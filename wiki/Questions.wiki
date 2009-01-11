@@ -1,0 +1,20 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+I collected some (not yet frequently asked) questions and answers about the Open-IG project.
+
+= Questions & Answers =
+
+=== Why did you start this project? ===
+Recently I pulled my old Imperium Galactica game and played with it using DOSBox. I noticed the age of this game, how the 640x480 resolution was too small and how unresponsive it worked. I figured out that maybe I could create a resizable game 
+interface. Luckily, the images, sound and animation is present, therefore I just need to create the engine to play it.
+
+=== Where did the inspiration came from? ===
+My another old-time favorite is Open Transport Tycoon Deluxe, which started out as a modern time version of the old DOS program. Luckily, the rendering in Imperium Galactica much simpler.
+
+=== Why Java? ===
+I'm a Java developer so it was a simple decision. As a side effect, the Open-IG will be playable on any platform which supports the recent versions of Java.
+
+=== When will we see the source? ===
+Soon. Unfortunately, the current source code is used to do some proof-of-concept rendering and game resource analysis. It has hand coded filenames and undocumented functions. They don't suit the format of a proper open source project yet.
