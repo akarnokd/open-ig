@@ -96,7 +96,7 @@ public class AnimPlay {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						String file = showOpenDialog();
-						if (file != null) {
+						if (file == null) {
 							menuOpen.setEnabled(false);
 						} else {
 							final File fl = new File(file);
@@ -289,7 +289,7 @@ public class AnimPlay {
 				}
 				ad.queue.offer(new byte[0]);
 				ad.interrupt();
-				System.out.printf("%.2f", audioCount * 0x4F6 / 22050f / saf.getFrameCount());
+				//System.out.printf("%.2f", audioCount * 0x4F6 / 22050f / saf.getFrameCount());
 			} finally {
 				rf.close();
 				SwingUtilities.invokeLater(new Runnable() {
