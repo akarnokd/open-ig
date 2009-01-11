@@ -32,6 +32,9 @@ The targeted original game version is 1.3, which as I think, corrected some game
 
 The Open-IG should run just fine with the English and Hungarian versions of the game (although I have only the English version).
 
+=== Isn't the game copyrighted? ===
+Yes, the original game's copyright belongs to GT Interactive or Digital Reality. Because this project does not include any file from the original distribution, my take is that this shouldn't be a problem. You need to legally own the original game to be able to use Open-IG.
+
 === Why Java? ===
 I'm a Java developer so it was a simple decision. As a side effect, the Open-IG will be playable on any platform which supports the recent versions of Java.
 
