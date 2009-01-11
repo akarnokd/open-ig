@@ -4,7 +4,7 @@ Welcome to Open-IG, the open source clone for Imperium Galactica written in Java
 
 = Details =
 
-You may see the [http://code.google.com/p/open-ig/Questions questions] page.
+You may see the [Questions questions] page.
 
 = Developer resources =
 
