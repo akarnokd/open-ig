@@ -1,0 +1,14 @@
+= Introduction =
+
+Welcome to Open-IG, the open source clone for Imperium Galactica written in Java.
+
+= Details =
+
+You may see the [http://code.google.com/p/open-ig/Questions questions] page.
+
+= Developer resources =
+
+  * [PAC_Format PAC file format specification]
+  * [ANI ANI file format specification]
+  * [Custom_LZSS LZSS decompression algorithm] used in the ANI files
+  * [Custom_RLE RLE decompression algorithm] used in the ANI files
