@@ -44,3 +44,14 @@ The original Imperium Galactica had several standard and non-standard files:
   * Sound files are in SND files which contain a raw 22050Hz 8 bit 1 channel signed PCM audio
   * Music files are stored in XMF files, whose structure I could not decipher yet. All I know it contains samples in the previous audio format at the end of the file.
   * The animations are stored in a custom binary file in a block structure containing Palette, Sound and Image data. The image data doubly packed first by an [http://code.google.com/p/open-ig/wiki/Custom_RLE custom RLE] compression and then by a [http://code.google.com/p/open-ig/wiki/Custom_LZSS custom LZSS] algorithm. See the links for the sample decompression algorithms.
+
+=== How did you find these out? ===
+The text and image formats were trivial case. The deciphering of the ANI files took one week of visual analysis (e.g. I starred at the data bytes).
+
+=== Can I comment/join? ===
+I disabled the commenting of this project until I produce enough resources (wiki pages and source files) to be meaningful. 
+
+Joining to this project will be enabled when there is at least something to actually run. I'm still figuring out the proper coding style and structure of this project.
+
+=== What about donations? ===
+Never. Spend your money for something useful.
