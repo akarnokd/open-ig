@@ -1,3 +1,6 @@
+#summary The description of the custom LZSS image decompression algorithm used by the game
+
+<wiki:toc max_depth="2" />
 = Introduction =
 
 This page describes the custom [http://en.wikipedia.org/wiki/LZSS LZSS] decompression algorithm used in the Imperium Galactica ANI files. It was (up to day) the most challenging information to obtain.
