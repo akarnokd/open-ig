@@ -1,5 +1,5 @@
+#summary Questions and answers about the project and the code
 <wiki:toc max_depth="3" />
-
 = Introduction =
 
 I collected some (not yet frequently asked) questions and answers about the Open-IG project.
