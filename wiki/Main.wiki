@@ -1,15 +1,36 @@
 #labels Featured
 = Introduction =
+Open-IG is an open source Java^TM^ clone of the [http://www.digitalreality.hu Digital Reality] game [http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica], a popular real time space strategy game developed around 1997 in Hungary. Open-IG attempts to mimic the original game as closely as possible while extending it with new features. It needs the original Imperium Galactica files to run.
 
-Welcome to Open-IG, the open source clone for Imperium Galactica written in Java.
+Open-IG is licensed under the GNU Lesser General Public License.
 
-= Details =
+[http://karnokd.uw.hu/open-ig-starmap.png An image] of the user interface. Note, that the image is 822x605 whereas the original game was restricted to 640x480.
 
-You may see the [Questions questions] page.
+The project is currently in a very early stage of development, mostly I spent time to decipher the game's resource files. For more information please see the [http://code.google.com/p/open-ig/wiki/Questions Questions and answers] page.
 
-= Developer resources =
+= Installation =
+
+Install Java JRE/JDK 1.6.X (preferrably X >= 10). Copy the contents of the original Imperium Galactica CD1 and CD2 into one directory (duplicate files can be simply overwritten). Put the (yet to come) {{{open-ig.jar}}} file into that directory. Double click on this file or use the command line {{{java -jar open-ig.jar}}}
+
+= Documentation =
+
+See the [http://code.google.com/p/open-ig/wiki/Main main] wiki page.
+
+= Development =
+
+Currently, not much info can I provide.
+
+== Developer resources ==
 
   * [PAC_Format PAC file format] specification
   * [ANI_Format ANI file format] specification
   * [Custom_LZSS LZSS decompression algorithm] used in the ANI files
   * [Custom_RLE RLE decompression algorithm] used in the ANI files
+
+= Tools =
+
+The Open-IG will play the original game's ANI files. To play these files separately, please use the [http://open-ig.googlecode.com/files/animplay-0.1.jar AnimPlay] utility. Double click on this file or use the command line {{{java -jar animplay-0.1.jar}}}. The utility will allow you to select a file to play. 
+(The source code is available from the SVN.)
+
+= About the author =
+I'm a Ph.D student specializing in Production Informatics, Supply Chains and Manufacturing Execution Systems.
