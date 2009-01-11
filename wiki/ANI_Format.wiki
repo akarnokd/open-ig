@@ -27,7 +27,7 @@ The header is 19 bytes long and has the following byte structure.
 || *Offset (hex)* || *Description* ||
 ||{{{bit 0}}} || The image data is compressed (probably). The player requires this to be 1. ||
 ||{{{bit 2}}} || The image is encoded using 0: the first [Custom_RLE RLE algorithm]; 1: the second RLE algorithm ||
-||{{{bit 5}}} || The encoded image is further encoded by an [Custom_LZSS LZSS] algorithm.
+||{{{bit 5}}} || The encoded image is further encoded by an [Custom_LZSS LZSS] algorithm.||
 
 The meaning of the other bits are unknown, probably reserved.
 
@@ -75,7 +75,6 @@ If the data block size (bytes 06-07) is FFFF, it is an indication, that the bloc
 === Decompressing the image ===
 The decompression of the images could be done in the following steps:
 
-  # If the LZSS animation flag is set and the current block did not contain the special FFFF size marker
-    * decompress the data using the [Custom_LZSS LZSS] algorithm into a temporary buffer and pass it to the following step instead of the original data
-  # If the algorithm animation flag is zero, use the first [Custom_RLE RLE] algorithm to decompress the actual image
-  # If the algorithm animation flag is one, use the second [Custom_RLE RLE] algorithm to decompress the actual image
+  * If the LZSS animation flag is set and the current block did not contain the special FFFF size marker, decompress the data using the [Custom_LZSS LZSS] algorithm into a temporary buffer and pass it to the following step instead of the original data
+  * If the algorithm animation flag is zero, use the first [Custom_RLE RLE] algorithm to decompress the actual image
+  * If the algorithm animation flag is one, use the second [Custom_RLE RLE] algorithm to decompress the actual image
