@@ -81,38 +81,41 @@ public class AnimPlay {
 		swingInvokeAndWait(new Runnable() {
 			@Override
 			public void run() {
-				frame = new JFrame(String.format("Playing: %s", f));
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				Container c = frame.getContentPane();
-				imageLabel = new JLabel();
-				c.add(imageLabel);
-				frame.setResizable(false);
-				JMenuBar mb = new JMenuBar();
-				frame.setJMenuBar(mb);
-				JMenu file = new JMenu("File");
-				menuOpen = new JMenuItem("Open...");
-				menuOpen.setEnabled(false);
-				menuOpen.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						String file = showOpenDialog();
-						if (file == null) {
-							menuOpen.setEnabled(false);
-						} else {
-							final File fl = new File(file);
-							lastPath = fl.getParentFile();
-							Thread t = new Thread(new Runnable() {
-								@Override
-								public void run() {
-									playFile(fl);
-								}
-							});
-							t.start();
+				if (frame == null) {
+					frame = new JFrame();
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					Container c = frame.getContentPane();
+					imageLabel = new JLabel();
+					c.add(imageLabel);
+					frame.setResizable(false);
+					JMenuBar mb = new JMenuBar();
+					frame.setJMenuBar(mb);
+					JMenu file = new JMenu("File");
+					menuOpen = new JMenuItem("Open...");
+					menuOpen.setEnabled(false);
+					menuOpen.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String file = showOpenDialog();
+							if (file == null) {
+								menuOpen.setEnabled(false);
+							} else {
+								final File fl = new File(file);
+								lastPath = fl.getParentFile();
+								Thread t = new Thread(new Runnable() {
+									@Override
+									public void run() {
+										playFile(fl);
+									}
+								});
+								t.start();
+							}
 						}
-					}
-				});
-				file.add(menuOpen);
-				mb.add(file);
+					});
+					file.add(menuOpen);
+					mb.add(file);
+				}
+				frame.setTitle(String.format("Playing: %s", f));
 				frame.setVisible(true);
 				frame.pack();
 			}
