@@ -1,3 +1,4 @@
+#summary The main wiki page
 #labels Featured
 <wiki:toc max_depth="2" />
 = Introduction =
