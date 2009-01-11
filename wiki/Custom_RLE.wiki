@@ -1,4 +1,4 @@
-#summary The description of the image decompression algorithm used by the game
+#summary The description of the custom RLE image decompression algorithm used by the game
 <wiki:toc max_depth="2" />
 = Introduction =
 
