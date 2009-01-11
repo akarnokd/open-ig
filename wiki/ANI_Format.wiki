@@ -1,5 +1,5 @@
+#summary The description of the game's ANI file format
 <wiki:toc max_depth="3" />
-
 = Introduction =
 
 This page describes the file format used for animations in the original Imperium Galactica.
