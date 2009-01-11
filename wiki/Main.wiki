@@ -1,6 +1,5 @@
 #labels Featured
 <wiki:toc max_depth="2" />
-
 = Introduction =
 Open-IG is an open source Java^TM^ clone of the [http://www.digitalreality.hu Digital Reality] game [http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica], a popular real time space strategy game developed around 1997 in Hungary. Open-IG attempts to mimic the original game as closely as possible while extending it with new features. It needs the original Imperium Galactica files to run.
 
