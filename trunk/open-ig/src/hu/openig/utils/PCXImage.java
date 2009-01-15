@@ -84,7 +84,8 @@ public class PCXImage {
 	/**
 	 * Parses the byte array and returns a buffered image containing the PCX image.
 	 * @param data the data array
-	 * @param transparentRGB the optional transparency color or -1 none
+	 * @param transparentRGB the optional transparency color or -1 none, -2 for set transparency based on
+	 * the original color index 0, -3 for index 1, etc.
 	 * @return the buffered image
 	 */
 	public static BufferedImage parse(byte[] data, int transparentRGB) {
@@ -142,12 +143,12 @@ public class PCXImage {
 					break;
 				case 3:
 					switch (h.bitsperpixel) {
-					case 1:
-						c = (scan[sll * y + x / 8] & (1 << (x % 8)))
-						| (scan[sll * y + xmax / 2 + x / 8] & (1 << (x % 8))) << 1
-						| (scan[sll * y + xmax + x / 8] & (1 << (x % 8))) << 2
-						;
-						break;
+//					case 1:
+//						c = (scan[sll * y + x / 8] & (1 << (x % 8)))
+//						| (scan[sll * y + xmax / 2 + x / 8] & (1 << (x % 8))) << 1
+//						| (scan[sll * y + xmax + x / 8] & (1 << (x % 8))) << 2
+//						;
+//						break;
 					case 8:
 						c = (scan[sll * y + x] & 0xFF) << 16
 						| (scan[sll * y + xmax + x] & 0xFF) << 8
@@ -156,23 +157,23 @@ public class PCXImage {
 						break;
 					}
 					break;
-				case 4:
-					// assume 1 bpp
-					c = (scan[sll * 4 * y + x / 8] & (1 << (x % 8)))
-					| (scan[sll * (4 * y + 1) + x / 8] & (1 << (x % 8))) << 1
-					| (scan[sll * (4 * y + 2) + x / 8] & (1 << (x % 8))) << 2
-					| (scan[sll * (4 * y + 3) + x / 8] & (1 << (x % 8))) << 3
-					;
-					break;
+//				case 4:
+//					// assume 1 bpp
+//					c = (scan[sll * 4 * y + x / 8] & (1 << (x % 8)))
+//					| (scan[sll * (4 * y + 1) + x / 8] & (1 << (x % 8))) << 1
+//					| (scan[sll * (4 * y + 2) + x / 8] & (1 << (x % 8))) << 2
+//					| (scan[sll * (4 * y + 3) + x / 8] & (1 << (x % 8))) << 3
+//					;
+//					break;
 				}
 				if (isrgb) {
 					if (c != transparentRGB) {
 						image[y * xmax + x] = 0xFF000000 | c;
 					}
 				} else {
-					c = h.rgb(c);
-					if (c != transparentRGB) {
-						image[y * xmax + x] = 0xFF000000 | c;
+					int d = h.rgb(c);
+					if ((transparentRGB >= 0 && d != transparentRGB) || (transparentRGB < -1 && c != -transparentRGB - 2)) {
+						image[y * xmax + x] = 0xFF000000 | d;
 					}
 				}
 			}
