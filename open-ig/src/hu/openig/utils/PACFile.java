@@ -7,22 +7,17 @@
  */
 package hu.openig.utils;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class to handle Imperium Galactica's PAC files.
@@ -41,98 +36,116 @@ import javax.swing.event.ListSelectionListener;
  *
  */
 public class PACFile {
-	static class PACEntry {
+	/**
+	 * Record to store entry information about various entries in the Pack file.
+	 * @author karnokd
+	 */
+	public static class PACEntry {
+		/** The entry's filename. */
 		public String filename;
+		/** The starting offset of the data. */
 		public long offset;
+		/** The size of the data. */
 		public int size;
-		public byte[] icon;
-	}
-	static class ImageRenderer extends DefaultListCellRenderer {
-	    /**
-		 * 
-		 */
-		private static final long serialVersionUID = 6224396689689734489L;
-
-		public Component getListCellRendererComponent(JList list,
-	                                                  Object value,
-	                                                  int index,
-	                                                  boolean isSelected,
-	                                                  boolean cellHasFocus) {
-	        // for default cell renderer behavior
-	        Component c = super.getListCellRendererComponent(list, value,
-	                                       index, isSelected, cellHasFocus);
-	        // set icon for cell image
-	        //((JLabel)c).setIcon(((PACEntry)value).icon);
-	        ((JLabel)c).setText(((PACEntry)value).filename);
-	        return c;
-	    }
+		/** The binary data of the entry. */
+		public byte[] data;
 	}
 	/**
-	 * @param args
+	 * Parses the given file fully and loads all entries into the memory.
+	 * @param f the file to parse fuly
+	 * @return the non-null list of pac entry records filled with data
+	 * @throws IOException if a file format error or other I/O problem occurs
 	 */
-	public static void main(String[] args) throws Exception {
-		DefaultListModel lm = new DefaultListModel();
-		final JList lst = new JList(lm);
-
-		
-		File fd = new File("c:\\letoltes\\ig11\\data");
-		for (File f : fd.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.toUpperCase().endsWith(".PAC");
-			}
-		})) {
-			RandomAccessFile fin = new RandomAccessFile(f, "r");
+	public static List<PACEntry> parseFully(File f) throws IOException {
+		RandomAccessFile fin = new RandomAccessFile(f, "r");
+		try {
+			// Parse header
 			byte[] entry = new byte[20];
 			fin.readFully(entry, 0, 2);
 			int count = (entry[1] & 0xFF) << 8 | (entry[0] & 0xFF);
+			List<PACEntry> result = new ArrayList<PACEntry>(count);
+			// parse entries
 			for (int i = 0 ; i < count; i++) {
 				PACEntry pe = new PACEntry();
 				fin.readFully(entry);
 				pe.filename = new String(entry, 1, entry[0], "ISO-8859-1");
 				pe.size = (entry[0x0E] & 0xFF) | (entry[0x0F] & 0xFF) << 8;
 				pe.offset = (entry[0x10] & 0xFF) | (entry[0x11] & 0xFF) << 8 | (entry[0x12] & 0xFF) << 16 | (entry[0x13] & 0xFF) << 24;
-				if (pe.filename.toUpperCase().endsWith(".PCX")) {
-					long p = fin.getFilePointer();
-					fin.seek(pe.offset);
-					pe.icon = new byte[pe.size];
-					fin.readFully(pe.icon);
-					
-//					FileOutputStream fout = new FileOutputStream("pcx/" + f.getName()+ "_" + pe.filename);
-//					fout.write(pe.icon);
-//					fout.close();
-					
-					fin.seek(p);
-					lm.addElement(pe);
-				}
+				result.add(pe);
 			}
+			// load entries
+			for (int i = 0; i < count; i++) {
+				PACEntry e = result.get(i);
+				fin.seek(e.offset);
+				fin.readFully(e.data = new byte[e.size]);
+			}
+			return result;
+		} finally {
 			fin.close();
 		}
-		
-		// create GUI for 
-		JFrame fr = new JFrame("Contents of " + fd);
-		fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		lst.setCellRenderer(new ImageRenderer());
-		fr.setLayout(new BorderLayout());
-		fr.getContentPane().add(new JScrollPane(lst), BorderLayout.WEST);
-		final JLabel imgLabel = new JLabel();
-		fr.getContentPane().add(new JScrollPane(imgLabel), BorderLayout.CENTER);
-		lst.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting()) {
-					PACEntry pe = (PACEntry)lst.getSelectedValue();
-					if (pe != null) {
-						ImageIcon ii = new ImageIcon(PCXImage.parse(pe.icon, -1));
-						imgLabel.setIcon(ii);
-						imgLabel.setText(String.format("%d x %d", ii.getIconWidth(), ii.getIconHeight()));
-					}
-				}
-			}
-		});
-		lst.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		fr.setSize(650, 490);
-		fr.setVisible(true);
 	}
-
+	/**
+	 * Parses the given filename fully and loads all entries into the memory.
+	 * @param f the filename to parse fully
+	 * @return the non-null list of pac entry records filled with data
+	 * @throws IOException if a file format error or other I/O problem occurs
+	 */
+	public static List<PACEntry> parseFully(String filename) throws IOException {
+		return parseFully(new File(filename));
+	}
+	/**
+	 * Parse a PAC file from the given non-seekable input stream. The stream should
+	 * be at the beginning of the PAC header. The stream will be positioned after the last
+	 * entry's data. Does not close the stream
+	 * @param in the input stream to parse from
+	 * @return the nonnull list of PACEntry objects filled in with data.
+	 * @throws IOException if an I/O error occurs during the operation
+	 */
+	public static List<PACEntry> parseFully(InputStream in) throws IOException {
+		// Parse header
+		DataInputStream din = new DataInputStream(in);
+		// the current offset
+		long offset = 0;
+		byte[] entry = new byte[20];
+		din.readFully(entry, 0, 2);
+		offset += 2;
+		int count = (entry[1] & 0xFF) << 8 | (entry[0] & 0xFF);
+		List<PACEntry> result = new ArrayList<PACEntry>(count);
+		// parse entries
+		for (int i = 0 ; i < count; i++) {
+			PACEntry pe = new PACEntry();
+			din.readFully(entry);
+			offset += entry.length;
+			pe.filename = new String(entry, 1, entry[0], "ISO-8859-1");
+			pe.size = (entry[0x0E] & 0xFF) | (entry[0x0F] & 0xFF) << 8;
+			pe.offset = (entry[0x10] & 0xFF) | (entry[0x11] & 0xFF) << 8 | (entry[0x12] & 0xFF) << 16 | (entry[0x13] & 0xFF) << 24;
+			result.add(pe);
+		}
+		// load entries
+		for (int i = 0; i < count; i++) {
+			PACEntry e = result.get(i);
+			while (offset < e.offset) {
+				long n = din.skip(e.offset - offset);
+				if (n < 0) {
+					throw new EOFException("Incomplete PAC file at entry #" + i);
+				}
+				offset += n;
+			}
+			din.readFully(e.data = new byte[e.size]);
+			offset += e.size;
+		}
+		return result;
+	}
+	/**
+	 * Creates a map from filename to entry based on the supplied collection of PACEntry objects.
+	 * @param it the collection of PACEntry objects
+	 * @return a map from PACEntry.filename to PACEntry objects
+	 */
+	public static Map<String, PACEntry> mapByName(Collection<? extends PACEntry> it) {
+		Map<String, PACEntry> result = new HashMap<String, PACEntry>(it.size());
+		for (PACEntry e : it) {
+			result.put(e.filename, e);
+		}
+		return result;
+	}
 }
