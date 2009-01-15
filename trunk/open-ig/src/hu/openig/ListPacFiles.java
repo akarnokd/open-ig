@@ -71,6 +71,7 @@ public class ListPacFiles {
 		})) {
 			for (PACEntry pe : PACFile.parseFully(f)) {
 				if (pe.filename.toUpperCase().endsWith(".PCX")) {
+					pe.filename = f.getName() + " " + pe.filename;
 					lm.addElement(pe);
 				}
 			}

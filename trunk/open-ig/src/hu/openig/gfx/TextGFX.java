@@ -37,7 +37,7 @@ public class TextGFX {
 	private Map<Integer, SizedCharImages> charMap 
 	= new HashMap<Integer, SizedCharImages>();
 	/** The colors used in the charset image to indicate aliased text. */
-	private final int[] IMAGE_COLORS = { 0x009AC9FF, 0x004D7099, 0x0025364B };
+	private final int[] IMAGE_COLORS = { 0xFF9AC9FF, 0xFF4D7099, 0xFF25364B };
 	/**
 	 * Constructor. Initializes the internal tables by processing the given file.
 	 * @param charsetFile the character set .PCX file
@@ -52,33 +52,61 @@ public class TextGFX {
 	private void split() {
 		// first sequence for siz
 		String[] lineCharacters = {
+				/* Size: 7 */
 				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
 				"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
-				"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00DA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00FA"
+				"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
+				/* Size: 10 */
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
+				"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
+				"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
+				/* Size: 14 */
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+				"abcdefghijklmnopqrstuvwxyz",
+				"?!()'\"+-:;.,1234567890%& /",
+				"\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
+				"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
+				/* Size: 5 */
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+				"?!()'\"+-:;.,1234567890%& /\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
+				"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA"
 		};
 		int[] height = {
-				7, 7, 7
+				7, 7, 7, 
+				10, 10, 10, 
+				14, 14, 14, 14, 14,
+				5, 5, 5
 		};
 		int[] width = {
+				5, 5, 5, 
+				7, 7, 7, 
+				12, 12, 12, 12, 12,
 				5, 5, 5
 		};
 		int[] spacingX = {
-				2, 2, 2
-		};
-		int[] spacingY = {
+				3, 3, 3, 
+				1, 1, 1, 
+				0, 0, 0, 0, 0,
 				1, 1, 1
 		};
-		int x = 0;
+		int[] spacingY = {
+				1, 1, 2, 
+				0, 0, 1, 
+				0, 0, 0, 0, 1,
+				1, 1, 1
+		};
 		int y = 0;
 		for (int j = 0; j < lineCharacters.length; j++) {
-			for (int i = 0; i < lineCharacters[j].length(); i++) {
-				SizedCharImages charToImg = charMap.get(height);
-				if (charToImg == null) {
-					charToImg = new SizedCharImages();
-					charToImg.width = width[j];
-					charToImg.height = height[j];
-					charMap.put(height[j], charToImg);
-				}
+			SizedCharImages charToImg = charMap.get(height[j]);
+			if (charToImg == null) {
+				charToImg = new SizedCharImages();
+				charToImg.width = width[j];
+				charToImg.height = height[j];
+				charMap.put(height[j], charToImg);
+			}
+			int x = 0;
+			String s = lineCharacters[j];
+			for (int i = 0; i < s.length(); i++) {
 				BufferedImage ci = charImage.getSubimage(x, y, width[j], height[j]);
 				charToImg.chars.put(lineCharacters[j].charAt(i), ci);
 				
@@ -100,16 +128,16 @@ public class TextGFX {
 		SizedCharImages charToImage = charMap.get(size);
 		if (charToImage != null) {
 			BufferedImage workImage = new BufferedImage(charToImage.width, charToImage.height, BufferedImage.TYPE_INT_ARGB);
+			int[] localImage = new int[charToImage.width * charToImage.height];
 			for (int i = 0; i < text.length(); i++) {
 				BufferedImage ci = charToImage.chars.get(text.charAt(i));
 				if (ci != null) {
-					int[] localImage = new int[ci.getWidth() * ci.getHeight()];
 					ci.getRGB(0, 0, charToImage.width, charToImage.height, localImage, 0, charToImage.width);
 					colorRewrite(localImage, color);
 					workImage.setRGB(0, 0, charToImage.width, charToImage.height, localImage, 0, charToImage.width);
 					g.drawImage(workImage, x, y, null);
 				}
-				x += charToImage.width + 1;
+				x += charToImage.width + 2;
 			}
 		}
 	}
@@ -119,11 +147,18 @@ public class TextGFX {
 	 * @param color the color to rewrite to
 	 */
 	private void colorRewrite(int[] pixels, int color) {
-		
-	}
-	public static void main(String[] args) {
-		for (char c : "ÕõÛûú".toCharArray()) {
-			System.out.printf("\\u%04X, ", (int)c);
+		color &= 0x00FFFFFF;
+		int[] newcolor = { 0x99000000 | color, 0xFF000000 | color, 0x4B000000 | color };
+		for (int i = 0; i < pixels.length; i++) {
+			int c = pixels[i];
+			for (int j = 0; j < newcolor.length; j++) {
+				if (c == IMAGE_COLORS[j]) {
+					c = newcolor[j];
+					break;
+				}
+			}
+			pixels[i] = c;
 		}
+		
 	}
 }

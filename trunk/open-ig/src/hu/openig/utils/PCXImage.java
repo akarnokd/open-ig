@@ -172,7 +172,7 @@ public class PCXImage {
 					}
 				} else {
 					int d = h.rgb(c);
-					if ((transparentRGB >= 0 && d != transparentRGB) || (transparentRGB < -1 && c != -transparentRGB - 2)) {
+					if (transparentRGB == -1 || (transparentRGB >= 0 && d != transparentRGB) || (transparentRGB < -1 && c != -transparentRGB - 2)) {
 						image[y * xmax + x] = 0xFF000000 | d;
 					}
 				}
