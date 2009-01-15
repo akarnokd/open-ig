@@ -99,29 +99,27 @@ public class PCXImage {
 		byte[] scan = new byte[sll * ymax];
 		// check for 256 color VGA palette
 		int y = 0;
-		while (src < data.length) {
-			if (data[src] == (byte)0x0C) {
-				// fix palette
-				h.palette = new byte[768];
-				System.arraycopy(data, src + 1, h.palette, 0, h.palette.length);
-				src += 1 + h.palette.length;
-				break;
-			} else {
-				while (dst < scan.length) {
-					byte b = data[src++];
-					byte cnt = 1;
-					if ((b & 0xC0) == 0xC0) {
-						cnt = (byte)(b & 0x3F);
-						b = data[src++];
-					}
-					// process line only if it is still within range;
-					if (y < ymax) {
-						Arrays.fill(scan, dst, dst + cnt, b);
-					}
-					dst += cnt;
+		while (src < data.length && dst < scan.length) {
+			while (dst < scan.length) {
+				byte b = data[src++];
+				byte cnt = 1;
+				if ((b & 0xC0) == 0xC0) {
+					cnt = (byte)(b & 0x3F);
+					b = data[src++];
 				}
-				y++;
+				// process line only if it is still within range;
+				if (y < ymax) {
+					Arrays.fill(scan, dst, dst + cnt, b);
+				}
+				dst += cnt;
 			}
+			y++;
+		}
+		if (src == data.length - 769 && data[src] == (byte)0x0C) {
+			// fix palette
+			h.palette = new byte[768];
+			System.arraycopy(data, src + 1, h.palette, 0, h.palette.length);
+			src += 1 + h.palette.length;
 		}
 		boolean isrgb = h.colorplanes == 3 && h.bitsperpixel == 8;
 		// decode every pixel data
@@ -145,15 +143,15 @@ public class PCXImage {
 				case 3:
 					switch (h.bitsperpixel) {
 					case 1:
-						c = (scan[sll * 3 * y + x / 8] & (1 << (x % 8)))
-						| (scan[sll * (3 * y + 1) + x / 8] & (1 << (x % 8))) << 1
-						| (scan[sll * (3 * y + 2) + x / 8] & (1 << (x % 8))) << 2
+						c = (scan[sll * y + x / 8] & (1 << (x % 8)))
+						| (scan[sll * y + xmax / 2 + x / 8] & (1 << (x % 8))) << 1
+						| (scan[sll * y + xmax + x / 8] & (1 << (x % 8))) << 2
 						;
 						break;
 					case 8:
-						c = (scan[sll * 3 * y + x])
-						| (scan[sll * (3 * y + 1)]) << 8
-						| (scan[sll * (3 * y + 2)]) << 16
+						c = (scan[sll * y + x] & 0xFF) << 16
+						| (scan[sll * y + xmax + x] & 0xFF) << 8
+						| (scan[sll * y + 2 * xmax + x] & 0xFF) << 0
 						;
 						break;
 					}
@@ -188,7 +186,7 @@ public class PCXImage {
 		return parse(IOUtils.load(f), transparentRGB);
 	}
 	public static void main(String[] args) throws Exception {
-		File f = new File("pcx/BOLYGOK.PAC_BVIZ00XH.PCX");
+		File f = new File("me.PCX");
 		byte[] data = new byte[(int)f.length()];
 		DataInputStream fin = new DataInputStream(new FileInputStream(f));
 		fin.readFully(data);
