@@ -74,10 +74,8 @@ public class ListPacFiles {
 			}
 		})) {
 			for (PACEntry pe : PACFile.parseFully(f)) {
-				if (pe.filename.toUpperCase().endsWith(".PCX")) {
-					pe.filename = f.getName() + " " + pe.filename;
-					lm.addElement(pe);
-				}
+				pe.filename = f.getName() + " " + pe.filename;
+				lm.addElement(pe);
 			}
 		}
 		
@@ -109,8 +107,10 @@ public class ListPacFiles {
 				if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
 					PACEntry pe = (PACEntry)lst.getSelectedValue();
 					if (pe != null) {
-						ImageIcon ii = new ImageIcon(PCXImage.parse(pe.data, -2));
-						imgLabel.setIcon(ii);
+						if (pe.filename.toUpperCase().endsWith(".PCX")) {
+							ImageIcon ii = new ImageIcon(PCXImage.parse(pe.data, -2));
+							imgLabel.setIcon(ii);
+						}
 					}
 				}
 			}
@@ -121,10 +121,12 @@ public class ListPacFiles {
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
 					PACEntry pe = (PACEntry)lst.getSelectedValue();
-					if (pe != null) {
+					if (pe != null && pe.filename.toUpperCase().endsWith(".PCX")) {
 						ImageIcon ii = new ImageIcon(PCXImage.parse(pe.data, -1));
 						imgLabel.setIcon(ii);
 						imgLabel.setText(String.format("%d x %d", ii.getIconWidth(), ii.getIconHeight()));
+					} else {
+						imgLabel.setText("Non image data.");
 					}
 				}
 			}
