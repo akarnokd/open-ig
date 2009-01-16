@@ -13,8 +13,12 @@ import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -84,6 +88,33 @@ public class ListPacFiles {
 		fr.setLayout(new BorderLayout());
 		fr.getContentPane().add(new JScrollPane(lst), BorderLayout.WEST);
 		final JLabel imgLabel = new JLabel();
+		imgLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getButton() == MouseEvent.BUTTON3) {
+					PACEntry pe = (PACEntry)lst.getSelectedValue();
+					if (pe != null) {
+						try {
+							FileOutputStream fout = new FileOutputStream(pe.filename);
+							try {
+								fout.write(pe.data);
+							} finally {
+								fout.close();
+							}
+						} catch (IOException ex) {
+							
+						}
+					}					
+				} else
+				if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
+					PACEntry pe = (PACEntry)lst.getSelectedValue();
+					if (pe != null) {
+						ImageIcon ii = new ImageIcon(PCXImage.parse(pe.data, -2));
+						imgLabel.setIcon(ii);
+					}
+				}
+			}
+		});
 		fr.getContentPane().add(new JScrollPane(imgLabel), BorderLayout.CENTER);
 		lst.addListSelectionListener(new ListSelectionListener() {
 			@Override
