@@ -8,19 +8,25 @@
 
 package hu.openig;
 
-import hu.openig.gfx.TextGFX;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.PACFile.PACEntry;
 
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 /**
  * Planetary surface renderer.
@@ -42,69 +48,180 @@ public class Planet {
 		return (r & 0xFF0000) | (g & 0xFF00) | (b & 0xFF);
 	}
 	/**
+	 * A point coordinate on the planetary screen.
+	 * @author karnokd
+	 */
+	public static class Pt {
+		/** The X coordinate. */
+		public int x;
+		/** The Y coordinate. */
+		public int y;
+		/**
+		 * Constructor.
+		 * @param x
+		 * @param y
+		 */
+		public Pt(int x, int y) {
+			this.x = x;
+			this.y = 0;
+		}
+		public void add(Pt p) {
+			x += p.x;
+			y += p.y;
+		}
+		/** Convert to screen coordinates. */
+		public Pt toScreen() {
+			return new Pt(x * 30 - y * 26, - 12 * x - 15 * y);
+		}
+		/** Convert to tile coordinates. */
+		public Pt toTile() {
+			return new Pt(0, 0);
+		}
+		public static int toScreenX(int x, int y) {
+			return x * 30 - y * 28;
+		}
+		public static int toScreenY(int x, int y) {
+			return - 12 * x - 15 * y;
+		}
+		public static float toTileX(int x, int y) {
+			return (x + toTileY(x, y) * 28) / 30f;
+		}
+		public static float toTileY(int x, int y) {
+			return -(30 * y + 12 * x) / 786f;
+		}
+	}
+	public static class PlanetRenderer extends JComponent implements MouseMotionListener {
+		BufferedImage back1;
+		BufferedImage keret1;
+		BufferedImage keret2;
+		BufferedImage keret3;
+		BufferedImage keret4;
+		BufferedImage hub1;
+		BufferedImage hub1B;
+		Rectangle tilesToHighlight;
+		int xoff;
+		int yoff;
+		int lastx;
+		int lasty;
+		boolean panMode;
+		public PlanetRenderer(String root) throws IOException {
+			Map<String, PACEntry> colony1 = PACFile.mapByName(PACFile.parseFully(root + "data\\colony1.pac"));
+			Map<String, PACEntry> surface1 = PACFile.mapByName(PACFile.parseFully(root + "data\\felszin1.pac"));
+			back1 = PCXImage.parse(surface1.get("021.PCX").data, -2);
+
+			BufferedImage keretek = PCXImage.from(root + "gfx\\keret.pcx", -2);
+			keret1 = keretek.getSubimage(0, 0, 57, 28);
+			keret2 = keretek.getSubimage(58, 0, 57, 28);
+			keret3 = keretek.getSubimage(116, 0, 57, 28);
+			keret4 = keretek.getSubimage(174, 0, 57, 28);
+			
+			hub1 = PCXImage.parse(colony1.get("000.PCX").data, 0);
+			hub1B = PCXImage.parse(colony1.get("000B.PCX").data, 0);
+			addMouseMotionListener(this);
+			addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent e) {
+					doMousePressed(e);
+				}
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					doMouseReleased(e);
+				}
+			});
+			addComponentListener(new ComponentAdapter() {
+				@Override
+				public void componentResized(ComponentEvent e) {
+					doComponentResized(e);
+				}
+			});
+		}
+		@Override
+		public void paint(Graphics g) {
+			Graphics2D g2 = (Graphics2D)g;
+			int maxx = 60;
+			int maxy = 60;
+			for (int j = 0; j < maxy; j++) {
+				for (int k = 0; k < maxx; k++) {
+					int x = xoff + Pt.toScreenX(k, j); //k * 30 - j * 27;
+					int y = yoff + Pt.toScreenY(k, j); //12 * k - 15 * j;
+					if (x >= -back1.getWidth() && x <= getWidth()
+							&& y >= -back1.getHeight() && y <= getHeight() + back1.getHeight()) {
+						g2.drawImage(back1, x, y - back1.getHeight(), null);
+					}
+				}
+			}
+			if (tilesToHighlight != null) {
+				for (int j = tilesToHighlight.y; j < tilesToHighlight.y + tilesToHighlight.height; j++) {
+					for (int k = tilesToHighlight.x; k < tilesToHighlight.x + tilesToHighlight.width; k++) {
+						int x = xoff + Pt.toScreenX(k, j); //k * 30 - j * 27;
+						int y = yoff + Pt.toScreenY(k, j); //12 * k - 15 * j;
+						
+						g2.drawImage(keret1, x - 1, y - keret1.getHeight(), null);
+					}
+				}
+			}
+			
+			int hx = 0, hy = 0;
+			Rectangle r1 = new Rectangle(xoff + Pt.toScreenX(0 + hx, 6 + hy), yoff + Pt.toScreenY(hx, hy) - hub1.getHeight(), 
+					hub1.getWidth() - 1, hub1.getHeight() - 1);
+//			g2.draw(r1);
+			g2.drawImage(hub1, r1.x, r1.y, null);
+			g2.drawImage(hub1B, r1.x + hub1.getWidth(), r1.y, null);
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			if (panMode) {
+				xoff -= (lastx - e.getX());
+				yoff -= (lasty - e.getY());
+				lastx = e.getX();
+				lasty = e.getY();
+				repaint();
+			}
+		}
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			int x = e.getX() - xoff - 27;
+			int y = e.getY() - yoff + 1;
+			int a = (int)Math.floor(Pt.toTileX(x, y));
+			int b = (int)Math.floor(Pt.toTileY(x, y));
+			tilesToHighlight = new Rectangle(a, b, 1, 1);
+			repaint();
+		}
+		public void doMousePressed(MouseEvent e) {
+			if (e.getButton() == MouseEvent.BUTTON3) {
+				lastx = e.getX();
+				lasty = e.getY();
+				panMode = true;
+			}
+		}
+		public void doMouseReleased(MouseEvent e) {
+			if (e.getButton() == MouseEvent.BUTTON3) {
+				panMode = false;
+			}
+		}
+		boolean once = true;
+		private void doComponentResized(ComponentEvent e) {
+			if (once) {
+				xoff = getWidth() / 2;
+				yoff = getHeight() - 1;
+				once = false;
+			}
+		}
+	}
+	/**
 	 * Main test program
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
 		String root = "c:\\games\\ig\\";
-		Map<String, PACEntry> colony1 = PACFile.mapByName(PACFile.parseFully(root + "data\\colony1.pac"));
-		BufferedImage back1 = PCXImage.parse(colony1.get("A.PCX").data, -2);
-
-		BufferedImage hub1 = PCXImage.parse(colony1.get("000.PCX").data, 0);
-		BufferedImage hub1B = PCXImage.parse(colony1.get("000B.PCX").data, 0);
-		BufferedImage hub2 = PCXImage.parse(colony1.get("000.PCX").data, 0);
-		BufferedImage hub2B = PCXImage.parse(colony1.get("000B.PCX").data, 0);
 		
-		Rectangle r1 = new Rectangle(50, 0, hub1.getWidth(), hub2.getHeight());
-		Rectangle r2 = new Rectangle(0, 50, hub1.getWidth(), hub2.getHeight());
-		BufferedImage gfx = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+		PlanetRenderer pr = new PlanetRenderer(root);
 		
-		
-		
-		Graphics2D g2 = (Graphics2D)gfx.getGraphics();
-		
-		TextGFX txt = new TextGFX(root + "gfx\\charset1.pcx");
-		
-		int y = - gfx.getWidth() * 3;
-		int x = -gfx.getHeight() * 2;
-		while (y < gfx.getHeight()) {
-			int y0 = y;
-			int x0 = x;
-			while(x < gfx.getWidth()) {
-				g2.drawImage(back1, x, y, null);
-				g2.drawImage(back1, x + back1.getWidth() / 2, y + back1.getHeight() / 2 + 2, null);
-				x += back1.getWidth() + 2;
-				y += 3;
-			}
-			y = y0 + back1.getHeight();
-			x = x0;
-			x -= 2;
-		}
-		
-		g2.drawImage(hub1, r1.x, r1.y, null);
-		g2.drawImage(hub1B, r1.x + hub1.getWidth(), r1.y, null);
-		g2.drawImage(hub2, r2.x, r2.y, null);
-		g2.drawImage(hub2B, r2.x + hub2.getWidth(), r2.y, null);
-
-		Rectangle r3 = r1.intersection(r2);
-		for (y = r3.y; y < r3.y + r3.height; y++) {
-			for (x = r3.x; x < r3.x + r3.width; x++) {
-				int c1 = hub1.getRGB(x - r1.x, y - r1.y);
-				int c2 = hub2.getRGB(x - r2.x, y - r2.y);
-				if ((c1 & 0xFF000000) != 0 && (c2 & 0xFF000000) != 0) {
-					int c3 = average(c2, 0xFF0000, 0.75f);
-					gfx.setRGB(x, y, 0xFF000000 | c3);
-				}
-			}
-		}
-		txt.paintTo((Graphics2D)gfx.getGraphics(), 0, 350, 7, 0xFF000000, "ÁRVÍZTÛRÕ TÜKÖRFÚRÓGÉP árvíztûrõ tükörfúrógép");
-		txt.paintTo((Graphics2D)gfx.getGraphics(), 0, 360, 10, 0xFF000000, "ÁRVÍZTÛRÕ TÜKÖRFÚRÓGÉP árvíztûrõ tükörfúrógép");
-		txt.paintTo((Graphics2D)gfx.getGraphics(), 0, 380, 14, 0xFFFF0000, "ÁRVÍZTÛRÕ TÜKÖRFÚRÓGÉP árvíztûrõ tükörfúrógép");
-		txt.paintTo((Graphics2D)gfx.getGraphics(), 0, 400, 5, 0xFF000000, "ÁRVÍZTÛRÕ TÜKÖRFÚRÓGÉP árvíztûrõ tükörfúrógép");
-		
-		JFrame fm = new JFrame("Overlap test");
+		JFrame fm = new JFrame("Open-IG: Planet");
 		fm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		fm.getContentPane().add(new JLabel(new ImageIcon(gfx)));
+		fm.getContentPane().add(pr);
+		fm.setMinimumSize(new Dimension(640, 480));
 		fm.pack();
 		fm.setVisible(true);
 	}
