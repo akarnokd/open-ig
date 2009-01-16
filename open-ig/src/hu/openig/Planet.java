@@ -23,13 +23,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 /**
- * Planetary surface renderer.
+ * Planetary surface renderer test file.
  * @author karnokd, 2009.01.14.
  * @version $Revision 1.0$
  */
@@ -41,7 +43,7 @@ public class Planet {
 	 * @param scale the weight (0..1) of the first color
 	 * @return the averaged RGB color
 	 */
-	private static int average(int c1, int c2, float scale) {
+	protected static int average(int c1, int c2, float scale) {
 		int r = (int)((c1 & 0xFF0000) * scale + (c2 & 0xFF0000) * (1 - scale));
 		int g = (int)((c1 & 0xFF00) * scale + (c2 & 0xFF00) * (1 - scale));
 		int b = (int)((c1 & 0xFF) * scale  + (c2 & 0xFF) * (1 - scale));
@@ -90,7 +92,14 @@ public class Planet {
 			return -(30 * y + 12 * x) / 786f;
 		}
 	}
+	/**
+	 * Planet surface renderer class.
+	 * @author karnokd, 2009.01.16.
+	 * @version $Revision 1.0$
+	 */
 	public static class PlanetRenderer extends JComponent implements MouseMotionListener {
+		/** */
+		private static final long serialVersionUID = -2113448032455145733L;
 		BufferedImage back1;
 		BufferedImage keret1;
 		BufferedImage keret2;
@@ -104,10 +113,25 @@ public class Planet {
 		int lastx;
 		int lasty;
 		boolean panMode;
+		Map<Integer, Map<Integer, BufferedImage>> surfaceImages;
+		byte[] mapBytes;
 		public PlanetRenderer(String root) throws IOException {
 			Map<String, PACEntry> colony1 = PACFile.mapByName(PACFile.parseFully(root + "data\\colony1.pac"));
-			Map<String, PACEntry> surface1 = PACFile.mapByName(PACFile.parseFully(root + "data\\felszin1.pac"));
-			back1 = PCXImage.parse(surface1.get("021.PCX").data, -2);
+			Map<String, PACEntry> maps = PACFile.mapByName(PACFile.parseFully(root + "DATA\\MAP.PAC"));
+
+			surfaceImages = new HashMap<Integer, Map<Integer, BufferedImage>>();
+			for (int i = 1; i < 8; i++) {
+				Map<Integer, BufferedImage> actual = new HashMap<Integer, BufferedImage>();
+				surfaceImages.put(i, actual);
+				for (PACEntry e : PACFile.parseFully(root + "DATA\\FELSZIN" + i +".PAC")) {
+					int idx = e.filename.indexOf('.');
+					actual.put(Integer.parseInt(e.filename.substring(0, idx)), PCXImage.parse(e.data, -2));
+				}
+			}
+			
+			mapBytes = maps.get("MAP_F1.MAP").data;
+			
+			back1 = surfaceImages.get(1).get(27);
 
 			BufferedImage keretek = PCXImage.from(root + "gfx\\keret.pcx", -2);
 			keret1 = keretek.getSubimage(0, 0, 57, 28);
@@ -138,17 +162,66 @@ public class Planet {
 		@Override
 		public void paint(Graphics g) {
 			Graphics2D g2 = (Graphics2D)g;
-			int maxx = 60;
-			int maxy = 60;
-			for (int j = 0; j < maxy; j++) {
-				for (int k = 0; k < maxx; k++) {
-					int x = xoff + Pt.toScreenX(k, j); //k * 30 - j * 27;
-					int y = yoff + Pt.toScreenY(k, j); //12 * k - 15 * j;
-					if (x >= -back1.getWidth() && x <= getWidth()
-							&& y >= -back1.getHeight() && y <= getHeight() + back1.getHeight()) {
-						g2.drawImage(back1, x, y - back1.getHeight(), null);
+			int maxx = 65;
+			int maxy = 65;
+			
+//			for (int j = 0; j < 1; j++) {
+//				for (int k = 0; k < maxx; k++) {
+//					int ff = mapBytes[4 + (maxy * j + k) * 2 + 1] & 0xFF;
+//					int ii = (mapBytes[4 + (maxy * j + k) * 2] & 0xFF) - 41;
+//					BufferedImage tile = surfaceImages.get(6).get(ii);
+//					if (tile != null && ff != 255) {
+//						int corr = tile.getWidth() / 56 - 1;
+//						int x = xoff + Pt.toScreenX(-k, -j + corr); //k * 30 - j * 27;
+//						int y = yoff + Pt.toScreenY(-k, -j); //12 * k - 15 * j;
+//						if (x >= -tile.getWidth() && x <= getWidth()
+//								&& y >= -tile.getHeight() && y <= getHeight() + tile.getHeight()) {
+//							g2.drawImage(tile, x, y - tile.getHeight(), null);
+//						}
+//					}
+//				}
+//			}
+			{
+			int k = 0;
+			int j = 0;
+			int k0 = 0;
+			int j0 = 0;
+			for (int i = 0; i < /* mapBytes.length / 2 - 2 */ 65 * 65; i++) {
+				int ii = (mapBytes[2 * i + 4] & 0xFF) - 41;
+				int ff = mapBytes[2 * i + 5] & 0xFF;
+				BufferedImage tile = surfaceImages.get(6).get(ii);
+				if (tile != null && ff == 0) {
+					int corr = tile.getWidth() / 56 - 1;
+					int x = xoff + Pt.toScreenX(-k, j); //k * 30 - j * 27;
+					int y = yoff + Pt.toScreenY(-k, j - corr); //12 * k - 15 * j;
+					if (x >= -tile.getWidth() && x <= getWidth()
+							&& y >= -tile.getHeight() && y <= getHeight() + tile.getHeight()) {
+						g2.drawImage(tile, x, y - tile.getHeight(), null);
 					}
+					/* */
+				}				
+				k++;
+				j--;
+				k0++;
+//				if ((j0 % 2 == 0 && k0 > 63) || (j0 % 2 == 1 && k0 > 64)) {
+				if (k0 > 64) {
+					k0 = 0;
+					j0++;
+//					k = - (j0 / 2);
+//					j = - ((j0 - 1) / 2 + 1);
+					j = - (j0 / 2);
+					k = - ((j0 - 1) / 2 + 1);
 				}
+				/* ZIG-ZAG */
+//				if (k == 0) {
+//					j = 0;
+//					k = -k0 - 1;
+//					k0++;
+//				} else {
+//					k++;
+//					j--;
+//				}
+			}
 			}
 			if (tilesToHighlight != null) {
 				for (int j = tilesToHighlight.y; j < tilesToHighlight.y + tilesToHighlight.height; j++) {
@@ -165,8 +238,8 @@ public class Planet {
 			Rectangle r1 = new Rectangle(xoff + Pt.toScreenX(0 + hx, 6 + hy), yoff + Pt.toScreenY(hx, hy) - hub1.getHeight(), 
 					hub1.getWidth() - 1, hub1.getHeight() - 1);
 //			g2.draw(r1);
-			g2.drawImage(hub1, r1.x, r1.y, null);
-			g2.drawImage(hub1B, r1.x + hub1.getWidth(), r1.y, null);
+//			g2.drawImage(hub1, r1.x, r1.y, null);
+//			g2.drawImage(hub1B, r1.x + hub1.getWidth(), r1.y, null);
 		}
 		
 		@Override
@@ -204,7 +277,7 @@ public class Planet {
 		private void doComponentResized(ComponentEvent e) {
 			if (once) {
 				xoff = getWidth() / 2;
-				yoff = getHeight() - 1;
+				yoff = 27; //getHeight() - 1;
 				once = false;
 			}
 		}
