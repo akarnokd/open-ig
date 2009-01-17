@@ -13,6 +13,7 @@ import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.PACFile.PACEntry;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -117,8 +118,12 @@ public class Planet {
 		boolean panMode;
 		Map<Integer, Map<Integer, Tile>> surfaceImages;
 		byte[] mapBytes;
-		int type = 1;
+		int surfaceVariant = 1;
 		Map<String, PACEntry> maps;
+		float scale = 1.0f;
+		int surfaceType = 1;
+		/** Empty surface map array. */
+		private final byte[] EMPTY_SURFACE_MAP = new byte[65 * 65 * 2 + 4];
 		public PlanetRenderer(String root) throws IOException {
 			Map<String, PACEntry> colony1 = PACFile.mapByName(PACFile.parseFully(root + "data\\colony1.pac"));
 			maps = PACFile.mapByName(PACFile.parseFully(root + "DATA\\MAP.PAC"));
@@ -136,7 +141,7 @@ public class Planet {
 			}
 			adjustTileParams();
 			
-			mapBytes = maps.get("MAP_F" + type + ".MAP").data;
+			changeSurface();
 			
 			back1 = surfaceImages.get(1).get(27).image;
 
@@ -166,11 +171,18 @@ public class Planet {
 					doComponentResized(e);
 				}
 			});
+//			setOpaque(true);
+		}
+		private PACEntry getSurface(int surfaceType, int variant) {
+			String mapName = "MAP_" + (char)('A' + (surfaceType - 1)) + variant + ".MAP";
+			return maps.get(mapName);
 		}
 		/**
 		 * Fixes width and heigth for larger tiles.
 		 */
 		private void adjustTileParams() {
+			// DESERT TYPE SURFACE TILE ADJUSTMENTS
+			
 			// EARTH TYPE SURFACE TILE ADJUSTMENTS
 			setParams(6, 108, 2, 1);
 			for (int i = 109; i <= 130; i++) {
@@ -199,56 +211,140 @@ public class Planet {
 			t.width = width;
 			t.height = height;
 			t.scanlines = width + height - 1;
+			t.strips = new BufferedImage[width + height - 1];
+			for (int i = 0; i < t.strips.length; i++) {
+				int x0 = i >= t.width ? Pt.toScreenX(i, 0) : Pt.toScreenX(0, -i);
+				int w0 = Math.min(57, t.image.getWidth() - x0);
+				t.strips[i] = t.image.getSubimage(x0, 0, w0, t.image.getHeight());
+			}
 		}
 		@Override
 		public void paint(Graphics g) {
 			Graphics2D g2 = (Graphics2D)g;
+			g2.scale(scale, scale);
+			g2.setColor(Color.RED);
+//			g2.fill(this.getBounds());
+			Rectangle r = new Rectangle();
 			int k = 0;
 			int j = 0;
+			// RENDER VERTICALLY
 			int k0 = 0;
 			int j0 = 0;
-			for (int i = 0; i < /* mapBytes.length / 2 - 2 */ 65 * 65; i++) {
+			Map<Integer, Tile> surface = surfaceImages.get(surfaceType);
+			for (int i = 0; i < 65 * 65; i++) {
 				int ii = (mapBytes[2 * i + 4] & 0xFF) - 41;
 				int ff = mapBytes[2 * i + 5] & 0xFF;
-				Tile tile = surfaceImages.get(6).get(ii);
+				Tile tile = surface.get(ii);
 				if (tile != null) {
-					if (ff == tile.width - 1) {
-						int x = xoff + Pt.toScreenX(-k, j + tile.width - 1);
-						int y = yoff + Pt.toScreenY(-k, j);
+					// 1x1 tiles can be drawn from top to bottom
+					if (tile.width == 1 && tile.height == 1) {
+						int x = xoff + Pt.toScreenX(k, j);
+						int y = yoff + Pt.toScreenY(k, j);
 						if (x >= -tile.image.getWidth() && x <= getWidth()
 								&& y >= -tile.image.getHeight() && y <= getHeight() + tile.image.getHeight()) {
 							g2.drawImage(tile.image, x, y - tile.image.getHeight() + tile.heightCorrection, null);
 						}
+					} else 
+					if (ff < 255){
+						// multi spanning tiles should be cut into small rendering piece for the current strip
+						// ff value indicates the stripe count
+						// the entire image would be placed using this bottom left coordinate
+						int j1 = ff >= tile.width ? j + tile.width - 1: j + ff;
+						int k1 = ff >= tile.width ? k + (tile.width - 1 - ff): k;
+						int j2 = ff >= tile.width ? j : j - (tile.width - 1 - ff);
+						int x = xoff + Pt.toScreenX(k1, j1);
+						int y = yoff + Pt.toScreenY(k1, j2);
+						// use subimage stripe
+						int x0 = ff >= tile.width ? Pt.toScreenX(ff, 0) : Pt.toScreenX(0, -ff);
+						BufferedImage subimage = tile.strips[ff];
+						g2.drawImage(subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection, null);
+						r.x = x;
+						r.y = y - tile.image.getHeight();
+						r.width = tile.image.getWidth();
+						r.height = tile.image.getHeight();
 					}
-//					if (corr > 1 && ff < 255) {
-//						int x = xoff + Pt.toScreenX(-k, j);
-//						int y = yoff + Pt.toScreenY(-k, j);
-//						g2.drawImage(keret3, x - 1, y - keret3.getHeight(), null);
-//					}
 				}				
-				k++;
+				k--;
 				j--;
 				k0++;
 				if (k0 > 64) {
 					k0 = 0;
 					j0++;
 					j = - (j0 / 2);
-					k = - ((j0 - 1) / 2 + 1);
+					k = ((j0 - 1) / 2 + 1);
 				}
 			}
-			if (tilesToHighlight != null) {
-				for (j = tilesToHighlight.y; j < tilesToHighlight.y + tilesToHighlight.height; j++) {
-					for (k = tilesToHighlight.x; k < tilesToHighlight.x + tilesToHighlight.width; k++) {
-						int x = xoff + Pt.toScreenX(k, j); //k * 30 - j * 27;
-						int y = yoff + Pt.toScreenY(k, j); //12 * k - 15 * j;
-						
-						g2.drawImage(keret1, x - 1, y - keret1.getHeight(), null);
+			// RENDER HORIZONTALLY
+			/*
+			for (int sy = 0; sy < 132; sy++) {
+				boolean iseven = sy % 2 == 0;
+				j = - (sy / 2);
+				k = - (sy + 1) / 2;
+				for (int sx = 0; sx < 33; sx++) {
+					int i = iseven ? 65 : 0;
+					i += sx * 130 + sy / 2;
+					if (i * 2 + 5 >= mapBytes.length) {
+						continue;
 					}
+					int ii = (mapBytes[2 * i + 4] & 0xFF) - 41;
+					int ff = mapBytes[2 * i + 5] & 0xFF;
+					Tile tile = surfaceImages.get(6).get(ii);
+					if (tile != null && tile.width == 1 && tile.height == 1) {
+						if (ff == tile.width - 1) {
+							int x = xoff + Pt.toScreenX(k, j + tile.width - 1);
+							int y = yoff + Pt.toScreenY(k, j);
+							if (x >= -tile.image.getWidth() && x <= getWidth()
+									&& y >= -tile.image.getHeight() && y <= getHeight() + tile.image.getHeight()) {
+								g2.drawImage(tile.image, x, y - tile.image.getHeight() + tile.heightCorrection, null);
+							}
+						}
+					}
+					k++;
+					j--;
 				}
+			}
+			*/
+//			if (r != null) {
+//				g2.draw(r);
+//			}
+			
+			if (tilesToHighlight != null) {
+				drawIntoRect(g2, keret1, tilesToHighlight);
 			}
 			
 		}
-		
+		private void changeSurface() {
+			PACEntry e = getSurface(surfaceType, surfaceVariant);
+			if (e != null) {
+				mapBytes = e.data;
+			} else {
+				mapBytes = EMPTY_SURFACE_MAP;
+			}
+		}
+		/**
+		 * Converts the tile x and y coordinates to map offset.
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 * @return the map offset
+		 */
+		public int toMapOffset(int x, int y) {
+			return (x - y) * 65 + (x - y + 1) / 2 - x;
+		}
+		/**
+		 * Fills the given rectangular tile area with the specified tile image.
+		 * @param g2
+		 * @param image
+		 * @param rect
+		 */
+		private void drawIntoRect(Graphics2D g2, BufferedImage image, Rectangle rect) {
+			for (int j = rect.y; j < rect.y + rect.height; j++) {
+				for (int k = rect.x; k < rect.x + rect.width; k++) {
+					int x = xoff + Pt.toScreenX(k, j); 
+					int y = yoff + Pt.toScreenY(k, j); 
+					g2.drawImage(image, x - 1, y - image.getHeight(), null);
+				}
+			}
+		}
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			if (panMode) {
@@ -273,6 +369,15 @@ public class Planet {
 				lastx = e.getX();
 				lasty = e.getY();
 				panMode = true;
+			} else
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				int x = e.getX() - xoff - 27;
+				int y = e.getY() - yoff + 1;
+				int a = (int)Math.floor(Pt.toTileX(x, y));
+				int b = (int)Math.floor(Pt.toTileY(x, y));
+				int offs = this.toMapOffset(a, b);
+				int val = offs >= 0 && offs < 65 * 65 ? mapBytes[offs * 2 + 4] & 0xFF : 0;
+				System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
 			}
 		}
 		public void doMouseReleased(MouseEvent e) {
@@ -290,17 +395,31 @@ public class Planet {
 		}
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
-			if (e.getWheelRotation() > 0 & type < 9) {
-				type++;
+			if (!e.isControlDown() && !e.isAltDown()) {
+				if (e.getWheelRotation() > 0 & surfaceVariant < 9) {
+					surfaceVariant++;
+				} else 
+				if (e.getWheelRotation() < 0 && surfaceVariant > 1){
+					surfaceVariant--;
+				}
+				changeSurface();
 			} else 
-			if (e.getWheelRotation() < 0 && type > 1){
-				type--;
-			}
-			PACEntry pe = maps.get("MAP_F" + type + ".MAP");
-			if (pe != null) {
-				mapBytes = pe.data;
-			} else {
-				mapBytes = new byte[65 * 65 * 2 + 4];
+			if (e.isControlDown()) {
+				if (e.getWheelRotation() < 0 & scale < 32) {
+					scale *= 2;
+				} else 
+				if (e.getWheelRotation() > 0 && scale > 1f/32){
+					scale /= 2;
+				}
+			} else
+			if (e.isAltDown()) {
+				if (e.getWheelRotation() < 0 && surfaceType > 1) {
+					surfaceType--;
+				} else
+				if (e.getWheelRotation() > 0 && surfaceType < 7) {
+					surfaceType++;
+				}
+				changeSurface();
 			}
 			repaint();
 		}
