@@ -26,4 +26,6 @@ public class Tile {
 	public int heightCorrection;
 	/** The actual tile image. */
 	public BufferedImage image;
+	/** The vertical strips for larger tiles.*/
+	public BufferedImage[] strips;
 }
