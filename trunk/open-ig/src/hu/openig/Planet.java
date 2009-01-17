@@ -121,7 +121,7 @@ public class Planet {
 		int surfaceVariant = 1;
 		Map<String, PACEntry> maps;
 		float scale = 1.0f;
-		int surfaceType = 1;
+		int surfaceType = 7;
 		/** Empty surface map array. */
 		private final byte[] EMPTY_SURFACE_MAP = new byte[65 * 65 * 2 + 4];
 		public PlanetRenderer(String root) throws IOException {
@@ -182,6 +182,108 @@ public class Planet {
 		 */
 		private void adjustTileParams() {
 			// DESERT TYPE SURFACE TILE ADJUSTMENTS
+			for (int i = 55; i <= 68; i++) {
+				setParams(1, i, 2, 2);
+			}
+			setParams(1, 69, 2, 1);
+			setParams(1, 70, 3, 2);
+			for (int i = 71; i <= 74; i++) {
+				setParams(1, i, 3, 3);
+			}
+			setParams(1, 75, 4, 3);
+			for (int i = 76; i <= 79; i++) {
+				setParams(1, i, 4, 4);
+			}
+			// ICE TYPE SURFACE TILE ADJUSTMENTS
+			for (int i = 33; i <= 37; i++) {
+				setParams(2, i, 1, 2);
+			}
+			for (int i = 38; i <= 39; i++) {
+				setParams(2, i, 2, 1);
+			}
+			for (int i = 40; i <= 54; i++) {
+				setParams(2, i, 2, 2);
+			}
+			for (int i = 55; i <= 59; i++) {
+				setParams(2, i, 2, 3);
+			}
+			for (int i = 60; i <= 62; i++) {
+				setParams(2, i, 2, 4);
+			}
+			for (int i = 63; i <= 67; i++) {
+				setParams(2, i, 3, 2);
+			}
+			setParams(2, 68, 3, 3);
+			for (int i = 69; i <= 73; i++) {
+				setParams(2, i, 4, 2);
+			}
+			for (int i = 74; i <= 78; i++) {
+				setParams(2, i, 4, 4);
+			}
+			setParams(2, 79, 2, 2);
+			// CRATER TYPE SURFACE TILE ADJUSTMENTS
+			setParams(3, 61, 1, 2);
+			setParams(3, 62, 2, 1);
+			for (int i = 63; i <= 86; i++) {
+				setParams(3, i, 2, 2);
+			}
+			for (int i = 87; i <= 89; i++) {
+				setParams(3, i, 2, 3);
+			}
+			setParams(3, 91, 3, 2);
+			for (int i = 92; i <= 94; i++) {
+				setParams(3, i, 3, 3);
+			}
+			setParams(3, 95, 3, 4);
+			setParams(3, 96, 4, 2);
+			setParams(3, 97, 4, 4);
+			// ROCKY TYPE SURFACE TILE ADJUSTMENTS
+			for (int i = 42; i <= 45; i++) {
+				setParams(4, i, 1, 2);
+			}
+			for (int i = 46; i <= 58; i++) {
+				setParams(4, i, 2, 2);
+			}
+			for (int i = 59; i <= 64; i++) {
+				setParams(4, i, 2, 4);
+			}
+			for (int i = 65; i <= 71; i++) {
+				setParams(4, i, 3, 3);
+			}
+			for (int i = 72; i <= 73; i++) {
+				setParams(4, i, 4, 4);
+			}
+			surfaceImages.get(4).get(72).heightCorrection = 1;
+			setParams(4, 74, 5, 5);
+			// LIQUID TYPE SURFACE TILE ADJUSTMENTS
+			for (int i = 70; i <= 72; i++) {
+				setParams(5, i, 1, 2);
+			}
+			setParams(5, 73, 2, 1);
+			for (int i = 74; i <= 79; i++) {
+				setParams(5, i, 2, 2);
+			}
+			for (int i = 86; i <= 103; i++) {
+				setParams(5, i, 2, 2);
+			}
+			for (int i = 104; i <= 105; i++) {
+				setParams(5, i, 3, 3);
+			}
+			setParams(5, 106, 2, 3);
+			for (int i = 107; i <= 109; i++) {
+				setParams(5, i, 3, 2);
+			}
+			for (int i = 110; i <= 116; i++) {
+				setParams(5, i, 3, 3);
+			}
+			setParams(5, 117, 4, 3);
+			setParams(5, 118, 3, 3);
+			for (int i = 119; i <= 121; i++) {
+				setParams(5, i, 4, 4);
+			}
+			for (int i = 122; i <= 123; i++) {
+				setParams(5, i, 3, 3);
+			}
 			
 			// EARTH TYPE SURFACE TILE ADJUSTMENTS
 			setParams(6, 108, 2, 1);
@@ -205,6 +307,20 @@ public class Planet {
 			setParams(6, 160, 6, 5);
 			
 			setParams(6, 161, 6, 6);
+			// NECTOPLASM TYPE SURFACE TILE ADJUSTMENTS
+			for (int i = 27; i <= 42; i++) {
+				setParams(7, i, 2, 2);
+			}
+			setParams(7, 43, 2, 3);
+			setParams(7, 44, 3, 2);
+			setParams(7, 45, 3, 3);
+			for (int i = 46; i <= 48; i++) {
+				setParams(7, i, 3, 2);
+			}
+			for (int i = 49; i <= 57; i++) {
+				setParams(7, i, 4, 4);
+			}
+			surfaceImages.get(7).get(57).heightCorrection = 1;
 		}
 		private void setParams(int surface, int tile, int width, int height) {
 			Tile t = surfaceImages.get(surface).get(tile);
@@ -232,7 +348,7 @@ public class Planet {
 			int j0 = 0;
 			Map<Integer, Tile> surface = surfaceImages.get(surfaceType);
 			for (int i = 0; i < 65 * 65; i++) {
-				int ii = (mapBytes[2 * i + 4] & 0xFF) - 41;
+				int ii = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
 				int ff = mapBytes[2 * i + 5] & 0xFF;
 				Tile tile = surface.get(ii);
 				if (tile != null) {
@@ -240,8 +356,8 @@ public class Planet {
 					if (tile.width == 1 && tile.height == 1) {
 						int x = xoff + Pt.toScreenX(k, j);
 						int y = yoff + Pt.toScreenY(k, j);
-						if (x >= -tile.image.getWidth() && x <= getWidth()
-								&& y >= -tile.image.getHeight() && y <= getHeight() + tile.image.getHeight()) {
+						if (x >= -tile.image.getWidth() && x <= (int)(getWidth() / scale)
+								&& y >= -tile.image.getHeight() && y <= (int)(getHeight() / scale) + tile.image.getHeight()) {
 							g2.drawImage(tile.image, x, y - tile.image.getHeight() + tile.heightCorrection, null);
 						}
 					} else 
