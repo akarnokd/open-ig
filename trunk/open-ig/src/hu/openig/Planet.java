@@ -8,6 +8,7 @@
 
 package hu.openig;
 
+import hu.openig.core.Tile;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.PACFile.PACEntry;
@@ -21,10 +22,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
@@ -97,7 +99,7 @@ public class Planet {
 	 * @author karnokd, 2009.01.16.
 	 * @version $Revision 1.0$
 	 */
-	public static class PlanetRenderer extends JComponent implements MouseMotionListener {
+	public static class PlanetRenderer extends JComponent implements MouseMotionListener, MouseWheelListener {
 		/** */
 		private static final long serialVersionUID = -2113448032455145733L;
 		BufferedImage back1;
@@ -113,25 +115,30 @@ public class Planet {
 		int lastx;
 		int lasty;
 		boolean panMode;
-		Map<Integer, Map<Integer, BufferedImage>> surfaceImages;
+		Map<Integer, Map<Integer, Tile>> surfaceImages;
 		byte[] mapBytes;
+		int type = 1;
+		Map<String, PACEntry> maps;
 		public PlanetRenderer(String root) throws IOException {
 			Map<String, PACEntry> colony1 = PACFile.mapByName(PACFile.parseFully(root + "data\\colony1.pac"));
-			Map<String, PACEntry> maps = PACFile.mapByName(PACFile.parseFully(root + "DATA\\MAP.PAC"));
+			maps = PACFile.mapByName(PACFile.parseFully(root + "DATA\\MAP.PAC"));
 
-			surfaceImages = new HashMap<Integer, Map<Integer, BufferedImage>>();
+			surfaceImages = new HashMap<Integer, Map<Integer, Tile>>();
 			for (int i = 1; i < 8; i++) {
-				Map<Integer, BufferedImage> actual = new HashMap<Integer, BufferedImage>();
+				Map<Integer, Tile> actual = new HashMap<Integer, Tile>();
 				surfaceImages.put(i, actual);
 				for (PACEntry e : PACFile.parseFully(root + "DATA\\FELSZIN" + i +".PAC")) {
 					int idx = e.filename.indexOf('.');
-					actual.put(Integer.parseInt(e.filename.substring(0, idx)), PCXImage.parse(e.data, -2));
+					Tile t = new Tile();
+					t.image = PCXImage.parse(e.data, -2);
+					actual.put(Integer.parseInt(e.filename.substring(0, idx)), t);
 				}
 			}
+			adjustTileParams();
 			
-			mapBytes = maps.get("MAP_F1.MAP").data;
+			mapBytes = maps.get("MAP_F" + type + ".MAP").data;
 			
-			back1 = surfaceImages.get(1).get(27);
+			back1 = surfaceImages.get(1).get(27).image;
 
 			BufferedImage keretek = PCXImage.from(root + "gfx\\keret.pcx", -2);
 			keret1 = keretek.getSubimage(0, 0, 57, 28);
@@ -142,6 +149,7 @@ public class Planet {
 			hub1 = PCXImage.parse(colony1.get("000.PCX").data, 0);
 			hub1B = PCXImage.parse(colony1.get("000B.PCX").data, 0);
 			addMouseMotionListener(this);
+			addMouseWheelListener(this);
 			addMouseListener(new MouseAdapter() {
 				@Override
 				public void mousePressed(MouseEvent e) {
@@ -159,29 +167,42 @@ public class Planet {
 				}
 			});
 		}
+		/**
+		 * Fixes width and heigth for larger tiles.
+		 */
+		private void adjustTileParams() {
+			// EARTH TYPE SURFACE TILE ADJUSTMENTS
+			setParams(6, 108, 2, 1);
+			for (int i = 109; i <= 130; i++) {
+				setParams(6, i, 2, 2);
+			}
+			for (int i = 131; i <= 139; i++) {
+				setParams(6, i, 2, 3);
+			}
+			for (int i = 140; i <= 147; i++) {
+				setParams(6, i, 3, 2);
+			}
+			for (int i = 148; i <= 149; i++) {
+				setParams(6, i, 3, 3);
+			}
+			for (int i = 150; i <= 158; i++) {
+				setParams(6, i, 4, 4);
+			}
+			surfaceImages.get(6).get(157).heightCorrection = 1;
+			setParams(6, 159, 5, 3);
+			setParams(6, 160, 6, 5);
+			
+			setParams(6, 161, 6, 6);
+		}
+		private void setParams(int surface, int tile, int width, int height) {
+			Tile t = surfaceImages.get(surface).get(tile);
+			t.width = width;
+			t.height = height;
+			t.scanlines = width + height - 1;
+		}
 		@Override
 		public void paint(Graphics g) {
 			Graphics2D g2 = (Graphics2D)g;
-			int maxx = 65;
-			int maxy = 65;
-			
-//			for (int j = 0; j < 1; j++) {
-//				for (int k = 0; k < maxx; k++) {
-//					int ff = mapBytes[4 + (maxy * j + k) * 2 + 1] & 0xFF;
-//					int ii = (mapBytes[4 + (maxy * j + k) * 2] & 0xFF) - 41;
-//					BufferedImage tile = surfaceImages.get(6).get(ii);
-//					if (tile != null && ff != 255) {
-//						int corr = tile.getWidth() / 56 - 1;
-//						int x = xoff + Pt.toScreenX(-k, -j + corr); //k * 30 - j * 27;
-//						int y = yoff + Pt.toScreenY(-k, -j); //12 * k - 15 * j;
-//						if (x >= -tile.getWidth() && x <= getWidth()
-//								&& y >= -tile.getHeight() && y <= getHeight() + tile.getHeight()) {
-//							g2.drawImage(tile, x, y - tile.getHeight(), null);
-//						}
-//					}
-//				}
-//			}
-			{
 			int k = 0;
 			int j = 0;
 			int k0 = 0;
@@ -189,43 +210,35 @@ public class Planet {
 			for (int i = 0; i < /* mapBytes.length / 2 - 2 */ 65 * 65; i++) {
 				int ii = (mapBytes[2 * i + 4] & 0xFF) - 41;
 				int ff = mapBytes[2 * i + 5] & 0xFF;
-				BufferedImage tile = surfaceImages.get(6).get(ii);
-				if (tile != null && ff == 0) {
-					int corr = tile.getWidth() / 56 - 1;
-					int x = xoff + Pt.toScreenX(-k, j); //k * 30 - j * 27;
-					int y = yoff + Pt.toScreenY(-k, j - corr); //12 * k - 15 * j;
-					if (x >= -tile.getWidth() && x <= getWidth()
-							&& y >= -tile.getHeight() && y <= getHeight() + tile.getHeight()) {
-						g2.drawImage(tile, x, y - tile.getHeight(), null);
+				Tile tile = surfaceImages.get(6).get(ii);
+				if (tile != null) {
+					if (ff == tile.width - 1) {
+						int x = xoff + Pt.toScreenX(-k, j + tile.width - 1);
+						int y = yoff + Pt.toScreenY(-k, j);
+						if (x >= -tile.image.getWidth() && x <= getWidth()
+								&& y >= -tile.image.getHeight() && y <= getHeight() + tile.image.getHeight()) {
+							g2.drawImage(tile.image, x, y - tile.image.getHeight() + tile.heightCorrection, null);
+						}
 					}
-					/* */
+//					if (corr > 1 && ff < 255) {
+//						int x = xoff + Pt.toScreenX(-k, j);
+//						int y = yoff + Pt.toScreenY(-k, j);
+//						g2.drawImage(keret3, x - 1, y - keret3.getHeight(), null);
+//					}
 				}				
 				k++;
 				j--;
 				k0++;
-//				if ((j0 % 2 == 0 && k0 > 63) || (j0 % 2 == 1 && k0 > 64)) {
 				if (k0 > 64) {
 					k0 = 0;
 					j0++;
-//					k = - (j0 / 2);
-//					j = - ((j0 - 1) / 2 + 1);
 					j = - (j0 / 2);
 					k = - ((j0 - 1) / 2 + 1);
 				}
-				/* ZIG-ZAG */
-//				if (k == 0) {
-//					j = 0;
-//					k = -k0 - 1;
-//					k0++;
-//				} else {
-//					k++;
-//					j--;
-//				}
-			}
 			}
 			if (tilesToHighlight != null) {
-				for (int j = tilesToHighlight.y; j < tilesToHighlight.y + tilesToHighlight.height; j++) {
-					for (int k = tilesToHighlight.x; k < tilesToHighlight.x + tilesToHighlight.width; k++) {
+				for (j = tilesToHighlight.y; j < tilesToHighlight.y + tilesToHighlight.height; j++) {
+					for (k = tilesToHighlight.x; k < tilesToHighlight.x + tilesToHighlight.width; k++) {
 						int x = xoff + Pt.toScreenX(k, j); //k * 30 - j * 27;
 						int y = yoff + Pt.toScreenY(k, j); //12 * k - 15 * j;
 						
@@ -234,12 +247,6 @@ public class Planet {
 				}
 			}
 			
-			int hx = 0, hy = 0;
-			Rectangle r1 = new Rectangle(xoff + Pt.toScreenX(0 + hx, 6 + hy), yoff + Pt.toScreenY(hx, hy) - hub1.getHeight(), 
-					hub1.getWidth() - 1, hub1.getHeight() - 1);
-//			g2.draw(r1);
-//			g2.drawImage(hub1, r1.x, r1.y, null);
-//			g2.drawImage(hub1B, r1.x + hub1.getWidth(), r1.y, null);
 		}
 		
 		@Override
@@ -276,10 +283,26 @@ public class Planet {
 		boolean once = true;
 		private void doComponentResized(ComponentEvent e) {
 			if (once) {
-				xoff = getWidth() / 2;
+				xoff = 0; //getWidth() / 2;
 				yoff = 27; //getHeight() - 1;
 				once = false;
 			}
+		}
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			if (e.getWheelRotation() > 0 & type < 9) {
+				type++;
+			} else 
+			if (e.getWheelRotation() < 0 && type > 1){
+				type--;
+			}
+			PACEntry pe = maps.get("MAP_F" + type + ".MAP");
+			if (pe != null) {
+				mapBytes = pe.data;
+			} else {
+				mapBytes = new byte[65 * 65 * 2 + 4];
+			}
+			repaint();
 		}
 	}
 	/**
