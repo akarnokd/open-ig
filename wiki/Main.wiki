@@ -12,11 +12,11 @@ The project is currently in a very early stage of development, mostly I spent ti
 
 = Installation =
 
-Install Java JRE/JDK 1.6.X (preferrably X >= 10). Copy the contents of the original Imperium Galactica CD1 and CD2 into one directory (duplicate files can be simply overwritten). Put the (yet to come) {{{open-ig.jar}}} file into that directory. Double click on this file or use the command line {{{java -jar open-ig.jar}}}
+Install Java JRE/JDK 1.6.X (preferrably X >= 10). Copy the contents of the original Imperium Galactica CD1 and CD2 into one directory (duplicate files can be simply overwritten). Put the {{{open-ig-0.2.jar}}} file into that directory. Double click on this file or use the command line {{{java -jar open-ig-0.2.jar}}}. If you don't want to put the JAR with the game files, you could use an extra command line parameter to specify the home of the IG files: {{{java -jar open-ig-0.2.jar c:\games\ig\}}}.
 
 = Documentation =
 
-See the [http://code.google.com/p/open-ig/wiki/Main main] wiki page.
+See the [Documentation documentation] wiki page.
 
 = Development =
 
