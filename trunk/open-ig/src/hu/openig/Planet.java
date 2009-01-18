@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  * Planetary surface renderer test file.
@@ -125,14 +126,14 @@ public class Planet {
 		/** Empty surface map array. */
 		private final byte[] EMPTY_SURFACE_MAP = new byte[65 * 65 * 2 + 4];
 		public PlanetRenderer(String root) throws IOException {
-			Map<String, PACEntry> colony1 = PACFile.mapByName(PACFile.parseFully(root + "data\\colony1.pac"));
-			maps = PACFile.mapByName(PACFile.parseFully(root + "DATA\\MAP.PAC"));
+			Map<String, PACEntry> colony1 = PACFile.mapByName(PACFile.parseFully(root + "/DATA/COLONY1.PAC"));
+			maps = PACFile.mapByName(PACFile.parseFully(root + "/DATA/MAP.PAC"));
 
 			surfaceImages = new HashMap<Integer, Map<Integer, Tile>>();
 			for (int i = 1; i < 8; i++) {
 				Map<Integer, Tile> actual = new HashMap<Integer, Tile>();
 				surfaceImages.put(i, actual);
-				for (PACEntry e : PACFile.parseFully(root + "DATA\\FELSZIN" + i +".PAC")) {
+				for (PACEntry e : PACFile.parseFully(root + "/DATA/FELSZIN" + i +".PAC")) {
 					int idx = e.filename.indexOf('.');
 					Tile t = new Tile();
 					t.image = PCXImage.parse(e.data, -2);
@@ -145,7 +146,7 @@ public class Planet {
 			
 			back1 = surfaceImages.get(1).get(27).image;
 
-			BufferedImage keretek = PCXImage.from(root + "gfx\\keret.pcx", -2);
+			BufferedImage keretek = PCXImage.from(root + "/GFX/KERET.PCX", -2);
 			keret1 = keretek.getSubimage(0, 0, 57, 28);
 			keret2 = keretek.getSubimage(58, 0, 57, 28);
 			keret3 = keretek.getSubimage(116, 0, 57, 28);
@@ -545,16 +546,23 @@ public class Planet {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		String root = "c:\\games\\ig\\";
+		String root = ".";
+		if (args.length > 0) {
+			root = args[0];
+		}
+		final PlanetRenderer pr = new PlanetRenderer(root);
 		
-		PlanetRenderer pr = new PlanetRenderer(root);
-		
-		JFrame fm = new JFrame("Open-IG: Planet");
-		fm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		fm.getContentPane().add(pr);
-		fm.setMinimumSize(new Dimension(640, 480));
-		fm.pack();
-		fm.setVisible(true);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+				public void run() {
+					JFrame fm = new JFrame("Open-IG: Planet");
+					fm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					fm.getContentPane().add(pr);
+					fm.setMinimumSize(new Dimension(640, 480));
+					fm.pack();
+					fm.setVisible(true);
+				}
+		});
 	}
 
 }
