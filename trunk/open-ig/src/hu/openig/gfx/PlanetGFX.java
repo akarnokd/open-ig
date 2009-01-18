@@ -37,10 +37,17 @@ public class PlanetGFX {
 	public BufferedImage rightBottom;
 	/** Button for showing/hiding the bottom right buttons of colony, info, etc. */
 	public BufferedImage screenButtons;
+	
 	public BufferedImage colonyInfoButton;
-	public BufferedImage militaryInfoButton;
+	public BufferedImage planetButton;
 	public BufferedImage starmapButton;
 	public BufferedImage bridgeButton;
+	
+	public BufferedImage colonyInfoButtonDown;
+	public BufferedImage planetButtonDown;
+	public BufferedImage starmapButtonDown;
+	public BufferedImage bridgeButtonDown;
+	
 	public BufferedImage buildPanel;
 	public BufferedImage radarPanel;
 	public BufferedImage buildingInfoPanel;
@@ -258,13 +265,21 @@ public class PlanetGFX {
 		screenButtons = colony.getSubimage(620, 413, 20, 29);
 		
 		colonyInfoButton = colony.getSubimage(200, 414, 105, 28);
-		militaryInfoButton = colony.getSubimage(305, 414, 105, 28);
+		//planetButton = colony.getSubimage(305, 414, 105, 28);
 		starmapButton = colony.getSubimage(410, 414, 105, 28);
 		bridgeButton = colony.getSubimage(515, 414, 105, 28);
 		
 		buildPanel = colony.getSubimage(19, 0, 182, 170);
 		radarPanel = colony.getSubimage(19, 282, 181, 160);
 		buildingInfoPanel = colony.getSubimage(424, 0, 196, 147);
+		
+		BufferedImage colonyx = PCXImage.from(root + "/SCREENS/COLONY_X.PCX", -1);
+
+		colonyInfoButtonDown = colonyx.getSubimage(80, 198, 105, 28);
+		planetButton = colonyx.getSubimage(185, 170, 105, 28);
+		planetButtonDown = colonyx.getSubimage(185, 198, 105, 28);
+		starmapButtonDown = colonyx.getSubimage(290, 198, 105, 28);
+		bridgeButtonDown = colonyx.getSubimage(395, 198, 105, 28);
 	}
 	/**
 	 * Returns the map for a surface name.
