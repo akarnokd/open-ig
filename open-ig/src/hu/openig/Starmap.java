@@ -8,6 +8,7 @@
 
 package hu.openig;
 
+import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StarmapRenderer;
 
@@ -32,7 +33,7 @@ public class Starmap {
 		if (args.length > 0) {
 			igroot = args[0];
 		}
-		final StarmapRenderer smr = new StarmapRenderer(StarmapGFX.loadImages(igroot));
+		final StarmapRenderer smr = new StarmapRenderer(new StarmapGFX(igroot), new CommonGFX(igroot));
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

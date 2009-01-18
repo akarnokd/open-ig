@@ -73,10 +73,13 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		private float hscrollFactor;
 		/** The vertical scroll factor. */
 		private float vscrollFactor;
+		/** The common graphics objects. */
+		private CommonGFX cgfx;
 		/** Constructor. */
-		public StarmapRenderer(StarmapGFX gfx) {
+		public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx) {
 			super();
 			this.gfx = gfx;
+			this.cgfx = cgfx;
 			setDoubleBuffered(true);
 			setOpaque(true);
 			//setCursor(gfx.cursors.target);
@@ -99,40 +102,26 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				updateScrollKnobs();
 			}
 			
-			g2.drawImage(gfx.top.left, 0, 0, null);
-			g2.drawImage(gfx.bottom.left, 0, h - gfx.bottom.left.getHeight(), null);
-			g2.drawImage(gfx.top.right, w - gfx.top.right.getWidth(), 0, null);
-			g2.drawImage(gfx.bottom.right, w - gfx.bottom.right.getWidth(), h - gfx.bottom.left.getHeight(), null);
-
-			int bh = gfx.bottom.left.getHeight() + gfx.contents.bottomLeft.getHeight();
+			cgfx.renderInfoBars(this, g2);
+			
+			int bh = cgfx.bottom.left.getHeight() + gfx.contents.bottomLeft.getHeight();
 			// draw inner area four corners
 			g2.drawImage(gfx.contents.bottomLeft, 0, h - bh, null);
-			g2.drawImage(gfx.contents.rightTop, w - gfx.contents.rightTop.getWidth(), gfx.top.right.getHeight(), null);
+			g2.drawImage(gfx.contents.rightTop, w - gfx.contents.rightTop.getWidth(), cgfx.top.right.getHeight(), null);
 
 			g2.drawImage(gfx.contents.bottomRight, w - gfx.contents.bottomRight.getWidth(), h - bh, null);
 			g2.drawImage(gfx.contents.rightBottom, w - gfx.contents.rightBottom.getWidth(), h - bh - gfx.contents.rightBottom.getHeight(), null);
 			// check if the rendering width is greater than the default 640
 			// if so, draw the link lines
-			int lr = gfx.top.left.getWidth() + gfx.top.right.getWidth();
+			int lr = cgfx.top.left.getWidth() + cgfx.top.right.getWidth();
 			if (w > lr) {
-				AffineTransform at = g2.getTransform();
-				g2.translate(gfx.top.left.getWidth(), 0);
-				g2.scale(w - lr, 1);
-				g2.drawImage(gfx.top.link, 0, 0, null);
-
-				g2.setTransform(at);
-				g2.translate(gfx.bottom.left.getWidth(), 0);
-				g2.scale(w - lr, 1);
-				g2.drawImage(gfx.bottom.link, 0, h - gfx.bottom.link.getHeight(), null);
-				g2.setTransform(at);
-				
 				// inner content filler
 				for (int i = gfx.contents.bottomLeft.getWidth(); i < w - gfx.contents.bottomRight.getWidth(); i += 2) {
 					g2.drawImage(gfx.contents.bottomFiller, i, h - bh, null);
 				}
 			}
 			if (h > 480) {
-				for (int i = gfx.top.right.getHeight() + gfx.contents.rightTop.getHeight(); i < h - bh - gfx.contents.rightBottom.getHeight(); i += 2) {
+				for (int i = cgfx.top.right.getHeight() + gfx.contents.rightTop.getHeight(); i < h - bh - gfx.contents.rightBottom.getHeight(); i += 2) {
 					g2.drawImage(gfx.contents.rightFiller, w - gfx.contents.rightFiller.getWidth(), i, null);
 				}
 			}
@@ -191,7 +180,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		private void updateRegions() {
 			int w = getWidth();
 			int h = getHeight();
-			int bh = gfx.bottom.left.getHeight() + gfx.contents.bottomLeft.getHeight();
+			int bh = cgfx.bottom.left.getHeight() + gfx.contents.bottomLeft.getHeight();
 			// fix scrollbar area colors
 			hscrollRect.x = 3;
 			hscrollRect.y = h - bh + 3;
@@ -199,9 +188,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			hscrollRect.height = 18;
 
 			vscrollRect.x = w - gfx.contents.rightBottom.getWidth() + 3;
-			vscrollRect.y = gfx.top.right.getHeight() + 3;
+			vscrollRect.y = cgfx.top.right.getHeight() + 3;
 			vscrollRect.width = 18;
-			vscrollRect.height = h - bh - gfx.top.right.getHeight() - 7;
+			vscrollRect.height = h - bh - cgfx.top.right.getHeight() - 7;
 
 			// fix ship control area if the ship area is not visible
 			shipControlRect.x = w - 355;
@@ -211,14 +200,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			
 			// minimap rectangle
 			minimapRect.x = w - 133;
-			minimapRect.y = h - 109 - gfx.bottom.right.getHeight();
+			minimapRect.y = h - 109 - cgfx.bottom.right.getHeight();
 			minimapRect.width = 131;
 			minimapRect.height = 108;
 			
 			mapRect.x = 0;
-			mapRect.y = gfx.top.left.getHeight();
+			mapRect.y = cgfx.top.left.getHeight();
 			mapRect.width = w - gfx.contents.rightTop.getWidth();
-			mapRect.height = h - gfx.top.left.getHeight() - gfx.bottom.left.getHeight() - gfx.contents.bottomLeft.getHeight();
+			mapRect.height = h - cgfx.top.left.getHeight() - cgfx.bottom.left.getHeight() - gfx.contents.bottomLeft.getHeight();
 		}
 		/** Update the location records for the scrollbar knobs. */
 		public void updateScrollKnobs() {
