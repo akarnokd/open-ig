@@ -59,7 +59,7 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 	private Rectangle rightBottomRect = new Rectangle();
 	
 	private Rectangle colonyInfoRect = new Rectangle();
-	private Rectangle militaryInfoRect = new Rectangle();
+	private Rectangle planetRect = new Rectangle();
 	private Rectangle starmapRect = new Rectangle();
 	private Rectangle bridgeRect = new Rectangle();
 	/** The middle window for the surface drawing. */
@@ -82,6 +82,14 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 	private boolean showBuild = true;
 	private boolean showRadar = true;
 	private boolean showBuildingInfo = true;
+	/** Is the colony info button pressed? */
+	private boolean colonyInfoDown;
+	/** Is the military info button pressed? */
+	private boolean planetDown;
+	/** Is the starmap button pressed? */
+	private boolean starmapDown;
+	/** Is the bridge button pressed? */
+	private boolean bridgeDown;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx
@@ -198,10 +206,26 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 		g2.drawImage(gfx.screenButtons, screenButtonRect.x, screenButtonRect.y, null);
 		
 		if (showControlButtons) {
-			g2.drawImage(gfx.colonyInfoButton, colonyInfoRect.x, colonyInfoRect.y, null);
-			g2.drawImage(gfx.militaryInfoButton, militaryInfoRect.x, militaryInfoRect.y, null);
-			g2.drawImage(gfx.starmapButton, starmapRect.x, starmapRect.y, null);
-			g2.drawImage(gfx.bridgeButton, bridgeRect.x, bridgeRect.y, null);
+			if (colonyInfoDown) {
+				g2.drawImage(gfx.colonyInfoButtonDown, colonyInfoRect.x, colonyInfoRect.y, null);
+			} else {
+				g2.drawImage(gfx.colonyInfoButton, colonyInfoRect.x, colonyInfoRect.y, null);
+			}
+			if (planetDown) {
+				g2.drawImage(gfx.planetButtonDown, planetRect.x, planetRect.y, null);
+			} else {
+				g2.drawImage(gfx.planetButton, planetRect.x, planetRect.y, null);
+			}
+			if (starmapDown) {
+				g2.drawImage(gfx.starmapButtonDown, starmapRect.x, starmapRect.y, null);
+			} else {
+				g2.drawImage(gfx.starmapButton, starmapRect.x, starmapRect.y, null);
+			}
+			if (bridgeDown) {
+				g2.drawImage(gfx.bridgeButtonDown, bridgeRect.x, bridgeRect.y, null);
+			} else {
+				g2.drawImage(gfx.bridgeButton, bridgeRect.x, bridgeRect.y, null);
+			}
 		}
 		if (showBuild) {
 			g2.drawImage(gfx.buildPanel, buildPanelRect.x, buildPanelRect.y, null);
@@ -285,12 +309,12 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 		starmapRect.width = gfx.starmapButton.getWidth();
 		starmapRect.height = gfx.starmapButton.getHeight();
 		
-		militaryInfoRect.x = starmapRect.x - gfx.militaryInfoButton.getWidth();
-		militaryInfoRect.y = bridgeRect.y;
-		militaryInfoRect.width = gfx.militaryInfoButton.getWidth();
-		militaryInfoRect.height = gfx.militaryInfoButton.getHeight();
+		planetRect.x = starmapRect.x - gfx.planetButton.getWidth();
+		planetRect.y = bridgeRect.y;
+		planetRect.width = gfx.planetButton.getWidth();
+		planetRect.height = gfx.planetButton.getHeight();
 
-		colonyInfoRect.x = militaryInfoRect.x - gfx.colonyInfoButton.getWidth();
+		colonyInfoRect.x = planetRect.x - gfx.colonyInfoButton.getWidth();
 		colonyInfoRect.y = bridgeRect.y;
 		colonyInfoRect.width = gfx.colonyInfoButton.getWidth();
 		colonyInfoRect.height = gfx.colonyInfoButton.getHeight();
@@ -360,9 +384,30 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 			repaint();
 		}
 	}
+	/**
+	 * Returns true if the mouse event is within the
+	 * visible area of the main window (e.g not over
+	 * the panels or buttons).
+	 * @param e
+	 * @return
+	 */
+	private boolean eventInMainWindow(MouseEvent e) {
+		Point pt = e.getPoint();
+		return mainWindow.contains(pt) 
+		&& (!showBuild || !buildPanelRect.contains(pt))
+		&& (!showRadar || !radarPanelRect.contains(pt))
+		&& (!showBuildingInfo || !buildingInfoPanelRect.contains(pt))
+		&& (!showControlButtons || (
+				!colonyInfoRect.contains(pt)
+				&& !planetRect.contains(pt)
+				&& !starmapRect.contains(pt)
+				&& !bridgeRect.contains(pt)
+		));
+
+	}
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		if (mainWindow.contains(e.getPoint())) {
+		if (eventInMainWindow(e)) {
 			int x = e.getX() - xoff - 27;
 			int y = e.getY() - yoff + 1;
 			int a = (int)Math.floor(Tile.toTileX(x, y));
@@ -372,24 +417,52 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 		}
 	}
 	public void mousePressed(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON3 && mainWindow.contains(e.getPoint())) {
+		Point pt = e.getPoint(); 
+		if (e.getButton() == MouseEvent.BUTTON3 && eventInMainWindow(e)) {
 			lastx = e.getX();
 			lasty = e.getY();
 			panMode = true;
 		} else
-		if (e.getButton() == MouseEvent.BUTTON1 && mainWindow.contains(e.getPoint())) {
-			int x = e.getX() - xoff - 27;
-			int y = e.getY() - yoff + 1;
-			int a = (int)Math.floor(Tile.toTileX(x, y));
-			int b = (int)Math.floor(Tile.toTileY(x, y));
-			int offs = this.toMapOffset(a, b);
-			int val = offs >= 0 && offs < 65 * 65 ? mapBytes[offs * 2 + 4] & 0xFF : 0;
-			System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			if (eventInMainWindow(e)) {
+				int x = e.getX() - xoff - 27;
+				int y = e.getY() - yoff + 1;
+				int a = (int)Math.floor(Tile.toTileX(x, y));
+				int b = (int)Math.floor(Tile.toTileY(x, y));
+				int offs = this.toMapOffset(a, b);
+				int val = offs >= 0 && offs < 65 * 65 ? mapBytes[offs * 2 + 4] & 0xFF : 0;
+				System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
+			} else
+			if (showControlButtons) {
+				if (colonyInfoRect.contains(pt)) {
+					colonyInfoDown = true;
+					repaint();
+				}
+				if (planetRect.contains(pt)) {
+					planetDown = true;
+					repaint();
+				}
+				if (starmapRect.contains(pt)) {
+					starmapDown = true;
+					repaint();
+				}
+				if (bridgeRect.contains(pt)) {
+					bridgeDown = true;
+					repaint();
+				}
+			}
 		}
 	}
 	public void mouseReleased(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON3) {
 			panMode = false;
+		} else
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			colonyInfoDown = false;
+			planetDown = false;
+			starmapDown = false;
+			bridgeDown = false;
+			repaint();
 		}
 	}
 	boolean once = true;

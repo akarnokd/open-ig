@@ -26,14 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -122,76 +115,6 @@ public class AnimPlay {
 		});
 	}
 	/**
-	 * Creates the audio output stream. The returned output
-	 * stream is opened but not started.
-	 * @return the created audio output stream or null if no audio support
-	 * is available.
-	 */
-	private static SourceDataLine createAudioOutput() {
-		AudioFormat af = new AudioFormat(22050, 8, 1, true, false);
-		SourceDataLine sdl = null;
-		DataLine.Info dli = new DataLine.Info(SourceDataLine.class, af);
-		if (!AudioSystem.isLineSupported(dli)) {
-			return null;
-		}
-		try {
-			sdl = (SourceDataLine)AudioSystem.getLine(dli);
-			sdl.open(af);
-			return sdl;
-		} catch (LineUnavailableException ex) {
-			return null;
-		}
-	}
-	/**
-	 * Asynchronous thread to play audio data in parallel of the
-	 * rendered images. Send an empty array or interrupt to
-	 * close this thread. Will start and stop the playback automatically
-	 * @author karnokd, 2009.01.11.
-	 * @version $Revision 1.0$
-	 */
-	public static class AudioThread extends Thread {
-		/** The queue for asynchronus music play. */
-		private final BlockingQueue<byte[]> queue;
-		/** The output audio line. */
-		private final SourceDataLine sdl;
-		/**
-		 * Constructor. Sets the private fields.
-		 * @param queue the data queue to use.
-		 * @param sdl
-		 */
-		public AudioThread(BlockingQueue<byte[]> queue, SourceDataLine sdl) {
-			this.queue = queue;
-			this.sdl = sdl;
-		}
-		/**
-		 * The main loop to enqueue and play audio.
-		 */
-		@Override
-		public void run() {
-			try {
-				boolean first = true;
-				while (!isInterrupted()) {
-					byte[] data = queue.take();
-					if (data.length == 0) {
-						break;
-					}
-					if (first) {
-						sdl.start();
-						first = false;
-					}
-					sdl.write(data, 0, data.length);
-				}
-			} catch (InterruptedException ex) {
-				// time to quit;
-				interrupt();
-			} finally {
-				sdl.stop();
-				sdl.drain();
-				sdl.close();
-			}
-		}
-	}
-	/**
 	 * Show a file open dialog.
 	 * @return the selected file;
 	 */
@@ -217,9 +140,7 @@ public class AnimPlay {
 				saf.load();
 				createFrame(f);
 				
-				BlockingQueue<byte[]> queue = new LinkedBlockingQueue<byte[]>();
-				
-				AudioThread ad = new AudioThread(queue, createAudioOutput());
+				AudioThread ad = new AudioThread();
 				ad.start();
 				
 				PaletteDecoder palette = null;
@@ -238,7 +159,7 @@ public class AnimPlay {
 							palette = (Palette)b;
 						} else
 						if (b instanceof Sound) {
-							queue.offer(b.data);
+							ad.submit(b.data);
 							audioCount++;
 						} else
 						if (b instanceof Data) {
@@ -290,7 +211,7 @@ public class AnimPlay {
 				} catch (EOFException ex) {
 					// we reached the end of file
 				}
-				ad.queue.offer(new byte[0]);
+				ad.submit(new byte[0]);
 				ad.interrupt();
 				//System.out.printf("%.2f", audioCount * 0x4F6 / 22050f / saf.getFrameCount());
 			} finally {
