@@ -54,7 +54,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		/** Current pixel value of the horizontal scrollbar. */
 		private int hscrollValue = 0;
 		/** Determines zoom factor where 1.0 means the original size, 0.5 the half size. */
-		private float zoomFactor = 0.75f;
+		private float zoomFactor = 1f;
 		/** Set to true if the user performs the map movement via the mouse. */
 		private boolean mapDragMode;
 		/** The last mouse coordinate. */

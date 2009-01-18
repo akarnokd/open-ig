@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,32 +57,37 @@ public class PACFile {
 	 * @return the non-null list of pac entry records filled with data
 	 * @throws IOException if a file format error or other I/O problem occurs
 	 */
-	public static List<PACEntry> parseFully(File f) throws IOException {
-		RandomAccessFile fin = new RandomAccessFile(f, "r");
+	public static List<PACEntry> parseFully(File f) {
 		try {
-			// Parse header
-			byte[] entry = new byte[20];
-			fin.readFully(entry, 0, 2);
-			int count = (entry[1] & 0xFF) << 8 | (entry[0] & 0xFF);
-			List<PACEntry> result = new ArrayList<PACEntry>(count);
-			// parse entries
-			for (int i = 0 ; i < count; i++) {
-				PACEntry pe = new PACEntry();
-				fin.readFully(entry);
-				pe.filename = new String(entry, 1, entry[0], "ISO-8859-1");
-				pe.size = (entry[0x0E] & 0xFF) | (entry[0x0F] & 0xFF) << 8;
-				pe.offset = (entry[0x10] & 0xFF) | (entry[0x11] & 0xFF) << 8 | (entry[0x12] & 0xFF) << 16 | (entry[0x13] & 0xFF) << 24;
-				result.add(pe);
+			RandomAccessFile fin = new RandomAccessFile(f, "r");
+			try {
+				// Parse header
+				byte[] entry = new byte[20];
+				fin.readFully(entry, 0, 2);
+				int count = (entry[1] & 0xFF) << 8 | (entry[0] & 0xFF);
+				List<PACEntry> result = new ArrayList<PACEntry>(count);
+				// parse entries
+				for (int i = 0 ; i < count; i++) {
+					PACEntry pe = new PACEntry();
+					fin.readFully(entry);
+					pe.filename = new String(entry, 1, entry[0], "ISO-8859-1");
+					pe.size = (entry[0x0E] & 0xFF) | (entry[0x0F] & 0xFF) << 8;
+					pe.offset = (entry[0x10] & 0xFF) | (entry[0x11] & 0xFF) << 8 | (entry[0x12] & 0xFF) << 16 | (entry[0x13] & 0xFF) << 24;
+					result.add(pe);
+				}
+				// load entries
+				for (int i = 0; i < count; i++) {
+					PACEntry e = result.get(i);
+					fin.seek(e.offset);
+					fin.readFully(e.data = new byte[e.size]);
+				}
+				return result;
+			} finally {
+				fin.close();
 			}
-			// load entries
-			for (int i = 0; i < count; i++) {
-				PACEntry e = result.get(i);
-				fin.seek(e.offset);
-				fin.readFully(e.data = new byte[e.size]);
-			}
-			return result;
-		} finally {
-			fin.close();
+		} catch (IOException ex) {
+			// ignored
+			return Collections.emptyList();
 		}
 	}
 	/**
@@ -90,7 +96,7 @@ public class PACFile {
 	 * @return the non-null list of pac entry records filled with data
 	 * @throws IOException if a file format error or other I/O problem occurs
 	 */
-	public static List<PACEntry> parseFully(String filename) throws IOException {
+	public static List<PACEntry> parseFully(String filename) {
 		return parseFully(new File(filename));
 	}
 	/**
