@@ -1,0 +1,3 @@
+#summary Description of the usage of the application.
+
+= Features of open-ig-0.2.jar =
