@@ -92,7 +92,7 @@ public class IOUtils {
 					fin.close();
 				}
 			} catch (IOException ex) {
-				// ignored
+				ex.printStackTrace();
 			}
 		}
 		return new byte[0];
