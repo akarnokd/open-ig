@@ -1,3 +1,21 @@
 #summary Description of the usage of the application.
 
 = Features of open-ig-0.2.jar =
+The 0.2 version is not yet a functioning game but a simple tech-demo of how far the project is gone. It contains mainly rendering related functions.
+
+If the application doesn't seem to show any of the windows, please see the Java console output. You might need to run the application from command line to see the console output.
+
+== Starmap ==
+  * Hold down the right mouse button in the starmap area to pan the viewport.
+  * You could drag the vertical and horizontal scrollbar with the left mouse button
+  * Resize the window to see how the various fields grow
+
+== Planet ==
+  * Hold down the right mouse button in the planet area to pan the viewport
+  * Use the ALT + Mouse wheel to switch between the seven types of planet.
+  * Use the CTRL + Mouse wheel to zoom in or out by factor of 2
+  * Use the Mouse wheel to switch between surface variations of the current surface type
+
+There are 7 surface types (Desert, Ice, Crater, Rocky, Water, Earth, Nectoplasm) and several variations for each. 
+
+When you start the application, the Planet window shows the Nectoplasm variant 1 surface.
