@@ -17,9 +17,9 @@ import hu.openig.compress.RLE;
 import hu.openig.core.PaletteDecoder;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
@@ -27,10 +27,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -47,11 +45,15 @@ public class AnimPlay {
 	/** The frame form the images. */
 	private static JFrame frame;
 	/** The label for the player. */
-	private static JLabel imageLabel;
+	private static MovieSurface imageLabel;
 	/** The menu item for open. */
 	private static JMenuItem menuOpen;
+	/** The menu item for open. */
+	private static JMenuItem menuStop;
 	/** The last opened file directory. */
-	private static File lastPath;
+	private static File lastPath = new File(".");
+	/** Stop the playback. */
+	private static volatile boolean stop;
 	/**
 	 * Execute the SwingUtilities.invokeAndWait() method but strip of
 	 * the exceptions. The exceptions will be ignored.
@@ -78,9 +80,9 @@ public class AnimPlay {
 					frame = new JFrame();
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					Container c = frame.getContentPane();
-					imageLabel = new JLabel();
+					imageLabel = new MovieSurface();
 					c.add(imageLabel);
-					frame.setResizable(false);
+					frame.setResizable(true);
 					JMenuBar mb = new JMenuBar();
 					frame.setJMenuBar(mb);
 					JMenu file = new JMenu("File");
@@ -91,7 +93,8 @@ public class AnimPlay {
 						public void actionPerformed(ActionEvent e) {
 							String file = showOpenDialog();
 							if (file == null) {
-								menuOpen.setEnabled(false);
+								menuOpen.setEnabled(true);
+								menuStop.setEnabled(false);
 							} else {
 								final File fl = new File(file);
 								lastPath = fl.getParentFile();
@@ -102,15 +105,26 @@ public class AnimPlay {
 									}
 								});
 								t.start();
+								menuStop.setEnabled(true);
 							}
 						}
 					});
+					menuStop = new JMenuItem("Stop");
+					menuStop.setEnabled(true);
+					menuStop.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							stop = true;
+						}
+					});
+					
 					file.add(menuOpen);
+					file.add(menuStop);
 					mb.add(file);
 				}
 				frame.setTitle(String.format("Playing: %s", f));
 				frame.setVisible(true);
-				frame.pack();
+				//frame.pack();
 			}
 		});
 	}
@@ -131,29 +145,44 @@ public class AnimPlay {
 	 * @param f the file to play
 	 */
 	public static void playFile(File f) {
-		final float FPS = 16.6f;
+		final float FPS = 15.9f;
 		try {
+			AudioThread ad = new AudioThread();
+			ad.start();
 			FileInputStream rf = new FileInputStream(f);
 			try {
-				SpidyAniFile saf = new SpidyAniFile();
+				final SpidyAniFile saf = new SpidyAniFile();
 				saf.open(new DataInputStream(rf));
 				saf.load();
 				createFrame(f);
 				
-				AudioThread ad = new AudioThread();
-				ad.start();
 				
 				PaletteDecoder palette = null;
-				BufferedImage bimg = new BufferedImage(saf.getWidth(), saf.getHeight(), BufferedImage.TYPE_INT_ARGB);
+//				BufferedImage bimg = new BufferedImage(saf.getWidth(), saf.getHeight(), BufferedImage.TYPE_INT_ARGB);
 				int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
 				int imageHeight = 0;
 				int dst = 0;
 				int audioCount = 0;
 				Algorithm alg = saf.getAlgorithm();
+				// initialize the painting surface
+				imageLabel.init(saf.getWidth(), saf.getHeight());
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						if (frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
+							imageLabel.setPreferredSize(new Dimension(saf.getWidth(), saf.getHeight()));
+							frame.pack();
+							frame.setLocationRelativeTo(null);
+						}
+						
+					}
+				});
 				try {
 			   		long starttime = System.currentTimeMillis();  // notice the start time
 			   		boolean firstFrame = true;
-			   		while (true) {
+			   		while (!stop) {
+						if (firstFrame) {
+							starttime = System.currentTimeMillis();
+						}
 						Block b = saf.next();
 						if (b instanceof Palette) {
 							palette = (Palette)b;
@@ -183,17 +212,10 @@ public class AnimPlay {
 							}
 							// we reached the number of subimages per frame?
 							if (imageHeight >= saf.getHeight()) {
-								bimg.setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
-								final ImageIcon imgIcon = new ImageIcon(bimg);
-								SwingUtilities.invokeLater(new Runnable() {
-									@Override
-									public void run() {
-										imageLabel.setIcon(imgIcon);
-										frame.pack();
-									}
-								});
+								imageLabel.getBackbuffer().setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
+								imageLabel.swap();
 								if (firstFrame) {
-									starttime = System.currentTimeMillis();
+									ad.startPlaybackNow();
 									firstFrame = false;
 								}
 								imageHeight = 0;
@@ -214,12 +236,21 @@ public class AnimPlay {
 				ad.submit(new byte[0]);
 				ad.interrupt();
 				//System.out.printf("%.2f", audioCount * 0x4F6 / 22050f / saf.getFrameCount());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
 			} finally {
+				if (stop) {
+					ad.stopPlaybackNow();
+				}
+				stop = false;
 				rf.close();
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
 						menuOpen.setEnabled(true);
+						menuStop.setEnabled(false);
 					}
 				});
 			}
