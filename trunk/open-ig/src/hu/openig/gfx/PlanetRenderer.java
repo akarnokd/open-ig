@@ -3,6 +3,7 @@ package hu.openig.gfx;
 import hu.openig.core.Tile;
 import hu.openig.utils.PACFile.PACEntry;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,6 +11,8 @@ import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -20,13 +23,15 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.swing.JComponent;
+import javax.swing.Timer;
 
 /**
  * Planet surface renderer class.
  * @author karnokd, 2009.01.16.
  * @version $Revision 1.0$
  */
-public class PlanetRenderer extends JComponent implements MouseListener, MouseMotionListener, MouseWheelListener {
+public class PlanetRenderer extends JComponent implements MouseListener, MouseMotionListener, 
+MouseWheelListener, ActionListener {
 	/** */
 	private static final long serialVersionUID = -2113448032455145733L;
 	Rectangle tilesToHighlight;
@@ -90,6 +95,23 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 	private boolean starmapDown;
 	/** Is the bridge button pressed? */
 	private boolean bridgeDown;
+	/** 
+	 * The timer to scroll the building window if the user holds down the left mouse button on the
+	 * up/down arrow.
+	 */
+	private Timer buildScroller;
+	/** The scroll interval. */
+	private static final int BUILD_SCROLL_INTERVAL = 500;
+	/** Timer used to animate fade in-out. */
+	private Timer fadeTimer;
+	/** Fade timer interval. */
+	private static final int FADE_INTERVAL = 50;
+	/** The alpha difference to use when animating the fadeoff-fadein. */
+	private static final float ALPHA_DELTA = 0.1f;
+	/** THe fade direction is up (true) or down (false). */
+	private boolean fadeDirection;
+	/** The current alpha value used in rendering. */
+	private float alpha = 1.0f;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx
@@ -99,6 +121,10 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx) throws IOException {
 		this.gfx = gfx;
 		this.cgfx = cgfx;
+		buildScroller = new Timer(BUILD_SCROLL_INTERVAL, this);
+		buildScroller.setActionCommand("BUILD_SCROLLER");
+		fadeTimer = new Timer(FADE_INTERVAL, this);
+		fadeTimer.setActionCommand("FADE");
 		changeSurface();
 		
 		addMouseMotionListener(this);
@@ -112,6 +138,7 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 		int w = getWidth();
 		int h = getHeight();
 		if (w != lastWidth || h != lastHeight) {
@@ -462,6 +489,7 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 			planetDown = false;
 			starmapDown = false;
 			bridgeDown = false;
+			buildScroller.stop();
 			repaint();
 		}
 	}
@@ -519,24 +547,55 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 				if (screenButtonRect.contains(pt)) {
 					showControlButtons = !showControlButtons;
 					repaint();
+				} else
+				if (showControlButtons && starmapRect.contains(pt)) {
+					fadeDirection = false;
+					fadeTimer.start();
 				}
 			}
 		}
 	}
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if ("FADE".equals(e.getActionCommand())) {
+			doFade();
+		} else
+		if ("BUILD_SCROLLER".equals(e.getActionCommand())) {
+			doBuildScroller();
+		}
+	}
+	/** Execute the fade animation. */
+	private void doFade() {
+		if (fadeDirection) {
+			alpha = Math.max(0.0f, Math.min(1.0f, alpha + ALPHA_DELTA));
+			if (alpha >= 0.999f) {
+				fadeTimer.stop();
+				doFadeCompleted();
+			}
+		} else {
+			alpha = Math.max(0.0f, Math.min(1.0f, alpha - ALPHA_DELTA));
+			if (alpha <= 0.001f) {
+				fadeTimer.stop();
+				doFadeCompleted();
+			}
+		}
+		repaint();
+	}
+	/**
+	 * Invoked when the fading operation is completed.
+	 */
+	private void doFadeCompleted() {
+		
+	}
+	private void doBuildScroller() {
 		
 	}
 }

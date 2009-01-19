@@ -59,6 +59,7 @@ public class SoundList {
 		}
 		ad = new AudioThread();
 		ad.start();
+		ad.startPlaybackNow();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
