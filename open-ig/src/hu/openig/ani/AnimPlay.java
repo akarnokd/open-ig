@@ -105,6 +105,7 @@ public class AnimPlay {
 									}
 								});
 								t.start();
+								menuOpen.setEnabled(false);
 								menuStop.setEnabled(true);
 							}
 						}

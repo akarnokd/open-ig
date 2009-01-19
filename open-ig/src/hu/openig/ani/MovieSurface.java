@@ -1,4 +1,13 @@
+/*
+ * Copyright 2008, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 package hu.openig.ani;
+
+import hu.openig.core.SwappableRenderer;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,7 +23,7 @@ import javax.swing.JComponent;
  * @author karnokd, 2009.01.19.
  * @version $Revision 1.0$
  */
-public class MovieSurface extends JComponent {
+public class MovieSurface extends JComponent implements SwappableRenderer {
 	/** */
 	private static final long serialVersionUID = 6083662951581621963L;
 	/**
