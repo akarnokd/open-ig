@@ -2,6 +2,9 @@ package hu.openig.ani;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -21,6 +24,12 @@ public class AudioThread extends Thread {
 	private final BlockingQueue<byte[]> queue = new LinkedBlockingQueue<byte[]>();
 	/** The output audio line. */
 	private final SourceDataLine sdl;
+	/** The start semaphore. */
+	private final Lock lock = new ReentrantLock();
+	/** The start condition. */
+	private final Condition startCond = lock.newCondition();
+	/** Start audio playback flag. */
+	private boolean startAudio;
 	/**
 	 * Constructor. Initializes the audio output to 22050Hz, 8 bit PCM.
 	 */
@@ -33,17 +42,25 @@ public class AudioThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			boolean first = true;
 			while (!isInterrupted()) {
 				byte[] data = queue.take();
 				if (data.length == 0) {
 					break;
 				}
-				if (sdl != null) {
-					if (first) {
+				if (!sdl.isActive()) {
+					// wait for start playing signal
+					lock.lock();
+					try {
+						while (!startAudio) {
+							startCond.await();
+						}
+						startAudio = false;
 						sdl.start();
-						first = false;
+					} finally {
+						lock.unlock();
 					}
+				}
+				synchronized(sdl) {
 					sdl.write(data, 0, data.length);
 				}
 			}
@@ -86,5 +103,26 @@ public class AudioThread extends Thread {
 	 */
 	public void submit(byte[] data) {
 		queue.offer(data);
+	}
+	/**
+	 * Stops the playback immediately.
+	 */
+	public void stopPlaybackNow() {
+		synchronized(sdl) {
+			sdl.stop();
+			sdl.drain();
+		}
+	}
+	/**
+	 * Starts the playback immediately.
+	 */
+	public void startPlaybackNow() {
+		lock.lock();
+		try {
+			startAudio = true;
+			startCond.signalAll();
+		} finally {
+			lock.unlock();
+		}
 	}
 }
