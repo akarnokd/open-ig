@@ -8,6 +8,7 @@
 
 package hu.openig.gfx;
 
+import hu.openig.core.InfoBarRegions;
 import hu.openig.utils.PCXImage;
 
 import java.awt.Graphics2D;
@@ -30,6 +31,8 @@ public class CommonGFX {
 	public StarmapBar bottom;
 	/** The cursors. */
 	public GFXCursors cursors;
+	/** The text drawing. */
+	public TextGFX text;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param root
@@ -91,6 +94,9 @@ public class CommonGFX {
 				new Point(10, 19), "South");
 		cursors.southeast = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
 				new Point(19, 19), "SouthWest");
+		
+		
+		text = new TextGFX(root + "/GFX/CHARSET1.PCX");
 	}
 	public void renderInfoBars(JComponent c, Graphics2D g2) {
 		int w = c.getWidth();
@@ -115,5 +121,14 @@ public class CommonGFX {
 			g2.drawImage(bottom.link, 0, h - bottom.link.getHeight(), null);
 			g2.setTransform(at);
 		}
+	}
+	public void updateRegions(JComponent c, InfoBarRegions reg) {
+		int w = c.getWidth();
+		//int h = c.getHeight();
+		// location of the top info area
+		reg.topInfoArea.x = 387;
+		reg.topInfoArea.y = 2;
+		reg.topInfoArea.width = w - reg.topInfoArea.x - 11;
+		reg.topInfoArea.height = 16;
 	}
 }
