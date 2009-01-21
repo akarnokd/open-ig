@@ -51,6 +51,35 @@ public class PlanetGFX {
 	public BufferedImage buildPanel;
 	public BufferedImage radarPanel;
 	public BufferedImage buildingInfoPanel;
+	/** The build scroll up button down state. */
+	public BufferedImage buildScrollUpDown;
+	/** The building scroll down butoon down state. */
+	public BufferedImage buildScrollDownDown;
+	/** An unclickabel scroll image. */
+	public BufferedImage buildScrollNone;
+	/** The build button pressed state. */
+	public BufferedImage buildDown;
+	/** The build list button pressed state. */
+	public BufferedImage listDown;
+	/** The demolish button pressed. */
+	public BufferedImage demolishDown;
+	/** Repair percentage viewer. */
+	public BufferedImage repairPercent;
+	public BufferedImage damagedPercent;
+	public BufferedImage notActive;
+	public BufferedImage offline;
+	public BufferedImage damaged;
+	public BufferedImage noEnergy;
+	/** Build completed percent. */
+	public BufferedImage completedPercent;
+	/** The vehicle selection mini window. */
+	public BufferedImage vehicleWindow;
+	/** The start battle button. */
+	public BufferedImage startBattle;
+	/** The start battle button pressed. */
+	public BufferedImage startBattleDown;
+	/** The empty building button. */
+	public BufferedImage buildingNoButton;
 	/**
 	 * Constructor. Loads all graphics necessary for planetary rendering.
 	 * @param root the root directory of the IG files.
@@ -280,6 +309,29 @@ public class PlanetGFX {
 		planetButtonDown = colonyx.getSubimage(185, 198, 105, 28);
 		starmapButtonDown = colonyx.getSubimage(290, 198, 105, 28);
 		bridgeButtonDown = colonyx.getSubimage(395, 198, 105, 28);
+		
+		buildScrollUpDown = colonyx.getSubimage(501, 163, 21, 45);
+		buildScrollDownDown = colonyx.getSubimage(523, 163, 21, 45);
+		buildScrollNone = colonyx.getSubimage(581, 181, 22, 48);
+		
+		buildDown = colonyx.getSubimage(544, 160, 81, 21);
+		listDown = colonyx.getSubimage(500, 208, 81, 21);
+		demolishDown = colonyx.getSubimage(611, 181, 29, 90);
+		
+		repairPercent = colonyx.getSubimage(0, 226, 145, 18);
+		damagedPercent = colonyx.getSubimage(145, 226, 145, 18);
+		notActive = colonyx.getSubimage(290, 226, 145, 18);
+		offline = colonyx.getSubimage(0, 244, 145, 18);
+		damaged = colonyx.getSubimage(145, 244, 145, 18);
+		noEnergy = colonyx.getSubimage(290, 244, 145, 18);
+		completedPercent = colonyx.getSubimage(435, 244, 145, 18);
+
+		BufferedImage colonzx = PCXImage.from(root + "/SCREENS/COLONZ_X.PCX", -1);
+
+		vehicleWindow = colonzx.getSubimage(80, 0, 140, 79);
+		buildingNoButton = colonzx.getSubimage(0, 0, 19, 170);
+		startBattle = colonzx.getSubimage(394, 170, 106, 28);
+		startBattleDown = colonzx.getSubimage(394, 198, 106, 28);
 	}
 	/**
 	 * Returns the map for a surface name.

@@ -1,15 +1,18 @@
 package hu.openig.gfx;
 
+import hu.openig.core.InfoBarRegions;
 import hu.openig.core.Tile;
 import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +21,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
@@ -110,8 +114,14 @@ MouseWheelListener, ActionListener {
 	private static final float ALPHA_DELTA = 0.1f;
 	/** THe fade direction is up (true) or down (false). */
 	private boolean fadeDirection;
-	/** The current alpha value used in rendering. */
-	private float alpha = 1.0f;
+	/** The current darkening factor for the entire UI. 0=No darkness, 1=Full darkness. */
+	private float darkness = 0f;
+	/** The daylight factor for the planetary surface only. 0=No darkness, 1=Full darkness. */
+	private float daylight = 0.5f;
+	/** The text renderer. */
+	private TextGFX text;
+	/** Regions of the info bars. */
+	public InfoBarRegions infoBarRects = new InfoBarRegions();
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx
@@ -121,6 +131,7 @@ MouseWheelListener, ActionListener {
 	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx) throws IOException {
 		this.gfx = gfx;
 		this.cgfx = cgfx;
+		this.text = cgfx.text;
 		buildScroller = new Timer(BUILD_SCROLL_INTERVAL, this);
 		buildScroller.setActionCommand("BUILD_SCROLLER");
 		fadeTimer = new Timer(FADE_INTERVAL, this);
@@ -130,6 +141,7 @@ MouseWheelListener, ActionListener {
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 		addMouseListener(this);
+		setOpaque(true);
 	}
 	private PACEntry getSurface(int surfaceType, int variant) {
 		String mapName = "MAP_" + (char)('A' + (surfaceType - 1)) + variant + ".MAP";
@@ -138,18 +150,19 @@ MouseWheelListener, ActionListener {
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 		int w = getWidth();
 		int h = getHeight();
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, w, h);
+
 		if (w != lastWidth || h != lastHeight) {
 			lastWidth = w;
 			lastHeight = h;
 			// if the render window changes, re-zoom to update scrollbars
 			updateRegions();
 		}
-		
+		AffineTransform t = g2.getTransform();
 		g2.scale(scale, scale);
-		Rectangle r = new Rectangle();
 		int k = 0;
 		int j = 0;
 		// RENDER VERTICALLY
@@ -183,10 +196,10 @@ MouseWheelListener, ActionListener {
 					int x0 = ff >= tile.width ? Tile.toScreenX(ff, 0) : Tile.toScreenX(0, -ff);
 					BufferedImage subimage = tile.strips[ff];
 					g2.drawImage(subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection, null);
-					r.x = x;
-					r.y = y - tile.image.getHeight();
-					r.width = tile.image.getWidth();
-					r.height = tile.image.getHeight();
+//					r.x = x;
+//					r.y = y - tile.image.getHeight();
+//					r.width = tile.image.getWidth();
+//					r.height = tile.image.getHeight();
 				}
 			}				
 			k--;
@@ -199,9 +212,16 @@ MouseWheelListener, ActionListener {
 				k = ((j0 - 1) / 2 + 1);
 			}
 		}
+		Composite comp = g2.getComposite();
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, daylight));
+		g2.setColor(Color.BLACK);
+		g2.fill(mainWindow);
+		g2.setComposite(comp);
+		
 		if (tilesToHighlight != null) {
 			drawIntoRect(g2, gfx.getFrame(0), tilesToHighlight);
 		}
+		g2.setTransform(t);
 		// RENDER INFOBARS
 		cgfx.renderInfoBars(this, g2);
 		// RENDER LEFT BUTTONS
@@ -263,12 +283,25 @@ MouseWheelListener, ActionListener {
 		if (showRadar) {
 			g2.drawImage(gfx.radarPanel, radarPanelRect.x, radarPanelRect.y, null);
 		}
+		Shape sp = g2.getClip();
+		g2.clip(infoBarRects.topInfoArea);
+		text.paintTo(g2, infoBarRects.topInfoArea.x, infoBarRects.topInfoArea.y + 1, 14, 0xFFFFFFFF, "Surface: " + surfaceType + ", Variant: " + surfaceVariant);
+		g2.setClip(sp);
 		
+		// now darken the entire screen
+		comp = g2.getComposite();
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, darkness));
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, w, h);
+		g2.setComposite(comp);
 	}
 	/**
 	 * Update location of various interresting rectangles of objects.
 	 */
 	private void updateRegions() {
+		
+		cgfx.updateRegions(this, infoBarRects);
+		
 		buildingButtonRect.x = 0;
 		buildingButtonRect.y = cgfx.top.left.getHeight();
 		buildingButtonRect.width = gfx.buildingButton.getWidth();
@@ -365,6 +398,7 @@ MouseWheelListener, ActionListener {
 		radarPanelRect.y = mainWindow.y + mainWindow.height - gfx.radarPanel.getHeight();
 		radarPanelRect.width = gfx.radarPanel.getWidth();
 		radarPanelRect.height = gfx.radarPanel.getHeight();
+		
 	}
 	/**
 	 * Changes the surface type and variant so the next rendering pass will use that.
@@ -574,15 +608,15 @@ MouseWheelListener, ActionListener {
 	}
 	/** Execute the fade animation. */
 	private void doFade() {
-		if (fadeDirection) {
-			alpha = Math.max(0.0f, Math.min(1.0f, alpha + ALPHA_DELTA));
-			if (alpha >= 0.999f) {
+		if (!fadeDirection) {
+			darkness = Math.max(0.0f, Math.min(1.0f, darkness + ALPHA_DELTA));
+			if (darkness >= 0.999f) {
 				fadeTimer.stop();
 				doFadeCompleted();
 			}
 		} else {
-			alpha = Math.max(0.0f, Math.min(1.0f, alpha - ALPHA_DELTA));
-			if (alpha <= 0.001f) {
+			darkness = Math.max(0.0f, Math.min(1.0f, darkness - ALPHA_DELTA));
+			if (darkness <= 0.001f) {
 				fadeTimer.stop();
 				doFadeCompleted();
 			}
@@ -593,7 +627,7 @@ MouseWheelListener, ActionListener {
 	 * Invoked when the fading operation is completed.
 	 */
 	private void doFadeCompleted() {
-		
+		darkness = 0f;
 	}
 	private void doBuildScroller() {
 		
