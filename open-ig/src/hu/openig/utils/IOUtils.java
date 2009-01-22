@@ -94,6 +94,8 @@ public class IOUtils {
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
+		} else {
+			System.err.println("File inaccessible: " + f);
 		}
 		return new byte[0];
 	}
