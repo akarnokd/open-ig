@@ -22,7 +22,35 @@ import java.util.Map;
 public class StarmapGFX {
 	public StarmapContents contents;
 	/** Map from surface type to drawing size to list of animation phase images. */
-	Map<String, Map<Integer, List<BufferedImage>>> starmapPlanets;
+	public Map<String, Map<Integer, List<BufferedImage>>> starmapPlanets;
+	public BufferedImage btnBorder;
+	public BufferedImage btnRadars;
+	public BufferedImage btnStars;
+	public BufferedImage btnFleets;
+	public BufferedImage btnDest;
+	public BufferedImage btnGrids;
+
+	public BufferedImage btnBorderLight;
+	public BufferedImage btnRadarsLight;
+	public BufferedImage btnStarsLight;
+	public BufferedImage btnFleetsLight;
+	public BufferedImage btnDestLight;
+	public BufferedImage btnGridsLight;
+	public BufferedImage btnNameOff;
+	public BufferedImage btnNameColony;
+	public BufferedImage btnNameFleets;
+	public BufferedImage btnNameBoth;
+	public BufferedImage btnColonise;
+	public BufferedImage btnColoniseDisabled;
+	/** Add satelite button. */
+	public BufferedImage btnAddSat;
+	public BufferedImage btnAddSpySat1;
+	public BufferedImage btnAddSpySat2;
+	public BufferedImage btnAddHubble2;
+	
+	public BufferedImage btnEquipmentDisabled;
+	public BufferedImage btnEquipmentDown;
+	public BufferedImage btnColonyDown;
 	/**
 	 * Constructor. Loads all images belonging to the starmap.
 	 * @param root the file system root directory of IG.
@@ -87,7 +115,39 @@ public class StarmapGFX {
 			}
 			
 			aplanet.put(planetImg.getWidth(), list);
-			
 		}
+		
+		BufferedImage starx = PCXImage.from(root + "/SCREENS/STAR_X.PCX", -1);
+		
+		btnBorderLight = starx.getSubimage(0, 0, 53, 18);
+		btnRadarsLight = starx.getSubimage(53, 0, 53, 18);
+		btnStarsLight = starx.getSubimage(0, 18, 53, 18);
+		btnFleetsLight = starx.getSubimage(53, 18, 53, 18);
+		btnDestLight = starx.getSubimage(0, 36, 53, 18);
+		btnGridsLight = starx.getSubimage(53, 36, 53, 18);
+
+		btnBorder = starx.getSubimage(161, 0, 53, 18);
+		btnRadars = starx.getSubimage(53, 0, 53, 18);
+		btnStars = starx.getSubimage(161, 18, 53, 18);
+		btnFleets = starx.getSubimage(53, 18, 53, 18);
+		btnDest = starx.getSubimage(161, 36, 53, 18);
+		btnGrids = starx.getSubimage(53, 36, 53, 18);
+
+		btnNameOff = starx.getSubimage(0, 54, 108, 18);
+		btnNameColony = starx.getSubimage(0, 72, 108, 18);
+		btnNameFleets = starx.getSubimage(0, 90, 108, 18);
+		btnNameBoth = starx.getSubimage(0, 108, 108, 18);
+		
+		btnColonise = starx.getSubimage(0, 126, 108, 15);
+		btnColoniseDisabled = starx.getSubimage(108, 126, 108, 15);
+		
+		btnAddSat = starx.getSubimage(109, 54, 84, 17);
+		btnAddSpySat1 = starx.getSubimage(109, 71, 84, 17);
+		btnAddSpySat2 = starx.getSubimage(109, 88, 84, 17);
+		btnAddHubble2 = starx.getSubimage(109, 105, 84, 17);
+		
+		btnEquipmentDisabled = starx.getSubimage(216, 0, 103, 28);
+		btnEquipmentDown = starx.getSubimage(216, 28, 103, 28);
+		btnColonyDown = starx.getSubimage(216, 84, 103, 28);
 	}
 }

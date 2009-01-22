@@ -8,6 +8,8 @@
 
 package hu.openig.gfx;
 
+import hu.openig.core.InfoBarRegions;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -75,6 +77,13 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		private float vscrollFactor;
 		/** The common graphics objects. */
 		private CommonGFX cgfx;
+		private Rectangle bottomLeftRect = new Rectangle();
+		private Rectangle bottomFillerRect = new Rectangle();
+		private Rectangle bottomRightRect = new Rectangle();
+		private Rectangle rightTopRect = new Rectangle();
+		private Rectangle rightFillerRect = new Rectangle();
+		private Rectangle rightBottomRect = new Rectangle();
+		private InfoBarRegions infoBarRect = new InfoBarRegions();
 		/** Constructor. */
 		public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx) {
 			super();
@@ -104,26 +113,34 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			
 			cgfx.renderInfoBars(this, g2);
 			
-			int bh = cgfx.bottom.left.getHeight() + gfx.contents.bottomLeft.getHeight();
 			// draw inner area four corners
-			g2.drawImage(gfx.contents.bottomLeft, 0, h - bh, null);
-			g2.drawImage(gfx.contents.rightTop, w - gfx.contents.rightTop.getWidth(), cgfx.top.right.getHeight(), null);
+			g2.drawImage(gfx.contents.bottomLeft, bottomLeftRect.x, bottomLeftRect.y, null);
+			g2.drawImage(gfx.contents.rightTop, rightTopRect.x, rightTopRect.y, null);
 
-			g2.drawImage(gfx.contents.bottomRight, w - gfx.contents.bottomRight.getWidth(), h - bh, null);
-			g2.drawImage(gfx.contents.rightBottom, w - gfx.contents.rightBottom.getWidth(), h - bh - gfx.contents.rightBottom.getHeight(), null);
+			g2.drawImage(gfx.contents.bottomRight, bottomRightRect.x, bottomRightRect.y, null);
+			g2.drawImage(gfx.contents.rightBottom, rightBottomRect.x, rightBottomRect.y, null);
 			// check if the rendering width is greater than the default 640
 			// if so, draw the link lines
-			int lr = cgfx.top.left.getWidth() + cgfx.top.right.getWidth();
-			if (w > lr) {
+			if (bottomFillerRect.width > 0) {
 				// inner content filler
+				Paint p = g2.getPaint();
+				g2.setPaint(new TexturePaint(gfx.contents.bottomFiller, new Rectangle(bottomFillerRect.x, bottomFillerRect.y, 2, bottomFillerRect.height)));
+				g2.fill(bottomFillerRect);
+				g2.setPaint(p);
+				/*
 				for (int i = gfx.contents.bottomLeft.getWidth(); i < w - gfx.contents.bottomRight.getWidth(); i += 2) {
 					g2.drawImage(gfx.contents.bottomFiller, i, h - bh, null);
 				}
+				*/
 			}
 			if (h > 480) {
-				for (int i = cgfx.top.right.getHeight() + gfx.contents.rightTop.getHeight(); i < h - bh - gfx.contents.rightBottom.getHeight(); i += 2) {
-					g2.drawImage(gfx.contents.rightFiller, w - gfx.contents.rightFiller.getWidth(), i, null);
-				}
+				Paint p = g2.getPaint();
+				g2.setPaint(new TexturePaint(gfx.contents.rightFiller, new Rectangle(rightFillerRect.x, rightFillerRect.y, rightFillerRect.width, 2)));
+				g2.fill(rightFillerRect);
+				g2.setPaint(p);
+//				for (int i = cgfx.top.right.getHeight() + gfx.contents.rightTop.getHeight(); i < h - bh - gfx.contents.rightBottom.getHeight(); i += 2) {
+//					g2.drawImage(gfx.contents.rightFiller, w - gfx.contents.rightFiller.getWidth(), i, null);
+//				}
 			}
 			// draw inner controls
 
@@ -178,6 +195,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		}
 		/** Recalculate the region coordinates. */
 		private void updateRegions() {
+			cgfx.updateRegions(this, infoBarRect);
 			int w = getWidth();
 			int h = getHeight();
 			int bh = cgfx.bottom.left.getHeight() + gfx.contents.bottomLeft.getHeight();
@@ -208,6 +226,36 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			mapRect.y = cgfx.top.left.getHeight();
 			mapRect.width = w - gfx.contents.rightTop.getWidth();
 			mapRect.height = h - cgfx.top.left.getHeight() - cgfx.bottom.left.getHeight() - gfx.contents.bottomLeft.getHeight();
+			
+			bottomLeftRect.x = 0;
+			bottomLeftRect.y = h - cgfx.bottom.left.getHeight() - gfx.contents.bottomLeft.getHeight();
+			bottomLeftRect.width = gfx.contents.bottomLeft.getWidth();
+			bottomLeftRect.height = gfx.contents.bottomLeft.getHeight();
+			
+			bottomRightRect.x = w - gfx.contents.bottomRight.getWidth();
+			bottomRightRect.y = bottomLeftRect.y;
+			bottomRightRect.width = gfx.contents.bottomRight.getWidth();
+			bottomRightRect.height = gfx.contents.bottomRight.getHeight();
+			
+			bottomFillerRect.x = bottomLeftRect.x + bottomLeftRect.width;
+			bottomFillerRect.y = bottomLeftRect.y;
+			bottomFillerRect.width = bottomRightRect.x - bottomFillerRect.x;
+			bottomFillerRect.height = gfx.contents.bottomFiller.getHeight();
+			
+			rightTopRect.x = w - gfx.contents.rightTop.getWidth();
+			rightTopRect.y = cgfx.top.right.getHeight();
+			rightTopRect.width = gfx.contents.rightTop.getWidth();
+			rightTopRect.height = gfx.contents.rightTop.getHeight();
+			
+			rightBottomRect.x = rightTopRect.x;
+			rightBottomRect.y = bottomRightRect.y - gfx.contents.rightBottom.getHeight();
+			rightBottomRect.width = gfx.contents.rightBottom.getWidth();
+			rightBottomRect.height = gfx.contents.rightBottom.getHeight();
+			
+			rightFillerRect.x = rightTopRect.x;
+			rightFillerRect.y = rightTopRect.y + rightTopRect.height;
+			rightFillerRect.width = gfx.contents.rightFiller.getWidth();
+			rightFillerRect.height = rightBottomRect.y - rightFillerRect.y;
 		}
 		/** Update the location records for the scrollbar knobs. */
 		public void updateScrollKnobs() {
