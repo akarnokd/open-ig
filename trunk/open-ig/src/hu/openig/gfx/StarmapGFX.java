@@ -51,6 +51,24 @@ public class StarmapGFX {
 	public BufferedImage btnEquipmentDisabled;
 	public BufferedImage btnEquipmentDown;
 	public BufferedImage btnColonyDown;
+	/** Zoom button hightlighted. */
+	public BufferedImage btnMagnifyLight;
+	public BufferedImage btnMagnifyDisabled;
+	
+	public BufferedImage btnNormalDisabled;
+	public BufferedImage btnScrollDisabled;
+	public BufferedImage btnZoomDisabled;
+	public BufferedImage btnNormalLight;
+	public BufferedImage btnScrollLight;
+	public BufferedImage btnZoomLight;
+	
+	public BufferedImage btnPrevDisabled;
+	public BufferedImage btnPrevDown;
+	public BufferedImage btnNextDisabled;
+	public BufferedImage btnNextDown;
+	
+	public BufferedImage btnInfoDown;
+	public BufferedImage btnBridgeDown;
 	/**
 	 * Constructor. Loads all images belonging to the starmap.
 	 * @param root the file system root directory of IG.
@@ -149,5 +167,24 @@ public class StarmapGFX {
 		btnEquipmentDisabled = starx.getSubimage(216, 0, 103, 28);
 		btnEquipmentDown = starx.getSubimage(216, 28, 103, 28);
 		btnColonyDown = starx.getSubimage(216, 84, 103, 28);
+		
+		btnMagnifyLight = starx.getSubimage(352, 60, 33, 64);
+		btnMagnifyDisabled = starx.getSubimage(599, 78, 33, 64);
+		
+		btnNormalDisabled = starx.getSubimage(319, 138, 66, 20);
+		btnScrollDisabled = starx.getSubimage(385, 138, 66, 20);
+		btnZoomDisabled = starx.getSubimage(451, 138, 66, 20);
+		
+		btnNormalLight = starx.getSubimage(533, 78, 66, 20);
+		btnScrollLight = starx.getSubimage(533, 98, 66, 20);
+		btnZoomLight = starx.getSubimage(533, 118, 66, 20);
+		
+		btnPrevDisabled = starx.getSubimage(483, 0, 50, 20);
+		btnPrevDown = starx.getSubimage(483, 41, 50, 18);
+		btnNextDisabled = starx.getSubimage(483, 60, 49, 20);
+		btnNextDown = starx.getSubimage(483, 101, 49, 18);
+		
+		btnInfoDown = starx.getSubimage(533, 0, 102, 39);
+		btnBridgeDown = starx.getSubimage(533, 39, 102, 39);
 	}
 }
