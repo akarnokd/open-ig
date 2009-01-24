@@ -22,12 +22,123 @@ import javax.swing.JLabel;
 
 /**
  * PCX Image decoder.<p>
- * Format:<br>
- * <pre>
- * </pre> 
- *
  */
 public class PCXImage {
+	/** The raw pixels as either the color indexes colors themselves. */
+	private byte[] raw;
+	/** The image width. */
+	private int width;
+	/** The image height. */
+	private int height;
+	/** The RGB palette if the image is not true color. */
+	private byte[] palette;
+	/**
+	 * Constructor. Initializes the image from the supplied data array.
+	 * @param data the data array
+	 */
+	public PCXImage(byte[] data) {
+		parse(data);
+	}
+	/** 
+	 * Parses the given data stream into the raw data.
+	 * @param data the data bytes
+	 */
+	private void parse(byte[] data) {
+		int bitsperpixel = data[3] & 0xFF;
+		int xmin = (data[4] & 0xFF) | (data[5] & 0xFF) << 8;
+		int ymin = (data[6] & 0xFF) | (data[7] & 0xFF) << 8;
+		int xmax = (data[8] & 0xFF) | (data[9] & 0xFF) << 8;
+		int ymax = (data[10] & 0xFF) | (data[11] & 0xFF) << 8;
+		palette = new byte[48];
+		System.arraycopy(data, 16, palette, 0, 48);
+		int colorplanes = data[65] & 0xFF;
+		int bytesperline = (data[66] & 0xFF) | (data[67] & 0xFF) << 8;
+		if (bitsperpixel != 8 || colorplanes != 1) {
+			throw new IllegalArgumentException(String.format("Unsupported format of BPP %d and Planes %d.", bitsperpixel, colorplanes));
+		}
+		width = xmax - xmin + 1;
+		height = ymax - ymin + 1;
+		int src = 128;
+		int dst = 0;
+		raw = new byte[width * height];
+		int sll = colorplanes * bytesperline;
+		byte[] scan = new byte[sll * height];
+		// check for 256 color VGA palette
+		int y = 0;
+		while (src < data.length && dst < scan.length) {
+			while (dst < scan.length) {
+				byte b = data[src++];
+				byte cnt = 1;
+				if ((b & 0xC0) == 0xC0) {
+					cnt = (byte)(b & 0x3F);
+					b = data[src++];
+				}
+				// process line only if it is still within range;
+				if (y < height) {
+					Arrays.fill(scan, dst, dst + cnt, b);
+				}
+				dst += cnt;
+			}
+			y++;
+		}
+		if (src == data.length - 769 && data[src] == (byte)0x0C) {
+			// fix palette
+			palette = new byte[768];
+			System.arraycopy(data, src + 1, palette, 0, palette.length);
+			src += 1 + palette.length;
+		}
+		// just strip the unwanted bytes from the scan line.
+		for (y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				raw[y * width + x] = scan[sll * y + x];
+			}
+		}
+	}
+	/**
+	 * Convert the raw data into a BufferedImage using the suppliead transparency. The original palette
+	 * will be used.
+	 * @param transparency transparency the transparency RGB color, -1 no transparency, &lt;= -2 of the color index to use for transparency
+	 * @return the created RGBA BufferedImage object
+	 */
+	public BufferedImage toBufferedImage(int transparency) {
+		return toBufferedImage(transparency, palette);
+	}
+	/**
+	 * Convert the raw data into a BufferedImage using the supplied transparency and palette.
+	 * @param transparency the transparency RGB color, -1 no transparency, &lt;= -2 of the color index to use for transparency
+	 * @param withPalette the palette to use
+	 * @return the created RGBA BufferedImage object
+	 */
+	public BufferedImage toBufferedImage(int transparency, byte[] withPalette) {
+		int[] image = new int[width * height];
+		for (int i = 0; i < image.length; i++) {
+			int c = raw[i] & 0xFF;
+			int d = (withPalette[c * 3] & 0xFF) << 16 |
+			(withPalette[c * 3 + 1] & 0xFF) << 8 | (withPalette[c * 3 + 2] & 0xFF) << 0;
+			if (transparency == -1 || (transparency >= 0 && d != transparency) 
+					|| (transparency < -1 && c != -transparency - 2)) {
+				image[i] = 0xFF000000 | d;
+			}
+		}
+		// remap pixels using the palette into a fully RGBA
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		img.setRGB(0, 0, width, height, image, 0, width);
+		return img;
+	}
+	/**
+	 * Returns the current image width.
+	 * @return the current image width
+	 */
+	public int getWidth() {
+		return width;
+	}
+	/**
+	 * Returns the current image height.
+	 * @return the current image height
+	 */
+	public int getHeight() {
+		return height;
+	}
 	/**
 	 * Header size: 128 bytes 
 	 */
@@ -89,98 +200,99 @@ public class PCXImage {
 	 * @return the buffered image
 	 */
 	public static BufferedImage parse(byte[] data, int transparentRGB) {
-		Header h = new Header();
-		Header.parse(data, h);
-		int src = 128;
-		int dst = 0;
-		int xmax = h.getWidth();
-		int ymax = h.getHeight();
-		int[] image = new int[xmax * ymax];
-		int sll = h.getScanLineLength();
-		byte[] scan = new byte[sll * ymax];
-		// check for 256 color VGA palette
-		int y = 0;
-		while (src < data.length && dst < scan.length) {
-			while (dst < scan.length) {
-				byte b = data[src++];
-				byte cnt = 1;
-				if ((b & 0xC0) == 0xC0) {
-					cnt = (byte)(b & 0x3F);
-					b = data[src++];
-				}
-				// process line only if it is still within range;
-				if (y < ymax) {
-					Arrays.fill(scan, dst, dst + cnt, b);
-				}
-				dst += cnt;
-			}
-			y++;
-		}
-		if (src == data.length - 769 && data[src] == (byte)0x0C) {
-			// fix palette
-			h.palette = new byte[768];
-			System.arraycopy(data, src + 1, h.palette, 0, h.palette.length);
-			src += 1 + h.palette.length;
-		}
-		boolean isrgb = h.colorplanes == 3 && h.bitsperpixel == 8;
-		// decode every pixel data
-		int c = 0;
-		for (y = 0; y < ymax; y++) {
-			for (int x = 0; x < xmax; x++) {
-				switch (h.colorplanes) {
-				case 1:
-					switch (h.bitsperpixel) {
-					case 1:
-						c = scan[sll * y + x / 8] & (1 << (x % 8));
-						break;
-					case 2:
-						c = scan[sll * y + x / 4] & (3 << ((x % 4) * 2));
-						break;
-					case 8:
-						c = scan[sll * y + x] & 0xFF;
-						break;
-					}
-					break;
-				case 3:
-					switch (h.bitsperpixel) {
+//		Header h = new Header();
+//		Header.parse(data, h);
+//		int src = 128;
+//		int dst = 0;
+//		int xmax = h.getWidth();
+//		int ymax = h.getHeight();
+//		int[] image = new int[xmax * ymax];
+//		int sll = h.getScanLineLength();
+//		byte[] scan = new byte[sll * ymax];
+//		// check for 256 color VGA palette
+//		int y = 0;
+//		while (src < data.length && dst < scan.length) {
+//			while (dst < scan.length) {
+//				byte b = data[src++];
+//				byte cnt = 1;
+//				if ((b & 0xC0) == 0xC0) {
+//					cnt = (byte)(b & 0x3F);
+//					b = data[src++];
+//				}
+//				// process line only if it is still within range;
+//				if (y < ymax) {
+//					Arrays.fill(scan, dst, dst + cnt, b);
+//				}
+//				dst += cnt;
+//			}
+//			y++;
+//		}
+//		if (src == data.length - 769 && data[src] == (byte)0x0C) {
+//			// fix palette
+//			h.palette = new byte[768];
+//			System.arraycopy(data, src + 1, h.palette, 0, h.palette.length);
+//			src += 1 + h.palette.length;
+//		}
+//		boolean isrgb = h.colorplanes == 3 && h.bitsperpixel == 8;
+//		// decode every pixel data
+//		int c = 0;
+//		for (y = 0; y < ymax; y++) {
+//			for (int x = 0; x < xmax; x++) {
+//				switch (h.colorplanes) {
+//				case 1:
+//					switch (h.bitsperpixel) {
 //					case 1:
-//						c = (scan[sll * y + x / 8] & (1 << (x % 8)))
-//						| (scan[sll * y + xmax / 2 + x / 8] & (1 << (x % 8))) << 1
-//						| (scan[sll * y + xmax + x / 8] & (1 << (x % 8))) << 2
+//						c = scan[sll * y + x / 8] & (1 << (x % 8));
+//						break;
+//					case 2:
+//						c = scan[sll * y + x / 4] & (3 << ((x % 4) * 2));
+//						break;
+//					case 8:
+//						c = scan[sll * y + x] & 0xFF;
+//						break;
+//					}
+//					break;
+//				case 3:
+//					switch (h.bitsperpixel) {
+////					case 1:
+////						c = (scan[sll * y + x / 8] & (1 << (x % 8)))
+////						| (scan[sll * y + xmax / 2 + x / 8] & (1 << (x % 8))) << 1
+////						| (scan[sll * y + xmax + x / 8] & (1 << (x % 8))) << 2
+////						;
+////						break;
+//					case 8:
+//						c = (scan[sll * y + x] & 0xFF) << 16
+//						| (scan[sll * y + xmax + x] & 0xFF) << 8
+//						| (scan[sll * y + 2 * xmax + x] & 0xFF) << 0
 //						;
 //						break;
-					case 8:
-						c = (scan[sll * y + x] & 0xFF) << 16
-						| (scan[sll * y + xmax + x] & 0xFF) << 8
-						| (scan[sll * y + 2 * xmax + x] & 0xFF) << 0
-						;
-						break;
-					}
-					break;
-//				case 4:
-//					// assume 1 bpp
-//					c = (scan[sll * 4 * y + x / 8] & (1 << (x % 8)))
-//					| (scan[sll * (4 * y + 1) + x / 8] & (1 << (x % 8))) << 1
-//					| (scan[sll * (4 * y + 2) + x / 8] & (1 << (x % 8))) << 2
-//					| (scan[sll * (4 * y + 3) + x / 8] & (1 << (x % 8))) << 3
-//					;
+//					}
 //					break;
-				}
-				if (isrgb) {
-					if (c != transparentRGB) {
-						image[y * xmax + x] = 0xFF000000 | c;
-					}
-				} else {
-					int d = h.rgb(c);
-					if (transparentRGB == -1 || (transparentRGB >= 0 && d != transparentRGB) || (transparentRGB < -1 && c != -transparentRGB - 2)) {
-						image[y * xmax + x] = 0xFF000000 | d;
-					}
-				}
-			}
-		}
-		BufferedImage bi = new BufferedImage(h.getWidth(), h.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		bi.setRGB(0, 0, xmax, ymax, image, 0, xmax);
-		return bi;
+////				case 4:
+////					// assume 1 bpp
+////					c = (scan[sll * 4 * y + x / 8] & (1 << (x % 8)))
+////					| (scan[sll * (4 * y + 1) + x / 8] & (1 << (x % 8))) << 1
+////					| (scan[sll * (4 * y + 2) + x / 8] & (1 << (x % 8))) << 2
+////					| (scan[sll * (4 * y + 3) + x / 8] & (1 << (x % 8))) << 3
+////					;
+////					break;
+//				}
+//				if (isrgb) {
+//					if (c != transparentRGB) {
+//						image[y * xmax + x] = 0xFF000000 | c;
+//					}
+//				} else {
+//					int d = h.rgb(c);
+//					if (transparentRGB == -1 || (transparentRGB >= 0 && d != transparentRGB) || (transparentRGB < -1 && c != -transparentRGB - 2)) {
+//						image[y * xmax + x] = 0xFF000000 | d;
+//					}
+//				}
+//			}
+//		}
+//		BufferedImage bi = new BufferedImage(h.getWidth(), h.getHeight(), BufferedImage.TYPE_INT_ARGB);
+//		bi.setRGB(0, 0, xmax, ymax, image, 0, xmax);
+//		return bi;
+		return new PCXImage(data).toBufferedImage(transparentRGB);
 	}
 	/** Loads an image from the specified filename. */
 	public static BufferedImage from(String f, int transparentRGB) {

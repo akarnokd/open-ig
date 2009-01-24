@@ -58,13 +58,11 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** The maximum value of the vertical scroller. Minimum is always 0. */
 	private int vscrollMax = 0;
 	/** Current pixel value of the vertical scrollbar. */
-	private int vscrollValue = 0;
+	private float vscrollValue = 0;
 	/** The maximum value of the horizontal scroller. Minimum is always 0. */
 	private int hscrollMax = 0;
 	/** Current pixel value of the horizontal scrollbar. */
-	private int hscrollValue = 0;
-	/** Determines zoom factor where 1.0 means the original size, 0.5 the half size. */
-	private float zoomFactor = 1f;
+	private float hscrollValue = 0;
 	/** Set to true if the user performs the map movement via the mouse. */
 	private boolean mapDragMode;
 	/** The last mouse coordinate. */
@@ -110,9 +108,11 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** The magnification direction: true-in, false-out. */
 	private boolean magnifyDirection;
 	/** The magnification factors. */
-	private int[] magnifyFactors = { /*5, 6, 7, 8, 9, 10, 12, 13,*/ 15, 17, 20, 24, 30 };
+	private int[] magnifyFactors = { /*5, 6, 7, 8, 9, 10, 12, 13,*/ 15, 17, 20, 24, 30, 34, 40, 48, 60 };
 	/** The current magnification index. */
 	private int magnifyIndex = magnifyFactors.length - 1;
+	/** Determines zoom factor where 1.0 means the original size, 0.5 the half size. */
+	private float zoomFactor = magnifyFactors[magnifyIndex] / 30f;
 	/** Show ship controls. */
 	private boolean showShipControls;
 	private Btn btnColonize;
@@ -229,18 +229,18 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		Shape sp = g2.getClip();
 		g2.setClip(mapRect);
 		AffineTransform af = g2.getTransform();
-		int mx = -(int)(hscrollValue * hscrollFactor / zoomFactor);
-		int my = -(int)(vscrollValue * vscrollFactor / zoomFactor); 
+		int mx = -(int)(hscrollValue * hscrollFactor);
+		int my = -(int)(vscrollValue * vscrollFactor); 
 		// if the viewport is much bigger than the actual image, lets center it
 		if (mapRect.width > gfx.contents.fullMap.getWidth() * zoomFactor) {
-			mx = (int)((mapRect.width / zoomFactor - gfx.contents.fullMap.getWidth()) / 2);
+			mx = (int)((mapRect.width - gfx.contents.fullMap.getWidth() * zoomFactor) / 2);
 		}
 		if (mapRect.height > gfx.contents.fullMap.getHeight() * zoomFactor) {
-			my = (int)((mapRect.height / zoomFactor - gfx.contents.fullMap.getHeight()) / 2);
+			my = (int)((mapRect.height - gfx.contents.fullMap.getHeight() * zoomFactor) / 2);
 		}
-		g2.translate(mapRect.x, mapRect.y);
+		g2.translate(mapRect.x + mx, mapRect.y + my);
 		g2.scale(zoomFactor, zoomFactor);
-		g2.drawImage(gfx.contents.fullMap, mx, my, null);
+		g2.drawImage(gfx.contents.fullMap, 0, 0, null);
 		g2.setTransform(af);
 		
 		g2.setClip(sp);
@@ -593,24 +593,22 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	public void updateScrollKnobs() {
 		int hextsize = Math.max(gfx.contents.hscrollLeft.getWidth() + gfx.contents.hscrollRight.getWidth(), hscrollRect.width - hscrollMax);
 
-		hknobRect.x = hscrollRect.x + hscrollValue;
+		hknobRect.x = (int)(hscrollRect.x + hscrollValue);
 		hknobRect.width = hextsize;
 		hknobRect.y = hscrollRect.y;
 		hknobRect.height = gfx.contents.hscrollLeft.getHeight();
 
-		int vextsize = Math.max(gfx.contents.vscrollTop.getHeight() + gfx.contents.hscrollRight.getHeight(), vscrollRect.height - vscrollMax);
+		int vextsize = Math.max(gfx.contents.vscrollTop.getHeight() + gfx.contents.vscrollBottom.getHeight(), vscrollRect.height - vscrollMax);
 		
 		vknobRect.x = vscrollRect.x;
 		vknobRect.width = gfx.contents.vscrollTop.getWidth();
-		vknobRect.y = vscrollRect.y  + vscrollValue;
+		vknobRect.y = (int)(vscrollRect.y  + vscrollValue);
 		vknobRect.height = vextsize;
-		
-		
 	}
 	/** Zoom in or out on a particular region. */
 	public void zoom(float newZoomFactor) {
-		if (newZoomFactor > 1.0f) {
-			newZoomFactor = 1.0f;
+		if (newZoomFactor > 2.0f) {
+			newZoomFactor = 2.0f;
 		}
 		this.zoomFactor = newZoomFactor;
 		// ************************************************************
@@ -650,9 +648,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		scroll(hscrollValue, vscrollValue);
 	}
 	/** Scroll to a particular scrollbar position. */
-	public void scroll(int xValue, int yValue) {
-		hscrollValue = Math.max(Math.min(xValue, hscrollMax), 0);
-		vscrollValue = Math.max(Math.min(yValue, vscrollMax), 0);
+	public void scroll(float xValue, float yValue) {
+		hscrollValue = Math.max(Math.min(xValue, hscrollMax), 0f);
+		vscrollValue = Math.max(Math.min(yValue, vscrollMax), 0f);
 		// calculate map offset based on the current scrollbar locations
 //			mapX = (int)(hscrollValue * hscrollFactor);
 //			mapY = (int)(vscrollValue * vscrollFactor);
@@ -661,8 +659,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	}
 	/** Scroll the map by relative coordinates given in pixels. */
 	public void scrollByPixelRel(int dx, int dy) {
-		scroll((int)(hscrollValue + dx / zoomFactor / hscrollFactor), 
-				(int)(vscrollValue + dy / zoomFactor / vscrollFactor));
+		scroll((hscrollValue + dx / hscrollFactor), 
+				(vscrollValue + dy / vscrollFactor));
 	}
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)

@@ -1,0 +1,128 @@
+/*
+ * Copyright 2008, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
+package hu.openig.sound;
+
+import hu.openig.utils.IOUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import javax.sound.sampled.SourceDataLine;
+
+
+/**
+ * User interface sound registry.
+ * @author karnokd
+ */
+public class UISounds {
+	/** The audio sample map. */
+	private final Map<String, byte[]> samples = new HashMap<String, byte[]>();
+	/** Number of parallel sound lines. */
+	private final int SOUND_POOL_SIZE = 4;
+	/** The sound pool. */
+	private final BlockingQueue<SourceDataLine> soundPool = new LinkedBlockingQueue<SourceDataLine>(SOUND_POOL_SIZE);
+	/**
+	 * Constructor. Loads the user interface sound samples.
+	 * @param root the IG root directory
+	 */
+	public UISounds(String root) {
+		// Initialize sound pool
+		for (int i = 0; i < SOUND_POOL_SIZE; i++) {
+			soundPool.offer(AudioThread.createAudioOutput());
+		}
+		samples.put("IncomingMessage", IOUtils.load(root + "/SOUND/NOI01.SMP"));
+		samples.put("CommanderMessage", IOUtils.load(root + "/SOUND/NOI02.SMP"));
+		samples.put("Message", IOUtils.load(root + "/SOUND/NOI03.SMP"));
+		samples.put("MessageBridge", IOUtils.load(root + "/SOUND/NOI04.SMP"));
+		samples.put("DrAwaitsOnBridge", IOUtils.load(root + "/SOUND/NOI08.SMP"));
+		samples.put("AlienVesselsDetected", IOUtils.load(root + "/SOUND/NOI09.SMP"));
+		samples.put("TransportUnderAttack", IOUtils.load(root + "/SOUND/NOI10.SMP"));
+		samples.put("BackupReceived", IOUtils.load(root + "/SOUND/NOI15.SMP"));
+		samples.put("ReinforcementsArrived", IOUtils.load(root + "/SOUND/NOI16.SMP"));
+		samples.put("Bridge", IOUtils.load(root + "/SOUND/NOI24.SMP"));
+		samples.put("Starmap", IOUtils.load(root + "/SOUND/NOI25.SMP"));
+		samples.put("Colony", IOUtils.load(root + "/SOUND/NOI26.SMP"));
+		samples.put("Equipment", IOUtils.load(root + "/SOUND/NOI27.SMP"));
+		samples.put("Production", IOUtils.load(root + "/SOUND/NOI28.SMP"));
+		samples.put("Research", IOUtils.load(root + "/SOUND/NOI29.SMP"));
+		samples.put("Information", IOUtils.load(root + "/SOUND/NOI30.SMP"));
+		samples.put("StateRoom", IOUtils.load(root + "/SOUND/NOI31.SMP"));
+		samples.put("Local", IOUtils.load(root + "/SOUND/NOI32.SMP"));
+		samples.put("Diplomacy", IOUtils.load(root + "/SOUND/NOI33.SMP"));
+		samples.put("Inventions", IOUtils.load(root + "/SOUND/NOI34.SMP"));
+		samples.put("AlienRaces", IOUtils.load(root + "/SOUND/NOI35.SMP"));
+		samples.put("FinancialInformation", IOUtils.load(root + "/SOUND/NOI36.SMP"));
+		samples.put("MilitaryInformation", IOUtils.load(root + "/SOUND/NOI37.SMP"));
+		samples.put("ColonyInformation", IOUtils.load(root + "/SOUND/NOI38.SMP"));
+		samples.put("Fleets", IOUtils.load(root + "/SOUND/NOI39.SMP"));
+		samples.put("Buildings", IOUtils.load(root + "/SOUND/NOI40.SMP"));
+		samples.put("Planets", IOUtils.load(root + "/SOUND/NOI41.SMP"));
+		samples.put("NewShipAdded", IOUtils.load(root + "/SOUND/NOI42.SMP"));
+		samples.put("SplitFleet", IOUtils.load(root + "/SOUND/NOI49.SMP"));
+		samples.put("JoinFleet", IOUtils.load(root + "/SOUND/NOI50.SMP"));
+		samples.put("NewFleetCreated", IOUtils.load(root + "/SOUND/NOI51.SMP"));
+		samples.put("AddedToProductionList", IOUtils.load(root + "/SOUND/NOI52.SMP"));
+		samples.put("DeletedFromProductionList", IOUtils.load(root + "/SOUND/NOI53.SMP"));
+		samples.put("ResearchStarted", IOUtils.load(root + "/SOUND/NOI54.SMP"));
+		samples.put("ResearchStopped", IOUtils.load(root + "/SOUND/NOI55.SMP"));
+		samples.put("ItemsProduced", IOUtils.load(root + "/SOUND/NOI56.SMP"));
+		samples.put("ResearchCompleted", IOUtils.load(root + "/SOUND/NOI57.SMP"));
+		samples.put("SatelliteDestroyed", IOUtils.load(root + "/SOUND/NOI58.SMP"));
+		samples.put("UnidentifiedShipDetected", IOUtils.load(root + "/SOUND/NOI59.SMP"));
+		samples.put("PlanetRevolveInProgress", IOUtils.load(root + "/SOUND/NOI60.SMP"));
+		samples.put("NewFleetDetected", IOUtils.load(root + "/SOUND/NOI61.SMP"));
+		samples.put("CampaignRecordMessageNotNow", IOUtils.load(root + "/SOUND/NOI80.SMP"));
+		samples.put("CampaignRecordMessage", IOUtils.load(root + "/SOUND/NOI81.SMP"));
+		samples.put("PlaceBuilding", IOUtils.load(root + "/SOUND/NOI82.SMP"));
+		samples.put("DemolishBuilding", IOUtils.load(root + "/SOUND/NOI83.SMP"));
+		samples.put("WelcomeToIG", IOUtils.load(root + "/SOUND/NOI84.SMP"));
+		samples.put("GoodBye", IOUtils.load(root + "/SOUND/NOI85.SMP"));
+		samples.put("DiplomacyShow", IOUtils.load(root + "/SOUND/NOI86.SMP"));
+		samples.put("DiplomacyHide", IOUtils.load(root + "/SOUND/NOI87.SMP"));
+	}
+	/**
+	 * Plays the specified UI sound or throws an IllegalArgumentException if there is no such name.
+	 * @param name the sound name
+	 */
+	public void playSound(String name) {
+		byte[] data = samples.get(name);
+		if (data == null) {
+			throw new IllegalArgumentException("Sound sample not found " + name);
+		}
+		playSound(data);
+	}
+	/**
+	 * Play the given sound data asynchronously.
+	 * @param data the non null data to write
+	 */
+	private void playSound(byte[] data) {
+		final byte[] dataCopy = data.clone();
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					SourceDataLine sdl = soundPool.poll();
+					if (sdl != null) {
+						sdl.start();
+						sdl.write(dataCopy, 0, dataCopy.length);
+						sdl.drain();
+						sdl.stop();
+						soundPool.put(sdl);
+					} else {
+						System.err.println("Sound resources exhausted at this moment");
+					}
+				} catch (InterruptedException e) {
+					// ignored
+				}
+			}
+		});
+		t.start();
+	}
+}

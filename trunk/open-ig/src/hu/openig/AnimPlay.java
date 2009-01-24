@@ -5,8 +5,10 @@
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
-package hu.openig.ani;
+package hu.openig;
 
+import hu.openig.ani.MovieSurface;
+import hu.openig.ani.SpidyAniFile;
 import hu.openig.ani.SpidyAniFile.Algorithm;
 import hu.openig.ani.SpidyAniFile.Block;
 import hu.openig.ani.SpidyAniFile.Data;
@@ -15,6 +17,7 @@ import hu.openig.ani.SpidyAniFile.Sound;
 import hu.openig.compress.LZSS;
 import hu.openig.compress.RLE;
 import hu.openig.core.PaletteDecoder;
+import hu.openig.sound.AudioThread;
 
 import java.awt.Container;
 import java.awt.Dimension;

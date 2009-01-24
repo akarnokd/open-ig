@@ -6,9 +6,9 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.sound;
+package hu.openig;
 
-import hu.openig.ani.AudioThread;
+import hu.openig.sound.AudioThread;
 import hu.openig.utils.IOUtils;
 
 import java.io.File;

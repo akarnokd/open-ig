@@ -1,4 +1,4 @@
-package hu.openig.ani;
+package hu.openig.sound;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -81,7 +81,7 @@ public class AudioThread extends Thread {
 	 * @return the created audio output stream or null if no audio support
 	 * is available.
 	 */
-	private static SourceDataLine createAudioOutput() {
+	public static SourceDataLine createAudioOutput() {
 		AudioFormat af = new AudioFormat(22050, 8, 1, true, false);
 		SourceDataLine sdl = null;
 		DataLine.Info dli = new DataLine.Info(SourceDataLine.class, af);
