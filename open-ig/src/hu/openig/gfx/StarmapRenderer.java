@@ -23,13 +23,16 @@ import java.awt.TexturePaint;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
 
-public class StarmapRenderer extends JComponent implements MouseMotionListener, MouseListener {
+public class StarmapRenderer extends JComponent implements MouseMotionListener, MouseListener, MouseWheelListener {
 	/** The serial version UID. */
 	private static final long serialVersionUID = -4832071241159647010L;
 	/** The graphics objects. */
@@ -107,9 +110,34 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** The magnification direction: true-in, false-out. */
 	private boolean magnifyDirection;
 	/** The magnification factors. */
-	private int[] magnifyFactors = { 5, 6, 7, 8, 9, 10, 12, 13, 15, 17, 20, 24, 30 };
+	private int[] magnifyFactors = { /*5, 6, 7, 8, 9, 10, 12, 13,*/ 15, 17, 20, 24, 30 };
 	/** The current magnification index. */
 	private int magnifyIndex = magnifyFactors.length - 1;
+	/** Show ship controls. */
+	private boolean showShipControls;
+	private Btn btnColonize;
+	private Btn btnRadars;
+	private Btn btnFleets;
+	private Btn btnGrids;
+	private Btn btnStars;
+	private Btn btnName;
+	/** Ship move button. */
+	private Btn btnMove;
+	/** Ship attack button. */
+	private Btn btnAttack;
+	/** Ship stop buttom. */
+	private Btn btnStop;
+	/** The display name modes: None, Colony, Fleets, Both. */
+	private int nameMode;
+	/** Buttons which change state on click.*/
+	private final List<Btn> toggleButtons = new ArrayList<Btn>();
+	/** The mouse wheel scrolling amount. */
+	private static final int SCROLL_AMOUNT = 20;
+	private Btn btnSatellite;
+	private Btn btnSpySat1;
+	private Btn btnSpySat2;
+	private Btn btnHubble2;
+	public boolean showSatellites = true;
 	/** Constructor. */
 	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx) {
 		super();
@@ -120,6 +148,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		//setCursor(gfx.cursors.target);
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addMouseWheelListener(this);
 		initActions();
 	}
 	@Override
@@ -189,8 +218,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		g2.fillRect(vknobRect.x, vknobRect.y + gfx.contents.vscrollTop.getHeight(), gfx.contents.vscrollFiller.getWidth(), vknobRect.height - gfx.contents.vscrollTop.getHeight() - gfx.contents.vscrollBottom.getHeight());
 		
 		g2.setPaint(p);
-		
-		g2.fillRect(shipControlRect.x, shipControlRect.y, shipControlRect.width, shipControlRect.height);
 		
 		// draw minimap
 		g2.drawImage(gfx.contents.minimap, minimapRect.x, minimapRect.y, null);
@@ -282,7 +309,82 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		if (btnMagnify.down) {
 			g2.drawImage(gfx.btnMagnifyLight, btnMagnify.rect.x, btnMagnify.rect.y, null);
 		}
+
+		if (showShipControls) {
+			if (btnMove.down) {
+				g2.drawImage(gfx.btnMoveLight, btnMove.rect.x, btnMove.rect.y, null);
+			}
+			if (btnAttack.down) {
+				g2.drawImage(gfx.btnAttackLight, btnAttack.rect.x, btnAttack.rect.y, null);
+			}
+			if (btnStop.down) {
+				g2.drawImage(gfx.btnStopLight, btnStop.rect.x, btnStop.rect.y, null);
+			}
+		} else 
+		if (showSatellites) {
+			g2.fillRect(shipControlRect.x, shipControlRect.y, shipControlRect.width, shipControlRect.height);
+			if (btnSatellite.visible) {
+				g2.drawImage(gfx.btnAddSat, btnSatellite.rect.x, btnSatellite.rect.y, null);
+			}
+			if (btnSpySat1.visible) {
+				g2.drawImage(gfx.btnAddSpySat1, btnSpySat1.rect.x, btnSpySat1.rect.y, null);
+			}
+			if (btnSpySat2.visible) {
+				g2.drawImage(gfx.btnAddSpySat2, btnSpySat2.rect.x, btnSpySat2.rect.y, null);
+			}
+			if (btnHubble2.visible) {
+				g2.drawImage(gfx.btnAddHubble2, btnHubble2.rect.x, btnHubble2.rect.y, null);
+			}
+		} else {
+			g2.fillRect(shipControlRect.x, shipControlRect.y, shipControlRect.width, shipControlRect.height);
+		}
+
 		
+		if (btnColonize.visible) {
+			if (btnColonize.disabled) {
+				g2.drawImage(gfx.btnColoniseDisabled, btnColonize.rect.x, btnColonize.rect.y, null);
+			} else {
+				g2.drawImage(gfx.btnColonise, btnColonize.rect.x, btnColonize.rect.y, null);
+			}
+		}
+		
+		if (btnRadars.down) {
+			g2.drawImage(gfx.btnRadarsLight, btnRadars.rect.x, btnRadars.rect.y, null);
+		} else {
+			g2.drawImage(gfx.btnRadars, btnRadars.rect.x, btnRadars.rect.y, null);
+		}
+		if (btnFleets.down) {
+			g2.drawImage(gfx.btnFleetsLight, btnFleets.rect.x, btnFleets.rect.y, null);
+		} else {
+			g2.drawImage(gfx.btnFleets, btnFleets.rect.x, btnFleets.rect.y, null);
+		}
+		if (btnStars.down) {
+			g2.drawImage(gfx.btnStarsLight, btnStars.rect.x, btnStars.rect.y, null);
+		} else {
+			g2.drawImage(gfx.btnStars, btnStars.rect.x, btnStars.rect.y, null);
+		}
+		if (btnGrids.down) {
+			g2.drawImage(gfx.btnGridsLight, btnGrids.rect.x, btnGrids.rect.y, null);
+		} else {
+			g2.drawImage(gfx.btnGrids, btnGrids.rect.x, btnGrids.rect.y, null);
+		}
+		
+		BufferedImage img = null;
+		switch (nameMode) {
+		case 0:
+			img = gfx.btnNameOff;
+			break;
+		case 1:
+			img = gfx.btnNameColony;
+			break;
+		case 2:
+			img = gfx.btnNameFleets;
+			break;
+		case 3:
+			img = gfx.btnNameBoth;
+			break;
+		}
+		g2.drawImage(img, btnName.rect.x, btnName.rect.y, null);
 		t = System.nanoTime() - t;
 		//System.out.printf("%.2f frame/s%n", 1E9 / t);
 	}
@@ -406,6 +508,86 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		btnMagnify.rect.y = 35 + btnEquipment.rect.y;
 		btnMagnify.rect.width = 33;
 		btnMagnify.rect.height = 64;
+		
+		btnColonize.rect.x = w - 245;
+		btnColonize.rect.y = bottomLeftRect.y + 30;
+		btnColonize.rect.width = 108;
+		btnColonize.rect.height = 15;
+		
+		btnRadars.rect.x = btnColonize.rect.x;
+		btnRadars.rect.y = btnColonize.rect.y + 21;
+		btnRadars.rect.width = 53;
+		btnRadars.rect.height = 18;
+		
+		btnFleets.rect.x = btnRadars.rect.x + 55;
+		btnFleets.rect.y = btnRadars.rect.y;
+		btnFleets.rect.width = 53;
+		btnFleets.rect.height = 18;
+		
+		btnStars.rect.x = btnRadars.rect.x;
+		btnStars.rect.y = btnRadars.rect.y + 20;
+		btnStars.rect.width = 53;
+		btnStars.rect.height = 18;
+		
+		btnGrids.rect.x = btnFleets.rect.x;
+		btnGrids.rect.y = btnStars.rect.y;
+		btnGrids.rect.width = 53;
+		btnGrids.rect.height = 18;
+		
+		btnName.rect.x = btnStars.rect.x;
+		btnName.rect.y = btnStars.rect.y + 20;
+		btnName.rect.width = 108;
+		btnName.rect.height = 18;
+		
+		btnMove.rect.x = btnStars.rect.x - 105;
+		btnMove.rect.y = btnColonize.rect.y + 1;
+		btnMove.rect.width = 98;
+		btnMove.rect.height = 23;
+		
+		btnAttack.rect.x = btnMove.rect.x;
+		btnAttack.rect.y = btnMove.rect.y + 27;
+		btnAttack.rect.width = 98;
+		btnAttack.rect.height = 23;
+		
+		btnStop.rect.x = btnMove.rect.x;
+		btnStop.rect.y = btnAttack.rect.y + 27;
+		btnStop.rect.width = 98;
+		btnStop.rect.height = 23;
+		
+		updateSatellites();
+	}
+	/** Update satellite button. */
+	public void updateSatellites() {
+		int x = btnColonize.rect.x - 91;
+		int y = btnColonize.rect.y;
+		if (btnSatellite.visible) {
+			btnSatellite.rect.x = x;
+			btnSatellite.rect.y = y;
+			btnSatellite.rect.width = 84;
+			btnSatellite.rect.height = 17;
+			y += 20;
+		}
+		if (btnSpySat1.visible) {
+			btnSpySat1.rect.x = x;
+			btnSpySat1.rect.y = y;
+			btnSpySat1.rect.width = 84;
+			btnSpySat1.rect.height = 17;
+			y += 20;
+		}
+		if (btnSpySat2.visible) {
+			btnSpySat2.rect.x = x;
+			btnSpySat2.rect.y = y;
+			btnSpySat2.rect.width = 84;
+			btnSpySat2.rect.height = 17;
+			y += 20;
+		}
+		if (btnHubble2.visible) {
+			btnHubble2.rect.x = x;
+			btnHubble2.rect.y = y;
+			btnHubble2.rect.width = 84;
+			btnHubble2.rect.height = 17;
+			y += 20;
+		}
 	}
 	/** Update the location records for the scrollbar knobs. */
 	public void updateScrollKnobs() {
@@ -481,35 +663,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	public void scrollByPixelRel(int dx, int dy) {
 		scroll((int)(hscrollValue + dx / zoomFactor / hscrollFactor), 
 				(int)(vscrollValue + dy / zoomFactor / vscrollFactor));
-		/**
-		// calculate the zoom corrected map offsets
-		mapX += (int)(dx * zoomFactor);
-		mapY += (int)(dy * zoomFactor);
-		// calculate the associated scrollbar positions.
-		hscrollValue = (int)(mapX / zoomFactor / hscrollFactor);
-		vscrollValue = (int)(mapY / zoomFactor / vscrollFactor);
-		// check if the scroll values didn't go beyond the scroll limits
-		// if so, compensate back the mapX/mapY values
-		// if it does not violate the bounds, leave it as is, because of the fractional coordinates
-		if (hscrollValue < 0) {
-			hscrollValue = 0;
-			mapX = 0;
-		} else
-		if (hscrollValue > hscrollMax) {
-			hscrollValue = hscrollMax;
-			mapX = (int)((gfx.contents.fullMap.getWidth() - mapRect.width) * zoomFactor * hscrollFactor);
-		}
-		if (vscrollValue < 0) {
-			vscrollValue = 0;
-			mapY = 0;
-		} else
-		if (vscrollValue > vscrollMax) {
-			vscrollValue = vscrollMax;
-			mapY =  (int)((gfx.contents.fullMap.getHeight() - mapRect.height) * zoomFactor * vscrollFactor);
-		}
-		updateScrollKnobs();
-		repaint();
-		*/
 	}
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
@@ -543,7 +696,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		} else {
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				for (Btn b : buttons) {
-					if (!b.disabled && b.rect.contains(pt)) {
+					if (b.test(pt)) {
 						b.click();
 						break;
 					}
@@ -584,15 +737,23 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				repaint(btnMagnify.rect);
 			} else {
 				for (Btn b : buttons) {
-					if (!b.disabled && b.rect.contains(pt)) {
+					if (b.test(pt)) {
 						b.down = true;
 						repaint(b.rect);
 						break;
 					}
 				}
+				for (Btn b : toggleButtons) {
+					if (b.test(pt)) {
+						b.down = !b.down;
+						repaint(b.rect);
+						b.click();
+						break;
+					}
+				}
 			}
 		} else
-		if (e.getButton() == MouseEvent.BUTTON3 && !btnMagnify.disabled && btnMagnify.rect.contains(pt)) {
+		if (e.getButton() == MouseEvent.BUTTON3 && btnMagnify.test(pt)) {
 			magnifyDirection = false;
 			btnMagnify.down = true;
 			repaint(btnMagnify.rect);
@@ -628,23 +789,83 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		buttons.add(btnEquipmentNext = new Btn());
 		buttons.add(btnInfo = new Btn());
 		buttons.add(btnBridge = new Btn());
+		buttons.add(btnColonize = new Btn());
+		buttons.add(btnName = new Btn(new BtnAction() {
+			@Override
+			public void invoke() {
+				doNameChange();
+			}
+		}));
 		btnMagnify = new Btn(new BtnAction() {
 			@Override
 			public void invoke() {
 				doMagnify();
 			}
 		});
+		toggleButtons.add(btnFleets = new Btn());
+		toggleButtons.add(btnGrids = new Btn());
+		toggleButtons.add(btnRadars = new Btn());
+		toggleButtons.add(btnStars = new Btn());
+		
+		toggleButtons.add(btnMove = new Btn());
+		toggleButtons.add(btnAttack = new Btn());
+		toggleButtons.add(btnStop = new Btn());
+		
+		buttons.add(btnSatellite = new Btn());
+		buttons.add(btnSpySat1 = new Btn());
+		buttons.add(btnSpySat2 = new Btn());
+		buttons.add(btnHubble2 = new Btn());
+		
+		btnSatellite.visible = true;
+		btnSpySat1.visible = true;
+		btnSpySat2.visible = true;
+		btnHubble2.visible = true;
+		
 	}
 	private void doMagnify() {
 		if (magnifyDirection && magnifyIndex < magnifyFactors.length - 1) {
 			magnifyIndex++;
-			zoomFactor = magnifyFactors[magnifyIndex] / 30f;
-			repaint();
+			zoom(magnifyFactors[magnifyIndex] / 30f);
 		} else
 		if (!magnifyDirection && magnifyIndex > 0) {
 			magnifyIndex--;
-			zoomFactor = magnifyFactors[magnifyIndex] / 30f;
-			repaint();
+			zoom(magnifyFactors[magnifyIndex] / 30f);
+		}
+	}
+	private void doNameChange() {
+		nameMode = (nameMode + 1) % 4;
+		repaint(btnName.rect);
+	}
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		Point pt = e.getPoint();
+		if (mapRect.contains(pt)) {
+			if (e.isControlDown()) {
+				// zoom in or out
+				if (e.getWheelRotation() < 0 && magnifyIndex < magnifyFactors.length - 1) {
+					magnifyIndex++;
+					zoom(magnifyFactors[magnifyIndex] / 30f);
+				} else 
+				if (e.getWheelRotation() > 0 && magnifyIndex > 0) {
+					magnifyIndex--;
+					zoom(magnifyFactors[magnifyIndex] / 30f);
+				}
+			} else
+			if (e.isShiftDown()) {
+				// scroll horizontally
+				if (e.getWheelRotation() < 0) {
+					scrollByPixelRel(-SCROLL_AMOUNT, 0);
+				} else {
+					scrollByPixelRel(SCROLL_AMOUNT, 0);
+				}
+			} else {
+				// scroll vertically
+				if (e.getWheelRotation() < 0) {
+					scrollByPixelRel(0, -SCROLL_AMOUNT);
+				} else {
+					scrollByPixelRel(0, SCROLL_AMOUNT);
+				}
+			}
 		}
 	}
 }

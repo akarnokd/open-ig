@@ -69,6 +69,10 @@ public class StarmapGFX {
 	
 	public BufferedImage btnInfoDown;
 	public BufferedImage btnBridgeDown;
+	/** Ship move light. */
+	public BufferedImage btnMoveLight;
+	public BufferedImage btnAttackLight;
+	public BufferedImage btnStopLight;
 	/**
 	 * Constructor. Loads all images belonging to the starmap.
 	 * @param root the file system root directory of IG.
@@ -144,12 +148,12 @@ public class StarmapGFX {
 		btnDestLight = starx.getSubimage(0, 36, 53, 18);
 		btnGridsLight = starx.getSubimage(53, 36, 53, 18);
 
-		btnBorder = starx.getSubimage(161, 0, 53, 18);
-		btnRadars = starx.getSubimage(53, 0, 53, 18);
-		btnStars = starx.getSubimage(161, 18, 53, 18);
-		btnFleets = starx.getSubimage(53, 18, 53, 18);
-		btnDest = starx.getSubimage(161, 36, 53, 18);
-		btnGrids = starx.getSubimage(53, 36, 53, 18);
+		btnBorder = starx.getSubimage(108, 0, 53, 18);
+		btnRadars = starx.getSubimage(161, 0, 53, 18);
+		btnStars = starx.getSubimage(108, 18, 53, 18);
+		btnFleets = starx.getSubimage(161, 18, 53, 18);
+		btnDest = starx.getSubimage(108, 36, 53, 18);
+		btnGrids = starx.getSubimage(161, 36, 53, 18);
 
 		btnNameOff = starx.getSubimage(0, 54, 108, 18);
 		btnNameColony = starx.getSubimage(0, 72, 108, 18);
@@ -186,5 +190,9 @@ public class StarmapGFX {
 		
 		btnInfoDown = starx.getSubimage(533, 0, 102, 39);
 		btnBridgeDown = starx.getSubimage(533, 39, 102, 39);
+		
+		btnMoveLight = starx.getSubimage(385, 69, 98, 23);
+		btnAttackLight = starx.getSubimage(385, 92, 98, 23);
+		btnStopLight = starx.getSubimage(385, 115, 98, 23);
 	}
 }
