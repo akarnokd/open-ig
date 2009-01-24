@@ -7,6 +7,7 @@
  */
 package hu.openig.core;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 
 /**
@@ -20,6 +21,8 @@ public class Btn {
 	public boolean disabled;
 	/** The button is pressed. */
 	public boolean down;
+	/** Button visibility indicator. */
+	public boolean visible = true;
 	/** The action to perform when the button is clicked. */
 	private BtnAction onClick;
 	/**
@@ -43,6 +46,10 @@ public class Btn {
 		if (onClick != null) {
 			onClick.invoke();
 		}
+	}
+	/** Tests if the point is within the visible, enabled rectangle of this button. */
+	public boolean test(Point p) {
+		return visible && !disabled && rect.contains(p);
 	}
 //	/**
 //	 * Set width and height from the image.
