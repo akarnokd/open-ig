@@ -2,6 +2,7 @@ package hu.openig.gfx;
 
 import hu.openig.core.InfoBarRegions;
 import hu.openig.core.Tile;
+import hu.openig.sound.UISounds;
 import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.AlphaComposite;
@@ -122,16 +123,19 @@ MouseWheelListener, ActionListener {
 	private TextGFX text;
 	/** Regions of the info bars. */
 	public InfoBarRegions infoBarRects = new InfoBarRegions();
+	/** The user interface sounds. */
+	private UISounds uiSound;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx
 	 * @param cgfx
 	 * @throws IOException
 	 */
-	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx) throws IOException {
+	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx, UISounds uiSound) throws IOException {
 		this.gfx = gfx;
 		this.cgfx = cgfx;
 		this.text = cgfx.text;
+		this.uiSound = uiSound;
 		buildScroller = new Timer(BUILD_SCROLL_INTERVAL, this);
 		buildScroller.setActionCommand("BUILD_SCROLLER");
 		fadeTimer = new Timer(FADE_INTERVAL, this);

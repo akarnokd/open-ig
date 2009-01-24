@@ -12,6 +12,8 @@ import hu.openig.utils.IOUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.sound.sampled.SourceDataLine;
@@ -25,7 +27,11 @@ public class UISounds {
 	/** The audio sample map. */
 	private final Map<String, byte[]> samples = new HashMap<String, byte[]>();
 	/** Number of parallel sound lines. */
-	private final int SOUND_POOL_SIZE = 4;
+	private final int SOUND_POOL_SIZE = 8;
+	/** Shutdown all audio threads. */
+	private volatile boolean shutdown;
+	/** The executor service for parallel sound playback. */
+	private volatile ExecutorService service;
 	/** The sound pool. */
 	private final BlockingQueue<SourceDataLine> soundPool = new LinkedBlockingQueue<SourceDataLine>(SOUND_POOL_SIZE);
 	/**
@@ -33,9 +39,12 @@ public class UISounds {
 	 * @param root the IG root directory
 	 */
 	public UISounds(String root) {
+		service = Executors.newFixedThreadPool(SOUND_POOL_SIZE);
 		// Initialize sound pool
 		for (int i = 0; i < SOUND_POOL_SIZE; i++) {
-			soundPool.offer(AudioThread.createAudioOutput());
+			SourceDataLine sdl = AudioThread.createAudioOutput();
+			sdl.start();
+			soundPool.offer(sdl);
 		}
 		samples.put("IncomingMessage", IOUtils.load(root + "/SOUND/NOI01.SMP"));
 		samples.put("CommanderMessage", IOUtils.load(root + "/SOUND/NOI02.SMP"));
@@ -104,17 +113,19 @@ public class UISounds {
 	 */
 	private void playSound(byte[] data) {
 		final byte[] dataCopy = data.clone();
-		Thread t = new Thread(new Runnable() {
+		service.submit(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					SourceDataLine sdl = soundPool.poll();
 					if (sdl != null) {
-						sdl.start();
 						sdl.write(dataCopy, 0, dataCopy.length);
 						sdl.drain();
-						sdl.stop();
 						soundPool.put(sdl);
+						if (shutdown) {
+							sdl.stop();
+							sdl.close();
+						}
 					} else {
 						System.err.println("Sound resources exhausted at this moment");
 					}
@@ -123,6 +134,21 @@ public class UISounds {
 				}
 			}
 		});
-		t.start();
+	}
+	/** Close all audio lines. */
+	public void close() {
+		shutdown = true;
+		SourceDataLine sdl = null;
+		while ((sdl = soundPool.poll()) != null) {
+			sdl.close();
+		}
+		service.shutdown();
+	}
+	public static void main(String[] args) {
+		UISounds uis = new UISounds("c:/games/ig/");
+		uis.playSound("Colony");
+		uis.playSound("Equipment");
+		uis.close();
+		System.out.println("Done.");
 	}
 }

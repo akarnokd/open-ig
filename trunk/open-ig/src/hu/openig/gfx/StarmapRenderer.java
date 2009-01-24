@@ -11,6 +11,7 @@ package hu.openig.gfx;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoBarRegions;
+import hu.openig.sound.UISounds;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -138,11 +139,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private Btn btnSpySat2;
 	private Btn btnHubble2;
 	public boolean showSatellites = true;
+	/** The user interface sounds. */
+	private UISounds uiSound;
 	/** Constructor. */
-	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx) {
+	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		super();
 		this.gfx = gfx;
 		this.cgfx = cgfx;
+		this.uiSound = uiSound;
 		setDoubleBuffered(true);
 		setOpaque(true);
 		//setCursor(gfx.cursors.target);
@@ -779,14 +783,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	}
 	/** Initialize button actions. */
 	private void initActions() {
-		buttons.add(btnColony = new Btn());
+		buttons.add(btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); }}));
 		buttons.add(btnColonyPrev = new Btn());
 		buttons.add(btnColonyNext = new Btn());
-		buttons.add(btnEquipment = new Btn());
+		buttons.add(btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); }}));
 		buttons.add(btnEquipmentPrev = new Btn());
 		buttons.add(btnEquipmentNext = new Btn());
-		buttons.add(btnInfo = new Btn());
-		buttons.add(btnBridge = new Btn());
+		buttons.add(btnInfo = new Btn(new BtnAction() { public void invoke() { doInfoClick(); }}));
+		buttons.add(btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); }}));
 		buttons.add(btnColonize = new Btn());
 		buttons.add(btnName = new Btn(new BtnAction() {
 			@Override
@@ -865,5 +869,17 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				}
 			}
 		}
+	}
+	private void doColonyClick() {
+		uiSound.playSound("Colony");
+	}
+	private void doEquipmentClick() {
+		uiSound.playSound("Equipment");
+	}
+	private void doInfoClick() {
+		uiSound.playSound("Information");
+	}
+	private void doBridgeClick() {
+		uiSound.playSound("Bridge");
 	}
 }
