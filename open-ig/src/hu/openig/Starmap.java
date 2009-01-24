@@ -11,9 +11,12 @@ package hu.openig;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StarmapRenderer;
+import hu.openig.sound.UISounds;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -33,12 +36,20 @@ public class Starmap {
 		if (args.length > 0) {
 			igroot = args[0];
 		}
-		final StarmapRenderer smr = new StarmapRenderer(new StarmapGFX(igroot), new CommonGFX(igroot));
+		final UISounds uis = new UISounds(igroot);
+		uis.playSound("WelcomeToIG");
+		final StarmapRenderer smr = new StarmapRenderer(new StarmapGFX(igroot), new CommonGFX(igroot), uis);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				JFrame fm = new JFrame("Open-IG: Starmap");
 				fm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				fm.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosed(WindowEvent e) {
+						uis.close();
+					}
+				});
 				Container c = fm.getContentPane();
 				GroupLayout gl = new GroupLayout(c);
 				c.setLayout(gl);

@@ -11,6 +11,7 @@ package hu.openig;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.PlanetGFX;
 import hu.openig.gfx.PlanetRenderer;
+import hu.openig.sound.UISounds;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -47,7 +48,8 @@ public class Planet {
 		if (args.length > 0) {
 			root = args[0];
 		}
-		final PlanetRenderer pr = new PlanetRenderer(new PlanetGFX(root), new CommonGFX(root));
+		UISounds uis = new UISounds(root);
+		final PlanetRenderer pr = new PlanetRenderer(new PlanetGFX(root), new CommonGFX(root), uis);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
