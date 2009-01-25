@@ -9,13 +9,19 @@
 package hu.openig.gfx;
 
 import hu.openig.core.InfoBarRegions;
+import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
+import hu.openig.utils.PACFile.PACEntry;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.JComponent;
 
@@ -35,6 +41,67 @@ public class CommonGFX {
 	public TextGFX text;
 	/** The minimap. */
 	public BufferedImage minimap;
+	/** The minimaps for the various ranks (zero based). */
+	public BufferedImage[] minimapInfo = new BufferedImage[5];
+	/** Map of race index to (building name or building index) to building small picture. */
+	public Map<Integer, Map<Object, BufferedImage>> buildingPictures = new LinkedHashMap<Integer, Map<Object, BufferedImage>>();
+	/** The human race index. */
+	public static final int RACE_HUMANS = 1;
+	/** The building names for the various building indexes. */
+	public static final String[] BUILDING_NAMES = {
+		"ColonyHub",
+		"PrefabHousing",
+		"ApartmentBlock", 
+		"Arcology",
+		"NuclearPlant",
+		"FusionPlant",
+		"SolarPlant",
+		"WaterWaporator",
+		"HydroponicFoodFarm",
+		"PhoodFactory",
+		
+		"SpaceshipFactory",
+		"EquipmentFactory",
+		"WeaponFactory",
+		"CivilEngDevCentre",
+		"MechanicsDevCentre",
+		"ComputerDevCentre",
+		"AIDevCentre",
+		"MilitaryDevCentre",
+		"TradersSpaceport",
+		"MilitarySpaceport",
+
+		"Bank",
+		"TradeCentre",
+		"Hospital",
+		"PoliceStation",
+		"FireBrigade",
+		"RadarTelescope",
+		"FieldTelescope",
+		"PasedTelescope",
+		"Bunker",
+		"IonProjector",
+		
+		"PlasmaProjector",
+		"FusionProjector",
+		"MesonProjector",
+		"InversionShield",
+		"HyperShield",
+		"Barracks",
+		"Fortress",
+		"Stronghold",
+		"RecreationCentre",
+		"Park",
+		
+		"Church",
+		"Bar",
+		"Stadium",
+	};
+	/** The dotted grid color. */
+	public Color GRID_COLOR = new Color(0x783C5C);
+	/** The dotted grid stroke. */
+	public BasicStroke GRID_STROKE = new BasicStroke(1f, BasicStroke.CAP_BUTT, 
+            BasicStroke.JOIN_MITER, 10f, new float[] { 1f }, 0f);
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param root
@@ -103,7 +170,36 @@ public class CommonGFX {
 		minimap = PCXImage.from(root + "/GFX/ZOOM2.PCX", -1);
 		// fix image
 		minimap = minimap.getSubimage(0, 0, minimap.getWidth() - 1, minimap.getHeight());
-
+		
+		for (int i = 0; i < 5; i++) {
+			minimapInfo[i] = PCXImage.from(root + "/GFX/INFO" + (i + 1) + ".PCX", -1);
+		}
+		
+		// BUILDING PICTURES
+		for (int i = 1; i <= 8; i++) {
+			Map<String, PACEntry> buildingPics = PACFile.mapByName(PACFile.parseFully(root + "/DATA/COLONYP" + i + ".PAC"));
+			for (PACEntry e : buildingPics.values()) {
+				int idx1 = e.filename.indexOf('.');
+				int value = Integer.parseInt(e.filename.substring(0, idx1));
+				setBuildingImage(i, value, BUILDING_NAMES[value], PCXImage.parse(buildingPics.get(e.filename).data, -1));
+			}
+		}
+	}
+	/**
+	 * Set building image for a race and building type.
+	 * @param race
+	 * @param index
+	 * @param name
+	 * @param picture
+	 */
+	private void setBuildingImage(int race, int index, String name, BufferedImage picture) {
+		Map<Object, BufferedImage> raceBuildings = buildingPictures.get(race);
+		if (raceBuildings == null) {
+			raceBuildings = new LinkedHashMap<Object, BufferedImage>();
+			buildingPictures.put(race, raceBuildings);
+		}
+		raceBuildings.put(index, picture);
+		raceBuildings.put(name, picture);
 	}
 	public void renderInfoBars(JComponent c, Graphics2D g2) {
 		int w = c.getWidth();
