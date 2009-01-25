@@ -7,6 +7,8 @@
  */
 package hu.openig.gfx;
 
+import hu.openig.utils.IOUtils;
+import hu.openig.utils.LRUHashMap;
 import hu.openig.utils.PCXImage;
 
 import java.awt.Graphics2D;
@@ -32,24 +34,81 @@ public class TextGFX {
 		public final Map<Character, BufferedImage> chars = new HashMap<Character, BufferedImage>();
 	}
 	/** The entire backing image. */
-	private BufferedImage charImage;
-	/** The map of text size to character to actual image. */
-	private Map<Integer, SizedCharImages> charMap 
-	= new HashMap<Integer, SizedCharImages>();
-	/** The colors used in the charset image to indicate aliased text. */
-	private final int[] IMAGE_COLORS = { 0xFF9AC9FF, 0xFF4D7099, 0xFF25364B };
+	private PCXImage charImage;
+	/** Text height constant helper. */
+	public static final int SIZE_5 = 5;
+	/** Text height constant helper. */
+	public static final int SIZE_7 = 7;
+	/** Text height constant helper. */
+	public static final int SIZE_10 = 10;
+	/** Text height constant helper. */
+	public static final int SIZE_14 = 14;
+	/** Predefined color constant. */
+	public static final int YELLOW = 0xFCFC58;
+	/** Predefined color constant. */
+	public static final int GREEN = 0x6CB068;
+	/** Predefined color constant. */
+	public static final int GRAY = 0x949494;
+	/** Predefined color constant. */
+	public static final int DARK_GRAY = 0x6C6C6C;
+	/** Predefined color constant. */
+	public static final int RED = 0xFC2828;
+	/** Predefined color constant. */
+	public static final int DARK_GREEN = 0x009800;
+	/** Predefined color constant. */
+	public static final int ORANGE = 0xFCB000;
+	/** Predefined color constant. */
+	public static final int WHITE = 0xFCFCFC;
+	/** Predefined color constant. */
+	public static final int CYAN = 0x00FCFC;
+	/** Predefined color constant. */
+	public static final int PURPLE = 0xFC00FC;
+	/** Predefined color constant. */
+	public static final int LIGHT_GREEN = 0xB0FC6C;
+	/** Predefined color constant. */
+	public static final int BLUE = 0x3C3CFC;
+	/** Predefined color constant. */
+	public static final int LIGHT_BLUE = 0x94A4FC;
+	/** Predefined color constant for a race. */
+	int GALACTIC_EMPIRE = ORANGE;
+	/** Predefined color constant for a race. */
+	int GARTHOG_REPUBLIC = RED;
+	/** Predefined color constant for a race. */
+	int MORGATH_EMPIRE = WHITE;
+	/** Predefined color constant for a race. */
+	int YCHOM_EMPIRE = WHITE;
+	/** Predefined color constant for a race. */
+	int DRIBS_EMPIRE = PURPLE;
+	/** Predefined color constant for a race. */
+	int SULLEP_EMPIRE = YELLOW;
+	/** Predefined color constant for a race. */
+	int DARGSLAN_KINGDOM= DARK_GREEN;
+	/** Predefined color constant for a race. */
+	int ECALEP_REPUBLIC = LIGHT_GREEN;
+	/** Predefined color constant for a race. */
+	int FREE_TRADERS = BLUE;
+	/** Predefined color constant for a race. */
+	int FREE_NATIONS_SOCIETY = LIGHT_BLUE;
+	
+	/** The cache for color-remaped charImages. */
+	private Map<Integer, Map<Integer, SizedCharImages>> coloredCharImages = LRUHashMap.create(32);
 	/**
 	 * Constructor. Initializes the internal tables by processing the given file.
 	 * @param charsetFile the character set .PCX file
 	 */
 	public TextGFX(String charsetFile) {
-		charImage = PCXImage.from(charsetFile, -2);
-		split();
+		charImage = new PCXImage(IOUtils.load(charsetFile));
+		// map some colors
+		split(YELLOW);
+		split(GREEN);
+		split(GRAY);
+		split(RED);
 	}
 	/**
 	 * Split the entire images into character sizes and characters
+	 * @return the generated sized map of the character images
 	 */
-	private void split() {
+	private Map<Integer, SizedCharImages> split(int color) {
 		// first sequence for siz
 		String[] lineCharacters = {
 				/* Size: 7 */
@@ -95,6 +154,9 @@ public class TextGFX {
 				0, 0, 0, 0, 1,
 				1, 1, 1
 		};
+		Map<Integer, SizedCharImages> charMap = new HashMap<Integer, SizedCharImages>();
+		coloredCharImages.put(color, charMap);
+		BufferedImage workImage = charImage.toBufferedImage(-2, createPaletteFor(color));
 		int y = 0;
 		for (int j = 0; j < lineCharacters.length; j++) {
 			SizedCharImages charToImg = charMap.get(height[j]);
@@ -107,13 +169,35 @@ public class TextGFX {
 			int x = 0;
 			String s = lineCharacters[j];
 			for (int i = 0; i < s.length(); i++) {
-				BufferedImage ci = charImage.getSubimage(x, y, width[j], height[j]);
+				BufferedImage ci = workImage.getSubimage(x, y, width[j], height[j]);
 				charToImg.chars.put(lineCharacters[j].charAt(i), ci);
 				
 				x += width[j] + spacingX[j];
 			}
 			y += height[j] + spacingY[j];
 		}
+		return charMap;
+	}
+	/**
+	 * Create a palette using the supplied color.
+	 * @param color
+	 * @return
+	 */
+	private byte[] createPaletteFor(int color) {
+		byte[] result = new byte[768];
+		// full color
+		result[3] = (byte)Math.min(((color & 0xFF0000) >> 16) * 1.3f, 0xFC);
+		result[4] = (byte)Math.min(((color & 0xFF00) >> 8) * 1.3f, 0xFC);
+		result[5] = (byte)Math.min(((color & 0xFF) >> 0) * 1.3f, 0xFC);
+		// darker color
+		result[6] = (byte)(((color & 0xFF0000) >> 16) * 1f);
+		result[7] = (byte)(((color & 0xFF00) >> 8) * 1f);
+		result[8] = (byte)(((color & 0xFF) >> 0) * 1f);
+		// darkest color
+		result[9] = (byte)(((color & 0xFF0000) >> 16) * 0.6f);
+		result[10] = (byte)(((color & 0xFF00) >> 8) * 0.6f);
+		result[11] = (byte)(((color & 0xFF) >> 0) * 0.6f);
+		return result;
 	}
 	/**
 	 * Draw the given text at the given location on the supplied graphics object.
@@ -121,44 +205,23 @@ public class TextGFX {
 	 * @param x the starting X coordinate
 	 * @param y the starting Y coordinate
 	 * @param size the font size
-	 * @param color the color to use
+	 * @param color the color to use, alpha values are ignored at this level. If you need alpha, set the graphics object appropriately.
 	 * @param text the text to print
 	 */
 	public void paintTo(Graphics2D g, int x, int y, int size, int color, String text) {
+		Map<Integer, SizedCharImages> charMap = coloredCharImages.get(color);
+		if (charMap == null) {
+			charMap = split(color);
+		}
 		SizedCharImages charToImage = charMap.get(size);
 		if (charToImage != null) {
-			BufferedImage workImage = new BufferedImage(charToImage.width, charToImage.height, BufferedImage.TYPE_INT_ARGB);
-			int[] localImage = new int[charToImage.width * charToImage.height];
 			for (int i = 0; i < text.length(); i++) {
 				BufferedImage ci = charToImage.chars.get(text.charAt(i));
 				if (ci != null) {
-					ci.getRGB(0, 0, charToImage.width, charToImage.height, localImage, 0, charToImage.width);
-					colorRewrite(localImage, color);
-					workImage.setRGB(0, 0, charToImage.width, charToImage.height, localImage, 0, charToImage.width);
-					g.drawImage(workImage, x, y, null);
+					g.drawImage(ci, x, y, null);
 				}
 				x += charToImage.width + 2;
 			}
 		}
-	}
-	/**
-	 * Rewrites the original char pixel colors into the properly shaded color of the supplied value.
-	 * @param pixels the array of pixels
-	 * @param color the color to rewrite to
-	 */
-	private void colorRewrite(int[] pixels, int color) {
-		color &= 0x00FFFFFF;
-		int[] newcolor = { 0x99000000 | color, 0xFF000000 | color, 0x4B000000 | color };
-		for (int i = 0; i < pixels.length; i++) {
-			int c = pixels[i];
-			for (int j = 0; j < newcolor.length; j++) {
-				if (c == IMAGE_COLORS[j]) {
-					c = newcolor[j];
-					break;
-				}
-			}
-			pixels[i] = c;
-		}
-		
 	}
 }

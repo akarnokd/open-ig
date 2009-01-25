@@ -21,6 +21,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.GroupLayout.Alignment;
 
 /**
  * Planetary surface renderer test file.
@@ -54,11 +55,12 @@ public class Info {
 					Container c = fm.getContentPane();
 					GroupLayout gl = new GroupLayout(c);
 					c.setLayout(gl);
-					gl.setHorizontalGroup(gl.createSequentialGroup()
+					gl.setHorizontalGroup(
+						gl.createParallelGroup(Alignment.CENTER)
 						.addComponent(pr, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
 					);
 					gl.setVerticalGroup(
-						gl.createSequentialGroup()
+						gl.createParallelGroup(Alignment.CENTER)
 						.addComponent(pr, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
 					);
 					fm.pack();
