@@ -224,7 +224,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		g2.setPaint(p);
 		
 		// draw minimap
-		g2.drawImage(gfx.contents.minimap, minimapRect.x, minimapRect.y, null);
+		g2.drawImage(cgfx.minimap, minimapRect.x, minimapRect.y, null);
 		
 		// draw the entire map in a clipping rect
 		g2.setColor(gfx.contents.mapBackground);

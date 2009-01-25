@@ -105,11 +105,8 @@ public class StarmapGFX {
 		contents.vscrollBottom = body.getSubimage(508, 309, 18, 17);
 		
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-		// BIGMAP AND MINIMAP
+		// BIGMAP
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-		contents.minimap = PCXImage.from(root + "/GFX/ZOOM2.PCX", -1);
-		// fix image
-		contents.minimap = contents.minimap.getSubimage(0, 0, contents.minimap.getWidth() - 1, contents.minimap.getHeight());
 		contents.fullMap = PCXImage.from(root + "/GFX/ZOOM.PCX", -1);
 		// fix image
 		contents.fullMap = contents.fullMap.getSubimage(0, 0, contents.fullMap.getWidth(), 662);

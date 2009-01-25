@@ -9,8 +9,8 @@
 package hu.openig;
 
 import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.PlanetGFX;
-import hu.openig.gfx.PlanetRenderer;
+import hu.openig.gfx.InformationGFX;
+import hu.openig.gfx.InformationRenderer;
 import hu.openig.sound.UISounds;
 
 import java.awt.Container;
@@ -27,7 +27,7 @@ import javax.swing.SwingUtilities;
  * @author karnokd, 2009.01.14.
  * @version $Revision 1.0$
  */
-public class Planet {
+public class Info {
 	/**
 	 * Main test program
 	 * @param args
@@ -38,12 +38,12 @@ public class Planet {
 			root = args[0];
 		}
 		final UISounds uis = new UISounds(root);
-		final PlanetRenderer pr = new PlanetRenderer(new PlanetGFX(root), new CommonGFX(root), uis);
+		final InformationRenderer pr = new InformationRenderer(new InformationGFX(root), new CommonGFX(root), uis);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 				public void run() {
-					JFrame fm = new JFrame("Open-IG: Planet");
+					JFrame fm = new JFrame("Open-IG: Information");
 					fm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					fm.addWindowListener(new WindowAdapter() {
 						@Override
@@ -55,11 +55,11 @@ public class Planet {
 					GroupLayout gl = new GroupLayout(c);
 					c.setLayout(gl);
 					gl.setHorizontalGroup(gl.createSequentialGroup()
-						.addComponent(pr, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(pr, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
 					);
 					gl.setVerticalGroup(
 						gl.createSequentialGroup()
-						.addComponent(pr, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(pr, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
 					);
 					fm.pack();
 					fm.setLocationRelativeTo(null);

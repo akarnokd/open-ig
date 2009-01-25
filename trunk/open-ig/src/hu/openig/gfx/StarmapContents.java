@@ -25,8 +25,6 @@ public class StarmapContents {
 	public BufferedImage vscrollTop;
 	public BufferedImage vscrollFiller;
 	public BufferedImage vscrollBottom;
-	/** The bottom right minimap background. */
-	public BufferedImage minimap;
 	/** The full map background. */
 	public BufferedImage fullMap;
 	/** The color of the map background. */
