@@ -298,7 +298,7 @@ public class PlanetGFX {
 		starmapButton = colony.getSubimage(410, 414, 105, 28);
 		bridgeButton = colony.getSubimage(515, 414, 105, 28);
 		
-		buildPanel = colony.getSubimage(19, 0, 182, 170);
+		buildPanel = colony.getSubimage(19, 0, 181, 170);
 		radarPanel = colony.getSubimage(19, 282, 181, 160);
 		buildingInfoPanel = colony.getSubimage(424, 0, 196, 147);
 		

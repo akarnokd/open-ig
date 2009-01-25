@@ -1,5 +1,7 @@
 package hu.openig.gfx;
 
+import hu.openig.core.Btn;
+import hu.openig.core.BtnAction;
 import hu.openig.core.InfoBarRegions;
 import hu.openig.core.Tile;
 import hu.openig.sound.UISounds;
@@ -25,6 +27,8 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
@@ -56,22 +60,22 @@ MouseWheelListener, ActionListener {
 	/** The common graphics. */
 	private final CommonGFX cgfx;
 	
-	private Rectangle buildingButtonRect = new Rectangle();
-	private Rectangle radarButtonRect = new Rectangle();
 	private Rectangle leftTopRect = new Rectangle();
 	private Rectangle leftFillerRect = new Rectangle();
 	private Rectangle leftBottomRect = new Rectangle();
 	
-	private Rectangle buildingInfoButtonRect = new Rectangle();
-	private Rectangle screenButtonRect = new Rectangle();
 	private Rectangle rightTopRect = new Rectangle();
 	private Rectangle rightFillerRect = new Rectangle();
 	private Rectangle rightBottomRect = new Rectangle();
 	
-	private Rectangle colonyInfoRect = new Rectangle();
-	private Rectangle planetRect = new Rectangle();
-	private Rectangle starmapRect = new Rectangle();
-	private Rectangle bridgeRect = new Rectangle();
+	private Btn btnBuilding;
+	private Btn btnRadar;
+	private Btn btnBuildingInfo;
+	private Btn btnButtons;
+	private Btn btnColonyInfo;
+	private Btn btnPlanet;
+	private Btn btnStarmap;
+	private Btn btnBridge;
 	/** The middle window for the surface drawing. */
 	private Rectangle mainWindow = new Rectangle();
 	
@@ -87,19 +91,6 @@ MouseWheelListener, ActionListener {
 	private TexturePaint leftFillerPaint;
 	/** The right filler painter. */
 	private TexturePaint rightFillerPaint;
-	
-	private boolean showControlButtons = true;
-	private boolean showBuild = true;
-	private boolean showRadar = true;
-	private boolean showBuildingInfo = true;
-	/** Is the colony info button pressed? */
-	private boolean colonyInfoDown;
-	/** Is the military info button pressed? */
-	private boolean planetDown;
-	/** Is the starmap button pressed? */
-	private boolean starmapDown;
-	/** Is the bridge button pressed? */
-	private boolean bridgeDown;
 	/** 
 	 * The timer to scroll the building window if the user holds down the left mouse button on the
 	 * up/down arrow.
@@ -125,6 +116,10 @@ MouseWheelListener, ActionListener {
 	public InfoBarRegions infoBarRects = new InfoBarRegions();
 	/** The user interface sounds. */
 	private UISounds uiSound;
+	/** Buttons which change state on click.*/
+	private final List<Btn> toggleButtons = new ArrayList<Btn>();
+	/** The various buttons. */
+	private final List<Btn> buttons = new ArrayList<Btn>();
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx
@@ -141,7 +136,7 @@ MouseWheelListener, ActionListener {
 		fadeTimer = new Timer(FADE_INTERVAL, this);
 		fadeTimer.setActionCommand("FADE");
 		changeSurface();
-		
+		initButtons();
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 		addMouseListener(this);
@@ -200,10 +195,6 @@ MouseWheelListener, ActionListener {
 					int x0 = ff >= tile.width ? Tile.toScreenX(ff, 0) : Tile.toScreenX(0, -ff);
 					BufferedImage subimage = tile.strips[ff];
 					g2.drawImage(subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection, null);
-//					r.x = x;
-//					r.y = y - tile.image.getHeight();
-//					r.width = tile.image.getWidth();
-//					r.height = tile.image.getHeight();
 				}
 			}				
 			k--;
@@ -229,9 +220,9 @@ MouseWheelListener, ActionListener {
 		// RENDER INFOBARS
 		cgfx.renderInfoBars(this, g2);
 		// RENDER LEFT BUTTONS
-		g2.drawImage(gfx.buildingButton, buildingButtonRect.x, buildingButtonRect.y, null);
+		g2.drawImage(gfx.buildingButton, btnBuilding.rect.x, btnBuilding.rect.y, null);
 		g2.setColor(Color.BLACK);
-		g2.drawLine(buildingButtonRect.width, buildingButtonRect.y, buildingButtonRect.width, buildingButtonRect.y + buildingButtonRect.height - 1);
+		g2.drawLine(btnBuilding.rect.width, btnBuilding.rect.y, btnBuilding.rect.width, btnBuilding.rect.y + btnBuilding.rect.height - 1);
 		
 		g2.drawImage(gfx.leftTop, leftTopRect.x, leftTopRect.y, null);
 		if (leftFillerRect.height > 0) {
@@ -241,11 +232,12 @@ MouseWheelListener, ActionListener {
 			g2.setPaint(p);
 		}
 		g2.drawImage(gfx.leftBottom, leftBottomRect.x, leftBottomRect.y, null);
-		g2.drawLine(radarButtonRect.width, radarButtonRect.y, radarButtonRect.width, radarButtonRect.y + radarButtonRect.height - 1);
-		g2.drawImage(gfx.radarButton, radarButtonRect.x, radarButtonRect.y, null);
+		g2.drawLine(btnRadar.rect.width, btnRadar.rect.y, btnRadar.rect.width, 
+				btnRadar.rect.y + btnRadar.rect.height - 1);
+		g2.drawImage(gfx.radarButton, btnRadar.rect.x, btnRadar.rect.y, null);
 		
 		// RENDER RIGHT BUTTONS
-		g2.drawImage(gfx.buildingInfoButton, buildingInfoButtonRect.x, buildingInfoButtonRect.y, null);
+		g2.drawImage(gfx.buildingInfoButton, btnBuildingInfo.rect.x, btnBuildingInfo.rect.y, null);
 		g2.drawImage(gfx.rightTop, rightTopRect.x, rightTopRect.y, null);
 		if (rightFillerRect.height > 0) {
 			Paint p = g2.getPaint();
@@ -254,37 +246,43 @@ MouseWheelListener, ActionListener {
 			g2.setPaint(p);
 		}
 		g2.drawImage(gfx.rightBottom, rightBottomRect.x, rightBottomRect.y, null);
-		g2.drawImage(gfx.screenButtons, screenButtonRect.x, screenButtonRect.y, null);
+		g2.drawImage(gfx.screenButtons, btnButtons.rect.x, btnButtons.rect.y, null);
 		
-		if (showControlButtons) {
-			if (colonyInfoDown) {
-				g2.drawImage(gfx.colonyInfoButtonDown, colonyInfoRect.x, colonyInfoRect.y, null);
+		if (btnColonyInfo.visible) {
+			if (btnColonyInfo.down) {
+				g2.drawImage(gfx.colonyInfoButtonDown, btnColonyInfo.rect.x, btnColonyInfo.rect.y, null);
 			} else {
-				g2.drawImage(gfx.colonyInfoButton, colonyInfoRect.x, colonyInfoRect.y, null);
-			}
-			if (planetDown) {
-				g2.drawImage(gfx.planetButtonDown, planetRect.x, planetRect.y, null);
-			} else {
-				g2.drawImage(gfx.planetButton, planetRect.x, planetRect.y, null);
-			}
-			if (starmapDown) {
-				g2.drawImage(gfx.starmapButtonDown, starmapRect.x, starmapRect.y, null);
-			} else {
-				g2.drawImage(gfx.starmapButton, starmapRect.x, starmapRect.y, null);
-			}
-			if (bridgeDown) {
-				g2.drawImage(gfx.bridgeButtonDown, bridgeRect.x, bridgeRect.y, null);
-			} else {
-				g2.drawImage(gfx.bridgeButton, bridgeRect.x, bridgeRect.y, null);
+				g2.drawImage(gfx.colonyInfoButton, btnColonyInfo.rect.x, btnColonyInfo.rect.y, null);
 			}
 		}
-		if (showBuild) {
+		if (btnPlanet.visible) {
+			if (btnPlanet.down) {
+				g2.drawImage(gfx.planetButtonDown, btnPlanet.rect.x, btnPlanet.rect.y, null);
+			} else {
+				g2.drawImage(gfx.planetButton, btnPlanet.rect.x, btnPlanet.rect.y, null);
+			}
+		}
+		if (btnStarmap.visible) {
+			if (btnStarmap.down) {
+				g2.drawImage(gfx.starmapButtonDown, btnStarmap.rect.x, btnStarmap.rect.y, null);
+			} else {
+				g2.drawImage(gfx.starmapButton, btnStarmap.rect.x, btnStarmap.rect.y, null);
+			}
+		}
+		if (btnBridge.visible) {
+			if (btnBridge.down) {
+				g2.drawImage(gfx.bridgeButtonDown, btnBridge.rect.x, btnBridge.rect.y, null);
+			} else {
+				g2.drawImage(gfx.bridgeButton, btnBridge.rect.x, btnBridge.rect.y, null);
+			}
+		}
+		if (btnBuilding.down) {
 			g2.drawImage(gfx.buildPanel, buildPanelRect.x, buildPanelRect.y, null);
 		}
-		if (showBuildingInfo) {
+		if (btnBuildingInfo.down) {
 			g2.drawImage(gfx.buildingInfoPanel, buildingInfoPanelRect.x, buildingInfoPanelRect.y, null);
 		}
-		if (showRadar) {
+		if (btnRadar.down) {
 			g2.drawImage(gfx.radarPanel, radarPanelRect.x, radarPanelRect.y, null);
 		}
 		Shape sp = g2.getClip();
@@ -299,6 +297,23 @@ MouseWheelListener, ActionListener {
 		g2.fillRect(0, 0, w, h);
 		g2.setComposite(comp);
 	}
+	/** Initialize buttons. */
+	private void initButtons() {
+		buttons.add(btnPlanet = new Btn(new BtnAction() { public void invoke() { doPlanetClick(); }}));
+		buttons.add(btnColonyInfo = new Btn(new BtnAction() { public void invoke() { doColonyInfoClick(); }}));
+		buttons.add(btnStarmap = new Btn(new BtnAction() { public void invoke() { doStarmapRecClick(); }}));
+		buttons.add(btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); }}));
+		
+		toggleButtons.add(btnBuilding = new Btn(new BtnAction() { public void invoke() { doBuildingClick(); }}));
+		toggleButtons.add(btnRadar = new Btn(new BtnAction() { public void invoke() { doRadarClick(); }}));
+		toggleButtons.add(btnBuildingInfo = new Btn(new BtnAction() { public void invoke() { doBuildingInfoClick(); }}));
+		toggleButtons.add(btnButtons = new Btn(new BtnAction() { public void invoke() { doScreenClick(); }}));
+		
+		btnBuilding.down = true;
+		btnRadar.down = true;
+		btnBuildingInfo.down = true;
+		btnButtons.down = true;
+	}
 	/**
 	 * Update location of various interresting rectangles of objects.
 	 */
@@ -306,23 +321,23 @@ MouseWheelListener, ActionListener {
 		
 		cgfx.updateRegions(this, infoBarRects);
 		
-		buildingButtonRect.x = 0;
-		buildingButtonRect.y = cgfx.top.left.getHeight();
-		buildingButtonRect.width = gfx.buildingButton.getWidth();
-		buildingButtonRect.height = gfx.buildingButton.getHeight();
+		btnBuilding.rect.x = 0;
+		btnBuilding.rect.y = cgfx.top.left.getHeight();
+		btnBuilding.rect.width = gfx.buildingButton.getWidth();
+		btnBuilding.rect.height = gfx.buildingButton.getHeight();
 		
 		leftTopRect.x = 0;
-		leftTopRect.y = buildingButtonRect.y + buildingButtonRect.height;
+		leftTopRect.y = btnBuilding.rect.y + btnBuilding.rect.height;
 		leftTopRect.width = gfx.leftTop.getWidth();
 		leftTopRect.height = gfx.leftTop.getHeight();
 		
-		radarButtonRect.x = 0;
-		radarButtonRect.y = getHeight() - cgfx.bottom.left.getHeight() - gfx.radarButton.getHeight();
-		radarButtonRect.width = gfx.radarButton.getWidth();
-		radarButtonRect.height = gfx.radarButton.getHeight();
+		btnRadar.rect.x = 0;
+		btnRadar.rect.y = getHeight() - cgfx.bottom.left.getHeight() - gfx.radarButton.getHeight();
+		btnRadar.rect.width = gfx.radarButton.getWidth();
+		btnRadar.rect.height = gfx.radarButton.getHeight();
 		
 		leftBottomRect.x = 0;
-		leftBottomRect.y = radarButtonRect.y - gfx.leftBottom.getHeight();
+		leftBottomRect.y = btnRadar.rect.y - gfx.leftBottom.getHeight();
 		leftBottomRect.width = gfx.leftBottom.getWidth();
 		leftBottomRect.height = gfx.leftBottom.getHeight();
 		
@@ -334,27 +349,27 @@ MouseWheelListener, ActionListener {
 			leftFillerPaint = new TexturePaint(gfx.leftFiller, leftFillerRect);
 		}
 		
-		buildingInfoButtonRect.x = getWidth() - gfx.buildingInfoButton.getWidth();
-		buildingInfoButtonRect.y = cgfx.top.left.getHeight();
-		buildingInfoButtonRect.width = gfx.buildingInfoButton.getWidth();
-		buildingInfoButtonRect.height = gfx.buildingInfoButton.getHeight();
+		btnBuildingInfo.rect.x = getWidth() - gfx.buildingInfoButton.getWidth();
+		btnBuildingInfo.rect.y = cgfx.top.left.getHeight();
+		btnBuildingInfo.rect.width = gfx.buildingInfoButton.getWidth();
+		btnBuildingInfo.rect.height = gfx.buildingInfoButton.getHeight();
 		
-		rightTopRect.x = buildingInfoButtonRect.x;
-		rightTopRect.y = buildingInfoButtonRect.y + buildingInfoButtonRect.height;
+		rightTopRect.x = btnBuildingInfo.rect.x;
+		rightTopRect.y = btnBuildingInfo.rect.y + btnBuildingInfo.rect.height;
 		rightTopRect.width = gfx.rightTop.getWidth();
 		rightTopRect.height = gfx.rightTop.getHeight();
 		
-		screenButtonRect.x = buildingInfoButtonRect.x;
-		screenButtonRect.y = getHeight() - cgfx.bottom.left.getHeight() - gfx.screenButtons.getHeight();
-		screenButtonRect.width = gfx.screenButtons.getWidth();
-		screenButtonRect.height = gfx.screenButtons.getHeight();
+		btnButtons.rect.x = btnBuildingInfo.rect.x;
+		btnButtons.rect.y = getHeight() - cgfx.bottom.left.getHeight() - gfx.screenButtons.getHeight();
+		btnButtons.rect.width = gfx.screenButtons.getWidth();
+		btnButtons.rect.height = gfx.screenButtons.getHeight();
 		
-		rightBottomRect.x = buildingInfoButtonRect.x;
-		rightBottomRect.y = screenButtonRect.y - gfx.rightBottom.getHeight();
+		rightBottomRect.x = btnBuildingInfo.rect.x;
+		rightBottomRect.y = btnButtons.rect.y - gfx.rightBottom.getHeight();
 		rightBottomRect.width = gfx.rightBottom.getWidth();
 		rightBottomRect.height = gfx.rightBottom.getHeight();
 		
-		rightFillerRect.x = buildingInfoButtonRect.x;
+		rightFillerRect.x = btnBuildingInfo.rect.x;
 		rightFillerRect.y = rightTopRect.y + gfx.rightTop.getHeight();
 		rightFillerRect.width = gfx.rightFiller.getWidth();
 		rightFillerRect.height = rightBottomRect.y - rightFillerRect.y;
@@ -363,30 +378,30 @@ MouseWheelListener, ActionListener {
 		
 		// BOTTOM RIGHT CONTROL BUTTONS
 		
-		bridgeRect.x = getWidth() - gfx.rightBottom.getWidth() - gfx.bridgeButton.getWidth();
-		bridgeRect.y = getHeight() - cgfx.bottom.right.getHeight() - gfx.bridgeButton.getHeight();
-		bridgeRect.width = gfx.bridgeButton.getWidth();
-		bridgeRect.height = gfx.bridgeButton.getHeight();
+		btnBridge.rect.x = getWidth() - gfx.rightBottom.getWidth() - gfx.bridgeButton.getWidth();
+		btnBridge.rect.y = getHeight() - cgfx.bottom.right.getHeight() - gfx.bridgeButton.getHeight();
+		btnBridge.rect.width = gfx.bridgeButton.getWidth();
+		btnBridge.rect.height = gfx.bridgeButton.getHeight();
 		
-		starmapRect.x = bridgeRect.x - gfx.starmapButton.getWidth();
-		starmapRect.y = bridgeRect.y;
-		starmapRect.width = gfx.starmapButton.getWidth();
-		starmapRect.height = gfx.starmapButton.getHeight();
+		btnStarmap.rect.x = btnBridge.rect.x - gfx.starmapButton.getWidth();
+		btnStarmap.rect.y = btnBridge.rect.y;
+		btnStarmap.rect.width = gfx.starmapButton.getWidth();
+		btnStarmap.rect.height = gfx.starmapButton.getHeight();
 		
-		planetRect.x = starmapRect.x - gfx.planetButton.getWidth();
-		planetRect.y = bridgeRect.y;
-		planetRect.width = gfx.planetButton.getWidth();
-		planetRect.height = gfx.planetButton.getHeight();
+		btnPlanet.rect.x = btnStarmap.rect.x - gfx.planetButton.getWidth();
+		btnPlanet.rect.y = btnBridge.rect.y;
+		btnPlanet.rect.width = gfx.planetButton.getWidth();
+		btnPlanet.rect.height = gfx.planetButton.getHeight();
 
-		colonyInfoRect.x = planetRect.x - gfx.colonyInfoButton.getWidth();
-		colonyInfoRect.y = bridgeRect.y;
-		colonyInfoRect.width = gfx.colonyInfoButton.getWidth();
-		colonyInfoRect.height = gfx.colonyInfoButton.getHeight();
+		btnColonyInfo.rect.x = btnPlanet.rect.x - gfx.colonyInfoButton.getWidth();
+		btnColonyInfo.rect.y = btnBridge.rect.y;
+		btnColonyInfo.rect.width = gfx.colonyInfoButton.getWidth();
+		btnColonyInfo.rect.height = gfx.colonyInfoButton.getHeight();
 		
-		mainWindow.x = buildingButtonRect.width + 1;
-		mainWindow.y = buildingButtonRect.y;
-		mainWindow.width = buildingInfoButtonRect.x - mainWindow.x;
-		mainWindow.height = radarButtonRect.y + radarButtonRect.height - mainWindow.y;
+		mainWindow.x = btnBuilding.rect.width + 1;
+		mainWindow.y = btnBuilding.rect.y;
+		mainWindow.width = btnBuildingInfo.rect.x - mainWindow.x;
+		mainWindow.height = btnRadar.rect.y + btnRadar.rect.height - mainWindow.y;
 		
 		buildPanelRect.x = mainWindow.x - 1;
 		buildPanelRect.y = mainWindow.y;
@@ -459,16 +474,14 @@ MouseWheelListener, ActionListener {
 	private boolean eventInMainWindow(MouseEvent e) {
 		Point pt = e.getPoint();
 		return mainWindow.contains(pt) 
-		&& (!showBuild || !buildPanelRect.contains(pt))
-		&& (!showRadar || !radarPanelRect.contains(pt))
-		&& (!showBuildingInfo || !buildingInfoPanelRect.contains(pt))
-		&& (!showControlButtons || (
-				!colonyInfoRect.contains(pt)
-				&& !planetRect.contains(pt)
-				&& !starmapRect.contains(pt)
-				&& !bridgeRect.contains(pt)
-		));
-
+		&& (!btnBuilding.down || !buildPanelRect.contains(pt))
+		&& (!btnRadar.down || !radarPanelRect.contains(pt))
+		&& (!btnBuildingInfo.down || !buildingInfoPanelRect.contains(pt))
+		&& (!btnColonyInfo.test(pt)
+				&& !btnPlanet.test(pt)
+				&& !btnStarmap.test(pt)
+				&& !btnBridge.test(pt)
+		);
 	}
 	@Override
 	public void mouseMoved(MouseEvent e) {
@@ -497,23 +510,19 @@ MouseWheelListener, ActionListener {
 				int offs = this.toMapOffset(a, b);
 				int val = offs >= 0 && offs < 65 * 65 ? mapBytes[offs * 2 + 4] & 0xFF : 0;
 				System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
-			} else
-			if (showControlButtons) {
-				if (colonyInfoRect.contains(pt)) {
-					colonyInfoDown = true;
-					repaint();
+			} else {
+				for (Btn b : buttons) {
+					if (b.test(pt)) {
+						b.down = true;
+						repaint(b.rect);
+					}
 				}
-				if (planetRect.contains(pt)) {
-					planetDown = true;
-					repaint();
-				}
-				if (starmapRect.contains(pt)) {
-					starmapDown = true;
-					repaint();
-				}
-				if (bridgeRect.contains(pt)) {
-					bridgeDown = true;
-					repaint();
+				for (Btn b : toggleButtons) {
+					if (b.test(pt)) {
+						b.down = !b.down;
+						b.click();
+						repaint(b.rect);
+					}
 				}
 			}
 		}
@@ -523,12 +532,15 @@ MouseWheelListener, ActionListener {
 			panMode = false;
 		} else
 		if (e.getButton() == MouseEvent.BUTTON1) {
-			colonyInfoDown = false;
-			planetDown = false;
-			starmapDown = false;
-			bridgeDown = false;
+			boolean needRepaint = buildScroller.isRunning();
 			buildScroller.stop();
-			repaint();
+			for (Btn b : buttons) {
+				needRepaint |= b.down;
+				b.down = false;
+			}
+			if (needRepaint) {
+				repaint();
+			}
 		}
 	}
 	boolean once = true;
@@ -562,33 +574,15 @@ MouseWheelListener, ActionListener {
 		}
 		repaint();
 	}
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (e.getClickCount() == 1) {
 				Point pt = e.getPoint();
-				if (buildingButtonRect.contains(pt)) {
-					showBuild = !showBuild;
-					repaint();
-				} else
-				if (radarButtonRect.contains(pt)) {
-					showRadar = !showRadar;
-					repaint();
-				} else
-				if (buildingInfoButtonRect.contains(pt)) {
-					showBuildingInfo = !showBuildingInfo;
-					repaint();
-				} else
-				if (screenButtonRect.contains(pt)) {
-					showControlButtons = !showControlButtons;
-					repaint();
-				} else
-				if (showControlButtons && starmapRect.contains(pt)) {
-					fadeDirection = false;
-					fadeTimer.start();
+				for (Btn b : buttons) {
+					if (b.test(pt)) {
+						b.click();
+					}
 				}
 			}
 		}
@@ -635,5 +629,35 @@ MouseWheelListener, ActionListener {
 	}
 	private void doBuildScroller() {
 		
+	}
+	protected void doBridgeClick() {
+		uiSound.playSound("Bridge");
+	}
+	protected void doStarmapRecClick() {
+		uiSound.playSound("Starmap");
+		fadeDirection = false;
+		fadeTimer.start();
+	}
+	protected void doColonyInfoClick() {
+		uiSound.playSound("ColonyInformation");
+	}
+	protected void doPlanetClick() {
+		uiSound.playSound("Planets");
+	}
+	protected void doScreenClick() {
+		btnColonyInfo.visible = btnButtons.down;
+		btnPlanet.visible = btnButtons.down;
+		btnStarmap.visible = btnButtons.down;
+		btnBridge.visible = btnButtons.down;
+		repaint();
+	}
+	protected void doBuildingInfoClick() {
+		repaint(buildingInfoPanelRect);
+	}
+	protected void doRadarClick() {
+		repaint(radarPanelRect);
+	}
+	protected void doBuildingClick() {
+		repaint(buildPanelRect);
 	}
 }

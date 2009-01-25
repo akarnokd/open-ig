@@ -33,29 +33,31 @@ public class CommonGFX {
 	public GFXCursors cursors;
 	/** The text drawing. */
 	public TextGFX text;
+	/** The minimap. */
+	public BufferedImage minimap;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param root
 	 */
 	public CommonGFX(String root) {
-		BufferedImage alap = PCXImage.from(root + "/GFX/ALAP.PCX", -1);
+		BufferedImage basic = PCXImage.from(root + "/GFX/ALAP.PCX", -1);
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// TOP BAR
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// get the colors from the joining point
 		top = new StarmapBar();
-		top.left = alap.getSubimage(0, 0, 400, 20);
-		top.right = alap.getSubimage(400, 0, 240, 20);
-		top.link = alap.getSubimage(399, 0, 1, 20);
+		top.left = basic.getSubimage(0, 0, 400, 20);
+		top.right = basic.getSubimage(400, 0, 240, 20);
+		top.link = basic.getSubimage(399, 0, 1, 20);
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// BOTTOM BAR
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		bottom = new StarmapBar();
 		// get the colors from the joining point
 		bottom = new StarmapBar();
-		bottom.left = alap.getSubimage(0, 20, 400, 18);
-		bottom.right = alap.getSubimage(400, 20, 240, 18);
-		bottom.link = alap.getSubimage(399, 20, 1, 18);
+		bottom.left = basic.getSubimage(0, 20, 400, 18);
+		bottom.right = basic.getSubimage(400, 20, 240, 18);
+		bottom.link = basic.getSubimage(399, 20, 1, 18);
 		
 		BufferedImage cursorImage = PCXImage.from(root + "/GFX/ICONMAIN.PCX", 0);
 		cursors = new GFXCursors();
@@ -97,6 +99,11 @@ public class CommonGFX {
 		
 		
 		text = new TextGFX(root + "/GFX/CHARSET1.PCX");
+		
+		minimap = PCXImage.from(root + "/GFX/ZOOM2.PCX", -1);
+		// fix image
+		minimap = minimap.getSubimage(0, 0, minimap.getWidth() - 1, minimap.getHeight());
+
 	}
 	public void renderInfoBars(JComponent c, Graphics2D g2) {
 		int w = c.getWidth();
