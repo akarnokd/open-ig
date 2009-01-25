@@ -20,6 +20,7 @@ import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -141,11 +142,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	public boolean showSatellites = true;
 	/** The user interface sounds. */
 	private UISounds uiSound;
+	/** The text renderer. */
+	private TextGFX text;
 	/** Constructor. */
 	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		super();
 		this.gfx = gfx;
 		this.cgfx = cgfx;
+		this.text = cgfx.text;
 		this.uiSound = uiSound;
 		setDoubleBuffered(true);
 		setOpaque(true);
@@ -246,6 +250,39 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		g2.scale(zoomFactor, zoomFactor);
 		g2.drawImage(gfx.contents.fullMap, 0, 0, null);
 		g2.setTransform(af);
+		
+		// Render Grid
+		if (btnGrids.down) {
+			g2.setColor(cgfx.GRID_COLOR);
+			Stroke st = g2.getStroke();
+			g2.setStroke(cgfx.GRID_STROKE);
+			float fw = gfx.contents.fullMap.getWidth() * zoomFactor;
+			float fh = gfx.contents.fullMap.getHeight() * zoomFactor;
+			float dx = fw / 5;
+			float dy = fh / 5;
+			float y0 = dy;
+			float x0 = dx;
+			for (int i = 1; i < 5; i++) {
+				g2.drawLine((int)(mapRect.x + x0) + mx, mapRect.y + my, (int)(mapRect.x + x0) + mx, (int)(mapRect.y + fh) + my);
+				g2.drawLine(mapRect.x + mx, (int)(mapRect.y + y0) + my, (int)(mapRect.x + fw) + mx, (int)(mapRect.y + y0) + my);
+				x0 += dx;
+				y0 += dy;
+			}
+			int i = 0;
+			y0 = dy - 6;
+			x0 = 2;
+			for (char c = 'A'; c < 'Z'; c++) {
+				text.paintTo(g2, (int)(mapRect.x + x0) + mx, (int)(mapRect.y + y0) + my, 5, TextGFX.GRAY, String.valueOf(c));
+				x0 += dx;
+				i++;
+				if (i % 5 == 0) {
+					x0 = 2;
+					y0 += dy;
+				}
+			}
+			
+			g2.setStroke(st);
+		}
 		
 		g2.setClip(sp);
 		
@@ -805,7 +842,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			}
 		});
 		toggleButtons.add(btnFleets = new Btn());
-		toggleButtons.add(btnGrids = new Btn());
+		toggleButtons.add(btnGrids = new Btn(new BtnAction() { public void invoke() { doGridsClick(); }}));
 		toggleButtons.add(btnRadars = new Btn());
 		toggleButtons.add(btnStars = new Btn());
 		
@@ -823,6 +860,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		btnSpySat2.visible = true;
 		btnHubble2.visible = true;
 		
+	}
+	protected void doGridsClick() {
+		repaint(mapRect);
 	}
 	private void doMagnify() {
 		if (magnifyDirection && magnifyIndex < magnifyFactors.length - 1) {

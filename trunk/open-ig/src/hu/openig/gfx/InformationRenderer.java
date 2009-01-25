@@ -4,7 +4,6 @@ import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.sound.UISounds;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
