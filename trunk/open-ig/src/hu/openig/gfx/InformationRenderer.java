@@ -2,9 +2,13 @@ package hu.openig.gfx;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
+import hu.openig.core.InfoBarRegions;
+import hu.openig.core.InfoScreen;
 import hu.openig.sound.UISounds;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -33,16 +37,6 @@ import javax.swing.JComponent;
  */
 public class InformationRenderer extends JComponent implements MouseListener, MouseMotionListener, 
 MouseWheelListener, ActionListener {
-	public static enum InfoScreen {
-		COLONY_INFORMATION,
-		MILITARY_INFORMATION,
-		FINANCIAL_INFORMATION,
-		BUILDINGS,
-		PLANETS,
-		FLEETS,
-		INVENTIONS,
-		ALIENS
-	}
 	/** */
 	private static final long serialVersionUID = 1638048442106816873L;
 	/** The planet graphics. */
@@ -100,15 +94,21 @@ MouseWheelListener, ActionListener {
 	private Btn btnResearch;
 	private Btn btnProduction;
 	private Btn btnDiplomacy;
+	/** The screen rectangle. */
+	private Rectangle screen = new Rectangle();
 	
 	private boolean showMinimap = true;
+	private BtnAction onColonyClicked;
+	private BtnAction onStarmapClicked;
+	/** Regions of the info bars. */
+	public InfoBarRegions infoBarRects = new InfoBarRegions();
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx
 	 * @param cgfx
 	 * @throws IOException
 	 */
-	public InformationRenderer(InformationGFX gfx, CommonGFX cgfx, UISounds uiSound) throws IOException {
+	public InformationRenderer(InformationGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		this.gfx = gfx;
 		this.cgfx = cgfx;
 		this.text = cgfx.text;
@@ -116,28 +116,36 @@ MouseWheelListener, ActionListener {
 		
 		controlSize.width = gfx.infoScreen.getWidth();
 		controlSize.height = gfx.infoScreen.getHeight();
-		
+
 		initButtons();
+		
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 		addMouseListener(this);
-		setOpaque(true);
+//		setOpaque(true);
 	}
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
 		int w = getWidth();
 		int h = getHeight();
+		
+		Composite cp = g2.getComposite();
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, w, h);
-
+		g2.setComposite(cp);
+		
 		if (w != lastWidth || h != lastHeight) {
 			lastWidth = w;
 			lastHeight = h;
 			// if the render window changes, re-zoom to update scrollbars
 			updateRegions();
 		}
-		g2.drawImage(gfx.infoScreen, 0, 0, null);
+		// RENDER INFOBARS
+		cgfx.renderInfoBars(this, g2);
+		
+		g2.drawImage(gfx.infoScreen, screen.x, screen.y, null);
 		
 		renderButton(g2, btnColonyInfo, InfoScreen.COLONY_INFORMATION, gfx.btnColonyInfo, gfx.btnColonyInfoLight, gfx.btnColonyInfoLightDown);
 		renderButton(g2, btnMilitaryInfo, InfoScreen.MILITARY_INFORMATION, gfx.btnMilitaryInfo, gfx.btnMilitaryInfoLight, gfx.btnMilitaryInfoLightDown);
@@ -248,18 +256,18 @@ MouseWheelListener, ActionListener {
 	public Dimension getPreferredSize() {
 		return controlSize.getSize();
 	}
-	@Override
-	public Dimension getMinimumSize() {
-		return controlSize.getSize();
-	}
-	@Override
-	public Dimension getMaximumSize() {
-		return controlSize.getSize();
-	}
-	@Override
-	public Dimension getSize() {
-		return controlSize.getSize();
-	}
+//	@Override
+//	public Dimension getMinimumSize() {
+//		return controlSize.getSize();
+//	}
+//	@Override
+//	public Dimension getMaximumSize() {
+//		return controlSize.getSize();
+//	}
+//	@Override
+//	public Dimension getSize() {
+//		return controlSize.getSize();
+//	}
 	/** Initialize buttons. */
 	private void initButtons() {
 		pressButtons.add(btnColonyInfo = new Btn(new BtnAction() { public void invoke() { doColonyInfoClick(); } }));
@@ -294,79 +302,69 @@ MouseWheelListener, ActionListener {
 	}
 	protected void doStarmapClick() {
 		uiSound.playSound("Starmap");
+		if (onStarmapClicked != null) {
+			onStarmapClicked.invoke();
+		}
 	}
 	protected void doColonyClick() {
 		uiSound.playSound("Colony");
+		if (onColonyClicked != null) {
+			onColonyClicked.invoke();
+		}
 	}
 	protected void doAliensClick() {
 		if (currentScreen != InfoScreen.ALIENS) {
-			currentScreen = InfoScreen.ALIENS;
 			uiSound.playSound("AlienRaces");
-			selectButtonFor(1, btnDiplomacy, gfx.btnDiplomacyLarge, gfx.btnDiplomacyLargeDown);
-			selectButtonFor(2, null, null, null);
+			setScreenButtonsFor(InfoScreen.ALIENS);
 			repaint();
 		}
 	}
 	protected void doInventionsClick() {
 		if (currentScreen != InfoScreen.INVENTIONS) {
-			currentScreen = InfoScreen.INVENTIONS;
 			uiSound.playSound("Inventions");
-			selectButtonFor(1, btnProduction, gfx.btnProductionLarge, gfx.btnProductionLargeDown);
-			selectButtonFor(2, btnResearch, gfx.btnResearchLarge, gfx.btnResearchLargeDown);
+			setScreenButtonsFor(InfoScreen.INVENTIONS);
 			repaint();
 		}
 	}
 	protected void doFleetsClick() {
 		if (currentScreen != InfoScreen.FLEETS) {
-			currentScreen = InfoScreen.FLEETS;
 			uiSound.playSound("Fleets");
-			selectButtonFor(1, btnEquipment, gfx.btnEquipmentLarge, gfx.btnEquipmentLargeDown);
-			selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+			setScreenButtonsFor(InfoScreen.FLEETS);
 			repaint();
 		}
 	}
 	protected void doPlanetsClick() {
 		if (currentScreen != InfoScreen.PLANETS) {
-			currentScreen = InfoScreen.PLANETS;
 			uiSound.playSound("Planets");
-			selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
-			selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+			setScreenButtonsFor(InfoScreen.PLANETS);
 			repaint();
 		}
 	}
 	protected void doBuildingsClick() {
 		if (currentScreen != InfoScreen.BUILDINGS) {
-			currentScreen = InfoScreen.BUILDINGS;
 			uiSound.playSound("Buildings");
-			selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
-			selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+			setScreenButtonsFor(InfoScreen.BUILDINGS);
 			repaint();
 		}
 	}
 	protected void doFinancialInfoClick() {
 		if (currentScreen != InfoScreen.FINANCIAL_INFORMATION) {
-			currentScreen = InfoScreen.FINANCIAL_INFORMATION;
 			uiSound.playSound("FinancialInformation");
-			selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
-			selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+			setScreenButtonsFor(InfoScreen.FINANCIAL_INFORMATION);
 			repaint();
 		}
 	}
 	protected void doMilitaryInfoClick() {
 		if (currentScreen != InfoScreen.MILITARY_INFORMATION) {
-			currentScreen = InfoScreen.MILITARY_INFORMATION;
 			uiSound.playSound("MilitaryInformation");
-			selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
-			selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+			setScreenButtonsFor(InfoScreen.MILITARY_INFORMATION);
 			repaint();
 		}
 	}
 	protected void doColonyInfoClick() {
 		if (currentScreen != InfoScreen.COLONY_INFORMATION) {
-			currentScreen = InfoScreen.COLONY_INFORMATION;
 			uiSound.playSound("ColonyInformation");
-			selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
-			selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+			setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
 			repaint();
 		}
 	}
@@ -374,27 +372,39 @@ MouseWheelListener, ActionListener {
 	 * Update location of various interresting rectangles of objects.
 	 */
 	private void updateRegions() {
-		mainArea.setBounds(2, 2, 411, 362);
 		
-		titleArea.setBounds(415, 2, 203, 26);
+		cgfx.updateRegions(this, infoBarRects);
 		
-		secondaryArea.setBounds(415, 30, 203, 179);
+		screen.x = (getWidth() - gfx.infoScreen.getWidth()) / 2;
+		screen.y = (getHeight() - gfx.infoScreen.getHeight()) / 2;
 		
-		pictureArea.setBounds(415, 211, 203, 170);
+		mainArea.setBounds(screen.x + 2, screen.y + 2, 411, 362);
 		
-		btnPlanets.rect.setBounds(1, 364, 102, 28);
-		btnColonyInfo.rect.setBounds(104, 364, 102, 28);
-		btnMilitaryInfo.rect.setBounds(207, 364, 102, 28);
-		btnFinancialInfo.rect.setBounds(310, 364, 102, 28);
+		titleArea.setBounds(screen.x + 415, screen.y + 2, 203, 26);
 		
-		btnFleets.rect.setBounds(1, 392, 102, 28);
-		btnBuildings.rect.setBounds(104, 392, 102, 28);
-		btnInventions.rect.setBounds(207, 392, 102, 28);
-		btnAliens.rect.setBounds(310, 392, 102, 28);
+		secondaryArea.setBounds(screen.x + 415, screen.y + 30, 203, 179);
 		
-		btnLarge1Rect.setBounds(413, 381, 102, 39);
-		btnLarge2Rect.setBounds(516, 381, 102, 39);
+		pictureArea.setBounds(screen.x + 415, screen.y + 211, 203, 170);
 		
+		btnPlanets.rect.setBounds(screen.x + 1, screen.y + 364, 102, 28);
+		btnColonyInfo.rect.setBounds(screen.x + 104, screen.y + 364, 102, 28);
+		btnMilitaryInfo.rect.setBounds(screen.x + 207, screen.y + 364, 102, 28);
+		btnFinancialInfo.rect.setBounds(screen.x + 310, screen.y + 364, 102, 28);
+		
+		btnFleets.rect.setBounds(screen.x + 1, screen.y + 392, 102, 28);
+		btnBuildings.rect.setBounds(screen.x + 104, screen.y + 392, 102, 28);
+		btnInventions.rect.setBounds(screen.x + 207, screen.y + 392, 102, 28);
+		btnAliens.rect.setBounds(screen.x + 310, screen.y + 392, 102, 28);
+		
+		btnLarge1Rect.setBounds(screen.x + 413, screen.y + 381, 102, 39);
+		btnLarge2Rect.setBounds(screen.x + 516, screen.y + 381, 102, 39);
+		
+		if (btnLarge1 != null) {
+			btnLarge1.rect.setBounds(btnLarge1Rect);
+		}
+		if (btnLarge2 != null) {
+			btnLarge2.rect.setBounds(btnLarge2Rect);
+		}
 	}
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -509,5 +519,71 @@ MouseWheelListener, ActionListener {
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
+	}
+	/**
+	 * @param onColonyClicked the onColonyClicked to set
+	 */
+	public void setOnColonyClicked(BtnAction onColonyClicked) {
+		this.onColonyClicked = onColonyClicked;
+	}
+	/**
+	 * @return the onColonyClicked
+	 */
+	public BtnAction getOnColonyClicked() {
+		return onColonyClicked;
+	}
+	/**
+	 * @param onStarmapClicked the onStarmapClicked to set
+	 */
+	public void setOnStarmapClicked(BtnAction onStarmapClicked) {
+		this.onStarmapClicked = onStarmapClicked;
+	}
+	/**
+	 * @return the onStarmapClicked
+	 */
+	public BtnAction getOnStarmapClicked() {
+		return onStarmapClicked;
+	}
+	public void setScreenButtonsFor(InfoScreen screen) {
+		if (screen != null) {
+			switch (screen) {
+			case COLONY_INFORMATION:
+				selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
+				selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+				break;
+			case MILITARY_INFORMATION:
+				selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
+				selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+				break;
+			case FINANCIAL_INFORMATION:
+				selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
+				selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+				break;
+			case BUILDINGS:
+				selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
+				selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+				break;
+			case PLANETS:
+				selectButtonFor(1, btnColony, gfx.btnColonyLarge, gfx.btnColonyLargeDown);
+				selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+				break;
+			case FLEETS:
+				selectButtonFor(1, btnEquipment, gfx.btnEquipmentLarge, gfx.btnEquipmentLargeDown);
+				selectButtonFor(2, btnStarmap, gfx.btnStarmapLarge, gfx.btnStarmapLargeDown);
+				break;
+			case INVENTIONS:
+				selectButtonFor(1, btnProduction, gfx.btnProductionLarge, gfx.btnProductionLargeDown);
+				selectButtonFor(2, btnResearch, gfx.btnResearchLarge, gfx.btnResearchLargeDown);
+				break;
+			case ALIENS:
+				selectButtonFor(1, btnDiplomacy, gfx.btnDiplomacyLarge, gfx.btnDiplomacyLargeDown);
+				selectButtonFor(2, null, null, null);
+				break;
+			}
+		} else {
+			selectButtonFor(1, null, null, null);
+			selectButtonFor(2, null, null, null);
+		}
+		currentScreen = screen;
 	}
 }
