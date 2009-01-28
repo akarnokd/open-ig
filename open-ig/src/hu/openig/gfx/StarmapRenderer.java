@@ -209,8 +209,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		// draw inner controls
 
 		g2.setColor(Color.BLACK);
-		g2.fillRect(hscrollRect.x, hscrollRect.y, hscrollRect.width, hscrollRect.height);
-		g2.fillRect(vscrollRect.x, vscrollRect.y, vscrollRect.width, vscrollRect.height);
+		g2.fill(hscrollRect);
+		g2.fill(vscrollRect);
 		
 		// paint horizontal scrollbar
 		g2.drawImage(gfx.contents.hscrollLeft, hknobRect.x, hknobRect.y, null);
@@ -233,7 +233,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		// draw the entire map in a clipping rect
 		g2.setColor(gfx.contents.mapBackground);
 		//g2.setColor(Color.YELLOW);
-		g2.fillRect(mapRect.x, mapRect.y, mapRect.width, mapRect.height);
+		g2.fill(mapRect);
 		Shape sp = g2.getClip();
 		g2.setClip(mapRect);
 		AffineTransform af = g2.getTransform();
@@ -363,7 +363,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			}
 		} else 
 		if (showSatellites) {
-			g2.fillRect(shipControlRect.x, shipControlRect.y, shipControlRect.width, shipControlRect.height);
+			g2.fill(shipControlRect);
 			if (btnSatellite.visible) {
 				g2.drawImage(gfx.btnAddSat, btnSatellite.rect.x, btnSatellite.rect.y, null);
 			}
@@ -377,7 +377,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				g2.drawImage(gfx.btnAddHubble2, btnHubble2.rect.x, btnHubble2.rect.y, null);
 			}
 		} else {
-			g2.fillRect(shipControlRect.x, shipControlRect.y, shipControlRect.width, shipControlRect.height);
+			g2.fill(shipControlRect);
 		}
 
 		
@@ -435,16 +435,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		int w = getWidth();
 		int h = getHeight();
 		int bh = cgfx.bottom.left.getHeight() + gfx.contents.bottomLeft.getHeight();
-		// fix scrollbar area colors
-		hscrollRect.x = 3;
-		hscrollRect.y = h - bh + 3;
-		hscrollRect.width = w - 142;
-		hscrollRect.height = 18;
-
-		vscrollRect.x = w - gfx.contents.rightBottom.getWidth() + 3;
-		vscrollRect.y = cgfx.top.right.getHeight() + 3;
-		vscrollRect.width = 18;
-		vscrollRect.height = h - bh - cgfx.top.right.getHeight() - 7;
 
 		// fix ship control area if the ship area is not visible
 		shipControlRect.x = w - 355;
@@ -492,7 +482,18 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		rightFillerRect.y = rightTopRect.y + rightTopRect.height;
 		rightFillerRect.width = gfx.contents.rightFiller.getWidth();
 		rightFillerRect.height = rightBottomRect.y - rightFillerRect.y;
-		
+
+		// fix scrollbar area colors
+		hscrollRect.x = 3;
+		hscrollRect.y = h - bh + 3;
+		hscrollRect.width = w - 142;
+		hscrollRect.height = 18;
+
+		vscrollRect.x = rightTopRect.x + 3;
+		vscrollRect.y = rightTopRect.y + 3;
+		vscrollRect.width = 18;
+		vscrollRect.height = h - bh - cgfx.top.right.getHeight() - 7;
+
 		// Update button locations
 		
 		btnColonyPrev.rect.x = w - 105;
