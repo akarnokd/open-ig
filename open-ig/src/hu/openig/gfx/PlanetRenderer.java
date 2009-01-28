@@ -101,9 +101,9 @@ MouseWheelListener, ActionListener {
 	/** Timer used to animate fade in-out. */
 	private Timer fadeTimer;
 	/** Fade timer interval. */
-	private static final int FADE_INTERVAL = 50;
+	private static final int FADE_INTERVAL = 25;
 	/** The alpha difference to use when animating the fadeoff-fadein. */
-	private static final float ALPHA_DELTA = 0.1f;
+	private static final float ALPHA_DELTA = 0.15f;
 	/** THe fade direction is up (true) or down (false). */
 	private boolean fadeDirection;
 	/** The current darkening factor for the entire UI. 0=No darkness, 1=Full darkness. */
@@ -120,13 +120,17 @@ MouseWheelListener, ActionListener {
 	private final List<Btn> toggleButtons = new ArrayList<Btn>();
 	/** The various buttons. */
 	private final List<Btn> buttons = new ArrayList<Btn>();
+	private BtnAction onStarmapClicked;
+	private BtnAction onInformationClicked;
+	private BtnAction onBridgeClicked;
+	private BtnAction onPlanetsClicked;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx
 	 * @param cgfx
 	 * @throws IOException
 	 */
-	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx, UISounds uiSound) throws IOException {
+	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		this.gfx = gfx;
 		this.cgfx = cgfx;
 		this.text = cgfx.text;
@@ -291,11 +295,13 @@ MouseWheelListener, ActionListener {
 		g2.setClip(sp);
 		
 		// now darken the entire screen
-		comp = g2.getComposite();
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, darkness));
-		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, w, h);
-		g2.setComposite(comp);
+		if (darkness > 0.0f) {
+			comp = g2.getComposite();
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, darkness));
+			g2.setColor(Color.BLACK);
+			g2.fillRect(0, 0, w, h);
+			g2.setComposite(comp);
+		}
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
@@ -625,6 +631,9 @@ MouseWheelListener, ActionListener {
 	 * Invoked when the fading operation is completed.
 	 */
 	private void doFadeCompleted() {
+		if (onStarmapClicked != null) {
+			onStarmapClicked.invoke();
+		}
 		darkness = 0f;
 	}
 	private void doBuildScroller() {
@@ -632,6 +641,9 @@ MouseWheelListener, ActionListener {
 	}
 	protected void doBridgeClick() {
 		uiSound.playSound("Bridge");
+		if (onBridgeClicked != null) {
+			onBridgeClicked.invoke();
+		}
 	}
 	protected void doStarmapRecClick() {
 		uiSound.playSound("Starmap");
@@ -640,9 +652,15 @@ MouseWheelListener, ActionListener {
 	}
 	protected void doColonyInfoClick() {
 		uiSound.playSound("ColonyInformation");
+		if (onInformationClicked != null) {
+			onInformationClicked.invoke();
+		}
 	}
 	protected void doPlanetClick() {
 		uiSound.playSound("Planets");
+		if (onPlanetsClicked != null) {
+			onPlanetsClicked.invoke();
+		}
 	}
 	protected void doScreenClick() {
 		btnColonyInfo.visible = btnButtons.down;
@@ -659,5 +677,53 @@ MouseWheelListener, ActionListener {
 	}
 	protected void doBuildingClick() {
 		repaint(buildPanelRect);
+	}
+	/**
+	 * @param onStarmapClick the onStarmapClick to set
+	 */
+	public void setOnStarmapClicked(BtnAction onStarmapClicked) {
+		this.onStarmapClicked = onStarmapClicked;
+	}
+	/**
+	 * @return the onStarmapClick
+	 */
+	public BtnAction getOnStarmapClicked() {
+		return onStarmapClicked;
+	}
+	/**
+	 * @param onInformationClick the onInformationClick to set
+	 */
+	public void setOnInformationClicked(BtnAction onInformationClicked) {
+		this.onInformationClicked = onInformationClicked;
+	}
+	/**
+	 * @return the onInformationClick
+	 */
+	public BtnAction getOnInformationClicked() {
+		return onInformationClicked;
+	}
+	/**
+	 * @param onBridgeClicked the onBridgeClicked to set
+	 */
+	public void setOnBridgeClicked(BtnAction onBridgeClicked) {
+		this.onBridgeClicked = onBridgeClicked;
+	}
+	/**
+	 * @return the onBridgeClicked
+	 */
+	public BtnAction getOnBridgeClicked() {
+		return onBridgeClicked;
+	}
+	/**
+	 * @param onPlanetsClicked the onPlanetsClicked to set
+	 */
+	public void setOnPlanetsClicked(BtnAction onPlanetsClicked) {
+		this.onPlanetsClicked = onPlanetsClicked;
+	}
+	/**
+	 * @return the onPlanetsClicked
+	 */
+	public BtnAction getOnPlanetsClicked() {
+		return onPlanetsClicked;
 	}
 }

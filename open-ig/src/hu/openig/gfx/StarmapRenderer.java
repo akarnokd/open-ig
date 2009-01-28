@@ -13,7 +13,9 @@ import hu.openig.core.BtnAction;
 import hu.openig.core.InfoBarRegions;
 import hu.openig.sound.UISounds;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
@@ -22,6 +24,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -33,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.Timer;
 
 public class StarmapRenderer extends JComponent implements MouseMotionListener, MouseListener, MouseWheelListener {
 	/** The serial version UID. */
@@ -144,6 +149,18 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private UISounds uiSound;
 	/** The text renderer. */
 	private TextGFX text;
+	private BtnAction onColonyClicked;
+	private BtnAction onInformationClicked;
+	/** Timer used to animate fade in-out. */
+	private Timer fadeTimer;
+	/** Fade timer interval. */
+	private static final int FADE_INTERVAL = 25;
+	/** The alpha difference to use when animating the fadeoff-fadein. */
+	private static final float ALPHA_DELTA = 0.15f;
+	/** THe fade direction is up (true) or down (false). */
+	private boolean fadeDirection;
+	/** The current darkening factor for the entire UI. 0=No darkness, 1=Full darkness. */
+	private float darkness = 0f;
 	/** Constructor. */
 	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		super();
@@ -158,6 +175,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 		initActions();
+		fadeTimer = new Timer(FADE_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doFade(); }});
 	}
 	@Override
 	public void paint(Graphics g) {
@@ -428,6 +446,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		g2.drawImage(img, btnName.rect.x, btnName.rect.y, null);
 		t = System.nanoTime() - t;
 		//System.out.printf("%.2f frame/s%n", 1E9 / t);
+		// now darken the entire screen
+		if (darkness > 0.0f) {
+			Composite comp = g2.getComposite();
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, darkness));
+			g2.setColor(Color.BLACK);
+			g2.fillRect(0, 0, w, h);
+			g2.setComposite(comp);
+		}
 	}
 	/** Recalculate the region coordinates. */
 	private void updateRegions() {
@@ -913,14 +939,68 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	}
 	private void doColonyClick() {
 		uiSound.playSound("Colony");
+		fadeTimer.start();
 	}
 	private void doEquipmentClick() {
 		uiSound.playSound("Equipment");
 	}
 	private void doInfoClick() {
 		uiSound.playSound("Information");
+		if (onInformationClicked != null) {
+			onInformationClicked.invoke();
+		}
 	}
 	private void doBridgeClick() {
 		uiSound.playSound("Bridge");
+	}
+	/**
+	 * @param onColonyClicked the onColonyClicked to set
+	 */
+	public void setOnColonyClicked(BtnAction onColonyClicked) {
+		this.onColonyClicked = onColonyClicked;
+	}
+	/**
+	 * @return the onColonyClicked
+	 */
+	public BtnAction getOnColonyClicked() {
+		return onColonyClicked;
+	}
+	/**
+	 * @param onInformationClicked the onInformationClicked to set
+	 */
+	public void setOnInformationClicked(BtnAction onInformationClicked) {
+		this.onInformationClicked = onInformationClicked;
+	}
+	/**
+	 * @return the onInformationClicked
+	 */
+	public BtnAction getOnInformationClicked() {
+		return onInformationClicked;
+	}
+	/** Execute the fade animation. */
+	private void doFade() {
+		if (!fadeDirection) {
+			darkness = Math.max(0.0f, Math.min(1.0f, darkness + ALPHA_DELTA));
+			if (darkness >= 0.999f) {
+				fadeTimer.stop();
+				doFadeCompleted();
+			}
+		} else {
+			darkness = Math.max(0.0f, Math.min(1.0f, darkness - ALPHA_DELTA));
+			if (darkness <= 0.001f) {
+				fadeTimer.stop();
+				doFadeCompleted();
+			}
+		}
+		repaint();
+	}
+	/**
+	 * Invoked when the fading operation is completed.
+	 */
+	private void doFadeCompleted() {
+		if (onColonyClicked != null) {
+			onColonyClicked.invoke();
+		}
+		darkness = 0f;
 	}
 }
