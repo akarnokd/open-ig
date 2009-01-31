@@ -1,7 +1,17 @@
 #summary Description of the usage of the application.
 
+= Features of open-ig-0.4.jar =
+This release contains the new Info screen and various rendering and audio enhancements.
+
+  * Added the Info screen
+  * Added down/disabled images for buttons on the Starmap, Planet and Info screen
+  * Added the "later annoying" computer voice to the button click actions.
+  * Combined the Starmap, Planet and Info screens into the Main application
+  * Using F2, F3 and F7 the application switches between the three available screens
+  * Added screen transition to the info, colony, starmap buttons
+
 = Features of open-ig-0.2.jar =
-The 0.2 version is not yet a functioning game but a simple tech-demo of how far the project is gone. It contains mainly rendering related functions.
+The 0.2 version is not yet a functioning game but a simple tech-demo of how far the project has evolved. It contains mainly rendering related functions.
 
 If the application doesn't seem to show any of the windows, please see the Java console output. You might need to run the application from command line to see the console output.
 
