@@ -12,7 +12,7 @@ The project is currently in a very early stage of development, mostly I spent ti
 
 = Installation =
 
-Install Java JRE/JDK 1.6.X (preferrably X >= 10). Copy the contents of the original Imperium Galactica CD1 and CD2 into one directory (duplicate files can be simply overwritten). Put the {{{open-ig-0.2.jar}}} file into that directory. Double click on this file or use the command line {{{java -jar open-ig-0.2.jar}}}. If you don't want to put the JAR with the game files, you could use an extra command line parameter to specify the home of the IG files: {{{java -jar open-ig-0.2.jar c:\games\ig\}}}. Please see the [Documentation documentation] page for what can you do within the application at the moment.
+Install Java JRE/JDK 1.6.X (preferrably X >= 10). Copy the contents of the original Imperium Galactica CD1 and CD2 into one directory (duplicate files can be simply overwritten). Put the {{{open-ig-0.4.jar}}} file into that directory. Double click on this file or use the command line {{{java -jar open-ig-0.4.jar}}}. If you don't want to put the JAR with the game files, you could use an extra command line parameter to specify the home of the IG files: {{{java -jar open-ig-0.4.jar c:\games\ig\}}}. Please see the [Documentation documentation] page for what can you do within the application at the moment.
 
 = Documentation =
 
@@ -31,7 +31,7 @@ Currently, not much info can I provide.
 
 = Tools =
 
-The Open-IG will play the original game's ANI files. To play these files separately, please use the [http://open-ig.googlecode.com/files/animplay-0.1.jar AnimPlay] utility. Double click on this file or use the command line {{{java -jar animplay-0.1.jar}}}. The utility will allow you to select a file to play. 
+The Open-IG will play the original game's ANI files. To play these files separately, please use the [http://open-ig.googlecode.com/files/animplay-0.3.jar AnimPlay] utility. Double click on this file or use the command line {{{java -jar animplay-0.3.jar}}}. The utility will allow you to select a file to play. 
 (The source code is available from the SVN.)
 
 = About the author =
