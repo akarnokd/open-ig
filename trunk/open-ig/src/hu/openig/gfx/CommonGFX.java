@@ -102,6 +102,7 @@ public class CommonGFX {
 	/** The dotted grid stroke. */
 	public BasicStroke GRID_STROKE = new BasicStroke(1f, BasicStroke.CAP_BUTT, 
             BasicStroke.JOIN_MITER, 10f, new float[] { 1f }, 0f);
+	public BufferedImage[] shipImages;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param root
@@ -183,6 +184,12 @@ public class CommonGFX {
 				int value = Integer.parseInt(e.filename.substring(0, idx1));
 				setBuildingImage(i, value, BUILDING_NAMES[value], PCXImage.parse(buildingPics.get(e.filename).data, -1));
 			}
+		}
+		
+		shipImages = new BufferedImage[15];
+		BufferedImage fleets = PCXImage.from(root + "/GFX/FLEETS.PCX", -2);
+		for (int i = 0; i < shipImages.length; i++) {
+			shipImages[i] = fleets.getSubimage(28 + (i % 12), 7 * (i / 12), 20, 7);
 		}
 	}
 	/**
