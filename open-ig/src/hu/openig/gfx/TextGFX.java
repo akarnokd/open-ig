@@ -70,28 +70,30 @@ public class TextGFX {
 	/** Predefined color constant. */
 	public static final int LIGHT_BLUE = 0x94A4FC;
 	/** Predefined color constant for a race. */
-	int GALACTIC_EMPIRE = ORANGE;
+	public static final int GALACTIC_EMPIRE = ORANGE;
 	/** Predefined color constant for a race. */
-	int GARTHOG_REPUBLIC = RED;
+	public static final int GARTHOG_REPUBLIC = RED;
 	/** Predefined color constant for a race. */
-	int MORGATH_EMPIRE = WHITE;
+	public static final int MORGATH_EMPIRE = WHITE;
 	/** Predefined color constant for a race. */
-	int YCHOM_EMPIRE = WHITE;
+	public static final int YCHOM_EMPIRE = WHITE;
 	/** Predefined color constant for a race. */
-	int DRIBS_EMPIRE = PURPLE;
+	public static final int DRIBS_EMPIRE = PURPLE;
 	/** Predefined color constant for a race. */
-	int SULLEP_EMPIRE = YELLOW;
+	public static final int SULLEP_EMPIRE = YELLOW;
 	/** Predefined color constant for a race. */
-	int DARGSLAN_KINGDOM= DARK_GREEN;
+	public static final int DARGSLAN_KINGDOM= DARK_GREEN;
 	/** Predefined color constant for a race. */
-	int ECALEP_REPUBLIC = LIGHT_GREEN;
+	public static final int ECALEP_REPUBLIC = LIGHT_GREEN;
 	/** Predefined color constant for a race. */
-	int FREE_TRADERS = BLUE;
+	public static final int FREE_TRADERS = BLUE;
 	/** Predefined color constant for a race. */
-	int FREE_NATIONS_SOCIETY = LIGHT_BLUE;
+	public static final int FREE_NATIONS_SOCIETY = LIGHT_BLUE;
 	
 	/** The cache for color-remaped charImages. */
 	private Map<Integer, Map<Integer, SizedCharImages>> coloredCharImages = LRUHashMap.create(32);
+	/** The character width on a particular character size. */
+	private Map<Integer, Integer> charsetWidths = new HashMap<Integer, Integer>();
 	/**
 	 * Constructor. Initializes the internal tables by processing the given file.
 	 * @param charsetFile the character set .PCX file
@@ -159,6 +161,7 @@ public class TextGFX {
 		BufferedImage workImage = charImage.toBufferedImage(-2, createPaletteFor(color));
 		int y = 0;
 		for (int j = 0; j < lineCharacters.length; j++) {
+			charsetWidths.put(height[j], width[j]);
 			SizedCharImages charToImg = charMap.get(height[j]);
 			if (charToImg == null) {
 				charToImg = new SizedCharImages();
@@ -198,6 +201,15 @@ public class TextGFX {
 		result[10] = (byte)(((color & 0xFF00) >> 8) * 0.6f);
 		result[11] = (byte)(((color & 0xFF) >> 0) * 0.6f);
 		return result;
+	}
+	/**
+	 * Returns the expected text width for the given character size and string.
+	 * @param size the character size
+	 * @param text the text to test
+	 * @return the width in pixels
+	 */
+	public int getTextWidth(int size, String text) {
+		return charsetWidths.get(size) * text.length();
 	}
 	/**
 	 * Draw the given text at the given location on the supplied graphics object.

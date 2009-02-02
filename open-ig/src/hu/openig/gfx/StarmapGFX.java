@@ -123,6 +123,7 @@ public class StarmapGFX {
 			Map<Integer, List<BufferedImage>> aplanet = starmapPlanets.get(type);
 			if (aplanet == null) {
 				aplanet = new HashMap<Integer, List<BufferedImage>>();
+				starmapPlanets.put(type, aplanet);
 			}
 			BufferedImage planetImg = PCXImage.parse(pe.data, -2);
 			

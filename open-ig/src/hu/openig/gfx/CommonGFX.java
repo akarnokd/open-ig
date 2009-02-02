@@ -102,7 +102,10 @@ public class CommonGFX {
 	/** The dotted grid stroke. */
 	public BasicStroke GRID_STROKE = new BasicStroke(1f, BasicStroke.CAP_BUTT, 
             BasicStroke.JOIN_MITER, 10f, new float[] { 1f }, 0f);
+	/** The array for the ship icon images for starmap and minimaps. */
 	public BufferedImage[] shipImages;
+	/** The array for various zoom level rada dots. */
+	public BufferedImage[] radarDots;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param root
@@ -191,6 +194,11 @@ public class CommonGFX {
 		for (int i = 0; i < shipImages.length; i++) {
 			shipImages[i] = fleets.getSubimage(28 + (i % 12), 7 * (i / 12), 20, 7);
 		}
+		radarDots = new BufferedImage[4];
+		radarDots[0] = fleets.getSubimage(144, 13, 3, 3);
+		radarDots[1] = fleets.getSubimage(150, 13, 3, 3);
+		radarDots[2] = fleets.getSubimage(157, 13, 3, 3);
+		radarDots[3] = fleets.getSubimage(164, 13, 3, 3);
 	}
 	/**
 	 * Set building image for a race and building type.
