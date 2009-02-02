@@ -9,6 +9,7 @@ package hu.openig;
 
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoScreen;
+import hu.openig.core.SurfaceType;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.InformationGFX;
 import hu.openig.gfx.InformationRenderer;
@@ -16,6 +17,8 @@ import hu.openig.gfx.PlanetGFX;
 import hu.openig.gfx.PlanetRenderer;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StarmapRenderer;
+import hu.openig.gfx.TextGFX;
+import hu.openig.model.GMPlanet;
 import hu.openig.sound.UISounds;
 
 import java.awt.Container;
@@ -112,6 +115,7 @@ public class Main extends JFrame {
 		final int inH = getHeight();
 		setMinimumSize(new Dimension(inW, inH));
 		
+		initModel();
 		
 		setVisible(true);
 	}
@@ -120,15 +124,24 @@ public class Main extends JFrame {
 		
 		KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "F2");
-		rp.getActionMap().put("F2", new AbstractAction() { public void actionPerformed(ActionEvent e) { onF2Action(); }});
+		rp.getActionMap().put("F2", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { onF2Action(); }});
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "F3");
-		rp.getActionMap().put("F3", new AbstractAction() { public void actionPerformed(ActionEvent e) { onF3Action(); }});
+		rp.getActionMap().put("F3", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { onF3Action(); }});
 
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "F7");
-		rp.getActionMap().put("F7", new AbstractAction() { public void actionPerformed(ActionEvent e) { onF7Action(); }});
+		rp.getActionMap().put("F7", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { onF7Action(); }});
 
 	}
 	/**
@@ -233,5 +246,20 @@ public class Main extends JFrame {
 			ir.setVisible(true);
 			layers.validate();
 		}
+	}
+	/** Initialize model to test model dependand rendering. */
+	private void initModel() {
+		GMPlanet p = new GMPlanet();
+		p.name = "Planet X";
+		p.radarRadius = 50;
+		p.showName = true;
+		p.showRadar = true;
+		p.surfaceType = SurfaceType.ROCKY;
+		p.surfaceVariant = 1;
+		p.visible = true;
+		p.x = 500;
+		p.y = 500;
+		p.nameColor = TextGFX.GALACTIC_EMPIRE;
+		smr.planets.add(p);
 	}
 }

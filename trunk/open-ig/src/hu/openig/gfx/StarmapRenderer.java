@@ -11,6 +11,7 @@ package hu.openig.gfx;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoBarRegions;
+import hu.openig.model.GMPlanet;
 import hu.openig.sound.UISounds;
 
 import java.awt.AlphaComposite;
@@ -115,7 +116,11 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** The magnification direction: true-in, false-out. */
 	private boolean magnifyDirection;
 	/** The magnification factors. */
-	private int[] magnifyFactors = { /*5, 6, 7, 8, 9, 10, 12, 13,*/ 15, 17, 20, 24, 30, 34, 40, 48, 60 };
+	private int[] magnifyFactors = { 15, 17, 20,  24, 30, 34,  40, 48, 60,  75, 90, 105, 120 };
+	/** The planet sizes for magnify factors. */
+	private int[] planetSizes = { 5, 6, 7,  8, 9, 10,  12, 13, 15,  17, 20, 24, 30 };
+	/** Radar dot size selector for various zoom levels. */
+	private int[] radarDotSizes = { 0, 0, 0,  1, 1, 1,  2, 2, 2,  3, 3, 3, 3 };
 	/** The current magnification index. */
 	private int magnifyIndex = magnifyFactors.length - 1;
 	/** Determines zoom factor where 1.0 means the original size, 0.5 the half size. */
@@ -161,6 +166,10 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private boolean fadeDirection;
 	/** The current darkening factor for the entire UI. 0=No darkness, 1=Full darkness. */
 	private float darkness = 0f;
+	/** The list of planets. */
+	public final List<GMPlanet> planets = new ArrayList<GMPlanet>();
+	/** The map coordinates. */
+	public final Rectangle mapCoords = new Rectangle();
 	/** Constructor. */
 	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		super();
@@ -264,6 +273,12 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		if (mapRect.height > gfx.contents.fullMap.getHeight() * zoomFactor) {
 			my = (int)((mapRect.height - gfx.contents.fullMap.getHeight() * zoomFactor) / 2);
 		}
+		
+		mapCoords.x = mapRect.x + mx;
+		mapCoords.y = mapRect.y + my;
+		mapCoords.width = (int)(gfx.contents.fullMap.getWidth() * zoomFactor);
+		mapCoords.height = (int)(gfx.contents.fullMap.getHeight() * zoomFactor);
+		
 		g2.translate(mapRect.x + mx, mapRect.y + my);
 		g2.scale(zoomFactor, zoomFactor);
 		g2.drawImage(gfx.contents.fullMap, 0, 0, null);
@@ -301,6 +316,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			
 			g2.setStroke(st);
 		}
+		
+		renderPlanets(g2, mapRect.x + mx, mapRect.y + my);
 		
 		g2.setClip(sp);
 		
@@ -675,8 +692,17 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	}
 	/** Zoom in or out on a particular region. */
 	public void zoom(float newZoomFactor) {
-		if (newZoomFactor > 2.0f) {
-			newZoomFactor = 2.0f;
+		zoomAndScroll(newZoomFactor, vscrollValue, hscrollValue);
+	}
+	/**
+	 * Zoom in an scroll to the given position.
+	 * @param newZoomFactor the new zoom factor
+	 * @param hscroll the horizontal scroll position
+	 * @param vscroll the vertical scroll position
+	 */
+	public void zoomAndScroll(float newZoomFactor, float hscroll, float vscroll) {
+		if (newZoomFactor > 4.0f) {
+			newZoomFactor = 4.0f;
 		}
 		this.zoomFactor = newZoomFactor;
 		// ************************************************************
@@ -713,7 +739,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			vscrollFactor = mapExcess * 1.0f / maxScrollRegion;
 		}
 
-		scroll(hscrollValue, vscrollValue);
+		scroll(hscroll, vscroll);
 	}
 	/** Scroll to a particular scrollbar position. */
 	public void scroll(float xValue, float yValue) {
@@ -892,14 +918,20 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		repaint(mapRect);
 	}
 	private void doMagnify() {
-		if (magnifyDirection && magnifyIndex < magnifyFactors.length - 1) {
+		doZoom(magnifyDirection, mapRect.width / 2, mapRect.y + mapRect.height / 2);
+	}
+	private void doZoom(boolean direction, int x, int y) {
+		float currFactor = magnifyFactors[magnifyIndex];
+		if (direction && magnifyIndex < magnifyFactors.length - 1) {
 			magnifyIndex++;
-			zoom(magnifyFactors[magnifyIndex] / 30f);
 		} else
-		if (!magnifyDirection && magnifyIndex > 0) {
+		if (!direction && magnifyIndex > 0) {
 			magnifyIndex--;
-			zoom(magnifyFactors[magnifyIndex] / 30f);
 		}
+		float nextFactor = magnifyFactors[magnifyIndex];
+		float hp = ((hscrollValue + x) * nextFactor / currFactor - x + mapRect.x);
+		float vp = ((vscrollValue + y) * nextFactor / currFactor - y + mapRect.y);
+		zoomAndScroll(nextFactor / 30f, hp, vp);
 	}
 	private void doNameChange() {
 		nameMode = (nameMode + 1) % 4;
@@ -910,15 +942,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		Point pt = e.getPoint();
 		if (mapRect.contains(pt)) {
 			if (e.isControlDown()) {
-				// zoom in or out
-				if (e.getWheelRotation() < 0 && magnifyIndex < magnifyFactors.length - 1) {
-					magnifyIndex++;
-					zoom(magnifyFactors[magnifyIndex] / 30f);
-				} else 
-				if (e.getWheelRotation() > 0 && magnifyIndex > 0) {
-					magnifyIndex--;
-					zoom(magnifyFactors[magnifyIndex] / 30f);
-				}
+				doZoom(e.getWheelRotation() < 0, pt.x, pt.y);
 			} else
 			if (e.isShiftDown()) {
 				// scroll horizontally
@@ -1002,5 +1026,39 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			onColonyClicked.invoke();
 		}
 		darkness = 0f;
+	}
+	/**
+	 * Render the planets.
+	 * @param g2 the graphics 2d object
+	 * @param xOrig map rendering original coordinate X
+	 * @param yOrig map rendering original coordinate Y
+	 */
+	private void renderPlanets(Graphics2D g2, int xOrig, int yOrig) {
+		BufferedImage ri = cgfx.radarDots[radarDotSizes[magnifyIndex]];
+		for (GMPlanet p : planets) {
+			if (!p.visible) {
+				continue;
+			}
+			BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[magnifyIndex]).get(p.rotationPhase);
+			int x = (int)(p.x * zoomFactor - pimg.getWidth() / 2);
+			int y = (int)(p.y * zoomFactor - pimg.getHeight() / 2);
+			
+			g2.drawImage(pimg, xOrig + x, yOrig + y, null);
+			if (p.showName) {
+				y = (int)(p.y * zoomFactor + pimg.getHeight()) + 1;
+				int w = text.getTextWidth(5, p.name);
+				x = (int)(p.x * zoomFactor - pimg.getWidth() / 2 - w / 2);
+				text.paintTo(g2, xOrig + x, yOrig + y, 5, p.nameColor, p.name);
+			}
+			if (p.showRadar) {
+				double fd = Math.PI / 50;
+				double fm = 2 * Math.PI - fd;
+				for (double f = 0.0f; f <= fm; f += fd) {
+					x = (int)((p.x + p.radarRadius * Math.sin(f)) * zoomFactor);
+					y = (int)((p.y + p.radarRadius * Math.cos(f)) * zoomFactor);
+					g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
+				}
+			}
+		}
 	}
 }
