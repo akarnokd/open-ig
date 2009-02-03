@@ -82,9 +82,9 @@ public class AudioThread extends Thread {
 	 * is available.
 	 */
 	public static SourceDataLine createAudioOutput() {
-		AudioFormat af = new AudioFormat(22050, 8, 1, true, false);
 		SourceDataLine sdl = null;
-		DataLine.Info dli = new DataLine.Info(SourceDataLine.class, af);
+		AudioFormat af = createAudioFormat();
+		DataLine.Info dli = createAudioInfo(af);
 		if (!AudioSystem.isLineSupported(dli)) {
 			return null;
 		}
@@ -95,6 +95,21 @@ public class AudioThread extends Thread {
 		} catch (LineUnavailableException ex) {
 			return null;
 		}
+	}
+	/**
+	 * The audio line specification.
+	 * @param af the audio fromat
+	 * @return the appropriate DataLine.Info object
+	 */
+	public static DataLine.Info createAudioInfo(AudioFormat af) {
+		return new DataLine.Info(SourceDataLine.class, af);
+	}
+	/**
+	 * Create the default audio format.
+	 * @return the audio format
+	 */
+	public static AudioFormat createAudioFormat() {
+		return new AudioFormat(22050, 8, 1, true, false);
 	}
 	/**
 	 * Send an audio sample to the audio player.

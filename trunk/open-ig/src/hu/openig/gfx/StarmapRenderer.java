@@ -140,7 +140,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** Ship stop buttom. */
 	private Btn btnStop;
 	/** The display name modes: None, Colony, Fleets, Both. */
-	private int nameMode;
+	private int nameMode = 3;
 	/** Buttons which change state on click.*/
 	private final List<Btn> toggleButtons = new ArrayList<Btn>();
 	/** The mouse wheel scrolling amount. */
@@ -170,6 +170,10 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	public final List<GMPlanet> planets = new ArrayList<GMPlanet>();
 	/** The map coordinates. */
 	public final Rectangle mapCoords = new Rectangle();
+	/** The animation timer. */
+	private Timer animations;
+	/** The animation interval. */
+	private static final int ANIMATION_INTERVAL = 100;
 	/** Constructor. */
 	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		super();
@@ -185,6 +189,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		addMouseWheelListener(this);
 		initActions();
 		fadeTimer = new Timer(FADE_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doFade(); }});
+		animations = new Timer(ANIMATION_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doAnimate(); }});
+		
+		
 	}
 	@Override
 	public void paint(Graphics g) {
@@ -692,15 +699,15 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	}
 	/** Zoom in or out on a particular region. */
 	public void zoom(float newZoomFactor) {
-		zoomAndScroll(newZoomFactor, vscrollValue, hscrollValue);
+		zoomAndScroll(newZoomFactor, true);
 	}
 	/**
 	 * Zoom in an scroll to the given position.
 	 * @param newZoomFactor the new zoom factor
-	 * @param hscroll the horizontal scroll position
-	 * @param vscroll the vertical scroll position
+	 * @param scroll indicate that perform the scroll correction instantly, if false, 
+	 * the caller must issue a subsequenct scroll() to re-locate the viewport and redraw the screen.
 	 */
-	public void zoomAndScroll(float newZoomFactor, float hscroll, float vscroll) {
+	public void zoomAndScroll(float newZoomFactor, boolean scroll) {
 		if (newZoomFactor > 4.0f) {
 			newZoomFactor = 4.0f;
 		}
@@ -738,8 +745,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			vscrollMax = maxScrollRegion;
 			vscrollFactor = mapExcess * 1.0f / maxScrollRegion;
 		}
-
-		scroll(hscroll, vscroll);
+		if (scroll) {
+			scroll(hscrollValue, vscrollValue);
+		}
 	}
 	/** Scroll to a particular scrollbar position. */
 	public void scroll(float xValue, float yValue) {
@@ -899,6 +907,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		toggleButtons.add(btnRadars = new Btn());
 		toggleButtons.add(btnStars = new Btn());
 		
+		btnGrids.down = true;
+		btnRadars.down = true;
+		
 		toggleButtons.add(btnMove = new Btn());
 		toggleButtons.add(btnAttack = new Btn());
 		toggleButtons.add(btnStop = new Btn());
@@ -929,9 +940,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			magnifyIndex--;
 		}
 		float nextFactor = magnifyFactors[magnifyIndex];
-		float hp = ((hscrollValue + x) * nextFactor / currFactor - x + mapRect.x);
-		float vp = ((vscrollValue + y) * nextFactor / currFactor - y + mapRect.y);
-		zoomAndScroll(nextFactor / 30f, hp, vp);
+		// calculate the mouse position using the map's scroll position
+		float hp = (hscrollValue * hscrollFactor + x - mapRect.x) / currFactor * 30;
+		float vp = (vscrollValue * vscrollFactor + y - mapRect.y) / currFactor * 30;
+		zoomAndScroll(nextFactor / 30f, false);
+		// now re-position the very same point back under the cursor
+		float hpp = (hp * nextFactor / 30 - x + mapRect.x) / hscrollFactor;
+		float vpp = (vp * nextFactor / 30 - y + mapRect.y) / vscrollFactor;
+		scroll(hpp, vpp);
 	}
 	private void doNameChange() {
 		nameMode = (nameMode + 1) % 4;
@@ -1044,13 +1060,13 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			int y = (int)(p.y * zoomFactor - pimg.getHeight() / 2);
 			
 			g2.drawImage(pimg, xOrig + x, yOrig + y, null);
-			if (p.showName) {
+			if (p.showName && (nameMode == 1 || nameMode == 3)) {
 				y = (int)(p.y * zoomFactor + pimg.getHeight()) + 1;
 				int w = text.getTextWidth(5, p.name);
 				x = (int)(p.x * zoomFactor - pimg.getWidth() / 2 - w / 2);
 				text.paintTo(g2, xOrig + x, yOrig + y, 5, p.nameColor, p.name);
 			}
-			if (p.showRadar) {
+			if (p.showRadar && btnRadars.down) {
 				double fd = Math.PI / 50;
 				double fm = 2 * Math.PI - fd;
 				for (double f = 0.0f; f <= fm; f += fd) {
@@ -1060,5 +1076,37 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				}
 			}
 		}
+	}
+	/**
+	 * Perform animations. Rotate planets, move fleets.
+	 */
+	private void doAnimate() {
+		for (GMPlanet p : planets) {
+			if (!p.visible) {
+				continue;
+			}
+			int phaseCount = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[magnifyIndex]).size();
+			if (p.rotationDirection) {
+				p.rotationPhase = (p.rotationPhase + 1) % phaseCount;
+			} else {
+				p.rotationPhase--;
+				if (p.rotationPhase < 0) {
+					p.rotationPhase = phaseCount - 1;
+				}
+			}
+		}
+		repaint(mapRect);
+	}
+	/**
+	 * Start animations.
+	 */
+	public void startAnimations() {
+		animations.start();
+	}
+	/** 
+	 * Stop animations.
+	 */
+	public void stopAnimations() {
+		animations.stop();
 	}
 }

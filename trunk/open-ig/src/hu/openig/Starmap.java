@@ -37,7 +37,7 @@ public class Starmap {
 			igroot = args[0];
 		}
 		final UISounds uis = new UISounds(igroot);
-		uis.playSound("WelcomeToIG");
+//		uis.playSound("WelcomeToIG");
 		final StarmapRenderer smr = new StarmapRenderer(new StarmapGFX(igroot), new CommonGFX(igroot), uis);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
