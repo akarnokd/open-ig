@@ -40,4 +40,6 @@ public class GMPlanet {
 	public boolean visible;
 	/** The color of the name. */
 	public int nameColor;
+	/** Rotation direction: true - forward, false - backward. */
+	public boolean rotationDirection;
 }

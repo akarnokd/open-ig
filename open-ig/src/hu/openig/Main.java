@@ -73,6 +73,7 @@ public class Main extends JFrame {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				uis.close();
+				smr.stopAnimations();
 			}
 		});
 
@@ -116,7 +117,7 @@ public class Main extends JFrame {
 		setMinimumSize(new Dimension(inW, inH));
 		
 		initModel();
-		
+		smr.startAnimations();
 		setVisible(true);
 	}
 	private void setKeyboard() {
@@ -249,17 +250,20 @@ public class Main extends JFrame {
 	}
 	/** Initialize model to test model dependand rendering. */
 	private void initModel() {
-		GMPlanet p = new GMPlanet();
-		p.name = "Planet X";
-		p.radarRadius = 50;
-		p.showName = true;
-		p.showRadar = true;
-		p.surfaceType = SurfaceType.ROCKY;
-		p.surfaceVariant = 1;
-		p.visible = true;
-		p.x = 500;
-		p.y = 500;
-		p.nameColor = TextGFX.GALACTIC_EMPIRE;
-		smr.planets.add(p);
+		for (SurfaceType st : SurfaceType.values()) {
+			GMPlanet p = new GMPlanet();
+			p.name = "Planet " + st.surfaceIndex;
+			p.radarRadius = 50;
+			p.showName = true;
+			p.showRadar = true;
+			p.surfaceType = st;
+			p.surfaceVariant = 1;
+			p.visible = true;
+			p.x = 100 + st.surfaceIndex * 50;
+			p.y = 100 + st.surfaceIndex * 50;
+			p.nameColor = TextGFX.GALACTIC_EMPIRE_ST;
+			p.rotationDirection = st.surfaceIndex % 2 == 0;
+			smr.planets.add(p);
+		}
 	}
 }

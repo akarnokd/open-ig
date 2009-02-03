@@ -71,24 +71,44 @@ public class TextGFX {
 	public static final int LIGHT_BLUE = 0x94A4FC;
 	/** Predefined color constant for a race. */
 	public static final int GALACTIC_EMPIRE = ORANGE;
+	/** Predefined color constant for a race and small text. */
+	public static final int GALACTIC_EMPIRE_ST = scaleColor(GALACTIC_EMPIRE, 1/1.3f);
 	/** Predefined color constant for a race. */
 	public static final int GARTHOG_REPUBLIC = RED;
 	/** Predefined color constant for a race. */
+	public static final int GARTHOG_REPUBLIC_ST = scaleColor(RED, 1/1.3f);
+	/** Predefined color constant for a race. */
 	public static final int MORGATH_EMPIRE = WHITE;
+	/** Predefined color constant for a race. */
+	public static final int MORGATH_EMPIRE_ST = scaleColor(WHITE, 1/1.3f);
 	/** Predefined color constant for a race. */
 	public static final int YCHOM_EMPIRE = WHITE;
 	/** Predefined color constant for a race. */
+	public static final int YCHOM_EMPIRE_ST = scaleColor(WHITE, 1/1.3f);
+	/** Predefined color constant for a race. */
 	public static final int DRIBS_EMPIRE = PURPLE;
+	/** Predefined color constant for a race. */
+	public static final int DRIBS_EMPIRE_ST = scaleColor(PURPLE, 1/1.3f);
 	/** Predefined color constant for a race. */
 	public static final int SULLEP_EMPIRE = YELLOW;
 	/** Predefined color constant for a race. */
-	public static final int DARGSLAN_KINGDOM= DARK_GREEN;
+	public static final int SULLEP_EMPIRE_ST = scaleColor(YELLOW, 1/1.3f);
+	/** Predefined color constant for a race. */
+	public static final int DARGSLAN_KINGDOM = DARK_GREEN;
+	/** Predefined color constant for a race. */
+	public static final int DARGSLAN_KINGDOM_ST = scaleColor(DARK_GREEN, 1/1.3f);
 	/** Predefined color constant for a race. */
 	public static final int ECALEP_REPUBLIC = LIGHT_GREEN;
 	/** Predefined color constant for a race. */
+	public static final int ECALEP_REPUBLIC_ST = scaleColor(LIGHT_GREEN, 1/1.3f);
+	/** Predefined color constant for a race. */
 	public static final int FREE_TRADERS = BLUE;
 	/** Predefined color constant for a race. */
+	public static final int FREE_TRADERS_ST = scaleColor(BLUE, 1/1.3f);
+	/** Predefined color constant for a race. */
 	public static final int FREE_NATIONS_SOCIETY = LIGHT_BLUE;
+	/** Predefined color constant for a race. */
+	public static final int FREE_NATIONS_SOCIETY_ST = scaleColor(LIGHT_BLUE, 1/1.3f);
 	
 	/** The cache for color-remaped charImages. */
 	private Map<Integer, Map<Integer, SizedCharImages>> coloredCharImages = LRUHashMap.create(32);
@@ -235,5 +255,16 @@ public class TextGFX {
 				x += charToImage.width + 2;
 			}
 		}
+	}
+	/**
+	 * Scale the color according to the given factor
+	 * @param color the original color
+	 * @param scale the scale amount
+	 * @return the scaled color
+	 */
+	private static int scaleColor(int color, float scale) {
+		return ((int)Math.min(((color & 0xFF0000) >> 16) * scale, 0xFC) << 16)
+		| ((int)Math.min(((color & 0xFF00) >> 8) * scale, 0xFC) << 8)
+		| ((int)Math.min(((color & 0xFF) >> 0) * scale, 0xFC) << 0);
 	}
 }

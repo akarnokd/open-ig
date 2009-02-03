@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 
 
@@ -113,12 +114,19 @@ public class UISounds {
 	 */
 	private void playSound(byte[] data) {
 		final byte[] dataCopy = data.clone();
+		final float vv = -20f;
 		service.submit(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					SourceDataLine sdl = soundPool.poll();
 					if (sdl != null) {
+						FloatControl fc = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
+						fc.setValue(vv);
+						// reamplify
+//						for (int i = 0; i < dataCopy.length; i++) {
+//							dataCopy[i] = (byte)(dataCopy[i] * vv);
+//						}
 						sdl.write(dataCopy, 0, dataCopy.length);
 						sdl.drain();
 						soundPool.put(sdl);
