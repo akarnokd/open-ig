@@ -106,6 +106,22 @@ public class CommonGFX {
 	public BufferedImage[] shipImages;
 	/** The array for various zoom level rada dots. */
 	public BufferedImage[] radarDots;
+	/** The research rotating CD images. */
+	public BufferedImage[][] researchCDs;
+	/** Index for full research cd images. */
+	public static final int RESEARCH_CD_FULL = 0;
+	/** Index for full research cd images with red exclamation mark. */
+	public static final int RESEARCH_CD_FULL_RED = 1;
+	/** Index for full research cd images with orange exclamation mark. */
+	public static final int RESEARCH_CD_FULL_ORANGE = 2;
+	/** Index for small research cd images. */
+	public static final int RESEARCH_CD = 3;
+	/** Index for small research cd images with red exclamation mark. */
+	public static final int RESEARCH_CD_RED = 4;
+	/** Index for small research cd images with orange exclamation mark. */
+	public static final int RESEARCH_CD_ORANGE = 5;
+	/** Research is not allowed image. */
+	public BufferedImage researchDisallowed;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param root
@@ -199,6 +215,23 @@ public class CommonGFX {
 		radarDots[1] = fleets.getSubimage(150, 13, 3, 3);
 		radarDots[2] = fleets.getSubimage(157, 13, 3, 3);
 		radarDots[3] = fleets.getSubimage(164, 13, 3, 3);
+		
+		// Research CDs
+		BufferedImage rescd = PCXImage.from(root + "/SCREENS/FEJL_CD.PCX", -2);
+		researchCDs = new BufferedImage[6][];
+		for (int i = 0; i < 3; i++) {
+			researchCDs[i] = new BufferedImage[16];
+			for (int j = 0; j < researchCDs[i].length; j++) {
+				researchCDs[i][j] = rescd.getSubimage(j * 20, i * 20, 20, 19);
+			}
+		}
+		for (int i = 0; i < 3; i++) {
+			researchCDs[i] = new BufferedImage[16];
+			for (int j = 0; j < researchCDs[i].length; j++) {
+				researchCDs[i][j] = rescd.getSubimage(j * 20, 60 + i * 17, 20, 17);
+			}
+		}
+		researchDisallowed = PCXImage.from(root + "/SCREENS/FEJL_TAK.PCX", -2);
 	}
 	/**
 	 * Set building image for a race and building type.

@@ -126,6 +126,8 @@ public class AudioThread extends Thread {
 		synchronized(sdl) {
 			sdl.stop();
 			sdl.drain();
+			queue.clear();
+			queue.offer(new byte[0]);
 		}
 	}
 	/**

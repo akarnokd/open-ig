@@ -114,6 +114,8 @@ public class TextGFX {
 	private Map<Integer, Map<Integer, SizedCharImages>> coloredCharImages = LRUHashMap.create(32);
 	/** The character width on a particular character size. */
 	private Map<Integer, Integer> charsetWidths = new HashMap<Integer, Integer>();
+	/** The character space for a particular character size. */
+	private Map<Integer, Integer> charsetSpaces = new HashMap<Integer, Integer>();
 	/**
 	 * Constructor. Initializes the internal tables by processing the given file.
 	 * @param charsetFile the character set .PCX file
@@ -199,6 +201,10 @@ public class TextGFX {
 			}
 			y += height[j] + spacingY[j];
 		}
+		charsetSpaces.put(5, 1);
+		charsetSpaces.put(7, 1);
+		charsetSpaces.put(10, 2);
+		charsetSpaces.put(14, 2);
 		return charMap;
 	}
 	/**
@@ -229,7 +235,10 @@ public class TextGFX {
 	 * @return the width in pixels
 	 */
 	public int getTextWidth(int size, String text) {
-		return charsetWidths.get(size) * text.length();
+		if (text.length() > 0) {
+			return (charsetWidths.get(size) + charsetSpaces.get(size)) * (text.length()) - charsetSpaces.get(size);
+		}
+		return 0;
 	}
 	/**
 	 * Draw the given text at the given location on the supplied graphics object.
@@ -246,13 +255,14 @@ public class TextGFX {
 			charMap = split(color);
 		}
 		SizedCharImages charToImage = charMap.get(size);
+		int spc = charsetSpaces.get(size);
 		if (charToImage != null) {
 			for (int i = 0; i < text.length(); i++) {
 				BufferedImage ci = charToImage.chars.get(text.charAt(i));
 				if (ci != null) {
 					g.drawImage(ci, x, y, null);
 				}
-				x += charToImage.width + 2;
+				x += charToImage.width + spc;
 			}
 		}
 	}

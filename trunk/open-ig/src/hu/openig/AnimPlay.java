@@ -162,7 +162,6 @@ public class AnimPlay {
 				
 				
 				PaletteDecoder palette = null;
-//				BufferedImage bimg = new BufferedImage(saf.getWidth(), saf.getHeight(), BufferedImage.TYPE_INT_ARGB);
 				int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
 				int imageHeight = 0;
 				int dst = 0;
