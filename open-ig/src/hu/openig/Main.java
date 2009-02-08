@@ -7,12 +7,16 @@
  */
 package hu.openig;
 
+import hu.openig.ani.MovieSurface;
+import hu.openig.ani.Player;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoScreen;
 import hu.openig.core.SurfaceType;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.InformationGFX;
 import hu.openig.gfx.InformationRenderer;
+import hu.openig.gfx.MainmenuRenderer;
+import hu.openig.gfx.MenuGFX;
 import hu.openig.gfx.PlanetGFX;
 import hu.openig.gfx.PlanetRenderer;
 import hu.openig.gfx.StarmapGFX;
@@ -21,6 +25,7 @@ import hu.openig.gfx.TextGFX;
 import hu.openig.model.GMPlanet;
 import hu.openig.sound.UISounds;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -48,23 +53,51 @@ import javax.swing.Timer;
 public class Main extends JFrame {
 	/** */
 	private static final long serialVersionUID = 6922932910697940684L;
+	public static final String version = "0.5 Alpha";
 	UISounds uis;
 	CommonGFX cgfx;
 	StarmapRenderer smr;
 	PlanetRenderer pr;
 	InformationRenderer ir;
+	MainmenuRenderer mmr;
+	/** The full screen movie surface. */
+	MovieSurface mov;
 	Timer fadeTimer;
 	int FADE_TIME = 50;
 	JLayeredPane layers;
+	/** The array of screens. */
+	JComponent[] screens;
+	/** The root directory. */
+	String root;
+	/** The animation player. */
+	Player player;
+	/** Set to true if the ESC is pressed while a full screen playback is in progress. */
+	private boolean playbackCancelled;
 	protected void initialize(String root) {
+		this.root = root;
 		setTitle("Open Imperium Galactica");
+		setBackground(Color.BLACK);
 		fadeTimer = new Timer(FADE_TIME, null);
 		uis = new UISounds(root);
 		cgfx = new CommonGFX(root);
+		
+		// initialize renderers
 		smr = new StarmapRenderer(new StarmapGFX(root), cgfx, uis);
 		pr = new PlanetRenderer(new PlanetGFX(root), cgfx, uis);
 		ir = new InformationRenderer(new InformationGFX(root), cgfx, uis);
-		smr.setVisible(true);
+		mmr = new MainmenuRenderer(new MenuGFX(root), cgfx.text);
+		mov = new MovieSurface();
+		player = new Player(mov);
+		
+		screens = new JComponent[] {
+			smr, pr, ir, mmr, mov
+		};
+		
+		// setup renderers
+		mmr.setVisible(true);
+		mmr.setVersion(version);
+		mmr.setRandomPicture();
+		smr.setVisible(false);
 		ir.setVisible(false);
 		pr.setVisible(false);
 		setListeners();
@@ -83,19 +116,26 @@ public class Main extends JFrame {
 		layers.add(smr, Integer.valueOf(0));
 		layers.add(pr, Integer.valueOf(1));
 		layers.add(ir, Integer.valueOf(2));
+		layers.add(mmr, Integer.valueOf(3));
+
+		layers.add(mov, Integer.valueOf(4));
 		
 		GroupLayout gl = new GroupLayout(layers);
 		layers.setLayout(gl);
 		gl.setHorizontalGroup(gl.createParallelGroup()
+			.addComponent(mmr, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(smr, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(pr, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(ir, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(mov, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 		);
 		gl.setVerticalGroup(
 			gl.createParallelGroup()
+			.addComponent(mmr, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(smr, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(pr, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(ir, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(mov, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 		);
 		
 		
@@ -144,6 +184,13 @@ public class Main extends JFrame {
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { onF7Action(); }});
 
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "ESC");
+		rp.getActionMap().put("ESC", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { onESCAction(); }});
+		
 	}
 	/**
 	 * Sets action listeners on the various screens.
@@ -156,11 +203,22 @@ public class Main extends JFrame {
 		ir.setOnStarmapClicked(new BtnAction() { public void invoke() { onInfoStarmap(); }});
 		ir.setOnColonyClicked(new BtnAction() { public void invoke() { onInfoColony(); }});
 		pr.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); }});
+		
+		mmr.setStartNewAction(new BtnAction() { public void invoke() { onStarmap(); }});
+		mmr.setTitleAnimAction(new BtnAction() { public void invoke() { onTitle(); }});
+		mmr.setIntroAction(new BtnAction() { public void invoke() { onIntro(); }});
+		mmr.setQuitAction(new BtnAction() { public void invoke() { onQuit(); }});
+	}
+	/** Go to starmap from main menu. */
+	private void onStarmap() {
+		showScreen(smr);
+	}
+	/** Quit pressed on starmap. */
+	private void onQuit() {
+		dispose();
 	}
 	private void onStarmapColony() {
-		smr.setVisible(false);
-		pr.setVisible(true);
-		layers.validate();
+		showScreen(pr);
 	}
 	private void onStarmapInfo() {
 		ir.setScreenButtonsFor(InfoScreen.PLANETS);
@@ -168,9 +226,7 @@ public class Main extends JFrame {
 		layers.validate();
 	}
 	private void onColonyStarmap() {
-		pr.setVisible(false);
-		smr.setVisible(true);
-		layers.validate();
+		showScreen(smr);
 	}
 	private void onColonyPlanets() {
 		ir.setScreenButtonsFor(InfoScreen.PLANETS);
@@ -183,21 +239,17 @@ public class Main extends JFrame {
 		layers.validate();
 	}
 	private void onInfoStarmap() {
-		smr.setVisible(true);
-		pr.setVisible(false);
-		ir.setVisible(false);
-		layers.validate();
+		showScreen(smr);
 	}
 	private void onInfoColony() {
-		smr.setVisible(false);
-		pr.setVisible(true);
-		ir.setVisible(false);
-		layers.validate();
+		showScreen(pr);
 	}
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args)  throws Exception {
+		// D3D pipeline is slow for an unknown reason
+		System.setProperty("sun.java2d.d3d", "false");
 		String root = ".";
 		if (args.length > 0) {
 			root = args[0];
@@ -217,35 +269,35 @@ public class Main extends JFrame {
 		});
 	}
 	private void onF2Action() {
-		if (!smr.isVisible()) {
-			uis.playSound("Starmap");
-			smr.setVisible(true);
-			pr.setVisible(false);
-			ir.setVisible(false);
-			layers.validate();
+		if (!player.isPlayback()) {
+			if (!smr.isVisible()) {
+				uis.playSound("Starmap");
+				showScreen(smr);
+			}
 		}
 	}
 	private void onF3Action() {
-		if (!pr.isVisible()) {
-			uis.playSound("Colony");
-			smr.setVisible(false);
-			pr.setVisible(true);
-			ir.setVisible(false);
-			layers.validate();
+		if (!player.isPlayback()) {
+			if (!pr.isVisible()) {
+				uis.playSound("Colony");
+				showScreen(pr);
+			}
 		}
 	}
 	private void onF7Action() {
-		if (!ir.isVisible()) {
-			if (smr.isVisible()) {
-				uis.playSound("Planets");
-				ir.setScreenButtonsFor(InfoScreen.PLANETS);
-			} else
-			if (pr.isVisible()) {
-				uis.playSound("ColonyInformation");
-				ir.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
+		if (!player.isPlayback()) {
+			if (!ir.isVisible()) {
+				if (smr.isVisible()) {
+					uis.playSound("Planets");
+					ir.setScreenButtonsFor(InfoScreen.PLANETS);
+				} else
+				if (pr.isVisible()) {
+					uis.playSound("ColonyInformation");
+					ir.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
+				}
+				ir.setVisible(true);
+				layers.validate();
 			}
-			ir.setVisible(true);
-			layers.validate();
 		}
 	}
 	/** Initialize model to test model dependand rendering. */
@@ -264,6 +316,69 @@ public class Main extends JFrame {
 			p.nameColor = TextGFX.GALACTIC_EMPIRE_ST;
 			p.rotationDirection = st.surfaceIndex % 2 == 0;
 			smr.planets.add(p);
+		}
+	}
+	/**
+	 * Show the given screen and hide all other screens.
+	 * @param comp the component to show
+	 */
+	private void showScreen(JComponent comp) {
+		for (JComponent c : screens) {
+			c.setVisible(c == comp);
+		}
+		layers.validate();
+	}
+	/**
+	 * Play the title intro.
+	 */
+	private void onTitle() {
+		showScreen(mov);
+		player.setFilename(root + "/INTRO/GT_TITLE.ANI");
+		player.setOnCompleted(new BtnAction() { public void invoke() { onPlaybackCompleted(); } });
+		player.startPlayback();
+	}
+	/** Play the sequence of intro videos. */ 
+	private void onIntro() {
+		showScreen(mov);
+		player.setFilename(root + "/INTRO/BLOCK1.ANI");
+		player.setOnCompleted(new BtnAction() { public void invoke() { onIntro1(); } });
+		player.startPlayback();
+	}
+	/**
+	 * Play intro video 2.
+	 */
+	private void onIntro1() {
+		if (playbackCancelled) {
+			playbackCancelled = false;
+			onPlaybackCompleted();
+			return;
+		}
+		player.setFilename(root + "/INTRO/BLOCK23.ANI");
+		player.setOnCompleted(new BtnAction() { public void invoke() { onIntro2(); } });
+		player.startPlayback();
+	}
+	/**
+	 * Play intro video 3.
+	 */
+	private void onIntro2() {
+		if (playbackCancelled) {
+			playbackCancelled = false;
+			onPlaybackCompleted();
+			return;
+		}
+		player.setFilename(root + "/INTRO/BLOCK4.ANI");
+		player.setOnCompleted(new BtnAction() { public void invoke() { onPlaybackCompleted(); } });
+		player.startPlayback();
+	}
+	/** If the main menu playback completes, restore the main menu. */
+	private void onPlaybackCompleted() {
+		showScreen(mmr);
+	}
+	/** The escape key pressed. */
+	private void onESCAction() {
+		if (player.isPlayback()) {
+			playbackCancelled = true;
+			player.stopAndWait();
 		}
 	}
 }
