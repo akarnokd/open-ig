@@ -119,6 +119,8 @@ public class SpidyAniFile {
 	private boolean partialData;
 	/** Unknown field after the height. */
 	private int unknown;
+	/** Number of bytes in the sound block. */
+	private int soundSize;
 	/**
 	 * Use the given DataInputStream as the data source.
 	 * @param in the DataInputStream object
@@ -160,6 +162,7 @@ public class SpidyAniFile {
 		height = buffer[15] & 0xFF | (buffer[16] & 0xFF) << 8;
 		partialData = width * height > 65536;
 		unknown = buffer[17] & 0xFF | (buffer[18] & 0xFF) << 8;
+		soundSize = 0;
 	}
 	/**
 	 * Returns the next block from the input stream.
@@ -185,6 +188,7 @@ public class SpidyAniFile {
 			Sound block = new Sound();
 			block.data = new byte[SOUND_BLOCK_LENGTH];
 			in.readFully(block.data);
+			soundSize += SOUND_BLOCK_LENGTH;
 			return block;
 		} else
 		if (DATA_BLOCK.equals(entryStr)) {
@@ -266,5 +270,58 @@ public class SpidyAniFile {
 	 */
 	public int getUnknown() {
 		return unknown;
+	}
+	/**
+	 * Returns the number of bytes the sound occupies.
+	 * @return the number of bytes the sound occupies
+	 */
+	public int getSoundSize() {
+		return soundSize;
+	}
+	/**
+	 * Walks all blocks within the file
+	 * @throws IOException if the underlying IO stream throws it
+	 */
+	public void walkBlocks() throws IOException {
+		byte[] entry = new byte[4];
+		try {
+			while (true) {
+				// load next block marker
+				in.readFully(entry);
+				String entryStr = new String(entry, "ISO-8859-1");
+				if (PAL_BLOCK.equals(entryStr)) {
+					in.skipBytes(PAL_BLOCK_LENGTH);
+				} else
+				if (SOUND_BLOCK.equals(entryStr)) {
+					in.skipBytes(SOUND_BLOCK_LENGTH);
+					soundSize += SOUND_BLOCK_LENGTH;
+				} else
+				if (DATA_BLOCK.equals(entryStr)) {
+					int bufferSize = 0;
+					if (lzssUsed) {
+						// if lzss is used, the data block contains a lzssLen, len, width, height values
+						bufferSize = readWord();
+					}
+					int len = readWord();
+	//				readWord();
+	//				readWord();
+					// handle special case of len
+					if (len == 0xFFFF) {
+						// the following data is not LZSS compressed
+						len = bufferSize;
+					}
+					in.skipBytes(len + 4);
+				}
+			}
+		} catch (EOFException ex) {
+			// ignored
+		}
+	}
+	/**
+	 * Returns the frames per second to play this file.
+	 * @return the frames per second to play this file
+	 */
+	public double getFPS() {
+		return soundSize > 0 ? frameCount * 22050.0 / soundSize : 16; 
 	}
 }

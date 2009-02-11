@@ -20,10 +20,10 @@ import hu.openig.core.PaletteDecoder;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.sound.AudioThread;
 
-import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.concurrent.locks.LockSupport;
 
 import javax.swing.SwingUtilities;
 
@@ -33,8 +33,6 @@ import javax.swing.SwingUtilities;
  * @version $Revision 1.0$
  */
 public class Player {
-	/** The general playback framerate. */
-	private final float FPS = 15.9f;
 	/** Loop the playback? */
 	private boolean loop;
 	/** Stop the playback? */
@@ -46,7 +44,7 @@ public class Player {
 	/** The playback thread. */
 	private volatile Thread playback;
 	/** The action to be invoked when the playback completes normally. */
-	private BtnAction onCompleted;
+	private volatile BtnAction onCompleted;
 	/**
 	 * Constructor.
 	 */
@@ -62,8 +60,14 @@ public class Player {
 				ad.start();
 				try {
 					final SpidyAniFile saf = new SpidyAniFile();
-					saf.open(new DataInputStream(rf));
+					saf.open(rf);
 					saf.load();
+					saf.walkBlocks();
+			   		double fps = saf.getFPS();
+					rf.close();
+					saf.open(rf = new FileInputStream(getFilename()));
+					saf.load();
+					
 					
 					PaletteDecoder palette = null;
 					int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
@@ -73,13 +77,10 @@ public class Player {
 					int audioCount = 0;
 					Algorithm alg = saf.getAlgorithm();
 
-			   		long starttime = System.currentTimeMillis();  // notice the start time
+			   		double starttime = System.currentTimeMillis();  // notice the start time
 			   		boolean firstFrame = true;
 			   		try {
 				   		while (!stop) {
-							if (firstFrame) {
-								starttime = System.currentTimeMillis();
-							}
 							Block b = saf.next();
 							if (b instanceof Palette) {
 								palette = (Palette)b;
@@ -114,26 +115,26 @@ public class Player {
 									if (firstFrame) {
 										ad.startPlaybackNow();
 										firstFrame = false;
+										starttime = System.currentTimeMillis();
 									}
 									imageHeight = 0;
 									dst = 0;
-									try {
-					           			starttime += (int)(1000 / FPS); // compute the destination time
-					           			// if destination time isn't reached --> sleep
-					           			Thread.sleep(Math.max(0,starttime - System.currentTimeMillis())); 
-					           		} catch (InterruptedException ex) {
-										
-									}
+									starttime += (1000.0 / fps);
+				           			LockSupport.parkNanos((long)(Math.max(0,starttime - System.currentTimeMillis()) * 1000000));
 								}
 							}
 						}
 					} catch (EOFException ex) {
-						// we reached the end of file
+						ad.submit(new byte[0]);
 					}
 				} finally {
-					ad.submit(new byte[0]);
-					ad.interrupt();
-					ad.stopPlaybackNow();
+					if (stop) {
+						ad.stopPlaybackNow();
+					}
+					try {
+						ad.join();
+					} catch (InterruptedException e) {
+					}
 				}
 				if (!isLoop()) {
 					break;

@@ -107,6 +107,8 @@ public class Main extends JFrame {
 			public void windowClosed(WindowEvent e) {
 				uis.close();
 				smr.stopAnimations();
+				player.setOnCompleted(null);
+				player.stopAndWait();
 			}
 		});
 
@@ -350,8 +352,8 @@ public class Main extends JFrame {
 	private void onIntro1() {
 		if (playbackCancelled) {
 			playbackCancelled = false;
-			onPlaybackCompleted();
-			return;
+//			onPlaybackCompleted();
+//			return;
 		}
 		player.setFilename(root + "/INTRO/BLOCK23.ANI");
 		player.setOnCompleted(new BtnAction() { public void invoke() { onIntro2(); } });
@@ -363,8 +365,8 @@ public class Main extends JFrame {
 	private void onIntro2() {
 		if (playbackCancelled) {
 			playbackCancelled = false;
-			onPlaybackCompleted();
-			return;
+//			onPlaybackCompleted();
+//			return;
 		}
 		player.setFilename(root + "/INTRO/BLOCK4.ANI");
 		player.setOnCompleted(new BtnAction() { public void invoke() { onPlaybackCompleted(); } });
