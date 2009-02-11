@@ -23,12 +23,12 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.locks.LockSupport;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -149,23 +149,29 @@ public class AnimPlay {
 	 * @param f the file to play
 	 */
 	public static void playFile(File f) {
-		final float FPS = 15.9f;
+		double FPS = 17.8912f; //17.8912f; //15.85f;
 		try {
 			AudioThread ad = new AudioThread();
 			ad.start();
 			FileInputStream rf = new FileInputStream(f);
 			try {
 				final SpidyAniFile saf = new SpidyAniFile();
-				saf.open(new DataInputStream(rf));
+				saf.open(rf);
+				saf.load();
+				saf.walkBlocks();
+				FPS = saf.getFPS();
+				rf.close();
+				// reopen
+				saf.open(rf = new FileInputStream(f));
 				saf.load();
 				createFrame(f);
+				frame.setTitle(String.format("%s | FPS: %.2f", frame.getTitle(), FPS));
 				
 				
 				PaletteDecoder palette = null;
 				int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
 				int imageHeight = 0;
 				int dst = 0;
-				int audioCount = 0;
 				Algorithm alg = saf.getAlgorithm();
 				// initialize the painting surface
 				imageLabel.init(saf.getWidth(), saf.getHeight());
@@ -180,19 +186,15 @@ public class AnimPlay {
 					}
 				});
 				try {
-			   		long starttime = System.currentTimeMillis();  // notice the start time
 			   		boolean firstFrame = true;
+			   		double starttime = System.currentTimeMillis();
 			   		while (!stop) {
-						if (firstFrame) {
-							starttime = System.currentTimeMillis();
-						}
 						Block b = saf.next();
 						if (b instanceof Palette) {
 							palette = (Palette)b;
 						} else
 						if (b instanceof Sound) {
 							ad.submit(b.data);
-							audioCount++;
 						} else
 						if (b instanceof Data) {
 							Data d = (Data)b;
@@ -220,24 +222,29 @@ public class AnimPlay {
 								if (firstFrame) {
 									ad.startPlaybackNow();
 									firstFrame = false;
+									starttime = System.currentTimeMillis();
 								}
 								imageHeight = 0;
 								dst = 0;
-								try {
-				           			starttime += (int)(1000 / FPS); // compute the destination time
-				           			// if destination time isn't reached --> sleep
-				           			Thread.sleep(Math.max(0,starttime - System.currentTimeMillis())); 
-				           		} catch (InterruptedException ex) {
-									
-								}
+								
+								starttime += (1000.0 / FPS);
+			           			LockSupport.parkNanos((long)(Math.max(0,starttime - System.currentTimeMillis()) * 1000000));
+			           			
+//								try {
+//				           			starttime += (int)(1000 / FPS); // compute the destination time
+//				           			// if destination time isn't reached --> sleep
+//				           			Thread.sleep(Math.max(0,starttime - System.currentTimeMillis())); 
+//				           		} catch (InterruptedException ex) {
+//									
+//								}
 							}
 						}
 					}
 				} catch (EOFException ex) {
 					// we reached the end of file
+					ad.submit(new byte[0]);
+					ad.interrupt();
 				}
-				ad.submit(new byte[0]);
-				ad.interrupt();
 				//System.out.printf("%.2f", audioCount * 0x4F6 / 22050f / saf.getFrameCount());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -246,6 +253,13 @@ public class AnimPlay {
 			} finally {
 				if (stop) {
 					ad.stopPlaybackNow();
+				}
+				try {
+					ad.interrupt();
+					ad.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				stop = false;
 				rf.close();
