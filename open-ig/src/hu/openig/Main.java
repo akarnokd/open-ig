@@ -88,7 +88,7 @@ public class Main extends JFrame {
 		mmr = new MainmenuRenderer(new MenuGFX(root), cgfx.text);
 		mov = new MovieSurface();
 		player = new Player(mov);
-		
+		player.setMasterGain(-20);
 		screens = new JComponent[] {
 			smr, pr, ir, mmr, mov
 		};
@@ -213,6 +213,7 @@ public class Main extends JFrame {
 	}
 	/** Go to starmap from main menu. */
 	private void onStarmap() {
+		uis.playSound("WelcomeToIG");
 		showScreen(smr);
 	}
 	/** Quit pressed on starmap. */

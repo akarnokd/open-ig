@@ -45,6 +45,12 @@ public class Player {
 	private volatile Thread playback;
 	/** The action to be invoked when the playback completes normally. */
 	private volatile BtnAction onCompleted;
+	/** The current audio thread. */
+	private volatile AudioThread ad;
+	/** The master gain. */
+	private volatile float masterGain;
+	/** The mute value. */
+	private volatile boolean mute;
 	/**
 	 * Constructor.
 	 */
@@ -56,8 +62,10 @@ public class Player {
 		try {
 			while (!stop && !Thread.currentThread().isInterrupted()) {
 				FileInputStream rf = new FileInputStream(getFilename());
-				AudioThread ad = new AudioThread();
+				ad = new AudioThread();
 				ad.start();
+				ad.setMasterGain(masterGain);
+				ad.setMute(mute);
 				try {
 					final SpidyAniFile saf = new SpidyAniFile();
 					saf.open(rf);
@@ -130,6 +138,7 @@ public class Player {
 				} finally {
 					if (stop) {
 						ad.stopPlaybackNow();
+						ad.interrupt();
 					}
 					try {
 						ad.join();
@@ -145,6 +154,7 @@ public class Player {
 			ex.printStackTrace();
 		}
 		playback = null;
+		ad = null;
 		if (onCompleted != null) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
@@ -235,5 +245,27 @@ public class Player {
 	 */
 	public boolean isPlayback() {
 		return playback != null;
+	}
+	/**
+	 * Set the master gain on the source data line.
+	 * @param gain the master gain in decibels, typically -80 to 0.
+	 */
+	public void setMasterGain(float gain) {
+		AudioThread au = ad;
+		if (au != null) {
+			au.setMasterGain(gain);
+		}
+		masterGain = gain;
+	}
+	/**
+	 * Mute or unmute the current playback.
+	 * @param mute the mute status
+	 */
+	public void setMute(boolean mute) {
+		AudioThread au = ad;
+		if (au != null) {
+			au.setMute(mute);
+		}
+		this.mute = mute;
 	}
 }

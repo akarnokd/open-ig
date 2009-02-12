@@ -8,7 +8,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
@@ -60,9 +62,8 @@ public class AudioThread extends Thread {
 						lock.unlock();
 					}
 				}
-				synchronized(sdl) {
-					sdl.write(data, 0, data.length);
-				}
+				byte[] data16 = convert8To16(data); //split16To8(movingAverage(upscale8To16(data), ));
+				sdl.write(data16, 0, data16.length);
 			}
 		} catch (InterruptedException ex) {
 			// time to quit;
@@ -83,7 +84,7 @@ public class AudioThread extends Thread {
 	 */
 	public static SourceDataLine createAudioOutput() {
 		SourceDataLine sdl = null;
-		AudioFormat af = createAudioFormat();
+		AudioFormat af = createAudioFormat16();
 		DataLine.Info dli = createAudioInfo(af);
 		if (!AudioSystem.isLineSupported(dli)) {
 			return null;
@@ -112,6 +113,71 @@ public class AudioThread extends Thread {
 		return new AudioFormat(22050, 8, 1, true, false);
 	}
 	/**
+	 * Create the default audio format.
+	 * @return the audio format
+	 */
+	public static AudioFormat createAudioFormat16() {
+		return new AudioFormat(22050, 16, 1, true, false);
+	}
+	/**
+	 * Upsample the audio data from signed 8 bits to signed 16 bits.
+	 * @param data the source data
+	 * @return the conversion result
+	 */
+	public static byte[] convert8To16(byte[] data) {
+		byte[] result = new byte[data.length * 2];
+		for (int i = 0; i < data.length; i++) {
+			int s = data[i] * 256;
+			result[i * 2] = (byte)(s & 0xFF);
+			result[i * 2 + 1] = (byte)((s & 0xFF00) >> 8);
+		}
+		return result;
+	}
+	/**
+	 * Upscale the 8 bit signed values to 16 bit signed values.
+	 * @param data the data to upscale
+	 * @return the upscaled data
+	 */
+	public static short[] upscale8To16(byte[] data) {
+		short[] result = new short[data.length];
+		for (int i = 0; i < data.length; i++) {
+			result[i] = (short)(data[i] * 256);
+		}
+		return result;
+	}
+	/**
+	 * Split the 16 bit signed values into little endian byte array format
+	 * @param data the data to split
+	 * @return the splitted data
+	 */
+	public static byte[] split16To8(short[] data) {
+		byte[] result = new byte[data.length * 2];
+		for (int i = 0; i < data.length; i++) {
+			result[i * 2] = (byte)(data[i] & 0xFF);
+			result[i * 2 + 1] = (byte)((data[i] & 0xFF00) >> 8);
+		}
+		return result;
+	}
+	/**
+	 * Calculates the moving average of the given sample data using the defined window.
+	 * @param data the data to be smoothed by moving average
+	 * @param windowSize the averaging window size
+	 * @return the transformed data
+	 */
+	public static short[] movingAverage(short[] data, int windowSize) {
+		short[] result = new short[data.length];
+		int acc = 0;
+		for (int i = 0, count = windowSize / 2; i < count; i++) {
+			acc += data[i];
+		}
+		result[0] = (short)(acc / windowSize);
+		for (int i = 1, count = data.length; i < count; i++) {
+			acc = acc + (i < data.length ? data[i] : 0) - ((i - windowSize / 2 - 1 >= 0) ? data[i - windowSize / 2 - 1] : 0);
+			result[i] = (short)(acc / windowSize);
+		}
+		return result;
+	}
+	/**
 	 * Send an audio sample to the audio player.
 	 * Can be called from any thread.
 	 * @param data the non null data to send
@@ -123,12 +189,10 @@ public class AudioThread extends Thread {
 	 * Stops the playback immediately.
 	 */
 	public void stopPlaybackNow() {
-		synchronized(sdl) {
-			sdl.stop();
-			sdl.drain();
-			queue.clear();
-			queue.offer(new byte[0]);
-		}
+		sdl.stop();
+		sdl.drain();
+		queue.clear();
+		queue.offer(new byte[0]);
 	}
 	/**
 	 * Starts the playback immediately.
@@ -141,5 +205,21 @@ public class AudioThread extends Thread {
 		} finally {
 			lock.unlock();
 		}
+	}
+	/**
+	 * Set the master gain on the source data line.
+	 * @param gain the master gain in decibels, typically -80 to 0.
+	 */
+	public void setMasterGain(float gain) {
+		FloatControl fc = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
+		fc.setValue(gain);
+	}
+	/**
+	 * Mute or unmute the current playback.
+	 * @param mute the mute status
+	 */
+	public void setMute(boolean mute) {
+		BooleanControl bc = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
+		bc.setValue(mute);
 	}
 }
