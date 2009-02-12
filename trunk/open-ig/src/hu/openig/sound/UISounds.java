@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 
@@ -33,6 +34,12 @@ public class UISounds {
 	private volatile boolean shutdown;
 	/** The executor service for parallel sound playback. */
 	private volatile ExecutorService service;
+	/** The master gain dB. */
+	private volatile float masterGain = -10;
+	/** The mute value. */
+	private volatile boolean mute;
+	/** The window size for the moving average filter. */
+	private volatile int movingAverageWindow = 4;
 	/** The sound pool. */
 	private final BlockingQueue<SourceDataLine> soundPool = new LinkedBlockingQueue<SourceDataLine>(SOUND_POOL_SIZE);
 	/**
@@ -112,9 +119,7 @@ public class UISounds {
 	 * Play the given sound data asynchronously.
 	 * @param data the non null data to write
 	 */
-	private void playSound(byte[] data) {
-		final byte[] dataCopy = data.clone();
-		final float vv = -20f;
+	private void playSound(final byte[] data) {
 		service.submit(new Runnable() {
 			@Override
 			public void run() {
@@ -122,12 +127,11 @@ public class UISounds {
 					SourceDataLine sdl = soundPool.poll();
 					if (sdl != null) {
 						FloatControl fc = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
-						fc.setValue(vv);
-						// reamplify
-//						for (int i = 0; i < dataCopy.length; i++) {
-//							dataCopy[i] = (byte)(dataCopy[i] * vv);
-//						}
-						sdl.write(dataCopy, 0, dataCopy.length);
+						fc.setValue(masterGain);
+						BooleanControl bc = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
+						bc.setValue(mute);
+						byte[] data16 = movingAverageWindow > 0 ? AudioThread.split16To8(AudioThread.movingAverage(AudioThread.upscale8To16(data), movingAverageWindow)) : AudioThread.convert8To16(data);
+						sdl.write(data16, 0, data16.length);
 						sdl.drain();
 						soundPool.put(sdl);
 						if (shutdown) {
@@ -152,11 +156,31 @@ public class UISounds {
 		}
 		service.shutdown();
 	}
+	/**
+	 * Set the master gain on the source data line.
+	 * @param gain the master gain in decibels, typically -80 to 0.
+	 */
+	public void setMasterGain(float gain) {
+		masterGain = gain;
+	}
+	/**
+	 * Mute or unmute the current playback.
+	 * @param mute the mute status
+	 */
+	public void setMute(boolean mute) {
+		this.mute = mute;
+	}
 	public static void main(String[] args) {
 		UISounds uis = new UISounds("c:/games/ig/");
 		uis.playSound("Colony");
 		uis.playSound("Equipment");
 		uis.close();
 		System.out.println("Done.");
+	}
+	public void setMovingAverageWindow(int movingAverageWindow) {
+		this.movingAverageWindow = movingAverageWindow;
+	}
+	public int getMovingAverageWindow() {
+		return movingAverageWindow;
 	}
 }
