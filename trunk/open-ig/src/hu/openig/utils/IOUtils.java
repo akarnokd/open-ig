@@ -10,6 +10,7 @@ package hu.openig.utils;
 
 import java.io.BufferedReader;
 import java.io.DataInput;
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,7 @@ public class IOUtils {
 		private byte[] data;
 		private long offset;
 		public BitArray(byte[] data) {
-			this.data = data;
+			this.data = data.clone();
 		}
 		public void setOffset(long offset) {
 			this.offset = offset;
@@ -304,5 +305,37 @@ public class IOUtils {
 	 */
 	public static Iterable<String> textIterator(byte[] data, Charset encoding) {
 		return new TextIterator(new String(data, encoding));
+	}
+	/**
+	 * Skips the number of bytes from the given input stream.
+	 * @param in the input stream
+	 * @param count the number of bytes to skip
+	 * @throws IOException if the input stream throws this exception
+	 * @throws EOFException if there is less than count bytes in the stream remaining.
+	 */
+	public static void skipFully(InputStream in, long count) throws IOException {
+		while (count > 0) {
+			long c = in.skip(count);
+			if (c < 0) {
+				throw new EOFException();
+			}
+			count -= c;
+		}
+	}
+	/**
+	 * Skips the number of bytes from the given data input.
+	 * @param in the input stream
+	 * @param count the number of bytes to skip
+	 * @throws IOException if the input stream throws this exception
+	 * @throws EOFException if there is less than count bytes in the stream remaining.
+	 */
+	public static void skipFullyD(DataInput in, int count) throws IOException {
+		while (count > 0) {
+			int c = in.skipBytes(count);
+			if (c < 0) {
+				throw new EOFException();
+			}
+			count -= c;
+		}
 	}
 }

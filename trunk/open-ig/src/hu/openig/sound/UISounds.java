@@ -29,7 +29,7 @@ public class UISounds {
 	/** The audio sample map. */
 	private final Map<String, byte[]> samples = new HashMap<String, byte[]>();
 	/** Number of parallel sound lines. */
-	private final int SOUND_POOL_SIZE = 8;
+	private static final int SOUND_POOL_SIZE = 8;
 	/** Shutdown all audio threads. */
 	private volatile boolean shutdown;
 	/** The executor service for parallel sound playback. */
@@ -52,7 +52,9 @@ public class UISounds {
 		for (int i = 0; i < SOUND_POOL_SIZE; i++) {
 			SourceDataLine sdl = AudioThread.createAudioOutput();
 			sdl.start();
-			soundPool.offer(sdl);
+			if (soundPool.offer(sdl)) {
+				throw new AssertionError("Queue problems");
+			}
 		}
 		samples.put("IncomingMessage", IOUtils.load(root + "/SOUND/NOI01.SMP"));
 		samples.put("CommanderMessage", IOUtils.load(root + "/SOUND/NOI02.SMP"));
