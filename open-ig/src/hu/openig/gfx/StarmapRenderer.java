@@ -1056,14 +1056,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				continue;
 			}
 			BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[magnifyIndex]).get(p.rotationPhase);
-			int x = (int)(p.x * zoomFactor - pimg.getWidth() / 2);
-			int y = (int)(p.y * zoomFactor - pimg.getHeight() / 2);
+			int x = (int)(p.x * zoomFactor - pimg.getWidth() / 2f);
+			int y = (int)(p.y * zoomFactor - pimg.getHeight() / 2f);
 			
 			g2.drawImage(pimg, xOrig + x, yOrig + y, null);
 			if (p.showName && (nameMode == 1 || nameMode == 3)) {
 				y = (int)(p.y * zoomFactor + pimg.getHeight()) + 1;
 				int w = text.getTextWidth(5, p.name);
-				x = (int)(p.x * zoomFactor - w / 2);
+				x = (int)(p.x * zoomFactor - w / 2f);
 				text.paintTo(g2, xOrig + x, yOrig + y, 5, p.nameColor, p.name);
 			}
 			if (p.showRadar && btnRadars.down) {

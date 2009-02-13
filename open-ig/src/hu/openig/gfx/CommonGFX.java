@@ -48,7 +48,7 @@ public class CommonGFX {
 	/** The human race index. */
 	public static final int RACE_HUMANS = 1;
 	/** The building names for the various building indexes. */
-	public static final String[] BUILDING_NAMES = {
+	private static final String[] BUILDING_NAMES = {
 		"ColonyHub",
 		"PrefabHousing",
 		"ApartmentBlock", 
@@ -281,5 +281,12 @@ public class CommonGFX {
 		reg.topInfoArea.y = 2;
 		reg.topInfoArea.width = w - reg.topInfoArea.x - 11;
 		reg.topInfoArea.height = 16;
+	}
+	/**
+	 * Returns a copy of the building names array.
+	 * @return the building names array 
+	 */
+	public String[] getBuildingNames() {
+		return BUILDING_NAMES.clone();
 	}
 }

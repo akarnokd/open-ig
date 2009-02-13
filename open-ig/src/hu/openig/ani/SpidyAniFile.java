@@ -9,6 +9,7 @@
 package hu.openig.ani;
 
 import hu.openig.core.PaletteDecoder;
+import hu.openig.utils.IOUtils;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -290,10 +291,10 @@ public class SpidyAniFile {
 				in.readFully(entry);
 				String entryStr = new String(entry, "ISO-8859-1");
 				if (PAL_BLOCK.equals(entryStr)) {
-					in.skipBytes(PAL_BLOCK_LENGTH);
+					IOUtils.skipFully(in, PAL_BLOCK_LENGTH);
 				} else
 				if (SOUND_BLOCK.equals(entryStr)) {
-					in.skipBytes(SOUND_BLOCK_LENGTH);
+					IOUtils.skipFully(in, SOUND_BLOCK_LENGTH);
 					soundSize += SOUND_BLOCK_LENGTH;
 				} else
 				if (DATA_BLOCK.equals(entryStr)) {
@@ -310,7 +311,7 @@ public class SpidyAniFile {
 						// the following data is not LZSS compressed
 						len = bufferSize;
 					}
-					in.skipBytes(len + 4);
+					IOUtils.skipFully(in, len + 4);
 				}
 			}
 		} catch (EOFException ex) {

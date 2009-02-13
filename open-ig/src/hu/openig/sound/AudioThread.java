@@ -183,7 +183,9 @@ public class AudioThread extends Thread {
 	 * @param data the non null data to send
 	 */
 	public void submit(byte[] data) {
-		queue.offer(data);
+		if (!queue.offer(data)) {
+			throw new AssertionError("Queue problems");
+		}
 	}
 	/**
 	 * Stops the playback immediately.
@@ -192,7 +194,10 @@ public class AudioThread extends Thread {
 		sdl.stop();
 		sdl.drain();
 		queue.clear();
-		queue.offer(new byte[0]);
+		// should always return true
+		if (!queue.offer(new byte[0])) {
+			throw new AssertionError("Queue problems");
+		}
 	}
 	/**
 	 * Starts the playback immediately.
