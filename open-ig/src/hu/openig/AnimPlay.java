@@ -7,8 +7,10 @@
  */
 package hu.openig;
 
+import hu.openig.ani.Framerates;
 import hu.openig.ani.MovieSurface;
 import hu.openig.ani.SpidyAniFile;
+import hu.openig.ani.Framerates.Rates;
 import hu.openig.ani.SpidyAniFile.Algorithm;
 import hu.openig.ani.SpidyAniFile.Block;
 import hu.openig.ani.SpidyAniFile.Data;
@@ -35,6 +37,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -53,10 +56,14 @@ public class AnimPlay {
 	private static JMenuItem menuOpen;
 	/** The menu item for open. */
 	private static JMenuItem menuStop;
+	/** The replay current item. */
+	private static JMenuItem menuReplay;
 	/** The last opened file directory. */
-	private static File lastPath = new File(".");
+	private static File lastPath = new File("c:/games/ighu");
 	/** Stop the playback. */
 	private static volatile boolean stop;
+	/** Current file. */
+	private static volatile File current;
 	/**
 	 * Execute the SwingUtilities.invokeAndWait() method but strip of
 	 * the exceptions. The exceptions will be ignored.
@@ -91,29 +98,53 @@ public class AnimPlay {
 					JMenu file = new JMenu("File");
 					menuOpen = new JMenuItem("Open...");
 					menuOpen.setEnabled(false);
+					menuOpen.setAccelerator(KeyStroke.getKeyStroke("A"));
 					menuOpen.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							String file = showOpenDialog();
 							if (file == null) {
 								menuOpen.setEnabled(true);
+								menuReplay.setEnabled(current != null);
 								menuStop.setEnabled(false);
 							} else {
-								final File fl = new File(file);
-								lastPath = fl.getParentFile();
+								current = new File(file);
+								lastPath = current.getParentFile();
 								Thread t = new Thread(new Runnable() {
 									@Override
 									public void run() {
-										playFile(fl);
+										playFile(current);
 									}
 								});
 								t.start();
 								menuOpen.setEnabled(false);
+								menuReplay.setEnabled(false);
+								menuStop.setEnabled(true);
+							}
+						}
+					});
+					menuReplay = new JMenuItem("Replay");
+					menuReplay.setAccelerator(KeyStroke.getKeyStroke("D"));
+					menuReplay.setEnabled(false);
+					menuReplay.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							if (current != null) {
+								Thread t = new Thread(new Runnable() {
+									@Override
+									public void run() {
+										playFile(current);
+									}
+								});
+								t.start();
+								menuOpen.setEnabled(false);
+								menuReplay.setEnabled(false);
 								menuStop.setEnabled(true);
 							}
 						}
 					});
 					menuStop = new JMenuItem("Stop");
+					menuStop.setAccelerator(KeyStroke.getKeyStroke("S"));
 					menuStop.setEnabled(true);
 					menuStop.addActionListener(new ActionListener() {
 						@Override
@@ -123,6 +154,7 @@ public class AnimPlay {
 					});
 					
 					file.add(menuOpen);
+					file.add(menuReplay);
 					file.add(menuStop);
 					mb.add(file);
 				}
@@ -149,23 +181,27 @@ public class AnimPlay {
 	 * @param f the file to play
 	 */
 	public static void playFile(File f) {
-		double FPS = 17.8912f; //17.8912f; //15.85f;
+		double fps = 0;
 		try {
 			AudioThread ad = new AudioThread();
 			ad.start();
 			FileInputStream rf = new FileInputStream(f);
 			try {
 				final SpidyAniFile saf = new SpidyAniFile();
-				saf.open(rf);
-				saf.load();
-				saf.walkBlocks();
-				FPS = saf.getFPS();
-				rf.close();
-				// reopen
+//				saf.open(rf);
+//				saf.load();
+//				saf.walkBlocks();
+//		   		
+//		   		fps = saf.getFPS();
+//				rf.close();
+				Framerates fr = new Framerates();
 				saf.open(rf = new FileInputStream(f));
 				saf.load();
 				createFrame(f);
-				frame.setTitle(String.format("%s | FPS: %.2f", frame.getTitle(), FPS));
+				Rates r = fr.getRates(f.getAbsolutePath(), saf.getUnknown());
+				fps = r.fps;
+				int delay = r.delay;
+				frame.setTitle(String.format("%s | FPS: %.4f | Delay: %d", frame.getTitle(), fps, delay));
 				
 				
 				PaletteDecoder palette = null;
@@ -186,6 +222,10 @@ public class AnimPlay {
 					}
 				});
 				try {
+					// add audio delay
+					if (delay > 0) {
+						ad.submit(new byte[delay]);
+					}
 			   		boolean firstFrame = true;
 			   		double starttime = System.currentTimeMillis();
 			   		while (!stop) {
@@ -227,16 +267,9 @@ public class AnimPlay {
 								imageHeight = 0;
 								dst = 0;
 								
-								starttime += (1000.0 / FPS);
+								starttime += (1000.0 / fps);
 			           			LockSupport.parkNanos((long)(Math.max(0,starttime - System.currentTimeMillis()) * 1000000));
 			           			
-//								try {
-//				           			starttime += (int)(1000 / FPS); // compute the destination time
-//				           			// if destination time isn't reached --> sleep
-//				           			Thread.sleep(Math.max(0,starttime - System.currentTimeMillis())); 
-//				           		} catch (InterruptedException ex) {
-//									
-//								}
 							}
 						}
 					}
@@ -258,7 +291,6 @@ public class AnimPlay {
 					ad.interrupt();
 					ad.join();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				stop = false;
@@ -267,6 +299,7 @@ public class AnimPlay {
 					@Override
 					public void run() {
 						menuOpen.setEnabled(true);
+						menuReplay.setEnabled(true);
 						menuStop.setEnabled(false);
 					}
 				});
@@ -288,9 +321,9 @@ public class AnimPlay {
 		}
 		// the number of images per second
 		if (filename != null) {
-			File f = new File(filename);
-			lastPath = f.getParentFile();
-			playFile(f);
+			current = new File(filename);
+			lastPath = current.getParentFile();
+			playFile(current);
 		}
 	}
 

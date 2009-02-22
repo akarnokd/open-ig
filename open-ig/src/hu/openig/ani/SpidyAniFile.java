@@ -323,6 +323,6 @@ public class SpidyAniFile {
 	 * @return the frames per second to play this file
 	 */
 	public double getFPS() {
-		return soundSize > 0 ? frameCount * 22050.0 / soundSize : 16; 
+		return soundSize > 0 ? (frameCount + 0) * 22050.0 / soundSize : 17.89; 
 	}
 }
