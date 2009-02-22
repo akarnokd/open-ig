@@ -68,11 +68,15 @@ public class Player {
 				ad.setMute(mute);
 				try {
 					final SpidyAniFile saf = new SpidyAniFile();
+			   		double fps = 0;
+			   		// check framerate override
 					saf.open(rf);
 					saf.load();
 					saf.walkBlocks();
-			   		double fps = saf.getFPS();
+			   		
+			   		fps = saf.getFPS();
 					rf.close();
+			   		int delay = 0;
 					saf.open(rf = new FileInputStream(getFilename()));
 					saf.load();
 					
@@ -88,6 +92,10 @@ public class Player {
 			   		double starttime = System.currentTimeMillis();  // notice the start time
 			   		boolean firstFrame = true;
 			   		try {
+						// add audio delay
+						if (delay > 0) {
+							ad.submit(new byte[delay]);
+						}
 				   		while (!stop) {
 							Block b = saf.next();
 							if (b instanceof Palette) {

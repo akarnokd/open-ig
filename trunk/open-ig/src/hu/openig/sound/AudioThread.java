@@ -47,6 +47,7 @@ public class AudioThread extends Thread {
 			while (!isInterrupted()) {
 				byte[] data = queue.take();
 				if (data.length == 0) {
+					sdl.drain();
 					break;
 				}
 				if (!sdl.isActive()) {
