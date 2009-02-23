@@ -23,6 +23,7 @@ import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StarmapRenderer;
 import hu.openig.gfx.TextGFX;
 import hu.openig.model.GMPlanet;
+import hu.openig.music.Music;
 import hu.openig.sound.UISounds;
 
 import java.awt.Color;
@@ -58,7 +59,9 @@ public class Main extends JFrame {
 	CommonGFX cgfx;
 	StarmapRenderer smr;
 	PlanetRenderer pr;
+	/** The information screen renderer. */
 	InformationRenderer ir;
+	/** The main menu renderer. */
 	MainmenuRenderer mmr;
 	/** The full screen movie surface. */
 	MovieSurface mov;
@@ -71,6 +74,8 @@ public class Main extends JFrame {
 	String root;
 	/** The animation player. */
 	Player player;
+	/** The music player. */
+	Music music;
 	/** Set to true if the ESC is pressed while a full screen playback is in progress. */
 	private boolean playbackCancelled;
 	protected void initialize(String root) {
@@ -79,6 +84,7 @@ public class Main extends JFrame {
 		setBackground(Color.BLACK);
 		fadeTimer = new Timer(FADE_TIME, null);
 		uis = new UISounds(root);
+		music = new Music(".");
 		cgfx = new CommonGFX(root);
 		
 		// initialize renderers
@@ -109,6 +115,7 @@ public class Main extends JFrame {
 				smr.stopAnimations();
 				player.setOnCompleted(null);
 				player.stopAndWait();
+				music.close();
 			}
 		});
 
@@ -215,6 +222,7 @@ public class Main extends JFrame {
 	private void onStarmap() {
 		uis.playSound("WelcomeToIG");
 		showScreen(smr);
+		music.playFile("music1.wav");
 	}
 	/** Quit pressed on starmap. */
 	private void onQuit() {
