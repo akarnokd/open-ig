@@ -70,6 +70,9 @@ public class ToAvi {
 					bout.write(b.data);
 				} else
 				if (b instanceof Data) {
+					if (true) {
+						continue;
+					}
 					Data d = (Data)b;
 					imageHeight += d.height;
 					// decompress the image

@@ -59,7 +59,7 @@ public class AnimPlay {
 	/** The replay current item. */
 	private static JMenuItem menuReplay;
 	/** The last opened file directory. */
-	private static File lastPath = new File("c:/games/ighu");
+	private static File lastPath = new File("c:/games/ig");
 	/** Stop the playback. */
 	private static volatile boolean stop;
 	/** Current file. */
@@ -198,7 +198,7 @@ public class AnimPlay {
 				saf.open(rf = new FileInputStream(f));
 				saf.load();
 				createFrame(f);
-				Rates r = fr.getRates(f.getAbsolutePath(), saf.getUnknown());
+				Rates r = fr.getRates(f.getAbsolutePath(), saf.getLanguageCode());
 				fps = r.fps;
 				int delay = r.delay;
 				frame.setTitle(String.format("%s | FPS: %.4f | Delay: %d", frame.getTitle(), fps, delay));
@@ -214,20 +214,19 @@ public class AnimPlay {
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run() {
 						if (frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
-							imageLabel.setPreferredSize(new Dimension(saf.getWidth(), saf.getHeight()));
-							frame.pack();
-							frame.setLocationRelativeTo(null);
+							if (imageLabel.getWidth() < saf.getWidth() || imageLabel.getHeight() < saf.getHeight()) {
+								imageLabel.setPreferredSize(new Dimension(saf.getWidth(), saf.getHeight()));
+								frame.pack();
+								frame.setLocationRelativeTo(null);
+							}
 						}
 						
 					}
 				});
 				try {
-					// add audio delay
-					if (delay > 0) {
-						ad.submit(new byte[delay]);
-					}
-			   		boolean firstFrame = true;
 			   		double starttime = System.currentTimeMillis();
+			   		int framecounter = 0;
+			   		boolean firstframe = true;
 			   		while (!stop) {
 						Block b = saf.next();
 						if (b instanceof Palette) {
@@ -237,6 +236,10 @@ public class AnimPlay {
 							ad.submit(b.data);
 						} else
 						if (b instanceof Data) {
+							if (firstframe) {
+								starttime = System.currentTimeMillis();
+								firstframe = false;
+							}
 							Data d = (Data)b;
 							imageHeight += d.height;
 							// decompress the image
@@ -259,17 +262,15 @@ public class AnimPlay {
 							if (imageHeight >= saf.getHeight()) {
 								imageLabel.getBackbuffer().setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
 								imageLabel.swap();
-								if (firstFrame) {
+								if (framecounter == delay) {
 									ad.startPlaybackNow();
-									firstFrame = false;
-									starttime = System.currentTimeMillis();
 								}
 								imageHeight = 0;
 								dst = 0;
 								
 								starttime += (1000.0 / fps);
 			           			LockSupport.parkNanos((long)(Math.max(0,starttime - System.currentTimeMillis()) * 1000000));
-			           			
+			           			framecounter++;
 							}
 						}
 					}
