@@ -52,7 +52,7 @@ public class UISounds {
 		for (int i = 0; i < SOUND_POOL_SIZE; i++) {
 			SourceDataLine sdl = AudioThread.createAudioOutput();
 			sdl.start();
-			if (soundPool.offer(sdl)) {
+			if (!soundPool.offer(sdl)) {
 				throw new AssertionError("Queue problems");
 			}
 		}

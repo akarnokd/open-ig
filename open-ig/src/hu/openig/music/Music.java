@@ -1,355 +1,241 @@
 package hu.openig.music;
 
+import hu.openig.compress.CompUtils;
 import hu.openig.utils.IOUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Arrays;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.BooleanControl;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.UnsupportedAudioFileException;
+/**
+ * Background music player.
+ * @author karnokd, 2009.02.23.
+ * @version $Revision 1.0$
+ */
 public class Music {
+	/** The audio output line. */
+	private SourceDataLine sdl;
+	/** The background playback thread. */
+	private volatile Thread playbackThread;
+	/** Adjust master gain in dB. */
+	private volatile float gain;
+	/** Mute sound. */
+	private volatile boolean mute;
+	/** The root directory. */
+	private final String root;
+	/** The clip for sound playback. */
+	private volatile Clip soundClip;
+	/** Use soundClip for playback. */
+	private final boolean useClip = true;
 	/**
-	 * Replaces the array with a moving difference values. 
-	 * Modifies the input array!
-	 * @param data the data to differential encode
-	 * @return the input array
+	 * Constructor. Initializes the audio output.
+	 * @param root the root directory
 	 */
-	public static byte[] difference8(byte[] data) {
-		byte start = 0;
-		// replace entries with the difference
-		for (int i = 0; i < data.length; i++) {
-			byte val = data[i];
-			data[i] = (byte)(data[i] - start);
-			start = val;
-		}
-		return data;
-	}
-	/**
-	 * Replaces the array with a moving sum values.
-	 * Modifies the input array!
-	 * @param data the differenced array
-	 * @return the input array
-	 */
-	public static byte[] undifference8(byte[] data) {
-		int start = 0;
-		// un differentiate
-		for (int i = 0; i < data.length; i++) {
-			data[i] = (byte)(start + data[i]);
-			start = data[i];
-		}
-		return data;
-	}
-	/**
-	 * Compresses an 8 bit per sample audio data first using a differential coding then GZIP.
-	 * @param raw the raw bytes
-	 * @return the generated compressed bytes
-	 */
-	public static byte[] compress8(byte[] raw) {
-		return compressGZIP(difference8(raw.clone()));
-	}
-	/**
-	 * Compresses a 16 bit sample using differential and GZIP compression.
-	 * @param raw the raw data to compress
-	 * @return the compressed data
-	 */
-	public static byte[] compress16(byte[] raw) {
-		return compressGZIP(difference16(raw.clone()));
-	}
-	/**
-	 * Replaces the array values with the 16 bit difference values.
-	 * Modifies the input array!
-	 * @param raw the raw data
-	 * @return the same as raw
-	 */
-	public static byte[] difference16(byte[] raw) {
-		short start = 0;
-		for (int i = 0; i < raw.length; i += 2) {
-			short rd = (short)((raw[i] & 0xFF) | (raw[i + 1] & 0xFF) << 8);
-			short rdd = (short)(rd - start); 
-			raw[i] = (byte)(rdd & 0xFF);
-			raw[i + 1] = (byte)((rdd >> 8)& 0xFF);
-			start = rd;
-		}
-		return raw;
-	}
-	/**
-	 * Decompresses a GZIP and differentially coded stream of 8 bit data
-	 * @param raw the raw data to decompress
-	 * @return the uncompressed data
-	 */
-	public static byte[] decompress8(byte[] raw) {
-		return undifference8(decompressGZIP(raw));
-	}
-	/**
-	 * Decompresses a GZIP and differentially coded stream of 16 bit data
-	 * @param raw the raw data to decompress
-	 * @return the uncompressed data
-	 */
-	public static byte[] decompress16(byte[] raw) {
-		return undifference16(decompressGZIP(raw));
-	}
-	/**
-	 * Undifferences the given array of 16 bit values.
-	 * Modifies the input array!
-	 * @param data the data to undifference
-	 * @return same as data
-	 */
-	public static byte[] undifference16(byte[] data) {
-		int start = 0;
-		// un differentiate
-		for (int i = 0; i < data.length; i += 2) {
-			short rd = (short)((data[i] & 0xFF) | (data[i + 1] & 0xFF) << 8);
-			short rdd = (short)(rd + start); 
-			data[i] = (byte)(rdd & 0xFF);
-			data[i + 1] = (byte)((rdd >> 8) & 0xFF);
-			start = rdd;
-		}
-		return data;
-	}
-	/**
-	 * Compress the data using GZIP compression.
-	 * @param raw the raw data to compress
-	 * @return the compressed bytes
-	 */
-	public static byte[] compressGZIP(byte[] raw) {
-		try {
-			ByteArrayOutputStream bout = new ByteArrayOutputStream(4096);
-			GZIPOutputStream gout = new GZIPOutputStream(bout);
-			gout.write(raw);
-			gout.finish();
-			gout.close();
-			return bout.toByteArray();
-		} catch (IOException ex) {
-			throw new AssertionError("IO Exception on a ByteArrayOutputStream?");
-		}
-	}
-	/**
-	 * Decompress the data using GZIP decompression.
-	 * @param raw the raw data to decompress
-	 * @return the decompressed bytes
-	 */
-	public static byte[] decompressGZIP(byte[] raw) {
-		ByteArrayOutputStream bout = new ByteArrayOutputStream(4096);
-		try {
-			GZIPInputStream gin = new GZIPInputStream(new ByteArrayInputStream(raw));
-			byte[] buffer = new byte[4096];
-			int read;
-			do {
-				read = gin.read(buffer);
-				if (read > 0) {
-					bout.write(buffer, 0, read);
-				}
-			} while (read >= 0);
-			return bout.toByteArray();
-		} catch (IOException ex) {
-			throw new AssertionError("IO Exception on a ByteArrayOutputStream?");
-		}
-	}
-	/**
-	 * Interleaves the raw data by putting each even bytes to the beginning of the
-	 * result, then each odd bytes.
-	 * Modifies the input array!
-	 * @param raw the raw data to interleave
-	 * @return the interleaved data
-	 */
-	public static byte[] interleave16(byte[] raw) {
-		byte[] data = new byte[raw.length];
-		int half = raw.length / 2;
-		int j = 0;
-		for (int i = 0; i < data.length; i += 2) {
-			data[j] = raw[i];
-			data[half + j] = raw[i + 1];
-			j++;
-		}
-		return data;
-	}
-	/**
-	 * Uninterleaves the data interleaved by interleave16().
-	 * Modifies the input array!
-	 * @param raw the data to uninterleave
-	 * @return the uninterleaved data
-	 */
-	public static byte[] uninterleave16(byte[] raw) {
-		byte[] data = new byte[raw.length];
-		int half = raw.length / 2;
-		int j = 0;
-		for (int i = 0; i < data.length; i += 2) {
-			data[i] = raw[j];
-			data[i + 1] = raw[j + half];
-			j++;
-		}
-		return data;
-	}
-	/**
-	 * Run-length encode the given array of bytes using the simple count based version.
-	 * @param raw the raw data
-	 * @return the encoded version
-	 */
-	public static byte[] rle(byte[] raw) {
-		ByteArrayOutputStream bout = new ByteArrayOutputStream(4096);
-		int src = 0;
-		while (src < raw.length) {
-			int b = raw[src] & 0xFF;
-			// check if there are more than 3 subsequent
-			int count = 0;
-			for (int i = src; i < raw.length; i++) {
-				int lb = raw[i] & 0xFF;
-				if (lb == b && count < 65535) {
-					count++;
-				} else {
-					break;
-				}
+	public Music(String root) {
+		this.root = root;
+		if (!useClip) {
+			AudioFormat af = new AudioFormat(22050, 16, 1, true, false);
+			DataLine.Info dli = new DataLine.Info(SourceDataLine.class, af);
+			if (!AudioSystem.isLineSupported(dli)) {
+				return;
 			}
-			if (count < 2) {
-				// find out how many different values are in a succession
-				int lb = b;
-				for (int i = src + 1; i < raw.length; i++) {
-					b = raw[i] & 0xFF;
-					if (b != lb && count < 65535) {
-						count++;
-						lb = b;
-					} else {
-						count--;
-						break;
-					}
-				}
-				if (count < 128) {
-					bout.write(0x80 + count);
-				} else {
-					bout.write(0x80);
-					bout.write(count & 0xFF);
-					bout.write((count & 0xFF00) >> 8);
-				}
-				for (int i = 0; i < count; i++) {
-					bout.write(raw[src++] & 0xFF);
-				}
-			} else {
-				if (count < 128) {
-					bout.write(count);
-				} else {
-					bout.write(0x00);
-					bout.write(count & 0xFF);
-					bout.write((count & 0xFF00) >> 8);
-				}
-				bout.write(b);
-				src += count;
+			try {
+				sdl = (SourceDataLine)AudioSystem.getLine(dli);
+				sdl.open(af);
+				setGain(0);
+			} catch (LineUnavailableException ex) {
 			}
 		}
-		return bout.toByteArray();
 	}
 	/**
-	 * Uncompress the data using a simple run-length encoding algorithm.
-	 * @param raw the data to uncompress
-	 * @return the uncompressed data
+	 * Start/continue the music playback.
 	 */
-	public static byte[] unRle(byte[] raw) {
-		ByteArrayOutputStream bout = new ByteArrayOutputStream(4096);
-		int src = 0;
-		while (src < raw.length) {
-			int b = raw[src++] & 0xFF;
-			int count = 0;
-			if (b >= 0x80) {
-				if (b == 0x80) {
-					count = raw[src++] & 0xFF | (raw[src++] & 0xFF) << 8;
-				} else {
-					count = b & 0x7F;
-				}
-				for (int i = 0; i < count; i++) {
-					bout.write(raw[src++] & 0xFF);
-				}
-			} else {
-				if (b == 0) {
-					count = raw[src++] & 0xFF | (raw[src++] & 0xFF) << 8;
-				} else {
-					count = b & 0x7F;
-				}
-				int c = raw[src++] & 0xFF;
-				for (int i = 0; i < count; i++) {
-					bout.write(c);
+	public void play() {
+		if (sdl != null) {
+			sdl.start();
+		} else
+		if (soundClip != null) {
+			soundClip.start();
+		}
+	}
+	/** Stop the music playback. */
+	public void stop() {
+		if (sdl != null) {
+			sdl.stop();
+		} else
+		if (soundClip != null) {
+			soundClip.stop();
+		}
+	}
+	/**
+	 * Stop the music playback and close the playback thread.
+	 */
+	public void close() {
+		if (sdl != null) {
+			sdl.stop();
+			sdl.drain();
+			sdl.close();
+		}
+		if (soundClip != null) {
+			soundClip.stop();
+			soundClip.drain();
+			soundClip.close();
+		}
+		if (playbackThread != null) {
+			playbackThread.interrupt();
+			playbackThread = null;
+		}
+	}
+	/**
+	 * Play the given file.
+	 * @param fileName
+	 */
+	public void playFile(final String fileName) {
+		stop();
+		Thread th = playbackThread;
+		if (th != null) {
+			th.interrupt();
+			playbackThread = null;
+		}
+		th = new Thread(new Runnable() {
+			public void run() {
+				if (sdl != null || useClip) {
+					playbackLoop(fileName);
 				}
 			}
-			
-		}
-		return bout.toByteArray();
+		});
+		playbackThread = th;
+		th.start();
 	}
 	/**
-	 * @param args
+	 * The audio playback loop.
+	 * @param fileName the audio file to play back
 	 */
-	public static void main(String[] args) throws IOException {
-		byte[] orig = IOUtils.load("gt_title16.wav");
-		byte[] sound = Arrays.copyOfRange(orig, 0x2C, orig.length);
-		System.out.printf("Original: %d%n", sound.length);
-		byte[] comp;
-		byte[] rest;
-		long time;
-//		time = System.nanoTime();
-//		comp = compress8(sound);
-//		System.out.printf("Compress8: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-//		
-//		time = System.nanoTime();
-//		rest = decompress8(comp);
-//		System.out.printf("Decompress8: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-//		if (!Arrays.equals(sound, rest)) {
-//			System.err.println("Differs!");
-//		}
-//
-//		time = System.nanoTime();
-//		comp = compress16(sound);
-//		System.out.printf("Compress16: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-//		
-//		time = System.nanoTime();
-//		rest = decompress16(comp);
-//		System.out.printf("Decompress16: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-//		if (!Arrays.equals(sound, rest)) {
-//			System.err.println("Differs!");
-//		}
-//		
-//		time = System.nanoTime();
-//		comp = compressGZIP(sound);
-//		System.out.printf("CompressGZIP: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-//		
-//		time = System.nanoTime();
-//		rest = decompressGZIP(comp);
-//		System.out.printf("DecompressGZIP: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-//		if (!Arrays.equals(sound, rest)) {
-//			System.err.println("Differs!");
-//		}
-		
-		time = System.nanoTime();
-		comp = compressGZIP(interleave16(difference16(sound.clone())));
-		System.out.printf("Compress16+IL: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = undifference16(uninterleave16(decompressGZIP(comp)));
-		System.out.printf("Decompress16+IL: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
-		}
-		
-		time = System.nanoTime();
-		comp = compressGZIP(difference8(interleave16(difference16(sound.clone()))));
-		System.out.printf("Compress16+IL+D8: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = undifference16(uninterleave16(undifference8(decompressGZIP(comp))));
-		System.out.printf("Decompress16+IL+D8: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
+	private void playbackLoop(String fileName) {
+		if (useClip) {
+	        try { 
+	            File audioFile = new File(root + "/" + fileName);
+	            AudioInputStream soundStream = AudioSystem.getAudioInputStream(audioFile);
+	            AudioFormat streamFormat = soundStream.getFormat();
+	            DataLine.Info clipInfo = new DataLine.Info(Clip.class, streamFormat);
+	 
+	            Clip clip = (Clip)AudioSystem.getLine(clipInfo);
+	            soundClip = clip;
+	            clip.open(soundStream);
+	            clip.setLoopPoints(0, -1);
+	            clip.loop(Clip.LOOP_CONTINUOUSLY);
+	            setGain(gain);
+	            setMute(mute);
+	            clip.start();
+	        } catch ( UnsupportedAudioFileException e ) { 
+	        	e.printStackTrace();
+	        } catch ( IOException e ) { 
+	        	e.printStackTrace();
+	        } catch ( LineUnavailableException e ) {
+	        	e.printStackTrace();
+	        }
+		} else {
+			try {
+				RandomAccessFile raf = new RandomAccessFile(root + "/" + fileName, "r");
+				
+				// skip chunks
+				long startOffset = findData(raf);
+				byte[] buffer = new byte[16384];
+				// compensate for signed
+				// playback loop
+				sdl.start();
+				while (playbackThread == Thread.currentThread() 
+						&& !Thread.currentThread().isInterrupted()) {
+					// skip wav header
+					raf.seek(startOffset);
+					int read = 0;
+					do {
+						read = raf.read(buffer);
+						if (read > 0) {
+							//signifySound(buffer, read);
+							sdl.write(buffer, 0, read);
+						}
+					} while (playbackThread == Thread.currentThread() 
+						&& !Thread.currentThread().isInterrupted() && read >= 0);
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
 		}
 
-		time = System.nanoTime();
-		comp = rle(interleave16(sound));
-		System.out.printf("RLE: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = uninterleave16(unRle(comp));
-		System.out.printf("UNRLE: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
+	}
+	/**
+	 * Finds the 'data' chunk in a RIFF wav file.
+	 * @param raf the random access file
+	 * @return the offset of the actual data chunk
+	 * @throws IOException if an IO error occurs
+	 */
+	long findData(RandomAccessFile raf) throws IOException {
+		raf.seek(12);
+		while (raf.getFilePointer() < raf.length()) {
+			int type = raf.readInt();
+			if (type == 0x64617461) {
+				raf.readInt();
+				return raf.getFilePointer();
+			} else {
+				int count = rotate(raf.readInt());
+				raf.seek(raf.getFilePointer() + count);
+			}
 		}
-		//compressLoop(sound);
+		return raf.length();
+	}
+	/**
+	 * Signifiy the 16 bit sound data.
+	 * @param buffer the buffer
+	 */
+	void signifySound(byte[] buffer, int len) {
+		for (int i = 0; i < len; i += 2) {
+			short v = (short)((buffer[i] & 0xFF) | (buffer[i + 1] & 0xFF) << 8);
+			v -= 32768;
+			buffer[i] = (byte)(v & 0xFF);
+			buffer[i + 1] = (byte)((v & 0xFF00) >> 8);
+		}
+	}
+	/**
+	 * Switch between big endian and little endian byte order
+	 * @param val the value to switch
+	 * @return the switched value
+	 */
+	private static int rotate(int val) {
+		return (val & 0xFF000000) >> 24 | (val & 0xFF0000) >> 8 
+		| (val & 0xFF00) << 8 | (val & 0xFF) << 24;
+	}
+	/**
+	 * Convert the audio.
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	static void convertMusic() throws FileNotFoundException,
+			IOException {
+		File f = new File("music2.wav");
+		byte[] sound = new byte[(int)(f.length() - 0x2C)];
+		RandomAccessFile raf = new RandomAccessFile(f, "r");
+		raf.seek(0x2C);
+		raf.read(sound);
+		raf.close();
+		sound = CompUtils.interleave16(CompUtils.difference16(sound));
+		GZIPOutputStream zout = new GZIPOutputStream(new FileOutputStream("music2.snd"));
+		zout.write(sound);
+		zout.close();
 	}
 	/** Find the minimum of repeated compression loops. */
 	public static void compressLoop(byte[] sound) {
@@ -358,8 +244,8 @@ public class Music {
 		byte[] inp = sound;
 		int loop = 1;
 		while (true) {
-			  byte[] diff = difference16(inp);
-			  comp = compressGZIP(diff);
+			  byte[] diff = CompUtils.difference16(inp);
+			  comp = CompUtils.compressGZIP(diff);
 			  double newRatio = comp.length / (double)inp.length;
 			  System.out.printf("Compress %d: %d -> %d, %.2f%%%n", loop, inp.length, comp.length, newRatio * 100);
 			  if (newRatio > 1 || (Math.abs(newRatio - ratio) < 0.001)) {
@@ -371,5 +257,133 @@ public class Music {
 			  loop++;
 		}
 	}
+	/**
+	 * Test compressions.
+	 */
+	public static void testCompress() {
+		byte[] orig = IOUtils.load("music1.wav");
+		byte[] sound = Arrays.copyOfRange(orig, 0x2C, orig.length);
+		System.out.printf("Original: %d%n", sound.length);
+		byte[] comp;
+		byte[] rest;
+		long time;
+		time = System.nanoTime();
+		comp = CompUtils.compress8(sound);
+		System.out.printf("Compress8: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
+		
+		time = System.nanoTime();
+		rest = CompUtils.decompress8(comp);
+		System.out.printf("Decompress8: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
 
+		time = System.nanoTime();
+		comp = CompUtils.compress16(sound);
+		System.out.printf("Compress16: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
+		
+		time = System.nanoTime();
+		rest = CompUtils.decompress16(comp);
+		System.out.printf("Decompress16: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+		
+		time = System.nanoTime();
+		comp = CompUtils.compressGZIP(sound);
+		System.out.printf("CompressGZIP: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
+		
+		time = System.nanoTime();
+		rest = CompUtils.decompressGZIP(comp);
+		System.out.printf("DecompressGZIP: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+		
+		time = System.nanoTime();
+		comp = CompUtils.compressGZIP(CompUtils.interleave16(CompUtils.difference16(sound.clone())));
+		System.out.printf("Compress16+IL: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
+		
+		time = System.nanoTime();
+		rest = CompUtils.undifference16(CompUtils.uninterleave16(CompUtils.decompressGZIP(comp)));
+		System.out.printf("Decompress16+IL: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+		
+		time = System.nanoTime();
+		comp = CompUtils.compressGZIP(CompUtils.difference8(CompUtils.interleave16(CompUtils.difference16(sound.clone()))));
+		System.out.printf("Compress16+IL+D8: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
+		
+		time = System.nanoTime();
+		rest = CompUtils.undifference16(CompUtils.uninterleave16(CompUtils.undifference8(CompUtils.decompressGZIP(comp))));
+		System.out.printf("Decompress16+IL+D8: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+
+		time = System.nanoTime();
+		comp = CompUtils.rle(CompUtils.interleave16(sound));
+		System.out.printf("RLE: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
+		
+		time = System.nanoTime();
+		rest = CompUtils.uninterleave16(CompUtils.unRle(comp));
+		System.out.printf("UNRLE: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+		//compressLoop(sound);
+		time = System.nanoTime();
+		comp = CompUtils.compressGZIP(CompUtils.rle(CompUtils.interleave16(sound)));
+		System.out.printf("RLE+Gzip: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
+		
+		time = System.nanoTime();
+		rest = CompUtils.uninterleave16(CompUtils.unRle(CompUtils.decompressGZIP(comp)));
+		System.out.printf("UNRLE+Gzip: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+	}
+	/**
+	 * Set the master gain in dB.
+	 * @param gain the gain to set
+	 */
+	public void setGain(float gain) {
+		if (sdl != null) {
+			FloatControl f = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
+			f.setValue(gain);
+		} else
+		if (soundClip != null) {
+			FloatControl f = (FloatControl)soundClip.getControl(FloatControl.Type.MASTER_GAIN);
+			f.setValue(gain);
+		}
+		this.gain = gain;
+	}
+	/**
+	 * @return the gain
+	 */
+	public float getGain() {
+		return gain;
+	}
+	/**
+	 * Mute or unmute the sound
+	 * @param mute the mute to set
+	 */
+	public void setMute(boolean mute) {
+		if (sdl != null) {
+			BooleanControl b = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
+			b.setValue(mute);
+		} else
+		if (soundClip != null) {
+			BooleanControl b = (BooleanControl)soundClip.getControl(BooleanControl.Type.MUTE);
+			b.setValue(mute);
+		}
+		this.mute = mute;
+	}
+	/**
+	 * @return the mute
+	 */
+	public boolean isMute() {
+		return mute;
+	}
 }
