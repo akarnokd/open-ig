@@ -8,6 +8,7 @@
 
 package hu.openig.ani;
 
+import hu.openig.ani.Framerates.Rates;
 import hu.openig.ani.SpidyAniFile.Algorithm;
 import hu.openig.ani.SpidyAniFile.Block;
 import hu.openig.ani.SpidyAniFile.Data;
@@ -51,11 +52,14 @@ public class Player {
 	private volatile float masterGain;
 	/** The mute value. */
 	private volatile boolean mute;
+	/** The frame rates object. */
+	//private Framerates framerates;
 	/**
 	 * Constructor.
 	 */
 	public Player(SwappableRenderer surface) {
 		this.surface = surface;
+		//framerates = new Framerates();
 	}
 	/** The playback loop. */
 	private void play() {
@@ -68,17 +72,14 @@ public class Player {
 				ad.setMute(mute);
 				try {
 					final SpidyAniFile saf = new SpidyAniFile();
-			   		double fps = 0;
-			   		// check framerate override
 					saf.open(rf);
 					saf.load();
-					saf.walkBlocks();
-			   		
-			   		fps = saf.getFPS();
-					rf.close();
-			   		int delay = 0;
-					saf.open(rf = new FileInputStream(getFilename()));
-					saf.load();
+
+					Framerates fr = new Framerates();
+					
+					Rates r = fr.getRates(getFilename(), saf.getLanguageCode());
+					double fps = r.fps;
+					int delay = r.delay;
 					
 					
 					PaletteDecoder palette = null;
@@ -90,12 +91,10 @@ public class Player {
 					Algorithm alg = saf.getAlgorithm();
 
 			   		double starttime = System.currentTimeMillis();  // notice the start time
-			   		boolean firstFrame = true;
 			   		try {
 						// add audio delay
-						if (delay > 0) {
-							ad.submit(new byte[delay]);
-						}
+				   		int framecounter = 0;
+				   		boolean firstframe = true;
 				   		while (!stop) {
 							Block b = saf.next();
 							if (b instanceof Palette) {
@@ -106,6 +105,10 @@ public class Player {
 								audioCount++;
 							} else
 							if (b instanceof Data) {
+								if (firstframe) {
+									starttime = System.currentTimeMillis();
+									firstframe = false;
+								}
 								Data d = (Data)b;
 								imageHeight += d.height;
 								// decompress the image
@@ -128,10 +131,8 @@ public class Player {
 								if (imageHeight >= saf.getHeight()) {
 									surface.getBackbuffer().setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
 									surface.swap();
-									if (firstFrame) {
+									if (framecounter == delay) {
 										ad.startPlaybackNow();
-										firstFrame = false;
-										starttime = System.currentTimeMillis();
 									}
 									imageHeight = 0;
 									dst = 0;

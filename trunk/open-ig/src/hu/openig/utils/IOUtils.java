@@ -12,8 +12,10 @@ import java.io.BufferedReader;
 import java.io.DataInput;
 import java.io.EOFException;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
@@ -107,6 +109,31 @@ public class IOUtils {
 	 */
 	public static byte[] load(String f) {
 		return load(new File(f));
+	}
+	/**
+	 * Save the given byte array as the given file.
+	 * @param f the file
+	 * @param data the non null data to save
+	 */
+	public static void save(String f, byte[] data) {
+		save(new File(f), data);
+	}
+	/**
+	 * Save the given byte array as the given file.
+	 * @param f the file
+	 * @param data the non null data to save
+	 */
+	public static void save(File f, byte[] data) {
+		try {
+			FileOutputStream fout = new FileOutputStream(f);
+			try {
+				fout.write(data);
+			} finally {
+				fout.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	/**
 	 * RandomAccessFile to InputStream wrapper class.
@@ -336,6 +363,77 @@ public class IOUtils {
 				throw new EOFException();
 			}
 			count -= c;
+		}
+	}
+	/**
+	 * Read bitstream from a static array
+	 * @author Karnok Dávid, Apr 11, 2007
+	 * @version 1.0
+	 */
+	public static class BitReader {
+		private byte[] stream;
+		private int bitOffset;
+		private int byteOffset;
+		public BitReader(byte[] source) {
+			stream = source;
+		}
+		public int inputBit() {
+			int b = (stream[byteOffset] & (1 << bitOffset)) != 0?1:0;
+			bitOffset++;
+			if (bitOffset >= 8) {
+				bitOffset = 0;
+				byteOffset++;
+			}
+			return b;
+		}
+		/**
+		 * Input number of bits
+		 * @param n input bit count 1..8
+		 * @return
+		 */
+		public int inputBits(int n) {
+			int result = -1;
+			// do we have byte wrap?
+			if (bitOffset + n <= 8) {
+				int b = (stream[byteOffset] & 0xFF) >> bitOffset;
+				result = b & ((1 << n) - 1);
+			} else {
+				int b = (stream[byteOffset] & 0xFF) >> bitOffset;
+				int nextoffset = n - 8 + bitOffset;
+				int c = stream[byteOffset+1] & ((1 << nextoffset) - 1);
+				result = b | (c << (8 - bitOffset));
+			}
+			bitOffset += n;
+			if (bitOffset >= 8) {
+				byteOffset += bitOffset >> 3;
+				bitOffset &= 7;
+			}
+			return result;
+		}
+	}
+	public static class BitWriter {
+		private int bitOffset;
+		private int currentByte;
+		private OutputStream out;
+		public BitWriter(OutputStream out) {
+			this.out = out;
+		}
+		public void outputBits(int code, int n) throws IOException {
+//			System.out.println("Code: "+Integer.toBinaryString(code)+" size: "+n);
+			for(int i=0; i<n; i++) {
+				currentByte |= (code & (1 << i)) != 0?1 << bitOffset:0;
+				bitOffset++;
+				if (bitOffset >= 7) {
+					bitOffset = 0;
+					out.write(currentByte);
+					currentByte = 0;
+				}
+			}
+		}
+		public void flush() throws IOException {
+			if (bitOffset > 0) {
+				out.write(currentByte);
+			}
 		}
 	}
 }

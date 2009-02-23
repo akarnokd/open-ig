@@ -119,7 +119,7 @@ public class SpidyAniFile {
 	/** Indicate if the Data blocks contain only a part for each frame (because of the 64KB limit). */
 	private boolean partialData;
 	/** Unknown field after the height. */
-	private int unknown;
+	private int languageCode;
 	/** Number of bytes in the sound block. */
 	private int soundSize;
 	/**
@@ -162,7 +162,7 @@ public class SpidyAniFile {
 		width = buffer[13] & 0xFF | (buffer[14] & 0xFF) << 8;
 		height = buffer[15] & 0xFF | (buffer[16] & 0xFF) << 8;
 		partialData = width * height > 65536;
-		unknown = buffer[17] & 0xFF | (buffer[18] & 0xFF) << 8;
+		languageCode = buffer[17] & 0xFF | (buffer[18] & 0xFF) << 8;
 		soundSize = 0;
 	}
 	/**
@@ -266,11 +266,11 @@ public class SpidyAniFile {
 		return lzssUsed;
 	}
 	/**
-	 * Returns the unknown field value.
-	 * @return the unknown field value
+	 * Returns the possibly language code field value. 1=English, 2=Hungarian, etc.
+	 * @return the language field value
 	 */
-	public int getUnknown() {
-		return unknown;
+	public int getLanguageCode() {
+		return languageCode;
 	}
 	/**
 	 * Returns the number of bytes the sound occupies.
