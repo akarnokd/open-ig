@@ -145,6 +145,9 @@ MouseWheelListener, ActionListener {
 		addMouseWheelListener(this);
 		addMouseListener(this);
 		setOpaque(true);
+		
+//		int w = Tile.toScreenX(33,-33) - Tile.toScreenX(-64, -64);
+//		int h = Tile.toScreenY(1, 0) - Tile.toScreenY(-32, -96);
 	}
 	private PACEntry getSurface(int surfaceType, int variant) {
 		String mapName = "MAP_" + (char)('A' + (surfaceType - 1)) + variant + ".MAP";

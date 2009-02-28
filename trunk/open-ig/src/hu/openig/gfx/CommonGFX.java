@@ -9,6 +9,7 @@
 package hu.openig.gfx;
 
 import hu.openig.core.InfoBarRegions;
+import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.PACFile.PACEntry;
@@ -133,18 +134,18 @@ public class CommonGFX {
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// get the colors from the joining point
 		top = new StarmapBar();
-		top.left = basic.getSubimage(0, 0, 400, 20);
-		top.right = basic.getSubimage(400, 0, 240, 20);
-		top.link = basic.getSubimage(399, 0, 1, 20);
+		top.left = ImageUtils.subimage(basic, 0, 0, 400, 20);
+		top.right = ImageUtils.subimage(basic, 400, 0, 240, 20);
+		top.link = ImageUtils.subimage(basic, 399, 0, 1, 20);
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// BOTTOM BAR
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		bottom = new StarmapBar();
 		// get the colors from the joining point
 		bottom = new StarmapBar();
-		bottom.left = basic.getSubimage(0, 20, 400, 18);
-		bottom.right = basic.getSubimage(400, 20, 240, 18);
-		bottom.link = basic.getSubimage(399, 20, 1, 18);
+		bottom.left = ImageUtils.subimage(basic, 0, 20, 400, 18);
+		bottom.right = ImageUtils.subimage(basic, 400, 20, 240, 18);
+		bottom.link = ImageUtils.subimage(basic, 399, 20, 1, 18);
 		
 		BufferedImage cursorImage = PCXImage.from(root + "/GFX/ICONMAIN.PCX", 0);
 		cursors = new GFXCursors();
@@ -155,33 +156,33 @@ public class CommonGFX {
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		
-		cursors.pointer = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.pointer = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(0, 0), "Pointer");
-		cursors.hand = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.hand = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(0, 0), "Hand");
-		cursors.target = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.target = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(10, 10), "Target");
-		cursors.move = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.move = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(10, 10), "Move");
-		cursors.select = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.select = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(10, 10), "Select");
-		cursors.northwest = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.northwest = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(0, 0), "NorthWest");
-		cursors.north = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.north = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(10, 0), "North");
-		cursors.northeast = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.northeast = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(19, 0), "NorthEast");
-		cursors.east = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.east = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(19, 8), "East");
-		cursors.west = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.west = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(0, 8), "West");
-		cursors.back = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.back = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(9, 10), "Back");
-		cursors.southwest = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.southwest = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(0, 19), "SouthWest");
-		cursors.south = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.south = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(10, 19), "South");
-		cursors.southeast = toolkit.createCustomCursor(cursorImage.getSubimage(idx++ * 32, 1, 32, 31), 
+		cursors.southeast = toolkit.createCustomCursor(ImageUtils.subimage(cursorImage, idx++ * 32, 1, 32, 31), 
 				new Point(19, 19), "SouthWest");
 		
 		
@@ -208,13 +209,13 @@ public class CommonGFX {
 		shipImages = new BufferedImage[15];
 		BufferedImage fleets = PCXImage.from(root + "/GFX/FLEETS.PCX", -2);
 		for (int i = 0; i < shipImages.length; i++) {
-			shipImages[i] = fleets.getSubimage(28 + (i % 12), 7 * (i / 12), 20, 7);
+			shipImages[i] = ImageUtils.subimage(fleets, 28 + (i % 12), 7 * (i / 12), 20, 7);
 		}
 		radarDots = new BufferedImage[4];
-		radarDots[0] = fleets.getSubimage(144, 13, 3, 3);
-		radarDots[1] = fleets.getSubimage(150, 13, 3, 3);
-		radarDots[2] = fleets.getSubimage(157, 13, 3, 3);
-		radarDots[3] = fleets.getSubimage(164, 13, 3, 3);
+		radarDots[0] = ImageUtils.subimage(fleets, 144, 13, 3, 3);
+		radarDots[1] = ImageUtils.subimage(fleets, 150, 13, 3, 3);
+		radarDots[2] = ImageUtils.subimage(fleets, 157, 13, 3, 3);
+		radarDots[3] = ImageUtils.subimage(fleets, 164, 13, 3, 3);
 		
 		// Research CDs
 		BufferedImage rescd = PCXImage.from(root + "/SCREENS/FEJL_CD.PCX", -2);
@@ -222,13 +223,13 @@ public class CommonGFX {
 		for (int i = 0; i < 3; i++) {
 			researchCDs[i] = new BufferedImage[16];
 			for (int j = 0; j < researchCDs[i].length; j++) {
-				researchCDs[i][j] = rescd.getSubimage(j * 20, i * 20, 20, 19);
+				researchCDs[i][j] = ImageUtils.subimage(rescd, j * 20, i * 20, 20, 19);
 			}
 		}
 		for (int i = 0; i < 3; i++) {
 			researchCDs[i] = new BufferedImage[16];
 			for (int j = 0; j < researchCDs[i].length; j++) {
-				researchCDs[i][j] = rescd.getSubimage(j * 20, 60 + i * 17, 20, 17);
+				researchCDs[i][j] = ImageUtils.subimage(rescd, j * 20, 60 + i * 17, 20, 17);
 			}
 		}
 		researchDisallowed = PCXImage.from(root + "/SCREENS/FEJL_TAK.PCX", -2);

@@ -42,16 +42,19 @@ public class UISounds {
 	private volatile int movingAverageWindow = 4;
 	/** The sound pool. */
 	private final BlockingQueue<SourceDataLine> soundPool = new LinkedBlockingQueue<SourceDataLine>(SOUND_POOL_SIZE);
+	private final SourceDataLine[] lines;
 	/**
 	 * Constructor. Loads the user interface sound samples.
 	 * @param root the IG root directory
 	 */
 	public UISounds(String root) {
 		service = Executors.newFixedThreadPool(SOUND_POOL_SIZE);
+		lines = new SourceDataLine[SOUND_POOL_SIZE];
 		// Initialize sound pool
 		for (int i = 0; i < SOUND_POOL_SIZE; i++) {
 			SourceDataLine sdl = AudioThread.createAudioOutput();
 			sdl.start();
+			lines[i] = sdl;
 			if (!soundPool.offer(sdl)) {
 				throw new AssertionError("Queue problems");
 			}
@@ -105,6 +108,7 @@ public class UISounds {
 		samples.put("GoodBye", IOUtils.load(root + "/SOUND/NOI85.SMP"));
 		samples.put("DiplomacyShow", IOUtils.load(root + "/SOUND/NOI86.SMP"));
 		samples.put("DiplomacyHide", IOUtils.load(root + "/SOUND/NOI87.SMP"));
+		samples.put("SoundTest", IOUtils.load(root + "/MUSIC/SAMPLE.SMP"));
 	}
 	/**
 	 * Plays the specified UI sound or throws an IllegalArgumentException if there is no such name.
@@ -164,6 +168,10 @@ public class UISounds {
 	 */
 	public void setMasterGain(float gain) {
 		masterGain = gain;
+		for (SourceDataLine sdl : lines) {
+			FloatControl fc = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
+			fc.setValue(masterGain);
+		}
 	}
 	/**
 	 * Mute or unmute the current playback.
@@ -171,6 +179,10 @@ public class UISounds {
 	 */
 	public void setMute(boolean mute) {
 		this.mute = mute;
+		for (SourceDataLine sdl : lines) {
+			BooleanControl bc = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
+			bc.setValue(mute);
+		}
 	}
 	public static void main(String[] args) {
 		UISounds uis = new UISounds("c:/games/ig/");

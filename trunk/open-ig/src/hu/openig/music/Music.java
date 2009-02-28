@@ -56,7 +56,7 @@ public class Music {
 			try {
 				sdl = (SourceDataLine)AudioSystem.getLine(dli);
 				sdl.open(af);
-				setGain(0);
+				setMasterGain(0);
 			} catch (LineUnavailableException ex) {
 			}
 		}
@@ -138,7 +138,7 @@ public class Music {
 	            clip.open(soundStream);
 	            clip.setLoopPoints(0, -1);
 	            clip.loop(Clip.LOOP_CONTINUOUSLY);
-	            setGain(gain);
+	            setMasterGain(gain);
 	            setMute(mute);
 	            clip.start();
 	        } catch ( UnsupportedAudioFileException e ) { 
@@ -348,7 +348,7 @@ public class Music {
 	 * Set the master gain in dB.
 	 * @param gain the gain to set
 	 */
-	public void setGain(float gain) {
+	public void setMasterGain(float gain) {
 		if (sdl != null) {
 			FloatControl f = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
 			f.setValue(gain);

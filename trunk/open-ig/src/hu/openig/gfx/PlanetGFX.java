@@ -9,6 +9,7 @@
 package hu.openig.gfx;
 
 import hu.openig.core.Tile;
+import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.PACFile.PACEntry;
@@ -251,7 +252,7 @@ public class PlanetGFX {
 		for (int i = 0; i < t.strips.length; i++) {
 			int x0 = i >= t.width ? Tile.toScreenX(i, 0) : Tile.toScreenX(0, -i);
 			int w0 = Math.min(57, t.image.getWidth() - x0);
-			t.strips[i] = t.image.getSubimage(x0, 0, w0, t.image.getHeight());
+			t.strips[i] = ImageUtils.subimage(t.image, x0, 0, w0, t.image.getHeight());
 		}
 	}
 	/**
@@ -275,63 +276,63 @@ public class PlanetGFX {
 
 		frames = new BufferedImage[4];
 		BufferedImage keretek = PCXImage.from(root + "/GFX/KERET.PCX", -2);
-		frames[0] = keretek.getSubimage(0, 0, 57, 28);
-		frames[1] = keretek.getSubimage(58, 0, 57, 28);
-		frames[2] = keretek.getSubimage(116, 0, 57, 28);
-		frames[3] = keretek.getSubimage(174, 0, 57, 28);
+		frames[0] = ImageUtils.subimage(keretek, 0, 0, 57, 28);
+		frames[1] = ImageUtils.subimage(keretek, 58, 0, 57, 28);
+		frames[2] = ImageUtils.subimage(keretek, 116, 0, 57, 28);
+		frames[3] = ImageUtils.subimage(keretek, 174, 0, 57, 28);
 		
 		BufferedImage colony = PCXImage.from(root + "/SCREENS/COLONY.PCX", -1);
-		buildingButton = colony.getSubimage(0, 0, 19, 170);
-		leftTop = colony.getSubimage(0, 169, 20, 57);
-		leftFiller = colony.getSubimage(0, 226, 20, 2);
-		leftBottom = colony.getSubimage(0, 226, 20, 57);
-		radarButton = colony.getSubimage(0, 283, 19, 159);
+		buildingButton = ImageUtils.subimage(colony, 0, 0, 19, 170);
+		leftTop = ImageUtils.subimage(colony, 0, 169, 20, 57);
+		leftFiller = ImageUtils.subimage(colony, 0, 226, 20, 2);
+		leftBottom = ImageUtils.subimage(colony, 0, 226, 20, 57);
+		radarButton = ImageUtils.subimage(colony, 0, 283, 19, 159);
 		
-		buildingInfoButton = colony.getSubimage(620, 0, 20, 146);
-		rightTop = colony.getSubimage(620, 146, 20, 130);
-		rightFiller = colony.getSubimage(620, 276, 20, 2);
-		rightBottom = colony.getSubimage(620, 276, 20, 137);
-		screenButtons = colony.getSubimage(620, 413, 20, 29);
+		buildingInfoButton = ImageUtils.subimage(colony, 620, 0, 20, 146);
+		rightTop = ImageUtils.subimage(colony, 620, 146, 20, 130);
+		rightFiller = ImageUtils.subimage(colony, 620, 276, 20, 2);
+		rightBottom = ImageUtils.subimage(colony, 620, 276, 20, 137);
+		screenButtons = ImageUtils.subimage(colony, 620, 413, 20, 29);
 		
-		colonyInfoButton = colony.getSubimage(200, 414, 105, 28);
-		//planetButton = colony.getSubimage(305, 414, 105, 28);
-		starmapButton = colony.getSubimage(410, 414, 105, 28);
-		bridgeButton = colony.getSubimage(515, 414, 105, 28);
+		colonyInfoButton = ImageUtils.subimage(colony, 200, 414, 105, 28);
+		//planetButton = ImageUtils.subimage(colony, 305, 414, 105, 28);
+		starmapButton = ImageUtils.subimage(colony, 410, 414, 105, 28);
+		bridgeButton = ImageUtils.subimage(colony, 515, 414, 105, 28);
 		
-		buildPanel = colony.getSubimage(19, 0, 181, 170);
-		radarPanel = colony.getSubimage(19, 282, 181, 160);
-		buildingInfoPanel = colony.getSubimage(424, 0, 196, 147);
+		buildPanel = ImageUtils.subimage(colony, 19, 0, 181, 170);
+		radarPanel = ImageUtils.subimage(colony, 19, 282, 181, 160);
+		buildingInfoPanel = ImageUtils.subimage(colony, 424, 0, 196, 147);
 		
 		BufferedImage colonyx = PCXImage.from(root + "/SCREENS/COLONY_X.PCX", -1);
 
-		colonyInfoButtonDown = colonyx.getSubimage(80, 198, 105, 28);
-		planetButton = colonyx.getSubimage(185, 170, 105, 28);
-		planetButtonDown = colonyx.getSubimage(185, 198, 105, 28);
-		starmapButtonDown = colonyx.getSubimage(290, 198, 105, 28);
-		bridgeButtonDown = colonyx.getSubimage(395, 198, 105, 28);
+		colonyInfoButtonDown = ImageUtils.subimage(colonyx, 80, 198, 105, 28);
+		planetButton = ImageUtils.subimage(colonyx, 185, 170, 105, 28);
+		planetButtonDown = ImageUtils.subimage(colonyx, 185, 198, 105, 28);
+		starmapButtonDown = ImageUtils.subimage(colonyx, 290, 198, 105, 28);
+		bridgeButtonDown = ImageUtils.subimage(colonyx, 395, 198, 105, 28);
 		
-		buildScrollUpDown = colonyx.getSubimage(501, 163, 21, 45);
-		buildScrollDownDown = colonyx.getSubimage(523, 163, 21, 45);
-		buildScrollNone = colonyx.getSubimage(581, 181, 22, 48);
+		buildScrollUpDown = ImageUtils.subimage(colonyx, 501, 163, 21, 45);
+		buildScrollDownDown = ImageUtils.subimage(colonyx, 523, 163, 21, 45);
+		buildScrollNone = ImageUtils.subimage(colonyx, 581, 181, 22, 48);
 		
-		buildDown = colonyx.getSubimage(544, 160, 81, 21);
-		listDown = colonyx.getSubimage(500, 208, 81, 21);
-		demolishDown = colonyx.getSubimage(611, 181, 29, 90);
+		buildDown = ImageUtils.subimage(colonyx, 544, 160, 81, 21);
+		listDown = ImageUtils.subimage(colonyx, 500, 208, 81, 21);
+		demolishDown = ImageUtils.subimage(colonyx, 611, 181, 29, 90);
 		
-		repairPercent = colonyx.getSubimage(0, 226, 145, 18);
-		damagedPercent = colonyx.getSubimage(145, 226, 145, 18);
-		notActive = colonyx.getSubimage(290, 226, 145, 18);
-		offline = colonyx.getSubimage(0, 244, 145, 18);
-		damaged = colonyx.getSubimage(145, 244, 145, 18);
-		noEnergy = colonyx.getSubimage(290, 244, 145, 18);
-		completedPercent = colonyx.getSubimage(435, 244, 145, 18);
+		repairPercent = ImageUtils.subimage(colonyx, 0, 226, 145, 18);
+		damagedPercent = ImageUtils.subimage(colonyx, 145, 226, 145, 18);
+		notActive = ImageUtils.subimage(colonyx, 290, 226, 145, 18);
+		offline = ImageUtils.subimage(colonyx, 0, 244, 145, 18);
+		damaged = ImageUtils.subimage(colonyx, 145, 244, 145, 18);
+		noEnergy = ImageUtils.subimage(colonyx, 290, 244, 145, 18);
+		completedPercent = ImageUtils.subimage(colonyx, 435, 244, 145, 18);
 
 		BufferedImage colonzx = PCXImage.from(root + "/SCREENS/COLONZ_X.PCX", -1);
 
-		vehicleWindow = colonzx.getSubimage(80, 0, 140, 79);
-		buildingNoButton = colonzx.getSubimage(0, 0, 19, 170);
-		startBattle = colonzx.getSubimage(394, 170, 106, 28);
-		startBattleDown = colonzx.getSubimage(394, 198, 106, 28);
+		vehicleWindow = ImageUtils.subimage(colonzx, 80, 0, 140, 79);
+		buildingNoButton = ImageUtils.subimage(colonzx, 0, 0, 19, 170);
+		startBattle = ImageUtils.subimage(colonzx, 394, 170, 106, 28);
+		startBattleDown = ImageUtils.subimage(colonzx, 394, 198, 106, 28);
 	}
 	/**
 	 * Returns the map for a surface name.
