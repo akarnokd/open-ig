@@ -17,6 +17,8 @@ import hu.openig.gfx.InformationGFX;
 import hu.openig.gfx.InformationRenderer;
 import hu.openig.gfx.MainmenuRenderer;
 import hu.openig.gfx.MenuGFX;
+import hu.openig.gfx.OptionsGFX;
+import hu.openig.gfx.OptionsRenderer;
 import hu.openig.gfx.PlanetGFX;
 import hu.openig.gfx.PlanetRenderer;
 import hu.openig.gfx.StarmapGFX;
@@ -78,6 +80,8 @@ public class Main extends JFrame {
 	Music music;
 	/** Set to true if the ESC is pressed while a full screen playback is in progress. */
 	private boolean playbackCancelled;
+	/** The options screen renderer. */
+	OptionsRenderer or;
 	protected void initialize(String root) {
 		this.root = root;
 		setTitle("Open Imperium Galactica");
@@ -93,10 +97,15 @@ public class Main extends JFrame {
 		ir = new InformationRenderer(new InformationGFX(root), cgfx, uis);
 		mmr = new MainmenuRenderer(new MenuGFX(root), cgfx.text);
 		mov = new MovieSurface();
+		or = new OptionsRenderer(new OptionsGFX(root), cgfx.text, uis);
+		or.setVisible(false);
 		player = new Player(mov);
-		player.setMasterGain(-20);
+		player.setMasterGain(0);
+		uis.setMasterGain(0);
+		or.setAudioVolume(1);
+		or.setMusicVolume(1);
 		screens = new JComponent[] {
-			smr, pr, ir, mmr, mov
+			smr, pr, ir, mmr, mov, or
 		};
 		
 		// setup renderers
@@ -122,12 +131,14 @@ public class Main extends JFrame {
 		setKeyboard();
 		
 		layers = new JLayeredPane();
-		layers.add(smr, Integer.valueOf(0));
-		layers.add(pr, Integer.valueOf(1));
-		layers.add(ir, Integer.valueOf(2));
-		layers.add(mmr, Integer.valueOf(3));
+		int lvl = 0;
+		layers.add(smr, Integer.valueOf(lvl++));
+		layers.add(pr, Integer.valueOf(lvl++));
+		layers.add(ir, Integer.valueOf(lvl++));
+		layers.add(mmr, Integer.valueOf(lvl++));
 
-		layers.add(mov, Integer.valueOf(4));
+		layers.add(mov, Integer.valueOf(lvl++));
+		layers.add(or, Integer.valueOf(lvl++));
 		
 		GroupLayout gl = new GroupLayout(layers);
 		layers.setLayout(gl);
@@ -137,6 +148,7 @@ public class Main extends JFrame {
 			.addComponent(pr, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(ir, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(mov, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(or, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 		);
 		gl.setVerticalGroup(
 			gl.createParallelGroup()
@@ -145,6 +157,7 @@ public class Main extends JFrame {
 			.addComponent(pr, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(ir, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(mov, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(or, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 		);
 		
 		
@@ -214,9 +227,14 @@ public class Main extends JFrame {
 		pr.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); }});
 		
 		mmr.setStartNewAction(new BtnAction() { public void invoke() { onStarmap(); }});
+		mmr.setLoadAction(new BtnAction() { public void invoke() { onLoad(); }});
 		mmr.setTitleAnimAction(new BtnAction() { public void invoke() { onTitle(); }});
 		mmr.setIntroAction(new BtnAction() { public void invoke() { onIntro(); }});
 		mmr.setQuitAction(new BtnAction() { public void invoke() { onQuit(); }});
+		
+		or.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); }});
+		or.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); }});
+
 	}
 	/** Go to starmap from main menu. */
 	private void onStarmap() {
@@ -284,12 +302,20 @@ public class Main extends JFrame {
 			if (!smr.isVisible()) {
 				uis.playSound("Starmap");
 				showScreen(smr);
+			} else
+			if (ir.isVisible()) {
+				uis.playSound("Starmap");
+				showScreen(smr);
 			}
 		}
 	}
 	private void onF3Action() {
 		if (!player.isPlayback()) {
 			if (!pr.isVisible()) {
+				uis.playSound("Colony");
+				showScreen(pr);
+			} else
+			if (ir.isVisible()) {
 				uis.playSound("Colony");
 				showScreen(pr);
 			}
@@ -390,6 +416,55 @@ public class Main extends JFrame {
 		if (player.isPlayback()) {
 			playbackCancelled = true;
 			player.stopAndWait();
+		} else
+		if (!mmr.isVisible()) {
+			if (!or.isVisible()) {
+				or.setRandomPicture();
+			}
+			or.setVisible(!or.isVisible());
+			startStopAnimations(!or.isVisible());
+			layers.validate();
+		} else
+		if (mmr.isVisible() && or.isVisible()) {
+			or.setVisible(!or.isVisible());
+			startStopAnimations(!or.isVisible());
+			layers.validate();
+		}
+	}
+	/**
+	 * Start or stop animations when the options screen is displayed
+	 * @param state start or stop animations
+	 */
+	private void startStopAnimations(boolean state) {
+		if (state) {
+			smr.startAnimations();
+		} else {
+			smr.stopAnimations();
+		}
+	}
+	/** Show the options screen when called from the main menu. */
+	private void onLoad() {
+		or.setRandomPicture();
+		or.setVisible(!or.isVisible());
+		startStopAnimations(!or.isVisible());
+		layers.validate();
+	}
+	/** If adjusting music volume. */
+	private void onAdjustSound() {
+		if (or.getAudioVolume() < 0.0001) {
+			uis.setMute(true);
+		} else {
+			uis.setMute(false);
+			uis.setMasterGain((float)(20 * Math.log10(or.getAudioVolume())));
+		}
+	}
+	/** If adjusting sound volume. */
+	private void onAdjustMusic() {
+		if (or.getMusicVolume() < 0.0001) {
+			music.setMute(true);
+		} else {
+			music.setMute(false);
+			music.setMasterGain((float)(20 * Math.log10(or.getMusicVolume())));
 		}
 	}
 }

@@ -59,4 +59,21 @@ public class Btn {
 //		rect.width = img.getWidth();
 //		rect.height = img.getHeight();
 //	}
+	/**
+	 * Set the bounds.
+	 * @param the bounding rectangle
+	 */
+	public void setBounds(Rectangle r) {
+		rect.setBounds(r);
+	}
+	/**
+	 * Set the bounds from coordinates.
+	 * @param x 
+	 * @param y
+	 * @param w
+	 * @param h
+	 */
+	public void setBounds(int x, int y, int w, int h) {
+		rect.setBounds(x, y, w, h);
+	}
 }

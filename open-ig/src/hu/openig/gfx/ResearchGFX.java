@@ -8,6 +8,7 @@
 
 package hu.openig.gfx;
 
+import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PCXImage;
 
 import java.awt.Rectangle;
@@ -129,14 +130,14 @@ public class ResearchGFX {
 		researchScreen = PCXImage.from(root + "/SCREEN/FEJLESZT.PCX", -1);
 		
 		BufferedImage res = PCXImage.from(root + "/SCREEN/FEJL_X.PCX", -1);
-		btnEmpty = res.getSubimage(336, 0, 102, 39);
-		btnStart = res.getSubimage(336, 39, 102, 39);
-		btnStartDown = res.getSubimage(336, 78, 102, 39);
-		btnEquipmentDown = res.getSubimage(336, 117, 102, 39);
+		btnEmpty = ImageUtils.subimage(res, 336, 0, 102, 39);
+		btnStart = ImageUtils.subimage(res, 336, 39, 102, 39);
+		btnStartDown = ImageUtils.subimage(res, 336, 78, 102, 39);
+		btnEquipmentDown = ImageUtils.subimage(res, 336, 117, 102, 39);
 		// the original source is malformed
-		btnProductDown = res.getSubimage(336, 156, 101, 39);
-		btnBridgeDown = res.getSubimage(336, 195, 101, 39);
-		arrow = res.getSubimage(568, 0, 15, 11);
+		btnProductDown = ImageUtils.subimage(res, 336, 156, 101, 39);
+		btnBridgeDown = ImageUtils.subimage(res, 336, 195, 101, 39);
+		arrow = ImageUtils.subimage(res, 568, 0, 15, 11);
 		// fix arrow background to transparent
 		for (int i = 0; i < arrow.getHeight(); i++) {
 			for (int j = 0; j < arrow.getWidth(); j++) {
@@ -146,42 +147,42 @@ public class ResearchGFX {
 				}
 			}
 		}
-		btnMoneyDown = res.getSubimage(549, 104, 57, 19);
-		btnViewDown = res.getSubimage(437, 189, 115, 23);
-		btnEmptySmall = res.getSubimage(437, 212, 115, 23);
-		btnStopDown = res.getSubimage(437, 258, 115, 23);
+		btnMoneyDown = ImageUtils.subimage(res, 549, 104, 57, 19);
+		btnViewDown = ImageUtils.subimage(res, 437, 189, 115, 23);
+		btnEmptySmall = ImageUtils.subimage(res, 437, 212, 115, 23);
+		btnStopDown = ImageUtils.subimage(res, 437, 258, 115, 23);
 		
-		tabSpaceships = res.getSubimage(438, 0, 111, 21);
-		tabEquipment = res.getSubimage(438, 22, 111, 21);
-		tabWeapons = res.getSubimage(438, 44, 111, 21);
-		tabBuildings = res.getSubimage(438, 65, 111, 18);
+		tabSpaceships = ImageUtils.subimage(res, 438, 0, 111, 21);
+		tabEquipment = ImageUtils.subimage(res, 438, 22, 111, 21);
+		tabWeapons = ImageUtils.subimage(res, 438, 44, 111, 21);
+		tabBuildings = ImageUtils.subimage(res, 438, 65, 111, 18);
 	
-		optSpaceships = res.getSubimage(0, 0, 168, 78);
-		optEquipment = res.getSubimage(0, 78, 168, 78);
-		optWeapons = res.getSubimage(0, 156, 168, 78);
-		optBuildings = res.getSubimage(0, 234, 168, 78);
+		optSpaceships = ImageUtils.subimage(res, 0, 0, 168, 78);
+		optEquipment = ImageUtils.subimage(res, 0, 78, 168, 78);
+		optWeapons = ImageUtils.subimage(res, 0, 156, 168, 78);
+		optBuildings = ImageUtils.subimage(res, 0, 234, 168, 78);
 		
-		optSpaceships = res.getSubimage(168, 0, 168, 14);
-		optDestroyers = res.getSubimage(168, 16, 168, 14);
-		optFlagships = res.getSubimage(168, 32, 168, 14);
-		optSatellites = res.getSubimage(168, 48, 168, 14);
-		optSpaceStations = res.getSubimage(168, 64, 168, 14);
+		optSpaceships = ImageUtils.subimage(res, 168, 0, 168, 14);
+		optDestroyers = ImageUtils.subimage(res, 168, 16, 168, 14);
+		optFlagships = ImageUtils.subimage(res, 168, 32, 168, 14);
+		optSatellites = ImageUtils.subimage(res, 168, 48, 168, 14);
+		optSpaceStations = ImageUtils.subimage(res, 168, 64, 168, 14);
 		
-		optHyperdrives = res.getSubimage(168, 78, 168, 14);
-		optModules = res.getSubimage(168, 94, 168, 14);
-		optRadars = res.getSubimage(168, 110, 168, 14);
-		optShields = res.getSubimage(168, 126, 168, 14);
+		optHyperdrives = ImageUtils.subimage(res, 168, 78, 168, 14);
+		optModules = ImageUtils.subimage(res, 168, 94, 168, 14);
+		optRadars = ImageUtils.subimage(res, 168, 110, 168, 14);
+		optShields = ImageUtils.subimage(res, 168, 126, 168, 14);
 		
-		optLasers = res.getSubimage(168, 156, 168, 14);
-		optGuns = res.getSubimage(168, 172, 168, 14);
-		optBombsMissiles = res.getSubimage(168, 188, 168, 14);
-		optTanks = res.getSubimage(168, 204, 168, 14);
-		optVehicles = res.getSubimage(168, 220, 168, 14);
+		optLasers = ImageUtils.subimage(res, 168, 156, 168, 14);
+		optGuns = ImageUtils.subimage(res, 168, 172, 168, 14);
+		optBombsMissiles = ImageUtils.subimage(res, 168, 188, 168, 14);
+		optTanks = ImageUtils.subimage(res, 168, 204, 168, 14);
+		optVehicles = ImageUtils.subimage(res, 168, 220, 168, 14);
 		
-		optColonyBuildings = res.getSubimage(168, 234, 168, 14);
-		optMilitaryBuildings = res.getSubimage(168, 250, 168, 14);
-		optColonyRadars = res.getSubimage(168, 266, 168, 14);
-		optColonyGuns = res.getSubimage(168, 282, 168, 14);
+		optColonyBuildings = ImageUtils.subimage(res, 168, 234, 168, 14);
+		optMilitaryBuildings = ImageUtils.subimage(res, 168, 250, 168, 14);
+		optColonyRadars = ImageUtils.subimage(res, 168, 266, 168, 14);
+		optColonyGuns = ImageUtils.subimage(res, 168, 282, 168, 14);
 		
 		// various locations on the research screen
 		rectAnimation = new Rectangle(2, 2, 316, 196);
@@ -206,7 +207,7 @@ public class ResearchGFX {
 		rectProduction = new Rectangle(534, 361, 102, 39);
 		rectBridge = new Rectangle(534, 400, 102, 39);
 		rectBridgeFix = new Rectangle(534, 437, 102, 2);
-		btnBridgeFix = res.getSubimage(534, 398, 102, 2);
+		btnBridgeFix = ImageUtils.subimage(res, 534, 398, 102, 2);
 		
 		rectView = new Rectangle(291, 360, 115, 23);
 		rectStop = new Rectangle(410, 360, 115, 23);

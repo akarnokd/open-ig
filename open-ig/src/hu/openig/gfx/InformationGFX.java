@@ -8,6 +8,7 @@
 
 package hu.openig.gfx;
 
+import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PCXImage;
 
 import java.awt.image.BufferedImage;
@@ -80,65 +81,65 @@ public class InformationGFX {
 		
 		
 		
-		btnColonyLarge = infox.getSubimage(0, 0, 102, 39);
-		btnColonyLargeDown = infox.getSubimage(0, 39, 102, 39);
+		btnColonyLarge = ImageUtils.subimage(infox, 0, 0, 102, 39);
+		btnColonyLargeDown = ImageUtils.subimage(infox, 0, 39, 102, 39);
 		
-		btnStarmapLarge = infox.getSubimage(102, 0, 102, 39);
-		btnStarmapLargeDown = infox.getSubimage(102, 39, 102, 39);
+		btnStarmapLarge = ImageUtils.subimage(infox, 102, 0, 102, 39);
+		btnStarmapLargeDown = ImageUtils.subimage(infox, 102, 39, 102, 39);
 
-		btnEquipmentLarge = infox.getSubimage(204, 0, 102, 39);
-		btnEquipmentLargeDown = infox.getSubimage(204, 39, 102, 39);
+		btnEquipmentLarge = ImageUtils.subimage(infox, 204, 0, 102, 39);
+		btnEquipmentLargeDown = ImageUtils.subimage(infox, 204, 39, 102, 39);
 
-		btnResearchLarge = infox.getSubimage(306, 0, 102, 39);
-		btnResearchLargeDown = infox.getSubimage(306, 39, 102, 39);
+		btnResearchLarge = ImageUtils.subimage(infox, 306, 0, 102, 39);
+		btnResearchLargeDown = ImageUtils.subimage(infox, 306, 39, 102, 39);
 
-		btnProductionLarge = infox.getSubimage(408, 0, 102, 39);
-		btnProductionLargeDown = infox.getSubimage(408, 39, 102, 39);
+		btnProductionLarge = ImageUtils.subimage(infox, 408, 0, 102, 39);
+		btnProductionLargeDown = ImageUtils.subimage(infox, 408, 39, 102, 39);
 
-		btnDiplomacyLarge = infox.getSubimage(510, 0, 102, 39);
-		btnDiplomacyLargeDown = infox.getSubimage(510, 39, 102, 39);
+		btnDiplomacyLarge = ImageUtils.subimage(infox, 510, 0, 102, 39);
+		btnDiplomacyLargeDown = ImageUtils.subimage(infox, 510, 39, 102, 39);
 		
-		btnEmptyLarge = infox.getSubimage(0, 190, 102, 39);
+		btnEmptyLarge = ImageUtils.subimage(infox, 0, 190, 102, 39);
 		// small buttons
 		
-		btnColonyInfo = infox.getSubimage(0, 78, 102, 28);
-		btnColonyInfoLightDown = infox.getSubimage(0, 106, 102, 28);
-		btnColonyInfoLight = infox.getSubimage(0, 134, 102, 28);
+		btnColonyInfo = ImageUtils.subimage(infox, 0, 78, 102, 28);
+		btnColonyInfoLightDown = ImageUtils.subimage(infox, 0, 106, 102, 28);
+		btnColonyInfoLight = ImageUtils.subimage(infox, 0, 134, 102, 28);
 		
-		btnMilitaryInfo = infox.getSubimage(102, 78, 102, 28);
-		btnMilitaryInfoLightDown = infox.getSubimage(102, 106, 102, 28);
-		btnMilitaryInfoLight = infox.getSubimage(102, 134, 102, 28);
+		btnMilitaryInfo = ImageUtils.subimage(infox, 102, 78, 102, 28);
+		btnMilitaryInfoLightDown = ImageUtils.subimage(infox, 102, 106, 102, 28);
+		btnMilitaryInfoLight = ImageUtils.subimage(infox, 102, 134, 102, 28);
 		
-		btnFinancialInfo = infox.getSubimage(204, 78, 102, 28);
-		btnFinancialInfoLightDown = infox.getSubimage(204, 106, 102, 28);
-		btnFinancialInfoLight = infox.getSubimage(204, 134, 102, 28);
+		btnFinancialInfo = ImageUtils.subimage(infox, 204, 78, 102, 28);
+		btnFinancialInfoLightDown = ImageUtils.subimage(infox, 204, 106, 102, 28);
+		btnFinancialInfoLight = ImageUtils.subimage(infox, 204, 134, 102, 28);
 		
-		btnBuildings = infox.getSubimage(306, 78, 102, 28);
-		btnBuildingsLightDown = infox.getSubimage(306, 106, 102, 28);
-		btnBuildingsLight = infox.getSubimage(306, 134, 102, 28);
+		btnBuildings = ImageUtils.subimage(infox, 306, 78, 102, 28);
+		btnBuildingsLightDown = ImageUtils.subimage(infox, 306, 106, 102, 28);
+		btnBuildingsLight = ImageUtils.subimage(infox, 306, 134, 102, 28);
 		
-		btnPlanets = infox.getSubimage(408, 78, 102, 28);
-		btnPlanetsLightDown = infox.getSubimage(408, 106, 102, 28);
-		btnPlanetsLight = infox.getSubimage(408, 134, 102, 28);
+		btnPlanets = ImageUtils.subimage(infox, 408, 78, 102, 28);
+		btnPlanetsLightDown = ImageUtils.subimage(infox, 408, 106, 102, 28);
+		btnPlanetsLight = ImageUtils.subimage(infox, 408, 134, 102, 28);
 		
-		btnFleets = infox.getSubimage(510, 78, 102, 28);
-		btnFleetsLightDown = infox.getSubimage(510, 106, 102, 28);
-		btnFleetsLight = infox.getSubimage(510, 134, 102, 28);
+		btnFleets = ImageUtils.subimage(infox, 510, 78, 102, 28);
+		btnFleetsLightDown = ImageUtils.subimage(infox, 510, 106, 102, 28);
+		btnFleetsLight = ImageUtils.subimage(infox, 510, 134, 102, 28);
 		
-		btnInventions = infox.getSubimage(0, 162, 102, 28);
-		btnAliens = infox.getSubimage(102, 162, 102, 28);
+		btnInventions = ImageUtils.subimage(infox, 0, 162, 102, 28);
+		btnAliens = ImageUtils.subimage(infox, 102, 162, 102, 28);
 		
-		btnInventionsLightDown = infox.getSubimage(204, 162, 102, 28);
-		btnAliensLightDown = infox.getSubimage(306, 162, 102, 28);
+		btnInventionsLightDown = ImageUtils.subimage(infox, 204, 162, 102, 28);
+		btnAliensLightDown = ImageUtils.subimage(infox, 306, 162, 102, 28);
 		
-		btnInventionsLight = infox.getSubimage(408, 162, 102, 28);
-		btnAliensLight = infox.getSubimage(510, 162, 102, 28);
+		btnInventionsLight = ImageUtils.subimage(infox, 408, 162, 102, 28);
+		btnAliensLight = ImageUtils.subimage(infox, 510, 162, 102, 28);
 		
-		btnEmpty = infox.getSubimage(102, 190, 102, 28);
+		btnEmpty = ImageUtils.subimage(infox, 102, 190, 102, 28);
 		
-		btnTaxMore = infox.getSubimage(204, 190, 70, 30);
-		btnTaxLess = infox.getSubimage(274, 190, 70, 30);
-		btnTaxMoreDown = infox.getSubimage(344, 190, 70, 30);
-		btnTaxLessDown = infox.getSubimage(414, 190, 70, 30);
+		btnTaxMore = ImageUtils.subimage(infox, 204, 190, 70, 30);
+		btnTaxLess = ImageUtils.subimage(infox, 274, 190, 70, 30);
+		btnTaxMoreDown = ImageUtils.subimage(infox, 344, 190, 70, 30);
+		btnTaxLessDown = ImageUtils.subimage(infox, 414, 190, 70, 30);
 	}
 }

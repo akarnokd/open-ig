@@ -10,6 +10,8 @@ package hu.openig.utils;
 import java.awt.image.BufferedImage;
 
 public final class ImageUtils {
+	/** Use subimage or separate image. */
+	private static final boolean SUBIMAGE = true; 
 	/** Private constructor. */
 	private ImageUtils() {
 		// private class
@@ -26,10 +28,10 @@ public final class ImageUtils {
 	 * @return the extracted sub-image
 	 */
 	public static BufferedImage subimage(BufferedImage src, int x, int y, int w, int h) {
-		if (w * h * 16 < src.getWidth() * src.getHeight()) {
+		if (!SUBIMAGE && w * h * 16 < src.getWidth() * src.getHeight()) {
 			BufferedImage bimg =  new BufferedImage(w, h, src.getType());
 			int[] tmp = new int[w * h];
-			src.getRGB(x, y, w, h, tmp, 0, src.getWidth());
+			src.getRGB(x, y, w, h, tmp, 0, w);
 			bimg.setRGB(0, 0, w, h, tmp, 0, w);
 			return bimg;
 		}

@@ -7,6 +7,7 @@
  */
 package hu.openig.gfx;
 
+import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.PACFile.PACEntry;
@@ -85,24 +86,24 @@ public class StarmapGFX {
 		
 		contents = new StarmapContents();
 		
-		contents.bottomLeft = body.getSubimage(0, 331, 33, 111);
-		contents.bottomFiller = body.getSubimage(33, 331, 2, 111);
-		contents.bottomRight = body.getSubimage(33, 331, 607, 111);
-		contents.shipControls = body.getSubimage(285, 359, 106, 83);
-		contents.rightTop = body.getSubimage(505, 0, 135, 42);
-		contents.rightFiller = body.getSubimage(505, 42, 135, 2);
-		contents.rightBottom = body.getSubimage(505, 42, 135, 289);
+		contents.bottomLeft = ImageUtils.subimage(body, 0, 331, 33, 111);
+		contents.bottomFiller = ImageUtils.subimage(body, 33, 331, 2, 111);
+		contents.bottomRight = ImageUtils.subimage(body, 33, 331, 607, 111);
+		contents.shipControls = ImageUtils.subimage(body, 285, 359, 106, 83);
+		contents.rightTop = ImageUtils.subimage(body, 505, 0, 135, 42);
+		contents.rightFiller = ImageUtils.subimage(body, 505, 42, 135, 2);
+		contents.rightBottom = ImageUtils.subimage(body, 505, 42, 135, 289);
 		
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// SCROLLBAR SEGMENTS
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-		contents.hscrollLeft = body.getSubimage(37, 334, 18, 18);
-		contents.hscrollFiller = body.getSubimage(55, 334, 2, 18);
-		contents.hscrollRight = body.getSubimage(55, 334, 17, 18);
+		contents.hscrollLeft = ImageUtils.subimage(body, 37, 334, 18, 18);
+		contents.hscrollFiller = ImageUtils.subimage(body, 55, 334, 2, 18);
+		contents.hscrollRight = ImageUtils.subimage(body, 55, 334, 17, 18);
 		
-		contents.vscrollTop = body.getSubimage(508, 291, 18, 18);
-		contents.vscrollFiller = body.getSubimage(508, 309, 18, 2);
-		contents.vscrollBottom = body.getSubimage(508, 309, 18, 17);
+		contents.vscrollTop = ImageUtils.subimage(body, 508, 291, 18, 18);
+		contents.vscrollFiller = ImageUtils.subimage(body, 508, 309, 18, 2);
+		contents.vscrollBottom = ImageUtils.subimage(body, 508, 309, 18, 17);
 		
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// BIGMAP
@@ -131,7 +132,7 @@ public class StarmapGFX {
 			int count = planetImg.getHeight() / width;
 			List<BufferedImage> list = new ArrayList<BufferedImage>(count);
 			for (int i = 0; i < count; i++) {
-				list.add(planetImg.getSubimage(0, width * i, width, width));
+				list.add(ImageUtils.subimage(planetImg, 0, width * i, width, width));
 			}
 			
 			aplanet.put(planetImg.getWidth(), list);
@@ -139,58 +140,58 @@ public class StarmapGFX {
 		
 		BufferedImage starx = PCXImage.from(root + "/SCREENS/STAR_X.PCX", -1);
 		
-		btnBorderLight = starx.getSubimage(0, 0, 53, 18);
-		btnRadarsLight = starx.getSubimage(53, 0, 53, 18);
-		btnStarsLight = starx.getSubimage(0, 18, 53, 18);
-		btnFleetsLight = starx.getSubimage(53, 18, 53, 18);
-		btnDestLight = starx.getSubimage(0, 36, 53, 18);
-		btnGridsLight = starx.getSubimage(53, 36, 53, 18);
+		btnBorderLight = ImageUtils.subimage(starx, 0, 0, 53, 18);
+		btnRadarsLight = ImageUtils.subimage(starx, 53, 0, 53, 18);
+		btnStarsLight = ImageUtils.subimage(starx, 0, 18, 53, 18);
+		btnFleetsLight = ImageUtils.subimage(starx, 53, 18, 53, 18);
+		btnDestLight = ImageUtils.subimage(starx, 0, 36, 53, 18);
+		btnGridsLight = ImageUtils.subimage(starx, 53, 36, 53, 18);
 
-		btnBorder = starx.getSubimage(108, 0, 53, 18);
-		btnRadars = starx.getSubimage(161, 0, 53, 18);
-		btnStars = starx.getSubimage(108, 18, 53, 18);
-		btnFleets = starx.getSubimage(161, 18, 53, 18);
-		btnDest = starx.getSubimage(108, 36, 53, 18);
-		btnGrids = starx.getSubimage(161, 36, 53, 18);
+		btnBorder = ImageUtils.subimage(starx, 108, 0, 53, 18);
+		btnRadars = ImageUtils.subimage(starx, 161, 0, 53, 18);
+		btnStars = ImageUtils.subimage(starx, 108, 18, 53, 18);
+		btnFleets = ImageUtils.subimage(starx, 161, 18, 53, 18);
+		btnDest = ImageUtils.subimage(starx, 108, 36, 53, 18);
+		btnGrids = ImageUtils.subimage(starx, 161, 36, 53, 18);
 
-		btnNameOff = starx.getSubimage(0, 54, 108, 18);
-		btnNameColony = starx.getSubimage(0, 72, 108, 18);
-		btnNameFleets = starx.getSubimage(0, 90, 108, 18);
-		btnNameBoth = starx.getSubimage(0, 108, 108, 18);
+		btnNameOff = ImageUtils.subimage(starx, 0, 54, 108, 18);
+		btnNameColony = ImageUtils.subimage(starx, 0, 72, 108, 18);
+		btnNameFleets = ImageUtils.subimage(starx, 0, 90, 108, 18);
+		btnNameBoth = ImageUtils.subimage(starx, 0, 108, 108, 18);
 		
-		btnColonise = starx.getSubimage(0, 126, 108, 15);
-		btnColoniseDisabled = starx.getSubimage(108, 126, 108, 15);
+		btnColonise = ImageUtils.subimage(starx, 0, 126, 108, 15);
+		btnColoniseDisabled = ImageUtils.subimage(starx, 108, 126, 108, 15);
 		
-		btnAddSat = starx.getSubimage(109, 54, 84, 17);
-		btnAddSpySat1 = starx.getSubimage(109, 71, 84, 17);
-		btnAddSpySat2 = starx.getSubimage(109, 88, 84, 17);
-		btnAddHubble2 = starx.getSubimage(109, 105, 84, 17);
+		btnAddSat = ImageUtils.subimage(starx, 109, 54, 84, 17);
+		btnAddSpySat1 = ImageUtils.subimage(starx, 109, 71, 84, 17);
+		btnAddSpySat2 = ImageUtils.subimage(starx, 109, 88, 84, 17);
+		btnAddHubble2 = ImageUtils.subimage(starx, 109, 105, 84, 17);
 		
-		btnEquipmentDisabled = starx.getSubimage(216, 0, 103, 28);
-		btnEquipmentDown = starx.getSubimage(216, 28, 103, 28);
-		btnColonyDown = starx.getSubimage(216, 84, 103, 28);
+		btnEquipmentDisabled = ImageUtils.subimage(starx, 216, 0, 103, 28);
+		btnEquipmentDown = ImageUtils.subimage(starx, 216, 28, 103, 28);
+		btnColonyDown = ImageUtils.subimage(starx, 216, 84, 103, 28);
 		
-		btnMagnifyLight = starx.getSubimage(352, 60, 33, 64);
-		btnMagnifyDisabled = starx.getSubimage(599, 78, 33, 64);
+		btnMagnifyLight = ImageUtils.subimage(starx, 352, 60, 33, 64);
+		btnMagnifyDisabled = ImageUtils.subimage(starx, 599, 78, 33, 64);
 		
-		btnNormalDisabled = starx.getSubimage(319, 138, 66, 20);
-		btnScrollDisabled = starx.getSubimage(385, 138, 66, 20);
-		btnZoomDisabled = starx.getSubimage(451, 138, 66, 20);
+		btnNormalDisabled = ImageUtils.subimage(starx, 319, 138, 66, 20);
+		btnScrollDisabled = ImageUtils.subimage(starx, 385, 138, 66, 20);
+		btnZoomDisabled = ImageUtils.subimage(starx, 451, 138, 66, 20);
 		
-		btnNormalLight = starx.getSubimage(533, 78, 66, 20);
-		btnScrollLight = starx.getSubimage(533, 98, 66, 20);
-		btnZoomLight = starx.getSubimage(533, 118, 66, 20);
+		btnNormalLight = ImageUtils.subimage(starx, 533, 78, 66, 20);
+		btnScrollLight = ImageUtils.subimage(starx, 533, 98, 66, 20);
+		btnZoomLight = ImageUtils.subimage(starx, 533, 118, 66, 20);
 		
-		btnPrevDisabled = starx.getSubimage(483, 0, 50, 20);
-		btnPrevDown = starx.getSubimage(483, 41, 50, 18);
-		btnNextDisabled = starx.getSubimage(483, 60, 49, 20);
-		btnNextDown = starx.getSubimage(483, 101, 49, 18);
+		btnPrevDisabled = ImageUtils.subimage(starx, 483, 0, 50, 20);
+		btnPrevDown = ImageUtils.subimage(starx, 483, 41, 50, 18);
+		btnNextDisabled = ImageUtils.subimage(starx, 483, 60, 49, 20);
+		btnNextDown = ImageUtils.subimage(starx, 483, 101, 49, 18);
 		
-		btnInfoDown = starx.getSubimage(533, 0, 102, 39);
-		btnBridgeDown = starx.getSubimage(533, 39, 102, 39);
+		btnInfoDown = ImageUtils.subimage(starx, 533, 0, 102, 39);
+		btnBridgeDown = ImageUtils.subimage(starx, 533, 39, 102, 39);
 		
-		btnMoveLight = starx.getSubimage(385, 69, 98, 23);
-		btnAttackLight = starx.getSubimage(385, 92, 98, 23);
-		btnStopLight = starx.getSubimage(385, 115, 98, 23);
+		btnMoveLight = ImageUtils.subimage(starx, 385, 69, 98, 23);
+		btnAttackLight = ImageUtils.subimage(starx, 385, 92, 98, 23);
+		btnStopLight = ImageUtils.subimage(starx, 385, 115, 98, 23);
 	}
 }
