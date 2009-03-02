@@ -36,6 +36,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
@@ -80,24 +86,56 @@ public class Main extends JFrame {
 	Music music;
 	/** Set to true if the ESC is pressed while a full screen playback is in progress. */
 	private boolean playbackCancelled;
+	public ExecutorService exec;
+	StarmapGFX starmapGFX;
+	PlanetGFX planetGFX;
+	InformationGFX infoGFX;
+	MenuGFX menuGFX;
+	OptionsGFX optionsGFX;
 	/** The options screen renderer. */
 	OptionsRenderer or;
-	protected void initialize(String root) {
+	/** The program is currently in Game mode. */
+	boolean inGame;
+	/**
+	 * Initialize resources from the given root directory.
+	 * @param root the root directory
+	 */
+	protected void initialize(final String root) {
 		this.root = root;
 		setTitle("Open Imperium Galactica");
 		setBackground(Color.BLACK);
 		fadeTimer = new Timer(FADE_TIME, null);
-		uis = new UISounds(root);
+		
+		exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		
 		music = new Music(".");
-		cgfx = new CommonGFX(root);
+
+		List<Future<?>> futures = new LinkedList<Future<?>>();
+		futures.add(exec.submit(new Runnable() { public void run() { uis = new UISounds(root); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { cgfx = new CommonGFX(root); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { starmapGFX = new StarmapGFX(root); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { planetGFX = new PlanetGFX(root); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { infoGFX = new InformationGFX(root); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { menuGFX = new MenuGFX(root); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { optionsGFX = new OptionsGFX(root); }}));
+		
+		for (Future<?> f : futures) {
+			try {
+				f.get();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			} catch (ExecutionException e1) {
+				e1.printStackTrace();
+			}
+		}
 		
 		// initialize renderers
-		smr = new StarmapRenderer(new StarmapGFX(root), cgfx, uis);
-		pr = new PlanetRenderer(new PlanetGFX(root), cgfx, uis);
-		ir = new InformationRenderer(new InformationGFX(root), cgfx, uis);
-		mmr = new MainmenuRenderer(new MenuGFX(root), cgfx.text);
+		smr = new StarmapRenderer(starmapGFX, cgfx, uis);
+		pr = new PlanetRenderer(planetGFX, cgfx, uis);
+		ir = new InformationRenderer(infoGFX, cgfx, uis);
+		mmr = new MainmenuRenderer(menuGFX, cgfx.text);
 		mov = new MovieSurface();
-		or = new OptionsRenderer(new OptionsGFX(root), cgfx.text, uis);
+		or = new OptionsRenderer(optionsGFX, cgfx.text, uis);
 		or.setVisible(false);
 		player = new Player(mov);
 		player.setMasterGain(0);
@@ -120,11 +158,7 @@ public class Main extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				uis.close();
-				smr.stopAnimations();
-				player.setOnCompleted(null);
-				player.stopAndWait();
-				music.close();
+				doQuit();
 			}
 		});
 
@@ -234,10 +268,11 @@ public class Main extends JFrame {
 		
 		or.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); }});
 		or.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); }});
-
+		or.setOnExit(new BtnAction() { public void invoke() { doExit(); }});
 	}
 	/** Go to starmap from main menu. */
 	private void onStarmap() {
+		inGame = true;
 		uis.playSound("WelcomeToIG");
 		showScreen(smr);
 		music.playFile("music1.wav");
@@ -466,5 +501,23 @@ public class Main extends JFrame {
 			music.setMute(false);
 			music.setMasterGain((float)(20 * Math.log10(or.getMusicVolume())));
 		}
+	}
+	/** Perform actions to quit from the application. */
+	private void doQuit() {
+		uis.close();
+		smr.stopAnimations();
+		player.setOnCompleted(null);
+		player.stopAndWait();
+		music.close();
+		exec.shutdown();
+	}
+	/** Perform the exit operation. */
+	private void doExit() {
+		or.setVisible(false);
+		mmr.setVisible(true);
+		startStopAnimations(false);
+		layers.validate();
+		music.stop();
+		inGame = false;
 	}
 }
