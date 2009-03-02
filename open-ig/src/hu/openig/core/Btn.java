@@ -24,7 +24,7 @@ public class Btn {
 	/** Button visibility indicator. */
 	public boolean visible = true;
 	/** The action to perform when the button is clicked. */
-	private BtnAction onClick;
+	public BtnAction onClick;
 	/**
 	 * Constructor.
 	 */

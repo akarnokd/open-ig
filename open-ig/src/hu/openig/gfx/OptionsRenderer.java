@@ -384,4 +384,25 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	public float getAudioVolume() {
 		return audioVolume;
 	}
+	/**
+	 * Set the on exit action.
+	 * @param action the action
+	 */
+	public void setOnExit(BtnAction action) {
+		btnExit.onClick = action;
+	}
+	/**
+	 * Set the on load action.
+	 * @param action the action
+	 */
+	public void setOnLoad(BtnAction action) {
+		btnLoad.onClick = action;
+	}
+	/**
+	 * Set the on save action.
+	 * @param action the action
+	 */
+	public void setOnSave(BtnAction action) {
+		btnSave.onClick = action;
+	}
 }
