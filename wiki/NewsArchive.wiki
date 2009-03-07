@@ -1,1 +1,14 @@
 #summary News archive.
+
+January 28. 2009
+
+  * Made some enhancements in audio, screen switching and on information screen.
+
+January 19. 2009
+
+  * Updated the !AnimPlay utility. Now it allows to stop the playback, and resize the playback window.
+
+January 18. 2009
+
+  * Fixed some minor issues in the !AnimPlay utility.
+  * Created a demonstration application to show the current state of the game.
