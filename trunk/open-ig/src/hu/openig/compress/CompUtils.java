@@ -8,9 +8,12 @@
 
 package hu.openig.compress;
 
+import hu.openig.utils.IOUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -287,5 +290,168 @@ public final class CompUtils {
 			
 		}
 		return bout.toByteArray();
+	}
+	/**
+	 * Signifiy the 16 bit sound data.
+	 * 
+	 * @param buffer
+	 *            the buffer
+	 */
+	void signifySound(byte[] buffer, int len) {
+		for (int i = 0; i < len; i += 2) {
+			short v = (short) ((buffer[i] & 0xFF) | (buffer[i + 1] & 0xFF) << 8);
+			v -= 32768;
+			buffer[i] = (byte) (v & 0xFF);
+			buffer[i + 1] = (byte) ((v & 0xFF00) >> 8);
+		}
+	}
+
+	/**
+	 * Switch between big endian and little endian byte order
+	 * 
+	 * @param val
+	 *            the value to switch
+	 * @return the switched value
+	 */
+	public static int rotate(int val) {
+		return (val & 0xFF000000) >> 24 | (val & 0xFF0000) >> 8
+				| (val & 0xFF00) << 8 | (val & 0xFF) << 24;
+	}
+
+	/** Find the minimum of repeated compression loops. */
+	public static void compressLoop(byte[] sound) {
+		byte[] comp;
+		double ratio = 1;
+		byte[] inp = sound;
+		int loop = 1;
+		while (true) {
+			byte[] diff = CompUtils.difference16(inp);
+			comp = CompUtils.compressGZIP(diff);
+			double newRatio = comp.length / (double) inp.length;
+			System.out.printf("Compress %d: %d -> %d, %.2f%%%n", loop,
+					inp.length, comp.length, newRatio * 100);
+			if (newRatio > 1 || (Math.abs(newRatio - ratio) < 0.001)) {
+				break;
+			}
+			ratio = newRatio;
+			// re differentiate
+			inp = diff;
+			loop++;
+		}
+	}
+
+	/**
+	 * Test compressions.
+	 */
+	public static void testCompress() {
+		byte[] orig = IOUtils.load("music1.wav");
+		byte[] sound = Arrays.copyOfRange(orig, 0x2C, orig.length);
+		System.out.printf("Original: %d%n", sound.length);
+		byte[] comp;
+		byte[] rest;
+		long time;
+		time = System.nanoTime();
+		comp = CompUtils.compress8(sound);
+		System.out.printf("Compress8: %d in %d ms, %.2f%%%n", comp.length,
+				(System.nanoTime() - time) / 1000000, comp.length * 100.0
+						/ sound.length);
+
+		time = System.nanoTime();
+		rest = CompUtils.decompress8(comp);
+		System.out.printf("Decompress8: %d in %d ms%n", rest.length, (System
+				.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+
+		time = System.nanoTime();
+		comp = CompUtils.compress16(sound);
+		System.out.printf("Compress16: %d in %d ms, %.2f%%%n", comp.length,
+				(System.nanoTime() - time) / 1000000, comp.length * 100.0
+						/ sound.length);
+
+		time = System.nanoTime();
+		rest = CompUtils.decompress16(comp);
+		System.out.printf("Decompress16: %d in %d ms%n", rest.length, (System
+				.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+
+		time = System.nanoTime();
+		comp = CompUtils.compressGZIP(sound);
+		System.out.printf("CompressGZIP: %d in %d ms, %.2f%%%n", comp.length,
+				(System.nanoTime() - time) / 1000000, comp.length * 100.0
+						/ sound.length);
+
+		time = System.nanoTime();
+		rest = CompUtils.decompressGZIP(comp);
+		System.out.printf("DecompressGZIP: %d in %d ms%n", rest.length, (System
+				.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+
+		time = System.nanoTime();
+		comp = CompUtils.compressGZIP(CompUtils.interleave16(CompUtils
+				.difference16(sound.clone())));
+		System.out.printf("Compress16+IL: %d in %d ms, %.2f%%%n", comp.length,
+				(System.nanoTime() - time) / 1000000, comp.length * 100.0
+						/ sound.length);
+
+		time = System.nanoTime();
+		rest = CompUtils.undifference16(CompUtils.uninterleave16(CompUtils
+				.decompressGZIP(comp)));
+		System.out.printf("Decompress16+IL: %d in %d ms%n", rest.length,
+				(System.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+
+		time = System.nanoTime();
+		comp = CompUtils.compressGZIP(CompUtils.difference8(CompUtils
+				.interleave16(CompUtils.difference16(sound.clone()))));
+		System.out.printf("Compress16+IL+D8: %d in %d ms, %.2f%%%n",
+				comp.length, (System.nanoTime() - time) / 1000000, comp.length
+						* 100.0 / sound.length);
+
+		time = System.nanoTime();
+		rest = CompUtils.undifference16(CompUtils.uninterleave16(CompUtils
+				.undifference8(CompUtils.decompressGZIP(comp))));
+		System.out.printf("Decompress16+IL+D8: %d in %d ms%n", rest.length,
+				(System.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+
+		time = System.nanoTime();
+		comp = CompUtils.rle(CompUtils.interleave16(sound));
+		System.out.printf("RLE: %d in %d ms, %.2f%%%n", comp.length, (System
+				.nanoTime() - time) / 1000000, comp.length * 100.0
+				/ sound.length);
+
+		time = System.nanoTime();
+		rest = CompUtils.uninterleave16(CompUtils.unRle(comp));
+		System.out.printf("UNRLE: %d in %d ms%n", rest.length, (System
+				.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
+		// compressLoop(sound);
+		time = System.nanoTime();
+		comp = CompUtils.compressGZIP(CompUtils.rle(CompUtils
+				.interleave16(sound)));
+		System.out.printf("RLE+Gzip: %d in %d ms, %.2f%%%n", comp.length,
+				(System.nanoTime() - time) / 1000000, comp.length * 100.0
+						/ sound.length);
+
+		time = System.nanoTime();
+		rest = CompUtils.uninterleave16(CompUtils.unRle(CompUtils
+				.decompressGZIP(comp)));
+		System.out.printf("UNRLE+Gzip: %d in %d ms%n", rest.length, (System
+				.nanoTime() - time) / 1000000);
+		if (!Arrays.equals(sound, rest)) {
+			System.err.println("Differs!");
+		}
 	}
 }

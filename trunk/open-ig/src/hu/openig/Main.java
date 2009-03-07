@@ -275,7 +275,9 @@ public class Main extends JFrame {
 		inGame = true;
 		uis.playSound("WelcomeToIG");
 		showScreen(smr);
-		music.playFile("music1.wav");
+		startStopAnimations(true);
+		
+		music.playFile("res:/hu/openig/res/music1.ogg", "res:/hu/openig/res/music2.ogg", "res:/hu/openig/res/music3.ogg");
 	}
 	/** Quit pressed on starmap. */
 	private void onQuit() {
@@ -508,6 +510,7 @@ public class Main extends JFrame {
 		smr.stopAnimations();
 		player.setOnCompleted(null);
 		player.stopAndWait();
+		music.stop();
 		music.close();
 		exec.shutdown();
 	}
@@ -518,6 +521,7 @@ public class Main extends JFrame {
 		startStopAnimations(false);
 		layers.validate();
 		music.stop();
+		music.close();
 		inGame = false;
 	}
 }

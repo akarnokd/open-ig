@@ -1,14 +1,22 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 package hu.openig.music;
 
 import hu.openig.compress.CompUtils;
 import hu.openig.utils.IOUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
 import java.util.zip.GZIPOutputStream;
 
 import javax.sound.sampled.AudioFormat;
@@ -21,8 +29,10 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
 /**
  * Background music player.
+ * 
  * @author karnokd, 2009.02.23.
  * @version $Revision 1.0$
  */
@@ -40,47 +50,58 @@ public class Music {
 	/** The clip for sound playback. */
 	private volatile Clip soundClip;
 	/** Use soundClip for playback. */
-	private final boolean useClip = true;
+	private final boolean useClip = false;
+	/** OGG music player. */
+	private volatile OggMusic oggMusic;
+
 	/**
 	 * Constructor. Initializes the audio output.
-	 * @param root the root directory
+	 * 
+	 * @param root
+	 *            the root directory
 	 */
 	public Music(String root) {
 		this.root = root;
-		if (!useClip) {
-			AudioFormat af = new AudioFormat(22050, 16, 1, true, false);
-			DataLine.Info dli = new DataLine.Info(SourceDataLine.class, af);
-			if (!AudioSystem.isLineSupported(dli)) {
-				return;
-			}
-			try {
-				sdl = (SourceDataLine)AudioSystem.getLine(dli);
-				sdl.open(af);
-				setMasterGain(0);
-			} catch (LineUnavailableException ex) {
-			}
+	}
+	/** Initialize wave playback format. */
+	private void initWave() {
+		AudioFormat af = new AudioFormat(22050, 16, 1, true, false);
+		DataLine.Info dli = new DataLine.Info(SourceDataLine.class, af);
+		if (!AudioSystem.isLineSupported(dli)) {
+			return;
+		}
+		try {
+			sdl = (SourceDataLine) AudioSystem.getLine(dli);
+			sdl.open(af);
+			setMasterGain(0);
+		} catch (LineUnavailableException ex) {
 		}
 	}
+
 	/**
 	 * Start/continue the music playback.
 	 */
 	public void play() {
 		if (sdl != null) {
 			sdl.start();
-		} else
-		if (soundClip != null) {
+		} else if (soundClip != null) {
 			soundClip.start();
+		} else if (oggMusic != null) {
+			oggMusic.outputLine.start();
 		}
 	}
+
 	/** Stop the music playback. */
 	public void stop() {
 		if (sdl != null) {
 			sdl.stop();
-		} else
-		if (soundClip != null) {
+		} else if (soundClip != null) {
 			soundClip.stop();
+		} else if (oggMusic != null) {
+			oggMusic.outputLine.stop();
 		}
 	}
+
 	/**
 	 * Stop the music playback and close the playback thread.
 	 */
@@ -89,301 +110,305 @@ public class Music {
 			sdl.stop();
 			sdl.drain();
 			sdl.close();
+			sdl = null;
 		}
 		if (soundClip != null) {
 			soundClip.stop();
 			soundClip.drain();
 			soundClip.close();
+			soundClip = null;
+		}
+		if (oggMusic != null) {
+			oggMusic.close();
+			oggMusic = null;
 		}
 		if (playbackThread != null) {
 			playbackThread.interrupt();
 			playbackThread = null;
 		}
 	}
+
 	/**
-	 * Play the given file.
-	 * @param fileName
+	 * Play the given file list in the given sequence.
+	 * 
+	 * @param fileName the array of filenames to play
 	 */
-	public void playFile(final String fileName) {
+	public void playFile(final String... fileName) {
 		stop();
 		Thread th = playbackThread;
 		if (th != null) {
 			th.interrupt();
 			playbackThread = null;
 		}
-		th = new Thread(new Runnable() {
+		th = new Thread(null, new Runnable() {
 			public void run() {
-				if (sdl != null || useClip) {
-					playbackLoop(fileName);
-				}
+				playbackLoop(fileName);
 			}
-		});
+		}, "MusicPlayback-" + fileName);
 		playbackThread = th;
 		th.start();
 	}
+
 	/**
 	 * The audio playback loop.
-	 * @param fileName the audio file to play back
+	 * 
+	 * @param fileNames
+	 *            the audio files to play back
 	 */
-	private void playbackLoop(String fileName) {
-		if (useClip) {
-	        try { 
-	            File audioFile = new File(root + "/" + fileName);
-	            AudioInputStream soundStream = AudioSystem.getAudioInputStream(audioFile);
-	            AudioFormat streamFormat = soundStream.getFormat();
-	            DataLine.Info clipInfo = new DataLine.Info(Clip.class, streamFormat);
-	 
-	            Clip clip = (Clip)AudioSystem.getLine(clipInfo);
-	            soundClip = clip;
-	            clip.open(soundStream);
-	            clip.setLoopPoints(0, -1);
-	            clip.loop(Clip.LOOP_CONTINUOUSLY);
-	            setMasterGain(gain);
-	            setMute(mute);
-	            clip.start();
-	        } catch ( UnsupportedAudioFileException e ) { 
-	        	e.printStackTrace();
-	        } catch ( IOException e ) { 
-	        	e.printStackTrace();
-	        } catch ( LineUnavailableException e ) {
-	        	e.printStackTrace();
-	        }
-		} else {
-			try {
-				RandomAccessFile raf = new RandomAccessFile(root + "/" + fileName, "r");
-				
-				// skip chunks
-				long startOffset = findData(raf);
-				byte[] buffer = new byte[16384];
-				// compensate for signed
-				// playback loop
-				sdl.start();
-				while (playbackThread == Thread.currentThread() 
-						&& !Thread.currentThread().isInterrupted()) {
-					// skip wav header
-					raf.seek(startOffset);
-					int read = 0;
-					do {
-						read = raf.read(buffer);
-						if (read > 0) {
-							//signifySound(buffer, read);
-							sdl.write(buffer, 0, read);
-						}
-					} while (playbackThread == Thread.currentThread() 
-						&& !Thread.currentThread().isInterrupted() && read >= 0);
+	private void playbackLoop(String... fileNames) {
+		while (checkStop()) {
+			for (String fileName : fileNames) {
+				if (!checkStop()) {
+					break;
 				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
+				if (useClip) {
+					playBackClip(fileName);
+				} else {
+					try {
+						if (fileName.toUpperCase().endsWith(".WAV")) {
+							playbackWav(fileName);
+						} else if (fileName.toUpperCase().endsWith(".OGG")) {
+							playbackOgg(fileName);
+						}
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+				}
 			}
 		}
-
 	}
 	/**
-	 * Finds the 'data' chunk in a RIFF wav file.
-	 * @param raf the random access file
-	 * @return the offset of the actual data chunk
-	 * @throws IOException if an IO error occurs
+	 * Returns true if the playback can continue.
+	 * @return true if the playback can continue
 	 */
-	long findData(RandomAccessFile raf) throws IOException {
-		raf.seek(12);
-		while (raf.getFilePointer() < raf.length()) {
-			int type = raf.readInt();
-			if (type == 0x64617461) {
-				raf.readInt();
-				return raf.getFilePointer();
+	private boolean checkStop() {
+		return playbackThread == Thread.currentThread()
+		&& !Thread.currentThread().isInterrupted();
+	}
+	/**
+	 * Plays back the given filename as an OGG audio file.
+	 * @param fileName the file or resource to play
+	 * @throws IOException
+	 */
+	private void playbackOgg(String fileName) throws IOException {
+		InputStream raf = null;
+		try {
+			if (fileName.startsWith("res:")) {
+				raf = Music.class.getResourceAsStream(fileName.substring(4));
 			} else {
-				int count = rotate(raf.readInt());
-				raf.seek(raf.getFilePointer() + count);
+				raf = new FileInputStream(root + "/"
+						+ fileName);
 			}
-		}
-		return raf.length();
-	}
-	/**
-	 * Signifiy the 16 bit sound data.
-	 * @param buffer the buffer
-	 */
-	void signifySound(byte[] buffer, int len) {
-		for (int i = 0; i < len; i += 2) {
-			short v = (short)((buffer[i] & 0xFF) | (buffer[i + 1] & 0xFF) << 8);
-			v -= 32768;
-			buffer[i] = (byte)(v & 0xFF);
-			buffer[i + 1] = (byte)((v & 0xFF00) >> 8);
+			oggMusic = new OggMusic(Thread.currentThread());
+			oggMusic.playOgg(raf);
+		} finally {
+			raf.close();
 		}
 	}
 	/**
-	 * Switch between big endian and little endian byte order
-	 * @param val the value to switch
-	 * @return the switched value
-	 */
-	private static int rotate(int val) {
-		return (val & 0xFF000000) >> 24 | (val & 0xFF0000) >> 8 
-		| (val & 0xFF00) << 8 | (val & 0xFF) << 24;
-	}
-	/**
-	 * Convert the audio.
+	 * Plays back the given filename as a WAV file.
+	 * @param fileName
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	static void convertMusic() throws FileNotFoundException,
+	private void playbackWav(String fileName) throws FileNotFoundException,
 			IOException {
-		File f = new File("music2.wav");
-		byte[] sound = new byte[(int)(f.length() - 0x2C)];
-		RandomAccessFile raf = new RandomAccessFile(f, "r");
-		raf.seek(0x2C);
-		raf.read(sound);
-		raf.close();
-		sound = CompUtils.interleave16(CompUtils.difference16(sound));
-		GZIPOutputStream zout = new GZIPOutputStream(new FileOutputStream("music2.snd"));
-		zout.write(sound);
-		zout.close();
-	}
-	/** Find the minimum of repeated compression loops. */
-	public static void compressLoop(byte[] sound) {
-		byte[] comp;
-		double ratio = 1;
-		byte[] inp = sound;
-		int loop = 1;
-		while (true) {
-			  byte[] diff = CompUtils.difference16(inp);
-			  comp = CompUtils.compressGZIP(diff);
-			  double newRatio = comp.length / (double)inp.length;
-			  System.out.printf("Compress %d: %d -> %d, %.2f%%%n", loop, inp.length, comp.length, newRatio * 100);
-			  if (newRatio > 1 || (Math.abs(newRatio - ratio) < 0.001)) {
-				  break;
-			  }
-			  ratio = newRatio;
-			  // re differentiate
-			  inp = diff;
-			  loop++;
+		InputStream raf = null;
+		if (fileName.startsWith("res:")) {
+			raf = Music.class.getResourceAsStream(fileName.substring(4));
+		} else {
+			raf = new FileInputStream(root + "/"
+					+ fileName);
+		}
+		// skip chunks
+		try {
+			long startOffset = findData(raf);
+			raf.close();
+			byte[] buffer = new byte[16384];
+			// compensate for signed
+			// playback loop
+			initWave();
+			sdl.start();
+			while (checkStop()) {
+				if (fileName.startsWith("res:")) {
+					raf = Music.class.getResourceAsStream(fileName.substring(4));
+				} else {
+					raf = new FileInputStream(root + "/"
+							+ fileName);
+				}
+				// skip wav header
+				IOUtils.skipFully(raf, startOffset);
+				int read = 0;
+				do {
+					read = raf.read(buffer);
+					if (read > 0) {
+						// signifySound(buffer, read);
+						sdl.write(buffer, 0, read);
+					}
+				} while (checkStop() && read >= 0);
+			}
+		} finally {
+			raf.close();
 		}
 	}
 	/**
-	 * Test compressions.
+	 * Play back music using the Clip object.
+	 * @param fileName the file or resource to playback
 	 */
-	public static void testCompress() {
-		byte[] orig = IOUtils.load("music1.wav");
-		byte[] sound = Arrays.copyOfRange(orig, 0x2C, orig.length);
-		System.out.printf("Original: %d%n", sound.length);
-		byte[] comp;
-		byte[] rest;
-		long time;
-		time = System.nanoTime();
-		comp = CompUtils.compress8(sound);
-		System.out.printf("Compress8: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = CompUtils.decompress8(comp);
-		System.out.printf("Decompress8: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
-		}
+	private void playBackClip(String fileName) {
+		try {
+			AudioInputStream soundStream = null;
+			if (fileName.startsWith("res:")) {
+				soundStream = AudioSystem.getAudioInputStream(Music.class.getResourceAsStream(fileName.substring(4)));
+			} else {
+				File audioFile = new File(root + "/" + fileName);
+				soundStream = AudioSystem.getAudioInputStream(audioFile);
+			}
+			AudioFormat streamFormat = soundStream.getFormat();
+			DataLine.Info clipInfo = new DataLine.Info(Clip.class,
+					streamFormat);
 
-		time = System.nanoTime();
-		comp = CompUtils.compress16(sound);
-		System.out.printf("Compress16: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = CompUtils.decompress16(comp);
-		System.out.printf("Decompress16: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
-		}
-		
-		time = System.nanoTime();
-		comp = CompUtils.compressGZIP(sound);
-		System.out.printf("CompressGZIP: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = CompUtils.decompressGZIP(comp);
-		System.out.printf("DecompressGZIP: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
-		}
-		
-		time = System.nanoTime();
-		comp = CompUtils.compressGZIP(CompUtils.interleave16(CompUtils.difference16(sound.clone())));
-		System.out.printf("Compress16+IL: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = CompUtils.undifference16(CompUtils.uninterleave16(CompUtils.decompressGZIP(comp)));
-		System.out.printf("Decompress16+IL: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
-		}
-		
-		time = System.nanoTime();
-		comp = CompUtils.compressGZIP(CompUtils.difference8(CompUtils.interleave16(CompUtils.difference16(sound.clone()))));
-		System.out.printf("Compress16+IL+D8: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = CompUtils.undifference16(CompUtils.uninterleave16(CompUtils.undifference8(CompUtils.decompressGZIP(comp))));
-		System.out.printf("Decompress16+IL+D8: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
-		}
-
-		time = System.nanoTime();
-		comp = CompUtils.rle(CompUtils.interleave16(sound));
-		System.out.printf("RLE: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = CompUtils.uninterleave16(CompUtils.unRle(comp));
-		System.out.printf("UNRLE: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
-		}
-		//compressLoop(sound);
-		time = System.nanoTime();
-		comp = CompUtils.compressGZIP(CompUtils.rle(CompUtils.interleave16(sound)));
-		System.out.printf("RLE+Gzip: %d in %d ms, %.2f%%%n", comp.length, (System.nanoTime() - time) / 1000000, comp.length * 100.0 / sound.length);
-		
-		time = System.nanoTime();
-		rest = CompUtils.uninterleave16(CompUtils.unRle(CompUtils.decompressGZIP(comp)));
-		System.out.printf("UNRLE+Gzip: %d in %d ms%n", rest.length, (System.nanoTime() - time) / 1000000);
-		if (!Arrays.equals(sound, rest)) {
-			System.err.println("Differs!");
+			Clip clip = (Clip) AudioSystem.getLine(clipInfo);
+			soundClip = clip;
+			clip.open(soundStream);
+			clip.setLoopPoints(0, -1);
+			setMasterGain(gain);
+			setMute(mute);
+			clip.start();
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Finds the 'data' chunk in a RIFF wav file.
+	 * 
+	 * @param raf
+	 *            the random access file
+	 * @return the offset of the actual data chunk
+	 * @throws IOException
+	 *             if an IO error occurs
+	 */
+	static long findData(InputStream raf) throws IOException {
+		IOUtils.skipFully(raf, 12);
+		long offset = 12;
+		while (true) {
+			int type = IOUtils.readIntLE(raf);
+			offset += 4;
+			if (type == 0x61746164) {
+				IOUtils.skipFully(raf, 4);
+				return offset + 4;
+			} else {
+				int count = IOUtils.readIntLE(raf);
+				IOUtils.skipFully(raf, count);
+				offset += count;
+			}
+		}
+	}
+	/**
+	 * Finds the 'data' chunk in a RIFF wav file.
+	 * 
+	 * @param raf
+	 *            the random access file
+	 * @return the offset of the actual data chunk
+	 * @throws IOException
+	 *             if an IO error occurs
+	 */
+	static long findData(RandomAccessFile raf) throws IOException {
+		raf.seek(12);
+		long offset = 12;
+		while (true) {
+			int type = IOUtils.readIntLE(raf);
+			offset += 4;
+			if (type == 0x61746164) {
+				IOUtils.skipFullyD(raf, 4);
+				return offset + 4;
+			} else {
+				int count = IOUtils.readIntLE(raf);
+				IOUtils.skipFullyD(raf, count);
+				offset += count;
+			}
+		}
+	}
+
+
 	/**
 	 * Set the master gain in dB.
-	 * @param gain the gain to set
+	 * 
+	 * @param gain
+	 *            the gain to set
 	 */
 	public void setMasterGain(float gain) {
 		if (sdl != null) {
-			FloatControl f = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
+			FloatControl f = (FloatControl) sdl
+					.getControl(FloatControl.Type.MASTER_GAIN);
 			f.setValue(gain);
-		} else
-		if (soundClip != null) {
-			FloatControl f = (FloatControl)soundClip.getControl(FloatControl.Type.MASTER_GAIN);
+		} else if (soundClip != null) {
+			FloatControl f = (FloatControl) soundClip
+					.getControl(FloatControl.Type.MASTER_GAIN);
+			f.setValue(gain);
+		}else if (oggMusic != null) {
+			FloatControl f = (FloatControl) oggMusic.outputLine
+			.getControl(FloatControl.Type.MASTER_GAIN);
 			f.setValue(gain);
 		}
 		this.gain = gain;
 	}
+
 	/**
 	 * @return the gain
 	 */
 	public float getGain() {
 		return gain;
 	}
+
 	/**
 	 * Mute or unmute the sound
-	 * @param mute the mute to set
+	 * 
+	 * @param mute
+	 *            the mute to set
 	 */
 	public void setMute(boolean mute) {
 		if (sdl != null) {
-			BooleanControl b = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
+			BooleanControl b = (BooleanControl) sdl
+					.getControl(BooleanControl.Type.MUTE);
 			b.setValue(mute);
-		} else
-		if (soundClip != null) {
-			BooleanControl b = (BooleanControl)soundClip.getControl(BooleanControl.Type.MUTE);
+		} else if (soundClip != null) {
+			BooleanControl b = (BooleanControl) soundClip
+					.getControl(BooleanControl.Type.MUTE);
+			b.setValue(mute);
+		} else if (oggMusic != null) {
+			BooleanControl b = (BooleanControl) oggMusic.outputLine
+					.getControl(BooleanControl.Type.MUTE);
 			b.setValue(mute);
 		}
 		this.mute = mute;
 	}
+
 	/**
 	 * @return the mute
 	 */
 	public boolean isMute() {
 		return mute;
+	}
+
+	public static void main(String[] args) throws Exception {
+		String name = "SPACEWAR";
+		File f = new File(name + ".WAV");
+		RandomAccessFile raf = new RandomAccessFile(f, "r");
+		long loc = findData(raf);
+		byte[] sound = new byte[(int) (f.length() - loc)];
+		raf.seek(loc);
+		raf.readFully(sound);
+		raf.close();
+		sound = CompUtils.interleave16(CompUtils.difference16(sound));
+		GZIPOutputStream zout = new GZIPOutputStream(new FileOutputStream(name
+				+ ".SND"));
+		zout.write(sound);
+		zout.close();
 	}
 }
