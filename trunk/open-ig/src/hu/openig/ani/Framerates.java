@@ -8,11 +8,11 @@
 
 package hu.openig.ani;
 
+import hu.openig.utils.XML;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,8 +21,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -93,40 +91,20 @@ public class Framerates {
 	 */
 	private void process(Document doc) {
 		Element root = doc.getDocumentElement();
-		for (Element ani : childrenWithName(root, "ani")) {
+		for (Element ani : XML.childrenWithName(root, "ani")) {
 			String name = ani.getAttribute("name");
 			Map<Integer, Rates> rt = rates.get(name);
 			if (rt == null) {
 				rt = new HashMap<Integer, Rates>();
 				rates.put(name, rt);
 			}
-			for (Element type : childrenWithName(ani, "type")) {
+			for (Element type : XML.childrenWithName(ani, "type")) {
 				int typeInt = Integer.parseInt(type.getAttribute("value"));
 				double fps = Double.parseDouble(type.getAttribute("fps"));
 				int delay = Integer.parseInt(type.getAttribute("delay"));
 				rt.put(typeInt, new Rates(fps, delay));
 			}
 		}
-	}
-	/**
-	 * Returns a list of the child elements with the given name
-	 * @param parent the parent node
-	 * @param name the name
-	 * @return the list of elements with the given name
-	 */
-	public List<Element> childrenWithName(Element parent, String name) {
-		List<Element> result = new ArrayList<Element>();
-		NodeList nl = parent.getChildNodes();
-		for (int i = 0, count = nl.getLength(); i < count; i++) {
-			Node n = nl.item(i);
-			if (n instanceof Element) {
-				Element e = (Element)n;
-				if (name.equals(e.getNodeName())) {
-					result.add(e);
-				}
-			}
-		}
-		return result;
 	}
 	/**
 	 * Get the rates for a filename and type.
