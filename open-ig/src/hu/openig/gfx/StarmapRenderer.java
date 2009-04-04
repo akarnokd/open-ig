@@ -1055,7 +1055,11 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			if (!p.visible) {
 				continue;
 			}
-			BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[magnifyIndex]).get(p.rotationPhase);
+			int modifiedMagnify = magnifyIndex + p.size;
+			if (modifiedMagnify < 0) {
+				modifiedMagnify = 0;
+			}
+			BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[modifiedMagnify]).get(p.rotationPhase);
 			int x = (int)(p.x * zoomFactor - pimg.getWidth() / 2f);
 			int y = (int)(p.y * zoomFactor - pimg.getHeight() / 2f);
 			

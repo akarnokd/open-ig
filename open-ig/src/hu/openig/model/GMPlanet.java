@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -9,6 +9,21 @@
 package hu.openig.model;
 
 import hu.openig.core.SurfaceType;
+import hu.openig.utils.XML;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Game model planet record.
@@ -16,8 +31,6 @@ import hu.openig.core.SurfaceType;
  * @version $Revision 1.0$
  */
 public class GMPlanet {
-	/** The surface type string from StarmapGFX.SURFACETYPE_* constants. */
-	public String surfaceKey;
 	/** The surface type 1-7. */
 	public SurfaceType surfaceType;
 	/** The surface variant 1-9. */
@@ -42,4 +55,73 @@ public class GMPlanet {
 	public int nameColor;
 	/** Rotation direction: true - forward, false - backward. */
 	public boolean rotationDirection;
+	/** The planet's unique id. */
+	public String id;
+	public String ownerRace;
+	public String populationRace;
+	public int population;
+	public int populationGrowth;
+	public final List<String> inOrbit = new ArrayList<String>();
+	/** The planet size relative to the largest size, e.g. -2, -1, 0 .*/
+	public int size;
+	/**
+	 * Parses and processes a planetary resource XML
+	 * @param resource
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<GMPlanet> parse(String resource) {
+		List<GMPlanet> result = null;
+		try {
+			InputStream in = GMPlanet.class.getResourceAsStream(resource);
+			if (in != null) {
+				try {
+					DocumentBuilderFactory db = DocumentBuilderFactory.newInstance();
+					DocumentBuilder doc = db.newDocumentBuilder();
+					result = process(doc.parse(in));
+				} finally {
+					in.close();
+				}
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} catch (SAXException ex) {
+			ex.printStackTrace();
+		} catch (ParserConfigurationException ex) {
+			ex.printStackTrace();
+		}
+		return result == null ? new ArrayList<GMPlanet>() : result;
+	}
+	/**
+	 * Processes a planets.xml document.
+	 * @param root
+	 * @return
+	 */
+	private static List<GMPlanet> process(Document root) {
+		List<GMPlanet> result = new ArrayList<GMPlanet>();
+		for (Element planet : XML.childrenWithName(root.getDocumentElement(), "planet")) {
+			GMPlanet p = new GMPlanet();
+			p.id = planet.getAttribute("id");
+			p.name = XML.childValue(planet, "name");
+			p.x = Integer.parseInt(XML.childValue(planet, "location-x")) * 2;
+			p.y = Integer.parseInt(XML.childValue(planet, "location-y")) * 2;
+			p.surfaceType = SurfaceType.planetXmlMap.get(XML.childValue(planet, "type"));
+			p.surfaceVariant = Integer.parseInt(XML.childValue(planet, "variant"));
+			p.ownerRace = XML.childValue(planet, "race");
+			p.populationRace = p.ownerRace;
+			p.size = Integer.parseInt(XML.childValue(planet, "size")) - 8;
+			p.rotationDirection = "RL".equals(XML.childValue(planet, "rotate"));
+			p.population = Integer.parseInt(XML.childValue(planet, "populate"));
+			String orbit = XML.childValue(planet, "in-orbit");
+			p.showName = true;
+			p.showRadar = true;
+			p.visible = true;
+			p.nameColor = 0xFCB000;
+			if (!"-".equals(orbit)) {
+				p.inOrbit.addAll(Arrays.asList(orbit.split("\\\\s*,\\\\s*")));
+			}
+			result.add(p);
+		}
+		return result;
+	}
 }

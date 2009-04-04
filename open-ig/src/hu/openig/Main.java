@@ -11,7 +11,6 @@ import hu.openig.ani.MovieSurface;
 import hu.openig.ani.Player;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoScreen;
-import hu.openig.core.SurfaceType;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.InformationGFX;
 import hu.openig.gfx.InformationRenderer;
@@ -23,7 +22,6 @@ import hu.openig.gfx.PlanetGFX;
 import hu.openig.gfx.PlanetRenderer;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StarmapRenderer;
-import hu.openig.gfx.TextGFX;
 import hu.openig.model.GMPlanet;
 import hu.openig.music.Music;
 import hu.openig.sound.UISounds;
@@ -376,21 +374,22 @@ public class Main extends JFrame {
 	}
 	/** Initialize model to test model dependand rendering. */
 	private void initModel() {
-		for (SurfaceType st : SurfaceType.values()) {
-			GMPlanet p = new GMPlanet();
-			p.name = "Planet " + st.surfaceIndex;
-			p.radarRadius = 50;
-			p.showName = true;
-			p.showRadar = true;
-			p.surfaceType = st;
-			p.surfaceVariant = 1;
-			p.visible = true;
-			p.x = 100 + st.surfaceIndex * 50;
-			p.y = 100 + st.surfaceIndex * 50;
-			p.nameColor = TextGFX.GALACTIC_EMPIRE_ST;
-			p.rotationDirection = st.surfaceIndex % 2 == 0;
-			smr.planets.add(p);
-		}
+//		for (SurfaceType st : SurfaceType.values()) {
+//			GMPlanet p = new GMPlanet();
+//			p.name = "Planet " + st.surfaceIndex;
+//			p.radarRadius = 50;
+//			p.showName = true;
+//			p.showRadar = true;
+//			p.surfaceType = st;
+//			p.surfaceVariant = 1;
+//			p.visible = true;
+//			p.x = 100 + st.surfaceIndex * 50;
+//			p.y = 100 + st.surfaceIndex * 50;
+//			p.nameColor = TextGFX.GALACTIC_EMPIRE_ST;
+//			p.rotationDirection = st.surfaceIndex % 2 == 0;
+//			smr.planets.add(p);
+//		}
+		smr.planets.addAll(GMPlanet.parse("/hu/openig/res/planets.xml"));
 	}
 	/**
 	 * Show the given screen and hide all other screens.
