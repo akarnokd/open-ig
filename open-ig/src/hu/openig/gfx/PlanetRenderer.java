@@ -154,13 +154,13 @@ MouseWheelListener, ActionListener {
 		return gfx.getMap(mapName);
 	}
 	/** Rendering X coordinates. */
-	static int[] mapStartX = new int[97];
+	static final int[] mapStartX = new int[97];
 	/** Rendering Y coordinates. */
-	static int[] mapStartY = new int[97];
+	static final int[] mapStartY = new int[97];
 	/** Rendering X end coordinates. */
-	static int[] mapEndX = new int[97];
+	static final int[] mapEndX = new int[97];
 	/** Rendering Y end coordinates. */
-	static int[] mapEndY = new int[97];
+//	static int[] mapEndY = new int[97];
 	static {
 		// initialize map rendering stripe coordinates
 		int idx = 0;
@@ -179,13 +179,13 @@ MouseWheelListener, ActionListener {
 		idx = 0;
 		for (int i = 0; i >= -64; i--) {
 			mapEndX[idx] = i;
-			mapEndY[idx] = i;
+//			mapEndY[idx] = i;
 			idx++;
 		}
 		y = -65;
 		for (int i = -63; i <= -32; i++) {
 			mapEndX[idx] = i;
-			mapEndY[idx] = y;
+//			mapEndY[idx] = y;
 			y--;
 			idx++;
 		}

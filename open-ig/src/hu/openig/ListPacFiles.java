@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -70,7 +71,7 @@ public class ListPacFiles {
 		final JList lst = new JList(lm);
 		List<PACEntry> lpe = new ArrayList<PACEntry>();
 		
-		File fd = new File(args.length > 0 ? args[0] : "c:\\games\\ig\\data");
+		File fd = new File(args.length > 0 ? args[0] : "c:\\games\\ighu\\data");
 		for (File f : fd.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -122,6 +123,8 @@ public class ListPacFiles {
 						if (pe.filename.toUpperCase().endsWith(".PCX")) {
 							ImageIcon ii = new ImageIcon(PCXImage.parse(pe.data, -2));
 							imgLabel.setIcon(ii);
+						} else {
+							imgLabel.setIcon(null);
 						}
 					}
 				}
@@ -138,13 +141,19 @@ public class ListPacFiles {
 						imgLabel.setIcon(ii);
 						imgLabel.setText(String.format("%d x %d", ii.getIconWidth(), ii.getIconHeight()));
 					} else {
-						imgLabel.setText("Non image data.");
+						imgLabel.setIcon(null);
+						try {
+							imgLabel.setText("<html>" + new String(pe.data, "IBM-437").replaceAll("\r", "<br>"));
+						} catch (UnsupportedEncodingException ex) {
+							ex.printStackTrace();
+						}
 					}
 				}
 			}
 		});
 		lst.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		fr.setSize(650, 490);
+		fr.setLocationRelativeTo(null);
 		fr.setVisible(true);
 	}
 
