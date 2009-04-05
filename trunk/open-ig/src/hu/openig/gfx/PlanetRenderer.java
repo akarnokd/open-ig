@@ -109,7 +109,7 @@ MouseWheelListener, ActionListener {
 	/** The current darkening factor for the entire UI. 0=No darkness, 1=Full darkness. */
 	private float darkness = 0f;
 	/** The daylight factor for the planetary surface only. 0=No darkness, 1=Full darkness. */
-	private float daylight = 0.5f;
+	private float daylight = 0.0f;
 	/** The text renderer. */
 	private TextGFX text;
 	/** Regions of the info bars. */
@@ -153,6 +153,43 @@ MouseWheelListener, ActionListener {
 		String mapName = "MAP_" + (char)('A' + (surfaceType - 1)) + variant + ".MAP";
 		return gfx.getMap(mapName);
 	}
+	/** Rendering X coordinates. */
+	static int[] mapStartX = new int[97];
+	/** Rendering Y coordinates. */
+	static int[] mapStartY = new int[97];
+	/** Rendering X end coordinates. */
+	static int[] mapEndX = new int[97];
+	/** Rendering Y end coordinates. */
+	static int[] mapEndY = new int[97];
+	static {
+		// initialize map rendering stripe coordinates
+		int idx = 0;
+		for (int i = 1; i <= 32; i++) {
+			mapStartX[idx] = i;
+			mapStartY[idx] = 1 - i;
+			idx++;
+		}
+		int y = -32;
+		for (int i = 32; i >= -32; i--) {
+			mapStartX[idx] = i;
+			mapStartY[idx] = y;
+			idx++;
+			y--;
+		}
+		idx = 0;
+		for (int i = 0; i >= -64; i--) {
+			mapEndX[idx] = i;
+			mapEndY[idx] = i;
+			idx++;
+		}
+		y = -65;
+		for (int i = -63; i <= -32; i++) {
+			mapEndX[idx] = i;
+			mapEndY[idx] = y;
+			y--;
+			idx++;
+		}
+	}
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
@@ -172,46 +209,43 @@ MouseWheelListener, ActionListener {
 		int k = 0;
 		int j = 0;
 		// RENDER VERTICALLY
-		int k0 = 0;
-		int j0 = 0;
 		Map<Integer, Tile> surface = gfx.getSurfaceTiles(surfaceType);
-		for (int i = 0; i < 65 * 65; i++) {
-			int ii = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
-			int ff = mapBytes[2 * i + 5] & 0xFF;
-			Tile tile = surface.get(ii);
-			if (tile != null) {
-				// 1x1 tiles can be drawn from top to bottom
-				if (tile.width == 1 && tile.height == 1) {
-					int x = xoff + Tile.toScreenX(k, j);
-					int y = yoff + Tile.toScreenY(k, j);
-					if (x >= -tile.image.getWidth() && x <= (int)(getWidth() / scale)
-							&& y >= -tile.image.getHeight() && y <= (int)(getHeight() / scale) + tile.image.getHeight()) {
-						g2.drawImage(tile.image, x, y - tile.image.getHeight() + tile.heightCorrection, null);
+		for (int mi = 0; mi < mapStartX.length; mi++) {
+			k = mapStartX[mi];
+			j = mapStartY[mi];
+			int i = toMapOffset(k, j);
+			int kmin = mapEndX[mi];
+			while (i >= 0 && k >= kmin) {
+				int tileId = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
+				int stripeId = mapBytes[2 * i + 5] & 0xFF;
+				Tile tile = surface.get(tileId);
+				if (tile != null) {
+					// 1x1 tiles can be drawn from top to bottom
+					if (tile.width == 1 && tile.height == 1) {
+						int x = xoff + Tile.toScreenX(k, j);
+						int y = yoff + Tile.toScreenY(k, j);
+						if (x >= -tile.image.getWidth() && x <= (int)(getWidth() / scale)
+								&& y >= -tile.image.getHeight() && y <= (int)(getHeight() / scale) + tile.image.getHeight()) {
+							g2.drawImage(tile.image, x, y - tile.image.getHeight() + tile.heightCorrection, null);
+						}
+					} else 
+					if (stripeId < 255) {
+						// multi spanning tiles should be cut into small rendering piece for the current strip
+						// ff value indicates the stripe count
+						// the entire image would be placed using this bottom left coordinate
+						int j1 = stripeId >= tile.width ? j + tile.width - 1: j + stripeId;
+						int k1 = stripeId >= tile.width ? k + (tile.width - 1 - stripeId): k;
+						int j2 = stripeId >= tile.width ? j : j - (tile.width - 1 - stripeId);
+						int x = xoff + Tile.toScreenX(k1, j1);
+						int y = yoff + Tile.toScreenY(k1, j2);
+						// use subimage stripe
+						int x0 = stripeId >= tile.width ? Tile.toScreenX(stripeId, 0) : Tile.toScreenX(0, -stripeId);
+						BufferedImage subimage = tile.strips[stripeId];
+						g2.drawImage(subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection, null);
 					}
-				} else 
-				if (ff < 255) {
-					// multi spanning tiles should be cut into small rendering piece for the current strip
-					// ff value indicates the stripe count
-					// the entire image would be placed using this bottom left coordinate
-					int j1 = ff >= tile.width ? j + tile.width - 1: j + ff;
-					int k1 = ff >= tile.width ? k + (tile.width - 1 - ff): k;
-					int j2 = ff >= tile.width ? j : j - (tile.width - 1 - ff);
-					int x = xoff + Tile.toScreenX(k1, j1);
-					int y = yoff + Tile.toScreenY(k1, j2);
-					// use subimage stripe
-					int x0 = ff >= tile.width ? Tile.toScreenX(ff, 0) : Tile.toScreenX(0, -ff);
-					BufferedImage subimage = tile.strips[ff];
-					g2.drawImage(subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection, null);
 				}
-			}				
-			k--;
-			j--;
-			k0++;
-			if (k0 > 64) {
-				k0 = 0;
-				j0++;
-				j = - (j0 / 2);
-				k = ((j0 - 1) / 2 + 1);
+				k--;
+				i = toMapOffset(k, j);
 			}
 		}
 		Composite comp = g2.getComposite();

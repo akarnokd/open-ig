@@ -6,7 +6,7 @@
 		<location-x>154</location-x>
 		<location-y>204</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -18,7 +18,7 @@
 		<location-x>434</location-x>
 		<location-y>314</location-y>
 		<type>Neptoplasm</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Ecalep</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -30,7 +30,7 @@
 		<location-x>456</location-x>
 		<location-y>307</location-y>
 		<type>Neptoplasm</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race>Ecalep</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -42,7 +42,7 @@
 		<location-x>441</location-x>
 		<location-y>295</location-y>
 		<type>Neptoplasm</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race>Ecalep</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -54,7 +54,7 @@
 		<location-x>460</location-x>
 		<location-y>287</location-y>
 		<type>Neptoplasm</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Ecalep</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -66,7 +66,7 @@
 		<location-x>485</location-x>
 		<location-y>247</location-y>
 		<type>Neptoplasm</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -78,7 +78,7 @@
 		<location-x>423</location-x>
 		<location-y>271</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -90,7 +90,7 @@
 		<location-x>487</location-x>
 		<location-y>294</location-y>
 		<type>Neptoplasm</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -102,7 +102,7 @@
 		<location-x>156</location-x>
 		<location-y>165</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Ychom</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -114,7 +114,7 @@
 		<location-x>175</location-x>
 		<location-y>158</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race>Ychom</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -126,7 +126,7 @@
 		<location-x>158</location-x>
 		<location-y>145</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Ychom</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -138,7 +138,7 @@
 		<location-x>139</location-x>
 		<location-y>151</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race>Ychom</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -150,7 +150,7 @@
 		<location-x>176</location-x>
 		<location-y>138</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>Ychom</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -162,7 +162,7 @@
 		<location-x>149</location-x>
 		<location-y>125</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race>Ychom</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -174,7 +174,7 @@
 		<location-x>253</location-x>
 		<location-y>154</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>AFT</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -186,7 +186,7 @@
 		<location-x>251</location-x>
 		<location-y>175</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race>AFT</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -198,7 +198,7 @@
 		<location-x>270</location-x>
 		<location-y>166</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race>AFT</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -210,7 +210,7 @@
 		<location-x>229</location-x>
 		<location-y>219</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -222,7 +222,7 @@
 		<location-x>227</location-x>
 		<location-y>172</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -234,7 +234,7 @@
 		<location-x>98</location-x>
 		<location-y>159</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -246,7 +246,7 @@
 		<location-x>121</location-x>
 		<location-y>138</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -258,7 +258,7 @@
 		<location-x>104</location-x>
 		<location-y>144</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -270,7 +270,7 @@
 		<location-x>56</location-x>
 		<location-y>179</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -282,7 +282,7 @@
 		<location-x>149</location-x>
 		<location-y>188</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -294,7 +294,7 @@
 		<location-x>126</location-x>
 		<location-y>191</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -306,7 +306,7 @@
 		<location-x>55</location-x>
 		<location-y>115</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race>Empire</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -318,7 +318,7 @@
 		<location-x>54</location-x>
 		<location-y>153</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -330,7 +330,7 @@
 		<location-x>78</location-x>
 		<location-y>252</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race>Morgath</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -342,7 +342,7 @@
 		<location-x>85</location-x>
 		<location-y>268</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race>Morgath</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -354,7 +354,7 @@
 		<location-x>63</location-x>
 		<location-y>278</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race>Morgath</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -366,7 +366,7 @@
 		<location-x>118</location-x>
 		<location-y>319</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>Sullep</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -378,7 +378,7 @@
 		<location-x>145</location-x>
 		<location-y>299</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race>Sullep</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -390,7 +390,7 @@
 		<location-x>186</location-x>
 		<location-y>314</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race>Sullep</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -402,7 +402,7 @@
 		<location-x>223</location-x>
 		<location-y>282</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>Sullep</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -414,7 +414,7 @@
 		<location-x>240</location-x>
 		<location-y>305</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>Sullep</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -426,7 +426,7 @@
 		<location-x>283</location-x>
 		<location-y>275</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race>Sullep</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -438,7 +438,7 @@
 		<location-x>303</location-x>
 		<location-y>321</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>Sullep</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -450,7 +450,7 @@
 		<location-x>316</location-x>
 		<location-y>264</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race>Sullep</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -462,7 +462,7 @@
 		<location-x>328</location-x>
 		<location-y>286</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race>Sullep</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -474,7 +474,7 @@
 		<location-x>277</location-x>
 		<location-y>255</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race>Sullep</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -486,7 +486,7 @@
 		<location-x>79</location-x>
 		<location-y>226</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -498,7 +498,7 @@
 		<location-x>265</location-x>
 		<location-y>250</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -510,7 +510,7 @@
 		<location-x>119</location-x>
 		<location-y>294</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -522,7 +522,7 @@
 		<location-x>152</location-x>
 		<location-y>44</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -534,7 +534,7 @@
 		<location-x>376</location-x>
 		<location-y>306</location-y>
 		<type>Neptoplasm</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -546,7 +546,7 @@
 		<location-x>21</location-x>
 		<location-y>218</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -558,7 +558,7 @@
 		<location-x>8</location-x>
 		<location-y>299</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -570,7 +570,7 @@
 		<location-x>53</location-x>
 		<location-y>311</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -582,7 +582,7 @@
 		<location-x>166</location-x>
 		<location-y>266</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -594,7 +594,7 @@
 		<location-x>202</location-x>
 		<location-y>289</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -606,7 +606,7 @@
 		<location-x>178</location-x>
 		<location-y>193</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race>Garthog</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -618,7 +618,7 @@
 		<location-x>209</location-x>
 		<location-y>229</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Garthog</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -630,7 +630,7 @@
 		<location-x>210</location-x>
 		<location-y>200</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race>Garthog</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -642,7 +642,7 @@
 		<location-x>183</location-x>
 		<location-y>221</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race>Garthog</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -654,7 +654,7 @@
 		<location-x>192</location-x>
 		<location-y>236</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Garthog</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -666,7 +666,7 @@
 		<location-x>77</location-x>
 		<location-y>87</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Empire</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -678,7 +678,7 @@
 		<location-x>311</location-x>
 		<location-y>140</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race>FNS</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -690,7 +690,7 @@
 		<location-x>333</location-x>
 		<location-y>149</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>FNS</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -702,7 +702,7 @@
 		<location-x>318</location-x>
 		<location-y>157</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race>FNS</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -714,7 +714,7 @@
 		<location-x>333</location-x>
 		<location-y>180</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>FNS</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -726,7 +726,7 @@
 		<location-x>318</location-x>
 		<location-y>203</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race>FNS</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -738,7 +738,7 @@
 		<location-x>356</location-x>
 		<location-y>172</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race>FNS</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -750,7 +750,7 @@
 		<location-x>382</location-x>
 		<location-y>182</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race>FNS</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -762,7 +762,7 @@
 		<location-x>423</location-x>
 		<location-y>192</location-y>
 		<type>Neptoplasm</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -774,7 +774,7 @@
 		<location-x>425</location-x>
 		<location-y>222</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>9</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -786,7 +786,7 @@
 		<location-x>344</location-x>
 		<location-y>238</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -798,7 +798,7 @@
 		<location-x>284</location-x>
 		<location-y>218</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -810,7 +810,7 @@
 		<location-x>72</location-x>
 		<location-y>145</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race>Empire</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -822,7 +822,7 @@
 		<location-x>160</location-x>
 		<location-y>232</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -834,7 +834,7 @@
 		<location-x>102</location-x>
 		<location-y>197</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -846,7 +846,7 @@
 		<location-x>7</location-x>
 		<location-y>61</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race>Drib</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -858,7 +858,7 @@
 		<location-x>29</location-x>
 		<location-y>32</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race>Drib</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -870,7 +870,7 @@
 		<location-x>50</location-x>
 		<location-y>12</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race>Drib</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -882,7 +882,7 @@
 		<location-x>11</location-x>
 		<location-y>5</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race>Drib</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -894,7 +894,7 @@
 		<location-x>209</location-x>
 		<location-y>10</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -906,7 +906,7 @@
 		<location-x>262</location-x>
 		<location-y>6</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race>Dargslan</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -918,7 +918,7 @@
 		<location-x>281</location-x>
 		<location-y>46</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Dargslan</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -930,7 +930,7 @@
 		<location-x>265</location-x>
 		<location-y>13</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -942,7 +942,7 @@
 		<location-x>334</location-x>
 		<location-y>69</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -954,7 +954,7 @@
 		<location-x>404</location-x>
 		<location-y>18</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -966,7 +966,7 @@
 		<location-x>384</location-x>
 		<location-y>82</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race>Dargslan</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -978,7 +978,7 @@
 		<location-x>415</location-x>
 		<location-y>58</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race>Dargslan</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -990,7 +990,7 @@
 		<location-x>416</location-x>
 		<location-y>110</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race>Dargslan</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -1002,7 +1002,7 @@
 		<location-x>445</location-x>
 		<location-y>80</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -1014,7 +1014,7 @@
 		<location-x>11</location-x>
 		<location-y>106</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -1026,7 +1026,7 @@
 		<location-x>44</location-x>
 		<location-y>62</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -1038,7 +1038,7 @@
 		<location-x>63</location-x>
 		<location-y>52</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -1050,7 +1050,7 @@
 		<location-x>118</location-x>
 		<location-y>15</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>8</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -1062,7 +1062,7 @@
 		<location-x>198</location-x>
 		<location-y>74</location-y>
 		<type>Desert</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -1074,7 +1074,7 @@
 		<location-x>228</location-x>
 		<location-y>65</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -1086,7 +1086,7 @@
 		<location-x>243</location-x>
 		<location-y>40</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -1098,7 +1098,7 @@
 		<location-x>285</location-x>
 		<location-y>95</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>1</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -1110,7 +1110,7 @@
 		<location-x>337</location-x>
 		<location-y>106</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -1122,7 +1122,7 @@
 		<location-x>406</location-x>
 		<location-y>152</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -1134,7 +1134,7 @@
 		<location-x>487</location-x>
 		<location-y>54</location-y>
 		<type>Neptoplasm</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -1146,7 +1146,7 @@
 		<location-x>466</location-x>
 		<location-y>114</location-y>
 		<type>Earth</type>
-		<variant>0</variant>
+		<variant>5</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -1158,7 +1158,7 @@
 		<location-x>496</location-x>
 		<location-y>10</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>9</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -1170,7 +1170,7 @@
 		<location-x>457</location-x>
 		<location-y>14</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>4</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -1182,7 +1182,7 @@
 		<location-x>475</location-x>
 		<location-y>146</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -1194,7 +1194,7 @@
 		<location-x>468</location-x>
 		<location-y>55</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race></race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -1206,7 +1206,7 @@
 		<location-x>125</location-x>
 		<location-y>86</location-y>
 		<type>Cratered</type>
-		<variant>0</variant>
+		<variant>6</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -1218,7 +1218,7 @@
 		<location-x>227</location-x>
 		<location-y>123</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race></race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -1230,7 +1230,7 @@
 		<location-x>158</location-x>
 		<location-y>76</location-y>
 		<type>Liquid</type>
-		<variant>0</variant>
+		<variant>3</variant>
 		<race></race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -1242,7 +1242,7 @@
 		<location-x>140</location-x>
 		<location-y>213</location-y>
 		<type>Frozen</type>
-		<variant>0</variant>
+		<variant>2</variant>
 		<race>Empire</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -1254,12 +1254,11 @@
 		<location-x>83</location-x>
 		<location-y>185</location-y>
 		<type>Rocky</type>
-		<variant>0</variant>
+		<variant>7</variant>
 		<race>Empire</race>
 		<size>7</size>
 		<rotate>RL</rotate>
 		<populate>4232</populate>
 		<in-orbit>-</in-orbit>
 	</planet>
-
 </planets>
