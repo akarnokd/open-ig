@@ -187,7 +187,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable{
       //catch(Exception ee){
       //  System.out.println(ee);
       //}
-      AudioFormat audioFormat=new AudioFormat((float)rate, 16, channels, true, // PCM_Signed
+      AudioFormat audioFormat=new AudioFormat(rate, 16, channels, true, // PCM_Signed
           false // littleEndian
       );
       DataLine.Info info=new DataLine.Info(SourceDataLine.class, audioFormat,
