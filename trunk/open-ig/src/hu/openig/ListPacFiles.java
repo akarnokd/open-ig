@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -7,6 +7,7 @@
  */
 package hu.openig;
 
+import hu.openig.res.Texts;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.PACFile.PACEntry;
@@ -143,7 +144,7 @@ public class ListPacFiles {
 					} else {
 						imgLabel.setIcon(null);
 						try {
-							imgLabel.setText("<html>" + new String(pe.data, "IBM-437").replaceAll("\r", "<br>"));
+							imgLabel.setText("<html>" + Texts.fixHungarianChars(new String(pe.data, "ISO-8859-1")).replaceAll("\r", "<br>"));
 						} catch (UnsupportedEncodingException ex) {
 							ex.printStackTrace();
 						}

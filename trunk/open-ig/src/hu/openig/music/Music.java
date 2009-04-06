@@ -200,6 +200,8 @@ public class Music {
 						+ fileName);
 			}
 			oggMusic = new OggMusic(Thread.currentThread());
+			setMasterGain(gain);
+			setMute(mute);
 			oggMusic.playOgg(raf);
 		} finally {
 			raf.close();

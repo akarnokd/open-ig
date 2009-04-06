@@ -7,12 +7,22 @@
  */
 package hu.openig.utils;
 
+import hu.openig.model.GMPlanet;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * XML processing related helper functions.
@@ -84,5 +94,47 @@ public final class XML {
 			return it.next().getTextContent();
 		}
 		return "";
+	}
+	/** Returns the first child element with the given name. */
+	public static Element childElement(Element e, String name) {
+		Iterator<Element> it = childrenWithName(e, name).iterator();
+		if (it.hasNext()) {
+			return it.next();
+		}
+		return null;
+	}
+	/** Callback interface for processing a fully parsed XML DOM document. */
+	public static interface XmlProcessor<T> {
+		/** Process the given document object and return an object. */
+		T process(Document doc);
+	}
+	/**
+	 * Parse and process the given resource using the supplied callback.
+	 * @param <T> the return type of the callback
+	 * @param resource the resource string, not null
+	 * @param processor the processor object, not null
+	 * @return the processed object
+	 */
+	public static <T> T parseResource(String resource, XmlProcessor<T> processor) {
+		T result = null;
+		try {
+			InputStream in = GMPlanet.class.getResourceAsStream(resource);
+			if (in != null) {
+				try {
+					DocumentBuilderFactory db = DocumentBuilderFactory.newInstance();
+					DocumentBuilder doc = db.newDocumentBuilder();
+					result = processor.process(doc.parse(in));
+				} finally {
+					in.close();
+				}
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} catch (SAXException ex) {
+			ex.printStackTrace();
+		} catch (ParserConfigurationException ex) {
+			ex.printStackTrace();
+		}
+		return result;
 	}
 }
