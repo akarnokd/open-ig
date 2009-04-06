@@ -75,7 +75,7 @@ class Lookup{
 
   /* interpolated lookup based cos function, domain 0 to PI only */
   static float coslook(float a){
-    double d=a*(.31830989*(float)COS_LOOKUP_SZ);
+    double d=a*(.31830989*COS_LOOKUP_SZ);
     int i=(int)d;
     return COS_LOOKUP[i]+((float)(d-i))*(COS_LOOKUP[i+1]-COS_LOOKUP[i]);
   }
@@ -93,7 +93,7 @@ class Lookup{
 
   /* interpolated 1./sqrt(p) where .5 <= p < 1. */
   static float invsqlook(float a){
-    double d=a*(2.f*(float)INVSQ_LOOKUP_SZ)-(float)INVSQ_LOOKUP_SZ;
+    double d=a*(2.f*INVSQ_LOOKUP_SZ)-INVSQ_LOOKUP_SZ;
     int i=(int)d;
     return INVSQ_LOOKUP[i]+((float)(d-i))*(INVSQ_LOOKUP[i+1]-INVSQ_LOOKUP[i]);
   }
@@ -144,7 +144,7 @@ class Lookup{
 
   /* interpolated lookup based fromdB function, domain -140dB to 0dB only */
   static float fromdBlook(float a){
-    int i=(int)(a*((float)(-(1<<FROMdB2_SHIFT))));
+    int i=(int)(a*(-(1<<FROMdB2_SHIFT)));
     return (i<0) ? 1.f : ((i>=(FROMdB_LOOKUP_SZ<<FROMdB_SHIFT)) ? 0.f
         : FROMdB_LOOKUP[i>>>FROMdB_SHIFT]*FROMdB2_LOOKUP[i&FROMdB2_MASK]);
   }

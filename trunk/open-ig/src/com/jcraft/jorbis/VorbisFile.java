@@ -1094,7 +1094,7 @@ public class VorbisFile{
       }
     }
 
-    return ((float)time_total+(float)(pcm_offset-pcm_total)/vi[link].rate);
+    return (time_total+(float)(pcm_offset-pcm_total)/vi[link].rate);
   }
 
   //  link:   -1) return the vorbis_info struct for the bitstream section
@@ -1360,7 +1360,7 @@ public class VorbisFile{
     }
 
     public long skip(long n) throws java.io.IOException{
-      return (long)(raf.skipBytes((int)n));
+      return (raf.skipBytes((int)n));
     }
 
     public long getLength() throws java.io.IOException{
