@@ -10,20 +10,14 @@ package hu.openig.model;
 
 import hu.openig.core.SurfaceType;
 import hu.openig.utils.XML;
+import hu.openig.utils.XML.XmlProcessor;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * Game model planet record.
@@ -65,32 +59,18 @@ public class GMPlanet {
 	/** The planet size relative to the largest size, e.g. -2, -1, 0 .*/
 	public int size;
 	/**
-	 * Parses and processes a planetary resource XML
+	 * Parses and processes a planetary resource XML.
 	 * @param resource
-	 * @return
-	 * @throws IOException
+	 * @return list of planets
 	 */
 	public static List<GMPlanet> parse(String resource) {
-		List<GMPlanet> result = null;
-		try {
-			InputStream in = GMPlanet.class.getResourceAsStream(resource);
-			if (in != null) {
-				try {
-					DocumentBuilderFactory db = DocumentBuilderFactory.newInstance();
-					DocumentBuilder doc = db.newDocumentBuilder();
-					result = process(doc.parse(in));
-				} finally {
-					in.close();
-				}
+		List<GMPlanet> planet = XML.parseResource(resource, new XmlProcessor<List<GMPlanet>>() {
+			@Override
+			public List<GMPlanet> process(Document doc) {
+				return GMPlanet.process(doc);
 			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} catch (SAXException ex) {
-			ex.printStackTrace();
-		} catch (ParserConfigurationException ex) {
-			ex.printStackTrace();
-		}
-		return result == null ? new ArrayList<GMPlanet>() : result;
+		});
+		return planet != null ? planet : new ArrayList<GMPlanet>();
 	}
 	/**
 	 * Processes a planets.xml document.
