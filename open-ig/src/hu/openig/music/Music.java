@@ -199,9 +199,7 @@ public class Music {
 				raf = new FileInputStream(root + "/"
 						+ fileName);
 			}
-			oggMusic = new OggMusic(Thread.currentThread());
-			setMasterGain(gain);
-			setMute(mute);
+			oggMusic = new OggMusic(Thread.currentThread(), gain, mute);
 			oggMusic.playOgg(raf);
 		} finally {
 			raf.close();
@@ -383,7 +381,7 @@ public class Music {
 			BooleanControl b = (BooleanControl) soundClip
 					.getControl(BooleanControl.Type.MUTE);
 			b.setValue(mute);
-		} else if (oggMusic != null) {
+		} else if (oggMusic != null && oggMusic.outputLine != null) {
 			BooleanControl b = (BooleanControl) oggMusic.outputLine
 					.getControl(BooleanControl.Type.MUTE);
 			b.setValue(mute);
