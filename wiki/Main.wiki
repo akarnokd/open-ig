@@ -34,5 +34,9 @@ Currently, not much info can I provide.
 The Open-IG will play the original game's ANI files. To play these files separately, please use the [http://open-ig.googlecode.com/files/animplay-0.3.jar AnimPlay] utility. Double click on this file or use the command line {{{java -jar animplay-0.3.jar}}}. The utility will allow you to select a file to play. 
 (The source code is available from the SVN.)
 
+== External tools ==
+
+There exist an unpacker for the game PAC files. You can downoad it from [http://bgafc.t-hosting.hu/data/ig1pac_h.exe here].
+
 = About the author =
 I'm a Ph.D student specializing in Production Informatics, Supply Chains and Manufacturing Execution Systems.
