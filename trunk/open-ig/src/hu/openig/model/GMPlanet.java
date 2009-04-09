@@ -85,7 +85,7 @@ public class GMPlanet {
 			p.name = XML.childValue(planet, "name");
 			p.x = Integer.parseInt(XML.childValue(planet, "location-x")) * 2;
 			p.y = Integer.parseInt(XML.childValue(planet, "location-y")) * 2;
-			p.surfaceType = SurfaceType.planetXmlMap.get(XML.childValue(planet, "type"));
+			p.surfaceType = SurfaceType.MAP.get(XML.childValue(planet, "type"));
 			p.surfaceVariant = Integer.parseInt(XML.childValue(planet, "variant"));
 			p.ownerRace = XML.childValue(planet, "race");
 			p.populationRace = p.ownerRace;

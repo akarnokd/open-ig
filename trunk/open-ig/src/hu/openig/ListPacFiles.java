@@ -41,13 +41,22 @@ import javax.swing.event.ListSelectionListener;
  * Utility program to list image contents of all pack files in a directory.
  * @author karnokd
  */
-public class ListPacFiles {
+public final class ListPacFiles {
+	/** Private constructor. */
+	private ListPacFiles() {
+		// utility program
+	}
+	/**
+	 * Image renderer for list cells.
+	 * @author karnokd
+	 */
 	static class ImageRenderer extends DefaultListCellRenderer {
 	    /** */
 		private static final long serialVersionUID = 6224396689689734489L;
 		/**
-		 * Custom cell renderer.
+		 * {@inheritDoc}
 		 */
+		@Override
 		public Component getListCellRendererComponent(JList list,
 	                                                  Object value,
 	                                                  int index,

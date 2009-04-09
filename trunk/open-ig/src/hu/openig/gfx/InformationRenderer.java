@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 package hu.openig.gfx;
 
 import hu.openig.core.Btn;
@@ -124,6 +131,9 @@ MouseWheelListener, ActionListener {
 		addMouseListener(this);
 //		setOpaque(true);
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
@@ -201,9 +211,9 @@ MouseWheelListener, ActionListener {
 			// DRAW GRID
 			Shape sp = g2.getClip();
 			g2.setClip(pictureArea);
-			g2.setColor(cgfx.GRID_COLOR);
+			g2.setColor(CommonGFX.GRID_COLOR);
 			Stroke st = g2.getStroke();
-			g2.setStroke(cgfx.GRID_STROKE);
+			g2.setStroke(CommonGFX.GRID_STROKE);
 			int y0 = 34;
 			int x0 = 40;
 			for (int i = 1; i < 5; i++) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -32,36 +32,36 @@ public class Tile {
 	public BufferedImage[] strips;
 	/**
 	 * Converts the tile coordinates to pixel coordinates, X component.
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x the X tile coordinate
+	 * @param y the Y tile coordinate
+	 * @return the screen coordinate
 	 */
 	public static int toScreenX(int x, int y) {
 		return x * 30 - y * 28;
 	}
 	/**
 	 * Converts the tile coordinates to pixel coordinates, Y component.
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x the X tile coordinate
+	 * @param y the Y tile coordinate
+	 * @return the screen Y coordinate
 	 */
 	public static int toScreenY(int x, int y) {
 		return - 12 * x - 15 * y;
 	}
 	/**
 	 * Converts the screen coordinates to tile coordinates, X component.
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x the X screen coordinate
+	 * @param y the Y screen coordinate
+	 * @return the tile X coordinate
 	 */
 	public static float toTileX(int x, int y) {
 		return (x + toTileY(x, y) * 28) / 30f;
 	}
 	/**
 	 * Converts the screen coordinates to tile coordinates, Y comonent.
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x the screen X coordinate
+	 * @param y the screen Y coordinate
+	 * @return the tile Y coordinate
 	 */
 	public static float toTileY(int x, int y) {
 		return -(30 * y + 12 * x) / 786f;

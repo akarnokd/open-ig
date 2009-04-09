@@ -18,11 +18,11 @@ import java.util.Map;
  * cause problems. Imperium Galactica does not have duplicate filenames in its subdirectories, therefore
  * the mapper only keeps the filename, not the path.
  * @author karnokd
- *
  */
 public class ResourceMapper {
 	/** The map of file names to file objects. */
 	private Map<String, File> files;
+	/** The root directory. */
 	private final String root;
 	/**
 	 * Constructor. Maps the files of the given directory. 

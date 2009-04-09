@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -43,10 +43,11 @@ public class UISounds {
 	private volatile int movingAverageWindow = 4;
 	/** The sound pool. */
 	private final BlockingQueue<SourceDataLine> soundPool = new LinkedBlockingQueue<SourceDataLine>(SOUND_POOL_SIZE);
+	/** The array of source data lines used. */
 	private final SourceDataLine[] lines;
 	/**
 	 * Constructor. Loads the user interface sound samples.
-	 * @param root the IG root directory
+	 * @param resMap the resource mapper
 	 */
 	public UISounds(ResourceMapper resMap) {
 		service = Executors.newFixedThreadPool(SOUND_POOL_SIZE);
@@ -185,9 +186,17 @@ public class UISounds {
 			bc.setValue(mute);
 		}
 	}
+	/**
+	 * Sets the moving average window length used in sound filtering.
+	 * @param movingAverageWindow the moving average window length in samples
+	 */
 	public void setMovingAverageWindow(int movingAverageWindow) {
 		this.movingAverageWindow = movingAverageWindow;
 	}
+	/**
+	 * Returns the moving average window length used in sound filtering.
+	 * @return the moving average window length
+	 */
 	public int getMovingAverageWindow() {
 		return movingAverageWindow;
 	}

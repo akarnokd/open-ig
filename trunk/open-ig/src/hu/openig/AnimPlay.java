@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -47,7 +47,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author karnokd, 2009.01.11.
  * @version $Revision 1.0$
  */
-public class AnimPlay {
+public final class AnimPlay {
 	/** The frame form the images. */
 	private static JFrame frame;
 	/** The label for the player. */
@@ -64,6 +64,10 @@ public class AnimPlay {
 	private static volatile boolean stop;
 	/** Current file. */
 	private static volatile File current;
+	/** Private constructor. */
+	private AnimPlay() {
+		// utility program
+	}
 	/**
 	 * Execute the SwingUtilities.invokeAndWait() method but strip of
 	 * the exceptions. The exceptions will be ignored.
@@ -195,7 +199,8 @@ public class AnimPlay {
 //		   		fps = saf.getFPS();
 //				rf.close();
 				Framerates fr = new Framerates();
-				saf.open(rf = new FileInputStream(f));
+				rf = new FileInputStream(f);
+				saf.open(rf);
 				saf.load();
 				createFrame(f);
 				Rates r = fr.getRates(f.getAbsolutePath(), saf.getLanguageCode());
@@ -257,6 +262,7 @@ public class AnimPlay {
 								newDst = RLE.decompress2(rleInput, 0, rawImage, dst, palette);
 								dst = newDst;
 								break;
+							default:
 							}
 							// we reached the number of subimages per frame?
 							if (imageHeight >= saf.getHeight()) {
@@ -269,7 +275,7 @@ public class AnimPlay {
 								dst = 0;
 								
 								starttime += (1000.0 / fps);
-			           			LockSupport.parkNanos((long)(Math.max(0,starttime - System.currentTimeMillis()) * 1000000));
+			           			LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
 			           			framecounter++;
 							}
 						}
@@ -312,6 +318,7 @@ public class AnimPlay {
 	/**
 	 * Main program. Accepts 1 optional argument: the file name to play.
 	 * @param args the arguments
+	 * @throws IOException ignored
 	 */
 	public static void main(String[] args) throws IOException {
 		String filename = null;

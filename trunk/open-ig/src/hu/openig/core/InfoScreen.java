@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -8,17 +8,25 @@
 
 package hu.openig.core;
 /**
- * Information screen.
+ * Information screen page enumerations.
  * @author karnokd, 2009.01.28.
  * @version $Revision 1.0$
  */
 public enum InfoScreen {
+	/** Colony information screen. */
 	COLONY_INFORMATION,
+	/** Military information screen. */
 	MILITARY_INFORMATION,
+	/** Financial information screen. */
 	FINANCIAL_INFORMATION,
+	/** Buildings list screen. */
 	BUILDINGS,
+	/** Planets list screen. */
 	PLANETS,
+	/** Fleets list screen. */
 	FLEETS,
+	/** Inventions list screen. */
 	INVENTIONS,
+	/** Aliens list screen. */
 	ALIENS
 }

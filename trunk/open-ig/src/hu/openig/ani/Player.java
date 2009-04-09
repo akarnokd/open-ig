@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -56,6 +56,7 @@ public class Player {
 	//private Framerates framerates;
 	/**
 	 * Constructor.
+	 * @param surface the target surface to render to
 	 */
 	public Player(SwappableRenderer surface) {
 		this.surface = surface;
@@ -126,6 +127,7 @@ public class Player {
 									newDst = RLE.decompress2(rleInput, 0, rawImage, dst, palette);
 									dst = newDst;
 									break;
+								default:
 								}
 								// we reached the number of subimages per frame?
 								if (imageHeight >= saf.getHeight()) {
@@ -137,7 +139,7 @@ public class Player {
 									imageHeight = 0;
 									dst = 0;
 									starttime += (1000.0 / fps);
-				           			LockSupport.parkNanos((long)(Math.max(0,starttime - System.currentTimeMillis()) * 1000000));
+				           			LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
 								}
 							}
 						}

@@ -47,6 +47,7 @@ public class OptionsGFX {
 		public BufferedImage checkmark;
 		/** The save list area. */
 		public Rectangle listArea = new Rectangle();
+		/** The background area. */
 		public Rectangle background = new Rectangle();
 		/** The enclosing settings rectangle. */
 		public final Rectangle settingsRect = new Rectangle();
