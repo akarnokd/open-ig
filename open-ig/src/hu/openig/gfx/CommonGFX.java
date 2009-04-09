@@ -12,6 +12,7 @@ import hu.openig.core.InfoBarRegions;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
+import hu.openig.utils.ResourceMapper;
 import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.BasicStroke;
@@ -125,10 +126,10 @@ public class CommonGFX {
 	public BufferedImage researchDisallowed;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
-	 * @param root
+	 * @param resMap the resource mapper object
 	 */
-	public CommonGFX(String root) {
-		BufferedImage basic = PCXImage.from(root + "/GFX/ALAP.PCX", -1);
+	public CommonGFX(ResourceMapper resMap) {
+		BufferedImage basic = PCXImage.from(resMap.get("GFX/ALAP.PCX"), -1);
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// TOP BAR
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
@@ -147,7 +148,7 @@ public class CommonGFX {
 		bottom.right = ImageUtils.subimage(basic, 400, 20, 240, 18);
 		bottom.link = ImageUtils.subimage(basic, 399, 20, 1, 18);
 		
-		BufferedImage cursorImage = PCXImage.from(root + "/GFX/ICONMAIN.PCX", 0);
+		BufferedImage cursorImage = PCXImage.from(resMap.get("GFX/ICONMAIN.PCX"), 0);
 		cursors = new GFXCursors();
 		int idx = 0;
 
@@ -186,19 +187,19 @@ public class CommonGFX {
 				new Point(19, 19), "SouthWest");
 		
 		
-		text = new TextGFX(root + "/GFX/CHARSET1.PCX");
+		text = new TextGFX(resMap.get("GFX/CHARSET1.PCX").getAbsolutePath());
 		
-		minimap = PCXImage.from(root + "/GFX/ZOOM2.PCX", -1);
+		minimap = PCXImage.from(resMap.get("GFX/ZOOM2.PCX"), -1);
 		// fix image
 		minimap = minimap.getSubimage(0, 0, minimap.getWidth() - 1, minimap.getHeight());
 		
 		for (int i = 0; i < 5; i++) {
-			minimapInfo[i] = PCXImage.from(root + "/GFX/INFO" + (i + 1) + ".PCX", -1);
+			minimapInfo[i] = PCXImage.from(resMap.get("GFX/INFO" + (i + 1) + ".PCX"), -1);
 		}
 		
 		// BUILDING PICTURES
 		for (int i = 1; i <= 8; i++) {
-			Map<String, PACEntry> buildingPics = PACFile.mapByName(PACFile.parseFully(root + "/DATA/COLONYP" + i + ".PAC"));
+			Map<String, PACEntry> buildingPics = PACFile.mapByName(PACFile.parseFully(resMap.get("DATA/COLONYP" + i + ".PAC")));
 			for (PACEntry e : buildingPics.values()) {
 				int idx1 = e.filename.indexOf('.');
 				int value = Integer.parseInt(e.filename.substring(0, idx1));
@@ -207,7 +208,7 @@ public class CommonGFX {
 		}
 		
 		shipImages = new BufferedImage[15];
-		BufferedImage fleets = PCXImage.from(root + "/GFX/FLEETS.PCX", -2);
+		BufferedImage fleets = PCXImage.from(resMap.get("GFX/FLEETS.PCX"), -2);
 		for (int i = 0; i < shipImages.length; i++) {
 			shipImages[i] = ImageUtils.subimage(fleets, 28 + (i % 12), 7 * (i / 12), 20, 7);
 		}
@@ -218,7 +219,7 @@ public class CommonGFX {
 		radarDots[3] = ImageUtils.subimage(fleets, 164, 13, 3, 3);
 		
 		// Research CDs
-		BufferedImage rescd = PCXImage.from(root + "/SCREENS/FEJL_CD.PCX", -2);
+		BufferedImage rescd = PCXImage.from(resMap.get("SCREENS/FEJL_CD.PCX"), -2);
 		researchCDs = new BufferedImage[6][];
 		for (int i = 0; i < 3; i++) {
 			researchCDs[i] = new BufferedImage[16];
@@ -232,7 +233,7 @@ public class CommonGFX {
 				researchCDs[i][j] = ImageUtils.subimage(rescd, j * 20, 60 + i * 17, 20, 17);
 			}
 		}
-		researchDisallowed = PCXImage.from(root + "/SCREENS/FEJL_TAK.PCX", -2);
+		researchDisallowed = PCXImage.from(resMap.get("SCREENS/FEJL_TAK.PCX"), -2);
 	}
 	/**
 	 * Set building image for a race and building type.

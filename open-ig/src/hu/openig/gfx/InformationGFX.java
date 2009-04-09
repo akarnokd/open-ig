@@ -10,6 +10,7 @@ package hu.openig.gfx;
 
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PCXImage;
+import hu.openig.utils.ResourceMapper;
 
 import java.awt.image.BufferedImage;
 
@@ -69,15 +70,15 @@ public class InformationGFX {
 	public BufferedImage btnTaxLessDown;
 	/**
 	 * Constructor. Loads all graphics necessary for information screen rendering.
-	 * @param root the root directory of the IG files.
+	 * @param resMap the respource mapper
 	 */
-	public InformationGFX(String root) {
+	public InformationGFX(ResourceMapper resMap) {
 		// entire background
-		BufferedImage info = PCXImage.from(root + "/SCREENS/INFO.PCX", -1);
+		BufferedImage info = PCXImage.from(resMap.get("SCREENS/INFO.PCX"), -1);
 		// fix unnecessary right sidebar
 		infoScreen = info.getSubimage(0, 0, 620, 420);
 		// button states
-		BufferedImage infox = PCXImage.from(root + "/SCREENS/INFO_X.PCX", -1);
+		BufferedImage infox = PCXImage.from(resMap.get("SCREENS/INFO_X.PCX"), -1);
 		
 		
 		

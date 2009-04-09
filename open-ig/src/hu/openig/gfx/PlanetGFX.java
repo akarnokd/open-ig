@@ -12,6 +12,7 @@ import hu.openig.core.Tile;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
+import hu.openig.utils.ResourceMapper;
 import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.image.BufferedImage;
@@ -83,10 +84,10 @@ public class PlanetGFX {
 	public BufferedImage buildingNoButton;
 	/**
 	 * Constructor. Loads all graphics necessary for planetary rendering.
-	 * @param root the root directory of the IG files.
+	 * @param resMap the resource mapper
 	 */
-	public PlanetGFX(String root) {
-		loadFrom(root);
+	public PlanetGFX(ResourceMapper resMap) {
+		loadFrom(resMap);
 	}
 	/**
 	 * Ajusts varios surface tile geometry. These tiles are not the
@@ -257,15 +258,15 @@ public class PlanetGFX {
 	}
 	/**
 	 * Load and initialize images and maps from the given directory.
-	 * @param root
+	 * @param resMap the resource mapper
 	 */
-	private void loadFrom(String root) {
-		maps = PACFile.mapByName(PACFile.parseFully(root + "/DATA/MAP.PAC"));
+	private void loadFrom(ResourceMapper resMap) {
+		maps = PACFile.mapByName(PACFile.parseFully(resMap.get("DATA/MAP.PAC")));
 		surfaceImages = new HashMap<Integer, Map<Integer, Tile>>();
 		for (int i = 1; i < 8; i++) {
 			Map<Integer, Tile> actual = new HashMap<Integer, Tile>();
 			surfaceImages.put(i, actual);
-			for (PACEntry e : PACFile.parseFully(root + "/DATA/FELSZIN" + i +".PAC")) {
+			for (PACEntry e : PACFile.parseFully(resMap.get("DATA/FELSZIN" + i +".PAC"))) {
 				int idx = e.filename.indexOf('.');
 				Tile t = new Tile();
 				t.image = PCXImage.parse(e.data, -2);
@@ -275,13 +276,13 @@ public class PlanetGFX {
 		adjustTileParams();
 
 		frames = new BufferedImage[4];
-		BufferedImage keretek = PCXImage.from(root + "/GFX/KERET.PCX", -2);
+		BufferedImage keretek = PCXImage.from(resMap.get("GFX/KERET.PCX"), -2);
 		frames[0] = ImageUtils.subimage(keretek, 0, 0, 57, 28);
 		frames[1] = ImageUtils.subimage(keretek, 58, 0, 57, 28);
 		frames[2] = ImageUtils.subimage(keretek, 116, 0, 57, 28);
 		frames[3] = ImageUtils.subimage(keretek, 174, 0, 57, 28);
 		
-		BufferedImage colony = PCXImage.from(root + "/SCREENS/COLONY.PCX", -1);
+		BufferedImage colony = PCXImage.from(resMap.get("SCREENS/COLONY.PCX"), -1);
 		buildingButton = ImageUtils.subimage(colony, 0, 0, 19, 170);
 		leftTop = ImageUtils.subimage(colony, 0, 169, 20, 57);
 		leftFiller = ImageUtils.subimage(colony, 0, 226, 20, 2);
@@ -303,7 +304,7 @@ public class PlanetGFX {
 		radarPanel = ImageUtils.subimage(colony, 19, 282, 181, 160);
 		buildingInfoPanel = ImageUtils.subimage(colony, 424, 0, 196, 147);
 		
-		BufferedImage colonyx = PCXImage.from(root + "/SCREENS/COLONY_X.PCX", -1);
+		BufferedImage colonyx = PCXImage.from(resMap.get("SCREENS/COLONY_X.PCX"), -1);
 
 		colonyInfoButtonDown = ImageUtils.subimage(colonyx, 80, 198, 105, 28);
 		planetButton = ImageUtils.subimage(colonyx, 185, 170, 105, 28);
@@ -327,7 +328,7 @@ public class PlanetGFX {
 		noEnergy = ImageUtils.subimage(colonyx, 290, 244, 145, 18);
 		completedPercent = ImageUtils.subimage(colonyx, 435, 244, 145, 18);
 
-		BufferedImage colonzx = PCXImage.from(root + "/SCREENS/COLONZ_X.PCX", -1);
+		BufferedImage colonzx = PCXImage.from(resMap.get("SCREENS/COLONZ_X.PCX"), -1);
 
 		vehicleWindow = ImageUtils.subimage(colonzx, 80, 0, 140, 79);
 		buildingNoButton = ImageUtils.subimage(colonzx, 0, 0, 19, 170);
