@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -22,10 +22,13 @@ import java.util.Map;
 
 /** Record to store the graphical elements of the starmap screen. */
 public class StarmapGFX {
+	/** The starmap contents object. */
 	public StarmapContents contents;
 	/** Map from surface type to drawing size to list of animation phase images. */
 	public Map<String, Map<Integer, List<BufferedImage>>> starmapPlanets;
+	/** The border button image. */
 	public BufferedImage btnBorder;
+	/** The radars button image. */
 	public BufferedImage btnRadars;
 	public BufferedImage btnStars;
 	public BufferedImage btnFleets;

@@ -12,9 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Enumeration for error conditions
+ * Enumeration for error conditions.
  * @author karnokd
- *
  */
 public enum Errors {
 	/** Not enough money. */
@@ -78,12 +77,12 @@ public enum Errors {
 	/**
 	 * Maps the error index value to the error enumeration.
 	 */
-	public static final Map<Integer, Errors> map;
+	public static final Map<Integer, Errors> MAP;
 	static {
 		Map<Integer, Errors> m = new HashMap<Integer, Errors>();
 		for (Errors e : values()) {
 			m.put(e.index, e);
 		}
-		map = Collections.unmodifiableMap(m);
+		MAP = Collections.unmodifiableMap(m);
 	}
 }

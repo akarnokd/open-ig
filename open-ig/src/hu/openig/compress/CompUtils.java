@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -86,13 +86,13 @@ public final class CompUtils {
 			short rd = (short)((raw[i] & 0xFF) | (raw[i + 1] & 0xFF) << 8);
 			short rdd = (short)(rd - start); 
 			raw[i] = (byte)(rdd & 0xFF);
-			raw[i + 1] = (byte)((rdd >> 8)& 0xFF);
+			raw[i + 1] = (byte)((rdd >> 8) & 0xFF);
 			start = rd;
 		}
 		return raw;
 	}
 	/**
-	 * Decompresses a GZIP and differentially coded stream of 8 bit data
+	 * Decompresses a GZIP and differentially coded stream of 8 bit data.
 	 * @param raw the raw data to decompress
 	 * @return the uncompressed data
 	 */
@@ -100,7 +100,7 @@ public final class CompUtils {
 		return undifference8(decompressGZIP(raw));
 	}
 	/**
-	 * Decompresses a GZIP and differentially coded stream of 16 bit data
+	 * Decompresses a GZIP and differentially coded stream of 16 bit data.
 	 * @param raw the raw data to decompress
 	 * @return the uncompressed data
 	 */
@@ -294,8 +294,8 @@ public final class CompUtils {
 	/**
 	 * Signifiy the 16 bit sound data.
 	 * 
-	 * @param buffer
-	 *            the buffer
+	 * @param buffer the buffer
+	 * @param len the length to process
 	 */
 	void signifySound(byte[] buffer, int len) {
 		for (int i = 0; i < len; i += 2) {
@@ -307,7 +307,7 @@ public final class CompUtils {
 	}
 
 	/**
-	 * Switch between big endian and little endian byte order
+	 * Switch between big endian and little endian byte order.
 	 * 
 	 * @param val
 	 *            the value to switch
@@ -318,7 +318,10 @@ public final class CompUtils {
 				| (val & 0xFF00) << 8 | (val & 0xFF) << 24;
 	}
 
-	/** Find the minimum of repeated compression loops. */
+	/** 
+	 * Find the minimum of repeated compression loops.
+	 * @param sound the sound bytes 
+	 */
 	public static void compressLoop(byte[] sound) {
 		byte[] comp;
 		double ratio = 1;

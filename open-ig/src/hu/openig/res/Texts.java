@@ -68,7 +68,7 @@ public class Texts {
 			idx = 0;
 			for (String name : fixHungarianChars(new String(entries.get("HIBAK.TXT").data, "ISO-8859-1")).split("\r\n")) {
 				int i = name.indexOf(' ');
-				errorTexts.put(Errors.map.get(Integer.parseInt(name.substring(0, i))), name.substring(i + 1));
+				errorTexts.put(Errors.MAP.get(Integer.parseInt(name.substring(0, i))), name.substring(i + 1));
 				idx++;
 			}
 			idx = 0;
@@ -81,7 +81,7 @@ public class Texts {
 			idx = 0;
 			for (String name : fixHungarianChars(new String(entries.get("UZENET.TXT").data, "ISO-8859-1")).split("\r\n")) {
 				int i = name.indexOf(' ');
-				messageTexts.put(Messages.map.get(Integer.parseInt(name.substring(0, i))), name.substring(i + 1));
+				messageTexts.put(Messages.MAP.get(Integer.parseInt(name.substring(0, i))), name.substring(i + 1));
 				idx++;
 			}
 		} catch (UnsupportedEncodingException ex) {

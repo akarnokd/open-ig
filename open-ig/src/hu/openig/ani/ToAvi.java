@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -19,28 +19,42 @@ import hu.openig.compress.RLE;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Convert the SpidyAni2 files into uncompressed AVI
+ * Convert the SpidyAni2 files into uncompressed AVI.
  * @author karnokd, 2009.02.20.
  * @version $Revision 1.0$
  */
-public class ToAvi {
+public final class ToAvi {
+	/** Private constructor. */
+	private ToAvi() {
+		// utility class
+	}
+	/** 
+	 * Change between little endian and big endian coding.
+	 * @param val the value to rotate
+	 * @return the rotated value 
+	 */
 	private static int rotate(int val) {
 		return (val & 0xFF000000) >> 24 | (val & 0xFF0000) >> 8 
 		| (val & 0xFF00) << 8 | (val & 0xFF) << 24;
 	}
+	/** 
+	 * Change between little endian and big endian coding.
+	 * @param val the value to rotate
+	 * @return the rotated value 
+	 */
 	private static int rotateShort(int val) {
 		return (val & 0xFF00) >> 8 | (val & 0xFF) << 8;
 	}
 	/**
-	 * @param args
+	 * Main program.
+	 * @param args arguments, format: ToAvi inFile outFile
+	 * @throws IOException ignored
 	 */
 	public static void main(String[] args) throws IOException {
 		if (args.length != 2) {
@@ -90,6 +104,7 @@ public class ToAvi {
 						newDst = RLE.decompress2(rleInput, 0, rawImage, dst, palette);
 						dst = newDst;
 						break;
+					default:
 					}
 					// we reached the number of subimages per frame?
 					if (imageHeight >= saf.getHeight()) {
@@ -109,17 +124,17 @@ public class ToAvi {
 		//writeAviFile(saf, args, frames, bout, 17.89);
 	}
 	/**
-	 * Write avi file
-	 * @param the spidyani file
-	 * @param args
-	 * @param frames
-	 * @param sound
-	 * @param fps
+	 * Write avi file.
+	 * @param saf the spidyani file
+	 * @param args the arguments
+	 * @param frames the frame pixels
+	 * @param sound the sound stream
+	 * @param fps the target frame/sec
+	 * @throws IOException passed along
 	 */
 	static void writeAviFile(SpidyAniFile saf, String[] args, 
 			List<int[]> frames, ByteArrayOutputStream sound, double fps)
-	throws FileNotFoundException, IOException,
-	UnsupportedEncodingException {
+	throws IOException {
 
 		RandomAccessFile rf = new RandomAccessFile(args[1], "rw");
 		rf.write("RIFF".getBytes("Latin1"));
@@ -239,15 +254,13 @@ public class ToAvi {
 		rf.close();
 	}
 	/**
-	 * @param args
-	 * @param bout
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws UnsupportedEncodingException
+	 * Writes a wav file based on the raw bytes.
+	 * @param args the arguments
+	 * @param bout the audio stream
+	 * @throws IOException passed along
 	 */
 	static void writeWaveFile(String[] args, ByteArrayOutputStream bout)
-			throws FileNotFoundException, IOException,
-			UnsupportedEncodingException {
+			throws IOException {
 		RandomAccessFile rf = new RandomAccessFile(args[1], "rw");
 		rf.write("RIFF".getBytes("Latin1"));
 		rf.writeInt(rotate(bout.size() + 36)); // size

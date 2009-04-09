@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -22,12 +22,23 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
+ * Utility program to play sound files from Imperium Galactica's SOUND directory.
  * @author karnokd, 2009.01.18.
  * @version $Revision 1.0$
  */
-public class SoundList {
+public final class SoundList {
+	/** The audio playback thread. */
 	static AudioThread ad;
+	/** The IG root directory. */
 	static String root;
+	/** Private constructor. */
+	private SoundList() {
+		// utility program
+	}
+	/** 
+	 * Fill list with filenames from the SOUND directory. 
+	 * @param lst the JList object to fill in 
+	 */
 	private static void populateList(JList lst) {
 		DefaultListModel mdl = new DefaultListModel();
 		File[] files = new File(root + "/SOUND").listFiles();
@@ -40,6 +51,10 @@ public class SoundList {
 		}
 		lst.setModel(mdl);
 	}
+	/**
+	 * Action method for list selection change event.
+	 * @param e the event
+	 */
 	private static void doSelectionChange(ListSelectionEvent e) {
 		if (!e.getValueIsAdjusting()) {
 			JList lst = (JList)e.getSource();
@@ -49,8 +64,8 @@ public class SoundList {
 		}
 	}
 	/**
-	 * 
-	 * @param args
+	 * Main program.
+	 * @param args arguments, optionally one argument containing the root directory for IG
 	 */
 	public static void main(String[] args) {
 		root = "./";

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -9,6 +9,10 @@ package hu.openig.utils;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Image manipulation utilities.
+ * @author karnokd
+ */
 public final class ImageUtils {
 	/** Use subimage or separate image. */
 	private static final boolean SUBIMAGE = true; 

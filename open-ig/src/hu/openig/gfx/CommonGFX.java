@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -100,9 +100,9 @@ public class CommonGFX {
 		"Stadium",
 	};
 	/** The dotted grid color. */
-	public Color GRID_COLOR = new Color(0x783C5C);
+	public static final Color GRID_COLOR = new Color(0x783C5C);
 	/** The dotted grid stroke. */
-	public BasicStroke GRID_STROKE = new BasicStroke(1f, BasicStroke.CAP_BUTT, 
+	public static final BasicStroke GRID_STROKE = new BasicStroke(1f, BasicStroke.CAP_BUTT, 
             BasicStroke.JOIN_MITER, 10f, new float[] { 1f }, 0f);
 	/** The array for the ship icon images for starmap and minimaps. */
 	public BufferedImage[] shipImages;
@@ -237,10 +237,10 @@ public class CommonGFX {
 	}
 	/**
 	 * Set building image for a race and building type.
-	 * @param race
-	 * @param index
-	 * @param name
-	 * @param picture
+	 * @param race the race index
+	 * @param index the building index
+	 * @param name the building name
+	 * @param picture the building's image
 	 */
 	private void setBuildingImage(int race, int index, String name, BufferedImage picture) {
 		Map<Object, BufferedImage> raceBuildings = buildingPictures.get(race);
@@ -251,6 +251,11 @@ public class CommonGFX {
 		raceBuildings.put(index, picture);
 		raceBuildings.put(name, picture);
 	}
+	/**
+	 * Renders the information top and bottom bars onto the specified component and graphics context.
+	 * @param c the component to draw onto
+	 * @param g2 the graphics object to use
+	 */
 	public void renderInfoBars(JComponent c, Graphics2D g2) {
 		int w = c.getWidth();
 		int h = c.getHeight();
@@ -275,6 +280,11 @@ public class CommonGFX {
 			g2.setTransform(at);
 		}
 	}
+	/**
+	 * Update interactable region coordinates on the information bars for the given component.
+	 * @param c the parent component
+	 * @param reg the information bar record
+	 */
 	public void updateRegions(JComponent c, InfoBarRegions reg) {
 		int w = c.getWidth();
 		//int h = c.getHeight();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -30,8 +30,8 @@ public final class LZSS {
 	public static void decompress(byte[] data, int src, byte[] out, int dst) {
 		int marker = 0;
 		int nextChar = 0xFEE;
-		final int WINDOW_SIZE = 4096;
-		byte[] slidingWindow = new byte[WINDOW_SIZE];
+		final int windowSize = 4096;
+		byte[] slidingWindow = new byte[windowSize];
 		while (src < data.length) {
 			marker = data[src++] & 0xFF;
 			for (int i = 0; i < 8 && src < data.length; i++) {
@@ -40,17 +40,17 @@ public final class LZSS {
 					byte d = data[src++];
 					out[dst++] = d;
 					slidingWindow[nextChar] = d;
-					nextChar = (nextChar + 1) % WINDOW_SIZE;
+					nextChar = (nextChar + 1) % windowSize;
 				} else {
 					int offset = data[src++] & 0xFF;
 					int len = data[src++] & 0xFF;
 					offset = offset | (len & 0xF0) << 4;
 					len = (len & 0x0F) + 3;
 					for (int j = 0; j < len; j++) {
-						byte d = slidingWindow[(offset + j) % WINDOW_SIZE];
+						byte d = slidingWindow[(offset + j) % windowSize];
 						out[dst++] = d;
 						slidingWindow[nextChar] = d;
-						nextChar = (nextChar + 1) % WINDOW_SIZE;
+						nextChar = (nextChar + 1) % windowSize;
 					}
 				}
 			}

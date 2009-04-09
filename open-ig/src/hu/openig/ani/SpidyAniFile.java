@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -29,7 +29,7 @@ public class SpidyAniFile {
 	 * @author karnokd, 2009.01.11.
 	 * @version $Revision 1.0$
 	 */
-	public static abstract class Block {
+	public abstract static class Block {
 		/** The block data bytes. */
 		public byte[] data;
 	}
@@ -76,7 +76,7 @@ public class SpidyAniFile {
 		}
 	}
 	/**
-	 * Describes the
+	 * Describes the image compression algorithm.
 	 * @author karnokd, 2009.01.11.
 	 * @version $Revision 1.0$
 	 */
@@ -217,7 +217,6 @@ public class SpidyAniFile {
 	 * Read a little endian word from the input stream.
 	 * @return the read word value of 0 to 65535
 	 * @throws IOException if The underlying input stream throws exception
-	 * @throws EOFException if there none or one byte available for input
 	 */
 	private int readWord() throws IOException {
 		return (in.readByte() & 0xFF) | (in.readByte() & 0xFF) << 8;
@@ -280,7 +279,7 @@ public class SpidyAniFile {
 		return soundSize;
 	}
 	/**
-	 * Walks all blocks within the file
+	 * Walks all blocks within the file.
 	 * @throws IOException if the underlying IO stream throws it
 	 */
 	public void walkBlocks() throws IOException {

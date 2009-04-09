@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -9,22 +9,16 @@
 package hu.openig.ani;
 
 import hu.openig.utils.XML;
+import hu.openig.utils.XML.XmlProcessor;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
- * Class to manage frame rate and delay constants in framerates.xml
+ * Class to manage frame rate and delay constants in framerates.xml.
  * @author karnokd, 2009.02.22.
  * @version $Revision 1.0$
  */
@@ -62,34 +56,17 @@ public class Framerates {
 		loadFromResource("/hu/openig/res/framerates.xml");
 	}
 	/**
-	 * Load values from resource
+	 * Load values from resource.
 	 * @param resource the resource path
 	 */
 	private void loadFromResource(String resource) {
-		try {
-			InputStream in = getClass().getResourceAsStream(resource);
-			if (in != null) {
-				try {
-					DocumentBuilderFactory db = DocumentBuilderFactory.newInstance();
-					DocumentBuilder doc = db.newDocumentBuilder();
-					process(doc.parse(in));
-				} finally {
-					in.close();
-				}
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} catch (SAXException ex) {
-			ex.printStackTrace();
-		} catch (ParserConfigurationException ex) {
-			ex.printStackTrace();
-		}
+		XML.parseResource(resource, new XmlProcessor<Void>() { public Void process(Document doc) { processDoc(doc); return null; } });
 	}
 	/**
 	 * Process the xml document.
 	 * @param doc the DOM document
 	 */
-	private void process(Document doc) {
+	private void processDoc(Document doc) {
 		Element root = doc.getDocumentElement();
 		for (Element ani : XML.childrenWithName(root, "ani")) {
 			String name = ani.getAttribute("name");

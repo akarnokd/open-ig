@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -72,6 +72,9 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
@@ -154,6 +157,9 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 	public String getVersion() {
 		return version;
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		Point pt = e.getPoint();
@@ -172,6 +178,9 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 			highlight = null;
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		Point pt = e.getPoint();
@@ -190,6 +199,9 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 			highlight = null;
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Point pt = e.getPoint();
@@ -209,18 +221,30 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 			quitAction.invoke();
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		

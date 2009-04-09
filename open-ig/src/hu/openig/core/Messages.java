@@ -87,14 +87,14 @@ public enum Messages {
 		this.paramCount = paramCount;
 	}
 	/** Map from message index to message enumeration. */
-	public static final Map<Integer, Messages> map;
+	public static final Map<Integer, Messages> MAP;
 	
 	static {
 		Map<Integer, Messages> m = new HashMap<Integer, Messages>();
 		for (Messages msg : values()) {
 			m.put(msg.index, msg);
 		}
-		map = Collections.unmodifiableMap(m);
+		MAP = Collections.unmodifiableMap(m);
 	}
 	/**
 	 * Converts the patameterized string to a correct String.format() format specification.

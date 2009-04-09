@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -61,10 +61,15 @@ import javax.swing.Timer;
 public class Main extends JFrame {
 	/** */
 	private static final long serialVersionUID = 6922932910697940684L;
-	public static final String version = "0.5 Alpha";
+	/** Version string. */
+	public static final String VERSION = "0.5 Alpha";
+	/** The user interface sounds. */
 	UISounds uis;
+	/** The common graphics objects. */
 	CommonGFX cgfx;
+	/** The starmap renderer. */
 	StarmapRenderer smr;
+	/** The planet surface renderer. */
 	PlanetRenderer pr;
 	/** The information screen renderer. */
 	InformationRenderer ir;
@@ -72,8 +77,11 @@ public class Main extends JFrame {
 	MainmenuRenderer mmr;
 	/** The full screen movie surface. */
 	MovieSurface mov;
+	/** Timer for fade in-out animations. */
 	Timer fadeTimer;
-	int FADE_TIME = 50;
+	/** The fade timer firing interval in milliseconds. */
+	static final int FADE_TIME = 50;
+	/** The panel used for screen switching. */
 	JLayeredPane layers;
 	/** The array of screens. */
 	JComponent[] screens;
@@ -85,11 +93,17 @@ public class Main extends JFrame {
 	Music music;
 	/** Set to true if the ESC is pressed while a full screen playback is in progress. */
 	private boolean playbackCancelled;
+	/** The executor service for parallel operations. */
 	public ExecutorService exec;
+	/** The starmap graphics objects. */
 	StarmapGFX starmapGFX;
+	/** The planet graphics objects. */
 	PlanetGFX planetGFX;
+	/** The information screen renderer. */
 	InformationGFX infoGFX;
+	/** The main menu renderer. */
 	MenuGFX menuGFX;
+	/** The options screen renderer. */
 	OptionsGFX optionsGFX;
 	/** The options screen renderer. */
 	OptionsRenderer or;
@@ -113,13 +127,13 @@ public class Main extends JFrame {
 		music = new Music(".");
 
 		List<Future<?>> futures = new LinkedList<Future<?>>();
-		futures.add(exec.submit(new Runnable() { public void run() { uis = new UISounds(resMap); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { cgfx = new CommonGFX(resMap); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { starmapGFX = new StarmapGFX(resMap); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { planetGFX = new PlanetGFX(resMap); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { infoGFX = new InformationGFX(resMap); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { menuGFX = new MenuGFX(resMap); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { optionsGFX = new OptionsGFX(resMap); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { uis = new UISounds(resMap); } }));
+		futures.add(exec.submit(new Runnable() { public void run() { cgfx = new CommonGFX(resMap); } }));
+		futures.add(exec.submit(new Runnable() { public void run() { starmapGFX = new StarmapGFX(resMap); } }));
+		futures.add(exec.submit(new Runnable() { public void run() { planetGFX = new PlanetGFX(resMap); } }));
+		futures.add(exec.submit(new Runnable() { public void run() { infoGFX = new InformationGFX(resMap); } }));
+		futures.add(exec.submit(new Runnable() { public void run() { menuGFX = new MenuGFX(resMap); } }));
+		futures.add(exec.submit(new Runnable() { public void run() { optionsGFX = new OptionsGFX(resMap); } }));
 		
 		for (Future<?> f : futures) {
 			try {
@@ -150,7 +164,7 @@ public class Main extends JFrame {
 		
 		// setup renderers
 		mmr.setVisible(true);
-		mmr.setVersion(version);
+		mmr.setVersion(VERSION);
 		mmr.setRandomPicture();
 		smr.setVisible(false);
 		ir.setVisible(false);
@@ -218,6 +232,9 @@ public class Main extends JFrame {
 		smr.startAnimations();
 		setVisible(true);
 	}
+	/**
+	 * Set the keyboard shortcuts.
+	 */
 	private void setKeyboard() {
 		JRootPane rp = getRootPane();
 		
@@ -226,51 +243,51 @@ public class Main extends JFrame {
 		rp.getActionMap().put("F2", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
-			public void actionPerformed(ActionEvent e) { onF2Action(); }});
+			public void actionPerformed(ActionEvent e) { onF2Action(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "F3");
 		rp.getActionMap().put("F3", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
-			public void actionPerformed(ActionEvent e) { onF3Action(); }});
+			public void actionPerformed(ActionEvent e) { onF3Action(); } });
 
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "F7");
 		rp.getActionMap().put("F7", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
-			public void actionPerformed(ActionEvent e) { onF7Action(); }});
+			public void actionPerformed(ActionEvent e) { onF7Action(); } });
 
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "ESC");
 		rp.getActionMap().put("ESC", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
-			public void actionPerformed(ActionEvent e) { onESCAction(); }});
+			public void actionPerformed(ActionEvent e) { onESCAction(); } });
 		
 	}
 	/**
 	 * Sets action listeners on the various screens.
 	 */
 	private void setListeners() {
-		smr.setOnColonyClicked(new BtnAction() { public void invoke() { onStarmapColony(); }});
-		smr.setOnInformationClicked(new BtnAction() { public void invoke() { onStarmapInfo(); }});
-		pr.setOnStarmapClicked(new BtnAction() { public void invoke() { onColonyStarmap(); }});
-		pr.setOnInformationClicked(new BtnAction() { public void invoke() { onColonyInfo(); }});
-		ir.setOnStarmapClicked(new BtnAction() { public void invoke() { onInfoStarmap(); }});
-		ir.setOnColonyClicked(new BtnAction() { public void invoke() { onInfoColony(); }});
-		pr.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); }});
+		smr.setOnColonyClicked(new BtnAction() { public void invoke() { onStarmapColony(); } });
+		smr.setOnInformationClicked(new BtnAction() { public void invoke() { onStarmapInfo(); } });
+		pr.setOnStarmapClicked(new BtnAction() { public void invoke() { onColonyStarmap(); } });
+		pr.setOnInformationClicked(new BtnAction() { public void invoke() { onColonyInfo(); } });
+		ir.setOnStarmapClicked(new BtnAction() { public void invoke() { onInfoStarmap(); } });
+		ir.setOnColonyClicked(new BtnAction() { public void invoke() { onInfoColony(); } });
+		pr.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
 		
-		mmr.setStartNewAction(new BtnAction() { public void invoke() { onStarmap(); }});
-		mmr.setLoadAction(new BtnAction() { public void invoke() { onLoad(); }});
-		mmr.setTitleAnimAction(new BtnAction() { public void invoke() { onTitle(); }});
-		mmr.setIntroAction(new BtnAction() { public void invoke() { onIntro(); }});
-		mmr.setQuitAction(new BtnAction() { public void invoke() { onQuit(); }});
+		mmr.setStartNewAction(new BtnAction() { public void invoke() { onStarmap(); } });
+		mmr.setLoadAction(new BtnAction() { public void invoke() { onLoad(); } });
+		mmr.setTitleAnimAction(new BtnAction() { public void invoke() { onTitle(); } });
+		mmr.setIntroAction(new BtnAction() { public void invoke() { onIntro(); } });
+		mmr.setQuitAction(new BtnAction() { public void invoke() { onQuit(); } });
 		
-		or.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); }});
-		or.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); }});
-		or.setOnExit(new BtnAction() { public void invoke() { doExit(); }});
+		or.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); } });
+		or.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); } });
+		or.setOnExit(new BtnAction() { public void invoke() { doExit(); } });
 	}
 	/** Go to starmap from main menu. */
 	private void onStarmap() {
@@ -285,35 +302,46 @@ public class Main extends JFrame {
 	private void onQuit() {
 		dispose();
 	}
+	/**
+	 * Action for starmap colony button pressed.
+	 */
 	private void onStarmapColony() {
 		showScreen(pr);
 	}
+	/** Action for starmap info button pressed. */
 	private void onStarmapInfo() {
 		ir.setScreenButtonsFor(InfoScreen.PLANETS);
 		ir.setVisible(true);
 		layers.validate();
 	}
+	/** Action for colony starmap button pressed. */
 	private void onColonyStarmap() {
 		showScreen(smr);
 	}
+	/** Action for colony planets button pressed. */
 	private void onColonyPlanets() {
 		ir.setScreenButtonsFor(InfoScreen.PLANETS);
 		ir.setVisible(true);
 		layers.validate();
 	}
+	/** Action for colony info button pressed. */
 	private void onColonyInfo() {
 		ir.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
 		ir.setVisible(true);
 		layers.validate();
 	}
+	/** Action for info screen starmap button pressed. */
 	private void onInfoStarmap() {
 		showScreen(smr);
 	}
+	/** Action for info screen colony button pressed. */
 	private void onInfoColony() {
 		showScreen(pr);
 	}
 	/**
-	 * @param args
+	 * Open Imperium Galactica main program.
+	 * @param args arguments one optional argument for specifying IG's root directory
+	 * @throws Exception ignores any exception
 	 */
 	public static void main(String[] args)  throws Exception {
 		// D3D pipeline is slow for an unknown reason
@@ -336,6 +364,7 @@ public class Main extends JFrame {
 			}
 		});
 	}
+	/** Action for F2 keypress. */
 	private void onF2Action() {
 		if (!player.isPlayback()) {
 			if (!smr.isVisible()) {
@@ -348,6 +377,7 @@ public class Main extends JFrame {
 			}
 		}
 	}
+	/** Action for F3 keypress. */
 	private void onF3Action() {
 		if (!player.isPlayback()) {
 			if (!pr.isVisible()) {
@@ -360,6 +390,7 @@ public class Main extends JFrame {
 			}
 		}
 	}
+	/** Action for F7 keypress. */
 	private void onF7Action() {
 		if (!player.isPlayback()) {
 			if (!ir.isVisible()) {
@@ -472,7 +503,7 @@ public class Main extends JFrame {
 		}
 	}
 	/**
-	 * Start or stop animations when the options screen is displayed
+	 * Start or stop animations when the options screen is displayed.
 	 * @param state start or stop animations
 	 */
 	private void startStopAnimations(boolean state) {

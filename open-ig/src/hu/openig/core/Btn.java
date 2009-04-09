@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -47,31 +47,27 @@ public class Btn {
 			onClick.invoke();
 		}
 	}
-	/** Tests if the point is within the visible, enabled rectangle of this button. */
+	/** 
+	 * Tests if the point is within the visible, enabled rectangle of this button.
+	 * @param p the point to test
+	 * @return true if the point is within the button's boundaries
+	 */
 	public boolean test(Point p) {
 		return visible && !disabled && rect.contains(p);
 	}
-//	/**
-//	 * Set width and height from the image.
-//	 * @param img the image to use
-//	 */
-//	public void setSizeFrom(BufferedImage img) {
-//		rect.width = img.getWidth();
-//		rect.height = img.getHeight();
-//	}
 	/**
 	 * Set the bounds.
-	 * @param the bounding rectangle
+	 * @param r the bounding rectangle
 	 */
 	public void setBounds(Rectangle r) {
 		rect.setBounds(r);
 	}
 	/**
 	 * Set the bounds from coordinates.
-	 * @param x 
-	 * @param y
-	 * @param w
-	 * @param h
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width
+	 * @param h the height
 	 */
 	public void setBounds(int x, int y, int w, int h) {
 		rect.setBounds(x, y, w, h);
