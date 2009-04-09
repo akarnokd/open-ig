@@ -298,6 +298,10 @@ public class PCXImage {
 	public static BufferedImage from(String f, int transparentRGB) {
 		return parse(IOUtils.load(f), transparentRGB);
 	}
+	/** Loads an image from the specified file object. */
+	public static BufferedImage from(File f, int transparentRGB) {
+		return parse(IOUtils.load(f), transparentRGB);
+	}
 	public static void main(String[] args) throws Exception {
 		File f = new File("me.PCX");
 		byte[] data = new byte[(int)f.length()];

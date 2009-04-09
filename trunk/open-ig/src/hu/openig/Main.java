@@ -25,6 +25,7 @@ import hu.openig.gfx.StarmapRenderer;
 import hu.openig.model.GMPlanet;
 import hu.openig.music.Music;
 import hu.openig.sound.UISounds;
+import hu.openig.utils.ResourceMapper;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -94,6 +95,8 @@ public class Main extends JFrame {
 	OptionsRenderer or;
 	/** The program is currently in Game mode. */
 	boolean inGame;
+	/** The resource file mapper. */
+	private ResourceMapper resMap;
 	/**
 	 * Initialize resources from the given root directory.
 	 * @param root the root directory
@@ -106,16 +109,17 @@ public class Main extends JFrame {
 		
 		exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		
+		resMap = new ResourceMapper(root);
 		music = new Music(".");
 
 		List<Future<?>> futures = new LinkedList<Future<?>>();
-		futures.add(exec.submit(new Runnable() { public void run() { uis = new UISounds(root); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { cgfx = new CommonGFX(root); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { starmapGFX = new StarmapGFX(root); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { planetGFX = new PlanetGFX(root); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { infoGFX = new InformationGFX(root); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { menuGFX = new MenuGFX(root); }}));
-		futures.add(exec.submit(new Runnable() { public void run() { optionsGFX = new OptionsGFX(root); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { uis = new UISounds(resMap); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { cgfx = new CommonGFX(resMap); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { starmapGFX = new StarmapGFX(resMap); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { planetGFX = new PlanetGFX(resMap); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { infoGFX = new InformationGFX(resMap); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { menuGFX = new MenuGFX(resMap); }}));
+		futures.add(exec.submit(new Runnable() { public void run() { optionsGFX = new OptionsGFX(resMap); }}));
 		
 		for (Future<?> f : futures) {
 			try {

@@ -9,6 +9,7 @@
 package hu.openig.gfx;
 
 import hu.openig.utils.PCXImage;
+import hu.openig.utils.ResourceMapper;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -29,17 +30,17 @@ public class MenuGFX {
 	public Rectangle rectHard;
 	/**
 	 * Constructor. Loads the menu related images.
-	 * @param root the root directory.
+	 * @param resMap the resource mapper
 	 */
-	public MenuGFX(String root) {
+	public MenuGFX(ResourceMapper resMap) {
 		startImages = new BufferedImage[3];
 		for (int i = 0; i < startImages.length; i++) {
-			startImages[i] = PCXImage.from(root + "/SCREENS/START" + (i + 1) + ".PCX", -1);
+			startImages[i] = PCXImage.from(resMap.get("SCREENS/START" + (i + 1) + ".PCX"), -1);
 		}
 		// relative positions of the title options
 		difficultyImages = new BufferedImage[2];
 		for (int i = 0; i < difficultyImages.length; i++) {
-			difficultyImages[i] = PCXImage.from(root + "/SCREENS/DIFF" + (i + 1) + ".PCX", -1);
+			difficultyImages[i] = PCXImage.from(resMap.get("SCREENS/DIFF" + (i + 1) + ".PCX"), -1);
 		}
 		rectNormal = new Rectangle(50, 172, 540, 40);
 		rectHard = new Rectangle(50, 228, 540, 40);

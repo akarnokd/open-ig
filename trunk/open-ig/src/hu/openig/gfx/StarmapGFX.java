@@ -10,6 +10,7 @@ package hu.openig.gfx;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
+import hu.openig.utils.ResourceMapper;
 import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.Color;
@@ -76,13 +77,13 @@ public class StarmapGFX {
 	public BufferedImage btnStopLight;
 	/**
 	 * Constructor. Loads all images belonging to the starmap.
-	 * @param root the file system root directory of IG.
+	 * @param resMap the resource mapper object.
 	 */
-	public StarmapGFX(String root) {
+	public StarmapGFX(ResourceMapper resMap) {
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// STARMAP BODY
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-		BufferedImage body = PCXImage.from(root + "/SCREENS/STARMAP.PCX", -1);
+		BufferedImage body = PCXImage.from(resMap.get("SCREENS/STARMAP.PCX"), -1);
 		
 		contents = new StarmapContents();
 		
@@ -108,7 +109,7 @@ public class StarmapGFX {
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// BIGMAP
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-		contents.fullMap = PCXImage.from(root + "/GFX/ZOOM.PCX", -1);
+		contents.fullMap = PCXImage.from(resMap.get("GFX/ZOOM.PCX"), -1);
 		// fix image
 		contents.fullMap = contents.fullMap.getSubimage(0, 0, contents.fullMap.getWidth(), 662);
 		
@@ -119,7 +120,7 @@ public class StarmapGFX {
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 
 		starmapPlanets = new HashMap<String, Map<Integer, List<BufferedImage>>>();
-		for (PACEntry pe : PACFile.parseFully(root + "/DATA/BOLYGOK.PAC")) {
+		for (PACEntry pe : PACFile.parseFully(resMap.get("DATA/BOLYGOK.PAC"))) {
 			String type = pe.filename.substring(0, 4);
 			Map<Integer, List<BufferedImage>> aplanet = starmapPlanets.get(type);
 			if (aplanet == null) {
@@ -138,7 +139,7 @@ public class StarmapGFX {
 			aplanet.put(planetImg.getWidth(), list);
 		}
 		
-		BufferedImage starx = PCXImage.from(root + "/SCREENS/STAR_X.PCX", -1);
+		BufferedImage starx = PCXImage.from(resMap.get("SCREENS/STAR_X.PCX"), -1);
 		
 		btnBorderLight = ImageUtils.subimage(starx, 0, 0, 53, 18);
 		btnRadarsLight = ImageUtils.subimage(starx, 53, 0, 53, 18);

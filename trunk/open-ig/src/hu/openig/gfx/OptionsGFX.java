@@ -8,6 +8,7 @@
 package hu.openig.gfx;
 
 import hu.openig.utils.PCXImage;
+import hu.openig.utils.ResourceMapper;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -56,16 +57,16 @@ public class OptionsGFX {
 	public final Opts[] opts;
 	/**
 	 * Constructor. Loads the graphics.
-	 * @param root the root directory of the IG
+	 * @param the resource mapper object
 	 */
-	public OptionsGFX(String root) {
+	public OptionsGFX(ResourceMapper resMap) {
 		opts = new Opts[2];
 		for (int i = 0; i < opts.length; i++) {
 			opts[i] = new Opts();
 		}
-		opts[0].options = PCXImage.from(root + "/SCREENS/OPTIONS1.PCX", -1);
+		opts[0].options = PCXImage.from(resMap.get("SCREENS/OPTIONS1.PCX"), -1);
 		
-		BufferedImage bimg = PCXImage.from(root + "/SCREENS/OPT1_X.PCX", -2);
+		BufferedImage bimg = PCXImage.from(resMap.get("SCREENS/OPT1_X.PCX"), -2);
 		opts[0].btnLoadDown = bimg.getSubimage(138, 42, 120, 41);
 		opts[0].btnLoadDisabled = bimg.getSubimage(138, 84, 120, 41);
 		opts[0].btnSaveDown = bimg.getSubimage(259, 42, 118, 41);
@@ -74,8 +75,8 @@ public class OptionsGFX {
 		opts[0].slider = bimg.getSubimage(548, 0, 22, 12);
 		opts[0].checkmark = bimg.getSubimage(571, 0, 23, 19);
 		
-		opts[1].options = PCXImage.from(root + "/SCREENS/OPTIONS2.PCX", -1); 
-		bimg = PCXImage.from(root + "/SCREENS/OPT2_X.PCX", -2);
+		opts[1].options = PCXImage.from(resMap.get("SCREENS/OPTIONS2.PCX"), -1); 
+		bimg = PCXImage.from(resMap.get("SCREENS/OPT2_X.PCX"), -2);
 		opts[1].btnLoadDown = bimg.getSubimage(138, 42, 120, 41);
 		opts[1].btnLoadDisabled = bimg.getSubimage(138, 84, 120, 41);
 		opts[1].btnSaveDown = bimg.getSubimage(259, 42, 118, 41);
