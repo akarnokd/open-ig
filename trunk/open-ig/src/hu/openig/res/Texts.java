@@ -21,14 +21,18 @@ import java.util.Map;
  * @author karnokd
  */
 public class Texts {
-	private final Map<Integer, String> buildingName = new HashMap<Integer, String>();
-	private final Map<Integer, String[]> buildingInfo = new HashMap<Integer, String[]>();
-	private final Map<Integer, String> equipmentName = new HashMap<Integer, String>();
-	private final Map<Integer, String[]> equipmentInfo = new HashMap<Integer, String[]>();
+	/** Maps building integers to building names. */
+	public final Map<Integer, String> buildingName = new HashMap<Integer, String>();
+	/** Maps building integers to building information lines. */
+	public final Map<Integer, String[]> buildingInfo = new HashMap<Integer, String[]>();
+	/** Maps equipment indexes to equipment names. */ 
+	public final Map<Integer, String> equipmentName = new HashMap<Integer, String>();
+	/** Maps equipment indexes to equipment information lines. */
+	public final Map<Integer, String[]> equipmentInfo = new HashMap<Integer, String[]>();
 	/** The map of error enumerations to error descriptions. */
-	private final Map<Errors, String> errorTexts = new HashMap<Errors, String>();
+	public final Map<Errors, String> errorTexts = new HashMap<Errors, String>();
 	/** The map of messages to messate descriptions. */
-	private final Map<Messages, String> messageTexts = new HashMap<Messages, String>();
+	public final Map<Messages, String> messageTexts = new HashMap<Messages, String>();
 	/**
 	 * Constructor. Loads the text entries.
 	 * @param root the root directory of IG.

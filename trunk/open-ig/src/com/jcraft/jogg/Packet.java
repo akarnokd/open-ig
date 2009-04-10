@@ -36,11 +36,11 @@ public class Packet{
   public long granulepos;
 
   /**
-   * sequence number for decode; the framing
+   * Sequence number for decode; the framing
    * knows where there's a hole in the data,
    * but we need coupling so that the codec
    * (which is in a seperate abstraction
-   * layer) also knows about the gap
+   * layer) also knows about the gap.
    */
   public long packetno;
 

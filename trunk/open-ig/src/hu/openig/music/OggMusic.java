@@ -31,24 +31,47 @@ import com.jcraft.jorbis.Info;
  * @author karnokd
  */
 public class OggMusic {
+	/** The current playback thread. */
 	private volatile Thread playbackThread;
+	/** Ogg Player object. */
 	private SyncState oy;
+	/** Ogg Player object. */
 	private StreamState os;
+	/** Ogg Player object. */
 	private Page og;
+	/** Ogg Player object. */
 	private Packet op;
+	/** Ogg Player object. */
 	private Info vi;
+	/** Ogg Player object. */
 	private Comment vc;
+	/** Ogg Player object. */
 	private DspState vd;
+	/** Ogg Player object. */
 	private Block vb;
+	/** Ogg Player object. */
 	private static final int BUFSIZE = 4096 * 2;
+	/** Ogg Player object. */
 	private static int convsize = BUFSIZE * 2;
+	/** Ogg Player object. */
 	private byte[] convbuffer = new byte[convsize];
 
+	/** Ogg Player object. */
 	private int rate = 0;
+	/** Ogg Player object. */
 	private int channels = 0;
+	/** The current playback source data line. */
 	public volatile SourceDataLine outputLine = null;
+	/** Current/initial sound gain. */
 	private float initialGain;
+	/** Current/initial mute state. */
 	private boolean initialMute; 
+	/**
+	 * Constructor.
+	 * @param me the playback thread running the run() method
+	 * @param gain the initial sound gain
+	 * @param mute the initial mute state
+	 */
 	public OggMusic(Thread me, float gain, boolean mute) {
 		this.playbackThread = me;
 		this.initialGain = gain;
@@ -63,6 +86,9 @@ public class OggMusic {
 			playbackThread = null;
 		}
 	}
+	/**
+	 * Initialize JOrbis.
+	 */
 	void initJOrbis() {
 		oy = new SyncState();
 		os = new StreamState();
@@ -76,7 +102,11 @@ public class OggMusic {
 
 		oy.init();
 	}
-
+	/**
+	 * Initialize the audio subsystem.
+	 * @param channels the number of channels
+	 * @param rate the frequence
+	 */
 	void initAudio(int channels, int rate) {
 		try {
 			// ClassLoader originalClassLoader=null;
@@ -119,7 +149,12 @@ public class OggMusic {
 			System.out.println(ee);
 		}
 	}
-
+	/**
+	 * Create or return the output line.
+	 * @param channels the number of channels
+	 * @param rate the frequency
+	 * @return the current output line
+	 */
 	SourceDataLine getOutputLine(int channels, int rate) {
 		if (outputLine == null || this.rate != rate
 				|| this.channels != channels) {
@@ -156,13 +191,12 @@ public class OggMusic {
 
 			if (chained) { //
 				chained = false; //   
-			} //
-			else { //
+			} else { //
 				if (oy.pageout(og) != 1) {
-					if (bytes < BUFSIZE)
+					if (bytes < BUFSIZE) {
 						break;
-					System.err
-							.println("Input does not appear to be an Ogg bitstream.");
+					}
+					System.err.println("Input does not appear to be an Ogg bitstream.");
 					return;
 				}
 			} //
@@ -198,14 +232,16 @@ public class OggMusic {
 			while (i < 2) {
 				while (i < 2) {
 					int result = oy.pageout(og);
-					if (result == 0)
+					if (result == 0) {
 						break; // Need more data
+					}
 					if (result == 1) {
 						os.pagein(og);
 						while (i < 2) {
 							result = os.packetout(op);
-							if (result == 0)
+							if (result == 0) {
 								break;
+							}
 							if (result == -1) {
 								System.err
 										.println("Corrupt secondary header.  Exiting.");
@@ -234,26 +270,12 @@ public class OggMusic {
 				oy.wrote(bytes);
 			}
 
-			{
-				byte[][] ptr = vc.user_comments;
-				StringBuffer sb = null;
+			byte[][] ptr = vc.user_comments;
 
-				for (int j = 0; j < ptr.length; j++) {
-					if (ptr[j] == null)
-						break;
-					// System.err.println("Comment: "
-					// + new String(ptr[j], 0, ptr[j].length - 1));
-					if (sb != null)
-						sb.append(" "
-								+ new String(ptr[j], 0, ptr[j].length - 1));
+			for (int j = 0; j < ptr.length; j++) {
+				if (ptr[j] == null) {
+					break;
 				}
-				// System.err.println("Bitstream is " + vi.channels +
-				// " channel, "
-				// + vi.rate + "Hz");
-				// System.err
-				// .println("Encoded by: "
-				// + new String(vc.vendor, 0, vc.vendor.length - 1)
-				// + "\n");
 			}
 
 			convsize = BUFSIZE / vi.channels;
@@ -261,8 +283,8 @@ public class OggMusic {
 			vd.synthesis_init(vi);
 			vb.init(vd);
 
-			float[][][] _pcmf = new float[1][][];
-			int[] _index = new int[vi.channels];
+			float[][][] lPcmf = new float[1][][];
+			int[] lIndex = new int[vi.channels];
 
 			// Preset initial gain and mute
 			SourceDataLine sdl = getOutputLine(vi.channels, vi.rate);
@@ -289,12 +311,10 @@ public class OggMusic {
 					}
 
 					int result = oy.pageout(og);
-					if (result == 0)
+					if (result == 0) {
 						break; // need more data
-					if (result == -1) { // missing or corrupt data at this page
-						// position
-						// System.err.println("Corrupt or missing data in bitstream; continuing...");
-					} else {
+					}
+					if (result != -1) {
 						os.pagein(og);
 
 						if (og.granulepos() == 0) { //
@@ -305,24 +325,19 @@ public class OggMusic {
 
 						while (true) {
 							result = os.packetout(op);
-							if (result == 0)
+							if (result == 0) {
 								break; // need more data
-							if (result == -1) { // missing or corrupt data at
-								// this page position
-								// no reason to complain; already complained
-								// above
-
-								// System.err.println("no reason to complain; already complained above");
-							} else {
+							}
+							if (result != -1) {
 								// we have a packet. Decode it
 								int samples;
 								if (vb.synthesis(op) == 0) { // test for
 									// success!
 									vd.synthesis_blockin(vb);
 								}
-								while ((samples = vd.synthesis_pcmout(_pcmf,
-										_index)) > 0) {
-									float[][] pcmf = _pcmf[0];
+								while ((samples = vd.synthesis_pcmout(lPcmf,
+										lIndex)) > 0) {
+									float[][] pcmf = lPcmf[0];
 									int bout = (samples < convsize ? samples
 											: convsize);
 
@@ -330,9 +345,9 @@ public class OggMusic {
 									// (host order) and
 									// interleave
 									for (i = 0; i < vi.channels; i++) {
-										int ptr = i * 2;
+										int iptr = i * 2;
 										// int ptr=i;
-										int mono = _index[i];
+										int mono = lIndex[i];
 										for (int j = 0; j < bout; j++) {
 											int val = (int) (pcmf[i][mono + j] * 32767.);
 											if (val > 32767) {
@@ -341,11 +356,12 @@ public class OggMusic {
 											if (val < -32768) {
 												val = -32768;
 											}
-											if (val < 0)
+											if (val < 0) {
 												val = val | 0x8000;
-											convbuffer[ptr] = (byte) (val);
-											convbuffer[ptr + 1] = (byte) (val >>> 8);
-											ptr += 2 * (vi.channels);
+											}
+											convbuffer[iptr] = (byte) (val);
+											convbuffer[iptr + 1] = (byte) (val >>> 8);
+											iptr += 2 * (vi.channels);
 										}
 									}
 									outputLine.write(convbuffer, 0, 2
@@ -354,8 +370,9 @@ public class OggMusic {
 								}
 							}
 						}
-						if (og.eos() != 0)
+						if (og.eos() != 0) {
 							eos = 1;
+						}
 					}
 				}
 
@@ -372,8 +389,9 @@ public class OggMusic {
 						break;
 					}
 					oy.wrote(bytes);
-					if (bytes == 0)
+					if (bytes == 0) {
 						eos = 1;
+					}
 				}
 			}
 
@@ -386,8 +404,9 @@ public class OggMusic {
 		oy.clear();
 
 		try {
-			if (bitStream != null)
+			if (bitStream != null) {
 				bitStream.close();
+			}
 		} catch (Exception e) {
 		}
 	}

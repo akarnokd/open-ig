@@ -38,7 +38,7 @@ public class GMRace {
 	public int smallColor;
 	/**
 	 * Parses and processes a race resource XML.
-	 * @param resource
+	 * @param resource the resource location
 	 * @return the list of races
 	 */
 	public static List<GMRace> parse(String resource) {

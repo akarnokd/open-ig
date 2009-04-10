@@ -13,7 +13,7 @@
  * modify it under the terms of the GNU Library General Public License
  * as published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
-   
+
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,48 +27,48 @@
 package com.jcraft.jorbis;
 
 // psychoacoustic setup
-class PsyInfo{
-  int athp;
-  int decayp;
-  int smoothp;
-  int noisefitp;
-  int noisefit_subblock;
-  float noisefit_threshdB;
+class PsyInfo {
+	int athp;
+	int decayp;
+	int smoothp;
+	int noisefitp;
+	int noisefit_subblock;
+	float noisefit_threshdB;
 
-  float ath_att;
+	float ath_att;
 
-  int tonemaskp;
-  float[] toneatt_125Hz=new float[5];
-  float[] toneatt_250Hz=new float[5];
-  float[] toneatt_500Hz=new float[5];
-  float[] toneatt_1000Hz=new float[5];
-  float[] toneatt_2000Hz=new float[5];
-  float[] toneatt_4000Hz=new float[5];
-  float[] toneatt_8000Hz=new float[5];
+	int tonemaskp;
+	float[] toneatt_125Hz = new float[5];
+	float[] toneatt_250Hz = new float[5];
+	float[] toneatt_500Hz = new float[5];
+	float[] toneatt_1000Hz = new float[5];
+	float[] toneatt_2000Hz = new float[5];
+	float[] toneatt_4000Hz = new float[5];
+	float[] toneatt_8000Hz = new float[5];
 
-  int peakattp;
-  float[] peakatt_125Hz=new float[5];
-  float[] peakatt_250Hz=new float[5];
-  float[] peakatt_500Hz=new float[5];
-  float[] peakatt_1000Hz=new float[5];
-  float[] peakatt_2000Hz=new float[5];
-  float[] peakatt_4000Hz=new float[5];
-  float[] peakatt_8000Hz=new float[5];
+	int peakattp;
+	float[] peakatt_125Hz = new float[5];
+	float[] peakatt_250Hz = new float[5];
+	float[] peakatt_500Hz = new float[5];
+	float[] peakatt_1000Hz = new float[5];
+	float[] peakatt_2000Hz = new float[5];
+	float[] peakatt_4000Hz = new float[5];
+	float[] peakatt_8000Hz = new float[5];
 
-  int noisemaskp;
-  float[] noiseatt_125Hz=new float[5];
-  float[] noiseatt_250Hz=new float[5];
-  float[] noiseatt_500Hz=new float[5];
-  float[] noiseatt_1000Hz=new float[5];
-  float[] noiseatt_2000Hz=new float[5];
-  float[] noiseatt_4000Hz=new float[5];
-  float[] noiseatt_8000Hz=new float[5];
+	int noisemaskp;
+	float[] noiseatt_125Hz = new float[5];
+	float[] noiseatt_250Hz = new float[5];
+	float[] noiseatt_500Hz = new float[5];
+	float[] noiseatt_1000Hz = new float[5];
+	float[] noiseatt_2000Hz = new float[5];
+	float[] noiseatt_4000Hz = new float[5];
+	float[] noiseatt_8000Hz = new float[5];
 
-  float max_curve_dB;
+	float max_curve_dB;
 
-  float attack_coeff;
-  float decay_coeff;
+	float attack_coeff;
+	float decay_coeff;
 
-  void free(){
-  }
+	void free() {
+	}
 }

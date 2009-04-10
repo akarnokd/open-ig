@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -36,7 +36,11 @@ import java.util.Map;
  * </pre> 
  *
  */
-public class PACFile {
+public final class PACFile {
+	/** Private constructor. */
+	private PACFile() {
+		// utility class
+	}
 	/**
 	 * Record to store entry information about various entries in the Pack file.
 	 * @author karnokd
@@ -55,7 +59,6 @@ public class PACFile {
 	 * Parses the given file fully and loads all entries into the memory.
 	 * @param f the file to parse fuly
 	 * @return the non-null list of pac entry records filled with data
-	 * @throws IOException if a file format error or other I/O problem occurs
 	 */
 	public static List<PACEntry> parseFully(File f) {
 		try {
@@ -79,7 +82,8 @@ public class PACFile {
 				for (int i = 0; i < count; i++) {
 					PACEntry e = result.get(i);
 					fin.seek(e.offset);
-					fin.readFully(e.data = new byte[e.size]);
+					e.data = new byte[e.size];
+					fin.readFully(e.data);
 				}
 				return result;
 			} finally {
@@ -92,9 +96,8 @@ public class PACFile {
 	}
 	/**
 	 * Parses the given filename fully and loads all entries into the memory.
-	 * @param f the filename to parse fully
+	 * @param filename the filename to parse fully
 	 * @return the non-null list of pac entry records filled with data
-	 * @throws IOException if a file format error or other I/O problem occurs
 	 */
 	public static List<PACEntry> parseFully(String filename) {
 		return parseFully(new File(filename));
@@ -137,7 +140,8 @@ public class PACFile {
 				}
 				offset += n;
 			}
-			din.readFully(e.data = new byte[e.size]);
+			e.data = new byte[e.size];
+			din.readFully(e.data);
 			offset += e.size;
 		}
 		return result;

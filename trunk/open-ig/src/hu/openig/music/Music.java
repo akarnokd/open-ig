@@ -7,17 +7,14 @@
  */
 package hu.openig.music;
 
-import hu.openig.compress.CompUtils;
 import hu.openig.utils.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.util.zip.GZIPOutputStream;
+import java.util.Arrays;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -144,7 +141,7 @@ public class Music {
 			public void run() {
 				playbackLoop(fileName);
 			}
-		}, "MusicPlayback-" + fileName);
+		}, "MusicPlayback-" + Arrays.toString(fileName));
 		playbackThread = th;
 		th.start();
 	}
@@ -188,7 +185,7 @@ public class Music {
 	/**
 	 * Plays back the given filename as an OGG audio file.
 	 * @param fileName the file or resource to play
-	 * @throws IOException
+	 * @throws IOException on IO error
 	 */
 	private void playbackOgg(String fileName) throws IOException {
 		InputStream raf = null;
@@ -207,12 +204,10 @@ public class Music {
 	}
 	/**
 	 * Plays back the given filename as a WAV file.
-	 * @param fileName
-	 * @throws FileNotFoundException
-	 * @throws IOException
+	 * @param fileName the wav file name to play
+	 * @throws IOException if there is problem with the IO
 	 */
-	private void playbackWav(String fileName) throws FileNotFoundException,
-			IOException {
+	private void playbackWav(String fileName) throws IOException {
 		InputStream raf = null;
 		if (fileName.startsWith("res:")) {
 			raf = Music.class.getResourceAsStream(fileName.substring(4));
@@ -351,7 +346,7 @@ public class Music {
 			FloatControl f = (FloatControl) soundClip
 					.getControl(FloatControl.Type.MASTER_GAIN);
 			f.setValue(gain);
-		}else if (oggMusic != null) {
+		} else if (oggMusic != null) {
 			FloatControl f = (FloatControl) oggMusic.outputLine
 			.getControl(FloatControl.Type.MASTER_GAIN);
 			f.setValue(gain);
@@ -367,7 +362,7 @@ public class Music {
 	}
 
 	/**
-	 * Mute or unmute the sound
+	 * Mute or unmute the sound.
 	 * 
 	 * @param mute
 	 *            the mute to set
@@ -394,21 +389,5 @@ public class Music {
 	 */
 	public boolean isMute() {
 		return mute;
-	}
-
-	public static void main(String[] args) throws Exception {
-		String name = "SPACEWAR";
-		File f = new File(name + ".WAV");
-		RandomAccessFile raf = new RandomAccessFile(f, "r");
-		long loc = findData(raf);
-		byte[] sound = new byte[(int) (f.length() - loc)];
-		raf.seek(loc);
-		raf.readFully(sound);
-		raf.close();
-		sound = CompUtils.interleave16(CompUtils.difference16(sound));
-		GZIPOutputStream zout = new GZIPOutputStream(new FileOutputStream(name
-				+ ".SND"));
-		zout.write(sound);
-		zout.close();
 	}
 }

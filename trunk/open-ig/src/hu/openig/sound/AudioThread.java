@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 package hu.openig.sound;
 
 import java.util.concurrent.BlockingQueue;
@@ -147,7 +154,7 @@ public class AudioThread extends Thread {
 		return result;
 	}
 	/**
-	 * Split the 16 bit signed values into little endian byte array format
+	 * Split the 16 bit signed values into little endian byte array format.
 	 * @param data the data to split
 	 * @return the splitted data
 	 */

@@ -87,7 +87,12 @@ public final class XML {
 			}
 		};
 	}
-	/** Returns the contents of the first occurrence of the specified child. */
+	/** 
+	 * Returns the contents of the first occurrence of the specified child. 
+	 * @param e the parent element
+	 * @param name the child name
+	 * @return the child textual value or empty string 
+	 */
 	public static String childValue(Element e, String name) {
 		Iterator<Element> it = childrenWithName(e, name).iterator();
 		if (it.hasNext()) {
@@ -95,7 +100,12 @@ public final class XML {
 		}
 		return "";
 	}
-	/** Returns the first child element with the given name. */
+	/** 
+	 * Returns the first child element with the given name.
+	 * @param e the parent element
+	 * @param name child name
+	 * @return the child element or null if not present 
+	 */
 	public static Element childElement(Element e, String name) {
 		Iterator<Element> it = childrenWithName(e, name).iterator();
 		if (it.hasNext()) {
@@ -103,9 +113,16 @@ public final class XML {
 		}
 		return null;
 	}
-	/** Callback interface for processing a fully parsed XML DOM document. */
+	/** 
+	 * Callback interface for processing a fully parsed XML DOM document.
+	 * @param <T> the type of the parsing result 
+	 */
 	public static interface XmlProcessor<T> {
-		/** Process the given document object and return an object. */
+		/** 
+		 * Process the given document object and return an object.
+		 * @param doc the DOM document
+		 * @return a parsed object 
+		 */
 		T process(Document doc);
 	}
 	/**
