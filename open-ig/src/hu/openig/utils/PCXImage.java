@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -9,16 +9,10 @@ package hu.openig.utils;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 /**
  * PCX Image decoder.<p>
@@ -113,8 +107,8 @@ public class PCXImage {
 		int[] image = new int[width * height];
 		for (int i = 0; i < image.length; i++) {
 			int c = raw[i] & 0xFF;
-			int d = (withPalette[c * 3] & 0xFF) << 16 |
-			(withPalette[c * 3 + 1] & 0xFF) << 8 | (withPalette[c * 3 + 2] & 0xFF) << 0;
+			int d = (withPalette[c * 3] & 0xFF) << 16 
+			| (withPalette[c * 3 + 1] & 0xFF) << 8 | (withPalette[c * 3 + 2] & 0xFF) << 0;
 			if (transparency == -1 || (transparency >= 0 && d != transparency) 
 					|| (transparency < -1 && c != -transparency - 2)) {
 				image[i] = 0xFF000000 | d;
@@ -140,22 +134,47 @@ public class PCXImage {
 		return height;
 	}
 	/**
-	 * Header size: 128 bytes 
+	 * The PCX file header.
+	 * Header size: 128 bytes.
 	 */
 	static class Header {
+		/** Manufacturer. */
 		public byte manufacturer; // 0x0A
+		/** Version. */
 		public byte version;
+		/** Encoding. */
 		public byte encoding; // 0x01
+		/** Bits per pixel. */
 		public byte bitsperpixel;
+		/** Minimum X coordinate. */
 		public int xmin; // word
+		/** Minimum Y coordinate. */
 		public int ymin; // word
+		/** Maximum X coordinate. */
 		public int xmax; // word
+		/** Maximum Y coordinate. */
 		public int ymax; // word
+		/**
+		 * Returns the width of the image.
+		 * @return the width of the image
+		 */
 		public int getWidth() { return xmax - xmin + 1; }
+		/**
+		 * Returns the height of the image.
+		 * @return the height of the image
+		 */
 		public int getHeight() { return ymax - ymin + 1; }
+		/** Vertical DPI. */
 		public int vertdpi;
+		/** A default 16 color palette data. */
 		public byte[] palette = new byte[48];
+		/** An indexed color map. */
 		private Map<Integer, Color> colormap = new HashMap<Integer, Color>();
+		/**
+		 * Returns a Color object for the given index in the palette.
+		 * @param index the index
+		 * @return the color
+		 */
 		public Color colorOf(int index) { 
 			Color c = colormap.get(index);
 			if (c == null) {
@@ -165,20 +184,47 @@ public class PCXImage {
 			}
 			return c;  
 		}
+		/**
+		 * Returns an RGB integer of the given palette entry.
+		 * @param index the index
+		 * @return the color integer
+		 */
 		public int rgb(int index) {
-			return (palette[index * 3] & 0xFF) << 16 |
-			(palette[index * 3 + 1] & 0xFF) << 8 | (palette[index * 3 + 2] & 0xFF) << 0;
+			return (palette[index * 3] & 0xFF) << 16 
+			| (palette[index * 3 + 1] & 0xFF) << 8 | (palette[index * 3 + 2] & 0xFF) << 0;
 		}
 		//public byte reserved;
+		/** Number of color planes. */
 		public byte colorplanes;
+		/** Bytes per line. */
 		public int bytesperline; // word
+		/** Palette type. */
 		public int palettetype; // word
+		/** Horizontal screen size. */
 		public int hscrsize; // word
+		/** Vertical screen size. */
 		public int vscrsize; // word
+		/**
+		 * Returns the maximum number of colors.
+		 * @return the maximum number of colors
+		 */
 		public int getMaxNumberOfColors() { return 1 << (bitsperpixel * colorplanes); }
+		/** 
+		 * Returns the scan line length in bytes.
+		 * @return the scan line length in bytes
+		 */
 		public int getScanLineLength() { return colorplanes * bytesperline; }
+		/**
+		 * Returns the line padding in bytes.
+		 * @return the line padding in bytes
+		 */
 		public int getLinePaddingSize() { return (getScanLineLength() * 8 / bitsperpixel - getWidth()); }
 		//public byte[] filler = new byte[56]
+		/**
+		 * Parses the header from the given array of PCX image bytes.
+		 * @param data the PCX image data
+		 * @param h the target header
+		 */
 		public static void parse(byte[] data, Header h) {
 			h.version = data[1];
 			h.bitsperpixel = data[3];
@@ -294,25 +340,26 @@ public class PCXImage {
 //		return bi;
 		return new PCXImage(data).toBufferedImage(transparentRGB);
 	}
-	/** Loads an image from the specified filename. */
+	/** 
+	 * Loads an image from the specified filename.
+	 * @param f the file name
+	 * @param transparentRGB specifies how transparency should be handled: -1: No transparency, 
+	 * >= 0 the actual RGB color as transparent color, -2: The 0th palette entry, -3: the 1st palette entry,
+	 * etc.
+	 * @return an RGBA  buffered image 
+	 */
 	public static BufferedImage from(String f, int transparentRGB) {
 		return parse(IOUtils.load(f), transparentRGB);
 	}
-	/** Loads an image from the specified file object. */
+	/** 
+	 * Loads an image from the specified file object. 
+	 * @param f the file
+	 * @param transparentRGB specifies how transparency should be handled: -1: No transparency, 
+	 * >= 0 the actual RGB color as transparent color, -2: The 0th palette entry, -3: the 1st palette entry,
+	 * etc.
+	 * @return an RGBA  buffered image 
+	 */
 	public static BufferedImage from(File f, int transparentRGB) {
 		return parse(IOUtils.load(f), transparentRGB);
-	}
-	public static void main(String[] args) throws Exception {
-		File f = new File("me.PCX");
-		byte[] data = new byte[(int)f.length()];
-		DataInputStream fin = new DataInputStream(new FileInputStream(f));
-		fin.readFully(data);
-		fin.close();
-		JFrame fm = new JFrame("Image of " + f);
-		fm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		fm.getContentPane().add(new JLabel(new ImageIcon(parse(data, -1))));
-		fm.pack();
-		fm.setVisible(true);
-		
 	}
 }

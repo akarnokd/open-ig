@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -24,26 +24,50 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
+ * Contains Input / Output related functions and classes.
  * @author karnokd, 2009.01.05.
  * @version $Revision 1.0$
  */
-public class IOUtils {
+public final class IOUtils {
+	/** Private constructor. */
+	private IOUtils() {
+		// utility class
+	}
 	/**
 	 * An array wrapper with bit sized read operations.
 	 * @author karnokd
 	 */
 	public static class BitArray {
+		/** The data bytes. */
 		private byte[] data;
+		/** The current bit offset. */
 		private long offset;
+		/**
+		 * Constructor.
+		 * @param data the data to use
+		 */
 		public BitArray(byte[] data) {
 			this.data = data.clone();
 		}
+		/**
+		 * Sets the current bit offset. 
+		 * @param offset the offset
+		 */
 		public void setOffset(long offset) {
 			this.offset = offset;
 		}
+		/**
+		 * Returns the current bit offset.
+		 * @return the current bit offset
+		 */
 		public long getOffset() {
 			return offset;
 		}
+		/**
+		 * Reads the given number of bits in LSB style.
+		 * @param count the number of bits
+		 * @return the value read
+		 */
 		public int readBits(int count) {
 			int r = 0;
 			int obs = (int)(offset >> 3);
@@ -59,6 +83,11 @@ public class IOUtils {
 			int f = (1 << count) - 1;
 			return (s) & (f);
 		}
+		/**
+		 * Reads the given number of bits but stores it MSB.
+		 * @param count the number of bits
+		 * @return the value read
+		 */
 		public int readBitsRev(int count) {
 			int r = 0;
 			int obs = (int)(offset >> 3);
@@ -74,6 +103,10 @@ public class IOUtils {
 			int f = (1 << count) - 1;
 			return (s) & (f);
 		}
+		/**
+		 * Returns the length of the data in bits.
+		 * @return length in bits
+		 */
 		public long getBitSize() {
 			return data.length * 8L;
 		}
@@ -151,10 +184,16 @@ public class IOUtils {
 		public RAFtoInputStream(RandomAccessFile raf) {
 			this.raf = raf;
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public boolean markSupported() {
 			return true;
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public synchronized void mark(int readlimit) {
 			try {
@@ -163,6 +202,9 @@ public class IOUtils {
 				// ignored, cannot do much about it
 			}
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public synchronized void reset() throws IOException {
 			if (markPosition >= 0) {
@@ -171,27 +213,45 @@ public class IOUtils {
 				throw new IOException("mark() not called.");
 			}
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int read() throws IOException {
 			return raf.read();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int available() throws IOException {
 			long avail = raf.length() - raf.getFilePointer();
 			return avail > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)avail;
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void close() throws IOException {
 			raf.close();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int read(byte[] b) throws IOException {
 			return raf.read(b);
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int read(byte[] b, int off, int len) throws IOException {
 			return raf.read(b, off, len);
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public long skip(long n) throws IOException {
 			long newoffs = raf.getFilePointer() + n;
@@ -199,62 +259,107 @@ public class IOUtils {
 			raf.seek(toskip);
 			return toskip;
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public boolean readBoolean() throws IOException {
 			return raf.readBoolean();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public byte readByte() throws IOException {
 			return raf.readByte();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public char readChar() throws IOException {
 			return raf.readChar();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public double readDouble() throws IOException {
 			return raf.readDouble();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public float readFloat() throws IOException {
 			return raf.readFloat();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void readFully(byte[] b) throws IOException {
 			raf.readFully(b);
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public void readFully(byte[] b, int off, int len) throws IOException {
 			raf.readFully(b, off, len);
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int readInt() throws IOException {
 			return raf.readInt();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public String readLine() throws IOException {
 			return raf.readLine();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public long readLong() throws IOException {
 			return raf.readLong();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public short readShort() throws IOException {
 			return raf.readShort();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public String readUTF() throws IOException {
 			return raf.readUTF();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int readUnsignedByte() throws IOException {
 			return raf.readUnsignedByte();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int readUnsignedShort() throws IOException {
 			return raf.readUnsignedShort();
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public int skipBytes(int n) throws IOException {
 			return raf.skipBytes(n);
@@ -283,6 +388,9 @@ public class IOUtils {
 		public TextIterator(String buffer) {
 			this.buffer = buffer;
 		}
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public Iterator<String> iterator() {
 			return new Iterator<String>() {
@@ -293,7 +401,8 @@ public class IOUtils {
 				@Override
 				public boolean hasNext() {
 					try {
-						return (line = in.readLine()) != null;
+						line = in.readLine();
+						return line != null;
 					} catch (IOException ex) {
 						throw new AssertionError("IOException on in-memory object.");
 					}
@@ -338,7 +447,6 @@ public class IOUtils {
 	 * @param in the input stream
 	 * @param count the number of bytes to skip
 	 * @throws IOException if the input stream throws this exception
-	 * @throws EOFException if there is less than count bytes in the stream remaining.
 	 */
 	public static void skipFully(InputStream in, long count) throws IOException {
 		while (count > 0) {
@@ -354,7 +462,6 @@ public class IOUtils {
 	 * @param in the input stream
 	 * @param count the number of bytes to skip
 	 * @throws IOException if the input stream throws this exception
-	 * @throws EOFException if there is less than count bytes in the stream remaining.
 	 */
 	public static void skipFullyD(DataInput in, int count) throws IOException {
 		while (count > 0) {
@@ -366,19 +473,30 @@ public class IOUtils {
 		}
 	}
 	/**
-	 * Read bitstream from a static array
+	 * Read bitstream from a static array.
 	 * @author Karnok Dávid, Apr 11, 2007
 	 * @version 1.0
 	 */
 	public static class BitReader {
+		/** The source byte array. */
 		private byte[] stream;
+		/** The current bit offset. */
 		private int bitOffset;
+		/** The current byte offset. */
 		private int byteOffset;
+		/**
+		 * Constructor.
+		 * @param source the source array to use
+		 */
 		public BitReader(byte[] source) {
 			stream = source;
 		}
+		/**
+		 * Read one bit.
+		 * @return the bit value
+		 */
 		public int inputBit() {
-			int b = (stream[byteOffset] & (1 << bitOffset)) != 0?1:0;
+			int b = (stream[byteOffset] & (1 << bitOffset)) != 0 ? 1 : 0;
 			bitOffset++;
 			if (bitOffset >= 8) {
 				bitOffset = 0;
@@ -387,9 +505,9 @@ public class IOUtils {
 			return b;
 		}
 		/**
-		 * Input number of bits
+		 * Input number of bits.
 		 * @param n input bit count 1..8
-		 * @return
+		 * @return the bits read
 		 */
 		public int inputBits(int n) {
 			int result = -1;
@@ -400,7 +518,7 @@ public class IOUtils {
 			} else {
 				int b = (stream[byteOffset] & 0xFF) >> bitOffset;
 				int nextoffset = n - 8 + bitOffset;
-				int c = stream[byteOffset+1] & ((1 << nextoffset) - 1);
+				int c = stream[byteOffset + 1] & ((1 << nextoffset) - 1);
 				result = b | (c << (8 - bitOffset));
 			}
 			bitOffset += n;
@@ -411,17 +529,34 @@ public class IOUtils {
 			return result;
 		}
 	}
+	/**
+	 * Write data to an output stream as bits. 
+	 * @author karnokd
+	 */
 	public static class BitWriter {
+		/** The current logical bit offset. */
 		private int bitOffset;
+		/** The current logical byte offset. */
 		private int currentByte;
+		/** The output stream. */
 		private OutputStream out;
+		/**
+		 * Constructor.
+		 * @param out the output stream to write to
+		 */
 		public BitWriter(OutputStream out) {
 			this.out = out;
 		}
+		/**
+		 * Write bits.
+		 * @param code the bits to write
+		 * @param n length
+		 * @throws IOException if the underlying OutputStream.write() throws it
+		 */
 		public void outputBits(int code, int n) throws IOException {
 //			System.out.println("Code: "+Integer.toBinaryString(code)+" size: "+n);
-			for(int i=0; i<n; i++) {
-				currentByte |= (code & (1 << i)) != 0?1 << bitOffset:0;
+			for (int i = 0; i < n; i++) {
+				currentByte |= (code & (1 << i)) != 0 ? 1 << bitOffset : 0;
 				bitOffset++;
 				if (bitOffset >= 7) {
 					bitOffset = 0;
@@ -430,6 +565,10 @@ public class IOUtils {
 				}
 			}
 		}
+		/**
+		 * Flushes the underlying output stream.
+		 * @throws IOException if the underlying stream throws it
+		 */
 		public void flush() throws IOException {
 			if (bitOffset > 0) {
 				out.write(currentByte);
@@ -447,8 +586,9 @@ public class IOUtils {
         int ch2 = in.read();
         int ch3 = in.read();
         int ch4 = in.read();
-        if ((ch1 | ch2 | ch3 | ch4) < 0)
+        if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
+        }
         return ((ch1 << 0) + (ch2 << 8) + (ch3 << 16) + (ch4 << 24));
 	}
 	/**
@@ -462,8 +602,9 @@ public class IOUtils {
         int ch2 = in.read();
         int ch3 = in.read();
         int ch4 = in.read();
-        if ((ch1 | ch2 | ch3 | ch4) < 0)
+        if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
+        }
         return ((ch1 << 0) + (ch2 << 8) + (ch3 << 16) + (ch4 << 24));
 	}
 }

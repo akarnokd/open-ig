@@ -51,16 +51,21 @@ public class GMPlanet {
 	public boolean rotationDirection;
 	/** The planet's unique id. */
 	public String id;
+	/** Owner race name. */
 	public String ownerRace;
+	/** Population race name. */
 	public String populationRace;
+	/** Population count. */
 	public int population;
+	/** Last day's population growth. */
 	public int populationGrowth;
+	/** Object names in orbit. */
 	public final List<String> inOrbit = new ArrayList<String>();
 	/** The planet size relative to the largest size, e.g. -2, -1, 0 .*/
 	public int size;
 	/**
 	 * Parses and processes a planetary resource XML.
-	 * @param resource
+	 * @param resource the name of the resource
 	 * @return list of planets
 	 */
 	public static List<GMPlanet> parse(String resource) {
@@ -74,8 +79,8 @@ public class GMPlanet {
 	}
 	/**
 	 * Processes a planets.xml document.
-	 * @param root
-	 * @return
+	 * @param root the document 
+	 * @return the list of planets
 	 */
 	private static List<GMPlanet> process(Document root) {
 		List<GMPlanet> result = new ArrayList<GMPlanet>();

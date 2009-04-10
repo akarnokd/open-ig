@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -22,7 +22,11 @@ import javax.sound.sampled.SourceDataLine;
  * @author karnokd
  *
  */
-public class XMFFile {
+public final class XMFFile {
+	/** Private constructor. */
+	private XMFFile() {
+		// utility class.
+	}
 	/**
 	 * Returns the audio samples from the supplied XMF data.
 	 * @param data the data file
@@ -49,6 +53,11 @@ public class XMFFile {
 		}
 		return result;
 	}
+	/**
+	 * Main program.
+	 * @param args arguments.
+	 * @throws IOException if an IO error occurs
+	 */
 	public static void main(String[] args) throws IOException {
 		SourceDataLine sdl = AudioThread.createAudioOutput();
 		int i = 0;

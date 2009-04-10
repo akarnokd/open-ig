@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 package hu.openig.utils;
 
 import java.util.LinkedHashMap;
@@ -5,12 +12,17 @@ import java.util.LinkedHashMap;
 /**
  * Least recently used map.
  * @author karnokd
+ * @param <K> the key type
+ * @param <V> the value type
  */
 public class LRUHashMap<K, V> extends LinkedHashMap<K, V> {
 	/**  */
 	private static final long serialVersionUID = -8032627958631838087L;
 	/** The capacity. */
 	private int capacity;
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest) {
 		return size() == capacity;

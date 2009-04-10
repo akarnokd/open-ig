@@ -59,7 +59,7 @@ public final class AnimPlay {
 	/** The replay current item. */
 	private static JMenuItem menuReplay;
 	/** The last opened file directory. */
-	private static File lastPath = new File("c:/games/ig");
+	private static File lastPath = new File("c:/games/ighu");
 	/** Stop the playback. */
 	private static volatile boolean stop;
 	/** Current file. */

@@ -13,7 +13,7 @@
  * modify it under the terms of the GNU Library General Public License
  * as published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
-   
+
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,20 +26,20 @@
 
 package com.jcraft.jorbis;
 
-import com.jcraft.jogg.*;
+import com.jcraft.jogg.Buffer;
 
-abstract class FuncTime{
-  public static FuncTime[] time_P= {new Time0()};
+abstract class FuncTime {
+	public static FuncTime[] time_P = { new Time0() };
 
-  abstract void pack(Object i, Buffer opb);
+	abstract void pack(Object i, Buffer opb);
 
-  abstract Object unpack(Info vi, Buffer opb);
+	abstract Object unpack(Info vi, Buffer opb);
 
-  abstract Object look(DspState vd, InfoMode vm, Object i);
+	abstract Object look(DspState vd, InfoMode vm, Object i);
 
-  abstract void free_info(Object i);
+	abstract void free_info(Object i);
 
-  abstract void free_look(Object i);
+	abstract void free_look(Object i);
 
-  abstract int inverse(Block vb, Object i, float[] in, float[] out);
+	abstract int inverse(Block vb, Object i, float[] in, float[] out);
 }
