@@ -85,7 +85,10 @@ public class Player {
 					
 					PaletteDecoder palette = null;
 					int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
+					// clear any previous things from the buffer
 					surface.init(saf.getWidth(), saf.getHeight());
+					surface.getBackbuffer().setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
+					surface.swap();
 					int imageHeight = 0;
 					int dst = 0;
 					int audioCount = 0;

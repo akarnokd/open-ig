@@ -23,7 +23,7 @@ import java.awt.image.BufferedImage;
 public class InformationGFX {
 	/** The entire info screen. */
 	public BufferedImage infoScreen;
-	
+	/** Large colony button. */
 	public BufferedImage btnColonyLarge;
 	public BufferedImage btnColonyLargeDown;
 	public BufferedImage btnStarmapLarge;

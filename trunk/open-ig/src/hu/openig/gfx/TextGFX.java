@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -72,43 +72,43 @@ public class TextGFX {
 	/** Predefined color constant for a race. */
 	public static final int GALACTIC_EMPIRE = ORANGE;
 	/** Predefined color constant for a race and small text. */
-	public static final int GALACTIC_EMPIRE_ST = scaleColor(GALACTIC_EMPIRE, 1/1.3f);
+	public static final int GALACTIC_EMPIRE_ST = scaleColor(GALACTIC_EMPIRE, 1 / 1.3f);
 	/** Predefined color constant for a race. */
 	public static final int GARTHOG_REPUBLIC = RED;
 	/** Predefined color constant for a race. */
-	public static final int GARTHOG_REPUBLIC_ST = scaleColor(RED, 1/1.3f);
+	public static final int GARTHOG_REPUBLIC_ST = scaleColor(RED, 1 / 1.3f);
 	/** Predefined color constant for a race. */
 	public static final int MORGATH_EMPIRE = WHITE;
 	/** Predefined color constant for a race. */
-	public static final int MORGATH_EMPIRE_ST = scaleColor(WHITE, 1/1.3f);
+	public static final int MORGATH_EMPIRE_ST = scaleColor(WHITE, 1 / 1.3f);
 	/** Predefined color constant for a race. */
 	public static final int YCHOM_EMPIRE = WHITE;
 	/** Predefined color constant for a race. */
-	public static final int YCHOM_EMPIRE_ST = scaleColor(WHITE, 1/1.3f);
+	public static final int YCHOM_EMPIRE_ST = scaleColor(WHITE, 1 / 1.3f);
 	/** Predefined color constant for a race. */
 	public static final int DRIBS_EMPIRE = PURPLE;
 	/** Predefined color constant for a race. */
-	public static final int DRIBS_EMPIRE_ST = scaleColor(PURPLE, 1/1.3f);
+	public static final int DRIBS_EMPIRE_ST = scaleColor(PURPLE, 1 / 1.3f);
 	/** Predefined color constant for a race. */
 	public static final int SULLEP_EMPIRE = YELLOW;
 	/** Predefined color constant for a race. */
-	public static final int SULLEP_EMPIRE_ST = scaleColor(YELLOW, 1/1.3f);
+	public static final int SULLEP_EMPIRE_ST = scaleColor(YELLOW, 1 / 1.3f);
 	/** Predefined color constant for a race. */
 	public static final int DARGSLAN_KINGDOM = DARK_GREEN;
 	/** Predefined color constant for a race. */
-	public static final int DARGSLAN_KINGDOM_ST = scaleColor(DARK_GREEN, 1/1.3f);
+	public static final int DARGSLAN_KINGDOM_ST = scaleColor(DARK_GREEN, 1 / 1.3f);
 	/** Predefined color constant for a race. */
 	public static final int ECALEP_REPUBLIC = LIGHT_GREEN;
 	/** Predefined color constant for a race. */
-	public static final int ECALEP_REPUBLIC_ST = scaleColor(LIGHT_GREEN, 1/1.3f);
+	public static final int ECALEP_REPUBLIC_ST = scaleColor(LIGHT_GREEN, 1 / 1.3f);
 	/** Predefined color constant for a race. */
 	public static final int FREE_TRADERS = BLUE;
 	/** Predefined color constant for a race. */
-	public static final int FREE_TRADERS_ST = scaleColor(BLUE, 1/1.3f);
+	public static final int FREE_TRADERS_ST = scaleColor(BLUE, 1 / 1.3f);
 	/** Predefined color constant for a race. */
 	public static final int FREE_NATIONS_SOCIETY = LIGHT_BLUE;
 	/** Predefined color constant for a race. */
-	public static final int FREE_NATIONS_SOCIETY_ST = scaleColor(LIGHT_BLUE, 1/1.3f);
+	public static final int FREE_NATIONS_SOCIETY_ST = scaleColor(LIGHT_BLUE, 1 / 1.3f);
 	
 	/** The cache for color-remaped charImages. */
 	private Map<Integer, Map<Integer, SizedCharImages>> coloredCharImages = LRUHashMap.create(32);
@@ -128,78 +128,84 @@ public class TextGFX {
 		split(GRAY);
 		split(RED);
 	}
+	/** Characters in various lines. */
+	static final String[] LINE_CHARACTERS = {
+			/* Size: 7 */
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
+			"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
+			"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
+			/* Size: 10 */
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
+			"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
+			"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
+			/* Size: 14 */
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+			"abcdefghijklmnopqrstuvwxyz",
+			"?!()'\"+-:;.,1234567890%& /",
+			"\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
+			"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
+			/* Size: 5 */
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+			"?!()'\"+-:;.,1234567890%& /\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
+			"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA"
+	};
+	/** Character heights in various lines. */
+	static final int[] HEIGHTS = {
+			7, 7, 7, 
+			10, 10, 10, 
+			14, 14, 14, 14, 14,
+			5, 5, 5
+	};
+	/** Character widths in various lines. */
+	static final int[] WIDTHS = {
+			5, 5, 5, 
+			7, 7, 7, 
+			12, 12, 12, 12, 12,
+			5, 5, 5
+	};
+	/** Spacing between characters for various lines. */
+	static final int[] SPACING_X = {
+			3, 3, 3, 
+			1, 1, 1, 
+			0, 0, 0, 0, 0,
+			1, 1, 1
+	};
+	/** Spacing between character lines. */
+	static final int[] SPACING_Y = {
+			1, 1, 2, 
+			0, 0, 1, 
+			0, 0, 0, 0, 1,
+			1, 1, 1
+	};
 	/**
-	 * Split the entire images into character sizes and characters
+	 * Split the entire images into character sizes and characters.
+	 * @param color the target color.
 	 * @return the generated sized map of the character images
 	 */
 	private Map<Integer, SizedCharImages> split(int color) {
 		// first sequence for siz
-		String[] lineCharacters = {
-				/* Size: 7 */
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
-				"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
-				"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
-				/* Size: 10 */
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
-				"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
-				"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
-				/* Size: 14 */
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-				"abcdefghijklmnopqrstuvwxyz",
-				"?!()'\"+-:;.,1234567890%& /",
-				"\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
-				"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
-				/* Size: 5 */
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-				"?!()'\"+-:;.,1234567890%& /\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
-				"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA"
-		};
-		int[] height = {
-				7, 7, 7, 
-				10, 10, 10, 
-				14, 14, 14, 14, 14,
-				5, 5, 5
-		};
-		int[] width = {
-				5, 5, 5, 
-				7, 7, 7, 
-				12, 12, 12, 12, 12,
-				5, 5, 5
-		};
-		int[] spacingX = {
-				3, 3, 3, 
-				1, 1, 1, 
-				0, 0, 0, 0, 0,
-				1, 1, 1
-		};
-		int[] spacingY = {
-				1, 1, 2, 
-				0, 0, 1, 
-				0, 0, 0, 0, 1,
-				1, 1, 1
-		};
 		Map<Integer, SizedCharImages> charMap = new HashMap<Integer, SizedCharImages>();
 		coloredCharImages.put(color, charMap);
 		BufferedImage workImage = charImage.toBufferedImage(-2, createPaletteFor(color));
 		int y = 0;
-		for (int j = 0; j < lineCharacters.length; j++) {
-			charsetWidths.put(height[j], width[j]);
-			SizedCharImages charToImg = charMap.get(height[j]);
+		for (int j = 0; j < LINE_CHARACTERS.length; j++) {
+			charsetWidths.put(HEIGHTS[j], WIDTHS[j]);
+			SizedCharImages charToImg = charMap.get(HEIGHTS[j]);
 			if (charToImg == null) {
 				charToImg = new SizedCharImages();
-				charToImg.width = width[j];
-				charToImg.height = height[j];
-				charMap.put(height[j], charToImg);
+				charToImg.width = WIDTHS[j];
+				charToImg.height = HEIGHTS[j];
+				charMap.put(HEIGHTS[j], charToImg);
 			}
 			int x = 0;
-			String s = lineCharacters[j];
+			String s = LINE_CHARACTERS[j];
 			for (int i = 0; i < s.length(); i++) {
-				BufferedImage ci = workImage.getSubimage(x, y, width[j], height[j]);
-				charToImg.chars.put(lineCharacters[j].charAt(i), ci);
+				BufferedImage ci = workImage.getSubimage(x, y, WIDTHS[j], HEIGHTS[j]);
+				charToImg.chars.put(LINE_CHARACTERS[j].charAt(i), ci);
 				
-				x += width[j] + spacingX[j];
+				x += WIDTHS[j] + SPACING_X[j];
 			}
-			y += height[j] + spacingY[j];
+			y += HEIGHTS[j] + SPACING_Y[j];
 		}
 		charsetSpaces.put(5, 1);
 		charsetSpaces.put(7, 1);
@@ -209,8 +215,8 @@ public class TextGFX {
 	}
 	/**
 	 * Create a palette using the supplied color.
-	 * @param color
-	 * @return
+	 * @param color the color
+	 * @return the 768 byte palette filled with color
 	 */
 	private byte[] createPaletteFor(int color) {
 		byte[] result = new byte[768];
@@ -267,12 +273,12 @@ public class TextGFX {
 		}
 	}
 	/**
-	 * Scale the color according to the given factor
+	 * Scale the color according to the given factor.
 	 * @param color the original color
 	 * @param scale the scale amount
 	 * @return the scaled color
 	 */
-	private static int scaleColor(int color, float scale) {
+	public static int scaleColor(int color, float scale) {
 		return ((int)Math.min(((color & 0xFF0000) >> 16) * scale, 0xFC) << 16)
 		| ((int)Math.min(((color & 0xFF00) >> 8) * scale, 0xFC) << 8)
 		| ((int)Math.min(((color & 0xFF) >> 0) * scale, 0xFC) << 0);

@@ -111,6 +111,10 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 		Graphics2D g2 = (Graphics2D)g;
 		swapLock.lock();
 		try {
+			if (isOpaque()) {
+				g.setColor(getBackground());
+				g.fillRect(0, 0, getWidth(), getHeight());
+			}
 			if (frontbuffer != null) {
 				
 				double scalex = 1;

@@ -120,6 +120,13 @@ public class PCXImage {
 		return img;
 	}
 	/**
+	 * Returns a copy of the current RGB image palette.
+	 * @return the current image palette
+	 */
+	public byte[] getPalette() {
+		return palette.clone();
+	}
+	/**
 	 * Returns the current image width.
 	 * @return the current image width
 	 */
