@@ -117,6 +117,7 @@ public class Main extends JFrame {
 	 */
 	protected void initialize(final String root) {
 		this.root = root;
+		//setUndecorated(true);
 		setTitle("Open Imperium Galactica");
 		setBackground(Color.BLACK);
 		fadeTimer = new Timer(FADE_TIME, null);
@@ -150,7 +151,11 @@ public class Main extends JFrame {
 		pr = new PlanetRenderer(planetGFX, cgfx, uis);
 		ir = new InformationRenderer(infoGFX, cgfx, uis);
 		mmr = new MainmenuRenderer(menuGFX, cgfx.text);
+		mmr.setOpaque(true);
+		mmr.setBackground(Color.BLACK);
 		mov = new MovieSurface();
+		mov.setOpaque(true);
+		mov.setBackground(Color.BLACK);
 		or = new OptionsRenderer(optionsGFX, cgfx.text, uis);
 		or.setVisible(false);
 		player = new Player(mov);
@@ -161,7 +166,6 @@ public class Main extends JFrame {
 		screens = new JComponent[] {
 			smr, pr, ir, mmr, mov, or
 		};
-		
 		// setup renderers
 		mmr.setVisible(true);
 		mmr.setVersion(VERSION);
@@ -169,6 +173,7 @@ public class Main extends JFrame {
 		smr.setVisible(false);
 		ir.setVisible(false);
 		pr.setVisible(false);
+		mov.setVisible(false);
 		setListeners();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -228,8 +233,10 @@ public class Main extends JFrame {
 		final int inH = getHeight();
 		setMinimumSize(new Dimension(inW, inH));
 		
+		setFocusTraversalKeysEnabled(false);
 		initModel();
 		smr.startAnimations();
+		//GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(this);
 		setVisible(true);
 	}
 	/**
@@ -550,6 +557,7 @@ public class Main extends JFrame {
 	}
 	/** Perform the exit operation. */
 	private void doExit() {
+		smr.setVisible(false);
 		or.setVisible(false);
 		mmr.setVisible(true);
 		startStopAnimations(false);

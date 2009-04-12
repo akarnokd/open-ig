@@ -80,12 +80,17 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 		Graphics2D g2 = (Graphics2D)g;
 		int w = getWidth();
 		int h = getHeight();
+		if (isOpaque()) {
+			g.setColor(getBackground());
+			g.fillRect(0, 0, w, h);
+		}
 		
-		Composite cp = g2.getComposite();
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, w, h);
-		g2.setComposite(cp);
+		Composite cp = null;
+//		Composite cp = g2.getComposite();
+//		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+//		g2.setColor(Color.BLACK);
+//		g2.fillRect(0, 0, w, h);
+//		g2.setComposite(cp);
 		
 		if (w != lastWidth || h != lastHeight) {
 			lastWidth = w;
@@ -204,22 +209,6 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Point pt = e.getPoint();
-		if (rects.rectStartNewGame.contains(pt) && startNewAction != null) {
-			startNewAction.invoke();
-		} else
-		if (rects.rectLoadGame.contains(pt) && loadAction != null) {
-			loadAction.invoke();
-		} else
-		if (rects.rectTitleAnimation.contains(pt) && titleAnimAction != null) {
-			titleAnimAction.invoke();
-		} else
-		if (rects.rectViewIntro.contains(pt) && introAction != null) {
-			introAction.invoke();
-		} else
-		if (rects.rectQuit.contains(pt) && quitAction != null) {
-			quitAction.invoke();
-		}
 	}
 	/**
 	 * {@inheritDoc}
@@ -247,7 +236,22 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+		Point pt = e.getPoint();
+		if (rects.rectStartNewGame.contains(pt) && startNewAction != null) {
+			startNewAction.invoke();
+		} else
+		if (rects.rectLoadGame.contains(pt) && loadAction != null) {
+			loadAction.invoke();
+		} else
+		if (rects.rectTitleAnimation.contains(pt) && titleAnimAction != null) {
+			titleAnimAction.invoke();
+		} else
+		if (rects.rectViewIntro.contains(pt) && introAction != null) {
+			introAction.invoke();
+		} else
+		if (rects.rectQuit.contains(pt) && quitAction != null) {
+			quitAction.invoke();
+		}
 	}
 	/**
 	 * @param startNewAction the startNewAction to set

@@ -293,9 +293,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		
 		// Render Grid
 		if (btnGrids.down) {
-			g2.setColor(cgfx.GRID_COLOR);
+			g2.setColor(CommonGFX.GRID_COLOR);
 			Stroke st = g2.getStroke();
-			g2.setStroke(cgfx.GRID_STROKE);
+			g2.setStroke(CommonGFX.GRID_STROKE);
 			float fw = gfx.contents.fullMap.getWidth() * zoomFactor;
 			float fh = gfx.contents.fullMap.getHeight() * zoomFactor;
 			float dx = fw / 5;
@@ -1060,22 +1060,22 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				modifiedMagnify = 0;
 			}
 			BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[modifiedMagnify]).get(p.rotationPhase);
-			int x = (int)(p.x * zoomFactor - pimg.getWidth() / 2f);
-			int y = (int)(p.y * zoomFactor - pimg.getHeight() / 2f);
+			int x = (int)(p.x * zoomFactor /* - pimg.getWidth() / 2f*/);
+			int y = (int)(p.y * zoomFactor /* - pimg.getHeight() / 2f*/);
 			
 			g2.drawImage(pimg, xOrig + x, yOrig + y, null);
 			if (p.showName && (nameMode == 1 || nameMode == 3)) {
 				y = (int)(p.y * zoomFactor + pimg.getHeight()) + 1;
 				int w = text.getTextWidth(5, p.name);
-				x = (int)(p.x * zoomFactor - w / 2f);
+				x = (int)(p.x * zoomFactor + pimg.getWidth() / 2f - w / 2f);
 				text.paintTo(g2, xOrig + x, yOrig + y, 5, p.nameColor, p.name);
 			}
 			if (p.showRadar && btnRadars.down) {
 				double fd = Math.PI / 50;
 				double fm = 2 * Math.PI - fd;
 				for (double f = 0.0f; f <= fm; f += fd) {
-					x = (int)((p.x + p.radarRadius * Math.sin(f)) * zoomFactor);
-					y = (int)((p.y + p.radarRadius * Math.cos(f)) * zoomFactor);
+					x = (int)((p.x + p.radarRadius * Math.sin(f)) * zoomFactor + pimg.getWidth() / 2f);
+					y = (int)((p.y + p.radarRadius * Math.cos(f)) * zoomFactor + pimg.getHeight() / 2f);
 					g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
 				}
 			}

@@ -92,7 +92,6 @@ public class PlanetGFX {
 	/**
 	 * Ajusts varios surface tile geometry. These tiles are not the
 	 * default assumed 1x1 tiles. Some of them even needs pixel height adjustments.
-	 * @param gfx the Planet Graphics object to adjust
 	 */
 	private void adjustTileParams() {
 		// DESERT TYPE SURFACE TILE ADJUSTMENTS
@@ -235,26 +234,32 @@ public class PlanetGFX {
 			setParams(7, i, 4, 4);
 		}
 		surfaceImages.get(7).get(57).heightCorrection = 1;
+		
+		// call createimage on the 1x1 tiles
+		for (Map<Integer, Tile> tiles : surfaceImages.values()) {
+			for (Tile t : tiles.values()) {
+				if (t.width == 1 && t.height == 1) {
+					t.createImage(1.0f);
+				}
+			}
+		}
 	}
 	/**
 	 * Set geimetrical parameters on a specific surface type and tile index.
-	 * @param gfx
-	 * @param surface
-	 * @param tile
-	 * @param width
-	 * @param height
+	 * @param surface the surface type index
+	 * @param tile the tile index
+	 * @param width the tile width
+	 * @param height the tile height
 	 */
 	private void setParams(int surface, int tile, int width, int height) {
 		Tile t = surfaceImages.get(surface).get(tile);
 		t.width = width;
 		t.height = height;
-		//t.scanlines = width + height - 1;
-		t.strips = new BufferedImage[width + height - 1];
-		for (int i = 0; i < t.strips.length; i++) {
-			int x0 = i >= t.width ? Tile.toScreenX(i, 0) : Tile.toScreenX(0, -i);
-			int w0 = Math.min(57, t.image.getWidth() - x0);
-			t.strips[i] = ImageUtils.subimage(t.image, x0, 0, w0, t.image.getHeight());
+		// tile size doesnt change, so create the strips a priory
+		if (width + height - 1 > 1) {
+			t.strips = new BufferedImage[width + height - 1];
 		}
+		t.createImage(1.0f);
 	}
 	/**
 	 * Load and initialize images and maps from the given directory.
@@ -266,10 +271,11 @@ public class PlanetGFX {
 		for (int i = 1; i < 8; i++) {
 			Map<Integer, Tile> actual = new HashMap<Integer, Tile>();
 			surfaceImages.put(i, actual);
-			for (PACEntry e : PACFile.parseFully(resMap.get("DATA/FELSZIN" + i +".PAC"))) {
+			for (PACEntry e : PACFile.parseFully(resMap.get("DATA/FELSZIN" + i + ".PAC"))) {
 				int idx = e.filename.indexOf('.');
 				Tile t = new Tile();
-				t.image = PCXImage.parse(e.data, -2);
+				t.rawImage = new PCXImage(e.data);
+//				t.image = PCXImage.parse(e.data, -2);
 				actual.put(Integer.parseInt(e.filename.substring(0, idx)), t);
 			}
 		}

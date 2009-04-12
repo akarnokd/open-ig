@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 package hu.openig.gfx;
 
 import hu.openig.core.Btn;
@@ -26,7 +33,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,44 +49,70 @@ public class PlanetRenderer extends JComponent implements MouseListener, MouseMo
 MouseWheelListener, ActionListener {
 	/** */
 	private static final long serialVersionUID = -2113448032455145733L;
+	/** Contains the rectangle to highlight. */
 	Rectangle tilesToHighlight;
+	/** The rendering X offset. */
 	int xoff = 56;
+	/** The rendering Y offset. */
 	int yoff = 27;
+	/** Last mouse X coordinate. */
 	int lastx;
+	/** Last mouse Y coordinate. */
 	int lasty;
+	/** Panning the screen. */
 	boolean panMode;
+	/** The bytes of the current map. */
 	byte[] mapBytes;
+	/** The surface variant. */
 	int surfaceVariant = 1;
+	/** Zoom scale. */
 	float scale = 1.0f;
+	/** The surace type. */
 	int surfaceType = 1;
 	/** Empty surface map array. */
-	private final byte[] EMPTY_SURFACE_MAP = new byte[65 * 65 * 2 + 4];
+	private static final byte[] EMPTY_SURFACE_MAP = new byte[65 * 65 * 2 + 4];
 	/** The planet graphics. */
 	private final PlanetGFX gfx;
 	/** The common graphics. */
 	private final CommonGFX cgfx;
-	
+	/** Rectangle for. */
 	private Rectangle leftTopRect = new Rectangle();
+	/** Rectangle for. */
 	private Rectangle leftFillerRect = new Rectangle();
+	/** Rectangle for. */
 	private Rectangle leftBottomRect = new Rectangle();
 	
+	/** Rectangle for. */
 	private Rectangle rightTopRect = new Rectangle();
+	/** Rectangle for. */
 	private Rectangle rightFillerRect = new Rectangle();
+	/** Rectangle for. */
 	private Rectangle rightBottomRect = new Rectangle();
 	
+	/** Button for. */
 	private Btn btnBuilding;
+	/** Button for. */
 	private Btn btnRadar;
+	/** Button for. */
 	private Btn btnBuildingInfo;
+	/** Button for. */
 	private Btn btnButtons;
+	/** Button for. */
 	private Btn btnColonyInfo;
+	/** Button for. */
 	private Btn btnPlanet;
+	/** Button for. */
 	private Btn btnStarmap;
+	/** Button for. */
 	private Btn btnBridge;
 	/** The middle window for the surface drawing. */
 	private Rectangle mainWindow = new Rectangle();
 	
+	/** Rectangle for. */
 	private Rectangle buildPanelRect = new Rectangle();
+	/** Rectangle for. */
 	private Rectangle radarPanelRect = new Rectangle();
+	/** Rectangle for. */
 	private Rectangle buildingInfoPanelRect = new Rectangle();
 	
 	/** The last width. */
@@ -108,8 +140,8 @@ MouseWheelListener, ActionListener {
 	private boolean fadeDirection;
 	/** The current darkening factor for the entire UI. 0=No darkness, 1=Full darkness. */
 	private float darkness = 0f;
-	/** The daylight factor for the planetary surface only. 0=No darkness, 1=Full darkness. */
-	private float daylight = 0.0f;
+	/** The daylight factor for the planetary surface only. 1=No darkness, 0=Full darkness. */
+	private float daylight = 0.5f;
 	/** The text renderer. */
 	private TextGFX text;
 	/** Regions of the info bars. */
@@ -120,15 +152,19 @@ MouseWheelListener, ActionListener {
 	private final List<Btn> toggleButtons = new ArrayList<Btn>();
 	/** The various buttons. */
 	private final List<Btn> buttons = new ArrayList<Btn>();
+	/** Event for starmap click. */
 	private BtnAction onStarmapClicked;
+	/** Event for information click. */
 	private BtnAction onInformationClicked;
+	/** Event for bridge click. */
 	private BtnAction onBridgeClicked;
+	/** Event for planets click. */
 	private BtnAction onPlanetsClicked;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
-	 * @param gfx
-	 * @param cgfx
-	 * @throws IOException
+	 * @param gfx the planet graphics 
+	 * @param cgfx the common graphics
+	 * @param uiSound the user interface sounds.
 	 */
 	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		this.gfx = gfx;
@@ -149,47 +185,57 @@ MouseWheelListener, ActionListener {
 //		int w = Tile.toScreenX(33,-33) - Tile.toScreenX(-64, -64);
 //		int h = Tile.toScreenY(1, 0) - Tile.toScreenY(-32, -96);
 	}
+	/**
+	 * Returns the given surface map based on the type and variant.
+	 * @param surfaceType the type index 1-7
+	 * @param variant the variant index 1-9
+	 * @return the pac entry for the surface or null if not existent
+	 */
 	private PACEntry getSurface(int surfaceType, int variant) {
 		String mapName = "MAP_" + (char)('A' + (surfaceType - 1)) + variant + ".MAP";
 		return gfx.getMap(mapName);
 	}
 	/** Rendering X coordinates. */
-	static final int[] mapStartX = new int[97];
+	static final int[] MAP_START_X = new int[97];
 	/** Rendering Y coordinates. */
-	static final int[] mapStartY = new int[97];
+	static final int[] MAP_START_Y = new int[97];
 	/** Rendering X end coordinates. */
-	static final int[] mapEndX = new int[97];
+	static final int[] MAP_END_X = new int[97];
 	/** Rendering Y end coordinates. */
 //	static int[] mapEndY = new int[97];
 	static {
 		// initialize map rendering stripe coordinates
 		int idx = 0;
 		for (int i = 1; i <= 32; i++) {
-			mapStartX[idx] = i;
-			mapStartY[idx] = 1 - i;
+			MAP_START_X[idx] = i;
+			MAP_START_Y[idx] = 1 - i;
 			idx++;
 		}
 		int y = -32;
 		for (int i = 32; i >= -32; i--) {
-			mapStartX[idx] = i;
-			mapStartY[idx] = y;
+			MAP_START_X[idx] = i;
+			MAP_START_Y[idx] = y;
 			idx++;
 			y--;
 		}
 		idx = 0;
 		for (int i = 0; i >= -64; i--) {
-			mapEndX[idx] = i;
+			MAP_END_X[idx] = i;
 //			mapEndY[idx] = i;
 			idx++;
 		}
 		y = -65;
 		for (int i = -63; i <= -32; i++) {
-			mapEndX[idx] = i;
+			MAP_END_X[idx] = i;
 //			mapEndY[idx] = y;
 			y--;
 			idx++;
 		}
 	}
+	/**
+	 * Paints the entire planet window.
+	 * @param g the graphics object
+	 */
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
@@ -210,16 +256,17 @@ MouseWheelListener, ActionListener {
 		int j = 0;
 		// RENDER VERTICALLY
 		Map<Integer, Tile> surface = gfx.getSurfaceTiles(surfaceType);
-		for (int mi = 0; mi < mapStartX.length; mi++) {
-			k = mapStartX[mi];
-			j = mapStartY[mi];
+		for (int mi = 0; mi < MAP_START_X.length; mi++) {
+			k = MAP_START_X[mi];
+			j = MAP_START_Y[mi];
 			int i = toMapOffset(k, j);
-			int kmin = mapEndX[mi];
+			int kmin = MAP_END_X[mi];
 			while (i >= 0 && k >= kmin) {
 				int tileId = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
 				int stripeId = mapBytes[2 * i + 5] & 0xFF;
 				Tile tile = surface.get(tileId);
 				if (tile != null) {
+					tile.createImage(daylight);
 					// 1x1 tiles can be drawn from top to bottom
 					if (tile.width == 1 && tile.height == 1) {
 						int x = xoff + Tile.toScreenX(k, j);
@@ -233,8 +280,8 @@ MouseWheelListener, ActionListener {
 						// multi spanning tiles should be cut into small rendering piece for the current strip
 						// ff value indicates the stripe count
 						// the entire image would be placed using this bottom left coordinate
-						int j1 = stripeId >= tile.width ? j + tile.width - 1: j + stripeId;
-						int k1 = stripeId >= tile.width ? k + (tile.width - 1 - stripeId): k;
+						int j1 = stripeId >= tile.width ? j + tile.width - 1 : j + stripeId;
+						int k1 = stripeId >= tile.width ? k + (tile.width - 1 - stripeId) : k;
 						int j2 = stripeId >= tile.width ? j : j - (tile.width - 1 - stripeId);
 						int x = xoff + Tile.toScreenX(k1, j1);
 						int y = yoff + Tile.toScreenY(k1, j2);
@@ -248,11 +295,12 @@ MouseWheelListener, ActionListener {
 				i = toMapOffset(k, j);
 			}
 		}
-		Composite comp = g2.getComposite();
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, daylight));
-		g2.setColor(Color.BLACK);
-		g2.fill(mainWindow);
-		g2.setComposite(comp);
+		Composite comp = null;
+//		Composite comp = g2.getComposite();
+//		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, daylight));
+//		g2.setColor(Color.BLACK);
+//		g2.fill(mainWindow);
+//		g2.setComposite(comp);
 		
 		if (tilesToHighlight != null) {
 			drawIntoRect(g2, gfx.getFrame(0), tilesToHighlight);
@@ -342,15 +390,23 @@ MouseWheelListener, ActionListener {
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
-		buttons.add(btnPlanet = new Btn(new BtnAction() { public void invoke() { doPlanetClick(); }}));
-		buttons.add(btnColonyInfo = new Btn(new BtnAction() { public void invoke() { doColonyInfoClick(); }}));
-		buttons.add(btnStarmap = new Btn(new BtnAction() { public void invoke() { doStarmapRecClick(); }}));
-		buttons.add(btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); }}));
+		btnPlanet = new Btn(new BtnAction() { public void invoke() { doPlanetClick(); } });
+		buttons.add(btnPlanet);
+		btnColonyInfo = new Btn(new BtnAction() { public void invoke() { doColonyInfoClick(); } });
+		buttons.add(btnColonyInfo);
+		btnStarmap = new Btn(new BtnAction() { public void invoke() { doStarmapRecClick(); } });
+		buttons.add(btnStarmap);
+		btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); } });
+		buttons.add(btnBridge);
 		
-		toggleButtons.add(btnBuilding = new Btn(new BtnAction() { public void invoke() { doBuildingClick(); }}));
-		toggleButtons.add(btnRadar = new Btn(new BtnAction() { public void invoke() { doRadarClick(); }}));
-		toggleButtons.add(btnBuildingInfo = new Btn(new BtnAction() { public void invoke() { doBuildingInfoClick(); }}));
-		toggleButtons.add(btnButtons = new Btn(new BtnAction() { public void invoke() { doScreenClick(); }}));
+		btnBuilding = new Btn(new BtnAction() { public void invoke() { doBuildingClick(); } });
+		toggleButtons.add(btnBuilding);
+		btnRadar = new Btn(new BtnAction() { public void invoke() { doRadarClick(); } });
+		toggleButtons.add(btnRadar);
+		btnBuildingInfo = new Btn(new BtnAction() { public void invoke() { doBuildingInfoClick(); } });
+		toggleButtons.add(btnBuildingInfo);
+		btnButtons = new Btn(new BtnAction() { public void invoke() { doScreenClick(); } });
+		toggleButtons.add(btnButtons);
 		
 		btnBuilding.down = true;
 		btnRadar.down = true;
@@ -484,9 +540,9 @@ MouseWheelListener, ActionListener {
 	}
 	/**
 	 * Fills the given rectangular tile area with the specified tile image.
-	 * @param g2
-	 * @param image
-	 * @param rect
+	 * @param g2 the graphics object
+	 * @param image the image to draw
+	 * @param rect the target rectangle
 	 */
 	private void drawIntoRect(Graphics2D g2, BufferedImage image, Rectangle rect) {
 		for (int j = rect.y; j < rect.y + rect.height; j++) {
@@ -497,8 +553,18 @@ MouseWheelListener, ActionListener {
 			}
 		}
 	}
+	/** Light value change. */
+	boolean lightMode;
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		if (lightMode) {
+			// adjust daylight value based on the vertical mouse position
+			daylight = e.getY() / (float)getHeight();
+			repaint();
+		} else
 		if (panMode) {
 			xoff -= (lastx - e.getX());
 			yoff -= (lasty - e.getY());
@@ -511,8 +577,8 @@ MouseWheelListener, ActionListener {
 	 * Returns true if the mouse event is within the
 	 * visible area of the main window (e.g not over
 	 * the panels or buttons).
-	 * @param e
-	 * @return
+	 * @param e the mouse event
+	 * @return true if the event was on the surface
 	 */
 	private boolean eventInMainWindow(MouseEvent e) {
 		Point pt = e.getPoint();
@@ -526,6 +592,9 @@ MouseWheelListener, ActionListener {
 				&& !btnBridge.test(pt)
 		);
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (eventInMainWindow(e)) {
@@ -537,12 +606,21 @@ MouseWheelListener, ActionListener {
 			repaint();
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void mousePressed(MouseEvent e) {
 		Point pt = e.getPoint(); 
 		if (e.getButton() == MouseEvent.BUTTON3 && eventInMainWindow(e)) {
 			lastx = e.getX();
 			lasty = e.getY();
 			panMode = true;
+		} else
+		if (e.getButton() == MouseEvent.BUTTON2 && eventInMainWindow(e)) {
+			daylight = e.getY() / (float)getHeight();
+			lightMode = true;
+			repaint();
 		} else
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (eventInMainWindow(e)) {
@@ -570,9 +648,16 @@ MouseWheelListener, ActionListener {
 			}
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON3) {
 			panMode = false;
+		} else
+		if (e.getButton() == MouseEvent.BUTTON2) {
+			lightMode = false;
 		} else
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			boolean needRepaint = buildScroller.isRunning();
@@ -586,14 +671,18 @@ MouseWheelListener, ActionListener {
 			}
 		}
 	}
+	/** Execute once flag. */
 	boolean once = true;
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if (!e.isControlDown() && !e.isAltDown()) {
 			if (e.getWheelRotation() > 0 & surfaceVariant < 9) {
 				surfaceVariant++;
 			} else 
-			if (e.getWheelRotation() < 0 && surfaceVariant > 1){
+			if (e.getWheelRotation() < 0 && surfaceVariant > 1) {
 				surfaceVariant--;
 			}
 			changeSurface();
@@ -602,7 +691,7 @@ MouseWheelListener, ActionListener {
 			if (e.getWheelRotation() < 0 & scale < 32) {
 				scale *= 2;
 			} else 
-			if (e.getWheelRotation() > 0 && scale > 1f/32){
+			if (e.getWheelRotation() > 0 && scale > 1f / 32) {
 				scale /= 2;
 			}
 		} else
@@ -617,6 +706,9 @@ MouseWheelListener, ActionListener {
 		}
 		repaint();
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
@@ -630,14 +722,23 @@ MouseWheelListener, ActionListener {
 			}
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if ("FADE".equals(e.getActionCommand())) {
@@ -673,32 +774,38 @@ MouseWheelListener, ActionListener {
 		}
 		darkness = 0f;
 	}
+	/** Action for build list scrolling. */
 	private void doBuildScroller() {
 		
 	}
+	/** Perform action on bridge button click. */
 	protected void doBridgeClick() {
 		uiSound.playSound("Bridge");
 		if (onBridgeClicked != null) {
 			onBridgeClicked.invoke();
 		}
 	}
+	/** Perform action on starmap button click. */
 	protected void doStarmapRecClick() {
 		uiSound.playSound("Starmap");
 		fadeDirection = false;
 		fadeTimer.start();
 	}
+	/** Perform colony button click. */
 	protected void doColonyInfoClick() {
 		uiSound.playSound("ColonyInformation");
 		if (onInformationClicked != null) {
 			onInformationClicked.invoke();
 		}
 	}
+	/** Do planet click. */
 	protected void doPlanetClick() {
 		uiSound.playSound("Planets");
 		if (onPlanetsClicked != null) {
 			onPlanetsClicked.invoke();
 		}
 	}
+	/** Do Screen buttons click. */
 	protected void doScreenClick() {
 		btnColonyInfo.visible = btnButtons.down;
 		btnPlanet.visible = btnButtons.down;
@@ -706,17 +813,21 @@ MouseWheelListener, ActionListener {
 		btnBridge.visible = btnButtons.down;
 		repaint();
 	}
+	/** Do building info button click. */
 	protected void doBuildingInfoClick() {
 		repaint(buildingInfoPanelRect);
 	}
+	/** Do radar button click. */
 	protected void doRadarClick() {
 		repaint(radarPanelRect);
 	}
+	/** Do building button click. */
 	protected void doBuildingClick() {
 		repaint(buildPanelRect);
 	}
 	/**
-	 * @param onStarmapClick the onStarmapClick to set
+	 * Sets the onStarmapClicked action.
+	 * @param onStarmapClicked the onStarmapClick to set
 	 */
 	public void setOnStarmapClicked(BtnAction onStarmapClicked) {
 		this.onStarmapClicked = onStarmapClicked;
@@ -728,7 +839,7 @@ MouseWheelListener, ActionListener {
 		return onStarmapClicked;
 	}
 	/**
-	 * @param onInformationClick the onInformationClick to set
+	 * @param onInformationClicked the onInformationClick to set
 	 */
 	public void setOnInformationClicked(BtnAction onInformationClicked) {
 		this.onInformationClicked = onInformationClicked;
