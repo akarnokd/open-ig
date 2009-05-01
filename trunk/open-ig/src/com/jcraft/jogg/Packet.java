@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,23 +32,31 @@
  */
 
 package com.jcraft.jogg;
+/**
+ * A record for an OGG packet.
+ * Commented and style fixed by karnokd
+ * @author ymnk
+ */
+public class Packet {
+	/** The packet base data. */
+	public byte[] packetBase;
+	/** Packet type. */
+	public int packet;
+	/** Number of bytes. */
+	public int bytes;
+	/** Beginning of the stream indicator. */
+	public int beginOfStream;
+	/** End of the stream indicator. */
+	public int endOfStream;
+	/** Granular position. */
+	public long granulepos;
 
-public class Packet{
-  public byte[] packet_base;
-  public int packet;
-  public int bytes;
-  public int b_o_s;
-  public int e_o_s;
-
-  public long granulepos;
-
-  /**
-   * Sequence number for decode; the framing
-   * knows where there's a hole in the data,
-   * but we need coupling so that the codec
-   * (which is in a seperate abstraction
-   * layer) also knows about the gap.
-   */
-  public long packetno;
-
+	/**
+	 * Sequence number for decode; the framing
+	 * knows where there's a hole in the data,
+	 * but we need coupling so that the codec
+	 * (which is in a seperate abstraction
+	 * layer) also knows about the gap.
+	 */
+	public long packetno;
 }

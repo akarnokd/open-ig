@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,16 +32,41 @@
  */
 
 package com.jcraft.jorbis;
-
+/**
+ * Exception class to indicate problems in the JOrbis library.
+ * Comments and style correction by karnokd.
+ * @author ymnk
+ * @version 1.1
+ */
 public class JOrbisException extends Exception {
-
-	private static final long serialVersionUID = 1L;
-
+	/** The serial version. */
+	private static final long serialVersionUID = -2429372581713032065L;
+	/** Constructor without message or cause. */
 	public JOrbisException() {
 		super();
 	}
-
-	public JOrbisException(String s) {
-		super("JOrbis: " + s);
+	/**
+	 * Constructor with custom error message.
+	 * @param message the error message
+	 */
+	public JOrbisException(String message) {
+		super("JOrbis: " + message);
+	}
+	/**
+	 * Constructor with root cause throwable.
+	 * @param cause the root cause
+	 * @since 1.1 karnokd
+	 */
+	public JOrbisException(Throwable cause) {
+		super(cause);
+	}
+	/**
+	 * Constructor with message and root cause.
+	 * @param message the message
+	 * @param cause the root cause
+	 * @since 1.1 karnokd
+	 */
+	public JOrbisException(String message, Throwable cause) {
+		super("JOrbis: " + message, cause);
 	}
 }

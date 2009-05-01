@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,39 +32,63 @@
  */
 
 package com.jcraft.jorbis;
-
+/**
+ * Drft object.
+ * Comments and style correction by karnokd
+ * @author ymnk
+ *
+ */
 class Drft {
+	/** Number. */
 	int n;
+	/** Trigonometry cache. */
 	float[] trigcache;
+	/** Split cache. */
 	int[] splitcache;
-
+	/**
+	 * Backward.
+	 * @param data float array
+	 */
 	void backward(float[] data) {
-		if (n == 1)
+		if (n == 1) {
 			return;
+		}
 		drftb1(n, data, trigcache, trigcache, n, splitcache);
 	}
-
+	/**
+	 * Initialize.
+	 * @param n the size
+	 */
 	void init(int n) {
 		this.n = n;
 		trigcache = new float[3 * n];
 		splitcache = new int[32];
 		fdrffti(n, trigcache, splitcache);
 	}
-
+	/** Clear contents. */
 	void clear() {
-		if (trigcache != null)
-			trigcache = null;
-		if (splitcache != null)
-			splitcache = null;
+		trigcache = null;
+		splitcache = null;
 	}
-
-	static int[] ntryh = { 4, 2, 3, 5 };
-	static float tpi = 6.28318530717958647692528676655900577f;
-	static float hsqt2 = .70710678118654752440084436210485f;
-	static float taui = .86602540378443864676372317075293618f;
-	static float taur = -.5f;
-	static float sqrt2 = 1.4142135623730950488016887242097f;
-
+	/** Ntryh constant. */
+	static final int[] NTRYH = { 4, 2, 3, 5 };
+	/** 2 x PI. */
+	static final float TPI = 6.28318530717958647692528676655900577f;
+	/** Sqrt(2)/2 .*/
+	static final float HSQT2 = .70710678118654752440084436210485f;
+	/** Tau i. */
+	static final float TAUI = .86602540378443864676372317075293618f;
+	/** Tau r. */
+	static final float TAUR = -.5f;
+	/** Sqrt(2) . */
+	static final float SQRT2 = 1.4142135623730950488016887242097f;
+	/**
+	 * Calculate drfti1.
+	 * @param n number
+	 * @param wa float array
+	 * @param index index
+	 * @param ifac int array
+	 */
 	static void drfti1(int n, float[] wa, int index, int[] ifac) {
 		float arg, argh, argld, fi;
 		int ntry = 0, i, j = -1;
@@ -69,14 +100,16 @@ class Drft {
 
 		int state = 101;
 
-		loop: while (true) {
+		loop: 
+		while (true) {
 			switch (state) {
 			case 101:
 				j++;
-				if (j < 4)
-					ntry = ntryh[j];
-				else
+				if (j < 4) {
+					ntry = NTRYH[j];
+				} else {
 					ntry += 2;
+				}
 			case 104:
 				nq = nl / ntry;
 				nr = nl - ntry * nq;
@@ -108,13 +141,14 @@ class Drft {
 				}
 				ifac[0] = n;
 				ifac[1] = nf;
-				argh = tpi / n;
+				argh = TPI / n;
 				is = 0;
 				nfm1 = nf - 1;
 				l1 = 1;
 
-				if (nfm1 == 0)
+				if (nfm1 == 0) {
 					return;
+				}
 
 				for (k1 = 0; k1 < nfm1; k1++) {
 					ip = ifac[k1 + 2];
@@ -139,16 +173,31 @@ class Drft {
 					l1 = l2;
 				}
 				break loop;
+			default:
 			}
 		}
 	}
-
+	/**
+	 * Calculate Fdrffti.
+	 * @param n length
+	 * @param wsave float array
+	 * @param ifac int array
+	 */
 	static void fdrffti(int n, float[] wsave, int[] ifac) {
-		if (n == 1)
+		if (n == 1) {
 			return;
+		}
 		drfti1(n, wsave, n, ifac);
 	}
-
+	/**
+	 * Calculate dradf2.
+	 * @param ido int
+	 * @param l1 int
+	 * @param cc float array
+	 * @param ch float array
+	 * @param wa1 float array
+	 * @param index index
+	 */
 	static void dradf2(int ido, int l1, float[] cc, float[] ch, float[] wa1,
 			int index) {
 		int i, k;
@@ -156,7 +205,8 @@ class Drft {
 		int t0, t1, t2, t3, t4, t5, t6;
 
 		t1 = 0;
-		t0 = (t2 = l1 * ido);
+		t2 = l1 * ido;
+		t0 = t2;
 		t3 = ido << 1;
 		for (k = 0; k < l1; k++) {
 			ch[t1 << 1] = cc[t1] + cc[t2];
@@ -165,8 +215,9 @@ class Drft {
 			t2 += ido;
 		}
 
-		if (ido < 2)
+		if (ido < 2) {
 			return;
+		}
 
 		if (ido != 2) {
 			t1 = 0;
@@ -193,11 +244,13 @@ class Drft {
 				t1 += ido;
 				t2 += ido;
 			}
-			if (ido % 2 == 1)
+			if (ido % 2 == 1) {
 				return;
+			}
 		}
-
-		t3 = (t2 = (t1 = ido) - 1);
+		t1 = ido;
+		t2 = t1 - 1;
+		t3 = t2;
 		t2 += t0;
 		for (k = 0; k < l1; k++) {
 			ch[t1] = -cc[t2];
@@ -207,7 +260,19 @@ class Drft {
 			t3 += ido;
 		}
 	}
-
+	/**
+	 * Calculate dradf4.
+	 * @param ido int
+	 * @param l1 int
+	 * @param cc float array
+	 * @param ch float array
+	 * @param wa1 float wa1
+	 * @param index1 int
+	 * @param wa2 float array
+	 * @param index2 int
+	 * @param wa3 float array
+	 * @param index3 int
+	 */
 	static void dradf4(int ido, int l1, float[] cc, float[] ch, float[] wa1,
 			int index1, float[] wa2, int index2, float[] wa3, int index3) {
 		int i, k, t0, t1, t2, t3, t4, t5, t6;
@@ -222,10 +287,11 @@ class Drft {
 		for (k = 0; k < l1; k++) {
 			tr1 = cc[t1] + cc[t2];
 			tr2 = cc[t3] + cc[t4];
-
-			ch[t5 = t3 << 2] = tr1 + tr2;
+			t5 = t3 << 2;
+			ch[t5] = tr1 + tr2;
 			ch[(ido << 2) + t5 - 1] = tr2 - tr1;
-			ch[(t5 += (ido << 1)) - 1] = cc[t3] - cc[t4];
+			t5 += (ido << 1);
+			ch[t5 - 1] = cc[t3] - cc[t4];
 			ch[t5] = cc[t2] - cc[t1];
 
 			t1 += ido;
@@ -233,17 +299,20 @@ class Drft {
 			t3 += ido;
 			t4 += ido;
 		}
-		if (ido < 2)
+		if (ido < 2) {
 			return;
+		}
 
 		if (ido != 2) {
 			t1 = 0;
 			for (k = 0; k < l1; k++) {
 				t2 = t1;
 				t4 = t1 << 2;
-				t5 = (t6 = ido << 1) + t4;
+				t6 = ido << 1;
+				t5 = t6 + t4;
 				for (i = 2; i < ido; i += 2) {
-					t3 = (t2 += 2);
+					t2 += 2;
+					t3 = t2;
 					t4 += 2;
 					t5 -= 2;
 
@@ -287,19 +356,20 @@ class Drft {
 				}
 				t1 += ido;
 			}
-			if ((ido & 1) != 0)
+			if ((ido & 1) != 0) {
 				return;
+			}
 		}
-
-		t2 = (t1 = t0 + ido - 1) + (t0 << 1);
+		t1 = t0 + ido - 1;
+		t2 = t1 + (t0 << 1);
 		t3 = ido << 2;
 		t4 = ido;
 		t5 = ido << 1;
 		t6 = ido;
 
 		for (k = 0; k < l1; k++) {
-			ti1 = -hsqt2 * (cc[t1] + cc[t2]);
-			tr1 = hsqt2 * (cc[t1] - cc[t2]);
+			ti1 = -HSQT2 * (cc[t1] + cc[t2]);
+			tr1 = HSQT2 * (cc[t1] - cc[t2]);
 
 			ch[t4 - 1] = tr1 + cc[t6 - 1];
 			ch[t4 + t5 - 1] = cc[t6 - 1] - tr1;
@@ -313,7 +383,20 @@ class Drft {
 			t6 += ido;
 		}
 	}
-
+	/**
+	 * Calculate dradfg.
+	 * @param ido int
+	 * @param ip int
+	 * @param l1 int
+	 * @param idl1 int
+	 * @param cc float array
+	 * @param c1 float array
+	 * @param c2 float array
+	 * @param ch float array
+	 * @param ch2 float array
+	 * @param wa float array
+	 * @param index int
+	 */
 	static void dradfg(int ido, int ip, int l1, int idl1, float[] cc,
 			float[] c1, float[] c2, float[] ch, float[] ch2, float[] wa,
 			int index) {
@@ -324,7 +407,7 @@ class Drft {
 		float dcp = 0, arg, dsp = 0, ar1h, ar2h;
 		int idp2, ipp2;
 
-		arg = tpi / ip;
+		arg = TPI / ip;
 		dcp = (float) Math.cos(arg);
 		dsp = (float) Math.sin(arg);
 		ipph = (ip + 1) >> 1;
@@ -342,8 +425,9 @@ class Drft {
 					state = 119;
 					break;
 				}
-				for (ik = 0; ik < idl1; ik++)
+				for (ik = 0; ik < idl1; ik++) {
 					ch2[ik] = c2[ik];
+				}
 
 				t1 = 0;
 				for (j = 1; j < ip; j++) {
@@ -444,8 +528,9 @@ class Drft {
 					}
 				}
 			case 119:
-				for (ik = 0; ik < idl1; ik++)
+				for (ik = 0; ik < idl1; ik++) {
 					c2[ik] = ch2[ik];
+				}
 
 				t1 = 0;
 				t2 = ipp2 * idl1;
@@ -512,8 +597,9 @@ class Drft {
 				for (j = 1; j < ipph; j++) {
 					t1 += idl1;
 					t2 = t1;
-					for (ik = 0; ik < idl1; ik++)
+					for (ik = 0; ik < idl1; ik++) {
 						ch2[ik] += c2[t2++];
+					}
 				}
 
 				if (ido < l1) {
@@ -526,8 +612,9 @@ class Drft {
 				for (k = 0; k < l1; k++) {
 					t3 = t1;
 					t4 = t2;
-					for (i = 0; i < ido; i++)
+					for (i = 0; i < ido; i++) {
 						cc[t4++] = ch[t3++];
+					}
 					t1 += ido;
 					t2 += t10;
 				}
@@ -567,8 +654,9 @@ class Drft {
 					}
 				}
 
-				if (ido == 1)
+				if (ido == 1) {
 					return;
+				}
 				if (nbd < l1) {
 					state = 141;
 					break;
@@ -630,10 +718,18 @@ class Drft {
 					}
 				}
 				break loop;
+			default:
 			}
 		}
 	}
-
+	/**
+	 * Calculate drftf1.
+	 * @param n number
+	 * @param c float array
+	 * @param ch float array
+	 * @param wa float array
+	 * @param ifac int array
+	 */
 	static void drftf1(int n, float[] c, float[] ch, float[] wa, int[] ifac) {
 		int i, k1, l1, l2;
 		int na, kh, nf;
@@ -664,12 +760,13 @@ class Drft {
 
 					ix2 = iw + ido;
 					ix3 = ix2 + ido;
-					if (na != 0)
+					if (na != 0) {
 						dradf4(ido, l1, ch, c, wa, iw - 1, wa, ix2 - 1, wa,
 								ix3 - 1);
-					else
+					} else {
 						dradf4(ido, l1, c, ch, wa, iw - 1, wa, ix2 - 1, wa,
 								ix3 - 1);
+					}
 					state = 110;
 					break;
 				case 102:
@@ -687,8 +784,9 @@ class Drft {
 				case 103:
 					dradf2(ido, l1, ch, c, wa, iw - 1);
 				case 104:
-					if (ido == 1)
+					if (ido == 1) {
 						na = 1 - na;
+					}
 					if (na != 0) {
 						state = 109;
 						break;
@@ -703,15 +801,26 @@ class Drft {
 				case 110:
 					l2 = l1;
 					break loop;
+				default:
 				}
 			}
 		}
-		if (na == 1)
+		if (na == 1) {
 			return;
-		for (i = 0; i < n; i++)
+		}
+		for (i = 0; i < n; i++) {
 			c[i] = ch[i];
+		}
 	}
-
+	/**
+	 * Calculate dradb2.
+	 * @param ido int
+	 * @param l1 int
+	 * @param cc float array
+	 * @param ch float array
+	 * @param wa1 float array
+	 * @param index int
+	 */
 	static void dradb2(int ido, int l1, float[] cc, float[] ch, float[] wa1,
 			int index) {
 		int i, k, t0, t1, t2, t3, t4, t5, t6;
@@ -725,17 +834,20 @@ class Drft {
 		for (k = 0; k < l1; k++) {
 			ch[t1] = cc[t2] + cc[t3 + t2];
 			ch[t1 + t0] = cc[t2] - cc[t3 + t2];
-			t2 = (t1 += ido) << 1;
+			t1 += ido;
+			t2 = t1 << 1;
 		}
 
-		if (ido < 2)
+		if (ido < 2) {
 			return;
+		}
 		if (ido != 2) {
 			t1 = 0;
 			t2 = 0;
 			for (k = 0; k < l1; k++) {
 				t3 = t1;
-				t5 = (t4 = t2) + (ido << 1);
+				t4 = t2;
+				t5 = t4 + (ido << 1);
 				t6 = t0 + t1;
 				for (i = 2; i < ido; i += 2) {
 					t3 += 2;
@@ -751,10 +863,12 @@ class Drft {
 					ch[t6] = wa1[index + i - 2] * ti2 + wa1[index + i - 1]
 							* tr2;
 				}
-				t2 = (t1 += ido) << 1;
+				t1 += ido;
+				t2 = t1 << 1;
 			}
-			if ((ido % 2) == 1)
+			if ((ido % 2) == 1) {
 				return;
+			}
 		}
 
 		t1 = ido - 1;
@@ -766,7 +880,17 @@ class Drft {
 			t2 += ido << 1;
 		}
 	}
-
+	/**
+	 * Calculate dradb3.
+	 * @param ido int
+	 * @param l1 int
+	 * @param cc float array
+	 * @param ch float array
+	 * @param wa1 float array
+	 * @param index1 int
+	 * @param wa2 float array
+	 * @param index2 int
+	 */
 	static void dradb3(int ido, int l1, float[] cc, float[] ch, float[] wa1,
 			int index1, float[] wa2, int index2) {
 		int i, k, t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
@@ -780,9 +904,9 @@ class Drft {
 		t5 = 0;
 		for (k = 0; k < l1; k++) {
 			tr2 = cc[t3 - 1] + cc[t3 - 1];
-			cr2 = cc[t5] + (taur * tr2);
+			cr2 = cc[t5] + (TAUR * tr2);
 			ch[t1] = cc[t5] + tr2;
-			ci3 = taui * (cc[t3] + cc[t3]);
+			ci3 = TAUI * (cc[t3] + cc[t3]);
 			ch[t1 + t0] = cr2 - ci3;
 			ch[t1 + t2] = cr2 + ci3;
 			t1 += ido;
@@ -790,16 +914,19 @@ class Drft {
 			t5 += t4;
 		}
 
-		if (ido == 1)
+		if (ido == 1) {
 			return;
+		}
 
 		t1 = 0;
 		t3 = ido << 1;
 		for (k = 0; k < l1; k++) {
 			t7 = t1 + (t1 << 1);
-			t6 = (t5 = t7 + t3);
+			t5 = t7 + t3;
+			t6 = t5;
 			t8 = t1;
-			t10 = (t9 = t1 + t0) + t0;
+			t9 = t1 + t0;
+			t10 = t9 + t0;
 
 			for (i = 2; i < ido; i += 2) {
 				t5 += 2;
@@ -809,13 +936,13 @@ class Drft {
 				t9 += 2;
 				t10 += 2;
 				tr2 = cc[t5 - 1] + cc[t6 - 1];
-				cr2 = cc[t7 - 1] + (taur * tr2);
+				cr2 = cc[t7 - 1] + (TAUR * tr2);
 				ch[t8 - 1] = cc[t7 - 1] + tr2;
 				ti2 = cc[t5] - cc[t6];
-				ci2 = cc[t7] + (taur * ti2);
+				ci2 = cc[t7] + (TAUR * ti2);
 				ch[t8] = cc[t7] + ti2;
-				cr3 = taui * (cc[t5 - 1] - cc[t6 - 1]);
-				ci3 = taui * (cc[t5] + cc[t6]);
+				cr3 = TAUI * (cc[t5 - 1] - cc[t6 - 1]);
+				ci3 = TAUI * (cc[t5] + cc[t6]);
 				dr2 = cr2 - ci3;
 				dr3 = cr2 + ci3;
 				di2 = ci2 + cr3;
@@ -830,7 +957,19 @@ class Drft {
 			t1 += ido;
 		}
 	}
-
+	/**
+	 * Calculate dradb4.
+	 * @param ido int
+	 * @param l1 int
+	 * @param cc float array
+	 * @param ch float array
+	 * @param wa1 float array
+	 * @param index1 int
+	 * @param wa2 float array
+	 * @param index2 int
+	 * @param wa3 float array
+	 * @param index3 int
+	 */
 	static void dradb4(int ido, int l1, float[] cc, float[] ch, float[] wa1,
 			int index1, float[] wa2, int index2, float[] wa3, int index3) {
 		int i, k, t0, t1, t2, t3, t4, t5, t6, t7, t8;
@@ -846,22 +985,30 @@ class Drft {
 			t5 = t1;
 			tr3 = cc[t4 - 1] + cc[t4 - 1];
 			tr4 = cc[t4] + cc[t4];
-			tr1 = cc[t3] - cc[(t4 += t6) - 1];
+			t4 += t6;
+			tr1 = cc[t3] - cc[t4 - 1];
 			tr2 = cc[t3] + cc[t4 - 1];
 			ch[t5] = tr2 + tr3;
-			ch[t5 += t0] = tr1 - tr4;
-			ch[t5 += t0] = tr2 - tr3;
-			ch[t5 += t0] = tr1 + tr4;
+			t5 += t0;
+			ch[t5] = tr1 - tr4;
+			t5 += t0;
+			ch[t5] = tr2 - tr3;
+			t5 += t0;
+			ch[t5] = tr1 + tr4;
 			t1 += ido;
 			t3 += t2;
 		}
 
-		if (ido < 2)
+		if (ido < 2) {
 			return;
+		}
 		if (ido != 2) {
 			t1 = 0;
 			for (k = 0; k < l1; k++) {
-				t5 = (t4 = (t3 = (t2 = t1 << 2) + t6)) + t6;
+				t2 = t1 << 2;
+				t3 = t2 + t6;
+				t4 = t3;
+				t5 = t4 + t6;
 				t7 = t1;
 				for (i = 2; i < ido; i += 2) {
 					t2 += 2;
@@ -885,24 +1032,27 @@ class Drft {
 					cr4 = tr1 + tr4;
 					ci2 = ti1 + ti4;
 					ci4 = ti1 - ti4;
-
-					ch[(t8 = t7 + t0) - 1] = wa1[index1 + i - 2] * cr2
+					t8 = t7 + t0;
+					ch[t8 - 1] = wa1[index1 + i - 2] * cr2
 							- wa1[index1 + i - 1] * ci2;
 					ch[t8] = wa1[index1 + i - 2] * ci2 + wa1[index1 + i - 1]
 							* cr2;
-					ch[(t8 += t0) - 1] = wa2[index2 + i - 2] * cr3
+					t8 += t0;
+					ch[t8 - 1] = wa2[index2 + i - 2] * cr3
 							- wa2[index2 + i - 1] * ci3;
 					ch[t8] = wa2[index2 + i - 2] * ci3 + wa2[index2 + i - 1]
 							* cr3;
-					ch[(t8 += t0) - 1] = wa3[index3 + i - 2] * cr4
+					t8 += t0;
+					ch[t8 - 1] = wa3[index3 + i - 2] * cr4
 							- wa3[index3 + i - 1] * ci4;
 					ch[t8] = wa3[index3 + i - 2] * ci4 + wa3[index3 + i - 1]
 							* cr4;
 				}
 				t1 += ido;
 			}
-			if (ido % 2 == 1)
+			if (ido % 2 == 1) {
 				return;
+			}
 		}
 
 		t1 = ido;
@@ -916,16 +1066,32 @@ class Drft {
 			tr1 = cc[t1 - 1] - cc[t4 - 1];
 			tr2 = cc[t1 - 1] + cc[t4 - 1];
 			ch[t5] = tr2 + tr2;
-			ch[t5 += t0] = sqrt2 * (tr1 - ti1);
-			ch[t5 += t0] = ti2 + ti2;
-			ch[t5 += t0] = -sqrt2 * (tr1 + ti1);
+			t5 += t0;
+			ch[t5] = SQRT2 * (tr1 - ti1);
+			t5 += t0;
+			ch[t5] = ti2 + ti2;
+			t5 += t0;
+			ch[t5] = -SQRT2 * (tr1 + ti1);
 
 			t3 += ido;
 			t1 += t2;
 			t4 += t2;
 		}
 	}
-
+	/**
+	 * Calculate DRADBG.
+	 * @param ido int
+	 * @param ip int
+	 * @param l1 int
+	 * @param idl1 int
+	 * @param cc float array
+	 * @param c1 float array
+	 * @param c2 float array
+	 * @param ch float array
+	 * @param ch2 float array
+	 * @param wa float array
+	 * @param index int
+	 */
 	static void dradbg(int ido, int ip, int l1, int idl1, float[] cc,
 			float[] c1, float[] c2, float[] ch, float[] ch2, float[] wa,
 			int index) {
@@ -943,7 +1109,7 @@ class Drft {
 			case 100:
 				t10 = ip * ido;
 				t0 = l1 * ido;
-				arg = tpi / ip;
+				arg = TPI / ip;
 				dcp = (float) Math.cos(arg);
 				dsp = (float) Math.sin(arg);
 				nbd = (ido - 1) >>> 1;
@@ -983,7 +1149,8 @@ class Drft {
 			case 106:
 				t1 = 0;
 				t2 = ipp2 * t0;
-				t7 = (t5 = ido << 1);
+				t5 = ido << 1;
+				t7 = t5;
 				for (j = 1; j < ipph; j++) {
 					t1 += t0;
 					t2 -= t0;
@@ -1078,7 +1245,8 @@ class Drft {
 				ar1 = 1.f;
 				ai1 = 0.f;
 				t1 = 0;
-				t9 = (t2 = ipp2 * idl1);
+				t2 = ipp2 * idl1;
+				t9 = t2;
 				t3 = (ip - 1) * idl1;
 				for (l = 1; l < ipph; l++) {
 					t1 += idl1;
@@ -1124,8 +1292,9 @@ class Drft {
 				for (j = 1; j < ipph; j++) {
 					t1 += idl1;
 					t2 = t1;
-					for (ik = 0; ik < idl1; ik++)
+					for (ik = 0; ik < idl1; ik++) {
 						ch2[ik] += ch2[t2++];
+					}
 				}
 
 				t1 = 0;
@@ -1200,15 +1369,18 @@ class Drft {
 					}
 				}
 			case 132:
-				if (ido == 1)
+				if (ido == 1) {
 					return;
+				}
 
-				for (ik = 0; ik < idl1; ik++)
+				for (ik = 0; ik < idl1; ik++) {
 					c2[ik] = ch2[ik];
+				}
 
 				t1 = 0;
 				for (j = 1; j < ip; j++) {
-					t2 = (t1 += t0);
+					t1 += t0;
+					t2 = t1;
 					for (k = 0; k < l1; k++) {
 						c1[t2] = ch[t2];
 						t2 += ido;
@@ -1264,10 +1436,19 @@ class Drft {
 					}
 				}
 				break loop;
+			default:
 			}
 		}
 	}
-
+	/**
+	 * Calculate DRFTB1.
+	 * @param n int
+	 * @param c float array
+	 * @param ch float array
+	 * @param wa float array
+	 * @param index int
+	 * @param ifac int array
+	 */
 	static void drftb1(int n, float[] c, float[] ch, float[] wa, int index,
 			int[] ifac) {
 		int i, k1, l1, l2 = 0;
@@ -1295,12 +1476,13 @@ class Drft {
 					ix2 = iw + ido;
 					ix3 = ix2 + ido;
 
-					if (na != 0)
+					if (na != 0) {
 						dradb4(ido, l1, ch, c, wa, index + iw - 1, wa, index
 								+ ix2 - 1, wa, index + ix3 - 1);
-					else
+					} else {
 						dradb4(ido, l1, c, ch, wa, index + iw - 1, wa, index
 								+ ix2 - 1, wa, index + ix3 - 1);
+					}
 					na = 1 - na;
 					state = 115;
 					break;
@@ -1310,10 +1492,11 @@ class Drft {
 						break;
 					}
 
-					if (na != 0)
+					if (na != 0) {
 						dradb2(ido, l1, ch, c, wa, index + iw - 1);
-					else
+					} else {
 						dradb2(ido, l1, c, ch, wa, index + iw - 1);
+					}
 					na = 1 - na;
 					state = 115;
 					break;
@@ -1325,35 +1508,41 @@ class Drft {
 					}
 
 					ix2 = iw + ido;
-					if (na != 0)
+					if (na != 0) {
 						dradb3(ido, l1, ch, c, wa, index + iw - 1, wa, index
 								+ ix2 - 1);
-					else
+					} else {
 						dradb3(ido, l1, c, ch, wa, index + iw - 1, wa, index
 								+ ix2 - 1);
+					}
 					na = 1 - na;
 					state = 115;
 					break;
 				case 109:
-					if (na != 0)
+					if (na != 0) {
 						dradbg(ido, ip, l1, idl1, ch, ch, ch, c, c, wa, index
 								+ iw - 1);
-					else
+					} else {
 						dradbg(ido, ip, l1, idl1, c, c, c, ch, ch, wa, index
 								+ iw - 1);
-					if (ido == 1)
+					}
+					if (ido == 1) {
 						na = 1 - na;
+					}
 
 				case 115:
 					l1 = l2;
 					iw += (ip - 1) * ido;
 					break loop;
+				default:
 				}
 			}
 		}
-		if (na == 0)
+		if (na == 0) {
 			return;
-		for (i = 0; i < n; i++)
+		}
+		for (i = 0; i < n; i++) {
 			c[i] = ch[i];
+		}
 	}
 }

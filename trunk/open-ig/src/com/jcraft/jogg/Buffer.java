@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,31 +32,44 @@
  */
 
 package com.jcraft.jogg;
-
+/**
+ * Buffer class to perform bitvise stream operations.
+ * Comments and style correction by karnokd. Don't expect
+ * every comment to be accurate.
+ * @author ymnk
+ */
 public class Buffer {
+	/** Buffer increment. */
 	private static final int BUFFER_INCREMENT = 256;
-
-	private static final int[] mask = { 0x00000000, 0x00000001, 0x00000003,
+	/** Buffer bitmask. */
+	private static final int[] MASK = { 0x00000000, 0x00000001, 0x00000003,
 			0x00000007, 0x0000000f, 0x0000001f, 0x0000003f, 0x0000007f,
 			0x000000ff, 0x000001ff, 0x000003ff, 0x000007ff, 0x00000fff,
 			0x00001fff, 0x00003fff, 0x00007fff, 0x0000ffff, 0x0001ffff,
 			0x0003ffff, 0x0007ffff, 0x000fffff, 0x001fffff, 0x003fffff,
 			0x007fffff, 0x00ffffff, 0x01ffffff, 0x03ffffff, 0x07ffffff,
 			0x0fffffff, 0x1fffffff, 0x3fffffff, 0x7fffffff, 0xffffffff };
-
+	/** Pointer into the buffer. */
 	int ptr = 0;
+	/** The buffer. */
 	byte[] buffer = null;
+	/** End bit. */
 	int endbit = 0;
+	/** End byte. */
 	int endbyte = 0;
+	/** Storage. */
 	int storage = 0;
-
+	/** Initializes the buffer. */
 	public void writeinit() {
 		buffer = new byte[BUFFER_INCREMENT];
 		ptr = 0;
 		buffer[0] = (byte) '\0';
 		storage = BUFFER_INCREMENT;
 	}
-
+	/**
+	 * Writes the supplied byte array into the buffer.
+	 * @param s the data array to write
+	 */
 	public void write(byte[] s) {
 		for (int i = 0; i < s.length; i++) {
 			if (s[i] == 0) {
@@ -58,29 +78,42 @@ public class Buffer {
 			write(s[i], 8);
 		}
 	}
-
+	/**
+	 * Reads into the supplied byte array the number of bytes.
+	 * @param s the output byte array
+	 * @param bytes the number of bytes to read
+	 */
 	public void read(byte[] s, int bytes) {
 		int i = 0;
 		while (bytes-- != 0) {
 			s[i++] = (byte) (read(8));
 		}
 	}
-
+	/** Resets the buffer to the beginning. */
 	void reset() {
 		ptr = 0;
 		buffer[0] = (byte) '\0';
 		endbit = 0; 
 		endbyte = 0;
 	}
-
+	/** Frees the internal buffer. */
 	public void writeclear() {
 		buffer = null;
 	}
-
+	/**
+	 * Initialize the buffer to use the supplied data.
+	 * @param buf the byte array to use, shares the array
+	 * @param bytes number of bytes to use
+	 */
 	public void readinit(byte[] buf, int bytes) {
 		readinit(buf, 0, bytes);
 	}
-
+	/**
+	 * Initialize the buffer to use the supplied data range.
+	 * @param buf the byte array to use, shares the array
+	 * @param start the start index
+	 * @param bytes the number of bytes to use
+	 */
 	public void readinit(byte[] buf, int start, int bytes) {
 		ptr = start;
 		buffer = buf;
@@ -88,7 +121,11 @@ public class Buffer {
 		endbyte = 0;
 		storage = bytes;
 	}
-
+	/**
+	 * Writes the specified number of bits into the buffer.
+	 * @param value the value
+	 * @param bits the number of bits to write
+	 */
 	public void write(int value, int bits) {
 		if (endbyte + 4 >= storage) {
 			byte[] foo = new byte[storage + BUFFER_INCREMENT];
@@ -97,7 +134,7 @@ public class Buffer {
 			storage += BUFFER_INCREMENT;
 		}
 
-		value &= mask[bits];
+		value &= MASK[bits];
 		bits += endbit;
 		buffer[ptr] |= (byte) (value << endbit);
 
@@ -122,10 +159,14 @@ public class Buffer {
 		ptr += bits / 8;
 		endbit = bits & 7;
 	}
-
+	/** 
+	 * Looks ahead a number of bits and returns this value without moving the read pointer.
+	 * @param bits to read
+	 * @return the bits read
+	 */
 	public int look(int bits) {
 		int ret;
-		int m = mask[bits];
+		int m = MASK[bits];
 
 		bits += endbit;
 
@@ -150,21 +191,27 @@ public class Buffer {
 		}
 		return (m & ret);
 	}
-
+	/**
+	 * Returns the next bit without moving the read pointer.
+	 * @return the next bit
+	 */
 	public int look1() {
 		if (endbyte >= storage) {
 			return (-1);
 		}
 		return ((buffer[ptr] >> endbit) & 1);
 	}
-
+	/**
+	 * Advance the read pointer by the supplied number of bits.
+	 * @param bits the bits to skip
+	 */
 	public void adv(int bits) {
 		bits += endbit;
 		ptr += bits / 8;
 		endbyte += bits / 8;
 		endbit = bits & 7;
 	}
-
+	/** Advance the read pointer by one bit. */
 	public void adv1() {
 		++endbit;
 		if (endbit > 7) {
@@ -173,10 +220,14 @@ public class Buffer {
 			endbyte++;
 		}
 	}
-
+	/**
+	 * Reads the given amount of bits from the buffer.
+	 * @param bits the number of bits to read
+	 * @return the read value
+	 */
 	public int read(int bits) {
 		int ret;
-		int m = mask[bits];
+		int m = MASK[bits];
 
 		bits += endbit;
 
@@ -211,7 +262,11 @@ public class Buffer {
 		endbit = bits & 7;
 		return (ret);
 	}
-
+	/**
+	 * Reads bits.
+	 * @param bits the number of bits to read
+	 * @return the value read
+	 */
 	public int readB(int bits) {
 		int ret;
 		int m = 32 - bits;
@@ -249,7 +304,10 @@ public class Buffer {
 		endbit = bits & 7;
 		return (ret);
 	}
-
+	/**
+	 * Reads the next bit.
+	 * @return the next bit
+	 */
 	public int read1() {
 		int ret;
 		if (endbyte >= storage) {
@@ -273,19 +331,32 @@ public class Buffer {
 		}
 		return (ret);
 	}
-
+	/**
+	 * Returns the current number of bytes from the beginning of the buffer.
+	 * @return the current number of bytes from the beginning of the buffer
+	 */
 	public int bytes() {
 		return (endbyte + (endbit + 7) / 8);
 	}
-
+	/** 
+	 * Returns the current bit offset.
+	 * @return the current bit offset
+	 */
 	public int bits() {
 		return (endbyte * 8 + endbit);
 	}
-
+	/**
+	 * Returns the underlying array buffer in a shared form.
+	 * @return the underlying array buffer in a shared form
+	 */
 	public byte[] buffer() {
 		return (buffer);
 	}
-
+	/**
+	 * Returns the integer log 2 of the value.
+	 * @param v the value
+	 * @return the integer log 2 of the value
+	 */
 	public static int ilog(int v) {
 		int ret = 0;
 		while (v > 0) {
@@ -294,7 +365,10 @@ public class Buffer {
 		}
 		return (ret);
 	}
-
+	/**
+	 * Log error and exit.
+	 * @param in the string to print
+	 */
 	public static void report(String in) {
 		System.err.println(in);
 		System.exit(1);

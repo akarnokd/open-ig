@@ -203,7 +203,7 @@ class Floor0 extends FuncFloor {
 				}
 
 				for (int j = 0; j < look.m; j += b.dim) {
-					if (b.decodev_set(lsp, j, vb.opb, b.dim) == -1) {
+					if (b.decodevSet(lsp, j, vb.opb, b.dim) == -1) {
 						return (null);
 					}
 				}

@@ -215,12 +215,12 @@ class Residue0 extends FuncResidue {
 							CodeBook stagebook = look.fullbooks[look.partbooks[index][s]];
 							if (stagebook != null) {
 								if (decodepart == 0) {
-									if (stagebook.decodevs_add(in[j], offset,
+									if (stagebook.decodevsAdd(in[j], offset,
 											vb.opb, samples_per_partition) == -1) {
 										return (0);
 									}
 								} else if (decodepart == 1) {
-									if (stagebook.decodev_add(in[j], offset,
+									if (stagebook.decodevAdd(in[j], offset,
 											vb.opb, samples_per_partition) == -1) {
 										return (0);
 									}
@@ -273,7 +273,7 @@ class Residue0 extends FuncResidue {
 					if ((info.secondstages[index] & (1 << s)) != 0) {
 						CodeBook stagebook = look.fullbooks[look.partbooks[index][s]];
 						if (stagebook != null) {
-							if (stagebook.decodevv_add(in, offset, ch, vb.opb,
+							if (stagebook.decodevvAdd(in, offset, ch, vb.opb,
 									samples_per_partition) == -1) {
 								return (0);
 							}

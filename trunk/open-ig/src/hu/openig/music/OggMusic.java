@@ -270,7 +270,7 @@ public class OggMusic {
 				oy.wrote(bytes);
 			}
 
-			byte[][] ptr = vc.user_comments;
+			byte[][] ptr = vc.userComments;
 
 			for (int j = 0; j < ptr.length; j++) {
 				if (ptr[j] == null) {
