@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -26,38 +33,51 @@
 
 package com.jcraft.jogg;
 
-// DECODING PRIMITIVES: packet streaming layer
+/**
+ * DECODING PRIMITIVES: packet streaming layer
 
-// This has two layers to place more of the multi-serialno and paging
-// control in the application's hands.  First, we expose a data buffer
-// using ogg_decode_buffer().  The app either copies into the
-// buffer, or passes it directly to read(), etc.  We then call
-// ogg_decode_wrote() to tell how many bytes we just added.
-//
-// Pages are returned (pointers into the buffer in ogg_sync_state)
-// by ogg_decode_stream().  The page is then submitted to
-// ogg_decode_page() along with the appropriate
-// ogg_stream_state* (ie, matching serialno).  We then get raw
-// packets out calling ogg_stream_packet() with a
-// ogg_stream_state.  See the 'frame-prog.txt' docs for details and
-// example code.
-
+ * This has two layers to place more of the multi-serialno and paging
+ * control in the application's hands.  First, we expose a data buffer
+ * using ogg_decode_buffer().  The app either copies into the
+ * buffer, or passes it directly to read(), etc.  We then call
+ * ogg_decode_wrote() to tell how many bytes we just added.
+ *
+ * Pages are returned (pointers into the buffer in ogg_sync_state)
+ * by ogg_decode_stream().  The page is then submitted to
+ * ogg_decode_page() along with the appropriate
+ * ogg_stream_state* (ie, matching serialno).  We then get raw
+ * packets out calling ogg_stream_packet() with a
+ * ogg_stream_state.  See the 'frame-prog.txt' docs for details and
+ * example code.
+ * Comments and style correction by karnokd
+ * @author ymnk
+ */
 public class SyncState {
-
+	/** The data. */
 	public byte[] data;
+	/** Storage. */
 	int storage;
+	/** Fill. */
 	int fill;
+	/** Returned. */
 	int returned;
-
+	/** Unsynced. */
 	int unsynced;
+	/** Header bytes. */
 	int headerbytes;
+	/** Body bytes. */
 	int bodybytes;
-
-	public int clear() {
+	/** 
+	 * Clear internal data.
+	 */
+	public void clear() {
 		data = null;
-		return (0);
 	}
-
+	/**
+	 * Renew the buffer with the given size.
+	 * @param size the size
+	 * @return the fill value
+	 */
 	public int buffer(int size) {
 		// first, clear out any space that has been previously returned
 		if (returned != 0) {
@@ -83,7 +103,11 @@ public class SyncState {
 
 		return (fill);
 	}
-
+	/** 
+	 * Returns -1 f the number of bytes added to the fill value is above the store size.
+	 * @param bytes the bytes to test
+	 * @return -1 or 0
+	 */
 	public int wrote(int bytes) {
 		if (fill + bytes > storage) {
 			return (-1);
@@ -91,17 +115,19 @@ public class SyncState {
 		fill += bytes;
 		return (0);
 	}
-
-	// sync the stream. This is meant to be useful for finding page
-	// boundaries.
-	//
-	// return values for this:
-	// -n) skipped n bytes
-	// 0) page not ready; more data (no bytes skipped)
-	// n) page synced at current location; page length n bytes
+	/** Page seek object. */
 	private Page pageseek = new Page();
+	/** Checksum. */
 	private byte[] chksum = new byte[4];
-
+	/**
+	 * Sync the stream. This is meant to be useful for finding page
+	 * boundaries.
+	 * @param og the page
+	 * @return
+	 * -n) skipped n bytes<br>
+	 * 0) page not ready; more data (no bytes skipped)<br>
+	 * n) page synced at current location; page length n bytes
+	 */
 	public int pageseek(Page og) {
 		int page = returned;
 		int next;
@@ -164,13 +190,13 @@ public class SyncState {
 
 			// set up a temp page struct and recompute the checksum
 			Page log = pageseek;
-			log.header_base = data;
+			log.headerBase = data;
 			log.header = page;
-			log.header_len = headerbytes;
+			log.headerLen = headerbytes;
 
-			log.body_base = data;
+			log.bodyBase = data;
 			log.body = page + headerbytes;
-			log.body_len = bodybytes;
+			log.bodyLen = bodybytes;
 			log.checksum();
 
 			// Compare
@@ -206,12 +232,12 @@ public class SyncState {
 		page = returned;
 
 		if (og != null) {
-			og.header_base = data;
+			og.headerBase = data;
 			og.header = page;
-			og.header_len = headerbytes;
-			og.body_base = data;
+			og.headerLen = headerbytes;
+			og.bodyBase = data;
 			og.body = page + headerbytes;
-			og.body_len = bodybytes;
+			og.bodyLen = bodybytes;
 		}
 
 		unsynced = 0;
@@ -221,17 +247,19 @@ public class SyncState {
 		bodybytes = 0;
 		return (bytes);
 	}
-
-	// sync the stream and get a page. Keep trying until we find a page.
-	// Supress 'sync errors' after reporting the first.
-	//
-	// return values:
-	// -1) recapture (hole in data)
-	// 0) need more data
-	// 1) page returned
-	//
-	// Returns pointers into buffered data; invalidated by next call to
-	// _stream, _clear, _init, or _buffer
+	/**
+	 * Sync the stream and get a page. Keep trying until we find a page.
+	 * Supress 'sync errors' after reporting the first.
+	 *
+	 * Returns pointers into buffered data; invalidated by next call to
+	 * _stream, _clear, _init, or _buffer
+	 * 
+	 * @param og the page
+	 * @return
+	 * -1) recapture (hole in data)<br>
+	 * 0) need more data<br>
+	 * 1) page returned
+	 */
 
 	public int pageout(Page og) {
 		// all we need to do is verify a page at the head of the stream
@@ -257,24 +285,28 @@ public class SyncState {
 			// loop. keep looking
 		}
 	}
-
-	// clear things to an initial state. Good to call, eg, before seeking
-	public int reset() {
+	/** Clear things to an initial state. Good to call, eg, before seeking. */
+	public void reset() {
 		fill = 0;
 		returned = 0;
 		unsynced = 0;
 		headerbytes = 0;
 		bodybytes = 0;
-		return (0);
 	}
-
+	/** Initialize. */
 	public void init() {
 	}
-
+	/**
+	 * Returns the data offset.
+	 * @return the data offset
+	 */
 	public int getDataOffset() {
 		return returned;
 	}
-
+	/** 
+	 * Returns the buffer offset.
+	 * @return the buffer offset
+	 */
 	public int getBufferOffset() {
 		return fill;
 	}

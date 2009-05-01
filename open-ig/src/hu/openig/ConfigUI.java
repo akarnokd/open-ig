@@ -10,6 +10,11 @@ package hu.openig;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -39,18 +44,54 @@ public class ConfigUI extends JFrame {
 		tabs.add("Game", new JPanel());
 		tabs.add("Network", new JPanel());
 		tabs.add("About", new JPanel());
-		
+		tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		Container c = getContentPane();
 		c.setLayout(new BorderLayout());
 		c.add(tabs, BorderLayout.CENTER);
-		
+		pack();
 		setLocationRelativeTo(null);
 	}
 	/**
+	 * Save frame properties.
+	 * @param frame the frame to save
+	 * @throws IOException if the config file has problems
+	 */
+	void saveFrame(JFrame frame) throws IOException {
+	    Properties props = new Properties();
+	    props.setProperty("State", String.valueOf(frame.getExtendedState()));
+	    props.setProperty("X", String.valueOf(frame.getX()));
+	    props.setProperty("Y", String.valueOf(frame.getY()));
+	    props.setProperty("W", String.valueOf(frame.getWidth()));
+	    props.setProperty("H", String.valueOf(frame.getHeight()));
+	    props.storeToXML(new FileOutputStream("config.xml"), null);
+	}
+	/**
+	 * Load a frame properties.
+	 * @param frame the target frame to instantiate
+	 * @throws IOException if the config file has problems
+	 */
+	void loadFrame(JFrame frame) throws IOException {
+	    Properties props = new Properties();
+	    props.loadFromXML(new FileInputStream("config.xml"));
+	    int extendedState = Integer.parseInt(props.getProperty("State", String.valueOf(frame.getExtendedState())));
+	    if (extendedState != JFrame.MAXIMIZED_BOTH) {
+	        frame.setBounds(
+        		Integer.parseInt(props.getProperty("X", String.valueOf(frame.getX()))),
+				Integer.parseInt(props.getProperty("Y", String.valueOf(frame.getY()))),
+				Integer.parseInt(props.getProperty("W", String.valueOf(frame.getWidth()))),
+				Integer.parseInt(props.getProperty("H", String.valueOf(frame.getHeight())))
+	        );
+	    } else {
+	        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	    }
+	}	/**
 	 * Main program to independently test the ui.
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
+		for (Map.Entry<?, ?>  e : System.getProperties().entrySet()) {
+			System.out.printf("%s = %s%n", e.getKey(), e.getValue());
+		}
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

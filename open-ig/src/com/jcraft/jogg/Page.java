@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,16 +32,25 @@
  */
 
 package com.jcraft.jogg;
-
+/**
+ * Page object.
+ * Comments and style correction by karnokd
+ * @author ymnk
+ */
 public class Page {
-	private static int[] crc_lookup = new int[256];
+	/** CRC lookup table. */
+	private static final int[] CRC_LOOKUP = new int[256];
 	static {
-		for (int i = 0; i < crc_lookup.length; i++) {
-			crc_lookup[i] = crc_entry(i);
+		for (int i = 0; i < CRC_LOOKUP.length; i++) {
+			CRC_LOOKUP[i] = crcEntry(i);
 		}
 	}
-
-	private static int crc_entry(int index) {
+	/**
+	 * Calculates a CRC entry.
+	 * @param index the index
+	 * @return the entry value
+	 */
+	private static int crcEntry(int index) {
 		int r = index << 24;
 		for (int i = 0; i < 8; i++) {
 			if ((r & 0x80000000) != 0) {
@@ -51,89 +67,124 @@ public class Page {
 		}
 		return (r & 0xffffffff);
 	}
-
-	public byte[] header_base;
+	/** Header base array. */
+	public byte[] headerBase;
+	/** Header start. */
 	public int header;
-	public int header_len;
-	public byte[] body_base;
+	/** Header length. */
+	public int headerLen;
+	/** Body base array. */
+	public byte[] bodyBase;
+	/** Body start. */
 	public int body;
-	public int body_len;
-
+	/** Body length. */
+	public int bodyLen;
+	/**
+	 * Returns the version.
+	 * @return the version
+	 */
 	int version() {
-		return header_base[header + 4] & 0xff;
+		return headerBase[header + 4] & 0xff;
 	}
-
+	/**
+	 * Returns the continued flag.
+	 * @return the continued flag
+	 */
 	int continued() {
-		return (header_base[header + 5] & 0x01);
+		return (headerBase[header + 5] & 0x01);
 	}
-
+	/**
+	 * Returns the begin of stream flag.
+	 * @return the begin of stream flag
+	 */
 	public int bos() {
-		return (header_base[header + 5] & 0x02);
+		return (headerBase[header + 5] & 0x02);
 	}
-
+	/** 
+	 * Returns the end of stream flag.
+	 * @return the end of stream flag
+	 */
 	public int eos() {
-		return (header_base[header + 5] & 0x04);
+		return (headerBase[header + 5] & 0x04);
 	}
-
+	/**
+	 * Returns the granule(?) position.
+	 * @return the granule position
+	 */
 	public long granulepos() {
-		long foo = header_base[header + 13] & 0xff;
-		foo = (foo << 8) | (header_base[header + 12] & 0xff);
-		foo = (foo << 8) | (header_base[header + 11] & 0xff);
-		foo = (foo << 8) | (header_base[header + 10] & 0xff);
-		foo = (foo << 8) | (header_base[header + 9] & 0xff);
-		foo = (foo << 8) | (header_base[header + 8] & 0xff);
-		foo = (foo << 8) | (header_base[header + 7] & 0xff);
-		foo = (foo << 8) | (header_base[header + 6] & 0xff);
+		long foo = headerBase[header + 13] & 0xff;
+		foo = (foo << 8) | (headerBase[header + 12] & 0xff);
+		foo = (foo << 8) | (headerBase[header + 11] & 0xff);
+		foo = (foo << 8) | (headerBase[header + 10] & 0xff);
+		foo = (foo << 8) | (headerBase[header + 9] & 0xff);
+		foo = (foo << 8) | (headerBase[header + 8] & 0xff);
+		foo = (foo << 8) | (headerBase[header + 7] & 0xff);
+		foo = (foo << 8) | (headerBase[header + 6] & 0xff);
 		return (foo);
 	}
-
+	/**
+	 * Returns the serial number.
+	 * @return the serial number
+	 */
 	public int serialno() {
-		return (header_base[header + 14] & 0xff)
-				| ((header_base[header + 15] & 0xff) << 8)
-				| ((header_base[header + 16] & 0xff) << 16)
-				| ((header_base[header + 17] & 0xff) << 24);
+		return (headerBase[header + 14] & 0xff)
+				| ((headerBase[header + 15] & 0xff) << 8)
+				| ((headerBase[header + 16] & 0xff) << 16)
+				| ((headerBase[header + 17] & 0xff) << 24);
 	}
-
+	/**
+	 * Returns the page number.
+	 * @return the page number
+	 */
 	int pageno() {
-		return (header_base[header + 18] & 0xff)
-				| ((header_base[header + 19] & 0xff) << 8)
-				| ((header_base[header + 20] & 0xff) << 16)
-				| ((header_base[header + 21] & 0xff) << 24);
+		return (headerBase[header + 18] & 0xff)
+				| ((headerBase[header + 19] & 0xff) << 8)
+				| ((headerBase[header + 20] & 0xff) << 16)
+				| ((headerBase[header + 21] & 0xff) << 24);
 	}
-
+	/**
+	 * Calculates and sets the checksum.
+	 */
 	void checksum() {
 		int crcReg = 0;
 
-		for (int i = 0; i < header_len; i++) {
+		for (int i = 0; i < headerLen; i++) {
 			crcReg = (crcReg << 8)
-					^ crc_lookup[((crcReg >>> 24) & 0xff)
-							^ (header_base[header + i] & 0xff)];
+					^ CRC_LOOKUP[((crcReg >>> 24) & 0xff)
+							^ (headerBase[header + i] & 0xff)];
 		}
-		for (int i = 0; i < body_len; i++) {
+		for (int i = 0; i < bodyLen; i++) {
 			crcReg = (crcReg << 8)
-					^ crc_lookup[((crcReg >>> 24) & 0xff)
-							^ (body_base[body + i] & 0xff)];
+					^ CRC_LOOKUP[((crcReg >>> 24) & 0xff)
+							^ (bodyBase[body + i] & 0xff)];
 		}
-		header_base[header + 22] = (byte) crcReg;
-		header_base[header + 23] = (byte) (crcReg >>> 8);
-		header_base[header + 24] = (byte) (crcReg >>> 16);
-		header_base[header + 25] = (byte) (crcReg >>> 24);
+		headerBase[header + 22] = (byte) crcReg;
+		headerBase[header + 23] = (byte) (crcReg >>> 8);
+		headerBase[header + 24] = (byte) (crcReg >>> 16);
+		headerBase[header + 25] = (byte) (crcReg >>> 24);
 	}
-
+	/**
+	 * Returns a copy of this page.
+	 * @return the copied page no array is shared
+	 */
 	public Page copy() {
 		return copy(new Page());
 	}
-
+	/**
+	 * Copies the values of this page into the supplied Page.
+	 * @param p the target page to copy to
+	 * @return the p
+	 */
 	public Page copy(Page p) {
-		byte[] tmp = new byte[header_len];
-		System.arraycopy(header_base, header, tmp, 0, header_len);
-		p.header_len = header_len;
-		p.header_base = tmp;
+		byte[] tmp = new byte[headerLen];
+		System.arraycopy(headerBase, header, tmp, 0, headerLen);
+		p.headerLen = headerLen;
+		p.headerBase = tmp;
 		p.header = 0;
-		tmp = new byte[body_len];
-		System.arraycopy(body_base, body, tmp, 0, body_len);
-		p.body_len = body_len;
-		p.body_base = tmp;
+		tmp = new byte[bodyLen];
+		System.arraycopy(bodyBase, body, tmp, 0, bodyLen);
+		p.bodyLen = bodyLen;
+		p.bodyBase = tmp;
 		p.body = 0;
 		return p;
 	}

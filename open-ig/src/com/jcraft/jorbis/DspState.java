@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,7 +32,12 @@
  */
 
 package com.jcraft.jorbis;
-
+/**
+ * DSP state record.
+ * Comments and style correction by karnokd
+ * @author ymnk
+ *
+ */
 public class DspState {
 	static final float M_PI = 3.1415926539f;
 	static final int VI_TRANSFORMB = 1;
@@ -175,7 +187,7 @@ public class DspState {
 		fullbooks = new CodeBook[vi.books];
 		for (int i = 0; i < vi.books; i++) {
 			fullbooks[i] = new CodeBook();
-			fullbooks[i].init_decode(vi.book_param[i]);
+			fullbooks[i].initDecode(vi.book_param[i]);
 		}
 
 		// initialize the storage vectors to a decent size greater than the
@@ -257,13 +269,13 @@ public class DspState {
 		}
 
 		lW = W;
-		W = vb.W;
+		W = vb.w;
 		nW = -1;
 
-		glue_bits += vb.glue_bits;
-		time_bits += vb.time_bits;
-		floor_bits += vb.floor_bits;
-		res_bits += vb.res_bits;
+		glue_bits += vb.glueBits;
+		time_bits += vb.timeBits;
+		floor_bits += vb.floorBits;
+		res_bits += vb.resBits;
 
 		if (sequence + 1 != vb.sequence)
 			granulepos = -1; // out of sequence; lose count

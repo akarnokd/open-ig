@@ -195,9 +195,9 @@ class Mapping0 extends FuncMapping {
 		LookMapping0 look = (LookMapping0) l;
 		InfoMapping0 info = look.map;
 		InfoMode mode = look.mode;
-		int n = vb.pcmend = vi.blocksizes[vb.W];
+		int n = vb.pcmend = vi.blocksizes[vb.w];
 
-		float[] window = vd.window[vb.W][vb.lW][vb.nW][mode.windowtype];
+		float[] window = vd.window[vb.w][vb.lW][vb.nW][mode.windowtype];
 		if (pcmbundle == null || pcmbundle.length < vi.channels) {
 			pcmbundle = new float[vi.channels][];
 			nonzero = new int[vi.channels];
@@ -298,7 +298,7 @@ class Mapping0 extends FuncMapping {
 		for (int i = 0; i < vi.channels; i++) {
 			float[] pcm = vb.pcm[i];
 			// _analysis_output("out",seq+i,pcm,n/2,0,0);
-			((Mdct) vd.transform[vb.W][0]).backward(pcm, pcm);
+			((Mdct) vd.transform[vb.w][0]).backward(pcm, pcm);
 		}
 
 		// now apply the decoded pre-window time information

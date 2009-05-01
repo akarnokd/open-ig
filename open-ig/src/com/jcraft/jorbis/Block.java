@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -28,54 +35,81 @@ package com.jcraft.jorbis;
 
 import com.jcraft.jogg.Buffer;
 import com.jcraft.jogg.Packet;
-
+/**
+ * Block object.
+ * Comments and style fix by karnokd. 
+ * @author ymnk
+ */
 public class Block {
-	// /necessary stream state for linking to the framing abstraction
-	float[][] pcm = new float[0][]; // this is a pointer into local storage
+	/** 
+	 * Necessary stream state for linking to the framing abstraction. 
+	 * This is a pointer into local storage.
+	 */
+	float[][] pcm = new float[0][];
+	/** Buffer. */
 	Buffer opb = new Buffer();
-
+	/** LW. */
 	int lW;
-	int W;
+	/** W. */
+	int w;
+	/** NW. */
 	int nW;
+	/** PCM end. */
 	int pcmend;
+	/** Mode. */
 	int mode;
-
+	/** EOF flag. */
 	int eofflag;
+	/** Granule position. */
 	long granulepos;
+	/** Sequence. */
 	long sequence;
-	DspState vd; // For read-only access of configuration
+	/** For read-only access of configuration. */
+	DspState vd;
 
-	// bitmetrics for the frame
-	int glue_bits;
-	int time_bits;
-	int floor_bits;
-	int res_bits;
-
+	/** Glue bit metrics for the frame. */
+	int glueBits;
+	/** Time bit metrics for the frame. */
+	int timeBits;
+	/** Floor bit metrics for the frame. */
+	int floorBits;
+	/** Res bit metrics for the frame. */
+	int resBits;
+	/**
+	 * Constructor. Sets the DspState.
+	 * @param vd the dsp state
+	 */
 	public Block(DspState vd) {
 		this.vd = vd;
 		if (vd.analysisp != 0) {
 			opb.writeinit();
 		}
 	}
-
+	/**
+	 * Initializes the dsp state.
+	 * @param vd the dsp state
+	 */
 	public void init(DspState vd) {
 		this.vd = vd;
 	}
-
-	public int clear() {
+	/** Clears the internal state. */
+	public void clear() {
 		if (vd != null) {
 			if (vd.analysisp != 0) {
 				opb.writeclear();
 			}
 		}
-		return (0);
 	}
-
+	/**
+	 * Sinthesis.
+	 * @param op packet
+	 * @return success value
+	 */
 	public int synthesis(Packet op) {
 		Info vi = vd.vi;
 
 		// first things first. Make sure decode is ready
-		opb.readinit(op.packet_base, op.packet, op.bytes);
+		opb.readinit(op.packetBase, op.packet, op.bytes);
 
 		// Check the packet type
 		if (opb.read(1) != 0) {
@@ -84,17 +118,19 @@ public class Block {
 		}
 
 		// read our mode and pre/post windowsize
-		int _mode = opb.read(vd.modebits);
-		if (_mode == -1)
+		int lMode = opb.read(vd.modebits);
+		if (lMode == -1) {
 			return (-1);
+		}
 
-		mode = _mode;
-		W = vi.mode_param[mode].blockflag;
-		if (W != 0) {
+		mode = lMode;
+		w = vi.mode_param[mode].blockflag;
+		if (w != 0) {
 			lW = opb.read(1);
 			nW = opb.read(1);
-			if (nW == -1)
+			if (nW == -1) {
 				return (-1);
+			}
 		} else {
 			lW = 0;
 			nW = 0;
@@ -103,10 +139,10 @@ public class Block {
 		// more setup
 		granulepos = op.granulepos;
 		sequence = op.packetno - 3; // first block is third packet
-		eofflag = op.e_o_s;
+		eofflag = op.endOfStream;
 
 		// alloc pcm passback storage
-		pcmend = vi.blocksizes[W];
+		pcmend = vi.blocksizes[w];
 		if (pcm.length < vi.channels) {
 			pcm = new float[vi.channels][];
 		}

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,132 +32,166 @@
  */
 
 package com.jcraft.jogg;
-
+/**
+ * Stream state object.
+ * Comments and style fixes
+ * @author ymnk
+ */
 public class StreamState {
-	byte[] body_data; /* bytes from packet bodies */
-	int body_storage; /* storage elements allocated */
-	int body_fill; /* elements stored; fill mark */
-	private int body_returned; /* elements of fill returned */
-
-	int[] lacing_vals; /* The values that will go to the segment table */
-	long[] granule_vals; /*
-						 * pcm_pos values for headers. Not compact this way, but
-						 * it is simple coupled to the lacing fifo
-						 */
-	int lacing_storage;
-	int lacing_fill;
-	int lacing_packet;
-	int lacing_returned;
-
-	byte[] header = new byte[282]; /* working space for header encode */
-	int header_fill;
-
-	public int e_o_s; /*
-					 * set when we have buffered the last packet in the logical
-					 * bitstream
-					 */
-	int b_o_s; /*
-				 * set after we've written the initial page of a logical
-				 * bitstream
-				 */
+	/** Bytes from packet bodies. */
+	byte[] bodyData;
+	/** Storage elements allocated. */
+	int bodyStorage; 
+	/** Elements stored; fill mark. */
+	int bodyFill; 
+	/** Elements of fill returned. */
+	private int bodyReturned; 
+	/** The values that will go to the segment table. */
+	int[] lacingVals; 
+	/**
+	 * The pcm_pos values for headers. Not compact this way, but
+	 * it is simple coupled to the lacing fifo.
+	 */
+	long[] granuleVals; 
+	/** Lacing storage. */
+	int lacingStorage;
+	/** Lacing fill. */
+	int lacingFill;
+	/** Lacing packet. */
+	int lacingPacket;
+	/** Lacing returned. */
+	int lacingReturned;
+	/** Working space for header encode. */
+	byte[] header = new byte[282]; 
+	/** Header fill. */
+	int headerFill;
+	/**
+	 * Set when we have buffered the last packet in the logical
+	 * bitstream.
+	 */
+	public int endOfStream;
+	/**
+	 * Set after we've written the initial page of a logical
+	 * bitstream.
+	 */
+	int beginOfStream;
+	/** Serial number. */
 	int serialno;
+	/** Page number. */
 	int pageno;
-	long packetno; /*
-					 * sequence number for decode; the framing knows where
-					 * there's a hole in the data, but we need coupling so that
-					 * the codec (which is in a seperate abstraction layer) also
-					 * knows about the gap
-					 */
+	/**
+	 * sequence number for decode; the framing knows where
+	 * there's a hole in the data, but we need coupling so that
+	 * the codec (which is in a seperate abstraction layer) also
+	 * knows about the gap.
+	 */	
+	long packetno;
+	/** Granule pos. */
 	long granulepos;
-
+	/** Constructor. Initializes the store. */
 	public StreamState() {
 		init();
 	}
-
+	/**
+	 * Constructor. Sets the serial number.
+	 * @param serialno the serial number
+	 */
 	StreamState(int serialno) {
 		this();
 		init(serialno);
 	}
-
+	/** Initializes the store. */
 	void init() {
-		body_storage = 16 * 1024;
-		body_data = new byte[body_storage];
-		lacing_storage = 1024;
-		lacing_vals = new int[lacing_storage];
-		granule_vals = new long[lacing_storage];
+		bodyStorage = 16 * 1024;
+		bodyData = new byte[bodyStorage];
+		lacingStorage = 1024;
+		lacingVals = new int[lacingStorage];
+		granuleVals = new long[lacingStorage];
 	}
-
+	/**
+	 * Initializes the store with the given serial number.
+	 * @param serialno the serial number
+	 */
 	public void init(int serialno) {
-		if (body_data == null) {
+		if (bodyData == null) {
 			init();
 		} else {
-			for (int i = 0; i < body_data.length; i++) {
-				body_data[i] = 0;
+			for (int i = 0; i < bodyData.length; i++) {
+				bodyData[i] = 0;
 			}
-			for (int i = 0; i < lacing_vals.length; i++) {
-				lacing_vals[i] = 0;
+			for (int i = 0; i < lacingVals.length; i++) {
+				lacingVals[i] = 0;
 			}
-			for (int i = 0; i < granule_vals.length; i++) {
-				granule_vals[i] = 0;
+			for (int i = 0; i < granuleVals.length; i++) {
+				granuleVals[i] = 0;
 			}
 		}
 		this.serialno = serialno;
 	}
-
+	/** Frees the internal buffers. */
 	public void clear() {
-		body_data = null;
-		lacing_vals = null;
-		granule_vals = null;
+		bodyData = null;
+		lacingVals = null;
+		granuleVals = null;
 	}
-
+	/** Frees the internal buffers. */
 	void destroy() {
 		clear();
 	}
+	/**
+	 * Expand body data.
+	 * @param needed the number of bytes needed
+	 */
+	void bodyExpand(int needed) {
+		if (bodyStorage <= bodyFill + needed) {
+			bodyStorage += (needed + 1024);
+			byte[] foo = new byte[bodyStorage];
+			System.arraycopy(bodyData, 0, foo, 0, bodyData.length);
+			bodyData = foo;
+		}
+	}
+	/**
+	 * Expand the lacing data.
+	 * @param needed the number of bytes needed
+	 */
+	void lacingExpand(int needed) {
+		if (lacingStorage <= lacingFill + needed) {
+			lacingStorage += (needed + 32);
+			int[] foo = new int[lacingStorage];
+			System.arraycopy(lacingVals, 0, foo, 0, lacingVals.length);
+			lacingVals = foo;
 
-	void body_expand(int needed) {
-		if (body_storage <= body_fill + needed) {
-			body_storage += (needed + 1024);
-			byte[] foo = new byte[body_storage];
-			System.arraycopy(body_data, 0, foo, 0, body_data.length);
-			body_data = foo;
+			long[] bar = new long[lacingStorage];
+			System.arraycopy(granuleVals, 0, bar, 0, granuleVals.length);
+			granuleVals = bar;
 		}
 	}
 
-	void lacing_expand(int needed) {
-		if (lacing_storage <= lacing_fill + needed) {
-			lacing_storage += (needed + 32);
-			int[] foo = new int[lacing_storage];
-			System.arraycopy(lacing_vals, 0, foo, 0, lacing_vals.length);
-			lacing_vals = foo;
-
-			long[] bar = new long[lacing_storage];
-			System.arraycopy(granule_vals, 0, bar, 0, granule_vals.length);
-			granule_vals = bar;
-		}
-	}
-
-	/* submit data to the internal buffer of the framing engine */
-	public int packetin(Packet op) {
+	/**
+	 *  Submit data to the internal buffer of the framing engine .
+	 *  @param op the packet
+	 */
+	public void packetin(Packet op) {
 		int lacingVal = op.bytes / 255 + 1;
 
-		if (body_returned != 0) {
+		if (bodyReturned != 0) {
 			/*
 			 * advance packet data according to the body_returned pointer. We
 			 * had to keep it around to return a pointer into the buffer last
 			 * call
 			 */
 
-			body_fill -= body_returned;
-			if (body_fill != 0) {
-				System.arraycopy(body_data, body_returned, body_data, 0,
-						body_fill);
+			bodyFill -= bodyReturned;
+			if (bodyFill != 0) {
+				System.arraycopy(bodyData, bodyReturned, bodyData, 0,
+						bodyFill);
 			}
-			body_returned = 0;
+			bodyReturned = 0;
 		}
 
 		/* make sure we have the buffer storage */
-		body_expand(op.bytes);
-		lacing_expand(lacingVal);
+		bodyExpand(op.bytes);
+		lacingExpand(lacingVal);
 
 		/*
 		 * Copy in the submitted packet. Yes, the copy is a waste; this is the
@@ -158,34 +199,37 @@ public class StreamState {
 		 * actually be fairly easy to eliminate the extra copy in the future
 		 */
 
-		System.arraycopy(op.packet_base, op.packet, body_data, body_fill,
+		System.arraycopy(op.packetBase, op.packet, bodyData, bodyFill,
 				op.bytes);
-		body_fill += op.bytes;
+		bodyFill += op.bytes;
 
 		/* Store lacing vals for this packet */
 		int j;
 		for (j = 0; j < lacingVal - 1; j++) {
-			lacing_vals[lacing_fill + j] = 255;
-			granule_vals[lacing_fill + j] = granulepos;
+			lacingVals[lacingFill + j] = 255;
+			granuleVals[lacingFill + j] = granulepos;
 		}
-		lacing_vals[lacing_fill + j] = (op.bytes) % 255;
+		lacingVals[lacingFill + j] = (op.bytes) % 255;
 		granulepos = op.granulepos;
-		granule_vals[lacing_fill + j] = op.granulepos;
+		granuleVals[lacingFill + j] = op.granulepos;
 
 		/* flag the first segment as the beginning of the packet */
-		lacing_vals[lacing_fill] |= 0x100;
+		lacingVals[lacingFill] |= 0x100;
 
-		lacing_fill += lacingVal;
+		lacingFill += lacingVal;
 
 		/* for the sake of completeness */
 		packetno++;
 
-		if (op.e_o_s != 0) {
-			e_o_s = 1;
+		if (op.endOfStream != 0) {
+			endOfStream = 1;
 		}
-		return (0);
 	}
-
+	/**
+	 * Sets the last packet.
+	 * @param op the packet
+	 * @return state
+	 */
 	public int packetout(Packet op) {
 
 		/*
@@ -194,15 +238,15 @@ public class StreamState {
 		 * of sync markers)
 		 */
 
-		int ptr = lacing_returned;
+		int ptr = lacingReturned;
 
-		if (lacing_packet <= ptr) {
+		if (lacingPacket <= ptr) {
 			return (0);
 		}
 
-		if ((lacing_vals[ptr] & 0x400) != 0) {
+		if ((lacingVals[ptr] & 0x400) != 0) {
 			/* We lost sync here; let the app know */
-			lacing_returned++;
+			lacingReturned++;
 
 			/*
 			 * we need to tell the codec there's a gap; it might need to handle
@@ -213,45 +257,47 @@ public class StreamState {
 		}
 
 		/* Gather the whole packet. We'll have no holes or a partial packet */
-		int size = lacing_vals[ptr] & 0xff;
+		int size = lacingVals[ptr] & 0xff;
 		int bytes = 0;
 
-		op.packet_base = body_data;
-		op.packet = body_returned;
-		op.e_o_s = lacing_vals[ptr] & 0x200; /* last packet of the stream? */
-		op.b_o_s = lacing_vals[ptr] & 0x100; /* first packet of the stream? */
+		op.packetBase = bodyData;
+		op.packet = bodyReturned;
+		op.endOfStream = lacingVals[ptr] & 0x200; /* last packet of the stream? */
+		op.beginOfStream = lacingVals[ptr] & 0x100; /* first packet of the stream? */
 		bytes += size;
 
 		while (size == 255) {
-			int val = lacing_vals[++ptr];
+			int val = lacingVals[++ptr];
 			size = val & 0xff;
 			if ((val & 0x200) != 0) {
-				op.e_o_s = 0x200;
+				op.endOfStream = 0x200;
 			}
 			bytes += size;
 		}
 
 		op.packetno = packetno;
-		op.granulepos = granule_vals[ptr];
+		op.granulepos = granuleVals[ptr];
 		op.bytes = bytes;
 
-		body_returned += bytes;
+		bodyReturned += bytes;
 
-		lacing_returned = ptr + 1;
+		lacingReturned = ptr + 1;
 
 		packetno++;
 		return (1);
 	}
-
-	// add the incoming page to the stream state; we decompose the page
-	// into packet segments here as well.
-
+	/**
+	 * Adds the incoming page to the stream state; we decompose the page
+	 * into packet segments here as well.
+	 * @param og the Page
+	 * @return zero
+     */
 	public int pagein(Page og) {
-		byte[] headerBase = og.header_base;
+		byte[] headerBase = og.headerBase;
 		int header = og.header;
-		byte[] bodyBase = og.body_base;
+		byte[] bodyBase = og.bodyBase;
 		int body = og.body;
-		int bodysize = og.body_len;
+		int bodysize = og.bodyLen;
 		int segptr = 0;
 
 		int version = og.version();
@@ -264,29 +310,29 @@ public class StreamState {
 		int segments = headerBase[header + 26] & 0xff;
 
 		// clean up 'returned data'
-		int lr = lacing_returned;
-		int br = body_returned;
+		int lr = lacingReturned;
+		int br = bodyReturned;
 
 		// body data
 		if (br != 0) {
-			body_fill -= br;
-			if (body_fill != 0) {
-				System.arraycopy(body_data, br, body_data, 0, body_fill);
+			bodyFill -= br;
+			if (bodyFill != 0) {
+				System.arraycopy(bodyData, br, bodyData, 0, bodyFill);
 			}
-			body_returned = 0;
+			bodyReturned = 0;
 		}
 
 		if (lr != 0) {
 			// segment table
-			if ((lacing_fill - lr) != 0) {
-				System.arraycopy(lacing_vals, lr, lacing_vals, 0,
-						lacing_fill - lr);
-				System.arraycopy(granule_vals, lr, granule_vals, 0,
-						lacing_fill - lr);
+			if ((lacingFill - lr) != 0) {
+				System.arraycopy(lacingVals, lr, lacingVals, 0,
+						lacingFill - lr);
+				System.arraycopy(granuleVals, lr, granuleVals, 0,
+						lacingFill - lr);
 			}
-			lacing_fill -= lr;
-			lacing_packet -= lr;
-			lacing_returned = 0;
+			lacingFill -= lr;
+			lacingPacket -= lr;
+			lacingReturned = 0;
 		}
 
 		// check the serial number
@@ -297,23 +343,23 @@ public class StreamState {
 			return (-1);
 		}
 
-		lacing_expand(segments + 1);
+		lacingExpand(segments + 1);
 
 		// are we in sequence?
 		if (aPageno != pageno) {
 			int i;
 
 			// unroll previous partial packet (if any)
-			for (i = lacing_packet; i < lacing_fill; i++) {
-				body_fill -= lacing_vals[i] & 0xff;
+			for (i = lacingPacket; i < lacingFill; i++) {
+				bodyFill -= lacingVals[i] & 0xff;
 				// System.out.println("??");
 			}
-			lacing_fill = lacing_packet;
+			lacingFill = lacingPacket;
 
 			// make a note of dropped data in segment table
 			if (pageno != -1) {
-				lacing_vals[lacing_fill++] = 0x400;
-				lacing_packet++;
+				lacingVals[lacingFill++] = 0x400;
+				lacingPacket++;
 			}
 
 			// are we a 'continued packet' page? If so, we'll need to skip
@@ -333,43 +379,43 @@ public class StreamState {
 		}
 
 		if (bodysize != 0) {
-			body_expand(bodysize);
-			System.arraycopy(bodyBase, body, body_data, body_fill, bodysize);
-			body_fill += bodysize;
+			bodyExpand(bodysize);
+			System.arraycopy(bodyBase, body, bodyData, bodyFill, bodysize);
+			bodyFill += bodysize;
 		}
 
 		int saved = -1;
 		while (segptr < segments) {
 			int val = (headerBase[header + 27 + segptr] & 0xff);
-			lacing_vals[lacing_fill] = val;
-			granule_vals[lacing_fill] = -1;
+			lacingVals[lacingFill] = val;
+			granuleVals[lacingFill] = -1;
 
 			if (bos != 0) {
-				lacing_vals[lacing_fill] |= 0x100;
+				lacingVals[lacingFill] |= 0x100;
 				bos = 0;
 			}
 
 			if (val < 255) {
-				saved = lacing_fill;
+				saved = lacingFill;
 			}
 
-			lacing_fill++;
+			lacingFill++;
 			segptr++;
 
 			if (val < 255) {
-				lacing_packet = lacing_fill;
+				lacingPacket = lacingFill;
 			}
 		}
 
 		/* set the granulepos on the last pcmval of the last full packet */
 		if (saved != -1) {
-			granule_vals[saved] = granulepos;
+			granuleVals[saved] = granulepos;
 		}
 
 		if (eos != 0) {
-			e_o_s = 1;
-			if (lacing_fill > 0) {
-				lacing_vals[lacing_fill - 1] |= 0x200;
+			endOfStream = 1;
+			if (lacingFill > 0) {
+				lacingVals[lacingFill - 1] |= 0x200;
 			}
 		}
 
@@ -397,10 +443,10 @@ public class StreamState {
 
 		int i;
 		int vals = 0;
-		int maxvals = (lacing_fill > 255 ? 255 : lacing_fill);
+		int maxvals = (lacingFill > 255 ? 255 : lacingFill);
 		int bytes = 0;
 		int acc = 0;
-		long granulePos = granule_vals[0];
+		long granulePos = granuleVals[0];
 
 		if (maxvals == 0) {
 			return (0);
@@ -413,10 +459,10 @@ public class StreamState {
 		 * If this is the initial header case, the first page must only include
 		 * the initial header packet
 		 */
-		if (b_o_s == 0) { /* 'initial header page' case */
+		if (beginOfStream == 0) { /* 'initial header page' case */
 			granulePos = 0;
 			for (vals = 0; vals < maxvals; vals++) {
-				if ((lacing_vals[vals] & 0x0ff) < 255) {
+				if ((lacingVals[vals] & 0x0ff) < 255) {
 					vals++;
 					break;
 				}
@@ -426,8 +472,8 @@ public class StreamState {
 				if (acc > 4096) {
 					break;
 				}
-				acc += (lacing_vals[vals] & 0x0ff);
-				granulePos = granule_vals[vals];
+				acc += (lacingVals[vals] & 0x0ff);
+				granulePos = granuleVals[vals];
 			}
 		}
 
@@ -439,18 +485,18 @@ public class StreamState {
 
 		/* continued packet flag? */
 		header[5] = 0x00;
-		if ((lacing_vals[0] & 0x100) == 0) {
+		if ((lacingVals[0] & 0x100) == 0) {
 			header[5] |= 0x01;
 		}
 		/* first page flag? */
-		if (b_o_s == 0) {
+		if (beginOfStream == 0) {
 			header[5] |= 0x02;
 		}
 		/* last page flag? */
-		if (e_o_s != 0 && lacing_fill == vals) {
+		if (endOfStream != 0 && lacingFill == vals) {
 			header[5] |= 0x04;
 		}
-		b_o_s = 1;
+		beginOfStream = 1;
 
 		/* 64 bits of PCM position */
 		for (i = 6; i < 14; i++) {
@@ -492,25 +538,25 @@ public class StreamState {
 		/* segment table */
 		header[26] = (byte) vals;
 		for (i = 0; i < vals; i++) {
-			header[i + 27] = (byte) lacing_vals[i];
+			header[i + 27] = (byte) lacingVals[i];
 			bytes += (header[i + 27] & 0xff);
 		}
 
 		/* set pointers in the ogg_page struct */
-		og.header_base = header;
+		og.headerBase = header;
 		og.header = 0;
-		og.header_len = vals + 27; 
-		header_fill = vals + 27;
-		og.body_base = body_data;
-		og.body = body_returned;
-		og.body_len = bytes;
+		og.headerLen = vals + 27; 
+		headerFill = vals + 27;
+		og.bodyBase = bodyData;
+		og.body = bodyReturned;
+		og.bodyLen = bytes;
 
 		/* advance the lacing data and set the body_returned pointer */
 
-		lacing_fill -= vals;
-		System.arraycopy(lacing_vals, vals, lacing_vals, 0, lacing_fill * 4);
-		System.arraycopy(granule_vals, vals, granule_vals, 0, lacing_fill * 8);
-		body_returned += bytes;
+		lacingFill -= vals;
+		System.arraycopy(lacingVals, vals, lacingVals, 0, lacingFill * 4);
+		System.arraycopy(granuleVals, vals, granuleVals, 0, lacingFill * 8);
+		bodyReturned += bytes;
 
 		/* calculate the checksum */
 
@@ -528,34 +574,38 @@ public class StreamState {
 	 * @return int
 	 */
 	public int pageout(Page og) {
-		if ((e_o_s != 0 && lacing_fill != 0) || /* 'were done, now flush' case */
-		body_fill - body_returned > 4096 || /* 'page nominal size' case */
-		lacing_fill >= 255 || /* 'segment table full' case */
-		(lacing_fill != 0 && b_o_s == 0)) { /* 'initial header page' case */
+		if ((endOfStream != 0 && lacingFill != 0) || /* 'were done, now flush' case */
+		bodyFill - bodyReturned > 4096 || /* 'page nominal size' case */
+		lacingFill >= 255 || /* 'segment table full' case */
+		(lacingFill != 0 && beginOfStream == 0)) { /* 'initial header page' case */
 			return flush(og);
 		}
 		return 0;
 	}
-
+	/**
+	 * Returns the end of stream flag.
+	 * @return the end of stream flag
+	 */
 	public int eof() {
-		return e_o_s;
+		return endOfStream;
 	}
+	/**
+	 * Resets the internal buffers and pointers.
+	 */
+	public void reset() {
+		bodyFill = 0;
+		bodyReturned = 0;
 
-	public int reset() {
-		body_fill = 0;
-		body_returned = 0;
+		lacingFill = 0;
+		lacingPacket = 0;
+		lacingReturned = 0;
 
-		lacing_fill = 0;
-		lacing_packet = 0;
-		lacing_returned = 0;
+		headerFill = 0;
 
-		header_fill = 0;
-
-		e_o_s = 0;
-		b_o_s = 0;
+		endOfStream = 0;
+		beginOfStream = 0;
 		pageno = -1;
 		packetno = 0;
 		granulepos = 0;
-		return (0);
 	}
 }
