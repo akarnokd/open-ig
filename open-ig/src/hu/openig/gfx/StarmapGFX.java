@@ -23,61 +23,93 @@ import java.util.Map;
 /** Record to store the graphical elements of the starmap screen. */
 public class StarmapGFX {
 	/** The starmap contents object. */
-	public StarmapContents contents;
+	public final StarmapContents contents;
 	/** Map from surface type to drawing size to list of animation phase images. */
-	public Map<String, Map<Integer, List<BufferedImage>>> starmapPlanets;
+	public final Map<String, Map<Integer, List<BufferedImage>>> starmapPlanets;
 	/** The border button image. */
-	public BufferedImage btnBorder;
+	public final BufferedImage btnBorder;
 	/** The radars button image. */
-	public BufferedImage btnRadars;
-	public BufferedImage btnStars;
-	public BufferedImage btnFleets;
-	public BufferedImage btnDest;
-	public BufferedImage btnGrids;
-
-	public BufferedImage btnBorderLight;
-	public BufferedImage btnRadarsLight;
-	public BufferedImage btnStarsLight;
-	public BufferedImage btnFleetsLight;
-	public BufferedImage btnDestLight;
-	public BufferedImage btnGridsLight;
-	public BufferedImage btnNameOff;
-	public BufferedImage btnNameColony;
-	public BufferedImage btnNameFleets;
-	public BufferedImage btnNameBoth;
-	public BufferedImage btnColonise;
-	public BufferedImage btnColoniseDisabled;
+	public final BufferedImage btnRadars;
+	/** Stars button image. */
+	public final BufferedImage btnStars;
+	/** Fleets button image. */
+	public final BufferedImage btnFleets;
+	/** Destination button image. */
+	public final BufferedImage btnDest;
+	/** Grids button image. */
+	public final BufferedImage btnGrids;
+	/** Borders highlighted image. */
+	public final BufferedImage btnBorderLight;
+	/** Radars highlighted image. */
+	public final BufferedImage btnRadarsLight;
+	/** Stars highlight button image. */
+	public final BufferedImage btnStarsLight;
+	/** Fleets highlight button image. */
+	public final BufferedImage btnFleetsLight;
+	/** Destinations highlight button image. */
+	public final BufferedImage btnDestLight;
+	/** Grids highlight button image. */
+	public final BufferedImage btnGridsLight;
+	/** Name off button image. */
+	public final BufferedImage btnNameOff;
+	/** Name colony button image. */
+	public final BufferedImage btnNameColony;
+	/** Name fleets button image. */
+	public final BufferedImage btnNameFleets;
+	/** Name both button image. */
+	public final BufferedImage btnNameBoth;
+	/** Colonise button image. */
+	public final BufferedImage btnColonise;
+	/** Colonise disabled button image. */
+	public final BufferedImage btnColoniseDisabled;
 	/** Add satelite button. */
-	public BufferedImage btnAddSat;
-	public BufferedImage btnAddSpySat1;
-	public BufferedImage btnAddSpySat2;
-	public BufferedImage btnAddHubble2;
-	
-	public BufferedImage btnEquipmentDisabled;
-	public BufferedImage btnEquipmentDown;
-	public BufferedImage btnColonyDown;
+	public final BufferedImage btnAddSat;
+	/** Add spy sat 1 button image. */
+	public final BufferedImage btnAddSpySat1;
+	/** Add spy sat 2 button image. */
+	public final BufferedImage btnAddSpySat2;
+	/** Add hubble 2 button image. */
+	public final BufferedImage btnAddHubble2;
+	/** Equipment disabled button image. */
+	public final BufferedImage btnEquipmentDisabled;
+	/** Equipment down button image. */
+	public final BufferedImage btnEquipmentDown;
+	/** Colony button down image. */
+	public final BufferedImage btnColonyDown;
 	/** Zoom button hightlighted. */
-	public BufferedImage btnMagnifyLight;
-	public BufferedImage btnMagnifyDisabled;
-	
-	public BufferedImage btnNormalDisabled;
-	public BufferedImage btnScrollDisabled;
-	public BufferedImage btnZoomDisabled;
-	public BufferedImage btnNormalLight;
-	public BufferedImage btnScrollLight;
-	public BufferedImage btnZoomLight;
-	
-	public BufferedImage btnPrevDisabled;
-	public BufferedImage btnPrevDown;
-	public BufferedImage btnNextDisabled;
-	public BufferedImage btnNextDown;
-	
-	public BufferedImage btnInfoDown;
-	public BufferedImage btnBridgeDown;
-	/** Ship move light. */
-	public BufferedImage btnMoveLight;
-	public BufferedImage btnAttackLight;
-	public BufferedImage btnStopLight;
+	public final BufferedImage btnMagnifyLight;
+	/** Magnify disabled button image. */
+	public final BufferedImage btnMagnifyDisabled;
+	/** Normal disabled button image. */
+	public final BufferedImage btnNormalDisabled;
+	/** Scroll disabled button image. */
+	public final BufferedImage btnScrollDisabled;
+	/** Zoom disabled button image. */
+	public final BufferedImage btnZoomDisabled;
+	/** Normal light button image. */
+	public final BufferedImage btnNormalLight;
+	/** Scroll light button image. */
+	public final BufferedImage btnScrollLight;
+	/** Zoom light button image. */
+	public final BufferedImage btnZoomLight;
+	/** Prev disabled button image. */
+	public final BufferedImage btnPrevDisabled;
+	/** Prev down button image. */
+	public final BufferedImage btnPrevDown;
+	/** Next disabled button image. */
+	public final BufferedImage btnNextDisabled;
+	/** Next down button image. */
+	public final BufferedImage btnNextDown;
+	/** Info down button image. */
+	public final BufferedImage btnInfoDown;
+	/** Bridge down button image. */
+	public final BufferedImage btnBridgeDown;
+	/** Ship move button light. */
+	public final BufferedImage btnMoveLight;
+	/** Attack button highlight image. */
+	public final BufferedImage btnAttackLight;
+	/** Stop button highlicht image. */
+	public final BufferedImage btnStopLight;
 	/**
 	 * Constructor. Loads all images belonging to the starmap.
 	 * @param resMap the resource mapper object.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -10,6 +10,7 @@ package hu.openig.gfx;
 
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PCXImage;
+import hu.openig.utils.ResourceMapper;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -21,68 +22,111 @@ import java.awt.image.BufferedImage;
  */
 public class ResearchGFX {
 	/** The research base screen. */
-	public BufferedImage researchScreen;
-	public BufferedImage btnEmpty;
-	public BufferedImage btnStart;
-	public BufferedImage btnStartDown;
-	public BufferedImage btnEquipmentDown;
-	public BufferedImage btnProductDown;
-	public BufferedImage btnBridgeDown;
+	public final BufferedImage researchScreen;
+	/** Empty button image. */
+	public final BufferedImage btnEmpty;
+	/** Start button image. */
+	public final BufferedImage btnStart;
+	/** Start down button image. */
+	public final BufferedImage btnStartDown;
+	/** Equipment down button image. */
+	public final BufferedImage btnEquipmentDown;
+	/** Product down button image. */
+	public final BufferedImage btnProductDown;
+	/** Bridge down button image. */
+	public final BufferedImage btnBridgeDown;
 	/** The current selection indicator arrow. */ 
-	public BufferedImage arrow;
-	public BufferedImage btnMoneyDown;
-	public BufferedImage btnViewDown;
+	public final BufferedImage arrow;
+	/** Money down button image. */
+	public final BufferedImage btnMoneyDown;
+	/** View down button image. */
+	public final BufferedImage btnViewDown;
 	/** The smaller empty button region. */
-	public BufferedImage btnEmptySmall;
-	public BufferedImage btnStopDown;
-	public BufferedImage tabSpaceships;
-	public BufferedImage tabEquipment;
-	public BufferedImage tabWeapons;
-	public BufferedImage tabBuildings;
-	/** Spaceship options. */
-	public BufferedImage optSpaceships;
-	public BufferedImage optEquipment;
-	public BufferedImage optWeapons;
-	public BufferedImage optBuildings;
+	public final BufferedImage btnEmptySmall;
+	/** Stop down button image. */
+	public final BufferedImage btnStopDown;
+	/** Spaceships tab image. */
+	public final BufferedImage tabSpaceships;
+	/** Equipment tab image. */
+	public final BufferedImage tabEquipment;
+	/** Weapons tab image. */
+	public final BufferedImage tabWeapons;
+	/** Buildings tab image. */
+	public final BufferedImage tabBuildings;
+	/** Spaceship options image. */
+	public final BufferedImage optSpaceships;
+	/** Equipment options image. */
+	public final BufferedImage optEquipment;
+	/** Weapons options image. */
+	public final BufferedImage optWeapons;
+	/** Buildings options image. */
+	public final BufferedImage optBuildings;
 	/** Spaceships - Fighters suboptions. */
-	public BufferedImage optFighters;
-	public BufferedImage optDestroyers;
-	public BufferedImage optFlagships;
-	public BufferedImage optSatellites;
-	public BufferedImage optSpaceStations;
+	public final BufferedImage optFighters;
+	/** Destroyers options image. */
+	public final BufferedImage optDestroyers;
+	/** Flagships options image. */
+	public final BufferedImage optFlagships;
+	/** Satellites options image. */
+	public final BufferedImage optSatellites;
+	/** Space station options image. */
+	public final BufferedImage optSpaceStations;
 	/** Equipment - Hyperdrives. */
-	public BufferedImage optHyperdrives;
-	public BufferedImage optModules;
-	public BufferedImage optRadars;
-	public BufferedImage optShields;
+	public final BufferedImage optHyperdrives;
+	/** Modules options image. */
+	public final BufferedImage optModules;
+	/** Radars options image. */
+	public final BufferedImage optRadars;
+	/** Shields options image. */
+	public final BufferedImage optShields;
 	/** Weapons - Laser weapons. */
-	public BufferedImage optLasers;
-	public BufferedImage optGuns;
-	public BufferedImage optBombsMissiles;
-	public BufferedImage optTanks;
-	public BufferedImage optVehicles;
+	public final BufferedImage optLasers;
+	/** Guns option image. */
+	public final BufferedImage optGuns;
+	/** Bombs missiles  options image. */
+	public final BufferedImage optBombsMissiles;
+	/** Tanks options image. */
+	public final BufferedImage optTanks;
+	/** Vehicles options image. */
+	public final BufferedImage optVehicles;
 	/** Buildings - Buildings. */
-	public BufferedImage optColonyBuildings;
-	public BufferedImage optMilitaryBuildings;
-	public BufferedImage optColonyRadars;
-	public BufferedImage optColonyGuns;
+	public final BufferedImage optColonyBuildings;
+	/** Military buildings image. */
+	public final BufferedImage optMilitaryBuildings;
+	/** Colony radars buildings image. */
+	public final BufferedImage optColonyRadars;
+	/** Colony guns image. */
+	public final BufferedImage optColonyGuns;
 	// research screen main regions relative
+	/** Animation rectangle. */
 	public Rectangle rectAnimation;
+	/** Research rectangles. */
 	public Rectangle[] rectResearch;
+	/** Project name rectangle. */
 	public Rectangle rectProjectName;
+	/** Project status rectangle. */
 	public Rectangle rectProjectStatus;
+	/** Completed rectangle. */
 	public Rectangle rectCompleted;
+	/** Time remaining rectangle. */
 	public Rectangle rectTimeRemaining;
 	/** Number of civil enginering rectangle. */
 	public Rectangle rectCiv;
+	/** Number of mechanical research rectangle. */
 	public Rectangle rectMech;
+	/** Number of computer research rectangle. */
 	public Rectangle rectComp;
+	/** Number of AU research rectangle. */
 	public Rectangle rectAI;
+	/** Number of Military research rectangle. */
 	public Rectangle rectMil;
 	/** Start button location. */
 	public Rectangle rectStart;
+	/** Equipment rectangle. */
 	public Rectangle rectEquipment;
+	/** Production rectangle. */
 	public Rectangle rectProduction;
+	/** Bridge rectangle. */
 	public Rectangle rectBridge;
 	/** The current project name. */
 	public Rectangle rectProject;
@@ -98,9 +142,13 @@ public class ResearchGFX {
 	public Rectangle rectPercent;
 	/** Current number of civil enginerring rectangle. */
 	public Rectangle rectCurrCiv;
+	/** Current number of mechanical research rectangle. */
 	public Rectangle rectCurrMech;
+	/** Current number of computer research rectangle. */
 	public Rectangle rectCurrComp;
+	/** Current number of AI research rectangle. */
 	public Rectangle rectCurrAI;
+	/** Current number of military research rectangle. */
 	public Rectangle rectCurrMil;
 	/** View current research in the tech tree. */
 	public Rectangle rectView;
@@ -124,12 +172,12 @@ public class ResearchGFX {
 	public BufferedImage btnBridgeFix;
 	/**
 	 * Constructor. Loads the images.
-	 * @param root the root directory of IG
+	 * @param resMap the resource mapper
 	 */
-	public ResearchGFX(String root) {
-		researchScreen = PCXImage.from(root + "/SCREEN/FEJLESZT.PCX", -1);
+	public ResearchGFX(ResourceMapper resMap) {
+		researchScreen = PCXImage.from(resMap.get("SCREEN/FEJLESZT.PCX"), -1);
 		
-		BufferedImage res = PCXImage.from(root + "/SCREEN/FEJL_X.PCX", -1);
+		BufferedImage res = PCXImage.from(resMap.get("SCREEN/FEJL_X.PCX"), -1);
 		btnEmpty = ImageUtils.subimage(res, 336, 0, 102, 39);
 		btnStart = ImageUtils.subimage(res, 336, 39, 102, 39);
 		btnStartDown = ImageUtils.subimage(res, 336, 78, 102, 39);
@@ -162,7 +210,7 @@ public class ResearchGFX {
 		optWeapons = ImageUtils.subimage(res, 0, 156, 168, 78);
 		optBuildings = ImageUtils.subimage(res, 0, 234, 168, 78);
 		
-		optSpaceships = ImageUtils.subimage(res, 168, 0, 168, 14);
+		optFighters = ImageUtils.subimage(res, 168, 0, 168, 14);
 		optDestroyers = ImageUtils.subimage(res, 168, 16, 168, 14);
 		optFlagships = ImageUtils.subimage(res, 168, 32, 168, 14);
 		optSatellites = ImageUtils.subimage(res, 168, 48, 168, 14);

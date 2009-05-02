@@ -1,5 +1,5 @@
 /*
- * Copyright 2008, David Karnok 
+ * Copyright 2008-2009, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -39,26 +39,29 @@ import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.Timer;
-
+/**
+ * Component that renders the starmap.
+ * @author karnokd
+ */
 public class StarmapRenderer extends JComponent implements MouseMotionListener, MouseListener, MouseWheelListener {
 	/** The serial version UID. */
 	private static final long serialVersionUID = -4832071241159647010L;
 	/** The graphics objects. */
 	private final StarmapGFX gfx;
 	/** The area of the horizontal scrollbar. */
-	private Rectangle hscrollRect = new Rectangle();
+	private final Rectangle hscrollRect = new Rectangle();
 	/** The horizontal scrollbar knobs location. */
-	private Rectangle hknobRect = new Rectangle();
+	private final Rectangle hknobRect = new Rectangle();
 	/** The area of the vertical scrollbar. */
-	private Rectangle vscrollRect = new Rectangle();
+	private final Rectangle vscrollRect = new Rectangle();
 	/** The vertical scrollbar knob location. */
-	private Rectangle vknobRect = new Rectangle();
+	private final Rectangle vknobRect = new Rectangle();
 	/** The position of the ship control rectangle. */
-	private Rectangle shipControlRect = new Rectangle();
+	private final Rectangle shipControlRect = new Rectangle();
 	/** The position of the minimap rectangle. */
-	private Rectangle minimapRect = new Rectangle();
+	private final Rectangle minimapRect = new Rectangle();
 	/** The position of the main map rectangle. */
-	private Rectangle mapRect = new Rectangle();
+	private final Rectangle mapRect = new Rectangle();
 	/** The width when the last time the component was rendered. */
 	private int lastWidth = -1;
 	/** The height when the last time the component was rendered. */
@@ -90,26 +93,42 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** The vertical scroll factor. */
 	private float vscrollFactor;
 	/** The common graphics objects. */
-	private CommonGFX cgfx;
-	private Rectangle bottomLeftRect = new Rectangle();
-	private Rectangle bottomFillerRect = new Rectangle();
-	private Rectangle bottomRightRect = new Rectangle();
-	private Rectangle rightTopRect = new Rectangle();
-	private Rectangle rightFillerRect = new Rectangle();
-	private Rectangle rightBottomRect = new Rectangle();
-	private InfoBarRegions infoBarRect = new InfoBarRegions();
+	private final CommonGFX cgfx;
+	/** Bottom left rectangle. */
+	private final Rectangle bottomLeftRect = new Rectangle();
+	/** Bottom filler rectangle. */
+	private final Rectangle bottomFillerRect = new Rectangle();
+	/** Bottom right rectangle. */
+	private final Rectangle bottomRightRect = new Rectangle();
+	/** Right top rectangle. */
+	private final Rectangle rightTopRect = new Rectangle();
+	/** Right filler rectangle. */
+	private final Rectangle rightFillerRect = new Rectangle();
+	/** Right bottom rectangle. */
+	private final Rectangle rightBottomRect = new Rectangle();
+	/** Info bar ractangle. */
+	private final InfoBarRegions infoBarRect = new InfoBarRegions();
+	/** Colony previous button. */
 	private Btn btnColonyPrev;
+	/** COlony next button. */
 	private Btn btnColonyNext;
 	/** The colonies text area. */
-	private Rectangle colonies = new Rectangle();
+	private final Rectangle colonies = new Rectangle();
+	/** Colony button. */
 	private Btn btnColony;
+	/** Equipment button. */
 	private Btn btnEquipment;
+	/** Equipment prev button. */
 	private Btn btnEquipmentPrev;
+	/** Equipment next button. */
 	private Btn btnEquipmentNext;
 	/** The equipment text area. */
 	private Rectangle equipments = new Rectangle();
+	/** Info button. */
 	private Btn btnInfo;
+	/** Bridge button. */
 	private Btn btnBridge;
+	/** Magnify button. */
 	private Btn btnMagnify;
 	/** The various buttons. */
 	private final List<Btn> buttons = new ArrayList<Btn>();
@@ -127,11 +146,17 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private float zoomFactor = magnifyFactors[magnifyIndex] / 30f;
 	/** Show ship controls. */
 	private boolean showShipControls;
+	/** Colonize button. */
 	private Btn btnColonize;
+	/** Radars button. */
 	private Btn btnRadars;
+	/** Fleets button. */
 	private Btn btnFleets;
+	/** Grids button. */
 	private Btn btnGrids;
+	/** Stars button. */
 	private Btn btnStars;
+	/** Name button. */
 	private Btn btnName;
 	/** Ship move button. */
 	private Btn btnMove;
@@ -145,16 +170,23 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private final List<Btn> toggleButtons = new ArrayList<Btn>();
 	/** The mouse wheel scrolling amount. */
 	private static final int SCROLL_AMOUNT = 20;
+	/** Satellite button. */
 	private Btn btnSatellite;
+	/** Spy satellite 1 button. */
 	private Btn btnSpySat1;
+	/** Spy satellite 2 button. */
 	private Btn btnSpySat2;
+	/** Hubble 2 button. */
 	private Btn btnHubble2;
+	/** Show satellites. */
 	public boolean showSatellites = true;
 	/** The user interface sounds. */
-	private UISounds uiSound;
+	private final UISounds uiSound;
 	/** The text renderer. */
-	private TextGFX text;
+	private final TextGFX text;
+	/** Action for colony clicked. */
 	private BtnAction onColonyClicked;
+	/** Action for information clicked. */
 	private BtnAction onInformationClicked;
 	/** Timer used to animate fade in-out. */
 	private Timer fadeTimer;
@@ -174,7 +206,12 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private Timer animations;
 	/** The animation interval. */
 	private static final int ANIMATION_INTERVAL = 100;
-	/** Constructor. */
+	/**
+	 * Constructor. Sets the helper object fields.
+	 * @param gfx the starmap graphics object
+	 * @param cgfx the common graphics object
+	 * @param uiSound the user interface
+	 */
 	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		super();
 		this.gfx = gfx;
@@ -188,11 +225,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 		initActions();
-		fadeTimer = new Timer(FADE_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doFade(); }});
-		animations = new Timer(ANIMATION_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doAnimate(); }});
+		fadeTimer = new Timer(FADE_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doFade(); } });
+		animations = new Timer(ANIMATION_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doAnimate(); } });
 		
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void paint(Graphics g) {
 		long t = System.nanoTime();
@@ -466,6 +506,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		case 3:
 			img = gfx.btnNameBoth;
 			break;
+		default:
 		}
 		g2.drawImage(img, btnName.rect.x, btnName.rect.y, null);
 		t = System.nanoTime() - t;
@@ -697,7 +738,10 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		vknobRect.y = (int)(vscrollRect.y  + vscrollValue);
 		vknobRect.height = vextsize;
 	}
-	/** Zoom in or out on a particular region. */
+	/** 
+	 * Zoom in or out on a particular region. 
+	 * @param newZoomFactor the new zoom factor to set
+	 */
 	public void zoom(float newZoomFactor) {
 		zoomAndScroll(newZoomFactor, true);
 	}
@@ -749,7 +793,11 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			scroll(hscrollValue, vscrollValue);
 		}
 	}
-	/** Scroll to a particular scrollbar position. */
+	/** 
+	 * Scroll to a particular scrollbar position.
+	 * @param xValue scroll to X value
+	 * @param yValue scroll to Y value 
+	 */
 	public void scroll(float xValue, float yValue) {
 		hscrollValue = Math.max(Math.min(xValue, hscrollMax), 0f);
 		vscrollValue = Math.max(Math.min(yValue, vscrollMax), 0f);
@@ -759,13 +807,17 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		updateScrollKnobs();
 		repaint();
 	}
-	/** Scroll the map by relative coordinates given in pixels. */
+	/** 
+	 * Scroll the map by relative coordinates given in pixels. 
+	 * @param dx delta x
+	 * @param dy delta y
+	 */
 	public void scrollByPixelRel(int dx, int dy) {
 		scroll((hscrollValue + dx / hscrollFactor), 
 				(vscrollValue + dy / vscrollFactor));
 	}
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -783,10 +835,16 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			scroll(hscrollValue - dx, vscrollValue);
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Point pt = e.getPoint();
@@ -804,14 +862,23 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			}
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		Point pt = e.getPoint();
@@ -859,8 +926,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			repaint(btnMagnify.rect);
 		}
 	}
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
