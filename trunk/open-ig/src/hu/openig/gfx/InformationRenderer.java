@@ -31,7 +31,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,7 @@ import javax.swing.JComponent;
  */
 public class InformationRenderer extends JComponent implements MouseListener, MouseMotionListener, 
 MouseWheelListener, ActionListener {
-	/** */
+	/** Serial version. */
 	private static final long serialVersionUID = 1638048442106816873L;
 	/** The planet graphics. */
 	private final InformationGFX gfx;
@@ -76,44 +75,65 @@ MouseWheelListener, ActionListener {
 	private Rectangle pictureArea = new Rectangle();
 	/** The currently showing screen. */
 	private InfoScreen currentScreen;
+	/** Colony info button. */
 	private Btn btnColonyInfo;
+	/** Military info button. */
 	private Btn btnMilitaryInfo;
+	/** Financial info button. */
 	private Btn btnFinancialInfo;
+	/** Buildings button. */
 	private Btn btnBuildings;
+	/** Planets button. */
 	private Btn btnPlanets;
+	/** Fleets button. */
 	private Btn btnFleets;
+	/** Inventions button. */
 	private Btn btnInventions;
+	/** Aliens button. */
 	private Btn btnAliens;
 	/** The first large button beneath the picture area. Its function depends on the current screen. */ 
 	private Btn btnLarge1;
+	/** The first large button rectangle. */
 	private Rectangle btnLarge1Rect = new Rectangle();
+	/** Image used for the first large button. */
 	private BufferedImage btnLarge1Normal;
+	/** Image used for the first large button down state. */
 	private BufferedImage btnLarge1Down;
 	/** The second large button beneath the picture area. Its function depends on the current screen. */ 
 	private Btn btnLarge2;
+	/** The second large button rectangle. */
 	private Rectangle btnLarge2Rect = new Rectangle();
+	/** The second large button normal image. */
 	private BufferedImage btnLarge2Normal;
+	/** The second large button down image. */
 	private BufferedImage btnLarge2Down;
-	
+	/** Colony button. */
 	private Btn btnColony;
+	/** Starmap button. */
 	private Btn btnStarmap;
+	/** Equipment button. */
 	private Btn btnEquipment;
+	/** Research button. */
 	private Btn btnResearch;
+	/** Production button. */
 	private Btn btnProduction;
+	/** Diplomacy button. */
 	private Btn btnDiplomacy;
 	/** The screen rectangle. */
 	private Rectangle screen = new Rectangle();
-	
+	/** Show minimap? */
 	private boolean showMinimap = true;
+	/** Action when the user clicks on the colony button. */
 	private BtnAction onColonyClicked;
+	/** Action when the user clicks on the starmap button. */
 	private BtnAction onStarmapClicked;
 	/** Regions of the info bars. */
 	public InfoBarRegions infoBarRects = new InfoBarRegions();
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
-	 * @param gfx
-	 * @param cgfx
-	 * @throws IOException
+	 * @param gfx the information graphics obj ects
+	 * @param cgfx the common graphics objects
+	 * @param uiSound the user interface sounds
 	 */
 	public InformationRenderer(InformationGFX gfx, CommonGFX cgfx, UISounds uiSound) {
 		this.gfx = gfx;
@@ -241,11 +261,12 @@ MouseWheelListener, ActionListener {
 	}
 	/**
 	 * Renders a button based on its state.
-	 * @param g2
-	 * @param button
-	 * @param screen
-	 * @param light
-	 * @param down
+	 * @param g2 the graphics object
+	 * @param button the button to render
+	 * @param screen the currently shown information screen
+	 * @param normal the normal image
+	 * @param light the highlighted image
+	 * @param down the down image
 	 */
 	private void renderButton(Graphics2D g2, Btn button, InfoScreen screen, 
 			BufferedImage normal, BufferedImage light, BufferedImage down) {
@@ -262,66 +283,76 @@ MouseWheelListener, ActionListener {
 			g2.drawImage(gfx.btnEmpty, button.rect.x, button.rect.y, null);
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Dimension getPreferredSize() {
 		return controlSize.getSize();
 	}
-//	@Override
-//	public Dimension getMinimumSize() {
-//		return controlSize.getSize();
-//	}
-//	@Override
-//	public Dimension getMaximumSize() {
-//		return controlSize.getSize();
-//	}
-//	@Override
-//	public Dimension getSize() {
-//		return controlSize.getSize();
-//	}
 	/** Initialize buttons. */
 	private void initButtons() {
-		pressButtons.add(btnColonyInfo = new Btn(new BtnAction() { public void invoke() { doColonyInfoClick(); } }));
-		pressButtons.add(btnMilitaryInfo = new Btn(new BtnAction() { public void invoke() { doMilitaryInfoClick(); } }));
-		pressButtons.add(btnFinancialInfo = new Btn(new BtnAction() { public void invoke() { doFinancialInfoClick(); } }));
-		pressButtons.add(btnBuildings = new Btn(new BtnAction() { public void invoke() { doBuildingsClick(); } }));
-		pressButtons.add(btnPlanets = new Btn(new BtnAction() { public void invoke() { doPlanetsClick(); } }));
-		pressButtons.add(btnFleets = new Btn(new BtnAction() { public void invoke() { doFleetsClick(); } }));
-		pressButtons.add(btnInventions = new Btn(new BtnAction() { public void invoke() { doInventionsClick(); } }));
-		pressButtons.add(btnAliens = new Btn(new BtnAction() { public void invoke() { doAliensClick(); } }));
-		
-		buttons.add(btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); } }));
-		buttons.add(btnStarmap = new Btn(new BtnAction() { public void invoke() { doStarmapClick(); } }));
-		buttons.add(btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } }));
-		buttons.add(btnProduction = new Btn(new BtnAction() { public void invoke() { doProductionClick(); } }));
-		buttons.add(btnResearch = new Btn(new BtnAction() { public void invoke() { doResearchClick(); } }));
-		buttons.add(btnDiplomacy = new Btn(new BtnAction() { public void invoke() { doDiplomacyClick(); } }));
+		btnColonyInfo = new Btn(new BtnAction() { public void invoke() { doColonyInfoClick(); } });
+		pressButtons.add(btnColonyInfo);
+		btnMilitaryInfo = new Btn(new BtnAction() { public void invoke() { doMilitaryInfoClick(); } });
+		pressButtons.add(btnMilitaryInfo);
+		btnFinancialInfo = new Btn(new BtnAction() { public void invoke() { doFinancialInfoClick(); } });
+		pressButtons.add(btnFinancialInfo);
+		btnBuildings = new Btn(new BtnAction() { public void invoke() { doBuildingsClick(); } });
+		pressButtons.add(btnBuildings);
+		btnPlanets = new Btn(new BtnAction() { public void invoke() { doPlanetsClick(); } });
+		pressButtons.add(btnPlanets);
+		btnFleets = new Btn(new BtnAction() { public void invoke() { doFleetsClick(); } });
+		pressButtons.add(btnFleets);
+		btnInventions = new Btn(new BtnAction() { public void invoke() { doInventionsClick(); } });
+		pressButtons.add(btnInventions);
+		btnAliens = new Btn(new BtnAction() { public void invoke() { doAliensClick(); } });
+		pressButtons.add(btnAliens);
+		btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); } });
+		buttons.add(btnColony);
+		btnStarmap = new Btn(new BtnAction() { public void invoke() { doStarmapClick(); } });
+		buttons.add(btnStarmap);
+		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
+		buttons.add(btnEquipment);
+		btnProduction = new Btn(new BtnAction() { public void invoke() { doProductionClick(); } });
+		buttons.add(btnProduction);
+		btnResearch = new Btn(new BtnAction() { public void invoke() { doResearchClick(); } });
+		buttons.add(btnResearch);
+		btnDiplomacy = new Btn(new BtnAction() { public void invoke() { doDiplomacyClick(); } });
+		buttons.add(btnDiplomacy);
 		
 	}
-	
+	/** Diplomacy click action. */
 	protected void doDiplomacyClick() {
 		uiSound.playSound("Diplomacy");
 	}
+	/** Research click action. */
 	protected void doResearchClick() {
 		uiSound.playSound("Research");
 	}
+	/** Production click action. */
 	protected void doProductionClick() {
 		uiSound.playSound("Production");
 	}
+	/** Equipment click action. */
 	protected void doEquipmentClick() {
 		uiSound.playSound("Equipment");
 	}
+	/** Starmap click action. */
 	protected void doStarmapClick() {
 		uiSound.playSound("Starmap");
 		if (onStarmapClicked != null) {
 			onStarmapClicked.invoke();
 		}
 	}
+	/** Colony click action. */
 	protected void doColonyClick() {
 		uiSound.playSound("Colony");
 		if (onColonyClicked != null) {
 			onColonyClicked.invoke();
 		}
 	}
+	/** Aliens click action. */
 	protected void doAliensClick() {
 		if (currentScreen != InfoScreen.ALIENS) {
 			uiSound.playSound("AlienRaces");
@@ -329,6 +360,7 @@ MouseWheelListener, ActionListener {
 			repaint();
 		}
 	}
+	/** Inventions click action. */
 	protected void doInventionsClick() {
 		if (currentScreen != InfoScreen.INVENTIONS) {
 			uiSound.playSound("Inventions");
@@ -336,6 +368,7 @@ MouseWheelListener, ActionListener {
 			repaint();
 		}
 	}
+	/** Fleets click action. */
 	protected void doFleetsClick() {
 		if (currentScreen != InfoScreen.FLEETS) {
 			uiSound.playSound("Fleets");
@@ -343,6 +376,7 @@ MouseWheelListener, ActionListener {
 			repaint();
 		}
 	}
+	/** Planets click action. */
 	protected void doPlanetsClick() {
 		if (currentScreen != InfoScreen.PLANETS) {
 			uiSound.playSound("Planets");
@@ -350,6 +384,7 @@ MouseWheelListener, ActionListener {
 			repaint();
 		}
 	}
+	/** Buildings click action. */
 	protected void doBuildingsClick() {
 		if (currentScreen != InfoScreen.BUILDINGS) {
 			uiSound.playSound("Buildings");
@@ -357,6 +392,7 @@ MouseWheelListener, ActionListener {
 			repaint();
 		}
 	}
+	/** Financial info click action. */
 	protected void doFinancialInfoClick() {
 		if (currentScreen != InfoScreen.FINANCIAL_INFORMATION) {
 			uiSound.playSound("FinancialInformation");
@@ -364,6 +400,7 @@ MouseWheelListener, ActionListener {
 			repaint();
 		}
 	}
+	/** Military info click action. */
 	protected void doMilitaryInfoClick() {
 		if (currentScreen != InfoScreen.MILITARY_INFORMATION) {
 			uiSound.playSound("MilitaryInformation");
@@ -371,6 +408,7 @@ MouseWheelListener, ActionListener {
 			repaint();
 		}
 	}
+	/** Colony info click action. */
 	protected void doColonyInfoClick() {
 		if (currentScreen != InfoScreen.COLONY_INFORMATION) {
 			uiSound.playSound("ColonyInformation");
@@ -416,12 +454,21 @@ MouseWheelListener, ActionListener {
 			btnLarge2.rect.setBounds(btnLarge2Rect);
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
@@ -451,7 +498,7 @@ MouseWheelListener, ActionListener {
 		}
 	}
 	/**
-	 * Assign a large button to the first or second place and repaint the screen
+	 * Assign a large button to the first or second place and repaint the screen.
 	 * @param index the index to assign, either 1 or 2
 	 * @param button the button to assign, or null to remove assignment
 	 * @param normal the normal image
@@ -488,6 +535,9 @@ MouseWheelListener, ActionListener {
 			}
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		boolean needRepaint = false;
@@ -503,9 +553,15 @@ MouseWheelListener, ActionListener {
 			repaint();
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
@@ -519,14 +575,23 @@ MouseWheelListener, ActionListener {
 			}
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	}
@@ -554,6 +619,10 @@ MouseWheelListener, ActionListener {
 	public BtnAction getOnStarmapClicked() {
 		return onStarmapClicked;
 	}
+	/**
+	 * Set the two large buttons for various information screen.
+	 * @param screen the screen to use
+	 */
 	public void setScreenButtonsFor(InfoScreen screen) {
 		if (screen != null) {
 			switch (screen) {
@@ -589,6 +658,7 @@ MouseWheelListener, ActionListener {
 				selectButtonFor(1, btnDiplomacy, gfx.btnDiplomacyLarge, gfx.btnDiplomacyLargeDown);
 				selectButtonFor(2, null, null, null);
 				break;
+			default:
 			}
 		} else {
 			selectButtonFor(1, null, null, null);

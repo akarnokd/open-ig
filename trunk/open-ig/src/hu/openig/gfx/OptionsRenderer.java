@@ -49,22 +49,35 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	private int picture;
 	/** Indicator that the picture changed recently. */
 	private boolean pictureChanged;
+	/** The load button. */
 	private Btn btnLoad;
+	/** The save button. */
 	private Btn btnSave;
+	/** The exit button. */
 	private Btn btnExit;
 	/** The various buttons. */
 	private final List<Btn> buttons = new ArrayList<Btn>();
 	/** Buttons which change state on click.*/
 	private final List<Btn> toggleButtons = new ArrayList<Btn>();
+	/** Reequip planets checkbox. */
 	private Btn btnReequipPlanets;
+	/** Building names checkbox. */
 	private Btn btnBuildingNames;
+	/** Building damage checkbox. */
 	private Btn btnBuildingDamage;
+	/** Building damage battle checkbox. */
 	private Btn btnBuildingDamageBattle;
+	/** Auto scroll checkbox. */
 	private Btn btnAutoScroll;
+	/** Reequip rockets checkbox. */
 	private Btn btnReequipRockets;
+	/** Repair buildings checkbox. */
 	private Btn btnRepairBuildings;
+	/** Tax info checkbox. */
 	private Btn btnTaxInfo;
+	/** Computer voice checkox. */
 	private Btn btnComputerVoice;
+	/** Animations checkbox. */
 	private Btn btnAnimations;
 	/** Adjust music action. */
 	private BtnAction onAdjustMusic;
@@ -78,7 +91,9 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	private Opts currentOpts;
 	/** The user interface sound. */
 	private UISounds uis;
+	/** Audio adjusting. */
 	private boolean audioAdjusting;
+	/** Music adjusting. */
 	private boolean musicAdjusting;
 	/**
 	 * Constructor. Initializes the graphics fields.
@@ -96,21 +111,36 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
-		buttons.add(btnLoad = new Btn());
-		buttons.add(btnSave = new Btn());
-		buttons.add(btnExit = new Btn());
-		
-		toggleButtons.add(btnReequipPlanets = new Btn());
-		toggleButtons.add(btnBuildingNames = new Btn());
-		toggleButtons.add(btnBuildingDamage = new Btn());
-		toggleButtons.add(btnBuildingDamageBattle = new Btn());
-		toggleButtons.add(btnAutoScroll = new Btn());
-		toggleButtons.add(btnReequipRockets = new Btn());
-		toggleButtons.add(btnRepairBuildings = new Btn());
-		toggleButtons.add(btnTaxInfo = new Btn());
-		toggleButtons.add(btnComputerVoice = new Btn());
-		toggleButtons.add(btnAnimations = new Btn());
+		btnLoad = new Btn();
+		buttons.add(btnLoad);
+		btnSave = new Btn();
+		buttons.add(btnSave);
+		btnExit = new Btn();
+		buttons.add(btnExit);
+		btnReequipPlanets = new Btn();
+		toggleButtons.add(btnReequipPlanets);
+		btnBuildingNames = new Btn();
+		toggleButtons.add(btnBuildingNames);
+		btnBuildingDamage = new Btn();
+		toggleButtons.add(btnBuildingDamage);
+		btnBuildingDamageBattle = new Btn();
+		toggleButtons.add(btnBuildingDamageBattle);
+		btnAutoScroll = new Btn();
+		toggleButtons.add(btnAutoScroll);
+		btnReequipRockets = new Btn();
+		toggleButtons.add(btnReequipRockets);
+		btnRepairBuildings = new Btn();
+		toggleButtons.add(btnRepairBuildings);
+		btnTaxInfo = new Btn();
+		toggleButtons.add(btnTaxInfo);
+		btnComputerVoice = new Btn();
+		toggleButtons.add(btnComputerVoice);
+		btnAnimations = new Btn();
+		toggleButtons.add(btnAnimations);
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
@@ -174,10 +204,10 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 		
 	}
 	/**
-	 * Draw checkmark if necessary
-	 * @param g2
-	 * @param o
-	 * @param b
+	 * Draw checkmark if necessary.
+	 * @param g2 the graphics object
+	 * @param o the options
+	 * @param b button
 	 */
 	private void drawCheckMark(Graphics2D g2, Opts o, Btn b) {
 		if (b.down) {
@@ -197,6 +227,7 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 		case 1:
 			gfx.setLocations2(currentOpts, (w - currentOpts.options.getWidth()) / 2, (h - currentOpts.options.getHeight()) / 2);
 			break;
+		default:
 		}
 		btnLoad.rect.setBounds(currentOpts.btnLoad);
 		btnSave.rect.setBounds(currentOpts.btnSave);
@@ -232,6 +263,9 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	public int getPicture() {
 		return picture;
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		Point pt = e.getPoint();
@@ -250,9 +284,15 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 			repaint(currentOpts.volumeRect);
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Point pt = e.getPoint();
@@ -265,14 +305,23 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 			}
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
 		
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		Point pt = e.getPoint();
@@ -309,6 +358,9 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 			}
 		}
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		//Point pt = e.getPoint();
@@ -338,26 +390,34 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	}
 	/**
 	 * Set the music adjustment action.
-	 * @param onAdjustMusic
+	 * @param onAdjustMusic the event handler
 	 */
 	public void setOnAdjustMusic(BtnAction onAdjustMusic) {
 		this.onAdjustMusic = onAdjustMusic;
 	}
+	/**
+	 * Returns the adjust music event handler.
+	 * @return the adjust music event handler
+	 */
 	public BtnAction getOnAdjustMusic() {
 		return onAdjustMusic;
 	}
 	/**
 	 * Set the sound adjustment action.
-	 * @param onAdjustSound
+	 * @param onAdjustSound the event handler
 	 */
 	public void setOnAdjustSound(BtnAction onAdjustSound) {
 		this.onAdjustSound = onAdjustSound;
 	}
+	/**
+	 * Returns the adjust sound event handler.
+	 * @return the adjust sound event handler
+	 */
 	public BtnAction getOnAdjustSound() {
 		return onAdjustSound;
 	}
 	/**
-	 * Set the music volume on a linear scale from 0 to 1
+	 * Set the music volume on a linear scale from 0 to 1.
 	 * @param musicVolume the music volume of [0, 1]
 	 */
 	public void setMusicVolume(float musicVolume) {

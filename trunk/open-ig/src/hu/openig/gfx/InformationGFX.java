@@ -22,52 +22,91 @@ import java.awt.image.BufferedImage;
  */
 public class InformationGFX {
 	/** The entire info screen. */
-	public BufferedImage infoScreen;
-	/** Large colony button. */
-	public BufferedImage btnColonyLarge;
-	public BufferedImage btnColonyLargeDown;
-	public BufferedImage btnStarmapLarge;
-	public BufferedImage btnStarmapLargeDown;
-	public BufferedImage btnEquipmentLarge;
-	public BufferedImage btnEquipmentLargeDown;
-	public BufferedImage btnResearchLarge;
-	public BufferedImage btnResearchLargeDown;
-	public BufferedImage btnProductionLarge;
-	public BufferedImage btnProductionLargeDown;
-	public BufferedImage btnDiplomacyLarge;
-	public BufferedImage btnDiplomacyLargeDown;
-	public BufferedImage btnEmptyLarge;
-	
-	public BufferedImage btnColonyInfo;
-	public BufferedImage btnColonyInfoLightDown;
-	public BufferedImage btnColonyInfoLight;
-	public BufferedImage btnMilitaryInfo;
-	public BufferedImage btnMilitaryInfoLightDown;
-	public BufferedImage btnMilitaryInfoLight;
-	public BufferedImage btnFinancialInfo;
-	public BufferedImage btnFinancialInfoLightDown;
-	public BufferedImage btnFinancialInfoLight;
-	public BufferedImage btnBuildings;
-	public BufferedImage btnBuildingsLightDown;
-	public BufferedImage btnBuildingsLight;
-	public BufferedImage btnPlanets;
-	public BufferedImage btnPlanetsLightDown;
-	public BufferedImage btnPlanetsLight;
-	public BufferedImage btnFleets;
-	public BufferedImage btnFleetsLightDown;
-	public BufferedImage btnFleetsLight;
-	public BufferedImage btnInventions;
-	public BufferedImage btnInventionsLightDown;
-	public BufferedImage btnInventionsLight;
-	public BufferedImage btnAliens;
-	public BufferedImage btnAliensLightDown;
-	public BufferedImage btnAliensLight;
-	public BufferedImage btnEmpty;
-	
-	public BufferedImage btnTaxMore;
-	public BufferedImage btnTaxMoreDown;
-	public BufferedImage btnTaxLess;
-	public BufferedImage btnTaxLessDown;
+	public final BufferedImage infoScreen;
+	/** Large colony button image. */
+	public final BufferedImage btnColonyLarge;
+	/** Colony large down button image. */
+	public final BufferedImage btnColonyLargeDown;
+	/** Starmap large button image. */
+	public final BufferedImage btnStarmapLarge;
+	/** Starmap large down button image. */
+	public final BufferedImage btnStarmapLargeDown;
+	/** Equipment large button image. */
+	public final BufferedImage btnEquipmentLarge;
+	/** Equipment large down button image. */
+	public final BufferedImage btnEquipmentLargeDown;
+	/** Research large button image. */
+	public final BufferedImage btnResearchLarge;
+	/** Research large down button image. */
+	public final BufferedImage btnResearchLargeDown;
+	/** Production large button image. */
+	public final BufferedImage btnProductionLarge;
+	/** Production large down button image. */
+	public final BufferedImage btnProductionLargeDown;
+	/** Diplomacy large button image. */
+	public final BufferedImage btnDiplomacyLarge;
+	/** Diplomacy large down button image. */
+	public final BufferedImage btnDiplomacyLargeDown;
+	/** Empty large buttom image. */
+	public final BufferedImage btnEmptyLarge;
+	/** Colony info image. */
+	public final BufferedImage btnColonyInfo;
+	/** Colony info light down button image. */
+	public final BufferedImage btnColonyInfoLightDown;
+	/** Colony info light button image. */
+	public final BufferedImage btnColonyInfoLight;
+	/** Military info button image. */
+	public final BufferedImage btnMilitaryInfo;
+	/** Military info light down button image. */
+	public final BufferedImage btnMilitaryInfoLightDown;
+	/** Military info light button image. */
+	public final BufferedImage btnMilitaryInfoLight;
+	/** Financial info button image. */
+	public final BufferedImage btnFinancialInfo;
+	/** Financial info light down button image. */
+	public final BufferedImage btnFinancialInfoLightDown;
+	/** Financial info light button image. */
+	public final BufferedImage btnFinancialInfoLight;
+	/** Buildings button image. */
+	public final BufferedImage btnBuildings;
+	/** Buildings light down button image. */
+	public final BufferedImage btnBuildingsLightDown;
+	/** Buildings light button image. */
+	public final BufferedImage btnBuildingsLight;
+	/** Planets button image. */
+	public final BufferedImage btnPlanets;
+	/** Planets light down button image. */
+	public final BufferedImage btnPlanetsLightDown;
+	/** Planets light button image. */
+	public final BufferedImage btnPlanetsLight;
+	/** Fleets button image. */
+	public final BufferedImage btnFleets;
+	/** Fleets light down button image. */
+	public final BufferedImage btnFleetsLightDown;
+	/** Fleets light button image. */
+	public final BufferedImage btnFleetsLight;
+	/** Inventions button image. */
+	public final BufferedImage btnInventions;
+	/** Inventions light down button image. */
+	public final BufferedImage btnInventionsLightDown;
+	/** Inventions light button image. */
+	public final BufferedImage btnInventionsLight;
+	/** Aliens button image. */
+	public final BufferedImage btnAliens;
+	/** Aliens light down button image. */
+	public final BufferedImage btnAliensLightDown;
+	/** Aliens light button image. */
+	public final BufferedImage btnAliensLight;
+	/** Empty button image. */
+	public final BufferedImage btnEmpty;
+	/** Tax more button image. */
+	public final BufferedImage btnTaxMore;
+	/** Tax more down button image. */
+	public final BufferedImage btnTaxMoreDown;
+	/** Tax les button image. */
+	public final BufferedImage btnTaxLess;
+	/** Tax less down button image. */
+	public final BufferedImage btnTaxLessDown;
 	/**
 	 * Constructor. Loads all graphics necessary for information screen rendering.
 	 * @param resMap the respource mapper

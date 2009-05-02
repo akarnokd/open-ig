@@ -21,29 +21,53 @@ import java.awt.image.BufferedImage;
 public class OptionsGFX {
 	/** The base image for options. */
 	public static class Opts {
+		/** The background image. */
 		public BufferedImage options;
+		/** Checkbox for reequip planets. */
 		public final Rectangle btnReequipPlanets = new Rectangle();
+		/** Checkbox for building names. */
 		public final Rectangle btnBuildingNames = new Rectangle();
+		/** Checkbox for building damage. */
 		public final Rectangle btnBuildingDamage = new Rectangle();
+		/** Checkbox for building damage battle. */
 		public final Rectangle btnBuildingDamageBattle = new Rectangle();
+		/** Checkbox for auto scroll. */
 		public final Rectangle btnAutoScroll = new Rectangle();
+		/** Checkbox for reequip rockets. */
 		public final Rectangle btnReequipRockets = new Rectangle();
+		/** Checkbox for repair buildings. */
 		public final Rectangle btnRepairBuildings = new Rectangle();
+		/** Checkbox for tax info. */
 		public final Rectangle btnTaxInfo = new Rectangle();
+		/** Checkbox for computer voice. */
 		public final Rectangle btnComputerVoice = new Rectangle();
+		/** Checkbox for animations. */
 		public final Rectangle btnAnimations = new Rectangle();
+		/** Load button rectangle. */
 		public final Rectangle btnLoad = new Rectangle();
+		/** Save button rectangle. */
 		public final Rectangle btnSave = new Rectangle();
+		/**Exit button rectangle. */
 		public final Rectangle btnExit = new Rectangle();
+		/** Rectangle for music adjustments. */
 		public final Rectangle btnMusic = new Rectangle();
+		/** Rectangle for audio adjustments. */
 		public final Rectangle btnAudio = new Rectangle();
+		/** Rectangle for speed adjustments. */
 		public final Rectangle btnSpeed = new Rectangle();
+		/** The load button down state image. */
 		public BufferedImage btnLoadDown;
+		/** The load button disabled state image. */
 		public BufferedImage btnLoadDisabled;
+		/** The save button down state image. */
 		public BufferedImage btnSaveDown;
+		/** The save button disabled state image. */
 		public BufferedImage btnSaveDisabled;
+		/** The exit button donw state image. */
 		public BufferedImage btnExitDown;
+		/** The slider image. */
 		public BufferedImage slider;
+		/** The checkmark image. */
 		public BufferedImage checkmark;
 		/** The save list area. */
 		public Rectangle listArea = new Rectangle();
@@ -58,7 +82,7 @@ public class OptionsGFX {
 	public final Opts[] opts;
 	/**
 	 * Constructor. Loads the graphics.
-	 * @param the resource mapper object
+	 * @param resMap the resource mapper object
 	 */
 	public OptionsGFX(ResourceMapper resMap) {
 		opts = new Opts[2];
