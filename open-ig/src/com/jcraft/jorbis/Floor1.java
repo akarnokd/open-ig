@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -27,11 +34,20 @@
 package com.jcraft.jorbis;
 
 import com.jcraft.jogg.Buffer;
-
+/**
+ * Floor one.
+ * Comments and style correction by karnokd.
+ * @author ymnk
+ */
 class Floor1 extends FuncFloor {
-	static final int floor1_rangedb = 140;
+	/** Floor range db. */
+	static final int FLOOR1_RANGE_DB = 140;
+	/** VIF position. */
 	static final int VIF_POSIT = 63;
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	void pack(Object i, Buffer opb) {
 		InfoFloor1 info = (InfoFloor1) i;
 
@@ -44,19 +60,20 @@ class Floor1 extends FuncFloor {
 		opb.write(info.partitions, 5); /* only 0 to 31 legal */
 		for (int j = 0; j < info.partitions; j++) {
 			opb.write(info.partitionclass[j], 4); /* only 0 to 15 legal */
-			if (maxclass < info.partitionclass[j])
+			if (maxclass < info.partitionclass[j]) {
 				maxclass = info.partitionclass[j];
+			}
 		}
 
 		/* save out partition classes */
 		for (int j = 0; j < maxclass + 1; j++) {
-			opb.write(info.class_dim[j] - 1, 3); /* 1 to 8 */
-			opb.write(info.class_subs[j], 2); /* 0 to 3 */
-			if (info.class_subs[j] != 0) {
-				opb.write(info.class_book[j], 8);
+			opb.write(info.classDim[j] - 1, 3); /* 1 to 8 */
+			opb.write(info.classSubs[j], 2); /* 0 to 3 */
+			if (info.classSubs[j] != 0) {
+				opb.write(info.classBook[j], 8);
 			}
-			for (int k = 0; k < (1 << info.class_subs[j]); k++) {
-				opb.write(info.class_subbook[j][k] + 1, 8);
+			for (int k = 0; k < (1 << info.classSubs[j]); k++) {
+				opb.write(info.classSubbook[j][k] + 1, 8);
 			}
 		}
 
@@ -66,13 +83,16 @@ class Floor1 extends FuncFloor {
 		rangebits = Util.ilog2(maxposit);
 
 		for (int j = 0, k = 0; j < info.partitions; j++) {
-			count += info.class_dim[info.partitionclass[j]];
+			count += info.classDim[info.partitionclass[j]];
 			for (; k < count; k++) {
 				opb.write(info.postlist[k + 2], rangebits);
 			}
 		}
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	Object unpack(Info vi, Buffer opb) {
 		int count = 0, maxclass = -1, rangebits;
 		InfoFloor1 info = new InfoFloor1();
@@ -81,29 +101,30 @@ class Floor1 extends FuncFloor {
 		info.partitions = opb.read(5); /* only 0 to 31 legal */
 		for (int j = 0; j < info.partitions; j++) {
 			info.partitionclass[j] = opb.read(4); /* only 0 to 15 legal */
-			if (maxclass < info.partitionclass[j])
+			if (maxclass < info.partitionclass[j]) {
 				maxclass = info.partitionclass[j];
+			}
 		}
 
 		/* read partition classes */
 		for (int j = 0; j < maxclass + 1; j++) {
-			info.class_dim[j] = opb.read(3) + 1; /* 1 to 8 */
-			info.class_subs[j] = opb.read(2); /* 0,1,2,3 bits */
-			if (info.class_subs[j] < 0) {
+			info.classDim[j] = opb.read(3) + 1; /* 1 to 8 */
+			info.classSubs[j] = opb.read(2); /* 0,1,2,3 bits */
+			if (info.classSubs[j] < 0) {
 				info.free();
 				return (null);
 			}
-			if (info.class_subs[j] != 0) {
-				info.class_book[j] = opb.read(8);
+			if (info.classSubs[j] != 0) {
+				info.classBook[j] = opb.read(8);
 			}
-			if (info.class_book[j] < 0 || info.class_book[j] >= vi.books) {
+			if (info.classBook[j] < 0 || info.classBook[j] >= vi.books) {
 				info.free();
 				return (null);
 			}
-			for (int k = 0; k < (1 << info.class_subs[j]); k++) {
-				info.class_subbook[j][k] = opb.read(8) - 1;
-				if (info.class_subbook[j][k] < -1
-						|| info.class_subbook[j][k] >= vi.books) {
+			for (int k = 0; k < (1 << info.classSubs[j]); k++) {
+				info.classSubbook[j][k] = opb.read(8) - 1;
+				if (info.classSubbook[j][k] < -1
+						|| info.classSubbook[j][k] >= vi.books) {
 					info.free();
 					return (null);
 				}
@@ -115,9 +136,11 @@ class Floor1 extends FuncFloor {
 		rangebits = opb.read(4);
 
 		for (int j = 0, k = 0; j < info.partitions; j++) {
-			count += info.class_dim[info.partitionclass[j]];
+			count += info.classDim[info.partitionclass[j]];
 			for (; k < count; k++) {
-				int t = info.postlist[k + 2] = opb.read(rangebits);
+				int x = opb.read(rangebits);
+				info.postlist[k + 2] = x;
+				int t = x;
 				if (t < 0 || t >= (1 << rangebits)) {
 					info.free();
 					return (null);
@@ -129,9 +152,12 @@ class Floor1 extends FuncFloor {
 
 		return (info);
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	Object look(DspState vd, InfoMode mi, Object i) {
-		int _n = 0;
+		int ln = 0;
 
 		int[] sortpointer = new int[VIF_POSIT + 2];
 
@@ -152,20 +178,20 @@ class Floor1 extends FuncFloor {
 		 */
 
 		for (int j = 0; j < info.partitions; j++) {
-			_n += info.class_dim[info.partitionclass[j]];
+			ln += info.classDim[info.partitionclass[j]];
 		}
-		_n += 2;
-		look.posts = _n;
+		ln += 2;
+		look.posts = ln;
 
 		/* also store a sorted position index */
-		for (int j = 0; j < _n; j++) {
+		for (int j = 0; j < ln; j++) {
 			sortpointer[j] = j;
 		}
 		// qsort(sortpointer,n,sizeof(int),icomp); // !!
 
 		int foo;
-		for (int j = 0; j < _n - 1; j++) {
-			for (int k = j; k < _n; k++) {
+		for (int j = 0; j < ln - 1; j++) {
+			for (int k = j; k < ln; k++) {
 				if (info.postlist[sortpointer[j]] > info.postlist[sortpointer[k]]) {
 					foo = sortpointer[k];
 					sortpointer[k] = sortpointer[j];
@@ -175,41 +201,41 @@ class Floor1 extends FuncFloor {
 		}
 
 		/* points from sort order back to range number */
-		for (int j = 0; j < _n; j++) {
-			look.forward_index[j] = sortpointer[j];
+		for (int j = 0; j < ln; j++) {
+			look.forwardIndex[j] = sortpointer[j];
 		}
 		/* points from range order to sorted position */
-		for (int j = 0; j < _n; j++) {
-			look.reverse_index[look.forward_index[j]] = j;
+		for (int j = 0; j < ln; j++) {
+			look.reverseIndex[look.forwardIndex[j]] = j;
 		}
 		/* we actually need the post values too */
-		for (int j = 0; j < _n; j++) {
-			look.sorted_index[j] = info.postlist[look.forward_index[j]];
+		for (int j = 0; j < ln; j++) {
+			look.sortedIndex[j] = info.postlist[look.forwardIndex[j]];
 		}
 
 		/* quantize values to multiplier spec */
 		switch (info.mult) {
 		case 1: /* 1024 -> 256 */
-			look.quant_q = 256;
+			look.quantQ = 256;
 			break;
 		case 2: /* 1024 -> 128 */
-			look.quant_q = 128;
+			look.quantQ = 128;
 			break;
 		case 3: /* 1024 -> 86 */
-			look.quant_q = 86;
+			look.quantQ = 86;
 			break;
 		case 4: /* 1024 -> 64 */
-			look.quant_q = 64;
+			look.quantQ = 64;
 			break;
 		default:
-			look.quant_q = -1;
+			look.quantQ = -1;
 		}
 
 		/*
 		 * discover our neighbors for decode where we don't use fit flags (that
 		 * would push the neighbors outward)
 		 */
-		for (int j = 0; j < _n - 2; j++) {
+		for (int j = 0; j < ln - 2; j++) {
 			int lo = 0;
 			int hi = 1;
 			int lx = 0;
@@ -232,20 +258,35 @@ class Floor1 extends FuncFloor {
 
 		return look;
 	}
-
-	void free_info(Object i) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	void freeInfo(Object i) {
 	}
-
-	void free_look(Object i) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	void freeLook(Object i) {
 	}
-
-	void free_state(Object vs) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	void freeState(Object vs) {
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	int forward(Block vb, Object i, float[] in, float[] out, Object vs) {
 		return 0;
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	Object inverse1(Block vb, Object ii, Object memo) {
 		LookFloor1 look = (LookFloor1) ii;
 		InfoFloor1 info = look.vi;
@@ -253,31 +294,32 @@ class Floor1 extends FuncFloor {
 
 		/* unpack wrapped/predicted values from stream */
 		if (vb.opb.read(1) == 1) {
-			int[] fit_value = null;
+			int[] fitValue = null;
 			if (memo instanceof int[]) {
-				fit_value = (int[]) memo;
+				fitValue = (int[]) memo;
 			}
-			if (fit_value == null || fit_value.length < look.posts) {
-				fit_value = new int[look.posts];
+			if (fitValue == null || fitValue.length < look.posts) {
+				fitValue = new int[look.posts];
 			} else {
-				for (int i = 0; i < fit_value.length; i++)
-					fit_value[i] = 0;
+				for (int i = 0; i < fitValue.length; i++) {
+					fitValue[i] = 0;
+				}
 			}
 
-			fit_value[0] = vb.opb.read(Util.ilog(look.quant_q - 1));
-			fit_value[1] = vb.opb.read(Util.ilog(look.quant_q - 1));
+			fitValue[0] = vb.opb.read(Util.ilog(look.quantQ - 1));
+			fitValue[1] = vb.opb.read(Util.ilog(look.quantQ - 1));
 
 			/* partition by partition */
 			for (int i = 0, j = 2; i < info.partitions; i++) {
 				int clss = info.partitionclass[i];
-				int cdim = info.class_dim[clss];
-				int csubbits = info.class_subs[clss];
+				int cdim = info.classDim[clss];
+				int csubbits = info.classSubs[clss];
 				int csub = 1 << csubbits;
 				int cval = 0;
 
 				/* decode the partition's first stage cascade value */
 				if (csubbits != 0) {
-					cval = books[info.class_book[clss]].decode(vb.opb);
+					cval = books[info.classBook[clss]].decode(vb.opb);
 
 					if (cval == -1) {
 						return (null);
@@ -285,14 +327,16 @@ class Floor1 extends FuncFloor {
 				}
 
 				for (int k = 0; k < cdim; k++) {
-					int book = info.class_subbook[clss][cval & (csub - 1)];
+					int book = info.classSubbook[clss][cval & (csub - 1)];
 					cval >>>= csubbits;
 					if (book >= 0) {
-						if ((fit_value[j + k] = books[book].decode(vb.opb)) == -1) {
+						int fv = books[book].decode(vb.opb);
+						fitValue[j + k] = fv;
+						if (fv == -1) {
 							return (null);
 						}
 					} else {
-						fit_value[j + k] = 0;
+						fitValue[j + k] = 0;
 					}
 				}
 				j += cdim;
@@ -300,15 +344,15 @@ class Floor1 extends FuncFloor {
 
 			/* unwrap positive values and reconsitute via linear interpolation */
 			for (int i = 2; i < look.posts; i++) {
-				int predicted = render_point(
+				int predicted = renderPoint(
 						info.postlist[look.loneighbor[i - 2]],
 						info.postlist[look.hineighbor[i - 2]],
-						fit_value[look.loneighbor[i - 2]],
-						fit_value[look.hineighbor[i - 2]], info.postlist[i]);
-				int hiroom = look.quant_q - predicted;
+						fitValue[look.loneighbor[i - 2]],
+						fitValue[look.hineighbor[i - 2]], info.postlist[i]);
+				int hiroom = look.quantQ - predicted;
 				int loroom = predicted;
 				int room = (hiroom < loroom ? hiroom : loroom) << 1;
-				int val = fit_value[i];
+				int val = fitValue[i];
 
 				if (val != 0) {
 					if (val >= room) {
@@ -325,36 +369,46 @@ class Floor1 extends FuncFloor {
 						}
 					}
 
-					fit_value[i] = val + predicted;
-					fit_value[look.loneighbor[i - 2]] &= 0x7fff;
-					fit_value[look.hineighbor[i - 2]] &= 0x7fff;
+					fitValue[i] = val + predicted;
+					fitValue[look.loneighbor[i - 2]] &= 0x7fff;
+					fitValue[look.hineighbor[i - 2]] &= 0x7fff;
 				} else {
-					fit_value[i] = predicted | 0x8000;
+					fitValue[i] = predicted | 0x8000;
 				}
 			}
-			return (fit_value);
+			return (fitValue);
 		}
 
 		return (null);
 	}
-
-	private static int render_point(int x0, int x1, int y0, int y1, int x) {
+	/**
+	 * Render a point.
+	 * @param x0 x
+	 * @param x1 x2
+	 * @param y0 y
+	 * @param y1 y2
+	 * @param x value
+	 * @return value
+	 */
+	private static int renderPoint(int x0, int x1, int y0, int y1, int x) {
 		y0 &= 0x7fff; /* mask off flag */
 		y1 &= 0x7fff;
 
-		{
-			int dy = y1 - y0;
-			int adx = x1 - x0;
-			int ady = Math.abs(dy);
-			int err = ady * (x - x0);
+		int dy = y1 - y0;
+		int adx = x1 - x0;
+		int ady = Math.abs(dy);
+		int err = ady * (x - x0);
 
-			int off = (err / adx);
-			if (dy < 0)
-				return (y0 - off);
-			return (y0 + off);
+		int off = (err / adx);
+		if (dy < 0) {
+			return (y0 - off);
 		}
+		return (y0 + off);
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	int inverse2(Block vb, Object i, Object memo, float[] out) {
 		LookFloor1 look = (LookFloor1) i;
 		InfoFloor1 info = look.vi;
@@ -362,18 +416,18 @@ class Floor1 extends FuncFloor {
 
 		if (memo != null) {
 			/* render the lines */
-			int[] fit_value = (int[]) memo;
+			int[] fitValue = (int[])memo;
 			int hx = 0;
 			int lx = 0;
-			int ly = fit_value[0] * info.mult;
+			int ly = fitValue[0] * info.mult;
 			for (int j = 1; j < look.posts; j++) {
-				int current = look.forward_index[j];
-				int hy = fit_value[current] & 0x7fff;
-				if (hy == fit_value[current]) {
+				int current = look.forwardIndex[j];
+				int hy = fitValue[current] & 0x7fff;
+				if (hy == fitValue[current]) {
 					hy *= info.mult;
 					hx = info.postlist[current];
 
-					render_line(lx, hx, ly, hy, out);
+					renderLine(lx, hx, ly, hy, out);
 
 					lx = hx;
 					ly = hy;
@@ -389,8 +443,10 @@ class Floor1 extends FuncFloor {
 		}
 		return (0);
 	}
-
-	private static float[] FLOOR_fromdB_LOOKUP = { 1.0649863e-07F,
+	/**
+	 * Floor from decibel lookup table.
+	 */
+	private static final float[] FLOOR_FROMDB_LOOKUP = { 1.0649863e-07F,
 			1.1341951e-07F, 1.2079015e-07F, 1.2863978e-07F, 1.3699951e-07F,
 			1.4590251e-07F, 1.5538408e-07F, 1.6548181e-07F, 1.7623575e-07F,
 			1.8768855e-07F, 1.9988561e-07F, 2.128753e-07F, 2.2670913e-07F,
@@ -453,8 +509,15 @@ class Floor1 extends FuncFloor {
 			0.44109412F, 0.46975890F, 0.50028648F, 0.53279791F, 0.56742212F,
 			0.60429640F, 0.64356699F, 0.68538959F, 0.72993007F, 0.77736504F,
 			0.82788260F, 0.88168307F, 0.9389798F, 1.F };
-
-	private static void render_line(int x0, int x1, int y0, int y1, float[] d) {
+	/**
+	 * Render line.
+	 * @param x0 x
+	 * @param x1 x2
+	 * @param y0 y 
+	 * @param y1 y2
+	 * @param d float array
+	 */
+	private static void renderLine(int x0, int x1, int y0, int y1, float[] d) {
 		int dy = y1 - y0;
 		int adx = x1 - x0;
 		int ady = Math.abs(dy);
@@ -466,7 +529,7 @@ class Floor1 extends FuncFloor {
 
 		ady -= Math.abs(base * adx);
 
-		d[x] *= FLOOR_fromdB_LOOKUP[y];
+		d[x] *= FLOOR_FROMDB_LOOKUP[y];
 		while (++x < x1) {
 			err = err + ady;
 			if (err >= adx) {
@@ -475,69 +538,93 @@ class Floor1 extends FuncFloor {
 			} else {
 				y += base;
 			}
-			d[x] *= FLOOR_fromdB_LOOKUP[y];
+			d[x] *= FLOOR_FROMDB_LOOKUP[y];
 		}
 	}
-
+	/**
+	 * Info floor 1.
+	 * Comments and style correction by karnokd.
+	 * @author ymnk
+	 */
 	class InfoFloor1 {
+		/** VIF position. */
 		static final int VIF_POSIT = 63;
+		/** VIF class. */
 		static final int VIF_CLASS = 16;
+		/** VIF parts. */
 		static final int VIF_PARTS = 31;
-
+		/** Partitions. */
 		int partitions; /* 0 to 31 */
-		int[] partitionclass = new int[VIF_PARTS]; /* 0 to 15 */
+		/** Partition class. 0 to 15 */
+		int[] partitionclass = new int[VIF_PARTS];
+		/** Class dim. 1 to 8 */
+		int[] classDim = new int[VIF_CLASS];
+		/** Class subs. 0,1,2,3 (bits: 1&lt;&lt;n poss). */
+		int[] classSubs = new int[VIF_CLASS];
+		/** Subs and dim entries. */
+		int[] classBook = new int[VIF_CLASS];
+		/** [VIF_CLASS][subs]. */
+		int[][] classSubbook = new int[VIF_CLASS][]; 
+		/** 1 2 3 or 4. */
+		int mult;
+		/** First two implicit. */
+		int[] postlist = new int[VIF_POSIT + 2]; 
 
-		int[] class_dim = new int[VIF_CLASS]; /* 1 to 8 */
-		int[] class_subs = new int[VIF_CLASS]; /* 0,1,2,3 (bits: 1<<n poss) */
-		int[] class_book = new int[VIF_CLASS]; /* subs ^ dim entries */
-		int[][] class_subbook = new int[VIF_CLASS][]; /* [VIF_CLASS][subs] */
-
-		int mult; /* 1 2 3 or 4 */
-		int[] postlist = new int[VIF_POSIT + 2]; /* first two implicit */
-
-		/* encode side analysis parameters */
+		/** Encode side analysis parameters. */
 		float maxover;
+		/** Max under. */
 		float maxunder;
+		/** Max error. */
 		float maxerr;
-
+		/** Two fit min size. */
 		int twofitminsize;
+		/** Two fit min used. */
 		int twofitminused;
+		/** Two fit weight. */
 		int twofitweight;
+		/** Two fit at ten. */
 		float twofitatten;
+		/** Unused min size. */
 		int unusedminsize;
-		int unusedmin_n;
-
+		/** Unused min number. */
+		int unusedminN;
+		/** Number. */
 		int n;
-
+		/** Constructor. */
 		InfoFloor1() {
-			for (int i = 0; i < class_subbook.length; i++) {
-				class_subbook[i] = new int[8];
+			for (int i = 0; i < classSubbook.length; i++) {
+				classSubbook[i] = new int[8];
 			}
 		}
-
+		/**
+		 * Free objects.
+		 */
 		void free() {
 			partitionclass = null;
-			class_dim = null;
-			class_subs = null;
-			class_book = null;
-			class_subbook = null;
+			classDim = null;
+			classSubs = null;
+			classBook = null;
+			classSubbook = null;
 			postlist = null;
 		}
-
-		Object copy_info() {
+		/**
+		 * Copy info.
+		 * @return the new copy
+		 */
+		Object copyInfo() {
 			InfoFloor1 info = this;
 			InfoFloor1 ret = new InfoFloor1();
 
 			ret.partitions = info.partitions;
 			System.arraycopy(info.partitionclass, 0, ret.partitionclass, 0,
 					VIF_PARTS);
-			System.arraycopy(info.class_dim, 0, ret.class_dim, 0, VIF_CLASS);
-			System.arraycopy(info.class_subs, 0, ret.class_subs, 0, VIF_CLASS);
-			System.arraycopy(info.class_book, 0, ret.class_book, 0, VIF_CLASS);
+			System.arraycopy(info.classDim, 0, ret.classDim, 0, VIF_CLASS);
+			System.arraycopy(info.classSubs, 0, ret.classSubs, 0, VIF_CLASS);
+			System.arraycopy(info.classBook, 0, ret.classBook, 0, VIF_CLASS);
 
 			for (int j = 0; j < VIF_CLASS; j++) {
-				System.arraycopy(info.class_subbook[j], 0,
-						ret.class_subbook[j], 0, 8);
+				System.arraycopy(info.classSubbook[j], 0,
+						ret.classSubbook[j], 0, 8);
 			}
 
 			ret.mult = info.mult;
@@ -552,7 +639,7 @@ class Floor1 extends FuncFloor {
 			ret.twofitweight = info.twofitweight;
 			ret.twofitatten = info.twofitatten;
 			ret.unusedminsize = info.unusedminsize;
-			ret.unusedmin_n = info.unusedmin_n;
+			ret.unusedminN = info.unusedminN;
 
 			ret.n = info.n;
 
@@ -560,54 +647,91 @@ class Floor1 extends FuncFloor {
 		}
 
 	}
-
+	/**
+	 * Look floor 1.
+	 * Comments and style correction by karnokd.
+	 * @author ymnk
+	 */
 	class LookFloor1 {
+		/** VIF position. */
 		static final int VIF_POSIT = 63;
-
-		int[] sorted_index = new int[VIF_POSIT + 2];
-		int[] forward_index = new int[VIF_POSIT + 2];
-		int[] reverse_index = new int[VIF_POSIT + 2];
+		/** Sorted index. */
+		int[] sortedIndex = new int[VIF_POSIT + 2];
+		/** Forward index. */
+		int[] forwardIndex = new int[VIF_POSIT + 2];
+		/** Reverse index. */
+		int[] reverseIndex = new int[VIF_POSIT + 2];
+		/** Highest neighbor. */
 		int[] hineighbor = new int[VIF_POSIT];
+		/** Lowest neighbor. */
 		int[] loneighbor = new int[VIF_POSIT];
+		/** Posts. */
 		int posts;
-
+		/** Number. */
 		int n;
-		int quant_q;
+		/** Quantization quality. */
+		int quantQ;
+		/** Info floor 1. */
 		InfoFloor1 vi;
-
+		/** Phase bits. */
 		int phrasebits;
+		/** Post bits. */
 		int postbits;
+		/** Frames. */
 		int frames;
-
+		/** Free objects. */
 		void free() {
-			sorted_index = null;
-			forward_index = null;
-			reverse_index = null;
+			sortedIndex = null;
+			forwardIndex = null;
+			reverseIndex = null;
 			hineighbor = null;
 			loneighbor = null;
 		}
 	}
-
-	class Lsfit_acc {
+	/**
+	 * LS fit acc.
+	 * Comments and style correction by karnokd.
+	 * @author ymnk
+	 */
+	class LsfitAcc {
+		/** X0. */
 		long x0;
+		/** X1. */
 		long x1;
-
+		/** XA. */
 		long xa;
+		/** YA. */
 		long ya;
+		/** X2A. */
 		long x2a;
+		/** Y2A. */
 		long y2a;
+		/** XYA. */
 		long xya;
+		/** Number. */
 		long n;
+		/** AN. */
 		long an;
+		/** UN. */
 		long un;
+		/** Edge y0. */
 		long edgey0;
+		/** Edge y1. */
 		long edgey1;
 	}
-
+	/**
+	 * Ech state floor 1.
+	 * Comments and style correction by karnokd.
+	 * @author ymnk.
+	 */
 	class EchstateFloor1 {
+		/** Code workds. */
 		int[] codewords;
+		/** Curve. */
 		float[] curve;
+		/** Frame number. */
 		long frameno;
+		/** Codes. */
 		long codes;
 	}
 }

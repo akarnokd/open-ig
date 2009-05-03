@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -27,25 +34,48 @@
 package com.jcraft.jorbis;
 
 import com.jcraft.jogg.Buffer;
-
+/**
+ * Time zero.
+ * Comments and style correction by karnokd.
+ * @author ymnk
+ */
 class Time0 extends FuncTime {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	void pack(Object i, Buffer opb) {
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	Object unpack(Info vi, Buffer opb) {
 		return "";
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	Object look(DspState vd, InfoMode mi, Object i) {
 		return "";
 	}
-
-	void free_info(Object i) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	void freeInfo(Object i) {
 	}
-
-	void free_look(Object i) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	void freeLook(Object i) {
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	int inverse(Block vb, Object i, float[] in, float[] out) {
 		return 0;
 	}

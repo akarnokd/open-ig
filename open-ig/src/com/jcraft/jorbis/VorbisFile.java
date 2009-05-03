@@ -379,7 +379,7 @@ public class VorbisFile {
 					os.clear();
 					return -1;
 				}
-				if (vi.synthesis_headerin(vc, op) != 0) {
+				if (vi.synthesisHeaderin(vc, op) != 0) {
 					vi.clear();
 					vc.clear();
 					os.clear();
@@ -468,7 +468,7 @@ public class VorbisFile {
 			throw new RuntimeException("Reinitialized decoder");
 		}
 
-		vd.synthesis_init(vi[0]);
+		vd.synthesisInit(vi[0]);
 		vb.init(vd);
 		decodeReady = true;
 	}
@@ -592,9 +592,9 @@ public class VorbisFile {
 						// vorbis_synthesis will
 						// reject them
 						// suck in the synthesis data and track bitrate
-						int oldsamples = vd.synthesis_pcmout(null, null);
-						vd.synthesis_blockin(vb);
-						samptrack += vd.synthesis_pcmout(null, null)
+						int oldsamples = vd.synthesisPcmout(null, null);
+						vd.synthesisBlockin(vb);
+						samptrack += vd.synthesisPcmout(null, null)
 								- oldsamples;
 						bittrack += op.bytes * 8;
 
@@ -623,7 +623,7 @@ public class VorbisFile {
 							// to have a reference point. Thus the !op.e_o_s
 							// clause above
 
-							samples = vd.synthesis_pcmout(null, null);
+							samples = vd.synthesisPcmout(null, null);
 							granulepos -= samples;
 							for (int i = 0; i < link; i++) {
 								granulepos += pcmlengths[i];
@@ -874,14 +874,14 @@ public class VorbisFile {
 						/ timeTotal(i)));
 			} else {
 				// return nominal if set
-				if (vi[i].bitrate_nominal > 0) {
-					return vi[i].bitrate_nominal;
+				if (vi[i].bitrateNominal > 0) {
+					return vi[i].bitrateNominal;
 				} else {
-					if (vi[i].bitrate_upper > 0) {
-						if (vi[i].bitrate_lower > 0) {
-							return (vi[i].bitrate_upper + vi[i].bitrate_lower) / 2;
+					if (vi[i].bitrateUpper > 0) {
+						if (vi[i].bitrateLower > 0) {
+							return (vi[i].bitrateUpper + vi[i].bitrateLower) / 2;
 						} else {
-							return vi[i].bitrate_upper;
+							return vi[i].bitrateUpper;
 						}
 					}
 					return (-1);
@@ -1151,12 +1151,12 @@ public class VorbisFile {
 			int target2 = (int) (pos - pcmOffset);
 			float[][][] lPcm = new float[1][][];
 			int[] lIndex = new int[getInfo(-1).channels];
-			int samples = vd.synthesis_pcmout(lPcm, lIndex);
+			int samples = vd.synthesisPcmout(lPcm, lIndex);
 
 			if (samples > target2) {
 				samples = target2;
 			}
-			vd.synthesis_read(samples);
+			vd.synthesisRead(samples);
 			pcmOffset += samples;
 
 			if (samples < target2) {
@@ -1371,7 +1371,7 @@ public class VorbisFile {
 				float[][] pcm;
 				float[][][] lPcm = new float[1][][];
 				int[] lIndex = new int[getInfo(-1).channels];
-				int samples = vd.synthesis_pcmout(lPcm, lIndex);
+				int samples = vd.synthesisPcmout(lPcm, lIndex);
 				pcm = lPcm[0];
 				if (samples != 0) {
 					// yay! proceed to pack data into the byte buffer
@@ -1474,7 +1474,7 @@ public class VorbisFile {
 						}
 					}
 
-					vd.synthesis_read(samples);
+					vd.synthesisRead(samples);
 					pcmOffset += samples;
 					if (bitstream != null) {
 						bitstream[0] = currentLink;

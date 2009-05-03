@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -27,21 +34,54 @@
 package com.jcraft.jorbis;
 
 import com.jcraft.jogg.Buffer;
-
+/**
+ * Function residue.
+ * Comments and style correction by karnokd.
+ * @author ymnk
+ */
 abstract class FuncResidue {
-	public static FuncResidue[] residue_P = { new Residue0(), new Residue1(),
+	/** Residue function array. */
+	static FuncResidue[] residueP = { new Residue0(), new Residue1(),
 			new Residue2() };
-
+	/**
+	 * Pack.
+	 * @param vr object
+	 * @param opb buffer
+	 */
 	abstract void pack(Object vr, Buffer opb);
-
+	/**
+	 * Unpack.
+	 * @param vi info
+	 * @param opb buffer
+	 * @return object
+	 */
 	abstract Object unpack(Info vi, Buffer opb);
-
+	/**
+	 * Look.
+	 * @param vd dsp state
+	 * @param vm info mode
+	 * @param vr object
+	 * @return object
+	 */
 	abstract Object look(DspState vd, InfoMode vm, Object vr);
-
-	abstract void free_info(Object i);
-
-	abstract void free_look(Object i);
-
-	abstract int inverse(Block vb, Object vl, float[][] in, int[] nonzero,
-			int ch);
+	/**
+	 * Free info.
+	 * @param i object
+	 */
+	abstract void freeInfo(Object i);
+	/**
+	 * Free look.
+	 * @param i object
+	 */
+	abstract void freeLook(Object i);
+	/**
+	 * Inverse.
+	 * @param vb block
+	 * @param vl object
+	 * @param in 2D float array
+	 * @param nonzero int array
+	 * @param ch channel
+	 * @return int
+	 */
+	abstract int inverse(Block vb, Object vl, float[][] in, int[] nonzero, int ch);
 }

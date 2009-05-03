@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,18 +32,32 @@
  */
 
 package com.jcraft.jorbis;
-
+/**
+ * Psy look.
+ * Comments and style correction by karnokd.
+ * @author ymnk
+ */
 class PsyLook {
+	/** Number. */
 	int n;
+	/** Psy info. */
 	PsyInfo vi;
-
+	/** Tone curves. */
 	float[][][] tonecurves;
+	/** Peak att. */
 	float[][] peakatt;
+	/** Noise curves. */
 	float[][][] noisecurves;
-
+	/** Ath. */
 	float[] ath;
+	/** Octave. */
 	int[] octave;
-
+	/** 
+	 * Init.
+	 * @param vi psy info
+	 * @param n number
+	 * @param rate rate
+	 */
 	void init(PsyInfo vi, int n, int rate) {
 	}
 }

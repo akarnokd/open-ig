@@ -1,5 +1,10 @@
-package com.jcraft.jorbis.example;
-
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbisPlayer -- pure Java Ogg Vorbis player
  *
@@ -27,6 +32,14 @@ package com.jcraft.jorbis.example;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+package com.jcraft.jorbis.example;
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 
 import java.applet.AppletContext;
 import java.awt.BorderLayout;
@@ -37,6 +50,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
@@ -65,59 +79,84 @@ import com.jcraft.jorbis.Block;
 import com.jcraft.jorbis.Comment;
 import com.jcraft.jorbis.DspState;
 import com.jcraft.jorbis.Info;
-
+/**
+ * OGG player applet.
+ * Comments and style correction by karnokd.
+ * @author ymnk
+ */
 public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
-
+	/** Serial version. */
 	private static final long serialVersionUID = 1L;
-
-	boolean running_as_applet = true;
-
+	/** Running as applet flag. */
+	boolean runningAsApplet = true;
+	/** Player thread. */
 	Thread player = null;
+	/** Audio stream. */
 	InputStream bitStream = null;
-
-	int udp_port = -1;
-	String udp_baddress = null;
-
+	/** UDP port. */
+	int udpPort = -1;
+	/** UDP base address. */
+	String udpBaddress = null;
+	/** Applet context. */
 	static AppletContext acontext = null;
-
+	/** Buffer size. */
 	static final int BUFSIZE = 4096 * 2;
+	/** Conversion size. */
 	static int convsize = BUFSIZE * 2;
+	/** Conversion buffer. */
 	static byte[] convbuffer = new byte[convsize];
-
-	private int RETRY = 3;
+	/** Max retry count. */
+	private static final int RETRY = 3;
+	/** Current retry count. */
 	int retry = RETRY;
-
+	/** Paylist file name. */
 	String playlistfile = "playlist";
-
+	/** ICE statistics. */
 	boolean icestats = false;
-
+	/** Sync state. */
 	SyncState oy;
+	/** Stream state. */
 	StreamState os;
+	/** Page. */
 	Page og;
+	/** Packet. */
 	Packet op;
+	/** Info. */
 	Info vi;
+	/** Comment. */
 	Comment vc;
+	/** Dsp state. */
 	DspState vd;
+	/** Block. */
 	Block vb;
-
+	/** Buffer. */
 	byte[] buffer = null;
+	/** Buffer bytes. */
 	int bytes = 0;
-
+	/** Format. */
 	int format;
+	/** Bitrate. */
 	int rate = 0;
+	/** Channels. */
 	int channels = 0;
-	int left_vol_scale = 100;
-	int right_vol_scale = 100;
-	SourceDataLine outputLine = null;
-	String current_source = null;
-
+	/** Left channel volume scale. */
+	int leftVolScale = 100;
+	/** Right channel volume scale. */
+	int rightVolScale = 100;
+	/** Audio output stream. */
+	SourceDataLine outputLine;
+	/** Current source. */
+	String currentSource;
+	/** Frame size in bytes. */
 	int frameSizeInBytes;
+	/** Buffer length in bytes. */
 	int bufferLengthInBytes;
-
-	boolean playonstartup = false;
-
+	/** Start playing on startup. */
+	boolean playonstartup;
+	/** Initialize applet. */
+	@Override
 	public void init() {
-		running_as_applet = true;
+		runningAsApplet = true;
 
 		acontext = getAppletContext();
 
@@ -144,15 +183,16 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(panel);
 	}
-
+	/** Start applet. */
+	@Override
 	public void start() {
 		super.start();
 		if (playonstartup) {
-			play_sound();
+			playSound();
 		}
 	}
-
-	void init_jorbis() {
+	/** Init JOrbis. */
+	void initJorbis() {
 		oy = new SyncState();
 		os = new StreamState();
 		og = new Page();
@@ -168,7 +208,12 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 
 		oy.init();
 	}
-
+	/**
+	 * Get audio output line for the given channel and bitrate.
+	 * @param channels the number of channels
+	 * @param rate the bitrate
+	 * @return the audio data line
+	 */
 	SourceDataLine getOutputLine(int channels, int rate) {
 		if (outputLine == null || this.rate != rate
 				|| this.channels != channels) {
@@ -177,13 +222,17 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				outputLine.stop();
 				outputLine.close();
 			}
-			init_audio(channels, rate);
+			initAudio(channels, rate);
 			outputLine.start();
 		}
 		return outputLine;
 	}
-
-	void init_audio(int channels, int rate) {
+	/**
+	 * Initialize audio line.
+	 * @param channels number of channels
+	 * @param rate frequency
+	 */
+	void initAudio(int channels, int rate) {
 		try {
 			// ClassLoader originalClassLoader=null;
 			// try{
@@ -229,30 +278,38 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			System.out.println(ee);
 		}
 	}
-
+	/**
+	 * Find an item index by name or add it if non-existent.
+	 * @param item the string
+	 * @return the index
+	 */
 	private int item2index(String item) {
 		for (int i = 0; i < cb.getItemCount(); i++) {
 			String foo = (String) (cb.getItemAt(i));
-			if (item.equals(foo))
+			if (item.equals(foo)) {
 				return i;
+			}
 		}
 		cb.addItem(item);
 		return cb.getItemCount() - 1;
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void run() {
 		Thread me = Thread.currentThread();
 		String item = (String) (cb.getSelectedItem());
-		int current_index = item2index(item);
+		int currentIndex = item2index(item);
 		while (true) {
-			item = (String) (cb.getItemAt(current_index));
-			cb.setSelectedIndex(current_index);
+			item = (String) (cb.getItemAt(currentIndex));
+			cb.setSelectedIndex(currentIndex);
 			bitStream = selectSource(item);
 			if (bitStream != null) {
-				if (udp_port != -1) {
-					play_udp_stream(me);
+				if (udpPort != -1) {
+					playUdpStream(me);
 				} else {
-					play_stream(me);
+					playStream(me);
 				}
 			} else if (cb.getItemCount() == 1) {
 				break;
@@ -261,22 +318,26 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				break;
 			}
 			bitStream = null;
-			current_index++;
-			if (current_index >= cb.getItemCount()) {
-				current_index = 0;
+			currentIndex++;
+			if (currentIndex >= cb.getItemCount()) {
+				currentIndex = 0;
 			}
-			if (cb.getItemCount() <= 0)
+			if (cb.getItemCount() <= 0) {
 				break;
+			}
 		}
 		player = null;
-		start_button.setText("start");
+		startButton.setText("start");
 	}
-
-	private void play_stream(Thread me) {
+	/** 
+	 * Play stream.
+	 * @param me the playback tread
+	 */
+	private void playStream(Thread me) {
 
 		boolean chained = false;
 
-		init_jorbis();
+		initJorbis();
 
 		retry = RETRY;
 
@@ -297,11 +358,11 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 
 			if (chained) { //
 				chained = false; //   
-			} //
-			else { //
+			} else { //
 				if (oy.pageout(og) != 1) {
-					if (bytes < BUFSIZE)
+					if (bytes < BUFSIZE) {
 						break;
+					}
 					System.err
 							.println("Input does not appear to be an Ogg bitstream.");
 					return;
@@ -329,7 +390,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				// return;
 			}
 
-			if (vi.synthesis_headerin(vc, op) < 0) {
+			if (vi.synthesisHeaderin(vc, op) < 0) {
 				// error case; not a vorbis header
 				System.err
 						.println("This Ogg bitstream does not contain Vorbis audio data.");
@@ -341,21 +402,23 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			while (i < 2) {
 				while (i < 2) {
 					int result = oy.pageout(og);
-					if (result == 0)
+					if (result == 0) {
 						break; // Need more data
+					}
 					if (result == 1) {
 						os.pagein(og);
 						while (i < 2) {
 							result = os.packetout(op);
-							if (result == 0)
+							if (result == 0) {
 								break;
+							}
 							if (result == -1) {
 								System.err
 										.println("Corrupt secondary header.  Exiting.");
 								// return;
 								break loop;
 							}
-							vi.synthesis_headerin(vc, op);
+							vi.synthesisHeaderin(vc, op);
 							i++;
 						}
 					}
@@ -377,38 +440,40 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				oy.wrote(bytes);
 			}
 
-			{
-				byte[][] ptr = vc.userComments;
-				StringBuffer sb = null;
-				if (acontext != null)
-					sb = new StringBuffer();
+			byte[][] ptrC = vc.userComments;
+			StringBuffer sb = null;
+			if (acontext != null) {
+				sb = new StringBuffer();
+			}
 
-				for (int j = 0; j < ptr.length; j++) {
-					if (ptr[j] == null)
-						break;
-					System.err.println("Comment: "
-							+ new String(ptr[j], 0, ptr[j].length - 1));
-					if (sb != null)
-						sb.append(" "
-								+ new String(ptr[j], 0, ptr[j].length - 1));
+			for (int j = 0; j < ptrC.length; j++) {
+				if (ptrC[j] == null) {
+					break;
 				}
-				System.err.println("Bitstream is " + vi.channels + " channel, "
-						+ vi.rate + "Hz");
-				System.err
-						.println("Encoded by: "
-								+ new String(vc.vendor, 0, vc.vendor.length - 1)
-								+ "\n");
-				if (sb != null)
-					acontext.showStatus(sb.toString());
+				System.err.println("Comment: "
+						+ new String(ptrC[j], 0, ptrC[j].length - 1));
+				if (sb != null) {
+					sb.append(" "
+							+ new String(ptrC[j], 0, ptrC[j].length - 1));
+				}
+			}
+			System.err.println("Bitstream is " + vi.channels + " channel, "
+					+ vi.rate + "Hz");
+			System.err
+					.println("Encoded by: "
+							+ new String(vc.vendor, 0, vc.vendor.length - 1)
+							+ "\n");
+			if (sb != null) {
+				acontext.showStatus(sb.toString());
 			}
 
 			convsize = BUFSIZE / vi.channels;
 
-			vd.synthesis_init(vi);
+			vd.synthesisInit(vi);
 			vb.init(vd);
 
-			float[][][] _pcmf = new float[1][][];
-			int[] _index = new int[vi.channels];
+			float[][][] lPcmf = new float[1][][];
+			int[] lIndex = new int[vi.channels];
 
 			getOutputLine(vi.channels, vi.rate);
 
@@ -428,12 +493,10 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 					}
 
 					int result = oy.pageout(og);
-					if (result == 0)
+					if (result == 0) {
 						break; // need more data
-					if (result == -1) { // missing or corrupt data at this page
-						// position
-						// System.err.println("Corrupt or missing data in bitstream; continuing...");
-					} else {
+					}
+					if (result != -1) { // missing or corrupt data at this page
 						os.pagein(og);
 
 						if (og.granulepos() == 0) { //
@@ -444,24 +507,19 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 
 						while (true) {
 							result = os.packetout(op);
-							if (result == 0)
+							if (result == 0) {
 								break; // need more data
-							if (result == -1) { // missing or corrupt data at
-								// this page position
-								// no reason to complain; already complained
-								// above
-
-								// System.err.println("no reason to complain; already complained above");
-							} else {
+							}
+							if (result != -1) { // missing or corrupt data at
 								// we have a packet. Decode it
 								int samples;
 								if (vb.synthesis(op) == 0) { // test for
 									// success!
-									vd.synthesis_blockin(vb);
+									vd.synthesisBlockin(vb);
 								}
-								while ((samples = vd.synthesis_pcmout(_pcmf,
-										_index)) > 0) {
-									float[][] pcmf = _pcmf[0];
+								while ((samples = vd.synthesisPcmout(lPcmf,
+										lIndex)) > 0) {
+									float[][] pcmf = lPcmf[0];
 									int bout = (samples < convsize ? samples
 											: convsize);
 
@@ -471,7 +529,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 									for (i = 0; i < vi.channels; i++) {
 										int ptr = i * 2;
 										// int ptr=i;
-										int mono = _index[i];
+										int mono = lIndex[i];
 										for (int j = 0; j < bout; j++) {
 											int val = (int) (pcmf[i][mono + j] * 32767.);
 											if (val > 32767) {
@@ -480,8 +538,9 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 											if (val < -32768) {
 												val = -32768;
 											}
-											if (val < 0)
+											if (val < 0) {
 												val = val | 0x8000;
+											}
 											convbuffer[ptr] = (byte) (val);
 											convbuffer[ptr + 1] = (byte) (val >>> 8);
 											ptr += 2 * (vi.channels);
@@ -489,12 +548,13 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 									}
 									outputLine.write(convbuffer, 0, 2
 											* vi.channels * bout);
-									vd.synthesis_read(bout);
+									vd.synthesisRead(bout);
 								}
 							}
 						}
-						if (og.eos() != 0)
+						if (og.eos() != 0) {
 							eos = 1;
+						}
 					}
 				}
 
@@ -511,8 +571,9 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 						break;
 					}
 					oy.wrote(bytes);
-					if (bytes == 0)
+					if (bytes == 0) {
 						eos = 1;
+					}
 				}
 			}
 
@@ -525,14 +586,18 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 		oy.clear();
 
 		try {
-			if (bitStream != null)
+			if (bitStream != null) {
 				bitStream.close();
-		} catch (Exception e) {
+			}
+		} catch (IOException e) {
 		}
 	}
-
-	private void play_udp_stream(Thread me) {
-		init_jorbis();
+	/**
+	 * Play udp stream.
+	 * @param me the current thread
+	 */
+	private void playUdpStream(Thread me) {
+		initJorbis();
 
 		try {
 			loop: while (true) {
@@ -572,7 +637,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 					return;
 				}
 
-				if (vi.synthesis_headerin(vc, op) < 0) {
+				if (vi.synthesisHeaderin(vc, op) < 0) {
 					// error case; not a vorbis header
 					System.err
 							.println("This Ogg bitstream does not contain Vorbis audio data.");
@@ -583,28 +648,31 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				while (i < 2) {
 					while (i < 2) {
 						int result = oy.pageout(og);
-						if (result == 0)
+						if (result == 0) {
 							break; // Need more data
+						}
 						if (result == 1) {
 							os.pagein(og);
 							while (i < 2) {
 								result = os.packetout(op);
-								if (result == 0)
+								if (result == 0) {
 									break;
+								}
 								if (result == -1) {
 									System.err
 											.println("Corrupt secondary header.  Exiting.");
 									// return;
 									break loop;
 								}
-								vi.synthesis_headerin(vc, op);
+								vi.synthesisHeaderin(vc, op);
 								i++;
 							}
 						}
 					}
 
-					if (i == 2)
+					if (i == 2) {
 						break;
+					}
 
 					index = oy.buffer(BUFSIZE);
 					buffer = oy.data;
@@ -633,15 +701,18 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 
 		UDPIO io = null;
 		try {
-			io = new UDPIO(udp_port);
+			io = new UDPIO(udpPort);
 		} catch (Exception e) {
 			return;
 		}
 
 		bitStream = io;
-		play_stream(me);
+		playStream(me);
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void stop() {
 		if (player == null) {
 			try {
@@ -649,30 +720,37 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				outputLine.stop();
 				outputLine.close();
 				outputLine = null;
-				if (bitStream != null)
+				if (bitStream != null) {
 					bitStream.close();
+				}
 			} catch (Exception e) {
 			}
 		}
 		player = null;
 	}
-
+	/** Playlist. */
 	Vector<String> playlist = new Vector<String>();
-
+	/**
+	 * Common action handler.
+	 * @param e the action event
+	 */
 	public void actionPerformed(ActionEvent e) {
 
-		if (e.getSource() == stats_button) {
+		if (e.getSource() == statsButton) {
 			String item = (String) (cb.getSelectedItem());
-			if (!item.startsWith("http://"))
+			if (!item.startsWith("http://")) {
 				return;
+			}
 			if (item.endsWith(".pls")) {
-				item = fetch_pls(item);
-				if (item == null)
+				item = fetchPls(item);
+				if (item == null) {
 					return;
+				}
 			} else if (item.endsWith(".m3u")) {
-				item = fetch_m3u(item);
-				if (item == null)
+				item = fetchM3u(item);
+				if (item == null) {
 					return;
+				}
 			}
 			byte[] foo = item.getBytes();
 			for (int i = foo.length - 1; i >= 0; i--) {
@@ -684,17 +762,19 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			System.out.println(item);
 			try {
 				URL url = null;
-				if (running_as_applet)
+				if (runningAsApplet) {
 					url = new URL(getCodeBase(), item);
-				else
+				} else {
 					url = new URL(item);
+				}
 				BufferedReader stats = new BufferedReader(
 						new InputStreamReader(url.openConnection()
 								.getInputStream()));
 				while (true) {
 					String bar = stats.readLine();
-					if (bar == null)
+					if (bar == null) {
 						break;
+					}
 					System.out.println(bar);
 				}
 			} catch (Exception ee) {
@@ -705,41 +785,52 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 
 		String command = ((JButton) (e.getSource())).getText();
 		if (command.equals("start") && player == null) {
-			play_sound();
+			playSound();
 		} else if (player != null) {
-			stop_sound();
+			stopSound();
 		}
 	}
-
+	/**
+	 * Returns the current title.
+	 * @return the current title
+	 */
 	public String getTitle() {
 		return (String) (cb.getSelectedItem());
 	}
-
-	public void play_sound() {
-		if (player != null)
+	/** Play sound. */
+	public void playSound() {
+		if (player != null) {
 			return;
+		}
 		player = new Thread(this);
-		start_button.setText("stop");
+		startButton.setText("stop");
 		player.start();
 	}
-
-	public void stop_sound() {
-		if (player == null)
+	/** Stop sound playback. */
+	public void stopSound() {
+		if (player == null) {
 			return;
+		}
 		player = null;
-		start_button.setText("start");
+		startButton.setText("start");
 	}
-
+	/**
+	 * Select source.
+	 * @param item the item name
+	 * @return the input stream
+	 */
 	InputStream selectSource(String item) {
 		if (item.endsWith(".pls")) {
-			item = fetch_pls(item);
-			if (item == null)
+			item = fetchPls(item);
+			if (item == null) {
 				return null;
+			}
 			// System.out.println("fetch: "+item);
 		} else if (item.endsWith(".m3u")) {
-			item = fetch_m3u(item);
-			if (item == null)
+			item = fetchM3u(item);
+			if (item == null) {
 				return null;
+			}
 			// System.out.println("fetch: "+item);
 		}
 
@@ -751,80 +842,86 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 		URLConnection urlc = null;
 		try {
 			URL url = null;
-			if (running_as_applet)
+			if (runningAsApplet) {
 				url = new URL(getCodeBase(), item);
-			else
+			} else {
 				url = new URL(item);
+			}
 			urlc = url.openConnection();
 			is = urlc.getInputStream();
-			current_source = url.getProtocol() + "://" + url.getHost() + ":"
+			currentSource = url.getProtocol() + "://" + url.getHost() + ":"
 					+ url.getPort() + url.getFile();
 		} catch (Exception ee) {
 			System.err.println(ee);
 		}
 
-		if (is == null && !running_as_applet) {
+		if (is == null && !runningAsApplet) {
 			try {
 				is = new FileInputStream(System.getProperty("user.dir")
 						+ System.getProperty("file.separator") + item);
-				current_source = null;
+				currentSource = null;
 			} catch (Exception ee) {
 				System.err.println(ee);
 			}
 		}
 
-		if (is == null)
+		if (is == null) {
 			return null;
+		}
 
 		System.out.println("Select: " + item);
 
-		{
-			boolean find = false;
-			for (int i = 0; i < cb.getItemCount(); i++) {
-				String foo = (String) (cb.getItemAt(i));
-				if (item.equals(foo)) {
-					find = true;
-					break;
-				}
+		boolean find = false;
+		for (int i = 0; i < cb.getItemCount(); i++) {
+			String foo = (String) (cb.getItemAt(i));
+			if (item.equals(foo)) {
+				find = true;
+				break;
 			}
-			if (!find) {
-				cb.addItem(item);
-			}
+		}
+		if (!find) {
+			cb.addItem(item);
 		}
 
 		int i = 0;
 		String s = null;
 		String t = null;
-		udp_port = -1;
-		udp_baddress = null;
-		while (urlc != null && true) {
+		udpPort = -1;
+		udpBaddress = null;
+		while (urlc != null) {
 			s = urlc.getHeaderField(i);
 			t = urlc.getHeaderFieldKey(i);
-			if (s == null)
+			if (s == null) {
 				break;
+			}
 			i++;
 			if (t != null && t.equals("udp-port")) {
 				try {
-					udp_port = Integer.parseInt(s);
+					udpPort = Integer.parseInt(s);
 				} catch (Exception ee) {
 					System.err.println(ee);
 				}
 			} else if (t != null && t.equals("udp-broadcast-address")) {
-				udp_baddress = s;
+				udpBaddress = s;
 			}
 		}
 		return is;
 	}
-
-	String fetch_pls(String pls) {
+	/**
+	 * Fetches a playlist from the url.
+	 * @param pls the playlist url
+	 * @return the contents
+	 */
+	String fetchPls(String pls) {
 		InputStream pstream = null;
 		if (pls.startsWith("http://")) {
 			try {
 				URL url = null;
-				if (running_as_applet)
+				if (runningAsApplet) {
 					url = new URL(getCodeBase(), pls);
-				else
+				} else {
 					url = new URL(pls);
+				}
 				URLConnection urlc = url.openConnection();
 				pstream = urlc.getInputStream();
 			} catch (Exception ee) {
@@ -832,7 +929,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				return null;
 			}
 		}
-		if (pstream == null && !running_as_applet) {
+		if (pstream == null && !runningAsApplet) {
 			try {
 				pstream = new FileInputStream(System.getProperty("user.dir")
 						+ System.getProperty("file.separator") + pls);
@@ -848,30 +945,37 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				line = readline(pstream);
 			} catch (Exception e) {
 			}
-			if (line == null)
+			if (line == null) {
 				break;
+			}
 			if (line.startsWith("File1=")) {
 				byte[] foo = line.getBytes();
 				int i = 6;
 				for (; i < foo.length; i++) {
-					if (foo[i] == 0x0d)
+					if (foo[i] == 0x0d) {
 						break;
+					}
 				}
 				return line.substring(6, i);
 			}
 		}
 		return null;
 	}
-
-	String fetch_m3u(String m3u) {
+	/** 
+	 * Fetches an M3U playlist.
+	 * @param m3u the url to the playlist
+	 * @return the contents
+	 */
+	String fetchM3u(String m3u) {
 		InputStream pstream = null;
 		if (m3u.startsWith("http://")) {
 			try {
 				URL url = null;
-				if (running_as_applet)
+				if (runningAsApplet) {
 					url = new URL(getCodeBase(), m3u);
-				else
+				} else {
 					url = new URL(m3u);
+				}
 				URLConnection urlc = url.openConnection();
 				pstream = urlc.getInputStream();
 			} catch (Exception ee) {
@@ -879,7 +983,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				return null;
 			}
 		}
-		if (pstream == null && !running_as_applet) {
+		if (pstream == null && !runningAsApplet) {
 			try {
 				pstream = new FileInputStream(System.getProperty("user.dir")
 						+ System.getProperty("file.separator") + m3u);
@@ -895,21 +999,22 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				line = readline(pstream);
 			} catch (Exception e) {
 			}
-			if (line == null)
+			if (line == null) {
 				break;
+			}
 			return line;
 		}
 		return null;
 	}
-
+	/** Load play list. */
 	void loadPlaylist() {
-
-		if (running_as_applet) {
+		if (runningAsApplet) {
 			String s = null;
 			for (int i = 0; i < 10; i++) {
 				s = getParameter("jorbis.player.play." + i);
-				if (s == null)
+				if (s == null) {
 					break;
+				}
 				playlist.addElement(s);
 			}
 		}
@@ -922,15 +1027,16 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			InputStream is = null;
 			try {
 				URL url = null;
-				if (running_as_applet)
+				if (runningAsApplet) {
 					url = new URL(getCodeBase(), playlistfile);
-				else
+				} else {
 					url = new URL(playlistfile);
+				}
 				URLConnection urlc = url.openConnection();
 				is = urlc.getInputStream();
 			} catch (Exception ee) {
 			}
-			if (is == null && !running_as_applet) {
+			if (is == null && !runningAsApplet) {
 				try {
 					is = new FileInputStream(System.getProperty("user.dir")
 							+ System.getProperty("file.separator")
@@ -939,13 +1045,15 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				}
 			}
 
-			if (is == null)
+			if (is == null) {
 				return;
+			}
 
 			while (true) {
 				String line = readline(is);
-				if (line == null)
+				if (line == null) {
 					break;
+				}
 				byte[] foo = line.getBytes();
 				for (int i = 0; i < foo.length; i++) {
 					if (foo[i] == 0x0d) {
@@ -959,7 +1067,11 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			System.out.println(e);
 		}
 	}
-
+	/**
+	 * Read line from a stream.
+	 * @param is the input stream
+	 * @return the line
+	 */
 	private String readline(InputStream is) {
 		StringBuffer rtn = new StringBuffer();
 		int temp;
@@ -971,24 +1083,29 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			}
 			if (temp == -1) {
 				String str = rtn.toString();
-				if (str.length() == 0)
+				if (str.length() == 0) {
 					return (null);
+				}
 				return str;
 			}
-			if (temp != 0 && temp != '\n' && temp != '\r')
+			if (temp != 0 && temp != '\n' && temp != '\r') {
 				rtn.append((char) temp);
+			}
 		} while (temp != '\n' && temp != '\r');
 		return (rtn.toString());
 	}
-
+	/** Constructor. */
 	public JOrbisPlayer() {
 	}
-
+	/** The panel. */
 	JPanel panel;
+	/** The combobox. */
 	JComboBox cb;
-	JButton start_button;
-	JButton stats_button;
-
+	/** Start button. */
+	JButton startButton;
+	/** Statistics button. */
+	JButton statsButton;
+	/** Init user interface. */
 	void initUI() {
 		panel = new JPanel();
 
@@ -996,29 +1113,48 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 		cb.setEditable(true);
 		panel.add(cb);
 
-		start_button = new JButton("start");
-		start_button.addActionListener(this);
-		panel.add(start_button);
+		startButton = new JButton("start");
+		startButton.addActionListener(this);
+		panel.add(startButton);
 
 		if (icestats) {
-			stats_button = new JButton("IceStats");
-			stats_button.addActionListener(this);
-			panel.add(stats_button);
+			statsButton = new JButton("IceStats");
+			statsButton.addActionListener(this);
+			panel.add(statsButton);
 		}
 	}
-
+	/**
+	 * UDP I/O class.
+	 * @author ymnk
+	 */
 	class UDPIO extends InputStream {
+		/** Target address. */
 		InetAddress address;
+		/** The UDP socket. */
 		DatagramSocket socket = null;
+		/** SND packet. */
 		DatagramPacket sndpacket;
+		/** REC packet. */
 		DatagramPacket recpacket;
+		/** Buffer. */
 		byte[] buf = new byte[1024];
 		// String host;
+		/** Port. */
 		int port;
+		/** Input buffer. */
 		byte[] inbuffer = new byte[2048];
+		/** Output buffer. */
 		byte[] outbuffer = new byte[1024];
-		int instart = 0, inend = 0, outindex = 0;
-
+		/** Input start. */
+		int instart = 0;
+		/** Input end. */
+		int inend = 0;
+		/** Output index. */
+		int outindex = 0;
+		/**
+		 * Constructor.
+		 * @param port the port number
+		 */
 		UDPIO(int port) {
 			this.port = port;
 			try {
@@ -1028,7 +1164,10 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			}
 			recpacket = new DatagramPacket(buf, 1024);
 		}
-
+		/**
+		 * Set socket timeout.
+		 * @param i timeout in milliseconds
+		 */
 		void setTimeout(int i) {
 			try {
 				socket.setSoTimeout(i);
@@ -1036,24 +1175,41 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				System.out.println(e);
 			}
 		}
-
-		int getByte() throws java.io.IOException {
+		/** 
+		 * Read one byte.
+		 * @return the byte
+		 * @throws IOException on I/O error 
+		 */
+		int getByte() throws IOException {
 			if ((inend - instart) < 1) {
 				read(1);
 			}
 			return inbuffer[instart++] & 0xff;
 		}
-
-		int getByte(byte[] array) throws java.io.IOException {
+		/**
+		 * Get bytes into the array.
+		 * @param array the array
+		 * @return the actual length
+		 * @throws IOException on I/O error
+		 */
+		int getByte(byte[] array) throws IOException {
 			return getByte(array, 0, array.length);
 		}
-
+		/**
+		 * Get bytes into the array range.
+		 * @param array the outut array
+		 * @param begin the beginning index
+		 * @param length the length
+		 * @return the actual length
+		 * @throws IOException o I/O error
+		 */
 		int getByte(byte[] array, int begin, int length)
 				throws java.io.IOException {
 			int i = 0;
 			int foo = begin;
 			while (true) {
-				if ((i = (inend - instart)) < length) {
+				i = (inend - instart);
+				if (i < length) {
 					if (i != 0) {
 						System.arraycopy(inbuffer, instart, array, begin, i);
 						begin += i;
@@ -1069,8 +1225,12 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			}
 			return begin + length - foo;
 		}
-
-		int getShort() throws java.io.IOException {
+		/**
+		 * Get a short value.
+		 * @return a short value
+		 * @throws IOException on I/O error
+		 */
+		int getShort() throws IOException {
 			if ((inend - instart) < 2) {
 				read(2);
 			}
@@ -1079,8 +1239,12 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			s = ((s << 8) & 0xffff) | (inbuffer[instart++] & 0xff);
 			return s;
 		}
-
-		int getInt() throws java.io.IOException {
+		/**
+		 * Get an int value.
+		 * @return the int value
+		 * @throws IOException on I/O error
+		 */
+		int getInt() throws IOException {
 			if ((inend - instart) < 4) {
 				read(4);
 			}
@@ -1091,11 +1255,16 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			i = (i << 8) | (inbuffer[instart++] & 0xff);
 			return i;
 		}
-
-		void getPad(int n) throws java.io.IOException {
+		/**
+		 * Get padding.
+		 * @param n the number
+		 * @throws IOException on I/O error
+		 */
+		void getPad(int n) throws IOException {
 			int i;
 			while (n > 0) {
-				if ((i = inend - instart) < n) {
+				i = inend - instart;
+				if (i < n) {
 					n -= i;
 					instart += i;
 					read(n);
@@ -1105,12 +1274,17 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				break;
 			}
 		}
-
+		/**
+		 * Read a number of bytes.
+		 * @param n the number of bytes read
+		 * @throws IOException on I/O erro
+		 */
 		void read(int n) throws java.io.IOException {
 			if (n > inbuffer.length) {
 				n = inbuffer.length;
 			}
-			instart = inend = 0;
+			inend = 0;
+			instart = 0;
 			int i;
 			while (true) {
 				recpacket.setData(buf, 0, 1024);
@@ -1125,21 +1299,33 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				break;
 			}
 		}
-
-		public void close() throws java.io.IOException {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void close() throws IOException {
 			socket.close();
 		}
-
-		public int read() throws java.io.IOException {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int read() throws IOException {
 			return 0;
 		}
-
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
 		public int read(byte[] array, int begin, int length)
 				throws java.io.IOException {
 			return getByte(array, begin, length);
 		}
 	}
-
+	/**
+	 * Main program.
+	 * @param arg playlist elements
+	 */
 	public static void main(String[] arg) {
 
 		JFrame frame = new JFrame("JOrbisPlayer");
@@ -1154,7 +1340,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 		});
 
 		JOrbisPlayer player = new JOrbisPlayer();
-		player.running_as_applet = false;
+		player.runningAsApplet = false;
 
 		if (arg.length > 0) {
 			for (int i = 0; i < arg.length; i++) {

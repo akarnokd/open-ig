@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -27,57 +34,76 @@
 package com.jcraft.jorbis;
 
 import com.jcraft.jogg.Buffer;
-
+/**
+ * Mapping zero.
+ * Comments and style corrections by karnokd.
+ * @author ymnk
+ *
+ */
 class Mapping0 extends FuncMapping {
+	/** Sequence. */
 	static int seq = 0;
-
-	void free_info(Object imap) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	void freeInfo(Object imap) {
 	};
-
-	void free_look(Object imap) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	void freeLook(Object imap) {
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	Object look(DspState vd, InfoMode vm, Object m) {
 		// System.err.println("Mapping0.look");
 		Info vi = vd.vi;
 		LookMapping0 look = new LookMapping0();
-		InfoMapping0 info = look.map = (InfoMapping0) m;
+		InfoMapping0 info = (InfoMapping0)m;
+		look.map = info;
 		look.mode = vm;
 
-		look.time_look = new Object[info.submaps];
-		look.floor_look = new Object[info.submaps];
-		look.residue_look = new Object[info.submaps];
+		look.timeLook = new Object[info.submaps];
+		look.floorLook = new Object[info.submaps];
+		look.residueLook = new Object[info.submaps];
 
-		look.time_func = new FuncTime[info.submaps];
-		look.floor_func = new FuncFloor[info.submaps];
-		look.residue_func = new FuncResidue[info.submaps];
+		look.timeFunc = new FuncTime[info.submaps];
+		look.floorFunc = new FuncFloor[info.submaps];
+		look.residueFunc = new FuncResidue[info.submaps];
 
 		for (int i = 0; i < info.submaps; i++) {
 			int timenum = info.timesubmap[i];
 			int floornum = info.floorsubmap[i];
 			int resnum = info.residuesubmap[i];
 
-			look.time_func[i] = FuncTime.time_P[vi.time_type[timenum]];
-			look.time_look[i] = look.time_func[i].look(vd, vm,
-					vi.time_param[timenum]);
-			look.floor_func[i] = FuncFloor.floor_P[vi.floor_type[floornum]];
-			look.floor_look[i] = look.floor_func[i].look(vd, vm,
-					vi.floor_param[floornum]);
-			look.residue_func[i] = FuncResidue.residue_P[vi.residue_type[resnum]];
-			look.residue_look[i] = look.residue_func[i].look(vd, vm,
-					vi.residue_param[resnum]);
+			look.timeFunc[i] = FuncTime.timeP[vi.timeType[timenum]];
+			look.timeLook[i] = look.timeFunc[i].look(vd, vm,
+					vi.timeParam[timenum]);
+			look.floorFunc[i] = FuncFloor.floorP[vi.floorType[floornum]];
+			look.floorLook[i] = look.floorFunc[i].look(vd, vm,
+					vi.floorParam[floornum]);
+			look.residueFunc[i] = FuncResidue.residueP[vi.residueType[resnum]];
+			look.residueLook[i] = look.residueFunc[i].look(vd, vm,
+					vi.residueParam[resnum]);
 
 		}
 
-		if (vi.psys != 0 && vd.analysisp != 0) {
-			// ??
-		}
+//		if (vi.psys != 0 && vd.analysisp != 0) {
+//			// ??
+//		}
 
 		look.ch = vi.channels;
 
 		return (look);
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	void pack(Info vi, Object imap, Buffer opb) {
 		InfoMapping0 info = (InfoMapping0) imap;
 
@@ -96,12 +122,12 @@ class Mapping0 extends FuncMapping {
 			opb.write(0, 1);
 		}
 
-		if (info.coupling_steps > 0) {
+		if (info.couplingSteps > 0) {
 			opb.write(1, 1);
-			opb.write(info.coupling_steps - 1, 8);
-			for (int i = 0; i < info.coupling_steps; i++) {
-				opb.write(info.coupling_mag[i], Util.ilog2(vi.channels));
-				opb.write(info.coupling_ang[i], Util.ilog2(vi.channels));
+			opb.write(info.couplingSteps - 1, 8);
+			for (int i = 0; i < info.couplingSteps; i++) {
+				opb.write(info.couplingMag[i], Util.ilog2(vi.channels));
+				opb.write(info.couplingAng[i], Util.ilog2(vi.channels));
 			}
 		} else {
 			opb.write(0, 1);
@@ -111,8 +137,9 @@ class Mapping0 extends FuncMapping {
 
 		/* we don't write the channel submappings if we only have one... */
 		if (info.submaps > 1) {
-			for (int i = 0; i < vi.channels; i++)
+			for (int i = 0; i < vi.channels; i++) {
 				opb.write(info.chmuxlist[i], 4);
+			}
 		}
 		for (int i = 0; i < info.submaps; i++) {
 			opb.write(info.timesubmap[i], 8);
@@ -120,8 +147,10 @@ class Mapping0 extends FuncMapping {
 			opb.write(info.residuesubmap[i], 8);
 		}
 	}
-
-	// also responsible for range checking
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	Object unpack(Info vi, Buffer opb) {
 		InfoMapping0 info = new InfoMapping0();
 
@@ -132,14 +161,15 @@ class Mapping0 extends FuncMapping {
 		}
 
 		if (opb.read(1) != 0) {
-			info.coupling_steps = opb.read(8) + 1;
+			info.couplingSteps = opb.read(8) + 1;
 
-			for (int i = 0; i < info.coupling_steps; i++) {
-				int testM = info.coupling_mag[i] = opb.read(Util
+			for (int i = 0; i < info.couplingSteps; i++) {
+				int testM = opb.read(Util
 						.ilog2(vi.channels));
-				int testA = info.coupling_ang[i] = opb.read(Util
+				info.couplingMag[i] = testM;
+				int testA = opb.read(Util
 						.ilog2(vi.channels));
-
+				info.couplingAng[i] = testA;
 				if (testM < 0 || testA < 0 || testM == testA
 						|| testM >= vi.channels || testA >= vi.channels) {
 					// goto err_out;
@@ -183,20 +213,27 @@ class Mapping0 extends FuncMapping {
 		}
 		return info;
 	}
-
-	float[][] pcmbundle = null;
-	int[] zerobundle = null;
-	int[] nonzero = null;
-	Object[] floormemo = null;
-
+	/** PCM bundle. */
+	float[][] pcmbundle;
+	/** Zero bundle. */
+	int[] zerobundle;
+	/** Non zero. */
+	int[] nonzero;
+	/** Flor memo. */
+	Object[] floormemo;
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	synchronized int inverse(Block vb, Object l) {
 		DspState vd = vb.vd;
 		Info vi = vd.vi;
 		LookMapping0 look = (LookMapping0) l;
 		InfoMapping0 info = look.map;
 		InfoMode mode = look.mode;
-		int n = vb.pcmend = vi.blocksizes[vb.w];
-
+		int n = vi.blocksizes[vb.w];
+		vb.pcmend = n;
+		
 		float[] window = vd.window[vb.w][vb.lW][vb.nW][mode.windowtype];
 		if (pcmbundle == null || pcmbundle.length < vi.channels) {
 			pcmbundle = new float[vi.channels][];
@@ -215,8 +252,8 @@ class Mapping0 extends FuncMapping {
 			float[] pcm = vb.pcm[i];
 			int submap = info.chmuxlist[i];
 
-			floormemo[i] = look.floor_func[submap].inverse1(vb,
-					look.floor_look[submap], floormemo[i]);
+			floormemo[i] = look.floorFunc[submap].inverse1(vb,
+					look.floorLook[submap], floormemo[i]);
 			if (floormemo[i] != null) {
 				nonzero[i] = 1;
 			} else {
@@ -228,36 +265,36 @@ class Mapping0 extends FuncMapping {
 
 		}
 
-		for (int i = 0; i < info.coupling_steps; i++) {
-			if (nonzero[info.coupling_mag[i]] != 0
-					|| nonzero[info.coupling_ang[i]] != 0) {
-				nonzero[info.coupling_mag[i]] = 1;
-				nonzero[info.coupling_ang[i]] = 1;
+		for (int i = 0; i < info.couplingSteps; i++) {
+			if (nonzero[info.couplingMag[i]] != 0
+					|| nonzero[info.couplingAng[i]] != 0) {
+				nonzero[info.couplingMag[i]] = 1;
+				nonzero[info.couplingAng[i]] = 1;
 			}
 		}
 
 		// recover the residue, apply directly to the spectral envelope
 
 		for (int i = 0; i < info.submaps; i++) {
-			int ch_in_bundle = 0;
+			int chInBundle = 0;
 			for (int j = 0; j < vi.channels; j++) {
 				if (info.chmuxlist[j] == i) {
 					if (nonzero[j] != 0) {
-						zerobundle[ch_in_bundle] = 1;
+						zerobundle[chInBundle] = 1;
 					} else {
-						zerobundle[ch_in_bundle] = 0;
+						zerobundle[chInBundle] = 0;
 					}
-					pcmbundle[ch_in_bundle++] = vb.pcm[j];
+					pcmbundle[chInBundle++] = vb.pcm[j];
 				}
 			}
 
-			look.residue_func[i].inverse(vb, look.residue_look[i], pcmbundle,
-					zerobundle, ch_in_bundle);
+			look.residueFunc[i].inverse(vb, look.residueLook[i], pcmbundle,
+					zerobundle, chInBundle);
 		}
 
-		for (int i = info.coupling_steps - 1; i >= 0; i--) {
-			float[] pcmM = vb.pcm[info.coupling_mag[i]];
-			float[] pcmA = vb.pcm[info.coupling_ang[i]];
+		for (int i = info.couplingSteps - 1; i >= 0; i--) {
+			float[] pcmM = vb.pcm[info.couplingMag[i]];
+			float[] pcmA = vb.pcm[info.couplingAng[i]];
 
 			for (int j = 0; j < n / 2; j++) {
 				float mag = pcmM[j];
@@ -288,7 +325,7 @@ class Mapping0 extends FuncMapping {
 		for (int i = 0; i < vi.channels; i++) {
 			float[] pcm = vb.pcm[i];
 			int submap = info.chmuxlist[i];
-			look.floor_func[submap].inverse2(vb, look.floor_look[submap],
+			look.floorFunc[submap].inverse2(vb, look.floorLook[submap],
 					floormemo[i], pcm);
 		}
 
@@ -323,20 +360,31 @@ class Mapping0 extends FuncMapping {
 		// all done!
 		return (0);
 	}
-
+	/**
+	 * Info mapping 0.
+	 * Comments and style corrections by karnokd.
+	 * @author ymnk
+	 */
 	class InfoMapping0 {
+		/** Sub maps. */
 		int submaps; // <= 16
+		/** Up to 256 channels in a Vorbis stream. */
 		int[] chmuxlist = new int[256]; // up to 256 channels in a Vorbis stream
-
+		/** Time submap. */
 		int[] timesubmap = new int[16]; // [mux]
-		int[] floorsubmap = new int[16]; // [mux] submap to floors
-		int[] residuesubmap = new int[16]; // [mux] submap to residue
-		int[] psysubmap = new int[16]; // [mux]; encode only
-
-		int coupling_steps;
-		int[] coupling_mag = new int[256];
-		int[] coupling_ang = new int[256];
-
+		/** Submap to floors. */
+		int[] floorsubmap = new int[16]; // [mux] 
+		/** Submap to residue. */
+		int[] residuesubmap = new int[16]; // [mux] 
+		/** Encode only. */
+		int[] psysubmap = new int[16]; // [mux]; 
+		/** Coupling steps. */
+		int couplingSteps;
+		/** Coupling mag. */
+		int[] couplingMag = new int[256];
+		/** Coupling ang. */
+		int[] couplingAng = new int[256];
+		/** Free. */
 		void free() {
 			chmuxlist = null;
 			timesubmap = null;
@@ -344,28 +392,44 @@ class Mapping0 extends FuncMapping {
 			residuesubmap = null;
 			psysubmap = null;
 
-			coupling_mag = null;
-			coupling_ang = null;
+			couplingMag = null;
+			couplingAng = null;
 		}
 	}
-
+	/**
+	 * Look mapping 0. 
+	 * Comments and style corrections by karnokd.
+	 * @author ymnk
+	 */
 	class LookMapping0 {
+		/** Mode. */
 		InfoMode mode;
+		/** Info mapping. */
 		InfoMapping0 map;
-		Object[] time_look;
-		Object[] floor_look;
-		Object[] floor_state;
-		Object[] residue_look;
-		PsyLook[] psy_look;
-
-		FuncTime[] time_func;
-		FuncFloor[] floor_func;
-		FuncResidue[] residue_func;
-
+		/** Time look. */
+		Object[] timeLook;
+		/** Floor look. */
+		Object[] floorLook;
+		/** Flor state. */
+		Object[] floorState;
+		/** Residue look. */
+		Object[] residueLook;
+		/** Psy look. */
+		PsyLook[] psyLook;
+		/** Time functions. */
+		FuncTime[] timeFunc;
+		/** Floor functions. */
+		FuncFloor[] floorFunc;
+		/** Residue functions. */
+		FuncResidue[] residueFunc;
+		/** Channel. */
 		int ch;
+		/** Decay. */
 		float[][] decay;
-		int lastframe; // if a different mode is called, we need to
-		// invalidate decay and floor state
+		/**
+		 * If a different mode is called, we need to
+		 * invalidate decay and floor state.
+		 */
+		int lastframe;
 	}
-
 }

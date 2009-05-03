@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,10 +32,18 @@
  */
 
 package com.jcraft.jorbis;
-
+/**
+ * Info mode.
+ * Comments and style corrections by karnokd.
+ * @author ymnk
+ */
 class InfoMode {
+	/** Block flag. */
 	int blockflag;
+	/** Window type. */
 	int windowtype;
+	/** Transform type. */
 	int transformtype;
+	/** Mapping. */
 	int mapping;
 }

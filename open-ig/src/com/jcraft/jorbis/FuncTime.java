@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -27,19 +34,52 @@
 package com.jcraft.jorbis;
 
 import com.jcraft.jogg.Buffer;
-
+/**
+ * Function time.
+ * Comments and style correction by karnokd.
+ * @author ymnk
+ */
 abstract class FuncTime {
-	public static FuncTime[] time_P = { new Time0() };
-
+	/** Time instances. */
+	static FuncTime[] timeP = { new Time0() };
+	/**
+	 * Pack.
+	 * @param i object
+	 * @param opb buffer
+	 */
 	abstract void pack(Object i, Buffer opb);
-
+	/**
+	 * Unpack.
+	 * @param vi info
+	 * @param opb buffer
+	 * @return object
+	 */
 	abstract Object unpack(Info vi, Buffer opb);
-
+	/**
+	 * Look.
+	 * @param vd dsp state
+	 * @param vm info mode
+	 * @param i object
+	 * @return object
+	 */
 	abstract Object look(DspState vd, InfoMode vm, Object i);
-
-	abstract void free_info(Object i);
-
-	abstract void free_look(Object i);
-
+	/**
+	 * Free info.
+	 * @param i object
+	 */
+	abstract void freeInfo(Object i);
+	/**
+	 * Free look.
+	 * @param i object
+	 */
+	abstract void freeLook(Object i);
+	/**
+	 * Inverse.
+	 * @param vb block
+	 * @param i object
+	 * @param in float array
+	 * @param out float array
+	 * @return int
+	 */
 	abstract int inverse(Block vb, Object i, float[] in, float[] out);
 }

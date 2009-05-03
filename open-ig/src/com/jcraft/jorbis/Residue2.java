@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,17 +32,27 @@
  */
 
 package com.jcraft.jorbis;
-
+/**
+ * Floor function abstraction.
+ * Comments and style correction by karnokd.
+ * @author ymnk
+ */
 class Residue2 extends Residue0 {
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	int inverse(Block vb, Object vl, float[][] in, int[] nonzero, int ch) {
 		int i = 0;
-		for (i = 0; i < ch; i++)
-			if (nonzero[i] != 0)
+		for (i = 0; i < ch; i++) {
+			if (nonzero[i] != 0) {
 				break;
-		if (i == ch)
+			}
+		}
+		if (i == ch) {
 			return (0); /* no nonzero vectors */
-
-		return (_2inverse(vb, vl, in, ch));
+		}
+		
+		return (f2inverse(vb, vl, in, ch));
 	}
 }

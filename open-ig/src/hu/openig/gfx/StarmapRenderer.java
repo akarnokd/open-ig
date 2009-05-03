@@ -948,56 +948,73 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	}
 	/** Initialize button actions. */
 	private void initActions() {
-		buttons.add(btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); }}));
-		buttons.add(btnColonyPrev = new Btn());
-		buttons.add(btnColonyNext = new Btn());
-		buttons.add(btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); }}));
-		buttons.add(btnEquipmentPrev = new Btn());
-		buttons.add(btnEquipmentNext = new Btn());
-		buttons.add(btnInfo = new Btn(new BtnAction() { public void invoke() { doInfoClick(); }}));
-		buttons.add(btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); }}));
-		buttons.add(btnColonize = new Btn());
-		buttons.add(btnName = new Btn(new BtnAction() {
-			@Override
-			public void invoke() {
-				doNameChange();
-			}
-		}));
-		btnMagnify = new Btn(new BtnAction() {
-			@Override
-			public void invoke() {
-				doMagnify();
-			}
-		});
-		toggleButtons.add(btnFleets = new Btn());
-		toggleButtons.add(btnGrids = new Btn(new BtnAction() { public void invoke() { doGridsClick(); }}));
-		toggleButtons.add(btnRadars = new Btn());
-		toggleButtons.add(btnStars = new Btn());
+		btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); } });
+		buttons.add(btnColony);
+		btnColonyPrev = new Btn();
+		buttons.add(btnColonyPrev);
+		btnColonyNext = new Btn();
+		buttons.add(btnColonyNext);
+		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
+		buttons.add(btnEquipment);
+		btnEquipmentPrev = new Btn();
+		buttons.add(btnEquipmentPrev);
+		btnEquipmentNext = new Btn();
+		buttons.add(btnEquipmentNext);
+		btnInfo = new Btn(new BtnAction() { public void invoke() { doInfoClick(); } });
+		buttons.add(btnInfo);
+		btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); } });
+		buttons.add(btnBridge);
+		btnColonize = new Btn();
+		buttons.add(btnColonize);
+		btnName = new Btn(new BtnAction() { @Override public void invoke() { doNameChange(); } });
+		buttons.add(btnName);
+		btnMagnify = new Btn(new BtnAction() { @Override public void invoke() {	doMagnify(); } });
+		btnFleets = new Btn();
+		toggleButtons.add(btnFleets);
+		btnGrids = new Btn(new BtnAction() { public void invoke() { doGridsClick(); } });
+		toggleButtons.add(btnGrids);
+		btnRadars = new Btn();
+		toggleButtons.add(btnRadars);
+		btnStars = new Btn();
+		toggleButtons.add(btnStars);
 		
 		btnGrids.down = true;
 		btnRadars.down = true;
 		
-		toggleButtons.add(btnMove = new Btn());
-		toggleButtons.add(btnAttack = new Btn());
-		toggleButtons.add(btnStop = new Btn());
-		
-		buttons.add(btnSatellite = new Btn());
-		buttons.add(btnSpySat1 = new Btn());
-		buttons.add(btnSpySat2 = new Btn());
-		buttons.add(btnHubble2 = new Btn());
+		btnMove = new Btn();
+		toggleButtons.add(btnMove);
+		btnAttack = new Btn();
+		toggleButtons.add(btnAttack);
+		btnStop = new Btn();
+		toggleButtons.add(btnStop);
+		btnSatellite = new Btn();
+		buttons.add(btnSatellite);
+		btnSpySat1 = new Btn();
+		buttons.add(btnSpySat1);
+		btnSpySat2 = new Btn();
+		buttons.add(btnSpySat2);
+		btnHubble2 = new Btn();
+		buttons.add(btnHubble2);
 		
 		btnSatellite.visible = true;
 		btnSpySat1.visible = true;
 		btnSpySat2.visible = true;
 		btnHubble2.visible = true;
-		
 	}
+	/** Grids click action. */
 	protected void doGridsClick() {
 		repaint(mapRect);
 	}
+	/** Do magnify operation. */
 	private void doMagnify() {
 		doZoom(magnifyDirection, mapRect.width / 2, mapRect.y + mapRect.height / 2);
 	}
+	/**
+	 * Do zoom operation. 
+	 * @param direction zoom direction, true means in
+	 * @param x the x coordinate to zoom in/out around
+	 * @param y the y coordinate to zoom in/out around
+	 */
 	private void doZoom(boolean direction, int x, int y) {
 		float currFactor = magnifyFactors[magnifyIndex];
 		if (direction && magnifyIndex < magnifyFactors.length - 1) {
@@ -1016,10 +1033,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		float vpp = (vp * nextFactor / 30 - y + mapRect.y) / vscrollFactor;
 		scroll(hpp, vpp);
 	}
+	/** Perform display names toggle. */
 	private void doNameChange() {
 		nameMode = (nameMode + 1) % 4;
 		repaint(btnName.rect);
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		Point pt = e.getPoint();
@@ -1044,19 +1065,23 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			}
 		}
 	}
+	/** Perform colony click action. */
 	private void doColonyClick() {
 		uiSound.playSound("Colony");
 		fadeTimer.start();
 	}
+	/** Equipment colony click action. */
 	private void doEquipmentClick() {
 		uiSound.playSound("Equipment");
 	}
+	/** Info click action. */
 	private void doInfoClick() {
 		uiSound.playSound("Information");
 		if (onInformationClicked != null) {
 			onInformationClicked.invoke();
 		}
 	}
+	/** Bridge click action. */
 	private void doBridgeClick() {
 		uiSound.playSound("Bridge");
 	}
