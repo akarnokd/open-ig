@@ -59,7 +59,7 @@ public final class AnimPlay {
 	/** The replay current item. */
 	private static JMenuItem menuReplay;
 	/** The last opened file directory. */
-	private static File lastPath = new File("c:/games/ighu");
+	private static File lastPath;
 	/** Stop the playback. */
 	private static volatile boolean stop;
 	/** Current file. */
@@ -189,7 +189,7 @@ public final class AnimPlay {
 		try {
 			AudioThread ad = new AudioThread();
 			ad.start();
-			FileInputStream rf = new FileInputStream(f);
+			FileInputStream rf = null;
 			try {
 				final SpidyAniFile saf = new SpidyAniFile();
 //				saf.open(rf);
@@ -291,6 +291,11 @@ public final class AnimPlay {
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
 			} finally {
+				try {
+					rf.close();
+				} catch (IOException ex) {
+					// ignored
+				}
 				if (stop) {
 					ad.stopPlaybackNow();
 				}
@@ -301,7 +306,6 @@ public final class AnimPlay {
 					e.printStackTrace();
 				}
 				stop = false;
-				rf.close();
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -323,6 +327,7 @@ public final class AnimPlay {
 	public static void main(String[] args) throws IOException {
 		String filename = null;
 		if (args.length == 0) {
+			lastPath = new File("/games/ighu");
 			filename = showOpenDialog();
 		} else {
 			filename = args[0];

@@ -39,19 +39,19 @@ package com.jcraft.jorbis;
  */
 class PsyLook {
 	/** Number. */
-	int n;
+//	int n;
 	/** Psy info. */
-	PsyInfo vi;
+//	PsyInfo vi;
 	/** Tone curves. */
-	float[][][] tonecurves;
+//	float[][][] tonecurves;
 	/** Peak att. */
-	float[][] peakatt;
+//	float[][] peakatt;
 	/** Noise curves. */
-	float[][][] noisecurves;
+//	float[][][] noisecurves;
 	/** Ath. */
-	float[] ath;
+//	float[] ath;
 	/** Octave. */
-	int[] octave;
+//	int[] octave;
 	/** 
 	 * Init.
 	 * @param vi psy info

@@ -55,7 +55,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Vector;
@@ -98,7 +97,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 	/** UDP base address. */
 	String udpBaddress = null;
 	/** Applet context. */
-	static AppletContext acontext = null;
+	AppletContext acontext = null;
 	/** Buffer size. */
 	static final int BUFSIZE = 4096 * 2;
 	/** Conversion size. */
@@ -487,7 +486,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 							outputLine.stop();
 							outputLine.close();
 							outputLine = null;
-						} catch (Exception ee) {
+						} catch (IOException ee) {
 						}
 						return;
 					}
@@ -586,9 +585,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 		oy.clear();
 
 		try {
-			if (bitStream != null) {
-				bitStream.close();
-			}
+			bitStream.close();
 		} catch (IOException e) {
 		}
 	}
@@ -723,7 +720,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				if (bitStream != null) {
 					bitStream.close();
 				}
-			} catch (Exception e) {
+			} catch (IOException e) {
 			}
 		}
 		player = null;
@@ -770,14 +767,18 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				BufferedReader stats = new BufferedReader(
 						new InputStreamReader(url.openConnection()
 								.getInputStream()));
-				while (true) {
-					String bar = stats.readLine();
-					if (bar == null) {
-						break;
+				try {
+					while (true) {
+						String bar = stats.readLine();
+						if (bar == null) {
+							break;
+						}
+						System.out.println(bar);
 					}
-					System.out.println(bar);
+				} finally {
+					stats.close();
 				}
-			} catch (Exception ee) {
+			} catch (IOException ee) {
 				// System.err.println(ee);
 			}
 			return;
@@ -938,7 +939,9 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				return null;
 			}
 		}
-
+		if (pstream == null) {
+			return null;
+		}
 		String line = null;
 		while (true) {
 			try {
@@ -987,12 +990,14 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			try {
 				pstream = new FileInputStream(System.getProperty("user.dir")
 						+ System.getProperty("file.separator") + m3u);
-			} catch (Exception ee) {
+			} catch (IOException ee) {
 				System.err.println(ee);
 				return null;
 			}
 		}
-
+		if (pstream == null) {
+			return null;
+		}
 		String line = null;
 		while (true) {
 			try {
@@ -1034,14 +1039,14 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 				}
 				URLConnection urlc = url.openConnection();
 				is = urlc.getInputStream();
-			} catch (Exception ee) {
+			} catch (IOException ee) {
 			}
 			if (is == null && !runningAsApplet) {
 				try {
 					is = new FileInputStream(System.getProperty("user.dir")
 							+ System.getProperty("file.separator")
 							+ playlistfile);
-				} catch (Exception ee) {
+				} catch (IOException ee) {
 				}
 			}
 
@@ -1127,36 +1132,36 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 	 * UDP I/O class.
 	 * @author ymnk
 	 */
-	class UDPIO extends InputStream {
+	static class UDPIO extends InputStream {
 		/** Target address. */
-		InetAddress address;
+//		InetAddress address;
 		/** The UDP socket. */
 		DatagramSocket socket = null;
 		/** SND packet. */
-		DatagramPacket sndpacket;
+//		DatagramPacket sndpacket;
 		/** REC packet. */
 		DatagramPacket recpacket;
 		/** Buffer. */
 		byte[] buf = new byte[1024];
 		// String host;
 		/** Port. */
-		int port;
+//		int port;
 		/** Input buffer. */
 		byte[] inbuffer = new byte[2048];
 		/** Output buffer. */
-		byte[] outbuffer = new byte[1024];
+//		byte[] outbuffer = new byte[1024];
 		/** Input start. */
 		int instart = 0;
 		/** Input end. */
 		int inend = 0;
 		/** Output index. */
-		int outindex = 0;
+//		int outindex = 0;
 		/**
 		 * Constructor.
 		 * @param port the port number
 		 */
 		UDPIO(int port) {
-			this.port = port;
+//			this.port = port;
 			try {
 				socket = new DatagramSocket(port);
 			} catch (Exception e) {
@@ -1280,9 +1285,10 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 		 * @throws IOException on I/O erro
 		 */
 		void read(int n) throws java.io.IOException {
-			if (n > inbuffer.length) {
-				n = inbuffer.length;
-			}
+//			n is not used
+//			if (n > inbuffer.length) {
+//				n = inbuffer.length;
+//			}
 			inend = 0;
 			instart = 0;
 			int i;

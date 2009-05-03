@@ -33,6 +33,7 @@
 
 package com.jcraft.jorbis;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -90,7 +91,7 @@ public class VorbisFile {
 	/** Current offset. */
 	long offset;
 	/** End. */
-	long end;
+//	long end;
 	/** Sync state. */
 	SyncState oy = new SyncState();
 	/** Links. */
@@ -752,8 +753,15 @@ public class VorbisFile {
 			if (whence == 0) {
 				fis.reset();
 			}
-			fis.skip(off);
-		} catch (Exception e) {
+			long count = off;
+			while (count > 0) {
+				long c = fis.skip(count);
+				if (c < 0) {
+					throw new EOFException();
+				}
+				count -= c;
+			}
+		} catch (IOException e) {
 			return -1;
 		}
 		return 0;
@@ -1520,18 +1528,18 @@ public class VorbisFile {
 	 * Comments and style correction by karnokd.
 	 * @author ymnk
 	 */
-	class SeekableInputStream extends InputStream {
+	static class SeekableInputStream extends InputStream {
 		/** The random access file to use. */
 		RandomAccessFile raf = null;
 		/** Open mode. */
-		final String mode = "r";
+		static final String MODE = "r";
 		/**
 		 * Constructor. Opens the supplied file.
 		 * @param file the file to open
 		 * @throws IOException if there is problem with the file
 		 */
 		SeekableInputStream(String file) throws IOException {
-			raf = new java.io.RandomAccessFile(file, mode);
+			raf = new java.io.RandomAccessFile(file, MODE);
 		}
 		/**
 		 * {@inheritDoc}

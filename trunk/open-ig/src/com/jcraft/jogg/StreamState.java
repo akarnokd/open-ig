@@ -64,7 +64,7 @@ public class StreamState {
 	/** Working space for header encode. */
 	byte[] header = new byte[282]; 
 	/** Header fill. */
-	int headerFill;
+//	int headerFill;
 	/**
 	 * Set when we have buffered the last packet in the logical
 	 * bitstream.
@@ -546,7 +546,7 @@ public class StreamState {
 		og.headerBase = header;
 		og.header = 0;
 		og.headerLen = vals + 27; 
-		headerFill = vals + 27;
+//		headerFill = vals + 27;
 		og.bodyBase = bodyData;
 		og.body = bodyReturned;
 		og.bodyLen = bytes;
@@ -600,7 +600,7 @@ public class StreamState {
 		lacingPacket = 0;
 		lacingReturned = 0;
 
-		headerFill = 0;
+//		headerFill = 0;
 
 		endOfStream = 0;
 		beginOfStream = 0;

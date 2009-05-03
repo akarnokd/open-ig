@@ -96,7 +96,7 @@ class Mapping0 extends FuncMapping {
 //			// ??
 //		}
 
-		look.ch = vi.channels;
+//		look.ch = vi.channels;
 
 		return (look);
 	}
@@ -365,7 +365,7 @@ class Mapping0 extends FuncMapping {
 	 * Comments and style corrections by karnokd.
 	 * @author ymnk
 	 */
-	class InfoMapping0 {
+	static class InfoMapping0 {
 		/** Sub maps. */
 		int submaps; // <= 16
 		/** Up to 256 channels in a Vorbis stream. */
@@ -377,7 +377,7 @@ class Mapping0 extends FuncMapping {
 		/** Submap to residue. */
 		int[] residuesubmap = new int[16]; // [mux] 
 		/** Encode only. */
-		int[] psysubmap = new int[16]; // [mux]; 
+//		int[] psysubmap = new int[16]; // [mux]; 
 		/** Coupling steps. */
 		int couplingSteps;
 		/** Coupling mag. */
@@ -390,7 +390,7 @@ class Mapping0 extends FuncMapping {
 			timesubmap = null;
 			floorsubmap = null;
 			residuesubmap = null;
-			psysubmap = null;
+//			psysubmap = null;
 
 			couplingMag = null;
 			couplingAng = null;
@@ -401,7 +401,7 @@ class Mapping0 extends FuncMapping {
 	 * Comments and style corrections by karnokd.
 	 * @author ymnk
 	 */
-	class LookMapping0 {
+	static class LookMapping0 {
 		/** Mode. */
 		InfoMode mode;
 		/** Info mapping. */
@@ -411,11 +411,11 @@ class Mapping0 extends FuncMapping {
 		/** Floor look. */
 		Object[] floorLook;
 		/** Flor state. */
-		Object[] floorState;
+//		Object[] floorState;
 		/** Residue look. */
 		Object[] residueLook;
 		/** Psy look. */
-		PsyLook[] psyLook;
+//		PsyLook[] psyLook;
 		/** Time functions. */
 		FuncTime[] timeFunc;
 		/** Floor functions. */
@@ -423,13 +423,13 @@ class Mapping0 extends FuncMapping {
 		/** Residue functions. */
 		FuncResidue[] residueFunc;
 		/** Channel. */
-		int ch;
+//		int ch;
 		/** Decay. */
-		float[][] decay;
+//		float[][] decay;
 		/**
 		 * If a different mode is called, we need to
 		 * invalidate decay and floor state.
 		 */
-		int lastframe;
+//		int lastframe;
 	}
 }

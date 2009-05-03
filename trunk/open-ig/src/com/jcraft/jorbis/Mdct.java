@@ -48,7 +48,7 @@ class Mdct {
 	/** Bit rev. */
 	int[] bitrev;
 	/** Scale. */
-	float scale;
+//	float scale;
 	/**
 	 * Init.
 	 * @param n number
@@ -93,7 +93,7 @@ class Mdct {
 			// bitrev[i*2]=((~acc)&mask)-1;
 			bitrev[i * 2 + 1] = acc;
 		}
-		scale = 4.f / n;
+//		scale = 4.f / n;
 	}
 	/** Clear. */
 	void clear() {

@@ -150,7 +150,8 @@ public final class ListPacFiles {
 						ImageIcon ii = new ImageIcon(PCXImage.parse(pe.data, -1));
 						imgLabel.setIcon(ii);
 						imgLabel.setText(String.format("%d x %d", ii.getIconWidth(), ii.getIconHeight()));
-					} else {
+					} else 
+					if (pe != null) {
 						imgLabel.setIcon(null);
 						try {
 							imgLabel.setText("<html>" + Texts.fixHungarianChars(new String(pe.data, "ISO-8859-1")).replaceAll("\r", "<br>"));

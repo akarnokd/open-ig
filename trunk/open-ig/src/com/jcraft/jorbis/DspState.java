@@ -60,19 +60,19 @@ public class DspState {
 	/** PCM returned. */
 	int pcmReturned;
 	/** Multipliers. */
-	float[] multipliers;
+//	float[] multipliers;
 	/** Envelope storage. */
-	int envelopeStorage;
+//	int envelopeStorage;
 	/** Envelope current. */
-	int envelopeCurrent;
+//	int envelopeCurrent;
 	/** EOF flag. */
-	int eofflag;
+//	int eofflag;
 	/** LW. */
 	int lW;
 	/** W. */
 	int w;
 	/** NW. */
-	int nW;
+//	int nW;
 	/** CenterW. */
 	int centerW;
 	/** Granule pos. */
@@ -102,11 +102,11 @@ public class DspState {
 	// memory and not others'; packet storage is always tracked.
 	// Cleared next call to a _dsp_ function
 	/** Header. */
-	byte[] header;
+//	byte[] header;
 	/** Header 1. */
-	byte[] header1;
+//	byte[] header1;
 	/** Header 2. */
-	byte[] header2;
+//	byte[] header2;
 	/** Constructor. */
 	public DspState() {
 		transform = new Object[2][];
@@ -307,7 +307,7 @@ public class DspState {
 
 		lW = w;
 		w = vb.w;
-		nW = -1;
+//		nW = -1;
 
 		glueBits += vb.glueBits;
 		timeBits += vb.timeBits;
@@ -392,9 +392,9 @@ public class DspState {
 
 		centerW = lCenterW;
 		pcmCurrent = endW;
-		if (vb.eofflag != 0) {
-			eofflag = 1;
-		}
+//		if (vb.eofflag != 0) {
+//			eofflag = 1;
+//		}
 		return (0);
 	}
 	/**
