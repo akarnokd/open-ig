@@ -7,8 +7,6 @@
  */
 package hu.openig.utils;
 
-import hu.openig.model.GMPlanet;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -135,7 +133,7 @@ public final class XML {
 	public static <T> T parseResource(String resource, XmlProcessor<T> processor) {
 		T result = null;
 		try {
-			InputStream in = GMPlanet.class.getResourceAsStream(resource);
+			InputStream in = XML.class.getResourceAsStream(resource);
 			if (in != null) {
 				try {
 					DocumentBuilderFactory db = DocumentBuilderFactory.newInstance();
