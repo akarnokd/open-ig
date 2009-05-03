@@ -220,7 +220,7 @@ public class OggMusic {
 				// return;
 			}
 
-			if (vi.synthesis_headerin(vc, op) < 0) {
+			if (vi.synthesisHeaderin(vc, op) < 0) {
 				// error case; not a vorbis header
 				System.err
 						.println("This Ogg bitstream does not contain Vorbis audio data.");
@@ -248,7 +248,7 @@ public class OggMusic {
 								// return;
 								break loop;
 							}
-							vi.synthesis_headerin(vc, op);
+							vi.synthesisHeaderin(vc, op);
 							i++;
 						}
 					}
@@ -280,7 +280,7 @@ public class OggMusic {
 
 			convsize = BUFSIZE / vi.channels;
 
-			vd.synthesis_init(vi);
+			vd.synthesisInit(vi);
 			vb.init(vd);
 
 			float[][][] lPcmf = new float[1][][];
@@ -333,9 +333,9 @@ public class OggMusic {
 								int samples;
 								if (vb.synthesis(op) == 0) { // test for
 									// success!
-									vd.synthesis_blockin(vb);
+									vd.synthesisBlockin(vb);
 								}
-								while ((samples = vd.synthesis_pcmout(lPcmf,
+								while ((samples = vd.synthesisPcmout(lPcmf,
 										lIndex)) > 0) {
 									float[][] pcmf = lPcmf[0];
 									int bout = (samples < convsize ? samples
@@ -366,7 +366,7 @@ public class OggMusic {
 									}
 									outputLine.write(convbuffer, 0, 2
 											* vi.channels * bout);
-									vd.synthesis_read(bout);
+									vd.synthesisRead(bout);
 								}
 							}
 						}

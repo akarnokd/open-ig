@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -27,8 +34,16 @@
 package com.jcraft.jorbis;
 
 import com.jcraft.jogg.Buffer;
-
+/**
+ * Residue. 
+ * Comments and style corrections by karnokd.
+ * @author ymnk
+ */
 class Residue0 extends FuncResidue {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	void pack(Object vr, Buffer opb) {
 		InfoResidue0 info = (InfoResidue0) vr;
 		int acc = 0;
@@ -63,7 +78,10 @@ class Residue0 extends FuncResidue {
 			opb.write(info.booklist[j], 8);
 		}
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	Object unpack(Info vi, Buffer opb) {
 		int acc = 0;
 		InfoResidue0 info = new InfoResidue0();
@@ -87,19 +105,22 @@ class Residue0 extends FuncResidue {
 		}
 
 		if (info.groupbook >= vi.books) {
-			free_info(info);
+			freeInfo(info);
 			return (null);
 		}
 
 		for (int j = 0; j < acc; j++) {
 			if (info.booklist[j] >= vi.books) {
-				free_info(info);
+				freeInfo(info);
 				return (null);
 			}
 		}
 		return (info);
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	Object look(DspState vd, InfoMode vm, Object vr) {
 		InfoResidue0 info = (InfoResidue0) vr;
 		LookResidue0 look = new LookResidue0();
@@ -121,8 +142,9 @@ class Residue0 extends FuncResidue {
 			int i = info.secondstages[j];
 			int stages = Util.ilog(i);
 			if (stages != 0) {
-				if (stages > maxstage)
+				if (stages > maxstage) {
 					maxstage = stages;
+				}
 				look.partbooks[j] = new int[stages];
 				for (int k = 0; k < stages; k++) {
 					if ((i & (1 << k)) != 0) {
@@ -149,42 +171,52 @@ class Residue0 extends FuncResidue {
 		}
 		return (look);
 	}
-
-	void free_info(Object i) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	void freeInfo(Object i) {
 	}
-
-	void free_look(Object i) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	void freeLook(Object i) {
 	}
-
-	private static int[][][] _01inverse_partword = new int[2][][]; // _01inverse
-																	// is
-																	// synchronized
-																	// for
-
-	// re-using partword
-	synchronized static int _01inverse(Block vb, Object vl, float[][] in,
+	/** Inverse partworld. is synchronized for re-using partword */
+	private static int[][][] m01inversePartword = new int[2][][]; 
+	/**
+	 * Inverse.
+	 * @param vb block
+	 * @param vl object
+	 * @param in float float array
+	 * @param ch int
+	 * @param decodepart int
+	 * @return int
+	 */
+	static synchronized int f01inverse(Block vb, Object vl, float[][] in,
 			int ch, int decodepart) {
 		int i, j, k, l, s;
 		LookResidue0 look = (LookResidue0) vl;
 		InfoResidue0 info = look.info;
 
 		// move all this setup out later
-		int samples_per_partition = info.grouping;
-		int partitions_per_word = look.phrasebook.dim;
+		int samplesPerPartition = info.grouping;
+		int partitionsPerWord = look.phrasebook.dim;
 		int n = info.end - info.begin;
 
-		int partvals = n / samples_per_partition;
-		int partwords = (partvals + partitions_per_word - 1)
-				/ partitions_per_word;
+		int partvals = n / samplesPerPartition;
+		int partwords = (partvals + partitionsPerWord - 1)
+				/ partitionsPerWord;
 
-		if (_01inverse_partword.length < ch) {
-			_01inverse_partword = new int[ch][][];
+		if (m01inversePartword.length < ch) {
+			m01inversePartword = new int[ch][][];
 		}
 
 		for (j = 0; j < ch; j++) {
-			if (_01inverse_partword[j] == null
-					|| _01inverse_partword[j].length < partwords) {
-				_01inverse_partword[j] = new int[partwords][];
+			if (m01inversePartword[j] == null
+					|| m01inversePartword[j].length < partwords) {
+				m01inversePartword[j] = new int[partwords][];
 			}
 		}
 
@@ -199,58 +231,66 @@ class Residue0 extends FuncResidue {
 						if (temp == -1) {
 							return (0);
 						}
-						_01inverse_partword[j][l] = look.decodemap[temp];
-						if (_01inverse_partword[j][l] == null) {
+						m01inversePartword[j][l] = look.decodemap[temp];
+						if (m01inversePartword[j][l] == null) {
 							return (0);
 						}
 					}
 				}
 
 				// now we decode residual values for the partitions
-				for (k = 0; k < partitions_per_word && i < partvals; k++, i++)
+				for (k = 0; k < partitionsPerWord && i < partvals; k++, i++) {
 					for (j = 0; j < ch; j++) {
-						int offset = info.begin + i * samples_per_partition;
-						int index = _01inverse_partword[j][l][k];
+						int offset = info.begin + i * samplesPerPartition;
+						int index = m01inversePartword[j][l][k];
 						if ((info.secondstages[index] & (1 << s)) != 0) {
 							CodeBook stagebook = look.fullbooks[look.partbooks[index][s]];
 							if (stagebook != null) {
 								if (decodepart == 0) {
 									if (stagebook.decodevsAdd(in[j], offset,
-											vb.opb, samples_per_partition) == -1) {
+											vb.opb, samplesPerPartition) == -1) {
 										return (0);
 									}
 								} else if (decodepart == 1) {
 									if (stagebook.decodevAdd(in[j], offset,
-											vb.opb, samples_per_partition) == -1) {
+											vb.opb, samplesPerPartition) == -1) {
 										return (0);
 									}
 								}
 							}
 						}
 					}
+				}
 			}
 		}
 		return (0);
 	}
-
-	static int[][] _2inverse_partword = null;
-
-	synchronized static int _2inverse(Block vb, Object vl, float[][] in, int ch) {
+	/** Inverse part word 2. */
+	static int[][] m2inversePartword;
+	/**
+	 * Inverse 2.
+	 * @param vb block
+	 * @param vl object
+	 * @param in float float array
+	 * @param ch int
+	 * @return int
+	 */
+	static synchronized int f2inverse(Block vb, Object vl, float[][] in, int ch) {
 		int i, k, l, s;
 		LookResidue0 look = (LookResidue0) vl;
 		InfoResidue0 info = look.info;
 
 		// move all this setup out later
-		int samples_per_partition = info.grouping;
-		int partitions_per_word = look.phrasebook.dim;
+		int samplesPerPartition = info.grouping;
+		int partitionsPerWord = look.phrasebook.dim;
 		int n = info.end - info.begin;
 
-		int partvals = n / samples_per_partition;
-		int partwords = (partvals + partitions_per_word - 1)
-				/ partitions_per_word;
+		int partvals = n / samplesPerPartition;
+		int partwords = (partvals + partitionsPerWord - 1)
+				/ partitionsPerWord;
 
-		if (_2inverse_partword == null || _2inverse_partword.length < partwords) {
-			_2inverse_partword = new int[partwords][];
+		if (m2inversePartword == null || m2inversePartword.length < partwords) {
+			m2inversePartword = new int[partwords][];
 		}
 		for (s = 0; s < look.stages; s++) {
 			for (i = 0, l = 0; i < partvals; l++) {
@@ -260,21 +300,21 @@ class Residue0 extends FuncResidue {
 					if (temp == -1) {
 						return (0);
 					}
-					_2inverse_partword[l] = look.decodemap[temp];
-					if (_2inverse_partword[l] == null) {
+					m2inversePartword[l] = look.decodemap[temp];
+					if (m2inversePartword[l] == null) {
 						return (0);
 					}
 				}
 
 				// now we decode residual values for the partitions
-				for (k = 0; k < partitions_per_word && i < partvals; k++, i++) {
-					int offset = info.begin + i * samples_per_partition;
-					int index = _2inverse_partword[l][k];
+				for (k = 0; k < partitionsPerWord && i < partvals; k++, i++) {
+					int offset = info.begin + i * samplesPerPartition;
+					int index = m2inversePartword[l][k];
 					if ((info.secondstages[index] & (1 << s)) != 0) {
 						CodeBook stagebook = look.fullbooks[look.partbooks[index][s]];
 						if (stagebook != null) {
 							if (stagebook.decodevvAdd(in, offset, ch, vb.opb,
-									samples_per_partition) == -1) {
+									samplesPerPartition) == -1) {
 								return (0);
 							}
 						}
@@ -284,7 +324,10 @@ class Residue0 extends FuncResidue {
 		}
 		return (0);
 	}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	int inverse(Block vb, Object vl, float[][] in, int[] nonzero, int ch) {
 		int used = 0;
 		for (int i = 0; i < ch; i++) {
@@ -292,47 +335,76 @@ class Residue0 extends FuncResidue {
 				in[used++] = in[i];
 			}
 		}
-		if (used != 0)
-			return (_01inverse(vb, vl, in, used, 0));
-		else
+		if (used != 0) {
+			return (f01inverse(vb, vl, in, used, 0));
+		} else {
 			return (0);
+		}
 	}
-
+	/**
+	 * Lookup residue 0.
+	 * Comments and style corrections by karnokd.
+	 * @author ymnk
+	 */
 	class LookResidue0 {
+		/** Info residue. */
 		InfoResidue0 info;
+		/** Map. */
 		int map;
-
+		/** Parts. */
 		int parts;
+		/** Stages. */
 		int stages;
+		/** Full books. */
 		CodeBook[] fullbooks;
+		/** Phrase book. */
 		CodeBook phrasebook;
+		/** Part books. */
 		int[][] partbooks;
-
+		/** Part values. */
 		int partvals;
+		/** Decode map. */
 		int[][] decodemap;
-
+		/** Post bits. */
 		int postbits;
+		/** Pharse bits. */
 		int phrasebits;
+		/** Frames. */
 		int frames;
 	}
-
+	/**
+	 * Info residue 0.
+	 * Block-partitioned VQ coded straight residue.
+	 * Comments and style corrections by karnokd.
+	 * @author ymnk
+	 */
 	class InfoResidue0 {
-		// block-partitioned VQ coded straight residue
+		/** Begin. */
 		int begin;
+		/** End. */
 		int end;
 
 		// first stage (lossless partitioning)
-		int grouping; // group n vectors per partition
-		int partitions; // possible codebooks for a partition
-		int groupbook; // huffbook for partitioning
-		int[] secondstages = new int[64]; // expanded out to pointers in lookup
-		int[] booklist = new int[256]; // list of second stage books
+		/** Group n vectors per partition. */
+		int grouping;
+		/** Possible codebooks for a partition. */
+		int partitions;
+		/** Huffbook for partitioning. */
+		int groupbook;
+		/** Expanded out to pointers in lookup. */
+		int[] secondstages = new int[64]; 
+		/** List of second stage books. */
+		int[] booklist = new int[256];
 
 		// encode-only heuristic settings
-		float[] entmax = new float[64]; // book entropy threshholds
-		float[] ampmax = new float[64]; // book amp threshholds
-		int[] subgrp = new int[64]; // book heuristic subgroup size
-		int[] blimit = new int[64]; // subgroup position limits
+		/** Book entropy threshholds. */
+		float[] entmax = new float[64];
+		/** Book amp threshholds. */
+		float[] ampmax = new float[64]; 
+		/** Book heuristic subgroup size. */
+		int[] subgrp = new int[64];
+		/** Subgroup position limits. */
+		int[] blimit = new int[64];
 	}
 
 }

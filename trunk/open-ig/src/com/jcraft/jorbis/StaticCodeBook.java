@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -27,37 +34,54 @@
 package com.jcraft.jorbis;
 
 import com.jcraft.jogg.Buffer;
-
+/**
+ * Static code book.
+ * Comments and style corrections by karnokd.
+ * @author ymnk
+ */
 class StaticCodeBook {
-	int dim; // codebook dimensions (elements per vector)
-	int entries; // codebook entries
-	int[] lengthlist; // codeword lengths in bits
+	/** Codebook dimensions (elements per vector). */
+	int dim; // 
+	/** Codebook entries. */
+	int entries;
+	/** Codeword lengths in bits. */
+	int[] lengthlist;
 
 	// mapping
-	int maptype; // 0=none
-	// 1=implicitly populated values from map column
-	// 2=listed arbitrary values
-
+	/** 
+	 * Mapping. 0=none, 1=implicitly populated values from map column,
+	 * 2=listed arbitrary values. 
+	 */
+	int maptype;
 	// The below does a linear, single monotonic sequence mapping.
-	int q_min; // packed 32 bit float; quant value 0 maps to minval
-	int q_delta; // packed 32 bit float; val 1 - val 0 == delta
-	int q_quant; // bits: 0 < quant <= 16
-	int q_sequencep; // bitflag
-
-	// additional information for log (dB) mapping; the linear mapping
-	// is assumed to actually be values in dB. encodebias is used to
-	// assign an error weight to 0 dB. We have two additional flags:
-	// zeroflag indicates if entry zero is to represent -Inf dB; negflag
-	// indicates if we're to represent negative linear values in a
-	// mirror of the positive mapping.
-
-	int[] quantlist; // map == 1: (int)(entries/dim) element column map
-
-	// map == 2: list of dim*entries quantized entry vals
-
+	/** Packed 32 bit float; quant value 0 maps to minval. */
+	int qMin; 
+	/** Packed 32 bit float; val 1 - val 0 == delta. */
+	int qDelta; 
+	/** Bits: 0 < quant <= 16. */
+	int qQuant; 
+	/** Bitflag. */
+	int qSequencep;
+	/**
+	 * Additional information for log (dB) mapping; the linear mapping
+	 * is assumed to actually be values in dB. encodebias is used to
+	 * assign an error weight to 0 dB. We have two additional flags:
+	 * zeroflag indicates if entry zero is to represent -Inf dB; negflag
+	 * indicates if we're to represent negative linear values in a
+	 * mirror of the positive mapping.
+	 * map == 1: (int)(entries/dim) element column map
+	 */
+	int[] quantlist;
+	/**
+	 * Constructor.
+	 */
 	StaticCodeBook() {
 	}
-
+	/**
+	 * Pack.
+	 * @param opb buffer
+	 * @return int
+	 */
 	int pack(Buffer opb) {
 		int i;
 		boolean ordered = false;
@@ -70,11 +94,13 @@ class StaticCodeBook {
 		// length random. Decide between the two now.
 
 		for (i = 1; i < entries; i++) {
-			if (lengthlist[i] < lengthlist[i - 1])
+			if (lengthlist[i] < lengthlist[i - 1]) {
 				break;
+			}
 		}
-		if (i == entries)
+		if (i == entries) {
 			ordered = true;
+		}
 
 		if (ordered) {
 			// length ordered. We only need to say how many codewords of
@@ -86,10 +112,10 @@ class StaticCodeBook {
 			opb.write(lengthlist[0] - 1, 5); // 1 to 32
 
 			for (i = 1; i < entries; i++) {
-				int _this = lengthlist[i];
-				int _last = lengthlist[i - 1];
-				if (_this > _last) {
-					for (int j = _last; j < _this; j++) {
+				int lThis = lengthlist[i];
+				int lLast = lengthlist[i - 1];
+				if (lThis > lLast) {
+					for (int j = lLast; j < lThis; j++) {
 						opb.write(i - count, Util.ilog(entries - count));
 						count = i;
 					}
@@ -105,8 +131,9 @@ class StaticCodeBook {
 			// here. The algorithmic mapping happens as usual, but the unused
 			// entry has no codeword.
 			for (i = 0; i < entries; i++) {
-				if (lengthlist[i] == 0)
+				if (lengthlist[i] == 0) {
 					break;
+				}
 			}
 
 			if (i == entries) {
@@ -144,32 +171,31 @@ class StaticCodeBook {
 			}
 
 			// values that define the dequantization
-			opb.write(q_min, 32);
-			opb.write(q_delta, 32);
-			opb.write(q_quant - 1, 4);
-			opb.write(q_sequencep, 1);
+			opb.write(qMin, 32);
+			opb.write(qDelta, 32);
+			opb.write(qQuant - 1, 4);
+			opb.write(qSequencep, 1);
 
-			{
-				int quantvals = 0;
-				switch (maptype) {
-				case 1:
-					// a single column of (c->entries/c->dim) quantized values
-					// for
-					// building a full value list algorithmically (square
-					// lattice)
-					quantvals = maptype1_quantvals();
-					break;
-				case 2:
-					// every value (c->entries*c->dim total) specified
-					// explicitly
-					quantvals = entries * dim;
-					break;
-				}
+			int quantvals = 0;
+			switch (maptype) {
+			case 1:
+				// a single column of (c->entries/c->dim) quantized values
+				// for
+				// building a full value list algorithmically (square
+				// lattice)
+				quantvals = maptype1Quantvals();
+				break;
+			case 2:
+				// every value (c->entries*c->dim total) specified
+				// explicitly
+				quantvals = entries * dim;
+				break;
+			default:
+			}
 
-				// quantized values
-				for (i = 0; i < quantvals; i++) {
-					opb.write(Math.abs(quantlist[i]), q_quant);
-				}
+			// quantized values
+			for (i = 0; i < quantvals; i++) {
+				opb.write(Math.abs(quantlist[i]), qQuant);
 			}
 			break;
 		default:
@@ -178,9 +204,12 @@ class StaticCodeBook {
 		}
 		return (0);
 	}
-
-	// unpacks a codebook from the packet buffer into the codebook struct,
-	// readies the codebook auxiliary structures for decode
+	/**
+	 * Unpacks a codebook from the packet buffer into the codebook struct,
+	 * readies the codebook auxiliary structures for decode.
+	 * @param opb buffer
+	 * @return int
+	 */
 	int unpack(Buffer opb) {
 		int i;
 		// memset(s,0,sizeof(static_codebook));
@@ -239,7 +268,6 @@ class StaticCodeBook {
 			break;
 		case 1:
 			// ordered
-		{
 			int length = opb.read(5) + 1;
 			lengthlist = new int[entries];
 
@@ -255,7 +283,6 @@ class StaticCodeBook {
 				}
 				length++;
 			}
-		}
 			break;
 		default:
 			// EOF
@@ -263,7 +290,8 @@ class StaticCodeBook {
 		}
 
 		// Do we have a mapping to unpack?
-		switch ((maptype = opb.read(4))) {
+		maptype = opb.read(4);
+		switch (maptype) {
 		case 0:
 			// no mapping
 			break;
@@ -271,32 +299,31 @@ class StaticCodeBook {
 		case 2:
 			// implicitly populated value mapping
 			// explicitly populated value mapping
-			q_min = opb.read(32);
-			q_delta = opb.read(32);
-			q_quant = opb.read(4) + 1;
-			q_sequencep = opb.read(1);
+			qMin = opb.read(32);
+			qDelta = opb.read(32);
+			qQuant = opb.read(4) + 1;
+			qSequencep = opb.read(1);
 
-			{
-				int quantvals = 0;
-				switch (maptype) {
-				case 1:
-					quantvals = maptype1_quantvals();
-					break;
-				case 2:
-					quantvals = entries * dim;
-					break;
-				}
+			int quantvals = 0;
+			switch (maptype) {
+			case 1:
+				quantvals = maptype1Quantvals();
+				break;
+			case 2:
+				quantvals = entries * dim;
+				break;
+			default:
+			}
 
-				// quantized values
-				quantlist = new int[quantvals];
-				for (i = 0; i < quantvals; i++) {
-					quantlist[i] = opb.read(q_quant);
-				}
-				if (quantlist[quantvals - 1] == -1) {
-					// goto _eofout;
-					clear();
-					return (-1);
-				}
+			// quantized values
+			quantlist = new int[quantvals];
+			for (i = 0; i < quantvals; i++) {
+				quantlist[i] = opb.read(qQuant);
+			}
+			if (quantlist[quantvals - 1] == -1) {
+				// goto _eofout;
+				clear();
+				return (-1);
 			}
 			break;
 		default:
@@ -311,11 +338,13 @@ class StaticCodeBook {
 		// vorbis_staticbook_clear(s);
 		// return(-1);
 	}
-
-	// there might be a straightforward one-line way to do the below
-	// that's portable and totally safe against roundoff, but I haven't
-	// thought of it. Therefore, we opt on the side of caution
-	private int maptype1_quantvals() {
+	/**
+	 * There might be a straightforward one-line way to do the below
+	 * that's portable and totally safe against roundoff, but I haven't
+	 * thought of it. Therefore, we opt on the side of caution
+	 * @return int
+	 */
+	private int maptype1Quantvals() {
 		int vals = (int) (Math.floor(Math.pow(entries, 1. / dim)));
 
 		// the above *should* be reliable, but we'll not assume that FP is
@@ -341,21 +370,22 @@ class StaticCodeBook {
 			}
 		}
 	}
-
+	/** Clear. */
 	void clear() {
 	}
-
-	// unpack the quantized list of values for encode/decode
-	// we need to deal with two map types: in map type 1, the values are
-	// generated algorithmically (each column of the vector counts through
-	// the values in the quant vector). in map type 2, all the values came
-	// in in an explicit list. Both value lists must be unpacked
+	/**
+	 * Unpack the quantized list of values for encode/decode
+	 * we need to deal with two map types: in map type 1, the values are
+	 * generated algorithmically (each column of the vector counts through
+	 * the values in the quant vector). in map type 2, all the values came
+	 * in in an explicit list. Both value lists must be unpacked
+	 * @return float array
+	 */
 	float[] unquantize() {
-
 		if (maptype == 1 || maptype == 2) {
 			int quantvals;
-			float mindel = float32_unpack(q_min);
-			float delta = float32_unpack(q_delta);
+			float mindel = float32Unpack(qMin);
+			float delta = float32Unpack(qDelta);
 			float[] r = new float[entries * dim];
 
 			// maptype 1 and 2 both use a quantized value vector, but
@@ -369,7 +399,7 @@ class StaticCodeBook {
 				// we'll have 'left over' entries; left over entries use zeroed
 				// values (and are wasted). So don't generate codebooks like
 				// that
-				quantvals = maptype1_quantvals();
+				quantvals = maptype1Quantvals();
 				for (int j = 0; j < entries; j++) {
 					float last = 0.f;
 					int indexdiv = 1;
@@ -377,8 +407,9 @@ class StaticCodeBook {
 						int index = (j / indexdiv) % quantvals;
 						float val = quantlist[index];
 						val = Math.abs(val) * delta + mindel + last;
-						if (q_sequencep != 0)
+						if (qSequencep != 0) {
 							last = val;
+						}
 						r[j * dim + k] = val;
 						indexdiv *= quantvals;
 					}
@@ -391,13 +422,15 @@ class StaticCodeBook {
 						float val = quantlist[j * dim + k];
 						// if((j*dim+k)==0){System.err.println(" | 0 -> "+val+" | ");}
 						val = Math.abs(val) * delta + mindel + last;
-						if (q_sequencep != 0)
+						if (qSequencep != 0) {
 							last = val;
+						}
 						r[j * dim + k] = val;
 						// if((j*dim+k)==0){System.err.println(" $ r[0] -> "+r[0]+" | ");}
 					}
 				}
 				// System.err.println("\nr[0]="+r[0]);
+			default:
 			}
 			return (r);
 		}
@@ -407,13 +440,19 @@ class StaticCodeBook {
 	// 32 bit float (not IEEE; nonnormalized mantissa +
 	// biased exponent) : neeeeeee eeemmmmm mmmmmmmm mmmmmmmm
 	// Why not IEEE? It's just not that important here.
-
+	/** VQ f exp. */
 	static final int VQ_FEXP = 10;
+	/** VQ fman. */
 	static final int VQ_FMAN = 21;
-	static final int VQ_FEXP_BIAS = 768; // bias toward values smaller than 1.
-
-	// doesn't currently guard under/overflow
-	static long float32_pack(float val) {
+	/** Bias toward values smaller than 1. */
+	static final int VQ_FEXP_BIAS = 768;
+	/**
+	 * Float pack.
+	 * Doesn't currently guard under/overflow
+	 * @param val value
+	 * @return value
+	 */
+	static long float32Pack(float val) {
 		int sign = 0;
 		int exp;
 		int mant;
@@ -426,15 +465,25 @@ class StaticCodeBook {
 		exp = (exp + VQ_FEXP_BIAS) << VQ_FMAN;
 		return (sign | exp | mant);
 	}
-
-	static float float32_unpack(int val) {
+	/**
+	 * Float unpack.
+	 * @param val value
+	 * @return value
+	 */
+	static float float32Unpack(int val) {
 		float mant = val & 0x1fffff;
 		float exp = (val & 0x7fe00000) >>> VQ_FMAN;
-		if ((val & 0x80000000) != 0)
+		if ((val & 0x80000000) != 0) {
 			mant = -mant;
+		}
 		return (ldexp(mant, ((int) exp) - (VQ_FMAN - 1) - VQ_FEXP_BIAS));
 	}
-
+	/**
+	 * LDExp.
+	 * @param foo float
+	 * @param e int
+	 * @return float
+	 */
 	static float ldexp(float foo, int e) {
 		return (float) (foo * Math.pow(2, e));
 	}

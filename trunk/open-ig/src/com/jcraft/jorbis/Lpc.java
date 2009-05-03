@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,21 +32,28 @@
  */
 
 package com.jcraft.jorbis;
-
+/**
+ * LPC.
+ * Comments and style corrections by karnokd.
+ * @author ymnk
+ */
 class Lpc {
-	// en/decode lookups
+	/** Encode/decode lookups. */
 	Drft fft = new Drft();;
-
+	/** LN. */
 	int ln;
+	/** M. */
 	int m;
-
-	// Autocorrelation LPC coeff generation algorithm invented by
-	// N. Levinson in 1947, modified by J. Durbin in 1959.
-
-	// Input : n elements of time doamin data
-	// Output: m lpc coefficients, excitation energy
-
-	static float lpc_from_data(float[] data, float[] lpc, int n, int m) {
+	/**
+	 * Autocorrelation LPC coeff generation algorithm invented by
+	 * N. Levinson in 1947, modified by J. Durbin in 1959.
+	 * @param data elements of time doamin data
+	 * @param lpc coefficients, excitation energy
+	 * @param n elements of time doamin data
+	 * @param m coefficients, excitation energy
+	 * @return float
+	 */
+	static float lpcFromData(float[] data, float[] lpc, int n, int m) {
 		float[] aut = new float[m + 1];
 		float error;
 		int i, j;
@@ -49,8 +63,9 @@ class Lpc {
 		j = m + 1;
 		while (j-- != 0) {
 			float d = 0;
-			for (i = j; i < n; i++)
+			for (i = j; i < n; i++) {
 				d += data[i] * data[i - j];
+			}
 			aut[j] = d;
 		}
 
@@ -65,8 +80,9 @@ class Lpc {
 			float r = -aut[i + 1];
 
 			if (error == 0) {
-				for (int k = 0; k < m; k++)
+				for (int k = 0; k < m; k++) {
 					lpc[k] = 0.0f;
+				}
 				return 0;
 			}
 
@@ -75,8 +91,9 @@ class Lpc {
 			// and needs reflection coefficients, save the results of 'r' from
 			// each iteration.
 
-			for (j = 0; j < i; j++)
+			for (j = 0; j < i; j++) {
 				r -= lpc[j] * aut[i - j];
+			}
 			r /= error;
 
 			// Update LPC coefficients and total error
@@ -87,8 +104,9 @@ class Lpc {
 				lpc[j] += r * lpc[i - 1 - j];
 				lpc[i - 1 - j] += r * tmp;
 			}
-			if (i % 2 != 0)
+			if (i % 2 != 0) {
 				lpc[j] += lpc[j] * r;
+			}
 
 			error *= 1.0 - r * r;
 		}
@@ -98,11 +116,13 @@ class Lpc {
 
 		return error;
 	}
-
-	// Input : n element envelope spectral curve
-	// Output: m lpc coefficients, excitation energy
-
-	float lpc_from_curve(float[] curve, float[] lpc) {
+	/**
+	 * LPC from curve.
+	 * @param curve element envelope spectral curve
+	 * @param lpc coefficients, excitation energy
+	 * @return value
+	 */
+	float lpcFromCurve(float[] curve, float[] lpc) {
 		int n = ln;
 		float[] work = new float[n + n];
 		float fscale = (float) (.5 / n);
@@ -128,9 +148,13 @@ class Lpc {
 			work[j++] = temp;
 		}
 
-		return (lpc_from_data(work, lpc, n, m));
+		return (lpcFromData(work, lpc, n, m));
 	}
-
+	/**
+	 * Initialize.
+	 * @param mapped int
+	 * @param m int
+	 */
 	void init(int mapped, int m) {
 		ln = mapped;
 		this.m = m;
@@ -138,29 +162,38 @@ class Lpc {
 		// we cheat decoding the LPC spectrum via FFTs
 		fft.init(mapped * 2);
 	}
-
+	/** Clear. */
 	void clear() {
 		fft.clear();
 	}
-
-	static float FAST_HYPOT(float a, float b) {
+	/** 
+	 * Flash hypot.
+	 * @param a float
+	 * @param b float
+	 * @return float
+	 */
+	static float fastHypot(float a, float b) {
 		return (float) Math.sqrt((a) * (a) + (b) * (b));
 	}
+	/**
+	 * One can do this the long way by generating the transfer function in
+	 * the time domain and taking the forward FFT of the result. The
+	 * results from direct calculation are cleaner and faster.
+	 * This version does a linear curve generation and then later
+	 * interpolates the log curve from the linear curve.
+	 * @param curve float array
+	 * @param lpc float array
+	 * @param amp float
+	 */
+	void lpcToCurve(float[] curve, float[] lpc, float amp) {
 
-	// One can do this the long way by generating the transfer function in
-	// the time domain and taking the forward FFT of the result. The
-	// results from direct calculation are cleaner and faster.
-	//
-	// This version does a linear curve generation and then later
-	// interpolates the log curve from the linear curve.
-
-	void lpc_to_curve(float[] curve, float[] lpc, float amp) {
-
-		for (int i = 0; i < ln * 2; i++)
+		for (int i = 0; i < ln * 2; i++) {
 			curve[i] = 0.0f;
+		}
 
-		if (amp == 0)
+		if (amp == 0) {
 			return;
+		}
 
 		for (int i = 0; i < m; i++) {
 			curve[i * 2 + 1] = lpc[i] / (4 * amp);
@@ -169,17 +202,15 @@ class Lpc {
 
 		fft.backward(curve);
 
-		{
-			int l2 = ln * 2;
-			float unit = (float) (1. / amp);
-			curve[0] = (float) (1. / (curve[0] * 2 + unit));
-			for (int i = 1; i < ln; i++) {
-				float real = (curve[i] + curve[l2 - i]);
-				float imag = (curve[i] - curve[l2 - i]);
+		int l2 = ln * 2;
+		float unit = (float) (1. / amp);
+		curve[0] = (float) (1. / (curve[0] * 2 + unit));
+		for (int i = 1; i < ln; i++) {
+			float real = (curve[i] + curve[l2 - i]);
+			float imag = (curve[i] - curve[l2 - i]);
 
-				float a = real + unit;
-				curve[i] = (float) (1.0 / FAST_HYPOT(a, imag));
-			}
+			float a = real + unit;
+			curve[i] = (float) (1.0 / fastHypot(a, imag));
 		}
 	}
 }

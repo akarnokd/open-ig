@@ -124,7 +124,7 @@ public class Block {
 		}
 
 		mode = lMode;
-		w = vi.mode_param[mode].blockflag;
+		w = vi.modeParam[mode].blockflag;
 		if (w != 0) {
 			lW = opb.read(1);
 			nW = opb.read(1);
@@ -157,7 +157,7 @@ public class Block {
 		}
 
 		// unpack_header enforces range checking
-		int type = vi.map_type[vi.mode_param[mode].mapping];
-		return (FuncMapping.mapping_P[type].inverse(this, vd.mode[mode]));
+		int type = vi.mapType[vi.modeParam[mode].mapping];
+		return (FuncMapping.mappingP[type].inverse(this, vd.mode[mode]));
 	}
 }

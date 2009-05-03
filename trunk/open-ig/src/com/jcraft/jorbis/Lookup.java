@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -25,9 +32,19 @@
  */
 
 package com.jcraft.jorbis;
-
-class Lookup {
+/**
+ * Lookup tables.
+ * Comments and style corrections by karnokd. 
+ * @author ymnk
+ */
+final class Lookup {
+	/** Private lookup. */
+	private Lookup() {
+		// utility class
+	}
+	/** Cosine lookup size. */
 	static final int COS_LOOKUP_SZ = 128;
+	/** Cosine lookup. */
 	static final float[] COS_LOOKUP = { +1.0000000000000f, +0.9996988186962f,
 			+0.9987954562052f, +0.9972904566787f, +0.9951847266722f,
 			+0.9924795345987f, +0.9891765099648f, +0.9852776423889f,
@@ -72,16 +89,20 @@ class Lookup {
 			-0.9891765099648f, -0.9924795345987f, -0.9951847266722f,
 			-0.9972904566787f, -0.9987954562052f, -0.9996988186962f,
 			-1.0000000000000f, };
-
-	/* interpolated lookup based cos function, domain 0 to PI only */
+	/**
+	 * Interpolated lookup based cos function, domain 0 to PI only.
+	 * @param a angle in radian
+	 * @return the cosine value.
+	 */
 	static float coslook(float a) {
 		double d = a * (.31830989 * COS_LOOKUP_SZ);
 		int i = (int) d;
 		return COS_LOOKUP[i] + ((float) (d - i))
 				* (COS_LOOKUP[i + 1] - COS_LOOKUP[i]);
 	}
-
+	/** Inverse square lookup table size. */
 	static final int INVSQ_LOOKUP_SZ = 32;
+	/** Inverse square lookup. */
 	static final float[] INVSQ_LOOKUP = { 1.414213562373f, 1.392621247646f,
 			1.371988681140f, 1.352246807566f, 1.333333333333f, 1.315191898443f,
 			1.297771369046f, 1.281025230441f, 1.264911064067f, 1.249390095109f,
@@ -91,17 +112,22 @@ class Lookup {
 			1.088662107904f, 1.078719779941f, 1.069044967650f, 1.059625885652f,
 			1.050451462878f, 1.041511287847f, 1.032795558989f, 1.024295039463f,
 			1.016001016002f, 1.007905261358f, 1.000000000000f, };
-
-	/* interpolated 1./sqrt(p) where .5 <= p < 1. */
+	/**
+	 * Interpolated 1./sqrt(p) where .5 <= p < 1.
+	 * @param a the value
+	 * @return value
+	 */
 	static float invsqlook(float a) {
 		double d = a * (2.f * INVSQ_LOOKUP_SZ) - INVSQ_LOOKUP_SZ;
 		int i = (int) d;
 		return INVSQ_LOOKUP[i] + ((float) (d - i))
 				* (INVSQ_LOOKUP[i + 1] - INVSQ_LOOKUP[i]);
 	}
-
+	/** Inverse lookup min. */
 	static final int INVSQ2EXP_LOOKUP_MIN = -32;
+	/** Inverse lookup max. */
 	static final int INVSQ2EXP_LOOKUP_MAX = 32;
+	/** Inverse square two exp lookup. */
 	static final float[] INVSQ2EXP_LOOKUP = { 65536.f, 46340.95001f, 32768.f,
 			23170.47501f, 16384.f, 11585.2375f, 8192.f, 5792.618751f, 4096.f,
 			2896.309376f, 2048.f, 1448.154688f, 1024.f, 724.0773439f, 512.f,
@@ -116,18 +142,26 @@ class Lookup {
 			0.0001726334915f, 0.0001220703125f, 8.631674575e-05f,
 			6.103515625e-05f, 4.315837288e-05f, 3.051757812e-05f,
 			2.157918644e-05f, 1.525878906e-05f, };
-
-	/* interpolated 1./sqrt(p) where .5 <= p < 1. */
+	/**
+	 * Interpolated 1./sqrt(p) where .5 <= p < 1.
+	 * @param a int
+	 * @return float
+	 */
 	static float invsq2explook(int a) {
 		return INVSQ2EXP_LOOKUP[a - INVSQ2EXP_LOOKUP_MIN];
 	}
-
-	static final int FROMdB_LOOKUP_SZ = 35;
-	static final int FROMdB2_LOOKUP_SZ = 32;
-	static final int FROMdB_SHIFT = 5;
-	static final int FROMdB2_SHIFT = 3;
-	static final int FROMdB2_MASK = 31;
-	static final float[] FROMdB_LOOKUP = { 1.f, 0.6309573445f, 0.3981071706f,
+	/** From DB lookup size. */
+	static final int FROM_DB_LOOKUP_SZ = 35;
+	/** From DB2 lookup size. */
+	static final int FROM_DB2_LOOKUP_SZ = 32;
+	/** From db shift. */
+	static final int FROM_DB_SHIFT = 5;
+	/** From db2 lookup. */
+	static final int FROM_DB2_SHIFT = 3;
+	/** From db2 mask. */
+	static final int FROM_DB2_MASK = 31;
+	/** From db lookup table. */
+	static final float[] FROM_DB_LOOKUP = { 1.f, 0.6309573445f, 0.3981071706f,
 			0.2511886432f, 0.1584893192f, 0.1f, 0.06309573445f, 0.03981071706f,
 			0.02511886432f, 0.01584893192f, 0.01f, 0.006309573445f,
 			0.003981071706f, 0.002511886432f, 0.001584893192f, 0.001f,
@@ -137,7 +171,8 @@ class Lookup {
 			3.981071706e-06f, 2.511886432e-06f, 1.584893192e-06f, 1e-06f,
 			6.309573445e-07f, 3.981071706e-07f, 2.511886432e-07f,
 			1.584893192e-07f, };
-	static final float[] FROMdB2_LOOKUP = { 0.9928302478f, 0.9786445908f,
+	/** From db2 lookup table. */
+	static final float[] FROM_DB2_LOOKUP = { 0.9928302478f, 0.9786445908f,
 			0.9646616199f, 0.9508784391f, 0.9372921937f, 0.92390007f,
 			0.9106992942f, 0.8976871324f, 0.8848608897f, 0.8722179097f,
 			0.8597555737f, 0.8474713009f, 0.835362547f, 0.8234268041f,
@@ -146,13 +181,16 @@ class Lookup {
 			0.7233941627f, 0.7130582353f, 0.7028699885f, 0.6928273125f,
 			0.6829281272f, 0.6731703824f, 0.6635520573f, 0.6540711597f,
 			0.6447257262f, 0.6355138211f, };
-
-	/* interpolated lookup based fromdB function, domain -140dB to 0dB only */
+	/**
+	 * Interpolated lookup based fromdB function, domain -140dB to 0dB only.
+	 * @param a float
+	 * @return float
+	 */
 	static float fromdBlook(float a) {
-		int i = (int) (a * (-(1 << FROMdB2_SHIFT)));
-		return (i < 0) ? 1.f : ((i >= (FROMdB_LOOKUP_SZ << FROMdB_SHIFT)) ? 0.f
-				: FROMdB_LOOKUP[i >>> FROMdB_SHIFT]
-						* FROMdB2_LOOKUP[i & FROMdB2_MASK]);
+		int i = (int) (a * (-(1 << FROM_DB2_SHIFT)));
+		return (i < 0) ? 1.f : ((i >= (FROM_DB_LOOKUP_SZ << FROM_DB_SHIFT)) ? 0.f
+				: FROM_DB_LOOKUP[i >>> FROM_DB_SHIFT]
+						* FROM_DB2_LOOKUP[i & FROM_DB2_MASK]);
 	}
 
 }

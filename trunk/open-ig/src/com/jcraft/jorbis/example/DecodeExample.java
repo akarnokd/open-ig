@@ -154,7 +154,7 @@ public final class DecodeExample {
 				System.exit(1);
 			}
 
-			if (vi.synthesis_headerin(vc, op) < 0) {
+			if (vi.synthesisHeaderin(vc, op) < 0) {
 				// error case; not a vorbis header
 				System.err
 						.println("This Ogg bitstream does not contain Vorbis audio data.");
@@ -200,7 +200,7 @@ public final class DecodeExample {
 										.println("Corrupt secondary header.  Exiting.");
 								System.exit(1);
 							}
-							vi.synthesis_headerin(vc, op);
+							vi.synthesisHeaderin(vc, op);
 							i++;
 						}
 					}
@@ -242,7 +242,7 @@ public final class DecodeExample {
 
 			// OK, got and parsed all three headers. Initialize the Vorbis
 			// packet->PCM decoder.
-			vd.synthesis_init(vi); // central decode state
+			vd.synthesisInit(vi); // central decode state
 			vb.init(vd); // local state for most of the decode
 			// so multiple block decodes can
 			// proceed in parallel. We could init
@@ -278,7 +278,7 @@ public final class DecodeExample {
 								int samples;
 								if (vb.synthesis(op) == 0) { // test for
 																// success!
-									vd.synthesis_blockin(vb);
+									vd.synthesisBlockin(vb);
 								}
 
 								// **pcm is a multichannel float vector. In
@@ -290,7 +290,7 @@ public final class DecodeExample {
 								// (-1.<=range<=1.) to whatever PCM format and
 								// write it out
 
-								while ((samples = vd.synthesis_pcmout(lPcm,
+								while ((samples = vd.synthesisPcmout(lPcm,
 										lIndex)) > 0) {
 									float[][] pcm = lPcm[0];
 									int bout = (samples < convsize ? samples
@@ -332,7 +332,7 @@ public final class DecodeExample {
 									// tell libvorbis how
 									// many samples we
 									// actually consumed
-									vd.synthesis_read(bout);
+									vd.synthesisRead(bout);
 								}
 							}
 						}

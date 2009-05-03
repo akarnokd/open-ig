@@ -1,3 +1,10 @@
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
@@ -26,26 +33,40 @@
 
 package com.jcraft.jorbis;
 
-/*
- function: LSP (also called LSF) conversion routines
-
- The LSP generation code is taken (with minimal modification) from
- "On the Computation of the LSP Frequencies" by Joseph Rothweiler
- <rothwlr@altavista.net>, available at:
-
- http://www2.xtdl.com/~rothwlr/lsfpaper/lsfpage.html 
- ********************************************************************/
-
-class Lsp {
-
+/**
+ * Function: LSP (also called LSF) conversion routines.
+ * The LSP generation code is taken (with minimal modification) from
+ * "On the Computation of the LSP Frequencies" by Joseph Rothweiler
+ * rothwlr@altavista.net, available at:
+ * http://www2.xtdl.com/~rothwlr/lsfpaper/lsfpage.html<br>
+ * Comments and style corrections by karnokd.
+ * @author ymnk
+ */
+final class Lsp {
+	/** Private constructor. */
+	private Lsp() {
+		// utility class
+	}
+	/** Constant PI. */
 	static final float M_PI = (float) (3.1415926539);
-
-	static void lsp_to_curve(float[] curve, int[] map, int n, int ln,
+	/**
+	 * Lsp to curve.
+	 * @param curve float array
+	 * @param map int array
+	 * @param n length
+	 * @param ln length
+	 * @param lsp float array
+	 * @param m int
+	 * @param amp float
+	 * @param ampoffset float
+	 */
+	static void lspToCurve(float[] curve, int[] map, int n, int ln,
 			float[] lsp, int m, float amp, float ampoffset) {
 		int i;
 		float wdel = M_PI / ln;
-		for (i = 0; i < m; i++)
+		for (i = 0; i < m; i++) {
 			lsp[i] = Lookup.coslook(lsp[i]);
+		}
 		int m2 = (m / 2) * 2;
 
 		i = 0;
@@ -78,9 +99,7 @@ class Lsp {
 			int ix = 0x7fffffff & hx;
 			int qexp = 0;
 
-			if (ix >= 0x7f800000 || (ix == 0)) {
-				// 0,inf,nan
-			} else {
+			if (!(ix >= 0x7f800000 || (ix == 0))) {
 				if (ix < 0x00800000) { // subnormal
 					q *= 3.3554432000e+07; // 0x4c000000
 					hx = Float.floatToIntBits(q);
