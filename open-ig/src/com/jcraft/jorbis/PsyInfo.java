@@ -39,73 +39,73 @@ package com.jcraft.jorbis;
  */
 class PsyInfo {
 	/** Athp. */
-	int athp;
+//	int athp;
 	/** Decayp. */
-	int decayp;
+//	int decayp;
 	/** Smoothp. */
-	int smoothp;
+//	int smoothp;
 	/** Noisefitp. */
-	int noisefitp;
+//	int noisefitp;
 	/** Noisefit subblock. */
-	int noisefitSubblock;
+//	int noisefitSubblock;
 	/** Noisefit threshdb. */
-	float noisefitThreshdB;
+//	float noisefitThreshdB;
 	/** Ath att. */
-	float athAtt;
+//	float athAtt;
 	/** Tone mask p. */
-	int tonemaskp;
+//	int tonemaskp;
 	/** Tone attribute array. */
-	float[] toneatt125Hz = new float[5];
+//	float[] toneatt125Hz = new float[5];
 	/** Tone attribute array. */
-	float[] toneatt250Hz = new float[5];
+//	float[] toneatt250Hz = new float[5];
 	/** Tone attribute array. */
-	float[] toneatt500Hz = new float[5];
+//	float[] toneatt500Hz = new float[5];
 	/** Tone attribute array. */
-	float[] toneatt1000Hz = new float[5];
+//	float[] toneatt1000Hz = new float[5];
 	/** Tone attribute array. */
-	float[] toneatt2000Hz = new float[5];
+//	float[] toneatt2000Hz = new float[5];
 	/** Tone attribute array. */
-	float[] toneatt4000Hz = new float[5];
+//	float[] toneatt4000Hz = new float[5];
 	/** Tone attribute array. */
-	float[] toneatt8000Hz = new float[5];
+//	float[] toneatt8000Hz = new float[5];
 	/** Peak att p. */
-	int peakattp;
+//	int peakattp;
 	/** Tone attribute array. */
-	float[] peakatt125Hz = new float[5];
+//	float[] peakatt125Hz = new float[5];
 	/** Tone attribute array. */
-	float[] peakatt250Hz = new float[5];
+//	float[] peakatt250Hz = new float[5];
 	/** Tone attribute array. */
-	float[] peakatt500Hz = new float[5];
+//	float[] peakatt500Hz = new float[5];
 	/** Tone attribute array. */
-	float[] peakatt1000Hz = new float[5];
+//	float[] peakatt1000Hz = new float[5];
 	/** Tone attribute array. */
-	float[] peakatt2000Hz = new float[5];
+//	float[] peakatt2000Hz = new float[5];
 	/** Tone attribute array. */
-	float[] peakatt4000Hz = new float[5];
+//	float[] peakatt4000Hz = new float[5];
 	/** Tone attribute array. */
-	float[] peakatt8000Hz = new float[5];
+//	float[] peakatt8000Hz = new float[5];
 	/** Noise mask. */
-	int noisemaskp;
+//	int noisemaskp;
 	/** Tone attribute array. */
-	float[] noiseatt125Hz = new float[5];
+//	float[] noiseatt125Hz = new float[5];
 	/** Tone attribute array. */
-	float[] noiseatt250Hz = new float[5];
+//	float[] noiseatt250Hz = new float[5];
 	/** Tone attribute array. */
-	float[] noiseatt500Hz = new float[5];
+//	float[] noiseatt500Hz = new float[5];
 	/** Tone attribute array. */
-	float[] noiseatt1000Hz = new float[5];
+//	float[] noiseatt1000Hz = new float[5];
 	/** Tone attribute array. */
-	float[] noiseatt2000Hz = new float[5];
+//	float[] noiseatt2000Hz = new float[5];
 	/** Tone attribute array. */
-	float[] noiseatt4000Hz = new float[5];
+//	float[] noiseatt4000Hz = new float[5];
 	/** Tone attribute array. */
-	float[] noiseatt8000Hz = new float[5];
+//	float[] noiseatt8000Hz = new float[5];
 	/** Max curve db. */
-	float maxCurveDB;
+//	float maxCurveDB;
 	/** Attack coeff. */
-	float attackCoeff;
+//	float attackCoeff;
 	/** Decay coeff. */
-	float decayCoeff;
+//	float decayCoeff;
 	/** Free. */
 	void free() {
 	}

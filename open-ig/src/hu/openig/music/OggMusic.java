@@ -7,6 +7,7 @@
  */
 package hu.openig.music;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.sound.sampled.AudioFormat;
@@ -52,7 +53,7 @@ public class OggMusic {
 	/** Ogg Player object. */
 	private static final int BUFSIZE = 4096 * 2;
 	/** Ogg Player object. */
-	private static int convsize = BUFSIZE * 2;
+	private int convsize = BUFSIZE * 2;
 	/** Ogg Player object. */
 	private byte[] convbuffer = new byte[convsize];
 
@@ -305,7 +306,7 @@ public class OggMusic {
 							outputLine.stop();
 							outputLine.close();
 							outputLine = null;
-						} catch (Exception ee) {
+						} catch (IOException ee) {
 						}
 						return;
 					}
@@ -404,10 +405,8 @@ public class OggMusic {
 		oy.clear();
 
 		try {
-			if (bitStream != null) {
-				bitStream.close();
-			}
-		} catch (Exception e) {
+			bitStream.close();
+		} catch (IOException e) {
 		}
 	}
 }

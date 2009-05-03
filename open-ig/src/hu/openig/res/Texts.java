@@ -10,6 +10,7 @@ package hu.openig.res;
 import hu.openig.core.Errors;
 import hu.openig.core.Messages;
 import hu.openig.utils.PACFile;
+import hu.openig.utils.ResourceMapper;
 import hu.openig.utils.PACFile.PACEntry;
 
 import java.io.UnsupportedEncodingException;
@@ -35,10 +36,10 @@ public class Texts {
 	public final Map<Messages, String> messageTexts = new HashMap<Messages, String>();
 	/**
 	 * Constructor. Loads the text entries.
-	 * @param root the root directory of IG.
+	 * @param resMap the resource mapper object
 	 */
-	public Texts(String root) {
-		Map<String, PACEntry> entries = PACFile.mapByName(PACFile.parseFully(root + "/DATA/TEXT.PAC"));
+	public Texts(ResourceMapper resMap) {
+		Map<String, PACEntry> entries = PACFile.mapByName(PACFile.parseFully(resMap.get("DATA/TEXT.PAC")));
 		try {
 			int idx = 0;
 			// load building names

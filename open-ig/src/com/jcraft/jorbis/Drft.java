@@ -244,7 +244,7 @@ class Drft {
 				t1 += ido;
 				t2 += ido;
 			}
-			if (ido % 2 == 1) {
+			if (ido % 2 != 0) {
 				return;
 			}
 		}
@@ -866,7 +866,7 @@ class Drft {
 				t1 += ido;
 				t2 = t1 << 1;
 			}
-			if ((ido % 2) == 1) {
+			if ((ido % 2) != 0) {
 				return;
 			}
 		}
@@ -1050,7 +1050,7 @@ class Drft {
 				}
 				t1 += ido;
 			}
-			if (ido % 2 == 1) {
+			if (ido % 2 != 0) {
 				return;
 			}
 		}
@@ -1146,6 +1146,7 @@ class Drft {
 					}
 					t1++;
 				}
+//				break;
 			case 106:
 				t1 = 0;
 				t2 = ipp2 * t0;

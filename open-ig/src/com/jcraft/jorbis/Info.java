@@ -135,11 +135,11 @@ public class Info {
 
 	// for block long/sort tuning; encode only
 	/** Envelope SA. */
-	int envelopesa;
+//	int envelopesa;
 	/** Pre echo treshold. */
-	float preechoThresh;
+//	float preechoThresh;
 	/** Pre echo clamp. */
-	float preechoClamp;
+//	float preechoClamp;
 
 	/** used by synthesis, which has a full, alloced vi. */
 	public void init() {
@@ -529,10 +529,10 @@ public class Info {
 	 */
 	@Override
 	public String toString() {
-		return "version:" + new Integer(version) + ", channels:"
-				+ new Integer(channels) + ", rate:" + new Integer(rate)
-				+ ", bitrate:" + new Integer(bitrateUpper) + ","
-				+ new Integer(bitrateNominal) + ","
-				+ new Integer(bitrateLower);
+		return "version:" + version + ", channels:"
+				+ channels + ", rate:" + rate
+				+ ", bitrate:" + bitrateUpper + ","
+				+ bitrateNominal + ","
+				+ bitrateLower;
 	}
 }

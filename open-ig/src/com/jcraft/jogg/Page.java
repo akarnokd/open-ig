@@ -65,7 +65,7 @@ public class Page {
 				r <<= 1;
 			}
 		}
-		return (r & 0xffffffff);
+		return r;
 	}
 	/** Header base array. */
 	public byte[] headerBase;

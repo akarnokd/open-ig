@@ -135,12 +135,12 @@ class Floor0 extends FuncFloor {
 	 */
 	Object state(Object i) {
 		EchstateFloor0 state = new EchstateFloor0();
-		InfoFloor0 info = (InfoFloor0) i;
+//		InfoFloor0 info = (InfoFloor0) i;
 
 		// a safe size if usually too big (dim==1)
-		state.codewords = new int[info.order];
-		state.curve = new float[info.barkmap];
-		state.frameno = -1;
+//		state.codewords = new int[info.order];
+//		state.curve = new float[info.barkmap];
+//		state.frameno = -1;
 		return (state);
 	}
 	/**
@@ -393,7 +393,7 @@ class Floor0 extends FuncFloor {
 	 * Comments and style correction by karnokd.
 	 * @author ymnk
 	 */
-	class InfoFloor0 {
+	static class InfoFloor0 {
 		/** Order. */
 		int order;
 		/** Rate. */
@@ -414,7 +414,7 @@ class Floor0 extends FuncFloor {
 	 * Comments and style correction by karnokd.
 	 * @author ymnk
 	 */
-	class LookFloor0 {
+	static class LookFloor0 {
 		/** N. */
 		int n;
 		/** LN. */
@@ -433,14 +433,14 @@ class Floor0 extends FuncFloor {
 	 * Comments and style correction by karnokd.
 	 * @author ymnk
 	 */
-	class EchstateFloor0 {
+	static class EchstateFloor0 {
 		/** Code words. */
-		int[] codewords;
+//		int[] codewords;
 		/** Curve. */
-		float[] curve;
+//		float[] curve;
 		/** Frame number. */
-		long frameno;
+//		long frameno;
 		/** Codes. */
-		long codes;
+//		long codes;
 	}
 }

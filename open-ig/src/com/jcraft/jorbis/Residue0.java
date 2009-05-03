@@ -128,7 +128,7 @@ class Residue0 extends FuncResidue {
 		int dim;
 		int maxstage = 0;
 		look.info = info;
-		look.map = vm.mapping;
+//		look.map = vm.mapping;
 
 		look.parts = info.partitions;
 		look.fullbooks = vd.fullbooks;
@@ -346,11 +346,11 @@ class Residue0 extends FuncResidue {
 	 * Comments and style corrections by karnokd.
 	 * @author ymnk
 	 */
-	class LookResidue0 {
+	static class LookResidue0 {
 		/** Info residue. */
 		InfoResidue0 info;
 		/** Map. */
-		int map;
+//		int map;
 		/** Parts. */
 		int parts;
 		/** Stages. */
@@ -366,11 +366,11 @@ class Residue0 extends FuncResidue {
 		/** Decode map. */
 		int[][] decodemap;
 		/** Post bits. */
-		int postbits;
+//		int postbits;
 		/** Pharse bits. */
-		int phrasebits;
+//		int phrasebits;
 		/** Frames. */
-		int frames;
+//		int frames;
 	}
 	/**
 	 * Info residue 0.
@@ -378,7 +378,7 @@ class Residue0 extends FuncResidue {
 	 * Comments and style corrections by karnokd.
 	 * @author ymnk
 	 */
-	class InfoResidue0 {
+	static class InfoResidue0 {
 		/** Begin. */
 		int begin;
 		/** End. */
@@ -398,13 +398,13 @@ class Residue0 extends FuncResidue {
 
 		// encode-only heuristic settings
 		/** Book entropy threshholds. */
-		float[] entmax = new float[64];
+//		float[] entmax = new float[64];
 		/** Book amp threshholds. */
-		float[] ampmax = new float[64]; 
+//		float[] ampmax = new float[64]; 
 		/** Book heuristic subgroup size. */
-		int[] subgrp = new int[64];
+//		int[] subgrp = new int[64];
 		/** Subgroup position limits. */
-		int[] blimit = new int[64];
+//		int[] blimit = new int[64];
 	}
 
 }

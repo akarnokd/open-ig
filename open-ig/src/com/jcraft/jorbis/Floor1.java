@@ -652,7 +652,7 @@ class Floor1 extends FuncFloor {
 	 * Comments and style correction by karnokd.
 	 * @author ymnk
 	 */
-	class LookFloor1 {
+	static class LookFloor1 {
 		/** VIF position. */
 		static final int VIF_POSIT = 63;
 		/** Sorted index. */
@@ -674,11 +674,11 @@ class Floor1 extends FuncFloor {
 		/** Info floor 1. */
 		InfoFloor1 vi;
 		/** Phase bits. */
-		int phrasebits;
+//		int phrasebits;
 		/** Post bits. */
-		int postbits;
+//		int postbits;
 		/** Frames. */
-		int frames;
+//		int frames;
 		/** Free objects. */
 		void free() {
 			sortedIndex = null;
@@ -693,45 +693,45 @@ class Floor1 extends FuncFloor {
 	 * Comments and style correction by karnokd.
 	 * @author ymnk
 	 */
-	class LsfitAcc {
+	static class LsfitAcc {
 		/** X0. */
-		long x0;
+//		long x0;
 		/** X1. */
-		long x1;
+//		long x1;
 		/** XA. */
-		long xa;
+//		long xa;
 		/** YA. */
-		long ya;
+//		long ya;
 		/** X2A. */
-		long x2a;
+//		long x2a;
 		/** Y2A. */
-		long y2a;
+//		long y2a;
 		/** XYA. */
-		long xya;
+//		long xya;
 		/** Number. */
-		long n;
+//		long n;
 		/** AN. */
-		long an;
+//		long an;
 		/** UN. */
-		long un;
+//		long un;
 		/** Edge y0. */
-		long edgey0;
+//		long edgey0;
 		/** Edge y1. */
-		long edgey1;
+//		long edgey1;
 	}
 	/**
 	 * Ech state floor 1.
 	 * Comments and style correction by karnokd.
 	 * @author ymnk.
 	 */
-	class EchstateFloor1 {
+	static class EchstateFloor1 {
 		/** Code workds. */
-		int[] codewords;
+//		int[] codewords;
 		/** Curve. */
-		float[] curve;
+//		float[] curve;
 		/** Frame number. */
-		long frameno;
+//		long frameno;
 		/** Codes. */
-		long codes;
+//		long codes;
 	}
 }

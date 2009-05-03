@@ -8,20 +8,9 @@
 
 package hu.openig.ani;
 
-import hu.openig.ani.SpidyAniFile.Algorithm;
-import hu.openig.ani.SpidyAniFile.Block;
-import hu.openig.ani.SpidyAniFile.Data;
-import hu.openig.ani.SpidyAniFile.Palette;
-import hu.openig.ani.SpidyAniFile.Sound;
-import hu.openig.compress.LZSS;
-import hu.openig.compress.RLE;
-
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,67 +50,6 @@ public final class ToAvi {
 			System.out.printf("Usage:%nToAvi inFile outFile%n");
 			return;
 		}
-		SpidyAniFile saf = new SpidyAniFile();
-		FileInputStream fin = new FileInputStream(args[0]); 
-		saf.open(fin);
-		saf.load();
-		// audio data
-		ByteArrayOutputStream bout = new ByteArrayOutputStream(102400);
-		// video frames
-		List<int[]> frames = new ArrayList<int[]>();
-		try {
-			Palette palette = null;
-			int imageHeight = 0;
-			Algorithm alg = saf.getAlgorithm();
-			int dst = 0;
-			int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
-			while (true) {
-				Block b = saf.next();
-				if (b instanceof Palette) {
-					palette = (Palette)b;
-				} else
-				if (b instanceof Sound) {
-					bout.write(b.data);
-				} else
-				if (b instanceof Data) {
-					if (true) {
-						continue;
-					}
-					Data d = (Data)b;
-					imageHeight += d.height;
-					// decompress the image
-					byte[] rleInput = d.data;
-					if (saf.isLZSS() && !d.specialFrame) {
-						rleInput = new byte[d.bufferSize];
-						LZSS.decompress(d.data, 0, rleInput, 0);
-					}
-					switch (alg) {
-					case RLE_TYPE_1:
-						int newDst = RLE.decompress1(rleInput, 0, rawImage, dst, palette);
-						dst = newDst;
-						break;
-					case RLE_TYPE_2:
-						newDst = RLE.decompress2(rleInput, 0, rawImage, dst, palette);
-						dst = newDst;
-						break;
-					default:
-					}
-					// we reached the number of subimages per frame?
-					if (imageHeight >= saf.getHeight()) {
-						frames.add(rawImage);
-						rawImage = new int[saf.getWidth() * saf.getHeight()];
-						imageHeight = 0;
-						dst = 0;
-					}
-				}
-			}
-		} catch (EOFException ex) {
-			
-		}
-		fin.close();
-		
-		writeWaveFile(args, bout);
-		//writeAviFile(saf, args, frames, bout, 17.89);
 	}
 	/**
 	 * Write avi file.
@@ -237,7 +165,7 @@ public final class ToAvi {
 			rf.write("01wb".getBytes("Latin1"));
 			rf.writeInt(rotate(audiosize));
 			// pad if necessary
-			if (audiosize % 2 == 1) {
+			if (audiosize % 2 != 0) {
 				rf.write(0);
 			}
 			rf.write(adata, audioIdx, audiosize);

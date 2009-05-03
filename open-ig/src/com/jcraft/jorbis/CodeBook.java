@@ -50,7 +50,7 @@ class CodeBook {
 	/** List of dim*entries actual entry values. */
 	float[] valuelist;
 	/** List of bitstream codewords for each entry. */
-	int[] codelist;
+	int[] codelist = new int[16];
 	/** Decode tree. */
 	DecodeAux decodeTree;
 
@@ -523,7 +523,7 @@ class CodeBook {
 		if (codelist == null) {
 			return (null);
 		}
-		t.aux = entries * 2;
+//		t.aux = entries * 2;
 
 		for (int i = 0; i < entries; i++) {
 			if (c.lengthlist[i] > 0) {
@@ -582,7 +582,7 @@ class CodeBook {
 	 * Comments and style correction by karnokd.
 	 * @author ymnk
 	 */
-	class DecodeAux {
+	static class DecodeAux {
 		/** The tab array. */
 		int[] tab;
 		/** The tab1 array. */
@@ -594,6 +594,6 @@ class CodeBook {
 		/** Pointer 1. */
 		int[] ptr1;
 		/** number of tree entries. */
-		int aux;
+//		int aux;
 	}
 }

@@ -139,14 +139,14 @@ public class Buffer {
 		buffer[ptr] |= (byte) (value << endbit);
 
 		if (bits >= 8) {
-			buffer[ptr + 1] = (byte) (value >>> (8 - endbit));
+			buffer[ptr + 1] = (byte) (value >> (8 - endbit)); // removed >>
 			if (bits >= 16) {
-				buffer[ptr + 2] = (byte) (value >>> (16 - endbit));
+				buffer[ptr + 2] = (byte) (value >> (16 - endbit)); // removed >>
 				if (bits >= 24) {
-					buffer[ptr + 3] = (byte) (value >>> (24 - endbit));
+					buffer[ptr + 3] = (byte) (value >> (24 - endbit)); // removed >>
 					if (bits >= 32) {
 						if (endbit > 0) {
-							buffer[ptr + 4] = (byte) (value >>> (32 - endbit));
+							buffer[ptr + 4] = (byte) (value >> (32 - endbit)); // removed >>
 						} else {
 							buffer[ptr + 4] = 0;
 						}
