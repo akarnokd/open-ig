@@ -23,7 +23,37 @@ Install Java JRE/JDK 1.6.X (preferrably X >= 10). Copy the contents of the origi
 
 Please see the [Documentation documentation] page for what can you do within the application at the moment.
 
+== System requirements ==
+ * Java JRE/JDK 1.6.X or 1.7.X
+ * Any operating system with graphical user interface
+ * 128MB RAM
+ * 2-15 MB for Open-IG, 1.2 GB for original Imperium Galactica
+ * 1 GHz P4 or equivalent (estimated)
+ * Optional: GPU with DirectX/OpenGL hardware acceleration
+
 = Documentation =
+
+Features
+ * Main menu screen
+ * Options screen, accessible through the Load main menu option or ESC
+ * Starmap screen
+   * Accessible through F2 or via the Starmap buttons
+   * Hold down the right mouse button in the starmap area to pan the viewport
+   * You could drag the vertical and horizontal scrollbar with the left mouse button
+   * Use CTRL + Mouse Scroll to zoom in/out of the viewport
+   * Use Mouse scroll to scroll up/down
+   * Use SHIFT + Mouse scroll to scroll left/right
+   * Resize the window to see how the various fields grow
+ * Planet screen
+   * Accessible through F3 or via the Planet/Colony buttons
+   * Hold down the right mouse button over the planet surface to pan the viewport
+   * Click on the Buildings, Radar, Building Info and Lower left buttons to toggle the panels
+   * Use the ALT + Mouse wheel to switch between the seven types of planet
+   * Use the Mouse wheel to switch between surface variations of the current surface type
+   * There are 7 surface types (Desert, Ice, Crater, Rocky, Water, Earth, Nectoplasm) and several variations for each.
+ * Infromation screen
+   * Accessible through F7 or via the Info buttons.
+   * Click on the buttons to show various (yet unfilled) information tabs.
 
 See the [Documentation documentation] wiki page.
 
