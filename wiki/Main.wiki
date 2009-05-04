@@ -35,7 +35,10 @@ Please see the [Documentation documentation] page for what can you do within the
 
 Features
  * Main menu screen
+   * Click on the five options to jump to Starmap, Options screens; play the Title and Intro animations or exit the program
  * Options screen, accessible through the Load main menu option or ESC
+   * Click on the varius checkboxes to toggle checked options (no effect yet)
+   * Move the Music and Sound sliders to adjust volume
  * Starmap screen
    * Accessible through F2 or via the Starmap buttons
    * Hold down the right mouse button in the starmap area to pan the viewport
