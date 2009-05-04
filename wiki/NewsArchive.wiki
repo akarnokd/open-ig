@@ -1,5 +1,12 @@
 #summary News archive.
 
+February 19. 2009
+  * Thanks to Open-IG and a new wide screen monitor, I was able to find two bugs in the latest JDK regarding the new D3D rendering. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6801614 and http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6804860 for further details as soon as they are available.
+
+February 3. 2009
+
+  * Due some strange rendering behavior in 6u11 I strongly advise to use 6u7 on Windows for running Open-IG. The strange rendering occurs when the game windows are resized to a very large size (>1500 pixels). On these resolutions, the graphics gets misplaced, the dotted lines get garbled. Possible reason might be in the new D3D rendering pipeline (or just my videocard driver is too old).
+
 January 28. 2009
 
   * Made some enhancements in audio, screen switching and on information screen.
