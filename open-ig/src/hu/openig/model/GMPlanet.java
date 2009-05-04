@@ -101,6 +101,7 @@ public class GMPlanet {
 			p.showName = true;
 			p.showRadar = true;
 			p.visible = true;
+			p.radarRadius = 50;
 			p.nameColor = 0xFCB000;
 			if (!"-".equals(orbit)) {
 				p.inOrbit.addAll(Arrays.asList(orbit.split("\\\\s*,\\\\s*")));

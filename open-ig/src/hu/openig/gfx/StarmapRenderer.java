@@ -1143,6 +1143,28 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	private void renderPlanets(Graphics2D g2, int xOrig, int yOrig) {
 		BufferedImage ri = cgfx.radarDots[radarDotSizes[magnifyIndex]];
+		// render radar first.
+		if (btnRadars.down) {
+			for (GMPlanet p : planets) {
+				if (!p.visible) {
+					continue;
+				}
+				int modifiedMagnify = magnifyIndex + p.size;
+				if (modifiedMagnify < 0) {
+					modifiedMagnify = 0;
+				}
+				BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[modifiedMagnify]).get(p.rotationPhase);
+				if (p.showRadar) {
+					double fd = Math.PI / 50;
+					double fm = 2 * Math.PI - fd;
+					for (double f = 0.0f; f <= fm; f += fd) {
+						int x = (int)((p.x + p.radarRadius * Math.sin(f)) * zoomFactor + pimg.getWidth() / 2f);
+						int y = (int)((p.y + p.radarRadius * Math.cos(f)) * zoomFactor + pimg.getHeight() / 2f);
+						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
+					}
+				}
+			}
+		}
 		for (GMPlanet p : planets) {
 			if (!p.visible) {
 				continue;
@@ -1161,15 +1183,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				int w = text.getTextWidth(5, p.name);
 				x = (int)(p.x * zoomFactor + pimg.getWidth() / 2f - w / 2f);
 				text.paintTo(g2, xOrig + x, yOrig + y, 5, p.nameColor, p.name);
-			}
-			if (p.showRadar && btnRadars.down) {
-				double fd = Math.PI / 50;
-				double fm = 2 * Math.PI - fd;
-				for (double f = 0.0f; f <= fm; f += fd) {
-					x = (int)((p.x + p.radarRadius * Math.sin(f)) * zoomFactor + pimg.getWidth() / 2f);
-					y = (int)((p.y + p.radarRadius * Math.cos(f)) * zoomFactor + pimg.getHeight() / 2f);
-					g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
-				}
 			}
 		}
 	}

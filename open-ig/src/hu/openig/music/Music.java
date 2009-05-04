@@ -153,7 +153,8 @@ public class Music {
 	 *            the audio files to play back
 	 */
 	private void playbackLoop(String... fileNames) {
-		while (checkStop()) {
+		int fails = 0;
+		while (checkStop() && fails < fileNames.length) {
 			for (String fileName : fileNames) {
 				if (!checkStop()) {
 					break;
@@ -163,9 +164,15 @@ public class Music {
 				} else {
 					try {
 						if (fileName.toUpperCase().endsWith(".WAV")) {
-							playbackWav(fileName);
+							if (!playbackWav(fileName)) {
+								fails++;
+							}
 						} else if (fileName.toUpperCase().endsWith(".OGG")) {
-							playbackOgg(fileName);
+							if (!playbackOgg(fileName)) {
+								fails++;
+							}
+						} else {
+							fails++;
 						}
 					} catch (IOException ex) {
 						ex.printStackTrace();
@@ -185,9 +192,10 @@ public class Music {
 	/**
 	 * Plays back the given filename as an OGG audio file.
 	 * @param fileName the file or resource to play
+	 * @return true if the file was accessible
 	 * @throws IOException on IO error
 	 */
-	private void playbackOgg(String fileName) throws IOException {
+	private boolean playbackOgg(String fileName) throws IOException {
 		InputStream raf = null;
 		try {
 			if (fileName.startsWith("res:")) {
@@ -196,8 +204,12 @@ public class Music {
 				raf = new FileInputStream(root + "/"
 						+ fileName);
 			}
-			oggMusic = new OggMusic(Thread.currentThread(), gain, mute);
-			oggMusic.playOgg(raf);
+			if (raf != null) {
+				oggMusic = new OggMusic(Thread.currentThread(), gain, mute);
+				oggMusic.playOgg(raf);
+				return true;
+			}
+			return false;
 		} finally {
 			raf.close();
 		}
@@ -205,9 +217,10 @@ public class Music {
 	/**
 	 * Plays back the given filename as a WAV file.
 	 * @param fileName the wav file name to play
+	 * @return true if the file is accessible
 	 * @throws IOException if there is problem with the IO
 	 */
-	private void playbackWav(String fileName) throws IOException {
+	private boolean playbackWav(String fileName) throws IOException {
 		InputStream raf = null;
 		if (fileName.startsWith("res:")) {
 			raf = Music.class.getResourceAsStream(fileName.substring(4));
@@ -215,36 +228,40 @@ public class Music {
 			raf = new FileInputStream(root + "/"
 					+ fileName);
 		}
-		// skip chunks
-		try {
-			long startOffset = findData(raf);
-			raf.close();
-			byte[] buffer = new byte[16384];
-			// compensate for signed
-			// playback loop
-			initWave();
-			sdl.start();
-			while (checkStop()) {
-				if (fileName.startsWith("res:")) {
-					raf = Music.class.getResourceAsStream(fileName.substring(4));
-				} else {
-					raf = new FileInputStream(root + "/"
-							+ fileName);
-				}
-				// skip wav header
-				IOUtils.skipFully(raf, startOffset);
-				int read = 0;
-				do {
-					read = raf.read(buffer);
-					if (read > 0) {
-						// signifySound(buffer, read);
-						sdl.write(buffer, 0, read);
+		if (raf != null) {
+			// skip chunks
+			try {
+				long startOffset = findData(raf);
+				raf.close();
+				byte[] buffer = new byte[16384];
+				// compensate for signed
+				// playback loop
+				initWave();
+				sdl.start();
+				while (checkStop()) {
+					if (fileName.startsWith("res:")) {
+						raf = Music.class.getResourceAsStream(fileName.substring(4));
+					} else {
+						raf = new FileInputStream(root + "/"
+								+ fileName);
 					}
-				} while (checkStop() && read >= 0);
+					// skip wav header
+					IOUtils.skipFully(raf, startOffset);
+					int read = 0;
+					do {
+						read = raf.read(buffer);
+						if (read > 0) {
+							// signifySound(buffer, read);
+							sdl.write(buffer, 0, read);
+						}
+					} while (checkStop() && read >= 0);
+				}
+			} finally {
+				raf.close();
 			}
-		} finally {
-			raf.close();
+			return true;
 		}
+		return false;
 	}
 	/**
 	 * Play back music using the Clip object.

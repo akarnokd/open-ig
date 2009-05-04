@@ -62,7 +62,7 @@ public class Main extends JFrame {
 	/** */
 	private static final long serialVersionUID = 6922932910697940684L;
 	/** Version string. */
-	public static final String VERSION = "0.5 Alpha";
+	public static final String VERSION = "0.6 Alpha";
 	/** The user interface sounds. */
 	UISounds uis;
 	/** The common graphics objects. */
@@ -118,7 +118,7 @@ public class Main extends JFrame {
 	protected void initialize(final String root) {
 		this.root = root;
 		//setUndecorated(true);
-		setTitle("Open Imperium Galactica");
+		setTitle("Open Imperium Galactica (" + VERSION + ")");
 		setBackground(Color.BLACK);
 		fadeTimer = new Timer(FADE_TIME, null);
 		
@@ -303,7 +303,7 @@ public class Main extends JFrame {
 		showScreen(smr);
 		startStopAnimations(true);
 		
-		music.playFile("res:/hu/openig/res/music2.ogg", "res:/hu/openig/res/music1.ogg", "res:/hu/openig/res/music3.ogg");
+		music.playFile("res:/hu/openig/res/music2.ogg0", "res:/hu/openig/res/music1.ogg0", "res:/hu/openig/res/music3.ogg0");
 	}
 	/** Quit pressed on starmap. */
 	private void onQuit() {
