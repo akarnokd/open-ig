@@ -474,7 +474,7 @@ public final class IOUtils {
 	}
 	/**
 	 * Read bitstream from a static array.
-	 * @author Karnok Dávid, Apr 11, 2007
+	 * @author Karnok David, Apr 11, 2007
 	 * @version 1.0
 	 */
 	public static class BitReader {
