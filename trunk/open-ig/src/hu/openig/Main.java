@@ -303,7 +303,7 @@ public class Main extends JFrame {
 		showScreen(smr);
 		startStopAnimations(true);
 		
-		music.playFile("res:/hu/openig/res/music2.ogg0", "res:/hu/openig/res/music1.ogg0", "res:/hu/openig/res/music3.ogg0");
+		music.playFile("res:/hu/openig/res/Music2.ogg", "res:/hu/openig/res/Music1.ogg", "res:/hu/openig/res/Music3.ogg");
 	}
 	/** Quit pressed on starmap. */
 	private void onQuit() {
