@@ -208,10 +208,14 @@ public class Music {
 				oggMusic = new OggMusic(Thread.currentThread(), gain, mute);
 				oggMusic.playOgg(raf);
 				return true;
+			} else {
+				System.err.println("Music inaccessible: " + fileName);
 			}
 			return false;
 		} finally {
-			raf.close();
+			if (raf != null) {
+				raf.close();
+			}
 		}
 	}
 	/**
