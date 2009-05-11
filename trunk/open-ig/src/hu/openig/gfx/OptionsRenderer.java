@@ -11,6 +11,7 @@ package hu.openig.gfx;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.gfx.OptionsGFX.Opts;
+import hu.openig.model.GameWorld;
 import hu.openig.sound.UISounds;
 
 import java.awt.AlphaComposite;
@@ -95,16 +96,26 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	private boolean audioAdjusting;
 	/** Music adjusting. */
 	private boolean musicAdjusting;
+	/** The game world. */
+	private GameWorld gameWorld;
+	/** The common graphics object. */
+//	private CommonGFX cgfx;
+	/** The information bar renderer. */
+	private InfobarRenderer infobarRenderer;
 	/**
 	 * Constructor. Initializes the graphics fields.
 	 * @param gfx the menu graphics
-	 * @param text the text graphics
+	 * @param cgfx the common graphics
 	 * @param uis the user interface sound
+	 * @param infobarRenderer the information bar renderer
 	 */
-	public OptionsRenderer(OptionsGFX gfx, TextGFX text, UISounds uis) {
+	public OptionsRenderer(OptionsGFX gfx, CommonGFX cgfx, 
+			UISounds uis, InfobarRenderer infobarRenderer) {
 		this.gfx = gfx;
-		this.text = text;
+//		this.cgfx = cgfx;
+		this.text = cgfx.text;
 		this.uis = uis;
+		this.infobarRenderer = infobarRenderer;
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		initButtons();
@@ -160,6 +171,9 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 			updateRegions();
 			pictureChanged = false;
 		}
+		
+		infobarRenderer.renderInfoBars(this, g2);
+		
 		BufferedImage bimg = currentOpts.options;
 		g2.drawImage(bimg, currentOpts.background.x, currentOpts.background.y, null);
 		
@@ -218,6 +232,7 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	 * Update important rendering regions.
 	 */
 	private void updateRegions() {
+		infobarRenderer.updateRegions(this);
 		int w = getWidth();
 		int h = getHeight();
 		switch (picture) {
@@ -464,5 +479,17 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	public void setOnSave(BtnAction action) {
 		btnSave.onClick = action;
+	}
+	/**
+	 * @param gameWorld the gameWorld to set
+	 */
+	public void setGameWorld(GameWorld gameWorld) {
+		this.gameWorld = gameWorld;
+	}
+	/**
+	 * @return the gameWorld
+	 */
+	public GameWorld getGameWorld() {
+		return gameWorld;
 	}
 }

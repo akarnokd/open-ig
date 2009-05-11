@@ -8,7 +8,6 @@
 
 package hu.openig.gfx;
 
-import hu.openig.core.InfoBarRegions;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
@@ -17,15 +16,11 @@ import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javax.swing.JComponent;
 
 /**
  * Common graphical objects which is used by multiple screens.
@@ -124,6 +119,24 @@ public class CommonGFX {
 	public static final int RESEARCH_CD_ORANGE = 5;
 	/** Research is not allowed image. */
 	public BufferedImage researchDisallowed;
+	/** Time normal speed icon. */
+	public BufferedImage timeNormal;
+	/** Time fast speed icon. */
+	public BufferedImage timeFast;
+	/** Time ultrafast speed icon. */
+	public BufferedImage timeUltrafast;
+	/** Time none icon. */
+	public BufferedImage timeNone;
+	/** Time pause icon. */
+	public BufferedImage timePause;
+	/** Time normal speed selected icon. */
+	public BufferedImage timeNormalSelected;
+	/** Time fast speed selected icon. */
+	public BufferedImage timeFastSelected;
+	/** Time ultrafast speed selected icon. */
+	public BufferedImage timeUltrafastSelected;
+	/** Time pause selected icon. */
+	public BufferedImage timePauseSelected;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param resMap the resource mapper object
@@ -234,6 +247,18 @@ public class CommonGFX {
 			}
 		}
 		researchDisallowed = PCXImage.from(resMap.get("SCREENS/FEJL_TAK.PCX"), -2);
+		
+		BufferedImage timeAnim = PCXImage.from(resMap.get("GFX/IDOANIM.PCX"), -1);
+		timeNormal = ImageUtils.subimage(timeAnim, 0, 0, 14, 16);
+		timeFast = ImageUtils.subimage(timeAnim, 14, 0, 14, 16);
+		timeUltrafast = ImageUtils.subimage(timeAnim, 28, 0, 14, 16);
+		timeNone = ImageUtils.subimage(timeAnim, 42, 0, 14, 16);
+		timePause = ImageUtils.subimage(timeAnim, 42, 16, 14, 16);
+		
+		timeNormalSelected = ImageUtils.subimage(timeAnim, 0 * 14, 6 * 16, 14, 16);
+		timeFastSelected = ImageUtils.subimage(timeAnim, 1 * 14, 6 * 16, 14, 16);
+		timeUltrafastSelected = ImageUtils.subimage(timeAnim, 2 * 14, 6 * 16, 14, 16);
+		timePauseSelected = ImageUtils.subimage(timeAnim, 3 * 14, 2 * 16, 14, 16);
 	}
 	/**
 	 * Set building image for a race and building type.
@@ -250,49 +275,6 @@ public class CommonGFX {
 		}
 		raceBuildings.put(index, picture);
 		raceBuildings.put(name, picture);
-	}
-	/**
-	 * Renders the information top and bottom bars onto the specified component and graphics context.
-	 * @param c the component to draw onto
-	 * @param g2 the graphics object to use
-	 */
-	public void renderInfoBars(JComponent c, Graphics2D g2) {
-		int w = c.getWidth();
-		int h = c.getHeight();
-		g2.drawImage(top.left, 0, 0, null);
-		g2.drawImage(bottom.left, 0, h - bottom.left.getHeight(), null);
-		g2.drawImage(top.right, w - top.right.getWidth(), 0, null);
-		g2.drawImage(bottom.right, w - bottom.right.getWidth(), h - bottom.left.getHeight(), null);
-
-		// check if the rendering width is greater than the default 640
-		// if so, draw the link lines
-		int lr = top.left.getWidth() + top.right.getWidth();
-		if (w > lr) {
-			AffineTransform at = g2.getTransform();
-			g2.translate(top.left.getWidth(), 0);
-			g2.scale(w - lr, 1);
-			g2.drawImage(top.link, 0, 0, null);
-
-			g2.setTransform(at);
-			g2.translate(bottom.left.getWidth(), 0);
-			g2.scale(w - lr, 1);
-			g2.drawImage(bottom.link, 0, h - bottom.link.getHeight(), null);
-			g2.setTransform(at);
-		}
-	}
-	/**
-	 * Update interactable region coordinates on the information bars for the given component.
-	 * @param c the parent component
-	 * @param reg the information bar record
-	 */
-	public void updateRegions(JComponent c, InfoBarRegions reg) {
-		int w = c.getWidth();
-		//int h = c.getHeight();
-		// location of the top info area
-		reg.topInfoArea.x = 387;
-		reg.topInfoArea.y = 2;
-		reg.topInfoArea.width = w - reg.topInfoArea.x - 11;
-		reg.topInfoArea.height = 16;
 	}
 	/**
 	 * Returns a copy of the building names array.

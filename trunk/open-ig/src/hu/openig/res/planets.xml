@@ -175,7 +175,7 @@
 		<location-y>154</location-y>
 		<type>Earth</type>
 		<variant>7</variant>
-		<race>AFT</race>
+		<race>FreeTraders</race>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>10000</populate>
@@ -187,7 +187,7 @@
 		<location-y>175</location-y>
 		<type>Desert</type>
 		<variant>6</variant>
-		<race>AFT</race>
+		<race>FreeTraders</race>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>10000</populate>
@@ -199,7 +199,7 @@
 		<location-y>166</location-y>
 		<type>Desert</type>
 		<variant>8</variant>
-		<race>AFT</race>
+		<race>FreeTraders</race>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>10000</populate>
@@ -679,7 +679,7 @@
 		<location-y>140</location-y>
 		<type>Rocky</type>
 		<variant>2</variant>
-		<race>FNS</race>
+		<race>FreeNations</race>
 		<size>7</size>
 		<rotate>RL</rotate>
 		<populate>10000</populate>
@@ -691,7 +691,7 @@
 		<location-y>149</location-y>
 		<type>Earth</type>
 		<variant>1</variant>
-		<race>FNS</race>
+		<race>FreeNations</race>
 		<size>8</size>
 		<rotate>RL</rotate>
 		<populate>10000</populate>
@@ -703,7 +703,7 @@
 		<location-y>157</location-y>
 		<type>Earth</type>
 		<variant>8</variant>
-		<race>FNS</race>
+		<race>FreeNations</race>
 		<size>6</size>
 		<rotate>RL</rotate>
 		<populate>10000</populate>
@@ -715,7 +715,7 @@
 		<location-y>180</location-y>
 		<type>Rocky</type>
 		<variant>7</variant>
-		<race>FNS</race>
+		<race>FreeNations</race>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>10000</populate>
@@ -727,7 +727,7 @@
 		<location-y>203</location-y>
 		<type>Rocky</type>
 		<variant>2</variant>
-		<race>FNS</race>
+		<race>FreeNations</race>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>10000</populate>
@@ -739,7 +739,7 @@
 		<location-y>172</location-y>
 		<type>Cratered</type>
 		<variant>2</variant>
-		<race>FNS</race>
+		<race>FreeNations</race>
 		<size>6</size>
 		<rotate>RL</rotate>
 		<populate>10000</populate>
@@ -751,7 +751,7 @@
 		<location-y>182</location-y>
 		<type>Desert</type>
 		<variant>4</variant>
-		<race>FNS</race>
+		<race>FreeNations</race>
 		<size>8</size>
 		<rotate>RL</rotate>
 		<populate>10000</populate>
@@ -847,7 +847,7 @@
 		<location-y>61</location-y>
 		<type>Liquid</type>
 		<variant>4</variant>
-		<race>Drib</race>
+		<race>Dribs</race>
 		<size>6</size>
 		<rotate>RL</rotate>
 		<populate>10000</populate>
@@ -859,7 +859,7 @@
 		<location-y>32</location-y>
 		<type>Desert</type>
 		<variant>5</variant>
-		<race>Drib</race>
+		<race>Dribs</race>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>10000</populate>
@@ -871,7 +871,7 @@
 		<location-y>12</location-y>
 		<type>Rocky</type>
 		<variant>2</variant>
-		<race>Drib</race>
+		<race>Dribs</race>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>10000</populate>
@@ -883,7 +883,7 @@
 		<location-y>5</location-y>
 		<type>Rocky</type>
 		<variant>8</variant>
-		<race>Drib</race>
+		<race>Dribs</race>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>10000</populate>

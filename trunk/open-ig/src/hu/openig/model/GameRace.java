@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
  * Race related attributes.
  * @author karnkd
  */
-public class GMRace {
+public class GameRace {
 	/** The race index. */
 	public int index;
 	/** The race identifier. */
@@ -41,24 +41,24 @@ public class GMRace {
 	 * @param resource the resource location
 	 * @return the list of races
 	 */
-	public static List<GMRace> parse(String resource) {
-		List<GMRace> planet = XML.parseResource(resource, new XmlProcessor<List<GMRace>>() {
+	public static List<GameRace> parse(String resource) {
+		List<GameRace> planet = XML.parseResource(resource, new XmlProcessor<List<GameRace>>() {
 			@Override
-			public List<GMRace> process(Document doc) {
-				return GMRace.process(doc);
+			public List<GameRace> process(Document doc) {
+				return GameRace.process(doc);
 			}
 		});
-		return planet != null ? planet : new ArrayList<GMRace>();
+		return planet != null ? planet : new ArrayList<GameRace>();
 	}
 	/**
 	 * Process a document containing race information. 
 	 * @param doc the DOM document to process
 	 * @return the list of race objects. 
 	 */
-	private static List<GMRace> process(Document doc) {
-		List<GMRace> result = new ArrayList<GMRace>();
+	private static List<GameRace> process(Document doc) {
+		List<GameRace> result = new ArrayList<GameRace>();
 		for (Element e : XML.childrenWithName(doc.getDocumentElement(), "race")) {
-			GMRace r = new GMRace();
+			GameRace r = new GameRace();
 			r.index = Integer.parseInt(e.getAttribute("index"));
 			r.id = e.getAttribute("id");
 			r.shipIndex = Integer.parseInt(XML.childValue(e, "ship"));

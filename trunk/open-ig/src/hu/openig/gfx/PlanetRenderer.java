@@ -9,8 +9,8 @@ package hu.openig.gfx;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
-import hu.openig.core.InfoBarRegions;
 import hu.openig.core.Tile;
+import hu.openig.model.GameWorld;
 import hu.openig.sound.UISounds;
 import hu.openig.utils.PACFile.PACEntry;
 
@@ -144,8 +144,6 @@ MouseWheelListener, ActionListener {
 	private float daylight = 0.5f;
 	/** The text renderer. */
 	private TextGFX text;
-	/** Regions of the info bars. */
-	public InfoBarRegions infoBarRects = new InfoBarRegions();
 	/** The user interface sounds. */
 	private UISounds uiSound;
 	/** Buttons which change state on click.*/
@@ -160,17 +158,24 @@ MouseWheelListener, ActionListener {
 	private BtnAction onBridgeClicked;
 	/** Event for planets click. */
 	private BtnAction onPlanetsClicked;
+	/** The game world. */
+	private GameWorld gameWorld;
+	/** The information bar renderer. */
+	private InfobarRenderer infobarRenderer;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx the planet graphics 
 	 * @param cgfx the common graphics
 	 * @param uiSound the user interface sounds.
+	 * @param infobarRenderer the information bar
 	 */
-	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx, UISounds uiSound) {
+	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx, 
+			UISounds uiSound, InfobarRenderer infobarRenderer) {
 		this.gfx = gfx;
 		this.cgfx = cgfx;
 		this.text = cgfx.text;
 		this.uiSound = uiSound;
+		this.infobarRenderer = infobarRenderer;
 		buildScroller = new Timer(BUILD_SCROLL_INTERVAL, this);
 		buildScroller.setActionCommand("BUILD_SCROLLER");
 		fadeTimer = new Timer(FADE_INTERVAL, this);
@@ -307,7 +312,7 @@ MouseWheelListener, ActionListener {
 		}
 		g2.setTransform(t);
 		// RENDER INFOBARS
-		cgfx.renderInfoBars(this, g2);
+		infobarRenderer.renderInfoBars(this, g2);
 		// RENDER LEFT BUTTONS
 		g2.drawImage(gfx.buildingButton, btnBuilding.rect.x, btnBuilding.rect.y, null);
 		g2.setColor(Color.BLACK);
@@ -375,8 +380,8 @@ MouseWheelListener, ActionListener {
 			g2.drawImage(gfx.radarPanel, radarPanelRect.x, radarPanelRect.y, null);
 		}
 		Shape sp = g2.getClip();
-		g2.clip(infoBarRects.topInfoArea);
-		text.paintTo(g2, infoBarRects.topInfoArea.x, infoBarRects.topInfoArea.y + 1, 14, 0xFFFFFFFF, "Surface: " + surfaceType + ", Variant: " + surfaceVariant);
+		g2.clip(infobarRenderer.topInfoArea);
+		text.paintTo(g2, infobarRenderer.topInfoArea.x, infobarRenderer.topInfoArea.y + 1, 14, 0xFFFFFFFF, "Surface: " + surfaceType + ", Variant: " + surfaceVariant);
 		g2.setClip(sp);
 		
 		// now darken the entire screen
@@ -418,7 +423,7 @@ MouseWheelListener, ActionListener {
 	 */
 	private void updateRegions() {
 		
-		cgfx.updateRegions(this, infoBarRects);
+		infobarRenderer.updateRegions(this);
 		
 		btnBuilding.rect.x = 0;
 		btnBuilding.rect.y = cgfx.top.left.getHeight();
@@ -873,5 +878,17 @@ MouseWheelListener, ActionListener {
 	 */
 	public BtnAction getOnPlanetsClicked() {
 		return onPlanetsClicked;
+	}
+	/**
+	 * @param gameWorld the gameWorld to set
+	 */
+	public void setGameWorld(GameWorld gameWorld) {
+		this.gameWorld = gameWorld;
+	}
+	/**
+	 * @return the gameWorld
+	 */
+	public GameWorld getGameWorld() {
+		return gameWorld;
 	}
 }

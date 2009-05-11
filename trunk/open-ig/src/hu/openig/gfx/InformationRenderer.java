@@ -9,8 +9,8 @@ package hu.openig.gfx;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
-import hu.openig.core.InfoBarRegions;
 import hu.openig.core.InfoScreen;
+import hu.openig.model.GameWorld;
 import hu.openig.sound.UISounds;
 
 import java.awt.AlphaComposite;
@@ -127,19 +127,24 @@ MouseWheelListener, ActionListener {
 	private BtnAction onColonyClicked;
 	/** Action when the user clicks on the starmap button. */
 	private BtnAction onStarmapClicked;
-	/** Regions of the info bars. */
-	public InfoBarRegions infoBarRects = new InfoBarRegions();
+	/** The game world. */
+	private GameWorld gameWorld;
+	/** The information bar renderer. */
+	private InfobarRenderer infobarRenderer;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx the information graphics obj ects
 	 * @param cgfx the common graphics objects
 	 * @param uiSound the user interface sounds
+	 * @param infobarRenderer the information bar renderer
 	 */
-	public InformationRenderer(InformationGFX gfx, CommonGFX cgfx, UISounds uiSound) {
+	public InformationRenderer(InformationGFX gfx, CommonGFX cgfx, 
+			UISounds uiSound, InfobarRenderer infobarRenderer) {
 		this.gfx = gfx;
 		this.cgfx = cgfx;
 		this.text = cgfx.text;
 		this.uiSound = uiSound;
+		this.infobarRenderer = infobarRenderer;
 		
 		controlSize.width = gfx.infoScreen.getWidth();
 		controlSize.height = gfx.infoScreen.getHeight();
@@ -173,7 +178,7 @@ MouseWheelListener, ActionListener {
 			updateRegions();
 		}
 		// RENDER INFOBARS
-		cgfx.renderInfoBars(this, g2);
+		infobarRenderer.renderInfoBars(this, g2);
 		
 		g2.drawImage(gfx.infoScreen, screen.x, screen.y, null);
 		
@@ -421,7 +426,7 @@ MouseWheelListener, ActionListener {
 	 */
 	private void updateRegions() {
 		
-		cgfx.updateRegions(this, infoBarRects);
+		infobarRenderer.updateRegions(this);
 		
 		screen.x = (getWidth() - gfx.infoScreen.getWidth()) / 2;
 		screen.y = (getHeight() - gfx.infoScreen.getHeight()) / 2;
@@ -665,5 +670,17 @@ MouseWheelListener, ActionListener {
 			selectButtonFor(2, null, null, null);
 		}
 		currentScreen = screen;
+	}
+	/**
+	 * @param gameWorld the gameWorld to set
+	 */
+	public void setGameWorld(GameWorld gameWorld) {
+		this.gameWorld = gameWorld;
+	}
+	/**
+	 * @return the gameWorld
+	 */
+	public GameWorld getGameWorld() {
+		return gameWorld;
 	}
 }

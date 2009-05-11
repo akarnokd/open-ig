@@ -209,8 +209,8 @@ public class TextGFX {
 		}
 		charsetSpaces.put(5, 1);
 		charsetSpaces.put(7, 1);
-		charsetSpaces.put(10, 2);
-		charsetSpaces.put(14, 2);
+		charsetSpaces.put(10, 1);
+		charsetSpaces.put(14, 1);
 		return charMap;
 	}
 	/**
