@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Labels of multiple languages. -->
+<labels>
+	<!-- The label languages in the file. -->
+	<langs>hu,en</langs>
+	<!-- An entry with a key -->
+	<entry key='SAMPLEKEY'>
+		<!-- The hungarian translation -->
+		<hu>Példakulcs</hu>
+		<!-- The neglish translation -->
+		<en>Sample key</en>
+	</entry>
+	<entry key='MONTHNAME_0'>
+		<hu>Január</hu>
+		<en>January</en>
+	</entry>
+	<entry key='MONTHNAME_1'>
+		<hu>Február</hu>
+		<en>February</en>
+	</entry>
+	<entry key='MONTHNAME_2'>
+		<hu>Március</hu>
+		<en>March</en>
+	</entry>
+	<entry key='MONTHNAME_3'>
+		<hu>Április</hu>
+		<en>April</en>
+	</entry>
+	<entry key='MONTHNAME_4'>
+		<hu>Május</hu>
+		<en>May</en>
+	</entry>
+	<entry key='MONTHNAME_5'>
+		<hu>Június</hu>
+		<en>June</en>
+	</entry>
+	<entry key='MONTHNAME_6'>
+		<hu>Július</hu>
+		<en>July</en>
+	</entry>
+	<entry key='MONTHNAME_7'>
+		<hu>Augusztus</hu>
+		<en>August</en>
+	</entry>
+	<entry key='MONTHNAME_8'>
+		<hu>Szeptember</hu>
+		<en>September</en>
+	</entry>
+	<entry key='MONTHNAME_9'>
+		<hu>Október</hu>
+		<en>October</en>
+	</entry>
+	<entry key='MONTHNAME_10'>
+		<hu>November</hu>
+		<en>November</en>
+	</entry>
+	<entry key='MONTHNAME_11'>
+		<hu>December</hu>
+		<en>December</en>
+	</entry>
+	
+</labels>

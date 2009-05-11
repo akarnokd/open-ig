@@ -35,7 +35,7 @@ public class GMBuilding {
 	/** The name. */
 	public String name;
 	/** The assigned race. */
-	public GMRace race;
+	public GameRace race;
 	/** On which surfaces cannot be built. */
 	public Set<SurfaceType> notBuildableSurfaces;
 	/** The textual description lines. */

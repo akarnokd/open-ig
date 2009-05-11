@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * @author karnokd, 2009.02.02.
  * @version $Revision 1.0$
  */
-public class GMPlanet {
+public class GamePlanet {
 	/** The surface type 1-7. */
 	public SurfaceType surfaceType;
 	/** The surface variant 1-9. */
@@ -45,16 +45,14 @@ public class GMPlanet {
 	public int y;
 	/** Display planet on the starmap? */
 	public boolean visible;
-	/** The color of the name. */
-	public int nameColor;
 	/** Rotation direction: true - forward, false - backward. */
 	public boolean rotationDirection;
 	/** The planet's unique id. */
 	public String id;
 	/** Owner race name. */
-	public String ownerRace;
+	public GameRace ownerRace;
 	/** Population race name. */
-	public String populationRace;
+	public GameRace populationRace;
 	/** Population count. */
 	public int population;
 	/** Last day's population growth. */
@@ -66,33 +64,38 @@ public class GMPlanet {
 	/**
 	 * Parses and processes a planetary resource XML.
 	 * @param resource the name of the resource
+	 * @param lookup the game race lookup
 	 * @return list of planets
 	 */
-	public static List<GMPlanet> parse(String resource) {
-		List<GMPlanet> planet = XML.parseResource(resource, new XmlProcessor<List<GMPlanet>>() {
+	public static List<GamePlanet> parse(String resource, final GameRaceLookup lookup) {
+		List<GamePlanet> planet = XML.parseResource(resource, new XmlProcessor<List<GamePlanet>>() {
 			@Override
-			public List<GMPlanet> process(Document doc) {
-				return GMPlanet.process(doc);
+			public List<GamePlanet> process(Document doc) {
+				return GamePlanet.process(doc, lookup);
 			}
 		});
-		return planet != null ? planet : new ArrayList<GMPlanet>();
+		return planet != null ? planet : new ArrayList<GamePlanet>();
 	}
 	/**
 	 * Processes a planets.xml document.
 	 * @param root the document 
+	 * @param lookup the game race lookup
 	 * @return the list of planets
 	 */
-	private static List<GMPlanet> process(Document root) {
-		List<GMPlanet> result = new ArrayList<GMPlanet>();
+	private static List<GamePlanet> process(Document root, GameRaceLookup lookup) {
+		List<GamePlanet> result = new ArrayList<GamePlanet>();
 		for (Element planet : XML.childrenWithName(root.getDocumentElement(), "planet")) {
-			GMPlanet p = new GMPlanet();
+			GamePlanet p = new GamePlanet();
 			p.id = planet.getAttribute("id");
 			p.name = XML.childValue(planet, "name");
 			p.x = Integer.parseInt(XML.childValue(planet, "location-x")) * 2;
 			p.y = Integer.parseInt(XML.childValue(planet, "location-y")) * 2;
 			p.surfaceType = SurfaceType.MAP.get(XML.childValue(planet, "type"));
 			p.surfaceVariant = Integer.parseInt(XML.childValue(planet, "variant"));
-			p.ownerRace = XML.childValue(planet, "race");
+			String ownerRaceStr = XML.childValue(planet, "race");
+			if (!ownerRaceStr.isEmpty()) {
+				p.ownerRace = lookup.getRace(ownerRaceStr);
+			}
 			p.populationRace = p.ownerRace;
 			p.size = Integer.parseInt(XML.childValue(planet, "size")) - 8;
 			p.rotationDirection = "RL".equals(XML.childValue(planet, "rotate"));
@@ -102,7 +105,6 @@ public class GMPlanet {
 			p.showRadar = true;
 			p.visible = true;
 			p.radarRadius = 50;
-			p.nameColor = 0xFCB000;
 			if (!"-".equals(orbit)) {
 				p.inOrbit.addAll(Arrays.asList(orbit.split("\\\\s*,\\\\s*")));
 			}

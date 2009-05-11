@@ -10,8 +10,8 @@ package hu.openig.gfx;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
-import hu.openig.core.InfoBarRegions;
-import hu.openig.model.GMPlanet;
+import hu.openig.model.GamePlanet;
+import hu.openig.model.GameWorld;
 import hu.openig.sound.UISounds;
 
 import java.awt.AlphaComposite;
@@ -106,8 +106,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private final Rectangle rightFillerRect = new Rectangle();
 	/** Right bottom rectangle. */
 	private final Rectangle rightBottomRect = new Rectangle();
-	/** Info bar ractangle. */
-	private final InfoBarRegions infoBarRect = new InfoBarRegions();
 	/** Colony previous button. */
 	private Btn btnColonyPrev;
 	/** COlony next button. */
@@ -198,8 +196,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private boolean fadeDirection;
 	/** The current darkening factor for the entire UI. 0=No darkness, 1=Full darkness. */
 	private float darkness = 0f;
-	/** The list of planets. */
-	public final List<GMPlanet> planets = new ArrayList<GMPlanet>();
 	/** The map coordinates. */
 	public final Rectangle mapCoords = new Rectangle();
 	/** The animation timer. */
@@ -207,17 +203,28 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** The animation interval. */
 	private static final int ANIMATION_INTERVAL = 100;
 	/**
+	 * The game world object.
+	 */
+	private GameWorld gameWorld;
+	/** The information bar renderer. */
+	private InfobarRenderer infobarRenderer;
+	/** The planet listing scroll offset. */
+	private int planetListOffset;
+	/**
 	 * Constructor. Sets the helper object fields.
 	 * @param gfx the starmap graphics object
 	 * @param cgfx the common graphics object
 	 * @param uiSound the user interface
+	 * @param infobarRenderer the information bar renderer
 	 */
-	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, UISounds uiSound) {
+	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, 
+			UISounds uiSound, InfobarRenderer infobarRenderer) {
 		super();
 		this.gfx = gfx;
 		this.cgfx = cgfx;
 		this.text = cgfx.text;
 		this.uiSound = uiSound;
+		this.infobarRenderer = infobarRenderer;
 		setDoubleBuffered(true);
 		setOpaque(true);
 		//setCursor(gfx.cursors.target);
@@ -249,7 +256,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			updateScrollKnobs();
 		}
 		
-		cgfx.renderInfoBars(this, g2);
+		infobarRenderer.renderInfoBars(this, g2);
 		
 		// draw inner area four corners
 		g2.drawImage(gfx.contents.bottomLeft, bottomLeftRect.x, bottomLeftRect.y, null);
@@ -519,10 +526,27 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			g2.fillRect(0, 0, w, h);
 			g2.setComposite(comp);
 		}
+		
+		// render planets
+		sp = g2.getClip();
+		g2.setClip(colonies);
+		int y = colonies.y + 2;
+		List<GamePlanet> list = gameWorld.getPlayerPlanets();
+		int planetTextSize = 10;
+		for (int i = planetListOffset; i < list.size(); i++) {
+			if (y > colonies.y + colonies.height) {
+				break;
+			}
+			GamePlanet planet = list.get(i);
+			text.paintTo(g2, colonies.x + 1, y, planetTextSize, TextGFX.GREEN, planet.name);
+			y += planetTextSize + 1;
+		}
+		
+		g2.setClip(sp);
 	}
 	/** Recalculate the region coordinates. */
 	private void updateRegions() {
-		cgfx.updateRegions(this, infoBarRect);
+		infobarRenderer.updateRegions(this);
 		int w = getWidth();
 		int h = getHeight();
 		int bh = cgfx.bottom.left.getHeight() + gfx.contents.bottomLeft.getHeight();
@@ -950,9 +974,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private void initActions() {
 		btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); } });
 		buttons.add(btnColony);
-		btnColonyPrev = new Btn();
+		btnColonyPrev = new Btn(new BtnAction() { public void invoke() { doColonyPrev(); } });
 		buttons.add(btnColonyPrev);
-		btnColonyNext = new Btn();
+		btnColonyNext = new Btn(new BtnAction() { public void invoke() { doColonyNext(); } });
 		buttons.add(btnColonyNext);
 		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
 		buttons.add(btnEquipment);
@@ -1145,7 +1169,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		BufferedImage ri = cgfx.radarDots[radarDotSizes[magnifyIndex]];
 		// render radar first.
 		if (btnRadars.down) {
-			for (GMPlanet p : planets) {
+			for (GamePlanet p : gameWorld.planets) {
 				if (!p.visible) {
 					continue;
 				}
@@ -1165,7 +1189,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				}
 			}
 		}
-		for (GMPlanet p : planets) {
+		for (GamePlanet p : gameWorld.planets) {
 			if (!p.visible) {
 				continue;
 			}
@@ -1182,7 +1206,11 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				y = (int)(p.y * zoomFactor + pimg.getHeight()) + 2;
 				int w = text.getTextWidth(5, p.name);
 				x = (int)(p.x * zoomFactor + pimg.getWidth() / 2f - w / 2f);
-				text.paintTo(g2, xOrig + x, yOrig + y, 5, p.nameColor, p.name);
+				int color = TextGFX.GRAY;
+				if (p.ownerRace != null) {
+					color = p.ownerRace.smallColor;
+				}
+				text.paintTo(g2, xOrig + x, yOrig + y, 5, color, p.name);
 			}
 		}
 	}
@@ -1190,7 +1218,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 * Perform animations. Rotate planets, move fleets.
 	 */
 	private void doAnimate() {
-		for (GMPlanet p : planets) {
+		for (GamePlanet p : gameWorld.planets) {
 			if (!p.visible) {
 				continue;
 			}
@@ -1217,5 +1245,25 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	public void stopAnimations() {
 		animations.stop();
+	}
+	/**
+	 * @param gameWorld the gameWorld to set
+	 */
+	public void setGameWorld(GameWorld gameWorld) {
+		this.gameWorld = gameWorld;
+	}
+	/**
+	 * @return the gameWorld
+	 */
+	public GameWorld getGameWorld() {
+		return gameWorld;
+	}
+	/** Action for colony next button clicked. */
+	private void doColonyNext() {
+		
+	}
+	/** Action for colony previous button clicked. */
+	private void doColonyPrev() {
+		
 	}
 }

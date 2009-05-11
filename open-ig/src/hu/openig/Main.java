@@ -12,6 +12,7 @@ import hu.openig.ani.Player;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoScreen;
 import hu.openig.gfx.CommonGFX;
+import hu.openig.gfx.InfobarRenderer;
 import hu.openig.gfx.InformationGFX;
 import hu.openig.gfx.InformationRenderer;
 import hu.openig.gfx.MainmenuRenderer;
@@ -22,8 +23,14 @@ import hu.openig.gfx.PlanetGFX;
 import hu.openig.gfx.PlanetRenderer;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StarmapRenderer;
-import hu.openig.model.GMPlanet;
+import hu.openig.model.GamePlanet;
+import hu.openig.model.GamePlayer;
+import hu.openig.model.GameRace;
+import hu.openig.model.GameSpeed;
+import hu.openig.model.GameWorld;
+import hu.openig.model.PlayerType;
 import hu.openig.music.Music;
+import hu.openig.res.Labels;
 import hu.openig.sound.UISounds;
 import hu.openig.utils.ResourceMapper;
 
@@ -64,19 +71,19 @@ public class Main extends JFrame {
 	/** Version string. */
 	public static final String VERSION = "0.6 Alpha";
 	/** The user interface sounds. */
-	UISounds uis;
+	UISounds uiSounds;
 	/** The common graphics objects. */
 	CommonGFX cgfx;
 	/** The starmap renderer. */
-	StarmapRenderer smr;
+	StarmapRenderer starmapRenderer;
 	/** The planet surface renderer. */
-	PlanetRenderer pr;
+	PlanetRenderer planetRenderer;
 	/** The information screen renderer. */
-	InformationRenderer ir;
+	InformationRenderer informationRenderer;
 	/** The main menu renderer. */
-	MainmenuRenderer mmr;
+	MainmenuRenderer mainmenuRenderer;
 	/** The full screen movie surface. */
-	MovieSurface mov;
+	MovieSurface moviePlayer;
 	/** Timer for fade in-out animations. */
 	Timer fadeTimer;
 	/** The fade timer firing interval in milliseconds. */
@@ -106,11 +113,15 @@ public class Main extends JFrame {
 	/** The options screen renderer. */
 	OptionsGFX optionsGFX;
 	/** The options screen renderer. */
-	OptionsRenderer or;
+	OptionsRenderer optionsRenderer;
 	/** The program is currently in Game mode. */
 	boolean inGame;
 	/** The resource file mapper. */
 	private ResourceMapper resMap;
+	/** The current game world. */
+	private GameWorld gameWorld;
+	/** The information bar renderer. */
+	private InfobarRenderer infobarRenderer;
 	/**
 	 * Initialize resources from the given root directory.
 	 * @param root the root directory
@@ -128,7 +139,7 @@ public class Main extends JFrame {
 		music = new Music(".");
 
 		List<Future<?>> futures = new LinkedList<Future<?>>();
-		futures.add(exec.submit(new Runnable() { public void run() { uis = new UISounds(resMap); } }));
+		futures.add(exec.submit(new Runnable() { public void run() { uiSounds = new UISounds(resMap); } }));
 		futures.add(exec.submit(new Runnable() { public void run() { cgfx = new CommonGFX(resMap); } }));
 		futures.add(exec.submit(new Runnable() { public void run() { starmapGFX = new StarmapGFX(resMap); } }));
 		futures.add(exec.submit(new Runnable() { public void run() { planetGFX = new PlanetGFX(resMap); } }));
@@ -146,34 +157,47 @@ public class Main extends JFrame {
 			}
 		}
 		
+		gameWorld = new GameWorld();
+		// disable controls
+		gameWorld.showTime = false;
+		gameWorld.showSpeedControls = false;
+		
 		// initialize renderers
-		smr = new StarmapRenderer(starmapGFX, cgfx, uis);
-		pr = new PlanetRenderer(planetGFX, cgfx, uis);
-		ir = new InformationRenderer(infoGFX, cgfx, uis);
-		mmr = new MainmenuRenderer(menuGFX, cgfx.text);
-		mmr.setOpaque(true);
-		mmr.setBackground(Color.BLACK);
-		mov = new MovieSurface();
-		mov.setOpaque(true);
-		mov.setBackground(Color.BLACK);
-		or = new OptionsRenderer(optionsGFX, cgfx.text, uis);
-		or.setVisible(false);
-		player = new Player(mov);
+		infobarRenderer = new InfobarRenderer(cgfx);
+		starmapRenderer = new StarmapRenderer(starmapGFX, cgfx, uiSounds, infobarRenderer);
+		planetRenderer = new PlanetRenderer(planetGFX, cgfx, uiSounds, infobarRenderer);
+		informationRenderer = new InformationRenderer(infoGFX, cgfx, uiSounds, infobarRenderer);
+		mainmenuRenderer = new MainmenuRenderer(menuGFX, cgfx.text);
+		mainmenuRenderer.setOpaque(true);
+		mainmenuRenderer.setBackground(Color.BLACK);
+		moviePlayer = new MovieSurface();
+		moviePlayer.setOpaque(true);
+		moviePlayer.setBackground(Color.BLACK);
+		optionsRenderer = new OptionsRenderer(optionsGFX, cgfx, uiSounds, infobarRenderer);
+		optionsRenderer.setVisible(false);
+		player = new Player(moviePlayer);
 		player.setMasterGain(0);
-		uis.setMasterGain(0);
-		or.setAudioVolume(1);
-		or.setMusicVolume(1);
+		uiSounds.setMasterGain(0);
+		optionsRenderer.setAudioVolume(1);
+		optionsRenderer.setMusicVolume(1);
 		screens = new JComponent[] {
-			smr, pr, ir, mmr, mov, or
+			starmapRenderer, planetRenderer, informationRenderer, mainmenuRenderer, moviePlayer, optionsRenderer
 		};
 		// setup renderers
-		mmr.setVisible(true);
-		mmr.setVersion(VERSION);
-		mmr.setRandomPicture();
-		smr.setVisible(false);
-		ir.setVisible(false);
-		pr.setVisible(false);
-		mov.setVisible(false);
+		mainmenuRenderer.setVisible(true);
+		mainmenuRenderer.setVersion(VERSION);
+		mainmenuRenderer.setRandomPicture();
+		starmapRenderer.setVisible(false);
+		informationRenderer.setVisible(false);
+		planetRenderer.setVisible(false);
+		moviePlayer.setVisible(false);
+		
+		infobarRenderer.setGameWorld(gameWorld);
+		starmapRenderer.setGameWorld(gameWorld);
+		informationRenderer.setGameWorld(gameWorld);
+		planetRenderer.setGameWorld(gameWorld);
+		optionsRenderer.setGameWorld(gameWorld);
+		
 		setListeners();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -187,32 +211,32 @@ public class Main extends JFrame {
 		
 		layers = new JLayeredPane();
 		int lvl = 0;
-		layers.add(smr, Integer.valueOf(lvl++));
-		layers.add(pr, Integer.valueOf(lvl++));
-		layers.add(ir, Integer.valueOf(lvl++));
-		layers.add(mmr, Integer.valueOf(lvl++));
+		layers.add(starmapRenderer, Integer.valueOf(lvl++));
+		layers.add(planetRenderer, Integer.valueOf(lvl++));
+		layers.add(informationRenderer, Integer.valueOf(lvl++));
+		layers.add(mainmenuRenderer, Integer.valueOf(lvl++));
 
-		layers.add(mov, Integer.valueOf(lvl++));
-		layers.add(or, Integer.valueOf(lvl++));
+		layers.add(moviePlayer, Integer.valueOf(lvl++));
+		layers.add(optionsRenderer, Integer.valueOf(lvl++));
 		
 		GroupLayout gl = new GroupLayout(layers);
 		layers.setLayout(gl);
 		gl.setHorizontalGroup(gl.createParallelGroup()
-			.addComponent(mmr, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(smr, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(pr, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(ir, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(mov, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(or, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(mainmenuRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(starmapRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(planetRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(informationRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(moviePlayer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(optionsRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 		);
 		gl.setVerticalGroup(
 			gl.createParallelGroup()
-			.addComponent(mmr, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(smr, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(pr, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(ir, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(mov, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-			.addComponent(or, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(mainmenuRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(starmapRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(planetRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(informationRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(moviePlayer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(optionsRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 		);
 		
 		
@@ -234,8 +258,7 @@ public class Main extends JFrame {
 		setMinimumSize(new Dimension(inW, inH));
 		
 		setFocusTraversalKeysEnabled(false);
-		initModel();
-		smr.startAnimations();
+		starmapRenderer.startAnimations();
 		//GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(this);
 		setVisible(true);
 	}
@@ -278,32 +301,63 @@ public class Main extends JFrame {
 	 * Sets action listeners on the various screens.
 	 */
 	private void setListeners() {
-		smr.setOnColonyClicked(new BtnAction() { public void invoke() { onStarmapColony(); } });
-		smr.setOnInformationClicked(new BtnAction() { public void invoke() { onStarmapInfo(); } });
-		pr.setOnStarmapClicked(new BtnAction() { public void invoke() { onColonyStarmap(); } });
-		pr.setOnInformationClicked(new BtnAction() { public void invoke() { onColonyInfo(); } });
-		ir.setOnStarmapClicked(new BtnAction() { public void invoke() { onInfoStarmap(); } });
-		ir.setOnColonyClicked(new BtnAction() { public void invoke() { onInfoColony(); } });
-		pr.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
+		starmapRenderer.setOnColonyClicked(new BtnAction() { public void invoke() { onStarmapColony(); } });
+		starmapRenderer.setOnInformationClicked(new BtnAction() { public void invoke() { onStarmapInfo(); } });
+		planetRenderer.setOnStarmapClicked(new BtnAction() { public void invoke() { onColonyStarmap(); } });
+		planetRenderer.setOnInformationClicked(new BtnAction() { public void invoke() { onColonyInfo(); } });
+		informationRenderer.setOnStarmapClicked(new BtnAction() { public void invoke() { onInfoStarmap(); } });
+		informationRenderer.setOnColonyClicked(new BtnAction() { public void invoke() { onInfoColony(); } });
+		planetRenderer.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
 		
-		mmr.setStartNewAction(new BtnAction() { public void invoke() { onStarmap(); } });
-		mmr.setLoadAction(new BtnAction() { public void invoke() { onLoad(); } });
-		mmr.setTitleAnimAction(new BtnAction() { public void invoke() { onTitle(); } });
-		mmr.setIntroAction(new BtnAction() { public void invoke() { onIntro(); } });
-		mmr.setQuitAction(new BtnAction() { public void invoke() { onQuit(); } });
+		mainmenuRenderer.setStartNewAction(new BtnAction() { public void invoke() { onStarmap(); } });
+		mainmenuRenderer.setLoadAction(new BtnAction() { public void invoke() { onLoad(); } });
+		mainmenuRenderer.setTitleAnimAction(new BtnAction() { public void invoke() { onTitle(); } });
+		mainmenuRenderer.setIntroAction(new BtnAction() { public void invoke() { onIntro(); } });
+		mainmenuRenderer.setQuitAction(new BtnAction() { public void invoke() { onQuit(); } });
 		
-		or.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); } });
-		or.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); } });
-		or.setOnExit(new BtnAction() { public void invoke() { doExit(); } });
+		optionsRenderer.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); } });
+		optionsRenderer.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); } });
+		optionsRenderer.setOnExit(new BtnAction() { public void invoke() { doExit(); } });
 	}
 	/** Go to starmap from main menu. */
 	private void onStarmap() {
 		inGame = true;
-		uis.playSound("WelcomeToIG");
-		showScreen(smr);
+		
+		// start new game with the following settings
+		startNewGame();
+		
+		uiSounds.playSound("WelcomeToIG");
+		showScreen(starmapRenderer);
 		startStopAnimations(true);
 		
 		music.playFile("res:/hu/openig/res/Music2.ogg", "res:/hu/openig/res/Music1.ogg", "res:/hu/openig/res/Music3.ogg");
+	}
+	/**
+	 * Prepare the game world for a new game.
+	 */
+	private void startNewGame() {
+		gameWorld.showSpeedControls = true;
+		gameWorld.showTime = true;
+		gameWorld.showUltrafast = false;
+		gameWorld.gameSpeed = GameSpeed.NORMAL;
+		gameWorld.calendar.setTimeInMillis(45997848000000L); //August 13th, 3427, 12 PM
+
+		gameWorld.language = "hu";
+		gameWorld.labels = Labels.parse("/hu/openig/res/labels.xml");
+		
+		gameWorld.races.clear();
+		gameWorld.races.addAll(GameRace.parse("/hu/openig/res/races.xml"));
+
+		gameWorld.planets.clear();
+		gameWorld.planets.addAll(GamePlanet.parse("/hu/openig/res/planets.xml", gameWorld));
+		// initialize local player
+		
+		GamePlayer player = new GamePlayer();
+		gameWorld.player = player;
+		player.playerType = PlayerType.LOCAL_HUMAN;
+		player.race = gameWorld.getRace(1);
+		player.money = 32000;
+		gameWorld.players.add(player);
 	}
 	/** Quit pressed on starmap. */
 	private void onQuit() {
@@ -313,37 +367,37 @@ public class Main extends JFrame {
 	 * Action for starmap colony button pressed.
 	 */
 	private void onStarmapColony() {
-		showScreen(pr);
+		showScreen(planetRenderer);
 	}
 	/** Action for starmap info button pressed. */
 	private void onStarmapInfo() {
-		ir.setScreenButtonsFor(InfoScreen.PLANETS);
-		ir.setVisible(true);
+		informationRenderer.setScreenButtonsFor(InfoScreen.PLANETS);
+		informationRenderer.setVisible(true);
 		layers.validate();
 	}
 	/** Action for colony starmap button pressed. */
 	private void onColonyStarmap() {
-		showScreen(smr);
+		showScreen(starmapRenderer);
 	}
 	/** Action for colony planets button pressed. */
 	private void onColonyPlanets() {
-		ir.setScreenButtonsFor(InfoScreen.PLANETS);
-		ir.setVisible(true);
+		informationRenderer.setScreenButtonsFor(InfoScreen.PLANETS);
+		informationRenderer.setVisible(true);
 		layers.validate();
 	}
 	/** Action for colony info button pressed. */
 	private void onColonyInfo() {
-		ir.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
-		ir.setVisible(true);
+		informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
+		informationRenderer.setVisible(true);
 		layers.validate();
 	}
 	/** Action for info screen starmap button pressed. */
 	private void onInfoStarmap() {
-		showScreen(smr);
+		showScreen(starmapRenderer);
 	}
 	/** Action for info screen colony button pressed. */
 	private void onInfoColony() {
-		showScreen(pr);
+		showScreen(planetRenderer);
 	}
 	/**
 	 * Open Imperium Galactica main program.
@@ -374,64 +428,45 @@ public class Main extends JFrame {
 	/** Action for F2 keypress. */
 	private void onF2Action() {
 		if (!player.isPlayback()) {
-			if (!smr.isVisible()) {
-				uis.playSound("Starmap");
-				showScreen(smr);
+			if (!starmapRenderer.isVisible()) {
+				uiSounds.playSound("Starmap");
+				showScreen(starmapRenderer);
 			} else
-			if (ir.isVisible()) {
-				uis.playSound("Starmap");
-				showScreen(smr);
+			if (informationRenderer.isVisible()) {
+				uiSounds.playSound("Starmap");
+				showScreen(starmapRenderer);
 			}
 		}
 	}
 	/** Action for F3 keypress. */
 	private void onF3Action() {
 		if (!player.isPlayback()) {
-			if (!pr.isVisible()) {
-				uis.playSound("Colony");
-				showScreen(pr);
+			if (!planetRenderer.isVisible()) {
+				uiSounds.playSound("Colony");
+				showScreen(planetRenderer);
 			} else
-			if (ir.isVisible()) {
-				uis.playSound("Colony");
-				showScreen(pr);
+			if (informationRenderer.isVisible()) {
+				uiSounds.playSound("Colony");
+				showScreen(planetRenderer);
 			}
 		}
 	}
 	/** Action for F7 keypress. */
 	private void onF7Action() {
 		if (!player.isPlayback()) {
-			if (!ir.isVisible()) {
-				if (smr.isVisible()) {
-					uis.playSound("Planets");
-					ir.setScreenButtonsFor(InfoScreen.PLANETS);
+			if (!informationRenderer.isVisible()) {
+				if (starmapRenderer.isVisible()) {
+					uiSounds.playSound("Planets");
+					informationRenderer.setScreenButtonsFor(InfoScreen.PLANETS);
 				} else
-				if (pr.isVisible()) {
-					uis.playSound("ColonyInformation");
-					ir.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
+				if (planetRenderer.isVisible()) {
+					uiSounds.playSound("ColonyInformation");
+					informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
 				}
-				ir.setVisible(true);
+				informationRenderer.setVisible(true);
 				layers.validate();
 			}
 		}
-	}
-	/** Initialize model to test model dependand rendering. */
-	private void initModel() {
-//		for (SurfaceType st : SurfaceType.values()) {
-//			GMPlanet p = new GMPlanet();
-//			p.name = "Planet " + st.surfaceIndex;
-//			p.radarRadius = 50;
-//			p.showName = true;
-//			p.showRadar = true;
-//			p.surfaceType = st;
-//			p.surfaceVariant = 1;
-//			p.visible = true;
-//			p.x = 100 + st.surfaceIndex * 50;
-//			p.y = 100 + st.surfaceIndex * 50;
-//			p.nameColor = TextGFX.GALACTIC_EMPIRE_ST;
-//			p.rotationDirection = st.surfaceIndex % 2 == 0;
-//			smr.planets.add(p);
-//		}
-		smr.planets.addAll(GMPlanet.parse("/hu/openig/res/planets.xml"));
 	}
 	/**
 	 * Show the given screen and hide all other screens.
@@ -447,14 +482,14 @@ public class Main extends JFrame {
 	 * Play the title intro.
 	 */
 	private void onTitle() {
-		showScreen(mov);
+		showScreen(moviePlayer);
 		player.setFilename(root + "/INTRO/GT_TITLE.ANI");
 		player.setOnCompleted(new BtnAction() { public void invoke() { onPlaybackCompleted(); } });
 		player.startPlayback();
 	}
 	/** Play the sequence of intro videos. */ 
 	private void onIntro() {
-		showScreen(mov);
+		showScreen(moviePlayer);
 		player.setFilename(root + "/INTRO/BLOCK1.ANI");
 		player.setOnCompleted(new BtnAction() { public void invoke() { onIntro1(); } });
 		player.startPlayback();
@@ -487,7 +522,7 @@ public class Main extends JFrame {
 	}
 	/** If the main menu playback completes, restore the main menu. */
 	private void onPlaybackCompleted() {
-		showScreen(mmr);
+		showScreen(mainmenuRenderer);
 	}
 	/** The escape key pressed. */
 	private void onESCAction() {
@@ -495,17 +530,21 @@ public class Main extends JFrame {
 			playbackCancelled = true;
 			player.stopAndWait();
 		} else
-		if (!mmr.isVisible()) {
-			if (!or.isVisible()) {
-				or.setRandomPicture();
+		if (!mainmenuRenderer.isVisible()) {
+			if (!optionsRenderer.isVisible()) {
+				optionsRenderer.setRandomPicture();
 			}
-			or.setVisible(!or.isVisible());
-			startStopAnimations(!or.isVisible());
+			optionsRenderer.setVisible(!optionsRenderer.isVisible());
+			startStopAnimations(!optionsRenderer.isVisible());
+			// enable/disable speed controls
+			gameWorld.showSpeedControls = !optionsRenderer.isVisible();
 			layers.validate();
 		} else
-		if (mmr.isVisible() && or.isVisible()) {
-			or.setVisible(!or.isVisible());
-			startStopAnimations(!or.isVisible());
+		if (mainmenuRenderer.isVisible() && optionsRenderer.isVisible()) {
+			optionsRenderer.setVisible(!optionsRenderer.isVisible());
+			// enable/disable speed controls
+			gameWorld.showSpeedControls = !optionsRenderer.isVisible();
+			startStopAnimations(!optionsRenderer.isVisible());
 			layers.validate();
 		}
 	}
@@ -515,40 +554,40 @@ public class Main extends JFrame {
 	 */
 	private void startStopAnimations(boolean state) {
 		if (state) {
-			smr.startAnimations();
+			starmapRenderer.startAnimations();
 		} else {
-			smr.stopAnimations();
+			starmapRenderer.stopAnimations();
 		}
 	}
 	/** Show the options screen when called from the main menu. */
 	private void onLoad() {
-		or.setRandomPicture();
-		or.setVisible(!or.isVisible());
-		startStopAnimations(!or.isVisible());
+		optionsRenderer.setRandomPicture();
+		optionsRenderer.setVisible(!optionsRenderer.isVisible());
+		startStopAnimations(!optionsRenderer.isVisible());
 		layers.validate();
 	}
 	/** If adjusting music volume. */
 	private void onAdjustSound() {
-		if (or.getAudioVolume() < 0.0001) {
-			uis.setMute(true);
+		if (optionsRenderer.getAudioVolume() < 0.0001) {
+			uiSounds.setMute(true);
 		} else {
-			uis.setMute(false);
-			uis.setMasterGain((float)(20 * Math.log10(or.getAudioVolume())));
+			uiSounds.setMute(false);
+			uiSounds.setMasterGain((float)(20 * Math.log10(optionsRenderer.getAudioVolume())));
 		}
 	}
 	/** If adjusting sound volume. */
 	private void onAdjustMusic() {
-		if (or.getMusicVolume() < 0.0001) {
+		if (optionsRenderer.getMusicVolume() < 0.0001) {
 			music.setMute(true);
 		} else {
 			music.setMute(false);
-			music.setMasterGain((float)(20 * Math.log10(or.getMusicVolume())));
+			music.setMasterGain((float)(20 * Math.log10(optionsRenderer.getMusicVolume())));
 		}
 	}
 	/** Perform actions to quit from the application. */
 	private void doQuit() {
-		uis.close();
-		smr.stopAnimations();
+		uiSounds.close();
+		starmapRenderer.stopAnimations();
 		player.setOnCompleted(null);
 		player.stopAndWait();
 		music.stop();
@@ -557,9 +596,9 @@ public class Main extends JFrame {
 	}
 	/** Perform the exit operation. */
 	private void doExit() {
-		smr.setVisible(false);
-		or.setVisible(false);
-		mmr.setVisible(true);
+		starmapRenderer.setVisible(false);
+		optionsRenderer.setVisible(false);
+		mainmenuRenderer.setVisible(true);
 		startStopAnimations(false);
 		layers.validate();
 		music.stop();
