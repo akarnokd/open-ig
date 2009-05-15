@@ -35,23 +35,21 @@ public class GamePlanet {
 	public String name;
 	/** Show planet name? */
 	public boolean showName;
-	/** Show radar region? */
-	public boolean showRadar;
-	/** The radar circle radius. */
+	/** The radar circle radius. If zero, no radar should be displayed */
 	public int radarRadius;
-	/** Center X coordinate on the starmap. */
+	/** Center X coordinate on the 1:1 zoomed starmap. */
 	public int x;
-	/** Center Y coordinate on the starmap. */
+	/** Center Y coordinate on the 1:1 zoomed starmap. */
 	public int y;
-	/** Display planet on the starmap? */
+	/** Display planet on the starmap? Used to globally enable/disable a planet's visibility */
 	public boolean visible;
 	/** Rotation direction: true - forward, false - backward. */
 	public boolean rotationDirection;
 	/** The planet's unique id. */
 	public String id;
-	/** Owner race name. */
-	public GameRace ownerRace;
-	/** Population race name. */
+	/** Owner race. Null indicates no owner. */
+	public GamePlayer owner;
+	/** Population race name. Null indicates an uninhabited planet. */
 	public GameRace populationRace;
 	/** Population count. */
 	public int population;
@@ -94,17 +92,17 @@ public class GamePlanet {
 			p.surfaceVariant = Integer.parseInt(XML.childValue(planet, "variant"));
 			String ownerRaceStr = XML.childValue(planet, "race");
 			if (!ownerRaceStr.isEmpty()) {
-				p.ownerRace = lookup.getRace(ownerRaceStr);
+				p.populationRace = lookup.getRace(ownerRaceStr);
 			}
-			p.populationRace = p.ownerRace;
+			p.owner = lookup.getPlayerForRace(p.populationRace);
+			
 			p.size = Integer.parseInt(XML.childValue(planet, "size")) - 8;
 			p.rotationDirection = "RL".equals(XML.childValue(planet, "rotate"));
 			p.population = Integer.parseInt(XML.childValue(planet, "populate"));
 			String orbit = XML.childValue(planet, "in-orbit");
 			p.showName = true;
-			p.showRadar = true;
 			p.visible = true;
-			p.radarRadius = 50;
+			p.radarRadius = p.owner != null ? 50 : 0;
 			if (!"-".equals(orbit)) {
 				p.inOrbit.addAll(Arrays.asList(orbit.split("\\\\s*,\\\\s*")));
 			}

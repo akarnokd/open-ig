@@ -33,8 +33,14 @@ public class GameWorld implements GameRaceLookup {
 	public final List<GamePlanet> planets = new ArrayList<GamePlanet>();
 	/** The current time of the game. Should be handled in GMT mode, no summer time. */
 	public final GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-	/** The human player object. */
+	/** The player object, whose properties (fleets, planets, research, etc) are displayed by the rendering. */
 	public GamePlayer player;
+	/** 
+	 * A flag to disable the modification of the player's assets.
+	 * Could be used for diagnostic purposes when the player object is changed from
+	 * the real human player to the other players. 
+	 */
+	public boolean readOnly;
 	/** The list of all players. */
 	public final List<GamePlayer> players = new ArrayList<GamePlayer>();
 	/** The races in the current game. */
@@ -66,6 +72,19 @@ public class GameWorld implements GameRaceLookup {
 			}
 		}
 		throw new IllegalStateException("Unknown race id: " + id);
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public GamePlayer getPlayerForRace(GameRace race) {
+		for (GamePlayer player : players) {
+			if (player.race == race) {
+				return player;
+			}
+		}
+		//throw new IllegalStateException("No player for race: " + race);
+		return null;
 	}
 	/**
 	 * Convinience method to return the current game year.
@@ -118,10 +137,24 @@ public class GameWorld implements GameRaceLookup {
 		// i wish we had yield return
 		List<GamePlanet> result = new ArrayList<GamePlanet>();
 		for (GamePlanet p : planets) {
-			if (p.ownerRace == player.race) {
+			if (p.owner == player) {
 				result.add(p);
 			}
 		}
 		return result;
+	}
+	/**
+	 * A convinience method to associate each
+	 * planet with its corresponding owner's internal
+	 * known* sets. Only planets with direct ownership
+	 * is assigned this way (e.g. the planets discovered
+	 * by radar is not covered here).
+	 */
+	public void setPlanetOwnerships() {
+		for (GamePlanet p : planets) {
+			if (p.owner != null) {
+				p.owner.possessPlanet(p);
+			}
+		}
 	}
 }
