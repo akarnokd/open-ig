@@ -38,6 +38,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JComponent;
 import javax.swing.Timer;
@@ -212,6 +213,20 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private InfobarRenderer infobarRenderer;
 	/** The planet listing scroll offset. */
 	private int planetListOffset;
+	/** Star rendering starting color. */
+	private int startStars = 0x685CA4;
+	/** Star rendering end color. */
+	private int endStars = 0xFCFCFC;
+	/** Number of stars per layer. */
+	private static final int STAR_COUNT = 1000;
+	/** Number of layers. */
+	private static final int STAR_LAYER_COUNT = 4;
+	/** Precalculated star coordinates. */
+	private int[] starsX = new int[STAR_COUNT * STAR_LAYER_COUNT];
+	/** Precalculated star coordinates. */
+	private int[] starsY = new int[STAR_COUNT * STAR_LAYER_COUNT];
+	/** Precalculated star colors. */
+	private int[] starsColors = new int[STAR_COUNT * STAR_LAYER_COUNT];
 	/**
 	 * Constructor. Sets the helper object fields.
 	 * @param gfx the starmap graphics object
@@ -236,8 +251,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		initActions();
 		fadeTimer = new Timer(FADE_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doFade(); } });
 		animations = new Timer(ANIMATION_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doAnimate(); } });
-		
-		
+		precalculateStars();
 	}
 	/**
 	 * {@inheritDoc}
@@ -335,10 +349,27 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		mapCoords.width = (int)(gfx.contents.fullMap.getWidth() * zoomFactor);
 		mapCoords.height = (int)(gfx.contents.fullMap.getHeight() * zoomFactor);
 		
+		g2.setClip(mapCoords.intersection(mapRect));
 		g2.translate(mapRect.x + mx, mapRect.y + my);
 		g2.scale(zoomFactor, zoomFactor);
 		g2.drawImage(gfx.contents.fullMap, 0, 0, null);
 		g2.setTransform(af);
+		
+		if (btnStars.down) {
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 1000; j++) {
+					int x = (int)(mapCoords.x - hscrollValue * hscrollFactor * (i + 1) / 10 + starsX[i * STAR_COUNT + j] * zoomFactor);
+					int y = (int)(mapCoords.y - vscrollValue * vscrollFactor * (i + 1) / 10 + starsY[i * STAR_COUNT + j] * zoomFactor);
+					int c = starsColors[i * STAR_COUNT + j];
+					g2.setColor(new Color(c));
+					if (zoomFactor < 2) {
+						g2.fillRect(x, y, 1, 1);
+					} else {
+						g2.fillRect(x, y, 2, 2);
+					}
+				}
+			}
+		}
 		
 		// Render Grid
 		if (btnGrids.down) {
@@ -1018,6 +1049,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		btnGrids.down = true;
 		btnRadars.down = true;
 		btnFleets.down = true;
+		btnStars.down = true;
 		
 		btnMove = new Btn();
 		toggleButtons.add(btnMove);
@@ -1372,5 +1404,33 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		float dx = (pt.x - minimapRect.x - w0 / 2) / hscrollFactor * zoomFactor / w2;
 		float dy = (pt.y - minimapRect.y - h0 / 2) / vscrollFactor * zoomFactor / h2;
 		scroll(dx, dy);
+	}
+	/**
+	 * Mix two colors with a factor.
+	 * @param c1 the first color
+	 * @param c2 the second color
+	 * @param rate the third color
+	 * @return the mixed color
+	 */
+	private int mixColors(int c1, int c2, float rate) {
+		return
+			((int)((c1 & 0xFF0000) * rate + (c2 & 0xFF0000) * (1 - rate)) & 0xFF0000)
+			| ((int)((c1 & 0xFF00) * rate + (c2 & 0xFF00) * (1 - rate)) & 0xFF00)
+			| ((int)((c1 & 0xFF) * rate + (c2 & 0xFF) * (1 - rate)) & 0xFF);
+	}
+	/**
+	 * Precalculates the star background locations and colors.
+	 */
+	private void precalculateStars() {
+		Random random = new Random(0);
+		for (int i = 0; i < STAR_LAYER_COUNT; i++) {
+			int fw = gfx.contents.fullMap.getWidth() * (10 + i + 1) / 10;
+			int fh = gfx.contents.fullMap.getHeight() * (10 + i + 1) / 10;
+			for (int j = 0; j < STAR_COUNT; j++) {
+				starsX[i * STAR_COUNT + j] = random.nextInt(fw);
+				starsY[i * STAR_COUNT + j] = random.nextInt(fh);
+				starsColors[i * STAR_COUNT + j] = mixColors(startStars, endStars, random.nextFloat());
+			}
+		}
 	}
 }
