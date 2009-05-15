@@ -45,6 +45,8 @@ public class GameWorld implements GameRaceLookup {
 	public final List<GamePlayer> players = new ArrayList<GamePlayer>();
 	/** The races in the current game. */
 	public final List<GameRace> races = new ArrayList<GameRace>();
+	/** All fleets in the current game. */
+	public final List<GameFleet> fleets = new ArrayList<GameFleet>();
 	/** The labels used in the game world. */
 	public Labels labels;
 	/** The current language. */
@@ -154,6 +156,17 @@ public class GameWorld implements GameRaceLookup {
 		for (GamePlanet p : planets) {
 			if (p.owner != null) {
 				p.owner.possessPlanet(p);
+			}
+		}
+	}
+	/**
+	 * A convinience method to assign fleets to their
+	 * respective ovners ownFleet set.
+	 */
+	public void setFleetOwnerships() {
+		for (GameFleet f : fleets) {
+			if (f.owner != null) {
+				f.owner.possessFleet(f);
 			}
 		}
 	}

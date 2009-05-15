@@ -10,6 +10,7 @@ package hu.openig.gfx;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
+import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
@@ -371,7 +372,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			
 			g2.setStroke(st);
 		}
-		renderPlanets(g2, mapRect.x + mx, mapRect.y + my);
+		renderPlanetsAndFleets(g2, mapRect.x + mx, mapRect.y + my);
 		g2.setClip(minimapRect);
 		renderMinimap(g2);
 		
@@ -1016,6 +1017,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		
 		btnGrids.down = true;
 		btnRadars.down = true;
+		btnFleets.down = true;
 		
 		btnMove = new Btn();
 		toggleButtons.add(btnMove);
@@ -1177,22 +1179,19 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 * @param xOrig map rendering original coordinate X
 	 * @param yOrig map rendering original coordinate Y
 	 */
-	private void renderPlanets(Graphics2D g2, int xOrig, int yOrig) {
+	private void renderPlanetsAndFleets(Graphics2D g2, int xOrig, int yOrig) {
 		BufferedImage ri = cgfx.radarDots[radarDotSizes[magnifyIndex]];
 		// render radar first.
 		GamePlayer player = gameWorld.player;
 		if (btnRadars.down) {
 			// render radar circle only for the own planets
 			for (GamePlanet p : player.ownPlanets) {
-				if (!p.visible) {
-					continue;
-				}
-				int modifiedMagnify = magnifyIndex + p.size;
-				if (modifiedMagnify < 0) {
-					modifiedMagnify = 0;
-				}
-				BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[modifiedMagnify]).get(p.rotationPhase);
-				if (p.radarRadius > 0) {
+				if (p.visible && p.radarRadius > 0) {
+					int modifiedMagnify = magnifyIndex + p.size;
+					if (modifiedMagnify < 0) {
+						modifiedMagnify = 0;
+					}
+					BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[modifiedMagnify]).get(p.rotationPhase);
 					double fd = Math.PI / 50;
 					double fm = 2 * Math.PI - fd;
 					for (double f = 0.0f; f <= fm; f += fd) {
@@ -1216,8 +1215,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			int y = (int)(p.y * zoomFactor /* - pimg.getHeight() / 2f*/);
 			
 			g2.drawImage(pimg, xOrig + x, yOrig + y, null);
-			if (p.showName && (nameMode == 1 || nameMode == 3) 
-					&& gameWorld.player.knownPlanetsByName.contains(p)) {
+			if ((nameMode == 1 || nameMode == 3) 
+					&& player.knownPlanetsByName.contains(p)) {
 				int color = TextGFX.GRAY;
 				if (p.owner != null) {
 					color = p.owner.race.smallColor;
@@ -1226,6 +1225,50 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				int w = text.getTextWidth(5, p.name);
 				x = (int)(p.x * zoomFactor + pimg.getWidth() / 2f - w / 2f);
 				text.paintTo(g2, xOrig + x, yOrig + y, 5, color, p.name);
+			}
+		}
+		// render fleet radars
+		if (btnRadars.down && btnFleets.down) {
+			for (GameFleet fleet : player.ownFleets) {
+				if (fleet.visible && fleet.radarRadius > 0) {
+					double fd = Math.PI / 50;
+					double fm = 2 * Math.PI - fd;
+					for (double f = 0.0f; f <= fm; f += fd) {
+						int x = (int)((fleet.x + fleet.radarRadius * Math.sin(f)) * zoomFactor);
+						int y = (int)((fleet.y + fleet.radarRadius * Math.cos(f)) * zoomFactor);
+						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
+					}
+				}
+			}
+		}
+		// render fleet names
+		if (btnFleets.down && (nameMode == 2 || nameMode == 3)) {
+			for (GameFleet f : player.knownFleets) {
+				if (f.visible) {
+					int color = TextGFX.GRAY;
+					if (f.owner != null) {
+						color = f.owner.race.smallColor;
+					}
+					BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
+					int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2);
+					int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2);
+					y = (int)(f.y * zoomFactor) + 2 + fleetImg.getHeight();
+					int w = text.getTextWidth(5, f.name);
+					x = (int)(f.x * zoomFactor - w / 2f);
+					text.paintTo(g2, xOrig + x, yOrig + y, 5, color, f.name);
+				}
+			}
+		}
+		// render fleet icons
+		if (btnFleets.down) {
+			for (GameFleet f : player.knownFleets) {
+				if (f.visible) {
+					BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
+					int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2);
+					int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2);
+					
+					g2.drawImage(fleetImg, xOrig + x, yOrig + y, null);
+				}
 			}
 		}
 	}

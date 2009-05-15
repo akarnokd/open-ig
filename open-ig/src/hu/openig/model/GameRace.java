@@ -27,7 +27,7 @@ public class GameRace {
 	/** The race identifier. */
 	public String id;
 	/** The race name. */
-	public String name;
+//	public String name;
 	/** The technology index. */
 	public int techIndex;
 	/** The ship icon index. */

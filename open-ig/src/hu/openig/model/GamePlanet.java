@@ -33,13 +33,11 @@ public class GamePlanet {
 	public int rotationPhase;
 	/** The planet name. */
 	public String name;
-	/** Show planet name? */
-	public boolean showName;
 	/** The radar circle radius. If zero, no radar should be displayed */
 	public int radarRadius;
-	/** Center X coordinate on the 1:1 zoomed starmap. */
+	/** Center X coordinate on the 1:1 zoomed starmap. Means (currently) the top-left corner of the planet rectangle. */
 	public int x;
-	/** Center Y coordinate on the 1:1 zoomed starmap. */
+	/** Center Y coordinate on the 1:1 zoomed starmap.  Means (currently) the top-left corner of the planet rectangle.*/
 	public int y;
 	/** Display planet on the starmap? Used to globally enable/disable a planet's visibility */
 	public boolean visible;
@@ -100,7 +98,6 @@ public class GamePlanet {
 			p.rotationDirection = "RL".equals(XML.childValue(planet, "rotate"));
 			p.population = Integer.parseInt(XML.childValue(planet, "populate"));
 			String orbit = XML.childValue(planet, "in-orbit");
-			p.showName = true;
 			p.visible = true;
 			p.radarRadius = p.owner != null ? 50 : 0;
 			if (!"-".equals(orbit)) {

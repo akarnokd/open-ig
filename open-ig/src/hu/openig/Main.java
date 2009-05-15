@@ -23,6 +23,7 @@ import hu.openig.gfx.PlanetGFX;
 import hu.openig.gfx.PlanetRenderer;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StarmapRenderer;
+import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameRace;
@@ -38,6 +39,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -92,8 +94,6 @@ public class Main extends JFrame {
 	JLayeredPane layers;
 	/** The array of screens. */
 	JComponent[] screens;
-	/** The root directory. */
-	String root;
 	/** The animation player. */
 	Player player;
 	/** The music player. */
@@ -124,10 +124,9 @@ public class Main extends JFrame {
 	private InfobarRenderer infobarRenderer;
 	/**
 	 * Initialize resources from the given root directory.
-	 * @param root the root directory
+	 * @param resMap the resource mapper
 	 */
-	protected void initialize(final String root) {
-		this.root = root;
+	protected void initialize(final ResourceMapper resMap) {
 		//setUndecorated(true);
 		setTitle("Open Imperium Galactica (" + VERSION + ")");
 		setBackground(Color.BLACK);
@@ -135,7 +134,7 @@ public class Main extends JFrame {
 		
 		exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		
-		resMap = new ResourceMapper(root);
+		this.resMap = resMap;
 		music = new Music(".");
 
 		List<Future<?>> futures = new LinkedList<Future<?>>();
@@ -303,6 +302,35 @@ public class Main extends JFrame {
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { onESCAction(); } });
 		
+		// Diagnostic/Cheat keystrokes
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+K");
+		rp.getActionMap().put("CTRL+K", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doKnowAllPlanets(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+K");
+		rp.getActionMap().put("CTRL+K", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doKnowAllPlanets(); } });
+
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+N");
+		rp.getActionMap().put("CTRL+N", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doKnowAllPlanetsByName(); } });
+
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+F");
+		rp.getActionMap().put("CTRL+F", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doKnowAllFleets(); } });
+		
 	}
 	/**
 	 * Sets action listeners on the various screens.
@@ -338,36 +366,6 @@ public class Main extends JFrame {
 		startStopAnimations(true);
 		
 		music.playFile("res:/hu/openig/res/Music2.ogg", "res:/hu/openig/res/Music1.ogg", "res:/hu/openig/res/Music3.ogg");
-	}
-	/**
-	 * Prepare the game world for a new game.
-	 */
-	private void startNewGame() {
-		gameWorld.showSpeedControls = true;
-		gameWorld.showTime = true;
-		gameWorld.showUltrafast = false;
-		gameWorld.gameSpeed = GameSpeed.NORMAL;
-		gameWorld.calendar.setTimeInMillis(45997848000000L); //August 13th, 3427, 12 PM
-
-		gameWorld.language = "hu";
-		gameWorld.labels = Labels.parse("/hu/openig/res/labels.xml");
-
-		gameWorld.races.clear();
-		gameWorld.races.addAll(GameRace.parse("/hu/openig/res/races.xml"));
-		
-		// create the single player
-		GamePlayer player = new GamePlayer();
-		player.playerType = PlayerType.LOCAL_HUMAN;
-		player.race = gameWorld.getRace(1);
-		player.money = 32000;
-		gameWorld.player = player;
-		gameWorld.players.add(player);
-
-		gameWorld.planets.clear();
-		gameWorld.planets.addAll(GamePlanet.parse("/hu/openig/res/planets.xml", gameWorld));
-		// initialize local player
-		
-		gameWorld.setPlanetOwnerships();
 	}
 	/** Quit pressed on starmap. */
 	private void onQuit() {
@@ -421,17 +419,17 @@ public class Main extends JFrame {
 		if (args.length > 0) {
 			root = args[0];
 		}
-		File file = new File(root + "/IMPERIUM.EXE");
-		if (!file.exists()) {
+		final ResourceMapper resMap = new ResourceMapper(root);
+		File file = resMap.get("IMPERIUM.EXE");
+		if (file == null || !file.exists()) {
 			JOptionPane.showMessageDialog(null, "Please place this program into the Imperium Galactica directory or specify the location via the first command line parameter.");
 			return;
 		}
-		final String fRoot = root;
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				Main m = new Main();
-				m.initialize(fRoot);
+				m.initialize(resMap);
 			}
 		});
 	}
@@ -493,14 +491,14 @@ public class Main extends JFrame {
 	 */
 	private void onTitle() {
 		showScreen(moviePlayer);
-		player.setFilename(root + "/INTRO/GT_TITLE.ANI");
+		player.setFilename(resMap.get("INTRO/GT_TITLE.ANI").getAbsolutePath());
 		player.setOnCompleted(new BtnAction() { public void invoke() { onPlaybackCompleted(); } });
 		player.startPlayback();
 	}
 	/** Play the sequence of intro videos. */ 
 	private void onIntro() {
 		showScreen(moviePlayer);
-		player.setFilename(root + "/INTRO/BLOCK1.ANI");
+		player.setFilename(resMap.get("INTRO/BLOCK1.ANI").getAbsolutePath());
 		player.setOnCompleted(new BtnAction() { public void invoke() { onIntro1(); } });
 		player.startPlayback();
 	}
@@ -513,7 +511,7 @@ public class Main extends JFrame {
 //			onPlaybackCompleted();
 //			return;
 		}
-		player.setFilename(root + "/INTRO/BLOCK23.ANI");
+		player.setFilename(resMap.get("INTRO/BLOCK23.ANI").getAbsolutePath());
 		player.setOnCompleted(new BtnAction() { public void invoke() { onIntro2(); } });
 		player.startPlayback();
 	}
@@ -526,7 +524,7 @@ public class Main extends JFrame {
 //			onPlaybackCompleted();
 //			return;
 		}
-		player.setFilename(root + "/INTRO/BLOCK4.ANI");
+		player.setFilename(resMap.get("INTRO/BLOCK4.ANI").getAbsolutePath());
 		player.setOnCompleted(new BtnAction() { public void invoke() { onPlaybackCompleted(); } });
 		player.startPlayback();
 	}
@@ -614,5 +612,85 @@ public class Main extends JFrame {
 		music.stop();
 		music.close();
 		inGame = false;
+	}
+	/**
+	 * Prepare the game world for a new game.
+	 */
+	private void startNewGame() {
+		gameWorld.showSpeedControls = true;
+		gameWorld.showTime = true;
+		gameWorld.showUltrafast = false;
+		gameWorld.gameSpeed = GameSpeed.NORMAL;
+		gameWorld.calendar.setTimeInMillis(45997848000000L); //August 13th, 3427, 12 PM
+
+		gameWorld.language = "hu";
+		gameWorld.labels = Labels.parse("/hu/openig/res/labels.xml");
+
+		gameWorld.races.clear();
+		gameWorld.races.addAll(GameRace.parse("/hu/openig/res/races.xml"));
+		
+		gameWorld.players.clear();
+		for (int i = 0; i < gameWorld.races.size(); i++) {
+			// create the single player
+			GamePlayer player = new GamePlayer();
+			player.playerType = i == 0 ? PlayerType.LOCAL_HUMAN : PlayerType.LOCAL_AI;
+			player.race = gameWorld.getRace(i + 1);
+			player.money = 32000;
+			player.fleetIcon = i;
+			gameWorld.players.add(player);
+			if (i == 0) {
+				gameWorld.player = player;
+			}
+		}
+
+		gameWorld.planets.clear();
+		gameWorld.planets.addAll(GamePlanet.parse("/hu/openig/res/planets.xml", gameWorld));
+		// initialize local player
+		
+		// create fleets for all owned planets
+		for (GamePlanet p : gameWorld.planets) {
+			if (p.owner != null) {
+				GameFleet f = new GameFleet();
+				f.name = p.owner.race.id + " fleet over " + p.name;
+				f.owner = p.owner;
+				f.radarRadius = 50;
+				f.x = p.x;
+				f.y = p.y;
+				gameWorld.fleets.add(f);
+			}
+		}
+		
+		gameWorld.setPlanetOwnerships();
+		gameWorld.setFleetOwnerships();
+	}
+	/**
+	 * Diagnostic method to set the player know all planets in the game world.
+	 * To know all planets by name use knowAllPlanetsByName().
+	 */
+	public void doKnowAllPlanets() {
+		for (GamePlanet p : gameWorld.planets) {
+			gameWorld.player.knowPlanet(p);
+		}
+		repaint();
+	}
+	/**
+	 * Diagnostic method to set the player know all planets in the game world.
+	 * To know all planets by name use knowAllPlanetsByName().
+	 */
+	public void doKnowAllPlanetsByName() {
+		for (GamePlanet p : gameWorld.planets) {
+			gameWorld.player.knowPlanetByName(p);
+		}
+		repaint();
+	}
+	/**
+	 * Diagnostic method to set the player know all planets in the game world.
+	 * To know all planets by name use knowAllPlanetsByName().
+	 */
+	public void doKnowAllFleets() {
+		for (GameFleet p : gameWorld.fleets) {
+			gameWorld.player.knowFleet(p);
+		}
+		repaint();
 	}
 }

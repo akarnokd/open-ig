@@ -39,6 +39,10 @@ public class GamePlayer {
 	 * Set of own planets.
 	 */
 	public final Set<GamePlanet> ownPlanets = new HashSet<GamePlanet>();
+	/** Set of own fleets. */
+	public final Set<GameFleet> ownFleets = new HashSet<GameFleet>();
+	/** Set of known fleets. (Should) contain the ownFleets too. */
+	public final Set<GameFleet> knownFleets = new HashSet<GameFleet>();
 	/**
 	 * Adds the planet to the own planets set and subsequently
 	 * calls knowPlanet. Players can lose posession of a planet
@@ -77,12 +81,54 @@ public class GamePlayer {
 	 * from the ownPlanets set.
 	 * @param planet the planet to loose, cannot be null
 	 */
-	public void losePlanet(GamePlanet planet) {
+	public void loosePlanet(GamePlanet planet) {
 		if (planet == null) {
 			throw new NullPointerException("planet");
 		}
 		if (!ownPlanets.remove(planet)) {
 			throw new IllegalStateException("Planet " + planet.id + " was not own by player ");
 		}
+	}
+	/**
+	 * Acquire a new fleet.
+	 * @param fleet the fleet to aquire, cannot be null
+	 */
+	public void possessFleet(GameFleet fleet) {
+		if (fleet == null) {
+			throw new NullPointerException("fleet");
+		}
+		ownFleets.add(fleet);
+		knowFleet(fleet);
+	}
+	/**
+	 * Know a new fleet.
+	 * @param fleet the fleet to aquire, cannot be null
+	 */
+	public void knowFleet(GameFleet fleet) {
+		if (fleet == null) {
+			throw new NullPointerException("fleet");
+		}
+		knownFleets.add(fleet);
+	}
+	/**
+	 * Loose a fleet.
+	 * @param fleet the fleet to aquire, cannot be null
+	 */
+	public void looseFleet(GameFleet fleet) {
+		if (fleet == null) {
+			throw new NullPointerException("fleet");
+		}
+		ownFleets.remove(fleet);
+		unknowFleet(fleet);
+	}
+	/**
+	 * Unknow a fleet, e.g. loose sight of a fleet.
+	 * @param fleet the fleet to aquire, cannot be null
+	 */
+	public void unknowFleet(GameFleet fleet) {
+		if (fleet == null) {
+			throw new NullPointerException("fleet");
+		}
+		knownFleets.remove(fleet);
 	}
 }
