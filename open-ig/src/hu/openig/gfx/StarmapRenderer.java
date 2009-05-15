@@ -11,6 +11,7 @@ package hu.openig.gfx;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.model.GamePlanet;
+import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
 import hu.openig.sound.UISounds;
 
@@ -370,8 +371,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			
 			g2.setStroke(st);
 		}
-		
 		renderPlanets(g2, mapRect.x + mx, mapRect.y + my);
+		g2.setClip(minimapRect);
+		renderMinimap(g2);
 		
 		g2.setClip(sp);
 		
@@ -519,15 +521,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		t = System.nanoTime() - t;
 		//System.out.printf("%.2f frame/s%n", 1E9 / t);
 		// now darken the entire screen
-		if (darkness > 0.0f) {
-			Composite comp = g2.getComposite();
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, darkness));
-			g2.setColor(Color.BLACK);
-			g2.fillRect(0, 0, w, h);
-			g2.setComposite(comp);
-		}
 		
-		// render planets
+		// render planet names
 		sp = g2.getClip();
 		g2.setClip(colonies);
 		int y = colonies.y + 2;
@@ -543,6 +538,16 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		}
 		
 		g2.setClip(sp);
+
+		// FINAL OPERATION: draw darkening layer over the screen
+		if (darkness > 0.0f) {
+			Composite comp = g2.getComposite();
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, darkness));
+			g2.setColor(Color.BLACK);
+			g2.fillRect(0, 0, w, h);
+			g2.setComposite(comp);
+		}
+
 	}
 	/** Recalculate the region coordinates. */
 	private void updateRegions() {
@@ -845,10 +850,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		int dx = lastMouseX - e.getX();
-		int dy = lastMouseY - e.getY();
-		lastMouseX = e.getX();
-		lastMouseY = e.getY();
+		Point pt = e.getPoint();
+		int dx = lastMouseX - pt.x;
+		int dy = lastMouseY - pt.y;
+		lastMouseX = pt.x;
+		lastMouseY = pt.y;
+		if (minimapRect.contains(pt)) {
+			doMinimapScroll(pt);
+		} else
 		if (mapDragMode) {
 			scrollByPixelRel(dx, dy);
 		} else
@@ -906,6 +915,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		Point pt = e.getPoint();
+		if (minimapRect.contains(pt)) {
+			doMinimapScroll(pt);
+		} else
 		if (e.getButton() == MouseEvent.BUTTON3 && mapRect.contains(pt)) {
 			lastMouseX = e.getX();
 			lastMouseY = e.getY();
@@ -1160,7 +1172,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		darkness = 0f;
 	}
 	/**
-	 * Render the planets.
+	 * Render the planets onto the starmap screen and onto the minimap.
 	 * @param g2 the graphics 2d object
 	 * @param xOrig map rendering original coordinate X
 	 * @param yOrig map rendering original coordinate Y
@@ -1168,8 +1180,10 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private void renderPlanets(Graphics2D g2, int xOrig, int yOrig) {
 		BufferedImage ri = cgfx.radarDots[radarDotSizes[magnifyIndex]];
 		// render radar first.
+		GamePlayer player = gameWorld.player;
 		if (btnRadars.down) {
-			for (GamePlanet p : gameWorld.planets) {
+			// render radar circle only for the own planets
+			for (GamePlanet p : player.ownPlanets) {
 				if (!p.visible) {
 					continue;
 				}
@@ -1178,7 +1192,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 					modifiedMagnify = 0;
 				}
 				BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[modifiedMagnify]).get(p.rotationPhase);
-				if (p.showRadar) {
+				if (p.radarRadius > 0) {
 					double fd = Math.PI / 50;
 					double fm = 2 * Math.PI - fd;
 					for (double f = 0.0f; f <= fm; f += fd) {
@@ -1189,7 +1203,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				}
 			}
 		}
-		for (GamePlanet p : gameWorld.planets) {
+		for (GamePlanet p : player.knownPlanets) {
 			if (!p.visible) {
 				continue;
 			}
@@ -1202,14 +1216,15 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			int y = (int)(p.y * zoomFactor /* - pimg.getHeight() / 2f*/);
 			
 			g2.drawImage(pimg, xOrig + x, yOrig + y, null);
-			if (p.showName && (nameMode == 1 || nameMode == 3)) {
+			if (p.showName && (nameMode == 1 || nameMode == 3) 
+					&& gameWorld.player.knownPlanetsByName.contains(p)) {
+				int color = TextGFX.GRAY;
+				if (p.owner != null) {
+					color = p.owner.race.smallColor;
+				}
 				y = (int)(p.y * zoomFactor + pimg.getHeight()) + 2;
 				int w = text.getTextWidth(5, p.name);
 				x = (int)(p.x * zoomFactor + pimg.getWidth() / 2f - w / 2f);
-				int color = TextGFX.GRAY;
-				if (p.ownerRace != null) {
-					color = p.ownerRace.smallColor;
-				}
 				text.paintTo(g2, xOrig + x, yOrig + y, 5, color, p.name);
 			}
 		}
@@ -1265,5 +1280,54 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** Action for colony previous button clicked. */
 	private void doColonyPrev() {
 		
+	}
+	/**
+	 * Render the minimap region.
+	 * @param g2 the graphics object
+	 */
+	private void renderMinimap(Graphics2D g2) {
+		double w2 = cgfx.minimap.getWidth() * 1.0 / gfx.contents.fullMap.getWidth();
+		double h2 = cgfx.minimap.getHeight() * 1.0 / gfx.contents.fullMap.getHeight();
+		GamePlayer player = gameWorld.player;
+		for (GamePlanet p : player.knownPlanets) {
+			int color = TextGFX.GRAY;
+			if (p.owner != null) {
+				color = p.owner.race.smallColor;
+			}
+			// draw the planet dot onto the minimap
+			int x2 = (int)(p.x * w2);
+			int y2 = (int)(p.y * h2);
+			g2.setColor(new Color(color));
+			g2.fillRect(minimapRect.x + x2 - 1, minimapRect.y + y2 - 1, 3, 3);
+		}
+		// render viewport window
+		int x0 = (int)(hscrollValue * hscrollFactor * w2 / zoomFactor);
+		int y0 = (int)(vscrollValue * vscrollFactor * h2 / zoomFactor);
+		int w0 = (int)(mapRect.width * w2 / zoomFactor);
+		int h0 = (int)(mapRect.height * h2 / zoomFactor);
+		// bound width and height to avoid the scroll rectangle to run out of the minimap area
+		if (x0 + w0 >= minimapRect.width - 1) {
+			w0 = minimapRect.width - x0 - 1;
+		}
+		if (y0 + h0 >= minimapRect.height - 1) {
+			h0 = minimapRect.height - y0 - 1;
+		}
+		g2.setColor(Color.WHITE);
+		g2.drawRect(minimapRect.x + x0, minimapRect.y + y0, w0, h0);
+	}
+	/**
+	 * Center the main viewport around the given minimap location.
+	 * @param pt the point
+	 */
+	private void doMinimapScroll(Point pt) {
+		// get the current location
+		float w2 = cgfx.minimap.getWidth() * 1.0f / gfx.contents.fullMap.getWidth();
+		float h2 = cgfx.minimap.getHeight() * 1.0f / gfx.contents.fullMap.getHeight();
+		float w0 = Math.min((mapRect.width * w2 / zoomFactor), minimapRect.width);
+		float h0 = Math.min((mapRect.height * h2 / zoomFactor), minimapRect.height);
+		
+		float dx = (pt.x - minimapRect.x - w0 / 2) / hscrollFactor * zoomFactor / w2;
+		float dy = (pt.y - minimapRect.y - h0 / 2) / vscrollFactor * zoomFactor / h2;
+		scroll(dx, dy);
 	}
 }

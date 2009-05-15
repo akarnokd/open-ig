@@ -261,6 +261,13 @@ public class Main extends JFrame {
 		starmapRenderer.startAnimations();
 		//GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(this);
 		setVisible(true);
+		// switch to a particular screen.
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				onStarmap();
+			}
+		});
 	}
 	/**
 	 * Set the keyboard shortcuts.
@@ -344,20 +351,23 @@ public class Main extends JFrame {
 
 		gameWorld.language = "hu";
 		gameWorld.labels = Labels.parse("/hu/openig/res/labels.xml");
-		
+
 		gameWorld.races.clear();
 		gameWorld.races.addAll(GameRace.parse("/hu/openig/res/races.xml"));
+		
+		// create the single player
+		GamePlayer player = new GamePlayer();
+		player.playerType = PlayerType.LOCAL_HUMAN;
+		player.race = gameWorld.getRace(1);
+		player.money = 32000;
+		gameWorld.player = player;
+		gameWorld.players.add(player);
 
 		gameWorld.planets.clear();
 		gameWorld.planets.addAll(GamePlanet.parse("/hu/openig/res/planets.xml", gameWorld));
 		// initialize local player
 		
-		GamePlayer player = new GamePlayer();
-		gameWorld.player = player;
-		player.playerType = PlayerType.LOCAL_HUMAN;
-		player.race = gameWorld.getRace(1);
-		player.money = 32000;
-		gameWorld.players.add(player);
+		gameWorld.setPlanetOwnerships();
 	}
 	/** Quit pressed on starmap. */
 	private void onQuit() {

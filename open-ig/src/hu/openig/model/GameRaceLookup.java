@@ -26,4 +26,10 @@ public interface GameRaceLookup {
 	 * @return the game race
 	 */
 	GameRace getRace(String id);
+	/**
+	 * Returns the first game player with the given race.
+	 * @param race the race object
+	 * @return the game player or null if no such player
+	 */
+	GamePlayer getPlayerForRace(GameRace race);
 }
