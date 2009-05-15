@@ -223,7 +223,7 @@ public class CommonGFX {
 		shipImages = new BufferedImage[15];
 		BufferedImage fleets = PCXImage.from(resMap.get("GFX/FLEETS.PCX"), -2);
 		for (int i = 0; i < shipImages.length; i++) {
-			shipImages[i] = ImageUtils.subimage(fleets, 28 + (i % 12), 7 * (i / 12), 20, 7);
+			shipImages[i] = ImageUtils.subimage(fleets, 28 + (i % 12) * 20, 7 * (i / 12), 20, 7);
 		}
 		radarDots = new BufferedImage[4];
 		radarDots[0] = ImageUtils.subimage(fleets, 144, 13, 3, 3);

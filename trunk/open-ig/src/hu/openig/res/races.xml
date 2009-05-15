@@ -18,7 +18,7 @@
 	<race id='Ychom' index='4'>
 		<ship>4</ship>
 		<tech>4</tech> <!-- The technology index. -->
-		<color small='00C1C1C1' normal='00FCFCFC'/> <!-- Color used for small text and normal text -->
+		<color small='0000CFCF' normal='0000FCFC'/> <!-- Color used for small text and normal text -->
 	</race>
 	<race id='Dribs' index='5'>
 		<ship>5</ship>

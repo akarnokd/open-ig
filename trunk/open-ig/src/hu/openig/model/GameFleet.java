@@ -22,8 +22,10 @@ public class GameFleet {
 	public int speed;
 	/** The user given name of the fleet. */
 	public String name;
-	/** The fleet's X coordinate on the starmap. */
+	/** The fleet's X coordinate on the starmap. Used as the central position of the icon. */
 	public int x;
-	/** The fleet's Y coordinate on the starmap. */
+	/** The fleet's Y coordinate on the starmap. Used as the central position of the icon. */
 	public int y;
+	/** The visibility of the fleet. Can be used to hide fleets. */
+	public boolean visible = true;
 }
