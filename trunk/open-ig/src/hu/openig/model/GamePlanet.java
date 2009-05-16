@@ -12,8 +12,10 @@ import hu.openig.core.SurfaceType;
 import hu.openig.utils.XML;
 import hu.openig.utils.XML.XmlProcessor;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -57,6 +59,8 @@ public class GamePlanet {
 	public final List<String> inOrbit = new ArrayList<String>();
 	/** The planet size relative to the largest size, e.g. -2, -1, 0 .*/
 	public int size;
+	/** Lazy initialized location point object. */
+	private Point locationPoint;
 	/**
 	 * Parses and processes a planetary resource XML.
 	 * @param resource the name of the resource
@@ -107,4 +111,28 @@ public class GamePlanet {
 		}
 		return result;
 	}
+	/** 
+	 * Returns the planet's logical coordinates as point.
+	 * @return the logical location as point
+	 */
+	public Point getPoint() {
+		if (locationPoint == null) {
+			locationPoint = new Point(x, y);
+		}
+		return locationPoint;
+	}
+	/** Planet comparator by name ascending. */
+	public static final Comparator<GamePlanet> BY_NAME_ASC = new Comparator<GamePlanet>() {
+		@Override
+		public int compare(GamePlanet o1, GamePlanet o2) {
+			return o1.name.compareTo(o2.name);
+		}
+	};
+	/** Planet comparator by name descending. */
+	public static final Comparator<GamePlanet> BY_NAME_DESC = new Comparator<GamePlanet>() {
+		@Override
+		public int compare(GamePlanet o1, GamePlanet o2) {
+			return o2.name.compareTo(o1.name);
+		}
+	};
 }

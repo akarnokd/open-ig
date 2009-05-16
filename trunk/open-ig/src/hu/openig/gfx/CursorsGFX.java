@@ -10,7 +10,7 @@ package hu.openig.gfx;
 import java.awt.Cursor;
 
 /** The record to store the individual. */ 
-public class GFXCursors {
+public class CursorsGFX {
 	/** Normal pointer. */
 	public Cursor pointer;
 	/** Hand. */
