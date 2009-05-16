@@ -1,5 +1,19 @@
 #summary Description of the usage of the application.
 
+= Features of open-ig-0.65.jar =
+This release contains the game model and some starmap related gui behavior. And finally the minimap is also working.
+
+  * Render planets
+  * Render fleets
+  * Display planet info
+  * Display fleet info
+  * Display planets in minimap
+  * Scroll using minimap
+  * Cycle through the player's fleets
+  * Select/Jump to fleet
+  * Select planet
+  * List player's planets
+
 = Features of open-ig-0.4.jar =
 This release contains the new Info screen and various rendering and audio enhancements.
 
