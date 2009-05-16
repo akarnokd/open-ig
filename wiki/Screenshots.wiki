@@ -1,0 +1,8 @@
+#summary Contains screenshots from the game.
+#labels Featured
+
+= Version 0.65 screenshots =
+
+|| [http://karnokd.uw.hu/open-ig-0.65-screen01.png http://karnokd.uw.hu/open-ig-0.65-screen01-tn.png]<br>The main menu || [http://karnokd.uw.hu/open-ig-0.65-screen02.png http://karnokd.uw.hu/open-ig-0.65-screen02-tn.png]<br>Options screen || [http://karnokd.uw.hu/open-ig-0.65-screen03.png http://karnokd.uw.hu/open-ig-0.65-screen03-tn.png]<br>Title animation || 
+|| [http://karnokd.uw.hu/open-ig-0.65-screen04.png http://karnokd.uw.hu/open-ig-0.65-screen04-tn.png]<br>Intro animation|| [http://karnokd.uw.hu/open-ig-0.65-screen05.png http://karnokd.uw.hu/open-ig-0.65-screen05-tn.png]<br>Starmap zoomed in || [http://karnokd.uw.hu/open-ig-0.65-screen06.png http://karnokd.uw.hu/open-ig-0.65-screen06-tn.png]<br>Starmap zoomed out ||
+|| [http://karnokd.uw.hu/open-ig-0.65-screen07.png http://karnokd.uw.hu/open-ig-0.65-screen07-tn.png]<br>Information || [http://karnokd.uw.hu/open-ig-0.65-screen08.png http://karnokd.uw.hu/open-ig-0.65-screen08-tn.png]<br>Planet surface ||  ||
