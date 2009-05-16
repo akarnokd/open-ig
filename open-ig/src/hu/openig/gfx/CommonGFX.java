@@ -33,7 +33,7 @@ public class CommonGFX {
 	/** The bottom statusbar. */
 	public StarmapBar bottom;
 	/** The cursors. */
-	public GFXCursors cursors;
+	public CursorsGFX cursors;
 	/** The text drawing. */
 	public TextGFX text;
 	/** The minimap. */
@@ -162,7 +162,7 @@ public class CommonGFX {
 		bottom.link = ImageUtils.subimage(basic, 399, 20, 1, 18);
 		
 		BufferedImage cursorImage = PCXImage.from(resMap.get("GFX/ICONMAIN.PCX"), 0);
-		cursors = new GFXCursors();
+		cursors = new CursorsGFX();
 		int idx = 0;
 
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo

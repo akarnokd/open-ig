@@ -6,8 +6,10 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.gfx;
+package hu.openig.render;
 
+import hu.openig.gfx.CommonGFX;
+import hu.openig.gfx.TextGFX;
 import hu.openig.model.GameSpeed;
 import hu.openig.model.GameWorld;
 

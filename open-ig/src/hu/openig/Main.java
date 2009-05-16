@@ -12,17 +12,11 @@ import hu.openig.ani.Player;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoScreen;
 import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.InfobarRenderer;
 import hu.openig.gfx.InformationGFX;
-import hu.openig.gfx.InformationRenderer;
-import hu.openig.gfx.MainmenuRenderer;
 import hu.openig.gfx.MenuGFX;
 import hu.openig.gfx.OptionsGFX;
-import hu.openig.gfx.OptionsRenderer;
 import hu.openig.gfx.PlanetGFX;
-import hu.openig.gfx.PlanetRenderer;
 import hu.openig.gfx.StarmapGFX;
-import hu.openig.gfx.StarmapRenderer;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
@@ -31,6 +25,12 @@ import hu.openig.model.GameSpeed;
 import hu.openig.model.GameWorld;
 import hu.openig.model.PlayerType;
 import hu.openig.music.Music;
+import hu.openig.render.InfobarRenderer;
+import hu.openig.render.InformationRenderer;
+import hu.openig.render.MainmenuRenderer;
+import hu.openig.render.OptionsRenderer;
+import hu.openig.render.PlanetRenderer;
+import hu.openig.render.StarmapRenderer;
 import hu.openig.res.Labels;
 import hu.openig.sound.UISounds;
 import hu.openig.utils.ResourceMapper;
@@ -662,6 +662,7 @@ public class Main extends JFrame {
 		
 		gameWorld.setPlanetOwnerships();
 		gameWorld.setFleetOwnerships();
+		starmapRenderer.scrollToLogical(gameWorld.player.ownPlanets.iterator().next().getPoint());
 	}
 	/**
 	 * Diagnostic method to set the player know all planets in the game world.

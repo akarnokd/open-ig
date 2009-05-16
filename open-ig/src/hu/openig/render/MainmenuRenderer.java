@@ -6,10 +6,12 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.gfx;
+package hu.openig.render;
 
 import hu.openig.core.BtnAction;
 import hu.openig.core.MainmenuRects;
+import hu.openig.gfx.MenuGFX;
+import hu.openig.gfx.TextGFX;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

@@ -25,6 +25,12 @@ public class GamePlayer {
 	public long money;
 	/** The icon index used to display the player's fleets. */
 	public int fleetIcon;
+	/** The currently selected planet. */
+	public GamePlanet selectedPlanet;
+	/** The currently selected fleet. */
+	public GameFleet selectedFleet;
+	/** The type currently selected game object on the starmap. */
+	public StarmapSelection selectionType;
 	/**
 	 * Set of known planets, which can be displayed on the starmap for the player.
 	 * (Should) contain all entries of knownPlanetsByName and ownPlanets
