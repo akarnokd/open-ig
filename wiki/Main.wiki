@@ -47,6 +47,9 @@ Features
    * Use Mouse scroll to scroll up/down
    * Use SHIFT + Mouse scroll to scroll left/right
    * Resize the window to see how the various fields grow
+   * Use CTRL+K to show non-player planets on the starmap, as they where just discovered
+   * Use CTRL+N to display names/owners of non-player planets on the starmap as they where having spy satelite v2
+   * Use CTRL+F to display non-player fleets
  * Planet screen
    * Accessible through F3 or via the Planet/Colony buttons
    * Hold down the right mouse button over the planet surface to pan the viewport
