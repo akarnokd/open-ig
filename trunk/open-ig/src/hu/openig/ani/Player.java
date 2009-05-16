@@ -136,7 +136,7 @@ public class Player {
 								if (imageHeight >= saf.getHeight()) {
 									surface.getBackbuffer().setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
 									surface.swap();
-									if (framecounter == delay) {
+									if (framecounter++ == delay) {
 										ad.startPlaybackNow();
 									}
 									imageHeight = 0;

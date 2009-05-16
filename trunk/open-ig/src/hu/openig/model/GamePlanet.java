@@ -51,6 +51,8 @@ public class GamePlanet {
 	public GamePlayer owner;
 	/** Population race name. Null indicates an uninhabited planet. */
 	public GameRace populationRace;
+	/** Current popularity. */
+	public float popularity;
 	/** Population count. */
 	public int population;
 	/** Last day's population growth. */
@@ -103,6 +105,7 @@ public class GamePlanet {
 			p.population = Integer.parseInt(XML.childValue(planet, "populate"));
 			String orbit = XML.childValue(planet, "in-orbit");
 			p.visible = true;
+			p.popularity = 0.5f;
 			p.radarRadius = p.owner != null ? 50 : 0;
 			if (!"-".equals(orbit)) {
 				p.inOrbit.addAll(Arrays.asList(orbit.split("\\\\s*,\\\\s*")));

@@ -71,7 +71,7 @@ public class Main extends JFrame {
 	/** */
 	private static final long serialVersionUID = 6922932910697940684L;
 	/** Version string. */
-	public static final String VERSION = "0.6 Alpha";
+	public static final String VERSION = "0.65 Alpha"; // TODO reach 1.0!
 	/** The user interface sounds. */
 	UISounds uiSounds;
 	/** The common graphics objects. */
@@ -178,7 +178,8 @@ public class Main extends JFrame {
 		player.setMasterGain(0);
 		uiSounds.setMasterGain(0);
 		optionsRenderer.setAudioVolume(1);
-		optionsRenderer.setMusicVolume(1);
+		optionsRenderer.setMusicVolume(0); // TODO fix during testing
+		music.setMute(true);
 		screens = new JComponent[] {
 			starmapRenderer, planetRenderer, informationRenderer, mainmenuRenderer, moviePlayer, optionsRenderer
 		};
@@ -257,7 +258,7 @@ public class Main extends JFrame {
 		setMinimumSize(new Dimension(inW, inH));
 		
 		setFocusTraversalKeysEnabled(false);
-		starmapRenderer.startAnimations();
+//		starmapRenderer.startAnimations();
 		//GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(this);
 		setVisible(true);
 		// switch to a particular screen.
@@ -623,7 +624,7 @@ public class Main extends JFrame {
 		gameWorld.gameSpeed = GameSpeed.NORMAL;
 		gameWorld.calendar.setTimeInMillis(45997848000000L); //August 13th, 3427, 12 PM
 
-		gameWorld.language = "hu";
+		gameWorld.language = "en";
 		gameWorld.labels = Labels.parse("/hu/openig/res/labels.xml");
 
 		gameWorld.races.clear();
@@ -636,6 +637,7 @@ public class Main extends JFrame {
 			player.playerType = i == 0 ? PlayerType.LOCAL_HUMAN : PlayerType.LOCAL_AI;
 			player.race = gameWorld.getRace(i + 1);
 			player.money = 32000;
+			player.name = gameWorld.getLabel("EmpireNames." + player.race.id);
 			player.fleetIcon = i;
 			gameWorld.players.add(player);
 			if (i == 0) {
@@ -653,7 +655,6 @@ public class Main extends JFrame {
 				GameFleet f = new GameFleet();
 				f.name = p.owner.race.id + " fleet over " + p.name;
 				f.owner = p.owner;
-				f.radarRadius = 50;
 				f.x = p.x;
 				f.y = p.y;
 				gameWorld.fleets.add(f);

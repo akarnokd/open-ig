@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.core.FleetStatus;
+
 import java.awt.Point;
 import java.util.Comparator;
 
@@ -19,10 +21,6 @@ import java.util.Comparator;
 public class GameFleet {
 	/** The owner player. */
 	public GamePlayer owner;
-	/** The fleet's radar radius. Zero means no radar. */
-	public int radarRadius;
-	/** The fleet's movement speed. */
-	public int speed;
 	/** The user given name of the fleet. */
 	public String name;
 	/** The fleet's X coordinate on the starmap. Used as the central position of the icon. */
@@ -31,6 +29,14 @@ public class GameFleet {
 	public int y;
 	/** The visibility of the fleet. Can be used to hide fleets. */
 	public boolean visible = true;
+	/** The fleet status. */
+	public FleetStatus status = FleetStatus.STOP;
+	/** Non-null value indicates a movement to that logical point. */
+	public Point moveTarget;
+	/** If attack mode, contains the target planet. */
+	public GamePlanet attackPlanet;
+	/** If attack mode, contains the target fleet. */
+	public GameFleet attackFleet;
 	/** 
 	 * Returns the planet's logical coordinates as point.
 	 * @return the logical location as point
@@ -52,4 +58,52 @@ public class GameFleet {
 			return o2.name.compareTo(o1.name);
 		}
 	};
+	/**
+	 * @return the number of battleships in this fleet
+	 */
+	public int getBattleshipCount() {
+		// TODO evaluate fleet contents correctly
+		return 0;
+	}
+	/**
+	 * @return the number of destroyers in this fleet
+	 */
+	public int getDestroyerCount() {
+		// TODO evaluate fleet contents correctly
+		return 0;
+	}
+	/**
+	 * @return the number of fighters in this fleet
+	 */
+	public int getFighterCount() {
+		// TODO evaluate fleet contents correctly
+		return 0;
+	}
+	/**
+	 * @return the number of tanks in this fleet
+	 */
+	public int getTankCount() {
+		// TODO evaluate fleet contents correctly
+		return 0;
+	}
+	/**
+	 * @return the fleet's maximum speed
+	 */
+	public int getSpeed() {
+		// TODO evaluate fleet contents correctly
+		return 6;
+	}
+	/**
+	 * @return the fleet's radar radius
+	 */
+	public int getRadarRadius() {
+		// TODO evaluate fleet contents correctly
+		return 50;
+	}
+	/**
+	 * @return the fleet's current firepower
+	 */
+	public int getFirepower() {
+		return 1;
+	}
 }

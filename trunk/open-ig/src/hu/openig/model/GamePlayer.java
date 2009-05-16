@@ -17,6 +17,8 @@ import java.util.Set;
  * @version $Revision 1.0$
  */
 public class GamePlayer {
+	/** The player's name. */
+	public String name;
 	/** The player type. */
 	public PlayerType playerType;
 	/** The race of the player. */
