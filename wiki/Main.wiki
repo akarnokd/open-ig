@@ -50,6 +50,11 @@ Features
    * Use CTRL+K to show non-player planets on the starmap, as they where just discovered
    * Use CTRL+N to display names/owners of non-player planets on the starmap as they where having spy satelite v2
    * Use CTRL+F to display non-player fleets
+   * Right click on the minimap to see the scroll animate
+   * Use left click to select a planet/fleet
+   * Use left click on the equipment (fleets) name to select the fleet
+   * Use right click to instantly jump to the equipmnet (fleet)
+   * Use middle mouse click to scroll-animate to the equipment (fleet)
  * Planet screen
    * Accessible through F3 or via the Planet/Colony buttons
    * Hold down the right mouse button over the planet surface to pan the viewport
