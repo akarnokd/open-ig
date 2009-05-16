@@ -58,5 +58,213 @@
 		<hu>December</hu>
 		<en>December</en>
 	</entry>
+	<entry key='EmpireNames.Empire'>
+		<hu>Galaktikus birodalom</hu>
+		<en>Galactic empire</en>
+	</entry>
+	<entry key='EmpireNames.Garthog'>
+		<hu>Garthog köztársaság</hu>
+		<en>Garthog republic</en>
+	</entry>
+	<entry key='EmpireNames.Morgath'>
+		<hu>Morgath birodalom</hu>
+		<en>Morgath empire</en>
+	</entry>
+	<entry key='EmpireNames.Ychom'>
+		<hu>Ychom birodalom</hu>
+		<en>Ychom empire</en>
+	</entry>
+	<entry key='EmpireNames.Dribs'>
+		<hu>Dribs birodalom</hu>
+		<en>Dribs empire</en>
+	</entry>
+	<entry key='EmpireNames.Sullep'>
+		<hu>Sullep birodalom</hu>
+		<en>Sullep empire</en>
+	</entry>
+	<entry key='EmpireNames.Dargslan'>
+		<hu>Dargslan királyság</hu>
+		<en>Dargslan kingdom</en>
+	</entry>
+	<entry key='EmpireNames.Ecalep'>
+		<hu>Ecalep köztársaság</hu>
+		<en>Ecalep republic</en>
+	</entry>
+	<entry key='EmpireNames.FreeTraders'>
+		<hu>Szabad Kereskedők Szövetsége</hu>
+		<en>Free Traders Alliance</en>
+	</entry>
+	<entry key='EmpireNames.FreeNations'>
+		<hu>Szabad Nemzetek Szervezete</hu>
+		<en>Free Nations Society</en>
+	</entry>
+	<entry key='EmpireNames.Pirates'>
+		<hu>Kalózok</hu>
+		<en>Pirates</en>
+	</entry>
+	<entry key='EmpireNames.Traders'>
+		<hu>Kereskedők</hu>
+		<en>Traders</en>
+	</entry>
+	<entry key='EmpireNames.Empty'>
+		<hu>Üres - Kolonizálható</hu>
+		<en>Empty - Colonizable</en>
+	</entry>
+	<entry key='RaceNames.Empire'>
+		<hu>Ember</hu>
+		<en>Human</en>
+	</entry>
+	<entry key='RaceNames.Garthog'>
+		<hu>Garthog</hu>
+		<en>Garthog</en>
+	</entry>
+	<entry key='RaceNames.Morgath'>
+		<hu>Morgath</hu>
+		<en>Morgath</en>
+	</entry>
+	<entry key='RaceNames.Ychom'>
+		<hu>Ychom</hu>
+		<en>Ychom</en>
+	</entry>
+	<entry key='RaceNames.Dribs'>
+		<hu>Dribs</hu>
+		<en>Dribs</en>
+	</entry>
+	<entry key='RaceNames.Sullep'>
+		<hu>Sullep</hu>
+		<en>Sullep</en>
+	</entry>
+	<entry key='RaceNames.Dargslan'>
+		<hu>Dargslan</hu>
+		<en>Dargslan</en>
+	</entry>
+	<entry key='RaceNames.Ecalep'>
+		<hu>Ecalep</hu>
+		<en>Ecalep</en>
+	</entry>
+	<entry key='RaceNames.FreeTraders'>
+		<hu>Ember</hu>
+		<en>Ember</en>
+	</entry>
+	<entry key='RaceNames.FreeNations'>
+		<hu>Ember</hu>
+		<en>Ember</en>
+	</entry>
+	<entry key='RaceNames.Pirates'>
+		<hu>Kalózok</hu>
+		<en>Pirates</en>
+	</entry>
+	<entry key='RaceNames.Traders'>
+		<hu>Kereskedők</hu>
+		<en>Traders</en>
+	</entry>
+	<entry key='RaceNames.Empty'>
+		<hu>Üres - Kolonizálható</hu>
+		<en>Empty - Colonizable</en>
+	</entry>
+	<entry key='SurfaceTypeNames.Desert'>
+		<hu>sivatagos</hu>
+		<en>desert</en>
+	</entry>
+	<entry key='SurfaceTypeNames.Frozen'>
+		<hu>jeges</hu>
+		<en>frozen</en>
+	</entry>
+	<entry key='SurfaceTypeNames.Cratered'>
+		<hu>kráteres</hu>
+		<en>cratered</en>
+	</entry>
+	<entry key='SurfaceTypeNames.Rocky'>
+		<hu>sziklás</hu>
+		<en>rocky</en>
+	</entry>
+	<entry key='SurfaceTypeNames.Liquid'>
+		<hu>folyékony</hu>
+		<en>liquid</en>
+	</entry>
+	<entry key='SurfaceTypeNames.Earth'>
+		<hu>Föld-típusú</hu>
+		<en>Earth-tye</en>
+	</entry>
+	<entry key='SurfaceTypeNames.Neptoplasm'>
+		<hu>ektoplazma</hu>
+		<en>neptoplasm</en>
+	</entry>
+	<entry key='PopulationRaceOnSurface'>
+		<hu>%1$s %2$s felszínen</hu>
+		<en>%1$s on %2$s surface</en>
+	</entry>
+	<entry key='NoRaceOnSurface'>
+		<hu>%1$s felszín</hu>
+		<en>%1$s surface</en>
+	</entry>
+	<entry key='PopulationStatus'>
+		<hu>%1$d %2$s (%3$d)</hu>
+		<en>%1$d %2$s (%3$d)</en>
+	</entry>
+	<entry key='PopulatityName.Revolution'>
+		<hu>fellázadt</hu>
+		<en>revolted against you</en>
+	</entry>
+	<entry key='PopulatityName.Revolting'>
+		<hu>lázadozik</hu>
+		<en>revolting against you</en>
+	</entry>
+	<entry key='PopulatityName.Hate'>
+		<hu>utál</hu>
+		<en>hate you</en>
+	</entry>
+	<entry key='PopulatityName.Dislike'>
+		<hu>nem kedvel</hu>
+		<en>dislike you</en>
+	</entry>
+	<entry key='PopulatityName.Neutral'>
+		<hu>semleges</hu>
+		<en>neutral</en>
+	</entry>
+	<entry key='PopulatityName.Like'>
+		<hu>kedvel</hu>
+		<en>like you</en>
+	</entry>
+	<entry key='PopulatityName.Happy'>
+		<hu>szeret</hu>
+		<en>happy with you</en>
+	</entry>
+	<entry key='PopulatityName.Simpatize'>
+		<hu>szimpatizál veled</hu>
+		<en>simpatize with you</en>
+	</entry>
+	<entry key='PopulatityName.Support'>
+		<hu>támogat</hu>
+		<en>support you</en>
+	</entry>
+	<entry key='SpeedValue'>
+		<hu>Sebesség: %1$d</hu>
+		<en>Speed: %1$d</en>
+	</entry>
+	<entry key='FirepowerValue'>
+		<hu>Tűzerő: %1$d</hu>
+		<en>Firepower: %1$d</en>
+	</entry>
+	<entry key='FleetStatus.Stop'>
+		<hu>Állj</hu>
+		<en>Stop</en>
+	</entry>
+	<entry key='FleetStatus.Move'>
+		<hu>Mozgás</hu>
+		<en>Move</en>
+	</entry>
+	<entry key='FleetStatus.Attack'>
+		<hu>Támadás</hu>
+		<en>Attack</en>
+	</entry>
+	<entry key='PlanetNearBy'>
+		<hu>Közeli bolygó: %1$s</hu>
+		<en>Planet near by: %1$s</en>
+	</entry>
+	<entry key='FleetStatistics'>
+		<hu>Csatahajók:%1$s Rombolók:%2$s Vadászok:%3$s Tankok:%4$s</hu>
+		<en>Battleships:%1$s Destroyers:%2$s Fighters:%3$s Tanks:%4$s</en>
+	</entry>
 	
 </labels>

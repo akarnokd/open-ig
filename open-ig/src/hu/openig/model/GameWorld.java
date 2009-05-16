@@ -132,6 +132,16 @@ public class GameWorld implements GameRaceLookup {
 		return labels.get(key, language);
 	}
 	/**
+	 * Returns a label which is a format specification and passes the objects
+	 * to String.format.
+	 * @param key the key
+	 * @param params the format parameters
+	 * @return the translation
+	 */
+	public String getLabel(String key, Object... params) {
+		return String.format(getLabel(key), params);
+	}
+	/**
 	 * Returns an iterable of the player owned planets.
 	 * @return the iterable
 	 */

@@ -10,6 +10,7 @@ package hu.openig.render;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
+import hu.openig.core.PopularityType;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.TextGFX;
@@ -152,8 +153,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private int magnifyIndex = magnifyFactors.length - 1;
 	/** Determines zoom factor where 1.0 means the original size, 0.5 the half size. */
 	private float zoomFactor = magnifyFactors[magnifyIndex] / 30f;
-	/** Show ship controls. */
-	private boolean showShipControls;
 	/** Colonize button. */
 	private Btn btnColonize;
 	/** Radars button. */
@@ -247,6 +246,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private float scrollDestX;
 	/** The ending y scrollbar position. */
 	private float scrollDestY;
+	/** The details rectangle without the ship control rect area. */
+	private final Rectangle detailsRect = new Rectangle();
 	/**
 	 * Constructor. Sets the helper object fields.
 	 * @param gfx the starmap graphics object
@@ -489,31 +490,11 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			g2.drawImage(gfx.btnMagnifyLight, btnMagnify.rect.x, btnMagnify.rect.y, null);
 		}
 
-		if (showShipControls) {
-			if (btnMove.down) {
-				g2.drawImage(gfx.btnMoveLight, btnMove.rect.x, btnMove.rect.y, null);
-			}
-			if (btnAttack.down) {
-				g2.drawImage(gfx.btnAttackLight, btnAttack.rect.x, btnAttack.rect.y, null);
-			}
-			if (btnStop.down) {
-				g2.drawImage(gfx.btnStopLight, btnStop.rect.x, btnStop.rect.y, null);
-			}
+		if (gameWorld.player.selectionType == StarmapSelection.FLEET && gameWorld.player.selectedFleet != null) {
+			renderFleetDetails(g2, gameWorld.player.selectedFleet);
 		} else 
-		if (showSatellites) {
-			g2.fill(shipControlRect);
-			if (btnSatellite.visible) {
-				g2.drawImage(gfx.btnAddSat, btnSatellite.rect.x, btnSatellite.rect.y, null);
-			}
-			if (btnSpySat1.visible) {
-				g2.drawImage(gfx.btnAddSpySat1, btnSpySat1.rect.x, btnSpySat1.rect.y, null);
-			}
-			if (btnSpySat2.visible) {
-				g2.drawImage(gfx.btnAddSpySat2, btnSpySat2.rect.x, btnSpySat2.rect.y, null);
-			}
-			if (btnHubble2.visible) {
-				g2.drawImage(gfx.btnAddHubble2, btnHubble2.rect.x, btnHubble2.rect.y, null);
-			}
+		if (gameWorld.player.selectionType == StarmapSelection.PLANET && gameWorld.player.selectedPlanet != null) {
+			renderPlanetDetails(g2, gameWorld.player.selectedPlanet);
 		} else {
 			g2.fill(shipControlRect);
 		}
@@ -624,6 +605,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		shipControlRect.y = h - bh + 28;
 		shipControlRect.width = 106;
 		shipControlRect.height = 83;
+		
+		detailsRect.setBounds(2, h - bh + 28, w - 357, 83);
 		
 		// minimap rectangle
 		minimapRect.x = w - 133;
@@ -941,6 +924,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Point pt = e.getPoint();
+		if (e.getButton() == MouseEvent.BUTTON3 && minimapRect.contains(pt)) {
+			doMinimapScrollAnimated(pt);
+		} else
 		if ((e.getButton() == MouseEvent.BUTTON1 || e.getButton() == MouseEvent.BUTTON3) 
 				&& !btnMagnify.disabled && btnMagnify.rect.contains(pt)) {
 			btnMagnify.click();
@@ -984,9 +970,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		} else
 		if (equipments.contains(pt)) {
 			doEquipmentSelect(e.getButton());
-		}
-		if (e.getButton() == MouseEvent.BUTTON3 && minimapRect.contains(pt)) {
-			doMinimapScrollAnimated(pt);
 		} else
 		if (e.getButton() == MouseEvent.BUTTON3 && mapRect.contains(pt)) {
 			lastMouseX = e.getX();
@@ -1321,12 +1304,13 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		// render fleet radars
 		if (btnRadars.down && btnFleets.down) {
 			for (GameFleet fleet : player.ownFleets) {
-				if (fleet.visible && fleet.radarRadius > 0) {
+				float radarRadius = fleet.getRadarRadius();
+				if (fleet.visible && radarRadius > 0) {
 					double fd = Math.PI / 50;
 					double fm = 2 * Math.PI - fd;
 					for (double f = 0.0f; f <= fm; f += fd) {
-						int x = (int)((fleet.x + fleet.radarRadius * Math.sin(f)) * zoomFactor);
-						int y = (int)((fleet.y + fleet.radarRadius * Math.cos(f)) * zoomFactor);
+						int x = (int)((fleet.x + radarRadius * Math.sin(f)) * zoomFactor);
+						int y = (int)((fleet.y + radarRadius * Math.cos(f)) * zoomFactor);
 						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
 					}
 				}
@@ -1538,40 +1522,45 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	public void checkGameObjects(Point point) {
 		Rectangle viewPort = mapCoords.intersection(mapRect);
-		if (btnFleets.down) {
-			// fleets can overlap
-			// check for own fleets
-			for (GameFleet f : gameWorld.player.ownFleets) {
-				if (checkFleetSelected(point, viewPort, f)) {
-					gameWorld.player.selectionType = StarmapSelection.FLEET;
-					gameWorld.player.selectedFleet = f;
-					setDisplayedFleet(f);
-					doSelectFleetForUI(f);
+		if (viewPort.contains(point)) {
+			if (btnFleets.down) {
+				// fleets can overlap
+				// check for own fleets
+				for (GameFleet f : gameWorld.player.ownFleets) {
+					if (checkFleetSelected(point, viewPort, f)) {
+						gameWorld.player.selectionType = StarmapSelection.FLEET;
+						gameWorld.player.selectedFleet = f;
+						setDisplayedFleet(f);
+						doSelectFleetForUI(f);
+						return;
+					}
+				}
+				// check for other fleets
+				for (GameFleet f : gameWorld.player.knownFleets) {
+					if (checkFleetSelected(point, viewPort, f)) {
+						gameWorld.player.selectionType = StarmapSelection.FLEET;
+						gameWorld.player.selectedFleet = f;
+						setDisplayedFleet(f);
+						doSelectFleetForUI(f);
+						return;
+					}
+				}
+			}
+			for (GamePlanet p : gameWorld.player.knownPlanets) {
+				Point pt = logicalToScreen(p.getPoint(), viewPort);
+				BufferedImage planetImg = getPlanetImage(p, 0);
+				Rectangle rect = new Rectangle(pt.x, 
+						pt.y, planetImg.getWidth(), planetImg.getHeight());
+				if (rect.contains(point)) {
+					gameWorld.player.selectionType = StarmapSelection.PLANET;
+					gameWorld.player.selectedPlanet = p;
+					doSelectPlanetForUI(p);
 					return;
 				}
 			}
-			// check for other fleets
-			for (GameFleet f : gameWorld.player.knownFleets) {
-				if (checkFleetSelected(point, viewPort, f)) {
-					gameWorld.player.selectionType = StarmapSelection.FLEET;
-					gameWorld.player.selectedFleet = f;
-					setDisplayedFleet(f);
-					doSelectFleetForUI(f);
-					return;
-				}
-			}
-		}
-		for (GamePlanet p : gameWorld.player.knownPlanets) {
-			Point pt = logicalToScreen(p.getPoint(), viewPort);
-			BufferedImage planetImg = getPlanetImage(p, 0);
-			Rectangle rect = new Rectangle(pt.x, 
-					pt.y, planetImg.getWidth(), planetImg.getHeight());
-			if (rect.contains(point)) {
-				gameWorld.player.selectionType = StarmapSelection.PLANET;
-				gameWorld.player.selectedPlanet = p;
-				doSelectPlanetForUI(p);
-				return;
-			}
+			gameWorld.player.selectionType = null;
+			doSelectFleetForUI(null);
+			doSelectPlanetForUI(null);
 		}
 	}
 	/**
@@ -1590,13 +1579,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			return true;
 		}
 		return false;
-	}
-	/**
-	 * Makes necessary adjustments on the UI for selecting a fleet.
-	 * @param f the fleet to select, can be null indicating no selection
-	 */
-	private void doSelectFleetForUI(GameFleet f) {
-		repaint();
 	}
 	/**
 	 * Makes necessary adjustments on the UI for selecting a planet.
@@ -1634,8 +1616,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			float dx = (pt.x * zoomFactor - viewPort.width / 2f) / hscrollFactor;
 			float dy = (pt.y * zoomFactor - viewPort.height / 2f) / vscrollFactor;
 			if (!scrollAnimTimer.isRunning()) {
-				scrollDestX = dx;
-				scrollDestY = dy;
+				scrollDestX = Math.max(0, Math.min(hscrollMax, dx));
+				scrollDestY = Math.max(0, Math.min(vscrollMax, dy));
 				scrollAnimTimer.start();
 			}
 		} else {
@@ -1650,16 +1632,16 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	}
 	/** Perform the animated scrolling. */
 	public void doScrollAnimate() {
-//		float dx = hscrollValue - scrollDestX;
-//		float dy = vscrollValue - scrollDestY;
-//		float distanceToDest = (dx * dx + dy * dy);
-//		if (distanceToDest < SCROLL_ANIM_SPEED * SCROLL_ANIM_SPEED || (scrollDestX >= hscrollMax) || (scrollDestY >= vscrollMax)) {
+		float dx = scrollDestX - hscrollValue;
+		float dy = scrollDestY - vscrollValue;
+		float distanceToDest = (dx * dx + dy * dy);
+		if (distanceToDest < SCROLL_ANIM_SPEED * SCROLL_ANIM_SPEED) {
 			scroll(scrollDestX, scrollDestY);
 			scrollAnimTimer.stop();
-//		} else {
-//			double theta = Math.atan2(dy, dx);
-//			scroll(hscrollValue + (float)Math.cos(theta) * SCROLL_ANIM_SPEED, vscrollValue + (float)Math.cos(theta) * SCROLL_ANIM_SPEED);
-//		}
+		} else {
+			double theta = Math.atan2(dy, dx);
+			scroll(hscrollValue + (float)Math.cos(theta) * SCROLL_ANIM_SPEED, vscrollValue + (float)Math.sin(theta) * SCROLL_ANIM_SPEED);
+		}
 	}
 	/**
 	 * Center the main viewport around the given minimap location.
@@ -1745,5 +1727,121 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			fleetListOffset = Math.max(0, list.indexOf(f));
 			repaint();
 		}
+	}
+	/**
+	 * Makes necessary adjustments on the UI for selecting a fleet.
+	 * @param f the fleet to select, can be null indicating no selection
+	 */
+	private void doSelectFleetForUI(GameFleet f) {
+		repaint();
+	}
+	/**
+	 * Render planet details.
+	 * @param g2 the graphics object
+	 * @param selectedPlanet the selected planet
+	 */
+	private void renderPlanetDetails(Graphics2D g2, GamePlanet selectedPlanet) {
+		g2.fill(shipControlRect);
+		if (btnSatellite.visible) {
+			g2.drawImage(gfx.btnAddSat, btnSatellite.rect.x, btnSatellite.rect.y, null);
+		}
+		if (btnSpySat1.visible) {
+			g2.drawImage(gfx.btnAddSpySat1, btnSpySat1.rect.x, btnSpySat1.rect.y, null);
+		}
+		if (btnSpySat2.visible) {
+			g2.drawImage(gfx.btnAddSpySat2, btnSpySat2.rect.x, btnSpySat2.rect.y, null);
+		}
+		if (btnHubble2.visible) {
+			g2.drawImage(gfx.btnAddHubble2, btnHubble2.rect.x, btnHubble2.rect.y, null);
+		}
+		
+		Shape sp = g2.getClip();
+		g2.setClip(detailsRect);
+		
+		text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 4, 14, TextGFX.RED, selectedPlanet.name);
+		if (selectedPlanet.owner != null) {
+			text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 23, 10, TextGFX.GREEN, selectedPlanet.owner.name);
+			// if planet is own by the current player
+			if (gameWorld.player == selectedPlanet.owner) {
+				// or planet has any satellite
+				text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 40, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("PopulationRaceOnSurface", 
+						gameWorld.getLabel("RaceNames." + selectedPlanet.populationRace.id), 
+						gameWorld.getLabel("SurfaceTypeNames." + selectedPlanet.surfaceType.planetXmlString)));
+				// has hubble or spy sattellite 2
+				text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 57, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("PopulationStatus",
+						selectedPlanet.population,
+						gameWorld.getLabel("PopulatityName." + PopularityType.find(selectedPlanet.popularity).id), 
+						selectedPlanet.populationGrowth));
+			}
+		} else {
+			text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 23, 10, TextGFX.GREEN, gameWorld.getLabel("EmpireNames.Empty"));
+			text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 40, 10, TextGFX.GREEN, 
+					gameWorld.getLabel("NoRaceOnSurface", 
+					gameWorld.getLabel("SurfaceTypeNames." + selectedPlanet.surfaceType.planetXmlString)));
+		}
+		StringBuilder b = new StringBuilder();
+		for (String s : selectedPlanet.inOrbit) {
+			if (b.length() > 0) {
+				b.append(", ");
+			}
+			b.append(s);
+		}
+		text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 72, 7, TextGFX.GREEN, b.toString());
+		
+		g2.setClip(sp);
+	}
+	/**
+	 * Render fleet details.
+	 * @param g2 the graphics object
+	 * @param selectedFleet the selected fleet
+	 */
+	private void renderFleetDetails(Graphics2D g2, GameFleet selectedFleet) {
+		if (btnMove.down) {
+			g2.drawImage(gfx.btnMoveLight, btnMove.rect.x, btnMove.rect.y, null);
+		}
+		if (btnAttack.down) {
+			g2.drawImage(gfx.btnAttackLight, btnAttack.rect.x, btnAttack.rect.y, null);
+		}
+		if (btnStop.down) {
+			g2.drawImage(gfx.btnStopLight, btnStop.rect.x, btnStop.rect.y, null);
+		}
+		
+		Shape sp = g2.getClip();
+		g2.setClip(detailsRect);
+		
+		text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 4, 14, TextGFX.RED, selectedFleet.name);
+		text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 23, 10, TextGFX.GREEN, selectedFleet.owner.name);
+		String speedStr = gameWorld.getLabel("SpeedValue", selectedFleet.getSpeed());
+		int speedLen = text.getTextWidth(7, speedStr);
+		String firepowerStr = gameWorld.getLabel("FirepowerValue", selectedFleet.getSpeed());
+		int firepowerLen = text.getTextWidth(7, firepowerStr);
+		int len = Math.max(speedLen, firepowerLen);
+		text.paintTo(g2, detailsRect.x + detailsRect.width - len - 10, detailsRect.y + 23, 7, TextGFX.GREEN, speedStr);
+		if (selectedFleet.owner == gameWorld.player) {
+			text.paintTo(g2, detailsRect.x + detailsRect.width - len - 10, detailsRect.y + 32, 7, TextGFX.GREEN, firepowerStr);
+			
+			text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 40, 10, TextGFX.GREEN, 
+					gameWorld.getLabel("FleetStatus." + selectedFleet.status.id));
+			
+			text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 57, 10, TextGFX.GREEN, 
+					gameWorld.getLabel("PlanetNearBy", "----")); // TODO find nearby planet
+			
+			int battleships = selectedFleet.getBattleshipCount();
+			int destroyers = selectedFleet.getDestroyerCount();
+			int fighters = selectedFleet.getFighterCount();
+			int tanks = selectedFleet.getTankCount();
+			
+			text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 72, 7, TextGFX.GREEN, 
+				gameWorld.getLabel("FleetStatistics",
+					battleships > 0 ? String.valueOf(battleships) : "-",
+					destroyers > 0 ? String.valueOf(destroyers) : "-",
+					fighters > 0 ? String.valueOf(fighters) : "-",
+					tanks > 0 ? String.valueOf(tanks) : "-"
+			));
+		}
+		
+		g2.setClip(sp);
 	}
 }
