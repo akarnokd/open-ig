@@ -13,7 +13,6 @@ import hu.openig.utils.PCXImage;
 import hu.openig.utils.ResourceMapper;
 import hu.openig.utils.PACFile.PACEntry;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,15 +140,6 @@ public class StarmapGFX {
 		contents.vscrollFiller = ImageUtils.subimage(body, 508, 309, 18, 2);
 		contents.vscrollBottom = ImageUtils.subimage(body, 508, 309, 18, 17);
 		
-		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-		// BIGMAP
-		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-		contents.fullMap = PCXImage.from(resMap.get("GFX/ZOOM.PCX"), -1);
-		// fix image
-		contents.fullMap = contents.fullMap.getSubimage(0, 0, contents.fullMap.getWidth(), 662);
-		
-		contents.mapBackground = new Color(contents.fullMap.getRGB(0, 0));
-
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		// LOADING VARIOUS PLANET ANIMATIONS
 		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo

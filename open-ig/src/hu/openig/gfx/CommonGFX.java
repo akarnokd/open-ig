@@ -137,6 +137,10 @@ public class CommonGFX {
 	public BufferedImage timeUltrafastSelected;
 	/** Time pause selected icon. */
 	public BufferedImage timePauseSelected;
+	/** The full map background. */
+	public BufferedImage fullMap;
+	/** The color of the map background. */
+	public Color mapBackground;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param resMap the resource mapper object
@@ -259,6 +263,15 @@ public class CommonGFX {
 		timeFastSelected = ImageUtils.subimage(timeAnim, 1 * 14, 6 * 16, 14, 16);
 		timeUltrafastSelected = ImageUtils.subimage(timeAnim, 2 * 14, 6 * 16, 14, 16);
 		timePauseSelected = ImageUtils.subimage(timeAnim, 3 * 14, 2 * 16, 14, 16);
+		
+		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+		// BIGMAP
+		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+		fullMap = PCXImage.from(resMap.get("GFX/ZOOM.PCX"), -1);
+		// fix image
+		fullMap = fullMap.getSubimage(0, 0, fullMap.getWidth(), 662);
+		
+		mapBackground = new Color(fullMap.getRGB(0, 0));
 	}
 	/**
 	 * Set building image for a race and building type.

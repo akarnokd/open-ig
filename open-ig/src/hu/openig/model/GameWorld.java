@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.res.Labels;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -179,5 +180,27 @@ public class GameWorld implements GameRaceLookup {
 				f.owner.possessFleet(f);
 			}
 		}
+	}
+	/**
+	 * @return the list of knwon planets with owber
+	 */
+	public List<GamePlanet> getKnownPlanetsByWithOwner() {
+		List<GamePlanet> planets = new ArrayList<GamePlanet>(player.knownPlanetsByName);
+		// remove planets without owner
+		for (int i = planets.size() - 1; i >= 0; i--) {
+			if (planets.get(i).owner == null) {
+				planets.remove(i);
+			}
+		}
+		Collections.sort(planets, GamePlanet.BY_RACE_ID_AND_NAME);
+		return planets;
+	}
+	/**
+	 * @return the list of knwon planets with owber
+	 */
+	public List<GamePlanet> getOwnPlanetsInOrder() {
+		List<GamePlanet> planets = new ArrayList<GamePlanet>(player.ownPlanets);
+		Collections.sort(planets, GamePlanet.BY_COORDINATES);
+		return planets;
 	}
 }

@@ -32,7 +32,7 @@ public enum SurfaceType {
 	NEPTOPLASM(7, "BALI", "Neptoplasm")
 	;
 	/** Surface type index for the planet surface rendering. */
-	public final int surfaceIndex;
+	public final int index;
 	/** Surface type for starmap planet animation rendering. */
 	public final String planetString;
 	/** Textual representation in the planets.xml file. */
@@ -46,7 +46,7 @@ public enum SurfaceType {
 	 * @param planetXmlString the planet type referenced in the resource xmls
 	 */
 	SurfaceType(int surfaceIndex, String planetString, String planetXmlString) {
-		this.surfaceIndex = surfaceIndex;
+		this.index = surfaceIndex;
 		this.planetString = planetString;
 		this.planetXmlString = planetXmlString;
 	}

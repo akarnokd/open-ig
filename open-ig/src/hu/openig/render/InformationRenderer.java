@@ -10,10 +10,16 @@ package hu.openig.render;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoScreen;
+import hu.openig.core.PopularityType;
+import hu.openig.core.TaxRate;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.InformationGFX;
 import hu.openig.gfx.TextGFX;
+import hu.openig.model.GameFleet;
+import hu.openig.model.GamePlanet;
+import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
+import hu.openig.model.StarmapSelection;
 import hu.openig.sound.UISounds;
 
 import java.awt.AlphaComposite;
@@ -124,8 +130,6 @@ MouseWheelListener, ActionListener {
 	private Btn btnDiplomacy;
 	/** The screen rectangle. */
 	private Rectangle screen = new Rectangle();
-	/** Show minimap? */
-	private boolean showMinimap = true;
 	/** Action when the user clicks on the colony button. */
 	private BtnAction onColonyClicked;
 	/** Action when the user clicks on the starmap button. */
@@ -134,6 +138,10 @@ MouseWheelListener, ActionListener {
 	private GameWorld gameWorld;
 	/** The information bar renderer. */
 	private InfobarRenderer infobarRenderer;
+	/** Less tax. */
+	private Btn btnTaxLess;
+	/** More tax. */
+	private Btn btnTaxMore;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx the information graphics obj ects
@@ -214,58 +222,65 @@ MouseWheelListener, ActionListener {
 			g2.drawImage(gfx.btnEmptyLarge, btnLarge2Rect.x, btnLarge2Rect.y, null);
 		}
 		
-		int y = 0;
-		Shape cs = g2.getClip();
-		g2.setClip(mainArea);
-		int size = 5;
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.YELLOW, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.GREEN, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.GRAY, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.RED, "Sample text");
-		
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.DARK_GREEN, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.ORANGE, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.WHITE, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.CYAN, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.PURPLE, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.LIGHT_GREEN, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.BLUE, "Sample text");
-		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.LIGHT_BLUE, "Sample text");
-		g2.setClip(cs);
-		
-		if (showMinimap) {
-			int viewerRank = 4;
-			g2.drawImage(cgfx.minimapInfo[viewerRank], pictureArea.x, pictureArea.y, null);
-			// DRAW GRID
-			Shape sp = g2.getClip();
-			g2.setClip(pictureArea);
-			g2.setColor(CommonGFX.GRID_COLOR);
-			Stroke st = g2.getStroke();
-			g2.setStroke(CommonGFX.GRID_STROKE);
-			int y0 = 34;
-			int x0 = 40;
-			for (int i = 1; i < 5; i++) {
-				g2.drawLine(pictureArea.x + x0, pictureArea.y, pictureArea.x + x0, pictureArea.y + pictureArea.height);
-				g2.drawLine(pictureArea.x, pictureArea.y + y0, pictureArea.x + pictureArea.width, pictureArea.y + y0);
-				x0 += 41;
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.YELLOW, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.GREEN, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.GRAY, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.RED, "Sample text");
+//		
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.DARK_GREEN, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.ORANGE, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.WHITE, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.CYAN, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.PURPLE, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.LIGHT_GREEN, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.BLUE, "Sample text");
+//		text.paintTo(g2, mainArea.x, mainArea.y + (y++ * 16), size, TextGFX.LIGHT_BLUE, "Sample text");
+		switch (currentScreen) {
+		case PLANETS:
+			renderPlanets(g2);
+			break;
+		case COLONY_INFORMATION:
+			renderColonyInfo(g2);
+			break;
+		default:
+		}
+	}
+	/**
+	 * Render the minimap with grids onto the picture area.
+	 * @param g2 the graphics object
+	 */
+	private void renderMinimapBackground(Graphics2D g2) {
+		// DRAW GRID
+		Shape sp = g2.getClip();
+		g2.setClip(pictureArea);
+		int viewerRank = 4;
+		g2.drawImage(cgfx.minimapInfo[viewerRank], pictureArea.x, pictureArea.y, null);
+		g2.setColor(CommonGFX.GRID_COLOR);
+		Stroke st = g2.getStroke();
+		g2.setStroke(CommonGFX.GRID_STROKE);
+		int y0 = 34;
+		int x0 = 40;
+		for (int i = 1; i < 5; i++) {
+			g2.drawLine(pictureArea.x + x0, pictureArea.y, pictureArea.x + x0, pictureArea.y + pictureArea.height);
+			g2.drawLine(pictureArea.x, pictureArea.y + y0, pictureArea.x + pictureArea.width, pictureArea.y + y0);
+			x0 += 41;
+			y0 += 34;
+		}
+		int i = 0;
+		y0 = 28;
+		x0 = 2;
+		for (char c = 'A'; c < 'Z'; c++) {
+			text.paintTo(g2, pictureArea.x + x0, pictureArea.y + y0, 5, TextGFX.GRAY, String.valueOf(c));
+			x0 += 41;
+			i++;
+			if (i % 5 == 0) {
+				x0 = 2;
 				y0 += 34;
 			}
-			int i = 0;
-			y0 = 28;
-			x0 = 2;
-			for (char c = 'A'; c < 'Z'; c++) {
-				text.paintTo(g2, pictureArea.x + x0, pictureArea.y + y0, 5, TextGFX.GRAY, String.valueOf(c));
-				x0 += 41;
-				i++;
-				if (i % 5 == 0) {
-					x0 = 2;
-					y0 += 34;
-				}
-			}
-			
-			g2.setStroke(st);
-			g2.setClip(sp);
 		}
+		
+		g2.setStroke(st);
+		g2.setClip(sp);
 	}
 	/**
 	 * Renders a button based on its state.
@@ -329,6 +344,10 @@ MouseWheelListener, ActionListener {
 		btnDiplomacy = new Btn(new BtnAction() { public void invoke() { doDiplomacyClick(); } });
 		buttons.add(btnDiplomacy);
 		
+		btnTaxLess = new Btn(new BtnAction() { public void invoke() { doLessTax(); } });
+		pressButtons.add(btnTaxLess);
+		btnTaxMore = new Btn(new BtnAction() { public void invoke() { doMoreTax(); } });
+		pressButtons.add(btnTaxMore);
 	}
 	/** Diplomacy click action. */
 	protected void doDiplomacyClick() {
@@ -461,6 +480,9 @@ MouseWheelListener, ActionListener {
 		if (btnLarge2 != null) {
 			btnLarge2.rect.setBounds(btnLarge2Rect);
 		}
+		btnTaxLess.setBounds(screen.x + 250, screen.y + 260, gfx.btnTaxLess.getWidth(), gfx.btnTaxLess.getHeight());
+		btnTaxMore.setBounds(screen.x + 260 + gfx.btnTaxLess.getWidth(), screen.y + 260, 
+				gfx.btnTaxMore.getWidth(), gfx.btnTaxMore.getHeight());
 	}
 	/**
 	 * {@inheritDoc}
@@ -479,9 +501,9 @@ MouseWheelListener, ActionListener {
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
+		Point pt = e.getPoint();
 		if (e.getButton() == MouseEvent.BUTTON1) {
-			if (e.getClickCount() == 1) {
-				Point pt = e.getPoint();
+//			if (e.getClickCount() == 1) {
 				for (Btn b : pressButtons) {
 					if (b.test(pt)) {
 						b.down = true;
@@ -502,7 +524,13 @@ MouseWheelListener, ActionListener {
 						repaint(b.rect);
 					}
 				}
-			}
+//			}
+		}
+		if (currentScreen == InfoScreen.PLANETS) {
+			doPlanetsMousePressed(e);
+		} else
+		if (currentScreen == InfoScreen.COLONY_INFORMATION) {
+			doColonyMousePressed(e);
 		}
 	}
 	/**
@@ -685,5 +713,403 @@ MouseWheelListener, ActionListener {
 	 */
 	public GameWorld getGameWorld() {
 		return gameWorld;
+	}
+	/**
+	 * Render planets information screen.
+	 * @param g2 the graphics
+	 */
+	private void renderPlanets(Graphics2D g2) {
+		Shape cs = g2.getClip();
+		GamePlayer player = gameWorld.player;
+		
+		int columnWidth = (mainArea.width - 7) / 4;
+		int x = 0;
+		int y = 0;
+		List<GamePlanet> planets = gameWorld.getKnownPlanetsByWithOwner();
+		g2.setClip(7 + mainArea.x + x, mainArea.y + y, columnWidth, mainArea.height);
+		for (GamePlanet p : planets) {
+			if (y + 13 >= mainArea.height) {
+				x += columnWidth;
+				y = 0;
+				g2.setClip(7 + mainArea.x + x, mainArea.y + y, columnWidth, mainArea.height);
+			}
+			text.paintTo(g2, 9 + mainArea.x + x, mainArea.y + y + 6, 10, p.owner.race.color, p.name);
+			if (p == player.selectedPlanet) {
+				g2.setColor(new Color(TextGFX.ORANGE));
+				g2.drawRect(mainArea.x + x + 7, mainArea.y + y + 4, columnWidth - 3, 13);
+			}
+			y += 13;
+		}
+		
+		renderMinimapWithPlanetsAndFleets(g2, true, false, false);
+		
+		renderPlanetShortInfo(g2);
+		
+		g2.setClip(cs);
+	}
+	/**
+	 * Renders the planet short information into the secondary area.
+	 * @param g2 the graphics object
+	 */
+	private void renderPlanetShortInfo(Graphics2D g2) {
+		// display details for the selected planet
+		GamePlayer player = gameWorld.player;
+		if (player.selectedPlanet != null) {
+			GamePlanet planet = player.selectedPlanet;
+			g2.setClip(titleArea);
+			int h = (titleArea.height - 14) / 2;
+			int color = TextGFX.GRAY;
+			if (player.knownPlanetsByName.contains(planet) && planet.owner != null) {
+				color = planet.owner.race.color;
+			}
+			text.paintTo(g2, titleArea.x + 2, titleArea.y + h, 14, color, planet.name);
+			g2.setClip(secondaryArea);
+			// display owner name
+			if (planet.owner != null) {
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 10, 10, color, planet.owner.name);
+				// if planet is own by the current player
+				if (gameWorld.player == planet.owner) {
+					// or planet has any satellite
+					text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 30, 10, color, 
+							gameWorld.getLabel("RaceNames." + planet.populationRace.id));
+					text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 70, 10, color, 
+							gameWorld.getLabel("PopulationStatusInfo",
+							planet.population,
+							gameWorld.getLabel("PopulatityName." + PopularityType.find(planet.popularity).id)));
+					text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 90, 10, color, 
+							gameWorld.getLabel("Taxation",
+							gameWorld.getLabel("TaxRate." + planet.tax.id)));
+				} else {
+					text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 70, 10, color, 
+							gameWorld.getLabel("PopulationStatusInfo",
+							planet.population,
+							gameWorld.getLabel("Aliens")));
+				}
+			} else {
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 10, 10, color, gameWorld.getLabel("EmpireNames.Empty"));
+			}
+			text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 50, 10, color, 
+					gameWorld.getLabel("NoRaceOnSurface", 
+					gameWorld.getLabel("SurfaceTypeNames." + planet.surfaceType.planetXmlString)));
+			StringBuilder b = new StringBuilder();
+			for (String s : planet.inOrbit) {
+				if (b.length() > 0) {
+					b.append(", ");
+				}
+				b.append(s);
+			}
+			text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 120, 7, color, b.toString());
+		}
+	}
+	/**
+	 * Render the minimap with planets.
+	 * @param g2 the graphics object
+	 * @param renderPlanetSelection render the selection box around the selected planet?
+	 * @param renderFleets render fleets icons?
+	 * @param renderFleetSelection render fleet selection?
+	 */
+	private void renderMinimapWithPlanetsAndFleets(Graphics2D g2, 
+			boolean renderPlanetSelection, boolean renderFleets, boolean renderFleetSelection) {
+		GamePlayer player = gameWorld.player;
+		renderMinimapBackground(g2);
+		g2.setClip(pictureArea);
+		// render known planet dots into the picture area
+		double w2 = pictureArea.getWidth() * 1.0 / cgfx.fullMap.getWidth();
+		double h2 = pictureArea.getHeight() * 1.0 / cgfx.fullMap.getHeight();
+		for (GamePlanet p : player.knownPlanets) {
+			int color = TextGFX.GRAY;
+			if (player.knownPlanetsByName.contains(p) && p.owner != null) {
+				color = p.owner.race.smallColor;
+			}
+			// draw the planet dot onto the minimap
+			int x2 = (int)(p.x * w2);
+			int y2 = (int)(p.y * h2);
+			g2.setColor(new Color(color));
+			g2.fillRect(pictureArea.x + x2 - 1, pictureArea.y + y2 - 1, 3, 3);
+			if (renderPlanetSelection && player.selectedPlanet == p) {
+				g2.setColor(Color.WHITE);
+				g2.drawRect(pictureArea.x + x2 - 3, pictureArea.y + y2 - 3, 6, 6);
+			}
+		}
+		if (renderFleets) {
+			for (GameFleet f : player.knownFleets) {
+				if (f.visible) {
+					BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
+					int x = (int)(f.x * w2 - fleetImg.getWidth() / 2);
+					int y = (int)(f.y * h2 - fleetImg.getHeight() / 2);
+					g2.drawImage(fleetImg, pictureArea.x + x, pictureArea.y + y, null);
+					if (renderFleetSelection && player.selectedFleet == f) {
+						g2.setColor(Color.WHITE);
+						g2.drawRect(pictureArea.x + x - 1, pictureArea.y + y - 1,
+								fleetImg.getWidth() + 2, fleetImg.getHeight() + 2);
+					}					
+				}
+			}
+		}
+	}
+	/**
+	 * Returns the index within the planet listing of the given point.
+	 * @param pt the point
+	 * @return the index, or -1 if out of list
+	 */
+	private GamePlanet getPlanetForPositionList(Point pt) {
+		int x = pt.x - mainArea.x - 7;
+		int y = pt.y - mainArea.y - 6;
+		if (x >= 0 && y >= 0 && x < mainArea.width && y < mainArea.height) {
+			int columnWidth = (mainArea.width - 7) / 4;
+			int numLen = mainArea.height / 13;
+			int col = x / columnWidth;
+			int row = y / 13;
+			int idx = col * numLen + row;
+			List<GamePlanet> list = gameWorld.getKnownPlanetsByWithOwner();
+			if (idx < list.size()) {
+				return list.get(idx);
+			}
+		}
+		return null;
+	}
+	/**
+	 * Returns the planet for the minimap position pt.
+	 * @param pt the point on minimap to check for planet
+	 * @return the planet at the position or null for none
+	 */
+	private GamePlanet getPlanetForPositionMini(Point pt) {
+		int x = pt.x - pictureArea.x;
+		int y = pt.y - pictureArea.y;
+		double w2 = pictureArea.getWidth() * 1.0 / cgfx.fullMap.getWidth();
+		double h2 = pictureArea.getHeight() * 1.0 / cgfx.fullMap.getHeight();
+		for (GamePlanet p : gameWorld.player.knownPlanets) {
+			int x2 = (int)(p.x * w2);
+			int y2 = (int)(p.y * h2);
+			if (x >= x2 - 2 && x <= x2 + 2 && y >= y2 - 2 && y <= y2 + 2) {
+				return p;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Perform actions for mouse events in the planets tab and main area.
+	 * @param e the mouse event
+	 */
+	private void doPlanetsMousePressed(MouseEvent e) {
+		Point pt = e.getPoint();
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			GamePlanet planet = null;
+			if (mainArea.contains(pt)) {
+				planet = getPlanetForPositionList(pt);
+			} else
+			if (pictureArea.contains(pt)) {
+				planet = getPlanetForPositionMini(pt);
+			}
+			if (planet != null) {
+				gameWorld.player.selectedPlanet = planet;
+				gameWorld.player.selectionType = StarmapSelection.PLANET;
+				repaint();
+			}
+		}
+	}
+	/** 
+	 * Action for mouse events on colony info tab.
+	 * @param e the mouse events
+	 */
+	private void doColonyMousePressed(MouseEvent e) {
+		Point pt = e.getPoint();
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			GamePlanet planet = getPlanetForPositionMini(pt);
+			if (planet != null) {
+				gameWorld.player.selectedPlanet = planet;
+				gameWorld.player.selectionType = StarmapSelection.PLANET;
+				repaint();
+			}
+		}		
+	}
+	/**
+	 * Renders the colony information.
+	 * @param g2 the graphics object
+	 */
+	private void renderColonyInfo(Graphics2D g2) {
+		Shape cs = g2.getClip();
+		g2.setClip(mainArea);
+		
+		GamePlanet planet = gameWorld.player.selectedPlanet;
+		if (planet != null) {
+			text.paintTo(g2, mainArea.x + 10, mainArea.y + 8, 14, TextGFX.GREEN, planet.name);
+			// if planet belongs to the player, display detailed info
+			if (planet.owner == gameWorld.player) {
+				
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 30, 10, TextGFX.GREEN,
+					gameWorld.getLabel("ColonyInfoEntry",
+						gameWorld.getLabel("ColonyInfo.Owner"),
+						planet.owner.name
+					));
+				
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 50, 10, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Race"),
+							gameWorld.getLabel("RaceNames." + planet.populationRace.id)
+						));
+				
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 70, 10, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Surface"),
+							gameWorld.getLabel("SurfaceTypeNames." + planet.surfaceType.planetXmlString)
+						));
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 90, 10, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Population"),
+							gameWorld.getLabel("PopulationStatus",
+									planet.population,
+									gameWorld.getLabel("PopulatityName." + PopularityType.find(planet.popularity).id), 
+									planet.populationGrowth)
+						));
+				int color = getColorForRelation(planet.population, planet.getLivingSpace());
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 110, 10, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.LivingSpace"),
+							planet.population + "/" + planet.getLivingSpace() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
+						));
+				
+				color = getColorForRelation(planet.population, planet.getHospital());
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 130, 10, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Hospital"),
+							planet.population + "/" + planet.getHospital() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
+						));
+				
+				color = getColorForRelation(planet.population, planet.getFood());
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 150, 10, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Hospital"),
+							planet.population + "/" + planet.getFood() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
+						));
+				
+				color = getColorForRelation(planet.getEnergy(), planet.getEnergyMax());
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 170, 10, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Energy"),
+							planet.getEnergyMax() + " " + gameWorld.getLabel("ColonyInfo.KWH")
+							+ "   " + gameWorld.getLabel("ColonyInfo.Demand") + " : " + planet.getEnergy()
+							+ " " + gameWorld.getLabel("ColonyInfo.KWH")
+						));
+				
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 240, 10, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry2",
+							gameWorld.getLabel("ColonyInfo.TaxIncome"),
+							planet.taxIncome
+						));
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 260, 10, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry2",
+							gameWorld.getLabel("ColonyInfo.TradeIncome"),
+							planet.tradeIncome
+						));
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 280, 10, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry2",
+							gameWorld.getLabel("ColonyInfo.TaxMorale"),
+							planet.taxMorale + "%"
+						));
+				// render tax buttons
+				String tr = gameWorld.getLabel("Taxation",
+						gameWorld.getLabel("TaxRate." + planet.tax.id));
+				int trLen = text.getTextWidth(10, tr);
+				int trx = btnTaxLess.rect.x + (btnTaxMore.rect.x + btnTaxMore.rect.width - btnTaxLess.rect.x - trLen) / 2;
+				text.paintTo(g2, trx, mainArea.y + 240, 10, color, tr);
+				
+				btnTaxLess.disabled = planet.tax == TaxRate.NONE;
+				btnTaxMore.disabled = planet.tax == TaxRate.OPPRESSIVE;
+				if (btnTaxLess.disabled) {
+					g2.drawImage(gfx.btnTaxLess, btnTaxLess.rect.x, btnTaxLess.rect.y, null);
+				} else {
+					if (btnTaxLess.down) {
+						g2.drawImage(gfx.btnTaxLessDown, btnTaxLess.rect.x, btnTaxLess.rect.y, null);
+					} else {
+						g2.drawImage(gfx.btnTaxLess, btnTaxLess.rect.x, btnTaxLess.rect.y, null);
+					}
+				}
+				if (btnTaxMore.disabled) {
+					g2.drawImage(gfx.btnTaxMore, btnTaxMore.rect.x, btnTaxMore.rect.y, null);
+				} else {
+					if (btnTaxMore.down) {
+						g2.drawImage(gfx.btnTaxMoreDown, btnTaxMore.rect.x, btnTaxMore.rect.y, null);
+					} else {
+						g2.drawImage(gfx.btnTaxMore, btnTaxMore.rect.x, btnTaxMore.rect.y, null);
+					}
+				}
+				
+			} else {
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 30, 10, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Owner"),
+							planet.owner != null ? planet.owner.name : gameWorld.getLabel("EmpireNames.Empty")
+						));
+					
+					text.paintTo(g2, mainArea.x + 10, mainArea.y + 50, 10, TextGFX.GREEN,
+							gameWorld.getLabel("ColonyInfoEntry",
+									gameWorld.getLabel("ColonyInfo.Race"),
+								(planet.populationRace != null && gameWorld.player.knownPlanetsByName.contains(planet)
+									? gameWorld.getLabel("RaceNames." + planet.populationRace.id)
+									: "?")
+							));
+					
+					text.paintTo(g2, mainArea.x + 10, mainArea.y + 70, 10, TextGFX.GREEN,
+							gameWorld.getLabel("ColonyInfoEntry",
+								gameWorld.getLabel("ColonyInfo.Surface"),
+								gameWorld.getLabel("SurfaceTypeNames." + planet.surfaceType.planetXmlString)
+							));
+					text.paintTo(g2, mainArea.x + 10, mainArea.y + 90, 10, TextGFX.GREEN,
+							gameWorld.getLabel("ColonyInfoEntry",
+								gameWorld.getLabel("ColonyInfo.Population"),
+								(planet.populationRace != null && gameWorld.player.knownPlanetsByName.contains(planet)
+								? planet.population + " " + gameWorld.getLabel("Aliens")
+								: "?")
+							));
+				
+			}
+			if (planet.owner == gameWorld.player || gameWorld.player.knownPlanetsByName.contains(planet)) {
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 310, 10, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfo.Deployed"));
+				StringBuilder b = new StringBuilder();
+				for (String s : planet.inOrbit) {
+					if (b.length() > 0) {
+						b.append(", ");
+					}
+					b.append(s);
+				}
+				text.paintTo(g2, mainArea.x + 20, mainArea.y + 330, 7, TextGFX.GREEN, b.toString());
+			}
+		}
+		renderPlanetShortInfo(g2);
+		renderMinimapWithPlanetsAndFleets(g2, true, false, false);
+		g2.setClip(cs);
+	}
+	/**
+	 * Returns GREEN, if value < limit, YELLOW if value < limit * 1.1, RED otherwise.
+	 * @param value the value
+	 * @param limit the limit
+	 * @return the color
+	 */
+	private int getColorForRelation(int value, int limit) {
+		if (value <= limit) {
+			return TextGFX.GREEN;
+		} else
+		if (value <= limit * 11 / 10) {
+			return TextGFX.YELLOW;
+		}
+		return TextGFX.RED;
+	}
+	/** Set tax level to a lesser level. */
+	private void doLessTax() {
+		GamePlanet planet = gameWorld.player.selectedPlanet;
+		if (planet != null && planet.tax != TaxRate.NONE) {
+			planet.tax = TaxRate.values()[planet.tax.ordinal() - 1];
+			repaint();
+		}
+	}
+	/** Set tax level to a greater level. */
+	private void doMoreTax() {
+		GamePlanet planet = gameWorld.player.selectedPlanet;
+		if (planet != null && planet.tax != TaxRate.OPPRESSIVE) {
+			planet.tax = TaxRate.values()[planet.tax.ordinal() + 1];
+			repaint();
+		}
 	}
 }
