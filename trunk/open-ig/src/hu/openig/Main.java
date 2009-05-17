@@ -24,6 +24,7 @@ import hu.openig.model.GameRace;
 import hu.openig.model.GameSpeed;
 import hu.openig.model.GameWorld;
 import hu.openig.model.PlayerType;
+import hu.openig.model.StarmapSelection;
 import hu.openig.music.Music;
 import hu.openig.render.InfobarRenderer;
 import hu.openig.render.InformationRenderer;
@@ -33,6 +34,8 @@ import hu.openig.render.PlanetRenderer;
 import hu.openig.render.StarmapRenderer;
 import hu.openig.res.Labels;
 import hu.openig.sound.UISounds;
+import hu.openig.utils.IOUtils;
+import hu.openig.utils.JavaUtils;
 import hu.openig.utils.ResourceMapper;
 
 import java.awt.Color;
@@ -44,6 +47,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -122,12 +126,16 @@ public class Main extends JFrame {
 	private GameWorld gameWorld;
 	/** The information bar renderer. */
 	private InfobarRenderer infobarRenderer;
+	/** The language of the used resources. */
+	private String language;
 	/**
 	 * Initialize resources from the given root directory.
 	 * @param resMap the resource mapper
+	 * @param language the resource language code
 	 */
-	protected void initialize(final ResourceMapper resMap) {
+	protected void initialize(final ResourceMapper resMap, final String language) {
 		//setUndecorated(true);
+		this.language = language;
 		setTitle("Open Imperium Galactica (" + VERSION + ")");
 		setBackground(Color.BLACK);
 		fadeTimer = new Timer(FADE_TIME, null);
@@ -332,6 +340,26 @@ public class Main extends JFrame {
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doKnowAllFleets(); } });
 		
+		ks = KeyStroke.getKeyStroke('+');
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "NUM+");
+		rp.getActionMap().put("NUM+", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doSelectNexPlanet(); } });
+		
+		ks = KeyStroke.getKeyStroke('-');
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "NUM-");
+		rp.getActionMap().put("NUM-", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doSelectPrevPlanet(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+O");
+		rp.getActionMap().put("CTRL+O", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doOnwEmptyPlanets(); } });
 	}
 	/**
 	 * Sets action listeners on the various screens.
@@ -380,7 +408,14 @@ public class Main extends JFrame {
 	}
 	/** Action for starmap info button pressed. */
 	private void onStarmapInfo() {
-		informationRenderer.setScreenButtonsFor(InfoScreen.PLANETS);
+		if (gameWorld.player.selectionType == StarmapSelection.PLANET) {
+			informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
+		} else 
+		if (gameWorld.player.selectionType == StarmapSelection.FLEET) {
+			informationRenderer.setScreenButtonsFor(InfoScreen.FLEETS);
+		} else {
+			informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
+		}
 		informationRenderer.setVisible(true);
 		layers.validate();
 	}
@@ -426,13 +461,38 @@ public class Main extends JFrame {
 			JOptionPane.showMessageDialog(null, "Please place this program into the Imperium Galactica directory or specify the location via the first command line parameter.");
 			return;
 		}
+		final String language = determineIGLanguage(resMap.get("MAIN.EXE"));
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				Main m = new Main();
-				m.initialize(resMap);
+				m.initialize(resMap, language);
 			}
 		});
+	}
+	/**
+	 * Returns the language of the target Imperium Galactica.
+	 * @param mainEXE the MAIN.EXE file
+	 * @return the language code, defaults to 'en'
+	 */
+	private static String determineIGLanguage(File mainEXE) {
+		if (mainEXE != null) {
+			byte[] data = IOUtils.load(mainEXE);
+			// Real time in hungarian
+			try {
+				byte[] hungarian = { 0x56, 0x61, 0x6C, (byte)0xA2, 0x73, 0x20, 0x69, 0x64, (byte)0x93 };
+				if (JavaUtils.arrayIndexOf(data, hungarian, 0) >= 0) {
+					return "hu";
+				}
+				byte[] english = "Realtime".getBytes("ISO-8859-1");
+				if (JavaUtils.arrayIndexOf(data, english, 0) >= 0) {
+					return "en";
+				}
+			} catch (UnsupportedEncodingException ex) {
+				// should not occur
+			}
+		}
+		return "en";
 	}
 	/** Action for F2 keypress. */
 	private void onF2Action() {
@@ -624,7 +684,7 @@ public class Main extends JFrame {
 		gameWorld.gameSpeed = GameSpeed.NORMAL;
 		gameWorld.calendar.setTimeInMillis(45997848000000L); //August 13th, 3427, 12 PM
 
-		gameWorld.language = "en";
+		gameWorld.language = language;
 		gameWorld.labels = Labels.parse("/hu/openig/res/labels.xml");
 
 		gameWorld.races.clear();
@@ -692,6 +752,40 @@ public class Main extends JFrame {
 	public void doKnowAllFleets() {
 		for (GameFleet p : gameWorld.fleets) {
 			gameWorld.player.knowFleet(p);
+		}
+		repaint();
+	}
+	/** Select next planet. */
+	private void doSelectNexPlanet() {
+		List<GamePlanet> list = gameWorld.getOwnPlanetsInOrder();
+		if (list.size() > 0) {
+			int idx = list.indexOf(gameWorld.player.selectedPlanet);
+			gameWorld.player.selectedPlanet = list.get((idx + 1) % list.size());
+			gameWorld.player.selectionType = StarmapSelection.PLANET;
+			repaint();
+		}
+	}
+	/** Select previous planet. */
+	private void doSelectPrevPlanet() {
+		List<GamePlanet> list = gameWorld.getOwnPlanetsInOrder();
+		if (list.size() > 0) {
+			int idx = list.indexOf(gameWorld.player.selectedPlanet) - 1;
+			if (idx < 0) {
+				idx = list.size() - 1;
+			}
+			gameWorld.player.selectedPlanet = list.get(idx);
+			gameWorld.player.selectionType = StarmapSelection.PLANET;
+			repaint();
+		}
+	}
+	/** Set owner of all empty planets to the player. */
+	private void doOnwEmptyPlanets() {
+		for (GamePlanet p : gameWorld.planets) {
+			if (p.owner == null) {
+				p.owner = gameWorld.player;
+				p.populationRace = gameWorld.player.race;
+				gameWorld.player.possessPlanet(p);
+			}
 		}
 		repaint();
 	}

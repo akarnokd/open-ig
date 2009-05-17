@@ -211,9 +211,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private Timer animations;
 	/** The animation interval. */
 	private static final int ANIMATION_INTERVAL = 100;
-	/**
-	 * The game world object.
-	 */
+	/** The game world object. */
 	private GameWorld gameWorld;
 	/** The information bar renderer. */
 	private InfobarRenderer infobarRenderer;
@@ -248,6 +246,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private float scrollDestY;
 	/** The details rectangle without the ship control rect area. */
 	private final Rectangle detailsRect = new Rectangle();
+	/** If true, the currently selected planet on the minimap will be displayed/blinked. */
+	private boolean minimapBlink;
+	/** Counter for minimap blinking. */
+	private int minimapBlinkCount;
+	/** Minimap blink rate in animation loop count. */
+	private static final int MINIMAP_BLINK_RATE = 2;
+	/** The alternate selection color for selected but not focused planet or fleet. */
+	private final Color alternateSelection = new Color(124, 124, 180);
 	/**
 	 * Constructor. Sets the helper object fields.
 	 * @param gfx the starmap graphics object
@@ -342,7 +348,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		g2.drawImage(cgfx.minimap, minimapRect.x, minimapRect.y, null);
 		
 		// draw the entire map in a clipping rect
-		g2.setColor(gfx.contents.mapBackground);
+		g2.setColor(cgfx.mapBackground);
 		//g2.setColor(Color.YELLOW);
 		g2.fill(mapRect);
 		Shape sp = g2.getClip();
@@ -351,22 +357,22 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		int mx = -(int)(hscrollValue * hscrollFactor);
 		int my = -(int)(vscrollValue * vscrollFactor); 
 		// if the viewport is much bigger than the actual image, lets center it
-		if (mapRect.width > gfx.contents.fullMap.getWidth() * zoomFactor) {
-			mx = (int)((mapRect.width - gfx.contents.fullMap.getWidth() * zoomFactor) / 2);
+		if (mapRect.width > cgfx.fullMap.getWidth() * zoomFactor) {
+			mx = (int)((mapRect.width - cgfx.fullMap.getWidth() * zoomFactor) / 2);
 		}
-		if (mapRect.height > gfx.contents.fullMap.getHeight() * zoomFactor) {
-			my = (int)((mapRect.height - gfx.contents.fullMap.getHeight() * zoomFactor) / 2);
+		if (mapRect.height > cgfx.fullMap.getHeight() * zoomFactor) {
+			my = (int)((mapRect.height - cgfx.fullMap.getHeight() * zoomFactor) / 2);
 		}
 		
 		mapCoords.x = mapRect.x + mx;
 		mapCoords.y = mapRect.y + my;
-		mapCoords.width = (int)(gfx.contents.fullMap.getWidth() * zoomFactor);
-		mapCoords.height = (int)(gfx.contents.fullMap.getHeight() * zoomFactor);
+		mapCoords.width = (int)(cgfx.fullMap.getWidth() * zoomFactor);
+		mapCoords.height = (int)(cgfx.fullMap.getHeight() * zoomFactor);
 		
 		g2.setClip(mapCoords.intersection(mapRect));
 		g2.translate(mapRect.x + mx, mapRect.y + my);
 		g2.scale(zoomFactor, zoomFactor);
-		g2.drawImage(gfx.contents.fullMap, 0, 0, null);
+		g2.drawImage(cgfx.fullMap, 0, 0, null);
 		g2.setTransform(af);
 		
 		if (btnStars.down) {
@@ -390,8 +396,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			g2.setColor(CommonGFX.GRID_COLOR);
 			Stroke st = g2.getStroke();
 			g2.setStroke(CommonGFX.GRID_STROKE);
-			float fw = gfx.contents.fullMap.getWidth() * zoomFactor;
-			float fh = gfx.contents.fullMap.getHeight() * zoomFactor;
+			float fw = cgfx.fullMap.getWidth() * zoomFactor;
+			float fh = cgfx.fullMap.getHeight() * zoomFactor;
 			float dx = fw / 5;
 			float dy = fh / 5;
 			float y0 = dy;
@@ -834,7 +840,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		// ************************************************************
 		// HORIZONTAL SCROLLBAR CORRECTION
 		// determine the maximum values for the horizontal scrollbar
-		int zoomedWidth = (int)(gfx.contents.fullMap.getWidth() * newZoomFactor);
+		int zoomedWidth = (int)(cgfx.fullMap.getWidth() * newZoomFactor);
 		// get the number of pixels differring in the size of the map and the scrollbar region
 		// minus the smallest scrollbar knob
 		int minKnobSize = gfx.contents.hscrollLeft.getWidth() + gfx.contents.hscrollRight.getWidth();
@@ -853,7 +859,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		// compensate the scroll value
 		// ************************************************************
 		// VERTICAL SCROLLBAR CORRECTION
-		int zoomedHeight = (int)(gfx.contents.fullMap.getHeight() * newZoomFactor);
+		int zoomedHeight = (int)(cgfx.fullMap.getHeight() * newZoomFactor);
 		minKnobSize = gfx.contents.vscrollTop.getHeight() + gfx.contents.vscrollBottom.getHeight();
 		maxScrollRegion = vscrollRect.height - minKnobSize;
 		mapExcess = Math.max(zoomedHeight - mapRect.height, 0);
@@ -1009,7 +1015,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				}
 				// check for clicks in the main map area
 				if (mapCoords.contains(pt)) {
-					checkGameObjects(pt);
+					checkGameObjects(e);
 				}
 			}
 		} else
@@ -1248,12 +1254,11 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 					if (modifiedMagnify < 0) {
 						modifiedMagnify = 0;
 					}
-					BufferedImage pimg = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[modifiedMagnify]).get(p.rotationPhase);
 					double fd = Math.PI / 50;
 					double fm = 2 * Math.PI - fd;
 					for (double f = 0.0f; f <= fm; f += fd) {
-						int x = (int)((p.x + p.radarRadius * Math.sin(f)) * zoomFactor + pimg.getWidth() / 2f);
-						int y = (int)((p.y + p.radarRadius * Math.cos(f)) * zoomFactor + pimg.getHeight() / 2f);
+						int x = (int)((p.x + p.radarRadius * Math.sin(f)) * zoomFactor);
+						int y = (int)((p.y + p.radarRadius * Math.cos(f)) * zoomFactor);
 						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
 					}
 				}
@@ -1267,9 +1272,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				if (p.owner != null) {
 					color = p.owner.race.smallColor;
 				}
-				int y = (int)(p.y * zoomFactor + pimg.getHeight()) + 2;
+				int y = (int)(p.y * zoomFactor + pimg.getHeight() / 2f) + 2;
 				int w = text.getTextWidth(5, p.name);
-				int x = (int)(p.x * zoomFactor + pimg.getWidth() / 2f - w / 2f);
+				int x = (int)(p.x * zoomFactor - w / 2f);
 				text.paintTo(g2, xOrig + x, yOrig + y, 5, color, p.name);
 			}
 		}
@@ -1279,24 +1284,24 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				continue;
 			}
 			BufferedImage pimg = getPlanetImage(p, p.rotationPhase);
-			int x = (int)(p.x * zoomFactor /* - pimg.getWidth() / 2f*/);
-			int y = (int)(p.y * zoomFactor /* - pimg.getHeight() / 2f*/);
+			int x = (int)(p.x * zoomFactor - pimg.getWidth() / 2f);
+			int y = (int)(p.y * zoomFactor - pimg.getHeight() / 2f);
 			
 			// if this planet is selected
-			if (player.selectionType == StarmapSelection.PLANET && player.selectedPlanet == p) {
-				int len = 4;
-				g2.setColor(Color.WHITE);
-				g2.drawLine(xOrig + x, yOrig + y, xOrig + x + len, yOrig + y);
-				g2.drawLine(xOrig + x + pimg.getWidth() - 1, yOrig + y, xOrig + x + pimg.getWidth() - len - 1, yOrig + y);
-				g2.drawLine(xOrig + x, yOrig + y + pimg.getHeight() - 1, xOrig + x + len, yOrig + y + pimg.getHeight() - 1);
-				g2.drawLine(xOrig + x + pimg.getWidth() - 1, yOrig + y + pimg.getHeight() - 1, 
-						xOrig + x + pimg.getWidth() - len - 1, yOrig + y + pimg.getHeight() - 1);
+			if (player.selectedPlanet == p) {
+				int len = (int)Math.max(1, 1 * zoomFactor);
+				g2.setColor(player.selectionType == StarmapSelection.PLANET ? Color.WHITE : alternateSelection);
+				g2.drawLine(xOrig + x - 1, yOrig + y - 1, xOrig + x + len - 1, yOrig + y - 1);
+				g2.drawLine(xOrig + x + pimg.getWidth(), yOrig + y - 1, xOrig + x + pimg.getWidth() - len, yOrig + y - 1);
+				g2.drawLine(xOrig + x - 1, yOrig + y + pimg.getHeight(), xOrig + x + len - 1, yOrig + y + pimg.getHeight());
+				g2.drawLine(xOrig + x + pimg.getWidth(), yOrig + y + pimg.getHeight(), 
+						xOrig + x + pimg.getWidth() - len, yOrig + y + pimg.getHeight());
 				
-				g2.drawLine(xOrig + x, yOrig + y, xOrig + x, yOrig + y + len);
-				g2.drawLine(xOrig + x + pimg.getWidth() - 1, yOrig + y, xOrig + x + pimg.getWidth() - 1, yOrig + y  + len);
-				g2.drawLine(xOrig + x, yOrig + y + pimg.getHeight() - 1, xOrig + x, yOrig + y + pimg.getHeight() - len - 1);
-				g2.drawLine(xOrig + x + pimg.getWidth() - 1, yOrig + y + pimg.getHeight() - 1,
-						xOrig + x + pimg.getWidth() - 1, yOrig + y + pimg.getHeight() - len - 1);
+				g2.drawLine(xOrig + x - 1, yOrig + y - 1, xOrig + x - 1, yOrig + y + len - 1);
+				g2.drawLine(xOrig + x + pimg.getWidth(), yOrig + y - 1, xOrig + x + pimg.getWidth(), yOrig + y  + len - 1);
+				g2.drawLine(xOrig + x - 1, yOrig + y + pimg.getHeight(), xOrig + x - 1, yOrig + y + pimg.getHeight() - len);
+				g2.drawLine(xOrig + x + pimg.getWidth(), yOrig + y + pimg.getHeight(),
+						xOrig + x + pimg.getWidth(), yOrig + y + pimg.getHeight() - len);
 			}
 			
 			g2.drawImage(pimg, xOrig + x, yOrig + y, null);
@@ -1342,8 +1347,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 					int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2);
 					int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2);
 					g2.drawImage(fleetImg, xOrig + x, yOrig + y, null);
-					if (player.selectionType == StarmapSelection.FLEET && player.selectedFleet == f) {
-						g2.setColor(Color.WHITE);
+					if (player.selectedFleet == f) {
+						g2.setColor(player.selectionType == StarmapSelection.FLEET ? Color.WHITE : alternateSelection);
 						g2.drawRect(xOrig + x - 1, yOrig + y - 1,
 								fleetImg.getWidth() + 2, fleetImg.getHeight() + 2);
 					}					
@@ -1355,6 +1360,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 * Perform animations. Rotate planets, move fleets.
 	 */
 	private void doAnimate() {
+		// animate rotations on starmap.
 		for (GamePlanet p : gameWorld.planets) {
 			if (!p.visible) {
 				continue;
@@ -1369,7 +1375,13 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				}
 			}
 		}
-		repaint(mapRect);
+		// blink toggle minimap planet selection indicator display
+		minimapBlinkCount++;
+		if (minimapBlinkCount >= MINIMAP_BLINK_RATE) {
+			minimapBlinkCount = 0;
+			minimapBlink = !minimapBlink;
+		}
+		repaint();
 	}
 	/**
 	 * Start animations.
@@ -1408,8 +1420,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 * @param g2 the graphics object
 	 */
 	private void renderMinimap(Graphics2D g2) {
-		double w2 = cgfx.minimap.getWidth() * 1.0 / gfx.contents.fullMap.getWidth();
-		double h2 = cgfx.minimap.getHeight() * 1.0 / gfx.contents.fullMap.getHeight();
+		double w2 = cgfx.minimap.getWidth() * 1.0 / cgfx.fullMap.getWidth();
+		double h2 = cgfx.minimap.getHeight() * 1.0 / cgfx.fullMap.getHeight();
 		GamePlayer player = gameWorld.player;
 		for (GamePlanet p : player.knownPlanets) {
 			int color = TextGFX.GRAY;
@@ -1420,7 +1432,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			int x2 = (int)(p.x * w2);
 			int y2 = (int)(p.y * h2);
 			g2.setColor(new Color(color));
-			g2.fillRect(minimapRect.x + x2 - 1, minimapRect.y + y2 - 1, 3, 3);
+			if (p != player.selectedPlanet || minimapBlink) {
+				g2.fillRect(minimapRect.x + x2 - 1, minimapRect.y + y2 - 1, 3, 3);
+			}
 		}
 		// render viewport window
 		int x0 = (int)(hscrollValue * hscrollFactor * w2 / zoomFactor);
@@ -1443,8 +1457,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	private void doMinimapScroll(Point pt) {
 		// get the current location
-		float w2 = cgfx.minimap.getWidth() * 1.0f / gfx.contents.fullMap.getWidth();
-		float h2 = cgfx.minimap.getHeight() * 1.0f / gfx.contents.fullMap.getHeight();
+		float w2 = cgfx.minimap.getWidth() * 1.0f / cgfx.fullMap.getWidth();
+		float h2 = cgfx.minimap.getHeight() * 1.0f / cgfx.fullMap.getHeight();
 		float w0 = Math.min((mapRect.width * w2 / zoomFactor), minimapRect.width);
 		float h0 = Math.min((mapRect.height * h2 / zoomFactor), minimapRect.height);
 		
@@ -1471,8 +1485,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private void precalculateStars() {
 		Random random = new Random(0);
 		for (int i = 0; i < STAR_LAYER_COUNT; i++) {
-			int fw = gfx.contents.fullMap.getWidth() * (10 + i + 1) / 10;
-			int fh = gfx.contents.fullMap.getHeight() * (10 + i + 1) / 10;
+			int fw = cgfx.fullMap.getWidth() * (10 + i + 1) / 10;
+			int fh = cgfx.fullMap.getHeight() * (10 + i + 1) / 10;
 			for (int j = 0; j < STAR_COUNT; j++) {
 				starsX[i * STAR_COUNT + j] = random.nextInt(fw);
 				starsY[i * STAR_COUNT + j] = random.nextInt(fh);
@@ -1517,22 +1531,25 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		return gfx.starmapPlanets.get(planet.surfaceType.planetString).get(planetSizes[modifiedMagnify]).get(phase);
 	}
 	/** 
-	 * Check if the point is on a game object. 
-	 * @param point the screen coordinate
+	 * Check if the point is on a fleet or planet. 
+	 * @param e the original mouse event
 	 */
-	public void checkGameObjects(Point point) {
+	public void checkGameObjects(MouseEvent e) {
+		Point point = e.getPoint();
 		Rectangle viewPort = mapCoords.intersection(mapRect);
 		if (viewPort.contains(point)) {
-			if (btnFleets.down) {
+			if (btnFleets.down && !e.isShiftDown()) {
 				// fleets can overlap
 				// check for own fleets
-				for (GameFleet f : gameWorld.player.ownFleets) {
-					if (checkFleetSelected(point, viewPort, f)) {
-						gameWorld.player.selectionType = StarmapSelection.FLEET;
-						gameWorld.player.selectedFleet = f;
-						setDisplayedFleet(f);
-						doSelectFleetForUI(f);
-						return;
+				if (!e.isControlDown()) {
+					for (GameFleet f : gameWorld.player.ownFleets) {
+						if (checkFleetSelected(point, viewPort, f)) {
+							gameWorld.player.selectionType = StarmapSelection.FLEET;
+							gameWorld.player.selectedFleet = f;
+							setDisplayedFleet(f);
+							doSelectFleetForUI(f);
+							return;
+						}
 					}
 				}
 				// check for other fleets
@@ -1546,16 +1563,18 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 					}
 				}
 			}
-			for (GamePlanet p : gameWorld.player.knownPlanets) {
-				Point pt = logicalToScreen(p.getPoint(), viewPort);
-				BufferedImage planetImg = getPlanetImage(p, 0);
-				Rectangle rect = new Rectangle(pt.x, 
-						pt.y, planetImg.getWidth(), planetImg.getHeight());
-				if (rect.contains(point)) {
-					gameWorld.player.selectionType = StarmapSelection.PLANET;
-					gameWorld.player.selectedPlanet = p;
-					doSelectPlanetForUI(p);
-					return;
+			if (!e.isControlDown()) {
+				for (GamePlanet p : gameWorld.player.knownPlanets) {
+					Point pt = logicalToScreen(p.getPoint(), viewPort);
+					BufferedImage planetImg = getPlanetImage(p, 0);
+					Rectangle rect = new Rectangle(pt.x - planetImg.getWidth() / 2, 
+							pt.y - planetImg.getHeight() / 2, planetImg.getWidth(), planetImg.getHeight());
+					if (rect.contains(point)) {
+						gameWorld.player.selectionType = StarmapSelection.PLANET;
+						gameWorld.player.selectedPlanet = p;
+						doSelectPlanetForUI(p);
+						return;
+					}
 				}
 			}
 			gameWorld.player.selectionType = null;
@@ -1573,8 +1592,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private boolean checkFleetSelected(Point point, Rectangle viewPort, GameFleet f) {
 		Point pt = logicalToScreen(new Point(f.x, f.y), viewPort);
 		BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
-		Rectangle rect = new Rectangle(pt.x - fleetImg.getWidth() / 2, 
-				pt.y - fleetImg.getHeight() / 2, fleetImg.getWidth(), fleetImg.getHeight());
+		Rectangle rect = new Rectangle(pt.x - fleetImg.getWidth() / 2 - 1, 
+				pt.y - fleetImg.getHeight() / 2, fleetImg.getWidth() + 2, fleetImg.getHeight() + 3);
 		if (rect.contains(point)) {
 			return true;
 		}
@@ -1649,8 +1668,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	private void doMinimapScrollAnimated(Point pt) {
 		// get the current location
-		float dx = (pt.x - minimapRect.x) * gfx.contents.fullMap.getWidth() / minimapRect.width;
-		float dy = (pt.y - minimapRect.y) * gfx.contents.fullMap.getHeight() / minimapRect.height;
+		float dx = (pt.x - minimapRect.x) * cgfx.fullMap.getWidth() / minimapRect.width;
+		float dy = (pt.y - minimapRect.y) * cgfx.fullMap.getHeight() / minimapRect.height;
 		scrollToLogicalAnimated(new Point((int)dx, (int)dy));
 	}
 	/** Close all animation timers. */
@@ -1773,7 +1792,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 						gameWorld.getLabel("PopulationStatus",
 						selectedPlanet.population,
 						gameWorld.getLabel("PopulatityName." + PopularityType.find(selectedPlanet.popularity).id), 
-						selectedPlanet.populationGrowth));
+						selectedPlanet.populationGrowth)
+						+ ", " + gameWorld.getLabel("TaxRate." + selectedPlanet.tax.id)
+				);
 			}
 		} else {
 			text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 23, 10, TextGFX.GREEN, gameWorld.getLabel("EmpireNames.Empty"));

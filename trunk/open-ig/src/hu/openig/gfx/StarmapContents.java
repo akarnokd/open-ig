@@ -7,7 +7,6 @@
  */
 package hu.openig.gfx;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /** 
@@ -41,8 +40,4 @@ public class StarmapContents {
 	public BufferedImage vscrollFiller;
 	/** Vertical scrollbar bottom. */
 	public BufferedImage vscrollBottom;
-	/** The full map background. */
-	public BufferedImage fullMap;
-	/** The color of the map background. */
-	public Color mapBackground;
 }

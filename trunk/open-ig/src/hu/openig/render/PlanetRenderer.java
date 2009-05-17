@@ -13,6 +13,7 @@ import hu.openig.core.Tile;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.PlanetGFX;
 import hu.openig.gfx.TextGFX;
+import hu.openig.model.GamePlanet;
 import hu.openig.model.GameWorld;
 import hu.openig.sound.UISounds;
 import hu.openig.utils.PACFile.PACEntry;
@@ -65,13 +66,13 @@ MouseWheelListener, ActionListener {
 	/** Panning the screen. */
 	boolean panMode;
 	/** The bytes of the current map. */
-	byte[] mapBytes;
+//	byte[] mapBytes;
 	/** The surface variant. */
-	int surfaceVariant = 1;
+//	int surfaceVariant = 1;
 	/** Zoom scale. */
 	float scale = 1.0f;
 	/** The surace type. */
-	int surfaceType = 1;
+//	int surfaceType = 1;
 	/** Empty surface map array. */
 	private static final byte[] EMPTY_SURFACE_MAP = new byte[65 * 65 * 2 + 4];
 	/** The planet graphics. */
@@ -183,7 +184,6 @@ MouseWheelListener, ActionListener {
 		buildScroller.setActionCommand("BUILD_SCROLLER");
 		fadeTimer = new Timer(FADE_INTERVAL, this);
 		fadeTimer.setActionCommand("FADE");
-		changeSurface();
 		initButtons();
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
@@ -262,6 +262,13 @@ MouseWheelListener, ActionListener {
 		g2.scale(scale, scale);
 		int k = 0;
 		int j = 0;
+		GamePlanet planet = gameWorld.player.selectedPlanet;
+		if (planet == null) {
+			planet = gameWorld.getOwnPlanetsInOrder().get(0);
+			gameWorld.player.selectedPlanet = planet;
+		}
+		int surfaceType = planet.surfaceType.index;
+		byte[] mapBytes = getSelectedPlanetSurface();
 		// RENDER VERTICALLY
 		Map<Integer, Tile> surface = gfx.getSurfaceTiles(surfaceType);
 		for (int mi = 0; mi < MAP_START_X.length; mi++) {
@@ -384,7 +391,8 @@ MouseWheelListener, ActionListener {
 		}
 		Shape sp = g2.getClip();
 		g2.clip(infobarRenderer.topInfoArea);
-		text.paintTo(g2, infobarRenderer.topInfoArea.x, infobarRenderer.topInfoArea.y + 1, 14, 0xFFFFFFFF, "Surface: " + surfaceType + ", Variant: " + surfaceVariant);
+		text.paintTo(g2, infobarRenderer.topInfoArea.x, infobarRenderer.topInfoArea.y + 1, 14, 0xFFFFFFFF, 
+				planet != null ? planet.name : "");
 		g2.setClip(sp);
 		
 		// now darken the entire screen
@@ -395,6 +403,20 @@ MouseWheelListener, ActionListener {
 			g2.fillRect(0, 0, w, h);
 			g2.setComposite(comp);
 		}
+	}
+	/**
+	 * Returns the currently selected planet's surface base.
+	 * @return the map bytes
+	 */
+	private byte[] getSelectedPlanetSurface() {
+		byte[] mapBytes;
+		PACEntry e = getSurface(gameWorld.player.selectedPlanet.surfaceType.index, gameWorld.player.selectedPlanet.surfaceVariant);
+		if (e != null) {
+			mapBytes = e.data;
+		} else {
+			mapBytes = EMPTY_SURFACE_MAP;
+		}
+		return mapBytes;
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
@@ -527,17 +549,6 @@ MouseWheelListener, ActionListener {
 		
 	}
 	/**
-	 * Changes the surface type and variant so the next rendering pass will use that.
-	 */
-	private void changeSurface() {
-		PACEntry e = getSurface(surfaceType, surfaceVariant);
-		if (e != null) {
-			mapBytes = e.data;
-		} else {
-			mapBytes = EMPTY_SURFACE_MAP;
-		}
-	}
-	/**
 	 * Converts the tile x and y coordinates to map offset.
 	 * @param x the X coordinate
 	 * @param y the Y coordinate
@@ -637,7 +648,7 @@ MouseWheelListener, ActionListener {
 				int a = (int)Math.floor(Tile.toTileX(x, y));
 				int b = (int)Math.floor(Tile.toTileY(x, y));
 				int offs = this.toMapOffset(a, b);
-				int val = offs >= 0 && offs < 65 * 65 ? mapBytes[offs * 2 + 4] & 0xFF : 0;
+				int val = offs >= 0 && offs < 65 * 65 ? getSelectedPlanetSurface()[offs * 2 + 4] & 0xFF : 0;
 				System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
 			} else {
 				for (Btn b : buttons) {
@@ -686,33 +697,33 @@ MouseWheelListener, ActionListener {
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		if (!e.isControlDown() && !e.isAltDown()) {
-			if (e.getWheelRotation() > 0 & surfaceVariant < 9) {
-				surfaceVariant++;
-			} else 
-			if (e.getWheelRotation() < 0 && surfaceVariant > 1) {
-				surfaceVariant--;
-			}
-			changeSurface();
-		} else 
-		if (e.isControlDown()) {
-			if (e.getWheelRotation() < 0 & scale < 32) {
-				scale *= 2;
-			} else 
-			if (e.getWheelRotation() > 0 && scale > 1f / 32) {
-				scale /= 2;
-			}
-		} else
-		if (e.isAltDown()) {
-			if (e.getWheelRotation() < 0 && surfaceType > 1) {
-				surfaceType--;
-			} else
-			if (e.getWheelRotation() > 0 && surfaceType < 7) {
-				surfaceType++;
-			}
-			changeSurface();
-		}
-		repaint();
+//		if (!e.isControlDown() && !e.isAltDown()) {
+//			if (e.getWheelRotation() > 0 & surfaceVariant < 9) {
+//				surfaceVariant++;
+//			} else 
+//			if (e.getWheelRotation() < 0 && surfaceVariant > 1) {
+//				surfaceVariant--;
+//			}
+//			changeSurface();
+//		} else 
+//		if (e.isControlDown()) {
+//			if (e.getWheelRotation() < 0 & scale < 32) {
+//				scale *= 2;
+//			} else 
+//			if (e.getWheelRotation() > 0 && scale > 1f / 32) {
+//				scale /= 2;
+//			}
+//		} else
+//		if (e.isAltDown()) {
+//			if (e.getWheelRotation() < 0 && surfaceType > 1) {
+//				surfaceType--;
+//			} else
+//			if (e.getWheelRotation() > 0 && surfaceType < 7) {
+//				surfaceType++;
+//			}
+//			changeSurface();
+//		}
+//		repaint();
 	}
 	/**
 	 * {@inheritDoc}

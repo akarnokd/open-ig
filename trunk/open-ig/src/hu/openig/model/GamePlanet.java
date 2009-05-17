@@ -9,6 +9,8 @@
 package hu.openig.model;
 
 import hu.openig.core.SurfaceType;
+import hu.openig.core.TaxRate;
+import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XML;
 import hu.openig.utils.XML.XmlProcessor;
 
@@ -63,6 +65,14 @@ public class GamePlanet {
 	public int size;
 	/** Lazy initialized location point object. */
 	private Point locationPoint;
+	/** The tax rate. */
+	public TaxRate tax = TaxRate.MODERATE;
+	/** The last days tax income. */
+	public int taxIncome;
+	/** The last days trade income. */
+	public int tradeIncome;
+	/** The current tax morale percent. */
+	public int taxMorale;
 	/**
 	 * Parses and processes a planetary resource XML.
 	 * @param resource the name of the resource
@@ -138,4 +148,56 @@ public class GamePlanet {
 			return o2.name.compareTo(o1.name);
 		}
 	};
+	/** Orders by race id then by planet name. */
+	public static final Comparator<GamePlanet> BY_RACE_ID_AND_NAME = new Comparator<GamePlanet>() {
+		@Override
+		public int compare(GamePlanet o1, GamePlanet o2) {
+			int diff = o1.owner.race.index - o2.owner.race.index;
+			if (diff == 0) {
+				diff = JavaUtils.naturalCompare(o1.name, o2.name);
+			}
+			return diff;
+		}
+	};
+	/** Orders planets by Y coordinates, then by X coordinates. */
+	public static final Comparator<GamePlanet> BY_COORDINATES = new Comparator<GamePlanet>() {
+		@Override
+		public int compare(GamePlanet o1, GamePlanet o2) {
+			int dy = o1.y - o2.y;
+			if (dy == 0) {
+				return o1.x - o2.x;
+			}
+			return dy;
+		}
+	};
+	/**
+	 * @return the living space amount in persons
+	 */
+	public int getLivingSpace() {
+		return 0; // TODO evaluate actual living space
+	}
+	/**
+	 * @return the hospital capacity in persons
+	 */
+	public int getHospital() {
+		return 0; // TODO evaluate actual hospital room
+	}
+	/**
+	 * @return the food capacity in persons
+	 */
+	public int getFood() {
+		return 0; // TODO evaluate actual food limit
+	}
+	/**
+	 * @return the energy consumption in kWh
+	 */
+	public int getEnergy() {
+		return 0; // TODO evaluate energy consumption
+	}
+	/**
+	 * @return the maximum energy output in kWh
+	 */
+	public int getEnergyMax() {
+		return 0; // TODO evaluate maximum energy output
+	}
 }
