@@ -6,14 +6,14 @@ I collected some (not yet frequently asked) questions and answers about the Open
 
 = Questions & Answers =
 
-=== Why did you start this project? ===
+== Why did you start this project? ==
 Recently I pulled my old Imperium Galactica game and played with it using DOSBox. I noticed the age of this game, how the 640x480 resolution was too small and how unresponsive it worked. I figured out that maybe I could create a resizable game 
 interface. Luckily, the images, sound and animation is present, therefore I just need to create the engine to play it.
 
-=== Where did the inspiration came from? ===
+== Where did the inspiration came from? ==
 My another old-time favorite is Open Transport Tycoon Deluxe, which started out as a modern time version of the old DOS program. Luckily, the rendering in Imperium Galactica much simpler.
 
-=== What new features are you talking about? ===
+== What new features are you talking about? ==
 At this stage, these are only plans:
 
   * Resizable game window.
@@ -26,22 +26,22 @@ At this stage, these are only plans:
 These features might seem a bit too large, but because the original game is a
 very simple 2D game with well predictable data modell, it wouldn't be hard in my opinion.
 
-=== What version of the game does Open-IG support? ===
+== What version of the game does Open-IG support? ==
 
 The targeted original game version is 1.3, which as I think, corrected some gameplay and DOS execution problems on fast machines. Unfortunately, the patch file is an MS-DOS executable, therefore, If you wan't a patched game on Linux for example, you have to extract the contents on a Windows box. Currently, I'm not sure if the project would be allowed to carry a zip repacked version of the patched files. (Note: the game's EXE files are not needed for the Open-IG to run.)
 
 The Open-IG should run just fine with the English and Hungarian versions of the game (although I have only the English version).
 
-=== Isn't the game copyrighted? ===
+== Isn't the game copyrighted? ==
 Yes, the original game's copyright belongs to GT Interactive or Digital Reality. Because this project does not include any file from the original distribution, my take is that this shouldn't be a problem. You need to legally own the original game to be able to use Open-IG.
 
-=== Why Java? ===
+== Why Java? ==
 I'm a Java developer so it was a simple decision. As a side effect, the Open-IG will be playable on any platform which supports the recent versions of Java.
 
-=== When will we see the source? ===
+== When will we see the source? ==
 Soon. Unfortunately, the current source code is used to do some proof-of-concept rendering and game resource analysis. It has hand coded filenames and undocumented functions. They don't suit the format of a proper open source project yet.
 
-=== What kind of resources does the game use? ===
+== What kind of resources does the game use? ==
 The original Imperium Galactica had several standard and non-standard files:
 
   * Images of the UI, ships, buildings etc. are stored in 8 bit [http://en.wikipedia.org/wiki/PCX PCX] files.
@@ -52,13 +52,13 @@ The original Imperium Galactica had several standard and non-standard files:
   * Music files are stored in XMF files, whose structure I could not decipher yet. All I know it contains samples in the previous audio format at the end of the file.
   * The animations are stored in a custom binary file in a block structure containing Palette, Sound and Image data. The image data doubly packed first by an [http://code.google.com/p/open-ig/wiki/Custom_RLE custom RLE] compression and then by a [http://code.google.com/p/open-ig/wiki/Custom_LZSS custom LZSS] algorithm. See the links for the sample decompression algorithms.
 
-=== How did you find these out? ===
+===How did you find these out? ===
 The text and image formats were trivial case. The deciphering of the ANI files took one week of visual analysis (e.g. I starred at the data bytes).
 
-=== Can I comment/join? ===
+== Can I comment/join? ==
 I disabled the commenting of this project until I produce enough resources (wiki pages and source files) to be meaningful. 
 
 Joining to this project will be enabled when there is at least something to actually run. I'm still figuring out the proper coding style and structure of this project.
 
-=== What about donations? ===
+== What about donations? ==
 Never. Spend your money for something useful.
