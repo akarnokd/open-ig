@@ -59,6 +59,7 @@ Please see this page later on or the [Documentation documentation] page for what
    * Use right click to instantly jump to the equipmnet (fleet)
    * Use middle mouse click to scroll-animate to the equipment (fleet)
    * Use + or - to cycle through the player's planets
+   * CTRL+. to toggle between default/neighbor/bilinear/bicubic interpolation of the starmap background
  * Planet screen
    * Accessible through F3 or via the Planet/Colony buttons
    * Hold down the right mouse button over the planet surface to pan the viewport
