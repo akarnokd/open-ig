@@ -141,6 +141,8 @@ public class CommonGFX {
 	public BufferedImage fullMap;
 	/** The color of the map background. */
 	public Color mapBackground;
+	/** Pattern used for indicating disabled buttons. */
+	public BufferedImage disablingPattern;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param resMap the resource mapper object
@@ -272,6 +274,15 @@ public class CommonGFX {
 		fullMap = fullMap.getSubimage(0, 0, fullMap.getWidth(), 662);
 		
 		mapBackground = new Color(fullMap.getRGB(0, 0));
+		
+		disablingPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
+		for (int i = 0; i < disablingPattern.getWidth(); i++) {
+			for (int j = 0; j < disablingPattern.getHeight(); j++) {
+				if ((i == 0 && j < 2) || (j == 0 && i < 2)) {
+					disablingPattern.setRGB(j, i, 0xFF000000);
+				}
+			}
+		}
 	}
 	/**
 	 * Set building image for a race and building type.

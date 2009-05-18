@@ -10,6 +10,7 @@ package hu.openig.render;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
+import hu.openig.core.ImageInterpolation;
 import hu.openig.core.PopularityType;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.StarmapGFX;
@@ -30,6 +31,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
@@ -43,7 +45,6 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
@@ -141,6 +142,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private Btn btnMagnify;
 	/** The various buttons. */
 	private final List<Btn> buttons = new ArrayList<Btn>();
+	/** The buttons that fire on mouse press. */
+	private final List<Btn> releaseButtons = new ArrayList<Btn>();
 	/** The magnification direction: true-in, false-out. */
 	private boolean magnifyDirection;
 	/** The magnification factors. */
@@ -218,7 +221,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** The planet listing scroll offset. */
 	private int planetListOffset;
 	/** The current displayed fleet index. */
-	private int fleetListOffset;
+	private int fleetListOffset = -1;
 	/** Star rendering starting color. */
 	private int startStars = 0x685CA4;
 	/** Star rendering end color. */
@@ -254,6 +257,20 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private static final int MINIMAP_BLINK_RATE = 2;
 	/** The alternate selection color for selected but not focused planet or fleet. */
 	private final Color alternateSelection = new Color(124, 124, 180);
+	/** Enable or disable bicubic interpolation on the starmap background. */
+	private ImageInterpolation interpolation = ImageInterpolation.NONE;
+	/** The last rendering position. */
+//	private float lastMx = Integer.MAX_VALUE;
+	/** The last rendering position. */
+//	private float lastMy = Integer.MAX_VALUE;
+	/** The last zoom value. */
+//	private float lastZoom = Integer.MAX_VALUE;
+	/** The cached zoomed background image. */
+//	private BufferedImage backgroundCache;
+//	/** Enable/disable cached scaling. */
+//	private boolean cachedScaling = true;
+//	/** Last interpolation value. */
+//	private boolean lastInterpolation;
 	/**
 	 * Constructor. Sets the helper object fields.
 	 * @param gfx the starmap graphics object
@@ -295,9 +312,13 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			lastWidth = w;
 			lastHeight = h;
 			// if the render window changes, re-zoom to update scrollbars
+			float sx = hscrollValue * hscrollFactor;
+			float sy = vscrollValue * vscrollFactor;
 			updateRegions();
 			zoom(zoomFactor);
 			updateScrollKnobs();
+			// scroll back to the original position
+			scroll(sx / hscrollFactor, sy / vscrollFactor);
 		}
 		
 		infobarRenderer.renderInfoBars(this, g2);
@@ -368,11 +389,39 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		mapCoords.y = mapRect.y + my;
 		mapCoords.width = (int)(cgfx.fullMap.getWidth() * zoomFactor);
 		mapCoords.height = (int)(cgfx.fullMap.getHeight() * zoomFactor);
-		
-		g2.setClip(mapCoords.intersection(mapRect));
+
+		Rectangle mapRectClip = mapCoords.intersection(mapRect);
+		g2.setClip(mapRectClip);
 		g2.translate(mapRect.x + mx, mapRect.y + my);
-		g2.scale(zoomFactor, zoomFactor);
-		g2.drawImage(cgfx.fullMap, 0, 0, null);
+		
+//		if (cachedScaling) {
+//			if (lastInterpolation != bicubicInterpolation || lastZoom != zoomFactor || backgroundCache == null) {
+//				lastZoom = zoomFactor;
+//				lastInterpolation = bicubicInterpolation;
+//				backgroundCache = new BufferedImage((int)(zoomFactor * cgfx.fullMap.getWidth()), 
+//						(int)(zoomFactor * cgfx.fullMap.getHeight()), BufferedImage.TYPE_INT_ARGB);
+//				Graphics2D gr2 = backgroundCache.createGraphics();
+//				if (bicubicInterpolation) {
+//					gr2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+//				}
+//				gr2.scale(zoomFactor, zoomFactor);
+//				gr2.drawImage(cgfx.fullMap, 0, 0, null);
+//				gr2.dispose();
+//			}
+//			g2.drawImage(backgroundCache, 0, 0, null);
+//			
+//		} else {
+			g2.scale(zoomFactor, zoomFactor);
+			// smooth scaled background
+			if (interpolation != ImageInterpolation.NONE) {
+				g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolation.hint);
+			}
+//			int px = (int)(hscrollValue * hscrollFactor / zoomFactor);
+//			int py = (int)(vscrollValue * vscrollFactor / zoomFactor);
+//			int pw = (int)Math.min(cgfx.fullMap.getWidth() - px, mapRectClip.width / zoomFactor);
+//			int ph = (int)Math.min(cgfx.fullMap.getHeight() - py, mapRectClip.height / zoomFactor);
+			g2.drawImage(cgfx.fullMap, 0, 0, null);
+//		}
 		g2.setTransform(af);
 		
 		if (btnStars.down) {
@@ -576,16 +625,25 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			pidx++;
 		}
 		
-		if (fleetListOffset >= 0 && gameWorld.player.ownFleets.size() != 0) {
+		if (gameWorld.player.selectedFleet != null) {
 			g2.setClip(equipments);
-			List<GameFleet> list = getSortedFleet();
+			String name = gameWorld.player.selectedFleet.name;
+			if (gameWorld.player.selectedFleet.owner != gameWorld.player) {
+				GameFleet f =  getUISelectedFleet();
+				if (f != null) {
+					name = f.name;
+				} else
+				if (fleetListOffset < 0) {
+					name = "";
+				}
+			}
 			int fleetTextSize = 10;
 			
-			GameFleet fleet = list.get(fleetListOffset);
 			text.paintTo(g2, equipments.x + 1, equipments.y + (equipments.height - fleetTextSize) / 2, fleetTextSize, 
-					fleet == gameWorld.player.selectedFleet ? TextGFX.RED : TextGFX.GREEN, fleet.name);
-		} else {
-			fleetListOffset = 0;
+					(gameWorld.player.selectionType == StarmapSelection.FLEET
+					&& gameWorld.player.selectedFleet.owner == gameWorld.player
+					? TextGFX.RED : TextGFX.GREEN), 
+							name);
 		}
 		g2.setClip(sp);
 
@@ -1005,6 +1063,13 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 						break;
 					}
 				}
+				for (Btn b : releaseButtons) {
+					if (b.test(pt)) {
+						b.down = true;
+						repaint(b.rect);
+						break;
+					}
+				}
 				for (Btn b : toggleButtons) {
 					if (b.test(pt)) {
 						b.down = !b.down;
@@ -1039,6 +1104,14 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			needRepaint |= b.down;
 			b.down = false;
 		}
+		Point pt = e.getPoint();
+		for (Btn b : releaseButtons) {
+			needRepaint |= b.down;
+			b.down = false;
+			if (b.test(pt)) {
+				b.click();
+			}
+		}
 		needRepaint |= btnMagnify.down;
 		btnMagnify.down = false;
 		if (needRepaint) {
@@ -1048,25 +1121,25 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** Initialize button actions. */
 	private void initActions() {
 		btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); } });
-		buttons.add(btnColony);
+		releaseButtons.add(btnColony);
 		btnColonyPrev = new Btn(new BtnAction() { public void invoke() { doColonyPrev(); } });
-		buttons.add(btnColonyPrev);
+		releaseButtons.add(btnColonyPrev);
 		btnColonyNext = new Btn(new BtnAction() { public void invoke() { doColonyNext(); } });
-		buttons.add(btnColonyNext);
+		releaseButtons.add(btnColonyNext);
 		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
-		buttons.add(btnEquipment);
+		releaseButtons.add(btnEquipment);
 		btnEquipmentPrev = new Btn(new BtnAction() { public void invoke() { doEquipmentPrevClick(); } });
-		buttons.add(btnEquipmentPrev);
+		releaseButtons.add(btnEquipmentPrev);
 		btnEquipmentNext = new Btn(new BtnAction() { public void invoke() { doEquipmentNextClick(); } });
-		buttons.add(btnEquipmentNext);
+		releaseButtons.add(btnEquipmentNext);
 		btnInfo = new Btn(new BtnAction() { public void invoke() { doInfoClick(); } });
-		buttons.add(btnInfo);
+		releaseButtons.add(btnInfo);
 		btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); } });
-		buttons.add(btnBridge);
+		releaseButtons.add(btnBridge);
 		btnColonize = new Btn();
-		buttons.add(btnColonize);
+		releaseButtons.add(btnColonize);
 		btnName = new Btn(new BtnAction() { @Override public void invoke() { doNameChange(); } });
-		buttons.add(btnName);
+		releaseButtons.add(btnName);
 		btnMagnify = new Btn(new BtnAction() { @Override public void invoke() {	doMagnify(); } });
 		btnFleets = new Btn();
 		toggleButtons.add(btnFleets);
@@ -1249,16 +1322,13 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		if (btnRadars.down) {
 			// render radar circle only for the own planets
 			for (GamePlanet p : player.ownPlanets) {
-				if (p.visible && p.radarRadius > 0) {
-					int modifiedMagnify = magnifyIndex + p.size;
-					if (modifiedMagnify < 0) {
-						modifiedMagnify = 0;
-					}
+				int rr = p.getRadarRadius();
+				if (p.visible && rr > 0) {
 					double fd = Math.PI / 50;
 					double fm = 2 * Math.PI - fd;
 					for (double f = 0.0f; f <= fm; f += fd) {
-						int x = (int)((p.x + p.radarRadius * Math.sin(f)) * zoomFactor);
-						int y = (int)((p.y + p.radarRadius * Math.cos(f)) * zoomFactor);
+						int x = (int)((p.x + rr * Math.sin(f)) * zoomFactor);
+						int y = (int)((p.y + rr * Math.cos(f)) * zoomFactor);
 						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
 					}
 				}
@@ -1546,8 +1616,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 						if (checkFleetSelected(point, viewPort, f)) {
 							gameWorld.player.selectionType = StarmapSelection.FLEET;
 							gameWorld.player.selectedFleet = f;
-							setDisplayedFleet(f);
-							doSelectFleetForUI(f);
+							fleetListOffset = gameWorld.getOwnFleetsByName().indexOf(f);
 							return;
 						}
 					}
@@ -1557,8 +1626,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 					if (checkFleetSelected(point, viewPort, f)) {
 						gameWorld.player.selectionType = StarmapSelection.FLEET;
 						gameWorld.player.selectedFleet = f;
-						setDisplayedFleet(f);
-						doSelectFleetForUI(f);
 						return;
 					}
 				}
@@ -1572,14 +1639,12 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 					if (rect.contains(point)) {
 						gameWorld.player.selectionType = StarmapSelection.PLANET;
 						gameWorld.player.selectedPlanet = p;
-						doSelectPlanetForUI(p);
 						return;
 					}
 				}
 			}
 			gameWorld.player.selectionType = null;
-			doSelectFleetForUI(null);
-			doSelectPlanetForUI(null);
+			repaint();
 		}
 	}
 	/**
@@ -1598,13 +1663,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			return true;
 		}
 		return false;
-	}
-	/**
-	 * Makes necessary adjustments on the UI for selecting a planet.
-	 * @param p the planet to select, can be null indicating no selection
-	 */
-	private void doSelectPlanetForUI(GamePlanet p) {
-		repaint();
 	}
 	/**
 	 * Center the main viewport around the given logical location.
@@ -1684,11 +1742,13 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	public void doEquipmentPrevClick() {
 		fleetListOffset = Math.max(0, fleetListOffset - 1);
+		gameWorld.player.selectedFleet = gameWorld.getOwnFleetsByName().get(fleetListOffset);
 		repaint();
 	}
 	/** Scroll through the fleet names forward. */
 	public void doEquipmentNextClick() {
 		fleetListOffset = Math.min(gameWorld.player.ownFleets.size() - 1, fleetListOffset + 1);
+		gameWorld.player.selectedFleet = gameWorld.getOwnFleetsByName().get(fleetListOffset);
 		repaint();
 	}
 	/**
@@ -1698,61 +1758,47 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private void doEquipmentSelect(int button) {
 		if (button == MouseEvent.BUTTON1) {
 			// select the fleet
-			gameWorld.player.selectedFleet = getDisplayedFleet();
 			gameWorld.player.selectionType = StarmapSelection.FLEET;
-			doSelectFleetForUI(gameWorld.player.selectedFleet);
+			// if the currently selected fleet is not the player's fleet
+			if (gameWorld.player.selectedFleet != null
+					&& gameWorld.player.selectedFleet.owner != gameWorld.player) {
+				// then set the selected fleet back to the currently displayed fleet
+				gameWorld.player.selectedFleet = getUISelectedFleet();
+			}
 		} else
 		if (button == MouseEvent.BUTTON2) {
-			GameFleet f = getDisplayedFleet();
-			if (f != null) {
-				scrollToLogicalAnimated(f.getPoint());
+			if (gameWorld.player.selectedFleet != null) {
+				if (gameWorld.player.selectedFleet.owner != gameWorld.player) {
+					GameFleet f = getUISelectedFleet();
+					if (f != null) {
+						scrollToLogicalAnimated(f.getPoint());
+					}
+				} else {
+					scrollToLogicalAnimated(gameWorld.player.selectedFleet.getPoint());
+				}
 			}
 		} else
 		if (button == MouseEvent.BUTTON3) {
-			GameFleet f = getDisplayedFleet();
-			if (f != null) {
-				scrollToLogical(f.getPoint());
+			if (gameWorld.player.selectedFleet != null) {
+				if (gameWorld.player.selectedFleet.owner != gameWorld.player) {
+					GameFleet f = getUISelectedFleet();
+					if (f != null) {
+						scrollToLogical(f.getPoint());
+					}
+				} else {
+					scrollToLogical(gameWorld.player.selectedFleet.getPoint());
+				}
 			}
 		}
 	}
 	/**
-	 * Creates a sorted list of fleets by name.
-	 * @return the list of fleets
+	 * @return the game fleet currently in the equipment list box or null
 	 */
-	public List<GameFleet> getSortedFleet() {
-		List<GameFleet> list = new ArrayList<GameFleet>(gameWorld.player.ownFleets);
-		Collections.sort(list, GameFleet.BY_NAME_ASC);
-		return list;
-	}
-	/**
-	 * Retuns the player's currently displayed fleet object or null if there are no fleets.
-	 * @return the fleet
-	 */
-	public GameFleet getDisplayedFleet() {
-		List<GameFleet> list = getSortedFleet();
-		if (list.size() <= fleetListOffset) {
-			return null;
+	public GameFleet getUISelectedFleet() {
+		if (fleetListOffset >= 0 && fleetListOffset < gameWorld.player.ownFleets.size()) {
+			return gameWorld.getOwnFleetsByName().get(fleetListOffset);
 		}
-		return list.get(fleetListOffset);
-	}
-	/**
-	 * Scrolls to the given fleet in the equipment list.
-	 * Only if the fleet is owned by the player
-	 * @param f the fleet to scroll to
-	 */
-	public void setDisplayedFleet(GameFleet f) {
-		if (f.owner == gameWorld.player) {
-			List<GameFleet> list = getSortedFleet();
-			fleetListOffset = Math.max(0, list.indexOf(f));
-			repaint();
-		}
-	}
-	/**
-	 * Makes necessary adjustments on the UI for selecting a fleet.
-	 * @param f the fleet to select, can be null indicating no selection
-	 */
-	private void doSelectFleetForUI(GameFleet f) {
-		repaint();
+		return null;
 	}
 	/**
 	 * Render planet details.
@@ -1836,7 +1882,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 23, 10, TextGFX.GREEN, selectedFleet.owner.name);
 		String speedStr = gameWorld.getLabel("SpeedValue", selectedFleet.getSpeed());
 		int speedLen = text.getTextWidth(7, speedStr);
-		String firepowerStr = gameWorld.getLabel("FirepowerValue", selectedFleet.getSpeed());
+		String firepowerStr = gameWorld.getLabel("FirepowerValue", selectedFleet.getFirepower());
 		int firepowerLen = text.getTextWidth(7, firepowerStr);
 		int len = Math.max(speedLen, firepowerLen);
 		text.paintTo(g2, detailsRect.x + detailsRect.width - len - 10, detailsRect.y + 23, 7, TextGFX.GREEN, speedStr);
@@ -1864,5 +1910,18 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		}
 		
 		g2.setClip(sp);
+	}
+	/**
+	 * @param interpolation the image interpolation to set
+	 */
+	public void setInterpolation(ImageInterpolation interpolation) {
+		this.interpolation = interpolation;
+		repaint();
+	}
+	/**
+	 * @return the current image interpolation
+	 */
+	public ImageInterpolation getInterpolation() {
+		return interpolation;
 	}
 }

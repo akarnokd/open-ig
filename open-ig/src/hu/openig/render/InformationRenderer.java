@@ -28,10 +28,12 @@ import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -241,6 +243,9 @@ MouseWheelListener, ActionListener {
 			break;
 		case COLONY_INFORMATION:
 			renderColonyInfo(g2);
+			break;
+		case FLEETS:
+			renderFleets(g2);
 			break;
 		default:
 		}
@@ -531,6 +536,9 @@ MouseWheelListener, ActionListener {
 		} else
 		if (currentScreen == InfoScreen.COLONY_INFORMATION) {
 			doColonyMousePressed(e);
+		} else
+		if (currentScreen == InfoScreen.FLEETS) {
+			doFleetsMousePressed(e);
 		}
 	}
 	/**
@@ -968,23 +976,30 @@ MouseWheelListener, ActionListener {
 							gameWorld.getLabel("ColonyInfo.LivingSpace"),
 							planet.population + "/" + planet.getLivingSpace() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
-				
-				color = getColorForRelation(planet.population, planet.getHospital());
+
+				color = getColorForRelation(planet.getWorkers(), planet.population);
 				text.paintTo(g2, mainArea.x + 10, mainArea.y + 130, 10, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Worker"),
+							planet.population + "/" + planet.getWorkers() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
+						));
+
+				color = getColorForRelation(planet.population, planet.getHospital());
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 150, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
 							gameWorld.getLabel("ColonyInfo.Hospital"),
 							planet.population + "/" + planet.getHospital() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
 				
 				color = getColorForRelation(planet.population, planet.getFood());
-				text.paintTo(g2, mainArea.x + 10, mainArea.y + 150, 10, color,
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 170, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
-							gameWorld.getLabel("ColonyInfo.Hospital"),
+							gameWorld.getLabel("ColonyInfo.Food"),
 							planet.population + "/" + planet.getFood() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
 				
 				color = getColorForRelation(planet.getEnergy(), planet.getEnergyMax());
-				text.paintTo(g2, mainArea.x + 10, mainArea.y + 170, 10, color,
+				text.paintTo(g2, mainArea.x + 10, mainArea.y + 190, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
 							gameWorld.getLabel("ColonyInfo.Energy"),
 							planet.getEnergyMax() + " " + gameWorld.getLabel("ColonyInfo.KWH")
@@ -1018,6 +1033,7 @@ MouseWheelListener, ActionListener {
 				btnTaxMore.disabled = planet.tax == TaxRate.OPPRESSIVE;
 				if (btnTaxLess.disabled) {
 					g2.drawImage(gfx.btnTaxLess, btnTaxLess.rect.x, btnTaxLess.rect.y, null);
+					paintDisablePattern(g2, btnTaxLess.rect);
 				} else {
 					if (btnTaxLess.down) {
 						g2.drawImage(gfx.btnTaxLessDown, btnTaxLess.rect.x, btnTaxLess.rect.y, null);
@@ -1027,6 +1043,7 @@ MouseWheelListener, ActionListener {
 				}
 				if (btnTaxMore.disabled) {
 					g2.drawImage(gfx.btnTaxMore, btnTaxMore.rect.x, btnTaxMore.rect.y, null);
+					paintDisablePattern(g2, btnTaxMore.rect);
 				} else {
 					if (btnTaxMore.down) {
 						g2.drawImage(gfx.btnTaxMoreDown, btnTaxMore.rect.x, btnTaxMore.rect.y, null);
@@ -1076,10 +1093,26 @@ MouseWheelListener, ActionListener {
 				}
 				text.paintTo(g2, mainArea.x + 20, mainArea.y + 330, 7, TextGFX.GREEN, b.toString());
 			}
+		} else {
+			text.paintTo(g2, mainArea.x + 10, mainArea.y + 30, 10, TextGFX.YELLOW,
+					gameWorld.getLabel("ColonyInfo.NoColonySelected"));
 		}
 		renderPlanetShortInfo(g2);
 		renderMinimapWithPlanetsAndFleets(g2, true, false, false);
 		g2.setClip(cs);
+	}
+	/**
+	 * Paint the disablingPattern onto the given rectangle area.
+	 * @param g2 the graphics object to paint to
+	 * @param rect the rectangle to fill
+	 */
+	private void paintDisablePattern(Graphics2D g2, Rectangle rect) {
+		Paint p = g2.getPaint();
+		g2.setPaint(new TexturePaint(cgfx.disablingPattern, 
+				new Rectangle(rect.x + 1, rect.y + 1, 
+						cgfx.disablingPattern.getWidth(), cgfx.disablingPattern.getHeight())));
+		g2.fill(new Rectangle(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2));
+		g2.setPaint(p);
 	}
 	/**
 	 * Returns GREEN, if value < limit, YELLOW if value < limit * 1.1, RED otherwise.
@@ -1111,5 +1144,170 @@ MouseWheelListener, ActionListener {
 			planet.tax = TaxRate.values()[planet.tax.ordinal() + 1];
 			repaint();
 		}
+	}
+	/**
+	 * Returns the index within the fleet listing of the given point.
+	 * @param pt the point
+	 * @return the fleet or null if not in the list
+	 */
+	private GameFleet getFleetForPositionList(Point pt) {
+		int x = pt.x - mainArea.x - 7;
+		int y = pt.y - mainArea.y - 6;
+		if (x >= 0 && y >= 0 && x < mainArea.width && y < mainArea.height) {
+			int columnWidth = (mainArea.width - 7) / 4;
+			int numLen = mainArea.height / 13;
+			int col = x / columnWidth;
+			int row = y / 13;
+			int idx = col * numLen + row;
+			List<GameFleet> list = gameWorld.getKnownFleets();
+			if (idx < list.size()) {
+				return list.get(idx);
+			}
+		}
+		return null;
+	}
+	/**
+	 * Returns the planet for the minimap position pt.
+	 * @param pt the point on minimap to check for planet
+	 * @return the planet at the position or null for none
+	 */
+	private GameFleet getFleetForPositionMini(Point pt) {
+		int x = pt.x - pictureArea.x;
+		int y = pt.y - pictureArea.y;
+		double w2 = pictureArea.getWidth() * 1.0 / cgfx.fullMap.getWidth();
+		double h2 = pictureArea.getHeight() * 1.0 / cgfx.fullMap.getHeight();
+		for (GameFleet f : gameWorld.player.knownFleets) {
+			int x2 = (int)(f.x * w2);
+			int y2 = (int)(f.y * h2);
+			BufferedImage fimg = cgfx.shipImages[f.owner.fleetIcon];
+			int w = fimg.getWidth() / 2;
+			int h = fimg.getHeight() / 2;
+			if (x >= x2 - w && x <= x2 + w && y >= y2 - h && y <= y2 + h) {
+				return f;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Perform actions for mouse events in the fleets tab and main area.
+	 * @param e the mouse event
+	 */
+	private void doFleetsMousePressed(MouseEvent e) {
+		Point pt = e.getPoint();
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			GameFleet fleet = null;
+			if (mainArea.contains(pt)) {
+				fleet = getFleetForPositionList(pt);
+			} else
+			if (pictureArea.contains(pt)) {
+				fleet = getFleetForPositionMini(pt);
+			}
+			if (fleet != null) {
+				gameWorld.player.selectedFleet = fleet;
+				gameWorld.player.selectionType = StarmapSelection.FLEET;
+				repaint();
+			}
+		}
+	}
+	/**
+	 * Renders the planet short information into the secondary area.
+	 * @param g2 the graphics object
+	 */
+	private void renderFleetShortInfo(Graphics2D g2) {
+		// display details for the selected planet
+		GamePlayer player = gameWorld.player;
+		if (player.selectedFleet != null) {
+			GameFleet fleet = player.selectedFleet;
+			g2.setClip(titleArea);
+			int h = (titleArea.height - 14) / 2;
+			text.paintTo(g2, titleArea.x + 2, titleArea.y + h, 14, TextGFX.RED, fleet.name);
+			g2.setClip(secondaryArea);
+			// display owner name
+			text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 10, 10, fleet.owner.race.color, fleet.owner.name);
+			// if fleet is own by the current player
+			if (gameWorld.player == fleet.owner) {
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 30, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("FleetStatus." + fleet.status.id));
+				
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 50, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("FleetStatistics.PlanetNearBy"));
+				
+				text.paintTo(g2, secondaryArea.x + 20, secondaryArea.y + 70, 10, TextGFX.GREEN, 
+						"----"); // TODO find nearby planet
+				
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 100, 7, TextGFX.GREEN, 
+						gameWorld.getLabel("FleetStatistics.Entry",
+							gameWorld.getLabel("FleetStatistics.Speed"),
+							fleet.getSpeed()
+					));
+
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 110, 7, TextGFX.GREEN, 
+						gameWorld.getLabel("FleetStatistics.Entry",
+							gameWorld.getLabel("FleetStatistics.Firepower"),
+							fleet.getFirepower()
+					));
+
+				int battleships = fleet.getBattleshipCount();
+				int destroyers = fleet.getDestroyerCount();
+				int fighters = fleet.getFighterCount();
+				int tanks = fleet.getTankCount();
+				
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 130, 7, TextGFX.GREEN, 
+					gameWorld.getLabel("FleetStatistics.Entry",
+						gameWorld.getLabel("FleetStatistics.Battleships"),
+						battleships > 0 ? String.valueOf(battleships) : "-"
+				));
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 140, 7, TextGFX.GREEN, 
+						gameWorld.getLabel("FleetStatistics.Entry",
+							gameWorld.getLabel("FleetStatistics.Destroyers"),
+							battleships > 0 ? String.valueOf(destroyers) : "-"
+					));
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 150, 7, TextGFX.GREEN, 
+						gameWorld.getLabel("FleetStatistics.Entry",
+							gameWorld.getLabel("FleetStatistics.Fighters"),
+							battleships > 0 ? String.valueOf(fighters) : "-"
+					));
+				text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 160, 7, TextGFX.GREEN, 
+						gameWorld.getLabel("FleetStatistics.Entry",
+							gameWorld.getLabel("FleetStatistics.Tanks"),
+							battleships > 0 ? String.valueOf(tanks) : "-"
+					));
+			}
+		}
+	}
+	/**
+	 * Render fleet list panel.
+	 * @param g2 the graphics object.
+	 */
+	private void renderFleets(Graphics2D g2) {
+		Shape cs = g2.getClip();
+		GamePlayer player = gameWorld.player;
+		
+		int columnWidth = (mainArea.width - 7) / 4;
+		int x = 0;
+		int y = 0;
+		List<GameFleet> fleets = gameWorld.getKnownFleets();
+		g2.setClip(9 + mainArea.x + x, mainArea.y + y, columnWidth - 5, mainArea.height);
+		for (GameFleet f : fleets) {
+			if (y + 13 >= mainArea.height) {
+				x += columnWidth;
+				y = 0;
+				g2.setClip(9 + mainArea.x + x, mainArea.y + y, columnWidth - 5, mainArea.height);
+			}
+			text.paintTo(g2, 9 + mainArea.x + x, mainArea.y + y + 6, 10, f.owner.race.color, f.name);
+			if (f == player.selectedFleet) {
+				g2.setColor(new Color(TextGFX.ORANGE));
+				Shape c1 = g2.getClip();
+				// widen the clip area for the box-around
+				g2.setClip(7 + mainArea.x + x, mainArea.y + y, columnWidth, mainArea.height);
+				g2.drawRect(mainArea.x + x + 7, mainArea.y + y + 4, columnWidth - 3, 13);
+				g2.setClip(c1);
+			}
+			y += 13;
+		}
+		
+		renderFleetShortInfo(g2);
+		renderMinimapWithPlanetsAndFleets(g2, false, true, true);
+		g2.setClip(cs);
 	}
 }

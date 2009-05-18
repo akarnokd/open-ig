@@ -17,7 +17,7 @@ import java.util.Set;
  * Building model.
  * @author karnokd
  */
-public class GMBuilding {
+public class GameBuilding {
 	/** The sample image for the building list and building info screens. */
 	public BufferedImage image;
 	/** The tile for the undamaged building for the planet renderer. */
@@ -48,4 +48,12 @@ public class GMBuilding {
 	public int workers;
 	/** The build limit per planet. */
 	public int buildLimit;
+	/** The tile coordinate. */
+	public int x;
+	/** The tile coordinate. */
+	public int y;
+	/** The width in tiles. */
+	public int width;
+	/** The height in tiles. */
+	public int height;
 }
