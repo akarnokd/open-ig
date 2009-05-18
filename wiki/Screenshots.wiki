@@ -1,6 +1,10 @@
 #summary Contains screenshots from the game.
 #labels Featured
 
+= Version 0.67 screenshots =
+
+|| [http://karnokd.uw.hu/open-ig-0.67-screen01.png http://karnokd.uw.hu/open-ig-0.67-screen01-tn.png]<br>The main menu || [http://karnokd.uw.hu/open-ig-0.67-screen02.png http://karnokd.uw.hu/open-ig-0.67-screen02-tn.png]<br>Options screen || [http://karnokd.uw.hu/open-ig-0.67-screen03.png http://karnokd.uw.hu/open-ig-0.67-screen03-tn.png]<br>Title animation || 
+
 = Version 0.65 screenshots =
 
 || [http://karnokd.uw.hu/open-ig-0.65-screen01.png http://karnokd.uw.hu/open-ig-0.65-screen01-tn.png]<br>The main menu || [http://karnokd.uw.hu/open-ig-0.65-screen02.png http://karnokd.uw.hu/open-ig-0.65-screen02-tn.png]<br>Options screen || [http://karnokd.uw.hu/open-ig-0.65-screen03.png http://karnokd.uw.hu/open-ig-0.65-screen03-tn.png]<br>Title animation || 
