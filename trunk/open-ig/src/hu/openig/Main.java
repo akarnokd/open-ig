@@ -73,7 +73,7 @@ public class Main extends JFrame {
 	/** */
 	private static final long serialVersionUID = 6922932910697940684L;
 	/** Version string. */
-	public static final String VERSION = "0.65 Alpha"; // TODO reach 1.0!
+	public static final String VERSION = "0.67 Alpha"; // TODO reach 1.0!
 	/** The user interface sounds. */
 	UISounds uiSounds;
 	/** The common graphics objects. */
