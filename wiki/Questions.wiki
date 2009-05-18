@@ -99,3 +99,6 @@ Apart from having different language labels, there is a really subtle difference
 
 == New: Will the Open-IG contain the famous "á la Bokros" tax setting? ==
 Yes it will/does already. For non-hungarian players to understand, "á la Bokros" tax settings is a practical joke about a hungarian economic minister who was in charge during the development of the original game around 1995. This minister has increased the taxing level beyond anything seen before to 'fight' the economic crisis of that time. The game developers wanted to capture this not so famous deed in the game. In the english version, the top tax level was simply named Oppressive.
+
+== New: How can I use the checked-out source code? ==
+I advise to use an IDE and import the source code as a Java project. You can also directly check out code from the SVN repository in most IDEs (you might need third party SVN plugins).
