@@ -12,13 +12,13 @@ The project is currently in a very early stage of development, mostly I spent ti
 
 = Installation =
 
-Install Java JRE/JDK 1.6.X (preferrably X >= 10). Copy the contents of the original Imperium Galactica CD1 and CD2 into one directory (duplicate files can be simply overwritten). Put the {{{open-ig-0.6.jar}}} file into that directory. Note that the application requires at least 128 MB of memory. You can use the -Xmx command line parameter or change the .jar file extension assignment settings in your operating system to include it. To run the game double click on this file or use the command line 
+Install Java JRE/JDK 1.6.X (preferrably X >= 10). Copy the contents of the original Imperium Galactica CD1 and CD2 into one directory (duplicate files can be simply overwritten). Put the {{{open-ig-0.65.jar}}} file into that directory. Note that the application requires at least 128 MB of memory. You can use the -Xmx command line parameter or change the .jar file extension assignment settings in your operating system to include it. To run the game double click on this file or use the command line 
 
-{{{java -Xmx128M -jar open-ig-0.6.jar}}}
+{{{java -Xmx128M -jar open-ig-0.65.jar}}}
 
  If you don't want to put the JAR with the game files, you could use an extra command line parameter to specify the home of the IG files: 
 
-{{{java -Xmx128M -jar open-ig-0.6.jar c:\games\ig\}}}
+{{{java -Xmx128M -jar open-ig-0.65.jar c:\games\ig\}}}
 
 
 Please see the [Documentation documentation] page for what can you do within the application at the moment.
@@ -33,7 +33,7 @@ Please see the [Documentation documentation] page for what can you do within the
 
 = Documentation =
 
-Features
+== Features ==
  * Main menu screen
    * Click on the five options to jump to Starmap, Options screens; play the Title and Intro animations or exit the program
  * Options screen, accessible through the Load main menu option or ESC
@@ -65,6 +65,12 @@ Features
  * Infromation screen
    * Accessible through F7 or via the Info buttons.
    * Click on the buttons to show various (yet unfilled) information tabs.
+
+== Differences from the original game ==
+Apart from the tons of missing screens and behaviors, there are few deliberate changes:
+  * Starmap and planet screens are occupying the entire window, the rest are centered and shadow out the big screens behind them. The original game was constrained to 640x480.
+  * Scrolling the starmap and planet is done using right-mouse pan. In the original game, you had to hold the right mouse button near the edges of the view to scroll it. I think this is a bit cumbersome for a modern UI game.
+  * Zoom is done with CTRL+Mouse Wheel. You can also left/right click on the zoom button to zoom in/out. The original game, you could click on the zoom button, or switch to zoom mode and click on the starmap. This is understandable, as in 1996 there were not many mouses with scroll wheel.
 
 See the [Documentation documentation] wiki page.
 
