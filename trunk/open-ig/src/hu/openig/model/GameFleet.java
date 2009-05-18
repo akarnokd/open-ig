@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.FleetStatus;
+import hu.openig.utils.JavaUtils;
 
 import java.awt.Point;
 import java.util.Comparator;
@@ -106,4 +107,26 @@ public class GameFleet {
 	public int getFirepower() {
 		return 1;
 	}
+	/** Orders by race id then by fleet name. */
+	public static final Comparator<GameFleet> BY_RACE_ID_AND_NAME = new Comparator<GameFleet>() {
+		@Override
+		public int compare(GameFleet o1, GameFleet o2) {
+			int diff = o1.owner.race.index - o2.owner.race.index;
+			if (diff == 0) {
+				diff = JavaUtils.naturalCompare(o1.name, o2.name);
+			}
+			return diff;
+		}
+	};
+	/** Orders fleets by Y coordinates, then by X coordinates. */
+	public static final Comparator<GameFleet> BY_COORDINATES = new Comparator<GameFleet>() {
+		@Override
+		public int compare(GameFleet o1, GameFleet o2) {
+			int dy = o1.y - o2.y;
+			if (dy == 0) {
+				return o1.x - o2.x;
+			}
+			return dy;
+		}
+	};
 }

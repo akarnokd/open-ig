@@ -182,7 +182,7 @@ public class GameWorld implements GameRaceLookup {
 		}
 	}
 	/**
-	 * @return the list of knwon planets with owber
+	 * @return the list of knwon planets with owner
 	 */
 	public List<GamePlanet> getKnownPlanetsByWithOwner() {
 		List<GamePlanet> planets = new ArrayList<GamePlanet>(player.knownPlanetsByName);
@@ -196,11 +196,35 @@ public class GameWorld implements GameRaceLookup {
 		return planets;
 	}
 	/**
-	 * @return the list of knwon planets with owber
+	 * @return the list of knwon planets with owner
 	 */
 	public List<GamePlanet> getOwnPlanetsInOrder() {
 		List<GamePlanet> planets = new ArrayList<GamePlanet>(player.ownPlanets);
 		Collections.sort(planets, GamePlanet.BY_COORDINATES);
 		return planets;
+	}
+	/**
+	 * @return the list of known fleets
+	 */
+	public List<GameFleet> getKnownFleets() {
+		List<GameFleet> fleets = new ArrayList<GameFleet>(player.knownFleets);
+		Collections.sort(fleets, GameFleet.BY_RACE_ID_AND_NAME);
+		return fleets;
+	}
+	/**
+	 * @return the list of own fleets ordered by coordinates
+	 */
+	public List<GameFleet> getOwnFleetsByCoords() {
+		List<GameFleet> fleets = new ArrayList<GameFleet>(player.ownFleets);
+		Collections.sort(fleets, GameFleet.BY_COORDINATES);
+		return fleets;
+	}
+	/**
+	 * @return the list of own fleets ordered by name
+	 */
+	public List<GameFleet> getOwnFleetsByName() {
+		List<GameFleet> fleets = new ArrayList<GameFleet>(player.ownFleets);
+		Collections.sort(fleets, GameFleet.BY_RACE_ID_AND_NAME);
+		return fleets;
 	}
 }

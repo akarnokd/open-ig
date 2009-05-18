@@ -37,8 +37,8 @@ public class GamePlanet {
 	public int rotationPhase;
 	/** The planet name. */
 	public String name;
-	/** The radar circle radius. If zero, no radar should be displayed */
-	public int radarRadius;
+//	/** The radar circle radius. If zero, no radar should be displayed */
+//	public int radarRadius;
 	/** Center X coordinate on the 1:1 zoomed starmap. Means (currently) the top-left corner of the planet rectangle. */
 	public int x;
 	/** Center Y coordinate on the 1:1 zoomed starmap.  Means (currently) the top-left corner of the planet rectangle.*/
@@ -116,7 +116,6 @@ public class GamePlanet {
 			String orbit = XML.childValue(planet, "in-orbit");
 			p.visible = true;
 			p.popularity = 0.5f;
-			p.radarRadius = p.owner != null ? 50 : 0;
 			if (!"-".equals(orbit)) {
 				p.inOrbit.addAll(Arrays.asList(orbit.split("\\\\s*,\\\\s*")));
 			}
@@ -199,5 +198,17 @@ public class GamePlanet {
 	 */
 	public int getEnergyMax() {
 		return 0; // TODO evaluate maximum energy output
+	}
+	/**
+	 * @return return the radar radius
+	 */
+	public int getRadarRadius() {
+		return 50; // properly determine radar radius based on the buildings
+	}
+	/**
+	 * @return returns the total worker demand on the planet
+	 */
+	public int getWorkers() {
+		return 0; // determine total worker count required for buildings
 	}
 }

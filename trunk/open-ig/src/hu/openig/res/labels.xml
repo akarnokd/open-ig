@@ -350,6 +350,10 @@
 		<hu>Energia</hu>
 		<en>Energy</en>
 	</entry>
+	<entry key='ColonyInfo.Worker'>
+		<hu>Munkás</hu>
+		<en>Worker</en>
+	</entry>
 	<entry key='ColonyInfo.Demand'>
 		<hu>igény</hu>
 		<en>demand</en>
@@ -381,5 +385,45 @@
 	<entry key='ColonyInfoEntry2'>
 		<hu>%1$-20s: %2$s</hu>
 		<en>%1$-20s: %2$s</en>
+	</entry>
+	<entry key='ColonyInfo.NoColonySelected'>
+		<hu>Nincs kiválasztott kolónia.</hu>
+		<en>No colony selected.</en>
+	</entry>
+	<entry key='ColonyInfo.NoFleetSelected'>
+		<hu>Nincs kiválasztott kolónia.</hu>
+		<en>No colony selected.</en>
+	</entry>
+	<entry key='FleetStatistics.Entry'>
+		<hu>%1$-15s: %2$s</hu>
+		<en>%1$-16s: %2$s</en>
+	</entry>
+	<entry key='FleetStatistics.Battleships'>
+		<hu>Csatahajók</hu>
+		<en>Battleships</en>
+	</entry>
+	<entry key='FleetStatistics.Destroyers'>
+		<hu>Rombolók</hu>
+		<en>Destroyers</en>
+	</entry>
+	<entry key='FleetStatistics.Fighters'>
+		<hu>Vadászok</hu>
+		<en>Fighters</en>
+	</entry>
+	<entry key='FleetStatistics.Tanks'>
+		<hu>Tankok</hu>
+		<en>Tanks</en>
+	</entry>
+	<entry key='FleetStatistics.Speed'>
+		<hu>Sebesség</hu>
+		<en>Speed</en>
+	</entry>
+	<entry key='FleetStatistics.Firepower'>
+		<hu>Tűzerő</hu>
+		<en>Firepower</en>
+	</entry>
+	<entry key='FleetStatistics.PlanetNearBy'>
+		<hu>Közeli bolygó:</hu>
+		<en>Planet near by:</en>
 	</entry>
 </labels>

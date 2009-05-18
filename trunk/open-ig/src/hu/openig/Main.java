@@ -10,6 +10,7 @@ package hu.openig;
 import hu.openig.ani.MovieSurface;
 import hu.openig.ani.Player;
 import hu.openig.core.BtnAction;
+import hu.openig.core.ImageInterpolation;
 import hu.openig.core.InfoScreen;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.InformationGFX;
@@ -36,6 +37,7 @@ import hu.openig.res.Labels;
 import hu.openig.sound.UISounds;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.JavaUtils;
+import hu.openig.utils.Parallels;
 import hu.openig.utils.ResourceMapper;
 
 import java.awt.Color;
@@ -48,12 +50,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
@@ -145,24 +144,15 @@ public class Main extends JFrame {
 		this.resMap = resMap;
 		music = new Music(".");
 
-		List<Future<?>> futures = new LinkedList<Future<?>>();
-		futures.add(exec.submit(new Runnable() { public void run() { uiSounds = new UISounds(resMap); } }));
-		futures.add(exec.submit(new Runnable() { public void run() { cgfx = new CommonGFX(resMap); } }));
-		futures.add(exec.submit(new Runnable() { public void run() { starmapGFX = new StarmapGFX(resMap); } }));
-		futures.add(exec.submit(new Runnable() { public void run() { planetGFX = new PlanetGFX(resMap); } }));
-		futures.add(exec.submit(new Runnable() { public void run() { infoGFX = new InformationGFX(resMap); } }));
-		futures.add(exec.submit(new Runnable() { public void run() { menuGFX = new MenuGFX(resMap); } }));
-		futures.add(exec.submit(new Runnable() { public void run() { optionsGFX = new OptionsGFX(resMap); } }));
-		
-		for (Future<?> f : futures) {
-			try {
-				f.get();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			} catch (ExecutionException e1) {
-				e1.printStackTrace();
-			}
-		}
+		Parallels.invokeAndWait(
+			new Runnable() { public void run() { uiSounds = new UISounds(resMap); } },
+			new Runnable() { public void run() { cgfx = new CommonGFX(resMap); } },
+			new Runnable() { public void run() { starmapGFX = new StarmapGFX(resMap); } },
+			new Runnable() { public void run() { planetGFX = new PlanetGFX(resMap); } },
+			new Runnable() { public void run() { infoGFX = new InformationGFX(resMap); } },
+			new Runnable() { public void run() { menuGFX = new MenuGFX(resMap); } },
+			new Runnable() { public void run() { optionsGFX = new OptionsGFX(resMap); } }
+		);
 		
 		gameWorld = new GameWorld();
 		// disable controls
@@ -345,14 +335,14 @@ public class Main extends JFrame {
 		rp.getActionMap().put("NUM+", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
-			public void actionPerformed(ActionEvent e) { doSelectNexPlanet(); } });
+			public void actionPerformed(ActionEvent e) { doSelectNexPlanetOrFleet(); } });
 		
 		ks = KeyStroke.getKeyStroke('-');
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "NUM-");
 		rp.getActionMap().put("NUM-", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
-			public void actionPerformed(ActionEvent e) { doSelectPrevPlanet(); } });
+			public void actionPerformed(ActionEvent e) { doSelectPrevPlanetOrFleet(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+O");
@@ -360,6 +350,18 @@ public class Main extends JFrame {
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doOnwEmptyPlanets(); } });
+		
+		ks = KeyStroke.getKeyStroke('.', InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+.");
+		rp.getActionMap().put("CTRL+.", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doDoToggleInterpolations(); } });
+	}
+	/** Toggle bicubic interpolation on the starmap background. */
+	protected void doDoToggleInterpolations() {
+		starmapRenderer.setInterpolation(
+				ImageInterpolation.values()[(starmapRenderer.getInterpolation().ordinal() + 1) % ImageInterpolation.values().length]);
 	}
 	/**
 	 * Sets action listeners on the various screens.
@@ -450,7 +452,7 @@ public class Main extends JFrame {
 	 */
 	public static void main(String[] args)  throws Exception {
 		// D3D pipeline is slow for an unknown reason
-		System.setProperty("sun.java2d.d3d", "false");
+//		System.setProperty("sun.java2d.d3d", "false");
 		String root = ".";
 		if (args.length > 0) {
 			root = args[0];
@@ -710,15 +712,17 @@ public class Main extends JFrame {
 		// initialize local player
 		
 		// create fleets for all owned planets
+		int i = 1;
 		for (GamePlanet p : gameWorld.planets) {
 			if (p.owner != null) {
 				GameFleet f = new GameFleet();
-				f.name = p.owner.race.id + " fleet over " + p.name;
+				f.name = p.owner.race.id + " " + i + " fleet over " + p.name;
 				f.owner = p.owner;
 				f.x = p.x;
 				f.y = p.y;
 				gameWorld.fleets.add(f);
 			}
+			i++;
 		}
 		
 		gameWorld.setPlanetOwnerships();
@@ -756,26 +760,49 @@ public class Main extends JFrame {
 		repaint();
 	}
 	/** Select next planet. */
-	private void doSelectNexPlanet() {
-		List<GamePlanet> list = gameWorld.getOwnPlanetsInOrder();
-		if (list.size() > 0) {
-			int idx = list.indexOf(gameWorld.player.selectedPlanet);
-			gameWorld.player.selectedPlanet = list.get((idx + 1) % list.size());
-			gameWorld.player.selectionType = StarmapSelection.PLANET;
-			repaint();
+	private void doSelectNexPlanetOrFleet() {
+		if (gameWorld.player.selectionType == null || gameWorld.player.selectionType == StarmapSelection.PLANET) {
+			List<GamePlanet> list = gameWorld.getOwnPlanetsInOrder();
+			if (list.size() > 0) {
+				int idx = list.indexOf(gameWorld.player.selectedPlanet);
+				gameWorld.player.selectedPlanet = list.get((idx + 1) % list.size());
+				gameWorld.player.selectionType = StarmapSelection.PLANET;
+				repaint();
+			}
+		} else {
+			List<GameFleet> list = gameWorld.getOwnFleetsByCoords();
+			if (list.size() > 0) {
+				int idx = list.indexOf(gameWorld.player.selectedFleet);
+				gameWorld.player.selectedFleet = list.get((idx + 1) % list.size());
+				gameWorld.player.selectionType = StarmapSelection.FLEET;
+				repaint();
+			}
 		}
 	}
 	/** Select previous planet. */
-	private void doSelectPrevPlanet() {
-		List<GamePlanet> list = gameWorld.getOwnPlanetsInOrder();
-		if (list.size() > 0) {
-			int idx = list.indexOf(gameWorld.player.selectedPlanet) - 1;
-			if (idx < 0) {
-				idx = list.size() - 1;
+	private void doSelectPrevPlanetOrFleet() {
+		if (gameWorld.player.selectionType == null || gameWorld.player.selectionType == StarmapSelection.PLANET) {
+			List<GamePlanet> list = gameWorld.getOwnPlanetsInOrder();
+			if (list.size() > 0) {
+				int idx = list.indexOf(gameWorld.player.selectedPlanet) - 1;
+				if (idx < 0) {
+					idx = list.size() - 1;
+				}
+				gameWorld.player.selectedPlanet = list.get(idx);
+				gameWorld.player.selectionType = StarmapSelection.PLANET;
+				repaint();
 			}
-			gameWorld.player.selectedPlanet = list.get(idx);
-			gameWorld.player.selectionType = StarmapSelection.PLANET;
-			repaint();
+		} else {
+		List<GameFleet> list = gameWorld.getOwnFleetsByCoords();
+			if (list.size() > 0) {
+				int idx = list.indexOf(gameWorld.player.selectedFleet) - 1;
+				if (idx < 0) {
+					idx = list.size() - 1;
+				}
+				gameWorld.player.selectedFleet = list.get(idx);
+				gameWorld.player.selectionType = StarmapSelection.FLEET;
+				repaint();
+			}
 		}
 	}
 	/** Set owner of all empty planets to the player. */
