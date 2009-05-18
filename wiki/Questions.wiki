@@ -52,13 +52,49 @@ The original Imperium Galactica had several standard and non-standard files:
   * Music files are stored in XMF files, whose structure I could not decipher yet. All I know it contains samples in the previous audio format at the end of the file.
   * The animations are stored in a custom binary file in a block structure containing Palette, Sound and Image data. The image data doubly packed first by an [http://code.google.com/p/open-ig/wiki/Custom_RLE custom RLE] compression and then by a [http://code.google.com/p/open-ig/wiki/Custom_LZSS custom LZSS] algorithm. See the links for the sample decompression algorithms.
 
-===How did you find these out? ===
-The text and image formats were trivial case. The deciphering of the ANI files took one week of visual analysis (e.g. I starred at the data bytes).
+==How did you find these out? ==
+The text and image formats were trivial case. The deciphering of the ANI files took one week of visual analysis (e.g. I stared at the data bytes).
 
 == Can I comment/join? ==
-I disabled the commenting of this project until I produce enough resources (wiki pages and source files) to be meaningful. 
+~~I disabled the commenting of this project until I produce enough resources (wiki pages and source files) to be meaningful.~~
+You can comment on the wiki pages. Joining the project still is a bit in the future. 
 
 Joining to this project will be enabled when there is at least something to actually run. I'm still figuring out the proper coding style and structure of this project.
 
 == What about donations? ==
 Never. Spend your money for something useful.
+
+== New: Why does Open-IG take up so much resources? ==
+The original game ran on a 486 with 16 MB of memory in DOS. But these hardware requirements made the developers have some compromises:
+  * Simpler UI animations, graphical shortcuts
+  * Graphic resources are cached and loaded on demand, causing delays on screen switches
+In reflection of that, Open-IG is written in Java for modern machines and operating systems. But these have some effects on the game components:
+  * The code runs in a virtual machine, which has some memory and runtime overhead
+  * All game resources except the animations are loaded into memory, using 70MB of memory
+  * The in memory representation of the game images use 32bit RGBA. Compared to the 8 bit compressed PCX images, this is a 4 - 10 times of increase
+But these properties on todays computers are not bad at all. Here is why:
+  * Plenty of memory is available in modern computers, 1GB on average. Open-IG consumes below 128MB, therefore, there remains enough room for the OS, your browser etc.
+  * Java uses JIT to compile the hot spots of the code, eliminating any interpretation overhead
+  * Rendering is mostly accelerated by GPU which likes 32 bit images
+  * Threading is heavily used which might utilize multiple cores
+  * Event and timer driven rendering instead of a main loop to consume all CPU.
+
+== New: Why is the development slow? ==
+It has some aspects:
+  * I develop it alone, I test it alone and I spend my spare time to develop it.
+  * Each screen has enormous amount of small pieces: buttons, text, clickable obects etc. These have to be placed, wired together manually to resemble to the original screen and behavior. Most screens are not even buildable/testable until a real data modell is under it (this is the case with the recently enhanced information screen). This needs lots of testing and comparison with the original game.
+
+== New: What languages are supported ==
+The current version has English and Hungarian labels. These labels are not extracted from the original game files (they reside in the MAIN.EXE file but the location varies between languages and game wersions) due the aim of the Open-IG project: extensibility. There is an XML file /hu/openig/res/labels.xml which contains the labels.
+
+== New: Can I change the language? ==
+It might be possible to change the language on textual labels at runtime, but currently no UI is provided for that. However, the game images (buttons, etc.) have fixed language (hungarian or english). Unless you have the original english or hungarian Imperium Galactica files, you cannot do much about it.
+
+== New: Why is there no music? ==
+I wasn't able to decode the music files yet, and it seems I won't ever. However, music playback is not outcast from Open-IG. We have an integrated JOrbis OGG player along with native WAV support to play back external music files. I already have created the .ogg files from the original game music (I let the game itself play it back and recorded it using DOSBox), but I am pretty certain I am not allowed to make them available bundled in the jar file. However, I will enhance the Open-IG to play user supplied music and you can use your .ogg/.wav file for game music.
+
+== New: What differences exist between the varius language versions of the original game? ==
+Apart from having different language labels, there is a really subtle difference in the game's animation files. Strangely, in the english version these animations are in lower resolution, about 2/3 of the hungarian version. The reason is unknown. Certainly, the size gain neglectible as the english version is still occupying 2 CDs with total size of 1.1GB.
+
+== New: Will the Open-IG contain the famous "á la Bokros" tax settings? ==
+Yes it will/does already. For non-hungarian players to understand, "á la Bokros" tax settings is a practical joke about a hungarian economic minister who was in charge during the development of the original game around 1995. This minister has increased the taxing level beyond anything seen before to 'fight' the economic crisis of that time. The game developers wanted to capture this not so famous deed in the game. In the english version, the top tax level was simply named Oppressive.
