@@ -1,5 +1,11 @@
 #summary Description of the usage of the application.
 
+= Features of open-ig-0.67.jar =
+  * Added information screen details for Planets, Colony info and Fleets.
+  * Fixed some navigation and selection behavior
+  * Some small model correction
+  * Experimental option to select interpolation mode for the starmap background image
+
 = Features of open-ig-0.65.jar =
 This release contains the game model and some starmap related gui behavior. And finally the minimap is also working.
 
