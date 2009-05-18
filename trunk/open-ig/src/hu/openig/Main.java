@@ -68,7 +68,6 @@ import javax.swing.Timer;
 /**
  * The main entry point for now.
  * @author karnokd
- *
  */
 public class Main extends JFrame {
 	/** */
