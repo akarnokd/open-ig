@@ -14,14 +14,14 @@ Check out the [http://code.google.com/p/open-ig/wiki/Questions Questions and ans
 
  # Install Java JRE/JDK 1.6.X (preferrably X >= 10) or later. 
  # Copy the contents of the original Imperium Galactica CD1 and CD2 into one directory (duplicate files can be simply overwritten). 
- # Put the {{{open-ig-0.65.jar}}} file into that directory. Note that the application requires at least 128 MB of memory. You can use the -Xmx command line parameter or change the .jar file extension assignment settings in your operating system to include it. 
+ # Put the {{{open-ig-0.67.jar}}} file into that directory. Note that the application requires at least 128 MB of memory. You can use the -Xmx command line parameter or change the .jar file extension assignment settings in your operating system to include it. 
  # To run the game double click on this file or use the command line 
 
-{{{java -Xmx128M -jar open-ig-0.65.jar}}}
+{{{java -Xmx128M -jar open-ig-0.67.jar}}}
 
  If you don't want to put the JAR with the game files, you could use an extra command line parameter to specify the home of the IG files (the path might be case sensitive on your operating system): 
 
-{{{java -Xmx128M -jar open-ig-0.65.jar c:\games\ig\}}}
+{{{java -Xmx128M -jar open-ig-0.67.jar c:\games\ig\}}}
 
 
 Please see this page later on or the [Documentation documentation] page for what can you do within the application at the moment.
@@ -58,16 +58,21 @@ Please see this page later on or the [Documentation documentation] page for what
    * Use left click on the equipment (fleets) name to select the fleet
    * Use right click to instantly jump to the equipmnet (fleet)
    * Use middle mouse click to scroll-animate to the equipment (fleet)
+   * Use + or - to cycle through the player's planets
  * Planet screen
    * Accessible through F3 or via the Planet/Colony buttons
    * Hold down the right mouse button over the planet surface to pan the viewport
    * Click on the Buildings, Radar, Building Info and Lower left buttons to toggle the panels
-   * Use the ALT + Mouse wheel to switch between the seven types of planet
-   * Use the Mouse wheel to switch between surface variations of the current surface type
    * There are 7 surface types (Desert, Ice, Crater, Rocky, Water, Earth, Nectoplasm) and several variations for each.
+   * Use + or - to cycle through the player's planets
+   * Use minimap to select a planet
+   * Use the Tax+ Tax- buttons to set tax level on the selected planet
  * Infromation screen
    * Accessible through F7 or via the Info buttons.
-   * Click on the buttons to show various (yet unfilled) information tabs.
+   * Click on the buttons to show various information tabs.
+   * Planets screen shows known planets, click on the planet names or the minimap to display details
+   * Colony info screen shows information about the currently selected colony
+   * Fleets shows information about known fleets
 
 == Differences from the original game ==
 Apart from the tons of missing screens and behaviors, there are few deliberate changes:
