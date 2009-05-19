@@ -8,6 +8,7 @@
 package hu.openig.music;
 
 import hu.openig.utils.IOUtils;
+import hu.openig.utils.ResourceMapper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,8 +43,8 @@ public class Music {
 	private volatile float gain;
 	/** Mute sound. */
 	private volatile boolean mute;
-	/** The root directory. */
-	private final String root;
+	/** The resource manager. */
+	private final ResourceMapper resMap;
 	/** The clip for sound playback. */
 	private volatile Clip soundClip;
 	/** Use soundClip for playback. */
@@ -53,12 +54,10 @@ public class Music {
 
 	/**
 	 * Constructor. Initializes the audio output.
-	 * 
-	 * @param root
-	 *            the root directory
+	 * @param resMap the resource mapper
 	 */
-	public Music(String root) {
-		this.root = root;
+	public Music(ResourceMapper resMap) {
+		this.resMap = resMap;
 	}
 	/** Initialize wave playback format. */
 	private void initWave() {
@@ -201,8 +200,7 @@ public class Music {
 			if (fileName.startsWith("res:")) {
 				raf = Music.class.getResourceAsStream(fileName.substring(4));
 			} else {
-				raf = new FileInputStream(root + "/"
-						+ fileName);
+				raf = new FileInputStream(resMap.get(fileName));
 			}
 			if (raf != null) {
 				oggMusic = new OggMusic(Thread.currentThread(), gain, mute);
@@ -229,8 +227,7 @@ public class Music {
 		if (fileName.startsWith("res:")) {
 			raf = Music.class.getResourceAsStream(fileName.substring(4));
 		} else {
-			raf = new FileInputStream(root + "/"
-					+ fileName);
+			raf = new FileInputStream(resMap.get(fileName));
 		}
 		if (raf != null) {
 			// skip chunks
@@ -246,8 +243,7 @@ public class Music {
 					if (fileName.startsWith("res:")) {
 						raf = Music.class.getResourceAsStream(fileName.substring(4));
 					} else {
-						raf = new FileInputStream(root + "/"
-								+ fileName);
+						raf = new FileInputStream(resMap.get(fileName));
 					}
 					// skip wav header
 					IOUtils.skipFully(raf, startOffset);
@@ -277,7 +273,7 @@ public class Music {
 			if (fileName.startsWith("res:")) {
 				soundStream = AudioSystem.getAudioInputStream(Music.class.getResourceAsStream(fileName.substring(4)));
 			} else {
-				File audioFile = new File(root + "/" + fileName);
+				File audioFile = resMap.get(fileName);
 				soundStream = AudioSystem.getAudioInputStream(audioFile);
 			}
 			AudioFormat streamFormat = soundStream.getFormat();

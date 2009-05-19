@@ -51,6 +51,12 @@ public class GamePlayer {
 	public final Set<GameFleet> ownFleets = new HashSet<GameFleet>();
 	/** Set of known fleets. (Should) contain the ownFleets too. */
 	public final Set<GameFleet> knownFleets = new HashSet<GameFleet>();
+	// FIXME introduce non-planetary manufacturing progress
+	// FIXME introduce concept of research in progress
+	/** The set of technologies that are known. */
+	public final Set<ResearchTech> knownTechnology = new HashSet<ResearchTech>();
+	/** The set of technologies that are researched. */
+	public final Set<ResearchTech> availableTechnology = new HashSet<ResearchTech>();
 	/**
 	 * Adds the planet to the own planets set and subsequently
 	 * calls knowPlanet. Players can lose posession of a planet

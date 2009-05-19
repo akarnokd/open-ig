@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
 
 /**
  * Race related attributes.
+ * Race name should be determined from the id and looked up via labels.
  * @author karnkd
  */
 public class GameRace {
@@ -26,10 +27,8 @@ public class GameRace {
 	public int index;
 	/** The race identifier. */
 	public String id;
-	/** The race name. */
-//	public String name;
-	/** The technology index. */
-	public int techIndex;
+	/** The technology identifier. */
+	public String techId;
 	/** The ship icon index. */
 	public int shipIndex;
 	/** The normal text color for the race. */
@@ -62,7 +61,7 @@ public class GameRace {
 			r.index = Integer.parseInt(e.getAttribute("index"));
 			r.id = e.getAttribute("id");
 			r.shipIndex = Integer.parseInt(XML.childValue(e, "ship"));
-			r.techIndex = Integer.parseInt(XML.childValue(e, "tech"));
+			r.techId = XML.childValue(e, "tech");
 			Element e1 = XML.childElement(e, "color");
 			r.color = Integer.parseInt(e1.getAttribute("normal"), 16);
 			r.smallColor = Integer.parseInt(e1.getAttribute("small"), 16);

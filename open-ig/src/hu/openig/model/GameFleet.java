@@ -113,7 +113,7 @@ public class GameFleet {
 		public int compare(GameFleet o1, GameFleet o2) {
 			int diff = o1.owner.race.index - o2.owner.race.index;
 			if (diff == 0) {
-				diff = JavaUtils.naturalCompare(o1.name, o2.name);
+				diff = JavaUtils.naturalCompare(o1.name, o2.name, false);
 			}
 			return diff;
 		}

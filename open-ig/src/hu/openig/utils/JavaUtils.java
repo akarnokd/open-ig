@@ -8,6 +8,8 @@
 
 package hu.openig.utils;
 
+import java.util.Comparator;
+
 /**
  * Utility class for missing java functionalities.
  * @author karnokd
@@ -42,9 +44,10 @@ public final class JavaUtils {
 	 * regions.
 	 * @param s1 the first string
 	 * @param s2 the second string
+	 * @param cases be case sensitive?
 	 * @return the comparison
 	 */
-	public static int naturalCompare(String s1, String s2) {
+	public static int naturalCompare(String s1, String s2, boolean cases) {
 		String[] a1 = s1.split("\\s+");
 		String[] a2 = s2.split("\\s+");
 		int result = 0;
@@ -63,7 +66,11 @@ public final class JavaUtils {
 				}
 				return 1;
 			} else {
-				result = a1[i].compareTo(a2[i]);
+				if (cases) {
+					result = a1[i].compareTo(a2[i]);
+				} else {
+					result = a1[i].compareToIgnoreCase(a2[i]);
+				}
 				if (result != 0) {
 					return result;
 				}
@@ -83,5 +90,32 @@ public final class JavaUtils {
 			}
 		}
 		return true;
+	}
+	/**
+	 * A natural case sensitive comparator.
+	 */
+	public static final Comparator<String> NATURAL_COMPARATOR = new Comparator<String>() {
+		@Override
+		public int compare(String o1, String o2) {
+			return naturalCompare(o1, o2, true);
+		}
+	};
+	/**
+	 * A natural case insensitive comparator.
+	 */
+	public static final Comparator<String> NATURAL_COMPARATOR_NOCASE = new Comparator<String>() {
+		@Override
+		public int compare(String o1, String o2) {
+			return naturalCompare(o1, o2, false);
+		}
+	};
+	/**
+	 * Nullsafe equality test.
+	 * @param o1 the first object
+	 * @param o2 the second object
+	 * @return true if they are the same or o1.equals(o2). This also includes the null == null case
+	 */
+	public static boolean equal(Object o1, Object o2) {
+		return o1 == o2 || (o1 != null && o1.equals(o2));
 	}
 }

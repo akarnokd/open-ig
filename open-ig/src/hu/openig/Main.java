@@ -50,6 +50,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -73,7 +75,7 @@ public class Main extends JFrame {
 	/** */
 	private static final long serialVersionUID = 6922932910697940684L;
 	/** Version string. */
-	public static final String VERSION = "0.67 Alpha"; // TODO reach 1.0!
+	public static final String VERSION = "0.68 Alpha"; // TODO reach 1.0!
 	/** The user interface sounds. */
 	UISounds uiSounds;
 	/** The common graphics objects. */
@@ -141,7 +143,7 @@ public class Main extends JFrame {
 		exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		
 		this.resMap = resMap;
-		music = new Music(".");
+		music = new Music(resMap);
 
 		Parallels.invokeAndWait(
 			new Runnable() { public void run() { uiSounds = new UISounds(resMap); } },
@@ -395,11 +397,31 @@ public class Main extends JFrame {
 		showScreen(starmapRenderer);
 		startStopAnimations(true);
 		
-		music.playFile("res:/hu/openig/res/Music2.ogg", "res:/hu/openig/res/Music1.ogg", "res:/hu/openig/res/Music3.ogg");
+		List<String> userMusic = findUserMusic();
+		userMusic.add("res:/hu/openig/res/Music2.ogg");
+		userMusic.add("res:/hu/openig/res/Music1.ogg");
+		userMusic.add("res:/hu/openig/res/Music3.ogg");
+		music.playFile(userMusic.toArray(new String[userMusic.size()]));
 	}
 	/** Quit pressed on starmap. */
 	private void onQuit() {
 		dispose();
+	}
+	/**
+	 * Retrieves all filenames from the MUSIC/ subdirectory with
+	 * .WAV or .OGG extension. The list is then ordered by
+	 * a natural short order
+	 * @return the ordered list of user music, never null
+	 */
+	private List<String> findUserMusic() {
+		List<String> result = new ArrayList<String>();
+		for (String s : resMap.keySet()) {
+			if (s.startsWith("MUSIC/") && (s.endsWith(".OGG") || s.endsWith(".WAV"))) {
+				result.add(s);
+			}
+		}
+		Collections.sort(result, JavaUtils.NATURAL_COMPARATOR);
+		return result;
 	}
 	/**
 	 * Action for starmap colony button pressed.
@@ -450,8 +472,8 @@ public class Main extends JFrame {
 	 * @throws Exception ignores any exception
 	 */
 	public static void main(String[] args)  throws Exception {
-		// D3D pipeline is slow for an unknown reason
-//		System.setProperty("sun.java2d.d3d", "false");
+		// FIXME D3D pipeline is slow for an unknown reason
+		System.setProperty("sun.java2d.d3d", "false");
 		String root = ".";
 		if (args.length > 0) {
 			root = args[0];
