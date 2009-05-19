@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Technology trees for varius races -->
+<tech>
+	<techrace id='1'> <!-- Empire -->
+		<item id='Fighter1' index=''>
+			<class>Spaceships</class>
+			<type>Fighters</type>
+			<level>0</level> <!-- Automatically available -->
+			<cost>0</cost>
+			<maxcost>0</maxcost>
+			<buildcost>2000</buildcost>
+			<ai>1</ai>
+			<military>1</military>
+			<equipment>
+				<armor>50</armor>
+				<weapon id='Laser1'>1</weapon>
+				<speed>1</speed>
+			</equipment>
+		</item>
+		<item id='Fighter2' index=''>
+			<class>Spaceships</class>
+			<type>Fighters</type>
+			<level>0</level>
+			<cost>0</cost>
+			<maxcost>0</maxcost>
+			<buildcost>3200</buildcost>
+			<mechanic>1</mechanic>
+			<ai>1</ai>
+			<military>1</military>
+			<equipment>
+				<armor>100</armor>
+				<weapon id='Laser1'>2</weapon>
+				<shield id='Shield1'>1</shield>
+				<speed>2</speed>
+			</equipment>
+		</item>
+		<item id='Fighter3' index=''>
+			<class>Spaceships</class>
+			<type>Fighters</type>
+			<level>3</level>
+			<!-- Development time = maxtime / spent * mincost -->
+			<maxtime>3000</maxtime> 
+			<mincost>1500</mincost>
+			<cost>8000</cost> <!-- Default cost -->
+			<maxcost>12000</maxcost>
+			<buildcost></buildcost>
+			<mechanic>1</mechanic>
+			<computer>2</computer>
+			<ai>2</ai>
+			<military>2</military>
+			<equipment>
+				<armor>150</armor>
+				<weapon id='Laser1'>3</weapon>
+				<shield id='Shield1'>1</shield>
+				<speed>3</speed>
+			</equipment>
+		</item>
+		<item id='AdvancedSpySatellite' index=''>
+			<class>Spaceships</class>
+			<type>Satellites</type>
+			<level>4</level>
+			<cost>7000</cost>
+			<maxcost>12000</maxcost>
+			<!-- Zero science requirement is simply not in file <civil>0</civil> -->
+			<mechanic>2</mechanic>
+			<computer>3</computer>
+			<ai>3</ai>
+			<military>2</military>
+			<requires>SpySatellite</requires>
+		</item>
+	</techrace>
+</tech>
