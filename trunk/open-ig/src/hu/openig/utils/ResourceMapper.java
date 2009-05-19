@@ -9,8 +9,10 @@
 package hu.openig.utils;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Scans the current directory and its subdirectories and provides an associative map for files.
@@ -66,5 +68,12 @@ public class ResourceMapper {
 	 */
 	public File get(String filename) {
 		return files.get(filename.toUpperCase());
+	}
+	/**
+	 * Returns an unmodifiable set of the available keys in the resource map.
+	 * @return the set of available keys
+	 */
+	public Set<String> keySet() {
+		return Collections.unmodifiableSet(files.keySet());
 	}
 }

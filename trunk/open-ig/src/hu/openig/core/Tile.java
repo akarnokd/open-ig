@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
  * have the same origo, namely the 1x1 tile's bottom left position.
  * @author karnokd
  */
-public class Tile {
+public class Tile implements TileProvider {
 	/** Tile base area width in tile units. */
 	public int width = 1;
 	/** Tile base area height in tile units. */
@@ -129,5 +129,13 @@ public class Tile {
 			return max;
 		}
 		return value;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Tile getTile(Location location) {
+		// just return us - used by non-building type tiles, such as roads etc.
+		return this;
 	}
 }

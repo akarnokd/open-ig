@@ -8,8 +8,10 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Location;
 import hu.openig.core.SurfaceType;
 import hu.openig.core.TaxRate;
+import hu.openig.core.TileFragment;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XML;
 import hu.openig.utils.XML.XmlProcessor;
@@ -18,7 +20,11 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -73,6 +79,13 @@ public class GamePlanet {
 	public int tradeIncome;
 	/** The current tax morale percent. */
 	public int taxMorale;
+	/** 
+	 * The user-buildings on the map mapped via X,Y location for each of its entire rectangular base surface (e.g a 2x2 tile will have 4 entries in this map).
+	 * Moving buildings around is not allowed. 
+	 */
+	public final Map<Location, TileFragment> map = new HashMap<Location, TileFragment>();
+	/** The set of buildings on the planet. */
+	public final Set<GameBuilding> buildings = new HashSet<GameBuilding>();
 	/**
 	 * Parses and processes a planetary resource XML.
 	 * @param resource the name of the resource
@@ -153,7 +166,7 @@ public class GamePlanet {
 		public int compare(GamePlanet o1, GamePlanet o2) {
 			int diff = o1.owner.race.index - o2.owner.race.index;
 			if (diff == 0) {
-				diff = JavaUtils.naturalCompare(o1.name, o2.name);
+				diff = JavaUtils.naturalCompare(o1.name, o2.name, false);
 			}
 			return diff;
 		}
