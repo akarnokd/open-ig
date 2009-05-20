@@ -7,30 +7,48 @@
  */
 package hu.openig;
 
+import hu.openig.ani.GifSequenceWriter;
 import hu.openig.ani.MovieSurface;
+import hu.openig.ani.ProgressCallback;
 import hu.openig.ani.SpidyAniDecoder;
 import hu.openig.ani.SpidyAniDecoder.SpidyAniCallback;
 import hu.openig.sound.AudioThread;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
+import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JProgressBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -50,8 +68,20 @@ public final class AnimPlay {
 	private static JMenuItem menuStop;
 	/** The replay current item. */
 	private static JMenuItem menuReplay;
+	/** Save the animation as GIF. */
+	private static JMenuItem saveAsGif;
+	/** Save the animation as WAV. */
+	private static JMenuItem saveAsWav;
+	/** Save the animation as AVI. */
+	private static JMenuItem saveAsAvi;
+	/**
+	 * Save frames as PNG images.
+	 */
+	private static JMenuItem saveAsPng;
 	/** The last opened file directory. */
 	private static File lastPath;
+	/** The last opened file directory. */
+	private static File lastSavePath;
 	/** Stop the playback. */
 	private static volatile boolean stop;
 	/** Current file. */
@@ -149,9 +179,24 @@ public final class AnimPlay {
 						}
 					});
 					
+					saveAsGif = new JMenuItem("Save as animated GIF...");
+					saveAsGif.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsGif(); } });
+					saveAsPng = new JMenuItem("Save as PNGs...");
+					saveAsPng.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsPng(); } });
+					saveAsWav = new JMenuItem("Save as WAV...");
+					saveAsWav.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsWav(); } });
+					saveAsAvi = new JMenuItem("Save as AVI...");
+					saveAsAvi.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsAvi(); } });
+					saveAsAvi.setEnabled(false);
+					
 					file.add(menuOpen);
 					file.add(menuReplay);
 					file.add(menuStop);
+					file.addSeparator();
+					file.add(saveAsGif);
+					file.add(saveAsPng);
+					file.add(saveAsWav);
+					file.add(saveAsAvi);
 					mb.add(file);
 				}
 				frame.setTitle(String.format("Playing: %s", f));
@@ -316,6 +361,522 @@ public final class AnimPlay {
 		SpidyAniDecoder.decodeLoop(callback);
 	}
 	/**
+	 * The progress indicator dialog.
+	 * @author karnokd
+	 */
+	static class ProgressFrame extends JDialog implements ActionListener {
+		/** Serial version. */
+		private static final long serialVersionUID = -537904934073232256L;
+		/** The progress bar. */
+		private JProgressBar bar;
+		/** The progress label. */
+		private JLabel label;
+		/** The cancel button. */
+		private JButton cancel;
+		/** The operation was cancelled. */
+		private volatile boolean cancelled;
+		/**
+		 * Constructor. Sets the dialog's title. 
+		 * @param title the title
+		 * @param owner the owner
+		 */
+		public ProgressFrame(String title, Window owner) {
+			super(owner, title);
+			setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+			setModalityType(ModalityType.APPLICATION_MODAL);
+			bar = new JProgressBar();
+			label = new JLabel();
+			cancel = new JButton("Cancel");
+			cancel.addActionListener(this);
+			Container c = getContentPane();
+			GroupLayout gl = new GroupLayout(c);
+			c.setLayout(gl);
+			gl.setAutoCreateContainerGaps(true);
+			gl.setAutoCreateGaps(true);
+			
+			gl.setHorizontalGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(bar)
+				.addComponent(label)
+				.addComponent(cancel)
+			);
+			gl.setVerticalGroup(
+				gl.createSequentialGroup()
+				.addComponent(bar)
+				.addComponent(label)
+				.addComponent(cancel)
+			);
+			setSize(350, 150);
+			setLocationRelativeTo(owner);
+		}
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			cancelled = true;
+		}
+		/**
+		 * Set the progress bar's maximum value.
+		 * @param max the maximum value
+		 */
+		public void setMax(int max) {
+			bar.setMaximum(max);
+		}
+		/**
+		 * Update the progress bar's current value.
+		 * @param value the current value
+		 * @param text the text to display in label
+		 */
+		public void setCurrent(int value, String text) {
+			bar.setValue(value);
+			label.setText(text);
+		}
+		/**
+		 * Was the operation cancelled by the user?
+		 * @return the cancellation status
+		 */
+		public boolean isCancelled() {
+			return cancelled;
+		}
+	}
+	/**
+	 * Save animation as GIF. 
+	 */
+	private static void doSaveAsGif() {
+		if (current == null) {
+			return;
+		}
+		JFileChooser fc = new JFileChooser(lastSavePath);
+		fc.setAcceptAllFileFilterUsed(true);
+		fc.setFileFilter(new FileNameExtensionFilter("GIF files", "GIF"));
+		if (fc.showSaveDialog(frame) == JFileChooser.CANCEL_OPTION) {
+			return;
+		}
+		final File sel = fc.getSelectedFile();
+		lastSavePath = sel.getParentFile();
+		final ProgressFrame pf = new ProgressFrame("Save as GIF: " + sel, frame);
+		
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			@Override
+			protected Void doInBackground() throws Exception {
+				GifSequenceWriter.transcodeToGif(current.getAbsolutePath(), sel.getAbsolutePath(), new ProgressCallback() {
+					@Override
+					public void progress(final int value, final int max) {
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								pf.setMax(max);
+								pf.setCurrent(value, "Progress: " + value + " / " + max + " frames");
+							}
+						});
+					}
+					@Override
+					public boolean cancel() {
+						return pf.isCancelled();
+					}
+				});
+				return null;
+			}
+			@Override
+			protected void done() {
+				// delay window close a bit further
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						pf.dispose();
+					}
+				});
+			}
+		};
+		worker.execute();
+		pf.setVisible(true);
+	}
+	/**
+	 * Save animation as Wav.
+	 */
+	private static void doSaveAsWav() {
+		if (current == null) {
+			return;
+		}
+		JFileChooser fc = new JFileChooser(lastSavePath);
+		fc.setAcceptAllFileFilterUsed(true);
+		fc.setFileFilter(new FileNameExtensionFilter("WAV files", "WAV"));
+		if (fc.showSaveDialog(frame) == JFileChooser.CANCEL_OPTION) {
+			return;
+		}
+		final File sel = fc.getSelectedFile();
+		lastSavePath = sel.getParentFile();
+		final ProgressFrame pf = new ProgressFrame("Save as WAV: " + sel, frame);
+		
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			@Override
+			protected Void doInBackground() throws Exception {
+				transcodeToWav(current.getAbsolutePath(), sel.getAbsolutePath(), new ProgressCallback() {
+					@Override
+					public void progress(final int value, final int max) {
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								pf.setMax(max);
+								pf.setCurrent(value, "Progress: " + value + " / " + max + " frames");
+							}
+						});
+					}
+					@Override
+					public boolean cancel() {
+						return pf.isCancelled();
+					}
+				});
+				return null;
+			}
+			@Override
+			protected void done() {
+				// delay window close a bit further
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						pf.dispose();
+					}
+				});
+			}
+		};
+		worker.execute();
+		pf.setVisible(true);
+	}
+	/**
+	 * Save animation as Wav.
+	 */
+	private static void doSaveAsPng() {
+		if (current == null) {
+			return;
+		}
+		JFileChooser fc = new JFileChooser(lastSavePath);
+		fc.setAcceptAllFileFilterUsed(true);
+		fc.setFileFilter(new FileNameExtensionFilter("PNG files", "PNG"));
+		if (fc.showSaveDialog(frame) == JFileChooser.CANCEL_OPTION) {
+			return;
+		}
+		final File sel = fc.getSelectedFile();
+		lastSavePath = sel.getParentFile();
+		final ProgressFrame pf = new ProgressFrame("Save as PNG: " + sel, frame);
+		
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			@Override
+			protected Void doInBackground() throws Exception {
+				transcodeToPng(current.getAbsolutePath(), sel.getAbsolutePath(), new ProgressCallback() {
+					@Override
+					public void progress(final int value, final int max) {
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								pf.setMax(max);
+								pf.setCurrent(value, "Progress: " + value + " / " + max + " frames");
+							}
+						});
+					}
+					@Override
+					public boolean cancel() {
+						return pf.isCancelled();
+					}
+				});
+				return null;
+			}
+			@Override
+			protected void done() {
+				// delay window close a bit further
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						pf.dispose();
+					}
+				});
+			}
+		};
+		worker.execute();
+		pf.setVisible(true);
+	}
+	/**
+	 * Save animation as AVI.
+	 */
+	private static void doSaveAsAvi() {
+		if (current == null) {
+			return;
+		}
+		JFileChooser fc = new JFileChooser(lastSavePath);
+		fc.setAcceptAllFileFilterUsed(true);
+		fc.setFileFilter(new FileNameExtensionFilter("AVI files", "AVI"));
+		if (fc.showSaveDialog(frame) == JFileChooser.CANCEL_OPTION) {
+			return;
+		}
+//		final File sel = fc.getSelectedFile();
+//		final ProgressFrame pf = new ProgressFrame("Save as AVI: " + sel, frame);
+	}
+	/** 
+	 * Change between little endian and big endian coding.
+	 * @param val the value to rotate
+	 * @return the rotated value 
+	 */
+	private static int rotate(int val) {
+		return (val & 0xFF000000) >> 24 | (val & 0xFF0000) >> 8 
+		| (val & 0xFF00) << 8 | (val & 0xFF) << 24;
+	}
+	/** 
+	 * Change between little endian and big endian coding.
+	 * @param val the value to rotate
+	 * @return the rotated value 
+	 */
+	private static int rotateShort(int val) {
+		return (val & 0xFF00) >> 8 | (val & 0xFF) << 8;
+	}
+	/**
+	 * Transcode the input ANI file to a WAV file.
+	 * @param infile the input file
+	 * @param outFile the output file
+	 * @param progress the progress indicator callback.
+	 */
+	public static void transcodeToWav(final String infile, final String outFile, final ProgressCallback progress) {
+		try {
+			final RandomAccessFile rf = new RandomAccessFile(outFile, "rw");
+			try {
+				rf.write("RIFF".getBytes("Latin1"));
+				final long size1 = rf.getFilePointer();
+				rf.writeInt(rotate(0 + 36)); // WE write this value later
+				rf.write("WAVE".getBytes("Latin1"));
+				rf.write("fmt ".getBytes("Latin1"));
+				rf.writeInt(rotate(16));
+				rf.writeShort(rotateShort(1)); // audioformat
+				rf.writeShort(rotateShort(1)); // channels
+				rf.writeInt(rotate(22050)); // samplerate
+				rf.writeInt(rotate(22050)); // byterate
+				rf.writeShort(rotateShort(1)); // block alignment
+				rf.writeShort(rotateShort(8)); // bytes per sample
+				rf.write("data".getBytes("Latin1"));
+				final long size2 = rf.getFilePointer();
+				rf.writeInt(rotate(0)); // We write this value later
+				SpidyAniCallback callback = new SpidyAniCallback() {
+					/** The current frame index. */
+					private int frameCount;
+					/** The maximum frame count. */
+					private int maxFrameCount;
+					/** The total byte counter. */
+					private int byteCount;
+					@Override
+					public void audioData(byte[] data) {
+						try {
+							for (int i = 0; i < data.length; i++) {
+								data[i] = (byte)(data[i] + 128); // offset to unsigned
+							}
+							rf.write(data);
+							byteCount += data.length;
+						} catch (IOException ex) {
+							throw new RuntimeException(ex);
+						}
+					}
+
+					@Override
+					public void fatal(Throwable t) {
+						t.printStackTrace();
+						stopped();
+					}
+
+					@Override
+					public void finished() {
+						try {
+							rf.seek(size1);
+							rf.writeInt(rotate(byteCount + 36));
+							rf.seek(size2);
+							rf.writeInt(rotate(byteCount));
+							rf.close();
+						} catch (IOException ex) {
+							throw new RuntimeException(ex);
+						}
+					}
+
+					@Override
+					public String getFileName() {
+						return infile;
+					}
+
+					@Override
+					public InputStream getNewInputStream() {
+						try {
+							return new FileInputStream(getFileName());
+						} catch (FileNotFoundException ex) {
+							throw new RuntimeException(ex);
+						}
+					}
+
+					@Override
+					public void imageDate(int[] image) {
+						if (progress != null) {
+							progress.progress(frameCount, maxFrameCount);
+						}
+						frameCount++;
+					}
+
+					@Override
+					public void initialize(int width, int height, int frames,
+							int languageCode, double fps, int audioDelay) {
+						this.maxFrameCount = frames;
+						// introduce the audio delay as no sound
+						try {
+							int delay = (int)(audioDelay / fps * 22050);
+							byte[] silence = new byte[delay];
+							for (int i = 0; i < silence.length; i++) {
+								silence[i] = -128;
+							}
+							rf.write(silence);
+							byteCount += delay;
+						} catch (IOException ex) {
+							throw new RuntimeException(ex);
+						}
+					}
+
+					@Override
+					public boolean isPaused() {
+						return false;
+					}
+
+					@Override
+					public boolean isStopped() {
+						return progress != null && progress.cancel();
+					}
+
+					@Override
+					public void stopped() {
+						finished();
+					}
+					
+				};
+				SpidyAniDecoder.decodeLoop(callback);
+			} finally {
+				rf.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+	}
+	/**
+	 * Transcode the input ANI file to a WAV file.
+	 * @param infile the input file
+	 * @param outFile the output file
+	 * @param progress the progress indicator callback.
+	 */
+	public static void transcodeToPng(final String infile, final String outFile, final ProgressCallback progress) {
+		// use all available processors for PNG encoding, but not more for the queue
+		final ExecutorService exec = new ThreadPoolExecutor(
+				Runtime.getRuntime().availableProcessors(), 
+				Runtime.getRuntime().availableProcessors(),
+				0, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>(Runtime.getRuntime().availableProcessors()),
+				// in case of rejection, simply do a blocking put onto the queue
+				new RejectedExecutionHandler() {
+					@Override
+					public void rejectedExecution(Runnable r,
+							ThreadPoolExecutor executor) {
+						try {
+							executor.getQueue().put(r);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				);
+		SpidyAniCallback callback = new SpidyAniCallback() {
+			/** The current frame index. */
+			private int frameCount;
+			/** The maximum frame count. */
+			private int maxFrameCount;
+			/** The image width. */
+			private int width;
+			/** The image height. */
+			private int height;
+			@Override
+			public void audioData(byte[] data) {
+				// ignored
+			}
+
+			@Override
+			public void fatal(Throwable t) {
+				t.printStackTrace();
+				stopped();
+			}
+
+			@Override
+			public void finished() {
+				exec.shutdown();
+			}
+
+			@Override
+			public String getFileName() {
+				return infile;
+			}
+
+			@Override
+			public InputStream getNewInputStream() {
+				try {
+					return new FileInputStream(getFileName());
+				} catch (FileNotFoundException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+
+			@Override
+			public void imageDate(int[] image) {
+				if (progress != null) {
+					progress.progress(frameCount, maxFrameCount);
+				}
+				final BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				img.setRGB(0, 0, width, height, image, 0, width);
+				
+				final int frameIndex = frameCount;
+				// convert asynchronously
+				exec.submit(new Runnable() {
+					@Override
+					public void run() {
+						File f = new File(outFile + String.format("-%05d", frameIndex) + ".png");
+						try {
+							ImageIO.write(img, "png", f);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				
+				frameCount++;
+			}
+
+			@Override
+			public void initialize(int width, int height, int frames,
+					int languageCode, double fps, int audioDelay) {
+				this.maxFrameCount = frames;
+				this.width = width;
+				this.height = height;
+				// introduce the audio delay as no sound
+			}
+
+			@Override
+			public boolean isPaused() {
+				return false;
+			}
+
+			@Override
+			public boolean isStopped() {
+				return progress != null && progress.cancel();
+			}
+
+			@Override
+			public void stopped() {
+				finished();
+			}
+			
+		};
+		SpidyAniDecoder.decodeLoop(callback);
+	}
+	/**
 	 * Main program. Accepts 1 optional argument: the file name to play.
 	 * @param args the arguments
 	 * @throws IOException ignored
@@ -324,6 +885,7 @@ public final class AnimPlay {
 		String filename = null;
 		if (args.length == 0) {
 			lastPath = new File("/games/ighu");
+			lastSavePath = lastPath;
 			filename = showOpenDialog();
 		} else {
 			filename = args[0];
@@ -332,6 +894,7 @@ public final class AnimPlay {
 		if (filename != null) {
 			current = new File(filename);
 			lastPath = current.getParentFile();
+			lastSavePath = lastPath;
 			playFile(current);
 		}
 	}

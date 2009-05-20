@@ -17,22 +17,15 @@ package hu.openig.ani;
 //http://creativecommons.org/licenses/by/3.0/ or send a letter to Creative
 //Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
 
-import hu.openig.ani.Framerates.Rates;
-import hu.openig.ani.SpidyAniFile.Algorithm;
-import hu.openig.ani.SpidyAniFile.Block;
-import hu.openig.ani.SpidyAniFile.Data;
-import hu.openig.ani.SpidyAniFile.Palette;
-import hu.openig.ani.SpidyAniFile.Sound;
-import hu.openig.compress.LZSS;
-import hu.openig.compress.RLE;
-import hu.openig.core.PaletteDecoder;
+import hu.openig.ani.SpidyAniDecoder.SpidyAniCallback;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 import javax.imageio.IIOException;
@@ -183,7 +176,6 @@ public class GifSequenceWriter {
 		rootNode.appendChild(node);
 		return (node);
 	}
-
 	/**
 	 * Sample program.
 	 * @param args arguments last argument the target filename
@@ -193,86 +185,120 @@ public class GifSequenceWriter {
 	public static void main(String[] args) throws Exception {
 		if (args.length == 2) {
 			// create a new BufferedOutputStream with the last argument
-			ImageOutputStream output = new FileImageOutputStream(new File(
-					args[1]));
-
-			final SpidyAniFile saf = new SpidyAniFile();
-			FileInputStream rf = new FileInputStream(args[0]);
-			saf.open(rf);
-			saf.load();
-
-			Framerates fr = new Framerates();
-			
-			Rates r = fr.getRates(args[0], saf.getLanguageCode());
-			double fps = r.fps;
-			// create a gif sequence with the type of the first image, 1 second
-			// between frames, which loops continuously
-			GifSequenceWriter writer = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, (int)(1000 / fps), false);
-
-			PaletteDecoder palette = null;
-			int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
-			// clear any previous things from the buffer
-			int imageHeight = 0;
-			int dst = 0;
-			int audioCount = 0;
-			Algorithm alg = saf.getAlgorithm();
-
-	   		double starttime = System.currentTimeMillis();  // notice the start time
-	   		try {
-				// add audio delay
-		   		boolean firstframe = true;
-		   		while (true) {
-					Block b = saf.next();
-					if (b instanceof Palette) {
-						palette = (Palette)b;
-					} else
-					if (b instanceof Sound) {
-						audioCount++;
-					} else
-					if (b instanceof Data) {
-						if (firstframe) {
-							starttime = System.currentTimeMillis();
-							firstframe = false;
-						}
-						Data d = (Data)b;
-						imageHeight += d.height;
-						// decompress the image
-						byte[] rleInput = d.data;
-						if (saf.isLZSS() && !d.specialFrame) {
-							rleInput = new byte[d.bufferSize];
-							LZSS.decompress(d.data, 0, rleInput, 0);
-						}
-						switch (alg) {
-						case RLE_TYPE_1:
-							int newDst = RLE.decompress1(rleInput, 0, rawImage, dst, palette);
-							dst = newDst;
-							break;
-						case RLE_TYPE_2:
-							newDst = RLE.decompress2(rleInput, 0, rawImage, dst, palette);
-							dst = newDst;
-							break;
-						default:
-						}
-						// we reached the number of subimages per frame?
-						if (imageHeight >= saf.getHeight()) {
-							BufferedImage img = new BufferedImage(saf.getWidth(), saf.getHeight(), BufferedImage.TYPE_INT_ARGB);
-							img.setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
-							writer.writeToSequence(img);
-							imageHeight = 0;
-							dst = 0;
-							starttime += (1000.0 / fps);
-//		           			LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
-						}
-					}
-				}
-			} catch (EOFException ex) {
-			}
-
-			writer.close();
-			output.close();
+			final String filename = args[0];
+			final String outfile = args[1];
+			transcodeToGif(filename, outfile, null);
 		} else {
 			System.out
 					.println("Usage: java GifSequenceWriter anim-file-in gif-file-out");
 		}
+	}
+	/**
+	 * Transcodes the given input ANI file into the given output GIF file.
+	 * @param filename the input filename
+	 * @param outfile the output filename
+	 * @param progress the progress callback or null
+	 */
+	public static void transcodeToGif(final String filename, final String outfile, final ProgressCallback progress) {
+		SpidyAniCallback callback = new SpidyAniCallback() {
+			/** The output image. */
+			private FileImageOutputStream output;
+			/** The gif sequencer. */
+			private GifSequenceWriter writer;
+			/** The image width. */
+			private int width;
+			/** The image height. */
+			private int height;
+			/** The working frame buffer. */
+			private BufferedImage img;
+			/** The current frame index. */
+			private int frameCount;
+			/** The maximum frame count. */
+			private int maxFrameCount;
+			@Override
+			public void audioData(byte[] data) {
+				// ignored
+			}
+
+			@Override
+			public void fatal(Throwable t) {
+				t.printStackTrace();
+				stopped();
+			}
+
+			@Override
+			public void finished() {
+				try {
+					writer.close();
+					output.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+
+			@Override
+			public String getFileName() {
+				return filename;
+			}
+
+			@Override
+			public InputStream getNewInputStream() {
+				try {
+					return new FileInputStream(filename);
+				} catch (FileNotFoundException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+
+			@Override
+			public void imageDate(int[] image) {
+				if (progress != null) {
+					progress.progress(frameCount, maxFrameCount);
+				}
+				img.setRGB(0, 0, width, height, image, 0, width);
+				frameCount++;
+				try {
+					writer.writeToSequence(img);
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+
+			@Override
+			public void initialize(int width, int height, int frames,
+					int languageCode, double fps, int audioDelay) {
+				this.width = width;
+				this.height = height;
+				this.maxFrameCount = frames;
+				img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				try {
+					output = new FileImageOutputStream(new File(outfile));
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+				try {
+					writer = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, (int)(1000 / fps), false);
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+
+			@Override
+			public boolean isPaused() {
+				return false;
+			}
+
+			@Override
+			public boolean isStopped() {
+				return progress != null && progress.cancel();
+			}
+
+			@Override
+			public void stopped() {
+				finished();
+			}
+			
+		};
+		SpidyAniDecoder.decodeLoop(callback);
 	}
 }
