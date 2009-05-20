@@ -38,11 +38,16 @@ public class AudioThread extends Thread {
 	/** The start condition. */
 	private final Condition startCond = lock.newCondition();
 	/** Start audio playback flag. */
-	private boolean startAudio;
+	private volatile boolean startAudio;
+	/**
+	 * If audio playback is delayed, setting this flag to true will terminate the playback loop.
+	 */
+	private volatile boolean stop;
 	/**
 	 * Constructor. Initializes the audio output to 22050Hz, 8 bit PCM.
 	 */
 	public AudioThread() {
+		super("AudioPlayback");
 		sdl = createAudioOutput();
 	}
 	/**
@@ -51,7 +56,7 @@ public class AudioThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			while (!isInterrupted()) {
+			while (!stop && !isInterrupted()) {
 				byte[] data = queue.take();
 				if (data.length == 0) {
 					sdl.drain();
@@ -61,8 +66,12 @@ public class AudioThread extends Thread {
 					// wait for start playing signal
 					lock.lock();
 					try {
-						while (!startAudio) {
+						while (!startAudio && !stop) {
 							startCond.await();
+						}
+						if (stop) {
+							stop = false;
+							break;
 						}
 						startAudio = false;
 						sdl.start();
@@ -203,9 +212,7 @@ public class AudioThread extends Thread {
 		sdl.drain();
 		queue.clear();
 		// should always return true
-		if (!queue.offer(new byte[0])) {
-			throw new AssertionError("Queue problems");
-		}
+		stopPlayback();
 	}
 	/**
 	 * Starts the playback immediately.
@@ -214,6 +221,21 @@ public class AudioThread extends Thread {
 		lock.lock();
 		try {
 			startAudio = true;
+			startCond.signalAll();
+		} finally {
+			lock.unlock();
+		}
+	}
+	/**
+	 * Stops the playback.
+	 */
+	public void stopPlayback() {
+		if (!queue.offer(new byte[0])) {
+			throw new AssertionError("Queue problems");
+		}
+		lock.lock();
+		try {
+			stop = true;
 			startCond.signalAll();
 		} finally {
 			lock.unlock();

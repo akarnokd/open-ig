@@ -7,28 +7,20 @@
  */
 package hu.openig;
 
-import hu.openig.ani.Framerates;
 import hu.openig.ani.MovieSurface;
-import hu.openig.ani.SpidyAniFile;
-import hu.openig.ani.Framerates.Rates;
-import hu.openig.ani.SpidyAniFile.Algorithm;
-import hu.openig.ani.SpidyAniFile.Block;
-import hu.openig.ani.SpidyAniFile.Data;
-import hu.openig.ani.SpidyAniFile.Palette;
-import hu.openig.ani.SpidyAniFile.Sound;
-import hu.openig.compress.LZSS;
-import hu.openig.compress.RLE;
-import hu.openig.core.PaletteDecoder;
+import hu.openig.ani.SpidyAniDecoder;
+import hu.openig.ani.SpidyAniDecoder.SpidyAniCallback;
 import hu.openig.sound.AudioThread;
 
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.locks.LockSupport;
 
@@ -184,127 +176,131 @@ public final class AnimPlay {
 	 * Plays the given file.
 	 * @param f the file to play
 	 */
-	public static void playFile(File f) {
-		double fps = 0;
-		try {
-			AudioThread ad = new AudioThread();
-			ad.start();
-			FileInputStream rf = null;
-			try {
-				final SpidyAniFile saf = new SpidyAniFile();
-//				saf.open(rf);
-//				saf.load();
-//				saf.walkBlocks();
-//		   		
-//		   		fps = saf.getFPS();
-//				rf.close();
-				Framerates fr = new Framerates();
-				rf = new FileInputStream(f);
-				saf.open(rf);
-				saf.load();
-				createFrame(f);
-				Rates r = fr.getRates(f.getAbsolutePath(), saf.getLanguageCode());
-				fps = r.fps;
-				int delay = r.delay;
-				frame.setTitle(String.format("%s | FPS: %.4f | Delay: %d", frame.getTitle(), fps, delay));
-				
-				
-				PaletteDecoder palette = null;
-				int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
-				int imageHeight = 0;
-				int dst = 0;
-				Algorithm alg = saf.getAlgorithm();
-				// initialize the painting surface
-				imageLabel.init(saf.getWidth(), saf.getHeight());
-				SwingUtilities.invokeAndWait(new Runnable() {
-					public void run() {
-						if (frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
-							if (imageLabel.getWidth() < saf.getWidth() || imageLabel.getHeight() < saf.getHeight()) {
-								imageLabel.setPreferredSize(new Dimension(saf.getWidth(), saf.getHeight()));
-								frame.pack();
-								frame.setLocationRelativeTo(null);
-							}
-						}
-						
-					}
-				});
+	public static void playFile(final File f) {
+		final AudioThread ad = new AudioThread();
+		ad.start();
+		SpidyAniCallback callback = new SpidyAniCallback() {
+			/** Time calculation for proper frame delay. */
+			double starttime;
+			/** The current frame number. */
+			int frameCount;
+			/** The audio frame delay. */
+			int frameDelay;
+			/** Frame width. */
+			int width;
+			/** Frame height. */
+			int height;
+			/** The frame/second. */
+			double fps;
+			@Override
+			public void audioData(byte[] data) {
+				ad.submit(data);
+			}
+
+			@Override
+			public void fatal(Throwable t) {
+				t.printStackTrace();
+				stopped();
+			}
+
+			@Override
+			public void finished() {
+				ad.stopPlayback();
+				// wait for the audio thread to finish
 				try {
-			   		double starttime = System.currentTimeMillis();
-			   		int framecounter = 0;
-			   		boolean firstframe = true;
-			   		while (!stop) {
-						Block b = saf.next();
-						if (b instanceof Palette) {
-							palette = (Palette)b;
-						} else
-						if (b instanceof Sound) {
-							ad.submit(b.data);
-						} else
-						if (b instanceof Data) {
-							if (firstframe) {
-								starttime = System.currentTimeMillis();
-								firstframe = false;
-							}
-							Data d = (Data)b;
-							imageHeight += d.height;
-							// decompress the image
-							byte[] rleInput = d.data;
-							if (saf.isLZSS() && !d.specialFrame) {
-								rleInput = new byte[d.bufferSize];
-								LZSS.decompress(d.data, 0, rleInput, 0);
-							}
-							switch (alg) {
-							case RLE_TYPE_1:
-								int newDst = RLE.decompress1(rleInput, 0, rawImage, dst, palette);
-								dst = newDst;
-								break;
-							case RLE_TYPE_2:
-								newDst = RLE.decompress2(rleInput, 0, rawImage, dst, palette);
-								dst = newDst;
-								break;
-							default:
-							}
-							// we reached the number of subimages per frame?
-							if (imageHeight >= saf.getHeight()) {
-								imageLabel.getBackbuffer().setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
-								imageLabel.swap();
-								if (framecounter == delay) {
-									ad.startPlaybackNow();
-								}
-								imageHeight = 0;
-								dst = 0;
-								
-								starttime += (1000.0 / fps);
-			           			LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
-			           			framecounter++;
-							}
-						}
-					}
-				} catch (EOFException ex) {
-					// we reached the end of file
-					ad.submit(new byte[0]);
-					ad.interrupt();
-				}
-				//System.out.printf("%.2f", audioCount * 0x4F6 / 22050f / saf.getFrameCount());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					rf.close();
-				} catch (IOException ex) {
-					// ignored
-				}
-				if (stop) {
-					ad.stopPlaybackNow();
-				}
-				try {
-					ad.interrupt();
 					ad.join();
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					// ignored here
 				}
+				done();
+			}
+
+			@Override
+			public String getFileName() {
+				return f.getName();
+			}
+
+			@Override
+			public InputStream getNewInputStream() {
+				try {
+					return new FileInputStream(f);
+				} catch (FileNotFoundException ex) {
+					throw new RuntimeException("Missing file? " + f);
+				}
+			}
+
+			@Override
+			public void imageDate(int[] image) {
+				if (frameCount == 0) {
+					starttime = System.currentTimeMillis();
+				}
+				if (frameCount++ == frameDelay) {
+					ad.startPlaybackNow();
+				}
+				imageLabel.getBackbuffer().setRGB(0, 0, width, height, image, 0, width);
+				imageLabel.swap();
+				// wait the frame/sec
+				starttime += (1000.0 / fps);
+       			LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
+			}
+
+			@Override
+			public void initialize(int width, int height, int frames,
+					int languageCode, double fps, int audioDelay) {
+				this.frameDelay = audioDelay;
+				this.width = width;
+				this.height = height;
+				this.fps = fps;
+				imageLabel.init(width, height);
+				// clear backbuffer
+				imageLabel.getBackbuffer().setRGB(0, 0, width, height, new int[width * height], 0, width);
+				imageLabel.swap();
+				frame.setTitle(String.format("%s | FPS: %.4f | Delay: %d", frame.getTitle(), fps, frameDelay));
+				final int fwidth = width;
+				final int fheight = height;
+				try {
+					SwingUtilities.invokeAndWait(new Runnable() {
+						public void run() {
+							if (frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
+								if (imageLabel.getWidth() < fwidth || imageLabel.getHeight() < fheight) {
+									imageLabel.setPreferredSize(new Dimension(fwidth, fheight));
+									frame.pack();
+									frame.setLocationRelativeTo(null);
+								}
+							}
+							
+						}
+					});
+				} catch (InterruptedException ex) {
+					Thread.currentThread().interrupt();
+				} catch (InvocationTargetException ex) {
+					Thread.currentThread().interrupt();
+					ex.printStackTrace();
+				}
+			}
+
+			@Override
+			public boolean isPaused() {
+				return false;
+			}
+
+			@Override
+			public boolean isStopped() {
+				return stop;
+			}
+
+			@Override
+			public void stopped() {
+				ad.stopPlaybackNow();
+				try {
+					ad.join();
+				} catch (InterruptedException e) {
+					// ignored here
+				}
+				done();
+			}
+			/** Re-enable controls on either stop or finish outcome. */
+			private void done() {
 				stop = false;
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -315,9 +311,9 @@ public final class AnimPlay {
 					}
 				});
 			}
-		} catch (IOException ex) {
-			
-		}
+		};
+		createFrame(f);
+		SpidyAniDecoder.decodeLoop(callback);
 	}
 	/**
 	 * Main program. Accepts 1 optional argument: the file name to play.
