@@ -19,8 +19,11 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 /**
  * Common graphical objects which is used by multiple screens.
@@ -143,6 +146,8 @@ public class CommonGFX {
 	public Color mapBackground;
 	/** Pattern used for indicating disabled buttons. */
 	public BufferedImage disablingPattern;
+	/** The achievement badge icon. */
+	public BufferedImage achievement;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param resMap the resource mapper object
@@ -283,6 +288,11 @@ public class CommonGFX {
 				}
 			}
 		}
+		try {
+			achievement = ImageIO.read(CommonGFX.class.getResource("/hu/openig/res/achievement.png"));
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	/**
 	 * Set building image for a race and building type.
@@ -306,5 +316,18 @@ public class CommonGFX {
 	 */
 	public String[] getBuildingNames() {
 		return BUILDING_NAMES.clone();
+	}
+	/**
+	 * Mix two colors with a factor.
+	 * @param c1 the first color
+	 * @param c2 the second color
+	 * @param rate the mixing factor
+	 * @return the mixed color
+	 */
+	public int mixColors(int c1, int c2, float rate) {
+		return
+			((int)((c1 & 0xFF0000) * rate + (c2 & 0xFF0000) * (1 - rate)) & 0xFF0000)
+			| ((int)((c1 & 0xFF00) * rate + (c2 & 0xFF00) * (1 - rate)) & 0xFF00)
+			| ((int)((c1 & 0xFF) * rate + (c2 & 0xFF) * (1 - rate)) & 0xFF);
 	}
 }

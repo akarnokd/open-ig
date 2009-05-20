@@ -217,7 +217,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** The game world object. */
 	private GameWorld gameWorld;
 	/** The information bar renderer. */
-	private InfobarRenderer infobarRenderer;
+	private final InfobarRenderer infobarRenderer;
 	/** The planet listing scroll offset. */
 	private int planetListOffset;
 	/** The current displayed fleet index. */
@@ -260,32 +260,29 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** Enable or disable bicubic interpolation on the starmap background. */
 	private ImageInterpolation interpolation = ImageInterpolation.NONE;
 	/** The last rendering position. */
-//	private float lastMx = Integer.MAX_VALUE;
-	/** The last rendering position. */
-//	private float lastMy = Integer.MAX_VALUE;
-	/** The last zoom value. */
-//	private float lastZoom = Integer.MAX_VALUE;
-	/** The cached zoomed background image. */
-//	private BufferedImage backgroundCache;
-//	/** Enable/disable cached scaling. */
-//	private boolean cachedScaling = true;
-//	/** Last interpolation value. */
-//	private boolean lastInterpolation;
+	private final AchievementRenderer achievementRenderer;
+	/** Radar cosine table. */
+	private final double[] radarSineTable;
+	/** Radar sine table. */
+	private final double[] radarCosineTable; 
 	/**
 	 * Constructor. Sets the helper object fields.
 	 * @param gfx the starmap graphics object
 	 * @param cgfx the common graphics object
 	 * @param uiSound the user interface
 	 * @param infobarRenderer the information bar renderer
+	 * @param achievementRenderer the achievement renderer
 	 */
 	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, 
-			UISounds uiSound, InfobarRenderer infobarRenderer) {
+			UISounds uiSound, InfobarRenderer infobarRenderer,
+			AchievementRenderer achievementRenderer) {
 		super();
 		this.gfx = gfx;
 		this.cgfx = cgfx;
 		this.text = cgfx.text;
 		this.uiSound = uiSound;
 		this.infobarRenderer = infobarRenderer;
+		this.achievementRenderer = achievementRenderer;
 		setDoubleBuffered(true);
 		setOpaque(true);
 		//setCursor(gfx.cursors.target);
@@ -297,6 +294,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		animations = new Timer(ANIMATION_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doAnimate(); } });
 		scrollAnimTimer = new Timer(SCROLL_ANIM_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doScrollAnimate(); } });
 		precalculateStars();
+		radarSineTable = new double[101];
+		radarCosineTable = new double[101];
+		precalculateRadar();
 	}
 	/**
 	 * {@inheritDoc}
@@ -647,6 +647,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		}
 		g2.setClip(sp);
 
+		
 		// FINAL OPERATION: draw darkening layer over the screen
 		if (darkness > 0.0f) {
 			Composite comp = g2.getComposite();
@@ -655,6 +656,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			g2.fillRect(0, 0, w, h);
 			g2.setComposite(comp);
 		}
+
+		achievementRenderer.renderAchievements(g2);
 
 	}
 	/** Recalculate the region coordinates. */
@@ -1320,33 +1323,11 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		// render radar first.
 		GamePlayer player = gameWorld.player;
 		if (btnRadars.down) {
-			// render radar circle only for the own planets
-			for (GamePlanet p : player.ownPlanets) {
-				int rr = p.getRadarRadius();
-				if (p.visible && rr > 0) {
-					double fd = Math.PI / 50;
-					double fm = 2 * Math.PI - fd;
-					for (double f = 0.0f; f <= fm; f += fd) {
-						int x = (int)((p.x + rr * Math.sin(f)) * zoomFactor);
-						int y = (int)((p.y + rr * Math.cos(f)) * zoomFactor);
-						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
-					}
-				}
-			}
+			renderPlanetRadar(g2, xOrig, yOrig, ri, player);
 		}
 		// render known planets by name labels
 		if ((nameMode == 1 || nameMode == 3)) {
-			for (GamePlanet p : player.knownPlanetsByName) {
-				BufferedImage pimg = getPlanetImage(p, p.rotationPhase);
-				int color = TextGFX.GRAY;
-				if (p.owner != null) {
-					color = p.owner.race.smallColor;
-				}
-				int y = (int)(p.y * zoomFactor + pimg.getHeight() / 2f) + 2;
-				int w = text.getTextWidth(5, p.name);
-				int x = (int)(p.x * zoomFactor - w / 2f);
-				text.paintTo(g2, xOrig + x, yOrig + y, 5, color, p.name);
-			}
+			renderPlanetNames(g2, xOrig, yOrig, player);
 		}
 		
 		for (GamePlanet p : player.knownPlanets) {
@@ -1378,50 +1359,144 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		}
 		// render fleet radars
 		if (btnRadars.down && btnFleets.down) {
-			for (GameFleet fleet : player.ownFleets) {
-				float radarRadius = fleet.getRadarRadius();
-				if (fleet.visible && radarRadius > 0) {
-					double fd = Math.PI / 50;
-					double fm = 2 * Math.PI - fd;
-					for (double f = 0.0f; f <= fm; f += fd) {
-						int x = (int)((fleet.x + radarRadius * Math.sin(f)) * zoomFactor);
-						int y = (int)((fleet.y + radarRadius * Math.cos(f)) * zoomFactor);
-						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
-					}
-				}
-			}
+			renderFleetRadar(g2, xOrig, yOrig, ri, player);
 		}
 		// render fleet names
 		if (btnFleets.down && (nameMode == 2 || nameMode == 3)) {
-			for (GameFleet f : player.knownFleets) {
-				if (f.visible) {
-					int color = TextGFX.GRAY;
-					if (f.owner != null) {
-						color = f.owner.race.smallColor;
-					}
-					BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
-					int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2);
-					int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2);
-					y = (int)(f.y * zoomFactor) + 2 + fleetImg.getHeight();
-					int w = text.getTextWidth(5, f.name);
-					x = (int)(f.x * zoomFactor - w / 2f);
-					text.paintTo(g2, xOrig + x, yOrig + y, 5, color, f.name);
-				}
-			}
+			renderFleetNames(g2, xOrig, yOrig, player);
 		}
 		// render fleet icons
 		if (btnFleets.down) {
-			for (GameFleet f : player.knownFleets) {
-				if (f.visible) {
-					BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
-					int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2);
-					int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2);
-					g2.drawImage(fleetImg, xOrig + x, yOrig + y, null);
-					if (player.selectedFleet == f) {
-						g2.setColor(player.selectionType == StarmapSelection.FLEET ? Color.WHITE : alternateSelection);
-						g2.drawRect(xOrig + x - 1, yOrig + y - 1,
-								fleetImg.getWidth() + 2, fleetImg.getHeight() + 2);
-					}					
+			renderFleetIcons(g2, xOrig, yOrig, player);
+		}
+	}
+	/**
+	 * Renders the fleet icons onto the starmap surface.
+	 * @param g2 the graphics object
+	 * @param xOrig the rendering X origin
+	 * @param yOrig the rendering Y origin
+	 * @param player the player object
+	 */
+	private void renderFleetIcons(Graphics2D g2, int xOrig, int yOrig,
+			GamePlayer player) {
+		for (GameFleet f : player.knownFleets) {
+			if (f.visible) {
+				BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
+				int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2);
+				int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2);
+				g2.drawImage(fleetImg, xOrig + x, yOrig + y, null);
+				if (player.selectedFleet == f) {
+					g2.setColor(player.selectionType == StarmapSelection.FLEET ? Color.WHITE : alternateSelection);
+					g2.drawRect(xOrig + x - 1, yOrig + y - 1,
+							fleetImg.getWidth() + 2, fleetImg.getHeight() + 2);
+				}					
+			}
+		}
+	}
+	/**
+	 * Renders the fleet names onto the starmap screen.
+	 * @param g2 the graphics object
+	 * @param xOrig the rendering X origin
+	 * @param yOrig the rendering Y origin
+	 * @param player the player object
+	 */
+	private void renderFleetNames(Graphics2D g2, int xOrig, int yOrig,
+			GamePlayer player) {
+		for (GameFleet f : player.knownFleets) {
+			if (f.visible) {
+				int color = TextGFX.GRAY;
+				if (f.owner != null) {
+					color = f.owner.race.smallColor;
+				}
+				BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
+				int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2);
+				int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2);
+				y = (int)(f.y * zoomFactor) + 2 + fleetImg.getHeight();
+				int w = text.getTextWidth(5, f.name);
+				x = (int)(f.x * zoomFactor - w / 2f);
+				// update cached name image if necessary
+				if (f.nameImage == null) {
+					int len = text.getTextWidth(5, f.name);
+					f.nameImage = new BufferedImage(len, 5, BufferedImage.TYPE_INT_ARGB);
+					Graphics2D tg = f.nameImage.createGraphics();
+					text.paintTo(tg, 0, 0, 5, color, f.name);
+					tg.dispose();
+				}
+				g2.drawImage(f.nameImage, xOrig + x, yOrig + y, null);
+				//text.paintTo(g2, xOrig + x, yOrig + y, 5, color, f.name);
+			}
+		}
+	}
+	/**
+	 * Renders the fleet radar.
+	 * @param g2 the graphics object
+	 * @param xOrig the origin X
+	 * @param yOrig the origin Y
+	 * @param ri the radar dot image for the current zoom level
+	 * @param player the player
+	 */
+	private void renderFleetRadar(Graphics2D g2, int xOrig, int yOrig,
+			BufferedImage ri, GamePlayer player) {
+		for (GameFleet fleet : player.ownFleets) {
+			float radarRadius = fleet.getRadarRadius();
+			if (fleet.visible && radarRadius > 0) {
+				for (int i = 0; i < radarSineTable.length; i++) {
+					int x = (int)((fleet.x + radarRadius * radarCosineTable[i]) * zoomFactor);
+					int y = (int)((fleet.y + radarRadius * radarSineTable[i]) * zoomFactor);
+					g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
+				}
+			}
+		}
+	}
+	/**
+	 * Renders planet names onto the starmap.
+	 * @param g2 the graphics object
+	 * @param xOrig the origin X
+	 * @param yOrig the origin Y
+	 * @param player the player object
+	 */
+	private void renderPlanetNames(Graphics2D g2, int xOrig, int yOrig,
+			GamePlayer player) {
+		for (GamePlanet p : player.knownPlanetsByName) {
+			BufferedImage pimg = getPlanetImage(p, p.rotationPhase);
+			int color = TextGFX.GRAY;
+			if (p.owner != null) {
+				color = p.owner.race.smallColor;
+			}
+			int y = (int)(p.y * zoomFactor + pimg.getHeight() / 2f) + 2;
+			int w = text.getTextWidth(5, p.name);
+			int x = (int)(p.x * zoomFactor - w / 2f);
+			if (p.nameImage == null) {
+				int len = text.getTextWidth(5, p.name);
+				p.nameImage = new BufferedImage(len, 5, BufferedImage.TYPE_INT_ARGB);
+				Graphics2D tg = p.nameImage.createGraphics();
+				text.paintTo(tg, 0, 0, 5, color, p.name);
+				tg.dispose();
+			}
+			g2.drawImage(p.nameImage, xOrig + x, yOrig + y, null);
+//			text.paintTo(g2, xOrig + x, yOrig + y, 5, color, p.name);
+		}
+	}
+	/**
+	 * Renders the planetary radar onto the starmap.
+	 * @param g2 the graphics object
+	 * @param xOrig the X origin
+	 * @param yOrig the Y origin
+	 * @param ri the radar dot for the current zoom level
+	 * @param player the player object
+	 */
+	private void renderPlanetRadar(Graphics2D g2, int xOrig, int yOrig,
+			BufferedImage ri, GamePlayer player) {
+		// render radar circle only for the own planets
+		for (GamePlanet p : player.ownPlanets) {
+			int rr = p.getRadarRadius();
+			if (p.visible && rr > 0) {
+				for (int i = 0; i < radarSineTable.length; i++) {
+					int x = (int)((p.x + rr * radarCosineTable[i]) * zoomFactor);
+					int y = (int)((p.y + rr * radarSineTable[i]) * zoomFactor);
+					if (mapCoords.contains(xOrig + x - 1, yOrig + y - 1, 3, 3)) {
+						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
+					}
 				}
 			}
 		}
@@ -1537,19 +1612,6 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		scroll(dx, dy);
 	}
 	/**
-	 * Mix two colors with a factor.
-	 * @param c1 the first color
-	 * @param c2 the second color
-	 * @param rate the third color
-	 * @return the mixed color
-	 */
-	private int mixColors(int c1, int c2, float rate) {
-		return
-			((int)((c1 & 0xFF0000) * rate + (c2 & 0xFF0000) * (1 - rate)) & 0xFF0000)
-			| ((int)((c1 & 0xFF00) * rate + (c2 & 0xFF00) * (1 - rate)) & 0xFF00)
-			| ((int)((c1 & 0xFF) * rate + (c2 & 0xFF) * (1 - rate)) & 0xFF);
-	}
-	/**
 	 * Precalculates the star background locations and colors.
 	 */
 	private void precalculateStars() {
@@ -1560,7 +1622,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			for (int j = 0; j < STAR_COUNT; j++) {
 				starsX[i * STAR_COUNT + j] = random.nextInt(fw);
 				starsY[i * STAR_COUNT + j] = random.nextInt(fh);
-				starsColors[i * STAR_COUNT + j] = mixColors(startStars, endStars, random.nextFloat());
+				starsColors[i * STAR_COUNT + j] = cgfx.mixColors(startStars, endStars, random.nextFloat());
 			}
 		}
 	}
@@ -1923,5 +1985,15 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	public ImageInterpolation getInterpolation() {
 		return interpolation;
+	}
+	/** Precalculates the radar circle's sine and cosine table. */
+	private void precalculateRadar() {
+		double angle = 0;
+		for (int i = 0; i < radarSineTable.length; i++) {
+			radarSineTable[i] = Math.sin(angle);
+			radarCosineTable[i] = Math.cos(angle);
+			angle = i * Math.PI / 50;
+		}
+		
 	}
 }

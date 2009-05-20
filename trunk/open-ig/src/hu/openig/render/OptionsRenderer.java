@@ -105,20 +105,25 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 //	private CommonGFX cgfx;
 	/** The information bar renderer. */
 	private InfobarRenderer infobarRenderer;
+	/** The last rendering position. */
+	private final AchievementRenderer achievementRenderer;
 	/**
 	 * Constructor. Initializes the graphics fields.
 	 * @param gfx the menu graphics
 	 * @param cgfx the common graphics
 	 * @param uis the user interface sound
 	 * @param infobarRenderer the information bar renderer
+	 * @param achievementRenderer the achievement renderer
 	 */
 	public OptionsRenderer(OptionsGFX gfx, CommonGFX cgfx, 
-			UISounds uis, InfobarRenderer infobarRenderer) {
+			UISounds uis, InfobarRenderer infobarRenderer,
+			AchievementRenderer achievementRenderer) {
 		this.gfx = gfx;
 //		this.cgfx = cgfx;
 		this.text = cgfx.text;
 		this.uis = uis;
 		this.infobarRenderer = infobarRenderer;
+		this.achievementRenderer = achievementRenderer;
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		initButtons();
@@ -219,6 +224,7 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 			text.paintTo(g2, currentOpts.listArea.x + 1, currentOpts.listArea.y + i * 13, 10, TextGFX.GREEN, String.format("%d.", i + 1));
 		}
 		
+		achievementRenderer.renderAchievements(g2);
 	}
 	/**
 	 * Draw checkmark if necessary.

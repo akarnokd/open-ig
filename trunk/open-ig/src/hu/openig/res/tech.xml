@@ -43,7 +43,7 @@
 			<mincost>1500</mincost>
 			<cost>8000</cost> <!-- Default cost -->
 			<maxcost>12000</maxcost>
-			<buildcost></buildcost>
+			<buildcost>5000</buildcost>
 			<mechanic>1</mechanic>
 			<computer>2</computer>
 			<ai>2</ai>
@@ -53,6 +53,21 @@
 				<weapon id='Laser1'>3</weapon>
 				<shield id='Shield1'>1</shield>
 				<speed>3</speed>
+			</equipment>
+		</item>
+		<item id='Radar2'>
+			<class>Equipments</class>
+			<type>Radars</type>
+			<level>3</level>
+			<maxtime>2000</maxtime>
+			<maxcost>18000</maxcost>
+			<buildcost></buildcost>
+			<mechanic>2</mechanic>
+			<computer>2</computer>
+			<ai>1</ai>
+			<military>2</military>
+			<equipment>
+				<range>30</range>
 			</equipment>
 		</item>
 		<item id='AdvancedSpySatellite' index=''>

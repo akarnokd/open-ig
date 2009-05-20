@@ -12,6 +12,7 @@ import hu.openig.core.FleetStatus;
 import hu.openig.utils.JavaUtils;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.Comparator;
 
 /**
@@ -38,6 +39,8 @@ public class GameFleet {
 	public GamePlanet attackPlanet;
 	/** If attack mode, contains the target fleet. */
 	public GameFleet attackFleet;
+	/** Rendering helper to cache the fleet name. To re-render it, set this to null. */
+	public BufferedImage nameImage;
 	/** 
 	 * Returns the planet's logical coordinates as point.
 	 * @return the logical location as point
