@@ -8,22 +8,14 @@
 
 package hu.openig.ani;
 
-import hu.openig.ani.Framerates.Rates;
-import hu.openig.ani.SpidyAniFile.Algorithm;
-import hu.openig.ani.SpidyAniFile.Block;
-import hu.openig.ani.SpidyAniFile.Data;
-import hu.openig.ani.SpidyAniFile.Palette;
-import hu.openig.ani.SpidyAniFile.Sound;
-import hu.openig.compress.LZSS;
-import hu.openig.compress.RLE;
+import hu.openig.ani.SpidyAniDecoder.SpidyAniCallback;
 import hu.openig.core.BtnAction;
-import hu.openig.core.PaletteDecoder;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.sound.AudioThread;
 
-import java.io.EOFException;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.concurrent.locks.LockSupport;
 
 import javax.swing.SwingUtilities;
@@ -64,108 +56,113 @@ public class Player {
 	}
 	/** The playback loop. */
 	private void play() {
-		try {
-			while (!stop && !Thread.currentThread().isInterrupted()) {
-				FileInputStream rf = new FileInputStream(getFilename());
-				ad = new AudioThread();
-				ad.start();
-				ad.setMasterGain(masterGain);
-				ad.setMute(mute);
-				try {
-					final SpidyAniFile saf = new SpidyAniFile();
-					saf.open(rf);
-					saf.load();
+		while (!stop && !Thread.currentThread().isInterrupted()) {
+			ad = new AudioThread();
+			ad.start();
+			ad.setMasterGain(masterGain);
+			ad.setMute(mute);
+			SpidyAniCallback callback = new SpidyAniCallback() {
+				/** Time calculation for proper frame delay. */
+				double starttime;
+				/** The current frame number. */
+				int frameCount;
+				/** The audio frame delay. */
+				int frameDelay;
+				/** Frame width. */
+				int width;
+				/** Frame height. */
+				int height;
+				/** The frame/second. */
+				double fps;
+				@Override
+				public void audioData(byte[] data) {
+					ad.submit(data);
+				}
 
-					Framerates fr = new Framerates();
-					
-					Rates r = fr.getRates(getFilename(), saf.getLanguageCode());
-					double fps = r.fps;
-					int delay = r.delay;
-					
-					
-					PaletteDecoder palette = null;
-					int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
-					// clear any previous things from the buffer
-					surface.init(saf.getWidth(), saf.getHeight());
-					surface.getBackbuffer().setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
-					surface.swap();
-					int imageHeight = 0;
-					int dst = 0;
-					int audioCount = 0;
-					Algorithm alg = saf.getAlgorithm();
+				@Override
+				public void fatal(Throwable t) {
+					t.printStackTrace();
+					stopped();
+				}
 
-			   		double starttime = System.currentTimeMillis();  // notice the start time
-			   		try {
-						// add audio delay
-				   		int framecounter = 0;
-				   		boolean firstframe = true;
-				   		while (!stop) {
-							Block b = saf.next();
-							if (b instanceof Palette) {
-								palette = (Palette)b;
-							} else
-							if (b instanceof Sound) {
-								ad.submit(b.data);
-								audioCount++;
-							} else
-							if (b instanceof Data) {
-								if (firstframe) {
-									starttime = System.currentTimeMillis();
-									firstframe = false;
-								}
-								Data d = (Data)b;
-								imageHeight += d.height;
-								// decompress the image
-								byte[] rleInput = d.data;
-								if (saf.isLZSS() && !d.specialFrame) {
-									rleInput = new byte[d.bufferSize];
-									LZSS.decompress(d.data, 0, rleInput, 0);
-								}
-								switch (alg) {
-								case RLE_TYPE_1:
-									int newDst = RLE.decompress1(rleInput, 0, rawImage, dst, palette);
-									dst = newDst;
-									break;
-								case RLE_TYPE_2:
-									newDst = RLE.decompress2(rleInput, 0, rawImage, dst, palette);
-									dst = newDst;
-									break;
-								default:
-								}
-								// we reached the number of subimages per frame?
-								if (imageHeight >= saf.getHeight()) {
-									surface.getBackbuffer().setRGB(0, 0, saf.getWidth(), saf.getHeight(), rawImage, 0, saf.getWidth());
-									surface.swap();
-									if (framecounter++ == delay) {
-										ad.startPlaybackNow();
-									}
-									imageHeight = 0;
-									dst = 0;
-									starttime += (1000.0 / fps);
-				           			LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
-								}
-							}
-						}
-					} catch (EOFException ex) {
-						ad.submit(new byte[0]);
-					}
-				} finally {
-					if (stop) {
-						ad.stopPlaybackNow();
-						ad.interrupt();
-					}
+				@Override
+				public void finished() {
+					ad.stopPlayback();
+					// wait for the audio thread to finish
 					try {
 						ad.join();
 					} catch (InterruptedException e) {
+						// ignored here
 					}
 				}
-				if (!isLoop()) {
-					break;
+
+				@Override
+				public String getFileName() {
+					return Player.this.getFilename();
 				}
+
+				@Override
+				public InputStream getNewInputStream() {
+					try {
+						return new FileInputStream(getFilename());
+					} catch (FileNotFoundException ex) {
+						throw new RuntimeException("Missing file? " + getFilename());
+					}
+				}
+
+				@Override
+				public void imageDate(int[] image) {
+					if (frameCount == 0) {
+						starttime = System.currentTimeMillis();
+					}
+					if (frameCount++ == frameDelay) {
+						ad.startPlaybackNow();
+					}
+					surface.getBackbuffer().setRGB(0, 0, width, height, image, 0, width);
+					surface.swap();
+					// wait the frame/sec
+					starttime += (1000.0 / fps);
+           			LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
+				}
+
+				@Override
+				public void initialize(int width, int height, int frames,
+						int languageCode, double fps, int audioDelay) {
+					this.frameDelay = audioDelay;
+					this.width = width;
+					this.height = height;
+					this.fps = fps;
+					surface.init(width, height);
+					// clear backbuffer
+					surface.getBackbuffer().setRGB(0, 0, width, height, new int[width * height], 0, width);
+					surface.swap();
+				}
+
+				@Override
+				public boolean isPaused() {
+					return false;
+				}
+
+				@Override
+				public boolean isStopped() {
+					return stop;
+				}
+
+				@Override
+				public void stopped() {
+					ad.stopPlaybackNow();
+					try {
+						ad.join();
+					} catch (InterruptedException e) {
+						// ignored here
+					}
+				}
+				
+			};
+			SpidyAniDecoder.decodeLoop(callback);
+			if (!isLoop()) {
+				break;
 			}
-		} catch (IOException ex) {
-			// won't do much about the general case
-			ex.printStackTrace();
 		}
 		playback = null;
 		ad = null;
