@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.Timer;
 
 /**
  * Planet surface renderer class.
@@ -144,24 +145,38 @@ MouseWheelListener, ActionListener {
 	private Btn btnTaxLess;
 	/** More tax. */
 	private Btn btnTaxMore;
+	/** The last rendering position. */
+	private final AchievementRenderer achievementRenderer;
+	/** The problematic planet blinker timer. */
+	private Timer blinkTimer;
+	/** The steps of blink transition. */
+	private static final int BLINK_STEPS = 10;
+	/** The timer interval for blinking. */
+	private static final int BLINK_INTERVAL = 100;
+	/** The current blink step. */
+	private int blinkStep;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx the information graphics obj ects
 	 * @param cgfx the common graphics objects
 	 * @param uiSound the user interface sounds
 	 * @param infobarRenderer the information bar renderer
+	 * @param achievementRenderer the achievement renderer
 	 */
 	public InformationRenderer(InformationGFX gfx, CommonGFX cgfx, 
-			UISounds uiSound, InfobarRenderer infobarRenderer) {
+			UISounds uiSound, InfobarRenderer infobarRenderer,
+			AchievementRenderer achievementRenderer) {
 		this.gfx = gfx;
 		this.cgfx = cgfx;
 		this.text = cgfx.text;
 		this.uiSound = uiSound;
 		this.infobarRenderer = infobarRenderer;
+		this.achievementRenderer = achievementRenderer;
 		
 		controlSize.width = gfx.infoScreen.getWidth();
 		controlSize.height = gfx.infoScreen.getHeight();
-
+		blinkTimer = new Timer(BLINK_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doBlink(); } });
+		
 		initButtons();
 		
 		addMouseMotionListener(this);
@@ -177,13 +192,14 @@ MouseWheelListener, ActionListener {
 		Graphics2D g2 = (Graphics2D)g;
 		int w = getWidth();
 		int h = getHeight();
-		
-		Composite cp = g2.getComposite();
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, w, h);
-		g2.setComposite(cp);
-		
+
+		if (false) {
+			Composite cp = g2.getComposite();
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+			g2.setColor(Color.BLACK);
+			g2.fillRect(0, 0, w, h);
+			g2.setComposite(cp);
+		}
 		if (w != lastWidth || h != lastHeight) {
 			lastWidth = w;
 			lastHeight = h;
@@ -249,6 +265,7 @@ MouseWheelListener, ActionListener {
 			break;
 		default:
 		}
+		achievementRenderer.renderAchievements(g2);
 	}
 	/**
 	 * Render the minimap with grids onto the picture area.
@@ -741,9 +758,25 @@ MouseWheelListener, ActionListener {
 				y = 0;
 				g2.setClip(7 + mainArea.x + x, mainArea.y + y, columnWidth, mainArea.height);
 			}
-			text.paintTo(g2, 9 + mainArea.x + x, mainArea.y + y + 6, 10, p.owner.race.color, p.name);
+			int color = p.owner.race.color;
+			if (p.owner == player && p.hasProblems()) {
+				color = cgfx.mixColors(TextGFX.RED, color, 
+						blinkStep <= BLINK_STEPS ? (1.0f * blinkStep / BLINK_STEPS) : ((2.0f * BLINK_STEPS - blinkStep) / BLINK_STEPS));
+			}
+			if (p.owner == player) {
+				text.paintTo(g2, 9 + mainArea.x + x, mainArea.y + y + 6, 10, color, p.name);
+			} else {
+				if (p.planetListImage == null || p.planetListImageOwner != p.owner) {
+					int len = text.getTextWidth(10, p.name);
+					p.planetListImage = new BufferedImage(len, 10, BufferedImage.TYPE_INT_ARGB);
+					Graphics2D tg = p.planetListImage.createGraphics();
+					text.paintTo(tg, 0, 0, 10, color, p.name);
+					tg.dispose();
+				}
+				g2.drawImage(p.planetListImage, 9 + mainArea.x + x, mainArea.y + y + 6, null);
+			}
 			if (p == player.selectedPlanet) {
-				g2.setColor(new Color(TextGFX.ORANGE));
+				g2.setColor(player.getColor());
 				g2.drawRect(mainArea.x + x + 7, mainArea.y + y + 4, columnWidth - 3, 13);
 			}
 			y += 13;
@@ -787,6 +820,58 @@ MouseWheelListener, ActionListener {
 					text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 90, 10, color, 
 							gameWorld.getLabel("Taxation",
 							gameWorld.getLabel("TaxRate." + planet.tax.id)));
+					
+					// display problematic areas
+
+					List<String> problems = new ArrayList<String>();
+					List<Integer> serious = new ArrayList<Integer>();
+					int lsp = planet.getLivingSpace();
+					if (lsp < planet.population) {
+						problems.add(gameWorld.getLabel("ColonyInfo.LivingSpace"));
+						serious.add(getColorForRelation(planet.population, lsp));
+					}
+					int hsp = planet.getHospital();
+					if (hsp < planet.population) {
+						problems.add(gameWorld.getLabel("ColonyInfo.Hospital"));
+						serious.add(getColorForRelation(planet.population, hsp));
+					}
+					int fsp = planet.getFood();
+					if (fsp < planet.population) {
+						problems.add(gameWorld.getLabel("ColonyInfo.Food"));
+						serious.add(getColorForRelation(planet.population, fsp));
+					}
+					int esp = planet.getEnergyDemand();
+					int emp = planet.getEnergyProduction();
+					if (emp < esp) {
+						problems.add(gameWorld.getLabel("ColonyInfo.Energy"));
+						serious.add(getColorForRelation(esp, emp));
+					}
+					int wsp = planet.getWorkerDemand();
+					if (wsp > planet.population) {
+						problems.add(gameWorld.getLabel("ColonyInfo.Worker"));
+						serious.add(getColorForRelation(planet.population, lsp));
+					}
+					int x0 = secondaryArea.x + 6;
+					int x = x0;
+					int y = secondaryArea.y + 150;
+					int seplen = text.getTextWidth(7, ", ");
+					for (int i = 0; i < problems.size(); i++) {
+						int len = text.getTextWidth(7, problems.get(i));
+						if (y + seplen + len > secondaryArea.x + secondaryArea.width - 6) {
+							y += 10;
+							x = x0;
+							text.paintTo(g2, x, y, 7, serious.get(i), problems.get(i));
+							x += len;
+						} else {
+							if (i > 0) {
+								text.paintTo(g2, x, y, 7, TextGFX.GREEN, ", ");
+								x += seplen;
+							}
+							text.paintTo(g2, x, y, 7, serious.get(i), problems.get(i));
+							x += len;
+						}
+						
+					}
 				} else {
 					text.paintTo(g2, secondaryArea.x + 6, secondaryArea.y + 70, 10, color, 
 							gameWorld.getLabel("PopulationStatusInfo",
@@ -977,11 +1062,11 @@ MouseWheelListener, ActionListener {
 							planet.population + "/" + planet.getLivingSpace() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
 
-				color = getColorForRelation(planet.getWorkers(), planet.population);
+				color = getColorForRelation(planet.getWorkerDemand(), planet.population);
 				text.paintTo(g2, mainArea.x + 10, mainArea.y + 130, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
 							gameWorld.getLabel("ColonyInfo.Worker"),
-							planet.population + "/" + planet.getWorkers() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
+							planet.population + "/" + planet.getWorkerDemand() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
 
 				color = getColorForRelation(planet.population, planet.getHospital());
@@ -998,12 +1083,12 @@ MouseWheelListener, ActionListener {
 							planet.population + "/" + planet.getFood() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
 				
-				color = getColorForRelation(planet.getEnergy(), planet.getEnergyMax());
+				color = getColorForRelation(planet.getEnergyDemand(), planet.getEnergyProduction());
 				text.paintTo(g2, mainArea.x + 10, mainArea.y + 190, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
 							gameWorld.getLabel("ColonyInfo.Energy"),
-							planet.getEnergyMax() + " " + gameWorld.getLabel("ColonyInfo.KWH")
-							+ "   " + gameWorld.getLabel("ColonyInfo.Demand") + " : " + planet.getEnergy()
+							planet.getEnergyProduction() + " " + gameWorld.getLabel("ColonyInfo.KWH")
+							+ "   " + gameWorld.getLabel("ColonyInfo.Demand") + " : " + planet.getEnergyDemand()
 							+ " " + gameWorld.getLabel("ColonyInfo.KWH")
 						));
 				
@@ -1124,7 +1209,7 @@ MouseWheelListener, ActionListener {
 		if (value <= limit) {
 			return TextGFX.GREEN;
 		} else
-		if (value <= limit * 11 / 10) {
+		if (value * 10 <= limit * 11) {
 			return TextGFX.YELLOW;
 		}
 		return TextGFX.RED;
@@ -1294,7 +1379,8 @@ MouseWheelListener, ActionListener {
 				y = 0;
 				g2.setClip(9 + mainArea.x + x, mainArea.y + y, columnWidth - 5, mainArea.height);
 			}
-			text.paintTo(g2, 9 + mainArea.x + x, mainArea.y + y + 6, 10, f.owner.race.color, f.name);
+			int color = f.owner.race.color;
+			text.paintTo(g2, 9 + mainArea.x + x, mainArea.y + y + 6, 10, color, f.name);
 			if (f == player.selectedFleet) {
 				g2.setColor(new Color(TextGFX.ORANGE));
 				Shape c1 = g2.getClip();
@@ -1309,5 +1395,25 @@ MouseWheelListener, ActionListener {
 		renderFleetShortInfo(g2);
 		renderMinimapWithPlanetsAndFleets(g2, false, true, true);
 		g2.setClip(cs);
+	}
+	/**
+	 * Start all animation timers.
+	 */
+	public void startAnimations() {
+		blinkTimer.start();
+	}
+	/** Stop all animation timers. */
+	public void stopAnimations() {
+		blinkTimer.stop();
+	}
+	/** Perform the blink operations. */
+	public void doBlink() {
+		blinkStep++;
+		if (blinkStep >= BLINK_STEPS * 2) {
+			blinkStep = 0;
+		}
+		if (currentScreen == InfoScreen.PLANETS) {
+			repaint();
+		}
 	}
 }

@@ -166,20 +166,25 @@ MouseWheelListener, ActionListener {
 	private GameWorld gameWorld;
 	/** The information bar renderer. */
 	private InfobarRenderer infobarRenderer;
+	/** The last rendering position. */
+	private final AchievementRenderer achievementRenderer;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param gfx the planet graphics 
 	 * @param cgfx the common graphics
 	 * @param uiSound the user interface sounds.
 	 * @param infobarRenderer the information bar
+	 * @param achievementRenderer the achievement renderer
 	 */
 	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx, 
-			UISounds uiSound, InfobarRenderer infobarRenderer) {
+			UISounds uiSound, InfobarRenderer infobarRenderer,
+			AchievementRenderer achievementRenderer) {
 		this.gfx = gfx;
 		this.cgfx = cgfx;
 		this.text = cgfx.text;
 		this.uiSound = uiSound;
 		this.infobarRenderer = infobarRenderer;
+		this.achievementRenderer = achievementRenderer;
 		buildScroller = new Timer(BUILD_SCROLL_INTERVAL, this);
 		buildScroller.setActionCommand("BUILD_SCROLLER");
 		fadeTimer = new Timer(FADE_INTERVAL, this);
@@ -403,6 +408,7 @@ MouseWheelListener, ActionListener {
 			g2.fillRect(0, 0, w, h);
 			g2.setComposite(comp);
 		}
+		achievementRenderer.renderAchievements(g2);
 	}
 	/**
 	 * Returns the currently selected planet's surface base.

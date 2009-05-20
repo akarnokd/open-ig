@@ -17,6 +17,7 @@ import hu.openig.utils.XML;
 import hu.openig.utils.XML.XmlProcessor;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -79,6 +80,17 @@ public class GamePlanet {
 	public int tradeIncome;
 	/** The current tax morale percent. */
 	public int taxMorale;
+	/** Rendering helper to cache the planet name
+	 * for the starmap. To re-render it, set this to null. */
+	public BufferedImage nameImage;
+	/** 
+	 * The planetary list image used to render the name.
+	 * Used only by non-player planets, because they don't flash the name
+	 * on a planetary problem.
+	 */
+	public BufferedImage planetListImage;
+	/** The owner of the planet when the planetListImage was rendered. */
+	public GamePlayer planetListImageOwner;
 	/** 
 	 * The user-buildings on the map mapped via X,Y location for each of its entire rectangular base surface (e.g a 2x2 tile will have 4 entries in this map).
 	 * Moving buildings around is not allowed. 
@@ -203,13 +215,13 @@ public class GamePlanet {
 	/**
 	 * @return the energy consumption in kWh
 	 */
-	public int getEnergy() {
+	public int getEnergyDemand() {
 		return 0; // TODO evaluate energy consumption
 	}
 	/**
 	 * @return the maximum energy output in kWh
 	 */
-	public int getEnergyMax() {
+	public int getEnergyProduction() {
 		return 0; // TODO evaluate maximum energy output
 	}
 	/**
@@ -221,7 +233,17 @@ public class GamePlanet {
 	/**
 	 * @return returns the total worker demand on the planet
 	 */
-	public int getWorkers() {
+	public int getWorkerDemand() {
 		return 0; // determine total worker count required for buildings
+	}
+	/**
+	 * Convinience method to check if a planet has any problems with
+	 * its statistics (e.g. low energy, living space, hospital, etc.)
+	 * @return true if there is any problem
+	 */
+	public boolean hasProblems() {
+		return population > getLivingSpace() || population > getHospital()
+		|| population > getFood() || population < getWorkerDemand() 
+		|| getEnergyProduction() < getEnergyDemand();
 	}
 }

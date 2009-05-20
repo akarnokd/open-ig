@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,6 +34,8 @@ public class GamePlayer {
 	public GameFleet selectedFleet;
 	/** The type currently selected game object on the starmap. */
 	public StarmapSelection selectionType;
+	/** The lazily initialized color object. */
+	private Color colorObj;
 	/**
 	 * Set of known planets, which can be displayed on the starmap for the player.
 	 * (Should) contain all entries of knownPlanetsByName and ownPlanets
@@ -144,5 +147,15 @@ public class GamePlayer {
 			throw new NullPointerException("fleet");
 		}
 		knownFleets.remove(fleet);
+	}
+	/**
+	 * Returns the default text color for the player.
+	 * @return the color
+	 */
+	public Color getColor() {
+		if (colorObj == null) {
+			colorObj = new Color(race.color);
+		}
+		return colorObj;
 	}
 }

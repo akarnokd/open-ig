@@ -27,6 +27,7 @@ import hu.openig.model.GameWorld;
 import hu.openig.model.PlayerType;
 import hu.openig.model.StarmapSelection;
 import hu.openig.music.Music;
+import hu.openig.render.AchievementRenderer;
 import hu.openig.render.InfobarRenderer;
 import hu.openig.render.InformationRenderer;
 import hu.openig.render.MainmenuRenderer;
@@ -128,6 +129,8 @@ public class Main extends JFrame {
 	private InfobarRenderer infobarRenderer;
 	/** The language of the used resources. */
 	private String language;
+	/** The achievement renderer. */
+	private AchievementRenderer achievementRenderer;
 	/**
 	 * Initialize resources from the given root directory.
 	 * @param resMap the resource mapper
@@ -160,18 +163,26 @@ public class Main extends JFrame {
 		gameWorld.showTime = false;
 		gameWorld.showSpeedControls = false;
 		
+		
 		// initialize renderers
+		achievementRenderer = new AchievementRenderer(cgfx, uiSounds);
 		infobarRenderer = new InfobarRenderer(cgfx);
-		starmapRenderer = new StarmapRenderer(starmapGFX, cgfx, uiSounds, infobarRenderer);
-		planetRenderer = new PlanetRenderer(planetGFX, cgfx, uiSounds, infobarRenderer);
-		informationRenderer = new InformationRenderer(infoGFX, cgfx, uiSounds, infobarRenderer);
+		
+		starmapRenderer = new StarmapRenderer(starmapGFX, cgfx, uiSounds, infobarRenderer, achievementRenderer);
+		achievementRenderer.add(starmapRenderer);
+		planetRenderer = new PlanetRenderer(planetGFX, cgfx, uiSounds, infobarRenderer, achievementRenderer);
+		achievementRenderer.add(planetRenderer);
+		informationRenderer = new InformationRenderer(infoGFX, cgfx, uiSounds, infobarRenderer, achievementRenderer);
+		achievementRenderer.add(informationRenderer);
+		optionsRenderer = new OptionsRenderer(optionsGFX, cgfx, uiSounds, infobarRenderer, achievementRenderer);
+		achievementRenderer.add(optionsRenderer);
+
 		mainmenuRenderer = new MainmenuRenderer(menuGFX, cgfx.text);
 		mainmenuRenderer.setOpaque(true);
 		mainmenuRenderer.setBackground(Color.BLACK);
 		moviePlayer = new MovieSurface();
 		moviePlayer.setOpaque(true);
 		moviePlayer.setBackground(Color.BLACK);
-		optionsRenderer = new OptionsRenderer(optionsGFX, cgfx, uiSounds, infobarRenderer);
 		optionsRenderer.setVisible(false);
 		player = new Player(moviePlayer);
 		player.setMasterGain(0);
@@ -473,7 +484,7 @@ public class Main extends JFrame {
 	 */
 	public static void main(String[] args)  throws Exception {
 		// FIXME D3D pipeline is slow for an unknown reason
-		System.setProperty("sun.java2d.d3d", "false");
+//		System.setProperty("sun.java2d.d3d", "false");
 		String root = ".";
 		if (args.length > 0) {
 			root = args[0];
@@ -646,9 +657,13 @@ public class Main extends JFrame {
 	 */
 	private void startStopAnimations(boolean state) {
 		if (state) {
+			achievementRenderer.startAnimations();
 			starmapRenderer.startAnimations();
+			informationRenderer.startAnimations();
 		} else {
+			achievementRenderer.stopAnimations();
 			starmapRenderer.stopAnimations();
+			informationRenderer.stopAnimations();
 		}
 	}
 	/** Show the options screen when called from the main menu. */
@@ -679,7 +694,7 @@ public class Main extends JFrame {
 	/** Perform actions to quit from the application. */
 	private void doQuit() {
 		uiSounds.close();
-		starmapRenderer.stopAnimations();
+		startStopAnimations(false);
 		player.setOnCompleted(null);
 		player.stopAndWait();
 		music.stop();
@@ -749,6 +764,8 @@ public class Main extends JFrame {
 		gameWorld.setPlanetOwnerships();
 		gameWorld.setFleetOwnerships();
 		starmapRenderer.scrollToLogical(gameWorld.player.ownPlanets.iterator().next().getPoint());
+		achievementRenderer.enqueueAchievement("Welcome to Open Imperium Galactica");
+		achievementRenderer.enqueueAchievement("Good luck");
 	}
 	/**
 	 * Diagnostic method to set the player know all planets in the game world.
