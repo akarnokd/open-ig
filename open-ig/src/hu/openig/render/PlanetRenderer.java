@@ -408,7 +408,7 @@ MouseWheelListener, ActionListener {
 			g2.fillRect(0, 0, w, h);
 			g2.setComposite(comp);
 		}
-		achievementRenderer.renderAchievements(g2);
+		achievementRenderer.renderAchievements(g2, this);
 	}
 	/**
 	 * Returns the currently selected planet's surface base.

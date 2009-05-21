@@ -12,6 +12,7 @@ import hu.openig.ani.Player;
 import hu.openig.core.BtnAction;
 import hu.openig.core.ImageInterpolation;
 import hu.openig.core.InfoScreen;
+import hu.openig.core.ScreenLayerer;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.InformationGFX;
 import hu.openig.gfx.MenuGFX;
@@ -193,6 +194,17 @@ public class Main extends JFrame {
 		screens = new JComponent[] {
 			starmapRenderer, planetRenderer, informationRenderer, mainmenuRenderer, moviePlayer, optionsRenderer
 		};
+		achievementRenderer.setScreenLayerer(new ScreenLayerer() { 
+			@Override
+			public boolean isTopScreen(JComponent component) {
+				for (int i = screens.length - 1; i >= 0; i--) {
+					if (screens[i].isVisible()) {
+						return screens[i] == component;
+					}
+				}
+				return false;
+			} 
+		});
 		// setup renderers
 		mainmenuRenderer.setVisible(true);
 		mainmenuRenderer.setVersion(VERSION);

@@ -657,7 +657,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			g2.setComposite(comp);
 		}
 
-		achievementRenderer.renderAchievements(g2);
+		achievementRenderer.renderAchievements(g2, this);
 
 	}
 	/** Recalculate the region coordinates. */
