@@ -85,6 +85,55 @@ public final class XML {
 			}
 		};
 	}
+	/**
+	 * Returns an iterator of the child elements.
+	 * (Remark: I wish we had C# yield and their iterator semantics: MoveNext, Current)
+	 * @param parent the parent node
+	 * @return the list of elements
+	 */
+	public static Iterable<Element> children(final Element parent) {
+		return new Iterable<Element>() {
+			@Override
+			public Iterator<Element> iterator() {
+				return new Iterator<Element>() {
+					/** The loop index. */
+					private int i = 0;
+					/** The original node list to iterate over. */
+					private NodeList nl = parent.getChildNodes();
+					/** The number of elements. */
+					private int count = nl.getLength();
+					/** The current element. */
+					private Element current;
+					@Override
+					public boolean hasNext() {
+						boolean result = false;
+						for (; i < count; i++) {
+							Node n = nl.item(i);
+							if (n instanceof Element) {
+								Element e = (Element)n;
+								current = e;
+								result = true;
+								i++;
+								break;
+							}
+						}
+						return result;
+					};
+					@Override
+					public Element next() {
+						if (current != null) {
+							return current;
+						}
+						throw new NoSuchElementException();
+					};
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					};
+				};
+			}
+		};
+	}
 	/** 
 	 * Returns the contents of the first occurrence of the specified child. 
 	 * @param e the parent element
