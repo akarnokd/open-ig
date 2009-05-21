@@ -369,4 +369,31 @@ public class PCXImage {
 	public static BufferedImage from(File f, int transparentRGB) {
 		return parse(IOUtils.load(f), transparentRGB);
 	}
+	/**
+	 * Increases the image size by width1 and puts the new raw pixels to the left part of the image.
+	 * @param rawAdd the raw image data to add
+	 * @param paletteAdd the palette of the newly added data
+	 * @param width1 the width of the raw data
+	 */
+	public void addRight(byte[] rawAdd, byte[] paletteAdd, int width1) {
+		byte[] curr = this.raw;
+		int newWidth = width + width1;
+		raw = new byte[newWidth * height];
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				raw[i * newWidth + j] = curr[i * width + j];
+			}
+			for (int j = width; j < newWidth; j++) {
+				raw[i * newWidth + j] = rawAdd[i * width1 + j - width];
+			}
+		}
+		width = newWidth;
+	}
+	/**
+	 * Returns a copy of the raw pixel data.
+	 * @return the raw pixel data
+	 */
+	public byte[] getRaw() {
+		return raw.clone();
+	}
 }

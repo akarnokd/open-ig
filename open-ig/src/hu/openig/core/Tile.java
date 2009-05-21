@@ -36,7 +36,7 @@ public class Tile implements TileProvider {
 	/** The vertical strips for larger tiles. Null for 1x1 tiles. */
 	public BufferedImage[] strips;
 	/** The current alpha value. */
-	public float alpha;
+	public float alpha = -1; // set as uninitialized
 	/**
 	 * Converts the tile coordinates to pixel coordinates, X component.
 	 * @param x the X tile coordinate
@@ -85,13 +85,18 @@ public class Tile implements TileProvider {
 		this.alpha = alpha;
 		image = rawImage.toBufferedImage(-2, createPalette(rawImage.getPalette(), alpha));
 		//t.scanlines = width + height - 1;
-		if (strips != null) {
+		if (strips == null) {
+			strips = new BufferedImage[width + height - 1];
+		}
+		if (strips.length > 1) {
 			// create strips
 			for (int i = 0; i < strips.length; i++) {
 				int x0 = i >= width ? Tile.toScreenX(i, 0) : Tile.toScreenX(0, -i);
 				int w0 = Math.min(57, image.getWidth() - x0);
 				strips[i] = ImageUtils.subimage(image, x0, 0, w0, image.getHeight());
 			}
+		} else {
+			strips[0] = image;
 		}
 	}
 	/**

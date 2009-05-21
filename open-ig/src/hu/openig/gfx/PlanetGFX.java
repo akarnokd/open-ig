@@ -8,6 +8,7 @@
 
 package hu.openig.gfx;
 
+import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.PACFile;
@@ -107,6 +108,14 @@ public class PlanetGFX {
 	public final BufferedImage startBattleDown;
 	/** The empty building button. */
 	public final BufferedImage buildingNoButton;
+	/** Map from tech id to building index to the thumbnail image. */
+	private final Map<String, Map<Integer, BufferedImage>> buildingThumbnails = new HashMap<String, Map<Integer, BufferedImage>>();
+	/** The regular building images from tech id to building index to the PCX image. */
+	private final Map<String, Map<Integer, PCXImage>> regularBuildings = new HashMap<String, Map<Integer, PCXImage>>();
+	/** The damaged building images from tech id to building index to the PCX image. */
+	private final Map<String, Map<Integer, PCXImage>> damagedBuildings = new HashMap<String, Map<Integer, PCXImage>>();
+	/** The road tile map from tech id to road type to tile. */
+	private final Map<String, Map<RoadType, Tile>> roadTiles = new HashMap<String, Map<RoadType, Tile>>();
 	/**
 	 * Constructor. Loads all graphics necessary for planetary rendering.
 	 * @param resMap the resource mapper
@@ -186,6 +195,142 @@ public class PlanetGFX {
 		buildingNoButton = ImageUtils.subimage(colonzx, 0, 0, 19, 170);
 		startBattle = ImageUtils.subimage(colonzx, 394, 170, 106, 28);
 		startBattleDown = ImageUtils.subimage(colonzx, 394, 198, 106, 28);
+		
+		for (int i = 1; i < 9; i++) {
+			Map<Integer, BufferedImage> thumbs = new HashMap<Integer, BufferedImage>();
+			// thumbnails
+			buildingThumbnails.put(String.valueOf(i), thumbs);
+			for (PACEntry e : PACFile.parseFully(resMap.get("DATA/COLONYP" + i + ".DAT"))) {
+				int idx = Integer.parseInt(e.filename.substring(0, 3));
+				thumbs.put(idx, PCXImage.parse(e.data, -2));
+			}
+			// colony buildings
+			Map<String, PACEntry> entries = PACFile.mapByName(PACFile.parseFully(resMap.get("DATA/COLONY" + i + ".DAT")));
+			Map<Integer, PCXImage> regulars = new HashMap<Integer, PCXImage>();
+			regularBuildings.put(String.valueOf(i), regulars);
+			Map<Integer, PCXImage> damageds = new HashMap<Integer, PCXImage>();
+			damagedBuildings.put(String.valueOf(i), damageds);
+			for (int j = 0; j < 43; j++) {
+				PACEntry b1 = entries.get(String.format("%03d.PCX", j));
+				PACEntry b2 = entries.get(String.format("%03dB.PCX", j));
+				PCXImage img = new PCXImage(b1.data);
+				if (b2 != null) {
+					PCXImage img1 = new PCXImage(b2.data);
+					img.addRight(img1.getRaw(), img1.getPalette(), img1.getWidth());
+				}
+				regulars.put(j, img);
+				// damaged image
+				b1 = entries.get(String.format("D%02d.PCX", j));
+				b2 = entries.get(String.format("D%02dB.PCX", j));
+				img = new PCXImage(b1.data);
+				if (b2 != null) {
+					PCXImage img1 = new PCXImage(b2.data);
+					img.addRight(img1.getRaw(), img1.getPalette(), img1.getWidth());
+				}
+				damageds.put(j, img);
+			}
+			
+			Map<RoadType, Tile> roads = new HashMap<RoadType, Tile>();
+			roadTiles.put(String.valueOf(i), roads);
+			for (RoadType rt : RoadType.values()) {
+				Tile t = new Tile();
+				t.rawImage = new PCXImage(entries.get(String.format("U%02d.PCX", rt.index)).data);
+				t.width = 1;
+				t.height = 1;
+				roads.put(rt, t);
+			}
+			switch (i) {
+			case 1:
+				tech1Build(entries);
+				break;
+			case 2:
+				tech2Build(entries);
+				break;
+			case 3:
+				tech3Build(entries);
+				break;
+			case 4:
+				tech4Build(entries);
+				break;
+			case 5:
+				tech5Build(entries);
+				break;
+			case 6:
+				tech6Build(entries);
+				break;
+			case 7:
+				tech7Build(entries);
+				break;
+			case 8:
+				tech8Build(entries);
+				break;
+			default:
+			}
+		}
+	}
+	/**
+	 * Extract build progress, and damaged build progress from the tech 1 data file.
+	 * (Remark: Each tech id has different layout in these files.
+	 * @param entries the entries in the pac file
+	 */
+	private void tech1Build(Map<String, PACEntry> entries) {
+		
+	}
+	/**
+	 * Extract build progress, and damaged build progress from the tech 1 data file.
+	 * (Remark: Each tech id has different layout in these files.
+	 * @param entries the entries in the pac file
+	 */
+	private void tech2Build(Map<String, PACEntry> entries) {
+		
+	}
+	/**
+	 * Extract build progress, and damaged build progress from the tech 1 data file.
+	 * (Remark: Each tech id has different layout in these files.
+	 * @param entries the entries in the pac file
+	 */
+	private void tech3Build(Map<String, PACEntry> entries) {
+		
+	}
+	/**
+	 * Extract build progress, and damaged build progress from the tech 1 data file.
+	 * (Remark: Each tech id has different layout in these files.
+	 * @param entries the entries in the pac file
+	 */
+	private void tech4Build(Map<String, PACEntry> entries) {
+		
+	}
+	/**
+	 * Extract build progress, and damaged build progress from the tech 1 data file.
+	 * (Remark: Each tech id has different layout in these files.
+	 * @param entries the entries in the pac file
+	 */
+	private void tech5Build(Map<String, PACEntry> entries) {
+		
+	}
+	/**
+	 * Extract build progress, and damaged build progress from the tech 1 data file.
+	 * (Remark: Each tech id has different layout in these files.
+	 * @param entries the entries in the pac file
+	 */
+	private void tech6Build(Map<String, PACEntry> entries) {
+		
+	}
+	/**
+	 * Extract build progress, and damaged build progress from the tech 1 data file.
+	 * (Remark: Each tech id has different layout in these files.
+	 * @param entries the entries in the pac file
+	 */
+	private void tech7Build(Map<String, PACEntry> entries) {
+		
+	}
+	/**
+	 * Extract build progress, and damaged build progress from the tech 1 data file.
+	 * (Remark: Each tech id has different layout in these files.
+	 * @param entries the entries in the pac file
+	 */
+	private void tech8Build(Map<String, PACEntry> entries) {
+		
 	}
 	/**
 	 * Ajusts varios surface tile geometry. These tiles are not the
@@ -354,9 +499,9 @@ public class PlanetGFX {
 		t.width = width;
 		t.height = height;
 		// tile size doesnt change, so create the strips a priory
-		if (width + height - 1 > 1) {
-			t.strips = new BufferedImage[width + height - 1];
-		}
+//		if (width + height - 1 > 1) {
+//			t.strips = new BufferedImage[width + height - 1];
+//		}
 		t.createImage(1.0f);
 	}
 	/**
