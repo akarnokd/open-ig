@@ -8,6 +8,7 @@
 
 package hu.openig.render;
 
+import hu.openig.core.ScreenLayerer;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.TextGFX;
 import hu.openig.sound.UISounds;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -55,6 +57,8 @@ public class AchievementRenderer {
 	private final Queue<String> achievementQueue = new LinkedBlockingQueue<String>();
 	/** The current achievement text. */
 	private String achievementText;
+	/** The screen layerer callback. */
+	private ScreenLayerer screenLayerer;
 	/**
 	 * Components that are in contact with the renderer and will be repainted on
 	 * the active animation.
@@ -100,9 +104,10 @@ public class AchievementRenderer {
 	/**
 	 * Render achievement icon with its text below the top status bar.
 	 * @param g2 the graphics object
+	 * @param component the component that requests the achivement to render
 	 */
-	public void renderAchievements(Graphics2D g2) {
-		if (achievementText != null) {
+	public void renderAchievements(Graphics2D g2, JComponent component) {
+		if (screenLayerer.isTopScreen(component) && achievementText != null) {
 			Composite c = g2.getComposite();
 			if (achievementAlpha < 0.99f) {
 				g2.setComposite(AlphaComposite.SrcOver.derive(achievementAlpha));
@@ -170,5 +175,17 @@ public class AchievementRenderer {
 	 */
 	public void stopAnimations() {
 		achievementFader.stop();
+	}
+	/**
+	 * @param screenLayerer the screenLayerer to set
+	 */
+	public void setScreenLayerer(ScreenLayerer screenLayerer) {
+		this.screenLayerer = screenLayerer;
+	}
+	/**
+	 * @return the screenLayerer
+	 */
+	public ScreenLayerer getScreenLayerer() {
+		return screenLayerer;
 	}
 }

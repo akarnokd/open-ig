@@ -265,7 +265,7 @@ MouseWheelListener, ActionListener {
 			break;
 		default:
 		}
-		achievementRenderer.renderAchievements(g2);
+		achievementRenderer.renderAchievements(g2, this);
 	}
 	/**
 	 * Render the minimap with grids onto the picture area.

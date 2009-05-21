@@ -224,7 +224,7 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 			text.paintTo(g2, currentOpts.listArea.x + 1, currentOpts.listArea.y + i * 13, 10, TextGFX.GREEN, String.format("%d.", i + 1));
 		}
 		
-		achievementRenderer.renderAchievements(g2);
+		achievementRenderer.renderAchievements(g2, this);
 	}
 	/**
 	 * Draw checkmark if necessary.
