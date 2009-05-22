@@ -9,9 +9,15 @@ package hu.openig.render;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
+import hu.openig.core.Location;
+import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
+import hu.openig.core.TileFragment;
+import hu.openig.model.GameBuilding;
+import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GameWorld;
+import hu.openig.model.GameBuildingPrototype.BuildingImages;
 import hu.openig.res.GameResourceManager;
 import hu.openig.res.gfx.CommonGFX;
 import hu.openig.res.gfx.PlanetGFX;
@@ -94,7 +100,7 @@ MouseWheelListener, ActionListener {
 	/** Rectangle for. */
 	private Rectangle rightBottomRect = new Rectangle();
 	
-	/** Button for. */
+	/** Button for buildable building list. */
 	private Btn btnBuilding;
 	/** Button for. */
 	private Btn btnRadar;
@@ -119,7 +125,6 @@ MouseWheelListener, ActionListener {
 	private Rectangle radarPanelRect = new Rectangle();
 	/** Rectangle for. */
 	private Rectangle buildingInfoPanelRect = new Rectangle();
-	
 	/** The last width. */
 	private int lastWidth;
 	/** The last height. */
@@ -153,12 +158,16 @@ MouseWheelListener, ActionListener {
 	private SoundFXPlayer uiSound;
 	/** Buttons which change state on click.*/
 	private final List<Btn> toggleButtons = new ArrayList<Btn>();
-	/** The various buttons. */
-	private final List<Btn> buttons = new ArrayList<Btn>();
+	/** The press buttons. */
+	private final List<Btn> pressButtons = new ArrayList<Btn>();
+	/** The buttons which fire on mouse release. */
+	private final List<Btn> releaseButtons = new ArrayList<Btn>();
 	/** Event for starmap click. */
 	private BtnAction onStarmapClicked;
 	/** Event for information click. */
 	private BtnAction onInformationClicked;
+	/** Event for information click. */
+	private BtnAction onListClicked;
 	/** Event for bridge click. */
 	private BtnAction onBridgeClicked;
 	/** Event for planets click. */
@@ -169,6 +178,20 @@ MouseWheelListener, ActionListener {
 	private InfobarRenderer infobarRenderer;
 	/** The last rendering position. */
 	private final AchievementRenderer achievementRenderer;
+	/** Build image rectangle. */
+	private final Rectangle buildImageRect = new Rectangle();
+	/** Build image rectangle. */
+	private final Rectangle buildNameRect = new Rectangle();
+	/** Button for next building. */
+	private Btn btnBuildNext;
+	/** Button for previous building. */
+	private Btn btnBuildPrev;
+	/** Button for build. */
+	private Btn btnBuild;
+	/** Button for building list. */
+	private Btn btnList;
+	/** We are currently in build mode. */
+	private boolean buildMode;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager 
@@ -285,6 +308,14 @@ MouseWheelListener, ActionListener {
 				int tileId = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
 				int stripeId = mapBytes[2 * i + 5] & 0xFF;
 				Tile tile = surface.get(tileId);
+				Location l = Location.of(k, j);
+				TileFragment tf = planet.map.get(l);
+				if (tf != null && tf.fragment >= 0) {
+					tile = tf.provider.getTile(l);
+					// select appropriate stripe
+					tile.createImage(daylight);
+					stripeId = tf.fragment % tile.strips.length; // wrap around for safety
+				}
 				if (tile != null) {
 					tile.createImage(daylight);
 					// 1x1 tiles can be drawn from top to bottom
@@ -293,7 +324,8 @@ MouseWheelListener, ActionListener {
 						int y = yoff + Tile.toScreenY(k, j);
 						if (x >= -tile.image.getWidth() && x <= (int)(getWidth() / scale)
 								&& y >= -tile.image.getHeight() && y <= (int)(getHeight() / scale) + tile.image.getHeight()) {
-							g2.drawImage(tile.image, x, y - tile.image.getHeight() + tile.heightCorrection, null);
+							BufferedImage subimage = tile.strips[stripeId];
+							g2.drawImage(subimage, x, y - tile.image.getHeight() + tile.heightCorrection, null);
 						}
 					} else 
 					if (stripeId < 255) {
@@ -386,7 +418,7 @@ MouseWheelListener, ActionListener {
 			}
 		}
 		if (btnBuilding.down) {
-			g2.drawImage(gfx.buildPanel, buildPanelRect.x, buildPanelRect.y, null);
+			renderBuildings(g2);
 		}
 		if (btnBuildingInfo.down) {
 			g2.drawImage(gfx.buildingInfoPanel, buildingInfoPanelRect.x, buildingInfoPanelRect.y, null);
@@ -427,13 +459,13 @@ MouseWheelListener, ActionListener {
 	/** Initialize buttons. */
 	private void initButtons() {
 		btnPlanet = new Btn(new BtnAction() { public void invoke() { doPlanetClick(); } });
-		buttons.add(btnPlanet);
+		releaseButtons.add(btnPlanet);
 		btnColonyInfo = new Btn(new BtnAction() { public void invoke() { doColonyInfoClick(); } });
-		buttons.add(btnColonyInfo);
+		releaseButtons.add(btnColonyInfo);
 		btnStarmap = new Btn(new BtnAction() { public void invoke() { doStarmapRecClick(); } });
-		buttons.add(btnStarmap);
+		releaseButtons.add(btnStarmap);
 		btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); } });
-		buttons.add(btnBridge);
+		releaseButtons.add(btnBridge);
 		
 		btnBuilding = new Btn(new BtnAction() { public void invoke() { doBuildingClick(); } });
 		toggleButtons.add(btnBuilding);
@@ -444,10 +476,112 @@ MouseWheelListener, ActionListener {
 		btnButtons = new Btn(new BtnAction() { public void invoke() { doScreenClick(); } });
 		toggleButtons.add(btnButtons);
 		
+		btnBuildNext = new Btn(new BtnAction() { public void invoke() { doBuildNext(); } });
+		pressButtons.add(btnBuildNext);
+		btnBuildPrev = new Btn(new BtnAction() { public void invoke() { doBuildPrev(); } });
+		pressButtons.add(btnBuildPrev);
+		btnBuild = new Btn(new BtnAction() { public void invoke() { doBuild(); } });
+		toggleButtons.add(btnBuild);
+		btnList = new Btn(new BtnAction() { public void invoke() { doList(); } });
+		releaseButtons.add(btnList);
+
 		btnBuilding.down = true;
 		btnRadar.down = true;
 		btnBuildingInfo.down = true;
 		btnButtons.down = true;
+	}
+	/**
+	 * Perform action on list button click.
+	 */
+	protected void doList() {
+		uiSound.playSound("Buildings");
+		if (getOnListClicked() != null) {
+			getOnListClicked().invoke();
+		}
+		cancelBuildMode();
+	}
+	/**
+	 * Perform action on the build button click.
+	 */
+	protected void doBuild() {
+		GameBuildingPrototype bp = gameWorld.player.selectedBuildingPrototype;
+		if (bp == null) {
+			return;
+		}
+		BuildingImages bi = bp.images.get(getTechId());
+		if (bi == null) {
+			return;
+		}
+		buildMode = !buildMode;
+		// if build mode, resize the selection rectangle
+		if (buildMode) {
+			tilesToHighlight = new Rectangle(0, 0, bi.regularTile.height + 2, bi.regularTile.width + 2);
+		} else {
+			cancelBuildMode();
+		}
+	}
+	/**
+	 * Perform action on the previous button click.
+	 */
+	protected void doBuildPrev() {
+		List<GameBuildingPrototype> list = getBuildingList();
+		GameBuildingPrototype bp = gameWorld.player.selectedBuildingPrototype;
+		int idx = Math.max(0, list.indexOf(bp) - 1);
+		if (idx < list.size()) {
+			gameWorld.player.selectedBuildingPrototype = list.get(idx);
+		}
+		repaint(buildPanelRect);
+		buildScroller.setActionCommand("SCROLL-UP");
+		if (!buildScroller.isRunning()) {
+			buildScroller.start();
+		}
+		cancelBuildMode();
+	}
+	/**
+	 * Cancel the build mode.
+	 */
+	private void cancelBuildMode() {
+		buildMode = false;
+		tilesToHighlight = null;
+		btnBuild.down = false;
+		repaint(btnBuild.rect);
+	}
+	/**
+	 * @return a list of buildings for the selected planet's race or the player's race.
+	 */
+	private List<GameBuildingPrototype> getBuildingList() {
+		String techId = getTechId();
+		List<GameBuildingPrototype> list = gameWorld.getTechIdBuildingPrototypes(techId);
+		return list;
+	}
+	/**
+	 * @return the technology id for the current planet buildings
+	 */
+	private String getTechId() {
+		String techId;
+		if (gameWorld.player.selectedPlanet != null && gameWorld.player.selectedPlanet.populationRace != null) {
+			techId = gameWorld.player.selectedPlanet.populationRace.techId; 
+		} else {
+			techId = gameWorld.player.race.techId;
+		}
+		return techId;
+	}
+	/**
+	 * Perform action on the building next button click.
+	 */
+	protected void doBuildNext() {
+		List<GameBuildingPrototype> list = getBuildingList();
+		GameBuildingPrototype bp = gameWorld.player.selectedBuildingPrototype;
+		int idx = Math.min(list.size(), list.indexOf(bp) + 1);
+		if (idx < list.size()) {
+			gameWorld.player.selectedBuildingPrototype = list.get(idx);
+		}
+		repaint(buildPanelRect);
+		buildScroller.setActionCommand("SCROLL-DOWN");
+		if (!buildScroller.isRunning()) {
+			buildScroller.start();
+		}
+		cancelBuildMode();
 	}
 	/**
 	 * Update location of various interresting rectangles of objects.
@@ -553,6 +687,12 @@ MouseWheelListener, ActionListener {
 		radarPanelRect.width = gfx.radarPanel.getWidth();
 		radarPanelRect.height = gfx.radarPanel.getHeight();
 		
+		buildImageRect.setBounds(26, buildPanelRect.y + 7, 140, 103);
+		buildNameRect.setBounds(27, buildPanelRect.y + 117, 166, 18);
+		btnList.setBounds(26, buildPanelRect.y + 142, 81, 21);
+		btnBuild.setBounds(113, buildPanelRect.y + 142, 81, 21);
+		btnBuildPrev.setBounds(172, buildPanelRect.y + 7, 22, 48);
+		btnBuildNext.setBounds(172, buildPanelRect.y + 62, 22, 48);
 	}
 	/**
 	 * Converts the tile x and y coordinates to map offset.
@@ -570,7 +710,7 @@ MouseWheelListener, ActionListener {
 	 * @param rect the target rectangle
 	 */
 	private void drawIntoRect(Graphics2D g2, BufferedImage image, Rectangle rect) {
-		for (int j = rect.y; j < rect.y + rect.height; j++) {
+		for (int j = rect.y; j >= rect.y - rect.height + 1; j--) {
 			for (int k = rect.x; k < rect.x + rect.width; k++) {
 				int x = xoff + Tile.toScreenX(k, j); 
 				int y = yoff + Tile.toScreenY(k, j); 
@@ -623,12 +763,15 @@ MouseWheelListener, ActionListener {
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (eventInMainWindow(e)) {
-			int x = e.getX() - xoff - 27;
-			int y = e.getY() - yoff + 1;
-			int a = (int)Math.floor(Tile.toTileX(x, y));
-			int b = (int)Math.floor(Tile.toTileY(x, y));
-			tilesToHighlight = new Rectangle(a, b, 1, 1);
-			repaint();
+			if (tilesToHighlight != null) {
+				int x = e.getX() - xoff - 27;
+				int y = e.getY() - yoff + 1;
+				int a = (int)Math.floor(Tile.toTileX(x, y));
+				int b = (int)Math.floor(Tile.toTileY(x, y));
+				tilesToHighlight.x = a;
+				tilesToHighlight.y = b;
+				repaint();
+			}
 		}
 	}
 	/**
@@ -649,15 +792,16 @@ MouseWheelListener, ActionListener {
 		} else
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (eventInMainWindow(e)) {
-				int x = e.getX() - xoff - 27;
-				int y = e.getY() - yoff + 1;
-				int a = (int)Math.floor(Tile.toTileX(x, y));
-				int b = (int)Math.floor(Tile.toTileY(x, y));
-				int offs = this.toMapOffset(a, b);
-				int val = offs >= 0 && offs < 65 * 65 ? getSelectedPlanetSurface()[offs * 2 + 4] & 0xFF : 0;
-				System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
+				doMainWindowClick(e);
 			} else {
-				for (Btn b : buttons) {
+				for (Btn b : pressButtons) {
+					if (b.test(pt)) {
+						b.down = true;
+						repaint(b.rect);
+						b.click();
+					}
+				}
+				for (Btn b : releaseButtons) {
 					if (b.test(pt)) {
 						b.down = true;
 						repaint(b.rect);
@@ -674,10 +818,85 @@ MouseWheelListener, ActionListener {
 		}
 	}
 	/**
+	 * Do action when the user clicks on the maon window.
+	 * @param e the mouse event
+	 */
+	private void doMainWindowClick(MouseEvent e) {
+		if (!buildMode) {
+			int x = e.getX() - xoff - 27;
+			int y = e.getY() - yoff + 1;
+			int a = (int)Math.floor(Tile.toTileX(x, y));
+			int b = (int)Math.floor(Tile.toTileY(x, y));
+			int offs = this.toMapOffset(a, b);
+			int val = offs >= 0 && offs < 65 * 65 ? getSelectedPlanetSurface()[offs * 2 + 4] & 0xFF : 0;
+			System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
+		} else {
+			// TODO test placeability first!
+			// place the selected building onto the planet
+			GamePlanet planet = gameWorld.player.selectedPlanet;
+			GameBuildingPrototype bp = gameWorld.player.selectedBuildingPrototype;
+			String techid = getTechId();
+			BuildingImages bi = bp.images.get(techid);
+			
+			GameBuilding b = new GameBuilding();
+			b.prototype = bp;
+			b.images = bi;
+			b.progress = 100;
+			b.health = 100;
+			b.x = tilesToHighlight.x + 1;
+			b.y = tilesToHighlight.y - 1;
+			
+			// place roads around the base
+			Map<RoadType, Tile> rts = gfx.roadTiles.get(techid);
+			TileFragment tf = TileFragment.of(0, rts.get(RoadType.RIGHT_TO_BOTTOM));
+			planet.map.put(Location.of(tilesToHighlight.x, tilesToHighlight.y), tf);
+			tf = TileFragment.of(0, rts.get(RoadType.LEFT_TO_BOTTOM));
+			planet.map.put(Location.of(tilesToHighlight.x + tilesToHighlight.width - 1, tilesToHighlight.y), tf);
+			tf = TileFragment.of(0, rts.get(RoadType.TOP_TO_RIGHT));
+			planet.map.put(Location.of(tilesToHighlight.x, tilesToHighlight.y - tilesToHighlight.height + 1), tf);
+			tf = TileFragment.of(0, rts.get(RoadType.TOP_TO_LEFT));
+			planet.map.put(Location.of(tilesToHighlight.x + tilesToHighlight.width - 1, tilesToHighlight.y - tilesToHighlight.height + 1), tf);
+			// add linear segments
+			Tile ht = rts.get(RoadType.HORIZONTAL);
+			for (int i = tilesToHighlight.x + 1; i < tilesToHighlight.x + tilesToHighlight.width - 1; i++) {
+				tf = TileFragment.of(0, ht);
+				planet.map.put(Location.of(i, tilesToHighlight.y), tf);
+				tf = TileFragment.of(0, ht);
+				planet.map.put(Location.of(i, tilesToHighlight.y - tilesToHighlight.height + 1), tf);
+			}
+			Tile vt = rts.get(RoadType.VERTICAL);
+			for (int i = tilesToHighlight.y - 1; i > tilesToHighlight.y - tilesToHighlight.height + 1; i--) {
+				tf = TileFragment.of(0, vt);
+				planet.map.put(Location.of(tilesToHighlight.x, i), tf);
+				tf = TileFragment.of(0, vt);
+				planet.map.put(Location.of(tilesToHighlight.x + tilesToHighlight.width - 1, i), tf);
+			}
+			// place the actual building fragments
+			int fragment = 0;
+			for (int i = tilesToHighlight.y - 1; i >= tilesToHighlight.y - tilesToHighlight.height + 2; i--) {
+				tf = TileFragment.of(fragment, b);
+				planet.map.put(Location.of(tilesToHighlight.x + 1, i), tf);
+				fragment++;
+			}
+			for (int i = tilesToHighlight.x + 2; i < tilesToHighlight.x + tilesToHighlight.width - 1; i++) {
+				tf = TileFragment.of(fragment, b);
+				planet.map.put(Location.of(i, tilesToHighlight.y - tilesToHighlight.height + 2), tf);
+				fragment++;
+			}
+			planet.addBuilding(b);
+			repaint(mainWindow);
+			// if not multiple placement
+			if (!e.isShiftDown()) {
+				cancelBuildMode();
+			}
+		}
+	}
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		Point pt = e.getPoint();
 		if (e.getButton() == MouseEvent.BUTTON3) {
 			panMode = false;
 		} else
@@ -687,9 +906,16 @@ MouseWheelListener, ActionListener {
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			boolean needRepaint = buildScroller.isRunning();
 			buildScroller.stop();
-			for (Btn b : buttons) {
+			for (Btn b : pressButtons) {
 				needRepaint |= b.down;
 				b.down = false;
+			}
+			for (Btn b : releaseButtons) {
+				needRepaint |= b.down;
+				b.down = false;
+				if (b.test(pt)) {
+					b.click();
+				}
 			}
 			if (needRepaint) {
 				repaint();
@@ -736,16 +962,7 @@ MouseWheelListener, ActionListener {
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON1) {
-			if (e.getClickCount() == 1) {
-				Point pt = e.getPoint();
-				for (Btn b : buttons) {
-					if (b.test(pt)) {
-						b.click();
-					}
-				}
-			}
-		}
+		// no op
 	}
 	/**
 	 * {@inheritDoc}
@@ -769,8 +986,11 @@ MouseWheelListener, ActionListener {
 		if ("FADE".equals(e.getActionCommand())) {
 			doFade();
 		} else
-		if ("BUILD_SCROLLER".equals(e.getActionCommand())) {
-			doBuildScroller();
+		if ("SCROLL-UP".equals(e.getActionCommand())) {
+			doBuildScroller(false);
+		} else
+		if ("SCROLL-DOWN".equals(e.getActionCommand())) {
+			doBuildScroller(true);
 		}
 	}
 	/** Execute the fade animation. */
@@ -799,9 +1019,16 @@ MouseWheelListener, ActionListener {
 		}
 		darkness = 0f;
 	}
-	/** Action for build list scrolling. */
-	private void doBuildScroller() {
-		
+	/** 
+	 * Action for build list scrolling.
+	 * @param direction true: down, false: up 
+	 */
+	private void doBuildScroller(boolean direction) {
+		if (direction) {
+			doBuildNext();
+		} else {
+			doBuildPrev();
+		}
 	}
 	/** Perform action on bridge button click. */
 	protected void doBridgeClick() {
@@ -910,5 +1137,85 @@ MouseWheelListener, ActionListener {
 	 */
 	public GameWorld getGameWorld() {
 		return gameWorld;
+	}
+	/**
+	 * Render buildings panel.
+	 * @param g2 the graphics object
+	 */
+	private void renderBuildings(Graphics2D g2) {
+		Shape sp = g2.getClip();
+		g2.drawImage(gfx.buildPanel, buildPanelRect.x, buildPanelRect.y, null);
+		List<GameBuildingPrototype> list = getBuildingList();
+		GameBuildingPrototype bp = gameWorld.player.selectedBuildingPrototype;
+		int idx = list.indexOf(bp);
+		if (idx < 0 && list.size() > 0) {
+			idx = 0;
+			gameWorld.player.selectedBuildingPrototype = list.get(0);
+			bp = list.get(0);
+		}
+		if (bp != null) {
+			BuildingImages bi = bp.images.get(getTechId());
+			if (bp != null && bi != null) {
+				g2.setClip(buildImageRect);
+				g2.drawImage(bi.thumbnail, buildImageRect.x + (buildImageRect.width - bi.thumbnail.getWidth()) / 2,
+						buildImageRect.y + (buildImageRect.height - bi.thumbnail.getHeight()) / 2,  null);
+				
+				if (!gameWorld.isBuildableOnPlanet(bp)) {
+					g2.setColor(Color.RED);
+					g2.drawLine(buildImageRect.x, buildImageRect.y, 
+							buildImageRect.x + buildImageRect.width - 1, 
+							buildImageRect.y + buildImageRect.height - 1
+					);
+					g2.drawLine(buildImageRect.x + buildImageRect.width - 1, buildImageRect.y, 
+							buildImageRect.x, 
+							buildImageRect.y + buildImageRect.height - 1 
+					);
+				}
+				
+				String costStr = bp.cost + " " + gameWorld.getLabel("BuildingInfo.ProductionUnitFor.credit");
+				int len0 = text.getTextWidth(7, costStr);
+				text.paintTo(g2, buildImageRect.x + (buildImageRect.width - len0) - 2,
+						buildImageRect.y + (buildImageRect.height - 10),
+						7, TextGFX.YELLOW, costStr);
+				
+				g2.setClip(buildNameRect);
+				int len = text.getTextWidth(10, bp.name);
+				text.paintTo(g2, buildNameRect.x + (buildNameRect.width - len) / 2,
+						buildNameRect.y + (buildNameRect.height - 10) / 2,
+						10, TextGFX.YELLOW, bp.name);
+			}
+		}
+		g2.setClip(sp);
+		if (idx <= 0) {
+			g2.drawImage(gfx.buildScrollNone, btnBuildPrev.rect.x, btnBuildPrev.rect.y, null);
+		} else
+		if (btnBuildPrev.down) {
+			g2.drawImage(gfx.buildScrollUpDown, btnBuildPrev.rect.x, btnBuildPrev.rect.y, null);
+		}
+		if (idx >= list.size() - 1) {
+			g2.drawImage(gfx.buildScrollNone, btnBuildNext.rect.x, btnBuildNext.rect.y, null);
+		} else
+		if (btnBuildNext.down) {
+			g2.drawImage(gfx.buildScrollDownDown, btnBuildNext.rect.x, btnBuildNext.rect.y, null);
+		}
+		if (btnList.down) {
+			g2.drawImage(gfx.listDown, btnList.rect.x, btnList.rect.y, null);
+		}
+		if (btnBuild.down) {
+			g2.drawImage(gfx.buildDown, btnBuild.rect.x, btnBuild.rect.y, null);
+		}
+		g2.setClip(sp);
+	}
+	/**
+	 * @param onListClicked the onListClicked to set
+	 */
+	public void setOnListClicked(BtnAction onListClicked) {
+		this.onListClicked = onListClicked;
+	}
+	/**
+	 * @return the onListClicked
+	 */
+	public BtnAction getOnListClicked() {
+		return onListClicked;
 	}
 }

@@ -20,8 +20,9 @@ public enum BuildLimit {
 	UNLIMITED("Unlimited"),
 	/** A fixed number of buildings can be built. */
 	FIXED_NUMBER_PER_PLANET("Fixed"),
-	/** Only one can be built from a group of similar buildings (e.g. one kind of research center per planet). */
-	ONE_KIND_PER_PLANET("OneKind")
+	/** Only a fixed number can be built from a group of similar buildings 
+	 * (e.g. one kind of research center per planet). */
+	FIXED_KIND_PER_PLANET("Kind")
 	;
 	/** The build limit id in xml. */
 	public final String id;

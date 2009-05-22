@@ -63,6 +63,8 @@ public class GamePlayer {
 	public final Set<ResearchTech> knownTechnology = new HashSet<ResearchTech>();
 	/** The set of technologies that are researched. */
 	public final Set<ResearchTech> availableTechnology = new HashSet<ResearchTech>();
+	/** The currently selected building prototype. */
+	public GameBuildingPrototype selectedBuildingPrototype;
 	/**
 	 * Adds the planet to the own planets set and subsequently
 	 * calls knowPlanet. Players can lose posession of a planet
@@ -160,5 +162,18 @@ public class GamePlayer {
 			colorObj = new Color(race.color);
 		}
 		return colorObj;
+	}
+	/**
+	 * Returns the total number of buildings which belong to the given
+	 * building prototype for the current player.
+	 * @param bp the building prototype, not null
+	 * @return the total number of buildings
+	 */
+	public int getTotalCountOfBuildings(GameBuildingPrototype bp) {
+		int sum = 0;
+		for (GamePlanet p : ownPlanets) {
+			sum += p.getCountOfBuilding(bp);
+		}
+		return sum;
 	}
 }

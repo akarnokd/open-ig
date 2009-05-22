@@ -372,6 +372,7 @@ public class Main extends JFrame {
 		starmapRenderer.setOnInformationClicked(new BtnAction() { public void invoke() { onStarmapInfo(); } });
 		planetRenderer.setOnStarmapClicked(new BtnAction() { public void invoke() { onColonyStarmap(); } });
 		planetRenderer.setOnInformationClicked(new BtnAction() { public void invoke() { onColonyInfo(); } });
+		planetRenderer.setOnListClicked(new BtnAction() { public void invoke() { onBuildings(); } });
 		informationRenderer.setOnStarmapClicked(new BtnAction() { public void invoke() { onInfoStarmap(); } });
 		informationRenderer.setOnColonyClicked(new BtnAction() { public void invoke() { onInfoColony(); } });
 		planetRenderer.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
@@ -385,6 +386,14 @@ public class Main extends JFrame {
 		optionsRenderer.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); } });
 		optionsRenderer.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); } });
 		optionsRenderer.setOnExit(new BtnAction() { public void invoke() { doExit(); } });
+	}
+	/**
+	 * Switch to buildings on the information screen.
+	 */
+	protected void onBuildings() {
+		informationRenderer.setScreenButtonsFor(InfoScreen.BUILDINGS);
+		informationRenderer.setVisible(true);
+		layers.validate();
 	}
 	/** Go to starmap from main menu. */
 	private void onStarmap() {
