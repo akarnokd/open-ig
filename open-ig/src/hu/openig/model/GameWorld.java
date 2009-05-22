@@ -53,6 +53,8 @@ public class GameWorld implements GameRaceLookup {
 	public Labels labels;
 	/** The current language. */
 	public String language;
+	/** The tech id to game building prototype map. */
+	public final List<GameBuildingPrototype> buildingPrototypes = new ArrayList<GameBuildingPrototype>();
 	/**
 	 * {@inheritDoc}
 	 */

@@ -1903,6 +1903,30 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 						selectedPlanet.populationGrowth)
 						+ ", " + gameWorld.getLabel("TaxRate." + selectedPlanet.tax.id)
 				);
+				
+				// render problematic area icons backwards
+				int x = detailsRect.x + detailsRect.width - 15;
+				int y = detailsRect.y + 69;
+				if (selectedPlanet.getEnergyDemand() > selectedPlanet.getEnergyProduction()) {
+					g2.drawImage(cgfx.energyIcon, x, y, null);
+					x -= 12;
+				}
+				if (selectedPlanet.population > selectedPlanet.getFood()) {
+					g2.drawImage(cgfx.foodIcon, x, y, null);
+					x -= 12;
+				}
+				if (selectedPlanet.population > selectedPlanet.getHospital()) {
+					g2.drawImage(cgfx.hospitalIcon, x, y, null);
+					x -= 12;
+				}
+				if (selectedPlanet.population < selectedPlanet.getWorkerDemand()) {
+					g2.drawImage(cgfx.workerIcon, x, y, null);
+					x -= 12;
+				}
+				if (selectedPlanet.population > selectedPlanet.getLivingSpace()) {
+					g2.drawImage(cgfx.livingSpaceIcon, x, y, null);
+					x -= 12;
+				}
 			}
 		} else {
 			text.paintTo(g2, detailsRect.x + 6, detailsRect.y + 23, 10, TextGFX.GREEN, gameWorld.getLabel("EmpireNames.Empty"));

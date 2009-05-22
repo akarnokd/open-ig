@@ -263,6 +263,9 @@ MouseWheelListener, ActionListener {
 		case FLEETS:
 			renderFleets(g2);
 			break;
+		case BUILDINGS:
+			renderBuildings(g2);
+;			break;
 		default:
 		}
 		achievementRenderer.renderAchievements(g2, this);
@@ -1415,5 +1418,41 @@ MouseWheelListener, ActionListener {
 		if (currentScreen == InfoScreen.PLANETS) {
 			repaint();
 		}
+	}
+	/**
+	 * Render fleet list panel.
+	 * @param g2 the graphics object.
+	 */
+	private void renderBuildings(Graphics2D g2) {
+		Shape cs = g2.getClip();
+//		GamePlayer player = gameWorld.player;
+		
+//		int columnWidth = (mainArea.width - 7) / 4;
+//		int x = 0;
+//		int y = 0;
+//		List<GameFleet> fleets = gameWorld.getKnownFleets();
+//		g2.setClip(9 + mainArea.x + x, mainArea.y + y, columnWidth - 5, mainArea.height);
+//		for (GameFleet f : fleets) {
+//			if (y + 13 >= mainArea.height) {
+//				x += columnWidth;
+//				y = 0;
+//				g2.setClip(9 + mainArea.x + x, mainArea.y + y, columnWidth - 5, mainArea.height);
+//			}
+//			int color = f.owner.race.color;
+//			text.paintTo(g2, 9 + mainArea.x + x, mainArea.y + y + 6, 10, color, f.name);
+//			if (f == player.selectedFleet) {
+//				g2.setColor(new Color(TextGFX.ORANGE));
+//				Shape c1 = g2.getClip();
+//				// widen the clip area for the box-around
+//				g2.setClip(7 + mainArea.x + x, mainArea.y + y, columnWidth, mainArea.height);
+//				g2.drawRect(mainArea.x + x + 7, mainArea.y + y + 4, columnWidth - 3, 13);
+//				g2.setClip(c1);
+//			}
+//			y += 13;
+//		}
+//		
+//		renderFleetShortInfo(g2);
+//		renderMinimapWithPlanetsAndFleets(g2, false, true, true);
+		g2.setClip(cs);
 	}
 }

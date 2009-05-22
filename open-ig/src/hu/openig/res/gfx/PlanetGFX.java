@@ -8,7 +8,6 @@
 
 package hu.openig.res.gfx;
 
-import hu.openig.core.BuildingLookup;
 import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.utils.ImageUtils;
@@ -28,7 +27,7 @@ import java.util.Map;
  * @author karnokd, 2009.01.18.
  * @version $Revision 1.0$
  */
-public class PlanetGFX implements BuildingLookup {
+public class PlanetGFX {
 	/** A map from surface type to tile index to tile object. */
 	private final Map<Integer, Map<Integer, Tile>> surfaceImages;
 	/** The map name to the map pack. */
@@ -571,7 +570,44 @@ public class PlanetGFX implements BuildingLookup {
 	 * @param entries the entries in the pac file
 	 */
 	private void tech2Build(Map<String, PACEntry> entries) {
+		List<Tile> tiles = new ArrayList<Tile>();
+		buildupTiles.put("2", tiles);
 		
+		PCXImage buildup = new PCXImage(entries.get("EPULES1.PCX").data);
+		tiles.add(new Tile(buildup.subimage(1, 1, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 29, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 57, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 85, 55, 44), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 130, 55, 36), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 167, 55, 43), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 211, 55, 50), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 262, 55, 46), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 309, 55, 46), 1, 1));
+		
+		tiles.add(new Tile(buildup.subimage(57, 1, 55, 64), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 66, 55, 31), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 98, 55, 38), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 137, 55, 38), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 176, 55, 47), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 224, 55, 42), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 267, 55, 60), 1, 1));
+		
+		List<Tile> damagedTiles = new ArrayList<Tile>();
+		buildupDamagedTiles.put("2", damagedTiles);
+		PCXImage damage = new PCXImage(entries.get("DAMAGE.PCX").data);
+		damagedTiles.add(new Tile(damage.subimage(1, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 29, 55, 44), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 74, 55, 34), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 109, 55, 28), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 138, 55, 64), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 203, 55, 43), 1, 1));
+		
+		damagedTiles.add(new Tile(damage.subimage(57, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 29, 55, 46), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 76, 55, 47), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 124, 55, 39), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 164, 55, 38), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 203, 55, 27), 1, 1));
 	}
 	/**
 	 * Extract build progress, and damaged build progress from the tech 3 data file.
@@ -579,7 +615,45 @@ public class PlanetGFX implements BuildingLookup {
 	 * @param entries the entries in the pac file
 	 */
 	private void tech3Build(Map<String, PACEntry> entries) {
+		List<Tile> tiles = new ArrayList<Tile>();
+		buildupTiles.put("3", tiles);
 		
+		PCXImage buildup = new PCXImage(entries.get("EPULES1.PCX").data);
+		tiles.add(new Tile(buildup.subimage(1, 1, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 29, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 57, 55, 40), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 98, 55, 37), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 136, 55, 40), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 177, 55, 40), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 218, 55, 57), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 276, 55, 57), 1, 1));
+
+		tiles.add(new Tile(buildup.subimage(57, 1, 55, 39), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 41, 55, 50), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 92, 55, 50), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 143, 55, 50), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 194, 55, 58), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 253, 55, 58), 1, 1));
+		
+		List<Tile> damagedTiles = new ArrayList<Tile>();
+		buildupDamagedTiles.put("3", damagedTiles);
+		PCXImage damage = new PCXImage(entries.get("DAMAGE.PCX").data);
+		damagedTiles.add(new Tile(damage.subimage(1, 1, 55, 37), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 39, 55, 58), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 98, 55, 57), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 156, 55, 39), 1, 1));
+
+		damagedTiles.add(new Tile(damage.subimage(57, 1, 55, 50), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 52, 55, 40), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 93, 55, 40), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 134, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 162, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 190, 55, 50), 1, 1));
+
+		damagedTiles.add(new Tile(damage.subimage(113, 1, 55, 50), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(113, 52, 55, 58), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(113, 111, 55, 40), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(113, 152, 55, 57), 1, 1));
 	}
 	/**
 	 * Extract build progress, and damaged build progress from the tech 4 data file.
@@ -587,7 +661,48 @@ public class PlanetGFX implements BuildingLookup {
 	 * @param entries the entries in the pac file
 	 */
 	private void tech4Build(Map<String, PACEntry> entries) {
+		List<Tile> tiles = new ArrayList<Tile>();
+		buildupTiles.put("4", tiles);
 		
+		PCXImage buildup = new PCXImage(entries.get("EPULES1.PCX").data);
+		// seems to be the same as techid 3
+		tiles.add(new Tile(buildup.subimage(1, 1, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 29, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 57, 55, 40), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 98, 55, 37), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 136, 55, 40), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 177, 55, 40), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 218, 55, 57), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 276, 55, 57), 1, 1));
+
+		tiles.add(new Tile(buildup.subimage(57, 1, 55, 39), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 41, 55, 50), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 92, 55, 50), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 143, 55, 50), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 194, 55, 58), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 253, 55, 58), 1, 1));
+		
+		
+		List<Tile> damagedTiles = new ArrayList<Tile>();
+		buildupDamagedTiles.put("4", damagedTiles);
+		PCXImage damage = new PCXImage(entries.get("DAMAGE.PCX").data);
+		// seems to be the same as techid 3
+		damagedTiles.add(new Tile(damage.subimage(1, 1, 55, 37), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 39, 55, 58), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 98, 55, 57), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 156, 55, 39), 1, 1));
+
+		damagedTiles.add(new Tile(damage.subimage(57, 1, 55, 50), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 52, 55, 40), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 93, 55, 40), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 134, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 162, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 190, 55, 50), 1, 1));
+
+		damagedTiles.add(new Tile(damage.subimage(113, 1, 55, 50), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(113, 52, 55, 58), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(113, 111, 55, 40), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(113, 152, 55, 57), 1, 1));
 	}
 	/**
 	 * Extract build progress, and damaged build progress from the tech 5 data file.
@@ -595,7 +710,46 @@ public class PlanetGFX implements BuildingLookup {
 	 * @param entries the entries in the pac file
 	 */
 	private void tech5Build(Map<String, PACEntry> entries) {
+		List<Tile> tiles = new ArrayList<Tile>();
+		buildupTiles.put("5", tiles);
 		
+		PCXImage buildup = new PCXImage(entries.get("EPULES1.PCX").data);
+		tiles.add(new Tile(buildup.subimage(1, 1, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 29, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 57, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 85, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 113, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 141, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 169, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 198, 55, 36), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 235, 55, 33), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 269, 55, 41), 1, 1));
+		
+		tiles.add(new Tile(buildup.subimage(57, 1, 55, 56), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 58, 55, 34), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 93, 55, 40), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 134, 55, 58), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 193, 55, 36), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 230, 55, 64), 1, 1));
+		
+		tiles.add(new Tile(buildup.subimage(113, 1, 55, 67), 1, 1));
+		tiles.add(new Tile(buildup.subimage(113, 69, 55, 77), 1, 1));
+		tiles.add(new Tile(buildup.subimage(113, 147, 55, 99), 1, 1));
+		tiles.add(new Tile(buildup.subimage(113, 247, 55, 55), 1, 1));
+		tiles.add(new Tile(buildup.subimage(113, 289, 55, 54), 1, 1));
+		
+		List<Tile> damagedTiles = new ArrayList<Tile>();
+		buildupDamagedTiles.put("5", damagedTiles);
+		PCXImage damage = new PCXImage(entries.get("DAMAGE.PCX").data);
+		damagedTiles.add(new Tile(damage.subimage(1, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 29, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 57, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 85, 55, 27), 1, 1));
+		
+		damagedTiles.add(new Tile(damage.subimage(57, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 29, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 57, 55, 28), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 86, 55, 27), 1, 1));
 	}
 	/**
 	 * Extract build progress, and damaged build progress from the tech 6 data file.
@@ -603,7 +757,46 @@ public class PlanetGFX implements BuildingLookup {
 	 * @param entries the entries in the pac file
 	 */
 	private void tech6Build(Map<String, PACEntry> entries) {
+		List<Tile> tiles = new ArrayList<Tile>();
+		buildupTiles.put("6", tiles);
 		
+		PCXImage buildup = new PCXImage(entries.get("EPULES1.PCX").data);
+		// seems to be the same as techid 2
+		tiles.add(new Tile(buildup.subimage(1, 1, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 29, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 57, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 85, 55, 44), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 130, 55, 36), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 167, 55, 43), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 211, 55, 50), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 262, 55, 46), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 309, 55, 46), 1, 1));
+		
+		tiles.add(new Tile(buildup.subimage(57, 1, 55, 64), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 66, 55, 31), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 98, 55, 38), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 137, 55, 38), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 176, 55, 47), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 224, 55, 42), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 267, 55, 60), 1, 1));
+		
+		List<Tile> damagedTiles = new ArrayList<Tile>();
+		buildupDamagedTiles.put("6", damagedTiles);
+		// seems to be the same as techid 2
+		PCXImage damage = new PCXImage(entries.get("DAMAGE.PCX").data);
+		damagedTiles.add(new Tile(damage.subimage(1, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 29, 55, 44), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 74, 55, 34), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 109, 55, 28), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 138, 55, 64), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 203, 55, 43), 1, 1));
+		
+		damagedTiles.add(new Tile(damage.subimage(57, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 29, 55, 46), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 76, 55, 47), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 124, 55, 39), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 164, 55, 38), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 203, 55, 27), 1, 1));
 	}
 	/**
 	 * Extract build progress, and damaged build progress from the tech 7 data file.
@@ -611,7 +804,48 @@ public class PlanetGFX implements BuildingLookup {
 	 * @param entries the entries in the pac file
 	 */
 	private void tech7Build(Map<String, PACEntry> entries) {
+		List<Tile> tiles = new ArrayList<Tile>();
+		buildupTiles.put("7", tiles);
 		
+		PCXImage buildup = new PCXImage(entries.get("EPULES1.PCX").data);
+		// seems to be the same as techid 5
+		tiles.add(new Tile(buildup.subimage(1, 1, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 29, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 57, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 85, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 113, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 141, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 169, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 198, 55, 36), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 235, 55, 33), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 269, 55, 41), 1, 1));
+		
+		tiles.add(new Tile(buildup.subimage(57, 1, 55, 56), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 58, 55, 34), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 93, 55, 40), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 134, 55, 58), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 193, 55, 36), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 230, 55, 64), 1, 1));
+		
+		tiles.add(new Tile(buildup.subimage(113, 1, 55, 67), 1, 1));
+		tiles.add(new Tile(buildup.subimage(113, 69, 55, 77), 1, 1));
+		tiles.add(new Tile(buildup.subimage(113, 147, 55, 99), 1, 1));
+		tiles.add(new Tile(buildup.subimage(113, 247, 55, 55), 1, 1));
+		tiles.add(new Tile(buildup.subimage(113, 289, 55, 54), 1, 1));
+		
+		List<Tile> damagedTiles = new ArrayList<Tile>();
+		buildupDamagedTiles.put("7", damagedTiles);
+		PCXImage damage = new PCXImage(entries.get("DAMAGE.PCX").data);
+		// seems to be the same as techid 5
+		damagedTiles.add(new Tile(damage.subimage(1, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 29, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 57, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 85, 55, 27), 1, 1));
+		
+		damagedTiles.add(new Tile(damage.subimage(57, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 29, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 57, 55, 28), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 86, 55, 27), 1, 1));
 	}
 	/**
 	 * Extract build progress, and damaged build progress from the tech 8 data file.
@@ -619,48 +853,45 @@ public class PlanetGFX implements BuildingLookup {
 	 * @param entries the entries in the pac file
 	 */
 	private void tech8Build(Map<String, PACEntry> entries) {
+		List<Tile> tiles = new ArrayList<Tile>();
+		buildupTiles.put("8", tiles);
 		
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, List<Tile>> getBuildingPhases() {
-		return buildupTiles;
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Map<String, List<Tile>> getDamagedBuildingPhases() {
-		return buildupDamagedTiles;
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PCXImage getBuildingTile(String techId, int index, boolean damaged) {
-		return (damaged ? damagedBuildings : regularBuildings).get(techId).get(index);
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String[] getDescriptionLabels(int index) {
-		throw new UnsupportedOperationException();
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getNameLabel(int index) {
-		throw new UnsupportedOperationException();
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public BufferedImage getThumbnail(String techId, int index) {
-		return buildingThumbnails.get(techId).get(index);
+		PCXImage buildup = new PCXImage(entries.get("EPULES1.PCX").data);
+		// seems to be the same as techid 2
+		tiles.add(new Tile(buildup.subimage(1, 1, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 29, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 57, 55, 27), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 85, 55, 44), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 130, 55, 36), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 167, 55, 43), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 211, 55, 50), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 262, 55, 46), 1, 1));
+		tiles.add(new Tile(buildup.subimage(1, 309, 55, 46), 1, 1));
+		
+		tiles.add(new Tile(buildup.subimage(57, 1, 55, 64), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 66, 55, 31), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 98, 55, 38), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 137, 55, 38), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 176, 55, 47), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 224, 55, 42), 1, 1));
+		tiles.add(new Tile(buildup.subimage(57, 267, 55, 60), 1, 1));
+		
+		List<Tile> damagedTiles = new ArrayList<Tile>();
+		buildupDamagedTiles.put("8", damagedTiles);
+		// seems to be the same as techid 2
+		PCXImage damage = new PCXImage(entries.get("DAMAGE.PCX").data);
+		damagedTiles.add(new Tile(damage.subimage(1, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 29, 55, 44), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 74, 55, 34), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 109, 55, 28), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 138, 55, 64), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(1, 203, 55, 43), 1, 1));
+		
+		damagedTiles.add(new Tile(damage.subimage(57, 1, 55, 27), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 29, 55, 46), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 76, 55, 47), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 124, 55, 39), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 164, 55, 38), 1, 1));
+		damagedTiles.add(new Tile(damage.subimage(57, 203, 55, 27), 1, 1));
 	}
 }

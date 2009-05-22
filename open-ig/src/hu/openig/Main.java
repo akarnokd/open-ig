@@ -16,6 +16,7 @@ import hu.openig.core.InfoScreen;
 import hu.openig.core.PlayerType;
 import hu.openig.core.ScreenLayerer;
 import hu.openig.core.StarmapSelection;
+import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
@@ -30,7 +31,6 @@ import hu.openig.render.OptionsRenderer;
 import hu.openig.render.PlanetRenderer;
 import hu.openig.render.StarmapRenderer;
 import hu.openig.res.GameResourceManager;
-import hu.openig.res.Labels;
 import hu.openig.sound.SoundFXPlayer;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.JavaUtils;
@@ -712,10 +712,13 @@ public class Main extends JFrame {
 		gameWorld.calendar.setTimeInMillis(45997848000000L); //August 13th, 3427, 12 PM
 
 		gameWorld.language = language;
-		gameWorld.labels = Labels.parse("/hu/openig/res/labels.xml");
+		gameWorld.labels = grm.labels;
 
 		gameWorld.races.clear();
 		gameWorld.races.addAll(GameRace.parse("/hu/openig/res/races.xml"));
+		
+		gameWorld.buildingPrototypes.clear();
+		gameWorld.buildingPrototypes.addAll(GameBuildingPrototype.parse("/hu/openig/res/buildings.xml", grm));
 		
 		gameWorld.players.clear();
 		for (int i = 0; i < gameWorld.races.size(); i++) {
