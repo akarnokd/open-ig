@@ -22,7 +22,7 @@ public enum RoadType {
 	TOP_TO_LEFT(3),
 	/** Left to bottom corner. ^^| */
 	LEFT_TO_BOTTOM(4),
-	/** Right to borrom. |^^*/
+	/** Right to bottom. |^^*/
 	RIGHT_TO_BOTTOM(5),
 	/** Vertical. | */
 	VERTICAL(6),

@@ -98,6 +98,10 @@ public class GamePlanet {
 	public final Map<Location, TileFragment> map = new HashMap<Location, TileFragment>();
 	/** The set of buildings on the planet. */
 	public final Set<GameBuilding> buildings = new HashSet<GameBuilding>();
+	/** Map for building prototype to instances of that building. */
+	public final Map<GameBuildingPrototype, Set<GameBuilding>> buildingTypes = new HashMap<GameBuildingPrototype, Set<GameBuilding>>();
+	/** Map for building kind to instances of that building. */
+	public final Map<String, Set<GameBuilding>> buildingKinds = new HashMap<String, Set<GameBuilding>>();
 	/**
 	 * Parses and processes a planetary resource XML.
 	 * @param resource the name of the resource
@@ -245,5 +249,56 @@ public class GamePlanet {
 		return population > getLivingSpace() || population > getHospital()
 		|| population > getFood() || population < getWorkerDemand() 
 		|| getEnergyProduction() < getEnergyDemand();
+	}
+	/**
+	 * Returns the number of buildings on the planet belonging to
+	 * the given prototype.
+	 * @param bp the building prototype, not null
+	 * @return the number of buildings
+	 */
+	public int getCountOfBuilding(GameBuildingPrototype bp) {
+		int sum = 0;
+		for (GameBuilding b : buildings) {
+			if (b.prototype == bp) {
+				sum++;
+			}
+		}
+		return sum;
+	}
+	/**
+	 * Adds a new building to the internal building collections.
+	 * @param building the building, not null
+	 */
+	public void addBuilding(GameBuilding building) {
+		buildings.add(building);
+		
+		Set<GameBuilding> bs = buildingTypes.get(building.prototype);
+		if (bs == null) {
+			bs = new HashSet<GameBuilding>();
+			buildingTypes.put(building.prototype, bs);
+		}
+		bs.add(building);
+
+		Set<GameBuilding> bk = buildingKinds.get(building.prototype.kind);
+		if (bk == null) {
+			bk = new HashSet<GameBuilding>();
+			buildingKinds.put(building.prototype.kind, bs);
+		}
+		bk.add(building);
+	}
+	/**
+	 * Removes the building from the internal collections.
+	 * @param building the building to remove, not null
+	 */
+	public void removeBuilding(GameBuilding building) {
+		buildings.remove(building);
+		Set<GameBuilding> bs = buildingTypes.get(building.prototype);
+		if (bs != null) {
+			bs.remove(building);
+		}
+		Set<GameBuilding> bk = buildingKinds.get(building.prototype.kind);
+		if (bk != null) {
+			bk.remove(building);
+		}
 	}
 }

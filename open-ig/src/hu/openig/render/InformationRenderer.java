@@ -13,10 +13,12 @@ import hu.openig.core.InfoScreen;
 import hu.openig.core.PopularityType;
 import hu.openig.core.StarmapSelection;
 import hu.openig.core.TaxRate;
+import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
+import hu.openig.model.GameBuildingPrototype.BuildingImages;
 import hu.openig.res.GameResourceManager;
 import hu.openig.res.gfx.CommonGFX;
 import hu.openig.res.gfx.InformationGFX;
@@ -45,6 +47,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.Timer;
@@ -559,6 +562,9 @@ MouseWheelListener, ActionListener {
 		} else
 		if (currentScreen == InfoScreen.FLEETS) {
 			doFleetsMousePressed(e);
+		} else
+		if (currentScreen == InfoScreen.BUILDINGS) {
+			doBuildingPrototypeMousePressed(e);
 		}
 	}
 	/**
@@ -1420,39 +1426,190 @@ MouseWheelListener, ActionListener {
 		}
 	}
 	/**
+	 * Returns the index within the fleet listing of the given point.
+	 * @param pt the point
+	 * @return the fleet or null if not in the list
+	 */
+	private GameBuildingPrototype getBuildingPrototypeForPositionList(Point pt) {
+		int x = pt.x - mainArea.x - 7;
+		int y = pt.y - mainArea.y - 6;
+		int h = mainArea.height - 43;
+		if (x >= 0 && y >= 0 && x < mainArea.width && y < h) {
+			int columnWidth = (mainArea.width - 7) / 2;
+			int numLen = h / 13;
+			int col = x / columnWidth;
+			int row = y / 13;
+			int idx = col * numLen + row;
+			String techId;
+			if (gameWorld.player.selectedPlanet != null 
+					&& gameWorld.player.selectedPlanet.populationRace != null) {
+				techId = gameWorld.player.selectedPlanet.populationRace.techId; 
+			} else {
+				techId = gameWorld.player.race.techId;
+			}
+			
+			List<GameBuildingPrototype> list = gameWorld.getTechIdBuildingPrototypes(techId);
+			if (idx < list.size()) {
+				return list.get(idx);
+			}
+		}
+		return null;
+	}
+	/**
+	 * Perform actions for mouse events in the fleets tab and main area.
+	 * @param e the mouse event
+	 */
+	private void doBuildingPrototypeMousePressed(MouseEvent e) {
+		Point pt = e.getPoint();
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			if (mainArea.contains(pt)) {
+				GameBuildingPrototype bp = getBuildingPrototypeForPositionList(pt);
+				if (bp != null) {
+					gameWorld.player.selectedBuildingPrototype = bp;
+				}
+				repaint();
+			}
+		}
+	}
+	/**
 	 * Render fleet list panel.
 	 * @param g2 the graphics object.
 	 */
 	private void renderBuildings(Graphics2D g2) {
 		Shape cs = g2.getClip();
-//		GamePlayer player = gameWorld.player;
-		
-//		int columnWidth = (mainArea.width - 7) / 4;
-//		int x = 0;
-//		int y = 0;
-//		List<GameFleet> fleets = gameWorld.getKnownFleets();
-//		g2.setClip(9 + mainArea.x + x, mainArea.y + y, columnWidth - 5, mainArea.height);
-//		for (GameFleet f : fleets) {
-//			if (y + 13 >= mainArea.height) {
-//				x += columnWidth;
-//				y = 0;
-//				g2.setClip(9 + mainArea.x + x, mainArea.y + y, columnWidth - 5, mainArea.height);
-//			}
-//			int color = f.owner.race.color;
-//			text.paintTo(g2, 9 + mainArea.x + x, mainArea.y + y + 6, 10, color, f.name);
-//			if (f == player.selectedFleet) {
-//				g2.setColor(new Color(TextGFX.ORANGE));
-//				Shape c1 = g2.getClip();
-//				// widen the clip area for the box-around
-//				g2.setClip(7 + mainArea.x + x, mainArea.y + y, columnWidth, mainArea.height);
-//				g2.drawRect(mainArea.x + x + 7, mainArea.y + y + 4, columnWidth - 3, 13);
-//				g2.setClip(c1);
-//			}
-//			y += 13;
-//		}
-//		
-//		renderFleetShortInfo(g2);
-//		renderMinimapWithPlanetsAndFleets(g2, false, true, true);
-		g2.setClip(cs);
+		GamePlayer player = gameWorld.player;
+		GamePlanet planet = player.selectedPlanet;
+		if (planet != null) {
+			
+			int columnWidth = (mainArea.width - 7) / 2;
+			int x = 0;
+			int y = 0;
+			// use technology id of the current planet's population race or the players race
+			String techId;
+			if (player.selectedPlanet != null && player.selectedPlanet.populationRace != null) {
+				techId = player.selectedPlanet.populationRace.techId; 
+			} else {
+				techId = player.race.techId;
+			}
+			
+			List<GameBuildingPrototype> list = gameWorld.getTechIdBuildingPrototypes(techId);
+			g2.setClip(9 + mainArea.x + x, mainArea.y + y, columnWidth - 5, mainArea.height);
+			for (GameBuildingPrototype bp : list) {
+				if (y + 52 >= mainArea.height) {
+					x += columnWidth;
+					y = 0;
+					g2.setClip(9 + mainArea.x + x, mainArea.y + y, columnWidth - 5, mainArea.height);
+				}
+				int curr = planet.getCountOfBuilding(bp);
+				int tot = player.getTotalCountOfBuildings(bp);
+				
+				int color = TextGFX.YELLOW;
+				if (!gameWorld.isBuildableOnPlanet(bp)) {
+					color = TextGFX.GRAY;
+				}
+				text.paintTo(g2, 9 + mainArea.x + x, mainArea.y + y + 7, 7, TextGFX.GREEN, curr + "/" + tot);
+				text.paintTo(g2, 39 + mainArea.x + x, mainArea.y + y + 6, 10, color, bp.name);
+				if (bp == player.selectedBuildingPrototype) {
+					g2.setColor(new Color(TextGFX.ORANGE));
+					Shape c1 = g2.getClip();
+					// widen the clip area for the box-around
+					g2.setClip(7 + mainArea.x + x, mainArea.y + y, columnWidth, mainArea.height);
+					g2.drawRect(mainArea.x + x + 37, mainArea.y + y + 4, columnWidth - 31, 13);
+					g2.setClip(c1);
+				}
+				y += 13;
+			}
+			// render thumbnail of the selected building
+			GameBuildingPrototype bp = player.selectedBuildingPrototype;
+			if (bp != null) {
+				g2.setClip(pictureArea);
+				BuildingImages bimg = bp.images.get(techId);
+				if (bimg != null) {
+					BufferedImage img = bimg.thumbnail; 
+					g2.drawImage(img, pictureArea.x + (pictureArea.width - img.getWidth()) / 2, 
+							pictureArea.y + (pictureArea.height - img.getHeight()) / 2, null);
+				}
+				// render building name
+				g2.setClip(titleArea);
+				int len = text.getTextWidth(10, bp.name);
+				text.paintTo(g2, titleArea.x + (titleArea.width - len) / 2, 
+						titleArea.y + (titleArea.height - 10) / 2, 10, TextGFX.RED, 
+						bp.name);
+				// render the building description
+				g2.setClip(mainArea);
+				text.paintTo(g2, mainArea.x + (mainArea.width - len) / 2, 
+						mainArea.y + mainArea.height - 43, 10, TextGFX.RED, 
+						bp.name);
+				y = mainArea.y + mainArea.height - 30;
+				for (String s : bp.description) {
+					if (s != null) {
+						text.paintTo(g2, mainArea.x + 6, y, 7, TextGFX.GREEN, s);
+					}
+					y += 10;
+				}
+				g2.setClip(secondaryArea);
+				// render building properties
+				int color = TextGFX.GREEN;
+				int h = secondaryArea.y + 6;
+				text.paintTo(g2, secondaryArea.x + 6, h, 10, color, 
+					gameWorld.getLabel("BuildingInfo.Entry",
+						gameWorld.getLabel("BuildingInfo.Cost"),
+						bp.cost + " " + gameWorld.getLabel("BuildingInfo.ProductionUnitFor.credit")
+					)
+				);
+				text.paintTo(g2, secondaryArea.x + 6, h + 17, 10, color, 
+						gameWorld.getLabel("BuildingInfo.Entry",
+							gameWorld.getLabel("BuildingInfo.Energy"),
+							(bp.energy > 0 ? 0 : -bp.energy) + " "
+							+ gameWorld.getLabel("BuildingInfo.ProductionUnitFor.energy")
+						)
+					);
+				text.paintTo(g2, secondaryArea.x + 6, h + 34, 10, color, 
+						gameWorld.getLabel("BuildingInfo.Entry",
+							gameWorld.getLabel("BuildingInfo.Worker"),
+							-bp.workers
+						)
+					);
+				int i = 0;
+				h += 51;
+				for (Map.Entry<String, Object> e : bp.properties.entrySet()) {
+					if (GameBuildingPrototype.PRODUCT_TYPES.contains(e.getKey())) {
+						String value = e.getValue() + " " 
+						+ gameWorld.getLabel("BuildingInfo.ProductionUnitFor." + e.getKey());
+						text.paintTo(g2, secondaryArea.x + 6, h, 10, color, 
+								gameWorld.getLabel("BuildingInfo.Entry",
+									(i == 0 ? gameWorld.getLabel("BuildingInfo.Production") : ""),
+									value
+								)
+							);
+						h += 17;
+						i++;
+					}
+				}
+			}
+			g2.setClip(secondaryArea);
+			int color = TextGFX.GRAY;
+			int h = secondaryArea.y + secondaryArea.height - 68;
+			text.paintTo(g2, secondaryArea.x + 6, h, 10, color, planet.name);
+			// display owner name
+			if (planet.owner != null) {
+				text.paintTo(g2, secondaryArea.x + 6, h + 17, 10, color, planet.owner.name);
+				// if planet is own by the current player
+				if (gameWorld.player == planet.owner) {
+					// or planet has any satellite
+					text.paintTo(g2, secondaryArea.x + 6, h + 34, 10, color, 
+							gameWorld.getLabel("RaceNames." + planet.populationRace.id));
+				}
+			} else {
+				text.paintTo(g2, secondaryArea.x + 6, h + 17, 10, color, gameWorld.getLabel("EmpireNames.Empty"));
+			}
+			text.paintTo(g2, secondaryArea.x + 6, h + 51, 10, color, 
+					gameWorld.getLabel("NoRaceOnSurface", 
+					gameWorld.getLabel("SurfaceTypeNames." + planet.surfaceType.planetXmlString)));
+			g2.setClip(cs);
+		} else {
+			text.paintTo(g2, mainArea.x + 10, mainArea.y + 30, 10, TextGFX.YELLOW,
+					gameWorld.getLabel("ColonyInfo.NoColonySelected"));
+		}
 	}
 }

@@ -48,7 +48,7 @@ public class Texts {
 				idx++;
 			}
 			// load building information lines
-			String[] sa = fixHungarianChars(new String(entries.get("EPUL_NEV.TXT").data, "ISO-8859-1")).split("\r\n");
+			String[] sa = fixHungarianChars(new String(entries.get("EPUL_INF.TXT").data, "ISO-8859-1")).split("\r\n");
 			for (idx = 0; idx < sa.length; idx++) {
 				String[] lines = new String[] { "", "", "" };
 				for (int j = 0; j < 3; j++) {

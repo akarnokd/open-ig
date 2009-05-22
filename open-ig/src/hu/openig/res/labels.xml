@@ -426,5 +426,49 @@
 		<hu>Közeli bolygó:</hu>
 		<en>Planet near by:</en>
 	</entry>
+	<entry key='BuildingInfo.Entry'>
+		<hu>%1$-9s:%2$s</hu>
+		<en>%1$-9s:%2$s</en>
+	</entry>
+	<entry key='BuildingInfo.Cost'>
+		<hu>Ár</hu>
+		<en>Cost</en>
+	</entry>
+	<entry key='BuildingInfo.Energy'>
+		<hu>Energia</hu>
+		<en>Energy</en>
+	</entry>
+	<entry key='BuildingInfo.Worker'>
+		<hu>Dolgozó</hu>
+		<en>Worker</en>
+	</entry>
+	<entry key='BuildingInfo.Production'>
+		<hu>Termelés</hu>
+		<en>Production</en>
+	</entry>
+	<entry key='BuildingInfo.ProductionUnitFor.energy'>
+		<hu>kWh</hu>
+		<en>kWh</en>
+	</entry>
+	<entry key='BuildingInfo.ProductionUnitFor.food'>
+		<hu>t</hu>
+		<en>t</en>
+	</entry>
+	<entry key='BuildingInfo.ProductionUnitFor.living-space'>
+		<hu>férőhely</hu>
+		<en>space</en>
+	</entry>
+	<entry key='BuildingInfo.ProductionUnitFor.hospital'>
+		<hu>ágy</hu>
+		<en>bed</en>
+	</entry>
+	<entry key='BuildingInfo.ProductionUnitFor.credit'>
+		<hu>cr</hu>
+		<en>cr</en>
+	</entry>
+	<entry key='BuildingInfo.ProductionUnitFor.credit-dup'>
+		<hu>duplázás</hu>
+		<en>doubling</en>
+	</entry>
 	
 </labels>

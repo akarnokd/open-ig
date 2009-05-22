@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.BuildLimit;
 import hu.openig.core.GameSpeed;
 import hu.openig.res.Labels;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 /**
@@ -229,5 +231,60 @@ public class GameWorld implements GameRaceLookup {
 		List<GameFleet> fleets = new ArrayList<GameFleet>(player.ownFleets);
 		Collections.sort(fleets, GameFleet.BY_RACE_ID_AND_NAME);
 		return fleets;
+	}
+	/**
+	 * @return a list of building prototypes available for the current player.
+	 */
+	public List<GameBuildingPrototype> getPlayerBuildingPrototypes() {
+		return getTechIdBuildingPrototypes(player.race.techId);
+	}
+	/**
+	 * Returns a list of buildins which are available in the supplied technology id.
+	 * @param techId the technology id
+	 * @return a list of building prototypes available for the current player.
+	 */
+	public List<GameBuildingPrototype> getTechIdBuildingPrototypes(String techId) {
+		List<GameBuildingPrototype> result = new ArrayList<GameBuildingPrototype>();
+		for (GameBuildingPrototype bp : buildingPrototypes) {
+			if (bp.images.containsKey(techId)) {
+				result.add(bp);
+			}
+		}
+		Collections.sort(result, GameBuildingPrototype.BY_INDEX);
+		return result;
+	}
+	/**
+	 * Check if a new instance of the given prototype can be built on the selected planet.
+	 * @param bp the prototype
+	 * @return true if the building can be built
+	 */
+	public boolean isBuildableOnPlanet(GameBuildingPrototype bp) {
+		GamePlanet planet = player.selectedPlanet;
+		// allow build on player owned planets
+		if (planet.owner != player) {
+			return false;
+		}
+		// planet type check
+		if (bp.notBuildableSurfaces.contains(planet.surfaceType)) {
+			return false;
+		}
+		// build only if there is a main building already
+		if (!GameBuildingPrototype.MAIN_BUILDING.equals(bp.kind)) {
+			Set<GameBuilding> bs = planet.buildingKinds.get(GameBuildingPrototype.MAIN_BUILDING);
+			if (bs == null || bs.size() == 0) {
+				return false;
+			}
+		}
+		// for fixed number types, check limit
+		if (bp.limitType == BuildLimit.FIXED_NUMBER_PER_PLANET) {
+			Set<GameBuilding> bs = planet.buildingTypes.get(bp);
+			return bs == null || bs.size() < bp.limitValue;
+		}
+		// for fixed number per kind, check limit
+		if (bp.limitType == BuildLimit.FIXED_KIND_PER_PLANET) {
+			Set<GameBuilding> bs = planet.buildingKinds.get(bp.kind);
+			return bs == null || bs.size() < bp.limitValue;
+		}
+		return true;
 	}
 }

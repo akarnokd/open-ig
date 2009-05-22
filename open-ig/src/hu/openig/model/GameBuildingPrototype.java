@@ -16,6 +16,8 @@ import hu.openig.utils.XML.XmlProcessor;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,11 +56,13 @@ public class GameBuildingPrototype {
 		public List<BufferedImage> planetaryDefense;
 	}
 	/** Map from technology id to building images. */
-	public Map<String, BuildingImages> images;
+	public final Map<String, BuildingImages> images = new HashMap<String, BuildingImages>();
 	/** The building health. */
 	public int health;
 	/** The universal building identifier. */
 	public String id;
+	/** The building kind used for grouping. */
+	public String kind;
 	/** The building index in the resource files. */
 	public int index;
 	/** The name. */
@@ -79,6 +83,12 @@ public class GameBuildingPrototype {
 	public int limitValue;
 	/** Map of custom properties with various data types (probably Integer or String). */
 	public final Map<String, Object> properties = new HashMap<String, Object>();
+	/** The set of product types which should be listed in the building properties page. */
+	public static final Set<String> PRODUCT_TYPES = new HashSet<String>(
+		Arrays.<String>asList("living-space", "energy", "food", "hospital", "credit", "credit-dup")
+	);
+	/** The main building kind to check if a building could be built on a planet. */
+	public static final String MAIN_BUILDING = "MainBuilding";
 	/** 
 	 * Indicates the technology to research before this building can be built by the player.
 	 * Not all buildable objects are required to have a research technology associated. 
@@ -118,22 +128,51 @@ public class GameBuildingPrototype {
 			b.name = lookup.getNameLabel(b.index);
 			b.description = lookup.getDescriptionLabels(b.index);
 			for (Element e1 : XML.children(e)) {
-				if ("cost".equals(e1.getLocalName())) {
+				if ("cost".equals(e1.getNodeName())) {
 					b.cost = Integer.parseInt(e1.getTextContent());
 				} else
-				if ("worker".equals(e1.getLocalName())) {
+				if ("worker".equals(e1.getNodeName())) {
 					b.workers = Integer.parseInt(e1.getTextContent());
 				} else
-				if ("energy".equals(e1.getLocalName())) {
+				if ("energy".equals(e1.getNodeName())) {
 					b.energy = Integer.parseInt(e1.getTextContent());
+					if (b.energy > 0) {
+						b.properties.put("energy", e1.getTextContent());
+					}
 				} else
-				if ("hp".equals(e1.getLocalName())) {
+				if ("hp".equals(e1.getNodeName())) {
 					b.health = Integer.parseInt(e1.getTextContent());
 				} else
-				if ("tile".equals(e1.getLocalName())) {
+				if ("nobuild".equals(e1.getNodeName())) {
+					String nobuild = e1.getTextContent();
+					if (nobuild.length() > 0) {
+						String[] st = nobuild.split("\\s*,\\s*");
+						for (String s : st) {
+							b.notBuildableSurfaces.add(SurfaceType.MAP.get(s));
+						}
+					}
+				} else
+				if ("kind".equals(e1.getNodeName())) {
+					b.kind = e1.getTextContent();
+				} else
+				if ("limit".equals(e1.getNodeName())) {
+					String limit = e1.getTextContent();
+					if ("*".equals(limit)) {
+						b.limitType = BuildLimit.UNLIMITED;
+						b.limitValue = Integer.MAX_VALUE;
+					} else
+					if (limit.startsWith("-")) {
+						b.limitType = BuildLimit.FIXED_KIND_PER_PLANET;
+						b.limitValue = -Integer.parseInt(limit);
+					} else {
+						b.limitType = BuildLimit.FIXED_NUMBER_PER_PLANET;
+						b.limitValue = Integer.parseInt(limit);
+					}
+				} else
+				if ("tile".equals(e1.getNodeName())) {
 					String techid = e1.getAttribute("techid");
-					int x = Integer.parseInt(e1.getAttribute("x"));
-					int y = Integer.parseInt(e1.getAttribute("y"));
+					int y = Integer.parseInt(e1.getAttribute("width"));
+					int x = Integer.parseInt(e1.getAttribute("height"));
 					BuildingImages bi = new BuildingImages();
 					bi.thumbnail = lookup.getThumbnail(techid, b.index);
 					bi.regularTile = new Tile();
@@ -146,13 +185,20 @@ public class GameBuildingPrototype {
 					bi.damagedTile.rawImage = lookup.getBuildingTile(techid, b.index, true);
 					bi.buildPhases = buildingPhases.get(techid);
 					bi.damagedPhases = damagedPhases.get(techid);
+					b.images.put(techid, bi);
 				} else {
-					b.properties.put(e.getLocalName(), e.getTextContent());
+					b.properties.put(e1.getNodeName(), e1.getTextContent());
 				}
 			}
 			result.add(b);
 		}
 		return result;
 	}
-
+	/** Comparator by index of the building prototype. */
+	public static final Comparator<GameBuildingPrototype> BY_INDEX = new Comparator<GameBuildingPrototype>() {
+		@Override
+		public int compare(GameBuildingPrototype o1, GameBuildingPrototype o2) {
+			return o1.index - o2.index;
+		}
+	};
 }
