@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.model;
+package hu.openig.core;
 
 /**
  * Enumeration for various kinds of building limits used in the game.

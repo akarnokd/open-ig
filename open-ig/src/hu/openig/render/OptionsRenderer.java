@@ -10,12 +10,12 @@ package hu.openig.render;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
-import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.OptionsGFX;
-import hu.openig.gfx.TextGFX;
-import hu.openig.gfx.OptionsGFX.Opts;
 import hu.openig.model.GameWorld;
-import hu.openig.sound.UISounds;
+import hu.openig.res.GameResourceManager;
+import hu.openig.res.gfx.OptionsGFX;
+import hu.openig.res.gfx.TextGFX;
+import hu.openig.res.gfx.OptionsGFX.Opts;
+import hu.openig.sound.SoundFXPlayer;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -94,7 +94,7 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	/** The currently selected options. */
 	private Opts currentOpts;
 	/** The user interface sound. */
-	private UISounds uis;
+	private SoundFXPlayer uis;
 	/** Audio adjusting. */
 	private boolean audioAdjusting;
 	/** Music adjusting. */
@@ -109,18 +109,16 @@ public class OptionsRenderer extends JComponent implements MouseMotionListener, 
 	private final AchievementRenderer achievementRenderer;
 	/**
 	 * Constructor. Initializes the graphics fields.
-	 * @param gfx the menu graphics
-	 * @param cgfx the common graphics
+	 * @param grm the game resource manager.
 	 * @param uis the user interface sound
 	 * @param infobarRenderer the information bar renderer
 	 * @param achievementRenderer the achievement renderer
 	 */
-	public OptionsRenderer(OptionsGFX gfx, CommonGFX cgfx, 
-			UISounds uis, InfobarRenderer infobarRenderer,
+	public OptionsRenderer(GameResourceManager grm, 
+			SoundFXPlayer uis, InfobarRenderer infobarRenderer,
 			AchievementRenderer achievementRenderer) {
-		this.gfx = gfx;
-//		this.cgfx = cgfx;
-		this.text = cgfx.text;
+		this.gfx = grm.optionsGFX;
+		this.text = grm.commonGFX.text;
 		this.uis = uis;
 		this.infobarRenderer = infobarRenderer;
 		this.achievementRenderer = achievementRenderer;

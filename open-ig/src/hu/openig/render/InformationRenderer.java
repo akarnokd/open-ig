@@ -11,16 +11,17 @@ import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoScreen;
 import hu.openig.core.PopularityType;
+import hu.openig.core.StarmapSelection;
 import hu.openig.core.TaxRate;
-import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.InformationGFX;
-import hu.openig.gfx.TextGFX;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
-import hu.openig.model.StarmapSelection;
-import hu.openig.sound.UISounds;
+import hu.openig.res.GameResourceManager;
+import hu.openig.res.gfx.CommonGFX;
+import hu.openig.res.gfx.InformationGFX;
+import hu.openig.res.gfx.TextGFX;
+import hu.openig.sound.SoundFXPlayer;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -68,7 +69,7 @@ MouseWheelListener, ActionListener {
 	/** The text renderer. */
 	private TextGFX text;
 	/** The user interface sounds. */
-	private UISounds uiSound;
+	private SoundFXPlayer uiSound;
 	/** Buttons which change state on click.*/
 	private final List<Btn> toggleButtons = new ArrayList<Btn>();
 	/** The various buttons. */
@@ -157,17 +158,16 @@ MouseWheelListener, ActionListener {
 	private int blinkStep;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
-	 * @param gfx the information graphics obj ects
-	 * @param cgfx the common graphics objects
+	 * @param grm the game resource manager
 	 * @param uiSound the user interface sounds
 	 * @param infobarRenderer the information bar renderer
 	 * @param achievementRenderer the achievement renderer
 	 */
-	public InformationRenderer(InformationGFX gfx, CommonGFX cgfx, 
-			UISounds uiSound, InfobarRenderer infobarRenderer,
+	public InformationRenderer(GameResourceManager grm, 
+			SoundFXPlayer uiSound, InfobarRenderer infobarRenderer,
 			AchievementRenderer achievementRenderer) {
-		this.gfx = gfx;
-		this.cgfx = cgfx;
+		this.gfx = grm.infoGFX;
+		this.cgfx = grm.commonGFX;
 		this.text = cgfx.text;
 		this.uiSound = uiSound;
 		this.infobarRenderer = infobarRenderer;

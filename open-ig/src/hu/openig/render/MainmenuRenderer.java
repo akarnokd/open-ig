@@ -10,8 +10,9 @@ package hu.openig.render;
 
 import hu.openig.core.BtnAction;
 import hu.openig.core.MainmenuRects;
-import hu.openig.gfx.MenuGFX;
-import hu.openig.gfx.TextGFX;
+import hu.openig.res.GameResourceManager;
+import hu.openig.res.gfx.MenuGFX;
+import hu.openig.res.gfx.TextGFX;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -64,12 +65,11 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 	private BtnAction quitAction;
 	/**
 	 * Constructor. Initializes the graphics fields.
-	 * @param gfx the menu graphics
-	 * @param text the text graphics
+	 * @param grm the game resource manager
 	 */
-	public MainmenuRenderer(MenuGFX gfx, TextGFX text) {
-		this.gfx = gfx;
-		this.text = text;
+	public MainmenuRenderer(GameResourceManager grm) {
+		this.gfx = grm.menuGFX;
+		this.text = grm.commonGFX.text;
 		rects = new MainmenuRects();
 		addMouseListener(this);
 		addMouseMotionListener(this);

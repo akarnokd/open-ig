@@ -33,6 +33,12 @@ public class PCXImage {
 	public PCXImage(byte[] data) {
 		parse(data);
 	}
+	/**
+	 * Create a new PCX image without any initialized fields.
+	 */
+	private PCXImage() {
+		
+	}
 	/** 
 	 * Parses the given data stream into the raw data.
 	 * @param data the data bytes
@@ -395,5 +401,33 @@ public class PCXImage {
 	 */
 	public byte[] getRaw() {
 		return raw.clone();
+	}
+	/**
+	 * Create a sub PCX image from the current image's sub region.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width
+	 * @param h the height
+	 * @return the new PCX image
+	 */
+	public PCXImage subimage(int x, int y, int w, int h) {
+		if (x + w > width) {
+			throw new IllegalArgumentException(String.format("x(%d) + w(%d) greater than width(%d)", x, w, width));
+		}
+		if (y + h > height) {
+			throw new IllegalArgumentException(String.format("y(%d) + h(%d) greater than height(%d)", y, h, height));
+		}
+		PCXImage sub = new PCXImage();
+		sub.palette = this.palette;
+		sub.width = w;
+		sub.height = h;
+		byte[] data = new byte[w * h];
+		for (int i = y; i < y + h; i++) {
+			for (int j = x; j < x + w; j++) {
+				data[(i - y) * w + (j - x)] = raw[i * width + j];
+			}
+		}
+		sub.raw = data;
+		return sub;
 	}
 }

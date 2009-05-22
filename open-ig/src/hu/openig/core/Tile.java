@@ -23,10 +23,6 @@ public class Tile implements TileProvider {
 	public int width = 1;
 	/** Tile base area height in tile units. */
 	public int height = 1;
-	/** Correctional value for bottom edge of the tile. */
-	//public int offset = 0;
-	/** Number of scan lines spanning this tile's base over. Is equal to width + height - 1. */
-	//public int scanlines = 1;
 	/** Tile image height correction, for those images which don't end at the last line of the image. */
 	public int heightCorrection;
 	/** The original image. */
@@ -37,6 +33,23 @@ public class Tile implements TileProvider {
 	public BufferedImage[] strips;
 	/** The current alpha value. */
 	public float alpha = -1; // set as uninitialized
+	/**
+	 * Constructor. No initialization is performed
+	 */
+	public Tile() {
+		// no inicialization.
+	}
+	/**
+	 * Constructor. Initializes some internal fields.
+	 * @param rawImage the raw image.
+	 * @param width the tile width
+	 * @param height the tile height
+	 */
+	public Tile(PCXImage rawImage, int width, int height) {
+		this.rawImage = rawImage;
+		this.width = width;
+		this.height = height;
+	}
 	/**
 	 * Converts the tile coordinates to pixel coordinates, X component.
 	 * @param x the X tile coordinate
@@ -53,7 +66,7 @@ public class Tile implements TileProvider {
 	 * @return the screen Y coordinate
 	 */
 	public static int toScreenY(int x, int y) {
-		return - 12 * x - 15 * y;
+		return -12 * x - 15 * y;
 	}
 	/**
 	 * Converts the screen coordinates to tile coordinates, X component.

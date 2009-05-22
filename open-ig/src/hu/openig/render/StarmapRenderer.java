@@ -12,15 +12,16 @@ import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.ImageInterpolation;
 import hu.openig.core.PopularityType;
-import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.StarmapGFX;
-import hu.openig.gfx.TextGFX;
+import hu.openig.core.StarmapSelection;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
-import hu.openig.model.StarmapSelection;
-import hu.openig.sound.UISounds;
+import hu.openig.res.GameResourceManager;
+import hu.openig.res.gfx.CommonGFX;
+import hu.openig.res.gfx.StarmapGFX;
+import hu.openig.res.gfx.TextGFX;
+import hu.openig.sound.SoundFXPlayer;
 import hu.openig.utils.Parallels;
 
 import java.awt.AlphaComposite;
@@ -191,7 +192,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** Show satellites. */
 	public boolean showSatellites = true;
 	/** The user interface sounds. */
-	private final UISounds uiSound;
+	private final SoundFXPlayer uiSound;
 	/** The text renderer. */
 	private final TextGFX text;
 	/** Action for colony clicked. */
@@ -267,18 +268,17 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	private final double[] radarCosineTable; 
 	/**
 	 * Constructor. Sets the helper object fields.
-	 * @param gfx the starmap graphics object
-	 * @param cgfx the common graphics object
+	 * @param grm the game resource manager
 	 * @param uiSound the user interface
 	 * @param infobarRenderer the information bar renderer
 	 * @param achievementRenderer the achievement renderer
 	 */
-	public StarmapRenderer(StarmapGFX gfx, CommonGFX cgfx, 
-			UISounds uiSound, InfobarRenderer infobarRenderer,
+	public StarmapRenderer(GameResourceManager grm, 
+			SoundFXPlayer uiSound, InfobarRenderer infobarRenderer,
 			AchievementRenderer achievementRenderer) {
 		super();
-		this.gfx = gfx;
-		this.cgfx = cgfx;
+		this.gfx = grm.starmapGFX;
+		this.cgfx = grm.commonGFX;
 		this.text = cgfx.text;
 		this.uiSound = uiSound;
 		this.infobarRenderer = infobarRenderer;

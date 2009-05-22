@@ -8,10 +8,11 @@
 
 package hu.openig.render;
 
-import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.TextGFX;
-import hu.openig.model.GameSpeed;
+import hu.openig.core.GameSpeed;
 import hu.openig.model.GameWorld;
+import hu.openig.res.GameResourceManager;
+import hu.openig.res.gfx.CommonGFX;
+import hu.openig.res.gfx.TextGFX;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -44,10 +45,10 @@ public class InfobarRenderer {
 	private GameWorld gameWorld;
 	/**
 	 * Constructor. Sets the common graphics and text objects.
-	 * @param cgfx the common graphics
+	 * @param grm the game resource manager
 	 */
-	public InfobarRenderer(CommonGFX cgfx) {
-		this.cgfx = cgfx;
+	public InfobarRenderer(GameResourceManager grm) {
+		this.cgfx = grm.commonGFX;
 		this.text = cgfx.text;
 	}
 	/**
