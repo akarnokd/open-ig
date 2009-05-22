@@ -148,6 +148,16 @@ public class CommonGFX {
 	public BufferedImage disablingPattern;
 	/** The achievement badge icon. */
 	public BufferedImage achievement;
+	/** Low living space warning icon. */
+	public BufferedImage livingSpaceIcon;
+	/** Low worker count icon. */
+	public BufferedImage workerIcon;
+	/** Low food icon. */
+	public BufferedImage foodIcon;
+	/** Low hospital icon. */
+	public BufferedImage hospitalIcon;
+	/** Low energy icon. */
+	public BufferedImage energyIcon;
 	/**
 	 * Constructor. Loads the images from the specified home IG directory.
 	 * @param resMap the resource mapper object
@@ -290,6 +300,11 @@ public class CommonGFX {
 		}
 		try {
 			achievement = ImageIO.read(CommonGFX.class.getResource("/hu/openig/res/achievement.png"));
+			workerIcon = ImageIO.read(CommonGFX.class.getResource("/hu/openig/res/worker-icon.png"));
+			livingSpaceIcon = ImageIO.read(CommonGFX.class.getResource("/hu/openig/res/house-icon.png"));
+			foodIcon = ImageIO.read(CommonGFX.class.getResource("/hu/openig/res/food-icon.png"));
+			hospitalIcon = ImageIO.read(CommonGFX.class.getResource("/hu/openig/res/hospital-icon.png"));
+			energyIcon = ImageIO.read(CommonGFX.class.getResource("/hu/openig/res/energy-icon.png"));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

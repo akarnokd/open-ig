@@ -52,7 +52,7 @@ public class Texts {
 			for (idx = 0; idx < sa.length; idx++) {
 				String[] lines = new String[] { "", "", "" };
 				for (int j = 0; j < 3; j++) {
-					if (idx + j < sa.length) {
+					if (idx * 3 + j < sa.length) {
 						lines[j] = sa[idx * 3 + j];
 					}
 				}
@@ -63,7 +63,7 @@ public class Texts {
 			for (idx = 0; idx < sa.length; idx++) {
 				String[] lines = new String[] { "", "", "" };
 				for (int j = 0; j < 3; j++) {
-					if (idx + j < sa.length) {
+					if (idx * 3 + j < sa.length) {
 						lines[j] = sa[idx * 3 + j];
 					}
 				}
@@ -72,8 +72,8 @@ public class Texts {
 			// load error texts
 			idx = 0;
 			for (String name : fixHungarianChars(new String(entries.get("HIBAK.TXT").data, "ISO-8859-1")).split("\r\n")) {
-				int i = name.indexOf(' ');
-				errorTexts.put(Errors.MAP.get(Integer.parseInt(name.substring(0, i))), name.substring(i + 1));
+				int i = name.indexOf(' ', 1);
+				errorTexts.put(Errors.MAP.get(Integer.parseInt(name.substring(0, i).trim())), name.substring(i + 1));
 				idx++;
 			}
 			idx = 0;
@@ -85,8 +85,8 @@ public class Texts {
 			// load message texts
 			idx = 0;
 			for (String name : fixHungarianChars(new String(entries.get("UZENET.TXT").data, "ISO-8859-1")).split("\r\n")) {
-				int i = name.indexOf(' ');
-				messageTexts.put(Messages.MAP.get(Integer.parseInt(name.substring(0, i))), name.substring(i + 1));
+				int i = name.indexOf(' ', 1);
+				messageTexts.put(Messages.MAP.get(Integer.parseInt(name.substring(0, i).trim())), name.substring(i + 1));
 				idx++;
 			}
 		} catch (UnsupportedEncodingException ex) {

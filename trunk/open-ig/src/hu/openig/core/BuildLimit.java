@@ -8,15 +8,45 @@
 
 package hu.openig.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Enumeration for various kinds of building limits used in the game.
  * @author karnokd
  */
 public enum BuildLimit {
 	/** There is no limit imposed. */
-	UNLIMITED,
+	UNLIMITED("Unlimited"),
 	/** A fixed number of buildings can be built. */
-	FIXED_NUMBER_PER_PLANET,
+	FIXED_NUMBER_PER_PLANET("Fixed"),
 	/** Only one can be built from a group of similar buildings (e.g. one kind of research center per planet). */
-	ONE_KIND_PER_PLANET
+	ONE_KIND_PER_PLANET("OneKind")
+	;
+	/** The build limit id in xml. */
+	public final String id;
+	/**
+	 * Constructor.
+	 * @param id the build limit id in xml.
+	 */
+	BuildLimit(String id) {
+		this.id = id;
+	}
+	/** The id to buildlimit map. */
+	private static final Map<String, BuildLimit> MAP;
+	/** Static initialization. */
+	static {
+		MAP = new HashMap<String, BuildLimit>();
+		for (BuildLimit bl : values()) {
+			MAP.put(bl.id, bl);
+		}
+	}
+	/**
+	 * Returns a buildlimit based on its id.
+	 * @param id the identifier
+	 * @return the build limit enum
+	 */
+	public static BuildLimit getById(String id) {
+		return MAP.get(id);
+	}
 }
