@@ -7,6 +7,7 @@
  */
 package hu.openig.model;
 
+import hu.openig.core.BuildLimit;
 import hu.openig.core.BuildingLookup;
 import hu.openig.core.SurfaceType;
 import hu.openig.core.Tile;
@@ -43,6 +44,8 @@ public class GameBuildingPrototype {
 		public Tile damagedTile;
 		/** The building phases of the building. The original game had one set of images for each tech id, therefore, this list could be shared. */
 		public List<Tile> buildPhases;
+		/** The damaged building phases of the building. The original game had one set of images for each tech id, therefore, this list could be shared. */
+		public List<Tile> damagedPhases;
 		/** 
 		 * If the building is a planetary defense building, this list contains the 360 degrees 
 		 * rotated small images of the building to display it on the space battle screen.
@@ -106,6 +109,7 @@ public class GameBuildingPrototype {
 		List<GameBuildingPrototype> result = new ArrayList<GameBuildingPrototype>();
 		// query for all building phases.
 		Map<String, List<Tile>> buildingPhases = lookup.getBuildingPhases();
+		Map<String, List<Tile>> damagedPhases = lookup.getDamagedBuildingPhases();
 		// loop on each building entry
 		for (Element e : XML.childrenWithName(root.getDocumentElement(), "building")) {
 			GameBuildingPrototype b = new GameBuildingPrototype();
@@ -128,7 +132,6 @@ public class GameBuildingPrototype {
 				} else
 				if ("tile".equals(e1.getLocalName())) {
 					String techid = e1.getAttribute("techid");
-					boolean multi = "true".equals(e1.getAttribute("b"));
 					int x = Integer.parseInt(e1.getAttribute("x"));
 					int y = Integer.parseInt(e1.getAttribute("y"));
 					BuildingImages bi = new BuildingImages();
@@ -136,12 +139,13 @@ public class GameBuildingPrototype {
 					bi.regularTile = new Tile();
 					bi.regularTile.width = x;
 					bi.regularTile.height = y;
-					bi.regularTile.rawImage = lookup.getBuildingTile(techid, b.index, multi, false);
+					bi.regularTile.rawImage = lookup.getBuildingTile(techid, b.index, false);
 					bi.damagedTile = new Tile();
 					bi.damagedTile.width = x;
 					bi.damagedTile.height = y;
-					bi.damagedTile.rawImage = lookup.getBuildingTile(techid, b.index, multi, true);
+					bi.damagedTile.rawImage = lookup.getBuildingTile(techid, b.index, true);
 					bi.buildPhases = buildingPhases.get(techid);
+					bi.damagedPhases = damagedPhases.get(techid);
 				} else {
 					b.properties.put(e.getLocalName(), e.getTextContent());
 				}

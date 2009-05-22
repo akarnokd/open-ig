@@ -10,23 +10,17 @@ package hu.openig;
 import hu.openig.ani.MovieSurface;
 import hu.openig.ani.Player;
 import hu.openig.core.BtnAction;
+import hu.openig.core.GameSpeed;
 import hu.openig.core.ImageInterpolation;
 import hu.openig.core.InfoScreen;
+import hu.openig.core.PlayerType;
 import hu.openig.core.ScreenLayerer;
-import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.InformationGFX;
-import hu.openig.gfx.MenuGFX;
-import hu.openig.gfx.OptionsGFX;
-import hu.openig.gfx.PlanetGFX;
-import hu.openig.gfx.StarmapGFX;
+import hu.openig.core.StarmapSelection;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameRace;
-import hu.openig.model.GameSpeed;
 import hu.openig.model.GameWorld;
-import hu.openig.model.PlayerType;
-import hu.openig.model.StarmapSelection;
 import hu.openig.music.Music;
 import hu.openig.render.AchievementRenderer;
 import hu.openig.render.InfobarRenderer;
@@ -35,11 +29,11 @@ import hu.openig.render.MainmenuRenderer;
 import hu.openig.render.OptionsRenderer;
 import hu.openig.render.PlanetRenderer;
 import hu.openig.render.StarmapRenderer;
+import hu.openig.res.GameResourceManager;
 import hu.openig.res.Labels;
-import hu.openig.sound.UISounds;
+import hu.openig.sound.SoundFXPlayer;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.JavaUtils;
-import hu.openig.utils.Parallels;
 import hu.openig.utils.ResourceMapper;
 
 import java.awt.Color;
@@ -78,10 +72,10 @@ public class Main extends JFrame {
 	private static final long serialVersionUID = 6922932910697940684L;
 	/** Version string. */
 	public static final String VERSION = "0.68 Alpha"; // TODO reach 1.0!
+	/** The game resource manager. */
+	GameResourceManager grm;
 	/** The user interface sounds. */
-	UISounds uiSounds;
-	/** The common graphics objects. */
-	CommonGFX cgfx;
+	SoundFXPlayer uiSounds;
 	/** The starmap renderer. */
 	StarmapRenderer starmapRenderer;
 	/** The planet surface renderer. */
@@ -108,16 +102,6 @@ public class Main extends JFrame {
 	private boolean playbackCancelled;
 	/** The executor service for parallel operations. */
 	public ExecutorService exec;
-	/** The starmap graphics objects. */
-	StarmapGFX starmapGFX;
-	/** The planet graphics objects. */
-	PlanetGFX planetGFX;
-	/** The information screen renderer. */
-	InformationGFX infoGFX;
-	/** The main menu renderer. */
-	MenuGFX menuGFX;
-	/** The options screen renderer. */
-	OptionsGFX optionsGFX;
 	/** The options screen renderer. */
 	OptionsRenderer optionsRenderer;
 	/** The program is currently in Game mode. */
@@ -149,15 +133,8 @@ public class Main extends JFrame {
 		this.resMap = resMap;
 		music = new Music(resMap);
 
-		Parallels.invokeAndWait(
-			new Runnable() { public void run() { uiSounds = new UISounds(resMap); } },
-			new Runnable() { public void run() { cgfx = new CommonGFX(resMap); } },
-			new Runnable() { public void run() { starmapGFX = new StarmapGFX(resMap); } },
-			new Runnable() { public void run() { planetGFX = new PlanetGFX(resMap); } },
-			new Runnable() { public void run() { infoGFX = new InformationGFX(resMap); } },
-			new Runnable() { public void run() { menuGFX = new MenuGFX(resMap); } },
-			new Runnable() { public void run() { optionsGFX = new OptionsGFX(resMap); } }
-		);
+		grm = new GameResourceManager(resMap);
+		uiSounds = new SoundFXPlayer(grm);
 		
 		gameWorld = new GameWorld();
 		// disable controls
@@ -166,19 +143,19 @@ public class Main extends JFrame {
 		
 		
 		// initialize renderers
-		achievementRenderer = new AchievementRenderer(cgfx, uiSounds);
-		infobarRenderer = new InfobarRenderer(cgfx);
+		achievementRenderer = new AchievementRenderer(grm, uiSounds);
+		infobarRenderer = new InfobarRenderer(grm);
 		
-		starmapRenderer = new StarmapRenderer(starmapGFX, cgfx, uiSounds, infobarRenderer, achievementRenderer);
+		starmapRenderer = new StarmapRenderer(grm, uiSounds, infobarRenderer, achievementRenderer);
 		achievementRenderer.add(starmapRenderer);
-		planetRenderer = new PlanetRenderer(planetGFX, cgfx, uiSounds, infobarRenderer, achievementRenderer);
+		planetRenderer = new PlanetRenderer(grm, uiSounds, infobarRenderer, achievementRenderer);
 		achievementRenderer.add(planetRenderer);
-		informationRenderer = new InformationRenderer(infoGFX, cgfx, uiSounds, infobarRenderer, achievementRenderer);
+		informationRenderer = new InformationRenderer(grm, uiSounds, infobarRenderer, achievementRenderer);
 		achievementRenderer.add(informationRenderer);
-		optionsRenderer = new OptionsRenderer(optionsGFX, cgfx, uiSounds, infobarRenderer, achievementRenderer);
+		optionsRenderer = new OptionsRenderer(grm, uiSounds, infobarRenderer, achievementRenderer);
 		achievementRenderer.add(optionsRenderer);
 
-		mainmenuRenderer = new MainmenuRenderer(menuGFX, cgfx.text);
+		mainmenuRenderer = new MainmenuRenderer(grm);
 		mainmenuRenderer.setOpaque(true);
 		mainmenuRenderer.setBackground(Color.BLACK);
 		moviePlayer = new MovieSurface();
@@ -496,7 +473,7 @@ public class Main extends JFrame {
 	 */
 	public static void main(String[] args)  throws Exception {
 		// FIXME D3D pipeline is slow for an unknown reason
-//		System.setProperty("sun.java2d.d3d", "false");
+		System.setProperty("sun.java2d.d3d", "false");
 		String root = ".";
 		if (args.length > 0) {
 			root = args[0];

@@ -9,9 +9,10 @@
 package hu.openig.render;
 
 import hu.openig.core.ScreenLayerer;
-import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.TextGFX;
-import hu.openig.sound.UISounds;
+import hu.openig.res.GameResourceManager;
+import hu.openig.res.gfx.CommonGFX;
+import hu.openig.res.gfx.TextGFX;
+import hu.openig.sound.SoundFXPlayer;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -66,12 +67,12 @@ public class AchievementRenderer {
 	private final List<Component> components = new LinkedList<Component>();
 	/**
 	 * Constructor.
-	 * @param cgfx the common graphics
+	 * @param grm the game resource manager
 	 * @param sounds the ui sounds
 	 */
-	public AchievementRenderer(CommonGFX cgfx, UISounds sounds) {
-		this.cgfx = cgfx;
-		this.text = cgfx.text;
+	public AchievementRenderer(GameResourceManager grm, SoundFXPlayer sounds) {
+		this.cgfx = grm.commonGFX;
+		this.text = grm.commonGFX.text;
 //		this.sounds = sounds;
 		achievementFader = new Timer(ACHIEVEMENT_SPEED, 
 				new ActionListener() { public void actionPerformed(ActionEvent e) { doAchievement(); } });

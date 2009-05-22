@@ -8,6 +8,9 @@
 
 package hu.openig.model;
 
+import hu.openig.core.PlayerType;
+import hu.openig.core.StarmapSelection;
+
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;

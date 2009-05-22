@@ -10,12 +10,13 @@ package hu.openig.render;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.Tile;
-import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.PlanetGFX;
-import hu.openig.gfx.TextGFX;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GameWorld;
-import hu.openig.sound.UISounds;
+import hu.openig.res.GameResourceManager;
+import hu.openig.res.gfx.CommonGFX;
+import hu.openig.res.gfx.PlanetGFX;
+import hu.openig.res.gfx.TextGFX;
+import hu.openig.sound.SoundFXPlayer;
 import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.AlphaComposite;
@@ -149,7 +150,7 @@ MouseWheelListener, ActionListener {
 	/** The text renderer. */
 	private TextGFX text;
 	/** The user interface sounds. */
-	private UISounds uiSound;
+	private SoundFXPlayer uiSound;
 	/** Buttons which change state on click.*/
 	private final List<Btn> toggleButtons = new ArrayList<Btn>();
 	/** The various buttons. */
@@ -170,17 +171,16 @@ MouseWheelListener, ActionListener {
 	private final AchievementRenderer achievementRenderer;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
-	 * @param gfx the planet graphics 
-	 * @param cgfx the common graphics
+	 * @param grm the game resource manager 
 	 * @param uiSound the user interface sounds.
 	 * @param infobarRenderer the information bar
 	 * @param achievementRenderer the achievement renderer
 	 */
-	public PlanetRenderer(PlanetGFX gfx, CommonGFX cgfx, 
-			UISounds uiSound, InfobarRenderer infobarRenderer,
+	public PlanetRenderer(GameResourceManager grm, 
+			SoundFXPlayer uiSound, InfobarRenderer infobarRenderer,
 			AchievementRenderer achievementRenderer) {
-		this.gfx = gfx;
-		this.cgfx = cgfx;
+		this.gfx = grm.planetGFX;
+		this.cgfx = grm.commonGFX;
 		this.text = cgfx.text;
 		this.uiSound = uiSound;
 		this.infobarRenderer = infobarRenderer;

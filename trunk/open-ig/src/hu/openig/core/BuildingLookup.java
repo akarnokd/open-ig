@@ -45,14 +45,18 @@ public interface BuildingLookup {
 	 * index, and wheter it should be the damaged or undamaged version.
 	 * @param techId the technology id
 	 * @param index the building index
-	 * @param multi should ve check a second part?
 	 * @param damaged the damaged version?
 	 * @return the image in one piece
 	 */
-	PCXImage getBuildingTile(String techId, int index, boolean multi, boolean damaged);
+	PCXImage getBuildingTile(String techId, int index, boolean damaged);
 	/**
 	 * Returns a map from techid to list of building phase tiles.
 	 * @return a map from techid to list of building phase tiles
 	 */
 	Map<String, List<Tile>> getBuildingPhases();
+	/**
+	 * Returns a map from techid to list of damaged building phase tiles.
+	 * @return a map from techid to list of damaged building phase tiles
+	 */
+	Map<String, List<Tile>> getDamagedBuildingPhases();
 }

@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.GameSpeed;
 import hu.openig.res.Labels;
 
 import java.util.ArrayList;
