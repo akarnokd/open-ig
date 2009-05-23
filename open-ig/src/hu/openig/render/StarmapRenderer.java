@@ -294,8 +294,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		animations = new Timer(ANIMATION_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doAnimate(); } });
 		scrollAnimTimer = new Timer(SCROLL_ANIM_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doScrollAnimate(); } });
 		precalculateStars();
-		radarSineTable = new double[101];
-		radarCosineTable = new double[101];
+		radarSineTable = new double[51];
+		radarCosineTable = new double[51];
 		precalculateRadar();
 	}
 	/**
@@ -2016,7 +2016,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		for (int i = 0; i < radarSineTable.length; i++) {
 			radarSineTable[i] = Math.sin(angle);
 			radarCosineTable[i] = Math.cos(angle);
-			angle = i * Math.PI / 50;
+			angle = i * Math.PI / 25;
 		}
 		
 	}

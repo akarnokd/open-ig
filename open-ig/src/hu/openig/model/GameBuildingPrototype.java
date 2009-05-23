@@ -188,6 +188,11 @@ public class GameBuildingPrototype {
 					bi.damagedTile.rawImage = lookup.getBuildingTile(techid, b.index, true);
 					bi.buildPhases = buildingPhases.get(techid);
 					bi.damagedPhases = damagedPhases.get(techid);
+					String offset = e1.getAttribute("offset");
+					if (offset != null && offset.length() > 0) {
+						bi.regularTile.heightCorrection = Integer.parseInt(offset);
+						bi.damagedTile.heightCorrection = Integer.parseInt(offset);
+					}
 					b.images.put(techid, bi);
 				} else {
 					b.properties.put(e1.getNodeName(), e1.getTextContent());

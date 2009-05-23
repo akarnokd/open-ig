@@ -13,6 +13,70 @@
 		<populate>8100</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>RadarTelescope</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>9</x>
+				<y>-30</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Church</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-3</x>
+				<y>-43</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>MilitarySpaceport</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-3</x>
+				<y>-28</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>9</x>
+				<y>-33</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>MilitaryDevCentre</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-35</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PoliceStation</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-13</x>
+				<y>-41</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>FireBrigade</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-7</x>
+				<y>-42</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PrefabHousing</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>1</x>
+				<y>-43</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='Andromeda 1'>
@@ -349,6 +413,54 @@
 		<populate>5212</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>MilitarySpaceport</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-19</x>
+				<y>-41</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>RadarTelescope</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>2</x>
+				<y>-45</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ComputerDevCentre</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-13</x>
+				<y>-35</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PrefabHousing</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-2</x>
+				<y>-41</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-41</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-33</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='Earth'>
@@ -363,6 +475,158 @@
 		<populate>12343</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>MilitaryDevCentre</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>6</x>
+				<y>-20</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Hospital</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-9</x>
+				<y>-22</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Bank</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-17</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Church</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>2</x>
+				<y>-28</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>TradersSpaceport</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-46</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>HydroponicFoodFarm</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-16</x>
+				<y>-44</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-13</x>
+				<y>-28</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>FireBrigade</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-20</x>
+				<y>-45</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>FusionPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-15</x>
+				<y>-20</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Arcology</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-11</x>
+				<y>-34</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Barracks</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-23</x>
+				<y>-41</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Stadium</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-4</x>
+				<y>-19</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PrefabHousing</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>6</x>
+				<y>-26</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>RadarTelescope</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-15</x>
+				<y>-50</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>RecreationCentre</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-17</x>
+				<y>-26</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-7</x>
+				<y>-31</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>MilitarySpaceport</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-13</x>
+				<y>-53</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Bar</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-6</x>
+				<y>-39</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Stadium</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-39</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='Edgepolis'>
@@ -377,6 +641,62 @@
 		<populate>5133</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>PrefabHousing</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-9</x>
+				<y>-39</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>SpaceshipFactory</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-11</x>
+				<y>-17</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Bank</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-13</x>
+				<y>-30</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-19</x>
+				<y>-29</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-9</x>
+				<y>-31</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>MilitaryDevCentre</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-13</x>
+				<y>-24</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>MilitarySpaceport</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-16</x>
+				<y>-35</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='Exterior 1'>
@@ -755,6 +1075,198 @@
 		<populate>21000</populate>
 		<in-orbit>Base1, Base1</in-orbit>
 		<buildings>
+			<building>
+				<id>Arcology</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-17</x>
+				<y>-53</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PhoodFactory</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-21</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-9</x>
+				<y>-32</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>EquipmentFactory</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>1</x>
+				<y>-17</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-17</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PlasmaProjector</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-4</x>
+				<y>-50</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>0</x>
+				<y>-45</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Fortress</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-13</x>
+				<y>-51</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Arcology</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-55</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>SpaceshipFactory</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-4</x>
+				<y>-17</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-4</x>
+				<y>-46</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PlasmaProjector</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>8</x>
+				<y>-27</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PoliceStation</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-9</x>
+				<y>-39</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>RadarTelescope</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-9</x>
+				<y>-43</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ComputerDevCentre</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-4</x>
+				<y>-28</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>WeaponFactory</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-4</x>
+				<y>-23</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Arcology</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-29</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>IonProjector</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-46</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>InversionShield</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-49</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-25</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>4</x>
+				<y>-33</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>MilitarySpaceport</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>6</x>
+				<y>-14</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PlasmaProjector</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>0</x>
+				<y>-33</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Hospital</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>4</x>
+				<y>-27</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='Garthog 5'>
@@ -784,28 +1296,36 @@
 		<in-orbit>-</in-orbit>
 		<buildings>
 			<building>
-				<id>ColonyHub</id>
-				<health>100</health>
-				<progress>100</progress>
-				<x>-5</x>
-				<y>-13</y>
-				<powered>false</powered>
-			</building>
-			<building>
 				<id>NuclearPlant</id>
 				<health>100</health>
 				<progress>100</progress>
 				<x>-11</x>
-				<y>-19</y>
-				<powered>false</powered>
+				<y>-48</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-40</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>RadarTelescope</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>0</x>
+				<y>-51</y>
+				<enabled>true</enabled>
 			</building>
 			<building>
 				<id>PrefabHousing</id>
 				<health>100</health>
 				<progress>100</progress>
 				<x>-5</x>
-				<y>-21</y>
-				<powered>false</powered>
+				<y>-48</y>
+				<enabled>true</enabled>
 			</building>
 		</buildings>
 	</planet>
@@ -975,6 +1495,38 @@
 		<populate>4877</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-14</x>
+				<y>-34</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PoliceStation</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-6</x>
+				<y>-39</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PrefabHousing</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-4</x>
+				<y>-27</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-31</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='Naxos'>
@@ -989,6 +1541,38 @@
 		<populate>4600</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>PrefabHousing</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-46</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>RadarTelescope</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-20</x>
+				<y>-65</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-20</x>
+				<y>-59</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-38</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='New Caroline'>
@@ -1003,6 +1587,62 @@
 		<populate>6422</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>AIDevCentre</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-17</x>
+				<y>-52</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>HydroponicFoodFarm</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-53</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>RecreationCentre</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-49</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-4</x>
+				<y>-35</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Barracks</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-49</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-41</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PrefabHousing</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-16</x>
+				<y>-34</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='Outer 1'>
@@ -1479,6 +2119,30 @@
 		<populate>4900</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>RadarTelescope</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-13</x>
+				<y>-42</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PrefabHousing</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-26</x>
+				<y>-46</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id> <!-- Override, the surface isn't suitable for this building here! -->
+				<health>100</health>
+				<progress>100</progress>
+				<x>-22</x>
+				<y>-37</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='Zeuson'>
@@ -1493,6 +2157,30 @@
 		<populate>4232</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>RadarTelescope</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-11</x>
+				<y>-42</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>1</x>
+				<y>-39</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-8</x>
+				<y>-37</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 </planets>

@@ -426,7 +426,7 @@ public class Main extends JFrame {
 						out.printf("\t\t<progress>%s</progress>%n", gb.progress);
 						out.printf("\t\t<x>%s</x>%n", gb.x);
 						out.printf("\t\t<y>%s</y>%n", gb.y);
-						out.printf("\t\t<powered>%s</powered>%n", gb.powered);
+						out.printf("\t\t<enabled>%s</enabled>%n", gb.enabled);
 						out.printf("\t</building>%n");
 					}
 					out.printf("</buildings>%n");
@@ -455,6 +455,8 @@ public class Main extends JFrame {
 		planetRenderer.setOnListClicked(new BtnAction() { public void invoke() { onBuildings(); } });
 		informationRenderer.setOnStarmapClicked(new BtnAction() { public void invoke() { onInfoStarmap(); } });
 		informationRenderer.setOnColonyClicked(new BtnAction() { public void invoke() { onInfoColony(); } });
+		informationRenderer.setOnCancelInfoscreen(new BtnAction() { public void invoke() { onCancelInfoScreen(); } });
+		
 		planetRenderer.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
 		
 		mainmenuRenderer.setStartNewAction(new BtnAction() { public void invoke() { onStarmap(); } });
@@ -466,6 +468,17 @@ public class Main extends JFrame {
 		optionsRenderer.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); } });
 		optionsRenderer.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); } });
 		optionsRenderer.setOnExit(new BtnAction() { public void invoke() { doExit(); } });
+	}
+	/**
+	 * 
+	 */
+	protected void onCancelInfoScreen() {
+		if (planetRenderer.isVisible()) {
+			showScreen(planetRenderer);
+		} else
+		if (starmapRenderer.isVisible()) {
+			showScreen(starmapRenderer);
+		}
 	}
 	/**
 	 * Switch to buildings on the information screen.
