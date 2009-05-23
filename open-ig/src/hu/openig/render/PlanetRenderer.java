@@ -859,7 +859,7 @@ MouseWheelListener, ActionListener {
 		Point pt = e.getPoint();
 		if (lightMode) {
 			// adjust daylight value based on the vertical mouse position
-			daylight = pt.x / (float)getHeight();
+			daylight = pt.y / (float)getHeight();
 			repaint();
 		} else
 		if (panMode) {
