@@ -22,26 +22,31 @@ public final class TileFragment {
 	public final int fragment;
 	/** The tile provider which will supply the actual tile object. */
 	public final TileProvider provider;
+	/** The tile fragment represents a road. */
+	public final boolean isRoad;
 	/**
 	 * Constructor. Initializes the final fields
 	 * @param fragment the fragment index, -1 indicates no tile to use
 	 * @param provider the tile provider, not null
+	 * @param isRoad the fragment represents a road
 	 */
-	private TileFragment(int fragment, TileProvider provider) {
+	private TileFragment(int fragment, TileProvider provider, boolean isRoad) {
 		this.fragment = fragment;
 		if (provider == null) {
 			throw new IllegalArgumentException("provider null");
 		}
 		this.provider = provider;
+		this.isRoad = isRoad;
 	}
 	/**
 	 * Returns a tile fragment with the supplied settings.
 	 * @param fragment The tile fragment index. -1 indicates no tile should be used
 	 * @param provider The tile provider which will supply the actual tile object
+	 * @param isRoad the fragment represents a road
 	 * @return the tile fragment object
 	 */
-	public static TileFragment of(int fragment, TileProvider provider) {
-		return new TileFragment(fragment, provider);
+	public static TileFragment of(int fragment, TileProvider provider, boolean isRoad) {
+		return new TileFragment(fragment, provider, isRoad);
 	}
 	/**
 	 * {@inheritDoc}

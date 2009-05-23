@@ -12,6 +12,8 @@
 		<rotate>LR</rotate>
 		<populate>8100</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Andromeda 1'>
 		<name>Andromeda 1</name>
@@ -24,6 +26,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Andromeda 2'>
 		<name>Andromeda 2</name>
@@ -36,6 +40,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base1, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Andromeda 3'>
 		<name>Andromeda 3</name>
@@ -48,6 +54,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Andromeda 4'>
 		<name>Andromeda 4</name>
@@ -60,6 +68,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base1, Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Andromeda 5'>
 		<name>Andromeda 5</name>
@@ -72,6 +82,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Andromeda 6'>
 		<name>Andromeda 6</name>
@@ -84,6 +96,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Andromeda 7'>
 		<name>Andromeda 7</name>
@@ -96,6 +110,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 1'>
 		<name>Center 1</name>
@@ -108,6 +124,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 2'>
 		<name>Center 2</name>
@@ -120,6 +138,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 3'>
 		<name>Center 3</name>
@@ -132,6 +152,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base1, Base2, Base1</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 4'>
 		<name>Center 4</name>
@@ -144,6 +166,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 5'>
 		<name>Center 5</name>
@@ -156,6 +180,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base1, Base1, Base1</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 6'>
 		<name>Center 6</name>
@@ -168,6 +194,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 7'>
 		<name>Center 7</name>
@@ -180,6 +208,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 8'>
 		<name>Center 8</name>
@@ -192,6 +222,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base3, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 9'>
 		<name>Center 9</name>
@@ -204,6 +236,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base3, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 10'>
 		<name>Center 10</name>
@@ -216,6 +250,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 11'>
 		<name>Center 11</name>
@@ -228,6 +264,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 12'>
 		<name>Center 12</name>
@@ -240,6 +278,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 13'>
 		<name>Center 13</name>
@@ -252,6 +292,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 14'>
 		<name>Center 14</name>
@@ -264,6 +306,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 15'>
 		<name>Center 15</name>
@@ -276,6 +320,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Center 16'>
 		<name>Center 16</name>
@@ -288,6 +334,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Centronom'>
 		<name>Centronom</name>
@@ -300,6 +348,8 @@
 		<rotate>LR</rotate>
 		<populate>5212</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Earth'>
 		<name>Earth</name>
@@ -312,6 +362,8 @@
 		<rotate>RL</rotate>
 		<populate>12343</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Edgepolis'>
 		<name>Edgepolis</name>
@@ -324,6 +376,8 @@
 		<rotate>LR</rotate>
 		<populate>5133</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 1'>
 		<name>Exterior 1</name>
@@ -336,6 +390,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 2'>
 		<name>Exterior 2</name>
@@ -348,6 +404,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base1, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 3'>
 		<name>Exterior 3</name>
@@ -360,6 +418,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 4'>
 		<name>Exterior 4</name>
@@ -372,6 +432,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 5'>
 		<name>Exterior 5</name>
@@ -384,6 +446,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 6'>
 		<name>Exterior 6</name>
@@ -396,6 +460,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base3</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 7'>
 		<name>Exterior 7</name>
@@ -408,6 +474,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 8'>
 		<name>Exterior 8</name>
@@ -420,6 +488,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 9'>
 		<name>Exterior 9</name>
@@ -432,6 +502,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 10'>
 		<name>Exterior 10</name>
@@ -444,6 +516,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 11'>
 		<name>Exterior 11</name>
@@ -456,6 +530,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 12'>
 		<name>Exterior 12</name>
@@ -468,6 +544,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 13'>
 		<name>Exterior 13</name>
@@ -480,6 +558,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base1, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 14'>
 		<name>Exterior 14</name>
@@ -492,6 +572,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 15'>
 		<name>Exterior 15</name>
@@ -504,6 +586,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 16'>
 		<name>Exterior 16</name>
@@ -516,6 +600,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 17'>
 		<name>Exterior 17</name>
@@ -528,6 +614,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 18'>
 		<name>Exterior 18</name>
@@ -540,6 +628,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 19'>
 		<name>Exterior 19</name>
@@ -552,6 +642,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 19'>
 		<name>Exterior 19</name>
@@ -564,6 +656,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 20'>
 		<name>Exterior 20</name>
@@ -576,6 +670,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 21'>
 		<name>Exterior 21</name>
@@ -588,6 +684,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Exterior 22'>
 		<name>Exterior 22</name>
@@ -600,6 +698,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Garthog 1'>
 		<name>Garthog 1</name>
@@ -612,6 +712,8 @@
 		<rotate>RL</rotate>
 		<populate>13000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Garthog 2'>
 		<name>Garthog 2</name>
@@ -624,6 +726,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Garthog 3'>
 		<name>Garthog 3</name>
@@ -636,6 +740,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Garthog 4'>
 		<name>Garthog 4</name>
@@ -648,6 +754,8 @@
 		<rotate>RL</rotate>
 		<populate>21000</populate>
 		<in-orbit>Base1, Base1</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Garthog 5'>
 		<name>Garthog 5</name>
@@ -660,6 +768,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Giantropolis'>
 		<name>Giantropolis</name>
@@ -672,6 +782,32 @@
 		<rotate>LR</rotate>
 		<populate>5323</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-5</x>
+				<y>-13</y>
+				<powered>false</powered>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-11</x>
+				<y>-19</y>
+				<powered>false</powered>
+			</building>
+			<building>
+				<id>PrefabHousing</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-5</x>
+				<y>-21</y>
+				<powered>false</powered>
+			</building>
+		</buildings>
 	</planet>
 	<planet id='Magellan 1'>
 		<name>Magellan 1</name>
@@ -684,6 +820,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellan 2'>
 		<name>Magellan 2</name>
@@ -696,6 +834,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellan 3'>
 		<name>Magellan 3</name>
@@ -708,6 +848,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellan 4'>
 		<name>Magellan 4</name>
@@ -720,6 +862,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base3, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellan 5'>
 		<name>Magellan 5</name>
@@ -732,6 +876,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellan 6'>
 		<name>Magellan 6</name>
@@ -744,6 +890,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellan 7'>
 		<name>Magellan 7</name>
@@ -756,6 +904,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base1, Base3, Base1</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellan 8'>
 		<name>Magellan 8</name>
@@ -768,6 +918,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellan 9'>
 		<name>Magellan 9</name>
@@ -780,6 +932,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellan 10'>
 		<name>Magellan 10</name>
@@ -792,6 +946,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Magellen 11'>
 		<name>Magellen 11</name>
@@ -804,6 +960,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Myridan'>
 		<name>Myridan</name>
@@ -816,6 +974,8 @@
 		<rotate>LR</rotate>
 		<populate>4877</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Naxos'>
 		<name>Naxos</name>
@@ -828,6 +988,8 @@
 		<rotate>LR</rotate>
 		<populate>4600</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='New Caroline'>
 		<name>New Caroline</name>
@@ -840,6 +1002,8 @@
 		<rotate>RL</rotate>
 		<populate>6422</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 1'>
 		<name>Outer 1</name>
@@ -852,6 +1016,8 @@
 		<rotate>RL</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 2'>
 		<name>Outer 2</name>
@@ -864,6 +1030,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 3'>
 		<name>Outer 3</name>
@@ -876,6 +1044,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 4'>
 		<name>Outer 4</name>
@@ -888,6 +1058,8 @@
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 5'>
 		<name>Outer 5</name>
@@ -900,6 +1072,8 @@
 		<rotate>RL</rotate>
 		<populate>14000</populate>
 		<in-orbit></in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 6'>
 		<name>Outer 6</name>
@@ -912,6 +1086,8 @@
 		<rotate>LR</rotate>
 		<populate>19000</populate>
 		<in-orbit>Base3, Base2, Base3</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 7'>
 		<name>Outer 7</name>
@@ -924,6 +1100,8 @@
 		<rotate>RL</rotate>
 		<populate>15000</populate>
 		<in-orbit>Base2, Base2, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 8'>
 		<name>Outer 8</name>
@@ -936,6 +1114,8 @@
 		<rotate>LR</rotate>
 		<populate>15000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 9'>
 		<name>Outer 9</name>
@@ -948,6 +1128,8 @@
 		<rotate>LR</rotate>
 		<populate>20000</populate>
 		<in-orbit>Base2, Base3, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 10'>
 		<name>Outer 10</name>
@@ -960,6 +1142,8 @@
 		<rotate>RL</rotate>
 		<populate>30000</populate>
 		<in-orbit>Base3, Base3, Base3</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 11'>
 		<name>Outer 11</name>
@@ -972,6 +1156,8 @@
 		<rotate>LR</rotate>
 		<populate>20000</populate>
 		<in-orbit>Base3, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 12'>
 		<name>Outer 12</name>
@@ -984,6 +1170,8 @@
 		<rotate>LR</rotate>
 		<populate>20000</populate>
 		<in-orbit>Base2, Base3, Base2</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 13'>
 		<name>Outer 13</name>
@@ -996,6 +1184,8 @@
 		<rotate>LR</rotate>
 		<populate>20000</populate>
 		<in-orbit>Base2, Base2, Base3</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 14'>
 		<name>Outer 14</name>
@@ -1008,6 +1198,8 @@
 		<rotate>RL</rotate>
 		<populate>20000</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 15'>
 		<name>Outer 15</name>
@@ -1020,6 +1212,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 16'>
 		<name>Outer 16</name>
@@ -1032,6 +1226,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 17'>
 		<name>Outer 17</name>
@@ -1044,6 +1240,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 18'>
 		<name>Outer 18</name>
@@ -1056,6 +1254,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 19'>
 		<name>Outer 19</name>
@@ -1068,6 +1268,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 20'>
 		<name>Outer 20</name>
@@ -1080,6 +1282,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 21'>
 		<name>Outer 21</name>
@@ -1092,6 +1296,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 22'>
 		<name>Outer 22</name>
@@ -1104,6 +1310,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 23'>
 		<name>Outer 23</name>
@@ -1116,6 +1324,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 24'>
 		<name>Outer 24</name>
@@ -1128,6 +1338,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 25'>
 		<name>Outer 25</name>
@@ -1140,6 +1352,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 26'>
 		<name>Outer 26</name>
@@ -1152,6 +1366,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 27'>
 		<name>Outer 27</name>
@@ -1164,6 +1380,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 28'>
 		<name>Outer 28</name>
@@ -1176,6 +1394,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 29'>
 		<name>Outer 29</name>
@@ -1188,6 +1408,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Outer 30'>
 		<name>Outer 30</name>
@@ -1200,6 +1422,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Persol 1'>
 		<name>Persol 1</name>
@@ -1212,6 +1436,8 @@
 		<rotate>LR</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Persol 2'>
 		<name>Persol 2</name>
@@ -1224,6 +1450,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Persol 3'>
 		<name>Persol 3</name>
@@ -1236,6 +1464,8 @@
 		<rotate>RL</rotate>
 		<populate>0</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='San Sterling'>
 		<name>San Sterling</name>
@@ -1248,6 +1478,8 @@
 		<rotate>RL</rotate>
 		<populate>4900</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 	<planet id='Zeuson'>
 		<name>Zeuson</name>
@@ -1260,5 +1492,7 @@
 		<rotate>RL</rotate>
 		<populate>4232</populate>
 		<in-orbit>-</in-orbit>
+		<buildings>
+		</buildings>
 	</planet>
 </planets>

@@ -61,4 +61,13 @@ public final class Location {
 	public String toString() {
 		return "(" + x + ", " + y + ")";
 	}
+	/**
+	 * Returns a location relative to this location.
+	 * @param dx the delta x
+	 * @param dy the delta y
+	 * @return the new location
+	 */
+	public Location delta(int dx, int dy) {
+		return Location.of(x + dx, y + dy);
+	}
 }

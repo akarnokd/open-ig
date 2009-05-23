@@ -16,6 +16,7 @@ import hu.openig.core.InfoScreen;
 import hu.openig.core.PlayerType;
 import hu.openig.core.ScreenLayerer;
 import hu.openig.core.StarmapSelection;
+import hu.openig.model.GameBuilding;
 import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
@@ -45,6 +46,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -358,6 +363,81 @@ public class Main extends JFrame {
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doDoToggleInterpolations(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+C");
+		rp.getActionMap().put("CTRL+C", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doClearPlanetBuildings(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+S");
+		rp.getActionMap().put("CTRL+S", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doSavePlanetBuildings(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "DEL");
+		rp.getActionMap().put("DEL", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doDeleteBuilding(); } });
+	}
+	/**
+	 * Deletes the currently selected building from the current planet,
+	 * if the planet renderer is active.
+	 */
+	protected void doDeleteBuilding() {
+		if (planetRenderer.isVisible() && !informationRenderer.isVisible()) {
+			planetRenderer.doDemolish();
+		}
+	}
+	/**
+	 * Clear planet buildings from the currently selected planet.
+	 */
+	protected void doClearPlanetBuildings() {
+		GamePlanet planet = gameWorld.player.selectedPlanet;
+		if (planet != null) {
+			planet.buildings.clear();
+			planet.buildingKinds.clear();
+			planet.buildingTypes.clear();
+			planet.map.clear();
+		}
+		planetRenderer.repaint();
+	}
+	/**
+	 * FIXME for development only
+	 * Save planet buildings from the currently selected planet.
+	 */
+	protected void doSavePlanetBuildings() {
+		GamePlanet planet = gameWorld.player.selectedPlanet;
+		if (planet != null) {
+			try {
+				PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(planet.name + ".xml"), "UTF-8"));
+				try {
+					out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
+					out.printf("<buildings>%n");
+					for (GameBuilding gb : planet.buildings) {
+						out.printf("\t<building>%n");
+						out.printf("\t\t<id>%s</id>%n", gb.prototype.id);
+						out.printf("\t\t<health>%s</health>%n", gb.health);
+						out.printf("\t\t<progress>%s</progress>%n", gb.progress);
+						out.printf("\t\t<x>%s</x>%n", gb.x);
+						out.printf("\t\t<y>%s</y>%n", gb.y);
+						out.printf("\t\t<powered>%s</powered>%n", gb.powered);
+						out.printf("\t</building>%n");
+					}
+					out.printf("</buildings>%n");
+				} finally {
+					out.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		planetRenderer.repaint();
 	}
 	/** Toggle bicubic interpolation on the starmap background. */
 	protected void doDoToggleInterpolations() {
@@ -726,8 +806,10 @@ public class Main extends JFrame {
 		gameWorld.races.clear();
 		gameWorld.races.addAll(GameRace.parse("/hu/openig/res/races.xml"));
 		
+		gameWorld.buildingPrototypesMap.clear();
+		gameWorld.buildingPrototypesMap.putAll(GameBuildingPrototype.parse("/hu/openig/res/buildings.xml", grm));
 		gameWorld.buildingPrototypes.clear();
-		gameWorld.buildingPrototypes.addAll(GameBuildingPrototype.parse("/hu/openig/res/buildings.xml", grm));
+		gameWorld.buildingPrototypes.addAll(gameWorld.buildingPrototypesMap.values());
 		
 		gameWorld.players.clear();
 		for (int i = 0; i < gameWorld.races.size(); i++) {

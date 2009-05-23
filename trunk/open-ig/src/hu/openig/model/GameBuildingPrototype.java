@@ -15,11 +15,11 @@ import hu.openig.utils.XML;
 import hu.openig.utils.XML.XmlProcessor;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +48,8 @@ public class GameBuildingPrototype {
 		public List<Tile> buildPhases;
 		/** The damaged building phases of the building. The original game had one set of images for each tech id, therefore, this list could be shared. */
 		public List<Tile> damagedPhases;
+		/** The technology id. */
+		public String techId;
 		/** 
 		 * If the building is a planetary defense building, this list contains the 360 degrees 
 		 * rotated small images of the building to display it on the space battle screen.
@@ -100,14 +102,14 @@ public class GameBuildingPrototype {
 	 * @param lookup the building images lookup
 	 * @return list of planets
 	 */
-	public static List<GameBuildingPrototype> parse(String resource, final BuildingLookup lookup) {
-		List<GameBuildingPrototype> planet = XML.parseResource(resource, new XmlProcessor<List<GameBuildingPrototype>>() {
+	public static Map<String, GameBuildingPrototype> parse(String resource, final BuildingLookup lookup) {
+		Map<String, GameBuildingPrototype> planet = XML.parseResource(resource, new XmlProcessor<Map<String, GameBuildingPrototype>>() {
 			@Override
-			public List<GameBuildingPrototype> process(Document doc) {
+			public Map<String, GameBuildingPrototype> process(Document doc) {
 				return GameBuildingPrototype.process(doc, lookup);
 			}
 		});
-		return planet != null ? planet : new ArrayList<GameBuildingPrototype>();
+		return planet != null ? planet : new HashMap<String, GameBuildingPrototype>();
 	}
 	/**
 	 * Processes a buildings.xml document.
@@ -115,8 +117,8 @@ public class GameBuildingPrototype {
 	 * @param lookup building images lookup
 	 * @return the list of buildings
 	 */
-	private static List<GameBuildingPrototype> process(Document root, BuildingLookup lookup) {
-		List<GameBuildingPrototype> result = new ArrayList<GameBuildingPrototype>();
+	private static Map<String, GameBuildingPrototype> process(Document root, BuildingLookup lookup) {
+		Map<String, GameBuildingPrototype> result = new LinkedHashMap<String, GameBuildingPrototype>();
 		// query for all building phases.
 		Map<String, List<Tile>> buildingPhases = lookup.getBuildingPhases();
 		Map<String, List<Tile>> damagedPhases = lookup.getDamagedBuildingPhases();
@@ -174,6 +176,7 @@ public class GameBuildingPrototype {
 					int y = Integer.parseInt(e1.getAttribute("width"));
 					int x = Integer.parseInt(e1.getAttribute("height"));
 					BuildingImages bi = new BuildingImages();
+					bi.techId = techid;
 					bi.thumbnail = lookup.getThumbnail(techid, b.index);
 					bi.regularTile = new Tile();
 					bi.regularTile.width = x;
@@ -190,7 +193,7 @@ public class GameBuildingPrototype {
 					b.properties.put(e1.getNodeName(), e1.getTextContent());
 				}
 			}
-			result.add(b);
+			result.put(b.id, b);
 		}
 		return result;
 	}

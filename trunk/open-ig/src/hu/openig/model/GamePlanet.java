@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,6 +93,15 @@ public class GamePlanet {
 	/** The owner of the planet when the planetListImage was rendered. */
 	public GamePlayer planetListImageOwner;
 	/** 
+	 * Indicator for the planet renderer to place buildings on the map when first
+	 * displaying the surface.
+	 */
+	public boolean placeBuildings = true;
+	/**
+	 * The currently selected building on this planet.
+	 */
+	public GameBuilding selectedBuilding;
+	/** 
 	 * The user-buildings on the map mapped via X,Y location for each of its entire rectangular base surface (e.g a 2x2 tile will have 4 entries in this map).
 	 * Moving buildings around is not allowed. 
 	 */
@@ -148,6 +158,28 @@ public class GamePlanet {
 			if (!"-".equals(orbit)) {
 				p.inOrbit.addAll(Arrays.asList(orbit.split("\\\\s*,\\\\s*")));
 			}
+			
+			Element be = XML.childElement(planet, "buildings");
+			// planets without population don't allow prebuilt planets!
+			if (be != null && p.populationRace != null) {
+				for (Element b : XML.childrenWithName(be, "building")) {
+					GameBuilding gb = new GameBuilding();
+					String bid = XML.childValue(b, "id");
+					gb.prototype = lookup.getBuildingPrototype(bid);
+					gb.images = gb.prototype.images.get(p.populationRace.techId);
+					// keep building only if it is supported for the current planet techid
+					if (gb.images != null) {
+						gb.health = Integer.parseInt(XML.childValue(b, "health"));
+						gb.progress = Integer.parseInt(XML.childValue(b, "progress"));
+						gb.x = Integer.parseInt(XML.childValue(b, "x"));
+						gb.y = Integer.parseInt(XML.childValue(b, "y"));
+						gb.powered = "true".equals(XML.childValue(b, "powered"));
+						
+						p.addBuilding(gb);
+					}
+				}
+			}
+			
 			result.add(p);
 		}
 		return result;
@@ -299,6 +331,11 @@ public class GamePlanet {
 		Set<GameBuilding> bk = buildingKinds.get(building.prototype.kind);
 		if (bk != null) {
 			bk.remove(building);
+		}
+		for (Map.Entry<Location, TileFragment> e : new LinkedList<Map.Entry<Location, TileFragment>>(map.entrySet())) {
+			if (e.getValue().provider == building) {
+				map.remove(e.getKey());
+			}
 		}
 	}
 }

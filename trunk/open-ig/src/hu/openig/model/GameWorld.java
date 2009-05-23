@@ -15,7 +15,9 @@ import hu.openig.res.Labels;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -55,8 +57,10 @@ public class GameWorld implements GameRaceLookup {
 	public Labels labels;
 	/** The current language. */
 	public String language;
-	/** The tech id to game building prototype map. */
+	/** The tech id to game building prototype list. */
 	public final List<GameBuildingPrototype> buildingPrototypes = new ArrayList<GameBuildingPrototype>();
+	/** The tech id to game building prototype map. */
+	public final Map<String, GameBuildingPrototype> buildingPrototypesMap = new HashMap<String, GameBuildingPrototype>();
 	/**
 	 * {@inheritDoc}
 	 */
@@ -286,5 +290,12 @@ public class GameWorld implements GameRaceLookup {
 			return bs == null || bs.size() < bp.limitValue;
 		}
 		return true;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public GameBuildingPrototype getBuildingPrototype(String buildingId) {
+		return buildingPrototypesMap.get(buildingId);
 	}
 }

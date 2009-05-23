@@ -12,6 +12,8 @@ import hu.openig.core.Location;
 import hu.openig.core.Tile;
 import hu.openig.core.TileProvider;
 
+import java.awt.Rectangle;
+
 /**
  * Actual building instance.
  * @author karnokd
@@ -21,8 +23,6 @@ public class GameBuilding implements TileProvider {
 	public GameBuildingPrototype prototype;
 	/** Shortcut for building images for the actual tech id. */
 	public GameBuildingPrototype.BuildingImages images;
-	/** The technology id. */
-	public String techId; // TODO do we need this here?
 	/** The tile X coordinate of the left edge. */
 	public int x;
 	/** The tile Y coordinate of the top edge. */
@@ -31,18 +31,38 @@ public class GameBuilding implements TileProvider {
 	public int health; // FIXME damage percent or hitpoints?
 	/** The current build progress percent: 0 to 100. */
 	public int progress;
+	/** Is the building powered? */
+	public boolean powered;
+	/** The lazily initialized rectangle. */
+	private Rectangle rect;
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public Tile getTile(Location location) {
+		int dx = location.x - x;
+		int dy = y - location.y;
 		if (progress == 100) {
-			if (health < 50) { // FIXME health level to switch to damaged tile
-				return images.damagedTile;
+			if (dx == 0 || dy == images.regularTile.width - 1) {
+				if (health < 50) { // FIXME health level to switch to damaged tile
+					return images.damagedTile;
+				}
+				return images.regularTile;
 			}
-			return images.regularTile;
+			return null; // no tile to draw
 		}
 		// FIXME: maybe the returned tile should depend on the internal location, to have non-uniformly built structure visual effect
 		return images.buildPhases.get(images.buildPhases.size() * progress / 100); 
+	}
+	/**
+	 * Returns the rectangle containint this building inclusive the roads around.
+	 * Note, that height in this case points to +y whereas rendering is done into the -y direction.
+	 * @return the rectangle
+	 */
+	public Rectangle getRectWithRoad() {
+		if (rect == null) {
+			rect = new Rectangle(x - 1, y + 1, images.regularTile.height + 2, images.regularTile.width + 2);
+		}
+		return rect;
 	}
 }
