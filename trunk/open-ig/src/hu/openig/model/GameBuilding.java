@@ -32,9 +32,11 @@ public class GameBuilding implements TileProvider {
 	/** The current build progress percent: 0 to 100. */
 	public int progress;
 	/** Is the building powered? */
-	public boolean powered;
+	public boolean powered = true;
 	/** The lazily initialized rectangle. */
 	private Rectangle rect;
+	/** Is this building enabled? Disabled buildings don't consume/produce energy or workers. */
+	public boolean enabled = true;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -64,5 +66,26 @@ public class GameBuilding implements TileProvider {
 			rect = new Rectangle(x - 1, y + 1, images.regularTile.height + 2, images.regularTile.width + 2);
 		}
 		return rect;
+	}
+	/**
+	 * Returns the current energy production/consumption.
+	 * This value depend on the current health and progress as well
+	 * as the enabled state
+	 * @return the energy value
+	 */
+	public int getEnergy() {
+		if (enabled && progress == 100) {
+			if (health >= 50) {
+				return prototype.energy * health / 100;
+			}
+		}
+		return 0;
+	}
+	/**
+	 * Returns the worker demand which depends on the building status.
+	 * @return the worker demand
+	 */
+	public int getWorkerDemand() {
+		return enabled && progress == 100 ? prototype.workers : 0;
 	}
 }

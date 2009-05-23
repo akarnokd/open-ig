@@ -102,7 +102,7 @@ public class GameFleet {
 	 */
 	public int getRadarRadius() {
 		// TODO evaluate fleet contents correctly
-		return 50;
+		return 15;
 	}
 	/**
 	 * @return the fleet's current firepower

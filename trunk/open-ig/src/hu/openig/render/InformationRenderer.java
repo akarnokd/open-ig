@@ -76,7 +76,7 @@ MouseWheelListener, ActionListener {
 	/** Buttons which change state on click.*/
 	private final List<Btn> toggleButtons = new ArrayList<Btn>();
 	/** The various buttons. */
-	private final List<Btn> buttons = new ArrayList<Btn>();
+	private final List<Btn> releaseButtons = new ArrayList<Btn>();
 	/** Buttons which fire on the press mouse action. */
 	private final List<Btn> pressButtons = new ArrayList<Btn>();
 	/** The fixed size of this renderer. */
@@ -159,6 +159,8 @@ MouseWheelListener, ActionListener {
 	private static final int BLINK_INTERVAL = 100;
 	/** The current blink step. */
 	private int blinkStep;
+	/** Action on cancel information screen. */
+	private BtnAction onCancelInfoscreen;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager
@@ -196,7 +198,7 @@ MouseWheelListener, ActionListener {
 		int w = getWidth();
 		int h = getHeight();
 
-		if (false) {
+		if (true) {
 			Composite cp = g2.getComposite();
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
 			g2.setColor(Color.BLACK);
@@ -360,17 +362,17 @@ MouseWheelListener, ActionListener {
 		btnAliens = new Btn(new BtnAction() { public void invoke() { doAliensClick(); } });
 		pressButtons.add(btnAliens);
 		btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); } });
-		buttons.add(btnColony);
+		releaseButtons.add(btnColony);
 		btnStarmap = new Btn(new BtnAction() { public void invoke() { doStarmapClick(); } });
-		buttons.add(btnStarmap);
+		releaseButtons.add(btnStarmap);
 		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
-		buttons.add(btnEquipment);
+		releaseButtons.add(btnEquipment);
 		btnProduction = new Btn(new BtnAction() { public void invoke() { doProductionClick(); } });
-		buttons.add(btnProduction);
+		releaseButtons.add(btnProduction);
 		btnResearch = new Btn(new BtnAction() { public void invoke() { doResearchClick(); } });
-		buttons.add(btnResearch);
+		releaseButtons.add(btnResearch);
 		btnDiplomacy = new Btn(new BtnAction() { public void invoke() { doDiplomacyClick(); } });
-		buttons.add(btnDiplomacy);
+		releaseButtons.add(btnDiplomacy);
 		
 		btnTaxLess = new Btn(new BtnAction() { public void invoke() { doLessTax(); } });
 		pressButtons.add(btnTaxLess);
@@ -480,7 +482,8 @@ MouseWheelListener, ActionListener {
 		
 		screen.x = (getWidth() - gfx.infoScreen.getWidth()) / 2;
 		screen.y = (getHeight() - gfx.infoScreen.getHeight()) / 2;
-		
+		screen.width = gfx.infoScreen.getWidth();
+		screen.height = gfx.infoScreen.getHeight();
 		mainArea.setBounds(screen.x + 2, screen.y + 2, 411, 362);
 		
 		titleArea.setBounds(screen.x + 415, screen.y + 2, 203, 26);
@@ -546,7 +549,7 @@ MouseWheelListener, ActionListener {
 						repaint(b.rect);
 					}
 				}
-				for (Btn b : buttons) {
+				for (Btn b : releaseButtons) {
 					if (b.test(pt)) {
 						b.down = true;
 						repaint(b.rect);
@@ -610,14 +613,23 @@ MouseWheelListener, ActionListener {
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		Point pt = e.getPoint();
 		boolean needRepaint = false;
-		for (Btn b : buttons) {
+		for (Btn b : releaseButtons) {
 			needRepaint |= b.down;
 			b.down = false;
+			if (b.test(pt)) {
+				b.click();
+			}
 		}
 		for (Btn b : pressButtons) {
 			needRepaint |= b.down;
 			b.down = false;
+		}
+		if (!screen.contains(pt)) {
+			if (onCancelInfoscreen != null) {
+				onCancelInfoscreen.invoke();
+			}
 		}
 		if (needRepaint) {
 			repaint();
@@ -634,16 +646,6 @@ MouseWheelListener, ActionListener {
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON1) {
-			if (e.getClickCount() == 1) {
-				Point pt = e.getPoint();
-				for (Btn b : buttons) {
-					if (b.test(pt)) {
-						b.click();
-					}
-				}
-			}
-		}
 	}
 	/**
 	 * {@inheritDoc}
@@ -1121,7 +1123,7 @@ MouseWheelListener, ActionListener {
 						gameWorld.getLabel("TaxRate." + planet.tax.id));
 				int trLen = text.getTextWidth(10, tr);
 				int trx = btnTaxLess.rect.x + (btnTaxMore.rect.x + btnTaxMore.rect.width - btnTaxLess.rect.x - trLen) / 2;
-				text.paintTo(g2, trx, mainArea.y + 240, 10, color, tr);
+				text.paintTo(g2, trx, mainArea.y + 240, 10, TextGFX.GREEN, tr);
 				
 				btnTaxLess.disabled = planet.tax == TaxRate.NONE;
 				btnTaxMore.disabled = planet.tax == TaxRate.OPPRESSIVE;
@@ -1567,7 +1569,7 @@ MouseWheelListener, ActionListener {
 				text.paintTo(g2, secondaryArea.x + 6, h + 34, 10, color, 
 						gameWorld.getLabel("BuildingInfo.Entry",
 							gameWorld.getLabel("BuildingInfo.Worker"),
-							-bp.workers
+							bp.workers
 						)
 					);
 				int i = 0;
@@ -1611,5 +1613,17 @@ MouseWheelListener, ActionListener {
 			text.paintTo(g2, mainArea.x + 10, mainArea.y + 30, 10, TextGFX.YELLOW,
 					gameWorld.getLabel("ColonyInfo.NoColonySelected"));
 		}
+	}
+	/**
+	 * @param onCancelInfoscreen the onCancelInfoscreen to set
+	 */
+	public void setOnCancelInfoscreen(BtnAction onCancelInfoscreen) {
+		this.onCancelInfoscreen = onCancelInfoscreen;
+	}
+	/**
+	 * @return the onCancelInfoscreen
+	 */
+	public BtnAction getOnCancelInfoscreen() {
+		return onCancelInfoscreen;
 	}
 }

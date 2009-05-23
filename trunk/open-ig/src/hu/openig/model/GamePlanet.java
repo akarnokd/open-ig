@@ -173,7 +173,7 @@ public class GamePlanet {
 						gb.progress = Integer.parseInt(XML.childValue(b, "progress"));
 						gb.x = Integer.parseInt(XML.childValue(b, "x"));
 						gb.y = Integer.parseInt(XML.childValue(b, "y"));
-						gb.powered = "true".equals(XML.childValue(b, "powered"));
+						gb.enabled = "true".equals(XML.childValue(b, "enabled"));
 						
 						p.addBuilding(gb);
 					}
@@ -234,43 +234,95 @@ public class GamePlanet {
 	 * @return the living space amount in persons
 	 */
 	public int getLivingSpace() {
-		return 0; // TODO evaluate actual living space
+		int sum = 0;
+		for (GameBuilding b : buildings) {
+			Object value = b.prototype.properties.get("living-space");
+			if (value != null) {
+				sum += Integer.valueOf(value.toString());
+			}
+		}
+		return sum;
 	}
 	/**
 	 * @return the hospital capacity in persons
 	 */
 	public int getHospital() {
-		return 0; // TODO evaluate actual hospital room
+		int sum = 0;
+		for (GameBuilding b : buildings) {
+			Object value = b.prototype.properties.get("hospital");
+			if (value != null) {
+				sum += Integer.valueOf(value.toString());
+			}
+		}
+		return sum;
 	}
 	/**
 	 * @return the food capacity in persons
 	 */
 	public int getFood() {
-		return 0; // TODO evaluate actual food limit
+		int sum = 0;
+		for (GameBuilding b : buildings) {
+			Object value = b.prototype.properties.get("food");
+			if (value != null) {
+				sum += Integer.valueOf(value.toString());
+			}
+		}
+		return sum;
 	}
 	/**
 	 * @return the energy consumption in kWh
 	 */
 	public int getEnergyDemand() {
-		return 0; // TODO evaluate energy consumption
+		int sum = 0;
+		for (GameBuilding b : buildings) {
+			int v = b.getEnergy();
+			if (v < 0) {
+				sum += -v;
+			}
+		}
+		return sum;
 	}
 	/**
 	 * @return the maximum energy output in kWh
 	 */
 	public int getEnergyProduction() {
-		return 0; // TODO evaluate maximum energy output
+		int sum = 0;
+		for (GameBuilding b : buildings) {
+			int v = b.getEnergy();
+			if (v > 0) {
+				sum += v;
+			}
+		}
+		return sum;
 	}
 	/**
 	 * @return return the radar radius
 	 */
 	public int getRadarRadius() {
-		return 50; // properly determine radar radius based on the buildings
+		int sum = 0;
+		for (GameBuilding b : buildings) {
+			if (b.enabled) {
+				Object value = b.prototype.properties.get("radar");
+				if (value != null) {
+					int v = Integer.valueOf(value.toString());
+					if (v > sum) {
+						sum = v;
+					}
+				}
+			}
+		}
+		return sum;
 	}
 	/**
 	 * @return returns the total worker demand on the planet
 	 */
 	public int getWorkerDemand() {
-		return 0; // determine total worker count required for buildings
+		int sum = 0;
+		for (GameBuilding b : buildings) {
+			int v = b.getWorkerDemand();
+			sum += v;
+		}
+		return sum;
 	}
 	/**
 	 * Convinience method to check if a planet has any problems with
