@@ -118,6 +118,8 @@ public class PlanetGFX {
 	public final Map<String, Map<Integer, PCXImage>> damagedBuildings = new HashMap<String, Map<Integer, PCXImage>>();
 	/** The road tile map from tech id to road type to tile. */
 	public final Map<String, Map<RoadType, Tile>> roadTiles = new HashMap<String, Map<RoadType, Tile>>();
+	/** The road tile to road type reverse lookup table. */
+	public final Map<String, Map<Tile, RoadType>> tileRoads = new HashMap<String, Map<Tile, RoadType>>();
 	/** Tech id to list of various buildup phase tiles. */
 	public final Map<String, List<Tile>> buildupTiles = new HashMap<String, List<Tile>>();
 	/** Tech id to list of various buildup damaged phase tiles. */
@@ -248,12 +250,16 @@ public class PlanetGFX {
 			
 			Map<RoadType, Tile> roads = new HashMap<RoadType, Tile>();
 			roadTiles.put(String.valueOf(i), roads);
+			Map<Tile, RoadType> tiles = new HashMap<Tile, RoadType>();
+			tileRoads.put(String.valueOf(i), tiles);
+			
 			for (RoadType rt : RoadType.values()) {
 				Tile t = new Tile();
 				t.rawImage = new PCXImage(entries.get(String.format("U%02d.PCX", rt.index)).data);
 				t.width = 1;
 				t.height = 1;
 				roads.put(rt, t);
+				tiles.put(t, rt);
 			}
 			switch (i) {
 			case 1:

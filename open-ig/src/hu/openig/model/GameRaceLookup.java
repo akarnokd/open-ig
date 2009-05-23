@@ -32,4 +32,11 @@ public interface GameRaceLookup {
 	 * @return the game player or null if no such player
 	 */
 	GamePlayer getPlayerForRace(GameRace race);
+	/**
+	 * Returns the building prototype object for the given building
+	 * prototype id.
+	 * @param buildingId the prototype id
+	 * @return the building
+	 */
+	GameBuildingPrototype getBuildingPrototype(String buildingId);
 }

@@ -45,8 +45,12 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.Timer;
@@ -123,7 +127,7 @@ MouseWheelListener, ActionListener {
 	private Rectangle buildPanelRect = new Rectangle();
 	/** Rectangle for. */
 	private Rectangle radarPanelRect = new Rectangle();
-	/** Rectangle for. */
+	/** Rectangle for the building information panel. */
 	private Rectangle buildingInfoPanelRect = new Rectangle();
 	/** The last width. */
 	private int lastWidth;
@@ -151,7 +155,7 @@ MouseWheelListener, ActionListener {
 	/** The current darkening factor for the entire UI. 0=No darkness, 1=Full darkness. */
 	private float darkness = 0f;
 	/** The daylight factor for the planetary surface only. 1=No darkness, 0=Full darkness. */
-	private float daylight = 0.5f;
+	private float daylight = 1f;
 	/** The text renderer. */
 	private TextGFX text;
 	/** The user interface sounds. */
@@ -192,6 +196,10 @@ MouseWheelListener, ActionListener {
 	private Btn btnList;
 	/** We are currently in build mode. */
 	private boolean buildMode;
+	/** The building info panel name region. */
+	private final Rectangle buildingInfoName = new Rectangle();
+	/** The demolish building button. */
+	private Btn btnDemolish;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager 
@@ -295,6 +303,13 @@ MouseWheelListener, ActionListener {
 			planet = gameWorld.getOwnPlanetsInOrder().get(0);
 			gameWorld.player.selectedPlanet = planet;
 		}
+		if (planet.placeBuildings) {
+			for (GameBuilding b : planet.buildings) {
+				placeBuilding(b);
+			}
+			planet.placeBuildings = false;
+			fixRoads();
+		}
 		int surfaceType = planet.surfaceType.index;
 		byte[] mapBytes = getSelectedPlanetSurface();
 		// RENDER VERTICALLY
@@ -313,8 +328,10 @@ MouseWheelListener, ActionListener {
 				if (tf != null && tf.fragment >= 0) {
 					tile = tf.provider.getTile(l);
 					// select appropriate stripe
-					tile.createImage(daylight);
-					stripeId = tf.fragment % tile.strips.length; // wrap around for safety
+					if (tile != null) {
+						tile.createImage(daylight);
+						stripeId = tf.fragment % tile.strips.length; // wrap around for safety
+					}
 				}
 				if (tile != null) {
 					tile.createImage(daylight);
@@ -355,8 +372,34 @@ MouseWheelListener, ActionListener {
 //		g2.setComposite(comp);
 		
 		if (tilesToHighlight != null) {
-			drawIntoRect(g2, gfx.getFrame(0), tilesToHighlight);
+			drawIntoRect(g2);
 		}
+		
+		// ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+		// render textual labels, dama indicators and energy/status icons
+		
+		for (GameBuilding b : planet.buildings) {
+			int pw = b.images.regularTile.image.getWidth();
+			int ph = b.images.regularTile.image.getHeight();
+			int tx = b.x;
+			int ty = b.y - b.images.regularTile.width;
+			int mx = xoff + Tile.toScreenX(b.x, b.y);
+			int my = yoff + Tile.toScreenY(tx, ty + 1);
+			
+			int py = (my - ph) + (ph - 7) / 2;
+			
+			if (planet.selectedBuilding == b) {
+				g2.setColor(Color.RED);
+				g2.drawRect(mx, my - ph, pw, ph);
+			}
+			
+			int nameLen = text.getTextWidth(7, b.prototype.name);
+			text.paintTo(g2, mx + (pw - nameLen) / 2 + 1, py + 1, 7, TextGFX.LIGHT_BLUE, b.prototype.name);
+			text.paintTo(g2, mx + (pw - nameLen) / 2, py, 7, TextGFX.LIGHT_GREEN, b.prototype.name);
+		}
+		
+		// ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+		
 		g2.setTransform(t);
 		// RENDER INFOBARS
 		infobarRenderer.renderInfoBars(this, g2);
@@ -422,6 +465,7 @@ MouseWheelListener, ActionListener {
 		}
 		if (btnBuildingInfo.down) {
 			g2.drawImage(gfx.buildingInfoPanel, buildingInfoPanelRect.x, buildingInfoPanelRect.y, null);
+			renderBuildingInfo(g2);
 		}
 		if (btnRadar.down) {
 			g2.drawImage(gfx.radarPanel, radarPanelRect.x, radarPanelRect.y, null);
@@ -485,10 +529,25 @@ MouseWheelListener, ActionListener {
 		btnList = new Btn(new BtnAction() { public void invoke() { doList(); } });
 		releaseButtons.add(btnList);
 
+		btnDemolish = new Btn(new BtnAction() { public void invoke() { doDemolish(); } });
+		releaseButtons.add(btnDemolish);
+		
 		btnBuilding.down = true;
 		btnRadar.down = true;
 		btnBuildingInfo.down = true;
 		btnButtons.down = true;
+	}
+	/**
+	 * Demolish the selected building.
+	 */
+	public void doDemolish() {
+		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
+		if (b != null) {
+			gameWorld.player.selectedPlanet.removeBuilding(b);
+			gameWorld.player.selectedPlanet.selectedBuilding = null;
+			fixRoads();
+			repaint();
+		}
 	}
 	/**
 	 * Perform action on list button click.
@@ -519,6 +578,7 @@ MouseWheelListener, ActionListener {
 		} else {
 			cancelBuildMode();
 		}
+		repaint(mainWindow);
 	}
 	/**
 	 * Perform action on the previous button click.
@@ -693,6 +753,9 @@ MouseWheelListener, ActionListener {
 		btnBuild.setBounds(113, buildPanelRect.y + 142, 81, 21);
 		btnBuildPrev.setBounds(172, buildPanelRect.y + 7, 22, 48);
 		btnBuildNext.setBounds(172, buildPanelRect.y + 62, 22, 48);
+		
+		buildingInfoName.setBounds(buildingInfoPanelRect.x + 9, buildingInfoPanelRect.y + 7, 182, 16);
+		btnDemolish.setBounds(buildingInfoPanelRect.x + 161, buildingInfoPanelRect.y + 50, 29, 90);
 	}
 	/**
 	 * Converts the tile x and y coordinates to map offset.
@@ -706,14 +769,43 @@ MouseWheelListener, ActionListener {
 	/**
 	 * Fills the given rectangular tile area with the specified tile image.
 	 * @param g2 the graphics object
-	 * @param image the image to draw
-	 * @param rect the target rectangle
 	 */
-	private void drawIntoRect(Graphics2D g2, BufferedImage image, Rectangle rect) {
+	private void drawIntoRect(Graphics2D g2) {
+		Rectangle rect = tilesToHighlight;
+		allowBuild = true;
+		GamePlanet planet = gameWorld.player.selectedPlanet;
+		int surfaceType = planet.surfaceType.index;
+		Map<Integer, Tile> surface = gfx.getSurfaceTiles(surfaceType);
+		byte[] mapBytes = getSelectedPlanetSurface();
+		
 		for (int j = rect.y; j >= rect.y - rect.height + 1; j--) {
 			for (int k = rect.x; k < rect.x + rect.width; k++) {
 				int x = xoff + Tile.toScreenX(k, j); 
-				int y = yoff + Tile.toScreenY(k, j); 
+				int y = yoff + Tile.toScreenY(k, j);
+				// test for other object in the
+				BufferedImage image = gfx.getFrame(0);
+				Location l = Location.of(k, j);
+				TileFragment tf = planet.map.get(l);
+				if (tf != null && !tf.isRoad) {
+					image = gfx.getFrame(2);
+					allowBuild = false;
+				} else {
+					// test surface for a multi tile feature
+					int i = toMapOffset(k, j);
+					if (i >= 0 && i < 65 * 65) {
+						int tileId = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
+	//					int stripeId = mapBytes[2 * i + 5] & 0xFF;
+						Tile tile = surface.get(tileId);
+						if (tile.strips.length > 1) {
+							image = gfx.getFrame(2);
+							allowBuild = false;
+						}
+					} else {
+						image = gfx.getFrame(2);
+						allowBuild = false;
+					}
+				}
+				
 				g2.drawImage(image, x - 1, y - image.getHeight(), null);
 			}
 		}
@@ -822,20 +914,34 @@ MouseWheelListener, ActionListener {
 	 * @param e the mouse event
 	 */
 	private void doMainWindowClick(MouseEvent e) {
+		GamePlanet planet = gameWorld.player.selectedPlanet;
 		if (!buildMode) {
 			int x = e.getX() - xoff - 27;
 			int y = e.getY() - yoff + 1;
 			int a = (int)Math.floor(Tile.toTileX(x, y));
 			int b = (int)Math.floor(Tile.toTileY(x, y));
-			int offs = this.toMapOffset(a, b);
-			int val = offs >= 0 && offs < 65 * 65 ? getSelectedPlanetSurface()[offs * 2 + 4] & 0xFF : 0;
-			System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
+			
+			TileFragment tf = planet.map.get(Location.of(a, b));
+			if (tf != null && !tf.isRoad) {
+				planet.selectedBuilding = (GameBuilding)tf.provider;
+				gameWorld.player.selectedBuildingPrototype = planet.selectedBuilding.prototype;
+			} else {
+				planet.selectedBuilding = null;
+			}
+			repaint(mainWindow);
+			repaint(buildingInfoPanelRect);
+			repaint(buildPanelRect);
+//			int offs = this.toMapOffset(a, b);
+//			int val = offs >= 0 && offs < 65 * 65 ? getSelectedPlanetSurface()[offs * 2 + 4] & 0xFF : 0;
+//			System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
 		} else {
-			// TODO test placeability first!
-			// place the selected building onto the planet
-			GamePlanet planet = gameWorld.player.selectedPlanet;
-			GameBuildingPrototype bp = gameWorld.player.selectedBuildingPrototype;
+			if (!allowBuild) {
+				return;
+			}
+
 			String techid = getTechId();
+			// place the selected building onto the planet
+			GameBuildingPrototype bp = gameWorld.player.selectedBuildingPrototype;
 			BuildingImages bi = bp.images.get(techid);
 			
 			GameBuilding b = new GameBuilding();
@@ -846,50 +952,89 @@ MouseWheelListener, ActionListener {
 			b.x = tilesToHighlight.x + 1;
 			b.y = tilesToHighlight.y - 1;
 			
-			// place roads around the base
-			Map<RoadType, Tile> rts = gfx.roadTiles.get(techid);
-			TileFragment tf = TileFragment.of(0, rts.get(RoadType.RIGHT_TO_BOTTOM));
-			planet.map.put(Location.of(tilesToHighlight.x, tilesToHighlight.y), tf);
-			tf = TileFragment.of(0, rts.get(RoadType.LEFT_TO_BOTTOM));
-			planet.map.put(Location.of(tilesToHighlight.x + tilesToHighlight.width - 1, tilesToHighlight.y), tf);
-			tf = TileFragment.of(0, rts.get(RoadType.TOP_TO_RIGHT));
-			planet.map.put(Location.of(tilesToHighlight.x, tilesToHighlight.y - tilesToHighlight.height + 1), tf);
-			tf = TileFragment.of(0, rts.get(RoadType.TOP_TO_LEFT));
-			planet.map.put(Location.of(tilesToHighlight.x + tilesToHighlight.width - 1, tilesToHighlight.y - tilesToHighlight.height + 1), tf);
-			// add linear segments
-			Tile ht = rts.get(RoadType.HORIZONTAL);
-			for (int i = tilesToHighlight.x + 1; i < tilesToHighlight.x + tilesToHighlight.width - 1; i++) {
-				tf = TileFragment.of(0, ht);
-				planet.map.put(Location.of(i, tilesToHighlight.y), tf);
-				tf = TileFragment.of(0, ht);
-				planet.map.put(Location.of(i, tilesToHighlight.y - tilesToHighlight.height + 1), tf);
-			}
-			Tile vt = rts.get(RoadType.VERTICAL);
-			for (int i = tilesToHighlight.y - 1; i > tilesToHighlight.y - tilesToHighlight.height + 1; i--) {
-				tf = TileFragment.of(0, vt);
-				planet.map.put(Location.of(tilesToHighlight.x, i), tf);
-				tf = TileFragment.of(0, vt);
-				planet.map.put(Location.of(tilesToHighlight.x + tilesToHighlight.width - 1, i), tf);
-			}
-			// place the actual building fragments
-			int fragment = 0;
-			for (int i = tilesToHighlight.y - 1; i >= tilesToHighlight.y - tilesToHighlight.height + 2; i--) {
-				tf = TileFragment.of(fragment, b);
-				planet.map.put(Location.of(tilesToHighlight.x + 1, i), tf);
-				fragment++;
-			}
-			for (int i = tilesToHighlight.x + 2; i < tilesToHighlight.x + tilesToHighlight.width - 1; i++) {
-				tf = TileFragment.of(fragment, b);
-				planet.map.put(Location.of(i, tilesToHighlight.y - tilesToHighlight.height + 2), tf);
-				fragment++;
-			}
+			placeBuilding(b);
 			planet.addBuilding(b);
+
+			fixRoads();
+			
+			planet.selectedBuilding = b;
 			repaint(mainWindow);
+			repaint(buildingInfoPanelRect);
 			// if not multiple placement
 			if (!e.isShiftDown()) {
 				cancelBuildMode();
 			}
 		}
+	}
+	/**
+	 * Places the given game building onto the game map of the current planet.
+	 * @param b the building to place
+	 */
+	public void placeBuilding(GameBuilding b) {
+		GamePlanet planet = gameWorld.player.selectedPlanet;
+		Rectangle rect = b.getRectWithRoad();
+		addRoadAround(planet, b.images.techId, rect);
+		// place roads around the base
+		TileFragment tf;
+		// place the actual building fragments
+		int fragment = 0;
+		for (int i = rect.y - 1; i >= rect.y - rect.height + 2; i--) {
+			tf = TileFragment.of(fragment, b, false);
+			planet.map.put(Location.of(rect.x + 1, i), tf);
+			fragment++;
+		}
+		for (int i = rect.x + 2; i < rect.x + rect.width - 1; i++) {
+			tf = TileFragment.of(fragment, b, false);
+			planet.map.put(Location.of(i, rect.y - rect.height + 2), tf);
+			fragment++;
+		}
+		// place secondary tiles to the remaingin region
+		for (int i = rect.y - 1; i >= rect.y - rect.height + 3; i--) {
+			for (int j = rect.x + 2; j < rect.x + rect.width - 1; j++) {
+				tf = TileFragment.of(255, b, false);
+				planet.map.put(Location.of(j, i), tf);
+			}
+		}
+	}
+	/**
+	 * Places a road frame around the tilesToHighlight rectangle.
+	 * @param planet the planet to place the road
+	 * @param techid the technology id
+	 * @param rect the rectangle to use
+	 * @return the four corner tile fragment location, top-left, top-right, bottom-left, bottom-right
+	 */
+	private Location[] addRoadAround(GamePlanet planet, String techid, Rectangle rect) {
+		Map<RoadType, Tile> rts = gfx.roadTiles.get(techid);
+		Location[] result = new Location[4];
+		result[0] = Location.of(rect.x, rect.y);
+		result[1] = Location.of(rect.x + rect.width - 1, rect.y);
+		result[2] = Location.of(rect.x, rect.y - rect.height + 1);
+		result[3] = Location.of(rect.x + rect.width - 1, rect.y - rect.height + 1);
+		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+		TileFragment tf = TileFragment.of(0, rts.get(RoadType.RIGHT_TO_BOTTOM), true);
+		planet.map.put(result[0], tf);
+		tf = TileFragment.of(0, rts.get(RoadType.LEFT_TO_BOTTOM), true);
+		planet.map.put(result[1], tf);
+		tf = TileFragment.of(0, rts.get(RoadType.TOP_TO_RIGHT), true);
+		planet.map.put(result[2], tf);
+		tf = TileFragment.of(0, rts.get(RoadType.TOP_TO_LEFT), true);
+		planet.map.put(result[3], tf);
+		// add linear segments
+		Tile ht = rts.get(RoadType.HORIZONTAL);
+		for (int i = rect.x + 1; i < rect.x + rect.width - 1; i++) {
+			tf = TileFragment.of(0, ht, true);
+			planet.map.put(Location.of(i, rect.y), tf);
+			tf = TileFragment.of(0, ht, true);
+			planet.map.put(Location.of(i, rect.y - rect.height + 1), tf);
+		}
+		Tile vt = rts.get(RoadType.VERTICAL);
+		for (int i = rect.y - 1; i > rect.y - rect.height + 1; i--) {
+			tf = TileFragment.of(0, vt, true);
+			planet.map.put(Location.of(rect.x, i), tf);
+			tf = TileFragment.of(0, vt, true);
+			planet.map.put(Location.of(rect.x + rect.width - 1, i), tf);
+		}
+		return result;
 	}
 	/**
 	 * {@inheritDoc}
@@ -924,6 +1069,8 @@ MouseWheelListener, ActionListener {
 	}
 	/** Execute once flag. */
 	boolean once = true;
+	/** Indicator to allow building on the currently selected spot. */
+	private boolean allowBuild;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1067,6 +1214,7 @@ MouseWheelListener, ActionListener {
 	}
 	/** Do building info button click. */
 	protected void doBuildingInfoClick() {
+		btnDemolish.disabled = !btnBuildingInfo.down;
 		repaint(buildingInfoPanelRect);
 	}
 	/** Do radar button click. */
@@ -1075,6 +1223,10 @@ MouseWheelListener, ActionListener {
 	}
 	/** Do building button click. */
 	protected void doBuildingClick() {
+		btnBuild.disabled = !btnBuilding.down;
+		btnList.disabled = !btnBuilding.down;
+		btnBuildPrev.disabled = !btnBuilding.down;
+		btnBuildNext.disabled = !btnBuilding.down;
 		repaint(buildPanelRect);
 	}
 	/**
@@ -1217,5 +1369,135 @@ MouseWheelListener, ActionListener {
 	 */
 	public BtnAction getOnListClicked() {
 		return onListClicked;
+	}
+	/**
+	 * Render the building information panel contents.
+	 * @param g2 the graphics object
+	 */
+	private void renderBuildingInfo(Graphics2D g2) {
+		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
+		if (b == null) {
+			return;
+		}
+		Shape sp = g2.getClip();
+		g2.setClip(buildingInfoName);
+		
+		int nameLen = text.getTextWidth(10, b.prototype.name);
+		text.paintTo(g2, buildingInfoName.x + (buildingInfoName.width - nameLen) / 2, 
+				buildingInfoName.y + (buildingInfoName.height - 10) / 2, 10, TextGFX.YELLOW, b.prototype.name);
+		
+		g2.setClip(buildingInfoPanelRect);
+		if (btnDemolish.down) {
+			g2.drawImage(gfx.demolishDown, btnDemolish.rect.x, btnDemolish.rect.y, null);
+		}
+		
+		g2.setClip(sp);
+	}
+	/**
+	 * Fixes the road joints and unnecessary roads on the planet map.
+	 */
+	private void fixRoads() {
+		GamePlanet planet = gameWorld.player.selectedPlanet;
+		String techid = getTechId();
+		Map<RoadType, Tile> rts = gfx.roadTiles.get(techid);
+		Map<Tile, RoadType> trs = gfx.tileRoads.get(techid);
+		Map<Location, TileFragment> map = planet.map;
+		// remove all roads from the planet
+		for (Map.Entry<Location, TileFragment> e : new LinkedList<Map.Entry<Location, TileFragment>>(map.entrySet())) {
+			if (e.getValue().isRoad) {
+				map.remove(e.getKey());
+			}
+		}
+		Set<Location> corners = new HashSet<Location>();
+		for (GameBuilding b : planet.buildings) {
+			Rectangle rect = b.getRectWithRoad();
+			Location[] locations = addRoadAround(planet, b.images.techId, rect);
+			corners.addAll(Arrays.asList(locations));
+			// add neighboring locations to the corners
+//			corners.add(Location.of(locations[0].x, locations[0].y + 1));
+//			corners.add(Location.of(locations[0].x - 1, locations[0].y));
+//
+//			corners.add(Location.of(locations[1].x, locations[1].y + 1));
+//			corners.add(Location.of(locations[1].x + 1, locations[1].y));
+//
+//			corners.add(Location.of(locations[2].x, locations[2].y - 1));
+//			corners.add(Location.of(locations[2].x - 1, locations[2].y));
+//
+//			corners.add(Location.of(locations[3].x, locations[3].y - 1));
+//			corners.add(Location.of(locations[3].x + 1, locations[3].y));
+		}
+		TileFragment[] neighbors = new TileFragment[9];
+		for (Location l : corners) {
+			TileFragment tf = map.get(l);
+			if (tf == null || !tf.isRoad) {
+				continue;
+			}
+			setNeighbors(l.x, l.y, map, neighbors);
+			int pattern = 0;
+			RoadType rt1 = null;
+			if (neighbors[1] != null && neighbors[1].isRoad) {
+				pattern |= RoadType.Sides.TOP;
+				rt1 = trs.get(neighbors[1].provider);
+			}
+			RoadType rt3 = null;
+			if (neighbors[3] != null && neighbors[3].isRoad) {
+				pattern |= RoadType.Sides.LEFT;
+				rt3 = trs.get(neighbors[3].provider);
+			}
+			RoadType rt5 = null;
+			if (neighbors[5] != null && neighbors[5].isRoad) {
+				pattern |= RoadType.Sides.RIGHT;
+				rt5 = trs.get(neighbors[5].provider);
+			}
+			RoadType rt7 = null;
+			if (neighbors[7] != null && neighbors[7].isRoad) {
+				pattern |= RoadType.Sides.BOTTOM;
+				rt7 = trs.get(neighbors[7].provider);
+			}
+			RoadType rt = RoadType.get(pattern);
+			// place the new tile fragment onto the map
+			// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+			tf = TileFragment.of(0, rts.get(rt), true);
+			map.put(l, tf);
+			// alter the four neighboring tiles to contain road back to this
+			if (rt1 != null) {
+				rt1 = RoadType.get(rt1.pattern | RoadType.Sides.BOTTOM);
+				map.put(l.delta(0, 1), TileFragment.of(0, rts.get(rt1), true));
+			}
+			if (rt3 != null) {
+				rt3 = RoadType.get(rt3.pattern | RoadType.Sides.RIGHT);
+				map.put(l.delta(-1, 0), TileFragment.of(0, rts.get(rt3), true));
+			}
+			if (rt5 != null) {
+				rt5 = RoadType.get(rt5.pattern | RoadType.Sides.LEFT);
+				map.put(l.delta(1, 0), TileFragment.of(0, rts.get(rt5), true));
+			}
+			if (rt7 != null) {
+				rt7 = RoadType.get(rt7.pattern | RoadType.Sides.TOP);
+				map.put(l.delta(0, -1), TileFragment.of(0, rts.get(rt7), true));
+			}
+			
+		}
+//		repaint(mainWindow);
+	}
+	/**
+	 * Fills the fragment array of the 3x3 rectangle centered around x and y.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param map the map
+	 * @param fragments the fragments
+	 */
+	private void setNeighbors(int x, int y, Map<Location, TileFragment> map, TileFragment[] fragments) {
+		fragments[0] = map.get(Location.of(x - 1, y + 1));
+		fragments[1] = map.get(Location.of(x, y + 1));
+		fragments[2] = map.get(Location.of(x + 1, y + 1));
+		
+		fragments[3] = map.get(Location.of(x - 1, y));
+		fragments[4] = map.get(Location.of(x, y));
+		fragments[5] = map.get(Location.of(x + 1, y));
+		
+		fragments[6] = map.get(Location.of(x - 1, y - 1));
+		fragments[7] = map.get(Location.of(x, y - 1));
+		fragments[8] = map.get(Location.of(x + 1, y - 1));
 	}
 }
