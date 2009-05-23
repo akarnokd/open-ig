@@ -76,14 +76,6 @@ MouseWheelListener, ActionListener {
 	int lasty;
 	/** Panning the screen. */
 	boolean panMode;
-	/** The bytes of the current map. */
-//	byte[] mapBytes;
-	/** The surface variant. */
-//	int surfaceVariant = 1;
-	/** Zoom scale. */
-	float scale = 1.0f;
-	/** The surace type. */
-//	int surfaceType = 1;
 	/** Empty surface map array. */
 	private static final byte[] EMPTY_SURFACE_MAP = new byte[65 * 65 * 2 + 4];
 	/** The planet graphics. */
@@ -143,7 +135,9 @@ MouseWheelListener, ActionListener {
 	 */
 	private Timer buildScroller;
 	/** The scroll interval. */
-	private static final int BUILD_SCROLL_INTERVAL = 500;
+	private static final int BUILD_SCROLL_WAIT = 500;
+	/** The scroll interval. */
+	private static final int BUILD_SCROLL_INTERVAL = 250;
 	/** Timer used to animate fade in-out. */
 	private Timer fadeTimer;
 	/** Fade timer interval. */
@@ -200,6 +194,12 @@ MouseWheelListener, ActionListener {
 	private final Rectangle buildingInfoName = new Rectangle();
 	/** The demolish building button. */
 	private Btn btnDemolish;
+	/** The radar image cached. */
+	private BufferedImage radarImage;
+	/** The last planet to which the radar image belongs. */
+	private GamePlanet radarImagePlanet;
+	/** The minimap rectangle. */
+	private Rectangle minimapRect = new Rectangle();
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager 
@@ -217,6 +217,7 @@ MouseWheelListener, ActionListener {
 		this.infobarRenderer = infobarRenderer;
 		this.achievementRenderer = achievementRenderer;
 		buildScroller = new Timer(BUILD_SCROLL_INTERVAL, this);
+		buildScroller.setInitialDelay(BUILD_SCROLL_WAIT);
 		buildScroller.setActionCommand("BUILD_SCROLLER");
 		fadeTimer = new Timer(FADE_INTERVAL, this);
 		fadeTimer.setActionCommand("FADE");
@@ -225,9 +226,13 @@ MouseWheelListener, ActionListener {
 		addMouseWheelListener(this);
 		addMouseListener(this);
 		setOpaque(true);
-		
 //		int w = Tile.toScreenX(33,-33) - Tile.toScreenX(-64, -64);
 //		int h = Tile.toScreenY(1, 0) - Tile.toScreenY(-32, -96);
+		xOffsetMin = Tile.toScreenX(-66, -66);
+		xOffsetMax = Tile.toScreenX(33, -33);
+		yOffsetMin = Tile.toScreenY(1, 2);
+		yOffsetMax = Tile.toScreenY(-32, -96);
+		adjustOffsets();
 	}
 	/**
 	 * Returns the given surface map based on the type and variant.
@@ -294,10 +299,6 @@ MouseWheelListener, ActionListener {
 			// if the render window changes, re-zoom to update scrollbars
 			updateRegions();
 		}
-		AffineTransform t = g2.getTransform();
-		g2.scale(scale, scale);
-		int k = 0;
-		int j = 0;
 		GamePlanet planet = gameWorld.player.selectedPlanet;
 		if (planet == null) {
 			planet = gameWorld.getOwnPlanetsInOrder().get(0);
@@ -309,67 +310,12 @@ MouseWheelListener, ActionListener {
 			}
 			planet.placeBuildings = false;
 			fixRoads();
+			radarImage = null;
 		}
-		int surfaceType = planet.surfaceType.index;
-		byte[] mapBytes = getSelectedPlanetSurface();
-		// RENDER VERTICALLY
-		Map<Integer, Tile> surface = gfx.getSurfaceTiles(surfaceType);
-		for (int mi = 0; mi < MAP_START_X.length; mi++) {
-			k = MAP_START_X[mi];
-			j = MAP_START_Y[mi];
-			int i = toMapOffset(k, j);
-			int kmin = MAP_END_X[mi];
-			while (i >= 0 && k >= kmin) {
-				int tileId = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
-				int stripeId = mapBytes[2 * i + 5] & 0xFF;
-				Tile tile = surface.get(tileId);
-				Location l = Location.of(k, j);
-				TileFragment tf = planet.map.get(l);
-				if (tf != null && tf.fragment >= 0) {
-					tile = tf.provider.getTile(l);
-					// select appropriate stripe
-					if (tile != null) {
-						tile.createImage(daylight);
-						stripeId = tf.fragment % tile.strips.length; // wrap around for safety
-					}
-				}
-				if (tile != null) {
-					tile.createImage(daylight);
-					// 1x1 tiles can be drawn from top to bottom
-					if (tile.width == 1 && tile.height == 1) {
-						int x = xoff + Tile.toScreenX(k, j);
-						int y = yoff + Tile.toScreenY(k, j);
-						if (x >= -tile.image.getWidth() && x <= (int)(getWidth() / scale)
-								&& y >= -tile.image.getHeight() && y <= (int)(getHeight() / scale) + tile.image.getHeight()) {
-							BufferedImage subimage = tile.strips[stripeId];
-							g2.drawImage(subimage, x, y - tile.image.getHeight() + tile.heightCorrection, null);
-						}
-					} else 
-					if (stripeId < 255) {
-						// multi spanning tiles should be cut into small rendering piece for the current strip
-						// ff value indicates the stripe count
-						// the entire image would be placed using this bottom left coordinate
-						int j1 = stripeId >= tile.width ? j + tile.width - 1 : j + stripeId;
-						int k1 = stripeId >= tile.width ? k + (tile.width - 1 - stripeId) : k;
-						int j2 = stripeId >= tile.width ? j : j - (tile.width - 1 - stripeId);
-						int x = xoff + Tile.toScreenX(k1, j1);
-						int y = yoff + Tile.toScreenY(k1, j2);
-						// use subimage stripe
-						int x0 = stripeId >= tile.width ? Tile.toScreenX(stripeId, 0) : Tile.toScreenX(0, -stripeId);
-						BufferedImage subimage = tile.strips[stripeId];
-						g2.drawImage(subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection, null);
-					}
-				}
-				k--;
-				i = toMapOffset(k, j);
-			}
-		}
+		AffineTransform at = g2.getTransform();
+		g2.translate(mainWindow.x, mainWindow.y);
+		renderContents(g2, planet, xoff, yoff, true);
 		Composite comp = null;
-//		Composite comp = g2.getComposite();
-//		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, daylight));
-//		g2.setColor(Color.BLACK);
-//		g2.fill(mainWindow);
-//		g2.setComposite(comp);
 		
 		if (tilesToHighlight != null) {
 			drawIntoRect(g2);
@@ -397,10 +343,10 @@ MouseWheelListener, ActionListener {
 			text.paintTo(g2, mx + (pw - nameLen) / 2 + 1, py + 1, 7, TextGFX.LIGHT_BLUE, b.prototype.name);
 			text.paintTo(g2, mx + (pw - nameLen) / 2, py, 7, TextGFX.LIGHT_GREEN, b.prototype.name);
 		}
+		g2.setTransform(at);
 		
 		// ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 		
-		g2.setTransform(t);
 		// RENDER INFOBARS
 		infobarRenderer.renderInfoBars(this, g2);
 		// RENDER LEFT BUTTONS
@@ -461,7 +407,7 @@ MouseWheelListener, ActionListener {
 			}
 		}
 		if (btnBuilding.down) {
-			renderBuildings(g2);
+			renderBuildingsPanel(g2);
 		}
 		if (btnBuildingInfo.down) {
 			g2.drawImage(gfx.buildingInfoPanel, buildingInfoPanelRect.x, buildingInfoPanelRect.y, null);
@@ -469,6 +415,7 @@ MouseWheelListener, ActionListener {
 		}
 		if (btnRadar.down) {
 			g2.drawImage(gfx.radarPanel, radarPanelRect.x, radarPanelRect.y, null);
+			renderMinimap(g2);
 		}
 		Shape sp = g2.getClip();
 		g2.clip(infobarRenderer.topInfoArea);
@@ -485,6 +432,74 @@ MouseWheelListener, ActionListener {
 			g2.setComposite(comp);
 		}
 		achievementRenderer.renderAchievements(g2, this);
+	}
+	/**
+	 * Renders the the surface and buildings.
+	 * @param g2 the graphics object
+	 * @param planet the current planet
+	 * @param xoffset the rendering x offset
+	 * @param yoffset the rendering y offset
+	 * @param clip clip the window?
+	 */
+	private void renderContents(Graphics2D g2, GamePlanet planet, 
+			int xoffset, int yoffset, boolean clip) {
+		int k = 0;
+		int j = 0;
+		int surfaceType = planet.surfaceType.index;
+		byte[] mapBytes = getSelectedPlanetSurface();
+		// RENDER VERTICALLY
+		Map<Integer, Tile> surface = gfx.getSurfaceTiles(surfaceType);
+		for (int mi = 0; mi < MAP_START_X.length; mi++) {
+			k = MAP_START_X[mi];
+			j = MAP_START_Y[mi];
+			int i = toMapOffset(k, j);
+			int kmin = MAP_END_X[mi];
+			while (i >= 0 && k >= kmin) {
+				int tileId = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
+				int stripeId = mapBytes[2 * i + 5] & 0xFF;
+				Tile tile = surface.get(tileId);
+				Location l = Location.of(k, j);
+				TileFragment tf = planet.map.get(l);
+				if (tf != null && tf.fragment >= 0) {
+					tile = tf.provider.getTile(l);
+					// select appropriate stripe
+					if (tile != null) {
+						tile.createImage(daylight);
+						stripeId = tf.fragment % tile.strips.length; // wrap around for safety
+					}
+				}
+				if (tile != null) {
+					tile.createImage(daylight);
+					// 1x1 tiles can be drawn from top to bottom
+					if (tile.width == 1 && tile.height == 1) {
+						int x = xoffset + Tile.toScreenX(k, j);
+						int y = yoffset + Tile.toScreenY(k, j);
+						if (!clip || (x >= -tile.image.getWidth() && x <= getWidth()
+								&& y >= -tile.image.getHeight() 
+								&& y <= getHeight() + tile.image.getHeight())) {
+							BufferedImage subimage = tile.strips[stripeId];
+							g2.drawImage(subimage, x, y - tile.image.getHeight() + tile.heightCorrection, null);
+						}
+					} else 
+					if (stripeId < 255) {
+						// multi spanning tiles should be cut into small rendering piece for the current strip
+						// ff value indicates the stripe count
+						// the entire image would be placed using this bottom left coordinate
+						int j1 = stripeId >= tile.width ? j + tile.width - 1 : j + stripeId;
+						int k1 = stripeId >= tile.width ? k + (tile.width - 1 - stripeId) : k;
+						int j2 = stripeId >= tile.width ? j : j - (tile.width - 1 - stripeId);
+						int x = xoffset + Tile.toScreenX(k1, j1);
+						int y = yoffset + Tile.toScreenY(k1, j2);
+						// use subimage stripe
+						int x0 = stripeId >= tile.width ? Tile.toScreenX(stripeId, 0) : Tile.toScreenX(0, -stripeId);
+						BufferedImage subimage = tile.strips[stripeId];
+						g2.drawImage(subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection, null);
+					}
+				}
+				k--;
+				i = toMapOffset(k, j);
+			}
+		}
 	}
 	/**
 	 * Returns the currently selected planet's surface base.
@@ -543,9 +558,11 @@ MouseWheelListener, ActionListener {
 	public void doDemolish() {
 		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
 		if (b != null) {
+			uiSound.playSound("DemolishBuilding");
 			gameWorld.player.selectedPlanet.removeBuilding(b);
 			gameWorld.player.selectedPlanet.selectedBuilding = null;
 			fixRoads();
+			radarImage = null;
 			repaint();
 		}
 	}
@@ -756,6 +773,18 @@ MouseWheelListener, ActionListener {
 		
 		buildingInfoName.setBounds(buildingInfoPanelRect.x + 9, buildingInfoPanelRect.y + 7, 182, 16);
 		btnDemolish.setBounds(buildingInfoPanelRect.x + 161, buildingInfoPanelRect.y + 50, 29, 90);
+		
+		minimapRect.setBounds(radarPanelRect.x + 14, radarPanelRect.y + 13, 152, 135);
+		
+		// readjust rendering offset
+		adjustOffsets();
+	}
+	/**
+	 * Adjust offsets to limits.
+	 */
+	private void adjustOffsets() {
+		xoff = Math.max(Math.min(xoff, -xOffsetMin), -xOffsetMax + mainWindow.width);
+		yoff = Math.max(Math.min(yoff, -yOffsetMin), -yOffsetMax + mainWindow.height);
 	}
 	/**
 	 * Converts the tile x and y coordinates to map offset.
@@ -777,57 +806,74 @@ MouseWheelListener, ActionListener {
 		int surfaceType = planet.surfaceType.index;
 		Map<Integer, Tile> surface = gfx.getSurfaceTiles(surfaceType);
 		byte[] mapBytes = getSelectedPlanetSurface();
+		BufferedImage okImage = gfx.getFrame(0);
+		BufferedImage noImage = gfx.getFrame(2);
 		
 		for (int j = rect.y; j >= rect.y - rect.height + 1; j--) {
 			for (int k = rect.x; k < rect.x + rect.width; k++) {
 				int x = xoff + Tile.toScreenX(k, j); 
 				int y = yoff + Tile.toScreenY(k, j);
-				// test for other object in the
-				BufferedImage image = gfx.getFrame(0);
-				Location l = Location.of(k, j);
-				TileFragment tf = planet.map.get(l);
-				if (tf != null && !tf.isRoad) {
-					image = gfx.getFrame(2);
+				
+				BufferedImage image = okImage;
+				// test logical screen bounds
+				if (-j + 2 <= k || -j - 129 >= k) {
+					image = noImage;
 					allowBuild = false;
 				} else {
-					// test surface for a multi tile feature
-					int i = toMapOffset(k, j);
-					if (i >= 0 && i < 65 * 65) {
-						int tileId = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
-	//					int stripeId = mapBytes[2 * i + 5] & 0xFF;
-						Tile tile = surface.get(tileId);
-						if (tile.strips.length > 1) {
+					// test for other object in the
+					Location l = Location.of(k, j);
+					TileFragment tf = planet.map.get(l);
+					if (tf != null && !tf.isRoad) {
+						image = noImage;
+						allowBuild = false;
+					} else {
+						// test surface for a multi tile feature
+						int i = toMapOffset(k, j);
+						if (i >= 0 && i < 65 * 65) {
+							int tileId = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
+		//					int stripeId = mapBytes[2 * i + 5] & 0xFF;
+							Tile tile = surface.get(tileId);
+							if (tile.strips.length > 1) {
+								image = noImage;
+								allowBuild = false;
+							}
+						} else {
 							image = gfx.getFrame(2);
 							allowBuild = false;
 						}
-					} else {
-						image = gfx.getFrame(2);
-						allowBuild = false;
 					}
 				}
-				
 				g2.drawImage(image, x - 1, y - image.getHeight(), null);
 			}
 		}
 	}
 	/** Light value change. */
 	boolean lightMode;
+	/** Set to true if the user drags the minimap. */
+	private boolean minimapScroll;
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		Point pt = e.getPoint();
 		if (lightMode) {
 			// adjust daylight value based on the vertical mouse position
-			daylight = e.getY() / (float)getHeight();
+			daylight = pt.x / (float)getHeight();
 			repaint();
 		} else
 		if (panMode) {
-			xoff -= (lastx - e.getX());
-			yoff -= (lasty - e.getY());
-			lastx = e.getX();
-			lasty = e.getY();
+			xoff -= (lastx - pt.x);
+			yoff -= (lasty - pt.y);
+			
+			adjustOffsets();
+			
+			lastx = pt.x;
+			lasty = pt.y;
 			repaint();
+		} else
+		if (minimapScroll) {
+			doScrollMinimap(pt);
 		}
 	}
 	/**
@@ -856,8 +902,8 @@ MouseWheelListener, ActionListener {
 	public void mouseMoved(MouseEvent e) {
 		if (eventInMainWindow(e)) {
 			if (tilesToHighlight != null) {
-				int x = e.getX() - xoff - 27;
-				int y = e.getY() - yoff + 1;
+				int x = e.getX() - xoff - mainWindow.x - 27;
+				int y = e.getY() - yoff - mainWindow.y - 1;
 				int a = (int)Math.floor(Tile.toTileX(x, y));
 				int b = (int)Math.floor(Tile.toTileY(x, y));
 				tilesToHighlight.x = a;
@@ -885,6 +931,10 @@ MouseWheelListener, ActionListener {
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (eventInMainWindow(e)) {
 				doMainWindowClick(e);
+			} else 
+			if (btnRadar.down && minimapRect.contains(pt)) {
+				minimapScroll = true;
+				doScrollMinimap(pt);
 			} else {
 				for (Btn b : pressButtons) {
 					if (b.test(pt)) {
@@ -910,14 +960,32 @@ MouseWheelListener, ActionListener {
 		}
 	}
 	/**
+	 * Scroll the main window to the point, centered around the given point.
+	 * @param pt the point to center around
+	 */
+	private void doScrollMinimap(Point pt) {
+		// TODO Auto-generated method stub
+		
+		double xs = minimapRect.width / (double)(xOffsetMax - xOffsetMin);
+		double ys = minimapRect.height / (double)(yOffsetMax - yOffsetMin);
+		
+		double x = (pt.x - minimapRect.x) / xs - mainWindow.width / 2;
+		double y = (pt.y - minimapRect.y) / ys - mainWindow.height / 2;
+		
+		xoff = (int)(-xOffsetMin - x);  
+		yoff = (int)(-yOffsetMin - y);
+		adjustOffsets();
+		repaint();
+	}
+	/**
 	 * Do action when the user clicks on the maon window.
 	 * @param e the mouse event
 	 */
 	private void doMainWindowClick(MouseEvent e) {
 		GamePlanet planet = gameWorld.player.selectedPlanet;
 		if (!buildMode) {
-			int x = e.getX() - xoff - 27;
-			int y = e.getY() - yoff + 1;
+			int x = e.getX() - xoff - mainWindow.x - 27;
+			int y = e.getY() - yoff - mainWindow.y - 1;
 			int a = (int)Math.floor(Tile.toTileX(x, y));
 			int b = (int)Math.floor(Tile.toTileY(x, y));
 			
@@ -931,14 +999,15 @@ MouseWheelListener, ActionListener {
 			repaint(mainWindow);
 			repaint(buildingInfoPanelRect);
 			repaint(buildPanelRect);
-//			int offs = this.toMapOffset(a, b);
-//			int val = offs >= 0 && offs < 65 * 65 ? getSelectedPlanetSurface()[offs * 2 + 4] & 0xFF : 0;
-//			System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
+			
+			int offs = this.toMapOffset(a, b);
+			int val = offs >= 0 && offs < 65 * 65 ? getSelectedPlanetSurface()[offs * 2 + 4] & 0xFF : 0;
+			System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
 		} else {
 			if (!allowBuild) {
 				return;
 			}
-
+			uiSound.playSound("PlaceBuilding");
 			String techid = getTechId();
 			// place the selected building onto the planet
 			GameBuildingPrototype bp = gameWorld.player.selectedBuildingPrototype;
@@ -957,6 +1026,7 @@ MouseWheelListener, ActionListener {
 
 			fixRoads();
 			
+			radarImage = null;
 			planet.selectedBuilding = b;
 			repaint(mainWindow);
 			repaint(buildingInfoPanelRect);
@@ -1049,6 +1119,7 @@ MouseWheelListener, ActionListener {
 			lightMode = false;
 		} else
 		if (e.getButton() == MouseEvent.BUTTON1) {
+			minimapScroll = false;
 			boolean needRepaint = buildScroller.isRunning();
 			buildScroller.stop();
 			for (Btn b : pressButtons) {
@@ -1071,6 +1142,14 @@ MouseWheelListener, ActionListener {
 	boolean once = true;
 	/** Indicator to allow building on the currently selected spot. */
 	private boolean allowBuild;
+	/** The minimum X offset for the panning. */
+	private int xOffsetMin;
+	/** The maximum X offset for the panning. */
+	private int xOffsetMax;
+	/** The minimum y offset for panning. */
+	private int yOffsetMin;
+	/** The maximum y offset for panning. */
+	private int yOffsetMax;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1294,7 +1373,7 @@ MouseWheelListener, ActionListener {
 	 * Render buildings panel.
 	 * @param g2 the graphics object
 	 */
-	private void renderBuildings(Graphics2D g2) {
+	private void renderBuildingsPanel(Graphics2D g2) {
 		Shape sp = g2.getClip();
 		g2.drawImage(gfx.buildPanel, buildPanelRect.x, buildPanelRect.y, null);
 		List<GameBuildingPrototype> list = getBuildingList();
@@ -1499,5 +1578,32 @@ MouseWheelListener, ActionListener {
 		fragments[6] = map.get(Location.of(x - 1, y - 1));
 		fragments[7] = map.get(Location.of(x, y - 1));
 		fragments[8] = map.get(Location.of(x + 1, y - 1));
+	}
+	/**
+	 * Render the minimap.
+	 * @param g2 the graphics object.
+	 */
+	private void renderMinimap(Graphics2D g2) {
+		int x = Tile.toScreenX(0, 0);
+		double xs = minimapRect.width / (double)(xOffsetMax - xOffsetMin);
+		double ys = minimapRect.height / (double)(yOffsetMax - yOffsetMin);
+		
+		if (radarImage == null || radarImagePlanet != gameWorld.player.selectedPlanet) {
+			radarImage = new BufferedImage(minimapRect.width, minimapRect.height, BufferedImage.TYPE_INT_ARGB);
+			radarImagePlanet = gameWorld.player.selectedPlanet;
+			
+			Graphics2D rg = radarImage.createGraphics();
+			rg.scale(xs, ys);
+			renderContents(rg, radarImagePlanet, (x - xOffsetMin), -yOffsetMin, false);
+			rg.dispose();
+		}
+		g2.drawImage(radarImage, minimapRect.x, minimapRect.y, null);
+		Shape sp = g2.getClip();
+		g2.setClip(minimapRect);
+		g2.setColor(Color.RED);
+		g2.drawRect((int)(minimapRect.x + (-xoff - xOffsetMin) * xs), 
+				(int)(minimapRect.y + (-yoff - yOffsetMin) * ys), 
+				(int)(mainWindow.width * xs), (int)(mainWindow.height * ys));
+		g2.setClip(sp);
 	}
 }
