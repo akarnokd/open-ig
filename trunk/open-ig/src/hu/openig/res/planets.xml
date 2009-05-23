@@ -704,13 +704,101 @@
 		<location-x>78</location-x>
 		<location-y>252</location-y>
 		<type>Frozen</type>
-		<variant>8</variant>
+		<variant>9</variant>
 		<race>Morgath</race>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>10000</populate>
 		<in-orbit>-</in-orbit>
 		<buildings>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>1</x>
+				<y>-20</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PlasmaProjector</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-9</x>
+				<y>-37</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>FieldTelescope</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-10</x>
+				<y>-24</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>NuclearPlant</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-11</x>
+				<y>-28</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Fortress</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-14</x>
+				<y>-24</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>ColonyHub</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-6</x>
+				<y>-22</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Fortress</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-13</x>
+				<y>-37</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Arcology</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-7</x>
+				<y>-28</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PhoodFactory</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-10</x>
+				<y>-20</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>PlasmaProjector</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>4</x>
+				<y>-26</y>
+				<enabled>true</enabled>
+			</building>
+			<building>
+				<id>Hospital</id>
+				<health>100</health>
+				<progress>100</progress>
+				<x>-12</x>
+				<y>-33</y>
+				<enabled>true</enabled>
+			</building>
 		</buildings>
 	</planet>
 	<planet id='Exterior 2'>
