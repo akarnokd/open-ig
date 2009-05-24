@@ -963,9 +963,10 @@ MouseWheelListener, ActionListener {
 	private GamePlanet getPlanetForPositionList(Point pt) {
 		int x = pt.x - mainArea.x - 7;
 		int y = pt.y - mainArea.y - 6;
-		if (x >= 0 && y >= 0 && x < mainArea.width && y < mainArea.height) {
+		int h = mainArea.height - 11;
+		if (x >= 0 && y >= 0 && x < mainArea.width && y < h) {
 			int columnWidth = (mainArea.width - 7) / 4;
-			int numLen = mainArea.height / 13;
+			int numLen = h / 13;
 			int col = x / columnWidth;
 			int row = y / 13;
 			int idx = col * numLen + row;
@@ -1444,7 +1445,7 @@ MouseWheelListener, ActionListener {
 	private GameBuildingPrototype getBuildingPrototypeForPositionList(Point pt) {
 		int x = pt.x - mainArea.x - 7;
 		int y = pt.y - mainArea.y - 6;
-		int h = mainArea.height - 43;
+		int h = mainArea.height - 50;
 		if (x >= 0 && y >= 0 && x < mainArea.width && y < h) {
 			int columnWidth = (mainArea.width - 7) / 2;
 			int numLen = h / 13;

@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Location;
 import hu.openig.core.Tile;
 import hu.openig.core.TileProvider;
+import hu.openig.core.TileStatus;
 
 import java.awt.Rectangle;
 
@@ -37,6 +38,8 @@ public class GameBuilding implements TileProvider {
 	private Rectangle rect;
 	/** Is this building enabled? Disabled buildings don't consume/produce energy or workers. */
 	public boolean enabled = true;
+	/** The current energy received. */
+	public int energy;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -87,5 +90,21 @@ public class GameBuilding implements TileProvider {
 	 */
 	public int getWorkerDemand() {
 		return enabled && progress == 100 ? prototype.workers : 0;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public TileStatus getStatus() {
+		if (health == 0) {
+			return TileStatus.DESTROYED;
+		} else
+		if (health < 100) {
+			return TileStatus.DAMAGED;
+//		} else
+//		if (energy < getEnergy()) {
+//			return TileStatus.NO_ENERGY;
+		}
+		return TileStatus.NORMAL;
 	}
 }
