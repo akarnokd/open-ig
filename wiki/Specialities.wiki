@@ -11,3 +11,4 @@ This page collects the strange properties of the original game I discovered.
 || Significant amount of the building image has height greater than the actual tile, causing a transparent bottom part || Introduced a vertical offset parameter to shift down the image ||
 || On San Sterling, the Colony Hub is placed actually on an unbuildable region || Open-IG enforces strictly the buildability region, but the rendering allows the placement of buildings everywhere. The default building deployment of San Sterling is simply forced. Note that if the player looses the Colony hub there, he/she won't be able to build it back on the same area ||
 || On Center 4, the pack of Military spaceport, Civil Dev Center and Radar 2.0 were built on an unbuildable tile || Deployed the buildings around the obstacle ||
+|| Planetary Shield 2 for the Sullep Empire has bad width/height || Using correct width/height ||
