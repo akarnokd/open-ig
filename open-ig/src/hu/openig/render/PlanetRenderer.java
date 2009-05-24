@@ -9,6 +9,7 @@ package hu.openig.render;
 
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
+import hu.openig.core.ImageInterpolation;
 import hu.openig.core.Location;
 import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
@@ -30,9 +31,11 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
@@ -200,6 +203,12 @@ MouseWheelListener, ActionListener {
 	private GamePlanet radarImagePlanet;
 	/** The minimap rectangle. */
 	private Rectangle minimapRect = new Rectangle();
+	/** Enable or disable bicubic interpolation on the starmap background. */
+	private ImageInterpolation interpolation = ImageInterpolation.NONE;
+	/** The current mouse tile. */
+	private int mouseTileX;
+	/** The current mouse tile. */
+	private int mouseTileY;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager 
@@ -341,7 +350,7 @@ MouseWheelListener, ActionListener {
 			
 			int nameLen = text.getTextWidth(7, b.prototype.name);
 			text.paintTo(g2, mx + (pw - nameLen) / 2 + 1, py + 1, 7, TextGFX.LIGHT_BLUE, b.prototype.name);
-			text.paintTo(g2, mx + (pw - nameLen) / 2, py, 7, TextGFX.LIGHT_GREEN, b.prototype.name);
+			text.paintTo(g2, mx + (pw - nameLen) / 2, py, 7, 0xD4FC84, b.prototype.name);
 		}
 		g2.setTransform(at);
 		
@@ -579,7 +588,9 @@ MouseWheelListener, ActionListener {
 	/**
 	 * Perform action on the build button click.
 	 */
-	protected void doBuild() {
+	public void doBuild() {
+		// small fix when called from outside
+		btnBuild.down = true;
 		GameBuildingPrototype bp = gameWorld.player.selectedBuildingPrototype;
 		if (bp == null) {
 			return;
@@ -591,10 +602,17 @@ MouseWheelListener, ActionListener {
 		buildMode = !buildMode;
 		// if build mode, resize the selection rectangle
 		if (buildMode) {
-			tilesToHighlight = new Rectangle(0, 0, bi.regularTile.height + 2, bi.regularTile.width + 2);
+			// adjust the highlight rectangle's origin to the current mouse position.
+			Point pt = MouseInfo.getPointerInfo().getLocation();
+			Point abs = getLocationOnScreen();
+			// relative to this component
+			updateMouseTileCoords(new Point(pt.x - abs.x, pt.y - abs.y));
+			
+			tilesToHighlight = new Rectangle(mouseTileX, mouseTileY, bi.regularTile.height + 2, bi.regularTile.width + 2);
 		} else {
 			cancelBuildMode();
 		}
+		repaint(btnBuild.rect);
 		repaint(mainWindow);
 	}
 	/**
@@ -617,11 +635,12 @@ MouseWheelListener, ActionListener {
 	/**
 	 * Cancel the build mode.
 	 */
-	private void cancelBuildMode() {
+	public void cancelBuildMode() {
 		buildMode = false;
 		tilesToHighlight = null;
 		btnBuild.down = false;
 		repaint(btnBuild.rect);
+		repaint(mainWindow);
 	}
 	/**
 	 * @return a list of buildings for the selected planet's race or the player's race.
@@ -857,6 +876,7 @@ MouseWheelListener, ActionListener {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		Point pt = e.getPoint();
+		updateMouseTileCoords(pt);
 		if (lightMode) {
 			// adjust daylight value based on the vertical mouse position
 			daylight = pt.y / (float)getHeight();
@@ -900,14 +920,12 @@ MouseWheelListener, ActionListener {
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		Point pt = e.getPoint();
 		if (eventInMainWindow(e)) {
+			updateMouseTileCoords(pt);
 			if (tilesToHighlight != null) {
-				int x = e.getX() - xoff - mainWindow.x - 27;
-				int y = e.getY() - yoff - mainWindow.y - 1;
-				int a = (int)Math.floor(Tile.toTileX(x, y));
-				int b = (int)Math.floor(Tile.toTileY(x, y));
-				tilesToHighlight.x = a;
-				tilesToHighlight.y = b;
+				tilesToHighlight.x = mouseTileX;
+				tilesToHighlight.y = mouseTileY;
 				repaint();
 			}
 		}
@@ -984,10 +1002,9 @@ MouseWheelListener, ActionListener {
 	private void doMainWindowClick(MouseEvent e) {
 		GamePlanet planet = gameWorld.player.selectedPlanet;
 		if (!buildMode) {
-			int x = e.getX() - xoff - mainWindow.x - 27;
-			int y = e.getY() - yoff - mainWindow.y - 1;
-			int a = (int)Math.floor(Tile.toTileX(x, y));
-			int b = (int)Math.floor(Tile.toTileY(x, y));
+			updateMouseTileCoords(e.getPoint());
+			int a = mouseTileX;
+			int b = mouseTileY;
 			
 			TileFragment tf = planet.map.get(Location.of(a, b));
 			if (tf != null && !tf.isRoad) {
@@ -1000,9 +1017,9 @@ MouseWheelListener, ActionListener {
 			repaint(buildingInfoPanelRect);
 			repaint(buildPanelRect);
 			
-			int offs = this.toMapOffset(a, b);
-			int val = offs >= 0 && offs < 65 * 65 ? getSelectedPlanetSurface()[offs * 2 + 4] & 0xFF : 0;
-			System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
+//			int offs = this.toMapOffset(a, b);
+//			int val = offs >= 0 && offs < 65 * 65 ? getSelectedPlanetSurface()[offs * 2 + 4] & 0xFF : 0;
+//			System.out.printf("%d, %d -> %d, %d%n", a, b, offs, val);
 		} else {
 			if (!allowBuild) {
 				return;
@@ -1189,13 +1206,29 @@ MouseWheelListener, ActionListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// no op
+		if (e.getButton() == MouseEvent.BUTTON3 && buildMode) {
+			cancelBuildMode();
+		}
 	}
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+		Point pt = e.getPoint();
+		updateMouseTileCoords(pt);
+	}
+	/**
+	 * Updates the mouse tile coordinates based on the given mouse position.
+	 * @param pt the point
+	 */
+	private void updateMouseTileCoords(Point pt) {
+		int x = pt.x - xoff - mainWindow.x - 27;
+		int y = pt.y - yoff - mainWindow.y - 1;
+		int a = (int)Math.floor(Tile.toTileX(x, y));
+		int b = (int)Math.floor(Tile.toTileY(x, y));
+		mouseTileX = a;
+		mouseTileY = b;
 	}
 	/**
 	 * {@inheritDoc}
@@ -1594,6 +1627,9 @@ MouseWheelListener, ActionListener {
 			
 			Graphics2D rg = radarImage.createGraphics();
 			rg.scale(xs, ys);
+			if (interpolation != ImageInterpolation.NONE) {
+				rg.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolation.hint);
+			}
 			renderContents(rg, radarImagePlanet, (x - xOffsetMin), -yOffsetMin, false);
 			rg.dispose();
 		}
@@ -1605,5 +1641,26 @@ MouseWheelListener, ActionListener {
 				(int)(minimapRect.y + (-yoff - yOffsetMin) * ys), 
 				(int)(mainWindow.width * xs), (int)(mainWindow.height * ys));
 		g2.setClip(sp);
+	}
+	/**
+	 * @param interpolation the image interpolation to set
+	 */
+	public void setInterpolation(ImageInterpolation interpolation) {
+		this.interpolation = interpolation;
+		repaint();
+	}
+	/**
+	 * @return the current image interpolation
+	 */
+	public ImageInterpolation getInterpolation() {
+		return interpolation;
+	}
+	/**
+	 * Clear radar cache.
+	 */
+	public void clearRadarCache() {
+		radarImage = null;
+		radarImagePlanet = null;
+		repaint(minimapRect);
 	}
 }

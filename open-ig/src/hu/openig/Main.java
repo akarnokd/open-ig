@@ -41,6 +41,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -121,6 +122,10 @@ public class Main extends JFrame {
 	private String language;
 	/** The achievement renderer. */
 	private AchievementRenderer achievementRenderer;
+	/** The periodic screen refresh timer to fix some anomalies. */
+	private Timer screenRefreshTimer;
+	/** The main screen refresh time. */
+	private static final int SCREEN_REFRESH_TIME = 2500;
 	/**
 	 * Initialize resources from the given root directory.
 	 * @param resMap the resource mapper
@@ -168,11 +173,14 @@ public class Main extends JFrame {
 		moviePlayer.setBackground(Color.BLACK);
 		optionsRenderer.setVisible(false);
 		player = new Player(moviePlayer);
+		
 		player.setMasterGain(0);
 		uiSounds.setMasterGain(0);
-		optionsRenderer.setAudioVolume(1);
+		optionsRenderer.setAudioVolume(0); // TODO fix during testing
 		optionsRenderer.setMusicVolume(0); // TODO fix during testing
 		music.setMute(true);
+		uiSounds.setMute(true);
+		
 		screens = new JComponent[] {
 			starmapRenderer, planetRenderer, informationRenderer, mainmenuRenderer, moviePlayer, optionsRenderer
 		};
@@ -272,6 +280,13 @@ public class Main extends JFrame {
 				onStarmap();
 			}
 		});
+		screenRefreshTimer = new Timer(SCREEN_REFRESH_TIME, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				repaint();
+			}
+		});
+		screenRefreshTimer.start();
 	}
 	/**
 	 * Set the keyboard shortcuts.
@@ -443,6 +458,10 @@ public class Main extends JFrame {
 	protected void doDoToggleInterpolations() {
 		starmapRenderer.setInterpolation(
 				ImageInterpolation.values()[(starmapRenderer.getInterpolation().ordinal() + 1) % ImageInterpolation.values().length]);
+		planetRenderer.clearRadarCache();
+		planetRenderer.setInterpolation(
+				ImageInterpolation.values()[(starmapRenderer.getInterpolation().ordinal() + 1) % ImageInterpolation.values().length]);
+
 	}
 	/**
 	 * Sets action listeners on the various screens.
@@ -453,9 +472,12 @@ public class Main extends JFrame {
 		planetRenderer.setOnStarmapClicked(new BtnAction() { public void invoke() { onColonyStarmap(); } });
 		planetRenderer.setOnInformationClicked(new BtnAction() { public void invoke() { onColonyInfo(); } });
 		planetRenderer.setOnListClicked(new BtnAction() { public void invoke() { onBuildings(); } });
+		
 		informationRenderer.setOnStarmapClicked(new BtnAction() { public void invoke() { onInfoStarmap(); } });
 		informationRenderer.setOnColonyClicked(new BtnAction() { public void invoke() { onInfoColony(); } });
 		informationRenderer.setOnCancelInfoscreen(new BtnAction() { public void invoke() { onCancelInfoScreen(); } });
+		informationRenderer.setOnDblClickBuilding(new BtnAction() { public void invoke() { onDblClickBuilding(); } });
+		informationRenderer.setOnDblClickPlanet(new BtnAction() { public void invoke() { onDblClickPlanet(); } });
 		
 		planetRenderer.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
 		
@@ -470,7 +492,22 @@ public class Main extends JFrame {
 		optionsRenderer.setOnExit(new BtnAction() { public void invoke() { doExit(); } });
 	}
 	/**
-	 * 
+	 * Display planet when double clicking on the planet name.
+	 */
+	protected void onDblClickPlanet() {
+		showScreen(planetRenderer);
+	}
+	/**
+	 * Enter build mode on planet when double clicking on the building name.
+	 */
+	protected void onDblClickBuilding() {
+		if (planetRenderer.isVisible()) {
+			showScreen(planetRenderer);
+			planetRenderer.doBuild();
+		}
+	}
+	/**
+	 * Cancel information screen and return to the previous screen.
 	 */
 	protected void onCancelInfoScreen() {
 		if (planetRenderer.isVisible()) {
@@ -784,6 +821,7 @@ public class Main extends JFrame {
 	}
 	/** Perform actions to quit from the application. */
 	private void doQuit() {
+		screenRefreshTimer.stop();
 		uiSounds.close();
 		startStopAnimations(false);
 		player.setOnCompleted(null);

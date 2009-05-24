@@ -14,8 +14,8 @@
 		<tile techid='3' height='5' width='6' offset='1' />
 		<tile techid='4' height='3' width='3' />
 		<tile techid='5' height='4' width='4' />
-		<tile techid='6' height='3' width='4' />
-		<tile techid='7' height='8' width='6' />
+		<tile techid='6' height='3' width='4' offset='1' />
+		<tile techid='7' height='8' width='5' />
 		<tile techid='8' height='4' width='4' />
 	</building>
 	<building id='PrefabHousing' index='1'>
@@ -66,8 +66,8 @@
 		<tile techid='2' height='3' width='3' />
 		<tile techid='3' height='3' width='3' />
 		<tile techid='4' height='4' width='4' />
-		<tile techid='5' height='5' width='4' />
-		<tile techid='6' height='4' width='4' />
+		<tile techid='5' height='5' width='4'/>
+		<tile techid='6' height='4' width='4' offset='2'/>
 		<tile techid='7' height='5' width='4' />
 		<tile techid='8' height='3' width='4' />
 	</building>
@@ -154,7 +154,7 @@
 		<tile techid='1' height='5' width='5' />
 		<tile techid='2' height='4' width='4' offset='1'/>
 		<tile techid='3' height='3' width='4' offset='1'/>
-		<tile techid='4' height='3' width='4' />
+		<tile techid='4' height='3' width='4' offset='1'/>
 		<tile techid='5' height='3' width='4' />
 		<tile techid='6' height='3' width='3' />
 		<tile techid='7' height='3' width='3' />
@@ -238,7 +238,7 @@
 		<kind>Science</kind>
 		<tile techid='1' height='5' width='4' />
 		<tile techid='2' height='4' width='4' />
-		<tile techid='3' height='3' width='4' />
+		<tile techid='3' height='3' width='4' offset='1'/>
 		<tile techid='4' height='4' width='4' />
 		<tile techid='5' height='3' width='3' />
 		<tile techid='6' height='3' width='3' />
@@ -528,7 +528,7 @@
 		<kind>Shield</kind>
 		<tile techid='1' height='4' width='4' />
 		<tile techid='2' height='2' width='3' />
-		<tile techid='3' height='3' width='4' />
+		<tile techid='3' height='3' width='4' offset='1'/>
 		<tile techid='4' height='3' width='4' />
 		<tile techid='5' height='2' width='4' />
 		<tile techid='6' height='3' width='2' />
