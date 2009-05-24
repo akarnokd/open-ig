@@ -19,7 +19,7 @@ The header is 19 bytes long and has the following byte structure.
 || {{{0B-0C}}} || Number of full frames in the file. Due to the 64KB limit of the DOS program, a frame must be divided into sub blocks (for example, an 640x480 animation consists of 5 subsequent image blocks)||
 || {{{0D-0E}}} || The width of the animation ||
 || {{{0F-10}}} || The height of the animation ||
-|| {{{11-12}}} || Unknown word ||
+|| {{{11-12}}} || Language: 1-English, 2-Hungarian. ||
 
 === The structure of the animation flags ===
 (Note: bit 0 is the least significant bit)
