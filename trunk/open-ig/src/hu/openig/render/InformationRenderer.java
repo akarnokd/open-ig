@@ -161,6 +161,10 @@ MouseWheelListener, ActionListener {
 	private int blinkStep;
 	/** Action on cancel information screen. */
 	private BtnAction onCancelInfoscreen;
+	/** Perform the action on double clicking on a building name. */
+	private BtnAction onDblClickBuilding;
+	/** Perform action on double clicking on a planet name. */
+	private BtnAction onDblClickPlanet;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager
@@ -1010,6 +1014,11 @@ MouseWheelListener, ActionListener {
 				gameWorld.player.selectionType = StarmapSelection.PLANET;
 				repaint();
 			}
+			if (e.getClickCount() == 2) {
+				if (onDblClickPlanet != null) {
+					onDblClickPlanet.invoke();
+				}
+			}
 		}
 	}
 	/** 
@@ -1471,6 +1480,12 @@ MouseWheelListener, ActionListener {
 				}
 				repaint();
 			}
+			// on double click go to the planet surface and into build mode
+			if (e.getClickCount() == 2) {
+				if (onDblClickBuilding != null) {
+					onDblClickBuilding.invoke();
+				}
+			}
 		}
 	}
 	/**
@@ -1625,5 +1640,29 @@ MouseWheelListener, ActionListener {
 	 */
 	public BtnAction getOnCancelInfoscreen() {
 		return onCancelInfoscreen;
+	}
+	/**
+	 * @param onDblClickBuilding the onDblClickBuilding to set
+	 */
+	public void setOnDblClickBuilding(BtnAction onDblClickBuilding) {
+		this.onDblClickBuilding = onDblClickBuilding;
+	}
+	/**
+	 * @return the onDblClickBuilding
+	 */
+	public BtnAction getOnDblClickBuilding() {
+		return onDblClickBuilding;
+	}
+	/**
+	 * @param onDblClickPlanet the onDblClickPlanet to set
+	 */
+	public void setOnDblClickPlanet(BtnAction onDblClickPlanet) {
+		this.onDblClickPlanet = onDblClickPlanet;
+	}
+	/**
+	 * @return the onDblClickPlanet
+	 */
+	public BtnAction getOnDblClickPlanet() {
+		return onDblClickPlanet;
 	}
 }
