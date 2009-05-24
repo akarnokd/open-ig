@@ -13,3 +13,4 @@ This page collects the strange properties of the original game I discovered.
 || On Center 4, the pack of Military spaceport, Civil Dev Center and Radar 2.0 were built on an unbuildable tile || Deployed the buildings around the obstacle ||
 || Planetary Shield 2 for the Sullep Empire has bad width/height || Using correct width/height ||
 || Exterior 11 of the Sullep Empire has two Colony hubs || Keep both for now ||
+|| Outer 7 of the Dargslans has ColonyHub on an unbuildable area || Manually force building placement ||
