@@ -16,6 +16,7 @@ import hu.openig.utils.PCXImage;
 import hu.openig.utils.ResourceMapper;
 import hu.openig.utils.PACFile.PACEntry;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,6 +131,14 @@ public class PlanetGFX {
 	public final BufferedImage[] buildingOff = new BufferedImage[2];
 	/** Two images for the building repairing icon above buildings. */
 	public final BufferedImage[] buildingRepair = new BufferedImage[2];
+	/** The red tile for minimap rendering. */
+	public final BufferedImage redTile;
+	/** The yellow tile for minimap rendering. */
+	public final BufferedImage yellowTile;
+	/** The black tile for minimap rendering. */
+	public final BufferedImage blackTile;
+	/** The green tile for minimap rendering. */
+	public final BufferedImage greenTile;
 	/**
 	 * Constructor. Loads all graphics necessary for planetary rendering.
 	 * @param resMap the resource mapper
@@ -210,6 +219,7 @@ public class PlanetGFX {
 		startBattle = ImageUtils.subimage(colonzx, 394, 170, 106, 28);
 		startBattleDown = ImageUtils.subimage(colonzx, 394, 198, 106, 28);
 		
+		BufferedImage timg = null;
 		for (int i = 1; i < 9; i++) {
 			Map<Integer, BufferedImage> thumbs = new HashMap<Integer, BufferedImage>();
 			// thumbnails
@@ -263,6 +273,9 @@ public class PlanetGFX {
 			}
 			switch (i) {
 			case 1:
+				if (timg == null) {
+					timg = PCXImage.parse(entries.get("A.PCX").data, -2);
+				}
 				tech1Build(entries);
 				break;
 			case 2:
@@ -289,6 +302,31 @@ public class PlanetGFX {
 			default:
 			}
 		}
+		redTile = colorTile(timg, Color.RED.getRGB());
+		yellowTile = colorTile(timg, Color.YELLOW.getRGB());
+		greenTile = colorTile(timg, 0x6CB068);
+		blackTile = colorTile(timg, Color.BLACK.getRGB());
+	}
+	/**
+	 * Recolors all non-transparent tiles to the specified color.
+	 * @param tile the original tile image
+	 * @param color the target color
+	 * @return the colored image
+	 */
+	private static BufferedImage colorTile(BufferedImage tile, int color) {
+		if (tile == null) {
+			return null;
+		}
+		int[] data = new int[tile.getWidth() * tile.getHeight()];
+		tile.getRGB(0, 0, tile.getWidth(), tile.getHeight(), data, 0, tile.getWidth());
+		for (int i = 0; i < data.length; i++) {
+			if ((data[i] & 0xFF000000) != 0) {
+				data[i] = 0xFF000000 | color;
+			}
+		}
+		BufferedImage result = new BufferedImage(tile.getWidth(), tile.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		result.setRGB(0, 0, tile.getWidth(), tile.getHeight(), data, 0, tile.getWidth());
+		return result;
 	}
 	/**
 	 * Ajusts varios surface tile geometry. These tiles are not the

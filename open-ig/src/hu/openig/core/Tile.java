@@ -156,4 +156,11 @@ public class Tile implements TileProvider {
 		// just return us - used by non-building type tiles, such as roads etc.
 		return this;
 	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public TileStatus getStatus() {
+		return TileStatus.NORMAL;
+	}
 }

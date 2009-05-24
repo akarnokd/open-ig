@@ -14,6 +14,7 @@ import hu.openig.core.Location;
 import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.core.TileFragment;
+import hu.openig.core.TileStatus;
 import hu.openig.model.GameBuilding;
 import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GamePlanet;
@@ -323,7 +324,7 @@ MouseWheelListener, ActionListener {
 		}
 		AffineTransform at = g2.getTransform();
 		g2.translate(mainWindow.x, mainWindow.y);
-		renderContents(g2, planet, xoff, yoff, true);
+		renderContents(g2, planet, xoff, yoff, true, false);
 		Composite comp = null;
 		
 		if (tilesToHighlight != null) {
@@ -449,9 +450,10 @@ MouseWheelListener, ActionListener {
 	 * @param xoffset the rendering x offset
 	 * @param yoffset the rendering y offset
 	 * @param clip clip the window?
+	 * @param skeleton draw the buildings as a simple colored skeleton?
 	 */
 	private void renderContents(Graphics2D g2, GamePlanet planet, 
-			int xoffset, int yoffset, boolean clip) {
+			int xoffset, int yoffset, boolean clip, boolean skeleton) {
 		int k = 0;
 		int j = 0;
 		int surfaceType = planet.surfaceType.index;
@@ -477,6 +479,33 @@ MouseWheelListener, ActionListener {
 						stripeId = tf.fragment % tile.strips.length; // wrap around for safety
 					}
 				}
+				if (skeleton && tf != null && !tf.isRoad) {
+					BufferedImage tileImg;
+					TileStatus ts = tf.provider.getStatus();
+					switch (ts) {
+					case DAMAGED:
+						tileImg = gfx.redTile;
+						break;
+					case DESTROYED:
+						tileImg = gfx.blackTile;
+						break;
+					case NO_ENERGY:
+						tileImg = gfx.yellowTile;
+						break;
+					default:
+						tileImg = gfx.greenTile; 
+					}
+					int x = xoffset + Tile.toScreenX(k, j);
+					int y = yoffset + Tile.toScreenY(k, j);
+					
+					int w = tileImg.getWidth();
+					int h = tileImg.getHeight();
+					if (!clip || (x >= -w && x <= getWidth()
+							&& y >= -h 
+							&& y <= getHeight() + h)) {
+						g2.drawImage(tileImg, x, y - h, null);
+					}
+				} else
 				if (tile != null) {
 					tile.createImage(daylight);
 					// 1x1 tiles can be drawn from top to bottom
@@ -852,7 +881,7 @@ MouseWheelListener, ActionListener {
 							int tileId = (mapBytes[2 * i + 4] & 0xFF) - (surfaceType < 7 ? 41 : 84);
 		//					int stripeId = mapBytes[2 * i + 5] & 0xFF;
 							Tile tile = surface.get(tileId);
-							if (tile.strips.length > 1) {
+							if (tile == null || tile.strips.length > 1) {
 								image = noImage;
 								allowBuild = false;
 							}
@@ -880,6 +909,7 @@ MouseWheelListener, ActionListener {
 		if (lightMode) {
 			// adjust daylight value based on the vertical mouse position
 			daylight = pt.y / (float)getHeight();
+			radarImage = null;
 			repaint();
 		} else
 		if (panMode) {
@@ -944,6 +974,7 @@ MouseWheelListener, ActionListener {
 		if (e.getButton() == MouseEvent.BUTTON2 && eventInMainWindow(e)) {
 			daylight = e.getY() / (float)getHeight();
 			lightMode = true;
+			radarImage = null;
 			repaint();
 		} else
 		if (e.getButton() == MouseEvent.BUTTON1) {
@@ -1630,7 +1661,7 @@ MouseWheelListener, ActionListener {
 			if (interpolation != ImageInterpolation.NONE) {
 				rg.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolation.hint);
 			}
-			renderContents(rg, radarImagePlanet, (x - xOffsetMin), -yOffsetMin, false);
+			renderContents(rg, radarImagePlanet, (x - xOffsetMin), -yOffsetMin, false, true);
 			rg.dispose();
 		}
 		g2.drawImage(radarImage, minimapRect.x, minimapRect.y, null);
