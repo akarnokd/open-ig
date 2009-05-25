@@ -14,8 +14,6 @@ package hu.openig.core;
  * @author karnokd
  */
 public interface StateExchanger {
-	/** Load state values from the backing objects. Should be invoked in the event thread. */
-	void load();
 	/** Store state values into the backing objects. Should be invoked in the event thread. */
 	void save();
 }

@@ -406,6 +406,22 @@ public class Main extends JFrame {
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doDamageBuilding(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+M");
+		rp.getActionMap().put("CTRL+M", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doTakeoverPlanet(); } });
+	}
+	/**
+	 * Takes over the currently selected planet.
+	 */
+	protected void doTakeoverPlanet() {
+		if (gameWorld.player.selectedPlanet != null) {
+			gameWorld.player.selectedPlanet.owner = gameWorld.player;
+			repaint();
+		}
 	}
 	/**
 	 * Toggle the selected building's health between 100 and 40 percent.
