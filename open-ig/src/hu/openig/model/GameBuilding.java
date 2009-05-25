@@ -9,7 +9,6 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
-import hu.openig.core.PlanetInfo;
 import hu.openig.core.Tile;
 import hu.openig.core.TileProvider;
 import hu.openig.core.TileStatus;
@@ -28,8 +27,6 @@ public class GameBuilding implements TileProvider {
 	public GameBuildingPrototype prototype;
 	/** Shortcut for building images for the actual tech id. */
 	public GameBuildingPrototype.BuildingImages images;
-	/** The planetary information provider. */
-	public PlanetInfo planetInfo;
 	/** The tile X coordinate of the left edge. */
 	public int x;
 	/** The tile Y coordinate of the top edge. */

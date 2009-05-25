@@ -383,22 +383,38 @@ MouseWheelListener, ActionListener {
 			
 			// render status icons
 			int x = mx + (pw - gfx.buildingOff[0].getWidth()) / 2;
+			int y = py + 15;
+			int y1 = 0;
 			if (b.enabled) {
-				if (b.repairing) {
-					g2.drawImage(gfx.buildingRepair[blinkStatus ? 1 : 0], x, py + 10, null);
-				} else {
+				if (!b.repairing) {
+//					g2.drawImage(gfx.buildingRepair[blinkStatus ? 1 : 0], x, y, null);
+//					y1 = 10;
+//				} else {
 					float ep = b.getEnergyPercent();
 					float wp = b.getWorkerPercent();
 					if (ep >= 0 && ep < 0.5 && b.getEnergyDemand() > 0) {
-						g2.drawImage(gfx.buildingNoEnergy[blinkStatus ? 1 : 0], x, py + 10, null);
+						g2.drawImage(gfx.buildingNoEnergy[blinkStatus ? 1 : 0], x, y, null);
 						x += gfx.buildingNoEnergy[0].getWidth() + 3;
+						y1 = gfx.buildingNoEnergy[0].getHeight() + 5;
 					}
 					if (wp >= 0 && wp < 0.5 && b.getWorkerDemand() > 0) {
-						g2.drawImage(cgfx.workerIcon, x, py + 10, cgfx.workerIcon.getWidth() * 3, cgfx.workerIcon.getHeight() * 3, null);
+						g2.drawImage(cgfx.workerIcon, x, y, cgfx.workerIcon.getWidth() * 3, cgfx.workerIcon.getHeight() * 3, null);
+						y1 = Math.max(cgfx.workerIcon.getHeight() * 3 + 5, y1);
 					}
 				}
 			} else {
 				g2.drawImage(gfx.buildingOff[blinkStatus ? 1 : 0], x, py + 10, null);
+			}
+			if (b.health < 100) {
+				String s = (100 - b.health) + "%";
+				int len = text.getTextWidth(7, s);
+				if (b.repairing && blinkStatus) {
+					text.paintTo(g2, mx + (pw - len) / 2 + 1, y + y1 + 1, 7, TextGFX.LIGHT_BLUE, s);
+					text.paintTo(g2, mx + (pw - len) / 2, y + y1, 7, TextGFX.RED, s);
+				} else {
+					text.paintTo(g2, mx + (pw - len) / 2 + 1, y + y1 + 1, 7, TextGFX.LIGHT_BLUE, s);
+					text.paintTo(g2, mx + (pw - len) / 2, y + y1, 7, TextGFX.YELLOW, s);
+				}
 			}
 		}
 		g2.setTransform(at);

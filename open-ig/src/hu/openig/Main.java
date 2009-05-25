@@ -442,8 +442,10 @@ public class Main extends JFrame {
 			planet.buildingKinds.clear();
 			planet.buildingTypes.clear();
 			planet.map.clear();
+			planet.selectedBuilding = null;
+			planetRenderer.clearRadarCache();
+			planetRenderer.repaint();
 		}
-		planetRenderer.repaint();
 	}
 	/**
 	 * FIXME for development only
