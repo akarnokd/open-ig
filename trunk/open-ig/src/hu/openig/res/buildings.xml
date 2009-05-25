@@ -4,7 +4,7 @@
 		<cost>40000</cost>
 		<energy>0</energy>
 		<worker>960</worker>
-		<living-space>5000</living-space>
+		<food>5000</food>
 		<hospital>10000</hospital>
 		<nobuild></nobuild>
 		<limit>1</limit>

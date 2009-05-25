@@ -9,7 +9,6 @@
 package hu.openig.render;
 
 import hu.openig.core.BtnAction;
-import hu.openig.core.MainmenuRects;
 import hu.openig.res.GameResourceManager;
 import hu.openig.res.gfx.MenuGFX;
 import hu.openig.res.gfx.TextGFX;
@@ -47,8 +46,22 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 	private int lastHeight;
 	/** The background picture selector. */
 	private int picture;
-	/** The main menu rectangles. */
-	private MainmenuRects rects;
+	/** The background rectangle. */
+	private Rectangle background = new Rectangle();
+	/** Rectangle for start new game. */
+	private Rectangle rectStartNewGame = new Rectangle();
+	/** Rectangle for load game. */
+	private Rectangle rectLoadGame = new Rectangle();
+	/** Rectangle for title animation. */
+	private Rectangle rectTitleAnimation = new Rectangle();
+	/** Rectangle for view intro. */
+	private Rectangle rectViewIntro = new Rectangle();
+	/** Rectangle for quit. */
+	private Rectangle rectQuit = new Rectangle();
+	/** Rectangles as array. */
+	private Rectangle[] rectMenus = {
+		rectStartNewGame, rectLoadGame, rectTitleAnimation, rectViewIntro, rectQuit
+	};
 	/** Version string. */
 	private String version;
 	/** Which menu index to highlight. -1 means none */
@@ -70,7 +83,6 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 	public MainmenuRenderer(GameResourceManager grm) {
 		this.gfx = grm.menuGFX;
 		this.text = grm.commonGFX.text;
-		rects = new MainmenuRects();
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
@@ -101,7 +113,7 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 			updateRegions();
 		}
 		BufferedImage bimg = gfx.startImages[picture];
-		g2.drawImage(bimg, rects.background.x, rects.background.y, null);
+		g2.drawImage(bimg, background.x, background.y, null);
 		
 		if (highlight != null) {
 			cp = g2.getComposite();
@@ -113,8 +125,8 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 		if (version != null) {
 			int th = 10;
 			int tw = text.getTextWidth(th, version);
-			text.paintTo(g2, rects.background.x + rects.background.width - tw - 5, 
-					rects.background.y + rects.background.height - th - 5, th, TextGFX.RED, version);
+			text.paintTo(g2, background.x + background.width - tw - 5, 
+					background.y + background.height - th - 5, th, TextGFX.RED, version);
 		}
 	}
 	/**
@@ -126,12 +138,12 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 		int w = (getWidth() - bimg.getWidth()) / 2;
 		int h = (getHeight() - bimg.getHeight()) / 2;
 		
-		rects.background.setBounds(w, h, bimg.getWidth(), bimg.getHeight());
-		rects.rectStartNewGame.setBounds(w + 50, h + 142, 540, 38);
-		rects.rectLoadGame.setBounds(w + 50, h + 198, 540, 40);
-		rects.rectTitleAnimation.setBounds(w + 50, h + 260, 540, 38);
-		rects.rectViewIntro.setBounds(w + 50, h + 316, 540, 38);
-		rects.rectQuit.setBounds(w + 50, h + 385, 540, 38);
+		background.setBounds(w, h, bimg.getWidth(), bimg.getHeight());
+		rectStartNewGame.setBounds(w + 50, h + 142, 540, 38);
+		rectLoadGame.setBounds(w + 50, h + 198, 540, 40);
+		rectTitleAnimation.setBounds(w + 50, h + 260, 540, 38);
+		rectViewIntro.setBounds(w + 50, h + 316, 540, 38);
+		rectQuit.setBounds(w + 50, h + 385, 540, 38);
 	}
 	/**
 	 * Set the background picture based on index.
@@ -170,7 +182,7 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		Point pt = e.getPoint();
-		for (Rectangle r : rects.rectMenus) {
+		for (Rectangle r : rectMenus) {
 			if (r.contains(pt)) {
 				if (highlight != null) {
 					repaint(highlight);
@@ -191,7 +203,7 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		Point pt = e.getPoint();
-		for (Rectangle r : rects.rectMenus) {
+		for (Rectangle r : rectMenus) {
 			if (r.contains(pt)) {
 				if (highlight != null) {
 					repaint(highlight);
@@ -239,19 +251,19 @@ public class MainmenuRenderer extends JComponent implements MouseMotionListener,
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		Point pt = e.getPoint();
-		if (rects.rectStartNewGame.contains(pt) && startNewAction != null) {
+		if (rectStartNewGame.contains(pt) && startNewAction != null) {
 			startNewAction.invoke();
 		} else
-		if (rects.rectLoadGame.contains(pt) && loadAction != null) {
+		if (rectLoadGame.contains(pt) && loadAction != null) {
 			loadAction.invoke();
 		} else
-		if (rects.rectTitleAnimation.contains(pt) && titleAnimAction != null) {
+		if (rectTitleAnimation.contains(pt) && titleAnimAction != null) {
 			titleAnimAction.invoke();
 		} else
-		if (rects.rectViewIntro.contains(pt) && introAction != null) {
+		if (rectViewIntro.contains(pt) && introAction != null) {
 			introAction.invoke();
 		} else
-		if (rects.rectQuit.contains(pt) && quitAction != null) {
+		if (rectQuit.contains(pt) && quitAction != null) {
 			quitAction.invoke();
 		}
 	}

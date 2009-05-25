@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
+import hu.openig.core.PlanetInfo;
 import hu.openig.core.Tile;
 import hu.openig.core.TileProvider;
 import hu.openig.core.TileStatus;
@@ -24,6 +25,8 @@ public class GameBuilding implements TileProvider {
 	public GameBuildingPrototype prototype;
 	/** Shortcut for building images for the actual tech id. */
 	public GameBuildingPrototype.BuildingImages images;
+	/** The planetary information provider. */
+	public PlanetInfo planetInfo;
 	/** The tile X coordinate of the left edge. */
 	public int x;
 	/** The tile Y coordinate of the top edge. */
@@ -32,14 +35,16 @@ public class GameBuilding implements TileProvider {
 	public int health; // FIXME damage percent or hitpoints?
 	/** The current build progress percent: 0 to 100. */
 	public int progress;
-	/** Is the building powered? */
-	public boolean powered = true;
 	/** The lazily initialized rectangle. */
 	private Rectangle rect;
 	/** Is this building enabled? Disabled buildings don't consume/produce energy or workers. */
 	public boolean enabled = true;
 	/** The current energy received. */
 	public int energy;
+	/** The current worker amount. */
+	public int workers;
+	/** Indicator that this building is being repaired. */
+	public boolean repairing;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -78,7 +83,11 @@ public class GameBuilding implements TileProvider {
 	 */
 	public int getEnergy() {
 		if (enabled && progress == 100) {
-			if (health >= 50) {
+			float w = getWorkerPercent();
+			if (w >= 0.5 && health >= 50) {
+				return (int)(prototype.energy * (health * w / 100));
+			} else
+			if (w < 0) {
 				return prototype.energy * health / 100;
 			}
 		}
@@ -101,10 +110,56 @@ public class GameBuilding implements TileProvider {
 		} else
 		if (health < 100) {
 			return TileStatus.DAMAGED;
-//		} else
-//		if (energy < getEnergy()) {
-//			return TileStatus.NO_ENERGY;
+		} else
+		if (!isOperational()) {
+			return TileStatus.NO_ENERGY;
 		}
 		return TileStatus.NORMAL;
+	}
+	/**
+	 * Returns the ratio of assigned/required energy for
+	 * energy consuming buildings.
+	 * @return the ratio [0..1], -1 signals no energy required
+	 */
+	public float getEnergyPercent() {
+		int e = getEnergy();
+		if (e < 0) {
+			return -energy * 1.0f / getEnergy();
+		}
+		return -1;
+	}
+	/**
+	 * Returns the ratio of assigned/required workers
+	 * for the buildings.
+	 * @return the ratio [0..1]
+	 */
+	public float getWorkerPercent() {
+		int w = getWorkerDemand();
+		if (w > 0) {
+			return workers * 1.0f / w;
+		}
+		return -1;
+	}
+	/**
+	 * @return true if the building is enabled, 100% completed and at least on 50% health
+	 */
+	public boolean requiresEnergy() {
+		return getEnergy() < 0;
+	}
+	/**
+	 * 
+	 * @return true if the building is enabled, 100% completed
+	 */
+	public boolean requiresWorkers() {
+		return getWorkerDemand() > 0;
+	}
+	/**
+	 * Returns true if this building is operational, e.g the energy and woker levels are at least 50%.
+	 * @return true if this building is operational
+	 */
+	public boolean isOperational() {
+		float e = getEnergyPercent();
+		float w = getWorkerPercent();
+		return (e < 0 || e >= 0.5) && (w < 0 || w >= 0.5);
 	}
 }
