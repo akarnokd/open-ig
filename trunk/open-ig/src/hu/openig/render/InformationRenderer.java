@@ -46,6 +46,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -843,28 +844,28 @@ MouseWheelListener, ActionListener {
 					int lsp = planet.getLivingSpace();
 					if (lsp < planet.population) {
 						problems.add(gameWorld.getLabel("ColonyInfo.LivingSpace"));
-						serious.add(getColorForRelation(planet.population, lsp));
+						serious.add(getColorForRelation(planet.population, lsp, 1.1f));
 					}
 					int hsp = planet.getHospital();
 					if (hsp < planet.population) {
 						problems.add(gameWorld.getLabel("ColonyInfo.Hospital"));
-						serious.add(getColorForRelation(planet.population, hsp));
+						serious.add(getColorForRelation(planet.population, hsp, 1.1f));
 					}
 					int fsp = planet.getFood();
 					if (fsp < planet.population) {
 						problems.add(gameWorld.getLabel("ColonyInfo.Food"));
-						serious.add(getColorForRelation(planet.population, fsp));
+						serious.add(getColorForRelation(planet.population, fsp, 1.1f));
 					}
 					int esp = planet.getEnergyDemand();
 					int emp = planet.getEnergyProduction();
 					if (emp < esp) {
 						problems.add(gameWorld.getLabel("ColonyInfo.Energy"));
-						serious.add(getColorForRelation(esp, emp));
+						serious.add(getColorForRelation(esp, emp, 2f));
 					}
 					int wsp = planet.getWorkerDemand();
 					if (wsp > planet.population) {
 						problems.add(gameWorld.getLabel("ColonyInfo.Worker"));
-						serious.add(getColorForRelation(planet.population, lsp));
+						serious.add(getColorForRelation(planet.population, lsp, 1.1f));
 					}
 					int x0 = secondaryArea.x + 6;
 					int x = x0;
@@ -872,7 +873,7 @@ MouseWheelListener, ActionListener {
 					int seplen = text.getTextWidth(7, ", ");
 					for (int i = 0; i < problems.size(); i++) {
 						int len = text.getTextWidth(7, problems.get(i));
-						if (y + seplen + len > secondaryArea.x + secondaryArea.width - 6) {
+						if (x + seplen + len > secondaryArea.x + secondaryArea.width - 6) {
 							y += 10;
 							x = x0;
 							text.paintTo(g2, x, y, 7, serious.get(i), problems.get(i));
@@ -1076,35 +1077,35 @@ MouseWheelListener, ActionListener {
 									gameWorld.getLabel("PopulatityName." + PopularityType.find(planet.popularity).id), 
 									planet.populationGrowth)
 						));
-				int color = getColorForRelation(planet.population, planet.getLivingSpace());
+				int color = getColorForRelation(planet.population, planet.getLivingSpace(), 1.1f);
 				text.paintTo(g2, mainArea.x + 10, mainArea.y + 110, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
 							gameWorld.getLabel("ColonyInfo.LivingSpace"),
 							planet.population + "/" + planet.getLivingSpace() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
 
-				color = getColorForRelation(planet.getWorkerDemand(), planet.population);
+				color = getColorForRelation(planet.getWorkerDemand(), planet.population, 1.1f);
 				text.paintTo(g2, mainArea.x + 10, mainArea.y + 130, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
 							gameWorld.getLabel("ColonyInfo.Worker"),
 							planet.population + "/" + planet.getWorkerDemand() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
 
-				color = getColorForRelation(planet.population, planet.getHospital());
+				color = getColorForRelation(planet.population, planet.getHospital(), 1.1f);
 				text.paintTo(g2, mainArea.x + 10, mainArea.y + 150, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
 							gameWorld.getLabel("ColonyInfo.Hospital"),
 							planet.population + "/" + planet.getHospital() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
 				
-				color = getColorForRelation(planet.population, planet.getFood());
+				color = getColorForRelation(planet.population, planet.getFood(), 1.1f);
 				text.paintTo(g2, mainArea.x + 10, mainArea.y + 170, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
 							gameWorld.getLabel("ColonyInfo.Food"),
 							planet.population + "/" + planet.getFood() + " " + gameWorld.getLabel("ColonyInfo.Dweller")
 						));
 				
-				color = getColorForRelation(planet.getEnergyDemand(), planet.getEnergyProduction());
+				color = getColorForRelation(planet.getEnergyDemand(), planet.getEnergyProduction(), 2f);
 				text.paintTo(g2, mainArea.x + 10, mainArea.y + 190, 10, color,
 						gameWorld.getLabel("ColonyInfoEntry",
 							gameWorld.getLabel("ColonyInfo.Energy"),
@@ -1221,16 +1222,17 @@ MouseWheelListener, ActionListener {
 		g2.setPaint(p);
 	}
 	/**
-	 * Returns GREEN, if value < limit, YELLOW if value < limit * 1.1, RED otherwise.
+	 * Returns GREEN, if value < limit, YELLOW if value < limit * percent, RED otherwise.
 	 * @param value the value
 	 * @param limit the limit
+	 * @param percent the limit percent to switch to yellow
 	 * @return the color
 	 */
-	private int getColorForRelation(int value, int limit) {
+	private int getColorForRelation(int value, int limit, float percent) {
 		if (value <= limit) {
 			return TextGFX.GREEN;
 		} else
-		if (value * 10 <= limit * 11) {
+		if (value <= limit * percent) {
 			return TextGFX.YELLOW;
 		}
 		return TextGFX.RED;
@@ -1590,7 +1592,10 @@ MouseWheelListener, ActionListener {
 					);
 				int i = 0;
 				h += 51;
-				for (Map.Entry<String, Object> e : bp.properties.entrySet()) {
+				List<Map.Entry<String, ?>> plist = new LinkedList<Map.Entry<String, ?>>();
+				plist.addAll(bp.values.entrySet());
+				plist.addAll(bp.properties.entrySet());
+				for (Map.Entry<String, ?> e : plist) {
 					if (GameBuildingPrototype.PRODUCT_TYPES.contains(e.getKey())) {
 						String value = e.getValue() + " " 
 						+ gameWorld.getLabel("BuildingInfo.ProductionUnitFor." + e.getKey());

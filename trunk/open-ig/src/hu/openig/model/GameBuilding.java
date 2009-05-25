@@ -13,8 +13,11 @@ import hu.openig.core.PlanetInfo;
 import hu.openig.core.Tile;
 import hu.openig.core.TileProvider;
 import hu.openig.core.TileStatus;
+import hu.openig.core.Tuple2;
 
 import java.awt.Rectangle;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Actual building instance.
@@ -76,31 +79,6 @@ public class GameBuilding implements TileProvider {
 		return rect;
 	}
 	/**
-	 * Returns the current energy production/consumption.
-	 * This value depend on the current health and progress as well
-	 * as the enabled state
-	 * @return the energy value
-	 */
-	public int getEnergy() {
-		if (enabled && progress == 100) {
-			float w = getWorkerPercent();
-			if (w >= 0.5 && health >= 50) {
-				return (int)(prototype.energy * (health * w / 100));
-			} else
-			if (w < 0) {
-				return prototype.energy * health / 100;
-			}
-		}
-		return 0;
-	}
-	/**
-	 * Returns the worker demand which depends on the building status.
-	 * @return the worker demand
-	 */
-	public int getWorkerDemand() {
-		return enabled && progress == 100 ? prototype.workers : 0;
-	}
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -111,55 +89,92 @@ public class GameBuilding implements TileProvider {
 		if (health < 100) {
 			return TileStatus.DAMAGED;
 		} else
-		if (!isOperational()) {
+		if (getOperationPercent() < 0.5f) {
 			return TileStatus.NO_ENERGY;
 		}
 		return TileStatus.NORMAL;
 	}
 	/**
-	 * Returns the ratio of assigned/required energy for
-	 * energy consuming buildings.
-	 * @return the ratio [0..1], -1 signals no energy required
+	 * Returns the primary production value weighted with the operation percentage.
+	 * @return the production type and value tuple
 	 */
-	public float getEnergyPercent() {
-		int e = getEnergy();
-		if (e < 0) {
-			return -energy * 1.0f / getEnergy();
+	public Tuple2<String, Object> getPrimaryProduction() {
+		LinkedList<Map.Entry<String, ?>> plist = new LinkedList<Map.Entry<String, ?>>();
+		plist.addAll(prototype.values.entrySet());
+		plist.addAll(prototype.properties.entrySet());
+		for (Map.Entry<String, ?> e : plist) {
+			String key = e.getKey();
+			if (GameBuildingPrototype.PRODUCT_TYPES.contains(key)) {
+				Object value = e.getValue();
+				if (value instanceof Integer && GameBuildingPrototype.PRODUCTION_PERCENTABLES.contains(key)) {
+					value = (int)(((Integer)value) * getOperationPercent()); 
+				}
+				return new Tuple2<String, Object>(key, value);
+			}
 		}
-		return -1;
+		return null;
 	}
 	/**
-	 * Returns the ratio of assigned/required workers
-	 * for the buildings.
-	 * @return the ratio [0..1]
+	 * Returns the current received energy
+	 * relative to the current energy demand.
+	 * @return the [0..1] value. Zero if there is no demand for energy
+	 */
+	public float getEnergyPercent() {
+		int e = getEnergyDemand();
+		if (e > 0) {
+			return energy * 1.0f / e;
+		}
+		return 0;
+	}
+	/**
+	 * Returns the current worker amount relative
+	 * to the current worker demand.
+	 * @return the [0..1] value. Zero if there is no demand for workers
 	 */
 	public float getWorkerPercent() {
 		int w = getWorkerDemand();
 		if (w > 0) {
 			return workers * 1.0f / w;
 		}
-		return -1;
+		return 0;
 	}
 	/**
-	 * @return true if the building is enabled, 100% completed and at least on 50% health
+	 * Returns the energy demand of the building.
+	 * @return the demand
 	 */
-	public boolean requiresEnergy() {
-		return getEnergy() < 0;
+	public int getEnergyDemand() {
+		return enabled && progress == 100 && health >= 50 ? prototype.energy : 0;
+	}
+	/** 
+	 * Returns the worker demand of this building.
+	 * If the building is off line or incomplete, the demand is zero
+	 * @return the worker amount 
+	 */
+	public int getWorkerDemand() {
+		return enabled && progress == 100 && health >= 50 ? prototype.workers : 0;
 	}
 	/**
-	 * 
-	 * @return true if the building is enabled, 100% completed
+	 * Returns the operation percentage based
+	 * on the current energy and worker supply.
+	 * @return the operation percentage
 	 */
-	public boolean requiresWorkers() {
-		return getWorkerDemand() > 0;
-	}
-	/**
-	 * Returns true if this building is operational, e.g the energy and woker levels are at least 50%.
-	 * @return true if this building is operational
-	 */
-	public boolean isOperational() {
-		float e = getEnergyPercent();
-		float w = getWorkerPercent();
-		return (e < 0 || e >= 0.5) && (w < 0 || w >= 0.5);
+	public float getOperationPercent() {
+		int e = getEnergyDemand();
+		int w = getWorkerDemand();
+		float result = 0;
+		// if no energy required, use the worker demand for the operation value
+		if (e == 0 && w > 0) {
+			result = workers * 1.0f / w;
+		} else
+		if (e > 0 && w == 0) {
+			result = energy * 1.0f / e;
+		} else
+		if (e != 0 && w != 0) {
+			result = Math.min(energy * 1.0f / e, workers * 1.0f / w);
+		}
+		if (health >= 50) {
+			return result * 100 / health;
+		}
+		return 0;
 	}
 }
