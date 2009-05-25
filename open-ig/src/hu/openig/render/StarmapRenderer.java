@@ -1701,6 +1701,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 					if (rect.contains(point)) {
 						gameWorld.player.selectionType = StarmapSelection.PLANET;
 						gameWorld.player.selectedPlanet = p;
+						if (e.getClickCount() == 2) {
+							doColonyClick();
+						}
 						return;
 					}
 				}

@@ -209,4 +209,10 @@ public class GameBuildingPrototype {
 			return o1.index - o2.index;
 		}
 	};
+	/**
+	 * @return true if this building consumes energy (colony hubs don't require energy, power plants produce energy)
+	 */
+	public boolean isEnergyConsumer() {
+		return energy < 0;
+	}
 }

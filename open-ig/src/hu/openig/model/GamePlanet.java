@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
+import hu.openig.core.PlanetInfo;
 import hu.openig.core.SurfaceType;
 import hu.openig.core.TaxRate;
 import hu.openig.core.TileFragment;
@@ -36,7 +37,7 @@ import org.w3c.dom.Element;
  * @author karnokd, 2009.02.02.
  * @version $Revision 1.0$
  */
-public class GamePlanet {
+public class GamePlanet implements PlanetInfo {
 	/** The surface type 1-7. */
 	public SurfaceType surfaceType;
 	/** The surface variant 1-9. */
@@ -301,7 +302,7 @@ public class GamePlanet {
 	public int getRadarRadius() {
 		int sum = 0;
 		for (GameBuilding b : buildings) {
-			if (b.enabled) {
+			if (b.enabled && b.isOperational()) {
 				Object value = b.prototype.properties.get("radar");
 				if (value != null) {
 					int v = Integer.valueOf(value.toString());
@@ -389,5 +390,14 @@ public class GamePlanet {
 				map.remove(e.getKey());
 			}
 		}
+		// notify clients that the planet needs building-re placement
+		placeBuildings = true;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public SurfaceType getSurfaceType() {
+		return surfaceType;
 	}
 }

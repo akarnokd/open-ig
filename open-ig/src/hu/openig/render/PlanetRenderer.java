@@ -7,6 +7,7 @@
  */
 package hu.openig.render;
 
+import hu.openig.behavior.ResourceAllocator;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.ImageInterpolation;
@@ -210,6 +211,12 @@ MouseWheelListener, ActionListener {
 	private int mouseTileX;
 	/** The current mouse tile. */
 	private int mouseTileY;
+	/** The status icon blinking rate. */
+	private static final int BLINK_TIMER_VALUE = 500;
+	/** The timer for blinking status icons. */
+	private Timer blinkTimer;
+	/** The status icon blinking phase. */
+	private boolean blinkStatus;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager 
@@ -231,6 +238,8 @@ MouseWheelListener, ActionListener {
 		buildScroller.setActionCommand("BUILD_SCROLLER");
 		fadeTimer = new Timer(FADE_INTERVAL, this);
 		fadeTimer.setActionCommand("FADE");
+		blinkTimer = new Timer(BLINK_TIMER_VALUE, this);
+		blinkTimer.setActionCommand("BLINK");
 		initButtons();
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
@@ -352,6 +361,26 @@ MouseWheelListener, ActionListener {
 			int nameLen = text.getTextWidth(7, b.prototype.name);
 			text.paintTo(g2, mx + (pw - nameLen) / 2 + 1, py + 1, 7, TextGFX.LIGHT_BLUE, b.prototype.name);
 			text.paintTo(g2, mx + (pw - nameLen) / 2, py, 7, 0xD4FC84, b.prototype.name);
+			
+			// render status icons
+			int x = mx + (pw - gfx.buildingOff[0].getWidth()) / 2;
+			if (b.enabled) {
+				if (b.repairing) {
+					g2.drawImage(gfx.buildingRepair[blinkStatus ? 1 : 0], x, py + 10, null);
+				} else {
+					float ep = b.getEnergyPercent();
+					float wp = b.getWorkerPercent();
+					if (ep >= 0 && ep < 0.5) {
+						g2.drawImage(gfx.buildingNoEnergy[blinkStatus ? 1 : 0], x, py + 10, null);
+						x += gfx.buildingNoEnergy[0].getWidth() + 3;
+					}
+					if (wp >= 0 && wp < 0.5) {
+						g2.drawImage(cgfx.workerIcon, x, py + 10, null);
+					}
+				}
+			} else {
+				g2.drawImage(gfx.buildingOff[blinkStatus ? 1 : 0], x, py + 10, null);
+			}
 		}
 		g2.setTransform(at);
 		
@@ -1281,6 +1310,9 @@ MouseWheelListener, ActionListener {
 		} else
 		if ("SCROLL-DOWN".equals(e.getActionCommand())) {
 			doBuildScroller(true);
+		} else
+		if ("BLINK".equals(e.getActionCommand())) {
+			doBlink();
 		}
 	}
 	/** Execute the fade animation. */
@@ -1514,29 +1546,6 @@ MouseWheelListener, ActionListener {
 		return onListClicked;
 	}
 	/**
-	 * Render the building information panel contents.
-	 * @param g2 the graphics object
-	 */
-	private void renderBuildingInfo(Graphics2D g2) {
-		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
-		if (b == null) {
-			return;
-		}
-		Shape sp = g2.getClip();
-		g2.setClip(buildingInfoName);
-		
-		int nameLen = text.getTextWidth(10, b.prototype.name);
-		text.paintTo(g2, buildingInfoName.x + (buildingInfoName.width - nameLen) / 2, 
-				buildingInfoName.y + (buildingInfoName.height - 10) / 2, 10, TextGFX.YELLOW, b.prototype.name);
-		
-		g2.setClip(buildingInfoPanelRect);
-		if (btnDemolish.down) {
-			g2.drawImage(gfx.demolishDown, btnDemolish.rect.x, btnDemolish.rect.y, null);
-		}
-		
-		g2.setClip(sp);
-	}
-	/**
 	 * Fixes the road joints and unnecessary roads on the planet map.
 	 */
 	private void fixRoads() {
@@ -1693,5 +1702,56 @@ MouseWheelListener, ActionListener {
 		radarImage = null;
 		radarImagePlanet = null;
 		repaint(minimapRect);
+	}
+	/**
+	 * Start animation timers.
+	 */
+	public void startTimers() {
+		blinkTimer.start();
+	}
+	/**
+	 * Stop animation timers.
+	 */
+	public void stopTimers() {
+		blinkTimer.stop();
+	}
+	/**
+	 * Render the building information panel contents.
+	 * @param g2 the graphics object
+	 */
+	private void renderBuildingInfo(Graphics2D g2) {
+		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
+		if (b == null) {
+			return;
+		}
+		Shape sp = g2.getClip();
+		g2.setClip(buildingInfoName);
+		
+		int nameLen = text.getTextWidth(10, b.prototype.name);
+		text.paintTo(g2, buildingInfoName.x + (buildingInfoName.width - nameLen) / 2, 
+				buildingInfoName.y + (buildingInfoName.height - 10) / 2, 10, TextGFX.YELLOW, b.prototype.name);
+		
+		g2.setClip(buildingInfoPanelRect);
+		if (btnDemolish.down) {
+			g2.drawImage(gfx.demolishDown, btnDemolish.rect.x, btnDemolish.rect.y, null);
+		}
+		
+		g2.setClip(sp);
+	}
+	/**
+	 * Perform actions on a blink event.
+	 */
+	private void doBlink() {
+		blinkStatus = !blinkStatus;
+		// FIXME simulation related stuff!
+		GamePlanet p = gameWorld.player.selectedPlanet;
+		if (p != null) {
+			ResourceAllocator.uniformWorkerAllocation(p);
+			ResourceAllocator.uniformEnergyAllocation(p);
+			repaint(mainWindow);
+		}
+		if (blinkStatus) {
+			radarImage = null;
+		}
 	}
 }

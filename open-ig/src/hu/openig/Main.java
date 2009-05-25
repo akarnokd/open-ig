@@ -811,10 +811,12 @@ public class Main extends JFrame {
 			achievementRenderer.startAnimations();
 			starmapRenderer.startAnimations();
 			informationRenderer.startAnimations();
+			planetRenderer.startTimers();
 		} else {
 			achievementRenderer.stopAnimations();
 			starmapRenderer.stopAnimations();
 			informationRenderer.stopAnimations();
+			planetRenderer.stopTimers();
 		}
 	}
 	/** Show the options screen when called from the main menu. */
