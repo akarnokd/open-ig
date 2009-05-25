@@ -19,77 +19,66 @@ import hu.openig.model.GamePlanet;
  */
 public final class ResourceAllocator {
 	/**
-	 * Constructor. Sets the allocation strategies
+	 * Constructor.
 	 */
 	private ResourceAllocator() {
 	}
 	/**
 	 * Allocate energy uniformly.
 	 * @param planet the planet
+	 * @return true if the allocation did change properties of the buildings
 	 */
-	public static void uniformEnergyAllocation(GamePlanet planet) {
+	public static boolean uniformEnergyAllocation(GamePlanet planet) {
+		boolean result = false;
+		int edemand = planet.getEnergyDemand();
 		int eavail = planet.getEnergyProduction();
-		int eneed = planet.getEnergyDemand();
-		// if there is enough energy, give everyone its demand
-		if (eneed <= eavail) {
+		if (eavail >= edemand || edemand == 0) {
+			// use the demanded values everywhere
 			for (GameBuilding b : planet.buildings) {
-				// for enerergy consuming buildings
-				if (b.requiresEnergy()) {
-					b.energy = b.getEnergy();
-				}
+				int currEnergy = b.energy;
+				b.energy = b.getEnergyDemand();
+				// capture value change
+				result |= currEnergy != b.energy;
 			}
 		} else {
-			// count the energy consuming buildings
-			int count = 0;
+			float perc = eavail / (float)edemand;
 			for (GameBuilding b : planet.buildings) {
-				// for enerergy consuming buildings
-				if (b.requiresEnergy()) {
-					count++;
-				}
-			}
-			// if there was at least one energy demanding building
-			if (count > 0) {
-				int e = eavail / count;
-				for (GameBuilding b : planet.buildings) {
-					// for enerergy consuming buildings
-					if (b.requiresEnergy()) {
-						b.energy = e;
-					}
-				}
-			}
+				int currEnergy = b.energy;
+				b.energy = (int)(b.getEnergyDemand() * perc);
+				// capture value change
+				result |= currEnergy != b.energy;
+			}			
 		}
+		return result;
 	}
 	/**
 	 * Allocate the workers uniformly.
 	 * @param planet the planet
+	 * @return true if the allocation did change properties of the buildings
 	 */
-	public static void uniformWorkerAllocation(GamePlanet planet) {
+	public static boolean uniformWorkerAllocation(GamePlanet planet) {
+		boolean result = false;
+		int wdemand = planet.getWorkerDemand();
 		int wavail = planet.population;
-		int wneed = planet.getWorkerDemand();
-		if (wavail >= wneed) {
+		// if available is more than the demand
+		if (wavail >= wdemand || wdemand == 0) {
+			// use the demanded values everywhere
 			for (GameBuilding b : planet.buildings) {
-				if (b.requiresWorkers()) {
-					b.workers = b.getWorkerDemand();
-				}
+				int currWorkers = b.workers;
+				b.workers = b.getWorkerDemand();
+				// capture value change
+				result |= currWorkers != b.workers;
 			}
 		} else {
-			int count = 0;
+			float perc = wavail / (float)wdemand;
+			// set the worker amount to the proportional
 			for (GameBuilding b : planet.buildings) {
-				// for enerergy consuming buildings
-				if (b.requiresWorkers()) {
-					count++;
-				}
-			}
-			// if there was at least one energy demanding building
-			if (count > 0) {
-				int w = wavail / count;
-				for (GameBuilding b : planet.buildings) {
-					// for enerergy consuming buildings
-					if (b.requiresWorkers()) {
-						b.workers = w;
-					}
-				}
+				int currWorkers = b.workers;
+				b.workers = (int)(b.getWorkerDemand() * perc);
+				// capture value change
+				result |= currWorkers != b.workers;
 			}
 		}
+		return result;
 	}
 }

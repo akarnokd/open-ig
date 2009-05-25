@@ -93,14 +93,14 @@ public class PlanetGFX {
 	public final BufferedImage repairPercent;
 	/** Damage percent image. */
 	public final BufferedImage damagedPercent;
-	/** Not active image. */
-	public final BufferedImage notActive;
+	/** Inoperational image. */
+	public final BufferedImage inoperational;
 	/** Offline image. */
 	public final BufferedImage offline;
 	/** Damaged image. */
 	public final BufferedImage damaged;
-	/** No energy image. */
-	public final BufferedImage noEnergy;
+	/** Inoperational light image. */
+	public final BufferedImage inoperationalLight;
 	/** Build completed percent. */
 	public final BufferedImage completedPercent;
 	/** The vehicle selection mini window. */
@@ -206,10 +206,12 @@ public class PlanetGFX {
 		
 		repairPercent = ImageUtils.subimage(colonyx, 0, 226, 145, 18);
 		damagedPercent = ImageUtils.subimage(colonyx, 145, 226, 145, 18);
-		notActive = ImageUtils.subimage(colonyx, 290, 226, 145, 18);
+		
+		inoperational = ImageUtils.subimage(colonyx, 290, 226, 145, 18);
+		inoperationalLight = ImageUtils.subimage(colonyx, 290, 244, 145, 18);
+
 		offline = ImageUtils.subimage(colonyx, 0, 244, 145, 18);
 		damaged = ImageUtils.subimage(colonyx, 145, 244, 145, 18);
-		noEnergy = ImageUtils.subimage(colonyx, 290, 244, 145, 18);
 		completedPercent = ImageUtils.subimage(colonyx, 435, 244, 145, 18);
 
 		BufferedImage colonzx = PCXImage.from(resMap.get("SCREENS/COLONZ_X.PCX"), -1);

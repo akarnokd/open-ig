@@ -16,6 +16,7 @@ import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.core.TileFragment;
 import hu.openig.core.TileStatus;
+import hu.openig.core.Tuple2;
 import hu.openig.model.GameBuilding;
 import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GamePlanet;
@@ -51,6 +52,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -217,6 +219,22 @@ MouseWheelListener, ActionListener {
 	private Timer blinkTimer;
 	/** The status icon blinking phase. */
 	private boolean blinkStatus;
+	/** Energy percent rectangle. */
+	private final Rectangle energyPercentRect = new Rectangle();
+	/** Energy rectangle. */
+	private final Rectangle energyRect = new Rectangle();
+	/** Worker percent rectangle. */
+	private final Rectangle workerPercentRect = new Rectangle();
+	/** Worker rectangle. */
+	private final Rectangle workerRect = new Rectangle();
+	/** Operation percent rectangle. */
+	private final Rectangle operationPercentRect = new Rectangle();
+	/** Production rectangle. */
+	private final Rectangle productionRect = new Rectangle();
+	/** The active status toggle button. */
+	private Btn btnActive;
+	/** The repair status toggle button. */
+	private Btn btnRepair;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager 
@@ -331,9 +349,10 @@ MouseWheelListener, ActionListener {
 			fixRoads();
 			radarImage = null;
 		}
+		reallocateResources();
 		AffineTransform at = g2.getTransform();
 		g2.translate(mainWindow.x, mainWindow.y);
-		renderContents(g2, planet, xoff, yoff, true, false);
+		renderContents(g2, new SurfaceRendering(xoff, yoff, true, false));
 		Composite comp = null;
 		
 		if (tilesToHighlight != null) {
@@ -370,12 +389,12 @@ MouseWheelListener, ActionListener {
 				} else {
 					float ep = b.getEnergyPercent();
 					float wp = b.getWorkerPercent();
-					if (ep >= 0 && ep < 0.5) {
+					if (ep >= 0 && ep < 0.5 && b.getEnergyDemand() > 0) {
 						g2.drawImage(gfx.buildingNoEnergy[blinkStatus ? 1 : 0], x, py + 10, null);
 						x += gfx.buildingNoEnergy[0].getWidth() + 3;
 					}
-					if (wp >= 0 && wp < 0.5) {
-						g2.drawImage(cgfx.workerIcon, x, py + 10, null);
+					if (wp >= 0 && wp < 0.5 && b.getWorkerDemand() > 0) {
+						g2.drawImage(cgfx.workerIcon, x, py + 10, cgfx.workerIcon.getWidth() * 3, cgfx.workerIcon.getHeight() * 3, null);
 					}
 				}
 			} else {
@@ -473,20 +492,56 @@ MouseWheelListener, ActionListener {
 		achievementRenderer.renderAchievements(g2, this);
 	}
 	/**
+	 * Helper class to store invariants for the surface rendering.
+	 * @author karnokd, 2009.05.25.
+	 * @version $Revision 1.0$
+	 */
+	class SurfaceRendering {
+		/** The surface type. */
+		final int surfaceType;
+		/** The surface map. */
+		final byte[] mapBytes;
+		/** The map. */
+		final Map<Location, TileFragment> map;
+		/** The daylight value. */
+		final float daylight;
+		/** The X offset. */
+		final int xoffset;
+		/** The Y offset. */
+		final int yoffset;
+		/** Clip on screen edges? */
+		final boolean clip;
+		/** Draw building skeletons only? */
+		final boolean skeleton;
+		/**
+		 * Constructor. Captures the current planet's properties.
+		 * @param xoffset the x offset
+		 * @param yoffset the y offset
+		 * @param clip do clip?
+		 * @param skeleton draw skeletons only?
+		 */
+		SurfaceRendering(int xoffset, int yoffset, boolean clip, boolean skeleton) {
+			GamePlanet p = gameWorld.player.selectedPlanet;
+			this.surfaceType = p.surfaceType.index;
+			this.mapBytes = getSelectedPlanetSurface();
+			this.daylight = PlanetRenderer.this.daylight;
+			this.map = new HashMap<Location, TileFragment>(p.map);
+			this.xoffset = xoffset;
+			this.yoffset = yoffset;
+			this.clip = clip;
+			this.skeleton = skeleton;
+		}
+	}
+	/**
 	 * Renders the the surface and buildings.
 	 * @param g2 the graphics object
-	 * @param planet the current planet
-	 * @param xoffset the rendering x offset
-	 * @param yoffset the rendering y offset
-	 * @param clip clip the window?
-	 * @param skeleton draw the buildings as a simple colored skeleton?
+	 * @param config the rendering configuration
 	 */
-	private void renderContents(Graphics2D g2, GamePlanet planet, 
-			int xoffset, int yoffset, boolean clip, boolean skeleton) {
+	private void renderContents(Graphics2D g2, SurfaceRendering config) {
 		int k = 0;
 		int j = 0;
-		int surfaceType = planet.surfaceType.index;
-		byte[] mapBytes = getSelectedPlanetSurface();
+		int surfaceType = config.surfaceType;
+		byte[] mapBytes = config.mapBytes;
 		// RENDER VERTICALLY
 		Map<Integer, Tile> surface = gfx.getSurfaceTiles(surfaceType);
 		for (int mi = 0; mi < MAP_START_X.length; mi++) {
@@ -499,16 +554,16 @@ MouseWheelListener, ActionListener {
 				int stripeId = mapBytes[2 * i + 5] & 0xFF;
 				Tile tile = surface.get(tileId);
 				Location l = Location.of(k, j);
-				TileFragment tf = planet.map.get(l);
+				TileFragment tf = config.map.get(l);
 				if (tf != null && tf.fragment >= 0) {
 					tile = tf.provider.getTile(l);
 					// select appropriate stripe
 					if (tile != null) {
-						tile.createImage(daylight);
+						tile.createImage(config.daylight);
 						stripeId = tf.fragment % tile.strips.length; // wrap around for safety
 					}
 				}
-				if (skeleton && tf != null && !tf.isRoad) {
+				if (config.skeleton && tf != null && !tf.isRoad) {
 					BufferedImage tileImg;
 					TileStatus ts = tf.provider.getStatus();
 					switch (ts) {
@@ -524,24 +579,24 @@ MouseWheelListener, ActionListener {
 					default:
 						tileImg = gfx.greenTile; 
 					}
-					int x = xoffset + Tile.toScreenX(k, j);
-					int y = yoffset + Tile.toScreenY(k, j);
+					int x = config.xoffset + Tile.toScreenX(k, j);
+					int y = config.yoffset + Tile.toScreenY(k, j);
 					
 					int w = tileImg.getWidth();
 					int h = tileImg.getHeight();
-					if (!clip || (x >= -w && x <= getWidth()
+					if (!config.clip || (x >= -w && x <= getWidth()
 							&& y >= -h 
 							&& y <= getHeight() + h)) {
 						g2.drawImage(tileImg, x, y - h, null);
 					}
 				} else
 				if (tile != null) {
-					tile.createImage(daylight);
+					tile.createImage(config.daylight);
 					// 1x1 tiles can be drawn from top to bottom
 					if (tile.width == 1 && tile.height == 1) {
-						int x = xoffset + Tile.toScreenX(k, j);
-						int y = yoffset + Tile.toScreenY(k, j);
-						if (!clip || (x >= -tile.image.getWidth() && x <= getWidth()
+						int x = config.xoffset + Tile.toScreenX(k, j);
+						int y = config.yoffset + Tile.toScreenY(k, j);
+						if (!config.clip || (x >= -tile.image.getWidth() && x <= getWidth()
 								&& y >= -tile.image.getHeight() 
 								&& y <= getHeight() + tile.image.getHeight())) {
 							BufferedImage subimage = tile.strips[stripeId];
@@ -555,8 +610,8 @@ MouseWheelListener, ActionListener {
 						int j1 = stripeId >= tile.width ? j + tile.width - 1 : j + stripeId;
 						int k1 = stripeId >= tile.width ? k + (tile.width - 1 - stripeId) : k;
 						int j2 = stripeId >= tile.width ? j : j - (tile.width - 1 - stripeId);
-						int x = xoffset + Tile.toScreenX(k1, j1);
-						int y = yoffset + Tile.toScreenY(k1, j2);
+						int x = config.xoffset + Tile.toScreenX(k1, j1);
+						int y = config.yoffset + Tile.toScreenY(k1, j2);
 						// use subimage stripe
 						int x0 = stripeId >= tile.width ? Tile.toScreenX(stripeId, 0) : Tile.toScreenX(0, -stripeId);
 						BufferedImage subimage = tile.strips[stripeId];
@@ -614,10 +669,39 @@ MouseWheelListener, ActionListener {
 		btnDemolish = new Btn(new BtnAction() { public void invoke() { doDemolish(); } });
 		releaseButtons.add(btnDemolish);
 		
+		btnActive = new Btn(new BtnAction() { public void invoke() { doActiveClick(); } });
+		btnRepair = new Btn(new BtnAction() { public void invoke() { doRepairClick(); } });
+		releaseButtons.add(btnActive);
+		releaseButtons.add(btnRepair);
+		
 		btnBuilding.down = true;
 		btnRadar.down = true;
 		btnBuildingInfo.down = true;
 		btnButtons.down = true;
+	}
+	/**
+	 * Perform actions on active button click.
+	 */
+	protected void doActiveClick() {
+		// TODO Auto-generated method stub
+		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
+		if (b != null) {
+			b.enabled = !b.enabled;
+			radarImage = null;
+			repaint();
+		}
+	}
+	/**
+	 * Perform actions on repair button click.
+	 */
+	protected void doRepairClick() {
+		// TODO Auto-generated method stub
+		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
+		if (b != null) {
+			b.repairing = !b.repairing;
+			radarImage = null;
+			repaint();
+		}
 	}
 	/**
 	 * Demolish the selected building.
@@ -852,6 +936,17 @@ MouseWheelListener, ActionListener {
 		btnDemolish.setBounds(buildingInfoPanelRect.x + 161, buildingInfoPanelRect.y + 50, 29, 90);
 		
 		minimapRect.setBounds(radarPanelRect.x + 14, radarPanelRect.y + 13, 152, 135);
+		
+		// building information fields
+		energyPercentRect.setBounds(buildingInfoPanelRect.x + 70, buildingInfoPanelRect.y + 29, 28, 12);
+		energyRect.setBounds(buildingInfoPanelRect.x + 119, buildingInfoPanelRect.y + 29, 42, 12);
+		workerPercentRect.setBounds(buildingInfoPanelRect.x + 70, buildingInfoPanelRect.y + 45, 28, 12);
+		workerRect.setBounds(buildingInfoPanelRect.x + 119, buildingInfoPanelRect.y + 45, 28, 12);
+		operationPercentRect.setBounds(buildingInfoPanelRect.x + 70, buildingInfoPanelRect.y + 61, 28, 12);
+		productionRect.setBounds(buildingInfoPanelRect.x + 70, buildingInfoPanelRect.y + 77, 77, 12);
+		
+		btnActive.setBounds(buildingInfoPanelRect.x + 8, buildingInfoPanelRect.y + 98, 145, 18);
+		btnRepair.setBounds(buildingInfoPanelRect.x + 8, buildingInfoPanelRect.y + 122, 145, 18);
 		
 		// readjust rendering offset
 		adjustOffsets();
@@ -1670,10 +1765,13 @@ MouseWheelListener, ActionListener {
 			if (interpolation != ImageInterpolation.NONE) {
 				rg.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolation.hint);
 			}
-			renderContents(rg, radarImagePlanet, (x - xOffsetMin), -yOffsetMin, false, true);
+			renderContents(rg, new SurfaceRendering((x - xOffsetMin), -yOffsetMin, false, true));
 			rg.dispose();
+//			rebuildRadarAsync();
 		}
-		g2.drawImage(radarImage, minimapRect.x, minimapRect.y, null);
+		if (radarImage != null) {
+			g2.drawImage(radarImage, minimapRect.x, minimapRect.y, null);
+		}
 		Shape sp = g2.getClip();
 		g2.setClip(minimapRect);
 		g2.setColor(Color.RED);
@@ -1735,7 +1833,69 @@ MouseWheelListener, ActionListener {
 		if (btnDemolish.down) {
 			g2.drawImage(gfx.demolishDown, btnDemolish.rect.x, btnDemolish.rect.y, null);
 		}
+		// energy
+		float ep = b.getEnergyPercent();
+		String value = ep > 0 ? Integer.toString((int)(ep * 100)) : " -";
+		g2.setClip(energyPercentRect);
+		text.paintTo(g2, energyPercentRect.x + 1, energyPercentRect.y + 1, 10, TextGFX.YELLOW, value);
+		int ev = b.energy;
+		value = ev > 0 ? Integer.toString(ev) : "  -";
+		g2.setClip(energyRect);
+		text.paintTo(g2, energyRect.x + 1, energyRect.y + 1, 10, TextGFX.YELLOW, value);
+		// worker
+		int wp = b.workers;
+		value = wp > 0 ? Integer.toString(wp) : " -";
+		g2.setClip(workerPercentRect);
+		text.paintTo(g2, workerPercentRect.x + 1, workerPercentRect.y + 1, 10, TextGFX.YELLOW, value);
+		int wv = b.getWorkerDemand();
+		value = wv > 0 ? Integer.toString(wv) : " -";
+		g2.setClip(workerRect);
+		text.paintTo(g2, workerRect.x + 1, workerRect.y + 1, 10, TextGFX.YELLOW, value);
+		// aggregated percent
+		float op = b.getOperationPercent();
+		value = op > 0 ? Integer.toString((int)(op * 100)) : " -";
+		g2.setClip(operationPercentRect);
+		text.paintTo(g2, operationPercentRect.x + 1, operationPercentRect.y + 1, 10, TextGFX.YELLOW, value);
 		
+		Tuple2<String, Object> primaryProduction = b.getPrimaryProduction();
+		if (primaryProduction != null) {
+			g2.setClip(productionRect);
+			text.paintTo(g2, productionRect.x + 1, productionRect.y + 1, 10, TextGFX.YELLOW, 
+				primaryProduction.second + " " 
+				+ gameWorld.getLabel("BuildingInfo.ProductionUnitFor." + primaryProduction.first)
+			);
+		}
+		g2.setClip(btnActive.rect);
+		btnActive.disabled = b.progress < 100;
+		if (b.progress == 100) {
+			if (b.enabled) {
+				if (b.getOperationPercent() < 0.5f) {
+					g2.drawImage(gfx.inoperational, btnActive.rect.x, btnActive.rect.y, null);
+				}
+			} else {
+				g2.drawImage(gfx.offline, btnActive.rect.x, btnActive.rect.y, null);
+			}
+		} else {
+			g2.drawImage(gfx.completedPercent, btnActive.rect.x, btnActive.rect.y, null);
+			String s = Integer.toString(b.progress);
+			int l = text.getTextWidth(10, s);
+			text.paintTo(g2, btnActive.rect.x + 96 + (28 - l) / 2, btnActive.rect.y + 3, 10, TextGFX.YELLOW, s);
+		}
+		g2.setClip(btnRepair.rect);
+		btnRepair.disabled = true;
+		if (b.progress == 100) {
+			if (b.health < 100) {
+				btnRepair.disabled = false;
+				if (b.repairing) {
+					g2.drawImage(gfx.repairPercent, btnRepair.rect.x, btnRepair.rect.y, null);
+				} else {
+					g2.drawImage(gfx.damagedPercent, btnRepair.rect.x, btnRepair.rect.y, null);
+				}
+				String s = Integer.toString(100 - b.health);
+				int l = text.getTextWidth(10, s);
+				text.paintTo(g2, btnRepair.rect.x + 96 + (28 - l) / 2, btnRepair.rect.y + 3, 10, TextGFX.YELLOW, s);
+			}
+		}		
 		g2.setClip(sp);
 	}
 	/**
@@ -1744,14 +1904,21 @@ MouseWheelListener, ActionListener {
 	private void doBlink() {
 		blinkStatus = !blinkStatus;
 		// FIXME simulation related stuff!
+		reallocateResources();
+		repaint(mainWindow);
+	}
+	/**
+	 * Reallocates resources and asks for radar redraw on demand.
+	 */
+	private void reallocateResources() {
 		GamePlanet p = gameWorld.player.selectedPlanet;
+		boolean changes = false;
 		if (p != null) {
-			ResourceAllocator.uniformWorkerAllocation(p);
-			ResourceAllocator.uniformEnergyAllocation(p);
-			repaint(mainWindow);
-		}
-		if (blinkStatus) {
-			radarImage = null;
+			changes = ResourceAllocator.uniformWorkerAllocation(p);
+			changes |= ResourceAllocator.uniformEnergyAllocation(p);
+			if (blinkStatus && changes) {
+				radarImage = null;
+			}
 		}
 	}
 }

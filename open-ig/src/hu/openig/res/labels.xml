@@ -450,6 +450,10 @@
 		<hu>kWh</hu>
 		<en>kWh</en>
 	</entry>
+	<entry key='BuildingInfo.ProductionUnitFor.energy-prod'>
+		<hu>kWh</hu>
+		<en>kWh</en>
+	</entry>
 	<entry key='BuildingInfo.ProductionUnitFor.food'>
 		<hu>t</hu>
 		<en>t</en>

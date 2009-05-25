@@ -83,11 +83,17 @@ public class GameBuildingPrototype {
 	public BuildLimit limitType;
 	/** If the limit type is FIXED_NUMBER_PER_PLANET, this field contains the actual limit value. */
 	public int limitValue;
-	/** Map of custom properties with various data types (probably Integer or String). */
+	/** The numerical properties. */
+	public final Map<String, Integer> values = new LinkedHashMap<String, Integer>();
+	/** Map of custom properties with various data types (not integers, they go into 'values'). */
 	public final Map<String, Object> properties = new HashMap<String, Object>();
 	/** The set of product types which should be listed in the building properties page. */
 	public static final Set<String> PRODUCT_TYPES = new HashSet<String>(
-		Arrays.<String>asList("living-space", "energy", "food", "hospital", "credit", "credit-dup")
+		Arrays.<String>asList("living-space", "energy-prod", "food", "hospital", "credit", "credit-dup")
+	);
+	/** Set of product types whose production depends on the operation percentage of the building. */
+	public static final Set<String> PRODUCTION_PERCENTABLES = new HashSet<String>(
+		Arrays.<String>asList("energy-prod", "spaceship", "weapon", "equipment")
 	);
 	/** The main building kind to check if a building could be built on a planet. */
 	public static final String MAIN_BUILDING = "MainBuilding";
@@ -138,8 +144,9 @@ public class GameBuildingPrototype {
 				} else
 				if ("energy".equals(e1.getNodeName())) {
 					b.energy = Integer.parseInt(e1.getTextContent());
+					// energy producers go to values
 					if (b.energy > 0) {
-						b.properties.put("energy", e1.getTextContent());
+						b.values.put("energy", b.energy);
 					}
 				} else
 				if ("hp".equals(e1.getNodeName())) {
@@ -195,7 +202,14 @@ public class GameBuildingPrototype {
 					}
 					b.images.put(techid, bi);
 				} else {
-					b.properties.put(e1.getNodeName(), e1.getTextContent());
+					String value = e1.getTextContent().trim();
+					try {
+						// if numerical, put into values
+						b.values.put(e1.getNodeName(), Integer.parseInt(value));
+					} catch (NumberFormatException ex) {
+						// else put into properties
+						b.properties.put(e1.getNodeName(), value);
+					}
 				}
 			}
 			result.put(b.id, b);
@@ -209,10 +223,4 @@ public class GameBuildingPrototype {
 			return o1.index - o2.index;
 		}
 	};
-	/**
-	 * @return true if this building consumes energy (colony hubs don't require energy, power plants produce energy)
-	 */
-	public boolean isEnergyConsumer() {
-		return energy < 0;
-	}
 }

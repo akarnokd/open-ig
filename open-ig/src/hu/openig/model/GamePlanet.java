@@ -237,9 +237,11 @@ public class GamePlanet implements PlanetInfo {
 	public int getLivingSpace() {
 		int sum = 0;
 		for (GameBuilding b : buildings) {
-			Object value = b.prototype.properties.get("living-space");
-			if (value != null) {
-				sum += Integer.valueOf(value.toString());
+			if (b.getOperationPercent() >= 0.5) {
+				Integer value = b.prototype.values.get("living-space");
+				if (value != null) {
+					sum += value;
+				}
 			}
 		}
 		return sum;
@@ -250,9 +252,11 @@ public class GamePlanet implements PlanetInfo {
 	public int getHospital() {
 		int sum = 0;
 		for (GameBuilding b : buildings) {
-			Object value = b.prototype.properties.get("hospital");
-			if (value != null) {
-				sum += Integer.valueOf(value.toString());
+			if (b.getOperationPercent() >= 0.5) {
+				Integer value = b.prototype.values.get("hospital");
+				if (value != null) {
+					sum += value;
+				}
 			}
 		}
 		return sum;
@@ -263,9 +267,11 @@ public class GamePlanet implements PlanetInfo {
 	public int getFood() {
 		int sum = 0;
 		for (GameBuilding b : buildings) {
-			Object value = b.prototype.properties.get("food");
-			if (value != null) {
-				sum += Integer.valueOf(value.toString());
+			if (b.getOperationPercent() >= 0.5) {
+				Integer value = b.prototype.values.get("food");
+				if (value != null) {
+					sum += value;
+				}
 			}
 		}
 		return sum;
@@ -276,10 +282,7 @@ public class GamePlanet implements PlanetInfo {
 	public int getEnergyDemand() {
 		int sum = 0;
 		for (GameBuilding b : buildings) {
-			int v = b.getEnergy();
-			if (v < 0) {
-				sum += -v;
-			}
+			sum += b.getEnergyDemand();
 		}
 		return sum;
 	}
@@ -289,9 +292,9 @@ public class GamePlanet implements PlanetInfo {
 	public int getEnergyProduction() {
 		int sum = 0;
 		for (GameBuilding b : buildings) {
-			int v = b.getEnergy();
-			if (v > 0) {
-				sum += v;
+			Integer value = b.prototype.values.get("energy-prod");
+			if (value != null) {
+				sum += value.intValue() * b.getOperationPercent();
 			}
 		}
 		return sum;
@@ -302,10 +305,10 @@ public class GamePlanet implements PlanetInfo {
 	public int getRadarRadius() {
 		int sum = 0;
 		for (GameBuilding b : buildings) {
-			if (b.enabled && b.isOperational()) {
-				Object value = b.prototype.properties.get("radar");
+			if (b.enabled) {
+				Integer value = b.prototype.values.get("radar");
 				if (value != null) {
-					int v = Integer.valueOf(value.toString());
+					int v = value;
 					if (v > sum) {
 						sum = v;
 					}
