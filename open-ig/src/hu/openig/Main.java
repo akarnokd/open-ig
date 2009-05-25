@@ -399,6 +399,29 @@ public class Main extends JFrame {
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doDeleteBuilding(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+D");
+		rp.getActionMap().put("CTRL+D", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doDamageBuilding(); } });
+	}
+	/**
+	 * Toggle the selected building's health between 100 and 40 percent.
+	 */
+	protected void doDamageBuilding() {
+		if (gameWorld.player.selectedPlanet != null) {
+			if (gameWorld.player.selectedPlanet.selectedBuilding != null) {
+				if (gameWorld.player.selectedPlanet.selectedBuilding.health < 100) {
+					gameWorld.player.selectedPlanet.selectedBuilding.health = 100;
+				} else {
+					gameWorld.player.selectedPlanet.selectedBuilding.health = 40;
+				}
+				planetRenderer.clearRadarCache();
+				repaint();
+			}
+		}
 	}
 	/**
 	 * Deletes the currently selected building from the current planet,
