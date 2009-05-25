@@ -43,11 +43,12 @@ public class BuildingState implements StateExchanger {
 	public BuildingState(GameBuilding building, GamePlanet planet) {
 		this.building = building;
 		this.planet = planet;
+		load();
 	}
 	/**
 	 * Load values from the actual building object.
 	 */
-	public void load() {
+	private void load() {
 		health = building.health;
 		progress = building.progress;
 		enabled = building.enabled;
