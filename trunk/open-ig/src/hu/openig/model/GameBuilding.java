@@ -112,6 +112,17 @@ public class GameBuilding implements TileProvider {
 		return null;
 	}
 	/**
+	 * @return true if this building's production depends proportionally on the received energy and worker amount.
+	 */
+	public boolean isProductionDependantOnOperationLevel() {
+		for (String s : prototype.values.keySet()) {
+			if (GameBuildingPrototype.PRODUCTION_PERCENTABLES.contains(s)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
 	 * Returns the current received energy
 	 * relative to the current energy demand.
 	 * @return the [0..1] value. Zero if there is no demand for energy

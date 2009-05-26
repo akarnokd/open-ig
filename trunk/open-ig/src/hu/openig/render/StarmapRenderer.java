@@ -1459,14 +1459,15 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			GamePlayer player) {
 		for (GamePlanet p : player.knownPlanetsByName) {
 			BufferedImage pimg = getPlanetImage(p, p.rotationPhase);
-			int color = TextGFX.GRAY;
-			if (p.owner != null) {
-				color = p.owner.race.smallColor;
-			}
 			int y = (int)(p.y * zoomFactor + pimg.getHeight() / 2f) + 2;
 			int w = text.getTextWidth(5, p.name);
 			int x = (int)(p.x * zoomFactor - w / 2f);
-			if (p.nameImage == null) {
+			if (p.nameImage == null || p.nameOwner != p.owner) {
+				p.nameOwner = p.owner;
+				int color = TextGFX.GRAY;
+				if (p.owner != null) {
+					color = p.owner.race.smallColor;
+				}
 				int len = text.getTextWidth(5, p.name);
 				p.nameImage = new BufferedImage(len, 5, BufferedImage.TYPE_INT_ARGB);
 				Graphics2D tg = p.nameImage.createGraphics();
