@@ -8,7 +8,11 @@
 
 package hu.openig.utils;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 /**
  * Utility class for missing java functionalities.
@@ -117,5 +121,39 @@ public final class JavaUtils {
 	 */
 	public static boolean equal(Object o1, Object o2) {
 		return o1 == o2 || (o1 != null && o1.equals(o2));
+	}
+	/**
+	 * Creates a new array list with default capacity.
+	 * @param <T> the type of the elements in the list
+	 * @return the new array list
+	 */
+	public static <T> ArrayList<T> newArrayList() {
+		return new ArrayList<T>();
+	}
+	/**
+	 * Creates a new linked list with default capacity.
+	 * @param <T> the type of the elements in the list
+	 * @return the new linked list
+	 */
+	public static <T> LinkedList<T> newLinkedList() {
+		return new LinkedList<T>();
+	}
+	/**
+	 * Creates a new hash map with default capacity.
+	 * @param <K> the type of the key
+	 * @param <V> the type of the value
+	 * @return the new hash map
+	 */
+	public static <K, V> HashMap<K, V> newHashMap() {
+		return new HashMap<K, V>();
+	}
+	/**
+	 * Creates a new linked hash map with default capacity.
+	 * @param <K> the type of the key
+	 * @param <V> the type of the value
+	 * @return the new linked hash map
+	 */
+	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap() {
+		return new LinkedHashMap<K, V>();
 	}
 }

@@ -19,9 +19,11 @@ import java.awt.image.BufferedImage;
  * @author karnokd
  */
 public class Tile implements TileProvider {
-	/** Tile base area width in tile units. */
+	/** Tile base area width in tile units. 
+	 * Note, it points to the -y direction! */
 	public int width = 1;
-	/** Tile base area height in tile units. */
+	/** Tile base area height in tile units. 
+	 * Note it points to the +x direction! */
 	public int height = 1;
 	/** Tile image height correction, for those images which don't end at the last line of the image. */
 	public int heightCorrection;

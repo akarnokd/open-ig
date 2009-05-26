@@ -180,7 +180,9 @@ public class GameBuildingPrototype {
 				} else
 				if ("tile".equals(e1.getNodeName())) {
 					String techid = e1.getAttribute("techid");
+					// the datafile contains the width as a +x size!
 					int y = Integer.parseInt(e1.getAttribute("width"));
+					// the datafile contains the height as a -y size!
 					int x = Integer.parseInt(e1.getAttribute("height"));
 					BuildingImages bi = new BuildingImages();
 					bi.techId = techid;

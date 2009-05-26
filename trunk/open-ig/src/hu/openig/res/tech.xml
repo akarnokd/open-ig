@@ -16,6 +16,8 @@
 				<weapon id='Laser1'>1</weapon>
 				<speed>1</speed>
 			</equipment>
+			<image-index>111</image-index>
+			<factory>spaceship</factory>
 		</item>
 		<item id='Fighter2' index=''>
 			<class>Spaceships</class>
@@ -33,6 +35,8 @@
 				<shield id='Shield1'>1</shield>
 				<speed>2</speed>
 			</equipment>
+			<image-index>112</image-index>
+			<factory>spaceship</factory>
 		</item>
 		<item id='Fighter3' index=''>
 			<class>Spaceships</class>
@@ -54,6 +58,240 @@
 				<shield id='Shield1'>1</shield>
 				<speed>3</speed>
 			</equipment>
+			<image-index>113</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Fighter4'>
+			<class>Spaceships</class>
+			<type>Fighters</type>
+			<level>4</level>
+			<buildcost>7500</buildcost>
+			<mechanic>3</mechanic>
+			<computer>2</computer>
+			<ai>2</ai>
+			<military>4</military>
+			<requires>Fighter3</requires>
+			<image-index>114</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Fighter5'>
+			<class>Spaceships</class>
+			<type>Fighters</type>
+			<level>5</level>
+			<civil>1</civil>
+			<mechanic>5</mechanic>
+			<computer>4</computer>
+			<ai>4</ai>
+			<military>5</military>
+			<buildcost>10000</buildcost>
+			<image-index>115</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Fighter6'>
+			<class>Spaceships</class>
+			<type>Fighters</type>
+			<level>5</level>
+			<mechanic>4</mechanic>
+			<computer>4</computer>
+			<ai>5</ai>
+			<military>7</military>
+			<buildcost>12000</buildcost>
+			<requires>Rocket2</requires>
+			<image-index>116</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Destroyer1'>
+			<class>Spaceships</class>
+			<type>Cruisers</type>
+			<level>0</level>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<buildcost>12000</buildcost>
+			<image-index>121</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Destroyer2'>
+			<class>Spaceships</class>
+			<type>Cruisers</type>
+			<level>3</level>
+			<mechanic>2</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>2</military>
+			<buildcost>17500</buildcost>
+			<requires>Laser2</requires>
+			<image-index>122</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Destroyer3'>
+			<class>Spaceships</class>
+			<type>Cruisers</type>
+			<level>4</level>
+			<mechanic>3</mechanic>
+			<computer>4</computer>
+			<ai>3</ai>
+			<military>4</military>
+			<buildcost>22000</buildcost>
+			<requires>Radar2, HyperDrive4, PlasmaGun</requires>
+			<image-index>123</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Cruiser1'>
+			<class>Spaceships</class>
+			<type>Cruisers</type>
+			<level>0</level>
+			<mechanic>2</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<buildcost>15000</buildcost>
+			<requires>Shield1</requires>
+			<image-index>124</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Cruiser2'>
+			<class>Spaceships</class>
+			<type>Cruisers</type>
+			<level>3</level>
+			<mechanic>2</mechanic>
+			<computer>3</computer>
+			<ai>3</ai>
+			<military>4</military>
+			<buildcost>25000</buildcost>
+			<requires>Shield2, Laser2, Radar2</requires>
+			<image-index>125</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Cruiser3'>
+			<class>Spaceships</class>
+			<type>Cruisers</type>
+			<level>4</level>
+			<civil>1</civil>
+			<mechanic>4</mechanic>
+			<computer>5</computer>
+			<ai>4</ai>
+			<military>7</military>
+			<buildcost>36000</buildcost>
+			<requires>HyperDrive5,Shield2,Bomb2</requires>
+			<image-index>126</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id='Battleship1'>
+			<class>Spaceships</class>
+			<type>Battleships</type>
+			<level>3</level>
+			<civil>1</civil>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<buildcost>80000</buildcost>
+			<requires>OrbitalFactory</requires>
+			<image-index>131</image-index>
+			<factory>orbital</factory>
+		</item>
+		<item id='Battleship2'>
+			<class>Spaceships</class>
+			<type>Battleships</type>
+			<level>4</level>
+			<civil>3</civil>
+			<mechanic>3</mechanic>
+			<computer>4</computer>
+			<ai>2</ai>
+			<military>5</military>
+			<buildcost>130000</buildcost>
+			<factory>orbital</factory>
+			<image-index>132</image-index>
+			<requires>HyperDrive4, Radar4, Shield3</requires>
+		</item>
+		<item id='Battleship3'>
+			<class>Spaceships</class>
+			<type>Battleships</type>
+			<level>5</level>
+			<civil>4</civil>
+			<mechanic>5</mechanic>
+			<computer>5</computer>
+			<ai>5</ai>
+			<military>7</military>
+			<buildcost>230000</buildcost>
+			<factory>orbital</factory>
+			<image-index>133</image-index>
+			<requires>Battleship2, MesonGun, Bomb2</requires>
+		</item>
+		<item id='ColonyShip'>
+			<class>Spaceships</class>
+			<type>Battleships</type>
+			<level>3</level>
+			<civil>2</civil>
+			<mechanic>2</mechanic>
+			<computer>3</computer>
+			<ai>2</ai>
+			<buildcost>80000</buildcost>
+			<factory>orbital</factory>
+			<image-index>134</image-index>
+			<requires>Radar2, Shield1</requires>
+		</item>
+		<item id='Flagship'>
+			<class>Spaceships</class>
+			<type>Battleships</type>
+			<level>6</level>
+			<civil>5</civil>
+			<mechanic>6</mechanic>
+			<computer>6</computer>
+			<ai>5</ai>
+			<military>7</military>
+			<buildcost>1000000</buildcost>
+			<factory>orbital</factory>
+			<image-index>135</image-index>
+		</item>
+		<item id='Satellite'>
+			<class>Spaceships</class>
+			<type>Satellites</type>
+			<level>0</level>
+			<computer>1</computer>
+			<ai>1</ai>
+			<buildcost>120</buildcost>
+			<factory>spaceship</factory>
+			<image-index>141</image-index>
+		</item>
+		<item id='SpySatellite1'>
+			<class>Spaceships</class>
+			<type>Satellites</type>
+			<level>3</level>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<buildcost>1000</buildcost>
+			<factory>spaceship</factory>
+			<image-index>142</image-index>
+		</item>
+		<item id='SpySatellite2' index=''>
+			<class>Spaceships</class>
+			<type>Satellites</type>
+			<level>4</level>
+			<maxcost>12000</maxcost>
+			<buildcost>1000</buildcost>
+			<mechanic>2</mechanic>
+			<computer>3</computer>
+			<ai>3</ai>
+			<military>2</military>
+			<factory>spaceship</factory>
+			<requires>SpySatellite</requires>
+			<image-index>143</image-index>
+		</item>
+		<item id='Hubble2' index=''>
+			<class>Spaceships</class>
+			<type>Satellites</type>
+			<level>4</level>
+			<buildcost>2100</buildcost>
+			<mechanic>5</mechanic>
+			<computer>5</computer>
+			<ai>6</ai>
+			<military>4</military>
+			<factory>spaceship</factory>
+			<requires>SpySatellite1, Radar2</requires>
+			<image-index>144</image-index>
 		</item>
 		<item id='Radar2'>
 			<class>Equipments</class>
@@ -66,22 +304,6 @@
 			<computer>2</computer>
 			<ai>1</ai>
 			<military>2</military>
-			<equipment>
-				<range>30</range>
-			</equipment>
-		</item>
-		<item id='AdvancedSpySatellite' index=''>
-			<class>Spaceships</class>
-			<type>Satellites</type>
-			<level>4</level>
-			<cost>7000</cost>
-			<maxcost>12000</maxcost>
-			<!-- Zero science requirement is simply not in file <civil>0</civil> -->
-			<mechanic>2</mechanic>
-			<computer>3</computer>
-			<ai>3</ai>
-			<military>2</military>
-			<requires>SpySatellite</requires>
 		</item>
 	</techrace>
 </tech>
