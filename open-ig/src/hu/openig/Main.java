@@ -130,7 +130,7 @@ public class Main extends JFrame {
 	 */
 	private Timer screenRefreshTimer;
 	/** The main screen refresh time. */
-	private static final int SCREEN_REFRESH_TIME = 100;
+	private static final int SCREEN_REFRESH_TIME = 2500;
 	/**
 	 * Initialize resources from the given root directory.
 	 * @param resMap the resource mapper

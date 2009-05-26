@@ -699,7 +699,6 @@ MouseWheelListener, ActionListener {
 	 * Perform actions on active button click.
 	 */
 	protected void doActiveClick() {
-		// TODO Auto-generated method stub
 		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
 		if (b != null) {
 			b.enabled = !b.enabled;
@@ -711,7 +710,6 @@ MouseWheelListener, ActionListener {
 	 * Perform actions on repair button click.
 	 */
 	protected void doRepairClick() {
-		// TODO Auto-generated method stub
 		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
 		if (b != null) {
 			b.repairing = !b.repairing;
@@ -1153,8 +1151,6 @@ MouseWheelListener, ActionListener {
 	 * @param pt the point to center around
 	 */
 	private void doScrollMinimap(Point pt) {
-		// TODO Auto-generated method stub
-		
 		double xs = minimapRect.width / (double)(xOffsetMax - xOffsetMin);
 		double ys = minimapRect.height / (double)(yOffsetMax - yOffsetMin);
 		
@@ -1441,7 +1437,7 @@ MouseWheelListener, ActionListener {
 				doFadeCompleted();
 			}
 		}
-//FIXME	repaint();
+		repaint(); //FIXME	repaint performance
 	}
 	/**
 	 * Invoked when the fading operation is completed.
@@ -1921,7 +1917,7 @@ MouseWheelListener, ActionListener {
 		blinkStatus = !blinkStatus;
 		// FIXME simulation related stuff!
 		reallocateResources();
-//FIXME	repaint(mainWindow);
+		repaint(mainWindow); //FIXME repaint performance
 	}
 	/**
 	 * Reallocates resources and asks for radar redraw on demand.

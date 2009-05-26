@@ -1303,7 +1303,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				doFadeCompleted();
 			}
 		}
-//FIXME repaint();
+		repaint(); // FIXME repaint performance
 	}
 	/**
 	 * Invoked when the fading operation is completed.
@@ -1573,7 +1573,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			minimapBlinkCount = 0;
 			minimapBlink = !minimapBlink;
 		}
-// FIXME repaint();
+		repaint(); // repaint performance
 	}
 	/**
 	 * Start animations.
