@@ -152,9 +152,7 @@
 		<cost>20000</cost>
 		<energy>2600</energy>
 		<worker>460</worker>
-		<properties>
-			<equipment>1000</equipment>
-		</properties>
+		<equipment>1000</equipment>
 		<nobuild></nobuild>
 		<limit>1</limit>
 		<kind>Factory</kind>

@@ -9,11 +9,13 @@
 package hu.openig.res.gfx;
 
 import hu.openig.utils.ImageUtils;
+import hu.openig.utils.JavaUtils;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.ResourceMapper;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Map;
 
 /**
  * Research screen graphics.
@@ -170,6 +172,17 @@ public class ResearchGFX {
 	public Rectangle rectBridgeFix;
 	/** The location for the bridge button's fix. */
 	public BufferedImage btnBridgeFix;
+	/** The map if invention images. Keys are the image index: 111 through 443.
+	 * <br>DATA/INVENTS.PAC!INVxxx.PCX*/
+	public final Map<Integer, BufferedImage> inventions = JavaUtils.newHashMap();
+	/** Map for invention images for the research and production screens. 
+	 * Keys are the image index: 111 through 443. 
+	 * <br>EQ_PICS/EQ_PICS.PAC!KISxx.PCX#x */
+	public final Map<Integer, BufferedImage> smallInventions = JavaUtils.newHashMap();
+	/** Map for the wired invention images for the research and production screens. 
+	 * Keys are the image index: 111 through 443. 
+	 * <br>DATA/INVENTS.PAC!WIRxxx.PCX*/
+	public final Map<Integer, BufferedImage> wiredInventions = JavaUtils.newHashMap();
 	/**
 	 * Constructor. Loads the images.
 	 * @param resMap the resource mapper

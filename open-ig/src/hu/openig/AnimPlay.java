@@ -884,7 +884,7 @@ public final class AnimPlay {
 	public static void main(String[] args) throws IOException {
 		String filename = null;
 		if (args.length == 0) {
-			lastPath = new File("/games/ighu");
+			lastPath = new File("c:/games/ighu");
 			lastSavePath = lastPath;
 			filename = showOpenDialog();
 		} else {
