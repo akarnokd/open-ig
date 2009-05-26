@@ -336,7 +336,7 @@
 		<tile techid='3' height='3' width='6' offset='1' />
 		<tile techid='4' height='2' width='4' />
 		<tile techid='5' height='2' width='5' />
-		<tile techid='6' height='3' width='2' />
+		<tile techid='6' height='3' width='2' offset='1'/>
 		<tile techid='7' height='4' width='4' />
 		<tile techid='8' height='3' width='4' />
 	</building>

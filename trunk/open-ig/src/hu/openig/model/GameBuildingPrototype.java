@@ -198,7 +198,11 @@ public class GameBuildingPrototype {
 					String offset = e1.getAttribute("offset");
 					if (offset != null && offset.length() > 0) {
 						bi.regularTile.heightCorrection = Integer.parseInt(offset);
-						bi.damagedTile.heightCorrection = Integer.parseInt(offset);
+					}
+					// damaged images might need different offset
+					String doffset = e1.getAttribute("doffset");
+					if (doffset != null && doffset.length() > 0) {
+						bi.damagedTile.heightCorrection = Integer.parseInt(doffset);
 					}
 					b.images.put(techid, bi);
 				} else {
