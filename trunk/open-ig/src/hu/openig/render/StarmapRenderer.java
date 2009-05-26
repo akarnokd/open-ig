@@ -265,7 +265,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** Radar cosine table. */
 	private final double[] radarSineTable;
 	/** Radar sine table. */
-	private final double[] radarCosineTable; 
+	private final double[] radarCosineTable;
+	/** Flag to indicate whether the planetary status icons should be drawn onto the starmap window. */
+	public boolean displayPlanetStatusOnStarmap = true;
 	/**
 	 * Constructor. Sets the helper object fields.
 	 * @param grm the game resource manager
@@ -1476,6 +1478,50 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			}
 			g2.drawImage(p.nameImage, xOrig + x, yOrig + y, null);
 //			text.paintTo(g2, xOrig + x, yOrig + y, 5, color, p.name);
+			// render problematic area icons backwards
+			if (displayPlanetStatusOnStarmap && p.owner == gameWorld.player) {
+				y = yOrig + (int)(p.y * zoomFactor - pimg.getHeight() / 2f) - 12;
+				x = xOrig + (int)(p.x * zoomFactor);
+				if (mapCoords.intersects(new Rectangle(x - 30, y, 60, 12))) {
+					int count = 0;
+					boolean energyIcon = p.getEnergyDemand() > p.getEnergyProduction();
+					count += energyIcon ? 1 : 0;
+					boolean foodIcon = p.population > p.getFood();
+					count += foodIcon ? 1 : 0;
+					boolean hospitalIcon = p.population > p.getHospital();
+					count += hospitalIcon ? 1 : 0;
+					boolean workerIcon = p.population < p.getWorkerDemand();
+					count += workerIcon ? 1 : 0;
+					boolean livingspaceIcon = p.population > p.getLivingSpace();
+					count += livingspaceIcon ? 1 : 0;
+					if (count > 0) {
+						x -= (count * 12) / 2;
+						if (count == 1) {
+							x++;
+						}
+						if (energyIcon) {
+							g2.drawImage(cgfx.energyIcon, x, y, null);
+							x += 12;
+						}
+						if (foodIcon) {
+							g2.drawImage(cgfx.foodIcon, x, y, null);
+							x += 12;
+						}
+						if (hospitalIcon) {
+							g2.drawImage(cgfx.hospitalIcon, x, y, null);
+							x += 12;
+						}
+						if (workerIcon) {
+							g2.drawImage(cgfx.workerIcon, x, y, null);
+							x += 12;
+						}
+						if (livingspaceIcon) {
+							g2.drawImage(cgfx.livingSpaceIcon, x, y, null);
+							x += 12;
+						}
+					}
+				}
+			}
 		}
 	}
 	/**

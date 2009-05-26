@@ -371,7 +371,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+O", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
-			public void actionPerformed(ActionEvent e) { doOnwEmptyPlanets(); } });
+			public void actionPerformed(ActionEvent e) { doOwnPlanets(false); } });
 		
 		ks = KeyStroke.getKeyStroke('.', InputEvent.CTRL_DOWN_MASK, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+.");
@@ -421,6 +421,13 @@ public class Main extends JFrame {
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doExtractResource(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+SHIFT+O");
+		rp.getActionMap().put("CTRL+SHIFT+O", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doOwnPlanets(true); } });
 	}
 	/**
 	 * Extracts the current planet configuration for the resource allocation optimizer.
@@ -970,6 +977,7 @@ public class Main extends JFrame {
 		
 		gameWorld.setPlanetOwnerships();
 		gameWorld.setFleetOwnerships();
+		gameWorld.allocateResources();
 		starmapRenderer.scrollToLogical(gameWorld.player.ownPlanets.iterator().next().getPoint());
 		achievementRenderer.enqueueAchievement("Welcome to Open Imperium Galactica");
 		achievementRenderer.enqueueAchievement("Good luck");
@@ -1050,10 +1058,13 @@ public class Main extends JFrame {
 			}
 		}
 	}
-	/** Set owner of all empty planets to the player. */
-	private void doOnwEmptyPlanets() {
+	/**
+	 * Set owner of all empty planets to the player.
+	 * @param all own all planets or just the empty ones 
+	 */
+	private void doOwnPlanets(boolean all) {
 		for (GamePlanet p : gameWorld.planets) {
-			if (p.owner == null) {
+			if (all || p.owner == null) {
 				p.owner = gameWorld.player;
 				p.populationRace = gameWorld.player.race;
 				gameWorld.player.possessPlanet(p);
