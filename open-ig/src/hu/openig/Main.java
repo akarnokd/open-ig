@@ -428,6 +428,13 @@ public class Main extends JFrame {
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doOwnPlanets(true); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+I");
+		rp.getActionMap().put("CTRL+I", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doOwnEnemyPlanets(); } });
 	}
 	/**
 	 * Extracts the current planet configuration for the resource allocation optimizer.
@@ -1065,8 +1072,26 @@ public class Main extends JFrame {
 	private void doOwnPlanets(boolean all) {
 		for (GamePlanet p : gameWorld.planets) {
 			if (all || p.owner == null) {
+				if (p.owner != null) {
+					p.owner.loosePlanet(p);
+				}
 				p.owner = gameWorld.player;
-				p.populationRace = gameWorld.player.race;
+				if (p.populationRace == null) {
+					p.populationRace = gameWorld.player.race;
+				}
+				gameWorld.player.possessPlanet(p);
+			}
+		}
+		repaint();
+	}
+	/**
+	 * Set owner of all enemy planets to the player.
+	 */
+	private void doOwnEnemyPlanets() {
+		for (GamePlanet p : gameWorld.planets) {
+			if (p.owner != null) {
+				p.owner.loosePlanet(p);
+				p.owner = gameWorld.player;
 				gameWorld.player.possessPlanet(p);
 			}
 		}

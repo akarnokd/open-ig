@@ -156,9 +156,9 @@ MouseWheelListener, ActionListener {
 	/** The problematic planet blinker timer. */
 	private Timer blinkTimer;
 	/** The steps of blink transition. */
-	private static final int BLINK_STEPS = 10;
+	private static final int BLINK_STEPS = 1;
 	/** The timer interval for blinking. */
-	private static final int BLINK_INTERVAL = 100;
+	private static final int BLINK_INTERVAL = 1000;
 	/** The current blink step. */
 	private int blinkStep;
 	/** Action on cancel information screen. */
@@ -1501,7 +1501,7 @@ MouseWheelListener, ActionListener {
 			blinkStep = 0;
 		}
 		if (currentScreen == InfoScreen.PLANETS) {
-			repaint();
+			repaint(mainArea);
 		}
 	}
 	/**
