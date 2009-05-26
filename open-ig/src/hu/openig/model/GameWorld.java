@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.behavior.ResourceAllocator;
 import hu.openig.core.BuildLimit;
 import hu.openig.core.GameSpeed;
 import hu.openig.res.Labels;
@@ -297,5 +298,17 @@ public class GameWorld implements GameRaceLookup {
 	@Override
 	public GameBuildingPrototype getBuildingPrototype(String buildingId) {
 		return buildingPrototypesMap.get(buildingId);
+	}
+	/**
+	 * Allocates the resources on all planets for the first time.
+	 */
+	public void allocateResources() {
+		for (GamePlanet p : planets) {
+			if (p.owner != null) {
+				ResourceAllocator.allocateWorkers(p);
+				ResourceAllocator.allocateEnergy(p);
+			}
+		}
+		
 	}
 }
