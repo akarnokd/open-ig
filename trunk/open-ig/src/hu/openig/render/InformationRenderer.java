@@ -1500,9 +1500,9 @@ MouseWheelListener, ActionListener {
 		if (blinkStep >= BLINK_STEPS * 2) {
 			blinkStep = 0;
 		}
-		if (currentScreen == InfoScreen.PLANETS) {
-			repaint(mainArea);
-		}
+//		if (currentScreen == InfoScreen.PLANETS) {
+// FIXME		repaint(mainArea);
+//		}
 	}
 	/**
 	 * Returns the index within the fleet listing of the given point.

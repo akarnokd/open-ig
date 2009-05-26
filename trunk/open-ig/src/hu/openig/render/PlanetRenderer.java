@@ -1441,7 +1441,7 @@ MouseWheelListener, ActionListener {
 				doFadeCompleted();
 			}
 		}
-		repaint();
+//FIXME	repaint();
 	}
 	/**
 	 * Invoked when the fading operation is completed.
@@ -1921,7 +1921,7 @@ MouseWheelListener, ActionListener {
 		blinkStatus = !blinkStatus;
 		// FIXME simulation related stuff!
 		reallocateResources();
-		repaint(mainWindow);
+//FIXME	repaint(mainWindow);
 	}
 	/**
 	 * Reallocates resources and asks for radar redraw on demand.

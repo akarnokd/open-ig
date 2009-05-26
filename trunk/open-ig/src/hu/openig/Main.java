@@ -123,10 +123,14 @@ public class Main extends JFrame {
 	private String language;
 	/** The achievement renderer. */
 	private AchievementRenderer achievementRenderer;
-	/** The periodic screen refresh timer to fix some anomalies. */
+	/** The periodic screen refresh timer to fix some anomalies. 
+	 * This is the only timed operation which is allowed to fire repaint
+	 * events. The other timers are simply changing the state and leaving this timer to
+	 * repaint.
+	 */
 	private Timer screenRefreshTimer;
 	/** The main screen refresh time. */
-	private static final int SCREEN_REFRESH_TIME = 2500;
+	private static final int SCREEN_REFRESH_TIME = 100;
 	/**
 	 * Initialize resources from the given root directory.
 	 * @param resMap the resource mapper
