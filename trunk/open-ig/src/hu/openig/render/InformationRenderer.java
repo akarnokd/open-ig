@@ -7,6 +7,7 @@
  */
 package hu.openig.render;
 
+import hu.openig.core.AllocationPreference;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoScreen;
@@ -166,6 +167,10 @@ MouseWheelListener, ActionListener {
 	private BtnAction onDblClickBuilding;
 	/** Perform action on double clicking on a planet name. */
 	private BtnAction onDblClickPlanet;
+	/** The button for changing energy allocation strategy. */
+	private final Rectangle energyAllocRect = new Rectangle();
+	/** The button for changing worker allocation strategy. */
+	private final Rectangle workerAllocRect = new Rectangle();
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager
@@ -383,6 +388,7 @@ MouseWheelListener, ActionListener {
 		pressButtons.add(btnTaxLess);
 		btnTaxMore = new Btn(new BtnAction() { public void invoke() { doMoreTax(); } });
 		pressButtons.add(btnTaxMore);
+		
 	}
 	/** Diplomacy click action. */
 	protected void doDiplomacyClick() {
@@ -519,6 +525,9 @@ MouseWheelListener, ActionListener {
 		btnTaxLess.setBounds(screen.x + 250, screen.y + 260, gfx.btnTaxLess.getWidth(), gfx.btnTaxLess.getHeight());
 		btnTaxMore.setBounds(screen.x + 260 + gfx.btnTaxLess.getWidth(), screen.y + 260, 
 				gfx.btnTaxMore.getWidth(), gfx.btnTaxMore.getHeight());
+		
+		energyAllocRect.setBounds(btnTaxLess.rect.x, btnTaxLess.rect.y + btnTaxLess.rect.height + 7, 10 + btnTaxLess.rect.width + btnTaxMore.rect.width, 9);
+		workerAllocRect.setBounds(btnTaxLess.rect.x, btnTaxLess.rect.y + btnTaxLess.rect.height + 17, 10 + btnTaxLess.rect.width + btnTaxMore.rect.width, 9);
 	}
 	/**
 	 * {@inheritDoc}
@@ -1029,6 +1038,12 @@ MouseWheelListener, ActionListener {
 	 */
 	private void doColonyMousePressed(MouseEvent e) {
 		Point pt = e.getPoint();
+		if (energyAllocRect.contains(pt)) {
+			doEnergyAllocChange(e);
+		} else
+		if (workerAllocRect.contains(pt)) {
+			doWorkerAllocChange(e);
+		}
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			GamePlanet planet = getPlanetForPositionMini(pt);
 			if (planet != null) {
@@ -1037,6 +1052,44 @@ MouseWheelListener, ActionListener {
 				repaint();
 			}
 		}		
+	}
+	/**
+	 * Change the worker allocation strategy back and forth based on the mouse button.
+	 * @param e the mouse event
+	 */
+	private void doWorkerAllocChange(MouseEvent e) {
+		GamePlanet p = gameWorld.player.selectedPlanet;
+		if (p != null) {
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				p.workerAllocation = AllocationPreference.values()[(p.workerAllocation.ordinal() + 1) % AllocationPreference.values().length];
+			} else {
+				int i = p.workerAllocation.ordinal() - 1;
+				if (i < 0) {
+					i = AllocationPreference.values().length - 1;
+				}
+				p.workerAllocation = AllocationPreference.values()[i];
+			}
+			repaint();
+		}
+	}
+	/**
+	 * Change the energy allocation strategy back and forth based on the mouse button.
+	 * @param e the mouse event
+	 */
+	private void doEnergyAllocChange(MouseEvent e) {
+		GamePlanet p = gameWorld.player.selectedPlanet;
+		if (p != null) {
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				p.energyAllocation = AllocationPreference.values()[(p.energyAllocation.ordinal() + 1) % AllocationPreference.values().length];
+			} else {
+				int i = p.energyAllocation.ordinal() - 1;
+				if (i < 0) {
+					i = AllocationPreference.values().length - 1;
+				}
+				p.energyAllocation = AllocationPreference.values()[i];
+			}
+			repaint();
+		}
 	}
 	/**
 	 * Renders the colony information.
@@ -1158,6 +1211,18 @@ MouseWheelListener, ActionListener {
 						g2.drawImage(gfx.btnTaxMore, btnTaxMore.rect.x, btnTaxMore.rect.y, null);
 					}
 				}
+				
+				// allocation preference settings
+				String s = gameWorld.getLabel("ColonyInfo.AllocationPreference.EnergyAlloc") + ":" + gameWorld.getLabel("ColonyInfo.AllocationPreference." + planet.energyAllocation.id);
+				int len = text.getTextWidth(7, s);
+				g2.setColor(Color.LIGHT_GRAY);
+//				g2.fill(energyAllocRect);
+				text.paintTo(g2, energyAllocRect.x + energyAllocRect.width - len - 1, energyAllocRect.y + 1, 7, TextGFX.YELLOW, s);
+//				g2.fill(workerAllocRect);
+				
+				s = gameWorld.getLabel("ColonyInfo.AllocationPreference.WorkerAlloc") + ":" + gameWorld.getLabel("ColonyInfo.AllocationPreference." + planet.workerAllocation.id);
+				len = text.getTextWidth(7, s);
+				text.paintTo(g2, workerAllocRect.x + workerAllocRect.width - len - 1, workerAllocRect.y + 1, 7, TextGFX.YELLOW, s);
 				
 			} else {
 				text.paintTo(g2, mainArea.x + 10, mainArea.y + 30, 10, TextGFX.GREEN,
@@ -1580,7 +1645,7 @@ MouseWheelListener, ActionListener {
 				text.paintTo(g2, secondaryArea.x + 6, h + 17, 10, color, 
 						gameWorld.getLabel("BuildingInfo.Entry",
 							gameWorld.getLabel("BuildingInfo.Energy"),
-							(bp.energy > 0 ? 0 : -bp.energy) + " "
+							bp.energy + " "
 							+ gameWorld.getLabel("BuildingInfo.ProductionUnitFor.energy")
 						)
 					);

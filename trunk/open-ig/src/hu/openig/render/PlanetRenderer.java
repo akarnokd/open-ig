@@ -1930,9 +1930,9 @@ MouseWheelListener, ActionListener {
 		GamePlanet p = gameWorld.player.selectedPlanet;
 		boolean changes = false;
 		if (p != null) {
-			changes = ResourceAllocator.uniformWorkerAllocation(p);
-			changes |= ResourceAllocator.uniformEnergyAllocation(p);
-			if (blinkStatus && changes) {
+			changes = ResourceAllocator.allocateWorkers(p);
+			changes |= ResourceAllocator.allocateEnergy(p);
+			if (changes) {
 				radarImage = null;
 			}
 		}
