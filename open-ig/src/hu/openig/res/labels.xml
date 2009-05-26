@@ -474,5 +474,40 @@
 		<hu>duplázás</hu>
 		<en>doubling</en>
 	</entry>
-	
+	<entry key='ColonyInfo.AllocationPreference.Uniform'>
+		<hu>egyenletes</hu>
+		<en>uniform</en>
+	</entry>
+	<entry key='ColonyInfo.AllocationPreference.LivingConditions'>
+		<hu>életkörülmények</hu>
+		<en>living conditions</en>
+	</entry>
+	<entry key='ColonyInfo.AllocationPreference.Production'>
+		<hu>termelés</hu>
+		<en>production</en>
+	</entry>
+	<entry key='ColonyInfo.AllocationPreference.Science'>
+		<hu>tudomány</hu>
+		<en>science</en>
+	</entry>
+	<entry key='ColonyInfo.AllocationPreference.Economic'>
+		<hu>gazdaság</hu>
+		<en>economy</en>
+	</entry>
+	<entry key='ColonyInfo.AllocationPreference.Military'>
+		<hu>katonai</hu>
+		<en>katonai</en>
+	</entry>
+	<entry key='ColonyInfo.AllocationPreference.Operational'>
+		<hu>működés</hu>
+		<en>operation</en>
+	</entry>
+	<entry key='ColonyInfo.AllocationPreference.EnergyAlloc'>
+		<hu>Energia</hu>
+		<en>Energy</en>
+	</entry>
+	<entry key='ColonyInfo.AllocationPreference.WorkerAlloc'>
+		<hu>Munkás</hu>
+		<en>Worker</en>
+	</entry>
 </labels>

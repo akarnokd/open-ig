@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.AllocationPreference;
 import hu.openig.core.Location;
 import hu.openig.core.PlanetInfo;
 import hu.openig.core.SurfaceType;
@@ -102,6 +103,10 @@ public class GamePlanet implements PlanetInfo {
 	 * The currently selected building on this planet.
 	 */
 	public GameBuilding selectedBuilding;
+	/** The energy allocation preference. */
+	public AllocationPreference energyAllocation = AllocationPreference.UNIFORM;
+	/** The worker allocation preference. */
+	public AllocationPreference workerAllocation = AllocationPreference.UNIFORM;
 	/** 
 	 * The user-buildings on the map mapped via X,Y location for each of its entire rectangular base surface (e.g a 2x2 tile will have 4 entries in this map).
 	 * Moving buildings around is not allowed. 

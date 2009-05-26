@@ -48,6 +48,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -413,6 +414,35 @@ public class Main extends JFrame {
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doTakeoverPlanet(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+P");
+		rp.getActionMap().put("CTRL+P", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doExtractResource(); } });
+	}
+	/**
+	 * Extracts the current planet configuration for the resource allocation optimizer.
+	 */
+	protected void doExtractResource() {
+		if (gameWorld.player.selectedPlanet != null) {
+			try {
+				PrintWriter out = new PrintWriter(new FileWriter(gameWorld.player.selectedPlanet.name + ".dat"));
+				int i = 0;
+				out.printf("%d%n", gameWorld.player.selectedPlanet.buildings.size());
+				for (GameBuilding b : gameWorld.player.selectedPlanet.buildings) {
+					if (i++ > 0) {
+						out.printf(",%n");
+					}
+					Integer ep = b.prototype.values.get("energy-prod");
+					out.printf("<\"%s\", %d, %d, %s, %d>", b.prototype.name, b.prototype.energy, b.prototype.workers, 0.5, ep != null ? ep : 0);
+				}
+				out.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}		
 	}
 	/**
 	 * Takes over the currently selected planet.
