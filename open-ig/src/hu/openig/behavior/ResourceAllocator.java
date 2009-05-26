@@ -237,18 +237,31 @@ public final class ResourceAllocator {
 	/**
 	 * Utility based on kind, prefers scientific buildings.
 	 */
-	public static final BuildingUtility OPERATIONAL_UTILITY = new BuildingUtility() {
+	public static final BuildingUtility ENERGY_OPERATIONAL_UTILITY = new BuildingUtility() {
+		@Override
+		public float getUtility(GameBuilding building) {
+			float result = 0;
+			int e = building.getEnergyDemand();
+			if (e > 0) {
+				result = 1.0f / e;
+			}
+			return result;
+		}
+	};
+	/**
+	 * Utility based on kind, prefers scientific buildings.
+	 */
+	public static final BuildingUtility WORKER_OPERATIONAL_UTILITY = new BuildingUtility() {
 		@Override
 		public float getUtility(GameBuilding building) {
 			float result = 1;
-			int e = building.getEnergyDemand();
-			if (e > 0) {
-				result /= e;
+			int w = building.getWorkerDemand();
+			if (!building.isProductionDependantOnOperationLevel()) {
+				w = w / 2 + 1; // half energy is enough for that
 			}
-//			int w = building.getWorkerDemand();
-//			if (w > 0) {
-//				result /= w;
-//			}
+			if (w > 0) {
+				result /= w;
+			}
 			return result;
 		}
 	};
@@ -285,7 +298,7 @@ public final class ResourceAllocator {
 				result = utilityWorkerAllocation(planet, MILITARY_UTILITY);
 				break;
 			case OPERATIONAL:
-				result = utilityWorkerAllocation(planet, OPERATIONAL_UTILITY);
+				result = utilityWorkerAllocation(planet, WORKER_OPERATIONAL_UTILITY);
 				break;
 			case PRODUCTION:
 				result = utilityWorkerAllocation(planet, PRODUCTION_UTILITY);
@@ -331,7 +344,7 @@ public final class ResourceAllocator {
 				result = utilityEnergyAllocation(planet, MILITARY_UTILITY, eavail);
 				break;
 			case OPERATIONAL:
-				result = utilityEnergyAllocation(planet, OPERATIONAL_UTILITY, eavail);
+				result = utilityEnergyAllocation(planet, ENERGY_OPERATIONAL_UTILITY, eavail);
 				break;
 			case PRODUCTION:
 				result = utilityEnergyAllocation(planet, PRODUCTION_UTILITY, eavail);

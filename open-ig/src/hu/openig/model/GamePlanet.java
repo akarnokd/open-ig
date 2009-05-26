@@ -86,6 +86,8 @@ public class GamePlanet implements PlanetInfo {
 	/** Rendering helper to cache the planet name
 	 * for the starmap. To re-render it, set this to null. */
 	public BufferedImage nameImage;
+	/** The owner of planet at the time the name image was created. */
+	public GamePlayer nameOwner;
 	/** 
 	 * The planetary list image used to render the name.
 	 * Used only by non-player planets, because they don't flash the name
