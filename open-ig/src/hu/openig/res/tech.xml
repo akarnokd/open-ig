@@ -1,309 +1,738 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!-- Technology trees for varius races -->
-<tech>
-	<techrace id='1'> <!-- Empire -->
-		<item id='Fighter1' index=''>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Technology trees for various races -->
+<tech xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="tech.xsd">
+	<techrace id="1">
+		<!-- Empire -->
+		<item id="Fighter1" index="0">
 			<class>Spaceships</class>
 			<type>Fighters</type>
-			<level>0</level> <!-- Automatically available -->
-			<cost>0</cost>
+			<level>0</level>
+			<maxtime>0</maxtime>
 			<maxcost>0</maxcost>
 			<buildcost>2000</buildcost>
 			<ai>1</ai>
 			<military>1</military>
-			<equipment>
-				<armor>50</armor>
-				<weapon id='Laser1'>1</weapon>
-				<speed>1</speed>
-			</equipment>
 			<image-index>111</image-index>
 			<factory>spaceship</factory>
+			<equipment>
+			</equipment>
 		</item>
-		<item id='Fighter2' index=''>
+		<item id="Fighter2" index="1">
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>0</level>
-			<cost>0</cost>
+			<maxtime>0</maxtime>
 			<maxcost>0</maxcost>
 			<buildcost>3200</buildcost>
 			<mechanic>1</mechanic>
 			<ai>1</ai>
 			<military>1</military>
-			<equipment>
-				<armor>100</armor>
-				<weapon id='Laser1'>2</weapon>
-				<shield id='Shield1'>1</shield>
-				<speed>2</speed>
-			</equipment>
 			<image-index>112</image-index>
 			<factory>spaceship</factory>
+			<equipment>
+			</equipment>
 		</item>
-		<item id='Fighter3' index=''>
+		<item id="Fighter3" index="2">
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>3</level>
 			<!-- Development time = maxtime / spent * mincost -->
-			<maxtime>3000</maxtime> 
-			<mincost>1500</mincost>
-			<cost>8000</cost> <!-- Default cost -->
+			<maxtime>3000</maxtime>
+			<!-- Default cost -->
 			<maxcost>12000</maxcost>
 			<buildcost>5000</buildcost>
 			<mechanic>1</mechanic>
 			<computer>2</computer>
 			<ai>2</ai>
 			<military>2</military>
-			<equipment>
-				<armor>150</armor>
-				<weapon id='Laser1'>3</weapon>
-				<shield id='Shield1'>1</shield>
-				<speed>3</speed>
-			</equipment>
 			<image-index>113</image-index>
 			<factory>spaceship</factory>
+			<equipment>
+			</equipment>
 		</item>
-		<item id='Fighter4'>
+		<item id="Fighter4" index="3">
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
 			<buildcost>7500</buildcost>
 			<mechanic>3</mechanic>
 			<computer>2</computer>
 			<ai>2</ai>
 			<military>4</military>
-			<requires>Fighter3</requires>
 			<image-index>114</image-index>
+			<requires>Fighter3</requires>
 			<factory>spaceship</factory>
 		</item>
-		<item id='Fighter5'>
+		<item id="Fighter5" index="4">
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>10000</buildcost>
 			<civil>1</civil>
 			<mechanic>5</mechanic>
 			<computer>4</computer>
 			<ai>4</ai>
 			<military>5</military>
-			<buildcost>10000</buildcost>
 			<image-index>115</image-index>
 			<factory>spaceship</factory>
 		</item>
-		<item id='Fighter6'>
+		<item id="Fighter6" index="5">
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>12000</buildcost>
 			<mechanic>4</mechanic>
 			<computer>4</computer>
 			<ai>5</ai>
 			<military>7</military>
-			<buildcost>12000</buildcost>
-			<requires>Rocket2</requires>
 			<image-index>116</image-index>
+			<requires>Rocket2</requires>
 			<factory>spaceship</factory>
 		</item>
-		<item id='Destroyer1'>
+		<item id="Destroyer1" index="6">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>12000</buildcost>
 			<computer>1</computer>
 			<ai>1</ai>
 			<military>1</military>
-			<buildcost>12000</buildcost>
 			<image-index>121</image-index>
 			<factory>spaceship</factory>
+			<equipment>
+				<slot x='109' y='58' width='26' height='12'>
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield1, Shield2</ids>
+				</slot>
+				<slot x='163' y='46' width='16' height='15'>
+					<type>Lasers</type>
+					<max>6</max>
+					<ids>Laser1, Laser2, Laser3</ids>
+				</slot>
+				<slot x='203' y='56' width='24' height='11'>
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive1, HyperDrive2</ids>
+				</slot>
+			</equipment>
 		</item>
-		<item id='Destroyer2'>
+		<item id="Destroyer2" index="7">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>17500</buildcost>
 			<mechanic>2</mechanic>
 			<computer>1</computer>
 			<ai>1</ai>
 			<military>2</military>
-			<buildcost>17500</buildcost>
-			<requires>Laser2</requires>
 			<image-index>122</image-index>
+			<requires>Laser2</requires>
 			<factory>spaceship</factory>
+			<equipment>
+				<slot height="15" width="24" x="187" y="39">
+					<type>Lasers</type>
+					<max>8</max>
+					<ids>Laser1, Laser2, Laser3, Laser4</ids>
+				</slot>
+				<slot height="12" width="21" x="149" y="61">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield1, Shield2</ids>
+				</slot>
+				<slot height="15" width="24" x="185" y="66">
+					<type>Lasers</type>
+					<max>6</max>
+					<ids>Laser1, Laser2, Laser3, Laser4</ids>
+				</slot>
+				<slot height="18" width="28" x="218" y="57">
+					<type>HyperDrivers</type>
+					<max>1</max>
+					<ids>HyperDrive1, HyperDrive2, HyperDrive3</ids>
+				</slot>
+			</equipment>
 		</item>
-		<item id='Destroyer3'>
+		<item id="Destroyer3" index="8">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>22000</buildcost>
 			<mechanic>3</mechanic>
 			<computer>4</computer>
 			<ai>3</ai>
 			<military>4</military>
-			<buildcost>22000</buildcost>
-			<requires>Radar2, HyperDrive4, PlasmaGun</requires>
 			<image-index>123</image-index>
+			<requires>Radar2, HyperDrive4, PlasmaGun</requires>
 			<factory>spaceship</factory>
+			<equipment>
+				<slot height="17" width="28" x="55" y="38">
+					<type>Radars</type>
+					<max>1</max>
+					<ids>Radar1, Radar2</ids>
+				</slot>
+				<slot height="11" width="30" x="87" y="47">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield1, Shield2</ids>
+				</slot>
+				<slot height="10" width="21" x="181" y="14">
+					<type>Lasers</type>
+					<max>9</max>
+					<ids>Laser1, Laser2, Laser3</ids>
+				</slot>
+				<slot height="22" width="27" x="207" y="58">
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive 1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
+				</slot>
+				<slot height="10" width="22" x="169" y="84">
+					<type>Lasers</type>
+					<max>9</max>
+					<ids>Laser1, Laser2, Laser3</ids>
+				</slot>
+				<slot height="15" width="16" x="184" y="102">
+					<type>Cannons</type>
+					<max>4</max>
+					<ids>IonCannon, PlasmaCannon, ParticleCannon</ids>
+				</slot>
+			</equipment>
 		</item>
-		<item id='Cruiser1'>
+		<item id="Cruiser1" index="9">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>15000</buildcost>
 			<mechanic>2</mechanic>
 			<computer>1</computer>
 			<ai>1</ai>
 			<military>1</military>
-			<buildcost>15000</buildcost>
-			<requires>Shield1</requires>
 			<image-index>124</image-index>
+			<requires>Shield1</requires>
 			<factory>spaceship</factory>
+			<equipment>
+				<slot height="13" width="36" x="60" y="62">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield1, Shield2, Shield3, Shield4</ids>
+				</slot>
+				<slot height="14" width="23" x="128" y="67">
+					<type>Lasers</type>
+					<max>8</max>
+					<ids>Laser1, Laser2, Laser3, Laser4</ids>
+				</slot>
+				<slot height="17" width="33" x="150" y="42">
+					<type>Cannons</type>
+					<max>2</max>
+					<ids>IonCannon, PlasmaCannon, ParticleCannon</ids>
+				</slot>
+				<slot height="17" width="30" x="192" y="38">
+					<type>Radars</type>
+					<max>1</max>
+					<ids>Radar1, Radar2</ids>
+				</slot>
+				<slot height="22" width="30" x="206" y="63">
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4</ids>
+				</slot>
+			</equipment>
 		</item>
-		<item id='Cruiser2'>
+		<item id="Cruiser2" index="10">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>25000</buildcost>
 			<mechanic>2</mechanic>
 			<computer>3</computer>
 			<ai>3</ai>
 			<military>4</military>
-			<buildcost>25000</buildcost>
-			<requires>Shield2, Laser2, Radar2</requires>
 			<image-index>125</image-index>
+			<requires>Shield2, Laser2, Radar2</requires>
 			<factory>spaceship</factory>
+			<equipment>
+				<slot height="19" width="40" x="57" y="71">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield1, Shield2, Shield3, Shield4</ids>
+				</slot>
+				<slot height="12" width="28" x="123" y="75">
+					<type>Radars</type>
+					<max>1</max>
+					<ids>Radar1, Radar2</ids>
+				</slot>
+				<slot height="17" width="26" x="161" y="65">
+					<type>Lasers</type>
+					<max>13</max>
+					<ids>Laser1, Laser2, Laser3, Laser4</ids>
+				</slot>
+				<slot height="13" width="40" x="168" y="45">
+					<type>Cannons</type>
+					<max>3</max>
+					<ids>IonCannon, PlasmaCannon</ids>
+				</slot>
+				<slot height="13" width="38" x="183" y="85">
+					<type>Cannons</type>
+					<max>5</max>
+					<ids>IonCannon</ids>
+				</slot>
+				<slot height="19" width="29" x="216" y="59">
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
+				</slot>
+			</equipment>
 		</item>
-		<item id='Cruiser3'>
+		<item id="Cruiser3" index="11">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>36000</buildcost>
 			<civil>1</civil>
 			<mechanic>4</mechanic>
 			<computer>5</computer>
 			<ai>4</ai>
 			<military>7</military>
-			<buildcost>36000</buildcost>
-			<requires>HyperDrive5,Shield2,Bomb2</requires>
 			<image-index>126</image-index>
+			<requires>HyperDrive5,Shield2,Bomb2</requires>
 			<factory>spaceship</factory>
+			<equipment>
+				<slot height="10" width="21" x="38" y="67">
+					<type>Lasers</type>
+					<max>16</max>
+					<ids>Laser1, Laser2, Laser3, Laser4</ids>
+				</slot>
+				<slot height="12" width="24" x="63" y="62">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield2, Shield3, Shield4</ids>
+				</slot>
+				<slot height="22" width="22" x="133" y="45">
+					<type>Projectiles</type>
+					<max>4</max>
+					<ids>Bomb1, Bomb2</ids>
+				</slot>
+				<slot height="14" width="25" x="153" y="72">
+					<type>Projectiles</type>
+					<max>4</max>
+					<ids>Rocket1, Rocket2, MultiheadedRocket</ids>
+				</slot>
+				<slot height="14" width="17" x="180" y="58">
+					<type>Cannons</type>
+					<max>10</max>
+					<ids>PlasmaCannon, ParticleCannon, MesonCannon</ids>
+				</slot>
+				<slot height="11" width="22" x="199" y="71">
+					<type>Modules</type>
+					<max>1</max>
+					<ids>ECM1, ECM2</ids>
+				</slot>
+				<slot height="14" width="15" x="207" y="56">
+					<type>Cannons</type>
+					<max>10</max>
+					<ids>PlasmaCannon, ParticleCannon, MesonCannon</ids>
+				</slot>
+				<slot height="21" width="23" x="235" y="55">
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
+				</slot>
+			</equipment>
 		</item>
-		<item id='Battleship1'>
+		<item id="Battleship1" index="12">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>80000</buildcost>
 			<civil>1</civil>
 			<mechanic>1</mechanic>
 			<computer>1</computer>
 			<ai>1</ai>
 			<military>1</military>
-			<buildcost>80000</buildcost>
-			<requires>OrbitalFactory</requires>
 			<image-index>131</image-index>
+			<requires>OrbitalFactory</requires>
 			<factory>orbital</factory>
+			<equipment>
+				<slot height="10" width="21" x="45" y="53">
+					<type>Lasers</type>
+					<max>14</max>
+					<ids>Laser1, Laser2, Laser3, Laser4</ids>
+				</slot>
+				<slot height="13" width="22" x="80" y="64">
+					<type>Projectiles</type>
+					<max>8</max>
+					<ids>Bomb1, Bomb2</ids>
+				</slot>
+				<slot height="17" width="23" x="115" y="65">
+					<type>Projectiles</type>
+					<max>6</max>
+					<ids>Rocket1, Rocket2, MultiheadedRocket</ids>
+				</slot>
+				<slot height="11" width="15" x="140" y="17">
+					<type>Radars</type>
+					<max>1</max>
+					<ids>Radar1, Radar2, Radar3</ids>
+				</slot>
+				<slot height="13" width="15" x="143" y="57">
+					<type>Cannons</type>
+					<max>8</max>
+					<ids>IonCannon, PlasmaCannon</ids>
+				</slot>
+				<slot height="15" width="21" x="161" y="61">
+					<type>Modules</type>
+					<max>1</max>
+					<ids>Storage1, Storage2</ids>
+				</slot>
+				<slot height="14" width="26" x="220" y="53">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield1, Shield2, Shield3, Shield4</ids>
+				</slot>
+				<slot height="12" width="22" x="253" y="60">
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
+				</slot>
+				<fixedslot>
+					<type>Property</type>
+					<id>Vehicles</id>
+					<value>5</value>
+				</fixedslot>
+			</equipment>
 		</item>
-		<item id='Battleship2'>
+		<item id="Battleship2" index="13">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>130000</buildcost>
 			<civil>3</civil>
 			<mechanic>3</mechanic>
 			<computer>4</computer>
 			<ai>2</ai>
 			<military>5</military>
-			<buildcost>130000</buildcost>
-			<factory>orbital</factory>
 			<image-index>132</image-index>
 			<requires>HyperDrive4, Radar4, Shield3</requires>
+			<factory>orbital</factory>
+			<equipment>
+				<slot height="9" width="20" x="33" y="61">
+					<type>Radars</type>
+					<max>1</max>
+					<ids>Radar1, Radar2, Radar3</ids>
+				</slot>
+				<slot height="13" width="19" x="65" y="65">
+					<type>Cannons</type>
+					<max>15</max>
+					<ids>IonCannon, PlasmaCannon, ParticleCannon, MesonCannon</ids>
+				</slot>
+				<slot height="11" width="20" x="124" y="67">
+					<type>Modules</type>
+					<max>1</max>
+					<ids>Storage1, Storage2</ids>
+				</slot>
+				<slot height="15" width="23" x="156" y="102">
+					<type>Modules</type>
+					<max>1</max>
+					<ids>ECM1, ECM2</ids>
+				</slot>
+				<slot height="13" width="21" x="179" y="20">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield2, Shield3, Shield4</ids>
+				</slot>
+				<slot height="13" width="23" x="183" y="56">
+					<type>Projectiles</type>
+					<max>6</max>
+					<ids>Rocket1, Rocket2, MultiheadedRocket</ids>
+				</slot>
+				<slot height="13" width="21" x="208" y="56">
+					<type>Rockets</type>
+					<max>6</max>
+					<ids>Rocket1, Rocket2, MultiheadedRocket</ids>
+				</slot>
+				<slot height="13" width="20" x="211" y="74">
+					<type>Projectiles</type>
+					<max>12</max>
+					<ids>Bomb1, Bomb2</ids>
+				</slot>
+				<slot height="15" width="25" x="237" y="66">
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive5</ids>
+				</slot>
+				<fixedslot>
+					<type>Property</type>
+					<id>Vehicles</id>
+					<value>8</value>
+				</fixedslot>
+			</equipment>
 		</item>
-		<item id='Battleship3'>
+		<item id="Battleship3" index="14">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>230000</buildcost>
 			<civil>4</civil>
 			<mechanic>5</mechanic>
 			<computer>5</computer>
 			<ai>5</ai>
 			<military>7</military>
-			<buildcost>230000</buildcost>
-			<factory>orbital</factory>
 			<image-index>133</image-index>
 			<requires>Battleship2, MesonGun, Bomb2</requires>
+			<factory>orbital</factory>
+			<equipment>
+				<slot height="12" width="27" x="9" y="76">
+					<type>Cannons</type>
+					<max>10</max>
+					<ids>IonCannon, PlasmaCannon, ParticleCannon, MesonCannon</ids>
+				</slot>
+				<slot height="12" width="22" x="70" y="71">
+					<type>Projectiles</type>
+					<max>20</max>
+					<ids>Bomb1, Bomb2</ids>
+				</slot>
+				<slot height="11" width="26" x="116" y="49">
+					<type>Cannons</type>
+					<max>10</max>
+					<ids>IonCannon, PlasmaCannon, ParticleCannon, MesonCannon</ids>
+				</slot>
+				<slot height="8" width="16" x="121" y="19">
+					<type>Projectiles</type>
+					<max>14</max>
+					<ids>Rocket1, Rocket2, MultiheadedRocket</ids>
+				</slot>
+				<slot height="13" width="20" x="123" y="75">
+					<type>Modules</type>
+					<max>1</max>
+					<ids>Storage1, Storage2</ids>
+				</slot>
+				<slot height="7" width="22" x="182" y="58">
+					<type>Radars</type>
+					<max>1</max>
+					<ids>Radar1, Radar2, Radar3</ids>
+				</slot>
+				<slot height="10" width="16" x="195" y="108">
+					<type>Modules</type>
+					<max>1</max>
+					<ids>ECM1, ECM2</ids>
+				</slot>
+				<slot height="15" width="26" x="200" y="69">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield1, Shield2, Shield3, Shield4</ids>
+				</slot>
+				<slot height="10" width="21" x="246" y="60">
+					<type>Lasers</type>
+					<max>20</max>
+					<ids>Laser1, Laser2, Laser3, Laser4</ids>
+				</slot>
+				<slot height="11" width="34" x="253" y="73">
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
+				</slot>
+				<fixedslot>
+					<type>Property</type>
+					<id>Vehicles</id>
+					<value>10</value>
+				</fixedslot>
+			</equipment>
 		</item>
-		<item id='ColonyShip'>
+		<item id="ColonyShip" index="15">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>80000</buildcost>
 			<civil>2</civil>
 			<mechanic>2</mechanic>
 			<computer>3</computer>
 			<ai>2</ai>
-			<buildcost>80000</buildcost>
-			<factory>orbital</factory>
 			<image-index>134</image-index>
 			<requires>Radar2, Shield1</requires>
+			<factory>orbital</factory>
+			<equipment>
+				<slot height="14" width="32" x="79" y="62">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield1, Shield2, Shield3, Shield4</ids>
+				</slot>
+				<slot height="11" width="17" x="188" y="63">
+					<type>Radars</type>
+					<max>1</max>
+					<ids>Radar1, Radar2, Radar3</ids>
+				</slot>
+				<slot height="18" width="12" x="229" y="59">
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
+				</slot>
+			</equipment>
 		</item>
-		<item id='Flagship'>
+		<item id="Flagship" index="16">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>6</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>1000000</buildcost>
 			<civil>5</civil>
 			<mechanic>6</mechanic>
 			<computer>6</computer>
 			<ai>5</ai>
 			<military>7</military>
-			<buildcost>1000000</buildcost>
-			<factory>orbital</factory>
 			<image-index>135</image-index>
+			<factory>orbital</factory>
+			<equipment>
+				<slot height="8" width="21" x="24" y="51">
+					<type>Radars</type>
+					<max>1</max>
+					<ids>Radar1, Radar2, Radar3</ids>
+				</slot>
+				<slot height="11" width="22" x="69" y="58">
+					<type>Modules</type>
+					<max>1</max>
+					<ids>ECM1, ECM2</ids>
+				</slot>
+				<slot height="8" width="16" x="130" y="50">
+					<type>Lasers</type>
+					<max>24</max>
+					<ids>Laser1, Laser2, Laser3, Laser4</ids>
+				</slot>
+				<slot height="7" width="22" x="145" y="10">
+					<type>Projectiles</type>
+					<max>12</max>
+					<ids>Rocket1, Rocket2, MultiheadedRocket</ids>
+				</slot>
+				<slot height="7" width="16" x="146" y="27">
+					<type>Cannons</type>
+					<max>11</max>
+					<ids>IonCannon, PlasmaCannon, ParticleCannon, MesonCannon</ids>
+				</slot>
+				<slot height="9" width="22" x="147" y="61">
+					<type>Modules</type>
+					<max>1</max>
+					<ids>Storage1, Storage2</ids>
+				</slot>
+				<slot height="7" width="16" x="145" y="97">
+					<type>Cannons</type>
+					<max>11</max>
+					<ids>IonCannon, PlasmaCannon, ParticleCannon, MesonCannon</ids>
+				</slot>
+				<slot height="8" width="22" x="144" y="115">
+					<type>Projectiles</type>
+					<max>4</max>
+					<ids>Bomb1, Bomb2, VirusBomb</ids>
+				</slot>
+				<slot height="9" width="18" x="194" y="65">
+					<type>Shields</type>
+					<max>1</max>
+					<ids>Shield1, Shield2, Shield3, Shield4</ids>
+				</slot>
+				<slot height="13" width="32" x="255" y="65">
+					<type>HyperDrives</type>
+					<max>1</max>
+					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
+				</slot>
+				<fixedslot>
+					<type>Property</type>
+					<id>Vehicles</id>
+					<value>15</value>
+				</fixedslot>
+			</equipment>
 		</item>
-		<item id='Satellite'>
+		<item id="Satellite" index="17">
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>120</buildcost>
 			<computer>1</computer>
 			<ai>1</ai>
-			<buildcost>120</buildcost>
-			<factory>spaceship</factory>
 			<image-index>141</image-index>
+			<factory>spaceship</factory>
 		</item>
-		<item id='SpySatellite1'>
+		<item id="SpySatellite1" index="18">
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>1000</buildcost>
 			<mechanic>1</mechanic>
 			<computer>1</computer>
 			<ai>1</ai>
-			<buildcost>1000</buildcost>
-			<factory>spaceship</factory>
 			<image-index>142</image-index>
+			<factory>spaceship</factory>
 		</item>
-		<item id='SpySatellite2' index=''>
+		<item id="SpySatellite2" index="19">
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>4</level>
+			<maxtime>0</maxtime>
 			<maxcost>12000</maxcost>
 			<buildcost>1000</buildcost>
 			<mechanic>2</mechanic>
 			<computer>3</computer>
 			<ai>3</ai>
 			<military>2</military>
-			<factory>spaceship</factory>
-			<requires>SpySatellite</requires>
 			<image-index>143</image-index>
+			<requires>SpySatellite</requires>
+			<factory>spaceship</factory>
 		</item>
-		<item id='Hubble2' index=''>
+		<item id="Hubble2" index="20">
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
 			<buildcost>2100</buildcost>
 			<mechanic>5</mechanic>
 			<computer>5</computer>
 			<ai>6</ai>
 			<military>4</military>
-			<factory>spaceship</factory>
-			<requires>SpySatellite1, Radar2</requires>
 			<image-index>144</image-index>
+			<requires>SpySatellite1, Radar2</requires>
+			<factory>spaceship</factory>
 		</item>
-		<item id='Radar2'>
+<!--
+		<item id="Radar2" index="">
 			<class>Equipments</class>
 			<type>Radars</type>
 			<level>3</level>
 			<maxtime>2000</maxtime>
 			<maxcost>18000</maxcost>
-			<buildcost></buildcost>
+			<buildcost>0</buildcost>
 			<mechanic>2</mechanic>
 			<computer>2</computer>
 			<ai>1</ai>
 			<military>2</military>
+			<image-index></image-index>
 		</item>
+-->
 	</techrace>
 </tech>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="tech">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="techrace" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="class" type="xs:string"/>
+										<xs:element name="type" type="xs:string"/>
+										<xs:element name="level" type="xs:unsignedInt"/>
+										<xs:element name="maxtime" type="xs:unsignedInt"/>
+										<xs:element name="maxcost" type="xs:unsignedInt"/>
+										<xs:element name="buildcost" type="xs:unsignedInt"/>
+										<xs:element name="civil" type="xs:unsignedInt" minOccurs="0"/>
+										<xs:element name="mechanic" type="xs:unsignedInt" minOccurs="0"/>
+										<xs:element name="computer" type="xs:unsignedInt" minOccurs="0"/>
+										<xs:element name="ai" type="xs:unsignedInt" minOccurs="0"/>
+										<xs:element name="military" type="xs:unsignedInt" minOccurs="0"/>
+										<xs:element name="image-index" type="xs:unsignedInt"/>
+										<xs:element name="requires" type="xs:string" minOccurs="0"/>
+										<xs:element name="factory" type="xs:string"/>
+										<xs:element name="equipment" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="slot" minOccurs="0" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="type" type="xs:string"></xs:element>
+																<xs:element name="max" type="xs:unsignedInt"></xs:element>
+																<xs:element name="ids" type="xs:string">
+																	<xs:annotation><xs:documentation>List of accepted item ids.</xs:documentation></xs:annotation>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="x" type="xs:unsignedInt" use="required"/>
+															<xs:attribute name="y" type="xs:unsignedInt" use="required"/>
+															<xs:attribute name="width" type="xs:unsignedInt" use="required"/>
+															<xs:attribute name="height" type="xs:unsignedInt" use="required"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="fixedslot" minOccurs="0" maxOccurs="unbounded">
+														<xs:annotation><xs:documentation>Slots for equipment which don't show up on the equipment selections screen but carry properties</xs:documentation></xs:annotation>
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="type" type="xs:string">
+																	<xs:annotation><xs:documentation>The equipment type, if it contains Property, then the id field has the property name.</xs:documentation></xs:annotation>
+																</xs:element>
+																<xs:element name="id" type="xs:string">
+																	<xs:annotation><xs:documentation>The equipment id or the property name.</xs:documentation></xs:annotation>
+																</xs:element>
+																<xs:element name="value" type="xs:unsignedInt"></xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" type="xs:string" use="required"/>
+									<xs:attribute name="index" type="xs:unsignedInt" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="id" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
