@@ -22,17 +22,19 @@
 										<xs:element name="military" type="xs:unsignedInt" minOccurs="0"/>
 										<xs:element name="image-index" type="xs:unsignedInt"/>
 										<xs:element name="requires" type="xs:string" minOccurs="0"/>
-										<xs:element name="factory" type="xs:string"/>
+										<xs:element name="factory" type="FactoryEnum"/>
 										<xs:element name="equipment" minOccurs="0">
 											<xs:complexType>
 												<xs:sequence>
 													<xs:element name="slot" minOccurs="0" maxOccurs="unbounded">
 														<xs:complexType>
 															<xs:sequence>
-																<xs:element name="type" type="xs:string"></xs:element>
-																<xs:element name="max" type="xs:unsignedInt"></xs:element>
+																<xs:element name="type" type="xs:string"/>
+																<xs:element name="max" type="xs:unsignedInt"/>
 																<xs:element name="ids" type="xs:string">
-																	<xs:annotation><xs:documentation>List of accepted item ids.</xs:documentation></xs:annotation>
+																	<xs:annotation>
+																		<xs:documentation>List of accepted item ids.</xs:documentation>
+																	</xs:annotation>
 																</xs:element>
 															</xs:sequence>
 															<xs:attribute name="x" type="xs:unsignedInt" use="required"/>
@@ -42,17 +44,32 @@
 														</xs:complexType>
 													</xs:element>
 													<xs:element name="fixedslot" minOccurs="0" maxOccurs="unbounded">
-														<xs:annotation><xs:documentation>Slots for equipment which don't show up on the equipment selections screen but carry properties</xs:documentation></xs:annotation>
+														<xs:annotation>
+															<xs:documentation>Slots for equipment which don't show up on the equipment selections screen but carry properties</xs:documentation>
+														</xs:annotation>
 														<xs:complexType>
 															<xs:sequence>
 																<xs:element name="type" type="xs:string">
-																	<xs:annotation><xs:documentation>The equipment type, if it contains Property, then the id field has the property name.</xs:documentation></xs:annotation>
+																	<xs:annotation>
+																		<xs:documentation>The equipment type, if it contains Property, then the id field has the property name.</xs:documentation>
+																	</xs:annotation>
 																</xs:element>
 																<xs:element name="id" type="xs:string">
-																	<xs:annotation><xs:documentation>The equipment id or the property name.</xs:documentation></xs:annotation>
+																	<xs:annotation>
+																		<xs:documentation>The equipment id or the property name.</xs:documentation>
+																	</xs:annotation>
 																</xs:element>
-																<xs:element name="value" type="xs:unsignedInt"></xs:element>
+																<xs:element name="value" type="xs:unsignedInt"/>
 															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute name='name' type="xs:string" use="required"></xs:attribute>
+																</xs:extension>
+															</xs:simpleContent>
 														</xs:complexType>
 													</xs:element>
 												</xs:sequence>
@@ -70,4 +87,23 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+	<xs:simpleType name="FactoryEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="spaceship">
+				<xs:annotation><xs:documentation>Spaceship factory</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="equipment">
+				<xs:annotation><xs:documentation>Equipment factory</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="weapon">
+				<xs:annotation><xs:documentation>Weapons factory</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="orbital">
+				<xs:annotation><xs:documentation>Orbital factory</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="building">
+				<xs:annotation><xs:documentation>It is built on colonies</xs:documentation></xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
 </xs:schema>

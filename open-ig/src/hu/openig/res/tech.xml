@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<tech xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="tech.xsd">
 <!-- Technology trees for various races -->
-<tech xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="tech.xsd">
 	<techrace id="1">
 		<!-- Empire -->
 		<item id="Fighter1" index="0">
@@ -14,8 +15,6 @@
 			<military>1</military>
 			<image-index>111</image-index>
 			<factory>spaceship</factory>
-			<equipment>
-			</equipment>
 		</item>
 		<item id="Fighter2" index="1">
 			<class>Spaceships</class>
@@ -29,8 +28,6 @@
 			<military>1</military>
 			<image-index>112</image-index>
 			<factory>spaceship</factory>
-			<equipment>
-			</equipment>
 		</item>
 		<item id="Fighter3" index="2">
 			<class>Spaceships</class>
@@ -412,11 +409,7 @@
 					<max>1</max>
 					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
 				</slot>
-				<fixedslot>
-					<type>Property</type>
-					<id>Vehicles</id>
-					<value>5</value>
-				</fixedslot>
+				<property name="vehicles">5</property>
 			</equipment>
 		</item>
 		<item id="Battleship2" index="13">
@@ -480,11 +473,7 @@
 					<max>1</max>
 					<ids>HyperDrive5</ids>
 				</slot>
-				<fixedslot>
-					<type>Property</type>
-					<id>Vehicles</id>
-					<value>8</value>
-				</fixedslot>
+				<property name="vehicles">8</property>
 			</equipment>
 		</item>
 		<item id="Battleship3" index="14">
@@ -553,11 +542,7 @@
 					<max>1</max>
 					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
 				</slot>
-				<fixedslot>
-					<type>Property</type>
-					<id>Vehicles</id>
-					<value>10</value>
-				</fixedslot>
+				<property name="vehicles">10</property>
 			</equipment>
 		</item>
 		<item id="ColonyShip" index="15">
@@ -657,11 +642,7 @@
 					<max>1</max>
 					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
 				</slot>
-				<fixedslot>
-					<type>Property</type>
-					<id>Vehicles</id>
-					<value>15</value>
-				</fixedslot>
+				<property name="vehicles">15</property>
 			</equipment>
 		</item>
 		<item id="Satellite" index="17">
@@ -718,6 +699,890 @@
 			<image-index>144</image-index>
 			<requires>SpySatellite1, Radar2</requires>
 			<factory>spaceship</factory>
+			<equipment>
+				<property name="radar">90</property>
+			</equipment>
+		</item>
+		<item id="SpaceStation1" index="21">
+			<class>Spaceships</class>
+			<type>SpaceStations</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>65000</buildcost>
+			<civil>2</civil>
+			<mechanic>2</mechanic>
+			<computer>2</computer>
+			<ai>1</ai>
+			<military>3</military>
+			<image-index>151</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id="OrbitalFactory" index="22">
+			<class>Spaceships</class>
+			<type>SpaceStations</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>80000</buildcost>
+			<civil>1</civil>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<image-index>152</image-index>
+			<factory>spaceship</factory>
+		</item>
+		<item id="SpaceStation2" index="23">
+			<class>Spaceships</class>
+			<type>SpaceStations</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>90000</buildcost>
+			<civil>3</civil>
+			<mechanic>3</mechanic>
+			<computer>4</computer>
+			<ai>3</ai>
+			<military>5</military>
+			<image-index>153</image-index>
+			<requires>Laser2, IonCannon, SpaceStation1</requires>
+			<factory>spaceship</factory>
+		</item>
+		<item id="SpaceStation3" index="24">
+			<class>Spaceships</class>
+			<type>SpaceStations</type>
+			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>125000</buildcost>
+			<civil>6</civil>
+			<mechanic>4</mechanic>
+			<computer>5</computer>
+			<ai>3</ai>
+			<military>6</military>
+			<image-index>154</image-index>
+			<requires>Laser4, IonCannon, Rocket2</requires>
+			<factory>spaceship</factory>
+		</item>
+		<item id="HyperDrive1" index="25">
+			<class>Equipments</class>
+			<type>HyperDrives</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>2000</buildcost>
+			<mechanic>1</mechanic>
+			<military>1</military>
+			<image-index>211</image-index>
+			<factory>equipment</factory>
+			<equipment>
+					<property name="speed">28</property>
+			</equipment>
+		</item>
+		<item id="HyperDrive2" index="26">
+			<class>Equipments</class>
+			<type>HyperDrives</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>3200</buildcost>
+			<mechanic>2</mechanic>
+			<military>1</military>
+			<image-index>212</image-index>
+			<requires>HyperDrive1</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="speed">30</property>
+			</equipment>
+		</item>
+		<item id="HyperDrive3" index="27">
+			<class>Equipments</class>
+			<type>HyperDrives</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>4300</buildcost>
+			<civil>1</civil>
+			<mechanic>3</mechanic>
+			<computer>2</computer>
+			<military>1</military>
+			<image-index>213</image-index>
+			<requires>HyperDrive2</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="speed">32</property>
+			</equipment>
+		</item>
+		<item id="HyperDrive4" index="28">
+			<class>Equipments</class>
+			<type>HyperDrives</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>6000</buildcost>
+			<civil>3</civil>
+			<mechanic>4</mechanic>
+			<computer>2</computer>
+			<military>2</military>
+			<image-index>214</image-index>
+			<requires>HyperDrive5</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="speed">34</property>
+			</equipment>
+		</item>
+		<item id="HyperDrive5" index="29">
+			<class>Equipments</class>
+			<type>HyperDrives</type>
+			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>9000</buildcost>
+			<civil>4</civil>
+			<mechanic>6</mechanic>
+			<computer>1</computer>
+			<military>4</military>
+			<image-index>215</image-index>
+			<requires>HyperDrive4</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="speed">36</property>
+			</equipment>
+		</item>
+		<item id="ECM1" index="30">
+			<class>Equipments</class>
+			<type>Modules</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>7000</buildcost>
+			<civil>1</civil>
+			<mechanic>2</mechanic>
+			<computer>3</computer>
+			<ai>3</ai>
+			<military>2</military>
+			<image-index>221</image-index>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="ecm">1</property>
+			</equipment>
+		</item>
+		<item id="ECM2" index="31">
+			<class>Equipments</class>
+			<type>Modules</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>13500</buildcost>
+			<civil>2</civil>
+			<mechanic>3</mechanic>
+			<computer>4</computer>
+			<ai>5</ai>
+			<military>3</military>
+			<image-index>222</image-index>
+			<requires>ECM1, Rocket2</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="ecm">2</property>
+			</equipment>
+		</item>
+		<item id="Storage1" index="32">
+			<class>Equipments</class>
+			<type>Modules</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>7400</buildcost>
+			<civil>1</civil>
+			<image-index>223</image-index>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="vehicles">3</property>
+			</equipment>
+		</item>
+		<item id="Storage2" index="33">
+			<class>Equipments</class>
+			<type>Modules</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>10000</buildcost>
+			<civil>3</civil>
+			<mechanic>4</mechanic>
+			<computer>2</computer>
+			<military>2</military>
+			<image-index>224</image-index>
+			<requires>Storage1</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="vehicles">5</property>
+			</equipment>
+		</item>
+		<item id="Radar1" index="34">
+			<class>Equipments</class>
+			<type>Radars</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>5000</buildcost>
+			<military>1</military>
+			<image-index>231</image-index>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="radar">15</property>
+			</equipment>
+		</item>
+		<item id="Radar2" index="35">
+			<class>Equipments</class>
+			<type>Radars</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>9000</buildcost>
+			<mechanic>2</mechanic>
+			<computer>2</computer>
+			<ai>1</ai>
+			<military>2</military>
+			<image-index>232</image-index>
+			<requires>Radar1</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="radar">30</property>
+			</equipment>
+		</item>
+		<item id="Radar3" index="36">
+			<class>Equipments</class>
+			<type>Radars</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>16000</buildcost>
+			<civil>1</civil>
+			<mechanic>4</mechanic>
+			<computer>4</computer>
+			<ai>2</ai>
+			<military>4</military>
+			<image-index>233</image-index>
+			<requires>Radar2</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="radar">60</property>
+				<property name="enemydetect">1</property> <!-- Detects enemy fleet composition -->
+			</equipment>
+		</item>
+		<item id="Shield1" index="37">
+			<class>Equipments</class>
+			<type>Shields</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>4000</buildcost>
+			<civil>1</civil>
+			<computer>1</computer>
+			<military>1</military>
+			<image-index>241</image-index>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="shield">25</property>
+			</equipment>
+		</item>
+		<item id="Shield2" index="38">
+			<class>Equipments</class>
+			<type>Shields</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>7500</buildcost>
+			<computer>3</computer>
+			<ai>1</ai>
+			<military>4</military>
+			<image-index>242</image-index>
+			<requires>Shield1</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="shield">35</property>
+			</equipment>
+		</item>
+		<item id="Shield3" index="39">
+			<class>Equipments</class>
+			<type>Shields</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>12000</buildcost>
+			<mechanic>1</mechanic>
+			<computer>4</computer>
+			<ai>2</ai>
+			<military>6</military>
+			<image-index>243</image-index>
+			<requires>Shield2, ParticleCannon</requires>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="shield">45</property>
+			</equipment>
+		</item>
+		<item id="Shield4" index="40">
+			<class>Equipments</class>
+			<type>Shields</type>
+			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>19000</buildcost>
+			<civil>1</civil>
+			<mechanic>3</mechanic>
+			<computer>6</computer>
+			<ai>4</ai>
+			<military>7</military>
+			<image-index>244</image-index>
+			<factory>equipment</factory>
+			<equipment>
+				<property name="shield">60</property>
+			</equipment>
+		</item>
+		<item id="Laser1" index="41">
+			<class>Weapons</class>
+			<type>Lasers</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>620</buildcost>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<military>1</military>
+			<image-index>311</image-index>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">beam</property>
+				<property name="damage">1</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="Laser2" index="42">
+			<class>Weapons</class>
+			<type>Lasers</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>900</buildcost>
+			<mechanic>2</mechanic>
+			<computer>1</computer>
+			<military>2</military>
+			<image-index>312</image-index>
+			<requires>Laser1</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">beam</property>
+				<property name="damage">2</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="Laser3" index="43">
+			<class>Weapons</class>
+			<type>Lasers</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>1400</buildcost>
+			<mechanic>2</mechanic>
+			<computer>3</computer>
+			<ai>1</ai>
+			<military>4</military>
+			<image-index>313</image-index>
+			<requires>Laser2, SolarPlant</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">beam</property>
+				<property name="damage">3</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="Laser4" index="44">
+			<class>Weapons</class>
+			<type>Lasers</type>
+			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>1750</buildcost>
+			<mechanic>4</mechanic>
+			<computer>4</computer>
+			<ai>2</ai>
+			<military>5</military>
+			<image-index>314</image-index>
+			<requires>Laser3</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">beam</property>
+				<property name="damage">6</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="IonCannon" index="45">
+			<class>Weapons</class>
+			<type>Cannons</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>1200</buildcost>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<image-index>321</image-index>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">ion</property>
+				<property name="damage">3</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="PlasmaCannon" index="46">
+			<class>Weapons</class>
+			<type>Cannons</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>3200</buildcost>
+			<mechanic>2</mechanic>
+			<computer>4</computer>
+			<ai>2</ai>
+			<military>4</military>
+			<image-index>322</image-index>
+			<requires>IonCannon</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">plasma</property>
+				<property name="damage">6</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="ParticleCannon" index="47">
+			<class>Weapons</class>
+			<type>Cannons</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>3200</buildcost>
+			<mechanic>3</mechanic>
+			<computer>5</computer>
+			<ai>3</ai>
+			<military>6</military>
+			<image-index>323</image-index>
+			<requires>PlasmaCannon</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">particle</property>
+				<property name="damage">4</property>
+				<property name="rate">2</property>
+			</equipment>
+		</item>
+		<item id="MesonCannon" index="48">
+			<class>Weapons</class>
+			<type>Cannons</type>
+			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>4000</buildcost>
+			<mechanic>5</mechanic>
+			<computer>6</computer>
+			<ai>4</ai>
+			<military>8</military>
+			<image-index>324</image-index>
+			<requires>ParticleCannon</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">meson</property>
+				<property name="damage">6</property>
+				<property name="rate">2</property>
+			</equipment>
+		</item>
+		<item id="Bomb1" index="49">
+			<class>Weapons</class>
+			<type>Projectiles</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>1400</buildcost>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<military>1</military>
+			<image-index>331</image-index>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">rocket</property>
+				<property name="damage">10</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="Bomb2" index="50">
+			<class>Weapons</class>
+			<type>Projectiles</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>1950</buildcost>
+			<civil>1</civil>
+			<mechanic>1</mechanic>
+			<computer>4</computer>
+			<ai>3</ai>
+			<military>2</military>
+			<image-index>332</image-index>
+			<requires>Bomb1</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">rocket</property>
+				<property name="damage">20</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="VirusBomb" index="51">
+			<class>Weapons</class>
+			<type>Projectiles</type>
+			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>5000</buildcost>
+			<civil>1</civil>
+			<mechanic>2</mechanic>
+			<computer>2</computer>
+			<ai>2</ai>
+			<military>7</military>
+			<image-index>333</image-index>
+			<requires>Bomb2</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">rocket</property>
+				<property name="virus">1</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="Rocket1" index="52">
+			<class>Weapons</class>
+			<type>Projectiles</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>900</buildcost>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<image-index>334</image-index>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">rocket</property>
+				<property name="damage">15</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="Rocket2" index="53">
+			<class>Weapons</class>
+			<type>Projectiles</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>1500</buildcost>
+			<mechanic>2</mechanic>
+			<computer>4</computer>
+			<ai>4</ai>
+			<military>3</military>
+			<image-index>335</image-index>
+			<requires>Rocket1</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">rocket</property>
+				<property name="damage">30</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="MultiheadedRocket" index="54">
+			<class>Weapons</class>
+			<type>Projectiles</type>
+			<level>5</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>6200</buildcost>
+			<mechanic>3</mechanic>
+			<computer>5</computer>
+			<ai>3</ai>
+			<military>6</military>
+			<image-index>336</image-index>
+			<requires>Rocket2, Bomb2</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="projectile">rocket</property>
+				<property name="damage">45</property>
+				<property name="rate">1</property>
+			</equipment>
+		</item>
+		<item id="LightTank" index="55">
+			<class>Weapons</class>
+			<type>Tanks</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>3000</buildcost>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<image-index>341</image-index>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="range">2</property>
+				<property name="speed">5</property>
+				<property name="armor">3</property>
+				<property name="damage">1</property>
+			</equipment>
+		</item>
+		<item id="MediumTank" index="56">
+			<class>Weapons</class>
+			<type>Tanks</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>3000</buildcost>
+			<civil>1</civil>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>2</military>
+			<image-index>342</image-index>
+			<requires>LightTank</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="range">4</property>
+				<property name="speed">4</property>
+				<property name="armor">4</property>
+				<property name="damage">2</property>
+			</equipment>
+		</item>
+		<item id="HeavyTank" index="57">
+			<class>Weapons</class>
+			<type>Tanks</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>7000</buildcost>
+			<civil>2</civil>
+			<mechanic>3</mechanic>
+			<computer>3</computer>
+			<ai>2</ai>
+			<military>5</military>
+			<image-index>343</image-index>
+			<requires>MediumTank</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="range">4</property>
+				<property name="speed">4</property>
+				<property name="armor">6</property>
+				<property name="damage">3</property>
+			</equipment>
+		</item>
+		<item id="Behemoth" index="58">
+			<class>Weapons</class>
+			<type>Tanks</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>17500</buildcost>
+			<civil>3</civil>
+			<mechanic>4</mechanic>
+			<computer>5</computer>
+			<ai>3</ai>
+			<military>5</military>
+			<image-index>344</image-index>
+			<requires>HeavyTank</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="range">5</property>
+				<property name="speed">3</property>
+				<property name="armor">7</property>
+				<property name="damage">4</property>
+			</equipment>
+		</item>
+		<item id="RadarCar" index="59">
+			<class>Weapons</class>
+			<type>Vehicles</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>10000</buildcost>
+			<mechanic>1</mechanic>
+			<ai>1</ai>
+			<military>1</military>
+			<image-index>351</image-index>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="armor">3</property>
+				<property name="surfaceradar">true</property>
+			</equipment>
+		</item>
+		<item id="RocketLauncher1" index="60">
+			<class>Weapons</class>
+			<type>Vehicles</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>10000</buildcost>
+			<civil>1</civil>
+			<mechanic>2</mechanic>
+			<computer>2</computer>
+			<ai>1</ai>
+			<military>2</military>
+			<image-index>352</image-index>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="range">7</property>
+				<property name="speed">6.5</property>
+				<property name="armor">2</property>
+				<property name="damage">3</property>
+				<property name="area">2</property>
+				<property name="projectile">surfacerocket</property>
+			</equipment>
+		</item>
+		<item id="RocketLauncher2" index="61">
+			<class>Weapons</class>
+			<type>Vehicles</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>24200</buildcost>
+			<civil>2</civil>
+			<mechanic>5</mechanic>
+			<computer>4</computer>
+			<ai>3</ai>
+			<military>6</military>
+			<image-index>353</image-index>
+			<requires>RocketLauncher2</requires>
+			<factory>weapon</factory>
+			<equipment>
+				<property name="range">8</property>
+				<property name="speed">7</property>
+				<property name="armor">1</property>
+				<property name="damage">4</property>
+				<property name="area">3</property>
+				<property name="projectile">surfacerocket</property>
+			</equipment>
+		</item>
+		<item id="SolarPlant" index="62">
+			<class>Buildings</class>
+			<type>Civil</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>16000</buildcost>
+			<civil>2</civil>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<image-index>411</image-index>
+			<factory>building</factory>
+		</item>
+		<item id="PhoodFactory" index="63">
+			<class>Buildings</class>
+			<type>Civil</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>10000</buildcost>
+			<civil>2</civil>
+			<mechanic>2</mechanic>
+			<computer>2</computer>
+			<image-index>412</image-index>
+			<factory>building</factory>
+		</item>
+		<item id="TradeCentre" index="64">
+			<class>Buildings</class>
+			<type>Civil</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>17000</buildcost>
+			<civil>2</civil>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<image-index>413</image-index>
+			<factory>building</factory>
+		</item>
+		<item id="InversionShield" index="65">
+			<class>Buildings</class>
+			<type>Military</type>
+			<level>0</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>15000</buildcost>
+			<civil>1</civil>
+			<mechanic>2</mechanic>
+			<computer>2</computer>
+			<ai>1</ai>
+			<military>2</military>
+			<image-index>421</image-index>
+			<factory>building</factory>
+		</item>
+		<item id="HyperShield" index="66">
+			<class>Buildings</class>
+			<type>Military</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>35000</buildcost>
+			<civil>3</civil>
+			<mechanic>2</mechanic>
+			<computer>4</computer>
+			<ai>2</ai>
+			<military>4</military>
+			<image-index>422</image-index>
+			<requires>InversionShield</requires>
+			<factory>building</factory>
+		</item>
+		<item id="Fortress" index="67">
+			<class>Buildings</class>
+			<type>Military</type>
+			<level>3</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>30000</buildcost>
+			<civil>4</civil>
+			<mechanic>3</mechanic>
+			<computer>2</computer>
+			<ai>1</ai>
+			<military>4</military>
+			<image-index>423</image-index>
+			<requires>IonCannon</requires>
+			<factory>building</factory>
+		</item>
+		<item id="Stronghold" index="68">
+			<class>Buildings</class>
+			<type>Military</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>50000</buildcost>
+			<civil>5</civil>
+			<mechanic>4</mechanic>
+			<computer>4</computer>
+			<ai>2</ai>
+			<military>5</military>
+			<image-index>424</image-index>
+			<requires>PlasmaCannon</requires>
+			<factory>building</factory>
+		</item>
+		<item id="Bunker" index="69">
+			<class>Buildings</class>
+			<type>Military</type>
+			<level>4</level>
+			<maxtime>0</maxtime>
+			<maxcost>0</maxcost>
+			<buildcost>18000</buildcost>
+			<civil>3</civil>
+			<mechanic>3</mechanic>
+			<computer>2</computer>
+			<military>3</military>
+			<image-index>424</image-index>
+			<factory>building</factory>
 		</item>
 <!--
 		<item id="Radar2" index="">

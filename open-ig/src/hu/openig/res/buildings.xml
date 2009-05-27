@@ -515,6 +515,7 @@
 		<nobuild></nobuild>
 		<limit>-5</limit>
 		<kind>Shield</kind>
+		<research>InversionShield</research>
 		<tile techid='1' height='2' width='3' />
 		<tile techid='2' height='2' width='3' />
 		<tile techid='3' height='3' width='3' />
@@ -532,6 +533,7 @@
 		<nobuild></nobuild>
 		<limit>-5</limit>
 		<kind>Shield</kind>
+		<research>HyperShield</research>
 		<tile techid='1' height='4' width='4' />
 		<tile techid='2' height='2' width='3' />
 		<tile techid='3' height='3' width='4' offset='1' />
@@ -545,7 +547,7 @@
 		<cost>15000</cost>
 		<energy>1000</energy>
 		<worker>360</worker>
-		<tanks>4</tanks>
+		<vehicles>4</vehicles>
 		<firepower>20</firepower>
 		<range>3</range>
 		<nobuild></nobuild>
@@ -557,12 +559,13 @@
 		<cost>30000</cost>
 		<energy>1500</energy>
 		<worker>530</worker>
-		<tanks>8</tanks>
+		<vehicles>8</vehicles>
 		<firepower>40</firepower>
 		<range>4</range>
 		<nobuild></nobuild>
 		<limit>*</limit>
 		<kind>Defensive</kind>
+		<research>Fortress</research>
 		<tile techid='1' height='3' width='3' />
 		<tile techid='2' height='4' width='4' />
 		<tile techid='3' height='3' width='3' />
@@ -576,7 +579,7 @@
 		<cost>50000</cost>
 		<energy>2000</energy>
 		<worker>550</worker>
-		<tanks>12</tanks>
+		<vehicles>12</vehicles>
 		<firepower>60</firepower>
 		<range>5</range>
 		<nobuild></nobuild>
