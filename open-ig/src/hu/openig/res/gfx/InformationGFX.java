@@ -9,10 +9,14 @@
 package hu.openig.res.gfx;
 
 import hu.openig.utils.ImageUtils;
+import hu.openig.utils.JavaUtils;
+import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.ResourceMapper;
+import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.image.BufferedImage;
+import java.util.Map;
 
 
 /**
@@ -107,6 +111,10 @@ public class InformationGFX {
 	public final BufferedImage btnTaxLess;
 	/** Tax less down button image. */
 	public final BufferedImage btnTaxLessDown;
+	/** Research information panel normal image. */
+	public final Map<Integer, BufferedImage> researchInfoImage;
+	/** Research information panel wired image. */
+	public final Map<Integer, BufferedImage> researchWiredInfoImage;
 	/**
 	 * Constructor. Loads all graphics necessary for information screen rendering.
 	 * @param resMap the respource mapper
@@ -181,5 +189,18 @@ public class InformationGFX {
 		btnTaxLess = ImageUtils.subimage(infox, 274, 190, 70, 30);
 		btnTaxMoreDown = ImageUtils.subimage(infox, 344, 190, 70, 30);
 		btnTaxLessDown = ImageUtils.subimage(infox, 414, 190, 70, 30);
+		
+		researchInfoImage = JavaUtils.newHashMap();
+		researchWiredInfoImage = JavaUtils.newHashMap();
+		for (PACEntry e : PACFile.parseFully(resMap.get("DATA/INVENTS.PAC"))) {
+			if (e.filename.startsWith("INV")) {
+				int idx = Integer.parseInt(e.filename.substring(3, 6));
+				researchInfoImage.put(idx, PCXImage.parse(e.data, -1));
+			} else
+			if (e.filename.startsWith("WIR")) {
+				int idx = Integer.parseInt(e.filename.substring(3, 6));
+				researchWiredInfoImage.put(idx, PCXImage.parse(e.data, -1));
+			}
+		}
 	}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<buildings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Work\Java\workspace\Open-IG\src\hu\openig\res\buildings.xsd">
+<buildings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="buildings.xsd">
 	<building id="ColonyHub" index="0">
 		<cost>40000</cost>
 		<energy>0</energy>
