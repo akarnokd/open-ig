@@ -530,4 +530,40 @@
 		<hu>Szükséges:</hu>
 		<en>Requires:</en>
 	</entry>
+	<entry key='ResearchInfo.Status.Researchable'>
+		<hu>Kutatás indítható</hu>
+		<en>Researchable</en>
+	</entry>
+	<entry key='ResearchInfo.Status.NotResearchable'>
+		<hu>Nem fejleszthető</hu>
+		<en>Not researchable</en>
+	</entry>
+	<entry key='ResearchInfo.Researchable.Entry'>
+		<hu>%1$-8s: %2$s</hu>
+		<en>%1$-8s: %2$s</en>
+	</entry>
+	<entry key='ResearchInfo.Researchable.Complete'>
+		<hu>Kész</hu>
+		<en>Complete</en>
+	</entry>
+	<entry key='ResearchInfo.Researchable.RemainingTime'>
+		<hu>Hátr.idő</hu>
+		<en>Rem.time</en>
+	</entry>
+	<entry key='ResearchInfo.Researchable.Money'>
+		<hu>Pénz</hu>
+		<en>Money</en>
+	</entry>
+	<entry key='ResearchInfo.Researchable.Entry2'>
+		<hu>%1$-12s:</hu>
+		<en>%1$-12s:</en>
+	</entry>
+	<entry key='ResearchInfo.Researchable.Knowledge'>
+		<hu>Tud. szint</hu>
+		<en>Sci. level</en>
+	</entry>
+	<entry key='ResearchInfo.Researchable.Lab'>
+		<hu>Labor szint</hu>
+		<en>Lab level</en>
+	</entry>
 </labels>

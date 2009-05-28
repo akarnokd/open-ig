@@ -14,6 +14,7 @@ import hu.openig.core.InfoScreen;
 import hu.openig.core.PopularityType;
 import hu.openig.core.StarmapSelection;
 import hu.openig.core.TaxRate;
+import hu.openig.model.GameBuilding;
 import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
@@ -172,6 +173,8 @@ MouseWheelListener, ActionListener {
 	private final Rectangle energyAllocRect = new Rectangle();
 	/** The button for changing worker allocation strategy. */
 	private final Rectangle workerAllocRect = new Rectangle();
+	/** If the user double clicks on a research. */
+	private BtnAction onResearchDblClick;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager
@@ -1768,11 +1771,13 @@ MouseWheelListener, ActionListener {
 			for (int j = 0; j < clazz.size(); j++) {
 				if (j > 0) {
 					g2.setColor(hseparator);
-					g2.drawLine(x, y + 2, x + columnWidth - 1, y + 2);
+					int x2 = i < 3 ? x + columnWidth - 1 : mainArea.x + mainArea.width - 1;
+					g2.drawLine(x, y + 2, x2, y + 2);
 				}
 				List<ResearchTech> type = clazz.get(j);
 				for (ResearchTech rt : type) {
-					int color = gameWorld.player.availableTechnology.contains(rt) ? TextGFX.ORANGE : TextGFX.GRAY;
+					int color = gameWorld.player.availableTechnology.contains(rt) 
+					? TextGFX.ORANGE : (gameWorld.isResearchable(rt) ? TextGFX.GREEN : TextGFX.GRAY);
 					text.paintTo(g2, x + 4, y + 5, 7, color, rt.name);
 					if (rt == gameWorld.player.selectedTech) {
 						g2.setColor(Color.LIGHT_GRAY);
@@ -1787,47 +1792,156 @@ MouseWheelListener, ActionListener {
 		// render selected technology descriptions
 		ResearchTech rt = gameWorld.player.selectedTech;
 		if (rt != null) {
+			boolean researchable = gameWorld.isResearchable(rt);
+			boolean researched = gameWorld.player.availableTechnology.contains(rt);
 			String n = rt.description[0];
 			int l = text.getTextWidth(10, n);
 			text.paintTo(g2, mainArea.x + (mainArea.width - l) / 2, mainArea.y + mainArea.height - 56, 10, TextGFX.RED, n);
-			String desc = rt.description[1] + " " + rt.description[2];
-			String[] words = desc.split("\\s+");
-			int y = mainArea.y + mainArea.height - 41;
-			int x = mainArea.x + 3;
-			int sl = text.getTextWidth(7, " ");
-			for (String w : words) {
-				int len = text.getTextWidth(7, w);
-				if (x + len > mainArea.x + mainArea.width - 4) {
-					y += 12;
-					x = mainArea.x + 3;
+			if (researched || researchable) {
+				String desc = rt.description[1] + " " + rt.description[2];
+				String[] words = desc.split("\\s+");
+				int y = mainArea.y + mainArea.height - 41;
+				int x = mainArea.x + 3;
+				int sl = text.getTextWidth(7, " ");
+				for (String w : words) {
+					int len = text.getTextWidth(7, w);
+					if (x + len > mainArea.x + mainArea.width - 4) {
+						y += 12;
+						x = mainArea.x + 3;
+					}
+					text.paintTo(g2, x, y, 7, TextGFX.GREEN, w);
+					x += len + sl;
 				}
-				text.paintTo(g2, x, y, 7, TextGFX.GREEN, w);
-				x += len + sl;
 			}
 			l = text.getTextWidth(14, rt.name);
 			g2.setClip(titleArea);
 			text.paintTo(g2, titleArea.x + (titleArea.width - l) / 2, titleArea.y + (titleArea.height - 14) / 2, 14, TextGFX.RED, rt.name);
 
 			g2.setClip(secondaryArea);
-			if (gameWorld.player.availableTechnology.contains(rt)) {
+			if (researched) {
 				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 4, 10, TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.Researched"));
-				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 24, 10, TextGFX.GREEN, 
-						gameWorld.getLabel("ResearchInfo.Entry",
-							gameWorld.getLabel("ResearchInfo.Inventory"), 0
-						));
+				if (!"Buildings".equals(rt.clazz)) {
+					text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 24, 10, TextGFX.GREEN, 
+							gameWorld.getLabel("ResearchInfo.Entry",
+								gameWorld.getLabel("ResearchInfo.Inventory"), 
+								gameWorld.getInventoryCount(rt)
+							));
+				}
 				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 44, 10, TextGFX.GREEN, 
 						gameWorld.getLabel("ResearchInfo.Entry",
 							gameWorld.getLabel("ResearchInfo.Cost"), rt.buildCost
 						));
-				
-				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 135, 7, TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Requires"));
-				y = secondaryArea.y + 145;
-				x = secondaryArea.x + 15;
-				for (ResearchTech rrt : rt.requires) {
-					int color = gameWorld.player.availableTechnology.contains(rrt) ? TextGFX.GREEN : TextGFX.RED;
-					text.paintTo(g2, x, y, 7, color, rrt.name);
-					y += 10;
+				g2.setClip(pictureArea);
+				if (rt.infoImage != null) {
+					g2.drawImage(rt.infoImage, pictureArea.x, pictureArea.y, null);
+				} else {
+					int len = text.getTextWidth(14, "?");
+					text.paintTo(g2, pictureArea.x + (pictureArea.width - len) / 2, pictureArea.y + (pictureArea.height - 14) / 2, 14, TextGFX.RED, "?");
 				}
+			} else 
+			if (researchable) {
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 4, 10, 
+						TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.Researchable"));
+				
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 24, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("ResearchInfo.Researchable.Entry",
+							gameWorld.getLabel("ResearchInfo.Researchable.Complete"), 
+							0 + "%"
+						));
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 44, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("ResearchInfo.Researchable.Entry",
+							gameWorld.getLabel("ResearchInfo.Researchable.RemainingTime"), 
+							rt.minTime
+						));
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 64, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("ResearchInfo.Researchable.Entry",
+							gameWorld.getLabel("ResearchInfo.Researchable.Money"), 
+							0 + "/" + rt.maxCost
+						));
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 84, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("ResearchInfo.Researchable.Entry2",
+						gameWorld.getLabel("ResearchInfo.Researchable.Knowledge"))
+				);
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 104, 10, TextGFX.GREEN,
+						gameWorld.getLabel("ResearchInfo.Researchable.Entry2",
+						gameWorld.getLabel("ResearchInfo.Researchable.Lab")));
+
+				int currCivil = 0;
+				int currMech = 0;
+				int currComp = 0;
+				int currAi = 0;
+				int currMil = 0;
+				for (GamePlanet p : gameWorld.player.ownPlanets) {
+					for (GameBuilding b : p.buildings) {
+						Integer value = b.prototype.values.get("civil");
+						if (value != null) {
+							currCivil += value;
+						}
+						value = b.prototype.values.get("mechanic");
+						if (value != null) {
+							currMech += value;
+						}
+						value = b.prototype.values.get("computer");
+						if (value != null) {
+							currComp += value;
+						}
+						value = b.prototype.values.get("ai");
+						if (value != null) {
+							currAi += value;
+						}
+						value = b.prototype.values.get("military");
+						if (value != null) {
+							currMil += value;
+						}
+					}
+				}
+				int color = rt.civil <= currCivil ? TextGFX.GREEN : TextGFX.RED;
+				text.paintTo(g2, secondaryArea.x + 120, secondaryArea.y + 82, 14, color, 
+						Integer.toString(rt.civil));
+				color = rt.mechanic <= currMech ? TextGFX.GREEN : TextGFX.RED;
+				text.paintTo(g2, secondaryArea.x + 135, secondaryArea.y + 82, 14, color, 
+						Integer.toString(rt.mechanic));
+				color = rt.computer <= currComp ? TextGFX.GREEN : TextGFX.RED;
+				text.paintTo(g2, secondaryArea.x + 150, secondaryArea.y + 82, 14, color, 
+						Integer.toString(rt.computer));
+				color = rt.ai <= currAi ? TextGFX.GREEN : TextGFX.RED;
+				text.paintTo(g2, secondaryArea.x + 165, secondaryArea.y + 82, 14, color, 
+						Integer.toString(rt.ai));
+				color = rt.military <= currMil ? TextGFX.GREEN : TextGFX.RED;
+				text.paintTo(g2, secondaryArea.x + 180, secondaryArea.y + 82, 14, color, 
+						Integer.toString(rt.military));
+				
+				text.paintTo(g2, secondaryArea.x + 120, secondaryArea.y + 102, 14, TextGFX.GREEN, 
+						Integer.toString(currCivil));
+				text.paintTo(g2, secondaryArea.x + 135, secondaryArea.y + 102, 14, TextGFX.GREEN, 
+						Integer.toString(currMech));
+				text.paintTo(g2, secondaryArea.x + 150, secondaryArea.y + 102, 14, TextGFX.GREEN, 
+						Integer.toString(currComp));
+				text.paintTo(g2, secondaryArea.x + 165, secondaryArea.y + 102, 14, TextGFX.GREEN, 
+						Integer.toString(currAi));
+				text.paintTo(g2, secondaryArea.x + 180, secondaryArea.y + 102, 14, TextGFX.GREEN, 
+						Integer.toString(currMil));
+				
+				
+				g2.setClip(pictureArea);
+				if (rt.wiredInfoImage != null) {
+					g2.drawImage(rt.wiredInfoImage, pictureArea.x, pictureArea.y, null);
+				} else {
+					int len = text.getTextWidth(14, "?");
+					text.paintTo(g2, pictureArea.x + (pictureArea.width - len) / 2, pictureArea.y + (pictureArea.height - 14) / 2, 14, TextGFX.RED, "?");
+				}
+			} else {
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 4, 10, TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.NotResearchable"));
+			}
+			g2.setClip(secondaryArea);
+			text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 135, 7, TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Requires"));
+			int y = secondaryArea.y + 145;
+			int x = secondaryArea.x + 15;
+			for (ResearchTech rrt : rt.requires) {
+				int color = gameWorld.player.availableTechnology.contains(rrt) 
+				? TextGFX.ORANGE : (gameWorld.isResearchable(rrt) ? TextGFX.GREEN : TextGFX.GRAY);
+				text.paintTo(g2, x, y, 7, color, rrt.name);
+				y += 10;
 			}
 		}
 		
@@ -1853,6 +1967,9 @@ MouseWheelListener, ActionListener {
 					}
 					// on double click jump to either the research or to the production screen
 					if (e.getClickCount() == 2) {
+						if (onResearchDblClick != null) {
+							onResearchDblClick.invoke();
+						}
 					}
 				}
 				repaint();
@@ -1884,5 +2001,17 @@ MouseWheelListener, ActionListener {
 			}
 		}
 		return null;
+	}
+	/**
+	 * @param onResearchDblClick the onResearchDblClick to set
+	 */
+	public void setOnResearchDblClick(BtnAction onResearchDblClick) {
+		this.onResearchDblClick = onResearchDblClick;
+	}
+	/**
+	 * @return the onResearchDblClick
+	 */
+	public BtnAction getOnResearchDblClick() {
+		return onResearchDblClick;
 	}
 }

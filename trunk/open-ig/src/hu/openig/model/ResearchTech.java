@@ -80,14 +80,6 @@ public class ResearchTech {
 	public final Map<String, Integer> values = JavaUtils.newHashMap();
 	/** Textual properties of this research technology. */
 	public final Map<String, String> properties = JavaUtils.newHashMap();
-	/** Image displayed on the equipment screen's fleet display. */
-	public BufferedImage smallImage;
-	/** Image displayed on the equipment screen's customization panel. */
-	public BufferedImage customImage;
-	/** The research/build image used. */
-	public BufferedImage rbImage;
-	/** The wired research/build image used. */
-	public BufferedImage rbImageWired;
 	/** The animation file to display in research/production screens. */
 	public File animation;
 	/** The set of technology ids in which this research is available. */
@@ -96,6 +88,10 @@ public class ResearchTech {
 	public String name;
 	/** The textual description lines. */
 	public String[] description = new String[3];
+	/** The image used on the information screen. */
+	public BufferedImage infoImage;
+	/** The wired version of the image for the information screen. */
+	public BufferedImage wiredInfoImage;
 	/**
 	 * Parses and processes a research XML.
 	 * @param resource the name of the resource
@@ -167,6 +163,8 @@ public class ResearchTech {
 					rt.clazzIndex = rt.imageIndex / 100;
 					rt.typeIndex = rt.imageIndex / 10 % 10;
 					rt.techIndex = rt.imageIndex % 10;
+					rt.infoImage = lookup.getInfoImage(rt.imageIndex);
+					rt.wiredInfoImage = lookup.getWiredInfoImage(rt.imageIndex);
 				} else
 				if ("factory".equals(n)) {
 					rt.factory = e.getTextContent();

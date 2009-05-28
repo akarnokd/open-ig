@@ -8,6 +8,8 @@
 
 package hu.openig.core;
 
+import java.awt.image.BufferedImage;
+
 
 /**
  * Callback interface for looking up various research related images and labels.
@@ -27,4 +29,16 @@ public interface ResearchLookup {
 	 * @return the 3 element array of the research description
 	 */
 	String[] getResearchDescription(int index);
+	/**
+	 * Returns the information image of the given research image-index.
+	 * @param index the index
+	 * @return the image
+	 */
+	BufferedImage getInfoImage(int index);
+	/**
+	 * Returns the wired information image of the given research image-index.
+	 * @param index the index
+	 * @return the wired image
+	 */
+	BufferedImage getWiredInfoImage(int index);
 }

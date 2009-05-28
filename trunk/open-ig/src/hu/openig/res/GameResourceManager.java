@@ -161,4 +161,18 @@ public final class GameResourceManager implements BuildingLookup, ResearchLookup
 	public String getResearchName(int index) {
 		return texts.equipmentName.get(index);
 	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BufferedImage getInfoImage(int index) {
+		return infoGFX.researchInfoImage.get(index);
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BufferedImage getWiredInfoImage(int index) {
+		return infoGFX.researchWiredInfoImage.get(index);
+	}
 }

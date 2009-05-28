@@ -333,10 +333,10 @@ public class GameWorld implements GameRaceLookup {
 	public void assignTechnologyToPlayers() {
 		for (GamePlayer player : players) {
 			for (ResearchTech rt : research.values()) {
-				if (rt.techIDs.contains(player.race.techId)) {
+				if (rt.techIDs.contains(player.race.techId) && rt.level <= level) {
 					player.knownTechnology.add(rt);
-					// FIXME: all technologies below the current level are considered automatically as researched, for now.
-					if (rt.level <= level) {
+					// set only the level0 technology as available, the rest is just known
+					if (rt.level == 0) {
 						player.availableTechnology.add(rt);
 					}
 				}
@@ -370,5 +370,27 @@ public class GameWorld implements GameRaceLookup {
 			currType.add(rt);
 		}
 		return result;
+	}
+	/**
+	 * Returns the inventory count of the given technology for the current player.
+	 * @param rt the technology
+	 * @return the number of items in inventory
+	 */
+	public int getInventoryCount(ResearchTech rt) {
+		return 0; // TODO inventory!
+	}
+	/**
+	 * Checks whether the given research can be started.
+	 * @param rt the research
+	 * @return true if all prerequisites are already researched
+	 */
+	public boolean isResearchable(ResearchTech rt) {
+		boolean researchable = true;
+		for (ResearchTech d : rt.requires) {
+			if (!player.availableTechnology.contains(d)) {
+				researchable = false;
+			}
+		}
+		return researchable;
 	}
 }
