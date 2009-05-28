@@ -510,4 +510,24 @@
 		<hu>Munkás</hu>
 		<en>Worker</en>
 	</entry>
+	<entry key='ResearchInfo.Status.Researched'>
+		<hu>Kifejlesztve</hu>
+		<en>Researched</en>
+	</entry>
+	<entry key='ResearchInfo.Entry'>
+		<hu>%1$-6s: %2$s</hu>
+		<en>%1$-9s: %2$s</en>
+	</entry>
+	<entry key='ResearchInfo.Inventory'>
+		<hu>Raktár</hu>
+		<en>Inventory</en>
+	</entry>
+	<entry key='ResearchInfo.Cost'>
+		<hu>Ár</hu>
+		<en>Cost</en>
+	</entry>
+	<entry key='ResearchInfo.Requires'>
+		<hu>Szükséges:</hu>
+		<en>Requires:</en>
+	</entry>
 </labels>

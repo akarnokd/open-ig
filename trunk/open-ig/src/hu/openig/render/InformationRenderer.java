@@ -19,6 +19,7 @@ import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
+import hu.openig.model.ResearchTech;
 import hu.openig.model.GameBuildingPrototype.BuildingImages;
 import hu.openig.res.GameResourceManager;
 import hu.openig.res.gfx.CommonGFX;
@@ -280,7 +281,10 @@ MouseWheelListener, ActionListener {
 			break;
 		case BUILDINGS:
 			renderBuildings(g2);
-;			break;
+			break;
+		case INVENTIONS:
+			renderResearch(g2);
+			break;
 		default:
 		}
 		achievementRenderer.renderAchievements(g2, this);
@@ -582,6 +586,9 @@ MouseWheelListener, ActionListener {
 		} else
 		if (currentScreen == InfoScreen.BUILDINGS) {
 			doBuildingPrototypeMousePressed(e);
+		}
+		if (currentScreen == InfoScreen.INVENTIONS) {
+			doResearchMousePressed(e);
 		}
 	}
 	/**
@@ -1545,14 +1552,17 @@ MouseWheelListener, ActionListener {
 				GameBuildingPrototype bp = getBuildingPrototypeForPositionList(pt);
 				if (bp != null) {
 					gameWorld.player.selectedBuildingPrototype = bp;
+					if (bp.researchTech != null) {
+						gameWorld.player.selectedTech = bp.researchTech;
+					}
+					// on double click go to the planet surface and into build mode
+					if (e.getClickCount() == 2) {
+						if (onDblClickBuilding != null) {
+							onDblClickBuilding.invoke();
+						}
+					}
 				}
 				repaint();
-			}
-			// on double click go to the planet surface and into build mode
-			if (e.getClickCount() == 2) {
-				if (onDblClickBuilding != null) {
-					onDblClickBuilding.invoke();
-				}
 			}
 		}
 	}
@@ -1735,5 +1745,144 @@ MouseWheelListener, ActionListener {
 	 */
 	public BtnAction getOnDblClickPlanet() {
 		return onDblClickPlanet;
+	}
+	/**
+	 * Renders the research tab.
+	 * @param g2 the graphics object
+	 */
+	private void renderResearch(Graphics2D g2) {
+		List<List<List<ResearchTech>>> rtl = gameWorld.getPlayerResearchList();
+		int columnWidth = (mainArea.width) / 4;
+		Shape sp = g2.getClip();
+		g2.setClip(mainArea);
+		Color hseparator = new Color(80, 80, 80);
+		Color vseparator = new Color(76, 108, 180);
+		for (int i = 0; i < rtl.size(); i++) {
+			int x = mainArea.x + i * columnWidth;
+			int y = mainArea.y;
+			if (i > 0) {
+				g2.setColor(vseparator);
+				g2.drawLine(x, mainArea.y, x, mainArea.y + mainArea.height - 60);
+			}
+			List<List<ResearchTech>> clazz = rtl.get(i);
+			for (int j = 0; j < clazz.size(); j++) {
+				if (j > 0) {
+					g2.setColor(hseparator);
+					g2.drawLine(x, y + 2, x + columnWidth - 1, y + 2);
+				}
+				List<ResearchTech> type = clazz.get(j);
+				for (ResearchTech rt : type) {
+					int color = gameWorld.player.availableTechnology.contains(rt) ? TextGFX.ORANGE : TextGFX.GRAY;
+					text.paintTo(g2, x + 4, y + 5, 7, color, rt.name);
+					if (rt == gameWorld.player.selectedTech) {
+						g2.setColor(Color.LIGHT_GRAY);
+						g2.drawRect(x + 2 , y + 2, columnWidth - 4, 11);
+					}
+					y += 12;
+				}
+			}
+		}
+		g2.setColor(vseparator);
+		g2.drawLine(mainArea.x, mainArea.y + mainArea.height - 59, mainArea.x + mainArea.width - 1, mainArea.y + mainArea.height - 59);
+		// render selected technology descriptions
+		ResearchTech rt = gameWorld.player.selectedTech;
+		if (rt != null) {
+			String n = rt.description[0];
+			int l = text.getTextWidth(10, n);
+			text.paintTo(g2, mainArea.x + (mainArea.width - l) / 2, mainArea.y + mainArea.height - 56, 10, TextGFX.RED, n);
+			String desc = rt.description[1] + " " + rt.description[2];
+			String[] words = desc.split("\\s+");
+			int y = mainArea.y + mainArea.height - 41;
+			int x = mainArea.x + 3;
+			int sl = text.getTextWidth(7, " ");
+			for (String w : words) {
+				int len = text.getTextWidth(7, w);
+				if (x + len > mainArea.x + mainArea.width - 4) {
+					y += 12;
+					x = mainArea.x + 3;
+				}
+				text.paintTo(g2, x, y, 7, TextGFX.GREEN, w);
+				x += len + sl;
+			}
+			l = text.getTextWidth(14, rt.name);
+			g2.setClip(titleArea);
+			text.paintTo(g2, titleArea.x + (titleArea.width - l) / 2, titleArea.y + (titleArea.height - 14) / 2, 14, TextGFX.RED, rt.name);
+
+			g2.setClip(secondaryArea);
+			if (gameWorld.player.availableTechnology.contains(rt)) {
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 4, 10, TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.Researched"));
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 24, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("ResearchInfo.Entry",
+							gameWorld.getLabel("ResearchInfo.Inventory"), 0
+						));
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 44, 10, TextGFX.GREEN, 
+						gameWorld.getLabel("ResearchInfo.Entry",
+							gameWorld.getLabel("ResearchInfo.Cost"), rt.buildCost
+						));
+				
+				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 135, 7, TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Requires"));
+				y = secondaryArea.y + 145;
+				x = secondaryArea.x + 15;
+				for (ResearchTech rrt : rt.requires) {
+					int color = gameWorld.player.availableTechnology.contains(rrt) ? TextGFX.GREEN : TextGFX.RED;
+					text.paintTo(g2, x, y, 7, color, rrt.name);
+					y += 10;
+				}
+			}
+		}
+		
+		g2.setClip(sp);
+	}
+	/**
+	 * Perform actions for mouse events in the research tab and main area.
+	 * @param e the mouse event
+	 */
+	private void doResearchMousePressed(MouseEvent e) {
+		Point pt = e.getPoint();
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			if (mainArea.contains(pt)) {
+				ResearchTech rt = getResearchForPosition(pt);
+				if (rt != null) {
+					gameWorld.player.selectedTech = rt;
+					// select the building prototype for this tech if any
+					for (GameBuildingPrototype bp : gameWorld.buildingPrototypes) {
+						if (bp.researchTech == rt) {
+							gameWorld.player.selectedBuildingPrototype = bp;
+							break;
+						}
+					}
+					// on double click jump to either the research or to the production screen
+					if (e.getClickCount() == 2) {
+					}
+				}
+				repaint();
+			}
+		}
+	}
+	/**
+	 * Returns the research for the given mouse coordinate.
+	 * @param pt the point
+	 * @return the research or null if there is nothing listed at the point
+	 */
+	private ResearchTech getResearchForPosition(Point pt) {
+		int columnWidth = (mainArea.width) / 4;
+		int rowHeight = 12;
+		int col = (pt.x - mainArea.x) / columnWidth;
+		int row = (pt.y - mainArea.y - 2) / rowHeight;
+		List<List<List<ResearchTech>>> rtl = gameWorld.getPlayerResearchList();
+		if (col < rtl.size()) {
+			List<List<ResearchTech>> clazz = rtl.get(col);
+			int cnt = 0;
+			for (int i = 0; i < clazz.size(); i++) {
+				List<ResearchTech> type = clazz.get(i);
+				for (int j = 0; j < type.size(); j++) {
+					if (cnt == row) {
+						return type.get(j);
+					}
+					cnt++;
+				}
+			}
+		}
+		return null;
 	}
 }

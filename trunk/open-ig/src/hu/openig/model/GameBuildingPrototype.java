@@ -91,17 +91,21 @@ public class GameBuildingPrototype {
 	public static final Set<String> PRODUCT_TYPES = new HashSet<String>(
 		Arrays.<String>asList("living-space", "energy-prod", "food", "hospital", "credit", "credit-dup")
 	);
-	/** Set of product types whose production depends on the operation percentage of the building. */
-	public static final Set<String> PRODUCTION_PERCENTABLES = new HashSet<String>(
-		Arrays.<String>asList("energy-prod", "spaceship", "weapon", "equipment")
-	);
+//	/** Set of product types whose production depends on the operation percentage of the building. */
+//	public static final Set<String> PRODUCTION_PERCENTABLES = new HashSet<String>(
+//		Arrays.<String>asList("energy-prod", "spaceship", "weapon", "equipment")
+//	);
 	/** The main building kind to check if a building could be built on a planet. */
 	public static final String MAIN_BUILDING = "MainBuilding";
+	/** The research identifier if this building needs to be researched. */
+	public String research;
 	/** 
 	 * Indicates the technology to research before this building can be built by the player.
 	 * Not all buildable objects are required to have a research technology associated. 
 	 */
 	public ResearchTech researchTech;
+	/** The building production output depends on the current operation level? */
+	public boolean productionPercentable;
 	/**
 	 * Parses and processes a building XML.
 	 * @param resource the name of the resource
@@ -178,6 +182,9 @@ public class GameBuildingPrototype {
 						b.limitValue = Integer.parseInt(limit);
 					}
 				} else
+				if ("research".equals(e1.getNodeName())) {
+					b.research = e1.getTextContent();
+				} else
 				if ("tile".equals(e1.getNodeName())) {
 					String techid = e1.getAttribute("techid");
 					// the datafile contains the width as a +x size!
@@ -207,14 +214,20 @@ public class GameBuildingPrototype {
 						bi.damagedTile.heightCorrection = Integer.parseInt(doffset);
 					}
 					b.images.put(techid, bi);
-				} else {
+				} else 
+				if ("property".equals(e1.getNodeName())) {
+					String n = e1.getAttribute("name");
 					String value = e1.getTextContent().trim();
-					try {
-						// if numerical, put into values
-						b.values.put(e1.getNodeName(), Integer.parseInt(value));
-					} catch (NumberFormatException ex) {
-						// else put into properties
-						b.properties.put(e1.getNodeName(), value);
+					if ("percentable".equals(n)) {
+						b.productionPercentable = "true".equals(value);
+					} else {
+						try {
+							// if numerical, put into values
+							b.values.put(n, Integer.parseInt(value));
+						} catch (NumberFormatException ex) {
+							// else put into properties
+							b.properties.put(n, value);
+						}
 					}
 				}
 			}

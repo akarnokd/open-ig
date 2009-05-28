@@ -12,6 +12,7 @@ import hu.openig.behavior.ResourceAllocator;
 import hu.openig.core.BuildLimit;
 import hu.openig.core.GameSpeed;
 import hu.openig.res.Labels;
+import hu.openig.utils.JavaUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,6 +63,10 @@ public class GameWorld implements GameRaceLookup {
 	public final List<GameBuildingPrototype> buildingPrototypes = new ArrayList<GameBuildingPrototype>();
 	/** The tech id to game building prototype map. */
 	public final Map<String, GameBuildingPrototype> buildingPrototypesMap = new HashMap<String, GameBuildingPrototype>();
+	/** Contains all research technology of the game. */
+	public final Map<String, ResearchTech> research = JavaUtils.newHashMap();
+	/** The current technology level. */
+	public int level;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -310,5 +315,60 @@ public class GameWorld implements GameRaceLookup {
 			}
 		}
 		
+	}
+	/**
+	 * Assign the appropriate technology to various researchable buildings.
+	 */
+	public void assignBuildingToResearch() {
+		for (GameBuildingPrototype bp : buildingPrototypes) {
+			if (bp.research != null && bp.research.length() > 0) {
+				bp.researchTech = research.get(bp.research);
+				if (bp.researchTech == null) {
+					throw new RuntimeException(String.format("Building %s research %s not found", bp.id, bp.research));
+				}
+			}
+		}
+	}
+	/** Assign the technologies to the players based on the current global technology level. */
+	public void assignTechnologyToPlayers() {
+		for (GamePlayer player : players) {
+			for (ResearchTech rt : research.values()) {
+				if (rt.techIDs.contains(player.race.techId)) {
+					player.knownTechnology.add(rt);
+					// FIXME: all technologies below the current level are considered automatically as researched, for now.
+					if (rt.level <= level) {
+						player.availableTechnology.add(rt);
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Returns the current player's research list grouped by class, type.
+	 * @return the list of research within a type within a class
+	 */
+	public List<List<List<ResearchTech>>> getPlayerResearchList() {
+		List<ResearchTech> rtl = new ArrayList<ResearchTech>(player.knownTechnology);
+		Collections.sort(rtl, ResearchTech.BY_IMAGE_INDEX);
+		int lastClazz = 0;
+		int lastType = 0;
+		List<List<List<ResearchTech>>> result = JavaUtils.newArrayList();
+		List<ResearchTech> currType = null;
+		List<List<ResearchTech>> currClass = null;
+		for (ResearchTech rt : rtl) {
+			if (lastClazz != rt.clazzIndex) {
+				lastClazz = rt.clazzIndex;
+				lastType = 0;
+				currClass = JavaUtils.newArrayList();
+				result.add(currClass);
+			}
+			if (lastType != rt.typeIndex) {
+				lastType = rt.typeIndex;
+				currType = JavaUtils.newArrayList();
+				currClass.add(currType);
+			}
+			currType.add(rt);
+		}
+		return result;
 	}
 }
