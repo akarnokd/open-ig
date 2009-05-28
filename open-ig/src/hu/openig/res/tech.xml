@@ -2,25 +2,25 @@
 <tech xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:noNamespaceSchemaLocation="tech.xsd">
 <!-- Technology trees for various races -->
-	<techrace id="1">
 		<!-- Empire -->
-		<item id="Fighter1" index="0">
+		<item id="Fighter1" index="0" desc-index='0'>
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>2000</buildcost>
 			<ai>1</ai>
 			<military>1</military>
 			<image-index>111</image-index>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="Fighter2" index="1">
+		<item id="Fighter2" index="1" desc-index='1'>
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>3200</buildcost>
 			<mechanic>1</mechanic>
@@ -28,13 +28,13 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>112</image-index>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="Fighter3" index="2">
+		<item id="Fighter3" index="2" desc-index='2'>
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>3</level>
-			<!-- Development time = maxtime / spent * mincost -->
-			<maxtime>3000</maxtime>
+			<mintime>375</mintime>
 			<!-- Default cost -->
 			<maxcost>12000</maxcost>
 			<buildcost>5000</buildcost>
@@ -44,15 +44,16 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>2</military>
 			<image-index>113</image-index>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 			</equipment>
 		</item>
-		<item id="Fighter4" index="3">
+		<item id="Fighter4" index="3" desc-index='3'>
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>18000</maxcost>
 			<buildcost>7500</buildcost>
 			<mechanic>3</mechanic>
 			<computer>2</computer>
@@ -61,13 +62,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>114</image-index>
 			<requires>Fighter3</requires>
 			<factory>spaceship</factory>
-		</item>
-		<item id="Fighter5" index="4">
+				<techids>1</techids>
+	</item>
+		<item id="Fighter5" index="4" desc-index='4'>
 			<class>Spaceships</class>
 			<type>Fighters</type>
-			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>22000</maxcost>
 			<buildcost>10000</buildcost>
 			<civil>1</civil>
 			<mechanic>5</mechanic>
@@ -76,13 +78,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>5</military>
 			<image-index>115</image-index>
 			<factory>spaceship</factory>
-		</item>
-		<item id="Fighter6" index="5">
+				<techids>1</techids>
+	</item>
+		<item id="Fighter6" index="5" desc-index='5'>
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>24000</maxcost>
 			<buildcost>12000</buildcost>
 			<mechanic>4</mechanic>
 			<computer>4</computer>
@@ -91,12 +94,13 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>116</image-index>
 			<requires>Rocket2</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="Destroyer1" index="6">
+		<item id="Destroyer1" index="6" desc-index='6'>
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>12000</buildcost>
 			<computer>1</computer>
@@ -104,6 +108,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>121</image-index>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot x='109' y='58' width='26' height='12'>
 					<type>Shields</type>
@@ -122,12 +127,12 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				</slot>
 			</equipment>
 		</item>
-		<item id="Destroyer2" index="7">
+		<item id="Destroyer2" index="7" desc-index='7'>
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>32000</maxcost>
 			<buildcost>17500</buildcost>
 			<mechanic>2</mechanic>
 			<computer>1</computer>
@@ -136,6 +141,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>122</image-index>
 			<requires>Laser2</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="15" width="24" x="187" y="39">
 					<type>Lasers</type>
@@ -159,20 +165,21 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				</slot>
 			</equipment>
 		</item>
-		<item id="Destroyer3" index="8">
+		<item id="Destroyer3" index="8" desc-index='8'>
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>44000</maxcost>
 			<buildcost>22000</buildcost>
 			<mechanic>3</mechanic>
 			<computer>4</computer>
 			<ai>3</ai>
 			<military>4</military>
 			<image-index>123</image-index>
-			<requires>Radar2, HyperDrive4, PlasmaGun</requires>
+			<requires>Radar2, HyperDrive4, PlasmaCannon</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="17" width="28" x="55" y="38">
 					<type>Radars</type>
@@ -192,7 +199,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				<slot height="22" width="27" x="207" y="58">
 					<type>HyperDrives</type>
 					<max>1</max>
-					<ids>HyperDrive 1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
+					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
 				</slot>
 				<slot height="10" width="22" x="169" y="84">
 					<type>Lasers</type>
@@ -206,12 +213,12 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				</slot>
 			</equipment>
 		</item>
-		<item id="Cruiser1" index="9">
+		<item id="Cruiser1" index="9" desc-index='9'>
 			<class>Spaceships</class>
 			<type>Cruisers</type>
-			<level>0</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>3</level>
+			<mintime>0</mintime>
+			<maxcost>24000</maxcost>
 			<buildcost>15000</buildcost>
 			<mechanic>2</mechanic>
 			<computer>1</computer>
@@ -220,6 +227,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>124</image-index>
 			<requires>Shield1</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="13" width="36" x="60" y="62">
 					<type>Shields</type>
@@ -248,12 +256,12 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				</slot>
 			</equipment>
 		</item>
-		<item id="Cruiser2" index="10">
+		<item id="Cruiser2" index="10" desc-index='10'>
 			<class>Spaceships</class>
 			<type>Cruisers</type>
-			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>50000</maxcost>
 			<buildcost>25000</buildcost>
 			<mechanic>2</mechanic>
 			<computer>3</computer>
@@ -262,6 +270,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>125</image-index>
 			<requires>Shield2, Laser2, Radar2</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="19" width="40" x="57" y="71">
 					<type>Shields</type>
@@ -295,12 +304,12 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				</slot>
 			</equipment>
 		</item>
-		<item id="Cruiser3" index="11">
+		<item id="Cruiser3" index="11" desc-index='11'>
 			<class>Spaceships</class>
 			<type>Cruisers</type>
-			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>5</level>
+			<mintime>0</mintime>
+			<maxcost>70000</maxcost>
 			<buildcost>36000</buildcost>
 			<civil>1</civil>
 			<mechanic>4</mechanic>
@@ -310,6 +319,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>126</image-index>
 			<requires>HyperDrive5,Shield2,Bomb2</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="10" width="21" x="38" y="67">
 					<type>Lasers</type>
@@ -353,11 +363,11 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				</slot>
 			</equipment>
 		</item>
-		<item id="Battleship1" index="12">
+		<item id="Battleship1" index="12" desc-index='12'>
 			<class>Spaceships</class>
 			<type>Battleships</type>
-			<level>3</level>
-			<maxtime>0</maxtime>
+			<level>0</level>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>80000</buildcost>
 			<civil>1</civil>
@@ -367,7 +377,8 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>131</image-index>
 			<requires>OrbitalFactory</requires>
-			<factory>orbital</factory>
+			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="10" width="21" x="45" y="53">
 					<type>Lasers</type>
@@ -410,14 +421,15 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
 				</slot>
 				<property name="vehicles">5</property>
+				<property name="needsOrbitalFactory">true</property> <!-- At least one orbital factory is required to produce this -->
 			</equipment>
 		</item>
-		<item id="Battleship2" index="13">
+		<item id="Battleship2" index="13" desc-index='13'>
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>150000</maxcost>
 			<buildcost>130000</buildcost>
 			<civil>3</civil>
 			<mechanic>3</mechanic>
@@ -425,8 +437,9 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<ai>2</ai>
 			<military>5</military>
 			<image-index>132</image-index>
-			<requires>HyperDrive4, Radar4, Shield3</requires>
-			<factory>orbital</factory>
+			<requires>HyperDrive4, Radar2, Shield3</requires>
+			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="9" width="20" x="33" y="61">
 					<type>Radars</type>
@@ -474,14 +487,15 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 					<ids>HyperDrive5</ids>
 				</slot>
 				<property name="vehicles">8</property>
+				<property name="needsOrbitalFactory">true</property> <!-- At least one deployed orbital factory is required to produce this -->
 			</equipment>
 		</item>
-		<item id="Battleship3" index="14">
+		<item id="Battleship3" index="14" desc-index='14'>
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>180000</maxcost>
 			<buildcost>230000</buildcost>
 			<civil>4</civil>
 			<mechanic>5</mechanic>
@@ -489,8 +503,9 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<ai>5</ai>
 			<military>7</military>
 			<image-index>133</image-index>
-			<requires>Battleship2, MesonGun, Bomb2</requires>
-			<factory>orbital</factory>
+			<requires>Battleship2, MesonCannon, Bomb2</requires>
+			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="12" width="27" x="9" y="76">
 					<type>Cannons</type>
@@ -543,14 +558,15 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
 				</slot>
 				<property name="vehicles">10</property>
+				<property name="needsOrbitalFactory">true</property> <!-- At least one orbital factory is required to produce this -->
 			</equipment>
 		</item>
-		<item id="ColonyShip" index="15">
+		<item id="ColonyShip" index="15" desc-index='15'>
 			<class>Spaceships</class>
 			<type>Battleships</type>
-			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>100000</maxcost>
 			<buildcost>80000</buildcost>
 			<civil>2</civil>
 			<mechanic>2</mechanic>
@@ -558,7 +574,8 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<ai>2</ai>
 			<image-index>134</image-index>
 			<requires>Radar2, Shield1</requires>
-			<factory>orbital</factory>
+			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="14" width="32" x="79" y="62">
 					<type>Shields</type>
@@ -575,13 +592,15 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 					<max>1</max>
 					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
 				</slot>
+				<property name="needsOrbitalFactory">true</property> <!-- At least one orbital factory is required to produce this -->
 			</equipment>
 		</item>
-		<item id="Flagship" index="16">
+		<item id="Flagship" index="16" desc-index='16'>
+			<!-- Not really buildable but still needed for information display. -->
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>6</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>1000000</buildcost>
 			<civil>5</civil>
@@ -590,7 +609,8 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<ai>5</ai>
 			<military>7</military>
 			<image-index>135</image-index>
-			<factory>orbital</factory>
+			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<slot height="8" width="21" x="24" y="51">
 					<type>Radars</type>
@@ -643,38 +663,41 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 					<ids>HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5</ids>
 				</slot>
 				<property name="vehicles">15</property>
+				<property name="needsOrbitalFactory">true</property> <!-- At least one orbital factory is required to produce this -->
 			</equipment>
 		</item>
-		<item id="Satellite" index="17">
+		<item id="Satellite" index="18" desc-index='17'>
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>120</buildcost>
 			<computer>1</computer>
 			<ai>1</ai>
 			<image-index>141</image-index>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="SpySatellite1" index="18">
+		<item id="SpySatellite1" index="19" desc-index='18'>
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>8000</maxcost>
 			<buildcost>1000</buildcost>
 			<mechanic>1</mechanic>
 			<computer>1</computer>
 			<ai>1</ai>
 			<image-index>142</image-index>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="SpySatellite2" index="19">
+		<item id="SpySatellite2" index="20" desc-index='19'>
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>12000</maxcost>
 			<buildcost>1000</buildcost>
 			<mechanic>2</mechanic>
@@ -682,15 +705,16 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<ai>3</ai>
 			<military>2</military>
 			<image-index>143</image-index>
-			<requires>SpySatellite</requires>
+			<requires>SpySatellite1</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="Hubble2" index="20">
+		<item id="Hubble2" index="21" desc-index='20'>
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>10000</maxcost>
 			<buildcost>2100</buildcost>
 			<mechanic>5</mechanic>
 			<computer>5</computer>
@@ -699,15 +723,16 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>144</image-index>
 			<requires>SpySatellite1, Radar2</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="radar">90</property>
 			</equipment>
 		</item>
-		<item id="SpaceStation1" index="21">
+		<item id="SpaceStation1" index="24" desc-index='21'>
 			<class>Spaceships</class>
 			<type>SpaceStations</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>65000</buildcost>
 			<civil>2</civil>
@@ -717,13 +742,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>3</military>
 			<image-index>151</image-index>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="OrbitalFactory" index="22">
+		<item id="OrbitalFactory" index="25" desc-index='22'>
 			<class>Spaceships</class>
 			<type>SpaceStations</type>
-			<level>0</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>3</level>
+			<mintime>0</mintime>
+			<maxcost>40000</maxcost>
 			<buildcost>80000</buildcost>
 			<civil>1</civil>
 			<mechanic>1</mechanic>
@@ -732,13 +758,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>152</image-index>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="SpaceStation2" index="23">
+		<item id="SpaceStation2" index="26" desc-index='23'>
 			<class>Spaceships</class>
 			<type>SpaceStations</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>110000</maxcost>
 			<buildcost>90000</buildcost>
 			<civil>3</civil>
 			<mechanic>3</mechanic>
@@ -748,13 +775,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>153</image-index>
 			<requires>Laser2, IonCannon, SpaceStation1</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="SpaceStation3" index="24">
+		<item id="SpaceStation3" index="27" desc-index='24'>
 			<class>Spaceships</class>
 			<type>SpaceStations</type>
 			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>200000</maxcost>
 			<buildcost>125000</buildcost>
 			<civil>6</civil>
 			<mechanic>4</mechanic>
@@ -764,44 +792,47 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>154</image-index>
 			<requires>Laser4, IonCannon, Rocket2</requires>
 			<factory>spaceship</factory>
+			<techids>1</techids>
 		</item>
-		<item id="HyperDrive1" index="25">
+		<item id="HyperDrive1" index="30" desc-index='25'>
 			<class>Equipments</class>
 			<type>HyperDrives</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>2000</buildcost>
 			<mechanic>1</mechanic>
 			<military>1</military>
 			<image-index>211</image-index>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 					<property name="speed">28</property>
 			</equipment>
 		</item>
-		<item id="HyperDrive2" index="26">
+		<item id="HyperDrive2" index="31" desc-index='26'>
 			<class>Equipments</class>
 			<type>HyperDrives</type>
-			<level>0</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>3</level>
+			<mintime>0</mintime>
+			<maxcost>14000</maxcost>
 			<buildcost>3200</buildcost>
 			<mechanic>2</mechanic>
 			<military>1</military>
 			<image-index>212</image-index>
 			<requires>HyperDrive1</requires>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="speed">30</property>
 			</equipment>
 		</item>
-		<item id="HyperDrive3" index="27">
+		<item id="HyperDrive3" index="32" desc-index='27'>
 			<class>Equipments</class>
 			<type>HyperDrives</type>
-			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>18000</maxcost>
 			<buildcost>4300</buildcost>
 			<civil>1</civil>
 			<mechanic>3</mechanic>
@@ -810,16 +841,17 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>213</image-index>
 			<requires>HyperDrive2</requires>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="speed">32</property>
 			</equipment>
 		</item>
-		<item id="HyperDrive4" index="28">
+		<item id="HyperDrive4" index="33" desc-index='28'>
 			<class>Equipments</class>
 			<type>HyperDrives</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>20000</maxcost>
 			<buildcost>6000</buildcost>
 			<civil>3</civil>
 			<mechanic>4</mechanic>
@@ -828,16 +860,17 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>214</image-index>
 			<requires>HyperDrive5</requires>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="speed">34</property>
 			</equipment>
 		</item>
-		<item id="HyperDrive5" index="29">
+		<item id="HyperDrive5" index="34" desc-index='29'>
 			<class>Equipments</class>
 			<type>HyperDrives</type>
 			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>24000</maxcost>
 			<buildcost>9000</buildcost>
 			<civil>4</civil>
 			<mechanic>6</mechanic>
@@ -846,16 +879,17 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>215</image-index>
 			<requires>HyperDrive4</requires>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="speed">36</property>
 			</equipment>
 		</item>
-		<item id="ECM1" index="30">
+		<item id="ECM1" index="36" desc-index='30'>
 			<class>Equipments</class>
 			<type>Modules</type>
-			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>11200</maxcost>
 			<buildcost>7000</buildcost>
 			<civil>1</civil>
 			<mechanic>2</mechanic>
@@ -864,16 +898,17 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>2</military>
 			<image-index>221</image-index>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="ecm">1</property>
 			</equipment>
 		</item>
-		<item id="ECM2" index="31">
+		<item id="ECM2" index="37" desc-index='31'>
 			<class>Equipments</class>
 			<type>Modules</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>12600</maxcost>
 			<buildcost>13500</buildcost>
 			<civil>2</civil>
 			<mechanic>3</mechanic>
@@ -883,30 +918,32 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>222</image-index>
 			<requires>ECM1, Rocket2</requires>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="ecm">2</property>
 			</equipment>
 		</item>
-		<item id="Storage1" index="32">
+		<item id="Storage1" index="38" desc-index='32'>
 			<class>Equipments</class>
 			<type>Modules</type>
 			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>10000</maxcost>
 			<buildcost>7400</buildcost>
 			<civil>1</civil>
 			<image-index>223</image-index>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="vehicles">3</property>
 			</equipment>
 		</item>
-		<item id="Storage2" index="33">
+		<item id="Storage2" index="39" desc-index='33'>
 			<class>Equipments</class>
 			<type>Modules</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>14000</maxcost>
 			<buildcost>10000</buildcost>
 			<civil>3</civil>
 			<mechanic>4</mechanic>
@@ -915,30 +952,32 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>224</image-index>
 			<requires>Storage1</requires>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="vehicles">5</property>
 			</equipment>
 		</item>
-		<item id="Radar1" index="34">
+		<item id="Radar1" index="42" desc-index='34'>
 			<class>Equipments</class>
 			<type>Radars</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>5000</buildcost>
 			<military>1</military>
 			<image-index>231</image-index>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="radar">15</property>
 			</equipment>
 		</item>
-		<item id="Radar2" index="35">
+		<item id="Radar2" index="43" desc-index='35'>
 			<class>Equipments</class>
 			<type>Radars</type>
 			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>18000</maxcost>
 			<buildcost>9000</buildcost>
 			<mechanic>2</mechanic>
 			<computer>2</computer>
@@ -947,16 +986,17 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>232</image-index>
 			<requires>Radar1</requires>
 			<factory>equipment</factory>
-			<equipment>
+				<techids>1</techids>
+		<equipment>
 				<property name="radar">30</property>
 			</equipment>
 		</item>
-		<item id="Radar3" index="36">
+		<item id="Radar3" index="44" desc-index='36'>
 			<class>Equipments</class>
 			<type>Radars</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>22000</maxcost>
 			<buildcost>16000</buildcost>
 			<civil>1</civil>
 			<mechanic>4</mechanic>
@@ -966,16 +1006,17 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>233</image-index>
 			<requires>Radar2</requires>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="radar">60</property>
 				<property name="enemydetect">1</property> <!-- Detects enemy fleet composition -->
 			</equipment>
 		</item>
-		<item id="Shield1" index="37">
+		<item id="Shield1" index="48" desc-index='37'>
 			<class>Equipments</class>
 			<type>Shields</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>4000</buildcost>
 			<civil>1</civil>
@@ -983,16 +1024,17 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>241</image-index>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="shield">25</property>
 			</equipment>
 		</item>
-		<item id="Shield2" index="38">
+		<item id="Shield2" index="49" desc-index='38'>
 			<class>Equipments</class>
 			<type>Shields</type>
-			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>20000</maxcost>
 			<buildcost>7500</buildcost>
 			<computer>3</computer>
 			<ai>1</ai>
@@ -1000,16 +1042,17 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>242</image-index>
 			<requires>Shield1</requires>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="shield">35</property>
 			</equipment>
 		</item>
-		<item id="Shield3" index="39">
+		<item id="Shield3" index="50" desc-index='39'>
 			<class>Equipments</class>
 			<type>Shields</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>24000</maxcost>
 			<buildcost>12000</buildcost>
 			<mechanic>1</mechanic>
 			<computer>4</computer>
@@ -1018,16 +1061,17 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>243</image-index>
 			<requires>Shield2, ParticleCannon</requires>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="shield">45</property>
 			</equipment>
 		</item>
-		<item id="Shield4" index="40">
+		<item id="Shield4" index="51" desc-index='40'>
 			<class>Equipments</class>
 			<type>Shields</type>
 			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>30000</maxcost>
 			<buildcost>19000</buildcost>
 			<civil>1</civil>
 			<mechanic>3</mechanic>
@@ -1036,15 +1080,16 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>7</military>
 			<image-index>244</image-index>
 			<factory>equipment</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="shield">60</property>
 			</equipment>
 		</item>
-		<item id="Laser1" index="41">
+		<item id="Laser1" index="60" desc-index='41'>
 			<class>Weapons</class>
 			<type>Lasers</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>620</buildcost>
 			<mechanic>1</mechanic>
@@ -1052,18 +1097,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>311</image-index>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">beam</property>
 				<property name="damage">1</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="Laser2" index="42">
+		<item id="Laser2" index="61" desc-index='42'>
 			<class>Weapons</class>
 			<type>Lasers</type>
 			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>8000</maxcost>
 			<buildcost>900</buildcost>
 			<mechanic>2</mechanic>
 			<computer>1</computer>
@@ -1071,18 +1117,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>312</image-index>
 			<requires>Laser1</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
-				<property name="projectile">beam</property>
+				<property name="projectile">dualbeam</property>
 				<property name="damage">2</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="Laser3" index="43">
+		<item id="Laser3" index="62" desc-index='43'>
 			<class>Weapons</class>
 			<type>Lasers</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>12</maxcost>
 			<buildcost>1400</buildcost>
 			<mechanic>2</mechanic>
 			<computer>3</computer>
@@ -1091,18 +1138,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>313</image-index>
 			<requires>Laser2, SolarPlant</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">beam</property>
 				<property name="damage">3</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="Laser4" index="44">
+		<item id="Laser4" index="63" desc-index='44'>
 			<class>Weapons</class>
 			<type>Lasers</type>
-			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>14000</maxcost>
 			<buildcost>1750</buildcost>
 			<mechanic>4</mechanic>
 			<computer>4</computer>
@@ -1111,18 +1159,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>314</image-index>
 			<requires>Laser3</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
-				<property name="projectile">beam</property>
+				<property name="projectile">dualbeam</property>
 				<property name="damage">6</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="IonCannon" index="45">
+		<item id="IonCannon" index="66" desc-index='45'>
 			<class>Weapons</class>
 			<type>Cannons</type>
-			<level>0</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>3</level>
+			<mintime>0</mintime>
+			<maxcost>8000</maxcost>
 			<buildcost>1200</buildcost>
 			<mechanic>1</mechanic>
 			<computer>1</computer>
@@ -1130,18 +1179,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>321</image-index>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">ion</property>
 				<property name="damage">3</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="PlasmaCannon" index="46">
+		<item id="PlasmaCannon" index="67" desc-index='46'>
 			<class>Weapons</class>
 			<type>Cannons</type>
-			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>12000</maxcost>
 			<buildcost>3200</buildcost>
 			<mechanic>2</mechanic>
 			<computer>4</computer>
@@ -1150,18 +1200,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>322</image-index>
 			<requires>IonCannon</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">plasma</property>
 				<property name="damage">6</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="ParticleCannon" index="47">
+		<item id="ParticleCannon" index="68" desc-index='47'>
 			<class>Weapons</class>
 			<type>Cannons</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>18000</maxcost>
 			<buildcost>3200</buildcost>
 			<mechanic>3</mechanic>
 			<computer>5</computer>
@@ -1170,18 +1221,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>323</image-index>
 			<requires>PlasmaCannon</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">particle</property>
 				<property name="damage">4</property>
 				<property name="rate">2</property>
 			</equipment>
 		</item>
-		<item id="MesonCannon" index="48">
+		<item id="MesonCannon" index="69" desc-index='48'>
 			<class>Weapons</class>
 			<type>Cannons</type>
 			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>28000</maxcost>
 			<buildcost>4000</buildcost>
 			<mechanic>5</mechanic>
 			<computer>6</computer>
@@ -1190,17 +1242,18 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>324</image-index>
 			<requires>ParticleCannon</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">meson</property>
 				<property name="damage">6</property>
 				<property name="rate">2</property>
 			</equipment>
 		</item>
-		<item id="Bomb1" index="49">
+		<item id="Bomb1" index="72" desc-index='49'>
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>1400</buildcost>
 			<mechanic>1</mechanic>
@@ -1208,18 +1261,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>331</image-index>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">rocket</property>
 				<property name="damage">10</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="Bomb2" index="50">
+		<item id="Bomb2" index="73" desc-index='50'>
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>10000</maxcost>
 			<buildcost>1950</buildcost>
 			<civil>1</civil>
 			<mechanic>1</mechanic>
@@ -1229,18 +1283,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>332</image-index>
 			<requires>Bomb1</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">rocket</property>
 				<property name="damage">20</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="VirusBomb" index="51">
+		<item id="VirusBomb" index="74" desc-index='51'>
 			<class>Weapons</class>
 			<type>Projectiles</type>
-			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>30000</maxcost>
 			<buildcost>5000</buildcost>
 			<civil>1</civil>
 			<mechanic>2</mechanic>
@@ -1250,17 +1305,18 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>333</image-index>
 			<requires>Bomb2</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">rocket</property>
 				<property name="virus">1</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="Rocket1" index="52">
+		<item id="Rocket1" index="75" desc-index='52'>
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>900</buildcost>
 			<mechanic>1</mechanic>
@@ -1269,18 +1325,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>334</image-index>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">rocket</property>
 				<property name="damage">15</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="Rocket2" index="53">
+		<item id="Rocket2" index="76" desc-index='53'>
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>12000</maxcost>
 			<buildcost>1500</buildcost>
 			<mechanic>2</mechanic>
 			<computer>4</computer>
@@ -1289,18 +1346,19 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>335</image-index>
 			<requires>Rocket1</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">rocket</property>
 				<property name="damage">30</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="MultiheadedRocket" index="54">
+		<item id="MultiheadedRocket" index="77" desc-index='54'>
 			<class>Weapons</class>
 			<type>Projectiles</type>
-			<level>5</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>18000</maxcost>
 			<buildcost>6200</buildcost>
 			<mechanic>3</mechanic>
 			<computer>5</computer>
@@ -1309,17 +1367,18 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>336</image-index>
 			<requires>Rocket2, Bomb2</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="projectile">rocket</property>
 				<property name="damage">45</property>
 				<property name="rate">1</property>
 			</equipment>
 		</item>
-		<item id="LightTank" index="55">
+		<item id="LightTank" index="78" desc-index='55'>
 			<class>Weapons</class>
 			<type>Tanks</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>3000</buildcost>
 			<computer>1</computer>
@@ -1327,6 +1386,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>341</image-index>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="range">2</property>
 				<property name="speed">5</property>
@@ -1334,12 +1394,12 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				<property name="damage">1</property>
 			</equipment>
 		</item>
-		<item id="MediumTank" index="56">
+		<item id="MediumTank" index="79" desc-index='56'>
 			<class>Weapons</class>
 			<type>Tanks</type>
 			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>20000</maxcost>
 			<buildcost>3000</buildcost>
 			<civil>1</civil>
 			<mechanic>1</mechanic>
@@ -1349,6 +1409,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>342</image-index>
 			<requires>LightTank</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="range">4</property>
 				<property name="speed">4</property>
@@ -1356,12 +1417,12 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				<property name="damage">2</property>
 			</equipment>
 		</item>
-		<item id="HeavyTank" index="57">
+		<item id="HeavyTank" index="80" desc-index='57'>
 			<class>Weapons</class>
 			<type>Tanks</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>24000</maxcost>
 			<buildcost>7000</buildcost>
 			<civil>2</civil>
 			<mechanic>3</mechanic>
@@ -1371,6 +1432,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>343</image-index>
 			<requires>MediumTank</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="range">4</property>
 				<property name="speed">4</property>
@@ -1378,12 +1440,12 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				<property name="damage">3</property>
 			</equipment>
 		</item>
-		<item id="Behemoth" index="58">
+		<item id="Behemoth" index="81" desc-index='58'>
 			<class>Weapons</class>
 			<type>Tanks</type>
-			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>5</level>
+			<mintime>0</mintime>
+			<maxcost>32000</maxcost>
 			<buildcost>17500</buildcost>
 			<civil>3</civil>
 			<mechanic>4</mechanic>
@@ -1393,6 +1455,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>344</image-index>
 			<requires>HeavyTank</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="range">5</property>
 				<property name="speed">3</property>
@@ -1400,11 +1463,11 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				<property name="damage">4</property>
 			</equipment>
 		</item>
-		<item id="RadarCar" index="59">
+		<item id="RadarCar" index="84" desc-index='59'>
 			<class>Weapons</class>
 			<type>Vehicles</type>
 			<level>0</level>
-			<maxtime>0</maxtime>
+			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>10000</buildcost>
 			<mechanic>1</mechanic>
@@ -1412,17 +1475,18 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>351</image-index>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="armor">3</property>
 				<property name="surfaceradar">true</property>
 			</equipment>
 		</item>
-		<item id="RocketLauncher1" index="60">
+		<item id="RocketLauncher1" index="85" desc-index='60'>
 			<class>Weapons</class>
 			<type>Vehicles</type>
 			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>14000</maxcost>
 			<buildcost>10000</buildcost>
 			<civil>1</civil>
 			<mechanic>2</mechanic>
@@ -1431,6 +1495,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>2</military>
 			<image-index>352</image-index>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="range">7</property>
 				<property name="speed">6.5</property>
@@ -1440,12 +1505,12 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				<property name="projectile">surfacerocket</property>
 			</equipment>
 		</item>
-		<item id="RocketLauncher2" index="61">
+		<item id="RocketLauncher2" index="86" desc-index='61'>
 			<class>Weapons</class>
 			<type>Vehicles</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>24000</maxcost>
 			<buildcost>24200</buildcost>
 			<civil>2</civil>
 			<mechanic>5</mechanic>
@@ -1455,6 +1520,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>353</image-index>
 			<requires>RocketLauncher2</requires>
 			<factory>weapon</factory>
+			<techids>1</techids>
 			<equipment>
 				<property name="range">8</property>
 				<property name="speed">7</property>
@@ -1464,12 +1530,12 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 				<property name="projectile">surfacerocket</property>
 			</equipment>
 		</item>
-		<item id="SolarPlant" index="62">
+		<item id="SolarPlant" index="90" desc-index='62'>
 			<class>Buildings</class>
 			<type>Civil</type>
 			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>12000</maxcost>
 			<buildcost>16000</buildcost>
 			<civil>2</civil>
 			<mechanic>1</mechanic>
@@ -1478,26 +1544,28 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>411</image-index>
 			<factory>building</factory>
+			<techids>1</techids>
 		</item>
-		<item id="PhoodFactory" index="63">
+		<item id="PhoodFactory" index="91" desc-index='63'>
 			<class>Buildings</class>
 			<type>Civil</type>
 			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>10000</maxcost>
 			<buildcost>10000</buildcost>
 			<civil>2</civil>
 			<mechanic>2</mechanic>
 			<computer>2</computer>
 			<image-index>412</image-index>
 			<factory>building</factory>
+			<techids>1</techids>
 		</item>
-		<item id="TradeCentre" index="64">
+		<item id="TradeCentre" index="92" desc-index='64'>
 			<class>Buildings</class>
 			<type>Civil</type>
-			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>12000</maxcost>
 			<buildcost>17000</buildcost>
 			<civil>2</civil>
 			<mechanic>1</mechanic>
@@ -1506,13 +1574,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>1</military>
 			<image-index>413</image-index>
 			<factory>building</factory>
+			<techids>1</techids>
 		</item>
-		<item id="InversionShield" index="65">
+		<item id="InversionShield" index="96" desc-index='65'>
 			<class>Buildings</class>
 			<type>Military</type>
-			<level>0</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>3</level>
+			<mintime>0</mintime>
+			<maxcost>14000</maxcost>
 			<buildcost>15000</buildcost>
 			<civil>1</civil>
 			<mechanic>2</mechanic>
@@ -1521,13 +1590,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>2</military>
 			<image-index>421</image-index>
 			<factory>building</factory>
+			<techids>1</techids>
 		</item>
-		<item id="HyperShield" index="66">
+		<item id="HyperShield" index="97" desc-index='66'>
 			<class>Buildings</class>
 			<type>Military</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>30000</maxcost>
 			<buildcost>35000</buildcost>
 			<civil>3</civil>
 			<mechanic>2</mechanic>
@@ -1537,13 +1607,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>422</image-index>
 			<requires>InversionShield</requires>
 			<factory>building</factory>
+			<techids>1</techids>
 		</item>
-		<item id="Fortress" index="67">
+		<item id="Fortress" index="98" desc-index='67'>
 			<class>Buildings</class>
 			<type>Military</type>
-			<level>3</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>18000</maxcost>
 			<buildcost>30000</buildcost>
 			<civil>4</civil>
 			<mechanic>3</mechanic>
@@ -1553,13 +1624,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>423</image-index>
 			<requires>IonCannon</requires>
 			<factory>building</factory>
+			<techids>1</techids>
 		</item>
-		<item id="Stronghold" index="68">
+		<item id="Stronghold" index="99" desc-index='68'>
 			<class>Buildings</class>
 			<type>Military</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>29600</maxcost>
 			<buildcost>50000</buildcost>
 			<civil>5</civil>
 			<mechanic>4</mechanic>
@@ -1569,13 +1641,14 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<image-index>424</image-index>
 			<requires>PlasmaCannon</requires>
 			<factory>building</factory>
+			<techids>1</techids>
 		</item>
-		<item id="Bunker" index="69">
+		<item id="Bunker" index="100" desc-index='69'>
 			<class>Buildings</class>
 			<type>Military</type>
 			<level>4</level>
-			<maxtime>0</maxtime>
-			<maxcost>0</maxcost>
+			<mintime>0</mintime>
+			<maxcost>8000</maxcost>
 			<buildcost>18000</buildcost>
 			<civil>3</civil>
 			<mechanic>3</mechanic>
@@ -1583,21 +1656,103 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<military>3</military>
 			<image-index>424</image-index>
 			<factory>building</factory>
+			<techids>1</techids>
 		</item>
-<!--
-		<item id="Radar2" index="">
-			<class>Equipments</class>
+		<item id="RadarTelescope" index="102" desc-index='70'>
+			<class>Buildings</class>
+			<type>Radars</type>
+			<level>0</level>
+			<mintime>0</mintime>
+			<maxcost>0</maxcost>
+			<buildcost>4000</buildcost>
+			<mechanic>1</mechanic>
+			<computer>1</computer>
+			<ai>1</ai>
+			<military>1</military>
+			<image-index>431</image-index>
+			<factory>building</factory>
+			<techids>1</techids>
+		</item>
+		<item id="FieldTelescope" index="103" desc-index='71'>
+			<class>Buildings</class>
 			<type>Radars</type>
 			<level>3</level>
-			<maxtime>2000</maxtime>
-			<maxcost>18000</maxcost>
-			<buildcost>0</buildcost>
+			<mintime>0</mintime>
+			<maxcost>14000</maxcost>
+			<buildcost>10000</buildcost>
+			<civil>1</civil>
+			<mechanic>1</mechanic>
+			<computer>2</computer>
+			<ai>2</ai>
+			<military>2</military>
+			<image-index>432</image-index>
+			<factory>building</factory>
+			<techids>1</techids>
+		</item>
+		<item id="PhasedTelescope" index="104" desc-index='72'>
+			<class>Buildings</class>
+			<type>Radar</type>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>20000</maxcost>
+			<buildcost>25000</buildcost>
+			<civil>2</civil>
 			<mechanic>2</mechanic>
+			<computer>3</computer>
+			<ai>4</ai>
+			<military>2</military>
+			<image-index>433</image-index>
+			<factory>building</factory>
+			<techids>1</techids>
+		</item>
+		<item id="PlasmaProjector" index="108" desc-index='73'>
+			<class>Buildings</class>
+			<type>Guns</type>
+			<level>3</level>
+			<mintime>0</mintime>
+			<maxcost>14000</maxcost>
+			<buildcost>17800</buildcost>
+			<civil>2</civil>
+			<mechanic>1</mechanic>
 			<computer>2</computer>
 			<ai>1</ai>
 			<military>2</military>
-			<image-index></image-index>
+			<image-index>441</image-index>
+			<factory>building</factory>
+			<techids>1</techids>
 		</item>
--->
-	</techrace>
+		<item id="ParticleProjector" index="109" desc-index='74'>
+			<class>Buildings</class>
+			<type>Guns</type>
+			<level>4</level>
+			<mintime>0</mintime>
+			<maxcost>34000</maxcost>
+			<buildcost>32000</buildcost>
+			<civil>4</civil>
+			<mechanic>3</mechanic>
+			<computer>3</computer>
+			<ai>2</ai>
+			<military>4</military>
+			<image-index>442</image-index>
+			<requires>PlasmaProjector</requires>
+			<factory>building</factory>
+			<techids>1</techids>
+		</item>
+		<item id="MesonProjector" index="110" desc-index='75'>
+			<class>Buildings</class>
+			<type>Guns</type>
+			<level>5</level>
+			<mintime>0</mintime>
+			<maxcost>60</maxcost>
+			<buildcost>40000</buildcost>
+			<civil>5</civil>
+			<mechanic>4</mechanic>
+			<computer>4</computer>
+			<ai>4</ai>
+			<military>6</military>
+			<image-index>443</image-index>
+			<requires>ParticleProjector</requires>
+			<factory>building</factory>
+			<techids>1</techids>
+		</item>
 </tech>

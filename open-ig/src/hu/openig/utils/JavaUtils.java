@@ -11,6 +11,7 @@ package hu.openig.utils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
@@ -155,5 +156,13 @@ public final class JavaUtils {
 	 */
 	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap() {
 		return new LinkedHashMap<K, V>();
+	}
+	/**
+	 * Creates a new hash set with default capacity.
+	 * @param <T> the value type
+	 * @return the new hash set
+	 */
+	public static <T> HashSet<T> newHashSet() {
+		return new HashSet<T>();
 	}
 }

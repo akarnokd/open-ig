@@ -9,6 +9,7 @@
 package hu.openig.res;
 
 import hu.openig.core.BuildingLookup;
+import hu.openig.core.ResearchLookup;
 import hu.openig.core.Tile;
 import hu.openig.res.gfx.CommonGFX;
 import hu.openig.res.gfx.InformationGFX;
@@ -32,7 +33,7 @@ import java.util.concurrent.Future;
  * Graphics manager for the old game's graphical resources.
  * @author karnokd
  */
-public final class GameResourceManager implements BuildingLookup {
+public final class GameResourceManager implements BuildingLookup, ResearchLookup {
 	/** The sound component. */
 	public final Sounds sounds;
 	/** The common graphics objects. */
@@ -145,5 +146,19 @@ public final class GameResourceManager implements BuildingLookup {
 	@Override
 	public BufferedImage getThumbnail(String techId, int index) {
 		return planetGFX.buildingThumbnails.get(techId).get(index);
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String[] getResearchDescription(int index) {
+		return texts.equipmentInfo.get(index);
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getResearchName(int index) {
+		return texts.equipmentName.get(index);
 	}
 }

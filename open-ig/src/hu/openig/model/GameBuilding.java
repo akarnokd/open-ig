@@ -103,7 +103,7 @@ public class GameBuilding implements TileProvider {
 			String key = e.getKey();
 			if (GameBuildingPrototype.PRODUCT_TYPES.contains(key)) {
 				Object value = e.getValue();
-				if (value instanceof Integer && GameBuildingPrototype.PRODUCTION_PERCENTABLES.contains(key)) {
+				if (value instanceof Integer && prototype.productionPercentable) {
 					value = (int)(((Integer)value) * getOperationPercent()); 
 				}
 				return new Tuple2<String, Object>(key, value);
@@ -115,12 +115,7 @@ public class GameBuilding implements TileProvider {
 	 * @return true if this building's production depends proportionally on the received energy and worker amount.
 	 */
 	public boolean isProductionDependantOnOperationLevel() {
-		for (String s : prototype.values.keySet()) {
-			if (GameBuildingPrototype.PRODUCTION_PERCENTABLES.contains(s)) {
-				return true;
-			}
-		}
-		return false;
+		return prototype.productionPercentable;
 	}
 	/**
 	 * Returns the current received energy

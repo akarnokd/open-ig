@@ -35,6 +35,8 @@ public class GamePlayer {
 	public GamePlanet selectedPlanet;
 	/** The currently selected fleet. */
 	public GameFleet selectedFleet;
+	/** The currently selected research technology. */
+	public ResearchTech selectedTech;
 	/** The type currently selected game object on the starmap. */
 	public StarmapSelection selectionType;
 	/** The lazily initialized color object. */

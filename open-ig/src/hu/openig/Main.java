@@ -23,6 +23,7 @@ import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameRace;
 import hu.openig.model.GameWorld;
+import hu.openig.model.ResearchTech;
 import hu.openig.music.Music;
 import hu.openig.render.AchievementRenderer;
 import hu.openig.render.InfobarRenderer;
@@ -944,7 +945,10 @@ public class Main extends JFrame {
 
 		gameWorld.language = language;
 		gameWorld.labels = grm.labels;
-
+		
+		gameWorld.research.clear();
+		gameWorld.research.putAll(ResearchTech.parse("/hu/openig/res/tech.xml", grm));
+		
 		gameWorld.races.clear();
 		gameWorld.races.addAll(GameRace.parse("/hu/openig/res/races.xml"));
 		
@@ -952,6 +956,8 @@ public class Main extends JFrame {
 		gameWorld.buildingPrototypesMap.putAll(GameBuildingPrototype.parse("/hu/openig/res/buildings.xml", grm));
 		gameWorld.buildingPrototypes.clear();
 		gameWorld.buildingPrototypes.addAll(gameWorld.buildingPrototypesMap.values());
+		
+		gameWorld.assignBuildingToResearch();
 		
 		gameWorld.players.clear();
 		for (int i = 0; i < gameWorld.races.size(); i++) {
@@ -967,7 +973,9 @@ public class Main extends JFrame {
 				gameWorld.player = player;
 			}
 		}
-
+		gameWorld.level = 6;
+		gameWorld.assignTechnologyToPlayers();
+		
 		gameWorld.planets.clear();
 		gameWorld.planets.addAll(GamePlanet.parse("/hu/openig/res/planets.xml", gameWorld));
 		// initialize local player
