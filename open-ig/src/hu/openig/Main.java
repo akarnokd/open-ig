@@ -660,12 +660,15 @@ public class Main extends JFrame {
 	}
 	/** Action for starmap info button pressed. */
 	private void onStarmapInfo() {
-		if (gameWorld.player.selectionType == StarmapSelection.PLANET) {
-			informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
-		} else 
 		if (gameWorld.player.selectionType == StarmapSelection.FLEET) {
 			informationRenderer.setScreenButtonsFor(InfoScreen.FLEETS);
 		} else {
+			if (gameWorld.player.selectedPlanet == null) {
+				List<GamePlanet> pl = gameWorld.getOwnPlanetsByName();
+				if (pl.size() > 0) {
+					gameWorld.player.selectedPlanet = pl.get(0);
+				}
+			}
 			informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
 		}
 		informationRenderer.setVisible(true);
@@ -1034,7 +1037,7 @@ public class Main extends JFrame {
 	/** Select next planet. */
 	private void doSelectNexPlanetOrFleet() {
 		if (gameWorld.player.selectionType == null || gameWorld.player.selectionType == StarmapSelection.PLANET) {
-			List<GamePlanet> list = gameWorld.getOwnPlanetsInOrder();
+			List<GamePlanet> list = gameWorld.getOwnPlanetsByCoords();
 			if (list.size() > 0) {
 				int idx = list.indexOf(gameWorld.player.selectedPlanet);
 				gameWorld.player.selectedPlanet = list.get((idx + 1) % list.size());
@@ -1054,7 +1057,7 @@ public class Main extends JFrame {
 	/** Select previous planet. */
 	private void doSelectPrevPlanetOrFleet() {
 		if (gameWorld.player.selectionType == null || gameWorld.player.selectionType == StarmapSelection.PLANET) {
-			List<GamePlanet> list = gameWorld.getOwnPlanetsInOrder();
+			List<GamePlanet> list = gameWorld.getOwnPlanetsByCoords();
 			if (list.size() > 0) {
 				int idx = list.indexOf(gameWorld.player.selectedPlanet) - 1;
 				if (idx < 0) {

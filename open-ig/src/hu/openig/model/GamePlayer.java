@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.LabInfo;
 import hu.openig.core.PlayerType;
 import hu.openig.core.StarmapSelection;
 
@@ -177,5 +178,54 @@ public class GamePlayer {
 			sum += p.getCountOfBuilding(bp);
 		}
 		return sum;
+	}
+	/**
+	 * Returns the lab information for the player.
+	 * @return the lab information containing operational and total number of various lab types
+	 */
+	public LabInfo getLabInfo() {
+		LabInfo result = new LabInfo();
+		for (GamePlanet p : ownPlanets) {
+			for (GameBuilding b : p.buildings) {
+				Integer value = b.prototype.values.get("civil");
+				float op = b.getOperationPercent();
+				if (value != null) {
+					if (op >= 0.5f) {
+						result.currentCivil += value;
+					}
+					result.totalCivil += value;
+				}
+				value = b.prototype.values.get("mechanic");
+				if (value != null) {
+					if (op >= 0.5f) {
+						result.currentMechanic += value;
+					}
+					result.totalMechanic += value;
+				}
+				value = b.prototype.values.get("computer");
+				if (value != null) {
+					if (op >= 0.5f) {
+						result.currentComputer += value;
+					}
+					result.totalComputer += value;
+				}
+				value = b.prototype.values.get("ai");
+				if (value != null) {
+					if (op >= 0.5f) {
+						result.currentAi += value;
+					}
+					result.totalAi += value;
+				}
+				value = b.prototype.values.get("military");
+				if (value != null) {
+					if (op >= 0.5f) {
+						result.currentMilitary += value;
+					}
+					result.totalMilitary += value;
+				}
+			}
+		}
+		
+		return result;
 	}
 }
