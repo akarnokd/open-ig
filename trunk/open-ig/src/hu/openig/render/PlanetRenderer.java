@@ -338,8 +338,11 @@ MouseWheelListener, ActionListener {
 		}
 		GamePlanet planet = gameWorld.player.selectedPlanet;
 		if (planet == null) {
-			planet = gameWorld.getOwnPlanetsInOrder().get(0);
-			gameWorld.player.selectedPlanet = planet;
+			List<GamePlanet> pl = gameWorld.getOwnPlanetsByName();
+			if (pl.size() > 0) {
+				planet = pl.get(0);
+				gameWorld.player.selectedPlanet = planet;
+			}
 		}
 		if (planet.placeBuildings) {
 			for (GameBuilding b : planet.buildings) {

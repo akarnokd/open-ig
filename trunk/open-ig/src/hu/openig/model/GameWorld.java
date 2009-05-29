@@ -211,11 +211,19 @@ public class GameWorld implements GameRaceLookup {
 		return planets;
 	}
 	/**
-	 * @return the list of knwon planets with owner
+	 * @return the list of known planets ordered by coordinates
 	 */
-	public List<GamePlanet> getOwnPlanetsInOrder() {
+	public List<GamePlanet> getOwnPlanetsByCoords() {
 		List<GamePlanet> planets = new ArrayList<GamePlanet>(player.ownPlanets);
 		Collections.sort(planets, GamePlanet.BY_COORDINATES);
+		return planets;
+	}
+	/**
+	 * @return the list of own planets ordered by name
+	 */
+	public List<GamePlanet> getOwnPlanetsByName() {
+		List<GamePlanet> planets = new ArrayList<GamePlanet>(player.ownPlanets);
+		Collections.sort(planets, GamePlanet.BY_NAME_ASC);
 		return planets;
 	}
 	/**

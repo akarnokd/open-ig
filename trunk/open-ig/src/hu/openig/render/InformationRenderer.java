@@ -11,10 +11,10 @@ import hu.openig.core.AllocationPreference;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.InfoScreen;
+import hu.openig.core.LabInfo;
 import hu.openig.core.PopularityType;
 import hu.openig.core.StarmapSelection;
 import hu.openig.core.TaxRate;
-import hu.openig.model.GameBuilding;
 import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
@@ -1866,61 +1866,53 @@ MouseWheelListener, ActionListener {
 						gameWorld.getLabel("ResearchInfo.Researchable.Entry2",
 						gameWorld.getLabel("ResearchInfo.Researchable.Lab")));
 
-				int currCivil = 0;
-				int currMech = 0;
-				int currComp = 0;
-				int currAi = 0;
-				int currMil = 0;
-				for (GamePlanet p : gameWorld.player.ownPlanets) {
-					for (GameBuilding b : p.buildings) {
-						Integer value = b.prototype.values.get("civil");
-						if (value != null) {
-							currCivil += value;
-						}
-						value = b.prototype.values.get("mechanic");
-						if (value != null) {
-							currMech += value;
-						}
-						value = b.prototype.values.get("computer");
-						if (value != null) {
-							currComp += value;
-						}
-						value = b.prototype.values.get("ai");
-						if (value != null) {
-							currAi += value;
-						}
-						value = b.prototype.values.get("military");
-						if (value != null) {
-							currMil += value;
-						}
-					}
-				}
-				int color = rt.civil <= currCivil ? TextGFX.GREEN : TextGFX.RED;
+				LabInfo li = gameWorld.player.getLabInfo();
+				int color = rt.civil <= li.currentCivil ? TextGFX.GREEN : TextGFX.RED;
 				text.paintTo(g2, secondaryArea.x + 120, secondaryArea.y + 82, 14, color, 
 						Integer.toString(rt.civil));
-				color = rt.mechanic <= currMech ? TextGFX.GREEN : TextGFX.RED;
+				color = rt.mechanic <= li.currentMechanic ? TextGFX.GREEN : TextGFX.RED;
 				text.paintTo(g2, secondaryArea.x + 135, secondaryArea.y + 82, 14, color, 
 						Integer.toString(rt.mechanic));
-				color = rt.computer <= currComp ? TextGFX.GREEN : TextGFX.RED;
+				color = rt.computer <= li.currentComputer ? TextGFX.GREEN : TextGFX.RED;
 				text.paintTo(g2, secondaryArea.x + 150, secondaryArea.y + 82, 14, color, 
 						Integer.toString(rt.computer));
-				color = rt.ai <= currAi ? TextGFX.GREEN : TextGFX.RED;
+				color = rt.ai <= li.currentAi ? TextGFX.GREEN : TextGFX.RED;
 				text.paintTo(g2, secondaryArea.x + 165, secondaryArea.y + 82, 14, color, 
 						Integer.toString(rt.ai));
-				color = rt.military <= currMil ? TextGFX.GREEN : TextGFX.RED;
+				color = rt.military <= li.currentMilitary ? TextGFX.GREEN : TextGFX.RED;
 				text.paintTo(g2, secondaryArea.x + 180, secondaryArea.y + 82, 14, color, 
 						Integer.toString(rt.military));
+				//------------------------------------------------------------------------
+				color = li.currentCivil < li.totalCivil ? TextGFX.YELLOW : TextGFX.GREEN;
+				text.paintTo(g2, secondaryArea.x + 120, secondaryArea.y + 102, 14, color, 
+						Integer.toString(li.currentCivil));
 				
-				text.paintTo(g2, secondaryArea.x + 120, secondaryArea.y + 102, 14, TextGFX.GREEN, 
-						Integer.toString(currCivil));
-				text.paintTo(g2, secondaryArea.x + 135, secondaryArea.y + 102, 14, TextGFX.GREEN, 
-						Integer.toString(currMech));
-				text.paintTo(g2, secondaryArea.x + 150, secondaryArea.y + 102, 14, TextGFX.GREEN, 
-						Integer.toString(currComp));
-				text.paintTo(g2, secondaryArea.x + 165, secondaryArea.y + 102, 14, TextGFX.GREEN, 
-						Integer.toString(currAi));
-				text.paintTo(g2, secondaryArea.x + 180, secondaryArea.y + 102, 14, TextGFX.GREEN, 
-						Integer.toString(currMil));
+				color = li.currentMechanic < li.totalMechanic ? TextGFX.YELLOW : TextGFX.GREEN;
+				text.paintTo(g2, secondaryArea.x + 135, secondaryArea.y + 102, 14, color, 
+						Integer.toString(li.currentMechanic));
+				
+				color = li.currentComputer < li.totalComputer ? TextGFX.YELLOW : TextGFX.GREEN;
+				text.paintTo(g2, secondaryArea.x + 150, secondaryArea.y + 102, 14, color, 
+						Integer.toString(li.currentComputer));
+				
+				color = li.currentAi < li.totalAi ? TextGFX.YELLOW : TextGFX.GREEN;
+				text.paintTo(g2, secondaryArea.x + 165, secondaryArea.y + 102, 14, color, 
+						Integer.toString(li.currentAi));
+				
+				color = li.currentMilitary < li.totalMilitary ? TextGFX.YELLOW : TextGFX.GREEN;
+				text.paintTo(g2, secondaryArea.x + 180, secondaryArea.y + 102, 14, color, 
+						Integer.toString(li.currentMilitary));
+				//------------------------------------------------------------------------
+				text.paintTo(g2, secondaryArea.x + 123, secondaryArea.y + 122, 7, TextGFX.GREEN, 
+						Integer.toString(li.totalCivil));
+				text.paintTo(g2, secondaryArea.x + 138, secondaryArea.y + 122, 7, TextGFX.GREEN, 
+						Integer.toString(li.totalMechanic));
+				text.paintTo(g2, secondaryArea.x + 153, secondaryArea.y + 122, 7, TextGFX.GREEN, 
+						Integer.toString(li.totalComputer));
+				text.paintTo(g2, secondaryArea.x + 168, secondaryArea.y + 122, 7, TextGFX.GREEN, 
+						Integer.toString(li.totalAi));
+				text.paintTo(g2, secondaryArea.x + 183, secondaryArea.y + 122, 7, TextGFX.GREEN, 
+						Integer.toString(li.totalMilitary));
 				
 				
 				g2.setClip(pictureArea);
