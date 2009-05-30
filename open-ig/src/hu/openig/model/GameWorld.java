@@ -28,7 +28,7 @@ import java.util.TimeZone;
  * @author karnokd, 2009.05.11.
  * @version $Revision 1.0$
  */
-public class GameWorld implements GameRaceLookup {
+public class GameWorld {
 	/** Show the ultra fast speed setter button? */
 	public boolean showUltrafast;
 	/** Current game speed. */
@@ -70,7 +70,6 @@ public class GameWorld implements GameRaceLookup {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public GameRace getRace(int index) {
 		for (GameRace gr : races) {
 			if (gr.index == index) {
@@ -82,7 +81,6 @@ public class GameWorld implements GameRaceLookup {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public GameRace getRace(String id) {
 		for (GameRace gr : races) {
 			if (gr.id.equals(id)) {
@@ -94,7 +92,6 @@ public class GameWorld implements GameRaceLookup {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public GamePlayer getPlayerForRace(GameRace race) {
 		for (GamePlayer player : players) {
 			if (player.race == race) {
@@ -308,7 +305,6 @@ public class GameWorld implements GameRaceLookup {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public GameBuildingPrototype getBuildingPrototype(String buildingId) {
 		return buildingPrototypesMap.get(buildingId);
 	}
@@ -320,6 +316,7 @@ public class GameWorld implements GameRaceLookup {
 			if (p.owner != null) {
 				ResourceAllocator.allocateWorkers(p);
 				ResourceAllocator.allocateEnergy(p);
+				p.update();
 			}
 		}
 		
@@ -400,5 +397,17 @@ public class GameWorld implements GameRaceLookup {
 			}
 		}
 		return researchable;
+	}
+	/**
+	 * Select the first planet for the current player if there is no planet selected.
+	 */
+	public void selectFirstPlanet() {
+		if (player.selectedPlanet == null) {
+			List<GamePlanet> pl = getOwnPlanetsByName();
+			if (pl.size() > 0) {
+				player.selectedPlanet = pl.get(0);
+			}
+		}
+
 	}
 }

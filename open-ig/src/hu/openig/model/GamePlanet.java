@@ -23,7 +23,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -113,20 +112,32 @@ public class GamePlanet implements PlanetInfo {
 	 * The user-buildings on the map mapped via X,Y location for each of its entire rectangular base surface (e.g a 2x2 tile will have 4 entries in this map).
 	 * Moving buildings around is not allowed. 
 	 */
-	public final Map<Location, TileFragment> map = new HashMap<Location, TileFragment>();
+	public final Map<Location, TileFragment> map = JavaUtils.newHashMap();
 	/** The set of buildings on the planet. */
 	public final Set<GameBuilding> buildings = new HashSet<GameBuilding>();
 	/** Map for building prototype to instances of that building. */
-	public final Map<GameBuildingPrototype, Set<GameBuilding>> buildingTypes = new HashMap<GameBuildingPrototype, Set<GameBuilding>>();
+	public final Map<GameBuildingPrototype, Set<GameBuilding>> buildingTypes = JavaUtils.newHashMap();
 	/** Map for building kind to instances of that building. */
-	public final Map<String, Set<GameBuilding>> buildingKinds = new HashMap<String, Set<GameBuilding>>();
+	public final Map<String, Set<GameBuilding>> buildingKinds = JavaUtils.newHashMap();
+	/** Whenever there is a change in the contents, this counter gets incremented. */
+	private long updateCounter;
+	/** The current planet status record. */
+	private PlanetStatus planetStatus = new PlanetStatus();
+	/** The update counter value when the planet status was last evaluated. */
+	private long planetStatusCounter = -1L;
+	/** The rotation phases for a given zoom level. */
+	public Map<Integer, List<BufferedImage>> rotations;
+	/** Indicate that the planet state has changed. */
+	public void update() {
+		updateCounter++;
+	}
 	/**
 	 * Parses and processes a planetary resource XML.
 	 * @param resource the name of the resource
 	 * @param lookup the game race lookup
 	 * @return list of planets
 	 */
-	public static List<GamePlanet> parse(String resource, final GameRaceLookup lookup) {
+	public static List<GamePlanet> parse(String resource, final GamePlanetLookup lookup) {
 		List<GamePlanet> planet = XML.parseResource(resource, new XmlProcessor<List<GamePlanet>>() {
 			@Override
 			public List<GamePlanet> process(Document doc) {
@@ -141,7 +152,7 @@ public class GamePlanet implements PlanetInfo {
 	 * @param lookup the game race lookup
 	 * @return the list of planets
 	 */
-	private static List<GamePlanet> process(Document root, GameRaceLookup lookup) {
+	private static List<GamePlanet> process(Document root, GamePlanetLookup lookup) {
 		List<GamePlanet> result = new ArrayList<GamePlanet>();
 		for (Element planet : XML.childrenWithName(root.getDocumentElement(), "planet")) {
 			GamePlanet p = new GamePlanet();
@@ -187,7 +198,8 @@ public class GamePlanet implements PlanetInfo {
 					}
 				}
 			}
-			
+			p.rotations = lookup.getRotations(p.surfaceType.planetString);
+			p.update();
 			result.add(p);
 		}
 		return result;
@@ -239,101 +251,68 @@ public class GamePlanet implements PlanetInfo {
 		}
 	};
 	/**
-	 * @return the living space amount in persons
-	 */
-	public int getLivingSpace() {
-		int sum = 0;
-		for (GameBuilding b : buildings) {
-			if (b.getOperationPercent() >= 0.5) {
-				Integer value = b.prototype.values.get("living-space");
-				if (value != null) {
-					sum += value;
-				}
-			}
-		}
-		return sum;
-	}
-	/**
-	 * @return the hospital capacity in persons
-	 */
-	public int getHospital() {
-		int sum = 0;
-		for (GameBuilding b : buildings) {
-			if (b.getOperationPercent() >= 0.5) {
-				Integer value = b.prototype.values.get("hospital");
-				if (value != null) {
-					sum += value;
-				}
-			}
-		}
-		return sum;
-	}
-	/**
-	 * @return the food capacity in persons
-	 */
-	public int getFood() {
-		int sum = 0;
-		for (GameBuilding b : buildings) {
-			if (b.getOperationPercent() >= 0.5) {
-				Integer value = b.prototype.values.get("food");
-				if (value != null) {
-					sum += value;
-				}
-			}
-		}
-		return sum;
-	}
-	/**
 	 * @return the energy consumption in kWh
 	 */
 	public int getEnergyDemand() {
-		int sum = 0;
-		for (GameBuilding b : buildings) {
-			sum += b.getEnergyDemand();
-		}
-		return sum;
+		return getStatus().energyDemand;
 	}
 	/**
 	 * @return the maximum energy output in kWh
 	 */
 	public int getEnergyProduction() {
-		int sum = 0;
-		for (GameBuilding b : buildings) {
-			Integer value = b.prototype.values.get("energy-prod");
-			if (value != null) {
-				sum += value.intValue() * b.getOperationPercent();
-			}
-		}
-		return sum;
+		return getStatus().energyProduction;
 	}
 	/**
 	 * @return return the radar radius
 	 */
 	public int getRadarRadius() {
-		int sum = 0;
-		for (GameBuilding b : buildings) {
-			if (b.enabled) {
-				Integer value = b.prototype.values.get("radar");
-				if (value != null) {
-					int v = value;
-					if (v > sum) {
-						sum = v;
-					}
-				}
-			}
-		}
-		return sum;
+		return getStatus().radar;
 	}
 	/**
 	 * @return returns the total worker demand on the planet
 	 */
 	public int getWorkerDemand() {
-		int sum = 0;
-		for (GameBuilding b : buildings) {
-			int v = b.getWorkerDemand();
-			sum += v;
+		return getStatus().workerDemand;
+	}
+	/**
+	 * @return record representing various planetary statuses
+	 */
+	public PlanetStatus getStatus() {
+		if (planetStatusCounter != updateCounter) {
+			planetStatus = new PlanetStatus();
+			planetStatusCounter = updateCounter;
+			planetStatus.population = population;
+			for (GameBuilding b : buildings) {
+				planetStatus.energyDemand += b.getEnergyDemand();
+				planetStatus.workerDemand += b.getWorkerDemand();
+				if (b.getOperationPercent() >= 0.5) {
+					Integer value = b.prototype.values.get("energy-prod");
+					if (value != null) {
+						planetStatus.energyProduction += value.intValue() * b.getOperationPercent();
+					}
+					value = b.prototype.values.get("food");
+					if (value != null && b.getOperationPercent() >= 0.5) {
+						planetStatus.food += value;
+					}
+					value = b.prototype.values.get("hospital");
+					if (value != null && b.getOperationPercent() >= 0.5) {
+						planetStatus.hospital += value;
+					}
+					value = b.prototype.values.get("living-space");
+					if (value != null && b.getOperationPercent() >= 0.5) {
+						planetStatus.livingSpace += value;
+					}
+					value = b.prototype.values.get("radar");
+					if (value != null) {
+						int v = value;
+						if (v > planetStatus.radar) {
+							planetStatus.radar = v;
+						}
+					}
+				}
+			}
 		}
-		return sum;
+		return planetStatus;
 	}
 	/**
 	 * Convinience method to check if a planet has any problems with
@@ -341,9 +320,10 @@ public class GamePlanet implements PlanetInfo {
 	 * @return true if there is any problem
 	 */
 	public boolean hasProblems() {
-		return population > getLivingSpace() || population > getHospital()
-		|| population > getFood() || population < getWorkerDemand() 
-		|| getEnergyProduction() < getEnergyDemand();
+		PlanetStatus ps = getStatus();
+		return population > ps.livingSpace || population > ps.hospital
+		|| population > ps.food || population < ps.workerDemand 
+		|| ps.energyProduction < ps.energyDemand;
 	}
 	/**
 	 * Returns the number of buildings on the planet belonging to

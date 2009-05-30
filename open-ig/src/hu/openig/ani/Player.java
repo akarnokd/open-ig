@@ -12,7 +12,9 @@ import hu.openig.ani.SpidyAniDecoder.SpidyAniCallback;
 import hu.openig.core.BtnAction;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.sound.AudioThread;
+import hu.openig.utils.IOUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -44,6 +46,10 @@ public class Player {
 	private volatile float masterGain;
 	/** The mute value. */
 	private volatile boolean mute;
+	/** Disable audio playback. */
+	private boolean noAudio;
+	/** Fetch the entire animation file into memory? */
+	private boolean memoryPlayback;
 	/** The frame rates object. */
 	//private Framerates framerates;
 	/**
@@ -57,10 +63,12 @@ public class Player {
 	/** The playback loop. */
 	private void play() {
 		while (!stop && !Thread.currentThread().isInterrupted()) {
-			ad = new AudioThread();
-			ad.start();
-			ad.setMasterGain(masterGain);
-			ad.setMute(mute);
+			if (!noAudio) {
+				ad = new AudioThread();
+				ad.start();
+				ad.setMasterGain(masterGain);
+				ad.setMute(mute);
+			}
 			SpidyAniCallback callback = new SpidyAniCallback() {
 				/** Time calculation for proper frame delay. */
 				double starttime;
@@ -74,9 +82,13 @@ public class Player {
 				int height;
 				/** The frame/second. */
 				double fps;
+				/** The memory loaded animation. */
+				ByteArrayInputStream mem;
 				@Override
 				public void audioData(byte[] data) {
-					ad.submit(data);
+					if (ad != null) {
+						ad.submit(data);
+					}
 				}
 
 				@Override
@@ -87,12 +99,14 @@ public class Player {
 
 				@Override
 				public void finished() {
-					ad.stopPlayback();
-					// wait for the audio thread to finish
-					try {
-						ad.join();
-					} catch (InterruptedException e) {
-						// ignored here
+					if (ad != null) {
+						ad.stopPlayback();
+						// wait for the audio thread to finish
+						try {
+							ad.join();
+						} catch (InterruptedException e) {
+							// ignored here
+						}
 					}
 				}
 
@@ -103,10 +117,18 @@ public class Player {
 
 				@Override
 				public InputStream getNewInputStream() {
-					try {
-						return new FileInputStream(getFilename());
-					} catch (FileNotFoundException ex) {
-						throw new RuntimeException("Missing file? " + getFilename());
+					if (memoryPlayback) {
+						if (mem == null) {
+							mem = new ByteArrayInputStream(IOUtils.load(getFileName()));
+						}
+						mem.reset();
+						return mem;
+					} else {
+						try {
+							return new FileInputStream(getFilename());
+						} catch (FileNotFoundException ex) {
+							throw new RuntimeException("Missing file? " + getFilename());
+						}
 					}
 				}
 
@@ -116,7 +138,9 @@ public class Player {
 						starttime = System.currentTimeMillis();
 					}
 					if (frameCount++ == frameDelay) {
-						ad.startPlaybackNow();
+						if (ad != null) {
+							ad.startPlaybackNow();
+						}
 					}
 					surface.getBackbuffer().setRGB(0, 0, width, height, image, 0, width);
 					surface.swap();
@@ -133,7 +157,7 @@ public class Player {
 					this.height = height;
 					this.fps = fps;
 					surface.init(width, height);
-					// clear backbuffer
+//					 clear backbuffer
 					surface.getBackbuffer().setRGB(0, 0, width, height, new int[width * height], 0, width);
 					surface.swap();
 				}
@@ -150,11 +174,13 @@ public class Player {
 
 				@Override
 				public void stopped() {
-					ad.stopPlaybackNow();
-					try {
-						ad.join();
-					} catch (InterruptedException e) {
-						// ignored here
+					if (ad != null) {
+						ad.stopPlaybackNow();
+						try {
+							ad.join();
+						} catch (InterruptedException e) {
+							// ignored here
+						}
 					}
 				}
 				
@@ -192,7 +218,7 @@ public class Player {
 			public void run() {
 				play();
 			}
-		});
+		}, "Video: " + filename);
 		playback = t;
 		t.start();
 	}
@@ -278,5 +304,33 @@ public class Player {
 			au.setMute(mute);
 		}
 		this.mute = mute;
+	}
+	/**
+	 * Disable audio playback.
+	 * @param noAudio the noAudio to set
+	 */
+	public void setNoAudio(boolean noAudio) {
+		this.noAudio = noAudio;
+	}
+	/**
+	 * Disable audio playback.
+	 * @return the noAudio
+	 */
+	public boolean isNoAudio() {
+		return noAudio;
+	}
+	/**
+	 * Fetch the entire animation file into memory?
+	 * @param memoryPlayback the memoryPlayback to set
+	 */
+	public void setMemoryPlayback(boolean memoryPlayback) {
+		this.memoryPlayback = memoryPlayback;
+	}
+	/**
+	 * Fetch the entire animation file into memory?
+	 * @return the memoryPlayback
+	 */
+	public boolean isMemoryPlayback() {
+		return memoryPlayback;
 	}
 }

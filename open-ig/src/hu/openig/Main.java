@@ -20,6 +20,7 @@ import hu.openig.model.GameBuilding;
 import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
+import hu.openig.model.GamePlanetLookup;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameRace;
 import hu.openig.model.GameWorld;
@@ -31,6 +32,7 @@ import hu.openig.render.InformationRenderer;
 import hu.openig.render.MainmenuRenderer;
 import hu.openig.render.OptionsRenderer;
 import hu.openig.render.PlanetRenderer;
+import hu.openig.render.ResearchRenderer;
 import hu.openig.render.StarmapRenderer;
 import hu.openig.res.GameResourceManager;
 import hu.openig.sound.SoundFXPlayer;
@@ -47,6 +49,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -57,6 +60,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -79,7 +83,7 @@ public class Main extends JFrame {
 	/** */
 	private static final long serialVersionUID = 6922932910697940684L;
 	/** Version string. */
-	public static final String VERSION = "0.69 Alpha"; // TODO reach 1.0!
+	public static final String VERSION = "0.70 Alpha"; // TODO reach 1.0!
 	/** The game resource manager. */
 	GameResourceManager grm;
 	/** The user interface sounds. */
@@ -130,6 +134,8 @@ public class Main extends JFrame {
 	 * repaint.
 	 */
 	private Timer screenRefreshTimer;
+	/** The research renderer. */
+	private ResearchRenderer researchRenderer;
 	/** The main screen refresh time. */
 	private static final int SCREEN_REFRESH_TIME = 2500;
 	/**
@@ -170,6 +176,7 @@ public class Main extends JFrame {
 		achievementRenderer.add(informationRenderer);
 		optionsRenderer = new OptionsRenderer(grm, uiSounds, infobarRenderer, achievementRenderer);
 		achievementRenderer.add(optionsRenderer);
+		researchRenderer = new ResearchRenderer(grm, uiSounds, infobarRenderer, achievementRenderer);
 
 		mainmenuRenderer = new MainmenuRenderer(grm);
 		mainmenuRenderer.setOpaque(true);
@@ -186,9 +193,10 @@ public class Main extends JFrame {
 		optionsRenderer.setMusicVolume(0); // TODO fix during testing
 		music.setMute(true);
 		uiSounds.setMute(true);
+		player.setMute(true);
 		
 		screens = new JComponent[] {
-			starmapRenderer, planetRenderer, informationRenderer, mainmenuRenderer, moviePlayer, optionsRenderer
+			starmapRenderer, planetRenderer, researchRenderer, informationRenderer, mainmenuRenderer, moviePlayer, optionsRenderer
 		};
 		achievementRenderer.setScreenLayerer(new ScreenLayerer() { 
 			@Override
@@ -209,12 +217,14 @@ public class Main extends JFrame {
 		informationRenderer.setVisible(false);
 		planetRenderer.setVisible(false);
 		moviePlayer.setVisible(false);
+		researchRenderer.setVisible(false);
 		
 		infobarRenderer.setGameWorld(gameWorld);
 		starmapRenderer.setGameWorld(gameWorld);
 		informationRenderer.setGameWorld(gameWorld);
 		planetRenderer.setGameWorld(gameWorld);
 		optionsRenderer.setGameWorld(gameWorld);
+		researchRenderer.setGameWorld(gameWorld);
 		
 		setListeners();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -231,6 +241,7 @@ public class Main extends JFrame {
 		int lvl = 0;
 		layers.add(starmapRenderer, Integer.valueOf(lvl++));
 		layers.add(planetRenderer, Integer.valueOf(lvl++));
+		layers.add(researchRenderer, Integer.valueOf(lvl++));
 		layers.add(informationRenderer, Integer.valueOf(lvl++));
 		layers.add(mainmenuRenderer, Integer.valueOf(lvl++));
 
@@ -243,6 +254,7 @@ public class Main extends JFrame {
 			.addComponent(mainmenuRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(starmapRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(planetRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(researchRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(informationRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(moviePlayer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(optionsRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -252,6 +264,7 @@ public class Main extends JFrame {
 			.addComponent(mainmenuRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(starmapRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(planetRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(researchRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(informationRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(moviePlayer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(optionsRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -314,6 +327,13 @@ public class Main extends JFrame {
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { onF3Action(); } });
 
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "F6");
+		rp.getActionMap().put("F6", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { onF6Action(); } });
+
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "F7");
 		rp.getActionMap().put("F7", new AbstractAction() { 
@@ -336,13 +356,6 @@ public class Main extends JFrame {
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doKnowAllPlanets(); } });
 		
-		ks = KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK, false);
-		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+K");
-		rp.getActionMap().put("CTRL+K", new AbstractAction() { 
-			/** */
-			private static final long serialVersionUID = -5381260756829107852L;
-			public void actionPerformed(ActionEvent e) { doKnowAllPlanets(); } });
-
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK, false);
 		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+N");
 		rp.getActionMap().put("CTRL+N", new AbstractAction() { 
@@ -440,6 +453,30 @@ public class Main extends JFrame {
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doOwnEnemyPlanets(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+B");
+		rp.getActionMap().put("CTRL+B", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doWalkBuildPhases(); } });
+
+	}
+	/**
+	 * Walks the currently selected building's progress to display various construction phase tiles.
+	 */
+	protected void doWalkBuildPhases() {
+		if (gameWorld.player.selectedPlanet != null) {
+			GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
+			if (b != null) {
+				if (b.progress == 100) {
+					b.progress = 0;
+				} else {
+					b.progress = Math.min(100, b.progress + (100 / b.images.buildPhases.size()));
+				}
+				planetRenderer.clearRadarCache();
+			}
+		}
 	}
 	/**
 	 * Extracts the current planet configuration for the resource allocation optimizer.
@@ -546,11 +583,13 @@ public class Main extends JFrame {
 	}
 	/** Toggle bicubic interpolation on the starmap background. */
 	protected void doDoToggleInterpolations() {
-		starmapRenderer.setInterpolation(
-				ImageInterpolation.values()[(starmapRenderer.getInterpolation().ordinal() + 1) % ImageInterpolation.values().length]);
+		ImageInterpolation ii = ImageInterpolation.values()[(starmapRenderer.getInterpolation().ordinal() + 1) 
+		                                                    % ImageInterpolation.values().length];
+		starmapRenderer.setInterpolation(ii);
 		planetRenderer.clearRadarCache();
-		planetRenderer.setInterpolation(
-				ImageInterpolation.values()[(starmapRenderer.getInterpolation().ordinal() + 1) % ImageInterpolation.values().length]);
+		planetRenderer.setInterpolation(ii);
+		
+		moviePlayer.setInterpolation(ii);
 
 	}
 	/**
@@ -663,15 +702,11 @@ public class Main extends JFrame {
 		if (gameWorld.player.selectionType == StarmapSelection.FLEET) {
 			informationRenderer.setScreenButtonsFor(InfoScreen.FLEETS);
 		} else {
-			if (gameWorld.player.selectedPlanet == null) {
-				List<GamePlanet> pl = gameWorld.getOwnPlanetsByName();
-				if (pl.size() > 0) {
-					gameWorld.player.selectedPlanet = pl.get(0);
-				}
-			}
+			gameWorld.selectFirstPlanet();
 			informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
 		}
 		informationRenderer.setVisible(true);
+		researchRenderer.setVisible(false);
 		layers.validate();
 	}
 	/** Action for colony starmap button pressed. */
@@ -752,27 +787,28 @@ public class Main extends JFrame {
 	/** Action for F2 keypress. */
 	private void onF2Action() {
 		if (!player.isPlayback()) {
-			if (!starmapRenderer.isVisible()) {
-				uiSounds.playSound("Starmap");
-				showScreen(starmapRenderer);
-			} else
-			if (informationRenderer.isVisible()) {
-				uiSounds.playSound("Starmap");
-				showScreen(starmapRenderer);
-			}
+			uiSounds.playSound("Starmap");
+			showScreen(starmapRenderer);
 		}
 	}
 	/** Action for F3 keypress. */
 	private void onF3Action() {
 		if (!player.isPlayback()) {
-			if (!planetRenderer.isVisible()) {
-				uiSounds.playSound("Colony");
-				showScreen(planetRenderer);
-			} else
+			uiSounds.playSound("Colony");
+			showScreen(planetRenderer);
+		}
+	}
+	/** Action for F7 keypress. */
+	private void onF6Action() {
+		if (!player.isPlayback()) {
 			if (informationRenderer.isVisible()) {
-				uiSounds.playSound("Colony");
-				showScreen(planetRenderer);
+				informationRenderer.setVisible(false);
 			}
+			if (!researchRenderer.isVisible() && gameWorld.player.selectedTech != null) {
+				researchRenderer.selectCurrentTech();
+			}
+			researchRenderer.setVisible(true);
+			layers.validate();
 		}
 	}
 	/** Action for F7 keypress. */
@@ -786,6 +822,11 @@ public class Main extends JFrame {
 				if (planetRenderer.isVisible()) {
 					uiSounds.playSound("ColonyInformation");
 					informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
+				}
+				if (researchRenderer.isVisible()) {
+					uiSounds.playSound("Inventions");
+					informationRenderer.setScreenButtonsFor(InfoScreen.INVENTIONS);
+					researchRenderer.setVisible(false);
 				}
 				informationRenderer.setVisible(true);
 				layers.validate();
@@ -882,11 +923,13 @@ public class Main extends JFrame {
 			starmapRenderer.startAnimations();
 			informationRenderer.startAnimations();
 			planetRenderer.startTimers();
+			researchRenderer.startAnimation();
 		} else {
 			achievementRenderer.stopAnimations();
 			starmapRenderer.stopAnimations();
 			informationRenderer.stopAnimations();
 			planetRenderer.stopTimers();
+			researchRenderer.stopAnimation();
 		}
 	}
 	/** Show the options screen when called from the main menu. */
@@ -900,9 +943,13 @@ public class Main extends JFrame {
 	private void onAdjustSound() {
 		if (optionsRenderer.getAudioVolume() < 0.0001) {
 			uiSounds.setMute(true);
+			player.setMute(true);
 		} else {
 			uiSounds.setMute(false);
-			uiSounds.setMasterGain((float)(20 * Math.log10(optionsRenderer.getAudioVolume())));
+			float gain = (float)(20 * Math.log10(optionsRenderer.getAudioVolume()));
+			uiSounds.setMasterGain(gain);
+			player.setMute(false);
+			player.setMasterGain(gain);
 		}
 	}
 	/** If adjusting sound volume. */
@@ -980,7 +1027,34 @@ public class Main extends JFrame {
 		gameWorld.assignTechnologyToPlayers();
 		
 		gameWorld.planets.clear();
-		gameWorld.planets.addAll(GamePlanet.parse("/hu/openig/res/planets.xml", gameWorld));
+		gameWorld.planets.addAll(GamePlanet.parse("/hu/openig/res/planets.xml", new GamePlanetLookup() {
+			@Override
+			public GameBuildingPrototype getBuildingPrototype(String buildingId) {
+				return gameWorld.getBuildingPrototype(buildingId);
+			}
+
+			@Override
+			public GamePlayer getPlayerForRace(GameRace race) {
+				return gameWorld.getPlayerForRace(race);
+			}
+
+			@Override
+			public GameRace getRace(int index) {
+				return gameWorld.getRace(index);
+			}
+
+			@Override
+			public GameRace getRace(String id) {
+				return gameWorld.getRace(id);
+			}
+
+			@Override
+			public Map<Integer, List<BufferedImage>> getRotations(
+					String planetString) {
+				return grm.getRotations(planetString);
+			}
+			
+		}));
 		// initialize local player
 		
 		// create fleets for all owned planets

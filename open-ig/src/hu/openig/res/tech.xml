@@ -6,8 +6,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 		<item id="Fighter1" index="0" desc-index='0'>
 			<class>Spaceships</class>
 			<type>Fighters</type>
-			<level>0</level>
-			<mintime>0</mintime>
+			<level>0</level> 
 			<maxcost>0</maxcost>
 			<buildcost>2000</buildcost>
 			<ai>1</ai>
@@ -19,8 +18,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 		<item id="Fighter2" index="1" desc-index='1'>
 			<class>Spaceships</class>
 			<type>Fighters</type>
-			<level>0</level>
-			<mintime>0</mintime>
+			<level>2</level>
 			<maxcost>0</maxcost>
 			<buildcost>3200</buildcost>
 			<mechanic>1</mechanic>
@@ -34,7 +32,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>3</level>
-			<mintime>375</mintime>
 			<!-- Default cost -->
 			<maxcost>12000</maxcost>
 			<buildcost>5000</buildcost>
@@ -52,7 +49,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>18000</maxcost>
 			<buildcost>7500</buildcost>
 			<mechanic>3</mechanic>
@@ -68,7 +64,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>22000</maxcost>
 			<buildcost>10000</buildcost>
 			<civil>1</civil>
@@ -84,7 +79,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Fighters</type>
 			<level>5</level>
-			<mintime>0</mintime>
 			<maxcost>24000</maxcost>
 			<buildcost>12000</buildcost>
 			<mechanic>4</mechanic>
@@ -100,7 +94,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>12000</buildcost>
 			<computer>1</computer>
@@ -131,7 +124,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>32000</maxcost>
 			<buildcost>17500</buildcost>
 			<mechanic>2</mechanic>
@@ -169,7 +161,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>44000</maxcost>
 			<buildcost>22000</buildcost>
 			<mechanic>3</mechanic>
@@ -217,7 +208,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>24000</maxcost>
 			<buildcost>15000</buildcost>
 			<mechanic>2</mechanic>
@@ -260,7 +250,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>50000</maxcost>
 			<buildcost>25000</buildcost>
 			<mechanic>2</mechanic>
@@ -308,7 +297,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Cruisers</type>
 			<level>5</level>
-			<mintime>0</mintime>
 			<maxcost>70000</maxcost>
 			<buildcost>36000</buildcost>
 			<civil>1</civil>
@@ -367,7 +355,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>80000</buildcost>
 			<civil>1</civil>
@@ -428,7 +415,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>150000</maxcost>
 			<buildcost>130000</buildcost>
 			<civil>3</civil>
@@ -494,7 +480,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>5</level>
-			<mintime>0</mintime>
 			<maxcost>180000</maxcost>
 			<buildcost>230000</buildcost>
 			<civil>4</civil>
@@ -565,7 +550,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>100000</maxcost>
 			<buildcost>80000</buildcost>
 			<civil>2</civil>
@@ -600,7 +584,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Battleships</type>
 			<level>6</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>1000000</buildcost>
 			<civil>5</civil>
@@ -670,7 +653,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>120</buildcost>
 			<computer>1</computer>
@@ -683,7 +665,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>8000</maxcost>
 			<buildcost>1000</buildcost>
 			<mechanic>1</mechanic>
@@ -697,7 +678,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>12000</maxcost>
 			<buildcost>1000</buildcost>
 			<mechanic>2</mechanic>
@@ -713,7 +693,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>Satellites</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>10000</maxcost>
 			<buildcost>2100</buildcost>
 			<mechanic>5</mechanic>
@@ -732,7 +711,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>SpaceStations</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>65000</buildcost>
 			<civil>2</civil>
@@ -748,7 +726,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>SpaceStations</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>40000</maxcost>
 			<buildcost>80000</buildcost>
 			<civil>1</civil>
@@ -764,7 +741,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>SpaceStations</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>110000</maxcost>
 			<buildcost>90000</buildcost>
 			<civil>3</civil>
@@ -781,7 +757,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Spaceships</class>
 			<type>SpaceStations</type>
 			<level>5</level>
-			<mintime>0</mintime>
 			<maxcost>200000</maxcost>
 			<buildcost>125000</buildcost>
 			<civil>6</civil>
@@ -798,7 +773,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>HyperDrives</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>2000</buildcost>
 			<mechanic>1</mechanic>
@@ -814,7 +788,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>HyperDrives</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>14000</maxcost>
 			<buildcost>3200</buildcost>
 			<mechanic>2</mechanic>
@@ -831,7 +804,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>HyperDrives</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>18000</maxcost>
 			<buildcost>4300</buildcost>
 			<civil>1</civil>
@@ -850,7 +822,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>HyperDrives</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>20000</maxcost>
 			<buildcost>6000</buildcost>
 			<civil>3</civil>
@@ -869,7 +840,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>HyperDrives</type>
 			<level>5</level>
-			<mintime>0</mintime>
 			<maxcost>24000</maxcost>
 			<buildcost>9000</buildcost>
 			<civil>4</civil>
@@ -888,7 +858,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Modules</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>11200</maxcost>
 			<buildcost>7000</buildcost>
 			<civil>1</civil>
@@ -907,7 +876,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Modules</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>12600</maxcost>
 			<buildcost>13500</buildcost>
 			<civil>2</civil>
@@ -927,7 +895,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Modules</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>10000</maxcost>
 			<buildcost>7400</buildcost>
 			<civil>1</civil>
@@ -942,7 +909,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Modules</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>14000</maxcost>
 			<buildcost>10000</buildcost>
 			<civil>3</civil>
@@ -961,7 +927,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Radars</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>5000</buildcost>
 			<military>1</military>
@@ -976,7 +941,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Radars</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>18000</maxcost>
 			<buildcost>9000</buildcost>
 			<mechanic>2</mechanic>
@@ -995,7 +959,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Radars</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>22000</maxcost>
 			<buildcost>16000</buildcost>
 			<civil>1</civil>
@@ -1016,7 +979,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Shields</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>4000</buildcost>
 			<civil>1</civil>
@@ -1033,7 +995,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Shields</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>20000</maxcost>
 			<buildcost>7500</buildcost>
 			<computer>3</computer>
@@ -1051,7 +1012,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Shields</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>24000</maxcost>
 			<buildcost>12000</buildcost>
 			<mechanic>1</mechanic>
@@ -1070,7 +1030,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Equipments</class>
 			<type>Shields</type>
 			<level>5</level>
-			<mintime>0</mintime>
 			<maxcost>30000</maxcost>
 			<buildcost>19000</buildcost>
 			<civil>1</civil>
@@ -1089,7 +1048,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Lasers</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>620</buildcost>
 			<mechanic>1</mechanic>
@@ -1108,7 +1066,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Lasers</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>8000</maxcost>
 			<buildcost>900</buildcost>
 			<mechanic>2</mechanic>
@@ -1128,7 +1085,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Lasers</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>12</maxcost>
 			<buildcost>1400</buildcost>
 			<mechanic>2</mechanic>
@@ -1149,7 +1105,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Lasers</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>14000</maxcost>
 			<buildcost>1750</buildcost>
 			<mechanic>4</mechanic>
@@ -1170,7 +1125,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Cannons</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>8000</maxcost>
 			<buildcost>1200</buildcost>
 			<mechanic>1</mechanic>
@@ -1190,7 +1144,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Cannons</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>12000</maxcost>
 			<buildcost>3200</buildcost>
 			<mechanic>2</mechanic>
@@ -1211,7 +1164,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Cannons</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>18000</maxcost>
 			<buildcost>3200</buildcost>
 			<mechanic>3</mechanic>
@@ -1232,7 +1184,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Cannons</type>
 			<level>5</level>
-			<mintime>0</mintime>
 			<maxcost>28000</maxcost>
 			<buildcost>4000</buildcost>
 			<mechanic>5</mechanic>
@@ -1253,7 +1204,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>1400</buildcost>
 			<mechanic>1</mechanic>
@@ -1272,7 +1222,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>10000</maxcost>
 			<buildcost>1950</buildcost>
 			<civil>1</civil>
@@ -1294,7 +1243,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>30000</maxcost>
 			<buildcost>5000</buildcost>
 			<civil>1</civil>
@@ -1316,7 +1264,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>900</buildcost>
 			<mechanic>1</mechanic>
@@ -1336,7 +1283,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>12000</maxcost>
 			<buildcost>1500</buildcost>
 			<mechanic>2</mechanic>
@@ -1357,7 +1303,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Projectiles</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>18000</maxcost>
 			<buildcost>6200</buildcost>
 			<mechanic>3</mechanic>
@@ -1378,7 +1323,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Tanks</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>3000</buildcost>
 			<computer>1</computer>
@@ -1398,7 +1342,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Tanks</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>20000</maxcost>
 			<buildcost>3000</buildcost>
 			<civil>1</civil>
@@ -1421,7 +1364,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Tanks</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>24000</maxcost>
 			<buildcost>7000</buildcost>
 			<civil>2</civil>
@@ -1444,7 +1386,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Tanks</type>
 			<level>5</level>
-			<mintime>0</mintime>
 			<maxcost>32000</maxcost>
 			<buildcost>17500</buildcost>
 			<civil>3</civil>
@@ -1467,7 +1408,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Vehicles</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>10000</buildcost>
 			<mechanic>1</mechanic>
@@ -1485,7 +1425,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Vehicles</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>14000</maxcost>
 			<buildcost>10000</buildcost>
 			<civil>1</civil>
@@ -1509,7 +1448,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Weapons</class>
 			<type>Vehicles</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>24000</maxcost>
 			<buildcost>24200</buildcost>
 			<civil>2</civil>
@@ -1534,7 +1472,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Civil</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>12000</maxcost>
 			<buildcost>16000</buildcost>
 			<civil>2</civil>
@@ -1550,7 +1487,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Civil</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>10000</maxcost>
 			<buildcost>10000</buildcost>
 			<civil>2</civil>
@@ -1564,7 +1500,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Civil</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>12000</maxcost>
 			<buildcost>17000</buildcost>
 			<civil>2</civil>
@@ -1580,7 +1515,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Military</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>14000</maxcost>
 			<buildcost>15000</buildcost>
 			<civil>1</civil>
@@ -1596,7 +1530,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Military</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>30000</maxcost>
 			<buildcost>35000</buildcost>
 			<civil>3</civil>
@@ -1613,7 +1546,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Military</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>18000</maxcost>
 			<buildcost>30000</buildcost>
 			<civil>4</civil>
@@ -1630,7 +1562,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Military</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>29600</maxcost>
 			<buildcost>50000</buildcost>
 			<civil>5</civil>
@@ -1647,7 +1578,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Military</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>8000</maxcost>
 			<buildcost>18000</buildcost>
 			<civil>3</civil>
@@ -1662,7 +1592,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Radars</type>
 			<level>0</level>
-			<mintime>0</mintime>
 			<maxcost>0</maxcost>
 			<buildcost>4000</buildcost>
 			<mechanic>1</mechanic>
@@ -1677,7 +1606,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Radars</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>14000</maxcost>
 			<buildcost>10000</buildcost>
 			<civil>1</civil>
@@ -1693,7 +1621,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Radar</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>20000</maxcost>
 			<buildcost>25000</buildcost>
 			<civil>2</civil>
@@ -1709,7 +1636,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Guns</type>
 			<level>3</level>
-			<mintime>0</mintime>
 			<maxcost>14000</maxcost>
 			<buildcost>17800</buildcost>
 			<civil>2</civil>
@@ -1725,7 +1651,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Guns</type>
 			<level>4</level>
-			<mintime>0</mintime>
 			<maxcost>34000</maxcost>
 			<buildcost>32000</buildcost>
 			<civil>4</civil>
@@ -1742,7 +1667,6 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<class>Buildings</class>
 			<type>Guns</type>
 			<level>5</level>
-			<mintime>0</mintime>
 			<maxcost>60</maxcost>
 			<buildcost>40000</buildcost>
 			<civil>5</civil>

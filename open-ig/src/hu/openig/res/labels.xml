@@ -496,7 +496,7 @@
 	</entry>
 	<entry key='ColonyInfo.AllocationPreference.Military'>
 		<hu>katonai</hu>
-		<en>katonai</en>
+		<en>military</en>
 	</entry>
 	<entry key='ColonyInfo.AllocationPreference.Operational'>
 		<hu>működés</hu>

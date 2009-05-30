@@ -9,34 +9,9 @@
 package hu.openig.model;
 
 /**
- * Interface for GameRace lookup operations.
- * @author karnokd, 2009.05.11.
- * @version $Revision 1.0$
+ * @author Anikó
+ *
  */
 public interface GameRaceLookup {
-	/**
-	 * Returns the indexth game race object.
-	 * @param index the index
-	 * @return the game race
-	 */
-	GameRace getRace(int index);
-	/**
-	 * Returns the game race with the given id.
-	 * @param id the race id
-	 * @return the game race
-	 */
-	GameRace getRace(String id);
-	/**
-	 * Returns the first game player with the given race.
-	 * @param race the race object
-	 * @return the game player or null if no such player
-	 */
-	GamePlayer getPlayerForRace(GameRace race);
-	/**
-	 * Returns the building prototype object for the given building
-	 * prototype id.
-	 * @param buildingId the prototype id
-	 * @return the building
-	 */
-	GameBuildingPrototype getBuildingPrototype(String buildingId);
+
 }

@@ -10,7 +10,6 @@
 							<xs:element name="class" type="xs:string"/>
 							<xs:element name="type" type="xs:string"/>
 							<xs:element name="level" type="xs:unsignedInt"/>
-							<xs:element name="mintime" type="xs:unsignedInt"/>
 							<xs:element name="maxcost" type="xs:unsignedInt"/>
 							<xs:element name="buildcost" type="xs:unsignedInt"/>
 							<xs:element name="civil" type="xs:unsignedInt" minOccurs="0"/>
