@@ -251,7 +251,7 @@ public class GifSequenceWriter {
 			}
 
 			@Override
-			public void imageDate(int[] image) {
+			public void imageData(int[] image) {
 				if (progress != null) {
 					progress.progress(frameCount, maxFrameCount);
 				}

@@ -786,6 +786,9 @@ MouseWheelListener, ActionListener {
 		int idx = Math.max(0, list.indexOf(bp) - 1);
 		if (idx < list.size()) {
 			gameWorld.player.selectedBuildingPrototype = list.get(idx);
+			if (gameWorld.player.selectedBuildingPrototype.researchTech != null) {
+				gameWorld.player.selectedTech = gameWorld.player.selectedBuildingPrototype.researchTech;
+			}
 		}
 		repaint(buildPanelRect);
 		buildScroller.setActionCommand("SCROLL-UP");
@@ -833,6 +836,9 @@ MouseWheelListener, ActionListener {
 		int idx = Math.min(list.size(), list.indexOf(bp) + 1);
 		if (idx < list.size()) {
 			gameWorld.player.selectedBuildingPrototype = list.get(idx);
+			if (gameWorld.player.selectedBuildingPrototype.researchTech != null) {
+				gameWorld.player.selectedTech = gameWorld.player.selectedBuildingPrototype.researchTech;
+			}
 		}
 		repaint(buildPanelRect);
 		buildScroller.setActionCommand("SCROLL-DOWN");

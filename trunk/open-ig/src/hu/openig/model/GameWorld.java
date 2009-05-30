@@ -313,8 +313,10 @@ public class GameWorld {
 	 */
 	public void allocateResources() {
 		for (GamePlanet p : planets) {
+			p.update();
 			if (p.owner != null) {
 				ResourceAllocator.allocateWorkers(p);
+				p.update();
 				ResourceAllocator.allocateEnergy(p);
 				p.update();
 			}
@@ -409,5 +411,13 @@ public class GameWorld {
 			}
 		}
 
+	}
+	/**
+	 * Convinient method to test if the given research is available for the current player.
+	 * @param rt the research to test
+	 * @return true if the research is available
+	 */
+	public boolean isAvailable(ResearchTech rt) {
+		return player.availableTechnology.contains(rt);
 	}
 }

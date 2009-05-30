@@ -1618,7 +1618,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			minimapBlinkCount = 0;
 			minimapBlink = !minimapBlink;
 		}
-		repaint(mapRect); // repaint performance
+		repaint(); // repaint performance
 	}
 	/**
 	 * Start animations.

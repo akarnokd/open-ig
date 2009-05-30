@@ -1456,7 +1456,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<ai>3</ai>
 			<military>6</military>
 			<image-index>353</image-index>
-			<requires>RocketLauncher2</requires>
+			<requires>RocketLauncher1</requires>
 			<factory>weapon</factory>
 			<techids>1</techids>
 			<equipment>
@@ -1584,7 +1584,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<mechanic>3</mechanic>
 			<computer>2</computer>
 			<military>3</military>
-			<image-index>424</image-index>
+			<image-index>425</image-index>
 			<factory>building</factory>
 			<techids>1</techids>
 		</item>

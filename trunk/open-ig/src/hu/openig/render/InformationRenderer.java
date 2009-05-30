@@ -176,6 +176,8 @@ MouseWheelListener, ActionListener {
 	private final Rectangle workerAllocRect = new Rectangle();
 	/** If the user double clicks on a research. */
 	private BtnAction onResearchDblClick;
+	/** The research button clicked. */
+	private BtnAction onResearchClick;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager
@@ -404,7 +406,9 @@ MouseWheelListener, ActionListener {
 	}
 	/** Research click action. */
 	protected void doResearchClick() {
-		uiSound.playSound("Research");
+		if (onResearchClick != null) {
+			onResearchClick.invoke();
+		}
 	}
 	/** Production click action. */
 	protected void doProductionClick() {
@@ -2010,5 +2014,17 @@ MouseWheelListener, ActionListener {
 	 */
 	public BtnAction getOnResearchDblClick() {
 		return onResearchDblClick;
+	}
+	/**
+	 * @param onResearchClick the onResearchClick to set
+	 */
+	public void setOnResearchClick(BtnAction onResearchClick) {
+		this.onResearchClick = onResearchClick;
+	}
+	/**
+	 * @return the onResearchClick
+	 */
+	public BtnAction getOnResearchClick() {
+		return onResearchClick;
 	}
 }

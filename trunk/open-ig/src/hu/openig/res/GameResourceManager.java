@@ -198,7 +198,7 @@ public final class GameResourceManager implements BuildingLookup, ResearchLookup
 	 */
 	@Override
 	public File getAnimationWired(int imageIndex) {
-		return resMap.get("EQ_ANIMW/INV" + imageIndex + ".ANI");
+		return resMap.get("EQ_ANIMW/WIR" + imageIndex + ".ANI");
 	}
 	/**
 	 * {@inheritDoc}

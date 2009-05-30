@@ -69,7 +69,7 @@ public final class SpidyAniDecoder {
 		 * Callback with the next image frame data.
 		 * @param image the array of RGBA image, do not modify the contents!
 		 */
-		void imageDate(int[] image);
+		void imageData(int[] image);
 		/**
 		 * Callback to notify if the playback should be stopped.
 		 * @return true if the playback should be stopped
@@ -153,7 +153,7 @@ public final class SpidyAniDecoder {
 						}
 						// we reached the number of subimages per frame?
 						if (imageHeight >= saf.getHeight()) {
-							callback.imageDate(rawImage);
+							callback.imageData(rawImage);
 							imageHeight = 0;
 							dst = 0;
 						}
