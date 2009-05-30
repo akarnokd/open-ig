@@ -10,10 +10,11 @@ package hu.openig.render;
 
 import hu.openig.ani.Player;
 import hu.openig.core.Btn;
+import hu.openig.core.BtnAction;
 import hu.openig.core.LabInfo;
 import hu.openig.core.SwappableRenderer;
-import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GameWorld;
+import hu.openig.model.ResearchProgress;
 import hu.openig.model.ResearchTech;
 import hu.openig.res.GameResourceManager;
 import hu.openig.res.gfx.CommonGFX;
@@ -247,12 +248,12 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
-		btnStart = new Btn();
+		btnStart = new Btn(new BtnAction() { public void invoke() { doStartResearch(); } });
 		btnEquipment = new Btn();
 		btnProduction = new Btn();
 		btnBridge = new Btn();
-		btnView = new Btn();
-		btnStop = new Btn();
+		btnView = new Btn(new BtnAction() { public void invoke() { doViewResearch(); } });
+		btnStop = new Btn(new BtnAction() { public void invoke() { doStopResearch(); } });
 		
 		releaseButtons.add(btnStart);
 		releaseButtons.add(btnEquipment);
@@ -260,6 +261,39 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		releaseButtons.add(btnBridge);
 		releaseButtons.add(btnView);
 		releaseButtons.add(btnStop);
+	}
+	/** Stop the current research. */
+	protected void doStopResearch() {
+		gameWorld.player.activeResearch = null;
+		repaint();
+	}
+	/** Display the currently researched technology. */
+	protected void doViewResearch() {
+		if (gameWorld.player.activeResearch != null) {
+			gameWorld.player.selectedTech = gameWorld.player.activeResearch.research;
+			clazzIndex = gameWorld.player.selectedTech.clazzIndex;
+			typeIndex = gameWorld.player.selectedTech.typeIndex;
+			gameWorld.selectBuildingFor(gameWorld.player.selectedTech);
+		}
+	}
+	/**
+	 * Start/continue researching the current item.
+	 */
+	protected void doStartResearch() {
+		ResearchTech rt = gameWorld.player.selectedTech;
+		if (rt == null) {
+			return;
+		}
+		ResearchProgress rp = gameWorld.player.researchProgresses.get(rt);
+		if (rp == null) {
+			rp = new ResearchProgress();
+			rp.research = rt;
+			rp.moneyRemaining = rt.maxCost;
+			rp.allocatedRemainingMoney = rt.maxCost * 6 / 10;
+			gameWorld.player.researchProgresses.put(rt, rp);
+		}
+		gameWorld.player.activeResearch = rp;
+		repaint();
 	}
 	/**
 	 * @param gameWorld the gameWorld to set
@@ -295,12 +329,16 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		infobarRenderer.renderInfoBars(this, g2);
 		
 		g2.drawImage(gfx.researchScreen, screenRect.x, screenRect.y, null);
+		ResearchProgress arp = gameWorld.player.activeResearch;
 		// draw main options
 		for (int i = 0; i < rectMainOptions.length; i++) {
 			if (i + 1 == clazzIndex) {
 				g2.drawImage(gfx.mainOptionsLight[i], rectMainOptions[i].x, rectMainOptions[i].y, null);
 			} else {
 				g2.drawImage(gfx.mainOptions[i], rectMainOptions[i].x, rectMainOptions[i].y, null);
+			}
+			if (arp != null && arp.research.clazzIndex == i + 1) {
+				g2.drawImage(gfx.arrow, rectMainOptions[i].x - 16, rectMainOptions[i].y + 6, null);
 			}
 		}
 		if (clazzIndex > 0) {
@@ -311,6 +349,9 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 					g2.drawImage(imagesLight[i], rectSubOptions[i].x, rectSubOptions[i].y, null);
 				} else {
 					g2.drawImage(images[i], rectSubOptions[i].x, rectSubOptions[i].y, null);
+				}
+				if (arp != null && arp.research.clazzIndex == clazzIndex && arp.research.typeIndex == i + 1) {
+					g2.drawImage(gfx.arrow, rectSubOptions[i].x - 14, rectSubOptions[i].y, null);
 				}
 			}
 		}
@@ -372,8 +413,9 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 			for (int i = 0; i < Math.min(rt.requires.size(), rectNeeded.length); i++) {
 				ResearchTech rrt = rt.requires.get(i);
 //				g2.setClip(rectNeeded[i]);
-				int color = gameWorld.player.availableTechnology.contains(rrt) 
-				? TextGFX.ORANGE : (gameWorld.isResearchable(rrt) ? TextGFX.GREEN : TextGFX.GRAY);
+				int color = gameWorld.isAvailable(rrt) 
+				? TextGFX.ORANGE : (gameWorld.isResearchable(rrt) 
+						? (gameWorld.isActiveResearch(rrt) ? TextGFX.YELLOW : TextGFX.GREEN) : TextGFX.GRAY);
 				text.paintTo(g2, rectNeeded[i].x + 2, rectNeeded[i].y + 2, 7, color, rrt.name);
 			}
 			text.paintTo(g2, rectProjectName.x + 2, rectProjectName.y, 10, TextGFX.GREEN, rt.name);
@@ -386,6 +428,10 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 			if (researchable) {
 				text.paintTo(g2, rectProjectStatus.x + 2, rectProjectStatus.y, 10, 
 						TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.Researchable"));
+			} else 
+			if (gameWorld.player.activeResearch != null && gameWorld.player.activeResearch.research == rt) {
+				text.paintTo(g2, rectProjectStatus.x + 2, rectProjectStatus.y, 10, 
+						TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.Researching"));
 			} else {
 				text.paintTo(g2, rectProjectStatus.x + 2, rectProjectStatus.y, 10, 
 						TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.NotResearchable"));
@@ -417,6 +463,27 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 				text.paintTo(g2, rectAI.x, rectAI.y + 1, 14, li.currentAi < rt.ai ? TextGFX.RED : TextGFX.GREEN, Integer.toString(rt.ai));
 				text.paintTo(g2, rectMil.x, rectMil.y + 1, 14, li.currentMilitary < rt.military ? TextGFX.RED : TextGFX.GREEN, Integer.toString(rt.military));
 			}
+			ResearchProgress rp = gameWorld.player.researchProgresses.get(rt);
+			if (rp != null) {
+				if (rp.research.maxCost > 0) {
+					String percent = Integer.toString((rp.research.maxCost - rp.moneyRemaining) * 100 
+							/ rp.research.maxCost);
+					int len = text.getTextWidth(14, percent);
+					text.paintTo(g2, rectCompleted.x + (rectCompleted.width - len) / 2, rectCompleted.y, 14, TextGFX.RED, percent);
+				} else {
+					String percent = "-";
+					int len = text.getTextWidth(14, percent);
+					text.paintTo(g2, rectCompleted.x + (rectCompleted.width - len) / 2, rectCompleted.y, 14, TextGFX.RED, percent);
+				}
+			}
+			if (gameWorld.isAvailable(rt)) {
+				String percent = gameWorld.getLabel("Research.Done");
+				int len = text.getTextWidth(14, percent);
+				text.paintTo(g2, rectCompleted.x + (rectCompleted.width - len) / 2, rectCompleted.y, 14, TextGFX.GREEN, percent);
+				String time = "----";
+				len = text.getTextWidth(14, time);
+				text.paintTo(g2, rectTimeRemaining.x + (rectTimeRemaining.width - len) / 2, rectTimeRemaining.y, 14, TextGFX.GREEN, time);
+			}
 			g2.setClip(sp);
 		}
 		text.paintTo(g2, rectCurrCiv.x, rectCurrCiv.y + 1, 14, li.currentCivil < li.totalCivil ? TextGFX.YELLOW : TextGFX.GREEN, Integer.toString(li.currentCivil));
@@ -425,7 +492,26 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		text.paintTo(g2, rectCurrAI.x, rectCurrAI.y + 1, 14, li.currentAi < li.totalAi ? TextGFX.YELLOW : TextGFX.GREEN, Integer.toString(li.currentAi));
 		text.paintTo(g2, rectCurrMil.x, rectCurrMil.y + 1, 14, li.currentMilitary < li.totalMilitary ? TextGFX.YELLOW : TextGFX.GREEN, Integer.toString(li.currentMilitary));
 
-		btnStart.disabled = rt == null || gameWorld.isAvailable(rt) || !gameWorld.isResearchable(rt);
+		if (arp != null) {
+			text.paintTo(g2, rectProject.x + 2, rectProject.y, 10, TextGFX.GREEN, arp.research.name);
+			String money = arp.allocatedRemainingMoney + "/" + arp.moneyRemaining;
+			int len = text.getTextWidth(10, money);
+			text.paintTo(g2, rectMoney.x + (rectMoney.width - len) / 2, rectMoney.y, 10, TextGFX.GREEN, money);
+			if (arp.research.maxCost > 0) {
+				String percent = Integer.toString((arp.research.maxCost - arp.moneyRemaining) * 100 
+						/ arp.research.maxCost) + "%";
+				len = text.getTextWidth(10, percent);
+				text.paintTo(g2, rectPercent.x + (rectPercent.width - len) / 2, rectPercent.y, 10, TextGFX.GREEN, percent);
+			} else {
+				String percent = "-";
+				len = text.getTextWidth(10, percent);
+				text.paintTo(g2, rectPercent.x + (rectPercent.width - len) / 2, rectPercent.y, 10, TextGFX.GREEN, percent);
+			}
+		}
+		
+		btnStart.disabled = rt == null || gameWorld.isAvailable(rt) 
+		|| !gameWorld.isResearchable(rt) || (gameWorld.player.activeResearch != null 
+				&& gameWorld.player.activeResearch.research == gameWorld.player.selectedTech);
 		if (!btnStart.disabled) {
 			if (btnStart.down) {
 				g2.drawImage(gfx.btnStartDown, btnStart.rect.x, btnStart.rect.y, null);
@@ -442,14 +528,16 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		if (btnBridge.down) {
 			g2.drawImage(gfx.btnBridgeDown, btnBridge.rect.x, btnBridge.rect.y, null);
 		}
+		btnView.disabled = gameWorld.player.activeResearch == null;
 		if (btnView.disabled) {
-			g2.drawImage(gfx.btnEmpty, btnView.rect.x, btnView.rect.y, null);
+			g2.drawImage(gfx.btnEmptySmall, btnView.rect.x, btnView.rect.y, null);
 		} else
 		if (btnView.down) {
 			g2.drawImage(gfx.btnViewDown, btnView.rect.x, btnView.rect.y, null);
 		}
+		btnStop.disabled = gameWorld.player.activeResearch == null;
 		if (btnStop.disabled) {
-			g2.drawImage(gfx.btnEmpty, btnStop.rect.x, btnStop.rect.y, null);
+			g2.drawImage(gfx.btnEmptySmall, btnStop.rect.x, btnStop.rect.y, null);
 		} else
 		if (btnStop.down) {
 			g2.drawImage(gfx.btnStopDown, btnStop.rect.x, btnStop.rect.y, null);
@@ -525,7 +613,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		btnView.setBounds(screenRect.x + 291, screenRect.y + 360, 115, 23);
 		btnStop.setBounds(screenRect.x + 410, screenRect.y + 360, 115, 23);
 		
-		rectCompleted.setBounds(screenRect.x + 314, screenRect.y + 290, 52, 14);
+		rectCompleted.setBounds(screenRect.x + 341, screenRect.y + 290, 52, 14);
 		rectTimeRemaining.setBounds(screenRect.x + 471, screenRect.y + 290, 51, 14);
 		
 		rectCiv.setBounds(screenRect.x + 319, screenRect.y + 310, 12, 15);
@@ -578,13 +666,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 					if (rectResearch[i].contains(pt)) {
 						gameWorld.player.selectedTech = rtl.get(i);
 						// if this is a building, select its prototype
-						if ("Buildings".equals(gameWorld.player.selectedTech.clazz)) {
-							for (GameBuildingPrototype bp : gameWorld.buildingPrototypes) {
-								if (bp.researchTech == gameWorld.player.selectedTech) {
-									gameWorld.player.selectedBuildingPrototype = bp;
-								}
-							}
-						}
+						gameWorld.selectBuildingFor(gameWorld.player.selectedTech);
 						repaint(screenRect);
 						return;
 					}

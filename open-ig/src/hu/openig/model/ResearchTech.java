@@ -48,8 +48,6 @@ public class ResearchTech {
 	 * the research won't even show up in the dialog. 
 	 */
 	public int level;
-	/** The minimum research time when the maximum money is used. */
-	public int minTime;
 	/** The maximum cost to research this technology. */
 	public int maxCost;
 	/** The build cost of the researched technology. */
@@ -137,9 +135,6 @@ public class ResearchTech {
 				} else
 				if ("level".equals(n)) {
 					rt.level = Integer.parseInt(e.getTextContent());
-				} else
-				if ("mintime".equals(n)) {
-					rt.minTime = Integer.parseInt(e.getTextContent());
 				} else
 				if ("maxcost".equals(n)) {
 					rt.maxCost = Integer.parseInt(e.getTextContent());

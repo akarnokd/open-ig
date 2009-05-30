@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -43,6 +44,10 @@ public class GamePlayer {
 	public ResearchTech selectedTech;
 	/** The type currently selected game object on the starmap. */
 	public StarmapSelection selectionType;
+	/** The currently active research progress. */
+	public ResearchProgress activeResearch;
+	/** The currently selected building prototype. */
+	public GameBuildingPrototype selectedBuildingPrototype;
 	/** The lazily initialized color object. */
 	private Color colorObj;
 	/**
@@ -58,19 +63,18 @@ public class GamePlayer {
 	/**
 	 * Set of own planets.
 	 */
-	public final Set<GamePlanet> ownPlanets = new HashSet<GamePlanet>();
+	public final Set<GamePlanet> ownPlanets = JavaUtils.newHashSet();
 	/** Set of own fleets. */
-	public final Set<GameFleet> ownFleets = new HashSet<GameFleet>();
+	public final Set<GameFleet> ownFleets = JavaUtils.newHashSet();
 	/** Set of known fleets. (Should) contain the ownFleets too. */
-	public final Set<GameFleet> knownFleets = new HashSet<GameFleet>();
+	public final Set<GameFleet> knownFleets = JavaUtils.newHashSet();
 	// FIXME introduce non-planetary manufacturing progress
-	// FIXME introduce concept of research in progress
 	/** The set of technologies that are known. */
-	public final Set<ResearchTech> knownTechnology = new HashSet<ResearchTech>();
+	public final Set<ResearchTech> knownTechnology = JavaUtils.newHashSet();
 	/** The set of technologies that are researched. */
-	public final Set<ResearchTech> availableTechnology = new HashSet<ResearchTech>();
-	/** The currently selected building prototype. */
-	public GameBuildingPrototype selectedBuildingPrototype;
+	public final Set<ResearchTech> availableTechnology = JavaUtils.newHashSet();
+	/** The map of started researches and their progress. */
+	public final Map<ResearchTech, ResearchProgress> researchProgresses = JavaUtils.newHashMap();
 	/**
 	 * Adds the planet to the own planets set and subsequently
 	 * calls knowPlanet. Players can lose posession of a planet
