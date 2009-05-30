@@ -21,6 +21,7 @@ import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
 import hu.openig.model.PlanetStatus;
+import hu.openig.model.ResearchProgress;
 import hu.openig.model.ResearchTech;
 import hu.openig.model.GameBuildingPrototype.BuildingImages;
 import hu.openig.res.GameResourceManager;
@@ -1785,8 +1786,9 @@ MouseWheelListener, ActionListener {
 				}
 				List<ResearchTech> type = clazz.get(j);
 				for (ResearchTech rt : type) {
-					int color = gameWorld.player.availableTechnology.contains(rt) 
-					? TextGFX.ORANGE : (gameWorld.isResearchable(rt) ? TextGFX.GREEN : TextGFX.GRAY);
+					int color = gameWorld.isAvailable(rt) 
+					? TextGFX.ORANGE : (gameWorld.isResearchable(rt) 
+							? (gameWorld.isActiveResearch(rt) ? TextGFX.YELLOW : TextGFX.GREEN) : TextGFX.GRAY);
 					text.paintTo(g2, x + 4, y + 5, 7, color, rt.name);
 					if (rt == gameWorld.player.selectedTech) {
 						g2.setColor(Color.LIGHT_GRAY);
@@ -1849,23 +1851,40 @@ MouseWheelListener, ActionListener {
 				}
 			} else 
 			if (researchable) {
-				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 4, 10, 
-						TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.Researchable"));
-				
+				boolean ar = gameWorld.isActiveResearch(rt);
+				if (ar) {
+					text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 4, 10, 
+							TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.Researching"));
+				} else {
+					text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 4, 10, 
+							TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.Researchable"));
+				}
+				ResearchProgress rp = gameWorld.player.researchProgresses.get(rt);
+				String percent = "0%";
+				int cost = 0;
+				if (rp != null) {
+					if (rp.research.maxCost > 0) {
+						percent = Integer.toString((rp.research.maxCost - rp.moneyRemaining) * 100 / rp.research.maxCost) + "%"; 
+					} else {
+						percent = "-";
+					}
+					cost = rp.allocatedRemainingMoney;
+				}
 				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 24, 10, TextGFX.GREEN, 
 						gameWorld.getLabel("ResearchInfo.Researchable.Entry",
 							gameWorld.getLabel("ResearchInfo.Researchable.Complete"), 
-							0 + "%"
+							percent
 						));
+				int time = 0;
 				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 44, 10, TextGFX.GREEN, 
 						gameWorld.getLabel("ResearchInfo.Researchable.Entry",
 							gameWorld.getLabel("ResearchInfo.Researchable.RemainingTime"), 
-							rt.minTime
+							time
 						));
 				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 64, 10, TextGFX.GREEN, 
 						gameWorld.getLabel("ResearchInfo.Researchable.Entry",
 							gameWorld.getLabel("ResearchInfo.Researchable.Money"), 
-							0 + "/" + rt.maxCost
+							cost + "/" + rt.maxCost
 						));
 				text.paintTo(g2, secondaryArea.x + 4, secondaryArea.y + 84, 10, TextGFX.GREEN, 
 						gameWorld.getLabel("ResearchInfo.Researchable.Entry2",
@@ -1940,7 +1959,8 @@ MouseWheelListener, ActionListener {
 			int x = secondaryArea.x + 15;
 			for (ResearchTech rrt : rt.requires) {
 				int color = gameWorld.player.availableTechnology.contains(rrt) 
-				? TextGFX.ORANGE : (gameWorld.isResearchable(rrt) ? TextGFX.GREEN : TextGFX.GRAY);
+				? TextGFX.ORANGE : (gameWorld.isResearchable(rrt) 
+						? (gameWorld.isActiveResearch(rrt) ? TextGFX.YELLOW : TextGFX.GREEN) : TextGFX.GRAY);
 				text.paintTo(g2, x, y, 7, color, rrt.name);
 				y += 10;
 			}
@@ -1960,12 +1980,7 @@ MouseWheelListener, ActionListener {
 				if (rt != null) {
 					gameWorld.player.selectedTech = rt;
 					// select the building prototype for this tech if any
-					for (GameBuildingPrototype bp : gameWorld.buildingPrototypes) {
-						if (bp.researchTech == rt) {
-							gameWorld.player.selectedBuildingPrototype = bp;
-							break;
-						}
-					}
+					gameWorld.selectBuildingFor(gameWorld.player.selectedTech);
 					// on double click jump to either the research or to the production screen
 					if (e.getClickCount() == 2) {
 						if (onResearchDblClick != null) {

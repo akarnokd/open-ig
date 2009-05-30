@@ -566,4 +566,12 @@
 		<hu>Labor szint</hu>
 		<en>Lab level</en>
 	</entry>
+	<entry key='Research.Done'>
+		<hu>Kész</hu>
+		<en>Done</en>
+	</entry>
+	<entry key='ResearchInfo.Status.Researching'>
+		<hu>Fejlesztés alatt</hu>
+		<en>Under research</en>
+	</entry>
 </labels>

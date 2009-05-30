@@ -261,7 +261,7 @@ public class GameWorld {
 	public List<GameBuildingPrototype> getTechIdBuildingPrototypes(String techId) {
 		List<GameBuildingPrototype> result = new ArrayList<GameBuildingPrototype>();
 		for (GameBuildingPrototype bp : buildingPrototypes) {
-			if (bp.images.containsKey(techId)) {
+			if (bp.images.containsKey(techId) && (bp.researchTech == null || player.availableTechnology.contains(bp.researchTech))) {
 				result.add(bp);
 			}
 		}
@@ -419,5 +419,27 @@ public class GameWorld {
 	 */
 	public boolean isAvailable(ResearchTech rt) {
 		return player.availableTechnology.contains(rt);
+	}
+	/**
+	 * Selectes a building prototype for the given research technology.
+	 * @param rt the research technology
+	 */
+	public void selectBuildingFor(ResearchTech rt) {
+		if (rt != null && "Buildings".equals(rt.clazz)) {
+			for (GameBuildingPrototype bp : buildingPrototypes) {
+				if (bp.researchTech == rt) {
+					player.selectedBuildingPrototype = bp;
+					break;
+				}
+			}
+		}
+	}
+	/**
+	 * Is the given research technology currently being researched?
+	 * @param rt the research tech
+	 * @return true if under research
+	 */
+	public boolean isActiveResearch(ResearchTech rt) {
+		return player.activeResearch != null && player.activeResearch.research == rt;
 	}
 }

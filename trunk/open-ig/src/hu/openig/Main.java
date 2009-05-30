@@ -473,6 +473,10 @@ public class Main extends JFrame {
 	protected void doResearchCurrent() {
 		if (gameWorld.player.selectedTech != null) {
 			gameWorld.player.availableTechnology.add(gameWorld.player.selectedTech);
+			gameWorld.player.researchProgresses.remove(gameWorld.player.selectedTech);
+			if (gameWorld.player.activeResearch != null && gameWorld.player.activeResearch.research == gameWorld.player.selectedTech) {
+				gameWorld.player.activeResearch = null;
+			}
 			repaint();
 		}
 	}
