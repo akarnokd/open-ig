@@ -80,8 +80,6 @@ public class ResearchTech {
 	public final Map<String, Integer> values = JavaUtils.newHashMap();
 	/** Textual properties of this research technology. */
 	public final Map<String, String> properties = JavaUtils.newHashMap();
-	/** The animation file to display in research/production screens. */
-	public File animation;
 	/** The set of technology ids in which this research is available. */
 	public final Set<String> techIDs = JavaUtils.newHashSet();
 	/** The technology display name. */
@@ -92,6 +90,12 @@ public class ResearchTech {
 	public BufferedImage infoImage;
 	/** The wired version of the image for the information screen. */
 	public BufferedImage wiredInfoImage;
+	/** The small image of this research. */
+	public BufferedImage smallImage;
+	/** The animation file to display in research/production screens. */
+	public File animation;
+	/** The wired animation file to display in research/production screens. */
+	public File animationWired;
 	/**
 	 * Parses and processes a research XML.
 	 * @param resource the name of the resource
@@ -165,6 +169,9 @@ public class ResearchTech {
 					rt.techIndex = rt.imageIndex % 10;
 					rt.infoImage = lookup.getInfoImage(rt.imageIndex);
 					rt.wiredInfoImage = lookup.getWiredInfoImage(rt.imageIndex);
+					rt.smallImage = lookup.getSmallImage(rt.imageIndex);
+					rt.animation = lookup.getAnimation(rt.imageIndex);
+					rt.animationWired = lookup.getAnimationWired(rt.imageIndex);
 				} else
 				if ("factory".equals(n)) {
 					rt.factory = e.getTextContent();

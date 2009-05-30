@@ -16,11 +16,13 @@ import hu.openig.res.gfx.InformationGFX;
 import hu.openig.res.gfx.MenuGFX;
 import hu.openig.res.gfx.OptionsGFX;
 import hu.openig.res.gfx.PlanetGFX;
+import hu.openig.res.gfx.ResearchGFX;
 import hu.openig.res.gfx.StarmapGFX;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.ResourceMapper;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -48,15 +50,20 @@ public final class GameResourceManager implements BuildingLookup, ResearchLookup
 	public final MenuGFX menuGFX;
 	/** The options related graphics objects. */
 	public final OptionsGFX optionsGFX;
+	/** The research graphics objects. */
+	public final ResearchGFX researchGFX;
 	/** The game labels. */
 	public final Labels labels;
 	/** The old games texts. */
 	public final Texts texts;
+	/** The resource mapper. */
+	private final ResourceMapper resMap;
 	/**
 	 * Constructor. Initializes various components.
 	 * @param resMap the resource mapper.
 	 */
 	public GameResourceManager(final ResourceMapper resMap) {
+		this.resMap = resMap;
 		ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		try {
 			Future<Sounds> soundsInit = exec.submit(new Callable<Sounds>() { 
@@ -86,6 +93,9 @@ public final class GameResourceManager implements BuildingLookup, ResearchLookup
 			Future<Texts> textsInit = exec.submit(new Callable<Texts>() { 
 				@Override public Texts call() throws Exception { return new Texts(resMap); } });
 			
+			Future<ResearchGFX> resInit = exec.submit(new Callable<ResearchGFX>() { 
+				@Override public ResearchGFX call() throws Exception { return new ResearchGFX(resMap); } });
+			
 			try {
 				sounds = soundsInit.get();
 				commonGFX = cgfxInit.get();
@@ -96,6 +106,7 @@ public final class GameResourceManager implements BuildingLookup, ResearchLookup
 				optionsGFX = optionsInit.get();
 				labels = labelsInit.get();
 				texts = textsInit.get();
+				researchGFX = resInit.get();
 			} catch (ExecutionException ex) {
 				throw new RuntimeException(ex);
 			} catch (InterruptedException ex) {
@@ -174,5 +185,34 @@ public final class GameResourceManager implements BuildingLookup, ResearchLookup
 	@Override
 	public BufferedImage getWiredInfoImage(int index) {
 		return infoGFX.researchWiredInfoImage.get(index);
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public File getAnimation(int imageIndex) {
+		return resMap.get("EQ_ANIMS/INV" + imageIndex + ".ANI");
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public File getAnimationWired(int imageIndex) {
+		return resMap.get("EQ_ANIMW/INV" + imageIndex + ".ANI");
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BufferedImage getSmallImage(int imageIndex) {
+		return researchGFX.smallImages.get(imageIndex);
+	}
+	/**
+	 * Returns a map containing the rotation images for various zoom levels.
+	 * @param planetString the planet surface type string
+	 * @return the map from zoom level to list of rotation images
+	 */
+	public Map<Integer, List<BufferedImage>> getRotations(String planetString) {
+		return starmapGFX.starmapPlanets.get(planetString);
 	}
 }

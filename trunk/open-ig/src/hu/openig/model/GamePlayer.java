@@ -11,9 +11,12 @@ package hu.openig.model;
 import hu.openig.core.LabInfo;
 import hu.openig.core.PlayerType;
 import hu.openig.core.StarmapSelection;
+import hu.openig.utils.JavaUtils;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -226,6 +229,22 @@ public class GamePlayer {
 			}
 		}
 		
+		return result;
+	}
+	/**
+	 * Returns a list of researches for the given class and type indexes.
+	 * @param clazz the class index
+	 * @param type the type index
+	 * @return the list of researches ordered by the image index
+	 */
+	public List<ResearchTech> getResearchFor(int clazz, int type) {
+		List<ResearchTech> result = JavaUtils.newArrayList();
+		for (ResearchTech rt : knownTechnology) {
+			if (rt.clazzIndex == clazz && rt.typeIndex == type) {
+				result.add(rt);
+			}
+		}
+		Collections.sort(result, ResearchTech.BY_IMAGE_INDEX);
 		return result;
 	}
 }

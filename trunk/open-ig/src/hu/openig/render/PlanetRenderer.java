@@ -705,6 +705,7 @@ MouseWheelListener, ActionListener {
 		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
 		if (b != null) {
 			b.enabled = !b.enabled;
+			gameWorld.player.selectedPlanet.update();
 			radarImage = null;
 			repaint();
 		}
@@ -716,6 +717,7 @@ MouseWheelListener, ActionListener {
 		GameBuilding b = gameWorld.player.selectedPlanet.selectedBuilding;
 		if (b != null) {
 			b.repairing = !b.repairing;
+			gameWorld.player.selectedPlanet.update();
 			radarImage = null;
 			repaint();
 		}
@@ -728,6 +730,7 @@ MouseWheelListener, ActionListener {
 		if (b != null) {
 			uiSound.playSound("DemolishBuilding");
 			gameWorld.player.selectedPlanet.removeBuilding(b);
+			gameWorld.player.selectedPlanet.update();
 			gameWorld.player.selectedPlanet.selectedBuilding = null;
 			fixRoads();
 			radarImage = null;
@@ -1180,6 +1183,9 @@ MouseWheelListener, ActionListener {
 			if (tf != null && !tf.isRoad) {
 				planet.selectedBuilding = (GameBuilding)tf.provider;
 				gameWorld.player.selectedBuildingPrototype = planet.selectedBuilding.prototype;
+				if (gameWorld.player.selectedBuildingPrototype.researchTech != null) {
+					gameWorld.player.selectedTech = gameWorld.player.selectedBuildingPrototype.researchTech;
+				}
 			} else {
 				planet.selectedBuilding = null;
 			}
@@ -1252,6 +1258,7 @@ MouseWheelListener, ActionListener {
 				planet.map.put(Location.of(j, i), tf);
 			}
 		}
+		planet.update();
 	}
 	/**
 	 * Places a road frame around the tilesToHighlight rectangle.
@@ -1932,6 +1939,7 @@ MouseWheelListener, ActionListener {
 			changes = ResourceAllocator.allocateWorkers(p);
 			changes |= ResourceAllocator.allocateEnergy(p);
 			if (changes) {
+				p.update();
 				radarImage = null;
 			}
 		}

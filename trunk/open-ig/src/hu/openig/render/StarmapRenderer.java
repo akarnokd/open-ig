@@ -17,6 +17,7 @@ import hu.openig.model.GameFleet;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
+import hu.openig.model.PlanetStatus;
 import hu.openig.res.GameResourceManager;
 import hu.openig.res.gfx.CommonGFX;
 import hu.openig.res.gfx.StarmapGFX;
@@ -236,7 +237,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	/** Precalculated star coordinates. */
 	private int[] starsY = new int[STAR_COUNT * STAR_LAYER_COUNT];
 	/** Precalculated star colors. */
-	private int[] starsColors = new int[STAR_COUNT * STAR_LAYER_COUNT];
+	private Color[] starsColors = new Color[STAR_COUNT * STAR_LAYER_COUNT];
 	/** Scroll animation timer. */
 	private Timer scrollAnimTimer;
 	/** Scroll animation step interval. */
@@ -325,45 +326,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		
 		infobarRenderer.renderInfoBars(this, g2);
 		
-		// draw inner area four corners
-		g2.drawImage(gfx.contents.bottomLeft, bottomLeftRect.x, bottomLeftRect.y, null);
-		g2.drawImage(gfx.contents.rightTop, rightTopRect.x, rightTopRect.y, null);
-
-		g2.drawImage(gfx.contents.bottomRight, bottomRightRect.x, bottomRightRect.y, null);
-		g2.drawImage(gfx.contents.rightBottom, rightBottomRect.x, rightBottomRect.y, null);
-		// check if the rendering width is greater than the default 640
-		// if so, draw the link lines
-		if (bottomFillerRect.width > 0) {
-			// inner content filler
-			Paint p = g2.getPaint();
-			g2.setPaint(new TexturePaint(gfx.contents.bottomFiller, new Rectangle(bottomFillerRect.x, bottomFillerRect.y, 2, bottomFillerRect.height)));
-			g2.fill(bottomFillerRect);
-			g2.setPaint(p);
-		}
-		if (h > 480) {
-			Paint p = g2.getPaint();
-			g2.setPaint(new TexturePaint(gfx.contents.rightFiller, new Rectangle(rightFillerRect.x, rightFillerRect.y, rightFillerRect.width, 2)));
-			g2.fill(rightFillerRect);
-			g2.setPaint(p);
-		}
-		// draw inner controls
-
-		g2.setColor(Color.BLACK);
-		g2.fill(hscrollRect);
-		g2.fill(vscrollRect);
-		
-		// paint horizontal scrollbar
-		g2.drawImage(gfx.contents.hscrollLeft, hknobRect.x, hknobRect.y, null);
-		g2.drawImage(gfx.contents.hscrollRight, hknobRect.x + hknobRect.width - gfx.contents.hscrollRight.getWidth(), hscrollRect.y, null);
-		g2.drawImage(gfx.contents.vscrollTop, vknobRect.x, vknobRect.y, null);
-		g2.drawImage(gfx.contents.vscrollBottom, vknobRect.x, vknobRect.y + vknobRect.height - gfx.contents.vscrollBottom.getHeight(), null);
-		
 		Paint p = g2.getPaint();
-		// horizontal scrollbar middle
-		g2.setPaint(new TexturePaint(gfx.contents.hscrollFiller, new Rectangle(hknobRect.x + gfx.contents.hscrollLeft.getWidth(), hscrollRect.y, gfx.contents.hscrollFiller.getWidth(), gfx.contents.hscrollFiller.getHeight())));
-		g2.fillRect(hknobRect.x + gfx.contents.hscrollLeft.getWidth(), hscrollRect.y, hknobRect.width - gfx.contents.hscrollLeft.getWidth() - gfx.contents.hscrollRight.getWidth(), gfx.contents.hscrollFiller.getHeight());
-		g2.setPaint(new TexturePaint(gfx.contents.vscrollFiller, new Rectangle(vknobRect.x, vknobRect.y + gfx.contents.vscrollTop.getHeight(), gfx.contents.vscrollFiller.getWidth(), gfx.contents.vscrollFiller.getHeight())));
-		g2.fillRect(vknobRect.x, vknobRect.y + gfx.contents.vscrollTop.getHeight(), gfx.contents.vscrollFiller.getWidth(), vknobRect.height - gfx.contents.vscrollTop.getHeight() - gfx.contents.vscrollBottom.getHeight());
+		renderScrollbars(g2, h);
 		
 		g2.setPaint(p);
 		
@@ -392,87 +356,17 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		mapCoords.width = (int)(cgfx.fullMap.getWidth() * zoomFactor);
 		mapCoords.height = (int)(cgfx.fullMap.getHeight() * zoomFactor);
 
-		Rectangle mapRectClip = mapCoords.intersection(mapRect);
-		g2.setClip(mapRectClip);
-		g2.translate(mapRect.x + mx, mapRect.y + my);
+		renderStarmapBackground(g2, mx, my);
 		
-//		if (cachedScaling) {
-//			if (lastInterpolation != bicubicInterpolation || lastZoom != zoomFactor || backgroundCache == null) {
-//				lastZoom = zoomFactor;
-//				lastInterpolation = bicubicInterpolation;
-//				backgroundCache = new BufferedImage((int)(zoomFactor * cgfx.fullMap.getWidth()), 
-//						(int)(zoomFactor * cgfx.fullMap.getHeight()), BufferedImage.TYPE_INT_ARGB);
-//				Graphics2D gr2 = backgroundCache.createGraphics();
-//				if (bicubicInterpolation) {
-//					gr2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-//				}
-//				gr2.scale(zoomFactor, zoomFactor);
-//				gr2.drawImage(cgfx.fullMap, 0, 0, null);
-//				gr2.dispose();
-//			}
-//			g2.drawImage(backgroundCache, 0, 0, null);
-//			
-//		} else {
-			g2.scale(zoomFactor, zoomFactor);
-			// smooth scaled background
-			if (interpolation != ImageInterpolation.NONE) {
-				g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolation.hint);
-			}
-//			int px = (int)(hscrollValue * hscrollFactor / zoomFactor);
-//			int py = (int)(vscrollValue * vscrollFactor / zoomFactor);
-//			int pw = (int)Math.min(cgfx.fullMap.getWidth() - px, mapRectClip.width / zoomFactor);
-//			int ph = (int)Math.min(cgfx.fullMap.getHeight() - py, mapRectClip.height / zoomFactor);
-			g2.drawImage(cgfx.fullMap, 0, 0, null);
-//		}
 		g2.setTransform(af);
 		
 		if (btnStars.down) {
-			for (int i = 0; i < STAR_LAYER_COUNT; i++) {
-				for (int j = 0; j < STAR_COUNT; j++) {
-					int x = (int)(mapCoords.x - hscrollValue * hscrollFactor * (i + 1) / 10 + starsX[i * STAR_COUNT + j] * zoomFactor);
-					int y = (int)(mapCoords.y - vscrollValue * vscrollFactor * (i + 1) / 10 + starsY[i * STAR_COUNT + j] * zoomFactor);
-					int c = starsColors[i * STAR_COUNT + j];
-					g2.setColor(new Color(c));
-					if (zoomFactor < 2) {
-						g2.fillRect(x, y, 1, 1);
-					} else {
-						g2.fillRect(x, y, 2, 2);
-					}
-				}
-			}
+			renderStars(g2);
 		}
 		
 		// Render Grid
 		if (btnGrids.down) {
-			g2.setColor(CommonGFX.GRID_COLOR);
-			Stroke st = g2.getStroke();
-			g2.setStroke(CommonGFX.GRID_STROKE);
-			float fw = cgfx.fullMap.getWidth() * zoomFactor;
-			float fh = cgfx.fullMap.getHeight() * zoomFactor;
-			float dx = fw / 5;
-			float dy = fh / 5;
-			float y0 = dy;
-			float x0 = dx;
-			for (int i = 1; i < 5; i++) {
-				g2.drawLine((int)(mapRect.x + x0) + mx, mapRect.y + my, (int)(mapRect.x + x0) + mx, (int)(mapRect.y + fh) + my);
-				g2.drawLine(mapRect.x + mx, (int)(mapRect.y + y0) + my, (int)(mapRect.x + fw) + mx, (int)(mapRect.y + y0) + my);
-				x0 += dx;
-				y0 += dy;
-			}
-			int i = 0;
-			y0 = dy - 6;
-			x0 = 2;
-			for (char c = 'A'; c < 'Z'; c++) {
-				text.paintTo(g2, (int)(mapRect.x + x0) + mx, (int)(mapRect.y + y0) + my, 5, TextGFX.GRAY, String.valueOf(c));
-				x0 += dx;
-				i++;
-				if (i % 5 == 0) {
-					x0 = 2;
-					y0 += dy;
-				}
-			}
-			
-			g2.setStroke(st);
+			renderGrids(g2, mx, my);
 		}
 		renderPlanetsAndFleets(g2, mapRect.x + mx, mapRect.y + my);
 		g2.setClip(minimapRect);
@@ -484,6 +378,30 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		// RENDER BUTTONS
 		// ----------------------------------------------------------------
 		
+		renderButtons(g2);
+		t = System.nanoTime() - t;
+		//System.out.printf("%.2f frame/s%n", 1E9 / t);
+		// now darken the entire screen
+		
+		// render planet names
+		sp = g2.getClip();
+		renderPlanetListing(g2);
+		
+		renderFleetListing(g2);
+		g2.setClip(sp);
+
+		
+		// FINAL OPERATION: draw darkening layer over the screen
+		renderAlphaLayer(g2, w, h);
+
+		achievementRenderer.renderAchievements(g2, this);
+
+	}
+	/**
+	 * Renders the button images.
+	 * @param g2 the graphics object
+	 */
+	private void renderButtons(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
 		if (btnColonyPrev.disabled) {
 			g2.drawImage(gfx.btnPrevDisabled, btnColonyPrev.rect.x, btnColonyPrev.rect.y, null);
@@ -603,30 +521,84 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		default:
 		}
 		g2.drawImage(img, btnName.rect.x, btnName.rect.y, null);
-		t = System.nanoTime() - t;
-		//System.out.printf("%.2f frame/s%n", 1E9 / t);
-		// now darken the entire screen
-		
-		// render planet names
-		sp = g2.getClip();
-		g2.setClip(colonies);
-		int y = colonies.y + 2;
-		TreeSet<GamePlanet> plist = new TreeSet<GamePlanet>(GamePlanet.BY_NAME_ASC);
-		plist.addAll(gameWorld.player.ownPlanets);
-		int planetTextSize = 10;
-		int pidx = 0;
-		for (GamePlanet planet : plist) {
-			if (y > colonies.y + colonies.height) {
-				break;
+	}
+	/**
+	 * Renders the grids.
+	 * @param g2 the graphics object
+	 * @param mx the x offset
+	 * @param my the y offset
+	 */
+	private void renderGrids(Graphics2D g2, int mx, int my) {
+		g2.setColor(CommonGFX.GRID_COLOR);
+		Stroke st = g2.getStroke();
+		//FIXME the dotted line rendering is somehow very slow
+		//g2.setStroke(CommonGFX.GRID_STROKE);
+		float fw = cgfx.fullMap.getWidth() * zoomFactor;
+		float fh = cgfx.fullMap.getHeight() * zoomFactor;
+		float dx = fw / 5;
+		float dy = fh / 5;
+		float y0 = dy;
+		float x0 = dx;
+		for (int i = 1; i < 5; i++) {
+			g2.drawLine((int)(mapRect.x + x0) + mx, mapRect.y + my, (int)(mapRect.x + x0) + mx, (int)(mapRect.y + fh) + my);
+			g2.drawLine(mapRect.x + mx, (int)(mapRect.y + y0) + my, (int)(mapRect.x + fw) + mx, (int)(mapRect.y + y0) + my);
+			x0 += dx;
+			y0 += dy;
+		}
+		int i = 0;
+		y0 = dy - 6;
+		x0 = 2;
+		for (char c = 'A'; c < 'Z'; c++) {
+			text.paintTo(g2, (int)(mapRect.x + x0) + mx, (int)(mapRect.y + y0) + my, 5, TextGFX.GRAY, String.valueOf(c));
+			x0 += dx;
+			i++;
+			if (i % 5 == 0) {
+				x0 = 2;
+				y0 += dy;
 			}
-			if (pidx >= planetListOffset) {
-				text.paintTo(g2, colonies.x + 1, y, planetTextSize, 
-						planet == gameWorld.player.selectedPlanet ? TextGFX.RED : TextGFX.GREEN, planet.name);
-				y += planetTextSize + 1;
-			}
-			pidx++;
 		}
 		
+		g2.setStroke(st);
+	}
+	/**
+	 * Renders the star pixels.
+	 * @param g2 the graphics object
+	 */
+	private void renderStars(Graphics2D g2) {
+		for (int i = 0; i < STAR_LAYER_COUNT; i++) {
+			for (int j = 0; j < STAR_COUNT; j++) {
+				int x = (int)(mapCoords.x - hscrollValue * hscrollFactor * (i + 1) / 10 + starsX[i * STAR_COUNT + j] * zoomFactor);
+				int y = (int)(mapCoords.y - vscrollValue * vscrollFactor * (i + 1) / 10 + starsY[i * STAR_COUNT + j] * zoomFactor);
+				Color c = starsColors[i * STAR_COUNT + j];
+				g2.setColor(c);
+				if (zoomFactor < 2) {
+					g2.fillRect(x, y, 1, 1);
+				} else {
+					g2.fillRect(x, y, 2, 2);
+				}
+			}
+		}
+	}
+	/**
+	 * Renders an alpha overlay of the entire screen background.
+	 * @param g2 the graphics object
+	 * @param w the width
+	 * @param h the height
+	 */
+	private void renderAlphaLayer(Graphics2D g2, int w, int h) {
+		if (darkness > 0.0f) {
+			Composite comp = g2.getComposite();
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, darkness));
+			g2.setColor(Color.BLACK);
+			g2.fillRect(0, 0, w, h);
+			g2.setComposite(comp);
+		}
+	}
+	/**
+	 * Render fleet name listing.
+	 * @param g2 the graphics object.
+	 */
+	private void renderFleetListing(Graphics2D g2) {
 		if (gameWorld.player.selectedFleet != null) {
 			g2.setClip(equipments);
 			String name = gameWorld.player.selectedFleet.name;
@@ -647,20 +619,92 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 					? TextGFX.RED : TextGFX.GREEN), 
 							name);
 		}
-		g2.setClip(sp);
-
-		
-		// FINAL OPERATION: draw darkening layer over the screen
-		if (darkness > 0.0f) {
-			Composite comp = g2.getComposite();
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, darkness));
-			g2.setColor(Color.BLACK);
-			g2.fillRect(0, 0, w, h);
-			g2.setComposite(comp);
+	}
+	/**
+	 * Renders the planet name listing.
+	 * @param g2 the graphics object
+	 */
+	private void renderPlanetListing(Graphics2D g2) {
+		g2.setClip(colonies);
+		int y = colonies.y + 2;
+		TreeSet<GamePlanet> plist = new TreeSet<GamePlanet>(GamePlanet.BY_NAME_ASC);
+		plist.addAll(gameWorld.player.ownPlanets);
+		int planetTextSize = 10;
+		int pidx = 0;
+		for (GamePlanet planet : plist) {
+			if (y > colonies.y + colonies.height) {
+				break;
+			}
+			if (pidx >= planetListOffset) {
+				text.paintTo(g2, colonies.x + 1, y, planetTextSize, 
+						planet == gameWorld.player.selectedPlanet ? TextGFX.RED : TextGFX.GREEN, planet.name);
+				y += planetTextSize + 1;
+			}
+			pidx++;
 		}
+	}
+	/**
+	 * Render the scrollbars.
+	 * @param g2 the graphics object
+	 * @param h the current height
+	 */
+	private void renderScrollbars(Graphics2D g2, int h) {
+		// draw inner area four corners
+		g2.drawImage(gfx.contents.bottomLeft, bottomLeftRect.x, bottomLeftRect.y, null);
+		g2.drawImage(gfx.contents.rightTop, rightTopRect.x, rightTopRect.y, null);
 
-		achievementRenderer.renderAchievements(g2, this);
+		g2.drawImage(gfx.contents.bottomRight, bottomRightRect.x, bottomRightRect.y, null);
+		g2.drawImage(gfx.contents.rightBottom, rightBottomRect.x, rightBottomRect.y, null);
+		// check if the rendering width is greater than the default 640
+		// if so, draw the link lines
+		if (bottomFillerRect.width > 0) {
+			// inner content filler
+			Paint p = g2.getPaint();
+			g2.setPaint(new TexturePaint(gfx.contents.bottomFiller, new Rectangle(bottomFillerRect.x, bottomFillerRect.y, 2, bottomFillerRect.height)));
+			g2.fill(bottomFillerRect);
+			g2.setPaint(p);
+		}
+		if (h > 480) {
+			Paint p = g2.getPaint();
+			g2.setPaint(new TexturePaint(gfx.contents.rightFiller, new Rectangle(rightFillerRect.x, rightFillerRect.y, rightFillerRect.width, 2)));
+			g2.fill(rightFillerRect);
+			g2.setPaint(p);
+		}
+		// draw inner controls
 
+		g2.setColor(Color.BLACK);
+		g2.fill(hscrollRect);
+		g2.fill(vscrollRect);
+		
+		// paint horizontal scrollbar
+		g2.drawImage(gfx.contents.hscrollLeft, hknobRect.x, hknobRect.y, null);
+		g2.drawImage(gfx.contents.hscrollRight, hknobRect.x + hknobRect.width - gfx.contents.hscrollRight.getWidth(), hscrollRect.y, null);
+		g2.drawImage(gfx.contents.vscrollTop, vknobRect.x, vknobRect.y, null);
+		g2.drawImage(gfx.contents.vscrollBottom, vknobRect.x, vknobRect.y + vknobRect.height - gfx.contents.vscrollBottom.getHeight(), null);
+		
+		// horizontal scrollbar middle
+		g2.setPaint(new TexturePaint(gfx.contents.hscrollFiller, new Rectangle(hknobRect.x + gfx.contents.hscrollLeft.getWidth(), hscrollRect.y, gfx.contents.hscrollFiller.getWidth(), gfx.contents.hscrollFiller.getHeight())));
+		g2.fillRect(hknobRect.x + gfx.contents.hscrollLeft.getWidth(), hscrollRect.y, hknobRect.width - gfx.contents.hscrollLeft.getWidth() - gfx.contents.hscrollRight.getWidth(), gfx.contents.hscrollFiller.getHeight());
+		g2.setPaint(new TexturePaint(gfx.contents.vscrollFiller, new Rectangle(vknobRect.x, vknobRect.y + gfx.contents.vscrollTop.getHeight(), gfx.contents.vscrollFiller.getWidth(), gfx.contents.vscrollFiller.getHeight())));
+		g2.fillRect(vknobRect.x, vknobRect.y + gfx.contents.vscrollTop.getHeight(), gfx.contents.vscrollFiller.getWidth(), vknobRect.height - gfx.contents.vscrollTop.getHeight() - gfx.contents.vscrollBottom.getHeight());
+	}
+	/**
+	 * Render starmap background image.
+	 * @param g2 the graphics object
+	 * @param mx the offset x
+	 * @param my the offset y
+	 */
+	private void renderStarmapBackground(Graphics2D g2, int mx, int my) {
+		Rectangle mapRectClip = mapCoords.intersection(mapRect);
+		g2.setClip(mapRectClip);
+		g2.translate(mapRect.x + mx, mapRect.y + my);
+		
+		g2.scale(zoomFactor, zoomFactor);
+		// smooth scaled background
+		if (interpolation != ImageInterpolation.NONE) {
+			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolation.hint);
+		}
+		g2.drawImage(cgfx.fullMap, 0, 0, null);
 	}
 	/** Recalculate the region coordinates. */
 	private void updateRegions() {
@@ -1484,15 +1528,16 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				x = xOrig + (int)(p.x * zoomFactor);
 				if (mapCoords.intersects(new Rectangle(x - 30, y, 60, 12))) {
 					int count = 0;
-					boolean energyIcon = p.getEnergyDemand() > p.getEnergyProduction();
+					PlanetStatus ps = p.getStatus();
+					boolean energyIcon = ps.energyDemand > ps.energyProduction;
 					count += energyIcon ? 1 : 0;
-					boolean foodIcon = p.population > p.getFood();
+					boolean foodIcon = ps.population > ps.food;
 					count += foodIcon ? 1 : 0;
-					boolean hospitalIcon = p.population > p.getHospital();
+					boolean hospitalIcon = ps.population > ps.hospital;
 					count += hospitalIcon ? 1 : 0;
-					boolean workerIcon = p.population < p.getWorkerDemand();
+					boolean workerIcon = ps.population < ps.workerDemand;
 					count += workerIcon ? 1 : 0;
-					boolean livingspaceIcon = p.population > p.getLivingSpace();
+					boolean livingspaceIcon = ps.population > ps.livingSpace;
 					count += livingspaceIcon ? 1 : 0;
 					if (count > 0) {
 						x -= (count * 12) / 2;
@@ -1557,7 +1602,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			if (!p.visible) {
 				continue;
 			}
-			int phaseCount = gfx.starmapPlanets.get(p.surfaceType.planetString).get(planetSizes[magnifyIndex]).size();
+			int phaseCount = /* gfx.starmapPlanets.get(p.surfaceType.planetString) */ p.rotations.get(planetSizes[magnifyIndex]).size();
 			if (p.rotationDirection) {
 				p.rotationPhase = (p.rotationPhase + 1) % phaseCount;
 			} else {
@@ -1573,7 +1618,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			minimapBlinkCount = 0;
 			minimapBlink = !minimapBlink;
 		}
-		repaint(); // repaint performance
+		repaint(mapRect); // repaint performance
 	}
 	/**
 	 * Start animations.
@@ -1669,7 +1714,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 			for (int j = 0; j < STAR_COUNT; j++) {
 				starsX[i * STAR_COUNT + j] = random.nextInt(fw);
 				starsY[i * STAR_COUNT + j] = random.nextInt(fh);
-				starsColors[i * STAR_COUNT + j] = cgfx.mixColors(startStars, endStars, random.nextFloat());
+				starsColors[i * STAR_COUNT + j] = new Color(cgfx.mixColors(startStars, endStars, random.nextFloat()));
 			}
 		}
 	}
@@ -1707,7 +1752,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		if (modifiedMagnify < 0) {
 			modifiedMagnify = 0;
 		}
-		return gfx.starmapPlanets.get(planet.surfaceType.planetString).get(planetSizes[modifiedMagnify]).get(phase);
+		return /* gfx.starmapPlanets.get(planet.surfaceType.planetString) */planet.rotations.get(planetSizes[modifiedMagnify]).get(phase);
 	}
 	/** 
 	 * Check if the point is on a fleet or planet. 
@@ -1957,23 +2002,24 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 				// render problematic area icons backwards
 				int x = detailsRect.x + detailsRect.width - 15;
 				int y = detailsRect.y + 69;
-				if (selectedPlanet.getEnergyDemand() > selectedPlanet.getEnergyProduction()) {
+				PlanetStatus ps = selectedPlanet.getStatus();
+				if (ps.energyDemand > ps.energyProduction) {
 					g2.drawImage(cgfx.energyIcon, x, y, null);
 					x -= 12;
 				}
-				if (selectedPlanet.population > selectedPlanet.getFood()) {
+				if (ps.population > ps.food) {
 					g2.drawImage(cgfx.foodIcon, x, y, null);
 					x -= 12;
 				}
-				if (selectedPlanet.population > selectedPlanet.getHospital()) {
+				if (ps.population > ps.hospital) {
 					g2.drawImage(cgfx.hospitalIcon, x, y, null);
 					x -= 12;
 				}
-				if (selectedPlanet.population < selectedPlanet.getWorkerDemand()) {
+				if (ps.population < ps.workerDemand) {
 					g2.drawImage(cgfx.workerIcon, x, y, null);
 					x -= 12;
 				}
-				if (selectedPlanet.population > selectedPlanet.getLivingSpace()) {
+				if (ps.population > ps.livingSpace) {
 					g2.drawImage(cgfx.livingSpaceIcon, x, y, null);
 					x -= 12;
 				}

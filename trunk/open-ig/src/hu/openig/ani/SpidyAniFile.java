@@ -63,6 +63,18 @@ public class SpidyAniFile {
 	 * @version $Revision 1.0$
 	 */
 	public static class Palette extends Block implements PaletteDecoder {
+		/** The translated RGB values. */
+		private int[] rgb = new int[256];
+		/**
+		 * Convert the byte data to rgb ints.
+		 */
+		public void map() {
+			for (int i = 0; i < rgb.length; i++) {
+				rgb[i] = 0xFF000000 | (data[i * 3] & 0xFF) << 18 
+				| (data[i * 3 + 1] & 0xFF) << 10 
+				| (data[i * 3 + 2] & 0xFF) << 2;
+			}
+		}
 		/**
 		 * Returns the given palette entry as an RGBA color. The palette is expected
 		 * to store RGB values in a 6 bit form.
@@ -70,9 +82,7 @@ public class SpidyAniFile {
 		 * @return the RGBA value of the color
 		 */
 		public int getColor(int index) {
-			return 0xFF000000 | (data[index * 3] & 0xFF) << 18 
-			| (data[index * 3 + 1] & 0xFF) << 10 
-			| (data[index * 3 + 2] & 0xFF) << 2;
+			return rgb[index];
 		}
 	}
 	/**
@@ -183,6 +193,7 @@ public class SpidyAniFile {
 			Palette block = new Palette();
 			block.data = new byte[PAL_BLOCK_LENGTH];
 			in.readFully(block.data);
+			block.map();
 			return block;
 		} else
 		if (SOUND_BLOCK.equals(entryStr)) {

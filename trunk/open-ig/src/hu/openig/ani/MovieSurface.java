@@ -7,10 +7,12 @@
  */
 package hu.openig.ani;
 
+import hu.openig.core.ImageInterpolation;
 import hu.openig.core.SwappableRenderer;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -47,6 +49,8 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 	private BufferedImage frontbuffer;
 	/** The scaling mode when rendering the image. */
 	private MovieSurface.ScalingMode scalingMode = ScalingMode.KEEP_ASPECT;
+	/** The interpolation method for stretched images. */
+	private ImageInterpolation interpolation = ImageInterpolation.NONE;
 	/**
 	 * Returns the back buffer which is safe to draw to at any time.
 	 * The get should be initiated by the party who is supplying the images.
@@ -99,6 +103,11 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 		try {
 			backbuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			frontbuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			// disable acceleration on these images?! they change so frequently it
+			// is just overhead to move them back and forth between the memory and VRAM on
+			// invalidate
+			backbuffer.setAccelerationPriority(0);
+			frontbuffer.setAccelerationPriority(0);
 		} finally {
 			swapLock.unlock();
 		}
@@ -133,10 +142,25 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 							(getHeight() - (frontbuffer.getHeight() * scaley)) / 2);
 				}
 				g2.scale(scalex, scaley);
+				if (interpolation != ImageInterpolation.NONE) {
+					g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolation.hint);
+				}
 				g2.drawImage(frontbuffer, 0, 0, null);
 			}
 		} finally {
 			swapLock.unlock();
 		}
+	}
+	/**
+	 * @param interpolation the interpolation to set
+	 */
+	public void setInterpolation(ImageInterpolation interpolation) {
+		this.interpolation = interpolation;
+	}
+	/**
+	 * @return the interpolation
+	 */
+	public ImageInterpolation getInterpolation() {
+		return interpolation;
 	}
 }

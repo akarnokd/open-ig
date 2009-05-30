@@ -108,8 +108,10 @@ public class InfobarRenderer {
 					gameWorld.player.race.color, Integer.toString(gameWorld.getYear()));
 			text.paintTo(g2, monthRect.x + 1, monthRect.y + 2, 10, 
 					gameWorld.player.race.color, gameWorld.getLabel("MONTHNAME_" + gameWorld.getMonth()));
-			text.paintTo(g2, dayRect.x + 1, dayRect.y + 2, 10, 
-					gameWorld.player.race.color, String.format("%02d", gameWorld.getDay()));
+			int v = gameWorld.getDay();
+			String sv = v < 10 ? "0" + v : String.valueOf(v);
+ 			text.paintTo(g2, dayRect.x + 1, dayRect.y + 2, 10, 
+					gameWorld.player.race.color, sv);
 			
 			
 			
@@ -118,8 +120,10 @@ public class InfobarRenderer {
 				// if game is not paused, the 10s of minutes are rounded off
 				minute = (minute / 60) * 60;
 			}
+			v = gameWorld.getHour();
+			sv = v < 10 ? "0" + v : String.valueOf(v);
 			text.paintTo(g2, timeRect.x + 1, timeRect.y + 2, 10, 
-					gameWorld.player.race.color, String.format("%02d", gameWorld.getHour()));
+					gameWorld.player.race.color, sv);
 
 			String colonStr = ":";
 			int colonLength = text.getTextWidth(10, colonStr);
@@ -127,7 +131,7 @@ public class InfobarRenderer {
 			text.paintTo(g2, timeRect.x + (timeRect.width - 1 - colonLength) / 2, timeRect.y + 2, 10, 
 					gameWorld.player.race.color, colonStr);
 			
-			String minuteStr = String.format("%02d", minute);
+			String minuteStr = minute < 10 ? "0" + minute : String.valueOf(minute);
 			int minuteLength = text.getTextWidth(10, minuteStr);
 			text.paintTo(g2, timeRect.x + timeRect.width - 1 - minuteLength, timeRect.y + 2, 10, 
 					gameWorld.player.race.color, minuteStr);

@@ -10,11 +10,14 @@ package hu.openig.res.gfx;
 
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.JavaUtils;
+import hu.openig.utils.PACFile;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.ResourceMapper;
+import hu.openig.utils.PACFile.PACEntry;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -55,55 +58,15 @@ public class ResearchGFX {
 	public final BufferedImage tabWeapons;
 	/** Buildings tab image. */
 	public final BufferedImage tabBuildings;
-	/** Spaceship options image. */
-	public final BufferedImage optSpaceships;
-	/** Equipment options image. */
-	public final BufferedImage optEquipment;
-	/** Weapons options image. */
-	public final BufferedImage optWeapons;
-	/** Buildings options image. */
-	public final BufferedImage optBuildings;
-	/** Spaceships - Fighters suboptions. */
-	public final BufferedImage optFighters;
-	/** Destroyers options image. */
-	public final BufferedImage optDestroyers;
-	/** Flagships options image. */
-	public final BufferedImage optFlagships;
-	/** Satellites options image. */
-	public final BufferedImage optSatellites;
-	/** Space station options image. */
-	public final BufferedImage optSpaceStations;
-	/** Equipment - Hyperdrives. */
-	public final BufferedImage optHyperdrives;
-	/** Modules options image. */
-	public final BufferedImage optModules;
-	/** Radars options image. */
-	public final BufferedImage optRadars;
-	/** Shields options image. */
-	public final BufferedImage optShields;
-	/** Weapons - Laser weapons. */
-	public final BufferedImage optLasers;
-	/** Guns option image. */
-	public final BufferedImage optGuns;
-	/** Bombs missiles  options image. */
-	public final BufferedImage optBombsMissiles;
-	/** Tanks options image. */
-	public final BufferedImage optTanks;
-	/** Vehicles options image. */
-	public final BufferedImage optVehicles;
-	/** Buildings - Buildings. */
-	public final BufferedImage optColonyBuildings;
-	/** Military buildings image. */
-	public final BufferedImage optMilitaryBuildings;
-	/** Colony radars buildings image. */
-	public final BufferedImage optColonyRadars;
-	/** Colony guns image. */
-	public final BufferedImage optColonyGuns;
+	/** Spaceships tab light image. */
+	public final BufferedImage tabSpaceshipsLight;
+	/** Equipment tab light image. */
+	public final BufferedImage tabEquipmentLight;
+	/** Weapons tab light image. */
+	public final BufferedImage tabWeaponsLight;
+	/** Buildings tab light image. */
+	public final BufferedImage tabBuildingsLight;
 	// research screen main regions relative
-	/** Animation rectangle. */
-	public Rectangle rectAnimation;
-	/** Research rectangles. */
-	public Rectangle[] rectResearch;
 	/** Project name rectangle. */
 	public Rectangle rectProjectName;
 	/** Project status rectangle. */
@@ -160,37 +123,28 @@ public class ResearchGFX {
 	public Rectangle rectDescription;
 	/** The areas for required research. */
 	public Rectangle[] rectNeeded;
-	/** The areas for the main options labels. */
-	public Rectangle[] rectMainOptions;
-	/** The areas for the sub options labels. */
-	public Rectangle[] rectSubOptions;
-	/** Areas for the current research selector arrow. */
-	public Rectangle[] rectMainArrow;
-	/** Areas for the current research selector arrow in sub options. */
-	public Rectangle[] rectSubArrow;
+	/** The main options images. */
+	public BufferedImage[] mainOptions;
+	/** The main options light images. */
+	public BufferedImage[] mainOptionsLight;
+	/** The sub options light array. */
+	public BufferedImage[][] subOptions;
+	/** The sub options light image array. */
+	public BufferedImage[][] subOptionsLight;
 	/** Fix for the bridge button's rendering anomaly. */
 	public Rectangle rectBridgeFix;
-	/** The location for the bridge button's fix. */
-	public BufferedImage btnBridgeFix;
-	/** The map if invention images. Keys are the image index: 111 through 443.
-	 * <br>DATA/INVENTS.PAC!INVxxx.PCX*/
-	public final Map<Integer, BufferedImage> inventions = JavaUtils.newHashMap();
-	/** Map for invention images for the research and production screens. 
-	 * Keys are the image index: 111 through 443. 
-	 * <br>EQ_PICS/EQ_PICS.PAC!KISxx.PCX#x */
-	public final Map<Integer, BufferedImage> smallInventions = JavaUtils.newHashMap();
-	/** Map for the wired invention images for the research and production screens. 
-	 * Keys are the image index: 111 through 443. 
-	 * <br>DATA/INVENTS.PAC!WIRxxx.PCX*/
-	public final Map<Integer, BufferedImage> wiredInventions = JavaUtils.newHashMap();
+	/** The small research images. */
+	public final Map<Integer, BufferedImage> smallImages = JavaUtils.newHashMap();
+	/** The empty animation. */
+	public final File emptyAnimation;
 	/**
 	 * Constructor. Loads the images.
 	 * @param resMap the resource mapper
 	 */
 	public ResearchGFX(ResourceMapper resMap) {
-		researchScreen = PCXImage.from(resMap.get("SCREEN/FEJLESZT.PCX"), -1);
+		researchScreen = PCXImage.from(resMap.get("SCREENS/FEJLESZT.PCX"), -1);
 		
-		BufferedImage res = PCXImage.from(resMap.get("SCREEN/FEJL_X.PCX"), -1);
+		BufferedImage res = PCXImage.from(resMap.get("SCREENS/FEJL_X.PCX"), -1);
 		btnEmpty = ImageUtils.subimage(res, 336, 0, 102, 39);
 		btnStart = ImageUtils.subimage(res, 336, 39, 102, 39);
 		btnStartDown = ImageUtils.subimage(res, 336, 78, 102, 39);
@@ -213,44 +167,87 @@ public class ResearchGFX {
 		btnEmptySmall = ImageUtils.subimage(res, 437, 212, 115, 23);
 		btnStopDown = ImageUtils.subimage(res, 437, 258, 115, 23);
 		
-		tabSpaceships = ImageUtils.subimage(res, 438, 0, 111, 21);
-		tabEquipment = ImageUtils.subimage(res, 438, 22, 111, 21);
-		tabWeapons = ImageUtils.subimage(res, 438, 44, 111, 21);
-		tabBuildings = ImageUtils.subimage(res, 438, 65, 111, 18);
+		tabSpaceshipsLight = ImageUtils.subimage(res, 438, 0, 111, 21);
+		tabEquipmentLight = ImageUtils.subimage(res, 438, 22, 111, 21);
+		tabWeaponsLight = ImageUtils.subimage(res, 438, 44, 111, 21);
+		tabBuildingsLight = ImageUtils.subimage(res, 438, 65, 111, 18);
+		
+		tabSpaceships = ImageUtils.subimage(res, 438, 83, 111, 21);
+		tabEquipment = ImageUtils.subimage(res, 438, 105, 111, 21);
+		tabWeapons = ImageUtils.subimage(res, 438, 127, 111, 21);
+		tabBuildings = ImageUtils.subimage(res, 438, 149, 111, 17);
+		
+		mainOptions = new BufferedImage[] {
+			tabSpaceships, tabEquipment, tabWeapons, tabBuildings
+		};
+		mainOptionsLight = new BufferedImage[] {
+			tabSpaceshipsLight, tabEquipmentLight, tabWeaponsLight, tabBuildingsLight
+		};
 	
-		optSpaceships = ImageUtils.subimage(res, 0, 0, 168, 78);
-		optEquipment = ImageUtils.subimage(res, 0, 78, 168, 78);
-		optWeapons = ImageUtils.subimage(res, 0, 156, 168, 78);
-		optBuildings = ImageUtils.subimage(res, 0, 234, 168, 78);
-		
-		optFighters = ImageUtils.subimage(res, 168, 0, 168, 14);
-		optDestroyers = ImageUtils.subimage(res, 168, 16, 168, 14);
-		optFlagships = ImageUtils.subimage(res, 168, 32, 168, 14);
-		optSatellites = ImageUtils.subimage(res, 168, 48, 168, 14);
-		optSpaceStations = ImageUtils.subimage(res, 168, 64, 168, 14);
-		
-		optHyperdrives = ImageUtils.subimage(res, 168, 78, 168, 14);
-		optModules = ImageUtils.subimage(res, 168, 94, 168, 14);
-		optRadars = ImageUtils.subimage(res, 168, 110, 168, 14);
-		optShields = ImageUtils.subimage(res, 168, 126, 168, 14);
-		
-		optLasers = ImageUtils.subimage(res, 168, 156, 168, 14);
-		optGuns = ImageUtils.subimage(res, 168, 172, 168, 14);
-		optBombsMissiles = ImageUtils.subimage(res, 168, 188, 168, 14);
-		optTanks = ImageUtils.subimage(res, 168, 204, 168, 14);
-		optVehicles = ImageUtils.subimage(res, 168, 220, 168, 14);
-		
-		optColonyBuildings = ImageUtils.subimage(res, 168, 234, 168, 14);
-		optMilitaryBuildings = ImageUtils.subimage(res, 168, 250, 168, 14);
-		optColonyRadars = ImageUtils.subimage(res, 168, 266, 168, 14);
-		optColonyGuns = ImageUtils.subimage(res, 168, 282, 168, 14);
+//		optSpaceships = ImageUtils.subimage(res, 0, 0, 168, 78);
+//		optEquipment = ImageUtils.subimage(res, 0, 78, 168, 78);
+//		optWeapons = ImageUtils.subimage(res, 0, 156, 168, 78);
+//		optBuildings = ImageUtils.subimage(res, 0, 234, 168, 78);
+		subOptions = new BufferedImage[4][];
+		subOptionsLight = new BufferedImage[4][];
+		// spaceships
+		subOptions[0] = new BufferedImage[] {
+				ImageUtils.subimage(res, 0, 0, 168, 14),
+				ImageUtils.subimage(res, 0, 16, 168, 14),
+				ImageUtils.subimage(res, 0, 32, 168, 14),
+				ImageUtils.subimage(res, 0, 48, 168, 14),
+				ImageUtils.subimage(res, 0, 64, 168, 14)
+			};
+		subOptionsLight[0] = new BufferedImage[] {
+			ImageUtils.subimage(res, 168, 0, 168, 14),
+			ImageUtils.subimage(res, 168, 16, 168, 14),
+			ImageUtils.subimage(res, 168, 32, 168, 14),
+			ImageUtils.subimage(res, 168, 48, 168, 14),
+			ImageUtils.subimage(res, 168, 64, 168, 14)
+		};
+		// equipments
+		subOptions[1] = new BufferedImage[] {
+			ImageUtils.subimage(res, 0, 78, 168, 14),
+			ImageUtils.subimage(res, 0, 94, 168, 14),
+			ImageUtils.subimage(res, 0, 110, 168, 14),
+			ImageUtils.subimage(res, 0, 126, 168, 14)
+		};
+		subOptionsLight[1] = new BufferedImage[] {
+			ImageUtils.subimage(res, 168, 78, 168, 14),
+			ImageUtils.subimage(res, 168, 94, 168, 14),
+			ImageUtils.subimage(res, 168, 110, 168, 14),
+			ImageUtils.subimage(res, 168, 126, 168, 14)
+		};
+		// weapons
+		subOptions[2] = new BufferedImage[] {
+				ImageUtils.subimage(res, 0, 156, 168, 14), // lasers
+				ImageUtils.subimage(res, 0, 172, 168, 14), // guns
+				ImageUtils.subimage(res, 0, 188, 168, 14), // bombs and missiles
+				ImageUtils.subimage(res, 0, 204, 168, 14), // tanks
+				ImageUtils.subimage(res, 0, 220, 168, 14)	 // vehicles	
+		};
+		subOptionsLight[2] = new BufferedImage[] {
+			ImageUtils.subimage(res, 168, 156, 168, 14), // lasers
+			ImageUtils.subimage(res, 168, 172, 168, 14), // guns
+			ImageUtils.subimage(res, 168, 188, 168, 14), // bombs and missiles
+			ImageUtils.subimage(res, 168, 204, 168, 14), // tanks
+			ImageUtils.subimage(res, 168, 220, 168, 14)	 // vehicles	
+		};
+		subOptions[3] = new BufferedImage[] {
+			ImageUtils.subimage(res, 0, 234, 168, 14),
+			ImageUtils.subimage(res, 0, 250, 168, 14),
+			ImageUtils.subimage(res, 0, 266, 168, 14),
+			ImageUtils.subimage(res, 0, 282, 168, 14)
+		};
+		subOptionsLight[3] = new BufferedImage[] {
+			ImageUtils.subimage(res, 168, 234, 167, 14),
+			ImageUtils.subimage(res, 168, 250, 167, 14),
+			ImageUtils.subimage(res, 168, 266, 167, 14),
+			ImageUtils.subimage(res, 168, 282, 167, 14)
+		};
 		
 		// various locations on the research screen
-		rectAnimation = new Rectangle(2, 2, 316, 196);
-		rectResearch = new Rectangle[6];
-		for (int i = 0; i < rectResearch.length; i++) {
-			rectResearch[i] = new Rectangle(3 + 106 * i, 201, 104, 78);
-		};
+		
 		rectProjectName = new Rectangle(128, 192, 156, 10);
 		rectProjectStatus = new Rectangle(128, 311, 156, 10);
 		rectProject = new Rectangle(128, 344, 156, 10);
@@ -268,7 +265,7 @@ public class ResearchGFX {
 		rectProduction = new Rectangle(534, 361, 102, 39);
 		rectBridge = new Rectangle(534, 400, 102, 39);
 		rectBridgeFix = new Rectangle(534, 437, 102, 2);
-		btnBridgeFix = ImageUtils.subimage(res, 534, 398, 102, 2);
+//		btnBridgeFix = ImageUtils.subimage(res, 534, 398, 102, 2);
 		
 		rectView = new Rectangle(291, 360, 115, 23);
 		rectStop = new Rectangle(410, 360, 115, 23);
@@ -292,17 +289,16 @@ public class ResearchGFX {
 		for (int i = 0; i < rectNeeded.length; i++) {
 			rectNeeded[i] = new Rectangle(539, 139 + i * 18, 92, 10);
 		}
-		rectMainOptions = new Rectangle[4];
-		rectMainArrow = new Rectangle[4];
-		for (int i = 0; i < rectMainOptions.length; i++) {
-			rectMainOptions[i] = new Rectangle(341, 10 + i * 22, 168, 20);
-			rectMainArrow[i] = new Rectangle(325, 13 + i * 22, 15, 11);
+		for (PACEntry e : PACFile.parseFully(resMap.get("DATA/EQ_PICS.PAC"))) {
+			if (e.filename.startsWith("KIS")) {
+				int idx = Integer.parseInt(e.filename.substring(3, 5)) * 10;
+				BufferedImage img = PCXImage.parse(e.data, -1);
+				for (int i = 0; i < 6; i++) {
+					BufferedImage sub = ImageUtils.subimage(img, i * 106, 0, 104, 78);
+					smallImages.put(idx + i + 1, sub);
+				}
+			}
 		}
-		rectSubOptions = new Rectangle[5];
-		rectSubArrow = new Rectangle[5];
-		for (int i = 0; i < rectSubOptions.length; i++) {
-			rectSubOptions[i] = new Rectangle(342, 112 + i * 16, 168, 14);
-			rectSubArrow[i] = new Rectangle(325, 112 + i * 16, 15, 11);
-		}
+		emptyAnimation = resMap.get("EQ_ANIMS/INV000.ANI");
 	}
 }

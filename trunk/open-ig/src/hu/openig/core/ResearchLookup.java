@@ -9,6 +9,7 @@
 package hu.openig.core;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 
 /**
@@ -41,4 +42,22 @@ public interface ResearchLookup {
 	 * @return the wired image
 	 */
 	BufferedImage getWiredInfoImage(int index);
+	/** 
+	 * Returns the small image used in research and production screens.
+	 * @param imageIndex the index
+	 * @return the image
+	 */
+	BufferedImage getSmallImage(int imageIndex);
+	/**
+	 * Returns the animation file name.
+	 * @param imageIndex the image index
+	 * @return the animation file
+	 */
+	File getAnimation(int imageIndex);
+	/**
+	 * Returns the wired animation file name.
+	 * @param imageIndex the image index
+	 * @return the wired animation file
+	 */
+	File getAnimationWired(int imageIndex);
 }
