@@ -31,6 +31,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -39,6 +41,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JComponent;
+import javax.swing.Timer;
 
 /**
  * Research screen renderer.
@@ -169,6 +172,12 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	private final List<Btn> releaseButtons = JavaUtils.newArrayList();
 	/** Is the currently animating technology available. */
 	private boolean selectedTechAvail;
+	/** The research timer. */
+	private Timer researchTimer;
+	/** The research timer firing interval. */
+	private static final int RESEARCH_TIMER = 100;
+	/** The research timer step counter. */
+	private int researchStep;
 	/**
 	 * Returns the back buffer which is safe to draw to at any time.
 	 * The get should be initiated by the party who is supplying the images.
@@ -244,7 +253,15 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		this.addMouseListener(ma);
 		this.addMouseMotionListener(ma);
 		this.addMouseWheelListener(ma);
+		researchTimer = new Timer(RESEARCH_TIMER, new ActionListener() { public void actionPerformed(ActionEvent e) { doResearchTimer(); } });
 		initButtons();
+	}
+	/** Advance the research image. */
+	protected void doResearchTimer() {
+		researchStep = (researchStep + 1) % 16;
+		if (gameWorld.player.activeResearch != null) {
+			repaint();
+		}
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
@@ -372,8 +389,16 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 						g2.drawLine(rectResearch[i].x, rectResearch[i].y + j, rectResearch[i].x + rectResearch[i].width - 1, rectResearch[i].y + j);
 					}
 					if (!gameWorld.isResearchable(rt)) {
-						g2.drawImage(gfx.researchDisabled, rectResearch[i].x + (rectResearch[i].width - gfx.researchDisabled.getWidth()) / 2, 
-								rectResearch[i].y + (rectResearch[i].height - gfx.researchDisabled.getHeight()) / 2, null);
+						g2.drawImage(cgfx.researchDisallowed, rectResearch[i].x + (rectResearch[i].width - cgfx.researchDisallowed.getWidth()) / 2, 
+								rectResearch[i].y + (rectResearch[i].height - cgfx.researchDisallowed.getHeight()) / 2, null);
+					} else {
+						LabInfo li = gameWorld.player.getLabInfo();
+						int cd = gameWorld.isEnoughLabFor(li, rt) ? (gameWorld.isEnoughWorkingLabFor(li, rt) ? 0 : 2) : 1;
+						if (arp != null && arp.research == rt) {
+							g2.drawImage(cgfx.researchCDs[cd][researchStep], rectResearch[i].x + 2, rectResearch[i].y + rectResearch[i].height - 30, null);
+						} else {
+							g2.drawImage(cgfx.researchCDs[cd][0], rectResearch[i].x + 2, rectResearch[i].y + rectResearch[i].height - 30, null);
+						}
 					}
 				}
 				if (rt == gameWorld.player.selectedTech) {
@@ -712,6 +737,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	 * Starts the animations.
 	 */
 	public void startAnimation() {
+		researchTimer.start();
 		if (anim.getFilename() != null) {
 			anim.startPlayback();
 		}
@@ -719,6 +745,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	/** Stops the animations. */
 	public void stopAnimation() {
 		anim.stopAndWait();
+		researchTimer.stop();
 	}
 	/**
 	 * Sets the list indexes to display the currently selected technology if any.

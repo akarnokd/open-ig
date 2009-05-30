@@ -196,9 +196,9 @@ public class CommonGFX {
 			}
 		}
 		for (int i = 0; i < 3; i++) {
-			researchCDs[i] = new BufferedImage[16];
+			researchCDs[i + 3] = new BufferedImage[16];
 			for (int j = 0; j < researchCDs[i].length; j++) {
-				researchCDs[i][j] = ImageUtils.subimage(rescd, j * 20, 60 + i * 17, 20, 17);
+				researchCDs[i + 3][j] = ImageUtils.subimage(rescd, j * 20, 60 + i * 17, 20, 17);
 			}
 		}
 		researchDisallowed = PCXImage.from(resMap.get("SCREENS/FEJL_TAK.PCX"), -2);

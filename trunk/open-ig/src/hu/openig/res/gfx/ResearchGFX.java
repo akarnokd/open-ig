@@ -81,8 +81,6 @@ public class ResearchGFX {
 	public final Map<Integer, BufferedImage> smallImages = JavaUtils.newHashMap();
 	/** The empty animation. */
 	public final File emptyAnimation;
-	/** The red cross for disabled research. */
-	public final BufferedImage researchDisabled;
 	/**
 	 * Constructor. Loads the images.
 	 * @param resMap the resource mapper
@@ -205,6 +203,5 @@ public class ResearchGFX {
 			}
 		}
 		emptyAnimation = resMap.get("EQ_ANIMS/INV000.ANI");
-		researchDisabled = PCXImage.from(resMap.get("SCREENS/FEJL_TAK.PCX"), -2);
 	}
 }

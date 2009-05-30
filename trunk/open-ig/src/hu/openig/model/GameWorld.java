@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.behavior.ResourceAllocator;
 import hu.openig.core.BuildLimit;
 import hu.openig.core.GameSpeed;
+import hu.openig.core.LabInfo;
 import hu.openig.res.Labels;
 import hu.openig.utils.JavaUtils;
 
@@ -441,5 +442,35 @@ public class GameWorld {
 	 */
 	public boolean isActiveResearch(ResearchTech rt) {
 		return player.activeResearch != null && player.activeResearch.research == rt;
+	}
+	/**
+	 * Returns true if the current working lab status is more than enough to research the given technology.
+	 * @param li the lab info
+	 * @param rt the technology to test
+	 * @return true if there is enough operational lab to research
+	 */
+	public boolean isEnoughWorkingLabFor(LabInfo li, ResearchTech rt) {
+		return 
+			li.currentCivil >= rt.civil
+			&& li.currentMechanic >= rt.mechanic
+			&& li.currentComputer >= rt.computer
+			&& li.currentAi >= rt.ai
+			&& li.currentMilitary >= rt.military
+		;
+	}
+	/**
+	 * Returns true if the current lab status is more than enough to research the given technology.
+	 * @param li the lab info
+	 * @param rt the technology to test
+	 * @return true if there is enough lab to research
+	 */
+	public boolean isEnoughLabFor(LabInfo li, ResearchTech rt) {
+		return 
+			li.totalCivil >= rt.civil
+			&& li.totalMechanic >= rt.mechanic
+			&& li.totalComputer >= rt.computer
+			&& li.totalAi >= rt.ai
+			&& li.totalMilitary >= rt.military
+		;
 	}
 }
