@@ -62,6 +62,11 @@ public class Player {
 	}
 	/** The playback loop. */
 	private void play() {
+		ByteArrayInputStream mem0 = null;
+		if (memoryPlayback) {
+			mem0 = new ByteArrayInputStream(IOUtils.load(filename));
+		}
+		final ByteArrayInputStream mem = mem0;
 		while (!stop && !Thread.currentThread().isInterrupted()) {
 			if (!noAudio) {
 				ad = new AudioThread();
@@ -82,8 +87,6 @@ public class Player {
 				int height;
 				/** The frame/second. */
 				double fps;
-				/** The memory loaded animation. */
-				ByteArrayInputStream mem;
 				@Override
 				public void audioData(byte[] data) {
 					if (ad != null) {
@@ -118,9 +121,6 @@ public class Player {
 				@Override
 				public InputStream getNewInputStream() {
 					if (memoryPlayback) {
-						if (mem == null) {
-							mem = new ByteArrayInputStream(IOUtils.load(getFileName()));
-						}
 						mem.reset();
 						return mem;
 					} else {
@@ -133,7 +133,7 @@ public class Player {
 				}
 
 				@Override
-				public void imageDate(int[] image) {
+				public void imageData(int[] image) {
 					if (frameCount == 0) {
 						starttime = System.currentTimeMillis();
 					}

@@ -111,7 +111,7 @@ public class TextGFX {
 	public static final int FREE_NATIONS_SOCIETY_ST = scaleColor(LIGHT_BLUE, 1 / 1.3f);
 	
 	/** The cache for color-remaped charImages. */
-	private Map<Integer, Map<Integer, SizedCharImages>> coloredCharImages = LRUHashMap.create(32);
+	private Map<Integer, Map<Integer, SizedCharImages>> coloredCharImages = LRUHashMap.create(64);
 	/** The character width on a particular character size. */
 	private Map<Integer, Integer> charsetWidths = new HashMap<Integer, Integer>();
 	/** The character space for a particular character size. */

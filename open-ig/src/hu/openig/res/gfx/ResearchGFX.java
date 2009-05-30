@@ -67,62 +67,6 @@ public class ResearchGFX {
 	/** Buildings tab light image. */
 	public final BufferedImage tabBuildingsLight;
 	// research screen main regions relative
-	/** Project name rectangle. */
-	public Rectangle rectProjectName;
-	/** Project status rectangle. */
-	public Rectangle rectProjectStatus;
-	/** Completed rectangle. */
-	public Rectangle rectCompleted;
-	/** Time remaining rectangle. */
-	public Rectangle rectTimeRemaining;
-	/** Number of civil enginering rectangle. */
-	public Rectangle rectCiv;
-	/** Number of mechanical research rectangle. */
-	public Rectangle rectMech;
-	/** Number of computer research rectangle. */
-	public Rectangle rectComp;
-	/** Number of AU research rectangle. */
-	public Rectangle rectAI;
-	/** Number of Military research rectangle. */
-	public Rectangle rectMil;
-	/** Start button location. */
-	public Rectangle rectStart;
-	/** Equipment rectangle. */
-	public Rectangle rectEquipment;
-	/** Production rectangle. */
-	public Rectangle rectProduction;
-	/** Bridge rectangle. */
-	public Rectangle rectBridge;
-	/** The current project name. */
-	public Rectangle rectProject;
-	/** The current project money. */
-	public Rectangle rectMoney;
-	/** The more money button area. */
-	public Rectangle rectMoreMoney;
-	/** The less money button area. */
-	public Rectangle rectLessMoney;
-	/** The adjust money entire button rectangle. */
-	public Rectangle rectMoneyAdjust;
-	/** The current percent. */
-	public Rectangle rectPercent;
-	/** Current number of civil enginerring rectangle. */
-	public Rectangle rectCurrCiv;
-	/** Current number of mechanical research rectangle. */
-	public Rectangle rectCurrMech;
-	/** Current number of computer research rectangle. */
-	public Rectangle rectCurrComp;
-	/** Current number of AI research rectangle. */
-	public Rectangle rectCurrAI;
-	/** Current number of military research rectangle. */
-	public Rectangle rectCurrMil;
-	/** View current research in the tech tree. */
-	public Rectangle rectView;
-	/** Stop research. */
-	public Rectangle rectStop;
-	/** The research description area. */
-	public Rectangle rectDescription;
-	/** The areas for required research. */
-	public Rectangle[] rectNeeded;
 	/** The main options images. */
 	public BufferedImage[] mainOptions;
 	/** The main options light images. */
@@ -137,6 +81,8 @@ public class ResearchGFX {
 	public final Map<Integer, BufferedImage> smallImages = JavaUtils.newHashMap();
 	/** The empty animation. */
 	public final File emptyAnimation;
+	/** The red cross for disabled research. */
+	public final BufferedImage researchDisabled;
 	/**
 	 * Constructor. Loads the images.
 	 * @param resMap the resource mapper
@@ -248,47 +194,6 @@ public class ResearchGFX {
 		
 		// various locations on the research screen
 		
-		rectProjectName = new Rectangle(128, 192, 156, 10);
-		rectProjectStatus = new Rectangle(128, 311, 156, 10);
-		rectProject = new Rectangle(128, 344, 156, 10);
-		rectMoney = new Rectangle(128, 365, 122, 10);
-		rectPercent = new Rectangle(259, 365, 25, 10);
-		
-		rectLessMoney = new Rectangle(9, 361, 28, 19);
-		rectMoreMoney = new Rectangle(38, 361, 28, 19);
-		rectMoneyAdjust = new Rectangle(9, 361, 57, 19);
-		
-		rectDescription = new Rectangle(9, 393, 515, 41);
-		
-		rectStart = new Rectangle(534, 283, 102, 39);
-		rectEquipment = new Rectangle(534, 322, 102, 39);
-		rectProduction = new Rectangle(534, 361, 102, 39);
-		rectBridge = new Rectangle(534, 400, 102, 39);
-		rectBridgeFix = new Rectangle(534, 437, 102, 2);
-//		btnBridgeFix = ImageUtils.subimage(res, 534, 398, 102, 2);
-		
-		rectView = new Rectangle(291, 360, 115, 23);
-		rectStop = new Rectangle(410, 360, 115, 23);
-		
-		rectCompleted = new Rectangle(314, 290, 52, 14);
-		rectTimeRemaining = new Rectangle(471, 290, 51, 14);
-		
-		rectCiv = new Rectangle(319, 310, 12, 15);
-		rectMech = new Rectangle(373, 310, 12, 15);
-		rectComp = new Rectangle(430, 310, 12, 15);
-		rectAI = new Rectangle(471, 310, 12, 15);
-		rectMil = new Rectangle(512, 310, 12, 15);
-
-		rectCurrCiv = new Rectangle(319, 341, 12, 15);
-		rectCurrMech = new Rectangle(373, 341, 12, 15);
-		rectCurrComp = new Rectangle(430, 341, 12, 15);
-		rectCurrAI = new Rectangle(471, 341, 12, 15);
-		rectCurrMil = new Rectangle(512, 341, 12, 15);
-		
-		rectNeeded = new Rectangle[3];
-		for (int i = 0; i < rectNeeded.length; i++) {
-			rectNeeded[i] = new Rectangle(539, 139 + i * 18, 92, 10);
-		}
 		for (PACEntry e : PACFile.parseFully(resMap.get("DATA/EQ_PICS.PAC"))) {
 			if (e.filename.startsWith("KIS")) {
 				int idx = Integer.parseInt(e.filename.substring(3, 5)) * 10;
@@ -300,5 +205,6 @@ public class ResearchGFX {
 			}
 		}
 		emptyAnimation = resMap.get("EQ_ANIMS/INV000.ANI");
+		researchDisabled = PCXImage.from(resMap.get("SCREENS/FEJL_TAK.PCX"), -2);
 	}
 }

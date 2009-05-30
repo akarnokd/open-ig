@@ -275,7 +275,7 @@ public final class AnimPlay {
 			}
 
 			@Override
-			public void imageDate(int[] image) {
+			public void imageData(int[] image) {
 				if (frameCount == 0) {
 					starttime = System.currentTimeMillis();
 				}
@@ -708,7 +708,7 @@ public final class AnimPlay {
 					}
 
 					@Override
-					public void imageDate(int[] image) {
+					public void imageData(int[] image) {
 						if (progress != null) {
 							progress.progress(frameCount, maxFrameCount);
 						}
@@ -825,7 +825,7 @@ public final class AnimPlay {
 			}
 
 			@Override
-			public void imageDate(int[] image) {
+			public void imageData(int[] image) {
 				if (progress != null) {
 					progress.progress(frameCount, maxFrameCount);
 				}

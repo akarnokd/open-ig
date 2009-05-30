@@ -461,6 +461,20 @@ public class Main extends JFrame {
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doWalkBuildPhases(); } });
 
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+R");
+		rp.getActionMap().put("CTRL+R", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { doResearchCurrent(); } });
+
+	}
+	/** Research the currently selected technology. */
+	protected void doResearchCurrent() {
+		if (gameWorld.player.selectedTech != null) {
+			gameWorld.player.availableTechnology.add(gameWorld.player.selectedTech);
+			repaint();
+		}
 	}
 	/**
 	 * Walks the currently selected building's progress to display various construction phase tiles.
@@ -607,6 +621,8 @@ public class Main extends JFrame {
 		informationRenderer.setOnCancelInfoscreen(new BtnAction() { public void invoke() { onCancelInfoScreen(); } });
 		informationRenderer.setOnDblClickBuilding(new BtnAction() { public void invoke() { onDblClickBuilding(); } });
 		informationRenderer.setOnDblClickPlanet(new BtnAction() { public void invoke() { onDblClickPlanet(); } });
+		informationRenderer.setOnResearchClick(new BtnAction() { public void invoke() { onF6Action(); } });
+		informationRenderer.setOnResearchDblClick(new BtnAction() { public void invoke() { onDblClickResearch(); } });
 		
 		planetRenderer.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
 		
@@ -619,6 +635,14 @@ public class Main extends JFrame {
 		optionsRenderer.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); } });
 		optionsRenderer.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); } });
 		optionsRenderer.setOnExit(new BtnAction() { public void invoke() { doExit(); } });
+	}
+	/** Perform action when the user double clicks on a research. */
+	protected void onDblClickResearch() {
+		if (gameWorld.player.selectedTech != null) {
+			if (!gameWorld.player.availableTechnology.contains(gameWorld.player.selectedTech)) {
+				onF6Action();
+			}
+		}
 	}
 	/**
 	 * Display planet when double clicking on the planet name.
@@ -740,7 +764,7 @@ public class Main extends JFrame {
 	 */
 	public static void main(String[] args)  throws Exception {
 		// FIXME D3D pipeline is slow for an unknown reason
-		System.setProperty("sun.java2d.d3d", "false");
+//		System.setProperty("sun.java2d.d3d", "false");
 		String root = ".";
 		if (args.length > 0) {
 			root = args[0];
@@ -806,6 +830,9 @@ public class Main extends JFrame {
 			}
 			if (!researchRenderer.isVisible() && gameWorld.player.selectedTech != null) {
 				researchRenderer.selectCurrentTech();
+			}
+			if (!researchRenderer.isVisible()) {
+				uiSounds.playSound("Research");
 			}
 			researchRenderer.setVisible(true);
 			layers.validate();
