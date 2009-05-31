@@ -181,6 +181,10 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	private Timer moneyAdjuster;
 	/** The time interval for money adjustment. */
 	private static final int MONEY_ADJUST_TIMER = 300;
+	/** User clicks on the production button. */
+	private BtnAction onProductionClick;
+	/** User clicks on the equipment button. */
+	private BtnAction onEquipmentClick;
 	/**
 	 * Returns the back buffer which is safe to draw to at any time.
 	 * The get should be initiated by the party who is supplying the images.
@@ -282,8 +286,8 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	/** Initialize buttons. */
 	private void initButtons() {
 		btnStart = new Btn(new BtnAction() { public void invoke() { doStartResearch(); } });
-		btnEquipment = new Btn();
-		btnProduction = new Btn();
+		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
+		btnProduction = new Btn(new BtnAction() { public void invoke() { doProductionClick(); } });
 		btnBridge = new Btn();
 		btnView = new Btn(new BtnAction() { public void invoke() { doViewResearch(); } });
 		btnStop = new Btn(new BtnAction() { public void invoke() { doStopResearch(); } });
@@ -296,6 +300,18 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		releaseButtons.add(btnView);
 		releaseButtons.add(btnStop);
 		releaseButtons.add(btnMoneyAdjust);
+	}
+	/** On production clicked. */
+	protected void doProductionClick() {
+		if (onProductionClick != null) {
+			onProductionClick.invoke();
+		}
+	}
+	/** On equipment clicked. */
+	protected void doEquipmentClick() {
+		if (onEquipmentClick != null) {
+			onEquipmentClick.invoke();
+		}
 	}
 	/** Stop the money adjustment trigger. */
 	protected void doStopMoneyAdjust() {
@@ -805,8 +821,8 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 			clazzIndex = gameWorld.player.selectedTech.clazzIndex;
 			typeIndex = gameWorld.player.selectedTech.typeIndex;
 		} else {
-			clazzIndex = 0;
-			typeIndex = 0;
+			clazzIndex = 1;
+			typeIndex = 1;
 		}
 	}
 	/**
@@ -820,5 +836,29 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	 */
 	public BtnAction getOnCancelScreen() {
 		return onCancelScreen;
+	}
+	/**
+	 * @param onProductionClick the onProductionClick to set
+	 */
+	public void setOnProductionClick(BtnAction onProductionClick) {
+		this.onProductionClick = onProductionClick;
+	}
+	/**
+	 * @return the onProductionClick
+	 */
+	public BtnAction getOnProductionClick() {
+		return onProductionClick;
+	}
+	/**
+	 * @param onEquipmentClick the onEquipmentClick to set
+	 */
+	public void setOnEquipmentClick(BtnAction onEquipmentClick) {
+		this.onEquipmentClick = onEquipmentClick;
+	}
+	/**
+	 * @return the onEquipmentClick
+	 */
+	public BtnAction getOnEquipmentClick() {
+		return onEquipmentClick;
 	}
 }
