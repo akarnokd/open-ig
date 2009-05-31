@@ -28,6 +28,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -144,12 +145,8 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	private final Rectangle rectProject = new Rectangle();
 	/** The current project money. */
 	private final Rectangle rectMoney = new Rectangle();
-	/** The more money button area. */
-	private final Rectangle rectMoreMoney = new Rectangle();
-	/** The less money button area. */
-	private final Rectangle rectLessMoney = new Rectangle();
 	/** The adjust money entire button rectangle. */
-	private final Rectangle rectMoneyAdjust = new Rectangle();
+	private Btn btnMoneyAdjust;
 	/** The current percent. */
 	private final Rectangle rectPercent = new Rectangle();
 	/** Current number of civil enginerring rectangle. */
@@ -178,6 +175,12 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	private static final int RESEARCH_TIMER = 100;
 	/** The research timer step counter. */
 	private int researchStep;
+	/** Action on cancel information screen. */
+	private BtnAction onCancelScreen;
+	/** Timer for continuous money adjustments. */
+	private Timer moneyAdjuster;
+	/** The time interval for money adjustment. */
+	private static final int MONEY_ADJUST_TIMER = 300;
 	/**
 	 * Returns the back buffer which is safe to draw to at any time.
 	 * The get should be initiated by the party who is supplying the images.
@@ -254,7 +257,20 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		this.addMouseMotionListener(ma);
 		this.addMouseWheelListener(ma);
 		researchTimer = new Timer(RESEARCH_TIMER, new ActionListener() { public void actionPerformed(ActionEvent e) { doResearchTimer(); } });
+		moneyAdjuster = new Timer(MONEY_ADJUST_TIMER, new ActionListener() { public void actionPerformed(ActionEvent e) { doMoneyAdjustTrigger(); } });
 		initButtons();
+	}
+	/** The money adjust trigger. */
+	protected void doMoneyAdjustTrigger() {
+		Point pt = MouseInfo.getPointerInfo().getLocation();
+		Point cpt = getLocationOnScreen();
+		Point rel = new Point(pt.x - cpt.x, pt.y - cpt.y);
+		if (btnMoneyAdjust.rect.contains(rel)) {
+			doMoneyAdjust(rel);
+		} else {
+			btnMoneyAdjust.down = false;
+			moneyAdjuster.stop();
+		}
 	}
 	/** Advance the research image. */
 	protected void doResearchTimer() {
@@ -271,6 +287,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		btnBridge = new Btn();
 		btnView = new Btn(new BtnAction() { public void invoke() { doViewResearch(); } });
 		btnStop = new Btn(new BtnAction() { public void invoke() { doStopResearch(); } });
+		btnMoneyAdjust = new Btn(new BtnAction() { public void invoke() { doStopMoneyAdjust(); } });
 		
 		releaseButtons.add(btnStart);
 		releaseButtons.add(btnEquipment);
@@ -278,6 +295,11 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		releaseButtons.add(btnBridge);
 		releaseButtons.add(btnView);
 		releaseButtons.add(btnStop);
+		releaseButtons.add(btnMoneyAdjust);
+	}
+	/** Stop the money adjustment trigger. */
+	protected void doStopMoneyAdjust() {
+		moneyAdjuster.stop();
 	}
 	/** Stop the current research. */
 	protected void doStopResearch() {
@@ -567,6 +589,10 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		if (btnStop.down) {
 			g2.drawImage(gfx.btnStopDown, btnStop.rect.x, btnStop.rect.y, null);
 		}
+		btnMoneyAdjust.disabled = arp == null;
+		if (btnMoneyAdjust.down) {
+			g2.drawImage(gfx.btnMoneyDown, btnMoneyAdjust.rect.x, btnMoneyAdjust.rect.y, null);
+		}
 		
 		achievementRenderer.renderAchievements(g2, this);
 	}
@@ -624,9 +650,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		rectMoney.setBounds(screenRect.x + 128, screenRect.y + 365, 122, 10);
 		rectPercent.setBounds(screenRect.x + 259, screenRect.y + 365, 25, 10);
 		
-		rectLessMoney.setBounds(screenRect.x + 9, screenRect.y + 361, 28, 19);
-		rectMoreMoney.setBounds(screenRect.x + 38, screenRect.y + 361, 28, 19);
-		rectMoneyAdjust.setBounds(screenRect.x + 9, screenRect.y + 361, 57, 19);
+		btnMoneyAdjust.setBounds(screenRect.x + 9, screenRect.y + 361, 57, 19);
 		
 		rectDescription.setBounds(screenRect.x + 9, screenRect.y + 393, 515, 41);
 		
@@ -708,10 +732,20 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 						}
 					}
 				}
-				for (Btn b : releaseButtons) {
-					if (b.test(pt)) {
-						b.down = true;
-						repaint(b.rect);
+				if (btnMoneyAdjust.test(pt)) {
+					btnMoneyAdjust.down = true;
+					doMoneyAdjust(pt);
+				} else {
+					for (Btn b : releaseButtons) {
+						if (b.test(pt)) {
+							b.down = true;
+							repaint(b.rect);
+						}
+					}
+					if (!screenRect.contains(pt)) {
+						if (onCancelScreen != null) {
+							onCancelScreen.invoke();
+						}
 					}
 				}
 			}
@@ -742,6 +776,22 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 			anim.startPlayback();
 		}
 	}
+	/** 
+	 * Adjust money level for the active research.
+	 * @param pt the point 
+	 */
+	public void doMoneyAdjust(Point pt) {
+		if (gameWorld.player.activeResearch != null) {
+			int x = pt.x - btnMoneyAdjust.rect.x - btnMoneyAdjust.rect.width / 2;
+			int f = x * 2000 / btnMoneyAdjust.rect.width;
+			int min = gameWorld.player.activeResearch.moneyRemaining / 8;
+			int max = gameWorld.player.activeResearch.moneyRemaining;
+			gameWorld.player.activeResearch.allocatedRemainingMoney = Math.max(min, Math.min(max, gameWorld.player.activeResearch.allocatedRemainingMoney + f));
+			if (!moneyAdjuster.isRunning()) {
+				moneyAdjuster.start();
+			}
+		}
+	}
 	/** Stops the animations. */
 	public void stopAnimation() {
 		anim.stopAndWait();
@@ -758,5 +808,17 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 			clazzIndex = 0;
 			typeIndex = 0;
 		}
+	}
+	/**
+	 * @param onCancelScreen the onCancelScreen to set
+	 */
+	public void setOnCancelScreen(BtnAction onCancelScreen) {
+		this.onCancelScreen = onCancelScreen;
+	}
+	/**
+	 * @return the onCancelScreen
+	 */
+	public BtnAction getOnCancelScreen() {
+		return onCancelScreen;
 	}
 }

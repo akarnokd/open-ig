@@ -628,6 +628,8 @@ public class Main extends JFrame {
 		informationRenderer.setOnResearchClick(new BtnAction() { public void invoke() { onF6Action(); } });
 		informationRenderer.setOnResearchDblClick(new BtnAction() { public void invoke() { onDblClickResearch(); } });
 		
+		researchRenderer.setOnCancelScreen(new BtnAction() { public void invoke() { onCancelInfoScreen(); } });
+		
 		planetRenderer.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
 		
 		mainmenuRenderer.setStartNewAction(new BtnAction() { public void invoke() { onStarmap(); } });
