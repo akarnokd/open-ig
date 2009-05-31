@@ -179,6 +179,8 @@ MouseWheelListener, ActionListener {
 	private BtnAction onResearchDblClick;
 	/** The research button clicked. */
 	private BtnAction onResearchClick;
+	/** The production button clicked. */
+	private BtnAction onProductionClick;
 	/**
 	 * Constructor, expecting the planet graphics and the common graphics objects.
 	 * @param grm the game resource manager
@@ -411,9 +413,11 @@ MouseWheelListener, ActionListener {
 			onResearchClick.invoke();
 		}
 	}
-	/** Production click action. */
+	/** Research click action. */
 	protected void doProductionClick() {
-		uiSound.playSound("Production");
+		if (onProductionClick != null) {
+			onProductionClick.invoke();
+		}
 	}
 	/** Equipment click action. */
 	protected void doEquipmentClick() {
@@ -2041,5 +2045,17 @@ MouseWheelListener, ActionListener {
 	 */
 	public BtnAction getOnResearchClick() {
 		return onResearchClick;
+	}
+	/**
+	 * @param onProductionClick the onProductionClick to set
+	 */
+	public void setOnProductionClick(BtnAction onProductionClick) {
+		this.onProductionClick = onProductionClick;
+	}
+	/**
+	 * @return the onProductionClick
+	 */
+	public BtnAction getOnProductionClick() {
+		return onProductionClick;
 	}
 }

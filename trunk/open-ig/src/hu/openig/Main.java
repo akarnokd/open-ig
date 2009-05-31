@@ -32,6 +32,7 @@ import hu.openig.render.InformationRenderer;
 import hu.openig.render.MainmenuRenderer;
 import hu.openig.render.OptionsRenderer;
 import hu.openig.render.PlanetRenderer;
+import hu.openig.render.ProductionRenderer;
 import hu.openig.render.ResearchRenderer;
 import hu.openig.render.StarmapRenderer;
 import hu.openig.res.GameResourceManager;
@@ -138,6 +139,8 @@ public class Main extends JFrame {
 	private ResearchRenderer researchRenderer;
 	/** The main screen refresh time. */
 	private static final int SCREEN_REFRESH_TIME = 2500;
+	/** The production renderer. */
+	private ProductionRenderer productionRenderer;
 	/**
 	 * Initialize resources from the given root directory.
 	 * @param resMap the resource mapper
@@ -177,6 +180,9 @@ public class Main extends JFrame {
 		optionsRenderer = new OptionsRenderer(grm, uiSounds, infobarRenderer, achievementRenderer);
 		achievementRenderer.add(optionsRenderer);
 		researchRenderer = new ResearchRenderer(grm, uiSounds, infobarRenderer, achievementRenderer);
+		achievementRenderer.add(researchRenderer);
+		productionRenderer = new ProductionRenderer(grm, uiSounds, infobarRenderer, achievementRenderer);
+		achievementRenderer.add(productionRenderer);
 
 		mainmenuRenderer = new MainmenuRenderer(grm);
 		mainmenuRenderer.setOpaque(true);
@@ -196,7 +202,7 @@ public class Main extends JFrame {
 		player.setMute(true);
 		
 		screens = new JComponent[] {
-			starmapRenderer, planetRenderer, researchRenderer, informationRenderer, mainmenuRenderer, moviePlayer, optionsRenderer
+			starmapRenderer, planetRenderer, researchRenderer, productionRenderer, informationRenderer, mainmenuRenderer, moviePlayer, optionsRenderer
 		};
 		achievementRenderer.setScreenLayerer(new ScreenLayerer() { 
 			@Override
@@ -218,6 +224,7 @@ public class Main extends JFrame {
 		planetRenderer.setVisible(false);
 		moviePlayer.setVisible(false);
 		researchRenderer.setVisible(false);
+		productionRenderer.setVisible(false);
 		
 		infobarRenderer.setGameWorld(gameWorld);
 		starmapRenderer.setGameWorld(gameWorld);
@@ -225,6 +232,7 @@ public class Main extends JFrame {
 		planetRenderer.setGameWorld(gameWorld);
 		optionsRenderer.setGameWorld(gameWorld);
 		researchRenderer.setGameWorld(gameWorld);
+		productionRenderer.setGameWorld(gameWorld);
 		
 		setListeners();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -241,6 +249,7 @@ public class Main extends JFrame {
 		int lvl = 0;
 		layers.add(starmapRenderer, Integer.valueOf(lvl++));
 		layers.add(planetRenderer, Integer.valueOf(lvl++));
+		layers.add(productionRenderer, Integer.valueOf(lvl++));
 		layers.add(researchRenderer, Integer.valueOf(lvl++));
 		layers.add(informationRenderer, Integer.valueOf(lvl++));
 		layers.add(mainmenuRenderer, Integer.valueOf(lvl++));
@@ -254,6 +263,7 @@ public class Main extends JFrame {
 			.addComponent(mainmenuRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(starmapRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(planetRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(productionRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(researchRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(informationRenderer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(moviePlayer, 640, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -264,6 +274,7 @@ public class Main extends JFrame {
 			.addComponent(mainmenuRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(starmapRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(planetRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+			.addComponent(productionRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(researchRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(informationRenderer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 			.addComponent(moviePlayer, 480, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -467,6 +478,14 @@ public class Main extends JFrame {
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { doResearchCurrent(); } });
+		
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "F5");
+		rp.getActionMap().put("F5", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { onF5Action(); } });
+
 
 	}
 	/** Research the currently selected technology. */
@@ -626,9 +645,13 @@ public class Main extends JFrame {
 		informationRenderer.setOnDblClickBuilding(new BtnAction() { public void invoke() { onDblClickBuilding(); } });
 		informationRenderer.setOnDblClickPlanet(new BtnAction() { public void invoke() { onDblClickPlanet(); } });
 		informationRenderer.setOnResearchClick(new BtnAction() { public void invoke() { onF6Action(); } });
+		informationRenderer.setOnProductionClick(new BtnAction() { public void invoke() { onF5Action(); } });
 		informationRenderer.setOnResearchDblClick(new BtnAction() { public void invoke() { onDblClickResearch(); } });
 		
 		researchRenderer.setOnCancelScreen(new BtnAction() { public void invoke() { onCancelInfoScreen(); } });
+		researchRenderer.setOnProductionClick(new BtnAction() { public void invoke() { onF5Action(); } });
+		productionRenderer.setOnCancelScreen(new BtnAction() { public void invoke() { onCancelInfoScreen(); } });
+		productionRenderer.setOnResearchClick(new BtnAction() { public void invoke() { onF6Action(); } });
 		
 		planetRenderer.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
 		
@@ -645,7 +668,9 @@ public class Main extends JFrame {
 	/** Perform action when the user double clicks on a research. */
 	protected void onDblClickResearch() {
 		if (gameWorld.player.selectedTech != null) {
-			if (!gameWorld.player.availableTechnology.contains(gameWorld.player.selectedTech)) {
+			if (gameWorld.isAvailable(gameWorld.player.selectedTech)) {
+				onF5Action();
+			} else {
 				onF6Action();
 			}
 		}
@@ -736,6 +761,7 @@ public class Main extends JFrame {
 			informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
 		}
 		informationRenderer.setVisible(true);
+		productionRenderer.setVisible(false);
 		researchRenderer.setVisible(false);
 		layers.validate();
 	}
@@ -828,13 +854,35 @@ public class Main extends JFrame {
 			showScreen(planetRenderer);
 		}
 	}
-	/** Action for F7 keypress. */
+	/** Action for F5 - production keyperss. */
+	private void onF5Action() {
+		if (!player.isPlayback()) {
+			if (informationRenderer.isVisible()) {
+				informationRenderer.setVisible(false);
+			}
+			if (researchRenderer.isVisible()) {
+				researchRenderer.setVisible(false);
+			}
+			if (!productionRenderer.isVisible()) {
+				productionRenderer.selectCurrentTech();
+			}
+			if (!productionRenderer.isVisible()) {
+				uiSounds.playSound("Production");
+			}
+			productionRenderer.setVisible(true);
+			layers.validate();
+		}
+	}
+	/** Action for F6 keypress. */
 	private void onF6Action() {
 		if (!player.isPlayback()) {
 			if (informationRenderer.isVisible()) {
 				informationRenderer.setVisible(false);
 			}
-			if (!researchRenderer.isVisible() && gameWorld.player.selectedTech != null) {
+			if (productionRenderer.isVisible()) {
+				productionRenderer.setVisible(false);
+			}
+			if (!researchRenderer.isVisible()) {
 				researchRenderer.selectCurrentTech();
 			}
 			if (!researchRenderer.isVisible()) {
@@ -856,10 +904,11 @@ public class Main extends JFrame {
 					uiSounds.playSound("ColonyInformation");
 					informationRenderer.setScreenButtonsFor(InfoScreen.COLONY_INFORMATION);
 				}
-				if (researchRenderer.isVisible()) {
+				if (researchRenderer.isVisible() || productionRenderer.isVisible()) {
 					uiSounds.playSound("Inventions");
 					informationRenderer.setScreenButtonsFor(InfoScreen.INVENTIONS);
 					researchRenderer.setVisible(false);
+					productionRenderer.setVisible(false);
 				}
 				informationRenderer.setVisible(true);
 				layers.validate();
@@ -957,12 +1006,14 @@ public class Main extends JFrame {
 			informationRenderer.startAnimations();
 			planetRenderer.startTimers();
 			researchRenderer.startAnimation();
+			productionRenderer.startAnimations();
 		} else {
 			achievementRenderer.stopAnimations();
 			starmapRenderer.stopAnimations();
 			informationRenderer.stopAnimations();
 			planetRenderer.stopTimers();
 			researchRenderer.stopAnimation();
+			productionRenderer.stopAnimations();
 		}
 	}
 	/** Show the options screen when called from the main menu. */

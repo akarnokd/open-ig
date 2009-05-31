@@ -16,6 +16,7 @@ import hu.openig.res.gfx.InformationGFX;
 import hu.openig.res.gfx.MenuGFX;
 import hu.openig.res.gfx.OptionsGFX;
 import hu.openig.res.gfx.PlanetGFX;
+import hu.openig.res.gfx.ProductionGFX;
 import hu.openig.res.gfx.ResearchGFX;
 import hu.openig.res.gfx.StarmapGFX;
 import hu.openig.utils.PCXImage;
@@ -52,6 +53,8 @@ public final class GameResourceManager implements BuildingLookup, ResearchLookup
 	public final OptionsGFX optionsGFX;
 	/** The research graphics objects. */
 	public final ResearchGFX researchGFX;
+	/** The production graphics objects. */
+	public final ProductionGFX productionGFX;
 	/** The game labels. */
 	public final Labels labels;
 	/** The old games texts. */
@@ -96,6 +99,9 @@ public final class GameResourceManager implements BuildingLookup, ResearchLookup
 			Future<ResearchGFX> resInit = exec.submit(new Callable<ResearchGFX>() { 
 				@Override public ResearchGFX call() throws Exception { return new ResearchGFX(resMap); } });
 			
+			Future<ProductionGFX> prodInit = exec.submit(new Callable<ProductionGFX>() { 
+				@Override public ProductionGFX call() throws Exception { return new ProductionGFX(resMap); } });
+			
 			try {
 				sounds = soundsInit.get();
 				commonGFX = cgfxInit.get();
@@ -107,6 +113,7 @@ public final class GameResourceManager implements BuildingLookup, ResearchLookup
 				labels = labelsInit.get();
 				texts = textsInit.get();
 				researchGFX = resInit.get();
+				productionGFX = prodInit.get();
 			} catch (ExecutionException ex) {
 				throw new RuntimeException(ex);
 			} catch (InterruptedException ex) {
