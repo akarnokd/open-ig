@@ -437,15 +437,14 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 				|| (this.selectedTech == null && !anim.isPlayback())) {
 			this.selectedTech = rt;
 			this.selectedTechAvail = gameWorld.isAvailable(this.selectedTech);
-			if (rt == null || rt.animation == null || !gameWorld.isResearchable(rt)) {
-				anim.stopAndWait();
-				anim.setFilename(gfx.emptyAnimation.getAbsolutePath());
+			anim.stopAndWait();
+			if (rt != null && gameWorld.isAvailable(rt) && rt.animation != null) {
+				anim.setFilename(rt.animation.getAbsolutePath());
+			} else
+			if (rt != null && gameWorld.isResearchable(rt) && rt.animationWired != null) {
+				anim.setFilename(rt.animationWired.getAbsolutePath());
 			} else {
-				if (gameWorld.player.availableTechnology.contains(rt) || rt.animationWired == null) {
-					anim.setFilename(rt.animation.getAbsolutePath());
-				} else {
-					anim.setFilename(rt.animationWired.getAbsolutePath());
-				}
+				anim.setFilename(gfx.emptyAnimation.getAbsolutePath());
 			}
 			anim.setLoop(true);
 			anim.setNoAudio(true);
@@ -466,9 +465,10 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 				text.paintTo(g2, rectNeeded[i].x + 2, rectNeeded[i].y + 2, 7, color, rrt.name);
 			}
 			text.paintTo(g2, rectProjectName.x + 2, rectProjectName.y, 10, TextGFX.GREEN, rt.name);
+			boolean available = gameWorld.isAvailable(rt);
 			boolean details = true;
 			boolean researchable = gameWorld.isResearchable(rt);
-			if (gameWorld.isAvailable(rt)) {
+			if (available) {
 				text.paintTo(g2, rectProjectStatus.x + 2, rectProjectStatus.y, 10, 
 						TextGFX.GREEN, gameWorld.getLabel("ResearchInfo.Status.Researched"));
 			} else
@@ -503,7 +503,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 					x += len + sl;
 				}
 			}
-			if (researchable) {
+			if (available || researchable) {
 				text.paintTo(g2, rectCiv.x, rectCiv.y + 1, 14, li.currentCivil < rt.civil ? TextGFX.RED : TextGFX.GREEN, Integer.toString(rt.civil));
 				text.paintTo(g2, rectMech.x, rectMech.y + 1, 14, li.currentMechanic < rt.mechanic ? TextGFX.RED : TextGFX.GREEN, Integer.toString(rt.mechanic));
 				text.paintTo(g2, rectComp.x, rectComp.y + 1, 14, li.currentComputer < rt.computer ? TextGFX.RED : TextGFX.GREEN, Integer.toString(rt.computer));
