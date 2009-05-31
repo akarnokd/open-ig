@@ -293,6 +293,8 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 				g2.drawImage(rgfx.arrow, rectMainOptions[i].x - 16, rectMainOptions[i].y + 6, null);
 			}
 		}
+		// put the empty background to position 5
+//		g2.drawImage(gfx.emptySubOption, rectSubOptions[4].x - 14, rectSubOptions[4].y, null);
 		if (clazzIndex > 0) {
 			BufferedImage[] images = rgfx.subOptions[clazzIndex - 1];
 			BufferedImage[] imagesLight = rgfx.subOptionsLight[clazzIndex - 1];
