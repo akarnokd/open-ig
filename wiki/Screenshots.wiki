@@ -2,7 +2,7 @@
 #labels Featured
 
 = Version 0.70 screenshots =
-|| [http://karnokd.uw.hu/open-ig-0.70-screen01.png http://karnokd.uw.hu/open-ig-0.70-screen01-tn.png]<br>Colony with buildings and their status|| [http://karnokd.uw.hu/open-ig-0.70-screen02.png http://karnokd.uw.hu/open-ig-0.70-screen02-tn.png]<br>Colony building information || 
+|| [http://karnokd.uw.hu/open-ig-0.70-screen01.png http://karnokd.uw.hu/open-ig-0.70-screen01-tn.png]<br>Production screen|| [http://karnokd.uw.hu/open-ig-0.70-screen02.png http://karnokd.uw.hu/open-ig-0.70-screen02-tn.png]<br>Research screen || 
 
 = Version 0.69 screenshots =
 || [http://karnokd.uw.hu/open-ig-0.69-screen01.png http://karnokd.uw.hu/open-ig-0.69-screen01-tn.png]<br>Colony with buildings and their status|| [http://karnokd.uw.hu/open-ig-0.69-screen02.png http://karnokd.uw.hu/open-ig-0.69-screen02-tn.png]<br>Colony building information || 
