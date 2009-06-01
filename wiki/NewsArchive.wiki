@@ -1,5 +1,36 @@
 #summary News archive.
 
+May 23. 2009
+  * Added ability to place buildings onto planets
+  * Added building listing to the information screen
+  * CTRL+C clears all buildings from the current planet, DEL deletes the selected building
+
+May 20. 2009
+  * Updated the AnimPlay application. Under the hood, now it uses the same method for rendering images and audio. Better yet, I've added 3 options to
+    * save the animation as an animated GIF file,
+    * save a series of PNG files containing every frame
+    * save the animation sound as a WAV file
+
+May 18. 2009
+  * Updated the Wiki pages.
+  * Released version 0.67. Major enhancements:
+    * Display planets, colony info, fleets on the information panel
+    * Planet/Colony button displays the appropriate surface type and variant of the selected planet
+    * CTRL+. to toggle between default/neighbor/bilinear/bicubic interpolation of the starmap background
+  * Added screenshots of the new screens
+
+May 16. 2009
+  * Updated the Wiki pages.
+  * Released version 0.65. Major enhancements:
+    * Game model for world, planet, fleet
+    * Render fleets
+    * Render minimap
+    * Navigate using minimap
+    * List player's planets
+    * List player's fleets, cycle through the fleets
+    * Display planet/fleet info
+  * Check out the new CTRL+K, CTRL+N and CTRL+F 'cheats'
+
 May 4. 2009
   * Updated the Wiki pages.
   * Progress is slower than I expected. Creating a good and solid data model supporting skirmish, campaign and multiplayer is hard. But I uploaded the 0.6 version, which includes some style and bug fixes. 
