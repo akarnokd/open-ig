@@ -79,16 +79,8 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	private final Rectangle[] rectMainOptions = new Rectangle[] {
 		new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()
 	};
-	/** Areas for the current research selector arrow. */
-	private final Rectangle[] rectMainArrow = new Rectangle[] {
-		new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()
-	};
 	/** The areas for the sub options labels. */
 	private final Rectangle[] rectSubOptions = {
-		new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()	
-	};
-	/** Areas for the current research selector arrow in sub options. */
-	private final Rectangle[] rectSubArrow = {
 		new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()	
 	};
 	/** The actual research rectangles. */
@@ -647,11 +639,9 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		
 		for (int i = 0; i < rectMainOptions.length; i++) {
 			rectMainOptions[i].setBounds(screenRect.x + 341, screenRect.y + 10 + i * 22, 168, 20);
-			rectMainArrow[i].setBounds(screenRect.x + 325, screenRect.y + 13 + i * 22, 15, 11);
 		}
 		for (int i = 0; i < rectSubOptions.length; i++) {
 			rectSubOptions[i].setBounds(screenRect.x + 342, screenRect.y + 112 + i * 16, 168, 14);
-			rectSubArrow[i].setBounds(screenRect.x + 325, screenRect.y + 112 + i * 16, 15, 11);
 		}
 		for (int i = 0; i < rectResearch.length; i++) {
 			rectResearch[i].setBounds(screenRect.x + 3 + 106 * i, screenRect.y + 201, 104, 78);
@@ -786,7 +776,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	/**
 	 * Starts the animations.
 	 */
-	public void startAnimation() {
+	public void startAnimations() {
 		researchTimer.start();
 		if (anim.getFilename() != null) {
 			anim.startPlayback();
@@ -809,7 +799,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		}
 	}
 	/** Stops the animations. */
-	public void stopAnimation() {
+	public void stopAnimations() {
 		anim.stopAndWait();
 		researchTimer.stop();
 	}
