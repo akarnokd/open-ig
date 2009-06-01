@@ -261,7 +261,7 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 		int w = getWidth();
 		int h = getHeight();
 
-		if (false) {
+		if (true) {
 			alphablendBackground(g2);
 		}
 		if (w != lastWidth || h != lastHeight) {
