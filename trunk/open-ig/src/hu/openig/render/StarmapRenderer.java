@@ -23,6 +23,7 @@ import hu.openig.res.gfx.CommonGFX;
 import hu.openig.res.gfx.StarmapGFX;
 import hu.openig.res.gfx.TextGFX;
 import hu.openig.sound.SoundFXPlayer;
+import hu.openig.utils.JavaUtils;
 import hu.openig.utils.Parallels;
 
 import java.awt.AlphaComposite;
@@ -47,6 +48,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
@@ -565,18 +567,36 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 * @param g2 the graphics object
 	 */
 	private void renderStars(Graphics2D g2) {
+		Color lastColor = null;
 		for (int i = 0; i < STAR_LAYER_COUNT; i++) {
 			for (int j = 0; j < STAR_COUNT; j++) {
 				int x = (int)(mapCoords.x - hscrollValue * hscrollFactor * (i + 1) / 10 + starsX[i * STAR_COUNT + j] * zoomFactor);
 				int y = (int)(mapCoords.y - vscrollValue * vscrollFactor * (i + 1) / 10 + starsY[i * STAR_COUNT + j] * zoomFactor);
-				Color c = starsColors[i * STAR_COUNT + j];
-				g2.setColor(c);
-				if (zoomFactor < 2) {
-					g2.fillRect(x, y, 1, 1);
-				} else {
-					g2.fillRect(x, y, 2, 2);
+				if (mapRect.contains(x, y)) {
+					Color c = starsColors[i * STAR_COUNT + j];
+					if (!JavaUtils.equal(lastColor, c)) {
+						lastColor = c;
+						g2.setColor(c);
+					}
+					renderStarPixel(g2, x, y);
 				}
 			}
+		}
+	}
+	/**
+	 * Renders a star pixel with the current color to the target location.
+	 * @param g2 the graphics object
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 */
+	private void renderStarPixel(Graphics2D g2, int x, int y) {
+		if (zoomFactor < 2) {
+			g2.fillRect(x, y, 1, 1);
+//			g2.drawLine(x, y, x, y);
+		} else {
+			g2.fillRect(x, y, 2, 2);
+//			g2.drawLine(x, y, x + 1, y);
+//			g2.drawLine(x, y + 1, x + 1, y + 1);
 		}
 	}
 	/**
@@ -1486,10 +1506,16 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		for (GameFleet fleet : player.ownFleets) {
 			float radarRadius = fleet.getRadarRadius();
 			if (fleet.visible && radarRadius > 0) {
-				for (int i = 0; i < radarSineTable.length; i++) {
-					int x = (int)((fleet.x + radarRadius * radarCosineTable[i]) * zoomFactor);
-					int y = (int)((fleet.y + radarRadius * radarSineTable[i]) * zoomFactor);
-					g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
+				Rectangle rect = new Rectangle(xOrig + (int)((fleet.x + radarRadius * -1) * zoomFactor) - 1,
+						yOrig + (int)((fleet.y + radarRadius * -1) * zoomFactor) - 1,
+						(int)((2 * radarRadius) * zoomFactor) + 2,
+						(int)((2 * radarRadius) * zoomFactor) + 2);
+				if (mapRect.intersects(rect)) {
+					for (int i = 0; i < radarSineTable.length; i++) {
+						int x = (int)((fleet.x + radarRadius * radarCosineTable[i]) * zoomFactor);
+						int y = (int)((fleet.y + radarRadius * radarSineTable[i]) * zoomFactor);
+						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
+					}
 				}
 			}
 		}
@@ -1583,11 +1609,17 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		for (GamePlanet p : player.ownPlanets) {
 			int rr = p.getRadarRadius();
 			if (p.visible && rr > 0) {
-				for (int i = 0; i < radarSineTable.length; i++) {
-					int x = (int)((p.x + rr * radarCosineTable[i]) * zoomFactor);
-					int y = (int)((p.y + rr * radarSineTable[i]) * zoomFactor);
-					if (mapCoords.contains(xOrig + x - 1, yOrig + y - 1, 3, 3)) {
-						g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
+				Rectangle rect = new Rectangle(xOrig + (int)((p.x + rr * -1) * zoomFactor) - 1,
+						yOrig + (int)((p.y + rr * -1) * zoomFactor) - 1,
+						(int)((2 * rr) * zoomFactor) + 2,
+						(int)((2 * rr) * zoomFactor) + 2);
+				if (mapRect.intersects(rect)) {
+					for (int i = 0; i < radarSineTable.length; i++) {
+						int x = (int)((p.x + rr * radarCosineTable[i]) * zoomFactor);
+						int y = (int)((p.y + rr * radarSineTable[i]) * zoomFactor);
+						if (mapCoords.contains(xOrig + x - 1, yOrig + y - 1, 3, 3)) {
+							g2.drawImage(ri, xOrig + x - 1, yOrig + y - 1, null);
+						}
 					}
 				}
 			}
@@ -1708,14 +1740,72 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	private void precalculateStars() {
 		Random random = new Random(0);
+		Color[] colors = new Color[8];
+		for (int i = 0; i < colors.length; i++) {
+			colors[i] = new Color(cgfx.mixColors(startStars, endStars, random.nextFloat()));
+		}
 		for (int i = 0; i < STAR_LAYER_COUNT; i++) {
 			int fw = cgfx.fullMap.getWidth() * (10 + i + 1) / 10;
 			int fh = cgfx.fullMap.getHeight() * (10 + i + 1) / 10;
 			for (int j = 0; j < STAR_COUNT; j++) {
 				starsX[i * STAR_COUNT + j] = random.nextInt(fw);
 				starsY[i * STAR_COUNT + j] = random.nextInt(fh);
-				starsColors[i * STAR_COUNT + j] = new Color(cgfx.mixColors(startStars, endStars, random.nextFloat()));
+				starsColors[i * STAR_COUNT + j] = colors[random.nextInt(colors.length)];
 			}
+		}
+		Stars[] stars = new Stars[starsX.length];
+		for (int i = 0; i < stars.length; i++) {
+			stars[i] = new Stars(starsColors[i], starsX[i], starsY[i]);
+		}
+		Arrays.sort(stars);
+		for (int i = 0; i < stars.length; i++) {
+			Stars s = stars[i];
+			starsX[i] = s.x;
+			starsY[i] = s.y;
+			starsColors[i] = s.color;
+		}
+	}
+	/** The helper record for ordering stars by color. */
+	private static class Stars implements Comparable<Stars> {
+		/** The color. */
+		public final Color color;
+		/** The X coordinate. */
+		public final int x;
+		/** The Y coordinage. */
+		public final int y;
+		/**
+		 * Constructor. Sets the fields.
+		 * @param color the color
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 */
+		public Stars(Color color, int x, int y) {
+			this.color = color;
+			this.x = x;
+			this.y = y;
+		}
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int compareTo(Stars o) {
+			int i1 = color.getRGB();
+			int i2 = o.color.getRGB();
+			return i1 < i2 ? -1 : (i1 > i2 ? 1 : 0);
+		}
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			return obj instanceof Stars && ((Stars)obj).color.equals(color);
+		}
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int hashCode() {
+			return color.hashCode();
 		}
 	}
 	/**

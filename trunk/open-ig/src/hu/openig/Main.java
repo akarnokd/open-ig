@@ -845,6 +845,12 @@ public class Main extends JFrame {
 		if (!player.isPlayback()) {
 			uiSounds.playSound("Starmap");
 			showScreen(starmapRenderer);
+			if (researchRenderer.isVisible()) {
+				researchRenderer.stopAnimations();
+			}
+			if (productionRenderer.isVisible()) {
+				productionRenderer.stopAnimations();
+			}
 		}
 	}
 	/** Action for F3 keypress. */
@@ -852,6 +858,12 @@ public class Main extends JFrame {
 		if (!player.isPlayback()) {
 			uiSounds.playSound("Colony");
 			showScreen(planetRenderer);
+			if (researchRenderer.isVisible()) {
+				researchRenderer.stopAnimations();
+			}
+			if (productionRenderer.isVisible()) {
+				productionRenderer.stopAnimations();
+			}
 		}
 	}
 	/** Action for F5 - production keyperss. */
@@ -868,6 +880,7 @@ public class Main extends JFrame {
 			}
 			if (!productionRenderer.isVisible()) {
 				uiSounds.playSound("Production");
+				productionRenderer.startAnimations();
 			}
 			productionRenderer.setVisible(true);
 			layers.validate();
@@ -887,6 +900,7 @@ public class Main extends JFrame {
 			}
 			if (!researchRenderer.isVisible()) {
 				uiSounds.playSound("Research");
+				researchRenderer.startAnimations();
 			}
 			researchRenderer.setVisible(true);
 			layers.validate();
@@ -907,6 +921,8 @@ public class Main extends JFrame {
 				if (researchRenderer.isVisible() || productionRenderer.isVisible()) {
 					uiSounds.playSound("Inventions");
 					informationRenderer.setScreenButtonsFor(InfoScreen.INVENTIONS);
+					researchRenderer.stopAnimations();
+					productionRenderer.stopAnimations();
 					researchRenderer.setVisible(false);
 					productionRenderer.setVisible(false);
 				}
@@ -1005,14 +1021,18 @@ public class Main extends JFrame {
 			starmapRenderer.startAnimations();
 			informationRenderer.startAnimations();
 			planetRenderer.startTimers();
-			researchRenderer.startAnimation();
-			productionRenderer.startAnimations();
+			if (researchRenderer.isVisible()) {
+				researchRenderer.startAnimations();
+			}
+			if (productionRenderer.isVisible()) {
+				productionRenderer.startAnimations();
+			}
 		} else {
 			achievementRenderer.stopAnimations();
 			starmapRenderer.stopAnimations();
 			informationRenderer.stopAnimations();
 			planetRenderer.stopTimers();
-			researchRenderer.stopAnimation();
+			researchRenderer.stopAnimations();
 			productionRenderer.stopAnimations();
 		}
 	}
