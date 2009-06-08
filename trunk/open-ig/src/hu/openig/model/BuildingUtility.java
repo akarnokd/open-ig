@@ -6,9 +6,8 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.behavior;
+package hu.openig.model;
 
-import hu.openig.model.GameBuilding;
 
 /**
  * Callback function to return a building's utility value.

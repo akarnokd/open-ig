@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.behavior.ResourceAllocator;
 import hu.openig.core.BuildLimit;
 import hu.openig.core.GameSpeed;
 import hu.openig.core.LabInfo;

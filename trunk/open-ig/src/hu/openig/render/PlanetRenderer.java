@@ -7,7 +7,6 @@
  */
 package hu.openig.render;
 
-import hu.openig.behavior.ResourceAllocator;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.ImageInterpolation;
@@ -21,6 +20,7 @@ import hu.openig.model.GameBuilding;
 import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GameWorld;
+import hu.openig.model.ResourceAllocator;
 import hu.openig.model.GameBuildingPrototype.BuildingImages;
 import hu.openig.res.GameResourceManager;
 import hu.openig.res.gfx.CommonGFX;
