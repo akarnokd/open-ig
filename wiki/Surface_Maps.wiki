@@ -69,3 +69,5 @@ public int toMapOffset(int x, int y) {
   return (x - y) * 65 + (x - y + 1) / 2 - x;
 }
 }}}
+
+Unfortunately, currently these algorithms are hard-coded into the Open-IG which has the drawback of not supporting arbitrary large maps. But luckily, the rendering module seems to be in a good shape for extending it into this direction, and also will allow surface editing (just like building placement).
