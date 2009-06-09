@@ -311,7 +311,7 @@
 		<en>Tax: %1$s</en>
 	</entry>
 	<entry key='ColonyInfoEntry'>
-		<hu>%1$-15s: %2$s</hu>
+		<hu>%1$-11s: %2$s</hu>
 		<en>%1$-16s: %2$s</en>
 	</entry>
 	<entry key='ColonyInfo.Owner'>
@@ -573,5 +573,13 @@
 	<entry key='ResearchInfo.Status.Researching'>
 		<hu>Fejlesztés alatt</hu>
 		<en>Under research</en>
+	</entry>
+	<entry key='ColonyInfo.Taxation'>
+		<hu>Adózás</hu>
+		<en>Taxation</en>
+	</entry>
+	<entry key='ColonyInfo.Deployed2'>
+		<hu>Eszközök</hu>
+		<en>Equipments</en>
 	</entry>
 </labels>
