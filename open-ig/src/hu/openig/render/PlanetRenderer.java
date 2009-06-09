@@ -927,6 +927,7 @@ MouseWheelListener, ActionListener {
 		toggleButtons.add(btnButtons);
 		
 		btnPlanetDetails = new Btn(new BtnAction() { public void invoke() { repaint(); } });
+		btnPlanetDetails.down = true;
 		toggleButtons.add(btnPlanetDetails);
 		
 		btnBuildNext = new Btn(new BtnAction() { public void invoke() { doBuildNext(); } });
