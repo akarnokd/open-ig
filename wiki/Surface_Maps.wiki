@@ -49,7 +49,7 @@ Translation between screen, tile and map coordinates are as follows:
 public static int toScreenX(int x, int y) {
   return x * 30 - y * 28;
 }
-public static int to ScreenY(int x, int y) {
+public static int toScreenY(int x, int y) {
   return -12 * x - 15 * y;
 }
 }}}
