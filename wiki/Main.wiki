@@ -23,7 +23,7 @@ Check out the [http://code.google.com/p/open-ig/wiki/Questions Questions and ans
 
 {{{java -Xmx160M -jar open-ig-0.70.jar c:\games\ig\}}}
 
-Java 1.6u10 thru 1.6u14 seems to have some performance issues with the newly introduced D3D pipeline, causing the game to consume lots of CPU resources and rendering becomes slow. In this case, you could run the program with the {{{-Dsun.sun.java2d.d3d=false}}} command line parameter and everything should be fast again. My experience is that running the game on JDK7 does not suffer this performance problem but runs even faster with lower CPU consumption.
+Java 1.6u10 thru 1.6u14 seems to have some performance issues with the newly introduced D3D pipeline, causing the game to consume lots of CPU resources and rendering becomes slow. In this case, you could run the program with the {{{-Dsun.java2d.d3d=false}}} command line parameter and everything should be fast again. My experience is that running the game on JDK7 does not suffer this performance problem but runs even faster with lower CPU consumption.
 
 Please see this page later on or the [Documentation documentation] page for what can you do within the application at the moment.
 
