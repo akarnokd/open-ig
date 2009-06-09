@@ -20,6 +20,7 @@ import hu.openig.model.GameBuilding;
 import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GamePlanet;
 import hu.openig.model.GameWorld;
+import hu.openig.model.PlanetStatus;
 import hu.openig.model.ResourceAllocator;
 import hu.openig.model.GameBuildingPrototype.BuildingImages;
 import hu.openig.res.GameResourceManager;
@@ -500,6 +501,8 @@ MouseWheelListener, ActionListener {
 				planet != null ? planet.name : "");
 		g2.setClip(sp);
 		
+		renderQuickInfo(g2);
+		
 		// now darken the entire screen
 		if (darkness > 0.0f) {
 			comp = g2.getComposite();
@@ -509,6 +512,68 @@ MouseWheelListener, ActionListener {
 			g2.setComposite(comp);
 		}
 		achievementRenderer.renderAchievements(g2, this);
+	}
+	/**
+	 * Render a quick info between the building list and info panels.
+	 * @param g2 the graphics object
+	 */
+	private void renderQuickInfo(Graphics2D g2) {
+		int h = 21;
+		int len = text.getTextWidth(7, gameWorld.player.selectedPlanet.name) + h;
+		int x0 = (getWidth() - len) / 2;
+		int y0 = btnBuilding.rect.y;
+		int[] x = { x0 - h, x0, x0 + len, x0 + len + h};
+		int[] y = { y0, y0 + h, y0 + h, y0 };
+		g2.setColor(Color.BLACK);
+		g2.fillPolygon(x, y, x.length);
+		g2.setColor(Color.WHITE);
+		g2.drawPolyline(x, y, x.length);
+		text.paintTo(g2, x0 + h / 2, y0 + 2, 7, 
+				gameWorld.player.selectedPlanet.owner != null ? gameWorld.player.selectedPlanet.owner.getColor().getRGB() : TextGFX.GRAY, 
+						gameWorld.player.selectedPlanet.name);
+		if (gameWorld.player.selectedPlanet.owner == gameWorld.player) {
+			int count = 0;
+			PlanetStatus ps = gameWorld.player.selectedPlanet.getStatus();
+			boolean energyIcon = ps.energyDemand > ps.energyProduction;
+			count += energyIcon ? 1 : 0;
+			boolean foodIcon = ps.population > ps.food;
+			count += foodIcon ? 1 : 0;
+			boolean hospitalIcon = ps.population > ps.hospital;
+			count += hospitalIcon ? 1 : 0;
+			boolean workerIcon = ps.population < ps.workerDemand;
+			count += workerIcon ? 1 : 0;
+			boolean livingspaceIcon = ps.population > ps.livingSpace;
+			count += livingspaceIcon ? 1 : 0;
+			int x1 = getWidth() / 2;
+			int y1 = y0 + 10;
+			if (count > 0) {
+				x1 -= (count * 12) / 2;
+				if (count == 1) {
+					x1++;
+				}
+				if (energyIcon) {
+					g2.drawImage(cgfx.energyIcon, x1, y1, null);
+					x1 += 12;
+				}
+				if (foodIcon) {
+					g2.drawImage(cgfx.foodIcon, x1, y1, null);
+					x1 += 12;
+				}
+				if (hospitalIcon) {
+					g2.drawImage(cgfx.hospitalIcon, x1, y1, null);
+					x1 += 12;
+				}
+				if (workerIcon) {
+					g2.drawImage(cgfx.workerIcon, x1, y1, null);
+					x1 += 12;
+				}
+				if (livingspaceIcon) {
+					g2.drawImage(cgfx.livingSpaceIcon, x1, y1, null);
+					x1 += 12;
+				}
+			}
+		}
+
 	}
 	/**
 	 * Helper class to store invariants for the surface rendering.
