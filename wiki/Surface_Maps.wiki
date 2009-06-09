@@ -37,4 +37,6 @@ The file contains the tile bytes in the following visual order:
 
 http://karnokd.uw.hu/mapdesc.png
 
-Where the top left corner (considered the origo in Open-IG) with coordinates 0,0 starts on byte 0x0004 in the map file. As the byte offset increases, the tiles are going downwards up to 65 times. Note that the coordinate system in Open-IG points top-right for the X axis and top-left for the Y axis.
+Where the top left corner (considered the origo in Open-IG) with coordinates 0,0 starts on byte 0x0004 in the map file (red line). As the byte offset increases, the tiles are going downwards up to 65 times. Note that the coordinate system in Open-IG points top-right for the X axis and top-left for the Y axis. Note also that the tiles themselves are not exactly rotated by 45 degrees, therefore, the slopes are visible on the rendered map.
+
+The display order of the map tiles (especially multi-sized tiles) requires some care. The proper Z order display is not the byte sequence in the map (e.g. up-down as the red line indicates) but diagonal, starting at the top tiles for each column and going in the left-down direction.
