@@ -1,0 +1,40 @@
+#summary Format description of the planet surface map files.
+
+= Introduction =
+
+This page describes the file format and rendering of the game's planetary surface maps.
+
+= Details =
+The surface map for various planets are located in the {{{DATA/MAP.PAC}}} package. There are 7 surface types and 5-9 variants for each in this file:
+
+|| *Index* || *Surface type* || *Variants* || *Example* ||
+|| 1 || Desert || 9 || MAP_A1.MAP ||
+|| 2 || Frozen || 9 || MAP_B2.MAP ||
+|| 3 || Cratered || 9 || MAP_C3.MAP ||
+|| 4 || Rocky || 8 || MAP_D4.MAP ||
+|| 5 || Liquid || 8 || MAP_E5.MAP ||
+|| 6 || Earth || 8 || MAP_F6.MAP ||
+|| 7 || Neptoplasm || 6 || MAP_G1.MAP ||
+
+Each map file is 8454 bytes long and has the following format:
+
+|| *Offset* || *Description* ||
+|| 0000-0001 || A word describing the width of the usable region ||
+|| 0002-0003 || A word describing the height of the usable region ||
+|| 0004-2105 || the actual map bytes ||
+
+Note: words are in little endian format
+
+The logical map size is 65*65 tiles, but the map file contains 2 bytes for each tile cell. The first byte selects the tile image and the second selects a strip for multi-tile images. 
+
+The actual tile images are located in the {{{DATA/FELSZINx.PAC}}} as PCX images where {{{x}}} denotes the index of the surface. Surface tiles are named for example as {{{021.PCX}}} but the numbers are non-continuous. 
+
+The map contains the biased values for the tile images using the following rule:
+ * if the surface type index is less than 7, then the actual image index can be obtained by subtracting 41 from the byte. 
+ * If the surface type index is 7, then 84 needs to be subtracted.
+
+The file contains the tile bytes in the following visual order:
+
+http://karnokd.uw.hu/mapdesc.png
+
+Where the top left corner (considered the origo in Open-IG) with coordinates 0,0 starts on byte 0x0004 in the map file. As the byte offset increases, the tiles are going downwards up to 65 times. Note that the coordinate system in Open-IG points top-right for the X axis and top-left for the Y axis.
