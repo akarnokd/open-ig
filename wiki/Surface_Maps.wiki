@@ -43,7 +43,7 @@ The display order of the map tiles (especially multi-sized tiles) requires some 
 
 Translation between screen, tile and map coordinates are as follows:
 
- * Translate from tile coordinate system to screen coordinate system used to render the tile images ({{{hu.openig.core.Tile class}}})
+==== Translate from tile coordinate system to screen coordinate system used to render the tile images ({{{hu.openig.core.Tile class}}}) ====
 (Note: the screen origo is considered that position, where the (0, 0) tile will be drawn, not considering the potential rendering offsets for scroll)
 {{{
 public static int toScreenX(int x, int y) {
@@ -53,7 +53,7 @@ public static int toScreenY(int x, int y) {
   return -12 * x - 15 * y;
 }
 }}}
- * Translate from screen coordinates back to tile coordinates used to locate tiles based on screen coordinates
+==== Translate from screen coordinates back to tile coordinates used to locate tiles based on screen coordinates ====
 {{{
 public static float toTileX(int x, int y) {
   return (x + toTileY(x, y) * 28) / 30f;
@@ -63,7 +63,7 @@ public static float toTileY(int x, int y) {
 }
 }}}
 Unfortunately, the reverse direction required floating point arithmetic for sub-tile coordinates.
- * Translate from tile coordinates to map coordinates (in {{{hu.openig.render.PlanetRenderer}}}:
+==== Translate from tile coordinates to map coordinates (in {{{hu.openig.render.PlanetRenderer}}} ====
 {{{
 public int toMapOffset(int x, int y) {
   return (x - y) * 65 + (x - y + 1) / 2 - x;
