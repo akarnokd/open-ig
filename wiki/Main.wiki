@@ -99,6 +99,7 @@ Currently, not much info can I provide.
   * [ANI_Format ANI file format] specification
   * [Custom_LZSS LZSS decompression algorithm] used in the ANI files
   * [Custom_RLE RLE decompression algorithm] used in the ANI files
+  * [Surface_Maps Surface map files]
 
 = Tools =
 
