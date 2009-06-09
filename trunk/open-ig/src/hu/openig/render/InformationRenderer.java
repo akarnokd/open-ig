@@ -1317,7 +1317,7 @@ MouseWheelListener, ActionListener {
 	 * @param percent the limit percent to switch to yellow
 	 * @return the color
 	 */
-	private int getColorForRelation(int value, int limit, float percent) {
+	static int getColorForRelation(int value, int limit, float percent) {
 		if (value <= limit) {
 			return TextGFX.GREEN;
 		} else

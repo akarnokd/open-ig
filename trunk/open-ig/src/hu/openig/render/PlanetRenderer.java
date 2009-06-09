@@ -11,6 +11,7 @@ import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
 import hu.openig.core.ImageInterpolation;
 import hu.openig.core.Location;
+import hu.openig.core.PopularityType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.core.TileFragment;
@@ -19,6 +20,7 @@ import hu.openig.core.Tuple2;
 import hu.openig.model.GameBuilding;
 import hu.openig.model.GameBuildingPrototype;
 import hu.openig.model.GamePlanet;
+import hu.openig.model.GamePlayer;
 import hu.openig.model.GameWorld;
 import hu.openig.model.PlanetStatus;
 import hu.openig.model.ResourceAllocator;
@@ -120,6 +122,8 @@ MouseWheelListener, ActionListener {
 	private Btn btnStarmap;
 	/** Button for. */
 	private Btn btnBridge;
+	/** The planet details button. */
+	private Btn btnPlanetDetails;
 	/** The middle window for the surface drawing. */
 	private Rectangle mainWindow = new Rectangle();
 	
@@ -502,6 +506,9 @@ MouseWheelListener, ActionListener {
 		g2.setClip(sp);
 		
 		renderQuickInfo(g2);
+		if (btnPlanetDetails.down) {
+			renderPlanetDetails(g2);
+		}
 		
 		// now darken the entire screen
 		if (darkness > 0.0f) {
@@ -512,6 +519,184 @@ MouseWheelListener, ActionListener {
 			g2.setComposite(comp);
 		}
 		achievementRenderer.renderAchievements(g2, this);
+	}
+	/**
+	 * Renders the information available on the colony info page in a smaller form bottom left of the planet screen.
+	 * @param g2 the graphics object
+	 */
+	private void renderPlanetDetails(Graphics2D g2) {
+		GamePlayer p = gameWorld.player;
+		GamePlanet planet = p.selectedPlanet;
+		int x0 = btnButtons.rect.x - 1;
+		int y0 = btnButtons.rect.y - 1;
+		g2.setColor(Color.BLACK);
+		Shape sp = g2.getClip();
+		Composite cmp = g2.getComposite();
+		g2.setComposite(AlphaComposite.SrcOver.derive(0.85f));
+		if (planet.owner != p) {
+			// TODO information depends on if there is a radar3 or spy satellite around the planet to show exactly whats on the planet
+			int x = x0 - 250;
+			int y = y0 - 60;
+			g2.fillRoundRect(x, y, 250, 60, 10, 10);
+			g2.setClip(x, y, 250, 60);
+			
+			text.paintTo(g2, x + 5, y + 5, 7, TextGFX.GREEN,
+					gameWorld.getLabel("ColonyInfoEntry",
+						gameWorld.getLabel("ColonyInfo.Owner"),
+						planet.owner != null ? planet.owner.name : gameWorld.getLabel("EmpireNames.Empty")
+					));
+				
+				text.paintTo(g2, x + 5, y + 15, 7, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+								gameWorld.getLabel("ColonyInfo.Race"),
+							(planet.populationRace != null && gameWorld.player.knownPlanetsByName.contains(planet)
+								? gameWorld.getLabel("RaceNames." + planet.populationRace.id)
+								: "?")
+						));
+				
+				text.paintTo(g2, x + 5, y + 25, 7, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Surface"),
+							gameWorld.getLabel("SurfaceTypeNames." + planet.surfaceType.planetXmlString)
+						));
+				text.paintTo(g2, x + 5, y + 35, 7, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Population"),
+							(planet.populationRace != null && gameWorld.player.knownPlanetsByName.contains(planet)
+							? planet.population + " " + gameWorld.getLabel("Aliens")
+							: "?")
+						));
+
+				StringBuilder b = new StringBuilder();
+				for (String s1 : planet.inOrbit) {
+					if (b.length() > 0) {
+						b.append(", ");
+					}
+					b.append(s1);
+				}
+				text.paintTo(g2, x + 5, y + 45, 7,  TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Deployed2"),
+							b
+						));
+		} else {
+			int x = x0 - 300;
+			int y = y0 - 170;
+			g2.fillRoundRect(x, y, 300, 170, 10, 10);
+			g2.setClip(x, y, 300, 170);
+			text.paintTo(g2, x + 5, y + 5, 7, TextGFX.GREEN,
+					gameWorld.getLabel("ColonyInfoEntry",
+						gameWorld.getLabel("ColonyInfo.Owner"),
+						planet.owner.name
+					));
+				
+				text.paintTo(g2, x + 5, y + 15, 7, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Race"),
+							gameWorld.getLabel("RaceNames." + planet.populationRace.id)
+						));
+				
+				text.paintTo(g2, x + 5, y + 25, 7, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Surface"),
+							gameWorld.getLabel("SurfaceTypeNames." + planet.surfaceType.planetXmlString)
+						));
+				text.paintTo(g2, x + 5, y + 35, 7, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Population"),
+							gameWorld.getLabel("PopulationStatus",
+									planet.population,
+									gameWorld.getLabel("PopulatityName." + PopularityType.find(planet.popularity).id), 
+									planet.populationGrowth)
+						));
+				PlanetStatus ps = planet.getStatus();
+				int color = InformationRenderer.getColorForRelation(planet.population, ps.livingSpace, 1.1f);
+				text.paintTo(g2, x + 5, y + 45, 7, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.LivingSpace"),
+							planet.population + "/" + ps.livingSpace + " " + gameWorld.getLabel("ColonyInfo.Dweller")
+						));
+
+				color = InformationRenderer.getColorForRelation(ps.workerDemand, planet.population, 1.1f);
+				text.paintTo(g2, x + 5, y + 55, 7, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Worker"),
+							planet.population + "/" + ps.workerDemand + " " + gameWorld.getLabel("ColonyInfo.Dweller")
+						));
+
+				color = InformationRenderer.getColorForRelation(planet.population, ps.hospital, 1.1f);
+				text.paintTo(g2, x + 5, y + 65, 7, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Hospital"),
+							planet.population + "/" + ps.hospital + " " + gameWorld.getLabel("ColonyInfo.Dweller")
+						));
+				
+				color = InformationRenderer.getColorForRelation(planet.population, ps.food, 1.1f);
+				text.paintTo(g2, x + 5, y + 75, 7, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Food"),
+							planet.population + "/" + ps.food + " " + gameWorld.getLabel("ColonyInfo.Dweller")
+						));
+				
+				color = InformationRenderer.getColorForRelation(ps.energyDemand, ps.energyProduction, 2f);
+				text.paintTo(g2, x + 5, y + 85, 7, color,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Energy"),
+							ps.energyProduction + " " + gameWorld.getLabel("ColonyInfo.KWH")
+							+ "   " + gameWorld.getLabel("ColonyInfo.Demand") + " : " + ps.energyDemand
+							+ " " + gameWorld.getLabel("ColonyInfo.KWH")
+						));
+				
+				text.paintTo(g2, x + 5, y + 95, 7, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry2",
+							gameWorld.getLabel("ColonyInfo.TaxIncome"),
+							planet.taxIncome
+						));
+				text.paintTo(g2, x + 5, y + 105, 7, TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry2",
+							gameWorld.getLabel("ColonyInfo.TradeIncome"),
+							planet.tradeIncome
+						));
+				text.paintTo(g2, x + 5, y + 115, 7,  TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry2",
+							gameWorld.getLabel("ColonyInfo.TaxMorale"),
+							planet.taxMorale + "%"
+						));
+				// render tax buttons
+				text.paintTo(g2, x + 5, y + 125, 7,  TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry2",
+							gameWorld.getLabel("ColonyInfo.Taxation"),
+							gameWorld.getLabel("TaxRate." + planet.tax.id)
+						));
+				
+				// allocation preference settings
+				
+				text.paintTo(g2, x + 5, y + 135, 7,  TextGFX.YELLOW,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.AllocationPreference.EnergyAlloc"),
+							gameWorld.getLabel("ColonyInfo.AllocationPreference." + planet.energyAllocation.id)
+						));
+				text.paintTo(g2, x + 5, y + 145, 7,  TextGFX.YELLOW,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.AllocationPreference.WorkerAlloc"),
+							gameWorld.getLabel("ColonyInfo.AllocationPreference." + planet.workerAllocation.id)
+						));
+				
+				StringBuilder b = new StringBuilder();
+				for (String s1 : planet.inOrbit) {
+					if (b.length() > 0) {
+						b.append(", ");
+					}
+					b.append(s1);
+				}
+				text.paintTo(g2, x + 5, y + 155, 7,  TextGFX.GREEN,
+						gameWorld.getLabel("ColonyInfoEntry",
+							gameWorld.getLabel("ColonyInfo.Deployed2"),
+							b
+						));
+		}
+		g2.setComposite(cmp);
+		g2.setClip(sp);
 	}
 	/**
 	 * Render a quick info between the building list and info panels.
@@ -740,6 +925,9 @@ MouseWheelListener, ActionListener {
 		toggleButtons.add(btnBuildingInfo);
 		btnButtons = new Btn(new BtnAction() { public void invoke() { doScreenClick(); } });
 		toggleButtons.add(btnButtons);
+		
+		btnPlanetDetails = new Btn(new BtnAction() { public void invoke() { repaint(); } });
+		toggleButtons.add(btnPlanetDetails);
 		
 		btnBuildNext = new Btn(new BtnAction() { public void invoke() { doBuildNext(); } });
 		pressButtons.add(btnBuildNext);
@@ -1038,6 +1226,8 @@ MouseWheelListener, ActionListener {
 		
 		btnActive.setBounds(buildingInfoPanelRect.x + 8, buildingInfoPanelRect.y + 98, 145, 18);
 		btnRepair.setBounds(buildingInfoPanelRect.x + 8, buildingInfoPanelRect.y + 122, 145, 18);
+		
+		btnPlanetDetails.setBounds(btnBuildingInfo.rect.x, btnBuildingInfo.rect.y + btnBuildingInfo.rect.height, btnBuildingInfo.rect.width, btnButtons.rect.y - btnBuildingInfo.rect.y - btnBuildingInfo.rect.height);
 		
 		// readjust rendering offset
 		adjustOffsets();
