@@ -384,7 +384,8 @@ public class GameWorld {
 	 * @return the number of items in inventory
 	 */
 	public int getInventoryCount(ResearchTech rt) {
-		return 0; // TODO inventory!
+		Integer i = player.inventory.get(rt);
+		return i != null ? i.intValue() : 0;
 	}
 	/**
 	 * Checks whether the given research can be started.
@@ -441,6 +442,21 @@ public class GameWorld {
 	 */
 	public boolean isActiveResearch(ResearchTech rt) {
 		return player.activeResearch != null && player.activeResearch.research == rt;
+	}
+	/**
+	 * Checks wether the given research technology is in production.
+	 * @param rt the technology
+	 * @return true if it is in production
+	 */
+	public boolean isInProduction(ResearchTech rt) {
+		for (List<ProductionProgress> pp : player.production.values()) {
+			for (ProductionProgress p : pp) {
+				if (p.tech == rt) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	/**
 	 * Returns true if the current working lab status is more than enough to research the given technology.

@@ -11,9 +11,11 @@ package hu.openig.render;
 import hu.openig.ani.Player;
 import hu.openig.core.Btn;
 import hu.openig.core.BtnAction;
+import hu.openig.core.FactoryInfo;
 import hu.openig.core.LabInfo;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.GameWorld;
+import hu.openig.model.ProductionProgress;
 import hu.openig.model.ResearchProgress;
 import hu.openig.model.ResearchTech;
 import hu.openig.res.GameResourceManager;
@@ -31,11 +33,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -126,6 +130,24 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 	private Btn btnResearch;
 	/** Bridge rectangle. */
 	private Btn btnBridge;
+	/** The total capacity rectangle. */
+	private final Rectangle rectTotalCapacity = new Rectangle();
+	/** The production lines coordinates. */
+	private final List<ProductionLine> lines = JavaUtils.newArrayList();
+	/** Number of production lines. */
+	private static final int PRODUCTION_LINES = 5;
+	/** Decrease production count by 10. */
+	private Btn btnMinusTen;
+	/** Decrease production count by 1. */
+	private Btn btnMinusOne;
+	/** Increase production count by 1. */
+	private Btn btnPlusOne;
+	/** Increase production count by 10. */
+	private Btn btnPlusTen;
+	/** Sell one item from inventory. */
+	private Btn btnSell;
+	/** Add/remove button rectangle. */
+	private Btn btnAddRemove;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -201,7 +223,12 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 		this.addMouseMotionListener(ma);
 		this.addMouseWheelListener(ma);
 		researchTimer = new Timer(RESEARCH_TIMER, new ActionListener() { public void actionPerformed(ActionEvent e) { doResearchTimer(); } });
+		
+		for (int i = 0; i < PRODUCTION_LINES; i++) {
+			lines.add(new ProductionLine());
+		}
 		initButtons();
+		
 	}
 	/** Advance the research image. */
 	protected void doResearchTimer() {
@@ -218,7 +245,60 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 		releaseButtons.add(btnEquipment);
 		releaseButtons.add(btnResearch);
 		releaseButtons.add(btnBridge);
+		
+		btnMinusTen = new Btn(new BtnAction() { public void invoke() { doAddCount(-10); } });
+		releaseButtons.add(btnMinusTen);
+		btnMinusOne = new Btn(new BtnAction() { public void invoke() { doAddCount(-1); } });
+		releaseButtons.add(btnMinusOne);
+		btnPlusOne = new Btn(new BtnAction() { public void invoke() { doAddCount(1); } });
+		releaseButtons.add(btnPlusOne);
+		btnPlusTen = new Btn(new BtnAction() { public void invoke() { doAddCount(10); } });
+		releaseButtons.add(btnPlusTen);
+		btnSell = new Btn(new BtnAction() { public void invoke() { doSell(1); } });
+		releaseButtons.add(btnSell);
+		
+		btnAddRemove = new Btn(new BtnAction() { public void invoke() { doAddRemoveClick(); } });
+		releaseButtons.add(btnAddRemove);
 	}
+	/**
+	 * Sell the given amount of items from the currently selected one.
+	 * @param i the amount to sell
+	 */
+	protected void doSell(int i) {
+		int j = gameWorld.getInventoryCount(gameWorld.player.selectedTech);
+		gameWorld.player.inventory.put(gameWorld.player.selectedTech, Math.max(0, j - i));
+		if (j > i) {
+			j = i;
+		}
+		gameWorld.player.money += j * gameWorld.player.selectedTech.buildCost / 2;
+		repaint();
+	}
+	/**
+	 * Adds the number of items to the currently selected production.
+	 * @param i the count to increment or decrement
+	 */
+	private void doAddCount(int i) {
+		List<ProductionProgress> ppl = gameWorld.player.production.get(clazzIndex);
+		if (ppl != null) {
+			for (ProductionProgress p : ppl) {
+				if (p.tech == gameWorld.player.selectedTech) {
+					p.count = Math.max(0, p.count + i);
+					gameWorld.player.rebalanceProduction(ppl, p.tech.clazzIndex);
+					repaint();
+					break;
+				}
+			}
+		}
+		
+	}
+	/**
+	 * Adds or removes a production for the current selection.
+	 */
+	protected void doAddRemoveClick() {
+		gameWorld.player.addRemove(gameWorld.player.selectedTech);
+		repaint();
+	}
+
 	/** On production clicked. */
 	protected void doResearchClick() {
 		if (onResearchClick != null) {
@@ -360,6 +440,76 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 		}
 		renderAnimation(g2);
 		
+		renderProductions(g2);
+		List<ProductionProgress> ppl = gameWorld.player.production.get(clazzIndex);
+		btnAddRemove.disabled = !(gameWorld.isAvailable(rt) && (rt != null && !"building".equals(rt.factory)));
+		if (!btnAddRemove.disabled) {
+			if (gameWorld.isInProduction(rt)) {
+				if (btnAddRemove.down) {
+					g2.drawImage(gfx.btnRemoveDown, btnAddRemove.rect.x, btnAddRemove.rect.y, null);
+				} else {
+					g2.drawImage(gfx.btnRemove, btnAddRemove.rect.x, btnAddRemove.rect.y, null);
+				}
+			} else {
+				if (ppl == null || ppl.size() < PRODUCTION_LINES) {
+					if (btnAddRemove.down) {
+						g2.drawImage(gfx.btnAddDown, btnAddRemove.rect.x, btnAddRemove.rect.y, null);
+					} else {
+						g2.drawImage(gfx.btnAdd, btnAddRemove.rect.x, btnAddRemove.rect.y, null);
+					}
+				}
+			}
+		}
+		btnMinusTen.disabled = true;
+		if (ppl != null) {
+			for (ProductionProgress p : ppl) {
+				if (p.tech == gameWorld.player.selectedTech) {
+					btnMinusTen.disabled = false;
+					break;
+				}
+			}
+		}
+		btnMinusOne.disabled = btnMinusTen.disabled;
+		btnPlusOne.disabled = btnMinusTen.disabled;
+		btnPlusTen.disabled = btnMinusTen.disabled;
+		
+		if (btnMinusTen.disabled) {
+			g2.drawImage(gfx.btnMinusTenDisabled, btnMinusTen.rect.x, btnMinusTen.rect.y, null);
+		} else {
+			if (btnMinusTen.down) {
+				g2.drawImage(gfx.btnMinusTenDown, btnMinusTen.rect.x, btnMinusTen.rect.y, null);
+			}
+		}
+		if (btnMinusOne.disabled) {
+			g2.drawImage(gfx.btnMinusOneDisabled, btnMinusOne.rect.x, btnMinusOne.rect.y, null);
+		} else {
+			if (btnMinusOne.down) {
+				g2.drawImage(gfx.btnMinusOneDown, btnMinusOne.rect.x, btnMinusOne.rect.y, null);
+			}
+		}
+		if (btnPlusOne.disabled) {
+			g2.drawImage(gfx.btnPlusOneDisabled, btnPlusOne.rect.x, btnPlusOne.rect.y, null);
+		} else {
+			if (btnPlusOne.down) {
+				g2.drawImage(gfx.btnPlusOneDown, btnPlusOne.rect.x, btnPlusOne.rect.y, null);
+			}
+		}
+		if (btnPlusTen.disabled) {
+			g2.drawImage(gfx.btnPlusTenDisabled, btnPlusTen.rect.x, btnPlusTen.rect.y, null);
+		} else {
+			if (btnPlusTen.down) {
+				g2.drawImage(gfx.btnPlusTenDown, btnPlusTen.rect.x, btnPlusTen.rect.y, null);
+			}
+		}
+		btnSell.disabled = gameWorld.getInventoryCount(rt) == 0;
+		if (btnSell.disabled) {
+			g2.drawImage(gfx.btnSellDisabled, btnSell.rect.x, btnSell.rect.y, null);
+		} else {
+			if (btnSell.down) {
+				g2.drawImage(gfx.btnSellDown, btnSell.rect.x, btnSell.rect.y, null);
+			}
+		}
+		
 		if (btnEquipment.down) {
 			g2.drawImage(gfx.btnEquipmentDown, btnEquipment.rect.x, btnEquipment.rect.y, null);
 		}
@@ -371,6 +521,89 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 		}
 		
 		achievementRenderer.renderAchievements(g2, this);
+	}
+	/**
+	 * Renders the production lines.
+	 * @param g2 the graphics object
+	 */
+	private void renderProductions(Graphics2D g2) {
+		FactoryInfo fi = gameWorld.player.getFactoryInfo();
+		Shape sp = g2.getClip();
+		// render capacity value
+		int value = -1;
+		int total = -1;
+		switch (clazzIndex) {
+		case 1:
+			value = fi.currentShip;
+			total = fi.totalShip;
+			break;
+		case 2:
+			value = fi.currentEquipment;
+			total = fi.totalEquipment;
+			break;
+		case 3:
+			value = fi.currentWeapons;
+			total = fi.totalWeapons;
+			break;
+		default:
+		}
+		int color = TextGFX.GREEN;
+		if (value >= total / 2 && value < total) {
+			color = TextGFX.YELLOW;
+		} else
+		if (value < total / 2) {
+			color = TextGFX.RED;
+		}
+		if (value < 0) {
+			text.paintTo(g2, rectTotalCapacity.x, rectTotalCapacity.y, 14, color, "----");
+		} else {
+			String s = Integer.toString(value);
+			g2.setClip(rectTotalCapacity);
+			text.paintTo(g2, rectTotalCapacity.x, rectTotalCapacity.y, 14, color, s);
+			String s1 = Integer.toString(total);
+			int len = text.getTextWidth(7, s1);
+			text.paintTo(g2, rectTotalCapacity.x + rectTotalCapacity.width - len, rectTotalCapacity.y + 4, 7
+					, TextGFX.GREEN, s1);
+		}
+		g2.setClip(sp);
+		// render production lines
+		List<ProductionProgress> ppl = gameWorld.player.production.get(clazzIndex);
+		if (ppl == null) {
+			ppl = Collections.emptyList();
+		}
+		for (int i = 0; i < Math.min(lines.size(), ppl.size()); i++) {
+			ProductionProgress p = ppl.get(i);
+			ProductionLine pl = lines.get(i);
+			color = p.tech == gameWorld.player.selectedTech ? TextGFX.RED : TextGFX.GREEN;
+			text.paintTo(g2, pl.productName.x + 2, pl.productName.y + 2, 10, color, p.tech.name);
+			String s = Integer.toString(p.priority); 
+			int len = text.getTextWidth(10, s);
+			text.paintTo(g2, pl.priority.x + (pl.priority.width - len) / 2, pl.priority.y + 1, 10, color, s);
+			
+			s = Integer.toString(p.capacity); 
+			len = text.getTextWidth(10, s);
+			text.paintTo(g2, pl.capacity.x + (pl.capacity.width - len) / 2, pl.capacity.y + 1, 10, color, s);
+			
+			s = Integer.toString(p.capacityPercent) + "%"; 
+			len = text.getTextWidth(10, s);
+			text.paintTo(g2, pl.capacityPercent.x + (pl.capacityPercent.width - len) / 2, pl.capacityPercent.y + 1, 10, color, s);
+			
+			s = Integer.toString(p.count); 
+			len = text.getTextWidth(10, s);
+			text.paintTo(g2, pl.count.x + (pl.count.width - len) / 2, pl.count.y + 1, 10, color, s);
+			
+			if (p.count > 0) {
+				s = Integer.toString(p.progress) + "%"; 
+				len = text.getTextWidth(10, s);
+				text.paintTo(g2, pl.completed.x + (pl.completed.width - len) / 2, pl.completed.y + 1, 10, color, s);
+				
+				s = Integer.toString(p.getCost()); 
+				len = text.getTextWidth(10, s);
+				text.paintTo(g2, pl.cost.x + (pl.cost.width - len) / 2, pl.cost.y + 1, 10, color, s);
+			}
+		}
+		
+		g2.setClip(sp);
 	}
 	/**
 	 * Alpha blends the background beneath this component.
@@ -416,9 +649,34 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 		};
 		rectAnimation.setBounds(screenRect.x + 2, screenRect.y + 2, 316, 196);
 		
+		btnAddRemove.setBounds(screenRect.x + 534, screenRect.y + 283, 102, 39);
 		btnEquipment.setBounds(screenRect.x + 534, screenRect.y + 322, 102, 39);
 		btnResearch.setBounds(screenRect.x + 534, screenRect.y + 361, 102, 39);
 		btnBridge.setBounds(screenRect.x + 534, screenRect.y + 400, 102, 39);
+		
+		rectTotalCapacity.setBounds(screenRect.x + 420, screenRect.y + 420, 101, 15);
+		btnMinusTen.setBounds(screenRect.x + 5, screenRect.y + 417, 52, 21);
+		btnMinusOne.setBounds(screenRect.x + 59, screenRect.y + 417, 52, 21);
+		btnPlusOne.setBounds(screenRect.x + 113, screenRect.y + 417, 52, 21);
+		btnPlusTen.setBounds(screenRect.x + 167, screenRect.y + 417, 52, 21);
+		btnSell.setBounds(screenRect.x + 222, screenRect.y + 417, 52, 21);
+		
+		int i = 0;
+		for (ProductionLine line : lines) {
+			line.productName.setBounds(screenRect.x + 9, screenRect.y + 306 + i * 23, 166, 14);
+			line.btnLessPriority.setBounds(screenRect.x + 195, screenRect.y + 307 + i * 23, 7, 12);
+			line.priority.setBounds(screenRect.x + 202, screenRect.y + 306 + i * 23, 26, 14);
+			line.btnMorePriority.setBounds(screenRect.x + 228, screenRect.y + 307 + i * 23, 8, 12);
+			line.capacity.setBounds(screenRect.x + 240, screenRect.y + 306 + i * 23, 54, 14);
+			line.capacityPercent.setBounds(screenRect.x + 307, screenRect.y + 306 + i * 23, 44, 14);
+			line.btnLessCount.setBounds(screenRect.x + 355, screenRect.y + 307 + i * 23, 7, 12);
+			line.count.setBounds(screenRect.x + 362, screenRect.y + 306 + i * 23, 26, 14);
+			line.btnMoreCount.setBounds(screenRect.x + 388, screenRect.y + 306 + i * 23, 8, 12);
+			line.completed.setBounds(screenRect.x + 400, screenRect.y + 306 + i * 23, 50, 14);
+			line.cost.setBounds(screenRect.x + 454, screenRect.y + 306 + i * 23, 69, 14);
+			line.line.setBounds(screenRect.x + 9, screenRect.y + 306 + i * 23, 514, 14);
+			i++;
+		}
 	}
 	/**
 	 * @param onCancelScreen the onCancelScreen to set
@@ -482,6 +740,39 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 					if (b.test(pt)) {
 						b.down = true;
 						repaint(b.rect);
+					}
+				}
+				List<ProductionProgress> ppl = gameWorld.player.production.get(clazzIndex);
+				for (int i = 0; i < lines.size(); i++) {
+					ProductionLine pl = lines.get(i);
+					if (ppl != null && ppl.size() > i) {
+						ProductionProgress p = ppl.get(i);
+						if (pl.line.contains(pt)) {
+							gameWorld.player.selectedTech = p.tech;
+							clazzIndex = p.tech.clazzIndex;
+							typeIndex = p.tech.typeIndex;
+							repaint();
+						}
+						if (pl.btnLessPriority.contains(pt)) {
+							p.priority = Math.max(0, p.priority - 5);
+							gameWorld.player.rebalanceProduction(ppl, p.tech.clazzIndex);
+							repaint();
+						} else
+						if (pl.btnMorePriority.contains(pt)) {
+							p.priority = Math.min(100, p.priority + 5);
+							gameWorld.player.rebalanceProduction(ppl, p.tech.clazzIndex);
+							repaint();
+						} else
+						if (pl.btnLessCount.contains(pt)) {
+							p.count = Math.max(0, p.count - 1);
+							gameWorld.player.rebalanceProduction(ppl, p.tech.clazzIndex);
+							repaint();
+						} else
+						if (pl.btnMoreCount.contains(pt)) {
+							p.count++;
+							gameWorld.player.rebalanceProduction(ppl, p.tech.clazzIndex);
+							repaint();
+						}
 					}
 				}
 				if (!screenRect.contains(pt)) {
@@ -559,5 +850,36 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 	 */
 	public BtnAction getOnResearchClick() {
 		return onResearchClick;
+	}
+	/**
+	 * Record to store production line rectangle locations.
+	 * @author karnokd, 2009.06.10.
+	 * @version $Revision 1.0$
+	 */
+	static class ProductionLine {
+		/** The production name rectangle. */
+		final Rectangle productName = new Rectangle();
+		/** Less priority button rectangle. */
+		final Rectangle btnLessPriority = new Rectangle();
+		/** The production priority number rectangle. */
+		final Rectangle priority = new Rectangle();
+		/** More priority button rectangle. */
+		final Rectangle btnMorePriority = new Rectangle();
+		/** Capacity value rectangle. */
+		final Rectangle capacity = new Rectangle();
+		/** Capacity percentage rectangle. */
+		final Rectangle capacityPercent = new Rectangle();
+		/** Less count button rectangle. */
+		final Rectangle btnLessCount = new Rectangle();
+		/** The number of items to produce. */
+		final Rectangle count = new Rectangle();
+		/** More count button rectangle. */
+		final Rectangle btnMoreCount = new Rectangle();
+		/** The completed percentage. */
+		final Rectangle completed = new Rectangle();
+		/** The cost of the produced items. */
+		final Rectangle cost = new Rectangle();
+		/** The line rectangle. */
+		final Rectangle line = new Rectangle();
 	}
 }
