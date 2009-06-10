@@ -976,8 +976,8 @@ MouseWheelListener, ActionListener {
 			for (GameFleet f : player.knownFleets) {
 				if (f.visible) {
 					BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
-					int x = (int)(f.x * w2 - fleetImg.getWidth() / 2);
-					int y = (int)(f.y * h2 - fleetImg.getHeight() / 2);
+					int x = (int)(f.x * w2 - fleetImg.getWidth() / 2.0);
+					int y = (int)(f.y * h2 - fleetImg.getHeight() / 2.0);
 					g2.drawImage(fleetImg, pictureArea.x + x, pictureArea.y + y, null);
 					if (renderFleetSelection && player.selectedFleet == f) {
 						g2.setColor(Color.WHITE);

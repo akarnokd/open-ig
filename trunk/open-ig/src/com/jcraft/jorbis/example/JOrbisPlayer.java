@@ -915,51 +915,57 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 	 */
 	String fetchPls(String pls) {
 		InputStream pstream = null;
-		if (pls.startsWith("http://")) {
-			try {
-				URL url = null;
-				if (runningAsApplet) {
-					url = new URL(getCodeBase(), pls);
-				} else {
-					url = new URL(pls);
-				}
-				URLConnection urlc = url.openConnection();
-				pstream = urlc.getInputStream();
-			} catch (Exception ee) {
-				System.err.println(ee);
-				return null;
-			}
-		}
-		if (pstream == null && !runningAsApplet) {
-			try {
-				pstream = new FileInputStream(System.getProperty("user.dir")
-						+ System.getProperty("file.separator") + pls);
-			} catch (Exception ee) {
-				System.err.println(ee);
-				return null;
-			}
-		}
-		if (pstream == null) {
-			return null;
-		}
-		String line = null;
-		while (true) {
-			try {
-				line = readline(pstream);
-			} catch (Exception e) {
-			}
-			if (line == null) {
-				break;
-			}
-			if (line.startsWith("File1=")) {
-				byte[] foo = line.getBytes();
-				int i = 6;
-				for (; i < foo.length; i++) {
-					if (foo[i] == 0x0d) {
-						break;
+		try {
+			if (pls.startsWith("http://")) {
+				try {
+					URL url = null;
+					if (runningAsApplet) {
+						url = new URL(getCodeBase(), pls);
+					} else {
+						url = new URL(pls);
 					}
+					URLConnection urlc = url.openConnection();
+					pstream = urlc.getInputStream();
+				} catch (Exception ee) {
+					System.err.println(ee);
+					return null;
 				}
-				return line.substring(6, i);
+			}
+			if (pstream == null && !runningAsApplet) {
+				try {
+					pstream = new FileInputStream(System.getProperty("user.dir")
+							+ System.getProperty("file.separator") + pls);
+				} catch (Exception ee) {
+					System.err.println(ee);
+					return null;
+				}
+			}
+			if (pstream == null) {
+				return null;
+			}
+			String line = null;
+			while (true) {
+				try {
+					line = readline(pstream);
+				} catch (Exception e) {
+				}
+				if (line == null) {
+					break;
+				}
+				if (line.startsWith("File1=")) {
+					byte[] foo = line.getBytes();
+					int i = 6;
+					for (; i < foo.length; i++) {
+						if (foo[i] == 0x0d) {
+							break;
+						}
+					}
+					return line.substring(6, i);
+				}
+			}
+		} finally {
+			if (pstream != null) {
+				try { pstream.close(); } catch (IOException ex) { }
 			}
 		}
 		return null;
@@ -971,43 +977,49 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 	 */
 	String fetchM3u(String m3u) {
 		InputStream pstream = null;
-		if (m3u.startsWith("http://")) {
-			try {
-				URL url = null;
-				if (runningAsApplet) {
-					url = new URL(getCodeBase(), m3u);
-				} else {
-					url = new URL(m3u);
+		try {
+			if (m3u.startsWith("http://")) {
+				try {
+					URL url = null;
+					if (runningAsApplet) {
+						url = new URL(getCodeBase(), m3u);
+					} else {
+						url = new URL(m3u);
+					}
+					URLConnection urlc = url.openConnection();
+					pstream = urlc.getInputStream();
+				} catch (Exception ee) {
+					System.err.println(ee);
+					return null;
 				}
-				URLConnection urlc = url.openConnection();
-				pstream = urlc.getInputStream();
-			} catch (Exception ee) {
-				System.err.println(ee);
+			}
+			if (pstream == null && !runningAsApplet) {
+				try {
+					pstream = new FileInputStream(System.getProperty("user.dir")
+							+ System.getProperty("file.separator") + m3u);
+				} catch (IOException ee) {
+					System.err.println(ee);
+					return null;
+				}
+			}
+			if (pstream == null) {
 				return null;
 			}
-		}
-		if (pstream == null && !runningAsApplet) {
-			try {
-				pstream = new FileInputStream(System.getProperty("user.dir")
-						+ System.getProperty("file.separator") + m3u);
-			} catch (IOException ee) {
-				System.err.println(ee);
-				return null;
+			String line = null;
+			while (true) {
+				try {
+					line = readline(pstream);
+				} catch (Exception e) {
+				}
+				if (line == null) {
+					break;
+				}
+				return line;
 			}
-		}
-		if (pstream == null) {
-			return null;
-		}
-		String line = null;
-		while (true) {
-			try {
-				line = readline(pstream);
-			} catch (Exception e) {
+		} finally {
+			if (pstream != null) {
+				try { pstream.close(); } catch (IOException ex) { }
 			}
-			if (line == null) {
-				break;
-			}
-			return line;
 		}
 		return null;
 	}
@@ -1028,8 +1040,8 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			return;
 		}
 
+		InputStream is = null;
 		try {
-			InputStream is = null;
 			try {
 				URL url = null;
 				if (runningAsApplet) {
@@ -1070,6 +1082,10 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 			}
 		} catch (Exception e) {
 			System.out.println(e);
+		} finally {
+			if (is != null) {
+				try { is.close(); } catch (IOException ex) { }
+			}
 		}
 	}
 	/**

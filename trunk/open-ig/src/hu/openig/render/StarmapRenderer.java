@@ -308,7 +308,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	@Override
 	public void paint(Graphics g) {
-		long t = System.nanoTime();
+//		long t = System.nanoTime();
 		Graphics2D g2 = (Graphics2D)g;
 		// draw top and bottom bar four corners
 		int w = getWidth();
@@ -381,7 +381,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		// ----------------------------------------------------------------
 		
 		renderButtons(g2);
-		t = System.nanoTime() - t;
+//		t = System.nanoTime() - t;
 		//System.out.printf("%.2f frame/s%n", 1E9 / t);
 		// now darken the entire screen
 		
@@ -1448,8 +1448,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		for (GameFleet f : player.knownFleets) {
 			if (f.visible) {
 				BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
-				int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2);
-				int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2);
+				int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2.0);
+				int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2.0);
 				g2.drawImage(fleetImg, xOrig + x, yOrig + y, null);
 				if (player.selectedFleet == f) {
 					g2.setColor(player.selectionType == StarmapSelection.FLEET ? Color.WHITE : alternateSelection);
@@ -1471,12 +1471,15 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		for (GameFleet f : player.knownFleets) {
 			if (f.visible) {
 				int color = TextGFX.GRAY;
+				int icon = 14;
 				if (f.owner != null) {
 					color = f.owner.race.smallColor;
+					icon = f.owner.fleetIcon;
 				}
-				BufferedImage fleetImg = cgfx.shipImages[f.owner.fleetIcon];
-				int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2);
-				int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2);
+				
+				BufferedImage fleetImg = cgfx.shipImages[icon];
+				int x = (int)(f.x * zoomFactor - fleetImg.getWidth() / 2.0);
+				int y = (int)(f.y * zoomFactor - fleetImg.getHeight() / 2.0);
 				y = (int)(f.y * zoomFactor) + 2 + fleetImg.getHeight();
 				int w = text.getTextWidth(5, f.name);
 				x = (int)(f.x * zoomFactor - w / 2f);
@@ -1973,8 +1976,8 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	 */
 	private void doMinimapScrollAnimated(Point pt) {
 		// get the current location
-		float dx = (pt.x - minimapRect.x) * cgfx.fullMap.getWidth() / minimapRect.width;
-		float dy = (pt.y - minimapRect.y) * cgfx.fullMap.getHeight() / minimapRect.height;
+		float dx = (pt.x - minimapRect.x) * cgfx.fullMap.getWidth() * 1.0f / minimapRect.width;
+		float dy = (pt.y - minimapRect.y) * cgfx.fullMap.getHeight() * 1.0f / minimapRect.height;
 		scrollToLogicalAnimated(new Point((int)dx, (int)dy));
 	}
 	/** Close all animation timers. */

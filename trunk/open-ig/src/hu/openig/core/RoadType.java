@@ -40,25 +40,6 @@ public enum RoadType {
 	/** Cross. -|- */
 	CROSS(11, Sides.LEFT | Sides.TOP | Sides.BOTTOM | Sides.RIGHT)
 	;
-	/**
-	 * The road sides constants.
-	 * @author karnokd, 2009.05.23.
-	 * @version $Revision 1.0$
-	 */
-	public final class Sides {
-		/** Constructor. */
-		private Sides() {
-			// constant class
-		}
-		/** Road has a left exit. */
-		public static final int LEFT = 8;
-		/** Road has a top exit. */
-		public static final int TOP = 4;
-		/** Road has a bottom exit. */
-		public static final int BOTTOM = 2;
-		/** Road has a right exit. */
-		public static final int RIGHT = 1;
-	}
 	/** The road type index. */
 	public final int index;
 	/** The road pattern. Combined from the constants below */

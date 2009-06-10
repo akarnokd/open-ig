@@ -13,6 +13,7 @@ import hu.openig.core.ImageInterpolation;
 import hu.openig.core.Location;
 import hu.openig.core.PopularityType;
 import hu.openig.core.RoadType;
+import hu.openig.core.Sides;
 import hu.openig.core.Tile;
 import hu.openig.core.TileFragment;
 import hu.openig.core.TileStatus;
@@ -1422,8 +1423,8 @@ MouseWheelListener, ActionListener {
 		double xs = minimapRect.width / (double)(xOffsetMax - xOffsetMin);
 		double ys = minimapRect.height / (double)(yOffsetMax - yOffsetMin);
 		
-		double x = (pt.x - minimapRect.x) / xs - mainWindow.width / 2;
-		double y = (pt.y - minimapRect.y) / ys - mainWindow.height / 2;
+		double x = (pt.x - minimapRect.x) / xs - mainWindow.width / 2.0;
+		double y = (pt.y - minimapRect.y) / ys - mainWindow.height / 2.0;
 		
 		xoff = (int)(-xOffsetMin - x);  
 		yoff = (int)(-yOffsetMin - y);
@@ -1967,22 +1968,22 @@ MouseWheelListener, ActionListener {
 			int pattern = 0;
 			RoadType rt1 = null;
 			if (neighbors[1] != null && neighbors[1].isRoad) {
-				pattern |= RoadType.Sides.TOP;
+				pattern |= Sides.TOP;
 				rt1 = trs.get(neighbors[1].provider);
 			}
 			RoadType rt3 = null;
 			if (neighbors[3] != null && neighbors[3].isRoad) {
-				pattern |= RoadType.Sides.LEFT;
+				pattern |= Sides.LEFT;
 				rt3 = trs.get(neighbors[3].provider);
 			}
 			RoadType rt5 = null;
 			if (neighbors[5] != null && neighbors[5].isRoad) {
-				pattern |= RoadType.Sides.RIGHT;
+				pattern |= Sides.RIGHT;
 				rt5 = trs.get(neighbors[5].provider);
 			}
 			RoadType rt7 = null;
 			if (neighbors[7] != null && neighbors[7].isRoad) {
-				pattern |= RoadType.Sides.BOTTOM;
+				pattern |= Sides.BOTTOM;
 				rt7 = trs.get(neighbors[7].provider);
 			}
 			RoadType rt = RoadType.get(pattern);
@@ -1992,19 +1993,19 @@ MouseWheelListener, ActionListener {
 			map.put(l, tf);
 			// alter the four neighboring tiles to contain road back to this
 			if (rt1 != null) {
-				rt1 = RoadType.get(rt1.pattern | RoadType.Sides.BOTTOM);
+				rt1 = RoadType.get(rt1.pattern | Sides.BOTTOM);
 				map.put(l.delta(0, 1), TileFragment.of(0, rts.get(rt1), true));
 			}
 			if (rt3 != null) {
-				rt3 = RoadType.get(rt3.pattern | RoadType.Sides.RIGHT);
+				rt3 = RoadType.get(rt3.pattern | Sides.RIGHT);
 				map.put(l.delta(-1, 0), TileFragment.of(0, rts.get(rt3), true));
 			}
 			if (rt5 != null) {
-				rt5 = RoadType.get(rt5.pattern | RoadType.Sides.LEFT);
+				rt5 = RoadType.get(rt5.pattern | Sides.LEFT);
 				map.put(l.delta(1, 0), TileFragment.of(0, rts.get(rt5), true));
 			}
 			if (rt7 != null) {
-				rt7 = RoadType.get(rt7.pattern | RoadType.Sides.TOP);
+				rt7 = RoadType.get(rt7.pattern | Sides.TOP);
 				map.put(l.delta(0, -1), TileFragment.of(0, rts.get(rt7), true));
 			}
 			
