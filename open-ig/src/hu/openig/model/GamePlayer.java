@@ -8,12 +8,14 @@
 
 package hu.openig.model;
 
+import hu.openig.core.FactoryInfo;
 import hu.openig.core.LabInfo;
 import hu.openig.core.PlayerType;
 import hu.openig.core.StarmapSelection;
 import hu.openig.utils.JavaUtils;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -68,13 +70,16 @@ public class GamePlayer {
 	public final Set<GameFleet> ownFleets = JavaUtils.newHashSet();
 	/** Set of known fleets. (Should) contain the ownFleets too. */
 	public final Set<GameFleet> knownFleets = JavaUtils.newHashSet();
-	// FIXME introduce non-planetary manufacturing progress
 	/** The set of technologies that are known. */
 	public final Set<ResearchTech> knownTechnology = JavaUtils.newHashSet();
 	/** The set of technologies that are researched. */
 	public final Set<ResearchTech> availableTechnology = JavaUtils.newHashSet();
 	/** The map of started researches and their progress. */
 	public final Map<ResearchTech, ResearchProgress> researchProgresses = JavaUtils.newHashMap();
+	/** The map for factory to list of production. */
+	public final Map<Integer, List<ProductionProgress>> production = JavaUtils.newHashMap();
+	/** The inventory counts for various research techs. */
+	public final Map<ResearchTech, Integer> inventory = JavaUtils.newHashMap();
 	/**
 	 * Adds the planet to the own planets set and subsequently
 	 * calls knowPlanet. Players can lose posession of a planet
@@ -236,6 +241,43 @@ public class GamePlayer {
 		return result;
 	}
 	/**
+	 * Returns the factory information for the player.
+	 * @return the factory information containing operational and total number of various lab types
+	 */
+	public FactoryInfo getFactoryInfo() {
+		FactoryInfo result = new FactoryInfo();
+		for (GamePlanet p : ownPlanets) {
+			for (GameBuilding b : p.buildings) {
+				Integer value = b.prototype.values.get("spaceship");
+				float op = b.getOperationPercent();
+				if (value != null) {
+					if (op >= 0.5f) {
+						result.currentShip += value * op;
+					}
+					result.totalShip += value;
+				}
+				value = b.prototype.values.get("equipment");
+				op = b.getOperationPercent();
+				if (value != null) {
+					if (op >= 0.5f) {
+						result.currentEquipment += value * op;
+					}
+					result.totalEquipment += value;
+				}
+				value = b.prototype.values.get("weapon");
+				op = b.getOperationPercent();
+				if (value != null) {
+					if (op >= 0.5f) {
+						result.currentWeapons += value * op;
+					}
+					result.totalWeapons += value;
+				}
+			}
+		}
+		
+		return result;
+	}
+	/**
 	 * Returns a list of researches for the given class and type indexes.
 	 * @param clazz the class index
 	 * @param type the type index
@@ -250,5 +292,65 @@ public class GamePlayer {
 		}
 		Collections.sort(result, ResearchTech.BY_IMAGE_INDEX);
 		return result;
+	}
+	/**
+	 * Adds or removes a research technology from the current productions.
+	 * @param rt the research technology
+	 */
+	public void addRemove(ResearchTech rt) {
+		for (List<ProductionProgress> pp : production.values()) {
+			List<ProductionProgress> ppl = new ArrayList<ProductionProgress>(pp);
+			for (int i = 0; i < ppl.size(); i++) {
+				ProductionProgress p = ppl.get(i);
+				if (p.tech == rt) {
+					pp.remove(i);
+					rebalanceProduction(pp, rt.clazzIndex);
+					return;
+				}
+			}
+		}
+		List<ProductionProgress> ppl = production.get(rt.clazzIndex);
+		if (ppl == null) {
+			ppl = JavaUtils.newArrayList();
+			production.put(rt.clazzIndex, ppl);
+		}
+		ProductionProgress p = new ProductionProgress();
+		p.tech = rt;
+		p.priority = 50;
+		ppl.add(p);
+		rebalanceProduction(ppl, rt.clazzIndex);
+	}
+	/**
+	 * Rebalances the available factory capacity between the given production progresses.
+	 * @param ppl the list of production progresses
+	 * @param clazzIndex the production class selector
+	 */
+	public void rebalanceProduction(List<ProductionProgress> ppl, int clazzIndex) {
+		FactoryInfo fi = getFactoryInfo();
+		int value = 0;
+		if (clazzIndex == 1) {
+			value = fi.currentShip;
+		} else
+		if (clazzIndex == 2) {
+			value = fi.currentEquipment;
+		} else
+		if (clazzIndex == 3) {
+			value = fi.currentWeapons;
+		}
+		int sumPrio = 0;
+		for (ProductionProgress p : ppl) {
+			if (p.count > 0) {
+				sumPrio += p.priority;
+			}
+		}
+		for (ProductionProgress p : ppl) {
+			if (sumPrio > 0 && p.count > 0) {
+				p.capacity = value * p.priority / sumPrio;
+				p.capacityPercent = p.priority * 100 / sumPrio;
+			} else {
+				p.capacity = 0;
+				p.capacityPercent = 0;
+			}
+		}			
 	}
 }

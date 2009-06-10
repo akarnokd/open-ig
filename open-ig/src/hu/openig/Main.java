@@ -486,7 +486,22 @@ public class Main extends JFrame {
 			private static final long serialVersionUID = -5381260756829107852L;
 			public void actionPerformed(ActionEvent e) { onF5Action(); } });
 
+		ks = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK, false);
+		rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "CTRL+A");
+		rp.getActionMap().put("CTRL+A", new AbstractAction() { 
+			/** */
+			private static final long serialVersionUID = -5381260756829107852L;
+			public void actionPerformed(ActionEvent e) { onAddInventory(); } });
 
+	}
+	/**
+	 * Increments the current inventory count of the current available technology.
+	 */
+	protected void onAddInventory() {
+		if (gameWorld.isAvailable(gameWorld.player.selectedTech)) {
+			Integer i = gameWorld.player.inventory.get(gameWorld.player.selectedTech);
+			gameWorld.player.inventory.put(gameWorld.player.selectedTech, i != null ? i + 1 : 1);
+		}
 	}
 	/** Research the currently selected technology. */
 	protected void doResearchCurrent() {

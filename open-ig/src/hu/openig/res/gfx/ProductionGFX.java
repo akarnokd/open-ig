@@ -86,8 +86,8 @@ public class ProductionGFX {
 		btnAddDown = ImageUtils.subimage(x, 336, 234, 102, 39);
 		btnRemoveDown = ImageUtils.subimage(x, 336, 273, 102, 39);
 		btnEmpty = ImageUtils.subimage(x, 438, 273, 102, 39);
-		btnSellDown = ImageUtils.subimage(x, 439, 191, 54, 23);
-		btnSellDisabled = ImageUtils.subimage(x, 439, 215, 54, 23);
+		btnSellDown = ImageUtils.subimage(x, 440, 192, 52, 21);
+		btnSellDisabled = ImageUtils.subimage(x, 440, 216, 52, 21);
 		
 		btnMinusTen = ImageUtils.subimage(x, 550, 0, 52, 21);
 		btnMinusOne = ImageUtils.subimage(x, 550, 21, 52, 21);
