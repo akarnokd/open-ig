@@ -13,6 +13,8 @@ import java.awt.Container;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map;
 import java.util.Properties;
 
@@ -63,7 +65,12 @@ public class ConfigUI extends JFrame {
 	    props.setProperty("Y", String.valueOf(frame.getY()));
 	    props.setProperty("W", String.valueOf(frame.getWidth()));
 	    props.setProperty("H", String.valueOf(frame.getHeight()));
-	    props.storeToXML(new FileOutputStream("config.xml"), null);
+	    OutputStream out = new FileOutputStream("config.xml");
+	    try {
+	    	props.storeToXML(out, null);
+	    } finally {
+	    	out.close();
+	    }
 	}
 	/**
 	 * Load a frame properties.
@@ -72,17 +79,22 @@ public class ConfigUI extends JFrame {
 	 */
 	void loadFrame(JFrame frame) throws IOException {
 	    Properties props = new Properties();
-	    props.loadFromXML(new FileInputStream("config.xml"));
-	    int extendedState = Integer.parseInt(props.getProperty("State", String.valueOf(frame.getExtendedState())));
-	    if (extendedState != JFrame.MAXIMIZED_BOTH) {
-	        frame.setBounds(
-        		Integer.parseInt(props.getProperty("X", String.valueOf(frame.getX()))),
-				Integer.parseInt(props.getProperty("Y", String.valueOf(frame.getY()))),
-				Integer.parseInt(props.getProperty("W", String.valueOf(frame.getWidth()))),
-				Integer.parseInt(props.getProperty("H", String.valueOf(frame.getHeight())))
-	        );
-	    } else {
-	        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	    InputStream in = new FileInputStream("config.xml");
+	    try {
+		    props.loadFromXML(in);
+		    int extendedState = Integer.parseInt(props.getProperty("State", String.valueOf(frame.getExtendedState())));
+		    if (extendedState != JFrame.MAXIMIZED_BOTH) {
+		        frame.setBounds(
+	        		Integer.parseInt(props.getProperty("X", String.valueOf(frame.getX()))),
+					Integer.parseInt(props.getProperty("Y", String.valueOf(frame.getY()))),
+					Integer.parseInt(props.getProperty("W", String.valueOf(frame.getWidth()))),
+					Integer.parseInt(props.getProperty("H", String.valueOf(frame.getHeight())))
+		        );
+		    } else {
+		        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		    }
+	    } finally {
+	    	in.close();
 	    }
 	}	/**
 	 * Main program to independently test the ui.
