@@ -136,14 +136,14 @@ The game uses several keyboard shortcuts and has some new ones for testing purpo
 || NUM- || Go to previous planet ||
 || CTRL+O || Take ownership of all empty planets ||
 || CTRL+. || Toggle rendering interpolation between linear, bilinear and bicubic ||
-|| CTRL+C || ||
-|| DEL ||
-|| CTRL+S || ||
-|| CTRL+D || ||
-|| CTRL+M || ||
-|| CTRL+P || ||
-|| CTRL+SHIFT+O || ||
-|| CTRL+I || ||
-|| CTRL+B || ||
-|| CTRL+R || ||
-|| CTRL+A || ||
+|| CTRL+C || Remove all buildings from the current planet ||
+|| DEL || Delete (demolish) the currently selected building ||
+|| CTRL+S || Save the current building layout into an XML file named by the planet ||
+|| CTRL+D || Toggle between 0% and 60% damage level for the currently selected building ||
+|| CTRL+M || Take over the currently selected planet ||
+|| CTRL+P || Save building list into a text file used for resource allocation optimization ||
+|| CTRL+SHIFT+O || Take over all planets on the starmap (enemy and empty too) ||
+|| CTRL+I || Take over all enemy planets on the starmap ||
+|| CTRL+B || Toggle building completion level between 0% and 100% for the currently selected building ||
+|| CTRL+R || Make available (researched) the currently selected technology ||
+|| CTRL+A || Increase the inventory amount by 1 of the currently selected and available technology ||
