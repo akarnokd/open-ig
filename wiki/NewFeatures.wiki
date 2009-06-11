@@ -35,3 +35,28 @@ The Open-IG utilizes the following icons to signal some errors:
 http://karnokd.uw.hu/feat-colinfo-1.png
 
 Displays all information available on the Colony info screen in a compact format. The semi-transparent panel can be toggled on/off by clicking on the bar right to it.
+
+The status coloring is similar to the original game:
+|| *Color* || *Description* ||
+|| Green || Everything is OK ||
+|| Yellow || The demand is higher than the available amount, but still less thant two times the available amount (e.g buildings can be operated at least 50%) ||
+|| Red || The demand is more than twice the available amount ||
+
+== Worker demand ==
+
+http://karnokd.uw.hu/feat-workers-1.png
+
+Displays the amount of demanded / available workers on a planet.
+
+== Colony info problems ==
+
+http://karnokd.uw.hu/feat-colprobl-1.png
+
+The small planetary info area on various information screens now includes the list of problems on that planet. The coloring is the same as for the *Colony info on the planet surface* above, except the OK cases are not listed
+
+== Problematic planet highlight on the Planets info page ==
+
+http://karnokd.uw.hu/feat-blink-1.png
+
+Planet names with any problem blinks on the Planets information page.
+
