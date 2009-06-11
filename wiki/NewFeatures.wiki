@@ -107,3 +107,14 @@ In addition, the requirements listing received coloring to, which resembles to t
 || Gray || Not all prerequisite technology is available ||
 
 This coloring is also used on the Research screen's *Needed* listing. Plus, the user can now click on the listed prerequisite and it jumps automatically to that research.
+
+== Available/Total production capacity ==
+
+http://karnokd.uw.hu/feat-prod-1.png
+
+On the production screen, the capacity display now contains the total-theoretical capacity of the manufacturing. The actual capacity is color coded and might be lower due some inoperable buildings. The same color coding concept is used as elsewhere:
+
+|| *Color* || *Description* ||
+|| Green || The maximum capacity is available ||
+|| Yellow || More than half of the maximum capacity is available ||
+|| Red || Less than half of the maximum capacity is available ||
