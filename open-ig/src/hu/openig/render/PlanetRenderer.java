@@ -56,7 +56,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -795,7 +794,7 @@ MouseWheelListener, ActionListener {
 			this.surfaceType = p.surfaceType.index;
 			this.mapBytes = getSelectedPlanetSurface();
 			this.daylight = PlanetRenderer.this.daylight;
-			this.map = new HashMap<Location, TileFragment>(p.map);
+			this.map = p.map; //new HashMap<Location, TileFragment>(p.map);
 			this.xoffset = xoffset;
 			this.yoffset = yoffset;
 			this.clip = clip;
@@ -857,7 +856,8 @@ MouseWheelListener, ActionListener {
 					if (!config.clip || (x >= -w && x <= getWidth()
 							&& y >= -h 
 							&& y <= getHeight() + h)) {
-						g2.drawImage(tileImg, x, y - h, null);
+//						g2.drawImage(tileImg, x, y - h, null);
+						draw(g2, tileImg, x, y - h);
 					}
 				} else
 				if (tile != null) {
@@ -870,7 +870,8 @@ MouseWheelListener, ActionListener {
 								&& y >= -tile.image.getHeight() 
 								&& y <= getHeight() + tile.image.getHeight())) {
 							BufferedImage subimage = tile.strips[stripeId];
-							g2.drawImage(subimage, x, y - tile.image.getHeight() + tile.heightCorrection, null);
+//							g2.drawImage(subimage, x, y - tile.image.getHeight() + tile.heightCorrection, null);
+							draw(g2, subimage, x, y - tile.image.getHeight() + tile.heightCorrection);
 						}
 					} else 
 					if (stripeId < 255) {
@@ -885,13 +886,24 @@ MouseWheelListener, ActionListener {
 						// use subimage stripe
 						int x0 = stripeId >= tile.width ? Tile.toScreenX(stripeId, 0) : Tile.toScreenX(0, -stripeId);
 						BufferedImage subimage = tile.strips[stripeId];
-						g2.drawImage(subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection, null);
+//						g2.drawImage(subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection, null);
+						draw(g2, subimage, x + x0, y - tile.image.getHeight() + tile.heightCorrection);
 					}
 				}
 				k--;
 				i = toMapOffset(k, j);
 			}
 		}
+	}
+	/**
+	 * Renders the given image to the given location.
+	 * @param g2 the graphics object
+	 * @param img the image
+	 * @param x the X coordinate
+	 * @param y the y coordinate
+	 */
+	private void draw(Graphics2D g2, BufferedImage img, int x, int y) {
+		g2.drawImage(img, x, y, null);
 	}
 	/**
 	 * Returns the currently selected planet's surface base.

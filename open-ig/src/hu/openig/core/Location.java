@@ -17,6 +17,19 @@ public final class Location {
 	public final int x;
 	/** The Y coordinate. */
 	public final int y;
+	/** The cached hash code. */
+	private final int hc;
+	/** The location cache, where the first dimension is the X coordinate + 80, 
+	 * the second is Y coordinate + 159. */
+	private static Location[][] cache;
+	static {
+		cache = new Location[160][160];
+		for (int i = 0; i < cache.length; i++) {
+			for (int j = 0; j < cache[i].length; j++) {
+				cache[i][j] = new Location(i - 80, -j);
+			}
+		}
+	}
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param x the X coordinate.
@@ -25,6 +38,7 @@ public final class Location {
 	private Location(int x, int y) {
 		this.x = x;
 		this.y = y;
+		this.hc = 31 * (x + 17) + y;
 	}
 	/**
 	 * Returns a location object with
@@ -34,13 +48,19 @@ public final class Location {
 	 * @return the location object
 	 */
 	public static Location of(int x, int y) {
-		return new Location(x, y);
+		if (x < -80 || x > 80 || y < -159 || y > 0) {
+			return new Location(x, y);
+		}
+		return cache[x + 80][-y];
 	}
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
 		if (obj instanceof Location) {
 			Location l = (Location)obj;
 			return this.x == l.x && this.y == l.y;
@@ -52,7 +72,7 @@ public final class Location {
 	 */
 	@Override
 	public int hashCode() {
-		return 31 * (x + 17) + y;
+		return hc;
 	}
 	/**
 	 * {@inheritDoc}
