@@ -1,0 +1,37 @@
+#summary New features not present in original game.
+
+<wiki:toc max_depth="2" />
+
+= Introduction =
+
+This page describes the newly added features of the Open Imperium Galactica. This includes graphical and game enhancements.
+
+
+= Details =
+
+== Planet status icons ==
+http://karnokd.uw.hu/feat-icons-1.png
+
+To allow easy management of planets the status icons have been introduced on various screens. These status icons allow the player to instantly recognize the problems with various planets.
+
+http://karnokd.uw.hu/feat-icons-2.png
+
+Also, the starmap screen's information area contains the same icons.
+
+http://karnokd.uw.hu/feat-icons-3.png
+
+The planetary surface screen includes these icons along with the continuous display of the current planet.
+
+The Open-IG utilizes the following icons to signal some errors:
+|| *Icon* || *Description* ||
+|| http://karnokd.uw.hu/energy-icon-b.png || The planet has some energy issues ||
+|| http://karnokd.uw.hu/food-icon-b.png || The planet lacks food ||
+|| http://karnokd.uw.hu/hospital-icon-b.png || There are not enough hospitals ||
+|| http://karnokd.uw.hu/house-icon-b.png || The planet has not enough living space ||
+|| http://karnokd.uw.hu/worker-icon-b.png || There is not enough population to operate all buildings perfectly ||
+
+== Colony info on the planet surface ==
+
+http://karnokd.uw.hu/feat-colinfo-1.png
+
+Displays all information available on the Colony info screen in a compact format. The semi-transparent panel can be toggled on/off by clicking on the bar right to it.
