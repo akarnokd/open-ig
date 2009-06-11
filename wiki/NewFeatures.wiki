@@ -129,13 +129,13 @@ The game uses several keyboard shortcuts and has some new ones for testing purpo
 || F6 || Go to the research screen ||
 || F7 || Go to the information screen. The displayed tab depends on the original screen ||
 || ESC || Pause and go to the options screen or cancel movie playback ||
-|| CTRL+K || ||
-|| CTRL+N || ||
-|| CTRL+F || ||
-|| NUM+ || ||
-|| NUM- || ||
-|| CTRL+O || ||
-|| CTRL+. || ||
+|| CTRL+K || Display all planets on the starmap in the discovered state (e.g. no name and limited planet info) ||
+|| CTRL+N || Display all planets on the starmap in the well known state (e.g. name, population, surface, etc.) ||
+|| CTRL+F || Display all currently existing enemy fleets on the starmap ||
+|| NUM+ || Go to next planet ||
+|| NUM- || Go to previous planet ||
+|| CTRL+O || Take ownership of all empty planets ||
+|| CTRL+. || Toggle rendering interpolation between linear, bilinear and bicubic ||
 || CTRL+C || ||
 || DEL ||
 || CTRL+S || ||
