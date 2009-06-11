@@ -81,3 +81,9 @@ In the original game, if there was a worker or energy shortage, the game automat
 http://karnokd.uw.hu/feat-firepower-1.png
 
 Beneath the fleet speed value, the current firepower is displayed for the currently selected fleet. Later on, it might be possible to see the enemy fleet's firepower if it is in the range of any Radar3.
+
+== Player planet listing on starmap ==
+
+http://karnokd.uw.hu/feat-planets-1.png
+
+Due the resizable window of Open-IG, the space gained by resizing the starmap vertically allows to display and choose from a list of planets instead of just one planet name.
