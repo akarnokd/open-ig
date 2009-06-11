@@ -118,3 +118,32 @@ On the production screen, the capacity display now contains the total-theoretica
 || Green || The maximum capacity is available ||
 || Yellow || More than half of the maximum capacity is available ||
 || Red || Less than half of the maximum capacity is available ||
+
+== Keyboard shortcuts ==
+The game uses several keyboard shortcuts and has some new ones for testing purposes. Most of these shortcuts will not be available in the final release of Open-IG.
+
+|| *Shortcut* || *Description* ||
+|| F2 || ||
+|| F3 || ||
+|| F5 || ||
+|| F6 || ||
+|| F7 || ||
+|| ESC || ||
+|| CTRL+K || ||
+|| CTRL+N || ||
+|| CTRL+F || ||
+|| NUM+ || ||
+|| NUM- || ||
+|| CTRL+O || ||
+|| CTRL+. || ||
+|| CTRL+C || ||
+|| DEL ||
+|| CTRL+S || ||
+|| CTRL+D || ||
+|| CTRL+M || ||
+|| CTRL+P || ||
+|| CTRL+SHIFT+O || ||
+|| CTRL+I || ||
+|| CTRL+B || ||
+|| CTRL+R || ||
+|| CTRL+A || ||
