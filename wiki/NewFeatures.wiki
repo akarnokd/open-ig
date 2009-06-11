@@ -123,12 +123,12 @@ On the production screen, the capacity display now contains the total-theoretica
 The game uses several keyboard shortcuts and has some new ones for testing purposes. Most of these shortcuts will not be available in the final release of Open-IG.
 
 || *Shortcut* || *Description* ||
-|| F2 || ||
-|| F3 || ||
-|| F5 || ||
-|| F6 || ||
-|| F7 || ||
-|| ESC || ||
+|| F2 || Go to the Starmap screen ||
+|| F3 || Go to the Planet surface screen ||
+|| F5 || Go to the production screen ||
+|| F6 || Go to the research screen ||
+|| F7 || Go to the information screen. The displayed tab depends on the original screen ||
+|| ESC || Pause and go to the options screen or cancel movie playback ||
 || CTRL+K || ||
 || CTRL+N || ||
 || CTRL+F || ||
