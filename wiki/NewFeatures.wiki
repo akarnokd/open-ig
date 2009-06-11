@@ -1,4 +1,5 @@
 #summary New features not present in original game.
+#labels Featured
 
 <wiki:toc max_depth="2" />
 
@@ -9,14 +10,14 @@ This page describes the newly added features of the Open Imperium Galactica. Thi
 
 = Details =
 
-== Planet status icons ==
+== Planet status icons, taxation level ==
 http://karnokd.uw.hu/feat-icons-1.png
 
 To allow easy management of planets the status icons have been introduced on various screens. These status icons allow the player to instantly recognize the problems with various planets.
 
 http://karnokd.uw.hu/feat-icons-2.png
 
-Also, the starmap screen's information area contains the same icons.
+Also, the starmap screen's information area contains the same icons. Also the taxation level is displayed in the population info line.
 
 http://karnokd.uw.hu/feat-icons-3.png
 
@@ -60,3 +61,23 @@ http://karnokd.uw.hu/feat-blink-1.png
 
 Planet names with any problem blinks on the Planets information page.
 
+== Customizable energy and worker allocation ==
+
+http://karnokd.uw.hu/feat-alloc-1.png
+
+In the original game, if there was a worker or energy shortage, the game automatically distributed the available resources equally among buildings, resulting in the same operation level for every one. This allocation strategy might be sub-optimal in various cases. Therefore, new and selectable strategies have been introduced as follows:
+
+|| *Name* || *Description* ||
+|| Uniform || The original game strategy, evaluates the supply percentage for everyone by available/demand ||
+|| Living conditions || Prefers life enhancing buildings (housing, entertainment, hospitals etc.). Boosts morale. ||
+|| Production || Moves resources to the production buildings to maximize capacity in space, equipment and weapons factories ||
+|| Science || Moves resources to scientific buildings to ensure research is not interrupted ||
+|| Economy || Moves resources to the financial and economic buildings to maximize trade income ||
+|| Military || Allocates resources to military and defensive buildings (barracks, radars, guns, shields, etc.) to maximize defensive capability of the planet ||
+|| Operation || Uses heuristic approach to maximize the number of operational buildings on the planet. ||
+
+== Fleet firepower ==
+
+http://karnokd.uw.hu/feat-firepower-1.png
+
+Beneath the fleet speed value, the current firepower is displayed for the currently selected fleet. Later on, it might be possible to see the enemy fleet's firepower if it is in the range of any Radar3.
