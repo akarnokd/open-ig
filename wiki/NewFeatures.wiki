@@ -1,4 +1,4 @@
-#summary New features not present in original game.
+#summary New features
 #labels Featured
 
 <wiki:toc max_depth="2" />
