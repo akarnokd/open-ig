@@ -103,7 +103,7 @@ Currently, not much info can I provide.
 
 = Tools =
 
-The Open-IG will play the original game's ANI files. To play these files separately, please use the [http://open-ig.googlecode.com/files/animplay-0.3.jar AnimPlay] utility. Double click on this file or use the command line {{{java -jar animplay-0.3.jar}}}. The utility will allow you to select a file to play. 
+The Open-IG will play the original game's ANI files. To play these files separately, please use the [http://open-ig.googlecode.com/files/animplay-0.4.jar AnimPlay] utility. Double click on this file or use the command line {{{java -jar animplay-0.4.jar}}}. The utility will allow you to select a file to play. 
 (The source code is available from the SVN.)
 
 == External tools ==
