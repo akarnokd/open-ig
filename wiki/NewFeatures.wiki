@@ -68,7 +68,7 @@ http://karnokd.uw.hu/feat-alloc-1.png
 In the original game, if there was a worker or energy shortage, the game automatically distributed the available resources equally among buildings, resulting in the same operation level for every one. This allocation strategy might be sub-optimal in various cases. Therefore, new and selectable strategies have been introduced as follows:
 
 || *Name* || *Description* ||
-|| Uniform || The original game strategy, evaluates the supply percentage for everyone by available/demand ||
+|| Uniform || The original game strategy, applies the same allocation percentage to every building ||
 || Living conditions || Prefers life enhancing buildings (housing, entertainment, hospitals etc.). Boosts morale. ||
 || Production || Moves resources to the production buildings to maximize capacity in space, equipment and weapons factories ||
 || Science || Moves resources to scientific buildings to ensure research is not interrupted ||
