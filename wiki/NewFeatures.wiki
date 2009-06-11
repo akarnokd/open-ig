@@ -87,3 +87,23 @@ Beneath the fleet speed value, the current firepower is displayed for the curren
 http://karnokd.uw.hu/feat-planets-1.png
 
 Due the resizable window of Open-IG, the space gained by resizing the starmap vertically allows to display and choose from a list of planets instead of just one planet name.
+
+== Research info enhancements ==
+
+http://karnokd.uw.hu/feat-res-1.png
+
+Added some color coded info about the currently operational and total amounts of research centers to the research information screen's lab level property. Yellow number means that there are some non-operational research centers on the player's planets. Beneath the lab level, the total number of research centers are displayed for each kind. 
+
+http://karnokd.uw.hu/feat-res-2.png
+
+The coloring is also visible on the Research screen.
+
+In addition, the requirements listing received coloring to, which resembles to the coloring of the main research item listings:
+
+|| *Color* || *Description* ||
+|| Orange || Already researched ||
+|| Yellow || Research in progress ||
+|| Green || All prerequisite technologies have been researched, research can be started ||
+|| Gray || Not all prerequisite technology is available ||
+
+This coloring is also used on the Research screen's *Needed* listing. Plus, the user can now click on the listed prerequisite and it jumps automatically to that research.
