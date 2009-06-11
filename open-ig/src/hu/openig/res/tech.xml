@@ -829,7 +829,7 @@ xsi:noNamespaceSchemaLocation="tech.xsd">
 			<computer>2</computer>
 			<military>2</military>
 			<image-index>214</image-index>
-			<requires>HyperDrive5</requires>
+			<requires>HyperDrive3</requires>
 			<factory>equipment</factory>
 			<techids>1</techids>
 			<equipment>

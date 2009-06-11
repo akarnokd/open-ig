@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!-- Planetary information for the original campaign -->
-<planets>
-	<planet id='Achilles'>
+<!-- Planetary information for the original campaign -->
+<planets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="planets.xsd">
+	<planet id="Achilles">
 		<name>Achilles</name>
 		<location-x>154</location-x>
 		<location-y>204</location-y>
 		<type>Desert</type>
 		<variant>2</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -79,12 +80,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Andromeda 1'>
+	<planet id="Andromeda 1">
 		<name>Andromeda 1</name>
 		<location-x>434</location-x>
 		<location-y>314</location-y>
 		<type>Neptoplasm</type>
 		<variant>1</variant>
+		<owner>Ecalep</owner>
 		<race>Ecalep</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -261,12 +263,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Andromeda 2'>
+	<planet id="Andromeda 2">
 		<name>Andromeda 2</name>
 		<location-x>456</location-x>
 		<location-y>307</location-y>
 		<type>Neptoplasm</type>
 		<variant>2</variant>
+		<owner>Ecalep</owner>
 		<race>Ecalep</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -427,12 +430,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Andromeda 3'>
+	<planet id="Andromeda 3">
 		<name>Andromeda 3</name>
 		<location-x>441</location-x>
 		<location-y>295</location-y>
 		<type>Neptoplasm</type>
 		<variant>3</variant>
+		<owner>Ecalep</owner>
 		<race>Ecalep</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -609,12 +613,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Andromeda 4'>
+	<planet id="Andromeda 4">
 		<name>Andromeda 4</name>
 		<location-x>460</location-x>
 		<location-y>287</location-y>
 		<type>Neptoplasm</type>
 		<variant>1</variant>
+		<owner>Ecalep</owner>
 		<race>Ecalep</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -799,13 +804,14 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Andromeda 5'>
+	<planet id="Andromeda 5">
 		<name>Andromeda 5</name>
 		<location-x>485</location-x>
 		<location-y>247</location-y>
 		<type>Neptoplasm</type>
 		<variant>4</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -813,13 +819,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Andromeda 6'>
+	<planet id="Andromeda 6">
 		<name>Andromeda 6</name>
 		<location-x>423</location-x>
 		<location-y>271</location-y>
 		<type>Earth</type>
 		<variant>3</variant>
-		<race></race>
+		<owner></owner>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -827,13 +834,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Andromeda 7'>
+	<planet id="Andromeda 7">
 		<name>Andromeda 7</name>
 		<location-x>487</location-x>
 		<location-y>294</location-y>
 		<type>Neptoplasm</type>
 		<variant>3</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -841,12 +849,13 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Center 1'>
+	<planet id="Center 1">
 		<name>Center 1</name>
 		<location-x>156</location-x>
 		<location-y>165</location-y>
 		<type>Rocky</type>
 		<variant>1</variant>
+		<owner>Ychom</owner>
 		<race>Ychom</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -1063,12 +1072,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Center 2'>
+	<planet id="Center 2">
 		<name>Center 2</name>
 		<location-x>175</location-x>
 		<location-y>158</location-y>
 		<type>Cratered</type>
 		<variant>8</variant>
+		<owner>Ychom</owner>
 		<race>Ychom</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -1181,12 +1191,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Center 3'>
+	<planet id="Center 3">
 		<name>Center 3</name>
 		<location-x>158</location-x>
 		<location-y>145</location-y>
 		<type>Rocky</type>
 		<variant>1</variant>
+		<owner>Ychom</owner>
 		<race>Ychom</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -1355,12 +1366,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Center 4'>
+	<planet id="Center 4">
 		<name>Center 4</name>
 		<location-x>139</location-x>
 		<location-y>151</location-y>
 		<type>Frozen</type>
 		<variant>3</variant>
+		<owner>Ychom</owner>
 		<race>Ychom</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -1553,12 +1565,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Center 5'>
+	<planet id="Center 5">
 		<name>Center 5</name>
 		<location-x>176</location-x>
 		<location-y>138</location-y>
 		<type>Cratered</type>
 		<variant>7</variant>
+		<owner>Ychom</owner>
 		<race>Ychom</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -1687,12 +1700,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Center 6'>
+	<planet id="Center 6">
 		<name>Center 6</name>
 		<location-x>149</location-x>
 		<location-y>125</location-y>
 		<type>Frozen</type>
 		<variant>5</variant>
+		<owner>Ychom</owner>
 		<race>Ychom</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -1821,12 +1835,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Center 7'>
+	<planet id="Center 7">
 		<name>Center 7</name>
 		<location-x>253</location-x>
 		<location-y>154</location-y>
 		<type>Earth</type>
 		<variant>7</variant>
+		<owner>FreeTraders</owner>
 		<race>FreeTraders</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -1971,12 +1986,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Center 8'>
+	<planet id="Center 8">
 		<name>Center 8</name>
 		<location-x>251</location-x>
 		<location-y>175</location-y>
 		<type>Desert</type>
 		<variant>6</variant>
+		<owner>FreeTraders</owner>
 		<race>FreeTraders</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -2121,12 +2137,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Center 9'>
+	<planet id="Center 9">
 		<name>Center 9</name>
 		<location-x>270</location-x>
 		<location-y>166</location-y>
 		<type>Desert</type>
 		<variant>8</variant>
+		<owner>FreeTraders</owner>
 		<race>FreeTraders</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -2207,13 +2224,14 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Center 10'>
+	<planet id="Center 10">
 		<name>Center 10</name>
 		<location-x>229</location-x>
 		<location-y>219</location-y>
 		<type>Cratered</type>
 		<variant>5</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -2221,13 +2239,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Center 11'>
+	<planet id="Center 11">
 		<name>Center 11</name>
 		<location-x>227</location-x>
 		<location-y>172</location-y>
 		<type>Desert</type>
 		<variant>7</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -2235,13 +2254,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Center 12'>
+	<planet id="Center 12">
 		<name>Center 12</name>
 		<location-x>98</location-x>
 		<location-y>159</location-y>
 		<type>Desert</type>
 		<variant>3</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -2249,13 +2269,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Center 13'>
+	<planet id="Center 13">
 		<name>Center 13</name>
 		<location-x>121</location-x>
 		<location-y>138</location-y>
 		<type>Frozen</type>
 		<variant>5</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -2263,13 +2284,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Center 14'>
+	<planet id="Center 14">
 		<name>Center 14</name>
 		<location-x>104</location-x>
 		<location-y>144</location-y>
 		<type>Earth</type>
 		<variant>4</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -2277,13 +2299,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Center 15'>
+	<planet id="Center 15">
 		<name>Center 15</name>
 		<location-x>56</location-x>
 		<location-y>179</location-y>
 		<type>Rocky</type>
 		<variant>5</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -2291,13 +2314,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Center 16'>
+	<planet id="Center 16">
 		<name>Center 16</name>
 		<location-x>149</location-x>
 		<location-y>188</location-y>
 		<type>Frozen</type>
 		<variant>4</variant>
-		<race></race>
+		<owner></owner>
+		<race/>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -2305,12 +2329,13 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Centronom'>
+	<planet id="Centronom">
 		<name>Centronom</name>
 		<location-x>126</location-x>
 		<location-y>191</location-y>
 		<type>Desert</type>
 		<variant>3</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -2367,12 +2392,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Earth'>
+	<planet id="Earth">
 		<name>Earth</name>
 		<location-x>55</location-x>
 		<location-y>115</location-y>
 		<type>Earth</type>
 		<variant>8</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -2533,12 +2559,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Edgepolis'>
+	<planet id="Edgepolis">
 		<name>Edgepolis</name>
 		<location-x>54</location-x>
 		<location-y>153</location-y>
 		<type>Desert</type>
 		<variant>4</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -2603,12 +2630,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 1'>
+	<planet id="Exterior 1">
 		<name>Exterior 1</name>
 		<location-x>78</location-x>
 		<location-y>252</location-y>
 		<type>Frozen</type>
 		<variant>9</variant>
+		<owner>Morgath</owner>
 		<race>Morgath</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -2705,12 +2733,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 2'>
+	<planet id="Exterior 2">
 		<name>Exterior 2</name>
 		<location-x>85</location-x>
 		<location-y>268</location-y>
 		<type>Desert</type>
 		<variant>6</variant>
+		<owner>Morgath</owner>
 		<race>Morgath</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -2919,12 +2948,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 3'>
+	<planet id="Exterior 3">
 		<name>Exterior 3</name>
 		<location-x>63</location-x>
 		<location-y>278</location-y>
 		<type>Desert</type>
 		<variant>8</variant>
+		<owner>Morgath</owner>
 		<race>Morgath</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -3061,12 +3091,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 4'>
+	<planet id="Exterior 4">
 		<name>Exterior 4</name>
 		<location-x>118</location-x>
 		<location-y>319</location-y>
 		<type>Rocky</type>
 		<variant>7</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -3259,12 +3290,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 5'>
+	<planet id="Exterior 5">
 		<name>Exterior 5</name>
 		<location-x>145</location-x>
 		<location-y>299</location-y>
 		<type>Rocky</type>
 		<variant>4</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -3417,12 +3449,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 6'>
+	<planet id="Exterior 6">
 		<name>Exterior 6</name>
 		<location-x>186</location-x>
 		<location-y>314</location-y>
 		<type>Cratered</type>
 		<variant>2</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -3551,12 +3584,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 7'>
+	<planet id="Exterior 7">
 		<name>Exterior 7</name>
 		<location-x>223</location-x>
 		<location-y>282</location-y>
 		<type>Desert</type>
 		<variant>7</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -3677,12 +3711,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 8'>
+	<planet id="Exterior 8">
 		<name>Exterior 8</name>
 		<location-x>240</location-x>
 		<location-y>305</location-y>
 		<type>Liquid</type>
 		<variant>7</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -3851,12 +3886,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 9'>
+	<planet id="Exterior 9">
 		<name>Exterior 9</name>
 		<location-x>283</location-x>
 		<location-y>275</location-y>
 		<type>Frozen</type>
 		<variant>6</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -4129,12 +4165,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 10'>
+	<planet id="Exterior 10">
 		<name>Exterior 10</name>
 		<location-x>303</location-x>
 		<location-y>321</location-y>
 		<type>Frozen</type>
 		<variant>7</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -4207,12 +4244,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 11'>
+	<planet id="Exterior 11">
 		<name>Exterior 11</name>
 		<location-x>316</location-x>
 		<location-y>264</location-y>
 		<type>Liquid</type>
 		<variant>8</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -4349,12 +4387,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 12'>
+	<planet id="Exterior 12">
 		<name>Exterior 12</name>
 		<location-x>328</location-x>
 		<location-y>286</location-y>
 		<type>Desert</type>
 		<variant>8</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -4459,12 +4498,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 13'>
+	<planet id="Exterior 13">
 		<name>Exterior 13</name>
 		<location-x>277</location-x>
 		<location-y>255</location-y>
 		<type>Cratered</type>
 		<variant>6</variant>
+		<owner>Sullep</owner>
 		<race>Sullep</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -4641,13 +4681,14 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Exterior 14'>
+	<planet id="Exterior 14">
 		<name>Exterior 14</name>
 		<location-x>79</location-x>
 		<location-y>226</location-y>
 		<type>Rocky</type>
 		<variant>8</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -4655,13 +4696,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Exterior 15'>
+	<planet id="Exterior 15">
 		<name>Exterior 15</name>
 		<location-x>265</location-x>
 		<location-y>250</location-y>
 		<type>Liquid</type>
 		<variant>8</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -4669,13 +4711,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Exterior 16'>
+	<planet id="Exterior 16">
 		<name>Exterior 16</name>
 		<location-x>119</location-x>
 		<location-y>294</location-y>
 		<type>Rocky</type>
 		<variant>3</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -4683,13 +4726,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Exterior 17'>
+	<planet id="Exterior 17">
 		<name>Exterior 17</name>
 		<location-x>152</location-x>
 		<location-y>44</location-y>
 		<type>Rocky</type>
 		<variant>1</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -4697,13 +4741,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Exterior 18'>
+	<planet id="Exterior 18">
 		<name>Exterior 18</name>
 		<location-x>376</location-x>
 		<location-y>306</location-y>
 		<type>Neptoplasm</type>
 		<variant>6</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -4711,13 +4756,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Exterior 19'>
+	<planet id="Exterior 19">
 		<name>Exterior 19</name>
 		<location-x>21</location-x>
 		<location-y>218</location-y>
 		<type>Frozen</type>
 		<variant>8</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -4725,13 +4771,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Exterior 19'>
+	<planet id="Exterior 19">
 		<name>Exterior 19</name>
 		<location-x>8</location-x>
 		<location-y>299</location-y>
 		<type>Cratered</type>
 		<variant>3</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -4739,13 +4786,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Exterior 20'>
+	<planet id="Exterior 20">
 		<name>Exterior 20</name>
 		<location-x>53</location-x>
 		<location-y>311</location-y>
 		<type>Earth</type>
 		<variant>2</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -4753,13 +4801,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Exterior 21'>
+	<planet id="Exterior 21">
 		<name>Exterior 21</name>
 		<location-x>166</location-x>
 		<location-y>266</location-y>
 		<type>Liquid</type>
 		<variant>4</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -4767,13 +4816,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Exterior 22'>
+	<planet id="Exterior 22">
 		<name>Exterior 22</name>
 		<location-x>202</location-x>
 		<location-y>289</location-y>
 		<type>Frozen</type>
 		<variant>6</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -4781,12 +4831,13 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Garthog 1'>
+	<planet id="Garthog 1">
 		<name>Garthog 1</name>
 		<location-x>178</location-x>
 		<location-y>193</location-y>
 		<type>Earth</type>
 		<variant>3</variant>
+		<owner>Garthog</owner>
 		<race>Garthog</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -4939,12 +4990,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Garthog 2'>
+	<planet id="Garthog 2">
 		<name>Garthog 2</name>
 		<location-x>209</location-x>
 		<location-y>229</location-y>
 		<type>Frozen</type>
 		<variant>1</variant>
+		<owner>Garthog</owner>
 		<race>Garthog</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -5009,12 +5061,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Garthog 3'>
+	<planet id="Garthog 3">
 		<name>Garthog 3</name>
 		<location-x>210</location-x>
 		<location-y>200</location-y>
 		<type>Frozen</type>
 		<variant>4</variant>
+		<owner>Garthog</owner>
 		<race>Garthog</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -5135,12 +5188,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Garthog 4'>
+	<planet id="Garthog 4">
 		<name>Garthog 4</name>
 		<location-x>183</location-x>
 		<location-y>221</location-y>
 		<type>Rocky</type>
 		<variant>6</variant>
+		<owner>Garthog</owner>
 		<race>Garthog</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -5341,12 +5395,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Garthog 5'>
+	<planet id="Garthog 5">
 		<name>Garthog 5</name>
 		<location-x>192</location-x>
 		<location-y>236</location-y>
 		<type>Cratered</type>
 		<variant>1</variant>
+		<owner>Garthog</owner>
 		<race>Garthog</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -5475,12 +5530,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Giantropolis'>
+	<planet id="Giantropolis">
 		<name>Giantropolis</name>
 		<location-x>77</location-x>
 		<location-y>87</location-y>
 		<type>Rocky</type>
 		<variant>1</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -5521,12 +5577,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Magellan 1'>
+	<planet id="Magellan 1">
 		<name>Magellan 1</name>
 		<location-x>311</location-x>
 		<location-y>140</location-y>
 		<type>Rocky</type>
 		<variant>2</variant>
+		<owner>FreeNations</owner>
 		<race>FreeNations</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -5703,12 +5760,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Magellan 2'>
+	<planet id="Magellan 2">
 		<name>Magellan 2</name>
 		<location-x>333</location-x>
 		<location-y>149</location-y>
 		<type>Earth</type>
 		<variant>1</variant>
+		<owner>FreeNations</owner>
 		<race>FreeNations</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -5773,12 +5831,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Magellan 3'>
+	<planet id="Magellan 3">
 		<name>Magellan 3</name>
 		<location-x>318</location-x>
 		<location-y>157</location-y>
 		<type>Earth</type>
 		<variant>8</variant>
+		<owner>FreeNations</owner>
 		<race>FreeNations</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -5915,12 +5974,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Magellan 4'>
+	<planet id="Magellan 4">
 		<name>Magellan 4</name>
 		<location-x>333</location-x>
 		<location-y>180</location-y>
 		<type>Rocky</type>
 		<variant>7</variant>
+		<owner>FreeNations</owner>
 		<race>FreeNations</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -6065,12 +6125,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Magellan 5'>
+	<planet id="Magellan 5">
 		<name>Magellan 5</name>
 		<location-x>318</location-x>
 		<location-y>203</location-y>
 		<type>Rocky</type>
 		<variant>2</variant>
+		<owner>FreeNations</owner>
 		<race>FreeNations</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -6199,12 +6260,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Magellan 6'>
+	<planet id="Magellan 6">
 		<name>Magellan 6</name>
 		<location-x>356</location-x>
 		<location-y>172</location-y>
 		<type>Cratered</type>
 		<variant>2</variant>
+		<owner>FreeNations</owner>
 		<race>FreeNations</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -6317,12 +6379,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Magellan 7'>
+	<planet id="Magellan 7">
 		<name>Magellan 7</name>
 		<location-x>382</location-x>
 		<location-y>182</location-y>
 		<type>Desert</type>
 		<variant>4</variant>
+		<owner>FreeNations</owner>
 		<race>FreeNations</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -6411,13 +6474,14 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Magellan 8'>
+	<planet id="Magellan 8">
 		<name>Magellan 8</name>
 		<location-x>423</location-x>
 		<location-y>192</location-y>
 		<type>Neptoplasm</type>
 		<variant>4</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -6425,13 +6489,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Magellan 9'>
+	<planet id="Magellan 9">
 		<name>Magellan 9</name>
 		<location-x>425</location-x>
 		<location-y>222</location-y>
 		<type>Desert</type>
 		<variant>9</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -6439,13 +6504,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Magellan 10'>
+	<planet id="Magellan 10">
 		<name>Magellan 10</name>
 		<location-x>344</location-x>
 		<location-y>238</location-y>
 		<type>Frozen</type>
 		<variant>7</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -6453,13 +6519,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Magellen 11'>
+	<planet id="Magellen 11">
 		<name>Magellen 11</name>
 		<location-x>284</location-x>
 		<location-y>218</location-y>
 		<type>Rocky</type>
 		<variant>7</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -6467,12 +6534,13 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Myridan'>
+	<planet id="Myridan">
 		<name>Myridan</name>
 		<location-x>72</location-x>
 		<location-y>145</location-y>
 		<type>Rocky</type>
 		<variant>5</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -6513,12 +6581,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Naxos'>
+	<planet id="Naxos">
 		<name>Naxos</name>
 		<location-x>160</location-x>
 		<location-y>232</location-y>
 		<type>Earth</type>
 		<variant>1</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -6559,12 +6628,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='New Caroline'>
+	<planet id="New Caroline">
 		<name>New Caroline</name>
 		<location-x>102</location-x>
 		<location-y>197</location-y>
 		<type>Earth</type>
 		<variant>4</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -6629,12 +6699,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 1'>
+	<planet id="Outer 1">
 		<name>Outer 1</name>
 		<location-x>7</location-x>
 		<location-y>61</location-y>
 		<type>Liquid</type>
 		<variant>4</variant>
+		<owner>Dribs</owner>
 		<race>Dribs</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -6819,12 +6890,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 2'>
+	<planet id="Outer 2">
 		<name>Outer 2</name>
 		<location-x>29</location-x>
 		<location-y>32</location-y>
 		<type>Desert</type>
 		<variant>5</variant>
+		<owner>Dribs</owner>
 		<race>Dribs</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -6921,12 +6993,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 3'>
+	<planet id="Outer 3">
 		<name>Outer 3</name>
 		<location-x>50</location-x>
 		<location-y>12</location-y>
 		<type>Rocky</type>
 		<variant>2</variant>
+		<owner>Dribs</owner>
 		<race>Dribs</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -7087,12 +7160,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 4'>
+	<planet id="Outer 4">
 		<name>Outer 4</name>
 		<location-x>11</location-x>
 		<location-y>5</location-y>
 		<type>Rocky</type>
 		<variant>8</variant>
+		<owner>Dribs</owner>
 		<race>Dribs</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -7229,17 +7303,18 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 5'>
+	<planet id="Outer 5">
 		<name>Outer 5</name>
 		<location-x>209</location-x>
 		<location-y>10</location-y>
 		<type>Earth</type>
 		<variant>2</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>RL</rotate>
 		<populate>14000</populate>
-		<in-orbit></in-orbit>
+		<in-orbit/>
 		<buildings>
 			<building>
 				<id>NuclearPlant</id>
@@ -7331,12 +7406,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 6'>
+	<planet id="Outer 6">
 		<name>Outer 6</name>
 		<location-x>262</location-x>
 		<location-y>6</location-y>
 		<type>Earth</type>
 		<variant>5</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -7489,12 +7565,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 7'>
+	<planet id="Outer 7">
 		<name>Outer 7</name>
 		<location-x>281</location-x>
 		<location-y>46</location-y>
 		<type>Desert</type>
 		<variant>1</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>8</size>
 		<rotate>RL</rotate>
@@ -7615,12 +7692,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 8'>
+	<planet id="Outer 8">
 		<name>Outer 8</name>
 		<location-x>265</location-x>
 		<location-y>13</location-y>
 		<type>Earth</type>
 		<variant>7</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -7725,12 +7803,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 9'>
+	<planet id="Outer 9">
 		<name>Outer 9</name>
 		<location-x>334</location-x>
 		<location-y>69</location-y>
 		<type>Liquid</type>
 		<variant>3</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>LR</rotate>
@@ -7899,12 +7978,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 10'>
+	<planet id="Outer 10">
 		<name>Outer 10</name>
 		<location-x>404</location-x>
 		<location-y>18</location-y>
 		<type>Earth</type>
 		<variant>6</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -8145,12 +8225,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 11'>
+	<planet id="Outer 11">
 		<name>Outer 11</name>
 		<location-x>384</location-x>
 		<location-y>82</location-y>
 		<type>Liquid</type>
 		<variant>1</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -8199,12 +8280,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 12'>
+	<planet id="Outer 12">
 		<name>Outer 12</name>
 		<location-x>415</location-x>
 		<location-y>58</location-y>
 		<type>Liquid</type>
 		<variant>5</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>7</size>
 		<rotate>LR</rotate>
@@ -8397,12 +8479,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 13'>
+	<planet id="Outer 13">
 		<name>Outer 13</name>
 		<location-x>416</location-x>
 		<location-y>110</location-y>
 		<type>Liquid</type>
 		<variant>6</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>8</size>
 		<rotate>LR</rotate>
@@ -8523,12 +8606,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 14'>
+	<planet id="Outer 14">
 		<name>Outer 14</name>
 		<location-x>445</location-x>
 		<location-y>80</location-y>
 		<type>Liquid</type>
 		<variant>7</variant>
+		<owner>Dargslan</owner>
 		<race>Dargslan</race>
 		<size>6</size>
 		<rotate>RL</rotate>
@@ -8665,13 +8749,14 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Outer 15'>
+	<planet id="Outer 15">
 		<name>Outer 15</name>
 		<location-x>11</location-x>
 		<location-y>106</location-y>
 		<type>Liquid</type>
 		<variant>4</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8679,13 +8764,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 16'>
+	<planet id="Outer 16">
 		<name>Outer 16</name>
 		<location-x>44</location-x>
 		<location-y>62</location-y>
 		<type>Earth</type>
 		<variant>6</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -8693,13 +8779,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 17'>
+	<planet id="Outer 17">
 		<name>Outer 17</name>
 		<location-x>63</location-x>
 		<location-y>52</location-y>
 		<type>Earth</type>
 		<variant>1</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -8707,13 +8794,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 18'>
+	<planet id="Outer 18">
 		<name>Outer 18</name>
 		<location-x>118</location-x>
 		<location-y>15</location-y>
 		<type>Desert</type>
 		<variant>8</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -8721,13 +8809,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 19'>
+	<planet id="Outer 19">
 		<name>Outer 19</name>
 		<location-x>198</location-x>
 		<location-y>74</location-y>
 		<type>Desert</type>
 		<variant>6</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8735,13 +8824,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 20'>
+	<planet id="Outer 20">
 		<name>Outer 20</name>
 		<location-x>228</location-x>
 		<location-y>65</location-y>
 		<type>Frozen</type>
 		<variant>3</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8749,13 +8839,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 21'>
+	<planet id="Outer 21">
 		<name>Outer 21</name>
 		<location-x>243</location-x>
 		<location-y>40</location-y>
 		<type>Frozen</type>
 		<variant>1</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8763,13 +8854,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 22'>
+	<planet id="Outer 22">
 		<name>Outer 22</name>
 		<location-x>285</location-x>
 		<location-y>95</location-y>
 		<type>Liquid</type>
 		<variant>1</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -8777,13 +8869,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 23'>
+	<planet id="Outer 23">
 		<name>Outer 23</name>
 		<location-x>337</location-x>
 		<location-y>106</location-y>
 		<type>Liquid</type>
 		<variant>5</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -8791,13 +8884,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 24'>
+	<planet id="Outer 24">
 		<name>Outer 24</name>
 		<location-x>406</location-x>
 		<location-y>152</location-y>
 		<type>Earth</type>
 		<variant>7</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8805,13 +8899,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 25'>
+	<planet id="Outer 25">
 		<name>Outer 25</name>
 		<location-x>487</location-x>
 		<location-y>54</location-y>
 		<type>Neptoplasm</type>
 		<variant>5</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8819,13 +8914,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 26'>
+	<planet id="Outer 26">
 		<name>Outer 26</name>
 		<location-x>466</location-x>
 		<location-y>114</location-y>
 		<type>Earth</type>
 		<variant>5</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8833,13 +8929,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 27'>
+	<planet id="Outer 27">
 		<name>Outer 27</name>
 		<location-x>496</location-x>
 		<location-y>10</location-y>
 		<type>Frozen</type>
 		<variant>9</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -8847,13 +8944,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 28'>
+	<planet id="Outer 28">
 		<name>Outer 28</name>
 		<location-x>457</location-x>
 		<location-y>14</location-y>
 		<type>Rocky</type>
 		<variant>4</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8861,13 +8959,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 29'>
+	<planet id="Outer 29">
 		<name>Outer 29</name>
 		<location-x>475</location-x>
 		<location-y>146</location-y>
 		<type>Liquid</type>
 		<variant>6</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8875,13 +8974,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Outer 30'>
+	<planet id="Outer 30">
 		<name>Outer 30</name>
 		<location-x>468</location-x>
 		<location-y>55</location-y>
 		<type>Cratered</type>
 		<variant>7</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>6</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8889,13 +8989,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Persol 1'>
+	<planet id="Persol 1">
 		<name>Persol 1</name>
 		<location-x>125</location-x>
 		<location-y>86</location-y>
 		<type>Cratered</type>
 		<variant>6</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>LR</rotate>
 		<populate>0</populate>
@@ -8903,13 +9004,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Persol 2'>
+	<planet id="Persol 2">
 		<name>Persol 2</name>
 		<location-x>227</location-x>
 		<location-y>123</location-y>
 		<type>Liquid</type>
 		<variant>7</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>8</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -8917,13 +9019,14 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='Persol 3'>
+	<planet id="Persol 3">
 		<name>Persol 3</name>
 		<location-x>158</location-x>
 		<location-y>76</location-y>
 		<type>Liquid</type>
 		<variant>3</variant>
-		<race></race>
+		<owner/>
+		<race/>
 		<size>7</size>
 		<rotate>RL</rotate>
 		<populate>0</populate>
@@ -8931,12 +9034,13 @@
 		<buildings>
 		</buildings>
 	</planet>
-	<planet id='San Sterling'>
+	<planet id="San Sterling">
 		<name>San Sterling</name>
 		<location-x>140</location-x>
 		<location-y>213</location-y>
 		<type>Frozen</type>
 		<variant>2</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>7</size>
 		<rotate>RL</rotate>
@@ -8968,7 +9072,8 @@
 				<enabled>true</enabled>
 			</building>
 			<building>
-				<id>ColonyHub</id> <!-- Override, the surface isn't suitable for this building here! -->
+				<id>ColonyHub</id>
+				<!-- Override, the surface isn't suitable for this building here! -->
 				<health>100</health>
 				<progress>100</progress>
 				<x>-22</x>
@@ -8977,12 +9082,13 @@
 			</building>
 		</buildings>
 	</planet>
-	<planet id='Zeuson'>
+	<planet id="Zeuson">
 		<name>Zeuson</name>
 		<location-x>83</location-x>
 		<location-y>185</location-y>
 		<type>Rocky</type>
 		<variant>7</variant>
+		<owner>Empire</owner>
 		<race>Empire</race>
 		<size>7</size>
 		<rotate>RL</rotate>
