@@ -558,6 +558,9 @@ public class Main extends JFrame {
 	protected void doTakeoverPlanet() {
 		if (gameWorld.player.selectedPlanet != null) {
 			gameWorld.player.selectedPlanet.owner = gameWorld.player;
+			if (gameWorld.player.selectedPlanet.populationRace == null) {
+				gameWorld.player.selectedPlanet.populationRace = gameWorld.player.race;
+			}
 			repaint();
 		}
 	}
@@ -572,6 +575,7 @@ public class Main extends JFrame {
 				} else {
 					gameWorld.player.selectedPlanet.selectedBuilding.health = 40;
 				}
+				gameWorld.player.selectedPlanet.selectedBuilding.repairing = false;
 				planetRenderer.clearRadarCache();
 				repaint();
 			}
