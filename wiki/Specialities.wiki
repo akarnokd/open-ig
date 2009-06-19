@@ -16,3 +16,5 @@ This page collects the strange properties of the original game I discovered.
 || Outer 7 of the Dargslans has Colony Hub on an unbuildable area || Manually force building placement ||
 || Center 7 of the Free Traders has Colony hub, Mechanics Dev and Nuclear Plant on an unbuildable area || Manually force building placement ||
 || Magellan 6 of the Free nations has Colony hub placed on an unbuildable area || Manually forced the building placement ||
+|| Exterior 4 has several buildings placed on one
+another (reported by TCH) || Only the visible buildings where placed ||
