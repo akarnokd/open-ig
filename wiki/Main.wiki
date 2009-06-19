@@ -14,14 +14,14 @@ Check out the [http://code.google.com/p/open-ig/wiki/Questions Questions and ans
 
  # Install Java JRE/JDK 1.6.X (preferrably X >= 10) or later. 
  # Copy the contents of the original Imperium Galactica CD1 and CD2 into one directory (duplicate files can be simply overwritten). 
- # Put the {{{open-ig-0.70.jar}}} file into that directory. Note that the application requires at least 160 MB of memory. You can use the -Xmx command line parameter or change the .jar file extension assignment settings in your operating system to include it. 
+ # Put the {{{open-ig-0.71.jar}}} file into that directory. Note that the application requires at least 160 MB of memory. You can use the -Xmx command line parameter or change the .jar file extension assignment settings in your operating system to include it. 
  # To run the game double click on this file or use the command line 
 
-{{{java -Xmx160M -jar open-ig-0.70.jar}}}
+{{{java -Xmx160M -jar open-ig-0.71.jar}}}
 
  If you don't want to put the JAR with the game files, you could use an extra command line parameter to specify the home of the IG files (the path might be case sensitive on your operating system): 
 
-{{{java -Xmx160M -jar open-ig-0.70.jar c:\games\ig\}}}
+{{{java -Xmx160M -jar open-ig-0.71.jar c:\games\ig\}}}
 
 Java 1.6u10 thru 1.6u14 seems to have some performance issues with the newly introduced D3D pipeline, causing the game to consume lots of CPU resources and rendering becomes slow. In this case, you could run the program with the {{{-Dsun.java2d.d3d=false}}} command line parameter and everything should be fast again. My experience is that running the game on JDK7 does not suffer this performance problem but runs even faster with lower CPU consumption.
 
