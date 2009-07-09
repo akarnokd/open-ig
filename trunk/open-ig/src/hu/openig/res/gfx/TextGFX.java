@@ -29,7 +29,7 @@ public class TextGFX {
 		/** The uniform character width. */
 		public int width;
 		/** The uniform character height. */
-		public int height;
+//		public int height;
 		/** The map of characters to its images. */
 		public final Map<Character, BufferedImage> chars = new HashMap<Character, BufferedImage>();
 	}
@@ -194,7 +194,7 @@ public class TextGFX {
 			if (charToImg == null) {
 				charToImg = new SizedCharImages();
 				charToImg.width = WIDTHS[j];
-				charToImg.height = HEIGHTS[j];
+//				charToImg.height = HEIGHTS[j];
 				charMap.put(HEIGHTS[j], charToImg);
 			}
 			int x = 0;
