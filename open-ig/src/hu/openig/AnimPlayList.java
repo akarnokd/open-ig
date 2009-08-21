@@ -183,7 +183,7 @@ public class AnimPlayList extends JFrame {
 		});
 		table.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyTyped(KeyEvent e) {
+			public void keyReleased(KeyEvent e) {
 				doKeyTyped(e);
 			}
 		});
@@ -246,7 +246,7 @@ public class AnimPlayList extends JFrame {
 	 * @param e the keyboard event
 	 */
 	protected void doKeyTyped(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			doPlaySelected();
 		}
 	}
