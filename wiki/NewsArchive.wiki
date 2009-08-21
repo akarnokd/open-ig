@@ -1,17 +1,42 @@
 #summary News archive.
 
-May 23. 2009
+*June 19. 2009*
+
+  * Added the ability to place/remove items into the production lines and adjust the production properties.
+  * CTRL+A will increase the inventory count of the currently selected technology.
+  * Some management related information display. See features.
+  * For my testing purposes, the game jumps right into the starmap after startup. If you want to watch the intro or title animation, hit ESC then click Quit/Exit and you get back t the main menu.
+  * The game now complains if you try run it with less than 160MB JVM memory instead of just crashing silently.
+
+*June 11. 2009*
+  * Added the [http://code.google.com/p/open-ig/wiki/NewFeatures new features] wiki page which describes the enhancements in Open-IG
+  * Added information about the technical details behind the [http://code.google.com/p/open-ig/wiki/Surface_Maps planetary surface maps] 
+
+*June 1. 2009*
+  * Added production (F5) and research (F6) screens with animation
+  * Unresearched buildings do not show up on the buildings listing
+  * User CTRL+R to completely research the currently selected technology
+  * You might need to run the game with at least 160MB JVM memory: -Xmx160M
+
+*May 29. 2009*
+  * Some navigation and UI behavior fixes
+  * Buildings now consume energy and workers, can be deactivated.
+  * Added inventions information screen
+  * CTRL+SHIFT+O own every planet on the starmap, CTRL+I own enemy occupied planets, CTRL+M takeover the current planet, CTRL+B toggle build phases, CTRL+D toggle building damaged status
+
+
+*May 23. 2009*
   * Added ability to place buildings onto planets
   * Added building listing to the information screen
   * CTRL+C clears all buildings from the current planet, DEL deletes the selected building
 
-May 20. 2009
+*May 20. 2009*
   * Updated the AnimPlay application. Under the hood, now it uses the same method for rendering images and audio. Better yet, I've added 3 options to
     * save the animation as an animated GIF file,
     * save a series of PNG files containing every frame
     * save the animation sound as a WAV file
 
-May 18. 2009
+*May 18. 2009*
   * Updated the Wiki pages.
   * Released version 0.67. Major enhancements:
     * Display planets, colony info, fleets on the information panel
@@ -19,7 +44,7 @@ May 18. 2009
     * CTRL+. to toggle between default/neighbor/bilinear/bicubic interpolation of the starmap background
   * Added screenshots of the new screens
 
-May 16. 2009
+*May 16. 2009*
   * Updated the Wiki pages.
   * Released version 0.65. Major enhancements:
     * Game model for world, planet, fleet
@@ -31,32 +56,32 @@ May 16. 2009
     * Display planet/fleet info
   * Check out the new CTRL+K, CTRL+N and CTRL+F 'cheats'
 
-May 4. 2009
+*May 4. 2009*
   * Updated the Wiki pages.
   * Progress is slower than I expected. Creating a good and solid data model supporting skirmish, campaign and multiplayer is hard. But I uploaded the 0.6 version, which includes some style and bug fixes. 
   * Planet surface rendering is now correctly displaying multi-tile elements. Added the original campaign's ~100 planets with radar enabled. I also added the open source [http://www.jcraft.com/jorbis/ JOrbis] OGG player library. I had to slightly modify its source code to adhere the checkstyle rules used in the project and removed lots of unused codes from it. When the application will support custom campaigns, it will allow custom music/sound playback from .ogg or .wav files.
 
-March 7. 2009
+*March 7. 2009*
   * Created a package for the newest version of the program. Now, along with the JAR file, I've put the source code into a ZIP file. As the program evolves, unfortunately, the default 64 MB memory for double-clicked JAR programs becomes too sort. There are several options:
     * Create/use a command line script with -Xmx128M parameter
     * Change the JAR file extension assignment and include the -Xmx128M parameter
 
-February 19. 2009
+*February 19. 2009*
   * Thanks to Open-IG and a new wide screen monitor, I was able to find two bugs in the latest JDK regarding the new D3D rendering. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6801614 and http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6804860 for further details as soon as they are available.
 
-February 3. 2009
+*February 3. 2009*
 
   * Due some strange rendering behavior in 6u11 I strongly advise to use 6u7 on Windows for running Open-IG. The strange rendering occurs when the game windows are resized to a very large size (>1500 pixels). On these resolutions, the graphics gets misplaced, the dotted lines get garbled. Possible reason might be in the new D3D rendering pipeline (or just my videocard driver is too old).
 
-January 28. 2009
+*January 28. 2009*
 
   * Made some enhancements in audio, screen switching and on information screen.
 
-January 19. 2009
+*January 19. 2009*
 
   * Updated the !AnimPlay utility. Now it allows to stop the playback, and resize the playback window.
 
-January 18. 2009
+*January 18. 2009*
 
   * Fixed some minor issues in the !AnimPlay utility.
   * Created a demonstration application to show the current state of the game.
