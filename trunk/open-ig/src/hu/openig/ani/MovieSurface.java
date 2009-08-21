@@ -51,6 +51,8 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 	private MovieSurface.ScalingMode scalingMode = ScalingMode.KEEP_ASPECT;
 	/** The interpolation method for stretched images. */
 	private ImageInterpolation interpolation = ImageInterpolation.NONE;
+	/** Center the image in no-scaling mode? */
+	private boolean center = true;
 	/**
 	 * Returns the back buffer which is safe to draw to at any time.
 	 * The get should be initiated by the party who is supplying the images.
@@ -145,7 +147,13 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 				if (interpolation != ImageInterpolation.NONE) {
 					g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, interpolation.hint);
 				}
-				g2.drawImage(frontbuffer, 0, 0, null);
+				int x = 0;
+				int y = 0;
+				if (center && scalingMode == ScalingMode.NONE) {
+					x = (getWidth() - frontbuffer.getWidth()) / 2;
+					y = (getHeight() - frontbuffer.getHeight()) / 2;
+				}
+				g2.drawImage(frontbuffer, x, y, null);
 			}
 		} finally {
 			swapLock.unlock();
@@ -156,11 +164,25 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 	 */
 	public void setInterpolation(ImageInterpolation interpolation) {
 		this.interpolation = interpolation;
+		repaint();
 	}
 	/**
 	 * @return the interpolation
 	 */
 	public ImageInterpolation getInterpolation() {
 		return interpolation;
+	}
+	/**
+	 * @param center the center to set
+	 */
+	public void setCenter(boolean center) {
+		this.center = center;
+		repaint();
+	}
+	/**
+	 * @return the center
+	 */
+	public boolean isCenter() {
+		return center;
 	}
 }

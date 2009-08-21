@@ -11,12 +11,13 @@ import hu.openig.ani.GifSequenceWriter;
 import hu.openig.ani.MovieSurface;
 import hu.openig.ani.ProgressCallback;
 import hu.openig.ani.SpidyAniDecoder;
+import hu.openig.ani.MovieSurface.ScalingMode;
 import hu.openig.ani.SpidyAniDecoder.SpidyAniCallback;
 import hu.openig.sound.AudioThread;
 
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Window;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -35,20 +37,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
 import javax.imageio.ImageIO;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JProgressBar;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -59,33 +58,35 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public final class AnimPlay {
 	/** The frame form the images. */
-	private static JFrame frame;
+	static JFrame frame;
+	/** The playlist. */
+	static AnimPlayList playList;
 	/** The label for the player. */
-	private static MovieSurface imageLabel;
+	static MovieSurface imageLabel;
 	/** The menu item for open. */
-	private static JMenuItem menuOpen;
+	static JMenuItem menuOpen;
 	/** The menu item for open. */
-	private static JMenuItem menuStop;
+	static JMenuItem menuStop;
 	/** The replay current item. */
-	private static JMenuItem menuReplay;
+	static JMenuItem menuReplay;
 	/** Save the animation as GIF. */
-	private static JMenuItem saveAsGif;
+	static JMenuItem saveAsGif;
 	/** Save the animation as WAV. */
-	private static JMenuItem saveAsWav;
+	static JMenuItem saveAsWav;
 	/** Save the animation as AVI. */
-	private static JMenuItem saveAsAvi;
+	static JMenuItem saveAsAvi;
 	/**
 	 * Save frames as PNG images.
 	 */
-	private static JMenuItem saveAsPng;
+	static JMenuItem saveAsPng;
 	/** The last opened file directory. */
-	private static File lastPath;
+	static File lastPath;
 	/** The last opened file directory. */
-	private static File lastSavePath;
+	static File lastSavePath;
 	/** Stop the playback. */
-	private static volatile boolean stop;
+	static volatile boolean stop;
 	/** Current file. */
-	private static volatile File current;
+	static volatile File current;
 	/** Private constructor. */
 	private AnimPlay() {
 		// utility program
@@ -95,7 +96,11 @@ public final class AnimPlay {
 	 * the exceptions. The exceptions will be ignored.
 	 * @param r the runnable to pass along
 	 */
-	private static void swingInvokeAndWait(final Runnable r) {
+	static void swingInvokeAndWait(final Runnable r) {
+		if (SwingUtilities.isEventDispatchThread()) {
+			r.run();
+			return;
+		}
 		try {
 			SwingUtilities.invokeAndWait(r);
 		} catch (InterruptedException ex) {
@@ -108,7 +113,7 @@ public final class AnimPlay {
 	 * Create the player's frame.
 	 * @param f the file that will be played
 	 */
-	private static void createFrame(final File f) {
+	static void createFrame(final File f) {
 		swingInvokeAndWait(new Runnable() {
 			@Override
 			public void run() {
@@ -121,9 +126,10 @@ public final class AnimPlay {
 					frame.setResizable(true);
 					JMenuBar mb = new JMenuBar();
 					frame.setJMenuBar(mb);
+					
 					JMenu file = new JMenu("File");
 					menuOpen = new JMenuItem("Open...");
-					menuOpen.setEnabled(false);
+					menuOpen.setEnabled(true);
 					menuOpen.setAccelerator(KeyStroke.getKeyStroke("A"));
 					menuOpen.addActionListener(new ActionListener() {
 						@Override
@@ -134,18 +140,7 @@ public final class AnimPlay {
 								menuReplay.setEnabled(current != null);
 								menuStop.setEnabled(false);
 							} else {
-								current = new File(file);
-								lastPath = current.getParentFile();
-								Thread t = new Thread(new Runnable() {
-									@Override
-									public void run() {
-										playFile(current);
-									}
-								});
-								t.start();
-								menuOpen.setEnabled(false);
-								menuReplay.setEnabled(false);
-								menuStop.setEnabled(true);
+								doPlayFile(file);
 							}
 						}
 					});
@@ -166,12 +161,15 @@ public final class AnimPlay {
 								menuOpen.setEnabled(false);
 								menuReplay.setEnabled(false);
 								menuStop.setEnabled(true);
+								saveAsGif.setEnabled(true);
+								saveAsPng.setEnabled(true);
+								saveAsWav.setEnabled(true);
 							}
 						}
 					});
 					menuStop = new JMenuItem("Stop");
 					menuStop.setAccelerator(KeyStroke.getKeyStroke("S"));
-					menuStop.setEnabled(true);
+					menuStop.setEnabled(false);
 					menuStop.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -181,14 +179,20 @@ public final class AnimPlay {
 					
 					saveAsGif = new JMenuItem("Save as animated GIF...");
 					saveAsGif.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsGif(); } });
+					saveAsGif.setEnabled(false);
+					
 					saveAsPng = new JMenuItem("Save as PNGs...");
+					saveAsPng.setEnabled(false);
 					saveAsPng.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsPng(); } });
+					
 					saveAsWav = new JMenuItem("Save as WAV...");
+					saveAsWav.setEnabled(false);
 					saveAsWav.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsWav(); } });
+					
 					saveAsAvi = new JMenuItem("Save as AVI...");
 					saveAsAvi.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsAvi(); } });
 					saveAsAvi.setEnabled(false);
-					
+
 					file.add(menuOpen);
 					file.add(menuReplay);
 					file.add(menuStop);
@@ -196,12 +200,102 @@ public final class AnimPlay {
 					file.add(saveAsGif);
 					file.add(saveAsPng);
 					file.add(saveAsWav);
-					file.add(saveAsAvi);
+//					file.add(saveAsAvi);
 					mb.add(file);
+					
+					JMenu view = new JMenu("View");
+					JRadioButtonMenuItem keepAspect = new JRadioButtonMenuItem("Keep aspect", true);
+					setAL(keepAspect, "setKeepAspect", null);
+					JRadioButtonMenuItem fitWindow = new JRadioButtonMenuItem("Fit window");
+					setAL(fitWindow, "setFitWindow", null);
+					JRadioButtonMenuItem noscale = new JRadioButtonMenuItem("No scaling");
+					setAL(noscale, "setNoScale", null);
+					
+					JMenuItem showPlayList = new JMenuItem("Show playlist");
+					setAL(showPlayList, "showPlayList", null);
+					
+					ButtonGroup bg = new ButtonGroup();
+					bg.add(keepAspect);
+					bg.add(fitWindow);
+					bg.add(noscale);
+					
+					view.add(keepAspect);
+					view.add(fitWindow);
+					view.add(noscale);
+					view.addSeparator();
+					view.add(showPlayList);
+					
+					mb.add(view);
+					frame.setSize(400, 300);
+					frame.setLocationRelativeTo(null);
 				}
 				frame.setTitle(String.format("Playing: %s", f));
 				frame.setVisible(true);
-				//frame.pack();
+				
+				if (playList == null) {
+					playList = new AnimPlayList(lastPath);
+					playList.setLocation(frame.getX() - playList.getWidth() - 5, frame.getY());
+					playList.setVisible(true);
+				}
+				
+			}
+		});
+	}
+	/** Displays the playlist window. */
+	static void showPlayList() {
+		playList.setLocation(frame.getX() - playList.getWidth() - 5, frame.getY());
+		playList.setVisible(true);
+	}
+	/**
+	 * Set playback scaling mode to keep aspect.
+	 */
+	static void setKeepAspect() {
+		imageLabel.setScalingMode(ScalingMode.KEEP_ASPECT);
+	}
+	/** Set scaling mode to fit window. */
+	static void setFitWindow() {
+		imageLabel.setScalingMode(ScalingMode.WINDOW_SIZE);
+	}
+	/** Set scaling mode to none. */
+	static void setNoScale() {
+		imageLabel.setScalingMode(ScalingMode.NONE);
+	}
+	/**
+	 * Sets a reflective action listener to the given abstract button. for convinience.
+	 * @param c the abstract button
+	 * @param action the method name within AnimPlay
+	 * @param o the target object or null for AnimPlay itself
+	 */
+	static void setAL(AbstractButton c, final String action, final Object o) {
+		c.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Method m =  (o != null ? o.getClass() : AnimPlay.class).getDeclaredMethod(action, ActionEvent.class);
+					m.invoke(o, e);
+				} catch (NoSuchMethodException e1) {
+				} catch (SecurityException e1) {
+					e1.printStackTrace();
+				} catch (IllegalAccessException e1) {
+					e1.printStackTrace();
+				} catch (IllegalArgumentException e1) {
+					e1.printStackTrace();
+				} catch (InvocationTargetException e1) {
+					e1.printStackTrace();
+				}
+				try {
+					Method m = (o != null ? o.getClass() : AnimPlay.class).getDeclaredMethod(action);
+					m.invoke(o);
+				} catch (NoSuchMethodException e1) {
+				} catch (SecurityException e1) {
+					e1.printStackTrace();
+				} catch (IllegalAccessException e1) {
+					e1.printStackTrace();
+				} catch (IllegalArgumentException e1) {
+					e1.printStackTrace();
+				} catch (InvocationTargetException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 	}
@@ -209,7 +303,7 @@ public final class AnimPlay {
 	 * Show a file open dialog.
 	 * @return the selected file;
 	 */
-	private static String showOpenDialog() {
+	static String showOpenDialog() {
 		JFileChooser jfc = new JFileChooser(lastPath);
 		jfc.setFileFilter(new FileNameExtensionFilter("ANI files", "ANI"));
 		if (jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
@@ -346,99 +440,19 @@ public final class AnimPlay {
 			}
 			/** Re-enable controls on either stop or finish outcome. */
 			private void done() {
-				stop = false;
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
 						menuOpen.setEnabled(true);
 						menuReplay.setEnabled(true);
 						menuStop.setEnabled(false);
+						stop = false;
 					}
 				});
 			}
 		};
 		createFrame(f);
 		SpidyAniDecoder.decodeLoop(callback);
-	}
-	/**
-	 * The progress indicator dialog.
-	 * @author karnokd
-	 */
-	static class ProgressFrame extends JDialog implements ActionListener {
-		/** Serial version. */
-		private static final long serialVersionUID = -537904934073232256L;
-		/** The progress bar. */
-		private JProgressBar bar;
-		/** The progress label. */
-		private JLabel label;
-		/** The cancel button. */
-		private JButton cancel;
-		/** The operation was cancelled. */
-		private volatile boolean cancelled;
-		/**
-		 * Constructor. Sets the dialog's title. 
-		 * @param title the title
-		 * @param owner the owner
-		 */
-		public ProgressFrame(String title, Window owner) {
-			super(owner, title);
-			setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-			setModalityType(ModalityType.APPLICATION_MODAL);
-			bar = new JProgressBar();
-			label = new JLabel();
-			cancel = new JButton("Cancel");
-			cancel.addActionListener(this);
-			Container c = getContentPane();
-			GroupLayout gl = new GroupLayout(c);
-			c.setLayout(gl);
-			gl.setAutoCreateContainerGaps(true);
-			gl.setAutoCreateGaps(true);
-			
-			gl.setHorizontalGroup(
-				gl.createParallelGroup(Alignment.CENTER)
-				.addComponent(bar)
-				.addComponent(label)
-				.addComponent(cancel)
-			);
-			gl.setVerticalGroup(
-				gl.createSequentialGroup()
-				.addComponent(bar)
-				.addComponent(label)
-				.addComponent(cancel)
-			);
-			setSize(350, 150);
-			setLocationRelativeTo(owner);
-		}
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			cancelled = true;
-		}
-		/**
-		 * Set the progress bar's maximum value.
-		 * @param max the maximum value
-		 */
-		public void setMax(int max) {
-			bar.setMaximum(max);
-		}
-		/**
-		 * Update the progress bar's current value.
-		 * @param value the current value
-		 * @param text the text to display in label
-		 */
-		public void setCurrent(int value, String text) {
-			bar.setValue(value);
-			label.setText(text);
-		}
-		/**
-		 * Was the operation cancelled by the user?
-		 * @return the cancellation status
-		 */
-		public boolean isCancelled() {
-			return cancelled;
-		}
 	}
 	/**
 	 * Save animation as GIF. 
@@ -507,12 +521,23 @@ public final class AnimPlay {
 		}
 		final File sel = fc.getSelectedFile();
 		lastSavePath = sel.getParentFile();
-		final ProgressFrame pf = new ProgressFrame("Save as WAV: " + sel, frame);
 		
+		saveAsWavWorker(current, sel, true, frame);
+	}
+	/**
+	 * Save the selected file's audio as Wave.
+	 * @param what the file to use as input
+	 * @param target the target output filename
+	 * @param modal show the dialog as modal?
+	 * @param parent the parent frame
+	 * @return the worker
+	 */
+	static SwingWorker<Void, Void> saveAsWavWorker(final File what, final File target, boolean modal, JFrame parent) {
+		final ProgressFrame pf = new ProgressFrame("Save as WAV: " + target, parent);
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 			@Override
 			protected Void doInBackground() throws Exception {
-				transcodeToWav(current.getAbsolutePath(), sel.getAbsolutePath(), new ProgressCallback() {
+				transcodeToWav(what.getAbsolutePath(), target.getAbsolutePath(), new ProgressCallback() {
 					@Override
 					public void progress(final int value, final int max) {
 						SwingUtilities.invokeLater(new Runnable() {
@@ -542,7 +567,9 @@ public final class AnimPlay {
 			}
 		};
 		worker.execute();
+		pf.setModalityType(modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
 		pf.setVisible(true);
+		return worker;
 	}
 	/**
 	 * Save animation as Wav.
@@ -559,12 +586,23 @@ public final class AnimPlay {
 		}
 		final File sel = fc.getSelectedFile();
 		lastSavePath = sel.getParentFile();
-		final ProgressFrame pf = new ProgressFrame("Save as PNG: " + sel, frame);
 		
+		saveAsPNGWorker(current, sel, true, frame);
+	}
+	/**
+	 * Worker for save as PNG.
+	 * @param what the file to convert
+	 * @param target the target filename
+	 * @param modal show the progress as a modal dialog?
+	 * @param parent the parent frame
+	 * @return the worker
+	 */
+	static SwingWorker<Void, Void> saveAsPNGWorker(final File what, final File target, boolean modal, JFrame parent) {
+		final ProgressFrame pf = new ProgressFrame("Save as PNG: " + target, parent);
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 			@Override
 			protected Void doInBackground() throws Exception {
-				transcodeToPng(current.getAbsolutePath(), sel.getAbsolutePath(), new ProgressCallback() {
+				transcodeToPng(what.getAbsolutePath(), target.getAbsolutePath(), new ProgressCallback() {
 					@Override
 					public void progress(final int value, final int max) {
 						SwingUtilities.invokeLater(new Runnable() {
@@ -594,7 +632,9 @@ public final class AnimPlay {
 			}
 		};
 		worker.execute();
+		pf.setModalityType(modal ? ModalityType.APPLICATION_MODAL : ModalityType.MODELESS);
 		pf.setVisible(true);
+		return worker;
 	}
 	/**
 	 * Save animation as AVI.
@@ -877,26 +917,37 @@ public final class AnimPlay {
 		SpidyAniDecoder.decodeLoop(callback);
 	}
 	/**
-	 * Main program. Accepts 1 optional argument: the file name to play.
+	 * Main program. no arguments whatsoever.
 	 * @param args the arguments
 	 * @throws IOException ignored
 	 */
 	public static void main(String[] args) throws IOException {
-		String filename = null;
-		if (args.length == 0) {
-			lastPath = new File("c:/games/ighu");
-			lastSavePath = lastPath;
-			filename = showOpenDialog();
-		} else {
-			filename = args[0];
+		lastPath = new File("d:\\games\\ighu");
+		if (!lastPath.exists()) {
+			lastPath = new File(".");
 		}
-		// the number of images per second
-		if (filename != null) {
-			current = new File(filename);
-			lastPath = current.getParentFile();
-			lastSavePath = lastPath;
-			playFile(current);
-		}
+		createFrame(lastPath);
+	}
+	/**
+	 * Play the given filename and set menu settings accordingly.
+	 * @param file the file to play
+	 */
+	static void doPlayFile(String file) {
+		current = new File(file);
+		lastPath = current.getParentFile();
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				playFile(current);
+			}
+		});
+		t.start();
+		menuOpen.setEnabled(false);
+		menuReplay.setEnabled(false);
+		menuStop.setEnabled(true);
+		saveAsGif.setEnabled(true);
+		saveAsPng.setEnabled(true);
+		saveAsWav.setEnabled(true);
 	}
 
 }
