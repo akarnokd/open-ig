@@ -228,9 +228,9 @@ public final class AnimPlay {
 					mb.add(view);
 					frame.setSize(400, 300);
 					frame.setLocationRelativeTo(null);
+					frame.setVisible(true);
 				}
 				frame.setTitle(String.format("Playing: %s", f));
-				frame.setVisible(true);
 				
 				if (playList == null) {
 					playList = new AnimPlayList(lastPath);
@@ -404,7 +404,7 @@ public final class AnimPlay {
 								if (imageLabel.getWidth() < fwidth || imageLabel.getHeight() < fheight) {
 									imageLabel.setPreferredSize(new Dimension(fwidth, fheight));
 									frame.pack();
-									frame.setLocationRelativeTo(null);
+//									frame.setLocationRelativeTo(null);
 								}
 							}
 							
@@ -723,6 +723,11 @@ public final class AnimPlay {
 					@Override
 					public void finished() {
 						try {
+							// data size must be even!
+							if (byteCount % 2 == 1) {
+								rf.write(0x80);
+								byteCount++;
+							}
 							rf.seek(size1);
 							rf.writeInt(rotate(byteCount + 36));
 							rf.seek(size2);
@@ -870,6 +875,7 @@ public final class AnimPlay {
 					progress.progress(frameCount, maxFrameCount);
 				}
 				final BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				img.setAccelerationPriority(0.0f);
 				img.setRGB(0, 0, width, height, image, 0, width);
 				
 				final int frameIndex = frameCount;
@@ -877,7 +883,7 @@ public final class AnimPlay {
 				exec.submit(new Runnable() {
 					@Override
 					public void run() {
-						File f = new File(outFile + String.format("-%05d", frameIndex) + ".png");
+						File f = new File(String.format("%s-%05d.png", outFile, frameIndex));
 						try {
 							ImageIO.write(img, "png", f);
 						} catch (IOException e) {

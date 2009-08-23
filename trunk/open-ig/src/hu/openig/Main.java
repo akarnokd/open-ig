@@ -84,7 +84,7 @@ public class Main extends JFrame {
 	/** */
 	private static final long serialVersionUID = 6922932910697940684L;
 	/** Version string. */
-	public static final String VERSION = "0.70 Alpha"; // TODO reach 1.0!
+	public static final String VERSION = "0.72"; // TODO reach 1.0!
 	/** The game resource manager. */
 	GameResourceManager grm;
 	/** The user interface sounds. */
@@ -141,6 +141,8 @@ public class Main extends JFrame {
 	private static final int SCREEN_REFRESH_TIME = 2500;
 	/** The production renderer. */
 	private ProductionRenderer productionRenderer;
+	/** Flag to indicate the game should instantly jump into the starmap and mute all sounds for testing purposes. */
+	private boolean testMode;
 	/**
 	 * Initialize resources from the given root directory.
 	 * @param resMap the resource mapper
@@ -192,14 +194,17 @@ public class Main extends JFrame {
 		moviePlayer.setBackground(Color.BLACK);
 		optionsRenderer.setVisible(false);
 		player = new Player(moviePlayer);
-		
-		player.setMasterGain(0);
-		uiSounds.setMasterGain(0);
-		optionsRenderer.setAudioVolume(0); // TODO fix during testing
-		optionsRenderer.setMusicVolume(0); // TODO fix during testing
-		music.setMute(true);
-		uiSounds.setMute(true);
-		player.setMute(true);
+
+		// in test mode, mute all annoying sounds
+		if (testMode) {
+			player.setMasterGain(0);
+			uiSounds.setMasterGain(0);
+			optionsRenderer.setAudioVolume(0); // TODO fix during testing
+			optionsRenderer.setMusicVolume(0); // TODO fix during testing
+			music.setMute(true);
+			uiSounds.setMute(true);
+			player.setMute(true);
+		}
 		
 		screens = new JComponent[] {
 			starmapRenderer, planetRenderer, researchRenderer, productionRenderer, informationRenderer, mainmenuRenderer, moviePlayer, optionsRenderer
@@ -304,12 +309,14 @@ public class Main extends JFrame {
 		//GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(this);
 		setVisible(true);
 		// switch to a particular screen.
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				onStarmap();
-			}
-		});
+		if (testMode) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					onStarmap();
+				}
+			});
+		}
 		screenRefreshTimer = new Timer(SCREEN_REFRESH_TIME, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -827,10 +834,19 @@ public class Main extends JFrame {
 			return;
 		}
 		final String language = determineIGLanguage(resMap.get("MAIN.EXE"));
+		boolean lTestMode = false;
+		for (String s : args) {
+			if (s.compareToIgnoreCase("-test") == 0) {
+				lTestMode = true;
+				break;
+			}
+		}
+		final boolean fTestMode = lTestMode;
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				Main m = new Main();
+				m.testMode = fTestMode;
 				m.initialize(resMap, language);
 			}
 		});
