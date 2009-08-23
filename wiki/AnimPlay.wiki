@@ -23,4 +23,6 @@ With version 0.5 I added a playlist window too, which can search any ANI files f
 
 You can use the {{{SPACE}}} or {{{ENTER}}} keys to start playing the selected video (note, that {{{ENTER}}} behaves a bit excellish as it moves the selection to the next line and that entry will be played). You can use {{{S}}} to stop the current playback or {{{D}}} to replay the last playback.
 
+This playlist window allows the user to select multiple entries and start a combined PNG &amp; WAV extraction - this way you can convert videos in batch mode. You can specify the output target directory and whether the files should be placed in their respectively named subdirectories.
+
 <img src='http://karnokd.uw.hu/images/open-ig-animplaylist.png'>
