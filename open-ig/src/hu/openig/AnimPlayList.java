@@ -246,8 +246,15 @@ public class AnimPlayList extends JFrame {
 	 * @param e the keyboard event
 	 */
 	protected void doKeyTyped(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+		if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_ENTER) {
 			doPlaySelected();
+			e.consume();
+		} else
+		if (e.getKeyCode() == KeyEvent.VK_S) {
+			AnimPlay.menuStop.doClick();
+		} else
+		if (e.getKeyCode() == KeyEvent.VK_D) {
+			AnimPlay.menuReplay.doClick();
 		}
 	}
 	/**
@@ -298,12 +305,14 @@ public class AnimPlayList extends JFrame {
 	 */
 	void processFiles(File dir, List<File> files) {
 		File[] fa = dir.listFiles();
-		for (File f : fa) {
-			if (f.isDirectory() && f.canRead()) {
-				processFiles(f, files);
-			} else
-			if (f.isFile() && f.canRead() && f.getName().toUpperCase().endsWith(".ANI")) {
-				files.add(f);
+		if (fa != null) {
+			for (File f : fa) {
+				if (f.isDirectory() && f.canRead()) {
+					processFiles(f, files);
+				} else
+				if (f.isFile() && f.canRead() && f.getName().toUpperCase().endsWith(".ANI")) {
+					files.add(f);
+				}
 			}
 		}
 	}

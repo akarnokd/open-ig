@@ -41,21 +41,24 @@ public class ResourceMapper {
 	 * @param dir the directory to search and map
 	 */
 	private void search(File dir) {
-		for (File f : dir.listFiles()) {
-			if (f.isDirectory()) {
-				search(f);
-			} else
-			if (f.isFile()) {
-				String newFile = f.getAbsolutePath().toUpperCase();
-				int idx = newFile.indexOf(root);
-				if (idx >= 0) {
-					newFile = newFile.substring(idx + root.length()).replaceAll("\\\\", "/");
-					if (newFile.startsWith("/")) {
-						newFile = newFile.substring(1);
-					}
-					File old = files.put(newFile, f);
-					if (old != null) {
-						System.err.printf("Duplicate filename: %s (%d) and %s (%d)%n", f.getAbsolutePath(), f.length(), old.getAbsolutePath(), old.length());
+		File[] fileList = dir.listFiles();
+		if (fileList != null) {
+			for (File f : fileList) {
+				if (f.isDirectory()) {
+					search(f);
+				} else
+				if (f.isFile()) {
+					String newFile = f.getAbsolutePath().toUpperCase();
+					int idx = newFile.indexOf(root);
+					if (idx >= 0) {
+						newFile = newFile.substring(idx + root.length()).replaceAll("\\\\", "/");
+						if (newFile.startsWith("/")) {
+							newFile = newFile.substring(1);
+						}
+						File old = files.put(newFile, f);
+						if (old != null) {
+							System.err.printf("Duplicate filename: %s (%d) and %s (%d)%n", f.getAbsolutePath(), f.length(), old.getAbsolutePath(), old.length());
+						}
 					}
 				}
 			}
