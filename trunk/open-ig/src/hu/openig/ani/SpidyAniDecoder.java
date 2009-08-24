@@ -120,6 +120,8 @@ public final class SpidyAniDecoder {
 			int imageHeight = 0;
 			int dst = 0;
 			int audioCount = 0;
+			int audioLength = 0;
+			int imageIndex = 0;
 			Algorithm alg = saf.getAlgorithm();
 			try {
 				while (!callback.isStopped() && !Thread.currentThread().isInterrupted()) {
@@ -128,6 +130,7 @@ public final class SpidyAniDecoder {
 						palette = (Palette)b;
 					} else
 					if (b instanceof Sound) {
+						audioLength += b.data.length;
 						callback.audioData(b.data);
 						audioCount++;
 					} else
@@ -156,6 +159,7 @@ public final class SpidyAniDecoder {
 							callback.imageData(rawImage);
 							imageHeight = 0;
 							dst = 0;
+							imageIndex++;
 						}
 					}
 					
@@ -163,6 +167,19 @@ public final class SpidyAniDecoder {
 			} catch (EOFException ex) {
 				// we reached the end of data
 			}
+			int excessFrames = (int)Math.floor((audioLength / 22050.0 - (imageIndex - delay) / fps) * fps);
+			int totalExcess = excessFrames;
+			int[] alpha = rawImage.clone();
+			// we have the last raw image, fade it out to blackness
+			while (!callback.isStopped() && !Thread.currentThread().isInterrupted() && excessFrames > 0) {
+				float factor = excessFrames * 1.0f / totalExcess;
+				for (int i = 0; i < alpha.length; i ++) {
+					alpha[i] = makeAlpha(rawImage[i], factor);
+				}
+				callback.imageData(alpha);
+				excessFrames--;
+			}
+			
 			if (callback.isStopped() || Thread.currentThread().isInterrupted()) {
 				callback.stopped();
 			} else {
@@ -178,5 +195,18 @@ public final class SpidyAniDecoder {
 				// ignored
 			}
 		}
+	}
+	/**
+	 * Increase or decrease the distance from the black
+	 * (e.g fade into white or black).
+	 * @param original the original color
+	 * @param alpha the percentage to change
+	 * @return the modified color
+	 */
+	static int makeAlpha(int original, double alpha) {
+		return (original & 0xFF000000) |
+		((int)((original & 0xFF0000) * alpha) & 0xFF0000) |
+		((int)((original & 0xFF00) * alpha) & 0xFF00) |
+		((int)((original & 0xFF) * alpha) & 0xFF);
 	}
 }
