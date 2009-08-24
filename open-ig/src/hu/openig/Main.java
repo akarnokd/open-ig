@@ -1216,6 +1216,14 @@ public class Main extends JFrame {
 		starmapRenderer.scrollToLogical(gameWorld.player.ownPlanets.iterator().next().getPoint());
 		achievementRenderer.enqueueAchievement("Welcome to Open Imperium Galactica");
 		achievementRenderer.enqueueAchievement("Good luck");
+		
+//		for (GamePlanet p : gameWorld.planets) {
+//			int rc = 0;
+//			Set<GameBuilding> gb = p.buildingKinds.get("Science");
+//			if (gb != null && gb.size() > 1) {
+//				System.out.printf(p.name);
+//			}
+//		}
 	}
 	/**
 	 * Diagnostic method to set the player know all planets in the game world.
