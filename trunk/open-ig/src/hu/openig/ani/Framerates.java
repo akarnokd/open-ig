@@ -43,6 +43,13 @@ public class Framerates {
 			this.fps = fps;
 			this.delay = delay;
 		}
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String toString() {
+			return String.format("fps = %.3f, delay = %d", fps, delay);
+		}
 	}
 	/** The default rates. */
 	private static final Rates DEFAULT_RATES = new Rates(17.89, 0);
@@ -86,7 +93,7 @@ public class Framerates {
 	/**
 	 * Get the rates for a filename and type.
 	 * @param filename the file name
-	 * @param type the type index
+	 * @param type the type index, 1 = hungarian, 2 = english
 	 * @return the rates, not null
 	 */
 	public Rates getRates(String filename, int type) {
