@@ -30,7 +30,7 @@ Please see this page later on or the [Documentation documentation] page for what
 == System requirements ==
  * Java JRE/JDK 1.6.X or 1.7.X
  * Any operating system with graphical user interface
- * 128MB RAM
+ * 160MB RAM
  * 2-15 MB for Open-IG, 1.2 GB for original Imperium Galactica
  * 1 GHz P4 or equivalent (estimated)
  * Optional: GPU with DirectX/OpenGL hardware acceleration
@@ -87,7 +87,7 @@ Apart from the tons of missing screens and behaviors, there are few deliberate c
   * Scrolling the starmap and planet is done using right-mouse pan. In the original game, you had to hold the right mouse button near the edges of the view to scroll it. I think this is a bit cumbersome for a modern UI game.
   * Zoom is done with CTRL+Mouse Wheel. You can also left/right click on the zoom button to zoom in/out. The original game, you could click on the zoom button, or switch to zoom mode and click on the starmap. This is understandable, as in 1996 there were not many mouses with scroll wheel.
 
-See the [Documentation documentation] wiki page.
+See the [Documentation documentation] and [NewFeatures new features] wiki page.
 
 = Development =
 
