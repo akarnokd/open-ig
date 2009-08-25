@@ -153,6 +153,11 @@ public class Main extends JFrame {
 		this.language = language;
 		setTitle("Open Imperium Galactica (" + VERSION + ")");
 		setBackground(Color.BLACK);
+		try {
+			setIconImage(ImageIO.read(getClass().getResource("/hu/openig/res/open-ig-logo.png")));
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 		fadeTimer = new Timer(FADE_TIME, null);
 		
 		exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
