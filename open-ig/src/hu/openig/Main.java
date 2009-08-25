@@ -210,6 +210,9 @@ public class Main extends JFrame {
 			music.setMute(true);
 			uiSounds.setMute(true);
 			player.setMute(true);
+		} else {
+			optionsRenderer.setAudioVolume(1); // TODO fix during testing
+			optionsRenderer.setMusicVolume(1); // TODO fix during testing
 		}
 		
 		screens = new JComponent[] {
