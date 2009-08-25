@@ -65,6 +65,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
