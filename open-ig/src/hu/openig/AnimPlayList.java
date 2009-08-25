@@ -408,9 +408,10 @@ public class AnimPlayList extends JFrame {
 		pf.setMax(idxs.length);
 		final String targetStr = saveDirectory.getText();
 		final boolean usesubdirs = useSubdirs.isSelected();
-    	SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+		// FIXME workaround for Java 7 single threaded swingworker pool - deadlocks if one swingworker starts another swingworker and waits for the other's result
+    	Thread t = new Thread("SaveAsPNGWAV") {
 			@Override
-			protected Void doInBackground() throws Exception {
+			public void run() {
 				for (int i = 0; i < files.length; i++) {
 					if (pf.isCancelled()) {
 						break;
@@ -443,22 +444,18 @@ public class AnimPlayList extends JFrame {
 					} catch (Throwable t) {
 						t.printStackTrace();
 					}
+					// delay window close a bit further
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							pf.dispose();
+						}
+					});
 				}
-				return null;
-			}
-			@Override
-			protected void done() {
-				// delay window close a bit further
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						pf.dispose();
-					}
-				});
 			}
     	};
-    	worker.execute();
 		pf.setModalityType(ModalityType.MODELESS);
     	pf.setVisible(true);
+    	t.start();
     }
 }
