@@ -11,12 +11,12 @@
 		<type value="2" fps="17.89" delay="0"/>
 	</ani>
 	<ani name="BLOCK1.ANI">
-		<type value="1" fps="17.89" delay="2"/>
-		<type value="2" fps="17.89" delay="18"/>
+		<type value="1" fps="16.103" delay="2"/>
+		<type value="2" fps="16.103" delay="2"/>
 	</ani>
 	<ani name="BLOCK23.ANI">
-		<type value="1" fps="17.89" delay="2"/>
-		<type value="2" fps="17.89" delay="2"/>
+		<type value="1" fps="17.89" delay="0"/>
+		<type value="2" fps="17.89" delay="0"/>
 	</ani>
 	<ani name="BLOCK4.ANI">
 		<type value="1" fps="17.89" delay="0"/>

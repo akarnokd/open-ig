@@ -137,10 +137,6 @@
         <module name="NPathComplexity">
             <property name="severity" value="ignore"/>
         </module>
-        <module name="RegexpHeader">
-            <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="GE header"/>
-            <property name="header" value="^/\*$\n^ \* Copyright 2008-2009, David Karnok.*$\n^ \* The file is part of the Open Imperium Galactica.*$"/>
-        </module>
     </module>
     <module name="PackageHtml">
         <property name="severity" value="ignore"/>
@@ -152,4 +148,8 @@
     <module name="StrictDuplicateCode">
         <property name="severity" value="ignore"/>
     </module>
+        <module name="RegexpHeader">
+            <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="GE header"/>
+            <property name="header" value="^/\*$\n^ \* Copyright 2008-2009, David Karnok.*$\n^ \* The file is part of the Open Imperium Galactica.*$"/>
+        </module>
 </module>

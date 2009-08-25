@@ -288,7 +288,7 @@ public class AnimPlayList extends JFrame {
 				model.fireTableDataChanged();
 				scan.setEnabled(true);
 				autoResizeColWidth(table, model);
-				pack();
+//				pack();
 				setCount();
 			}
 		};

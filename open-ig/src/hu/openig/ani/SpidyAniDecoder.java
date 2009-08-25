@@ -204,9 +204,9 @@ public final class SpidyAniDecoder {
 	 * @return the modified color
 	 */
 	static int makeAlpha(int original, double alpha) {
-		return (original & 0xFF000000) |
-		((int)((original & 0xFF0000) * alpha) & 0xFF0000) |
-		((int)((original & 0xFF00) * alpha) & 0xFF00) |
-		((int)((original & 0xFF) * alpha) & 0xFF);
+		return (original & 0xFF000000) 
+		| ((int)((original & 0xFF0000) * alpha) & 0xFF0000) 
+		| ((int)((original & 0xFF00) * alpha) & 0xFF00) 
+		| ((int)((original & 0xFF) * alpha) & 0xFF);
 	}
 }
