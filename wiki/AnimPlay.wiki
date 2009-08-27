@@ -1,5 +1,5 @@
 #summary Documentation of the AnimPlay utility
-#labels Documentation
+#labels Documentation,Featured
 
 = Introduction =
 
