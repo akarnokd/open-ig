@@ -1,5 +1,29 @@
 #summary News archive.
 
+*August 24. 2009*
+
+I uploaded two in-game videos from the current version: <a href='http://www.youtube.com/watch?v=cpZPm0AZPT8'>Howto build a Hospital Planet to support 500 000+ people</a> and a more <a href='http://www.youtube.com/watch?v=nSJ3vZCLfE4'>simplistic feature demo</a>. I advise to watch it in HD and on full screen.
+
+*August 21. 2009*
+
+I put the four wife videos on youtube: <a href='http://www.youtube.com/watch?v=CxofBDueRWk'>1</a>, <a href='http://www.youtube.com/watch?v=kbm1-bq4eRg'>2</a>, <a href='http://www.youtube.com/watch?v=_9oHxEJsbkE'>3</a>, <a href='http://www.youtube.com/watch?v=7kRQde8hufs'>4</a>. Unfortunately, youtube has decreased the video quality - but the hungarian sound acting is what matters!
+
+I also updated the AnimPlay to have a playlist automatically filled in from the ANI files from a given directory, plus added a batch conversion to PNGs & WAV files. Just select the files you want to convert and hit the button. If you have multiple CPUs, the conversion will be even faster!
+
+*July 9. 2009*
+
+Unfortunately, I have to do my regular job and don't have time for Open-IG at the moment. It could take 2-3 months to develop it further. Good news is that I have now a pretty solid view about how I will implement the simulation part. Until then, the biggest unfinished properties are:
+
+  * Equipment management screen
+  * Space combat - ships, rotation, projectiles, etc.
+  * Surface combat - tanks, radar, damage system
+  * Diplomacy
+  * Bridge + wandering around in the ship
+  * Technology dependant rules - radar level implied detail display, fleet visibility, planet discovery
+  * AI
+  * Achievement system and display
+  * Multiplayer
+
 *June 19. 2009*
 
   * Added the ability to place/remove items into the production lines and adjust the production properties.
