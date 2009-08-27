@@ -1,4 +1,7 @@
 #summary Description of the usage of the application.
+#labels Deprecated
+
+Deprecated
 
 = Features of open-ig-0.67.jar =
   * Added information screen details for Planets, Colony info and Fleets.
