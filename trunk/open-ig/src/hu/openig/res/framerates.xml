@@ -646,4 +646,31 @@
 	<ani name="DIGI155.ANI">
 		<type value="1" fps="17.89" delay="32"/>
 	</ani>
+	<ani name="K0_01.ANI">
+		<type value="3" fps="17.89" delay="42"/>
+	</ani>
+	<ani name="K0_21.ANI">
+		<type value="3" fps="17.89" delay="13"/>
+	</ani>
+	<ani name="K0_22.ANI">
+		<type value="3" fps="17.89" delay="3"/>
+	</ani>
+	<ani name="K0_32.ANI">
+		<type value="3" fps="17.89" delay="4"/>
+	</ani>
+	<ani name="K1_01.ANI">
+		<type value="3" fps="17.89" delay="34"/>
+	</ani>
+	<ani name="K1_11.ANI">
+		<type value="3" fps="17.89" delay="3"/>
+	</ani>
+	<ani name="K1_12.ANI">
+		<type value="3" fps="17.89" delay="2"/>
+	</ani>
+	<ani name="K4_01.ANI">
+		<type value="3" fps="17.89" delay="16"/>
+	</ani>
+	<ani name="K4_02.ANI">
+		<type value="3" fps="17.89" delay="8"/>
+	</ani>
 </framerates>
