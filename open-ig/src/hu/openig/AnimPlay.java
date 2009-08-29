@@ -930,7 +930,10 @@ public final class AnimPlay {
 	public static void main(String[] args) throws IOException {
 		lastPath = new File("d:\\games\\ighu");
 		if (!lastPath.exists()) {
-			lastPath = new File(".");
+			lastPath = new File("c:\\games\\ighu");
+			if (!lastPath.exists()) {
+				lastPath = new File(".");
+			}
 		}
 		createFrame(lastPath);
 	}
