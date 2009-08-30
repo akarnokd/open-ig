@@ -293,7 +293,7 @@ public final class ImgCompress {
 		for (int i = 0; i < numLength; i++) {
 			b.append('#');
 		}
-		System.out.printf("%s-%s%s%n", imageSeqName, b, imageSeqExt);
+//		System.out.printf("%s-%s%s%n", imageSeqName, b, imageSeqExt);
 		int i = 0;
 		int w = 0;
 		int h = 0;
@@ -310,16 +310,16 @@ public final class ImgCompress {
 			}
 			originalSizes += src.length();
 			i++;
-			if (i % 100 == 0) {
-				System.out.println("|");
-			} else
-			if (i % 10 == 0) {
-				System.out.print("*");
-			} else {
-				System.out.print(".");
-			}
+//			if (i % 100 == 0) {
+//				System.out.println("|");
+//			} else
+//			if (i % 10 == 0) {
+//				System.out.print("*");
+//			} else {
+//				System.out.print(".");
+//			}
 		}
-		System.out.println();
+//		System.out.println();
 		int cnt = i;
 		// store common palette
 		File dst = new File(imageSeqName);
@@ -355,7 +355,8 @@ public final class ImgCompress {
 			if (!imagePal.keySet().equals(currentMap.keySet())) {
 				out.write('P'); // indication for palette segment
 				if (imagePal.size() > 255) {
-					throw new AssertionError("Too much color: " + imagePal.size());
+					System.err.println("Too much color: " + imagePal.size() + " @ " + src);
+					break;
 				}
 				out.write(imagePal.size());
 				Map<Integer, Integer> reverse = new HashMap<Integer, Integer>(imagePal.size() + 1);
@@ -386,18 +387,18 @@ public final class ImgCompress {
 			}
 			lastRaw = raw;
 			i++;
-			if (i % 100 == 0) {
-				System.out.println("|");
-			} else
-			if (i % 10 == 0) {
-				System.out.print("*");
-			} else {
-				System.out.print(".");
-			}
+//			if (i % 100 == 0) {
+//				System.out.println("|");
+//			} else
+//			if (i % 10 == 0) {
+//				System.out.print("*");
+//			} else {
+//				System.out.print(".");
+//			}
 		}
 		out.write('X');
 		out.close();
-		System.out.printf("%nOriginal: %d, Compressed: %d, Ratio: %.3f%n", originalSizes, dst.length(), (dst.length() * 100d / originalSizes));
+		System.out.printf("%n%s | Original: %d, Compressed: %d, Ratio: %.3f%n", dst.getName(), originalSizes, dst.length(), (dst.length() * 100d / originalSizes));
 	}
 	/**
 	 * Adds the given raw audio data into the output stream starting with a length int then the raw data.
@@ -406,7 +407,7 @@ public final class ImgCompress {
 	 * @throws IOException if an IO error occurs
 	 */
 	private static void includeAudio(OutputStream out, File audio) throws IOException {
-		System.out.printf("%s", audio);
+//		System.out.printf("%s", audio);
 		if (audio.canRead()) {
 			byte[] data = IOUtils.load(audio);
 			int len = 0;
@@ -422,13 +423,13 @@ public final class ImgCompress {
 				}
 			}
 			if (len > 0) {
-				System.out.printf(": Audio: %d - %d%n", offset, len);
+//				System.out.printf(": Audio: %d - %d%n", offset, len);
 				writeLEInt(out, len);
 				out.write(data, offset, len);
 				return;
 			}
 		}
-		System.out.println(": No audio");
+//		System.out.println(": No audio");
 		out.write(0);
 		out.write(0);
 		out.write(0);
