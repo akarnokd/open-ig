@@ -1,0 +1,8 @@
+#summary The description of the modernized ANI_2009 video format
+
+= Introduction =
+
+Similar to the ANI_Format described, but has a slightly different format along with a different compression scheme, resulting in a 10-20% smaller video files.
+
+= Details =
+
