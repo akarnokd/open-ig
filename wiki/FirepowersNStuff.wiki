@@ -1,0 +1,50 @@
+#summary Collection of firepower and various other game numeric properties
+#labels Featured,Phase-Design
+
+= Introduction =
+
+This page collects firepower, hitpoints and other numerical properties of the original game to be used in Open-IG as metadata.
+
+= Human Fleet Firepowers =
+
+== Weapons ==
+===lézer===
+1. 5<br>
+2. 10<br>
+3. 15<br>
+4. 20<br>
+===ágyúk===
+Ion 25<br>
+Plazma 30<br>
+Részecske 35<br>
+Mezon 40<br>
+===rakéták===
+1. 10<br>
+2. 15<br>
+Többfejes 20<br>
+===bombák===
+1. nincs információ<br>
+2. nincs információ<br>
+Vírus nincs információ<br>
+==Hajók maximális tűzereje==
+===Vadász===
+1. 5<br>
+2. 10<br>
+3. 20<br>
+4. 20<br>
+5. 30<br>
+6. 30<br>
+===Romboló===
+1. 6db lézer slot, lézer 3 a maximum = 90<br>
+2. 1*6+1*8db lézer slot, lézer 4 = 280<br>
+3. 2*9 db lézer slot, lézer 3 a maximum, 4 db ágyú slot, részecske a maximum = 270 + 140 = 410<br>
+===Cirkáló===
+1. 8 db lézer slot, lézer 4, 2 darab ágyú slot, maximum részecske a maximum = 120 + 70 = 190<br>
+2. 13 db lézer slot, lézer 4, 1*5(maximum ion)+1*3(maximum plazma)db ágyú slot = 260 + 125 + 90 = 475 <br>
+3. 16 db lézer slot, lézer 3, 2*10 ágyú slot, mezon, 4 rakéta slot, többfejes = 320 + 400 + 400 + 80 = 1200<br>
+===Csatahajó===
+1. 14 db lézer slot, lézer 4, 8 db ágyú slot, plazma, 6 db rakéta slot, többfejes = 280 + 240 + 120 = 640<br>
+2. 15 db ágyú slot, mezon, 2*6 db rakéta slot, többfejes = 600 + 120 + 120 = 840<br>
+3. 20 db lézer slot, lézer 4, 2*10 ágyú slot, mezon, 14 db rakéta slot, többfejes = 400 + 400 + 400 + 280 = 1480<br>
+===Zálóshajó===
+Thorin 24 db lézer slot, lézer 4, 2*11 db ágyú slot, mezon, 12 db rakéta slot, többfejes = 480 + 880 + 240 = 1600<br>
