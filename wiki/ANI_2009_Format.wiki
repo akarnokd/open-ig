@@ -5,3 +5,15 @@
 Similar to the [ANI_Format ANI_Format] described, but has a slightly different format along with a different compression scheme, resulting in a 10-20% smaller video files.
 
 = Details =
+
+The new file format is as follows:
+
+|| *Offset* || *Length* || *Description* ||
+|| 0x0000 || int32 || The image width (W). Little endian. ||
+|| 0x0004 || int32 || The image height (H). Little endian. ||
+|| 0x0008 || int32 || Number of frames (N). Little endian. ||
+|| 0x000C || int32 || Frames per second * 1000. Little endian. ||
+|| 0x0010 || 768 bytes || Palette, with R,G,B byte values ||
+|| 0x0310 || int32 || Audio length in bytes (AL) or zero if no audio in this file. Little endian. ||
+|| 0x0314 || AL || The raw audio data. Probably 22050/8/1 unsigned ||
+|| 0x0314 + AL || W*H*N || The uncompressed frame datas. ||
