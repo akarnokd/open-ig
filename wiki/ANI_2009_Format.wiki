@@ -16,7 +16,7 @@ The new file format is as follows:
 
 Starting from offset {{{0x0010}}} multiple sections are possible. Each section starts with an indicator byte, then a section specific data and length
 
-  * {{{P}}} indicates a palette section: 768 bytes of R, G, B data.
+  * {{{P}}} indicates a palette section: following byte (M) indicates the number of byte sized R, G, B triplets following.
   * {{{A}}} indicates an audio section: the following int32 little endian indicates the number of raw bytes of the sound, possible format is 22050/8/1 unsigned
   * {{{I}}} image section, contains W `*` H bytes of 256 color image.
   * {{{X}}} end of file indicator, no more bytes
