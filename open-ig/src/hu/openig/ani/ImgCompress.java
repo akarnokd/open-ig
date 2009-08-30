@@ -56,23 +56,27 @@ public final class ImgCompress {
 	/**
 	 * Remaps the raw image int array to raw image byte array using the color map.
 	 * Note that colorMap should have &lt;= 256 entries
-	 * @param rawImage
-	 * @param colorMap
-	 * @return
+	 * @param rawImage the raw RGB array
+	 * @param colorMap the color remapper from color to index
+	 * @return the index map
 	 */
 	static byte[] remapToBytes(int[] rawImage, Map<Integer, Integer> colorMap) {
 		byte[] result = new byte[rawImage.length];
 		for (int i = 0; i < rawImage.length; i++) {
-			result[i] = colorMap.get(rawImage[i]).byteValue();
+			if (rawImage[i] != -1) {
+				result[i] = colorMap.get(rawImage[i]).byteValue();
+			} else {
+				result[i] = -1;
+			}
 		}
 		return result;
 	}
 	/**
 	 * Reorder bytes as they were a subsequent of square * square segments of the original image.
-	 * @param raw
+	 * @param raw the raw data
 	 * @param scan the scan line length in bytes
-	 * @param squareSize
-	 * @return
+	 * @param squareSize the square size
+	 * @return the reordered byte data
 	 */
 	static byte[] reorderSquared(byte[] raw, int scan, int squareSize) {
 		byte[] result = new byte[raw.length];
@@ -97,7 +101,7 @@ public final class ImgCompress {
 	 * @param raw the reordered image
 	 * @param scan the original scan length
 	 * @param squareSize the size of the square segments
-	 * @return
+	 * @return the unreordered bytes
 	 */
 	static byte[] unreorderSquared(byte[] raw, int scan, int squareSize) {
 		byte[] result = new byte[raw.length];
@@ -132,6 +136,11 @@ public final class ImgCompress {
 		
 		return result;
 	}
+	/**
+	 * Undifferentiate the given data.
+	 * @param raw the raw data
+	 * @return the undifferentiated data
+	 */
 	static byte[] undifferentiate(byte[] raw) {
 		byte[] result = new byte[raw.length];
 		
@@ -143,7 +152,10 @@ public final class ImgCompress {
 		
 		return result;
 	}
-	/** Test various compression methods on one image. */
+	/** 
+	 * Test various compression methods on one image. 
+	 * @throws IOException on error
+	 */
 	static void testMethods() throws IOException {
 		File src = new File("c:/games/ighu/youtube/digi060e.ani/digi060e.ani-00000a.png");
 		
@@ -269,33 +281,34 @@ public final class ImgCompress {
 				bout.size() * 100f / r1.length);
 		// --------------------------------------------------------------------
 	}
+	/**
+	 * Differential encode the given named and postfixed sequence of images or audio.
+	 * @param imageSeqName the path and name prefix of the images
+	 * @param numLength the length of sequence counter
+	 * @param imageSeqExt the image extension
+	 * @throws IOException if an I/O error occurs
+	 */
 	static void doDifferentialAniCoding(String imageSeqName, int numLength, String imageSeqExt) throws IOException {
-		System.out.printf("%s-%d%s%n", imageSeqName, numLength, imageSeqExt);
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < numLength; i++) {
+			b.append('#');
+		}
+		System.out.printf("%s-%s%s%n", imageSeqName, b, imageSeqExt);
 		int i = 0;
 		int w = 0;
 		int h = 0;
 		long originalSizes = 0;
-		Map<Integer, Integer> palette = new HashMap<Integer, Integer>();
-		Map<Integer, Integer> paletteIndex = new HashMap<Integer, Integer>();
 		while (true) {
 			File src = new File(String.format("%s-%0" + numLength + "d%s", imageSeqName, i, imageSeqExt));
 			if (!src.canRead()) {
 				break;
 			}
-			originalSizes += src.length();
-			BufferedImage img = ImageIO.read(src);
-			w = img.getWidth();
-			h = img.getHeight();
-			int[] raw = new int[img.getWidth() * img.getHeight()];
-			img.getRGB(0, 0, img.getWidth(), img.getHeight(), raw, 0, img.getWidth());
-			int cidx = 0;
-			for (int j = 0; j < raw.length; j++) {
-				if (!palette.containsKey(raw[j])) {
-					palette.put(raw[j], cidx);
-					paletteIndex.put(cidx, raw[j]);
-					cidx++;
-				}
+			if (originalSizes == 0) {
+				BufferedImage img = ImageIO.read(src);
+				w = img.getWidth();
+				h = img.getHeight();
 			}
+			originalSizes += src.length();
 			i++;
 			if (i % 100 == 0) {
 				System.out.println("|");
@@ -306,8 +319,8 @@ public final class ImgCompress {
 				System.out.print(".");
 			}
 		}
+		System.out.println();
 		int cnt = i;
-		System.out.printf("%nColors: %d%n", palette.size());
 		// store common palette
 		File dst = new File(imageSeqName);
 		String n = dst.getName();
@@ -319,17 +332,14 @@ public final class ImgCompress {
 		writeLEInt(out, cnt);
 		Rates r = new Framerates().getRates(new File(imageSeqName).getName(), 1);
 		writeLEInt(out, (int)(r.fps * 1000)); // number of frames per second * 1000
-		for (int j = 0; j < paletteIndex.size(); j++) {
-			int c = paletteIndex.get(j);
-			out.write((c & 0xFF0000) >> 16);
-			out.write((c & 0xFF00) >> 8);
-			out.write((c & 0xFF) >> 0);
-		}
+		
+		out.write('A'); // indication for audio segment
 		File audio = new File(imageSeqName + ".wav");
 		includeAudio(out, audio);
 		// begin differential store
-		byte[] lastRaw8 = null;
+		int[] lastRaw = null;
 		i = 0;
+		Map<Integer, Integer> currentMap = new HashMap<Integer, Integer>(256);
 		while (true) {
 			File src = new File(String.format("%s-%0" + numLength + "d%s", imageSeqName, i, imageSeqExt));
 			if (!src.canRead()) {
@@ -340,36 +350,60 @@ public final class ImgCompress {
 			h = img.getHeight();
 			int[] raw = new int[img.getWidth() * img.getHeight()];
 			img.getRGB(0, 0, img.getWidth(), img.getHeight(), raw, 0, img.getWidth());
-			byte[] raw8 = remapToBytes(raw, palette);
-			if (lastRaw8 == null) {
-				out.write(raw8);
+			
+			Map<Integer, Integer> imagePal = indexColors(raw);
+			if (!imagePal.keySet().equals(currentMap.keySet())) {
+				out.write('P'); // indication for palette segment
+				if (imagePal.size() > 255) {
+					throw new AssertionError("Too much color: " + imagePal.size());
+				}
+				out.write(imagePal.size());
+				Map<Integer, Integer> reverse = new HashMap<Integer, Integer>(imagePal.size() + 1);
+				for (Map.Entry<Integer, Integer> e : imagePal.entrySet()) {
+					reverse.put(e.getValue(), e.getKey());
+				}
+				for (int j = 0; j < reverse.size(); j++) {
+					int c = reverse.get(j);
+					out.write((c & 0xFF0000) >> 16);
+					out.write((c & 0xFF00) >> 8);
+					out.write((c & 0xFF) >> 0);
+				}
+				currentMap = imagePal;
+			}
+			out.write('I'); // indication for image segment
+			
+			if (lastRaw == null) {
+				out.write(remapToBytes(raw, currentMap));
 			} else {
-				byte[] altered = raw8.clone();
+				int[] altered = raw.clone();
 				// replace the pixels which are the same on both images with 255
-				for (int j = 0; j < raw8.length; j++) {
-					if (raw8[j] == lastRaw8[j]) {
+				for (int j = 0; j < raw.length; j++) {
+					if (raw[j] == lastRaw[j]) {
 						altered[j] = -1;
 					}
 				}
-				out.write(altered);
+				out.write(remapToBytes(altered, currentMap));
 			}
-			lastRaw8 = raw8;
+			lastRaw = raw;
 			i++;
 			if (i % 100 == 0) {
 				System.out.println("|");
 			} else
 			if (i % 10 == 0) {
 				System.out.print("*");
-			} else
-			System.out.print(".");
-		}		
+			} else {
+				System.out.print(".");
+			}
+		}
+		out.write('X');
 		out.close();
 		System.out.printf("%nOriginal: %d, Compressed: %d, Ratio: %.3f%n", originalSizes, dst.length(), (dst.length() * 100d / originalSizes));
 	}
 	/**
-	 * Adds the given raw audio data into the output stream starting with a length int then the raw data
-	 * @param out
-	 * @param audio
+	 * Adds the given raw audio data into the output stream starting with a length int then the raw data.
+	 * @param out the output stream
+	 * @param audio the audio file
+	 * @throws IOException if an IO error occurs
 	 */
 	private static void includeAudio(OutputStream out, File audio) throws IOException {
 		System.out.printf("%s", audio);
@@ -400,6 +434,12 @@ public final class ImgCompress {
 		out.write(0);
 		out.write(0);
 	}
+	/**
+	 * Writes an integer value in little endian order into the output stream.
+	 * @param out the output stream
+	 * @param value the value
+	 * @throws IOException if an error occurs
+	 */
 	static void writeLEInt(OutputStream out, int value) throws IOException {
 		out.write((value & 0xFF) >> 0);
 		out.write((value & 0xFF00) >> 8);
@@ -408,26 +448,32 @@ public final class ImgCompress {
 	}
 	/**
 	 * Main program.
-	 * @param args
+	 * @param args the arguments
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
+		
 //		testMethods();
-		File[] files = new File("c:/games/ighu/youtube").listFiles();
+		File[] files = new File("c:/games/youtube").listFiles();
 		if (files != null) {
-			ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+			int n = Runtime.getRuntime().availableProcessors();
+			ExecutorService exec = Executors.newFixedThreadPool(n);
 			for (File f : files) {
+				if (!f.isDirectory()) {
+					continue;
+				}
 				final String name = f.getAbsolutePath() + "/" + f.getName();
 				exec.submit(new Runnable() {
 					@Override
 					public void run() {
 						try {
 							doDifferentialAniCoding(name, 5, ".png");
-						} catch (IOException e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
 				});
+//				break;
 			}
 			exec.shutdown();
 		}

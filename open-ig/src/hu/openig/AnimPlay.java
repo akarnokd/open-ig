@@ -811,7 +811,7 @@ public final class AnimPlay {
 	 */
 	public static void transcodeToPng(final String infile, final String outFile, final ProgressCallback progress) {
 		// use all available processors for PNG encoding, but not more for the queue
-		final int n = 1 /* Runtime.getRuntime().availableProcessors() */;
+		final int n = Runtime.getRuntime().availableProcessors();
 		final ExecutorService exec = new ThreadPoolExecutor(
 				n, /* Runtime.getRuntime().availableProcessors() ,*/ 
 				n, /* Runtime.getRuntime().availableProcessors() ,*/
@@ -874,7 +874,7 @@ public final class AnimPlay {
 				if (progress != null) {
 					progress.progress(frameCount, maxFrameCount);
 				}
-				final BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				final BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 				img.setAccelerationPriority(0.0f);
 				img.setRGB(0, 0, width, height, image, 0, width);
 				
@@ -885,7 +885,7 @@ public final class AnimPlay {
 					public void run() {
 						File f = new File(String.format("%s-%05d.png", outFile, frameIndex));
 						try {
-							ImageIO.write(img, "png", f);
+							ImageIO.write(img, "BMP", f); // FIXME: for less CPU usage but more disk space
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
