@@ -192,7 +192,7 @@ public class AnimPlayList extends JFrame {
 		count = new JLabel("Entries: 0");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
-		saveDirectory = new JTextField(root.getAbsolutePath());
+		saveDirectory = new JTextField(root.getAbsolutePath() + "/savedanim");
 		savePNGWAV = new JButton("Save PNG & WAV");
 		AnimPlay.setAL(savePNGWAV, "doSavePNGWAV", this);
 		

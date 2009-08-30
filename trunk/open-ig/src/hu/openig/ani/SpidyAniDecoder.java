@@ -116,7 +116,10 @@ public final class SpidyAniDecoder {
 			callback.initialize(saf.getWidth(), saf.getHeight(), saf.getFrameCount(), saf.getLanguageCode(), fps, delay);
 			PaletteDecoder palette = null;
 			// the raw image container used when decoding the image
-			int[] rawImage = new int[saf.getWidth() * saf.getHeight()];
+			// Fix: It seems when the file contains a palette change, the differential coder retains the color index
+			// between the frames, but not the color itself.
+			byte[] rawImage = new byte[saf.getWidth() * saf.getHeight()];
+			int[] rgbImage = new int[saf.getWidth() * saf.getHeight()];
 			int imageHeight = 0;
 			int dst = 0;
 			int audioCount = 0;
@@ -145,18 +148,23 @@ public final class SpidyAniDecoder {
 						}
 						switch (alg) {
 						case RLE_TYPE_1:
-							int newDst = RLE.decompress1(rleInput, 0, rawImage, dst, palette);
+							int newDst = RLE.decompress1(rleInput, 0, rawImage, dst);
 							dst = newDst;
 							break;
 						case RLE_TYPE_2:
-							newDst = RLE.decompress2(rleInput, 0, rawImage, dst, palette);
+							newDst = RLE.decompress2(rleInput, 0, rawImage, dst);
 							dst = newDst;
 							break;
 						default:
 						}
 						// we reached the number of subimages per frame?
 						if (imageHeight >= saf.getHeight()) {
-							callback.imageData(rawImage);
+							// FIX: only the last step is to apply the current palette to transcode to RGBA
+							// hopefully, the palette switch anomalies disappear
+							for (int i = 0; i < rgbImage.length; i++) {
+								rgbImage[i] = palette.getColor(rawImage[i] & 0xFF);
+							}
+							callback.imageData(rgbImage);
 							imageHeight = 0;
 							dst = 0;
 							imageIndex++;
@@ -169,7 +177,7 @@ public final class SpidyAniDecoder {
 			}
 			int excessFrames = (int)Math.floor((audioLength / 22050.0 - (imageIndex - delay) / fps) * fps);
 			int totalExcess = excessFrames;
-			int[] alpha = rawImage.clone();
+			int[] alpha = rgbImage.clone();
 			// we have the last raw image, fade it out to blackness
 			while (!callback.isStopped() && !Thread.currentThread().isInterrupted() && excessFrames > 0) {
 				float factor = excessFrames * 1.0f / totalExcess;
