@@ -18,7 +18,7 @@ Starting from offset {{{0x0010}}} multiple sections are possible. Each section s
 
   * {{{P}}} indicates a palette section: 768 bytes of R, G, B data.
   * {{{A}}} indicates an audio section: the following int32 little endian indicates the number of raw bytes of the sound, possible format is 22050/8/1 unsigned
-  * {{{I}}} image section, contains W * H bytes of 256 color image.
+  * {{{I}}} image section, contains W `*` H bytes of 256 color image.
   * {{{X}}} end of file indicator, no more bytes
 
 The format is not final, as there are considerations going on to compress the audio data separately using OGG or simple differential scheme.
