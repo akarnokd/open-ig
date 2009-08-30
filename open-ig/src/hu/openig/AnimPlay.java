@@ -811,11 +811,12 @@ public final class AnimPlay {
 	 */
 	public static void transcodeToPng(final String infile, final String outFile, final ProgressCallback progress) {
 		// use all available processors for PNG encoding, but not more for the queue
+		final int n = 1 /* Runtime.getRuntime().availableProcessors() */;
 		final ExecutorService exec = new ThreadPoolExecutor(
-				Runtime.getRuntime().availableProcessors(), 
-				Runtime.getRuntime().availableProcessors(),
-				0, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<Runnable>(Runtime.getRuntime().availableProcessors()),
+				n, /* Runtime.getRuntime().availableProcessors() ,*/ 
+				n, /* Runtime.getRuntime().availableProcessors() ,*/
+				2000, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>(n),
 				// in case of rejection, simply do a blocking put onto the queue
 				new RejectedExecutionHandler() {
 					@Override
@@ -824,7 +825,6 @@ public final class AnimPlay {
 						try {
 							executor.getQueue().put(r);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
