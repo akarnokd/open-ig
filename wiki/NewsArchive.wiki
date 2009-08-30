@@ -1,5 +1,13 @@
 #summary News archive.
 
+*August 27. 2009*
+
+I have created a new package with version 0.72 . It contains the movie player fix for missing fade-outs and sound cuts. Plus, it contains an *experimental* feature: music. Of course, if you put any OGG file into the game's {{{MUSIC}}} directory, Open-IG is still happy to play it for you - in an uncontrollable, pseudo-random order. I plan to introduce an in-game or out-of-game (e.g plain old Java Swing window) jukebox sooner or later.
+
+*August 25. 2009*
+
+Upgraded the SpidyAniDecoder to insert an end fade-out into those videos, which have longer audio track than the number of frames/fps would indicate - similarly as the original game played it back. Because this 'hack' is in the decoder, all use places should automatically benefit from it: the in-game videos, the AnimPlay (now upgraded to 0.55) playback and conversion.
+
 *August 24. 2009*
 
 I uploaded two in-game videos from the current version: <a href='http://www.youtube.com/watch?v=cpZPm0AZPT8'>Howto build a Hospital Planet to support 500 000+ people</a> and a more <a href='http://www.youtube.com/watch?v=nSJ3vZCLfE4'>simplistic feature demo</a>. I advise to watch it in HD and on full screen.
