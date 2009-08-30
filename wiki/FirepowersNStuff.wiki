@@ -7,6 +7,10 @@ This page collects firepower, hitpoints and other numerical properties of the or
 
 = Human Fleet Firepowers =
 
+Thanks to *gump891202* from Youtube.
+
+In addition, it seems, all alien fighters are only one type and have *5* as firepower. I will have to balance it out if I want to create an any-race skirmish/network game.
+
 == Weapons ==
 ===lézer===
 1. 5<br>
