@@ -1,4 +1,7 @@
 #summary Game Credits
+
+Verification and merge in progress...
+
 <h1>Imperium Galactica</h1>
 <h2>Videók</h2>
 <h3>Színészek (<a href='http://groups.google.com/group/open-ig-discussion/browse_thread/thread/af29a08c3d873bf2'>thx</a> Harrach Gergely)</h3>
