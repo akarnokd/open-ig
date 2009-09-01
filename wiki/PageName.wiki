@@ -1,0 +1,33 @@
+#summary Game Credits
+<div align='center'>
+<h1>Imperium Galactica</h1>
+<h2>Videók</h2>
+<h3>Színkronhangok</h3>
+<p><a href=''>Johnson</a> - Miákovits Péter</p>
+<p><a href=''>Ezredes</a> - ?</p>
+<p><a href=''>Doktornő</a> - Györgyi Anna</p>
+<p><a href=''>Másodtiszt</a> - ?</p>
+<p><a href=''>Kelly</a> - ?</p>
+<p><a href=''>Brian</a> - ?</p>
+<p><a href=''>Doktor</a> - ?</p>
+<p><a href=''>Aszisztensnő</a> - ?</p>
+<p><a href=''>Robotikus doktor</a> - ?</p>
+<p><a href=''>Naxos kormányzó</a> - ?</p>
+<p><a href=''>San Sterling kormányzó</a> - ?</p>
+<p><a href=''>New Caroline kormányzó</a> - ?</p>
+<p><a href=''>Kormányzó</a> - ?</p>
+<p><a href=''>Kormányzó</a> - ?</p>
+<p><a href=''>Kereskedő</a> - ?</p>
+<p><a href=''>Kereskedő</a> - ?</p>
+<p><a href=''>Kereskedő</a> - ?</p>
+<p><a href=''>Kereskedő</a> - ?</p>
+<p><a href=''>Kereskedő</a> - ?</p>
+<p><a href=''>Kereskedő</a> - ?</p>
+<p><a href=''>Kereskedő</a> - ?</p>
+<p><a href=''>Kereskedő</a> - ?</p>
+<h1>Open Imperium Galactica</h1>
+<h2>Segítők</h2>
+<h3>Színészek beazonosítása</h3>
+<p>gharrah</p>
+<p>Góz Tamás - <a href='http://magyarszinkron.hu'>magyarszinkron.hu</p>
+</div>
