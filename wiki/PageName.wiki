@@ -2,7 +2,7 @@
 <h1>Imperium Galactica</h1>
 <h2>Videók</h2>
 <h3>Színkronhangok</h3>
-<p><a href='http://www.youtube.com/watch?v=9RTtg4Pj2ek'>Johnson</a> - Miákovits Péter</p>
+<p><a href='http://www.youtube.com/watch?v=9RTtg4Pj2ek'>Johnson</a> - Minárovits Péter</p>
 <p><a href='http://www.youtube.com/watch?v=BXzdOfQdzIY'>Ezredes</a> - ?</p>
 <p><a href='http://www.youtube.com/watch?v=RyUPhEdbjU8'>Doktornő</a> - Györgyi Anna</p>
 <p><a href='http://www.youtube.com/watch?v=7kRQde8hufs'>Feleség</a> - ?</p>
