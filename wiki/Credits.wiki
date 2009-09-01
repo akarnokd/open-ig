@@ -1,7 +1,30 @@
 #summary Game Credits
 <h1>Imperium Galactica</h1>
 <h2>Videók</h2>
-<h3>Színkronhangok</h3>
+<h3>Színészek (<a href='http://groups.google.com/group/open-ig-discussion/browse_thread/thread/af29a08c3d873bf2'>thx</a> Harrach Gergely)</h3>
+<p>Dave Johnson  - Gáti Gábor</p>
+<p>Douglas ezredes - Schneider Albert</p>
+<p>Politológus - Hámori Gyula</p>
+<p>Hadi tanácsadó - Csák Tamás</p>
+<p>Genetikus - Keiko Oyama</p>
+<p>Feleség - File Gabriella</p>
+<p>Johny - Kaló Ádám</p>
+<p>Thorin parancsnoka - Stenczel András</p> 
+<p>Destroyer másodtisztje - Tóth Attila</p>
+<p>Cruiser mádostisztje - Magyar Árpád</p>
+<p>Kelly - Albert Péter</p>
+<p>Technikusok - Hajtó Aurél, Pintér József</p> 
+<p>Pszichologusnő - László Edina</p>
+<p>Pilóták - Schubert Béla, Bognár Győző</p> 
+<p>Reinhart professzor - Gőz István</p>
+<p>Doktor - Puskás Tivadar</p>
+<p>Asszisztensnő - Bognár Gyöngyvér</p>
+<p>Intro - Bognár Gyöngyvér</p>
+<p>Rádiós - Kis István</p>
+<p>Kormányzók - Wampetich Nándor, Kőmíves Sándor, Miskolci Sándor, Kovács</p>
+<p>Miklós, Nagy János, Kerekes Lajos</p>
+<p>Kereskedők - Rózsa Károly, Nemes Tibor, Deschán Lajos, Hollósy Miklós, Szarvas István, Kis Józsefné, Murga György</p>
+<h3>Szinkronhangok</h3>
 <p><a href='http://www.youtube.com/watch?v=9RTtg4Pj2ek'>Johnson</a> - Minárovits Péter</p>
 <p><a href='http://www.youtube.com/watch?v=BXzdOfQdzIY'>Ezredes</a> - ?</p>
 <p><a href='http://www.youtube.com/watch?v=RyUPhEdbjU8'>Doktornő</a> - Györgyi Anna</p>
@@ -32,7 +55,7 @@
 <h1>Open Imperium Galactica</h1>
 <h2>Segítők</h2>
 <h3>Színészek beazonosítása</h3>
-<p>gharrah</p>
+<p>Harrach Gergely</p>
 <p>Góz Tamás - <a href='http://www.magyarszinkron.hu'>magyarszinkron.hu</a></p>
 <h3>ANI visszafejtés</h3>
 <p>TCH</p>
