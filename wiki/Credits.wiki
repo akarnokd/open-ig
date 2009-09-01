@@ -12,7 +12,7 @@
 <p>Thorin parancsnoka - Stenczel András</p> 
 <p>Destroyer másodtisztje - Tóth Attila</p>
 <p>Cruiser mádostisztje - Magyar Árpád</p>
-<p>Kelly - Albert Péter</p>
+<p>Kelly - <a href='www.petronelli.hu/photos/albertp.jpg'>Albert Péter</a></p>
 <p>Technikusok - Hajtó Aurél, Pintér József</p> 
 <p>Pszichologusnő - László Edina</p>
 <p>Pilóták - Schubert Béla, Bognár Győző</p> 
