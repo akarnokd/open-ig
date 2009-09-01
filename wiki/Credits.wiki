@@ -21,8 +21,7 @@
 <p>Asszisztensnő - Bognár Gyöngyvér</p>
 <p>Intro - Bognár Gyöngyvér</p>
 <p>Rádiós - Kis István</p>
-<p>Kormányzók - Wampetich Nándor, Kőmíves Sándor, Miskolci Sándor, Kovács</p>
-<p>Miklós, Nagy János, Kerekes Lajos</p>
+<p>Kormányzók - Wampetich Nándor, Kőmíves Sándor, Miskolci Sándor, Kovács Miklós, Nagy János, Kerekes Lajos</p>
 <p>Kereskedők - Rózsa Károly, Nemes Tibor, Deschán Lajos, Hollósy Miklós, Szarvas István, Kis Józsefné, Murga György</p>
 <h3>Szinkronhangok</h3>
 <p><a href='http://www.youtube.com/watch?v=9RTtg4Pj2ek'>Johnson</a> - Minárovits Péter</p>
