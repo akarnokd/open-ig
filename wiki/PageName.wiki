@@ -33,3 +33,7 @@
 <h3>Színészek beazonosítása</h3>
 <p>gharrah</p>
 <p>Góz Tamás - <a href='http://magyarszinkron.hu'>magyarszinkron.hu</a></p>
+<h3>ANI visszafejtés</h3>
+<p>TCH</p>
+<h3>Splash képernyő</h3>
+<p>Gxy</p>
