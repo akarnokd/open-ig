@@ -1,4 +1,5 @@
 #summary Game Credits
+#labels Featured
 
 Verification and merge in progress...
 
