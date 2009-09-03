@@ -1,5 +1,5 @@
 #summary Collection of firepower and various other game numeric properties
-#labels Featured,Phase-Design
+#labels Phase-Design
 
 = Introduction =
 
