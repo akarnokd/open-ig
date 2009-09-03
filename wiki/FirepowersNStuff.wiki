@@ -55,139 +55,139 @@ Thorin 24 db lézer slot, lézer 4, 2*11 db ágyú slot, mezon, 12 db rakéta sl
 
 ==Ship-equipment configurations==
 
- || hajó típusa || slot || kapacitás (db) || engedélyezett típusok || standard
- || Cirkáló 1 || pajzsok || 1 || védőpajzs v1 || nem
- ||  ||  ||  || védőpajzs v2 || 
- ||  ||  ||  || védőpajzs v3 || 
- ||  ||  ||  || védőpajzs v4 || 
- ||  || lézerfegyverek || 8 || lézer 1 || nem
- ||  ||  ||  || lézer 2 || 
- ||  ||  ||  || lézer 3 || 
- ||  ||  ||  || lézer 4 || 
- ||  || ágyúk || 2 || ionágyú || nem
- ||  ||  ||  || plazmaágyú || 
- ||  ||  ||  || részecskeágyú || 
- ||  || radarok || 1 || radar v1 || nem
- ||  ||  ||  || radar v2 || 
- ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen
- ||  ||  ||  || hiperhajtómű v2 || 
- ||  ||  ||  || hiperhajtómű v3 || 
- ||  ||  ||  || hiperhajtómű v4 || 
- || Cirkáló 2 || pajzsok || 1 || védőpajzs v1 || nem
- ||  ||  ||  || védőpajzs v2 || 
- ||  ||  ||  || védőpajzs v3 || 
- ||  ||  ||  || védőpajzs v4 || 
- ||  || lézerfegyverek || 13 || lézer 1 || nem
- ||  ||  ||  || lézer 2 || 
- ||  ||  ||  || lézer 3 || 
- ||  ||  ||  || lézer 4 || 
- ||  || ágyúk || 3 || ionágyú || nem
- ||  ||  ||  || plazmaágyú || 
- ||  || ágyúk || 5 || ionágyú || nem
- ||  || radarok || 1 || radar v1 || nem
- ||  ||  ||  || radar v2 || 
- ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen
- ||  ||  ||  || hiperhajtómű v2 || 
- ||  ||  ||  || hiperhajtómű v3 || 
- ||  ||  ||  || hiperhajtómű v4 || 
- ||  ||  ||  || hiperhajtómű v5 || 
- || Cirkáló 3 || lézerfegyverek || 16 || lézer 1 || nem
- ||  ||  ||  || lézer 2 || 
- ||  ||  ||  || lézer 3 || 
- ||  ||  ||  || lézer 4 || 
- ||  || pajzsok || 1 || védőpajzs v2 || nem
- ||  ||  ||  || védőpajzs v3 || 
- ||  ||  ||  || védőpajzs v4 || 
- ||  || rombák || 4 || bomba v1 || nem
- ||  ||  ||  || bomba v2 || 
- ||  || rakéták || 4 || rakéta v1 || nem
- ||  ||  ||  || rakéta v2 || 
- ||  ||  ||  || többfejes rakéta || 
- ||  || ágyúk || 10 || plazmaágyú || nem
- ||  ||  ||  || részecskeágyú || 
- ||  ||  ||  || mezonágyú || 
- ||  || ágyúk || 10 || plazmaágyú || nem
- ||  ||  ||  || részecskeágyú || 
- ||  ||  ||  || mezonágyú || 
- ||  || modulok || 1 || rakétazavaró v1 || nem
- ||  ||  ||  || rakétazavaró v2 || 
- ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen
- ||  ||  ||  || hiperhajtómű v2 || 
- ||  ||  ||  || hiperhajtómű v3 || 
- ||  ||  ||  || hiperhajtómű v4 || 
- ||  ||  ||  || hiperhajtómű v5 || 
- || Romboló 1 || pajzsok || 1 || védőpajzs v1 || nem
- ||  ||  ||  || védőpajzs v2 || 
- ||  || lézerfegyverek || 6 || lézer 1 || nem
- ||  ||  ||  || lézer 2 || 
- ||  ||  ||  || lézer 3 || 
- ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen
- ||  ||  ||  || hiperhajtómű v2 || 
- || Romboló 2 || pajzsok || 1 || védőpajzs v1 || nem
- ||  ||  ||  || védőpajzs v2 || 
- ||  || lézerfegyverek || 8 || lézer 1 || nem
- ||  ||  ||  || lézer 2 || 
- ||  ||  ||  || lézer 3 || 
- ||  ||  ||  || lézer 4 || 
- ||  || lézerfegyverek || 6 || lézer 1 || nem
- ||  ||  ||  || lézer 2 || 
- ||  ||  ||  || lézer 3 || 
- ||  ||  ||  || lézer 4 || 
- ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen
- ||  ||  ||  || hiperhajtómű v2 || 
- ||  ||  ||  || hiperhajtómű v3 || 
- || Romboló 3 || radarok || 1 || radar v1 || nem
- ||  ||  ||  || radar v2 || 
- ||  || pajzsok || 1 || védőpajzs v1 || nem
- ||  ||  ||  || védőpajzs v2 || 
- ||  || lézerfegyverek || 9 || lézer 1 || nem
- ||  ||  ||  || lézer 2 || 
- ||  ||  ||  || lézer 3 || 
- ||  || lézerfegyverek || 9 || lézer 1 || nem
- ||  ||  ||  || lézer 2 || 
- ||  ||  ||  || lézer 3 || 
- ||  || ágyúk || 4 || ionágyú || nem
- ||  ||  ||  || plazmaágyú || 
- ||  ||  ||  || részecskeágyú || 
- ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen
- ||  ||  ||  || hiperhajtómű v2 || 
- ||  ||  ||  || hiperhajtómű v3 || 
- ||  ||  ||  || hiperhajtómű v4 || 
- ||  ||  ||  || hiperhajtómű v5 || 
- || Csatahajó 1 || lézerfegyverek || 14 || lézer 1 || nem
- ||  ||  ||  || lézer 2 || 
- ||  ||  ||  || lézer 3 || 
- ||  ||  ||  || lézer 4 || 
- ||  || bombák || 8 || bomba v1 || nem
- ||  ||  ||  || bomba v2 || 
- ||  || rakéták || 6 || rakéta v1 || nem
- ||  ||  ||  || rakéta v2 || 
- ||  ||  ||  || többfejes rakéta || 
- ||  || radarok || 1 || radar v1 || nem
- ||  ||  ||  || radar v2 || 
- ||  ||  ||  || radar v3 || 
- ||  || ágyúk || 8 || ionágyú || nem
- ||  ||  ||  || plazmaágyú || 
- ||  || modulok || 1 || raktármodul v1 || nem
- ||  ||  ||  || raktármodul v2 || 
- ||  || pajzsok || 1 || védőpajzs v1 || nem
- ||  ||  ||  || védőpajzs v2 || 
- ||  ||  ||  || védőpajzs v3 || 
- ||  ||  ||  || védőpajzs v4 || 
- ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen
- ||  ||  ||  || hiperhajtómű v2 || 
- ||  ||  ||  || hiperhajtómű v3 || 
- ||  ||  ||  || hiperhajtómű v4 || 
- ||  ||  ||  || hiperhajtómű v5 || 
- || Csatahajó 2 || radarok || 1 || radar v1 || nem
- ||  ||  ||  || radar v2 || 
- ||  ||  ||  || radar v3 || 
- ||  || ágyúk || 15 || ionágyú || nem
- ||  ||  ||  || plazmaágyú || 
- ||  ||  ||  || részecskeágyú || 
- ||  ||  ||  || mezonágyú || 
- ||  || modulok || 1 || raktármodul v1 || nem
- ||  ||  ||  || raktármodul v2 || 
+ || hajó típusa || slot || kapacitás (db) || engedélyezett típusok || standard ||
+ || Cirkáló 1 || pajzsok || 1 || védőpajzs v1 || nem ||
+ ||  ||  ||  || védőpajzs v2 || ||
+ ||  ||  ||  || védőpajzs v3 || ||
+ ||  ||  ||  || védőpajzs v4 || ||
+ ||  || lézerfegyverek || 8 || lézer 1 || nem ||
+ ||  ||  ||  || lézer 2 || ||
+ ||  ||  ||  || lézer 3 || ||
+ ||  ||  ||  || lézer 4 || ||
+ ||  || ágyúk || 2 || ionágyú || nem ||
+ ||  ||  ||  || plazmaágyú || ||
+ ||  ||  ||  || részecskeágyú || ||
+ ||  || radarok || 1 || radar v1 || nem ||
+ ||  ||  ||  || radar v2 || ||
+ ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen ||
+ ||  ||  ||  || hiperhajtómű v2 || ||
+ ||  ||  ||  || hiperhajtómű v3 || ||
+ ||  ||  ||  || hiperhajtómű v4 || ||
+ || Cirkáló 2 || pajzsok || 1 || védőpajzs v1 || nem ||
+ ||  ||  ||  || védőpajzs v2 || ||
+ ||  ||  ||  || védőpajzs v3 || ||
+ ||  ||  ||  || védőpajzs v4 || ||
+ ||  || lézerfegyverek || 13 || lézer 1 || nem ||
+ ||  ||  ||  || lézer 2 || ||
+ ||  ||  ||  || lézer 3 || ||
+ ||  ||  ||  || lézer 4 || ||
+ ||  || ágyúk || 3 || ionágyú || nem ||
+ ||  ||  ||  || plazmaágyú || ||
+ ||  || ágyúk || 5 || ionágyú || nem ||
+ ||  || radarok || 1 || radar v1 || nem ||
+ ||  ||  ||  || radar v2 || ||
+ ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen ||
+ ||  ||  ||  || hiperhajtómű v2 || ||
+ ||  ||  ||  || hiperhajtómű v3 || ||
+ ||  ||  ||  || hiperhajtómű v4 || ||
+ ||  ||  ||  || hiperhajtómű v5 || ||
+ || Cirkáló 3 || lézerfegyverek || 16 || lézer 1 || nem ||
+ ||  ||  ||  || lézer 2 || ||
+ ||  ||  ||  || lézer 3 || ||
+ ||  ||  ||  || lézer 4 || ||
+ ||  || pajzsok || 1 || védőpajzs v2 || nem ||
+ ||  ||  ||  || védőpajzs v3 || ||
+ ||  ||  ||  || védőpajzs v4 || ||
+ ||  || rombák || 4 || bomba v1 || nem ||
+ ||  ||  ||  || bomba v2 || ||
+ ||  || rakéták || 4 || rakéta v1 || nem ||
+ ||  ||  ||  || rakéta v2 || ||
+ ||  ||  ||  || többfejes rakéta || ||
+ ||  || ágyúk || 10 || plazmaágyú || nem ||
+ ||  ||  ||  || részecskeágyú || ||
+ ||  ||  ||  || mezonágyú || ||
+ ||  || ágyúk || 10 || plazmaágyú || nem ||
+ ||  ||  ||  || részecskeágyú || ||
+ ||  ||  ||  || mezonágyú || ||
+ ||  || modulok || 1 || rakétazavaró v1 || nem ||
+ ||  ||  ||  || rakétazavaró v2 || ||
+ ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen ||
+ ||  ||  ||  || hiperhajtómű v2 || ||
+ ||  ||  ||  || hiperhajtómű v3 || ||
+ ||  ||  ||  || hiperhajtómű v4 || ||
+ ||  ||  ||  || hiperhajtómű v5 || ||
+ || Romboló 1 || pajzsok || 1 || védőpajzs v1 || nem ||
+ ||  ||  ||  || védőpajzs v2 || ||
+ ||  || lézerfegyverek || 6 || lézer 1 || nem ||
+ ||  ||  ||  || lézer 2 || ||
+ ||  ||  ||  || lézer 3 || ||
+ ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen ||
+ ||  ||  ||  || hiperhajtómű v2 || ||
+ || Romboló 2 || pajzsok || 1 || védőpajzs v1 || nem ||
+ ||  ||  ||  || védőpajzs v2 || ||
+ ||  || lézerfegyverek || 8 || lézer 1 || nem ||
+ ||  ||  ||  || lézer 2 || ||
+ ||  ||  ||  || lézer 3 || ||
+ ||  ||  ||  || lézer 4 || ||
+ ||  || lézerfegyverek || 6 || lézer 1 || nem ||
+ ||  ||  ||  || lézer 2 || ||
+ ||  ||  ||  || lézer 3 || ||
+ ||  ||  ||  || lézer 4 || ||
+ ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen ||
+ ||  ||  ||  || hiperhajtómű v2 || ||
+ ||  ||  ||  || hiperhajtómű v3 || ||
+ || Romboló 3 || radarok || 1 || radar v1 || nem ||
+ ||  ||  ||  || radar v2 || ||
+ ||  || pajzsok || 1 || védőpajzs v1 || nem ||
+ ||  ||  ||  || védőpajzs v2 || ||
+ ||  || lézerfegyverek || 9 || lézer 1 || nem ||
+ ||  ||  ||  || lézer 2 || ||
+ ||  ||  ||  || lézer 3 || ||
+ ||  || lézerfegyverek || 9 || lézer 1 || nem ||
+ ||  ||  ||  || lézer 2 || ||
+ ||  ||  ||  || lézer 3 || ||
+ ||  || ágyúk || 4 || ionágyú || nem ||
+ ||  ||  ||  || plazmaágyú || ||
+ ||  ||  ||  || részecskeágyú || ||
+ ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen ||
+ ||  ||  ||  || hiperhajtómű v2 || ||
+ ||  ||  ||  || hiperhajtómű v3 || ||
+ ||  ||  ||  || hiperhajtómű v4 || ||
+ ||  ||  ||  || hiperhajtómű v5 || ||
+ || Csatahajó 1 || lézerfegyverek || 14 || lézer 1 || nem ||
+ ||  ||  ||  || lézer 2 || ||
+ ||  ||  ||  || lézer 3 || ||
+ ||  ||  ||  || lézer 4 || ||
+ ||  || bombák || 8 || bomba v1 || nem ||
+ ||  ||  ||  || bomba v2 || ||
+ ||  || rakéták || 6 || rakéta v1 || nem ||
+ ||  ||  ||  || rakéta v2 || ||
+ ||  ||  ||  || többfejes rakéta || ||
+ ||  || radarok || 1 || radar v1 || nem ||
+ ||  ||  ||  || radar v2 || ||
+ ||  ||  ||  || radar v3 || ||
+ ||  || ágyúk || 8 || ionágyú || nem ||
+ ||  ||  ||  || plazmaágyú || ||
+ ||  || modulok || 1 || raktármodul v1 || nem ||
+ ||  ||  ||  || raktármodul v2 || ||
+ ||  || pajzsok || 1 || védőpajzs v1 || nem ||
+ ||  ||  ||  || védőpajzs v2 || ||
+ ||  ||  ||  || védőpajzs v3 || ||
+ ||  ||  ||  || védőpajzs v4 || ||
+ ||  || hiperhajtóművek || 1 || hiperhajtómű v1 || igen ||
+ ||  ||  ||  || hiperhajtómű v2 || ||
+ ||  ||  ||  || hiperhajtómű v3 || ||
+ ||  ||  ||  || hiperhajtómű v4 || ||
+ ||  ||  ||  || hiperhajtómű v5 || ||
+ || Csatahajó 2 || radarok || 1 || radar v1 || nem ||
+ ||  ||  ||  || radar v2 || ||
+ ||  ||  ||  || radar v3 || ||
+ ||  || ágyúk || 15 || ionágyú || nem ||
+ ||  ||  ||  || plazmaágyú || ||
+ ||  ||  ||  || részecskeágyú || ||
+ ||  ||  ||  || mezonágyú || ||
+ ||  || modulok || 1 || raktármodul v1 || nem ||
+ ||  ||  ||  || raktármodul v2 || ||
  ||  || pajzsok || 1 || védőpajzs v2 || nem ||
  ||  ||  ||  || védőpajzs v3 || ||
  ||  ||  ||  || védőpajzs v4 || ||
