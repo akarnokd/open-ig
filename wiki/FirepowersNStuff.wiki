@@ -55,6 +55,8 @@ Thorin 24 db lézer slot, lézer 4, 2*11 db ágyú slot, mezon, 12 db rakéta sl
 
 ==Ship-equipment configurations==
 
+Thanks to Harrach Gergő.
+
 || hajó típusa || slot || kapacitás (db) || engedélyezett típusok || standard ||
 || Cirkáló 1 || pajzsok || 1 || védőpajzs v1 || nem ||
 ||  ||  ||  || védőpajzs v2 || ||
