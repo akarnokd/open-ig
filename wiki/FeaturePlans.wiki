@@ -56,7 +56,7 @@ I think, there is a lot of room on the equimpent screen to have UI for this. Per
 
 The subsystem enhancement concept, however, is too strong to allow it to be unassigned. We will only know when the first real tests and usage patterns get fed back.
 
-= Achievement system =
+= Badge/Achievement system =
 
 The game is full of statistics: number of planets, income, power production, enemies destroyed, etc. I want to add some achievements for making progress in the game. Some ideas this far:
 
@@ -96,3 +96,5 @@ The game is full of statistics: number of planets, income, power production, ene
 || Admiral || You have been promoted to admiral ||
 || Grand Admiral || You have been promoted to grand admiral ||
 || Influenza no more || You successfully eliminated the source of the virus infection ||
+
+Of course, the limits for numerical achievements can change, depending on how open-ig is played (e.g maybe 10M kW for the Energizer achievement is too low or too high for a normal play?)
