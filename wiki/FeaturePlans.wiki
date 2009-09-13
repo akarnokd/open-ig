@@ -57,3 +57,42 @@ I think, there is a lot of room on the equimpent screen to have UI for this. Per
 The subsystem enhancement concept, however, is too strong to allow it to be unassigned. We will only know when the first real tests and usage patterns get fed back.
 
 = Achievement system =
+
+The game is full of statistics: number of planets, income, power production, enemies destroyed, etc. I want to add some achievements for making progress in the game. Some ideas this far:
+
+|| *Short name* || *Description* ||
+|| Conqueror || Conquered the first enemy planet ||
+|| Millionaire || You collected 1.000.000 credits ||
+|| Student of Bokros || All your planets sustained the Oppressive taxation for a week ||
+|| Pirate Bay || You lost a planet to the Pirates ||
+|| Dargslayer || You eliminated all Dargslan from the galaxy ||
+|| Energizer || Your total energy production reached 10.000.000 kW ||
+|| Death Star || You left your colony to be destroyed ||
+|| Resear assistant || You researched 5 technologies ||
+|| Scientist || You researched 30 technologies ||
+|| Nobel prize || You researched all technologies ||
+|| Popular || All your colonies are happy with you ||
+|| Happy clients of APEH || All your colonies have above 95% tax morale ||
+|| Ultimate leader || All your colonies support you ||
+|| Revolutioner || One of your colony has revolved ||
+|| Mass effect || Your total population got above 1.000.000 ||
+|| Defender of the crown || You successfully defended your colony ||
+|| Embargo || You destroyed your first Trader ship ||
+|| Colombus || You colonized your first planet ||
+|| Quarter of the pie || You own 25 planets ||
+|| Manufacturer || You produced a total of 1.000 items ||
+|| Salvage || You destroyed 1.000 enemy ships ||
+|| Living space || You discovered your first empty planet. ||
+|| Food for thought || Your food production is above 1.000.000 ||
+|| A decade in the service || You played 10 game years ||
+|| Oldest man || You played 100 game years ||
+|| All your base are belong to us || Your enemies captured one of your planets ||
+|| E.T. exists || You discovered a non-human civilization ||
+|| Defense contract || All your planets are equipped with at least 3 planetary guns and one shield. ||
+|| Coffee break || You paused your game for 30 minutes ||
+|| All seeing eye || At least 80% of the galaxy is covered by radar ||
+|| Newbie || Started a new game ||
+|| Commander || You have been promoted to commander ||
+|| Admiral || You have been promoted to admiral ||
+|| Grand Admiral || You have been promoted to grand admiral ||
+|| Influenza no more || You successfully eliminated the source of the virus infection ||
