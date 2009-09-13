@@ -1,6 +1,8 @@
 #summary Plans for enhancing the gameplay
 #labels Featured
 
+<wiki:toc max_depth="2" />
+
 = Introduction =
 
 On this page, I collect ideas about enhancing the gameplay with more modern concepts, better management ways or nicer gameplay mechanics. Suggestions and comments welcome.
@@ -26,3 +28,32 @@ I already plan a skirmish mode, where you can unbounded conquer the galaxy - no 
 = New experience management =
 
 The original game had a practically useless feature: the more enemies your ships destroyed, the more experience they gathered - improving their properties (exactly how exactly). I want to keep this experience aquisition but have a more usable and RPG-ish style.
+
+First of all, Introduce an experience pool. You can then assign and unassign experience to/from your ships at will. If you upgrade your fleet, you unassign the current XP, then assign it to the new vessels. We can conceptionalize it as not moving XP, but rather moving the experienced crew between ships... :)
+
+The second thing is how XP should (did in original game) affect the ship properties. I see some options:
+
+  * Have it alter the firepower of the ship based on its value (probably a degressive function, e.g. logarithmic)
+  * Have it alter all the ships properties together / on different scale: firepower, shields, hull, movement.
+  * Have fixed slot of enhancement options per type / slot and have a fixed effect on them. Maybe even name them or have a Mass Effect style enhancement: one after one, with some special mid elements
+    * Movement speed
+    * Rotation speed
+    * Lasers (power, range)
+    * Cannons (power, range)
+    * Rockets
+    * Bombs
+    * Shields
+    * ECMs (range)
+    * Hull
+
+For example, Hull enhancement points can go to:
+
+  +5% -> +10% -> +25% -> Regenerativity +5% -> +30% -> +50% -> Regenerativity + 10% -> +75% -> +90% -> +100% -> Regenerativity +25%
+
+Where regenerativity means hull integrity regeneration rate on a time unit.
+
+I think, there is a lot of room on the equimpent screen to have UI for this. Perhaps a tabbed panel on the right side where currently you can equip / unequip a medium or large ship. 
+
+The subsystem enhancement concept, however, is too strong to allow it to be unassigned. We will only know when the first real tests and usage patterns get fed back.
+
+= Achievement system =
