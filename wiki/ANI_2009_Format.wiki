@@ -27,4 +27,4 @@ As it is obvious, the format does not contain any compression - the audio and vi
 
 If a pixel in the current frame is the same as the pixel in the previous frame, the color index of 255 is used, instead of the concrete color index. This creates a huge patch of 255s on each frame, which can be nicely compressed by any means. If the original image contains 256 different colors, it might be possible to change the palette a bit or find a close replacement color, therefore index 255 can be used for transparency indication.
 
-The raw data can be then freely GZIP-ped or ZIP-ped with great efficiency: around 7% of the uncompressed video data.
+The raw data can be then freely GZIP-ped or ZIP-ped with great efficiency: around 7% of the uncompressed video data and about 10% smaller than the original ANI file.
