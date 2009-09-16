@@ -36,12 +36,14 @@ public final class ImageCompress {
 		// utility class
 	}
 	/**
-	 * Compress the image data.
-	 * @param img the image
+	 * Compress the RGBA pixels provided into the output stream.
+	 * @param pixels the pixels
+	 * @param width image width
+	 * @param height image height
 	 * @param pout the output stream
-	 * @throws IOException on error
+	 * @throws IOException if used IO operations throw this
 	 */
-	static void compressImage(BufferedImage img, OutputStream pout) throws IOException {
+	public static void compressImage(int[] pixels, int width, int height, OutputStream pout) throws IOException {
 		ByteArrayOutputStream moutP = new ByteArrayOutputStream(1024);
 		ByteArrayOutputStream moutNP = new ByteArrayOutputStream(1024);
 		ByteArrayOutputStream moutP8 = new ByteArrayOutputStream(1024);
@@ -50,9 +52,6 @@ public final class ImageCompress {
 		// analysis phase
 		Map<Integer, Integer> colorToIndex = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> indexToColor = new HashMap<Integer, Integer>();
-		
-		int[] pixels = new int[img.getWidth() * img.getHeight()];
-		img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
 		
 		int colorIndex = 0;
 		boolean transparency = false;
@@ -86,15 +85,15 @@ public final class ImageCompress {
 		// the bits per pixel
 		int bpp = 32 - Integer.numberOfLeadingZeros(colorIndex);
 
-		writeImageData(img, moutP, colorToIndex, indexToColor, pixels,
+		writeImageData(width, height, moutP, colorToIndex, indexToColor, pixels,
 				colorIndex, transparency, morealpha, bpp, true);
-		writeImageData(img, moutNP, colorToIndex, indexToColor, pixels,
+		writeImageData(width, height, moutNP, colorToIndex, indexToColor, pixels,
 				colorIndex, transparency, morealpha, bpp, false);
 		
 		if (bpp <= 8) {
-			writeImageData(img, moutP8, colorToIndex, indexToColor, pixels,
+			writeImageData(width, height, moutP8, colorToIndex, indexToColor, pixels,
 					colorIndex, transparency, morealpha, 8, true);
-			writeImageData(img, moutNP8, colorToIndex, indexToColor, pixels,
+			writeImageData(width, height, moutNP8, colorToIndex, indexToColor, pixels,
 					colorIndex, transparency, morealpha, 8, false);
 		}
 		
@@ -131,11 +130,23 @@ public final class ImageCompress {
 		pout.write(type);
 		mout.writeTo(pout);
 		pout.flush();
+	}
+	/**
+	 * Compress the image data.
+	 * @param img the image
+	 * @param pout the output stream
+	 * @throws IOException on error
+	 */
+	public static void compressImage(BufferedImage img, OutputStream pout) throws IOException {
 		// estimate the data size based on wether a palette + indexes or direct colors are used
+		int[] pixels = new int[img.getWidth() * img.getHeight()];
+		img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+		compressImage(pixels, img.getWidth(), img.getHeight(), pout);
 	}
 	/**
 	 * Encode and write the raw image data to the output stream.
-	 * @param img the original image
+	 * @param width the width
+	 * @param height the height
 	 * @param out the output stream
 	 * @param colorToIndex the color to index map
 	 * @param indexToColor the index to color map
@@ -147,7 +158,7 @@ public final class ImageCompress {
 	 * @param isWithPalette use palette + index or use 24/32 bit pixels
 	 * @throws IOException if an IO error occurs
 	 */
-	private static void writeImageData(BufferedImage img, OutputStream out,
+	private static void writeImageData(int width, int height, OutputStream out,
 			Map<Integer, Integer> colorToIndex,
 			Map<Integer, Integer> indexToColor, int[] pixels, int colorIndex,
 			boolean transparency, boolean morealpha, int bpp,
@@ -161,8 +172,8 @@ public final class ImageCompress {
 		bout.writeBit(isWithPalette ? 1 : 0);
 		// the number of bits per pixel minus one
 		bout.writeBits(bpp - 1, 5);
-		bout.writeBits(img.getWidth(), 12);
-		bout.writeBits(img.getHeight(), 12);
+		bout.writeBits(width, 12);
+		bout.writeBits(height, 12);
 		
 		if (isWithPalette) {
 			int max = transparency && !morealpha ? colorIndex - 1 : colorIndex;
@@ -219,12 +230,14 @@ public final class ImageCompress {
 		bout.close();
 	}
 	/**
-	 * Decompress image data.
+	 * Decompress the image from the input stream.
 	 * @param in the input stream
-	 * @return the ARGB buffered image
-	 * @throws IOException on error
+	 * @param width the one element array to store the width
+	 * @param height the one element array to store the height
+	 * @return the image pixels in RGBA format
+	 * @throws IOException if any IO operation throws it
 	 */
-	static BufferedImage decompressImage(InputStream in) throws IOException {
+	public static int[] decompressImage(InputStream in, int[] width, int[] height) throws IOException {
 		char type = (char)in.read();
 		if (type == 'G') {
 			in = new GZIPInputStream(in);
@@ -245,7 +258,6 @@ public final class ImageCompress {
 		int h = bin.readBits(12);
 		
 		int[] pixels = new int[w * h];
-		BufferedImage bimg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		Map<Integer, Integer> indexToColor = new HashMap<Integer, Integer>();
 		if (isWithPalette) {
 			int colorIndex = bin.readBits(bpp) + 1;
@@ -286,7 +298,21 @@ public final class ImageCompress {
 				}
 			}
 		}
-		bimg.setRGB(0, 0, w, h, pixels, 0, w);
+		width[0] = w;
+		height[0] = h;
+		return pixels;
+	}
+	/**
+	 * Decompress image data.
+	 * @param in the input stream
+	 * @return the ARGB buffered image
+	 * @throws IOException on error
+	 */
+	public static BufferedImage decompressImage(InputStream in) throws IOException {
+		int[] w = { 0 }, h = { 0 };
+		int[] pixels = decompressImage(in, w, h);
+		BufferedImage bimg = new BufferedImage(w[0], h[0], BufferedImage.TYPE_INT_ARGB);
+		bimg.setRGB(0, 0, w[0], h[0], pixels, 0, w[0]);
 		return bimg;
 	}
 }
