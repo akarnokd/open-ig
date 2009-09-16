@@ -9,7 +9,7 @@ The idea is simple: try different encoding and compression method and keep the b
 
   * Palette or without palette: replace colors with index, and use a common palette. The palette should contain only the colors for the used indexes, not the entire possible colors.
   * compute effective bit per pixel ratio (e.g 1 BPP, 12 BPP) and store the indexed images on bits
-  * for &lt;9 BPP, try keeping the index size on 8BPP to allow a further compression to better capture patterns
+  * for <9 BPP, try keeping the index size on 8BPP to allow a further compression to better capture patterns
   * try storing the image az raw 24bit (normal or transparent) or 32bit (= alpha channel) as  for small images, the palette might take up too much space in respect to the image data
   * try keeping it uncompressed (=no compression format overhead), GZIP-ped or ZIPped (maximum compression)
 
@@ -21,4 +21,25 @@ IMG_2009 compressed: 10,361,145 bytes(6.92%, 75.49% relative to the PNG)
 
 However, the format itself is rather slower to compress and decompress, as the IO operation is bit sized. It is possible to speed it up when everything is 8, 16, 24 or 32 BPP.
 
-= Details =
+= Format specification =
+
+The bit operations use least significant to most significant order, e.g. bit 0 of the input goes to bit 0 of the output byte. For multibyte data, this is equivalent to the little endian format.
+
+|| *Bit Offset* || *Description* ||
+|| 0 || Transparency indicator ||
+|| 1 || Alpha channel indicator: the image contains not only transparency, but more alpha values than 0 or 0xFF. If this bit is set ||
+|| 2 || The image contains palette ||
+|| 3 - 7 || The bits per pixel - 1 (+ end of first byte) ||
+|| 8 - 19 || The image width ||
+|| 20 - 31 || The image height (+ end of 4th byte) ||
+
+Based on the indicators, the following bytes can be different
+
+== No palette is used ==
+=== Transparent but no other alpha ==
+If the image is transparent, but has no other alpha values, the following 24 bits contain the RGB color, that is used to indicate a transparent pixel.
+
+After that, Width x Height number of 24 bits of RGB color bytes are stored as the pixels.
+
+=== No transparency ==
+If the alpha bit is zero, then Width x Height number of 24 bits of RGB colors follow. If the alpha bit is one, then Width x Height number of 32 bits of ARGB colors follow.
