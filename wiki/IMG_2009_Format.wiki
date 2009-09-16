@@ -23,15 +23,24 @@ However, the format itself is rather slower to compress and decompress, as the I
 
 = Format specification =
 
+The first whole byte (as a character) is an indicator for compression:
+
+|| *Value* || *Description* ||
+|| 'R' || The image is in raw format - no compression ||
+|| 'G' || The image is GZIP compressed ||
+|| 'Z' || The image is ZIP compressed. The ZIP contains only a raw.img file entry. ||
+
+The following bytes need to be interpreted according to this (e.g. start reading the file as a compressed stream)
+
 The bit operations use least significant to most significant order, e.g. bit 0 of the input goes to bit 0 of the output byte. For multibyte data, this is equivalent to the little endian format.
 
 || *Bit Offset* || *Description* ||
 || 0 || Transparency indicator ||
 || 1 || Alpha channel indicator: the image contains not only transparency, but more alpha values than 0 or 0xFF. If this bit is set ||
 || 2 || The image contains palette ||
-|| 3 - 7 || The bits per pixel - 1 (+ end of first byte) ||
-|| 8 - 19 || The image width ||
-|| 20 - 31 || The image height (+ end of 4th byte) ||
+|| 3 - 7 || BPP: The bits per pixel - 1 (+ end of first byte) ||
+|| 8 - 19 || W: The image width ||
+|| 20 - 31 || H: The image height (+ end of 4th byte) ||
 
 Based on the indicators, the following bytes can be different
 
@@ -39,7 +48,17 @@ Based on the indicators, the following bytes can be different
 === Transparent but no other alpha ==
 If the image is transparent, but has no other alpha values, the following 24 bits contain the RGB color, that is used to indicate a transparent pixel.
 
-After that, Width x Height number of 24 bits of RGB color bytes are stored as the pixels.
+After that, W x H number of 24 bits of RGB color bytes are stored as the pixels.
 
 === No transparency ==
-If the alpha bit is zero, then Width x Height number of 24 bits of RGB colors follow. If the alpha bit is one, then Width x Height number of 32 bits of ARGB colors follow.
+If the alpha bit is zero, then W x Hnumber of 24 bits of RGB colors follow. If the alpha bit is one, then W x H number of 32 bits of ARGB colors follow.
+
+== Palette is used ==
+Remark: if the image has transparency and no other alpha, then the transparent index is the number of palette entries plus one and is never stored in the palette.
+
+The following BPP bits contain the number of palette entries (PE) - 1.
+
+If the image has more alpha, the following PE number of 32 bit entries contains the ARGB color.
+If the image has no other alpha, the following PE number of 24 bit entries contains the RGB color.
+
+After the palette comes the image bits in BPP sized chunks. If there only transparency, the transparent index equals PE.
