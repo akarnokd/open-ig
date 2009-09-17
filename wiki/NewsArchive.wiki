@@ -1,5 +1,37 @@
 #summary News archive.
 
+*August 31. 2009*
+
+In Hungarian
+
+*FELHÍVÁS*
+
+Feltöltöttem jó pár videót a <a href='http://www.youtube.com/results?search_query=lgc314&search_type=&aq=f'>Youtube</a>-ra, amelyek az IG eredeti szereplőiből mutat egy-egy videót. Szeretném őket azonosítani, hogy Credits-ben felvehessem a nevüket. Köszönet.
+
+In english: call for identifying the voice actors of the Hungarian game videos.
+
+*August 30. 2009*
+
+I figured out why some videos show anomalous pixels when playing - I misinterpreted the differential coding and palette usage. I'll post the fixed player tomorrow.
+
+I started a [http://groups.google.com/group/open-ig-discussion discussion group], because the game mechanic, multiplayer and other new features will need tough decisions, and I don't want to cast those decision on my own - we should discuss the options.
+
+*August 28. 2009*
+
+== TESTERS NEEDED! ==
+
+But not for Open-IG at the moment! I'm about to implement the fleet management screen and I need volunteers, who extract the weapon statistics of the original game. The extraction is tedious, because: 
+  
+  * you need to create a fleet with one type of ship
+  * attack somebody
+  * on the space war screen, read the firepower value
+
+For larger, mutli-hub spaceships, you need to do it multiple times with different weapon settings. Unfortunately, determining the aliens' ship firepower is much harder, as they are usually in pack and you get only an aggregated firepower value - not a detailed one.
+
+Contact me to organize who tests what ships to avoid unnecessary overlapping. 
+
+Thank you.
+
 *August 27. 2009*
 
 I have created a new package with version 0.72 . It contains the movie player fix for missing fade-outs and sound cuts. Plus, it contains an *experimental* feature: music. Of course, if you put any OGG file into the game's {{{MUSIC}}} directory, Open-IG is still happy to play it for you - in an uncontrollable, pseudo-random order. I plan to introduce an in-game or out-of-game (e.g plain old Java Swing window) jukebox sooner or later.
