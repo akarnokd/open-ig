@@ -682,4 +682,56 @@
 		<type value="1" fps="17.89" delay="8"/>
 		<type value="3" fps="17.89" delay="8"/>
 	</ani>
+	<ani name="K3_01.ANI">
+		<type value="1" fps="17.89" delay="0"/>
+		<type value="3" fps="17.89" delay="0"/>
+	</ani>
+	<ani name="K3_11.ANI">
+		<type value="1" fps="17.89" delay="16"/>
+		<type value="3" fps="17.89" delay="16"/>
+	</ani>
+	<ani name="K3_12.ANI">
+		<type value="1" fps="17.89" delay="8"/>
+		<type value="3" fps="17.89" delay="8"/>
+	</ani>
+	<ani name="K3_21.ANI">
+		<type value="1" fps="17.89" delay="16"/>
+		<type value="3" fps="17.89" delay="16"/>
+	</ani>
+	<ani name="K3_23.ANI">
+		<type value="1" fps="17.89" delay="8"/>
+		<type value="3" fps="17.89" delay="8"/>
+	</ani>
+	<ani name="K3_31.ANI">
+		<type value="1" fps="17.89" delay="0"/>
+		<type value="3" fps="17.89" delay="0"/>
+	</ani>
+	<ani name="K4_11.ANI">
+		<type value="1" fps="17.89" delay="8"/>
+		<type value="3" fps="17.89" delay="8"/>
+	</ani>
+	<ani name="K4_21.ANI">
+		<type value="1" fps="17.89" delay="16"/>
+		<type value="3" fps="17.89" delay="16"/>
+	</ani>
+	<ani name="K4_31.ANI">
+		<type value="1" fps="17.89" delay="8"/>
+		<type value="3" fps="17.89" delay="8"/>
+	</ani>
+	<ani name="K4_41.ANI">
+		<type value="1" fps="17.89" delay="16"/>
+		<type value="3" fps="17.89" delay="16"/>
+	</ani>
+	<ani name="K4_51.ANI">
+		<type value="1" fps="17.89" delay="16"/>
+		<type value="3" fps="17.89" delay="16"/>
+	</ani>
+	<ani name="TEST.ANI">
+		<type value="1" fps="17.89" delay="38"/>
+		<type value="3" fps="17.89" delay="38"/>
+	</ani>
+	<ani name="TEST2.ANI">
+		<type value="1" fps="17.89" delay="28"/>
+		<type value="3" fps="17.89" delay="28"/>
+	</ani>
 </framerates>
