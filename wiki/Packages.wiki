@@ -42,6 +42,8 @@ This package contains the RPG-ish videos from the original game: wandering aroun
 
 = Images =
 
+*To be created*
+
 Total size: ~40 MB
 
 {{{open-ig-images-generic-*.zip}}}
@@ -60,8 +62,16 @@ Contains the English language buttons and labels for various screens and panels.
 
 Total size: ~3MB
 
+*To be created*
+
 {{{open-ig-data-generic-*.zip}}}
+
+Contains language neutral data files: planet maps, ship layouts, building and technology descriptions, scripts and credits.
 
 {{{open-ig-data-hu-*.zip}}}
 
+Contains dynamic textual labels in Hungarian along with subtitles to the videos.
+
 {{{open-ig-data-en-*.zip}}}
+
+Contains dynamic textual labels in English along with subtitles to the videos.
