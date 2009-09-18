@@ -10,6 +10,9 @@ package hu.openig.utils;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Port that has a work in progress counter.
@@ -17,10 +20,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author karnokd
  */
 public class WipPort {
-	/** The completion port. */
-	private final Port<Void> complete = new Port<Void>();
+	/** The lock object. */
+	private final Lock lock = new ReentrantLock();
+	/** The wait condition. */
+	private final Condition cond = lock.newCondition();
+	/** The done indicator. */
+	private boolean done;
 	/** The work in progress counter. */
 	private final AtomicInteger wip = new AtomicInteger();
+	/** The work in progress counter. */
+	private int waiters;
 	/**
 	 * Increment a work in progress counter.
 	 */
@@ -34,7 +43,13 @@ public class WipPort {
 	public void dec() {
 		int value = wip.decrementAndGet();
 		if (value == 0) {
-			complete.signal(null);
+			lock.lock();
+			try {
+				done = true;
+				cond.signalAll();
+			} finally {
+				lock.unlock();
+			}
 		} else
 		if (value < 0) {
 			throw new IllegalStateException("Broken WIP port: " + value);
@@ -45,7 +60,16 @@ public class WipPort {
 	 * @throws InterruptedException if the wait was interrupted
 	 */
 	public void await() throws InterruptedException {
-		complete.await();
+		lock.lock();
+		try {
+			waiters++; 
+			while (!done) {
+				cond.await();
+			}
+			done = (--waiters) != 0;
+		} finally {
+			lock.unlock();
+		}
 	}
 	/**
 	 * Await the completion signal for the specified amount of time.
@@ -55,13 +79,15 @@ public class WipPort {
 	 * @throws TimeoutException if the wait timed out
 	 */
 	public void await(long time, TimeUnit unit) throws InterruptedException, TimeoutException {
-		complete.await(time, unit);
+		lock.lock();
+		try {
+			waiters++;
+			while (!done) {
+				cond.await(time, unit);
+			}
+			done = (--waiters) != 0;
+		} finally {
+			lock.unlock();
+		}
 	}
-	/**
-	 * Reset the completion port to reuse.
-	 */
-	public void reset() {
-		complete.reset();
-	}
-
 }

@@ -62,13 +62,14 @@ public final class XMFFile {
 		SourceDataLine sdl = AudioThread.createAudioOutput();
 		int i = 0;
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		for (byte[] sample : getSamples(IOUtils.load("c:/games/ig/music/main3.xmf"))) {
-			System.out.printf("%d: %d", ++i, sample.length);
+		for (byte[] sample : getSamples(IOUtils.load("c:/games/ig/music/urharc.xmf"))) {
+			System.out.printf("%d: %d%n", ++i, sample.length);
 			sdl.start();
 			sdl.write(sample, 0, sample.length);
 			sdl.drain();
 			sdl.stop();
 			in.readLine();
+			IOUtils.save(String.format("d:/games/ighu/music/urharc_%03d.smp", i), sample);
 		}
 		sdl.drain();
 		sdl.stop();
