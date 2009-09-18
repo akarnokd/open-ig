@@ -78,7 +78,7 @@ public final class Transcoder {
 			final AtomicLong rawSize, final AtomicLong newSize,
 			final ExecutorService exec) throws InterruptedException {
 		final WipPort wp = new WipPort();
-		final AtomicLong ignore = new AtomicLong();
+//		final AtomicLong ignore = new AtomicLong();
 		Files.walkFileTree(Paths.get("c:\\games\\IGHU\\ANI"), 
 			new SimpleFileVisitor<Path>() {
 				public FileVisitResult visitFile(final Path file, BasicFileAttributes attrs) {

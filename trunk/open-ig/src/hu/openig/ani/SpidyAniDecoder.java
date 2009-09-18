@@ -176,15 +176,15 @@ public final class SpidyAniDecoder {
 				// we reached the end of data
 			}
 			int excessFrames = (int)Math.floor((audioLength / 22050.0 - (imageIndex - delay) / fps) * fps);
-			int totalExcess = excessFrames;
-			int[] alpha = rgbImage.clone();
+//			int totalExcess = excessFrames;
+//			int[] alpha = rgbImage.clone();
 			// we have the last raw image, fade it out to blackness
 			while (!callback.isStopped() && !Thread.currentThread().isInterrupted() && excessFrames > 0) {
-				float factor = excessFrames * 1.0f / totalExcess;
-				for (int i = 0; i < alpha.length; i ++) {
-					alpha[i] = makeAlpha(rawImage[i], factor);
-				}
-				callback.imageData(alpha);
+//				float factor = excessFrames * 1.0f / totalExcess;
+//				for (int i = 0; i < alpha.length; i ++) {
+//					alpha[i] = makeAlpha(rawImage[i], factor);
+//				}
+				callback.imageData(rgbImage);
 				excessFrames--;
 			}
 			
