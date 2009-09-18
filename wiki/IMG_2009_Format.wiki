@@ -62,3 +62,7 @@ If the image has more alpha, the following PE number of 32 bit entries contains 
 If the image has no other alpha, the following PE number of 24 bit entries contains the RGB color.
 
 After the palette comes the image bits in BPP sized chunks. If there only transparency, the transparent index equals PE.
+
+= Effectiveness =
+
+I tested the compression scheme on the current generic+hungarian images of 35MB of PNG (about 250MB of uncompressed RGBA). The scheme was able to reduce the image sizes to 28MB (~78% of original size). As there are smaller images than audio or video, I still haven't decided to transcode every image, as it might make hard to alter the resources further on - a price high for a 7 MB less download.
