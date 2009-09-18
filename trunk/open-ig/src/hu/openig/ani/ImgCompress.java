@@ -51,7 +51,7 @@ public final class ImgCompress {
 		Map<Integer, Integer> result = new HashMap<Integer, Integer>(256);
 		int idx = 0;
 		for (int i : rawImage) {
-			if (!result.containsKey(i)) {
+			if ((i & 0xFF000000) == 0xFF000000 && !result.containsKey(i)) {
 				result.put(i, idx++);
 			}
 		}
@@ -581,7 +581,7 @@ public final class ImgCompress {
 		out.writeShort(fps);
 		
 		int[] palette = new int[256];
-		int[] currimage = new int[w * h];
+//		int[] currimage = new int[w * h];
 		byte[] bytebuffer = new byte[w * h];
 		
 		int c = 0;
@@ -622,11 +622,11 @@ public final class ImgCompress {
 	 * @throws Exception on error
 	 */
 	public static void main(String[] args) throws Exception {
-		decompressToRaw(new DataInputStream(new GZIPInputStream(new FileInputStream("d:\\Games\\IGHU\\youtube\\1_hid.ani.raw.2009a.gz"), 1024 * 1024)), 
-				new DataOutputStream(new BufferedOutputStream(new FileOutputStream("d:\\Games\\IGHU\\youtube\\1_hid.ani.raw.2009a"), 1024 * 1024)));
-		if (false) {
-			return;
-		}
+//		decompressToRaw(new DataInputStream(new GZIPInputStream(new FileInputStream("d:\\Games\\IGHU\\youtube\\1_hid.ani.raw.2009a.gz"), 1024 * 1024)), 
+//				new DataOutputStream(new BufferedOutputStream(new FileOutputStream("d:\\Games\\IGHU\\youtube\\1_hid.ani.raw.2009a"), 1024 * 1024)));
+//		if (false) {
+//			return;
+//		}
 //		testMethods();
 		File[] files = new File("d:\\Games\\IGHU\\youtube").listFiles();
 		if (files != null) {
