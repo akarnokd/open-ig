@@ -432,7 +432,7 @@ public class AnimPlayList extends JFrame {
 						if (target.getParentFile() != null) {
 							target.getParentFile().mkdirs();
 						}
-						AnimPlay.saveAsPNGWorker(files[i], target, false, AnimPlayList.this).get();
+//						AnimPlay.saveAsPNGWorker(files[i], target, false, AnimPlayList.this).get();
 						if (pf.isCancelled()) {
 							break;
 						}
