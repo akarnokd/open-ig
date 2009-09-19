@@ -91,22 +91,22 @@ public final class Transcoder {
 									if (!stage2.exists()) {
 										SpidyAniDecoder.decodeLoop(createCallback(new File(file.toString()), Mode.RAW, originalSize, rawSize, newSize));
 									}
-									if (false) {
-										// recode
-										File fout = new File(stage2.getAbsolutePath() + ".2009.gz");
-										DataOutputStream gout = new DataOutputStream(new BufferedOutputStream(
-												new GZIPOutputStream(new FileOutputStream(fout)), 1024 * 1024));
-										convertWithPalette(stage2.getAbsolutePath(), gout);
-										gout.close();
-										
-										// statistics
-										long orig = new File(file.toString()).length();
-										long nw = fout.length();
-										newSize.addAndGet(nw);
-										System.out.printf("%s done | Original: %d -> New: %d (%.2f%%)%n", fout.toString().toLowerCase(),
-											orig, nw, (nw * 100.0 / orig) 
-										);
-									}
+//									if (false) {
+//										// recode
+//										File fout = new File(stage2.getAbsolutePath() + ".2009.gz");
+//										DataOutputStream gout = new DataOutputStream(new BufferedOutputStream(
+//												new GZIPOutputStream(new FileOutputStream(fout)), 1024 * 1024));
+//										convertWithPalette(stage2.getAbsolutePath(), gout);
+//										gout.close();
+//										
+//										// statistics
+//										long orig = new File(file.toString()).length();
+//										long nw = fout.length();
+//										newSize.addAndGet(nw);
+//										System.out.printf("%s done | Original: %d -> New: %d (%.2f%%)%n", fout.toString().toLowerCase(),
+//											orig, nw, (nw * 100.0 / orig) 
+//										);
+//									}
 								} catch (Throwable t) {
 									t.printStackTrace();
 								} finally {
