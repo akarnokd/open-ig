@@ -98,3 +98,18 @@ The game is full of statistics: number of planets, income, power production, ene
 || Influenza no more || You successfully eliminated the source of the virus infection ||
 
 Of course, the limits for numerical achievements can change, depending on how open-ig is played (e.g maybe 10M kW for the Energizer achievement is too low or too high for a normal play?)
+
+= Retreat from gound battle =
+
+By Gergő Harrach.
+
+A really simple scheme: retreat from ground battle if you feel you won't win it. There are things to decide:
+
+  * Should the retreat an instant loss of your vehicles?
+  * Should we automatically move out of range and save the remaining troops?
+  * If you are the defender, should the retreat mean you give off your planet?
+  * If you retreat from defense, should the remaining barracks...strongholds be left intact: e.g. in the counterattack you would face your own structures?
+
+This kind of option brings me an idea about an exit strategy: scorched earth. If you see you lost and there is no hope for retake, you could demolish ALL of your buildings, leaving your enemy to rebuild everything from scratch and cost them an enormous money to bring everything up to speed again. Just imagine, a planet of 100k inhabitants demanding food, energy, hospital and living space from the AI. An instant 250k credit drain? It is highly possible the planet will revolt.
+
+= Building upgrade slots =
