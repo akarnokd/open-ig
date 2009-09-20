@@ -116,7 +116,7 @@ This kind of option brings me an idea about an exit strategy: scorched earth. If
 
 Basically this idea is for a small anomaly fix and for more RPG elements. In the original game, the power output of the power plants are completely randomized, and mostly way over the nominal output. I discovered it while I was constructring the initial alien planets - almost all of them started with power shortage.
 
-To compensate this deterministically (e.g. not introducing a randomization with unknown outcome), I came to the idea of upgrade slots. These are plain simple efficiency multipliers for the buildings' outputs:
+To compensate this deterministically (e.g. not introducing a randomization with unknown outcome), I came to the idea of upgrade slots. These are plain simple efficiency multipliers for the buildings' outputs, e.g.:
 
 150%, 200%, 300%, 400%
 
@@ -124,9 +124,12 @@ This way, I can give free upgrade points to the alien and own structures to matc
 
 Upgrade slots should cost you some money, for example, the cost of the original building.
 
-It is also possible, that not all buildings will receive this kind of boost, or this number of boost - only the power plants are for sure, maybe the hospitals too. Here are my plans for the buildings:
+It is also possible, that not all buildings will receive this kind of boost, or this number of boost - only the power plants are for sure, maybe the hospitals too. Here are my plans for the buildings. (increasing the output will increase the energy and worker requirements as well. The final upgrade slot will not increase the demand part further than the previous one).
 
 || *Name* || *Default output* || *Build cost* || *Slots* ||
+|| Colony hub || 5k food, 5k hospital || 40k || - ||
+|| Housing || 7k, 15k, 30k living space || 5.6k, 12k, 16k || living space 125%, 150%, 200%; 250%; workers: 125%, 150%, 175%, 175%; energy: 125%, 150%, 200%, 200% ||
+|| Power Plants || 3.5MW, 9MW, 6MW energy || 8k, 24k, 16k || energy: 150%, 200%, 250%, 300%, worker: 125%, 150%, 200%, 200% ||
 
-
+... 
 ...
