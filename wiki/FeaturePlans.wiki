@@ -17,7 +17,7 @@ To compensate this deterministically (e.g. not introducing a randomization with 
 
 This way, I can give free upgrade points to the alien and own structures to match the initial required power output.
 
-Upgrade slots should cost you some money, for example, the cost of the original building.
+Upgrade slots should cost you some money, for example, the cost of the original building. If you have room, you might build more of the base structure (if it is not limited), however, if you start to run out of it, these slots will come in handy.
 
 It is also possible, that not all buildings will receive this kind of boost, or this number of boost - only the power plants are for sure, maybe the hospitals too. Here are my plans for the buildings. (increasing the output will increase the energy and worker requirements as well. The final upgrade slot will not increase the demand part further than the previous one).
 
@@ -30,6 +30,9 @@ It is also possible, that not all buildings will receive this kind of boost, or 
 || Civil lab<br>Mechanic lab<br>Computer lab<br>AI lab<br>Military lab || 1 civ<br>1 mech<br>1 comp<br>1 ai<br>1 mil || 30k<br>34k<br>42k<br>46<br>52k || energy: 75%, 50%, 25%, 5%<br>workers: 75%, 50%, 25%, 5% <sup>2</sup> ||
 || Traders spaceport || 600 cr/day || 10k || credits: 125%, 150%, 175%, 200%<br>energy: 125%, 150%, 175%, 175%<br>worker: 125%, 150%, 175%, 175% ||
 || Military spaceport || orbital support || 75k || - ||
+|| Bank || credit duplication || 16k || multiplier: 2.5x, 3x, 3.5x, 4x ||
+|| Trade center || 1200 cr/day || 17k || credits: 125%, 150%, 175%, 200%<br>energy: 125%, 150%, 175%, 175%<br>worker: 125%, 150%, 175%, 175% ||
+|| Hospital<br>Police || 20000 persons<br>50000 persons covered || 13k<br>26k || 125%, 150%, 175%, 200%<br>energy: 150%, 175%, 200%, 200%<br>worker: 150%, 175%, 200%, 200%<sup>3</sup> ||
 
 
 
@@ -38,6 +41,7 @@ It is also possible, that not all buildings will receive this kind of boost, or 
 
 <sup>2</sup> It is pointless to increase the research capacity, as it would allow the player to research everything with less planets - just decrease the power and worker requirement on these buildings - might come in handy for the factories. The drastic improvement is due the high cost of these buildings to be justified.
 
+<sup>3</sup> Coverage increase is more costly in terms of workers and energy.
 ... 
 
 = Build any building on planets =
