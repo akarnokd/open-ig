@@ -36,8 +36,10 @@ It is also possible, that not all buildings will receive this kind of boost, or 
 || Fire brigade || 50% free repair || 12k || 55% repair, 61% repair, 68% repair, 77% repair<br>energy: 150%, 175%, 200%, 200%<br>worker: 150%, 175%, 200%, 200% ||
 || Radar telescope<br>Field telescope<br>Phased telescope|| 1 parsec<br>2 parsec<br>3 parsec coverage || 4k<br>10k<br>25k || - ||
 || Bunker || 50% less causality || 18k || 55% less, 61% less, 68% less, 77% less<br>energy: 150%, 200%, 250%, 250%<br>worker: 150%, 200%, 250%, 250% ||
-|| Ion projector<br>Plasma projector<br>Particle projector<br>Meson projector<br> || 50, 75, 90, 105 hp/hit<sup>4</sup> || 10k<br>17.8<br>32k<br>40k || Firepower: 115%, 130%, 145%, 160% Hitpoints: 125%, 150%, 175%, 200%<br>Worker: 150%, 200%, 250%, 250%<br>Energy: 150%, 200%, 250%, 250%</br> ||
+|| Ion projector<br>Plasma projector<br>Particle projector<br>Meson projector<br> || 50, 75, 90, 105 hp/hit<sup>4</sup> || 10k<br>17.8<br>32k<br>40k || Firepower: 115%, 130%, 145%, 160%<br>Hitpoints: 125%, 150%, 175%, 200%<br>Worker: 150%, 200%, 250%, 250%<br>Energy: 150%, 200%, 250%, 250%</br> ||
 || Inversion shield<br>Hypershield || 50%<br>100% of hitpoints as extra shield  || 15k<br>35k || Shielding: 120%, 140%, 160%, 180%<br>Hitpoints: 110%, 120%, 130%, 140%<sup>5</sup><br>Worker: 150%, 200%, 250%, 250%<br>Energy: 150%, 200%, 250%, 250%</br> ||
+|| Barracks<br>Fortress<br>Stronghold || 2 firepower<br>4 firepower<br>6 firepower || 15k<br>30k<br>50k || Firepower: 115%, 130%, 145%, 160% rounded up<br>Hitpoints: 110%, 120%, 130%, 140%<br>Worker: 150%, 200%, 250%, 250%<br>Energy: 150%, 200%, 250%, 250%
+|| Recreation center<br>Park<br>Church<br>Bar<br>Stadium || 5<br>10<br>10<br>15<br>20 morale boost || 7.5k<br>14k<br>4k<br>6.3<br>50k || Morale boost: 120%, 140%, 160%, 200%<br>Worker: 150%, 200%, 250%, 250%<br>Energy: 150%, 200%, 250%, 250%||
 
 
 <sup>1</sup> I would arbitrarily decrease the default power output of the fusion and solar plant to allow it to play nicely with the upgrade slot.
