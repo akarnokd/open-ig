@@ -33,8 +33,9 @@ It is also possible, that not all buildings will receive this kind of boost, or 
 || Bank || credit duplication || 16k || multiplier: 2.5x, 3x, 3.5x, 4x ||
 || Trade center || 1200 cr/day || 17k || credits: 125%, 150%, 175%, 200%<br>energy: 125%, 150%, 175%, 175%<br>worker: 125%, 150%, 175%, 175% ||
 || Hospital<br>Police || 20000 persons<br>50000 persons covered || 13k<br>26k || 125%, 150%, 175%, 200%<br>energy: 150%, 175%, 200%, 200%<br>worker: 150%, 175%, 200%, 200%<sup>3</sup> ||
-
-
+|| Fire brigade || 50% free repair || 12k || 55% repair, 61% repair, 68% repair, 77% repair<br>energy: 150%, 175%, 200%, 200%<br>worker: 150%, 175%, 200%, 200% ||
+|| Radar telescope<br>Field telescope<br>Phased telescope|| 1 parsec<br>2 parsec<bt>3 parsec coverage || 4k<br>10k<br>25k || - ||
+|| Bunker || 50% less causality || 18k || 55% less, 61% less, 68% less, 77% less<br>energy: 150%, 200%, 250%, 250%<br>worker: 150%, 200%, 250%, 250% || 
 
 
 <sup>1</sup> I would arbitrarily decrease the default power output of the fusion and solar plant to allow it to play nicely with the upgrade slot.
