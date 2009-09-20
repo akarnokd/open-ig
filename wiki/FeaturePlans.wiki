@@ -27,13 +27,16 @@ It is also possible, that not all buildings will receive this kind of boost, or 
 || Nuclear plant<br>Fusion Plant<br>Solar plant || 3.5MW<br>9MW<br>6MW<sup>1</sup> energy || 8k, 24k, 16k || energy: 150%, 200%, 250%, 300%<br>worker: 125%, 150%, 200%, 200% ||
 || Hydroponic farm<br>Phood factory || 8k<br>20k food || 4.2k, 10k || food: 125%, 150%, 200%, 250%,<br>energy: 125%, 150%, 200%, 200%<br>worker: 125%, 150%, 200%, 200% ||
 || Spaceship factory<br>Equipment factory<br>Weapons factory || 1000 spaceship cap<br>1000 equipment cap<br>1000 equipment cap || 20k, 20k, 24k || caps: 125%, 150%, 175%, 200%<br>energy: 150%, 200%, 250%, 250%<br>worker: 150%, 200%, 250%, 250% ||
-|| Civil lab<br>Mechanic lab<br>Computer lab<br>AI lab<br>Military lab || 1 civ<br>1 mech<br>1 comp<br>1 ai<br>1 mil || 30k<br>34k<br>42k<br>46<br>52k || energy: 90%, 85%, 80%, 75%<br>workers: 90%, 85%, 80%, 75% <sup>2</sup> ||
+|| Civil lab<br>Mechanic lab<br>Computer lab<br>AI lab<br>Military lab || 1 civ<br>1 mech<br>1 comp<br>1 ai<br>1 mil || 30k<br>34k<br>42k<br>46<br>52k || energy: 75%, 50%, 25%, 5%<br>workers: 75%, 50%, 25%, 5% <sup>2</sup> ||
 || Traders spaceport || 600 cr/day || 10k || credits: 125%, 150%, 175%, 200%<br>energy: 125%, 150%, 175%, 175%<br>worker: 125%, 150%, 175%, 175% ||
+|| Military spaceport || orbital support || 75k || - ||
+
+
 
 
 <sup>1</sup> I would arbitrarily decrease the default power output of the fusion and solar plant to allow it to play nicely with the upgrade slot.
 
-<sup>2</sup> It is pointless to increase the research capacity, as it would allow the player to research everything with less planets - just decrease the power and worker requirement on these buildings - might come in handy for the factories.
+<sup>2</sup> It is pointless to increase the research capacity, as it would allow the player to research everything with less planets - just decrease the power and worker requirement on these buildings - might come in handy for the factories. The drastic improvement is due the high cost of these buildings to be justified.
 
 ... 
 
