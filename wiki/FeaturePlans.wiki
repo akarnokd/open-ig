@@ -7,6 +7,10 @@
 
 On this page, I collect ideas about enhancing the gameplay with more modern concepts, better management ways or nicer gameplay mechanics. Suggestions and comments welcome.
 
+= Vehicles move backwards =
+
+In the original game, if you give a move command in the opposite direction the turret is facing, the vehicles start to turn and then move - leaving a window for enemy hits without returning fire. By allowing altering the carryout of the movement, vehicles can decide to rotate less and move backwards. Perhaps adding separate 'Move backwards' command instead of changing the default move command.
+
 = No groud battle AI =
 
 Basically it means that after the AI deploys its vehicles (for defense: around the military buildings, for offense: on the map edges), no further command is issued to them and left alone to defend themselves. The player should go in/out to destroy them. Drawback is that the AI won't react to artillery fire at all, leaving the player to use only long range equipment. However, this latter can be solved by introducing an automatic move-away from attack if the attacker is not in range: move 1-3 slots into the direction of fire to potentially get into fire range. This approach requires only simple reactive agent behavior. AI vs AI battles will be non-visible and played out only in numbers.
