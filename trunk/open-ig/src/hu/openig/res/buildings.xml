@@ -26,7 +26,7 @@
 		<property name='living-space'>7000</property>
 		<tile techid="1" height="3" width="4"/>
 	</building>
-	<building id="ApartmentBlock " index="2">
+	<building id="ApartmentBlock" index="2">
 		<cost>12000</cost>
 		<energy>1200</energy>
 		<worker>70</worker>
