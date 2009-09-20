@@ -23,9 +23,12 @@ It is also possible, that not all buildings will receive this kind of boost, or 
 
 || *Name* || *Default output* || *Build cost* || *Slots* ||
 || Colony hub || 5k food, 5k hospital || 40k || - ||
-|| Housing || 7k, 15k, 30k living space || 5.6k, 12k, 16k || living space 125%, 150%, 200%; 250%; workers: 125%, 150%, 175%, 175%; energy: 125%, 150%, 200%, 200% ||
-|| Power Plants || 3.5MW, 9MW, 6MW energy || 8k, 24k, 16k || energy: 150%, 200%, 250%, 300%, worker: 125%, 150%, 200%, 200% ||
+|| Prefab shelter, Apartment block, Arcology, Water waporator || 7k, 15k, 30k, 12k living space || 5.6k, 12k, 16k, 45k || living space 125%, 150%, 200%; 250%; workers: 125%, 150%, 175%, 175%; energy: 125%, 150%, 200%, 200% ||
+|| Nuclear plant, Fusion Plant, Solar plant || 3.5MW, 9MW, 6MW<sup>1</sup> energy || 8k, 24k, 16k || energy: 150%, 200%, 250%, 300%, worker: 125%, 150%, 200%, 200% ||
+|| Hydroponic farm, Phood factory || 8k, 20k food || 4.2k, 10k || food: 125%, 150%, 200%, 250%, energy: 125%, 150%, 200%, 200%, worker, 125%, 150%, 200%, 200% ||
+ 
 
+<sup>1</sup> I would arbitrarily decrease the default power output of the fusion and solar plant to allow it to play nicely with the upgrade slot.
 ... 
 
 = Build any building on planets =
