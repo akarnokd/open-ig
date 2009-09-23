@@ -8,6 +8,7 @@
 
 package hu.openig.v1;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,8 +25,6 @@ import javax.swing.SwingUtilities;
 public final class Startup {
 	/** The minimum memory required to run Open-IG. */
 	private static final long MINIMUM_MEMORY = 160L;
-	/** TODO indicator to restart the Open-IG. */
-	private static final boolean DIRECT_CLASS_MODE = true;
 	/** The version number. */
 	public static final String VERSION = "0.8"; 
 	/** Constructor. */
@@ -39,11 +38,16 @@ public final class Startup {
 	public static void main(String[] args) {
 		long maxMem = Runtime.getRuntime().maxMemory();
 		if (maxMem < MINIMUM_MEMORY * 1024 * 1024 * 95 / 100) {
-			System.err.println("Low memory: " + maxMem);
 			if (!doLowMemory()) {
 				doWarnLowMemory(maxMem);
 			}
 			return;
+		}
+		File config = new File("open-ig-config.xml");
+		if (!config.exists()) {
+			doStartConfiguration();
+		} else {
+			doStartGame();
 		}
 	}
 	/**
@@ -70,7 +74,7 @@ public final class Startup {
 	 */
 	private static boolean doLowMemory() {
 		ProcessBuilder pb = new ProcessBuilder();
-		if (DIRECT_CLASS_MODE) {
+		if (!new File("open-ig-" + VERSION + ".jar").exists()) {
 			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/res/OpenIG_Splash.png", "hu.openig.v1.Startup");
 		} else {
 			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-" + VERSION + ".jar", "-splash:hu/openig/res/OpenIG_Splash.png", "hu.openig.v1.Startup");
@@ -112,5 +116,25 @@ public final class Startup {
 				}
 			}
 		};
+	}
+	/**
+	 * Display the configuration window for setup.
+	 */
+	private static void doStartConfiguration() {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Setup setup = new Setup();
+				setup.setLocationRelativeTo(null);
+				setup.setVisible(true);
+				setup.pack();
+			}
+		});
+	}
+	/**
+	 * Start the game.
+	 */
+	private static void doStartGame() {
+		
 	}
 }
