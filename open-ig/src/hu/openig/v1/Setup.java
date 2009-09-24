@@ -24,8 +24,19 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -47,6 +58,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.TitledBorder;
 
@@ -185,6 +197,12 @@ public class Setup extends JFrame {
 	private JSlider effectSlider;
 	/** Video slider. */
 	private JSlider videoSlider;
+	/** Stop playback. */
+	protected volatile boolean stopPlayback;
+	/**
+	 * Audio playback worker.
+	 */
+	private SwingWorker<Void, Void> playWorker;
 	/**
 	 * Constructor. Initializes the GUI elements.
 	 */
@@ -884,7 +902,9 @@ public class Setup extends JFrame {
 		lblAudioChannels = new JLabel("Audio channel count:");
 		lblAudioChannels.setForeground(Color.WHITE);
 		edAudioChannels = new AlphaTextField(0.85f, 2);
+		edAudioChannels.setText("8");
 		testAudioChannels = new ConfigButton("Test");
+		testAudioChannels.addActionListener(new Act() { public void act() { playTestMulti(); } });
 		GroupLayout gl = new GroupLayout(channelPanel);
 		channelPanel.setLayout(gl);
 		gl.setAutoCreateContainerGaps(true);
@@ -908,6 +928,7 @@ public class Setup extends JFrame {
 		lblMusicVolume = new JLabel("Music volume:");
 		lblMusicVolume.setForeground(Color.WHITE);
 		testMusic = new ConfigButton("Test");
+		testMusic.addActionListener(new Act() { public void act() { playTest(musicSlider.getValue(), testMusic); } });
 		musicSlider = new JSlider(0, 100); 
 
 		gl = new GroupLayout(musicPanel);
@@ -937,6 +958,7 @@ public class Setup extends JFrame {
 		lblEffectVolume = new JLabel("Effect volume:");
 		lblEffectVolume.setForeground(Color.WHITE);
 		testEffects = new ConfigButton("Test");
+		testEffects.addActionListener(new Act() { public void act() { playTest(effectSlider.getValue(), testEffects); } });
 		effectSlider = new JSlider(0, 100); 
 		gl = new GroupLayout(effectPanel);
 		effectPanel.setLayout(gl);
@@ -966,6 +988,7 @@ public class Setup extends JFrame {
 		lblVideoVolume = new JLabel("Video volume:");
 		lblVideoVolume.setForeground(Color.WHITE);
 		testVideo = new ConfigButton("Test");
+		testVideo.addActionListener(new Act() { public void act() { playTest(videoSlider.getValue(), testVideo); } });
 		videoSlider = new JSlider(0, 100); 
 		gl = new GroupLayout(videoPanel);
 		videoPanel.setLayout(gl);
@@ -1114,6 +1137,139 @@ public class Setup extends JFrame {
 		cbDisableOpenGL.setText("Disable OpenGL");
 		lblRestartNeeded.setText("* might require complete program restart");
 	}
-	
+	/**
+	 * Play test audio on the specified volume.
+	 * @param volume the volume whole percents
+	 * @param button the button to change title on
+	 */
+	protected void playTest(final int volume, final AbstractButton button) {
+		if (playWorker != null) {
+			stopPlayback = true;
+//			playWorker.cancel(true);
+		} else {
+			final String title = button.getText();
+			button.setText("Stop");
+			playWorker = new SwingWorker<Void, Void>() {
+				@Override
+				protected Void doInBackground() throws Exception {
+					playTestDirectly(volume);
+					return null;
+				}
+				@Override
+				protected void done() {
+					playWorker = null;
+					button.setText(title);
+					stopPlayback = false;
+				}
+			};
+			playWorker.execute();
+		}
+	}
+	/**
+	 * Play test directly.
+	 * @param volume the volume
+	 */
+	protected void playTestDirectly(int volume) {
+		try {
+			AudioInputStream in = AudioSystem.getAudioInputStream(getClass().getResource("/hu/openig/res/welcome.wav"));
+			try {
+				AudioFormat streamFormat = new AudioFormat(22050, 16, 1, true, false);
+				DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
 
+				SourceDataLine clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
+				try {
+					clip.open();
+					FloatControl fc = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+					double minLinear = Math.pow(10, fc.getMinimum() / 20);
+					double maxLinear = Math.pow(10, fc.getMaximum() / 20);
+					fc.setValue((float)(20 * Math.log10(minLinear + volume * (maxLinear - minLinear) / 100)));
+					clip.start();
+					byte[] buffer = new byte[4096];
+					while (!Thread.currentThread().isInterrupted() && !stopPlayback) {
+						int c = in.read(buffer);
+						if (c < 0) {
+							break;
+						} else
+						if (c > 0) {
+							// upscale
+							byte[] buf2 = new byte[c * 2];
+							for (int i = 0; i < c; i++) {
+								int o = ((buffer[i] & 0xFF) - 128) * 256;
+								buf2[i * 2] = (byte)(o & 0xFF);
+								buf2[i * 2 + 1] = (byte)((o & 0xFF00) >> 8);
+							}
+							clip.write(buf2, 0, buf2.length);
+						}
+					}
+					if (stopPlayback) {
+						clip.stop();
+						clip.drain();
+					} else {
+						clip.drain();
+						clip.stop();
+					}
+				} finally {
+					clip.close();
+				}
+			} finally {
+				in.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} catch (UnsupportedAudioFileException ex) {
+			ex.printStackTrace();
+		} catch (LineUnavailableException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Play the welcome.wav simultaneously.
+	 */
+	protected void playTestMulti() {
+		if (playWorker != null) {
+			stopPlayback = true;
+//			playWorker.cancel(true);
+		} else {
+			final int vol = effectSlider.getValue();
+			final int channels = Integer.parseInt(edAudioChannels.getText());
+			final String title = testAudioChannels.getText();
+			testAudioChannels.setText("Stop");
+			playWorker = new SwingWorker<Void, Void>() {
+				@Override
+				protected Void doInBackground() throws Exception {
+					try {
+						ExecutorService exec = Executors.newFixedThreadPool(channels);
+						for (int i = 0; i < channels; i++) {
+							final int j = i;
+							exec.submit(new Runnable() {
+								@Override
+								public void run() {
+									try {
+										TimeUnit.MILLISECONDS.sleep(3000 / channels * j);
+										playTestDirectly(vol);
+									} catch (InterruptedException ex) {
+										
+									}
+								}
+							});
+						}
+						exec.shutdown();
+						exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+					} catch (NumberFormatException ex) {
+						
+					} catch (InterruptedException ex) {
+						
+					}
+					return null;
+				}
+				@Override
+				protected void done() {
+					playWorker = null;
+					testAudioChannels.setText(title);
+					stopPlayback = false;
+				}
+			};
+			playWorker.execute();
+		}
+	}		
 }
