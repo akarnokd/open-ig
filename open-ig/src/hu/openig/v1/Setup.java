@@ -8,6 +8,8 @@
 
 package hu.openig.v1;
 
+import hu.openig.sound.AudioThread;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
@@ -22,6 +24,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -43,10 +47,12 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -56,11 +62,19 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
 
 /**
  * @author karnokd, 2009.09.23.
@@ -178,19 +192,19 @@ public class Setup extends JFrame {
 	/** Audio channels editor. */
 	private JTextField edAudioChannels;
 	/** Test audio channels. */
-	private ConfigButton testAudioChannels;
+	private ConfigButton btnTestAudioChannels;
 	/** Music volume. */
 	private JLabel lblMusicVolume;
 	/** Test music. */
-	private ConfigButton testMusic;
+	private ConfigButton btnTestMusic;
 	/** Effect volume. */
 	private JLabel lblEffectVolume;
 	/** Test effect volume. */
-	private ConfigButton testEffects;
+	private ConfigButton btnTestEffects;
 	/** Video volume. */
 	private JLabel lblVideoVolume;
 	/** Test video volume. */
-	private ConfigButton testVideo;
+	private ConfigButton btnTestVideo;
 	/** Music slider. */
 	private JSlider musicSlider;
 	/** Effect slider. */
@@ -203,6 +217,50 @@ public class Setup extends JFrame {
 	 * Audio playback worker.
 	 */
 	private SwingWorker<Void, Void> playWorker;
+	/** Effect filter label. */
+	private JLabel lblEffectFilter;
+	/** Effect filter value. */
+	private JSpinner edEffectFilter;
+	/** Video filter label. */
+	private JLabel lblVideoFilter;
+	/** Video filter value. */
+	private JSpinner edVideoFilter;
+	/** Player label. */
+	private JLabel lblPlayer;
+	/** List of players. */
+	private JComboBox cbPlayers;
+	/** Money label. */
+	private JLabel lblMoney;
+	/** Monery editor. */
+	private JTextField edMoney;
+	/** AI mode label. */
+	private JLabel lblAIMode;
+	/** AI mode list. */
+	private JComboBox cbAIMode;
+	/** Set Visual button. */
+	private ConfigButton btnSetVisual;
+	/** Apply player button. */
+	private ConfigButton btnApplyPlayer;
+	/** Planet label. */
+	private JLabel lblPlanet;
+	/** Planets list. */
+	private JComboBox cbPlanet;
+	/** Owner label. */
+	private JLabel lblOwner;
+	/** Owner list. */
+	private JComboBox cbOwner;
+	/** Population count label. */
+	private JLabel lblPopCount;
+	/** Population count editor. */
+	private JTextField edPopCount;
+	/** Apply planet button. */
+	private ConfigButton btnApplyPlanet;
+	/** The log model. */
+	protected LogModel logModel;
+	/** The log table. */
+	protected JTable logTable;
+	/** Log detail area. */
+	private JTextArea edLogDetail;
 	/**
 	 * Constructor. Initializes the GUI elements.
 	 */
@@ -903,8 +961,8 @@ public class Setup extends JFrame {
 		lblAudioChannels.setForeground(Color.WHITE);
 		edAudioChannels = new AlphaTextField(0.85f, 2);
 		edAudioChannels.setText("8");
-		testAudioChannels = new ConfigButton("Test");
-		testAudioChannels.addActionListener(new Act() { public void act() { playTestMulti(); } });
+		btnTestAudioChannels = new ConfigButton("Test");
+		btnTestAudioChannels.addActionListener(new Act() { public void act() { playTestMulti(); } });
 		GroupLayout gl = new GroupLayout(channelPanel);
 		channelPanel.setLayout(gl);
 		gl.setAutoCreateContainerGaps(true);
@@ -913,13 +971,13 @@ public class Setup extends JFrame {
 			gl.createSequentialGroup()
 			.addComponent(lblAudioChannels)
 			.addComponent(edAudioChannels, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			.addComponent(testAudioChannels)
+			.addComponent(btnTestAudioChannels)
 		);
 		gl.setVerticalGroup(
 			gl.createParallelGroup(Alignment.BASELINE)
 			.addComponent(lblAudioChannels)
 			.addComponent(edAudioChannels, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			.addComponent(testAudioChannels)
+			.addComponent(btnTestAudioChannels)
 		);
 		
 		
@@ -927,8 +985,8 @@ public class Setup extends JFrame {
 		JPanel musicPanel = getAlphaPanel(0.85f, 0x000080);
 		lblMusicVolume = new JLabel("Music volume:");
 		lblMusicVolume.setForeground(Color.WHITE);
-		testMusic = new ConfigButton("Test");
-		testMusic.addActionListener(new Act() { public void act() { playTest(musicSlider.getValue(), testMusic); } });
+		btnTestMusic = new ConfigButton("Test");
+		btnTestMusic.addActionListener(new Act() { public void act() { playTest(musicSlider.getValue(), btnTestMusic, 1); } });
 		musicSlider = new JSlider(0, 100); 
 
 		gl = new GroupLayout(musicPanel);
@@ -942,7 +1000,7 @@ public class Setup extends JFrame {
 				.addComponent(lblMusicVolume)
 				.addComponent(musicSlider)
 			)
-			.addComponent(testMusic)
+			.addComponent(btnTestMusic)
 		);
 		gl.setVerticalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
@@ -951,67 +1009,108 @@ public class Setup extends JFrame {
 				.addComponent(lblMusicVolume)
 				.addComponent(musicSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			)
-			.addComponent(testMusic)
+			.addComponent(btnTestMusic)
 		);
 		// -------------------------------------------------------
 		JPanel effectPanel = getAlphaPanel(0.85f, 0x000080);
 		lblEffectVolume = new JLabel("Effect volume:");
 		lblEffectVolume.setForeground(Color.WHITE);
-		testEffects = new ConfigButton("Test");
-		testEffects.addActionListener(new Act() { public void act() { playTest(effectSlider.getValue(), testEffects); } });
+		btnTestEffects = new ConfigButton("Test");
+		btnTestEffects.addActionListener(new Act() { public void act() { playTest(effectSlider.getValue(), btnTestEffects, (Integer)edEffectFilter.getValue()); } });
 		effectSlider = new JSlider(0, 100); 
+		
+		lblEffectFilter = new JLabel("Averaging filter step count: ");
+		lblEffectFilter.setForeground(Color.WHITE);
+		edEffectFilter = new JSpinner(new SpinnerNumberModel(1, 1, 2048, 1));
+		
+		
 		gl = new GroupLayout(effectPanel);
 		effectPanel.setLayout(gl);
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		gl.setHorizontalGroup(
-			gl.createSequentialGroup()
-			.addGroup(
-				gl.createParallelGroup()
-				.addComponent(lblEffectVolume)
-				.addComponent(effectSlider)
-			)
-			.addComponent(testEffects)
-		);
-		gl.setVerticalGroup(
-			gl.createParallelGroup(Alignment.CENTER)
+			gl.createParallelGroup()
 			.addGroup(
 				gl.createSequentialGroup()
-				.addComponent(lblEffectVolume)
-				.addComponent(effectSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(lblEffectVolume)
+					.addComponent(effectSlider)
+				)
+				.addComponent(btnTestEffects)
 			)
-			.addComponent(testEffects)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(lblEffectFilter)
+				.addComponent(edEffectFilter, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+		);
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(lblEffectVolume)
+					.addComponent(effectSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				)
+				.addComponent(btnTestEffects)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(lblEffectFilter)
+				.addComponent(edEffectFilter, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
 		);
 		
 		// -------------------------------------------------------
 		JPanel videoPanel = getAlphaPanel(0.85f, 0x000080);
 		lblVideoVolume = new JLabel("Video volume:");
 		lblVideoVolume.setForeground(Color.WHITE);
-		testVideo = new ConfigButton("Test");
-		testVideo.addActionListener(new Act() { public void act() { playTest(videoSlider.getValue(), testVideo); } });
+		btnTestVideo = new ConfigButton("Test");
+		btnTestVideo.addActionListener(new Act() { public void act() { playTest(videoSlider.getValue(), btnTestVideo, (Integer)edVideoFilter.getValue()); } });
 		videoSlider = new JSlider(0, 100); 
+		lblVideoFilter = new JLabel("Averaging filter step count: ");
+		lblVideoFilter.setForeground(Color.WHITE);
+		edVideoFilter = new JSpinner(new SpinnerNumberModel(1, 1, 2048, 1));
 		gl = new GroupLayout(videoPanel);
 		videoPanel.setLayout(gl);
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		gl.setHorizontalGroup(
-			gl.createSequentialGroup()
-			.addGroup(
 				gl.createParallelGroup()
-				.addComponent(lblVideoVolume)
-				.addComponent(videoSlider)
-			)
-			.addComponent(testVideo)
-		);
-		gl.setVerticalGroup(
-			gl.createParallelGroup(Alignment.CENTER)
-			.addGroup(
+				.addGroup(
+					gl.createSequentialGroup()
+					.addGroup(
+						gl.createParallelGroup()
+						.addComponent(lblVideoVolume)
+						.addComponent(videoSlider)
+					)
+					.addComponent(btnTestVideo)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(lblVideoFilter)
+					.addComponent(edVideoFilter, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				)
+			);
+			gl.setVerticalGroup(
 				gl.createSequentialGroup()
-				.addComponent(lblVideoVolume)
-				.addComponent(videoSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			)
-			.addComponent(testVideo)
-		);
+				.addGroup(
+					gl.createParallelGroup(Alignment.CENTER)
+					.addGroup(
+						gl.createSequentialGroup()
+						.addComponent(lblVideoVolume)
+						.addComponent(videoSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					)
+					.addComponent(btnTestVideo)
+				)
+				.addGroup(
+					gl.createParallelGroup(Alignment.CENTER)
+					.addComponent(lblVideoFilter)
+					.addComponent(edVideoFilter, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				)
+			);
 
 		// -------------------------------------------------------
 		vhelp.add(Box.createVerticalGlue());
@@ -1030,6 +1129,211 @@ public class Setup extends JFrame {
 	void createCheatsPanel() {
 		cheatsPanel = new JPanel();
 		cheatsPanel.setOpaque(false);
+		cheatsPanel.setLayout(new BoxLayout(cheatsPanel, BoxLayout.LINE_AXIS));
+		
+		JPanel vhelp = new JPanel();
+		vhelp.setOpaque(false);
+		vhelp.setLayout(new BoxLayout(vhelp, BoxLayout.PAGE_AXIS));
+		
+		cheatsPanel.add(Box.createHorizontalGlue());
+		cheatsPanel.add(vhelp);
+		cheatsPanel.add(Box.createHorizontalGlue());
+		
+		JPanel playerPanel = getAlphaPanel(0.85f, 0x000080);
+		
+		GroupLayout gl = new GroupLayout(playerPanel);
+		playerPanel.setLayout(gl);
+		gl.setAutoCreateContainerGaps(true);
+		gl.setAutoCreateGaps(true);
+		
+		lblPlayer = new JLabel("Player:");
+		lblPlayer.setForeground(Color.WHITE);
+		cbPlayers = new JComboBox(new String[] { "Player 1", "Player N" });
+		
+		JSeparator sep0 = new JSeparator();
+		
+		lblMoney = new JLabel("Money:");
+		lblMoney.setForeground(Color.WHITE);
+		edMoney = new AlphaTextField(0.85f, 10);
+		
+		lblAIMode = new JLabel("AI mode:");
+		lblAIMode.setForeground(Color.WHITE);
+		cbAIMode = new JComboBox(new String[] { "No AI", "Hard defensive", "Medium Defensive", "Light Defensive", 
+				"Normal", "Light Offensive", "Medium Offensive", "Heavy offensive" });
+
+		btnSetVisual = new ConfigButton("Set Visual Player");
+		btnApplyPlayer = new ConfigButton("Apply changes");
+		
+		gl.setHorizontalGroup(
+			gl.createParallelGroup(Alignment.CENTER)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(lblPlayer)
+					.addComponent(lblMoney)
+					.addComponent(lblAIMode)
+				)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(cbPlayers, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(edMoney, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(cbAIMode, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				)
+			)
+			.addComponent(sep0)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(btnSetVisual)
+				.addComponent(btnApplyPlayer)
+			)
+		);
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblPlayer)
+				.addComponent(cbPlayers)
+			)
+			.addComponent(sep0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblMoney)
+				.addComponent(edMoney, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblAIMode)
+				.addComponent(cbAIMode)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(btnSetVisual)
+				.addComponent(btnApplyPlayer)
+			)
+		);
+		
+		// ---------------------------------------------------------------
+		
+		JPanel planetPanel = getAlphaPanel(0.85f, 0x000080);
+
+		lblPlanet = new JLabel("Planet:");
+		lblPlanet.setForeground(Color.WHITE);
+		cbPlanet = new JComboBox(new String[] { "Achilles", "Centronom", "New Caroline", "San Sterling", "Earth" });
+		
+		JSeparator sep1 = new JSeparator();
+		
+		lblOwner = new JLabel("Owner:");
+		lblOwner.setForeground(Color.WHITE);
+		cbOwner = new JComboBox(new String[] { "", "Player 1", "Player N", "Pirates" });
+		
+		lblPopCount = new JLabel("Population count:");
+		lblPopCount.setForeground(Color.WHITE);
+		edPopCount = new AlphaTextField(0.85f, 10);
+		
+		btnApplyPlanet = new ConfigButton("Apply");
+		
+		gl = new GroupLayout(planetPanel);
+		gl.setAutoCreateContainerGaps(true);
+		gl.setAutoCreateGaps(true);
+		planetPanel.setLayout(gl);
+		
+		gl.setHorizontalGroup(
+			gl.createParallelGroup(Alignment.CENTER)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(lblPlanet)
+					.addComponent(lblOwner)
+					.addComponent(lblPopCount)
+				)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(cbPlanet, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(cbOwner, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(edPopCount, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				)
+			)
+			.addComponent(btnApplyPlanet)
+			.addComponent(sep1)
+		);
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblPlanet)
+				.addComponent(cbPlanet, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+			.addComponent(sep1)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblOwner)
+				.addComponent(cbOwner, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblPopCount)
+				.addComponent(edPopCount, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+			.addComponent(btnApplyPlanet)
+		);
+		
+		
+		vhelp.add(Box.createVerticalGlue());
+		vhelp.add(playerPanel);
+		vhelp.add(Box.createVerticalStrut(5));
+		vhelp.add(planetPanel);
+		vhelp.add(Box.createVerticalGlue());
+	}
+	/**
+	 * Log table model.
+	 * @author karnok, 2009.09.25.
+	 * @version $Revision 1.0$
+	 */
+	class LogModel extends AbstractTableModel {
+		/** */
+		private static final long serialVersionUID = 8455687509940724726L;
+		/** The column names. */
+		public String[] columnNames = { "Timestamp", "Severity", "Message", "Stacktrace" };
+		/** The column classes. */
+		public Class<?>[] columnClasses = { String.class, String.class, String.class, String.class };
+		/** The list of rows. */
+		public List<LogEntry> rows = new ArrayList<LogEntry>();
+		/** The date format helper. */
+		protected SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		@Override
+		public int getColumnCount() {
+			return columnNames.length;
+		}
+		@Override
+		public int getRowCount() {
+			return rows.size();
+		}
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			LogEntry e = rows.get(rowIndex);
+			switch (columnIndex) {
+			case 0:
+				return sdf.format(new Timestamp(e.timestamp));
+			case 1:
+				return e.severity;
+			case 2:
+				return e.message;
+			case 3:
+				return e.stackTrace;
+			default:
+				return null;
+			}
+		}
+		@Override
+		public Class<?> getColumnClass(int columnIndex) {
+			return columnClasses[columnIndex];
+		}
+		@Override
+		public String getColumnName(int column) {
+			return columnNames[column];
+		}
 	}
 	/**
 	 * Create language panel.
@@ -1037,6 +1341,89 @@ public class Setup extends JFrame {
 	void createLogsPanel() {
 		logsPanel = new JPanel();
 		logsPanel.setOpaque(false);
+		
+		GroupLayout gl = new GroupLayout(logsPanel);
+		logsPanel.setLayout(gl);
+		gl.setAutoCreateContainerGaps(true);
+		gl.setAutoCreateGaps(true);
+		
+		logModel = new LogModel();
+		logTable = new JTable(logModel) {
+			/** */
+			private static final long serialVersionUID = -2007954494618823917L;
+			@Override
+			public void paint(Graphics g) {
+				Graphics2D g2 = (Graphics2D)g;
+				g2.setComposite(AlphaComposite.SrcOver.derive(0.85f));
+				super.paint(g);
+			};
+		};
+		logTable.setOpaque(false);
+		logTable.setAutoCreateRowSorter(true);
+		logTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		logTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				doLogTableSelect();
+			}
+		});
+		logTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		logTable.getColumnModel().getColumn(0).setPreferredWidth(110);
+		logTable.getColumnModel().getColumn(1).setPreferredWidth(80);
+		logTable.getColumnModel().getColumn(2).setPreferredWidth(300);
+		logTable.getColumnModel().getColumn(3).setPreferredWidth(90);
+
+		logTable.getColumnModel().getColumn(0).setWidth(110);
+		logTable.getColumnModel().getColumn(1).setWidth(80);
+		logTable.getColumnModel().getColumn(2).setWidth(300);
+		logTable.getColumnModel().getColumn(3).setWidth(90);
+
+		JScrollPane sp = new JScrollPane(logTable);
+		sp.setOpaque(false);
+		
+		edLogDetail = new JTextArea() {
+			/** */
+			private static final long serialVersionUID = -1319968378332145953L;
+			@Override
+			public void paint(Graphics g) {
+				Graphics2D g2 = (Graphics2D)g;
+				g2.setComposite(AlphaComposite.SrcOver.derive(0.85f));
+				super.paint(g);
+			};
+		};
+		edLogDetail.setEditable(false);
+		JScrollPane sp2 = new JScrollPane(edLogDetail);
+		sp2.setOpaque(false);
+		
+		gl.setHorizontalGroup(
+			gl.createParallelGroup()
+			.addComponent(sp)
+			.addComponent(sp2)
+		);
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addComponent(sp, 100, 100, Short.MAX_VALUE)
+			.addComponent(sp2, 100, 100, 100)
+		);
+	}
+	/**
+	 * Display log detail in the log panel.
+	 */
+	void doLogTableSelect() {
+		int idx = logTable.getSelectedRow();
+		edLogDetail.setText("");
+		if (idx >= 0) {
+			idx = logTable.convertRowIndexToView(idx);
+			LogEntry e = logModel.rows.get(idx);
+			edLogDetail.append(logModel.sdf.format(new Timestamp(e.timestamp)));
+			edLogDetail.append("\r\n");
+			edLogDetail.append(e.severity);
+			edLogDetail.append("\r\n");
+			edLogDetail.append(e.message);
+			edLogDetail.append("\r\n");
+			edLogDetail.append(e.stackTrace);
+			edLogDetail.append("\r\n");
+		}
 	}
 	/**
 	 * Create an alpha composite panel.
@@ -1065,6 +1452,151 @@ public class Setup extends JFrame {
 		p.setOpaque(false);
 		return p;
 	}
+	/**
+	 * Play test audio on the specified volume.
+	 * @param volume the volume whole percents
+	 * @param button the button to change title on
+	 * @param filterSteps the number of filter steps.
+	 */
+	protected void playTest(final int volume, final AbstractButton button, final int filterSteps) {
+		if (playWorker != null) {
+			stopPlayback = true;
+//			playWorker.cancel(true);
+		} else {
+			final String title = button.getText();
+			button.setText("Stop");
+			playWorker = new SwingWorker<Void, Void>() {
+				@Override
+				protected Void doInBackground() throws Exception {
+					playTestDirectly(volume, filterSteps);
+					return null;
+				}
+				@Override
+				protected void done() {
+					playWorker = null;
+					button.setText(title);
+					stopPlayback = false;
+				}
+			};
+			playWorker.execute();
+		}
+	}
+	/**
+	 * Play test directly.
+	 * @param volume the volume
+	 * @param windowSize the averaging window size
+	 */
+	protected void playTestDirectly(int volume, int windowSize) {
+		try {
+			AudioInputStream in = AudioSystem.getAudioInputStream(getClass().getResource("/hu/openig/res/welcome.wav"));
+			try {
+				AudioFormat streamFormat = new AudioFormat(22050, 16, 1, true, false);
+				DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
+
+				SourceDataLine clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
+				try {
+					clip.open();
+					FloatControl fc = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+					double minLinear = Math.pow(10, fc.getMinimum() / 20);
+					double maxLinear = Math.pow(10, fc.getMaximum() / 20);
+					fc.setValue((float)(20 * Math.log10(minLinear + volume * (maxLinear - minLinear) / 100)));
+					clip.start();
+					byte[] buffer = new byte[in.available()];
+					in.read(buffer);
+					byte[] buffer2 = AudioThread.split16To8(AudioThread.movingAverage(upscale8To16AndSignify(buffer), windowSize));
+					int remaining = buffer2.length;
+					int offset = 0;
+					while (!Thread.currentThread().isInterrupted() && !stopPlayback && remaining > 0) {
+						int count = remaining > 4096 ? 4096 : remaining;
+						clip.write(buffer2, offset, count);
+						offset += count;
+						remaining -= count;
+					}
+					if (stopPlayback) {
+						clip.stop();
+						clip.drain();
+					} else {
+						clip.drain();
+						clip.stop();
+					}
+				} finally {
+					clip.close();
+				}
+			} finally {
+				in.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} catch (UnsupportedAudioFileException ex) {
+			ex.printStackTrace();
+		} catch (LineUnavailableException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Upscale the 8 bit signed values to 16 bit signed values.
+	 * @param data the data to upscale
+	 * @return the upscaled data
+	 */
+	public static short[] upscale8To16AndSignify(byte[] data) {
+		short[] result = new short[data.length];
+		for (int i = 0; i < data.length; i++) {
+			result[i] = (short)(((data[i] & 0xFF) - 128) * 256);
+		}
+		return result;
+	}
+
+	/**
+	 * Play the welcome.wav simultaneously.
+	 */
+	protected void playTestMulti() {
+		if (playWorker != null) {
+			stopPlayback = true;
+//			playWorker.cancel(true);
+		} else {
+			final int vol = effectSlider.getValue();
+			final int channels = Integer.parseInt(edAudioChannels.getText());
+			final String title = btnTestAudioChannels.getText();
+			final int window = (Integer)edEffectFilter.getValue();
+			btnTestAudioChannels.setText("Stop");
+			playWorker = new SwingWorker<Void, Void>() {
+				@Override
+				protected Void doInBackground() throws Exception {
+					try {
+						ExecutorService exec = Executors.newFixedThreadPool(channels);
+						for (int i = 0; i < channels; i++) {
+							final int j = i;
+							exec.submit(new Runnable() {
+								@Override
+								public void run() {
+									try {
+										TimeUnit.MILLISECONDS.sleep(3000 / channels * j);
+										playTestDirectly(vol, window);
+									} catch (InterruptedException ex) {
+										
+									}
+								}
+							});
+						}
+						exec.shutdown();
+						exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+					} catch (NumberFormatException ex) {
+						
+					} catch (InterruptedException ex) {
+						
+					}
+					return null;
+				}
+				@Override
+				protected void done() {
+					playWorker = null;
+					btnTestAudioChannels.setText(title);
+					stopPlayback = false;
+				}
+			};
+			playWorker.execute();
+		}
+	}		
 	/** Change to hungarian labels. */
 	void changeToHungarian() {
 		btnLanguage.setText("Nyelv / Language");
@@ -1100,6 +1632,37 @@ public class Setup extends JFrame {
 		cbDisableDDraw.setText("DirectDraw letiltása");
 		cbDisableOpenGL.setText("OpenGL letiltása");
 		lblRestartNeeded.setText("* akár az egész programot újra kell indítani");
+		
+		lblAudioChannels.setText("Audio csatornák száma:");
+		btnTestAudioChannels.setText("Teszt");
+		lblMusicVolume.setText("Zene hangerõ:");
+		btnTestMusic.setText("Teszt");
+		lblEffectVolume.setText("Effektus hangerõ:");
+		btnTestEffects.setText("Teszt");
+		lblVideoVolume.setText("Video hangerõ:");
+		btnTestVideo.setText("Teszt");
+		
+		lblEffectFilter.setText("Átlagoló szûrõ lépésszám:");
+		lblVideoFilter.setText("Átlagoló szûrõ lépésszám:");
+
+		lblPlayer.setText("Játékos:");
+		lblMoney.setText("Pénz:");
+		lblAIMode.setText("MI mód:");
+		int idx = cbAIMode.getSelectedIndex();
+		cbAIMode.setModel(new DefaultComboBoxModel(new String[] { "Nincs AI", "Nehéz védekezõ", "Közepes védekezõ", 
+				"Könnyû védekezõ", "Normál", "Könnyû támadó", "Közepes támadó", "Nehéz támadó" }));
+		cbAIMode.setSelectedIndex(idx);
+		
+		lblPlanet.setText("Bolygó:");
+		lblOwner.setText("Tulajdonos:");
+		lblPopCount.setText("Populáció:");
+
+		btnSetVisual.setText("Játékos mutatása");
+		btnApplyPlayer.setText("Alkalmaz");
+		btnApplyPlanet.setText("Alkalmaz");
+		
+		logModel.columnNames = new String[] { "Idõbélyeg", "Fontosság", "Üzenet", "Hibahely" };
+		refreshLogTableColumns();		
 	}
 	/** Change to english labels. */
 	void changeToEnglish() {
@@ -1136,140 +1699,49 @@ public class Setup extends JFrame {
 		cbDisableDDraw.setText("Disable DirectDraw");
 		cbDisableOpenGL.setText("Disable OpenGL");
 		lblRestartNeeded.setText("* might require complete program restart");
-	}
-	/**
-	 * Play test audio on the specified volume.
-	 * @param volume the volume whole percents
-	 * @param button the button to change title on
-	 */
-	protected void playTest(final int volume, final AbstractButton button) {
-		if (playWorker != null) {
-			stopPlayback = true;
-//			playWorker.cancel(true);
-		} else {
-			final String title = button.getText();
-			button.setText("Stop");
-			playWorker = new SwingWorker<Void, Void>() {
-				@Override
-				protected Void doInBackground() throws Exception {
-					playTestDirectly(volume);
-					return null;
-				}
-				@Override
-				protected void done() {
-					playWorker = null;
-					button.setText(title);
-					stopPlayback = false;
-				}
-			};
-			playWorker.execute();
-		}
-	}
-	/**
-	 * Play test directly.
-	 * @param volume the volume
-	 */
-	protected void playTestDirectly(int volume) {
-		try {
-			AudioInputStream in = AudioSystem.getAudioInputStream(getClass().getResource("/hu/openig/res/welcome.wav"));
-			try {
-				AudioFormat streamFormat = new AudioFormat(22050, 16, 1, true, false);
-				DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
 
-				SourceDataLine clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
-				try {
-					clip.open();
-					FloatControl fc = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
-					double minLinear = Math.pow(10, fc.getMinimum() / 20);
-					double maxLinear = Math.pow(10, fc.getMaximum() / 20);
-					fc.setValue((float)(20 * Math.log10(minLinear + volume * (maxLinear - minLinear) / 100)));
-					clip.start();
-					byte[] buffer = new byte[4096];
-					while (!Thread.currentThread().isInterrupted() && !stopPlayback) {
-						int c = in.read(buffer);
-						if (c < 0) {
-							break;
-						} else
-						if (c > 0) {
-							// upscale
-							byte[] buf2 = new byte[c * 2];
-							for (int i = 0; i < c; i++) {
-								int o = ((buffer[i] & 0xFF) - 128) * 256;
-								buf2[i * 2] = (byte)(o & 0xFF);
-								buf2[i * 2 + 1] = (byte)((o & 0xFF00) >> 8);
-							}
-							clip.write(buf2, 0, buf2.length);
-						}
-					}
-					if (stopPlayback) {
-						clip.stop();
-						clip.drain();
-					} else {
-						clip.drain();
-						clip.stop();
-					}
-				} finally {
-					clip.close();
-				}
-			} finally {
-				in.close();
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} catch (UnsupportedAudioFileException ex) {
-			ex.printStackTrace();
-		} catch (LineUnavailableException ex) {
-			ex.printStackTrace();
+		lblAudioChannels.setText("Audio channel count:");
+		btnTestAudioChannels.setText("Test");
+		lblMusicVolume.setText("Music volume:");
+		btnTestMusic.setText("Test");
+		lblEffectVolume.setText("Effect volume:");
+		btnTestEffects.setText("Test");
+		lblVideoVolume.setText("Video volume:");
+		btnTestVideo.setText("Test");
+		
+		lblEffectFilter.setText("Averaging filter step count:");
+		lblVideoFilter.setText("Averaging filter step count:");
+		
+		lblPlayer.setText("Player:");
+		lblMoney.setText("Money:");
+		lblAIMode.setText("AI mode:");
+		int idx = cbAIMode.getSelectedIndex();
+		cbAIMode.setModel(new DefaultComboBoxModel(new String[] { "No AI", "Hard defensive", "Medium Defensive", "Light Defensive", 
+				"Normal", "Light Offensive", "Medium Offensive", "Heavy offensive" }));
+		cbAIMode.setSelectedIndex(idx);
+		
+		lblPlanet.setText("Planet:");
+		lblOwner.setText("Owner:");
+		lblPopCount.setText("Population count:");
+
+		btnSetVisual.setText("Show Player");
+		btnApplyPlayer.setText("Apply changes");
+		btnApplyPlanet.setText("Apply changes");
+		
+		logModel.columnNames = new String[] { "Timestamp", "Severity", "Message", "Stacktrace" };
+		refreshLogTableColumns();
+	}
+	/** Refresh table column titles. */
+	private void refreshLogTableColumns() {
+		// save and restore column widths
+		List<Integer> widths = new ArrayList<Integer>();
+		for (int i = 0; i < logTable.getColumnCount(); i++) {
+			widths.add(logTable.getColumnModel().getColumn(i).getWidth());
+		}
+		logModel.fireTableStructureChanged();
+		for (int i = 0; i < logTable.getColumnCount(); i++) {
+			logTable.getColumnModel().getColumn(i).setWidth(widths.get(i));
+			logTable.getColumnModel().getColumn(i).setPreferredWidth(widths.get(i));
 		}
 	}
-	/**
-	 * Play the welcome.wav simultaneously.
-	 */
-	protected void playTestMulti() {
-		if (playWorker != null) {
-			stopPlayback = true;
-//			playWorker.cancel(true);
-		} else {
-			final int vol = effectSlider.getValue();
-			final int channels = Integer.parseInt(edAudioChannels.getText());
-			final String title = testAudioChannels.getText();
-			testAudioChannels.setText("Stop");
-			playWorker = new SwingWorker<Void, Void>() {
-				@Override
-				protected Void doInBackground() throws Exception {
-					try {
-						ExecutorService exec = Executors.newFixedThreadPool(channels);
-						for (int i = 0; i < channels; i++) {
-							final int j = i;
-							exec.submit(new Runnable() {
-								@Override
-								public void run() {
-									try {
-										TimeUnit.MILLISECONDS.sleep(3000 / channels * j);
-										playTestDirectly(vol);
-									} catch (InterruptedException ex) {
-										
-									}
-								}
-							});
-						}
-						exec.shutdown();
-						exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-					} catch (NumberFormatException ex) {
-						
-					} catch (InterruptedException ex) {
-						
-					}
-					return null;
-				}
-				@Override
-				protected void done() {
-					playWorker = null;
-					testAudioChannels.setText(title);
-					stopPlayback = false;
-				}
-			};
-			playWorker.execute();
-		}
-	}		
 }
