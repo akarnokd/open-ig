@@ -44,7 +44,7 @@ public class Configuration {
 	public boolean isNew;
 	/** The language code. */
 	@LoadSave
-	public String language;
+	public String language = "hu";
 	/** The ordered list of containers. */
 	@LoadSave
 	public final List<String> containers = new ArrayList<String>();
@@ -65,40 +65,40 @@ public class Configuration {
 	public int left;
 	/** Width. */
 	@LoadSave
-	public int width;
+	public int width = 640;
 	/** Height. */
 	@LoadSave
-	public int height;
+	public int height = 480;
 	/** The filename. */
 	@LoadSave
 	private String fileName;
 	/** The number of audio channels. */
 	@LoadSave
-	public int audioChannels;
+	public int audioChannels = 8;
 	/** The music volume 0-100. */
 	@LoadSave
-	public int musicVolume;
+	public int musicVolume = 100;
 	/** Mute music? */
 	@LoadSave
 	public boolean muteMusic;
 	/** The effect volume 0-100. */
 	@LoadSave
-	public int effectVolume;
+	public int effectVolume = 100;
 	/** Mute effect. */
 	@LoadSave
 	public boolean muteEffect;
 	/** The effect filter step. */
 	@LoadSave
-	public int effectFilter;
+	public int effectFilter = 1;
 	/** Video volume 0-100. */
 	@LoadSave
-	public int videoVolume;
+	public int videoVolume = 100;
 	/** Mute video. */
 	@LoadSave
 	public boolean muteVideo;
 	/** The video filter step. */
 	@LoadSave
-	public int videoFilter;
+	public int videoFilter = 1;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
@@ -153,11 +153,14 @@ public class Configuration {
 						f.set(this, Integer.valueOf(props.getProperty(f.getName(), ((Integer)f.get(this)).toString())));
 					} else
 					if (Collection.class.isAssignableFrom(f.getType())) {
-						int count = Integer.parseInt(props.getProperty(f.getName() + "-count"));
-						if ("containers".equals(f.getName())) {
-							for (int i = 0; i < count; i++) {
-								String s = props.getProperty(f.getName() + "-" + i);
-								containers.add(s);
+						String s = props.getProperty(f.getName() + "-count");
+						if (s != null) {
+						int count = Integer.parseInt(s);
+							if ("containers".equals(f.getName())) {
+								for (int i = 0; i < count; i++) {
+									s = props.getProperty(f.getName() + "-" + i);
+									containers.add(s);
+								}
 							}
 						}
 					} else
@@ -213,6 +216,7 @@ public class Configuration {
 				fout.close();
 			}
 			saveProperties(props);
+			isNew = false;
 			return true;
 		} catch (IOException ex) {
 			return false;
