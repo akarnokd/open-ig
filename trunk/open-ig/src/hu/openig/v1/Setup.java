@@ -110,9 +110,9 @@ public class Setup extends JFrame {
 	/** Panel group layout. */
 	private GroupLayout panelGroupLayout;
 	/** Hungarian language. */
-	private JRadioButton hungarian;
+	private JRadioButton rbHungarian;
 	/** English language. */
-	private JRadioButton english;
+	private JRadioButton rbEnglish;
 	/** Language tab. */
 	private ConfigButton btnLanguage;
 	/** Resources tab. */
@@ -365,9 +365,11 @@ public class Setup extends JFrame {
 		}
 		
 		btnSaveAndRun = new ConfigButton("Save & Run");
+		btnSaveAndRun.addActionListener(new Act() { public void act() { doSaveAndRun(); } });
 		btnSave = new ConfigButton("Save");
+		btnSave.addActionListener(new Act() { public void act() { doSave(); } });
 		btnClose = new ConfigButton("Close");
-		btnClose.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { dispose(); } });
+		btnClose.addActionListener(new Act() { public void act() { dispose(); } });
 		
 		buttonGroup.add(btnLanguage);
 		buttonGroup.add(btnResources);
@@ -429,6 +431,15 @@ public class Setup extends JFrame {
 			)
 		);
 		changeToHungarian();
+	}
+	/** Save and run the game. */
+	protected void doSaveAndRun() {
+		doSave();
+	}
+	/** Save the configuration. */
+	protected void doSave() {
+		storeConfig();
+		config.save();
 	}
 	/**
 	 * Select the panel for the given tab index.
@@ -512,10 +523,10 @@ public class Setup extends JFrame {
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		
-		hungarian = new JRadioButton("Magyar", true);
-		hungarian.setOpaque(false);
-		hungarian.setForeground(Color.WHITE);
-		hungarian.addActionListener(new ActionListener() {
+		rbHungarian = new JRadioButton("Magyar", true);
+		rbHungarian.setOpaque(false);
+		rbHungarian.setForeground(Color.WHITE);
+		rbHungarian.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				changeToHungarian();
@@ -523,10 +534,10 @@ public class Setup extends JFrame {
 		});
 		
 		
-		english = new JRadioButton("Angol / English");
-		english.setOpaque(false);
-		english.setForeground(Color.WHITE);
-		english.addActionListener(new ActionListener() {
+		rbEnglish = new JRadioButton("Angol / English");
+		rbEnglish.setOpaque(false);
+		rbEnglish.setForeground(Color.WHITE);
+		rbEnglish.addActionListener(new ActionListener() {
 			/* (non-Javadoc)
 			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 			 */
@@ -537,18 +548,18 @@ public class Setup extends JFrame {
 		});
 		
 		ButtonGroup bg = new ButtonGroup();
-		bg.add(hungarian);
-		bg.add(english);
+		bg.add(rbHungarian);
+		bg.add(rbEnglish);
 		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup(Alignment.LEADING)
-			.addComponent(hungarian)
-			.addComponent(english)
+			.addComponent(rbHungarian)
+			.addComponent(rbEnglish)
 		);
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
-			.addComponent(hungarian)
-			.addComponent(english)
+			.addComponent(rbHungarian)
+			.addComponent(rbEnglish)
 		);
 	}
 	/**
@@ -893,15 +904,22 @@ public class Setup extends JFrame {
 		lblLeft = new JLabel("Left:");
 		lblLeft.setForeground(Color.WHITE);
 		edLeft = new AlphaTextField(0.85f, 4);
+		edLeft.setText("0");
+		
 		lblTop = new JLabel("Top:");
 		lblTop.setForeground(Color.WHITE);
 		edTop = new AlphaTextField(0.85f, 4);
+		edTop.setText("0");
+
 		lblWidth = new JLabel("Width:");
 		lblWidth.setForeground(Color.WHITE);
 		edWidth = new AlphaTextField(0.85f, 4);
+		edWidth.setText("640");
+
 		lblHeight = new JLabel("Height:");
 		lblHeight.setForeground(Color.WHITE);
 		edHeight = new AlphaTextField(0.85f, 4);
+		edHeight.setText("480");
 		btnApplyBounds = new ConfigButton("Apply");
 		
 		gl.setHorizontalGroup(
@@ -1622,8 +1640,8 @@ public class Setup extends JFrame {
 		btnSave.setText("Mentés");
 		btnClose.setText("Kilépés");
 		
-		hungarian.setText("Magyar");
-		english.setText("Angol / English");
+		rbHungarian.setText("Magyar");
+		rbEnglish.setText("Angol / English");
 
 		pathLabel.setText("Fájl útvonal:");
 		fileListLabel.setText("Kiválasztott fájlok:");
@@ -1689,8 +1707,8 @@ public class Setup extends JFrame {
 		btnSave.setText("Save");
 		btnClose.setText("Close");
 		
-		hungarian.setText("Hungarian / Magyar");
-		english.setText("English");
+		rbHungarian.setText("Hungarian / Magyar");
+		rbEnglish.setText("English");
 
 		pathLabel.setText("File path:");
 		fileListLabel.setText("Selected files:");
@@ -1761,7 +1779,40 @@ public class Setup extends JFrame {
 	 * Load configuration values into the GUI.
 	 */
 	protected void loadConfig() {
+		if (config.isNew) {
+			return;
+		}
+		if ("hu".equals(config.language)) {
+			rbHungarian.setSelected(true);
+			changeToHungarian();
+		} else
+		if ("en".equals(config.language)) {
+			rbEnglish.setSelected(true);
+			changeToEnglish();
+		}
+		fileListModel.clear();
+		for (String s : config.containers) {
+			fileListModel.addElement(s);
+		}
 		
+		edLeft.setText(Integer.toString(config.left));
+		edTop.setText(Integer.toString(config.top));
+		edWidth.setText(Integer.toString(config.width));
+		edHeight.setText(Integer.toString(config.height));
+
+		cbDisableD3D.setSelected(config.disableD3D);
+		cbDisableDDraw.setSelected(config.disableDirectDraw);
+		cbDisableOpenGL.setSelected(config.disableOpenGL);
+		
+		edAudioChannels.setText(Integer.toString(config.audioChannels));
+		musicSlider.setValue(config.musicVolume);
+		effectSlider.setValue(config.effectVolume);
+		videoSlider.setValue(config.videoVolume);
+		
+		edEffectFilter.setValue(config.effectFilter);
+		edVideoFilter.setValue(config.videoFilter);
+		
+		repaint();
 	}
 	/**
 	 * Store GUI settings into the configuration.
