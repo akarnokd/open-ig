@@ -43,9 +43,9 @@ public final class Startup {
 			}
 			return;
 		}
-		File config = new File("open-ig-config.xml");
-		if (!config.exists()) {
-			doStartConfiguration();
+		Configuration config = new Configuration("open-ig-config.xml");
+		if (!config.load()) {
+			doStartConfiguration(config);
 		} else {
 			doStartGame();
 		}
@@ -119,12 +119,13 @@ public final class Startup {
 	}
 	/**
 	 * Display the configuration window for setup.
+	 * @param config the configuration
 	 */
-	private static void doStartConfiguration() {
+	private static void doStartConfiguration(final Configuration config) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				Setup setup = new Setup();
+				Setup setup = new Setup(config);
 				setup.setLocationRelativeTo(null);
 				setup.setVisible(true);
 				setup.pack();

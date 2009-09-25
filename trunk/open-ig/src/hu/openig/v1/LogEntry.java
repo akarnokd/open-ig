@@ -35,11 +35,22 @@ public class LogEntry {
 		result.timestamp = System.currentTimeMillis();
 		result.severity = "ERROR";
 		result.message = t.getMessage();
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		t.printStackTrace(pw);
-		pw.flush();
-		result.stackTrace = sw.toString();
+		result.stackTrace = toString(t);
 		return result;
+	}
+	/**
+	 * Convert the throwable stacktrace into string.
+	 * @param t the throwable
+	 * @return the string
+	 */
+	public static String toString(Throwable t) {
+		if (t != null) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			t.printStackTrace(pw);
+			pw.flush();
+			return sw.toString();
+		}
+		return "";
 	}
 }

@@ -261,16 +261,21 @@ public class Setup extends JFrame {
 	protected JTable logTable;
 	/** Log detail area. */
 	private JTextArea edLogDetail;
+	/** The configuration. */
+	private Configuration config;
 	/**
 	 * Constructor. Initializes the GUI elements.
+	 * @param config the configuration
 	 */
-	public Setup() {
+	public Setup(Configuration config) {
+		this.config = config;
 		setTitle("Open Imperium Galactica Setup/Beállítás");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		try {
 			background = ImageIO.read(getClass().getResource("/hu/openig/res/setup.png"));
 			setIconImage(ImageIO.read(getClass().getResource("/hu/openig/res/open-ig-logo.png")));
 		} catch (IOException ex) {
+			config.error(ex);
 			throw new RuntimeException(ex);
 		}
 		basePanel = new JPanel() {
@@ -305,6 +310,14 @@ public class Setup extends JFrame {
 		
 		setResizable(false);
 		pack();
+		config.logListener.add(new Act() { public void act() { doUpdateLog(); } });
+		if (config.isNew) {
+			loadConfig();
+		}
+	}
+	/** Update the event log. */
+	protected void doUpdateLog() {
+		logModel.fireTableDataChanged();
 	}
 	/**
 	 * Create configuration tabs.
@@ -1299,7 +1312,7 @@ public class Setup extends JFrame {
 		/** The column classes. */
 		public Class<?>[] columnClasses = { String.class, String.class, String.class, String.class };
 		/** The list of rows. */
-		public List<LogEntry> rows = new ArrayList<LogEntry>();
+		public List<LogEntry> rows = config.logs;
 		/** The date format helper. */
 		protected SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		@Override
@@ -1526,11 +1539,11 @@ public class Setup extends JFrame {
 				in.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			config.error(ex);
 		} catch (UnsupportedAudioFileException ex) {
-			ex.printStackTrace();
+			config.error(ex);
 		} catch (LineUnavailableException ex) {
-			ex.printStackTrace();
+			config.error(ex);
 		}
 	}
 	/**
@@ -1573,7 +1586,7 @@ public class Setup extends JFrame {
 										TimeUnit.MILLISECONDS.sleep(3000 / channels * j);
 										playTestDirectly(vol, window);
 									} catch (InterruptedException ex) {
-										
+										config.debug(ex);
 									}
 								}
 							});
@@ -1581,9 +1594,9 @@ public class Setup extends JFrame {
 						exec.shutdown();
 						exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 					} catch (NumberFormatException ex) {
-						
+						config.error(ex);
 					} catch (InterruptedException ex) {
-						
+						config.debug(ex);
 					}
 					return null;
 				}
@@ -1743,5 +1756,17 @@ public class Setup extends JFrame {
 			logTable.getColumnModel().getColumn(i).setWidth(widths.get(i));
 			logTable.getColumnModel().getColumn(i).setPreferredWidth(widths.get(i));
 		}
+	}
+	/**
+	 * Load configuration values into the GUI.
+	 */
+	protected void loadConfig() {
+		
+	}
+	/**
+	 * Store GUI settings into the configuration.
+	 */
+	protected void storeConfig() {
+		
 	}
 }
