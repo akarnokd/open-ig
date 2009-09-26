@@ -15,7 +15,6 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -27,7 +26,9 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -46,11 +47,9 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -263,6 +262,8 @@ public class Setup extends JFrame {
 	private JTextArea edLogDetail;
 	/** The configuration. */
 	private Configuration config;
+	/** Action listeners for the event of run. */
+	public final Set<Act> onRun = new HashSet<Act>();
 	/**
 	 * Constructor. Initializes the GUI elements.
 	 * @param config the configuration
@@ -311,9 +312,7 @@ public class Setup extends JFrame {
 		setResizable(false);
 		pack();
 		config.logListener.add(new Act() { public void act() { doUpdateLog(); } });
-		if (config.isNew) {
-			loadConfig();
-		}
+		loadConfig();
 	}
 	/** Update the event log. */
 	protected void doUpdateLog() {
@@ -435,6 +434,10 @@ public class Setup extends JFrame {
 	/** Save and run the game. */
 	protected void doSaveAndRun() {
 		doSave();
+		dispose();
+		for (Act a : onRun) {
+			a.act();
+		}
 	}
 	/** Save the configuration. */
 	protected void doSave() {
@@ -449,54 +452,6 @@ public class Setup extends JFrame {
 		buttonGroup.setSelected(tabs.get(i).getModel(), true);
 		panelGroupLayout.replace(currentPanel, panels.get(i));
 		currentPanel = panels.get(i);
-	}
-	/**
-	 * Special rounded rectangle toggle button.
-	 * @author karnokd, 2009.09.23.
-	 * @version $Revision 1.0$
-	 */
-	public class ConfigButton extends JButton {
-		/** */
-		private static final long serialVersionUID = -2759017088425629378L;
-		/**
-		 * Constructor. Sets the text.
-		 * @param text the title
-		 */
-		public ConfigButton(String text) {
-			super(text);
-			setOpaque(false);
-		}
-		@Override
-		public void paint(Graphics g) {
-			Graphics2D g2 = (Graphics2D)g;
-			g2.setFont(getFont());
-			FontMetrics fm = g2.getFontMetrics();
-			
-			ButtonModel mdl = getModel();
-			String s = getText();
-			
-			g2.setComposite(AlphaComposite.SrcOver.derive(0.85f));
-			if (mdl.isPressed() || mdl.isSelected()) {
-				if (mdl.isRollover()) {
-					g2.setColor(new Color(0xE0E0E0));
-				} else {
-					g2.setColor(new Color(0xFFFFFF));
-				}
-				g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-				g2.setColor(new Color(0x000000));
-			} else {
-				if (mdl.isRollover()) {
-					g2.setColor(new Color(0x000000));
-				} else {
-					g2.setColor(new Color(0x202020));
-				}
-				g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-				g2.setColor(new Color(0xFFFFFFFF));
-			}
-			int x = (getWidth() - fm.stringWidth(s)) / 2;
-			int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent() + fm.getLeading();
-			g2.drawString(s, x, y);
-		}
 	}
 	/**
 	 * Create language panel.
@@ -1153,6 +1108,10 @@ public class Setup extends JFrame {
 		vhelp.add(Box.createVerticalStrut(5));
 		vhelp.add(videoPanel);
 		vhelp.add(Box.createVerticalGlue());
+		
+		musicSlider.setValue(100);
+		effectSlider.setValue(100);
+		videoSlider.setValue(100);
 	}
 	/**
 	 * Create language panel.
@@ -1795,10 +1754,18 @@ public class Setup extends JFrame {
 			fileListModel.addElement(s);
 		}
 		
-		edLeft.setText(Integer.toString(config.left));
-		edTop.setText(Integer.toString(config.top));
-		edWidth.setText(Integer.toString(config.width));
-		edHeight.setText(Integer.toString(config.height));
+		if (config.left != null) {
+			edLeft.setText(config.left.toString());
+		}
+		if (config.top != null) {
+			edTop.setText(config.top.toString());
+		}
+		if (config.width != null) {
+			edWidth.setText(config.width.toString());
+		}
+		if (config.height != null) {
+			edHeight.setText(config.height.toString());
+		}
 
 		cbDisableD3D.setSelected(config.disableD3D);
 		cbDisableDDraw.setSelected(config.disableDirectDraw);
@@ -1818,6 +1785,45 @@ public class Setup extends JFrame {
 	 * Store GUI settings into the configuration.
 	 */
 	protected void storeConfig() {
+		if (rbHungarian.isSelected()) {
+			config.language = "hu";
+		} else
+		if (rbEnglish.isSelected()) {
+			config.language = "en";
+		}
+		config.containers.clear();
+		for (int i = 0; i < fileListModel.size(); i++) {
+			config.containers.add((String)fileListModel.elementAt(i));
+		}
+		if (!edLeft.getText().isEmpty()) {
+			config.left = Integer.valueOf(edLeft.getText());
+		} else {
+			config.left = null;
+		}
+		if (!edTop.getText().isEmpty()) {
+			config.top = Integer.valueOf(edTop.getText());
+		} else {
+			config.top = null;
+		}
+		if (!edWidth.getText().isEmpty()) {
+			config.width = Integer.valueOf(edWidth.getText());
+		} else {
+			config.width = null;
+		}
+		if (!edHeight.getText().isEmpty()) {
+			config.height = Integer.valueOf(edHeight.getText());
+		} else {
+			config.height = null;
+		}
+		config.disableD3D = cbDisableD3D.isSelected();
+		config.disableDirectDraw = cbDisableDDraw.isSelected();
+		config.disableOpenGL = cbDisableOpenGL.isSelected();
 		
+		config.audioChannels = Integer.parseInt(edAudioChannels.getText());
+		config.musicVolume = musicSlider.getValue();
+		config.effectVolume = effectSlider.getValue();
+		config.videoVolume = effectSlider.getValue();
+		config.effectFilter = (Integer)edEffectFilter.getValue();
+		config.videoFilter = (Integer)edVideoFilter.getValue();
 	}
 }

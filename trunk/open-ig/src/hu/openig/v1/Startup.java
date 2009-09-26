@@ -12,6 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -44,7 +47,8 @@ public final class Startup {
 			return;
 		}
 		Configuration config = new Configuration("open-ig-config.xml");
-		if (!config.load()) {
+		Set<String> argset = new HashSet<String>(Arrays.asList(args));
+		if (!config.load() || argset.contains("-config")) {
 			doStartConfiguration(config);
 		} else {
 			doStartGame();
