@@ -1,0 +1,27 @@
+#summary The Setup program description.
+
+= Introduction =
+
+This page describes the new setup program used for Open Imperium Galactica.
+
+
+= Details =
+
+== Language page ==
+
+http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-1.png
+
+== Files page ==
+http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-2.png
+
+== Graphics page ==
+http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-3.png
+
+== Audio page ==
+http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-4.png
+
+== Cheats page ==
+http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-5.png
+
+== Logs page ==
+http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-6.png
