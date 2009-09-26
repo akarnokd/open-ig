@@ -11,11 +11,28 @@ This page describes the new setup program used for Open Imperium Galactica.
 
 http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-1.png
 
+This page allows the user to switch between the supported languages. In version 0.8, these options are hard coded to Hungarian and English.
+
 == Files page ==
 http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-2.png
 
+The most important setup page is the Files page. Here must the resource files or directories be selected:
+
+  * Image directories or image ZIP file(s), named open-ig-images-`*`.zip
+  * Audio directories or audio ZIP file(s), named open-ig-audio-`*`.zip
+  * Video directories or video ZIP file(s), named open-ig-video-`*`.zip
+  * Data directories or data ZIP file(s), named open-ig-data-`*`.zip
+
+To allow patching/changing the resources without re-downloading everything, the system supports ordering of these files: put newer or override files in front.
+
+There is an auto locate option to look for these files in the active directory.
+
 == Graphics page ==
 http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-3.png
+
+On this page, the user can set the game window's position and size. This is useful when a predefined sized screenshot or video recording needs to be done.
+
+The troubleshooting options lets the user disable some acceleration properties if performance or rendering anomalies occur.
 
 == Audio page ==
 http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-4.png
