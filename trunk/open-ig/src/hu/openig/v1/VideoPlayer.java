@@ -9,12 +9,16 @@
 package hu.openig.v1;
 
 import hu.openig.ani.MovieSurface;
+import hu.openig.ani.MovieSurface.ScalingMode;
+import hu.openig.core.ImageInterpolation;
 import hu.openig.sound.AudioThread;
 import hu.openig.v1.ResourceLocator.ResourcePlace;
 
 import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -36,6 +40,7 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -43,6 +48,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
@@ -273,7 +279,12 @@ public class VideoPlayer extends JFrame {
 		this.config = config;
 		Container c = getContentPane();
 		
-		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				doExit();
+			}
+		});
 		
 		JPanel videoPanel = new JPanel();
 		
@@ -306,13 +317,53 @@ public class VideoPlayer extends JFrame {
 		
 		JMenuItem mnuRescan = new JMenuItem("Rescan");
 		mnuRescan.addActionListener(new Act() { public void act() { doRescan(); } });
-		
+
+		JMenuItem mnuSetup = new JMenuItem("Setup");
+		mnuSetup.addActionListener(new Act() { public void act() { doSetup(); } });
+
 		
 		mnuFile.add(mnuRescan);
+		mnuFile.add(mnuSetup);
 		mnuFile.addSeparator();
 		mnuFile.add(mnuFileExit);
 		menuBar.add(mnuFile);
 		
+		JMenu mnuView = new JMenu("View");
+		menuBar.add(mnuView);
+		
+		JMenuItem keepAspect = createRadioItem("Keep aspect", new Act() { public void act() { setScale(ScalingMode.KEEP_ASPECT); } });
+		JMenuItem scale = createRadioItem("Scale to window", new Act() { public void act() { setScale(ScalingMode.WINDOW_SIZE); } });
+		JMenuItem noScale = createRadioItem("Original size", new Act() { public void act() { setScale(ScalingMode.NONE); } });
+		keepAspect.setSelected(true);
+
+		
+		ButtonGroup bg1 = new ButtonGroup();
+		bg1.add(keepAspect);
+		bg1.add(scale);
+		bg1.add(noScale);
+		
+		mnuView.add(keepAspect);
+		mnuView.add(scale);
+		mnuView.add(noScale);
+		mnuView.addSeparator();
+		
+		JMenuItem interDefault = createRadioItem("Default Interpolation", new Act() { public void act() { setInterpolation(ImageInterpolation.NONE); } });
+		JMenuItem interLinear = createRadioItem("Linear Interpolation", new Act() { public void act() { setInterpolation(ImageInterpolation.NEIGHBOR); } });
+		JMenuItem interBilinear = createRadioItem("Bilinear Interpolation", new Act() { public void act() { setInterpolation(ImageInterpolation.BILINEAR); } });
+		JMenuItem interBicubic = createRadioItem("Bicubic Interpolation", new Act() { public void act() { setInterpolation(ImageInterpolation.BICUBIC); } });
+		
+		interDefault.setSelected(true);
+		
+		ButtonGroup bg2 = new ButtonGroup();
+		bg2.add(interDefault);
+		bg2.add(interLinear);
+		bg2.add(interBilinear);
+		bg2.add(interBicubic);
+		
+		mnuView.add(interDefault);
+		mnuView.add(interLinear);
+		mnuView.add(interBilinear);
+		mnuView.add(interBicubic);
 		
 		
 		setJMenuBar(menuBar);
@@ -344,6 +395,8 @@ public class VideoPlayer extends JFrame {
 		positionTime = new JLabel();
 		subtitle = new JLabel();
 		
+		JLabel volumeLabel = new JLabel("Volume:");
+		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup()
 			.addComponent(surface, 0, 320, Short.MAX_VALUE)
@@ -355,6 +408,7 @@ public class VideoPlayer extends JFrame {
 //				.addComponent(btnPause)
 				.addComponent(btnStop)
 				.addComponent(positionTime, 150, 150, 150)
+				.addComponent(volumeLabel)
 				.addComponent(volumeSlider, 100, 100, 100)
 			)
 		);
@@ -364,11 +418,15 @@ public class VideoPlayer extends JFrame {
 			.addComponent(subtitle, 50, 50, 50)
 			.addComponent(position, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(btnPlay)
-//				.addComponent(btnPause)
-				.addComponent(btnStop)
-				.addComponent(positionTime)
+				gl.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+					gl.createParallelGroup(Alignment.BASELINE)
+					.addComponent(btnPlay)
+	//				.addComponent(btnPause)
+					.addComponent(btnStop)
+					.addComponent(positionTime)
+					.addComponent(volumeLabel)
+				)
 				.addComponent(volumeSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			)
 		);
@@ -390,10 +448,46 @@ public class VideoPlayer extends JFrame {
 			}
 		});
 	}
+	/**
+	 * Show setup window.
+	 */
+	protected void doSetup() {
+		Setup s = new Setup(config);
+		s.setLocationRelativeTo(this);
+		s.setVisible(true);
+	}
+	/**
+	 * Set scaling mode.
+	 * @param mode the scaling mode
+	 */
+	protected void setScale(ScalingMode mode) {
+		surface.setScalingMode(mode);
+	}
+	/**
+	 * Set interpolation.
+	 * @param ip the interpolation
+	 */
+	protected void setInterpolation(ImageInterpolation ip) {
+		surface.setInterpolation(ip);
+	}
+	/**
+	 * Create a menu item.
+	 * @param title the title
+	 * @param action the action or null
+	 * @return the menu item
+	 */
+	protected JMenuItem createRadioItem(String title, Act action) {
+		JMenuItem result = new JRadioButtonMenuItem(title);
+		if (action != null) {
+			result.addActionListener(action);
+		}
+		return result;
+	}
 	/** Perform exit. */
 	protected void doExit() {
 		doStop();
 		dispose();
+		rl.close();
 	}
 	/**
 	 * Perform a rescan.
