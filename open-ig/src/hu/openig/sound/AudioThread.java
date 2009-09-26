@@ -182,6 +182,9 @@ public class AudioThread extends Thread {
 	 * @return the transformed data
 	 */
 	public static short[] movingAverage(short[] data, int windowSize) {
+		if (windowSize == 1) {
+			return data.clone();
+		}
 		short[] result = new short[data.length];
 		int acc = 0;
 		for (int i = 0, count = windowSize / 2; i < count; i++) {

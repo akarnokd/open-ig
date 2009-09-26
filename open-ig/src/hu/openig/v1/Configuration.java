@@ -59,16 +59,16 @@ public class Configuration {
 	public boolean disableOpenGL;
 	/** Top. */
 	@LoadSave
-	public int top;
+	public Integer top;
 	/** Left. */
 	@LoadSave
-	public int left;
+	public Integer left;
 	/** Width. */
 	@LoadSave
-	public int width = 640;
+	public Integer width;
 	/** Height. */
 	@LoadSave
-	public int height = 480;
+	public Integer height;
 	/** The filename. */
 	@LoadSave
 	private String fileName;
@@ -147,10 +147,16 @@ public class Configuration {
 			for (Field f : this.getClass().getDeclaredFields()) {
 				if (f.isAnnotationPresent(LoadSave.class)) {
 					if (f.getType() == Boolean.TYPE) {
-						f.set(this, Boolean.valueOf(props.getProperty(f.getName(), ((Boolean)f.get(this)).toString())));
+						String s = props.getProperty(f.getName());
+						if (s != null) {
+							f.set(this,  Boolean.valueOf(s));
+						}
 					} else
-					if (f.getType() == Integer.TYPE) {
-						f.set(this, Integer.valueOf(props.getProperty(f.getName(), ((Integer)f.get(this)).toString())));
+					if (f.getType() == Integer.TYPE || f.getType() == Integer.class) {
+						String s = props.getProperty(f.getName());
+						if (s != null) {
+							f.set(this, Integer.valueOf(s));
+						}
 					} else
 					if (Collection.class.isAssignableFrom(f.getType())) {
 						String s = props.getProperty(f.getName() + "-count");
@@ -194,7 +200,10 @@ public class Configuration {
 						}
 						props.setProperty(f.getName() + "-count", Integer.toString(c.size()));
 					} else {
-						props.setProperty(f.getName(), f.get(this).toString());
+						Object o = f.get(this);
+						if (o != null) {
+							props.setProperty(f.getName(), o.toString());
+						}
 					}
 				}
 			}
@@ -210,12 +219,12 @@ public class Configuration {
 		try {
 			Properties props = new Properties();
 			FileOutputStream fout = new FileOutputStream(fileName);
+			saveProperties(props);
 			try {
 				props.storeToXML(fout, "Open Imperium Galactica Configuration");
 			} finally {
 				fout.close();
 			}
-			saveProperties(props);
 			isNew = false;
 			return true;
 		} catch (IOException ex) {
@@ -301,6 +310,9 @@ public class Configuration {
 			logs.remove(0);
 		}
 		logs.add(e);
+		if (t != null) {
+			t.printStackTrace();
+		}
 		for (Act a : logListener) {
 			a.act();
 		}

@@ -28,7 +28,7 @@ public class ResourceLocator {
 	/** The directories and ZIP files that contain resources, order is inportant. */
 	private final List<String> containers = new ArrayList<String>();
 	/** The resource map. */
-	private final Map<ResourceType, Map<String, Map<String, ResourcePlace>>> resourceMap = new HashMap<ResourceType, Map<String, Map<String, ResourcePlace>>>();
+	public final Map<ResourceType, Map<String, Map<String, ResourcePlace>>> resourceMap = new HashMap<ResourceType, Map<String, Map<String, ResourcePlace>>>();
 	/** The pre-opened ZIP containers. */
 	private final Map<String, ZipFile> zipContainers = new HashMap<String, ZipFile>();
 	/**
@@ -75,7 +75,13 @@ public class ResourceLocator {
 			try {
 				if (zipContainer) {
 					ZipFile zf = zipContainers.get(container);
-					return zf.getInputStream(zf.getEntry(fileName));
+					try {
+						return zf.getInputStream(zf.getEntry(fileName));
+					} catch (IllegalStateException ex) {
+						zf = new ZipFile(container);
+						zipContainers.put(container, zf);
+						return zf.getInputStream(zf.getEntry(fileName));
+					}
 				} else {
 					return new FileInputStream(container + "/" + fileName);
 				}
@@ -123,6 +129,9 @@ public class ResourceLocator {
 			Enumeration<? extends ZipEntry> en = zf.entries();
 			while (en.hasMoreElements()) {
 				ZipEntry ze = en.nextElement();
+				if (ze.isDirectory()) {
+					continue;
+				}
 				String name = ze.getName();
 				ResourcePlace rp = new ResourcePlace();
 				rp.container = zipFile;
@@ -246,5 +255,32 @@ public class ResourceLocator {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Get resource for a language, type and resource name, but does not look for a generic version.
+	 * @param language the language
+	 * @param resourceName the resource name with dash
+	 * @param type the resource type
+	 * @return the resource place
+	 */
+	public ResourcePlace getExactly(String language, String resourceName, ResourceType type) {
+		Map<String, Map<String, ResourcePlace>> res = resourceMap.get(type);
+		if (res != null) {
+			Map<String, ResourcePlace> rps = res.get(language);
+			if (rps != null) {
+				ResourcePlace rp = rps.get(resourceName);
+				if (rp != null) {
+					return rp;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Clear the resource map.
+	 */
+	public void clear() {
+		resourceMap.clear();
 	}
 }
