@@ -42,6 +42,11 @@ public class ConfigButton extends JButton {
 		String s = getText();
 		
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.85f));
+		if (!mdl.isEnabled()) {
+			g2.setColor(new Color(0x808080));
+			g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+			g2.setColor(new Color(0x000000));
+		} else
 		if (mdl.isPressed() || mdl.isSelected()) {
 			if (mdl.isRollover()) {
 				g2.setColor(new Color(0xE0E0E0));

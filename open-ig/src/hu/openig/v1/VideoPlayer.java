@@ -103,6 +103,12 @@ public class VideoPlayer extends JFrame {
 	protected SubtitleManager subs;
 	/** Synchronization point for audio-video playback. */
 	protected CyclicBarrier barrier;
+	/** Play button. */
+	private ConfigButton btnPlay;
+	/** Pause button. */
+	private ConfigButton btnPause;
+	/** Stop button. */
+	private ConfigButton btnStop;
 	/**
 	 * Video entry.
 	 * @author karnok, 2009.09.26.
@@ -372,12 +378,13 @@ public class VideoPlayer extends JFrame {
 		
 		setJMenuBar(menuBar);
 		
-		ConfigButton btnPlay = new ConfigButton("Play");
+		btnPlay = new ConfigButton("Play");
 		btnPlay.addActionListener(new Act() { public void act() { doPlay(); } });
-		ConfigButton btnPause = new ConfigButton("Pause");
+		btnPause = new ConfigButton("Pause");
 		btnPause.addActionListener(new Act() { public void act() { doPause(); } });
-		ConfigButton btnStop = new ConfigButton("Stop");
+		btnStop = new ConfigButton("Stop");
 		btnStop.addActionListener(new Act() { public void act() { doStop(); } });
+//		btnStop.setEnabled(false);
 		
 		position = new JSlider(0, 0);
 		position.addChangeListener(new ChangeListener() {
@@ -525,6 +532,8 @@ public class VideoPlayer extends JFrame {
 			}
 			stop = false;
 			if (currentVideo != null) {
+//				btnPlay.setEnabled(false);
+//				btnStop.setEnabled(true);
 				playVideo(currentVideo.video, currentVideo.path, currentVideo.name, currentVideo.audio, currentVideo.subtitle);
 			}
 		} catch (InterruptedException ex) {
@@ -533,6 +542,8 @@ public class VideoPlayer extends JFrame {
 	}
 	/** Stop playback. */
 	protected void doStop() {
+//		btnStop.setEnabled(false);
+//		btnPlay.setEnabled(true);
 		if (videoWorker != null) {
 			videoWorker.interrupt();
 			stop = true;
@@ -648,6 +659,8 @@ public class VideoPlayer extends JFrame {
 		private boolean startFlag;
 		/** The start guard. */
 		private Object startGuard = new Object();
+		/** The initial volume. */
+		public int initialVolume = 100;
 		/**
 		 * Set audio volume.
 		 * @param volume the volume
@@ -712,9 +725,9 @@ public class VideoPlayer extends JFrame {
 					try {
 						AudioFormat streamFormat = new AudioFormat(22050, 16, 1, true, false);
 						DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
-		
 						clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
 						clip.open();
+						setVolume(initialVolume);
 						waitForStart();
 						try {
 							barrier.await();
@@ -753,7 +766,9 @@ public class VideoPlayer extends JFrame {
 		if (currentFps > 0) {
 			skip = (int)(position.getValue() * 22050 / currentFps);
 		}
-		return new AudioWorker(audio, skip);
+		AudioWorker aw = new AudioWorker(audio, skip);
+		aw.initialVolume = volumeSlider.getValue();
+		return aw;
 	}
 	/**
 	 * Decode the video.
