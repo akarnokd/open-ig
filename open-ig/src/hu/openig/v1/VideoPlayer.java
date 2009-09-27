@@ -592,6 +592,8 @@ public class VideoPlayer extends JFrame {
 		if (subtitle != null && !subtitle.isEmpty()) {
 			final ResourcePlace sub = rl.get(audio, path + "/" + name, ResourceType.SUBTITLE);
 			subs = new SubtitleManager(sub.open());
+		} else {
+			subs = null;
 		}
 		final int skip = position.getValue();
 		if (audio != null && !audio.isEmpty()) {
