@@ -734,4 +734,9 @@
 		<type value="1" fps="17.89" delay="28"/>
 		<type value="3" fps="17.89" delay="28"/>
 	</ani>
+	<ani name="ATVEZ001.ANI">
+		<type value="1" fps="17.693" delay="28"/>
+		<type value="2" fps="17.693" delay="28"/>
+		<type value="3" fps="17.89" delay="28"/>
+	</ani>
 </framerates>

@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.LockSupport;
 import java.util.zip.GZIPInputStream;
 
@@ -99,6 +101,8 @@ public class VideoPlayer extends JFrame {
 	protected volatile double currentFps;
 	/** The subtitle manager. */
 	protected SubtitleManager subs;
+	/** Synchronization point for audio-video playback. */
+	protected CyclicBarrier barrier;
 	/**
 	 * Video entry.
 	 * @author karnok, 2009.09.26.
@@ -596,11 +600,6 @@ public class VideoPlayer extends JFrame {
 			subs = null;
 		}
 		final int skip = position.getValue();
-		if (audio != null && !audio.isEmpty()) {
-			final ResourcePlace sound = rl.get(audio, path + "/" + name, ResourceType.AUDIO);
-			audioWorker = createAudioWorker(sound);
-			audioWorker.start();
-		}
 		videoWorker = new Worker() {
 			@Override
 			protected void work() {
@@ -610,6 +609,14 @@ public class VideoPlayer extends JFrame {
 			protected void done() {
 			}
 		};
+		if (audio != null && !audio.isEmpty()) {
+			final ResourcePlace sound = rl.get(audio, path + "/" + name, ResourceType.AUDIO);
+			audioWorker = createAudioWorker(sound);
+			audioWorker.start();
+			barrier = new CyclicBarrier(2);
+		} else {
+			barrier = new CyclicBarrier(1);
+		}
 		videoWorker.start();
 		
 	}
@@ -709,6 +716,13 @@ public class VideoPlayer extends JFrame {
 						clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
 						clip.open();
 						waitForStart();
+						try {
+							barrier.await();
+						} catch (InterruptedException ex) {
+							
+						} catch (BrokenBarrierException ex) {
+							
+						}
 						clip.start();
 						if (skip * 2 < buffer2.length) {
 							clip.write(buffer2, skip * 2, buffer2.length - skip * 2);
@@ -790,6 +804,13 @@ public class VideoPlayer extends JFrame {
 							if (frameCount == skipFrames) {
 								if (audioWorker != null) {
 									audioWorker.startPlayback();
+								}
+								try {
+									barrier.await();
+								} catch (InterruptedException ex) {
+									
+								} catch (BrokenBarrierException ex) {
+									
 								}
 								starttime = System.currentTimeMillis();
 							}
