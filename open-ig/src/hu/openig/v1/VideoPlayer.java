@@ -812,14 +812,14 @@ public class VideoPlayer extends JFrame {
 								} catch (BrokenBarrierException ex) {
 									
 								}
-								starttime = System.currentTimeMillis();
+								starttime = System.nanoTime();
 							}
 							surface.getBackbuffer().setRGB(0, 0, w, h, currentImage, 0, w);
 							surface.swap();
 							setPosition(fps, frameCount);
 							// wait the frame/sec
-							starttime += (1000.0 / fps);
-			       			LockSupport.parkNanos((Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
+							starttime += (1000000000.0 / fps);
+			       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
 						}
 		       			frameCount++;
 					}

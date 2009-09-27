@@ -158,8 +158,14 @@ public class ResourceLocator {
 		}
 		rp.language = name.substring(0, idx);
 		int idx2 = name.indexOf('.');
-		String type = name.substring(idx2 + 1).toLowerCase();
-		rp.name = name.substring(idx + 1, idx2);
+		
+		String type = "";
+		if (idx > 0) {
+			type = name.substring(idx2 + 1).toLowerCase();
+			rp.name = name.substring(idx + 1, idx2);
+		} else {
+			rp.name = name.substring(idx + 1);
+		}
 		
 		rp.fileName = name;
 		
