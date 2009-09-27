@@ -7,16 +7,19 @@
  */
 package hu.openig.ani;
 
+import hu.openig.ani.SpidyAniDecoder.SpidyAniCallback;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.zip.GZIPOutputStream;
 
 
@@ -86,7 +89,7 @@ public final class VideoCompress {
 		int h = ra.height;
 		long originalSizes = ra.raf.length();
 		// store common palette
-		File dst = new File(filename + ".2009a.gz");
+		File dst = new File(filename + ".gz");
 		OutputStream out = new GZIPOutputStream(new FileOutputStream(dst), 1024 * 1024);
 		writeLEInt(out, w);
 		writeLEInt(out, h);
@@ -245,36 +248,95 @@ public final class VideoCompress {
 	 * @throws Exception on error
 	 */
 	public static void main(String[] args) throws Exception {
-//		decompressToRaw(new DataInputStream(new GZIPInputStream(new FileInputStream("d:\\Games\\IGHU\\youtube\\1_hid.ani.raw.2009a.gz"), 1024 * 1024)), 
-//				new DataOutputStream(new BufferedOutputStream(new FileOutputStream("d:\\Games\\IGHU\\youtube\\1_hid.ani.raw.2009a"), 1024 * 1024)));
-//		if (false) {
-//			return;
-//		}
-//		testMethods();
-		File[] files = new File("d:\\Games\\IGHU\\youtube").listFiles();
-		if (files != null) {
-			int n = Runtime.getRuntime().availableProcessors();
-			ExecutorService exec = Executors.newFixedThreadPool(n);
-			for (File f : files) {
-				if (f.isDirectory()) {
-					continue;
-				}
-				final String name = f.getAbsolutePath();
-				if (name.endsWith(".raw")) {
-					exec.submit(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								doDifferentialAniCoding(name);
-							} catch (Throwable e) {
-								e.printStackTrace();
-							}
-						}
-					});
+		final String filename = "c:/games/ig/atvezeto/ATVEZ001.ANI";
+		final String outFile = "c:/games/campaign_start.ani";
+		SpidyAniDecoder.decodeLoop(new SpidyAniCallback() {
+			RandomAccessFile raf;
+			byte[] buffer;
+			@Override
+			public void audioData(byte[] data) {
+				
+			}
+
+			@Override
+			public void fatal(Throwable t) {
+				
+			}
+
+			@Override
+			public void finished() {
+				try {
+					raf.close();
+				} catch (IOException ex) {
+					
 				}
 			}
-			exec.shutdown();
-		}
+
+			@Override
+			public String getFileName() {
+				return filename;
+			}
+
+			@Override
+			public InputStream getNewInputStream() {
+				try {
+					return new FileInputStream(filename);
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+
+			@Override
+			public void imageData(int[] image) {
+				try {
+					for (int i = 0; i < image.length; i++) {
+						int c = image[i];
+						buffer[i * 4 + 0] = (byte)((c & 0xFF000000) >> 24); 
+						buffer[i * 4 + 1] = (byte)((c & 0xFF0000) >> 16); 
+						buffer[i * 4 + 2] = (byte)((c & 0xFF00) >> 8); 
+						buffer[i * 4 + 3] = (byte)((c & 0xFF) >> 0); 
+					}
+					raf.write(buffer);
+				} catch (IOException ex) {
+					
+				}
+			}
+
+			@Override
+			public void initialize(int width, int height, int frames,
+					int languageCode, double fps, int audioDelay) {
+				try {
+					raf = new RandomAccessFile(outFile, "rw");
+					raf.writeShort(width);
+					raf.writeShort(height);
+					raf.writeShort(frames);
+					raf.writeShort((short)(fps * 1000));
+					buffer = new byte[4 * width * height];
+				} catch (IOException ex) {
+					
+				}
+			}
+
+			@Override
+			public boolean isPaused() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean isStopped() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void stopped() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		doDifferentialAniCoding(outFile);
 	}
 
 }
