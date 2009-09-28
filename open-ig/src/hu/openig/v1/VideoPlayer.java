@@ -109,6 +109,8 @@ public class VideoPlayer extends JFrame {
 	private ConfigButton btnPause;
 	/** Stop button. */
 	private ConfigButton btnStop;
+	/** The audio length. */
+	protected volatile int audioLen;
 	/**
 	 * Video entry.
 	 * @author karnok, 2009.09.26.
@@ -626,6 +628,7 @@ public class VideoPlayer extends JFrame {
 			audioWorker.start();
 			barrier = new CyclicBarrier(2);
 		} else {
+			audioLen = 0;
 			barrier = new CyclicBarrier(1);
 		}
 		videoWorker.start();
@@ -655,10 +658,6 @@ public class VideoPlayer extends JFrame {
 		private ResourcePlace audio;
 		/** The number of audio samples to skip. */
 		private int skip;
-		/** The start flag. */
-		private boolean startFlag;
-		/** The start guard. */
-		private Object startGuard = new Object();
 		/** The initial volume. */
 		public int initialVolume = 100;
 		/**
@@ -688,36 +687,13 @@ public class VideoPlayer extends JFrame {
 		public void stopPlayback() {
 			clip.stop();
 			clip.close();
-			startPlayback();
-		}
-		/**
-		 * Start playback.
-		 */
-		public void startPlayback() {
-			synchronized (startGuard) {
-				startFlag = true;
-				startGuard.notifyAll();
-			}
-		}
-		/**
-		 * Wait for the start signal.
-		 */
-		private void waitForStart() {
-			try {
-				synchronized (startGuard) {
-					while (!startFlag) {
-						startGuard.wait();
-					}
-				}
-			} catch (InterruptedException ex) {
-				
-			}
 		}
 		@Override
 		protected void work() {
 			byte[] buffer2 = null;
 			try {
-				AudioInputStream in = AudioSystem.getAudioInputStream(new BufferedInputStream(audio.open(), 256 * 1024));
+				AudioInputStream in = AudioSystem.getAudioInputStream(new BufferedInputStream(
+						audio.open(), 256 * 1024));
 				try {
 					byte[] buffer = new byte[in.available()];
 					in.read(buffer);
@@ -728,7 +704,7 @@ public class VideoPlayer extends JFrame {
 						clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
 						clip.open();
 						setVolume(initialVolume);
-						waitForStart();
+						audioLen = buffer.length;
 						try {
 							barrier.await();
 						} catch (InterruptedException ex) {
@@ -777,7 +753,7 @@ public class VideoPlayer extends JFrame {
 	 */
 	public void decodeVideo(ResourcePlace video, int skipFrames) {
 		try {
-			DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open()), 256 * 1024));
+			DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
 			try {
 				int w = Integer.reverseBytes(in.readInt());
 				int h = Integer.reverseBytes(in.readInt());
@@ -786,13 +762,13 @@ public class VideoPlayer extends JFrame {
 				currentFps = fps;
 				
 				surface.init(w, h);
-				setMaximumFrame(frames);
 				
 				int[] palette = new int[256];
 				byte[] bytebuffer = new byte[w * h];
 				int[] currentImage = new int[w * h];
 				int frameCount = 0;
 				long starttime = 0;
+				int frames2 = frames;
 				while (!stop) {
 					int c = in.read();
 					if (c < 0 || c == 'X') {
@@ -817,9 +793,6 @@ public class VideoPlayer extends JFrame {
 						}
 						if (frameCount >= skipFrames) {
 							if (frameCount == skipFrames) {
-								if (audioWorker != null) {
-									audioWorker.startPlayback();
-								}
 								try {
 									barrier.await();
 								} catch (InterruptedException ex) {
@@ -827,6 +800,8 @@ public class VideoPlayer extends JFrame {
 								} catch (BrokenBarrierException ex) {
 									
 								}
+								frames2 = (int)Math.ceil(audioLen * fps / 22050.0);
+								setMaximumFrame(Math.max(frames, frames2));
 								starttime = System.nanoTime();
 							}
 							surface.getBackbuffer().setRGB(0, 0, w, h, currentImage, 0, w);
@@ -837,6 +812,15 @@ public class VideoPlayer extends JFrame {
 			       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
 						}
 		       			frameCount++;
+					}
+				}
+				// continue to emit reposition events
+				if (frames2 > frames && !stop) {
+					for (int i = frames; i < frames2; i++) {
+						setPosition(fps, i);
+						// wait the frame/sec
+						starttime += (1000000000.0 / fps);
+		       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
 					}
 				}
 			} finally {
