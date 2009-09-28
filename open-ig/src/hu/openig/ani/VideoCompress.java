@@ -248,8 +248,8 @@ public final class VideoCompress {
 	 * @throws Exception on error
 	 */
 	public static void main(String[] args) throws Exception {
-		final String filename = "c:/games/ig/atvezeto/ATVEZ001.ANI";
-		final String outFile = "c:/games/campaign_start.ani";
+		final String filename = "c:/games/ig/atvezeto/ATVEZ016.ANI";
+		final String outFile = "c:/games/loose_level_3.ani";
 		SpidyAniDecoder.decodeLoop(new SpidyAniCallback() {
 			RandomAccessFile raf;
 			byte[] buffer;
