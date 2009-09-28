@@ -1,5 +1,48 @@
 #summary News archive.
 
+*September 26. 2009*
+
+I've completed the packaging of the new video. The new VideoPlayer will be able to play the new (and only the new) video files along with selectable audio and subtitle. The new file distribution requires an [http://code.google.com/p/open-ig/wiki/Setup Setup] program. Uploading all the audio and video takes some time, and the documentation is also coming for these new windows.
+
+Note for the files: you'll always need the `*`generic`*` named files, as they contain language-independent data: e.g effect sound or audio for non-speaking videos. In practice, this means you don't need to download open-ig-audio-hu.zip and open-ig-images-hu.zip if you want only the English language (~65MB less to download). 
+
+*September 19. 2009*
+
+Note for the audio pack: Unfortunately, I put them up too early and without the music files. When version 0.8 arrives, please re-download all of them again, even if their version number won't change. Anyway, the audio format is in my [http://code.google.com/p/open-ig/wiki/Audio_2009_Format Audio_2009_Format] which allows better lossless compression with ZIP than the original WAV.
+
+*September 17. 2009*
+
+The resource extraction goes well, in couple of days I'll finish it and create (english+generic+hungarian) downloadable packages for the images (10+10+10MB), audio (70+10+70 MB) and video (950 MB).
+
+There are two subtasks, which could be performed by anyone willing to help:
+
+  * Figure out the Bar discussion graph: e.g there are 4-6 response videos in the LOCAL directory of the game. One should run the original game and note the dialog options that can be clicked by the user and record which video gets played in response. You can use the  AnimPlay to compare the in-game and file videos.
+
+  * Create subtitles for the videos (once the audio package is ready, it can be done for both english and hungarian). Unfortunately, there is no subtitle support yet, but I guess I can extend the AnimPlay to look for a subtitle file along the animation file and display it - this way you can adjust the subtitle position based on the spoken dialog. Currently at least, you will be able to write down the dialog itself - we will time it later. The subtitle file format should be plain simple: 
+
+{{{
+minute:second.millisecond-minute:second.millisecond The spoken text.
+minute:second.millisecond-minute:second.millisecond The spoken text 2.
+}}}
+
+{{{
+00:00.000-00:03.500 Meséljen, hogyan zajlik egy ilyen kutatás?
+00:04.500-00:06.000 A kolóniákon kiemelt szerepe van az ilyen kutatóközpontoknak.
+}}}
+
+No in-text newlines and the file should contain text in UTF-8.
+
+I also updated the AnimPlay with the latest hungarian audio-delay data. And don't worry about the ending of some videos - I made a small mistake in the auto-fade-out.
+
+*September 3. 2009*
+
+Thank you for the help in the identification. See the results on the <a href='http://code.google.com/p/open-ig/wiki/Credits'>Credits</a> page.
+I started to split and transcode the game images - I hope it will clear my resource-whereisit-paralysis. 
+
+I will create a package to contain common and language specific images. Expected combined size: ~50MB. Language specific audio: ~100MB per language. Animations: ~750MB total. I need to change the resource loading mechanism and the planned 0.8 version will be completely independent of the original game resources.
+
+If someone is willing to donate his German, French or other language version, I can create a small utility program, which extracts the language specific part from your version (~180MB) and you can submit that instead of the entire 1.2GB game.
+
 *August 31. 2009*
 
 In Hungarian
