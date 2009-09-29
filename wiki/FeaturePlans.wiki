@@ -7,6 +7,16 @@
 
 On this page, I collect ideas about enhancing the gameplay with more modern concepts, better management ways or nicer gameplay mechanics. Suggestions and comments welcome.
 
+= Multiple release versions =
+
+Watching this 1GB of data makes me think: It's nice to have them all, but might not be ideal to host that much amount of data.
+
+Therefore, I already thought about a reduced version of the data files: Basically have a key picture(s) of each, and let the subtitle do its job telling the story.
+
+This way, the game occupies about 70-90 MB of disk space and on-line storage.
+
+The drawback is that I need to work more on the videos and add a separate code path for the reduced version.
+
 = Vehicles move backwards =
 
 In the original game, if you give a move command in the opposite direction the turret is facing, the vehicles start to turn and then move - leaving a window for enemy hits without returning fire. By allowing altering the carryout of the movement, vehicles can decide to rotate less and move backwards. Perhaps adding separate 'Move backwards' command instead of changing the default move command.
