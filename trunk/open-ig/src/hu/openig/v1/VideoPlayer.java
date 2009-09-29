@@ -816,7 +816,7 @@ public class VideoPlayer extends JFrame {
 				}
 				// continue to emit reposition events
 				if (frames2 > frames && !stop) {
-					for (int i = frames; i < frames2; i++) {
+					for (int i = frames; i < frames2 && !stop; i++) {
 						setPosition(fps, i);
 						// wait the frame/sec
 						starttime += (1000000000.0 / fps);
