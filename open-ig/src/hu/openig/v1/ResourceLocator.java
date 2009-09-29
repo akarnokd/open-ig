@@ -160,7 +160,7 @@ public class ResourceLocator {
 		int idx2 = name.indexOf('.');
 		
 		String type = "";
-		if (idx > 0) {
+		if (idx2 > 0) {
 			type = name.substring(idx2 + 1).toLowerCase();
 			rp.name = name.substring(idx + 1, idx2);
 		} else {
