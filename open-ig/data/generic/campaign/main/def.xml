@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definition>
+	<campaign id='main'>
+		<labels>campaign/main/labels.xml</labels>
+		<sort-desc>campaign.main.sortdesc</sort-desc>
+		<long-desc>campaign.main.longdesc</long-desc>
+		<image>campaign/main/intro-image</image>
+		<media>campaign/main/intro-media</media>
+		<difficulties customizable='true'>
+			<diff id='easy' label='difficulty.easy'>
+				<param name='moneyboost'>1.2</param>
+			</diff>
+			<diff id='normal' label='difficulty.normal'>
+				<param name='moneyboost'>1.0</param>
+			</diff>
+			<diff id='normal' label='difficulty.hard'>
+				<param name='moneyboost'>0.8</param>
+			</diff>
+		</difficulties>
+	</campaign>
+</definition>
