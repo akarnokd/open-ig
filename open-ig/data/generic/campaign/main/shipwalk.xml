@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<shipwalk>
+	<ship id='level1'>
+		<position id='bridge' picture='flagship/bridge_level_1'>
+			<transition media='flagship/bridge_to_cabin_level_1' label='flagship.moveto.cabin' area='0,340 640,340 640,442 0,442' to='cabin'/>
+			<transition media="" label="flagship.moveto.starmap" area="237,221 431,221 431,300 237,300" to="*starmap"/>
+			<transition media="" label="flagship.moveto.colony" area="45,155 199,161 227,134 393,134 420,16 573,155 577,241 432,240 432,220 236,220 236,240 41,240" to="*colony"/>
+		</position>
+		<position id='cabin' picture='flagship/cabin_level_1'>
+			<transition media='flagship/cabin_to_bridge_level_1' label="flagship.moveto.bridge" area="0,0 441,441 0,441" to="bridge"/>
+			<transition media="flagship/cabin_to_database_level_1" label='flagship.moveto.database' area="432,197 606,197 606,360 432,360" to="*database"/>
+		</position>
+	</ship>
+	<ship  id='level2'>
+		<position id='bridge' picture='flagship/bridge_level_2'>
+			<transition media='flagship/bridge_to_colony_level_2' label='flagship.moveto.colony' area='453,126 639,126 639,212 453,212' to='*colony'/>
+			<transition media='flagship/bridge_to_production_level_2' label='flagship.moveto.production' area='10,128 190,128 190,213 10,213' to='*production'/>
+			<transition media='flagship/bridge_to_starmap_level_2' label='flagship.moveto.starmap' area='223,80 423,80 423,255 223,255' to='*starmap'/>
+			<transition media='flagship/bridge_to_corridor_level_2' label='flagship.moveto.corridor' area='0,346 639,346 639,441 0,441' to='corridor_bridge'/>
+		</position>
+		<position id='corridor_bridge' picture='flagship/corridor_from_bridge_level_2'>
+			<transition media='flagship/corridor_to_bar_1_level_2' label='flagship.moveto.bar' area='511,34 639,34 639,386 511,386' to='*bar'/>
+			<transition media='flagship/corridor_to_bridge_3_level_2' label='flagship.moveto.bridge' area='50,387 558,387 558,441 50,441' to='bridge'/>
+			<transition media='flagship/corridor_to_cabin_1_level_2' label='flagship.moveto.cabin' area='252,43 469,43 469,299 43,299' to='cabin'/>
+		</position>
+		<position id='cabin' picture='flagship/cabin_level_2'>
+			<transition media='flagship/cabin_to_database_level_2' label='flagship.moveto.database' area='439,139 602,139 602,302 439,302' to='*database'/>
+			<transition media='flagship/cabin_to_corridor_level_2' label='flagship.moveto.corridor' area='90,327 563,327 563,441 90,441' to='corridor_cabin'/>
+		</position>
+		<position id='corridor_cabin' picture='flagship/corridor_from_cabin_level_2'>
+			<transition media='flagship/corridor_to_bridge_1_level_2' label='flagship.moveto.bridge' area='281,99 438,99 438,239, 99,239' to='bridge'/>
+			<transition media='flagship/corridor_to_bar_2_level_2' label='flagship.moveto.bar' area='0,0 156,0 156,441 0,441' to='*bar'/>
+			<transition media='flagship/corridor_to_cabin_3_level_2' label='flagship.moveto.cabin' area='159,393 639,393 639,441 159,441' to='cabin'/>
+		</position>
+		<position id='corridor_bar' picture='flagship/corridor_from_bar_level_2'>
+			<transition media='flagship/corridor_to_bridge_3_level_2' label='flagship.moveto.bridge' area='0,0 72,0 72,398 0,398' to='bridge'/>
+			<transition media='flagship/corridor_to_cabin_2_level_2' label='flagship.moveto.cabin' area='526,0 639,0 639,408 526,408' to='cabin'/>
+			<transition media='flagship/corridor_to_bar_3_level_2' label='flagship.moveto.bar' area='60,411 551,441 551,441 60,441' to='*bar'/>
+		</position>
+	</ship>
+	<ship id='level3'>
+		<position id='bridge' picture='flagship/bridge_level_3'>
+			<transition media='' label='' area='' to=''/>
+			<transition media='' label='' area='' to=''/>
+			<transition media='' label='' area='' to=''/>
+			<transition media='' label='' area='' to=''/>
+			<transition media='' label='' area='' to=''/>
+			<transition media='' label='' area='' to=''/>
+			<transition media='' label='' area='' to=''/>
+			<transition media='' label='' area='' to=''/>
+		</position>
+	</ship>
+</shipwalk>

@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -127,6 +128,73 @@ public class VideoPlayer extends JFrame {
 		String audio;
 		/** Available subtitles. */
 		String subtitle;
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((audio == null) ? 0 : audio.hashCode());
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			result = prime * result + ((path == null) ? 0 : path.hashCode());
+			result = prime * result
+					+ ((subtitle == null) ? 0 : subtitle.hashCode());
+			result = prime * result + ((video == null) ? 0 : video.hashCode());
+			return result;
+		}
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			VideoEntry other = (VideoEntry) obj;
+			if (audio == null) {
+				if (other.audio != null) {
+					return false;
+				}
+			} else if (!audio.equals(other.audio)) {
+				return false;
+			}
+			if (name == null) {
+				if (other.name != null) {
+					return false;
+				}
+			} else if (!name.equals(other.name)) {
+				return false;
+			}
+			if (path == null) {
+				if (other.path != null) {
+					return false;
+				}
+			} else if (!path.equals(other.path)) {
+				return false;
+			}
+			if (subtitle == null) {
+				if (other.subtitle != null) {
+					return false;
+				}
+			} else if (!subtitle.equals(other.subtitle)) {
+				return false;
+			}
+			if (video == null) {
+				if (other.video != null) {
+					return false;
+				}
+			} else if (!video.equals(other.video)) {
+				return false;
+			}
+			return true;
+		}
 	}
 	/**
 	 * Video table model.
@@ -180,6 +248,7 @@ public class VideoPlayer extends JFrame {
 		rl.setContainers(config.containers);
 		rl.scanResources();
 		videoModel.rows.clear();
+		Set<VideoEntry> result = new LinkedHashSet<VideoEntry>();
 		Map<String, Map<String, ResourcePlace>> videos = rl.resourceMap.get(ResourceType.VIDEO);
 		Map<String, Map<String, ResourcePlace>> audios = rl.resourceMap.get(ResourceType.AUDIO);
 		
@@ -209,7 +278,7 @@ public class VideoPlayer extends JFrame {
 						} else {
 							ve.subtitle = "";
 						}
-						videoModel.rows.add(ve);
+						result.add(ve);
 					} else {
 						// test for subtitles only
 						ResourcePlace resps = rl.getExactly(e.getKey(), s, ResourceType.SUBTITLE);
@@ -223,11 +292,12 @@ public class VideoPlayer extends JFrame {
 						} else {
 							ve.subtitle = "";
 						}
-						videoModel.rows.add(ve);
+						result.add(ve);
 					}
 				}
 			}
 		}
+		videoModel.rows.addAll(result);
 		videoModel.fireTableDataChanged();
 	}
 	/**
