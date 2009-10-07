@@ -245,6 +245,7 @@ public class VideoPlayer extends JFrame {
 	 * Scan resources.
 	 */
 	protected void scan() {
+		rl.clear();
 		rl.setContainers(config.containers);
 		rl.scanResources();
 		videoModel.rows.clear();
@@ -606,6 +607,10 @@ public class VideoPlayer extends JFrame {
 			if (currentVideo != null) {
 //				btnPlay.setEnabled(false);
 //				btnStop.setEnabled(true);
+				// if at the end, rewind
+				if (position.getValue() >= position.getMaximum() - 1) {
+					position.setValue(0);
+				}
 				playVideo(currentVideo.video, currentVideo.path, currentVideo.name, currentVideo.audio, currentVideo.subtitle);
 			}
 		} catch (InterruptedException ex) {

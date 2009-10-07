@@ -148,9 +148,9 @@ public class SubtitleManager {
 	 * @throws Exception on error
 	 */
 	public static void main(String[] args) throws Exception {
-		OutputStream out = new FileOutputStream("android.sub");
+		OutputStream out = new FileOutputStream("c:/download/campaign_start.sub");
 		
-		SubtitleManager sm1 = new SubtitleManager(new FileInputStream("data/en/messages/android.sub"));
+		SubtitleManager sm1 = new SubtitleManager(new FileInputStream("data/en/message/campaign_start.sub"));
 		sm1.toSub(out);
 //		SubtitleManager sm1 = new SubtitleManager(new FileInputStream("data/en/intro/intro_1.sub"));
 //		sm1.toSub(out);
