@@ -265,36 +265,66 @@ public class VideoPlayer extends JFrame {
 					name = s;
 					path = "";
 				}
-				for (Map.Entry<String, Map<String, ResourcePlace>> e : audios.entrySet()) {
-					ResourcePlace resp = rl.getExactly(e.getKey(), s, ResourceType.AUDIO);
-					if (resp != null) {
-						VideoEntry ve = new VideoEntry();
-						ve.name = name;
-						ve.path = path;
-						ve.video = rpe.getKey();
-						ve.audio = e.getKey();
-						ResourcePlace resps = rl.getExactly(e.getKey(), s, ResourceType.SUBTITLE);
-						if (resps != null) {
-							ve.subtitle = ve.audio;
-						} else {
-							ve.subtitle = "";
-						}
-						result.add(ve);
+				
+				// look for audio and subtitle on the same language
+				ResourcePlace audio = rl.getExactly(rpe.getKey(), s, ResourceType.AUDIO);
+				ResourcePlace subtitle = rl.getExactly(rpe.getKey(), s, ResourceType.SUBTITLE);
+				
+				boolean found = false;
+				
+				if (audio != null || subtitle != null) {
+					VideoEntry ve = new VideoEntry();
+					ve.name = name;
+					ve.path = path;
+					ve.video = rpe.getKey();
+					if (audio != null) {
+						ve.audio = rpe.getKey();
 					} else {
-						// test for subtitles only
-						ResourcePlace resps = rl.getExactly(e.getKey(), s, ResourceType.SUBTITLE);
-						VideoEntry ve = new VideoEntry();
-						ve.name = name;
-						ve.path = path;
-						ve.video = rpe.getKey();
 						ve.audio = "";
-						if (resps != null) {
-							ve.subtitle = e.getKey();
-						} else {
-							ve.subtitle = "";
-						}
-						result.add(ve);
 					}
+					if (subtitle != null) {
+						ve.subtitle = rpe.getKey();
+					} else {
+						ve.subtitle = "";
+					}
+					result.add(ve);
+					found = true;
+				} else {
+					// generic video but language dependant audio or sub
+					for (String audioLang : audios.keySet()) {
+						if (audioLang.equals(rpe.getKey())) {
+							continue;
+						}
+						audio = rl.getExactly(audioLang, s, ResourceType.AUDIO);
+						subtitle = rl.getExactly(audioLang, s, ResourceType.SUBTITLE);
+						if (audio != null || subtitle != null) {
+							VideoEntry ve = new VideoEntry();
+							ve.name = name;
+							ve.path = path;
+							ve.video = rpe.getKey();
+							if (audio != null) {
+								ve.audio = audioLang;
+							} else {
+								ve.audio = "";
+							}
+							if (subtitle != null) {
+								ve.subtitle = audioLang;
+							} else {
+								ve.subtitle = "";
+							}
+							result.add(ve);
+							found = true;
+						}
+					}
+				}
+				if (!found) {
+					VideoEntry ve = new VideoEntry();
+					ve.name = name;
+					ve.path = path;
+					ve.video = rpe.getKey();
+					ve.audio = "";
+					ve.subtitle = "";
+					result.add(ve);
 				}
 			}
 		}
@@ -682,7 +712,7 @@ public class VideoPlayer extends JFrame {
 			return;
 		}
 		if (subtitle != null && !subtitle.isEmpty()) {
-			final ResourcePlace sub = rl.get(audio, path + "/" + name, ResourceType.SUBTITLE);
+			final ResourcePlace sub = rl.get(subtitle, path + "/" + name, ResourceType.SUBTITLE);
 			subs = new SubtitleManager(sub.open());
 		} else {
 			subs = null;
