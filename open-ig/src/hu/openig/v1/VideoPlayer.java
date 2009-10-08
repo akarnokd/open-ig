@@ -985,6 +985,8 @@ public class VideoPlayer extends JFrame {
 			} else {
 				subtitle.setText("");
 			}
+		} else {
+			subtitle.setText("");
 		}
 	}
 }
