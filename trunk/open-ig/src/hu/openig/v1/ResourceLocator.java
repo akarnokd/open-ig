@@ -36,7 +36,7 @@ public class ResourceLocator {
 	 * @author karnokd, 2009.09.23.
 	 * @version $Revision 1.0$
 	 */
-	class ResourcePlace {
+	public class ResourcePlace {
 		/** The container of this resource: A directory or a ZIP file. */
 		String container;
 		/** The resource language or <code>generic</code> if common. */
@@ -246,6 +246,7 @@ public class ResourceLocator {
 	 * @return the resource place
 	 */
 	public ResourcePlace get(String language, String resourceName, ResourceType type) {
+		resourceName = resourceName.replaceAll("/{2,}", "/");
 		Map<String, Map<String, ResourcePlace>> res = resourceMap.get(type);
 		if (res != null) {
 			Map<String, ResourcePlace> rps = res.get(language);
