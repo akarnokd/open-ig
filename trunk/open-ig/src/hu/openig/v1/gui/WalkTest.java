@@ -49,7 +49,7 @@ public class WalkTest extends JFrame {
 
 		walkpainter = new WalkPainter(rl, lang);
 		
-		walkpainter.ship = walks.ships.get("level2");
+		walkpainter.ship = walks.ships.get("level3");
 		walkpainter.position = walkpainter.ship.positions.get("bridge");
 		
 		gl.setHorizontalGroup(
