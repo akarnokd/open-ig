@@ -1560,7 +1560,7 @@ public class Setup extends JFrame {
 								@Override
 								public void run() {
 									try {
-										TimeUnit.MILLISECONDS.sleep(3000 / channels * j);
+										TimeUnit.MILLISECONDS.sleep(3000 * j / channels);
 										playTestDirectly(vol, window);
 									} catch (InterruptedException ex) {
 										config.debug(ex);

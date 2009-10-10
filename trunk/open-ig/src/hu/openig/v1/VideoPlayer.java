@@ -888,7 +888,7 @@ public class VideoPlayer extends JFrame {
 						}
 					} else
 					if (c == 'I') {
-						in.read(bytebuffer);
+						in.readFully(bytebuffer);
 						for (int i = 0; i < bytebuffer.length; i++) {
 							int c0 = palette[bytebuffer[i] & 0xFF];
 							if (c0 != 0) {
