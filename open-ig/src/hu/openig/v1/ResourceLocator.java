@@ -8,6 +8,7 @@
 
 package hu.openig.v1;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import javax.imageio.ImageIO;
 
 /**
  * @author karnokd, 2009.09.23.
@@ -180,8 +183,11 @@ public class ResourceLocator {
 		} else
 		if ("ani.gz".equals(type)) {
 			rp.type = ResourceType.VIDEO;
-		} else {
+		} else 
+		if ("xml".equals(type)) {
 			rp.type = ResourceType.DATA;
+		} else {
+			rp.type = ResourceType.OTHER;
 		}
 		
 		addResourcePlace(rp);
@@ -289,5 +295,26 @@ public class ResourceLocator {
 	 */
 	public void clear() {
 		resourceMap.clear();
+	}
+	/**
+	 * Get the given resource as image.
+	 * @param language the language
+	 * @param resourceName the resource name
+	 * @return the buffered image
+	 */
+	public BufferedImage getImage(String language, String resourceName) {
+		ResourcePlace rp = get(language, resourceName, ResourceType.IMAGE);
+		if (rp == null) {
+			throw new AssertionError("Missing resource: " + language + " " + resourceName);
+		}
+		InputStream in = rp.open();
+		try {
+			return ImageIO.read(in);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			throw new AssertionError("Resource error" + language + " " + resourceName);
+		} finally {
+			try { in.close(); } catch (IOException ex) { ex.printStackTrace(); }
+		}
 	}
 }

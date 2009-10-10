@@ -5,10 +5,10 @@
 		<state id="start" picture="bar/phsychologist_100">
 			<transition media="bar/phsychologist_101" text="bar.phsychologist.101" to="state101"/>
 		</state>
-		<state id="state101" picture="">
-			<transition media="bar/phsychologist_101" text="bar.phsychologist.101" to="state101"/>
+		<state id="state101" picture="bar/phsychologist_101">
 			<transition media="bar/phsychologist_111" text="bar.phsychologist.111" to="state101"/>
-			<transition media="bar/phsychologist_112" text="bar.phsychologist.112" to="end"/>
+			<transition media="bar/phsychologist_112" text="bar.phsychologist.112" to="state101"/>
+			<transition media="bar/phsychologist_121" text="bar.phsychologist.121" to="end"/>
 		</state>
 	</talk>
 	<talk with="kelly">

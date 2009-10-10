@@ -15,10 +15,10 @@ import hu.openig.v1.ResourceLocator.ResourcePlace;
 import hu.openig.v1.core.WalkPosition;
 import hu.openig.v1.core.WalkShip;
 import hu.openig.v1.core.WalkTransition;
+import hu.openig.v1.render.TextRenderer;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -69,6 +69,8 @@ public class WalkPainter extends JComponent implements SwappableRenderer {
 	String lang;
 	/** The transition the mouse is pointing at. */
 	WalkTransition pointerTransition;
+	/** The text renderer. */
+	protected TextRenderer txt;
 	/**
 	 * Constructor.
 	 * @param rl the resource locator
@@ -76,6 +78,7 @@ public class WalkPainter extends JComponent implements SwappableRenderer {
 	 */
 	public WalkPainter(ResourceLocator rl, String lang) {
 		super();
+		txt = new TextRenderer(rl);
 		swapLock = new ReentrantLock();
 		this.rl = rl;
 		this.lang = lang;
@@ -121,11 +124,10 @@ public class WalkPainter extends JComponent implements SwappableRenderer {
 					g2.fill(wt.area);
 					Rectangle rect = wt.area.getBounds();
 					
-					FontMetrics fm = g2.getFontMetrics();
 					if (pointerTransition == wt) {
 						g2.setColor(Color.BLACK);
-						int w = fm.stringWidth(pointerTransition.label);
-						g2.drawString(pointerTransition.label, rect.x + (rect.width - w) / 2, rect.y + (rect.height - fm.getAscent()) / 2);
+						int w = txt.getTextWidth(14, pointerTransition.label);
+						txt.paintTo(g2, rect.x + (rect.width - w) / 2, rect.y + (rect.height - 14) / 2, 14, TextRenderer.RED, pointerTransition.label);
 					}
 				}
 			}

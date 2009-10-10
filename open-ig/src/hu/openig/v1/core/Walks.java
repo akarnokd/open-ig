@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -87,25 +86,7 @@ public class Walks {
 				WalkPosition wp = new WalkPosition();
 				wp.id = position.getAttribute("id");
 				ws.positions.put(wp.id, wp);
-				ResourcePlace rin = rl.get(lang, position.getAttribute("picture"), ResourceType.IMAGE);
-				if (rin == null) {
-					// TODO log
-					throw new AssertionError("Missing resource: " + position.getAttribute("picture"));
-				}
-				InputStream in = rin.open();
-				try {
-					wp.picture = ImageIO.read(in);
-				} catch (IOException ex) {
-					// TODO log
-					ex.printStackTrace();
-				} finally {
-					try {
-						in.close();
-					} catch (IOException ex) {
-						// TODO log
-						ex.printStackTrace();
-					}
-				}
+				wp.picture = rl.getImage(lang, position.getAttribute("picture"));
 				for (Element transition : XML.childrenWithName(position, "transition")) {
 					WalkTransition wt = new WalkTransition();
 					wp.transitions.add(wt);

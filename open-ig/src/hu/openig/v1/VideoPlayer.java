@@ -795,14 +795,13 @@ public class VideoPlayer extends JFrame {
 		}
 		@Override
 		protected void work() {
-			byte[] buffer2 = null;
 			try {
 				AudioInputStream in = AudioSystem.getAudioInputStream(new BufferedInputStream(
 						audio.open(), 256 * 1024));
 				try {
 					byte[] buffer = new byte[in.available()];
 					in.read(buffer);
-					buffer2 = AudioThread.split16To8(AudioThread.movingAverage(upscale8To16AndSignify(buffer), config.videoFilter));
+					byte[] buffer2 = AudioThread.split16To8(AudioThread.movingAverage(upscale8To16AndSignify(buffer), config.videoFilter));
 					try {
 						AudioFormat streamFormat = new AudioFormat(22050, 16, 1, true, false);
 						DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
