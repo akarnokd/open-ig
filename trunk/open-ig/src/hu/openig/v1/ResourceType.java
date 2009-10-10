@@ -22,6 +22,8 @@ public enum ResourceType {
 	/** Subtitle for a video. */
 	SUBTITLE,
 	/** An image. */ 
-	IMAGE
+	IMAGE,
+	/** Document schema. */
+	OTHER,
 	;
 }
