@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class SubtitleManager {
 	/** The subtitle entry. */
-	public class SubEntry {
+	public static class SubEntry {
 		/** Time start. */
 		public long start;
 		/** Time end. */

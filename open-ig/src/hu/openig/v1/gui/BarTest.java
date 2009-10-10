@@ -8,6 +8,7 @@
 
 package hu.openig.v1.gui;
 
+import hu.openig.v1.Act;
 import hu.openig.v1.Configuration;
 import hu.openig.v1.ResourceLocator;
 import hu.openig.v1.core.TalkState;
@@ -17,6 +18,9 @@ import java.awt.Container;
 
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
 /**
@@ -41,16 +45,35 @@ public class BarTest extends JFrame {
 	 * @param rl the resource locator
 	 * @param lang the language
 	 */
-	public BarTest(Talks talks, ResourceLocator rl, String lang) {
+	public BarTest(final Talks talks, ResourceLocator rl, String lang) {
+		super("Bar test");
 		this.talks = talks;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		Container c = getRootPane();
+		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
 		c.setLayout(gl);
 
 		barpainter = new BarPainter(rl, lang);
 		
-		barpainter.person = talks.persons.get("phsychologist");
+		JMenuBar menu = new JMenuBar();
+		JMenu mnuOptions = new JMenu("Talks");
+		menu.add(mnuOptions);
+		
+		for (String s : talks.persons.keySet()) {
+			final String fs = s;
+			JMenuItem mnuItem = new JMenuItem(s);
+			mnuItem.addActionListener(new Act() {
+				@Override
+				public void act() {
+					barpainter.person = talks.persons.get(fs);
+					barpainter.state = barpainter.person.states.get(TalkState.START);
+					repaint();
+				}
+			});
+			mnuOptions.add(mnuItem);
+		}
+		setJMenuBar(menu);
+		barpainter.person = talks.persons.get("brian");
 		barpainter.state = barpainter.person.states.get(TalkState.START);
 		
 		gl.setHorizontalGroup(

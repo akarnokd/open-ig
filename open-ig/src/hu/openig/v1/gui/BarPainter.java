@@ -23,6 +23,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -128,7 +129,6 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 			mediaPlayback = false;
 			state = next;
 			frontBuffer = null;
-			backBuffer = null;
 			label = null;
 			doMouseMove(relativize(MouseInfo.getPointerInfo().getLocation()));
 			repaint();
@@ -251,7 +251,7 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 								}
 							} else
 							if (c == 'I') {
-								in.read(bytebuffer);
+								in.readFully(bytebuffer);
 								for (int i = 0; i < bytebuffer.length; i++) {
 									int c0 = palette[bytebuffer[i] & 0xFF];
 									if (c0 != 0) {
@@ -369,6 +369,7 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 			try {
 				if (state.picture != null) {
 					g2.translate((getWidth() - state.picture.getWidth()) / 2, (getHeight() - state.picture.getHeight()) / 2);
+					g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 					g2.drawImage(frontBuffer, 0, 
 							0, 
 							state.picture.getWidth(), state.picture.getHeight(), null);
