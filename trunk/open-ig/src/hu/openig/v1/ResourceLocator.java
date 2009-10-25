@@ -299,7 +299,7 @@ public class ResourceLocator {
 	/**
 	 * Get the given resource as image.
 	 * @param language the language
-	 * @param resourceName the resource name
+	 * @param resourceName the resource name, don't start it with slash
 	 * @return the buffered image
 	 */
 	public BufferedImage getImage(String language, String resourceName) {
