@@ -9,6 +9,7 @@
 package hu.openig.v1.gui;
 
 import hu.openig.v1.Act;
+import hu.openig.v1.Labels;
 import hu.openig.v1.gfx.DatabaseGFX;
 import hu.openig.v1.model.World;
 import hu.openig.v1.render.TextRenderer;
@@ -26,8 +27,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JComponent;
@@ -61,8 +64,12 @@ public class DatabasePainter extends JComponent {
 	protected int textPhaseCount = 10;
 	/** Picture phase count. */
 	protected int picturePhaseCount = 10;
+	/** Picture phase count. */
+	protected int alienPhaseCount = 10;
 	/** The map phase total index. */
 	protected int mapPhaseIndex;
+	/** The map phase total index. */
+	protected int alienPhaseIndex;
 	/** The timer for collapsing and expanding. */
 	protected Timer expandCollapse;
 	/** The text phase index. */
@@ -91,6 +98,22 @@ public class DatabasePainter extends JComponent {
 	protected int highlightHelp = -1;
 	/** Highlighted aliens. */
 	protected int highlightAliens = -1;
+	/** The labels. */
+	protected Labels labels;
+	/** The scroll text offset. */
+	protected int textOffset;
+	/** The text rows. */
+	protected final List<String> rows = new ArrayList<String>();
+	/** Move up. */
+	protected DatabaseButton moveUp;
+	/** Move down. */
+	protected DatabaseButton moveDown;
+	/** The title of the current starship map. */
+	protected String mapTitle;
+	/** The race description. */
+	protected String raceDesc;
+	/** Alien details displayed. */
+	protected boolean alienDetails;
 	/**
 	 * The database button.
 	 * @author karnok, 2009.10.25.
@@ -241,7 +264,7 @@ public class DatabasePainter extends JComponent {
 		while (dbi.hasNext()) {
 			DatabaseButton dbb = dbi.next();
 			dbb.phase = Math.min(dbb.phase + 1, dbb.phases.length - 1);
-			if (dbb.phase == dbb.phases.length) {
+			if (dbb.phase == dbb.phases.length - 1) {
 				dbi.remove();
 			}
 		}
@@ -263,8 +286,11 @@ public class DatabasePainter extends JComponent {
 	 * @param e the event
 	 */
 	protected void doMouseWheelMoved(MouseWheelEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getUnitsToScroll() < 0) {
+			doMoveUp();
+		} else {
+			doMoveDown();
+		}
 	}
 	/**
 	 * Do actions on mouse moved.
@@ -278,9 +304,10 @@ public class DatabasePainter extends JComponent {
 		boolean startTimer = false;
 		for (DatabaseButton btn : buttons) {
 			if (btn.test(e.getPoint(), x0, y0)) {
-				highlight.add(btn);
 				unlight.remove(btn);
-				startTimer = true;
+				if (highlight.add(btn)) {
+					startTimer = true;
+				}
 			} else {
 				if (btn.phase > 0) {
 					unlight.add(btn);
@@ -292,13 +319,13 @@ public class DatabasePainter extends JComponent {
 		if (startTimer) {
 			highlightTimer.start();
 		}
-		if (helpVisible) {
+//		if (helpVisible) {
 			int lastHighlight = highlightHelp;
 			highlightHelp = -1;
 			for (int i = 0; i < helpTexts.length; i++) {
 				int x = x0 + 20;
 				int y = y0 + 25 + 8 + i * 20;
-				int x1 = x + text.getTextWidth(10, helpTexts[i]);
+				int x1 = x + text.getTextWidth(10, labels.get(helpTexts[i]));
 				int y1 = y + 10;
 				if (e.getX() >= x && e.getX() <= x1 && e.getY() >= y && e.getY() <= y1) {
 					highlightHelp = i;
@@ -307,14 +334,14 @@ public class DatabasePainter extends JComponent {
 			if (lastHighlight != highlightHelp) {
 				repaint();
 			}
-		}
-		if (aliensVisible) {
-			int lastHighlight = highlightAliens;
+//		}
+//		if (aliensVisible) {
+			lastHighlight = highlightAliens;
 			highlightAliens = -1;
 			for (int i = 0; i < world.player.discoveredAliens.size(); i++) {
 				int x = x0 + 20;
 				int y = y0 + 25 + 8 + i * 20;
-				int x1 = x + text.getTextWidth(14, world.player.discoveredAliens.get(i));
+				int x1 = x + text.getTextWidth(14, labels.get(world.player.discoveredAliens.get(i)));
 				int y1 = y + 14;
 				if (e.getX() >= x && e.getX() <= x1 && e.getY() >= y && e.getY() <= y1) {
 					highlightAliens = i;
@@ -323,7 +350,7 @@ public class DatabasePainter extends JComponent {
 			if (lastHighlight != highlightAliens) {
 				repaint();
 			}
-		}
+//		}
 	}
 	/**
 	 * Do actions on mouse click.
@@ -332,6 +359,9 @@ public class DatabasePainter extends JComponent {
 	 * @param height the height
 	 */
 	protected void doMouseClicked(MouseEvent e, int width, int height) {
+		if (expandCollapse.isRunning()) {
+			return;
+		}
 		int x0 = (width - gfx.background.getWidth()) / 2;
 		int y0 = (height - gfx.background.getHeight()) / 2;
 		for (DatabaseButton btn : buttons) {
@@ -344,10 +374,11 @@ public class DatabasePainter extends JComponent {
 			for (int i = 0; i < helpTexts.length; i++) {
 				int x = x0 + 20;
 				int y = y0 + 25 + 8 + i * 20;
-				int x1 = x + text.getTextWidth(10, helpTexts[i]);
+				int x1 = x + text.getTextWidth(10, labels.get(helpTexts[i]));
 				int y1 = y + 10;
 				if (e.getX() >= x && e.getX() <= x1 && e.getY() >= y && e.getY() <= y1) {
 					if (selectedHelp != i) {
+						splitRows(labels.get(helpTexts[i] + ".details"));
 						doShowText();
 					}
 					selectedHelp = i;
@@ -359,10 +390,12 @@ public class DatabasePainter extends JComponent {
 			for (int i = 0; i < world.player.discoveredAliens.size(); i++) {
 				int x = x0 + 20;
 				int y = y0 + 25 + 8 + i * 20;
-				int x1 = x + text.getTextWidth(14, world.player.discoveredAliens.get(i));
+				int x1 = x + text.getTextWidth(14, labels.get(world.player.discoveredAliens.get(i)));
 				int y1 = y + 14;
 				if (e.getX() >= x && e.getX() <= x1 && e.getY() >= y && e.getY() <= y1) {
 					if (selectedAliens != i) {
+						splitRows(labels.get(world.player.discoveredAliens.get(i) + ".details"));
+						alienDetails = true;
 						doShowAlienText();
 					}
 					selectedAliens = i;
@@ -415,6 +448,19 @@ public class DatabasePainter extends JComponent {
 		starmap = new DatabaseButton(x, y + 2 * 34 - gfx.starmap[0].getHeight(), gfx.starmap, null);
 		diplomacy = new DatabaseButton(x, y + 3 * 34 - gfx.diplomacy[0].getHeight(), gfx.diplomacy, null);
 		
+		moveUp = new DatabaseButton(465, 340, gfx.arrowUp, new Act() {
+			@Override
+			public void act() {
+				doMoveUp();
+			}
+		});
+		moveDown = new DatabaseButton(465, 390, gfx.arrowDown, new Act() {
+			@Override
+			public void act() {
+				doMoveDown();
+			}
+		});
+		
 		buttons.add(recordMessage);
 		buttons.add(aliens);
 		buttons.add(map);
@@ -424,6 +470,8 @@ public class DatabasePainter extends JComponent {
 		buttons.add(info);
 		buttons.add(starmap);
 		buttons.add(diplomacy);
+		buttons.add(moveUp);
+		buttons.add(moveDown);
 	}
 	/**
 	 * Paint the contents into the graphics object.
@@ -495,16 +543,39 @@ public class DatabasePainter extends JComponent {
 				for (int i = 0; i < helpTexts.length; i++) {
 					int c = selectedHelp == i ? (highlightHelp == i ? 0xFFF9090 : 0xFFFF0000) 
 							: (highlightHelp == i ? 0xFFFFFFFF : 0xFFFFFF00);  
-					text.paintTo(g2, x, y + i * 20, 10, c, helpTexts[i]);
+					text.paintTo(g2, x, y + i * 20, 10, c, labels.get(helpTexts[i]));
 				}
 			} else
 			if (aliensVisible) {
-				int x = x0 + 20;
-				int y = y0 + 25 + 8;
-				for (int i = 0; i < world.player.discoveredAliens.size(); i++) {
-					int c = selectedAliens == i ? (highlightAliens == i ? 0xFFF9090 : 0xFFFF0000) 
-							: (highlightAliens == i ? 0xFFFFFFFF : 0xFFFFFF00);  
-					text.paintTo(g2, x, y + i * 20, 14, c, world.player.discoveredAliens.get(i));
+				if (alienDetails) {
+					x1 = x0 + 4 + 8;
+					y1 = y0 + 2 + 8;
+					BufferedImage m = gfx.shipMap[world.level - 1];
+					w1 = m.getWidth();
+					h1 = m.getHeight();
+					
+					x2 = x1 + w1 * (alienPhaseCount - alienPhaseIndex) / alienPhaseCount / 2; 
+					y2 = y1 + h1 * (alienPhaseCount - alienPhaseIndex) / alienPhaseCount / 2; 
+					
+					w2 = w1 * alienPhaseIndex / alienPhaseCount;
+					h2 = h1 * alienPhaseIndex / alienPhaseCount;
+					
+					g2.drawImage(m, x2, y2, w2, h2, null);
+					
+					if (selectedAliens >= 0) {
+						int x = x0 + 20;
+						int y = y0 + 2 + 8 + 202;
+						text.paintTo(g2, x, y, 14, 0xFFFFFF00, labels.get(world.player.discoveredAliens.get(selectedAliens)));
+						text.paintTo(g2, x, y + 20, 14, 0xFFFFFF00, labels.get(world.player.discoveredAliens.get(selectedAliens)));
+					}
+				} else {
+					int x = x0 + 20;
+					int y = y0 + 25 + 8;
+					for (int i = 0; i < world.player.discoveredAliens.size(); i++) {
+						int c = selectedAliens == i ? (highlightAliens == i ? 0xFFF9090 : 0xFFFF0000) 
+								: (highlightAliens == i ? 0xFFFFFFFF : 0xFFFFFF00);  
+						text.paintTo(g2, x, y + i * 20, 14, c, labels.get(world.player.discoveredAliens.get(i)));
+					}
 				}
 			}
 
@@ -523,12 +594,6 @@ public class DatabasePainter extends JComponent {
 			g2.setClip(new Rectangle(x2, y2, w2, h2));
 			g2.drawImage(gfx.background, x0, y0, null);
 
-//			cs = g2.getComposite();
-//			g2.setComposite(AlphaComposite.SrcOver.derive(0.75f));
-//			g2.setColor(Color.BLACK);
-//			g2.fillRect(x2, y2, w2, h2);
-//			g2.setComposite(cs);
-			
 			g2.setClip(sp);
 		}
 		if (textpanelVisible) {
@@ -550,11 +615,24 @@ public class DatabasePainter extends JComponent {
 			g2.setComposite(cs);
 			if (textPhaseIndex == textPhaseCount) {
 				g2.drawImage(gfx.textPanel, x1, y1, null);
-				if (helpVisible) {
-					
-				} else
-				if (aliensVisible) {
-					
+				if (mapTitle != null) {
+					text.paintTo(g2, x0 + 18, y0 + 299, 14, 0xFFFFFF00, mapTitle);
+				}
+				if (rows.size() > 0) {
+					if (textOffset > 0) {
+						moveUp.paintTo(g2, x0, y0);
+					}
+					if (textOffset + 10 < rows.size()) {
+						moveDown.paintTo(g2, x0, y0);
+					}
+					Shape sp = g2.getClip();
+					g2.setClip(new Rectangle(x0 + 18, y0 + 299, 430, 120));
+					int y = y0 + 299;
+					for (int i = textOffset; i < rows.size(); i++) {
+						text.paintTo(g2, x0 + 9 + 9, y, 10, 0xFFFFFF00, rows.get(i));
+						y += 12;
+					}
+					g2.setClip(sp);
 				}
 			}
 			
@@ -663,6 +741,8 @@ public class DatabasePainter extends JComponent {
 												repaint();
 											} else {
 												expandCollapse.stop();
+												splitRows(labels.get("database.map." + world.level));
+												mapTitle = labels.get("database.map." + world.level + ".title");
 												repaint();
 											}
 										}
@@ -710,6 +790,8 @@ public class DatabasePainter extends JComponent {
 						textpanelVisible = false;
 						textOutIndex = 0;
 						expandCollapse.stop();
+						mapTitle = null;
+						rows.clear();
 						doHide(endAction);
 					}
 				}
@@ -728,6 +810,7 @@ public class DatabasePainter extends JComponent {
 						repaint();
 					} else {
 						pictureFrameVisible = false;
+						alienDetails = false;
 						pictureOutIndex = 0;
 						expandCollapse.stop();
 						doHide(endAction);
@@ -762,6 +845,7 @@ public class DatabasePainter extends JComponent {
 						pictureEdgeVisible = true;
 						helpVisible = true;
 						expandCollapse.stop();
+						repaint();
 					}
 				}
 			});
@@ -877,5 +961,66 @@ public class DatabasePainter extends JComponent {
 			}
 		});
 		expandCollapse.start();
+	}
+	/**
+	 * Set the labels.
+	 * @param labels the label
+	 */
+	public void setLabels(Labels labels) {
+		this.labels = labels;
+	}
+	/**
+	 * Split the rows.
+	 * @param desc the original text
+	 */
+	protected void splitRows(String desc) {
+		textOffset = 0;
+		rows.clear();
+		int w = 430;
+		String[] par = desc.split("\n");
+		for (String s : par) {
+			if (s.trim().isEmpty()) {
+				rows.add("");
+				continue;
+			}
+			String[] words = s.split("\\s+");
+			StringBuilder line = new StringBuilder();
+			int i = 0;
+			while (i < words.length) {
+				line.setLength(0);
+				for (; i < words.length; i++) {
+					if (text.getTextWidth(10, line + " " + words[i]) >= w) {
+						rows.add(line.toString());
+						break;
+					} else {
+						if (line.length() > 0) {
+							line.append(" ");
+						}
+						line.append(words[i]);
+					}
+				}
+			}
+			if (line.length() > 0) {
+				rows.add(line.toString());
+			}
+		}
+	}
+	/** Move text up. */
+	protected void doMoveUp() {
+		if (aliensVisible || helpVisible) {
+			if (textOffset > 0) {
+				textOffset--;
+			}
+			repaint();
+		}
+	}
+	/** Move text down. */
+	protected void doMoveDown() {
+		if (aliensVisible || helpVisible) {
+			if (textOffset + 10 < rows.size()) {
+				textOffset++;
+			}
+			repaint();
+		}
 	}
 }

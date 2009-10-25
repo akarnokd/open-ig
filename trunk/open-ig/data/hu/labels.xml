@@ -1,4 +1,102 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <labels>
+	<entry key='database.repair_colony_buildings'>Kolónia épületek javítása</entry>
+	<entry key='database.battleship_production'>Csatahajók gyártása</entry>
+	<entry key='database.deploy_starbase'>Űrbázisok telepítése</entry>
+	<entry key='database.moral_boosting'>Morál javítása a kolóniákon</entry>
+	<entry key='database.effective_spacewar'>Hatékony űrharc stratégiák</entry>
+	<entry key='database.effective_groudwar'>Hatékony földharc stratégiák</entry>
+	<entry key='database.spaceship_equipping'>Űrhajók felszerelése</entry>
+	<entry key='database.research_labs'>Kutatóközpontok szerepe</entry>
+	<entry key='database.tax_income'>Adóbevételek</entry>
+	<entry key='database.discovering_planets'>Bolygók felderítése</entry>
+	
+	<entry key='database.repair_colony_buildings.details'>Kolónia épületek javítása</entry>
+	<entry key='database.battleship_production.details'>Csatahajók gyártása</entry>
+	<entry key='database.deploy_starbase.details'>Űrbázisok telepítése</entry>
+	<entry key='database.moral_boosting.details'>Morál javítása a kolóniákon</entry>
+	<entry key='database.effective_spacewar.details'>Hatékony űrharc stratégiák</entry>
+	<entry key='database.effective_groudwar.details'>Hatékony földharc stratégiák</entry>
+	<entry key='database.spaceship_equipping.details'>Űrhajók felszerelése</entry>
+	<entry key='database.research_labs.details'>Kutatóközpontok szerepe</entry>
+	<entry key='database.tax_income.details'>Adóbevételek</entry>
+	<entry key='database.discovering_planets.details'>Bolygók felderítése</entry>
+
+	<entry key='race.free_traders_alliance'>Kereskedők Szövetsége</entry>
+	<entry key='race.free_nations_society'>Szabad Nemzetek Szöv.</entry>
+	<entry key='race.pirates'>Kalózok</entry>
+	<entry key='race.garthogs'>Garthogok</entry>
+	<entry key='race.ychoms'>Ychomok</entry>
+	<entry key='race.morgaths'>Morgathok</entry>
+	<entry key='race.dribs'>Dribek</entry>
+	<entry key='race.ecaleps'>Ecalepek</entry>
+	<entry key='race.sulleps'>Sullepek</entry>
+	<entry key='race.dargslans'>Dargslanok</entry>
+	
+	<entry key='race.free_traders_alliance.details'>A Régi Birodalom része voltak egykor, de a Kereskedők elhagyták, hogy létrehozzanak egy új birodalmat. Békés, kereskedő népség.</entry>
+	<entry key='race.free_nations_society.details'>Egykor a régi nagy Birodalom része voltak, de már régen kikiáltották függetlenségüket. Az SZNSZ gyorsan gyárt újabbnál újabb flottákat és könnyedén fogla el új területeket. Az SZNSZ vezetői rendkívül arrogánsak a Birodalommal szemben.</entry>
+	<entry key='race.pirates.details'>A kalózok több fajból összeállt törvényen kívüli banda. Előszeretettel támadnak meg védtelen kereskedelmi hajókat és gyakran állnak át hozzájuk a morálukat vesztett kolóniák is. Hadi flottákat eddig még szándékosan sosem támadtak meg.</entry>
+	<entry key='race.garthogs.details'>A Garthog rendkívül sunyi faj. Imádnak mindenféle gépet, és szí@esen ellopnak bármilyen új technologiát. A gépek iránti szeretetük akkora, hogy extra szenzorokat építenek be a gyerekeikbe is, amikor megszületnek. Állítólag kiírtották a Nub nevezetű fajt, hogy ellophassák technológiájukat. A Garthog birodalom közel van az emberi birodalmakhoz, és már több mint 10 éve háborúznak. Speciális földi fegyverrel - a radarzavaró járművel - is rendelkeznek.</entry>
+	<entry key='race.ychoms.details'>Békés, kereskedő nép. Jó kapcsolataik vannak a Kereskedők Szövetségével. Az Ychomok érdekes fegyverrel védik saját kolóniáikat - egy aknatelepítő gépezettel.</entry>
+	<entry key='race.morgaths.details'>A Morgathok nagyon barátságtalanok. Sose bíznak meg senkiben. Állítólag hatalmas űrhajóik vannak, és egy speciális földi egységük, a Kamikaze tank. Vigyázz, ha közel kerülsz hozzá!</entry>
+	<entry key='race.dribs.details'>Dribek egy büszke faj. A technikai fejlettségük megmutatkozik a mechanikai és építkezési tudományukban.</entry>
+	<entry key='race.ecaleps.details'>A birodalmuk gyorsan nő és átlagon felüliek az adóbevételeik. Talán ezért is szeretik annyira a pénzt. Kifejlesztettek egy új speciális földi egységet, a rakétazavaró tankot, amely amellett, hogy erős páncélzattal rendelkezik, a rakétákat is eltéríti, így lehetetlen rakétás egységgel kilőni.</entry>
+	<entry key='race.sulleps.details'>A Sullepek alaptermészete a háború. Nagyon szigorú szociális szervezetekben nőnek fel. Kicsinyeiket születésüktől fogva harcra tanítják. Soha nem adják meg magukat a harcban - sokkal nagyobb dicsőség a csatamezőn meghalniuk, mint vesztesként hazatérni.</entry>
+	<entry key='race.dargslans.details'>Nem sokat tudni a Dargslanokról, kivéve azt, hogy nagy erőkkel rendelkeznek a földön és az űrben egyaránt.</entry>
+
+	<entry key='database.map.1'></entry>
+	<entry key='database.map.2'></entry>
+	<entry key='database.map.3'></entry>
+	<entry key='database.map.4'>
+	
+	1. Híd
+	2. Kutatás-gyártás terminálok
+	3. Felszerelés terminál
+	4. Az admirális szobája
+	5. Bár
+	6. Legénységi szállás
+	7. Diplomáciai kapcsolatok szobája</entry>
+	<entry key='database.map.5'>
+	
+	1. Híd
+	2. Kutatás-gyártás terminálok
+	3. Felszerelés terminál
+	4. Az admirális szobája
+	5. Bár
+	6. Legénységi szállás
+	7. Diplomáciai kapcsolatok szobája</entry>
+	<entry key='database.map.1.title'></entry>
+	<entry key='database.map.2.title'></entry>
+	<entry key='database.map.3.title'>A Thorin zászlóshajó térképe</entry>
+	<entry key='database.map.4.title'>A Thorin zászlóshajó térképe</entry>
+	<entry key='database.map.5.title'>A Thorin zászlóshajó térképe</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 </labels>
