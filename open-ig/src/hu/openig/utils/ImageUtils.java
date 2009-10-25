@@ -41,4 +41,21 @@ public final class ImageUtils {
 		}
 		return src.getSubimage(x, y, w, h);
 	}
+	/**
+	 * Returns a subimage of the given main image.
+	 * @param src the source image.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param w the width
+	 * @param h the height
+	 * @return the extracted sub-image
+	 */
+	public static BufferedImage newSubimage(BufferedImage src, int x, int y, int w, int h) {
+		BufferedImage bimg =  new BufferedImage(w, h, src.getType());
+		int[] tmp = new int[w * h];
+		src.getRGB(x, y, w, h, tmp, 0, w);
+		bimg.setRGB(0, 0, w, h, tmp, 0, w);
+		return bimg;
+	}
+	
 }
