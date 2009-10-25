@@ -9,6 +9,7 @@
 package hu.openig.v1.gui;
 
 import hu.openig.v1.Configuration;
+import hu.openig.v1.Labels;
 import hu.openig.v1.ResourceLocator;
 import hu.openig.v1.gfx.DatabaseGFX;
 import hu.openig.v1.model.Player;
@@ -55,8 +56,24 @@ public class DatabaseTest extends JFrame {
 		World w = new World();
 		w.level = 5;
 		w.player = new Player();
-		w.player.discoveredAliens.addAll(Arrays.asList("race.free_traders_alliance", "race.free_nations_society"));
+		w.player.discoveredAliens.addAll(Arrays.asList(
+				"race.free_traders_alliance", 
+				"race.free_nations_society",
+				"race.pirates",
+				"race.garthogs",
+				"race.ychoms",
+				"race.morgaths",
+				"race.dribs",
+				"race.ecaleps",
+				"race.sulleps",
+				"race.dargslans"
+		));
 		p.setWorld(w);
+		
+		Labels labels = new Labels();
+		labels.load(rl, lang, null);
+		
+		p.setLabels(labels);
 		
 		gl.setHorizontalGroup(
 			gl.createSequentialGroup()
