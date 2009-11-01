@@ -1,6 +1,14 @@
 #summary Contains screenshots from the game.
 #labels Featured
 
+= Version 0.80c screenshots =
+Unpublished intermediate version
+
+|| [http://darksideunderflow.com/images/shipwalk_bridge.png http://darksideunderflow.com/images/shipwalk_bridge_tn.png]<br>The bridge with clickable transitions highlighted|| [http://darksideunderflow.com/images/shipwalk_equipment.png http://darksideunderflow.com/images/shipwalk_equipment_tn.png]<br>Going to Equipment in-motion screenshot ||
+|| [http://darksideunderflow.com/images/bar_brian.png http://darksideunderflow.com/images/bar_brian_tn.png]<br>A talk to Brian || [http://darksideunderflow.com/images/bar_phsychologist.png http://darksideunderflow.com/images/bar_phsychologist_tn.png]<br>A talk to the Phsychologist ||
+|| [http://darksideunderflow.com/images/database_ship.png http://darksideunderflow.com/images/database_ship_tn.png]<br>The ship map level 5 || [http://darksideunderflow.com/images/database_race.png http://darksideunderflow.com/images/database_race_tn.png]<br>A race description, incomplete ||
+
+
 = Version 0.70 screenshots =
 || [http://karnokd.uw.hu/open-ig-0.70-screen01.png http://karnokd.uw.hu/open-ig-0.70-screen01-tn.png]<br>Production screen|| [http://karnokd.uw.hu/open-ig-0.70-screen02.png http://karnokd.uw.hu/open-ig-0.70-screen02-tn.png]<br>Research screen || 
 
