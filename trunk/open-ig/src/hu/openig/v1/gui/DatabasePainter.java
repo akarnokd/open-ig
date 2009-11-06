@@ -378,8 +378,7 @@ public class DatabasePainter extends JComponent {
 				int y1 = y + 10;
 				if (e.getX() >= x && e.getX() <= x1 && e.getY() >= y && e.getY() <= y1) {
 					if (selectedHelp != i) {
-						splitRows(labels.get(helpTexts[i] + ".details"));
-						doShowText();
+						doShowText(labels.get(helpTexts[i] + ".details"));
 					}
 					selectedHelp = i;
 				}
@@ -448,13 +447,13 @@ public class DatabasePainter extends JComponent {
 		starmap = new DatabaseButton(x, y + 2 * 34 - gfx.starmap[0].getHeight(), gfx.starmap, null);
 		diplomacy = new DatabaseButton(x, y + 3 * 34 - gfx.diplomacy[0].getHeight(), gfx.diplomacy, null);
 		
-		moveUp = new DatabaseButton(465, 340, gfx.arrowUp, new Act() {
+		moveUp = new DatabaseButton(465, 300, gfx.arrowUp, new Act() {
 			@Override
 			public void act() {
 				doMoveUp();
 			}
 		});
-		moveDown = new DatabaseButton(465, 390, gfx.arrowDown, new Act() {
+		moveDown = new DatabaseButton(465, 380, gfx.arrowDown, new Act() {
 			@Override
 			public void act() {
 				doMoveDown();
@@ -884,8 +883,11 @@ public class DatabasePainter extends JComponent {
 			expandCollapse.start();
 		}
 	}
-	/** Show the text panel. */
-	protected void doShowText() {
+	/** 
+	 * Show the text panel.
+	 * @param newText the new text to show 
+	 */
+	protected void doShowText(final String newText) {
 		if (textpanelVisible) {
 			textOutIndex = 0;
 			clearListeners(expandCollapse);
@@ -899,7 +901,8 @@ public class DatabasePainter extends JComponent {
 						textpanelVisible = false;
 						textOutIndex = 0;
 						expandCollapse.stop();
-						doShowText();
+						rows.clear();
+						doShowText(newText);
 					}
 				}
 			});
@@ -917,6 +920,7 @@ public class DatabasePainter extends JComponent {
 					repaint();
 				} else {
 					expandCollapse.stop();
+					splitRows(newText);
 					repaint();
 				}
 			}
