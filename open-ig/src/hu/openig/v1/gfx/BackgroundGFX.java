@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
  * @author karnok, 2009.11.09.
  * @version $Revision 1.0$
  */
-public class BackgroundGFX {
+public class BackgroundGFX implements ResourceSelfLoader {
 	/** The resource locator. */
 	protected ResourceLocator rl;
 	/** The start backgrounds. */
@@ -28,10 +28,13 @@ public class BackgroundGFX {
 	/** The difficulty backgrounds. */
 	public BufferedImage[] difficulty;
 	/** The test screen background. */
+	@Img(name = "phsychologist_test")
 	public BufferedImage test;
 	/** The setup screen background. */
+	@Img(name = "setup")
 	public BufferedImage setup;
 	/** The gameover image. */
+	@Img(name = "gameover")
 	public BufferedImage gameover;
 	/**
 	 * Constructor.
@@ -45,6 +48,13 @@ public class BackgroundGFX {
 	 * @param language the target language
 	 */
 	public void load(String language) {
+		GFXLoader.loadResources(this, rl, language);
+	}
+	/* (non-Javadoc)
+	 * @see hu.openig.v1.gfx.ResourceSelfLoader#load(hu.openig.v1.ResourceLocator, java.lang.String)
+	 */
+	@Override
+	public void load(ResourceLocator rl, String language) {
 		start = new BufferedImage[] {
 			rl.getImage(language, "start_1"),
 			rl.getImage(language, "start_2"),
@@ -59,8 +69,5 @@ public class BackgroundGFX {
 			rl.getImage(language, "difficulty_1"),
 			rl.getImage(language, "difficulty_2")
 		};
-		test = rl.getImage(language, "phsychologist_test");
-		setup = rl.getImage(language, "setup");
-		gameover = rl.getImage(language, "gameover");
 	}
 }
