@@ -8,6 +8,7 @@
 
 package hu.openig.v1.gfx;
 
+import hu.openig.utils.ImageUtils;
 import hu.openig.v1.ResourceLocator;
 
 import java.awt.image.BufferedImage;
@@ -46,6 +47,11 @@ public final class GFXLoader {
 							Cat ic = f.getAnnotation(Cat.class);
 							if (ic != null) {
 								f.set(target, getCategory(rl, language, ic.name()));
+							} else {
+								Anim ian = f.getAnnotation(Anim.class);
+								if (ian != null) {
+									f.set(target, getAnim(rl, language, ian.name(), ian.width()));
+								}
 							}
 						}
 					}
@@ -57,6 +63,22 @@ public final class GFXLoader {
 		} catch (IllegalAccessException ex) {
 			ex.printStackTrace();
 		}
+	}
+	/**
+	 * Get a multi-phase animation by splitting the target image.
+	 * @param rl the resource locator
+	 * @param language the target language
+	 * @param name the button name
+	 * @param width the phase width
+	 * @return the array.
+	 */
+	private static BufferedImage[] getAnim(ResourceLocator rl, String language, String name, int width) {
+		BufferedImage img = rl.getImage(language, name);
+		BufferedImage[] result = new BufferedImage[img.getWidth() / width];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = ImageUtils.newSubimage(img, i * width, 0, width, img.getHeight());
+		}
+		return result;
 	}
 	/**
 	 * Get a two phase button image (with and without _pressed).
@@ -94,7 +116,7 @@ public final class GFXLoader {
 	private static BufferedImage[] getButton3(ResourceLocator rl, String language, String name) {
 		return new BufferedImage[] {
 			rl.getImage(language, name),
-			rl.getImage(language, name + "_pressed"),
+			rl.getImage(language, name + "_selected"),
 			rl.getImage(language, name + "_selected_pressed")
 		};
 	}

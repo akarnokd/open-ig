@@ -72,6 +72,10 @@ public final class TestGFXLoad {
 		equipmentGFX.load(lang);
 		verifyNull(equipmentGFX);
 		
+		SpacewarGFX spacewarGFX = new SpacewarGFX(rl);
+		spacewarGFX.load(lang);
+		verifyNull(equipmentGFX);
+		
 		// -----------------------------------------------------
 		time = System.currentTimeMillis() -  time;
 		System.out.printf("Load time: %d%n", time);
