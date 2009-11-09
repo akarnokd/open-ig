@@ -32,13 +32,13 @@ public final class TestGFXLoad {
 			// test for nullness:
 			try {
 				if (f.get(obj) == null) {
-					System.err.printf("Field %s in %s is null%n", f.getName(), f.getClass());
+					System.err.printf("Field %s in %s is null%n", f.getName(), obj.getClass());
 				} else
 				if (f.getType().isArray()) {
 					Object[] arr = (Object[])f.get(obj);
 					for (int i = 0; i < arr.length; i++) {
 						if (arr[i] == null) {
-							System.err.printf("Entry %s[%d] in %s is null%n", f.getName(), i, f.getClass());
+							System.err.printf("Entry %s[%d] in %s is null%n", f.getName(), i, obj.getClass());
 						}
 					}
 				}
@@ -62,13 +62,15 @@ public final class TestGFXLoad {
 		// -----------------------------------------------------
 		StatusbarGFX statusbarGFX = new StatusbarGFX(rl);
 		statusbarGFX.load(lang);
-		
 		verifyNull(statusbarGFX);
 		
 		BackgroundGFX backgroundGFX = new BackgroundGFX(rl);
 		backgroundGFX.load(lang);
-		
 		verifyNull(backgroundGFX);
+		
+		EquipmentGFX equipmentGFX = new EquipmentGFX(rl);
+		equipmentGFX.load(lang);
+		verifyNull(equipmentGFX);
 		
 		// -----------------------------------------------------
 		time = System.currentTimeMillis() -  time;

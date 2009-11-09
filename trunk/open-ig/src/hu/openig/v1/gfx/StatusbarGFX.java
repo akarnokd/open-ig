@@ -18,32 +18,44 @@ import java.awt.image.BufferedImage;
  * @author karnok, 2009.11.09.
  * @version $Revision 1.0$
  */
-public class StatusbarGFX {
+public class StatusbarGFX implements ResourceSelfLoader {
 	/** The resource locator. */
 	protected ResourceLocator rl;
 	/** Ingame top left. */
+	@Img(name = "statusbar_ingame_top_left")
 	public BufferedImage ingameTopLeft;
 	/** Ingame top filler. */
+	@Img(name = "statusbar_ingame_top_fill")
 	public BufferedImage ingameTopFill;
 	/** Ingame top right. */
+	@Img(name = "statusbar_ingame_top_right")
 	public BufferedImage ingameTopRight;
 	/** Ingame bottom left. */
+	@Img(name = "statusbar_ingame_bottom_left")
 	public BufferedImage ingameBottomLeft;
 	/** Ingage bottom fill. */
+	@Img(name = "statusbar_ingame_bottom_fill")
 	public BufferedImage ingameBottomFill;
 	/** Ingame bottom right. */
+	@Img(name = "statusbar_ingame_bottom_right")
 	public BufferedImage ingameBottomRight;
 	/** Nongame top left. */
+	@Img(name = "statusbar_nongame_top_left")
 	public BufferedImage nongameTopLeft;
 	/** Nongame top fill. */
+	@Img(name = "statusbar_nongame_top_fill")
 	public BufferedImage nongameTopFill;
 	/** Nongame top right. */
+	@Img(name = "statusbar_nongame_top_right")
 	public BufferedImage nongameTopRight;
 	/** Nongame bottom left. */
+	@Img(name = "statusbar_nongame_bottom_left")
 	public BufferedImage nongameBottomLeft;
 	/** Nongame bottom fill. */
+	@Img(name = "statusbar_nongame_bottom_fill")
 	public BufferedImage nongameBottomFill;
 	/** Nongame bottom right. */
+	@Img(name = "statusbar_nongame_bottom_right")
 	public BufferedImage nongameBottomRight;
 	/** Pause animation phases. */
 	public BufferedImage[] pause;
@@ -65,22 +77,14 @@ public class StatusbarGFX {
 	 * @param language the target language
 	 */
 	public void load(String language) {
-		ingameTopLeft = rl.getImage(language, "statusbar_ingame_top_left");
-		ingameTopFill = rl.getImage(language, "statusbar_ingame_top_fill");
-		ingameTopRight = rl.getImage(language, "statusbar_ingame_top_right");
-		ingameBottomLeft = rl.getImage(language, "statusbar_ingame_bottom_left");
-		ingameBottomFill = rl.getImage(language, "statusbar_ingame_bottom_fill");
-		ingameBottomRight = rl.getImage(language, "statusbar_ingame_bottom_right");
-
-		nongameTopLeft = rl.getImage(language, "statusbar_nongame_top_left");
-		nongameTopFill = rl.getImage(language, "statusbar_nongame_top_fill");
-		nongameTopRight = rl.getImage(language, "statusbar_nongame_top_right");
-		nongameBottomLeft = rl.getImage(language, "statusbar_nongame_bottom_left");
-		nongameBottomFill = rl.getImage(language, "statusbar_nongame_bottom_fill");
-		nongameBottomRight = rl.getImage(language, "statusbar_nongame_bottom_right");
-		
+		GFXLoader.loadResources(this, rl, language);
+	}
+	/* (non-Javadoc)
+	 * @see hu.openig.v1.gfx.ResourceSelfLoader#load(hu.openig.v1.ResourceLocator, java.lang.String)
+	 */
+	@Override
+	public void load(ResourceLocator rl, String language) {
 		BufferedImage time = rl.getImage(language, "time_animations");
-		
 		pause = new BufferedImage[] {
 			ImageUtils.newSubimage(time, 42, 16, 14, 16),
 			ImageUtils.newSubimage(time, 42, 32, 14, 16)
