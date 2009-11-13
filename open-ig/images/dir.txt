@@ -1,1 +1,0 @@
-Contains image resources per 2 char language code.

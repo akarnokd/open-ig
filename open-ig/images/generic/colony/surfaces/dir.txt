@@ -1,9 +1,0 @@
-Surface types and its original index:
-
-1 Desert
-2 Frozen
-3 Cratered
-4 Rocky
-5 Liquid
-6 Earth
-7 Neptoplasm
