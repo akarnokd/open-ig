@@ -21,5 +21,7 @@ public @interface Anim {
 	/** The resource name. */
 	String name();
 	/** The phase width. */
-	int width();
+	int width() default -1;
+	/** The number of phases. */
+	int step() default -1;
 }

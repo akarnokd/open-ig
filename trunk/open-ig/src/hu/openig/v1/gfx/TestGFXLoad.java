@@ -58,33 +58,38 @@ public final class TestGFXLoad {
 		rl.setContainers(config.containers);
 		rl.scanResources();
 
-		String lang = "hu";
-		// -----------------------------------------------------
-		StatusbarGFX statusbarGFX = new StatusbarGFX(rl);
-		statusbarGFX.load(lang);
-		verifyNull(statusbarGFX);
-		
-		BackgroundGFX backgroundGFX = new BackgroundGFX(rl);
-		backgroundGFX.load(lang);
-		verifyNull(backgroundGFX);
-		
-		EquipmentGFX equipmentGFX = new EquipmentGFX(rl);
-		equipmentGFX.load(lang);
-		verifyNull(equipmentGFX);
-		
-		SpacewarGFX spacewarGFX = new SpacewarGFX(rl);
-		spacewarGFX.load(lang);
-		verifyNull(equipmentGFX);
-		
-		InfoGFX infoGFX = new InfoGFX(rl);
-		infoGFX.load(lang);
-		verifyNull(infoGFX);
-		
-		ResearchGFX researchGFX = new ResearchGFX(rl);
-		researchGFX.load(lang);
-		verifyNull(researchGFX);
-		
-		// -----------------------------------------------------
+		for (String lang : new String[] { "hu", "en" }) {
+			// -----------------------------------------------------
+			StatusbarGFX statusbarGFX = new StatusbarGFX(rl);
+			statusbarGFX.load(lang);
+			verifyNull(statusbarGFX);
+			
+			BackgroundGFX backgroundGFX = new BackgroundGFX(rl);
+			backgroundGFX.load(lang);
+			verifyNull(backgroundGFX);
+			
+			EquipmentGFX equipmentGFX = new EquipmentGFX(rl);
+			equipmentGFX.load(lang);
+			verifyNull(equipmentGFX);
+			
+			SpacewarGFX spacewarGFX = new SpacewarGFX(rl);
+			spacewarGFX.load(lang);
+			verifyNull(equipmentGFX);
+			
+			InfoGFX infoGFX = new InfoGFX(rl);
+			infoGFX.load(lang);
+			verifyNull(infoGFX);
+			
+			ResearchGFX researchGFX = new ResearchGFX(rl);
+			researchGFX.load(lang);
+			verifyNull(researchGFX);
+			
+			ColonyGFX colonyGFX = new ColonyGFX(rl);
+			colonyGFX.load(lang);
+			verifyNull(colonyGFX);
+			
+			// -----------------------------------------------------
+		}
 		time = System.currentTimeMillis() -  time;
 		System.out.printf("Load time: %d%n", time);
 	}

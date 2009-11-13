@@ -50,7 +50,7 @@ public final class GFXLoader {
 							} else {
 								Anim ian = f.getAnnotation(Anim.class);
 								if (ian != null) {
-									f.set(target, getAnim(rl, language, ian.name(), ian.width()));
+									f.set(target, getAnim(rl, language, ian.name(), ian.width(), ian.step()));
 								}
 							}
 						}
@@ -69,14 +69,17 @@ public final class GFXLoader {
 	 * @param rl the resource locator
 	 * @param language the target language
 	 * @param name the button name
-	 * @param width the phase width
+	 * @param width the phase width or -1 if not applicable
+	 * @param step the number of steps or -1 if not applicable
 	 * @return the array.
 	 */
-	private static BufferedImage[] getAnim(ResourceLocator rl, String language, String name, int width) {
+	private static BufferedImage[] getAnim(ResourceLocator rl, String language, String name, int width, int step) {
 		BufferedImage img = rl.getImage(language, name);
-		BufferedImage[] result = new BufferedImage[img.getWidth() / width];
+		int n = width >= 0 ? img.getWidth() / width : step;
+		int w = width >= 0 ? width : img.getWidth() / step;
+		BufferedImage[] result = new BufferedImage[n];
 		for (int i = 0; i < result.length; i++) {
-			result[i] = ImageUtils.newSubimage(img, i * width, 0, width, img.getHeight());
+			result[i] = ImageUtils.newSubimage(img, i * w, 0, w, img.getHeight());
 		}
 		return result;
 	}

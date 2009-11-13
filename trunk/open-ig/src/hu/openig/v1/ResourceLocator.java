@@ -16,8 +16,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -30,7 +32,7 @@ import javax.imageio.ImageIO;
 public class ResourceLocator {
 	/** The directories and ZIP files that contain resources, order is inportant. */
 	private final List<String> containers = new ArrayList<String>();
-	/** The resource map. */
+	/** The resource map from type to language to path. */
 	public final Map<ResourceType, Map<String, Map<String, ResourcePlace>>> resourceMap = new HashMap<ResourceType, Map<String, Map<String, ResourcePlace>>>();
 	/** The pre-opened ZIP containers. */
 	private final Map<String, ZipFile> zipContainers = new HashMap<String, ZipFile>();
@@ -316,5 +318,33 @@ public class ResourceLocator {
 		} finally {
 			try { in.close(); } catch (IOException ex) { ex.printStackTrace(); }
 		}
+	}
+	/**
+	 * Get a list of resources of a given path.
+	 * @param language the target language
+	 * @param path the path
+	 * @return the list of resources
+	 */
+	public List<ResourcePlace> list(String language, String path) {
+		List<ResourcePlace> result = new ArrayList<ResourcePlace>();
+		Set<String> rs = new HashSet<String>();
+		for (Map<String, Map<String, ResourcePlace>> e : resourceMap.values()) {
+			for (String s : new String[] { language, "generic" }) {
+				Map<String, ResourcePlace> e1 = e.get(s);
+				if (e1 != null) {
+					for (Map.Entry<String, ResourcePlace> e2 : e1.entrySet()) {
+						if (e2.getKey().startsWith(path)) {
+							int idx = e2.getKey().indexOf('/', path.length());
+							if (idx < 0) {
+								if (rs.add(e2.getKey())) {
+									result.add(e2.getValue());
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return result;
 	}
 }
