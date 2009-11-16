@@ -87,6 +87,10 @@ public final class TestGFXLoad {
 			ColonyGFX colonyGFX = new ColonyGFX(rl);
 			colonyGFX.load(lang);
 			verifyNull(colonyGFX);
+
+			StarmapGFX starmapGFX = new StarmapGFX();
+			starmapGFX.load(rl, lang);
+			verifyNull(starmapGFX);
 			
 			// -----------------------------------------------------
 		}
