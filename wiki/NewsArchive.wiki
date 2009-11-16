@@ -1,5 +1,26 @@
 #summary News archive.
 
+
+*November 1. 2009*
+
+There is a slow and hidden progress behind the [http://code.google.com/p/open-ig/wiki/Screenshots scenes]: the rendering of the ship walk, the bar and most of the database screens are ready, but not integrated in any way.
+
+To make thinks work standalone, I have to re-design all existing screens and re-model the backing data structures. There are simply too many pieces to compose and test.
+
+*October 7. 2009*
+
+Note again, that downloads marked as Deprecated and named with Developer is not meant for general download.
+
+*October 1. 2009*
+
+Note that the new VideoPlayer and video packs are currently for development purposes: this allows us to test the multilingual video playback and the creation of subtitles for the videos.
+
+*September 27. 2009*
+
+I must admit, we are stepping on an uncertain field with these lots of resource files. On two fronts: uploading 1GB resources into Google Code is rare, and they tend to post fix-things: delete without a single warning. The second thing is ownership. I do it for fun and for free, but there are forces on earth who like to disrupt such kind of deeds.
+
+Please be patient and don't download the game resources yet. Currently, Gergő Harrach and I are working on the subtitles for the videos, and it might happen that some videos and audio files need extra corrections to be made.
+
 *September 26. 2009*
 
 I've completed the packaging of the new video. The new VideoPlayer will be able to play the new (and only the new) video files along with selectable audio and subtitle. The new file distribution requires an [http://code.google.com/p/open-ig/wiki/Setup Setup] program. Uploading all the audio and video takes some time, and the documentation is also coming for these new windows.
