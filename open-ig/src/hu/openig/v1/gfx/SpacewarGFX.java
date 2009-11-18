@@ -45,6 +45,7 @@ public class SpacewarGFX implements ResourceSelfLoader {
 	@Anim(name = "spacewar/button_label_stat_4", width = 21)
 	public BufferedImage[] computers;
 	/** Layout OK. */
+	@Img(name = "spacewar/button_layout_ok")
 	public BufferedImage layoutOk;
 	/** Pause button. */
 	@Btn2(name = "spacewar/button_pause")
