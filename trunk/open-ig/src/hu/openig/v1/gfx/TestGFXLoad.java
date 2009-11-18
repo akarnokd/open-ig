@@ -12,6 +12,11 @@ import hu.openig.v1.Configuration;
 import hu.openig.v1.ResourceLocator;
 
 import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Test graphics loading.
@@ -58,44 +63,92 @@ public final class TestGFXLoad {
 		rl.setContainers(config.containers);
 		rl.scanResources();
 
-		for (String lang : new String[] { "hu", "en" }) {
+		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		List<Future<?>> ends = new LinkedList<Future<?>>();
+		for (String lang1 : new String[] { "hu", "en" }) {
+			final String lang = lang1;
 			// -----------------------------------------------------
-			StatusbarGFX statusbarGFX = new StatusbarGFX(rl);
-			statusbarGFX.load(lang);
-			verifyNull(statusbarGFX);
-			
-			BackgroundGFX backgroundGFX = new BackgroundGFX(rl);
-			backgroundGFX.load(lang);
-			verifyNull(backgroundGFX);
-			
-			EquipmentGFX equipmentGFX = new EquipmentGFX(rl);
-			equipmentGFX.load(lang);
-			verifyNull(equipmentGFX);
-			
-			SpacewarGFX spacewarGFX = new SpacewarGFX(rl);
-			spacewarGFX.load(lang);
-			verifyNull(equipmentGFX);
-			
-			InfoGFX infoGFX = new InfoGFX(rl);
-			infoGFX.load(lang);
-			verifyNull(infoGFX);
-			
-			ResearchGFX researchGFX = new ResearchGFX(rl);
-			researchGFX.load(lang);
-			verifyNull(researchGFX);
-			
-			ColonyGFX colonyGFX = new ColonyGFX(rl);
-			colonyGFX.load(lang);
-			verifyNull(colonyGFX);
-
-			StarmapGFX starmapGFX = new StarmapGFX();
-			starmapGFX.load(rl, lang);
-			verifyNull(starmapGFX);
-			
+			ends.add(exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					StatusbarGFX statusbarGFX = new StatusbarGFX(rl);
+					statusbarGFX.load(lang);
+					verifyNull(statusbarGFX);
+				}
+			}));
+			ends.add(exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					BackgroundGFX backgroundGFX = new BackgroundGFX(rl);
+					backgroundGFX.load(lang);
+					verifyNull(backgroundGFX);
+				}
+			}));
+			ends.add(exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					EquipmentGFX equipmentGFX = new EquipmentGFX(rl);
+					equipmentGFX.load(lang);
+					verifyNull(equipmentGFX);
+				}
+			}));
+			ends.add(exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					SpacewarGFX spacewarGFX = new SpacewarGFX(rl);
+					spacewarGFX.load(lang);
+					verifyNull(spacewarGFX);
+				}
+			}));
+			ends.add(exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					InfoGFX infoGFX = new InfoGFX(rl);
+					infoGFX.load(lang);
+					verifyNull(infoGFX);
+				}
+			}));
+			ends.add(exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					ResearchGFX researchGFX = new ResearchGFX(rl);
+					researchGFX.load(lang);
+					verifyNull(researchGFX);
+				}
+			}));
+			ends.add(exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					ColonyGFX colonyGFX = new ColonyGFX(rl);
+					colonyGFX.load(lang);
+					verifyNull(colonyGFX);
+				}
+			}));
+			ends.add(exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					StarmapGFX starmapGFX = new StarmapGFX();
+					starmapGFX.load(rl, lang);
+					verifyNull(starmapGFX);
+				}
+			}));
+			ends.add(exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					Galaxy galaxy = new Galaxy();
+					galaxy.load(rl, lang, "campaign/main");
+				}
+			}));
 			// -----------------------------------------------------
 		}
+		for (Future<?> f : ends) {
+			try {
+				f.get();
+			} catch (Exception ex) { }
+		}
+		exec.shutdown();
 		time = System.currentTimeMillis() -  time;
 		System.out.printf("Load time: %d%n", time);
 	}
-
+	
 }

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- The description of the galactic entities -->
-<galaxy>
+<galaxy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="galaxy.xsd">
 	<background>starmap/background</background>
 	<planets>
 		<planet type='neptoplasm' label='planet.type.neptoplasm'>
