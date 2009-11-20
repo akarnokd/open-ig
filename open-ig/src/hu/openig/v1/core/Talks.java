@@ -10,21 +10,11 @@ package hu.openig.v1.core;
 
 import hu.openig.utils.XML;
 import hu.openig.v1.ResourceLocator;
-import hu.openig.v1.ResourceType;
-import hu.openig.v1.ResourceLocator.ResourcePlace;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * The record for person talks.
@@ -41,33 +31,7 @@ public class Talks {
 	 * @param game the game
 	 */
 	public void load(ResourceLocator rl, String language, String game) {
-		ResourcePlace rp = rl.get(language, game + "/talks", ResourceType.DATA);
-		if (rp == null) {
-			// TODO log
-			throw new AssertionError("Missing resource: " + game + "/talks");
-		}
-		InputStream in = rp.open();
-		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(in);
-			process(doc.getDocumentElement(), rl, language);
-		} catch (IOException ex) {
-			// TODO log
-			ex.printStackTrace();
-		} catch (SAXException ex) {
-			// TODO log
-			ex.printStackTrace();
-		} catch (ParserConfigurationException ex) {
-			ex.printStackTrace();
-		} finally {
-			try {
-				in.close();
-			} catch (IOException ex) {
-				// TODO log
-				ex.printStackTrace();
-			}
-		}
+		process(rl.getXML(language, game + "/talks"), rl, language);
 	}
 	/**
 	 * Process the document.

@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<buildings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="buildings.xsd">
+	<race id='human'>
+		<building id='ColonyHub' label='buildings.human.colony_hub' desc='buildings.human.colony_hub.desc'>
+			<graphics>
+				<normal>colony/buildings/human/colony_hub</normal> 
+				<damaged>colony/buildings/human/colony_hub_damaged</damaged>
+				<mini>colony/buildings/human/colony_hub_mini</mini>
+				<width>8</width>
+				<height>7</height>
+			</graphics>
+			<build> 
+				<cost>40000</cost>
+				<kind>MainBuilding</kind>
+				<limit>1</limit>
+			</build>
+			<operation>
+				<unit type='energy'>0</unit>
+				<unit type='worker'>-960</unit>
+				<unit type='food'>5000</unit>
+				<unit type='hospital'>10000</unit>
+			</operation>	
+			<upgrades>
+			</upgrades>		
+		</building>
+		<building id='PrefabHousing' label='buildings.human.prefab_housing' desc='buildings.human.prefab_housing.desc'>
+			<graphics>
+				<normal>colony/buildings/human/prefab_housing</normal>
+				<damaged>colony/buildings/human/prefab_housing_damaged</damaged>
+				<mini>colony/buildings/human/prefab_housing_mini</mini>
+				<width>4</width>
+				<height>3</height>
+			</graphics>
+			<build>
+				<cost>5600</cost>
+				<kind>House</kind>
+				<limit>*</limit>
+			</build>
+			<operation>
+				<unit type='energy'>-850</unit>
+				<unit type='worker'>-60</unit>
+				<unit type='house' display='true'>7000</unit>
+			</operation>
+			<upgrades>
+				<upgrade desc='buildings.human.prefab_housing.upgrade_1'>
+					<unit type='house'>1.25</unit>
+					<unit type='energy'>1.25</unit>
+					<unit type='worker'>1.25</unit>
+				</upgrade>
+				<upgrade desc='buildings.human.prefab_housing.upgrade_2'>
+					<unit type='house'>1.5</unit>
+					<unit type='energy'>1.5</unit>
+					<unit type='worker'>1.5</unit>
+				</upgrade>
+				<upgrade desc='buildings.human.prefab_housing.upgrade_3'>
+					<unit type='house'>2</unit>
+					<unit type='energy'>2</unit>
+					<unit type='worker'>1.75</unit>
+				</upgrade>
+				<upgrade desc='buildings.human.prefab_housing.upgrade_4'>
+					<unit type='house'>2.5</unit>
+					<unit type='energy'>2</unit>
+					<unit type='worker'>1.75</unit>
+				</upgrade>
+			</upgrades>
+		</building>
+	</race>
+</buildings>

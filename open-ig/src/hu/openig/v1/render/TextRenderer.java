@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -315,5 +316,49 @@ public class TextRenderer {
 		return ((int)Math.min(((color & 0xFF0000) >> 16) * scale, 0xFC) << 16)
 		| ((int)Math.min(((color & 0xFF00) >> 8) * scale, 0xFC) << 8)
 		| ((int)Math.min(((color & 0xFF) >> 0) * scale, 0xFC) << 0);
+	}
+	/**
+	 * Wrap the text along the given width.
+	 * @param text the text to wrap
+	 * @param width the target width
+	 * @param size the text size
+	 * @param linesOut the output lines
+	 * @return the maximum width
+	 */
+	public int wrapText(String text, int width, int size, List<String> linesOut) {
+		linesOut.clear();
+		int maxWidth = 0;
+		String[] par = text.split("\n");
+		for (String s : par) {
+			if (s.trim().isEmpty()) {
+				linesOut.add("");
+				continue;
+			}
+			String[] words = s.split("\\s+");
+			StringBuilder line = new StringBuilder();
+			int i = 0;
+			while (i < words.length) {
+				line.setLength(0);
+				for (; i < words.length; i++) {
+					if (getTextWidth(size, line + " " + words[i]) >= width) {
+						String t = line.toString();
+						maxWidth = Math.max(maxWidth, getTextWidth(size, t));
+						linesOut.add(t);
+						break;
+					} else {
+						if (line.length() > 0) {
+							line.append(" ");
+						}
+						line.append(words[i]);
+					}
+				}
+			}
+			if (line.length() > 0) {
+				String t = line.toString();
+				maxWidth = Math.max(maxWidth, getTextWidth(size, t));
+				linesOut.add(t);
+			}
+		}
+		return maxWidth;
 	}
 }
