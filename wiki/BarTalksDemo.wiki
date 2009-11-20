@@ -1,4 +1,4 @@
-#summary Description of the installing and running the Bar talks demo
+#summary Description of the installing and running of the Bar talks demo
 
 = Introduction =
 
@@ -27,4 +27,3 @@ The *Language* menu allows you to change the audio and subtitle language. The pr
 http://darksideunderflow.com/images/open-ig-talks-3.png
 
 Click on the yellow text to start the talk. Clicking while the video is playing will instantly go to the next talk choices. Some talks allow you to re-talk about a topic and topics already talked about will get a dark gray coloring.
-
