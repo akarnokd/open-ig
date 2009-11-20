@@ -10,6 +10,7 @@ package hu.openig.v1.gui;
 
 import hu.openig.core.SwappableRenderer;
 import hu.openig.sound.AudioThread;
+import hu.openig.v1.Labels;
 import hu.openig.v1.ResourceLocator;
 import hu.openig.v1.ResourceType;
 import hu.openig.v1.SubtitleManager;
@@ -23,6 +24,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -92,14 +94,51 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 	volatile int audioLen;
 	/** The current subtitle manager. */
 	SubtitleManager subtitle;
+	/** The label manager. */
+	Labels labels;
+	/** The list of choices. */
+	final List<Choice> choices = new ArrayList<Choice>();
+	/** A talk choice. */
+	class Choice {
+		/** The target rendering rectangle. */
+		final Rectangle rect = new Rectangle();
+		/** The choice text rows. */
+		final List<String> rows = new ArrayList<String>();
+		/**
+		 * Paint the rows.
+		 * @param g2 the graphics
+		 * @param x0 the paint origin
+		 * @param y0 the paint origin
+		 * @param color the rendering color.
+		 */
+		public void paintTo(Graphics2D g2, int x0, int y0, int color) {
+			int y = y0 + rect.y;
+			for (int i = 0; i < rows.size(); i++) {
+				txt.paintTo(g2, x0 + rect.x, y + 3, 14, color, rows.get(i));
+				y += 20;
+			}
+		}
+		/**
+		 * Test if the mouse position in the rectangle.
+		 * @param x0 the paint origin
+		 * @param y0 the paint origin
+		 * @param mouse the mouse coordinate
+		 * @return true if in the rectangle
+		 */
+		public boolean test(int x0, int y0, Point mouse) {
+			return rect.contains(mouse.x - x0, mouse.y - y0);
+		}
+	}
 	/**
 	 * Constructor.
 	 * @param rl the resource locator
 	 * @param lang the language
+	 * @param labels the labels
 	 */
-	public BarPainter(ResourceLocator rl, String lang) {
+	public BarPainter(ResourceLocator rl, String lang, Labels labels) {
 		this.rl = rl;
 		this.lang = lang;
+		this.labels = labels;
 		txt = new TextRenderer(rl);
 		swapLock = new ReentrantLock();
 		addMouseListener(new MouseAdapter() {
@@ -116,6 +155,36 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 		});
 	}
 	/**
+	 * Set the next talk state. 
+	 * @param state the state
+	 */
+	void setState(TalkState state) {
+		this.state = state;
+		if (state != null) {
+			int h0 = state.picture.getHeight();
+			int w0 = state.picture.getWidth();
+			int h = 0;
+			choices.clear();
+			int maxTw = 0;
+			for (TalkSpeech ts : state.speeches) {
+				Choice c = new Choice();
+				int tw = txt.wrapText(labels.get(ts.text), w0, 14, c.rows);
+				maxTw = Math.max(maxTw, tw);
+				int dh = c.rows.size() * 20;
+				c.rect.setBounds(0, h, tw, dh);
+				h += dh + 20;
+				choices.add(c);
+			}
+			// center them all
+			int h1 = (h0 - h + 20) / 2;
+			int w1 = (w0 - maxTw) / 2;
+			for (Choice c : choices) {
+				c.rect.x += w1;
+				c.rect.y += h1;
+			}
+		}
+	}
+	/**
 	 * On mouse clicked.
 	 * @param e the event
 	 */
@@ -127,26 +196,25 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 			stop = true;
 			sdl.stop();
 			mediaPlayback = false;
-			state = next;
+			setState(next);
 			frontBuffer = null;
 			label = null;
 			doMouseMove(relativize(MouseInfo.getPointerInfo().getLocation()));
 			repaint();
 		} else {
-			int hmax = 28 * state.speeches.size();
-			if (state.speeches.size() > 1) {
-				hmax -= 14;
-			}
-			int my = e.getY();
-			int y0 = (getHeight() - hmax) / 2;
-			int idx = (e.getY() - y0) / 28;
-			int y1 = y0 + idx * 28;
-			if (my >= y1 && my < y1 + 14 && idx >= 0 && idx < state.speeches.size()) {
-				TalkSpeech ts = state.speeches.get(idx);
-				next = person.states.get(ts.to);
-				mediaPlayback = true;
-				ts.spoken = true;
-				startPlayback(ts.media);
+			int x0 = (getWidth() - state.picture.getWidth()) / 2;
+			int y0 = (getHeight() - state.picture.getHeight()) / 2;
+			int idx = 0;
+			for (Choice c : choices) {
+				if (c.test(x0, y0, e.getPoint())) {
+					TalkSpeech ts = state.speeches.get(idx);
+					next = person.states.get(ts.to);
+					mediaPlayback = true;
+					ts.spoken = true;
+					startPlayback(ts.media);
+					break;
+				}
+				idx++;
 			}
 			repaint();
 		}
@@ -297,7 +365,7 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							mediaPlayback = false;
-							state = next;
+							setState(next);
 							frontBuffer = null;
 							backBuffer = null;
 							label = null;
@@ -335,18 +403,16 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 			return;
 		}
 		if (!mediaPlayback) {
-			int hmax = 28 * state.speeches.size();
-			if (state.speeches.size() > 1) {
-				hmax -= 14;
-			}
-			int my = e.y;
-			int y0 = (getHeight() - hmax) / 2;
-			int idx = (my - y0) / 28;
-			int y1 = y0 + idx * 28;
-			if (my >= y1 && my < y1 + 14 && idx >= 0 && idx < state.speeches.size()) {
-				highlight = state.speeches.get(idx);
-			} else {
-				highlight = null;
+			int x0 = (getWidth() - state.picture.getWidth()) / 2;
+			int y0 = (getHeight() - state.picture.getHeight()) / 2;
+			int idx = 0;
+			highlight = null;
+			for (Choice c : choices) {
+				if (c.test(x0, y0, e.getLocation())) {
+					highlight = state.speeches.get(idx);
+					break;
+				}
+				idx++;
 			}
 			
 			repaint();
@@ -382,25 +448,17 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 			}
 		} else {
 			if (state != null && state.picture != null) {
-				g2.translate((getWidth() - state.picture.getWidth()) / 2, (getHeight() - state.picture.getHeight()) / 2);
-				g2.drawImage(state.picture, 0, 0, null);
-				// paint talk options.
-				int hmax = 28 * state.speeches.size();
-				if (state.speeches.size() > 1) {
-					hmax -= 14;
+				int x0 = (getWidth() - state.picture.getWidth()) / 2;
+				int y0 = (getHeight() - state.picture.getHeight()) / 2;
+
+				g2.drawImage(state.picture, x0, y0, null);
+				int idx = 0;
+				for (Choice c : choices) {
+					TalkSpeech ts = state.speeches.get(idx);
+					int color = ts == highlight ? TextRenderer.WHITE : (ts.spoken ? TextRenderer.GRAY : TextRenderer.YELLOW);
+					c.paintTo(g2, x0, y0, color);
+					idx++;
 				}
-				int wmax = 0;
-				for (TalkSpeech ts : state.speeches) {
-					wmax = Math.max(wmax, txt.getTextWidth(14, ts.text));
-				}
-				int y = (state.picture.getHeight() - hmax) / 2;
-				for (TalkSpeech ts : state.speeches) {
-					int x = (state.picture.getWidth() - wmax) / 2;
-					int x1 = (wmax - txt.getTextWidth(14, ts.text)) / 2;
-					int c = ts == highlight ? TextRenderer.WHITE : (ts.spoken ? TextRenderer.GRAY : TextRenderer.YELLOW);
-					txt.paintTo(g2, x + x1, y, 14, c, ts.text);
-					y += 28;
-				}				
 			}
 		}
 	}

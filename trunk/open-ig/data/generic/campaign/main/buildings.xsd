@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="buildings">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name='race'>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name='building' maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name='graphics'>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name='normal' type='xs:string'></xs:element>
+													<xs:element name='damaged' type='xs:string'></xs:element>
+													<xs:element name='mini' type='xs:string'></xs:element>
+													<xs:element name='width' type="xs:positiveInteger"></xs:element>
+													<xs:element name='height' type='xs:positiveInteger'></xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name='build'>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name='cost' type="xs:nonNegativeInteger"></xs:element>
+													<xs:element name='kind' type="xs:string"></xs:element>
+													<xs:element name='limit' type='xs:string'></xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name='operation'>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name='unit' maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:double">
+																	<xs:attribute name='type' type='xs:string'
+																		use="required"></xs:attribute>
+																	<xs:attribute name='display' type='xs:boolean'
+																		use="optional"></xs:attribute>
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name='upgrades'>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name='upgrade' minOccurs="0" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name='unit' maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:double">
+																				<xs:attribute name='type' type='xs:string'
+																					use="required"></xs:attribute>
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name='desc'></xs:attribute>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name='id' type='xs:string'></xs:attribute>
+									<xs:attribute name='label' type='xs:string'></xs:attribute>
+									<xs:attribute name='desc' type='xs:string'></xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name='id' type='xs:string'></xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

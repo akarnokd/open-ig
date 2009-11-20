@@ -980,34 +980,7 @@ public class DatabasePainter extends JComponent {
 	protected void splitRows(String desc) {
 		textOffset = 0;
 		rows.clear();
-		int w = 430;
-		String[] par = desc.split("\n");
-		for (String s : par) {
-			if (s.trim().isEmpty()) {
-				rows.add("");
-				continue;
-			}
-			String[] words = s.split("\\s+");
-			StringBuilder line = new StringBuilder();
-			int i = 0;
-			while (i < words.length) {
-				line.setLength(0);
-				for (; i < words.length; i++) {
-					if (text.getTextWidth(10, line + " " + words[i]) >= w) {
-						rows.add(line.toString());
-						break;
-					} else {
-						if (line.length() > 0) {
-							line.append(" ");
-						}
-						line.append(words[i]);
-					}
-				}
-			}
-			if (line.length() > 0) {
-				rows.add(line.toString());
-			}
-		}
+		text.wrapText(desc, 430, 10, rows);
 	}
 	/** Move text up. */
 	protected void doMoveUp() {

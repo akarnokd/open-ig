@@ -1,4 +1,31 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <labels>
+	<entry key='bar.phsychologist.101'>Hello Doctor. Do You have some time for me?</entry>
+	<entry key='bar.phsychologist.111'>I'd like You to tell me about the test I had to complete.</entry>
+	<entry key='bar.phsychologist.112'>I have some dreams which need rectification...</entry>
+	<entry key='bar.phsychologist.121'>Thank You for Your time. I have to go now.</entry>
+	
+	<entry key='bar.brian.301'>Hey Brian! Aren't You a little young for a head-tech?</entry>
+	<entry key='bar.brian.311'>Didn't know I have to do with a military tech-expert...</entry>
+	<entry key='bar.brian.312'>Do you think there is still a robot research going on?</entry>
+	<entry key='bar.brian.321'>Tell me, how does this kind of research happen?</entry>
+	<entry key='bar.brian.323'>Why did You leave development?</entry>
+	<entry key='bar.brian.331'>Thank You for Your help. Enjoy your leave, Brian.</entry>
+	
+	<entry key='bar.kelly.001'>Greetings, Kelly. What's up?</entry>
+	<entry key='bar.kelly.011'>I see you don't really like these situations.</entry>
+	<entry key='bar.kelly.021'>What do you mean?</entry>
+	<entry key='bar.kelly.022'>Do you think an alien could have slipped onto the ship?</entry>
+	<entry key='bar.kelly.032'>Look, I saw someone running out of my room, which was a mess.</entry>
+	<entry key='bar.kelly.041'>Thank you for you advice, Kelly.</entry>
+	
+	<entry key='bar.doctor.401'>Greetings doctor. What's the situation?</entry>
+	<entry key='bar.doctor.402'>Relaxing, doc?</entry>
+	<entry key='bar.doctor.411'>As I know You understand robots?</entry>
+	<entry key='bar.doctor.412'>As I know You worked on robotics earlier, aren't you?</entry>
+	<entry key='bar.doctor.421'>I'm interested in the research going on Earth.</entry>
+	<entry key='bar.doctor.431'>I think I need to speak with him. Can you help me?</entry>
+	<entry key='bar.doctor.441'>I must speak with the professor. It's very important..</entry>
+	<entry key='bar.doctor.451'>Thank you doc. You helped me a lot.</entry>
 	<entry key=''></entry>
 </labels>

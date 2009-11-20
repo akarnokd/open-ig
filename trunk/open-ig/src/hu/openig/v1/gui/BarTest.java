@@ -10,7 +10,10 @@ package hu.openig.v1.gui;
 
 import hu.openig.v1.Act;
 import hu.openig.v1.Configuration;
+import hu.openig.v1.Labels;
 import hu.openig.v1.ResourceLocator;
+import hu.openig.v1.core.TalkPerson;
+import hu.openig.v1.core.TalkSpeech;
 import hu.openig.v1.core.TalkState;
 import hu.openig.v1.core.Talks;
 
@@ -37,8 +40,27 @@ public class BarTest extends JFrame {
 	protected BarPainter barpainter;
 	/** The resource locator. */
 	protected ResourceLocator rl;
-	/** The current language. */
-	protected String lang;
+	/**
+	 * Switch language on the components.
+	 * @param lang the language
+	 */
+	void switchLanguage(String lang) {
+		barpainter.labels.load(rl, lang, "campaign/main");
+		barpainter.lang = lang;
+		barpainter.setState(barpainter.state);
+		repaint();
+	}
+	/**
+	 * Reset the visit state of the speeches.
+	 * @param person the person
+	 */
+	void resetVisits(TalkPerson person) {
+		for (TalkState ts : person.states.values()) {
+			for (TalkSpeech tsp : ts.speeches) {
+				tsp.spoken = false;
+			}
+		}
+	}
 	/**
 	 * Constructor.
 	 * @param talks the talks
@@ -48,12 +70,16 @@ public class BarTest extends JFrame {
 	public BarTest(final Talks talks, ResourceLocator rl, String lang) {
 		super("Bar test");
 		this.talks = talks;
+		this.rl = rl;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
 		c.setLayout(gl);
 
-		barpainter = new BarPainter(rl, lang);
+		Labels lbl = new Labels();
+		lbl.load(rl, lang, "campaign/main");
+		
+		barpainter = new BarPainter(rl, lang, lbl);
 		
 		JMenuBar menu = new JMenuBar();
 		JMenu mnuOptions = new JMenu("Talks");
@@ -66,15 +92,25 @@ public class BarTest extends JFrame {
 				@Override
 				public void act() {
 					barpainter.person = talks.persons.get(fs);
-					barpainter.state = barpainter.person.states.get(TalkState.START);
+					barpainter.setState(barpainter.person.states.get(TalkState.START));
+					resetVisits(barpainter.person);
 					repaint();
 				}
 			});
 			mnuOptions.add(mnuItem);
 		}
+		JMenu mnuLanguage = new JMenu("Language");
+		JMenuItem mi1 = new JMenuItem("English");
+		mi1.addActionListener(new Act() { public void act() { switchLanguage("en"); } });
+		JMenuItem mi2 = new JMenuItem("Hungarian");
+		mi2.addActionListener(new Act() { public void act() { switchLanguage("hu"); } });
+		mnuLanguage.add(mi1);
+		mnuLanguage.add(mi2);
+		menu.add(mnuLanguage);
+		
 		setJMenuBar(menu);
 		barpainter.person = talks.persons.get("brian");
-		barpainter.state = barpainter.person.states.get(TalkState.START);
+		barpainter.setState(barpainter.person.states.get(TalkState.START));
 		
 		gl.setHorizontalGroup(
 			gl.createSequentialGroup()
@@ -92,17 +128,17 @@ public class BarTest extends JFrame {
 	 * @param args no arguments
 	 */
 	public static void main(String[] args) {
-		Configuration config = new Configuration("open-ig-config.xml");
+		final Configuration config = new Configuration("open-ig-config.xml");
 		config.load();
 		final Talks w = new Talks();
 		final ResourceLocator rl = new ResourceLocator();
 		rl.setContainers(config.containers);
 		rl.scanResources();
-		w.load(rl, "hu", "campaign/main");
+		w.load(rl, config.language, "campaign/main");
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new BarTest(w, rl, "hu").setVisible(true);
+				new BarTest(w, rl, config.language).setVisible(true);
 			}
 		});
 	}

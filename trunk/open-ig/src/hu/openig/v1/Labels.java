@@ -9,20 +9,11 @@
 package hu.openig.v1;
 
 import hu.openig.utils.XML;
-import hu.openig.v1.ResourceLocator.ResourcePlace;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * The label manager with option for game specific sublabels.
@@ -40,44 +31,10 @@ public class Labels {
 	 */
 	public void load(ResourceLocator rl, String language, String game) {
 		map.clear();
-		ResourcePlace rp = rl.get(language, "labels", ResourceType.DATA);
-		if (rp == null) {
-			// TODO log
-			throw new AssertionError("Missing resource: labels");
-		}
-		parse(rp);
+		process(rl.getXML(language, "labels"));
 		if (game != null) {
-			rp = rl.get(language, game + "/labels", ResourceType.DATA);
-			if (rp != null) {
-				parse(rp);
-			}
-		}
-	}
-	/**
-	 * Parse the given resource.
-	 * @param rp the resource place
-	 */
-	private void parse(ResourcePlace rp) {
-		InputStream in = rp.open();
-		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(in);
-			process(doc.getDocumentElement());
-		} catch (IOException ex) {
-			// TODO log
-			ex.printStackTrace();
-		} catch (SAXException ex) {
-			// TODO log
-			ex.printStackTrace();
-		} catch (ParserConfigurationException ex) {
-			ex.printStackTrace();
-		} finally {
-			try {
-				in.close();
-			} catch (IOException ex) {
-				// TODO log
-				ex.printStackTrace();
+			if (rl.get(language, game + "/labels", ResourceType.DATA) != null) {
+				process(rl.getXML(language, game + "/labels"));
 			}
 		}
 	}
@@ -97,5 +54,14 @@ public class Labels {
 	 */
 	public String get(String key) {
 		return map.get(key);
+	}
+	/**
+	 * Use the given entry as a formatter and generate the string using the given parameters.
+	 * @param key the key
+	 * @param values the list of values
+	 * @return the string
+	 */
+	public String format(String key, Object... values) {
+		return String.format(get(key), values);
 	}
 }
