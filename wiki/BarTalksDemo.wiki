@@ -1,4 +1,4 @@
-#summary Description of the installing and running of the Bar talks demo
+#summary Description for installing and running of the Bar talks demo
 
 = Introduction =
 
