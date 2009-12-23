@@ -2,22 +2,22 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="buildings">
-		<xs:annotation><xs:documentation>The list of races.</xs:documentation></xs:annotation>
+		<xs:annotation><xs:documentation>The list of buildings.</xs:documentation></xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name='race' minOccurs="1" maxOccurs="unbounded">
-					<xs:annotation><xs:documentation>Buildings of the race.</xs:documentation></xs:annotation>
+				<xs:element name='building' maxOccurs="unbounded">
+					<xs:annotation><xs:documentation>A building description.</xs:documentation></xs:annotation>
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name='building' maxOccurs="unbounded">
-								<xs:annotation><xs:documentation>A building description.</xs:documentation></xs:annotation>
+							<xs:element name='graphics'>
+								<xs:annotation><xs:documentation>Graphics related properties.</xs:documentation></xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name='graphics'>
-											<xs:annotation><xs:documentation>Graphics related properties.</xs:documentation></xs:annotation>
+										<xs:element name='race' minOccurs="1" maxOccurs="unbounded">
+											<xs:annotation><xs:documentation>The race specific width and height information.</xs:documentation></xs:annotation>
 											<xs:complexType>
-												<xs:attribute name='base' type='xs:string' use="required">
-													<xs:annotation><xs:documentation>The normal graphics. The damaged and info image is derived using '_damaged' and '_mini' attached to the base image path.</xs:documentation></xs:annotation>
+												<xs:attribute name='id' type='xs:string' use='required'>
+													<xs:annotation><xs:documentation>The race identifier for the given size information.</xs:documentation></xs:annotation>
 												</xs:attribute>
 												<xs:attribute name='width' type='xs:positiveInteger' use="required">
 													<xs:annotation><xs:documentation>The width of the building, which is the top-right angle.</xs:documentation></xs:annotation>
@@ -27,95 +27,95 @@
 												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name='build'>
-											<xs:annotation><xs:documentation>The buildup properties.</xs:documentation></xs:annotation>
+									</xs:sequence>
+									<xs:attribute name='base' type='xs:string' use="required">
+										<xs:annotation><xs:documentation>The normal graphics. The damaged and info image is derived using '_damaged' and '_mini' attached to the base image path. Contains one parameter (%s) for the race id.</xs:documentation></xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name='build'>
+								<xs:annotation><xs:documentation>The buildup properties.</xs:documentation></xs:annotation>
+								<xs:complexType>
+									<xs:attribute name='cost' type="xs:unsignedInt" use="required">
+											<xs:annotation><xs:documentation>The building cost.</xs:documentation></xs:annotation>
+									</xs:attribute>
+									<xs:attribute name='kind' type='xs:string' use="required">
+											<xs:annotation><xs:documentation>The kind indicator to limit the amount of buildings of that kind.</xs:documentation></xs:annotation>
+									</xs:attribute>
+									<xs:attribute name='limit' type='xs:string' use="required">
+											<xs:annotation><xs:documentation>The number of buildings on a planet: star (*) means any, positive value means that amount, negative amount means up to that of the same kind.</xs:documentation></xs:annotation>
+									</xs:attribute>
+									<xs:attribute name='research' type='xs:string' use="optional">
+										<xs:annotation><xs:documentation>The research id for the technology which needs to be researched before this building can be built.</xs:documentation></xs:annotation>
+									</xs:attribute>
+									<xs:attribute name='except' type='xs:string' use='optional'>
+										<xs:annotation><xs:documentation>A comma separated list of the planet types where the building cannot be built.</xs:documentation></xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name='operation'>
+								<xs:annotation><xs:documentation>Operational properties: consumption and production.</xs:documentation></xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name='unit' maxOccurs="unbounded">
+											<xs:annotation><xs:documentation>The operational value. Positive means production, negative means consumption.</xs:documentation></xs:annotation>
 											<xs:complexType>
-												<xs:attribute name='cost' type="xs:unsignedInt" use="required">
-														<xs:annotation><xs:documentation>The building cost.</xs:documentation></xs:annotation>
-												</xs:attribute>
-												<xs:attribute name='kind' type='xs:string' use="required">
-														<xs:annotation><xs:documentation>The kind indicator to limit the amount of buildings of that kind.</xs:documentation></xs:annotation>
-												</xs:attribute>
-												<xs:attribute name='limit' type='xs:string' use="required">
-														<xs:annotation><xs:documentation>The number of buildings on a planet: star (*) means any, positive value means that amount, negative amount means up to that of the same kind.</xs:documentation></xs:annotation>
-												</xs:attribute>
-												<xs:attribute name='research' type='xs:string' use="optional">
-													<xs:annotation><xs:documentation>The research id for the technology which needs to be researched before this building can be built.</xs:documentation></xs:annotation>
-												</xs:attribute>
-												<xs:attribute name='except' type='xs:string' use='optional'>
-													<xs:annotation><xs:documentation>A comma separated list of the planet types where the building cannot be built.</xs:documentation></xs:annotation>
-												</xs:attribute>
+												<xs:simpleContent>
+													<xs:extension base="xs:double">
+														<xs:attribute name='type' type='xs:string'
+															use="required">
+															<xs:annotation><xs:documentation>The amount type.</xs:documentation></xs:annotation>
+														</xs:attribute>
+														<xs:attribute name='display' type='xs:boolean'
+															use="optional">
+															<xs:annotation><xs:documentation>Is this a significant attribute to display.</xs:documentation></xs:annotation>
+														</xs:attribute>
+													</xs:extension>
+												</xs:simpleContent>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name='operation'>
-											<xs:annotation><xs:documentation>Operational properties: consumption and production.</xs:documentation></xs:annotation>
+									</xs:sequence>
+									<xs:attribute name='percent' type='xs:boolean'>
+										<xs:annotation><xs:documentation>Is the output/operational level dependant on the amount of worker and energy percent?</xs:documentation></xs:annotation>												
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name='upgrades'>
+								<xs:annotation><xs:documentation>Available upgrades for this building. Will be used in the same order as declared.</xs:documentation></xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name='upgrade' minOccurs="0" maxOccurs="unbounded">
+											<xs:annotation><xs:documentation>An upgrade definition.</xs:documentation></xs:annotation>
 											<xs:complexType>
 												<xs:sequence>
 													<xs:element name='unit' maxOccurs="unbounded">
-														<xs:annotation><xs:documentation>The operational value. Positive means production, negative means consumption.</xs:documentation></xs:annotation>
+														<xs:annotation><xs:documentation>A unit multiplier.</xs:documentation></xs:annotation>
 														<xs:complexType>
 															<xs:simpleContent>
 																<xs:extension base="xs:double">
 																	<xs:attribute name='type' type='xs:string'
 																		use="required">
-																		<xs:annotation><xs:documentation>The amount type.</xs:documentation></xs:annotation>
-																	</xs:attribute>
-																	<xs:attribute name='display' type='xs:boolean'
-																		use="optional">
-																		<xs:annotation><xs:documentation>Is this a significant attribute to display.</xs:documentation></xs:annotation>
+																		<xs:annotation><xs:documentation>The type of the unit.</xs:documentation></xs:annotation>
 																	</xs:attribute>
 																</xs:extension>
 															</xs:simpleContent>
 														</xs:complexType>
 													</xs:element>
 												</xs:sequence>
-												<xs:attribute name='percent' type='xs:boolean'>
-													<xs:annotation><xs:documentation>Is the output/operational level dependant on the amount of worker and energy percent?</xs:documentation></xs:annotation>												
+												<xs:attribute name='desc' type="xs:string" use="required">
+													<xs:annotation><xs:documentation>The upgrade description label.</xs:documentation></xs:annotation>
 												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name='upgrades'>
-											<xs:annotation><xs:documentation>Available upgrades for this building. Will be used in the same order as declared.</xs:documentation></xs:annotation>
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name='upgrade' minOccurs="0" maxOccurs="unbounded">
-														<xs:annotation><xs:documentation>An upgrade definition.</xs:documentation></xs:annotation>
-														<xs:complexType>
-															<xs:sequence>
-																<xs:element name='unit' maxOccurs="unbounded">
-																	<xs:annotation><xs:documentation>A unit multiplier.</xs:documentation></xs:annotation>
-																	<xs:complexType>
-																		<xs:simpleContent>
-																			<xs:extension base="xs:double">
-																				<xs:attribute name='type' type='xs:string'
-																					use="required">
-																					<xs:annotation><xs:documentation>The type of the unit.</xs:documentation></xs:annotation>
-																				</xs:attribute>
-																			</xs:extension>
-																		</xs:simpleContent>
-																	</xs:complexType>
-																</xs:element>
-															</xs:sequence>
-															<xs:attribute name='desc' type="xs:string" use="required">
-																<xs:annotation><xs:documentation>The upgrade description label.</xs:documentation></xs:annotation>
-															</xs:attribute>
-														</xs:complexType>
-													</xs:element>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
 									</xs:sequence>
-									<xs:attribute name='id' type='xs:string' use="required">
-										<xs:annotation><xs:documentation>The building identifier.</xs:documentation></xs:annotation>
-									</xs:attribute>
-									<xs:attribute name='label' type='xs:string' use="required">
-										<xs:annotation><xs:documentation>The building name label, the sort description is derived using the '.desc' variant.</xs:documentation></xs:annotation>
-									</xs:attribute>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
-						<xs:attribute name='id' type='xs:string'>
-							<xs:annotation><xs:documentation>The race identifier.</xs:documentation></xs:annotation>
+						<xs:attribute name='id' type='xs:string' use="required">
+							<xs:annotation><xs:documentation>The building identifier.</xs:documentation></xs:annotation>
+						</xs:attribute>
+						<xs:attribute name='label' type='xs:string' use="required">
+							<xs:annotation><xs:documentation>The building name label, the sort description is derived using the '.desc' variant.</xs:documentation></xs:annotation>
 						</xs:attribute>
 					</xs:complexType>
 				</xs:element>
