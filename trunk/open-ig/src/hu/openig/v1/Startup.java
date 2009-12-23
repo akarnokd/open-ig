@@ -133,6 +133,12 @@ public final class Startup {
 				setup.setLocationRelativeTo(null);
 				setup.setVisible(true);
 				setup.pack();
+				setup.onRun.add(new Act() {
+					@Override
+					public void act() {
+						doStartGame();
+					}
+				});
 			}
 		});
 	}
