@@ -317,4 +317,15 @@ public class Configuration {
 			a.act();
 		}
 	}
+	/**
+	 * Creates a new resource locator object based on the current configuration.
+	 * Scans the containsers.
+	 * @return the resource locator ready to be used
+	 */
+	public ResourceLocator newResourceLocator() {
+		ResourceLocator rl = new ResourceLocator();
+		rl.setContainers(containers);
+		rl.scanResources();
+		return rl;
+	}
 }

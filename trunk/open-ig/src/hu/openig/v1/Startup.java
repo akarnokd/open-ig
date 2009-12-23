@@ -51,7 +51,7 @@ public final class Startup {
 		if (!config.load() || argset.contains("-config")) {
 			doStartConfiguration(config);
 		} else {
-			doStartGame();
+			doStartGame(config);
 		}
 	}
 	/**
@@ -136,7 +136,7 @@ public final class Startup {
 				setup.onRun.add(new Act() {
 					@Override
 					public void act() {
-						doStartGame();
+						doStartGame(config);
 					}
 				});
 			}
@@ -144,8 +144,15 @@ public final class Startup {
 	}
 	/**
 	 * Start the game.
+	 * @param config the configuration
 	 */
-	private static void doStartGame() {
-		
+	private static void doStartGame(final Configuration config) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				GameWindow gw = new GameWindow(config);
+				gw.setVisible(true);
+			}
+		});
 	}
 }
