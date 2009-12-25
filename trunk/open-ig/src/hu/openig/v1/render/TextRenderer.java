@@ -13,6 +13,7 @@ import hu.openig.v1.ResourceType;
 import hu.openig.v1.ResourceLocator.ResourcePlace;
 
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -196,6 +197,8 @@ public class TextRenderer {
 			0, 0, 0, 0, 1,
 			1, 1, 1
 	};
+	/** The maximum text size available. */
+	int maxSize = 14;
 	/**
 	 * Split the entire images into character sizes and characters.
 	 * @param color the target color.
@@ -294,17 +297,25 @@ public class TextRenderer {
 		if (charMap == null) {
 			charMap = split(color);
 		}
+		AffineTransform tf = g.getTransform();
+		g.translate(x, y);
 		SizedCharImages charToImage = charMap.get(size);
-		int spc = charsetSpaces.get(size);
-		if (charToImage != null) {
-			for (int i = 0; i < text.length(); i++) {
-				BufferedImage ci = charToImage.chars.get(text.charAt(i));
-				if (ci != null) {
-					g.drawImage(ci, x, y, null);
-				}
-				x += charToImage.width + spc;
-			}
+		if (charToImage == null) {
+			g.scale(size * 1.0 / maxSize, size * 1.0 / maxSize);
+			charToImage = charMap.get(maxSize);
+			size = maxSize;
+			
 		}
+		int spc = charsetSpaces.get(size);
+		int x1 = 0;
+		for (int i = 0; i < text.length(); i++) {
+			BufferedImage ci = charToImage.chars.get(text.charAt(i));
+			if (ci != null) {
+				g.drawImage(ci, x1, 0, null);
+			}
+			x1 += charToImage.width + spc;
+		}
+		g.setTransform(tf);
 	}
 	/**
 	 * Scale the color according to the given factor.
