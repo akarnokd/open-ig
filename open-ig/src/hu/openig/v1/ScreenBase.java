@@ -24,6 +24,8 @@ public abstract class ScreenBase {
 	protected ResourceLocator rl;
 	/** The component used to render the screen. */
 	protected JComponent parent;
+	/** The common resources. */
+	protected CommonResources commons;
 	/**
 	 * Render the screen's content based.
 	 * @param g2 the graphics object
@@ -61,13 +63,13 @@ public abstract class ScreenBase {
 	public abstract void keyTyped(int key, int modifiers);
 	/** 
 	 * Initialize any resources that are required by the screen. 
-	 * @param config the configuration object
-	 * @param rl the resource locator
+	 * @param commons the configuration object
 	 * @param parent the parent component for resizing
 	 */
-	public void initialize(Configuration config, ResourceLocator rl, JComponent parent) {
-		this.config = config;
-		this.rl = rl;
+	public void initialize(CommonResources commons, JComponent parent) {
+		this.commons = commons;
+		this.config = commons.config;
+		this.rl = commons.rl;
 		this.parent = parent;
 		initialize();
 	}

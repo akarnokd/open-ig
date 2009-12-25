@@ -18,7 +18,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.io.IOException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -72,28 +75,43 @@ public class GameWindow extends JFrame {
 	Configuration config;
 	/** The common resource locator. */
 	ResourceLocator rl;
+	/** The common resources. */
+	CommonResources commons;
+	/** The main menu. */
+	MainMenu mainMenu;
+	/** The surface used to render the screens. */
+	private ScreenRenderer surface;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
 	 */
 	public GameWindow(Configuration config) {
+		super("Open Imperium Galactica " + Configuration.VERSION);
+		URL icon = this.getClass().getResource("/hu/openig/res/open-ig-logo.png");
+		if (icon != null) {
+			try {
+				setIconImage(ImageIO.read(icon));
+			} catch (IOException e) {
+				config.log("ERROR", e.getMessage(), e);
+			}
+		}
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		
+		commons = new CommonResources(config);
 		this.config = config;
-		this.rl = config.newResourceLocator();
+		this.rl = commons.rl;
 		
 		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
 		c.setLayout(gl);
 		
-		ScreenRenderer sr = new ScreenRenderer();
+		surface = new ScreenRenderer();
 		gl.setHorizontalGroup(
 			gl.createSequentialGroup()
-			.addComponent(sr, 640, 640, Short.MAX_VALUE)
+			.addComponent(surface, 640, 640, Short.MAX_VALUE)
 		);
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
-			.addComponent(sr, 480, 480, Short.MAX_VALUE)
+			.addComponent(surface, 480, 480, Short.MAX_VALUE)
 		);
 		pack();
 		setMinimumSize(getSize());
@@ -102,10 +120,19 @@ public class GameWindow extends JFrame {
 //			setBounds(config.left, config.top, config.width, config.height);
 //		}
 		MouseActions ma = new MouseActions();
-		sr.addMouseListener(ma);
-		sr.addMouseMotionListener(ma);
-		sr.addMouseWheelListener(ma);
+		surface.addMouseListener(ma);
+		surface.addMouseMotionListener(ma);
+		surface.addMouseWheelListener(ma);
 		addKeyListener(new KeyEvents());
+		initScreens();
+	}
+	/** Initialize the various screen renderers. */
+	protected void initScreens() {
+		mainMenu = new MainMenu();
+		mainMenu.initialize(commons, surface);
+		
+		primary = mainMenu;
+		primary.onEnter();
 	}
 	/**
 	 * The common key manager.
@@ -115,7 +142,7 @@ public class GameWindow extends JFrame {
 	class KeyEvents extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			System.out.println("Press " + e.getKeyCode());
+//			System.out.println("Press " + e.getKeyCode());
 			if (secondary != null) {
 				secondary.keyTyped(e.getKeyCode(), e.getModifiersEx());
 			} else
@@ -132,7 +159,7 @@ public class GameWindow extends JFrame {
 	class MouseActions extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
-			System.out.println("Press");
+//			System.out.println("Press");
 			if (secondary != null) {
 				secondary.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
 			} else
