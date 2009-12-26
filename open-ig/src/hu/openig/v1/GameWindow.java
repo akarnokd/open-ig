@@ -11,6 +11,8 @@ package hu.openig.v1;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -131,8 +133,50 @@ public class GameWindow extends JFrame {
 		mainMenu = new MainMenu();
 		mainMenu.initialize(commons, surface);
 		
-		primary = mainMenu;
-		primary.onEnter();
+		displayPrimary(mainMenu);
+	}
+	/**
+	 * Display the given screen as the primary object. The secondary object, if any, will be removed.
+	 * @param sb the new screen to display
+	 */
+	public void displayPrimary(ScreenBase sb) {
+		if (secondary != null) {
+			secondary.onLeave();
+			secondary = null;
+		}
+		if (primary != null && primary != sb) {
+			primary.onLeave();
+		}
+		primary = sb;
+		if (primary != null) {
+			primary.onEnter(); 
+			// send a mouse moved event so that if necessary, components can react to mouseOver immediately
+			if (surface.isShowing()) {
+				Point p = getCurrentMousePosition();
+				primary.mouseMoved(0, p.x, p.y, 0);
+			}
+		}
+		surface.repaint();
+	}
+	/**
+	 * Retrieves the current mouse position relative to the rendering surface.
+	 * @return the current relative mouse position.
+	 */
+	public Point getCurrentMousePosition() {
+		Point p = MouseInfo.getPointerInfo().getLocation();
+		Point c = surface.getLocationOnScreen();
+		return new Point(c.x - p.x, c.y - p.y);
+	}
+	/**
+	 * Display the given secondary screen.
+	 * @param sb the screen to display as secondary
+	 */
+	public void displaySecondary(ScreenBase sb) {
+		if (secondary != null && secondary != sb) {
+			secondary.onLeave();
+		}
+		secondary = sb;
+		surface.repaint();
 	}
 	/**
 	 * The common key manager.
@@ -170,10 +214,10 @@ public class GameWindow extends JFrame {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			if (secondary != null) {
-				secondary.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				secondary.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
 			} else
 			if (primary != null) {
-				primary.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				primary.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
 			}
 		}
 		@Override

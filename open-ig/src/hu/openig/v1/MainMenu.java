@@ -13,6 +13,8 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -21,8 +23,87 @@ import java.util.Random;
  * @version $Revision 1.0$
  */
 public class MainMenu extends ScreenBase {
-	/** The screen index to display. */
-	int screenIndex;
+	/**
+	 * The click label.
+	 * @author karnokd, 2009.12.26.
+	 * @version $Revision 1.0$
+	 */
+	class ClickLabel {
+		/** The origin. */
+		public int x;
+		/** The origin. */
+		public int y;
+		/** The action to invoke. */
+		public Act action;
+		/** The text size. */
+		public int size;
+		/** The text label. */
+		public String label;
+		/** The selected state. */
+		public boolean selected;
+		/** The pressed state. */
+		public boolean pressed;
+		/**
+		 * Constructor.
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 * @param size the text size
+		 * @param label the label
+		 */
+		public ClickLabel(int x, int y, int size, String label) {
+			this.x = x;
+			this.y = y;
+			this.size = size;
+			this.label = label;
+		}
+		/**
+		 * Paint the label.
+		 * @param g2 the graphics context
+		 * @param x0 the origin
+		 * @param y0 the origin
+		 */
+		public void paintTo(Graphics2D g2, int x0, int y0) {
+			int color = 0xFFFFCC00;
+			if (pressed) {
+				color = 0xFFFF0000;
+			} else
+			if (selected) {
+				color = 0xFFFFFFFF;
+			}
+			commons.text.paintTo(g2, x0 + x, y0 + y, size, color, commons.labels.get(label));
+		}
+		/**
+		 * Test if the mouse is within the label.
+		 * @param mx the mouse X coordinate
+		 * @param my the mouse Y coordinate
+		 * @param x0 the screen rendering origin
+		 * @param y0 the screen rendering origin
+		 * @return true if mouse in the label
+		 */
+		public boolean test(int mx, int my, int x0, int y0) {
+			int w = commons.text.getTextWidth(size, commons.labels.get(label));
+			return (x0 + x) <= mx && (x0 + x + w) > mx
+			&& (y0 + y) <= my && (y0 + y + size) > my;
+		}
+		/** Invoke the associated action. */
+		public void invoke() {
+			if (action != null) {
+				action.act();
+			}
+		}
+	}
+	/** The memorized last width of the parent component. */
+	int lastWidth;
+	/** The memorized last height of the parent component. */
+	int lastHeight;
+	/** The screen X origin. */
+	private int xOrigin;
+	/** The screen Y origin. */
+	private int yOrigin;
+	/** The background image. */
+	private BufferedImage background;
+	/** The list of clickable labels. */
+	private List<ClickLabel> clicklabels;
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
@@ -37,8 +118,14 @@ public class MainMenu extends ScreenBase {
 	 */
 	@Override
 	public void initialize() {
-		// TODO Auto-generated method stub
-
+		clicklabels = new LinkedList<ClickLabel>();
+		
+		clicklabels.add(new ClickLabel(120, 120, 20, "mainmenu.singleplayer"));
+		clicklabels.add(new ClickLabel(120, 200, 20 , "mainmenu.multiplayer"));
+		clicklabels.add(new ClickLabel(120, 225, 20, "mainmenu.settings"));
+		clicklabels.add(new ClickLabel(120, 250, 20, "mainmenu.videos"));
+		clicklabels.add(new ClickLabel(120, 300, 20, "mainmenu.exit"));
+		
 	}
 
 	/* (non-Javadoc)
@@ -55,8 +142,19 @@ public class MainMenu extends ScreenBase {
 	 */
 	@Override
 	public void mouseMoved(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
+		boolean needRepaint = false;
+		for (ClickLabel cl : clicklabels) {
+			if (cl.test(x, y, xOrigin, yOrigin)) {
+				needRepaint |= !cl.selected;
+				cl.selected = true;
+			} else {
+				needRepaint |= cl.selected;
+				cl.selected = false;
+			}
+		}
+		if (needRepaint) {
+			repaint();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -64,8 +162,19 @@ public class MainMenu extends ScreenBase {
 	 */
 	@Override
 	public void mousePressed(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
+		boolean needRepaint = false;
+		for (ClickLabel cl : clicklabels) {
+			if (cl.test(x, y, xOrigin, yOrigin)) {
+				needRepaint |= !cl.pressed;
+				cl.pressed = true;
+			} else {
+				needRepaint |= cl.pressed;
+				cl.pressed = false;
+			}
+		}
+		if (needRepaint) {
+			repaint();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -73,8 +182,17 @@ public class MainMenu extends ScreenBase {
 	 */
 	@Override
 	public void mouseReleased(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
+		boolean needRepaint = false;
+		for (ClickLabel cl : clicklabels) {
+			if (cl.test(x, y, xOrigin, yOrigin) && cl.pressed) {
+				cl.invoke();
+			}
+			needRepaint |= cl.pressed;
+			cl.pressed = false;
+		}
+		if (needRepaint) {
+			repaint();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -91,8 +209,8 @@ public class MainMenu extends ScreenBase {
 	 */
 	@Override
 	public void onEnter() {
-		// TODO Auto-generated method stub
-		screenIndex = new Random().nextInt(commons.background.start.length);
+		background = commons.background.start[new Random().nextInt(commons.background.start.length)];
+		onResize();
 	}
 
 	/* (non-Javadoc)
@@ -109,44 +227,39 @@ public class MainMenu extends ScreenBase {
 	 */
 	@Override
 	public void onResize() {
-		// TODO Auto-generated method stub
-
+		if (lastWidth == parent.getWidth() && lastHeight == parent.getHeight()) {
+			return;
+		}
+		lastWidth = parent.getWidth();
+		lastHeight = parent.getHeight();
+		// relocate objects if necessary
+		xOrigin = (parent.getWidth() - background.getWidth()) / 2;
+		yOrigin = (parent.getHeight() - background.getHeight()) / 2;
 	}
-
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
 	 */
 	@Override
 	public void paintTo(Graphics2D g2) {
+		onResize(); // repaint might come before an onResize
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
-		BufferedImage back = commons.background.start[screenIndex];
-		int x = (parent.getWidth() - back.getWidth()) / 2;
-		int y = (parent.getHeight() - back.getHeight()) / 2;
-		g2.drawImage(back, x, y, null);
+		g2.drawImage(background, xOrigin, yOrigin, null);
 	
-		commons.text.paintTo(g2, x + 121, y + 21, 14, 0xFF000000, "Open");
-		commons.text.paintTo(g2, x + 120, y + 20, 14, 0xFFFFFF00, "Open");
-		commons.text.paintTo(g2, x + 501, y + 65, 14, 0xFF000000, Configuration.VERSION);
-		commons.text.paintTo(g2, x + 500, y + 64, 14, 0xFFFF0000, Configuration.VERSION);
+		commons.text.paintTo(g2, xOrigin + 121, yOrigin + 21, 14, 0xFF000000, "Open");
+		commons.text.paintTo(g2, xOrigin + 120, yOrigin + 20, 14, 0xFFFFFF00, "Open");
+		commons.text.paintTo(g2, xOrigin + 501, yOrigin + 65, 14, 0xFF000000, Configuration.VERSION);
+		commons.text.paintTo(g2, xOrigin + 500, yOrigin + 64, 14, 0xFFFF0000, Configuration.VERSION);
 		
 		Composite c0 = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
 		
-		g2.fillRoundRect(x + 60, y + 100, 640 - 120, 442 - 100 - 20, 40, 40);
+		g2.fillRoundRect(xOrigin + 60, yOrigin + 100, 640 - 120, 442 - 100 - 20, 40, 40);
 		g2.setComposite(c0);
 	
-		commons.text.paintTo(g2, x + 120, y + 120, 20, 0xFFFFCC00, commons.labels.get("mainmenu.singleplayer"));
-		commons.text.paintTo(g2, x + 140, y + 140, 14, 0xFFFFCC00, commons.labels.get("mainmenu.newcampaign"));
-		commons.text.paintTo(g2, x + 140, y + 160, 14, 0xFFFFCC00, commons.labels.get("mainmenu.newskirmish"));
-		commons.text.paintTo(g2, x + 140, y + 180, 14, 0xFFFFCC00, commons.labels.get("mainmenu.load"));
-		commons.text.paintTo(g2, x + 120, y + 200, 14, 0xFFFFCC00, commons.labels.get("mainmenu.multiplayer"));
-		commons.text.paintTo(g2, x + 120, y + 220, 14, 0xFFFFCC00, commons.labels.get("mainmenu.settings"));
-		commons.text.paintTo(g2, x + 120, y + 240, 14, 0xFFFFCC00, commons.labels.get("mainmenu.videos"));
-		commons.text.paintTo(g2, x + 140, y + 260, 14, 0xFFFFCC00, commons.labels.get("mainmenu.videos.intro"));
-		commons.text.paintTo(g2, x + 140, y + 280, 14, 0xFFFFCC00, commons.labels.get("mainmenu.videos.title"));
-		commons.text.paintTo(g2, x + 120, y + 300, 14, 0xFFFFCC00, commons.labels.get("mainmenu.exit"));
-		
+		for (ClickLabel cl : clicklabels) {
+			cl.paintTo(g2, xOrigin, yOrigin);
+		}
 	}
 
 }

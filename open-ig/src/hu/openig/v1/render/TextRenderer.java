@@ -279,7 +279,14 @@ public class TextRenderer {
 	 */
 	public int getTextWidth(int size, String text) {
 		if (text.length() > 0) {
-			return (charsetWidths.get(size) + charsetSpaces.get(size)) * (text.length()) - charsetSpaces.get(size);
+			Integer widths = charsetWidths.get(size);
+			Integer spaces = charsetSpaces.get(size);
+			if (widths == null) {
+				double widths2 = (size * 1.0 / maxSize * charsetWidths.get(maxSize));
+				double spaces2 = (size * 1.0 / maxSize * charsetSpaces.get(maxSize));
+				return (int)((widths2 + spaces2) * (text.length()) - spaces2);
+			}
+			return (widths + spaces) * (text.length()) - spaces;
 		}
 		return 0;
 	}
