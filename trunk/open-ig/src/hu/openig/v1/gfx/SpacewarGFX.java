@@ -89,6 +89,9 @@ public class SpacewarGFX implements ResourceSelfLoader {
 	/** Frame left filler. */
 	@Img(name = "spacewar/frame_left_fill")
 	public BufferedImage frameLeftFill;
+	/** Frame right filler. */
+	@Img(name = "spacewar/frame_right_fill")
+	public BufferedImage frameRightFill;
 	/** Frame right. */
 	@Img(name = "spacewar/frame_right")
 	public BufferedImage frameRight;

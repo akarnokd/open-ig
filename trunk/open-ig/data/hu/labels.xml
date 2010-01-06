@@ -103,8 +103,7 @@
 	<entry key='bar.doctor.441'>Muszáj beszélnem a professzorral. Rendkívül fontos lenne.</entry>
 	<entry key='bar.doctor.451'>Köszönöm doki. Sokat segített.</entry>
 	<entry key='mainmenu.singleplayer'>Egyjátékos</entry>
-	<entry key='mainmenu.newcampaign'>Új hadjárat</entry>
-	<entry key='mainmenu.newskirmish'>Új szabad játék</entry>
+	<entry key='mainmenu.continue'>Folytatás</entry>
 	<entry key='mainmenu.load'>Betöltés</entry>
 	<entry key='mainmenu.multiplayer'>Többjátékos</entry>
 	<entry key='mainmenu.settings'>Beállítások</entry>
@@ -112,8 +111,8 @@
 	<entry key='mainmenu.videos.intro'>Intró</entry>
 	<entry key='mainmenu.videos.title'>Főcím</entry>
 	<entry key='mainmenu.exit'>Kilépés</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='EN'>EN</entry>
+	<entry key='HU'>HU</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

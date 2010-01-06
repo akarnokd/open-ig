@@ -62,12 +62,16 @@ public class CommonResources {
 	public Galaxy galaxy;
 	/** The text renderer. */
 	public TextRenderer text;
+	/** The general control interface. */
+	public GameControls control;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
+	 * @param control the general control
 	 */
-	public CommonResources(Configuration config) {
+	public CommonResources(Configuration config, GameControls control) {
 		this.config = config;
+		this.control = control;
 		init();
 	}
 	/** Initialize the resources in parallel. */
@@ -183,5 +187,13 @@ public class CommonResources {
 			exec.shutdown();
 		}
 	}
-	
+	/**
+	 * Reinitialize the resources by reloading them in the new language.
+	 * @param newLanguage the new language
+	 */
+	public void reinit(String newLanguage) {
+		config.language = newLanguage;
+		config.save();
+		init();
+	}
 }
