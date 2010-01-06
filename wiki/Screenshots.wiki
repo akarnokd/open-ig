@@ -1,6 +1,10 @@
 #summary Contains screenshots from the game.
 #labels Featured
 
+= Version 0.80d screenshots =
+
+|| [http://karnokd.uw.hu/images/open-ig-mainmenu.png http://karnokd.uw.hu/images/open-ig-mainmenu-tn.png]<br>The new main menu||
+
 = Version 0.80c screenshots =
 Unpublished intermediate version
 
