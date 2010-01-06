@@ -414,7 +414,6 @@ public class SpacewarScreen extends ScreenBase {
 							arb2.selected = false;
 						}
 					}
-					buttonTimer.start();
 					arb.invoke();
 					needRepaint = true;
 					break;
@@ -431,7 +430,6 @@ public class SpacewarScreen extends ScreenBase {
 							arb2.selected = false;
 						}
 					}
-					buttonTimer.start();
 					arb.invoke();
 					needRepaint = true;
 					break;
@@ -520,8 +518,7 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	@Override
 	public void onEnter() {
-		// TODO Auto-generated method stub
-
+		buttonTimer.start();
 	}
 
 	/* (non-Javadoc)
@@ -529,8 +526,7 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	@Override
 	public void onLeave() {
-		// TODO Auto-generated method stub
-
+		buttonTimer.stop();
 	}
 	/** The location of the minimap. */
 	Rectangle minimap = new Rectangle();
