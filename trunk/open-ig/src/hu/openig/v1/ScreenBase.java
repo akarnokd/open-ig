@@ -26,6 +26,10 @@ public abstract class ScreenBase {
 	protected JComponent parent;
 	/** The common resources. */
 	protected CommonResources commons;
+	/** The memorized last width of the parent component. */
+	protected int lastWidth;
+	/** The memorized last height of the parent component. */
+	protected int lastHeight;
 	/**
 	 * Render the screen's content based.
 	 * @param g2 the graphics object
@@ -82,7 +86,16 @@ public abstract class ScreenBase {
 	/** Release resources of the screen, and e.g. cancel any animation timers. */
 	public abstract void finish();
 	/** Called when the parent component changed the size. */
-	public abstract void onResize();
+	public void onResize() {
+		if (lastWidth == parent.getWidth() && lastHeight == parent.getHeight()) {
+			return;
+		}
+		lastWidth = parent.getWidth();
+		lastHeight = parent.getHeight();
+		doResize();
+	}
+	/** Called if the component size changed since the last call. */
+	public abstract void doResize();
 	/** Ask for the parent to repaint itself. */
 	public void repaint() {
 		parent.repaint();
