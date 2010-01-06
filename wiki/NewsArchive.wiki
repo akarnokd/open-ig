@@ -1,5 +1,17 @@
 #summary News archive.
 
+*November 16. 2009*
+
+I've been able to make some progress with the new resource location and load mechanisms. It will surely take a week until I completely associate each image with a field. If done, it will be much faster to (re-)compose the game screens.
+
+I made the decision to include a new feature: [http://code.google.com/p/open-ig/wiki/FeaturePlans#Building_upgrade_slots Building Upgrade Slots].
+
+There is still one thing bugging me: how the remaining research time is computed, based on the available research labs? I can't figure it out. For example, a (1,1,0,0,0) research with (0,0,0,0,0) available labs will go up to 60% completeness before stopping. Is somebody willing to try to figure out the algorithm for it? It might need several trial and error runs with the original game.
+
+*November 2. 2009*
+
+I've uploaded a small sample of the new video files, so those who downloaded the new development player won't get bored. When you start the player and the setup screen arrives (or click on file-setup) you need to select the ig-video-sample.zip file then click Save and Run. See [http://code.google.com/p/open-ig/wiki/Setup Setup] for details.
+
 
 *November 1. 2009*
 
