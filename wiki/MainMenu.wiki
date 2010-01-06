@@ -29,4 +29,24 @@ Start or join to a multiplayer game. Details on how the multiplayer will work is
 
 == Settings ==
 
-It will display the Setup screen.
+It will display the [http://code.google.com/p/open-ig/wiki/Setup Setup screen]. The volume settings will be directly available on the in-game load/save screen.
+
+== Videos ==
+
+Play all available game videos. Possible option is to view videos on a discovery basis instead of showing all.
+
+=== Intro ===
+
+Play the intro video. Same as in the original game.
+
+=== Title ===
+
+Play the title video. Same as in the original game: the GT Interactive animation.
+
+== Exit ==
+
+Quit the program.
+
+== EN / HU ==
+
+Switch between the language versions. No need to go into the setup screen.
