@@ -27,5 +27,17 @@
 	<entry key='bar.doctor.431'>I think I need to speak with him. Can you help me?</entry>
 	<entry key='bar.doctor.441'>I must speak with the professor. It's very important..</entry>
 	<entry key='bar.doctor.451'>Thank you doc. You helped me a lot.</entry>
+	
+	<entry key='mainmenu.singleplayer'>Single player</entry>
+	<entry key='mainmenu.continue'>Continue</entry>
+	<entry key='mainmenu.load'>Load</entry>
+	<entry key='mainmenu.multiplayer'>Multiplayer</entry>
+	<entry key='mainmenu.settings'>Settings</entry>
+	<entry key='mainmenu.videos'>Videos</entry>
+	<entry key='mainmenu.videos.intro'>Intro</entry>
+	<entry key='mainmenu.videos.title'>Title</entry>
+	<entry key='mainmenu.exit'>Exit</entry>
+	<entry key='EN'>EN</entry>
+	<entry key='HU'>HU</entry>
 	<entry key=''></entry>
 </labels>

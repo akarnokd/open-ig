@@ -53,7 +53,11 @@ public class Labels {
 	 * @return the associated value
 	 */
 	public String get(String key) {
-		return map.get(key);
+		String value = map.get(key);
+		if (value == null) {
+			throw new AssertionError("Missing value for key " + key);
+		}
+		return value;
 	}
 	/**
 	 * Use the given entry as a formatter and generate the string using the given parameters.

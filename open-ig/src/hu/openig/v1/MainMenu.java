@@ -33,6 +33,8 @@ public class MainMenu extends ScreenBase {
 		public int x;
 		/** The origin. */
 		public int y;
+		/** The label's maximum width to use when centering. */
+		public int width;
 		/** The action to invoke. */
 		public Act action;
 		/** The text size. */
@@ -43,16 +45,20 @@ public class MainMenu extends ScreenBase {
 		public boolean selected;
 		/** The pressed state. */
 		public boolean pressed;
+		/** The button is disabled and does not react to mouse events. */
+		public boolean disabled;
 		/**
 		 * Constructor.
 		 * @param x the X coordinate
 		 * @param y the Y coordinate
+		 * @param width the available width for centering
 		 * @param size the text size
 		 * @param label the label
 		 */
-		public ClickLabel(int x, int y, int size, String label) {
+		public ClickLabel(int x, int y, int width, int size, String label) {
 			this.x = x;
 			this.y = y;
+			this.width = width;
 			this.size = size;
 			this.label = label;
 		}
@@ -64,13 +70,17 @@ public class MainMenu extends ScreenBase {
 		 */
 		public void paintTo(Graphics2D g2, int x0, int y0) {
 			int color = 0xFFFFCC00;
+			if (disabled) {
+				color = 0xFFC0C0C0;
+			} else
 			if (pressed) {
 				color = 0xFFFF0000;
 			} else
 			if (selected) {
 				color = 0xFFFFFFFF;
 			}
-			commons.text.paintTo(g2, x0 + x, y0 + y, size, color, commons.labels.get(label));
+			int textWidth = commons.text.getTextWidth(size, commons.labels.get(label));
+			commons.text.paintTo(g2, x0 + x + (width - textWidth) / 2, y0 + y, size, color, commons.labels.get(label));
 		}
 		/**
 		 * Test if the mouse is within the label.
@@ -81,8 +91,8 @@ public class MainMenu extends ScreenBase {
 		 * @return true if mouse in the label
 		 */
 		public boolean test(int mx, int my, int x0, int y0) {
-			int w = commons.text.getTextWidth(size, commons.labels.get(label));
-			return (x0 + x) <= mx && (x0 + x + w) > mx
+			int w = width;
+			return !disabled && (x0 + x) <= mx && (x0 + x + w) > mx
 			&& (y0 + y) <= my && (y0 + y + size) > my;
 		}
 		/** Invoke the associated action. */
@@ -120,12 +130,51 @@ public class MainMenu extends ScreenBase {
 	public void initialize() {
 		clicklabels = new LinkedList<ClickLabel>();
 		
-		clicklabels.add(new ClickLabel(120, 120, 20, "mainmenu.singleplayer"));
-		clicklabels.add(new ClickLabel(120, 200, 20 , "mainmenu.multiplayer"));
-		clicklabels.add(new ClickLabel(120, 225, 20, "mainmenu.settings"));
-		clicklabels.add(new ClickLabel(120, 250, 20, "mainmenu.videos"));
-		clicklabels.add(new ClickLabel(120, 300, 20, "mainmenu.exit"));
+		clicklabels.add(new ClickLabel(120, 120, 400, 20, "mainmenu.singleplayer"));
+
+		clicklabels.add(new ClickLabel(120, 155, 400, 14, "mainmenu.continue"));
+		clicklabels.add(new ClickLabel(120, 180, 400, 14, "mainmenu.load"));
 		
+		ClickLabel multiplayer = new ClickLabel(120, 215, 400, 20 , "mainmenu.multiplayer");
+		multiplayer.disabled = true;
+		clicklabels.add(multiplayer);
+		clicklabels.add(new ClickLabel(120, 250, 400, 20, "mainmenu.settings"));
+		clicklabels.add(new ClickLabel(120, 285, 400, 20, "mainmenu.videos"));
+		
+		clicklabels.add(new ClickLabel(120, 320, 400, 14, "mainmenu.videos.intro"));
+		clicklabels.add(new ClickLabel(120, 345, 400, 14, "mainmenu.videos.title"));
+		
+		clicklabels.add(new ClickLabel(120, 380, 400, 20, "mainmenu.exit"));
+		
+		// Language switcher on the main menu, for convenience
+		final ClickLabel toEng = new ClickLabel(550, 400, 20, 14, "EN");
+		toEng.disabled = commons.config.language.equals("en");
+		final ClickLabel toHu = new ClickLabel(550, 380, 20, 14, "HU");
+		toHu.disabled = commons.config.language.equals("hu");
+		
+		toEng.action = new Act() {
+			@Override
+			public void act() {
+				toEng.disabled = true;
+				toHu.disabled = false;
+				commons.control.switchLanguage("en");
+				selectRandomBackground();
+				repaint();
+			}
+		};
+		toHu.action = new Act() {
+			@Override
+			public void act() {
+				toEng.disabled = false;
+				toHu.disabled = true;
+				commons.control.switchLanguage("hu");
+				selectRandomBackground();
+				repaint();
+			}
+		};
+		
+		clicklabels.add(toEng);
+		clicklabels.add(toHu);
 	}
 
 	/* (non-Javadoc)
@@ -209,8 +258,16 @@ public class MainMenu extends ScreenBase {
 	 */
 	@Override
 	public void onEnter() {
-		background = commons.background.start[new Random().nextInt(commons.background.start.length)];
+		selectRandomBackground();
 		onResize();
+	}
+	/** The random used for background selection. */
+	Random rnd = new Random();
+	/**
+	 * Set the background randomly.
+	 */
+	protected void selectRandomBackground() {
+		background = commons.background.start[rnd.nextInt(commons.background.start.length)];
 	}
 
 	/* (non-Javadoc)

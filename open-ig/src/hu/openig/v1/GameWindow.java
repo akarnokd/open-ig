@@ -33,7 +33,7 @@ import javax.swing.JFrame;
  * @author karnokd, 2009.12.23.
  * @version $Revision 1.0$
  */
-public class GameWindow extends JFrame {
+public class GameWindow extends JFrame implements GameControls {
 	/**	 */
 	private static final long serialVersionUID = 4521036079508511968L;
 	/** 
@@ -83,6 +83,8 @@ public class GameWindow extends JFrame {
 	MainMenu mainMenu;
 	/** The surface used to render the screens. */
 	private ScreenRenderer surface;
+	/** The spacewar rendering screen. */
+	private SpacewarScreen spacewar;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
@@ -98,7 +100,7 @@ public class GameWindow extends JFrame {
 			}
 		}
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		commons = new CommonResources(config);
+		commons = new CommonResources(config, this);
 		this.config = config;
 		this.rl = commons.rl;
 		
@@ -128,17 +130,29 @@ public class GameWindow extends JFrame {
 		addKeyListener(new KeyEvents());
 		initScreens();
 	}
+	/* (non-Javadoc)
+	 * @see hu.openig.v1.GameControls#switchLanguage(java.lang.String)
+	 */
+	@Override
+	public void switchLanguage(String newLanguage) {
+		commons.reinit(newLanguage);
+		surface.repaint();
+	}
 	/** Initialize the various screen renderers. */
 	protected void initScreens() {
 		mainMenu = new MainMenu();
 		mainMenu.initialize(commons, surface);
 		
-		displayPrimary(mainMenu);
+		spacewar = new SpacewarScreen();
+		spacewar.initialize(commons, surface);
+		
+		displayPrimary(spacewar);
 	}
 	/**
 	 * Display the given screen as the primary object. The secondary object, if any, will be removed.
 	 * @param sb the new screen to display
 	 */
+	@Override
 	public void displayPrimary(ScreenBase sb) {
 		if (secondary != null) {
 			secondary.onLeave();
@@ -171,6 +185,7 @@ public class GameWindow extends JFrame {
 	 * Display the given secondary screen.
 	 * @param sb the screen to display as secondary
 	 */
+	@Override
 	public void displaySecondary(ScreenBase sb) {
 		if (secondary != null && secondary != sb) {
 			secondary.onLeave();
