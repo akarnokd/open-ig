@@ -20,8 +20,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -85,6 +89,8 @@ public class GameWindow extends JFrame implements GameControls {
 	private ScreenRenderer surface;
 	/** The spacewar rendering screen. */
 	private SpacewarScreen spacewar;
+	/** The list of screens. */
+	protected List<ScreenBase> screens;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
@@ -100,6 +106,12 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				uninitScreens();
+			}
+		});
 		commons = new CommonResources(config, this);
 		this.config = config;
 		this.rl = commons.rl;
@@ -140,13 +152,30 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	/** Initialize the various screen renderers. */
 	protected void initScreens() {
+		screens = new ArrayList<ScreenBase>();
+		
 		mainMenu = new MainMenu();
-		mainMenu.initialize(commons, surface);
+		screens.add(mainMenu);
 		
 		spacewar = new SpacewarScreen();
-		spacewar.initialize(commons, surface);
+		screens.add(spacewar);
+
+		for (ScreenBase sb : screens) {
+			sb.initialize(commons, surface);
+		}
 		
 		displayPrimary(spacewar);
+	}
+	/** Unitialize the screens. */
+	protected void uninitScreens() {
+		for (ScreenBase sb : screens) {
+			if (primary == sb || secondary == sb) {
+				sb.onLeave();
+			}
+			sb.finish();
+		}
+		primary = null;
+		secondary = null;
 	}
 	/**
 	 * Display the given screen as the primary object. The secondary object, if any, will be removed.

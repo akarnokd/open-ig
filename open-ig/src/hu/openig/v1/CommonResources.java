@@ -20,6 +20,7 @@ import hu.openig.v1.gfx.StarmapGFX;
 import hu.openig.v1.gfx.StatusbarGFX;
 import hu.openig.v1.render.TextRenderer;
 
+import java.awt.image.BufferedImage;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -64,6 +65,8 @@ public class CommonResources {
 	public TextRenderer text;
 	/** The general control interface. */
 	public GameControls control;
+	/** The disabled pattern. */
+	public BufferedImage disabledPattern;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -178,6 +181,7 @@ public class CommonResources {
 				starmap = loadSM.get();
 				database = loadDB.get();
 				text = loadTR.get();
+				createCustomImages();
 			} catch (ExecutionException ex) { 
 				config.log("ERROR", ex.getMessage(), ex);
 			} catch (InterruptedException ex) { 
@@ -186,6 +190,12 @@ public class CommonResources {
 		} finally {
 			exec.shutdown();
 		}
+	}
+	/** Create any custom images. */
+	private void createCustomImages() {
+		int[] disabled = { 0xFF000000, 0xFF000000, 0, 0, 0xFF000000, 0, 0, 0, 0 };
+		disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
+		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.
