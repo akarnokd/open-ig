@@ -30,8 +30,8 @@ public class SpacewarGFX implements ResourceSelfLoader {
 	@Img(name = "spacewar/button_label_movie")
 	public BufferedImage movieStrip;
 	/** The movies static button. */
-	@Img(name = "spacewar/button_label_stat_5")
-	public BufferedImage movies;
+	@Anim(name = "spacewar/button_label_stat_5", width = 20)
+	public BufferedImage[] movies;
 	/** Ship animations. */
 	@Anim(name = "spacewar/button_label_stat_1", width = 20)
 	public BufferedImage[] ships;
