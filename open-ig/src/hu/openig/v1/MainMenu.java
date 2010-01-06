@@ -102,10 +102,6 @@ public class MainMenu extends ScreenBase {
 			}
 		}
 	}
-	/** The memorized last width of the parent component. */
-	int lastWidth;
-	/** The memorized last height of the parent component. */
-	int lastHeight;
 	/** The screen X origin. */
 	private int xOrigin;
 	/** The screen Y origin. */
@@ -283,12 +279,7 @@ public class MainMenu extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#onResize()
 	 */
 	@Override
-	public void onResize() {
-		if (lastWidth == parent.getWidth() && lastHeight == parent.getHeight()) {
-			return;
-		}
-		lastWidth = parent.getWidth();
-		lastHeight = parent.getHeight();
+	public void doResize() {
 		// relocate objects if necessary
 		xOrigin = (parent.getWidth() - background.getWidth()) / 2;
 		yOrigin = (parent.getHeight() - background.getHeight()) / 2;

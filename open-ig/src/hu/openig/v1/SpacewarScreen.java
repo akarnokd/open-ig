@@ -12,6 +12,9 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The spacewar screen.
@@ -19,7 +22,68 @@ import java.awt.TexturePaint;
  * @version $Revision 1.0$
  */
 public class SpacewarScreen extends ScreenBase {
-
+	/** A three phase button. */
+	class ThreePhaseButton {
+		/** The X coordinate. */
+		int x;
+		/** The Y coordinate. */
+		int y;
+		/** The three phases: normal, selected, selected and pressed. */
+		BufferedImage[] phases;
+		/** Selected state. */
+		boolean selected;
+		/** Pressed state. */
+		boolean pressed;
+		/** The action to perform on the press. */
+		Act action;
+		/**
+		 * Constructor.
+		 * @param phases the phases
+		 */
+		public ThreePhaseButton(BufferedImage[] phases) {
+			this.phases = phases;
+		}
+		/**
+		 * Constructor.
+		 * @param x the x coordinate
+		 * @param y the y coordinat
+		 * @param phases the phases
+		 */
+		public ThreePhaseButton(int x, int y, BufferedImage[] phases) {
+			this.x = x;
+			this.y = y;
+			this.phases = phases;
+		}
+		/** 
+		 * Render the button.
+		 * @param g2 the graphics object
+		 */
+		public void paintTo(Graphics2D g2) {
+			if (pressed) {
+				g2.drawImage(phases[2], x, y, null);
+			} else
+			if (selected) {
+				g2.drawImage(phases[1], x, y, null);
+			} else {
+				g2.drawImage(phases[0], x, y, null);
+			}
+		}
+		/**
+		 * Test if the mouse is within this button.
+		 * @param mx the mouse X coordinate
+		 * @param my the mouse Y coordinate
+		 * @return true if within the button
+		 */
+		public boolean test(int mx, int my) {
+			return mx >= x && my >= y && mx < x + phases[0].getWidth() && my < y + phases[0].getHeight();
+		}
+		/** Invoke the associated action if present. */
+		public void invoke() {
+			if (action != null) {
+				action.act();
+			}
+		}
+	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
@@ -28,14 +92,29 @@ public class SpacewarScreen extends ScreenBase {
 		// TODO Auto-generated method stub
 
 	}
-
+	/** The group for the main buttons. */
+	List<ThreePhaseButton> mainCommands;
+	/** The view toggle buttons. */
+	List<ThreePhaseButton> viewCommands;
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
 	@Override
 	public void initialize() {
-		// TODO Auto-generated method stub
-
+		mainCommands = new ArrayList<ThreePhaseButton>();
+		mainCommands.add(new ThreePhaseButton(33, 24, commons.spacewar.stop));
+		mainCommands.add(new ThreePhaseButton(33 + 72, 24, commons.spacewar.move));
+		mainCommands.add(new ThreePhaseButton(33, 24 + 35, commons.spacewar.kamikaze));
+		mainCommands.add(new ThreePhaseButton(33 + 72, 24 + 35, commons.spacewar.attack));
+		mainCommands.add(new ThreePhaseButton(33, 24 + 35 * 2, commons.spacewar.guard));
+		mainCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 2, commons.spacewar.rocket));
+		
+		viewCommands = new ArrayList<ThreePhaseButton>();
+		
+		viewCommands.add(new ThreePhaseButton(33, 24 + 35 * 3, commons.spacewar.command));
+		viewCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 3, commons.spacewar.damage));
+		viewCommands.add(new ThreePhaseButton(33, 24 + 35 * 3 + 30, commons.spacewar.fireRange));
+		viewCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 3 + 30, commons.spacewar.grid));
 	}
 
 	/* (non-Javadoc)
@@ -61,8 +140,37 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	@Override
 	public void mousePressed(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
+		boolean needRepaint = false;
+		// the command panel
+		if (x < commons.spacewar.commands.getWidth() && y < commons.spacewar.commands.getHeight() + 20 + commons.spacewar.frameTopLeft.getHeight()) {
+			for (ThreePhaseButton btn : mainCommands) {
+				if (btn.test(x, y)) {
+					btn.selected = true;
+					btn.pressed = true;
+					needRepaint = true;
+					for (ThreePhaseButton btn2 : mainCommands) {
+						if (btn != btn2) {
+							btn2.pressed = false;
+							btn2.selected = false;
+						}
+					}
+					btn.invoke();
+					break;
+				}
+			}
+			for (ThreePhaseButton btn : viewCommands) {
+				if (btn.test(x, y)) {
+					btn.selected = !btn.selected;
+					btn.pressed = true;
+					needRepaint = true;
+					btn.invoke();
+					break;
+				}
+			}
+		}
+		if (needRepaint) {
+			repaint();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -70,8 +178,24 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	@Override
 	public void mouseReleased(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
+		boolean needRepaint = false;
+		for (ThreePhaseButton btn : mainCommands) {
+			if (btn.pressed) {
+				btn.pressed = false;
+				needRepaint = true;
+				break;
+			}
+		}
+		for (ThreePhaseButton btn : viewCommands) {
+			if (btn.pressed) {
+				btn.pressed = false;
+				needRepaint = true;
+				break;
+			}
+		}
+		if (needRepaint) {
+			repaint();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -105,7 +229,7 @@ public class SpacewarScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#onResize()
 	 */
 	@Override
-	public void onResize() {
+	public void doResize() {
 		// TODO Auto-generated method stub
 
 	}
@@ -115,6 +239,7 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	@Override
 	public void paintTo(Graphics2D g2) {
+		onResize();
 		g2.drawImage(commons.spacewar.frameTopLeft, 0, 20, null);
 		
 		g2.drawImage(commons.spacewar.frameTopRight, parent.getWidth() - commons.spacewar.frameTopRight.getWidth(), 20, null);
@@ -146,6 +271,15 @@ public class SpacewarScreen extends ScreenBase {
 				parent.getHeight() - 36 - commons.spacewar.frameTopLeft.getHeight() - commons.spacewar.commands.getHeight() - commons.spacewar.panelStatLeft.getHeight());
 		
 		g2.setPaint(p);
+		
+		for (ThreePhaseButton btn : mainCommands) {
+			btn.paintTo(g2);
+		}
+
+		for (ThreePhaseButton btn : viewCommands) {
+			btn.paintTo(g2);
+		}
+		
 	}
 
 }
