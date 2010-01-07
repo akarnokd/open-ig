@@ -132,13 +132,6 @@ public final class TestGFXLoad {
 					verifyNull(starmapGFX);
 				}
 			}));
-			ends.add(exec.submit(new Runnable() {
-				@Override
-				public void run() {
-					Galaxy galaxy = new Galaxy();
-					galaxy.load(rl, lang, "campaign/main");
-				}
-			}));
 			// -----------------------------------------------------
 		}
 		for (Future<?> f : ends) {

@@ -4,8 +4,19 @@
 		<xs:annotation><xs:documentation>The description of the celestrial bodies in the game galaxy.</xs:documentation></xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name='background' type='xs:string'>
+				<xs:element name='background'>
 					<xs:annotation><xs:documentation>The full background image.</xs:documentation></xs:annotation>
+					<xs:complexType>
+						<xs:attribute name='min-scale' type="xs:float">
+							<xs:annotation><xs:documentation>The minimum scaling factor.</xs:documentation></xs:annotation>
+						</xs:attribute>
+						<xs:attribute name='max-scale' type="xs:float">
+							<xs:annotation><xs:documentation>The maximum scaling factor.</xs:documentation></xs:annotation>
+						</xs:attribute>
+						<xs:attribute name='image' type='xs:string'>
+							<xs:annotation><xs:documentation>The background image on scaling factor 1.</xs:documentation></xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
 				</xs:element>
 				<xs:element name='planets'>
 					<xs:annotation><xs:documentation>The list of planet types.</xs:documentation></xs:annotation>

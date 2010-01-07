@@ -12,7 +12,6 @@ import hu.openig.v1.gfx.BackgroundGFX;
 import hu.openig.v1.gfx.ColonyGFX;
 import hu.openig.v1.gfx.DatabaseGFX;
 import hu.openig.v1.gfx.EquipmentGFX;
-import hu.openig.v1.gfx.Galaxy;
 import hu.openig.v1.gfx.InfoGFX;
 import hu.openig.v1.gfx.ResearchGFX;
 import hu.openig.v1.gfx.SpacewarGFX;
@@ -59,8 +58,6 @@ public class CommonResources {
 	public StarmapGFX starmap;
 	/** The database graphics. */
 	public DatabaseGFX database;
-	/** The game specific galaxy settings. */
-	public Galaxy galaxy;
 	/** The text renderer. */
 	public TextRenderer text;
 	/** The general control interface. */

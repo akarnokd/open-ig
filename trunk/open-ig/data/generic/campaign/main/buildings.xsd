@@ -13,7 +13,7 @@
 								<xs:annotation><xs:documentation>Graphics related properties.</xs:documentation></xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name='race' minOccurs="1" maxOccurs="unbounded">
+										<xs:element name='tech' minOccurs="1" maxOccurs="unbounded">
 											<xs:annotation><xs:documentation>The race specific width and height information.</xs:documentation></xs:annotation>
 											<xs:complexType>
 												<xs:attribute name='id' type='xs:string' use='required'>
@@ -57,7 +57,7 @@
 								<xs:annotation><xs:documentation>Operational properties: consumption and production.</xs:documentation></xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name='unit' maxOccurs="unbounded">
+										<xs:element name='resource' maxOccurs="unbounded">
 											<xs:annotation><xs:documentation>The operational value. Positive means production, negative means consumption.</xs:documentation></xs:annotation>
 											<xs:complexType>
 												<xs:simpleContent>
@@ -88,7 +88,7 @@
 											<xs:annotation><xs:documentation>An upgrade definition.</xs:documentation></xs:annotation>
 											<xs:complexType>
 												<xs:sequence>
-													<xs:element name='unit' maxOccurs="unbounded">
+													<xs:element name='resource' maxOccurs="unbounded">
 														<xs:annotation><xs:documentation>A unit multiplier.</xs:documentation></xs:annotation>
 														<xs:complexType>
 															<xs:simpleContent>
