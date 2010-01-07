@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- The description of the galactic entities -->
 <galaxy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="galaxy.xsd">
-	<background>starmap/background</background>
+	<background min-scale='0.5' max-scale='4' image='starmap/background'/>
 	<planets>
 		<planet type='neptoplasm' label='planet.type.neptoplasm'>
 			<body>starmap/planets/planet_alien_30x30</body>

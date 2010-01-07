@@ -8,7 +8,10 @@
 
 package hu.openig.v1;
 
+import hu.openig.utils.ImageUtils;
+
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -326,6 +329,40 @@ public class ResourceLocator {
 		}
 	}
 	/**
+	 * Returns the given resource as byte data.
+	 * @param language the language
+	 * @param resourceName the resource name.
+	 * @return the byte data of the resource
+	 */
+	public byte[] getData(String language, String resourceName) {
+		ResourcePlace rp = get(language, resourceName, ResourceType.DATA);
+		if (rp == null) {
+			rp = get(language, resourceName, ResourceType.OTHER);
+		}
+		if (rp == null) {
+			throw new AssertionError("Missing resource: " + language + " " + resourceName);
+		}
+		InputStream in = rp.open();
+		try {
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			byte[] buffer = new byte[4096];
+			int read = 0;
+			do {
+				read = in.read(buffer);
+				if (read > 0) {
+					bout.write(buffer, 0, read);
+				}
+			} while (read >= 0);
+			return bout.toByteArray();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			throw new AssertionError("Resource error" + language + " " + resourceName);
+		} finally {
+			try { in.close(); } catch (IOException ex) { ex.printStackTrace(); }
+		}
+				
+	}
+	/**
 	 * Get a list of resources of a given path.
 	 * @param language the target language
 	 * @param path the path
@@ -383,5 +420,23 @@ public class ResourceLocator {
 			ex.printStackTrace();
 			throw new AssertionError("Resource error" + language + " " + resourceName);
 		}
+	}
+	/**
+	 * Get a multi-phase animation by splitting the target image.
+	 * @param language the target language
+	 * @param name the button name
+	 * @param width the phase width or -1 if not applicable
+	 * @param step the number of steps or -1 if not applicable
+	 * @return the array.
+	 */
+	public BufferedImage[] getAnimation(String language, String name, int width, int step) {
+		BufferedImage img = getImage(language, name);
+		int n = width >= 0 ? img.getWidth() / width : step;
+		int w = width >= 0 ? width : img.getWidth() / step;
+		BufferedImage[] result = new BufferedImage[n];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = ImageUtils.newSubimage(img, i * w, 0, w, img.getHeight());
+		}
+		return result;
 	}
 }
