@@ -30,4 +30,13 @@ public interface GameControls {
 	 * @param screen the screen to display as secondary
 	 */
 	void displaySecondary(ScreenBase screen);
+	/**
+	 * Play the given set of videos.
+	 * @param videos the list of videos to play
+	 */
+	void playVideos(String... videos);
+	/** Display the status bar. */
+	void displayStatusbar();
+	/** Hide the statusbar. */
+	void hideStatusbar();
 }

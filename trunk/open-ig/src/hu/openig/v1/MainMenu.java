@@ -137,8 +137,22 @@ public class MainMenu extends ScreenBase {
 		clicklabels.add(new ClickLabel(120, 250, 400, 20, "mainmenu.settings"));
 		clicklabels.add(new ClickLabel(120, 285, 400, 20, "mainmenu.videos"));
 		
-		clicklabels.add(new ClickLabel(120, 320, 400, 14, "mainmenu.videos.intro"));
-		clicklabels.add(new ClickLabel(120, 345, 400, 14, "mainmenu.videos.title"));
+		ClickLabel introLabel = new ClickLabel(120, 320, 400, 14, "mainmenu.videos.intro");
+		introLabel.action = new Act() {
+			@Override
+			public void act() {
+				doPlayIntro();
+			}
+		};
+		clicklabels.add(introLabel);
+		ClickLabel titleLabel = new ClickLabel(120, 345, 400, 14, "mainmenu.videos.title");
+		titleLabel.action = new Act() {
+			@Override
+			public void act() {
+				doPlayTitle();
+			}
+		};
+		clicklabels.add(titleLabel);
 		
 		clicklabels.add(new ClickLabel(120, 380, 400, 20, "mainmenu.exit"));
 		
@@ -172,7 +186,18 @@ public class MainMenu extends ScreenBase {
 		clicklabels.add(toEng);
 		clicklabels.add(toHu);
 	}
-
+	/**
+	 * Play the intro videos.
+	 */
+	protected void doPlayIntro() {
+		commons.control.playVideos("intro/intro_1", "intro/intro_2", "intro/intro_3");
+	}
+	/**
+	 * Play the title video.
+	 */
+	protected void doPlayTitle() {
+		commons.control.playVideos("intro/gt_interactive_intro");
+	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
 	 */
