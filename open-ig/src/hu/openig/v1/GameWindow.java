@@ -59,17 +59,27 @@ public class GameWindow extends JFrame implements GameControls {
 					if (secondary != null) {
 						secondary.onResize();
 					}
+					if (movie != null) {
+						movie.onResize();
+					}
 				}
 			});
 		}
 		@Override
 		public void paint(Graphics g) {
 			Graphics2D g2 = (Graphics2D)g;
-			if (primary != null) {
-				primary.paintTo(g2);
-			}
-			if (secondary != null) {
-				secondary.paintTo(g2);
+			if (movieVisible) {
+				movie.paintTo(g2);
+			} else {
+				if (primary != null) {
+					primary.paintTo(g2);
+				}
+				if (secondary != null) {
+					secondary.paintTo(g2);
+				}
+				if (statusbarVisible) {
+					statusbar.paintTo(g2);
+				}
 			}
 		}
 	}
@@ -77,6 +87,14 @@ public class GameWindow extends JFrame implements GameControls {
 	ScreenBase primary;
 	/** The secondary screen drawn over the first. */
 	ScreenBase secondary;
+	/** The status bar to display over the primary and secondary screens. */
+	ScreenBase statusbar;
+	/** Is the status bar visible? */
+	boolean statusbarVisible;
+	/** The top overlay for playing 'full screen' movies. */
+	MovieScreen movie;
+	/** Is the movie visible. */
+	boolean movieVisible;
 	/** The configuration object. */
 	Configuration config;
 	/** The common resource locator. */
@@ -149,6 +167,9 @@ public class GameWindow extends JFrame implements GameControls {
 	public void switchLanguage(String newLanguage) {
 		commons.reinit(newLanguage);
 		surface.repaint();
+		for (ScreenBase sb : screens) {
+			sb.initialize(commons, surface);
+		}
 	}
 	/** Initialize the various screen renderers. */
 	protected void initScreens() {
@@ -160,11 +181,14 @@ public class GameWindow extends JFrame implements GameControls {
 		spacewar = new SpacewarScreen();
 		screens.add(spacewar);
 
+		movie = new MovieScreen();
+		screens.add(movie);
+		
 		for (ScreenBase sb : screens) {
 			sb.initialize(commons, surface);
 		}
 		
-		displayPrimary(spacewar);
+		displayPrimary(mainMenu);
 	}
 	/** Unitialize the screens. */
 	protected void uninitScreens() {
@@ -183,6 +207,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	@Override
 	public void displayPrimary(ScreenBase sb) {
+		hideMovie();
 		if (secondary != null) {
 			secondary.onLeave();
 			secondary = null;
@@ -223,6 +248,65 @@ public class GameWindow extends JFrame implements GameControls {
 		surface.repaint();
 	}
 	/**
+	 * Display the movie window.
+	 */
+	public void displayMovie() {
+		if (!movieVisible) {
+			movieVisible = true;
+			movie.onEnter();
+			doMoveMouseAgain();
+			surface.repaint();
+		}
+	}
+	/**
+	 * Hide the movie windows.
+	 */
+	public void hideMovie() {
+		if (movieVisible) {
+			movieVisible = false;
+			movie.onLeave();
+			doMoveMouseAgain();
+			surface.repaint();
+		}
+	}
+	/**
+	 * Display the status bar.
+	 */
+	public void displayStatusbar() {
+		if (!statusbarVisible) {
+			statusbarVisible = true;
+			statusbar.onEnter();
+			doMoveMouseAgain();
+			surface.repaint();
+		}
+	}
+	/**
+	 * Hide the status bar.
+	 */
+	public void hideStatusbar() {
+		if (statusbarVisible) {
+			statusbarVisible = true;
+			statusbar.onLeave();
+			doMoveMouseAgain();
+			surface.repaint();
+		}
+	}
+	/**
+	 * On screen transitions, issue a fake mouse moved events to support the highlighting.
+	 */
+	public void doMoveMouseAgain() {
+		Point pt = getCurrentMousePosition();
+		if (statusbarVisible) {
+			statusbar.mouseMoved(0, pt.x, pt.y, 0);
+		}
+		if (secondary != null) {
+			secondary.mouseMoved(0, pt.x, pt.y, 0);
+		} else
+		if (primary != null) {
+			primary.mouseMoved(0, pt.x, pt.y, 0);
+		}
+	}
+	/**
 	 * The common key manager.
 	 * @author karnokd, 2009.12.24.
 	 * @version $Revision 1.0$
@@ -231,6 +315,9 @@ public class GameWindow extends JFrame implements GameControls {
 		@Override
 		public void keyPressed(KeyEvent e) {
 //			System.out.println("Press " + e.getKeyCode());
+			if (movieVisible) {
+				movie.keyTyped(e.getKeyCode(), e.getModifiersEx());
+			} else
 			if (secondary != null) {
 				secondary.keyTyped(e.getKeyCode(), e.getModifiersEx());
 			} else
@@ -248,6 +335,9 @@ public class GameWindow extends JFrame implements GameControls {
 		@Override
 		public void mousePressed(MouseEvent e) {
 //			System.out.println("Press");
+			if (movieVisible) {
+				movie.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+			} else
 			if (secondary != null) {
 				secondary.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
 			} else
@@ -257,6 +347,9 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		@Override
 		public void mouseReleased(MouseEvent e) {
+			if (movieVisible) {
+				movie.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+			} else
 			if (secondary != null) {
 				secondary.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
 			} else
@@ -266,6 +359,9 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		@Override
 		public void mouseDragged(MouseEvent e) {
+			if (movieVisible) {
+				movie.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+			} else
 			if (secondary != null) {
 				secondary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
 			} else
@@ -275,6 +371,9 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
+			if (movieVisible) {
+				movie.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+			} else
 			if (secondary != null) {
 				secondary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
 			} else
@@ -284,6 +383,9 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
+			if (movieVisible) {
+				movie.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
+			} else
 			if (secondary != null) {
 				secondary.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
 			} else
@@ -291,5 +393,22 @@ public class GameWindow extends JFrame implements GameControls {
 				primary.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
 			}
 		}
+	}
+	/* (non-Javadoc)
+	 * @see hu.openig.v1.GameControls#playVideos(java.lang.String[])
+	 */
+	@Override
+	public void playVideos(String... videos) {
+		for (String s : videos) {
+			movie.mediaQueue.add(s);
+		}
+		movie.playbackFinished = new Act() {
+			@Override
+			public void act() {
+				hideMovie();
+			}
+		};
+		displayMovie();
+		
 	}
 }
