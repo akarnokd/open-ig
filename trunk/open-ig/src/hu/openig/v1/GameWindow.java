@@ -280,6 +280,18 @@ public class GameWindow extends JFrame implements GameControls {
 			surface.repaint();
 		}
 	}
+	/* (non-Javadoc)
+	 * @see hu.openig.v1.GameControls#hideSecondary()
+	 */
+	@Override
+	public void hideSecondary() {
+		if (secondary != null) {
+			secondary.onLeave();
+			secondary = null;
+			doMoveMouseAgain();
+			surface.repaint();
+		}
+	}
 	/**
 	 * Hide the status bar.
 	 */
