@@ -3,6 +3,7 @@
 
 = Version 0.80d screenshots =
 
+|| [http://karnokd.uw.hu/images/open-ig-0.8-intro.png http://karnokd.uw.hu/images/open-ig-0.8-intro-tn.png]<br>The intro, now with subtitle||
 || [http://karnokd.uw.hu/images/open-ig-mainmenu.png http://karnokd.uw.hu/images/open-ig-mainmenu-tn.png]<br>The new main menu||
 || [http://karnokd.uw.hu/images/open-ig-0.8-sw.png http://karnokd.uw.hu/images/open-ig-0.8-sw-tn.png]<br>Resizable space war screen ||
 
