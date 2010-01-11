@@ -6,10 +6,15 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1;
+package hu.openig.v1.screens;
 
 import hu.openig.core.SwappableRenderer;
 import hu.openig.sound.AudioThread;
+import hu.openig.v1.Act;
+import hu.openig.v1.ResourceLocator;
+import hu.openig.v1.ResourceType;
+import hu.openig.v1.ScreenBase;
+import hu.openig.v1.SubtitleManager;
 import hu.openig.v1.ResourceLocator.ResourcePlace;
 import hu.openig.v1.render.TextRenderer;
 
