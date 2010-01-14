@@ -21,11 +21,11 @@ This page describes the various keyboard shortcuts for Open Imperium Galactica 0
 || F11 || Display the statistics screen ||
 || F12 || Display the achievements screen ||
 || ESC || Display the Load/Save screen or cancel full screen movies. <sup>2</sup> ||
-|| CTRL+S || Quicksave ||
+|| CTRL+S || Quicksave<sup>2</sup> ||
 || CTRL+L || Quickload ||
-|| CTRL+F1 || DEVELOPMENT HACK: Jump to main menu screen ||
-|| CTRL+F2 || DEVELOPMENT HACK: Jump to space battle screen ||
-|| CTRL+F3 || DEVELOPMENT HACK: Jump to ground battle mode in colony screen ||
+|| CTRL+F1 || DEVELOPMENT HACK: Jump to main menu screen<sup>2</sup> ||
+|| CTRL+F2 || DEVELOPMENT HACK: Jump to space battle screen<sup>2</sup> ||
+|| CTRL+F3 || DEVELOPMENT HACK: Jump to ground battle mode in colony screen<sup>2</sup> ||
 
 
 <sup>1</sup>Except when playing a space battle or surface battle.<br>
