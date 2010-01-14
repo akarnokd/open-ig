@@ -36,6 +36,7 @@ Please see this page later on or the [Documentation documentation] page for what
 == System requirements ==
  * Java JRE/JDK 1.6.X or 1.7.X
  * Any operating system with graphical user interface
+ * A mouse with scroll wheel.
  * 160MB RAM
  * 2-15 MB for Open-IG, 1.2 GB for original Imperium Galactica
  * 1 GHz P4 or equivalent (estimated)
