@@ -10,6 +10,7 @@ package hu.openig.v1.screens;
 
 import hu.openig.v1.Act;
 import hu.openig.v1.ScreenBase;
+import hu.openig.v1.render.Button;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -60,17 +61,7 @@ public class AchievementsScreen extends ScreenBase {
 	/** The listing rectangle. */
 	final Rectangle listRect = new Rectangle();
 	/** A scroll button. */
-	class ImageButton {
-		/** The relative coordinate. */
-		public int x;
-		/** The relative coordinate. */
-		public int y;
-		/** Selected. */
-		public boolean selected;
-		/** Visible. */
-		public boolean visible;
-		/** Pressed. */
-		public boolean pressed;
+	class ImageButton extends Button {
 		/** The selected image. */
 		BufferedImage selectedImage;
 		/** The normal image. */
@@ -81,17 +72,15 @@ public class AchievementsScreen extends ScreenBase {
 		Act onPress;
 		/** The action to invoke when released. */
 		Act onRelease;
-		/**
-		 * Test if the mouse is within this button.
-		 * @param mx the mouse x
-		 * @param my the mouse y
-		 * @param x0 the reference x
-		 * @param y0 the reference y
-		 * @return true if in
-		 */
-		public boolean test(int mx, int my, int x0, int y0) {
-			return visible && mx >= x0 + x && mx < x0 + x + normalImage.getWidth()
-			&& my >= y0 + y && my < y0 + y + normalImage.getHeight();
+		/** The action to invoke when leave. */
+		Act onLeave;
+		@Override
+		public int getWidth() {
+			return normalImage.getWidth();
+		}
+		@Override
+		public int getHeight() {
+			return normalImage.getHeight();
 		}
 		/**
 		 * Paint the button.
@@ -104,26 +93,105 @@ public class AchievementsScreen extends ScreenBase {
 				if (pressed) {
 					g2.drawImage(pressedImage, x0 + x, y0 + y, null);
 				} else
-				if (selected) {
+				if (mouseOver) {
 					g2.drawImage(selectedImage, x0 + x, y0 + y, null);
 				} else {
 					g2.drawImage(normalImage, x0 + x, y0 + y, null);
 				}
 			}
 		}
-		/**
-		 * Invoke the associated action on press.
-		 */
-		public void invokePress() {
+		@Override
+		public void onPressed() {
 			if (onPress != null) {
 				onPress.act();
 			}
 		}
-		/** Invoke the associated action on release. */
-		public void invokeRelease() {
+		@Override
+		public void onReleased() {
 			if (onRelease != null) {
 				onRelease.act();
 			}
+		}
+		@Override
+		public void onEnter() {
+			
+		}
+		@Override
+		public void onLeave() {
+			if (onLeave != null) {
+				onLeave.act();
+			}
+		}
+	}
+	/**
+	 * A clickable option label.
+	 * @author karnok, 2010.01.14.
+	 * @version $Revision 1.0$
+	 */
+	class ClickLabel extends Button {
+		/** The label. */
+		public String label;
+		/** The text size. */
+		public int size;
+		/** The action to invoke on press. */
+		public Act action;
+		/** Is the label selected? */
+		public boolean selected;
+		/**
+		 * Paint the label.
+		 * @param g2 the graphics object
+		 * @param x0 the reference
+		 * @param y0 the reference
+		 */
+		public void paintTo(Graphics2D g2, int x0, int y0) {
+			g2.setColor(Color.BLACK);
+			g2.fillRect(x0 + x, y0 + y, getWidth(), getHeight());
+			int color = selected ? 0xFFFFCC00 : (mouseOver ? 0xFFFFEE00 : 0xFF00CC00);
+			commons.text.paintTo(g2, x0 + x + 5, y0 + y + 2, size, color, commons.labels.get(label));
+		}
+		/**
+		 * @return the text width
+		 */
+		public int getWidth() {
+			return commons.text.getTextWidth(size, commons.labels.get(label)) + 10;
+		}
+		/**
+		 * @return the text height
+		 */
+		public int getHeight() {
+			return size + 4;
+		}
+		/**
+		 * Invoke the action.
+		 */
+		public void onPressed() {
+			if (action != null) {
+				action.act();
+			}
+		}
+		/* (non-Javadoc)
+		 * @see hu.openig.v1.render.Button#onEnter()
+		 */
+		@Override
+		public void onEnter() {
+			// TODO Auto-generated method stub
+			
+		}
+		/* (non-Javadoc)
+		 * @see hu.openig.v1.render.Button#onLeave()
+		 */
+		@Override
+		public void onLeave() {
+			// TODO Auto-generated method stub
+			
+		}
+		/* (non-Javadoc)
+		 * @see hu.openig.v1.render.Button#onReleased()
+		 */
+		@Override
+		public void onReleased() {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 	/** Scroll up button. */
@@ -131,7 +199,7 @@ public class AchievementsScreen extends ScreenBase {
 	/** Scroll down button. */
 	ImageButton scrollDownButton;
 	/** Scroll buttons. */
-	final List<ImageButton> buttons = new ArrayList<ImageButton>();
+	final List<Button> buttons = new ArrayList<Button>();
 	/** The timer for the continuous scroll down. */
 	Timer scrollDownTimer;
 	/** The timer for the continuous scroll up. */
@@ -152,12 +220,21 @@ public class AchievementsScreen extends ScreenBase {
 	private ImageButton diplomacy;
 	/** Information button. */
 	private ImageButton info;
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#doResize()
-	 */
+	/** Statistics label. */
+	ClickLabel statisticsLabel;
+	/** Achievements label. */
+	ClickLabel achievementLabel;
+	/** The rendering mode. */
+	enum Mode {
+		/** Statistics screen. */
+		STATISTICS,
+		/** Achievements screen. */
+		ACHIEVEMENTS
+	}
+	/** The current display mode. */
+	Mode mode = Mode.ACHIEVEMENTS;
 	@Override
 	public void doResize() {
-		// TODO Auto-generated method stub
 		origin.setBounds(
 			(parent.getWidth() - commons.infoEmpty.getWidth()) / 2,
 			20 + (parent.getHeight() - commons.infoEmpty.getHeight() - 38) / 2,
@@ -175,6 +252,7 @@ public class AchievementsScreen extends ScreenBase {
 
 		bridge.x = 4 - bridge.normalImage.getWidth();
 		bridge.y = origin.height - 2 - bridge.normalImage.getHeight();
+		bridge.visible = false;
 		starmap.x = bridge.x + bridge.normalImage.getWidth();
 		starmap.y = bridge.y;
 		colony.x = starmap.x + starmap.normalImage.getWidth();
@@ -189,8 +267,14 @@ public class AchievementsScreen extends ScreenBase {
 		info.y = production.y;
 		diplomacy.x = info.x + info.normalImage.getWidth();
 		diplomacy.y = production.y;
+		diplomacy.visible = false;
 
-	
+		statisticsLabel.x = (origin.width / 2 - achievementLabel.getWidth()) / 2;
+		statisticsLabel.y = - achievementLabel.getHeight() / 2;
+		
+		achievementLabel.x = origin.width / 2 + (origin.width / 2 - statisticsLabel.getWidth()) / 2;
+		achievementLabel.y = - statisticsLabel.getHeight() / 2;
+		
 	}
 
 	/* (non-Javadoc)
@@ -207,6 +291,9 @@ public class AchievementsScreen extends ScreenBase {
 	 */
 	@Override
 	public void initialize() {
+		
+		buttons.clear();
+		achievements.clear();
 		
 		scrollDownTimer = new Timer(500, new Act() {
 			@Override
@@ -235,6 +322,12 @@ public class AchievementsScreen extends ScreenBase {
 				scrollUpTimer.start();
 			}
 		};
+		scrollUpButton.onLeave = new Act() {
+			@Override
+			public void act() {
+				scrollUpTimer.stop();
+			}
+		};
 		scrollUpButton.onRelease = new Act() {
 			@Override
 			public void act() {
@@ -251,6 +344,12 @@ public class AchievementsScreen extends ScreenBase {
 			public void act() {
 				doScrollDown();
 				scrollDownTimer.start();
+			}
+		};
+		scrollDownButton.onLeave = new Act() {
+			@Override
+			public void act() {
+				scrollDownTimer.stop();
 			}
 		};
 		scrollDownButton.onRelease = new Act() {
@@ -322,6 +421,30 @@ public class AchievementsScreen extends ScreenBase {
 		buttons.add(info);
 		buttons.add(diplomacy);
 		
+		achievementLabel = new ClickLabel();
+		achievementLabel.size = 14;
+		achievementLabel.label = "achievements";
+		achievementLabel.action = new Act() {
+			@Override
+			public void act() {
+				mode = Mode.ACHIEVEMENTS;
+				adjustLabels();
+			}
+		};
+		buttons.add(achievementLabel);
+		
+		statisticsLabel = new ClickLabel();
+		statisticsLabel.size = 14;
+		statisticsLabel.label = "statistics";
+		statisticsLabel.action = new Act() {
+			@Override
+			public void act() {
+				mode = Mode.STATISTICS;
+				adjustLabels();
+			}
+		};
+		buttons.add(statisticsLabel);
+		
 		// FIXME find other ways to populate the achievement list
 		createTestAchievements();
 	}
@@ -340,22 +463,18 @@ public class AchievementsScreen extends ScreenBase {
 	 */
 	@Override
 	public void mouseMoved(int button, int x, int y, int modifiers) {
-		for (ImageButton btn : buttons) {
+		for (Button btn : buttons) {
 			if (btn.test(x, y, origin.x, origin.y)) {
-				if (!btn.selected) {
-					btn.selected = true;
+				if (!btn.mouseOver) {
+					btn.mouseOver = true;
+					btn.onEnter();
 					requestRepaint();
 				}
 			} else
-			if (btn.selected || btn.pressed) {
-				btn.selected = false;
+			if (btn.mouseOver || btn.pressed) {
+				btn.mouseOver = false;
 				btn.pressed = false;
-				if (btn == scrollUpButton) {
-					scrollUpTimer.stop();
-				} else
-				if (btn == scrollDownButton) {
-					scrollDownTimer.stop();
-				}
+				btn.onLeave();
 				requestRepaint();
 			}
 		}
@@ -366,10 +485,10 @@ public class AchievementsScreen extends ScreenBase {
 	 */
 	@Override
 	public void mousePressed(int button, int x, int y, int modifiers) {
-		for (ImageButton btn : buttons) {
+		for (Button btn : buttons) {
 			if (btn.test(x, y, origin.x, origin.y)) {
 				btn.pressed = true;
-				btn.invokePress();
+				btn.onPressed();
 				requestRepaint();
 			}
 		}
@@ -380,11 +499,11 @@ public class AchievementsScreen extends ScreenBase {
 	 */
 	@Override
 	public void mouseReleased(int button, int x, int y, int modifiers) {
-		for (ImageButton btn : buttons) {
+		for (Button btn : buttons) {
 			if (btn.pressed) {
 				btn.pressed = false;
 				if (btn.test(x, y, origin.x, origin.y)) {
-					btn.invokeRelease();
+					btn.onReleased();
 				}
 				requestRepaint();
 			}
@@ -438,8 +557,13 @@ public class AchievementsScreen extends ScreenBase {
 	@Override
 	public void onEnter() {
 		adjustScrollButtons();
+		adjustLabels();
 	}
-
+	/** Adjust label selection. */
+	void adjustLabels() {
+		achievementLabel.selected = mode == Mode.ACHIEVEMENTS;
+		statisticsLabel.selected = mode == Mode.STATISTICS;
+	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#onLeave()
 	 */
@@ -462,44 +586,35 @@ public class AchievementsScreen extends ScreenBase {
 		
 		g2.drawImage(commons.infoEmpty, origin.x, origin.y, null);
 		
-		String t = commons.labels.get("statistics");
-		int tw0 = commons.text.getTextWidth(14, t);
-		g2.fillRect(origin.x + (origin.width / 2 - tw0) / 2 - 5, origin.y - 9, tw0 + 10, 18);
-		commons.text.paintTo(g2, origin.x + (origin.width / 2 - tw0) / 2, origin.y - 7, 14, 0xFF00CC00, t);
-
-		t = commons.labels.get("achievements");
-		tw0 = commons.text.getTextWidth(14, t);
-		g2.fillRect(origin.x + origin.width / 2 + (origin.width / 2 - tw0) / 2 - 5, origin.y - 9, tw0 + 10, 18);
-		commons.text.paintTo(g2, origin.x + origin.width / 2 + (origin.width / 2 - tw0) / 2, origin.y - 7, 14, 0xFFFFCC00, t);
-
 		Shape sp = g2.getClip();
 		g2.setClip(listRect);
-		int y = listRect.y;
-		for (int i = topIndex; i < achievements.size() && i < topIndex + visibleCount + 1; i++) {
-			AchievementEntry ae = achievements.get(i);
-			String desc = commons.labels.get(ae.description);
-			int tw = listRect.width - commons.achievement.getWidth() - 10;
-			List<String> lines = new ArrayList<String>();
-			commons.text.wrapText(desc, tw, 10, lines);
-			BufferedImage img = commons.achievement;
-			int color = 0xFF00FF00;
-			if (!ae.enabled) {
-				img = commons.achievementGrayed;
-				color = 0xFFC0C0C0;
+		if (mode == Mode.ACHIEVEMENTS) {
+			int y = listRect.y;
+			for (int i = topIndex; i < achievements.size() && i < topIndex + visibleCount + 1; i++) {
+				AchievementEntry ae = achievements.get(i);
+				String desc = commons.labels.get(ae.description);
+				int tw = listRect.width - commons.achievement.getWidth() - 10;
+				List<String> lines = new ArrayList<String>();
+				commons.text.wrapText(desc, tw, 10, lines);
+				BufferedImage img = commons.achievement;
+				int color = 0xFF00FF00;
+				if (!ae.enabled) {
+					img = commons.achievementGrayed;
+					color = 0xFFC0C0C0;
+				}
+				g2.drawImage(img, listRect.x, y, null);
+				commons.text.paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y, 14, color, commons.labels.get(ae.title));
+				int y1 = y + 20;
+				for (int j = 0; j < lines.size(); j++) {
+					commons.text.paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y1, 10, color, lines.get(j));
+					y1 += 12;
+				}
+				y += 50;
 			}
-			g2.drawImage(img, listRect.x, y, null);
-			commons.text.paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y, 14, color, commons.labels.get(ae.title));
-			int y1 = y + 20;
-			for (int j = 0; j < lines.size(); j++) {
-				commons.text.paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y1, 10, color, lines.get(j));
-				y1 += 12;
-			}
-			y += 50;
 		}
-		
 		g2.setClip(sp);
 		
-		for (ImageButton btn : buttons) {
+		for (Button btn : buttons) {
 			btn.paintTo(g2, origin.x, origin.y);
 		}
 		

@@ -11,7 +11,6 @@ package hu.openig.v1.screens;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.sound.AudioThread;
 import hu.openig.v1.Act;
-import hu.openig.v1.ResourceLocator;
 import hu.openig.v1.ResourceType;
 import hu.openig.v1.ScreenBase;
 import hu.openig.v1.SubtitleManager;
