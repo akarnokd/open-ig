@@ -66,7 +66,7 @@ public class InfoGFX {
 	public BufferedImage[] research;
 	/** Starmap. */
 	@Btn2(name = "info/button_starmap")
-	public BufferedImage[] startmap;
+	public BufferedImage[] starmap;
 	/** Less tax. */
 	@Btn2(name = "info/button_tax_less")
 	public BufferedImage[] taxLess;

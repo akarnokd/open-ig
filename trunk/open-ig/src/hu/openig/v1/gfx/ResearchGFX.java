@@ -105,7 +105,7 @@ public class ResearchGFX {
 	@Btn2(name = "research/button_add")
 	public BufferedImage[] add;
 	/** Go to bridge button. */
-	@Btn2(name = "research/button_bridge")
+	@Btn2(name = "starmap/button_bridge")
 	public BufferedImage[] bridge;
 	/** Go to research button. */
 	@Btn2(name = "research/button_research")

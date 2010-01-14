@@ -8,6 +8,7 @@
 
 package hu.openig.v1;
 
+import hu.openig.v1.screens.AchievementsScreen;
 import hu.openig.v1.screens.MainMenu;
 import hu.openig.v1.screens.MovieScreen;
 
@@ -112,6 +113,8 @@ public class GameWindow extends JFrame implements GameControls {
 	private SpacewarScreen spacewar;
 	/** The list of screens. */
 	protected List<ScreenBase> screens;
+	/** The achievements screen. */
+	private AchievementsScreen achievements;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
@@ -187,11 +190,15 @@ public class GameWindow extends JFrame implements GameControls {
 		movie = new MovieScreen();
 		screens.add(movie);
 		
+		achievements = new AchievementsScreen();
+		screens.add(achievements);
+		
 		for (ScreenBase sb : screens) {
 			sb.initialize(commons, surface);
 		}
 		
 		displayPrimary(mainMenu);
+		displaySecondary(achievements);
 	}
 	/** Unitialize the screens. */
 	protected void uninitScreens() {
@@ -247,8 +254,11 @@ public class GameWindow extends JFrame implements GameControls {
 		if (secondary != null && secondary != sb) {
 			secondary.onLeave();
 		}
-		secondary = sb;
-		surface.repaint();
+		if (secondary != sb) {
+			secondary = sb;
+			secondary.onEnter();
+			surface.repaint();
+		}
 	}
 	/**
 	 * Display the movie window.
@@ -313,12 +323,15 @@ public class GameWindow extends JFrame implements GameControls {
 		Point pt = getCurrentMousePosition();
 		if (statusbarVisible) {
 			statusbar.mouseMoved(0, pt.x, pt.y, 0);
+			statusbar.handleRepaint();
 		}
 		if (secondary != null) {
 			secondary.mouseMoved(0, pt.x, pt.y, 0);
+			secondary.handleRepaint();
 		} else
 		if (primary != null) {
 			primary.mouseMoved(0, pt.x, pt.y, 0);
+			primary.handleRepaint();
 		}
 	}
 	/**
@@ -332,12 +345,15 @@ public class GameWindow extends JFrame implements GameControls {
 //			System.out.println("Press " + e.getKeyCode());
 			if (movieVisible) {
 				movie.keyTyped(e.getKeyCode(), e.getModifiersEx());
+				movie.handleRepaint();
 			} else
 			if (secondary != null) {
 				secondary.keyTyped(e.getKeyCode(), e.getModifiersEx());
+				secondary.handleRepaint();
 			} else
 			if (primary != null) {
 				primary.keyTyped(e.getKeyCode(), e.getModifiersEx());
+				primary.handleRepaint();
 			}
 		}
 	}
@@ -352,60 +368,75 @@ public class GameWindow extends JFrame implements GameControls {
 //			System.out.println("Press");
 			if (movieVisible) {
 				movie.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				movie.handleRepaint();
 			} else
 			if (secondary != null) {
 				secondary.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				secondary.handleRepaint();
 			} else
 			if (primary != null) {
 				primary.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				primary.handleRepaint();
 			}
 		}
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			if (movieVisible) {
 				movie.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				movie.handleRepaint();
 			} else
 			if (secondary != null) {
 				secondary.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				secondary.handleRepaint();
 			} else
 			if (primary != null) {
 				primary.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				primary.handleRepaint();
 			}
 		}
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			if (movieVisible) {
 				movie.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				movie.handleRepaint();
 			} else
 			if (secondary != null) {
 				secondary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				secondary.handleRepaint();
 			} else
 			if (primary != null) {
 				primary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				primary.handleRepaint();
 			}
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			if (movieVisible) {
 				movie.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				movie.handleRepaint();
 			} else
 			if (secondary != null) {
 				secondary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				secondary.handleRepaint();
 			} else
 			if (primary != null) {
 				primary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				primary.handleRepaint();
 			}
 		}
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			if (movieVisible) {
 				movie.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
+				movie.handleRepaint();
 			} else
 			if (secondary != null) {
 				secondary.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
+				secondary.handleRepaint();
 			} else
 			if (primary != null) {
 				primary.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
+				primary.handleRepaint();
 			}
 		}
 	}
@@ -424,6 +455,5 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		};
 		displayMovie();
-		
 	}
 }

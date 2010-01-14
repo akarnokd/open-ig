@@ -354,21 +354,32 @@ public class TextRenderer {
 			}
 			String[] words = s.split("\\s+");
 			StringBuilder line = new StringBuilder();
-			int i = 0;
-			while (i < words.length) {
-				line.setLength(0);
-				for (; i < words.length; i++) {
-					if (getTextWidth(size, line + " " + words[i]) >= width) {
+			StringBuilder lineTest = new StringBuilder();
+			for (int i = 0; i < words.length; i++) {
+				if (lineTest.length() > 0) {
+					lineTest.append(" ");
+				}
+				lineTest.append(words[i]);
+				if (getTextWidth(size, lineTest.toString()) >= width) {
+					if (line.length() > 0) {
 						String t = line.toString();
 						maxWidth = Math.max(maxWidth, getTextWidth(size, t));
 						linesOut.add(t);
-						break;
+						line.setLength(0);
+						lineTest.setLength(0);
+						i--;
 					} else {
-						if (line.length() > 0) {
-							line.append(" ");
-						}
-						line.append(words[i]);
+						// the case when even word itself desnt fit in the width at all
+						String t = words[i];
+						maxWidth = Math.max(maxWidth, getTextWidth(size, t));
+						linesOut.add(t);
+						lineTest.setLength(0);
 					}
+				} else {
+					if (line.length() > 0) {
+						line.append(" ");
+					}
+					line.append(words[i]);
 				}
 			}
 			if (line.length() > 0) {
