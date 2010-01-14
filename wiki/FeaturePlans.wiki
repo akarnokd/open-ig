@@ -7,6 +7,14 @@
 
 On this page, I collect ideas about enhancing the gameplay with more modern concepts, better management ways or nicer gameplay mechanics. Suggestions and comments welcome.
 
+= Quicksave with automatic versioning =
+
+When using the quicksave function the game will automatically version the save files, e.g. no single quicksave slot as in many other games. This will be true for the daily autosave feature too. This helps during the development and testing a lot, plus, it might come in handy for the regular gamers too.
+
+= Allow save during battles =
+
+In the original version the player was not able to save an ongoing battle. Theoretically, it is as simple as the regular save. It might, however, affect the sense of the gameplay.
+
 = Multiple release versions =
 
 Watching this 1GB of data makes me think: It's nice to have them all, but might not be ideal to host that much amount of data.
