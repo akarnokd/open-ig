@@ -12,6 +12,8 @@ import hu.openig.v1.gfx.BackgroundGFX;
 import hu.openig.v1.gfx.ColonyGFX;
 import hu.openig.v1.gfx.DatabaseGFX;
 import hu.openig.v1.gfx.EquipmentGFX;
+import hu.openig.v1.gfx.GFXLoader;
+import hu.openig.v1.gfx.Img;
 import hu.openig.v1.gfx.InfoGFX;
 import hu.openig.v1.gfx.ResearchGFX;
 import hu.openig.v1.gfx.SpacewarGFX;
@@ -19,6 +21,9 @@ import hu.openig.v1.gfx.StarmapGFX;
 import hu.openig.v1.gfx.StatusbarGFX;
 import hu.openig.v1.render.TextRenderer;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -64,6 +69,17 @@ public class CommonResources {
 	public GameControls control;
 	/** The disabled pattern. */
 	public BufferedImage disabledPattern;
+	// --------------------------------------------
+	// The general images usable by multiple places
+	// --------------------------------------------
+	/** The achievement icon. */
+	@Img(name = "achievement")
+	public BufferedImage achievement;
+	/** The achievement icon grayed out. */
+	public BufferedImage achievementGrayed;
+	/** The empty background of the info panel. */
+	@Img(name = "info/info_empty")
+	public BufferedImage infoEmpty;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -193,6 +209,15 @@ public class CommonResources {
 		int[] disabled = { 0xFF000000, 0xFF000000, 0, 0, 0xFF000000, 0, 0, 0, 0 };
 		disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
 		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
+		GFXLoader.loadResources(this, rl, config.language);
+		
+		achievementGrayed = new BufferedImage(achievement.getWidth(), achievement.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = achievementGrayed.createGraphics();
+		g2.drawImage(achievement, 0, 0, null);
+		g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, achievement.getWidth(), achievement.getHeight());
+		g2.dispose();
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.

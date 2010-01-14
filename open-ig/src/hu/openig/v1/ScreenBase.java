@@ -30,6 +30,8 @@ public abstract class ScreenBase {
 	protected int lastWidth;
 	/** The memorized last height of the parent component. */
 	protected int lastHeight;
+	/** If the called method requires a repaint. */
+	protected boolean repaintRequested;
 	/**
 	 * Render the screen's content based.
 	 * @param g2 the graphics object
@@ -99,6 +101,21 @@ public abstract class ScreenBase {
 	/** Ask for the parent to repaint itself. */
 	public void repaint() {
 		parent.repaint();
+	}
+	/**
+	 * Signal to repaint after the event handler completed.
+	 */
+	public void requestRepaint() {
+		repaintRequested = true;
+	}
+	/**
+	 * Handle if the repaint request is set.
+	 */
+	public void handleRepaint() {
+		if (repaintRequested) {
+			repaintRequested = false;
+			repaint();
+		}
 	}
 	/**
 	 * Handle a mouse movement event.
