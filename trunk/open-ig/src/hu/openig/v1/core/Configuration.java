@@ -6,7 +6,8 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1;
+package hu.openig.v1.core;
+
 
 import java.io.File;
 import java.io.FileInputStream;

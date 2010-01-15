@@ -12,7 +12,13 @@ import hu.openig.ani.MovieSurface;
 import hu.openig.ani.MovieSurface.ScalingMode;
 import hu.openig.core.ImageInterpolation;
 import hu.openig.sound.AudioThread;
-import hu.openig.v1.ResourceLocator.ResourcePlace;
+import hu.openig.v1.core.Act;
+import hu.openig.v1.core.ConfigButton;
+import hu.openig.v1.core.Configuration;
+import hu.openig.v1.core.ResourceLocator;
+import hu.openig.v1.core.ResourceType;
+import hu.openig.v1.core.SubtitleManager;
+import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 
 import java.awt.Container;
 import java.awt.event.MouseAdapter;

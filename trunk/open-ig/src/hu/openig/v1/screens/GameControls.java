@@ -6,7 +6,9 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1;
+package hu.openig.v1.screens;
+
+
 
 /**
  * Interface for interacting with the game window or other objects in a global manner.

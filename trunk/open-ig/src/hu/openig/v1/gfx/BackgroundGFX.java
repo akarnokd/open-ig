@@ -8,7 +8,7 @@
 
 package hu.openig.v1.gfx;
 
-import hu.openig.v1.ResourceLocator;
+import hu.openig.v1.core.ResourceLocator;
 
 import java.awt.image.BufferedImage;
 

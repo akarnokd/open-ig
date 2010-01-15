@@ -10,11 +10,10 @@ package hu.openig.v1.screens;
 
 import hu.openig.core.SwappableRenderer;
 import hu.openig.sound.AudioThread;
-import hu.openig.v1.Act;
-import hu.openig.v1.ResourceType;
-import hu.openig.v1.ScreenBase;
-import hu.openig.v1.SubtitleManager;
-import hu.openig.v1.ResourceLocator.ResourcePlace;
+import hu.openig.v1.core.Act;
+import hu.openig.v1.core.ResourceType;
+import hu.openig.v1.core.SubtitleManager;
+import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 import hu.openig.v1.render.TextRenderer;
 
 import java.awt.AlphaComposite;
@@ -283,6 +282,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
+							frontBuffer = null;
 							playNext();
 						}
 					});
@@ -294,7 +294,9 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 			}
 		}, "Movie Completion Waiter");
 		continueThread.start();
-		audioThread.start();
+		if (audio != null) {
+			audioThread.start();
+		}
 		videoThread.start();
 	}
 	/**

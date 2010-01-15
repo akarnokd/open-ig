@@ -8,8 +8,8 @@
 
 package hu.openig.v1.gui;
 
-import hu.openig.v1.Act;
-import hu.openig.v1.Labels;
+import hu.openig.v1.core.Act;
+import hu.openig.v1.core.Labels;
 import hu.openig.v1.gfx.DatabaseGFX;
 import hu.openig.v1.model.World;
 import hu.openig.v1.render.TextRenderer;

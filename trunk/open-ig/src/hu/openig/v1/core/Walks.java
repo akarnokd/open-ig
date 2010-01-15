@@ -9,9 +9,7 @@
 package hu.openig.v1.core;
 
 import hu.openig.utils.XML;
-import hu.openig.v1.ResourceLocator;
-import hu.openig.v1.ResourceType;
-import hu.openig.v1.ResourceLocator.ResourcePlace;
+import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 
 import java.awt.Polygon;
 import java.io.IOException;

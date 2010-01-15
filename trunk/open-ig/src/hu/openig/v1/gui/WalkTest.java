@@ -8,8 +8,8 @@
 
 package hu.openig.v1.gui;
 
-import hu.openig.v1.Configuration;
-import hu.openig.v1.ResourceLocator;
+import hu.openig.v1.core.Configuration;
+import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.core.Walks;
 
 import java.awt.Container;

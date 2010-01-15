@@ -6,11 +6,11 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1;
+package hu.openig.v1.screens;
 
-import hu.openig.v1.screens.AchievementsScreen;
-import hu.openig.v1.screens.MainMenu;
-import hu.openig.v1.screens.MovieScreen;
+import hu.openig.v1.core.Act;
+import hu.openig.v1.core.Configuration;
+import hu.openig.v1.core.ResourceLocator;
 
 import java.awt.Container;
 import java.awt.Graphics;
@@ -105,16 +105,10 @@ public class GameWindow extends JFrame implements GameControls {
 	ResourceLocator rl;
 	/** The common resources. */
 	CommonResources commons;
-	/** The main menu. */
-	MainMenu mainMenu;
 	/** The surface used to render the screens. */
 	private ScreenRenderer surface;
-	/** The spacewar rendering screen. */
-	private SpacewarScreen spacewar;
 	/** The list of screens. */
 	protected List<ScreenBase> screens;
-	/** The achievements screen. */
-	private AchievementsScreen achievements;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
@@ -181,24 +175,27 @@ public class GameWindow extends JFrame implements GameControls {
 	protected void initScreens() {
 		screens = new ArrayList<ScreenBase>();
 		
-		mainMenu = new MainMenu();
-		screens.add(mainMenu);
+		commons.screens.mainmenu = new MainMenu();
+		screens.add(commons.screens.mainmenu);
 		
-		spacewar = new SpacewarScreen();
-		screens.add(spacewar);
+		commons.screens.spacewar = new SpacewarScreen();
+		screens.add(commons.screens.spacewar);
 
-		movie = new MovieScreen();
-		screens.add(movie);
+		commons.screens.movie = new MovieScreen();
+		movie = commons.screens.movie;
+		screens.add(commons.screens.movie);
 		
-		achievements = new AchievementsScreen();
-		screens.add(achievements);
+		commons.screens.statisticsAchievements = new AchievementsScreen();
+		screens.add(commons.screens.statisticsAchievements);
+		
+		commons.screens.videos = new VideoScreen();
+		screens.add(commons.screens.videos);
 		
 		for (ScreenBase sb : screens) {
 			sb.initialize(commons, surface);
 		}
 		
-		displayPrimary(mainMenu);
-		displaySecondary(achievements);
+		displayPrimary(commons.screens.mainmenu);
 	}
 	/** Unitialize the screens. */
 	protected void uninitScreens() {
@@ -213,19 +210,19 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	/**
 	 * Display the given screen as the primary object. The secondary object, if any, will be removed.
-	 * @param sb the new screen to display
+	 * @param screen the new screen to display
 	 */
 	@Override
-	public void displayPrimary(ScreenBase sb) {
+	public void displayPrimary(ScreenBase screen) {
 		hideMovie();
 		if (secondary != null) {
 			secondary.onLeave();
 			secondary = null;
 		}
-		if (primary != null && primary != sb) {
+		if (primary != null && primary != screen) {
 			primary.onLeave();
 		}
-		primary = sb;
+		primary = screen;
 		if (primary != null) {
 			primary.onEnter(); 
 			// send a mouse moved event so that if necessary, components can react to mouseOver immediately
@@ -247,16 +244,20 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	/**
 	 * Display the given secondary screen.
-	 * @param sb the screen to display as secondary
+	 * @param screen the screen to display as secondary
 	 */
 	@Override
-	public void displaySecondary(ScreenBase sb) {
-		if (secondary != null && secondary != sb) {
+	public void displaySecondary(ScreenBase screen) {
+		if (secondary != null && secondary != screen) {
 			secondary.onLeave();
 		}
-		if (secondary != sb) {
-			secondary = sb;
+		if (secondary != screen) {
+			secondary = screen;
 			secondary.onEnter();
+			if (surface.isShowing()) {
+				Point p = getCurrentMousePosition();
+				secondary.mouseMoved(0, p.x, p.y, 0);
+			}
 			surface.repaint();
 		}
 	}
@@ -366,77 +367,87 @@ public class GameWindow extends JFrame implements GameControls {
 		@Override
 		public void mousePressed(MouseEvent e) {
 //			System.out.println("Press");
+			ScreenBase pri = primary;
+			ScreenBase sec = secondary;
 			if (movieVisible) {
 				movie.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
 				movie.handleRepaint();
 			} else
-			if (secondary != null) {
-				secondary.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				secondary.handleRepaint();
+			if (sec != null) {
+				sec.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				sec.handleRepaint();
 			} else
-			if (primary != null) {
-				primary.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				primary.handleRepaint();
+			if (pri != null) {
+				pri.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				pri.handleRepaint();
 			}
 		}
 		@Override
 		public void mouseReleased(MouseEvent e) {
+			ScreenBase pri = primary;
+			ScreenBase sec = secondary;
 			if (movieVisible) {
 				movie.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
 				movie.handleRepaint();
 			} else
-			if (secondary != null) {
-				secondary.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				secondary.handleRepaint();
+			if (sec != null) {
+				sec.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				sec.handleRepaint();
 			} else
-			if (primary != null) {
-				primary.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				primary.handleRepaint();
+			if (pri != null) {
+				pri.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+				pri.handleRepaint();
 			}
 		}
 		@Override
 		public void mouseDragged(MouseEvent e) {
+			ScreenBase pri = primary;
+			ScreenBase sec = secondary;
 			if (movieVisible) {
 				movie.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
 				movie.handleRepaint();
 			} else
-			if (secondary != null) {
-				secondary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				secondary.handleRepaint();
+			if (sec != null) {
+				sec.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				sec.handleRepaint();
 			} else
-			if (primary != null) {
-				primary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				primary.handleRepaint();
+			if (pri != null) {
+				pri.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				pri.handleRepaint();
 			}
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
+			ScreenBase pri = primary;
+			ScreenBase sec = secondary;
 			if (movieVisible) {
 				movie.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
 				movie.handleRepaint();
 			} else
-			if (secondary != null) {
-				secondary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				secondary.handleRepaint();
+			if (sec != null) {
+				sec.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				sec.handleRepaint();
 			} else
-			if (primary != null) {
-				primary.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				primary.handleRepaint();
+			if (pri != null) {
+				pri.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+				pri.handleRepaint();
 			}
 		}
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
+			ScreenBase pri = primary;
+			ScreenBase sec = secondary;
 			if (movieVisible) {
 				movie.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
 				movie.handleRepaint();
 			} else
-			if (secondary != null) {
-				secondary.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
-				secondary.handleRepaint();
+			if (sec != null) {
+				sec.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
+				sec.handleRepaint();
 			} else
-			if (primary != null) {
-				primary.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
-				primary.handleRepaint();
+			if (pri != null) {
+				pri.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
+				pri.handleRepaint();
 			}
 		}
 	}

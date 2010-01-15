@@ -9,12 +9,12 @@
 package hu.openig.v1.gui;
 
 import hu.openig.core.SwappableRenderer;
-import hu.openig.v1.ResourceLocator;
-import hu.openig.v1.ResourceType;
-import hu.openig.v1.ResourceLocator.ResourcePlace;
+import hu.openig.v1.core.ResourceLocator;
+import hu.openig.v1.core.ResourceType;
 import hu.openig.v1.core.WalkPosition;
 import hu.openig.v1.core.WalkShip;
 import hu.openig.v1.core.WalkTransition;
+import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 import hu.openig.v1.render.TextRenderer;
 
 import java.awt.AlphaComposite;

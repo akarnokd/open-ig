@@ -10,7 +10,6 @@ package hu.openig.v1.screens;
 
 import java.awt.Graphics2D;
 
-import hu.openig.v1.ScreenBase;
 
 /**
  * @author karnokd, 2010.01.11.

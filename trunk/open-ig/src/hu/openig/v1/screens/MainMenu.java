@@ -8,9 +8,8 @@
 
 package hu.openig.v1.screens;
 
-import hu.openig.v1.Act;
-import hu.openig.v1.Configuration;
-import hu.openig.v1.ScreenBase;
+import hu.openig.v1.core.Act;
+import hu.openig.v1.core.Configuration;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -139,7 +138,14 @@ public class MainMenu extends ScreenBase {
 		multiplayer.disabled = true;
 		clicklabels.add(multiplayer);
 		clicklabels.add(new ClickLabel(120, 250, 400, 20, "mainmenu.settings"));
-		clicklabels.add(new ClickLabel(120, 285, 400, 20, "mainmenu.videos"));
+		ClickLabel videosLabel = new ClickLabel(120, 285, 400, 20, "mainmenu.videos");
+		videosLabel.action = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(commons.screens.videos);
+			}
+		};
+		clicklabels.add(videosLabel);
 		
 		ClickLabel introLabel = new ClickLabel(120, 320, 400, 14, "mainmenu.videos.intro");
 		introLabel.action = new Act() {

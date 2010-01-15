@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1.render;
+package hu.openig.v1.core;
 
 import java.awt.Graphics2D;
 

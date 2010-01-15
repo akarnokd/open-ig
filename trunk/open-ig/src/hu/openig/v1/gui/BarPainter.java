@@ -10,14 +10,14 @@ package hu.openig.v1.gui;
 
 import hu.openig.core.SwappableRenderer;
 import hu.openig.sound.AudioThread;
-import hu.openig.v1.Labels;
-import hu.openig.v1.ResourceLocator;
-import hu.openig.v1.ResourceType;
-import hu.openig.v1.SubtitleManager;
-import hu.openig.v1.ResourceLocator.ResourcePlace;
+import hu.openig.v1.core.Labels;
+import hu.openig.v1.core.ResourceLocator;
+import hu.openig.v1.core.ResourceType;
+import hu.openig.v1.core.SubtitleManager;
 import hu.openig.v1.core.TalkPerson;
 import hu.openig.v1.core.TalkSpeech;
 import hu.openig.v1.core.TalkState;
+import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 import hu.openig.v1.render.TextRenderer;
 
 import java.awt.Graphics;

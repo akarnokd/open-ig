@@ -9,13 +9,13 @@
 package hu.openig.v1.model;
 
 import hu.openig.utils.XML;
-import hu.openig.v1.ResourceLocator;
-import hu.openig.v1.ResourceType;
-import hu.openig.v1.ResourceLocator.ResourcePlace;
 import hu.openig.v1.core.PlanetType;
+import hu.openig.v1.core.ResourceLocator;
+import hu.openig.v1.core.ResourceType;
 import hu.openig.v1.core.Talks;
 import hu.openig.v1.core.Tile;
 import hu.openig.v1.core.Walks;
+import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 import hu.openig.v1.model.BuildingType.Resource;
 import hu.openig.v1.model.BuildingType.TileSet;
 import hu.openig.v1.model.BuildingType.Upgrade;

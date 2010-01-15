@@ -9,6 +9,10 @@
 package hu.openig.v1;
 
 import hu.openig.sound.AudioThread;
+import hu.openig.v1.core.Act;
+import hu.openig.v1.core.ConfigButton;
+import hu.openig.v1.core.Configuration;
+import hu.openig.v1.core.LogEntry;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
