@@ -8,6 +8,10 @@
 
 package hu.openig.v1;
 
+import hu.openig.v1.core.Act;
+import hu.openig.v1.core.Configuration;
+import hu.openig.v1.screens.GameWindow;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

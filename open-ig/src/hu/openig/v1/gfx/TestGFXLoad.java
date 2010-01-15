@@ -8,8 +8,8 @@
 
 package hu.openig.v1.gfx;
 
-import hu.openig.v1.Configuration;
-import hu.openig.v1.ResourceLocator;
+import hu.openig.v1.core.Configuration;
+import hu.openig.v1.core.ResourceLocator;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;

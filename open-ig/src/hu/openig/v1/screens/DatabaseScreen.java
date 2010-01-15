@@ -8,7 +8,6 @@
 
 package hu.openig.v1.screens;
 
-import hu.openig.v1.ScreenBase;
 
 import java.awt.Graphics2D;
 

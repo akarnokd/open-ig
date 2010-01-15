@@ -9,7 +9,6 @@
 package hu.openig.v1.core;
 
 import hu.openig.utils.XML;
-import hu.openig.v1.ResourceLocator;
 
 import java.util.HashMap;
 import java.util.Map;

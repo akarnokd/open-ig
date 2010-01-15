@@ -6,8 +6,11 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1;
+package hu.openig.v1.screens;
 
+import hu.openig.v1.core.Configuration;
+import hu.openig.v1.core.Labels;
+import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.gfx.BackgroundGFX;
 import hu.openig.v1.gfx.ColonyGFX;
 import hu.openig.v1.gfx.DatabaseGFX;
@@ -80,6 +83,52 @@ public class CommonResources {
 	/** The empty background of the info panel. */
 	@Img(name = "info/info_empty")
 	public BufferedImage infoEmpty;
+	// --------------------------------------------
+	// The various screen objects
+	// --------------------------------------------
+	/** The record of screens. */
+	public final Screens screens = new Screens();
+	/** The record of screens. */
+	public final class Screens {
+		/** Private constructor. */
+		private Screens() {
+			
+		}
+		/** Main menu. */
+		public MainMenu mainmenu;
+		/** Videos. */
+		public VideoScreen videos;
+		/** Bridge. */
+		public BridgeScreen bridge;
+		/** Starmap. */
+		public StarmapScreen starmap;
+		/** Colony. */
+		public PlanetScreen colony;
+		/** Equipment. */
+		public EquipmentScreen equipment;
+		/** Research and production. */
+		public ResearchProductionScreen researchProduction;
+		/** Information. */
+		public InfoScreen info;
+		/** Diplomacy. */
+		public DiplomacyScreen diplomacy;
+		/** Database. */
+		public DatabaseScreen database;
+		/** Bar. */
+		public BarScreen bar;
+		/** Statistics and achievements. */
+		public AchievementsScreen statisticsAchievements;
+		/** Spacewar. */
+		public SpacewarScreen spacewar;
+		/** Single player. */
+		public SingleplayerScreen singleplayer;
+		/** Load and save. */
+		public LoadSaveScreen loadSave;
+		/** Battle finish screen. */
+		public BattlefinishScreen battleFinish;
+		/** The movie screens. */
+		public MovieScreen movie;
+	}
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.

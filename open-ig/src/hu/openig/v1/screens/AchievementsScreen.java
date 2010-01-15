@@ -8,9 +8,8 @@
 
 package hu.openig.v1.screens;
 
-import hu.openig.v1.Act;
-import hu.openig.v1.ScreenBase;
-import hu.openig.v1.render.Button;
+import hu.openig.v1.core.Act;
+import hu.openig.v1.core.Button;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -26,6 +25,7 @@ import java.util.Random;
 import javax.swing.Timer;
 
 /**
+ * The achievements and statistics listing screen.
  * @author karnokd, 2010.01.11.
  * @version $Revision 1.0$
  */
@@ -50,150 +50,38 @@ public class AchievementsScreen extends ScreenBase {
 			this.description = description;
 		}
 	}
+	/** The statistics entry. */
+	class StatisticsEntry {
+		/** The label of the statistics. */
+		public String label;
+		/** The value of the statistics. */
+		public String value;
+		/**
+		 * Constructor.
+		 * @param label the label
+		 * @param value the value
+		 */
+		public StatisticsEntry(String label, String value) {
+			this.label = label;
+			this.value = value;
+		}
+	}
 	/** The list of achievements. */
 	public final List<AchievementEntry> achievements = new ArrayList<AchievementEntry>();
-	/** The top index used when scrolling. */
-	int topIndex;
-	/** The visible achievement count. */
-	int visibleCount;
+	/** The list of statistics. */
+	public final List<StatisticsEntry> statistics = new ArrayList<StatisticsEntry>();
+	/** The saved statistics index. */
+	int statisticsIndex;
+	/** The saved statistics count. */
+	int statisticsCount;
+	/** The saved achievements index. */
+	int achievementIndex;
+	/** The saved achievements count. */
+	int achievementCount;
 	/** The screen origin. */
 	final Rectangle origin = new Rectangle();
 	/** The listing rectangle. */
 	final Rectangle listRect = new Rectangle();
-	/** A scroll button. */
-	class ImageButton extends Button {
-		/** The selected image. */
-		BufferedImage selectedImage;
-		/** The normal image. */
-		BufferedImage normalImage;
-		/** The pressed image. */
-		BufferedImage pressedImage;
-		/** The action to invoke when pressed. */
-		Act onPress;
-		/** The action to invoke when released. */
-		Act onRelease;
-		/** The action to invoke when leave. */
-		Act onLeave;
-		@Override
-		public int getWidth() {
-			return normalImage.getWidth();
-		}
-		@Override
-		public int getHeight() {
-			return normalImage.getHeight();
-		}
-		/**
-		 * Paint the button.
-		 * @param g2 the graphics target
-		 * @param x0 the reference
-		 * @param y0 the reference
-		 */
-		public void paintTo(Graphics2D g2, int x0, int y0) {
-			if (visible) {
-				if (pressed) {
-					g2.drawImage(pressedImage, x0 + x, y0 + y, null);
-				} else
-				if (mouseOver) {
-					g2.drawImage(selectedImage, x0 + x, y0 + y, null);
-				} else {
-					g2.drawImage(normalImage, x0 + x, y0 + y, null);
-				}
-			}
-		}
-		@Override
-		public void onPressed() {
-			if (onPress != null) {
-				onPress.act();
-			}
-		}
-		@Override
-		public void onReleased() {
-			if (onRelease != null) {
-				onRelease.act();
-			}
-		}
-		@Override
-		public void onEnter() {
-			
-		}
-		@Override
-		public void onLeave() {
-			if (onLeave != null) {
-				onLeave.act();
-			}
-		}
-	}
-	/**
-	 * A clickable option label.
-	 * @author karnok, 2010.01.14.
-	 * @version $Revision 1.0$
-	 */
-	class ClickLabel extends Button {
-		/** The label. */
-		public String label;
-		/** The text size. */
-		public int size;
-		/** The action to invoke on press. */
-		public Act action;
-		/** Is the label selected? */
-		public boolean selected;
-		/**
-		 * Paint the label.
-		 * @param g2 the graphics object
-		 * @param x0 the reference
-		 * @param y0 the reference
-		 */
-		public void paintTo(Graphics2D g2, int x0, int y0) {
-			g2.setColor(Color.BLACK);
-			g2.fillRect(x0 + x, y0 + y, getWidth(), getHeight());
-			int color = selected ? 0xFFFFCC00 : (mouseOver ? 0xFFFFEE00 : 0xFF00CC00);
-			commons.text.paintTo(g2, x0 + x + 5, y0 + y + 2, size, color, commons.labels.get(label));
-		}
-		/**
-		 * @return the text width
-		 */
-		public int getWidth() {
-			return commons.text.getTextWidth(size, commons.labels.get(label)) + 10;
-		}
-		/**
-		 * @return the text height
-		 */
-		public int getHeight() {
-			return size + 4;
-		}
-		/**
-		 * Invoke the action.
-		 */
-		public void onPressed() {
-			if (action != null) {
-				action.act();
-			}
-		}
-		/* (non-Javadoc)
-		 * @see hu.openig.v1.render.Button#onEnter()
-		 */
-		@Override
-		public void onEnter() {
-			// TODO Auto-generated method stub
-			
-		}
-		/* (non-Javadoc)
-		 * @see hu.openig.v1.render.Button#onLeave()
-		 */
-		@Override
-		public void onLeave() {
-			// TODO Auto-generated method stub
-			
-		}
-		/* (non-Javadoc)
-		 * @see hu.openig.v1.render.Button#onReleased()
-		 */
-		@Override
-		public void onReleased() {
-			// TODO Auto-generated method stub
-			
-		}
-	}
 	/** Scroll up button. */
 	ImageButton scrollUpButton;
 	/** Scroll down button. */
@@ -205,34 +93,34 @@ public class AchievementsScreen extends ScreenBase {
 	/** The timer for the continuous scroll up. */
 	Timer scrollUpTimer;
 	/** Bridge button. */
-	private ImageButton bridge;
+	ImageButton bridge;
 	/** Starmap button. */
-	private ImageButton starmap;
+	ImageButton starmap;
 	/** Colony button. */
-	private ImageButton colony;
+	ImageButton colony;
 	/** Equipment button. */
-	private ImageButton equimpent;
+	ImageButton equimpent;
 	/** Production button. */
-	private ImageButton production;
+	ImageButton production;
 	/** Research button. */
-	private ImageButton research;
+	ImageButton research;
 	/** Diplomacy button. */
-	private ImageButton diplomacy;
+	ImageButton diplomacy;
 	/** Information button. */
-	private ImageButton info;
+	ImageButton info;
 	/** Statistics label. */
 	ClickLabel statisticsLabel;
 	/** Achievements label. */
 	ClickLabel achievementLabel;
 	/** The rendering mode. */
-	enum Mode {
+	public enum Mode {
 		/** Statistics screen. */
 		STATISTICS,
 		/** Achievements screen. */
 		ACHIEVEMENTS
 	}
 	/** The current display mode. */
-	Mode mode = Mode.ACHIEVEMENTS;
+	public Mode mode = Mode.STATISTICS;
 	@Override
 	public void doResize() {
 		origin.setBounds(
@@ -242,8 +130,9 @@ public class AchievementsScreen extends ScreenBase {
 			commons.infoEmpty.getHeight()
 		);
 		listRect.setBounds(origin.x + 10, origin.y + 20, origin.width - 50, 350);
-		visibleCount = listRect.height / 50;
-
+		achievementCount = listRect.height / 50;
+		statisticsCount = listRect.height / 20;
+		
 		scrollUpButton.x = listRect.width + 12;
 		scrollUpButton.y = 10 + (listRect.height / 2 - scrollUpButton.normalImage.getHeight()) / 2;
 		
@@ -269,9 +158,11 @@ public class AchievementsScreen extends ScreenBase {
 		diplomacy.y = production.y;
 		diplomacy.visible = false;
 
+		statisticsLabel.commons = commons;
 		statisticsLabel.x = (origin.width / 2 - achievementLabel.getWidth()) / 2;
 		statisticsLabel.y = - achievementLabel.getHeight() / 2;
 		
+		achievementLabel.commons = commons;
 		achievementLabel.x = origin.width / 2 + (origin.width / 2 - statisticsLabel.getWidth()) / 2;
 		achievementLabel.y = - statisticsLabel.getHeight() / 2;
 		
@@ -294,6 +185,7 @@ public class AchievementsScreen extends ScreenBase {
 		
 		buttons.clear();
 		achievements.clear();
+		statistics.clear();
 		
 		scrollDownTimer = new Timer(500, new Act() {
 			@Override
@@ -424,11 +316,12 @@ public class AchievementsScreen extends ScreenBase {
 		achievementLabel = new ClickLabel();
 		achievementLabel.size = 14;
 		achievementLabel.label = "achievements";
-		achievementLabel.action = new Act() {
+		achievementLabel.onPressed = new Act() {
 			@Override
 			public void act() {
 				mode = Mode.ACHIEVEMENTS;
 				adjustLabels();
+				adjustScrollButtons();
 			}
 		};
 		buttons.add(achievementLabel);
@@ -436,17 +329,18 @@ public class AchievementsScreen extends ScreenBase {
 		statisticsLabel = new ClickLabel();
 		statisticsLabel.size = 14;
 		statisticsLabel.label = "statistics";
-		statisticsLabel.action = new Act() {
+		statisticsLabel.onPressed = new Act() {
 			@Override
 			public void act() {
 				mode = Mode.STATISTICS;
 				adjustLabels();
+				adjustScrollButtons();
 			}
 		};
 		buttons.add(statisticsLabel);
 		
 		// FIXME find other ways to populate the achievement list
-		createTestAchievements();
+		createTestEntries();
 	}
 
 	/* (non-Javadoc)
@@ -525,27 +419,55 @@ public class AchievementsScreen extends ScreenBase {
 	}
 	/** Scoll the list up. */
 	void doScrollUp() {
-		int oldIndex = topIndex;
-		topIndex = Math.max(0, topIndex - 1);
-		if (oldIndex != topIndex) {
-			adjustScrollButtons();
+		if (mode == Mode.STATISTICS) {
+			int oldIndex = statisticsIndex;
+			statisticsIndex = Math.max(0, statisticsIndex - 1);
+			if (oldIndex != statisticsIndex) {
+				adjustScrollButtons();
+			}
+		} else
+		if (mode == Mode.ACHIEVEMENTS) {
+			int oldIndex = achievementIndex;
+			achievementIndex = Math.max(0, achievementIndex - 1);
+			if (oldIndex != achievementIndex) {
+				adjustScrollButtons();
+			}
 		}
 	}
 	/** Scroll the list down. */
 	void doScrollDown() {
-		int oldIndex = topIndex;
-		topIndex = Math.min(topIndex + 1, achievements.size() - visibleCount);
-		if (oldIndex != topIndex) {
-			adjustScrollButtons();
+		if (mode == Mode.STATISTICS) {
+			if (statistics.size() > statisticsCount) {
+				int oldIndex = statisticsIndex;
+				statisticsIndex = Math.min(statisticsIndex + 1, statistics.size() - statisticsCount);
+				if (oldIndex != statisticsIndex) {
+					adjustScrollButtons();
+				}
+			}
+		} else
+		if (mode == Mode.ACHIEVEMENTS) {
+			if (achievements.size() > achievementCount) {
+				int oldIndex = achievementIndex;
+				achievementIndex = Math.min(achievementIndex + 1, achievements.size() - achievementCount);
+				if (oldIndex != achievementIndex) {
+					adjustScrollButtons();
+				}
+			}
 		}
 	}
 	/** Adjust the visibility of the scroll buttons. */
 	void adjustScrollButtons() {
-		scrollUpButton.visible = topIndex > 0;
+		if (mode == Mode.STATISTICS) {
+			scrollUpButton.visible = statisticsIndex > 0;
+			scrollDownButton.visible = statisticsIndex < statistics.size() - statisticsCount;
+		} else
+		if (mode == Mode.ACHIEVEMENTS) {
+			scrollUpButton.visible = achievementIndex > 0;
+			scrollDownButton.visible = achievementIndex < achievements.size() - achievementCount;
+		}		
 		if (!scrollUpButton.visible) {
 			scrollUpTimer.stop();
 		}
-		scrollDownButton.visible = topIndex < achievements.size() - visibleCount;
 		if (!scrollDownButton.visible) {
 			scrollDownTimer.stop();
 		}
@@ -590,7 +512,7 @@ public class AchievementsScreen extends ScreenBase {
 		g2.setClip(listRect);
 		if (mode == Mode.ACHIEVEMENTS) {
 			int y = listRect.y;
-			for (int i = topIndex; i < achievements.size() && i < topIndex + visibleCount + 1; i++) {
+			for (int i = achievementIndex; i < achievements.size() && i < achievementIndex + achievementCount; i++) {
 				AchievementEntry ae = achievements.get(i);
 				String desc = commons.labels.get(ae.description);
 				int tw = listRect.width - commons.achievement.getWidth() - 10;
@@ -611,6 +533,18 @@ public class AchievementsScreen extends ScreenBase {
 				}
 				y += 50;
 			}
+		} else
+		if (mode == Mode.STATISTICS) {
+			int y = listRect.y;
+			int h = 10;
+			for (int i = statisticsIndex; i < statistics.size() && i < statisticsIndex + statisticsCount; i++) {
+				StatisticsEntry se = statistics.get(i);
+				commons.text.paintTo(g2, listRect.x, y, h, 0xFF80FF80, commons.labels.get(se.label));
+				int w2 = commons.text.getTextWidth(h, se.value);
+				commons.text.paintTo(g2, listRect.x + listRect.width - w2 - 5, y, h, 0xFF8080FF, se.value);
+				
+				y += 20;
+			}
 		}
 		g2.setClip(sp);
 		
@@ -620,7 +554,7 @@ public class AchievementsScreen extends ScreenBase {
 		
 	}
 	/** Create the test achievements. */
-	void createTestAchievements() {
+	void createTestEntries() {
 		achievements.add(new AchievementEntry("achievement.conqueror", "achievement.conqueror.desc", false));
 		achievements.add(new AchievementEntry("achievement.millionaire", "achievement.millionaire.desc", false));
 		achievements.add(new AchievementEntry("achievement.student_of_bokros", "achievement.student_of_bokros.desc", false));
@@ -661,5 +595,51 @@ public class AchievementsScreen extends ScreenBase {
 		for (AchievementEntry ae : achievements) {
 			ae.enabled = rnd.nextBoolean();
 		}
+		
+		statistics.add(new StatisticsEntry("statistics.total_gametime", "1 23:50.00"));
+		statistics.add(new StatisticsEntry("statistics.total_ingame_time", "50-03-01 12:50.00"));
+		statistics.add(new StatisticsEntry("statistics.money_aquired", "32.000"));
+		statistics.add(new StatisticsEntry("statistics.money_aquired_trade", "0"));
+		statistics.add(new StatisticsEntry("statistics.money_spent", "0 (0%)"));
+		statistics.add(new StatisticsEntry("statistics.money_spent_building", "0 (0%)"));
+		statistics.add(new StatisticsEntry("statistics.money_spent_production", "0 (0%)"));
+		statistics.add(new StatisticsEntry("statistics.money_spent_research", "0 (0%)"));
+		statistics.add(new StatisticsEntry("statistics.equipment_sold_money", "0 (0%)"));
+		statistics.add(new StatisticsEntry("statistics.planet_discovered", "0 (0%)"));
+		statistics.add(new StatisticsEntry("statistics.planet_own", "3 (3%)"));
+		statistics.add(new StatisticsEntry("statistics.planet_colonized", "0 (0%)"));
+		statistics.add(new StatisticsEntry("statistics.races_discovered", "1 (9%)"));
+		statistics.add(new StatisticsEntry("statistics.produced_items", "0"));
+		statistics.add(new StatisticsEntry("statistics.sold_items", "0"));
+		statistics.add(new StatisticsEntry("statistics.research_count", "5 (2%)"));
+		statistics.add(new StatisticsEntry("statistics.research_acquired", "0 (0%)"));
+		statistics.add(new StatisticsEntry("statistics.total_population", "350.000"));
+		statistics.add(new StatisticsEntry("statistics.total_houses", "170.000"));
+		statistics.add(new StatisticsEntry("statistics.total_energy", "121.000"));
+		statistics.add(new StatisticsEntry("statistics.actual_energy", "121.000 (100%)"));
+		statistics.add(new StatisticsEntry("statistics.total_energy_demand", "100.000 (89%)"));
+		statistics.add(new StatisticsEntry("statistics.total_buildings", "62"));
+		statistics.add(new StatisticsEntry("statistics.actual_buildings", "47 (75%)"));
+		statistics.add(new StatisticsEntry("statistics.total_food_production", "85.000"));
+		statistics.add(new StatisticsEntry("statistics.total_hospital", "130.000"));
+		statistics.add(new StatisticsEntry("statistics.total_worker", "45.000"));
+		statistics.add(new StatisticsEntry("statistics.total_police", "150.000"));
+		statistics.add(new StatisticsEntry("statistics.total_fleet", "6"));
+		statistics.add(new StatisticsEntry("statistics.total_own_firepower", "4.025"));
+		statistics.add(new StatisticsEntry("statistics.total_enemy_firepower", "19.200"));
+		statistics.add(new StatisticsEntry("statistics.ships_destroyed", "60"));
+		statistics.add(new StatisticsEntry("statistics.ships_destroyed_value", "125.000"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_acquired", "900.000"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_spent", "420.000"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_population", "1.000.000"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_buildings", "120"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_houses", "1.200.000 (120%)"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_energy", "1.000.000"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_energy_demand", "1.000.000 (100%)"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_worker", "700.000 (70%)"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_food", "1.100.000 (110%)"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_hospital", "1.150.000 (115%)"));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_police", "1.200.000 (120%)"));
+//		statistics.add(new StatisticsEntry("", ""));
 	}
 }

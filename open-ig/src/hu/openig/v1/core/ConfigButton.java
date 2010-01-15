@@ -5,7 +5,7 @@
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
-package hu.openig.v1;
+package hu.openig.v1.core;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

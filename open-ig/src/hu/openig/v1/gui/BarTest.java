@@ -8,10 +8,10 @@
 
 package hu.openig.v1.gui;
 
-import hu.openig.v1.Act;
-import hu.openig.v1.Configuration;
-import hu.openig.v1.Labels;
-import hu.openig.v1.ResourceLocator;
+import hu.openig.v1.core.Act;
+import hu.openig.v1.core.Configuration;
+import hu.openig.v1.core.Labels;
+import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.core.TalkPerson;
 import hu.openig.v1.core.TalkSpeech;
 import hu.openig.v1.core.TalkState;

@@ -8,9 +8,9 @@
 
 package hu.openig.v1.gui;
 
-import hu.openig.v1.Configuration;
-import hu.openig.v1.Labels;
-import hu.openig.v1.ResourceLocator;
+import hu.openig.v1.core.Configuration;
+import hu.openig.v1.core.Labels;
+import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.gfx.DatabaseGFX;
 import hu.openig.v1.model.Player;
 import hu.openig.v1.model.World;

@@ -8,9 +8,9 @@
 package hu.openig.v1.render;
 
 import hu.openig.utils.LRUHashMap;
-import hu.openig.v1.ResourceLocator;
-import hu.openig.v1.ResourceType;
-import hu.openig.v1.ResourceLocator.ResourcePlace;
+import hu.openig.v1.core.ResourceLocator;
+import hu.openig.v1.core.ResourceType;
+import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
