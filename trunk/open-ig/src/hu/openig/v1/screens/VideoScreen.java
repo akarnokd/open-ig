@@ -19,6 +19,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -231,8 +232,9 @@ public class VideoScreen extends ScreenBase {
 	 */
 	@Override
 	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-
+		if (key == KeyEvent.VK_ESCAPE) {
+			commons.control.hideSecondary();
+		}
 	}
 
 	/* (non-Javadoc)
