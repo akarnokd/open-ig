@@ -8,6 +8,8 @@
 
 package hu.openig.v1.screens;
 
+import hu.openig.v1.core.Act;
+
 import java.awt.Rectangle;
 
 
@@ -41,6 +43,12 @@ public interface GameControls {
 	 * @param videos the list of videos to play
 	 */
 	void playVideos(String... videos);
+	/**
+	 * Play the given list of animations then call the given completion handler.
+	 * @param onComplete the completion handler
+	 * @param videos the videos to play
+	 */
+	void playVideos(Act onComplete, String... videos);
 	/** Display the status bar. */
 	void displayStatusbar();
 	/** Hide the statusbar. */

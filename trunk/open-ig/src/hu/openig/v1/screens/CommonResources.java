@@ -12,6 +12,7 @@ import hu.openig.v1.core.Configuration;
 import hu.openig.v1.core.Labels;
 import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.gfx.BackgroundGFX;
+import hu.openig.v1.gfx.Btn2;
 import hu.openig.v1.gfx.ColonyGFX;
 import hu.openig.v1.gfx.DatabaseGFX;
 import hu.openig.v1.gfx.EquipmentGFX;
@@ -85,6 +86,18 @@ public class CommonResources {
 	/** The empty background of the info panel. */
 	@Img(name = "info/info_empty")
 	public BufferedImage infoEmpty;
+	/** Move up arrow. */
+	@Btn2(name = "button_up")
+	public BufferedImage[] moveUp;
+	/** Move down arrow. */
+	@Btn2(name = "button_down")
+	public BufferedImage[] moveDown;
+	/** Move left arrow. */
+	@Btn2(name = "button_left")
+	public BufferedImage[] moveLeft;
+	/** Move right arrow. */
+	@Btn2(name = "button_right")
+	public BufferedImage[] moveRight;
 	// --------------------------------------------
 	// The various screen objects
 	// --------------------------------------------
