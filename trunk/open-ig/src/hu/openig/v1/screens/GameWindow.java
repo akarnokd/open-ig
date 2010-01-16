@@ -17,6 +17,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -123,11 +124,11 @@ public class GameWindow extends JFrame implements GameControls {
 				config.log("ERROR", e.getMessage(), e);
 			}
 		}
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowClosed(WindowEvent e) {
-				uninitScreens();
+			public void windowClosing(WindowEvent e) {
+				exit();
 			}
 		});
 		commons = new CommonResources(config, this);
@@ -159,6 +160,21 @@ public class GameWindow extends JFrame implements GameControls {
 		surface.addMouseWheelListener(ma);
 		addKeyListener(new KeyEvents());
 		initScreens();
+	}
+	/* (non-Javadoc)
+	 * @see hu.openig.v1.screens.GameControls#exit()
+	 */
+	@Override
+	public void exit() {
+		uninitScreens();
+		dispose();
+	}
+	/* (non-Javadoc)
+	 * @see hu.openig.v1.screens.GameControls#setWindowBounds(int, int, int, int)
+	 */
+	@Override
+	public void setWindowBounds(int x, int y, int width, int height) {
+		setBounds(x, y, width, height);
 	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.GameControls#switchLanguage(java.lang.String)
@@ -466,5 +482,13 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		};
 		displayMovie();
+	}
+	@Override
+	public void center() {
+		setLocationRelativeTo(null);
+	}
+	@Override
+	public Rectangle getWindowBounds() {
+		return getBounds();
 	}
 }

@@ -102,8 +102,8 @@ public class VideoScreen extends ScreenBase {
 	 */
 	@Override
 	public void finish() {
-		// TODO Auto-generated method stub
-
+		scrollDownTimer.stop();
+		scrollUpTimer.stop();
 	}
 
 	/* (non-Javadoc)

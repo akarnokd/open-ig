@@ -8,6 +8,8 @@
 
 package hu.openig.v1.screens;
 
+import java.awt.Rectangle;
+
 
 
 /**
@@ -43,4 +45,18 @@ public interface GameControls {
 	void displayStatusbar();
 	/** Hide the statusbar. */
 	void hideStatusbar();
+	/**
+	 * Set the game window bounds to the specified size. 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param width the width
+	 * @param height the height
+	 */
+	void setWindowBounds(int x, int y, int width, int height);
+	/** @return the current window bounds. */
+	Rectangle getWindowBounds();
+	/** Center the game window. */
+	void center();
+	/** Exit the game. */
+	void exit();
 }

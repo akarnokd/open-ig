@@ -13,6 +13,7 @@ import hu.openig.v1.core.Act;
 import hu.openig.v1.core.ConfigButton;
 import hu.openig.v1.core.Configuration;
 import hu.openig.v1.core.LogEntry;
+import hu.openig.v1.screens.GameControls;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -21,6 +22,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -268,6 +270,22 @@ public class Setup extends JFrame {
 	private Configuration config;
 	/** Action listeners for the event of run. */
 	public final Set<Act> onRun = new HashSet<Act>();
+	/** The game window. */
+	protected GameControls gameControls;
+	/** Get the current bounds. */
+	private ConfigButton btnCurrentBounds;
+	/** Move to the center. */
+	private ConfigButton btnCenterBounds;
+	/**
+	 * Constructor. Assign an active game window.
+	 * @param config the configuration
+	 * @param gameControls the game window
+	 */
+	public Setup(Configuration config, GameControls gameControls) {
+		this(config);
+		this.gameControls = gameControls;
+		btnSaveAndRun.setEnabled(false);
+	}
 	/**
 	 * Constructor. Initializes the GUI elements.
 	 * @param config the configuration
@@ -445,7 +463,11 @@ public class Setup extends JFrame {
 	}
 	/** Save the configuration. */
 	protected void doSave() {
+		String currentLanguage = config.language;
 		storeConfig();
+		if (!currentLanguage.equals(config.language) && gameControls != null) {
+			gameControls.switchLanguage(config.language);
+		}
 		config.save();
 	}
 	/**
@@ -613,7 +635,7 @@ public class Setup extends JFrame {
 		gl.linkSize(SwingConstants.HORIZONTAL, btnMoveUp, btnMoveDown, btnRemove);
 	}
 	/**
-	 * 
+	 * Remove selected list entries.
 	 */
 	protected void doRemove() {
 		int[] idxs = fileList.getSelectedIndices();
@@ -880,6 +902,11 @@ public class Setup extends JFrame {
 		edHeight = new AlphaTextField(0.85f, 4);
 		edHeight.setText("480");
 		btnApplyBounds = new ConfigButton("Apply");
+		btnApplyBounds.addActionListener(new Act() { public void act() { doApplyBounds(); } });
+		btnCurrentBounds = new ConfigButton("Get current");
+		btnCurrentBounds.addActionListener(new Act() { public void act() { doCurrentBounds(); } });
+		btnCenterBounds = new ConfigButton("Center");
+		btnCenterBounds.addActionListener(new Act() { public void act() { doCenter(); } });
 		
 		gl.setHorizontalGroup(
 			gl.createSequentialGroup()
@@ -903,7 +930,12 @@ public class Setup extends JFrame {
 				.addComponent(edWidth)
 				.addComponent(edHeight, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			)
-			.addComponent(btnApplyBounds)
+			.addGroup(
+				gl.createParallelGroup()
+				.addComponent(btnApplyBounds)
+				.addComponent(btnCurrentBounds)
+				.addComponent(btnCenterBounds)
+			)
 		);
 		gl.setVerticalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
@@ -924,10 +956,40 @@ public class Setup extends JFrame {
 					.addComponent(edHeight)
 				)
 			)
-			.addComponent(btnApplyBounds)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(btnCurrentBounds)
+				.addComponent(btnApplyBounds)
+				.addComponent(btnCenterBounds)
+			)
 		);
 		gl.linkSize(SwingConstants.HORIZONTAL, edLeft, edTop, edWidth, edHeight);
-		
+		gl.linkSize(SwingConstants.HORIZONTAL, btnCurrentBounds, btnApplyBounds, btnCenterBounds);
+	}
+	/** Get the current bounds. */
+	void doCurrentBounds() {
+		if (gameControls != null) {
+			Rectangle rect = gameControls.getWindowBounds();
+			edLeft.setText(Integer.toString(rect.x));
+			edTop.setText(Integer.toString(rect.y));
+			edWidth.setText(Integer.toString(rect.width));
+			edHeight.setText(Integer.toString(rect.height));
+		}
+	}
+	/** Center the window. */
+	void doCenter() {
+		if (gameControls != null) {
+			gameControls.center();
+		}		
+	}
+	/**
+	 * Apply the size settings from the input boxes.
+	 */
+	void doApplyBounds() {
+		if (gameControls != null) {
+			gameControls.setWindowBounds(Integer.parseInt(edLeft.getText()), Integer.parseInt(edTop.getText()), 
+					Integer.parseInt(edWidth.getText()), Integer.parseInt(edHeight.getText()));
+		}
 	}
 	/**
 	 * Create language panel.
@@ -1655,6 +1717,9 @@ public class Setup extends JFrame {
 		btnApplyPlayer.setText("Alkalmaz");
 		btnApplyPlanet.setText("Alkalmaz");
 		
+		btnCenterBounds.setText("Középre");
+		btnCurrentBounds.setText("Jelenlegi pozíció");
+		
 		logModel.columnNames = new String[] { "Idõbélyeg", "Fontosság", "Üzenet", "Hibahely" };
 		refreshLogTableColumns();		
 	}
@@ -1721,6 +1786,9 @@ public class Setup extends JFrame {
 		btnSetVisual.setText("Show Player");
 		btnApplyPlayer.setText("Apply changes");
 		btnApplyPlanet.setText("Apply changes");
+
+		btnCenterBounds.setText("Center");
+		btnCurrentBounds.setText("Current position");
 		
 		logModel.columnNames = new String[] { "Timestamp", "Severity", "Message", "Stacktrace" };
 		refreshLogTableColumns();
