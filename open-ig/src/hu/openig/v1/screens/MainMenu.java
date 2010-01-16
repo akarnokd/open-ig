@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Constructor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -129,15 +130,36 @@ public class MainMenu extends ScreenBase {
 	public void initialize() {
 		clicklabels = new LinkedList<ClickLabel>();
 		
-		clicklabels.add(new ClickLabel(120, 120, 400, 20, "mainmenu.singleplayer"));
+		ClickLabel single = new ClickLabel(120, 120, 400, 20, "mainmenu.singleplayer");
+		single.action = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(commons.screens.singleplayer);
+			}
+		};
+		clicklabels.add(single);
 
 		clicklabels.add(new ClickLabel(120, 155, 400, 14, "mainmenu.continue"));
-		clicklabels.add(new ClickLabel(120, 180, 400, 14, "mainmenu.load"));
+		ClickLabel load = new ClickLabel(120, 180, 400, 14, "mainmenu.load");
+		load.action = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(commons.screens.loadSave);
+			}
+		};
+		clicklabels.add(load);
 		
 		ClickLabel multiplayer = new ClickLabel(120, 215, 400, 20 , "mainmenu.multiplayer");
 		multiplayer.disabled = true;
 		clicklabels.add(multiplayer);
-		clicklabels.add(new ClickLabel(120, 250, 400, 20, "mainmenu.settings"));
+		ClickLabel settings = new ClickLabel(120, 250, 400, 20, "mainmenu.settings");
+		settings.action = new Act() {
+			@Override
+			public void act() {
+				doSettings();
+			}
+		};
+		clicklabels.add(settings);
 		ClickLabel videosLabel = new ClickLabel(120, 285, 400, 20, "mainmenu.videos");
 		videosLabel.action = new Act() {
 			@Override
@@ -164,7 +186,9 @@ public class MainMenu extends ScreenBase {
 		};
 		clicklabels.add(titleLabel);
 		
-		clicklabels.add(new ClickLabel(120, 380, 400, 20, "mainmenu.exit"));
+		ClickLabel exit = new ClickLabel(120, 380, 400, 20, "mainmenu.exit");
+		exit.action = new Act() { public void act() { doExit(); } };
+		clicklabels.add(exit);
 		
 		// Language switcher on the main menu, for convenience
 		final ClickLabel toEng = new ClickLabel(550, 400, 20, 14, "EN");
@@ -195,6 +219,10 @@ public class MainMenu extends ScreenBase {
 		
 		clicklabels.add(toEng);
 		clicklabels.add(toHu);
+	}
+	/** Perform the exit. */
+	void doExit() {
+		commons.control.exit();
 	}
 	/**
 	 * Play the intro videos.
@@ -344,5 +372,16 @@ public class MainMenu extends ScreenBase {
 			cl.paintTo(g2, xOrigin, yOrigin);
 		}
 	}
-
+	/** Display the settings video. */
+	void doSettings() {
+		// do a small reflection trick to avoid circular dependency
+		try {
+			Class<?> clazz = Class.forName("hu.openig.v1.Setup");
+			Constructor<?> c = clazz.getConstructor(Configuration.class, GameControls.class);
+			Object instance = c.newInstance(commons.config, commons.control);
+			clazz.getMethod("setVisible", Boolean.TYPE).invoke(instance, true);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }
