@@ -28,6 +28,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,22 +192,19 @@ public class GameWindow extends JFrame implements GameControls {
 	protected void initScreens() {
 		screens = new ArrayList<ScreenBase>();
 		
-		commons.screens.mainmenu = new MainMenu();
-		screens.add(commons.screens.mainmenu);
+		try {
+			for (Field f : commons.screens.getClass().getFields()) {
+				if (ScreenBase.class.isAssignableFrom(f.getType())) {
+					ScreenBase sb = ScreenBase.class.cast(f.getType().newInstance());
+					f.set(commons.screens, sb);
+					screens.add(sb);
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		
-		commons.screens.spacewar = new SpacewarScreen();
-		screens.add(commons.screens.spacewar);
-
-		commons.screens.movie = new MovieScreen();
 		movie = commons.screens.movie;
-		screens.add(commons.screens.movie);
-		
-		commons.screens.statisticsAchievements = new AchievementsScreen();
-		screens.add(commons.screens.statisticsAchievements);
-		
-		commons.screens.videos = new VideoScreen();
-		screens.add(commons.screens.videos);
-		
 		for (ScreenBase sb : screens) {
 			sb.initialize(commons, surface);
 		}
@@ -359,18 +357,19 @@ public class GameWindow extends JFrame implements GameControls {
 	class KeyEvents extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-//			System.out.println("Press " + e.getKeyCode());
+			ScreenBase pri = primary;
+			ScreenBase sec = secondary;
 			if (movieVisible) {
 				movie.keyTyped(e.getKeyCode(), e.getModifiersEx());
 				movie.handleRepaint();
 			} else
-			if (secondary != null) {
-				secondary.keyTyped(e.getKeyCode(), e.getModifiersEx());
-				secondary.handleRepaint();
+			if (sec != null) {
+				sec.keyTyped(e.getKeyCode(), e.getModifiersEx());
+				sec.handleRepaint();
 			} else
-			if (primary != null) {
-				primary.keyTyped(e.getKeyCode(), e.getModifiersEx());
-				primary.handleRepaint();
+			if (pri != null) {
+				pri.keyTyped(e.getKeyCode(), e.getModifiersEx());
+				pri.handleRepaint();
 			}
 		}
 	}
