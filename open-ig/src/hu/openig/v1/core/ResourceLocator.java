@@ -397,6 +397,31 @@ public class ResourceLocator {
 		return result;
 	}
 	/**
+	 * Lists the directories below a given path. Use an ending slash for non-root directories.
+	 * @param language the language
+	 * @param path the path
+	 * @return the list of directory names
+	 */
+	public List<String> listDirectories(String language, String path) {
+		Set<String> result = new HashSet<String>();
+		for (Map<String, Map<String, ResourcePlace>> e : resourceMap.values()) {
+			for (String s : new String[] { language, "generic" }) {
+				Map<String, ResourcePlace> e1 = e.get(s);
+				if (e1 != null) {
+					for (Map.Entry<String, ResourcePlace> e2 : e1.entrySet()) {
+						if (e2.getKey().startsWith(path)) {
+							int idx = e2.getKey().indexOf('/', path.length());
+							if (idx > 0) {
+								result.add(e2.getKey().substring(path.length(), idx));
+							}
+						}
+					}
+				}
+			}
+		}
+		return new ArrayList<String>(result);
+	}
+	/**
 	 * Get the given XML resource.
 	 * @param language the language.
 	 * @param resourceName the resource name omitting any leading slash.

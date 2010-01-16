@@ -234,6 +234,14 @@
 	<entry key='videos.play'>Lejátszás</entry>
 	<entry key='videos.back'>Vissza</entry>
 	<entry key='videos.all_videos'>Minden videó</entry>
+	<entry key='singleplayer.start_game'>Játék Indítása</entry>
+	<entry key='singleplayer.back'>Vissza</entry>
+	<entry key='singleplayer.difficulty'>Nehézség</entry>
+	<entry key='difficulty.easy'>Könnyű</entry>
+	<entry key='difficulty.normal'>Normál</entry>
+	<entry key='difficulty.hard'>Nehéz</entry>
+	<entry key='singleplayer.campaigns'>Hadjáratok</entry>
+	<entry key='singleplayer.description'>Leírás</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

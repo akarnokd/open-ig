@@ -12,6 +12,9 @@ import hu.openig.v1.core.Act;
 import hu.openig.v1.core.Button;
 
 import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 
 /**
@@ -34,6 +37,8 @@ public class ImageButton extends Button {
 	public Act onLeave;
 	/** The action to invoke when enter. */
 	public Act onEnter;
+	/** The common resources. */
+	public CommonResources commons;
 	@Override
 	public int getWidth() {
 		return normalImage.getWidth();
@@ -50,6 +55,14 @@ public class ImageButton extends Button {
 	 */
 	public void paintTo(Graphics2D g2, int x0, int y0) {
 		if (visible) {
+			if (!enabled) {
+				g2.drawImage(normalImage, x0 + x, y0 + y, null);
+				TexturePaint tp = new TexturePaint(commons.disabledPattern, new Rectangle(x0 + x, y0 + y, 3, 3));
+				Paint sp = g2.getPaint();
+				g2.setPaint(tp);
+				g2.fillRect(x0 + x, y0 + y, normalImage.getWidth(), normalImage.getHeight());
+				g2.setPaint(sp);
+			} else
 			if (pressed) {
 				g2.drawImage(pressedImage, x0 + x, y0 + y, null);
 			} else

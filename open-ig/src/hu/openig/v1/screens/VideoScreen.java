@@ -233,6 +233,8 @@ public class VideoScreen extends ScreenBase {
 	@Override
 	public void keyTyped(int key, int modifiers) {
 		if (key == KeyEvent.VK_ESCAPE) {
+			playLabel.selected = false;
+			backLabel.selected = false;
 			commons.control.hideSecondary();
 		}
 	}

@@ -470,7 +470,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @see hu.openig.v1.GameControls#playVideos(java.lang.String[])
 	 */
 	@Override
-	public void playVideos(String... videos) {
+	public void playVideos(final Act onComplete, String... videos) {
 		for (String s : videos) {
 			movie.mediaQueue.add(s);
 		}
@@ -478,9 +478,19 @@ public class GameWindow extends JFrame implements GameControls {
 			@Override
 			public void act() {
 				hideMovie();
+				if (onComplete != null) {
+					onComplete.act();
+				}
 			}
 		};
 		displayMovie();
+	}
+	/* (non-Javadoc)
+	 * @see hu.openig.v1.screens.GameControls#playVideos(java.lang.String[])
+	 */
+	@Override
+	public void playVideos(String... videos) {
+		playVideos(null, videos);
 	}
 	@Override
 	public void center() {
