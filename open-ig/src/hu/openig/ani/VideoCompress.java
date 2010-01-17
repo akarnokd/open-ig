@@ -248,8 +248,24 @@ public final class VideoCompress {
 	 * @throws Exception on error
 	 */
 	public static void main(String[] args) throws Exception {
-		final String filename = "c:/games/ig/atvezeto/ATVEZ016.ANI";
-		final String outFile = "c:/games/loose_level_3.ani";
+		transcode("c:/games/ig/anim/1_HID.ANI", "c:/games/1_hid.ani");
+		transcode("c:/games/ig/anim/2_HID.ANI", "c:/games/2_hid.ani");
+		transcode("c:/games/ig/anim/3_HID.ANI", "c:/games/3_hid.ani");
+		transcode("c:/games/ig/anim/1_HID0.ANI", "c:/games/1_hid0.ani");
+		transcode("c:/games/ig/anim/2_HID0.ANI", "c:/games/2_hid0.ani");
+		transcode("c:/games/ig/anim/3_HID0.ANI", "c:/games/3_hid0.ani");
+		transcode("c:/games/ig/anim/1_HIDF.ANI", "c:/games/1_hidf.ani");
+		transcode("c:/games/ig/anim/2_HIDF.ANI", "c:/games/2_hidf.ani");
+		transcode("c:/games/ig/anim/3_HIDF.ANI", "c:/games/3_hidf.ani");
+	}
+	/**
+	 * Transcodes the given original ANI into the new video format.
+	 * @param filename the input ANI
+	 * @param outFile the output new ANI
+	 * @throws IOException on error
+	 */
+	private static void transcode(final String filename, final String outFile)
+			throws IOException {
 		SpidyAniDecoder.decodeLoop(new SpidyAniCallback() {
 			RandomAccessFile raf;
 			byte[] buffer;

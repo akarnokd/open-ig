@@ -23,6 +23,7 @@ import hu.openig.v1.gfx.ResearchGFX;
 import hu.openig.v1.gfx.SpacewarGFX;
 import hu.openig.v1.gfx.StarmapGFX;
 import hu.openig.v1.gfx.StatusbarGFX;
+import hu.openig.v1.model.World;
 import hu.openig.v1.render.TextRenderer;
 
 import java.awt.AlphaComposite;
@@ -146,6 +147,8 @@ public class CommonResources {
 	}
 	/** The game window. */
 	public JFrame window;
+	/** The game world. */
+	public World world;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.

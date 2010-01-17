@@ -10,6 +10,7 @@ package hu.openig.v1.screens;
 
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 /**
  * @author karnokd, 2010.01.11.
@@ -88,14 +89,11 @@ public class BridgeScreen extends ScreenBase {
 		// TODO Auto-generated method stub
 
 	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
+	/** The level specific background. */
+	BufferedImage background;
 	@Override
 	public void onEnter() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	/* (non-Javadoc)
