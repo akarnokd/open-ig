@@ -9,6 +9,7 @@
 package hu.openig.v1.model;
 
 import hu.openig.utils.XML;
+import hu.openig.v1.core.Difficulty;
 import hu.openig.v1.core.PlanetType;
 import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.core.ResourceType;
@@ -67,6 +68,10 @@ public class World {
 	public Talks talks;
 	/** The ship-walk definitions. */
 	public Walks walks;
+	/** The game definition. */
+	public GameDefinition definition;
+	/** The difficulty of the game. */
+	public Difficulty difficulty;
 	/**
 	 * Load the game world's resources.
 	 * @param rl the resource locator
@@ -74,7 +79,7 @@ public class World {
 	 * @param game the game directory
 	 */
 	public void load(ResourceLocator rl, String language, String game) {
-		Element def = rl.getXML(language, game + "/def");
+		level = definition.startingLevel;
 		Element galaxy = rl.getXML(language, game + "/galaxy");
 		processGalaxy(galaxy, rl, language);
 		Element races = rl.getXML(language, game + "/races");

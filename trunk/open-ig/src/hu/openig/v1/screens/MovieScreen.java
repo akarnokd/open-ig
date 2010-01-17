@@ -25,7 +25,6 @@ import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -34,9 +33,7 @@ import java.util.Queue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.zip.GZIPInputStream;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -57,7 +54,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	/** The center region for the movie frames. */
 	Rectangle movieRect = new Rectangle();
 	/** The video thread. */
-	Thread videoThread;
+	volatile VideoRenderer videoThread;
 	/** The audio playback thread. */
 	Thread audioThread;
 	/** The audio playback channel. */
@@ -148,7 +145,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 								double maxLinear = Math.pow(10, fc.getMaximum() / 20);
 								fc.setValue((float)(20 * Math.log10(minLinear + audioVolume * (maxLinear - minLinear) / 100)));
 							}
-							audioLen = buffer.length;
+							videoThread.setAudioLength(buffer.length);
 							try {
 								barrier.await();
 							} catch (InterruptedException ex) {
@@ -184,97 +181,14 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 				}
 			}
 		}, "Movie Audio");
-		videoThread = new Thread(new Runnable() {
+		videoThread = new VideoRenderer(barrier, continuation, this, video, "Movie Video") {
 			@Override
-			public void run() {
-				try {
-					DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
-					try {
-						int w = Integer.reverseBytes(in.readInt());
-						int h = Integer.reverseBytes(in.readInt());
-						final int frames = Integer.reverseBytes(in.readInt());
-						double fps = Integer.reverseBytes(in.readInt()) / 1000.0;
-						
-						init(w, h);
-						
-						int[] palette = new int[256];
-						byte[] bytebuffer = new byte[w * h];
-						int[] currentImage = new int[w * h];
-						int frameCount = 0;
-						long starttime = 0;
-						int frames2 = frames;
-						while (!stop) {
-							int c = in.read();
-							if (c < 0 || c == 'X') {
-								break;
-							} else
-							if (c == 'P') {
-								int len = in.read();
-								for (int j = 0; j < len; j++) {
-									int r = in.read() & 0xFF;
-									int g = in.read() & 0xFF;
-									int b = in.read() & 0xFF;
-									palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
-								}
-							} else
-							if (c == 'I') {
-								in.readFully(bytebuffer);
-								for (int i = 0; i < bytebuffer.length; i++) {
-									int c0 = palette[bytebuffer[i] & 0xFF];
-									if (c0 != 0) {
-										currentImage[i] = c0;
-									}
-								}
-								if (frameCount == 0) {
-									try {
-										barrier.await();
-									} catch (InterruptedException ex) {
-										
-									} catch (BrokenBarrierException ex) {
-										
-									}
-									frames2 = (int)Math.ceil(audioLen * fps / 22050.0);
-									starttime = System.nanoTime();
-								}
-								getBackbuffer().setRGB(0, 0, w, h, currentImage, 0, w);
-								swap();
-								setPosition(fps, frameCount);
-								// wait the frame/sec
-								starttime += (1000000000.0 / fps);
-				       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
-				       			frameCount++;
-							}
-						}
-						// continue to emit reposition events
-						if (frames2 > frames && !stop) {
-							for (int i = frames; i < frames2 && !stop; i++) {
-								setPosition(fps, i);
-								// wait the frame/sec
-								starttime += (1000000000.0 / fps);
-				       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
-							}
-						}
-					} finally {
-						try { in.close(); } catch (IOException ex) {  }
-					}
-				} catch (IOException ex) {
-					// TODO log
-					ex.printStackTrace();
-				} finally {
-					try {
-						continuation.await();
-					} catch (InterruptedException ex) {
-						
-					} catch (BrokenBarrierException ex) {
-						
-					}
-				}
+			public void onFrame(double fps, int frameIndex) {
+				setPosition(fps, frameIndex);
 			}
-		}, "Movie Video");
+		};
+		
 		Thread continueThread = new Thread(new Runnable() {
-			/* (non-Javadoc)
-			 * @see java.lang.Runnable#run()
-			 */
 			@Override
 			public void run() {
 				try {
@@ -369,6 +283,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		if (sdl != null) {
 			sdl.stop();
 		}
+		videoThread.stopPlayback();
 //		frontBuffer = null;
 		label = null;
 		repaint();

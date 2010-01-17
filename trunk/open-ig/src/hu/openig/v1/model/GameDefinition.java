@@ -28,4 +28,6 @@ public class GameDefinition {
 	public String description;
 	/** The game name. */
 	public String name;
+	/** The starting level of the game. */
+	public int startingLevel;
 }

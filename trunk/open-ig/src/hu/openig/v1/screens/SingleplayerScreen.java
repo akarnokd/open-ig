@@ -13,6 +13,7 @@ import hu.openig.v1.core.Act;
 import hu.openig.v1.core.Button;
 import hu.openig.v1.core.Difficulty;
 import hu.openig.v1.model.GameDefinition;
+import hu.openig.v1.model.World;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -176,6 +177,10 @@ public class SingleplayerScreen extends ScreenBase {
 	/** Start the selected game. */
 	void doStartGame() {
 		if (selectedDefinition != null) {
+			commons.world = new World();
+			commons.world.definition = selectedDefinition;
+			commons.world.difficulty = Difficulty.values()[difficulty];
+			commons.world.load(commons.rl, commons.config.language, selectedDefinition.name);
 			commons.control.playVideos(new Act() {
 				@Override
 				public void act() {
@@ -390,6 +395,7 @@ public class SingleplayerScreen extends ScreenBase {
 		}
 		result.intro = XML.childValue(root, "intro");
 		result.image = commons.rl.getImage(commons.config.language, XML.childValue(root, "image"));
+		result.startingLevel = Integer.parseInt(XML.childValue(root, "level"));
 		return result;
 	}
 
