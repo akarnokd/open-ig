@@ -182,7 +182,7 @@ public class SingleplayerScreen extends ScreenBase {
 	void doStartGame() {
 		if (selectedDefinition != null) {
 			// display the loading screen.
-			commons.control.displayPrimary(commons.screens.loading);
+			commons.control.displaySecondary(commons.screens.loading);
 			final Semaphore barrier = new Semaphore(-1);
 			// the completion waiter thread
 			Thread t0 = new Thread("Start Game Video Waiter") {

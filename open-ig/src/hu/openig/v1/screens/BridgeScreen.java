@@ -9,10 +9,24 @@
 package hu.openig.v1.screens;
 
 
+import hu.openig.core.SwappableRenderer;
+import hu.openig.v1.core.Act;
+import hu.openig.v1.model.WalkPosition;
+import hu.openig.v1.model.WalkTransition;
+import hu.openig.v1.render.TextRenderer;
+
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author karnokd, 2010.01.11.
@@ -21,20 +35,300 @@ import java.awt.image.BufferedImage;
 public class BridgeScreen extends ScreenBase {
 	/** The screen origins. */
 	final Rectangle origin = new Rectangle();
+	/** The message panel open rectangle. */
+	final Rectangle messageOpenRect = new Rectangle();
+	/** The message list rectangle. */
+	final Rectangle messageListRect = new Rectangle();
+	/** The projector rectangle. */
+	final Rectangle projectorRect = new Rectangle();
+	/** The video rectangle. */
+	final Rectangle videoRect = new Rectangle();
+	/** The message rectangle. */
+	final Rectangle messageRect = new Rectangle();
+	/** The poligin to click on to close the projector. */
+	Polygon closeProjector;
+	/** The poligon to click on to close the message panel. */
+	Polygon closeMessage;
 	@Override
 	public void doResize() {
 		origin.setBounds((parent.getWidth() - 640) / 2, 20 + (parent.getHeight() - 38 - 442) / 2, 640, 442);
-	}
+		messageOpenRect.setBounds(origin.x + 572, origin.y + 292, 68, 170);
+		projectorRect.setBounds(origin.x + (origin.width - 524) / 2 - 4, origin.y, 524, 258);
+		videoRect.setBounds(projectorRect.x + 99, projectorRect.y + 11, 320, 240);
+		messageRect.setBounds(origin.x + origin.width - 298, origin.y + origin.height - 182, 298, 182);
 
+		
+		
+		closeProjector = new Polygon(
+			new int[] { 
+					origin.x, projectorRect.x, 
+					projectorRect.x, projectorRect.x + projectorRect.width, 
+					projectorRect.x + projectorRect.width, origin.x + origin.width - 1, 
+					origin.x + origin.width - 1, messageRect.x, 
+					messageRect.x, origin.x
+				},
+			new int[] { 
+					origin.y, origin.y, 
+					projectorRect.y + projectorRect.height, projectorRect.y + projectorRect.height, 
+					origin.y, origin.y, 
+					messageRect.y, messageRect.y, 
+					origin.y + origin.height - 1, origin.y + origin.height - 1
+					
+				},
+			10
+		);
+		closeMessage = new Polygon(
+			new int[] {
+				origin.x, origin.x + origin.width - 1, origin.x + origin.width - 1, messageRect.x,
+				messageRect.x, origin.x
+			},
+			new int[] {
+				origin.y, origin.y, messageRect.y, messageRect.y, origin.y + origin.height - 1, 
+				origin.y + origin.height - 1
+			},
+			6
+		);
+	}
+	/** The message front buffer. */
+	BufferedImage messageFront;
+	/** The message back buffer. */
+	BufferedImage messageBack;
+	/** The message lock. */
+	final Lock messageLock = new ReentrantLock();
+	/** The projector front buffer. */
+	BufferedImage projectorFront;
+	/** The projector back buffer. */
+	BufferedImage projectorBack;
+	/** The projector lock. */
+	final Lock projectorLock = new ReentrantLock();
+	/** The video front buffer. */
+	BufferedImage videoFront;
+	/** The video back buffer. */
+	BufferedImage videoBack;
+	/** The video lock. */
+	final Lock videoLock = new ReentrantLock();
+	/** The video subtitle. */
+	String videoSubtitle;
+	/** The message panel video animator. */
+	volatile MediaPlayer messageAnim;
+	/** The projector animator. */
+	volatile MediaPlayer projectorAnim;
+	/** The video animator. */
+	volatile MediaPlayer videoAnim;
+	/** Is the message panel open? */
+	boolean messageOpen;
+	/** Is the projector open? */
+	boolean projectorOpen;
+	/** The opening/closing animation is in progress. */
+	boolean openCloseAnimating;
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
 	@Override
 	public void finish() {
-		// TODO Auto-generated method stub
-
+		if (messageAnim != null) {
+			messageAnim.terminate();
+		}
+		if (projectorAnim != null) {
+			projectorAnim.terminate();
+		}
+		if (videoAnim != null) {
+			videoAnim.terminate();
+		}
 	}
-
+	/**
+	 * Play the video for the. 
+	 */
+	void playMessageAppear() {
+		openCloseAnimating = true;
+		messageAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().messageAppear, new SwappableRenderer() {
+			@Override
+			public BufferedImage getBackbuffer() {
+				return messageBack;
+			}
+			@Override
+			public void init(int width, int height) {
+				messageFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				messageFront.setAccelerationPriority(0);
+				messageBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				messageBack.setAccelerationPriority(0);
+			}
+			@Override
+			public void swap() {
+				messageLock.lock();
+				try {
+					BufferedImage temp = messageFront;
+					messageFront = messageBack;
+					messageBack = temp;
+				} finally {
+					messageLock.unlock();
+					repaint();
+				}
+			}
+		});
+		messageAnim.onComplete = new Act() {
+			@Override
+			public void act() {
+				openCloseAnimating = false;
+				repaint();
+			}
+		};
+		messageAnim.start();
+	}
+	/**
+	 * Play message panel opening.
+	 */
+	void playMessageOpen() {
+		openCloseAnimating = true;
+		messageAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().messageOpen, new SwappableRenderer() {
+			@Override
+			public BufferedImage getBackbuffer() {
+				return messageBack;
+			}
+			@Override
+			public void init(int width, int height) {
+				messageFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				messageFront.setAccelerationPriority(0);
+				messageBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				messageBack.setAccelerationPriority(0);
+			}
+			@Override
+			public void swap() {
+				messageLock.lock();
+				try {
+					BufferedImage temp = messageFront;
+					messageFront = messageBack;
+					messageBack = temp;
+				} finally {
+					messageLock.unlock();
+					repaint();
+				}
+			}
+		});
+		messageAnim.onComplete = new Act() {
+			@Override
+			public void act() {
+				messageOpen = true;
+				openCloseAnimating = false;
+				repaint();
+			}
+		};
+		messageAnim.start();
+	}
+	/** Play message panel closing. */
+	void playMessageClose() {
+		openCloseAnimating = true;
+		messageAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().messageClose, new SwappableRenderer() {
+			@Override
+			public BufferedImage getBackbuffer() {
+				return messageBack;
+			}
+			@Override
+			public void init(int width, int height) {
+				messageFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				messageFront.setAccelerationPriority(0);
+				messageBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				messageBack.setAccelerationPriority(0);
+			}
+			@Override
+			public void swap() {
+				messageLock.lock();
+				try {
+					BufferedImage temp = messageFront;
+					messageFront = messageBack;
+					messageBack = temp;
+				} finally {
+					messageLock.unlock();
+					repaint();
+				}
+			}
+		});
+		messageAnim.onComplete = new Act() {
+			@Override
+			public void act() {
+				messageOpen = false;
+				openCloseAnimating = false;
+				repaint();
+			}
+		};
+		messageAnim.start();
+	}
+	/** Play message panel closing. */
+	void playProjectorOpen() {
+		openCloseAnimating = true;
+		projectorAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().projectorOpen, new SwappableRenderer() {
+			@Override
+			public BufferedImage getBackbuffer() {
+				return projectorBack;
+			}
+			@Override
+			public void init(int width, int height) {
+				projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				projectorFront.setAccelerationPriority(0);
+				projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				projectorBack.setAccelerationPriority(0);
+			}
+			@Override
+			public void swap() {
+				projectorLock.lock();
+				try {
+					BufferedImage temp = projectorFront;
+					projectorFront = projectorBack;
+					projectorBack = temp;
+				} finally {
+					projectorLock.unlock();
+					repaint();
+				}
+			}
+		});
+		projectorAnim.onComplete = new Act() {
+			@Override
+			public void act() {
+				projectorOpen = true;
+				openCloseAnimating = false;
+				repaint();
+			}
+		};
+		projectorAnim.start();
+	}
+	/** Play message panel closing. */
+	void playProjectorClose() {
+		openCloseAnimating = true;
+		projectorAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().projectorClose, new SwappableRenderer() {
+			@Override
+			public BufferedImage getBackbuffer() {
+				return projectorBack;
+			}
+			@Override
+			public void init(int width, int height) {
+				projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				projectorFront.setAccelerationPriority(0);
+				projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				projectorBack.setAccelerationPriority(0);
+			}
+			@Override
+			public void swap() {
+				projectorLock.lock();
+				try {
+					BufferedImage temp = projectorFront;
+					projectorFront = projectorBack;
+					projectorBack = temp;
+				} finally {
+					projectorLock.unlock();
+					repaint();
+				}
+			}
+		});
+		projectorAnim.onComplete = new Act() {
+			@Override
+			public void act() {
+				projectorOpen = false;
+				openCloseAnimating = false;
+				repaint();
+			}
+		};
+		projectorAnim.start();
+	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
@@ -68,7 +362,6 @@ public class BridgeScreen extends ScreenBase {
 	@Override
 	public void mousePressed(int button, int x, int y, int modifiers) {
 		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
@@ -77,7 +370,24 @@ public class BridgeScreen extends ScreenBase {
 	@Override
 	public void mouseReleased(int button, int x, int y, int modifiers) {
 		// TODO Auto-generated method stub
-
+		if (button == 1) {
+			if (!openCloseAnimating) {
+				if (messageOpen) {
+					playMessageClose();
+				} else {
+					playMessageOpen();
+				}
+			}
+		} else
+		if (button == 3) {
+			if (!openCloseAnimating) {
+				if (projectorOpen) {
+					playProjectorClose();
+				} else {
+					playProjectorOpen();
+				}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -94,6 +404,7 @@ public class BridgeScreen extends ScreenBase {
 	public void onEnter() {
 		background = commons.world.bridge.levels.get(commons.world.level).image;
 		onResize();
+		playMessageAppear();
 	}
 
 	/* (non-Javadoc)
@@ -101,8 +412,15 @@ public class BridgeScreen extends ScreenBase {
 	 */
 	@Override
 	public void onLeave() {
-		// TODO Auto-generated method stub
-
+		if (messageAnim != null) {
+			messageAnim.stop();
+		}
+		if (projectorAnim != null) {
+			projectorAnim.stop();
+		}
+		if (videoAnim != null) {
+			videoAnim.stop();
+		}
 	}
 	@Override
 	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
@@ -119,6 +437,79 @@ public class BridgeScreen extends ScreenBase {
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 		
 		g2.drawImage(background, origin.x, origin.y, null);
+		
+		
+		messageLock.lock();
+		try {
+			if (messageFront != null) {
+				g2.drawImage(messageFront, messageRect.x, messageRect.y, null);
+			}
+		} finally {
+			messageLock.unlock();
+		}
+		
+		projectorLock.lock();
+		try {
+			if (projectorFront != null) {
+				g2.drawImage(projectorFront, projectorRect.x, projectorRect.y, null);
+			}
+		} finally {
+			projectorLock.unlock();
+		}
+
+		videoLock.lock();
+		try {
+			if (videoFront != null) {
+				g2.drawImage(projectorFront, videoRect.x, videoRect.y, videoRect.width, videoRect.height, null);
+				if (videoSubtitle != null) {
+					paintLabel(g2, origin.x, videoRect.y + videoRect.height, origin.width);
+				}
+			}
+		} finally {
+			videoLock.unlock();
+		}
+		Composite cp = g2.getComposite();
+		g2.setComposite(AlphaComposite.SrcOver.derive(0.6f));
+		g2.setColor(Color.WHITE);
+		if (projectorOpen) {
+			g2.fillPolygon(closeProjector);
+		} else
+		if (messageOpen) {
+			g2.fillPolygon(closeMessage);
+		} else {
+			WalkPosition wp = commons.world.getCurrentLevel().walk;
+			AffineTransform tf = g2.getTransform();
+			g2.translate(origin.x, origin.y);
+			
+			for (WalkTransition tr : wp.transitions) {
+				g2.fillPolygon(tr.area);
+			}
+			
+			g2.setTransform(tf);
+		}
+		g2.setComposite(cp);
+	}
+	/**
+	 * Paint a word-wrapped label.
+	 * @param g2 the graphics context.
+	 * @param x0 the X coordinate
+	 * @param y0 the Y coordinate
+	 * @param width the draw width
+	 */
+	public void paintLabel(Graphics2D g2, int x0, int y0, int width) {
+		List<String> lines = new ArrayList<String>();
+		int maxWidth = commons.text.wrapText(videoSubtitle, width, 14, lines);
+		int y = y0;
+		Composite cp = g2.getComposite();
+		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
+		g2.fillRect(x0 + (width - maxWidth) / 2 - 3, y0 + y - 3, maxWidth + 6, lines.size() * 21 + 6);
+		g2.setComposite(cp);
+		for (String s : lines) {
+			int tw = commons.text.getTextWidth(14, s);
+			int x = (width - tw) / 2;
+			commons.text.paintTo(g2, x0 + x, y0 + y, 14, TextRenderer.WHITE, s);
+			y += 21;
+		}
 	}
 
 }

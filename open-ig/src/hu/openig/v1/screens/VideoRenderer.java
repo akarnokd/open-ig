@@ -133,15 +133,15 @@ public class VideoRenderer extends Thread {
 			// TODO log
 			ex.printStackTrace();
 		} finally {
+			try {
+				completionSync.await();
+			} catch (InterruptedException ex) {
+				
+			} catch (BrokenBarrierException ex) {
+				
+			}
 			if (!terminated) {
-				try {
-					completionSync.await();
-					onComplete();
-				} catch (InterruptedException ex) {
-					
-				} catch (BrokenBarrierException ex) {
-					
-				}
+				onComplete();
 			}
 		}
 			
