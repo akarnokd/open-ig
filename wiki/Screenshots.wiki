@@ -3,6 +3,7 @@
 
 = Version 0.80d screenshots =
 
+|| [http://karnokd.uw.hu/images/open-ig-0.8-ld.png http://karnokd.uw.hu/images/open-ig-0.8-ld-tn.png]<br>The loading screen. || ||
 || [http://karnokd.uw.hu/images/open-ig-0.8-bri.png http://karnokd.uw.hu/images/open-ig-0.8-bri-tn.png]<br>The bridge with two panels open. || [http://karnokd.uw.hu/images/open-ig-0.8-sp.png http://karnokd.uw.hu/images/open-ig-0.8-sp-tn.png]<br>The campaign selection screen. ||
 || [http://karnokd.uw.hu/images/open-ig-0.8-vid.png http://karnokd.uw.hu/images/open-ig-0.8-vid-tn.png]<br>The all videos screen || [http://karnokd.uw.hu/images/open-ig-0.8-stat.png http://karnokd.uw.hu/images/open-ig-0.8-stat-tn.png]<br>The statistics screen||
 || [http://karnokd.uw.hu/images/open-ig-0.8-ach.png http://karnokd.uw.hu/images/open-ig-0.8-ach-tn.png]<br>The achievements screen|| [http://karnokd.uw.hu/images/open-ig-0.8-intro.png http://karnokd.uw.hu/images/open-ig-0.8-intro-tn.png]<br>The intro, now with subtitle||
