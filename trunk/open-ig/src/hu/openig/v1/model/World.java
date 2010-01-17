@@ -15,6 +15,7 @@ import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.core.ResourceType;
 import hu.openig.v1.core.Tile;
 import hu.openig.v1.core.ResourceLocator.ResourcePlace;
+import hu.openig.v1.model.Bridge.Level;
 import hu.openig.v1.model.BuildingType.Resource;
 import hu.openig.v1.model.BuildingType.TileSet;
 import hu.openig.v1.model.BuildingType.Upgrade;
@@ -91,6 +92,13 @@ public class World {
 		walks.load(rl, language, definition.walk);
 		bridge = new Bridge();
 		processBridge(rl, language, definition.bridge);
+	}
+	/**
+	 * Returns the current level graphics.
+	 * @return the current level graphics
+	 */
+	public Level getCurrentLevel() {
+		return bridge.levels.get(level);
 	}
 	/**
 	 * Process the bridge definition resources.

@@ -20,13 +20,6 @@ import java.util.Map;
  * @version $Revision 1.0$
  */
 public class Bridge {
-	/** The video and audio record. */
-	public static class VideoAudio {
-		/** The video resource. */
-		public String video;
-		/** The audio resource. */
-		public String audio;
-	}
 	/** The level specific graphics. */
 	public static class Level {
 		/** The level number. */

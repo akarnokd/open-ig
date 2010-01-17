@@ -10,7 +10,9 @@ package hu.openig.v1.screens;
 
 import hu.openig.v1.core.Act;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
@@ -151,8 +153,11 @@ public class LoadingScreen extends ScreenBase {
 	 */
 	@Override
 	public void paintTo(Graphics2D g2) {
+		Composite cp = g2.getComposite();
+		g2.setComposite(AlphaComposite.SrcOver.derive(0.7f));
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+		g2.setComposite(cp);
 		
 		g2.drawImage(commons.research.rolling[rollingPhase], cd.x, cd.y, cd.width, cd.height, null);
 		

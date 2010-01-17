@@ -5,7 +5,7 @@
 			<message-panel>
 				<appear video='bridge/messages_appear_level_1' audio=''/>
 				<open video='bridge/messages_open_level_1' audio='ui/messages_deploy'/>
-				<close video='bridge/messages_open_level_1' audio='ui/messages_deploy'/>
+				<close video='bridge/messages_close_level_1' audio='ui/messages_deploy'/>
 				<buttons up="flagship/button_upwards_level_1" send="flagship/button_send_level_1" receive="flagship/button_receive_level_1" down="flagship/button_downwards_level_1"/>
 			</message-panel>
 			<comm-panel>
@@ -17,7 +17,7 @@
 			<message-panel>
 				<appear video='bridge/messages_appear_level_2' audio=''/>
 				<open video='bridge/messages_open_level_2' audio='ui/messages_deploy'/>
-				<close video='bridge/messages_open_level_2' audio='ui/messages_deploy'/>
+				<close video='bridge/messages_close_level_2' audio='ui/messages_deploy'/>
 				<buttons up="flagship/button_upwards_level_2" send="flagship/button_send_level_2" receive="flagship/button_receive_level_2" down="flagship/button_downwards_level_2"/>
 			</message-panel>
 			<comm-panel>
@@ -29,7 +29,7 @@
 			<message-panel>
 				<appear video='bridge/messages_appear_level_3' audio=''/>
 				<open video='bridge/messages_open_level_3' audio='ui/messages_deploy'/>
-				<close video='bridge/messages_open_level_3' audio='ui/messages_deploy'/>
+				<close video='bridge/messages_close_level_3' audio='ui/messages_deploy'/>
 				<buttons up="flagship/button_upwards_level_3" send="flagship/button_send_level_3" receive="flagship/button_receive_level_3" down="flagship/button_downwards_level_3"/>
 			</message-panel>
 			<comm-panel>
@@ -41,7 +41,7 @@
 			<message-panel>
 				<appear video='bridge/messages_appear_level_3' audio=''/>
 				<open video='bridge/messages_open_level_3' audio='ui/messages_deploy'/>
-				<close video='bridge/messages_open_level_3' audio='ui/messages_deploy'/>
+				<close video='bridge/messages_close_level_3' audio='ui/messages_deploy'/>
 				<buttons up="flagship/button_upwards_level_3" send="flagship/button_send_level_3" receive="flagship/button_receive_level_3" down="flagship/button_downwards_level_3"/>
 			</message-panel>
 			<comm-panel>
@@ -53,7 +53,7 @@
 			<message-panel>
 				<appear video='bridge/messages_appear_level_3' audio=''/>
 				<open video='bridge/messages_open_level_3' audio='ui/messages_deploy'/>
-				<close video='bridge/messages_open_level_3' audio='ui/messages_deploy'/>
+				<close video='bridge/messages_close_level_3' audio='ui/messages_deploy'/>
 				<buttons up="flagship/button_upwards_level_3" send="flagship/button_send_level_3" receive="flagship/button_receive_level_3" down="flagship/button_downwards_level_3"/>
 			</message-panel>
 			<comm-panel>
