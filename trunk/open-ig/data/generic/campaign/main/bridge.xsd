@@ -58,30 +58,15 @@
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name='areas'>
-											<xs:annotation><xs:documentation>The locations linking to the appropriate ship walk transitions on the bridge.</xs:documentation></xs:annotation>
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name='area' minOccurs="0" maxOccurs="unbounded">
-														<xs:annotation><xs:documentation>The transition marker</xs:documentation></xs:annotation>
-														<xs:complexType>
-															<xs:attribute name='id' type='xs:string' use="required">
-																<xs:annotation><xs:documentation>The transition id used in the ship walk.</xs:documentation></xs:annotation>
-															</xs:attribute>
-															<xs:attribute name='points' type='xs:string'>
-																<xs:annotation><xs:documentation>The points of the poligon. Set of coordinate pairs separated by spaces. Coordinates are separated by comma. Sample: 1,1 2,2</xs:documentation></xs:annotation>
-															</xs:attribute>
-														</xs:complexType>
-													</xs:element>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>									
 									</xs:sequence>
 									<xs:attribute name='id' type="xs:positiveInteger" use="required">
 										<xs:annotation><xs:documentation>The level number.</xs:documentation></xs:annotation>
 									</xs:attribute>
 									<xs:attribute name='image' type='xs:string' use="required">
 										<xs:annotation><xs:documentation>The background image.</xs:documentation></xs:annotation>
+									</xs:attribute>
+									<xs:attribute name='walk-id' type='xs:string' use='required'>
+										<xs:annotation><xs:documentation>The associated walk level id where the bridge position will be used.</xs:documentation></xs:annotation>
 									</xs:attribute>
 								</xs:complexType>
 							</xs:element>

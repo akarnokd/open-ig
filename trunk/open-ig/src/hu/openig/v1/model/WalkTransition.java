@@ -6,19 +6,21 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1.core;
+package hu.openig.v1.model;
+
+import java.awt.Polygon;
 
 /**
- * @author karnok, 2009.10.10.
+ * @author karnok, 2009.10.09.
  * @version $Revision 1.0$
  */
-public class TalkSpeech {
-	/** The speech was already taken. */
-	public boolean spoken;
-	/** The speech media. */
+public class WalkTransition {
+	/** The associated transition media. */
 	public String media;
-	/** The target state. */
+	/** The label to display when hovered. */
+	public String label;
+	/** The target location. */
 	public String to;
-	/** The speech option text. */
-	public String text;
+	/** The clickable polygon area. */
+	public Polygon area;
 }

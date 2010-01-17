@@ -57,6 +57,14 @@ public abstract class ScreenBase {
 	 */
 	public abstract void mouseReleased(int button, int x, int y, int modifiers);
 	/**
+	 * Handle a mouse double click event.
+	 * @param button the button, see MouseEvent.BUTTON_x
+	 * @param x the mouse coordinate
+	 * @param y the mouse coordinate
+	 * @param modifiers the optional modifiers, see MouseEvent.CTRL_DOWN_MASK etc.
+	 */
+	public abstract void mouseDoubleClicked(int button, int x, int y, int modifiers);
+	/**
 	 * Handle mouse scroll event.
 	 * @param direction the scroll direction: -1 or +1
 	 * @param x the mouse coordinate

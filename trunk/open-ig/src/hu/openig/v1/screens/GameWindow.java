@@ -465,6 +465,25 @@ public class GameWindow extends JFrame implements GameControls {
 				pri.handleRepaint();
 			}
 		}
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 2) {
+				ScreenBase pri = primary;
+				ScreenBase sec = secondary;
+				if (movieVisible) {
+					movie.mouseDoubleClicked(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+					movie.handleRepaint();
+				} else
+				if (sec != null) {
+					sec.mouseDoubleClicked(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+					sec.handleRepaint();
+				} else
+				if (pri != null) {
+					pri.mouseDoubleClicked(e.getButton(), e.getX(), e.getY(), e.getModifiers());
+					pri.handleRepaint();
+				}
+			}
+		}
 	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.GameControls#playVideos(java.lang.String[])

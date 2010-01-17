@@ -12,10 +12,10 @@ import hu.openig.v1.core.Act;
 import hu.openig.v1.core.Configuration;
 import hu.openig.v1.core.Labels;
 import hu.openig.v1.core.ResourceLocator;
-import hu.openig.v1.core.TalkPerson;
-import hu.openig.v1.core.TalkSpeech;
-import hu.openig.v1.core.TalkState;
-import hu.openig.v1.core.Talks;
+import hu.openig.v1.model.TalkPerson;
+import hu.openig.v1.model.TalkSpeech;
+import hu.openig.v1.model.TalkState;
+import hu.openig.v1.model.Talks;
 
 import java.awt.Container;
 

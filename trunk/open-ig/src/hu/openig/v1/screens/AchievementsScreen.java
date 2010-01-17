@@ -642,4 +642,9 @@ public class AchievementsScreen extends ScreenBase {
 		statistics.add(new StatisticsEntry("statistics.galaxy_total_police", "1.200.000 (120%)"));
 //		statistics.add(new StatisticsEntry("", ""));
 	}
+	@Override
+	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
+		// TODO Auto-generated method stub
+		
+	}
 }

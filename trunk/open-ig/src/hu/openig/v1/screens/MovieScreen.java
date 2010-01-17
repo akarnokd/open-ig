@@ -283,7 +283,9 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		if (sdl != null) {
 			sdl.stop();
 		}
-		videoThread.stopPlayback();
+		if (videoThread != null) {
+			videoThread.stopPlayback();
+		}
 //		frontBuffer = null;
 		label = null;
 		repaint();
@@ -399,4 +401,9 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		repaint();
 	}
 
+	@Override
+	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
+		// TODO Auto-generated method stub
+		
+	}
 }

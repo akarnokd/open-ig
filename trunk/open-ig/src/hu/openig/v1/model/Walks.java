@@ -6,9 +6,11 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1.core;
+package hu.openig.v1.model;
 
 import hu.openig.utils.XML;
+import hu.openig.v1.core.ResourceLocator;
+import hu.openig.v1.core.ResourceType;
 import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 
 import java.awt.Polygon;
@@ -33,18 +35,18 @@ import org.xml.sax.SAXException;
  */
 public class Walks {
 	/** The map of ships to be walked. */
-	public Map<String, WalkShip> ships = new HashMap<String, WalkShip>();
+	public final Map<String, WalkShip> ships = new HashMap<String, WalkShip>();
 	/**
 	 * Load the shipwalk.xml from the resoure locator.
 	 * @param rl the resource locator
 	 * @param lang the current language
-	 * @param game the path to the game data context (e.g. campaign/main)
+	 * @param data the path to the resource
 	 */
-	public void load(ResourceLocator rl, String lang, String game) {
-		ResourcePlace rp = rl.get(lang, game + "/shipwalk", ResourceType.DATA);
+	public void load(ResourceLocator rl, String lang, String data) {
+		ResourcePlace rp = rl.get(lang, data, ResourceType.DATA);
 		if (rp == null) {
 			// TODO log
-			throw new AssertionError("Missing resource: " + game + "/shipwalk");
+			throw new AssertionError("Missing resource: " + data);
 		}
 		InputStream in = rp.open();
 		try {

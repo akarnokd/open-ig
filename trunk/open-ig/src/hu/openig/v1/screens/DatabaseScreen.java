@@ -115,5 +115,10 @@ public class DatabaseScreen extends ScreenBase {
 		// TODO Auto-generated method stub
 
 	}
+	@Override
+	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

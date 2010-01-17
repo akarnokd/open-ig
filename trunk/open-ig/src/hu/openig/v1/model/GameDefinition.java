@@ -30,4 +30,23 @@ public class GameDefinition {
 	public String name;
 	/** The starting level of the game. */
 	public int startingLevel;
+	/** The labels associated with this game if any. */
+	public String labels;
+	/** The galaxy description. */
+	public String galaxy;
+	/** The reaces description. */
+	public String races;
+	/** The technology description. */
+	public String tech;
+	/** The building description. */
+	public String build;
+	/** The planets description. */
+	public String planets;
+	/** The bridge description. */
+	public String bridge;
+	/** The walk description. */
+	public String walk;
+	/** The talk description. */
+	public String talk;
+
 }
