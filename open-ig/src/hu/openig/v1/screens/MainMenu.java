@@ -384,4 +384,9 @@ public class MainMenu extends ScreenBase {
 			ex.printStackTrace();
 		}
 	}
+	@Override
+	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
+		// TODO Auto-generated method stub
+		
+	}
 }

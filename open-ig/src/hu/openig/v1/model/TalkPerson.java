@@ -6,18 +6,18 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1.core;
+package hu.openig.v1.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author karnok, 2009.10.09.
+ * @author karnok, 2009.10.10.
  * @version $Revision 1.0$
  */
-public class WalkShip {
-	/** The ship walk level. */
-	public String level;
-	/** The map of positions in the ship. */
-	public final Map<String, WalkPosition> positions = new HashMap<String, WalkPosition>();
+public class TalkPerson {
+	/** The person id. */
+	public String id;
+	/** The talk states. */
+	public final Map<String, TalkState> states = new HashMap<String, TalkState>();
 }

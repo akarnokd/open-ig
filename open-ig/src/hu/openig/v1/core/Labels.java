@@ -27,14 +27,14 @@ public class Labels {
 	 * Load the language file(s).
 	 * @param rl the resource locator
 	 * @param language the language
-	 * @param game the optional game naming
+	 * @param gameLabel the optional game namings, ignored if null or empty
 	 */
-	public void load(ResourceLocator rl, String language, String game) {
+	public void load(ResourceLocator rl, String language, String gameLabel) {
 		map.clear();
 		process(rl.getXML(language, "labels"));
-		if (game != null) {
-			if (rl.get(language, game + "/labels", ResourceType.DATA) != null) {
-				process(rl.getXML(language, game + "/labels"));
+		if (gameLabel != null && !gameLabel.isEmpty()) {
+			if (rl.get(language, gameLabel, ResourceType.DATA) != null) {
+				process(rl.getXML(language, gameLabel));
 			}
 		}
 	}

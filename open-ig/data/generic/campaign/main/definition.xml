@@ -11,13 +11,14 @@
 	<image>campaign/main/main_campaign_image</image>
 	<intro>interlude/campaign_start</intro>
 	<level>1</level>
+	<labels>campaign/main/labels</labels>
 	<galaxy>campaign/main/galaxy</galaxy>
 	<races>campaign/main/races</races>
 	<tech>campaign/main/tech</tech>
 	<build>campaign/main/buildings</build>
 	<planets>campaign/main/planets</planets>
 	<bridge>campaign/main/bridge</bridge>
-	<walk>campaign/mani/walks</walk>
+	<walk>campaign/main/walks</walk>
 	<talk>campaign/main/talks</talk>
 	<script>campaign/main/scripts</script>
 </definition>

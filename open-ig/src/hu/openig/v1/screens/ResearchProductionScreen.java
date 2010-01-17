@@ -116,4 +116,9 @@ public class ResearchProductionScreen extends ScreenBase {
 
 	}
 
+	@Override
+	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -12,6 +12,7 @@ import hu.openig.utils.XML;
 import hu.openig.v1.core.Act;
 import hu.openig.v1.core.Button;
 import hu.openig.v1.core.Difficulty;
+import hu.openig.v1.core.Labels;
 import hu.openig.v1.model.GameDefinition;
 import hu.openig.v1.model.World;
 
@@ -25,6 +26,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
+
+import javax.swing.SwingUtilities;
 
 import org.w3c.dom.Element;
 
@@ -177,14 +181,52 @@ public class SingleplayerScreen extends ScreenBase {
 	/** Start the selected game. */
 	void doStartGame() {
 		if (selectedDefinition != null) {
-			commons.world = new World();
-			commons.world.definition = selectedDefinition;
-			commons.world.difficulty = Difficulty.values()[difficulty];
-			commons.world.load(commons.rl, commons.config.language, selectedDefinition.name);
+			// display the loading screen.
+			commons.control.displayPrimary(commons.screens.loading);
+			final Semaphore barrier = new Semaphore(-1);
+			// the completion waiter thread
+			Thread t0 = new Thread("Start Game Video Waiter") {
+				public void run() {
+					try {
+						barrier.acquire();
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								commons.control.displayPrimary(commons.screens.bridge);
+							};
+						});
+					} catch (InterruptedException ex) {
+						
+					}
+				};
+			};
+			t0.setPriority(Thread.MIN_PRIORITY);
+			t0.start();
+			// the asynchronous loading
+			Thread t1 = new Thread("Start Game Loading") {
+				public void run() {
+					final World world = new World();
+					world.definition = selectedDefinition;
+					world.difficulty = Difficulty.values()[difficulty];
+					final Labels labels = new Labels(); 
+					labels.load(commons.rl, commons.language(), selectedDefinition.labels);
+					world.load(commons.rl, commons.language(), selectedDefinition.name);
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							commons.labels = labels;
+							commons.world = world;
+							barrier.release();
+						}
+					});
+				};
+			};
+			t1.setPriority(Thread.MIN_PRIORITY);
+			t1.start();
+			// the video playback
 			commons.control.playVideos(new Act() {
 				@Override
 				public void act() {
-					commons.control.displayPrimary(commons.screens.bridge);
+					barrier.release();
 				}
 			}, selectedDefinition.intro);
 		}
@@ -244,7 +286,20 @@ public class SingleplayerScreen extends ScreenBase {
 			}
 		}
 	}
-
+	/* (non-Javadoc)
+	 * @see hu.openig.v1.screens.ScreenBase#mouseDoubleClicked(int, int, int, int)
+	 */
+	@Override
+	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
+		if (campaignList.contains(x, y)) {
+			int idx = (y - campaignList.y) / 20;
+			if (idx < campaigns.size()) {
+				selectedDefinition = campaigns.get(idx);
+				doStartGame();
+				requestRepaint();
+			}
+		}
+	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
 	 */
@@ -396,6 +451,16 @@ public class SingleplayerScreen extends ScreenBase {
 		result.intro = XML.childValue(root, "intro");
 		result.image = commons.rl.getImage(commons.config.language, XML.childValue(root, "image"));
 		result.startingLevel = Integer.parseInt(XML.childValue(root, "level"));
+		result.labels = XML.childValue(root, "labels");
+		result.galaxy = XML.childValue(root, "galaxy");
+		result.races = XML.childValue(root, "races");
+		result.tech = XML.childValue(root, "tech");
+		result.build = XML.childValue(root, "build");
+		result.planets = XML.childValue(root, "planets");
+		result.bridge = XML.childValue(root, "bridge");
+		result.walk = XML.childValue(root, "walk");
+		result.talk = XML.childValue(root, "talk");
+		
 		return result;
 	}
 

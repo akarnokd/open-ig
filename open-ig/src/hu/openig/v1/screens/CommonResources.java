@@ -144,6 +144,8 @@ public class CommonResources {
 		public BattlefinishScreen battleFinish;
 		/** The movie screens. */
 		public MovieScreen movie;
+		/** The loading in progress screen. */
+		public LoadingScreen loading;
 	}
 	/** The game window. */
 	public JFrame window;
@@ -296,5 +298,11 @@ public class CommonResources {
 		config.language = newLanguage;
 		config.save();
 		init();
+	}
+	/**
+	 * @return the current language code
+	 */
+	public String language() {
+		return config.language;
 	}
 }

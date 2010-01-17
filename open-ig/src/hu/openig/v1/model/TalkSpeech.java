@@ -6,18 +6,19 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1.core;
-
-import java.util.HashMap;
-import java.util.Map;
+package hu.openig.v1.model;
 
 /**
  * @author karnok, 2009.10.10.
  * @version $Revision 1.0$
  */
-public class TalkPerson {
-	/** The person id. */
-	public String id;
-	/** The talk states. */
-	public final Map<String, TalkState> states = new HashMap<String, TalkState>();
+public class TalkSpeech {
+	/** The speech was already taken. */
+	public boolean spoken;
+	/** The speech media. */
+	public String media;
+	/** The target state. */
+	public String to;
+	/** The speech option text. */
+	public String text;
 }

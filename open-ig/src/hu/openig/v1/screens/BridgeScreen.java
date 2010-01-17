@@ -9,7 +9,9 @@
 package hu.openig.v1.screens;
 
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 /**
@@ -17,14 +19,11 @@ import java.awt.image.BufferedImage;
  * @version $Revision 1.0$
  */
 public class BridgeScreen extends ScreenBase {
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#doResize()
-	 */
+	/** The screen origins. */
+	final Rectangle origin = new Rectangle();
 	@Override
 	public void doResize() {
-		// TODO Auto-generated method stub
-
+		origin.setBounds((parent.getWidth() - 640) / 2, 20 + (parent.getHeight() - 38 - 442) / 2, 640, 442);
 	}
 
 	/* (non-Javadoc)
@@ -93,7 +92,8 @@ public class BridgeScreen extends ScreenBase {
 	BufferedImage background;
 	@Override
 	public void onEnter() {
-		
+		background = commons.world.bridge.levels.get(commons.world.level).image;
+		onResize();
 	}
 
 	/* (non-Javadoc)
@@ -104,14 +104,21 @@ public class BridgeScreen extends ScreenBase {
 		// TODO Auto-generated method stub
 
 	}
-
+	@Override
+	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
 	 */
 	@Override
 	public void paintTo(Graphics2D g2) {
-		// TODO Auto-generated method stub
-
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+		
+		g2.drawImage(background, origin.x, origin.y, null);
 	}
 
 }

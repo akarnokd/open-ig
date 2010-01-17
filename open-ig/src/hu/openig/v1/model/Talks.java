@@ -6,9 +6,10 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1.core;
+package hu.openig.v1.model;
 
 import hu.openig.utils.XML;
+import hu.openig.v1.core.ResourceLocator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,10 +28,10 @@ public class Talks {
 	 * Load the talks from the given game.
 	 * @param rl the resource locator
 	 * @param language the language
-	 * @param game the game
+	 * @param data the data resource
 	 */
-	public void load(ResourceLocator rl, String language, String game) {
-		process(rl.getXML(language, game + "/talks"), rl, language);
+	public void load(ResourceLocator rl, String language, String data) {
+		process(rl.getXML(language, data), rl, language);
 	}
 	/**
 	 * Process the document.

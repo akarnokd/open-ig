@@ -13,9 +13,7 @@ import hu.openig.v1.core.Difficulty;
 import hu.openig.v1.core.PlanetType;
 import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.core.ResourceType;
-import hu.openig.v1.core.Talks;
 import hu.openig.v1.core.Tile;
-import hu.openig.v1.core.Walks;
 import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 import hu.openig.v1.model.BuildingType.Resource;
 import hu.openig.v1.model.BuildingType.TileSet;
@@ -72,6 +70,8 @@ public class World {
 	public GameDefinition definition;
 	/** The difficulty of the game. */
 	public Difficulty difficulty;
+	/** The bridge definition. */
+	public Bridge bridge;
 	/**
 	 * Load the game world's resources.
 	 * @param rl the resource locator
@@ -80,25 +80,100 @@ public class World {
 	 */
 	public void load(ResourceLocator rl, String language, String game) {
 		level = definition.startingLevel;
-		Element galaxy = rl.getXML(language, game + "/galaxy");
-		processGalaxy(galaxy, rl, language);
-		Element races = rl.getXML(language, game + "/races");
-		Element tech = rl.getXML(language, game + "/tech");
-		Element buildings = rl.getXML(language, game + "/buildings");
-		processBuildings(buildings, rl, language);
-		Element planets = rl.getXML(language, game + "/planets");
+		processGalaxy(rl, language, definition.galaxy);
+//		Element races = rl.getXML(language, game + "/races");
+//		Element tech = rl.getXML(language, game + "/tech");
+		processBuildings(rl, language, definition.build);
+//		Element planets = rl.getXML(language, game + "/planets");
 		talks = new Talks();
-		talks.load(rl, language, game);
+		talks.load(rl, language, definition.talk);
 		walks = new Walks();
-		walks.load(rl, language, game);
+		walks.load(rl, language, definition.walk);
+		bridge = new Bridge();
+		processBridge(rl, language, definition.bridge);
+	}
+	/**
+	 * Process the bridge definition resources.
+	 * @param rl the resource locator
+	 * @param language the language
+	 * @param data the data resource to load
+	 */
+	protected void processBridge(ResourceLocator rl, String language, String data) {
+		Element root = rl.getXML(language, data);
+		Element graphics = XML.childElement(root, "graphics");
+		for (Element level : XML.childrenWithName(graphics, "level")) {
+			Bridge.Level lvl = new Bridge.Level();
+			lvl.id = Integer.parseInt(level.getAttribute("id"));
+			lvl.image = rl.getImage(language, level.getAttribute("image"));
+			lvl.walk = walks.ships.get(level.getAttribute("walk-id")).positions.get("bridge");
+			Element mp = XML.childElement(level, "message-panel");
+			
+			Element mpAppear = XML.childElement(mp, "appear");
+			lvl.messageAppear.video = mpAppear.getAttribute("video");
+			lvl.messageAppear.audio = mpAppear.getAttribute("audio");
+			
+			Element mpOpen = XML.childElement(mp, "open");
+			lvl.messageOpen.video = mpOpen.getAttribute("video");
+			lvl.messageOpen.audio = mpOpen.getAttribute("audio");
+			
+			Element mpClose = XML.childElement(mp, "close");
+			lvl.messageClose.video = mpClose.getAttribute("video");
+			lvl.messageClose.audio = mpClose.getAttribute("audio");
+			
+			Element mpButtons = XML.childElement(mp, "buttons");
+			String up = mpButtons.getAttribute("up");
+			lvl.up[0] = rl.getImage(language, up);
+			lvl.up[0] = rl.getImage(language, up + "_pressed");
+			lvl.up[0] = rl.getImage(language, up + "_empty");
+			String down = mpButtons.getAttribute("down");
+			lvl.down[0] = rl.getImage(language, down);
+			lvl.down[0] = rl.getImage(language, down + "_pressed");
+			lvl.down[0] = rl.getImage(language, down + "_empty");
+			String send = mpButtons.getAttribute("send");
+			lvl.send[0] = rl.getImage(language, send);
+			lvl.send[0] = rl.getImage(language, send + "_pressed");
+			String receive = mpButtons.getAttribute("receive");
+			lvl.receive[0] = rl.getImage(language, receive);
+			lvl.receive[0] = rl.getImage(language, receive + "_pressed");
+			
+			Element cp = XML.childElement(level, "comm-panel");
+			Element cpOpen = XML.childElement(cp, "open");
+			lvl.projectorOpen.video = cpOpen.getAttribute("video");
+			lvl.projectorOpen.audio = cpOpen.getAttribute("audio");
+			
+			Element cpClose = XML.childElement(cp, "close");
+			lvl.projectorClose.video = cpClose.getAttribute("video");
+			lvl.projectorClose.audio = cpClose.getAttribute("audio");
+			bridge.levels.put(lvl.id, lvl);
+		}
+		Element messages = XML.childElement(root, "messages");
+		Element send = XML.childElement(messages, "send");
+		for (Element message : XML.childrenWithName(send, "message")) {
+			Bridge.Message msg = new Bridge.Message();
+			msg.id = message.getAttribute("id");
+			msg.media = message.getAttribute("media");
+			msg.title = message.getAttribute("title");
+			msg.description = message.getAttribute("description");
+			bridge.sendMessages.add(msg);
+		}
+		Element receive = XML.childElement(messages, "receive");
+		for (Element message : XML.childrenWithName(receive, "message")) {
+			Bridge.Message msg = new Bridge.Message();
+			msg.id = message.getAttribute("id");
+			msg.media = message.getAttribute("media");
+			msg.title = message.getAttribute("title");
+			msg.description = message.getAttribute("description");
+			bridge.receiveMessages.add(msg);
+		}
 	}
 	/**
 	 * Process the contents of the galaxy data.
-	 * @param galaxy the galaxy
+	 * @param data the galaxy data file
 	 * @param rl the resource locator
 	 * @param language the current language
 	 */
-	protected void processGalaxy(Element galaxy, ResourceLocator rl, String language) {
+	protected void processGalaxy(ResourceLocator rl, String language, String data) {
+		Element galaxy = rl.getXML(language, data);
 		Element background = XML.childElement(galaxy, "background");
 		map = rl.getImage(language, background.getAttribute("image"));
 		minScale = Float.parseFloat(background.getAttribute("min-scale"));
@@ -119,8 +194,10 @@ public class World {
 				if (te.getNodeName().equals("tile-range")) {
 					int start = Integer.parseInt(te.getAttribute("start"));
 					int end = Integer.parseInt(te.getAttribute("end"));
-					int width = Integer.parseInt(te.getAttribute("width"));
-					int height = Integer.parseInt(te.getAttribute("height"));
+					String ws = te.getAttribute("width");
+					int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
+					String hs = te.getAttribute("height");
+					int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
 					for (int id = start; id <= end; id++) {
 						Tile tile = new Tile(width, height, rl.getImage(language, String.format(tilePattern, id)), null);
 						planetType.tiles.put(id, tile);
@@ -128,8 +205,10 @@ public class World {
 				} else
 				if (te.getNodeName().equals("tile")) {
 					int id = Integer.parseInt(te.getAttribute("id"));
-					int width = Integer.parseInt(te.getAttribute("width"));
-					int height = Integer.parseInt(te.getAttribute("height"));
+					String ws = te.getAttribute("width");
+					int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
+					String hs = te.getAttribute("height");
+					int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
 					Tile tile = new Tile(width, height, rl.getImage(language, String.format(tilePattern, id)), null);
 					planetType.tiles.put(id, tile);
 				}
@@ -147,11 +226,12 @@ public class World {
 	}
 	/**
 	 * Process the contents of the buildings definition.
-	 * @param buildings the buildings definition
+	 * @param data the buildings definition
 	 * @param rl the resource locator
 	 * @param language the language
 	 */
-	protected void processBuildings(Element buildings, ResourceLocator rl, String language) {
+	protected void processBuildings(ResourceLocator rl, String language, String data) {
+		Element buildings = rl.getXML(language, data);
 		for (Element building : XML.childrenWithName(buildings, "building")) {
 			BuildingType b = new BuildingType();
 			
