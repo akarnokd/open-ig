@@ -146,11 +146,15 @@ public class CommonResources {
 		public MovieScreen movie;
 		/** The loading in progress screen. */
 		public LoadingScreen loading;
+		/** The ship walk screen. */
+		public ShipwalkScreen shipwalk;
 	}
 	/** The game window. */
 	public JFrame window;
 	/** The game world. */
 	public World world;
+	/** Flag to indicate the game world is loading. */
+	public boolean worldLoading;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -304,5 +308,42 @@ public class CommonResources {
 	 */
 	public String language() {
 		return config.language;
+	}
+	/**
+	 * Switch to the screen named.
+	 * @param to the screen name
+	 */
+	public void switchScreen(String to) {
+		if ("*bridge".equals(to)) {
+			screens.bridge.displayPrimary();
+		} else
+		if ("*starmap".equals(to)) {
+			screens.starmap.displayPrimary();
+		} else
+		if ("*colony".equals(to)) {
+			screens.colony.displayPrimary();
+		} else
+		if ("*equipment".equals(to)) {
+			screens.equipment.displaySecondary();
+		} else
+		if ("*research".equals(to)) {
+			screens.researchProduction.displaySecondary();
+		} else
+		if ("*production".equals(to)) {
+			screens.researchProduction.displaySecondary();
+		} else
+		if ("*information".equals(to)) {
+			screens.info.displaySecondary();
+		} else
+		if ("*database".equals(to)) {
+			screens.database.displayPrimary();
+		} else
+		if ("*bar".equals(to)) {
+			screens.bar.displayPrimary();
+		} else
+		if ("*diplomacy".equals(to)) {
+			screens.diplomacy.displayPrimary();
+		}
+		
 	}
 }

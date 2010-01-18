@@ -46,6 +46,8 @@ public class Bridge {
 		public final BufferedImage[] receive = new BufferedImage[2];
 		/** The associated ship walk. */
 		public WalkPosition walk;
+		/** The ship for the walks. */
+		public WalkShip ship;
 	}
 	/** The message description. */
 	public static class Message {

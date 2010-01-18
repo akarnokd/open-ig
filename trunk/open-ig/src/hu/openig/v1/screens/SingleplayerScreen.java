@@ -201,6 +201,8 @@ public class SingleplayerScreen extends ScreenBase {
 			};
 			t0.setPriority(Thread.MIN_PRIORITY);
 			t0.start();
+			commons.world = null;
+			commons.worldLoading = true;
 			// the asynchronous loading
 			Thread t1 = new Thread("Start Game Loading") {
 				public void run() {
@@ -215,6 +217,7 @@ public class SingleplayerScreen extends ScreenBase {
 						public void run() {
 							commons.labels = labels;
 							commons.world = world;
+							commons.worldLoading = false;
 							barrier.release();
 						}
 					});

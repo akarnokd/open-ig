@@ -74,7 +74,7 @@ public class WalkTest extends JFrame {
 		final ResourceLocator rl = new ResourceLocator();
 		rl.setContainers(config.containers);
 		rl.scanResources();
-		w.load(rl, "hu", "campaign/main");
+		w.load(rl, "hu", "campaign/main/walks");
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

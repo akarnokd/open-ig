@@ -59,6 +59,8 @@ public class WalkPainter extends JComponent implements SwappableRenderer {
 	BufferedImage backBuffer;
 	/** The buffer swap lock. */
 	Lock swapLock;
+	/** The transition the mouse is pointing at. */
+	WalkTransition pointerTransition;
 	/** The current movie thread. */
 	Thread movieThread;
 	/** Stop movie playback. */
@@ -67,8 +69,6 @@ public class WalkPainter extends JComponent implements SwappableRenderer {
 	ResourceLocator rl;
 	/** The language. */
 	String lang;
-	/** The transition the mouse is pointing at. */
-	WalkTransition pointerTransition;
 	/** The text renderer. */
 	protected TextRenderer txt;
 	/**
