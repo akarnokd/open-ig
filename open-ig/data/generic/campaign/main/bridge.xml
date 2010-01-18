@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <bridge xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="bridge.xsd">
 	<graphics>
-		<level id='1' image='flagship/bridge_level_1' walk-id='level1'>
+		<level id='1' image='flagship/bridge_level_1' ship-id='1'>
 			<message-panel>
 				<appear video='bridge/messages_appear_level_1' audio=''/>
 				<open video='bridge/messages_open_level_1' audio='ui/messages_deploy'/>
@@ -13,7 +13,7 @@
 				<close video='bridge/projector_retract_level_1' audio='ui/comm_deploy'/>
 			</comm-panel>
 		</level>
-		<level id='2' image='flagship/bridge_level_2' walk-id='level2'>
+		<level id='2' image='flagship/bridge_level_2' ship-id='2'>
 			<message-panel>
 				<appear video='bridge/messages_appear_level_2' audio=''/>
 				<open video='bridge/messages_open_level_2' audio='ui/messages_deploy'/>
@@ -25,7 +25,7 @@
 				<close video='bridge/projector_retract_level_2' audio='ui/comm_deploy'/>
 			</comm-panel>
 		</level>
-		<level id='3' image='flagship/bridge_level_3' walk-id='level3'>
+		<level id='3' image='flagship/bridge_level_3' ship-id='3'>
 			<message-panel>
 				<appear video='bridge/messages_appear_level_3' audio=''/>
 				<open video='bridge/messages_open_level_3' audio='ui/messages_deploy'/>
@@ -37,7 +37,7 @@
 				<close video='bridge/projector_retract_level_3' audio='ui/comm_deploy'/>
 			</comm-panel>
 		</level>
-		<level id='4' image='flagship/bridge_level_3' walk-id='level4'>
+		<level id='4' image='flagship/bridge_level_3' ship-id='4'>
 			<message-panel>
 				<appear video='bridge/messages_appear_level_3' audio=''/>
 				<open video='bridge/messages_open_level_3' audio='ui/messages_deploy'/>
@@ -49,7 +49,7 @@
 				<close video='bridge/projector_retract_level_3' audio='ui/comm_deploy'/>
 			</comm-panel>
 		</level>
-		<level id='5' image='flagship/bridge_level_3' walk-id='level4'>
+		<level id='5' image='flagship/bridge_level_3' ship-id='4'>
 			<message-panel>
 				<appear video='bridge/messages_appear_level_3' audio=''/>
 				<open video='bridge/messages_open_level_3' audio='ui/messages_deploy'/>

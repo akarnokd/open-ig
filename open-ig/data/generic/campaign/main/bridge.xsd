@@ -65,7 +65,7 @@
 									<xs:attribute name='image' type='xs:string' use="required">
 										<xs:annotation><xs:documentation>The background image.</xs:documentation></xs:annotation>
 									</xs:attribute>
-									<xs:attribute name='walk-id' type='xs:string' use='required'>
+									<xs:attribute name='ship-id' type='xs:string' use='required'>
 										<xs:annotation><xs:documentation>The associated walk level id where the bridge position will be used.</xs:documentation></xs:annotation>
 									</xs:attribute>
 								</xs:complexType>

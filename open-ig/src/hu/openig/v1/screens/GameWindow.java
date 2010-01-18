@@ -11,6 +11,7 @@ package hu.openig.v1.screens;
 import hu.openig.v1.core.Act;
 import hu.openig.v1.core.Configuration;
 import hu.openig.v1.core.ResourceLocator;
+import hu.openig.v1.screens.AchievementsScreen.Mode;
 
 import java.awt.Container;
 import java.awt.Graphics;
@@ -357,20 +358,116 @@ public class GameWindow extends JFrame implements GameControls {
 	class KeyEvents extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			ScreenBase pri = primary;
-			ScreenBase sec = secondary;
-			if (movieVisible) {
-				movie.keyTyped(e.getKeyCode(), e.getModifiersEx());
-				movie.handleRepaint();
-			} else
-			if (sec != null) {
-				sec.keyTyped(e.getKeyCode(), e.getModifiersEx());
-				sec.handleRepaint();
-			} else
-			if (pri != null) {
-				pri.keyTyped(e.getKeyCode(), e.getModifiersEx());
-				pri.handleRepaint();
+			if (!handleScreenSwitch(e)) {
+				ScreenBase pri = primary;
+				ScreenBase sec = secondary;
+				if (movieVisible) {
+					movie.keyTyped(e.getKeyCode(), e.getModifiersEx());
+					movie.handleRepaint();
+				} else
+				if (sec != null) {
+					sec.keyTyped(e.getKeyCode(), e.getModifiersEx());
+					sec.handleRepaint();
+				} else
+				if (pri != null) {
+					pri.keyTyped(e.getKeyCode(), e.getModifiersEx());
+					pri.handleRepaint();
+				}
 			}
+		}
+		/**
+		 * Handle the screen switch if the appropriate key is pressed.
+		 * @param e the key event
+		 * @return true if the key event was handled
+		 */
+		boolean handleScreenSwitch(KeyEvent e) {
+			boolean result = false;
+			if (!commons.worldLoading && commons.world != null && !movieVisible) {
+				result = true;
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_F1:
+					commons.screens.bridge.displayPrimary();
+					break;
+				case KeyEvent.VK_F2:
+					commons.screens.starmap.displayPrimary();
+					break;
+				case KeyEvent.VK_F3:
+					commons.screens.colony.displayPrimary();
+					break;
+				case KeyEvent.VK_F4:
+					commons.screens.equipment.displayPrimary();
+					break;
+				case KeyEvent.VK_F5:
+					commons.screens.researchProduction.displayPrimary();
+					break;
+				case KeyEvent.VK_F6:
+					commons.screens.researchProduction.displayPrimary();
+					break;
+				case KeyEvent.VK_F7:
+					commons.screens.info.displaySecondary();
+					break;
+				case KeyEvent.VK_F8:
+					commons.screens.diplomacy.displayPrimary();
+					break;
+				case KeyEvent.VK_F9:
+					commons.screens.database.displayPrimary();
+					break;
+				case KeyEvent.VK_F10:
+					commons.screens.bar.displayPrimary();
+					break;
+				case KeyEvent.VK_F11:
+					commons.screens.statisticsAchievements.mode = Mode.STATISTICS;
+					commons.screens.statisticsAchievements.displaySecondary();
+					surface.repaint();
+					break;
+				case KeyEvent.VK_F12:
+					commons.screens.statisticsAchievements.mode = Mode.ACHIEVEMENTS;
+					commons.screens.statisticsAchievements.displaySecondary();
+					surface.repaint();
+					break;
+				case KeyEvent.VK_1:
+					if (e.isControlDown()) {
+						commons.world.level = 1;
+						primary = null;
+						commons.screens.bridge.displayPrimary();
+					}
+					break;
+				case KeyEvent.VK_2:
+					if (e.isControlDown()) {
+						commons.world.level = 2;
+						primary = null;
+						commons.screens.bridge.displayPrimary();
+					}
+					break;
+				case KeyEvent.VK_3:
+					if (e.isControlDown()) {
+						commons.world.level = 3;
+						primary = null;
+						commons.screens.bridge.displayPrimary();
+					}
+					break;
+				case KeyEvent.VK_4:
+					if (e.isControlDown()) {
+						commons.world.level = 4;
+						primary = null;
+						commons.screens.bridge.displayPrimary();
+					}
+					break;
+				case KeyEvent.VK_5:
+					if (e.isControlDown()) {
+						commons.world.level = 5;
+						primary = null;
+						commons.screens.bridge.displayPrimary();
+					}
+					break;
+				default:
+					result = false;
+				}
+			}
+			if (result) {
+				e.consume();
+			}
+			return result;
 		}
 	}
 	/**

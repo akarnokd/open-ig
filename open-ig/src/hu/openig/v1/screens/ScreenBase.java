@@ -136,4 +136,12 @@ public abstract class ScreenBase {
 	 * @param modifiers the optional modifiers, see MouseEvent.CTRL_DOWN_MASK etc.
 	 */
 	public abstract void mouseMoved(int button, int x, int y, int modifiers);
+	/** Display this screen as the primary. */
+	public void displayPrimary() {
+		commons.control.displayPrimary(this);
+	}
+	/** Display this screen as the secondary. */
+	public void displaySecondary() {
+		commons.control.displaySecondary(this);
+	}
 }

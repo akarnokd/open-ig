@@ -113,7 +113,8 @@ public class World {
 			Bridge.Level lvl = new Bridge.Level();
 			lvl.id = Integer.parseInt(level.getAttribute("id"));
 			lvl.image = rl.getImage(language, level.getAttribute("image"));
-			lvl.walk = walks.ships.get(level.getAttribute("walk-id")).positions.get("bridge");
+			lvl.ship = walks.ships.get(level.getAttribute("ship-id"));
+			lvl.walk = lvl.ship.positions.get("*bridge");
 			Element mp = XML.childElement(level, "message-panel");
 			
 			Element mpAppear = XML.childElement(mp, "appear");
@@ -310,5 +311,12 @@ public class World {
 			
 			this.buildings.put(b.id, b);
 		}
+	}
+	/**
+	 * @return the ship for the current level
+	 */
+	public WalkShip getShip() {
+		// TODO Auto-generated method stub
+		return getCurrentLevel().ship;
 	}
 }

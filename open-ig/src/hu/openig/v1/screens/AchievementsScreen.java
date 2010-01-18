@@ -314,6 +314,7 @@ public class AchievementsScreen extends ScreenBase {
 		buttons.add(diplomacy);
 		
 		achievementLabel = new ClickLabel();
+		achievementLabel.commons = commons;
 		achievementLabel.size = 14;
 		achievementLabel.label = "achievements";
 		achievementLabel.onPressed = new Act() {
@@ -327,6 +328,7 @@ public class AchievementsScreen extends ScreenBase {
 		buttons.add(achievementLabel);
 		
 		statisticsLabel = new ClickLabel();
+		statisticsLabel.commons = commons;
 		statisticsLabel.size = 14;
 		statisticsLabel.label = "statistics";
 		statisticsLabel.onPressed = new Act() {
@@ -478,6 +480,7 @@ public class AchievementsScreen extends ScreenBase {
 	 */
 	@Override
 	public void onEnter() {
+		onResize();
 		adjustScrollButtons();
 		adjustLabels();
 	}

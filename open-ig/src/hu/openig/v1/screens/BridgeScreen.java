@@ -12,6 +12,7 @@ package hu.openig.v1.screens;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.v1.core.Act;
 import hu.openig.v1.model.WalkPosition;
+import hu.openig.v1.model.WalkShip;
 import hu.openig.v1.model.WalkTransition;
 import hu.openig.v1.render.TextRenderer;
 
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.swing.SwingUtilities;
 
 /**
  * @author karnokd, 2010.01.11.
@@ -369,27 +372,58 @@ public class BridgeScreen extends ScreenBase {
 	 */
 	@Override
 	public void mouseReleased(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		if (button == 1) {
-			if (!openCloseAnimating) {
-				if (messageOpen) {
+		if (!openCloseAnimating) {
+			if (messageOpen && !projectorOpen) {
+				if (closeMessage.contains(x - origin.x, y - origin.y)) {
 					playMessageClose();
-				} else {
-					playMessageOpen();
 				}
-			}
-		} else
-		if (button == 3) {
-			if (!openCloseAnimating) {
-				if (projectorOpen) {
+			} else
+			if (projectorOpen) {
+				if (closeProjector.contains(x - origin.x, y - origin.y)) {
+					if (videoAnim != null) {
+						videoAnim.stop();
+					}
 					playProjectorClose();
+				}
+			} else 
+			if (!messageOpen && !projectorOpen) {
+				if (messageOpenRect.contains(x, y)) {
+					playMessageOpen();
 				} else {
-					playProjectorOpen();
+					for (WalkTransition tr : commons.world.getCurrentLevel().walk.transitions) {
+						if (tr.area.contains(x - origin.x, y - origin.y)) {
+							final String to = tr.to; 
+							if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty())) {
+								// move to the screen directly.
+								commons.switchScreen(to);
+							} else {
+								final ShipwalkScreen sws = commons.screens.shipwalk;
+								sws.position = commons.world.getCurrentLevel().walk;
+								
+								WalkShip ship = commons.world.getShip();
+								sws.next = ship.positions.get(tr.to);
+								sws.displayPrimary();
+								final String media = tr.media;
+								SwingUtilities.invokeLater(new Runnable() {
+									@Override
+									public void run() {
+										sws.startTransition(media);
+										sws.onCompleted = new Act() {
+											@Override
+											public void act() {
+												commons.switchScreen(to);
+												sws.onCompleted = null;
+											}
+										};
+									}
+								});
+							}
+						}
+					}
 				}
 			}
 		}
 	}
-
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
 	 */
