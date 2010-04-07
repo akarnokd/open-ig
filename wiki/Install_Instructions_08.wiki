@@ -11,14 +11,9 @@ This page details the installation instructions for Open Imperium Galactica vers
 
 [http://open-ig.googlecode.com/files/open-ig-0.8.jar open-ig-0.8.jar]
 
-2) Download the game resource files (hosted on different server at the moment):
+2) Download the game resource files:
 
-[http://darksideunderflow.com/open-ig/open-ig-data-0.8.zip Data] (300k)<br>
-[http://darksideunderflow.com/open-ig/open-ig-audio-0.8.zip Audio] (105MB)<br>
-[http://darksideunderflow.com/open-ig/open-ig-images-0.8.zip Images] (30MB)<br>
-[http://darksideunderflow.com/open-ig/open-ig-video-0.8-1.zip Video, Part 1] (~260MB)<br>
-[http://darksideunderflow.com/open-ig/open-ig-video-0.8-2.zip Video, Part 2] (~350MB)<br>
-[http://darksideunderflow.com/open-ig/open-ig-video-0.8-3.zip Video, Part 3] (~450MB)
+Soon...
 
 3) Place all these files into the same directory
 
