@@ -24,8 +24,22 @@ This page details the installation instructions for Open Imperium Galactica vers
 
 4) Run the game:
 
-* double click on {{{open-ig-0.8.jar}}}, or
-* run the following command line: {{{java -Xmx256M -jar open-ig-0.8.jar}}}, or
-* create a shell script/batch file and put in: {{{javaw -Xmx256M -jar open-ig-0.8.jar}}}
+ * double click on {{{open-ig-0.8.jar}}}, or
+ * run the following command line: {{{java -Xmx256M -jar open-ig-0.8.jar}}}, or
+ * create a shell script/batch file and put in: {{{javaw -Xmx256M -jar open-ig-0.8.jar}}}
 
 5) When the game loads, it should display the setup screen. Choose your preferred language:
+
+http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-1.png
+
+6) On the *Files* page, click on the *Auto-locate* button. It should find all 6 zip files in the current directory:
+
+http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-2.png
+
+7) Click on the *Save & Run* button. The main menu should popup.
+
+http://karnokd.uw.hu/images/open-ig-mainmenu.png
+
+8) When you start a new game, you can use *F1* to go to the Bridge screen, *F11* to go to the demo achievements screen and *F12* to go to the statistics demo screen.
+
+9) Unfortunately, everything else is missing (not ported to the new, independent version). If you liket the free building, please play with version 0.72 instead.
