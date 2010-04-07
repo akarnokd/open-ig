@@ -1,5 +1,25 @@
 #summary News archive.
 
+*January 18. 2010*
+
+I've created a small video presenting the recently developed screens: http://www.youtube.com/watch?v=qRSTZnWWGfY
+
+*January 14. 2010*
+
+Just a few [http://code.google.com/p/open-ig/wiki/Screenshots screenshots] containing the newly developed screens.
+
+*January 6. 2010*
+
+I hope I'll be able to do the development more frequently now. As the game's (now independent) resources are practically available, all I need to do is to rebuild and rewire every screen. Still a tedious task because of those numerous and small pieces...
+
+Until then, you can enjoy the screenshot for the new [http://code.google.com/p/open-ig/wiki/MainMenu Main Menu].
+
+*November 20. 2009*
+
+I have composed a small demo from the bar talk game mode. Please see the [http://code.google.com/p/open-ig/wiki/BarTalksDemo wiki page] for how to use it.
+
+If someone has the original English Imperium Galactica, you could help me with the proper english talk topics from the original.
+
 *November 16. 2009*
 
 I've been able to make some progress with the new resource location and load mechanisms. It will surely take a week until I completely associate each image with a field. If done, it will be much faster to (re-)compose the game screens.
