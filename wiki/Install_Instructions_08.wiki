@@ -7,4 +7,25 @@ This page details the installation instructions for Open Imperium Galactica vers
 
 = Details =
 
-soon...
+1) Download the main game JAR file from the downloads page:
+
+[http://open-ig.googlecode.com/files/open-ig-0.8.jar open-ig-0.8.jar]
+
+2) Download the game resource files (hosted on different server at the moment):
+
+[http://darksideunderflow.com/open-ig/open-ig-data-0.8.zip Data] (300k)<br>
+[http://darksideunderflow.com/open-ig/open-ig-audio-0.8.zip Audio] (105MB)<br>
+[http://darksideunderflow.com/open-ig/open-ig-images-0.8.zip Images] (30MB)<br>
+[http://darksideunderflow.com/open-ig/open-ig-video-0.8-1.zip Video, Part 1] (~260MB)<br>
+[http://darksideunderflow.com/open-ig/open-ig-video-0.8-2.zip Video, Part 2] (~350MB)<br>
+[http://darksideunderflow.com/open-ig/open-ig-video-0.8-3.zip Video, Part 3] (~450MB)
+
+3) Place all these files into the same directory
+
+4) Run the game:
+
+* double click on {{{open-ig-0.8.jar}}}, or
+* run the following command line: {{{java -Xmx256M -jar open-ig-0.8.jar}}}, or
+* create a shell script/batch file and put in: {{{javaw -Xmx256M -jar open-ig-0.8.jar}}}
+
+5) When the game loads, it should display the setup screen. Choose your preferred language:
