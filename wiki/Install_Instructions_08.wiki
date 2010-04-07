@@ -1,0 +1,10 @@
+#summary Installation instructions for Open-IG starting from version 0.8
+
+= Introduction =
+
+This page details the installation instructions for Open Imperium Galactica version 0.8 and above.
+
+
+= Details =
+
+soon...
