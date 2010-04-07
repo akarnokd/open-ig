@@ -45,7 +45,7 @@ This page details the installation instructions for Open Imperium Galactica vers
 
 http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-1.png
 
-6) On the *Files* page, click on the *Auto-locate* button. It should find all 6 zip files in the current directory:
+6) On the *Files* page, click on the *Auto-locate* button. It should find all 17 zip files in the current directory:
 
 http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-2.png
 
