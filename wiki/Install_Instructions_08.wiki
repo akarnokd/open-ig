@@ -40,6 +40,6 @@ http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-2.png
 
 http://karnokd.uw.hu/images/open-ig-mainmenu.png
 
-8) When you start a new game, you can use *F1* to go to the Bridge screen, *F11* to go to the demo achievements screen and *F12* to go to the statistics demo screen.
+8) When you start a new game, you can use *F1* to go to the Bridge screen, *F11* to go to the demo statistics screen and *F12* to go to the demo achievements screen.
 
 9) Unfortunately, everything else is missing (not ported to the new, independent version). If you liket the free building, please play with version 0.72 instead.
