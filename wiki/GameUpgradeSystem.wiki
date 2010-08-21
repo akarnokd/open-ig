@@ -16,4 +16,6 @@ The upgrade packages will be numbered by release date:
 
 {{{open-ig-upgrade-2010-08-21.zip}}}
 
+The *Auto locate* button should automatically place the upgrade packages in correct order.
+
 These upgrade packs should be downloaded as they will not contain any previously modified resources.
