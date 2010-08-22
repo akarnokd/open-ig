@@ -99,6 +99,21 @@ public class CommonResources {
 	/** Move right arrow. */
 	@Btn2(name = "button_right")
 	public BufferedImage[] moveRight;
+	/** Energy icon. */
+	@Img(name = "energy-icon")
+	public BufferedImage energyIcon;
+	/** Food icon. */
+	@Img(name = "food-icon")
+	public BufferedImage foodIcon;
+	/** Worker icon. */
+	@Img(name = "worker-icon")
+	public BufferedImage workerIcon;
+	/** Hospital icon. */
+	@Img(name = "hospital-icon")
+	public BufferedImage hospitalIcon;
+	/** Housing icon. */
+	@Img(name = "house-icon")
+	public BufferedImage houseIcon;
 	// --------------------------------------------
 	// The various screen objects
 	// --------------------------------------------
