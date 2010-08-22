@@ -16,6 +16,7 @@ import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.gfx.StarmapGFX;
 import hu.openig.v1.model.Fleet;
 import hu.openig.v1.model.Planet;
+import hu.openig.v1.model.PlanetProblems;
 import hu.openig.v1.model.Player;
 import hu.openig.v1.render.TextRenderer;
 
@@ -35,6 +36,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -48,9 +52,7 @@ import javax.swing.Timer;
  * @version $Revision 1.0$
  */
 public class StarmapPainter extends JComponent {
-	/**
-	 * 
-	 */
+	/** */
 	private static final long serialVersionUID = -3263402820975161594L;
 	/** The graphics objects. */
 	private final StarmapGFX gfx;
@@ -130,9 +132,31 @@ public class StarmapPainter extends JComponent {
 	/** Star rendering end color. */
 	private int endStars = 0xFCFCFC;
 	/** Number of stars per layer. */
-	private static final int STAR_COUNT = 1024;
+	private static final int STAR_COUNT = 512;
 	/** Number of layers. */
 	private static final int STAR_LAYER_COUNT = 4;
+	/** The divident ratio between the planet listing and the fleet listing. */
+	private double planetFleetSplitter = 0.5;
+	/** The planets listing entire subpanel. */
+	final Rectangle planetsListPanel = new Rectangle();
+	/** The fleets listing entire subpanel. */
+	final Rectangle fleetsListPanel = new Rectangle();
+	/** The zooming entire subpanel. */
+	final Rectangle zoomingPanel = new Rectangle();
+	/** The screen selection buttons subpanel. */
+	final Rectangle buttonsPanel = new Rectangle();
+	/** Planet fleet splitter. */
+	final Rectangle planetFleetSplitterRect = new Rectangle();
+	/** The planets/fleets splitter movement range. */
+	final Rectangle planetFleetSplitterRange = new Rectangle();
+	/** The planets listing. */
+	final Rectangle planetsList = new Rectangle();
+	/** The fleets listings. */
+	final Rectangle fleetsList = new Rectangle();
+	/** The planet scrolled index. */
+	int planetsOffset;
+	/** The fleets scroled index. */
+	int fleetsOffset;
 	/** A star object. */
 	class Star {
 		/** The star proportional position. */
@@ -144,10 +168,14 @@ public class StarmapPainter extends JComponent {
 	}
 	/** The list of stars. */
 	private List<Star> stars = new ArrayList<Star>();
+	/** The frame timestamp. */
+	private long fps;
 	/** The mouse event handler wrapper. */
 	class MouseHandler extends MouseAdapter {
 		/** In panning mode? */
 		boolean panning;
+		/** Moving the planets fleets splitter. */
+		boolean pfSplitter;
 		/** Last X. */
 		int lastX;
 		/** Last Y. */
@@ -162,8 +190,24 @@ public class StarmapPainter extends JComponent {
 					doZoomOut(e.getX(), e.getY());
 					repaint();
 				}
+			} else
+			if (fleetsList.contains(e.getPoint())) {
+				if (e.getUnitsToScroll() < 0) {
+					fleetsOffset--;
+				} else {
+					fleetsOffset++;
+				}
+				fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
+			} else
+			if (planetsList.contains(e.getPoint())) {
+				if (e.getUnitsToScroll() < 0) {
+					planetsOffset--;
+				} else {
+					planetsOffset++;
+				}
+				planetsOffset = limitScrollBox(planetsOffset, planets.size(), planetsList.height, 10);
 			}
-		};
+		}
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (SwingUtilities.isRightMouseButton(e)) {
@@ -175,15 +219,57 @@ public class StarmapPainter extends JComponent {
 				scrollMinimapTo(e.getX() - minimapInnerRect.x, e.getY() - minimapInnerRect.y);
 				repaint();
 			}
-			if (SwingUtilities.isLeftMouseButton(e) && starmapRect.contains(e.getPoint()) && !e.isControlDown() && !e.isShiftDown()) {
-				currentPlanet = getPlanetAt(e.getX(), e.getY());
-				currentFleet = getFleetAt(e.getX(), e.getY());
-				repaint();
+			if (SwingUtilities.isLeftMouseButton(e)) { 
+				if (starmapWindow.contains(e.getPoint()) && !e.isControlDown() && !e.isShiftDown()) {
+					currentPlanet = getPlanetAt(e.getX(), e.getY());
+					currentFleet = getFleetAt(e.getX(), e.getY());
+					repaint();
+				} else
+				if (planetFleetSplitterRect.contains(e.getPoint()) && planetFleetSplitterRange.height > 0) {
+					pfSplitter = true;
+				}
+				if (rightPanelVisible) {
+					for (Button2 btn : rightPanelButtons) {
+						if (btn.containsPoint(e.getX(), e.getY())) {
+							btn.down = true;
+							repaint();
+							break;
+						}
+					}
+					if (planetsList.contains(e.getPoint())) {
+						int idx = planetsOffset + (e.getY() - planetsList.y) / 10;
+						if (idx < planets.size()) {
+							currentPlanet = planets.get(idx);
+						}
+					}
+					if (fleetsList.contains(e.getPoint())) {
+						int idx = fleetsOffset + (e.getY() - fleetsList.y) / 10;
+						if (idx < fleets.size()) {
+							currentFleet = fleets.get(idx);
+						}
+					}
+				}
 			}
+			
 		}
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			panning = false;
+			pfSplitter = false;
+			boolean needRepaint = false;
+			for (Button2 btn : rightPanelButtons) {
+				if (btn.containsPoint(e.getX(), e.getY())) {
+					btn.click();
+					repaint();
+				}
+				if (btn.down) {
+					btn.down = false;
+					needRepaint = true;
+				}
+			}
+			if (needRepaint) {
+				repaint();
+			}
 		}
 		@Override
 		public void mouseDragged(MouseEvent e) {
@@ -202,8 +288,118 @@ public class StarmapPainter extends JComponent {
 				scrollMinimapTo(e.getX() - minimapInnerRect.x, e.getY() - minimapInnerRect.y);
 				repaint();
 			}
+			if (pfSplitter && planetFleetSplitterRange.contains(e.getPoint())) {
+				planetFleetSplitter = 1.0 * (e.getY() - planetFleetSplitterRange.y) / (planetFleetSplitterRange.height);
+				fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
+				planetsOffset = limitScrollBox(planetsOffset, planets.size(), planetsList.height, 10);
+				repaint();
+			}
 		}
-	};
+	}
+	/** Button with normal, pressed and disabled states. */
+	class Button2 {
+		/** The X coordinate. */
+		public int x;
+		/** The Y coordinate. */
+		public int y;
+		/** Is it down? */
+		public boolean down;
+		/** Enabled? */
+		public boolean enabled = true;
+		/** Normal image. */
+		public BufferedImage normalImage;
+		/** Down image. */
+		public BufferedImage downImage;
+		/** Disabled pattern. */
+		public BufferedImage disabledPattern;
+		/** The action to perform on clicking. */
+		public Act onClick;
+		/**
+		 * Constructor.
+		 * @param normal the normal image
+		 * @param downImage the down image
+		 * @param disabledPattern the disabled pattern
+		 */
+		public Button2(BufferedImage normal, BufferedImage downImage, BufferedImage disabledPattern) {
+			this.normalImage = normal;
+			this.downImage = downImage;
+			this.disabledPattern = disabledPattern;
+		}
+		/**
+		 * @return the width
+		 */
+		public int getWidth() {
+			return normalImage.getWidth();
+		}
+		/**
+		 * @return the height
+		 */
+		public int getHeight() {
+			return normalImage.getHeight();
+		}
+		/**
+		 * Render the button.
+		 * @param g2 the graphics object
+		 */
+		public void paint(Graphics2D g2) {
+			if (!enabled) {
+				g2.drawImage(normalImage, x, y, null);
+				TexturePaint tp = new TexturePaint(disabledPattern, new Rectangle(x, y, 3, 3));
+				Paint sp = g2.getPaint();
+				g2.setPaint(tp);
+				g2.fillRect(x, y, normalImage.getWidth(), normalImage.getHeight());
+				g2.setPaint(sp);
+			} else
+			if (down) {
+				g2.drawImage(downImage, x, y, null);
+			} else {
+				g2.drawImage(normalImage, x, y, null);
+			}
+		}
+		/**
+		 * Check if the point is within this button.
+		 * @param px the x coordinate
+		 * @param py the y coordinate
+		 * @return contains the point
+		 */
+		public boolean containsPoint(int px, int py) {
+			return enabled && x <= px && y <= py && px < x + getWidth() && py < y + getHeight();
+		}
+		/** Execute the click action. */
+		public void click() {
+			if (onClick != null) {
+				onClick.act();
+			}
+		}
+	}
+	/** Button. */
+	Button2 prevPlanet;
+	/** Button. */
+	Button2 nextPlanet;
+	/** Button. */
+	Button2 colony;
+	/** Button. */
+	Button2 prevFleet;
+	/** Button. */
+	Button2 nextFleet;
+	/** Button. */
+	Button2 equipment;
+	/** Button. */
+	Button2 info;
+	/** Button. */
+	Button2 bridge;
+	/** The list of buttons. */
+	final List<Button2> rightPanelButtons = new ArrayList<Button2>();
+	/** Status icon. */
+	private BufferedImage foodIcon;
+	/** Status icon. */
+	private BufferedImage houseIcon;
+	/** Status icon. */
+	private BufferedImage energyIcon;
+	/** Status icon. */
+	private BufferedImage workerIcon;
+	/** Status icon. */
+	private BufferedImage hospitalIcon;
 	/**
 	 * @param rl the resource locator
 	 * @param language the language
@@ -228,10 +424,11 @@ public class StarmapPainter extends JComponent {
 				repaint();
 			}
 		});
+		fps = System.nanoTime();
 		
 		loadTestImages();
 		
-		rotationTimer = new Timer(100, new Act() {
+		rotationTimer = new Timer(75, new Act() {
 			@Override
 			public void act() {
 				rotatePlanets();
@@ -272,6 +469,7 @@ public class StarmapPainter extends JComponent {
 		g2.dispose();
 		
 		// create test objects
+		Player pl = new Player();
 		
 		Planet p = new Planet();
 		p.x = 500;
@@ -280,12 +478,40 @@ public class StarmapPainter extends JComponent {
 		p.type = new PlanetType();
 		p.type.body = rl.getAnimation(language, "starmap/planets/planet_earth_30x30", 30, -1);
 		p.name = "Earth";
-		p.owner = new Player();
+		p.owner = pl;
 		p.owner.color = TextRenderer.ORANGE;
 		p.diameter = 30;
+		p.problems.addAll(Arrays.asList(PlanetProblems.values()));
 		
 		planets.add(p);
 		
+		p = new Planet();
+		p.x = 540;
+		p.y = 440;
+		p.radar = 25;
+		p.type = new PlanetType();
+		p.type.body = rl.getAnimation(language, "starmap/planets/planet_liquid_30x30", 30, -1);
+		p.name = "Aqua";
+		p.owner = pl;
+		p.owner.color = TextRenderer.ORANGE;
+		p.diameter = 20;
+		p.quarantine = true;
+		
+		planets.add(p);
+
+		p = new Planet();
+		p.x = 540;
+		p.y = 360;
+		p.radar = 25;
+		p.type = new PlanetType();
+		p.type.body = rl.getAnimation(language, "starmap/planets/planet_cratered_30x30", 30, -1);
+		p.name = "Crater";
+		p.owner = pl;
+		p.owner.color = TextRenderer.ORANGE;
+		p.diameter = 20;
+		
+		planets.add(p);
+
 		Fleet f = new Fleet();
 		f.x = 550;
 		f.y = 400;
@@ -308,6 +534,76 @@ public class StarmapPainter extends JComponent {
 		gfx.load(rl, newLanguage);
 		labels.load(rl, newLanguage, "campaign/main");
 		language = newLanguage;
+
+		int[] disabled = { 0xFF000000, 0xFF000000, 0, 0, 0xFF000000, 0, 0, 0, 0 };
+		BufferedImage disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
+		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
+
+		foodIcon = rl.getImage(language, "food-icon");
+		houseIcon = rl.getImage(language, "house-icon");
+		energyIcon = rl.getImage(language, "energy-icon");
+		workerIcon = rl.getImage(language, "worker-icon");
+		hospitalIcon = rl.getImage(language, "hospital-icon");
+		
+		prevPlanet = new Button2(gfx.backwards[0], gfx.backwards[1], disabledPattern);
+		nextPlanet = new Button2(gfx.forwards[0], gfx.forwards[1], disabledPattern);
+		prevFleet = new Button2(gfx.backwards[0], gfx.backwards[1], disabledPattern);
+		nextFleet = new Button2(gfx.forwards[0], gfx.forwards[1], disabledPattern);
+		colony = new Button2(gfx.colony[0], gfx.colony[1], disabledPattern);
+		equipment = new Button2(gfx.equipment[0], gfx.equipment[1], disabledPattern);
+		info = new Button2(gfx.info[0], gfx.info[1], disabledPattern);
+		bridge = new Button2(gfx.bridge[0], gfx.bridge[1], disabledPattern);
+		
+		rightPanelButtons.clear();
+		
+		rightPanelButtons.add(prevPlanet);
+		rightPanelButtons.add(nextPlanet);
+		rightPanelButtons.add(prevFleet);
+		rightPanelButtons.add(nextFleet);
+		rightPanelButtons.add(colony);
+		rightPanelButtons.add(equipment);
+		rightPanelButtons.add(info);
+		rightPanelButtons.add(bridge);
+		
+		prevPlanet.onClick = new Act() {
+			public void act() {
+				int idx = planets.indexOf(currentPlanet);
+				if (idx > 0 && planets.size() > 0) {
+					currentPlanet = planets.get(idx - 1);
+					planetsOffset = limitScrollBox(idx - 1, planets.size(), planetsList.height, 10);
+				}
+			}
+		};
+		nextPlanet.onClick = new Act() {
+			@Override
+			public void act() {
+				int idx = planets.indexOf(currentPlanet);
+				if (idx + 1 < planets.size()) {
+					currentPlanet = planets.get(idx + 1);
+					planetsOffset = limitScrollBox(idx + 1, planets.size(), planetsList.height, 10);
+				}
+			}
+		};
+		prevFleet.onClick = new Act() {
+			public void act() {
+				int idx = fleets.indexOf(currentFleet);
+				if (idx > 0 && fleets.size() > 0) {
+					currentFleet = fleets.get(idx - 1);
+					fleetsOffset = limitScrollBox(idx - 1, fleets.size(), fleetsList.height, 10);
+				}
+			}
+		};
+		nextFleet.onClick = new Act() {
+			@Override
+			public void act() {
+				int idx = fleets.indexOf(currentFleet);
+				if (idx + 1 < fleets.size()) {
+					currentFleet = fleets.get(idx + 1);
+					fleetsOffset = limitScrollBox(idx + 1, fleets.size(), fleetsList.height, 10);
+				}
+			}
+		};
+		
 		repaint();
 	}
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
@@ -321,7 +617,7 @@ public class StarmapPainter extends JComponent {
 			starmapWindow.height -= gfx.hScrollFill.getHeight();
 		}
 		if (rightPanelVisible) {
-			starmapWindow.width -= gfx.fleetsFill.getWidth();
+			starmapWindow.width -= gfx.panelVerticalFill.getWidth();
 			if (scrollbarsVisible) {
 				starmapWindow.width -= 3;
 			}
@@ -370,9 +666,9 @@ public class StarmapPainter extends JComponent {
 				}
 			}
 		}
-		rightPanel.x = getWidth() - gfx.planetsFill.getWidth();
+		rightPanel.x = getWidth() - gfx.panelVerticalFill.getWidth();
 		rightPanel.y = starmapWindow.y;
-		rightPanel.width = gfx.planetsFill.getWidth();
+		rightPanel.width = gfx.panelVerticalFill.getWidth();
 		rightPanel.height = starmapWindow.height - saveY;
 
 		bottomPanel.x = starmapWindow.x;
@@ -381,7 +677,94 @@ public class StarmapPainter extends JComponent {
 		bottomPanel.height = gfx.infoFill.getHeight();
 
 		scrollbarPainter.setBounds(starmapWindow, saveX, saveY);
+		// ..............................................................
+		// the right subpanels
+		buttonsPanel.width = gfx.panelVerticalFill.getWidth() - 4;
+		buttonsPanel.height = gfx.info[0].getHeight() + gfx.bridge[0].getHeight() + 2;
+		buttonsPanel.x = rightPanel.x + 2;
+		buttonsPanel.y = rightPanel.y + rightPanel.height - buttonsPanel.height;
 		
+		zoomingPanel.width = buttonsPanel.width;
+		zoomingPanel.height = gfx.zoom[0].getHeight() + 2;
+		zoomingPanel.x = buttonsPanel.x;
+		zoomingPanel.y = buttonsPanel.y - zoomingPanel.height - 2;
+		
+		planetFleetSplitterRange.x = zoomingPanel.x;
+		planetFleetSplitterRange.width = zoomingPanel.width;
+		planetFleetSplitterRange.y = rightPanel.y + 16 + gfx.backwards[0].getHeight()
+			+ gfx.colony[0].getHeight();
+		planetFleetSplitterRange.height = zoomingPanel.y - planetFleetSplitterRange.y
+			- 16 - gfx.backwards[0].getHeight() - gfx.equipment[0].getHeight();
+		
+		planetFleetSplitterRect.x = planetFleetSplitterRange.x;
+		planetFleetSplitterRect.width = planetFleetSplitterRange.width;
+		planetFleetSplitterRect.height = 4;
+		planetFleetSplitterRect.y = (int)(planetFleetSplitterRange.y + (planetFleetSplitter * planetFleetSplitterRange.height));
+
+		planetsListPanel.x = zoomingPanel.x;
+		planetsListPanel.y = rightPanel.y + 2;
+		planetsListPanel.width = zoomingPanel.width;
+		planetsListPanel.height = planetFleetSplitterRect.y - planetsListPanel.y;
+		
+		fleetsListPanel.x = planetsListPanel.x;
+		fleetsListPanel.y = planetsListPanel.y + planetsListPanel.height + 2;
+		fleetsListPanel.width = planetsListPanel.width;
+		fleetsListPanel.height = zoomingPanel.y - planetFleetSplitterRect.y - 4;
+		
+		prevPlanet.x = planetsListPanel.x + 2;
+		prevPlanet.y = planetsListPanel.y + 1;
+		nextPlanet.x = planetsListPanel.x + prevPlanet.getWidth() + 4;
+		nextPlanet.y = planetsListPanel.y + 1;
+
+		prevFleet.x = fleetsListPanel.x + 2;
+		prevFleet.y = fleetsListPanel.y + 1;
+		nextFleet.x = fleetsListPanel.x + prevFleet.getWidth() + 4;
+		nextFleet.y = fleetsListPanel.y + 1;
+
+		colony.x = planetsListPanel.x + 1;
+		colony.y = planetsListPanel.y + planetsListPanel.height - colony.getHeight() - 1;
+
+		equipment.x = fleetsListPanel.x + 1;
+		equipment.y = fleetsListPanel.y + fleetsListPanel.height - equipment.getHeight() - 1;
+		
+		info.x = buttonsPanel.x + 1;
+		info.y = buttonsPanel.y + 1;
+		bridge.x = buttonsPanel.x + 1;
+		bridge.y = info.y + info.getHeight() + 1;
+		
+		if (planets.size() > 0) {
+			int idx = planets.indexOf(currentPlanet);
+			prevPlanet.enabled = idx > 0;
+			nextPlanet.enabled = idx + 1 < planets.size();
+		} else {
+			prevPlanet.enabled = false;
+			nextPlanet.enabled = false;
+		}
+		
+		if (fleets.size() > 0) {
+			int idx = fleets.indexOf(currentFleet);
+			prevFleet.enabled = idx > 0;
+			nextFleet.enabled = idx + 1 < fleets.size();
+		} else {
+			prevFleet.enabled = false;
+			nextFleet.enabled = false;
+		}
+
+		// ..............................................................
+
+		planetsList.x = planetsListPanel.x;
+		planetsList.y = planetsListPanel.y + prevPlanet.getHeight() + 1;
+		planetsList.width = planetsListPanel.width;
+		planetsList.height = colony.y - planetsList.y;
+
+		fleetsList.x = fleetsListPanel.x;
+		fleetsList.y = fleetsListPanel.y + prevFleet.getHeight() + 1;
+		fleetsList.width = fleetsListPanel.width;
+		fleetsList.height = equipment.y - fleetsList.y;
+
+		
+		
+		// TODO fleet and planet listings
 		// ..............................................................
 		minimapRect.x = getWidth() - gfx.minimap.getWidth();
 		minimapRect.y = getHeight() - gfx.minimap.getHeight() - 17;
@@ -467,8 +850,6 @@ public class StarmapPainter extends JComponent {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getWidth(), getHeight());
 
-		txt.paintTo(g2, 10, 3, 14, TextRenderer.RED, getWidth() + " x " + getHeight() + " " + language);
-		
 		computeRectangles();
 //		// leave space for the status bars
 //		g2.setColor(Color.RED);
@@ -482,7 +863,7 @@ public class StarmapPainter extends JComponent {
 		double zoom = getZoom();
 		
 		if (showStars) {
-			paintStars(g2, starmapRect);
+			paintStars(g2, starmapRect, starmapClip);
 		}
 		
 		if (showGrid) {
@@ -529,6 +910,35 @@ public class StarmapPainter extends JComponent {
 				g2.drawLine(x0 - 1, y0 + di - 2, x0 - 1, y0 + di + 1);
 				g2.drawLine(x0 + di + 1, y0 + di - 2, x0 + di + 1, y0 + di + 1);
 			}
+			if (p.quarantine && minimapPlanetBlink) {
+				g2.setColor(Color.RED);
+				g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
+			}
+			if (p.problems.size() > 0) {
+				int w = p.problems.size() * 11 - 1;
+				for (int i = 0; i < p.problems.size(); i++) {
+					BufferedImage icon = null;
+					switch (p.problems.get(i)) {
+					case HOUSING:
+						icon = houseIcon;
+						break;
+					case FOOD:
+						icon = foodIcon;
+						break;
+					case HOSPITAL:
+						icon = hospitalIcon;
+						break;
+					case ENERGY:
+						icon = energyIcon;
+						break;
+					case WORKFORCE:
+						icon = workerIcon;
+						break;
+					default:
+					}
+					g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
+				}
+			}
 		}
 		if (showFleets) {
 			for (Fleet f : fleets) {
@@ -548,8 +958,47 @@ public class StarmapPainter extends JComponent {
 		
 		g2.setClip(defaultClip);
 
+		// TODO panel rendering
+		
 		if (rightPanelVisible) {
-			paintVertically(g2, rightPanel, gfx.planetsTop, gfx.planetsBottom, gfx.planetsBottom);
+			paintVertically(g2, rightPanel, gfx.panelVerticalTop, gfx.panelVerticalFill, gfx.panelVerticalFill);
+			
+//			g2.setColor(Color.GRAY);
+//			g2.fill(planetsListPanel);
+//			g2.setColor(Color.LIGHT_GRAY);
+//			g2.fill(fleetsListPanel);
+////			g2.setColor(Color.YELLOW);
+////			g2.fill(planetFleetSplitterRange);
+			
+			g2.drawImage(gfx.panelVerticalSeparator, planetFleetSplitterRect.x, planetFleetSplitterRect.y, null);
+			g2.drawImage(gfx.panelVerticalSeparator, zoomingPanel.x, zoomingPanel.y - 2, null);
+			g2.drawImage(gfx.panelVerticalSeparator, buttonsPanel.x, buttonsPanel.y - 2, null);
+			
+			for (Button2 btn : rightPanelButtons) {
+				btn.paint(g2);
+			}
+			Shape sp = g2.getClip();
+			g2.setClip(planetsList);
+			for (int i = planetsOffset; i < planets.size(); i++) {
+				Planet p = planets.get(i);
+				int color = TextRenderer.GREEN;
+				if (p == currentPlanet) {
+					color = TextRenderer.RED;
+				}
+				txt.paintTo(g2, planetsList.x + 3, planetsList.y + (i - planetsOffset) * 10 + 2, 7, color, p.name);
+			}
+			g2.setClip(fleetsList);
+			for (int i = fleetsOffset; i < fleets.size(); i++) {
+				Fleet p = fleets.get(i);
+				int color = TextRenderer.GREEN;
+				if (p == currentFleet) {
+					color = TextRenderer.RED;
+				}
+				txt.paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, p.name);
+			}
+			
+			
+			g2.setClip(sp);
 		}
 		if (bottomPanelVisible) {
 			paintHorizontally(g2, bottomPanel, gfx.infoLeft, gfx.infoRight, gfx.infoFill);
@@ -576,22 +1025,40 @@ public class StarmapPainter extends JComponent {
 			}
 			g2.setClip(defaultClip);
 		}
+		long frame = System.nanoTime() - fps;
+		fps = System.nanoTime();
+		txt.paintTo(g2, 10, 3, 14, TextRenderer.RED, getWidth() + " x " + getHeight() + " " + language + " Repaint/Seconds: " + String.format("%.3f", (1E9 / frame)));
+
 	}
 	/**
 	 * Paint the multiple layer of stars.
 	 * @param g2 the graphics object
 	 * @param rect the target rectanlge
+	 * @param view the viewport rectangle
 	 */
-	private void paintStars(Graphics2D g2, Rectangle rect) {
-		int starsize = zoomIndex < zoomLevelCount / 2 ? 1 : 2;
+	private void paintStars(Graphics2D g2, Rectangle rect, Rectangle view) {
+		int starsize = zoomIndex < zoomLevelCount / 2.5 ? 1 : 2;
+		double xf = (view.x - rect.x) * 1.0 / rect.width;
+		double yf = (view.y - rect.y) * 1.0 / rect.height;
+		Color last = null;
 		for (int i = 0; i < stars.size(); i++) {
 			Star s = stars.get(i);
-			int layer = i % STAR_COUNT;
-			g2.setColor(s.color);
-			int x = (int)(starmapRect.x + s.x * starmapRect.width);
-			int y = (int)(starmapRect.y + s.y * starmapRect.height);
+			double layer = 0.9 - (i / STAR_COUNT) * 0.10;
+			double w = rect.width * layer;
+			double h = rect.height * layer;
+			double lx = rect.x;
+			double ly = rect.y;
 			
-			g2.fillRect(x, y, starsize, starsize);
+			
+			int x = (int)(lx + xf * (rect.width - w) + s.x * rect.width);
+			int y = (int)(ly + yf * (rect.height - h) + s.y * rect.height);
+			if (starmapClip.contains(x, y)) {
+				if (last != s.color) {
+					g2.setColor(s.color);
+					last = s.color;
+				}
+				g2.fillRect(x, y, starsize, starsize);
+			}
 		}
 	}
 	/**
@@ -603,7 +1070,7 @@ public class StarmapPainter extends JComponent {
 		g2.setColor(gfx.gridColor);
 		Stroke st = g2.getStroke();
 		//FIXME the dotted line rendering is somehow very slow
-		g2.setStroke(gfx.gridStroke);
+//		g2.setStroke(gfx.gridStroke);
 		
 		float fw = rect.width;
 		float fh = rect.height;
@@ -954,6 +1421,33 @@ public class StarmapPainter extends JComponent {
 			s.x = random.nextDouble();
 			s.y = random.nextDouble();
 			s.color = colors[random.nextInt(colors.length)];
+			stars.add(s);
 		}
+		Collections.sort(stars, new Comparator<Star>() {
+			@Override
+			public int compare(Star o1, Star o2) {
+				int c1 = o1.color.getRGB() & 0xFFFFFF;
+				int c2 = o2.color.getRGB() & 0xFFFFFF;
+				return c1 - c2;
+			}
+		});
+	}
+	/**
+	 * Limit the scroll box offset value based on the size of the box and rowheight.
+	 * @param offset the current offset
+	 * @param count the total item count
+	 * @param height the box height
+	 * @param rowHeight the rowheight
+	 * @return the corrected offset
+	 */
+	int limitScrollBox(int offset, int count, int height, int rowHeight) {
+		int visibleRows = height / rowHeight;
+		if (count <= visibleRows || offset <= 0) {
+			return 0;
+		}
+		if (offset > count - visibleRows) {
+			return count - visibleRows;
+		}
+		return offset; 
 	}
 }

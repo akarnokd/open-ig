@@ -51,7 +51,7 @@ public class StarmapTest extends JFrame {
 	 * @param lang the language
 	 */
 	public StarmapTest(ResourceLocator rl, String lang) {
-		super("Bar test");
+		super("Starmap test");
 		this.rl = rl;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		Container c = getContentPane();

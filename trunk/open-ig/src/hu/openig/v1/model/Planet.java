@@ -10,6 +10,9 @@ package hu.openig.v1.model;
 
 import hu.openig.v1.core.PlanetType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A planet.
  * @author karnokd, 2010.01.07.
@@ -40,4 +43,8 @@ public class Planet {
 	public int radar;
 	/** The diameter in pixels up to 30 for the maximum zoom. */
 	public int diameter;
+	/** The current list of problems. */
+	public List<PlanetProblems> problems = new ArrayList<PlanetProblems>();
+	/** The planet is under quarantine: display red frame. */
+	public boolean quarantine;
 }

@@ -35,21 +35,9 @@ public class StarmapGFX {
 	/** Zoom button. */
 	@Cat(name = "starmap/button_zoom")
 	public BufferedImage[] zoom;
-	/** Panel buttons. */
-	@Img(name = "starmap/panel_buttons")
-	public BufferedImage buttonsPanel;
 	/** Commands separator. */
 	@Img(name = "starmap/panel_commands_separator")
 	public BufferedImage commandSeparator;
-	/** Fleets bottom part. */
-	@Img(name = "starmap/panel_fleets_bottom")
-	public BufferedImage fleetsBottom;
-	/** Fleets filler part. */
-	@Img(name = "starmap/panel_fleets_fill")
-	public BufferedImage fleetsFill;
-	/** Fleets top part. */
-	@Img(name = "starmap/panel_fleets_top")
-	public BufferedImage fleetsTop;
 	/** Info panel filler. */
 	@Img(name = "starmap/panel_info_fill")
 	public BufferedImage infoFill;
@@ -63,17 +51,14 @@ public class StarmapGFX {
 	@Img(name = "starmap/panel_minimap")
 	public BufferedImage minimap;
 	/** Planets panel bottom. */
-	@Img(name = "starmap/panel_planets_bottom")
-	public BufferedImage planetsBottom;
+	@Img(name = "starmap/panel_vertical_top")
+	public BufferedImage panelVerticalTop;
 	/** Planets panel filler. */
-	@Img(name = "starmap/panel_planets_fill")
-	public BufferedImage planetsFill;
+	@Img(name = "starmap/panel_vertical_fill")
+	public BufferedImage panelVerticalFill;
 	/** Planets panel top. */
-	@Img(name = "starmap/panel_planets_top")
-	public BufferedImage planetsTop;
-	/** Zoom panel. */
-	@Img(name = "starmap/panel_sz")
-	public BufferedImage zoomPanel;
+	@Img(name = "starmap/panel_vertical_separator")
+	public BufferedImage panelVerticalSeparator;
 	/** Radar dots. */
 	@Anim(name = "starmap/radar_dots_3x3x4", width = 3)
 	public BufferedImage[] radarDots;
