@@ -31,9 +31,7 @@ import javax.swing.SwingUtilities;
  */
 public final class Startup {
 	/** The minimum memory required to run Open-IG. */
-	private static final long MINIMUM_MEMORY = 160L;
-	/** The version number. */
-	public static final String VERSION = "0.8"; 
+	private static final long MINIMUM_MEMORY = 256L;
 	/** Constructor. */
 	private Startup() {
 		// private constructor.
@@ -66,10 +64,10 @@ public final class Startup {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				JOptionPane.showMessageDialog(null, "<html><p>Unable to auto-start Open Imperium Galactica version " + VERSION + ".<br>Please make sure you have at least " 
+				JOptionPane.showMessageDialog(null, "<html><p>Unable to auto-start Open Imperium Galactica version " + Configuration.VERSION + ".<br>Please make sure you have at least " 
 						+ MINIMUM_MEMORY + "MB defined for running a Java program in either your<br>"
 						+ "operating system's configuration for Java programs,<br> or run the program from command line using the <code>-Xmx" + MINIMUM_MEMORY + "M</code> parameter.</p><br>"
-						+ "<p>Nem sikerült automatikusan elindítani az Open Imperium Galactika " + VERSION + " programot.<br>Kérem ellenõrizze, hogy alapértelmezésben a Java programok futtatásához "
+						+ "<p>Nem sikerült automatikusan elindítani az Open Imperium Galactika " + Configuration.VERSION + " programot.<br>Kérem ellenõrizze, hogy alapértelmezésben a Java programok futtatásához "
 						+ "legalább " + MINIMUM_MEMORY + "MB memória<br> van beállítva az Operációs Rendszerben,<br> vagy indítsa a program parancssorból a <code>-Xmx" + MINIMUM_MEMORY + "M</code> "
 						+ "paraméter megadásával.</p>"
 				);
@@ -82,10 +80,10 @@ public final class Startup {
 	 */
 	private static boolean doLowMemory() {
 		ProcessBuilder pb = new ProcessBuilder();
-		if (!new File("open-ig-" + VERSION + ".jar").exists()) {
+		if (!new File("open-ig-" + Configuration.VERSION + ".jar").exists()) {
 			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/res/OpenIG_Splash.png", "hu.openig.v1.Startup");
 		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-" + VERSION + ".jar", "-splash:hu/openig/res/OpenIG_Splash.png", "hu.openig.v1.Startup");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-" + Configuration.VERSION + ".jar", "-splash:hu/openig/res/OpenIG_Splash.png", "hu.openig.v1.Startup");
 		}
 		try {
 			Process p = pb.start();

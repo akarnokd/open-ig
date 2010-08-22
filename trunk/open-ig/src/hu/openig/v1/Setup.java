@@ -32,9 +32,11 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -85,6 +87,7 @@ import javax.swing.table.AbstractTableModel;
  * @author karnokd, 2009.09.23.
  * @version $Revision 1.0$
  */
+@SuppressWarnings("unchecked") // since 6u20 or so, most jlist models became generic, but if I put the type in, it won't compile on older versions
 public class Setup extends JFrame {
 	/** */
 	private static final long serialVersionUID = -2427185313578487251L;
@@ -711,9 +714,20 @@ public class Setup extends JFrame {
 				return name.toLowerCase().startsWith("open-ig-") && name.toLowerCase().endsWith(".zip");
 			}
 		});
+		TreeSet<String> upgrades = new TreeSet<String>(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o2.compareTo(o1);
+			}
+		});
 		if (files != null) {
 			for (File f : files) {
-				fileListModel.addElement(f.getName());
+				String name = f.getName();
+				if (name.toLowerCase().startsWith("open-ig-upgrade-") && name.toLowerCase().endsWith(".zip")) {
+					upgrades.add(name);
+				} else {
+					fileListModel.addElement(f.getName());
+				}
 			}
 		}
 		filesPanel.repaint();

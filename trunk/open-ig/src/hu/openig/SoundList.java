@@ -26,6 +26,7 @@ import javax.swing.event.ListSelectionListener;
  * @author karnokd, 2009.01.18.
  * @version $Revision 1.0$
  */
+@SuppressWarnings("unchecked") // since 6u20 or so, most jlist models became generic, but if I put the type in, it won't compile on older versions
 public final class SoundList {
 	/** The audio playback thread. */
 	static AudioThread ad;
