@@ -10,6 +10,8 @@ package hu.openig.v1.gfx;
 
 import hu.openig.v1.core.ResourceLocator;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /**
@@ -88,10 +90,10 @@ public class StarmapGFX {
 	@Img(name = "starmap/scrollbar_vertical_fill")
 	public BufferedImage vScrollFill;
 	/** Scrollbar vertical top. */
-	@Img(name = "starmap/scrollbar_vertical_top")
+	@Img(name = "starmap/scrollbar_vertical_bottom")
 	public BufferedImage vScrollBottom;
 	/** Scrollbar vertical bottom. */
-	@Img(name = "starmap/scrollbar_vertical_bottom")
+	@Img(name = "starmap/scrollbar_vertical_top")
 	public BufferedImage vScrollTop;
 	/** Scrollknob horizontal filler. */
 	@Img(name = "starmap/scrollknob_horizontal_fill")
@@ -183,6 +185,11 @@ public class StarmapGFX {
 	/** View target. */
 	@Cat(name = "starmap/button_view_target")
 	public BufferedImage[] viewTarget;
+	/** The dotted grid color. */
+	public final Color gridColor = new Color(0x783C5C);
+	/** The dotted grid stroke. */
+	public final BasicStroke gridStroke = new BasicStroke(1f, BasicStroke.CAP_BUTT, 
+            BasicStroke.JOIN_MITER, 10f, new float[] { 1f }, 0f);
 	/**
 	 * Load the resources from the given locator and language.
 	 * @param rl the resource locator
@@ -190,5 +197,18 @@ public class StarmapGFX {
 	 */
 	public void load(ResourceLocator rl, String language) {
 		GFXLoader.loadResources(this, rl, language);
+	}
+	/**
+	 * Mix two colors with a factor.
+	 * @param c1 the first color
+	 * @param c2 the second color
+	 * @param rate the mixing factor
+	 * @return the mixed color
+	 */
+	public int mixColors(int c1, int c2, float rate) {
+		return
+			((int)((c1 & 0xFF0000) * rate + (c2 & 0xFF0000) * (1 - rate)) & 0xFF0000)
+			| ((int)((c1 & 0xFF00) * rate + (c2 & 0xFF00) * (1 - rate)) & 0xFF00)
+			| ((int)((c1 & 0xFF) * rate + (c2 & 0xFF) * (1 - rate)) & 0xFF);
 	}
 }
