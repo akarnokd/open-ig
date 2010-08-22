@@ -38,4 +38,6 @@ public class Planet {
 	public boolean rotationDirection;
 	/** The radar radius. */
 	public int radar;
+	/** The diameter in pixels up to 30 for the maximum zoom. */
+	public int diameter;
 }
