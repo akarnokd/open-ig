@@ -13,16 +13,16 @@
 <entry key="audioChannels">8</entry>
 <entry key="containers-3">video</entry>
 <entry key="containers-2">images</entry>
-<entry key="effectVolume">100</entry>
+<entry key="effectVolume">53</entry>
 <entry key="containers-1">data</entry>
 <entry key="containers-0">audio</entry>
 <entry key="top">0</entry>
-<entry key="videoVolume">100</entry>
+<entry key="videoVolume">53</entry>
 <entry key="height">480</entry>
 <entry key="width">1024</entry>
 <entry key="language">hu</entry>
 <entry key="disableD3D">false</entry>
 <entry key="muteEffect">false</entry>
-<entry key="musicVolume">100</entry>
+<entry key="musicVolume">45</entry>
 <entry key="fileName">open-ig-config.xml</entry>
 </properties>

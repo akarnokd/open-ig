@@ -206,6 +206,7 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		
 		movie = commons.screens.movie;
+		statusbar = commons.screens.statusbar;
 		for (ScreenBase sb : screens) {
 			sb.initialize(commons, surface);
 		}
@@ -337,17 +338,20 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	public void doMoveMouseAgain() {
 		Point pt = getCurrentMousePosition();
+		ScreenBase sb = statusbar;
 		if (statusbarVisible) {
-			statusbar.mouseMoved(0, pt.x, pt.y, 0);
-			statusbar.handleRepaint();
+			sb.mouseMoved(0, pt.x, pt.y, 0);
+			sb.handleRepaint();
 		}
-		if (secondary != null) {
-			secondary.mouseMoved(0, pt.x, pt.y, 0);
-			secondary.handleRepaint();
+		ScreenBase pri = primary;
+		ScreenBase sec = secondary;
+		if (pri != null) {
+			pri.mouseMoved(0, pt.x, pt.y, 0);
+			pri.handleRepaint();
 		} else
-		if (primary != null) {
-			primary.mouseMoved(0, pt.x, pt.y, 0);
-			primary.handleRepaint();
+		if (sec != null) {
+			sec.mouseMoved(0, pt.x, pt.y, 0);
+			sec.handleRepaint();
 		}
 	}
 	/**

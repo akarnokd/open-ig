@@ -36,4 +36,6 @@ public class Planet {
 	public int rotationPhase;
 	/** The rotation direction. */
 	public boolean rotationDirection;
+	/** The radar radius. */
+	public int radar;
 }

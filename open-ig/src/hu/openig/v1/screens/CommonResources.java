@@ -148,6 +148,8 @@ public class CommonResources {
 		public LoadingScreen loading;
 		/** The ship walk screen. */
 		public ShipwalkScreen shipwalk;
+		/** The status bar screen. */
+		public StatusbarScreen statusbar;
 	}
 	/** The game window. */
 	public JFrame window;
