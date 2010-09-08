@@ -10,7 +10,6 @@ package hu.openig.v1.model;
 
 import hu.openig.utils.XML;
 import hu.openig.v1.core.Difficulty;
-import hu.openig.v1.core.PlanetType;
 import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.core.ResourceType;
 import hu.openig.v1.core.Tile;
@@ -41,12 +40,6 @@ public class World {
 	public int level;
 	/** The current player. */
 	public Player player;
-	/** The default starmap. */
-	public BufferedImage map;
-	/** The minimum scaling level. */
-	public float minScale;
-	/** The maximum scaling level. */
-	public float maxScale;
 	/** The list of all players. */
 	public final List<Player> players = new ArrayList<Player>();
 	/** The time. */
@@ -61,8 +54,6 @@ public class World {
 	public final Map<String, BuildingType> buildings = new HashMap<String, BuildingType>();
 	/** Achievements. */
 	public final List<Achievement> achievements = new ArrayList<Achievement>();
-	/** The planet types. */
-	public final Map<String, PlanetType> planetTypes = new HashMap<String, PlanetType>();
 	/** The available crew-talks. */
 	public Talks talks;
 	/** The ship-walk definitions. */
@@ -73,6 +64,8 @@ public class World {
 	public Difficulty difficulty;
 	/** The bridge definition. */
 	public Bridge bridge;
+	/** The galaxy model. */
+	public GalaxyModel galaxyModel;
 	/**
 	 * Load the game world's resources.
 	 * @param rl the resource locator
@@ -81,7 +74,6 @@ public class World {
 	 */
 	public void load(ResourceLocator rl, String language, String game) {
 		level = definition.startingLevel;
-		processGalaxy(rl, language, definition.galaxy);
 //		Element races = rl.getXML(language, game + "/races");
 //		Element tech = rl.getXML(language, game + "/tech");
 		processBuildings(rl, language, definition.build);
@@ -92,6 +84,8 @@ public class World {
 		walks.load(rl, language, definition.walk);
 		bridge = new Bridge();
 		processBridge(rl, language, definition.bridge);
+		galaxyModel = new GalaxyModel();
+		galaxyModel.processGalaxy(rl, language, definition.galaxy);
 	}
 	/**
 	 * Returns the current level graphics.
@@ -173,64 +167,6 @@ public class World {
 			msg.title = message.getAttribute("title");
 			msg.description = message.getAttribute("description");
 			bridge.receiveMessages.add(msg);
-		}
-	}
-	/**
-	 * Process the contents of the galaxy data.
-	 * @param data the galaxy data file
-	 * @param rl the resource locator
-	 * @param language the current language
-	 */
-	protected void processGalaxy(ResourceLocator rl, String language, String data) {
-		Element galaxy = rl.getXML(language, data);
-		Element background = XML.childElement(galaxy, "background");
-		map = rl.getImage(language, background.getAttribute("image"));
-		minScale = Float.parseFloat(background.getAttribute("min-scale"));
-		maxScale = Float.parseFloat(background.getAttribute("max-scale"));
-		
-		Element planets = XML.childElement(galaxy, "planets");
-		for (Element planet : XML.childrenWithName(planets, "planet")) {
-			PlanetType planetType = new PlanetType();
-			planetType.type = planet.getAttribute("type");
-			planetType.label = planet.getAttribute("label");
-			
-			Element bodyElement = XML.childElement(planet, "body");
-			planetType.body = rl.getAnimation(language, bodyElement.getTextContent(), -1, 64);
-			Element tileset = XML.childElement(planet, "tileset");
-			String tilePattern = tileset.getAttribute("pattern");
-			
-			for (Element te : XML.children(tileset)) {
-				if (te.getNodeName().equals("tile-range")) {
-					int start = Integer.parseInt(te.getAttribute("start"));
-					int end = Integer.parseInt(te.getAttribute("end"));
-					String ws = te.getAttribute("width");
-					int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
-					String hs = te.getAttribute("height");
-					int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
-					for (int id = start; id <= end; id++) {
-						Tile tile = new Tile(width, height, rl.getImage(language, String.format(tilePattern, id)), null);
-						planetType.tiles.put(id, tile);
-					}
-				} else
-				if (te.getNodeName().equals("tile")) {
-					int id = Integer.parseInt(te.getAttribute("id"));
-					String ws = te.getAttribute("width");
-					int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
-					String hs = te.getAttribute("height");
-					int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
-					Tile tile = new Tile(width, height, rl.getImage(language, String.format(tilePattern, id)), null);
-					planetType.tiles.put(id, tile);
-				}
-			}
-			
-			Element map = XML.childElement(planet, "map");
-			String mapPattern = map.getAttribute("pattern");
-			int start = Integer.parseInt(map.getAttribute("start"));
-			int end = Integer.parseInt(map.getAttribute("end"));
-			for (int i = start; i <= end; i++) {
-				planetType.surfaces.put(i, rl.getData(language, String.format(mapPattern, i)));
-			}
-			planetTypes.put(planetType.type, planetType);
 		}
 	}
 	/**
