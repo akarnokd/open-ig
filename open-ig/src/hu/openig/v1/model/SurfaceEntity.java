@@ -25,6 +25,8 @@ public class SurfaceEntity {
 	 * The virtual column within the tile object. The column is defined in the  down-right direction and is always nonnegative. 
 	 */
 	public int virtualColumn;
+	/** The location of the bottom element, e.g the (0, height - 1) virtual row. */
+	public int bottomRow;
 	/**
 	 * The referenced tile.
 	 */
@@ -40,7 +42,7 @@ public class SurfaceEntity {
 			return tile.getStrip(tile.alphaBlendImage(), virtualRow);
 		} else
 		if (virtualRow == tile.height - 1) {
-			return tile.getStrip(tile.alphaBlendImage(), tile.height + virtualColumn);
+			return tile.getStrip(tile.alphaBlendImage(), tile.height - 1 + virtualColumn);
 		}
 		return null;
 	}
