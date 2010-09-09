@@ -18,6 +18,7 @@ import hu.openig.v1.model.BuildingModel;
 import hu.openig.v1.model.BuildingType;
 import hu.openig.v1.model.GalaxyModel;
 import hu.openig.v1.model.PlanetSurface;
+import hu.openig.v1.model.SurfaceEntity;
 import hu.openig.v1.model.BuildingType.TileSet;
 
 import java.awt.Color;
@@ -42,8 +43,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -161,6 +164,7 @@ public class MapEditor extends JFrame {
 				selection.alpha = 1.0f;
 				areaAccept.alpha = 1.0f;
 				areaDeny.alpha = 1.0f;
+				areaCurrent.alpha = 1.0f;
 				
 				buildTables();
 			}
@@ -229,10 +233,26 @@ public class MapEditor extends JFrame {
 				doSelectSurface();
 			}
 		});
+		surfaceTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					doPlaceSurface();
+				}
+			}
+		});
 		buildingTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				doSelectBuilding();
+			}
+		});
+		buildingTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					doPlaceBuilding();
+				}
 			}
 		});
 		
@@ -686,6 +706,29 @@ public class MapEditor extends JFrame {
 		renderer.surface.computeRenderingLocations();
 		renderer.repaint();
 	}
+	/**
+	 * Place a tile onto the current surface map.
+	 * @param tile the tile
+	 * @param x the tile's leftmost coordinate
+	 * @param y the tile's leftmost coordinate
+	 * @param isBuilding add as building?
+	 */
+	void placeTile(Tile tile, int x, int y, boolean isBuilding) {
+		for (int a = x; a < x + tile.width; a++) {
+			for (int b = y; b > y - tile.height; b--) {
+				SurfaceEntity se = new SurfaceEntity();
+				se.virtualRow = y - b;
+				se.virtualColumn = a - x;
+				se.bottomRow = tile.height - 1;
+				se.tile = tile;
+				if (isBuilding) {
+					renderer.surface.buildingmap.put(Location.of(a, b), se);
+				} else {
+					renderer.surface.basemap.put(Location.of(a, b), se);
+				}
+			}
+		}
+	}
 	/** The map renderer. */
 	class MapRenderer extends JComponent {
 		/** */
@@ -698,50 +741,93 @@ public class MapEditor extends JFrame {
 		int offsetY;
 		/** The current location based on the mouse pointer. */
 		Location current;
-		/** Preset. */
-		public MapRenderer() {
-			MouseAdapter ma = new MouseAdapter() {
-				int lastX;
-				int lastY;
-				boolean drag;
-				@Override
-				public void mousePressed(MouseEvent e) {
-					if (SwingUtilities.isRightMouseButton(e)) {
-						drag = true;
-						lastX = e.getX();
-						lastY = e.getY();
-					} else
-					if (SwingUtilities.isMiddleMouseButton(e)) {
-						offsetX = 0;
-						offsetY = 0;
-						repaint();
-					}
-				}
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					if (SwingUtilities.isRightMouseButton(e)) {
-						drag = false;
-					}
-				}
-				@Override
-				public void mouseDragged(MouseEvent e) {
-					if (drag) {
-						offsetX += e.getX() - lastX;
-						offsetY += e.getY() - lastY;
-						
-						lastX = e.getX();
-						lastY = e.getY();
-						repaint();
-					}
-				}
-				@Override
-				public void mouseMoved(MouseEvent e) {
-					current = getLocationAt(e.getX(), e.getY());
+		/** The currently selected locations. */
+		final Set<Location> selected = new HashSet<Location>();
+		/** The selected rectangular region. */
+		Rectangle selectedRectangle;
+		/** Right click-drag. */
+		MouseAdapter ma = new MouseAdapter() {
+			int lastX;
+			int lastY;
+			boolean drag;
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					drag = true;
+					lastX = e.getX();
+					lastY = e.getY();
+				} else
+				if (SwingUtilities.isMiddleMouseButton(e)) {
+					offsetX = 0;
+					offsetY = 0;
 					repaint();
 				}
-			};
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					drag = false;
+				}
+			}
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (drag) {
+					offsetX += e.getX() - lastX;
+					offsetY += e.getY() - lastY;
+					
+					lastX = e.getX();
+					lastY = e.getY();
+					repaint();
+				}
+			}
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				current = getLocationAt(e.getX(), e.getY());
+				repaint();
+			}
+		};
+		/** Selection handler. */
+		MouseAdapter sma = new MouseAdapter() {
+			boolean sel;
+			Location orig;
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isLeftMouseButton(e) && surface != null) {
+					sel = true;
+					selectedRectangle = new Rectangle();
+					orig = getLocationAt(e.getX(), e.getY());
+					selectedRectangle.x = orig.x;
+					selectedRectangle.y = orig.y;
+					selectedRectangle.width = 1;
+					selectedRectangle.height = 1;
+					repaint();
+				}
+			}			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (SwingUtilities.isLeftMouseButton(e)) {
+					sel = false;
+				}
+			}
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (sel) {
+					Location loc = getLocationAt(e.getX(), e.getY());
+					current = loc;
+					selectedRectangle.x = Math.min(orig.x, loc.x);
+					selectedRectangle.y = Math.min(orig.y, loc.y);
+					selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
+					selectedRectangle.height = Math.max(orig.y, loc.y) - selectedRectangle.y + 1;
+					repaint();
+				}
+			}
+		};
+		/** Preset. */
+		public MapRenderer() {
 			addMouseListener(ma);
 			addMouseMotionListener(ma);
+			addMouseListener(sma);
+			addMouseMotionListener(sma);
 		}
 		@Override
 		public void paint(Graphics g) {
@@ -768,7 +854,32 @@ public class MapEditor extends JFrame {
 				for (int j = 0; j < surface.renderingLength.get(i); j++) {
 					int x = offsetX + x0 + Tile.toScreenX(loc.x - j, loc.y);
 					int y = offsetY + y0 + Tile.toScreenY(loc.x - j, loc.y);
-					g2.drawImage(empty, x, y, null);
+					Location loc1 = Location.of(loc.x - j, loc.y);
+					SurfaceEntity se = surface.buildingmap.get(loc1);
+					if (se == null) {
+						se = surface.basemap.get(loc1);
+					}
+					if (se != null) {
+						BufferedImage img = se.getImage();
+						if (img != null) {
+							int a = loc1.x - se.virtualColumn;
+							int b = loc1.y + se.virtualRow - se.bottomRow;
+							int yref = offsetY + y0 + Tile.toScreenY(a, b);
+							g2.drawImage(img, x, yref - img.getHeight() + 27, null);
+							g2.drawLine(x, yref, x, yref - img.getHeight() + 27);
+						}
+					} else {
+						g2.drawImage(empty, x, y, null);
+					}
+				}
+			}
+			if (selectedRectangle != null) {
+				for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
+					for (int j = selectedRectangle.y; j < selectedRectangle.y + selectedRectangle.height; j++) {
+						int x = offsetX + x0 + Tile.toScreenX(i, j);
+						int y = offsetY + y0 + Tile.toScreenY(i, j);
+						g2.drawImage(selection.alphaBlendImage(), x, y, null);
+					}
 				}
 			}
 			if (current != null) {
@@ -785,11 +896,49 @@ public class MapEditor extends JFrame {
 		 */
 		Location getLocationAt(int mx, int my) {
 			if (surface != null) {
-				int mx0 = mx - offsetX - surface.baseXOffset;
-				int my0 = my - offsetY - surface.baseYOffset;
-				return Location.of((int)Tile.toTileX(mx0, my0), (int)Tile.toTileY(mx0, my0));
+				int mx0 = mx - offsetX - surface.baseXOffset - 28; // Half left
+				int my0 = my - offsetY - surface.baseYOffset - 27; // Half up
+				int a = (int)Math.floor(Tile.toTileX(mx0, my0));
+				int b = (int)Math.floor(Tile.toTileY(mx0, my0));
+				return Location.of(a, b);
 			}
 			return null;
+		}
+	}
+	/**
+	 * Place the selected surface tile into the selection rectangle.
+	 */
+	void doPlaceSurface() {
+		int idx = surfaceTable.getSelectedRow();
+		if (idx >= 0) {
+			idx = surfaceTable.convertRowIndexToModel(idx);
+			TileEntry te = surfaceTableModel.rows.get(idx);
+			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
+				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
+					for (int y = renderer.selectedRectangle.y; y < renderer.selectedRectangle.y + renderer.selectedRectangle.height; y += te.tile.height) {
+						placeTile(te.tile, x, y, false);
+					}
+				}
+			}
+			renderer.repaint();
+		}
+	}
+	/**
+	 * Place the selected building tile into the selection rectangle.
+	 */
+	void doPlaceBuilding() {
+		int idx = buildingTable.getSelectedRow();
+		if (idx >= 0) {
+			idx = buildingTable.convertRowIndexToModel(idx);
+			TileEntry te = buildingTableModel.rows.get(idx);
+			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
+				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
+					for (int y = renderer.selectedRectangle.y; y < renderer.selectedRectangle.y + renderer.selectedRectangle.height; y += te.tile.height) {
+						placeTile(te.tile, x, y, true);
+					}
+				}
+			}
+			renderer.repaint();
 		}
 	}
 }

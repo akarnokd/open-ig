@@ -33,9 +33,13 @@ public class Tile {
 	/** The tile strips for the rendering. */
 	public final BufferedImage[] strips;
 	/** The current alpha level of the image. */
-	public float alpha = -1;
+	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
-	protected final float lightThreshold = 0.5f; 
+	protected final float lightThreshold = 0.5f;
+	/** The cached image. */
+	private BufferedImage cached;
+	/** The cached alpha level. */
+	private float cachedAlpha = -1;
 	/**
 	 * Constructor. Sets the fields.
 	 * @param width the width in top-right angle.
@@ -78,10 +82,11 @@ public class Tile {
 	 * @return the partial image
 	 */
 	public BufferedImage getStrip(BufferedImage baseImage, int stripIndex) {
-		if (width + height > 2) {
+		if (width + height <= 2) {
 			return baseImage;
 		}
 		int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex, 0) : Tile.toScreenX(0, -stripIndex);
+//		int x0 = Tile.toScreenX(0, -stripIndex);
 		int w0 = Math.min(57, imageWidth - x0);
 		return baseImage.getSubimage(x0, 0, w0, baseImage.getHeight());
 	}
@@ -96,22 +101,26 @@ public class Tile {
 	 * @return the manipulated image.
 	 */
 	public BufferedImage alphaBlendImage() {
-		int[] work = new int[image.length];
-		// apply light map if exists?
-		boolean applyLM = lightMap != null && alpha <= lightThreshold;
-		for (int i = 0; i < work.length; i++) {
-			int c = withAlpha(image[i]);
-			if (applyLM) {
-				int d = lightMap[i];
-				if (d != 0) {
-					c = d;
+		if (alpha != cachedAlpha) {
+			int[] work = new int[image.length];
+			// apply light map if exists?
+			boolean applyLM = lightMap != null && alpha <= lightThreshold;
+			for (int i = 0; i < work.length; i++) {
+				int c = withAlpha(image[i]);
+				if (applyLM) {
+					int d = lightMap[i];
+					if (d != 0) {
+						c = d;
+					}
 				}
+				work[i] = c;
 			}
-			work[i] = c;
+			BufferedImage result = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
+			result.setRGB(0, 0, imageWidth, imageHeight, work, 0, imageWidth);
+			cached = result;
+			cachedAlpha = alpha;
 		}
-		BufferedImage result = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
-		result.setRGB(0, 0, imageWidth, imageHeight, work, 0, imageWidth);
-		return result;
+		return cached;
 	}
 	/**
 	 * Apply the alpha value to the supplied color. 
