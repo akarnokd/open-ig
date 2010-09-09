@@ -11,21 +11,11 @@ package hu.openig.v1.model;
 import hu.openig.utils.XML;
 import hu.openig.v1.core.Difficulty;
 import hu.openig.v1.core.ResourceLocator;
-import hu.openig.v1.core.ResourceType;
-import hu.openig.v1.core.Tile;
-import hu.openig.v1.core.ResourceLocator.ResourcePlace;
 import hu.openig.v1.model.Bridge.Level;
-import hu.openig.v1.model.BuildingType.Resource;
-import hu.openig.v1.model.BuildingType.TileSet;
-import hu.openig.v1.model.BuildingType.Upgrade;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 import org.w3c.dom.Element;
@@ -50,8 +40,6 @@ public class World {
 	public final List<Fleet> fleets = new ArrayList<Fleet>();
 	/** The list of available researches. */
 	public final List<ResearchType> researches = new ArrayList<ResearchType>();
-	/** The list of all building types. */
-	public final Map<String, BuildingType> buildings = new HashMap<String, BuildingType>();
 	/** Achievements. */
 	public final List<Achievement> achievements = new ArrayList<Achievement>();
 	/** The available crew-talks. */
@@ -66,6 +54,8 @@ public class World {
 	public Bridge bridge;
 	/** The galaxy model. */
 	public GalaxyModel galaxyModel;
+	/** The buildings model. */
+	public BuildingModel buildingModel;
 	/**
 	 * Load the game world's resources.
 	 * @param rl the resource locator
@@ -76,7 +66,6 @@ public class World {
 		level = definition.startingLevel;
 //		Element races = rl.getXML(language, game + "/races");
 //		Element tech = rl.getXML(language, game + "/tech");
-		processBuildings(rl, language, definition.build);
 //		Element planets = rl.getXML(language, game + "/planets");
 		talks = new Talks();
 		talks.load(rl, language, definition.talk);
@@ -86,6 +75,9 @@ public class World {
 		processBridge(rl, language, definition.bridge);
 		galaxyModel = new GalaxyModel();
 		galaxyModel.processGalaxy(rl, language, definition.galaxy);
+		buildingModel = new BuildingModel();
+		buildingModel.processBuildings(rl, language, definition.build);
+
 	}
 	/**
 	 * Returns the current level graphics.
@@ -167,85 +159,6 @@ public class World {
 			msg.title = message.getAttribute("title");
 			msg.description = message.getAttribute("description");
 			bridge.receiveMessages.add(msg);
-		}
-	}
-	/**
-	 * Process the contents of the buildings definition.
-	 * @param data the buildings definition
-	 * @param rl the resource locator
-	 * @param language the language
-	 */
-	protected void processBuildings(ResourceLocator rl, String language, String data) {
-		Element buildings = rl.getXML(language, data);
-		for (Element building : XML.childrenWithName(buildings, "building")) {
-			BuildingType b = new BuildingType();
-			
-			b.id = building.getAttribute("id");
-			b.label = building.getAttribute("label");
-			b.description = b.label + ".desc";
-			
-			Element gfx = XML.childElement(building, "graphics");
-			String pattern = gfx.getAttribute("base");
-			for (Element r : XML.childrenWithName(gfx, "tech")) {
-				TileSet ts = new TileSet();
-				
-				String rid = r.getAttribute("id");
-				int width = Integer.parseInt(r.getAttribute("width"));
-				int height = Integer.parseInt(r.getAttribute("height"));
-				
-				String normalImg = String.format(pattern, rid);
-				String normalLight = normalImg + "_lights";
-				String damagedImg = normalImg + "_damaged";
-				
-				BufferedImage lightMap = null;
-				ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
-				if (rp != null) {
-					lightMap = rl.getImage(language, normalLight);
-				}
-				ts.normal = new Tile(width, height, rl.getImage(language, normalImg), lightMap);
-				ts.damaged = new Tile(width, height, rl.getImage(language, damagedImg), null); // no lightmap for damaged building
-				b.tileset.put(rid, ts);
-			}
-			Element bld = XML.childElement(building, "build");
-			b.cost = Integer.parseInt(bld.getAttribute("cost"));
-			b.kind = bld.getAttribute("kind");
-			String limit = bld.getAttribute("limit");
-			if ("*".equals(limit)) {
-				b.limit = Integer.MAX_VALUE;
-			} else {
-				b.limit = Integer.parseInt(limit);
-			}
-			b.research = bld.getAttribute("research");
-			String except = bld.getAttribute("except");
-			if (except != null && !except.isEmpty()) {
-				b.except.addAll(Arrays.asList(except.split("\\s*,\\s*")));
-			}
-			Element op = XML.childElement(building, "operation");
-			b.percentable = "true".equals(op.getAttribute("percent"));
-			for (Element re : XML.childrenWithName(op, "resource")) {
-				Resource res = new Resource();
-				res.type = re.getAttribute("type");
-				res.amount = Float.parseFloat(re.getTextContent());
-				b.resources.put(res.type, res);
-				if ("true".equals(re.getAttribute("display"))) {
-					b.primary = res;
-				}
-			}
-			
-			Element ug = XML.childElement(building , "upgrades");
-			for (Element u : XML.childrenWithName(ug, "upgrade")) {
-				Upgrade upg = new Upgrade();
-				upg.description = u.getAttribute("desc");
-				for (Element re : XML.childrenWithName(op, "resource")) {
-					Resource res = new Resource();
-					res.type = re.getAttribute("type");
-					res.amount = Float.parseFloat(re.getTextContent());
-					upg.resources.put(res.type, res);
-				}
-				b.upgrades.add(upg);
-			}
-			
-			this.buildings.put(b.id, b);
 		}
 	}
 	/**
