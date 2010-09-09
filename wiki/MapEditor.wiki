@@ -1,0 +1,9 @@
+#summary The Map Editor for the version 0.8 and above
+
+= Introduction =
+
+Later.
+
+= Details =
+
+http://karnokd.uw.hu/images/open-ig-mapeditor-01.png
