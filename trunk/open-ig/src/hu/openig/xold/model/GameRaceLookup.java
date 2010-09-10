@@ -6,13 +6,12 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.model;
+package hu.openig.xold.model;
 
 /**
- * A slot on a ship.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * @author Anikó
+ *
  */
-public class Slot {
+public interface GameRaceLookup {
 
 }

@@ -9,10 +9,14 @@
 package hu.openig.model;
 
 /**
- * A slot on a ship.
  * @author karnokd, 2010.01.07.
  * @version $Revision 1.0$
  */
-public class Slot {
-
+public enum FleetKnowledge {
+	/** The fleet is visible, but nothing else is known. */
+	VISIBLE,
+	/** The fleet composition is known, but not the numbers. */
+	COMPOSITION,
+	/** The fleet composition, numbers and firepower is known. */
+	FULL
 }
