@@ -162,7 +162,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.fusion_plant" id="FusionPlanet">
+	<building label="buildings.fusion_plant" id="FusionPlant">
 		<graphics base="colony/buildings/%s/fusion_plant">
 			<tech height="5" width="5" id="human"/>
 		</graphics>
@@ -658,7 +658,7 @@
 		</upgrades>
 	</building>
 	<building label="building.military_spaceport" id="MilitarySpaceport">
-		<graphics base="colony/buildings/human/military_spaceport">
+		<graphics base="colony/buildings/%s/military_spaceport">
 			<tech id='human' height="5" width="6"/>
 			<tech id="garthog" height="5" width="3"/>
 			<tech id="morgath" height="5" width="5"/>
@@ -1444,5 +1444,27 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	
+	<roads>
+		<graphics base='colony/roads/%s/%s'>
+			<tech id='human'/>
+			<tech id="garthog"/>
+			<tech id="morgath"/>
+			<tech id="ychom"/>
+			<tech id="dribs"/>
+			<tech id="sullep"/>
+			<tech id="dargslan"/>
+			<tech id="ecalep"/>
+		</graphics>
+		<layout id='road_west_east' enum='HORIZONTAL' index='1'/>
+		<layout id='road_north_east' enum='TOP_TO_RIGHT' index='2'/>
+		<layout id='road_west_north' enum='TOP_TO_LEFT' index='3'/>
+		<layout id='road_south_west' enum='LEFT_TO_BOTTOM' index='4'/>
+		<layout id='road_south_east' enum='RIGHT_TO_BOTTOM' index='5'/>
+		<layout id='road_north_south' enum='VERTICAL' index='6'/>
+		<layout id='road_west_east_south' enum='HORIZONTAL_BOTTOM' index='7'/>
+		<layout id='road_north_south_east' enum='VERTICAL_RIGHT' index='8'/>
+		<layout id='road_west_east_north' enum='HORIZONTAL_TOP' index='9'/>
+		<layout id='road_north_south_west' enum='VERTICAL_LEFT' index='10'/>
+		<layout id='road_cross' enum='CROSS' index='11'/>
+	</roads>
 </buildings>

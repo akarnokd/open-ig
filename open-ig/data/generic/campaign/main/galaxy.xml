@@ -91,7 +91,7 @@
 				<tile id='73' height='2'/>
 				<tile-range start='74' end='79' width='2' height='2'/>
 				<tile-range start='80' end='85'/>
-				<tile-range start='86' end='103' width='2'/>
+				<tile-range start='86' end='103' width='2' height='2'/>
 				<tile-range start='104' end='105' width='3' height='3'/>
 				<tile id='106' width='3' height='2'/>
 				<tile-range start='107' end='109' width='2' height='3'/>

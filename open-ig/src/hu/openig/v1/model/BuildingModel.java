@@ -7,6 +7,7 @@
  */
 package hu.openig.v1.model;
 
+import hu.openig.core.RoadType;
 import hu.openig.utils.XML;
 import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.core.ResourceType;
@@ -17,8 +18,11 @@ import hu.openig.v1.model.BuildingType.TileSet;
 import hu.openig.v1.model.BuildingType.Upgrade;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
@@ -28,8 +32,12 @@ import org.w3c.dom.Element;
  * @author karnokd
  */
 public class BuildingModel {
-	/** The list of all building types. */
+	/** The list of all building types. Maps from building ID to building type definition. */
 	public final Map<String, BuildingType> buildings = new LinkedHashMap<String, BuildingType>();
+	/** The road tile map from tech id to road type to tile. */
+	public final Map<String, Map<RoadType, Tile>> roadTiles = new HashMap<String, Map<RoadType, Tile>>();
+	/** The road tile to road type reverse lookup table. */
+	public final Map<String, Map<Tile, RoadType>> tileRoads = new HashMap<String, Map<Tile, RoadType>>();
 	/**
 	 * Process the contents of the buildings definition.
 	 * @param data the buildings definition
@@ -108,6 +116,50 @@ public class BuildingModel {
 			
 			this.buildings.put(b.id, b);
 		}
+		Element roads = XML.childElement(buildings, "roads");
+		Element graph = XML.childElement(roads, "graphics");
+		String roadBase = graph.getAttribute("base");
+		List<String> techs = new ArrayList<String>();
+		for (Element e : XML.childrenWithName(graph, "tech")) {
+			techs.add(e.getAttribute("id"));
+		}
+		for (Element e : XML.childrenWithName(roads, "layout")) {
+			int index = Integer.parseInt(e.getAttribute("index"));
+			String id = e.getAttribute("id");
+			for (String rid : techs) {
+				String normalImg = String.format(roadBase, rid, id);
+				String normalLight = normalImg + "_lights";
+				
+				BufferedImage lightMap = null;
+				ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+				if (rp != null) {
+					lightMap = rl.getImage(language, normalLight);
+				}
+				Tile t = new Tile(1, 1, rl.getImage(language, normalImg), lightMap);
+				RoadType rt = RoadType.getByIndex(index);
+				addRoadType(rid, rt, t);
+			}
+		}
 	}
-
+	/**
+	 * Add a road type - tile entry.
+	 * @param rid the race id
+	 * @param rt the road type
+	 * @param tile the tile entry
+	 */
+	void addRoadType(String rid, RoadType rt, Tile tile) {
+		Map<RoadType, Tile> tiles = roadTiles.get(rid);
+		if (tiles == null) {
+			tiles = new HashMap<RoadType, Tile>();
+			roadTiles.put(rid, tiles);
+		}
+		tiles.put(rt, tile);
+		
+		Map<Tile, RoadType> roads = tileRoads.get(rid);
+		if (roads == null) {
+			roads = new HashMap<Tile, RoadType>();
+			tileRoads.put(rid, roads);
+		}
+		roads.put(tile, rt);
+	}
 }

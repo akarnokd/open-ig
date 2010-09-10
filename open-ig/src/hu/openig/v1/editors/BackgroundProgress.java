@@ -1,4 +1,11 @@
-package hu.openig.v1;
+/*
+ * Copyright 2008-2009, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
+package hu.openig.v1.editors;
 
 import java.awt.Container;
 
@@ -9,7 +16,7 @@ import javax.swing.JProgressBar;
 import javax.swing.GroupLayout.Alignment;
 
 /** A window with indeterminate backgound progress indicator. */
-class BackgroundProgress extends JDialog {
+public class BackgroundProgress extends JDialog {
 	/** */
 	private static final long serialVersionUID = -5795494140780969300L;
 	/** The text label. */

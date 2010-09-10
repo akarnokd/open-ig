@@ -8,8 +8,6 @@
 
 package hu.openig.v1.core;
 
-import hu.openig.utils.ImageUtils;
-
 import java.awt.image.BufferedImage;
 
 /**
@@ -30,8 +28,6 @@ public class Tile {
 	public final int imageHeight;
 	/** The overlay image for lights turned on. */
 	public int[] lightMap;
-	/** The tile strips for the rendering. */
-	public final BufferedImage[] strips;
 	/** The current alpha level of the image. */
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
@@ -59,21 +55,29 @@ public class Tile {
 			this.lightMap = new int[lightMap.getWidth() * lightMap.getHeight()];
 			lightMap.getRGB(0, 0, lightMap.getWidth(), lightMap.getHeight(), this.lightMap, 0, lightMap.getWidth());
 		}
-		this.strips = new BufferedImage[width + height - 1];
+//		this.strips = new BufferedImage[width + height - 1];
 	}
-	/** Splits the image into renderable strips along its lower side. */
-	protected void createStrips() {
-		BufferedImage image = alphaBlendImage();
-		if (strips.length > 1) {
-			// create strips
-			for (int i = 0; i < strips.length; i++) {
-				int x0 = i >= height ? Tile.toScreenX(i, 0) : Tile.toScreenX(0, -i);
-				int w0 = Math.min(57, image.getWidth() - x0);
-				strips[i] = ImageUtils.subimage(image, x0, 0, w0, image.getHeight());
-			}
-		} else {
-			strips[0] = image;
-		}
+	/**
+	 * Copy constructor.
+	 * @param other the other tile
+	 */
+	protected Tile(Tile other) {
+		this.width = other.width;
+		this.height = other.height;
+		this.image = other.image;
+		this.imageWidth = other.imageWidth;
+		this.imageHeight = other.imageHeight;
+		this.lightMap = other.lightMap;
+		this.alpha = other.alpha;
+		this.cached = other.cached;
+		this.cachedAlpha = other.cachedAlpha;
+	}
+	/**
+	 * Create a copy of this tile.
+	 * @return the tile
+	 */
+	public Tile copy() {
+		return new Tile(this);
 	}
 	/**
 	 * Get a strip of the given base image.
@@ -85,7 +89,7 @@ public class Tile {
 		if (width + height <= 2) {
 			return baseImage;
 		}
-		int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex, 0) : Tile.toScreenX(0, -stripIndex);
+		int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
 //		int x0 = Tile.toScreenX(0, -stripIndex);
 		int w0 = Math.min(57, imageWidth - x0);
 		return baseImage.getSubimage(x0, 0, w0, baseImage.getHeight());
@@ -101,7 +105,7 @@ public class Tile {
 	 * @return the manipulated image.
 	 */
 	public BufferedImage alphaBlendImage() {
-		if (alpha != cachedAlpha) {
+		if (alpha != cachedAlpha || cached == null) {
 			int[] work = new int[image.length];
 			// apply light map if exists?
 			boolean applyLM = lightMap != null && alpha <= lightThreshold;
