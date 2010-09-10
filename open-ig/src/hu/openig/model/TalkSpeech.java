@@ -9,10 +9,16 @@
 package hu.openig.model;
 
 /**
- * A slot on a ship.
- * @author karnokd, 2010.01.07.
+ * @author karnok, 2009.10.10.
  * @version $Revision 1.0$
  */
-public class Slot {
-
+public class TalkSpeech {
+	/** The speech was already taken. */
+	public boolean spoken;
+	/** The speech media. */
+	public String media;
+	/** The target state. */
+	public String to;
+	/** The speech option text. */
+	public String text;
 }

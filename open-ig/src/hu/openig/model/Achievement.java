@@ -9,10 +9,10 @@
 package hu.openig.model;
 
 /**
- * A slot on a ship.
+ * An achievement tester/indicator.
  * @author karnokd, 2010.01.07.
  * @version $Revision 1.0$
  */
-public class Slot {
+public class Achievement {
 
 }

@@ -5,14 +5,13 @@
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
-
-package hu.openig.model;
+package hu.openig.xold.core;
 
 /**
- * A slot on a ship.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * Button action interface.
+ * @author karnokd
  */
-public class Slot {
-
+public interface BtnAction {
+	/** Invoke the action. */
+	void invoke();
 }

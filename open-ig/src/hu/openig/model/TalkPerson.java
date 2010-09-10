@@ -8,11 +8,16 @@
 
 package hu.openig.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * A slot on a ship.
- * @author karnokd, 2010.01.07.
+ * @author karnok, 2009.10.10.
  * @version $Revision 1.0$
  */
-public class Slot {
-
+public class TalkPerson {
+	/** The person id. */
+	public String id;
+	/** The talk states. */
+	public final Map<String, TalkState> states = new HashMap<String, TalkState>();
 }

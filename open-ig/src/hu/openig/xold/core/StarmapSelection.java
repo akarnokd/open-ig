@@ -6,13 +6,15 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.model;
+package hu.openig.xold.core;
 
 /**
- * A slot on a ship.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * Enumeration for the current starmap selection.
+ * @author karnokd
  */
-public class Slot {
-
+public enum StarmapSelection {
+	/** A planet was last selected. */
+	PLANET,
+	/** A fleet was last selected. */
+	FLEET
 }

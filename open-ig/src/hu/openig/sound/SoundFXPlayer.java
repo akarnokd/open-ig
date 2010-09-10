@@ -7,7 +7,7 @@
  */
 package hu.openig.sound;
 
-import hu.openig.res.GameResourceManager;
+import hu.openig.xold.res.GameResourceManager;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
