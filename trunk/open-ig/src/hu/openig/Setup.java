@@ -1558,7 +1558,7 @@ public class Setup extends JFrame {
 	 */
 	protected void playTestDirectly(int volume, int windowSize) {
 		try {
-			AudioInputStream in = AudioSystem.getAudioInputStream(getClass().getResource("/hu/openig/res/welcome.wav"));
+			AudioInputStream in = AudioSystem.getAudioInputStream(getClass().getResource("/hu/openig/xold/res/welcome.wav"));
 			try {
 				AudioFormat streamFormat = new AudioFormat(22050, 16, 1, true, false);
 				DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
