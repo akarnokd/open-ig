@@ -1,5 +1,15 @@
 #summary News archive.
 
+*April 8. 2010*
+
+All resource files should be available now. [http://code.google.com/p/open-ig/wiki/Install_Instructions_08 Installation].
+
+*April 7. 2010*
+
+Unfortunately, I have little time to develop Open-IG at the moment. I plan to upload the new game resource files and publish the available parts of version 0.8. See the [http://code.google.com/p/open-ig/wiki/Install_Instructions_08 install instructions] page for further details.
+
+I'm still uploading the resource files from a slow connection. Please be patient.
+
 *January 18. 2010*
 
 I've created a small video presenting the recently developed screens: http://www.youtube.com/watch?v=qRSTZnWWGfY
