@@ -16,6 +16,15 @@ import java.awt.image.BufferedImage;
  * @author karnokd
  */
 public class SurfaceEntity {
+	/** The entity type. */
+	public enum SurfaceEntityType {
+		/** Planetary base tile. */
+		BASE,
+		/** Building tile. */
+		BUILDING,
+		/** Road tile. */
+		ROAD
+	}
 	/** 
 	 * The virtual row within the Tile object. A row is defined in the up-right direction and is always nonnegative (despite the surface coordinate
 	 * system is basically on the negative axis).
@@ -31,6 +40,8 @@ public class SurfaceEntity {
 	 * The referenced tile.
 	 */
 	public Tile tile;
+	/** The entity type. */
+	public SurfaceEntityType type;
 	/**
 	 * Return the image (strip) representing this surface entry.
 	 * The default behavior returns the tile strips along its lower 'V' arc.

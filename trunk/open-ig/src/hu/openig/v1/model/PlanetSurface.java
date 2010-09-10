@@ -54,6 +54,8 @@ public class PlanetSurface {
 	public int baseYOffset;
 	/** The bounding rectangle that fits all cells of this map. */
 	public Rectangle boundingRectangle;
+	/** The list of building instances. */
+	public List<Building> buildings = new ArrayList<Building>();
 	/** Compute the rendering start-stop locations. */
 	public void computeRenderingLocations() {
 		// y -> x

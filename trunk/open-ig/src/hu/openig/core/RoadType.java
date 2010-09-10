@@ -57,11 +57,17 @@ public enum RoadType {
 	 * The road pattern to road type map.
 	 */
 	private static final Map<Integer, RoadType> MAP;
+	/**
+	 * The road index to road type map.
+	 */
+	private static final Map<Integer, RoadType> INDEX_MAP;
 	/** Initialize MAP. */
 	static {
 		MAP = new HashMap<Integer, RoadType>();
+		INDEX_MAP = new HashMap<Integer, RoadType>();
 		for (RoadType rt : values()) {
 			MAP.put(rt.pattern, rt);
+			INDEX_MAP.put(rt.index, rt);
 		}
 	}
 	/**
@@ -72,5 +78,13 @@ public enum RoadType {
 	 */
 	public static RoadType get(int pattern) {
 		return MAP.get(pattern);
+	}
+	/**
+	 * Get a road type by index.
+	 * @param index the index map
+	 * @return the road type
+	 */
+	public static RoadType getByIndex(int index) {
+		return INDEX_MAP.get(index);
 	}
 }

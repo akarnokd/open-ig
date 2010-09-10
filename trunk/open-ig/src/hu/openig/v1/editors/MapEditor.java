@@ -6,25 +6,27 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.v1;
+package hu.openig.v1.editors;
 
 import hu.openig.core.Location;
+import hu.openig.core.RoadType;
+import hu.openig.core.Sides;
 import hu.openig.v1.core.Configuration;
 import hu.openig.v1.core.PlanetType;
 import hu.openig.v1.core.ResourceLocator;
 import hu.openig.v1.core.Tile;
+import hu.openig.v1.editors.ImportDialog.OriginalBuilding;
 import hu.openig.v1.gfx.ColonyGFX;
+import hu.openig.v1.model.Building;
 import hu.openig.v1.model.BuildingModel;
 import hu.openig.v1.model.BuildingType;
 import hu.openig.v1.model.GalaxyModel;
 import hu.openig.v1.model.PlanetSurface;
 import hu.openig.v1.model.SurfaceEntity;
 import hu.openig.v1.model.BuildingType.TileSet;
+import hu.openig.v1.model.SurfaceEntity.SurfaceEntityType;
 
-import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -41,16 +43,19 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -118,14 +123,12 @@ public class MapEditor extends JFrame {
 	TableRowSorter<TileList> buildingSorter;
 	/** The colony graphics. */
 	ColonyGFX colonyGFX;
-	/** The selection tile. */
-	Tile selection;
-	/** The placement tile for allowed area. */
-	Tile areaAccept;
-	/** The placement tile for denied area. */
-	Tile areaDeny;
-	/** The current cell tile. */
-	Tile areaCurrent;
+	/** The current alpha level. */
+	float alpha = 1.0f;
+	/** Show/hide buildings. */
+	private JCheckBoxMenuItem viewShowBuildings;
+	/** Place roads of a race around the buildings. */
+	private JMenu editPlaceRoads;
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -156,15 +159,15 @@ public class MapEditor extends JFrame {
 				MapEditor.this.buildingModel = buildingMap;
 				MapEditor.this.colonyGFX = colonyGraphics;
 				
-				selection = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFFFFFF00), null);
-				areaAccept = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFF00FFFF), null);
-				areaDeny = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileCrossed, 0xFF00FFFF), null);
-				areaCurrent  = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileCrossed, 0xFFFFCC00), null);
+				renderer.selection = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFFFFFF00), null);
+				renderer.areaAccept = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFF00FFFF), null);
+				renderer.areaDeny = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileCrossed, 0xFF00FFFF), null);
+				renderer.areaCurrent  = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileCrossed, 0xFFFFCC00), null);
 				
-				selection.alpha = 1.0f;
-				areaAccept.alpha = 1.0f;
-				areaDeny.alpha = 1.0f;
-				areaCurrent.alpha = 1.0f;
+				renderer.selection.alpha = 1.0f;
+				renderer.areaAccept.alpha = 1.0f;
+				renderer.areaDeny.alpha = 1.0f;
+				renderer.areaCurrent.alpha = 1.0f;
 				
 				buildTables();
 			}
@@ -269,11 +272,13 @@ public class MapEditor extends JFrame {
 			}
 		});
 		filterSurface.setToolTipText("Filter by size, name and surface. Example: '1x earth' means search for tiles with width=1 and surface=earth");
-		surfacePanel.add(filterSurface);
-		surfacePanel.add(sp0);
-		
+
+		GroupLayout gls = new GroupLayout(surfacePanel);
+		surfacePanel.setLayout(gls);
+		gls.setHorizontalGroup(gls.createParallelGroup().addComponent(filterSurface).addComponent(sp0));
+		gls.setVerticalGroup(gls.createSequentialGroup().addComponent(filterSurface, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(sp0));
+
 		JPanel buildingPanel = new JPanel();
-		buildingPanel.setLayout(new BoxLayout(buildingPanel, BoxLayout.PAGE_AXIS));
 		filterBuilding = new JTextField();
 		filterBuilding.addActionListener(new ActionListener() {
 			@Override
@@ -282,8 +287,10 @@ public class MapEditor extends JFrame {
 			}
 		});
 		filterBuilding.setToolTipText("Filter by size, name and race. Example: '2x human' means search for tiles with width=2 and race=human");
-		buildingPanel.add(filterBuilding);
-		buildingPanel.add(sp1);
+		GroupLayout glb = new GroupLayout(buildingPanel);
+		buildingPanel.setLayout(glb);
+		glb.setHorizontalGroup(glb.createParallelGroup().addComponent(filterBuilding).addComponent(sp1));
+		glb.setVerticalGroup(glb.createSequentialGroup().addComponent(filterBuilding, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(sp1));
 		
 		previewSplit.setBottomComponent(surfacePanel);
 		toolSplit.setBottomComponent(buildingPanel);
@@ -348,14 +355,42 @@ public class MapEditor extends JFrame {
 		fileOpen.setAccelerator(KeyStroke.getKeyStroke('O', InputEvent.CTRL_DOWN_MASK));
 		fileSave.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
 		
+		fileImport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doImport(); } });
+		
+		
+		JMenuItem editUndo = new JMenuItem("Undo");
+		JMenuItem editRedo = new JMenuItem("Redo");
 		JMenuItem editCut = new JMenuItem("Cut");
 		JMenuItem editCopy = new JMenuItem("Copy");
 		JMenuItem editPaste = new JMenuItem("Paste");
-		JMenuItem editDelete = new JMenuItem("Delete");
+		JMenuItem editDeleteBuilding = new JMenuItem("Delete building");
+		JMenuItem editDeleteSurface = new JMenuItem("Delete surface");
+		JMenuItem editDeleteBoth = new JMenuItem("Delete both");
 		
+		JMenuItem editClearBuildings = new JMenuItem("Clear buildings");
+		JMenuItem editClearSurface = new JMenuItem("Clear surface");
+
+		editUndo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doUndo(); } });
+		editRedo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doRedo(); } });
+		editClearBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearBuildings(); } });
+		editClearSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearSurfaces(); } });
+		
+
+		editUndo.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
+		editRedo.setAccelerator(KeyStroke.getKeyStroke('Y', InputEvent.CTRL_DOWN_MASK));
 		editCut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
 		editCopy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
 		editPaste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+		
+		editDeleteBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+		editDeleteSurface.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK));
+		editDeleteBoth.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+		
+		editDeleteBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBuilding(); } });
+		editDeleteSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteSurface(); } });
+		editDeleteBoth.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBoth(); } });
+		
+		editPlaceRoads = new JMenu("Place roads");
 		
 		JMenuItem viewZoomIn = new JMenuItem("Zoom in");
 		JMenuItem viewZoomOut = new JMenuItem("Zoom out");
@@ -366,36 +401,37 @@ public class MapEditor extends JFrame {
 		JMenuItem viewMoreLight = new JMenuItem("More light (+0.05)");
 		JMenuItem viewLessLight = new JMenuItem("Less light (-0.05)");
 		
+		viewShowBuildings = new JCheckBoxMenuItem("Show/hide buildings", true);
+		viewShowBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK));
+		
+		viewShowBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleBuildings(); } });
+		
+		viewBright.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doBright(); } });
+		viewDark.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDark(); } });
+		viewMoreLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doMoreLight(); } });
+		viewLessLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doLessLight(); } });
+		
 		viewZoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.CTRL_DOWN_MASK));
 		viewZoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK));
 		viewZoomNormal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD0, InputEvent.CTRL_DOWN_MASK));
-		viewMoreLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, InputEvent.CTRL_DOWN_MASK));
-		viewLessLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, InputEvent.CTRL_DOWN_MASK));
+		viewMoreLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD8, InputEvent.CTRL_DOWN_MASK));
+		viewLessLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD2, InputEvent.CTRL_DOWN_MASK));
+		viewBright.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD7, InputEvent.CTRL_DOWN_MASK));
+		viewDark.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD1, InputEvent.CTRL_DOWN_MASK));
 		
 		JMenuItem helpOnline = new JMenuItem("Online wiki...");
 		helpOnline.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Desktop desktop = Desktop.getDesktop();
-				if (desktop != null) {
-					try {
-						desktop.browse(new URI("http://code.google.com/p/open-ig/wiki/MapEditor"));
-					} catch (IOException ex) {
-						JOptionPane.showMessageDialog(MapEditor.this, "Exception", stacktraceToString(ex), JOptionPane.ERROR_MESSAGE);
-					} catch (URISyntaxException ex) {
-						JOptionPane.showMessageDialog(MapEditor.this, "Exception", stacktraceToString(ex), JOptionPane.ERROR_MESSAGE);
-					}
-				} else {
-					JOptionPane.showMessageDialog(MapEditor.this, "Desktop not supported. Please navigate to http://code.google.com/p/open-ig/wiki/MapEditor manually.");
-				}
+				doHelp();
 			}
 		});
 		JMenuItem helpAbout = new JMenuItem("About...");
 		
 		addAll(mainmenu, fileMenu, editMenu, viewMenu, helpMenu);
 		addAll(fileMenu, fileNew, null, fileOpen, fileImport, null, fileSave, fileSaveAs, null, fileExit);
-		addAll(editMenu, editCut, editCopy, editPaste, editDelete);
-		addAll(viewMenu, viewZoomIn, viewZoomOut, viewZoomNormal, viewZoomValue, null, viewBright, viewDark, viewMoreLight, viewLessLight);
+		addAll(editMenu, editCut, editCopy, editPaste, null, editDeleteBuilding, editDeleteSurface, editDeleteBoth, null, editClearBuildings, editClearSurface, null, editPlaceRoads);
+		addAll(viewMenu, viewZoomIn, viewZoomOut, viewZoomNormal, viewZoomValue, null, viewBright, viewDark, viewMoreLight, viewLessLight, null, viewShowBuildings);
 		addAll(helpMenu, helpOnline, null, helpAbout);
 		
 		fileNew.addActionListener(new ActionListener() {
@@ -404,6 +440,128 @@ public class MapEditor extends JFrame {
 				doNew();
 			}
 		});
+	}
+	/** Redo last operation. */
+	protected void doRedo() {
+		// TODO Auto-generated method stub
+		
+	}
+	/** Undo last operation. */
+	protected void doUndo() {
+		// TODO Auto-generated method stub
+		
+	}
+	/** Clear surfaces. */
+	protected void doClearSurfaces() {
+		if (renderer.surface != null) {
+			renderer.surface.basemap.clear();
+			renderer.repaint();
+		}
+	}
+	/** Clear buildings. */
+	protected void doClearBuildings() {
+		if (renderer.surface != null) {
+			renderer.surface.buildingmap.clear();
+			renderer.surface.buildings.clear();
+			renderer.repaint();
+		}
+	}
+	/**
+	 * Decrease the light amount on the tiles.
+	 */
+	protected void doLessLight() {
+		alpha = Math.max(0, alpha - 0.05f);
+		setAlphaOnTiles();
+		repaint();
+	}
+	/**
+	 * 
+	 */
+	private void setAlphaOnTiles() {
+		if (renderer.surface != null) {
+			for (SurfaceEntity se : renderer.surface.basemap.values()) {
+				se.tile.alpha = alpha; 
+			}
+			for (SurfaceEntity se : renderer.surface.buildingmap.values()) {
+				se.tile.alpha = alpha;
+			}
+		}
+	}
+	/**
+	 * Increase the light amount on the tiles.
+	 */
+	protected void doMoreLight() {
+		alpha = Math.min(1f, alpha + 0.05f);;
+		setAlphaOnTiles();
+		repaint();
+	}
+	/** Set lighting to half. */
+	protected void doDark() {
+		alpha = 0.5f;
+		setAlphaOnTiles();
+		repaint();
+	}
+	/** Set lighting to full. */
+	protected void doBright() {
+		alpha = 1.0f;
+		setAlphaOnTiles();
+		repaint();
+	}
+	/**
+	 * Toggle the visibility of the buildings.
+	 */
+	protected void doToggleBuildings() {
+		renderer.showBuildings = viewShowBuildings.getState();
+		repaint();
+	}
+	/** Delete buildings and surface elements of the selection rectangle. */
+	protected void doDeleteBoth() {
+		deleteEntitiesOf(renderer.surface.basemap, false);
+		deleteEntitiesOf(renderer.surface.buildingmap, true);
+		repaint();
+	}
+	/** Delete surface surface. */
+	protected void doDeleteSurface() {
+		deleteEntitiesOf(renderer.surface.basemap, false);
+		repaint();
+	}
+	/**
+	 * Delete buildings falling into the current selection rectangle.
+	 */
+	protected void doDeleteBuilding() {
+		deleteEntitiesOf(renderer.surface.buildingmap, true);
+		repaint();
+	}
+	/**
+	 * Delete entries of the given map.
+	 * @param map the map
+	 * @param checkBuildings check for the actual buildings
+	 */
+	void deleteEntitiesOf(Map<Location, SurfaceEntity> map, boolean checkBuildings) {
+		// find buildings falling into the selection box
+		if (renderer.selectedRectangle != null) {
+			for (int a = renderer.selectedRectangle.x; a < renderer.selectedRectangle.x + renderer.selectedRectangle.width; a++) {
+				for (int b = renderer.selectedRectangle.y; b < renderer.selectedRectangle.y + renderer.selectedRectangle.height; b++) {
+					SurfaceEntity se = map.get(Location.of(a, b));
+					if (se != null) {
+						int x = a - se.virtualColumn;
+						int y = b + se.virtualRow;
+						for (int x0 = x; x0 < x + se.tile.width; x0++) {
+							for (int y0 = y; y0 > y - se.tile.height; y0--) {
+								map.remove(Location.of(x0, y0));
+							}
+						}
+					}
+					if (checkBuildings) {
+						for (int i = renderer.surface.buildings.size() - 1; i >= 0; i--) {
+							if (renderer.surface.buildings.get(i).containsLocation(a, b)) {
+								renderer.surface.buildings.remove(i);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	/**
 	 * Extract the stacktrace as a string.
@@ -489,71 +647,10 @@ public class MapEditor extends JFrame {
 		}
 	}
 	/**
-	 * Paint a buffered image.
-	 * @author karnokd
-	 */
-	static class ImagePaint extends JComponent {
-		/** */
-		private static final long serialVersionUID = 3168477795343188089L;
-		/** The image. */
-		Tile tile;
-		/** The brighteness factor. */
-		float alpha = 1.0f;
-		@Override
-		public Dimension getPreferredSize() {
-			if (tile != null) {
-				return new Dimension(tile.imageWidth + 4, tile.imageHeight + 4);
-			}
-			return new Dimension(440, 300);
-		}
-		@Override
-		public void paint(Graphics g) {
-			if (tile != null) {
-				int x = (getWidth() - tile.imageWidth) / 2;
-				int y = (getHeight() - tile.imageHeight) / 2;
-				tile.alpha = alpha;
-				g.drawImage(tile.alphaBlendImage(), x, y, null);
-			}
-		}
-		/**
-		 * Set the image from the tile.
-		 * @param tile the tile
-		 */
-		public void setImage(Tile tile) {
-			this.tile = tile;
-			revalidate();
-			repaint();
-		}
-		/**
-		 * Set the brightness value.
-		 * @param alpha between 0.0 and 1.0
-		 */
-		public void setAlpha(float alpha) {
-			this.alpha = alpha;
-			repaint();
-		}
-	}
-	/**
-	 * A tile entry.
-	 * @author karnokd
-	 */
-	static class TileEntry {
-		/** A smaller preview image. */
-		public ImageIcon preview;
-		/** The identifier. */
-		public int id;
-		/** The user-definable name. */
-		public String name;
-		/** The surface name. */
-		public String surface;
-		/** The related tile object. */
-		public Tile tile;
-	}
-	/**
 	 * A tile list table model.
 	 * @author karnokd
 	 */
-	static class TileList extends AbstractTableModel {
+	public static class TileList extends AbstractTableModel {
 		/** */
 		private static final long serialVersionUID = 1870030483025880490L;
 		/** The column names. */
@@ -606,6 +703,7 @@ public class MapEditor extends JFrame {
 				TileEntry e = new TileEntry();
 				e.id = te.getKey();
 				e.surface = pt.getKey();
+				e.name = "" + e.id;
 				e.tile = te.getValue();
 				e.tile.alpha = 1.0f;
 				e.preview = new ImageIcon(scaledImage(e.tile.alphaBlendImage(), 32, 32));
@@ -620,6 +718,7 @@ public class MapEditor extends JFrame {
 			}
 		});
 		
+		Set<String> races = new HashSet<String>();
 		int idx = 0;
 		for (Map.Entry<String, BuildingType> bt : buildingModel.buildings.entrySet()) {
 			for (Map.Entry<String, TileSet> tss : bt.getValue().tileset.entrySet()) {
@@ -630,6 +729,7 @@ public class MapEditor extends JFrame {
 				e.tile = tss.getValue().normal;
 				e.tile.alpha = 1.0f;
 				e.preview = new ImageIcon(scaledImage(e.tile.alphaBlendImage(), 32, 32));
+				e.buildingType = bt.getValue();
 				buildingTableModel.rows.add(e);
 				
 				e = new TileEntry();
@@ -639,8 +739,9 @@ public class MapEditor extends JFrame {
 				e.tile = tss.getValue().damaged;
 				e.tile.alpha = 1.0f;
 				e.preview = new ImageIcon(scaledImage(e.tile.alphaBlendImage(), 32, 32));
+				e.buildingType = bt.getValue();
 				buildingTableModel.rows.add(e);
-				
+				races.add(tss.getKey());
 			}
 			idx++;
 		}
@@ -654,6 +755,21 @@ public class MapEditor extends JFrame {
 		
 		surfaceTableModel.fireTableDataChanged();
 		buildingTableModel.fireTableDataChanged();
+		List<String> racesList = new ArrayList<String>(races);
+		Collections.sort(racesList);
+		for (final String s : racesList) {
+			JMenuItem mnuPlaceRoad = new JMenuItem(s);
+			mnuPlaceRoad.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					placeRoads(s);
+					repaint();
+				}
+			});
+			
+			
+			editPlaceRoads.add(mnuPlaceRoad);
+		}
 	}
 	/**
 	 * Create a scaled image.
@@ -711,198 +827,26 @@ public class MapEditor extends JFrame {
 	 * @param tile the tile
 	 * @param x the tile's leftmost coordinate
 	 * @param y the tile's leftmost coordinate
-	 * @param isBuilding add as building?
+	 * @param type the tile type
 	 */
-	void placeTile(Tile tile, int x, int y, boolean isBuilding) {
+	void placeTile(Tile tile, int x, int y, SurfaceEntityType type) {
 		for (int a = x; a < x + tile.width; a++) {
 			for (int b = y; b > y - tile.height; b--) {
 				SurfaceEntity se = new SurfaceEntity();
+				se.type = type;
 				se.virtualRow = y - b;
 				se.virtualColumn = a - x;
 				se.bottomRow = tile.height - 1;
-				se.tile = tile;
-				if (isBuilding) {
-					renderer.surface.buildingmap.put(Location.of(a, b), se);
+				se.tile = tile.copy();
+				se.tile.alpha = alpha;
+				if (type != SurfaceEntityType.BASE) {
+					Building bld = new Building();
+					bld.location = Location.of(a, b);
+					renderer.surface.buildingmap.put(bld.location, se);
 				} else {
 					renderer.surface.basemap.put(Location.of(a, b), se);
 				}
 			}
-		}
-	}
-	/** The map renderer. */
-	class MapRenderer extends JComponent {
-		/** */
-		private static final long serialVersionUID = 5058274675379681602L;
-		/** The planet surface definition. */
-		PlanetSurface surface;
-		/** The offset X. */
-		int offsetX;
-		/** The offset Y. */
-		int offsetY;
-		/** The current location based on the mouse pointer. */
-		Location current;
-		/** The currently selected locations. */
-		final Set<Location> selected = new HashSet<Location>();
-		/** The selected rectangular region. */
-		Rectangle selectedRectangle;
-		/** Right click-drag. */
-		MouseAdapter ma = new MouseAdapter() {
-			int lastX;
-			int lastY;
-			boolean drag;
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if (SwingUtilities.isRightMouseButton(e)) {
-					drag = true;
-					lastX = e.getX();
-					lastY = e.getY();
-				} else
-				if (SwingUtilities.isMiddleMouseButton(e)) {
-					offsetX = 0;
-					offsetY = 0;
-					repaint();
-				}
-			}
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				if (SwingUtilities.isRightMouseButton(e)) {
-					drag = false;
-				}
-			}
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				if (drag) {
-					offsetX += e.getX() - lastX;
-					offsetY += e.getY() - lastY;
-					
-					lastX = e.getX();
-					lastY = e.getY();
-					repaint();
-				}
-			}
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				current = getLocationAt(e.getX(), e.getY());
-				repaint();
-			}
-		};
-		/** Selection handler. */
-		MouseAdapter sma = new MouseAdapter() {
-			boolean sel;
-			Location orig;
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if (SwingUtilities.isLeftMouseButton(e) && surface != null) {
-					sel = true;
-					selectedRectangle = new Rectangle();
-					orig = getLocationAt(e.getX(), e.getY());
-					selectedRectangle.x = orig.x;
-					selectedRectangle.y = orig.y;
-					selectedRectangle.width = 1;
-					selectedRectangle.height = 1;
-					repaint();
-				}
-			}			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				if (SwingUtilities.isLeftMouseButton(e)) {
-					sel = false;
-				}
-			}
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				if (sel) {
-					Location loc = getLocationAt(e.getX(), e.getY());
-					current = loc;
-					selectedRectangle.x = Math.min(orig.x, loc.x);
-					selectedRectangle.y = Math.min(orig.y, loc.y);
-					selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
-					selectedRectangle.height = Math.max(orig.y, loc.y) - selectedRectangle.y + 1;
-					repaint();
-				}
-			}
-		};
-		/** Preset. */
-		public MapRenderer() {
-			addMouseListener(ma);
-			addMouseMotionListener(ma);
-			addMouseListener(sma);
-			addMouseMotionListener(sma);
-		}
-		@Override
-		public void paint(Graphics g) {
-			Graphics2D g2 = (Graphics2D)g;
-
-			g2.setColor(new Color(96, 96, 96));
-			g2.fillRect(0, 0, getWidth(), getHeight());
-			
-			if (surface == null) {
-				return;
-			}
-			int x0 = surface.baseXOffset;
-			int y0 = surface.baseYOffset;
-
-			Rectangle br = surface.boundingRectangle;
-			g2.setColor(new Color(128, 128, 128));
-			g2.fillRect(br.x + offsetX, br.y + offsetY, br.width, br.height);
-			g2.setColor(Color.YELLOW);
-			g2.drawRect(br.x + offsetX, br.y + offsetY, br.width, br.height);
-			BufferedImage empty = areaAccept.alphaBlendImage(); 
-//			BufferedImage deny = areaDeny.alphaBlendImage();
-			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
-				Location loc = surface.renderingOrigins.get(i);
-				for (int j = 0; j < surface.renderingLength.get(i); j++) {
-					int x = offsetX + x0 + Tile.toScreenX(loc.x - j, loc.y);
-					int y = offsetY + y0 + Tile.toScreenY(loc.x - j, loc.y);
-					Location loc1 = Location.of(loc.x - j, loc.y);
-					SurfaceEntity se = surface.buildingmap.get(loc1);
-					if (se == null) {
-						se = surface.basemap.get(loc1);
-					}
-					if (se != null) {
-						BufferedImage img = se.getImage();
-						if (img != null) {
-							int a = loc1.x - se.virtualColumn;
-							int b = loc1.y + se.virtualRow - se.bottomRow;
-							int yref = offsetY + y0 + Tile.toScreenY(a, b);
-							g2.drawImage(img, x, yref - img.getHeight() + 27, null);
-							g2.drawLine(x, yref, x, yref - img.getHeight() + 27);
-						}
-					} else {
-						g2.drawImage(empty, x, y, null);
-					}
-				}
-			}
-			if (selectedRectangle != null) {
-				for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
-					for (int j = selectedRectangle.y; j < selectedRectangle.y + selectedRectangle.height; j++) {
-						int x = offsetX + x0 + Tile.toScreenX(i, j);
-						int y = offsetY + y0 + Tile.toScreenY(i, j);
-						g2.drawImage(selection.alphaBlendImage(), x, y, null);
-					}
-				}
-			}
-			if (current != null) {
-				int x = offsetX + x0 + Tile.toScreenX(current.x, current.y);
-				int y = offsetY + y0 + Tile.toScreenY(current.x, current.y);
-				g2.drawImage(areaCurrent.alphaBlendImage(), x, y, null);
-			}
-		}
-		/**
-		 * Get a location based on the mouse coordinates.
-		 * @param mx the mouse X coordinate
-		 * @param my the mouse Y coordinate
-		 * @return the location
-		 */
-		Location getLocationAt(int mx, int my) {
-			if (surface != null) {
-				int mx0 = mx - offsetX - surface.baseXOffset - 28; // Half left
-				int my0 = my - offsetY - surface.baseYOffset - 27; // Half up
-				int a = (int)Math.floor(Tile.toTileX(mx0, my0));
-				int b = (int)Math.floor(Tile.toTileY(mx0, my0));
-				return Location.of(a, b);
-			}
-			return null;
 		}
 	}
 	/**
@@ -916,7 +860,7 @@ public class MapEditor extends JFrame {
 			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
 					for (int y = renderer.selectedRectangle.y; y < renderer.selectedRectangle.y + renderer.selectedRectangle.height; y += te.tile.height) {
-						placeTile(te.tile, x, y, false);
+						placeTile(te.tile, x, y, SurfaceEntityType.BASE);
 					}
 				}
 			}
@@ -934,11 +878,271 @@ public class MapEditor extends JFrame {
 			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
 					for (int y = renderer.selectedRectangle.y; y < renderer.selectedRectangle.y + renderer.selectedRectangle.height; y += te.tile.height) {
-						placeTile(te.tile, x, y, true);
+						placeTile(te.tile, x, y, SurfaceEntityType.BUILDING);
+						Building bld = new Building();
+						bld.location = Location.of(x, y);
+						bld.type = te.buildingType;
+						bld.tileset = te.buildingType.tileset.get(te.surface);
+						renderer.surface.buildings.add(bld);
 					}
 				}
 			}
 			renderer.repaint();
 		}
+	}
+	/**
+	 * 
+	 */
+	void doHelp() {
+		Desktop desktop = Desktop.getDesktop();
+		if (desktop != null) {
+			try {
+				desktop.browse(new URI("http://code.google.com/p/open-ig/wiki/MapEditor"));
+			} catch (IOException ex) {
+				JOptionPane.showMessageDialog(MapEditor.this, "Exception", stacktraceToString(ex), JOptionPane.ERROR_MESSAGE);
+			} catch (URISyntaxException ex) {
+				JOptionPane.showMessageDialog(MapEditor.this, "Exception", stacktraceToString(ex), JOptionPane.ERROR_MESSAGE);
+			}
+		} else {
+			JOptionPane.showMessageDialog(MapEditor.this, "Desktop not supported. Please navigate to http://code.google.com/p/open-ig/wiki/MapEditor manually.");
+		}
+	}
+	/**
+	 * Show the import dialog.
+	 */
+	void doImport() {
+		ImportDialog imp = new ImportDialog(rl);
+		imp.setLocationRelativeTo(this);
+		imp.setVisible(true);
+		if (imp.success) {
+			if (renderer.surface == null) {
+				renderer.surface = new PlanetSurface();
+				renderer.surface.width = 33;
+				renderer.surface.height = 65;
+				renderer.surface.computeRenderingLocations();
+			}
+			if (imp.selected != null) {
+				if (imp.replaceSurface) {
+					doClearSurfaces();
+				}
+				placeTilesFromOriginalMap(imp.selected.fullPath, imp.selected.surfaceType, imp.shiftXValue, imp.shiftYValue);
+			}
+			if (imp.planet != null) {
+				if (imp.replaceBuildings) {
+					doClearBuildings();
+				}
+				if (imp.withSurface) {
+					if (imp.replaceSurface) {
+						doClearSurfaces();
+					}
+					placeTilesFromOriginalMap("colony/" + imp.planet.getMapName(), imp.planet.surfaceType.toLowerCase(), imp.shiftXValue, imp.shiftYValue);
+				}
+
+				for (OriginalBuilding ob : imp.planet.buildings) {
+					BuildingType bt = buildingModel.buildings.get(ob.getName()); 
+					String r = imp.planet.getRace();
+					TileSet t = bt.tileset.get(r);
+					placeTile(t.normal, ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue, SurfaceEntityType.BUILDING);
+					Building bld = new Building();
+					bld.location = Location.of(ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue);
+					bld.type = bt;
+					bld.tileset = t;
+					renderer.surface.buildings.add(bld);
+				}
+				placeRoads(imp.planet.getRace());
+			}
+			repaint();
+		}
+	}
+	/**
+	 * Place an original map tiles onto the current surface.
+	 * @param path the path to the original map file
+	 * @param surfaceType the surface type
+	 * @param shiftX the shift in X coordinates to place the map elements
+	 * @param shiftY the shift in Y coordinates to place the map elements
+	 */
+	private void placeTilesFromOriginalMap(String path, String surfaceType, int shiftX, int shiftY) {
+		byte[] map = rl.getData("en", path);
+		PlanetType pt = galaxyModel.planetTypes.get(surfaceType);
+		int bias = 41; 
+		if ("neptoplasm".equals(surfaceType)) {
+			bias = 84;
+		}
+		for (int i = 0; i < 65 * 65; i++) {
+			int tile = (map[4 + i * 2] & 0xFF) - bias;
+			int strip = map[5 + i * 2] & 0xFF;
+			if (strip == 0 && tile != 255) {
+				Location loc = toOriginalLocation(i);
+				Tile t = pt.tiles.get(tile);
+				if (t != null) {
+					placeTile(t, loc.x + shiftX, loc.y + shiftY, SurfaceEntityType.BASE);
+				}
+			}
+		}
+	}
+	/**
+	 * Converts the tile x and y coordinates to map offset.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return the map offset
+	 */
+	public int toOriginalMapOffset(int x, int y) {
+		return (x - y) * 65 + (x - y + 1) / 2 - x;
+	}
+	/**
+	 * Convert the original index location of the map to actual (x, y) location.
+	 * @param index the index into the map block, starting at 0
+	 * @return the location
+	 */
+	public Location toOriginalLocation(int index) {
+		int row = index % 65;
+		int col = index / 65;
+		
+		int x0 = (col + 1) / 2;
+		int y0 = - col / 2;
+		
+		int x = x0 - row;
+		int y = y0 - row;
+		return Location.of(x, y);
+	}
+	/**
+	 * Place roads around buildings for the given race.
+	 * @param raceId the race who builds the roads
+	 */
+	void placeRoads(String raceId) {
+		Map<RoadType, Tile> rts = buildingModel.roadTiles.get(raceId);
+		Map<Tile, RoadType> trs = buildingModel.tileRoads.get(raceId);
+		// remove all roads
+		Iterator<SurfaceEntity> it = renderer.surface.buildingmap.values().iterator();
+		while (it.hasNext()) {
+			SurfaceEntity se = it.next();
+			if (se.type == SurfaceEntityType.ROAD) {
+				it.remove();
+			}
+		}
+		Set<Location> corners = new HashSet<Location>();
+		for (Building bld : renderer.surface.buildings) {
+			Rectangle rect = new Rectangle(bld.location.x - 1, bld.location.y + 1, bld.tileset.normal.width + 2, bld.tileset.normal.height + 2);
+			addRoadAround(rts, rect, corners);
+		}
+		SurfaceEntity[] neighbors = new SurfaceEntity[9];
+		for (Location l : corners) {
+			SurfaceEntity se = renderer.surface.buildingmap.get(l);
+			if (se == null || se.type != SurfaceEntityType.ROAD) {
+				continue;
+			}
+			setNeighbors(l.x, l.y, renderer.surface.buildingmap, neighbors);
+			int pattern = 0;
+			
+			RoadType rt1 = null;
+			if (neighbors[1] != null && neighbors[1].type == SurfaceEntityType.ROAD) {
+				pattern |= Sides.TOP;
+				rt1 = trs.get(neighbors[1].tile);
+			}
+			RoadType rt3 = null;
+			if (neighbors[3] != null && neighbors[3].type == SurfaceEntityType.ROAD) {
+				pattern |= Sides.LEFT;
+				rt3 = trs.get(neighbors[3].tile);
+			}
+			RoadType rt5 = null;
+			if (neighbors[5] != null && neighbors[5].type == SurfaceEntityType.ROAD) {
+				pattern |= Sides.RIGHT;
+				rt5 = trs.get(neighbors[5].tile);
+			}
+			RoadType rt7 = null;
+			if (neighbors[7] != null && neighbors[7].type == SurfaceEntityType.ROAD) {
+				pattern |= Sides.BOTTOM;
+				rt7 = trs.get(neighbors[7].tile);
+			}
+			RoadType rt = RoadType.get(pattern);
+			// place the new tile fragment onto the map
+			// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+			se = createRoadEntity(rts.get(rt));
+			renderer.surface.buildingmap.put(l, se);
+			// alter the four neighboring tiles to contain road back to this
+			if (rt1 != null) {
+				rt1 = RoadType.get(rt1.pattern | Sides.BOTTOM);
+				renderer.surface.buildingmap.put(l.delta(0, 1), createRoadEntity(rts.get(rt1)));
+			}
+			if (rt3 != null) {
+				rt3 = RoadType.get(rt3.pattern | Sides.RIGHT);
+				renderer.surface.buildingmap.put(l.delta(-1, 0), createRoadEntity(rts.get(rt3)));
+			}
+			if (rt5 != null) {
+				rt5 = RoadType.get(rt5.pattern | Sides.LEFT);
+				renderer.surface.buildingmap.put(l.delta(1, 0), createRoadEntity(rts.get(rt5)));
+			}
+			if (rt7 != null) {
+				rt7 = RoadType.get(rt7.pattern | Sides.TOP);
+				renderer.surface.buildingmap.put(l.delta(0, -1), createRoadEntity(rts.get(rt7)));
+			}
+			
+		}
+	}
+	/**
+	 * Fills the fragment array of the 3x3 rectangle centered around x and y.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param map the map
+	 * @param fragments the fragments
+	 */
+	void setNeighbors(int x, int y, Map<Location, SurfaceEntity> map, SurfaceEntity[] fragments) {
+		fragments[0] = map.get(Location.of(x - 1, y + 1));
+		fragments[1] = map.get(Location.of(x, y + 1));
+		fragments[2] = map.get(Location.of(x + 1, y + 1));
+		
+		fragments[3] = map.get(Location.of(x - 1, y));
+		fragments[4] = map.get(Location.of(x, y));
+		fragments[5] = map.get(Location.of(x + 1, y));
+		
+		fragments[6] = map.get(Location.of(x - 1, y - 1));
+		fragments[7] = map.get(Location.of(x, y - 1));
+		fragments[8] = map.get(Location.of(x + 1, y - 1));
+	}
+	/**
+	 * Places a road frame around the tilesToHighlight rectangle.
+	 * @param rts the road to tile map for a concrete race
+	 * @param rect the rectangle to use
+	 * @param corners where to place the created corners
+	 */
+	void addRoadAround(Map<RoadType, Tile> rts, Rectangle rect, Collection<Location> corners) {
+		Location la = Location.of(rect.x, rect.y);
+		Location lb = Location.of(rect.x + rect.width - 1, rect.y);
+		Location lc = Location.of(rect.x, rect.y - rect.height + 1);
+		Location ld = Location.of(rect.x + rect.width - 1, rect.y - rect.height + 1);
+		
+		corners.add(la);
+		corners.add(lb);
+		corners.add(lc);
+		corners.add(ld);
+		
+		renderer.surface.buildingmap.put(la, createRoadEntity(rts.get(RoadType.RIGHT_TO_BOTTOM)));
+		renderer.surface.buildingmap.put(lb, createRoadEntity(rts.get(RoadType.LEFT_TO_BOTTOM)));
+		renderer.surface.buildingmap.put(lc, createRoadEntity(rts.get(RoadType.TOP_TO_RIGHT)));
+		renderer.surface.buildingmap.put(ld, createRoadEntity(rts.get(RoadType.TOP_TO_LEFT)));
+		// add linear segments
+		
+		Tile ht = rts.get(RoadType.HORIZONTAL);
+		for (int i = rect.x + 1; i < rect.x + rect.width - 1; i++) {
+			renderer.surface.buildingmap.put(Location.of(i, rect.y), createRoadEntity(ht));
+			renderer.surface.buildingmap.put(Location.of(i, rect.y - rect.height + 1), createRoadEntity(ht));
+		}
+		Tile vt = rts.get(RoadType.VERTICAL);
+		for (int i = rect.y - 1; i > rect.y - rect.height + 1; i--) {
+			renderer.surface.buildingmap.put(Location.of(rect.x, i), createRoadEntity(vt));
+			renderer.surface.buildingmap.put(Location.of(rect.x + rect.width - 1, i), createRoadEntity(vt));
+		}
+	}
+	/**
+	 * Create a road entity for the tile.
+	 * @param tile the tile
+	 * @return the entity
+	 */
+	SurfaceEntity createRoadEntity(Tile tile) {
+		SurfaceEntity result = new SurfaceEntity();
+		result.tile = tile;
+		result.tile.alpha = alpha;
+		result.type = SurfaceEntityType.ROAD;
+		return result;
 	}
 }
