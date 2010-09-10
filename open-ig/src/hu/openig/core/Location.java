@@ -48,7 +48,7 @@ public final class Location {
 	 * @return the location object
 	 */
 	public static Location of(int x, int y) {
-		if (x < -80 || x > 80 || y < -159 || y > 0) {
+		if (x < -80 || x >= 80 || y < -159 || y > 0) {
 			return new Location(x, y);
 		}
 		return cache[x + 80][-y];

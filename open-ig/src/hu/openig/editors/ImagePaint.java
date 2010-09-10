@@ -9,6 +9,7 @@ package hu.openig.editors;
 
 import hu.openig.core.Tile;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
@@ -38,7 +39,10 @@ public class ImagePaint extends JComponent {
 			int x = (getWidth() - tile.imageWidth) / 2;
 			int y = (getHeight() - tile.imageHeight) / 2;
 			tile.alpha = alpha;
+			g.setColor(Color.RED);
 			g.drawImage(tile.alphaBlendImage(), x, y, null);
+			g.drawRect(x - 1, y - 1, tile.imageWidth + 1, tile.imageHeight + 1);
+			g.drawRect(x - 2, y - 2, tile.imageWidth + 3, tile.imageHeight + 3);
 		}
 	}
 	/**

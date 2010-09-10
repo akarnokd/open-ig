@@ -16,8 +16,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,6 +53,10 @@ public class MapRenderer extends JComponent {
 	Tile areaDeny;
 	/** The current cell tile. */
 	Tile areaCurrent;
+	/** The last rendering timestamp. */
+	long t = System.nanoTime();
+	/** The current scaling factor. */
+	double scale = 1f;
 	/** Right click-drag. */
 	MouseAdapter ma = new MouseAdapter() {
 		int lastX;
@@ -66,6 +72,9 @@ public class MapRenderer extends JComponent {
 			if (SwingUtilities.isMiddleMouseButton(e)) {
 				offsetX = 0;
 				offsetY = 0;
+				if (e.isControlDown()) {
+					scale = 1.0;
+				}
 				repaint();
 			}
 		}
@@ -130,6 +139,7 @@ public class MapRenderer extends JComponent {
 	};
 	/** Preset. */
 	public MapRenderer() {
+		setOpaque(true);
 		addMouseListener(ma);
 		addMouseMotionListener(ma);
 		addMouseListener(sma);
@@ -139,27 +149,35 @@ public class MapRenderer extends JComponent {
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
 
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		
 		g2.setColor(new Color(96, 96, 96));
 		g2.fillRect(0, 0, getWidth(), getHeight());
 		
 		if (surface == null) {
 			return;
 		}
+		AffineTransform at = g2.getTransform();
+		g2.translate(offsetX, offsetY);
+		g2.scale(scale, scale);
+		
 		int x0 = surface.baseXOffset;
 		int y0 = surface.baseYOffset;
 
 		Rectangle br = surface.boundingRectangle;
-		g2.setColor(new Color(128, 128, 128));
-		g2.fillRect(br.x + offsetX, br.y + offsetY, br.width, br.height);
+		g2.setColor(new Color(255, 0, 0));
+		g2.fillRect(br.x, br.y, br.width, br.height);
 		g2.setColor(Color.YELLOW);
-		g2.drawRect(br.x + offsetX, br.y + offsetY, br.width, br.height);
+		g2.drawRect(br.x, br.y, br.width, br.height);
+		
+		
 		BufferedImage empty = areaAccept.alphaBlendImage();
 		Rectangle renderingWindow = new Rectangle(0, 0, getWidth(), getHeight());
 		for (int i = 0; i < surface.renderingOrigins.size(); i++) {
 			Location loc = surface.renderingOrigins.get(i);
 			for (int j = 0; j < surface.renderingLength.get(i); j++) {
-				int x = offsetX + x0 + Tile.toScreenX(loc.x - j, loc.y);
-				int y = offsetY + y0 + Tile.toScreenY(loc.x - j, loc.y);
+				int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
+				int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
 				Location loc1 = Location.of(loc.x - j, loc.y);
 				SurfaceEntity se = surface.buildingmap.get(loc1);
 				if (se == null || !showBuildings) {
@@ -168,15 +186,15 @@ public class MapRenderer extends JComponent {
 				if (se != null) {
 					int a = loc1.x - se.virtualColumn;
 					int b = loc1.y + se.virtualRow - se.bottomRow;
-					int yref = offsetY + y0 + Tile.toScreenY(a, b) + 27 - se.tile.imageHeight;
-					if (renderingWindow.intersects(x, yref, 57, se.tile.imageHeight)) {
+					int yref = y0 + Tile.toScreenY(a, b) + 27 - se.tile.imageHeight;
+					if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
 						BufferedImage img = se.getImage();
 						if (img != null) {
 							g2.drawImage(img, x, yref, null);
 						}
 					}
 				} else {
-					if (renderingWindow.intersects(x, y, 57, 27)) {
+					if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
 						g2.drawImage(empty, x, y, null);
 					}
 				}
@@ -185,17 +203,22 @@ public class MapRenderer extends JComponent {
 		if (selectedRectangle != null) {
 			for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
 				for (int j = selectedRectangle.y; j < selectedRectangle.y + selectedRectangle.height; j++) {
-					int x = offsetX + x0 + Tile.toScreenX(i, j);
-					int y = offsetY + y0 + Tile.toScreenY(i, j);
+					int x = x0 + Tile.toScreenX(i, j);
+					int y = y0 + Tile.toScreenY(i, j);
 					g2.drawImage(selection.alphaBlendImage(), x, y, null);
 				}
 			}
 		}
 		if (current != null) {
-			int x = offsetX + x0 + Tile.toScreenX(current.x, current.y);
-			int y = offsetY + y0 + Tile.toScreenY(current.x, current.y);
+			int x = x0 + Tile.toScreenX(current.x, current.y);
+			int y = y0 + Tile.toScreenY(current.x, current.y);
 			g2.drawImage(areaCurrent.alphaBlendImage(), x, y, null);
 		}
+		long t1 = System.nanoTime();
+		long dt = t1 - t;
+		t = t1;
+		g2.setTransform(at);
+		g2.drawString(String.format("%.3f", dt / 1E9) , getWidth() - 100, 15);
 	}
 	/**
 	 * Get a location based on the mouse coordinates.
@@ -205,10 +228,10 @@ public class MapRenderer extends JComponent {
 	 */
 	public Location getLocationAt(int mx, int my) {
 		if (surface != null) {
-			int mx0 = mx - offsetX - surface.baseXOffset - 28; // Half left
-			int my0 = my - offsetY - surface.baseYOffset - 27; // Half up
-			int a = (int)Math.floor(Tile.toTileX(mx0, my0));
-			int b = (int)Math.floor(Tile.toTileY(mx0, my0));
+			double mx0 = mx - (surface.baseXOffset + 28) * scale - offsetX; // Half left
+			double my0 = my - (surface.baseYOffset + 27) * scale - offsetY; // Half up
+			int a = (int)Math.floor(Tile.toTileX((int)mx0, (int)my0) / scale);
+			int b = (int)Math.floor(Tile.toTileY((int)mx0, (int)my0) / scale) ;
 			return Location.of(a, b);
 		}
 		return null;

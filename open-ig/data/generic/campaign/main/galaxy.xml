@@ -74,8 +74,7 @@
 				<tile-range start='40' end='54' width='2' height='2'/>
 				<tile-range start='55' end='59' width='3' height='2'/>
 				<tile-range start='60' end='62' width='4' height='2'/>
-				<tile-range start='63' end='64' width='2' height='3'/>
-				<tile-range start='65' end='67' width='2' height='4'/>
+				<tile-range start='63' end='67' width='2' height='3'/>
 				<tile id='68' width='3' height='3'/>
 				<tile-range start='69' end='73' width='2' height='4'/>
 				<tile-range start='74' end='78' width='4' height='4'/>
