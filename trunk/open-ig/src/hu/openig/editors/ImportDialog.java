@@ -233,11 +233,15 @@ public class ImportDialog extends JDialog {
 		success = true;
 		if (cbOriginalMap.getSelectedIndex() > 0) {
 			selected = originalMaps.get(cbOriginalMap.getSelectedIndex() - 1);
+		} else {
+			selected = null;
 		}
 		shiftXValue = Integer.parseInt(edShiftX.getText());
 		shiftYValue = Integer.parseInt(edShiftY.getText());
 		if (cbOriginalPlanets.getSelectedIndex() > 0) {
 			planet = originalPlanets.get(cbOriginalPlanets.getSelectedIndex() - 1);
+		} else {
+			planet = null;
 		}
 		replaceSurface = cbReplaceSurface.isSelected();
 		replaceBuildings = cbReplaceBuildings.isSelected();
@@ -366,9 +370,9 @@ public class ImportDialog extends JDialog {
 			
 			map.put("FusionProjector", "FusionProjector");
 			map.put("PlasmaProjector", "PlasmaProjector");
-			map.put("MechanicsDevCentre", "MechanicsDevCenter");
+			map.put("MechanicsDevCentre", "MechanicalDevCenter");
 			map.put("Bunker", "Bunker");
-			map.put("CivilEngDevCentre", "CivilEngDevCenter");
+			map.put("CivilEngDevCentre", "CivilDevCenter");
 			
 			map.put("InversionShield", "InversionShield");
 			map.put("IonProjector", "IonProjector");

@@ -8,12 +8,12 @@
 
 package hu.openig.editors;
 
-import hu.openig.core.Location;
-import hu.openig.core.RoadType;
-import hu.openig.core.Sides;
 import hu.openig.core.Configuration;
+import hu.openig.core.Location;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
+import hu.openig.core.RoadType;
+import hu.openig.core.Sides;
 import hu.openig.core.Tile;
 import hu.openig.editors.ImportDialog.OriginalBuilding;
 import hu.openig.gfx.ColonyGFX;
@@ -36,6 +36,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -129,6 +131,8 @@ public class MapEditor extends JFrame {
 	private JCheckBoxMenuItem viewShowBuildings;
 	/** Place roads of a race around the buildings. */
 	private JMenu editPlaceRoads;
+	/** The import dialog. */
+	private ImportDialog imp;
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -169,6 +173,8 @@ public class MapEditor extends JFrame {
 				renderer.areaDeny.alpha = 1.0f;
 				renderer.areaCurrent.alpha = 1.0f;
 				
+				imp = new ImportDialog(rl);
+
 				buildTables();
 			}
 		};
@@ -320,8 +326,32 @@ public class MapEditor extends JFrame {
 		previewPanel.add(preview);
 		previewSplit.setTopComponent(previewPanel);
 		
+		split.setDoubleBuffered(true);
 		getContentPane().add(split);
 		setSize(1024, 768);
+		
+		renderer.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if (e.isControlDown()) {
+					double pre = renderer.scale;
+					double mx = (e.getX() - renderer.offsetX) * pre;
+					double my = (e.getY() - renderer.offsetY) * pre;
+					if (e.getUnitsToScroll() < 0) {
+						doZoomIn();
+					} else {
+						doZoomOut();
+					}
+					double mx0 = (e.getX() - renderer.offsetX) * renderer.scale;
+					double my0 = (e.getY() - renderer.offsetY) * renderer.scale;
+					double dx = (mx - mx0) / pre;
+					double dy = (my - my0) / pre;
+					renderer.offsetX += (int)(dx);
+					renderer.offsetY += (int)(dy);
+					renderer.repaint();
+				}
+			}
+		});
 		
 		buildMenu();
 		
@@ -404,6 +434,9 @@ public class MapEditor extends JFrame {
 		viewShowBuildings = new JCheckBoxMenuItem("Show/hide buildings", true);
 		viewShowBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK));
 		
+		viewZoomIn.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomIn(); } });
+		viewZoomOut.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomOut(); } });
+		viewZoomNormal.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomNormal(); } });
 		viewShowBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleBuildings(); } });
 		
 		viewBright.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doBright(); } });
@@ -411,8 +444,8 @@ public class MapEditor extends JFrame {
 		viewMoreLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doMoreLight(); } });
 		viewLessLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doLessLight(); } });
 		
-		viewZoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.CTRL_DOWN_MASK));
-		viewZoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK));
+		viewZoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD9, InputEvent.CTRL_DOWN_MASK));
+		viewZoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD3, InputEvent.CTRL_DOWN_MASK));
 		viewZoomNormal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD0, InputEvent.CTRL_DOWN_MASK));
 		viewMoreLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD8, InputEvent.CTRL_DOWN_MASK));
 		viewLessLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD2, InputEvent.CTRL_DOWN_MASK));
@@ -440,6 +473,28 @@ public class MapEditor extends JFrame {
 				doNew();
 			}
 		});
+	}
+	/**
+	 * Zoom to 100%.
+	 */
+	protected void doZoomNormal() {
+		renderer.scale = 1.0;
+		renderer.repaint();
+	}
+	/**
+	 * 
+	 */
+	protected void doZoomOut() {
+		renderer.scale = Math.max(0.1, renderer.scale - 0.1);
+		renderer.repaint();
+	}
+	/**
+	 * 
+	 */
+	protected void doZoomIn() {
+		// TODO Auto-generated method stub
+		renderer.scale = Math.min(2.0, renderer.scale + 0.1);
+		renderer.repaint();
 	}
 	/** Redo last operation. */
 	protected void doRedo() {
@@ -706,6 +761,7 @@ public class MapEditor extends JFrame {
 				e.name = "" + e.id;
 				e.tile = te.getValue();
 				e.tile.alpha = 1.0f;
+				e.previewTile = e.tile.copy();
 				e.preview = new ImageIcon(scaledImage(e.tile.alphaBlendImage(), 32, 32));
 				surfaceTableModel.rows.add(e);
 			}
@@ -728,6 +784,7 @@ public class MapEditor extends JFrame {
 				e.name = bt.getKey();
 				e.tile = tss.getValue().normal;
 				e.tile.alpha = 1.0f;
+				e.previewTile = e.tile.copy();
 				e.preview = new ImageIcon(scaledImage(e.tile.alphaBlendImage(), 32, 32));
 				e.buildingType = bt.getValue();
 				buildingTableModel.rows.add(e);
@@ -738,6 +795,7 @@ public class MapEditor extends JFrame {
 				e.name = bt.getKey() + " damaged";
 				e.tile = tss.getValue().damaged;
 				e.tile.alpha = 1.0f;
+				e.previewTile = e.tile.copy();
 				e.preview = new ImageIcon(scaledImage(e.tile.alphaBlendImage(), 32, 32));
 				e.buildingType = bt.getValue();
 				buildingTableModel.rows.add(e);
@@ -799,7 +857,7 @@ public class MapEditor extends JFrame {
 		int idx = surfaceTable.getSelectedRow();
 		if (idx >= 0) {
 			idx = surfaceTable.convertRowIndexToModel(idx);
-			preview.setImage(surfaceTableModel.rows.get(idx).tile);
+			preview.setImage(surfaceTableModel.rows.get(idx).previewTile);
 			buildingTable.getSelectionModel().clearSelection();
 		}
 	}
@@ -808,7 +866,7 @@ public class MapEditor extends JFrame {
 		int idx = buildingTable.getSelectedRow();
 		if (idx >= 0) {
 			idx = buildingTable.convertRowIndexToModel(idx);
-			preview.setImage(buildingTableModel.rows.get(idx).tile);
+			preview.setImage(buildingTableModel.rows.get(idx).previewTile);
 			surfaceTable.getSelectionModel().clearSelection();
 		}
 	}
@@ -837,7 +895,7 @@ public class MapEditor extends JFrame {
 				se.virtualRow = y - b;
 				se.virtualColumn = a - x;
 				se.bottomRow = tile.height - 1;
-				se.tile = tile.copy();
+				se.tile = tile;
 				se.tile.alpha = alpha;
 				if (type != SurfaceEntityType.BASE) {
 					Building bld = new Building();
@@ -911,7 +969,6 @@ public class MapEditor extends JFrame {
 	 * Show the import dialog.
 	 */
 	void doImport() {
-		ImportDialog imp = new ImportDialog(rl);
 		imp.setLocationRelativeTo(this);
 		imp.setVisible(true);
 		if (imp.success) {
@@ -950,6 +1007,8 @@ public class MapEditor extends JFrame {
 					renderer.surface.buildings.add(bld);
 				}
 				placeRoads(imp.planet.getRace());
+			} else {
+				doClearBuildings();
 			}
 			repaint();
 		}

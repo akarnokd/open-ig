@@ -27,15 +27,17 @@ public class Tile {
 	/** The image height. */
 	public final int imageHeight;
 	/** The overlay image for lights turned on. */
-	public int[] lightMap;
+	public final int[] lightMap;
 	/** The current alpha level of the image. */
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
 	protected final float lightThreshold = 0.5f;
 	/** The cached image. */
-	private BufferedImage cached;
+	private final BufferedImage cached;
 	/** The cached alpha level. */
 	private float cachedAlpha = -1;
+	/** The shared working buffeer. Therefore, the alpha adjustments should be done in a single thread! */
+	private static int[] work = new int[512 * 512];
 	/**
 	 * Constructor. Sets the fields.
 	 * @param width the width in top-right angle.
@@ -51,9 +53,16 @@ public class Tile {
 		// use ARGB images for the base
 		this.image = new int[this.imageWidth * this.imageHeight];
 		image.getRGB(0, 0, this.imageWidth, this.imageHeight, this.image, 0, this.imageWidth);
+		this.cached = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
+		this.cached.setAccelerationPriority(1.0f);
+		if (work.length < this.image.length) {
+			work = new int[this.image.length];
+		}
 		if (lightMap != null) {
 			this.lightMap = new int[lightMap.getWidth() * lightMap.getHeight()];
 			lightMap.getRGB(0, 0, lightMap.getWidth(), lightMap.getHeight(), this.lightMap, 0, lightMap.getWidth());
+		} else {
+			this.lightMap = null;
 		}
 //		this.strips = new BufferedImage[width + height - 1];
 	}
@@ -105,11 +114,10 @@ public class Tile {
 	 * @return the manipulated image.
 	 */
 	public BufferedImage alphaBlendImage() {
-		if (alpha != cachedAlpha || cached == null) {
-			int[] work = new int[image.length];
+		if (alpha != cachedAlpha) {
 			// apply light map if exists?
 			boolean applyLM = lightMap != null && alpha <= lightThreshold;
-			for (int i = 0; i < work.length; i++) {
+			for (int i = 0; i < image.length; i++) {
 				int c = withAlpha(image[i]);
 				if (applyLM) {
 					int d = lightMap[i];
@@ -119,9 +127,7 @@ public class Tile {
 				}
 				work[i] = c;
 			}
-			BufferedImage result = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
-			result.setRGB(0, 0, imageWidth, imageHeight, work, 0, imageWidth);
-			cached = result;
+			cached.setRGB(0, 0, imageWidth, imageHeight, work, 0, imageWidth);
 			cachedAlpha = alpha;
 		}
 		return cached;

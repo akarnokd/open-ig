@@ -1000,7 +1000,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.plasma_projector" id="IonProjector">
+	<building label="building.plasma_projector" id="PlasmaProjector">
 		<graphics base="colony/buildings/%s/plasma_projector">
 			<tech id='human' height="3" width="3"/>
 			<tech id="garthog" height="2" width="3"/>

@@ -27,6 +27,8 @@ public class TileEntry {
 	public String surface;
 	/** The related tile object. */
 	public Tile tile;
+	/** The tile cused for the preview. */
+	public Tile previewTile;
 	/** The referenced building type if any. */
 	public BuildingType buildingType;
 }
