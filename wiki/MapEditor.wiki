@@ -13,13 +13,14 @@ The aim of this Map Editor program is to help convert the original surface and b
 
 = Installation =
 
-  * Download the JAR file and place it where the other Open-IG ZIP files are located. (See Install_Instructions_08 for details)
+  * Download the JAR file and place it where the other Open-IG ZIP files are located. (See [http://code.google.com/p/open-ig/wiki/Install_Instructions_08 Install Instructions] for details on the resource files)
   * Download any {{{open-ig-upgrade-*.zip}}} files
   * Delete the {{{open-ig-config.xml}}} file
   * Run the MapEditor by double clicking on its JAR file, or from command line: {{{java -Xmx512M -jar open-ig-mapeditor-0.1.jar}}}
  
 
+= Screenshots =
 
-http://karnokd.uw.hu/images/open-ig-mapeditor-02.png
+<a href='http://karnokd.uw.hu/images/open-ig-mapeditor-02.png'><img width='25%' height='25%' src='http://karnokd.uw.hu/images/open-ig-mapeditor-02.png'></a>
 
-http://karnokd.uw.hu/images/open-ig-mapeditor-01.png
+<a href='http://karnokd.uw.hu/images/open-ig-mapeditor-01.png'><img width='25%' height='25%' src='http://karnokd.uw.hu/images/open-ig-mapeditor-01.png'></a>
