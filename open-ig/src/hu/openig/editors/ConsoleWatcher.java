@@ -11,6 +11,7 @@ package hu.openig.editors;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -27,7 +28,7 @@ import javax.swing.SwingUtilities;
  * @author karnok, 2010.09.13.
  * @version $Revision 1.0$
  */
-public class ConsoleWatcher extends JFrame {
+public class ConsoleWatcher extends JFrame implements Closeable {
 	/** */
 	private static final long serialVersionUID = 8563889445922855434L;
 	/** The out watcher thread. */
@@ -36,14 +37,18 @@ public class ConsoleWatcher extends JFrame {
 	Thread errWatcher;
 	/** The text area for data. */
 	JTextArea area;
+	/** Original stream. */
+	private PrintStream originalOut;
+	/** Original error. */
+	private PrintStream originalErr;
 	/**
 	 * Create the gui.
 	 */
 	public ConsoleWatcher() {
 		setTitle("Console Watcher");
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		final PrintStream originalOut = System.out;
-		final PrintStream originalErr = System.err;
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		originalOut = System.out;
+		originalErr = System.err;
 		
 		area = new JTextArea();
 		area.setEditable(false);
@@ -58,10 +63,11 @@ public class ConsoleWatcher extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				errWatcher.interrupt();
-				outWatcher.interrupt();
-				System.setErr(originalErr);
-				System.setOut(originalOut);
+				try {
+					close();
+				} catch (IOException ex) {
+					
+				}
 			}
 		});
 		
@@ -118,5 +124,13 @@ public class ConsoleWatcher extends JFrame {
 		} catch (IOException ex) {
 			
 		}
+	}
+	@Override
+	public void close() throws IOException {
+		errWatcher.interrupt();
+		outWatcher.interrupt();
+		System.setErr(originalErr);
+		System.setOut(originalOut);
+		dispose();
 	}
 }

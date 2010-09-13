@@ -717,7 +717,7 @@ public class Setup extends JFrame {
 		TreeSet<String> upgrades = new TreeSet<String>(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				return o2.compareTo(o1);
+				return o1.compareTo(o2);
 			}
 		});
 		if (files != null) {
@@ -729,6 +729,9 @@ public class Setup extends JFrame {
 					fileListModel.addElement(f.getName());
 				}
 			}
+		}
+		for (String s : upgrades) {
+			fileListModel.add(0, s);
 		}
 		filesPanel.repaint();
 	}

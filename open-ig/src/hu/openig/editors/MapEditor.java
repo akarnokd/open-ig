@@ -27,6 +27,8 @@ import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.model.BuildingType.TileSet;
+import hu.openig.render.TextRenderer;
+import hu.openig.utils.JavaUtils;
 
 import java.awt.Desktop;
 import java.awt.Graphics2D;
@@ -40,6 +42,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -72,6 +76,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -117,7 +122,7 @@ public class MapEditor extends JFrame {
 	/** The building tile table model. */
 	TileList buildingTableModel;
 	/** Preview splitter. */
-	JSplitPane previewSplit;
+	JSplitPane featuresSplit;
 	/** The preview image. */
 	ImagePaint preview;
 	/** The alpha slider. */
@@ -137,32 +142,46 @@ public class MapEditor extends JFrame {
 	/** The current alpha level. */
 	float alpha = 1.0f;
 	/** Show/hide buildings. */
-	private JCheckBoxMenuItem viewShowBuildings;
+	JCheckBoxMenuItem viewShowBuildings;
 	/** Place roads of a race around the buildings. */
-	private JMenu editPlaceRoads;
+	JMenu editPlaceRoads;
 	/** The import dialog. */
-	private ImportDialog imp;
+	ImportDialog imp;
 	/** Are we in placement mode? */
-	private JToggleButton buildButton;
+	JToggleButton buildButton;
 	/** The current base tile object. */
-	public Tile currentBaseTile;
+	Tile currentBaseTile;
 	/** The current building type object. */
-	public BuildingType currentBuildingType;
+	BuildingType currentBuildingType;
 	/** The current building race. */
-	public String currentBuildingRace;
+	String currentBuildingRace;
 	/** Is the placement mode active? */
-	private JCheckBoxMenuItem editPlaceMode;
+	JCheckBoxMenuItem editPlaceMode;
 	/** The configuration object. */
-	private final Configuration config;
+	final Configuration config;
+	/** The building that is currently under edit. */
+	Building currentBuilding;
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
 		bgp.setLocationRelativeTo(this);
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			/** The resource locator. */
 			private ResourceLocator rl;
+			/** The galaxy model. */
 			private GalaxyModel  galaxyMap;
+			/** The building model. */
 			private BuildingModel buildingMap;
+			/** The colony graphics. */
 			private ColonyGFX colonyGraphics;
+			/** Surface list. */
+			private List<TileEntry> surfaces = JavaUtils.newArrayList();
+			/** Buildings list. */
+			private List<TileEntry> buildings = JavaUtils.newArrayList();
+			/** Races. */
+			private Set<String> races = JavaUtils.newHashSet();
+			/** The loaded text renderer. */
+			TextRenderer txt;
 			@Override
 			protected Void doInBackground() throws Exception {
 				rl = config.newResourceLocator();
@@ -172,6 +191,11 @@ public class MapEditor extends JFrame {
 				buildingMap.processBuildings(rl, "en", "campaign/main/buildings");
 				colonyGraphics = new ColonyGFX(rl);
 				colonyGraphics.load("en");
+				
+				txt = new TextRenderer(rl);
+				
+				prepareLists(galaxyMap, buildingMap, surfaces, buildings, races);
+				
 				return null;
 			}
 			@Override
@@ -192,8 +216,10 @@ public class MapEditor extends JFrame {
 				renderer.areaAccept.alpha = 1.0f;
 				renderer.areaDeny.alpha = 1.0f;
 				renderer.areaCurrent.alpha = 1.0f;
+			
+				renderer.txt = this.txt;
 				
-				buildTables();
+				buildTables(surfaces, buildings, races);
 			}
 		};
 		worker.execute();
@@ -232,7 +258,7 @@ public class MapEditor extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new ConsoleWatcher();
+				config.watcherWindow = new ConsoleWatcher();
 				MapEditor editor = new MapEditor(config);
 				editor.setLocationRelativeTo(null);
 				editor.setVisible(true);
@@ -331,25 +357,31 @@ public class MapEditor extends JFrame {
 	 * Build the GUI. 
 	 * @param config the configuration
 	 */
-	public MapEditor(Configuration config) {
+	public MapEditor(final Configuration config) {
 		super("Open-IG Map Editor");
 		this.config = config;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		toolSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		featuresSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		renderer = new MapRenderer();
 		
-		split.setLeftComponent(toolSplit);
-		split.setRightComponent(renderer);
 		
-
-		split.setDividerLocation(450);
-		toolSplit.setDividerLocation(550);
-
-		previewSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		
-		toolSplit.setTopComponent(previewSplit);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (config.watcherWindow != null) {
+					try {
+						config.watcherWindow.close();
+					} catch (IOException ex) {
+						
+					}
+				}
+			}
+		});
+
 		
 		surfaceTableModel = new TileList();
 		buildingTableModel = new TileList();
@@ -434,12 +466,6 @@ public class MapEditor extends JFrame {
 		glb.setHorizontalGroup(glb.createParallelGroup().addComponent(filterBuilding).addComponent(sp1));
 		glb.setVerticalGroup(glb.createSequentialGroup().addComponent(filterBuilding, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(sp1));
 		
-		previewSplit.setBottomComponent(surfacePanel);
-		toolSplit.setBottomComponent(buildingPanel);
-		
-		previewSplit.setDividerLocation(300);
-		
-		
 		JPanel previewPanel = new JPanel();
 		
 		alphaSlider = new JSlider(0, 100, 100);
@@ -462,6 +488,7 @@ public class MapEditor extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				editPlaceMode.setSelected(buildButton.isSelected());
+				renderer.placementMode = buildButton.isSelected();
 			}
 		});
 		GroupLayout gl2 = new GroupLayout(previewPanel);
@@ -471,7 +498,23 @@ public class MapEditor extends JFrame {
 		gl2.setHorizontalGroup(gl2.createParallelGroup(Alignment.CENTER).addComponent(alphaSlider).addComponent(preview).addComponent(buildButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
 		gl2.setVerticalGroup(gl2.createSequentialGroup().addComponent(alphaSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(preview).addComponent(buildButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
 		
-		previewSplit.setTopComponent(previewPanel);
+		
+		JTabbedPane propertyTab = new JTabbedPane();
+		
+		split.setLeftComponent(toolSplit);
+		split.setRightComponent(renderer);
+		split.setDividerLocation(450);
+		
+		toolSplit.setTopComponent(previewPanel);
+		toolSplit.setBottomComponent(propertyTab);
+		toolSplit.setDividerLocation(350);
+		
+		featuresSplit.setTopComponent(surfacePanel);
+		featuresSplit.setBottomComponent(buildingPanel);
+		featuresSplit.setDividerLocation(150);
+
+		propertyTab.addTab("Surfaces & Buildings", featuresSplit);
+		propertyTab.addTab("Building properties", createBuildingPropertiesPanel());
 		
 		split.setDoubleBuffered(true);
 		getContentPane().add(split);
@@ -496,6 +539,14 @@ public class MapEditor extends JFrame {
 					renderer.offsetX += (int)(dx);
 					renderer.offsetY += (int)(dy);
 					renderer.repaint();
+				}
+			}
+		});
+		renderer.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isLeftMouseButton(e) && !renderer.placementMode) {
+					doSelectBuilding(e.getX(), e.getY());
 				}
 			}
 		});
@@ -652,6 +703,7 @@ public class MapEditor extends JFrame {
 	 */
 	protected void doPlaceMode(boolean selected) {
 		buildButton.setSelected(selected);
+		renderer.placementMode = selected;
 	}
 	/**
 	 * Zoom to 100%.
@@ -788,8 +840,13 @@ public class MapEditor extends JFrame {
 					}
 					if (checkBuildings) {
 						for (int i = renderer.surface.buildings.size() - 1; i >= 0; i--) {
-							if (renderer.surface.buildings.get(i).containsLocation(a, b)) {
+							Building bld = renderer.surface.buildings.get(i);
+							if (bld.containsLocation(a, b)) {
 								renderer.surface.buildings.remove(i);
+								if (bld == currentBuilding) {
+									renderer.buildingBox = null;
+									currentBuilding = null;
+								}
 							}
 						}
 					}
@@ -892,7 +949,7 @@ public class MapEditor extends JFrame {
 		/** The column classes. */
 		final Class<?>[] colClasses = { ImageIcon.class, String.class, String.class, String.class };
 		/** The list of rows. */
-		public final List<TileEntry> rows = new ArrayList<TileEntry>();
+		public List<TileEntry> rows = new ArrayList<TileEntry>();
 		@Override
 		public int getColumnCount() {
 			return colNames.length;
@@ -930,66 +987,15 @@ public class MapEditor extends JFrame {
 			return columnIndex == 2;
 		}
 	}
-	/** Build the tile table contents. */
-	void buildTables() {
-		for (Map.Entry<String, PlanetType> pt : galaxyModel.planetTypes.entrySet()) {
-			for (Map.Entry<Integer, Tile> te : pt.getValue().tiles.entrySet()) {
-				TileEntry e = new TileEntry();
-				e.id = te.getKey();
-				e.surface = pt.getKey();
-				e.name = "" + e.id;
-				e.tile = te.getValue();
-				e.tile.alpha = 1.0f;
-				e.previewTile = e.tile.copy();
-				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
-				surfaceTableModel.rows.add(e);
-			}
-		}
-		Collections.sort(surfaceTableModel.rows, new Comparator<TileEntry>() {
-			@Override
-			public int compare(TileEntry o1, TileEntry o2) {
-				int c = o1.surface.compareTo(o2.surface);
-				return c != 0 ? c : (o1.id - o2.id);
-			}
-		});
-		
-		Set<String> races = new HashSet<String>();
-		int idx = 0;
-		for (Map.Entry<String, BuildingType> bt : buildingModel.buildings.entrySet()) {
-			for (Map.Entry<String, TileSet> tss : bt.getValue().tileset.entrySet()) {
-				TileEntry e = new TileEntry();
-				e.id = idx;
-				e.surface = tss.getKey();
-				e.name = bt.getKey();
-				e.tile = tss.getValue().normal;
-				e.tile.alpha = 1.0f;
-				e.previewTile = e.tile.copy();
-				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
-				e.buildingType = bt.getValue();
-				buildingTableModel.rows.add(e);
-				
-//				e = new TileEntry();
-//				e.id = idx;
-//				e.surface = tss.getKey();
-//				e.name = bt.getKey() + " damaged";
-//				e.tile = tss.getValue().damaged;
-//				e.tile.alpha = 1.0f;
-//				e.previewTile = e.tile.copy();
-//				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
-//				e.buildingType = bt.getValue();
-//				buildingTableModel.rows.add(e);
-				races.add(tss.getKey());
-			}
-			idx++;
-		}
-		Collections.sort(buildingTableModel.rows, new Comparator<TileEntry>() {
-			@Override
-			public int compare(TileEntry o1, TileEntry o2) {
-				int c = o1.surface.compareTo(o2.surface);
-				return c != 0 ? c : (o1.id - o2.id);
-			}
-		});
-		
+	/**
+	 * Build table contents.
+	 * @param surfaces the list of surface objects
+	 * @param buildings the list of building objects
+	 * @param races the set of races
+	 */
+	void buildTables(List<TileEntry> surfaces, List<TileEntry> buildings, Set<String> races) {
+		surfaceTableModel.rows = surfaces;
+		buildingTableModel.rows = buildings;
 		surfaceTableModel.fireTableDataChanged();
 		buildingTableModel.fireTableDataChanged();
 		List<String> racesList = new ArrayList<String>(races);
@@ -1076,8 +1082,9 @@ public class MapEditor extends JFrame {
 	 * @param x the tile's leftmost coordinate
 	 * @param y the tile's leftmost coordinate
 	 * @param type the tile type
+	 * @param building the building object to assign
 	 */
-	void placeTile(Tile tile, int x, int y, SurfaceEntityType type) {
+	void placeTile(Tile tile, int x, int y, SurfaceEntityType type, Building building) {
 		for (int a = x; a < x + tile.width; a++) {
 			for (int b = y; b > y - tile.height; b--) {
 				SurfaceEntity se = new SurfaceEntity();
@@ -1086,10 +1093,9 @@ public class MapEditor extends JFrame {
 				se.virtualColumn = a - x;
 				se.tile = tile;
 				se.tile.alpha = alpha;
+				se.building = building;
 				if (type != SurfaceEntityType.BASE) {
-					Building bld = new Building();
-					bld.location = Location.of(a, b);
-					renderer.surface.buildingmap.put(bld.location, se);
+					renderer.surface.buildingmap.put(Location.of(a, b), se);
 				} else {
 					renderer.surface.basemap.put(Location.of(a, b), se);
 				}
@@ -1105,9 +1111,15 @@ public class MapEditor extends JFrame {
 			idx = surfaceTable.convertRowIndexToModel(idx);
 			TileEntry te = surfaceTableModel.rows.get(idx);
 			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
+				
+				Rectangle clearRect = new Rectangle(renderer.selectedRectangle);
+				clearRect.width = ((clearRect.width + te.tile.width - 1) / te.tile.width) * te.tile.width;
+				clearRect.height = ((clearRect.height + te.tile.height - 1) / te.tile.height) * te.tile.height;
+				deleteEntitiesOf(renderer.surface.basemap, clearRect, false);
+				
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
 					for (int y = renderer.selectedRectangle.y; y > renderer.selectedRectangle.y - renderer.selectedRectangle.height; y -= te.tile.height) {
-						placeTile(te.tile, x, y, SurfaceEntityType.BASE);
+						placeTile(te.tile, x, y, SurfaceEntityType.BASE, null);
 					}
 				}
 			}
@@ -1123,18 +1135,24 @@ public class MapEditor extends JFrame {
 			idx = buildingTable.convertRowIndexToModel(idx);
 			TileEntry te = buildingTableModel.rows.get(idx);
 			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
-				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
-					for (int y = renderer.selectedRectangle.y; y > renderer.selectedRectangle.y - renderer.selectedRectangle.height; y -= te.tile.height) {
-						placeTile(te.tile, x, y, SurfaceEntityType.BUILDING);
+				Rectangle clearRect = new Rectangle(renderer.selectedRectangle);
+				clearRect.width = ((clearRect.width + te.tile.width) / (te.tile.width + 1)) * (te.tile.width + 1) + 1;
+				clearRect.height = ((clearRect.height + te.tile.height) / (te.tile.height + 1)) * (te.tile.height + 1) + 1;
+				deleteEntitiesOf(renderer.surface.buildingmap, clearRect, true);
+				
+				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width + 1) {
+					for (int y = renderer.selectedRectangle.y; y > renderer.selectedRectangle.y - renderer.selectedRectangle.height; y -= te.tile.height + 1) {
 						Building bld = new Building();
-						bld.location = Location.of(x, y);
+						bld.location = Location.of(x + 1, y - 1);
 						bld.type = te.buildingType;
 						bld.tileset = te.buildingType.tileset.get(te.surface);
 						renderer.surface.buildings.add(bld);
+						placeTile(te.tile, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING, bld);
 					}
 				}
 			}
 			renderer.repaint();
+			placeRoads(te.surface);
 		}
 	}
 	/**
@@ -1191,13 +1209,15 @@ public class MapEditor extends JFrame {
 					BuildingType bt = buildingModel.buildings.get(ob.getName()); 
 					String r = imp.planet.getRace();
 					TileSet t = bt.tileset.get(r);
-					placeTile(t.normal, ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue, SurfaceEntityType.BUILDING);
 					Building bld = new Building();
 					bld.location = Location.of(ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue);
 					bld.type = bt;
 					bld.tileset = t;
 					renderer.surface.buildings.add(bld);
+					placeTile(t.normal, ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue, SurfaceEntityType.BUILDING, bld);
 				}
+				renderer.buildingBox = null;
+				currentBuilding = null;
 				placeRoads(imp.planet.getRace());
 			} else {
 				doClearBuildings();
@@ -1226,7 +1246,7 @@ public class MapEditor extends JFrame {
 				Location loc = toOriginalLocation(i);
 				Tile t = pt.tiles.get(tile);
 				if (t != null) {
-					placeTile(t, loc.x + shiftX, loc.y + shiftY, SurfaceEntityType.BASE);
+					placeTile(t, loc.x + shiftX, loc.y + shiftY, SurfaceEntityType.BASE, null);
 				}
 			}
 		}
@@ -1402,7 +1422,7 @@ public class MapEditor extends JFrame {
 	void doPlaceObject() {
 		if (currentBaseTile != null) {
 			deleteEntitiesOf(renderer.surface.basemap, renderer.placementRectangle, false);
-			placeTile(currentBaseTile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE);
+			placeTile(currentBaseTile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE, null);
 		} else
 		if (currentBuildingType != null && renderer.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
 			Building bld = new Building();
@@ -1411,9 +1431,143 @@ public class MapEditor extends JFrame {
 			bld.tileset = currentBuildingType.tileset.get(currentBuildingRace);
 			renderer.surface.buildings.add(bld);
 			
-			placeTile(bld.tileset.normal, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING);
+			placeTile(bld.tileset.normal, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING, bld);
 		}
 		placeRoads(currentBuildingRace);
 		renderer.repaint();
+	}
+	/**
+	 * Select a building.
+	 * @param mx the mouse coordinate
+	 * @param my the mouse coordinate
+	 */
+	void doSelectBuilding(int mx, int my) {
+		Location loc = renderer.getLocationAt(mx, my);
+		SurfaceEntity se = renderer.surface.buildingmap.get(loc);
+		if (se != null && se.type == SurfaceEntityType.BUILDING) {
+			currentBuilding = se.building;
+			loadBuildingProperties();
+		} else { 
+			se = renderer.surface.basemap.get(loc);
+			if (se != null) {
+				selectSurfaceEntity(se.tile);
+			}
+		}
+		renderer.buildingBox = renderer.getBoundingRect(loc);
+		renderer.repaint();
+	}
+	/**
+	 * Select the surface tile in the lists and preview.
+	 * @param tile the tile
+	 */
+	private void selectSurfaceEntity(Tile tile) {
+		int i = 0;
+		for (TileEntry te : surfaceTableModel.rows) {
+			if (te.tile == tile) {
+				int idx = surfaceTable.convertRowIndexToView(i);
+				surfaceTable.getSelectionModel().addSelectionInterval(idx, idx);
+				surfaceTable.scrollRectToVisible(surfaceTable.getCellRect(idx, 0, true));
+			}
+			i++;
+		}		
+	}
+	/**
+	 * Set the GUI values from the current selected building object.
+	 */
+	void loadBuildingProperties() {
+		if (currentBuilding != null) {
+			// locate the building in the buildings list
+			int i = 0;
+			for (TileEntry te : buildingTableModel.rows) {
+				if (te.buildingType.tileset.get(te.surface) == currentBuilding.tileset) {
+					int idx = buildingTable.convertRowIndexToView(i);
+					buildingTable.getSelectionModel().addSelectionInterval(idx, idx);
+					buildingTable.scrollRectToVisible(buildingTable.getCellRect(idx, 0, true));
+					break;
+				}
+				i++;
+			}
+		}
+	}
+	/**
+	 * @return the building properties panel
+	 */
+	JPanel createBuildingPropertiesPanel() {
+		JPanel result = new JPanel();
+		
+		GroupLayout gl = new GroupLayout(result);
+		result.setLayout(gl);
+		gl.setAutoCreateContainerGaps(true);
+		gl.setAutoCreateGaps(true);
+		
+		return result;
+	}
+	/**
+	 * Prepare the lists.
+	 * @param galaxyModel the galaxy model
+	 * @param buildingModel the building model
+	 * @param surfaces the surfaces list
+	 * @param buildings the buildings list
+	 * @param races the races set
+	 */
+	void prepareLists(GalaxyModel galaxyModel, BuildingModel buildingModel, 
+			List<TileEntry> surfaces, List<TileEntry> buildings, Set<String> races) {
+		for (Map.Entry<String, PlanetType> pt : galaxyModel.planetTypes.entrySet()) {
+			for (Map.Entry<Integer, Tile> te : pt.getValue().tiles.entrySet()) {
+				TileEntry e = new TileEntry();
+				e.id = te.getKey();
+				e.surface = pt.getKey();
+				e.name = "" + e.id;
+				e.tile = te.getValue();
+				e.tile.alpha = 1.0f;
+				e.previewTile = e.tile.copy();
+				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
+				surfaces.add(e);
+			}
+		}
+		Collections.sort(surfaces, new Comparator<TileEntry>() {
+			@Override
+			public int compare(TileEntry o1, TileEntry o2) {
+				int c = o1.surface.compareTo(o2.surface);
+				return c != 0 ? c : (o1.id - o2.id);
+			}
+		});
+		
+		int idx = 0;
+		for (Map.Entry<String, BuildingType> bt : buildingModel.buildings.entrySet()) {
+			for (Map.Entry<String, TileSet> tss : bt.getValue().tileset.entrySet()) {
+				TileEntry e = new TileEntry();
+				e.id = idx;
+				e.surface = tss.getKey();
+				e.name = bt.getKey();
+				e.tile = tss.getValue().normal;
+				e.tile.alpha = 1.0f;
+				e.previewTile = e.tile.copy();
+				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
+				e.buildingType = bt.getValue();
+				buildings.add(e);
+				
+//				e = new TileEntry();
+//				e.id = idx;
+//				e.surface = tss.getKey();
+//				e.name = bt.getKey() + " damaged";
+//				e.tile = tss.getValue().damaged;
+//				e.tile.alpha = 1.0f;
+//				e.previewTile = e.tile.copy();
+//				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
+//				e.buildingType = bt.getValue();
+//				buildings.add(e);
+				races.add(tss.getKey());
+			}
+			idx++;
+		}
+		Collections.sort(buildings, new Comparator<TileEntry>() {
+			@Override
+			public int compare(TileEntry o1, TileEntry o2) {
+				int c = o1.surface.compareTo(o2.surface);
+				return c != 0 ? c : (o1.id - o2.id);
+			}
+		});
+
 	}
 }
