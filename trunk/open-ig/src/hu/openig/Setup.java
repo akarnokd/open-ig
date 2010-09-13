@@ -298,8 +298,8 @@ public class Setup extends JFrame {
 		setTitle("Open Imperium Galactica Setup/Beállítás");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		try {
-			background = ImageIO.read(getClass().getResource("/hu/openig/res/setup.png"));
-			setIconImage(ImageIO.read(getClass().getResource("/hu/openig/res/open-ig-logo.png")));
+			background = ImageIO.read(getClass().getResource("/hu/openig/xold/res/setup.png"));
+			setIconImage(ImageIO.read(getClass().getResource("/hu/openig/xold/res/open-ig-logo.png")));
 		} catch (IOException ex) {
 			config.error(ex);
 			throw new RuntimeException(ex);

@@ -8,6 +8,8 @@
 
 package hu.openig.editors;
 
+import hu.openig.Setup;
+import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Location;
 import hu.openig.core.PlanetType;
@@ -39,7 +41,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
@@ -91,6 +96,8 @@ import javax.swing.table.TableRowSorter;
 public class MapEditor extends JFrame {
 	/** */
 	private static final long serialVersionUID = -5949479655359917254L;
+	/** The minimum memory required to run Open-IG. */
+	private static final long MINIMUM_MEMORY = 384L;
 	/** The main resource locator. */
 	ResourceLocator rl;
 	/** The horizontal split between the tool listing and the rendering. */
@@ -145,6 +152,8 @@ public class MapEditor extends JFrame {
 	public String currentBuildingRace;
 	/** Is the placement mode active? */
 	private JCheckBoxMenuItem editPlaceMode;
+	/** The configuration object. */
+	private final Configuration config;
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -156,8 +165,6 @@ public class MapEditor extends JFrame {
 			private ColonyGFX colonyGraphics;
 			@Override
 			protected Void doInBackground() throws Exception {
-				final Configuration config = new Configuration("open-ig-config.xml");
-				config.load();
 				rl = config.newResourceLocator();
 				galaxyMap = new GalaxyModel();
 				galaxyMap.processGalaxy(rl, "en", "campaign/main/galaxy");
@@ -186,8 +193,6 @@ public class MapEditor extends JFrame {
 				renderer.areaDeny.alpha = 1.0f;
 				renderer.areaCurrent.alpha = 1.0f;
 				
-				imp = new ImportDialog(rl);
-
 				buildTables();
 			}
 		};
@@ -205,19 +210,130 @@ public class MapEditor extends JFrame {
 //		System.setProperty("sun.java2d.d3d", "false");
 //		System.setProperty("sun.java2d.noddraw", "true");
 //		System.setProperty("sun.java2d.translaccel", "true");
-
+		long maxMem = Runtime.getRuntime().maxMemory();
+		if (maxMem < MINIMUM_MEMORY * 1024 * 1024 * 95 / 100) {
+			if (!doLowMemory()) {
+				doWarnLowMemory(maxMem);
+			}
+			return;
+		}
+		final Configuration config = new Configuration("open-ig-config.xml");
+		if (!config.load()) {
+			doStartConfiguration(config);
+		} else {
+			doStartProgram(config);
+		}
+	}
+	/**
+	 * Start the program.
+	 * @param config the configuration.
+	 */
+	static void doStartProgram(final Configuration config) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				MapEditor editor = new MapEditor();
+				new ConsoleWatcher();
+				MapEditor editor = new MapEditor(config);
 				editor.setLocationRelativeTo(null);
 				editor.setVisible(true);
 			}
 		});
 	}
-	/** Build the GUI. */
-	public MapEditor() {
+	/**
+	 * Display the configuration window for setup.
+	 * @param config the configuration
+	 */
+	private static void doStartConfiguration(final Configuration config) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Setup setup = new Setup(config);
+				setup.setLocationRelativeTo(null);
+				setup.setVisible(true);
+				setup.pack();
+				setup.onRun.add(new Act() {
+					@Override
+					public void act() {
+						doStartProgram(config);
+					}
+				});
+			}
+		});
+	}
+	/**
+	 * Put up warning dialog for failed attempt to run the program with appropriate memory.
+	 * @param maxMem the detected memory
+	 */
+	private static void doWarnLowMemory(final long maxMem) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				JOptionPane.showMessageDialog(null, "<html><p>Unable to auto-start Open Imperium Galactica MapEditor for version " + Configuration.VERSION + ".<br>Please make sure you have at least " 
+						+ MINIMUM_MEMORY + "MB defined for running a Java program in either your<br>"
+						+ "operating system's configuration for Java programs,<br> or run the program from command line using the <code>-Xmx" + MINIMUM_MEMORY + "M</code> parameter.</p><br>"
+						+ "<p>Nem sikerült automatikusan elindítani az Open Imperium Galaktika " + Configuration.VERSION + " MapEditor programot.<br>Kérem ellenõrizze, hogy alapértelmezésben a Java programok futtatásához "
+						+ "legalább " + MINIMUM_MEMORY + "MB memória<br> van beállítva az Operációs Rendszerben,<br> vagy indítsa a program parancssorból a <code>-Xmx" + MINIMUM_MEMORY + "M</code> "
+						+ "paraméter megadásával.</p>"
+				);
+			}
+		});
+	}
+	/**
+	 * Restart the program using the proper memory settings.
+	 * @return true if the re initialization was successful
+	 */
+	private static boolean doLowMemory() {
+		ProcessBuilder pb = new ProcessBuilder();
+		if (!new File("open-ig-" + Configuration.VERSION + ".jar").exists()) {
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
+		} else {
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-" + Configuration.VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
+		}
+		try {
+			Process p = pb.start();
+			createBackgroundReader(p.getInputStream(), System.out).start();
+			createBackgroundReader(p.getErrorStream(), System.err).start();
+			p.waitFor();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+	/**
+	 * Create a background stream copy thread for the given input and output streams.
+	 * @param in the input stream
+	 * @param out the output stream
+	 * @return the thread
+	 */
+	private static Thread createBackgroundReader(final InputStream in, final OutputStream out) {
+		return new Thread() {
+			@Override
+			public void run() {
+				int c;
+				try {
+					while ((c = in.read()) != -1) {
+						out.write(c);
+						if (c == 10) {
+							out.flush();
+						}
+					}
+				} catch (IOException ex) {
+					// ignored
+				}
+			}
+		};
+	}
+	/** 
+	 * Build the GUI. 
+	 * @param config the configuration
+	 */
+	public MapEditor(Configuration config) {
 		super("Open-IG Map Editor");
+		this.config = config;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -386,9 +502,11 @@ public class MapEditor extends JFrame {
 		
 		renderer.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 1 && buildButton.isSelected()) {
-					doPlaceObject();
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isLeftMouseButton(e)) {
+					if (buildButton.isSelected()) {
+						doPlaceObject();
+					}
 				}
 			}
 		});
@@ -417,22 +535,30 @@ public class MapEditor extends JFrame {
 		
 		JMenuItem fileNew = new JMenuItem("New...");
 		JMenuItem fileOpen = new JMenuItem("Open...");
+		fileOpen.setEnabled(false); // TODO implement
 		JMenuItem fileImport = new JMenuItem("Import...");
 		JMenuItem fileSave = new JMenuItem("Save");
+		fileSave.setEnabled(false); // TODO implement
 		JMenuItem fileSaveAs = new JMenuItem("Save as...");
+		fileSaveAs.setEnabled(false); // TODO implement
 		JMenuItem fileExit = new JMenuItem("Exit");
 
 		fileOpen.setAccelerator(KeyStroke.getKeyStroke('O', InputEvent.CTRL_DOWN_MASK));
 		fileSave.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
 		
 		fileImport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doImport(); } });
-		
+		fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { dispose(); } });
 		
 		JMenuItem editUndo = new JMenuItem("Undo");
+		editUndo.setEnabled(false); // TODO implement
 		JMenuItem editRedo = new JMenuItem("Redo");
+		editRedo.setEnabled(false); // TODO implement
 		JMenuItem editCut = new JMenuItem("Cut");
+		editCut.setEnabled(false); // TODO implement
 		JMenuItem editCopy = new JMenuItem("Copy");
+		editCopy.setEnabled(false); // TODO implement
 		JMenuItem editPaste = new JMenuItem("Paste");
+		editPaste.setEnabled(false); // TODO implement
 		
 		editPlaceMode = new JCheckBoxMenuItem("Placement mode");
 		
@@ -454,7 +580,7 @@ public class MapEditor extends JFrame {
 		editCut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
 		editCopy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
 		editPaste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
-		editPlaceMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0));
+		editPlaceMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
 		
 		editDeleteBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		editDeleteSurface.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK));
@@ -505,6 +631,7 @@ public class MapEditor extends JFrame {
 			}
 		});
 		JMenuItem helpAbout = new JMenuItem("About...");
+		helpAbout.setEnabled(false); // TODO implement
 		
 		addAll(mainmenu, fileMenu, editMenu, viewMenu, helpMenu);
 		addAll(fileMenu, fileNew, null, fileOpen, fileImport, null, fileSave, fileSaveAs, null, fileExit);
@@ -622,32 +749,33 @@ public class MapEditor extends JFrame {
 	}
 	/** Delete buildings and surface elements of the selection rectangle. */
 	protected void doDeleteBoth() {
-		deleteEntitiesOf(renderer.surface.basemap, false);
-		deleteEntitiesOf(renderer.surface.buildingmap, true);
+		deleteEntitiesOf(renderer.surface.basemap, renderer.selectedRectangle, false);
+		deleteEntitiesOf(renderer.surface.buildingmap, renderer.selectedRectangle, true);
 		repaint();
 	}
 	/** Delete surface surface. */
 	protected void doDeleteSurface() {
-		deleteEntitiesOf(renderer.surface.basemap, false);
+		deleteEntitiesOf(renderer.surface.basemap, renderer.selectedRectangle, false);
 		repaint();
 	}
 	/**
 	 * Delete buildings falling into the current selection rectangle.
 	 */
 	protected void doDeleteBuilding() {
-		deleteEntitiesOf(renderer.surface.buildingmap, true);
+		deleteEntitiesOf(renderer.surface.buildingmap, renderer.selectedRectangle, true);
 		repaint();
 	}
 	/**
 	 * Delete entries of the given map.
 	 * @param map the map
+	 * @param rect the target rectangle
 	 * @param checkBuildings check for the actual buildings
 	 */
-	void deleteEntitiesOf(Map<Location, SurfaceEntity> map, boolean checkBuildings) {
+	void deleteEntitiesOf(Map<Location, SurfaceEntity> map, Rectangle rect, boolean checkBuildings) {
 		// find buildings falling into the selection box
-		if (renderer.selectedRectangle != null) {
-			for (int a = renderer.selectedRectangle.x; a < renderer.selectedRectangle.x + renderer.selectedRectangle.width; a++) {
-				for (int b = renderer.selectedRectangle.y; b < renderer.selectedRectangle.y + renderer.selectedRectangle.height; b++) {
+		if (rect != null) {
+			for (int a = rect.x; a < rect.x + rect.width; a++) {
+				for (int b = rect.y; b > rect.y - rect.height; b--) {
 					SurfaceEntity se = map.get(Location.of(a, b));
 					if (se != null) {
 						int x = a - se.virtualColumn;
@@ -978,7 +1106,7 @@ public class MapEditor extends JFrame {
 			TileEntry te = surfaceTableModel.rows.get(idx);
 			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
-					for (int y = renderer.selectedRectangle.y; y < renderer.selectedRectangle.y + renderer.selectedRectangle.height; y += te.tile.height) {
+					for (int y = renderer.selectedRectangle.y; y > renderer.selectedRectangle.y - renderer.selectedRectangle.height; y -= te.tile.height) {
 						placeTile(te.tile, x, y, SurfaceEntityType.BASE);
 					}
 				}
@@ -995,14 +1123,14 @@ public class MapEditor extends JFrame {
 			idx = buildingTable.convertRowIndexToModel(idx);
 			TileEntry te = buildingTableModel.rows.get(idx);
 			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
-				Building bld = new Building();
-				bld.location = Location.of(renderer.selectedRectangle.x, renderer.selectedRectangle.y);
-				bld.type = te.buildingType;
-				bld.tileset = te.buildingType.tileset.get(te.surface);
-				renderer.surface.buildings.add(bld);
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
-					for (int y = renderer.selectedRectangle.y; y < renderer.selectedRectangle.y + renderer.selectedRectangle.height; y += te.tile.height) {
+					for (int y = renderer.selectedRectangle.y; y > renderer.selectedRectangle.y - renderer.selectedRectangle.height; y -= te.tile.height) {
 						placeTile(te.tile, x, y, SurfaceEntityType.BUILDING);
+						Building bld = new Building();
+						bld.location = Location.of(x, y);
+						bld.type = te.buildingType;
+						bld.tileset = te.buildingType.tileset.get(te.surface);
+						renderer.surface.buildings.add(bld);
 					}
 				}
 			}
@@ -1030,6 +1158,9 @@ public class MapEditor extends JFrame {
 	 * Show the import dialog.
 	 */
 	void doImport() {
+		if (imp == null) {
+			imp = new ImportDialog(rl);
+		}
 		imp.setLocationRelativeTo(this);
 		imp.setVisible(true);
 		if (imp.success) {
@@ -1269,21 +1400,20 @@ public class MapEditor extends JFrame {
 	 * Place the currently selected object onto the surface.
 	 */
 	void doPlaceObject() {
-		if (renderer.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
-			if (currentBaseTile != null) {
-				placeTile(currentBaseTile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE);
-			} else
-			if (currentBuildingType != null) {
-				Building bld = new Building();
-				bld.location = Location.of(renderer.placementRectangle.x + 1, renderer.placementRectangle.y - 1); // leave room for the roads!
-				bld.type = currentBuildingType;
-				bld.tileset = currentBuildingType.tileset.get(currentBuildingRace);
-				renderer.surface.buildings.add(bld);
-				
-				placeTile(bld.tileset.normal, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING);
-			}
-			placeRoads(currentBuildingRace);
-			renderer.repaint();
+		if (currentBaseTile != null) {
+			deleteEntitiesOf(renderer.surface.basemap, renderer.placementRectangle, false);
+			placeTile(currentBaseTile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE);
+		} else
+		if (currentBuildingType != null && renderer.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
+			Building bld = new Building();
+			bld.location = Location.of(renderer.placementRectangle.x + 1, renderer.placementRectangle.y - 1); // leave room for the roads!
+			bld.type = currentBuildingType;
+			bld.tileset = currentBuildingType.tileset.get(currentBuildingRace);
+			renderer.surface.buildings.add(bld);
+			
+			placeTile(bld.tileset.normal, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING);
 		}
+		placeRoads(currentBuildingRace);
+		renderer.repaint();
 	}
 }
