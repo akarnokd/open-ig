@@ -69,11 +69,13 @@ import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -133,6 +135,16 @@ public class MapEditor extends JFrame {
 	private JMenu editPlaceRoads;
 	/** The import dialog. */
 	private ImportDialog imp;
+	/** Are we in placement mode? */
+	private JToggleButton buildButton;
+	/** The current base tile object. */
+	public Tile currentBaseTile;
+	/** The current building type object. */
+	public BuildingType currentBuildingType;
+	/** The current building race. */
+	public String currentBuildingRace;
+	/** Is the placement mode active? */
+	private JCheckBoxMenuItem editPlaceMode;
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -165,7 +177,8 @@ public class MapEditor extends JFrame {
 				
 				renderer.selection = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFFFFFF00), null);
 				renderer.areaAccept = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFF00FFFF), null);
-				renderer.areaDeny = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileCrossed, 0xFF00FFFF), null);
+				renderer.areaEmpty = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFF808080), null);
+				renderer.areaDeny = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileCrossed, 0xFFFF0000), null);
 				renderer.areaCurrent  = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileCrossed, 0xFFFFCC00), null);
 				
 				renderer.selection.alpha = 1.0f;
@@ -328,9 +341,20 @@ public class MapEditor extends JFrame {
 		
 		preview = new ImagePaint();
 		
-		previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.PAGE_AXIS));
-		previewPanel.add(alphaSlider);
-		previewPanel.add(preview);
+		buildButton = new JToggleButton("Object placement mode");
+		buildButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editPlaceMode.setSelected(buildButton.isSelected());
+			}
+		});
+		GroupLayout gl2 = new GroupLayout(previewPanel);
+		previewPanel.setLayout(gl2);
+		gl2.setAutoCreateContainerGaps(true);
+		
+		gl2.setHorizontalGroup(gl2.createParallelGroup(Alignment.CENTER).addComponent(alphaSlider).addComponent(preview).addComponent(buildButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
+		gl2.setVerticalGroup(gl2.createSequentialGroup().addComponent(alphaSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(preview).addComponent(buildButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
+		
 		previewSplit.setTopComponent(previewPanel);
 		
 		split.setDoubleBuffered(true);
@@ -356,6 +380,15 @@ public class MapEditor extends JFrame {
 					renderer.offsetX += (int)(dx);
 					renderer.offsetY += (int)(dy);
 					renderer.repaint();
+				}
+			}
+		});
+		
+		renderer.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 1 && buildButton.isSelected()) {
+					doPlaceObject();
 				}
 			}
 		});
@@ -400,6 +433,9 @@ public class MapEditor extends JFrame {
 		JMenuItem editCut = new JMenuItem("Cut");
 		JMenuItem editCopy = new JMenuItem("Copy");
 		JMenuItem editPaste = new JMenuItem("Paste");
+		
+		editPlaceMode = new JCheckBoxMenuItem("Placement mode");
+		
 		JMenuItem editDeleteBuilding = new JMenuItem("Delete building");
 		JMenuItem editDeleteSurface = new JMenuItem("Delete surface");
 		JMenuItem editDeleteBoth = new JMenuItem("Delete both");
@@ -418,6 +454,7 @@ public class MapEditor extends JFrame {
 		editCut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
 		editCopy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
 		editPaste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+		editPlaceMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0));
 		
 		editDeleteBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		editDeleteSurface.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK));
@@ -426,6 +463,7 @@ public class MapEditor extends JFrame {
 		editDeleteBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBuilding(); } });
 		editDeleteSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteSurface(); } });
 		editDeleteBoth.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBoth(); } });
+		editPlaceMode.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPlaceMode(editPlaceMode.isSelected()); } });
 		
 		editPlaceRoads = new JMenu("Place roads");
 		
@@ -470,7 +508,7 @@ public class MapEditor extends JFrame {
 		
 		addAll(mainmenu, fileMenu, editMenu, viewMenu, helpMenu);
 		addAll(fileMenu, fileNew, null, fileOpen, fileImport, null, fileSave, fileSaveAs, null, fileExit);
-		addAll(editMenu, editCut, editCopy, editPaste, null, editDeleteBuilding, editDeleteSurface, editDeleteBoth, null, editClearBuildings, editClearSurface, null, editPlaceRoads);
+		addAll(editMenu, editCut, editCopy, editPaste, null, editPlaceMode, null, editDeleteBuilding, editDeleteSurface, editDeleteBoth, null, editClearBuildings, editClearSurface, null, editPlaceRoads);
 		addAll(viewMenu, viewZoomIn, viewZoomOut, viewZoomNormal, viewZoomValue, null, viewBright, viewDark, viewMoreLight, viewLessLight, null, viewShowBuildings);
 		addAll(helpMenu, helpOnline, null, helpAbout);
 		
@@ -480,6 +518,13 @@ public class MapEditor extends JFrame {
 				doNew();
 			}
 		});
+	}
+	/**
+	 * Toggle between the placement mode and selection mode.
+	 * @param selected is placement mode on?
+	 */
+	protected void doPlaceMode(boolean selected) {
+		buildButton.setSelected(selected);
 	}
 	/**
 	 * Zoom to 100%.
@@ -499,7 +544,6 @@ public class MapEditor extends JFrame {
 	 * 
 	 */
 	protected void doZoomIn() {
-		// TODO Auto-generated method stub
 		renderer.scale = Math.min(2.0, renderer.scale + 0.1);
 		renderer.repaint();
 	}
@@ -796,16 +840,16 @@ public class MapEditor extends JFrame {
 				e.buildingType = bt.getValue();
 				buildingTableModel.rows.add(e);
 				
-				e = new TileEntry();
-				e.id = idx;
-				e.surface = tss.getKey();
-				e.name = bt.getKey() + " damaged";
-				e.tile = tss.getValue().damaged;
-				e.tile.alpha = 1.0f;
-				e.previewTile = e.tile.copy();
-				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
-				e.buildingType = bt.getValue();
-				buildingTableModel.rows.add(e);
+//				e = new TileEntry();
+//				e.id = idx;
+//				e.surface = tss.getKey();
+//				e.name = bt.getKey() + " damaged";
+//				e.tile = tss.getValue().damaged;
+//				e.tile.alpha = 1.0f;
+//				e.previewTile = e.tile.copy();
+//				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
+//				e.buildingType = bt.getValue();
+//				buildingTableModel.rows.add(e);
 				races.add(tss.getKey());
 			}
 			idx++;
@@ -864,8 +908,13 @@ public class MapEditor extends JFrame {
 		int idx = surfaceTable.getSelectedRow();
 		if (idx >= 0) {
 			idx = surfaceTable.convertRowIndexToModel(idx);
-			preview.setImage(surfaceTableModel.rows.get(idx).previewTile);
+			TileEntry tileEntry = surfaceTableModel.rows.get(idx);
+			preview.setImage(tileEntry.previewTile);
+			renderer.placementRectangle.width = tileEntry.tile.width;
+			renderer.placementRectangle.height = tileEntry.tile.height;
 			buildingTable.getSelectionModel().clearSelection();
+			currentBaseTile = tileEntry.tile;
+			currentBuildingType = null;
 		}
 	}
 	/** Select a surface image. */
@@ -873,8 +922,14 @@ public class MapEditor extends JFrame {
 		int idx = buildingTable.getSelectedRow();
 		if (idx >= 0) {
 			idx = buildingTable.convertRowIndexToModel(idx);
-			preview.setImage(buildingTableModel.rows.get(idx).previewTile);
+			TileEntry tileEntry = buildingTableModel.rows.get(idx);
+			preview.setImage(tileEntry.previewTile);
+			renderer.placementRectangle.width = tileEntry.tile.width + 2;
+			renderer.placementRectangle.height = tileEntry.tile.height + 2;
 			surfaceTable.getSelectionModel().clearSelection();
+			currentBaseTile = null;
+			currentBuildingType = tileEntry.buildingType;
+			currentBuildingRace = tileEntry.surface;
 		}
 	}
 	/**
@@ -901,7 +956,6 @@ public class MapEditor extends JFrame {
 				se.type = type;
 				se.virtualRow = y - b;
 				se.virtualColumn = a - x;
-				se.bottomRow = tile.height - 1;
 				se.tile = tile;
 				se.tile.alpha = alpha;
 				if (type != SurfaceEntityType.BASE) {
@@ -941,14 +995,14 @@ public class MapEditor extends JFrame {
 			idx = buildingTable.convertRowIndexToModel(idx);
 			TileEntry te = buildingTableModel.rows.get(idx);
 			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
+				Building bld = new Building();
+				bld.location = Location.of(renderer.selectedRectangle.x, renderer.selectedRectangle.y);
+				bld.type = te.buildingType;
+				bld.tileset = te.buildingType.tileset.get(te.surface);
+				renderer.surface.buildings.add(bld);
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
 					for (int y = renderer.selectedRectangle.y; y < renderer.selectedRectangle.y + renderer.selectedRectangle.height; y += te.tile.height) {
 						placeTile(te.tile, x, y, SurfaceEntityType.BUILDING);
-						Building bld = new Building();
-						bld.location = Location.of(x, y);
-						bld.type = te.buildingType;
-						bld.tileset = te.buildingType.tileset.get(te.surface);
-						renderer.surface.buildings.add(bld);
 					}
 				}
 			}
@@ -1210,5 +1264,26 @@ public class MapEditor extends JFrame {
 		result.tile.alpha = alpha;
 		result.type = SurfaceEntityType.ROAD;
 		return result;
+	}
+	/**
+	 * Place the currently selected object onto the surface.
+	 */
+	void doPlaceObject() {
+		if (renderer.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
+			if (currentBaseTile != null) {
+				placeTile(currentBaseTile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE);
+			} else
+			if (currentBuildingType != null) {
+				Building bld = new Building();
+				bld.location = Location.of(renderer.placementRectangle.x + 1, renderer.placementRectangle.y - 1); // leave room for the roads!
+				bld.type = currentBuildingType;
+				bld.tileset = currentBuildingType.tileset.get(currentBuildingRace);
+				renderer.surface.buildings.add(bld);
+				
+				placeTile(bld.tileset.normal, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING);
+			}
+			placeRoads(currentBuildingRace);
+			renderer.repaint();
+		}
 	}
 }

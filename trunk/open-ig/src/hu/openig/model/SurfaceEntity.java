@@ -26,11 +26,9 @@ public class SurfaceEntity {
 	 * The virtual column within the tile object. The column is defined in the  down-right direction and is always nonnegative. 
 	 */
 	public int virtualColumn;
-	/** The location of the bottom element, e.g the (0, height - 1) virtual row. */
-	public int bottomRow;
 	/** The referenced tile. */
 	public Tile tile;
-	/** The atached building object if any. */
+	/** The attached building object if any. */
 	public Building building;
 	/** The entity type. */
 	public SurfaceEntityType type;
