@@ -17,7 +17,33 @@ The aim of this Map Editor program is to help convert the original surface and b
   * Download any {{{open-ig-upgrade-*.zip}}} files
   * Delete the {{{open-ig-config.xml}}} file
   * Run the MapEditor by double clicking on its JAR file, or from command line: {{{java -Xmx512M -jar open-ig-mapeditor-0.1.jar}}}
- 
+
+= Usage =
+
+In version 0.1 there is two option to start editing a map.
+
+== Creating a new empty map ==
+
+From *File* menu select *New...*. This will create a 66 x 33 map comparable to the size of the original maps in Imperium Galactica.
+
+<a href='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p01.png'><img width='250' height='250' src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p01.png'/></a>
+
+== Import existing ==
+
+From *File* menu select *Import...*.
+
+<img width='250' height='250' src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p02.png'/>
+
+The dialog gives two main options:
+
+  * You can import one of the original base map (see [http://code.google.com/p/open-ig/wiki/Surface_Maps Surface Maps] for details).
+  * You can import one of the original planet with background and buildings (basically the version 0.72 map definitions from the earlier Open-IG).
+
+The *Original map* lists the surface type and the filename of the surface variant. The *Original planets* lists the original planets ordered by name along with the surface type and the current race that owns the planet.
+
+The *Shift X* and *Shift Y* options allow the user to place the original map and/or buildings relative to their original coordinate system. In Open-IG 0.72 and before, coordinate system was using (0, 0) and (1, 0) respectively as the top-left corner. However, due performance and correctness issues, Open-IG 0.8 and later renders everything from (0, 0). To convert between the new and old location system, -1 must be applied to the original coordinates to place it fully visible on the newer map surface.
+
+
 
 = Screenshots =
 
