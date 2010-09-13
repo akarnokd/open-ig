@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -23,8 +23,8 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.GalaxyModel;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
+import hu.openig.model.SurfaceEntityType;
 import hu.openig.model.BuildingType.TileSet;
-import hu.openig.model.SurfaceEntity.SurfaceEntityType;
 
 import java.awt.Desktop;
 import java.awt.Graphics2D;
@@ -186,6 +186,13 @@ public class MapEditor extends JFrame {
 	 * @param args no arguments
 	 */
 	public static void main(String[] args) {
+//		System.setProperty("sun.java2d.opengl", "true");
+//		System.setProperty("sun.java2d.trace", "log,timestamp,count,out:graphicstrace.log");
+//		System.setProperty("sun.java2d.accthreshold", "0");
+//		System.setProperty("sun.java2d.d3d", "false");
+//		System.setProperty("sun.java2d.noddraw", "true");
+//		System.setProperty("sun.java2d.translaccel", "true");
+
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -762,7 +769,7 @@ public class MapEditor extends JFrame {
 				e.tile = te.getValue();
 				e.tile.alpha = 1.0f;
 				e.previewTile = e.tile.copy();
-				e.preview = new ImageIcon(scaledImage(e.tile.alphaBlendImage(), 32, 32));
+				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
 				surfaceTableModel.rows.add(e);
 			}
 		}
@@ -785,7 +792,7 @@ public class MapEditor extends JFrame {
 				e.tile = tss.getValue().normal;
 				e.tile.alpha = 1.0f;
 				e.previewTile = e.tile.copy();
-				e.preview = new ImageIcon(scaledImage(e.tile.alphaBlendImage(), 32, 32));
+				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
 				e.buildingType = bt.getValue();
 				buildingTableModel.rows.add(e);
 				
@@ -796,7 +803,7 @@ public class MapEditor extends JFrame {
 				e.tile = tss.getValue().damaged;
 				e.tile.alpha = 1.0f;
 				e.previewTile = e.tile.copy();
-				e.preview = new ImageIcon(scaledImage(e.tile.alphaBlendImage(), 32, 32));
+				e.preview = new ImageIcon(scaledImage(e.tile.getFullImage(), 32, 32));
 				e.buildingType = bt.getValue();
 				buildingTableModel.rows.add(e);
 				races.add(tss.getKey());

@@ -1,15 +1,23 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.gfx;
+package hu.openig.test;
 
 import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
+import hu.openig.gfx.BackgroundGFX;
+import hu.openig.gfx.ColonyGFX;
+import hu.openig.gfx.EquipmentGFX;
+import hu.openig.gfx.InfoGFX;
+import hu.openig.gfx.ResearchGFX;
+import hu.openig.gfx.SpacewarGFX;
+import hu.openig.gfx.StarmapGFX;
+import hu.openig.gfx.StatusbarGFX;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;

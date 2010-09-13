@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -56,7 +56,7 @@ public class MapRenderer extends JComponent {
 	/** The last rendering timestamp. */
 	long t = System.nanoTime();
 	/** The current scaling factor. */
-	double scale = 1f;
+	double scale = 1;
 	/** Right click-drag. */
 	MouseAdapter ma = new MouseAdapter() {
 		int lastX;
@@ -73,7 +73,7 @@ public class MapRenderer extends JComponent {
 				offsetX = 0;
 				offsetY = 0;
 				if (e.isControlDown()) {
-					scale = 1.0;
+					scale = 1;
 				}
 				repaint();
 			}
@@ -171,7 +171,7 @@ public class MapRenderer extends JComponent {
 		g2.drawRect(br.x, br.y, br.width, br.height);
 		
 		
-		BufferedImage empty = areaAccept.alphaBlendImage();
+		BufferedImage empty = areaAccept.getStrip(0);
 		Rectangle renderingWindow = new Rectangle(0, 0, getWidth(), getHeight());
 		for (int i = 0; i < surface.renderingOrigins.size(); i++) {
 			Location loc = surface.renderingOrigins.get(i);
@@ -205,14 +205,14 @@ public class MapRenderer extends JComponent {
 				for (int j = selectedRectangle.y; j < selectedRectangle.y + selectedRectangle.height; j++) {
 					int x = x0 + Tile.toScreenX(i, j);
 					int y = y0 + Tile.toScreenY(i, j);
-					g2.drawImage(selection.alphaBlendImage(), x, y, null);
+					g2.drawImage(selection.getStrip(0), x, y, null);
 				}
 			}
 		}
 		if (current != null) {
 			int x = x0 + Tile.toScreenX(current.x, current.y);
 			int y = y0 + Tile.toScreenY(current.x, current.y);
-			g2.drawImage(areaCurrent.alphaBlendImage(), x, y, null);
+			g2.drawImage(areaCurrent.getStrip(0), x, y, null);
 		}
 		long t1 = System.nanoTime();
 		long dt = t1 - t;

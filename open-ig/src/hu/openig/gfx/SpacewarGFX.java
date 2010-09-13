@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -8,7 +8,13 @@
 
 package hu.openig.gfx;
 
+import hu.openig.core.Anim;
+import hu.openig.core.Btn2;
+import hu.openig.core.Btn3;
+import hu.openig.core.GFXLoader;
+import hu.openig.core.Img;
 import hu.openig.core.ResourceLocator;
+import hu.openig.core.ResourceSelfLoader;
 
 import java.awt.image.BufferedImage;
 

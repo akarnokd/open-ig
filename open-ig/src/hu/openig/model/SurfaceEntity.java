@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -17,15 +17,6 @@ import java.awt.image.BufferedImage;
  * @author karnokd
  */
 public class SurfaceEntity {
-	/** The entity type. */
-	public enum SurfaceEntityType {
-		/** Planetary base tile. */
-		BASE,
-		/** Building tile. */
-		BUILDING,
-		/** Road tile. */
-		ROAD
-	}
 	/** 
 	 * The virtual row within the Tile object. A row is defined in the up-right direction and is always nonnegative (despite the surface coordinate
 	 * system is basically on the negative axis).
@@ -37,10 +28,10 @@ public class SurfaceEntity {
 	public int virtualColumn;
 	/** The location of the bottom element, e.g the (0, height - 1) virtual row. */
 	public int bottomRow;
-	/**
-	 * The referenced tile.
-	 */
+	/** The referenced tile. */
 	public Tile tile;
+	/** The atached building object if any. */
+	public Building building;
 	/** The entity type. */
 	public SurfaceEntityType type;
 	/**
@@ -51,10 +42,10 @@ public class SurfaceEntity {
 	 */
 	public BufferedImage getImage() {
 		if (virtualColumn == 0 && virtualRow < tile.height) {
-			return tile.getStrip(tile.alphaBlendImage(), virtualRow);
+			return tile.getStrip(virtualRow);
 		} else
 		if (virtualRow == tile.height - 1) {
-			return tile.getStrip(tile.alphaBlendImage(), tile.height - 1 + virtualColumn);
+			return tile.getStrip(tile.height - 1 + virtualColumn);
 		}
 		return null;
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -9,6 +9,7 @@
 package hu.openig.core;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 /**
  * A tiled object.
@@ -20,24 +21,26 @@ public class Tile {
 	public final int width;
 	/** The tile height, points bottom-right, e.e. in &lt;> the length of the \\ sides. */
 	public final int height;
-	/** The entire reference tile image. */
+	/** The entire reference tile image. Can be shared freely between copies. */
 	public final int[] image;
+	/** The overlay image for lights turned on. Can be shared freely between copies. */
+	public final int[] lightMap;
 	/** The image width. */
 	public final int imageWidth;
 	/** The image height. */
 	public final int imageHeight;
-	/** The overlay image for lights turned on. */
-	public final int[] lightMap;
 	/** The current alpha level of the image. */
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
 	protected final float lightThreshold = 0.5f;
-	/** The cached image. */
-	private final BufferedImage cached;
+//	/** The cached image. */
+//	private final BufferedImage cached;
 	/** The cached alpha level. */
 	private float cachedAlpha = -1;
 	/** The shared working buffeer. Therefore, the alpha adjustments should be done in a single thread! */
 	private static int[] work = new int[512 * 512];
+	/** The strip cache. */
+	private final BufferedImage[] stripCache;
 	/**
 	 * Constructor. Sets the fields.
 	 * @param width the width in top-right angle.
@@ -53,18 +56,37 @@ public class Tile {
 		// use ARGB images for the base
 		this.image = new int[this.imageWidth * this.imageHeight];
 		image.getRGB(0, 0, this.imageWidth, this.imageHeight, this.image, 0, this.imageWidth);
-		this.cached = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
-		this.cached.setAccelerationPriority(1.0f);
 		if (work.length < this.image.length) {
 			work = new int[this.image.length];
 		}
+		stripCache = new BufferedImage[width + height - 1];
 		if (lightMap != null) {
-			this.lightMap = new int[lightMap.getWidth() * lightMap.getHeight()];
-			lightMap.getRGB(0, 0, lightMap.getWidth(), lightMap.getHeight(), this.lightMap, 0, lightMap.getWidth());
+			this.lightMap = createLightmapRLE(lightMap);
 		} else {
 			this.lightMap = null;
 		}
-//		this.strips = new BufferedImage[width + height - 1];
+		prepareStripCache();
+	}
+	/**
+	 * Create a run-length encoded light map from the sparse bufferedimage.
+	 * @param lightMap the original buffered image
+	 * @return the array containing [index,color] pairs subsequently
+	 */
+	private int[] createLightmapRLE(BufferedImage lightMap) {
+		lightMap.getRGB(0, 0, lightMap.getWidth(), lightMap.getHeight(), work, 0, lightMap.getWidth());
+		int[] result = new int[512];
+		int count = 0;
+		for (int i = 0; i < lightMap.getWidth() * lightMap.getHeight(); i++) {
+			if (work[i] != 0) {
+				if (count + 2 >= result.length) {
+					result = Arrays.copyOf(result, result.length * 3 / 2);
+				}
+				result[count] = i;
+				result[count + 1] = work[i];
+				count += 2;
+			}
+		}
+		return Arrays.copyOf(result, count);
 	}
 	/**
 	 * Copy constructor.
@@ -78,8 +100,10 @@ public class Tile {
 		this.imageHeight = other.imageHeight;
 		this.lightMap = other.lightMap;
 		this.alpha = other.alpha;
-		this.cached = other.cached;
-		this.cachedAlpha = other.cachedAlpha;
+//		this.cached = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
+//		this.cachedAlpha = other.cachedAlpha;
+		this.stripCache = new BufferedImage[width + height - 1];
+		prepareStripCache();
 	}
 	/**
 	 * Create a copy of this tile.
@@ -89,48 +113,80 @@ public class Tile {
 		return new Tile(this);
 	}
 	/**
-	 * Get a strip of the given base image.
-	 * @param baseImage the base image
+	 * Get a strip of the cached image.
 	 * @param stripIndex the strip index. Strips are indexed from left to right
 	 * @return the partial image
 	 */
-	public BufferedImage getStrip(BufferedImage baseImage, int stripIndex) {
-		if (width + height <= 2) {
-			return baseImage;
+	public BufferedImage getStrip(int stripIndex) {
+		if (alpha != cachedAlpha) {
+			computeImageWithLights();
 		}
-		int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
-//		int x0 = Tile.toScreenX(0, -stripIndex);
-		int w0 = Math.min(57, imageWidth - x0);
-		return baseImage.getSubimage(x0, 0, w0, baseImage.getHeight());
-	}
-	/**
-	 * @return the number of rendering strips
-	 */
-	public int getStripCount() {
-		return width + height + 1;
+		return stripCache[stripIndex];
 	}
 	/**
 	 * Create an alpha blent image from the reference tile image.
-	 * @return the manipulated image.
 	 */
-	public BufferedImage alphaBlendImage() {
-		if (alpha != cachedAlpha) {
-			// apply light map if exists?
-			boolean applyLM = lightMap != null && alpha <= lightThreshold;
-			for (int i = 0; i < image.length; i++) {
-				int c = withAlpha(image[i]);
-				if (applyLM) {
-					int d = lightMap[i];
-					if (d != 0) {
-						c = d;
-					}
+	private void computeImageWithLights() {
+		// apply light map if exists?
+		applyLightMap();
+		// compute strips
+		createStrips();
+		cachedAlpha = alpha;
+	}
+	/**
+	 * Create the rendering helper strips of the image.
+	 */
+	private void createStrips() {
+		if (stripCache.length == 1) {
+			stripCache[0].setRGB(0, 0, Math.min(57, imageWidth), imageHeight, work, 0, imageWidth);
+		} else {
+			for (int stripIndex = 0; stripIndex < width + height - 1; stripIndex++) {
+				int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
+				int w0 = 57;
+				if (stripIndex < height - 1) {
+					w0 = 28;
 				}
-				work[i] = c;
+				w0 = Math.min(w0, imageWidth - x0);
+				BufferedImage stripImage = stripCache[stripIndex];
+				stripImage.setRGB(0, 0, w0, imageHeight, work, x0, imageWidth);
 			}
-			cached.setRGB(0, 0, imageWidth, imageHeight, work, 0, imageWidth);
-			cachedAlpha = alpha;
 		}
-		return cached;
+	}
+	/**
+	 * Apply the alpha and light map info on the base image.
+	 */
+	private void applyLightMap() {
+		for (int i = 0; i < image.length; i++) {
+			work[i] = withAlpha(image[i]);
+		}
+		if (lightMap != null && alpha <= lightThreshold) {
+			for (int i = 0; i < lightMap.length; i += 2) {
+				work[lightMap[i]] = lightMap[i + 1];
+			}
+		}
+	}
+	/**
+	 * @return returns a full, uncached, lighed image of this tile.
+	 */
+	public BufferedImage getFullImage() {
+		BufferedImage result = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
+		computeImageWithLights();
+		result.setRGB(0, 0, imageWidth, imageHeight, work, 0, imageWidth);
+		return result;
+	}
+	/** Allocate image memory for the strip cache. */
+	private void prepareStripCache() {
+		// compute strips
+		for (int stripIndex = 0; stripIndex < width + height - 1; stripIndex++) {
+			int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
+			int w0 = 57;
+			if (stripIndex < height - 1) {
+				w0 = 28;
+			}
+			w0 = Math.min(w0, imageWidth - x0);
+			stripCache[stripIndex] = new BufferedImage(w0, imageHeight, BufferedImage.TYPE_INT_ARGB);
+			stripCache[stripIndex].setAccelerationPriority(1.0f);
+		}
 	}
 	/**
 	 * Apply the alpha value to the supplied color. 
@@ -138,11 +194,14 @@ public class Tile {
 	 * @return the output color
 	 */
 	protected int withAlpha(int c) {
-		return (c & 0xFF000000)
-			| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
-			| (((int)((c & 0xFF00) * alpha)) & 0xFF00)
-			| ((int)((c & 0xFF) * alpha))
-		;
+		if ((c & 0xFF000000) == 0) {
+			return c;
+		}
+		return 0xFF000000
+		| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
+		| (((int)((c & 0xFF00) * alpha)) & 0xFF00)
+		| (((int)((c & 0xFF) * alpha)) & 0xFF)
+	;
 	}
 	/**
 	 * Converts the tile coordinates to pixel coordinates, X component.

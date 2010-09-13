@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -27,8 +27,6 @@ public class Planet {
 	public int y;
 	/** The planet's type. */
 	public PlanetType type;
-	/** The surface map. */
-	public byte[] surface;
 	/** The owner. */
 	public Player owner;
 	/** The inhabitant race. */
@@ -47,4 +45,6 @@ public class Planet {
 	public List<PlanetProblems> problems = new ArrayList<PlanetProblems>();
 	/** The planet is under quarantine: display red frame. */
 	public boolean quarantine;
+	/** The contents of the planet. */
+	public PlanetSurface surface;
 }

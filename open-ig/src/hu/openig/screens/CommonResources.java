@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -8,16 +8,16 @@
 
 package hu.openig.screens;
 
+import hu.openig.core.Btn2;
 import hu.openig.core.Configuration;
+import hu.openig.core.GFXLoader;
+import hu.openig.core.Img;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.gfx.BackgroundGFX;
-import hu.openig.gfx.Btn2;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.gfx.DatabaseGFX;
 import hu.openig.gfx.EquipmentGFX;
-import hu.openig.gfx.GFXLoader;
-import hu.openig.gfx.Img;
 import hu.openig.gfx.InfoGFX;
 import hu.openig.gfx.ResearchGFX;
 import hu.openig.gfx.SpacewarGFX;

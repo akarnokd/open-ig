@@ -8,11 +8,12 @@
 
 package hu.openig.model;
 
-/**
- * A ship.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
- */
-public class Ship {
-
+/** The entity type. */
+public enum SurfaceEntityType {
+	/** Planetary base tile. */
+	BASE,
+	/** Building tile. */
+	BUILDING,
+	/** Road tile. */
+	ROAD
 }

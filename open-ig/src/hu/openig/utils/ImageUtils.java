@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -42,7 +42,7 @@ public final class ImageUtils {
 		return src.getSubimage(x, y, w, h);
 	}
 	/**
-	 * Returns a subimage of the given main image.
+	 * Returns an independent subimage of the given main image. copying data from the original image.
 	 * @param src the source image.
 	 * @param x the x coordinate
 	 * @param y the y coordinate
