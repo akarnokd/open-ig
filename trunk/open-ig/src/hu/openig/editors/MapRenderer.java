@@ -13,6 +13,8 @@ import hu.openig.model.Building;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
+import hu.openig.render.TextRenderer;
+import hu.openig.xold.res.gfx.TextGFX;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -23,8 +25,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -41,8 +41,6 @@ public class MapRenderer extends JComponent {
 	int offsetY;
 	/** The current location based on the mouse pointer. */
 	Location current;
-	/** The currently selected locations. */
-	final Set<Location> selected = new HashSet<Location>();
 	/** 
 	 * The selected rectangular region. The X coordinate is the smallest, the Y coordinate is the largest
 	 * the width points to +X and height points to -Y direction
@@ -66,6 +64,12 @@ public class MapRenderer extends JComponent {
 	double scale = 1;
 	/** Used to place buildings on the surface. */
 	final Rectangle placementRectangle = new Rectangle();
+	/** The building bounding box. */
+	Rectangle buildingBox;
+	/** Are we in placement mode? */
+	boolean placementMode;
+	/** The text renderer. */
+	TextRenderer txt;
 	/** Right click-drag. */
 	final MouseAdapter ma = new MouseAdapter() {
 		int lastX;
@@ -221,20 +225,30 @@ public class MapRenderer extends JComponent {
 				}
 			}
 		}
-		g2.setColor(Color.RED);
 		for (Building b : surface.buildings) {
 			Rectangle r = getBoundingRect(b.location);
-			g2.drawRect(r.x, r.y, r.width, r.height);
+//			g2.drawRect(r.x, r.y, r.width, r.height);
+			int nameLen = txt.getTextWidth(7, b.type.label);
+			int h = (r.height - 7) / 2;
+			txt.paintTo(g2, r.x + (r.width - nameLen) / 2 + 1, r.y + h + 1, 7, TextGFX.LIGHT_BLUE, b.type.label);
+			txt.paintTo(g2, r.x + (r.width - nameLen) / 2, r.y + h, 7, 0xD4FC84, b.type.label);
 		}
-		if (selectedRectangle != null) {
-			for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
-				for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
-					int x = x0 + Tile.toScreenX(i, j);
-					int y = y0 + Tile.toScreenY(i, j);
-					g2.drawImage(selection.getStrip(0), x, y, null);
+		if (!placementMode) {
+			if (selectedRectangle != null) {
+				for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
+					for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
+						int x = x0 + Tile.toScreenX(i, j);
+						int y = y0 + Tile.toScreenY(i, j);
+						g2.drawImage(selection.getStrip(0), x, y, null);
+					}
 				}
 			}
-		}
+			if (current != null) {
+				int x = x0 + Tile.toScreenX(current.x, current.y);
+				int y = y0 + Tile.toScreenY(current.x, current.y);
+				g2.drawImage(areaCurrent.getStrip(0), x, y, null);
+			}
+		} else
 		if (placementRectangle.width > 0) {
 			for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
 				for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
@@ -265,11 +279,11 @@ public class MapRenderer extends JComponent {
 				}
 			}
 		}
-		if (current != null) {
-			int x = x0 + Tile.toScreenX(current.x, current.y);
-			int y = y0 + Tile.toScreenY(current.x, current.y);
-			g2.drawImage(areaCurrent.getStrip(0), x, y, null);
+		g2.setColor(Color.RED);
+		if (buildingBox != null) {
+			g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
 		}
+		
 		long t1 = System.nanoTime();
 		long dt = t1 - t;
 		t = t1;

@@ -9,6 +9,7 @@
 package hu.openig.core;
 
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -102,6 +103,8 @@ public class Configuration {
 	/** The video filter step. */
 	@LoadSave
 	public int videoFilter = 1;
+	/** The debug watcher window. */
+	public Closeable watcherWindow;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
