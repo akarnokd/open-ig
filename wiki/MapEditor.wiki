@@ -32,7 +32,7 @@ From *File* menu select *New...*. This will create a 66 x 33 map comparable to t
 
 From *File* menu select *Import...*.
 
-<img width='250' height='250' src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p02.png'/>
+<img src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p02.png'/>
 
 The dialog gives two main options:
 
@@ -43,7 +43,11 @@ The *Original map* lists the surface type and the filename of the surface varian
 
 The *Shift X* and *Shift Y* options allow the user to place the original map and/or buildings relative to their original coordinate system. In Open-IG 0.72 and before, coordinate system was using (0, 0) and (1, 0) respectively as the top-left corner. However, due performance and correctness issues, Open-IG 0.8 and later renders everything from (0, 0). To convert between the new and old location system, -1 must be applied to the original coordinates to place it fully visible on the newer map surface.
 
+The *Replace current surface* lets the user clear any existing surface in the editor with the selected original surface or surface used in an original planet.
 
+The *Replace existing buildings* lets the user replace any existing building placement with the buildings from the original planet. This might be useful to place buildings onto a custom-drawn background.
+
+The *Replace surface along with building* options clears any existing feature and basically places the objects from the original map into the editor.
 
 = Screenshots =
 
