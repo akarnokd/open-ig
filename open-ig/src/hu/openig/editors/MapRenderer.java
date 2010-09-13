@@ -43,7 +43,10 @@ public class MapRenderer extends JComponent {
 	Location current;
 	/** The currently selected locations. */
 	final Set<Location> selected = new HashSet<Location>();
-	/** The selected rectangular region. */
+	/** 
+	 * The selected rectangular region. The X coordinate is the smallest, the Y coordinate is the largest
+	 * the width points to +X and height points to -Y direction
+	 */
 	Rectangle selectedRectangle;
 	/** Show the buildings? */
 	boolean showBuildings = true;
@@ -110,6 +113,12 @@ public class MapRenderer extends JComponent {
 				repaint();
 			}
 		}
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			if (!isFocusOwner()) { 
+				requestFocusInWindow(); 
+			}
+		};
 	};
 	/** Selection handler. */
 	final MouseAdapter sma = new MouseAdapter() {
@@ -142,9 +151,9 @@ public class MapRenderer extends JComponent {
 				placementRectangle.x = current.x - placementRectangle.width / 2;
 				placementRectangle.y = current.y + placementRectangle.height / 2;
 				selectedRectangle.x = Math.min(orig.x, loc.x);
-				selectedRectangle.y = Math.min(orig.y, loc.y);
+				selectedRectangle.y = Math.max(orig.y, loc.y);
 				selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
-				selectedRectangle.height = Math.max(orig.y, loc.y) - selectedRectangle.y + 1;
+				selectedRectangle.height = - Math.min(orig.y, loc.y) + selectedRectangle.y + 1;
 				repaint();
 			}
 		}
@@ -219,7 +228,7 @@ public class MapRenderer extends JComponent {
 		}
 		if (selectedRectangle != null) {
 			for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
-				for (int j = selectedRectangle.y; j < selectedRectangle.y + selectedRectangle.height; j++) {
+				for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
 					int x = x0 + Tile.toScreenX(i, j);
 					int y = y0 + Tile.toScreenY(i, j);
 					g2.drawImage(selection.getStrip(0), x, y, null);
