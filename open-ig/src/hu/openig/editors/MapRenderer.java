@@ -9,8 +9,10 @@ package hu.openig.editors;
 
 import hu.openig.core.Location;
 import hu.openig.core.Tile;
+import hu.openig.model.Building;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
+import hu.openig.model.SurfaceEntityType;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -49,6 +51,8 @@ public class MapRenderer extends JComponent {
 	Tile selection;
 	/** The placement tile for allowed area. */
 	Tile areaAccept;
+	/** The empty tile indicator. */
+	Tile areaEmpty;
 	/** The placement tile for denied area. */
 	Tile areaDeny;
 	/** The current cell tile. */
@@ -57,8 +61,10 @@ public class MapRenderer extends JComponent {
 	long t = System.nanoTime();
 	/** The current scaling factor. */
 	double scale = 1;
+	/** Used to place buildings on the surface. */
+	final Rectangle placementRectangle = new Rectangle();
 	/** Right click-drag. */
-	MouseAdapter ma = new MouseAdapter() {
+	final MouseAdapter ma = new MouseAdapter() {
 		int lastX;
 		int lastY;
 		boolean drag;
@@ -98,11 +104,15 @@ public class MapRenderer extends JComponent {
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			current = getLocationAt(e.getX(), e.getY());
-			repaint();
+			if (current != null) {
+				placementRectangle.x = current.x - placementRectangle.width / 2;
+				placementRectangle.y = current.y + placementRectangle.height / 2;
+				repaint();
+			}
 		}
 	};
 	/** Selection handler. */
-	MouseAdapter sma = new MouseAdapter() {
+	final MouseAdapter sma = new MouseAdapter() {
 		boolean sel;
 		Location orig;
 		@Override
@@ -129,6 +139,8 @@ public class MapRenderer extends JComponent {
 			if (sel) {
 				Location loc = getLocationAt(e.getX(), e.getY());
 				current = loc;
+				placementRectangle.x = current.x - placementRectangle.width / 2;
+				placementRectangle.y = current.y + placementRectangle.height / 2;
 				selectedRectangle.x = Math.min(orig.x, loc.x);
 				selectedRectangle.y = Math.min(orig.y, loc.y);
 				selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
@@ -165,13 +177,13 @@ public class MapRenderer extends JComponent {
 		int y0 = surface.baseYOffset;
 
 		Rectangle br = surface.boundingRectangle;
-		g2.setColor(new Color(255, 0, 0));
+		g2.setColor(new Color(128, 0, 0));
 		g2.fillRect(br.x, br.y, br.width, br.height);
 		g2.setColor(Color.YELLOW);
 		g2.drawRect(br.x, br.y, br.width, br.height);
 		
 		
-		BufferedImage empty = areaAccept.getStrip(0);
+		BufferedImage empty = areaEmpty.getStrip(0);
 		Rectangle renderingWindow = new Rectangle(0, 0, getWidth(), getHeight());
 		for (int i = 0; i < surface.renderingOrigins.size(); i++) {
 			Location loc = surface.renderingOrigins.get(i);
@@ -185,7 +197,7 @@ public class MapRenderer extends JComponent {
 				}
 				if (se != null) {
 					int a = loc1.x - se.virtualColumn;
-					int b = loc1.y + se.virtualRow - se.bottomRow;
+					int b = loc1.y + se.virtualRow - se.tile.height + 1;
 					int yref = y0 + Tile.toScreenY(a, b) + 27 - se.tile.imageHeight;
 					if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
 						BufferedImage img = se.getImage();
@@ -200,12 +212,47 @@ public class MapRenderer extends JComponent {
 				}
 			}
 		}
+		g2.setColor(Color.RED);
+		for (Building b : surface.buildings) {
+			Rectangle r = getBoundingRect(b.location);
+			g2.drawRect(r.x, r.y, r.width, r.height);
+		}
 		if (selectedRectangle != null) {
 			for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
 				for (int j = selectedRectangle.y; j < selectedRectangle.y + selectedRectangle.height; j++) {
 					int x = x0 + Tile.toScreenX(i, j);
 					int y = y0 + Tile.toScreenY(i, j);
 					g2.drawImage(selection.getStrip(0), x, y, null);
+				}
+			}
+		}
+		if (placementRectangle.width > 0) {
+			for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
+				for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
+					
+					BufferedImage img = areaAccept.getStrip(0);
+					// check for existing building
+					if (j > 0 || j < -(surface.width + surface.height - 2)) {
+						img = areaDeny.getStrip(0);
+					} else
+					if (i > surface.renderingOrigins.get(-j).x || i < surface.renderingOrigins.get(-j).x - surface.renderingLength.get(-j) + 1) {
+						img = areaDeny.getStrip(0);
+					} else {
+						SurfaceEntity se = surface.buildingmap.get(Location.of(i, j));
+						if (se != null && se.type == SurfaceEntityType.BUILDING) {
+							img = areaDeny.getStrip(0);
+						} else {
+							se = surface.basemap.get(Location.of(i, j));
+							if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
+								img = areaDeny.getStrip(0);
+							}
+						}
+							
+					}
+					
+					int x = x0 + Tile.toScreenX(i, j);
+					int y = y0 + Tile.toScreenY(i, j);
+					g2.drawImage(img, x, y, null);
 				}
 			}
 		}
@@ -218,7 +265,39 @@ public class MapRenderer extends JComponent {
 		long dt = t1 - t;
 		t = t1;
 		g2.setTransform(at);
+		g2.setColor(Color.WHITE);
 		g2.drawString(String.format("%.3f", dt / 1E9) , getWidth() - 100, 15);
+	}
+	/**
+	 * Test if the given rectangular region is eligible for building placement, e.g.:
+	 * all cells are within the map's boundary, no other buildings are present within the given bounds,
+	 * no multi-tile surface object is present at the location.
+	 * @param rect the surface rectangle
+	 * @return true if the building can be placed
+	 */
+	public boolean canPlaceBuilding(Rectangle rect) {
+		for (int i = rect.x; i < rect.x + rect.width; i++) {
+			for (int j = rect.y; j > rect.y - rect.height; j--) {
+				if (j > 0 || j < -(surface.width + surface.height - 2)) {
+					return false;
+				} else
+				if (i > surface.renderingOrigins.get(-j).x || i < surface.renderingOrigins.get(-j).x - surface.renderingLength.get(-j) + 1) {
+					return false;
+				} else {
+					SurfaceEntity se = surface.buildingmap.get(Location.of(i, j));
+					if (se != null && se.type == SurfaceEntityType.BUILDING) {
+						return false;
+					} else {
+						se = surface.basemap.get(Location.of(i, j));
+						if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
+							return false;
+						}
+					}
+						
+				}
+			}
+		}
+		return true;
 	}
 	/**
 	 * Get a location based on the mouse coordinates.
@@ -233,6 +312,24 @@ public class MapRenderer extends JComponent {
 			int a = (int)Math.floor(Tile.toTileX((int)mx0, (int)my0) / scale);
 			int b = (int)Math.floor(Tile.toTileY((int)mx0, (int)my0) / scale) ;
 			return Location.of(a, b);
+		}
+		return null;
+	}
+	/**
+	 * Compute the bounding rectangle of the rendered building object.
+	 * @param loc the location to look for a building.
+	 * @return the bounding rectangle or null if the target does not contain a building
+	 */
+	public Rectangle getBoundingRect(Location loc) {
+		SurfaceEntity se = surface.buildingmap.get(loc);
+		if (se != null && se.type == SurfaceEntityType.BUILDING) {
+			int a0 = loc.x - se.virtualColumn;
+			int b0 = loc.y + se.virtualRow;
+			
+			int x = surface.baseXOffset + Tile.toScreenX(a0, b0);
+			int y = surface.baseYOffset + Tile.toScreenY(a0, b0 - se.tile.height + 1) + 27;
+			
+			return new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
 		}
 		return null;
 	}
