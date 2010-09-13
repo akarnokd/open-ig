@@ -1,6 +1,8 @@
 #summary The Map Editor for the version 0.8 and above
 #labels Featured
 
+<wiki:toc max_depth="3" />
+
 = Map Editor Version 0.1 Introduction =
 
 The aim of this Map Editor program is to help convert the original surface and building maps convert to a version used by Open IG v0.8 and above. In addition, the tool allows creating completely new and mixed surface maps and building layouts for any further custom games. The third role is to help me develop the new planet surface rendering module.
@@ -48,6 +50,20 @@ The *Replace current surface* lets the user clear any existing surface in the ed
 The *Replace existing buildings* lets the user replace any existing building placement with the buildings from the original planet. This might be useful to place buildings onto a custom-drawn background.
 
 The *Replace surface along with building* options clears any existing feature and basically places the objects from the original map into the editor.
+
+== Editor window components ==
+
+The left side of the main editor window contains three sub-panels.
+
+=== Preview panel ===
+
+The topmost panel shows the currently selected building or surface object.
+
+<img src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p03.png'/>
+
+The red box around the image helps me spot offsetting errors within the image (e.g. a transparent line at its bottom, which distorts the rendering of the surface and creates holes).
+
+The *Object placement mode* (Hotkey: *F3*) is a toggle button and switches between _selection mode_ (up) or _placement mode_ (down). In _selection mode_ the user can drag a selection box in the right editor panel and perform some bulk operations, for example delete everything in that box or fill it with a surface or building. In _placement mode_ the user can place surface features and buildings just like in the game one by one while clicking on the map position.
 
 = Screenshots =
 
