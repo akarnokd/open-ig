@@ -61,9 +61,82 @@ The topmost panel shows the currently selected building or surface object.
 
 <img src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p03.png'/>
 
+The top slider adjusts the lighting level of the preview object. When the slider is dragged below 51, the lights on a building should pop up.
+
 The red box around the image helps me spot offsetting errors within the image (e.g. a transparent line at its bottom, which distorts the rendering of the surface and creates holes).
 
 The *Object placement mode* (Hotkey: *F3*) is a toggle button and switches between _selection mode_ (up) or _placement mode_ (down). In _selection mode_ the user can drag a selection box in the right editor panel and perform some bulk operations, for example delete everything in that box or fill it with a surface or building. In _placement mode_ the user can place surface features and buildings just like in the game one by one while clicking on the map position.
+
+=== Surface objects ===
+
+The middle-right panel contains the list of all surface features of all 7 planetary surface types.
+
+<img src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p04.png'/>
+
+The text box in this panel allows the user to filter for various named objects of the list below. For example, if we want to see only surface features of a *neptoplasm* surface, we need only to type {{{neptoplasm}}} and hit ENTER. More examples:
+
+  * Look for earth type surfaces: {{{earth}}}
+  * Look for 1x1 tiles: {{{1x1}}}
+  * Look for earth 1x1 tiles: {{{earth 1x1}}} or {{{1x1 earth}}}
+  * Look for 2xAny tiles: {{{2x}}}
+
+The filtering uses word based partial matching, e.g. typing only {{{a}}} will filter all rows which contain the letter *a* anywhere in them.
+
+Clicking on a row in the table will select that surface feature for preview and for placement.
+
+If the user selects a region within the map then double clicks on a row, the selected region is filled with that type of surface feature. Multi-tile entires can be also used for filling, but *note that it will overflow the filling area and interfere with anything placed outside of the selection rectangle*.
+
+The user can also rename a surface tile (by default, it displays its ID) by clicking on the name cell or pressing F2 while the cell is selected. In later version, the editor will remember these renamings beyond the current program run. You can name your favorite surface features and filter for them later on.
+
+
+*NOTE: Using the fill region option ignores the bounds of the base map and might place objects outside the visible positions. Use it with care.*
+
+=== Building objects ===
+
+The bottom-left panel lists all available buildings for all races. The panel works similarly to the surface panel described above.
+
+<img src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p05.png'/>
+
+You can filter for building name, race and size. Double clicking fills the current selection with that kind of building.
+
+*NOTE: Using the fill region option ignores the bounds and contents of the base map and might place objects outside the visible positions or place them on surface features which normally would not allow any building placement. Use it with care.*
+
+=== Editor window ===
+
+The editor window is where the main action happens. It has several interaction options:
+
+  * Hold the RIGHT mouse button to pan the map around
+  * In _selection mode_ hold the LEFT mouse button to select a rectangular region (in map coordinate system)
+  * In _placement mode_ click with the LEFT mouse button to place a surface feature or building. For buildings if the placement footprint contains crossed (X) cells, the building is not allowed to be placed.
+  * Press the MIDDLE mouse button to position the map back to the upper-left origin
+  * Hold CTRL and use the MOUSE WHEEL to zoom in or out. Zooming is allowed between 10% up to 200% with 10% steps.
+  * Hold CTRL and press NUMPAD 9 or NUMPAD 3 to zoom in-or out
+  * Hold CTRL and press the MIDDLE mouse button to reset the map position and zooming level.
+  * Hold CTRL and press NUMPAD 0 to reset the zoom level to 100%.
+  * Press DELETE to remove the buildings in the current selected rectangle (the surface remains intact)
+  * Press CTRL+DELETE to remove the surface features in the selected rectangle (the buildings remain intact)
+  * Press CTRL+SHIFT+DELETE to remove everything from the selected rectangle (buildings an surface alike)
+  * Press F3 to toggle between _selection mode_ and _placement mode_
+  * Press CTRL+NUMPAD 7 to set the lighting level to 100%, CTRL+NUMPAD 1 to set the lighting level to 50%
+  * Press CTRL+NUMPED 8 to increase the lighting level by 5%, CTRL+NUMPAD 2 to decrease lighting level by 5%
+  * Press CTRL+B to to show or hide buildings
+
+Most of these functions are available in the *Edit* and *View* menus.
+
+The *Edit* menu contains several additional options.
+
+<img src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p06.png'/>
+
+  * Clear all buildings from the current map (surface features remain intact)
+  * Clear all surface features from the current map (buildings remain intact)
+  * Place roads of various races around the buildings
+  
+=== Mixed planets ===
+
+The new rendering allows the placement of surface features and buildings from various types at once. You can create a half rocky, half snowy map with Garthog and Human buildings on it...
+
+The only drawback is the type of the roads to apply. In the game, the planet's population race will always determine the type of the road graphics for simplicity. In the editor, the roads are rendered based on the last building's race that was placed on the surface.
+
 
 = Screenshots =
 
