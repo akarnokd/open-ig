@@ -1,10 +1,24 @@
 #summary The Map Editor for the version 0.8 and above
+#labels Featured
 
-= Introduction =
+= Map Editor Version 0.1 Introduction =
 
-Later.
+The aim of this Map Editor program is to help convert the original surface and building maps convert to a version used by Open IG v0.8 and above. In addition, the tool allows creating completely new and mixed surface maps and building layouts for any further custom games. The third role is to help me develop the new planet surface rendering module.
 
-= Details =
+= System Requirements =
+
+  * Java JRE version 6 or later (Java 7 preferred, see https://jdk7.dev.java.net/ ).
+  * 384 MB of memory (512 MB or more preferred)
+  * 3MB disk space for the pack, 1.2 GB for the Open-IG resource files.
+
+= Installation =
+
+  * Download the JAR file and place it where the other Open-IG ZIP files are located. (See Install_Instructions_08 for details)
+  * Download any {{{open-ig-upgrade-*.zip}}} files
+  * Delete the {{{open-ig-config.xml}}} file
+  * Run the MapEditor by double clicking on its JAR file, or from command line: {{{java -Xmx512M -jar open-ig-mapeditor-0.1.jar}}}
+ 
+
 
 http://karnokd.uw.hu/images/open-ig-mapeditor-02.png
 
