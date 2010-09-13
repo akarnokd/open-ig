@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -8,7 +8,7 @@
 
 package hu.openig.xold.render;
 
-import hu.openig.xold.ani.Player;
+import hu.openig.xold.ani.SpidyAniPlayer;
 import hu.openig.xold.core.Btn;
 import hu.openig.xold.core.BtnAction;
 import hu.openig.xold.core.FactoryInfo;
@@ -97,7 +97,7 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 	/** Animation rectangle. */
 	private final Rectangle rectAnimation = new Rectangle();
 	/** The animation player. */
-	private Player anim = new Player(this);
+	private SpidyAniPlayer anim = new SpidyAniPlayer(this);
 	/** The animation research tech. */
 	private ResearchTech selectedTech;
 	/** The lock that protects the swapping and drawing of the frontbuffer. */

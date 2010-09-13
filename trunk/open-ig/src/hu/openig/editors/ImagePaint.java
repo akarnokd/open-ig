@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -40,7 +40,7 @@ public class ImagePaint extends JComponent {
 			int y = (getHeight() - tile.imageHeight) / 2;
 			tile.alpha = alpha;
 			g.setColor(Color.RED);
-			g.drawImage(tile.alphaBlendImage(), x, y, null);
+			g.drawImage(tile.getFullImage(), x, y, null);
 			g.drawRect(x - 1, y - 1, tile.imageWidth + 1, tile.imageHeight + 1);
 			g.drawRect(x - 2, y - 2, tile.imageWidth + 3, tile.imageHeight + 3);
 		}

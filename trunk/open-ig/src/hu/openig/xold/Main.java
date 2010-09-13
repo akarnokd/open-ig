@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -8,7 +8,7 @@
 package hu.openig.xold;
 
 import hu.openig.core.MovieSurface;
-import hu.openig.xold.ani.Player;
+import hu.openig.xold.ani.SpidyAniPlayer;
 import hu.openig.xold.core.BtnAction;
 import hu.openig.xold.core.GameSpeed;
 import hu.openig.core.ImageInterpolation;
@@ -109,7 +109,7 @@ public class Main extends JFrame {
 	/** The array of screens. */
 	JComponent[] screens;
 	/** The animation player. */
-	Player player;
+	SpidyAniPlayer player;
 	/** The music player. */
 	Music music;
 	/** Set to true if the ESC is pressed while a full screen playback is in progress. */
@@ -199,7 +199,7 @@ public class Main extends JFrame {
 		moviePlayer.setOpaque(true);
 		moviePlayer.setBackground(Color.BLACK);
 		optionsRenderer.setVisible(false);
-		player = new Player(moviePlayer);
+		player = new SpidyAniPlayer(moviePlayer);
 
 		// in test mode, mute all annoying sounds
 		if (testMode) {

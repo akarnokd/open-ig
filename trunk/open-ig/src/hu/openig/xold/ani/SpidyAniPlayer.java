@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -27,7 +27,7 @@ import javax.swing.SwingUtilities;
  * @author karnokd, 2009.02.08.
  * @version $Revision 1.0$
  */
-public class Player {
+public class SpidyAniPlayer {
 	/** Loop the playback? */
 	private boolean loop;
 	/** Stop the playback? */
@@ -56,7 +56,7 @@ public class Player {
 	 * Constructor.
 	 * @param surface the target surface to render to
 	 */
-	public Player(SwappableRenderer surface) {
+	public SpidyAniPlayer(SwappableRenderer surface) {
 		this.surface = surface;
 		//framerates = new Framerates();
 	}
@@ -115,7 +115,7 @@ public class Player {
 
 				@Override
 				public String getFileName() {
-					return Player.this.getFilename();
+					return SpidyAniPlayer.this.getFilename();
 				}
 
 				@Override

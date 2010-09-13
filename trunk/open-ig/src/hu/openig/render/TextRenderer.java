@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -7,10 +7,10 @@
  */
 package hu.openig.render;
 
-import hu.openig.utils.LRUHashMap;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceType;
 import hu.openig.core.ResourceLocator.ResourcePlace;
+import hu.openig.utils.LRUHashMap;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -116,13 +116,14 @@ public class TextRenderer {
 	public static final int FREE_NATIONS_SOCIETY = LIGHT_BLUE;
 	/** Predefined color constant for a race. */
 	public static final int FREE_NATIONS_SOCIETY_ST = scaleColor(LIGHT_BLUE, 1 / 1.3f);
-	
 	/** The cache for color-remaped charImages. */
 	private Map<Integer, Map<Integer, SizedCharImages>> coloredCharImages = LRUHashMap.create(64);
 	/** The character width on a particular character size. */
 	private Map<Integer, Integer> charsetWidths = new HashMap<Integer, Integer>();
 	/** The character space for a particular character size. */
 	private Map<Integer, Integer> charsetSpaces = new HashMap<Integer, Integer>();
+//	/** Use standard Java fonts instead of the original bitmap fonts. */
+//	private boolean useStandardFonts = true;
 	/**
 	 * Constructor. Initializes the internal tables by processing the given file.
 	 * @param rl the resource locator
@@ -300,6 +301,16 @@ public class TextRenderer {
 	 * @param text the text to print
 	 */
 	public void paintTo(Graphics2D g, int x, int y, int size, int color, String text) {
+//		if (useStandardFonts) {
+//			Font f = g.getFont();
+//			Color c = g.getColor();
+//			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, size + 2));
+//			g.setColor(new Color(color));
+//			g.drawString(text, x, y + g.getFontMetrics().getAscent());
+//			g.setColor(c);
+//			g.setFont(f);
+//			return;
+//		}
 		Map<Integer, SizedCharImages> charMap = coloredCharImages.get(color);
 		if (charMap == null) {
 			charMap = split(color);
@@ -390,4 +401,17 @@ public class TextRenderer {
 		}
 		return maxWidth;
 	}
+//	/**
+//	 * Set the standard font usage.
+//	 * @param value use?
+//	 */
+//	public void setUseStandardFonts(boolean value) {
+//		this.useStandardFonts = value;
+//	}
+//	/**
+//	 * @return is standard fonts in use?
+//	 */
+//	public boolean isUseStandardFonts() {
+//		return useStandardFonts;
+//	}
 }

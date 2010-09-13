@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009, David Karnok 
+ * Copyright 2008-2011, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -11,8 +11,6 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 
 import java.awt.Rectangle;
-
-
 
 /**
  * Interface for interacting with the game window or other objects in a global manner.
