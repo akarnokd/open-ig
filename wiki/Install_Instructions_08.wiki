@@ -32,6 +32,7 @@ This page details the installation instructions for Open Imperium Galactica vers
 [http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip Video 11]<br>
 [http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip Video 12]
 
+[http://open-ig.googlecode.com/files/open-ig-upgrade-20100913a.zip Upgrade 2010-09-13-a]
 
 3) Place all these files into the same directory
 
