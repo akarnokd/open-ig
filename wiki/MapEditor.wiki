@@ -21,6 +21,6 @@ The aim of this Map Editor program is to help convert the original surface and b
 
 = Screenshots =
 
-<a href='http://karnokd.uw.hu/images/open-ig-mapeditor-02.png'><img width='25%' height='25%' src='http://karnokd.uw.hu/images/open-ig-mapeditor-02.png'/></a>
+<a href='http://karnokd.uw.hu/images/open-ig-mapeditor-02.png'><img width='250' height='250' src='http://karnokd.uw.hu/images/open-ig-mapeditor-02.png'/></a>
 
-<a href='http://karnokd.uw.hu/images/open-ig-mapeditor-01.png'><img width='25%' height='25%' src='http://karnokd.uw.hu/images/open-ig-mapeditor-01.png'/></a>
+<a href='http://karnokd.uw.hu/images/open-ig-mapeditor-01.png'><img width='250' height='250' src='http://karnokd.uw.hu/images/open-ig-mapeditor-01.png'/></a>
