@@ -9,8 +9,6 @@ package hu.openig.model;
 
 import hu.openig.core.Tile;
 
-import java.awt.image.BufferedImage;
-
 /**
  * The entity describing a particular Location on the planet surface. For multi-tile and building entities, this
  * class is used to 'mediate' the inner segments of a tile.
@@ -32,19 +30,4 @@ public class SurfaceEntity {
 	public Building building;
 	/** The entity type. */
 	public SurfaceEntityType type;
-	/**
-	 * Return the image (strip) representing this surface entry.
-	 * The default behavior returns the tile strips along its lower 'V' arc.
-	 * This method to be overridden to handle the case of damaged or in-progress buildings 
-	 * @return the buffered image belonging to the current location or null if no image should be drawn
-	 */
-	public BufferedImage getImage() {
-		if (virtualColumn == 0 && virtualRow < tile.height) {
-			return tile.getStrip(virtualRow);
-		} else
-		if (virtualRow == tile.height - 1) {
-			return tile.getStrip(tile.height - 1 + virtualColumn);
-		}
-		return null;
-	}
 }

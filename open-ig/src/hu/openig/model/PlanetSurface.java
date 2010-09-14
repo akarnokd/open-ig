@@ -87,4 +87,19 @@ public class PlanetSurface {
 		int y1 = Tile.toScreenY(loc.x, loc.y);
 		boundingRectangle = new Rectangle(x0, y0, x1 - x0 + 57, y1 - y0 + 28); 
 	}
+	/**
+	 * Check if the given cell coordinates fall into the bounds of the surface map's visible (and rendered) zone.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return true if the cell is within the map bounds
+	 */
+	public boolean cellInMap(int x, int y) {
+		if (y > 0 || y < -(width + height - 2)) {
+			return false;
+		}
+		if (x > renderingOrigins.get(-y).x || x < renderingOrigins.get(-y).x - renderingLength.get(-y) + 1) {
+			return false;
+		}		
+		return true;
+	}
 }

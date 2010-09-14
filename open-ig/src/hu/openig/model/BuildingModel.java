@@ -7,15 +7,13 @@
  */
 package hu.openig.model;
 
-import hu.openig.core.RoadType;
-import hu.openig.utils.XML;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceType;
+import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.core.ResourceLocator.ResourcePlace;
-import hu.openig.model.BuildingType.Resource;
-import hu.openig.model.BuildingType.TileSet;
-import hu.openig.model.BuildingType.Upgrade;
+import hu.openig.utils.ImageUtils;
+import hu.openig.utils.XML;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -45,13 +43,74 @@ public class BuildingModel {
 	 * @param language the language
 	 */
 	public void processBuildings(ResourceLocator rl, String language, String data) {
+		
+		BufferedImage solidTile = rl.getImage(language, "colony/tile_1x1");
+		
+		BuildingMinimapTiles bmt = new BuildingMinimapTiles();
+		bmt.normal = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF00C000), null);
+		bmt.damaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF0000), null);
+		bmt.inoperable = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFFFF00), null);
+		bmt.destroyed = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF202020), null);
+		bmt.constructing = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF0040FF), null);
+		bmt.constructingDamaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF40FF), null);
+		
 		Element buildings = rl.getXML(language, data);
+		
+		Element scaff = XML.childElement(buildings, "scaffolding");
+		Element scaffGraph = XML.childElement(scaff, "graphics");
+		String scaffBase = scaffGraph.getAttribute("base");
+		Map<String, Scaffolding> scaffoldings = new HashMap<String, Scaffolding>();
+		for (Element scaffTech : XML.childrenWithName(scaffGraph, "tech")) {
+			String id = scaffTech.getAttribute("id");
+			Scaffolding scaffolding = new Scaffolding();
+			scaffoldings.put(id, scaffolding);
+
+			Element norm = XML.childElement(scaffTech, "normal");
+			
+			String nbase = norm.getAttribute("base");
+			int nstart = Integer.parseInt(norm.getAttribute("from"));
+			int nend = Integer.parseInt(norm.getAttribute("to"));
+			
+			for (int i = nstart; i <= nend; i++) {
+				String normalImg = String.format(scaffBase, id, String.format(nbase, i));
+				String normalLight = normalImg + "_lights";
+				BufferedImage lightMap = null;
+				ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+				if (rp != null) {
+					lightMap = rl.getImage(language, normalLight);
+				}
+				BufferedImage image = rl.getImage(language, normalImg);
+				
+				scaffolding.normal.add(new Tile(1, 1, image, lightMap));
+			}
+			
+			Element dam = XML.childElement(scaffTech, "damaged");
+			String dbase = dam.getAttribute("base");
+			int dstart = Integer.parseInt(dam.getAttribute("from"));
+			int dend = Integer.parseInt(dam.getAttribute("to"));
+			
+			for (int i = dstart; i <= dend; i++) {
+				String normalImg = String.format(scaffBase, id, String.format(dbase, i));
+				String normalLight = normalImg + "_lights";
+				BufferedImage lightMap = null;
+				ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+				if (rp != null) {
+					lightMap = rl.getImage(language, normalLight);
+				}
+				BufferedImage image = rl.getImage(language, normalImg);
+				
+				scaffolding.damaged.add(new Tile(1, 1, image, lightMap));
+			}
+			
+		}
+		
 		for (Element building : XML.childrenWithName(buildings, "building")) {
 			BuildingType b = new BuildingType();
-			
+			b.scaffoldings = scaffoldings;
 			b.id = building.getAttribute("id");
 			b.label = building.getAttribute("label");
 			b.description = b.label + ".desc";
+			b.minimapTiles = bmt;
 			
 			Element gfx = XML.childElement(building, "graphics");
 			String pattern = gfx.getAttribute("base");
@@ -71,12 +130,15 @@ public class BuildingModel {
 				if (rp != null) {
 					lightMap = rl.getImage(language, normalLight);
 				}
-				ts.normal = new Tile(width, height, rl.getImage(language, normalImg), lightMap);
+				BufferedImage image = rl.getImage(language, normalImg);
+				ts.normal = new Tile(width, height, image, lightMap);
+				ts.nolight = new Tile(width, height, image, null);
 				ts.damaged = new Tile(width, height, rl.getImage(language, damagedImg), null); // no lightmap for damaged building
 				b.tileset.put(rid, ts);
 			}
 			Element bld = XML.childElement(building, "build");
 			b.cost = Integer.parseInt(bld.getAttribute("cost"));
+			b.hitpoints = b.cost; // TODO cost == hitpoints???
 			b.kind = bld.getAttribute("kind");
 			String limit = bld.getAttribute("limit");
 			if ("*".equals(limit)) {

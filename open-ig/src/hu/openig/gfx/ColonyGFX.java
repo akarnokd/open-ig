@@ -54,9 +54,6 @@ public class ColonyGFX {
 	/** Radar panel. */
 	@Img(name = "colony/radar_panel_slashed")
 	public BufferedImage radarPanel;
-	/** Repair animation. */
-	@Anim(name = "colony/repair", width = 18)
-	public BufferedImage[] repair;
 	/** Sidebar left bottom. */
 	@Img(name = "colony/sidebar_left_bottom")
 	public BufferedImage sidebarLeftBottom;
@@ -75,18 +72,15 @@ public class ColonyGFX {
 	/** Sidebar right fill. */
 	@Img(name = "colony/sidebar_right_fill")
 	public BufferedImage sidebarRightFill;
-	/** The default filled tile. */
-	@Img(name = "colony/tile_1x1")
-	public BufferedImage tileFilled;
+//	/** The default filled tile. */
+//	@Img(name = "colony/tile_1x1")
+//	public BufferedImage tileFilled;
 	/** The tile edge for selection. */
 	@Img(name = "colony/tile_1x1_selected")
 	public BufferedImage tileEdge;
 	/** The tile crossed. */
 	@Img(name = "colony/tile_1x1_selected_crossed")
 	public BufferedImage tileCrossed;
-	/** The unpowered animation. */
-	@Anim(name = "colony/unpowered", width = 20)
-	public BufferedImage[] unpowered;
 	/** Upgrade panel. */
 	@Img(name = "colony/upgrade_panel")
 	public BufferedImage upgradePanel;
@@ -159,6 +153,18 @@ public class ColonyGFX {
 	/** Sidebar right top containing the status info. */
 	@Img(name = "colony/sidebar_right_top")
 	public BufferedImage sidebarRightTop;
+	/** The upgrade star. */
+	@Img(name = "colony/upgrade")
+	public BufferedImage upgrade;
+	/** The unpowered animation. */
+	@Anim(name = "colony/worker", width = 20)
+	public BufferedImage[] worker;
+	/** Repair animation. */
+	@Anim(name = "colony/repair", width = 24)
+	public BufferedImage[] repair;
+	/** The unpowered animation. */
+	@Anim(name = "colony/unpowered", width = 20)
+	public BufferedImage[] unpowered;
 	/**
 	 * Constructor.
 	 * @param rl the resource locator
@@ -172,24 +178,5 @@ public class ColonyGFX {
 	 */
 	public void load(String language) {
 		GFXLoader.loadResources(this, rl, language);
-	}
-	/**
-	 * Recolor a given default tile image.
-	 * @param img the original image.
-	 * @param newColor the new RGBA color.
-	 * @return the new RGBA image
-	 */
-	public BufferedImage recolor(BufferedImage img, int newColor) {
-		int[] pixels = new int[img.getWidth() * img.getHeight()];
-		img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
-		for (int i = 0; i < pixels.length; i++) {
-			int c = pixels[i];
-			if (c == 0xFF000000) {
-				pixels[i] = newColor;
-			}
-		}
-		BufferedImage result = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		result.setRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
-		return result;
 	}
 }

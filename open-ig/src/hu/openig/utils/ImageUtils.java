@@ -33,11 +33,7 @@ public final class ImageUtils {
 	 */
 	public static BufferedImage subimage(BufferedImage src, int x, int y, int w, int h) {
 		if (!SUBIMAGE /* && w * h * 16 < src.getWidth() * src.getHeight() */) {
-			BufferedImage bimg =  new BufferedImage(w, h, src.getType());
-			int[] tmp = new int[w * h];
-			src.getRGB(x, y, w, h, tmp, 0, w);
-			bimg.setRGB(0, 0, w, h, tmp, 0, w);
-			return bimg;
+			return newSubimage(src, x, y, w, h);
 		}
 		return src.getSubimage(x, y, w, h);
 	}
@@ -57,5 +53,23 @@ public final class ImageUtils {
 		bimg.setRGB(0, 0, w, h, tmp, 0, w);
 		return bimg;
 	}
-	
+	/**
+	 * Recolor a given default tile image.
+	 * @param img the original image.
+	 * @param newColor the new RGBA color.
+	 * @return the new RGBA image
+	 */
+	public static BufferedImage recolor(BufferedImage img, int newColor) {
+		int[] pixels = new int[img.getWidth() * img.getHeight()];
+		img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+		for (int i = 0; i < pixels.length; i++) {
+			int c = pixels[i];
+			if (c == 0xFF000000) {
+				pixels[i] = newColor;
+			}
+		}
+		BufferedImage result = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		result.setRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+		return result;
+	}
 }

@@ -1467,4 +1467,40 @@
 		<layout id='road_north_south_west' enum='VERTICAL_LEFT' index='10'/>
 		<layout id='road_cross' enum='CROSS' index='11'/>
 	</roads>
+	<scaffolding>
+		<graphics base='colony/phases/%s/%s'>
+			<tech id='human'>
+				<normal base='buildup_%02d' from='1' to='28'/>
+				<damaged base='damaged_%02d' from='1' to='13'/>
+			</tech>
+			<tech id="garthog">
+				<normal base='buildup_%02d' from='1' to='16'/>
+				<damaged base='damaged_%02d' from='1' to='12'/>
+			</tech>
+			<tech id="morgath">
+				<normal base='buildup_%02d' from='1' to='14'/>
+				<damaged base='damaged_%02d' from='1' to='14'/>
+			</tech>
+			<tech id="ychom">
+				<normal base='buildup_%02d' from='1' to='14'/>
+				<damaged base='damaged_%02d' from='1' to='14'/>
+			</tech>
+			<tech id="dribs">
+				<normal base='buildup_%02d' from='1' to='21'/>
+				<damaged base='damaged_%02d' from='1' to='8'/>
+			</tech>
+			<tech id="sullep">
+				<normal base='buildup_%02d' from='1' to='16'/>
+				<damaged base='damaged_%02d' from='1' to='12'/>
+			</tech>
+			<tech id="dargslan">
+				<normal base='buildup_%02d' from='1' to='21'/>
+				<damaged base='damaged_%02d' from='1' to='8'/>
+			</tech>
+			<tech id="ecalep">
+				<normal base='buildup_%02d' from='1' to='16'/>
+				<damaged base='damaged_%02d' from='1' to='12'/>
+			</tech>
+		</graphics>
+	</scaffolding>
 </buildings>

@@ -9,7 +9,6 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
-import hu.openig.model.BuildingType.TileSet;
 
 /**
  * A building instance.
@@ -17,12 +16,45 @@ import hu.openig.model.BuildingType.TileSet;
  * @version $Revision 1.0$
  */
 public class Building {
+	/** Build speed, hit points per game second. */
+	public static final int BUILD_SPEED = 100;
 	/** The building type definition. */
-	public BuildingType type;
+	public final BuildingType type;
+	/** The technology ID for selecting a Tileset from the building type. */
+	public final String techId;
 	/** The tileset used when rendering the building. */
-	public TileSet tileset;
+	public final TileSet tileset;
+	/** The scaffolding used when rendering the building build. */
+	public final Scaffolding scaffolding;
 	/** The building's placement. */
 	public Location location;
+	/** The energy assigned to this building. */
+	public int assignedEnergy;
+	/** The worker assigned to this building. */
+	public int assignedWorker;
+	/** The buildup progress up to the top hit point. */
+	public int buildProgress;
+	/** The hitpoints of this building. */
+	public int hitpoints;
+	/** The current upgrade. Can be null for plain buildings. */
+	public Upgrade currentUpgrade;
+	/** The current upgrade level. 0 means no upgrades. */
+	public int upgradeLevel = 3;
+	/** Is the building enabled. */
+	public boolean enabled = true;
+	/** Is the building under repair. */
+	public boolean repairing;
+	/**
+	 * Constructs a building instance and assigns the prototype model.
+	 * @param type the building type
+	 * @param techId the technology id
+	 */
+	public Building(BuildingType type, String techId) {
+		this.type = type;
+		this.techId = techId;
+		this.tileset = type.tileset.get(techId);
+		this.scaffolding = type.scaffoldings.get(techId);
+	}
 	/**
 	 * Tests wether the given location is within the base footprint of this placed building.
 	 * @param a the X coordinate
@@ -31,5 +63,87 @@ public class Building {
 	 */
 	public boolean containsLocation(int a, int b) {
 		return a >= location.x && b <= location.y && a < location.x + tileset.normal.width && b > location.y - tileset.normal.height; 
+	}
+	/**
+	 * @return Returns the required worker amount for this building, taking the upgrade level into account.
+	 */
+	public int getWorkers() {
+		float result = type.resources.get("worker").amount;
+		if (currentUpgrade != null) {
+			Resource ru = currentUpgrade.getType("worker");
+			if (ru != null) {
+				result *= ru.amount;
+			}
+		}
+		return (int)result;
+	}
+	/**
+	 * @return Returns the required (&lt;0) or produced (&gt;0) energy amount, taking the upgrade level into account
+	 */
+	public int getEnergy() {
+		float result = type.resources.get("energy").amount;
+		if (currentUpgrade != null) {
+			Resource ru = currentUpgrade.getType("energy");
+			if (ru != null) {
+				result *= ru.amount;
+			}
+		}
+		return (int)result;
+	}
+	/**
+	 * @return the operational efficiency
+	 */
+	public float getEfficiency() {
+		if (buildProgress < type.hitpoints || hitpoints * 2 < type.hitpoints) {
+			return 0.0f;
+		}
+		int workerDemand = getWorkers();
+		int energyDemand = getEnergy();
+		if (assignedWorker * 2 > workerDemand) {
+			return 0.0f;
+		}
+		// if the building doesn't need energy
+		if (energyDemand >= 0) {
+			return assignedWorker / (float)workerDemand;
+		}
+		if (assignedEnergy * 2 > energyDemand) {
+			return 0.0f;
+		}
+		return Math.min(Math.min(assignedEnergy / (float)energyDemand, assignedWorker / (float)workerDemand), hitpoints / (float)type.hitpoints);
+	}
+	/**
+	 * @return is the building in construction phase?
+	 */
+	public boolean isConstructing() {
+		return buildProgress < type.hitpoints;
+	}
+	/**
+	 * @return is the building or construction severly damaged?
+	 */
+	public boolean isSeverlyDamaged() {
+		return hitpoints * 2 < (isConstructing() ? buildProgress : type.hitpoints);
+	}
+	/**
+	 * @return is the building destroyed?
+	 */
+	public boolean isDestroyed() {
+		return hitpoints == 0 && buildProgress > 0;
+	}
+	/** Make the building fully built. */
+	public void makeFullyBuilt() {
+		buildProgress = type.hitpoints;
+		hitpoints = type.hitpoints;
+	}
+	/**
+	 * @return is there an energy shortage situation?
+	 */
+	public boolean isEnergyShortage() {
+		return !isConstructing() && assignedEnergy * 2 > getEnergy() && enabled;
+	}
+	/**
+	 * @return is there a worker shortage situation?
+	 */
+	public boolean isWorkerShortage() {
+		return !isConstructing() && assignedWorker * 2 > getWorkers() && enabled;
 	}
 }
