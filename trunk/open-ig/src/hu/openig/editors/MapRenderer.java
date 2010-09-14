@@ -7,8 +7,10 @@
  */
 package hu.openig.editors;
 
+import hu.openig.core.Act;
 import hu.openig.core.Location;
 import hu.openig.core.Tile;
+import hu.openig.gfx.ColonyGFX;
 import hu.openig.model.Building;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
@@ -16,7 +18,9 @@ import hu.openig.model.SurfaceEntityType;
 import hu.openig.render.TextRenderer;
 import hu.openig.xold.res.gfx.TextGFX;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -28,6 +32,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 /** The map renderer. */
 public class MapRenderer extends JComponent {
@@ -68,8 +73,33 @@ public class MapRenderer extends JComponent {
 	Rectangle buildingBox;
 	/** Are we in placement mode? */
 	boolean placementMode;
+	/** Render the buildings as symbolic cells. */ 
+	boolean minimapMode;
 	/** The text renderer. */
 	TextRenderer txt;
+	/** The colony graphics. */
+	ColonyGFX colonyGFX;
+	/** The simple blinking state. */
+	boolean blink;
+	/** The animation index. */
+	int animation;
+	/** The animation timer. */
+	Timer animationTimer;
+	/** Enable the drawing of black boxes behind building names and percentages. */
+	boolean textBackgrounds = true;
+	/** The surface cell image. */
+	static class SurfaceCell {
+		/** The tile target. */
+		public int a;
+		/** The tile target. */
+		public int b;
+		/** The image to render. */
+		public BufferedImage image;
+		/** The Y coordinate compensation. */
+		public int yCompensation;
+	}
+	/** The surface cell helper. */
+	final SurfaceCell cell = new SurfaceCell();
 	/** Right click-drag. */
 	final MouseAdapter ma = new MouseAdapter() {
 		int lastX;
@@ -169,6 +199,19 @@ public class MapRenderer extends JComponent {
 		addMouseMotionListener(ma);
 		addMouseListener(sma);
 		addMouseMotionListener(sma);
+		animationTimer = new Timer(100, new Act() {
+			@Override
+			public void act() {
+				//wrap animation index
+				if (animation == Integer.MAX_VALUE) {
+					animation = -1;
+				}
+				animation++;
+				blink = (animation % 10) >= 5;
+				repaint();
+			}
+		});
+		animationTimer.start();
 	}
 	@Override
 	public void paint(Graphics g) {
@@ -209,13 +252,11 @@ public class MapRenderer extends JComponent {
 					se = surface.basemap.get(loc1);
 				}
 				if (se != null) {
-					int a = loc1.x - se.virtualColumn;
-					int b = loc1.y + se.virtualRow - se.tile.height + 1;
-					int yref = y0 + Tile.toScreenY(a, b) + 27 - se.tile.imageHeight;
+					getImage(se, minimapMode, loc1, cell);
+					int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
 					if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
-						BufferedImage img = se.getImage();
-						if (img != null) {
-							g2.drawImage(img, x, yref, null);
+						if (cell.image != null) {
+							g2.drawImage(cell.image, x, yref, null);
 						}
 					}
 				} else {
@@ -224,14 +265,6 @@ public class MapRenderer extends JComponent {
 					}
 				}
 			}
-		}
-		for (Building b : surface.buildings) {
-			Rectangle r = getBoundingRect(b.location);
-//			g2.drawRect(r.x, r.y, r.width, r.height);
-			int nameLen = txt.getTextWidth(7, b.type.label);
-			int h = (r.height - 7) / 2;
-			txt.paintTo(g2, r.x + (r.width - nameLen) / 2 + 1, r.y + h + 1, 7, TextGFX.LIGHT_BLUE, b.type.label);
-			txt.paintTo(g2, r.x + (r.width - nameLen) / 2, r.y + h, 7, 0xD4FC84, b.type.label);
 		}
 		if (!placementMode) {
 			if (selectedRectangle != null) {
@@ -280,8 +313,95 @@ public class MapRenderer extends JComponent {
 			}
 		}
 		g2.setColor(Color.RED);
-		if (buildingBox != null) {
-			g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+		if (showBuildings) {
+			if (buildingBox != null) {
+				g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+			}
+			for (Building b : surface.buildings) {
+				Rectangle r = getBoundingRect(b.location);
+				int nameLen = txt.getTextWidth(7, b.type.label);
+				int h = (r.height - 7) / 2;
+				int nx = r.x + (r.width - nameLen) / 2;
+				int ny = r.y + h;
+				
+				Composite compositeSave = null;
+				Composite a1 = null;
+				
+				if (textBackgrounds) {
+					compositeSave = g2.getComposite();
+					a1 = AlphaComposite.SrcOver.derive(0.8f);
+					g2.setComposite(a1);
+					g2.setColor(Color.BLACK);
+					g2.fillRect(nx - 2, ny - 2, nameLen + 4, 12);
+					g2.setComposite(compositeSave);
+				}
+				
+				txt.paintTo(g2, nx + 1, ny + 1, 7, TextGFX.LIGHT_BLUE, b.type.label);
+				txt.paintTo(g2, nx, ny, 7, 0xD4FC84, b.type.label);
+
+				// paint upgrade level indicator
+				int uw = b.upgradeLevel * colonyGFX.upgrade.getWidth();
+				int ux = r.x + (r.width - uw) / 2;
+				int uy = r.y + h - colonyGFX.upgrade.getHeight() - 4; 
+
+				String percent = null;
+				int color = TextGFX.LIGHT_BLUE;
+				if (b.isConstructing()) {
+					percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
+				} else
+				if (b.hitpoints < b.type.hitpoints) {
+					percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
+					if (!blink) {
+						color = TextGFX.RED;
+					}
+				}
+				if (percent != null) {
+					int pw = txt.getTextWidth(10, percent);
+					int px = r.x + (r.width - pw) / 2;
+					int py = uy - 14;
+
+					if (textBackgrounds) {
+						g2.setComposite(a1);
+						g2.setColor(Color.BLACK);
+						g2.fillRect(px - 2, py - 2, pw + 4, 15);
+						g2.setComposite(compositeSave);
+					}
+					
+					txt.paintTo(g2, px + 1, py + 1, 10, color, percent);
+					txt.paintTo(g2, px, py, 10, 0xD4FC84, percent);
+				}
+				
+				for (int i = 1; i <= b.upgradeLevel; i++) {
+					g2.drawImage(colonyGFX.upgrade, ux, uy, null);
+					ux += colonyGFX.upgrade.getWidth();
+				}
+				
+				int w = 0;
+				if (b.isEnergyShortage()) {
+					w += colonyGFX.unpowered[0].getWidth();
+				}
+				if (b.isWorkerShortage()) {
+					w += colonyGFX.worker[0].getWidth();
+				}
+				if (b.repairing) {
+					w += colonyGFX.repair[0].getWidth();
+				}
+				int ex = r.x + (r.width - w) / 2;
+				int ey = r.y + h + 11;
+				// paint power shortage
+				if (b.isEnergyShortage()) {
+					g2.drawImage(colonyGFX.unpowered[blink ? 0 : 1], ex, ey, null);
+					ex += colonyGFX.unpowered[0].getWidth();
+				}
+				if (b.isWorkerShortage()) {
+					g2.drawImage(colonyGFX.worker[blink ? 0 : 1], ex, ey, null);
+					ex += colonyGFX.worker[0].getWidth();
+				}
+				if (b.repairing) {
+					g2.drawImage(colonyGFX.repair[(animation / 3) % 3], ex, ey, null);
+					ex += colonyGFX.repair[0].getWidth();
+				}
+			}
 		}
 		
 		long t1 = System.nanoTime();
@@ -290,6 +410,101 @@ public class MapRenderer extends JComponent {
 		g2.setTransform(at);
 		g2.setColor(Color.WHITE);
 		g2.drawString(String.format("%.3f", dt / 1E9) , getWidth() - 100, 15);
+	}
+	/**
+	 * Return the image (strip) representing this surface entry.
+	 * The default behavior returns the tile strips along its lower 'V' arc.
+	 * This method to be overridden to handle the case of damaged or in-progress buildings
+	 * @param se the surface entity
+	 * @param symbolic display a symbolic tile instead of the actual building image.
+	 * @param loc1 the the target cell location
+	 * @param cell the output for the image and the Y coordinate compensation
+	 */
+	public void getImage(SurfaceEntity se, boolean symbolic, Location loc1, SurfaceCell cell) {
+		if (se.type != SurfaceEntityType.BUILDING) {
+			cell.yCompensation = 27 - se.tile.imageHeight;
+			cell.a = loc1.x - se.virtualColumn;
+			cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
+			if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
+				cell.image = se.tile.getStrip(se.virtualRow);
+				return;
+			} else
+			if (se.virtualRow == se.tile.height - 1) {
+				cell.image = se.tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+				return;
+			}
+			cell.image = null;
+			return;
+		}
+		if (symbolic) {
+			Tile tile = null;
+
+			if (se.building.isConstructing()) {
+				if (se.building.isSeverlyDamaged()) {
+					tile = se.building.type.minimapTiles.constructingDamaged;
+				} else {
+					tile = se.building.type.minimapTiles.constructing;
+				}
+			} else {
+				if (se.building.isDestroyed()) {
+					tile = se.building.type.minimapTiles.destroyed;
+				} else
+				if (se.building.isSeverlyDamaged()) {
+					tile = se.building.type.minimapTiles.damaged;
+				} else
+				if (se.building.getEfficiency() < 0.5f) {
+					tile = se.building.type.minimapTiles.inoperable;
+				} else {
+					tile = se.building.type.minimapTiles.normal;
+				}
+			}
+			
+			cell.yCompensation = 27 - tile.imageHeight;
+			cell.image = tile.getStrip(0);
+			cell.a = loc1.x;
+			cell.b = loc1.y;
+			
+			return;
+		}
+		if (se.building.isConstructing()) {
+			Tile tile = null;
+			if (se.building.isSeverlyDamaged()) {
+				int constructIndex = se.building.buildProgress * se.building.scaffolding.damaged.size() / se.building.type.hitpoints;
+				tile =  se.building.scaffolding.damaged.get(constructIndex);
+			} else {
+				int constructIndex = se.building.buildProgress * se.building.scaffolding.normal.size() / se.building.type.hitpoints;
+				tile =  se.building.scaffolding.normal.get(constructIndex);
+			}
+			cell.yCompensation = 27 - tile.imageHeight;
+			cell.image = tile.getStrip(0);
+			cell.a = loc1.x;
+			cell.b = loc1.y;
+		} else {
+			Tile tile = null;
+			if (se.building.isSeverlyDamaged()) {
+				tile = se.building.tileset.damaged;
+			} else 
+			if (se.building.getEfficiency() < 0.5f) {
+				tile = se.building.tileset.nolight;
+			} else {
+				tile = se.building.tileset.normal;
+			}
+			tile.alpha = se.tile.alpha;
+			cell.yCompensation = 27 - tile.imageHeight;
+			cell.a = loc1.x - se.virtualColumn;
+			cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
+			if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
+				cell.image = tile.getStrip(se.virtualRow);
+				return;
+			} else
+			if (se.virtualRow == se.tile.height - 1) {
+				cell.image = tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+				return;
+			}
+			cell.image = null;
+			return;
+		}
+			
 	}
 	/**
 	 * Test if the given rectangular region is eligible for building placement, e.g.:
@@ -355,5 +570,9 @@ public class MapRenderer extends JComponent {
 			return new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
 		}
 		return null;
+	}
+	/** Stop any animation timers. */
+	public void stopAnimations() {
+		animationTimer.stop();
 	}
 }

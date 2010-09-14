@@ -295,7 +295,7 @@ public class ImportDialog extends JDialog {
 			return "";
 		}
 		/** @return the new race name from the old. */
-		public String getRace() {
+		public String getRaceTechId() {
 			if ("Empire".equals(race)) {
 				return "human";
 			}

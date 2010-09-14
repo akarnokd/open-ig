@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,35 +22,6 @@ import java.util.Set;
  * @version $Revision 1.0$
  */
 public class BuildingType {
-	/** The tileset for various races. */
-	public static class TileSet {
-		/** The normal building tile. */
-		public Tile normal;
-		/** The damaged building tile. */
-		public Tile damaged;
-	}
-	/**
-	 * The required or produced resource definition.
-	 * @author karnokd, 2010.01.07.
-	 * @version $Revision 1.0$
-	 */
-	public static class Resource {
-		/** The resource type. */
-		public String type;
-		/** The resource amount. */
-		public float amount;
-	}
-	/**
-	 * The upgrades for the building type.
-	 * @author karnokd, 2010.01.07.
-	 * @version $Revision 1.0$
-	 */
-	public static class Upgrade {
-		/** The upgrade description. */
-		public String description;
-		/** The resources associated with this upgrade. */
-		public final Map<String, Resource> resources = new HashMap<String, Resource>();
-	}
 	/** The identifier. */
 	public String id;
 	/** The label. */
@@ -80,4 +50,8 @@ public class BuildingType {
 	public final Map<String, Resource> resources = new HashMap<String, Resource>();
 	/** The ordered list of upgrades for this building, if any. */
 	public final List<Upgrade> upgrades = new ArrayList<Upgrade>();
+	/** The common scaffolding map. */
+	public Map<String, Scaffolding> scaffoldings;
+	/** The common minimap tiles for various building states. */
+	public BuildingMinimapTiles minimapTiles;
 }

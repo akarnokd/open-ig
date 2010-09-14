@@ -26,8 +26,9 @@ import hu.openig.model.GalaxyModel;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
-import hu.openig.model.BuildingType.TileSet;
+import hu.openig.model.TileSet;
 import hu.openig.render.TextRenderer;
+import hu.openig.utils.ImageUtils;
 import hu.openig.utils.JavaUtils;
 
 import java.awt.Desktop;
@@ -161,6 +162,12 @@ public class MapEditor extends JFrame {
 	final Configuration config;
 	/** The building that is currently under edit. */
 	Building currentBuilding;
+	/** The building info panel. */
+	BuildingInfoPanel buildingInfoPanel;
+	/** View buildings in minimap mode. */
+	private JCheckBoxMenuItem viewSymbolicBuildings;
+	/** View text naming backgrounds. */
+	private JCheckBoxMenuItem viewTextBackgrounds;
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -184,18 +191,21 @@ public class MapEditor extends JFrame {
 			TextRenderer txt;
 			@Override
 			protected Void doInBackground() throws Exception {
-				rl = config.newResourceLocator();
-				galaxyMap = new GalaxyModel();
-				galaxyMap.processGalaxy(rl, "en", "campaign/main/galaxy");
-				buildingMap = new BuildingModel();
-				buildingMap.processBuildings(rl, "en", "campaign/main/buildings");
-				colonyGraphics = new ColonyGFX(rl);
-				colonyGraphics.load("en");
-				
-				txt = new TextRenderer(rl);
-				
-				prepareLists(galaxyMap, buildingMap, surfaces, buildings, races);
-				
+				try {
+					rl = config.newResourceLocator();
+					galaxyMap = new GalaxyModel();
+					galaxyMap.processGalaxy(rl, "en", "campaign/main/galaxy");
+					buildingMap = new BuildingModel();
+					buildingMap.processBuildings(rl, "en", "campaign/main/buildings");
+					colonyGraphics = new ColonyGFX(rl);
+					colonyGraphics.load("en");
+					
+					txt = new TextRenderer(rl);
+					
+					prepareLists(galaxyMap, buildingMap, surfaces, buildings, races);
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
 				return null;
 			}
 			@Override
@@ -204,13 +214,13 @@ public class MapEditor extends JFrame {
 				MapEditor.this.rl = rl;
 				MapEditor.this.galaxyModel = galaxyMap;
 				MapEditor.this.buildingModel = buildingMap;
-				MapEditor.this.colonyGFX = colonyGraphics;
+				renderer.colonyGFX = colonyGraphics;
 				
-				renderer.selection = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFFFFFF00), null);
-				renderer.areaAccept = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFF00FFFF), null);
-				renderer.areaEmpty = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileEdge, 0xFF808080), null);
-				renderer.areaDeny = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileCrossed, 0xFFFF0000), null);
-				renderer.areaCurrent  = new Tile(1, 1, colonyGFX.recolor(colonyGFX.tileCrossed, 0xFFFFCC00), null);
+				renderer.selection = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFFFFFF00), null);
+				renderer.areaAccept = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFF00FFFF), null);
+				renderer.areaEmpty = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFF808080), null);
+				renderer.areaDeny = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileCrossed, 0xFFFF0000), null);
+				renderer.areaCurrent  = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileCrossed, 0xFFFFCC00), null);
 				
 				renderer.selection.alpha = 1.0f;
 				renderer.areaAccept.alpha = 1.0f;
@@ -372,6 +382,7 @@ public class MapEditor extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				renderer.stopAnimations();
 				if (config.watcherWindow != null) {
 					try {
 						config.watcherWindow.close();
@@ -656,10 +667,18 @@ public class MapEditor extends JFrame {
 		viewShowBuildings = new JCheckBoxMenuItem("Show/hide buildings", true);
 		viewShowBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK));
 		
+		viewSymbolicBuildings = new JCheckBoxMenuItem("Minimap rendering mode");
+		viewSymbolicBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK));
+		
+		viewTextBackgrounds = new JCheckBoxMenuItem("Show/hide text background boxes", true);
+		viewTextBackgrounds.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+		viewTextBackgrounds.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleTextBackgrounds(); } });
+		
 		viewZoomIn.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomIn(); } });
 		viewZoomOut.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomOut(); } });
 		viewZoomNormal.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomNormal(); } });
 		viewShowBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleBuildings(); } });
+		viewSymbolicBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleMinimap(); } });
 		
 		viewBright.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doBright(); } });
 		viewDark.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDark(); } });
@@ -686,8 +705,12 @@ public class MapEditor extends JFrame {
 		
 		addAll(mainmenu, fileMenu, editMenu, viewMenu, helpMenu);
 		addAll(fileMenu, fileNew, null, fileOpen, fileImport, null, fileSave, fileSaveAs, null, fileExit);
-		addAll(editMenu, editCut, editCopy, editPaste, null, editPlaceMode, null, editDeleteBuilding, editDeleteSurface, editDeleteBoth, null, editClearBuildings, editClearSurface, null, editPlaceRoads);
-		addAll(viewMenu, viewZoomIn, viewZoomOut, viewZoomNormal, viewZoomValue, null, viewBright, viewDark, viewMoreLight, viewLessLight, null, viewShowBuildings);
+		addAll(editMenu, editCut, editCopy, editPaste, null, 
+				editPlaceMode, null, editDeleteBuilding, editDeleteSurface, editDeleteBoth, null, 
+				editClearBuildings, editClearSurface, null, editPlaceRoads);
+		addAll(viewMenu, viewZoomIn, viewZoomOut, viewZoomNormal, viewZoomValue, null, 
+				viewBright, viewDark, viewMoreLight, viewLessLight, null, 
+				viewShowBuildings, viewSymbolicBuildings, viewTextBackgrounds);
 		addAll(helpMenu, helpOnline, null, helpAbout);
 		
 		fileNew.addActionListener(new ActionListener() {
@@ -696,6 +719,16 @@ public class MapEditor extends JFrame {
 				doNew();
 			}
 		});
+	}
+	/** Toggle the rendering of text backgrounds. */
+	protected void doToggleTextBackgrounds() {
+		renderer.textBackgrounds = viewTextBackgrounds.isSelected();
+		renderer.repaint();
+	}
+	/** Toggle minimap display mode. */
+	protected void doToggleMinimap() {
+		renderer.minimapMode = viewSymbolicBuildings.isSelected();
+		renderer.repaint();
 	}
 	/**
 	 * Toggle between the placement mode and selection mode.
@@ -826,6 +859,7 @@ public class MapEditor extends JFrame {
 	void deleteEntitiesOf(Map<Location, SurfaceEntity> map, Rectangle rect, boolean checkBuildings) {
 		// find buildings falling into the selection box
 		if (rect != null) {
+			Building bld = null;
 			for (int a = rect.x; a < rect.x + rect.width; a++) {
 				for (int b = rect.y; b > rect.y - rect.height; b--) {
 					SurfaceEntity se = map.get(Location.of(a, b));
@@ -840,7 +874,7 @@ public class MapEditor extends JFrame {
 					}
 					if (checkBuildings) {
 						for (int i = renderer.surface.buildings.size() - 1; i >= 0; i--) {
-							Building bld = renderer.surface.buildings.get(i);
+							bld = renderer.surface.buildings.get(i);
 							if (bld.containsLocation(a, b)) {
 								renderer.surface.buildings.remove(i);
 								if (bld == currentBuilding) {
@@ -851,6 +885,9 @@ public class MapEditor extends JFrame {
 						}
 					}
 				}
+			}
+			if (checkBuildings && bld != null) {
+				placeRoads(bld.techId);
 			}
 		}
 	}
@@ -1142,10 +1179,9 @@ public class MapEditor extends JFrame {
 				
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width + 1) {
 					for (int y = renderer.selectedRectangle.y; y > renderer.selectedRectangle.y - renderer.selectedRectangle.height; y -= te.tile.height + 1) {
-						Building bld = new Building();
+						Building bld = new Building(te.buildingType, te.surface);
+						bld.makeFullyBuilt();
 						bld.location = Location.of(x + 1, y - 1);
-						bld.type = te.buildingType;
-						bld.tileset = te.buildingType.tileset.get(te.surface);
 						renderer.surface.buildings.add(bld);
 						placeTile(te.tile, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING, bld);
 					}
@@ -1207,18 +1243,17 @@ public class MapEditor extends JFrame {
 
 				for (OriginalBuilding ob : imp.planet.buildings) {
 					BuildingType bt = buildingModel.buildings.get(ob.getName()); 
-					String r = imp.planet.getRace();
+					String r = imp.planet.getRaceTechId();
 					TileSet t = bt.tileset.get(r);
-					Building bld = new Building();
+					Building bld = new Building(bt, r);
+					bld.makeFullyBuilt();
 					bld.location = Location.of(ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue);
-					bld.type = bt;
-					bld.tileset = t;
 					renderer.surface.buildings.add(bld);
 					placeTile(t.normal, ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue, SurfaceEntityType.BUILDING, bld);
 				}
 				renderer.buildingBox = null;
 				currentBuilding = null;
-				placeRoads(imp.planet.getRace());
+				placeRoads(imp.planet.getRaceTechId());
 			} else {
 				doClearBuildings();
 			}
@@ -1425,10 +1460,9 @@ public class MapEditor extends JFrame {
 			placeTile(currentBaseTile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE, null);
 		} else
 		if (currentBuildingType != null && renderer.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
-			Building bld = new Building();
+			Building bld = new Building(currentBuildingType, currentBuildingRace);
+			bld.makeFullyBuilt();
 			bld.location = Location.of(renderer.placementRectangle.x + 1, renderer.placementRectangle.y - 1); // leave room for the roads!
-			bld.type = currentBuildingType;
-			bld.tileset = currentBuildingType.tileset.get(currentBuildingRace);
 			renderer.surface.buildings.add(bld);
 			
 			placeTile(bld.tileset.normal, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING, bld);
@@ -1444,15 +1478,16 @@ public class MapEditor extends JFrame {
 	void doSelectBuilding(int mx, int my) {
 		Location loc = renderer.getLocationAt(mx, my);
 		SurfaceEntity se = renderer.surface.buildingmap.get(loc);
+		currentBuilding = null;
 		if (se != null && se.type == SurfaceEntityType.BUILDING) {
 			currentBuilding = se.building;
-			loadBuildingProperties();
 		} else { 
 			se = renderer.surface.basemap.get(loc);
 			if (se != null) {
 				selectSurfaceEntity(se.tile);
 			}
 		}
+		loadBuildingProperties();
 		renderer.buildingBox = renderer.getBoundingRect(loc);
 		renderer.repaint();
 	}
@@ -1470,37 +1505,6 @@ public class MapEditor extends JFrame {
 			}
 			i++;
 		}		
-	}
-	/**
-	 * Set the GUI values from the current selected building object.
-	 */
-	void loadBuildingProperties() {
-		if (currentBuilding != null) {
-			// locate the building in the buildings list
-			int i = 0;
-			for (TileEntry te : buildingTableModel.rows) {
-				if (te.buildingType.tileset.get(te.surface) == currentBuilding.tileset) {
-					int idx = buildingTable.convertRowIndexToView(i);
-					buildingTable.getSelectionModel().addSelectionInterval(idx, idx);
-					buildingTable.scrollRectToVisible(buildingTable.getCellRect(idx, 0, true));
-					break;
-				}
-				i++;
-			}
-		}
-	}
-	/**
-	 * @return the building properties panel
-	 */
-	JPanel createBuildingPropertiesPanel() {
-		JPanel result = new JPanel();
-		
-		GroupLayout gl = new GroupLayout(result);
-		result.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
-		
-		return result;
 	}
 	/**
 	 * Prepare the lists.
@@ -1569,5 +1573,80 @@ public class MapEditor extends JFrame {
 			}
 		});
 
+	}
+	/**
+	 * @return the building properties panel
+	 */
+	JPanel createBuildingPropertiesPanel() {
+		buildingInfoPanel = new BuildingInfoPanel();
+		
+		buildingInfoPanel.apply.addActionListener(new Act() {
+			@Override
+			public void act() {
+				doApplyBuildingSettings();
+			}
+		});
+		
+		return buildingInfoPanel;
+	}
+	/**
+	 * Set the GUI values from the current selected building object.
+	 */
+	void loadBuildingProperties() {
+		if (currentBuilding != null) {
+			// locate the building in the buildings list
+			int i = 0;
+			for (TileEntry te : buildingTableModel.rows) {
+				if (te.buildingType.tileset.get(te.surface) == currentBuilding.tileset) {
+					int idx = buildingTable.convertRowIndexToView(i);
+					buildingTable.getSelectionModel().addSelectionInterval(idx, idx);
+					buildingTable.scrollRectToVisible(buildingTable.getCellRect(idx, 0, true));
+					break;
+				}
+				i++;
+			}
+			buildingInfoPanel.buildingName.setText(currentBuilding.type.label);
+			buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
+			buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
+			buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
+			buildingInfoPanel.hitpointsTotal.setText("" + currentBuilding.type.hitpoints);
+			buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
+			buildingInfoPanel.workerTotal.setText("" + currentBuilding.getWorkers());
+			buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
+			buildingInfoPanel.energyTotal.setText("" + currentBuilding.getEnergy());
+			buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
+			buildingInfoPanel.tech.setText(currentBuilding.techId);
+			buildingInfoPanel.cost.setText("" + currentBuilding.type.cost);
+			buildingInfoPanel.locationX.setText("" + currentBuilding.location.x);
+			buildingInfoPanel.locationY.setText("" + currentBuilding.location.y);
+			buildingInfoPanel.apply.setEnabled(true);
+			buildingInfoPanel.buildingEnabled.setSelected(currentBuilding.enabled);
+			buildingInfoPanel.buildingRepairing.setSelected(currentBuilding.repairing);
+		} else {
+			buildingInfoPanel.apply.setEnabled(false);
+		}
+	}
+	/**
+	 * Apply the building settings.
+	 */
+	void doApplyBuildingSettings() {
+		if (currentBuilding == null) {
+			return;
+		}
+		
+		currentBuilding.enabled = buildingInfoPanel.buildingEnabled.isSelected();
+		currentBuilding.repairing = buildingInfoPanel.buildingRepairing.isSelected();
+		
+		currentBuilding.buildProgress = Math.min(Integer.parseInt(buildingInfoPanel.completed.getText()), currentBuilding.type.hitpoints);
+		currentBuilding.hitpoints = Math.min(currentBuilding.buildProgress, Integer.parseInt(buildingInfoPanel.hitpoints.getText()));
+		currentBuilding.assignedWorker = Math.min(0, Math.max(Integer.parseInt(buildingInfoPanel.assignedWorkers.getText()), currentBuilding.getWorkers()));
+		currentBuilding.assignedEnergy = Math.min(0, Math.max(Integer.parseInt(buildingInfoPanel.assignedEnergy.getText()), currentBuilding.getEnergy()));
+		
+		buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
+		buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
+		buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
+		buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
+		buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
+		renderer.repaint();
 	}
 }
