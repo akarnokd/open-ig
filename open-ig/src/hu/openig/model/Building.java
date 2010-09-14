@@ -39,7 +39,7 @@ public class Building {
 	/** The current upgrade. Can be null for plain buildings. */
 	public Upgrade currentUpgrade;
 	/** The current upgrade level. 0 means no upgrades. */
-	public int upgradeLevel = 3;
+	public int upgradeLevel;
 	/** Is the building enabled. */
 	public boolean enabled = true;
 	/** Is the building under repair. */
@@ -68,27 +68,13 @@ public class Building {
 	 * @return Returns the required worker amount for this building, taking the upgrade level into account.
 	 */
 	public int getWorkers() {
-		float result = type.resources.get("worker").amount;
-		if (currentUpgrade != null) {
-			Resource ru = currentUpgrade.getType("worker");
-			if (ru != null) {
-				result *= ru.amount;
-			}
-		}
-		return (int)result;
+		return (int)getResource("worker");
 	}
 	/**
 	 * @return Returns the required (&lt;0) or produced (&gt;0) energy amount, taking the upgrade level into account
 	 */
 	public int getEnergy() {
-		float result = type.resources.get("energy").amount;
-		if (currentUpgrade != null) {
-			Resource ru = currentUpgrade.getType("energy");
-			if (ru != null) {
-				result *= ru.amount;
-			}
-		}
-		return (int)result;
+		return (int)getResource("energy");
 	}
 	/**
 	 * @return the operational efficiency
@@ -145,5 +131,29 @@ public class Building {
 	 */
 	public boolean isWorkerShortage() {
 		return !isConstructing() && assignedWorker * 2 > getWorkers() && enabled;
+	}
+	/**
+	 * Test if a given resource is present at this building.
+	 * @param name the resource name
+	 * @return the resource is present?
+	 */
+	public boolean hasResource(String name) {
+		return type.resources.containsKey(name);
+	}
+	/**
+	 * Retrieve a resource for this building and apply any upgrade settings.
+	 * The resource must exist, test with hasResource() before using this
+	 * @param name the resource name
+	 * @return the resource amount
+	 */
+	public float getResource(String name) {
+		Resource res = type.resources.get(name);
+		if (currentUpgrade != null) {
+			Resource ru = currentUpgrade.getType(name);
+			if (ru != null) {
+				return res.amount * ru.amount;
+			}
+		}
+		return res.amount;
 	}
 }
