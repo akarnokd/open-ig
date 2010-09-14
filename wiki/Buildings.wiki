@@ -1,0 +1,16 @@
+#summary Documentation and think page for the Buildings mechanic
+
+= Introduction =
+
+How buildings (should) work in Open-IG.
+
+
+= Details =
+
+  # build phase
+
+The {{{Building.buildProgress}}} defines the current buildup level. It goes from 0 to {{{Building.type.hitpoints}}} with a build speed constant {{{Building.BUILD_SPEED}}} per game seconds.
+
+Uncertain: {{{Building.type.hitpoints}}} equals to {{{Building.type.cost}}}?
+
+During buildup, the surface map displays the scaffolding tiles for the particular {{{Building.techId}}}.
