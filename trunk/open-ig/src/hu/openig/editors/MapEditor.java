@@ -24,6 +24,7 @@ import hu.openig.model.BuildingModel;
 import hu.openig.model.BuildingType;
 import hu.openig.model.GalaxyModel;
 import hu.openig.model.PlanetSurface;
+import hu.openig.model.Resource;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.model.TileSet;
@@ -1605,26 +1606,52 @@ public class MapEditor extends JFrame {
 				}
 				i++;
 			}
-			buildingInfoPanel.buildingName.setText(currentBuilding.type.label);
-			buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
-			buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
-			buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
-			buildingInfoPanel.hitpointsTotal.setText("" + currentBuilding.type.hitpoints);
-			buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
-			buildingInfoPanel.workerTotal.setText("" + currentBuilding.getWorkers());
-			buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
-			buildingInfoPanel.energyTotal.setText("" + currentBuilding.getEnergy());
-			buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
-			buildingInfoPanel.tech.setText(currentBuilding.techId);
-			buildingInfoPanel.cost.setText("" + currentBuilding.type.cost);
-			buildingInfoPanel.locationX.setText("" + currentBuilding.location.x);
-			buildingInfoPanel.locationY.setText("" + currentBuilding.location.y);
-			buildingInfoPanel.apply.setEnabled(true);
-			buildingInfoPanel.buildingEnabled.setSelected(currentBuilding.enabled);
-			buildingInfoPanel.buildingRepairing.setSelected(currentBuilding.repairing);
+			
+			displayBuildingInfo();
 		} else {
 			buildingInfoPanel.apply.setEnabled(false);
 		}
+	}
+	/**
+	 * Display the building info.
+	 */
+	private void displayBuildingInfo() {
+		buildingInfoPanel.buildingName.setText(currentBuilding.type.label);
+		buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
+		buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
+		buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
+		buildingInfoPanel.hitpointsTotal.setText("" + currentBuilding.type.hitpoints);
+		buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
+		buildingInfoPanel.workerTotal.setText("" + currentBuilding.getWorkers());
+		buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
+		buildingInfoPanel.energyTotal.setText("" + currentBuilding.getEnergy());
+		buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
+		buildingInfoPanel.tech.setText(currentBuilding.techId);
+		buildingInfoPanel.cost.setText("" + currentBuilding.type.cost);
+		buildingInfoPanel.locationX.setText("" + currentBuilding.location.x);
+		buildingInfoPanel.locationY.setText("" + currentBuilding.location.y);
+		buildingInfoPanel.apply.setEnabled(true);
+		buildingInfoPanel.buildingEnabled.setSelected(currentBuilding.enabled);
+		buildingInfoPanel.buildingRepairing.setSelected(currentBuilding.repairing);
+		
+		buildingInfoPanel.upgradeList.removeAllItems();
+		buildingInfoPanel.upgradeList.addItem("None");
+		for (int j = 0; j < currentBuilding.type.upgrades.size(); j++) {
+			buildingInfoPanel.upgradeList.addItem(currentBuilding.type.upgrades.get(j).description);
+		}
+		buildingInfoPanel.upgradeList.setSelectedIndex(currentBuilding.upgradeLevel);
+		
+		buildingInfoPanel.resourceTableModel.rows.clear();
+		for (String r : currentBuilding.type.resources.keySet()) {
+			if ("worker".equals(r) || "energy".equals(r)) {
+				continue;
+			}
+			Resource res = new Resource();
+			res.type = r;
+			res.amount = currentBuilding.getResource(r);
+			buildingInfoPanel.resourceTableModel.rows.add(res);
+		}
+		buildingInfoPanel.resourceTableModel.fireTableDataChanged();
 	}
 	/**
 	 * Apply the building settings.
@@ -1637,16 +1664,19 @@ public class MapEditor extends JFrame {
 		currentBuilding.enabled = buildingInfoPanel.buildingEnabled.isSelected();
 		currentBuilding.repairing = buildingInfoPanel.buildingRepairing.isSelected();
 		
+		currentBuilding.upgradeLevel = buildingInfoPanel.upgradeList.getSelectedIndex();
+		if (currentBuilding.upgradeLevel > 0) {
+			currentBuilding.currentUpgrade = currentBuilding.type.upgrades.get(currentBuilding.upgradeLevel - 1);
+		} else {
+			currentBuilding.currentUpgrade = null;
+		}
+		
 		currentBuilding.buildProgress = Math.min(Integer.parseInt(buildingInfoPanel.completed.getText()), currentBuilding.type.hitpoints);
 		currentBuilding.hitpoints = Math.min(currentBuilding.buildProgress, Integer.parseInt(buildingInfoPanel.hitpoints.getText()));
 		currentBuilding.assignedWorker = Math.min(0, Math.max(Integer.parseInt(buildingInfoPanel.assignedWorkers.getText()), currentBuilding.getWorkers()));
 		currentBuilding.assignedEnergy = Math.min(0, Math.max(Integer.parseInt(buildingInfoPanel.assignedEnergy.getText()), currentBuilding.getEnergy()));
-		
-		buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
-		buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
-		buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
-		buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
-		buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
+
+		displayBuildingInfo();
 		renderer.repaint();
 	}
 }

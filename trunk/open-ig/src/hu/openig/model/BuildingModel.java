@@ -167,7 +167,7 @@ public class BuildingModel {
 			for (Element u : XML.childrenWithName(ug, "upgrade")) {
 				Upgrade upg = new Upgrade();
 				upg.description = u.getAttribute("desc");
-				for (Element re : XML.childrenWithName(op, "resource")) {
+				for (Element re : XML.childrenWithName(u, "resource")) {
 					Resource res = new Resource();
 					res.type = re.getAttribute("type");
 					res.amount = Float.parseFloat(re.getTextContent());

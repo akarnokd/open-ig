@@ -7,14 +7,23 @@
  */
 package hu.openig.editors;
 
+import hu.openig.model.Resource;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.table.AbstractTableModel;
 
 /**
  * The building information panel used in the map editor.
@@ -57,6 +66,51 @@ public class BuildingInfoPanel extends JPanel {
 	JCheckBox buildingEnabled;
 	/** Building is repairing. */
 	JCheckBox buildingRepairing;
+	/** Upgrade list. */
+	JComboBox upgradeList;
+	/** The other resources table. */
+	JTable resourceTable;
+	/** The resource table model. */
+	static class ResourceTableModel extends AbstractTableModel {
+		/**	 */
+		private static final long serialVersionUID = 6093762358692787521L;
+		/** The rows. */
+		final List<Resource> rows = new ArrayList<Resource>();
+		/** Column names. */
+		final String[] colNames = { "resource", "amount" };
+		/** Column classes. */
+		Class<?>[] colClasses = { String.class, Float.class };
+		@Override
+		public int getColumnCount() {
+			return colNames.length;
+		}
+		@Override
+		public int getRowCount() {
+			return rows.size();
+		}
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			Resource r = rows.get(rowIndex);
+			switch (columnIndex) {
+			case 0:
+				return r.type;
+			case 1:
+				return r.amount;
+			default:
+			}
+			return null;
+		}
+		@Override
+		public Class<?> getColumnClass(int columnIndex) {
+			return colClasses[columnIndex];
+		}
+		@Override
+		public String getColumnName(int column) {
+			return colNames[column];
+		}
+	}
+	/** The resource table model. */
+	ResourceTableModel resourceTableModel;
 	/**
 	 * Constructs the panel's layout.
 	 */
@@ -137,6 +191,15 @@ public class BuildingInfoPanel extends JPanel {
 		buildingEnabled = new JCheckBox("Enabled");
 		buildingRepairing = new JCheckBox("Repairing");
 		
+		JLabel upgradeLbl = new JLabel("Upgrades:");
+		upgradeList = new JComboBox();
+		upgradeList.addItem("None");
+		
+		resourceTableModel = new ResourceTableModel();
+		resourceTable = new JTable(resourceTableModel);
+		resourceTable.setAutoCreateRowSorter(true);
+		JScrollPane sp = new JScrollPane(resourceTable);
+				
 		gl.setHorizontalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
 			.addGroup(
@@ -152,6 +215,7 @@ public class BuildingInfoPanel extends JPanel {
 					.addComponent(workerLbl)
 					.addComponent(energyLbl)
 					.addComponent(efficiencyLbl)
+					.addComponent(upgradeLbl)
 				)
 				.addGroup(
 					gl.createParallelGroup()
@@ -190,6 +254,7 @@ public class BuildingInfoPanel extends JPanel {
 						.addComponent(energyTotal)
 					)
 					.addComponent(efficiency, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(upgradeList, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				)
 			)
 			.addGroup(
@@ -197,6 +262,7 @@ public class BuildingInfoPanel extends JPanel {
 				.addComponent(buildingEnabled)
 				.addComponent(buildingRepairing)
 			)
+			.addComponent(sp)
 			.addComponent(apply)
 		);
 		
@@ -263,6 +329,12 @@ public class BuildingInfoPanel extends JPanel {
 				.addComponent(efficiencyLbl)
 				.addComponent(efficiency, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(upgradeLbl)
+				.addComponent(upgradeList, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+			.addComponent(sp, 0, 40, Short.MAX_VALUE)
 			.addComponent(apply)
 		);
 		
