@@ -140,6 +140,9 @@ The only drawback is the type of the roads to apply. In the game, the planet's p
 
 = Screenshots =
 
+<a href='http://karnokd.uw.hu/images/open-ig-mapeditor-07.png'><img width='250' height='250' src='http://karnokd.uw.hu/images/open-ig-mapeditor-07.png'/></a>
+
+
 <a href='http://karnokd.uw.hu/images/open-ig-mapeditor-02.png'><img width='250' height='250' src='http://karnokd.uw.hu/images/open-ig-mapeditor-02.png'/></a>
 
 <a href='http://karnokd.uw.hu/images/open-ig-mapeditor-01.png'><img width='250' height='250' src='http://karnokd.uw.hu/images/open-ig-mapeditor-01.png'/></a>
