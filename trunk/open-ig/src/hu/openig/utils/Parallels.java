@@ -8,6 +8,7 @@
 
 package hu.openig.utils;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -75,5 +76,31 @@ public final class Parallels {
 		} finally {
 			exec.shutdown();
 		}
+	}
+	/**
+	 * Wait for the given collection of futures to complete and invoke the runnable
+	 * in the event dispatch thread.
+	 * @param futures the collection of futures
+	 * @param runInEDT the task to run in the EDT
+	 */
+	public static void waitForFutures(final Collection<Future<?>> futures, final Runnable runInEDT) {
+		Thread waiter = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					for (Future<?> f : futures) {
+						f.get();
+					}
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				} catch (ExecutionException ex) {
+					ex.printStackTrace();
+				}
+				if (!Thread.currentThread().isInterrupted()) {
+					SwingUtilities.invokeLater(runInEDT);
+				}
+			}
+		}, "Waiter for " + futures.size() + " futures to finish");
+		waiter.start();
 	}
 }

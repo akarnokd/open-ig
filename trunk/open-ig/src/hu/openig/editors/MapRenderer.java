@@ -8,6 +8,7 @@
 package hu.openig.editors;
 
 import hu.openig.core.Act;
+import hu.openig.core.Labels;
 import hu.openig.core.Location;
 import hu.openig.core.Tile;
 import hu.openig.gfx.ColonyGFX;
@@ -46,6 +47,8 @@ public class MapRenderer extends JComponent {
 	int offsetY;
 	/** The current location based on the mouse pointer. */
 	Location current;
+	/** The labels. */
+	Labels labels;
 	/** 
 	 * The selected rectangular region. The X coordinate is the smallest, the Y coordinate is the largest
 	 * the width points to +X and height points to -Y direction
@@ -319,7 +322,11 @@ public class MapRenderer extends JComponent {
 			}
 			for (Building b : surface.buildings) {
 				Rectangle r = getBoundingRect(b.location);
-				int nameLen = txt.getTextWidth(7, b.type.label);
+//				if (r == null) {
+//					continue;
+//				}
+				String label = labels.get(b.type.label);
+				int nameLen = txt.getTextWidth(7, label);
 				int h = (r.height - 7) / 2;
 				int nx = r.x + (r.width - nameLen) / 2;
 				int ny = r.y + h;
@@ -336,8 +343,8 @@ public class MapRenderer extends JComponent {
 					g2.setComposite(compositeSave);
 				}
 				
-				txt.paintTo(g2, nx + 1, ny + 1, 7, TextGFX.LIGHT_BLUE, b.type.label);
-				txt.paintTo(g2, nx, ny, 7, 0xD4FC84, b.type.label);
+				txt.paintTo(g2, nx + 1, ny + 1, 7, TextGFX.LIGHT_BLUE, label);
+				txt.paintTo(g2, nx, ny, 7, 0xD4FC84, label);
 
 				// paint upgrade level indicator
 				int uw = b.upgradeLevel * colonyGFX.upgrade.getWidth();
@@ -376,30 +383,50 @@ public class MapRenderer extends JComponent {
 					ux += colonyGFX.upgrade.getWidth();
 				}
 				
-				int w = 0;
-				if (b.isEnergyShortage()) {
-					w += colonyGFX.unpowered[0].getWidth();
-				}
-				if (b.isWorkerShortage()) {
-					w += colonyGFX.worker[0].getWidth();
-				}
-				if (b.repairing) {
-					w += colonyGFX.repair[0].getWidth();
-				}
-				int ex = r.x + (r.width - w) / 2;
-				int ey = r.y + h + 11;
-				// paint power shortage
-				if (b.isEnergyShortage()) {
-					g2.drawImage(colonyGFX.unpowered[blink ? 0 : 1], ex, ey, null);
-					ex += colonyGFX.unpowered[0].getWidth();
-				}
-				if (b.isWorkerShortage()) {
-					g2.drawImage(colonyGFX.worker[blink ? 0 : 1], ex, ey, null);
-					ex += colonyGFX.worker[0].getWidth();
-				}
-				if (b.repairing) {
-					g2.drawImage(colonyGFX.repair[(animation / 3) % 3], ex, ey, null);
-					ex += colonyGFX.repair[0].getWidth();
+				if (b.enabled) {
+					int ey = r.y + h + 11;
+					int w = 0;
+					if (b.isEnergyShortage()) {
+						w += colonyGFX.unpowered[0].getWidth();
+					}
+					if (b.isWorkerShortage()) {
+						w += colonyGFX.worker[0].getWidth();
+					}
+					if (b.repairing) {
+						w += colonyGFX.repair[0].getWidth();
+					}
+					int ex = r.x + (r.width - w) / 2;
+					// paint power shortage
+					if (b.isEnergyShortage()) {
+						g2.drawImage(colonyGFX.unpowered[blink ? 0 : 1], ex, ey, null);
+						ex += colonyGFX.unpowered[0].getWidth();
+					}
+					if (b.isWorkerShortage()) {
+						g2.drawImage(colonyGFX.worker[blink ? 0 : 1], ex, ey, null);
+						ex += colonyGFX.worker[0].getWidth();
+					}
+					if (b.repairing) {
+						g2.drawImage(colonyGFX.repair[(animation / 3) % 3], ex, ey, null);
+						ex += colonyGFX.repair[0].getWidth();
+					}
+				} else {
+					int ey = r.y + h + 13;
+					String offline = labels.get("buildings.offline");
+					int w = txt.getTextWidth(10, offline);
+					color = TextGFX.LIGHT_BLUE;
+					if (!blink) {
+						color = TextGFX.RED;
+					}
+					int ex = r.x + (r.width - w) / 2;
+					if (textBackgrounds) {
+						g2.setComposite(a1);
+						g2.setColor(Color.BLACK);
+						g2.fillRect(ex - 2, ey - 2, w + 4, 15);
+						g2.setComposite(compositeSave);
+					}
+					
+					txt.paintTo(g2, ex + 1, ey + 1, 10, color, offline);
+					txt.paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
 				}
 			}
 		}

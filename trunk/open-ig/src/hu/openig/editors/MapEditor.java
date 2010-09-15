@@ -11,6 +11,7 @@ package hu.openig.editors;
 import hu.openig.Setup;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
+import hu.openig.core.Labels;
 import hu.openig.core.Location;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
@@ -58,6 +59,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -70,16 +72,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
@@ -136,8 +142,6 @@ public class MapEditor extends JFrame {
 	JSplitPane featuresSplit;
 	/** The preview image. */
 	ImagePaint preview;
-	/** The alpha slider. */
-	JSlider alphaSlider;
 	/** The building model. */
 	BuildingModel buildingModel;
 	/** Filter surface table. */
@@ -152,36 +156,149 @@ public class MapEditor extends JFrame {
 	ColonyGFX colonyGFX;
 	/** The current alpha level. */
 	float alpha = 1.0f;
-	/** Show/hide buildings. */
-	JCheckBoxMenuItem viewShowBuildings;
-	/** Place roads of a race around the buildings. */
-	JMenu editPlaceRoads;
 	/** The import dialog. */
 	ImportDialog imp;
-	/** Are we in placement mode? */
-	JToggleButton buildButton;
 	/** The current base tile object. */
 	SurfaceFeature currentBaseTile;
 	/** The current building type object. */
 	BuildingType currentBuildingType;
 	/** The current building race. */
 	String currentBuildingRace;
-	/** Is the placement mode active? */
-	JCheckBoxMenuItem editPlaceMode;
 	/** The configuration object. */
 	final Configuration config;
 	/** The building that is currently under edit. */
 	Building currentBuilding;
-	/** The building info panel. */
-	BuildingInfoPanel buildingInfoPanel;
-	/** View buildings in minimap mode. */
-	JCheckBoxMenuItem viewSymbolicBuildings;
-	/** View text naming backgrounds. */
-	JCheckBoxMenuItem viewTextBackgrounds;
 	/** The current save settings. */
 	MapSaveSettings saveSettings;
-	/** The allocation panel. */
-	AllocationPanel allocationPanel;
+	/** The alpha slider. */
+	JSlider alphaSlider;
+	/** The labels. */
+	Labels labels;
+	/** The User Interface elements to rename. */
+	class UIElements {
+		/** Show/hide buildings. */
+		@Rename(to = "mapeditor.show_hide_buildings")
+		JCheckBoxMenuItem viewShowBuildings;
+		/** Are we in placement mode? */
+		@Rename(to = "mapeditor.object_placement_mode")
+		JToggleButton buildButton;
+		/** Is the placement mode active? */
+		@Rename(to = "mapeditor.object_placement_mode")
+		JCheckBoxMenuItem editPlaceMode;
+		/** View buildings in minimap mode. */
+		@Rename(to = "mapeditor.symbolic_buildings")
+		JCheckBoxMenuItem viewSymbolicBuildings;
+		/** View text naming backgrounds. */
+		@Rename(to = "mapeditor.view_text_background")
+		JCheckBoxMenuItem viewTextBackgrounds;
+		/** The building info panel. */
+		BuildingInfoPanel buildingInfoPanel;
+		/** The allocation panel. */
+		AllocationPanel allocationPanel;
+		/** Place roads of a race around the buildings. */
+		@Rename(to = "mapeditor.place_roads")
+		JMenu editPlaceRoads;
+		/** File menu. */
+		@Rename(to = "mapeditor.file")
+		JMenu fileMenu;
+		/** Edit menu. */
+		@Rename(to = "mapeditor.edit")
+		JMenu editMenu;
+		/** View menu. */
+		@Rename(to = "mapeditor.view")
+		JMenu viewMenu;
+		/** Help menu. */
+		@Rename(to = "mapeditor.help")
+		JMenu helpMenu;
+		/** File new. */
+		@Rename(to = "mapeditor.file_new")
+		JMenuItem fileNew;
+		/** File open. */
+		@Rename(to = "mapeditor.file_open")
+		JMenuItem fileOpen;
+		/** File import. */
+		@Rename(to = "mapeditor.file_import")
+		JMenuItem fileImport;
+		/** File save. */
+		@Rename(to = "mapeditor.file_save")
+		JMenuItem fileSave;
+		/** File save as. */
+		@Rename(to = "mapeditor.file_save_as")
+		JMenuItem fileSaveAs;
+		/** File exit. */
+		@Rename(to = "mapeditor.file_exit")
+		JMenuItem fileExit;
+		/** Edit undo. */
+		@Rename(to = "mapeditor.edit_undo")
+		JMenuItem editUndo;
+		/** Edit redo. */
+		@Rename(to = "mapeditor.edit_redo")
+		JMenuItem editRedo;
+		/** Edit cut. */
+		@Rename(to = "mapeditor.edit_cut")
+		JMenuItem editCut;
+		/** Edit copy. */
+		@Rename(to = "mapeditor.edit_copy")
+		JMenuItem editCopy;
+		/** Edit paste. */
+		@Rename(to = "mapeditor.edit_paste")
+		JMenuItem editPaste;
+		/** Edit delete building. */
+		@Rename(to = "mapeditor.edit_delete_building")
+		JMenuItem editDeleteBuilding;
+		/** Edit delete surface. */
+		@Rename(to = "mapeditor.edit_delete_surface")
+		JMenuItem editDeleteSurface;
+		/** Edit delete both. */
+		@Rename(to = "mapeditor.edit_delete_both")
+		JMenuItem editDeleteBoth;
+		/** Edit clear buildings. */
+		@Rename(to = "mapeditor.edit_clear_buildings")
+		JMenuItem editClearBuildings;
+		/** Edit clear surface. */
+		@Rename(to = "mapeditor.edit_clear_surface")
+		JMenuItem editClearSurface;
+		/** View zoom in. */
+		@Rename(to = "mapeditor.view_zoom_in")
+		JMenuItem viewZoomIn;
+		/** View zoom out. */
+		@Rename(to = "mapeditor.view_zoom_out")
+		JMenuItem viewZoomOut;
+		/** View zoom normal. */
+		@Rename(to = "mapeditor.view_zoom_normal")
+		JMenuItem viewZoomNormal;
+		/** View bright. */
+		@Rename(to = "mapeditor.view_bright")
+		JMenuItem viewBrighter;
+		/** View dark. */
+		@Rename(to = "mapeditor.view_dark")
+		JMenuItem viewDarker;
+		/** View more light. */
+		@Rename(to = "mapeditor.view_more_light")
+		JMenuItem viewMoreLight;
+		/** View less light. */
+		@Rename(to = "mapeditor.view_less_light")
+		JMenuItem viewLessLight;
+		/** Help online. */
+		@Rename(to = "mapeditor.help_online")
+		JMenuItem helpOnline;
+		/** Help about. */
+		@Rename(to = "mapeditor.help_about")
+		JMenuItem helpAbout;
+		/** Language EN. */
+		@Rename(to = "mapeditor.language_en")
+		JRadioButtonMenuItem languageEn;
+		/** Language HU. */
+		@Rename(to = "mapeditor.language_hu")
+		JRadioButtonMenuItem languageHu;
+		/** Language. */
+		@Rename(to = "mapeditor.language")
+		JMenu languageMenu;
+	}
+	/** The User Interface elements to rename. */
+	final UIElements ui = new UIElements();
+	/** Tabbed pane. */
+	private JTabbedPane propertyTab;
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -207,6 +324,14 @@ public class MapEditor extends JFrame {
 			protected Void doInBackground() throws Exception {
 				try {
 					rl = config.newResourceLocator();
+					final ResourceLocator rl0 = rl;
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							MapEditor.this.rl = rl0;
+							setLabels("en");							
+						}
+					});
 					galaxyMap = new GalaxyModel();
 					galaxyMap.processGalaxy(rl, "en", "campaign/main/galaxy");
 					buildingMap = new BuildingModel();
@@ -215,6 +340,7 @@ public class MapEditor extends JFrame {
 					colonyGraphics.load("en");
 					
 					txt = new TextRenderer(rl);
+					labels.load(rl, "en", "campaign/main");
 					
 					prepareLists(galaxyMap, buildingMap, surfaces, buildings, races);
 				} catch (Throwable t) {
@@ -225,7 +351,6 @@ public class MapEditor extends JFrame {
 			@Override
 			protected void done() {
 				bgp.dispose();
-				MapEditor.this.rl = rl;
 				MapEditor.this.galaxyModel = galaxyMap;
 				MapEditor.this.buildingModel = buildingMap;
 				renderer.colonyGFX = colonyGraphics;
@@ -407,6 +532,9 @@ public class MapEditor extends JFrame {
 			}
 		});
 
+		labels = new Labels();
+		
+		renderer.labels = labels;
 		
 		surfaceTableModel = new TileList();
 		buildingTableModel = new TileList();
@@ -470,7 +598,6 @@ public class MapEditor extends JFrame {
 				doFilterSurface();
 			}
 		});
-		filterSurface.setToolTipText("Filter by size, name and surface. Example: '1x earth' means search for tiles with width=1 and surface=earth");
 
 		GroupLayout gls = new GroupLayout(surfacePanel);
 		surfacePanel.setLayout(gls);
@@ -485,7 +612,6 @@ public class MapEditor extends JFrame {
 				doFilterBuilding();
 			}
 		});
-		filterBuilding.setToolTipText("Filter by size, name and race. Example: '2x human' means search for tiles with width=2 and race=human");
 		GroupLayout glb = new GroupLayout(buildingPanel);
 		buildingPanel.setLayout(glb);
 		glb.setHorizontalGroup(glb.createParallelGroup().addComponent(filterBuilding).addComponent(sp1));
@@ -498,7 +624,6 @@ public class MapEditor extends JFrame {
 		alphaSlider.setMinorTickSpacing(1);
 		alphaSlider.setPaintLabels(true);
 		alphaSlider.setPaintTicks(true);
-		alphaSlider.setToolTipText("Adjust brightness level. Buildings should turn on lights below 51 by default.");
 		alphaSlider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -507,24 +632,38 @@ public class MapEditor extends JFrame {
 		});
 		
 		preview = new ImagePaint();
-		
-		buildButton = new JToggleButton("Object placement mode");
-		buildButton.addActionListener(new ActionListener() {
+
+		filterSurface.setToolTipText("Filter by size, name and surface. Example: '1x earth' means search for tiles with width=1 and surface=earth");
+		filterBuilding.setToolTipText("Filter by size, name and race. Example: '2x human' means search for tiles with width=2 and race=human");
+		alphaSlider.setToolTipText("Adjust brightness level. Buildings should turn on lights below 51 by default.");
+
+		ui.buildButton = new JToggleButton("Object placement mode");
+		ui.buildButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				editPlaceMode.setSelected(buildButton.isSelected());
-				renderer.placementMode = buildButton.isSelected();
+				ui.editPlaceMode.setSelected(ui.buildButton.isSelected());
+				renderer.placementMode = ui.buildButton.isSelected();
 			}
 		});
 		GroupLayout gl2 = new GroupLayout(previewPanel);
 		previewPanel.setLayout(gl2);
 		gl2.setAutoCreateContainerGaps(true);
 		
-		gl2.setHorizontalGroup(gl2.createParallelGroup(Alignment.CENTER).addComponent(alphaSlider).addComponent(preview).addComponent(buildButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
-		gl2.setVerticalGroup(gl2.createSequentialGroup().addComponent(alphaSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(preview).addComponent(buildButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
+		gl2.setHorizontalGroup(
+				gl2.createParallelGroup(Alignment.CENTER)
+				.addComponent(alphaSlider)
+				.addComponent(preview)
+				.addComponent(ui.buildButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+		);
+		gl2.setVerticalGroup(
+				gl2.createSequentialGroup()
+				.addComponent(alphaSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(preview)
+				.addComponent(ui.buildButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+		);
 		
 		
-		JTabbedPane propertyTab = new JTabbedPane();
+		propertyTab = new JTabbedPane();
 		
 		split.setLeftComponent(toolSplit);
 		split.setRightComponent(renderer);
@@ -540,8 +679,8 @@ public class MapEditor extends JFrame {
 
 		propertyTab.addTab("Surfaces & Buildings", featuresSplit);
 		propertyTab.addTab("Building properties", createBuildingPropertiesPanel());
-		allocationPanel = new AllocationPanel();
-		propertyTab.addTab("Allocation", allocationPanel);
+		ui.allocationPanel = new AllocationPanel();
+		propertyTab.addTab("Allocation", ui.allocationPanel);
 		
 		split.setDoubleBuffered(true);
 		getContentPane().add(split);
@@ -582,7 +721,7 @@ public class MapEditor extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (SwingUtilities.isLeftMouseButton(e)) {
-					if (buildButton.isSelected()) {
+					if (ui.buildButton.isSelected()) {
 						doPlaceObject();
 					}
 				}
@@ -619,146 +758,167 @@ public class MapEditor extends JFrame {
 		JMenuBar mainmenu = new JMenuBar();
 		setJMenuBar(mainmenu);
 
-		JMenu fileMenu = new JMenu("File");
-		JMenu editMenu = new JMenu("Edit");
-		JMenu viewMenu = new JMenu("View");
-		JMenu helpMenu = new JMenu("Help");
+		ui.fileMenu = new JMenu("File");
+		ui.editMenu = new JMenu("Edit");
+		ui.viewMenu = new JMenu("View");
+		ui.helpMenu = new JMenu("Help");
 		
-		JMenuItem fileNew = new JMenuItem("New...");
-		JMenuItem fileOpen = new JMenuItem("Open...");
-		JMenuItem fileImport = new JMenuItem("Import...");
-		JMenuItem fileSave = new JMenuItem("Save");
-		JMenuItem fileSaveAs = new JMenuItem("Save as...");
-		JMenuItem fileExit = new JMenuItem("Exit");
+		ui.fileNew = new JMenuItem("New...");
+		ui.fileOpen = new JMenuItem("Open...");
+		ui.fileImport = new JMenuItem("Import...");
+		ui.fileSave = new JMenuItem("Save");
+		ui.fileSaveAs = new JMenuItem("Save as...");
+		ui.fileExit = new JMenuItem("Exit");
 
-		fileOpen.setAccelerator(KeyStroke.getKeyStroke('O', InputEvent.CTRL_DOWN_MASK));
-		fileSave.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
+		ui.fileOpen.setAccelerator(KeyStroke.getKeyStroke('O', InputEvent.CTRL_DOWN_MASK));
+		ui.fileSave.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
 		
-		fileImport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doImport(); } });
-		fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { dispose(); doExit();  } });
+		ui.fileImport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doImport(); } });
+		ui.fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { dispose(); doExit();  } });
 		
-		fileOpen.addActionListener(new Act() {
+		ui.fileOpen.addActionListener(new Act() {
 			@Override
 			public void act() {
 				doLoad();
 			}
 		});
-		fileSave.addActionListener(new Act() {
+		ui.fileSave.addActionListener(new Act() {
 			@Override
 			public void act() {
 				doSave();
 			}
 		});
-		fileSaveAs.addActionListener(new Act() {
+		ui.fileSaveAs.addActionListener(new Act() {
 			@Override
 			public void act() {
 				doSaveAs();
 			}
 		});
 		
-		JMenuItem editUndo = new JMenuItem("Undo");
-		editUndo.setEnabled(false); // TODO implement
-		JMenuItem editRedo = new JMenuItem("Redo");
-		editRedo.setEnabled(false); // TODO implement
-		JMenuItem editCut = new JMenuItem("Cut");
-		editCut.setEnabled(false); // TODO implement
-		JMenuItem editCopy = new JMenuItem("Copy");
-		editCopy.setEnabled(false); // TODO implement
-		JMenuItem editPaste = new JMenuItem("Paste");
-		editPaste.setEnabled(false); // TODO implement
+		ui.editUndo = new JMenuItem("Undo");
+		ui.editUndo.setEnabled(false); // TODO implement
+		ui.editRedo = new JMenuItem("Redo");
+		ui.editRedo.setEnabled(false); // TODO implement
+		ui.editCut = new JMenuItem("Cut");
+		ui.editCut.setEnabled(false); // TODO implement
+		ui.editCopy = new JMenuItem("Copy");
+		ui.editCopy.setEnabled(false); // TODO implement
+		ui.editPaste = new JMenuItem("Paste");
+		ui.editPaste.setEnabled(false); // TODO implement
 		
-		editPlaceMode = new JCheckBoxMenuItem("Placement mode");
+		ui.editPlaceMode = new JCheckBoxMenuItem("Placement mode");
 		
-		JMenuItem editDeleteBuilding = new JMenuItem("Delete building");
-		JMenuItem editDeleteSurface = new JMenuItem("Delete surface");
-		JMenuItem editDeleteBoth = new JMenuItem("Delete both");
+		ui.editDeleteBuilding = new JMenuItem("Delete building");
+		ui.editDeleteSurface = new JMenuItem("Delete surface");
+		ui.editDeleteBoth = new JMenuItem("Delete both");
 		
-		JMenuItem editClearBuildings = new JMenuItem("Clear buildings");
-		JMenuItem editClearSurface = new JMenuItem("Clear surface");
+		ui.editClearBuildings = new JMenuItem("Clear buildings");
+		ui.editClearSurface = new JMenuItem("Clear surface");
 
-		editUndo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doUndo(); } });
-		editRedo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doRedo(); } });
-		editClearBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearBuildings(); } });
-		editClearSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearSurfaces(); } });
+		ui.editUndo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doUndo(); } });
+		ui.editRedo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doRedo(); } });
+		ui.editClearBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearBuildings(); } });
+		ui.editClearSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearSurfaces(); } });
 		
 
-		editUndo.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
-		editRedo.setAccelerator(KeyStroke.getKeyStroke('Y', InputEvent.CTRL_DOWN_MASK));
-		editCut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
-		editCopy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
-		editPaste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
-		editPlaceMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
+		ui.editUndo.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
+		ui.editRedo.setAccelerator(KeyStroke.getKeyStroke('Y', InputEvent.CTRL_DOWN_MASK));
+		ui.editCut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
+		ui.editCopy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+		ui.editPaste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+		ui.editPlaceMode.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
 		
-		editDeleteBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-		editDeleteSurface.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK));
-		editDeleteBoth.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+		ui.editDeleteBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+		ui.editDeleteSurface.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK));
+		ui.editDeleteBoth.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		
-		editDeleteBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBuilding(); } });
-		editDeleteSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteSurface(); } });
-		editDeleteBoth.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBoth(); } });
-		editPlaceMode.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPlaceMode(editPlaceMode.isSelected()); } });
+		ui.editDeleteBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBuilding(); } });
+		ui.editDeleteSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteSurface(); } });
+		ui.editDeleteBoth.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBoth(); } });
+		ui.editPlaceMode.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPlaceMode(ui.editPlaceMode.isSelected()); } });
 		
-		editPlaceRoads = new JMenu("Place roads");
+		ui.editPlaceRoads = new JMenu("Place roads");
 		
-		JMenuItem viewZoomIn = new JMenuItem("Zoom in");
-		JMenuItem viewZoomOut = new JMenuItem("Zoom out");
-		JMenuItem viewZoomNormal = new JMenuItem("Zoom normal");
-		JMenuItem viewZoomValue = new JMenuItem("Zoom...");
-		JMenuItem viewBright = new JMenuItem("Daylight (1.0)");
-		JMenuItem viewDark = new JMenuItem("Night (0.5)");
-		JMenuItem viewMoreLight = new JMenuItem("More light (+0.05)");
-		JMenuItem viewLessLight = new JMenuItem("Less light (-0.05)");
+		ui.viewZoomIn = new JMenuItem("Zoom in");
+		ui.viewZoomOut = new JMenuItem("Zoom out");
+		ui.viewZoomNormal = new JMenuItem("Zoom normal");
+		ui.viewBrighter = new JMenuItem("Daylight (1.0)");
+		ui.viewDarker = new JMenuItem("Night (0.5)");
+		ui.viewMoreLight = new JMenuItem("More light (+0.05)");
+		ui.viewLessLight = new JMenuItem("Less light (-0.05)");
 		
-		viewShowBuildings = new JCheckBoxMenuItem("Show/hide buildings", true);
-		viewShowBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK));
+		ui.viewShowBuildings = new JCheckBoxMenuItem("Show/hide buildings", true);
+		ui.viewShowBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK));
 		
-		viewSymbolicBuildings = new JCheckBoxMenuItem("Minimap rendering mode");
-		viewSymbolicBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK));
+		ui.viewSymbolicBuildings = new JCheckBoxMenuItem("Minimap rendering mode");
+		ui.viewSymbolicBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK));
 		
-		viewTextBackgrounds = new JCheckBoxMenuItem("Show/hide text background boxes", true);
-		viewTextBackgrounds.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
-		viewTextBackgrounds.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleTextBackgrounds(); } });
+		ui.viewTextBackgrounds = new JCheckBoxMenuItem("Show/hide text background boxes", true);
+		ui.viewTextBackgrounds.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+		ui.viewTextBackgrounds.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleTextBackgrounds(); } });
 		
-		viewZoomIn.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomIn(); } });
-		viewZoomOut.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomOut(); } });
-		viewZoomNormal.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomNormal(); } });
-		viewShowBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleBuildings(); } });
-		viewSymbolicBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleMinimap(); } });
+		ui.viewZoomIn.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomIn(); } });
+		ui.viewZoomOut.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomOut(); } });
+		ui.viewZoomNormal.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomNormal(); } });
+		ui.viewShowBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleBuildings(); } });
+		ui.viewSymbolicBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleMinimap(); } });
 		
-		viewBright.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doBright(); } });
-		viewDark.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDark(); } });
-		viewMoreLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doMoreLight(); } });
-		viewLessLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doLessLight(); } });
+		ui.viewBrighter.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doBright(); } });
+		ui.viewDarker.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDark(); } });
+		ui.viewMoreLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doMoreLight(); } });
+		ui.viewLessLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doLessLight(); } });
 		
-		viewZoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD9, InputEvent.CTRL_DOWN_MASK));
-		viewZoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD3, InputEvent.CTRL_DOWN_MASK));
-		viewZoomNormal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD0, InputEvent.CTRL_DOWN_MASK));
-		viewMoreLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD8, InputEvent.CTRL_DOWN_MASK));
-		viewLessLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD2, InputEvent.CTRL_DOWN_MASK));
-		viewBright.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD7, InputEvent.CTRL_DOWN_MASK));
-		viewDark.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD1, InputEvent.CTRL_DOWN_MASK));
+		ui.viewZoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD9, InputEvent.CTRL_DOWN_MASK));
+		ui.viewZoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD3, InputEvent.CTRL_DOWN_MASK));
+		ui.viewZoomNormal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD0, InputEvent.CTRL_DOWN_MASK));
+		ui.viewMoreLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD8, InputEvent.CTRL_DOWN_MASK));
+		ui.viewLessLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD2, InputEvent.CTRL_DOWN_MASK));
+		ui.viewBrighter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD7, InputEvent.CTRL_DOWN_MASK));
+		ui.viewDarker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD1, InputEvent.CTRL_DOWN_MASK));
 		
-		JMenuItem helpOnline = new JMenuItem("Online wiki...");
-		helpOnline.addActionListener(new ActionListener() {
+		ui.helpOnline = new JMenuItem("Online wiki...");
+		ui.helpOnline.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				doHelp();
 			}
 		});
-		JMenuItem helpAbout = new JMenuItem("About...");
-		helpAbout.setEnabled(false); // TODO implement
+		ui.helpAbout = new JMenuItem("About...");
+		ui.helpAbout.setEnabled(false); // TODO implement
 		
-		addAll(mainmenu, fileMenu, editMenu, viewMenu, helpMenu);
-		addAll(fileMenu, fileNew, null, fileOpen, fileImport, null, fileSave, fileSaveAs, null, fileExit);
-		addAll(editMenu, editCut, editCopy, editPaste, null, 
-				editPlaceMode, null, editDeleteBuilding, editDeleteSurface, editDeleteBoth, null, 
-				editClearBuildings, editClearSurface, null, editPlaceRoads);
-		addAll(viewMenu, viewZoomIn, viewZoomOut, viewZoomNormal, viewZoomValue, null, 
-				viewBright, viewDark, viewMoreLight, viewLessLight, null, 
-				viewShowBuildings, viewSymbolicBuildings, viewTextBackgrounds);
-		addAll(helpMenu, helpOnline, null, helpAbout);
+		ui.languageMenu = new JMenu("Language");
 		
-		fileNew.addActionListener(new ActionListener() {
+		ui.languageEn = new JRadioButtonMenuItem("English", true);
+		ui.languageEn.addActionListener(new Act() {
+			@Override
+			public void act() {
+				setLabels("en");
+			}
+		});
+		ui.languageHu = new JRadioButtonMenuItem("Hungarian", false);
+		ui.languageHu.addActionListener(new Act() {
+			@Override
+			public void act() {
+				setLabels("hu");
+			}
+		});
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(ui.languageEn);
+		bg.add(ui.languageHu);
+		
+		addAll(mainmenu, ui.fileMenu, ui.editMenu, ui.viewMenu, ui.languageMenu, ui.helpMenu);
+		addAll(ui.fileMenu, ui.fileNew, null, ui.fileOpen, ui.fileImport, null, ui.fileSave, ui.fileSaveAs, null, ui.fileExit);
+		addAll(ui.editMenu, ui.editCut, ui.editCopy, ui.editPaste, null, 
+				ui.editPlaceMode, null, ui.editDeleteBuilding, ui.editDeleteSurface, ui.editDeleteBoth, null, 
+				ui.editClearBuildings, ui.editClearSurface, null, ui.editPlaceRoads);
+		addAll(ui.viewMenu, ui.viewZoomIn, ui.viewZoomOut, ui.viewZoomNormal, null, 
+				ui.viewBrighter, ui.viewDarker, ui.viewMoreLight, ui.viewLessLight, null, 
+				ui.viewShowBuildings, ui.viewSymbolicBuildings, ui.viewTextBackgrounds);
+		addAll(ui.helpMenu, ui.helpOnline, null, ui.helpAbout);
+		
+		addAll(ui.languageMenu, ui.languageEn, ui.languageHu);
+		
+		ui.fileNew.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				doNew();
@@ -767,12 +927,12 @@ public class MapEditor extends JFrame {
 	}
 	/** Toggle the rendering of text backgrounds. */
 	protected void doToggleTextBackgrounds() {
-		renderer.textBackgrounds = viewTextBackgrounds.isSelected();
+		renderer.textBackgrounds = ui.viewTextBackgrounds.isSelected();
 		renderer.repaint();
 	}
 	/** Toggle minimap display mode. */
 	protected void doToggleMinimap() {
-		renderer.minimapMode = viewSymbolicBuildings.isSelected();
+		renderer.minimapMode = ui.viewSymbolicBuildings.isSelected();
 		renderer.repaint();
 	}
 	/**
@@ -780,7 +940,7 @@ public class MapEditor extends JFrame {
 	 * @param selected is placement mode on?
 	 */
 	protected void doPlaceMode(boolean selected) {
-		buildButton.setSelected(selected);
+		ui.buildButton.setSelected(selected);
 		renderer.placementMode = selected;
 	}
 	/**
@@ -875,7 +1035,7 @@ public class MapEditor extends JFrame {
 	 * Toggle the visibility of the buildings.
 	 */
 	protected void doToggleBuildings() {
-		renderer.showBuildings = viewShowBuildings.getState();
+		renderer.showBuildings = ui.viewShowBuildings.getState();
 		repaint();
 	}
 	/** Delete buildings and surface elements of the selection rectangle. */
@@ -1104,7 +1264,7 @@ public class MapEditor extends JFrame {
 			});
 			
 			
-			editPlaceRoads.add(mnuPlaceRoad);
+			ui.editPlaceRoads.add(mnuPlaceRoad);
 		}
 	}
 	/**
@@ -1183,7 +1343,7 @@ public class MapEditor extends JFrame {
 		renderer.surface.width = width;
 		renderer.surface.height = height;
 		renderer.surface.computeRenderingLocations();
-		allocationPanel.buildings = renderer.surface.buildings;
+		ui.allocationPanel.buildings = renderer.surface.buildings;
 	}
 	/**
 	 * Place a tile onto the current surface map.
@@ -1669,16 +1829,23 @@ public class MapEditor extends JFrame {
 	 * @return the building properties panel
 	 */
 	JPanel createBuildingPropertiesPanel() {
-		buildingInfoPanel = new BuildingInfoPanel();
+		ui.buildingInfoPanel = new BuildingInfoPanel();
 		
-		buildingInfoPanel.apply.addActionListener(new Act() {
+		ui.buildingInfoPanel.apply.addActionListener(new Act() {
 			@Override
 			public void act() {
 				doApplyBuildingSettings();
 			}
 		});
+		ui.buildingInfoPanel.refresh.addActionListener(new Act() {
+			@Override
+			public void act() {
+				displayBuildingInfo();
+			}
+		});
+
 		
-		return buildingInfoPanel;
+		return ui.buildingInfoPanel;
 	}
 	/**
 	 * Set the GUI values from the current selected building object.
@@ -1699,44 +1866,44 @@ public class MapEditor extends JFrame {
 			
 			displayBuildingInfo();
 		} else {
-			buildingInfoPanel.apply.setEnabled(false);
+			ui.buildingInfoPanel.apply.setEnabled(false);
 		}
 	}
 	/**
 	 * Display the building info.
 	 */
 	private void displayBuildingInfo() {
-		buildingInfoPanel.buildingName.setText(currentBuilding.type.label);
-		buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
-		buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
-		buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
-		buildingInfoPanel.hitpointsTotal.setText("" + currentBuilding.buildProgress);
-		buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
-		buildingInfoPanel.workerTotal.setText("" + currentBuilding.getWorkers());
-		buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
-		buildingInfoPanel.energyTotal.setText("" + currentBuilding.getEnergy());
-		buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
-		buildingInfoPanel.tech.setText(currentBuilding.techId);
-		buildingInfoPanel.cost.setText("" + currentBuilding.type.cost);
-		buildingInfoPanel.locationX.setText("" + currentBuilding.location.x);
-		buildingInfoPanel.locationY.setText("" + currentBuilding.location.y);
-		buildingInfoPanel.apply.setEnabled(true);
-		buildingInfoPanel.buildingEnabled.setSelected(currentBuilding.enabled);
-		buildingInfoPanel.buildingRepairing.setSelected(currentBuilding.repairing);
+		ui.buildingInfoPanel.buildingName.setText(currentBuilding.type.label);
+		ui.buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
+		ui.buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
+		ui.buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
+		ui.buildingInfoPanel.hitpointsTotal.setText("" + currentBuilding.buildProgress);
+		ui.buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
+		ui.buildingInfoPanel.workerTotal.setText("" + currentBuilding.getWorkers());
+		ui.buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
+		ui.buildingInfoPanel.energyTotal.setText("" + currentBuilding.getEnergy());
+		ui.buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
+		ui.buildingInfoPanel.tech.setText(currentBuilding.techId);
+		ui.buildingInfoPanel.cost.setText("" + currentBuilding.type.cost);
+		ui.buildingInfoPanel.locationX.setText("" + currentBuilding.location.x);
+		ui.buildingInfoPanel.locationY.setText("" + currentBuilding.location.y);
+		ui.buildingInfoPanel.apply.setEnabled(true);
+		ui.buildingInfoPanel.buildingEnabled.setSelected(currentBuilding.enabled);
+		ui.buildingInfoPanel.buildingRepairing.setSelected(currentBuilding.repairing);
 		
-		buildingInfoPanel.completionPercent.setText(String.format("  %.3f%%", currentBuilding.buildProgress * 100.0 / currentBuilding.type.hitpoints));
-		buildingInfoPanel.hitpointPercent.setText(String.format("  %.3f%%", currentBuilding.hitpoints * 100.0 / currentBuilding.buildProgress));
-		buildingInfoPanel.workerPercent.setText(String.format("  %.3f%%", currentBuilding.assignedWorker * 100.0 / currentBuilding.getWorkers()));
-		buildingInfoPanel.energyPercent.setText(String.format("  %.3f%%", currentBuilding.assignedEnergy * 100.0 / currentBuilding.getEnergy()));
+		ui.buildingInfoPanel.completionPercent.setText(String.format("  %.3f%%", currentBuilding.buildProgress * 100.0 / currentBuilding.type.hitpoints));
+		ui.buildingInfoPanel.hitpointPercent.setText(String.format("  %.3f%%", currentBuilding.hitpoints * 100.0 / currentBuilding.buildProgress));
+		ui.buildingInfoPanel.workerPercent.setText(String.format("  %.3f%%", currentBuilding.assignedWorker * 100.0 / currentBuilding.getWorkers()));
+		ui.buildingInfoPanel.energyPercent.setText(String.format("  %.3f%%", currentBuilding.assignedEnergy * 100.0 / currentBuilding.getEnergy()));
 		
-		buildingInfoPanel.upgradeList.removeAllItems();
-		buildingInfoPanel.upgradeList.addItem("None");
+		ui.buildingInfoPanel.upgradeList.removeAllItems();
+		ui.buildingInfoPanel.upgradeList.addItem("None");
 		for (int j = 0; j < currentBuilding.type.upgrades.size(); j++) {
-			buildingInfoPanel.upgradeList.addItem(currentBuilding.type.upgrades.get(j).description);
+			ui.buildingInfoPanel.upgradeList.addItem(currentBuilding.type.upgrades.get(j).description);
 		}
-		buildingInfoPanel.upgradeList.setSelectedIndex(currentBuilding.upgradeLevel);
+		ui.buildingInfoPanel.upgradeList.setSelectedIndex(currentBuilding.upgradeLevel);
 		
-		buildingInfoPanel.resourceTableModel.rows.clear();
+		ui.buildingInfoPanel.resourceTableModel.rows.clear();
 		for (String r : currentBuilding.type.resources.keySet()) {
 			if ("worker".equals(r) || "energy".equals(r)) {
 				continue;
@@ -1744,9 +1911,9 @@ public class MapEditor extends JFrame {
 			Resource res = new Resource();
 			res.type = r;
 			res.amount = currentBuilding.getResource(r);
-			buildingInfoPanel.resourceTableModel.rows.add(res);
+			ui.buildingInfoPanel.resourceTableModel.rows.add(res);
 		}
-		buildingInfoPanel.resourceTableModel.fireTableDataChanged();
+		ui.buildingInfoPanel.resourceTableModel.fireTableDataChanged();
 	}
 	/**
 	 * Apply the building settings.
@@ -1756,20 +1923,20 @@ public class MapEditor extends JFrame {
 			return;
 		}
 		
-		currentBuilding.enabled = buildingInfoPanel.buildingEnabled.isSelected();
-		currentBuilding.repairing = buildingInfoPanel.buildingRepairing.isSelected();
+		currentBuilding.enabled = ui.buildingInfoPanel.buildingEnabled.isSelected();
+		currentBuilding.repairing = ui.buildingInfoPanel.buildingRepairing.isSelected();
 		
-		currentBuilding.upgradeLevel = buildingInfoPanel.upgradeList.getSelectedIndex();
+		currentBuilding.upgradeLevel = ui.buildingInfoPanel.upgradeList.getSelectedIndex();
 		if (currentBuilding.upgradeLevel > 0) {
 			currentBuilding.currentUpgrade = currentBuilding.type.upgrades.get(currentBuilding.upgradeLevel - 1);
 		} else {
 			currentBuilding.currentUpgrade = null;
 		}
 		
-		currentBuilding.buildProgress = Math.min(Integer.parseInt(buildingInfoPanel.completed.getText()), currentBuilding.type.hitpoints);
-		currentBuilding.hitpoints = Math.min(currentBuilding.buildProgress, Integer.parseInt(buildingInfoPanel.hitpoints.getText()));
-		currentBuilding.assignedWorker = Math.min(0, Math.max(Integer.parseInt(buildingInfoPanel.assignedWorkers.getText()), currentBuilding.getWorkers()));
-		currentBuilding.assignedEnergy = Math.min(0, Math.max(Integer.parseInt(buildingInfoPanel.assignedEnergy.getText()), currentBuilding.getEnergy()));
+		currentBuilding.buildProgress = Math.min(Integer.parseInt(ui.buildingInfoPanel.completed.getText()), currentBuilding.type.hitpoints);
+		currentBuilding.hitpoints = Math.min(currentBuilding.buildProgress, Integer.parseInt(ui.buildingInfoPanel.hitpoints.getText()));
+		currentBuilding.assignedWorker = Math.min(0, Math.max(Integer.parseInt(ui.buildingInfoPanel.assignedWorkers.getText()), currentBuilding.getWorkers()));
+		currentBuilding.assignedEnergy = Math.min(0, Math.max(Integer.parseInt(ui.buildingInfoPanel.assignedEnergy.getText()), currentBuilding.getEnergy()));
 
 		displayBuildingInfo();
 		renderer.repaint();
@@ -1897,9 +2064,9 @@ public class MapEditor extends JFrame {
 						b.assignedWorker = Integer.parseInt(tile.getAttribute("worker"));
 						b.enabled = "true".equals(tile.getAttribute("enabled"));
 						b.repairing = "true".equals(tile.getAttribute("repairing"));
+						renderer.surface.buildings.add(b);
 						
 						placeTile(b.tileset.normal, x, y, SurfaceEntityType.BUILDING, b);
-						renderer.surface.buildings.add(b);
 					}
 					if (tech != null) {
 						placeRoads(tech);
@@ -1909,6 +2076,59 @@ public class MapEditor extends JFrame {
 			renderer.repaint();
 		} catch (IOException ex) {
 			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Set the UI labels for the given language.
+	 * @param language the new language
+	 */
+	void setLabels(String language) {
+		labels.load(rl, language, "campaign/main");
+		renameFieldsOf(ui);
+		renameFieldsOf(ui.allocationPanel);
+		renameFieldsOf(ui.buildingInfoPanel);
+		propertyTab.setTitleAt(0, labels.get("mapeditor.surface_and_buildings"));
+		propertyTab.setTitleAt(1, labels.get("mapeditor.building_properties"));
+		propertyTab.setTitleAt(2, labels.get("mapeditor.allocation"));
+		surfaceTableModel.colNames[0] = labels.get("mapeditor.tile_preview");
+		surfaceTableModel.colNames[1] = labels.get("mapeditor.tile_size");
+		surfaceTableModel.colNames[2] = labels.get("mapeditor.tile_name");
+		surfaceTableModel.colNames[3] = labels.get("mapeditor.tile_surface");
+
+		buildingTableModel.colNames[0] = labels.get("mapeditor.tile_preview");
+		buildingTableModel.colNames[1] = labels.get("mapeditor.tile_size");
+		buildingTableModel.colNames[2] = labels.get("mapeditor.tile_name");
+		buildingTableModel.colNames[3] = labels.get("mapeditor.tile_race");
+		
+		surfaceTableModel.fireTableStructureChanged();
+		buildingTableModel.fireTableStructureChanged();
+		
+		filterSurface.setToolTipText(labels.get("mapeditor.filter_surface"));
+		filterBuilding.setToolTipText(labels.get("mapeditor.filter_building"));
+		alphaSlider.setToolTipText(labels.get("mapeditor.preview_brightness"));
+	}
+	/**
+	 * Rename the annotated fields of the object.
+	 * @param o the target object
+	 */
+	void renameFieldsOf(Object o) {
+		for (Field f : o.getClass().getDeclaredFields()) {
+			Rename fr = f.getAnnotation(Rename.class);
+			if (fr != null) {
+				try {
+					if (AbstractButton.class.isAssignableFrom(f.getType())) {
+						AbstractButton.class.cast(f.get(o)).setText(labels.get(fr.to()));
+					}
+					if (JLabel.class.isAssignableFrom(f.getType())) {
+						JLabel.class.cast(f.get(o)).setText(labels.get(fr.to()));
+					}
+					if (String.class.isAssignableFrom(f.getType())) {
+						f.set(o, labels.get(fr.to()));
+					}
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				}
+			}
 		}
 	}
 }

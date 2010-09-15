@@ -324,7 +324,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.spaceship_factory" id="SpaceshipFactory">
+	<building label="buildings.spaceship_factory" id="SpaceshipFactory">
 		<graphics base="colony/buildings/%s/spaceship_factory">
 			<tech id='human' height="6" width="4"/>
 			<tech id="garthog" height="5" width="4"/>
@@ -342,29 +342,29 @@
 			<resource type="worker">-430</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.factory.upgrade_1">
+			<upgrade desc="buildings.factory.upgrade_1">
 				<resource type="spaceship">1.25</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.factory.upgrade_2">
+			<upgrade desc="buildings.factory.upgrade_2">
 				<resource type="spaceship">1.5</resource>
 				<resource type='energy'>2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="building.factory.upgrade_3">
+			<upgrade desc="buildings.factory.upgrade_3">
 				<resource type="spaceship">1.75</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
-			<upgrade desc="building.factory.upgrade_4">
+			<upgrade desc="buildings.factory.upgrade_4">
 				<resource type="spaceship">2</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.factory.equipment_factory" id="EquipmentFactory">
+	<building label="buildings.equipment_factory" id="EquipmentFactory">
 		<graphics base="colony/buildings/%s/equipment_factory">
 			<tech height="5" width="5" id="human"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -382,29 +382,29 @@
 			<resource type="worker">-460</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.factory.upgrade_1">
+			<upgrade desc="buildings.factory.upgrade_1">
 				<resource type="spaceship">1.25</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.factory.upgrade_2">
+			<upgrade desc="buildings.factory.upgrade_2">
 				<resource type="spaceship">1.5</resource>
 				<resource type='energy'>2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="building.factory.upgrade_3">
+			<upgrade desc="buildings.factory.upgrade_3">
 				<resource type="spaceship">1.75</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
-			<upgrade desc="building.factory.upgrade_4">
+			<upgrade desc="buildings.factory.upgrade_4">
 				<resource type="spaceship">2</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.weapon_factory" id="WeaponFactory">
+	<building label="buildings.weapon_factory" id="WeaponFactory">
 		<graphics base="colony/buildings/%s/weapons_factory">
 			<tech id='human' height="5" width="5"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -422,29 +422,29 @@
 			<resource type="worker">-390</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.factory.upgrade_1">
+			<upgrade desc="buildings.factory.upgrade_1">
 				<resource type="spaceship">1.25</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.factory.upgrade_2">
+			<upgrade desc="buildings.factory.upgrade_2">
 				<resource type="spaceship">1.5</resource>
 				<resource type='energy'>2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="building.factory.upgrade_3">
+			<upgrade desc="buildings.factory.upgrade_3">
 				<resource type="spaceship">1.75</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
-			<upgrade desc="building.factory.upgrade_4">
+			<upgrade desc="buildings.factory.upgrade_4">
 				<resource type="spaceship">2</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.civil_dev_center" id="CivilDevCenter">
+	<building label="buildings.civil_dev_center" id="CivilDevCenter">
 		<graphics base="colony/buildings/%s/civil_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -462,25 +462,25 @@
 			<resource type='worker'>-560</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.science.upgrade_1">
+			<upgrade desc="buildings.science.upgrade_1">
 				<resource type="energy">0.75</resource>
 				<resource type="worker">0.75</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_2">
+			<upgrade desc="buildings.science.upgrade_2">
 				<resource type="energy">0.5</resource>
 				<resource type="worker">0.5</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_3">
+			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_4">
+			<upgrade desc="buildings.science.upgrade_4">
 				<resource type="energy">0.05</resource>
 				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.mechanical_dev_center" id="MechanicalDevCenter">
+	<building label="buildings.mechanical_dev_center" id="MechanicalDevCenter">
 		<graphics base="colony/buildings/%s/mechanical_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -498,25 +498,25 @@
 			<resource type='worker'>-620</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.science.upgrade_1">
+			<upgrade desc="buildings.science.upgrade_1">
 				<resource type="energy">0.75</resource>
 				<resource type="worker">0.75</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_2">
+			<upgrade desc="buildings.science.upgrade_2">
 				<resource type="energy">0.5</resource>
 				<resource type="worker">0.5</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_3">
+			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_4">
+			<upgrade desc="buildings.science.upgrade_4">
 				<resource type="energy">0.05</resource>
 				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.computer_dev_center" id="ComputerDevCenter">
+	<building label="buildings.computer_dev_center" id="ComputerDevCenter">
 		<graphics base="colony/buildings/%s/computer_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -534,25 +534,25 @@
 			<resource type='worker'>-560</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.science.upgrade_1">
+			<upgrade desc="buildings.science.upgrade_1">
 				<resource type="energy">0.75</resource>
 				<resource type="worker">0.75</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_2">
+			<upgrade desc="buildings.science.upgrade_2">
 				<resource type="energy">0.5</resource>
 				<resource type="worker">0.5</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_3">
+			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_4">
+			<upgrade desc="buildings.science.upgrade_4">
 				<resource type="energy">0.05</resource>
 				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.ai_dev_center" id="AIDevCenter">
+	<building label="buildings.ai_dev_center" id="AIDevCenter">
 		<graphics base="colony/buildings/%s/ai_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -570,25 +570,25 @@
 			<resource type='worker'>-360</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.science.upgrade_1">
+			<upgrade desc="buildings.science.upgrade_1">
 				<resource type="energy">0.75</resource>
 				<resource type="worker">0.75</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_2">
+			<upgrade desc="buildings.science.upgrade_2">
 				<resource type="energy">0.5</resource>
 				<resource type="worker">0.5</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_3">
+			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_4">
+			<upgrade desc="buildings.science.upgrade_4">
 				<resource type="energy">0.05</resource>
 				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.military_dev_center" id="MilitaryDevCenter">
+	<building label="buildings.military_dev_center" id="MilitaryDevCenter">
 		<graphics base="colony/buildings/%s/military_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -606,25 +606,25 @@
 			<resource type='worker'>-420</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.science.upgrade_1">
+			<upgrade desc="buildings.science.upgrade_1">
 				<resource type="energy">0.75</resource>
 				<resource type="worker">0.75</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_2">
+			<upgrade desc="buildings.science.upgrade_2">
 				<resource type="energy">0.5</resource>
 				<resource type="worker">0.5</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_3">
+			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
-			<upgrade desc="building.science.upgrade_4">
+			<upgrade desc="buildings.science.upgrade_4">
 				<resource type="energy">0.05</resource>
 				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.traders_spaceport" id="TradersSpaceport">
+	<building label="buildings.traders_spaceport" id="TradersSpaceport">
 		<graphics base="colony/buildings/%s/traders_spaceport">
 			<tech id='human' height="6" width="7"/>
 		</graphics>
@@ -635,29 +635,29 @@
 			<resource type='worker'>-250</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.traders_spaceport.upgrade_1">
+			<upgrade desc="buildings.traders_spaceport.upgrade_1">
 				<resource type="credit">1.25</resource>
 				<resource type="energy">1.25</resource>
 				<resource type="worker">1.25</resource>
 			</upgrade>
-			<upgrade desc="building.traders_spaceport.upgrade_2">
+			<upgrade desc="buildings.traders_spaceport.upgrade_2">
 				<resource type="credit">1.5</resource>
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.traders_spaceport.upgrade_3">
+			<upgrade desc="buildings.traders_spaceport.upgrade_3">
 				<resource type="credit">1.75</resource>
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>
 			</upgrade>
-			<upgrade desc="building.traders_spaceport.upgrade_4">
+			<upgrade desc="buildings.traders_spaceport.upgrade_4">
 				<resource type="credit">2</resource>
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.military_spaceport" id="MilitarySpaceport">
+	<building label="buildings.military_spaceport" id="MilitarySpaceport">
 		<graphics base="colony/buildings/%s/military_spaceport">
 			<tech id='human' height="5" width="6"/>
 			<tech id="garthog" height="5" width="3"/>
@@ -676,7 +676,7 @@
 		<upgrades>
 		</upgrades>
 	</building>
-	<building label="building.bank" id="Bank">
+	<building label="buildings.bank" id="Bank">
 		<graphics base="colony/buildings/%s/bank">
 			<tech id='human' height="4" width="3"/>
 		</graphics>
@@ -687,29 +687,29 @@
 			<resource type="worker">-230</resource>
 		</operation>				
 		<upgrades>
-			<upgrade desc="building.bank.upgrade_1">
+			<upgrade desc="buildings.bank.upgrade_1">
 				<resource type="multiply">1.25</resource>
 				<resource type="energy">1.25</resource>
 				<resource type="worker">1.25</resource>					
 			</upgrade>
-			<upgrade desc="building.bank.upgrade_2">
+			<upgrade desc="buildings.bank.upgrade_2">
 				<resource type="multiply">1.5</resource>
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>					
 			</upgrade>
-			<upgrade desc="building.bank.upgrade_3">
+			<upgrade desc="buildings.bank.upgrade_3">
 				<resource type="multiply">1.75</resource>
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>					
 			</upgrade>
-			<upgrade desc="building.bank.upgrade_4">
+			<upgrade desc="buildings.bank.upgrade_4">
 				<resource type="multiply">2</resource>
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>					
 			</upgrade>
 		</upgrades>		
 	</building>
-	<building label="building.trade_center" id="TradeCenter">
+	<building label="buildings.trade_center" id="TradeCenter">
 		<graphics base="colony/buildings/%s/trade_center">
 			<tech id='human' height="5" width="5"/>
 			<tech id="garthog" height="4" width="2"/>
@@ -727,29 +727,29 @@
 			<resource type="worker">-360</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.trade_center.upgrade_1">
+			<upgrade desc="buildings.trade_center.upgrade_1">
 				<resource type="credit">1.25</resource>
 				<resource type="energy">1.25</resource>
 				<resource type="worker">1.25</resource>					
 			</upgrade>
-			<upgrade desc="building.trade_center.upgrade_2">
+			<upgrade desc="buildings.trade_center.upgrade_2">
 				<resource type="credit">1.5</resource>
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>					
 			</upgrade>
-			<upgrade desc="building.trade_center.upgrade_3">
+			<upgrade desc="buildings.trade_center.upgrade_3">
 				<resource type="credit">1.75</resource>
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>					
 			</upgrade>
-			<upgrade desc="building.trade_center.upgrade_4">
+			<upgrade desc="buildings.trade_center.upgrade_4">
 				<resource type="credit">2</resource>
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>					
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.hospital" id="Hospital">
+	<building label="buildings.hospital" id="Hospital">
 		<graphics base="colony/buildings/%s/hospital">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="5" width="3"/>
@@ -767,29 +767,29 @@
 			<resource type='worker'>-28</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc='building.hospital.upgrade_1'>
+			<upgrade desc='buildings.hospital.upgrade_1'>
 				<resource type='hospital'>1.25</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc='building.hospital.upgrade_2'>
+			<upgrade desc='buildings.hospital.upgrade_2'>
 				<resource type='hospital'>1.5</resource>
 				<resource type='energy'>1.75</resource>
 				<resource type='worker'>1.75</resource>
 			</upgrade>
-			<upgrade desc='building.hospital.upgrade_3'>
+			<upgrade desc='buildings.hospital.upgrade_3'>
 				<resource type='hospital'>1.75</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
-			<upgrade desc='building.hospital.upgrade_4'>
+			<upgrade desc='buildings.hospital.upgrade_4'>
 				<resource type='hospital'>2</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.police_station" id="PoliceStation">
+	<building label="buildings.police_station" id="PoliceStation">
 		<graphics base='colony/buildings/%s/police_station'>
 			<tech id='human' height='5' width='5'/>
 			<tech id="garthog" height="3" width="5"/>
@@ -807,29 +807,29 @@
 			<resource type='worker'>-400</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc='building.police_station.upgrade_1'>
+			<upgrade desc='buildings.police_station.upgrade_1'>
 				<resource type='hospital'>1.25</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc='building.police_station.upgrade_2'>
+			<upgrade desc='buildings.police_station.upgrade_2'>
 				<resource type='hospital'>1.5</resource>
 				<resource type='energy'>1.75</resource>
 				<resource type='worker'>1.75</resource>
 			</upgrade>
-			<upgrade desc='building.police_station.upgrade_3'>
+			<upgrade desc='buildings.police_station.upgrade_3'>
 				<resource type='hospital'>1.75</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
-			<upgrade desc='building.police_station.upgrade_4'>
+			<upgrade desc='buildings.police_station.upgrade_4'>
 				<resource type='hospital'>2</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.fire_brigade" id="FireBrigade">
+	<building label="buildings.fire_brigade" id="FireBrigade">
 		<graphics base="colony/buildings/%s/fire_brigade">
 			<tech id='human' height="4" width="3"/>
 		</graphics>
@@ -840,29 +840,29 @@
 			<resource type='worker'>-300</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.fire_brigade.upgrade_1">
+			<upgrade desc="buildings.fire_brigade.upgrade_1">
 				<resource type="repair">1.1</resource>
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.fire_brigade.upgrade_2">
+			<upgrade desc="buildings.fire_brigade.upgrade_2">
 				<resource type="repair">1.22</resource>
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>
 			</upgrade>
-			<upgrade desc="building.fire_brigade.upgrade_3">
+			<upgrade desc="buildings.fire_brigade.upgrade_3">
 				<resource type="repair">1.36</resource>
 				<resource type="energy">2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="building.fire_brigade.upgrade_4">
+			<upgrade desc="buildings.fire_brigade.upgrade_4">
 				<resource type="repair">1.54</resource>
 				<resource type="energy">2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.radar_telescope" id="RadarTelescope">
+	<building label="buildings.radar_telescope" id="RadarTelescope">
 		<graphics base="colony/buildings/%s/radar_telescope">
 			<tech id='human' height="2" width="2"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -882,7 +882,7 @@
 		<upgrades>
 		</upgrades>
 	</building>
-	<building label="building.field_telescope" id="FieldTelescope">
+	<building label="buildings.field_telescope" id="FieldTelescope">
 		<graphics base="colony/buildings/%s/field_telescope">
 			<tech id='human' height="2" width="3"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -901,7 +901,7 @@
 		</operation>
 		<upgrades></upgrades>
 	</building>
-	<building label="building.phased_telescope" id="PhasedTelescope">
+	<building label="buildings.phased_telescope" id="PhasedTelescope">
 		<graphics base="colony/buildings/%s/phased_telescope">
 			<tech id='human' height="3" width="3"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -920,7 +920,7 @@
 		</operation>
 		<upgrades></upgrades>
 	</building>
-	<building label='building.bunker' id='Bunker'>
+	<building label='buildings.bunker' id='Bunker'>
 		<graphics base="colony/buildings/%s/bunker">
 			<tech id='human' height="4" width="5"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -938,29 +938,29 @@
 			<resource type='worker'>-30</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.bunker.upgrade_1">
+			<upgrade desc="buildings.bunker.upgrade_1">
 				<resource type="repair">1.1</resource>
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.bunker.upgrade_2">
+			<upgrade desc="buildings.bunker.upgrade_2">
 				<resource type="repair">1.22</resource>
 				<resource type="energy">2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="building.bunker.upgrade_3">
+			<upgrade desc="buildings.bunker.upgrade_3">
 				<resource type="repair">1.36</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
-			<upgrade desc="building.bunker.upgrade_4">
+			<upgrade desc="buildings.bunker.upgrade_4">
 				<resource type="repair">1.54</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.ion_projector" id="IonProjector">
+	<building label="buildings.ion_projector" id="IonProjector">
 		<graphics base="colony/buildings/%s/ion_projector">
 			<tech id='human' height="3" width="3"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -978,29 +978,29 @@
 			<resource type='worker'>-120</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.ion_projector.upgrade_1">
+			<upgrade desc="buildings.ion_projector.upgrade_1">
 				<resource type="ion">1.15</resource>
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.ion_projector.upgrade_2">
+			<upgrade desc="buildings.ion_projector.upgrade_2">
 				<resource type="ion">1.3</resource>
 				<resource type="energy">2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="building.ion_projector.upgrade_3">
+			<upgrade desc="buildings.ion_projector.upgrade_3">
 				<resource type="ion">1.45</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
-			<upgrade desc="building.ion_projector.upgrade_4">
+			<upgrade desc="buildings.ion_projector.upgrade_4">
 				<resource type="ion">1.6</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.plasma_projector" id="PlasmaProjector">
+	<building label="buildings.plasma_projector" id="PlasmaProjector">
 		<graphics base="colony/buildings/%s/plasma_projector">
 			<tech id='human' height="3" width="3"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1018,29 +1018,29 @@
 			<resource type='worker'>-150</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.plasma_projector.upgrade_1">
+			<upgrade desc="buildings.plasma_projector.upgrade_1">
 				<resource type="plasma">1.15</resource>
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.plasma_projector.upgrade_2">
+			<upgrade desc="buildings.plasma_projector.upgrade_2">
 				<resource type="plasma">1.3</resource>
 				<resource type="energy">2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="building.plasma_projector.upgrade_3">
+			<upgrade desc="buildings.plasma_projector.upgrade_3">
 				<resource type="plasma">1.45</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
-			<upgrade desc="building.plasma_projector.upgrade_4">
+			<upgrade desc="buildings.plasma_projector.upgrade_4">
 				<resource type="plasma">1.6</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.fusion_projector" id="FusionProjector">
+	<building label="buildings.fusion_projector" id="FusionProjector">
 		<graphics base="colony/buildings/%s/fusion_projector">
 			<tech height="3" width="3" id="human"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1058,29 +1058,29 @@
 			<resource type='worker'>-160</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.fusion_projector.upgrade_1">
+			<upgrade desc="buildings.fusion_projector.upgrade_1">
 				<resource type="fusion">1.15</resource>
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.fusion_projector.upgrade_2">
+			<upgrade desc="buildings.fusion_projector.upgrade_2">
 				<resource type="fusion">1.3</resource>
 				<resource type="energy">2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="building.fusion_projector.upgrade_3">
+			<upgrade desc="buildings.fusion_projector.upgrade_3">
 				<resource type="fusion">1.45</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
-			<upgrade desc="building.fusion_projector.upgrade_4">
+			<upgrade desc="buildings.fusion_projector.upgrade_4">
 				<resource type="fusion">1.6</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.meson_projector" id="MesonProjector">
+	<building label="buildings.meson_projector" id="MesonProjector">
 		<graphics base="colony/buildings/%s/meson_projector">
 			<tech height="3" width="3" id="human"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1098,29 +1098,29 @@
 			<resource type='worker'>-165</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.meson_projector.upgrade_1">
+			<upgrade desc="buildings.meson_projector.upgrade_1">
 				<resource type="meson">1.15</resource>
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="building.meson_projector.upgrade_2">
+			<upgrade desc="buildings.meson_projector.upgrade_2">
 				<resource type="meson">1.3</resource>
 				<resource type="energy">2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="building.meson_projector.upgrade_3">
+			<upgrade desc="buildings.meson_projector.upgrade_3">
 				<resource type="meson">1.45</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
-			<upgrade desc="building.meson_projector.upgrade_4">
+			<upgrade desc="buildings.meson_projector.upgrade_4">
 				<resource type="meson">1.6</resource>
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.inversion_shield" id="InversionShield">
+	<building label="buildings.inversion_shield" id="InversionShield">
 		<graphics base="colony/buildings/%s/inversion_shield">
 			<tech id='human' height='2' width='3'/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1138,29 +1138,29 @@
 			<resource type='worker'>-50</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.inversion_shield.upgrade_1">
+			<upgrade desc="buildings.inversion_shield.upgrade_1">
 				<resource type='shield'>1.2</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc="building.inversion_shield.upgrade_2">
+			<upgrade desc="buildings.inversion_shield.upgrade_2">
 				<resource type='shield'>1.4</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
-			<upgrade desc="building.inversion_shield.upgrade_3">
+			<upgrade desc="buildings.inversion_shield.upgrade_3">
 				<resource type='shield'>1.6</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
-			<upgrade desc="building.inversion_shield.upgrade_4">
+			<upgrade desc="buildings.inversion_shield.upgrade_4">
 				<resource type='shield'>1.8</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="building.hypershield" id="HyperShield">
+	<building label="buildings.hypershield" id="HyperShield">
 		<graphics base="colony/buildings/%s/hypershield">
 			<tech id='human' height='4' width='4'/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1178,22 +1178,22 @@
 			<resource type='worker'>-120</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.hypershield_shield.upgrade_1">
+			<upgrade desc="buildings.hypershield_shield.upgrade_1">
 				<resource type='shield'>1.2</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc="building.hypershield_shield.upgrade_2">
+			<upgrade desc="buildings.hypershield_shield.upgrade_2">
 				<resource type='shield'>1.4</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
-			<upgrade desc="building.hypershield_shield.upgrade_3">
+			<upgrade desc="buildings.hypershield_shield.upgrade_3">
 				<resource type='shield'>1.6</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
-			<upgrade desc="building.hypershield_shield.upgrade_4">
+			<upgrade desc="buildings.hypershield_shield.upgrade_4">
 				<resource type='shield'>1.8</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
@@ -1212,12 +1212,12 @@
 			<resource type='worker'>-360</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.barracks.upgrade_1">
+			<upgrade desc="buildings.barracks.upgrade_1">
 				<resource type='laser'>1.5</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc="building.barracks.upgrade_2">
+			<upgrade desc="buildings.barracks.upgrade_2">
 				<resource type='laser'>2</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
@@ -1243,12 +1243,12 @@
 			<resource type='worker'>-530</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.fortress.upgrade_1">
+			<upgrade desc="buildings.fortress.upgrade_1">
 				<resource type='laser'>1.5</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc="building.fortress.upgrade_2">
+			<upgrade desc="buildings.fortress.upgrade_2">
 				<resource type='laser'>2</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
@@ -1257,7 +1257,7 @@
 	</building>
 	<building label='buildings.stronghold' id='Stronghold'>
 		<graphics base="colony/buildings/%s/stronghold">
-			<tech id='human' height='3' width='3'/>
+			<tech id='human' height='4' width='4'/>
 		</graphics>
 		<build limit="*" kind="Defensive" cost="50000" research='Stronghold'/>
 		<operation>
@@ -1267,12 +1267,12 @@
 			<resource type='worker'>-550</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="building.fortress.upgrade_1">
+			<upgrade desc="buildings.fortress.upgrade_1">
 				<resource type='laser'>1.5</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc="building.fortress.upgrade_2">
+			<upgrade desc="buildings.fortress.upgrade_2">
 				<resource type='laser'>2</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>

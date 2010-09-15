@@ -44,6 +44,8 @@ public class Building {
 	public boolean enabled = true;
 	/** Is the building under repair. */
 	public boolean repairing;
+	/** The allocation worker object. */
+	public final BuildingAW allocationWorker;
 	/**
 	 * Constructs a building instance and assigns the prototype model.
 	 * @param type the building type
@@ -54,6 +56,7 @@ public class Building {
 		this.techId = techId;
 		this.tileset = type.tileset.get(techId);
 		this.scaffolding = type.scaffoldings.get(techId);
+		this.allocationWorker = new BuildingAW(this);
 	}
 	/**
 	 * Tests wether the given location is within the base footprint of this placed building.
@@ -172,5 +175,12 @@ public class Building {
 	 */
 	public boolean isReady() {
 		return enabled && !isConstructing() && !isSeverlyDamaged();
+	}
+	/**
+	 * @return returns an allocation worker object for this building
+	 */
+	public BuildingAW getAllocationWorker() {
+		allocationWorker.read();
+		return allocationWorker;
 	}
 }

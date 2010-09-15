@@ -32,65 +32,18 @@ import javax.swing.table.AbstractTableModel;
 public class BuildingInfoPanel extends JPanel {
 	/**	 */
 	private static final long serialVersionUID = -2469177284141429466L;
-	/** The building name. */
-	JTextField buildingName;
-	/** The completed amount. */
-	JTextField completed;
-	/** The hitpoints. */
-	JTextField hitpoints;
-	/** The assigned workers. */
-	JTextField assignedWorkers;
-	/** The assigned energy. */
-	JTextField assignedEnergy;
-	/** The current efficiency. */
-	JTextField efficiency;
-	/** The total completed amount. */
-	JTextField completedTotal;
-	/** The total hitpoint amount. */
-	JTextField hitpointsTotal;
-	/** The total worker demand. */
-	JTextField workerTotal;
-	/** The total energy demand. */
-	JTextField energyTotal;
-	/** Apply the settings onto the building. */
-	JButton apply;
-	/** The technology name. */
-	JTextField tech;
-	/** The cost name. */
-	JTextField cost;
-	/** The current location. */
-	JTextField locationX;
-	/** The current location. */
-	JTextField locationY;
-	/** Building is enabled. */
-	JCheckBox buildingEnabled;
-	/** Building is repairing. */
-	JCheckBox buildingRepairing;
-	/** Upgrade list. */
-	JComboBox upgradeList;
-	/** The other resources table. */
-	JTable resourceTable;
-	/** The completion percent. */
-	JLabel completionPercent;
-	/** The hitpoint percent. */
-	JLabel hitpointPercent;
-	/** The worker percent. */
-	JLabel workerPercent;
-	/** The energy percent. */
-	JLabel energyPercent;
 	/** The resource table model. */
-	static class ResourceTableModel extends AbstractTableModel {
+	class ResourceTableModel extends AbstractTableModel {
 		/**	 */
 		private static final long serialVersionUID = 6093762358692787521L;
 		/** The rows. */
 		final List<Resource> rows = new ArrayList<Resource>();
 		/** Column names. */
-		final String[] colNames = { "resource", "amount" };
 		/** Column classes. */
 		Class<?>[] colClasses = { String.class, Float.class };
 		@Override
 		public int getColumnCount() {
-			return colNames.length;
+			return 2;
 		}
 		@Override
 		public int getRowCount() {
@@ -114,11 +67,111 @@ public class BuildingInfoPanel extends JPanel {
 		}
 		@Override
 		public String getColumnName(int column) {
-			return colNames[column];
+			return column == 0 ? resourceColumn : amountColumn;
 		}
 	}
+	/** The building name. */
+	JTextField buildingName;
+	/** The completed amount. */
+	JTextField completed;
+	/** The hitpoints. */
+	JTextField hitpoints;
+	/** The assigned workers. */
+	JTextField assignedWorkers;
+	/** The assigned energy. */
+	JTextField assignedEnergy;
+	/** The current efficiency. */
+	JTextField efficiency;
+	/** The total completed amount. */
+	JTextField completedTotal;
+	/** The total hitpoint amount. */
+	JTextField hitpointsTotal;
+	/** The total worker demand. */
+	JTextField workerTotal;
+	/** The total energy demand. */
+	JTextField energyTotal;
+	/** Apply the settings onto the building. */
+	@Rename(to = "mapeditor.apply")
+	JButton apply;
+	/** The technology name. */
+	JTextField tech;
+	/** The cost name. */
+	JTextField cost;
+	/** The current location. */
+	JTextField locationX;
+	/** The current location. */
+	JTextField locationY;
+	/** Building is enabled. */
+	@Rename(to = "mapeditor.enabled")
+	JCheckBox buildingEnabled;
+	/** Building is repairing. */
+	@Rename(to = "mapeditor.repairing")
+	JCheckBox buildingRepairing;
+	/** Upgrade list. */
+	JComboBox upgradeList;
+	/** The other resources table. */
+	JTable resourceTable;
+	/** The completion percent. */
+	JLabel completionPercent;
+	/** The hitpoint percent. */
+	JLabel hitpointPercent;
+	/** The worker percent. */
+	JLabel workerPercent;
+	/** The energy percent. */
+	JLabel energyPercent;
+	/** Refresh the current values. */
+	@Rename(to = "mapeditor.refresh")
+	JButton refresh;
+	/** Resource column label. */
+	@Rename(to = "mapeditor.resource")
+	String resourceColumn;
+	/** Amount column label. */
+	@Rename(to = "mapeditor.amount")
+	String amountColumn;
 	/** The resource table model. */
 	ResourceTableModel resourceTableModel;
+	/** Completed. */
+	@Rename(to = "mapeditor.info_completed")
+	JLabel completedLbl;
+	/** Hitpoints. */
+	@Rename(to = "mapeditor.info_hitpoints")
+	JLabel hitpointsLbl;
+	/** Worker. */
+	@Rename(to = "mapeditor.info_worker")
+	JLabel workerLbl;
+	/** Energy. */
+	@Rename(to = "mapeditor.info_energy")
+	JLabel energyLbl;
+	/** Building name. */
+	@Rename(to = "mapeditor.info_building_name")
+	JLabel buildingNameLbl;
+	/** Completed of. */
+	@Rename(to = "mapeditor.info_completed_of")
+	JLabel completedOfLbl;
+	/** Hitpoints of. */
+	@Rename(to = "mapeditor.info_hitpoints_of")
+	JLabel hitpointsOfLbl;
+	/** Worker of. */
+	@Rename(to = "mapeditor.info_worker_of")
+	JLabel workerOfLbl;
+	/** Energy of. */
+	@Rename(to = "mapeditor.info_energy_of")
+	JLabel energyOfLbl;
+	/** Efficency. */
+	@Rename(to = "mapeditor.info_efficiency")
+	JLabel efficiencyLbl;
+	/** Technology. */
+	@Rename(to = "mapeditor.info_technology")
+	JLabel techLbl;
+	/** Cost. */
+	@Rename(to = "mapeditor.info_cost")
+	JLabel costLbl;
+	/** Location. */
+	@Rename(to = "mapeditor.info_location")
+	JLabel locationLbl;
+	/** Upgrade. */
+	@Rename(to = "mapeditor.info_upgrade")
+	JLabel upgradeLbl;
 	/**
 	 * Constructs the panel's layout.
 	 */
@@ -128,28 +181,28 @@ public class BuildingInfoPanel extends JPanel {
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		
-		JLabel buildingNameLbl = new JLabel("Name:");
+		buildingNameLbl = new JLabel("Name:");
 		buildingName = new JTextField();
 		buildingName.setEditable(false);
 		
-		JLabel completedLbl = new JLabel("Completed:");
-		JLabel hitpointsLbl = new JLabel("Hitpoints:");
+		completedLbl = new JLabel("Completed:");
+		hitpointsLbl = new JLabel("Hitpoints:");
 		
 		completed = new JTextField(6);
 		completed.setHorizontalAlignment(JTextField.RIGHT);
 		hitpoints = new JTextField(6);
 		hitpoints.setHorizontalAlignment(JTextField.RIGHT);
 
-		JLabel workerLbl = new JLabel("Workers:");
-		JLabel energyLbl = new JLabel("Energy:");
+		workerLbl = new JLabel("Workers:");
+		energyLbl = new JLabel("Energy:");
 		
 		assignedWorkers = new JTextField(6);
 		assignedWorkers.setHorizontalAlignment(JTextField.RIGHT);
 		assignedEnergy = new JTextField(6);
 		assignedEnergy.setHorizontalAlignment(JTextField.RIGHT);
 	
-		JLabel completedOfLbl = new JLabel(" of ");
-		JLabel hitpointsOfLbl = new JLabel(" of ");
+		completedOfLbl = new JLabel(" of ");
+		hitpointsOfLbl = new JLabel(" of ");
 		
 		completedTotal = new JTextField();
 		completedTotal.setEditable(false);
@@ -158,8 +211,8 @@ public class BuildingInfoPanel extends JPanel {
 		hitpointsTotal.setEditable(false);
 		hitpointsTotal.setHorizontalAlignment(JTextField.RIGHT);
 		
-		JLabel workerOfLbl = new JLabel(" of ");
-		JLabel energyOfLbl = new JLabel(" of ");
+		workerOfLbl = new JLabel(" of ");
+		energyOfLbl = new JLabel(" of ");
 
 		workerTotal = new JTextField();
 		workerTotal.setEditable(false);
@@ -168,13 +221,13 @@ public class BuildingInfoPanel extends JPanel {
 		energyTotal.setEditable(false);
 		energyTotal.setHorizontalAlignment(JTextField.RIGHT);
 		
-		JLabel efficiencyLbl = new JLabel("Efficiency:");
+		efficiencyLbl = new JLabel("Efficiency:");
 		efficiency = new JTextField(6);
 		efficiency.setEditable(false);
 		efficiency.setHorizontalAlignment(JTextField.RIGHT);
 		
-		JLabel techLbl = new JLabel("Technology:");
-		JLabel costLbl = new JLabel("Cost:");
+		techLbl = new JLabel("Technology:");
+		costLbl = new JLabel("Cost:");
 		
 		tech = new JTextField(15);
 		tech.setEditable(false);
@@ -182,7 +235,7 @@ public class BuildingInfoPanel extends JPanel {
 		cost.setEditable(false);
 		cost.setHorizontalAlignment(JTextField.RIGHT);
 		
-		JLabel locationLbl = new JLabel("Location:");
+		locationLbl = new JLabel("Location:");
 		
 		JLabel locationXLbl = new JLabel("X =");
 		JLabel locationYLbl = new JLabel("Y =");
@@ -199,7 +252,7 @@ public class BuildingInfoPanel extends JPanel {
 		buildingEnabled = new JCheckBox("Enabled");
 		buildingRepairing = new JCheckBox("Repairing");
 		
-		JLabel upgradeLbl = new JLabel("Upgrades:");
+		upgradeLbl = new JLabel("Upgrades:");
 		upgradeList = new JComboBox();
 		upgradeList.addItem("None");
 		
@@ -216,6 +269,8 @@ public class BuildingInfoPanel extends JPanel {
 		energyPercent.setHorizontalAlignment(JLabel.RIGHT);
 		workerPercent = new JLabel();
 		workerPercent.setHorizontalAlignment(JLabel.RIGHT);
+		
+		refresh = new JButton("Refresh");
 		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
@@ -284,7 +339,11 @@ public class BuildingInfoPanel extends JPanel {
 				.addComponent(buildingRepairing)
 			)
 			.addComponent(sp)
-			.addComponent(apply)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(apply)
+				.addComponent(refresh)
+			)
 		);
 		
 		gl.setVerticalGroup(
@@ -360,7 +419,11 @@ public class BuildingInfoPanel extends JPanel {
 				.addComponent(upgradeList, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			)
 			.addComponent(sp, 0, 40, Short.MAX_VALUE)
-			.addComponent(apply)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(apply)
+				.addComponent(refresh)
+			)
 		);
 		
 		gl.linkSize(SwingConstants.HORIZONTAL, completed, completedTotal, hitpoints, hitpointsTotal, assignedWorkers, workerTotal, assignedEnergy, energyTotal);
