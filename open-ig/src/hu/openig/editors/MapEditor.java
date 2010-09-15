@@ -180,6 +180,8 @@ public class MapEditor extends JFrame {
 	JCheckBoxMenuItem viewTextBackgrounds;
 	/** The current save settings. */
 	MapSaveSettings saveSettings;
+	/** The allocation panel. */
+	AllocationPanel allocationPanel;
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -538,6 +540,8 @@ public class MapEditor extends JFrame {
 
 		propertyTab.addTab("Surfaces & Buildings", featuresSplit);
 		propertyTab.addTab("Building properties", createBuildingPropertiesPanel());
+		allocationPanel = new AllocationPanel();
+		propertyTab.addTab("Allocation", allocationPanel);
 		
 		split.setDoubleBuffered(true);
 		getContentPane().add(split);
@@ -1179,6 +1183,7 @@ public class MapEditor extends JFrame {
 		renderer.surface.width = width;
 		renderer.surface.height = height;
 		renderer.surface.computeRenderingLocations();
+		allocationPanel.buildings = renderer.surface.buildings;
 	}
 	/**
 	 * Place a tile onto the current surface map.
@@ -1292,10 +1297,7 @@ public class MapEditor extends JFrame {
 		imp.setVisible(true);
 		if (imp.success) {
 			if (renderer.surface == null) {
-				renderer.surface = new PlanetSurface();
-				renderer.surface.width = 33;
-				renderer.surface.height = 65;
-				renderer.surface.computeRenderingLocations();
+				createPlanetSurface(33, 66);
 			}
 			if (imp.selected != null) {
 				if (imp.replaceSurface) {
@@ -1562,6 +1564,9 @@ public class MapEditor extends JFrame {
 	 * @param my the mouse coordinate
 	 */
 	void doSelectBuilding(int mx, int my) {
+		if (renderer.surface == null) {
+			return;
+		}
 		Location loc = renderer.getLocationAt(mx, my);
 		SurfaceEntity se = renderer.surface.buildingmap.get(loc);
 		currentBuilding = null;
@@ -1705,7 +1710,7 @@ public class MapEditor extends JFrame {
 		buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
 		buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
 		buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
-		buildingInfoPanel.hitpointsTotal.setText("" + currentBuilding.type.hitpoints);
+		buildingInfoPanel.hitpointsTotal.setText("" + currentBuilding.buildProgress);
 		buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
 		buildingInfoPanel.workerTotal.setText("" + currentBuilding.getWorkers());
 		buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
@@ -1718,6 +1723,11 @@ public class MapEditor extends JFrame {
 		buildingInfoPanel.apply.setEnabled(true);
 		buildingInfoPanel.buildingEnabled.setSelected(currentBuilding.enabled);
 		buildingInfoPanel.buildingRepairing.setSelected(currentBuilding.repairing);
+		
+		buildingInfoPanel.completionPercent.setText(String.format("  %.3f%%", currentBuilding.buildProgress * 100.0 / currentBuilding.type.hitpoints));
+		buildingInfoPanel.hitpointPercent.setText(String.format("  %.3f%%", currentBuilding.hitpoints * 100.0 / currentBuilding.buildProgress));
+		buildingInfoPanel.workerPercent.setText(String.format("  %.3f%%", currentBuilding.assignedWorker * 100.0 / currentBuilding.getWorkers()));
+		buildingInfoPanel.energyPercent.setText(String.format("  %.3f%%", currentBuilding.assignedEnergy * 100.0 / currentBuilding.getEnergy()));
 		
 		buildingInfoPanel.upgradeList.removeAllItems();
 		buildingInfoPanel.upgradeList.addItem("None");
