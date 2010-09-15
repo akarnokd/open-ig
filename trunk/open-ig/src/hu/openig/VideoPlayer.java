@@ -251,9 +251,7 @@ public class VideoPlayer extends JFrame {
 	 * Scan resources.
 	 */
 	protected void scan() {
-		rl.clear();
-		rl.setContainers(config.containers);
-		rl.scanResources();
+		rl = config.newResourceLocator();
 		videoModel.rows.clear();
 		Set<VideoEntry> result = new LinkedHashSet<VideoEntry>();
 		Map<String, Map<String, ResourcePlace>> videos = rl.resourceMap.get(ResourceType.VIDEO);
@@ -394,8 +392,8 @@ public class VideoPlayer extends JFrame {
 	public VideoPlayer(Configuration config) {
 		super("Open-IG Video player");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		rl = new ResourceLocator();
 		this.config = config;
+		this.rl = config.newResourceLocator();
 		Container c = getContentPane();
 		
 		addWindowListener(new WindowAdapter() {

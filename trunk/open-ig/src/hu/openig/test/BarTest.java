@@ -131,9 +131,7 @@ public class BarTest extends JFrame {
 		final Configuration config = new Configuration("open-ig-config.xml");
 		config.load();
 		final Talks w = new Talks();
-		final ResourceLocator rl = new ResourceLocator();
-		rl.setContainers(config.containers);
-		rl.scanResources();
+		final ResourceLocator rl = config.newResourceLocator();
 		w.load(rl, config.language, "campaign/main");
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

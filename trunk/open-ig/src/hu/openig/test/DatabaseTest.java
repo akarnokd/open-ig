@@ -94,9 +94,7 @@ public class DatabaseTest extends JFrame {
 	public static void main(String[] args) {
 		Configuration config = new Configuration("open-ig-config.xml");
 		config.load();
-		final ResourceLocator rl = new ResourceLocator();
-		rl.setContainers(config.containers);
-		rl.scanResources();
+		final ResourceLocator rl = config.newResourceLocator();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
