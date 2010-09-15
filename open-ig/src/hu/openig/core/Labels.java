@@ -55,7 +55,7 @@ public class Labels {
 	public String get(String key) {
 		String value = map.get(key);
 		if (value == null) {
-			throw new AssertionError("Missing value for key " + key);
+			throw new AssertionError("Missing value for key: " + key);
 		}
 		return value;
 	}

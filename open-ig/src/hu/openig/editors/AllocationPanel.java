@@ -9,8 +9,13 @@
 package hu.openig.editors;
 
 import hu.openig.core.Act;
+import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.Building;
+import hu.openig.model.ResourceAllocationSettings;
+import hu.openig.model.ResourceAllocationStrategy;
+import hu.openig.utils.Parallels;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -34,10 +39,12 @@ public class AllocationPanel extends JPanel {
 	/** The available worker count. */
 	public JTextField availableWorkers;
 	/** Compute and apply the allocation values. */
+	@Rename(to = "mapeditor.apply")
 	public JButton apply;
 	/** The allocation strategies. */
 	public JComboBox strategies;
 	/** Refresh the requirements from the model. */
+	@Rename(to = "mapeditor.refresh")
 	public JButton refresh;
 	/** Total worker demand. */
 	JTextField workerDemand;
@@ -49,6 +56,29 @@ public class AllocationPanel extends JPanel {
 	JTextField operationCount;
 	/** Total efficiency. */
 	JTextField totalEfficiency;
+	/** The resource allocator. */
+	ResourceAllocator resourceAllocator;
+	/** Available workers. */
+	@Rename(to = "mapeditor.allocation_available_workers")
+	JLabel availableWorkersLbl;
+	/** Available energy. */
+	@Rename(to = "mapeditor.allocation_available_energy")
+	JLabel availableEnergyLbl;
+	/** Strategies. */
+	@Rename(to = "mapeditor.allocation_strategies")
+	JLabel strategiesLbl;
+	/** Energy demand. */
+	@Rename(to = "mapeditor.allocation_energy_demand")
+	JLabel energyDemandLbl;
+	/** Worker demand. */
+	@Rename(to = "mapeditor.allocation_worker_demand")
+	JLabel workerDemandLbl;
+	/** Operation count. */
+	@Rename(to = "mapeditor.allocation_operation_count")
+	JLabel operationCountLbl;
+	/** Total efficiency. */
+	@Rename(to = "mapeditor.allocation_total_efficiency")
+	JLabel totalEfficiencyLbl;
 	/** 
 	 * Creates the GUI. 
 	 */
@@ -68,7 +98,7 @@ public class AllocationPanel extends JPanel {
 		
 		apply = new JButton("Apply");
 		refresh = new JButton("Refresh");
-		strategies = new JComboBox();
+		strategies = new JComboBox(ResourceAllocationStrategy.values());
 		
 		workerDemand = new JTextField(6);
 		workerDemand.setEditable(false);
@@ -77,18 +107,14 @@ public class AllocationPanel extends JPanel {
 		energyDemand.setEditable(false);
 		energyDemand.setHorizontalAlignment(JTextField.RIGHT);
 		
-		JLabel availableWorkersLbl = new JLabel("Available workers:");
-		JLabel availableEnergyLbl = new JLabel("Produced energy:");
-		JLabel strategiesLbl = new JLabel("Strategies:");
-		JLabel energyDemandLbl = new JLabel("Energy demand:");
-		JLabel workerDemandLbl = new JLabel("Worker demand:");
+		availableWorkersLbl = new JLabel("Available workers:");
+		availableEnergyLbl = new JLabel("Produced energy:");
+		strategiesLbl = new JLabel("Strategies:");
+		energyDemandLbl = new JLabel("Energy demand:");
+		workerDemandLbl = new JLabel("Worker demand:");
 		
-		
-		strategies.addItem("Off (set everyone to zero)");
-		strategies.addItem("Uniform (original game strategy)");
-		
-		JLabel operationCountLbl = new JLabel("Operational count:");
-		JLabel totalEfficiencyLbl = new JLabel("Total efficiency:");
+		operationCountLbl = new JLabel("Operational count:");
+		totalEfficiencyLbl = new JLabel("Total efficiency:");
 		operationCount = new JTextField(6);
 		operationCount.setEditable(false);
 		operationCount.setHorizontalAlignment(JTextField.RIGHT);
@@ -191,6 +217,7 @@ public class AllocationPanel extends JPanel {
 		gl.linkSize(SwingConstants.HORIZONTAL, availableWorkersLbl, availableEnergyLbl, strategiesLbl);
 		gl.linkSize(SwingConstants.HORIZONTAL, apply, refresh);
 		
+		resourceAllocator = new ResourceAllocator();
 	}
 	/**
 	 *  Refresh the total values.
@@ -226,72 +253,22 @@ public class AllocationPanel extends JPanel {
 	 * Compute the allocation based on the current strategy.
 	 */
 	void doCompute() {
+		apply.setEnabled(false);
 		doRefresh();
-		
 		int availableWorker = Integer.parseInt(availableWorkers.getText());
-		int workerDemand = Integer.parseInt(this.workerDemand.getText());
-		int energyDemand = Integer.parseInt(this.energyDemand.getText());
 		
-		switch (strategies.getSelectedIndex()) {
-		case 0:
-			doZeroStrategy();
-			break;
-		case 1:
-			doUniformStrategy(-availableWorker, workerDemand, energyDemand);
-			break;
-		default:
-		}
+		ResourceAllocationSettings ras = new ResourceAllocationSettings(
+				this.buildings
+				, -availableWorker
+				, ResourceAllocationStrategy.values()[strategies.getSelectedIndex()]);
 		
-		doRefresh();
-	}
-	/** Zero all assignments. */
-	void doZeroStrategy() {
-		for (Building b : buildings) {
-			if (b.isReady()) {
-				b.assignedEnergy = 0;
-				b.assignedWorker = 0;
+		Parallels.waitForFutures(resourceAllocator.compute(Collections.singleton(ras))
+				, new Runnable() {
+			@Override
+			public void run() {
+				doRefresh();
+				apply.setEnabled(true);
 			}
-		}
-	}
-	/** 
-	 * Do an uniform distribution strategy. 
-	 * @param availableWorker The available worker amount
-	 * @param demandWorker the total worker demand 
-	 * @param demandEnergy the energy demand
-	 */
-	void doUniformStrategy(int availableWorker, int demandWorker, int demandEnergy) {
-		// no need to assign workers
-		if (demandWorker == 0) {
-			return;
-		}
-		float targetEfficiency = Math.min(1.0f, availableWorker / (float)demandWorker);
-		float availableEnergy = 0;
-		for (Building b : buildings) {
-			if (b.isReady()) {
-				int toAssign = Math.round(b.getWorkers() * targetEfficiency);
-				b.assignedWorker = toAssign > availableWorker ? toAssign : availableWorker;
-				availableWorker -= b.assignedWorker;
-				int e = b.getEnergy();
-				if (e > 0) {
-					availableEnergy -= e * b.getEfficiency();
-				}
-			}
-		}
-		// no need assign energy: everything is either colonyhub or power plant
-		if (demandEnergy == 0) {
-			return;
-		}
-		targetEfficiency = Math.min(1.0f, availableEnergy / (float)demandEnergy);
-		
-		for (Building b : buildings) {
-			if (b.isReady()) {
-				int e = b.getEnergy();
-				if (e < 0) {
-					int toAssign = (int)(b.getEnergy() * targetEfficiency);
-					b.assignedEnergy = toAssign > availableEnergy ? toAssign : (int)availableEnergy;
-					availableEnergy -= b.assignedEnergy;
-				}		
-			}
-		}
+		});
 	}
 }
