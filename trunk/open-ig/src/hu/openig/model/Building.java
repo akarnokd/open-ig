@@ -80,6 +80,7 @@ public class Building {
 	 * @return the operational efficiency
 	 */
 	public float getEfficiency() {
+		// if the building is incomplete or is more than 50% damaged
 		if (buildProgress < type.hitpoints || hitpoints * 2 < type.hitpoints) {
 			return 0.0f;
 		}
@@ -165,5 +166,11 @@ public class Building {
 		if (level > 0) {
 			this.currentUpgrade = type.upgrades.get(level - 1);
 		}
+	}
+	/**
+	 * @return is the building ready to receive workers and energy, e.g. is enabled, not under construction and is not severly damaged?
+	 */
+	public boolean isReady() {
+		return enabled && !isConstructing() && !isSeverlyDamaged();
 	}
 }

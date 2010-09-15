@@ -70,6 +70,14 @@ public class BuildingInfoPanel extends JPanel {
 	JComboBox upgradeList;
 	/** The other resources table. */
 	JTable resourceTable;
+	/** The completion percent. */
+	JLabel completionPercent;
+	/** The hitpoint percent. */
+	JLabel hitpointPercent;
+	/** The worker percent. */
+	JLabel workerPercent;
+	/** The energy percent. */
+	JLabel energyPercent;
 	/** The resource table model. */
 	static class ResourceTableModel extends AbstractTableModel {
 		/**	 */
@@ -199,7 +207,16 @@ public class BuildingInfoPanel extends JPanel {
 		resourceTable = new JTable(resourceTableModel);
 		resourceTable.setAutoCreateRowSorter(true);
 		JScrollPane sp = new JScrollPane(resourceTable);
-				
+			
+		completionPercent = new JLabel();
+		completionPercent.setHorizontalAlignment(JLabel.RIGHT);
+		hitpointPercent = new JLabel();
+		hitpointPercent.setHorizontalAlignment(JLabel.RIGHT);
+		energyPercent = new JLabel();
+		energyPercent.setHorizontalAlignment(JLabel.RIGHT);
+		workerPercent = new JLabel();
+		workerPercent.setHorizontalAlignment(JLabel.RIGHT);
+		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
 			.addGroup(
@@ -234,24 +251,28 @@ public class BuildingInfoPanel extends JPanel {
 						.addComponent(completed, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(completedOfLbl)
 						.addComponent(completedTotal)
+						.addComponent(completionPercent)
 					)
 					.addGroup(
 						gl.createSequentialGroup()
 						.addComponent(hitpoints)
 						.addComponent(hitpointsOfLbl)
 						.addComponent(hitpointsTotal)
+						.addComponent(hitpointPercent)
 					)
 					.addGroup(
 						gl.createSequentialGroup()
 						.addComponent(assignedWorkers)
 						.addComponent(workerOfLbl)
 						.addComponent(workerTotal)
+						.addComponent(workerPercent)
 					)
 					.addGroup(
 						gl.createSequentialGroup()
 						.addComponent(assignedEnergy)
 						.addComponent(energyOfLbl)
 						.addComponent(energyTotal)
+						.addComponent(energyPercent)
 					)
 					.addComponent(efficiency, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addComponent(upgradeList, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -302,6 +323,7 @@ public class BuildingInfoPanel extends JPanel {
 				.addComponent(completed, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addComponent(completedOfLbl)
 				.addComponent(completedTotal, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(completionPercent)
 			)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
@@ -309,6 +331,7 @@ public class BuildingInfoPanel extends JPanel {
 				.addComponent(hitpoints, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addComponent(hitpointsOfLbl)
 				.addComponent(hitpointsTotal, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(hitpointPercent)
 			)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
@@ -316,6 +339,7 @@ public class BuildingInfoPanel extends JPanel {
 				.addComponent(assignedWorkers, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addComponent(workerOfLbl)
 				.addComponent(workerTotal, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(workerPercent)
 			)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
@@ -323,6 +347,7 @@ public class BuildingInfoPanel extends JPanel {
 				.addComponent(assignedEnergy, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addComponent(energyOfLbl)
 				.addComponent(energyTotal, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(energyPercent)
 			)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
@@ -339,6 +364,7 @@ public class BuildingInfoPanel extends JPanel {
 		);
 		
 		gl.linkSize(SwingConstants.HORIZONTAL, completed, completedTotal, hitpoints, hitpointsTotal, assignedWorkers, workerTotal, assignedEnergy, energyTotal);
+		gl.linkSize(SwingConstants.HORIZONTAL, completionPercent, hitpointPercent, workerPercent, energyPercent);
 
 	}
 }
