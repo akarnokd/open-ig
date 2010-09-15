@@ -12,8 +12,8 @@ import hu.openig.core.Act;
 import hu.openig.core.ConfigButton;
 import hu.openig.core.Configuration;
 import hu.openig.core.LogEntry;
-import hu.openig.sound.AudioThread;
 import hu.openig.screens.GameControls;
+import hu.openig.sound.AudioThread;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -27,16 +27,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -279,6 +276,8 @@ public class Setup extends JFrame {
 	private ConfigButton btnCurrentBounds;
 	/** Move to the center. */
 	private ConfigButton btnCenterBounds;
+	/** Automatically manage resource files? */
+	private JCheckBox autoResources;
 	/**
 	 * Constructor. Assign an active game window.
 	 * @param config the configuration
@@ -558,6 +557,9 @@ public class Setup extends JFrame {
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		
+		autoResources = new JCheckBox("Automatically manage game files");
+		autoResources.setOpaque(false);
+		
 		pathLabel = new JLabel("File path:");
 		path = new AlphaTextField(0.85f);
 		path.setOpaque(false);
@@ -593,6 +595,7 @@ public class Setup extends JFrame {
 		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup()
+			.addComponent(autoResources)
 			.addGroup(
 				gl.createSequentialGroup()
 				.addComponent(pathLabel)
@@ -615,6 +618,7 @@ public class Setup extends JFrame {
 		);
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
+			.addComponent(autoResources)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(pathLabel)
@@ -696,42 +700,8 @@ public class Setup extends JFrame {
 	 * Add the standard places for the resource files.
 	 */
 	protected void doLocate() {
-		if (new File("audio").exists()) {
-			fileListModel.addElement("audio");
-		}
-		if (new File("data").exists()) {
-			fileListModel.addElement("data");
-		}
-		if (new File("images").exists()) {
-			fileListModel.addElement("images");
-		}
-		if (new File("video").exists()) {
-			fileListModel.addElement("video");
-		}
-		File[] files = new File(".").listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.toLowerCase().startsWith("open-ig-") && name.toLowerCase().endsWith(".zip");
-			}
-		});
-		TreeSet<String> upgrades = new TreeSet<String>(new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				return o1.compareTo(o2);
-			}
-		});
-		if (files != null) {
-			for (File f : files) {
-				String name = f.getName();
-				if (name.toLowerCase().startsWith("open-ig-upgrade-") && name.toLowerCase().endsWith(".zip")) {
-					upgrades.add(name);
-				} else {
-					fileListModel.addElement(f.getName());
-				}
-			}
-		}
-		for (String s : upgrades) {
-			fileListModel.add(0, s);
+		for (String s : config.getContainersAutomatically()) {
+			fileListModel.addElement(s);
 		}
 		filesPanel.repaint();
 	}
@@ -1737,6 +1707,8 @@ public class Setup extends JFrame {
 		btnCenterBounds.setText("Középre");
 		btnCurrentBounds.setText("Jelenlegi pozíció");
 		
+		autoResources.setText("Automatikusan kezelje a játék fájljait");
+		
 		logModel.columnNames = new String[] { "Idõbélyeg", "Fontosság", "Üzenet", "Hibahely" };
 		refreshLogTableColumns();		
 	}
@@ -1807,6 +1779,8 @@ public class Setup extends JFrame {
 		btnCenterBounds.setText("Center");
 		btnCurrentBounds.setText("Current position");
 		
+		autoResources.setText("Automatically manage game files");
+		
 		logModel.columnNames = new String[] { "Timestamp", "Severity", "Message", "Stacktrace" };
 		refreshLogTableColumns();
 	}
@@ -1827,9 +1801,9 @@ public class Setup extends JFrame {
 	 * Load configuration values into the GUI.
 	 */
 	protected void loadConfig() {
-		if (config.isNew) {
-			return;
-		}
+//		if (config.isNew) {
+//			return;
+//		}
 		if ("hu".equals(config.language)) {
 			rbHungarian.setSelected(true);
 			changeToHungarian();
@@ -1842,6 +1816,7 @@ public class Setup extends JFrame {
 		for (String s : config.containers) {
 			fileListModel.addElement(s);
 		}
+		autoResources.setSelected(config.autoResources);
 		
 		if (config.left != null) {
 			edLeft.setText(config.left.toString());
@@ -1884,6 +1859,8 @@ public class Setup extends JFrame {
 		for (int i = 0; i < fileListModel.size(); i++) {
 			config.containers.add((String)fileListModel.elementAt(i));
 		}
+		config.autoResources = autoResources.isSelected();
+		
 		if (!edLeft.getText().isEmpty()) {
 			config.left = Integer.valueOf(edLeft.getText());
 		} else {

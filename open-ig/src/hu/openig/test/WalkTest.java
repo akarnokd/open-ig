@@ -71,9 +71,7 @@ public class WalkTest extends JFrame {
 		Configuration config = new Configuration("open-ig-config.xml");
 		config.load();
 		final Walks w = new Walks();
-		final ResourceLocator rl = new ResourceLocator();
-		rl.setContainers(config.containers);
-		rl.scanResources();
+		final ResourceLocator rl = config.newResourceLocator();
 		w.load(rl, "hu", "campaign/main/walks");
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

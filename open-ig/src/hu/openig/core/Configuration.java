@@ -13,17 +13,20 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.SwingUtilities;
 
@@ -105,6 +108,9 @@ public class Configuration {
 	public int videoFilter = 1;
 	/** The debug watcher window. */
 	public Closeable watcherWindow;
+	/** Automatically find resource files instead of fixed set. */
+	@LoadSave
+	public boolean autoResources = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
@@ -330,8 +336,60 @@ public class Configuration {
 	 */
 	public ResourceLocator newResourceLocator() {
 		ResourceLocator rl = new ResourceLocator();
-		rl.setContainers(containers);
+		List<String> cont = null;
+		if (autoResources) {
+			cont = getContainersAutomatically();
+		}
+		if (cont == null || cont.size() == 0) {
+			cont = containers;
+		}
+		rl.setContainers(cont);
 		rl.scanResources();
 		return rl;
+	}
+	/**
+	 * @return Find the containers automatically
+	 */
+	public List<String> getContainersAutomatically() {
+		List<String> result = new ArrayList<String>();
+		if (new File("audio").exists()) {
+			result.add("audio");
+		}
+		if (new File("data").exists()) {
+			result.add("data");
+		}
+		if (new File("images").exists()) {
+			result.add("images");
+		}
+		if (new File("video").exists()) {
+			result.add("video");
+		}
+		File[] files = new File(".").listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().startsWith("open-ig-") && name.toLowerCase().endsWith(".zip");
+			}
+		});
+		TreeSet<String> upgrades = new TreeSet<String>(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		if (files != null) {
+			for (File f : files) {
+				String name = f.getName();
+				if (name.toLowerCase().startsWith("open-ig-upgrade-") && name.toLowerCase().endsWith(".zip")) {
+					upgrades.add(name);
+				} else {
+					result.add(f.getName());
+				}
+			}
+		}
+		for (String s : upgrades) {
+			result.add(0, s);
+		}
+		
+		return result;
 	}
 }

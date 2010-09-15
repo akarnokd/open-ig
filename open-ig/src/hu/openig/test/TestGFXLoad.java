@@ -67,9 +67,7 @@ public final class TestGFXLoad {
 		long time = System.currentTimeMillis();
 		Configuration config = new Configuration("open-ig-config.xml");
 		config.load();
-		final ResourceLocator rl = new ResourceLocator();
-		rl.setContainers(config.containers);
-		rl.scanResources();
+		final ResourceLocator rl = config.newResourceLocator();
 
 		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		List<Future<?>> ends = new LinkedList<Future<?>>();

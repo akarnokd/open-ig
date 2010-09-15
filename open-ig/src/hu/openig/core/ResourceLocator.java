@@ -45,6 +45,10 @@ public class ResourceLocator {
 	public final Map<ResourceType, Map<String, Map<String, ResourcePlace>>> resourceMap = new HashMap<ResourceType, Map<String, Map<String, ResourcePlace>>>();
 	/** The pre-opened ZIP containers. */
 	private final Map<String, ZipFile> zipContainers = new HashMap<String, ZipFile>();
+	/** Package-private. Use Configuration.newResourceLocator() instead. */
+	ResourceLocator() {
+		
+	}
 	/**
 	 * A concrete resource place.
 	 * @author karnokd, 2009.09.23.
@@ -120,7 +124,7 @@ public class ResourceLocator {
 	 * Set the list of resource containers.
 	 * @param containers the iterable of containers
 	 */
-	public void setContainers(Iterable<String> containers) {
+	void setContainers(Iterable<String> containers) {
 		this.containers.clear();
 		for (String s : containers) {
 			this.containers.add(s);
@@ -129,7 +133,7 @@ public class ResourceLocator {
 	/**
 	 * Scan the given resource containers for concrete files.
 	 */
-	public void scanResources() {
+	void scanResources() {
 //		List<ResourcePlace> resources = loadResourceCache();
 //		if (resources == null) {
 			// scan backwards and let the newer overrule the existing resource
@@ -322,7 +326,7 @@ public class ResourceLocator {
 	/**
 	 * Clear the resource map.
 	 */
-	public void clear() {
+	void clear() {
 		resourceMap.clear();
 	}
 	/**
