@@ -156,4 +156,14 @@ public class Building {
 		}
 		return res.amount;
 	}
+	/**
+	 * Set the upgrade level.
+	 * @param level the upgrade level
+	 */
+	public void setLevel(int level) {
+		this.upgradeLevel = level;
+		if (level > 0) {
+			this.currentUpgrade = type.upgrades.get(level - 1);
+		}
+	}
 }

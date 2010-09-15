@@ -27,6 +27,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
 
 import org.w3c.dom.Element;
@@ -214,6 +215,7 @@ public class ImportDialog extends JDialog {
 				.addComponent(btnCancel)
 			)
 		);
+		gl.linkSize(SwingConstants.HORIZONTAL, btnOk, btnCancel);
 		pack();
 		setResizable(false);
 	}

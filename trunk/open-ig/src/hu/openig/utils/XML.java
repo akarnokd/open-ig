@@ -7,6 +7,7 @@
  */
 package hu.openig.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -234,5 +235,23 @@ public final class XML {
 			return b.toString();
 		}
 		return "";
+	}
+	/**
+	 * Open an XML file from disk.
+	 * @param file the file to open
+	 * @return the document element of the XML file
+	 * @throws IOException on IO or parsing errors
+	 */
+	public static Element openXML(File file) throws IOException {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document doc = db.parse(file);
+			return doc.getDocumentElement();
+		} catch (SAXException ex) {
+			throw new IOException(ex);
+		} catch (ParserConfigurationException ex) {
+			throw new IOException(ex);
+		}
 	}
 }
