@@ -45,7 +45,7 @@ public class BuildingType {
 	/** Is the operation level dependent on the supplied energy and worker amounts? */
 	public boolean percentable;
 	/** The primary resource to display in the info panel. */
-	public Resource primary;
+	public String primary;
 	/** The resources associated with this building type. */
 	public final Map<String, Resource> resources = new HashMap<String, Resource>();
 	/** The ordered list of upgrades for this building, if any. */

@@ -159,7 +159,7 @@ public class BuildingModel {
 				res.amount = Float.parseFloat(re.getTextContent());
 				b.resources.put(res.type, res);
 				if ("true".equals(re.getAttribute("display"))) {
-					b.primary = res;
+					b.primary = res.type;
 				}
 			}
 			

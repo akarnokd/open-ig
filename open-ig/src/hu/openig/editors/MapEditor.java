@@ -27,10 +27,12 @@ import hu.openig.model.PlanetSurface;
 import hu.openig.model.Resource;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
+import hu.openig.model.SurfaceFeature;
 import hu.openig.model.TileSet;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.JavaUtils;
+import hu.openig.utils.XML;
 
 import java.awt.Desktop;
 import java.awt.Graphics2D;
@@ -47,10 +49,13 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
@@ -95,6 +100,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.w3c.dom.Element;
+
 /**
  * Map editor.
  * @author karnokd, 2010.09.08.
@@ -105,6 +112,8 @@ public class MapEditor extends JFrame {
 	private static final long serialVersionUID = -5949479655359917254L;
 	/** The minimum memory required to run Open-IG. */
 	private static final long MINIMUM_MEMORY = 384L;
+	/** The map editor's JAR file version. */
+	private static final String MAP_EDITOR_JAR_VERSION = "0.2";
 	/** The main resource locator. */
 	ResourceLocator rl;
 	/** The horizontal split between the tool listing and the rendering. */
@@ -152,7 +161,7 @@ public class MapEditor extends JFrame {
 	/** Are we in placement mode? */
 	JToggleButton buildButton;
 	/** The current base tile object. */
-	Tile currentBaseTile;
+	SurfaceFeature currentBaseTile;
 	/** The current building type object. */
 	BuildingType currentBuildingType;
 	/** The current building race. */
@@ -166,9 +175,11 @@ public class MapEditor extends JFrame {
 	/** The building info panel. */
 	BuildingInfoPanel buildingInfoPanel;
 	/** View buildings in minimap mode. */
-	private JCheckBoxMenuItem viewSymbolicBuildings;
+	JCheckBoxMenuItem viewSymbolicBuildings;
 	/** View text naming backgrounds. */
-	private JCheckBoxMenuItem viewTextBackgrounds;
+	JCheckBoxMenuItem viewTextBackgrounds;
+	/** The current save settings. */
+	MapSaveSettings saveSettings;
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -321,23 +332,30 @@ public class MapEditor extends JFrame {
 	 */
 	private static boolean doLowMemory() {
 		ProcessBuilder pb = new ProcessBuilder();
-		if (!new File("open-ig-" + Configuration.VERSION + ".jar").exists()) {
+		if (!new File("open-ig-mapeditor-" + MAP_EDITOR_JAR_VERSION + ".jar").exists()) {
 			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
 		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-" + Configuration.VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-mapeditor-" + MAP_EDITOR_JAR_VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
 		}
 		try {
-			Process p = pb.start();
-			createBackgroundReader(p.getInputStream(), System.out).start();
-			createBackgroundReader(p.getErrorStream(), System.err).start();
-			p.waitFor();
+			/* Process p = */pb.start();
+//			createBackgroundReader(p.getInputStream(), System.out).start();
+//			createBackgroundReader(p.getErrorStream(), System.err).start();
+//			SwingUtilities.invokeLater(new Runnable() {
+//				@Override
+//				public void run() {
+//					JFrame frame = new JFrame("Running MapEditor with correct memory settings...");
+//					frame.dispose();
+//				}
+//			});
+//			p.waitFor();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-			return false;
+//		} catch (InterruptedException ex) {
+//			ex.printStackTrace();
+//			return false;
 		}
 	}
 	/**
@@ -346,7 +364,7 @@ public class MapEditor extends JFrame {
 	 * @param out the output stream
 	 * @return the thread
 	 */
-	private static Thread createBackgroundReader(final InputStream in, final OutputStream out) {
+	static Thread createBackgroundReader(final InputStream in, final OutputStream out) {
 		return new Thread() {
 			@Override
 			public void run() {
@@ -383,14 +401,7 @@ public class MapEditor extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				renderer.stopAnimations();
-				if (config.watcherWindow != null) {
-					try {
-						config.watcherWindow.close();
-					} catch (IOException ex) {
-						
-					}
-				}
+				doExit();
 			}
 		});
 
@@ -585,6 +596,19 @@ public class MapEditor extends JFrame {
 		
 	}
 	/**
+	 * Exit the application.
+	 */
+	private void doExit() {
+		renderer.stopAnimations();
+		if (config.watcherWindow != null) {
+			try {
+				config.watcherWindow.close();
+			} catch (IOException ex) {
+				
+			}
+		}
+	}
+	/**
 	 * Construct the menu tree.
 	 */
 	private void buildMenu() {
@@ -598,19 +622,35 @@ public class MapEditor extends JFrame {
 		
 		JMenuItem fileNew = new JMenuItem("New...");
 		JMenuItem fileOpen = new JMenuItem("Open...");
-		fileOpen.setEnabled(false); // TODO implement
 		JMenuItem fileImport = new JMenuItem("Import...");
 		JMenuItem fileSave = new JMenuItem("Save");
-		fileSave.setEnabled(false); // TODO implement
 		JMenuItem fileSaveAs = new JMenuItem("Save as...");
-		fileSaveAs.setEnabled(false); // TODO implement
 		JMenuItem fileExit = new JMenuItem("Exit");
 
 		fileOpen.setAccelerator(KeyStroke.getKeyStroke('O', InputEvent.CTRL_DOWN_MASK));
 		fileSave.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
 		
 		fileImport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doImport(); } });
-		fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { dispose(); } });
+		fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { dispose(); doExit();  } });
+		
+		fileOpen.addActionListener(new Act() {
+			@Override
+			public void act() {
+				doLoad();
+			}
+		});
+		fileSave.addActionListener(new Act() {
+			@Override
+			public void act() {
+				doSave();
+			}
+		});
+		fileSaveAs.addActionListener(new Act() {
+			@Override
+			public void act() {
+				doSaveAs();
+			}
+		});
 		
 		JMenuItem editUndo = new JMenuItem("Undo");
 		editUndo.setEnabled(false); // TODO implement
@@ -774,6 +814,7 @@ public class MapEditor extends JFrame {
 	protected void doClearSurfaces() {
 		if (renderer.surface != null) {
 			renderer.surface.basemap.clear();
+			renderer.surface.features.clear();
 			renderer.repaint();
 		}
 	}
@@ -881,6 +922,16 @@ public class MapEditor extends JFrame {
 								if (bld == currentBuilding) {
 									renderer.buildingBox = null;
 									currentBuilding = null;
+								}
+							}
+						}
+					} else {
+						for (int i = renderer.surface.features.size() - 1; i >= 0; i--) {
+							SurfaceFeature sf = renderer.surface.features.get(i);
+							if (sf.containsLocation(a, b)) {
+								renderer.surface.features.remove(i);
+								if (sf.equals(currentBaseTile)) {
+									currentBaseTile = null;
 								}
 							}
 						}
@@ -1085,7 +1136,12 @@ public class MapEditor extends JFrame {
 			renderer.placementRectangle.width = tileEntry.tile.width;
 			renderer.placementRectangle.height = tileEntry.tile.height;
 			buildingTable.getSelectionModel().clearSelection();
-			currentBaseTile = tileEntry.tile;
+			
+			currentBaseTile = new SurfaceFeature(); 
+			currentBaseTile.tile = tileEntry.tile;
+			currentBaseTile.id = tileEntry.id;
+			currentBaseTile.type = tileEntry.surface;
+			
 			currentBuildingType = null;
 		}
 	}
@@ -1108,11 +1164,21 @@ public class MapEditor extends JFrame {
 	 * Create a new, empty surface map.
 	 */
 	void doNew() {
-		renderer.surface = new PlanetSurface();
-		renderer.surface.width = 33;
-		renderer.surface.height = 65;
-		renderer.surface.computeRenderingLocations();
+		setTitle("Open-IG Map Editor");
+		createPlanetSurface(33, 66);
 		renderer.repaint();
+		saveSettings = null;
+	}
+	/**
+	 * Create an empty planet surface with the given size.
+	 * @param width the horizontal width (and not in coordinate amounts!)
+	 * @param height the vertical height (and not in coordinate amounts!) 
+	 */
+	void createPlanetSurface(int width, int height) {
+		renderer.surface = new PlanetSurface();
+		renderer.surface.width = width;
+		renderer.surface.height = height;
+		renderer.surface.computeRenderingLocations();
 	}
 	/**
 	 * Place a tile onto the current surface map.
@@ -1157,6 +1223,12 @@ public class MapEditor extends JFrame {
 				
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
 					for (int y = renderer.selectedRectangle.y; y > renderer.selectedRectangle.y - renderer.selectedRectangle.height; y -= te.tile.height) {
+						SurfaceFeature sf = new SurfaceFeature();
+						sf.id = te.id;
+						sf.type = te.surface;
+						sf.location = Location.of(x, y);
+						sf.tile = te.tile;
+						renderer.surface.features.add(sf);
 						placeTile(te.tile, x, y, SurfaceEntityType.BASE, null);
 					}
 				}
@@ -1282,6 +1354,12 @@ public class MapEditor extends JFrame {
 				Location loc = toOriginalLocation(i);
 				Tile t = pt.tiles.get(tile);
 				if (t != null) {
+					SurfaceFeature sf = new SurfaceFeature();
+					sf.location = Location.of(loc.x + shiftX, loc.y + shiftY);
+					sf.id = tile;
+					sf.type = surfaceType;
+					sf.tile = t;
+					renderer.surface.features.add(sf);
 					placeTile(t, loc.x + shiftX, loc.y + shiftY, SurfaceEntityType.BASE, null);
 				}
 			}
@@ -1458,7 +1536,14 @@ public class MapEditor extends JFrame {
 	void doPlaceObject() {
 		if (currentBaseTile != null) {
 			deleteEntitiesOf(renderer.surface.basemap, renderer.placementRectangle, false);
-			placeTile(currentBaseTile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE, null);
+			SurfaceFeature sf = new SurfaceFeature();
+			sf.id = currentBaseTile.id;
+			sf.type = currentBaseTile.type;
+			sf.tile = currentBaseTile.tile;
+			sf.location = Location.of(renderer.placementRectangle.x, renderer.placementRectangle.y);
+			renderer.surface.features.add(sf);
+			
+			placeTile(currentBaseTile.tile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE, null);
 		} else
 		if (currentBuildingType != null && renderer.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
 			Building bld = new Building(currentBuildingType, currentBuildingRace);
@@ -1678,5 +1763,142 @@ public class MapEditor extends JFrame {
 
 		displayBuildingInfo();
 		renderer.repaint();
+	}
+	/**
+	 * Save the current planet definition to the output.
+	 * @param settings the save settings
+	 */
+	void savePlanet(MapSaveSettings settings) {
+		try {
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(settings.fileName), 1024 * 1024), "UTF-8"));
+			try {
+				out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
+				out.printf("<planets>%n");
+				out.printf("  <planet id='%s' x='%d' y='%d' radius='%d' type='%s' rotation='%s'>%n", "", 0, 0, 30, "rocky", "left-to-right");
+				if (settings.surface) {
+					out.printf("    <surface width='%d' height='%d'>%n", renderer.surface.width, renderer.surface.height);
+					for (SurfaceFeature sf : renderer.surface.features) {
+						out.printf("      <tile type='%s' id='%s' x='%d' y='%d'/>%n", sf.type, sf.id, sf.location.x, sf.location.y);
+					}
+					out.printf("    </surface>%n");
+				}
+				if (settings.buildings) {
+					out.printf("    <buildings>%n");
+					for (Building b : renderer.surface.buildings) {
+						out.printf("      <building id='%s' tech='%s' x='%d' y='%d' build='%d' hp='%d' level='%d' worker='%d' energy='%d' enabled='%s' repairing='%s' />%n",
+								b.type.id, b.techId, b.location.x, b.location.y, b.buildProgress, b.hitpoints, b.upgradeLevel, b.assignedWorker, b.assignedEnergy, b.enabled, b.repairing);
+					}
+					out.printf("    </buildings>%n");
+				}
+				out.printf("  </planet>");
+				out.printf("</planets>");
+			} finally {
+				out.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/** Perform the save. */
+	void doSave() {
+		if (saveSettings == null) {
+			doSaveAs();
+		} else {
+			savePlanet(saveSettings);
+			setTitle("Open-IG Map Editor: " + saveSettings.fileName.getAbsolutePath());
+		}
+	}
+	/** Perform the save as. */
+	void doSaveAs() {
+		MapSaveDialog dlg = new MapSaveDialog(true, saveSettings);
+		dlg.setLocationRelativeTo(this);
+		dlg.setVisible(true);
+		if (dlg.saveSettings != null) {
+			saveSettings = dlg.saveSettings;
+			doSave();
+		}
+	}
+	/** Perform the load. */
+	void doLoad() {
+		MapSaveDialog dlg = new MapSaveDialog(false, saveSettings);
+		dlg.setLocationRelativeTo(this);
+		dlg.setVisible(true);
+		if (dlg.saveSettings != null) {
+			saveSettings = dlg.saveSettings;
+			loadPlanet(saveSettings);
+			setTitle("Open-IG Map Editor: " + saveSettings.fileName.getAbsolutePath());
+		}		
+	}
+	/**
+	 * Load a planet definition.
+	 * @param settings the settings
+	 */
+	void loadPlanet(MapSaveSettings settings) {
+		try {
+			if (renderer.surface == null) {
+				createPlanetSurface(33, 66);
+			}
+			Element root = XML.openXML(settings.fileName);
+			Element planet = XML.childElement(root, "planet");
+			if (settings.surface) {
+				doClearSurfaces();
+				Element surface = XML.childElement(planet, "surface");
+				if (surface != null) {
+					int width = Integer.parseInt(surface.getAttribute("width"));
+					int height = Integer.parseInt(surface.getAttribute("height"));
+					createPlanetSurface(width, height);
+					for (Element tile : XML.childrenWithName(surface, "tile")) {
+						String type = tile.getAttribute("type");
+						int id = Integer.parseInt(tile.getAttribute("id"));
+						int x = Integer.parseInt(tile.getAttribute("x"));
+						int y = Integer.parseInt(tile.getAttribute("y"));
+						
+						Tile t = galaxyModel.planetTypes.get(type).tiles.get(id);
+						SurfaceFeature sf = new SurfaceFeature();
+						sf.id = id;
+						sf.type = type;
+						sf.location = Location.of(x, y);
+						sf.tile = t;
+						renderer.surface.features.add(sf);
+						
+						placeTile(t, x, y, SurfaceEntityType.BASE, null);
+					}
+				}
+			}
+			if (settings.buildings) {
+				doClearBuildings();
+				Element buildings = XML.childElement(planet, "buildings");
+				if (buildings != null) {
+					String tech = null;
+					for (Element tile : XML.childrenWithName(buildings, "building")) {
+						String id = tile.getAttribute("id");
+						tech = tile.getAttribute("tech");
+						
+						Building b = new Building(buildingModel.buildings.get(id), tech);
+						int x = Integer.parseInt(tile.getAttribute("x"));
+						int y = Integer.parseInt(tile.getAttribute("y"));
+					
+						b.location = Location.of(x, y);
+						
+						b.buildProgress = Integer.parseInt(tile.getAttribute("build"));
+						b.hitpoints = Integer.parseInt(tile.getAttribute("hp"));
+						b.setLevel(Integer.parseInt(tile.getAttribute("level")));
+						b.assignedEnergy = Integer.parseInt(tile.getAttribute("energy"));
+						b.assignedWorker = Integer.parseInt(tile.getAttribute("worker"));
+						b.enabled = "true".equals(tile.getAttribute("enabled"));
+						b.repairing = "true".equals(tile.getAttribute("repairing"));
+						
+						placeTile(b.tileset.normal, x, y, SurfaceEntityType.BUILDING, b);
+						renderer.surface.buildings.add(b);
+					}
+					if (tech != null) {
+						placeRoads(tech);
+					}
+				}
+			}
+			renderer.repaint();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 }
