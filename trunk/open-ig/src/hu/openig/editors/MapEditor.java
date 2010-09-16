@@ -299,6 +299,12 @@ public class MapEditor extends JFrame {
 		/** Language. */
 		@Rename(to = "mapeditor.language")
 		JMenu languageMenu;
+		/** File recent. */
+		@Rename(to = "mapeditor.recent")
+		JMenu fileRecent;
+		/** Clear recent. */
+		@Rename(to = "mapeditor.clear_recent")
+		JMenuItem clearRecent;
 	}
 	/** The User Interface elements to rename. */
 	final UIElements ui = new UIElements();
@@ -312,6 +318,8 @@ public class MapEditor extends JFrame {
 	final List<TileEntry> customBuildingNames = new ArrayList<TileEntry>();
 	/** The deferred language change. */
 	String deferredLanguage = "hu";
+	/** The set of recent files. */
+	final Set<String> recent = new HashSet<String>();
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -926,8 +934,19 @@ public class MapEditor extends JFrame {
 		bg.add(ui.languageEn);
 		bg.add(ui.languageHu);
 		
+		ui.fileRecent = new JMenu("Recent");
+		ui.clearRecent = new JMenuItem("Clear recent");
+		ui.clearRecent.addActionListener(new Act() {
+			@Override
+			public void act() {
+				doClearRecent();
+			}
+		});
+		
+		addAll(ui.fileRecent, ui.clearRecent);
+		
 		addAll(mainmenu, ui.fileMenu, ui.editMenu, ui.viewMenu, ui.languageMenu, ui.helpMenu);
-		addAll(ui.fileMenu, ui.fileNew, null, ui.fileOpen, ui.fileImport, null, ui.fileSave, ui.fileSaveAs, null, ui.fileExit);
+		addAll(ui.fileMenu, ui.fileNew, null, ui.fileOpen, ui.fileRecent, ui.fileImport, null, ui.fileSave, ui.fileSaveAs, null, ui.fileExit);
 		addAll(ui.editMenu, ui.editUndo, ui.editRedo, null, ui.editCut, ui.editCopy, ui.editPaste, null, 
 				ui.editPlaceMode, null, ui.editDeleteBuilding, ui.editDeleteSurface, ui.editDeleteBoth, null, 
 				ui.editClearBuildings, ui.editClearSurface, null, ui.editPlaceRoads);
@@ -1781,6 +1800,9 @@ public class MapEditor extends JFrame {
 	 * Place the currently selected object onto the surface.
 	 */
 	void doPlaceObject() {
+		if (renderer.surface == null) {
+			return;
+		}
 		UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 		if (currentBaseTile != null) {
 			deleteEntitiesOf(renderer.surface.basemap, renderer.placementRectangle, false);
@@ -2095,6 +2117,8 @@ public class MapEditor extends JFrame {
 		dlg.setVisible(true);
 		if (dlg.saveSettings != null) {
 			saveSettings = dlg.saveSettings;
+			final String fn = dlg.saveSettings.fileName.getPath();
+			addRecentEntry(fn);
 			doSave();
 		}
 	}
@@ -2104,6 +2128,10 @@ public class MapEditor extends JFrame {
 		dlg.setLocationRelativeTo(this);
 		dlg.setVisible(true);
 		if (dlg.saveSettings != null) {
+			
+			final String fn = dlg.saveSettings.fileName.getPath();
+			addRecentEntry(fn);
+			
 			saveSettings = dlg.saveSettings;
 			loadPlanet(saveSettings);
 			setTitle(TITLE + ": " + saveSettings.fileName.getAbsolutePath());
@@ -2373,8 +2401,11 @@ public class MapEditor extends JFrame {
 				out.printf("  <window x='%d' y='%d' width='%d' height='%d' state='%d'/>%n", getX(), getY(), getWidth(), getHeight(), getExtendedState());
 				out.printf("  <language id='%s'/>%n", ui.languageEn.isSelected() ? "en" : "hu");
 				out.printf("  <splitters main='%d' preview='%d' surfaces='%d'/>%n", split.getDividerLocation(), toolSplit.getDividerLocation(), featuresSplit.getDividerLocation());
+				out.printf("  <editmode type='%s'/>%n", ui.buildButton.isSelected());
 				out.printf("  <tabs selected='%d'/>%n", propertyTab.getSelectedIndex());
 				out.printf("  <lights preview='%d' map='%s'/>%n", alphaSlider.getValue(), Float.toString(alpha));
+				out.printf("  <filter surface='%s' building='%s'/>%n", XML.toHTML(filterSurface.getText()), XML.toHTML(filterBuilding.getText()));
+				out.printf("  <allocation worker='%s' strategy='%d'/>%n", ui.allocationPanel.availableWorkers.getText(), ui.allocationPanel.strategies.getSelectedIndex());
 				out.printf("  <view buildings='%s' minimap='%s' textboxes='%s' zoom='%s'/>%n", ui.viewShowBuildings.isSelected(), 
 						ui.viewSymbolicBuildings.isSelected(), ui.viewTextBackgrounds.isSelected(), Double.toString(renderer.scale));
 				out.printf("  <custom-surface-names>%n");
@@ -2387,6 +2418,11 @@ public class MapEditor extends JFrame {
 					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XML.toHTML(te.surface), XML.toHTML(te.name));
 				}
 				out.printf("  </custom-building-names>%n");
+				out.printf("  <recent>%n");
+				for (int i = ui.fileRecent.getItemCount() - 1; i >= 2 ; i--) {
+					out.printf("    <entry file='%s'/>%n", XML.toHTML(ui.fileRecent.getItem(i).getText()));
+				}
+				out.printf("  </recent>%n");
 				out.printf("</mapeditor-config>%n");
 			} finally {
 				out.close();
@@ -2404,75 +2440,142 @@ public class MapEditor extends JFrame {
 				
 				// reposition the window
 				Element eWindow = XML.childElement(root, "window");
-				
-				setBounds(
-					Integer.parseInt(eWindow.getAttribute("x")),
-					Integer.parseInt(eWindow.getAttribute("y")),
-					Integer.parseInt(eWindow.getAttribute("width")),
-					Integer.parseInt(eWindow.getAttribute("height"))
-				);
-				setExtendedState(Integer.parseInt(eWindow.getAttribute("state")));
-				
+				if (eWindow != null) {
+					setBounds(
+						Integer.parseInt(eWindow.getAttribute("x")),
+						Integer.parseInt(eWindow.getAttribute("y")),
+						Integer.parseInt(eWindow.getAttribute("width")),
+						Integer.parseInt(eWindow.getAttribute("height"))
+					);
+					setExtendedState(Integer.parseInt(eWindow.getAttribute("state")));
+				}
 				Element eLanguage = XML.childElement(root, "language");
-				
-				String langId = eLanguage.getAttribute("id");
-				if ("hu".equals(langId)) {
-					ui.languageHu.doClick();
-				} else {
-					ui.languageEn.doClick();
+				if (eLanguage != null) {
+					String langId = eLanguage.getAttribute("id");
+					if ("hu".equals(langId)) {
+						ui.languageHu.setSelected(true);
+						ui.languageHu.doClick();
+					} else {
+						ui.languageEn.setSelected(true);
+						ui.languageEn.doClick();
+					}
 				}
 				
 				Element eSplitters = XML.childElement(root, "splitters");
-				split.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("main")));
-				toolSplit.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("preview")));
-				featuresSplit.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("surfaces")));
-				
+				if (eSplitters != null) {
+					split.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("main")));
+					toolSplit.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("preview")));
+					featuresSplit.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("surfaces")));
+				}
+
 				Element eTabs = XML.childElement(root, "tabs");
-				propertyTab.setSelectedIndex(Integer.parseInt(eTabs.getAttribute("selected")));
+				if (eTabs != null) {
+					propertyTab.setSelectedIndex(Integer.parseInt(eTabs.getAttribute("selected")));
+				}
 				
 				Element eLights = XML.childElement(root, "lights");
-				alphaSlider.setValue(Integer.parseInt(eLights.getAttribute("preview")));
-				alpha = Float.parseFloat(eLights.getAttribute("map"));
+				if (eLights != null) {
+					alphaSlider.setValue(Integer.parseInt(eLights.getAttribute("preview")));
+					alpha = Float.parseFloat(eLights.getAttribute("map"));
+				}
+				
+				Element eMode = XML.childElement(root, "editmode");
+				if (eMode != null) {
+					if ("true".equals(eMode.getAttribute("type"))) {
+						ui.buildButton.doClick();
+					}
+				}
 				
 				Element eView = XML.childElement(root, "view");
-				
-				ui.viewShowBuildings.setSelected(false);
-				if ("true".equals(eView.getAttribute("buildings"))) {
-					ui.viewShowBuildings.doClick();
+				if (eView != null) {
+					ui.viewShowBuildings.setSelected(false);
+					if ("true".equals(eView.getAttribute("buildings"))) {
+						ui.viewShowBuildings.doClick();
+					}
+					ui.viewSymbolicBuildings.setSelected(false);
+					if ("true".equals(eView.getAttribute("minimap"))) {
+						ui.viewSymbolicBuildings.doClick();
+					}
+					
+					ui.viewTextBackgrounds.setSelected(false);
+					if ("true".equals(eView.getAttribute("textboxes"))) {
+						ui.viewTextBackgrounds.doClick();
+					}
+					renderer.scale = Double.parseDouble(eView.getAttribute("zoom"));
 				}
-				ui.viewSymbolicBuildings.setSelected(false);
-				if ("true".equals(eView.getAttribute("minimap"))) {
-					ui.viewShowBuildings.doClick();
-				}
-				
-				ui.viewTextBackgrounds.setSelected(false);
-				if ("true".equals(eView.getAttribute("textboxes"))) {
-					ui.viewShowBuildings.doClick();
-				}
-				
-				renderer.scale = Double.parseDouble(eView.getAttribute("zoom"));
 				
 				Element eSurfaces = XML.childElement(root, "custom-surface-names");
-				for (Element tile : XML.childrenWithName(eSurfaces, "tile")) {
-					TileEntry te = new TileEntry();
-					te.id = Integer.parseInt(tile.getAttribute("id"));
-					te.surface = tile.getAttribute("type");
-					te.name = tile.getAttribute("name");
-					customSurfaceNames.add(te);
+				if (eSurfaces != null) {
+					for (Element tile : XML.childrenWithName(eSurfaces, "tile")) {
+						TileEntry te = new TileEntry();
+						te.id = Integer.parseInt(tile.getAttribute("id"));
+						te.surface = tile.getAttribute("type");
+						te.name = tile.getAttribute("name");
+						customSurfaceNames.add(te);
+					}
 				}
 				
 				Element eBuildigns = XML.childElement(root, "custom-building-names");
-				for (Element tile : XML.childrenWithName(eBuildigns, "tile")) {
-					TileEntry te = new TileEntry();
-					te.id = Integer.parseInt(tile.getAttribute("id"));
-					te.surface = tile.getAttribute("type");
-					te.name = tile.getAttribute("name");
-					customBuildingNames.add(te);
+				if (eBuildigns != null) {
+					for (Element tile : XML.childrenWithName(eBuildigns, "tile")) {
+						TileEntry te = new TileEntry();
+						te.id = Integer.parseInt(tile.getAttribute("id"));
+						te.surface = tile.getAttribute("type");
+						te.name = tile.getAttribute("name");
+						customBuildingNames.add(te);
+					}
 				}
-
+				Element eFilter = XML.childElement(root, "filter");
+				if (eFilter != null) {
+					filterSurface.setText(eFilter.getAttribute("surface"));
+					filterBuilding.setText(eFilter.getAttribute("building"));
+				}
+				Element eAlloc = XML.childElement(root, "allocation");
+				if (eAlloc != null) {
+					ui.allocationPanel.availableWorkers.setText(eAlloc.getAttribute("worker"));
+					ui.allocationPanel.strategies.setSelectedIndex(Integer.parseInt(eAlloc.getAttribute("strategy")));
+				}
+				Element eRecent = XML.childElement(root, "recent");
+				if (eRecent != null) {
+					for (Element r : XML.childrenWithName(eRecent, "entry")) {
+						addRecentEntry(r.getAttribute("file")); 
+					}
+				}
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
+		}
+	}
+	/** Clear all recent entries. */
+	void doClearRecent() {
+		ui.fileRecent.removeAll();
+		ui.fileRecent.add(ui.clearRecent);
+	}
+	/**
+	 * Open a recent file.
+	 * @param fileName the filename
+	 */
+	void doOpenRecent(String fileName) {
+		saveSettings.fileName = new File(fileName);
+		doLoad();
+	}
+	/**
+	 * Add a recent file entry.
+	 * @param fileName the filename
+	 */
+	void addRecentEntry(final String fileName) {
+		if (recent.add(fileName)) {
+			if (ui.fileRecent.getItemCount() < 2) {
+				ui.fileRecent.addSeparator();
+			}
+			JMenuItem item = new JMenuItem(fileName);
+			item.addActionListener(new Act() {
+				@Override
+				public void act() {
+					doOpenRecent(fileName);
+				}
+			});
+			ui.fileRecent.insert(item, 2);
 		}
 	}
 }
