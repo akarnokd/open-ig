@@ -140,6 +140,9 @@ The only drawback is the type of the roads to apply. In the game, the planet's p
 
 = Screenshots =
 
+<a href='http://darksideunderflow.com/images/open-ig-mapeditor-p09.png'><img width='250' height='250' src='http://darksideunderflow.com/images/open-ig-mapeditor-p09.png'/></a>
+
+
 <a href='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p07.png'><img width='250' height='250' src='http://darksideunderflow.com/images/open-ig-mapeditor-0.1-p07.png'/></a>
 
 
