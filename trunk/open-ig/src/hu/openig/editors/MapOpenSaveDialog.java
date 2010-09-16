@@ -8,6 +8,7 @@
 package hu.openig.editors;
 
 import hu.openig.core.Act;
+import hu.openig.core.Labels;
 
 import java.awt.Container;
 import java.io.File;
@@ -27,7 +28,7 @@ import javax.swing.GroupLayout.Alignment;
  * @author karnokd
  *
  */
-public class MapSaveDialog extends JDialog {
+public class MapOpenSaveDialog extends JDialog {
 	/** */
 	private static final long serialVersionUID = -1815299252700684422L;
 	/** The map save settings. */
@@ -43,24 +44,25 @@ public class MapSaveDialog extends JDialog {
 	/** 
 	 * Create GUI. 
 	 * @param save display a save dialog? 
+	 * @param labels the UI labels
 	 * @param initialSettings the optional initial settings
 	 */
-	public MapSaveDialog(boolean save, MapSaveSettings initialSettings) {
+	public MapOpenSaveDialog(boolean save, Labels labels, MapSaveSettings initialSettings) {
 		this.save = save;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setModal(true);
-		setTitle(save ? "Save map" : "Load map");
+		setTitle(labels.get(save ? "mapeditor.save_map" : "mapeditor.load_map"));
 		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
 		c.setLayout(gl);
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		
-		JLabel fileNameLbl = new JLabel("File name:");
+		JLabel fileNameLbl = new JLabel(labels.get("mapeditor.filename"));
 		fileName = new JTextField(40);
-		surface = new JCheckBox(save ? "Save surface features" : "Load surface features", true);
-		buildings = new JCheckBox(save ? "Save buildings" : "Load buildings", true);
-		JButton browse = new JButton("Browse...");
+		surface = new JCheckBox(labels.get(save ? "mapeditor.save_surface_features" : "mapeditor.load_surface_features"), true);
+		buildings = new JCheckBox(labels.get(save ? "mapeditor.save_buildings" : "mapeditor.load_buildings"), true);
+		JButton browse = new JButton(labels.get("mapeditor.browse"));
 		browse.addActionListener(new Act() {
 			@Override
 			public void act() {
@@ -74,7 +76,7 @@ public class MapSaveDialog extends JDialog {
 			buildings.setSelected(initialSettings.buildings);
 		}
 		
-		JButton ok = new JButton(save ? "Save" : "Open");
+		JButton ok = new JButton(labels.get(save ? "mapeditor.save_map_save" : "mapeditor.open_map_open"));
 		ok.addActionListener(new Act() {
 			@Override
 			public void act() {
@@ -85,7 +87,7 @@ public class MapSaveDialog extends JDialog {
 				dispose();
 			}
 		});
-		JButton cancel = new JButton("Cancel");
+		JButton cancel = new JButton(labels.get("mapeditor.cancel"));
 		cancel.addActionListener(new Act() { 
 			@Override
 			public void act() {
@@ -96,13 +98,16 @@ public class MapSaveDialog extends JDialog {
 		gl.setHorizontalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
 			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(fileNameLbl)
-				.addComponent(fileName)
-				.addComponent(browse)
+				gl.createParallelGroup()
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(fileNameLbl)
+					.addComponent(fileName)
+					.addComponent(browse)
+				)
+				.addComponent(surface)
+				.addComponent(buildings)
 			)
-			.addComponent(surface)
-			.addComponent(buildings)
 			.addGroup(
 				gl.createSequentialGroup()
 				.addComponent(ok)

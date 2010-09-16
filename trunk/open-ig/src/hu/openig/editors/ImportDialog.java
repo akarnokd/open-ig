@@ -7,9 +7,10 @@
  */
 package hu.openig.editors;
 
+import hu.openig.core.Labels;
 import hu.openig.core.Location;
-import hu.openig.utils.XML;
 import hu.openig.core.ResourceLocator;
+import hu.openig.utils.XML;
 
 import java.awt.Container;
 import java.awt.Point;
@@ -99,6 +100,14 @@ public class ImportDialog extends JDialog {
 	JComboBox cbOriginalPlanets;
 	/** Update the surface settings along with the building settings. */
 	JCheckBox cbWithSurface;
+	/** Original map label. */
+	private JLabel originalMapLabel;
+	/** Shift X label. */
+	private JLabel shiftXLabel;
+	/** Shift Y label. */
+	private JLabel shiftYLabel;
+	/** Original planets label. */
+	private JLabel originalPlanetsLabel;
 	/**
 	 * Create the GUI.
 	 * @param rl the resource locator.
@@ -106,7 +115,7 @@ public class ImportDialog extends JDialog {
 	public ImportDialog(ResourceLocator rl) {
 		this.rl = rl;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setTitle("Import a map or planet settings.");
+		setTitle("Import a map or planet settings");
 		setModal(true);
 		
 		buildMap(9, 'a', "desert");
@@ -129,10 +138,10 @@ public class ImportDialog extends JDialog {
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		
-		JLabel originalMapLabel = new JLabel("Original map:");
-		JLabel shiftXLabel = new JLabel("Shift X:");
-		JLabel shiftYLabel = new JLabel("Shift Y:");
-		JLabel originalPlanetsLabel = new JLabel("Original planets:");
+		originalMapLabel = new JLabel("Original map:");
+		shiftXLabel = new JLabel("Shift X:");
+		shiftYLabel = new JLabel("Shift Y:");
+		originalPlanetsLabel = new JLabel("Original planet:");
 		
 		edShiftX = new JTextField("-1");
 		edShiftY = new JTextField("-1");
@@ -140,7 +149,7 @@ public class ImportDialog extends JDialog {
 		cbReplaceSurface = new JCheckBox("Replace current surface", true);
 		cbReplaceBuildings = new JCheckBox("Replace current buildings", true);
 		
-		btnOk = new JButton("OK");
+		btnOk = new JButton("Import");
 		btnOk.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doOk(); } });
 		btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCancel(); } });
@@ -413,5 +422,30 @@ public class ImportDialog extends JDialog {
 			}
 			originalPlanets.add(op);
 		}
+	}
+	/**
+	 * Set the labels of the UI elements.
+	 * @param labels the current language labels
+	 */
+	public void setLabels(Labels labels) {
+		setTitle(labels.get("mapeditor.import_title"));
+		btnOk.setText(labels.get("mapeditor.import_import"));
+		btnCancel.setText(labels.get("mapeditor.cancel"));
+		cbReplaceSurface.setText(labels.get("mapeditor.import_replace_surface"));
+		cbReplaceBuildings.setText(labels.get("mapeditor.import_replace_buildings"));
+		cbWithSurface.setText(labels.get("mapeditor.import_replace_both"));
+		originalMapLabel.setText(labels.get("mapeditor.import_original_map"));
+		shiftXLabel.setText(labels.get("mapeditor.import_shift_x"));
+		shiftYLabel.setText(labels.get("mapeditor.import_shift_y"));
+		originalPlanetsLabel.setText(labels.get("mapeditor.import_original_planet"));
+		int idx = cbOriginalMap.getSelectedIndex();
+		cbOriginalMap.removeItemAt(0);
+		cbOriginalMap.insertItemAt(labels.get("mapeditor.import_nothing"), 0);
+		cbOriginalMap.setSelectedIndex(idx);
+		
+		idx = cbOriginalPlanets.getSelectedIndex();
+		cbOriginalPlanets.removeItemAt(0);
+		cbOriginalPlanets.insertItemAt(labels.get("mapeditor.import_nothing"), 0);
+		cbOriginalPlanets.setSelectedIndex(idx);
 	}
 }
