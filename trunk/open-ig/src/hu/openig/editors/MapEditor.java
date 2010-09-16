@@ -378,7 +378,7 @@ public class MapEditor extends JFrame {
 	/** The custom building names. */
 	final List<TileEntry> customBuildingNames = new ArrayList<TileEntry>();
 	/** The deferred language change. */
-	String deferredLanguage = "hu";
+	String deferredLanguage = "en";
 	/** The set of recent files. */
 	final Set<String> recent = new HashSet<String>();
 	/** Load the resource locator. */
