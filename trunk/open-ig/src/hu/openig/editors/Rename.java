@@ -15,4 +15,6 @@ import java.lang.annotation.RetentionPolicy;
 @interface Rename {
 	/** The target label id. */
 	String to();
+	/** The optional tooltip. */
+	String tip() default "";
 }
