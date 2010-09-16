@@ -35,6 +35,8 @@ import hu.openig.utils.ImageUtils;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XML;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -62,6 +64,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -78,6 +81,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -94,6 +98,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
@@ -305,6 +310,62 @@ public class MapEditor extends JFrame {
 		/** Clear recent. */
 		@Rename(to = "mapeditor.clear_recent")
 		JMenuItem clearRecent;
+		/** The toolbar. */
+		JToolBar toolbar;
+		/** Toolbar's placement mode. */
+		@Rename(to = "", tip = "mapeditor.object_placement_mode")
+		public AbstractButton toolbarPlacementMode;
+		/** Toolbar cut. */
+		@Rename(to = "", tip = "mapeditor.edit_cut")
+		public AbstractButton toolbarCut;
+		/** Toolbar copy. */
+		@Rename(to = "", tip = "mapeditor.edit_copy")
+		public AbstractButton toolbarCopy;
+		/** Toolbar paste. */
+		@Rename(to = "", tip = "mapeditor.edit_paste")
+		public AbstractButton toolbarPaste;
+		/** Toolbar delete. */
+		@Rename(to = "", tip = "mapeditor.edit_delete_building")
+		public AbstractButton toolbarRemove;
+		/** Toolbar undo. */
+		@Rename(to = "", tip = "mapeditor.edit_undo")
+		public AbstractButton toolbarUndo;
+		/** Toolbar redo. */
+		@Rename(to = "", tip = "mapeditor.edit_redo")
+		public AbstractButton toolbarRedo;
+		/** Toolbar new. */
+		@Rename(to = "", tip = "mapeditor.file_new")
+		public AbstractButton toolbarNew;
+		/** Toolbar open. */
+		@Rename(to = "", tip = "mapeditor.file_open")
+		public AbstractButton toolbarOpen;
+		/** Toolbar save. */
+		@Rename(to = "", tip = "mapeditor.file_save")
+		public AbstractButton toolbarSave;
+		/** Toolbar file import. */
+		@Rename(to = "", tip = "mapeditor.file_import")
+		public AbstractButton toolbarImport;
+		/** Toolbar save as. */
+		@Rename(to = "", tip = "mapeditor.file_save_as")
+		public AbstractButton toolbarSaveAs;
+		/** Toolbar zoom normal. */
+		@Rename(to = "", tip = "mapeditor.view_zoom_normal")
+		public AbstractButton toolbarZoomNormal;
+		/** Toolbar zoom in. */
+		@Rename(to = "", tip = "mapeditor.view_zoom_in")
+		public AbstractButton toolbarZoomIn;
+		/** Toolbar zoom out. */
+		@Rename(to = "", tip = "mapeditor.view_zoom_out")
+		public AbstractButton toolbarZoomOut;
+		/** Toolbar bright. */
+		@Rename(to = "", tip = "mapeditor.view_bright")
+		public AbstractButton toolbarBrighter;
+		/** Toolbar dark. */
+		@Rename(to = "", tip = "mapeditor.view_dark")
+		public AbstractButton toolbarDarker;
+		/** Toolbar online. */
+		@Rename(to = "", tip = "mapeditor.help_online")
+		public AbstractButton toolbarHelp;
 	}
 	/** The User Interface elements to rename. */
 	final UIElements ui = new UIElements();
@@ -665,6 +726,7 @@ public class MapEditor extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				ui.editPlaceMode.setSelected(ui.buildButton.isSelected());
 				renderer.placementMode = ui.buildButton.isSelected();
+				ui.toolbarPlacementMode.setSelected(ui.buildButton.isSelected());
 			}
 		});
 		GroupLayout gl2 = new GroupLayout(previewPanel);
@@ -705,7 +767,10 @@ public class MapEditor extends JFrame {
 		propertyTab.addTab("Allocation", ui.allocationPanel);
 		
 		split.setDoubleBuffered(true);
-		getContentPane().add(split);
+		
+		Container c = getContentPane();
+		c.setLayout(new BorderLayout());
+		c.add(split, BorderLayout.CENTER);
 		setSize(1024, 768);
 		
 		renderer.addMouseWheelListener(new MouseWheelListener() {
@@ -964,6 +1029,87 @@ public class MapEditor extends JFrame {
 			}
 		});
 		
+		ui.toolbar = new JToolBar("Tools");
+		Container c = getContentPane();
+		c.add(ui.toolbar, BorderLayout.PAGE_START);
+
+		ui.toolbarCut = createFor("res/Cut24.gif", "Cut", ui.editCut, false);
+		ui.toolbarCopy = createFor("res/Copy24.gif", "Copy", ui.editCopy, false);
+		ui.toolbarPaste = createFor("res/Paste24.gif", "Paste", ui.editPaste, false);
+		ui.toolbarRemove = createFor("res/Remove24.gif", "Remove", ui.editDeleteBuilding, false);
+		ui.toolbarUndo = createFor("res/Undo24.gif", "Undo", ui.editUndo, false);
+		ui.toolbarRedo = createFor("res/Redo24.gif", "Redo", ui.editRedo, false);
+		ui.toolbarPlacementMode = createFor("res/Down24.gif", "Placement mode", ui.editPlaceMode, true);
+
+		ui.toolbarCut.setEnabled(false);
+		ui.toolbarCopy.setEnabled(false);
+		ui.toolbarPaste.setEnabled(false);
+		ui.toolbarUndo.setEnabled(false);
+		ui.toolbarRedo.setEnabled(false);
+		
+		ui.toolbarNew = createFor("res/New24.gif", "New", ui.fileNew, false);
+		ui.toolbarOpen = createFor("res/Open24.gif", "Open", ui.fileOpen, false);
+		ui.toolbarSave = createFor("res/Save24.gif", "Save", ui.fileSave, false);
+		ui.toolbarImport = createFor("res/Import24.gif", "Import", ui.fileImport, false);
+		ui.toolbarSaveAs = createFor("res/SaveAs24.gif", "Save as", ui.fileSaveAs, false);
+		ui.toolbarZoomNormal = createFor("res/Zoom24.gif", "Zoom normal", ui.viewZoomNormal, false);
+		ui.toolbarZoomIn = createFor("res/ZoomIn24.gif", "Zoom in", ui.viewZoomIn, false);
+		ui.toolbarZoomOut = createFor("res/ZoomOut24.gif", "Zoom out", ui.viewZoomOut, false);
+		ui.toolbarBrighter = createFor("res/TipOfTheDay24.gif", "Daylight", ui.viewBrighter, false);
+		ui.toolbarDarker = createFor("res/TipOfTheDayDark24.gif", "Night", ui.viewDarker, false);
+		ui.toolbarHelp = createFor("res/Help24.gif", "Help", ui.helpOnline, false);
+
+		
+		ui.toolbar.add(ui.toolbarNew);
+		ui.toolbar.add(ui.toolbarOpen);
+		ui.toolbar.add(ui.toolbarSave);
+		ui.toolbar.addSeparator();
+		ui.toolbar.add(ui.toolbarImport);
+		ui.toolbar.add(ui.toolbarSaveAs);
+		ui.toolbar.addSeparator();
+		ui.toolbar.add(ui.toolbarCut);
+		ui.toolbar.add(ui.toolbarCopy);
+		ui.toolbar.add(ui.toolbarPaste);
+		
+		ui.toolbar.add(ui.toolbarRemove);
+		ui.toolbar.addSeparator();
+		ui.toolbar.add(ui.toolbarUndo);
+		ui.toolbar.add(ui.toolbarRedo);
+		ui.toolbar.addSeparator();
+		ui.toolbar.add(ui.toolbarPlacementMode);
+		ui.toolbar.addSeparator();
+		ui.toolbar.add(ui.toolbarZoomNormal);
+		ui.toolbar.add(ui.toolbarZoomIn);
+		ui.toolbar.add(ui.toolbarZoomOut);
+		ui.toolbar.addSeparator();
+		ui.toolbar.add(ui.toolbarBrighter);
+		ui.toolbar.add(ui.toolbarDarker);
+		ui.toolbar.addSeparator();
+		ui.toolbar.add(ui.toolbarHelp);
+		
+	}
+	/**
+	 * Create a imaged button for the given menu item.
+	 * @param graphicsResource the graphics resource location.
+	 * @param tooltip the tooltip text
+	 * @param inMenu the menu item to relay the click to.
+	 * @param toggle create a toggle button?
+	 * @return the button
+	 */
+	AbstractButton createFor(String graphicsResource, String tooltip, final JMenuItem inMenu, boolean toggle) {
+		AbstractButton result = toggle ? new JToggleButton() : new JButton();
+		URL res = getClass().getResource(graphicsResource);
+		if (res != null) {
+			result.setIcon(new ImageIcon(res));
+		}
+		result.setToolTipText(tooltip);
+		result.addActionListener(new Act() {
+			@Override
+			public void act() {
+				inMenu.doClick();
+			}
+		});
+		return result;
 	}
 	/** Toggle the rendering of text backgrounds. */
 	protected void doToggleTextBackgrounds() {
@@ -982,6 +1128,7 @@ public class MapEditor extends JFrame {
 	protected void doPlaceMode(boolean selected) {
 		ui.buildButton.setSelected(selected);
 		renderer.placementMode = selected;
+		ui.toolbarPlacementMode.setSelected(ui.buildButton.isSelected());
 	}
 	/**
 	 * Zoom to 100%.
@@ -1008,6 +1155,8 @@ public class MapEditor extends JFrame {
 	void setUndoRedoMenu() {
 		ui.editUndo.setEnabled(undoManager.canUndo());
 		ui.editRedo.setEnabled(undoManager.canRedo());
+		ui.toolbarUndo.setEnabled(undoManager.canUndo());
+		ui.toolbarRedo.setEnabled(undoManager.canRedo());
 	}
 	/** Redo last operation. */
 	protected void doRedo() {
@@ -1803,8 +1952,8 @@ public class MapEditor extends JFrame {
 		if (renderer.surface == null) {
 			return;
 		}
-		UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 		if (currentBaseTile != null) {
+			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 			deleteEntitiesOf(renderer.surface.basemap, renderer.placementRectangle, false);
 			SurfaceFeature sf = new SurfaceFeature();
 			sf.id = currentBaseTile.id;
@@ -1814,19 +1963,25 @@ public class MapEditor extends JFrame {
 			renderer.surface.features.add(sf);
 			
 			placeTile(currentBaseTile.tile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE, null);
+			
+			undo.setAfter();
+			addUndo(undo);
+			renderer.repaint();
 		} else
 		if (currentBuildingType != null && renderer.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
+			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 			Building bld = new Building(currentBuildingType, currentBuildingRace);
 			bld.makeFullyBuilt();
 			bld.location = Location.of(renderer.placementRectangle.x + 1, renderer.placementRectangle.y - 1); // leave room for the roads!
 			renderer.surface.buildings.add(bld);
 			
 			placeTile(bld.tileset.normal, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING, bld);
+			placeRoads(currentBuildingRace);
+			
+			undo.setAfter();
+			addUndo(undo);
+			renderer.repaint();
 		}
-		placeRoads(currentBuildingRace);
-		undo.setAfter();
-		addUndo(undo);
-		renderer.repaint();
 	}
 	/**
 	 * Select a building.
@@ -2259,10 +2414,22 @@ public class MapEditor extends JFrame {
 			if (fr != null) {
 				try {
 					if (AbstractButton.class.isAssignableFrom(f.getType())) {
-						AbstractButton.class.cast(f.get(o)).setText(labels.get(fr.to()));
+						AbstractButton btn = AbstractButton.class.cast(f.get(o));
+						if (fr.to().length() > 0) {
+							btn.setText(labels.get(fr.to()));
+						}
+						if (fr.tip().length() > 0) {
+							btn.setToolTipText(labels.get(fr.tip()));
+						}
 					}
 					if (JLabel.class.isAssignableFrom(f.getType())) {
-						JLabel.class.cast(f.get(o)).setText(labels.get(fr.to()));
+						JLabel lbl = JLabel.class.cast(f.get(o));
+						if (fr.to().length() > 0) {
+							lbl.setText(labels.get(fr.to()));
+						}
+						if (fr.tip().length() > 0) {
+							lbl.setToolTipText(labels.get(fr.tip()));
+						}
 					}
 					if (String.class.isAssignableFrom(f.getType())) {
 						f.set(o, labels.get(fr.to()));
@@ -2346,7 +2513,6 @@ public class MapEditor extends JFrame {
 		}
 		@Override
 		public boolean addEdit(UndoableEdit anEdit) {
-			// TODO Auto-generated method stub
 			return false;
 		}
 		@Override
@@ -2359,7 +2525,6 @@ public class MapEditor extends JFrame {
 		}
 		@Override
 		public void die() {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
@@ -2556,6 +2721,11 @@ public class MapEditor extends JFrame {
 	 * @param fileName the filename
 	 */
 	void doOpenRecent(String fileName) {
+		if (saveSettings == null) {
+			saveSettings = new MapSaveSettings();
+			saveSettings.buildings = true;
+			saveSettings.surface = true;
+		}
 		saveSettings.fileName = new File(fileName);
 		doLoad();
 	}
