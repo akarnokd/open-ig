@@ -383,6 +383,8 @@
 	<entry key='mapeditor.import_import'>Importálás</entry>
 	<entry key='mapeditor.import_replace_both'>A felszín és épületek együttes cseréje</entry>
 	<entry key='mapeditor.filename'>Fájl név:</entry>
+	<entry key='mapeditor.recent'>Korábbi</entry>
+	<entry key='mapeditor.clear_recent'>Törlés</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

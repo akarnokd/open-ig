@@ -309,6 +309,14 @@
 	<entry key='mapeditor.import_import'>Import</entry>
 	<entry key='mapeditor.import_replace_both'>Replace surface along with the buildings</entry>
 	<entry key='mapeditor.filename'>File name:</entry>
+	<entry key='mapeditor.recent'>Recent</entry>
+	<entry key='mapeditor.clear_recent'>Clear recent</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
