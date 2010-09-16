@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -105,6 +106,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
 
 import org.w3c.dom.Element;
 
@@ -119,7 +122,9 @@ public class MapEditor extends JFrame {
 	/** The minimum memory required to run Open-IG. */
 	private static final long MINIMUM_MEMORY = 384L;
 	/** The map editor's JAR file version. */
-	private static final String MAP_EDITOR_JAR_VERSION = "0.2";
+	public static final String MAP_EDITOR_JAR_VERSION = "0.3";
+	/** The title text. */
+	public static final String TITLE = "Open-IG MapEditor v" + MAP_EDITOR_JAR_VERSION;
 	/** The main resource locator. */
 	ResourceLocator rl;
 	/** The horizontal split between the tool listing and the rendering. */
@@ -299,6 +304,14 @@ public class MapEditor extends JFrame {
 	final UIElements ui = new UIElements();
 	/** Tabbed pane. */
 	private JTabbedPane propertyTab;
+	/** The undo manager. */
+	UndoManager undoManager;
+	/** The custom surface names. */
+	final List<TileEntry> customSurfaceNames = new ArrayList<TileEntry>();
+	/** The custom building names. */
+	final List<TileEntry> customBuildingNames = new ArrayList<TileEntry>();
+	/** The deferred language change. */
+	String deferredLanguage = "hu";
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -329,7 +342,7 @@ public class MapEditor extends JFrame {
 						@Override
 						public void run() {
 							MapEditor.this.rl = rl0;
-							setLabels("en");							
+							setLabels(deferredLanguage);							
 						}
 					});
 					galaxyMap = new GalaxyModel();
@@ -514,20 +527,20 @@ public class MapEditor extends JFrame {
 	 * @param config the configuration
 	 */
 	public MapEditor(final Configuration config) {
-		super("Open-IG Map Editor");
+		super(TITLE);
 		this.config = config;
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		toolSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		featuresSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		renderer = new MapRenderer();
 		
-		
-		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				saveConfig();
+				dispose();
 				doExit();
 			}
 		});
@@ -546,16 +559,17 @@ public class MapEditor extends JFrame {
 		buildingTable.setRowHeight(32);
 
 		surfaceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		surfaceTable.getColumnModel().getColumn(0).setPreferredWidth(45);
-		surfaceTable.getColumnModel().getColumn(1).setPreferredWidth(32);
 		surfaceSorter = new TableRowSorter<TileList>(surfaceTableModel);
 		surfaceTable.setRowSorter(surfaceSorter);
 		
 		buildingTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		buildingTable.getColumnModel().getColumn(0).setPreferredWidth(45);
-		buildingTable.getColumnModel().getColumn(1).setPreferredWidth(32);
 		buildingSorter = new TableRowSorter<TileList>(buildingTableModel);
 		buildingTable.setRowSorter(buildingSorter);
+
+		surfaceTable.getColumnModel().getColumn(0).setPreferredWidth(45);
+		surfaceTable.getColumnModel().getColumn(1).setPreferredWidth(32);
+		buildingTable.getColumnModel().getColumn(0).setPreferredWidth(45);
+		buildingTable.getColumnModel().getColumn(1).setPreferredWidth(32);
 
 		surfaceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
@@ -728,11 +742,14 @@ public class MapEditor extends JFrame {
 			}
 		});
 		
+		undoManager = new UndoManager();
+		
 		buildMenu();
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				loadConfig();
 				loadResourceLocator();
 			}
 		});
@@ -796,9 +813,12 @@ public class MapEditor extends JFrame {
 		});
 		
 		ui.editUndo = new JMenuItem("Undo");
-		ui.editUndo.setEnabled(false); // TODO implement
+		ui.editUndo.setEnabled(undoManager.canUndo()); // TODO implement
+		
 		ui.editRedo = new JMenuItem("Redo");
-		ui.editRedo.setEnabled(false); // TODO implement
+		ui.editRedo.setEnabled(undoManager.canRedo()); // TODO implement
+		
+		
 		ui.editCut = new JMenuItem("Cut");
 		ui.editCut.setEnabled(false); // TODO implement
 		ui.editCopy = new JMenuItem("Copy");
@@ -817,8 +837,8 @@ public class MapEditor extends JFrame {
 
 		ui.editUndo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doUndo(); } });
 		ui.editRedo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doRedo(); } });
-		ui.editClearBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearBuildings(); } });
-		ui.editClearSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearSurfaces(); } });
+		ui.editClearBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearBuildings(true); } });
+		ui.editClearSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearSurfaces(true); } });
 		
 
 		ui.editUndo.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
@@ -908,7 +928,7 @@ public class MapEditor extends JFrame {
 		
 		addAll(mainmenu, ui.fileMenu, ui.editMenu, ui.viewMenu, ui.languageMenu, ui.helpMenu);
 		addAll(ui.fileMenu, ui.fileNew, null, ui.fileOpen, ui.fileImport, null, ui.fileSave, ui.fileSaveAs, null, ui.fileExit);
-		addAll(ui.editMenu, ui.editCut, ui.editCopy, ui.editPaste, null, 
+		addAll(ui.editMenu, ui.editUndo, ui.editRedo, null, ui.editCut, ui.editCopy, ui.editPaste, null, 
 				ui.editPlaceMode, null, ui.editDeleteBuilding, ui.editDeleteSurface, ui.editDeleteBoth, null, 
 				ui.editClearBuildings, ui.editClearSurface, null, ui.editPlaceRoads);
 		addAll(ui.viewMenu, ui.viewZoomIn, ui.viewZoomOut, ui.viewZoomNormal, null, 
@@ -924,6 +944,7 @@ public class MapEditor extends JFrame {
 				doNew();
 			}
 		});
+		
 	}
 	/** Toggle the rendering of text backgrounds. */
 	protected void doToggleTextBackgrounds() {
@@ -964,29 +985,58 @@ public class MapEditor extends JFrame {
 		renderer.scale = Math.min(2.0, renderer.scale + 0.1);
 		renderer.repaint();
 	}
+	/** Set the state of the undo and redo menu items. */
+	void setUndoRedoMenu() {
+		ui.editUndo.setEnabled(undoManager.canUndo());
+		ui.editRedo.setEnabled(undoManager.canRedo());
+	}
 	/** Redo last operation. */
 	protected void doRedo() {
-		// TODO Auto-generated method stub
-		
+		undoManager.redo();
+		setUndoRedoMenu();
 	}
 	/** Undo last operation. */
 	protected void doUndo() {
-		// TODO Auto-generated method stub
-		
+		undoManager.undo();
+		setUndoRedoMenu();
 	}
-	/** Clear surfaces. */
-	protected void doClearSurfaces() {
+	/** 
+	 * Add an undoable map edit and update menus accordingly.
+	 * @param undo the undo object
+	 */
+	void addUndo(UndoableMapEdit undo) {
+		undoManager.addEdit(undo);
+		setUndoRedoMenu();
+	}
+	/** 
+	 * Clear surfaces. 
+	 * @param redoable save a redo point?
+	 */
+	protected void doClearSurfaces(boolean redoable) {
 		if (renderer.surface != null) {
+			UndoableMapEdit undo = redoable ? new UndoableMapEdit(renderer.surface) : null;
 			renderer.surface.basemap.clear();
 			renderer.surface.features.clear();
+			if (redoable) {
+				undo.setAfter();
+				addUndo(undo);
+			}
 			renderer.repaint();
 		}
 	}
-	/** Clear buildings. */
-	protected void doClearBuildings() {
+	/** 
+	 * Clear buildings. 
+	 * @param redoable save a redo point?
+	 */
+	protected void doClearBuildings(boolean redoable) {
 		if (renderer.surface != null) {
+			UndoableMapEdit undo = redoable ? new UndoableMapEdit(renderer.surface) : null;
 			renderer.surface.buildingmap.clear();
 			renderer.surface.buildings.clear();
+			if (redoable) {
+				undo.setAfter();
+				addUndo(undo);
+			}
 			renderer.repaint();
 		}
 	}
@@ -1040,21 +1090,36 @@ public class MapEditor extends JFrame {
 	}
 	/** Delete buildings and surface elements of the selection rectangle. */
 	protected void doDeleteBoth() {
-		deleteEntitiesOf(renderer.surface.basemap, renderer.selectedRectangle, false);
-		deleteEntitiesOf(renderer.surface.buildingmap, renderer.selectedRectangle, true);
-		repaint();
+		if (renderer.surface != null) {
+			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
+			deleteEntitiesOf(renderer.surface.basemap, renderer.selectedRectangle, false);
+			deleteEntitiesOf(renderer.surface.buildingmap, renderer.selectedRectangle, true);
+			undo.setAfter();
+			addUndo(undo);
+			repaint();
+		}
 	}
 	/** Delete surface surface. */
 	protected void doDeleteSurface() {
-		deleteEntitiesOf(renderer.surface.basemap, renderer.selectedRectangle, false);
-		repaint();
+		if (renderer.surface != null) {
+			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
+			deleteEntitiesOf(renderer.surface.basemap, renderer.selectedRectangle, false);
+			undo.setAfter();
+			addUndo(undo);
+			repaint();
+		}
 	}
 	/**
 	 * Delete buildings falling into the current selection rectangle.
 	 */
 	protected void doDeleteBuilding() {
-		deleteEntitiesOf(renderer.surface.buildingmap, renderer.selectedRectangle, true);
-		repaint();
+		if (renderer.surface != null) {
+			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
+			deleteEntitiesOf(renderer.surface.buildingmap, renderer.selectedRectangle, true);
+			undo.setAfter();
+			addUndo(undo);
+			repaint();
+		}
 	}
 	/**
 	 * Delete entries of the given map.
@@ -1239,6 +1304,13 @@ public class MapEditor extends JFrame {
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return columnIndex == 2;
 		}
+		@Override
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+			if (columnIndex == 2) {
+				TileEntry te = rows.get(rowIndex);
+				te.name = String.valueOf(aValue);
+			}
+		}
 	}
 	/**
 	 * Build table contents.
@@ -1328,10 +1400,12 @@ public class MapEditor extends JFrame {
 	 * Create a new, empty surface map.
 	 */
 	void doNew() {
-		setTitle("Open-IG Map Editor");
+		setTitle(TITLE);
 		createPlanetSurface(33, 66);
 		renderer.repaint();
 		saveSettings = null;
+		undoManager.discardAllEdits();
+		setUndoRedoMenu();
 	}
 	/**
 	 * Create an empty planet surface with the given size.
@@ -1380,6 +1454,7 @@ public class MapEditor extends JFrame {
 			idx = surfaceTable.convertRowIndexToModel(idx);
 			TileEntry te = surfaceTableModel.rows.get(idx);
 			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
+				UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 				
 				Rectangle clearRect = new Rectangle(renderer.selectedRectangle);
 				clearRect.width = ((clearRect.width + te.tile.width - 1) / te.tile.width) * te.tile.width;
@@ -1397,6 +1472,8 @@ public class MapEditor extends JFrame {
 						placeTile(te.tile, x, y, SurfaceEntityType.BASE, null);
 					}
 				}
+				undo.setAfter();
+				addUndo(undo);
 			}
 			renderer.repaint();
 		}
@@ -1410,6 +1487,8 @@ public class MapEditor extends JFrame {
 			idx = buildingTable.convertRowIndexToModel(idx);
 			TileEntry te = buildingTableModel.rows.get(idx);
 			if (renderer.selectedRectangle != null && renderer.selectedRectangle.width > 0) {
+				UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
+				
 				Rectangle clearRect = new Rectangle(renderer.selectedRectangle);
 				clearRect.width = ((clearRect.width + te.tile.width) / (te.tile.width + 1)) * (te.tile.width + 1) + 1;
 				clearRect.height = ((clearRect.height + te.tile.height) / (te.tile.height + 1)) * (te.tile.height + 1) + 1;
@@ -1424,9 +1503,11 @@ public class MapEditor extends JFrame {
 						placeTile(te.tile, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING, bld);
 					}
 				}
+				placeRoads(te.surface);
+				undo.setAfter();
+				addUndo(undo);
+				renderer.repaint();
 			}
-			renderer.repaint();
-			placeRoads(te.surface);
 		}
 	}
 	/**
@@ -1453,25 +1534,27 @@ public class MapEditor extends JFrame {
 		if (imp == null) {
 			imp = new ImportDialog(rl);
 		}
+		imp.setLabels(labels);
 		imp.setLocationRelativeTo(this);
 		imp.setVisible(true);
 		if (imp.success) {
 			if (renderer.surface == null) {
 				createPlanetSurface(33, 66);
 			}
+			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 			if (imp.selected != null) {
 				if (imp.replaceSurface) {
-					doClearSurfaces();
+					doClearSurfaces(false);
 				}
 				placeTilesFromOriginalMap(imp.selected.fullPath, imp.selected.surfaceType, imp.shiftXValue, imp.shiftYValue);
 			}
 			if (imp.planet != null) {
 				if (imp.replaceBuildings) {
-					doClearBuildings();
+					doClearBuildings(false);
 				}
 				if (imp.withSurface) {
 					if (imp.replaceSurface) {
-						doClearSurfaces();
+						doClearSurfaces(false);
 					}
 					placeTilesFromOriginalMap("colony/" + imp.planet.getMapName(), imp.planet.surfaceType.toLowerCase(), imp.shiftXValue, imp.shiftYValue);
 				}
@@ -1490,8 +1573,10 @@ public class MapEditor extends JFrame {
 				currentBuilding = null;
 				placeRoads(imp.planet.getRaceTechId());
 			} else {
-				doClearBuildings();
+				doClearBuildings(false);
 			}
+			undo.setAfter();
+			addUndo(undo);
 			repaint();
 		}
 	}
@@ -1696,6 +1781,7 @@ public class MapEditor extends JFrame {
 	 * Place the currently selected object onto the surface.
 	 */
 	void doPlaceObject() {
+		UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 		if (currentBaseTile != null) {
 			deleteEntitiesOf(renderer.surface.basemap, renderer.placementRectangle, false);
 			SurfaceFeature sf = new SurfaceFeature();
@@ -1716,6 +1802,8 @@ public class MapEditor extends JFrame {
 			placeTile(bld.tileset.normal, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING, bld);
 		}
 		placeRoads(currentBuildingRace);
+		undo.setAfter();
+		addUndo(undo);
 		renderer.repaint();
 	}
 	/**
@@ -1772,7 +1860,7 @@ public class MapEditor extends JFrame {
 				TileEntry e = new TileEntry();
 				e.id = te.getKey();
 				e.surface = pt.getKey();
-				e.name = "" + e.id;
+				e.name = findCustomName(customSurfaceNames, e.id, e.surface, "" + e.id);
 				e.tile = te.getValue();
 				e.tile.alpha = 1.0f;
 				e.previewTile = e.tile.copy();
@@ -1794,7 +1882,7 @@ public class MapEditor extends JFrame {
 				TileEntry e = new TileEntry();
 				e.id = idx;
 				e.surface = tss.getKey();
-				e.name = bt.getKey();
+				e.name = findCustomName(customBuildingNames, e.id, e.surface, bt.getKey());
 				e.tile = tss.getValue().normal;
 				e.tile.alpha = 1.0f;
 				e.previewTile = e.tile.copy();
@@ -1823,7 +1911,22 @@ public class MapEditor extends JFrame {
 				return c != 0 ? c : (o1.id - o2.id);
 			}
 		});
-
+	}
+	/**
+	 * Find a custom name in the given entry list.
+	 * @param list the entry list
+	 * @param id the tile identifier
+	 * @param type the tile type (e.g., suface or race)
+	 * @param defaultName the default name to use if not found
+	 * @return the custom name
+	 */
+	String findCustomName(List<TileEntry> list, int id, String type, String defaultName) {
+		for (TileEntry te : list) {
+			if (te.id == id && te.surface.equals(type)) {
+				return te.name;
+			}
+		}
+		return defaultName;
 	}
 	/**
 	 * @return the building properties panel
@@ -1982,12 +2085,12 @@ public class MapEditor extends JFrame {
 			doSaveAs();
 		} else {
 			savePlanet(saveSettings);
-			setTitle("Open-IG Map Editor: " + saveSettings.fileName.getAbsolutePath());
+			setTitle(TITLE + ": " + saveSettings.fileName.getAbsolutePath());
 		}
 	}
 	/** Perform the save as. */
 	void doSaveAs() {
-		MapSaveDialog dlg = new MapSaveDialog(true, saveSettings);
+		MapOpenSaveDialog dlg = new MapOpenSaveDialog(true, labels, saveSettings);
 		dlg.setLocationRelativeTo(this);
 		dlg.setVisible(true);
 		if (dlg.saveSettings != null) {
@@ -1997,13 +2100,15 @@ public class MapEditor extends JFrame {
 	}
 	/** Perform the load. */
 	void doLoad() {
-		MapSaveDialog dlg = new MapSaveDialog(false, saveSettings);
+		MapOpenSaveDialog dlg = new MapOpenSaveDialog(false, labels, saveSettings);
 		dlg.setLocationRelativeTo(this);
 		dlg.setVisible(true);
 		if (dlg.saveSettings != null) {
 			saveSettings = dlg.saveSettings;
 			loadPlanet(saveSettings);
-			setTitle("Open-IG Map Editor: " + saveSettings.fileName.getAbsolutePath());
+			setTitle(TITLE + ": " + saveSettings.fileName.getAbsolutePath());
+			undoManager.discardAllEdits();
+			setUndoRedoMenu();
 		}		
 	}
 	/**
@@ -2018,7 +2123,7 @@ public class MapEditor extends JFrame {
 			Element root = XML.openXML(settings.fileName);
 			Element planet = XML.childElement(root, "planet");
 			if (settings.surface) {
-				doClearSurfaces();
+				doClearSurfaces(false);
 				Element surface = XML.childElement(planet, "surface");
 				if (surface != null) {
 					int width = Integer.parseInt(surface.getAttribute("width"));
@@ -2043,7 +2148,7 @@ public class MapEditor extends JFrame {
 				}
 			}
 			if (settings.buildings) {
-				doClearBuildings();
+				doClearBuildings(false);
 				Element buildings = XML.childElement(planet, "buildings");
 				if (buildings != null) {
 					String tech = null;
@@ -2083,6 +2188,10 @@ public class MapEditor extends JFrame {
 	 * @param language the new language
 	 */
 	void setLabels(String language) {
+		if (rl == null) {
+			deferredLanguage = language;
+			return;
+		}
 		labels.load(rl, language, "campaign/main");
 		renameFieldsOf(ui);
 		renameFieldsOf(ui.allocationPanel);
@@ -2106,6 +2215,11 @@ public class MapEditor extends JFrame {
 		filterSurface.setToolTipText(labels.get("mapeditor.filter_surface"));
 		filterBuilding.setToolTipText(labels.get("mapeditor.filter_building"));
 		alphaSlider.setToolTipText(labels.get("mapeditor.preview_brightness"));
+		
+		surfaceTable.getColumnModel().getColumn(0).setPreferredWidth(45);
+		surfaceTable.getColumnModel().getColumn(1).setPreferredWidth(32);
+		buildingTable.getColumnModel().getColumn(0).setPreferredWidth(45);
+		buildingTable.getColumnModel().getColumn(1).setPreferredWidth(32);
 	}
 	/**
 	 * Rename the annotated fields of the object.
@@ -2128,6 +2242,236 @@ public class MapEditor extends JFrame {
 				} catch (IllegalAccessException ex) {
 					ex.printStackTrace();
 				}
+			}
+		}
+	}
+	/**
+	 * The state capture for the surface editing.
+	 * @author karnokd
+	 */
+	class UndoableMapEdit implements UndoableEdit {
+		/** The reference surface. */
+		final PlanetSurface surface;
+		/** The before state of the basemap. */
+		Map<Location, SurfaceEntity> basemapBefore;
+		/** The after state of the basemap. */
+		Map<Location, SurfaceEntity> basemapAfter;
+		/** The building map before. */
+		Map<Location, SurfaceEntity> buildingmapBefore;
+		/** The building map after. */
+		Map<Location, SurfaceEntity> buildingmapAfter;
+		/** The surface features before. */
+		List<SurfaceFeature> surfaceBefore;
+		/** The surface features after. */
+		List<SurfaceFeature> surfaceAfter;
+		/** The buildings before. */
+		List<Building> buildingsBefore;
+		/** The buildings after. */
+		List<Building> buildingsAfter;
+		/**
+		 * Constructor.
+		 * @param surface sets the surface object
+		 */
+		public UndoableMapEdit(PlanetSurface surface) {
+			this.surface = surface;
+			basemapBefore = new HashMap<Location, SurfaceEntity>(surface.basemap);
+			surfaceBefore = new ArrayList<SurfaceFeature>(surface.features);
+			
+			buildingmapBefore = new HashMap<Location, SurfaceEntity>(surface.buildingmap);
+			buildingsBefore = new ArrayList<Building>(surface.buildings);
+		}
+		/**
+		 * Set the after status of the surface.
+		 */
+		public void setAfter() {
+			basemapAfter = new HashMap<Location, SurfaceEntity>(surface.basemap);
+			surfaceAfter = new ArrayList<SurfaceFeature>(surface.features);
+			
+			buildingmapAfter = new HashMap<Location, SurfaceEntity>(surface.buildingmap);
+			buildingsAfter = new ArrayList<Building>(surface.buildings);
+		}
+		/**
+		 * Restore the state to before.
+		 */
+		void restoreBefore() {
+			surface.basemap.clear();
+			surface.basemap.putAll(basemapBefore);
+			surface.buildingmap.clear();
+			surface.buildingmap.putAll(buildingmapBefore);
+			surface.features.clear();
+			surface.features.addAll(surfaceBefore);
+			surface.buildings.clear();
+			surface.buildings.addAll(buildingsBefore);
+		}
+		/**
+		 * Restore the state after.
+		 */
+		void restoreAfter() {
+			surface.basemap.clear();
+			surface.basemap.putAll(basemapAfter);
+			surface.buildingmap.clear();
+			surface.buildingmap.putAll(buildingmapAfter);
+			surface.features.clear();
+			surface.features.addAll(surfaceAfter);
+			surface.buildings.clear();
+			surface.buildings.addAll(buildingsAfter);
+		}
+		@Override
+		public boolean addEdit(UndoableEdit anEdit) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public boolean canRedo() {
+			return true;
+		}
+		@Override
+		public boolean canUndo() {
+			return true;
+		}
+		@Override
+		public void die() {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public String getPresentationName() {
+			return "Map editing";
+		}
+		@Override
+		public String getRedoPresentationName() {
+			return "Redo map editing";
+		}
+		@Override
+		public String getUndoPresentationName() {
+			return "Undo map editing";
+		}
+		@Override
+		public boolean isSignificant() {
+			return true;
+		}
+		@Override
+		public void redo() {
+			restoreAfter();
+		}
+		@Override
+		public boolean replaceEdit(UndoableEdit anEdit) {
+			return false;
+		}
+		@Override
+		public void undo() {
+			restoreBefore();
+		}
+	}
+	/** Save the current editor state. */
+	void saveConfig() {
+		try {
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-config.xml"), 64 * 1024), "UTF-8"));
+			try {
+				out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
+				out.printf("<mapeditor-config>%n");
+				out.printf("  <window x='%d' y='%d' width='%d' height='%d' state='%d'/>%n", getX(), getY(), getWidth(), getHeight(), getExtendedState());
+				out.printf("  <language id='%s'/>%n", ui.languageEn.isSelected() ? "en" : "hu");
+				out.printf("  <splitters main='%d' preview='%d' surfaces='%d'/>%n", split.getDividerLocation(), toolSplit.getDividerLocation(), featuresSplit.getDividerLocation());
+				out.printf("  <tabs selected='%d'/>%n", propertyTab.getSelectedIndex());
+				out.printf("  <lights preview='%d' map='%s'/>%n", alphaSlider.getValue(), Float.toString(alpha));
+				out.printf("  <view buildings='%s' minimap='%s' textboxes='%s' zoom='%s'/>%n", ui.viewShowBuildings.isSelected(), 
+						ui.viewSymbolicBuildings.isSelected(), ui.viewTextBackgrounds.isSelected(), Double.toString(renderer.scale));
+				out.printf("  <custom-surface-names>%n");
+				for (TileEntry te : surfaceTableModel.rows) {
+					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XML.toHTML(te.surface), XML.toHTML(te.name));
+				}
+				out.printf("  </custom-surface-names>%n");
+				out.printf("  <custom-building-names>%n");
+				for (TileEntry te : buildingTableModel.rows) {
+					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XML.toHTML(te.surface), XML.toHTML(te.name));
+				}
+				out.printf("  </custom-building-names>%n");
+				out.printf("</mapeditor-config>%n");
+			} finally {
+				out.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/** Load the editor configuration. */
+	void loadConfig() {
+		File file = new File("open-ig-mapeditor-config.xml");
+		if (file.canRead()) {
+			try {
+				Element root = XML.openXML(file);
+				
+				// reposition the window
+				Element eWindow = XML.childElement(root, "window");
+				
+				setBounds(
+					Integer.parseInt(eWindow.getAttribute("x")),
+					Integer.parseInt(eWindow.getAttribute("y")),
+					Integer.parseInt(eWindow.getAttribute("width")),
+					Integer.parseInt(eWindow.getAttribute("height"))
+				);
+				setExtendedState(Integer.parseInt(eWindow.getAttribute("state")));
+				
+				Element eLanguage = XML.childElement(root, "language");
+				
+				String langId = eLanguage.getAttribute("id");
+				if ("hu".equals(langId)) {
+					ui.languageHu.doClick();
+				} else {
+					ui.languageEn.doClick();
+				}
+				
+				Element eSplitters = XML.childElement(root, "splitters");
+				split.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("main")));
+				toolSplit.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("preview")));
+				featuresSplit.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("surfaces")));
+				
+				Element eTabs = XML.childElement(root, "tabs");
+				propertyTab.setSelectedIndex(Integer.parseInt(eTabs.getAttribute("selected")));
+				
+				Element eLights = XML.childElement(root, "lights");
+				alphaSlider.setValue(Integer.parseInt(eLights.getAttribute("preview")));
+				alpha = Float.parseFloat(eLights.getAttribute("map"));
+				
+				Element eView = XML.childElement(root, "view");
+				
+				ui.viewShowBuildings.setSelected(false);
+				if ("true".equals(eView.getAttribute("buildings"))) {
+					ui.viewShowBuildings.doClick();
+				}
+				ui.viewSymbolicBuildings.setSelected(false);
+				if ("true".equals(eView.getAttribute("minimap"))) {
+					ui.viewShowBuildings.doClick();
+				}
+				
+				ui.viewTextBackgrounds.setSelected(false);
+				if ("true".equals(eView.getAttribute("textboxes"))) {
+					ui.viewShowBuildings.doClick();
+				}
+				
+				renderer.scale = Double.parseDouble(eView.getAttribute("zoom"));
+				
+				Element eSurfaces = XML.childElement(root, "custom-surface-names");
+				for (Element tile : XML.childrenWithName(eSurfaces, "tile")) {
+					TileEntry te = new TileEntry();
+					te.id = Integer.parseInt(tile.getAttribute("id"));
+					te.surface = tile.getAttribute("type");
+					te.name = tile.getAttribute("name");
+					customSurfaceNames.add(te);
+				}
+				
+				Element eBuildigns = XML.childElement(root, "custom-building-names");
+				for (Element tile : XML.childrenWithName(eBuildigns, "tile")) {
+					TileEntry te = new TileEntry();
+					te.id = Integer.parseInt(tile.getAttribute("id"));
+					te.surface = tile.getAttribute("type");
+					te.name = tile.getAttribute("name");
+					customBuildingNames.add(te);
+				}
+
+			} catch (IOException ex) {
+				ex.printStackTrace();
 			}
 		}
 	}
