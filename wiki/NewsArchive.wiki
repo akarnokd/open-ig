@@ -1,5 +1,32 @@
 #summary News archive.
 
+*September 15. 2010*
+
+The next version of the MapEditor is released: version 0.2. Changes include:
+
+  * Bugfixes in editing behavior
+  * Rendering building with status information: powered, damaged, repairing, worker shortage, etc.
+  * Ability to save and load the map.
+  * Adjust the properties of the buildings: allocated energy & worker amount, upgrade level
+
+Running the new map editor requires the [http://open-ig.googlecode.com/files/open-ig-upgrade-20100915a.zip latest 20100915a upgrade pack].
+
+NOTE: The game resource file management has become a bit problematic. In the next versions, the program will automatically detect and utilize the resource ZIP files: there will be no need to manually specify them in general. For the current version. It is advised to delete the *open-ig-config.xml* before running the newest version of this map editor.
+
+*September 13. 2010*
+
+The first upgrade pack is now available. It contains fixes for various building images and their night-appearances.
+
+In addition, a pre-alpha version of the MapEditor has been uploaded. You can play around a bit. For the usage, please refer to the [http://code.google.com/p/open-ig/wiki/MapEditor Map Editor] wiki page.
+
+*September 10. 2010*
+
+I'm working on the new Planet surface renderer and a cool [http://code.google.com/p/open-ig/wiki/MapEditor Map Editor]. It will be available later in this month for download along with the first upgrade pack.
+
+*August 21. 2010*
+
+I've freed up some time and continue the development of the 0.8 branch. Until the next release, please check out [http://code.google.com/p/open-ig/wiki/GameUpgradeSystem how to upgrade the game resource files].
+
 *April 8. 2010*
 
 All resource files should be available now. [http://code.google.com/p/open-ig/wiki/Install_Instructions_08 Installation].
