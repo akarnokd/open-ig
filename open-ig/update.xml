@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<update>
+<update version='1.0'>
 	<!-- Update definitions for the Open Imperium Galactica components -->
 	<module id='Launcher' version='0.1'>
 		<!-- General module description -->
