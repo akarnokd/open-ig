@@ -20,11 +20,52 @@ The aim of this Map Editor program is to help convert the original surface and b
   * Delete the {{{open-ig-config.xml}}} file
   * Optionally: delete the {{{open-ig-mapeditor-config.xml}}} file
   * Run the MapEditor by double clicking on its JAR file, or from command line: {{{java -Xmx512M -jar open-ig-mapeditor-0.4.jar}}}
+  * If you don't want to customize any settings, click Save & Run.
 
 = Usage =
 
+After running the MapEditor, you may choose the preferred user interface language from the *Language* menu.
 
-  
+== Menus ==
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-file.png
+
+The file menu contains the usual operations:
+
+  * *New...* create a new empty map. The user can specify the size of the map
+  * *Open...* {{{CTRL+O}}} open an existing map definition. 
+  * *Recent* the list of previously opened or saved maps
+  * *Recent / Clear recent* removes the list of recently opened files
+  * *Import...* use a map or planet from the original Imperium Galactica
+  * *Save* {{{CTRL+S}}} save the current map, for new maps, it is equal to *Save as...*
+  * *Save as...* save the current map
+  * *Exit* quit the application without saving
+
+=== File / New ===
+
+=== File / Open ===
+
+=== File / Save as ===
+
+=== File / Import ===
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-edit.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-view.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-language.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-help.png
+
+
+== Toolbar ==
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-toolbar.png
+
+== Panels ==
+
+
+
 === Mixed planets ===
 
 The new rendering allows the placement of surface features and buildings from various types at once. You can create a half rocky, half snowy map with Garthog and Human buildings on it...
