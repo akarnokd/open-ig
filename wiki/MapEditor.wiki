@@ -30,7 +30,7 @@ http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-file.p
 
 The file menu contains the usual operations:
 
-|| _Menu item_ || _Shortcut_ || Description ||
+|| _Menu item_ || _Shortcut_ || _Description_ ||
 || *New...* || || create a new empty map. The user can specify the size of the map || 
 || *Open...* || {{{CTRL+O}}} ||  open an existing map definition. ||  
 || *Recent* || || the list of previously opened or saved maps || 
@@ -48,13 +48,11 @@ http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-filene
 
 The user can enter the width and height of the new map. Width and height of the map is considered as how many tiles can be placed edge-by-edge. For example:
 
-{{{<><><>
-<><><>}}}
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-filenew-tiles.png
 
 has width of 3 and height of 2. The tiles are twice as wide as they are height, therefore, a square-like map has width *w* and height *2 x w*.
 
 The default map size is 33 x 66 which corresponds to the original game's map size.
-
 
 === File / Open ===
 
