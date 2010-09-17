@@ -112,13 +112,30 @@ The *Edit* menu contains operations for manipulating the map contents.
 || *Redo* || CTRL+Y || Redo the last change to the map ||
 || *Cut* || CTRL+X || Cut the surface and buildings from the current selection ||
 || *Copy* || CTRL+C || Copy the surface and buildings from the current selection ||
-|| *Paste* || CTRL+V || Paste the surface and buildings (if any) relative to the currently selected cell. If multiple cells are selected, the most-left cell is used for origo ||
+|| *Paste* || CTRL+V || Paste the surface and buildings (if any) from the system clipboard relative to the currently selected cell. If multiple cells are selected, the most-left cell is used for origo ||
 || *Cut: building* || CTRL+SHIFT+X || Cut only the buildings from the current selection ||
 || *Copy: building* || CTRL+SHIFT+C || Copy only the buildings from the current selection ||
-|| *Paste: building* || CTRL+SHIFT+V || Paste only the buildings (if any) relative to the currently selected cell ||
-
+|| *Paste: building* || CTRL+SHIFT+V || Paste only the buildings (if any) from the system clipboard relative to the currently selected cell ||
+|| *Cut: surface* || || Cut only the surface from the current selection ||
+|| *Copy: surface* || || Copy only the surface from the current selection ||
+|| *Paste: surface* || || Paste only the surface (if any) from the system clipboard relative to the currently selected cell ||
+|| *[#Selection_/_Placement_mode Object placement mode]* || F3 || Toggle between selection mode and object placement mode. ||
+|| *Delete building* || DELETE || Delete buildings from the current selection rectangle ||
+|| *Delete surface* || CTRL+DELETE || Delete surface features from the current selection rectangle ||
+|| *Delete both* || CTRL+SHIFT+DELETE || Delete both surface features and buildings from the current selection rectangle ||
+|| *Clear buildings* || || Remove all buildings from the current map ||
+|| *Clear surface* || || Remove all surface features from the current map ||
+|| *Place roads* || || Place roads specific to a race ||
+|| *[#Resize_map Resize map...]* || || Resize the current map. All building and surface features remain intact, but might get beyond the allowed map cells ||
+|| *Remove outbound objects* || || Remove any building or surface feature which is partially or completely outside of the map boundary. Might be used after a map resize or fill operation. The operation displays a message box about how many buildings and surface features have been deleted. ||
 
 The cut, copy functions store an XML description of the selected elements on the System Clipboard. 
+
+=== Selection / Placement mode ===
+
+=== Resize map ===
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-resize.png
 
 == View ==
 
