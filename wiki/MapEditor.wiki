@@ -86,11 +86,21 @@ http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-toolba
 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/New24.gif || Create a new empty map with custom size || *File* / *New...* || ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Open24.gif || Open an existing map || *File* / *Open...* || CTRL+O ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Save24.gif || Save the current map || *File* / *Save* || CTRL+S ||
-|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Import24.gif || Import a surface map or planet from the original game || *File* / *Import...* ||
-|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/SaveAs24.gif || Save the current map into another name or location || *File* / *Save as...* ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Import24.gif || Import a surface map or planet from the original game || *File* / *Import...* || ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/SaveAs24.gif || Save the current map into another name or location || *File* / *Save as...* || ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Cut24.gif || Cut the selected area to the clipboard with both buildings and surface features  || *Edit* / *Cut...* || CTRL+X ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Copy24.gif || Copy the selected area to the clipboard with both buildings and surface features || *Edit* / *Copy* || CTRL+C ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Paste24.gif || Paste surface and building information relative to the currently selected cell || *Edit* / *Paste* || CTRL+V ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Remove24.gif || Remove buildings from the currently selected area || *Edit* / *Delete building* || DELETE ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Undo24.gif || Undo the last map editing operation || *Edit* / *Undo* || CTRL+Z ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Redo24.gif || Redo the last map editing operation || *Edit* / *Redo* || CTRL+Y ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Down24.gif || Toggle between object placement mode and selection mode || *Edit* / *Object placement mode* || F3 ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Zoom24.gif || Zoom back to normal level || *View* / *Zoom normal* || CTRL+NUMPAD 0 ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/ZoomIn24.gif || Zoom in by 10% || *View* / *Zoom in* || CTRL+NUMPAD 9 ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/ZoomOut24.gif || Zoom out by 10% || *View* / *Zoom out* || CTRL+NUMPAD 3 ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/TipOfTheDay24.gif || Switch to full daylight || *View* / *Zoom normal* || CTRL+NUMPAD 7 ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/TipOfTheDayDark24.gif || Switch to night || *View* / *Zoom normal* || CTRL+NUMPAD 1 ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Help24.gif || Jump to this help in your default browser || *Help* / *Online help...* ||  ||
 
 
 = Panels =
