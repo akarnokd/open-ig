@@ -78,7 +78,20 @@ http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-help.p
 
 == Toolbar ==
 
+The toolbar houses some quickly accessible operations.
+
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-toolbar.png
+
+|| _Symbol_ || _Description_ || _Menu_ || _Shortcut_ ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/New24.gif || Create a new empty map with custom size || *File* / *New...* || ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Open24.gif || Open an existing map || *File* / *Open...* || CTRL+O ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Save24.gif || Save the current map || *File* / *Save* || CTRL+S ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Import24.gif || Import a surface map or planet from the original game || *File* / *Import...* ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/SaveAs24.gif || Save the current map into another name or location || *File* / *Save as...* ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Cut24.gif || Cut the selected area to the clipboard with both buildings and surface features  || *Edit* / *Cut...* || CTRL+X ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Copy24.gif || Copy the selected area to the clipboard with both buildings and surface features || *Edit* / *Copy* || CTRL+C ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Paste24.gif || Paste surface and building information relative to the currently selected cell || *Edit* / *Paste* || CTRL+V ||
+
 
 = Panels =
 
