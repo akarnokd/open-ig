@@ -30,14 +30,14 @@ http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-file.p
 
 The file menu contains the usual operations:
 
-  * *New...* create a new empty map. The user can specify the size of the map
-  * *Open...* {{{CTRL+O}}} open an existing map definition. 
-  * *Recent* the list of previously opened or saved maps
-  * *Recent / Clear recent* removes the list of recently opened files
-  * *Import...* use a map or planet from the original Imperium Galactica
-  * *Save* {{{CTRL+S}}} save the current map, for new maps, it is equal to *Save as...*
-  * *Save as...* save the current map
-  * *Exit* quit the application without saving
+|| *New...* || || create a new empty map. The user can specify the size of the map || 
+|| *Open...* || {{{CTRL+O}}} ||  open an existing map definition. ||  
+|| *Recent* || || the list of previously opened or saved maps || 
+|| *Recent / Clear recent* || || removes the list of recently opened files || 
+|| *Import...* || || use a map or planet from the original Imperium Galactica || 
+|| *Save* || {{{CTRL+S}}} || save the current map, for new maps, it is equal to *Save as...* || 
+|| *Save as...* || || save the current map || 
+|| *Exit* quit the application without saving || 
 
 === File / New ===
 
