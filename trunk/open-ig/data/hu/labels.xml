@@ -395,6 +395,12 @@
 	<entry key='mapeditor.cleanup_result'>Takarítás eredménye: Összesen = %d, Épület = %d, Felszín = %d</entry>
 	<entry key='mapeditor.view_standard_fonts'>Standard betűtípus használata</entry>
 	<entry key='mapeditor.view_placement_hints'>Telepítési segédlet mutatása</entry>
+	<entry key='mapeditor.edit_cut_building'>Kivágás: épület</entry>
+	<entry key='mapeditor.edit_cut_surface'>Kivágás: felszín</entry>
+	<entry key='mapeditor.edit_copy_building'>Másolás: épület</entry>
+	<entry key='mapeditor.edit_copy_surface'>Másolás: felszín</entry>
+	<entry key='mapeditor.edit_paste_building'>Beillesztés: épület</entry>
+	<entry key='mapeditor.edit_paste_surface'>Beillesztés: felszín</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

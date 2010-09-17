@@ -41,6 +41,12 @@ import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -71,6 +77,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -378,6 +385,24 @@ public class MapEditor extends JFrame {
 		/** View the placement hints on the map? */
 		@Rename(to = "mapeditor.view_placement_hints", tip = "")
 		public JCheckBoxMenuItem viewPlacementHints;
+		/** Paste buildings only. */
+		@Rename(to = "mapeditor.edit_paste_building", tip = "")
+		public JMenuItem editPasteBuilding;
+		/** Paste surface only. */
+		@Rename(to = "mapeditor.edit_paste_surface", tip = "")
+		public JMenuItem editPasteSurface;
+		/** Paste buildings only. */
+		@Rename(to = "mapeditor.edit_cut_building", tip = "")
+		public JMenuItem editCutBuilding;
+		/** Paste surface only. */
+		@Rename(to = "mapeditor.edit_cut_surface", tip = "")
+		public JMenuItem editCutSurface;
+		/** Paste surface only. */
+		@Rename(to = "mapeditor.edit_copy_surface", tip = "")
+		public JMenuItem editCopySurface;
+		/** Paste surface only. */
+		@Rename(to = "mapeditor.edit_copy_building", tip = "")
+		public JMenuItem editCopyBuilding;
 	}
 	/** The User Interface elements to rename. */
 	final UIElements ui = new UIElements();
@@ -905,11 +930,12 @@ public class MapEditor extends JFrame {
 		
 		
 		ui.editCut = new JMenuItem("Cut");
-		ui.editCut.setEnabled(false); // TODO implement
 		ui.editCopy = new JMenuItem("Copy");
-		ui.editCopy.setEnabled(false); // TODO implement
 		ui.editPaste = new JMenuItem("Paste");
-		ui.editPaste.setEnabled(false); // TODO implement
+		
+		ui.editCut.addActionListener(new Act() { @Override public void act() { doCut(true, true); } });
+		ui.editCopy.addActionListener(new Act() { @Override public void act() { doCopy(true, true); } });
+		ui.editPaste.addActionListener(new Act() { @Override public void act() { doPaste(true, true); } });
 		
 		ui.editPlaceMode = new JCheckBoxMenuItem("Placement mode");
 		
@@ -959,6 +985,24 @@ public class MapEditor extends JFrame {
 				doCleanup();
 			}
 		});
+		
+		ui.editCutBuilding = new JMenuItem("Cut: building");
+		ui.editCutSurface = new JMenuItem("Cut: surface");
+		ui.editPasteBuilding = new JMenuItem("Paste: building");
+		ui.editPasteSurface = new JMenuItem("Paste: surface");
+		ui.editCopyBuilding = new JMenuItem("Copy: building");
+		ui.editCopySurface = new JMenuItem("Copy: surface");
+		
+		ui.editCutBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+		ui.editCopyBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+		ui.editPasteBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+		
+		ui.editCutBuilding.addActionListener(new Act() { @Override public void act() { doCut(false, true); } });
+		ui.editCutSurface.addActionListener(new Act() { @Override public void act() { doCut(true, false); } });
+		ui.editCopyBuilding.addActionListener(new Act() { @Override public void act() { doCopy(false, true); } });
+		ui.editCopySurface.addActionListener(new Act() { @Override public void act() { doCopy(true, false); } });
+		ui.editPasteBuilding.addActionListener(new Act() { @Override public void act() { doPaste(false, true); } });
+		ui.editPasteSurface.addActionListener(new Act() { @Override public void act() { doPaste(true, false); } });
 		
 		ui.viewZoomIn = new JMenuItem("Zoom in");
 		ui.viewZoomOut = new JMenuItem("Zoom out");
@@ -1056,7 +1100,10 @@ public class MapEditor extends JFrame {
 		
 		addAll(mainmenu, ui.fileMenu, ui.editMenu, ui.viewMenu, ui.languageMenu, ui.helpMenu);
 		addAll(ui.fileMenu, ui.fileNew, null, ui.fileOpen, ui.fileRecent, ui.fileImport, null, ui.fileSave, ui.fileSaveAs, null, ui.fileExit);
-		addAll(ui.editMenu, ui.editUndo, ui.editRedo, null, ui.editCut, ui.editCopy, ui.editPaste, null, 
+		addAll(ui.editMenu, ui.editUndo, ui.editRedo, null, 
+				ui.editCut, ui.editCopy, ui.editPaste, null, 
+				ui.editCutBuilding, ui.editCopyBuilding, ui.editPasteBuilding, null, 
+				ui.editCutSurface, ui.editCopySurface, ui.editPasteSurface, null, 
 				ui.editPlaceMode, null, ui.editDeleteBuilding, ui.editDeleteSurface, ui.editDeleteBoth, null, 
 				ui.editClearBuildings, ui.editClearSurface, null, ui.editPlaceRoads, null, ui.editResize, ui.editCleanup);
 		addAll(ui.viewMenu, ui.viewZoomIn, ui.viewZoomOut, ui.viewZoomNormal, null, 
@@ -1085,9 +1132,6 @@ public class MapEditor extends JFrame {
 		ui.toolbarRedo = createFor("res/Redo24.gif", "Redo", ui.editRedo, false);
 		ui.toolbarPlacementMode = createFor("res/Down24.gif", "Placement mode", ui.editPlaceMode, true);
 
-		ui.toolbarCut.setEnabled(false);
-		ui.toolbarCopy.setEnabled(false);
-		ui.toolbarPaste.setEnabled(false);
 		ui.toolbarUndo.setEnabled(false);
 		ui.toolbarRedo.setEnabled(false);
 		
@@ -2899,5 +2943,174 @@ public class MapEditor extends JFrame {
 	/** View placement hints. */
 	protected void doViewPlacementHints() {
 		renderer.placementHints = ui.viewPlacementHints.isSelected();
+	}
+	/** 
+	 * Copy contents of the current selection box. 
+	 * @param surface paste surface
+	 * @param building paste building
+	 */
+	void doCopy(boolean surface, boolean building) {
+		if (renderer.surface == null || renderer.selectedRectangle == null || renderer.selectedRectangle.width == 0) {
+			return;
+		}
+		StringWriter sw = new StringWriter();
+		PrintWriter out = new PrintWriter(sw);
+		
+		out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
+		out.printf("<map x='%d' y='%d' width='%d' height='%d'>%n", renderer.selectedRectangle.x, renderer.selectedRectangle.y, renderer.selectedRectangle.width, renderer.selectedRectangle.height);
+		
+		Map<Object, Object> memory = new IdentityHashMap<Object, Object>();
+		for (int i = renderer.selectedRectangle.x; i < renderer.selectedRectangle.x + renderer.selectedRectangle.width; i++) {
+			for (int j = renderer.selectedRectangle.y; j > renderer.selectedRectangle.y - renderer.selectedRectangle.height; j--) {
+				if (surface) {
+					for (SurfaceFeature sf : renderer.surface.features) {
+						if (sf.containsLocation(i, j)) {
+							if (memory.put(sf, sf) == null) {
+								out.printf("  <tile x='%d' y='%d' id='%s' type='%s'/>%n", sf.location.x, sf.location.y, sf.id, sf.type);
+							}
+							break;
+						}
+					}
+				}
+				if (building) {
+					for (Building b : renderer.surface.buildings) {
+						if (b.containsLocation(i, j)) {
+							if (memory.put(b, b) == null) {
+								out.printf("    <building id='%s' tech='%s' x='%d' y='%d' build='%d' hp='%d' level='%d' worker='%d' energy='%d' enabled='%s' repairing='%s' />%n",
+										b.type.id, b.techId, b.location.x, b.location.y, b.buildProgress, b.hitpoints, b.upgradeLevel, b.assignedWorker, b.assignedEnergy, b.enabled, b.repairing);
+							}
+							break;
+						}
+					}
+				}
+			}
+			out.printf("%n");
+		}
+		
+		out.printf("</map>%n");
+		out.flush();
+		
+		StringSelection sel = new StringSelection(sw.toString());
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, sel);
+	}
+	/** 
+	 * Perform the cut operation. 
+	 * @param surface paste surface
+	 * @param building paste building
+	 */
+	void doCut(boolean surface, boolean building) {
+		doCopy(surface, building);
+		if (surface && building) {
+			doDeleteBoth();
+		} else
+		if (surface) {
+			doDeleteSurface();
+		} else
+		if (building) {
+			doDeleteBuilding();
+		}
+	}
+	/** 
+	 * Perform the paste operation. 
+	 * @param surface paste surface
+	 * @param building paste building
+	 */
+	void doPaste(boolean surface, boolean building) {
+		if (renderer.surface == null || renderer.selectedRectangle == null || renderer.selectedRectangle.width == 0) {
+			return;
+		}
+		String s = getClipboardText();
+		if (s != null && s.startsWith("<?xml version='1.0' encoding='UTF-8'?>")) {
+			int originX = renderer.selectedRectangle.x;
+			int originY = renderer.selectedRectangle.y;
+			
+			try {
+				Element root = XML.parse(s);
+				
+				int ox = Integer.parseInt(root.getAttribute("x"));
+				int oy = Integer.parseInt(root.getAttribute("y"));
+				
+				UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
+				
+				String tech = null;
+				
+				if (surface) {
+					for (Element tile : XML.childrenWithName(root, "tile")) {
+						String type = tile.getAttribute("type");
+						int id = Integer.parseInt(tile.getAttribute("id"));
+						int x = Integer.parseInt(tile.getAttribute("x"));
+						int y = Integer.parseInt(tile.getAttribute("y"));
+						
+						Tile t = galaxyModel.planetTypes.get(type).tiles.get(id);
+						SurfaceFeature sf = new SurfaceFeature();
+						sf.id = id;
+						sf.type = type;
+						sf.location = Location.of(x - ox + originX, y - oy + originY);
+						sf.tile = t;
+						deleteEntitiesOf(renderer.surface.basemap, new Rectangle(sf.location.x, sf.location.y, t.width, t.height), false);
+
+						renderer.surface.features.add(sf);
+						placeTile(t, sf.location.x, sf.location.y, SurfaceEntityType.BASE, null);
+								
+					}
+				}
+				if (building) {
+					for (Element tile : XML.childrenWithName(root, "building")) {
+						String id = tile.getAttribute("id");
+						tech = tile.getAttribute("tech");
+						
+						Building b = new Building(buildingModel.buildings.get(id), tech);
+						int x = Integer.parseInt(tile.getAttribute("x"));
+						int y = Integer.parseInt(tile.getAttribute("y"));
+					
+						b.location = Location.of(x - ox + originX, y - oy + originY);
+						
+						b.buildProgress = Integer.parseInt(tile.getAttribute("build"));
+						b.hitpoints = Integer.parseInt(tile.getAttribute("hp"));
+						b.setLevel(Integer.parseInt(tile.getAttribute("level")));
+						b.assignedEnergy = Integer.parseInt(tile.getAttribute("energy"));
+						b.assignedWorker = Integer.parseInt(tile.getAttribute("worker"));
+						b.enabled = "true".equals(tile.getAttribute("enabled"));
+						b.repairing = "true".equals(tile.getAttribute("repairing"));
+					
+						
+						deleteEntitiesOf(renderer.surface.buildingmap, new Rectangle(b.location.x, b.location.y, b.tileset.normal.width, b.tileset.normal.height), true);
+
+						renderer.surface.buildings.add(b);
+						placeTile(b.tileset.normal, b.location.x, b.location.y, SurfaceEntityType.BUILDING, b);
+						
+					}
+				}
+				
+				if (tech != null) {
+					placeRoads(tech);
+				}
+				
+				undo.setAfter();
+				addUndo(undo);
+				repaint();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	/**
+	 * @return returns the contents of the clipboard as string
+	 */
+	String getClipboardText() {
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		Transferable clipData = clipboard.getContents(clipboard);
+		if (clipData != null) {
+			try {
+				if (clipData.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+					return (String)(clipData.getTransferData(DataFlavor.stringFlavor));
+				}
+			} catch (UnsupportedFlavorException ufe) {
+				System.err.println("Flavor unsupported: " + ufe);
+			} catch (IOException ioe) {
+				System.err.println("Data not available: " + ioe);
+			}
+		}
+		return null;
 	}
 }
