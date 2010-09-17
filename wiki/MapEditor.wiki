@@ -105,6 +105,21 @@ Click *Import* to proceed. The dialog remembers its last settings and can be use
 == Edit ==
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-edit.png
 
+The *Edit* menu contains operations for manipulating the map contents.
+
+|| _Menu item_ || _Shortcut_ || _Description_ ||
+|| *Undo* || CTRL+Z || Undo the last change to the map ||
+|| *Redo* || CTRL+Y || Redo the last change to the map ||
+|| *Cut* || CTRL+X || Cut the surface and buildings from the current selection ||
+|| *Copy* || CTRL+C || Copy the surface and buildings from the current selection ||
+|| *Paste* || CTRL+V || Paste the surface and buildings (if any) relative to the currently selected cell. If multiple cells are selected, the most-left cell is used for origo ||
+|| *Cut: building* || CTRL+SHIFT+X || Cut only the buildings from the current selection ||
+|| *Copy: building* || CTRL+SHIFT+C || Copy only the buildings from the current selection ||
+|| *Paste: building* || CTRL+SHIFT+V || Paste only the buildings (if any) relative to the currently selected cell ||
+
+
+The cut, copy functions store an XML description of the selected elements on the System Clipboard. 
+
 == View ==
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-view.png
