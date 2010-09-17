@@ -22,11 +22,9 @@ The aim of this Map Editor program is to help convert the original surface and b
   * Run the MapEditor by double clicking on its JAR file, or from command line: {{{java -Xmx512M -jar open-ig-mapeditor-0.4.jar}}}
   * If you don't want to customize any settings, click Save & Run.
 
-= Usage =
+= Menus =
 
-After running the MapEditor, you may choose the preferred user interface language from the *Language* menu.
-
-== Menus ==
+== File ==
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-file.png
 
@@ -49,11 +47,18 @@ The file menu contains the usual operations:
 
 === File / Import ===
 
+== Edit ==
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-edit.png
+
+== View ==
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-view.png
 
+== Language ==
+
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-language.png
+
+== Help ==
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-help.png
 
@@ -62,9 +67,19 @@ http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-help.p
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-toolbar.png
 
-== Panels ==
+= Panels =
 
+== Preview ==
 
+== Surfaces & Buildings ==
+
+== Building properties ==
+
+== Allocation ==
+
+= The Map =
+
+= Notes =
 
 === Mixed planets ===
 
