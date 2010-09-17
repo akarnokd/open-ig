@@ -1,0 +1,5 @@
+#summary The release notes of the MapEditor version comes here
+
+<wiki:toc max_depth="1" />
+
+Later.
