@@ -311,9 +311,17 @@
 	<entry key='mapeditor.filename'>File name:</entry>
 	<entry key='mapeditor.recent'>Recent</entry>
 	<entry key='mapeditor.clear_recent'>Clear recent</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	
+	<entry key='mapeditor.edit_resize'>Resize map...</entry>
+	<entry key='mapeditor.edit_cleanup'>Remove outbound objects</entry>
+	<entry key='mapeditor.new_map'>New Map</entry>
+	<entry key='mapeditor.resize_map'>Resize Map</entry>
+	<entry key='mapeditor.new_width'>Width:</entry>
+	<entry key='mapeditor.new_height'>Height:</entry>
+	<entry key='mapeditor.ok'>OK</entry>
+	<entry key='mapeditor.cleanup_result'>Cleanup results: Total = %d, Buildings = %d, Surfaces = %d</entry>
+	<entry key='mapeditor.view_standard_fonts'>Use standard fonts</entry>
+	<entry key='mapeditor.view_placement_hints'>View placement hints</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

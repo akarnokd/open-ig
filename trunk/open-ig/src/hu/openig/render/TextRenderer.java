@@ -12,7 +12,10 @@ import hu.openig.core.ResourceType;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.utils.LRUHashMap;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -122,13 +125,18 @@ public class TextRenderer {
 	private Map<Integer, Integer> charsetWidths = new HashMap<Integer, Integer>();
 	/** The character space for a particular character size. */
 	private Map<Integer, Integer> charsetSpaces = new HashMap<Integer, Integer>();
-//	/** Use standard Java fonts instead of the original bitmap fonts. */
-//	private boolean useStandardFonts = true;
+	/** By default, use the standard fonts? */
+	public static final boolean USE_STANDARD_FONTS = false;
+	/** Use standard Java fonts instead of the original bitmap fonts. */
+	private boolean useStandardFonts = USE_STANDARD_FONTS;
+	/** The default font rendering context. */
+	private final FontRenderContext frc;
 	/**
 	 * Constructor. Initializes the internal tables by processing the given file.
 	 * @param rl the resource locator
 	 */
 	public TextRenderer(ResourceLocator rl) {
+		frc = new FontRenderContext(null, false, false);
 		try {
 			ResourcePlace rp = rl.get("generic", "charset", ResourceType.IMAGE);
 			if (rp == null) {
@@ -280,6 +288,10 @@ public class TextRenderer {
 	 */
 	public int getTextWidth(int size, String text) {
 		if (text.length() > 0) {
+			if (useStandardFonts) {
+				Font font = new Font(Font.MONOSPACED, Font.PLAIN, size + 4);
+				return (int)font.getStringBounds(text, frc).getWidth();
+			}
 			Integer widths = charsetWidths.get(size);
 			Integer spaces = charsetSpaces.get(size);
 			if (widths == null) {
@@ -301,16 +313,16 @@ public class TextRenderer {
 	 * @param text the text to print
 	 */
 	public void paintTo(Graphics2D g, int x, int y, int size, int color, String text) {
-//		if (useStandardFonts) {
-//			Font f = g.getFont();
-//			Color c = g.getColor();
-//			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, size + 2));
-//			g.setColor(new Color(color));
-//			g.drawString(text, x, y + g.getFontMetrics().getAscent());
-//			g.setColor(c);
-//			g.setFont(f);
-//			return;
-//		}
+		if (useStandardFonts) {
+			Font f = g.getFont();
+			Color c = g.getColor();
+			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, size + 4));
+			g.setColor(new Color(color));
+			g.drawString(text, x, y + g.getFontMetrics().getAscent() - 4);
+			g.setColor(c);
+			g.setFont(f);
+			return;
+		}
 		Map<Integer, SizedCharImages> charMap = coloredCharImages.get(color);
 		if (charMap == null) {
 			charMap = split(color);
@@ -401,17 +413,17 @@ public class TextRenderer {
 		}
 		return maxWidth;
 	}
-//	/**
-//	 * Set the standard font usage.
-//	 * @param value use?
-//	 */
-//	public void setUseStandardFonts(boolean value) {
-//		this.useStandardFonts = value;
-//	}
-//	/**
-//	 * @return is standard fonts in use?
-//	 */
-//	public boolean isUseStandardFonts() {
-//		return useStandardFonts;
-//	}
+	/**
+	 * Set the standard font usage.
+	 * @param value use?
+	 */
+	public void setUseStandardFonts(boolean value) {
+		this.useStandardFonts = value;
+	}
+	/**
+	 * @return is standard fonts in use?
+	 */
+	public boolean isUseStandardFonts() {
+		return useStandardFonts;
+	}
 }

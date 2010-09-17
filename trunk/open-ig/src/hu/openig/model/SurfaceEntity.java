@@ -14,7 +14,7 @@ import hu.openig.core.Tile;
  * class is used to 'mediate' the inner segments of a tile.
  * @author karnokd
  */
-public class SurfaceEntity {
+public final class SurfaceEntity {
 	/** 
 	 * The virtual row within the Tile object. A row is defined in the up-right direction and is always nonnegative (despite the surface coordinate
 	 * system is basically on the negative axis).
@@ -30,4 +30,5 @@ public class SurfaceEntity {
 	public Building building;
 	/** The entity type. */
 	public SurfaceEntityType type;
+	
 }

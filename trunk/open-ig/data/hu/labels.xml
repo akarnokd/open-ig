@@ -385,7 +385,16 @@
 	<entry key='mapeditor.filename'>Fájl név:</entry>
 	<entry key='mapeditor.recent'>Korábbi</entry>
 	<entry key='mapeditor.clear_recent'>Törlés</entry>
-	<entry key=''></entry>
+	<entry key='mapeditor.edit_resize'>Térkép átméretezése...</entry>
+	<entry key='mapeditor.edit_cleanup'>Kilógó objektumok törlése</entry>
+	<entry key='mapeditor.new_map'>Új térkép</entry>
+	<entry key='mapeditor.resize_map'>Térkép átméretezése</entry>
+	<entry key='mapeditor.new_width'>Szélesség:</entry>
+	<entry key='mapeditor.new_height'>Magasság:</entry>
+	<entry key='mapeditor.ok'>OK</entry>
+	<entry key='mapeditor.cleanup_result'>Takarítás eredménye: Összesen = %d, Épület = %d, Felszín = %d</entry>
+	<entry key='mapeditor.view_standard_fonts'>Standard betűtípus használata</entry>
+	<entry key='mapeditor.view_placement_hints'>Telepítési segédlet mutatása</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
