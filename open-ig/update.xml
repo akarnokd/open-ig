@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<update>
+	<!-- Update definitions for the Open Imperium Galactica components -->
+	<module id='Launcher' version='0.1'>
+		<!-- General module description -->
+		<general url='http://code.google.com/p/open-ig/wiki/Launcher'>
+			<desc lang='hu'>
+				Az Open Imperium Galactica indító programja, amely automatikusan letölti
+				a különféle modulok fájljait telepítés, frissítés vagy javítás céljából.
+			</desc>
+			<desc lang='en'>
+				The launcher for the Open Imperium Galactica which can download various module files
+				for install, upgrade or repair purposes.
+			</desc>
+		</general>
+		<!-- Release notes -->
+		<notes url='http://code.google.com/p/open-ig/wiki/Launcher_Notes'>
+			<desc lang='hu'>Első verzió.</desc>
+			<desc lang='en'>First version.</desc>
+		</notes>
+		<!-- Particular files location and hashes, file descriptions -->
+		<file url='http://open-ig.googlecode.com/files/open-ig-launcher-0.1.jar' md5='' sha1=''>
+			<desc lang='hu'>A program fő fájlja</desc>
+			<desc lang='en'>The program's main file</desc>
+		</file>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip' md5='' sha1=''>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2010 szeptember 17 / A</desc>
+			<desc lang='en'>The upgraded resource file. 17th September, 2010 / A</desc>
+		</file>
+		<remove file='open-ig-launcher-config.xml'>
+			<desc lang='hu'>Konfigurációs probléma merülhet fel.</desc>
+			<desc lang='en'>To avoid configuration problems.</desc>
+		</remove>
+	</module>
+	<module id='MapEditor' version='0.4'>
+		<general url='http://code.google.com/p/open-ig/wiki/MapEditor'>
+			<desc lang='hu'>
+				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.
+			</desc>
+			<desc lang='en'>
+				The launcher for the Open Imperium Galactica which can download various module files
+				for install, upgrade or repair purposes.
+			</desc>
+		</general>
+		<!-- Release notes -->
+		<notes url='http://code.google.com/p/open-ig/wiki/MapEditor_Notes'>
+			<desc lang='hu'>Első verzió.</desc>
+			<desc lang='en'>First version.</desc>
+		</notes>
+		<file url='http://open-ig.googlecode.com/files/open-ig-mapeditor-0.4.jar' md5='' sha1=''>
+			<desc lang='hu'>A program fő fájlja.</desc>
+			<desc lang='en'>The program's main file.</desc>
+		</file>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip' md5='' sha1=''>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2010 szeptember 17 / A</desc>
+			<desc lang='en'>The upgraded resource file. 17th September, 2010 / A</desc>
+		</file>
+	</module>
+	<module id='Game' version='0.81'>
+		<general url='http://code.google.com/p/open-ig/'>
+			<desc lang='hu'>
+				Az Open Imperium Galactica játék.
+			</desc>
+			<desc lang='en'>
+				The Open Imperium Galactica game.
+			</desc>
+		</general>
+		<!-- Release notes -->
+		<notes url='http://code.google.com/p/open-ig/wiki/Game_Release_Notes'>
+			<desc lang='hu'>Első verzió.</desc>
+			<desc lang='en'>First version.</desc>
+		</notes>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.81.jar' md5='' sha1=''>
+			<desc lang='hu'>A program fő fájlja.</desc>
+			<desc lang='en'>The program's main file.</desc>
+		</file>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip' md5='' sha1=''>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2010 szeptember 17 / A</desc>
+			<desc lang='en'>The upgraded resource file. 17th September, 2010 / A</desc>
+		</file>
+		<file url='http://open-ig.googlecode.com/files/open-ig-audio-generic-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-audio-hu-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-audio-en-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-03-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-04-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-05-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-06-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-07-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-08-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-09-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-10-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip' md5='' sha1=''/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip' md5='' sha1=''/>
+		<!-- md5 and sha1 are optional: used to detect manipulation by user and offer the option to keep them -->
+		<remove file='open-ig-video-data-0.8.zip' md5='' sha1=''>
+			<desc lang='hu'>A 2010 szeptember 17 / A frissítés teljesen felülbírálja.</desc>
+			<desc lang='en'>The upgrade 17th September, 2010 / A overrides this file completely.</desc>
+		</remove>
+		<remove file='open-ig-video-images-0.8.zip' md5='' sha1=''>
+			<desc lang='hu'>A 2010 szeptember 17 / A frissítés teljesen felülbírálja.</desc>
+			<desc lang='en'>The upgrade 17th September, 2010 / A overrides this file completely.</desc>
+		</remove>
+	</module>
+</update>
