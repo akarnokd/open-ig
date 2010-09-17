@@ -47,15 +47,11 @@ public class ClickLabel extends Button {
 		int color = selected ? 0xFFFFCC00 : (mouseOver ? 0xFFFFEE00 : 0xFF00CC00);
 		commons.text.paintTo(g2, x0 + x + 5, y0 + y + 2, size, color, commons.labels.get(label));
 	}
-	/**
-	 * @return the text width
-	 */
+	@Override
 	public int getWidth() {
 		return commons.text.getTextWidth(size, commons.labels.get(label)) + 10;
 	}
-	/**
-	 * @return the text height
-	 */
+	@Override
 	public int getHeight() {
 		return size + 4;
 	}

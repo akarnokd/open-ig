@@ -261,6 +261,7 @@ public class ImportDialog extends JDialog {
 	}
 	/** Cancel button clicked. */
 	void doCancel() {
+		success = false;
 		dispose();
 	}
 	/**

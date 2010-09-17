@@ -60,6 +60,8 @@ public class PlanetSurface {
 	public final List<SurfaceFeature> features = new ArrayList<SurfaceFeature>();
 	/** Compute the rendering start-stop locations. */
 	public void computeRenderingLocations() {
+		renderingOrigins.clear();
+		renderingLength.clear();
 		// y -> x
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for (int i = 0; i < height; i++) {

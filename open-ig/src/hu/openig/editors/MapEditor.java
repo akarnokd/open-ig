@@ -127,7 +127,7 @@ public class MapEditor extends JFrame {
 	/** The minimum memory required to run Open-IG. */
 	private static final long MINIMUM_MEMORY = 384L;
 	/** The map editor's JAR file version. */
-	public static final String MAP_EDITOR_JAR_VERSION = "0.3";
+	public static final String MAP_EDITOR_JAR_VERSION = "0.4";
 	/** The title text. */
 	public static final String TITLE = "Open-IG MapEditor v" + MAP_EDITOR_JAR_VERSION;
 	/** The main resource locator. */
@@ -366,6 +366,18 @@ public class MapEditor extends JFrame {
 		/** Toolbar online. */
 		@Rename(to = "", tip = "mapeditor.help_online")
 		public AbstractButton toolbarHelp;
+		/** Resize map. */
+		@Rename(to = "mapeditor.edit_resize", tip = "")
+		public JMenuItem editResize;
+		/** Clear outbound objects. */
+		@Rename(to = "mapeditor.edit_cleanup", tip = "")
+		public JMenuItem editCleanup;
+		/** View standard fonts. */
+		@Rename(to = "mapeditor.view_standard_fonts", tip = "")
+		public JCheckBoxMenuItem viewStandardFonts;
+		/** View the placement hints on the map? */
+		@Rename(to = "mapeditor.view_placement_hints", tip = "")
+		public JCheckBoxMenuItem viewPlacementHints;
 	}
 	/** The User Interface elements to rename. */
 	final UIElements ui = new UIElements();
@@ -449,7 +461,7 @@ public class MapEditor extends JFrame {
 				renderer.areaCurrent.alpha = 1.0f;
 			
 				renderer.txt = this.txt;
-				
+				renderer.txt.setUseStandardFonts(ui.viewStandardFonts.isSelected());
 				buildTables(surfaces, buildings, races);
 			}
 		};
@@ -886,10 +898,10 @@ public class MapEditor extends JFrame {
 		});
 		
 		ui.editUndo = new JMenuItem("Undo");
-		ui.editUndo.setEnabled(undoManager.canUndo()); // TODO implement
+		ui.editUndo.setEnabled(undoManager.canUndo()); 
 		
 		ui.editRedo = new JMenuItem("Redo");
-		ui.editRedo.setEnabled(undoManager.canRedo()); // TODO implement
+		ui.editRedo.setEnabled(undoManager.canRedo()); 
 		
 		
 		ui.editCut = new JMenuItem("Cut");
@@ -932,6 +944,22 @@ public class MapEditor extends JFrame {
 		
 		ui.editPlaceRoads = new JMenu("Place roads");
 		
+		ui.editResize = new JMenuItem("Resize map");
+		ui.editCleanup = new JMenuItem("Remove outbound objects");
+		
+		ui.editResize.addActionListener(new Act() {
+			@Override
+			public void act() {
+				doResize();
+			}
+		});
+		ui.editCleanup.addActionListener(new Act() {
+			@Override
+			public void act() {
+				doCleanup();
+			}
+		});
+		
 		ui.viewZoomIn = new JMenuItem("Zoom in");
 		ui.viewZoomOut = new JMenuItem("Zoom out");
 		ui.viewZoomNormal = new JMenuItem("Zoom normal");
@@ -940,13 +968,13 @@ public class MapEditor extends JFrame {
 		ui.viewMoreLight = new JMenuItem("More light (+0.05)");
 		ui.viewLessLight = new JMenuItem("Less light (-0.05)");
 		
-		ui.viewShowBuildings = new JCheckBoxMenuItem("Show/hide buildings", true);
+		ui.viewShowBuildings = new JCheckBoxMenuItem("Show/hide buildings", renderer.showBuildings);
 		ui.viewShowBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK));
 		
-		ui.viewSymbolicBuildings = new JCheckBoxMenuItem("Minimap rendering mode");
+		ui.viewSymbolicBuildings = new JCheckBoxMenuItem("Minimap rendering mode", renderer.minimapMode);
 		ui.viewSymbolicBuildings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK));
 		
-		ui.viewTextBackgrounds = new JCheckBoxMenuItem("Show/hide text background boxes", true);
+		ui.viewTextBackgrounds = new JCheckBoxMenuItem("Show/hide text background boxes", renderer.textBackgrounds);
 		ui.viewTextBackgrounds.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
 		ui.viewTextBackgrounds.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleTextBackgrounds(); } });
 		
@@ -968,6 +996,22 @@ public class MapEditor extends JFrame {
 		ui.viewLessLight.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD2, InputEvent.CTRL_DOWN_MASK));
 		ui.viewBrighter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD7, InputEvent.CTRL_DOWN_MASK));
 		ui.viewDarker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD1, InputEvent.CTRL_DOWN_MASK));
+		
+		ui.viewStandardFonts = new JCheckBoxMenuItem("Use standard fonts", TextRenderer.USE_STANDARD_FONTS);
+		
+		ui.viewStandardFonts.addActionListener(new Act() {
+			@Override
+			public void act() {
+				doStandardFonts();
+			}
+		});
+		ui.viewPlacementHints = new JCheckBoxMenuItem("View placement hints", renderer.placementHints);
+		ui.viewPlacementHints.addActionListener(new Act() {
+			@Override
+			public void act() {
+				doViewPlacementHints();
+			}
+		});
 		
 		ui.helpOnline = new JMenuItem("Online wiki...");
 		ui.helpOnline.addActionListener(new ActionListener() {
@@ -1014,10 +1058,10 @@ public class MapEditor extends JFrame {
 		addAll(ui.fileMenu, ui.fileNew, null, ui.fileOpen, ui.fileRecent, ui.fileImport, null, ui.fileSave, ui.fileSaveAs, null, ui.fileExit);
 		addAll(ui.editMenu, ui.editUndo, ui.editRedo, null, ui.editCut, ui.editCopy, ui.editPaste, null, 
 				ui.editPlaceMode, null, ui.editDeleteBuilding, ui.editDeleteSurface, ui.editDeleteBoth, null, 
-				ui.editClearBuildings, ui.editClearSurface, null, ui.editPlaceRoads);
+				ui.editClearBuildings, ui.editClearSurface, null, ui.editPlaceRoads, null, ui.editResize, ui.editCleanup);
 		addAll(ui.viewMenu, ui.viewZoomIn, ui.viewZoomOut, ui.viewZoomNormal, null, 
 				ui.viewBrighter, ui.viewDarker, ui.viewMoreLight, ui.viewLessLight, null, 
-				ui.viewShowBuildings, ui.viewSymbolicBuildings, ui.viewTextBackgrounds);
+				ui.viewShowBuildings, ui.viewSymbolicBuildings, ui.viewTextBackgrounds, ui.viewStandardFonts, ui.viewPlacementHints);
 		addAll(ui.helpMenu, ui.helpOnline, null, ui.helpAbout);
 		
 		addAll(ui.languageMenu, ui.languageEn, ui.languageHu);
@@ -1568,12 +1612,18 @@ public class MapEditor extends JFrame {
 	 * Create a new, empty surface map.
 	 */
 	void doNew() {
-		setTitle(TITLE);
-		createPlanetSurface(33, 66);
-		renderer.repaint();
-		saveSettings = null;
-		undoManager.discardAllEdits();
-		setUndoRedoMenu();
+		
+		NewResizeDialog dlg = new NewResizeDialog(labels, true);
+		dlg.setLocationRelativeTo(this);
+		dlg.setVisible(true);
+		if (dlg.success) {
+			setTitle(TITLE);
+			createPlanetSurface(dlg.width, dlg.height);
+			renderer.repaint();
+			saveSettings = null;
+			undoManager.discardAllEdits();
+			setUndoRedoMenu();
+		}
 	}
 	/**
 	 * Create an empty planet surface with the given size.
@@ -2571,8 +2621,9 @@ public class MapEditor extends JFrame {
 				out.printf("  <lights preview='%d' map='%s'/>%n", alphaSlider.getValue(), Float.toString(alpha));
 				out.printf("  <filter surface='%s' building='%s'/>%n", XML.toHTML(filterSurface.getText()), XML.toHTML(filterBuilding.getText()));
 				out.printf("  <allocation worker='%s' strategy='%d'/>%n", ui.allocationPanel.availableWorkers.getText(), ui.allocationPanel.strategies.getSelectedIndex());
-				out.printf("  <view buildings='%s' minimap='%s' textboxes='%s' zoom='%s'/>%n", ui.viewShowBuildings.isSelected(), 
-						ui.viewSymbolicBuildings.isSelected(), ui.viewTextBackgrounds.isSelected(), Double.toString(renderer.scale));
+				out.printf("  <view buildings='%s' minimap='%s' textboxes='%s' zoom='%s' standard-fonts='%s' placement-hints='%s'/>%n", ui.viewShowBuildings.isSelected(), 
+						ui.viewSymbolicBuildings.isSelected(), ui.viewTextBackgrounds.isSelected(), Double.toString(renderer.scale), ui.viewStandardFonts.isSelected()
+						, ui.viewPlacementHints.isSelected());
 				out.printf("  <custom-surface-names>%n");
 				for (TileEntry te : surfaceTableModel.rows) {
 					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XML.toHTML(te.surface), XML.toHTML(te.name));
@@ -2666,7 +2717,15 @@ public class MapEditor extends JFrame {
 					if ("true".equals(eView.getAttribute("textboxes"))) {
 						ui.viewTextBackgrounds.doClick();
 					}
+					ui.viewTextBackgrounds.setSelected(false);
+					if ("true".equals(eView.getAttribute("textboxes"))) {
+						ui.viewTextBackgrounds.doClick();
+					}
 					renderer.scale = Double.parseDouble(eView.getAttribute("zoom"));
+					
+					ui.viewStandardFonts.setSelected("true".equals(eView.getAttribute("standard-fonts")));
+					ui.viewPlacementHints.setSelected(!"true".equals(eView.getAttribute("placement-hints")));
+					ui.viewPlacementHints.doClick();
 				}
 				
 				Element eSurfaces = XML.childElement(root, "custom-surface-names");
@@ -2747,5 +2806,98 @@ public class MapEditor extends JFrame {
 			});
 			ui.fileRecent.insert(item, 2);
 		}
+	}
+	/**
+	 * Remove outbound objects.
+	 */
+	protected void doCleanup() {
+		if (renderer.surface == null) {
+			return;
+		}
+		int buildingCount = 0;
+		UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
+		for (int i = renderer.surface.buildings.size() - 1; i >= 0; i--) {
+			Building b = renderer.surface.buildings.get(i);
+			inner:
+			for (int x = b.location.x; x < b.location.x + b.tileset.normal.width; x++) {
+				for (int y = b.location.y; y > b.location.y - b.tileset.normal.height; y--) {
+					if (!renderer.surface.cellInMap(x, y)) {
+						renderer.surface.buildings.remove(i);
+						if (currentBuilding == b) {
+							currentBuilding = null;
+						}
+						buildingCount++;
+						removeTiles(renderer.surface.buildingmap, b.location.x, b.location.y, b.tileset.normal.width, b.tileset.normal.height);
+						break inner;
+					}
+				}
+			}
+		}
+		int tileCount = 0;
+		for (int i = renderer.surface.features.size() - 1; i >= 0; i--) {
+			SurfaceFeature f = renderer.surface.features.get(i);
+			inner:
+			for (int x = f.location.x; x < f.location.x + f.tile.width; x++) {
+				for (int y = f.location.y; y > f.location.y - f.tile.height; y--) {
+					if (!renderer.surface.cellInMap(x, y)) {
+						renderer.surface.features.remove(i);
+						if (currentBaseTile == f) {
+							currentBaseTile = null;
+						}
+						tileCount++;
+						removeTiles(renderer.surface.basemap, f.location.x, f.location.y, f.tile.width, f.tile.height);
+						break inner;
+					}
+				}
+			}
+		}		
+		if (renderer.surface.buildings.size() > 0) {
+			placeRoads(renderer.surface.buildings.get(0).techId);
+		}
+		undo.setAfter();
+		addUndo(undo);
+		JOptionPane.showMessageDialog(this, String.format(labels.format("mapeditor.cleanup_result", buildingCount + tileCount, buildingCount, tileCount)));
+	}
+	/**
+	 * Remove tiles from the given rectangle.
+	 * @param map the map
+	 * @param x the origin
+	 * @param y the origin
+	 * @param width the width
+	 * @param height the height
+	 */
+	void removeTiles(Map<Location, SurfaceEntity> map, int x, int y, int width, int height) {
+		for (int i = x; i < x + width; i++) {
+			for (int j = y; j > y - height; j--) {
+				map.remove(Location.of(x, y));
+			}
+		}
+	}
+	/**
+	 * Resize the current surface.
+	 */
+	protected void doResize() {
+		if (renderer.surface == null) {
+			doNew();
+			return;
+		}
+		NewResizeDialog dlg = new NewResizeDialog(labels, false);
+		dlg.widthText.setText("" + renderer.surface.width);
+		dlg.heightText.setText("" + renderer.surface.height);
+		dlg.setLocationRelativeTo(this);
+		dlg.setVisible(true);
+		if (dlg.success) {
+			renderer.surface.width = dlg.width;
+			renderer.surface.height = dlg.height;
+			renderer.surface.computeRenderingLocations();
+		}
+	}
+	/** Toggle the standard font display mode. */
+	protected void doStandardFonts() {
+		renderer.txt.setUseStandardFonts(ui.viewStandardFonts.isSelected());
+	}
+	/** View placement hints. */
+	protected void doViewPlacementHints() {
+		renderer.placementHints = ui.viewPlacementHints.isSelected();
 	}
 }
