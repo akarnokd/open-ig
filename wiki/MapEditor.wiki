@@ -56,9 +56,51 @@ The default map size is 33 x 66 which corresponds to the original game's map siz
 
 === File / Open ===
 
+Brings up the *Load Map* dialog.
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-open.png
+
+The user can type in a path to the file or browse for it.
+
+The user can load only the surface features or only the buildings from the file.
+
+The dialog remembers the last filename entered.
+
 === File / Save as ===
 
+Brings up the *Save Map* dialog.
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-save.png
+
+The user can type in a path to the file or browse for it.
+
+The user can save only the surface features or only the buildings into the file.
+
+The dialog remembers the last filename entered.
+
 === File / Import ===
+
+Brings up the *Import a map or planet settings* dialog.
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-import.png
+
+Import an original Imperium Galactica surface or planet. 
+
+If there is no map active in the editor, the approval of the dialog creates the default 33 x 66 map.
+
+The *Original map* lists all available surface types and their variants, e.g. desert 1, neptoplasm 3 etc.
+
+The *Original planet* lists all planets from  the original game as they are present at the start of the main campaign. The list contains their names, their surface type and their current owner race, e.g. Achilles |Desert: Empire|.
+
+The *Shift X* and *Shift Y* lets the user adjust the placement of the imported map relative to the main coordinate system. Original maps and planets require to be shifted by (-1, -1) to confront with the new planet rendering routines (otherwise, it will clip the first column or row of the original map). Combined with the *Replace current surface* option disabled, the user can merge several different maps together.
+
+The *Replace current surface* clears any existing surface settings and puts the original map onto the current map. Can be used to switch a base surface below a built colony.
+
+The *Replace current building* clears any existing building and places the original buildings onto the map. Can be used to populate a newly built map with the original layout of buildings.
+
+The *Replace surface along with the buildings* basically loads the original planet with surface and building contents replacing the current map.
+
+Click *Import* to proceed. The dialog remembers its last settings and can be used to import maps subsequently with ease.
 
 == Edit ==
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-edit.png
