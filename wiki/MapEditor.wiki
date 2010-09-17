@@ -133,9 +133,26 @@ The cut, copy functions store an XML description of the selected elements on the
 
 === Selection / Placement mode ===
 
+The map can be used in two modes: _selection mode_ and _placement mode_.
+
+_Selection mode_ allows the user to select a rectangular region (in map coordinate terms) or select a building. This mode can be used to cut, copy, paste, delete or fill objects. In this mode, any placement started from the *Surfaces & Buildings* tables will ignore placeability constraints (e.g. you cannot place buildings on each other or on a multi-tile surface).
+
+_Placement mode_ allows the user to place the selected surface feature or building onto the map. In this mode the placeability constraints apply, e.g. you cannot place buildings onto each other, beyond the map's edges or onto a multi-tile surface feature; you cannot place surface features beyond the map edges. Placing a multi-tile surface on another multi-tile surface removes the latter.
+
+You can toggle between these modes with F3, menu or toolbar ( http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/editors/res/Down24.gif ).
+
+
 === Resize map ===
 
+Brings up the *Resize Map* dialog.
+
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-resize.png
+
+The user can enter the width and height of the new map. Width and height of the map is considered as how many tiles can be placed edge-by-edge. For example:
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-mapeditor-0.4-filenew-tiles.png
+
+has width of 3 and height of 2. The tiles are twice as wide as they are height, therefore, a square-like map has width *w* and height *2 x w*.
 
 == View ==
 
