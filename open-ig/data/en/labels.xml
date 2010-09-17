@@ -322,8 +322,12 @@
 	<entry key='mapeditor.cleanup_result'>Cleanup results: Total = %d, Buildings = %d, Surfaces = %d</entry>
 	<entry key='mapeditor.view_standard_fonts'>Use standard fonts</entry>
 	<entry key='mapeditor.view_placement_hints'>View placement hints</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mapeditor.edit_cut_building'>Cut: building</entry>
+	<entry key='mapeditor.edit_cut_surface'>Cut: surface</entry>
+	<entry key='mapeditor.edit_copy_building'>Copy: building</entry>
+	<entry key='mapeditor.edit_copy_surface'>Copy: surface</entry>
+	<entry key='mapeditor.edit_paste_building'>Paste: building</entry>
+	<entry key='mapeditor.edit_paste_surface'>Paste: surface</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

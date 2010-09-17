@@ -30,7 +30,7 @@ public final class PackageStuff {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		ZipOutputStream zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-0.3.jar"), 1024 * 1024));
+		ZipOutputStream zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-0.4.jar"), 1024 * 1024));
 		try {
 			processDirectory(".\\bin\\", ".\\bin", zout);
 			
@@ -43,7 +43,7 @@ public final class PackageStuff {
 		} finally {
 			zout.close();
 		}
-		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-0.3-src.zip"), 1024 * 1024));
+		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-0.4-src.zip"), 1024 * 1024));
 		try {
 			processDirectory(".\\src\\", ".\\src", zout);
 			
@@ -56,7 +56,7 @@ public final class PackageStuff {
 		} finally {
 			zout.close();
 		}
-		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-upgrade-20100916a.zip"), 16 * 1024 * 1024));
+		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-upgrade-20100917a.zip"), 16 * 1024 * 1024));
 		try {
 			processDirectory(".\\data\\", ".\\data", zout);
 			processDirectory(".\\images\\", ".\\images", zout);

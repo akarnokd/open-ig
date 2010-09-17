@@ -10,6 +10,7 @@ package hu.openig.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -21,6 +22,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -247,6 +249,24 @@ public final class XML {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(file);
+			return doc.getDocumentElement();
+		} catch (SAXException ex) {
+			throw new IOException(ex);
+		} catch (ParserConfigurationException ex) {
+			throw new IOException(ex);
+		}
+	}
+	/**
+	 * Parse an XML from the supplied string.
+	 * @param xml the XML as string
+	 * @return the root element
+	 * @throws IOException on parsing errors
+	 */
+	public static Element parse(String xml) throws IOException {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document doc = db.parse(new InputSource(new StringReader(xml)));
 			return doc.getDocumentElement();
 		} catch (SAXException ex) {
 			throw new IOException(ex);
