@@ -86,17 +86,17 @@ public final class Startup {
 			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-" + Configuration.VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.Startup");
 		}
 		try {
-			Process p = pb.start();
-			createBackgroundReader(p.getInputStream(), System.out).start();
-			createBackgroundReader(p.getErrorStream(), System.err).start();
-			p.waitFor();
+			/* Process p = */ pb.start();
+//			createBackgroundReader(p.getInputStream(), System.out).start();
+//			createBackgroundReader(p.getErrorStream(), System.err).start();
+//			p.waitFor();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-			return false;
+//		} catch (InterruptedException ex) {
+//			ex.printStackTrace();
+//			return false;
 		}
 	}
 	/**
@@ -105,7 +105,7 @@ public final class Startup {
 	 * @param out the output stream
 	 * @return the thread
 	 */
-	private static Thread createBackgroundReader(final InputStream in, final OutputStream out) {
+	static Thread createBackgroundReader(final InputStream in, final OutputStream out) {
 		return new Thread() {
 			@Override
 			public void run() {

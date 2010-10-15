@@ -63,6 +63,19 @@ public final class PackageStuff {
 		} finally {
 			zout.close();
 		}
+		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-0.81.jar"), 1024 * 1024));
+		try {
+			processDirectory(".\\bin\\", ".\\bin", zout);
+			
+			ZipEntry mf = new ZipEntry("META-INF/MANIFEST.MF");
+			File mfm = new File("META-INF/MANIFEST.MF");
+			mf.setSize(mfm.length());
+			mf.setTime(mfm.lastModified());
+			zout.putNextEntry(mf);
+			zout.write(IOUtils.load(mfm));
+		} finally {
+			zout.close();
+		}
 	}
 	/**
 	 * Process the contents of the given directory.
