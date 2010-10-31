@@ -20,4 +20,16 @@ public class LFile extends LBaseItem {
 	public String md5;
 	/** The SHA1 hash of the target file. */
 	public String sha1;
+	/**
+	 * Convert the hex string into a byte array.
+	 * @param hex the hex string
+	 * @return the byte array
+	 */
+	public static byte[] toByteArray(String hex) {
+		byte[] result = new byte[hex.length() / 2];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = (byte)Integer.parseInt(hex.substring(i * 2, i * 2 + 2), 16);
+		}
+		return result;
+	}
 }

@@ -28,7 +28,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +58,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -5640883678496406236L;
 	/** The launcher's version. */
-	static final String VERSION = "0.1";
+	static final String VERSION = "0.0";
 	/** The list of stuff. */
 	JPanel listPanel;
 	/** The exit buttom. */
@@ -273,8 +276,22 @@ public class Launcher extends JFrame {
 
 			mp.start.setVisible(false);
 			mp.update.setVisible(true);
+			mp.update.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					updateModule(mp, launcherModule);
+				}
+			});
+			
+			
 			mp.verify.setVisible(false);
 			mp.install.setVisible(false);
+			mp.install.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					installModule(mp, launcherModule);
+				}
+			});
 			mp.remove.setVisible(false);
 			mp.updateAvailable.setVisible(true);
 			listPanel.add(mp);
@@ -310,6 +327,18 @@ public class Launcher extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					installModule(mp, m);
+				}
+			});
+			mp.update.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					updateModule(mp, m);
+				}
+			});
+			mp.start.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					startModule(mp, m);
 				}
 			});
 			mp.remove.addActionListener(new ActionListener() {
@@ -357,12 +386,13 @@ public class Launcher extends JFrame {
 			mp.title.setText(m.id + " " + iv);
 			mp.install.setVisible(false);
 			mp.start.setVisible(true);
-			mp.verify.setVisible(true);
 			mp.remove.setVisible(true);
-			if (m.compareVersion(iv) > 0) {
+			int c = m.compareVersion(iv); 
+			if (c > 0) {
 				mp.update.setVisible(true);
 				mp.updateAvailable.setVisible(m.compareVersion(iv) > 0);
 			} else {
+				mp.verify.setVisible(c == 0);
 				mp.update.setVisible(false);
 				mp.updateAvailable.setVisible(false);
 			}
@@ -434,7 +464,7 @@ public class Launcher extends JFrame {
 			install = new JButton("Install");
 			remove = new JButton("Remove");
 			cancel = new JButton("Cancel");
-			
+			cancel.setVisible(false);
 			
 			progress = new JProgressBar();
 			progress.setVisible(false);
@@ -499,18 +529,6 @@ public class Launcher extends JFrame {
 				.addComponent(statistics)
 			);
 		}
-	}
-	/**
-	 * @param args the arguments
-	 */
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				Launcher ln = new Launcher();
-				ln.setVisible(true);
-			}
-		});
 	}
 	/** Perform the exit. */
 	void doExit() {
@@ -603,6 +621,79 @@ public class Launcher extends JFrame {
 		});
 	}
 	/**
+	 * Start the installation of the given module.
+	 * @param mp the module panel
+	 * @param m the module definition
+	 */
+	protected void updateModule(final ModulePanel mp, final LModule m) {
+		mp.update.setVisible(false);
+		mp.cancel.setVisible(true);
+
+		mp.progress.setVisible(true);
+		mp.statistics.setVisible(true);
+		
+		List<String> localFiles = new ArrayList<String>();
+		long t = System.currentTimeMillis();
+		int index = 0;
+		for (LFile f : m.files) {
+			int idx = f.url.lastIndexOf("/");
+			String lf = f.url.substring(idx + 1);
+
+			File lff = new File(lf);
+
+			try {
+				MessageDigest md5 = MessageDigest.getInstance("MD5");
+				if (lff.canRead()) {
+					
+					byte[] buffer = new byte[64 * 1024];
+					long bytesReceived = 0;
+					long bytesTotal = lff.length();
+					try {
+						FileInputStream fin = new FileInputStream(lff);
+						do {
+							int read = fin.read(buffer);
+							if (read > 0) {
+								mp.statistics.setText("[" + (index + 1) + " / " + localFiles.size() + "] "
+										+ lf + " (" + String.format("%.2f", bytesReceived / 1024.0 / 1024.0) + " MB"  
+								);
+								mp.progress.setValue((int)(100 * bytesReceived / bytesTotal));
+								md5.update(buffer, 0, read);
+							} else
+							if (read < 0) {
+								break;
+							}
+						} while (true);
+						byte[] md5h = md5.digest();
+						byte[] md5h1 = LFile.toByteArray(f.md5);
+						if (!Arrays.equals(md5h, md5h1)) {
+							localFiles.add(lf + "." + t);
+						}
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+				} else {			
+					localFiles.add(lf + "." + t);
+				}
+				index++;
+			} catch (NoSuchAlgorithmException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		final Downloader[] currentDownloader = new Downloader[1];
+		
+		downloadLoop(localFiles, mp, m, 0, currentDownloader);
+		
+		mp.cancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentDownloader[0].cancel(true);
+				mp.cancel.setVisible(false);
+				setVisibleModuleButtons(m, mp);
+			}
+		});
+	}
+	/**
 	 * The download loop for each files.
 	 * @param localFiles the local files
 	 * @param mp the module panel
@@ -657,26 +748,105 @@ public class Launcher extends JFrame {
 	 * @param localFiles the list of the local file names
 	 */
 	private void downloadCompleted(ModulePanel mp, LModule m, List<String> localFiles) {
-		for (int i = 0; i < localFiles.size(); i++) {
-			String s = localFiles.get(i);
-			File f = new File(s);
-			int idx = s.lastIndexOf(".");
-			String s1 = s.substring(0, idx);
-			File f2 = new File(s1);
-			if (f2.exists()) {
-				f2.delete();
+		if (!m.id.equals("Launcher")) {
+			for (int i = 0; i < localFiles.size(); i++) {
+				String s = localFiles.get(i);
+				File f = new File(s);
+				int idx = s.lastIndexOf(".");
+				String s1 = s.substring(0, idx);
+				File f2 = new File(s1);
+				if (f2.exists()) {
+					f2.delete();
+				}
+				if (!f.renameTo(f2)) {
+					System.err.printf("Could not rename %s to %s%n", s, s1);
+				}
 			}
-			if (!f.renameTo(f2)) {
-				System.err.printf("Could not rename %s to %s%n", s, s1);
+			for (LRemoveFile rf : m.removeFiles) {
+				File f = new File(rf.file);
+				f.delete();
+			}
+			mp.progress.setVisible(false);
+			mp.statistics.setVisible(false);
+			installedVersions.put(m.id, m.version);
+			setVisibleModuleButtons(m, mp);
+		} else {
+			String ff = "";
+			for (String s : localFiles) {
+				if (s.startsWith("open-ig-launcher.jar")) {
+					ff = s;
+					break;
+				}
+			}
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command(System.getProperty("java.home") + "/bin/java", "-jar", ff, "-selfupdate", ff);
+			try {
+				pb.start();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+			dispose();
+		}
+	}
+	/**
+	 * Start the module.
+	 * @param mp the module panel.
+	 * @param m the module
+	 */
+	protected void startModule(ModulePanel mp, LModule m) {
+		ProcessBuilder pb = new ProcessBuilder();
+		if (m.memory > 0) {
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + m.memory + "M", "-jar", String.format(m.executeFile, installedVersions.get(m.id)));
+		} else {
+			pb.command(System.getProperty("java.home") + "/bin/java", "-jar", String.format(m.executeFile, installedVersions.get(m.id)));
+		}
+		try {
+			pb.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * @param args the arguments
+	 */
+	public static void main(String[] args) {
+		if (args.length >= 2) {
+			if ("-selfupdate".equals(args[0])) {
+				// make a copy of self and restart
+				File f0 = new File(args[1]);
+				File old = new File("open-ig-launcher.jar");
+				try {
+					while (old.exists() && !old.delete()) {
+						Thread.sleep(1000);	
+					}
+					IOUtils.save(old, IOUtils.load(f0));
+					ProcessBuilder pb = new ProcessBuilder();
+					pb.command(System.getProperty("java.home") + "/bin/java", "-jar", "open-ig-launcher.jar", "-selfdelete", args[1]);
+					pb.start();
+					return;
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			} else
+			if ("-selfdelete".equals(args[0])) {
+				File f0 = new File(args[1]);
+				try {
+					while (f0.exists() && !f0.delete()) {
+						Thread.sleep(1000);	
+					}
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
-		for (LRemoveFile rf : m.removeFiles) {
-			File f = new File(rf.file);
-			f.delete();
-		}
-		mp.progress.setVisible(false);
-		mp.statistics.setVisible(false);
-		installedVersions.put(m.id, m.version);
-		setVisibleModuleButtons(m, mp);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Launcher ln = new Launcher();
+				ln.setVisible(true);
+			}
+		});
 	}
 }
