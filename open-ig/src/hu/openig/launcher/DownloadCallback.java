@@ -29,4 +29,8 @@ public interface DownloadCallback {
 	 * @param exception the exception
 	 */
 	void failed(Throwable exception);
+	/**
+	 * The download progress has been cancelled.
+	 */
+	void cancelled();
 }

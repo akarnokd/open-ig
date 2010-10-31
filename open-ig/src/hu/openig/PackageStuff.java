@@ -33,6 +33,7 @@ public final class PackageStuff {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
+		
 		ZipOutputStream zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-0.4.jar"), 1024 * 1024));
 		try {
 			processDirectory(".\\bin\\", ".\\bin", zout, null);

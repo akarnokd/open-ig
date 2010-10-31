@@ -100,6 +100,13 @@ public class Downloader extends SwingWorker<Void, Void> {
 							callback.success(pg, sha1h);
 						}
 					});
+				} else {
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							callback.cancelled();
+						}
+					});
 				}
 			} finally {
 				in.close();
