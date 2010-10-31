@@ -12,6 +12,7 @@ import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
 
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 
@@ -143,5 +144,59 @@ public abstract class ScreenBase {
 	/** Display this screen as the secondary. */
 	public void displaySecondary() {
 		commons.control.displaySecondary(this);
+	}
+	/**
+	 * Retrieve the screen width.
+	 * @return the width
+	 */
+	public int getWidth() {
+		return parent.getWidth();
+	}
+	/**
+	 * Retrieve the screen height.
+	 * @return the height
+	 */
+	public int getHeight() {
+		return parent.getHeight();
+	}
+	/**
+	 * Is the left mouse button pressed?
+	 * @param button the buttons
+	 * @return is the left pressed
+	 */
+	public boolean isLeftButton(int button) {
+		return (button == MouseEvent.BUTTON1);
+	}
+	/**
+	 * Is the right button pressed?
+	 * @param button the buttons
+	 * @return is the right pressed
+	 */
+	public boolean isRightButton(int button) {
+		return (button == MouseEvent.BUTTON3);
+	}
+	/**
+	 * Is the middle button pressed?
+	 * @param button the buttons
+	 * @return is the middle pressed
+	 */
+	public boolean isMiddleButton(int button) {
+		return (button == MouseEvent.BUTTON2);
+	}
+	/**
+	 * Is the CTRL down?
+	 * @param modifiers the modifiers
+	 * @return is the CTRL down
+	 */
+	public boolean isCtrl(int modifiers) {
+		return ((modifiers & MouseEvent.CTRL_DOWN_MASK) != 0) || ((modifiers & MouseEvent.CTRL_MASK) != 0);
+	}
+	/**
+	 * Is the SHIFT down?
+	 * @param modifiers the modifiers
+	 * @return is the SHIFT down
+	 */
+	public boolean isShift(int modifiers) {
+		return ((modifiers & MouseEvent.SHIFT_DOWN_MASK) != 0) || ((modifiers & MouseEvent.SHIFT_MASK) != 0);
 	}
 }
