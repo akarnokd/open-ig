@@ -1,5 +1,42 @@
 #summary News archive.
 
+*September 18. 2010*
+
+Just two Youtube videos about the MapEditor v0.4: [http://www.youtube.com/watch?v=mzrY9bO7tk8 480p] and [http://www.youtube.com/watch?v=x2g76kjZDzc 720p].
+
+*September 17. 2010*
+
+The newest MapEditor with version 0.4 is here!
+
+  * Ability to Cut, Copy and Paste the selected buildings, surfaces or both.
+  * Ability to create any custom sized map and resize the current map
+  * Ability to clear buildings/surfaces that fell outside the map's current bounds
+  * New visual option: Use a standard font (e.g. Courier New) for text instead of the classical font
+  * New visual option: display locations where buildings cannot be placed
+
+NOTE: the editor requires the [http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip open-ig-upgrade-20100917a.zip] upgrade pack.
+
+*September 16. 2010*
+
+The newest MapEditor with version 0.3 is here! [http://darksideunderflow.com/images/open-ig-mapeditor-p09.png Screenshot]
+
+  * Improved resource management: the game/editor will automatically locate files and upgrades of interest
+  * English and Hungarian text!
+  * Ability to Undo and Redo operations on the map
+  * Ability to Import, Open and Save maps
+  * Toolbar with easy access functionality.
+  * The name cells in the surface and building tables can be renamed and the editor remembers them.
+  * The editor remembers the settings of its window and restores itself to it.
+  * The editor maintains a recent list to easy access earlier maps
+
+For the last time, it is advised to delete the *open-ig-config.xml* file before running the v0.3 version.
+
+NOTE: the editor requires the [http://open-ig.googlecode.com/files/open-ig-upgrade-20100916a.zip open-ig-upgrade-20100916a.zip] upgrade pack.
+
+To run the MapEditor, there is no need to download the rest of the game resources, only the latest upgrade pack along with the JAR file is necessary (32MB total).
+
+The associated wiki page will be updated soon.
+
 *September 15. 2010*
 
 The next version of the MapEditor is released: version 0.2. Changes include:
