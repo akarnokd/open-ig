@@ -375,6 +375,8 @@ public class Launcher extends JFrame {
 	 * @param mp module panel
 	 */
 	void setVisibleModuleButtons(final LModule m, final ModulePanel mp) {
+		mp.progress.setVisible(false);
+		mp.statistics.setVisible(false);
 		String iv = installedVersions.get(m.id);
 		if (iv == null) {
 			mp.title.setText(m.id);
