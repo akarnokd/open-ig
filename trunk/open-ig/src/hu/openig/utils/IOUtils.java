@@ -607,4 +607,27 @@ public final class IOUtils {
         }
         return ((ch1 << 0) + (ch2 << 8) + (ch3 << 16) + (ch4 << 24));
 	}
+	/**
+	 * Copy the contents of the input stream into the output stream using the given batch
+	 * sized buffer. Does not close the streams.
+	 * @param in the input stream
+	 * @param out the output stream
+	 * @param batch the batch size
+	 * @throws IOException on error
+	 */
+	public static void copy(InputStream in, OutputStream out, int batch) throws IOException {
+		if (batch < 4096) {
+			batch = 4096;
+		}
+		byte[] buffer = new byte[batch];
+		do {
+			int read = in.read(buffer);
+			if (read > 0) {
+				out.write(buffer, 0, read);
+			} else
+			if (read < 0) {
+				break;
+			}
+		} while (!Thread.currentThread().isInterrupted());
+	}
 }
