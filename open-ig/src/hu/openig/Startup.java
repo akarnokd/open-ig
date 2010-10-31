@@ -83,20 +83,25 @@ public final class Startup {
 		if (!new File("open-ig-" + Configuration.VERSION + ".jar").exists()) {
 			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.Startup");
 		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-" + Configuration.VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.Startup");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-jar", "open-ig-" + Configuration.VERSION + ".jar");
 		}
 		try {
-			/* Process p = */ pb.start();
-//			createBackgroundReader(p.getInputStream(), System.out).start();
-//			createBackgroundReader(p.getErrorStream(), System.err).start();
-//			p.waitFor();
+			pb.start();
+//			Process p = pb.start();
+//			Thread t = createBackgroundReader(p.getErrorStream(), System.err);
+//			t.start();
+//			BufferedReader bin = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//			do {
+//				String line = bin.readLine();
+//				if (line == null || line.equals("OKAY")) {
+//					break;
+//				}
+//			} while (!Thread.currentThread().isInterrupted());
+//			t.interrupt();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
-//		} catch (InterruptedException ex) {
-//			ex.printStackTrace();
-//			return false;
 		}
 	}
 	/**
