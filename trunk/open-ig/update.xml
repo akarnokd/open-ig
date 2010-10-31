@@ -20,7 +20,7 @@
 		</notes>
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
-		<file url='http://open-ig.googlecode.com/files/open-ig-launcher.jar' sha1='d98c1a22fb669738fa73ecd9262d7944cdfe07cc'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-launcher.jar' sha1='67ed72363fa763f647e68f9d640772c4dff493eb'>
 			<desc lang='hu'>A program fő fájlja</desc>
 			<desc lang='en'>The program's main file</desc>
 		</file>

@@ -624,6 +624,21 @@ public class Launcher extends JFrame {
 //			}
 //		});
 //	}
+	/** The file entry. */
+	class FileEntry {
+		/**
+		 * @param localName the local name
+		 * @param remoteFile the remote file
+		 */
+		public FileEntry(String localName, LFile remoteFile) {
+			this.localName = localName;
+			this.remoteFile = remoteFile;
+		}
+		/** The local name. */
+		public String localName;
+		/** The remote file name. */
+		public LFile remoteFile;
+	}
 	/**
 	 * Start the installation of the given module.
 	 * @param mp the module panel
@@ -637,7 +652,7 @@ public class Launcher extends JFrame {
 		mp.progress.setVisible(true);
 		mp.statistics.setVisible(true);
 		
-		List<String> localFiles = new ArrayList<String>();
+		List<FileEntry> localFiles = new ArrayList<FileEntry>();
 		long t = System.currentTimeMillis();
 		int index = 0;
 		for (LFile f : m.files) {
@@ -671,13 +686,13 @@ public class Launcher extends JFrame {
 						byte[] sha1h = sha1.digest();
 						byte[] sha1hupdate = LFile.toByteArray(f.sha1);
 						if (!Arrays.equals(sha1h, sha1hupdate)) {
-							localFiles.add(lf + "." + t);
+							localFiles.add(new FileEntry(lf + "." + t, f));
 						}
 					} catch (IOException ex) {
 						ex.printStackTrace();
 					}
 				} else {			
-					localFiles.add(lf + "." + t);
+					localFiles.add(new FileEntry(lf + "." + t, f));
 				}
 				index++;
 			} catch (NoSuchAlgorithmException ex) {
@@ -717,7 +732,7 @@ public class Launcher extends JFrame {
 	 * @param index the index to continue
 	 * @param currentDownloader the active downloader
 	 */
-	private void downloadLoop(final List<String> localFiles, final ModulePanel mp, final LModule m, final int index,
+	private void downloadLoop(final List<FileEntry> localFiles, final ModulePanel mp, final LModule m, final int index,
 			final Downloader[] currentDownloader) {
 		if (index >= localFiles.size()) {
 			// last
@@ -726,8 +741,9 @@ public class Launcher extends JFrame {
 		}
 		mp.progress.setVisible(true);
 		mp.statistics.setVisible(true);
-		LFile f = m.files.get(index);
-		final String lf = localFiles.get(index);
+		FileEntry fe = localFiles.get(index);;
+		LFile f = fe.remoteFile;
+		final String lf = fe.localName;
 		currentDownloader[0] = new Downloader(f.url, lf, new DownloadCallback() {
 			@Override
 			public void success(DownloadProgress progress, byte[] sha1) {
@@ -758,8 +774,8 @@ public class Launcher extends JFrame {
 			public void cancelled() {
 				mp.cancel.setVisible(false);
 				// delete temporary files
-				for (String f : localFiles) {
-					File f0 = new File(f);
+				for (FileEntry f : localFiles) {
+					File f0 = new File(f.localName);
 					f0.delete();
 				}
 				setVisibleModuleButtons(m, mp);
@@ -773,11 +789,12 @@ public class Launcher extends JFrame {
 	 * @param m the module
 	 * @param localFiles the list of the local file names
 	 */
-	private void downloadCompleted(ModulePanel mp, LModule m, List<String> localFiles) {
+	private void downloadCompleted(ModulePanel mp, LModule m, List<FileEntry> localFiles) {
 		installedVersions.put(m.id, m.version);
 		if (!m.id.equals("Launcher")) {
 			for (int i = 0; i < localFiles.size(); i++) {
-				String s = localFiles.get(i);
+				FileEntry fe = localFiles.get(i);
+				String s = fe.localName;
 				File f = new File(s);
 				int idx = s.lastIndexOf(".");
 				String s1 = s.substring(0, idx);
@@ -798,9 +815,9 @@ public class Launcher extends JFrame {
 			setVisibleModuleButtons(m, mp);
 		} else {
 			String ff = "";
-			for (String s : localFiles) {
-				if (s.startsWith("open-ig-launcher.jar")) {
-					ff = s;
+			for (FileEntry s : localFiles) {
+				if (s.localName.startsWith("open-ig-launcher.jar")) {
+					ff = s.localName;
 					break;
 				}
 			}
