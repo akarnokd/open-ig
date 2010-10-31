@@ -58,7 +58,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -5640883678496406236L;
 	/** The launcher's version. */
-	static final String VERSION = "0.0";
+	static final String VERSION = "0.1";
 	/** The list of stuff. */
 	JPanel listPanel;
 	/** The exit buttom. */
@@ -212,8 +212,7 @@ public class Launcher extends JFrame {
 				}
 			}
 			@Override
-			public void success(DownloadProgress progress, byte[] md5,
-					byte[] sha1) {
+			public void success(DownloadProgress progress, byte[] sha1) {
 				if (progress.bytesTotal < 0 || (progress.bytesReceived == progress.bytesTotal)) {
 					doUpdateXMLCompleted(fn);
 					new File(fn).delete();
@@ -289,7 +288,7 @@ public class Launcher extends JFrame {
 			mp.install.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					installModule(mp, launcherModule);
+					updateModule(mp, launcherModule);
 				}
 			});
 			mp.remove.setVisible(false);
@@ -326,7 +325,7 @@ public class Launcher extends JFrame {
 			mp.install.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					installModule(mp, m);
+					updateModule(mp, m);
 				}
 			});
 			mp.update.addActionListener(new ActionListener() {
@@ -591,35 +590,35 @@ public class Launcher extends JFrame {
 			ex.printStackTrace();
 		}
 	}
-	/**
-	 * Start the installation of the given module.
-	 * @param mp the module panel
-	 * @param m the module definition
-	 */
-	protected void installModule(final ModulePanel mp, final LModule m) {
-		mp.install.setVisible(false);
-		mp.cancel.setVisible(true);
-
-		List<String> localFiles = new ArrayList<String>();
-		long t = System.currentTimeMillis();
-		for (LFile f : m.files) {
-			int idx = f.url.lastIndexOf("/");
-			localFiles.add(f.url.substring(idx + 1) + "." + t);
-		}
-		
-		final Downloader[] currentDownloader = new Downloader[1];
-		
-		downloadLoop(localFiles, mp, m, 0, currentDownloader);
-		
-		mp.cancel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				currentDownloader[0].cancel(true);
-				mp.cancel.setVisible(false);
-				setVisibleModuleButtons(m, mp);
-			}
-		});
-	}
+//	/**
+//	 * Start the installation of the given module.
+//	 * @param mp the module panel
+//	 * @param m the module definition
+//	 */
+//	protected void installModule(final ModulePanel mp, final LModule m) {
+//		mp.install.setVisible(false);
+//		mp.cancel.setVisible(true);
+//
+//		List<String> localFiles = new ArrayList<String>();
+//		long t = System.currentTimeMillis();
+//		for (LFile f : m.files) {
+//			int idx = f.url.lastIndexOf("/");
+//			localFiles.add(f.url.substring(idx + 1) + "." + t);
+//		}
+//		
+//		final Downloader[] currentDownloader = new Downloader[1];
+//		
+//		downloadLoop(localFiles, mp, m, 0, currentDownloader);
+//		
+//		mp.cancel.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				currentDownloader[0].cancel(true);
+//				mp.cancel.setVisible(false);
+//				setVisibleModuleButtons(m, mp);
+//			}
+//		});
+//	}
 	/**
 	 * Start the installation of the given module.
 	 * @param mp the module panel
@@ -642,7 +641,7 @@ public class Launcher extends JFrame {
 			File lff = new File(lf);
 
 			try {
-				MessageDigest md5 = MessageDigest.getInstance("MD5");
+				MessageDigest sha1 = MessageDigest.getInstance("SHA1");
 				if (lff.canRead()) {
 					
 					byte[] buffer = new byte[64 * 1024];
@@ -657,15 +656,15 @@ public class Launcher extends JFrame {
 										+ lf + " (" + String.format("%.2f", bytesReceived / 1024.0 / 1024.0) + " MB"  
 								);
 								mp.progress.setValue((int)(100 * bytesReceived / bytesTotal));
-								md5.update(buffer, 0, read);
+								sha1.update(buffer, 0, read);
 							} else
 							if (read < 0) {
 								break;
 							}
 						} while (true);
-						byte[] md5h = md5.digest();
-						byte[] md5h1 = LFile.toByteArray(f.md5);
-						if (!Arrays.equals(md5h, md5h1)) {
+						byte[] sha1h = sha1.digest();
+						byte[] sha1hupdate = LFile.toByteArray(f.sha1);
+						if (!Arrays.equals(sha1h, sha1hupdate)) {
 							localFiles.add(lf + "." + t);
 						}
 					} catch (IOException ex) {
@@ -678,6 +677,17 @@ public class Launcher extends JFrame {
 			} catch (NoSuchAlgorithmException ex) {
 				ex.printStackTrace();
 			}
+		}
+		if (localFiles.size() == 0) {
+			installedVersions.put(m.id, m.version);
+			if (m.id.equals("Launcher")) {
+				listPanel.remove(mp);
+				listPanel.revalidate();
+				listPanel.repaint();
+			} else {
+				setVisibleModuleButtons(m, mp);
+			}
+			return;
 		}
 		
 		final Downloader[] currentDownloader = new Downloader[1];
@@ -714,7 +724,7 @@ public class Launcher extends JFrame {
 		final String lf = localFiles.get(index);
 		currentDownloader[0] = new Downloader(f.url, lf, new DownloadCallback() {
 			@Override
-			public void success(DownloadProgress progress, byte[] md5, byte[] sha1) {
+			public void success(DownloadProgress progress, byte[] sha1) {
 				mp.statistics.setText("[" + (index + 1) + " / " + localFiles.size() + "] "
 						+ lf + " (" + String.format("%.2f", progress.bytesReceived / 1024.0 / 1024.0) + " MB, " + String.format("%.2f KB/s)", progress.getSpeed() / 1.024)  
 				);
@@ -748,6 +758,7 @@ public class Launcher extends JFrame {
 	 * @param localFiles the list of the local file names
 	 */
 	private void downloadCompleted(ModulePanel mp, LModule m, List<String> localFiles) {
+		installedVersions.put(m.id, m.version);
 		if (!m.id.equals("Launcher")) {
 			for (int i = 0; i < localFiles.size(); i++) {
 				String s = localFiles.get(i);
@@ -768,7 +779,6 @@ public class Launcher extends JFrame {
 			}
 			mp.progress.setVisible(false);
 			mp.statistics.setVisible(false);
-			installedVersions.put(m.id, m.version);
 			setVisibleModuleButtons(m, mp);
 		} else {
 			String ff = "";

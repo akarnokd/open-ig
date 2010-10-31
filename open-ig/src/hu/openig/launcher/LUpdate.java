@@ -77,7 +77,6 @@ public class LUpdate {
 			for (Element eFile : XML.childrenWithName(module, "file")) {
 				LFile f = new LFile();
 				f.url = eFile.getAttribute("url");
-				f.md5 = eFile.getAttribute("md5");
 				f.sha1 = eFile.getAttribute("sha1");
 				f.parse(eFile);
 				mdl.files.add(f);
