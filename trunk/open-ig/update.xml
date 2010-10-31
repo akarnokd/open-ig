@@ -38,8 +38,7 @@
 				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.
 			</desc>
 			<desc lang='en'>
-				The launcher for the Open Imperium Galactica which can download various module files
-				for install, upgrade or repair purposes.
+				The Map Editor for the Open Imperium Galactica, which can create a new or edit an existing map.
 			</desc>
 		</general>
 		<!-- Release notes -->
