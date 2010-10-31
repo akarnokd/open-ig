@@ -18,20 +18,12 @@
 			<desc lang='hu'>Első verzió.</desc>
 			<desc lang='en'>First version.</desc>
 		</notes>
-		<execute file='open-ig-launcher-0.1.jar' memory='64'/>
+		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
-		<file url='http://open-ig.googlecode.com/files/open-ig-launcher-0.1.jar' md5='' sha1=''>
+		<file url='http://open-ig.googlecode.com/files/open-ig-launcher.jar' md5='c241e9716a85c549887fcbd31113286a' sha1='bee48f37ecf860955a0e06105838e9f9140bda30'>
 			<desc lang='hu'>A program fő fájlja</desc>
 			<desc lang='en'>The program's main file</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip' md5='' sha1=''>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2010 szeptember 17 / A</desc>
-			<desc lang='en'>The upgraded resource file. 17th September, 2010 / A</desc>
-		</file>
-		<remove file='open-ig-launcher-config.xml'>
-			<desc lang='hu'>Konfigurációs probléma merülhet fel.</desc>
-			<desc lang='en'>To avoid configuration problems.</desc>
-		</remove>
 	</module>
 	<module id='MapEditor' version='0.4'>
 		<general url='http://code.google.com/p/open-ig/wiki/MapEditor'>
@@ -42,7 +34,7 @@
 				The Map Editor for the Open Imperium Galactica, which can create a new or edit an existing map.
 			</desc>
 		</general>
-		<execute file='open-ig-mapeditor-0.4.jar' memory='384'/>
+		<execute file='open-ig-mapeditor-%s.jar' memory='384'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/MapEditor_Notes'>
 			<desc lang='hu'>Első verzió.</desc>
@@ -66,7 +58,7 @@
 				The Open Imperium Galactica game.
 			</desc>
 		</general>
-		<execute file='open-ig-0.81.jar' memory='384'/>
+		<execute file='open-ig-%s.jar' memory='384'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Release_Notes'>
 			<desc lang='hu'>Első verzió.</desc>
