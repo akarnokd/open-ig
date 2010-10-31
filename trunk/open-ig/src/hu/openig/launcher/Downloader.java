@@ -30,8 +30,6 @@ public class Downloader extends SwingWorker<Void, Void> {
 	String url;
 	/** The local file to save into. */
 	String localFile;
-	/** The MD5 hash computer. */
-	MessageDigest md5;
 	/** The SHA1 hash computer. */
 	MessageDigest sha1;
 	/**
@@ -45,10 +43,9 @@ public class Downloader extends SwingWorker<Void, Void> {
 		this.localFile = localFile;
 		this.callback = callback;
 		try {
-			md5 = MessageDigest.getInstance("MD5");
 			sha1 = MessageDigest.getInstance("SHA1");
 		} catch (NoSuchAlgorithmException ex) {
-			
+			ex.printStackTrace();
 		}
 	}
 	@Override
@@ -67,7 +64,6 @@ public class Downloader extends SwingWorker<Void, Void> {
 					do {
 						final int read = in.read(buffer);
 						if (read > 0) {
-							md5.update(buffer, 0, read);
 							sha1.update(buffer, 0, read);
 							fout.write(buffer, 0, read);
 	
@@ -92,7 +88,6 @@ public class Downloader extends SwingWorker<Void, Void> {
 					fout.close();
 				}
 				if (!isCancelled()) {
-					final byte[] md5h = md5.digest();
 					final byte[] sha1h = sha1.digest();
 					final int freadsofar = readSoFar;
 					SwingUtilities.invokeLater(new Runnable() {
@@ -102,7 +97,7 @@ public class Downloader extends SwingWorker<Void, Void> {
 							pg.bytesReceived = freadsofar;
 							pg.startTimestamp = t0;
 							pg.bytesTotal = bt;
-							callback.success(pg, md5h, sha1h);
+							callback.success(pg, sha1h);
 						}
 					});
 				}

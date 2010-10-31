@@ -16,8 +16,6 @@ package hu.openig.launcher;
 public class LFile extends LBaseItem {
 	/** The URL to the file. */
 	public String url;
-	/** The MD5 hash of the target file. */
-	public String md5;
 	/** The SHA1 hash of the target file. */
 	public String sha1;
 	/**

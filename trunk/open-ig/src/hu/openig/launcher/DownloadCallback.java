@@ -21,10 +21,9 @@ public interface DownloadCallback {
 	/**
 	 * The download succeded.
 	 * @param progress the progress
-	 * @param md5 the MD5 hash
 	 * @param sha1 the SHA1 hash
 	 */
-	void success(DownloadProgress progress, byte[] md5, byte[] sha1);
+	void success(DownloadProgress progress, byte[] sha1);
 	/**
 	 * The download failed.
 	 * @param exception the exception
