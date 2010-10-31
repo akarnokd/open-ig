@@ -221,15 +221,18 @@ public class Launcher extends JFrame {
 					listPanel.repaint();
 				}
 			}
+			@Override
+			public void cancelled() {
+				listPanel.remove(dlp);
+				listPanel.revalidate();
+				listPanel.repaint();
+				new File(fn).delete();
+			}
 		});
 		dlp.cancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dl.cancel(true);
-				listPanel.remove(dlp);
-				listPanel.revalidate();
-				listPanel.repaint();
-				new File(fn).delete();
 			}
 		});
 		dl.execute();
@@ -625,6 +628,7 @@ public class Launcher extends JFrame {
 	 * @param m the module definition
 	 */
 	protected void updateModule(final ModulePanel mp, final LModule m) {
+		mp.install.setVisible(false);
 		mp.update.setVisible(false);
 		mp.cancel.setVisible(true);
 
@@ -746,6 +750,16 @@ public class Launcher extends JFrame {
 			public void failed(Throwable exception) {
 				exception.printStackTrace();
 				mp.cancel.setVisible(false);
+				setVisibleModuleButtons(m, mp);
+			}
+			@Override
+			public void cancelled() {
+				mp.cancel.setVisible(false);
+				// delete temporary files
+				for (String f : localFiles) {
+					File f0 = new File(f);
+					f0.delete();
+				}
 				setVisibleModuleButtons(m, mp);
 			}
 		});
