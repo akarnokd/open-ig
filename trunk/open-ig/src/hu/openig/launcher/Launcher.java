@@ -673,10 +673,12 @@ public class Launcher extends JFrame {
 							long bytesReceived = 0;
 							long bytesTotal = lff.length();
 							try {
+								
 								FileInputStream fin = new FileInputStream(lff);
 								do {
 									int read = fin.read(buffer);
 									if (read > 0) {
+										bytesReceived += read;
 										final int findex = index;
 										final int fsize = m.files.size();
 										final long fbytesReceived = bytesReceived;
@@ -684,7 +686,7 @@ public class Launcher extends JFrame {
 										SwingUtilities.invokeLater(new Runnable() {
 											public void run() {
 												mp.statistics.setText("[" + (findex + 1) + " / " + fsize + "] "
-														+ lf + " (" + String.format("%.2f", fbytesReceived / 1024.0 / 1024.0) + " MB"  
+														+ lf + " (" + String.format("%.2f", fbytesReceived / 1024.0 / 1024.0) + " MB)"  
 												);
 												mp.progress.setValue((int)(100 * fbytesReceived / fbytesTotal));
 											};
