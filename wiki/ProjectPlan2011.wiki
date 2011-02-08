@@ -1,0 +1,9 @@
+#summary List of tasks to complete in 2011
+
+= Introduction =
+
+This page lists tasks that I want to complete with expected times.
+
+
+|| *Task* || *ETA* || *Status* || *Remarks* ||
+|| Build a testbed for further screen developments || 2011-02-13 || - || Going through the entire menu for testing a screen is cumbersome and the current way of developing outside the game's context is ineffective. I want to create a fast environment to test out new screens and integrate the finished screens with the main game with less effort. ||
