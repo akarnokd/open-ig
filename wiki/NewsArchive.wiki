@@ -1,5 +1,22 @@
 #summary News archive.
 
+*October 31. 2010*
+
+I've integrated the starmap and planet rendering into the main Open Imperium Galactica. You can now download the version 0.81 file.
+
+Requirements:
+
+  * At least 384 MB of memory
+  * The [http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip open-ig-upgrade-20100917a.zip] upgrade pack.
+
+I'm still working (thinking about) the promised launcher for Open-IG.
+
+*October 3. 2010*
+
+It's the yearly article time for my PhD. Therefore, I am unable to do effective work in Open-IG right now.
+
+The next step in the development will be a Launcher with ability to automatically update the game files. In addition, the new Starmap and Planet screens will be integrated with the main game till the end of october.
+
 *September 18. 2010*
 
 Just two Youtube videos about the MapEditor v0.4: [http://www.youtube.com/watch?v=mzrY9bO7tk8 480p] and [http://www.youtube.com/watch?v=x2g76kjZDzc 720p].
