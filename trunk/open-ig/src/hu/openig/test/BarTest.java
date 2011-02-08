@@ -101,9 +101,9 @@ public class BarTest extends JFrame {
 		}
 		JMenu mnuLanguage = new JMenu("Language");
 		JMenuItem mi1 = new JMenuItem("English");
-		mi1.addActionListener(new Act() { public void act() { switchLanguage("en"); } });
+		mi1.addActionListener(new Act() { @Override public void act() { switchLanguage("en"); } });
 		JMenuItem mi2 = new JMenuItem("Hungarian");
-		mi2.addActionListener(new Act() { public void act() { switchLanguage("hu"); } });
+		mi2.addActionListener(new Act() { @Override public void act() { switchLanguage("hu"); } });
 		mnuLanguage.add(mi1);
 		mnuLanguage.add(mi2);
 		menu.add(mnuLanguage);

@@ -183,7 +183,7 @@ public class VideoScreen extends ScreenBase {
 		playLabel.commons = commons;
 		playLabel.size = 20;
 		playLabel.label = "videos.play";
-		playLabel.onLeave = new Act() { public void act() { playLabel.selected = false; } };
+		playLabel.onLeave = new Act() { @Override public void act() { playLabel.selected = false; } };
 		playLabel.onReleased = new Act() {
 			@Override
 			public void act() {
@@ -205,7 +205,7 @@ public class VideoScreen extends ScreenBase {
 		backLabel.commons = commons;
 		backLabel.size = 20;
 		backLabel.label = "videos.back";
-		backLabel.onLeave = new Act() { public void act() { backLabel.selected = false; } };
+		backLabel.onLeave = new Act() { @Override public void act() { backLabel.selected = false; } };
 		backLabel.onReleased = new Act() {
 			@Override
 			public void act() {

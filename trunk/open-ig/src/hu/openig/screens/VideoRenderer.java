@@ -58,6 +58,7 @@ public class VideoRenderer extends Thread {
 	/**
 	 * The main decoding loop.
 	 */
+	@Override 
 	public void run() {
 		try {
 			DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));

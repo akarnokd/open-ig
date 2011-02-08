@@ -856,7 +856,7 @@ public class DatabasePainter extends JComponent {
 		map.selected = false;
 		help.selected = false;
 		aliens.selected = true;
-		doHide(new Act() { public void act() { doAliensShow(); } });
+		doHide(new Act() { @Override public void act() { doAliensShow(); } });
 	}
 	/** Aliens show. */
 	protected void doAliensShow() {

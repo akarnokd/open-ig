@@ -363,6 +363,7 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 					ex.printStackTrace();
 				} finally {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override 
 						public void run() {
 							mediaPlayback = false;
 							setState(next);

@@ -227,6 +227,7 @@ public class StarmapScreen extends ScreenBase {
 		rightPanelButtons.add(bridge);
 		
 		prevPlanet.onClick = new Act() {
+			@Override 
 			public void act() {
 				int idx = planets.indexOf(currentPlanet);
 				if (idx > 0 && planets.size() > 0) {
@@ -246,6 +247,7 @@ public class StarmapScreen extends ScreenBase {
 			}
 		};
 		prevFleet.onClick = new Act() {
+			@Override 
 			public void act() {
 				int idx = fleets.indexOf(currentFleet);
 				if (idx > 0 && fleets.size() > 0) {

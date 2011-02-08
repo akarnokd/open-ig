@@ -178,19 +178,19 @@ public final class AnimPlay {
 					});
 					
 					saveAsGif = new JMenuItem("Save as animated GIF...");
-					saveAsGif.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsGif(); } });
+					saveAsGif.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doSaveAsGif(); } });
 					saveAsGif.setEnabled(false);
 					
 					saveAsPng = new JMenuItem("Save as PNGs...");
 					saveAsPng.setEnabled(false);
-					saveAsPng.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsPng(); } });
+					saveAsPng.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doSaveAsPng(); } });
 					
 					saveAsWav = new JMenuItem("Save as WAV...");
 					saveAsWav.setEnabled(false);
-					saveAsWav.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsWav(); } });
+					saveAsWav.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doSaveAsWav(); } });
 					
 					saveAsAvi = new JMenuItem("Save as AVI...");
-					saveAsAvi.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { doSaveAsAvi(); } });
+					saveAsAvi.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doSaveAsAvi(); } });
 					saveAsAvi.setEnabled(false);
 
 					file.add(menuOpen);
@@ -399,6 +399,7 @@ public final class AnimPlay {
 				final int fheight = height;
 				try {
 					SwingUtilities.invokeAndWait(new Runnable() {
+						@Override 
 						public void run() {
 							if (frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
 								if (imageLabel.getWidth() < fwidth || imageLabel.getHeight() < fheight) {

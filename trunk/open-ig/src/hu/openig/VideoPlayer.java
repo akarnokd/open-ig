@@ -379,7 +379,7 @@ public class VideoPlayer extends JFrame {
 			@Override
 			public void run() {
 				Setup wp = new Setup(config);
-				wp.onRun.add(new Act() { public void act() { showMainWindow(config); } });
+				wp.onRun.add(new Act() { @Override public void act() { showMainWindow(config); } });
 				wp.setLocationRelativeTo(null);
 				wp.setVisible(true);
 			}
@@ -430,13 +430,13 @@ public class VideoPlayer extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu mnuFile = new JMenu("File");
 		JMenuItem mnuFileExit = new JMenuItem("Exit");
-		mnuFileExit.addActionListener(new Act() { public void act() { doExit(); } });
+		mnuFileExit.addActionListener(new Act() { @Override public void act() { doExit(); } });
 		
 		JMenuItem mnuRescan = new JMenuItem("Rescan");
-		mnuRescan.addActionListener(new Act() { public void act() { doRescan(); } });
+		mnuRescan.addActionListener(new Act() { @Override public void act() { doRescan(); } });
 
 		JMenuItem mnuSetup = new JMenuItem("Setup");
-		mnuSetup.addActionListener(new Act() { public void act() { doSetup(); } });
+		mnuSetup.addActionListener(new Act() { @Override public void act() { doSetup(); } });
 
 		
 		mnuFile.add(mnuRescan);
@@ -448,9 +448,9 @@ public class VideoPlayer extends JFrame {
 		JMenu mnuView = new JMenu("View");
 		menuBar.add(mnuView);
 		
-		JMenuItem keepAspect = createRadioItem("Keep aspect", new Act() { public void act() { setScale(ScalingMode.KEEP_ASPECT); } });
-		JMenuItem scale = createRadioItem("Scale to window", new Act() { public void act() { setScale(ScalingMode.WINDOW_SIZE); } });
-		JMenuItem noScale = createRadioItem("Original size", new Act() { public void act() { setScale(ScalingMode.NONE); } });
+		JMenuItem keepAspect = createRadioItem("Keep aspect", new Act() { @Override public void act() { setScale(ScalingMode.KEEP_ASPECT); } });
+		JMenuItem scale = createRadioItem("Scale to window", new Act() { @Override public void act() { setScale(ScalingMode.WINDOW_SIZE); } });
+		JMenuItem noScale = createRadioItem("Original size", new Act() { @Override public void act() { setScale(ScalingMode.NONE); } });
 		keepAspect.setSelected(true);
 
 		
@@ -464,10 +464,10 @@ public class VideoPlayer extends JFrame {
 		mnuView.add(noScale);
 		mnuView.addSeparator();
 		
-		JMenuItem interDefault = createRadioItem("Default Interpolation", new Act() { public void act() { setInterpolation(ImageInterpolation.NONE); } });
-		JMenuItem interLinear = createRadioItem("Linear Interpolation", new Act() { public void act() { setInterpolation(ImageInterpolation.NEIGHBOR); } });
-		JMenuItem interBilinear = createRadioItem("Bilinear Interpolation", new Act() { public void act() { setInterpolation(ImageInterpolation.BILINEAR); } });
-		JMenuItem interBicubic = createRadioItem("Bicubic Interpolation", new Act() { public void act() { setInterpolation(ImageInterpolation.BICUBIC); } });
+		JMenuItem interDefault = createRadioItem("Default Interpolation", new Act() { @Override public void act() { setInterpolation(ImageInterpolation.NONE); } });
+		JMenuItem interLinear = createRadioItem("Linear Interpolation", new Act() { @Override public void act() { setInterpolation(ImageInterpolation.NEIGHBOR); } });
+		JMenuItem interBilinear = createRadioItem("Bilinear Interpolation", new Act() { @Override public void act() { setInterpolation(ImageInterpolation.BILINEAR); } });
+		JMenuItem interBicubic = createRadioItem("Bicubic Interpolation", new Act() { @Override public void act() { setInterpolation(ImageInterpolation.BICUBIC); } });
 		
 		interDefault.setSelected(true);
 		
@@ -486,11 +486,11 @@ public class VideoPlayer extends JFrame {
 		setJMenuBar(menuBar);
 		
 		btnPlay = new ConfigButton("Play");
-		btnPlay.addActionListener(new Act() { public void act() { doPlay(); } });
+		btnPlay.addActionListener(new Act() { @Override public void act() { doPlay(); } });
 		btnPause = new ConfigButton("Pause");
-		btnPause.addActionListener(new Act() { public void act() { doPause(); } });
+		btnPause.addActionListener(new Act() { @Override public void act() { doPause(); } });
 		btnStop = new ConfigButton("Stop");
-		btnStop.addActionListener(new Act() { public void act() { doStop(); } });
+		btnStop.addActionListener(new Act() { @Override public void act() { doStop(); } });
 //		btnStop.setEnabled(false);
 		
 		position = new JSlider(0, 0);

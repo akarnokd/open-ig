@@ -107,7 +107,7 @@ public class SingleplayerScreen extends ScreenBase {
 		playLabel.commons = commons;
 		playLabel.size = 20;
 		playLabel.label = "singleplayer.start_game";
-		playLabel.onLeave = new Act() { public void act() { playLabel.selected = false; } };
+		playLabel.onLeave = new Act() { @Override public void act() { playLabel.selected = false; } };
 		playLabel.onReleased = new Act() {
 			@Override
 			public void act() {
@@ -127,7 +127,7 @@ public class SingleplayerScreen extends ScreenBase {
 		backLabel.commons = commons;
 		backLabel.size = 20;
 		backLabel.label = "singleplayer.back";
-		backLabel.onLeave = new Act() { public void act() { backLabel.selected = false; } };
+		backLabel.onLeave = new Act() { @Override public void act() { backLabel.selected = false; } };
 		backLabel.onReleased = new Act() {
 			@Override
 			public void act() {
@@ -149,9 +149,9 @@ public class SingleplayerScreen extends ScreenBase {
 		difficultyLeft.normalImage = commons.moveLeft[0];
 		difficultyLeft.selectedImage = commons.moveLeft[0];
 		difficultyLeft.pressedImage = commons.moveLeft[1];
-		difficultyLeft.onPress = new Act() { public void act() { doDifficultyLess(); } };
-		difficultyLeft.onRelease = new Act() { public void act() { adjustDifficultyButtons(); } };
-		difficultyLeft.onLeave = new Act() { public void act() { adjustDifficultyButtons(); } };
+		difficultyLeft.onPress = new Act() { @Override public void act() { doDifficultyLess(); } };
+		difficultyLeft.onRelease = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
+		difficultyLeft.onLeave = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
 		
 		difficultyRight = new ImageButton();
 		difficultyRight.commons = commons;
@@ -160,9 +160,9 @@ public class SingleplayerScreen extends ScreenBase {
 		difficultyRight.normalImage = commons.moveRight[0];
 		difficultyRight.selectedImage = commons.moveRight[0];
 		difficultyRight.pressedImage = commons.moveRight[1];
-		difficultyRight.onPress = new Act() { public void act() { doDifficultyMore(); } };
-		difficultyRight.onRelease = new Act() { public void act() { adjustDifficultyButtons(); } };
-		difficultyRight.onLeave = new Act() { public void act() { adjustDifficultyButtons(); } };
+		difficultyRight.onPress = new Act() { @Override public void act() { doDifficultyMore(); } };
+		difficultyRight.onRelease = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
+		difficultyRight.onLeave = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
 		
 		buttons.add(playLabel);
 		buttons.add(backLabel);
@@ -186,10 +186,12 @@ public class SingleplayerScreen extends ScreenBase {
 			final Semaphore barrier = new Semaphore(-1);
 			// the completion waiter thread
 			Thread t0 = new Thread("Start Game Video Waiter") {
+				@Override 
 				public void run() {
 					try {
 						barrier.acquire();
 						SwingUtilities.invokeLater(new Runnable() {
+							@Override 
 							public void run() {
 								commons.control.displayPrimary(commons.screens.bridge);
 							};
@@ -205,6 +207,7 @@ public class SingleplayerScreen extends ScreenBase {
 			commons.worldLoading = true;
 			// the asynchronous loading
 			Thread t1 = new Thread("Start Game Loading") {
+				@Override 
 				public void run() {
 					final World world = new World();
 					world.definition = selectedDefinition;

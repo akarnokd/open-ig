@@ -345,6 +345,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("F2", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { onF2Action(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0, false);
@@ -352,6 +353,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("F3", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { onF3Action(); } });
 
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0, false);
@@ -359,6 +361,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("F6", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { onF6Action(); } });
 
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0, false);
@@ -366,6 +369,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("F7", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { onF7Action(); } });
 
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
@@ -373,6 +377,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("ESC", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { onESCAction(); } });
 		
 		// Diagnostic/Cheat keystrokes
@@ -381,6 +386,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+K", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doKnowAllPlanets(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK, false);
@@ -388,6 +394,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+N", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doKnowAllPlanetsByName(); } });
 
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK, false);
@@ -395,6 +402,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+F", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doKnowAllFleets(); } });
 		
 		ks = KeyStroke.getKeyStroke('+');
@@ -402,6 +410,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("NUM+", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doSelectNexPlanetOrFleet(); } });
 		
 		ks = KeyStroke.getKeyStroke('-');
@@ -409,6 +418,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("NUM-", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doSelectPrevPlanetOrFleet(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK, false);
@@ -416,6 +426,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+O", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doOwnPlanets(false); } });
 		
 		ks = KeyStroke.getKeyStroke('.', InputEvent.CTRL_DOWN_MASK, false);
@@ -423,6 +434,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+.", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doDoToggleInterpolations(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK, false);
@@ -430,6 +442,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+C", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doClearPlanetBuildings(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK, false);
@@ -437,6 +450,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+S", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doSavePlanetBuildings(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0, false);
@@ -444,6 +458,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("DEL", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doDeleteBuilding(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK, false);
@@ -451,6 +466,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+D", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doDamageBuilding(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK, false);
@@ -458,6 +474,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+M", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doTakeoverPlanet(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK, false);
@@ -465,6 +482,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+P", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doExtractResource(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK, false);
@@ -472,6 +490,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+SHIFT+O", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doOwnPlanets(true); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK, false);
@@ -479,6 +498,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+I", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doOwnEnemyPlanets(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK, false);
@@ -486,6 +506,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+B", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doWalkBuildPhases(); } });
 
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK, false);
@@ -493,6 +514,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+R", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { doResearchCurrent(); } });
 		
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0, false);
@@ -500,6 +522,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("F5", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { onF5Action(); } });
 
 		ks = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK, false);
@@ -507,6 +530,7 @@ public class Main extends JFrame {
 		rp.getActionMap().put("CTRL+A", new AbstractAction() { 
 			/** */
 			private static final long serialVersionUID = -5381260756829107852L;
+			@Override
 			public void actionPerformed(ActionEvent e) { onAddInventory(); } });
 
 	}
@@ -668,37 +692,37 @@ public class Main extends JFrame {
 	 * Sets action listeners on the various screens.
 	 */
 	private void setListeners() {
-		starmapRenderer.setOnColonyClicked(new BtnAction() { public void invoke() { onStarmapColony(); } });
-		starmapRenderer.setOnInformationClicked(new BtnAction() { public void invoke() { onStarmapInfo(); } });
-		planetRenderer.setOnStarmapClicked(new BtnAction() { public void invoke() { onColonyStarmap(); } });
-		planetRenderer.setOnInformationClicked(new BtnAction() { public void invoke() { onColonyInfo(); } });
-		planetRenderer.setOnListClicked(new BtnAction() { public void invoke() { onBuildings(); } });
+		starmapRenderer.setOnColonyClicked(new BtnAction() { @Override public void invoke() { onStarmapColony(); } });
+		starmapRenderer.setOnInformationClicked(new BtnAction() { @Override public void invoke() { onStarmapInfo(); } });
+		planetRenderer.setOnStarmapClicked(new BtnAction() { @Override public void invoke() { onColonyStarmap(); } });
+		planetRenderer.setOnInformationClicked(new BtnAction() { @Override public void invoke() { onColonyInfo(); } });
+		planetRenderer.setOnListClicked(new BtnAction() { @Override public void invoke() { onBuildings(); } });
 		
-		informationRenderer.setOnStarmapClicked(new BtnAction() { public void invoke() { onInfoStarmap(); } });
-		informationRenderer.setOnColonyClicked(new BtnAction() { public void invoke() { onInfoColony(); } });
-		informationRenderer.setOnCancelInfoscreen(new BtnAction() { public void invoke() { onCancelInfoScreen(); } });
-		informationRenderer.setOnDblClickBuilding(new BtnAction() { public void invoke() { onDblClickBuilding(); } });
-		informationRenderer.setOnDblClickPlanet(new BtnAction() { public void invoke() { onDblClickPlanet(); } });
-		informationRenderer.setOnResearchClick(new BtnAction() { public void invoke() { onF6Action(); } });
-		informationRenderer.setOnProductionClick(new BtnAction() { public void invoke() { onF5Action(); } });
-		informationRenderer.setOnResearchDblClick(new BtnAction() { public void invoke() { onDblClickResearch(); } });
+		informationRenderer.setOnStarmapClicked(new BtnAction() { @Override public void invoke() { onInfoStarmap(); } });
+		informationRenderer.setOnColonyClicked(new BtnAction() { @Override public void invoke() { onInfoColony(); } });
+		informationRenderer.setOnCancelInfoscreen(new BtnAction() { @Override public void invoke() { onCancelInfoScreen(); } });
+		informationRenderer.setOnDblClickBuilding(new BtnAction() { @Override public void invoke() { onDblClickBuilding(); } });
+		informationRenderer.setOnDblClickPlanet(new BtnAction() { @Override public void invoke() { onDblClickPlanet(); } });
+		informationRenderer.setOnResearchClick(new BtnAction() { @Override public void invoke() { onF6Action(); } });
+		informationRenderer.setOnProductionClick(new BtnAction() { @Override public void invoke() { onF5Action(); } });
+		informationRenderer.setOnResearchDblClick(new BtnAction() { @Override public void invoke() { onDblClickResearch(); } });
 		
-		researchRenderer.setOnCancelScreen(new BtnAction() { public void invoke() { onCancelInfoScreen(); } });
-		researchRenderer.setOnProductionClick(new BtnAction() { public void invoke() { onF5Action(); } });
-		productionRenderer.setOnCancelScreen(new BtnAction() { public void invoke() { onCancelInfoScreen(); } });
-		productionRenderer.setOnResearchClick(new BtnAction() { public void invoke() { onF6Action(); } });
+		researchRenderer.setOnCancelScreen(new BtnAction() { @Override public void invoke() { onCancelInfoScreen(); } });
+		researchRenderer.setOnProductionClick(new BtnAction() { @Override public void invoke() { onF5Action(); } });
+		productionRenderer.setOnCancelScreen(new BtnAction() { @Override public void invoke() { onCancelInfoScreen(); } });
+		productionRenderer.setOnResearchClick(new BtnAction() { @Override public void invoke() { onF6Action(); } });
 		
-		planetRenderer.setOnPlanetsClicked(new BtnAction() { public void invoke() { onColonyPlanets(); } });
+		planetRenderer.setOnPlanetsClicked(new BtnAction() { @Override public void invoke() { onColonyPlanets(); } });
 		
-		mainmenuRenderer.setStartNewAction(new BtnAction() { public void invoke() { onStarmap(); } });
-		mainmenuRenderer.setLoadAction(new BtnAction() { public void invoke() { onLoad(); } });
-		mainmenuRenderer.setTitleAnimAction(new BtnAction() { public void invoke() { onTitle(); } });
-		mainmenuRenderer.setIntroAction(new BtnAction() { public void invoke() { onIntro(); } });
-		mainmenuRenderer.setQuitAction(new BtnAction() { public void invoke() { onQuit(); } });
+		mainmenuRenderer.setStartNewAction(new BtnAction() { @Override public void invoke() { onStarmap(); } });
+		mainmenuRenderer.setLoadAction(new BtnAction() { @Override public void invoke() { onLoad(); } });
+		mainmenuRenderer.setTitleAnimAction(new BtnAction() { @Override public void invoke() { onTitle(); } });
+		mainmenuRenderer.setIntroAction(new BtnAction() { @Override public void invoke() { onIntro(); } });
+		mainmenuRenderer.setQuitAction(new BtnAction() { @Override public void invoke() { onQuit(); } });
 		
-		optionsRenderer.setOnAdjustMusic(new BtnAction() { public void invoke() { onAdjustMusic(); } });
-		optionsRenderer.setOnAdjustSound(new BtnAction() { public void invoke() { onAdjustSound(); } });
-		optionsRenderer.setOnExit(new BtnAction() { public void invoke() { doExit(); } });
+		optionsRenderer.setOnAdjustMusic(new BtnAction() { @Override public void invoke() { onAdjustMusic(); } });
+		optionsRenderer.setOnAdjustSound(new BtnAction() { @Override public void invoke() { onAdjustSound(); } });
+		optionsRenderer.setOnExit(new BtnAction() { @Override public void invoke() { doExit(); } });
 	}
 	/** Perform action when the user double clicks on a research. */
 	protected void onDblClickResearch() {
@@ -991,14 +1015,14 @@ public class Main extends JFrame {
 	private void onTitle() {
 		showScreen(moviePlayer);
 		player.setFilename(resMap.get("INTRO/GT_TITLE.ANI").getAbsolutePath());
-		player.setOnCompleted(new BtnAction() { public void invoke() { onPlaybackCompleted(); } });
+		player.setOnCompleted(new BtnAction() { @Override public void invoke() { onPlaybackCompleted(); } });
 		player.startPlayback();
 	}
 	/** Play the sequence of intro videos. */ 
 	private void onIntro() {
 		showScreen(moviePlayer);
 		player.setFilename(resMap.get("INTRO/BLOCK1.ANI").getAbsolutePath());
-		player.setOnCompleted(new BtnAction() { public void invoke() { onIntro1(); } });
+		player.setOnCompleted(new BtnAction() { @Override public void invoke() { onIntro1(); } });
 		player.startPlayback();
 	}
 	/**
@@ -1011,7 +1035,7 @@ public class Main extends JFrame {
 //			return;
 		}
 		player.setFilename(resMap.get("INTRO/BLOCK23.ANI").getAbsolutePath());
-		player.setOnCompleted(new BtnAction() { public void invoke() { onIntro2(); } });
+		player.setOnCompleted(new BtnAction() { @Override public void invoke() { onIntro2(); } });
 		player.startPlayback();
 	}
 	/**
@@ -1024,7 +1048,7 @@ public class Main extends JFrame {
 //			return;
 		}
 		player.setFilename(resMap.get("INTRO/BLOCK4.ANI").getAbsolutePath());
-		player.setOnCompleted(new BtnAction() { public void invoke() { onPlaybackCompleted(); } });
+		player.setOnCompleted(new BtnAction() { @Override public void invoke() { onPlaybackCompleted(); } });
 		player.startPlayback();
 	}
 	/** If the main menu playback completes, restore the main menu. */

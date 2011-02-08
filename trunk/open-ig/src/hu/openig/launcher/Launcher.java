@@ -684,6 +684,7 @@ public class Launcher extends JFrame {
 										final long fbytesReceived = bytesReceived;
 										final long fbytesTotal = bytesTotal;
 										SwingUtilities.invokeLater(new Runnable() {
+											@Override 
 											public void run() {
 												mp.statistics.setText("[" + (findex + 1) + " / " + fsize + "] "
 														+ lf + " (" + String.format("%.2f", fbytesReceived / 1024.0 / 1024.0) + " MB)"  

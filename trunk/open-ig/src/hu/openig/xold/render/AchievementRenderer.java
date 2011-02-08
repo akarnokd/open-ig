@@ -75,7 +75,7 @@ public class AchievementRenderer {
 		this.text = grm.commonGFX.text;
 //		this.sounds = sounds;
 		achievementFader = new Timer(ACHIEVEMENT_SPEED, 
-				new ActionListener() { public void actionPerformed(ActionEvent e) { doAchievement(); } });
+				new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doAchievement(); } });
 	}
 	/**
 	 * Perform the achievement animation.

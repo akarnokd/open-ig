@@ -302,6 +302,7 @@ public class GameWindow extends JFrame implements GameControls {
 	/**
 	 * Display the status bar.
 	 */
+	@Override 
 	public void displayStatusbar() {
 		if (!statusbarVisible) {
 			statusbarVisible = true;
@@ -325,6 +326,7 @@ public class GameWindow extends JFrame implements GameControls {
 	/**
 	 * Hide the status bar.
 	 */
+	@Override 
 	public void hideStatusbar() {
 		if (statusbarVisible) {
 			statusbarVisible = true;

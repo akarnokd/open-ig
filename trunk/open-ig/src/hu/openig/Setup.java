@@ -149,6 +149,7 @@ public class Setup extends JFrame {
 	/** Move down. */
 	private ConfigButton btnMoveDown;
 	/** File list. */
+	@SuppressWarnings("rawtypes")
 	private JList fileList;
 	/** Locate. */
 	private ConfigButton btnLocate;
@@ -157,6 +158,7 @@ public class Setup extends JFrame {
 	/** Remove. */
 	private ConfigButton btnRemove;
 	/** The file list model. */
+	@SuppressWarnings("rawtypes")
 	private DefaultListModel fileListModel;
 	/** The last open path. */
 	private File lastPath;
@@ -335,7 +337,7 @@ public class Setup extends JFrame {
 		
 		setResizable(false);
 		pack();
-		config.logListener.add(new Act() { public void act() { doUpdateLog(); } });
+		config.logListener.add(new Act() { @Override public void act() { doUpdateLog(); } });
 		loadConfig();
 	}
 	/** Update the event log. */
@@ -384,15 +386,15 @@ public class Setup extends JFrame {
 		
 		for (int i = 0; i < tabs.size(); i++) {
 			final int j = i;
-			tabs.get(i).addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { selectPanel(j); } });
+			tabs.get(i).addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { selectPanel(j); } });
 		}
 		
 		btnSaveAndRun = new ConfigButton("Save & Run");
-		btnSaveAndRun.addActionListener(new Act() { public void act() { doSaveAndRun(); } });
+		btnSaveAndRun.addActionListener(new Act() { @Override public void act() { doSaveAndRun(); } });
 		btnSave = new ConfigButton("Save");
-		btnSave.addActionListener(new Act() { public void act() { doSave(); } });
+		btnSave.addActionListener(new Act() { @Override public void act() { doSave(); } });
 		btnClose = new ConfigButton("Close");
-		btnClose.addActionListener(new Act() { public void act() { dispose(); } });
+		btnClose.addActionListener(new Act() { @Override public void act() { dispose(); } });
 		
 		buttonGroup.add(btnLanguage);
 		buttonGroup.add(btnResources);
@@ -548,6 +550,7 @@ public class Setup extends JFrame {
 	/**
 	 * Create language panel.
 	 */
+	@SuppressWarnings("rawtypes")
 	void createFilesPanel() {
 		filesPanel = new JPanel();
 		filesPanel.setOpaque(false);
@@ -564,19 +567,20 @@ public class Setup extends JFrame {
 		path = new AlphaTextField(0.85f);
 		path.setOpaque(false);
 		btnOpen = new ConfigButton("Open...");
-		btnOpen.addActionListener(new Act() { public void act() { doOpenPath(); } });
+		btnOpen.addActionListener(new Act() { @Override public void act() { doOpenPath(); } });
 		btnLocate = new ConfigButton("Locate");
-		btnLocate.addActionListener(new Act() { public void act() { doLocate(); } });
+		btnLocate.addActionListener(new Act() { @Override public void act() { doLocate(); } });
 		btnAdd = new ConfigButton("Add");
-		btnAdd.addActionListener(new Act() { public void act() { doAddPath(); } });
+		btnAdd.addActionListener(new Act() { @Override public void act() { doAddPath(); } });
 		btnMoveUp = new ConfigButton("Up");
-		btnMoveUp.addActionListener(new Act() { public void act() { doMoveUp(); } });
+		btnMoveUp.addActionListener(new Act() { @Override public void act() { doMoveUp(); } });
 		btnMoveDown = new ConfigButton("Down");
-		btnMoveDown.addActionListener(new Act() { public void act() { doMoveDown(); } });
+		btnMoveDown.addActionListener(new Act() { @Override public void act() { doMoveDown(); } });
 		btnRemove = new ConfigButton("Remove");
-		btnRemove.addActionListener(new Act() { public void act() { doRemove(); } });
+		btnRemove.addActionListener(new Act() { @Override public void act() { doRemove(); } });
 		
 		fileListLabel = new JLabel("Selected files");
+		
 		fileListModel = new DefaultListModel();
 		fileList = new JList(fileListModel);
 		fileList.setOpaque(false);
@@ -889,11 +893,11 @@ public class Setup extends JFrame {
 		edHeight = new AlphaTextField(0.85f, 4);
 		edHeight.setText("480");
 		btnApplyBounds = new ConfigButton("Apply");
-		btnApplyBounds.addActionListener(new Act() { public void act() { doApplyBounds(); } });
+		btnApplyBounds.addActionListener(new Act() { @Override public void act() { doApplyBounds(); } });
 		btnCurrentBounds = new ConfigButton("Get current");
-		btnCurrentBounds.addActionListener(new Act() { public void act() { doCurrentBounds(); } });
+		btnCurrentBounds.addActionListener(new Act() { @Override public void act() { doCurrentBounds(); } });
 		btnCenterBounds = new ConfigButton("Center");
-		btnCenterBounds.addActionListener(new Act() { public void act() { doCenter(); } });
+		btnCenterBounds.addActionListener(new Act() { @Override public void act() { doCenter(); } });
 		
 		gl.setHorizontalGroup(
 			gl.createSequentialGroup()
@@ -1001,7 +1005,7 @@ public class Setup extends JFrame {
 		edAudioChannels = new AlphaTextField(0.85f, 2);
 		edAudioChannels.setText("8");
 		btnTestAudioChannels = new ConfigButton("Test");
-		btnTestAudioChannels.addActionListener(new Act() { public void act() { playTestMulti(); } });
+		btnTestAudioChannels.addActionListener(new Act() { @Override public void act() { playTestMulti(); } });
 		GroupLayout gl = new GroupLayout(channelPanel);
 		channelPanel.setLayout(gl);
 		gl.setAutoCreateContainerGaps(true);
@@ -1025,7 +1029,7 @@ public class Setup extends JFrame {
 		lblMusicVolume = new JLabel("Music volume:");
 		lblMusicVolume.setForeground(Color.WHITE);
 		btnTestMusic = new ConfigButton("Test");
-		btnTestMusic.addActionListener(new Act() { public void act() { playTest(musicSlider.getValue(), btnTestMusic, 1); } });
+		btnTestMusic.addActionListener(new Act() { @Override public void act() { playTest(musicSlider.getValue(), btnTestMusic, 1); } });
 		musicSlider = new JSlider(0, 100); 
 
 		gl = new GroupLayout(musicPanel);
@@ -1055,7 +1059,7 @@ public class Setup extends JFrame {
 		lblEffectVolume = new JLabel("Effect volume:");
 		lblEffectVolume.setForeground(Color.WHITE);
 		btnTestEffects = new ConfigButton("Test");
-		btnTestEffects.addActionListener(new Act() { public void act() { playTest(effectSlider.getValue(), btnTestEffects, (Integer)edEffectFilter.getValue()); } });
+		btnTestEffects.addActionListener(new Act() { @Override public void act() { playTest(effectSlider.getValue(), btnTestEffects, (Integer)edEffectFilter.getValue()); } });
 		effectSlider = new JSlider(0, 100); 
 		
 		lblEffectFilter = new JLabel("Averaging filter step count: ");
@@ -1107,7 +1111,7 @@ public class Setup extends JFrame {
 		lblVideoVolume = new JLabel("Video volume:");
 		lblVideoVolume.setForeground(Color.WHITE);
 		btnTestVideo = new ConfigButton("Test");
-		btnTestVideo.addActionListener(new Act() { public void act() { playTest(videoSlider.getValue(), btnTestVideo, (Integer)edVideoFilter.getValue()); } });
+		btnTestVideo.addActionListener(new Act() { @Override public void act() { playTest(videoSlider.getValue(), btnTestVideo, (Integer)edVideoFilter.getValue()); } });
 		videoSlider = new JSlider(0, 100); 
 		lblVideoFilter = new JLabel("Averaging filter step count: ");
 		lblVideoFilter.setForeground(Color.WHITE);

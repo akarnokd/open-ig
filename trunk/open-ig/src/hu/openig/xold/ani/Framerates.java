@@ -67,7 +67,7 @@ public class Framerates {
 	 * @param resource the resource path
 	 */
 	private void loadFromResource(String resource) {
-		XML.parseResource(resource, new XmlProcessor<Void>() { public Void process(Document doc) { processDoc(doc); return null; } });
+		XML.parseResource(resource, new XmlProcessor<Void>() { @Override public Void process(Document doc) { processDoc(doc); return null; } });
 	}
 	/**
 	 * Process the xml document.

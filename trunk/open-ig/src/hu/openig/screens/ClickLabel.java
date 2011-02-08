@@ -41,6 +41,7 @@ public class ClickLabel extends Button {
 	 * @param x0 the reference
 	 * @param y0 the reference
 	 */
+	@Override 
 	public void paintTo(Graphics2D g2, int x0, int y0) {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(x0 + x, y0 + y, getWidth(), getHeight());
@@ -58,6 +59,7 @@ public class ClickLabel extends Button {
 	/**
 	 * Invoke the action.
 	 */
+	@Override 
 	public void onPressed() {
 		if (onPressed != null) {
 			onPressed.act();
