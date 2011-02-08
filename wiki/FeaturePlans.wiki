@@ -1,5 +1,4 @@
 #summary Plans for enhancing the gameplay
-#labels Featured
 
 <wiki:toc max_depth="2" />
 
