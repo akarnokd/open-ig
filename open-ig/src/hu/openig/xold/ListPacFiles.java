@@ -41,7 +41,8 @@ import javax.swing.event.ListSelectionListener;
  * Utility program to list image contents of all pack files in a directory.
  * @author karnokd
  */
-@SuppressWarnings("unchecked") // since 6u20 or so, most jlist models became generic, but if I put the type in, it won't compile on older versions
+@SuppressWarnings({ "rawtypes", "unchecked" })
+// since 6u20 or so, most jlist models became generic, but if I put the type in, it won't compile on older versions
 public final class ListPacFiles {
 	/** Private constructor. */
 	private ListPacFiles() {

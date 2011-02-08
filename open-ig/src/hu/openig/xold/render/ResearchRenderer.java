@@ -182,6 +182,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	 * The get should be initiated by the party who is supplying the images.
 	 * @return the backbuffer image.
 	 */
+	@Override 
 	public BufferedImage getBackbuffer() {
 		if (backbuffer == null) {
 			throw new IllegalStateException("init() not called");
@@ -196,6 +197,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	 * Swap the front and backbuffers.
 	 * The swap must be initiated by the party who is supplying the images.
 	 */
+	@Override 
 	public void swap() {
 		swapLock.lock();
 		try {
@@ -213,6 +215,7 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	 * @param width the image width
 	 * @param height the image height.
 	 */
+	@Override 
 	public void init(int width, int height) {
 		swapLock.lock();
 		try {
@@ -252,8 +255,8 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 		this.addMouseListener(ma);
 		this.addMouseMotionListener(ma);
 		this.addMouseWheelListener(ma);
-		researchTimer = new Timer(RESEARCH_TIMER, new ActionListener() { public void actionPerformed(ActionEvent e) { doResearchTimer(); } });
-		moneyAdjuster = new Timer(MONEY_ADJUST_TIMER, new ActionListener() { public void actionPerformed(ActionEvent e) { doMoneyAdjustTrigger(); } });
+		researchTimer = new Timer(RESEARCH_TIMER, new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doResearchTimer(); } });
+		moneyAdjuster = new Timer(MONEY_ADJUST_TIMER, new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doMoneyAdjustTrigger(); } });
 		initButtons();
 	}
 	/** The money adjust trigger. */
@@ -277,13 +280,13 @@ public class ResearchRenderer extends JComponent implements SwappableRenderer {
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
-		btnStart = new Btn(new BtnAction() { public void invoke() { doStartResearch(); } });
-		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
-		btnProduction = new Btn(new BtnAction() { public void invoke() { doProductionClick(); } });
+		btnStart = new Btn(new BtnAction() { @Override public void invoke() { doStartResearch(); } });
+		btnEquipment = new Btn(new BtnAction() { @Override public void invoke() { doEquipmentClick(); } });
+		btnProduction = new Btn(new BtnAction() { @Override public void invoke() { doProductionClick(); } });
 		btnBridge = new Btn();
-		btnView = new Btn(new BtnAction() { public void invoke() { doViewResearch(); } });
-		btnStop = new Btn(new BtnAction() { public void invoke() { doStopResearch(); } });
-		btnMoneyAdjust = new Btn(new BtnAction() { public void invoke() { doStopMoneyAdjust(); } });
+		btnView = new Btn(new BtnAction() { @Override public void invoke() { doViewResearch(); } });
+		btnStop = new Btn(new BtnAction() { @Override public void invoke() { doStopResearch(); } });
+		btnMoneyAdjust = new Btn(new BtnAction() { @Override public void invoke() { doStopMoneyAdjust(); } });
 		
 		releaseButtons.add(btnStart);
 		releaseButtons.add(btnEquipment);

@@ -921,42 +921,42 @@ MouseWheelListener, ActionListener {
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
-		btnPlanet = new Btn(new BtnAction() { public void invoke() { doPlanetClick(); } });
+		btnPlanet = new Btn(new BtnAction() { @Override public void invoke() { doPlanetClick(); } });
 		releaseButtons.add(btnPlanet);
-		btnColonyInfo = new Btn(new BtnAction() { public void invoke() { doColonyInfoClick(); } });
+		btnColonyInfo = new Btn(new BtnAction() { @Override public void invoke() { doColonyInfoClick(); } });
 		releaseButtons.add(btnColonyInfo);
-		btnStarmap = new Btn(new BtnAction() { public void invoke() { doStarmapRecClick(); } });
+		btnStarmap = new Btn(new BtnAction() { @Override public void invoke() { doStarmapRecClick(); } });
 		releaseButtons.add(btnStarmap);
-		btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); } });
+		btnBridge = new Btn(new BtnAction() { @Override public void invoke() { doBridgeClick(); } });
 		releaseButtons.add(btnBridge);
 		
-		btnBuilding = new Btn(new BtnAction() { public void invoke() { doBuildingClick(); } });
+		btnBuilding = new Btn(new BtnAction() { @Override public void invoke() { doBuildingClick(); } });
 		toggleButtons.add(btnBuilding);
-		btnRadar = new Btn(new BtnAction() { public void invoke() { doRadarClick(); } });
+		btnRadar = new Btn(new BtnAction() { @Override public void invoke() { doRadarClick(); } });
 		toggleButtons.add(btnRadar);
-		btnBuildingInfo = new Btn(new BtnAction() { public void invoke() { doBuildingInfoClick(); } });
+		btnBuildingInfo = new Btn(new BtnAction() { @Override public void invoke() { doBuildingInfoClick(); } });
 		toggleButtons.add(btnBuildingInfo);
-		btnButtons = new Btn(new BtnAction() { public void invoke() { doScreenClick(); } });
+		btnButtons = new Btn(new BtnAction() { @Override public void invoke() { doScreenClick(); } });
 		toggleButtons.add(btnButtons);
 		
-		btnPlanetDetails = new Btn(new BtnAction() { public void invoke() { repaint(); } });
+		btnPlanetDetails = new Btn(new BtnAction() { @Override public void invoke() { repaint(); } });
 		btnPlanetDetails.down = true;
 		toggleButtons.add(btnPlanetDetails);
 		
-		btnBuildNext = new Btn(new BtnAction() { public void invoke() { doBuildNext(); } });
+		btnBuildNext = new Btn(new BtnAction() { @Override public void invoke() { doBuildNext(); } });
 		pressButtons.add(btnBuildNext);
-		btnBuildPrev = new Btn(new BtnAction() { public void invoke() { doBuildPrev(); } });
+		btnBuildPrev = new Btn(new BtnAction() { @Override public void invoke() { doBuildPrev(); } });
 		pressButtons.add(btnBuildPrev);
-		btnBuild = new Btn(new BtnAction() { public void invoke() { doBuild(); } });
+		btnBuild = new Btn(new BtnAction() { @Override public void invoke() { doBuild(); } });
 		toggleButtons.add(btnBuild);
-		btnList = new Btn(new BtnAction() { public void invoke() { doList(); } });
+		btnList = new Btn(new BtnAction() { @Override public void invoke() { doList(); } });
 		releaseButtons.add(btnList);
 
-		btnDemolish = new Btn(new BtnAction() { public void invoke() { doDemolish(); } });
+		btnDemolish = new Btn(new BtnAction() { @Override public void invoke() { doDemolish(); } });
 		releaseButtons.add(btnDemolish);
 		
-		btnActive = new Btn(new BtnAction() { public void invoke() { doActiveClick(); } });
-		btnRepair = new Btn(new BtnAction() { public void invoke() { doRepairClick(); } });
+		btnActive = new Btn(new BtnAction() { @Override public void invoke() { doActiveClick(); } });
+		btnRepair = new Btn(new BtnAction() { @Override public void invoke() { doRepairClick(); } });
 		releaseButtons.add(btnActive);
 		releaseButtons.add(btnRepair);
 		

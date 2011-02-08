@@ -55,6 +55,7 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 	 * The get should be initiated by the party who is supplying the images.
 	 * @return the backbuffer image.
 	 */
+	@Override 
 	public BufferedImage getBackbuffer() {
 		if (backbuffer == null) {
 			throw new IllegalStateException("init() not called");
@@ -80,6 +81,7 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 	 * Swap the front and backbuffers.
 	 * The swap must be initiated by the party who is supplying the images.
 	 */
+	@Override 
 	public void swap() {
 		swapLock.lock();
 		try {
@@ -97,6 +99,7 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 	 * @param width the image width
 	 * @param height the image height.
 	 */
+	@Override 
 	public void init(int width, int height) {
 		swapLock.lock();
 		try {

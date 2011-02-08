@@ -81,6 +81,7 @@ public class SpidyAniFile {
 		 * @param index the index of the color
 		 * @return the RGBA value of the color
 		 */
+		@Override 
 		public int getColor(int index) {
 			return rgb[index];
 		}

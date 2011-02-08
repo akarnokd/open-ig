@@ -187,7 +187,7 @@ public class MainMenu extends ScreenBase {
 		clicklabels.add(titleLabel);
 		
 		ClickLabel exit = new ClickLabel(120, 380, 400, 20, "mainmenu.exit");
-		exit.action = new Act() { public void act() { doExit(); } };
+		exit.action = new Act() { @Override public void act() { doExit(); } };
 		clicklabels.add(exit);
 		
 		// Language switcher on the main menu, for convenience

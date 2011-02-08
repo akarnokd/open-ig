@@ -295,9 +295,9 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 		initActions();
-		fadeTimer = new Timer(FADE_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doFade(); } });
-		animations = new Timer(ANIMATION_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doAnimate(); } });
-		scrollAnimTimer = new Timer(SCROLL_ANIM_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doScrollAnimate(); } });
+		fadeTimer = new Timer(FADE_INTERVAL, new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doFade(); } });
+		animations = new Timer(ANIMATION_INTERVAL, new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doAnimate(); } });
+		scrollAnimTimer = new Timer(SCROLL_ANIM_INTERVAL, new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doScrollAnimate(); } });
 		precalculateStars();
 		radarSineTable = new double[51];
 		radarCosineTable = new double[51];
@@ -1189,21 +1189,21 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 	}
 	/** Initialize button actions. */
 	private void initActions() {
-		btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); } });
+		btnColony = new Btn(new BtnAction() { @Override public void invoke() { doColonyClick(); } });
 		releaseButtons.add(btnColony);
-		btnColonyPrev = new Btn(new BtnAction() { public void invoke() { doColonyPrev(); } });
+		btnColonyPrev = new Btn(new BtnAction() { @Override public void invoke() { doColonyPrev(); } });
 		releaseButtons.add(btnColonyPrev);
-		btnColonyNext = new Btn(new BtnAction() { public void invoke() { doColonyNext(); } });
+		btnColonyNext = new Btn(new BtnAction() { @Override public void invoke() { doColonyNext(); } });
 		releaseButtons.add(btnColonyNext);
-		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
+		btnEquipment = new Btn(new BtnAction() { @Override public void invoke() { doEquipmentClick(); } });
 		releaseButtons.add(btnEquipment);
-		btnEquipmentPrev = new Btn(new BtnAction() { public void invoke() { doEquipmentPrevClick(); } });
+		btnEquipmentPrev = new Btn(new BtnAction() { @Override public void invoke() { doEquipmentPrevClick(); } });
 		releaseButtons.add(btnEquipmentPrev);
-		btnEquipmentNext = new Btn(new BtnAction() { public void invoke() { doEquipmentNextClick(); } });
+		btnEquipmentNext = new Btn(new BtnAction() { @Override public void invoke() { doEquipmentNextClick(); } });
 		releaseButtons.add(btnEquipmentNext);
-		btnInfo = new Btn(new BtnAction() { public void invoke() { doInfoClick(); } });
+		btnInfo = new Btn(new BtnAction() { @Override public void invoke() { doInfoClick(); } });
 		releaseButtons.add(btnInfo);
-		btnBridge = new Btn(new BtnAction() { public void invoke() { doBridgeClick(); } });
+		btnBridge = new Btn(new BtnAction() { @Override public void invoke() { doBridgeClick(); } });
 		releaseButtons.add(btnBridge);
 		btnColonize = new Btn();
 		releaseButtons.add(btnColonize);
@@ -1212,7 +1212,7 @@ public class StarmapRenderer extends JComponent implements MouseMotionListener, 
 		btnMagnify = new Btn(new BtnAction() { @Override public void invoke() {	doMagnify(); } });
 		btnFleets = new Btn();
 		toggleButtons.add(btnFleets);
-		btnGrids = new Btn(new BtnAction() { public void invoke() { doGridsClick(); } });
+		btnGrids = new Btn(new BtnAction() { @Override public void invoke() { doGridsClick(); } });
 		toggleButtons.add(btnGrids);
 		btnRadars = new Btn();
 		toggleButtons.add(btnRadars);

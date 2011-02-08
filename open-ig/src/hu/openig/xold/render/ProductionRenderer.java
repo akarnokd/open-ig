@@ -222,7 +222,7 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 		this.addMouseListener(ma);
 		this.addMouseMotionListener(ma);
 		this.addMouseWheelListener(ma);
-		researchTimer = new Timer(RESEARCH_TIMER, new ActionListener() { public void actionPerformed(ActionEvent e) { doResearchTimer(); } });
+		researchTimer = new Timer(RESEARCH_TIMER, new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doResearchTimer(); } });
 		
 		for (int i = 0; i < PRODUCTION_LINES; i++) {
 			lines.add(new ProductionLine());
@@ -239,25 +239,25 @@ public class ProductionRenderer extends JComponent implements SwappableRenderer 
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
-		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
-		btnResearch = new Btn(new BtnAction() { public void invoke() { doResearchClick(); } });
+		btnEquipment = new Btn(new BtnAction() { @Override public void invoke() { doEquipmentClick(); } });
+		btnResearch = new Btn(new BtnAction() { @Override public void invoke() { doResearchClick(); } });
 		btnBridge = new Btn();
 		releaseButtons.add(btnEquipment);
 		releaseButtons.add(btnResearch);
 		releaseButtons.add(btnBridge);
 		
-		btnMinusTen = new Btn(new BtnAction() { public void invoke() { doAddCount(-10); } });
+		btnMinusTen = new Btn(new BtnAction() { @Override public void invoke() { doAddCount(-10); } });
 		releaseButtons.add(btnMinusTen);
-		btnMinusOne = new Btn(new BtnAction() { public void invoke() { doAddCount(-1); } });
+		btnMinusOne = new Btn(new BtnAction() { @Override public void invoke() { doAddCount(-1); } });
 		releaseButtons.add(btnMinusOne);
-		btnPlusOne = new Btn(new BtnAction() { public void invoke() { doAddCount(1); } });
+		btnPlusOne = new Btn(new BtnAction() { @Override public void invoke() { doAddCount(1); } });
 		releaseButtons.add(btnPlusOne);
-		btnPlusTen = new Btn(new BtnAction() { public void invoke() { doAddCount(10); } });
+		btnPlusTen = new Btn(new BtnAction() { @Override public void invoke() { doAddCount(10); } });
 		releaseButtons.add(btnPlusTen);
-		btnSell = new Btn(new BtnAction() { public void invoke() { doSell(1); } });
+		btnSell = new Btn(new BtnAction() { @Override public void invoke() { doSell(1); } });
 		releaseButtons.add(btnSell);
 		
-		btnAddRemove = new Btn(new BtnAction() { public void invoke() { doAddRemoveClick(); } });
+		btnAddRemove = new Btn(new BtnAction() { @Override public void invoke() { doAddRemoveClick(); } });
 		releaseButtons.add(btnAddRemove);
 	}
 	/**

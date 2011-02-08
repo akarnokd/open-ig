@@ -24,5 +24,7 @@ public enum ResourceAllocationStrategy {
 	 * Damaged buildings are computed with reduced energy/worker demands, giving room for
 	 * the rest of the buildings.
 	 */
-	DAMAGE_AWARE_DEFAULT_STRATEGY
+	DAMAGE_AWARE_DEFAULT_STRATEGY,
+	/** The maximum efficiency heuristics. */
+	MAX_EFFICIENCY
 }

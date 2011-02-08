@@ -38,7 +38,7 @@ public final class Tuple2<T1, T2> {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Tuple2<?, ?>) {
-			@SuppressWarnings("unchecked") Tuple2 o = (Tuple2)obj;
+			Tuple2<?, ?> o = (Tuple2<?, ?>)obj;
 			return JavaUtils.equal(first, o.first) 
 			&& JavaUtils.equal(second, o.second);
 		}

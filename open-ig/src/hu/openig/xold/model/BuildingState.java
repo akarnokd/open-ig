@@ -60,6 +60,7 @@ public class BuildingState implements StateExchanger {
 	/**
 	 * Save changes to the actual building object.
 	 */
+	@Override 
 	public void save() {
 		if (remove) {
 			planet.removeBuilding(building);

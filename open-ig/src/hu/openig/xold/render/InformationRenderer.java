@@ -200,7 +200,7 @@ MouseWheelListener, ActionListener {
 		
 		controlSize.width = gfx.infoScreen.getWidth();
 		controlSize.height = gfx.infoScreen.getHeight();
-		blinkTimer = new Timer(BLINK_INTERVAL, new ActionListener() { public void actionPerformed(ActionEvent e) { doBlink(); } });
+		blinkTimer = new Timer(BLINK_INTERVAL, new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doBlink(); } });
 		
 		initButtons();
 		
@@ -368,38 +368,38 @@ MouseWheelListener, ActionListener {
 	}
 	/** Initialize buttons. */
 	private void initButtons() {
-		btnColonyInfo = new Btn(new BtnAction() { public void invoke() { doColonyInfoClick(); } });
+		btnColonyInfo = new Btn(new BtnAction() { @Override public void invoke() { doColonyInfoClick(); } });
 		pressButtons.add(btnColonyInfo);
-		btnMilitaryInfo = new Btn(new BtnAction() { public void invoke() { doMilitaryInfoClick(); } });
+		btnMilitaryInfo = new Btn(new BtnAction() { @Override public void invoke() { doMilitaryInfoClick(); } });
 		pressButtons.add(btnMilitaryInfo);
-		btnFinancialInfo = new Btn(new BtnAction() { public void invoke() { doFinancialInfoClick(); } });
+		btnFinancialInfo = new Btn(new BtnAction() { @Override public void invoke() { doFinancialInfoClick(); } });
 		pressButtons.add(btnFinancialInfo);
-		btnBuildings = new Btn(new BtnAction() { public void invoke() { doBuildingsClick(); } });
+		btnBuildings = new Btn(new BtnAction() { @Override public void invoke() { doBuildingsClick(); } });
 		pressButtons.add(btnBuildings);
-		btnPlanets = new Btn(new BtnAction() { public void invoke() { doPlanetsClick(); } });
+		btnPlanets = new Btn(new BtnAction() { @Override public void invoke() { doPlanetsClick(); } });
 		pressButtons.add(btnPlanets);
-		btnFleets = new Btn(new BtnAction() { public void invoke() { doFleetsClick(); } });
+		btnFleets = new Btn(new BtnAction() { @Override public void invoke() { doFleetsClick(); } });
 		pressButtons.add(btnFleets);
-		btnInventions = new Btn(new BtnAction() { public void invoke() { doInventionsClick(); } });
+		btnInventions = new Btn(new BtnAction() { @Override public void invoke() { doInventionsClick(); } });
 		pressButtons.add(btnInventions);
-		btnAliens = new Btn(new BtnAction() { public void invoke() { doAliensClick(); } });
+		btnAliens = new Btn(new BtnAction() { @Override public void invoke() { doAliensClick(); } });
 		pressButtons.add(btnAliens);
-		btnColony = new Btn(new BtnAction() { public void invoke() { doColonyClick(); } });
+		btnColony = new Btn(new BtnAction() { @Override public void invoke() { doColonyClick(); } });
 		releaseButtons.add(btnColony);
-		btnStarmap = new Btn(new BtnAction() { public void invoke() { doStarmapClick(); } });
+		btnStarmap = new Btn(new BtnAction() { @Override public void invoke() { doStarmapClick(); } });
 		releaseButtons.add(btnStarmap);
-		btnEquipment = new Btn(new BtnAction() { public void invoke() { doEquipmentClick(); } });
+		btnEquipment = new Btn(new BtnAction() { @Override public void invoke() { doEquipmentClick(); } });
 		releaseButtons.add(btnEquipment);
-		btnProduction = new Btn(new BtnAction() { public void invoke() { doProductionClick(); } });
+		btnProduction = new Btn(new BtnAction() { @Override public void invoke() { doProductionClick(); } });
 		releaseButtons.add(btnProduction);
-		btnResearch = new Btn(new BtnAction() { public void invoke() { doResearchClick(); } });
+		btnResearch = new Btn(new BtnAction() { @Override public void invoke() { doResearchClick(); } });
 		releaseButtons.add(btnResearch);
-		btnDiplomacy = new Btn(new BtnAction() { public void invoke() { doDiplomacyClick(); } });
+		btnDiplomacy = new Btn(new BtnAction() { @Override public void invoke() { doDiplomacyClick(); } });
 		releaseButtons.add(btnDiplomacy);
 		
-		btnTaxLess = new Btn(new BtnAction() { public void invoke() { doLessTax(); } });
+		btnTaxLess = new Btn(new BtnAction() { @Override public void invoke() { doLessTax(); } });
 		pressButtons.add(btnTaxLess);
-		btnTaxMore = new Btn(new BtnAction() { public void invoke() { doMoreTax(); } });
+		btnTaxMore = new Btn(new BtnAction() { @Override public void invoke() { doMoreTax(); } });
 		pressButtons.add(btnTaxMore);
 		
 	}

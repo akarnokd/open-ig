@@ -84,6 +84,7 @@ public class RawAni implements Closeable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override 
 	public void close() throws IOException {
 		raf.close();
 	}

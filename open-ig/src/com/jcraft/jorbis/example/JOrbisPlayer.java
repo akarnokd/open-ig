@@ -731,6 +731,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 	 * Common action handler.
 	 * @param e the action event
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource() == statsButton) {
@@ -1356,6 +1357,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 		frame.getContentPane().setLayout(new BorderLayout());
 
 		frame.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}

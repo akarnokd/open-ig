@@ -194,6 +194,7 @@ public class SpidyAniPlayer {
 		ad = null;
 		if (onCompleted != null) {
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override 
 				public void run() {
 					onCompleted.invoke();
 				}
@@ -215,6 +216,7 @@ public class SpidyAniPlayer {
 		}
 		stop = false;
 		t = new Thread(new Runnable() {
+			@Override 
 			public void run() {
 				play();
 			}
