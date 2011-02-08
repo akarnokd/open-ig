@@ -1,4 +1,5 @@
 #summary List of tasks to complete in 2011
+#labels Featured
 
 = Introduction =
 
@@ -15,9 +16,10 @@ This page lists tasks that I want to complete with expected times.
 || Screen: Database || 2011-04-17 || - || I have a test implementation, but I'm not satisfied with its behavior. ||
 || Screen: Bar || 2011-04-24 || - || Test implementation exists, only integration is required. ||
 || Screen: Statistics &amp; Achievements || 2011-04-24 || - || Polish the current implementation, its look and behavior. ||
+|| Sound & Music integration || 2011-04-24 || - || Add sound and music. ||
 || Basic simulation || 2011-05-15 || - || Time elapse, running research and production, fleet movements. Gather achievements and statistics. No enemies. ||
-|| Screen: Save and load || 2011-05-15 || - || Will come in handy when testing. ||
-|| Surface &amp; Space battles || 2011-06-05 || - || Rendering and basic simulation ||
+|| Screen: Save, Load & Options || 2011-05-15 || - || Will come in handy when testing. ||
+|| Surface & Space battles || 2011-06-05 || - || Rendering and basic simulation ||
 || Scripting for campaign || 2011-07-03 || - || Build a scriptable campaign engine. We will use the internal JavaScript support. ||
 || Create the Artifical Intelligence || 2011-08-21 || - || This is going to be a real challenge. ||
 || Beta release || 2011-09-04 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup. ||
