@@ -5,18 +5,18 @@
 This page lists tasks that I want to complete with expected times.
 
 
-|| *Task* || *ETA* || *Status* || *Remarks* ||
-|| Build a testbed for further screen developments || 2011&#8209;02&#8209;13 || - || Going through the entire menu for testing a screen is cumbersome and the current way of developing outside the game's context is ineffective. I want to create a fast environment to test out new screens and integrate the finished screens with the main game with less effort. ||
-|| Screen: Equipment || 2011&#8209;02&#8209;27 || - || This screen has multiple modes: equip/unequip fleets, merge and combine fleets. ||
-|| Screen: Research &amp; Production || 2011&#8209;03&#8209;13 || - || The research and production are 50% the same. ||
-|| Screen: Colony || 2011&#8209;03&#8209;27 || - || Integrate properly with the main game, add controls. Transform all old planets via the map editor. ||
-|| Screen: Information || 2011&#8209;04&#8209;03 || - || It contains 8 different tabs with different content and behavior. ||
-|| Screen: Diplomacy || 2011&#8209;04&#8209;10 || - || I need to run the original game to figure out the available talk options. ||
-|| Screen: Database || 2011&#8209;04&#8209;17 || - || I have a test implementation, but I'm not satisfied with its behavior. ||
-|| Screen: Bar || 201&#8209;04&#8209;24 || - || Test implementation exists, only integration is required. ||
-|| Screen: Statistics &amp; Achievements || 2011&#8209;04&#8209;24 || - || Polish the current implementation, its look and behavior. ||
-|| Basic simulation || 2011&#8209;05&#8209;15 || - || Time elapse, running research and production, fleet movements. Gather achievements and statistics. No enemies. ||
-|| Surface &amp; Space battles || 2011&#8209;06&#8209;05 || - || Rendering and basic simulation ||
-|| Scripting for campaign || 2011&#8209;07&#8209;03 || - || Build a scriptable campaign engine. We will use the internal JavaScript support. ||
-|| Create the Artifical Intelligence || 2011&#8209;08&#8209;21 || - || This is going to be a real challenge. ||
-|| Beta release || 2011&#8209;09-&#8209;04 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup. ||
+|| *Task* || *Expected completion time* || *Status* || *Remarks* ||
+|| Build a testbed for further screen developments || 2011-02-13 || - || Going through the entire menu for testing a screen is cumbersome and the current way of developing outside the game's context is ineffective. I want to create a fast environment to test out new screens and integrate the finished screens with the main game with less effort. ||
+|| Screen: Equipment || 2011-02-27 || - || This screen has multiple modes: equip/unequip fleets, merge and combine fleets. ||
+|| Screen: Research & Production || 2011-03-13 || - || The research and production are 50% the same. ||
+|| Screen: Colony || 2011-03-27 || - || Integrate properly with the main game, add controls. Transform all old planets via the map editor. ||
+|| Screen: Information || 2011-04-03 || - || It contains 8 different tabs with different content and behavior. ||
+|| Screen: Diplomacy || 2011-04-10 || - || I need to run the original game to figure out the available talk options. ||
+|| Screen: Database || 2011-04-17 || - || I have a test implementation, but I'm not satisfied with its behavior. ||
+|| Screen: Bar || 2011-04-24 || - || Test implementation exists, only integration is required. ||
+|| Screen: Statistics &amp; Achievements || 2011-04-24 || - || Polish the current implementation, its look and behavior. ||
+|| Basic simulation || 2011-05-15 || - || Time elapse, running research and production, fleet movements. Gather achievements and statistics. No enemies. ||
+|| Surface &amp; Space battles || 2011-06-05 || - || Rendering and basic simulation ||
+|| Scripting for campaign || 2011-07-03 || - || Build a scriptable campaign engine. We will use the internal JavaScript support. ||
+|| Create the Artifical Intelligence || 2011-08-21 || - || This is going to be a real challenge. ||
+|| Beta release || 2011-09-04 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup. ||
