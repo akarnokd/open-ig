@@ -140,6 +140,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				ScreenBase sb = screen;
 				if (sb != null) {
 					sb.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiersEx());
+					sb.handleRepaint();
 				}
 			}
 			@Override
@@ -147,6 +148,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				ScreenBase sb = screen;
 				if (sb != null && e.getClickCount() >= 2) {
 					sb.mouseDoubleClicked(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+					sb.handleRepaint();
 				}
 			}
 			@Override
@@ -154,6 +156,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				ScreenBase sb = screen;
 				if (sb != null) {
 					sb.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+					sb.handleRepaint();
 				}
 			}
 			@Override
@@ -161,6 +164,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				ScreenBase sb = screen;
 				if (sb != null) {
 					sb.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+					sb.handleRepaint();
 				}
 			}
 			@Override
@@ -168,6 +172,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				ScreenBase sb = screen;
 				if (sb != null) {
 					sb.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+					sb.handleRepaint();
 				}
 			}
 			@Override
@@ -175,6 +180,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				ScreenBase sb = screen;
 				if (sb != null) {
 					sb.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
+					sb.handleRepaint();
 				}
 			}
 		};
