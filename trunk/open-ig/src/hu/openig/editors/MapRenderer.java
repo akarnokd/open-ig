@@ -17,7 +17,6 @@ import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.render.TextRenderer;
-import hu.openig.xold.res.gfx.TextGFX;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -340,7 +339,7 @@ public class MapRenderer extends JComponent {
 					g2.setComposite(compositeSave);
 				}
 				
-				txt.paintTo(g2, nx + 1, ny + 1, 7, TextGFX.LIGHT_BLUE, label);
+				txt.paintTo(g2, nx + 1, ny + 1, 7, 0xFF8080FF, label);
 				txt.paintTo(g2, nx, ny, 7, 0xD4FC84, label);
 
 				// paint upgrade level indicator
@@ -349,14 +348,14 @@ public class MapRenderer extends JComponent {
 				int uy = r.y + h - colonyGFX.upgrade.getHeight() - 4; 
 
 				String percent = null;
-				int color = TextGFX.LIGHT_BLUE;
+				int color = 0xFF8080FF;
 				if (b.isConstructing()) {
 					percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
 				} else
 				if (b.hitpoints < b.type.hitpoints) {
 					percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
 					if (!blink) {
-						color = TextGFX.RED;
+						color = 0xFFFF0000;
 					}
 				}
 				if (percent != null) {
@@ -410,9 +409,9 @@ public class MapRenderer extends JComponent {
 					int ey = r.y + h + 13;
 					String offline = labels.get("buildings.offline");
 					int w = txt.getTextWidth(10, offline);
-					color = TextGFX.LIGHT_BLUE;
+					color = 0xFF8080FF;
 					if (!blink) {
-						color = TextGFX.RED;
+						color = 0xFF000000;
 					}
 					int ex = r.x + (r.width - w) / 2;
 					if (textBackgrounds) {

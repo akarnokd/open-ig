@@ -353,11 +353,11 @@ public class SingleplayerScreen extends ScreenBase {
 		selectedDefinition = null;
 		campaigns.clear();
 		for (String name : commons.rl.listDirectories(commons.config.language, "campaign/")) {
-			GameDefinition gd = parseDefinition("campaign/" + name);
+			GameDefinition gd = parseDefinition(commons, "campaign/" + name);
 			campaigns.add(gd);
 		}
 		for (String name : commons.rl.listDirectories(commons.config.language, "skirmish/")) {
-			GameDefinition gd = parseDefinition("skirmish/" + name);
+			GameDefinition gd = parseDefinition(commons, "skirmish/" + name);
 			skirmishes.add(gd);
 		}
 		difficulty = Difficulty.values().length / 2;
@@ -440,10 +440,11 @@ public class SingleplayerScreen extends ScreenBase {
 	}
 	/**
 	 * Parse the game definition from.
+	 * @param commons the common resources
 	 * @param name the definition/game name
 	 * @return the parsed definition.
 	 */
-	public GameDefinition parseDefinition(String name) {
+	public static GameDefinition parseDefinition(CommonResources commons, String name) {
 		GameDefinition result = new GameDefinition();
 		result.name = name;
 		Element root = commons.rl.getXML(commons.config.language, name + "/definition");

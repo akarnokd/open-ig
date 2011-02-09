@@ -376,7 +376,7 @@ public class MainMenu extends ScreenBase {
 	void doSettings() {
 		// do a small reflection trick to avoid circular dependency
 		try {
-			Class<?> clazz = Class.forName("hu.openig.v1.Setup");
+			Class<?> clazz = Class.forName("hu.openig.Setup");
 			Constructor<?> c = clazz.getConstructor(Configuration.class, GameControls.class);
 			Object instance = c.newInstance(commons.config, commons.control);
 			clazz.getMethod("setVisible", Boolean.TYPE).invoke(instance, true);
