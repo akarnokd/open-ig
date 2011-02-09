@@ -8,12 +8,10 @@
 
 package hu.openig.core;
 
-import hu.openig.utils.XML;
+import hu.openig.utils.XElement;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.w3c.dom.Element;
 
 /**
  * The label manager with option for game specific sublabels.
@@ -42,9 +40,9 @@ public class Labels {
 	 * Process the document.
 	 * @param root the root element
 	 */
-	protected void process(Element root) {
-		for (Element e : XML.childrenWithName(root, "entry")) {
-			map.put(e.getAttribute("key"), e.getTextContent());
+	protected void process(XElement root) {
+		for (XElement e : root.childrenWithName("entry")) {
+			map.put(e.get("key"), e.content);
 		}
 	}
 	/**

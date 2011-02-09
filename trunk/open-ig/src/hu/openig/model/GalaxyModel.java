@@ -10,7 +10,7 @@ package hu.openig.model;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.Tile;
-import hu.openig.utils.XML;
+import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.w3c.dom.Element;
 
 /**
  * The Galaxy Model describing the planet types and surface tiles.
@@ -42,58 +40,58 @@ public class GalaxyModel {
 	 * @param exec the executor for parallel processing
 	 */
 	public void processGalaxy(final ResourceLocator rl, final String language, final String data, ExecutorService exec) {
-		Element galaxy = rl.getXML(language, data);
-		Element background = XML.childElement(galaxy, "background");
-		map = rl.getImage(language, background.getAttribute("image"));
-		minScale = Float.parseFloat(background.getAttribute("min-scale"));
-		maxScale = Float.parseFloat(background.getAttribute("max-scale"));
+		XElement galaxy = rl.getXML(language, data);
+		XElement background = galaxy.childElement("background");
+		map = rl.getImage(language, background.get("image"));
+		minScale = Float.parseFloat(background.get("min-scale"));
+		maxScale = Float.parseFloat(background.get("max-scale"));
 		
 		final AtomicInteger wip = new AtomicInteger(1);
 		final CountDownLatch cdl = new CountDownLatch(1);
 		
-		Element planets = XML.childElement(galaxy, "planets");
-		for (final Element planet : XML.childrenWithName(planets, "planet")) {
+		XElement planets = galaxy.childElement("planets");
+		for (final XElement planet : planets.childrenWithName("planet")) {
 			wip.incrementAndGet();
 			exec.submit(new Runnable() {
 				@Override
 				public void run() {
 					PlanetType planetType = new PlanetType();
-					planetType.type = planet.getAttribute("type");
-					planetType.label = planet.getAttribute("label");
+					planetType.type = planet.get("type");
+					planetType.label = planet.get("label");
 					
-					Element bodyElement = XML.childElement(planet, "body");
-					planetType.body = rl.getAnimation(language, bodyElement.getTextContent(), -1, 64);
-					Element tileset = XML.childElement(planet, "tileset");
-					String tilePattern = tileset.getAttribute("pattern");
+					XElement bodyElement = planet.childElement("body");
+					planetType.body = rl.getAnimation(language, bodyElement.content, -1, 64);
+					XElement tileset = planet.childElement("tileset");
+					String tilePattern = tileset.get("pattern");
 					
-					for (Element te : XML.children(tileset)) {
-						if (te.getNodeName().equals("tile-range")) {
-							int start = Integer.parseInt(te.getAttribute("start"));
-							int end = Integer.parseInt(te.getAttribute("end"));
-							String ws = te.getAttribute("width");
+					for (XElement te : tileset) {
+						if (te.name.equals("tile-range")) {
+							int start = Integer.parseInt(te.get("start"));
+							int end = Integer.parseInt(te.get("end"));
+							String ws = te.get("width");
 							int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
-							String hs = te.getAttribute("height");
+							String hs = te.get("height");
 							int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
 							for (int id = start; id <= end; id++) {
 								Tile tile = new Tile(width, height, rl.getImage(language, String.format(tilePattern, id)), null);
 								planetType.tiles.put(id, tile);
 							}
 						} else
-						if (te.getNodeName().equals("tile")) {
-							int id = Integer.parseInt(te.getAttribute("id"));
-							String ws = te.getAttribute("width");
+						if (te.name.equals("tile")) {
+							int id = Integer.parseInt(te.get("id"));
+							String ws = te.get("width");
 							int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
-							String hs = te.getAttribute("height");
+							String hs = te.get("height");
 							int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
 							Tile tile = new Tile(width, height, rl.getImage(language, String.format(tilePattern, id)), null);
 							planetType.tiles.put(id, tile);
 						}
 					}
 					
-					Element map = XML.childElement(planet, "map");
-					String mapPattern = map.getAttribute("pattern");
-					int start = Integer.parseInt(map.getAttribute("start"));
-					int end = Integer.parseInt(map.getAttribute("end"));
+					XElement map = planet.childElement("map");
+					String mapPattern = map.get("pattern");
+					int start = Integer.parseInt(map.get("start"));
+					int end = Integer.parseInt(map.get("end"));
 					for (int i = start; i <= end; i++) {
 						planetType.surfaces.put(i, rl.getData(language, String.format(mapPattern, i)));
 					}

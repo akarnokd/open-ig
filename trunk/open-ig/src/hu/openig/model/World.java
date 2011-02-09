@@ -11,7 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Difficulty;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
-import hu.openig.utils.XML;
+import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -22,8 +22,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import org.w3c.dom.Element;
 
 /**
  * The world object.
@@ -171,71 +169,71 @@ public class World {
 	 * @param data the data resource to load
 	 */
 	protected void processBridge(ResourceLocator rl, String language, String data) {
-		Element root = rl.getXML(language, data);
-		Element graphics = XML.childElement(root, "graphics");
-		for (Element level : XML.childrenWithName(graphics, "level")) {
+		XElement root = rl.getXML(language, data);
+		XElement graphics = root.childElement("graphics");
+		for (XElement level : graphics.childrenWithName("level")) {
 			Bridge.Level lvl = new Bridge.Level();
-			lvl.id = Integer.parseInt(level.getAttribute("id"));
-			lvl.image = rl.getImage(language, level.getAttribute("image"));
-			lvl.ship = walks.ships.get(level.getAttribute("ship-id"));
+			lvl.id = Integer.parseInt(level.get("id"));
+			lvl.image = rl.getImage(language, level.get("image"));
+			lvl.ship = walks.ships.get(level.get("ship-id"));
 			lvl.walk = lvl.ship.positions.get("*bridge");
-			Element mp = XML.childElement(level, "message-panel");
+			XElement mp = level.childElement("message-panel");
 			
-			Element mpAppear = XML.childElement(mp, "appear");
-			lvl.messageAppear.video = mpAppear.getAttribute("video");
-			lvl.messageAppear.audio = mpAppear.getAttribute("audio");
+			XElement mpAppear = mp.childElement("appear");
+			lvl.messageAppear.video = mpAppear.get("video");
+			lvl.messageAppear.audio = mpAppear.get("audio");
 			
-			Element mpOpen = XML.childElement(mp, "open");
-			lvl.messageOpen.video = mpOpen.getAttribute("video");
-			lvl.messageOpen.audio = mpOpen.getAttribute("audio");
+			XElement mpOpen = mp.childElement("open");
+			lvl.messageOpen.video = mpOpen.get("video");
+			lvl.messageOpen.audio = mpOpen.get("audio");
 			
-			Element mpClose = XML.childElement(mp, "close");
-			lvl.messageClose.video = mpClose.getAttribute("video");
-			lvl.messageClose.audio = mpClose.getAttribute("audio");
+			XElement mpClose = mp.childElement("close");
+			lvl.messageClose.video = mpClose.get("video");
+			lvl.messageClose.audio = mpClose.get("audio");
 			
-			Element mpButtons = XML.childElement(mp, "buttons");
-			String up = mpButtons.getAttribute("up");
+			XElement mpButtons = mp.childElement("buttons");
+			String up = mpButtons.get("up");
 			lvl.up[0] = rl.getImage(language, up);
 			lvl.up[0] = rl.getImage(language, up + "_pressed");
 			lvl.up[0] = rl.getImage(language, up + "_empty");
-			String down = mpButtons.getAttribute("down");
+			String down = mpButtons.get("down");
 			lvl.down[0] = rl.getImage(language, down);
 			lvl.down[0] = rl.getImage(language, down + "_pressed");
 			lvl.down[0] = rl.getImage(language, down + "_empty");
-			String send = mpButtons.getAttribute("send");
+			String send = mpButtons.get("send");
 			lvl.send[0] = rl.getImage(language, send);
 			lvl.send[0] = rl.getImage(language, send + "_pressed");
-			String receive = mpButtons.getAttribute("receive");
+			String receive = mpButtons.get("receive");
 			lvl.receive[0] = rl.getImage(language, receive);
 			lvl.receive[0] = rl.getImage(language, receive + "_pressed");
 			
-			Element cp = XML.childElement(level, "comm-panel");
-			Element cpOpen = XML.childElement(cp, "open");
-			lvl.projectorOpen.video = cpOpen.getAttribute("video");
-			lvl.projectorOpen.audio = cpOpen.getAttribute("audio");
+			XElement cp = level.childElement("comm-panel");
+			XElement cpOpen = cp.childElement("open");
+			lvl.projectorOpen.video = cpOpen.get("video");
+			lvl.projectorOpen.audio = cpOpen.get("audio");
 			
-			Element cpClose = XML.childElement(cp, "close");
-			lvl.projectorClose.video = cpClose.getAttribute("video");
-			lvl.projectorClose.audio = cpClose.getAttribute("audio");
+			XElement cpClose = cp.childElement("close");
+			lvl.projectorClose.video = cpClose.get("video");
+			lvl.projectorClose.audio = cpClose.get("audio");
 			bridge.levels.put(lvl.id, lvl);
 		}
-		Element messages = XML.childElement(root, "messages");
-		Element send = XML.childElement(messages, "send");
-		for (Element message : XML.childrenWithName(send, "message")) {
+		XElement messages = root.childElement("messages");
+		XElement send = messages.childElement("send");
+		for (XElement message : send.childrenWithName("message")) {
 			Bridge.Message msg = new Bridge.Message();
-			msg.id = message.getAttribute("id");
-			msg.media = message.getAttribute("media");
-			msg.title = message.getAttribute("title");
-			msg.description = message.getAttribute("description");
+			msg.id = message.get("id");
+			msg.media = message.get("media");
+			msg.title = message.get("title");
+			msg.description = message.get("description");
 			bridge.sendMessages.add(msg);
 		}
-		Element receive = XML.childElement(messages, "receive");
-		for (Element message : XML.childrenWithName(receive, "message")) {
+		XElement receive = messages.childElement("receive");
+		for (XElement message : receive.childrenWithName("message")) {
 			Bridge.Message msg = new Bridge.Message();
-			msg.id = message.getAttribute("id");
-			msg.media = message.getAttribute("media");
-			msg.title = message.getAttribute("title");
-			msg.description = message.getAttribute("description");
+			msg.id = message.get("id");
+			msg.media = message.get("media");
+			msg.title = message.get("title");
+			msg.description = message.get("description");
 			bridge.receiveMessages.add(msg);
 		}
 	}
