@@ -8,15 +8,20 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.XML;
 import hu.openig.core.Difficulty;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
+import hu.openig.utils.XML;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.w3c.dom.Element;
 
@@ -62,22 +67,95 @@ public class World {
 	 * @param language the current language
 	 * @param game the game directory
 	 */
-	public void load(ResourceLocator rl, String language, String game) {
-		level = definition.startingLevel;
-//		Element races = rl.getXML(language, game + "/races");
-//		Element tech = rl.getXML(language, game + "/tech");
-//		Element planets = rl.getXML(language, game + "/planets");
-		talks = new Talks();
-		talks.load(rl, language, definition.talk);
-		walks = new Walks();
-		walks.load(rl, language, definition.walk);
-		bridge = new Bridge();
-		processBridge(rl, language, definition.bridge);
-		galaxyModel = new GalaxyModel();
-		galaxyModel.processGalaxy(rl, language, definition.galaxy);
-		buildingModel = new BuildingModel();
-		buildingModel.processBuildings(rl, language, definition.build);
-
+	public void load(final ResourceLocator rl, final String language, final String game) {
+		final ExecutorService exec = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), Integer.MAX_VALUE, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+		final CountDownLatch cdl = new CountDownLatch(4);
+		try {
+			level = definition.startingLevel;
+	//		Element races = rl.getXML(language, game + "/races");
+	//		Element tech = rl.getXML(language, game + "/tech");
+	//		Element planets = rl.getXML(language, game + "/planets");
+			
+			
+			exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						long t = System.nanoTime();
+						talks = new Talks();
+						talks.load(rl, language, definition.talk);
+						System.out.printf("Loading talks: %d%n", (System.nanoTime() - t) / 1000000);
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						cdl.countDown();
+					}
+				}
+			});
+			exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						long t = System.nanoTime();
+						walks = new Walks();
+						walks.load(rl, language, definition.walk);
+						System.out.printf("Loading walks: %d%n", (System.nanoTime() - t) / 1000000);
+						
+						t = System.nanoTime();
+						bridge = new Bridge();
+						processBridge(rl, language, definition.bridge);
+						System.out.printf("Loading bridge: %d%n", (System.nanoTime() - t) / 1000000);
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						cdl.countDown();
+					}
+				}
+			});
+			exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						long t = System.nanoTime();
+						buildingModel = new BuildingModel();
+						buildingModel.processBuildings(rl, language, definition.build, exec);
+						System.out.printf("Loading building: %d%n", (System.nanoTime() - t) / 1000000);
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						cdl.countDown();
+					}
+				}
+			});
+			exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						long t = System.nanoTime();
+						galaxyModel = new GalaxyModel();
+						galaxyModel.processGalaxy(rl, language, definition.galaxy, exec);
+						System.out.printf("Loading galaxy: %d%n", (System.nanoTime() - t) / 1000000);
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						cdl.countDown();
+					}
+				}
+			});
+	
+		} finally {
+			try {
+				cdl.await();
+			} catch (InterruptedException ex) {
+				
+			}
+			exec.shutdown();
+			try {
+				exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException ex) {
+				
+			}
+		}
 	}
 	/**
 	 * Returns the current level graphics.

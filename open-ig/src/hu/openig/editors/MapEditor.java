@@ -82,11 +82,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -111,7 +115,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -451,10 +454,21 @@ public class MapEditor extends JFrame {
 							setLabels(deferredLanguage);							
 						}
 					});
-					galaxyMap = new GalaxyModel();
-					galaxyMap.processGalaxy(rl, "en", "campaign/main/galaxy");
-					buildingMap = new BuildingModel();
-					buildingMap.processBuildings(rl, "en", "campaign/main/buildings");
+					ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+					try {
+						galaxyMap = new GalaxyModel();
+						galaxyMap.processGalaxy(rl, "en", "campaign/main/galaxy", exec);
+						buildingMap = new BuildingModel();
+					
+						buildingMap.processBuildings(rl, "en", "campaign/main/buildings", exec);
+					} finally {
+						exec.shutdown();
+						try {
+							exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+						} catch (InterruptedException ex) {
+							
+						}
+					}
 					colonyGraphics = new ColonyGFX(rl);
 					colonyGraphics.load("en");
 					

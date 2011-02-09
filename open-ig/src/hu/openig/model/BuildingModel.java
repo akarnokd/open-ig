@@ -8,10 +8,10 @@
 package hu.openig.model;
 
 import hu.openig.core.ResourceLocator;
+import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.XML;
 
@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.w3c.dom.Element;
 
@@ -41,8 +44,11 @@ public class BuildingModel {
 	 * @param data the buildings definition
 	 * @param rl the resource locator
 	 * @param language the language
+	 * @param exec the executor service for the parallel processing
 	 */
-	public void processBuildings(ResourceLocator rl, String language, String data) {
+	public void processBuildings(final ResourceLocator rl, final String language, String data, final ExecutorService exec) {
+		final AtomicInteger wip = new AtomicInteger(1);
+		final CountDownLatch cdl = new CountDownLatch(1);
 		
 		BufferedImage solidTile = rl.getImage(language, "colony/tile_1x1");
 		
@@ -105,7 +111,7 @@ public class BuildingModel {
 		}
 		
 		for (Element building : XML.childrenWithName(buildings, "building")) {
-			BuildingType b = new BuildingType();
+			final BuildingType b = new BuildingType();
 			b.scaffoldings = scaffoldings;
 			b.id = building.getAttribute("id");
 			b.label = building.getAttribute("label");
@@ -115,26 +121,37 @@ public class BuildingModel {
 			Element gfx = XML.childElement(building, "graphics");
 			String pattern = gfx.getAttribute("base");
 			for (Element r : XML.childrenWithName(gfx, "tech")) {
-				TileSet ts = new TileSet();
+				final TileSet ts = new TileSet();
 				
-				String rid = r.getAttribute("id");
-				int width = Integer.parseInt(r.getAttribute("width"));
-				int height = Integer.parseInt(r.getAttribute("height"));
+				final String rid = r.getAttribute("id");
+				final int width = Integer.parseInt(r.getAttribute("width"));
+				final int height = Integer.parseInt(r.getAttribute("height"));
 				
-				String normalImg = String.format(pattern, rid);
-				String normalLight = normalImg + "_lights";
-				String damagedImg = normalImg + "_damaged";
+				final String normalImg = String.format(pattern, rid);
+				final String normalLight = normalImg + "_lights";
+				final String damagedImg = normalImg + "_damaged";
 				
-				BufferedImage lightMap = null;
-				ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
-				if (rp != null) {
-					lightMap = rl.getImage(language, normalLight);
-				}
-				BufferedImage image = rl.getImage(language, normalImg);
-				ts.normal = new Tile(width, height, image, lightMap);
-				ts.nolight = new Tile(width, height, image, null);
-				ts.damaged = new Tile(width, height, rl.getImage(language, damagedImg), null); // no lightmap for damaged building
-				b.tileset.put(rid, ts);
+				wip.incrementAndGet();
+				exec.execute(new Runnable() {
+					@Override
+					public void run() {
+						BufferedImage lightMap = null;
+						ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+						if (rp != null) {
+							lightMap = rl.getImage(language, normalLight);
+						}
+						BufferedImage image = rl.getImage(language, normalImg);
+						ts.normal = new Tile(width, height, image, lightMap);
+						ts.nolight = new Tile(width, height, image, null);
+						ts.damaged = new Tile(width, height, rl.getImage(language, damagedImg), null); // no lightmap for damaged building
+						synchronized (b.tileset) {
+							b.tileset.put(rid, ts);
+						}
+						if (wip.decrementAndGet() == 0) {
+							cdl.countDown();
+						}
+					}
+				});
 			}
 			Element bld = XML.childElement(building, "build");
 			b.cost = Integer.parseInt(bld.getAttribute("cost"));
@@ -202,6 +219,10 @@ public class BuildingModel {
 				addRoadType(rid, rt, t);
 			}
 		}
+		if (wip.decrementAndGet() == 0) {
+			cdl.countDown();
+		}
+		try { cdl.await(); } catch (InterruptedException ex) { }
 	}
 	/**
 	 * Add a road type - tile entry.

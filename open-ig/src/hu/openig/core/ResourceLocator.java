@@ -44,7 +44,13 @@ public class ResourceLocator {
 	/** The resource map from type to language to path. */
 	public final Map<ResourceType, Map<String, Map<String, ResourcePlace>>> resourceMap = new HashMap<ResourceType, Map<String, Map<String, ResourcePlace>>>();
 	/** The pre-opened ZIP containers. */
-	private final Map<String, ZipFile> zipContainers = new HashMap<String, ZipFile>();
+	private final ThreadLocal<Map<String, ZipFile>> zipContainers = 
+		new ThreadLocal<Map<String, ZipFile>>() {
+		@Override
+		protected Map<String, ZipFile> initialValue() {
+			return new HashMap<String, ZipFile>();
+		};
+	};
 	/** Package-private. Use Configuration.newResourceLocator() instead. */
 	ResourceLocator() {
 		
@@ -92,18 +98,18 @@ public class ResourceLocator {
 		public InputStream open() {
 			try {
 				if (zipContainer) {
-					ZipFile zf = zipContainers.get(container);
+					ZipFile zf = zipContainers.get().get(container);
 					if (zf != null) {
 						try {
 							return zf.getInputStream(zf.getEntry(fileName));
 						} catch (IllegalStateException ex) {
 							zf = new ZipFile(container);
-							zipContainers.put(container, zf);
+							zipContainers.get().put(container, zf);
 							return zf.getInputStream(zf.getEntry(fileName));
 						}
 					} else {
 						zf = new ZipFile(container);
-						zipContainers.put(container, zf);
+						zipContainers.get().put(container, zf);
 						return zf.getInputStream(zf.getEntry(fileName));
 					}
 				} else {
@@ -161,7 +167,7 @@ public class ResourceLocator {
 	private void analyzeZip(String zipFile) {
 		try {
 			ZipFile zf = new ZipFile(zipFile);
-			zipContainers.put(zipFile, zf);
+			zipContainers.get().put(zipFile, zf);
 			Enumeration<? extends ZipEntry> en = zf.entries();
 			while (en.hasMoreElements()) {
 				ZipEntry ze = en.nextElement();
@@ -269,7 +275,7 @@ public class ResourceLocator {
 	 * Close all zip containers.
 	 */
 	public void close() {
-		for (ZipFile zf : zipContainers.values()) {
+		for (ZipFile zf : zipContainers.get().values()) {
 			try {
 				zf.close();
 			} catch (IOException ex) {

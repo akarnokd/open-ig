@@ -307,17 +307,19 @@ public class ScreenTester extends JFrame implements GameControls {
 				try {
 					config = new Configuration("open-ig-config.xml");
 					config.load();
-					rl = config.newResourceLocator();
-					
+					long t = System.nanoTime();
 					commons = new CommonResources(config, ScreenTester.this);
+					System.out.printf("Common resources: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
+					rl = commons.rl;
 
+					t = System.nanoTime();
 					commons.world = new World();
 					commons.world.definition = SingleplayerScreen.parseDefinition(commons, "campaign/main");
 					commons.world.difficulty = Difficulty.values()[0];
 					commons.labels = new Labels(); 
 					commons.labels.load(commons.rl, commons.language(), commons.world.definition.name);
 					commons.world.load(commons.rl, commons.language(), commons.world.definition.name);
-
+					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
