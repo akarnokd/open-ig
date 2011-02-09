@@ -138,7 +138,7 @@ public class XElement implements Iterable<XElement> {
 					stack.push(emptyBuilder);
 				}
 				XElement n = new XElement(in.getName().getLocalPart());
-//				n.parent = node;
+				n.parent = node;
 //				n.depth = depth++;
 				int attCount = in.getAttributeCount();
 				if (attCount > 0) {
