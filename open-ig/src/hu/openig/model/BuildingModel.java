@@ -13,7 +13,7 @@ import hu.openig.core.ResourceType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.XML;
+import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.w3c.dom.Element;
 
 /**
  * The building models.
@@ -60,72 +58,92 @@ public class BuildingModel {
 		bmt.constructing = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF0040FF), null);
 		bmt.constructingDamaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF40FF), null);
 		
-		Element buildings = rl.getXML(language, data);
+		XElement buildings = rl.getXML(language, data);
 		
-		Element scaff = XML.childElement(buildings, "scaffolding");
-		Element scaffGraph = XML.childElement(scaff, "graphics");
-		String scaffBase = scaffGraph.getAttribute("base");
+		XElement scaff = buildings.childElement("scaffolding");
+		XElement scaffGraph = scaff.childElement("graphics");
+		String scaffBase = scaffGraph.get("base");
 		Map<String, Scaffolding> scaffoldings = new HashMap<String, Scaffolding>();
-		for (Element scaffTech : XML.childrenWithName(scaffGraph, "tech")) {
-			String id = scaffTech.getAttribute("id");
-			Scaffolding scaffolding = new Scaffolding();
+		for (XElement scaffTech : scaffGraph.childrenWithName("tech")) {
+			String id = scaffTech.get("id");
+			final Scaffolding scaffolding = new Scaffolding();
 			scaffoldings.put(id, scaffolding);
 
-			Element norm = XML.childElement(scaffTech, "normal");
+			XElement norm = scaffTech.childElement("normal");
 			
-			String nbase = norm.getAttribute("base");
-			int nstart = Integer.parseInt(norm.getAttribute("from"));
-			int nend = Integer.parseInt(norm.getAttribute("to"));
+			String nbase = norm.get("base");
+			int nstart = Integer.parseInt(norm.get("from"));
+			int nend = Integer.parseInt(norm.get("to"));
 			
 			for (int i = nstart; i <= nend; i++) {
-				String normalImg = String.format(scaffBase, id, String.format(nbase, i));
-				String normalLight = normalImg + "_lights";
-				BufferedImage lightMap = null;
-				ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
-				if (rp != null) {
-					lightMap = rl.getImage(language, normalLight);
-				}
-				BufferedImage image = rl.getImage(language, normalImg);
+				final String normalImg = String.format(scaffBase, id, String.format(nbase, i));
+				final String normalLight = normalImg + "_lights";
 				
-				scaffolding.normal.add(new Tile(1, 1, image, lightMap));
+				wip.incrementAndGet();
+				exec.execute(new Runnable() {
+					@Override
+					public void run() {
+						BufferedImage lightMap = null;
+						ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+						if (rp != null) {
+							lightMap = rl.getImage(language, normalLight);
+						}
+						BufferedImage image = rl.getImage(language, normalImg);
+						
+						scaffolding.normal.add(new Tile(1, 1, image, lightMap));
+						if (wip.decrementAndGet() == 0) {
+							cdl.countDown();
+						}
+					}
+				});
 			}
 			
-			Element dam = XML.childElement(scaffTech, "damaged");
-			String dbase = dam.getAttribute("base");
-			int dstart = Integer.parseInt(dam.getAttribute("from"));
-			int dend = Integer.parseInt(dam.getAttribute("to"));
+			XElement dam = scaffTech.childElement("damaged");
+			String dbase = dam.get("base");
+			int dstart = Integer.parseInt(dam.get("from"));
+			int dend = Integer.parseInt(dam.get("to"));
 			
 			for (int i = dstart; i <= dend; i++) {
-				String normalImg = String.format(scaffBase, id, String.format(dbase, i));
-				String normalLight = normalImg + "_lights";
-				BufferedImage lightMap = null;
-				ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
-				if (rp != null) {
-					lightMap = rl.getImage(language, normalLight);
-				}
-				BufferedImage image = rl.getImage(language, normalImg);
+				final String normalImg = String.format(scaffBase, id, String.format(dbase, i));
+				final String normalLight = normalImg + "_lights";
 				
-				scaffolding.damaged.add(new Tile(1, 1, image, lightMap));
+				wip.incrementAndGet();
+				exec.execute(new Runnable() {
+					@Override
+					public void run() {
+						BufferedImage lightMap = null;
+						ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+						if (rp != null) {
+							lightMap = rl.getImage(language, normalLight);
+						}
+						BufferedImage image = rl.getImage(language, normalImg);
+						
+						scaffolding.damaged.add(new Tile(1, 1, image, lightMap));
+						if (wip.decrementAndGet() == 0) {
+							cdl.countDown();
+						}
+					}
+				});
 			}
 			
 		}
 		
-		for (Element building : XML.childrenWithName(buildings, "building")) {
+		for (XElement building : buildings.childrenWithName("building")) {
 			final BuildingType b = new BuildingType();
 			b.scaffoldings = scaffoldings;
-			b.id = building.getAttribute("id");
-			b.label = building.getAttribute("label");
+			b.id = building.get("id");
+			b.label = building.get("label");
 			b.description = b.label + ".desc";
 			b.minimapTiles = bmt;
 			
-			Element gfx = XML.childElement(building, "graphics");
-			String pattern = gfx.getAttribute("base");
-			for (Element r : XML.childrenWithName(gfx, "tech")) {
+			XElement gfx = building.childElement("graphics");
+			String pattern = gfx.get("base");
+			for (XElement r : gfx.childrenWithName("tech")) {
 				final TileSet ts = new TileSet();
 				
-				final String rid = r.getAttribute("id");
-				final int width = Integer.parseInt(r.getAttribute("width"));
-				final int height = Integer.parseInt(r.getAttribute("height"));
+				final String rid = r.get("id");
+				final int width = Integer.parseInt(r.get("width"));
+				final int height = Integer.parseInt(r.get("height"));
 				
 				final String normalImg = String.format(pattern, rid);
 				final String normalLight = normalImg + "_lights";
@@ -153,41 +171,41 @@ public class BuildingModel {
 					}
 				});
 			}
-			Element bld = XML.childElement(building, "build");
-			b.cost = Integer.parseInt(bld.getAttribute("cost"));
+			XElement bld = building.childElement("build");
+			b.cost = Integer.parseInt(bld.get("cost"));
 			b.hitpoints = b.cost; // TODO cost == hitpoints???
-			b.kind = bld.getAttribute("kind");
-			String limit = bld.getAttribute("limit");
+			b.kind = bld.get("kind");
+			String limit = bld.get("limit");
 			if ("*".equals(limit)) {
 				b.limit = Integer.MAX_VALUE;
 			} else {
 				b.limit = Integer.parseInt(limit);
 			}
-			b.research = bld.getAttribute("research");
-			String except = bld.getAttribute("except");
+			b.research = bld.get("research");
+			String except = bld.get("except");
 			if (except != null && !except.isEmpty()) {
 				b.except.addAll(Arrays.asList(except.split("\\s*,\\s*")));
 			}
-			Element op = XML.childElement(building, "operation");
-			b.percentable = "true".equals(op.getAttribute("percent"));
-			for (Element re : XML.childrenWithName(op, "resource")) {
+			XElement op = building.childElement("operation");
+			b.percentable = "true".equals(op.get("percent"));
+			for (XElement re : op.childrenWithName("resource")) {
 				Resource res = new Resource();
-				res.type = re.getAttribute("type");
-				res.amount = Float.parseFloat(re.getTextContent());
+				res.type = re.get("type");
+				res.amount = Float.parseFloat(re.content);
 				b.resources.put(res.type, res);
-				if ("true".equals(re.getAttribute("display"))) {
+				if ("true".equals(re.get("display"))) {
 					b.primary = res.type;
 				}
 			}
 			
-			Element ug = XML.childElement(building , "upgrades");
-			for (Element u : XML.childrenWithName(ug, "upgrade")) {
+			XElement ug = building.childElement("upgrades");
+			for (XElement u : ug.childrenWithName("upgrade")) {
 				Upgrade upg = new Upgrade();
-				upg.description = u.getAttribute("desc");
-				for (Element re : XML.childrenWithName(u, "resource")) {
+				upg.description = u.get("desc");
+				for (XElement re : u.childrenWithName("resource")) {
 					Resource res = new Resource();
-					res.type = re.getAttribute("type");
-					res.amount = Float.parseFloat(re.getTextContent());
+					res.type = re.get("type");
+					res.amount = Float.parseFloat(re.content);
 					upg.resources.put(res.type, res);
 				}
 				b.upgrades.add(upg);
@@ -195,28 +213,39 @@ public class BuildingModel {
 			
 			this.buildings.put(b.id, b);
 		}
-		Element roads = XML.childElement(buildings, "roads");
-		Element graph = XML.childElement(roads, "graphics");
-		String roadBase = graph.getAttribute("base");
+		XElement roads = buildings.childElement("roads");
+		XElement graph = roads.childElement("graphics");
+		String roadBase = graph.get("base");
 		List<String> techs = new ArrayList<String>();
-		for (Element e : XML.childrenWithName(graph, "tech")) {
-			techs.add(e.getAttribute("id"));
+		for (XElement e : graph.childrenWithName("tech")) {
+			techs.add(e.get("id"));
 		}
-		for (Element e : XML.childrenWithName(roads, "layout")) {
-			int index = Integer.parseInt(e.getAttribute("index"));
-			String id = e.getAttribute("id");
-			for (String rid : techs) {
-				String normalImg = String.format(roadBase, rid, id);
-				String normalLight = normalImg + "_lights";
+		for (XElement e : roads.childrenWithName("layout")) {
+			final int index = Integer.parseInt(e.get("index"));
+			String id = e.get("id");
+			for (final String rid : techs) {
+				final String normalImg = String.format(roadBase, rid, id);
+				final String normalLight = normalImg + "_lights";
 				
-				BufferedImage lightMap = null;
-				ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
-				if (rp != null) {
-					lightMap = rl.getImage(language, normalLight);
-				}
-				Tile t = new Tile(1, 1, rl.getImage(language, normalImg), lightMap);
-				RoadType rt = RoadType.getByIndex(index);
-				addRoadType(rid, rt, t);
+				wip.incrementAndGet();
+
+				exec.execute(new Runnable() {
+					@Override
+					public void run() {
+						BufferedImage lightMap = null;
+						ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+						if (rp != null) {
+							lightMap = rl.getImage(language, normalLight);
+						}
+						Tile t = new Tile(1, 1, rl.getImage(language, normalImg), lightMap);
+						RoadType rt = RoadType.getByIndex(index);
+						addRoadType(rid, rt, t);
+						if (wip.decrementAndGet() == 0) {
+							cdl.countDown();
+						}
+					}
+				});
+				
 			}
 		}
 		if (wip.decrementAndGet() == 0) {
@@ -230,7 +259,7 @@ public class BuildingModel {
 	 * @param rt the road type
 	 * @param tile the tile entry
 	 */
-	void addRoadType(String rid, RoadType rt, Tile tile) {
+	synchronized void addRoadType(String rid, RoadType rt, Tile tile) {
 		Map<RoadType, Tile> tiles = roadTiles.get(rid);
 		if (tiles == null) {
 			tiles = new HashMap<RoadType, Tile>();

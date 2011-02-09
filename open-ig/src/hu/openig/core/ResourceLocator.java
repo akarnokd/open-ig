@@ -9,6 +9,7 @@
 package hu.openig.core;
 
 import hu.openig.utils.ImageUtils;
+import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -27,12 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * @author karnokd, 2009.09.23.
@@ -449,27 +445,22 @@ public class ResourceLocator {
 	 * @param resourceName the resource name omitting any leading slash.
 	 * @return the element
 	 */
-	public Element getXML(String language, String resourceName) {
+	public XElement getXML(String language, String resourceName) {
 		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
 			ResourcePlace rp = get(language, resourceName, ResourceType.DATA);
 			if (rp == null) {
 				throw new AssertionError("Missing resource: " + language + " " + resourceName);
 			}
 			InputStream in = rp.open();
 			try {
-				return db.parse(in).getDocumentElement();
+				return XElement.parseXML(in);
 			} finally {
 				in.close();
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			throw new AssertionError("Resource error" + language + " " + resourceName);
-		} catch (ParserConfigurationException ex) {
-			ex.printStackTrace();
-			throw new AssertionError("Resource error" + language + " " + resourceName);
-		} catch (SAXException ex) {
+		} catch (XMLStreamException ex) {
 			ex.printStackTrace();
 			throw new AssertionError("Resource error" + language + " " + resourceName);
 		}

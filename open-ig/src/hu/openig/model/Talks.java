@@ -8,13 +8,11 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.XML;
 import hu.openig.core.ResourceLocator;
+import hu.openig.utils.XElement;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.w3c.dom.Element;
 
 /**
  * The record for person talks.
@@ -39,21 +37,21 @@ public class Talks {
 	 * @param rl the resource locator
 	 * @param lang the current language
 	 */
-	protected void process(Element root, ResourceLocator rl, String lang) {
-		for (Element talk : XML.childrenWithName(root, "talk")) {
+	protected void process(XElement root, ResourceLocator rl, String lang) {
+		for (XElement talk : root.childrenWithName("talk")) {
 			TalkPerson tp = new TalkPerson();
-			tp.id = talk.getAttribute("with");
+			tp.id = talk.get("with");
 			persons.put(tp.id, tp);
-			for (Element state : XML.childrenWithName(talk, "state")) {
+			for (XElement state : talk.childrenWithName("state")) {
 				TalkState ts = new TalkState();
-				ts.id = state.getAttribute("id");
-				ts.picture = rl.getImage(lang, state.getAttribute("picture"));
+				ts.id = state.get("id");
+				ts.picture = rl.getImage(lang, state.get("picture"));
 				tp.states.put(ts.id, ts);
-				for (Element tr : XML.childrenWithName(state, "transition")) {
+				for (XElement tr : state.childrenWithName("transition")) {
 					TalkSpeech tsp = new TalkSpeech();
-					tsp.media = tr.getAttribute("media");
-					tsp.text = tr.getAttribute("text");
-					tsp.to = tr.getAttribute("to");
+					tsp.media = tr.get("media");
+					tsp.text = tr.get("text");
+					tsp.to = tr.get("to");
 					ts.speeches.add(tsp);
 				}
 			}

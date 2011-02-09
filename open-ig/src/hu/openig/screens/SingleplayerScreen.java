@@ -8,13 +8,13 @@
 
 package hu.openig.screens;
 
-import hu.openig.utils.XML;
 import hu.openig.core.Act;
 import hu.openig.core.Button;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.World;
+import hu.openig.utils.XElement;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -29,8 +29,6 @@ import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 import javax.swing.SwingUtilities;
-
-import org.w3c.dom.Element;
 
 
 /**
@@ -447,26 +445,26 @@ public class SingleplayerScreen extends ScreenBase {
 	public static GameDefinition parseDefinition(CommonResources commons, String name) {
 		GameDefinition result = new GameDefinition();
 		result.name = name;
-		Element root = commons.rl.getXML(commons.config.language, name + "/definition");
-		for (Element texts : XML.childrenWithName(root, "texts")) {
-			if (commons.config.language.equals(texts.getAttribute("language"))) {
-				result.title = XML.childValue(texts, "title");
-				result.description = XML.childValue(texts, "description");
+		XElement root = commons.rl.getXML(commons.config.language, name + "/definition");
+		for (XElement texts : root.childrenWithName("texts")) {
+			if (commons.config.language.equals(texts.get("language"))) {
+				result.title = texts.childValue("title");
+				result.description = texts.childValue("description");
 				break;
 			}
 		}
-		result.intro = XML.childValue(root, "intro");
-		result.image = commons.rl.getImage(commons.config.language, XML.childValue(root, "image"));
-		result.startingLevel = Integer.parseInt(XML.childValue(root, "level"));
-		result.labels = XML.childValue(root, "labels");
-		result.galaxy = XML.childValue(root, "galaxy");
-		result.races = XML.childValue(root, "races");
-		result.tech = XML.childValue(root, "tech");
-		result.build = XML.childValue(root, "build");
-		result.planets = XML.childValue(root, "planets");
-		result.bridge = XML.childValue(root, "bridge");
-		result.walk = XML.childValue(root, "walk");
-		result.talk = XML.childValue(root, "talk");
+		result.intro = root.childValue("intro");
+		result.image = commons.rl.getImage(commons.config.language, root.childValue("image"));
+		result.startingLevel = Integer.parseInt(root.childValue("level"));
+		result.labels = root.childValue("labels");
+		result.galaxy = root.childValue("galaxy");
+		result.races = root.childValue("races");
+		result.tech = root.childValue("tech");
+		result.build = root.childValue("build");
+		result.planets = root.childValue("planets");
+		result.bridge = root.childValue("bridge");
+		result.walk = root.childValue("walk");
+		result.talk = root.childValue("talk");
 		
 		return result;
 	}

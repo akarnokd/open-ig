@@ -10,7 +10,7 @@ package hu.openig.editors;
 import hu.openig.core.Labels;
 import hu.openig.core.Location;
 import hu.openig.core.ResourceLocator;
-import hu.openig.utils.XML;
+import hu.openig.utils.XElement;
 
 import java.awt.Container;
 import java.awt.Point;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -29,9 +30,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.GroupLayout.Alignment;
-
-import org.w3c.dom.Element;
 
 /**
  * @author karnokd
@@ -406,19 +404,20 @@ public class ImportDialog extends JDialog {
 	}
 	/** Parse the original planet definitions. */
 	void parseOriginalPlanet() {
-		Element e = rl.getXML("en", "colony/planets");
-		for (Element planet : XML.childrenWithName(e, "planet")) {
+		XElement e = rl.getXML("en", "colony/planets");
+		for (XElement planet : e.childrenWithName("planet")) {
 			OriginalPlanet op = new OriginalPlanet();
-			op.name = planet.getAttribute("id");
-			op.surfaceType = XML.childValue(planet, "type");
-			op.location.x = Integer.parseInt(XML.childValue(planet, "location-x"));
-			op.location.y = Integer.parseInt(XML.childValue(planet, "location-y"));
-			op.surfaceVariant = Integer.parseInt(XML.childValue(planet, "variant"));
-			op.race = XML.childValue(planet, "race");
-			for (Element building : XML.childrenWithName(XML.childElement(planet, "buildings"), "building")) {
+			op.name = planet.get("id");
+			op.surfaceType = planet.childValue("type");
+			op.location.x = Integer.parseInt(planet.childValue("location-x"));
+			op.location.y = Integer.parseInt(planet.childValue("location-y"));
+			op.surfaceVariant = Integer.parseInt(planet.childValue("variant"));
+			op.race = planet.childValue("race");
+			for (XElement building : planet.childElement("buildings").childrenWithName("building")) {
 				OriginalBuilding ob = new OriginalBuilding();
-				ob.name = XML.childValue(building, "id");
-				ob.location = Location.of(Integer.parseInt(XML.childValue(building, "x")), Integer.parseInt(XML.childValue(building, "y")));
+				ob.name = building.childValue("id");
+				ob.location = Location.of(Integer.parseInt(building.childValue("x")), 
+						Integer.parseInt(building.childValue("y")));
 				op.buildings.add(ob);
 			}
 			originalPlanets.add(op);
