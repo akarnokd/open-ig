@@ -13,6 +13,7 @@ import hu.openig.core.ResourceType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.utils.ImageUtils;
+import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
@@ -22,9 +23,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The building models.
@@ -43,11 +42,12 @@ public class BuildingModel {
 	 * @param rl the resource locator
 	 * @param language the language
 	 * @param exec the executor service for the parallel processing
+	 * @param wip the wip counter
 	 */
-	public void processBuildings(final ResourceLocator rl, final String language, String data, final ExecutorService exec) {
-		final AtomicInteger wip = new AtomicInteger(1);
-		final CountDownLatch cdl = new CountDownLatch(1);
-		
+	public void processBuildings(final ResourceLocator rl, 
+			final String language, String data, 
+			final ExecutorService exec, final WipPort wip) {
+		wip.inc();
 		BufferedImage solidTile = rl.getImage(language, "colony/tile_1x1");
 		
 		BuildingMinimapTiles bmt = new BuildingMinimapTiles();
@@ -79,7 +79,7 @@ public class BuildingModel {
 				final String normalImg = String.format(scaffBase, id, String.format(nbase, i));
 				final String normalLight = normalImg + "_lights";
 				
-				wip.incrementAndGet();
+				wip.inc();
 				exec.execute(new Runnable() {
 					@Override
 					public void run() {
@@ -91,9 +91,8 @@ public class BuildingModel {
 						BufferedImage image = rl.getImage(language, normalImg);
 						
 						scaffolding.normal.add(new Tile(1, 1, image, lightMap));
-						if (wip.decrementAndGet() == 0) {
-							cdl.countDown();
-						}
+						
+						wip.dec();
 					}
 				});
 			}
@@ -107,7 +106,7 @@ public class BuildingModel {
 				final String normalImg = String.format(scaffBase, id, String.format(dbase, i));
 				final String normalLight = normalImg + "_lights";
 				
-				wip.incrementAndGet();
+				wip.inc();
 				exec.execute(new Runnable() {
 					@Override
 					public void run() {
@@ -119,9 +118,7 @@ public class BuildingModel {
 						BufferedImage image = rl.getImage(language, normalImg);
 						
 						scaffolding.damaged.add(new Tile(1, 1, image, lightMap));
-						if (wip.decrementAndGet() == 0) {
-							cdl.countDown();
-						}
+						wip.dec();
 					}
 				});
 			}
@@ -149,7 +146,7 @@ public class BuildingModel {
 				final String normalLight = normalImg + "_lights";
 				final String damagedImg = normalImg + "_damaged";
 				
-				wip.incrementAndGet();
+				wip.inc();
 				exec.execute(new Runnable() {
 					@Override
 					public void run() {
@@ -165,9 +162,7 @@ public class BuildingModel {
 						synchronized (b.tileset) {
 							b.tileset.put(rid, ts);
 						}
-						if (wip.decrementAndGet() == 0) {
-							cdl.countDown();
-						}
+						wip.dec();
 					}
 				});
 			}
@@ -227,7 +222,7 @@ public class BuildingModel {
 				final String normalImg = String.format(roadBase, rid, id);
 				final String normalLight = normalImg + "_lights";
 				
-				wip.incrementAndGet();
+				wip.inc();
 
 				exec.execute(new Runnable() {
 					@Override
@@ -240,18 +235,13 @@ public class BuildingModel {
 						Tile t = new Tile(1, 1, rl.getImage(language, normalImg), lightMap);
 						RoadType rt = RoadType.getByIndex(index);
 						addRoadType(rid, rt, t);
-						if (wip.decrementAndGet() == 0) {
-							cdl.countDown();
-						}
+						wip.dec();
 					}
 				});
 				
 			}
 		}
-		if (wip.decrementAndGet() == 0) {
-			cdl.countDown();
-		}
-		try { cdl.await(); } catch (InterruptedException ex) { }
+		wip.dec();
 	}
 	/**
 	 * Add a road type - tile entry.

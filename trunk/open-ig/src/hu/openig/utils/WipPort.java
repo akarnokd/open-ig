@@ -31,6 +31,19 @@ public class WipPort {
 	/** The work in progress counter. */
 	private int waiters;
 	/**
+	 * Creates a WipPort with zero value.
+	 */
+	public WipPort() {
+		
+	}
+	/**
+	 * Create a WipPort with the initial WIP count.
+	 * @param initial the initial WIP count.
+	 */
+	public WipPort(int initial) {
+		wip.set(initial);
+	}
+	/**
 	 * Increment a work in progress counter.
 	 */
 	public void inc() {

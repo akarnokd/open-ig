@@ -33,6 +33,7 @@ import hu.openig.model.TileSet;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.JavaUtils;
+import hu.openig.utils.WipPort;
 import hu.openig.utils.XML;
 
 import java.awt.BorderLayout;
@@ -454,16 +455,36 @@ public class MapEditor extends JFrame {
 							setLabels(deferredLanguage);							
 						}
 					});
-					ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+					final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+					final WipPort wip = new WipPort(3);
 					try {
-						galaxyMap = new GalaxyModel();
-						galaxyMap.processGalaxy(rl, "en", "campaign/main/galaxy", exec);
-						buildingMap = new BuildingModel();
-					
-						buildingMap.processBuildings(rl, "en", "campaign/main/buildings", exec);
+						exec.execute(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									galaxyMap = new GalaxyModel();
+									galaxyMap.processGalaxy(rl, "en", "campaign/main/galaxy", exec, wip);
+								} finally {
+									wip.dec();
+								}
+							}
+						});
+						exec.execute(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									buildingMap = new BuildingModel();
+									buildingMap.processBuildings(rl, "en", "campaign/main/buildings", exec, wip);
+								} finally {
+									wip.dec();
+								}
+							}
+						});
 					} finally {
-						exec.shutdown();
+						wip.dec();
 						try {
+							wip.await();
+							exec.shutdown();
 							exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 						} catch (InterruptedException ex) {
 							
