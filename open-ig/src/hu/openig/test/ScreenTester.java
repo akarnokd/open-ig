@@ -300,6 +300,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	/** Reload game resources. */
 	void doReload() {
+		screen = null;
 		enableDisableMenu(false);
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 			@Override

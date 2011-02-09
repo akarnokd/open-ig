@@ -11,13 +11,13 @@ package hu.openig.model;
 import hu.openig.core.Difficulty;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
+import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -67,7 +67,7 @@ public class World {
 	 */
 	public void load(final ResourceLocator rl, final String language, final String game) {
 		final ExecutorService exec = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), Integer.MAX_VALUE, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-		final CountDownLatch cdl = new CountDownLatch(4);
+		final WipPort wip = new WipPort(5);
 		try {
 			level = definition.startingLevel;
 	//		Element races = rl.getXML(language, game + "/races");
@@ -86,7 +86,7 @@ public class World {
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
-						cdl.countDown();
+						wip.dec();
 					}
 				}
 			});
@@ -106,7 +106,7 @@ public class World {
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
-						cdl.countDown();
+						wip.dec();
 					}
 				}
 			});
@@ -116,12 +116,12 @@ public class World {
 					try {
 						long t = System.nanoTime();
 						buildingModel = new BuildingModel();
-						buildingModel.processBuildings(rl, language, definition.build, exec);
+						buildingModel.processBuildings(rl, language, definition.build, exec, wip);
 						System.out.printf("Loading building: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
-						cdl.countDown();
+						wip.dec();
 					}
 				}
 			});
@@ -131,19 +131,20 @@ public class World {
 					try {
 						long t = System.nanoTime();
 						galaxyModel = new GalaxyModel();
-						galaxyModel.processGalaxy(rl, language, definition.galaxy, exec);
+						galaxyModel.processGalaxy(rl, language, definition.galaxy, exec, wip);
 						System.out.printf("Loading galaxy: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
-						cdl.countDown();
+						wip.dec();
 					}
 				}
 			});
 	
 		} finally {
+			wip.dec();
 			try {
-				cdl.await();
+				wip.await();
 			} catch (InterruptedException ex) {
 				
 			}

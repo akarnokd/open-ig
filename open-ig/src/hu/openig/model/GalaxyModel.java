@@ -10,14 +10,13 @@ package hu.openig.model;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.Tile;
+import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The Galaxy Model describing the planet types and surface tiles.
@@ -38,20 +37,20 @@ public class GalaxyModel {
 	 * @param language the current language
 	 * @param data the galaxy data file
 	 * @param exec the executor for parallel processing
+	 * @param wip the wip counter
 	 */
-	public void processGalaxy(final ResourceLocator rl, final String language, final String data, ExecutorService exec) {
+	public void processGalaxy(final ResourceLocator rl, final String language, 
+			final String data, ExecutorService exec, final WipPort wip) {
+		wip.inc();
 		XElement galaxy = rl.getXML(language, data);
 		XElement background = galaxy.childElement("background");
 		map = rl.getImage(language, background.get("image"));
 		minScale = Float.parseFloat(background.get("min-scale"));
 		maxScale = Float.parseFloat(background.get("max-scale"));
 		
-		final AtomicInteger wip = new AtomicInteger(1);
-		final CountDownLatch cdl = new CountDownLatch(1);
-		
 		XElement planets = galaxy.childElement("planets");
 		for (final XElement planet : planets.childrenWithName("planet")) {
-			wip.incrementAndGet();
+			wip.inc();
 			exec.submit(new Runnable() {
 				@Override
 				public void run() {
@@ -98,16 +97,11 @@ public class GalaxyModel {
 					synchronized (planetTypes) {
 						planetTypes.put(planetType.type, planetType);
 					}
-					if (wip.decrementAndGet() == 0) {
-						cdl.countDown();
-					}
+					wip.dec();
 				}
 			});
 		}
-		if (wip.decrementAndGet() == 0) {
-			cdl.countDown();
-		}
-		try { cdl.await(); } catch (InterruptedException ex) { }
+		wip.dec();
 	}
 
 }
