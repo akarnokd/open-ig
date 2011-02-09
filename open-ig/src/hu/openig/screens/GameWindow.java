@@ -588,9 +588,6 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.GameControls#playVideos(java.lang.String[])
-	 */
 	@Override
 	public void playVideos(final Act onComplete, String... videos) {
 		for (String s : videos) {

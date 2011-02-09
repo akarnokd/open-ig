@@ -19,7 +19,6 @@ import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ImageUtils;
-import hu.openig.xold.res.gfx.TextGFX;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -429,7 +428,7 @@ public class PlanetScreen extends ScreenBase {
 					g2.setComposite(compositeSave);
 				}
 				
-				txt.paintTo(g2, nx + 1, ny + 1, 7, TextGFX.LIGHT_BLUE, label);
+				txt.paintTo(g2, nx + 1, ny + 1, 7, 0xFF8080FF, label);
 				txt.paintTo(g2, nx, ny, 7, 0xD4FC84, label);
 
 				// paint upgrade level indicator
@@ -438,14 +437,14 @@ public class PlanetScreen extends ScreenBase {
 				int uy = r.y + h - colonyGFX.upgrade.getHeight() - 4; 
 
 				String percent = null;
-				int color = TextGFX.LIGHT_BLUE;
+				int color = 0xFF8080FF;
 				if (b.isConstructing()) {
 					percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
 				} else
 				if (b.hitpoints < b.type.hitpoints) {
 					percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
 					if (!blink) {
-						color = TextGFX.RED;
+						color = 0xFFFF0000;
 					}
 				}
 				if (percent != null) {
@@ -499,9 +498,9 @@ public class PlanetScreen extends ScreenBase {
 					int ey = r.y + h + 13;
 					String offline = commons.labels.get("buildings.offline");
 					int w = txt.getTextWidth(10, offline);
-					color = TextGFX.LIGHT_BLUE;
+					color = 0xFF8080FF;
 					if (!blink) {
-						color = TextGFX.RED;
+						color = 0xFFFF0000;
 					}
 					int ex = r.x + (r.width - w) / 2;
 					if (textBackgrounds) {
