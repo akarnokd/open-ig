@@ -557,6 +557,8 @@ public class SpacewarScreen extends ScreenBase {
 	@Override
 	public void paintTo(Graphics2D g2) {
 		onResize();
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 		g2.drawImage(commons.spacewar.frameTopLeft, 0, 20, null);
 		
 		g2.drawImage(commons.spacewar.frameTopRight, parent.getWidth() - commons.spacewar.frameTopRight.getWidth(), 20, null);

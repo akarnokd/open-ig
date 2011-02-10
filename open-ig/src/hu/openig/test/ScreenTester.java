@@ -74,9 +74,12 @@ public class ScreenTester extends JFrame implements GameControls {
 		}
 		@Override
 		public void paint(Graphics g) {
+			g.setColor(Color.LIGHT_GRAY);
+			g.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 			if (screen != null) {
 				screen.paintTo((Graphics2D)g);
 			} else {
+				g.setColor(Color.BLACK);
 				String txt = "No screen selected. Please select a screen from the Screens menu.";
 				
 				int w = g.getFontMetrics().stringWidth(txt);
@@ -332,6 +335,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			}
 		};
 		worker.execute();
+		repaint();
 	}
 	
 	/**
