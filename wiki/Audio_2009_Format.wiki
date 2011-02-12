@@ -1,4 +1,5 @@
 #summary Description of the modernized audio format.
+#labels Deprecated
 
 = Introduction =
 
