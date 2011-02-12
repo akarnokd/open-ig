@@ -1,0 +1,34 @@
+#summary Open Imperium Galactica Introduction
+#labels Featured
+
+= Introduction =
+
+Open-IG is an open source Java^TM^ clone of the [http://www.digitalreality.hu Digital Reality] game [http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica], a popular real time space strategy game developed around 1997 in Hungary. Open-IG attempts to mimic the original game as closely as possible while extending it with new features. It needs the original Imperium Galactica files to run.
+
+Open-IG is licensed under the GNU Lesser General Public License.
+
+Some teaser images can be found on the [http://code.google.com/p/open-ig/wiki/Screenshots screenshots] page.
+
+Check out the [http://code.google.com/p/open-ig/wiki/Questions Questions and answers] page.
+
+== System requirements ==
+ * Java JRE/JDK 1.6.X or 1.7.X, Java 7 recommended
+ * Any operating system with graphical user interface
+ * A mouse with scroll wheel.
+ * 384B RAM
+ * 2-15 MB for Open-IG, 1.2 GB for original Imperium Galactica
+ * 1.5 GHz P4 or equivalent (estimated)
+ * Optional: GPU with DirectX/OpenGL hardware acceleration
+
+== Differences from the original game ==
+Apart from the tons of missing screens and behaviors, there are few deliberate changes:
+  * Starmap and planet screens are occupying the entire window, the rest are centered and shadow out the big screens behind them. The original game was constrained to 640x480.
+  * Scrolling the starmap and planet is done using right-mouse pan. In the original game, you had to hold the right mouse button near the edges of the view to scroll it. I think this is a bit cumbersome for a modern UI game.
+  * Zoom is done with CTRL+Mouse Wheel. You can also left/right click on the zoom button to zoom in/out. The original game, you could click on the zoom button, or switch to zoom mode and click on the starmap. This is understandable, as in 1996 there were not many mouses with scroll wheel.
+
+= External tools =
+
+There exist an unpacker for the game PAC files. You can downoad it from [http://bgafc.t-hosting.hu/data/ig1pac_h.exe here].
+
+= About the author =
+I'm a Ph.D student specializing in Production Informatics, Supply Chains and Manufacturing Execution Systems.
