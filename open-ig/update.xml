@@ -25,7 +25,7 @@
 			<desc lang='en'>The program's main file</desc>
 		</file>
 	</module>
-	<module id='MapEditor' version='0.4'>
+	<module id='MapEditor' version='0.41'>
 		<general url='http://code.google.com/p/open-ig/wiki/MapEditor'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.
@@ -37,10 +37,10 @@
 		<execute file='open-ig-mapeditor-%s.jar' memory='384'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/MapEditor_Notes'>
-			<desc lang='hu'>Első verzió.</desc>
-			<desc lang='en'>First version.</desc>
+			<desc lang='hu'>Javított erőforrás betöltés a sokmagos rendszerek esetében.</desc>
+			<desc lang='en'>Improved resource load times for multi-core systems.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-mapeditor-0.4.jar' sha1='324c780fe6fb60e82ffd6b565155cb8f524bfa44'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-mapeditor-0.41.jar' sha1='674eae6f6f56e03fb61fb04514335bdab024d61c'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
@@ -49,7 +49,7 @@
 			<desc lang='en'>The upgraded resource file. 17th September, 2010 / A</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.81'>
+	<module id='Game' version='0.82'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -61,14 +61,14 @@
 		<execute file='open-ig-%s.jar' memory='384'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Release_Notes'>
-			<desc lang='hu'>Első verzió.</desc>
-			<desc lang='en'>First version.</desc>
+			<desc lang='hu'>Javított erőforrás betöltés a sokmagos rendszerek esetében.</desc>
+			<desc lang='en'>Improved resource load times for multi-core systems.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.81.jar' sha1='5201d58fb6b89ac8be02815c12d16d824dc5869a'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.82.jar' sha1=''>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip' sha1='99869e75dc928b8403b5a66407dd29b9c11fd671'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip' sha1='48e20dd10aa32ef577a41241778bfec9cc206391'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2010 szeptember 17 / A</desc>
 			<desc lang='en'>The upgraded resource file. 17th September, 2010 / A</desc>
 		</file>
@@ -96,5 +96,31 @@
 			<desc lang='hu'>A 2010 szeptember 17 / A frissítés teljesen felülbírálja.</desc>
 			<desc lang='en'>The upgrade 17th September, 2010 / A overrides this file completely.</desc>
 		</remove>
+	</module>
+	<module id='Testbed' version='0.1'>
+		<general url='http://code.google.com/p/open-ig/wiki/Testbed'>
+			<desc lang='hu'>
+				Teszt alkalmazás, amivel megtekinthető és kipróbálható a képernyők nagyrésze anélkül, hogy a szokványos
+				menüben navigálgatással hoznánk elő őket az alapjátékban.
+			</desc>
+			<desc lang='en'>
+				Test application which allows the tester to access screens without navigating through the game's regular
+				set of screens.
+			</desc>
+		</general>
+		<execute file='open-ig-testbed-%s.jar' memory='512'/>
+		<!-- Release notes -->
+		<notes url='http://code.google.com/p/open-ig/wiki/Testbed_Notes'>
+			<desc lang='hu'>Első verzió. A teljes ablakos video lejátszás nincs engedélyezve.</desc>
+			<desc lang='en'>First version. Screens won't play any full-window videos.</desc>
+		</notes>
+		<file url='http://open-ig.googlecode.com/files/open-ig-testbed-0.1.jar' sha1='f3d27df12cea01d7757cc3e86f2748ccbe215527'>
+			<desc lang='hu'>A program fő fájlja.</desc>
+			<desc lang='en'>The program's main file.</desc>
+		</file>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip' sha1='99869e75dc928b8403b5a66407dd29b9c11fd671'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2010 szeptember 17 / A</desc>
+			<desc lang='en'>The upgraded resource file. 17th September, 2010 / A</desc>
+		</file>
 	</module>
 </update>
