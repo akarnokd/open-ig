@@ -165,4 +165,23 @@ public final class JavaUtils {
 	public static <T> HashSet<T> newHashSet() {
 		return new HashSet<T>();
 	}
+	/**
+	 * Wraps the given runnable into another one which captures and prints
+	 * the stack trace for any exception occurred in the original run() method.
+	 * @param run the runnable to wrap
+	 * @return the new runnable
+	 */
+	public static Runnable checked(final Runnable run) {
+		return new Runnable() {
+			@Override
+			public void run() {
+				try {
+					run.run();
+				} catch (RuntimeException t) {
+					t.printStackTrace();
+					throw t;
+				}
+			}
+		};
+	}
 }

@@ -13,6 +13,7 @@ import hu.openig.core.ResourceType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.utils.ImageUtils;
+import hu.openig.utils.JavaUtils;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
@@ -48,200 +49,218 @@ public class BuildingModel {
 			final String language, String data, 
 			final ExecutorService exec, final WipPort wip) {
 		wip.inc();
-		BufferedImage solidTile = rl.getImage(language, "colony/tile_1x1");
-		
-		BuildingMinimapTiles bmt = new BuildingMinimapTiles();
-		bmt.normal = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF00C000), null);
-		bmt.damaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF0000), null);
-		bmt.inoperable = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFFFF00), null);
-		bmt.destroyed = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF202020), null);
-		bmt.constructing = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF0040FF), null);
-		bmt.constructingDamaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF40FF), null);
-		
-		XElement buildings = rl.getXML(language, data);
-		
-		XElement scaff = buildings.childElement("scaffolding");
-		XElement scaffGraph = scaff.childElement("graphics");
-		String scaffBase = scaffGraph.get("base");
-		Map<String, Scaffolding> scaffoldings = new HashMap<String, Scaffolding>();
-		for (XElement scaffTech : scaffGraph.childrenWithName("tech")) {
-			String id = scaffTech.get("id");
-			final Scaffolding scaffolding = new Scaffolding();
-			scaffoldings.put(id, scaffolding);
-
-			XElement norm = scaffTech.childElement("normal");
+		try {
+			BufferedImage solidTile = rl.getImage(language, "colony/tile_1x1");
 			
-			String nbase = norm.get("base");
-			int nstart = Integer.parseInt(norm.get("from"));
-			int nend = Integer.parseInt(norm.get("to"));
+			BuildingMinimapTiles bmt = new BuildingMinimapTiles();
+			bmt.normal = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF00C000), null);
+			bmt.damaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF0000), null);
+			bmt.inoperable = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFFFF00), null);
+			bmt.destroyed = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF202020), null);
+			bmt.constructing = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF0040FF), null);
+			bmt.constructingDamaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF40FF), null);
 			
-			for (int i = nstart; i <= nend; i++) {
-				final String normalImg = String.format(scaffBase, id, String.format(nbase, i));
-				final String normalLight = normalImg + "_lights";
+			XElement buildings = rl.getXML(language, data);
+			
+			XElement scaff = buildings.childElement("scaffolding");
+			XElement scaffGraph = scaff.childElement("graphics");
+			String scaffBase = scaffGraph.get("base");
+			Map<String, Scaffolding> scaffoldings = new HashMap<String, Scaffolding>();
+			for (XElement scaffTech : scaffGraph.childrenWithName("tech")) {
+				String id = scaffTech.get("id");
+				final Scaffolding scaffolding = new Scaffolding();
+				scaffoldings.put(id, scaffolding);
+	
+				XElement norm = scaffTech.childElement("normal");
 				
-				wip.inc();
-				exec.execute(new Runnable() {
-					@Override
-					public void run() {
-						BufferedImage lightMap = null;
-						ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
-						if (rp != null) {
-							lightMap = rl.getImage(language, normalLight);
+				String nbase = norm.get("base");
+				int nstart = Integer.parseInt(norm.get("from"));
+				int nend = Integer.parseInt(norm.get("to"));
+				
+				for (int i = nstart; i <= nend; i++) {
+					final String normalImg = String.format(scaffBase, id, String.format(nbase, i));
+					final String normalLight = normalImg + "_lights";
+					
+					wip.inc();
+					exec.execute(JavaUtils.checked(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								BufferedImage lightMap = null;
+								ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+								if (rp != null) {
+									lightMap = rl.getImage(language, normalLight);
+								}
+								BufferedImage image = rl.getImage(language, normalImg);
+								
+								synchronized (scaffolding.normal) {
+									scaffolding.normal.add(new Tile(1, 1, image, lightMap));
+								}
+							} finally {
+								wip.dec();
+							}
 						}
-						BufferedImage image = rl.getImage(language, normalImg);
-						
-						scaffolding.normal.add(new Tile(1, 1, image, lightMap));
-						
-						wip.dec();
-					}
-				});
-			}
-			
-			XElement dam = scaffTech.childElement("damaged");
-			String dbase = dam.get("base");
-			int dstart = Integer.parseInt(dam.get("from"));
-			int dend = Integer.parseInt(dam.get("to"));
-			
-			for (int i = dstart; i <= dend; i++) {
-				final String normalImg = String.format(scaffBase, id, String.format(dbase, i));
-				final String normalLight = normalImg + "_lights";
-				
-				wip.inc();
-				exec.execute(new Runnable() {
-					@Override
-					public void run() {
-						BufferedImage lightMap = null;
-						ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
-						if (rp != null) {
-							lightMap = rl.getImage(language, normalLight);
-						}
-						BufferedImage image = rl.getImage(language, normalImg);
-						
-						scaffolding.damaged.add(new Tile(1, 1, image, lightMap));
-						wip.dec();
-					}
-				});
-			}
-			
-		}
-		
-		for (XElement building : buildings.childrenWithName("building")) {
-			final BuildingType b = new BuildingType();
-			b.scaffoldings = scaffoldings;
-			b.id = building.get("id");
-			b.label = building.get("label");
-			b.description = b.label + ".desc";
-			b.minimapTiles = bmt;
-			
-			XElement gfx = building.childElement("graphics");
-			String pattern = gfx.get("base");
-			for (XElement r : gfx.childrenWithName("tech")) {
-				final TileSet ts = new TileSet();
-				
-				final String rid = r.get("id");
-				final int width = Integer.parseInt(r.get("width"));
-				final int height = Integer.parseInt(r.get("height"));
-				
-				final String normalImg = String.format(pattern, rid);
-				final String normalLight = normalImg + "_lights";
-				final String damagedImg = normalImg + "_damaged";
-				
-				wip.inc();
-				exec.execute(new Runnable() {
-					@Override
-					public void run() {
-						BufferedImage lightMap = null;
-						ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
-						if (rp != null) {
-							lightMap = rl.getImage(language, normalLight);
-						}
-						BufferedImage image = rl.getImage(language, normalImg);
-						ts.normal = new Tile(width, height, image, lightMap);
-						ts.nolight = new Tile(width, height, image, null);
-						ts.damaged = new Tile(width, height, rl.getImage(language, damagedImg), null); // no lightmap for damaged building
-						synchronized (b.tileset) {
-							b.tileset.put(rid, ts);
-						}
-						wip.dec();
-					}
-				});
-			}
-			XElement bld = building.childElement("build");
-			b.cost = Integer.parseInt(bld.get("cost"));
-			b.hitpoints = b.cost; // TODO cost == hitpoints???
-			b.kind = bld.get("kind");
-			String limit = bld.get("limit");
-			if ("*".equals(limit)) {
-				b.limit = Integer.MAX_VALUE;
-			} else {
-				b.limit = Integer.parseInt(limit);
-			}
-			b.research = bld.get("research");
-			String except = bld.get("except");
-			if (except != null && !except.isEmpty()) {
-				b.except.addAll(Arrays.asList(except.split("\\s*,\\s*")));
-			}
-			XElement op = building.childElement("operation");
-			b.percentable = "true".equals(op.get("percent"));
-			for (XElement re : op.childrenWithName("resource")) {
-				Resource res = new Resource();
-				res.type = re.get("type");
-				res.amount = Float.parseFloat(re.content);
-				b.resources.put(res.type, res);
-				if ("true".equals(re.get("display"))) {
-					b.primary = res.type;
+					}));
 				}
+				
+				XElement dam = scaffTech.childElement("damaged");
+				String dbase = dam.get("base");
+				int dstart = Integer.parseInt(dam.get("from"));
+				int dend = Integer.parseInt(dam.get("to"));
+				
+				for (int i = dstart; i <= dend; i++) {
+					final String normalImg = String.format(scaffBase, id, String.format(dbase, i));
+					final String normalLight = normalImg + "_lights";
+					
+					wip.inc();
+					exec.execute(JavaUtils.checked(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								BufferedImage lightMap = null;
+								ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+								if (rp != null) {
+									lightMap = rl.getImage(language, normalLight);
+								}
+								BufferedImage image = rl.getImage(language, normalImg);
+								
+								synchronized (scaffolding.damaged) {
+									scaffolding.damaged.add(new Tile(1, 1, image, lightMap));
+								}
+							} finally {
+								wip.dec();
+							}
+						}
+					}));
+				}
+				
 			}
 			
-			XElement ug = building.childElement("upgrades");
-			for (XElement u : ug.childrenWithName("upgrade")) {
-				Upgrade upg = new Upgrade();
-				upg.description = u.get("desc");
-				for (XElement re : u.childrenWithName("resource")) {
+			for (XElement building : buildings.childrenWithName("building")) {
+				final BuildingType b = new BuildingType();
+				b.scaffoldings = scaffoldings;
+				b.id = building.get("id");
+				b.label = building.get("label");
+				b.description = b.label + ".desc";
+				b.minimapTiles = bmt;
+				
+				XElement gfx = building.childElement("graphics");
+				String pattern = gfx.get("base");
+				for (XElement r : gfx.childrenWithName("tech")) {
+					final TileSet ts = new TileSet();
+					
+					final String rid = r.get("id");
+					final int width = Integer.parseInt(r.get("width"));
+					final int height = Integer.parseInt(r.get("height"));
+					
+					final String normalImg = String.format(pattern, rid);
+					final String normalLight = normalImg + "_lights";
+					final String damagedImg = normalImg + "_damaged";
+					
+					wip.inc();
+					exec.execute(JavaUtils.checked(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								BufferedImage lightMap = null;
+								ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+								if (rp != null) {
+									lightMap = rl.getImage(language, normalLight);
+								}
+								BufferedImage image = rl.getImage(language, normalImg);
+								ts.normal = new Tile(width, height, image, lightMap);
+								ts.nolight = new Tile(width, height, image, null);
+								ts.damaged = new Tile(width, height, rl.getImage(language, damagedImg), null); // no lightmap for damaged building
+								synchronized (b.tileset) {
+									b.tileset.put(rid, ts);
+								}
+							} finally {
+								wip.dec();
+							}
+						}
+					}));
+				}
+				XElement bld = building.childElement("build");
+				b.cost = Integer.parseInt(bld.get("cost"));
+				b.hitpoints = b.cost; // TODO cost == hitpoints???
+				b.kind = bld.get("kind");
+				String limit = bld.get("limit");
+				if ("*".equals(limit)) {
+					b.limit = Integer.MAX_VALUE;
+				} else {
+					b.limit = Integer.parseInt(limit);
+				}
+				b.research = bld.get("research");
+				String except = bld.get("except");
+				if (except != null && !except.isEmpty()) {
+					b.except.addAll(Arrays.asList(except.split("\\s*,\\s*")));
+				}
+				XElement op = building.childElement("operation");
+				b.percentable = "true".equals(op.get("percent"));
+				for (XElement re : op.childrenWithName("resource")) {
 					Resource res = new Resource();
 					res.type = re.get("type");
 					res.amount = Float.parseFloat(re.content);
-					upg.resources.put(res.type, res);
-				}
-				b.upgrades.add(upg);
-			}
-			
-			this.buildings.put(b.id, b);
-		}
-		XElement roads = buildings.childElement("roads");
-		XElement graph = roads.childElement("graphics");
-		String roadBase = graph.get("base");
-		List<String> techs = new ArrayList<String>();
-		for (XElement e : graph.childrenWithName("tech")) {
-			techs.add(e.get("id"));
-		}
-		for (XElement e : roads.childrenWithName("layout")) {
-			final int index = Integer.parseInt(e.get("index"));
-			String id = e.get("id");
-			for (final String rid : techs) {
-				final String normalImg = String.format(roadBase, rid, id);
-				final String normalLight = normalImg + "_lights";
-				
-				wip.inc();
-
-				exec.execute(new Runnable() {
-					@Override
-					public void run() {
-						BufferedImage lightMap = null;
-						ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
-						if (rp != null) {
-							lightMap = rl.getImage(language, normalLight);
-						}
-						Tile t = new Tile(1, 1, rl.getImage(language, normalImg), lightMap);
-						RoadType rt = RoadType.getByIndex(index);
-						addRoadType(rid, rt, t);
-						wip.dec();
+					b.resources.put(res.type, res);
+					if ("true".equals(re.get("display"))) {
+						b.primary = res.type;
 					}
-				});
+				}
 				
+				XElement ug = building.childElement("upgrades");
+				for (XElement u : ug.childrenWithName("upgrade")) {
+					Upgrade upg = new Upgrade();
+					upg.description = u.get("desc");
+					for (XElement re : u.childrenWithName("resource")) {
+						Resource res = new Resource();
+						res.type = re.get("type");
+						res.amount = Float.parseFloat(re.content);
+						upg.resources.put(res.type, res);
+					}
+					b.upgrades.add(upg);
+				}
+				
+				this.buildings.put(b.id, b);
 			}
+			XElement roads = buildings.childElement("roads");
+			XElement graph = roads.childElement("graphics");
+			String roadBase = graph.get("base");
+			List<String> techs = new ArrayList<String>();
+			for (XElement e : graph.childrenWithName("tech")) {
+				techs.add(e.get("id"));
+			}
+			for (XElement e : roads.childrenWithName("layout")) {
+				final int index = Integer.parseInt(e.get("index"));
+				String id = e.get("id");
+				for (final String rid : techs) {
+					final String normalImg = String.format(roadBase, rid, id);
+					final String normalLight = normalImg + "_lights";
+					
+					wip.inc();
+	
+					exec.execute(JavaUtils.checked(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								BufferedImage lightMap = null;
+								ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+								if (rp != null) {
+									lightMap = rl.getImage(language, normalLight);
+								}
+								Tile t = new Tile(1, 1, rl.getImage(language, normalImg), lightMap);
+								RoadType rt = RoadType.getByIndex(index);
+								addRoadType(rid, rt, t);
+							} finally {
+								wip.dec();
+							}
+						}
+					}));
+					
+				}
+			}
+		} finally {
+			wip.dec();
 		}
-		wip.dec();
 	}
 	/**
 	 * Add a road type - tile entry.
