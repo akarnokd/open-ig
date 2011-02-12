@@ -1,4 +1,5 @@
 #summary The description of the modernized ANI_2009 video format
+#labels Deprecated
 
 = Introduction =
 
