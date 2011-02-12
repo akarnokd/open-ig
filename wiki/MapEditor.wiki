@@ -1,5 +1,4 @@
 #summary The Map Editor for the version 0.8 and above
-#labels Featured
 
 <wiki:toc max_depth="3" />
 
