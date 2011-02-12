@@ -1,5 +1,7 @@
 #summary The helper application for screen developments
 
+See the [Testbed_Notes release notes] about the changes in each version.
+
 = Introduction =
 
 This page will describe the usage and some details of the new Testbed application.
