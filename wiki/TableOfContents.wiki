@@ -1,6 +1,8 @@
 #summary Table of contents
+#labels Featured
 
   * [Introduction Introduction]
+  * [NewsArchive News archive]
   * [Install Install instructions]
     * [Game_Notes Release notes]
   * [Guides Guides]
