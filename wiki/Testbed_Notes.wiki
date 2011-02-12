@@ -1,0 +1,9 @@
+#summary Testbed release notes
+
+
+
+See the [Testbed testbed] page for the description of this application.
+
+= Version 0.1 - First release =
+
+  * First release, all expected screens can be reached from the menu, but most of them just cames up empty.
