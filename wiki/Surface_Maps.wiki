@@ -1,4 +1,5 @@
 #summary Format description of the planet surface map files.
+#labels Deprecated
 
 = Introduction =
 
