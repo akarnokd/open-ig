@@ -1,8 +1,8 @@
 #summary Testbed release notes
 
-
-
 See the [Testbed testbed] page for the description of this application.
+
+<wiki:toc max_depth="1" />
 
 = Version 0.1 - First release =
 
