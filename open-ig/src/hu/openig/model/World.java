@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The world object.
@@ -66,7 +68,20 @@ public class World {
 	 * @param game the game directory
 	 */
 	public void load(final ResourceLocator rl, final String language, final String game) {
-		final ExecutorService exec = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), Integer.MAX_VALUE, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+		final ExecutorService exec = 
+			new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 
+					Integer.MAX_VALUE, 1, TimeUnit.SECONDS, 
+					new LinkedBlockingQueue<Runnable>(),
+					new ThreadFactory() {
+				/** The thread count. */
+				final AtomicInteger count = new AtomicInteger();
+				@Override
+				public Thread newThread(Runnable r) {
+					Thread t = new Thread(r, "World-Loader-" + count.incrementAndGet());
+					t.setPriority(Thread.MIN_PRIORITY);
+					return t;
+				}
+			});
 		final WipPort wip = new WipPort(5);
 		try {
 			level = definition.startingLevel;

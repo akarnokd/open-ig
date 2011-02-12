@@ -64,6 +64,18 @@ import javax.swing.SwingWorker;
 public class ScreenTester extends JFrame implements GameControls {
 	/** */
 	private static final long serialVersionUID = -3535790397080644321L;
+	/** The version number for packaging. */
+	public static final String VERSION = "0.1";
+	/** The parent color to use. */
+	volatile Color parentColor = Color.LIGHT_GRAY;
+	/** The normal screen. */
+	final String txtScreen = "No screen selected. Please select a screen from the Screens menu.";
+	/** The normal screen. */
+	final String txtLoad = "Loading resources. This may take some seconds...";
+	/** The normal screen. */
+	final String txtError = "An error occurred. Please check the console output.";
+	/** The parent text. */
+	volatile String parentText = txtLoad;
 	/** The render panel. */
 	final JComponent parent = new JComponent() {
 		/** */
@@ -74,18 +86,17 @@ public class ScreenTester extends JFrame implements GameControls {
 		}
 		@Override
 		public void paint(Graphics g) {
-			g.setColor(Color.LIGHT_GRAY);
+			g.setColor(parentColor);
 			g.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 			if (screen != null) {
 				screen.paintTo((Graphics2D)g);
 			} else {
 				g.setColor(Color.BLACK);
-				String txt = "No screen selected. Please select a screen from the Screens menu.";
 				
-				int w = g.getFontMetrics().stringWidth(txt);
+				int w = g.getFontMetrics().stringWidth(parentText);
 				int h = g.getFontMetrics().getHeight();
 				
-				g.drawString(txt, (getWidth() - w) / 2, (getHeight() - h) / 2 + g.getFontMetrics().getAscent());
+				g.drawString(parentText, (getWidth() - w) / 2, (getHeight() - h) / 2 + g.getFontMetrics().getAscent());
 			}
 		};
 	};
@@ -304,6 +315,8 @@ public class ScreenTester extends JFrame implements GameControls {
 	/** Reload game resources. */
 	void doReload() {
 		screen = null;
+		parentColor = Color.LIGHT_GRAY;
+		parentText = txtLoad;
 		enableDisableMenu(false);
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 			@Override
@@ -326,12 +339,17 @@ public class ScreenTester extends JFrame implements GameControls {
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
 				} catch (Throwable t) {
 					t.printStackTrace();
+					parentColor = new Color(0xFFFF8080);
+					parentText = txtError;
 				}
 				return null;
 			}
 			@Override
 			protected void done() {
+				parentColor = new Color(0xFF80FF80);
+				parentText = txtScreen;
 				enableDisableMenu(true);
+				repaint();
 			}
 		};
 		worker.execute();

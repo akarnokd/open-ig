@@ -8,6 +8,9 @@
 
 package hu.openig;
 
+import hu.openig.core.Configuration;
+import hu.openig.editors.MapEditor;
+import hu.openig.test.ScreenTester;
 import hu.openig.utils.IOUtils;
 
 import java.io.BufferedOutputStream;
@@ -29,89 +32,126 @@ public final class PackageStuff {
 		
 	}
 	/**
-	 * @param args no arguments
-	 * @throws Exception ignored
+	 * Build the graphics/data patch file.
+	 * @param version the version number in the file
 	 */
-	public static void main(String[] args) throws Exception {
-		
-		ZipOutputStream zout = null;
-		
-//		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-0.4.jar"), 1024 * 1024));
-//		try {
-//			processDirectory(".\\bin\\", ".\\bin", zout, null);
-//			
-//			ZipEntry mf = new ZipEntry("META-INF/MANIFEST.MF");
-//			File mfm = new File("META-INF/MANIFEST.MF.mapeditor");
-//			mf.setSize(mfm.length());
-//			mf.setTime(mfm.lastModified());
-//			zout.putNextEntry(mf);
-//			zout.write(IOUtils.load(mfm));
-//		} finally {
-//			zout.close();
-//		}
-//		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-0.4-src.zip"), 1024 * 1024));
-//		try {
-//			processDirectory(".\\src\\", ".\\src", zout, null);
-//			
-//			ZipEntry mf = new ZipEntry("META-INF/MANIFEST.MF");
-//			File mfm = new File("META-INF/MANIFEST.MF.mapeditor");
-//			mf.setSize(mfm.length());
-//			mf.setTime(mfm.lastModified());
-//			zout.putNextEntry(mf);
-//			zout.write(IOUtils.load(mfm));
-//		} finally {
-//			zout.close();
-//		}
-//		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-upgrade-20100917a.zip"), 16 * 1024 * 1024));
-//		try {
-//			processDirectory(".\\data\\", ".\\data", zout, null);
-//			processDirectory(".\\images\\", ".\\images", zout, null);
-//		} finally {
-//			zout.close();
-//		}
-//		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-0.81.jar"), 1024 * 1024));
-//		try {
-//			processDirectory(".\\bin\\", ".\\bin", zout, null);
-//			
-//			ZipEntry mf = new ZipEntry("META-INF/MANIFEST.MF");
-//			File mfm = new File("META-INF/MANIFEST.MF");
-//			mf.setSize(mfm.length());
-//			mf.setTime(mfm.lastModified());
-//			zout.putNextEntry(mf);
-//			zout.write(IOUtils.load(mfm));
-//		} finally {
-//			zout.close();
-//		}
-		
-		zout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream("open-ig-launcher.jar"), 1024 * 1024));
+	static void buildPatch(String version) {
 		try {
-			processDirectory(".\\bin\\", ".\\bin", zout, new FilenameFilter() {
-				@Override
-				public boolean accept(File dir, String name) {
-					return (dir.getAbsolutePath().replace('\\', '/').endsWith("hu/openig/launcher"))
-					|| (dir.getAbsolutePath().replace('\\', '/').endsWith("hu/openig/utils"));
-				}
-			});
-			
-			ZipEntry mf = new ZipEntry("META-INF/MANIFEST.MF");
-			File mfm = new File("META-INF/MANIFEST.MF.launcher");
-			mf.setSize(mfm.length());
-			mf.setTime(mfm.lastModified());
-			zout.putNextEntry(mf);
-			zout.write(IOUtils.load(mfm));
-			
-			mf = new ZipEntry("hu/openig/xold/res/OpenIG_Splash.png");
-			mfm = new File("src/hu/openig/xold/res/OpenIG_Splash.png");
-			mf.setSize(mfm.length());
-			mf.setTime(mfm.lastModified());
-			zout.putNextEntry(mf);
-			zout.write(IOUtils.load(mfm));
-
-		} finally {
-			zout.close();
+			ZipOutputStream zout = new ZipOutputStream(
+					new BufferedOutputStream(
+							new FileOutputStream("open-ig-upgrade-" + version + ".zip"), 1024 * 1024));
+			try {
+				zout.setLevel(9);
+				processDirectory(".\\data\\", ".\\data", zout, null);
+				processDirectory(".\\images\\", ".\\images", zout, null);
+			} finally {
+				zout.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Build the map editor with the target version number.
+	 * @param version the target version number
+	 */
+	static void buildMapEditor(String version) {
+		try {
+			ZipOutputStream zout = new ZipOutputStream(
+					new BufferedOutputStream(
+							new FileOutputStream("open-ig-mapeditor-" + version + ".jar"), 1024 * 1024));
+			try {
+				zout.setLevel(9);
+				processDirectory(".\\bin\\", ".\\bin", zout, null);
+				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF.mapeditor", zout);
+			} finally {
+				zout.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Build the game's runnable jar.
+	 * @param version the target version
+	 */
+	static void buildGame(String version) {
+		try {
+			ZipOutputStream zout = new ZipOutputStream(
+					new BufferedOutputStream(
+							new FileOutputStream("open-ig-" + version + ".jar"), 1024 * 1024));
+			try {
+				zout.setLevel(9);
+				processDirectory(".\\bin\\", ".\\bin", zout, null);
+				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF", zout);
+			} finally {
+				zout.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Build the launcher file.
+	 */
+	static void buildLauncher() {
+		try {
+			ZipOutputStream zout = new ZipOutputStream(
+					new BufferedOutputStream(
+							new FileOutputStream("open-ig-launcher.jar"), 1024 * 1024));
+			try {
+				zout.setLevel(9);
+				processDirectory(".\\bin\\", ".\\bin", zout, new FilenameFilter() {
+					@Override
+					public boolean accept(File dir, String name) {
+						String d = dir.toString().replace('\\', '/');
+						return d.endsWith("hu/openig/launcher") || d.endsWith("hu/openig/utils");
+					}
+				});
+				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF.launcher", zout);
+			} finally {
+				zout.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Build the testbed application.
+	 * @param version the version
+	 */
+	static void buildTestbed(String version) {
+		try {
+			ZipOutputStream zout = new ZipOutputStream(
+					new BufferedOutputStream(
+							new FileOutputStream("open-ig-testbed-" + version + ".jar"), 1024 * 1024));
+			try {
+				zout.setLevel(9);
+				processDirectory(".\\bin\\", ".\\bin", zout, null);
+				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF.testbed", zout);
+			} finally {
+				zout.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Add the given fileName to the zip stream wiht the given entry name.
+	 * @param entryName the entry name
+	 * @param fileName the file name and path
+	 * @param zout the output stream
+	 * @throws IOException on error
+	 */
+	static void addFile(String entryName, String fileName, ZipOutputStream zout)
+	throws IOException {
+		ZipEntry mf = new ZipEntry(entryName);
+		File mfm = new File(fileName);
+		mf.setSize(mfm.length());
+		mf.setTime(mfm.lastModified());
+		zout.putNextEntry(mf);
+		zout.write(IOUtils.load(mfm));
+	}
 	/**
 	 * Process the contents of the given directory.
 	 * @param baseDir the base directory
@@ -148,5 +188,16 @@ public final class PackageStuff {
 				}
 			}
 		}
+	}
+	/**
+	 * @param args no arguments
+	 * @throws Exception ignored
+	 */
+	public static void main(String[] args) throws Exception {
+		buildGame(Configuration.VERSION);
+		buildLauncher();
+		buildMapEditor(MapEditor.MAP_EDITOR_JAR_VERSION);
+		buildPatch("20100917a");
+		buildTestbed(ScreenTester.VERSION);
 	}
 }

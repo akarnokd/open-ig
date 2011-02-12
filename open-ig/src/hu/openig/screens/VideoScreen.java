@@ -394,6 +394,7 @@ public class VideoScreen extends ScreenBase {
 	 */
 	@Override
 	public void paintTo(Graphics2D g2) {
+		doResize();
 		Composite cp = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
 		g2.drawImage(commons.infoEmpty, origin.x, origin.y, null);
