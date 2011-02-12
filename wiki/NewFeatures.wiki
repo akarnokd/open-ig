@@ -1,5 +1,5 @@
 #summary New features
-#labels Featured
+#labels Featured,Deprecated
 
 <wiki:toc max_depth="2" />
 
