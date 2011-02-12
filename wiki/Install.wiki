@@ -15,21 +15,18 @@ This page details the manual installation instructions for Open Imperium Galacti
 2) Download the game resource files (1.1 GB!):
 
 
-[http://open-ig.googlecode.com/files/open-ig-audio-generic-0.8.zip Audio 1]<br>
-[http://open-ig.googlecode.com/files/open-ig-audio-hu-0.8.zip Audio 2]<br>
-[http://open-ig.googlecode.com/files/open-ig-audio-en-0.8.zip Audio 3]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip Video 1]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip Video 2]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-03-0.8.zip Video 3]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-04-0.8.zip Video 4]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-05-0.8.zip Video 5]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-06-0.8.zip Video 6]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-07-0.8.zip Video 7]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-08-0.8.zip Video 8]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-09-0.8.zip Video 9]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-10-0.8.zip Video 10]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip Video 11]<br>
-[http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip Video 12]
+[http://open-ig.googlecode.com/files/open-ig-audio-generic-0.8.zip Audio 1], [http://open-ig.googlecode.com/files/open-ig-audio-hu-0.8.zip Audio 2], [http://open-ig.googlecode.com/files/open-ig-audio-en-0.8.zip Audio 3]<br><br>
+[http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip Video 1], 
+[http://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip Video 2], 
+[http://open-ig.googlecode.com/files/open-ig-video-03-0.8.zip Video 3], <br>
+[http://open-ig.googlecode.com/files/open-ig-video-04-0.8.zip Video 4], 
+[http://open-ig.googlecode.com/files/open-ig-video-05-0.8.zip Video 5], 
+[http://open-ig.googlecode.com/files/open-ig-video-06-0.8.zip Video 6], 
+<br>
+[http://open-ig.googlecode.com/files/open-ig-video-07-0.8.zip Video 7], 
+[http://open-ig.googlecode.com/files/open-ig-video-08-0.8.zip Video 8], 
+[http://open-ig.googlecode.com/files/open-ig-video-09-0.8.zip Video 9], <br>
+[http://open-ig.googlecode.com/files/open-ig-video-10-0.8.zip Video 10],[http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip Video 11],  [http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip Video 12]
 
 [http://open-ig.googlecode.com/files/open-ig-upgrade-20100917a.zip Upgrade 2010-09-17-a]
 
