@@ -2,12 +2,13 @@
 #labels Featured
 
   * [Introduction Introduction]
+  * [Install Install instructions]
+    * [Game_Notes Release notes]
+  * [Screenshots Screenshots]
   * Plans
     * [ProjectPlan2011 Project plans]
     * [FeaturePlans2011 Feature plans]
   * [NewsArchive News archive]
-  * [Install Install instructions]
-    * [Game_Notes Release notes]
   * [Guides Guides]
     * [Setup Setup guide]
     * [GameGuide Game guide]
