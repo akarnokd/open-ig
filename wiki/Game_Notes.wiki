@@ -1,9 +1,11 @@
 #summary Release notes for the Game.
 
+<wiki:toc max_depth="1" />
+
 = Introduction =
 
 This page (will) describe the differences between released versions of the Open Imperium Galactica Game (open-ig-xxx.jar)
 
-= 0.82 =
+= Version 0.82 - Small improvements =
 
-
+  * Improved the resource loading speed for multi-core systems. This affects the Game, the Map Editor and the Testbed applications too.
