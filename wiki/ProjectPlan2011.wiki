@@ -1,5 +1,4 @@
 #summary List of tasks to complete in 2011
-#labels Featured
 
 = Introduction =
 
