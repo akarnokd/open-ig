@@ -1,4 +1,5 @@
 #summary Description for installing and running of the Bar talks demo
+#labels Deprecated
 
 = Introduction =
 
