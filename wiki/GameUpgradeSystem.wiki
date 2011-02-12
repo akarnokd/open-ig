@@ -1,4 +1,5 @@
 #summary How to update/replace parts of OpenIG's game files
+#labels Deprecated
 
 = Introduction =
 
