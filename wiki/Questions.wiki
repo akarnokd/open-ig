@@ -6,6 +6,16 @@ I collected some (not yet frequently asked) questions and answers about the Open
 
 = Questions & Answers =
 
+== We are in 2011, what about the copyright now? ==
+
+This is a fully legitimate question. The original game is now 14 years old and nobody else seems to care about it or Open-IG at the current phase. Still, depending on how much success it will become once it reaches a playable state, the story might end. Based on experiences happening these days in software industry, these are the options:
+
+  * Nothing happens, everyone can use it.
+  * Oracle sues me because I dared to mention the word "Java".
+  * Atari (the current owner of the original license) gives an official supportive statement (e.g., they won't sue me).
+  * Atari sues me because if the success (and money) is not theirs, then noone should have it. If money = free, then especially likely.
+  * Before I finish, Atari creates a nostalgic (and working) version from the original game, taking away the fun.
+
 == Why did you start this project? ==
 Recently I pulled my old Imperium Galactica game and played with it using DOSBox. I noticed the age of this game, how the 640x480 resolution was too small and how unresponsive it worked. I figured out that maybe I could create a resizable game 
 interface. Luckily, the images, sound and animation is present, therefore I just need to create the engine to play it.
