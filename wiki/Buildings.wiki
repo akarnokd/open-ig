@@ -1,4 +1,5 @@
 #summary Documentation and think page for the Buildings mechanic
+#labels Deprecated
 
 = Introduction =
 
