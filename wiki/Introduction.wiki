@@ -13,6 +13,8 @@ Some teaser images can be found on the [http://code.google.com/p/open-ig/wiki/Sc
 
 Check out the [http://code.google.com/p/open-ig/wiki/Questions Questions and answers] page.
 
+See the [Game_Notes release notes] for details about the versions.
+
 == System requirements ==
  * Java JRE/JDK 1.6.X or 1.7.X, Java 7 recommended
  * Any operating system with graphical user interface
