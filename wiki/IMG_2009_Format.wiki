@@ -1,5 +1,5 @@
 #summary Description of the new Image format
-#labels Documentation
+#labels Documentation,Deprecated
 
 = Introduction =
 
