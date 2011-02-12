@@ -35,8 +35,8 @@ This page details the manual installation instructions for Open Imperium Galacti
 4) Run the game:
 
  * double click on {{{open-ig-0.82.jar}}}, or
- * run the following command line: {{{java -Xmx384M -jar open-ig-0.81.jar}}}, or
- * create a shell script/batch file and put in: {{{javaw -Xmx384M -jar open-ig-0.81.jar}}}
+ * run the following command line: {{{java -Xmx384M -jar open-ig-0.82.jar}}}, or
+ * create a shell script/batch file and put in: {{{javaw -Xmx384M -jar open-ig-0.82.jar}}}
 
 5) When the game loads, it should display the setup screen. Choose your preferred language:
 
