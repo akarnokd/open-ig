@@ -1,0 +1,9 @@
+#summary Release notes for the Game.
+
+= Introduction =
+
+This page (will) describe the differences between released versions of the Open Imperium Galactica Game (open-ig-xxx.jar)
+
+= 0.82 =
+
+
