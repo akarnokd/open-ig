@@ -1,4 +1,5 @@
 #summary The description of the keyboard shortcuts.
+#labels Deprecated
 
 = Introduction =
 
