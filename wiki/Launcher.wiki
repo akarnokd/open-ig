@@ -2,7 +2,7 @@
 
 <wiki:toc max_depth="3" />
 
-See [Launcher_Notes] for the per version release information.
+See the [Launcher_Notes Release notes] for the change details between versions.
 
 = Introduction =
 
