@@ -1,4 +1,5 @@
 #summary Description of the downloadable pakages.
+#labels Deprecated
 
 = Introduction =
 
