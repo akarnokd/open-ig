@@ -60,7 +60,7 @@
 		</general>
 		<execute file='open-ig-%s.jar' memory='384'/>
 		<!-- Release notes -->
-		<notes url='http://code.google.com/p/open-ig/wiki/Game_Release_Notes'>
+		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
 			<desc lang='hu'>Javított erőforrás betöltés a sokmagos rendszerek esetében.</desc>
 			<desc lang='en'>Improved resource load times for multi-core systems.</desc>
 		</notes>
