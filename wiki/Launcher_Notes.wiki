@@ -4,6 +4,6 @@
 
 See the [Launcher] page about the application itself.
 
-= 0.11 =
+= Version 0.11 - Bugfix release =
 
   * Fixed a bug when the user quit the launcher by using the *Exit* button, the Launcher forgot what modules where installed. Fortunately, clicking on the Install buttons, the launcher recognized that the files are already there and intact, therefore, no unnecessary network bandwith was required.
