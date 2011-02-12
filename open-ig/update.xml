@@ -16,7 +16,7 @@
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Launcher_Notes'>
 			<desc lang='hu'>Hibajavítás: a kilépés gombra most már elmenti a letöltött modulok listáját.</desc>
-			<desc lang='en'>BugFix:</desc>
+			<desc lang='en'>BugFix: when quitting with the Exit button, the launcher now saves the list of installed modules.</desc>
 		</notes>
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
