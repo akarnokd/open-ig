@@ -1,4 +1,5 @@
 #summary Installation instructions for Open-IG starting from version 0.8
+#labels Deprecated
 
 = Introduction =
 
