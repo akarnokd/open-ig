@@ -24,6 +24,7 @@ import hu.openig.gfx.SpacewarGFX;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StatusbarGFX;
 import hu.openig.model.World;
+import hu.openig.render.GenericMediumButton;
 import hu.openig.render.TextRenderer;
 
 import java.awt.AlphaComposite;
@@ -76,6 +77,10 @@ public class CommonResources {
 	public GameControls control;
 	/** The disabled pattern. */
 	public BufferedImage disabledPattern;
+	/** The normal button renderer. */
+	public GenericMediumButton mediumButton;
+	/** The pressed button renderer. */
+	public GenericMediumButton mediumButtonPressed;
 	// --------------------------------------------
 	// The general images usable by multiple places
 	// --------------------------------------------
@@ -274,7 +279,7 @@ public class CommonResources {
 						return new TextRenderer(rl);
 					}
 				});
-				
+
 				labels = loadLabels.get();
 				statusbar = loadSB.get();
 				background = loadB.get();
@@ -310,6 +315,10 @@ public class CommonResources {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, achievement.getWidth(), achievement.getHeight());
 		g2.dispose();
+		
+		mediumButton = new GenericMediumButton("/hu/openig/gfx/button_medium.png");
+		mediumButtonPressed = new GenericMediumButton("/hu/openig/gfx/button_medium_pressed.png");
+
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.
