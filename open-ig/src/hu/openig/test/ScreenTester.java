@@ -424,6 +424,18 @@ public class ScreenTester extends JFrame implements GameControls {
 	 * @param className the screen's class name.
 	 */
 	void onScreen(String className) {
-		
+		menuView.removeAll();
+		if ("ShipwalkScreen".equals(className)) {
+			for (final String s : commons.world.walks.ships.keySet()) {
+				JMenuItem mi = new JMenuItem(s);
+				mi.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						commons.screens.shipwalk.position = commons.world.walks.ships.get(s).positions.get("bridge");
+						repaint();
+					}
+				});
+			}
+		}
 	}
 }

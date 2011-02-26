@@ -13,8 +13,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * A category button without and with _selected.
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.09.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Cat {

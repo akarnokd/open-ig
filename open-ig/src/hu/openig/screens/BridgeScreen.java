@@ -32,8 +32,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.SwingUtilities;
 
 /**
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * The bridge rendering screen.
+ * @author akarnokd, 2010.01.11.
  */
 public class BridgeScreen extends ScreenBase {
 	/** The screen origins. */

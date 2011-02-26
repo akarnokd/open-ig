@@ -13,8 +13,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * A three phased button with normal, _selected_pressed and _selected phases.
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.09.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Btn3 {

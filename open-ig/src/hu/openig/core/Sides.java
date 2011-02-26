@@ -9,8 +9,7 @@ package hu.openig.core;
 
 /**
  * The road sides constants.
- * @author karnokd, 2009.05.23.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.05.23.
  */
 public final class Sides {
 	/** Constructor. */

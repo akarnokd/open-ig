@@ -33,8 +33,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * The single player screen with campaign selection.
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.11.
  */
 public class SingleplayerScreen extends ScreenBase {
 	/** The reference frame. */

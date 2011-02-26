@@ -25,8 +25,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * This frame should pop up whenever something is printed on System.out or System.err.
- * @author karnok, 2010.09.13.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.09.13.
  */
 public class ConsoleWatcher extends JFrame implements Closeable {
 	/** */

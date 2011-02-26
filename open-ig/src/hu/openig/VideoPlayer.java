@@ -72,8 +72,7 @@ import javax.swing.table.AbstractTableModel;
 
 /**
  * Video player for the new format.
- * @author karnok, 2009.09.26.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.09.26.
  */
 public class VideoPlayer extends JFrame {
 	/** */
@@ -120,8 +119,7 @@ public class VideoPlayer extends JFrame {
 	protected volatile int audioLen;
 	/**
 	 * Video entry.
-	 * @author karnok, 2009.09.26.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.09.26.
 	 */
 	class VideoEntry {
 		/** Name. */
@@ -204,8 +202,7 @@ public class VideoPlayer extends JFrame {
 	}
 	/**
 	 * Video table model.
-	 * @author karnok, 2009.09.26.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.09.26.
 	 */
 	class VideoModel extends AbstractTableModel {
 		/** */
@@ -757,8 +754,7 @@ public class VideoPlayer extends JFrame {
 	}
 	/**
 	 * The audio worker class.
-	 * @author karnok, 2009.09.26.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.09.26.
 	 */
 	class AudioWorker extends Worker {
 		/** The sound clip. */

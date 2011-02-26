@@ -12,8 +12,7 @@ import hu.openig.core.Location;
 
 /**
  * A building instance.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.07.
  */
 public class Building {
 	/** Build speed, hit points per game second. */

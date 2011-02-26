@@ -38,8 +38,7 @@ import javax.swing.Timer;
 
 /**
  * Paints the database screen.
- * @author karnok, 2009.10.25.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.10.25.
  */
 public class DatabasePainter extends JComponent {
 	/** */
@@ -116,8 +115,7 @@ public class DatabasePainter extends JComponent {
 	protected boolean alienDetails;
 	/**
 	 * The database button.
-	 * @author karnok, 2009.10.25.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.10.25.
 	 */
 	class DatabaseButton {
 		/** X. */

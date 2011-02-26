@@ -21,8 +21,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * The starmap graphics components.
- * @author karnok, 2009.11.16.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.16.
  */
 public class StarmapGFX {
 	/** The starmap background. */

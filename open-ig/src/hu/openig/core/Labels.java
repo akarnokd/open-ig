@@ -15,8 +15,7 @@ import java.util.Map;
 
 /**
  * The label manager with option for game specific sublabels.
- * @author karnok, 2009.10.25.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.10.25.
  */
 public class Labels {
 	/** The label map. */

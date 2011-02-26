@@ -9,8 +9,8 @@
 package hu.openig.core;
 
 /**
- * @author karnokd, 2009.09.23.
- * @version $Revision 1.0$
+ * The resource type enumeration.
+ * @author akarnokd, 2009.09.23.
  */
 public enum ResourceType {
 	/** Generic data file. */

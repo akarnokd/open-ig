@@ -9,8 +9,8 @@
 package hu.openig.model;
 
 /**
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * The knowledge type/level about a non-player fleet.
+ * @author akarnokd, 2010.01.07.
  */
 public enum FleetKnowledge {
 	/** The fleet is visible, but nothing else is known. */

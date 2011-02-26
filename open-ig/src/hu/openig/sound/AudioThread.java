@@ -25,8 +25,7 @@ import javax.sound.sampled.SourceDataLine;
  * Asynchronous thread to play audio data in parallel of the
  * rendered images. Send an empty array or interrupt to
  * close this thread. Will start and stop the playback automatically
- * @author karnokd, 2009.01.11.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.01.11.
  */
 public class AudioThread extends Thread {
 	/** The queue for asynchronus music play. */

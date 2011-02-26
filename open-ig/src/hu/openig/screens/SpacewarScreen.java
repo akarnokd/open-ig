@@ -23,8 +23,7 @@ import javax.swing.Timer;
 
 /**
  * The spacewar screen.
- * @author karnokd, 2010.01.06.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.06.
  */
 public class SpacewarScreen extends ScreenBase {
 	/** A three phase button. */

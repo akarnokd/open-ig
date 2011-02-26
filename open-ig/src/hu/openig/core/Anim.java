@@ -13,8 +13,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * Multiphase animation with equal X width.
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.09.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Anim {

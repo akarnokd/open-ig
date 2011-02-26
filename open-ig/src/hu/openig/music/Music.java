@@ -31,8 +31,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 /**
  * Background music player.
  * 
- * @author karnokd, 2009.02.23.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.02.23.
  */
 public class Music {
 	/** The audio output line. */

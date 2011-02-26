@@ -129,8 +129,7 @@ import org.w3c.dom.Element;
 
 /**
  * Map editor.
- * @author karnokd, 2010.09.08.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.09.08.
  */
 public class MapEditor extends JFrame {
 	/** */

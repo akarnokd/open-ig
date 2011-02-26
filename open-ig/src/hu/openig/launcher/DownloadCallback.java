@@ -9,8 +9,8 @@
 package hu.openig.launcher;
 
 /**
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * The download completion callback.
+ * @author akarnokd, 2010.10.31.
  */
 public interface DownloadCallback {
 	/**

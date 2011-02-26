@@ -18,8 +18,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * The colony graphics.
- * @author karnok, 2009.11.13.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.13.
  */
 public class ColonyGFX {
 	/** The resource locator. */

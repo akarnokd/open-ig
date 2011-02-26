@@ -13,8 +13,7 @@ import java.util.Map;
 
 /**
  * The road tile directional type.
- * @author karnokd, 2009.05.21.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.05.21.
  */
 public enum RoadType {
 	/** X axis linear road. _ */

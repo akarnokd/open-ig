@@ -18,8 +18,7 @@ import javax.swing.JComponent;
 
 /**
  * A screen base class.
- * @author karnokd, 2009.12.23.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.12.23.
  */
 public abstract class ScreenBase {
 	/** The global configuration object. */

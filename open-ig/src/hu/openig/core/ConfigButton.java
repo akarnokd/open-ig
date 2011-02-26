@@ -18,8 +18,7 @@ import javax.swing.JButton;
 
 /**
  * Special rounded rectangle toggle button.
- * @author karnokd, 2009.09.23.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.09.23.
  */
 public class ConfigButton extends JButton {
 	/** */

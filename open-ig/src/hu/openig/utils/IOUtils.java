@@ -25,8 +25,7 @@ import java.util.NoSuchElementException;
 
 /**
  * Contains Input / Output related functions and classes.
- * @author karnokd, 2009.01.05.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.01.05.
  */
 public final class IOUtils {
 	/** Private constructor. */

@@ -9,8 +9,8 @@
 package hu.openig.model;
 
 /**
- * @author karnok, 2009.10.10.
- * @version $Revision 1.0$
+ * The individual media and state for a conversation.
+ * @author akarnokd, 2009.10.10.
  */
 public class TalkSpeech {
 	/** The speech was already taken. */

@@ -10,8 +10,7 @@ package hu.openig.launcher;
 
 /**
  * The container for a description in a given language.
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.10.31.
  */
 public class LDescription {
 	/** The description's language. */

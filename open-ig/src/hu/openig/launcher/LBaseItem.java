@@ -17,8 +17,7 @@ import org.w3c.dom.Element;
 
 /**
  * The base item for various L* items.
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.10.31.
  */
 public class LBaseItem {
 	/** The descriptions in various languages. */

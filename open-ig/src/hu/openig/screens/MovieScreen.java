@@ -30,8 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The movie screen used for full screen video playback with sound and subtitles.
- * @author karnokd, 2010.01.08.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.08.
  */
 public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	/** The center region for the movie frames. */

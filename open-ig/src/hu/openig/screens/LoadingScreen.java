@@ -20,8 +20,7 @@ import javax.swing.Timer;
 
 /**
  * In progress loading screen.
- * @author karnok, 2010.01.17.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.17.
  */
 public class LoadingScreen extends ScreenBase {
 	/** The rotating cd icon location. */

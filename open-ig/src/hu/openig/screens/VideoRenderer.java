@@ -21,8 +21,7 @@ import java.util.zip.GZIPInputStream;
 
 /**
  * The video renderer thread.
- * @author karnok, 2010.01.17.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.17.
  */
 public class VideoRenderer extends Thread {
 	/** The audio synchronization. */

@@ -23,14 +23,12 @@ import java.util.Random;
 
 /**
  * The main menu rendering and actions.
- * @author karnokd, 2009.12.25.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.12.25.
  */
 public class MainMenu extends ScreenBase {
 	/**
 	 * The click label.
-	 * @author karnokd, 2009.12.26.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.12.26.
 	 */
 	class ClickLabel {
 		/** The origin. */

@@ -30,8 +30,7 @@ import javax.swing.Timer;
 
 /**
  * The video listing screen.
- * @author karnok, 2010.01.15.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.15.
  */
 public class VideoScreen extends ScreenBase {
 	/** The video entry. */

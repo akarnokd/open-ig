@@ -10,8 +10,7 @@ package hu.openig.launcher;
 
 /**
  * The list of files to download from a specific location.
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.10.31.
  */
 public class LFile extends LBaseItem {
 	/** The URL to the file. */

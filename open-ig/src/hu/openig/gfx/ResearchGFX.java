@@ -19,8 +19,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * Images for the research and production screens.
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.09.
  */
 public class ResearchGFX {
 	/** The resource locator. */

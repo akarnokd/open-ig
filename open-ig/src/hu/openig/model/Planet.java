@@ -15,8 +15,7 @@ import java.util.List;
 
 /**
  * A planet.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.07.
  */
 public class Planet {
 	/** The planet's display name. */

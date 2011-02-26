@@ -27,8 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The world object.
- * @author karnok, 2009.10.25.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.10.25.
  */
 public class World {
 	/** The current world level. */

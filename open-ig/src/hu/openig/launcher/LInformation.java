@@ -10,8 +10,7 @@ package hu.openig.launcher;
 
 /**
  * General information block.
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.10.31.
  */
 public class LInformation extends LBaseItem {
 	/** Link to the detailed description of the module. */

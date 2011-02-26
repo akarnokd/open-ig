@@ -13,8 +13,7 @@ import java.util.List;
 
 /**
  * The launcher module definition.
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.10.31.
  */
 public class LModule {
 	/** The module id. */

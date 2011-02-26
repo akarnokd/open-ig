@@ -31,8 +31,8 @@ import java.util.Random;
 import javax.swing.Timer;
 
 /**
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * The starmap screen.
+ * @author akarnokd, 2010.01.11.
  */
 public class StarmapScreen extends ScreenBase {
 	/** The minimum zoom level. */

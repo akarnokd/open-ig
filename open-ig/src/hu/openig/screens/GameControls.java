@@ -14,8 +14,7 @@ import java.awt.Rectangle;
 
 /**
  * Interface for interacting with the game window or other objects in a global manner.
- * @author karnokd, 2010.01.06.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.06.
  */
 public interface GameControls {
 	/**

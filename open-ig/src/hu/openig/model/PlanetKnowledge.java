@@ -10,8 +10,7 @@ package hu.openig.model;
 
 /**
  * Represents a knowledge status about a planet.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.07.
  */
 public enum PlanetKnowledge {
 	/** The planet has been discovered, the name is not displayed on the starmap and the surface does not show any buildings. */

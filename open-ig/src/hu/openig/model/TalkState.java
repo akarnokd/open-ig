@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author karnok, 2009.10.10.
- * @version $Revision 1.0$
+ * Defines a state in the conversation graph with the
+ * list of available topics, including a static
+ * picture to show when the state is reached.
+ * @author akarnokd, 2009.10.10.
  */
 public class TalkState {
 	/** The start state. */

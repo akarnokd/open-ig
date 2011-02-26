@@ -26,8 +26,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * The ship walk-around screen.
+ * @author akarnokd, 2010.01.11.
  */
 public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	/** The current position. */

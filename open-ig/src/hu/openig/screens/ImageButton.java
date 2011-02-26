@@ -19,8 +19,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * A three phase image button.
- * @author karnok, 2010.01.15.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.15.
  */
 public class ImageButton extends Button {
 	/** The selected image. */

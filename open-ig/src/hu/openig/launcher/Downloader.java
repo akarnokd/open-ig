@@ -20,8 +20,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 /**
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * A cancellable URL based downloader component which
+ * signals its completion via a callback.
+ * @author akarnokd, 2010.10.31.
  */
 public class Downloader extends SwingWorker<Void, Void> {
 	/** The download callback. */

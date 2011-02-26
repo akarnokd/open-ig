@@ -19,16 +19,14 @@ import javax.swing.JComponent;
 /**
  * Component which uses buffer swapping to render an image asynchronously.
  * Please call init() before attempting to use the 
- * @author karnokd, 2009.01.19.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.01.19.
  */
 public class MovieSurface extends JComponent implements SwappableRenderer {
 	/** */
 	private static final long serialVersionUID = 6083662951581621963L;
 	/**
 	 * Defines the scaling mode. 
-	 * @author karnokd, 2009.01.19.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.01.19.
 	 */
 	public enum ScalingMode {
 		/** Do not perform any scaling. Image will be rendered to 0, 0. */

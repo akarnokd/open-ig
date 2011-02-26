@@ -10,8 +10,7 @@ package hu.openig.core;
 
 /**
  * Difficulty level.
- * @author karnok, 2010.01.16.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.16.
  */
 public enum Difficulty {
 	/** Easy mode. */

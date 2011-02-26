@@ -25,8 +25,7 @@ import org.xml.sax.SAXException;
 
 /**
  * The container for various module updates.
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.10.31.
  */
 public class LUpdate {
 	/** The list of modules. */

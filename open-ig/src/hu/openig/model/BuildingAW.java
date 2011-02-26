@@ -10,8 +10,7 @@ package hu.openig.model;
 
 /**
  * The building allocation worker object to offload resource allocation to a different thread.
- * @author karnok, 2010.09.15.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.09.15.
  */
 public final class BuildingAW {
 	/** The back reference to the building. */
