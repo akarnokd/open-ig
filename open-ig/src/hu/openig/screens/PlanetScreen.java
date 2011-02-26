@@ -293,7 +293,7 @@ public class PlanetScreen extends ScreenBase {
 	@Override
 	public void onEnter() {
 		animationTimer.start();
-		offsetX = -(surface.boundingRectangle.width - getWidth()) / 2;
+		offsetX = -(surface.boundingRectangle.width - getSwingWidth()) / 2;
 		offsetY = -(surface.boundingRectangle.height - getHeight()) / 2;
 	}
 
@@ -313,7 +313,7 @@ public class PlanetScreen extends ScreenBase {
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		
 		g2.setColor(new Color(96, 96, 96));
-		g2.fillRect(0, 0, getWidth(), getHeight());
+		g2.fillRect(0, 0, getSwingWidth(), getHeight());
 		
 		if (surface == null) {
 			return;
@@ -333,7 +333,7 @@ public class PlanetScreen extends ScreenBase {
 		
 		
 		BufferedImage empty = areaEmpty.getStrip(0);
-		Rectangle renderingWindow = new Rectangle(0, 0, getWidth(), getHeight());
+		Rectangle renderingWindow = new Rectangle(0, 0, getSwingWidth(), getHeight());
 		for (int i = 0; i < surface.renderingOrigins.size(); i++) {
 			Location loc = surface.renderingOrigins.get(i);
 			for (int j = 0; j < surface.renderingLength.get(i); j++) {

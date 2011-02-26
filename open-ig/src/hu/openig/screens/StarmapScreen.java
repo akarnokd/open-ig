@@ -542,7 +542,7 @@ public class StarmapScreen extends ScreenBase {
 	public void paintTo(Graphics2D g2) {
 
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, getWidth(), getHeight());
+		g2.fillRect(0, 0, getSwingWidth(), getHeight());
 
 		computeRectangles();
 //		// leave space for the status bars
@@ -732,7 +732,7 @@ public class StarmapScreen extends ScreenBase {
 	void computeRectangles() {
 		starmapWindow.x = 0;
 		starmapWindow.y = 20;
-		starmapWindow.width = getWidth();
+		starmapWindow.width = getSwingWidth();
 		starmapWindow.height = getHeight() - 37;
 		if (scrollbarsVisible) {
 			starmapWindow.width -= commons.starmap.vScrollFill.getWidth();
@@ -759,7 +759,7 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 
-		minimapRect.x = getWidth() - commons.starmap.minimap.getWidth();
+		minimapRect.x = getSwingWidth() - commons.starmap.minimap.getWidth();
 		minimapRect.y = getHeight() - commons.starmap.minimap.getHeight() - 17;
 		minimapRect.width = commons.starmap.minimap.getWidth();
 		minimapRect.height = commons.starmap.minimap.getHeight();
@@ -788,7 +788,7 @@ public class StarmapScreen extends ScreenBase {
 				}
 			}
 		}
-		rightPanel.x = getWidth() - commons.starmap.panelVerticalFill.getWidth();
+		rightPanel.x = getSwingWidth() - commons.starmap.panelVerticalFill.getWidth();
 		rightPanel.y = starmapWindow.y;
 		rightPanel.width = commons.starmap.panelVerticalFill.getWidth();
 		rightPanel.height = starmapWindow.height - saveY;
@@ -888,7 +888,7 @@ public class StarmapScreen extends ScreenBase {
 		
 		// TODO fleet and planet listings
 		// ..............................................................
-		minimapRect.x = getWidth() - commons.starmap.minimap.getWidth();
+		minimapRect.x = getSwingWidth() - commons.starmap.minimap.getWidth();
 		minimapRect.y = getHeight() - commons.starmap.minimap.getHeight() - 17;
 		minimapRect.width = commons.starmap.minimap.getWidth();
 		minimapRect.height = commons.starmap.minimap.getHeight();

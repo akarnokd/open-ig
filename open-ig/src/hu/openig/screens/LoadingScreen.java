@@ -31,7 +31,7 @@ public class LoadingScreen extends ScreenBase {
 	 * @see hu.openig.v1.screens.ScreenBase#doResize()
 	 */
 	@Override
-	public void doResize() {
+	public void onResize() {
 	}
 	/** The animation timer. */
 	Timer animation;
@@ -39,15 +39,12 @@ public class LoadingScreen extends ScreenBase {
 	 * @see hu.openig.v1.screens.ScreenBase#finish()
 	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		animation.stop();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.ScreenBase#initialize()
-	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		animation = new Timer(100, new Act() {
 			@Override
 			public void act() {
@@ -67,65 +64,11 @@ public class LoadingScreen extends ScreenBase {
 	}
 
 	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.ScreenBase#keyTyped(int, int)
-	 */
-	@Override
-	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.ScreenBase#mouseDoubleClicked(int, int, int, int)
-	 */
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.ScreenBase#mouseMoved(int, int, int, int)
-	 */
-	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
 	 * @see hu.openig.v1.screens.ScreenBase#onEnter()
 	 */
 	@Override
 	public void onEnter() {
-		doResize();
+		resize();
 		animation.start();
 	}
 
@@ -141,7 +84,7 @@ public class LoadingScreen extends ScreenBase {
 	 * @see hu.openig.v1.screens.ScreenBase#paintTo(java.awt.Graphics2D)
 	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 		Composite cp = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.7f));
 		g2.setColor(Color.BLACK);

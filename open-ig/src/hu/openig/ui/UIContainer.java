@@ -6,9 +6,9 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.test;
+package hu.openig.ui;
 
-import hu.openig.test.UIMouse.Type;
+import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
