@@ -18,6 +18,9 @@ import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.render.TextRenderer;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
+import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.utils.ImageUtils;
 
 import java.awt.AlphaComposite;
@@ -26,6 +29,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
@@ -113,7 +117,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#doResize()
 	 */
 	@Override
-	public void doResize() {
+	public void onResize() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -122,7 +126,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		animationTimer.stop();
 	}
 
@@ -130,7 +134,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		surface = new PlanetSurface();
 		surface.width = 33;
 		surface.height = 66;
@@ -163,110 +167,125 @@ public class PlanetScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
 	 */
 	@Override
-	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-		
+	public boolean keyboard(KeyEvent e) {
+		boolean rep = false;
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_UP:
+			offsetY -= 28;
+			rep = true;
+			break;
+		case KeyEvent.VK_DOWN:
+			offsetY += 28;
+			rep = true;
+			break;
+		case KeyEvent.VK_LEFT:
+			offsetX -= 54;
+			rep = true;
+			break;
+		case KeyEvent.VK_RIGHT:
+			offsetX += 54;
+			rep = true;
+			break;
+		default:
+		}
+		return rep;
 	}
 
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
 	 */
 	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		if (drag) {
-			offsetX += x - lastX;
-			offsetY += y - lastY;
-			
-			lastX = x;
-			lastY = y;
-			repaint();
-		} else
-		if (sel) {
-			Location loc = getLocationAt(x, y);
-			current = loc;
-			placementRectangle.x = current.x - placementRectangle.width / 2;
-			placementRectangle.y = current.y + placementRectangle.height / 2;
-			selectedRectangle.x = Math.min(orig.x, loc.x);
-			selectedRectangle.y = Math.max(orig.y, loc.y);
-			selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
-			selectedRectangle.height = - Math.min(orig.y, loc.y) + selectedRectangle.y + 1;
-			repaint();
-		} else {
-			current = getLocationAt(x, y);
-			if (current != null) {
+	public boolean mouse(UIMouse e) {
+		boolean rep = false;
+		switch (e.type) {
+		case MOVE:
+		case DRAG:
+			if (drag) {
+				offsetX += e.x - lastX;
+				offsetY += e.y - lastY;
+				
+				lastX = e.x;
+				lastY = e.y;
+				rep = true;
+			} else
+			if (sel) {
+				Location loc = getLocationAt(e.x, e.y);
+				current = loc;
 				placementRectangle.x = current.x - placementRectangle.width / 2;
 				placementRectangle.y = current.y + placementRectangle.height / 2;
-				repaint();
-			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		if (isRightButton(button)) {
-			drag = true;
-			lastX = x;
-			lastY = y;
-		} else
-		if (isMiddleButton(button)) {
-			offsetX = 0;
-			offsetY = 0;
-			if (isCtrl(modifiers)) {
-				scale = 1;
-			}
-			repaint();
-		}
-		if (isLeftButton(button) && surface != null) {
-			sel = true;
-			selectedRectangle = new Rectangle();
-			orig = getLocationAt(x, y);
-			selectedRectangle.x = orig.x;
-			selectedRectangle.y = orig.y;
-			selectedRectangle.width = 1;
-			selectedRectangle.height = 1;
-			repaint();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		if (isRightButton(button)) {
-			drag = false;
-		}
-		if (isLeftButton(button)) {
-			sel = false;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		if (isCtrl(modifiers)) {
-			double pre = scale;
-			double mx = (x - offsetX) * pre;
-			double my = (y - offsetY) * pre;
-			if (direction < 0) {
-				doZoomIn();
+				selectedRectangle.x = Math.min(orig.x, loc.x);
+				selectedRectangle.y = Math.max(orig.y, loc.y);
+				selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
+				selectedRectangle.height = - Math.min(orig.y, loc.y) + selectedRectangle.y + 1;
+				rep = true;
 			} else {
-				doZoomOut();
+				current = getLocationAt(e.x, e.y);
+				if (current != null) {
+					placementRectangle.x = current.x - placementRectangle.width / 2;
+					placementRectangle.y = current.y + placementRectangle.height / 2;
+					rep = true;
+				}
 			}
-			double mx0 = (x - offsetX) * scale;
-			double my0 = (y - offsetY) * scale;
-			double dx = (mx - mx0) / pre;
-			double dy = (my - my0) / pre;
-			offsetX += (int)(dx);
-			offsetY += (int)(dy);
-			requestRepaint();
+			break;
+		case DOWN:
+			if (e.has(Button.RIGHT)) {
+				drag = true;
+				lastX = e.x;
+				lastY = e.y;
+			} else
+			if (e.has(Button.MIDDLE)) {
+				offsetX = 0;
+				offsetY = 0;
+				if (e.has(Modifier.CTRL)) {
+					scale = 1;
+				}
+				rep = true;
+			}
+			if (e.has(Button.LEFT) && surface != null) {
+				sel = true;
+				selectedRectangle = new Rectangle();
+				orig = getLocationAt(e.x, e.y);
+				selectedRectangle.x = orig.x;
+				selectedRectangle.y = orig.y;
+				selectedRectangle.width = 1;
+				selectedRectangle.height = 1;
+				rep = true;
+			}
+			break;
+		case UP:
+			if (e.has(Button.RIGHT)) {
+				drag = false;
+			}
+			if (e.has(Button.LEFT)) {
+				sel = false;
+			}
+			rep = true;
+			break;
+		case WHEEL:
+			if (e.has(Modifier.CTRL)) {
+				double pre = scale;
+				double mx = (e.x - offsetX) * pre;
+				double my = (e.y - offsetY) * pre;
+				if (e.z < 0) {
+					doZoomIn();
+				} else {
+					doZoomOut();
+				}
+				double mx0 = (e.x - offsetX) * scale;
+				double my0 = (e.y - offsetY) * scale;
+				double dx = (mx - mx0) / pre;
+				double dy = (my - my0) / pre;
+				offsetX += (int)(dx);
+				offsetY += (int)(dy);
+				rep = true;
+			}
+			break;
+		default:
 		}
+		return rep;
 	}
+
+
 	/**
 	 * Zoom to 100%.
 	 */
@@ -275,45 +294,36 @@ public class PlanetScreen extends ScreenBase {
 		repaint();
 	}
 	/**
-	 * 
+	 * Zoom out by decreasing the scale by 0.1.
 	 */
 	protected void doZoomOut() {
 		scale = Math.max(0.1, scale - 0.1);
 	}
 	/**
-	 * 
+	 * Zoom in by increasing the scale by 0.1.
 	 */
 	protected void doZoomIn() {
 		scale = Math.min(2.0, scale + 0.1);
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter() {
 		animationTimer.start();
-		offsetX = -(surface.boundingRectangle.width - getSwingWidth()) / 2;
-		offsetY = -(surface.boundingRectangle.height - getHeight()) / 2;
+		offsetX = -(surface.boundingRectangle.width - height) / 2;
+		offsetY = -(surface.boundingRectangle.height - width) / 2;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		animationTimer.stop();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		
 		g2.setColor(new Color(96, 96, 96));
-		g2.fillRect(0, 0, getSwingWidth(), getHeight());
+		g2.fillRect(0, 0, width, height);
 		
 		if (surface == null) {
 			return;
@@ -333,7 +343,7 @@ public class PlanetScreen extends ScreenBase {
 		
 		
 		BufferedImage empty = areaEmpty.getStrip(0);
-		Rectangle renderingWindow = new Rectangle(0, 0, getSwingWidth(), getHeight());
+		Rectangle renderingWindow = new Rectangle(0, 0, width, height);
 		for (int i = 0; i < surface.renderingOrigins.size(); i++) {
 			Location loc = surface.renderingOrigins.get(i);
 			for (int j = 0; j < surface.renderingLength.get(i); j++) {
@@ -518,11 +528,6 @@ public class PlanetScreen extends ScreenBase {
 		
 		g2.setTransform(at);
 		g2.setColor(Color.WHITE);
-	}
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
 	}
 	/**
 	 * Return the image (strip) representing this surface entry.

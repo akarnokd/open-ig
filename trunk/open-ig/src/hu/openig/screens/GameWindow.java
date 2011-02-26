@@ -73,7 +73,7 @@ public class GameWindow extends JFrame implements GameControls {
 		public void paint(Graphics g) {
 			Graphics2D g2 = (Graphics2D)g;
 			if (movieVisible) {
-				movie.paintTo(g2);
+				movie.draw(g2);
 			} else {
 				if (primary != null) {
 					primary.draw(g2);

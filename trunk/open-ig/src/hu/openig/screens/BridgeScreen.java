@@ -350,12 +350,12 @@ public class BridgeScreen extends ScreenBase {
 		if (e.type == UIMouse.Type.UP) {
 			if (!openCloseAnimating) {
 				if (messageOpen && !projectorOpen) {
-					if (closeMessage.contains(x - origin.x, y - origin.y)) {
+					if (closeMessage.contains(e.x - origin.x, e.y - origin.y)) {
 						playMessageClose();
 					}
 				} else
 				if (projectorOpen) {
-					if (closeProjector.contains(x - origin.x, y - origin.y)) {
+					if (closeProjector.contains(e.x - origin.x, e.y - origin.y)) {
 						if (videoAnim != null) {
 							videoAnim.stop();
 						}
@@ -363,11 +363,11 @@ public class BridgeScreen extends ScreenBase {
 					}
 				} else 
 				if (!messageOpen && !projectorOpen) {
-					if (messageOpenRect.contains(x, y)) {
+					if (messageOpenRect.contains(e.x, e.y)) {
 						playMessageOpen();
 					} else {
 						for (WalkTransition tr : commons.world.getCurrentLevel().walk.transitions) {
-							if (tr.area.contains(x - origin.x, y - origin.y)) {
+							if (tr.area.contains(e.x - origin.x, e.y - origin.y)) {
 								final String to = tr.to; 
 								if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty())) {
 									// move to the screen directly.

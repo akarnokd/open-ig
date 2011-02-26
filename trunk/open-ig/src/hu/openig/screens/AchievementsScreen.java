@@ -345,7 +345,7 @@ public class AchievementsScreen extends ScreenBase {
 		switch (e.type) {
 		case MOVE:
 			for (Button btn : buttons) {
-				if (btn.test(x, y, origin.x, origin.y)) {
+				if (btn.test(e.x, e.y, origin.x, origin.y)) {
 					if (!btn.mouseOver) {
 						btn.mouseOver = true;
 						btn.onEnter();
@@ -362,7 +362,7 @@ public class AchievementsScreen extends ScreenBase {
 			break;
 		case DOWN:
 			for (Button btn : buttons) {
-				if (btn.test(x, y, origin.x, origin.y)) {
+				if (btn.test(e.x, e.y, origin.x, origin.y)) {
 					btn.pressed = true;
 					btn.onPressed();
 					result = true;
@@ -374,7 +374,7 @@ public class AchievementsScreen extends ScreenBase {
 			for (Button btn : buttons) {
 				if (btn.pressed) {
 					btn.pressed = false;
-					if (btn.test(x, y, origin.x, origin.y)) {
+					if (btn.test(e.x, e.y, origin.x, origin.y)) {
 						btn.onReleased();
 					}
 					result = true;
@@ -382,7 +382,7 @@ public class AchievementsScreen extends ScreenBase {
 			}
 			break;
 		case WHEEL:
-			if (listRect.contains(x, y)) {
+			if (listRect.contains(e.x, e.y)) {
 				if (e.z < 0) {
 					doScrollUp();
 				} else {

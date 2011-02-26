@@ -241,7 +241,7 @@ public class MainMenu extends ScreenBase {
 		switch (e.type) {
 		case MOVE:
 			for (ClickLabel cl : clicklabels) {
-				if (cl.test(x, y, xOrigin, yOrigin)) {
+				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
 					needRepaint |= !cl.selected;
 					cl.selected = true;
 				} else {
@@ -252,7 +252,7 @@ public class MainMenu extends ScreenBase {
 			break;
 		case DOWN:
 			for (ClickLabel cl : clicklabels) {
-				if (cl.test(x, y, xOrigin, yOrigin)) {
+				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
 					needRepaint |= !cl.pressed;
 					cl.pressed = true;
 				} else {
@@ -263,7 +263,7 @@ public class MainMenu extends ScreenBase {
 			break;
 		case UP:
 			for (ClickLabel cl : clicklabels) {
-				if (cl.test(x, y, xOrigin, yOrigin) && cl.pressed) {
+				if (cl.test(e.x, e.y, xOrigin, yOrigin) && cl.pressed) {
 					cl.invoke();
 				}
 				needRepaint |= cl.pressed;

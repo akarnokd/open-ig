@@ -50,14 +50,14 @@ public class UIScrollBox extends UIContainer {
 			@Override
 			public void act() {
 				scrollBy(delta);
-				requestRepaint();
+				askRepaint();
 			}
 		};
 		downButton.onClick = new Act() {
 			@Override
 			public void act() {
 				scrollBy(-delta);
-				requestRepaint();
+				askRepaint();
 			}
 		};
 		upButton.z = 1;
