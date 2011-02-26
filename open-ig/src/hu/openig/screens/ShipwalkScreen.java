@@ -120,7 +120,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 				if (position != null) {
 					for (WalkTransition wt : position.transitions) {
 						if (wt.area.contains(x - origin.x, y - origin.y)) {
-							next = commons.world.getShip().positions.get(wt.to);
+							next = position.ship.positions.get(wt.to);
 							if (!wt.media.isEmpty()) {
 								startTransition(wt.media);
 							} else {
@@ -257,12 +257,16 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		this.video.onComplete = new Act() {
 			@Override
 			public void act() {
-				setNextPosition();
 				videoMode = false;
-				if (onCompleted != null) {
-					onCompleted.act();
+				try {
+					setNextPosition();
+					
+					if (onCompleted != null) {
+						onCompleted.act();
+					}
+				} finally {
+					repaint();
 				}
-				repaint();
 			}
 		};
 		this.video.start();

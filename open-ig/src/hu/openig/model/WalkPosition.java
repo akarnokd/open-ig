@@ -18,6 +18,8 @@ import java.util.List;
  * @author akarnokd, 2009.10.09.
  */
 public class WalkPosition {
+	/** The back reference to the owner ship. */
+	public WalkShip ship;
 	/** The walk position id. */
 	public String id;
 	/** The static image of the position. */
