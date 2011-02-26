@@ -13,6 +13,7 @@ import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
+import hu.openig.model.WalkShip;
 import hu.openig.model.World;
 import hu.openig.screens.AchievementsScreen;
 import hu.openig.screens.BarScreen;
@@ -44,9 +45,15 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
@@ -54,6 +61,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
@@ -65,7 +73,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	/** */
 	private static final long serialVersionUID = -3535790397080644321L;
 	/** The version number for packaging. */
-	public static final String VERSION = "0.1";
+	public static final String VERSION = "0.15";
 	/** The parent color to use. */
 	volatile Color parentColor = Color.LIGHT_GRAY;
 	/** The normal screen. */
@@ -83,6 +91,16 @@ public class ScreenTester extends JFrame implements GameControls {
 		{
 			setBackground(Color.LIGHT_GRAY);
 			setOpaque(true);
+			addComponentListener(new ComponentAdapter() {
+				@Override
+				public void componentResized(ComponentEvent e) {
+					if (screen != null) {
+						screen.doResize();
+					}
+					repaint();
+				}
+			});
+			RepaintManager.currentManager(this).setDoubleBufferingEnabled(true);
 		}
 		@Override
 		public void paint(Graphics g) {
@@ -295,7 +313,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					screen.initialize(commons, parent);
 					screen.onEnter();
 					repaint();
-					onScreen(clazz.getSimpleName());
+					onScreen(clazz.getSimpleName(), screen);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -422,19 +440,35 @@ public class ScreenTester extends JFrame implements GameControls {
 	/**
 	 * Invoke some custom action after displaying a screen.
 	 * @param className the screen's class name.
+	 * @param screen the screen object
 	 */
-	void onScreen(String className) {
+	void onScreen(String className, final ScreenBase screen) {
 		menuView.removeAll();
 		if ("ShipwalkScreen".equals(className)) {
-			for (final String s : commons.world.walks.ships.keySet()) {
-				JMenuItem mi = new JMenuItem(s);
+			final ShipwalkScreen sw = (ShipwalkScreen)screen;
+			WalkShip last = null;
+			List<WalkShip> list = new ArrayList<WalkShip>(commons.world.walks.ships.values());
+			Collections.sort(list, new Comparator<WalkShip>() {
+				@Override
+				public int compare(WalkShip o1, WalkShip o2) {
+					return o1.level.compareTo(o2.level);
+				}
+			});
+			for (final WalkShip s : list) {
+				JMenuItem mi = new JMenuItem("Level " + s.level);
+				last = s;
 				mi.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						commons.screens.shipwalk.position = commons.world.walks.ships.get(s).positions.get("bridge");
+						sw.position = s.positions.get("*bridge");
 						repaint();
 					}
 				});
+				menuView.add(mi);
+			}
+			if (last != null) {
+				sw.position = last.positions.get("*bridge");
+				repaint();
 			}
 		}
 	}

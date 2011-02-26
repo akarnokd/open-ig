@@ -85,6 +85,7 @@ public class Walks {
 			ships.put(ws.level, ws);
 			for (Element position : XML.childrenWithName(ship, "position")) {
 				WalkPosition wp = new WalkPosition();
+				wp.ship = ws;
 				wp.id = position.getAttribute("id");
 				ws.positions.put(wp.id, wp);
 				wp.picture = rl.getImage(lang, position.getAttribute("picture"));
