@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.test;
+package hu.openig.ui;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -124,5 +124,18 @@ public class UIComponent {
 	public void location(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+	/**
+	 * Request a repaint of the component.
+	 * This should be used from outside the mouse and keyboard
+	 * event handling, i.e., when the state changes due a timer
+	 * or other EDT action. By default, it simply forwards
+	 * the request to the parent, the top container should
+	 * override this and call a swing.repaint().
+	 */
+	public void askRepaint() {
+		if (parent != null) {
+			parent.askRepaint();
+		}
 	}
 }

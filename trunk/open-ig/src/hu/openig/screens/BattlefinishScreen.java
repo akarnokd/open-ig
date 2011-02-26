@@ -9,7 +9,6 @@
 package hu.openig.screens;
 
 
-import java.awt.Graphics2D;
 
 /**
  * The space/surface battle conclusion screen with the outcome statistics.
@@ -17,106 +16,32 @@ import java.awt.Graphics2D;
  */
 public class BattlefinishScreen extends ScreenBase {
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#doResize()
-	 */
 	@Override
-	public void doResize() {
+	public void onInitialize() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
-	@Override
-	public void finish() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
-	@Override
-	public void initialize() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
-	@Override
-	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
-	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void onFinish() {
 		// TODO Auto-generated method stub
-
+		
 	}
+
 	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
+	public void onResize() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -10,6 +10,7 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Button;
+import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -121,7 +122,7 @@ public class AchievementsScreen extends ScreenBase {
 	/** The current display mode. */
 	public Mode mode = Mode.STATISTICS;
 	@Override
-	public void doResize() {
+	public void onResize() {
 		origin.setBounds(
 			(parent.getWidth() - commons.infoEmpty.getWidth()) / 2,
 			20 + (parent.getHeight() - commons.infoEmpty.getHeight() - 38) / 2,
@@ -167,20 +168,14 @@ public class AchievementsScreen extends ScreenBase {
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		scrollDownTimer.stop();
 		scrollUpTimer.stop();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		
 		buttons.clear();
 		achievements.clear();
@@ -344,80 +339,62 @@ public class AchievementsScreen extends ScreenBase {
 		createTestEntries();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
 	@Override
-	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
-	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		for (Button btn : buttons) {
-			if (btn.test(x, y, origin.x, origin.y)) {
-				if (!btn.mouseOver) {
-					btn.mouseOver = true;
-					btn.onEnter();
-					requestRepaint();
-				}
-			} else
-			if (btn.mouseOver || btn.pressed) {
-				btn.mouseOver = false;
-				btn.pressed = false;
-				btn.onLeave();
-				requestRepaint();
-			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		for (Button btn : buttons) {
-			if (btn.test(x, y, origin.x, origin.y)) {
-				btn.pressed = true;
-				btn.onPressed();
-				requestRepaint();
-			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		for (Button btn : buttons) {
-			if (btn.pressed) {
-				btn.pressed = false;
+	public boolean mouse(UIMouse e) {
+		boolean result = false;
+		switch (e.type) {
+		case MOVE:
+			for (Button btn : buttons) {
 				if (btn.test(x, y, origin.x, origin.y)) {
-					btn.onReleased();
+					if (!btn.mouseOver) {
+						btn.mouseOver = true;
+						btn.onEnter();
+						result = true;
+					}
+				} else
+				if (btn.mouseOver || btn.pressed) {
+					btn.mouseOver = false;
+					btn.pressed = false;
+					btn.onLeave();
+					result = true;
 				}
-				requestRepaint();
 			}
+			break;
+		case DOWN:
+			for (Button btn : buttons) {
+				if (btn.test(x, y, origin.x, origin.y)) {
+					btn.pressed = true;
+					btn.onPressed();
+					result = true;
+				}
+			}
+			break;
+		case UP:
+		case LEAVE:
+			for (Button btn : buttons) {
+				if (btn.pressed) {
+					btn.pressed = false;
+					if (btn.test(x, y, origin.x, origin.y)) {
+						btn.onReleased();
+					}
+					result = true;
+				}
+			}
+			break;
+		case WHEEL:
+			if (listRect.contains(x, y)) {
+				if (e.z < 0) {
+					doScrollUp();
+				} else {
+					doScrollDown();
+				}
+			}
+			break;
+		default:
 		}
+		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		if (listRect.contains(x, y)) {
-			if (direction < 0) {
-				doScrollUp();
-			} else {
-				doScrollDown();
-			}
-		}
-	}
 	/** Scoll the list up. */
 	void doScrollUp() {
 		if (mode == Mode.STATISTICS) {
@@ -488,20 +465,14 @@ public class AchievementsScreen extends ScreenBase {
 		achievementLabel.selected = mode == Mode.ACHIEVEMENTS;
 		statisticsLabel.selected = mode == Mode.STATISTICS;
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		// TODO Auto-generated method stub
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
 		Composite cp = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
@@ -643,10 +614,5 @@ public class AchievementsScreen extends ScreenBase {
 		statistics.add(new StatisticsEntry("statistics.galaxy_total_hospital", "1.150.000 (115%)"));
 		statistics.add(new StatisticsEntry("statistics.galaxy_total_police", "1.200.000 (120%)"));
 //		statistics.add(new StatisticsEntry("", ""));
-	}
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
 	}
 }

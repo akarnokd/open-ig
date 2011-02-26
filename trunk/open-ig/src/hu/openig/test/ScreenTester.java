@@ -37,6 +37,7 @@ import hu.openig.screens.SpacewarScreen;
 import hu.openig.screens.StarmapScreen;
 import hu.openig.screens.StatusbarScreen;
 import hu.openig.screens.VideoScreen;
+import hu.openig.ui.UIMouse;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -95,7 +96,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				@Override
 				public void componentResized(ComponentEvent e) {
 					if (screen != null) {
-						screen.doResize();
+						screen.resize();
 					}
 					repaint();
 				}
@@ -107,7 +108,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			g.setColor(parentColor);
 			g.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 			if (screen != null) {
-				screen.paintTo((Graphics2D)g);
+				screen.draw((Graphics2D)g);
 			} else {
 				g.setColor(Color.BLACK);
 				
@@ -171,48 +172,42 @@ public class ScreenTester extends JFrame implements GameControls {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiersEx());
-					sb.handleRepaint();
+					sb.mouse(UIMouse.from(e));
 				}
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null && e.getClickCount() >= 2) {
-					sb.mouseDoubleClicked(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-					sb.handleRepaint();
+					sb.mouse(UIMouse.from(e));
 				}
 			}
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-					sb.handleRepaint();
+					sb.mouse(UIMouse.from(e));
 				}
 			}
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-					sb.handleRepaint();
+					sb.mouse(UIMouse.from(e));
 				}
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-					sb.handleRepaint();
+					sb.mouse(UIMouse.from(e));
 				}
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-					sb.handleRepaint();
+					sb.mouse(UIMouse.from(e));
 				}
 			}
 		};
@@ -305,7 +300,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			public void actionPerformed(ActionEvent e) {
 				if (screen != null) {
 					screen.onLeave();
-					screen.finish();
+					screen.onFinish();
 					screen = null;
 				}
 				try {
@@ -325,7 +320,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	void doExit() {
 		if (screen != null) {
 			screen.onLeave();
-			screen.finish();
+			screen.onFinish();
 			screen = null;
 		}
 		dispose();

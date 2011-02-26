@@ -9,12 +9,13 @@
 package hu.openig.screens;
 
 
-import hu.openig.core.SwappableRenderer;
 import hu.openig.core.Act;
+import hu.openig.core.SwappableRenderer;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.TextRenderer;
+import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -53,7 +54,7 @@ public class BridgeScreen extends ScreenBase {
 	/** The poligon to click on to close the message panel. */
 	Polygon closeMessage;
 	@Override
-	public void doResize() {
+	public void onResize() {
 		origin.setBounds((parent.getWidth() - 640) / 2, 20 + (parent.getHeight() - 38 - 442) / 2, 640, 442);
 		messageOpenRect.setBounds(origin.x + 572, origin.y + 292, 68, 170);
 		projectorRect.setBounds(origin.x + (origin.width - 524) / 2 - 4, origin.y, 524, 258);
@@ -128,7 +129,7 @@ public class BridgeScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		if (messageAnim != null) {
 			messageAnim.terminate();
 		}
@@ -336,101 +337,70 @@ public class BridgeScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		// TODO Auto-generated method stub
 
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
-	@Override
-	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
-	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
 	}
 
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
 	 */
 	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		if (!openCloseAnimating) {
-			if (messageOpen && !projectorOpen) {
-				if (closeMessage.contains(x - origin.x, y - origin.y)) {
-					playMessageClose();
-				}
-			} else
-			if (projectorOpen) {
-				if (closeProjector.contains(x - origin.x, y - origin.y)) {
-					if (videoAnim != null) {
-						videoAnim.stop();
+	public boolean mouse(UIMouse e) {
+		if (e.type == UIMouse.Type.UP) {
+			if (!openCloseAnimating) {
+				if (messageOpen && !projectorOpen) {
+					if (closeMessage.contains(x - origin.x, y - origin.y)) {
+						playMessageClose();
 					}
-					playProjectorClose();
-				}
-			} else 
-			if (!messageOpen && !projectorOpen) {
-				if (messageOpenRect.contains(x, y)) {
-					playMessageOpen();
-				} else {
-					for (WalkTransition tr : commons.world.getCurrentLevel().walk.transitions) {
-						if (tr.area.contains(x - origin.x, y - origin.y)) {
-							final String to = tr.to; 
-							if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty())) {
-								// move to the screen directly.
-								commons.switchScreen(to);
-							} else {
-								final ShipwalkScreen sws = commons.screens.shipwalk;
-								sws.position = commons.world.getCurrentLevel().walk;
-								
-								WalkShip ship = commons.world.getShip();
-								sws.next = ship.positions.get(tr.to);
-								sws.displayPrimary();
-								final String media = tr.media;
-								SwingUtilities.invokeLater(new Runnable() {
-									@Override
-									public void run() {
-										sws.startTransition(media);
-										sws.onCompleted = new Act() {
-											@Override
-											public void act() {
-												commons.switchScreen(to);
-												sws.onCompleted = null;
-											}
-										};
-									}
-								});
+				} else
+				if (projectorOpen) {
+					if (closeProjector.contains(x - origin.x, y - origin.y)) {
+						if (videoAnim != null) {
+							videoAnim.stop();
+						}
+						playProjectorClose();
+					}
+				} else 
+				if (!messageOpen && !projectorOpen) {
+					if (messageOpenRect.contains(x, y)) {
+						playMessageOpen();
+					} else {
+						for (WalkTransition tr : commons.world.getCurrentLevel().walk.transitions) {
+							if (tr.area.contains(x - origin.x, y - origin.y)) {
+								final String to = tr.to; 
+								if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty())) {
+									// move to the screen directly.
+									commons.switchScreen(to);
+								} else {
+									final ShipwalkScreen sws = commons.screens.shipwalk;
+									sws.position = commons.world.getCurrentLevel().walk;
+									
+									WalkShip ship = commons.world.getShip();
+									sws.next = ship.positions.get(tr.to);
+									sws.displayPrimary();
+									final String media = tr.media;
+									SwingUtilities.invokeLater(new Runnable() {
+										@Override
+										public void run() {
+											sws.startTransition(media);
+											sws.onCompleted = new Act() {
+												@Override
+												public void act() {
+													commons.switchScreen(to);
+													sws.onCompleted = null;
+												}
+											};
+										}
+									});
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
+		return false;
 	}
 	/** The level specific background. */
 	BufferedImage background;
@@ -456,17 +426,12 @@ public class BridgeScreen extends ScreenBase {
 			videoAnim.stop();
 		}
 	}
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
 	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 		

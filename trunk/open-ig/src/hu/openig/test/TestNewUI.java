@@ -8,13 +8,22 @@
 
 package hu.openig.test;
 
+import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIContainer;
+import hu.openig.ui.UIImageButton;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIScrollBox;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -34,11 +43,18 @@ public class TestNewUI extends JFrame {
 	public TestNewUI() {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		cc1 = new ColorChangerContainer();
-		cc1.width = 300;
-		cc1.height = 300;
+		cc1.width = 600;
+		cc1.height = 600;
+		
+		BufferedImage[] updown = getImage("images/generic/information/arrow_updown.png", 34);
+		
+		UIImageButton up = new UIImageButton(updown[3 + 0], updown[3 + 2], updown[3 + 1]);
+		up.setHoldDelay(100);
+		UIImageButton down = new UIImageButton(updown[0], updown[2], updown[1]);
+		down.setHoldDelay(100);
 		
 		ColorChangerContainer cc2 = new ColorChangerContainer();
-		cc2.location(25, 25);
+//		cc2.location(25, 25);
 		cc2.size(250, 250);
 		
 		ColorChanger c1 = new ColorChanger();
@@ -54,7 +70,13 @@ public class TestNewUI extends JFrame {
 		c3.size(50, 50);
 
 		cc2.add(c1, c2, c3);
-		cc1.add(cc2);
+
+		UIScrollBox scroll = new UIScrollBox(cc2, 16, up, down);
+		scroll.size(500, 100);
+		scroll.location(50, 50);
+
+		cc1.add(scroll);
+		
 		MouseAdapter ma = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -161,6 +183,29 @@ public class TestNewUI extends JFrame {
 		public boolean mouse(UIMouse e) {
 			boolean r = super.mouse(e);
 			return r || e.type == UIMouse.Type.ENTER || e.type == UIMouse.Type.LEAVE;
+		}
+		@Override
+		public void askRepaint() {
+			repaint();
+		}
+	}
+	/**
+	 * Retrieve an image by name without checked exceptions.
+	 * @param name the image name
+	 * @param splitSize the width in pixels to split the image
+	 * @return the image
+	 */
+	BufferedImage[] getImage(String name, int splitSize) {
+		try {
+			BufferedImage bimg = ImageIO.read(new File(name));
+			BufferedImage[] result = new BufferedImage[bimg.getWidth() / splitSize];
+			for (int i = 0; i < result.length; i++) {
+				result[i] = bimg.getSubimage(i * splitSize, 0, splitSize, bimg.getHeight());
+			}
+			return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
 		}
 	}
 	/**

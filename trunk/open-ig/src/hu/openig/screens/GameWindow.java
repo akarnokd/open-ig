@@ -12,12 +12,11 @@ import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
 import hu.openig.screens.AchievementsScreen.Mode;
+import hu.openig.ui.UIMouse;
 
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -77,13 +76,13 @@ public class GameWindow extends JFrame implements GameControls {
 				movie.paintTo(g2);
 			} else {
 				if (primary != null) {
-					primary.paintTo(g2);
+					primary.draw(g2);
 				}
 				if (secondary != null) {
-					secondary.paintTo(g2);
+					secondary.draw(g2);
 				}
 				if (statusbarVisible) {
-					statusbar.paintTo(g2);
+					statusbar.draw(g2);
 				}
 			}
 		}
@@ -217,7 +216,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if (primary == sb || secondary == sb) {
 				sb.onLeave();
 			}
-			sb.finish();
+			sb.onFinish();
 		}
 		primary = null;
 		secondary = null;
@@ -241,20 +240,10 @@ public class GameWindow extends JFrame implements GameControls {
 			primary.onEnter(); 
 			// send a mouse moved event so that if necessary, components can react to mouseOver immediately
 			if (surface.isShowing()) {
-				Point p = getCurrentMousePosition();
-				primary.mouseMoved(0, p.x, p.y, 0);
+				primary.mouse(UIMouse.createCurrent(surface));
 			}
 		}
 		surface.repaint();
-	}
-	/**
-	 * Retrieves the current mouse position relative to the rendering surface.
-	 * @return the current relative mouse position.
-	 */
-	public Point getCurrentMousePosition() {
-		Point p = MouseInfo.getPointerInfo().getLocation();
-		Point c = surface.getLocationOnScreen();
-		return new Point(c.x - p.x, c.y - p.y);
 	}
 	/**
 	 * Display the given secondary screen.
@@ -269,8 +258,7 @@ public class GameWindow extends JFrame implements GameControls {
 			secondary = screen;
 			secondary.onEnter();
 			if (surface.isShowing()) {
-				Point p = getCurrentMousePosition();
-				secondary.mouseMoved(0, p.x, p.y, 0);
+				secondary.mouse(UIMouse.createCurrent(surface));
 			}
 			surface.repaint();
 		}
@@ -337,21 +325,22 @@ public class GameWindow extends JFrame implements GameControls {
 	 * On screen transitions, issue a fake mouse moved events to support the highlighting.
 	 */
 	public void doMoveMouseAgain() {
-		Point pt = getCurrentMousePosition();
+		boolean result = false;
 		ScreenBase sb = statusbar;
+		UIMouse m = UIMouse.createCurrent(surface);
 		if (statusbarVisible) {
-			sb.mouseMoved(0, pt.x, pt.y, 0);
-			sb.handleRepaint();
+			result |= sb.mouse(m);
 		}
 		ScreenBase pri = primary;
 		ScreenBase sec = secondary;
 		if (pri != null) {
-			pri.mouseMoved(0, pt.x, pt.y, 0);
-			pri.handleRepaint();
+			result |= pri.mouse(m);
 		} else
 		if (sec != null) {
-			sec.mouseMoved(0, pt.x, pt.y, 0);
-			sec.handleRepaint();
+			result |= sec.mouse(m);
+		}
+		if (result) {
+			repaint();
 		}
 	}
 	/**
@@ -362,19 +351,20 @@ public class GameWindow extends JFrame implements GameControls {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if (!handleScreenSwitch(e)) {
+				boolean rep = false;
 				ScreenBase pri = primary;
 				ScreenBase sec = secondary;
 				if (movieVisible) {
-					movie.keyTyped(e.getKeyCode(), e.getModifiersEx());
-					movie.handleRepaint();
+					rep |= movie.keyboard(e);
 				} else
 				if (sec != null) {
-					sec.keyTyped(e.getKeyCode(), e.getModifiersEx());
-					sec.handleRepaint();
+					rep |= sec.keyboard(e);
 				} else
 				if (pri != null) {
-					pri.keyTyped(e.getKeyCode(), e.getModifiersEx());
-					pri.handleRepaint();
+					rep |= pri.keyboard(e);
+				}
+				if (rep) {
+					repaint();
 				}
 			}
 		}
@@ -480,20 +470,16 @@ public class GameWindow extends JFrame implements GameControls {
 	class MouseActions extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
-//			System.out.println("Press");
 			ScreenBase pri = primary;
 			ScreenBase sec = secondary;
 			if (movieVisible) {
-				movie.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				movie.handleRepaint();
+				movie.mouse(UIMouse.from(e));
 			} else
 			if (sec != null) {
-				sec.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				sec.handleRepaint();
+				sec.mouse(UIMouse.from(e));
 			} else
 			if (pri != null) {
-				pri.mousePressed(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				pri.handleRepaint();
+				pri.mouse(UIMouse.from(e));
 			}
 		}
 		@Override
@@ -501,16 +487,13 @@ public class GameWindow extends JFrame implements GameControls {
 			ScreenBase pri = primary;
 			ScreenBase sec = secondary;
 			if (movieVisible) {
-				movie.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				movie.handleRepaint();
+				movie.mouse(UIMouse.from(e));
 			} else
 			if (sec != null) {
-				sec.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				sec.handleRepaint();
+				sec.mouse(UIMouse.from(e));
 			} else
 			if (pri != null) {
-				pri.mouseReleased(e.getButton(), e.getX(), e.getY(), e.getModifiersEx());
-				pri.handleRepaint();
+				pri.mouse(UIMouse.from(e));
 			}
 		}
 		@Override
@@ -518,16 +501,13 @@ public class GameWindow extends JFrame implements GameControls {
 			ScreenBase pri = primary;
 			ScreenBase sec = secondary;
 			if (movieVisible) {
-				movie.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				movie.handleRepaint();
+				movie.mouse(UIMouse.from(e));
 			} else
 			if (sec != null) {
-				sec.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				sec.handleRepaint();
+				sec.mouse(UIMouse.from(e));
 			} else
 			if (pri != null) {
-				pri.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				pri.handleRepaint();
+				pri.mouse(UIMouse.from(e));
 			}
 		}
 		@Override
@@ -535,16 +515,13 @@ public class GameWindow extends JFrame implements GameControls {
 			ScreenBase pri = primary;
 			ScreenBase sec = secondary;
 			if (movieVisible) {
-				movie.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				movie.handleRepaint();
+				movie.mouse(UIMouse.from(e));
 			} else
 			if (sec != null) {
-				sec.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				sec.handleRepaint();
+				sec.mouse(UIMouse.from(e));
 			} else
 			if (pri != null) {
-				pri.mouseMoved(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-				pri.handleRepaint();
+				pri.mouse(UIMouse.from(e));
 			}
 		}
 		@Override
@@ -552,35 +529,27 @@ public class GameWindow extends JFrame implements GameControls {
 			ScreenBase pri = primary;
 			ScreenBase sec = secondary;
 			if (movieVisible) {
-				movie.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
-				movie.handleRepaint();
+				movie.mouse(UIMouse.from(e));
 			} else
 			if (sec != null) {
-				sec.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
-				sec.handleRepaint();
+				sec.mouse(UIMouse.from(e));
 			} else
 			if (pri != null) {
-				pri.mouseScrolled(e.getUnitsToScroll(), e.getX(), e.getY(), e.getModifiers());
-				pri.handleRepaint();
+				pri.mouse(UIMouse.from(e));
 			}
 		}
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 2) {
-				ScreenBase pri = primary;
-				ScreenBase sec = secondary;
-				if (movieVisible) {
-					movie.mouseDoubleClicked(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-					movie.handleRepaint();
-				} else
-				if (sec != null) {
-					sec.mouseDoubleClicked(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-					sec.handleRepaint();
-				} else
-				if (pri != null) {
-					pri.mouseDoubleClicked(e.getButton(), e.getX(), e.getY(), e.getModifiers());
-					pri.handleRepaint();
-				}
+			ScreenBase pri = primary;
+			ScreenBase sec = secondary;
+			if (movieVisible) {
+				movie.mouse(UIMouse.from(e));
+			} else
+			if (sec != null) {
+				sec.mouse(UIMouse.from(e));
+			} else
+			if (pri != null) {
+				pri.mouse(UIMouse.from(e));
 			}
 		}
 	}

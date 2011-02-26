@@ -10,6 +10,7 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
+import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -116,7 +117,7 @@ public class MainMenu extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		// TODO Auto-generated method stub
 
 	}
@@ -125,7 +126,7 @@ public class MainMenu extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		clicklabels = new LinkedList<ClickLabel>();
 		
 		ClickLabel single = new ClickLabel(120, 120, 400, 20, "mainmenu.singleplayer");
@@ -234,85 +235,46 @@ public class MainMenu extends ScreenBase {
 	protected void doPlayTitle() {
 		commons.control.playVideos("intro/gt_interactive_intro");
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
 	@Override
-	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
-	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
+	public boolean mouse(UIMouse e) {
 		boolean needRepaint = false;
-		for (ClickLabel cl : clicklabels) {
-			if (cl.test(x, y, xOrigin, yOrigin)) {
-				needRepaint |= !cl.selected;
-				cl.selected = true;
-			} else {
-				needRepaint |= cl.selected;
-				cl.selected = false;
+		switch (e.type) {
+		case MOVE:
+			for (ClickLabel cl : clicklabels) {
+				if (cl.test(x, y, xOrigin, yOrigin)) {
+					needRepaint |= !cl.selected;
+					cl.selected = true;
+				} else {
+					needRepaint |= cl.selected;
+					cl.selected = false;
+				}
 			}
-		}
-		if (needRepaint) {
-			repaint();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		boolean needRepaint = false;
-		for (ClickLabel cl : clicklabels) {
-			if (cl.test(x, y, xOrigin, yOrigin)) {
-				needRepaint |= !cl.pressed;
-				cl.pressed = true;
-			} else {
+			break;
+		case DOWN:
+			for (ClickLabel cl : clicklabels) {
+				if (cl.test(x, y, xOrigin, yOrigin)) {
+					needRepaint |= !cl.pressed;
+					cl.pressed = true;
+				} else {
+					needRepaint |= cl.pressed;
+					cl.pressed = false;
+				}
+			}
+			break;
+		case UP:
+			for (ClickLabel cl : clicklabels) {
+				if (cl.test(x, y, xOrigin, yOrigin) && cl.pressed) {
+					cl.invoke();
+				}
 				needRepaint |= cl.pressed;
 				cl.pressed = false;
 			}
+			break;
+		default:
 		}
-		if (needRepaint) {
-			repaint();
-		}
+		return needRepaint;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		boolean needRepaint = false;
-		for (ClickLabel cl : clicklabels) {
-			if (cl.test(x, y, xOrigin, yOrigin) && cl.pressed) {
-				cl.invoke();
-			}
-			needRepaint |= cl.pressed;
-			cl.pressed = false;
-		}
-		if (needRepaint) {
-			repaint();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter() {
 		selectRandomBackground();
@@ -327,29 +289,20 @@ public class MainMenu extends ScreenBase {
 		background = commons.background.start[rnd.nextInt(commons.background.start.length)];
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		// TODO Auto-generated method stub
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onResize()
-	 */
 	@Override
-	public void doResize() {
+	public void onResize() {
 		// relocate objects if necessary
 		xOrigin = (parent.getWidth() - background.getWidth()) / 2;
 		yOrigin = (parent.getHeight() - background.getHeight()) / 2;
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 		onResize(); // repaint might come before an onResize
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
@@ -381,10 +334,5 @@ public class MainMenu extends ScreenBase {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-	}
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
 	}
 }

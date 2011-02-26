@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.test;
+package hu.openig.ui;
 
 import java.awt.Component;
 import java.awt.MouseInfo;
@@ -108,6 +108,7 @@ public class UIMouse {
 		switch (e.getID()) {
 		case MouseEvent.MOUSE_CLICKED:
 			m.type = e.getClickCount() == 1 ? Type.CLICK : Type.DOUBLE_CLICK;
+			m.z = e.getClickCount();
 			break;
 		case MouseEvent.MOUSE_PRESSED:
 			m.type = Type.DOWN;
@@ -178,5 +179,20 @@ public class UIMouse {
 		Point pm = MouseInfo.getPointerInfo().getLocation();
 		Point pc = c.getLocationOnScreen();
 		return new Point(pc.x - pm.x, pc.y - pm.y);
+	}
+	/**
+	 * Create a mouse movement event as if the mouse just
+	 * moved to its current position.
+	 * @param c the base swing component to relativize the mouse location
+	 * @return the mouse event
+	 */
+	public static UIMouse createCurrent(Component c) {
+		UIMouse m = new UIMouse();
+		m.type = UIMouse.Type.MOVE;
+		Point pm = MouseInfo.getPointerInfo().getLocation();
+		Point pc = c.getLocationOnScreen();
+		m.x = pc.x - pm.x;
+		m.y = pc.y - pm.y;
+		return m;
 	}
 }
