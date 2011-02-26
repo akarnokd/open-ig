@@ -10,8 +10,9 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Button;
-import hu.openig.core.ResourceType;
 import hu.openig.core.ResourceLocator.ResourcePlace;
+import hu.openig.core.ResourceType;
+import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -72,7 +73,7 @@ public class VideoScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#doResize()
 	 */
 	@Override
-	public void doResize() {
+	public void onResize() {
 		origin.setBounds(
 			(parent.getWidth() - commons.infoEmpty.getWidth()) / 2,
 			20 + (parent.getHeight() - commons.infoEmpty.getHeight() - 38) / 2,
@@ -101,7 +102,7 @@ public class VideoScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		scrollDownTimer.stop();
 		scrollUpTimer.stop();
 	}
@@ -110,7 +111,7 @@ public class VideoScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		buttons.clear();
 		
 		scrollDownTimer = new Timer(500, new Act() {
@@ -226,93 +227,81 @@ public class VideoScreen extends ScreenBase {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
 	@Override
-	public void keyTyped(int key, int modifiers) {
-		if (key == KeyEvent.VK_ESCAPE) {
+	public boolean keyboard(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			playLabel.selected = false;
 			backLabel.selected = false;
 			commons.control.hideSecondary();
 		}
+		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
 	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		for (Button btn : buttons) {
-			if (btn.test(x, y, origin.x, origin.y)) {
-				if (!btn.mouseOver) {
-					btn.mouseOver = true;
-					btn.onEnter();
-					requestRepaint();
+	public boolean mouse(UIMouse e) {
+		boolean rep = false;
+		switch (e.type) {
+		case MOVE:
+			for (Button btn : buttons) {
+				if (btn.test(e.x, e.y, origin.x, origin.y)) {
+					if (!btn.mouseOver) {
+						btn.mouseOver = true;
+						btn.onEnter();
+						rep = true;
+					}
+				} else
+				if (btn.mouseOver || btn.pressed) {
+					btn.mouseOver = false;
+					btn.pressed = false;
+					btn.onLeave();
+					rep = true;
 				}
-			} else
-			if (btn.mouseOver || btn.pressed) {
-				btn.mouseOver = false;
-				btn.pressed = false;
-				btn.onLeave();
-				requestRepaint();
 			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		for (Button btn : buttons) {
-			if (btn.test(x, y, origin.x, origin.y)) {
-				btn.pressed = true;
-				btn.onPressed();
-				requestRepaint();
-			}
-		}
-		if (listRect.contains(x, y)) {
-			int idx = (y - listRect.y) / 20 + videoIndex;
-			if (idx < videos.size()) {
-				selectedVideo = videos.get(idx);
-				if (button == 3) {
-					commons.control.playVideos(selectedVideo.fullName);
+			break;
+		case DOWN:
+			for (Button btn : buttons) {
+				if (btn.test(e.x, e.y, origin.x, origin.y)) {
+					btn.pressed = true;
+					btn.onPressed();
+					rep = true;
 				}
-				requestRepaint();
 			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		for (Button btn : buttons) {
-			if (btn.pressed) {
-				btn.pressed = false;
-				if (btn.test(x, y, origin.x, origin.y)) {
-					btn.onReleased();
+			if (listRect.contains(e.x, e.y)) {
+				int idx = (e.y - listRect.y) / 20 + videoIndex;
+				if (idx < videos.size()) {
+					selectedVideo = videos.get(idx);
+					if (e.has(UIMouse.Button.RIGHT)) {
+						commons.control.playVideos(selectedVideo.fullName);
+					}
+					rep = true;
 				}
-				requestRepaint();
 			}
+			break;
+		case UP:
+			for (Button btn : buttons) {
+				if (btn.pressed) {
+					btn.pressed = false;
+					if (btn.test(e.x, e.y, origin.x, origin.y)) {
+						btn.onReleased();
+					}
+					rep = true;
+				}
+			}
+			break;
+		case WHEEL:
+			if (listRect.contains(e.x, e.y)) {
+				if (e.z < 0) {
+					doScrollUp(3);
+				} else {
+					doScrollDown(3);
+				}
+			}
+			break;
+		default:
 		}
+		return rep;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		if (listRect.contains(x, y)) {
-			if (direction < 0) {
-				doScrollUp(3);
-			} else {
-				doScrollDown(3);
-			}
-		}
-	}
 	/** 
 	 * Scoll the list up. 
 	 * @param amount the scroll amount
@@ -349,9 +338,6 @@ public class VideoScreen extends ScreenBase {
 		}
 		repaint();
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter() {
 		videos.clear();
@@ -379,21 +365,15 @@ public class VideoScreen extends ScreenBase {
 		adjustScrollButtons();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		// TODO Auto-generated method stub
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
-		doResize();
+	public void draw(Graphics2D g2) {
+		resize();
 		Composite cp = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
 		g2.drawImage(commons.infoEmpty, origin.x, origin.y, null);
@@ -429,11 +409,5 @@ public class VideoScreen extends ScreenBase {
 			btn.paintTo(g2, origin.x, origin.y);
 		}
 
-	}
-
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
 	}
 }

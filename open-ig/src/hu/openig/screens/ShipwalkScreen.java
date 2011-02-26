@@ -8,18 +8,20 @@
 
 package hu.openig.screens;
 
-import hu.openig.core.SwappableRenderer;
 import hu.openig.core.Act;
+import hu.openig.core.SwappableRenderer;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.TextRenderer;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.MouseEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -50,132 +52,97 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	final Rectangle origin = new Rectangle();
 	/** The action to call when the transition ends. */
 	public Act onCompleted;
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#doResize()
-	 */
 	@Override
-	public void doResize() {
+	public void onResize() {
 		origin.setBounds((parent.getWidth() - 640) / 2, 20 + (parent.getHeight() - 38 - 442) / 2, 640, 442);
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		if (video != null) {
 			video.stop();
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		// TODO Auto-generated method stub
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
 	@Override
-	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
-	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		WalkTransition prev = pointerTransition;
-		pointerTransition = null;
-		if (position != null) {
-			for (WalkTransition wt : position.transitions) {
-				if (wt.area.contains(x - origin.x, y - origin.y)) {
-					pointerTransition = wt;
-					break;
-				}
-			}
-		}
-		if (prev != pointerTransition) {
-			repaint();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		if (button == MouseEvent.BUTTON1) {
+	public boolean keyboard(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			if (videoMode) {
 				video.stop();
 				setNextPosition();
-				requestRepaint();
-			} else {
-				if (position != null) {
-					for (WalkTransition wt : position.transitions) {
-						if (wt.area.contains(x - origin.x, y - origin.y)) {
-							next = position.ship.positions.get(wt.to);
-							if (!wt.media.isEmpty()) {
-								startTransition(wt.media);
-							} else {
-								setNextPosition();
-								requestRepaint();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean mouse(UIMouse e) {
+		boolean rep = false;
+		switch (e.type) {
+		case MOVE:
+			WalkTransition prev = pointerTransition;
+			pointerTransition = null;
+			if (position != null) {
+				for (WalkTransition wt : position.transitions) {
+					if (wt.area.contains(e.x - origin.x, e.y - origin.y)) {
+						pointerTransition = wt;
+						break;
+					}
+				}
+			}
+			if (prev != pointerTransition) {
+				rep = true;
+			}
+			break;
+		case DOWN:
+			if (e.has(Button.LEFT)) {
+				if (videoMode) {
+					video.stop();
+					setNextPosition();
+					rep = true;
+				} else {
+					if (position != null) {
+						for (WalkTransition wt : position.transitions) {
+							if (wt.area.contains(e.x - origin.x, e.y - origin.y)) {
+								next = position.ship.positions.get(wt.to);
+								if (!wt.media.isEmpty()) {
+									startTransition(wt.media);
+								} else {
+									setNextPosition();
+									rep = true;
+								}
+								break;
 							}
-							break;
 						}
 					}
 				}
 			}
+			break;
+		default:
 		}
-
+		return rep;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter() {
-		doResize();
+		resize();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		// TODO Auto-generated method stub
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 		if (position != null) {
@@ -244,9 +211,6 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		repaint();
 	}
 
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-	}
 	/**
 	 * Start a transition playback video.
 	 * @param video the transition video

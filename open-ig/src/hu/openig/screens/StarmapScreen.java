@@ -13,6 +13,9 @@ import hu.openig.core.Act;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
 import hu.openig.render.TextRenderer;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
+import hu.openig.ui.UIMouse.Modifier;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -21,6 +24,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -175,7 +179,7 @@ public class StarmapScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#doResize()
 	 */
 	@Override
-	public void doResize() {
+	public void onResize() {
 		// TODO Auto-generated method stub
 
 	}
@@ -184,7 +188,7 @@ public class StarmapScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		rotationTimer.stop();
 	}
 
@@ -192,7 +196,7 @@ public class StarmapScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		rotationTimer = new Timer(75, new Act() {
 			@Override
 			public void act() {
@@ -287,144 +291,151 @@ public class StarmapScreen extends ScreenBase {
 		blinkCounter = (blinkCounter + 1) % 10;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
 	@Override
-	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-
+	public boolean keyboard(KeyEvent e) {
+		boolean rep = false;
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_UP:
+			pan(0, -30);
+			rep = true;
+			break;
+		case KeyEvent.VK_DOWN:
+			pan(0, 30);
+			rep = true;
+			break;
+		case KeyEvent.VK_LEFT:
+			pan(-30, 0);
+			rep = true;
+			break;
+		case KeyEvent.VK_RIGHT:
+			pan(30, 0);
+			rep = true;
+			break;
+		default:
+		}
+		return rep;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
 	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		if (panning) {
-			if (starmapWindow.contains(x, y)) {
-				int dx = x - lastX;
-				int dy = y - lastY;
-				
-				pan(dx, dy);
-				requestRepaint();
-				lastX = x;
-				lastY = y;
+	public boolean mouse(UIMouse e) {
+		boolean rep = false;
+		switch (e.type) {
+		case MOVE:
+		case DRAG:
+			if (panning) {
+				if (starmapWindow.contains(e.x, e.y)) {
+					int dx = e.x - lastX;
+					int dy = e.y - lastY;
+					
+					pan(dx, dy);
+					lastX = e.x;
+					lastY = e.y;
+				}
 			}
-		}
-		if (mouseDown) {
-			if (minimapVisible && minimapInnerRect.contains(x, y)) {
-				scrollMinimapTo(x - minimapInnerRect.x, y - minimapInnerRect.y);
-				requestRepaint();
+			if (mouseDown) {
+				if (minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
+					scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
+					rep = true;
+				}
+				if (pfSplitter && planetFleetSplitterRange.contains(e.x, e.y)) {
+					planetFleetSplitter = 1.0 * (e.y - planetFleetSplitterRange.y) / (planetFleetSplitterRange.height);
+					fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
+					planetsOffset = limitScrollBox(planetsOffset, planets.size(), planetsList.height, 10);
+					rep = true;
+				}
 			}
-			if (pfSplitter && planetFleetSplitterRange.contains(x, y)) {
-				planetFleetSplitter = 1.0 * (y - planetFleetSplitterRange.y) / (planetFleetSplitterRange.height);
-				fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
-				planetsOffset = limitScrollBox(planetsOffset, planets.size(), planetsList.height, 10);
-				requestRepaint();
+			break;
+		case DOWN:
+			if (e.has(Button.RIGHT)) {
+				panning = true;
+				lastX = e.x;
+				lastY = e.y;
 			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		if (isRightButton(button)) {
-			panning = true;
-			lastX = x;
-			lastY = y;
-		}
-		mouseDown = true;
-		if (minimapVisible && minimapInnerRect.contains(x, y)) {
-			scrollMinimapTo(x - minimapInnerRect.x, y - minimapInnerRect.y);
-			requestRepaint();
-		}
-		if (isLeftButton(button)) { 
-			if (starmapWindow.contains(x, y) && !isCtrl(modifiers) && !isShift(modifiers)) {
-				currentPlanet = getPlanetAt(x, y);
-				currentFleet = getFleetAt(x, y);
-				requestRepaint();
+			mouseDown = true;
+			if (minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
+				scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
+				rep = true;
+			}
+			if (e.has(Button.LEFT)) { 
+				if (starmapWindow.contains(e.x, e.y) 
+						&& !e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
+					currentPlanet = getPlanetAt(e.x, e.y);
+					currentFleet = getFleetAt(e.x, e.y);
+					rep = true;
+				} else
+				if (planetFleetSplitterRect.contains(e.x, e.y) && planetFleetSplitterRange.height > 0) {
+					pfSplitter = true;
+				}
+				if (rightPanelVisible) {
+					for (Button2 btn : rightPanelButtons) {
+						if (btn.containsPoint(e.x, e.y)) {
+							btn.down = true;
+							rep = true;
+							break;
+						}
+					}
+					if (planetsList.contains(e.x, e.y)) {
+						int idx = planetsOffset + (e.y - planetsList.y) / 10;
+						if (idx < planets.size()) {
+							currentPlanet = planets.get(idx);
+						}
+					}
+					if (fleetsList.contains(e.x, e.y)) {
+						int idx = fleetsOffset + (e.y - fleetsList.y) / 10;
+						if (idx < fleets.size()) {
+							currentFleet = fleets.get(idx);
+						}
+					}
+				}
+			}
+			break;
+		case UP:
+			panning = false;
+			mouseDown = false;
+			pfSplitter = false;
+			for (Button2 btn : rightPanelButtons) {
+				if (btn.containsPoint(e.x, e.y)) {
+					btn.click();
+					rep = true;
+				}
+				if (btn.down) {
+					btn.down = false;
+					rep = true;
+				}
+			}
+			break;
+		case WHEEL:
+			if (e.has(Modifier.CTRL) && starmapWindow.contains(e.x, e.y)) {
+				if (e.z < 0) {
+					doZoomIn(e.x, e.y);
+					rep = true;
+				} else {
+					doZoomOut(e.x, e.y);
+					rep = true;
+				}
 			} else
-			if (planetFleetSplitterRect.contains(x, y) && planetFleetSplitterRange.height > 0) {
-				pfSplitter = true;
+			if (fleetsList.contains(e.x, e.y)) {
+				if (e.z < 0) {
+					fleetsOffset--;
+				} else {
+					fleetsOffset++;
+				}
+				fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
+			} else
+			if (planetsList.contains(e.x, e.y)) {
+				if (e.z < 0) {
+					planetsOffset--;
+				} else {
+					planetsOffset++;
+				}
+				planetsOffset = limitScrollBox(planetsOffset, planets.size(), planetsList.height, 10);
 			}
-			if (rightPanelVisible) {
-				for (Button2 btn : rightPanelButtons) {
-					if (btn.containsPoint(x, y)) {
-						btn.down = true;
-						requestRepaint();
-						break;
-					}
-				}
-				if (planetsList.contains(x, y)) {
-					int idx = planetsOffset + (y - planetsList.y) / 10;
-					if (idx < planets.size()) {
-						currentPlanet = planets.get(idx);
-					}
-				}
-				if (fleetsList.contains(x, y)) {
-					int idx = fleetsOffset + (y - fleetsList.y) / 10;
-					if (idx < fleets.size()) {
-						currentFleet = fleets.get(idx);
-					}
-				}
-			}
+			break;
+		default:
 		}
+		return rep;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		panning = false;
-		mouseDown = false;
-		pfSplitter = false;
-		for (Button2 btn : rightPanelButtons) {
-			if (btn.containsPoint(x, y)) {
-				btn.click();
-				requestRepaint();
-			}
-			if (btn.down) {
-				btn.down = false;
-				requestRepaint();
-			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		if (isCtrl(modifiers) && starmapWindow.contains(x, y)) {
-			if (direction < 0) {
-				doZoomIn(x, y);
-				requestRepaint();
-			} else {
-				doZoomOut(x, y);
-				requestRepaint();
-			}
-		} else
-		if (fleetsList.contains(x, y)) {
-			if (direction < 0) {
-				fleetsOffset--;
-			} else {
-				fleetsOffset++;
-			}
-			fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
-		} else
-		if (planetsList.contains(x, y)) {
-			if (direction < 0) {
-				planetsOffset--;
-			} else {
-				planetsOffset++;
-			}
-			planetsOffset = limitScrollBox(planetsOffset, planets.size(), planetsList.height, 10);
-		}
-	}
 	/** Button with normal, pressed and disabled states. */
 	class Button2 {
 		/** The X coordinate. */
@@ -539,10 +550,10 @@ public class StarmapScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
 	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, getSwingWidth(), getHeight());
+		g2.fillRect(0, 0, width, height);
 
 		computeRectangles();
 //		// leave space for the status bars
@@ -719,21 +730,13 @@ public class StarmapScreen extends ScreenBase {
 			}
 			g2.setClip(defaultClip);
 		}
-//		long frame = System.nanoTime() - fps;
-//		fps = System.nanoTime();
-//		commons.text.paintTo(g2, 10, 3, 14, TextRenderer.RED, getWidth() + " x " + getHeight() + " " + language + " Repaint/Seconds: " + String.format("%.3f", (1E9 / frame)));
-	}
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
 	}
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
 	void computeRectangles() {
 		starmapWindow.x = 0;
 		starmapWindow.y = 20;
-		starmapWindow.width = getSwingWidth();
-		starmapWindow.height = getHeight() - 37;
+		starmapWindow.width = width;
+		starmapWindow.height = height - 37;
 		if (scrollbarsVisible) {
 			starmapWindow.width -= commons.starmap.vScrollFill.getWidth();
 			starmapWindow.height -= commons.starmap.hScrollFill.getHeight();
@@ -759,8 +762,8 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 
-		minimapRect.x = getSwingWidth() - commons.starmap.minimap.getWidth();
-		minimapRect.y = getHeight() - commons.starmap.minimap.getHeight() - 17;
+		minimapRect.x = width - commons.starmap.minimap.getWidth();
+		minimapRect.y = height - commons.starmap.minimap.getHeight() - 17;
 		minimapRect.width = commons.starmap.minimap.getWidth();
 		minimapRect.height = commons.starmap.minimap.getHeight();
 
@@ -794,7 +797,7 @@ public class StarmapScreen extends ScreenBase {
 		rightPanel.height = starmapWindow.height - saveY;
 
 		bottomPanel.x = starmapWindow.x;
-		bottomPanel.y = getHeight() - 18 - commons.starmap.infoFill.getHeight();
+		bottomPanel.y = height - 18 - commons.starmap.infoFill.getHeight();
 		bottomPanel.width = starmapWindow.width - saveX;
 		bottomPanel.height = commons.starmap.infoFill.getHeight();
 
@@ -888,8 +891,8 @@ public class StarmapScreen extends ScreenBase {
 		
 		// TODO fleet and planet listings
 		// ..............................................................
-		minimapRect.x = getSwingWidth() - commons.starmap.minimap.getWidth();
-		minimapRect.y = getHeight() - commons.starmap.minimap.getHeight() - 17;
+		minimapRect.x = width - commons.starmap.minimap.getWidth();
+		minimapRect.y = height - commons.starmap.minimap.getHeight() - 17;
 		minimapRect.width = commons.starmap.minimap.getWidth();
 		minimapRect.height = commons.starmap.minimap.getHeight();
 //		if ((!rightPanelVisible || ! bottomPanelVisible)) {

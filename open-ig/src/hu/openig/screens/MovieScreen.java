@@ -8,10 +8,11 @@
 
 package hu.openig.screens;
 
-import hu.openig.core.SwappableRenderer;
 import hu.openig.core.Act;
+import hu.openig.core.SwappableRenderer;
 import hu.openig.render.TextRenderer;
 import hu.openig.screens.MediaPlayer.LabelEvent;
+import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -96,58 +97,31 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 			playbackFinished.act();
 		}
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#doResize()
-	 */
 	@Override
-	public void doResize() {
+	public void onResize() {
 		movieRect.setBounds((parent.getWidth() - 640) / 2, (parent.getHeight() - 480) / 2, 640, 480);
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		mediaQueue.clear();
 		stopPlayback();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
 	@Override
-	public void initialize() {
-		// TODO Auto-generated method stub
+	public void onInitialize() {
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
 	@Override
-	public void keyTyped(int key, int modifiers) {
+	public boolean keyboard(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if (key == KeyEvent.VK_ESCAPE) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			stopPlayback();
 		}
+		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
-	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-	}
 	/** Stop the current playback. */
 	protected void stopPlayback() {
 		if (player != null) {
@@ -156,47 +130,27 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		label = null;
 		repaint();
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
 	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		if (button == 1) {
+	public boolean mouse(UIMouse e) {
+		if (e.buttons.contains(UIMouse.Button.LEFT) && e.type == UIMouse.Type.UP) {
 			stopPlayback();
 		}
+		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter() {
 		playNext();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 		onResize();
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
@@ -265,11 +219,5 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 			swapLock.unlock();
 		}
 		repaint();
-	}
-
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
 	}
 }

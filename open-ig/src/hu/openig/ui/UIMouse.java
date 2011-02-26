@@ -195,4 +195,28 @@ public class UIMouse {
 		m.y = pc.y - pm.y;
 		return m;
 	}
+	/**
+	 * Convenience method to check if the given button is contained by this event.
+	 * @param button the button
+	 * @return the event contains this button
+	 */
+	public boolean has(Button button) {
+		return buttons.contains(button);
+	}
+	/**
+	 * Convenience method to test if this event has the given type.
+	 * @param type the type to test
+	 * @return true if the type equal
+	 */
+	public boolean has(Type type) {
+		return this.type == type;
+	}
+	/**
+	 * Convenience method to test if the given modifier is contained by this event.
+	 * @param modifier the modifier
+	 * @return true if the modifier is present in this event
+	 */
+	public boolean has(Modifier modifier) {
+		return modifiers.contains(modifier);
+	}
 }

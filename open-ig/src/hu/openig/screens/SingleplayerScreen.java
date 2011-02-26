@@ -14,6 +14,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.World;
+import hu.openig.ui.UIMouse;
 import hu.openig.utils.XElement;
 
 import java.awt.AlphaComposite;
@@ -54,11 +55,8 @@ public class SingleplayerScreen extends ScreenBase {
 	final Rectangle difficultyRect = new Rectangle();
 	/** The difficulty index. */
 	int difficulty;
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#doResize()
-	 */
 	@Override
-	public void doResize() {
+	public void onResize() {
 		origin.setBounds((parent.getWidth() - 640) / 2, (parent.getHeight() - 480) / 2, 640, 480);
 
 		int w = origin.width / 2;
@@ -88,7 +86,7 @@ public class SingleplayerScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		// TODO Auto-generated method stub
 
 	}
@@ -97,7 +95,7 @@ public class SingleplayerScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		buttons.clear();
 		playLabel = new ClickLabel();
 		playLabel.visible = true;
@@ -234,98 +232,77 @@ public class SingleplayerScreen extends ScreenBase {
 			}, selectedDefinition.intro);
 		}
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
 	@Override
-	public void keyTyped(int key, int modifiers) {
-		if (key == KeyEvent.VK_ESCAPE) {
+	public boolean keyboard(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			playLabel.selected = false;
 			backLabel.selected = false;
 			commons.control.displayPrimary(commons.screens.mainmenu);
 		}
+		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
 	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		for (Button btn : buttons) {
-			if (btn.test(x, y, origin.x, origin.y)) {
-				if (!btn.mouseOver) {
-					btn.mouseOver = true;
-					btn.onEnter();
-					requestRepaint();
+	public boolean mouse(UIMouse e) {
+		boolean rep = false;
+		switch (e.type) {
+		case MOVE:
+			for (Button btn : buttons) {
+				if (btn.test(e.x, e.y, origin.x, origin.y)) {
+					if (!btn.mouseOver) {
+						btn.mouseOver = true;
+						btn.onEnter();
+						rep = true;
+					}
+				} else
+				if (btn.mouseOver || btn.pressed) {
+					btn.mouseOver = false;
+					btn.pressed = false;
+					btn.onLeave();
+					rep = true;
 				}
-			} else
-			if (btn.mouseOver || btn.pressed) {
-				btn.mouseOver = false;
-				btn.pressed = false;
-				btn.onLeave();
-				requestRepaint();
 			}
-		}
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
-		for (Button btn : buttons) {
-			if (btn.test(x, y, origin.x, origin.y)) {
-				btn.pressed = true;
-				btn.onPressed();
-				requestRepaint();
-			}
-		}
-		if (campaignList.contains(x, y)) {
-			int idx = (y - campaignList.y) / 20;
-			if (idx < campaigns.size()) {
-				selectedDefinition = campaigns.get(idx);
-				requestRepaint();
-			}
-		}
-	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.ScreenBase#mouseDoubleClicked(int, int, int, int)
-	 */
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		if (campaignList.contains(x, y)) {
-			int idx = (y - campaignList.y) / 20;
-			if (idx < campaigns.size()) {
-				selectedDefinition = campaigns.get(idx);
-				doStartGame();
-				requestRepaint();
-			}
-		}
-	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		for (Button btn : buttons) {
-			if (btn.pressed) {
-				btn.pressed = false;
-				if (btn.test(x, y, origin.x, origin.y)) {
-					btn.onReleased();
+			break;
+		case DOWN:
+			for (Button btn : buttons) {
+				if (btn.test(e.x, e.y, origin.x, origin.y)) {
+					btn.pressed = true;
+					btn.onPressed();
+					rep = true;
 				}
-				requestRepaint();
 			}
+			if (campaignList.contains(e.x, e.y)) {
+				int idx = (e.y - campaignList.y) / 20;
+				if (idx < campaigns.size()) {
+					selectedDefinition = campaigns.get(idx);
+					rep = true;
+				}
+			}
+			break;
+		case DOUBLE_CLICK:
+			if (campaignList.contains(e.x, e.y)) {
+				int idx = (e.y - campaignList.y) / 20;
+				if (idx < campaigns.size()) {
+					selectedDefinition = campaigns.get(idx);
+					doStartGame();
+					rep = true;
+				}
+			}
+			break;
+		case UP:
+			for (Button btn : buttons) {
+				if (btn.pressed) {
+					btn.pressed = false;
+					if (btn.test(e.x, e.y, origin.x, origin.y)) {
+						btn.onReleased();
+					}
+					rep = true;
+				}
+			}
+			break;
+		default:
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
+		return rep;
 	}
 	/** The random used for background selection. */
 	final Random rnd = new Random();
@@ -341,9 +318,6 @@ public class SingleplayerScreen extends ScreenBase {
 	final Rectangle campaignList = new Rectangle();
 	/** The definition. */
 	final Rectangle descriptionRect = new Rectangle();
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter() {
 		background = commons.background.difficulty[rnd.nextInt(commons.background.difficulty.length)];
@@ -366,20 +340,14 @@ public class SingleplayerScreen extends ScreenBase {
 		difficultyLeft.enabled = difficulty > 0;
 		difficultyRight.enabled = difficulty < Difficulty.values().length - 1;
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		// TODO Auto-generated method stub
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 		g2.drawImage(background, origin.x, origin.y, null);

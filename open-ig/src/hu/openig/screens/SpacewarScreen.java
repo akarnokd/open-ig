@@ -9,6 +9,8 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -232,7 +234,7 @@ public class SpacewarScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
 	@Override
-	public void finish() {
+	public void onFinish() {
 		buttonTimer.stop();
 	}
 	/** The group for the main buttons. */
@@ -259,7 +261,7 @@ public class SpacewarScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
 	@Override
-	public void initialize() {
+	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
 		mainCommands.add(new ThreePhaseButton(33, 24, commons.spacewar.stop));
 		mainCommands.add(new ThreePhaseButton(33 + 72, 24, commons.spacewar.move));
@@ -321,210 +323,169 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		repaint();
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
+
 	@Override
-	public void keyTyped(int key, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
-	@Override
-	public void mouseMoved(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mousePressed(int, int, int, int)
-	 */
-	@Override
-	public void mousePressed(int button, int x, int y, int modifiers) {
+	public boolean mouse(UIMouse e) {
 		boolean needRepaint = false;
-		// the command panel
-		if (x < commons.spacewar.commands.getWidth() && y < commons.spacewar.commands.getHeight() + 20 + commons.spacewar.frameTopLeft.getHeight()) {
-			for (ThreePhaseButton btn : mainCommands) {
-				if (btn.test(x, y)) {
-					btn.selected = true;
-					btn.pressed = true;
-					needRepaint = true;
-					for (ThreePhaseButton btn2 : mainCommands) {
-						if (btn != btn2) {
-							btn2.pressed = false;
-							btn2.selected = false;
+		switch (e.type) {
+		case DOWN:
+			if (e.x < commons.spacewar.commands.getWidth() && e.y < commons.spacewar.commands.getHeight() + 20 + commons.spacewar.frameTopLeft.getHeight()) {
+				for (ThreePhaseButton btn : mainCommands) {
+					if (btn.test(e.x, e.y)) {
+						btn.selected = true;
+						btn.pressed = true;
+						needRepaint = true;
+						for (ThreePhaseButton btn2 : mainCommands) {
+							if (btn != btn2) {
+								btn2.pressed = false;
+								btn2.selected = false;
+							}
 						}
+						btn.invoke();
+						break;
 					}
-					btn.invoke();
+				}
+				for (ThreePhaseButton btn : viewCommands) {
+					if (btn.test(e.x, e.y)) {
+						btn.selected = !btn.selected;
+						btn.pressed = true;
+						needRepaint = true;
+						btn.invoke();
+						break;
+					}
+				}
+				if (zoom.test(e.x, e.y)) {
+					if (e.has(Button.LEFT)) {
+						zoom.pressed = true;
+						needRepaint = true;
+						doZoomIn();
+					} else
+					if (e.has(Button.RIGHT)) {
+						zoom.pressed = true;
+						needRepaint = true;
+						doZoomOut();
+					}
+				}
+				if (pause.test(e.x, e.y)) {
+					if (!pause.pressed) {
+						pause.pressed = true;
+						needRepaint = true;
+						doPause();
+					} else {
+						unpause = true;
+					}
+				}
+				if (retreat.test(e.x, e.y)) {
+					retreat.pressed = true;
+					needRepaint = true;
+				}
+				if (confirmRetreat.test(e.x, e.y)) {
+					confirmRetreat.pressed = true;
+					needRepaint = true;
+				}
+				if (stopRetreat.test(e.x, e.y)) {
+					stopRetreat.pressed = true;
+					needRepaint = true;
+				}
+			}
+			if (e.x < leftPanel.x && e.y > leftPanel.y) {
+				for (AnimatedRadioButton arb : leftButtons) {
+					if (arb.test(e.x, e.y, leftPanel.x - 28, leftPanel.y + 1) 
+							&& !arb.selected) {
+						arb.selected = true;
+						arb.animationIndex = 0;
+						for (AnimatedRadioButton arb2 : leftButtons) {
+							if (arb != arb2) {
+								arb2.selected = false;
+							}
+						}
+						arb.invoke();
+						needRepaint = true;
+						break;
+					}
+				}
+			}
+			if (e.x > rightPanel.x && e.y > rightPanel.y) {
+				for (AnimatedRadioButton arb : rightButtons) {
+					if (arb.test(e.x, e.y, rightPanel.x + rightPanel.width + 5, rightPanel.y + 1) && !arb.selected) {
+						arb.selected = true;
+						arb.animationIndex = 0;
+						for (AnimatedRadioButton arb2 : rightButtons) {
+							if (arb != arb2) {
+								arb2.selected = false;
+							}
+						}
+						arb.invoke();
+						needRepaint = true;
+						break;
+					}
+				}
+			}
+			break;
+		case UP:
+			for (ThreePhaseButton btn : mainCommands) {
+				if (btn.pressed) {
+					btn.pressed = false;
+					needRepaint = true;
 					break;
 				}
 			}
 			for (ThreePhaseButton btn : viewCommands) {
-				if (btn.test(x, y)) {
-					btn.selected = !btn.selected;
-					btn.pressed = true;
+				if (btn.pressed) {
+					btn.pressed = false;
 					needRepaint = true;
-					btn.invoke();
 					break;
 				}
 			}
-			if (zoom.test(x, y)) {
-				if (button == 1) {
-					zoom.pressed = true;
+			if (zoom.pressed) {
+				zoom.pressed = false;
+				needRepaint = true;
+			}
+			if (pause.test(e.x, e.y)) {
+				if (unpause) {
+					unpause = false;
+					pause.pressed = false;
 					needRepaint = true;
-					doZoomIn();
-				} else
-				if (button == 3) {
-					zoom.pressed = true;
-					needRepaint = true;
-					doZoomOut();
+					doUnpause();
 				}
 			}
-			if (pause.test(x, y)) {
-				if (!pause.pressed) {
-					pause.pressed = true;
-					needRepaint = true;
-					doPause();
-				} else {
-					unpause = true;
+			if (retreat.pressed) {
+				retreat.pressed = false;
+				if (retreat.test(e.x, e.y)) {
+					doRetreat();
 				}
-			}
-			if (retreat.test(x, y)) {
-				retreat.pressed = true;
 				needRepaint = true;
 			}
-			if (confirmRetreat.test(x, y)) {
-				confirmRetreat.pressed = true;
-				needRepaint = true;
-			}
-			if (stopRetreat.test(x, y)) {
-				stopRetreat.pressed = true;
-				needRepaint = true;
-			}
-		}
-		if (x < leftPanel.x && y > leftPanel.y) {
-			for (AnimatedRadioButton arb : leftButtons) {
-				if (arb.test(x, y, leftPanel.x - 28, leftPanel.y + 1) && !arb.selected) {
-					arb.selected = true;
-					arb.animationIndex = 0;
-					for (AnimatedRadioButton arb2 : leftButtons) {
-						if (arb != arb2) {
-							arb2.selected = false;
-						}
+			if (confirmRetreat.pressed) {
+				confirmRetreat.pressed = false;
+				if (confirmRetreat.test(e.x, e.y)) {
+					if (e.has(Button.LEFT)) {
+						doConfirmRetreat();
+					} else
+					if (e.has(Button.RIGHT)) {
+						doUnconfirmRetreat();
 					}
-					arb.invoke();
-					needRepaint = true;
-					break;
 				}
+				needRepaint = true;
 			}
-		}
-		if (x > rightPanel.x && y > rightPanel.y) {
-			for (AnimatedRadioButton arb : rightButtons) {
-				if (arb.test(x, y, rightPanel.x + rightPanel.width + 5, rightPanel.y + 1) && !arb.selected) {
-					arb.selected = true;
-					arb.animationIndex = 0;
-					for (AnimatedRadioButton arb2 : rightButtons) {
-						if (arb != arb2) {
-							arb2.selected = false;
-						}
-					}
-					arb.invoke();
-					needRepaint = true;
-					break;
+			if (stopRetreat.pressed) {
+				stopRetreat.pressed = false;
+				if (stopRetreat.test(e.x, e.y)) {
+					doStopRetreat();
 				}
+				needRepaint = true;
 			}
+			break;
+		default:
 		}
-		if (needRepaint) {
-			repaint();
-		}
+		return needRepaint;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
-	@Override
-	public void mouseReleased(int button, int x, int y, int modifiers) {
-		boolean needRepaint = false;
-		for (ThreePhaseButton btn : mainCommands) {
-			if (btn.pressed) {
-				btn.pressed = false;
-				needRepaint = true;
-				break;
-			}
-		}
-		for (ThreePhaseButton btn : viewCommands) {
-			if (btn.pressed) {
-				btn.pressed = false;
-				needRepaint = true;
-				break;
-			}
-		}
-		if (zoom.pressed) {
-			zoom.pressed = false;
-			needRepaint = true;
-		}
-		if (pause.test(x, y)) {
-			if (unpause) {
-				unpause = false;
-				pause.pressed = false;
-				needRepaint = true;
-				doUnpause();
-			}
-		}
-		if (retreat.pressed) {
-			retreat.pressed = false;
-			if (retreat.test(x, y)) {
-				doRetreat();
-			}
-			needRepaint = true;
-		}
-		if (confirmRetreat.pressed) {
-			confirmRetreat.pressed = false;
-			if (confirmRetreat.test(x, y)) {
-				if (button == 1) {
-					doConfirmRetreat();
-				} else
-				if (button == 3) {
-					doUnconfirmRetreat();
-				}
-			}
-			needRepaint = true;
-		}
-		if (stopRetreat.pressed) {
-			stopRetreat.pressed = false;
-			if (stopRetreat.test(x, y)) {
-				doStopRetreat();
-			}
-			needRepaint = true;
-		}
-		if (needRepaint) {
-			repaint();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseScrolled(int, int, int, int)
-	 */
-	@Override
-	public void mouseScrolled(int direction, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter() {
 		buttonTimer.start();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		buttonTimer.stop();
@@ -537,11 +498,8 @@ public class SpacewarScreen extends ScreenBase {
 	Rectangle leftPanel = new Rectangle();
 	/** The right inner panel. */
 	Rectangle rightPanel = new Rectangle();
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onResize()
-	 */
 	@Override
-	public void doResize() {
+	public void onResize() {
 		// TODO Auto-generated method stub
 		minimap.setBounds(62, 168 + 20, 110, 73);
 		mainmap.setBounds(175, 23, parent.getWidth() - 3 - commons.spacewar.commands.getWidth(),
@@ -550,11 +508,8 @@ public class SpacewarScreen extends ScreenBase {
 		rightPanel.setBounds(parent.getWidth() - 33 - 286, parent.getHeight() - 18 - 3 - 195, 286, 195);
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
-	public void paintTo(Graphics2D g2) {
+	public void draw(Graphics2D g2) {
 		onResize();
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
@@ -658,10 +613,5 @@ public class SpacewarScreen extends ScreenBase {
 		for (ThreePhaseButton btn : mainCommands) {
 			btn.disabled = false;
 		}
-	}
-	@Override
-	public void mouseDoubleClicked(int button, int x, int y, int modifiers) {
-		// TODO Auto-generated method stub
-		
 	}
 }
