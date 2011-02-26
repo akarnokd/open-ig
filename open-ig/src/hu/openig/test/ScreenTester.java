@@ -48,6 +48,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -159,7 +161,17 @@ public class ScreenTester extends JFrame implements GameControls {
 		parent.addMouseListener(ma);
 		parent.addMouseMotionListener(ma);
 		parent.addMouseWheelListener(ma);
-		
+		parent.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				ScreenBase sb = screen;
+				if (sb != null) {
+					if (sb.keyboard(e)) {
+						repaint();
+					}
+				}
+			}
+		});
 		doReload();
 	}
 	/**
@@ -172,42 +184,54 @@ public class ScreenTester extends JFrame implements GameControls {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mouse(UIMouse.from(e));
+					if (sb.mouse(UIMouse.from(e))) {
+						repaint();
+					}
 				}
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null && e.getClickCount() >= 2) {
-					sb.mouse(UIMouse.from(e));
+					if (sb.mouse(UIMouse.from(e))) {
+						repaint();
+					}
 				}
 			}
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mouse(UIMouse.from(e));
+					if (sb.mouse(UIMouse.from(e))) {
+						repaint();
+					}
 				}
 			}
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mouse(UIMouse.from(e));
+					if (sb.mouse(UIMouse.from(e))) {
+						repaint();
+					}
 				}
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mouse(UIMouse.from(e));
+					if (sb.mouse(UIMouse.from(e))) {
+						repaint();
+					}
 				}
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				ScreenBase sb = screen;
 				if (sb != null) {
-					sb.mouse(UIMouse.from(e));
+					if (sb.mouse(UIMouse.from(e))) {
+						repaint();
+					}
 				}
 			}
 		};
@@ -306,6 +330,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				try {
 					screen = clazz.getConstructor().newInstance();
 					screen.initialize(commons, parent);
+					screen.resize();
 					screen.onEnter();
 					repaint();
 					onScreen(clazz.getSimpleName(), screen);
