@@ -15,8 +15,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 /**
- * @author karnok, 2010.01.15.
- * @version $Revision 1.0$
+ * A clickable label printed by the original IG font.
+ * Its size is computed from the contents.
+ * @author akarnokd, 2010.01.15.
  */
 public class ClickLabel extends Button {
 	/** The label. */

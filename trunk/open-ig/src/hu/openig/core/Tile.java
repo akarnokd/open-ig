@@ -13,8 +13,7 @@ import java.util.Arrays;
 
 /**
  * A tiled object.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.07.
  */
 public class Tile {
 	/** The tile width, points top-right, e.g. in &lt;> the length of the //. */

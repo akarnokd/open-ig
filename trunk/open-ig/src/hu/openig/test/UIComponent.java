@@ -14,7 +14,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 
 /**
- * @author karnok, 2011.02.25.
+ * @author akarnokd, 2011.02.25.
  */
 public class UIComponent {
 	/** The relative X placement to the parent. */

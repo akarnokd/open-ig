@@ -13,8 +13,7 @@ import java.awt.event.ActionListener;
 
 /**
  * An ActionListener implementation with short method names when the ActionEvent is not necessary.
- * @author karnok, 2009.09.23.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.09.23.
  */
 public abstract class Act implements ActionListener {
 	/**

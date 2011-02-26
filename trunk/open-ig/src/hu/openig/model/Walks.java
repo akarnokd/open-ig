@@ -30,8 +30,9 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * @author karnok, 2009.10.09.
- * @version $Revision 1.0$
+ * The main record that stores various ship types
+ * and their available walking routes and stages.
+ * @author akarnokd, 2009.10.09.
  */
 public class Walks {
 	/** The map of ships to be walked. */

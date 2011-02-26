@@ -18,8 +18,7 @@ import java.awt.image.BufferedImage;
  * init() method should be called before any attempt to use the getBackbuffer() method.
  * The renderer and controller should use another means of communicating how to render the
  * supplied images (e.g. scaling, positioning).
- * @author karnokd, 2009.01.19.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.01.19.
  */
 public interface SwappableRenderer {
 	/**

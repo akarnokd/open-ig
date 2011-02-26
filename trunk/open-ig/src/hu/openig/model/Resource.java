@@ -9,8 +9,7 @@ package hu.openig.model;
 
 /**
  * The required or produced resource definition.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.07.
  */
 public class Resource {
 	/** The resource type. */

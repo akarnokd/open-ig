@@ -28,8 +28,7 @@ import java.util.concurrent.Future;
 
 /**
  * Test graphics loading.
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.09.
  */
 public final class TestGFXLoad {
 	/** Private constructor. */

@@ -9,8 +9,8 @@
 package hu.openig.launcher;
 
 /**
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * The download prgress tracker and speed computation.
+ * @author akarnokd, 2010.10.31.
  */
 public class DownloadProgress {
 	/** The total amount of bytes to download. */

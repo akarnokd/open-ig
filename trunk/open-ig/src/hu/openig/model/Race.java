@@ -11,8 +11,8 @@ package hu.openig.model;
 import java.awt.image.BufferedImage;
 
 /**
- * @author karnok, 2009.10.25.
- * @version $Revision 1.0$
+ * A race description record.
+ * @author akarnokd, 2009.10.25.
  */
 public class Race {
 	/** The picture for the database screen. */

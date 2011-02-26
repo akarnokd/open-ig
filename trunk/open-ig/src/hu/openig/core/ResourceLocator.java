@@ -31,8 +31,9 @@ import javax.imageio.ImageIO;
 import javax.xml.stream.XMLStreamException;
 
 /**
- * @author karnokd, 2009.09.23.
- * @version $Revision 1.0$
+ * The resource manager and locator class to
+ * access resources by type and virtual path.
+ * @author akarnokd, 2009.09.23.
  */
 public class ResourceLocator {
 	/** The directories and ZIP files that contain resources, order is inportant. */
@@ -53,8 +54,7 @@ public class ResourceLocator {
 	}
 	/**
 	 * A concrete resource place.
-	 * @author karnokd, 2009.09.23.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.09.23.
 	 */
 	public class ResourcePlace {
 		/** The container of this resource: A directory or a ZIP file. */

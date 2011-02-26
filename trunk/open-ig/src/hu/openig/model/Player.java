@@ -17,8 +17,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author karnok, 2009.10.25.
- * @version $Revision 1.0$
+ * The object describing the player's status and associated
+ * objects.
+ * @author akarnokd, 2009.10.25.
  */
 public class Player {
 	/** The player's name. */

@@ -12,8 +12,8 @@ import java.awt.Graphics2D;
 
 
 /**
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * The equipment screen.
+ * @author akarnokd, 2010.01.11.
  */
 public class EquipmentScreen extends ScreenBase {
 

@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author karnok, 2009.10.09.
- * @version $Revision 1.0$
+ * Record describing a particular ship walk standing positions.
+ * @author akarnokd, 2009.10.09.
  */
 public class WalkShip {
 	/** The ship walk level. */

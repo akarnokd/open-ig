@@ -52,14 +52,14 @@ import javax.swing.SwingWorker;
 import javax.swing.GroupLayout.Alignment;
 
 /**
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * The application manager or launcher program.
+ * @author akarnokd, 2010.10.31.
  */
 public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -5640883678496406236L;
 	/** The launcher's version. */
-	static final String VERSION = "0.1";
+	static final String VERSION = "0.11";
 	/** The list of stuff. */
 	JPanel listPanel;
 	/** The exit buttom. */
@@ -537,6 +537,7 @@ public class Launcher extends JFrame {
 	}
 	/** Perform the exit. */
 	void doExit() {
+		saveInstalledVersions();
 		dispose();
 	}
 	/** Changle language. */

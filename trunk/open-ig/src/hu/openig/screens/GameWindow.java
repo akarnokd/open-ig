@@ -41,16 +41,14 @@ import javax.swing.JFrame;
 
 /**
  * The base game window which handles paint and input events.
- * @author karnokd, 2009.12.23.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.12.23.
  */
 public class GameWindow extends JFrame implements GameControls {
 	/**	 */
 	private static final long serialVersionUID = 4521036079508511968L;
 	/** 
 	 * The component that renders the primary and secondary screens into the current window.
-	 * @author karnokd, 2009.12.23.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.12.23.
 	 */
 	class ScreenRenderer extends JComponent {
 		/** */
@@ -358,8 +356,7 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	/**
 	 * The common key manager.
-	 * @author karnokd, 2009.12.24.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.12.24.
 	 */
 	class KeyEvents extends KeyAdapter {
 		@Override
@@ -478,8 +475,7 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	/**
 	 * The common mouse action manager.
-	 * @author karnokd, 2009.12.23.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.12.23.
 	 */
 	class MouseActions extends MouseAdapter {
 		@Override

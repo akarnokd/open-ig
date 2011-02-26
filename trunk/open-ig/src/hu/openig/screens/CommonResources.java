@@ -43,8 +43,7 @@ import javax.swing.JFrame;
 
 /**
  * Contains all common ang game specific graphical and textual resources.
- * @author karnokd, 2009.12.25.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.12.25.
  */
 public class CommonResources {
 	/** The main configuration object. */

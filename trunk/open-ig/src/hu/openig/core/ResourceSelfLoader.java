@@ -12,8 +12,7 @@ package hu.openig.core;
 /**
  * Indicator interface, that the object loads some of its resources.
  * Might be used in conjunction with the annotated resources.
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.09.
  */
 public interface ResourceSelfLoader {
 	/**

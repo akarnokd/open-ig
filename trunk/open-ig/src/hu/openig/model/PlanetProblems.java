@@ -10,8 +10,7 @@ package hu.openig.model;
 
 /**
  * The enumeration for displaying planetary problems on the starmap and other screens.
- * @author karnokd, 2010.08.22.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.08.22.
  */
 public enum PlanetProblems {
 	/** Not enough living space. */

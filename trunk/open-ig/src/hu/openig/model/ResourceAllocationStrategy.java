@@ -10,8 +10,7 @@ package hu.openig.model;
 
 /**
  * The resource allocation strategy enumeration.
- * @author karnok, 2010.09.15.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.09.15.
  */
 public enum ResourceAllocationStrategy {
 	/** Zero strategy: set every allocation to zero. */

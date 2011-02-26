@@ -12,8 +12,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * The game definition used on the single player screen.
- * @author karnok, 2010.01.16.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.16.
  */
 public class GameDefinition {
 	/**

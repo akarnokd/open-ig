@@ -16,8 +16,7 @@ import java.util.Map;
 
 /**
  * The definition of the bridge screen and messages.
- * @author karnok, 2010.01.17.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.17.
  */
 public class Bridge {
 	/** The level specific graphics. */

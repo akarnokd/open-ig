@@ -13,8 +13,7 @@ import java.awt.Graphics2D;
 
 /**
  * Displays and handles the status bar screen.
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.11.
  */
 public class StatusbarScreen extends ScreenBase {
 

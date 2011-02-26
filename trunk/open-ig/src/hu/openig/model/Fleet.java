@@ -12,8 +12,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * A fleet.
- * @author karnokd, 2010.01.07.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.07.
  */
 public class Fleet {
 	/** The owner of the fleet. */

@@ -12,8 +12,7 @@ import java.awt.Graphics2D;
 
 /**
  * A base class for common Imperium Galactica.
- * @author karnok, 2010.01.14.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.14.
  */
 public abstract class Button {
 	/** Is the button enabled. */

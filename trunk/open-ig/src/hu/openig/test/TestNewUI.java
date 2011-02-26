@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * Test the event response of the new UI mini framework.
- * @author karnok, 2011.02.25.
+ * @author akarnokd, 2011.02.25.
  */
 public class TestNewUI extends JFrame {
 	/** */
@@ -124,7 +124,7 @@ public class TestNewUI extends JFrame {
 	/**
 	 * Component that changes color when the mouse
 	 * enters or exits.
-	 * @author karnok, 2011.02.25.
+	 * @author akarnokd, 2011.02.25.
 	 */
 	class ColorChanger extends UIComponent {
 		@Override
@@ -144,7 +144,7 @@ public class TestNewUI extends JFrame {
 	/**
 	 * Component that changes color when the mouse
 	 * enters or exits.
-	 * @author karnok, 2011.02.25.
+	 * @author akarnokd, 2011.02.25.
 	 */
 	class ColorChangerContainer extends UIContainer {
 		@Override

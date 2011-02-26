@@ -10,8 +10,7 @@ package hu.openig.launcher;
 
 /**
  * The listing of files that need to be deleted.
- * @author karnokd, 2010.10.31.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.10.31.
  */
 public class LRemoveFile extends LBaseItem {
 	/** The file to delete. */

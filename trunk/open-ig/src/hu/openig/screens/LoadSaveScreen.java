@@ -12,8 +12,8 @@ import java.awt.Graphics2D;
 
 
 /**
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * A load and save game screen.
+ * @author akarnokd, 2010.01.11.
  */
 public class LoadSaveScreen extends ScreenBase {
 

@@ -81,8 +81,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * @author karnokd, 2009.09.23.
- * @version $Revision 1.0$
+ * Setup program for the game and other utilities.
+ * @author akarnokd, 2009.09.23.
  */
 @SuppressWarnings("unchecked") // since 6u20 or so, most jlist models became generic, but if I put the type in, it won't compile on older versions
 public class Setup extends JFrame {
@@ -812,8 +812,7 @@ public class Setup extends JFrame {
 	}
 	/**
 	 * Alpha composited text field.
-	 * @author karnok, 2009.09.23.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.09.23.
 	 */
 	public class AlphaTextField extends JTextField {
 		/** */
@@ -1335,8 +1334,7 @@ public class Setup extends JFrame {
 	}
 	/**
 	 * Log table model.
-	 * @author karnok, 2009.09.25.
-	 * @version $Revision 1.0$
+	 * @author akarnokd, 2009.09.25.
 	 */
 	class LogModel extends AbstractTableModel {
 		/** */

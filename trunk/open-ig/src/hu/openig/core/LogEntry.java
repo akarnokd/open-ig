@@ -13,8 +13,7 @@ import java.io.StringWriter;
 
 /**
  * Log entry.
- * @author karnok, 2009.09.25.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.09.25.
  */
 public class LogEntry {
 	/** The timestamp. */

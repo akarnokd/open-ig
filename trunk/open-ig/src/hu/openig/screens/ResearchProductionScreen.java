@@ -12,8 +12,8 @@ package hu.openig.screens;
 import java.awt.Graphics2D;
 
 /**
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * The combined research and production screen.
+ * @author akarnokd, 2010.01.11.
  */
 public class ResearchProductionScreen extends ScreenBase {
 

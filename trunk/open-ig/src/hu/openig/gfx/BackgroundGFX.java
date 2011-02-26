@@ -18,8 +18,7 @@ import java.awt.image.BufferedImage;
 /**
  * The background images for various screens,
  * including menu, options and battle end screens.
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.09.
  */
 public class BackgroundGFX implements ResourceSelfLoader {
 	/** The resource locator. */

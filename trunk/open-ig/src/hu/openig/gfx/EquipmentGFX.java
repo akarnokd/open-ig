@@ -17,8 +17,7 @@ import hu.openig.core.ResourceLocator;
 import java.awt.image.BufferedImage;
 
 /**
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.09.
  */
 public class EquipmentGFX {
 	/** The resource locator. */

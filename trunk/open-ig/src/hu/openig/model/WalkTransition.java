@@ -11,8 +11,9 @@ package hu.openig.model;
 import java.awt.Polygon;
 
 /**
- * @author karnok, 2009.10.09.
- * @version $Revision 1.0$
+ * A ship walk transition with media and the associated
+ * visual area where the user can click.
+ * @author akarnokd, 2009.10.09.
  */
 public class WalkTransition {
 	/** The associated transition media. */

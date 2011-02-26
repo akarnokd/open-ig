@@ -13,8 +13,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * Annotation to indicate a simple BufferedImage to be loaded.
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.11.09.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Img {

@@ -24,8 +24,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * Computes the resource allocations for planets asynchronously.
- * @author karnok, 2010.09.15.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.09.15.
  */
 public class ResourceAllocator {
 	/** The thread pool used for computations. */

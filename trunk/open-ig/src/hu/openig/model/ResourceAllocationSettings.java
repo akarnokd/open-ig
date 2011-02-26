@@ -14,8 +14,7 @@ import java.util.List;
 
 /**
  * A per planet resource allocation settings.
- * @author karnok, 2010.09.15.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.09.15.
  */
 public class ResourceAllocationSettings implements Iterable<BuildingAW> {
 	/** The available worker count. */

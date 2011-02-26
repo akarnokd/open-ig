@@ -33,8 +33,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * A media player for playing video and audio.
- * @author karnok, 2010.01.17.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.17.
  */
 public class MediaPlayer {
 	/** The label event. */

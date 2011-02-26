@@ -15,8 +15,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * The database graphics manager.
- * @author karnok, 2009.10.25.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.10.25.
  */
 public class DatabaseGFX {
 	/** The resource locator. */

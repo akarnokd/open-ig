@@ -13,8 +13,8 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 
 /**
- * @author karnok, 2009.11.09.
- * @version $Revision 1.0$
+ * Utility class to load graphics into annotated fields.
+ * @author akarnokd, 2009.11.09.
  */
 public final class GFXLoader {
 	/** Constructor. */

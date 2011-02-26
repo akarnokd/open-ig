@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
 /**
  * The modernized Mouse event class with enums instead
  * of complex ints.
- * @author karnok, 2011.02.25.
+ * @author akarnokd, 2011.02.25.
  */
 public class UIMouse {
 	/** The mouse event location X. */
@@ -56,7 +56,7 @@ public class UIMouse {
 	}
 	/**
 	 * The mouse event type.
-	 * @author karnok, 2011.02.25.
+	 * @author akarnokd, 2011.02.25.
 	 */
 	public enum Type {
 		/** Mouse enters some component. */

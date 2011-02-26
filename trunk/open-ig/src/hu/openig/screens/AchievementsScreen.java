@@ -26,8 +26,7 @@ import javax.swing.Timer;
 
 /**
  * The achievements and statistics listing screen.
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * @author akarnokd, 2010.01.11.
  */
 public class AchievementsScreen extends ScreenBase {
 	/** An achievement entry. */

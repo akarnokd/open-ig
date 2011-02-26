@@ -12,8 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author karnok, 2009.10.10.
- * @version $Revision 1.0$
+ * A master record for a conversation with one of the
+ * crew members in the bar.
+ * @author akarnokd, 2009.10.10.
  */
 public class TalkPerson {
 	/** The person id. */

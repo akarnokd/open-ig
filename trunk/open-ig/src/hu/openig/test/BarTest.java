@@ -28,8 +28,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * Test bar talks.
- * @author karnok, 2009.10.09.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.10.09.
  */
 public class BarTest extends JFrame {
 	/** */

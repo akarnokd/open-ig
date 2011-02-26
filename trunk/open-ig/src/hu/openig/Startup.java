@@ -26,8 +26,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * The main startup class.
- * @author karnok, 2009.09.22.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.09.22.
  */
 public final class Startup {
 	/** The minimum memory required to run Open-IG. */

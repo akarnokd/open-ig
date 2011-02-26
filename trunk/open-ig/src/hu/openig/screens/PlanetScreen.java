@@ -32,8 +32,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.Timer;
 
 /**
- * @author karnokd, 2010.01.11.
- * @version $Revision 1.0$
+ * The planet surface rendering screen.
+ * @author akarnokd, 2010.01.11.
  */
 public class PlanetScreen extends ScreenBase {
 	/** The planet surface definition. */

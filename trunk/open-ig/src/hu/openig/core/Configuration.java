@@ -32,8 +32,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * The main configuration object with rolling log support.
- * @author karnok, 2009.09.25.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.09.25.
  */
 public class Configuration {
 	/** The version string. */

@@ -19,7 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * @author karnok, 2011.02.25.
+ * @author akarnokd, 2011.02.25.
  */
 public class UIContainer extends UIComponent {
 	/** The list of sub-components. */

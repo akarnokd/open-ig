@@ -16,8 +16,7 @@ import java.util.Map;
 
 /**
  * The record for person talks.
- * @author karnok, 2009.10.10.
- * @version $Revision 1.0$
+ * @author akarnokd, 2009.10.10.
  */
 public class Talks {
 	/** The map of talk persons. */

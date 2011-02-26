@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author karnok, 2009.10.09.
- * @version $Revision 1.0$
+ * A location and static image of a position within the ship
+ * walks.
+ * @author akarnokd, 2009.10.09.
  */
 public class WalkPosition {
 	/** The walk position id. */

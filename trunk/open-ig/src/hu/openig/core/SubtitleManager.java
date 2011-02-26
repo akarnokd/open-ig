@@ -21,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author karnok, 2009.09.26.
- * @version $Revision 1.0$
+ * An utility class to manage subtitle retrieval based
+ * on elapsed time for movies.
+ * @author akarnokd, 2009.09.26.
  */
 public class SubtitleManager {
 	/** The subtitle entry. */

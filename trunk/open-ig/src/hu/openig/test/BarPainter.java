@@ -52,8 +52,8 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 /**
- * @author karnok, 2009.10.10.
- * @version $Revision 1.0$
+ * The test surface for a bar painting.
+ * @author akarnokd, 2009.10.10.
  */
 public class BarPainter extends JComponent implements SwappableRenderer {
 	/** */
