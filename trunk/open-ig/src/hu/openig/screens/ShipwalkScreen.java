@@ -208,7 +208,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		} finally {
 			swapLock.unlock();
 		}
-		repaint();
+		askRepaint();
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 						onCompleted.act();
 					}
 				} finally {
-					repaint();
+					askRepaint();
 				}
 			}
 		};

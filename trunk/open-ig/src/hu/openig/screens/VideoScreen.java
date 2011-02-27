@@ -336,7 +336,7 @@ public class VideoScreen extends ScreenBase {
 		if (!scrollDownButton.visible) {
 			scrollDownTimer.stop();
 		}
-		repaint();
+		askRepaint();
 	}
 	@Override
 	public void onEnter() {

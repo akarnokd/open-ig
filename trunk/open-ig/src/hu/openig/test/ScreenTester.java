@@ -13,6 +13,7 @@ import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
+import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.World;
 import hu.openig.screens.AchievementsScreen;
@@ -53,10 +54,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
@@ -304,6 +308,7 @@ public class ScreenTester extends JFrame implements GameControls {
 		menuScreen.add(addScreenItem("Videos", VideoScreen.class));
 		
 		menuView = new JMenu("View");
+		menuView.setVisible(false);
 
 		menubar.add(menuAction);
 		menubar.add(menuScreen);
@@ -330,8 +335,8 @@ public class ScreenTester extends JFrame implements GameControls {
 				try {
 					screen = clazz.getConstructor().newInstance();
 					screen.initialize(commons, parent);
-					screen.resize();
 					screen.onEnter();
+					screen.resize();
 					repaint();
 					onScreen(clazz.getSimpleName(), screen);
 				} catch (Exception ex) {
@@ -464,32 +469,95 @@ public class ScreenTester extends JFrame implements GameControls {
 	 */
 	void onScreen(String className, final ScreenBase screen) {
 		menuView.removeAll();
+		menuView.setVisible(false);
 		if ("ShipwalkScreen".equals(className)) {
-			final ShipwalkScreen sw = (ShipwalkScreen)screen;
-			WalkShip last = null;
-			List<WalkShip> list = new ArrayList<WalkShip>(commons.world.walks.ships.values());
-			Collections.sort(list, new Comparator<WalkShip>() {
+			prepareShipWalkMenu(screen);
+			menuView.setVisible(true);
+		} else
+		if ("MainMenu".equals(className)) {
+			prepareMainMenuMenu(screen);
+			menuView.setVisible(true);
+		}
+	}
+	/**
+	 * Prepare the menu for the main menu screen.
+	 * @param screen the screen
+	 */
+	void prepareMainMenuMenu(ScreenBase screen) {
+		final MainMenu mm = (MainMenu)screen;
+		int i = 1;
+		for (final BufferedImage img : commons.background.start) {
+			JMenuItem mi = new JMenuItem("Background #" + i);
+			mi.addActionListener(new Act() {
 				@Override
-				public int compare(WalkShip o1, WalkShip o2) {
-					return o1.level.compareTo(o2.level);
+				public void act() {
+					mm.useBackground(img);
 				}
 			});
-			for (final WalkShip s : list) {
-				JMenuItem mi = new JMenuItem("Level " + s.level);
-				last = s;
-				mi.addActionListener(new ActionListener() {
+			menuView.add(mi);
+			i++;
+		}
+	}
+	/**
+	 * Prepare the menu for the ship walk screen.
+	 * @param screen the ship walk screen.
+	 */
+	private void prepareShipWalkMenu(final ScreenBase screen) {
+		final ShipwalkScreen sw = (ShipwalkScreen)screen;
+		WalkShip last = null;
+		List<WalkShip> list = new ArrayList<WalkShip>(commons.world.walks.ships.values());
+		Collections.sort(list, new Comparator<WalkShip>() {
+			@Override
+			public int compare(WalkShip o1, WalkShip o2) {
+				return o1.level.compareTo(o2.level);
+			}
+		});
+		int j = 0;
+		for (final WalkShip s : list) {
+			if (j++ > 0) {
+				menuView.addSeparator();
+			}
+			JMenuItem mi = new JMenuItem("Level " + s.level);
+			last = s;
+			mi.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					sw.position = s.positions.get("*bridge");
+					repaint();
+				}
+			});
+			menuView.add(mi);
+			JMenu sm = new JMenu("Locations");
+			List<Map.Entry<String, WalkPosition>> el = new ArrayList<Map.Entry<String, WalkPosition>>(s.positions.entrySet());
+			Collections.sort(el, new Comparator<Map.Entry<String, WalkPosition>>() {
+				@Override
+				public int compare(Entry<String, WalkPosition> o1,
+						Entry<String, WalkPosition> o2) {
+					String s1 = o1.getKey().startsWith("*") ? o1.getKey().substring(1) : o1.getKey();
+					String s2 = o2.getKey().startsWith("*") ? o2.getKey().substring(1) : o2.getKey();
+					return s1.compareTo(s2);
+				}
+			});
+			for (final Map.Entry<String, WalkPosition> e : el) {
+				JMenuItem pos = new JMenuItem(e.getKey());
+				
+				pos.addActionListener(new Act() {
 					@Override
-					public void actionPerformed(ActionEvent e) {
-						sw.position = s.positions.get("*bridge");
+					public void act() {
+						sw.position = e.getValue();
 						repaint();
 					}
 				});
-				menuView.add(mi);
+				
+				sm.add(pos);
 			}
-			if (last != null) {
-				sw.position = last.positions.get("*bridge");
-				repaint();
-			}
+			
+			menuView.add(sm);
+			
+		}
+		if (last != null) {
+			sw.position = last.positions.get("*bridge");
+			repaint();
 		}
 	}
 }

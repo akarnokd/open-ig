@@ -58,7 +58,7 @@ public abstract class ScreenBase extends UIContainer {
 	/** Called if the component size changed since the last call. */
 	public abstract void onResize();
 	/** Ask for the parent JComponent to repaint itself. */
-	public void repaint() {
+	public void askRepaint() {
 		parent.repaint();
 	}
 	/** Display this screen as the primary. */
@@ -86,7 +86,7 @@ public abstract class ScreenBase extends UIContainer {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (super.mouse(e)) {
-			repaint();
+			askRepaint();
 			return true;
 		}
 		return false;

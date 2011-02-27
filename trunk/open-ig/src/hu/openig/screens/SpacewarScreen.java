@@ -321,7 +321,7 @@ public class SpacewarScreen extends ScreenBase {
 				arb.animationIndex = (arb.animationIndex + 1) % (arb.phases.length - 1);
 			}
 		}
-		repaint();
+		askRepaint();
 	}
 
 	@Override

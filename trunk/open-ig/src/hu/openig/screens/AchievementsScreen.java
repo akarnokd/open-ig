@@ -449,7 +449,7 @@ public class AchievementsScreen extends ScreenBase {
 		if (!scrollDownButton.visible) {
 			scrollDownTimer.stop();
 		}
-		repaint();
+		askRepaint();
 	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#onEnter()

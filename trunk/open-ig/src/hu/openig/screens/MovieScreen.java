@@ -128,7 +128,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 			player.stop();
 		}
 		label = null;
-		repaint();
+		askRepaint();
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
@@ -218,6 +218,6 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		} finally {
 			swapLock.unlock();
 		}
-		repaint();
+		askRepaint();
 	}
 }

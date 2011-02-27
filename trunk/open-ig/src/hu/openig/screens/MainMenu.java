@@ -121,7 +121,17 @@ public class MainMenu extends ScreenBase {
 		// TODO Auto-generated method stub
 
 	}
-
+	/**
+	 * Use the given background for the main menu.
+	 * @param newBackground the new background
+	 */
+	public void useBackground(BufferedImage newBackground) {
+		if (newBackground == null) {
+			throw new IllegalArgumentException("newBackground is null");
+		}
+		background = newBackground;
+		askRepaint();
+	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#initialize()
 	 */
@@ -202,7 +212,7 @@ public class MainMenu extends ScreenBase {
 				toHu.disabled = false;
 				commons.control.switchLanguage("en");
 				selectRandomBackground();
-				repaint();
+				askRepaint();
 			}
 		};
 		toHu.action = new Act() {
@@ -212,7 +222,7 @@ public class MainMenu extends ScreenBase {
 				toHu.disabled = true;
 				commons.control.switchLanguage("hu");
 				selectRandomBackground();
-				repaint();
+				askRepaint();
 			}
 		};
 		
@@ -240,13 +250,16 @@ public class MainMenu extends ScreenBase {
 		boolean needRepaint = false;
 		switch (e.type) {
 		case MOVE:
+		case DRAG:
 			for (ClickLabel cl : clicklabels) {
 				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
 					needRepaint |= !cl.selected;
 					cl.selected = true;
+					needRepaint = true;
 				} else {
 					needRepaint |= cl.selected;
 					cl.selected = false;
+					needRepaint = true;
 				}
 			}
 			break;
@@ -255,9 +268,11 @@ public class MainMenu extends ScreenBase {
 				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
 					needRepaint |= !cl.pressed;
 					cl.pressed = true;
+					needRepaint = true;
 				} else {
 					needRepaint |= cl.pressed;
 					cl.pressed = false;
+					needRepaint = true;
 				}
 			}
 			break;

@@ -60,7 +60,7 @@ public class LoadingScreen extends ScreenBase {
 	void doAnimate() {
 		rollingPhase = (rollingPhase + 1) % commons.research.rolling.length;
 		dots = (dots + 1) % 40;
-		repaint();
+		askRepaint();
 	}
 
 	/* (non-Javadoc)

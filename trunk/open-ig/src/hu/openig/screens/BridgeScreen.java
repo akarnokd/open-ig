@@ -166,7 +166,7 @@ public class BridgeScreen extends ScreenBase {
 					messageBack = temp;
 				} finally {
 					messageLock.unlock();
-					repaint();
+					askRepaint();
 				}
 			}
 		});
@@ -174,7 +174,7 @@ public class BridgeScreen extends ScreenBase {
 			@Override
 			public void act() {
 				openCloseAnimating = false;
-				repaint();
+				askRepaint();
 			}
 		};
 		messageAnim.start();
@@ -205,7 +205,7 @@ public class BridgeScreen extends ScreenBase {
 					messageBack = temp;
 				} finally {
 					messageLock.unlock();
-					repaint();
+					askRepaint();
 				}
 			}
 		});
@@ -214,7 +214,7 @@ public class BridgeScreen extends ScreenBase {
 			public void act() {
 				messageOpen = true;
 				openCloseAnimating = false;
-				repaint();
+				askRepaint();
 			}
 		};
 		messageAnim.start();
@@ -243,7 +243,7 @@ public class BridgeScreen extends ScreenBase {
 					messageBack = temp;
 				} finally {
 					messageLock.unlock();
-					repaint();
+					askRepaint();
 				}
 			}
 		});
@@ -252,7 +252,7 @@ public class BridgeScreen extends ScreenBase {
 			public void act() {
 				messageOpen = false;
 				openCloseAnimating = false;
-				repaint();
+				askRepaint();
 			}
 		};
 		messageAnim.start();
@@ -281,7 +281,7 @@ public class BridgeScreen extends ScreenBase {
 					projectorBack = temp;
 				} finally {
 					projectorLock.unlock();
-					repaint();
+					askRepaint();
 				}
 			}
 		});
@@ -290,7 +290,7 @@ public class BridgeScreen extends ScreenBase {
 			public void act() {
 				projectorOpen = true;
 				openCloseAnimating = false;
-				repaint();
+				askRepaint();
 			}
 		};
 		projectorAnim.start();
@@ -319,7 +319,7 @@ public class BridgeScreen extends ScreenBase {
 					projectorBack = temp;
 				} finally {
 					projectorLock.unlock();
-					repaint();
+					askRepaint();
 				}
 			}
 		});
@@ -328,7 +328,7 @@ public class BridgeScreen extends ScreenBase {
 			public void act() {
 				projectorOpen = false;
 				openCloseAnimating = false;
-				repaint();
+				askRepaint();
 			}
 		};
 		projectorAnim.start();

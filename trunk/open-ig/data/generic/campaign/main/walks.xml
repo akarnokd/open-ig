@@ -78,8 +78,8 @@
 			<transition media='flagship/corridor_to_production_3_level_3' label='flagship.moveto.production' area='229,154 427,154 427,315 229,315' to='production'/>
 		</position>		
 		<position id='window' picture='flagship/corridor_window_level_3'>
-			<transition media='flagship/corridor_to_equipment_3_level_3' label='flagship.moveto.production' area='490,0 639,0 639,441 490,441' to='production'/>
-			<transition media='flagship/corridor_to_production_2_level_3' label='flagship.moveto.equipment' area='0,0 150,0 150,441 0,441' to='equipment'/>
+			<transition media='flagship/corridor_to_equipment_3_level_3' label='flagship.moveto.equipment' area='490,0 639,0 639,441 490,441' to='equipment'/>
+			<transition media='flagship/corridor_to_production_2_level_3' label='flagship.moveto.production' area='0,0 150,0 150,441 0,441' to='production'/>
 		</position>
 		<position id='*bar' picture='flagship/bar_level_3'>
 			<transition media='flagship/bar_to_corridor_level_3' label='flagship.moveto.corridor' area='0,356 639,356 639,441 0,441' to='bar_front'/>
@@ -150,8 +150,8 @@
 			<transition media='flagship/corridor_to_production_3_level_3' label='flagship.moveto.production' area='229,154 427,154 427,315 229,315' to='production'/>
 		</position>		
 		<position id='window' picture='flagship/corridor_window_level_3'>
-			<transition media='flagship/corridor_to_equipment_3_level_3' label='flagship.moveto.production' area='490,0 639,0 639,441 490,441' to='production'/>
-			<transition media='flagship/corridor_to_production_2_level_3' label='flagship.moveto.equipment' area='0,0 150,0 150,441 0,441' to='equipment'/>
+			<transition media='flagship/corridor_to_equipment_3_level_3' label='flagship.moveto.equipment' area='490,0 639,0 639,441 490,441' to='equipment'/>
+			<transition media='flagship/corridor_to_production_2_level_3' label='flagship.moveto.production' area='0,0 150,0 150,441 0,441' to='production'/>
 		</position>
 		<position id='*bar' picture='flagship/bar_level_3'>
 			<transition media='flagship/bar_to_corridor_level_3' label='flagship.moveto.corridor' area='0,356 639,356 639,441 0,441' to='bar_front'/>
