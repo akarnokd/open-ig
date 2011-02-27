@@ -148,7 +148,7 @@ public class PlanetScreen extends ScreenBase {
 				}
 				animation++;
 				blink = (animation % 10) >= 5;
-				repaint();
+				askRepaint();
 			}
 		});
 		selection = new Tile(1, 1, ImageUtils.recolor(commons.colony.tileEdge, 0xFFFFFF00), null);
@@ -291,7 +291,7 @@ public class PlanetScreen extends ScreenBase {
 	 */
 	protected void doZoomNormal() {
 		scale = 1.0;
-		repaint();
+		askRepaint();
 	}
 	/**
 	 * Zoom out by decreasing the scale by 0.1.

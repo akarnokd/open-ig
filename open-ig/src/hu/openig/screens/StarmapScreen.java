@@ -201,7 +201,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				rotatePlanets();
-				repaint();
+				askRepaint();
 			}
 		});
 		precalculateStars();

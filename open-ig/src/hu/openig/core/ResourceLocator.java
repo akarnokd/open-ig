@@ -12,6 +12,7 @@ import hu.openig.utils.ImageUtils;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -344,7 +345,12 @@ public class ResourceLocator {
 		}
 		InputStream in = rp.open();
 		try {
-			return ImageIO.read(in);
+			BufferedInputStream bin = new BufferedInputStream(in, Math.max(8192, in.available()));
+			try {
+				return ImageIO.read(bin);
+			} finally {
+				try { bin.close(); } catch (IOException ex) { ex.printStackTrace(); }
+			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			throw new AssertionError("Resource error" + language + " " + resourceName);
@@ -369,7 +375,7 @@ public class ResourceLocator {
 		InputStream in = rp.open();
 		try {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			byte[] buffer = new byte[4096];
+			byte[] buffer = new byte[Math.max(8192, in.available())];
 			int read = 0;
 			do {
 				read = in.read(buffer);
@@ -453,7 +459,12 @@ public class ResourceLocator {
 			}
 			InputStream in = rp.open();
 			try {
-				return XElement.parseXML(in);
+				BufferedInputStream bin = new BufferedInputStream(in, Math.max(8192, in.available()));
+				try {
+					return XElement.parseXML(bin);
+				} finally {
+					bin.close();
+				}
 			} finally {
 				in.close();
 			}
@@ -483,120 +494,5 @@ public class ResourceLocator {
 		}
 		return result;
 	}
-//	/**
-//	 * Save the resource cache.
-//	 */
-//	protected void storeResourceCache() {
-//		try {
-//			File f = new File("resource-cache.xml.gz");
-//			PrintWriter pw = new PrintWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(f)), "UTF-8"));
-//			try {
-//				pw.println("<?xml version='1.0' encoding='UTF-8' standalone='yes'?>");
-//				pw.println("<containers><!-- backwards -->");
-//				for (int i = containers.size() - 1; i >= 0; i--) {
-//					String name = containers.get(i);
-//					f = new File(name);
-//					if (f.exists()) {
-//						boolean isZip = zipContainers.containsKey(name);
-//						pw.printf("  <container name='%s' zip='%s'>%n"
-//								, XML.toHTML(name), isZip);
-//						for (Map<String, Map<String, ResourcePlace>> m1 : resourceMap.values()) {
-//							for (Map<String, ResourcePlace> m2 : m1.values()) {
-//								for (ResourcePlace rp : m2.values()) {
-//									pw.printf("    <resource name='%s' language='%s' file='%s' size='%s' type='%s'/>%n"
-//										, XML.toHTML(rp.name), XML.toHTML(rp.language), XML.toHTML(rp.fileName), 
-//												rp.size, XML.toHTML(rp.type.toString())
-//									);
-//								}
-//							}
-//						}
-//						pw.println("  </container>");
-//					}
-//				}
-//				pw.println("</containers>");
-//			} finally {
-//				pw.close();
-//			}
-//		} catch (IOException ex) {
-//			ex.printStackTrace();
-//		}
-//	}
-//	/**
-//	 * Try to load the resource cache.
-//	 * @return the list of resource items or null if there is no cache or seems to be outdated.
-//	 */
-//	protected List<ResourcePlace> loadResourceCache() {
-//		try {
-//			File f = new File("resource-cache.xml.gz");
-//			if (f.canRead()) {
-//				GZIPInputStream gin = new GZIPInputStream(new FileInputStream(f));
-//				try {
-//					List<ResourcePlace> result = JavaUtils.newArrayList();
-//					DocumentBuilderFactory db = DocumentBuilderFactory.newInstance();
-//					DocumentBuilder doc = db.newDocumentBuilder();
-//					Element root = doc.parse(gin).getDocumentElement();
-//					int index = 0;
-//					for (Element ec : XML.childrenWithName(root, "container")) {
-//						if (index >= containers.size()) {
-//							return null;
-//						}
-//						String container = ec.getAttribute("name");
-//						if (!containers.get(containers.size() - 1 - index).equals(container)) {
-//							return null;
-//						}
-//						File fc = new File(container);
-//						if (!fc.exists()) {
-//							return null;
-//						}
-//						boolean zip = "true".equals(ec.getAttribute("zip"));
-//						for (Element erp : XML.childrenWithName(ec, "resource")) {
-//							ResourcePlace rp = new ResourcePlace();
-//							rp.name = erp.getAttribute("name");
-//							rp.fileName = erp.getAttribute("file");
-//							rp.language = erp.getAttribute("language");
-//							rp.size = Long.parseLong(erp.getAttribute("size"));
-//							rp.type = ResourceType.valueOf(erp.getAttribute("type"));
-//							rp.zipContainer = zip;
-//							rp.container = container;
-//							
-//							if (!rp.zipContainer) {
-//								if (!(new File(container + "/" + rp.fileName).exists())) {
-//									return null;
-//								}
-//							} else {
-//								ZipFile zf = new ZipFile(container);
-//								if (zf.getEntry(rp.fileName) == null) {
-//									return null;
-//								}
-//							}
-//							
-//							result.add(rp);
-//						}
-//						index++;
-//					}
-//					return result;
-//				} finally {
-//					gin.close();
-//				}
-//			}
-//		} catch (IOException ex) {
-//			ex.printStackTrace();
-//		} catch (SAXException ex) {
-//			ex.printStackTrace();
-//		} catch (ParserConfigurationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-//	/**
-//	 * Dispatch the resource places into the resourceMap.
-//	 * @param resources the list of resource places to dispatch
-//	 */
-//	private void dispatchResourcePlaces(List<ResourcePlace> resources) {
-//		for (ResourcePlace rp : resources) {
-//			addResourcePlace(rp);
-//		}
-//	}
 	
 }
