@@ -41,6 +41,7 @@ public class TestNewUI extends JFrame {
 	 * Build the GUI.
 	 */
 	public TestNewUI() {
+		setTitle("Test the components of the new UI framework");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		cc1 = new ColorChangerContainer();
 		cc1.width = 600;
@@ -77,6 +78,12 @@ public class TestNewUI extends JFrame {
 
 		cc1.add(scroll);
 		
+		initSwingPart();
+	}
+	/**
+	 * Init the swing part of the testing.
+	 */
+	private void initSwingPart() {
 		MouseAdapter ma = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
