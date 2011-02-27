@@ -1,5 +1,20 @@
 #summary News archive.
 
+*February 12. 2011*
+
+I've completed the Testbed application. In addition, the loading times should be now faster on multi-core systems. The testbed application is also available among the launcher downloadable modules.
+
+I strongly recommend to use/download the launcher application which will take care of updating your existing installments.
+
+*February 8. 2011*
+
+I'm feeling a bit uneasy about neglecting this nice project lately. It seems so easy to do it since I converted and grouped the resource files: all I have to do is draw them on screen or play it through the speakers, right? 
+
+After mining 1.7 million m^3^ cobblestone, dirt and sand, completing a major industrial software [http://www.reliawind.eu/ development], I feel ready to continue with research, and of course, hobby development of Open Imperium Galactica.
+
+I'll try to set up some milestones about the following 6 months. See the
+[http://code.google.com/p/open-ig/wiki/ProjectPlan2011 project plan for 2011].
+
 *October 31. 2010*
 
 I've integrated the starmap and planet rendering into the main Open Imperium Galactica. You can now download the version 0.81 file.
