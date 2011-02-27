@@ -19,6 +19,9 @@ import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -194,10 +197,40 @@ public final class PackageStuff {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		buildGame(Configuration.VERSION);
-		buildLauncher();
-		buildMapEditor(MapEditor.MAP_EDITOR_JAR_VERSION);
-		buildPatch("20100917a");
-		buildTestbed(ScreenTester.VERSION);
+		ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		
+		exec.execute(new Runnable() {
+			@Override
+			public void run() {
+				buildGame(Configuration.VERSION);
+			}
+		});
+		exec.execute(new Runnable() {
+			@Override
+			public void run() {
+				buildLauncher();
+			}
+		});
+		exec.execute(new Runnable() {
+			@Override
+			public void run() {
+				buildMapEditor(MapEditor.MAP_EDITOR_JAR_VERSION);
+			}
+		});
+		exec.execute(new Runnable() {
+			@Override
+			public void run() {
+				buildPatch("20110227a");
+			}
+		});
+		exec.execute(new Runnable() {
+			@Override
+			public void run() {
+				buildTestbed(ScreenTester.VERSION);
+			}
+		});
+		
+		exec.shutdown();
+		exec.awaitTermination(1, TimeUnit.DAYS);
 	}
 }
