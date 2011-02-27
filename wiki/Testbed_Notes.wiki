@@ -4,6 +4,14 @@ See the [Testbed testbed] page for the description of this application.
 
 <wiki:toc max_depth="1" />
 
+= Version 0.15 - New UI framework =
+
+  * Added a more composable underlying UI framework for screens
+  * Fixed the shipwalk model where the Level 3 and Level 4 Window position would lead to the wrong room.
+  * Added the option to go into any Level and any room of the available ship walks via the View menu.
+  * The MainMenu has the options in View to choose the available backgrounds.
+  * Other small improvements to the testbed functionality
+
 = Version 0.1 - First release =
 
   * First release, all expected screens can be reached from the menu, but most of them just cames up empty.
