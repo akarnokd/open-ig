@@ -58,6 +58,7 @@ public abstract class ScreenBase extends UIContainer {
 	/** Called if the component size changed since the last call. */
 	public abstract void onResize();
 	/** Ask for the parent JComponent to repaint itself. */
+	@Override
 	public void askRepaint() {
 		parent.repaint();
 	}

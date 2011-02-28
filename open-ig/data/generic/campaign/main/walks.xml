@@ -97,8 +97,8 @@
 		<position id='cabin_front' picture='flagship/corridor_lift_left_level_3'>
 			<transition media='flagship/corridor_to_cabin_2_level_3' label='flagship.moveto.cabin' area='0,412 639,412 639,441 0,441' to='cabin'/>
 <!--			<transition media='flagship/corridor_to_diplomacy_2_level_4' label='flagship.moveto.diplomacy' area='173,147 459,147 459,411 173,411' to='*diplomacy'/>-->
-			<transition media='flagship/corridor_to_bar_2_level_3' label='flagship.moveto.bar' area='561,73 639,73 639,397 561,397' to='*bar'/>
-			<transition media='flagship/corridor_to_lift_3_level_3' label='flagship.moveto.lift' area='0,73 86,73 86,397 0,397' to='lift'/>
+			<transition media='flagship/corridor_to_bar_2_level_3' label='flagship.moveto.bar' area='0,73 86,73 86,397 0,397' to='*bar'/>
+			<transition media='flagship/corridor_to_lift_2_level_3' label='flagship.moveto.lift' area='561,73 639,73 639,397 561,397' to='lift'/>
 		</position>		
 <!--		<position id='*diplomacy' picture='flagship/diplomacy_normal'>-->
 <!--			<transition media='flagship/diplomacy_to_corridor_level_4' label='flagship.moveto.corridor' area='0,392 639,392 639,441 0,441 ' to='diplomacy_front'/>-->
@@ -169,15 +169,15 @@
 		<position id='cabin_front' picture='flagship/corridor_lift_left_level_3'>
 			<transition media='flagship/corridor_to_cabin_2_level_3' label='flagship.moveto.cabin' area='0,412 639,412 639,441 0,441' to='cabin'/>
 			<transition media='flagship/corridor_to_diplomacy_2_level_4' label='flagship.moveto.diplomacy' area='173,147 459,147 459,411 173,411' to='*diplomacy'/>
-			<transition media='flagship/corridor_to_bar_2_level_3' label='flagship.moveto.bar' area='561,73 639,73 639,397 561,397' to='*bar'/>
-			<transition media='flagship/corridor_to_lift_3_level_3' label='flagship.moveto.lift' area='0,73 86,73 86,397 0,397' to='lift'/>
+			<transition media='flagship/corridor_to_bar_2_level_3' label='flagship.moveto.bar' area='0,73 86,73 86,397 0,397' to='*bar'/>
+			<transition media='flagship/corridor_to_lift_2_level_3' label='flagship.moveto.lift' area='561,73 639,73 639,397 561,397' to='lift'/>
 		</position>		
 		<position id='*diplomacy' picture='flagship/diplomacy_normal'>
 			<transition media='flagship/diplomacy_to_corridor_level_4' label='flagship.moveto.corridor' area='0,392 639,392 639,441 0,441 ' to='diplomacy_front'/>
 		</position>
 		<position id='diplomacy_front' picture='flagship/corridor_lift_right_level_3'>
 			<transition media='flagship/corridor_to_diplomacy_3_level_4' label='flagship.moveto.diplomacy' area='0,415 639,415 639,441 0,441' to='*diplomacy'/>
-			<transition media='flagship/corridor_to_bar_3_level_4' label='flagship.moveto.bar' area='527,65 639,65 639,410 527,410' to='*bar'/>
+			<transition media='flagship/corridor_to_bar_3_level_3' label='flagship.moveto.bar' area='527,65 639,65 639,410 527,410' to='*bar'/>
 			<transition media='flagship/corridor_to_cabin_3_level_4' label='flagship.moveto.cabin' area='183,149 452,149 452,413 183,413' to='cabin'/>
 			<transition media='flagship/corridor_to_lift_3_level_4' label='flagship.moveto.lift' area='0,65 112,65 112,410 0,410' to='lift'/>
 		</position>
