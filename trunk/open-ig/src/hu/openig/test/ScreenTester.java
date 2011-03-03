@@ -357,7 +357,11 @@ public class ScreenTester extends JFrame implements GameControls {
 	/** Reload game resources. */
 	void doReload() {
 		menuView.setVisible(false);
-		screen = null;
+		if (screen != null) {
+			screen.onLeave();
+			screen.onFinish();
+			screen = null;
+		}
 		config = null;
 		commons = null;
 		rl = null;
