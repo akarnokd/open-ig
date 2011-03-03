@@ -13,6 +13,12 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Stroke;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Utility class for common rendering tasks and algorithms. 
@@ -98,5 +104,142 @@ public final class RenderTools {
 			return;
 		}
 		g2.fillRect(x, y, x2 - x + 1, y2 - y + 1);
+	}
+	/**
+	 * Paint a 5x5 ABC grid on the given rectangle by equally distributing its cells.
+	 * The caller should remember to apply a clipping region if necessary.
+	 * @param g2 the graphics object
+	 * @param rect the rectangle to fill in
+	 * @param gridColor the color of the grid
+	 * @param text the text renderer to print the labels
+	 */
+	public static void paintGrid(Graphics2D g2, Rectangle rect, Color gridColor, TextRenderer text) {
+		g2.setColor(gridColor);
+		Stroke st = g2.getStroke();
+		//FIXME the dotted line rendering is somehow very slow
+//		g2.setStroke(gfx.gridStroke);
+		
+		float fw = rect.width;
+		float fh = rect.height;
+		float dx = fw / 5;
+		float dy = fh / 5;
+		float y0 = dy;
+		float x0 = dx;
+		for (int i = 1; i < 5; i++) {
+			g2.drawLine((int)(rect.x + x0), rect.y, (int)(rect.x + x0), (int)(rect.y + fh));
+			g2.drawLine(rect.x, (int)(rect.y + y0), (int)(rect.x + fw), (int)(rect.y + y0));
+			x0 += dx;
+			y0 += dy;
+		}
+		int i = 0;
+		y0 = dy - 6;
+		x0 = 2;
+		for (char c = 'A'; c < 'Z'; c++) {
+			text.paintTo(g2, (int)(rect.x + x0), (int)(rect.y + y0), 5, TextRenderer.GRAY, String.valueOf(c));
+			x0 += dx;
+			i++;
+			if (i % 5 == 0) {
+				x0 = 2;
+				y0 += dy;
+			}
+		}
+		
+		g2.setStroke(st);
+	}
+	/** Star rendering starting color. */
+	private static int startStars = 0x685CA4;
+	/** Star rendering end color. */
+	private static int endStars = 0xFCFCFC;
+	/** Number of stars per layer. */
+	private static final int STAR_COUNT = 512;
+	/** Number of layers. */
+	private static final int STAR_LAYER_COUNT = 4;
+	/** A star object. */
+	private static class Star {
+		/** The star proportional position. */
+		public double x;
+		/** The star proportional position. */
+		public double y;
+		/** The star color. */
+		public Color color;
+	}
+	/** The list of stars. */
+	private static List<Star> stars = new ArrayList<Star>();
+	/**
+	 * Paint the multiple layer of stars.
+	 * @param g2 the graphics object
+	 * @param rect the target rectanlge
+	 * @param view the viewport rectangle
+	 * @param starmapClip the clipping region to avoid even calling a graphics operation outside there for performance reasons
+	 * @param zoomIndex the current zoom index
+	 * @param zoomLevelCount the maximum zoom level
+	 */
+	public static void paintStars(Graphics2D g2, 
+			Rectangle rect, Rectangle view, 
+			Rectangle starmapClip, int zoomIndex, int zoomLevelCount) {
+		int starsize = zoomIndex < zoomLevelCount / 2.5 ? 1 : 2;
+		double xf = (view.x - rect.x) * 1.0 / rect.width;
+		double yf = (view.y - rect.y) * 1.0 / rect.height;
+		Color last = null;
+		for (int i = 0; i < stars.size(); i++) {
+			Star s = stars.get(i);
+			double layer = 0.9 - (i / STAR_COUNT) * 0.10;
+			double w = rect.width * layer;
+			double h = rect.height * layer;
+			double lx = rect.x;
+			double ly = rect.y;
+			
+			
+			int x = (int)(lx + xf * (rect.width - w) + s.x * rect.width);
+			int y = (int)(ly + yf * (rect.height - h) + s.y * rect.height);
+			if (starmapClip.contains(x, y)) {
+				if (last != s.color) {
+					g2.setColor(s.color);
+					last = s.color;
+				}
+				g2.fillRect(x, y, starsize, starsize);
+			}
+		}
+	}
+	static {
+		precalculateStars();
+	}
+	/**
+	 * Precalculates the star background locations and colors.
+	 */
+	private static void precalculateStars() {
+		Random random = new Random(0);
+		Color[] colors = new Color[8];
+		for (int i = 0; i < colors.length; i++) {
+			colors[i] = new Color(mixColors(startStars, endStars, random.nextFloat()));
+		}
+		for (int i = 0; i < STAR_COUNT * STAR_LAYER_COUNT; i++) {
+			Star s = new Star();
+			s.x = random.nextDouble();
+			s.y = random.nextDouble();
+			s.color = colors[random.nextInt(colors.length)];
+			stars.add(s);
+		}
+		Collections.sort(stars, new Comparator<Star>() {
+			@Override
+			public int compare(Star o1, Star o2) {
+				int c1 = o1.color.getRGB() & 0xFFFFFF;
+				int c2 = o2.color.getRGB() & 0xFFFFFF;
+				return c1 - c2;
+			}
+		});
+	}
+	/**
+	 * Mix two colors with a factor.
+	 * @param c1 the first color
+	 * @param c2 the second color
+	 * @param rate the mixing factor
+	 * @return the mixed color
+	 */
+	public static int mixColors(int c1, int c2, float rate) {
+		return
+			((int)((c1 & 0xFF0000) * rate + (c2 & 0xFF0000) * (1 - rate)) & 0xFF0000)
+			| ((int)((c1 & 0xFF00) * rate + (c2 & 0xFF00) * (1 - rate)) & 0xFF00)
+			| ((int)((c1 & 0xFF) * rate + (c2 & 0xFF) * (1 - rate)) & 0xFF);
 	}
 }

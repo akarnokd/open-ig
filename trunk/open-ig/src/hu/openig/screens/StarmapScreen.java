@@ -12,6 +12,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
+import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
@@ -22,15 +23,11 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.Timer;
 
@@ -102,14 +99,6 @@ public class StarmapScreen extends ScreenBase {
 	private boolean showGrid = true;
 	/** Show star background? */
 	private boolean showStars = true;
-	/** Star rendering starting color. */
-	private int startStars = 0x685CA4;
-	/** Star rendering end color. */
-	private int endStars = 0xFCFCFC;
-	/** Number of stars per layer. */
-	private static final int STAR_COUNT = 512;
-	/** Number of layers. */
-	private static final int STAR_LAYER_COUNT = 4;
 	/** The divident ratio between the planet listing and the fleet listing. */
 	private double planetFleetSplitter = 0.5;
 	/** The planets listing entire subpanel. */
@@ -132,17 +121,6 @@ public class StarmapScreen extends ScreenBase {
 	int planetsOffset;
 	/** The fleets scroled index. */
 	int fleetsOffset;
-	/** A star object. */
-	class Star {
-		/** The star proportional position. */
-		public double x;
-		/** The star proportional position. */
-		public double y;
-		/** The star color. */
-		public Color color;
-	}
-	/** The list of stars. */
-	private List<Star> stars = new ArrayList<Star>();
 	/** Button. */
 	Button2 prevPlanet;
 	/** Button. */
@@ -204,8 +182,6 @@ public class StarmapScreen extends ScreenBase {
 				askRepaint();
 			}
 		});
-		precalculateStars();
-		
 		int[] disabled = { 0xFF000000, 0xFF000000, 0, 0, 0xFF000000, 0, 0, 0, 0 };
 		BufferedImage disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
 		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
@@ -330,6 +306,7 @@ public class StarmapScreen extends ScreenBase {
 					pan(dx, dy);
 					lastX = e.x;
 					lastY = e.y;
+					rep = true;
 				}
 			}
 			if (mouseDown) {
@@ -568,11 +545,11 @@ public class StarmapScreen extends ScreenBase {
 		double zoom = getZoom();
 		
 		if (showStars) {
-			paintStars(g2, starmapRect, starmapClip);
+			RenderTools.paintStars(g2, starmapRect, starmapClip, starmapClip, zoomIndex, zoomLevelCount);
 		}
 		
 		if (showGrid) {
-			paintGrid(g2, starmapRect);
+			RenderTools.paintGrid(g2, starmapRect, commons.starmap.gridColor, commons.text);
 		}
 		
 		// render radar circles
@@ -966,76 +943,6 @@ public class StarmapScreen extends ScreenBase {
 		starmapClip = starmapWindow.intersection(starmapRect);
 	}
 	/**
-	 * Paint the multiple layer of stars.
-	 * @param g2 the graphics object
-	 * @param rect the target rectanlge
-	 * @param view the viewport rectangle
-	 */
-	private void paintStars(Graphics2D g2, Rectangle rect, Rectangle view) {
-		int starsize = zoomIndex < zoomLevelCount / 2.5 ? 1 : 2;
-		double xf = (view.x - rect.x) * 1.0 / rect.width;
-		double yf = (view.y - rect.y) * 1.0 / rect.height;
-		Color last = null;
-		for (int i = 0; i < stars.size(); i++) {
-			Star s = stars.get(i);
-			double layer = 0.9 - (i / STAR_COUNT) * 0.10;
-			double w = rect.width * layer;
-			double h = rect.height * layer;
-			double lx = rect.x;
-			double ly = rect.y;
-			
-			
-			int x = (int)(lx + xf * (rect.width - w) + s.x * rect.width);
-			int y = (int)(ly + yf * (rect.height - h) + s.y * rect.height);
-			if (starmapClip.contains(x, y)) {
-				if (last != s.color) {
-					g2.setColor(s.color);
-					last = s.color;
-				}
-				g2.fillRect(x, y, starsize, starsize);
-			}
-		}
-	}
-	/**
-	 * Paint a 5x5 grid on the given rectanlge.
-	 * @param g2 the graphics object
-	 * @param rect the rectangle
-	 */
-	private void paintGrid(Graphics2D g2, Rectangle rect) {
-		g2.setColor(commons.starmap.gridColor);
-		Stroke st = g2.getStroke();
-		//FIXME the dotted line rendering is somehow very slow
-//		g2.setStroke(gfx.gridStroke);
-		
-		float fw = rect.width;
-		float fh = rect.height;
-		float dx = fw / 5;
-		float dy = fh / 5;
-		float y0 = dy;
-		float x0 = dx;
-		for (int i = 1; i < 5; i++) {
-			g2.drawLine((int)(rect.x + x0), rect.y, (int)(rect.x + x0), (int)(rect.y + fh));
-			g2.drawLine(rect.x, (int)(rect.y + y0), (int)(rect.x + fw), (int)(rect.y + y0));
-			x0 += dx;
-			y0 += dy;
-		}
-		int i = 0;
-		y0 = dy - 6;
-		x0 = 2;
-		for (char c = 'A'; c < 'Z'; c++) {
-			commons.text.paintTo(g2, (int)(rect.x + x0), (int)(rect.y + y0), 5, TextRenderer.GRAY, String.valueOf(c));
-			x0 += dx;
-			i++;
-			if (i % 5 == 0) {
-				x0 = 2;
-				y0 += dy;
-			}
-		}
-		
-		g2.setStroke(st);
-		
-	}
-	/**
 	 * Paint a horizontal resizable area from images.
 	 * @param g2 the graphics
 	 * @param origin the bounding rectangle
@@ -1311,31 +1218,6 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 		return null;
-	}
-	/**
-	 * Precalculates the star background locations and colors.
-	 */
-	private void precalculateStars() {
-		Random random = new Random(0);
-		Color[] colors = new Color[8];
-		for (int i = 0; i < colors.length; i++) {
-			colors[i] = new Color(commons.starmap.mixColors(startStars, endStars, random.nextFloat()));
-		}
-		for (int i = 0; i < STAR_COUNT * STAR_LAYER_COUNT; i++) {
-			Star s = new Star();
-			s.x = random.nextDouble();
-			s.y = random.nextDouble();
-			s.color = colors[random.nextInt(colors.length)];
-			stars.add(s);
-		}
-		Collections.sort(stars, new Comparator<Star>() {
-			@Override
-			public int compare(Star o1, Star o2) {
-				int c1 = o1.color.getRGB() & 0xFFFFFF;
-				int c2 = o2.color.getRGB() & 0xFFFFFF;
-				return c1 - c2;
-			}
-		});
 	}
 	/** Limit the offsets how far they can go. */
 	public void limitOffsets() {
