@@ -8,7 +8,11 @@
 
 package hu.openig.screens;
 
+import hu.openig.gfx.EquipmentGFX;
+import hu.openig.render.RenderTools;
+
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 
 
@@ -17,17 +21,34 @@ import java.awt.Graphics2D;
  * @author akarnokd, 2010.01.11.
  */
 public class EquipmentScreen extends ScreenBase {
-
+	/** The panel base rectangle. */
+	Rectangle panelBaseRect;
+	/** The equipment. */
+	EquipmentGFX equipment;
+	/** The current equipment mode to render and behave. */
+	public enum EquipmentMode {
+		/** Manage an existing or new fleet. */
+		MANAGE_FLEET,
+		/** Share or combine existing fleets. */
+		SHARE_OR_COMBINE,
+		/** Manage a planet. */
+		MANAGE_PLANET
+	}
+	/** The equipment mode. */
+	EquipmentMode mode;
 	@Override
 	public void onInitialize() {
-		// TODO Auto-generated method stub
-		
+		equipment = commons.equipment;
+		panelBaseRect = new Rectangle(0, 0, 
+				equipment.base.getWidth(), equipment.base.getHeight());
 	}
 
 	@Override
 	public void onEnter() {
-		// TODO Auto-generated method stub
-		
+		onResize();
+		if (mode == null) {
+			mode = EquipmentMode.MANAGE_FLEET;
+		}
 	}
 
 	@Override
@@ -44,11 +65,21 @@ public class EquipmentScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		// TODO Auto-generated method stub
-		
+		RenderTools.centerScreen(panelBaseRect, width, height, true);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		
+		RenderTools.darkenAround(panelBaseRect, width, height, g2, 0.5f, true);
+		g2.drawImage(equipment.base, panelBaseRect.x, panelBaseRect.y, null);
+	}
+	/**
+	 * Set the equipment rendering mode. Use this before
+	 * switching to the equipment screen.
+	 * Based on this mode, the screen will use the current planet,
+	 * the current fleet (with the nearest other fleet)
+	 * @param mode the screen mode
+	 */
+	public void setEquipmentMode(EquipmentMode mode) {
+		this.mode = mode;
 	}
 }
