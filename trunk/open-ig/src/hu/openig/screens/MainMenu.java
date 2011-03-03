@@ -82,8 +82,8 @@ public class MainMenu extends ScreenBase {
 			if (selected) {
 				color = 0xFFFFFFFF;
 			}
-			int textWidth = commons.text.getTextWidth(size, commons.labels.get(label));
-			commons.text.paintTo(g2, x0 + x + (width - textWidth) / 2, y0 + y, size, color, commons.labels.get(label));
+			int textWidth = commons.text().getTextWidth(size, commons.labels().get(label));
+			commons.text().paintTo(g2, x0 + x + (width - textWidth) / 2, y0 + y, size, color, commons.labels().get(label));
 		}
 		/**
 		 * Test if the mouse is within the label.
@@ -251,15 +251,15 @@ public class MainMenu extends ScreenBase {
 		switch (e.type) {
 		case MOVE:
 		case DRAG:
+		case ENTER:
+		case LEAVE:
 			for (ClickLabel cl : clicklabels) {
 				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
 					needRepaint |= !cl.selected;
 					cl.selected = true;
-					needRepaint = true;
 				} else {
 					needRepaint |= cl.selected;
 					cl.selected = false;
-					needRepaint = true;
 				}
 			}
 			break;
@@ -268,11 +268,9 @@ public class MainMenu extends ScreenBase {
 				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
 					needRepaint |= !cl.pressed;
 					cl.pressed = true;
-					needRepaint = true;
 				} else {
 					needRepaint |= cl.pressed;
 					cl.pressed = false;
-					needRepaint = true;
 				}
 			}
 			break;
@@ -301,7 +299,7 @@ public class MainMenu extends ScreenBase {
 	 * Set the background randomly.
 	 */
 	protected void selectRandomBackground() {
-		background = commons.background.start[rnd.nextInt(commons.background.start.length)];
+		background = commons.background().start[rnd.nextInt(commons.background().start.length)];
 	}
 
 	@Override
@@ -323,10 +321,10 @@ public class MainMenu extends ScreenBase {
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 		g2.drawImage(background, xOrigin, yOrigin, null);
 	
-		commons.text.paintTo(g2, xOrigin + 121, yOrigin + 21, 14, 0xFF000000, "Open");
-		commons.text.paintTo(g2, xOrigin + 120, yOrigin + 20, 14, 0xFFFFFF00, "Open");
-		commons.text.paintTo(g2, xOrigin + 501, yOrigin + 65, 14, 0xFF000000, Configuration.VERSION);
-		commons.text.paintTo(g2, xOrigin + 500, yOrigin + 64, 14, 0xFFFF0000, Configuration.VERSION);
+		commons.text().paintTo(g2, xOrigin + 121, yOrigin + 21, 14, 0xFF000000, "Open");
+		commons.text().paintTo(g2, xOrigin + 120, yOrigin + 20, 14, 0xFFFFFF00, "Open");
+		commons.text().paintTo(g2, xOrigin + 501, yOrigin + 65, 14, 0xFF000000, Configuration.VERSION);
+		commons.text().paintTo(g2, xOrigin + 500, yOrigin + 64, 14, 0xFFFF0000, Configuration.VERSION);
 		
 		Composite c0 = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));

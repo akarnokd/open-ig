@@ -186,14 +186,14 @@ public class StarmapScreen extends ScreenBase {
 		BufferedImage disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
 		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
 
-		prevPlanet = new Button2(commons.starmap.backwards[0], commons.starmap.backwards[1], disabledPattern);
-		nextPlanet = new Button2(commons.starmap.forwards[0], commons.starmap.forwards[1], disabledPattern);
-		prevFleet = new Button2(commons.starmap.backwards[0], commons.starmap.backwards[1], disabledPattern);
-		nextFleet = new Button2(commons.starmap.forwards[0], commons.starmap.forwards[1], disabledPattern);
-		colony = new Button2(commons.starmap.colony[0], commons.starmap.colony[1], disabledPattern);
-		equipment = new Button2(commons.starmap.equipment[0], commons.starmap.equipment[1], disabledPattern);
-		info = new Button2(commons.starmap.info[0], commons.starmap.info[1], disabledPattern);
-		bridge = new Button2(commons.starmap.bridge[0], commons.starmap.bridge[1], disabledPattern);
+		prevPlanet = new Button2(commons.starmap().backwards[0], commons.starmap().backwards[1], disabledPattern);
+		nextPlanet = new Button2(commons.starmap().forwards[0], commons.starmap().forwards[1], disabledPattern);
+		prevFleet = new Button2(commons.starmap().backwards[0], commons.starmap().backwards[1], disabledPattern);
+		nextFleet = new Button2(commons.starmap().forwards[0], commons.starmap().forwards[1], disabledPattern);
+		colony = new Button2(commons.starmap().colony[0], commons.starmap().colony[1], disabledPattern);
+		equipment = new Button2(commons.starmap().equipment[0], commons.starmap().equipment[1], disabledPattern);
+		info = new Button2(commons.starmap().info[0], commons.starmap().info[1], disabledPattern);
+		bridge = new Button2(commons.starmap().bridge[0], commons.starmap().bridge[1], disabledPattern);
 		
 		rightPanelButtons.clear();
 		
@@ -540,7 +540,7 @@ public class StarmapScreen extends ScreenBase {
 		
 		Shape defaultClip = g2.getClip();
 		g2.setClip(starmapClip);
-		g2.drawImage(commons.starmap.background, starmapRect.x, starmapRect.y, starmapRect.width, starmapRect.height, null);
+		g2.drawImage(commons.starmap().background, starmapRect.x, starmapRect.y, starmapRect.width, starmapRect.height, null);
 		
 		double zoom = getZoom();
 		
@@ -549,7 +549,7 @@ public class StarmapScreen extends ScreenBase {
 		}
 		
 		if (showGrid) {
-			RenderTools.paintGrid(g2, starmapRect, commons.starmap.gridColor, commons.text);
+			RenderTools.paintGrid(g2, starmapRect, commons.starmap().gridColor, commons.text());
 		}
 		
 		// render radar circles
@@ -576,10 +576,10 @@ public class StarmapScreen extends ScreenBase {
 			int y0 = (int)(starmapRect.y + p.y * zoom - d / 2);
 			g2.drawImage(phase, x0, y0, (int)d, (int)d, null);
 			
-			int tw = commons.text.getTextWidth(5, p.name);
+			int tw = commons.text().getTextWidth(5, p.name);
 			int xt = (int)(starmapRect.x + p.x * zoom - tw / 2);
 			int yt = (int)(starmapRect.y + p.y * zoom + d / 2) + 4;
-			commons.text.paintTo(g2, xt, yt, 5, p.owner.color, p.name);
+			commons.text().paintTo(g2, xt, yt, 5, p.owner.color, p.name);
 			if (p == currentPlanet) {
 				g2.setColor(Color.WHITE);
 				g2.drawLine(x0 - 1, y0 - 1, x0 + 2, y0 - 1);
@@ -627,10 +627,10 @@ public class StarmapScreen extends ScreenBase {
 				int x0 = (int)(starmapRect.x + f.x * zoom - f.shipIcon.getWidth() / 2);
 				int y0 = (int)(starmapRect.y + f.y * zoom - f.shipIcon.getHeight() / 2);
 				g2.drawImage(f.shipIcon, x0, y0, null);
-				int tw = commons.text.getTextWidth(5, f.name);
+				int tw = commons.text().getTextWidth(5, f.name);
 				int xt = (int)(starmapRect.x + f.x * zoom - tw / 2);
 				int yt = (int)(starmapRect.y + f.y * zoom + f.shipIcon.getHeight() / 2) + 3;
-				commons.text.paintTo(g2, xt, yt, 5, f.owner.color, f.name);
+				commons.text().paintTo(g2, xt, yt, 5, f.owner.color, f.name);
 				if (f == currentFleet) {
 					g2.setColor(Color.WHITE);
 					g2.drawRect(x0 - 1, y0 - 1, f.shipIcon.getWidth() + 2, f.shipIcon.getHeight() + 2);
@@ -643,7 +643,7 @@ public class StarmapScreen extends ScreenBase {
 		// TODO panel rendering
 		
 		if (rightPanelVisible) {
-			paintVertically(g2, rightPanel, commons.starmap.panelVerticalTop, commons.starmap.panelVerticalFill, commons.starmap.panelVerticalFill);
+			paintVertically(g2, rightPanel, commons.starmap().panelVerticalTop, commons.starmap().panelVerticalFill, commons.starmap().panelVerticalFill);
 			
 //			g2.setColor(Color.GRAY);
 //			g2.fill(planetsListPanel);
@@ -652,9 +652,9 @@ public class StarmapScreen extends ScreenBase {
 ////			g2.setColor(Color.YELLOW);
 ////			g2.fill(planetFleetSplitterRange);
 			
-			g2.drawImage(commons.starmap.panelVerticalSeparator, planetFleetSplitterRect.x, planetFleetSplitterRect.y, null);
-			g2.drawImage(commons.starmap.panelVerticalSeparator, zoomingPanel.x, zoomingPanel.y - 2, null);
-			g2.drawImage(commons.starmap.panelVerticalSeparator, buttonsPanel.x, buttonsPanel.y - 2, null);
+			g2.drawImage(commons.starmap().panelVerticalSeparator, planetFleetSplitterRect.x, planetFleetSplitterRect.y, null);
+			g2.drawImage(commons.starmap().panelVerticalSeparator, zoomingPanel.x, zoomingPanel.y - 2, null);
+			g2.drawImage(commons.starmap().panelVerticalSeparator, buttonsPanel.x, buttonsPanel.y - 2, null);
 			
 			for (Button2 btn : rightPanelButtons) {
 				btn.paint(g2);
@@ -667,7 +667,7 @@ public class StarmapScreen extends ScreenBase {
 				if (p == currentPlanet) {
 					color = TextRenderer.RED;
 				}
-				commons.text.paintTo(g2, planetsList.x + 3, planetsList.y + (i - planetsOffset) * 10 + 2, 7, color, p.name);
+				commons.text().paintTo(g2, planetsList.x + 3, planetsList.y + (i - planetsOffset) * 10 + 2, 7, color, p.name);
 			}
 			g2.setClip(fleetsList);
 			for (int i = fleetsOffset; i < fleets.size(); i++) {
@@ -676,14 +676,14 @@ public class StarmapScreen extends ScreenBase {
 				if (p == currentFleet) {
 					color = TextRenderer.RED;
 				}
-				commons.text.paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, p.name);
+				commons.text().paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, p.name);
 			}
 			
 			
 			g2.setClip(sp);
 		}
 		if (bottomPanelVisible) {
-			paintHorizontally(g2, bottomPanel, commons.starmap.infoLeft, commons.starmap.infoRight, commons.starmap.infoFill);
+			paintHorizontally(g2, bottomPanel, commons.starmap().infoLeft, commons.starmap().infoRight, commons.starmap().infoFill);
 		}
 		
 		if (scrollbarsVisible) {
@@ -691,7 +691,7 @@ public class StarmapScreen extends ScreenBase {
 		}
 		
 		if (minimapVisible) {
-			g2.drawImage(commons.starmap.minimap, minimapRect.x, minimapRect.y, null);
+			g2.drawImage(commons.starmap().minimap, minimapRect.x, minimapRect.y, null);
 			g2.drawImage(minimapBackground, minimapInnerRect.x, minimapInnerRect.y, null);
 			g2.setColor(Color.WHITE);
 			g2.drawRect(minimapViewportRect.x, minimapViewportRect.y, minimapViewportRect.width - 1, minimapViewportRect.height - 1);
@@ -699,8 +699,8 @@ public class StarmapScreen extends ScreenBase {
 			// render planets
 			for (Planet p : planets) {
 				if (p != currentPlanet || minimapPlanetBlink) {
-					int x0 = minimapInnerRect.x + (p.x * minimapInnerRect.width / commons.starmap.background.getWidth());
-					int y0 = minimapInnerRect.y + (p.y * minimapInnerRect.height / commons.starmap.background.getHeight());
+					int x0 = minimapInnerRect.x + (p.x * minimapInnerRect.width / commons.starmap().background.getWidth());
+					int y0 = minimapInnerRect.y + (p.y * minimapInnerRect.height / commons.starmap().background.getHeight());
 					g2.setColor(new Color(p.owner.color));
 					g2.fillRect(x0 - 1, y0 - 1, 3, 3);
 				}
@@ -715,11 +715,11 @@ public class StarmapScreen extends ScreenBase {
 		starmapWindow.width = width;
 		starmapWindow.height = height - 37;
 		if (scrollbarsVisible) {
-			starmapWindow.width -= commons.starmap.vScrollFill.getWidth();
-			starmapWindow.height -= commons.starmap.hScrollFill.getHeight();
+			starmapWindow.width -= commons.starmap().vScrollFill.getWidth();
+			starmapWindow.height -= commons.starmap().hScrollFill.getHeight();
 		}
 		if (rightPanelVisible) {
-			starmapWindow.width -= commons.starmap.panelVerticalFill.getWidth();
+			starmapWindow.width -= commons.starmap().panelVerticalFill.getWidth();
 			if (scrollbarsVisible) {
 				starmapWindow.width -= 3;
 			}
@@ -729,7 +729,7 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 		if (bottomPanelVisible) {
-			starmapWindow.height -= commons.starmap.infoFill.getHeight();
+			starmapWindow.height -= commons.starmap().infoFill.getHeight();
 			if (scrollbarsVisible) {
 				starmapWindow.height -= 3;
 			}
@@ -739,10 +739,10 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 
-		minimapRect.x = width - commons.starmap.minimap.getWidth();
-		minimapRect.y = height - commons.starmap.minimap.getHeight() - 17;
-		minimapRect.width = commons.starmap.minimap.getWidth();
-		minimapRect.height = commons.starmap.minimap.getHeight();
+		minimapRect.x = width - commons.starmap().minimap.getWidth();
+		minimapRect.y = height - commons.starmap().minimap.getHeight() - 17;
+		minimapRect.width = commons.starmap().minimap.getWidth();
+		minimapRect.height = commons.starmap().minimap.getHeight();
 
 		int saveX = 0;
 		int saveY = 0;
@@ -750,53 +750,53 @@ public class StarmapScreen extends ScreenBase {
 			if (!rightPanelVisible) {
 				saveX += minimapRect.width + 1;
 				if (scrollbarsVisible) {
-					saveX -= commons.starmap.vScrollFill.getWidth() + 1;
+					saveX -= commons.starmap().vScrollFill.getWidth() + 1;
 				}
 			} else {
 				if (!scrollbarsVisible) {
-					saveX += commons.starmap.vScrollFill.getWidth() + 3;
+					saveX += commons.starmap().vScrollFill.getWidth() + 3;
 				}
 			}
 			if (!bottomPanelVisible) {
 				saveY += minimapRect.height + 1;
 				if (scrollbarsVisible) {
-					saveY -= commons.starmap.hScrollFill.getHeight() + 1;
+					saveY -= commons.starmap().hScrollFill.getHeight() + 1;
 				}
 			} else {
 				if (!scrollbarsVisible) {
-					saveY += commons.starmap.hScrollFill.getHeight() + 3;
+					saveY += commons.starmap().hScrollFill.getHeight() + 3;
 				}
 			}
 		}
-		rightPanel.x = getSwingWidth() - commons.starmap.panelVerticalFill.getWidth();
+		rightPanel.x = getSwingWidth() - commons.starmap().panelVerticalFill.getWidth();
 		rightPanel.y = starmapWindow.y;
-		rightPanel.width = commons.starmap.panelVerticalFill.getWidth();
+		rightPanel.width = commons.starmap().panelVerticalFill.getWidth();
 		rightPanel.height = starmapWindow.height - saveY;
 
 		bottomPanel.x = starmapWindow.x;
-		bottomPanel.y = height - 18 - commons.starmap.infoFill.getHeight();
+		bottomPanel.y = height - 18 - commons.starmap().infoFill.getHeight();
 		bottomPanel.width = starmapWindow.width - saveX;
-		bottomPanel.height = commons.starmap.infoFill.getHeight();
+		bottomPanel.height = commons.starmap().infoFill.getHeight();
 
 		scrollbarPainter.setBounds(starmapWindow, saveX, saveY);
 		// ..............................................................
 		// the right subpanels
-		buttonsPanel.width = commons.starmap.panelVerticalFill.getWidth() - 4;
-		buttonsPanel.height = commons.starmap.info[0].getHeight() + commons.starmap.bridge[0].getHeight() + 2;
+		buttonsPanel.width = commons.starmap().panelVerticalFill.getWidth() - 4;
+		buttonsPanel.height = commons.starmap().info[0].getHeight() + commons.starmap().bridge[0].getHeight() + 2;
 		buttonsPanel.x = rightPanel.x + 2;
 		buttonsPanel.y = rightPanel.y + rightPanel.height - buttonsPanel.height;
 		
 		zoomingPanel.width = buttonsPanel.width;
-		zoomingPanel.height = commons.starmap.zoom[0].getHeight() + 2;
+		zoomingPanel.height = commons.starmap().zoom[0].getHeight() + 2;
 		zoomingPanel.x = buttonsPanel.x;
 		zoomingPanel.y = buttonsPanel.y - zoomingPanel.height - 2;
 		
 		planetFleetSplitterRange.x = zoomingPanel.x;
 		planetFleetSplitterRange.width = zoomingPanel.width;
-		planetFleetSplitterRange.y = rightPanel.y + 16 + commons.starmap.backwards[0].getHeight()
-			+ commons.starmap.colony[0].getHeight();
+		planetFleetSplitterRange.y = rightPanel.y + 16 + commons.starmap().backwards[0].getHeight()
+			+ commons.starmap().colony[0].getHeight();
 		planetFleetSplitterRange.height = zoomingPanel.y - planetFleetSplitterRange.y
-			- 16 - commons.starmap.backwards[0].getHeight() - commons.starmap.equipment[0].getHeight();
+			- 16 - commons.starmap().backwards[0].getHeight() - commons.starmap().equipment[0].getHeight();
 		
 		planetFleetSplitterRect.x = planetFleetSplitterRange.x;
 		planetFleetSplitterRect.width = planetFleetSplitterRange.width;
@@ -868,10 +868,10 @@ public class StarmapScreen extends ScreenBase {
 		
 		// TODO fleet and planet listings
 		// ..............................................................
-		minimapRect.x = width - commons.starmap.minimap.getWidth();
-		minimapRect.y = height - commons.starmap.minimap.getHeight() - 17;
-		minimapRect.width = commons.starmap.minimap.getWidth();
-		minimapRect.height = commons.starmap.minimap.getHeight();
+		minimapRect.x = width - commons.starmap().minimap.getWidth();
+		minimapRect.y = height - commons.starmap().minimap.getHeight() - 17;
+		minimapRect.width = commons.starmap().minimap.getWidth();
+		minimapRect.height = commons.starmap().minimap.getHeight();
 //		if ((!rightPanelVisible || ! bottomPanelVisible)) {
 //			minimapRect.x = starmapWindow.x + starmapWindow.width - gfx.minimap.getWidth();
 //			minimapRect.y = starmapWindow.y + starmapWindow.height - gfx.minimap.getHeight();
@@ -892,8 +892,8 @@ public class StarmapScreen extends ScreenBase {
 	private void computeViewport() {
 		double zoom = getZoom();
 
-		starmapRect.width = (int)(commons.starmap.background.getWidth() * zoom);
-		starmapRect.height = (int)(commons.starmap.background.getHeight() * zoom);
+		starmapRect.width = (int)(commons.starmap().background.getWidth() * zoom);
+		starmapRect.height = (int)(commons.starmap().background.getHeight() * zoom);
 		
 		if (starmapRect.width < starmapWindow.width) {
 			xOffset = -(starmapWindow.width - starmapRect.width) / 2;
@@ -1007,11 +1007,11 @@ public class StarmapScreen extends ScreenBase {
 			hscrollRect.x = rectangle.x;
 			hscrollRect.y = rectangle.y + rectangle.height + 1;
 			hscrollRect.width = rectangle.width - saveX;
-			hscrollRect.height = commons.starmap.hScrollFill.getHeight();
+			hscrollRect.height = commons.starmap().hScrollFill.getHeight();
 			
 			vscrollRect.x = rectangle.x + rectangle.width + 1;
 			vscrollRect.y = rectangle.y;
-			vscrollRect.width = commons.starmap.vScrollFill.getWidth();
+			vscrollRect.width = commons.starmap().vScrollFill.getWidth();
 			vscrollRect.height = rectangle.height - saveY;
 			
 			hscrollInnerRect.setLocation(hscrollRect.x + 2, hscrollRect.y + 2);
@@ -1024,8 +1024,8 @@ public class StarmapScreen extends ScreenBase {
 		 * @param g2 the graphics
 		 */
 		public void paint(Graphics2D g2) {
-			paintHorizontally(g2, hscrollRect, commons.starmap.hScrollLeft, commons.starmap.hScrollRight, commons.starmap.hScrollFill);
-			paintVertically(g2, vscrollRect, commons.starmap.vScrollTop, commons.starmap.vScrollBottom, commons.starmap.vScrollFill);
+			paintHorizontally(g2, hscrollRect, commons.starmap().hScrollLeft, commons.starmap().hScrollRight, commons.starmap().hScrollFill);
+			paintVertically(g2, vscrollRect, commons.starmap().vScrollTop, commons.starmap().vScrollBottom, commons.starmap().vScrollFill);
 		}
 	}
 	/**
@@ -1158,7 +1158,7 @@ public class StarmapScreen extends ScreenBase {
 	 * Select the radar dot image for the current zoom level.
 	 */
 	void selectRadarDot() {
-		radarDot = commons.starmap.radarDots[commons.starmap.radarDots.length * zoomIndex / (zoomLevelCount + 1)];
+		radarDot = commons.starmap().radarDots[commons.starmap().radarDots.length * zoomIndex / (zoomLevelCount + 1)];
 	}
 	/**
 	 * Zoom out and keep try to keep the given pixel under the mouse.

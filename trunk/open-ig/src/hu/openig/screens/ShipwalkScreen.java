@@ -172,8 +172,8 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 					
 					if (pointerTransition == wt) {
 						g2.setColor(Color.BLACK);
-						int w = commons.text.getTextWidth(14, pointerTransition.label);
-						commons.text.paintTo(g2, rect.x + (rect.width - w) / 2, rect.y + (rect.height - 14) / 2, 14, TextRenderer.RED, pointerTransition.label);
+						int w = commons.text().getTextWidth(14, pointerTransition.label);
+						commons.text().paintTo(g2, rect.x + (rect.width - w) / 2, rect.y + (rect.height - 14) / 2, 14, TextRenderer.RED, pointerTransition.label);
 					}
 				}
 			}

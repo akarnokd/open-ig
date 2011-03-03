@@ -130,9 +130,9 @@ public class VideoScreen extends ScreenBase {
 		scrollUpTimer.setDelay(50);
 		
 		scrollUpButton = new ImageButton();
-		scrollUpButton.normalImage = commons.database.arrowUp[0];
-		scrollUpButton.selectedImage = commons.database.arrowUp[1];
-		scrollUpButton.pressedImage = commons.database.arrowUp[2];
+		scrollUpButton.normalImage = commons.database().arrowUp[0];
+		scrollUpButton.selectedImage = commons.database().arrowUp[1];
+		scrollUpButton.pressedImage = commons.database().arrowUp[2];
 		
 		scrollUpButton.onPress = new Act() {
 			@Override
@@ -155,9 +155,9 @@ public class VideoScreen extends ScreenBase {
 		};
 		
 		scrollDownButton = new ImageButton();
-		scrollDownButton.normalImage = commons.database.arrowDown[0];
-		scrollDownButton.selectedImage = commons.database.arrowDown[1];
-		scrollDownButton.pressedImage = commons.database.arrowDown[2];
+		scrollDownButton.normalImage = commons.database().arrowDown[0];
+		scrollDownButton.selectedImage = commons.database().arrowDown[1];
+		scrollDownButton.pressedImage = commons.database().arrowDown[2];
 		scrollDownButton.onPress = new Act() {
 			@Override
 			public void act() {
@@ -385,11 +385,11 @@ public class VideoScreen extends ScreenBase {
 		g2.setComposite(cp);
 		
 		
-		String s = commons.labels.get("videos.all_videos");
-		int w = commons.text.getTextWidth(14, s) + 10;
+		String s = commons.labels().get("videos.all_videos");
+		int w = commons.text().getTextWidth(14, s) + 10;
 		g2.setColor(Color.BLACK);
 		g2.fillRect(origin.x + (origin.width - w) / 2, origin.y - 9, w, 18);
-		commons.text.paintTo(g2, origin.x + (origin.width - w) / 2 + 5, origin.y - 7, 14, 0xFFFFCC00, s);
+		commons.text().paintTo(g2, origin.x + (origin.width - w) / 2 + 5, origin.y - 7, 14, 0xFFFFCC00, s);
 		
 		Shape sp = g2.getClip();
 		g2.setClip(listRect);
@@ -399,7 +399,7 @@ public class VideoScreen extends ScreenBase {
 		for (int i = videoIndex; i < videos.size() && i < videoIndex + videoCount; i++) {
 			VideoEntry ve = videos.get(i);
 			int color = ve == selectedVideo ? 0xFFFFCC00 : 0xFF80FFFF;
-			commons.text.paintTo(g2, listRect.x + 10, y + (20 - h) / 2, h, color, ve.fullName);
+			commons.text().paintTo(g2, listRect.x + 10, y + (20 - h) / 2, h, color, ve.fullName);
 			y += 20;
 		}
 		

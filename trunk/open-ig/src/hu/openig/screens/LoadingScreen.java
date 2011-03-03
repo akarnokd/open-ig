@@ -58,7 +58,7 @@ public class LoadingScreen extends ScreenBase {
 	int dots;
 	/** Perform the next animation phase. */
 	void doAnimate() {
-		rollingPhase = (rollingPhase + 1) % commons.research.rolling.length;
+		rollingPhase = (rollingPhase + 1) % commons.research().rolling.length;
 		dots = (dots + 1) % 40;
 		askRepaint();
 	}
@@ -91,24 +91,24 @@ public class LoadingScreen extends ScreenBase {
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 		g2.setComposite(cp);
 		
-		cd.height = commons.research.rolling[0].getHeight() * 2;
-		cd.width = commons.research.rolling[0].getWidth() * 2;
+		cd.height = commons.research().rolling[0].getHeight() * 2;
+		cd.width = commons.research().rolling[0].getWidth() * 2;
 		cd.y = (parent.getHeight() - cd.height) / 2;
 		text.height = 20;
-		text.width = commons.text.getTextWidth(text.height, commons.labels.get("loading") + "...");
+		text.width = commons.text().getTextWidth(text.height, commons.labels().get("loading") + "...");
 		text.y = (parent.getHeight() - text.height) / 2;
 		int tw = cd.width + 10 + text.width;
 		
 		cd.x = (parent.getWidth() - tw) / 2;
 		text.x = cd.x + cd.width + 10;
 		
-		g2.drawImage(commons.research.rolling[rollingPhase], cd.x, cd.y, cd.width, cd.height, null);
+		g2.drawImage(commons.research().rolling[rollingPhase], cd.x, cd.y, cd.width, cd.height, null);
 		
-		StringBuilder sb = new StringBuilder(commons.labels.get("loading"));
+		StringBuilder sb = new StringBuilder(commons.labels().get("loading"));
 		for (int i = 0; i < dots / 10; i++) {
 			sb.append('.');
 		}
-		commons.text.paintTo(g2, text.x, text.y, text.height, 0xFFFFFF00, sb.toString());
+		commons.text().paintTo(g2, text.x, text.y, text.height, 0xFFFFFF00, sb.toString());
 	}
 
 }
