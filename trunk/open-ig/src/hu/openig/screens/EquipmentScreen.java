@@ -8,6 +8,8 @@
 
 package hu.openig.screens;
 
+import java.awt.Graphics2D;
+
 
 
 /**
@@ -45,5 +47,8 @@ public class EquipmentScreen extends ScreenBase {
 		// TODO Auto-generated method stub
 		
 	}
-
+	@Override
+	public void draw(Graphics2D g2) {
+		
+	}
 }
