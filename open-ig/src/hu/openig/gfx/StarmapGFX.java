@@ -187,17 +187,4 @@ public class StarmapGFX {
 	public void load(ResourceLocator rl, String language) {
 		GFXLoader.loadResources(this, rl, language);
 	}
-	/**
-	 * Mix two colors with a factor.
-	 * @param c1 the first color
-	 * @param c2 the second color
-	 * @param rate the mixing factor
-	 * @return the mixed color
-	 */
-	public int mixColors(int c1, int c2, float rate) {
-		return
-			((int)((c1 & 0xFF0000) * rate + (c2 & 0xFF0000) * (1 - rate)) & 0xFF0000)
-			| ((int)((c1 & 0xFF00) * rate + (c2 & 0xFF00) * (1 - rate)) & 0xFF00)
-			| ((int)((c1 & 0xFF) * rate + (c2 & 0xFF) * (1 - rate)) & 0xFF);
-	}
 }
