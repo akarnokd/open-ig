@@ -65,4 +65,22 @@ public class Labels {
 	public String format(String key, Object... values) {
 		return String.format(get(key), values);
 	}
+	/**
+	 * Replace all labels with the supplied new labels.
+	 * This may be used to set an asynchronously loaded label source.
+	 * @param newLabels the new labels
+	 */
+	public void replaceWith(Map<String, String> newLabels) {
+		map.clear();
+		map.putAll(newLabels);
+	}
+	/**
+	 * Replace all labels with the supplied new labels.
+	 * This may be used to set an asynchronously loaded label source.
+	 * @param newLabels the new labels
+	 */
+	public void replaceWith(Labels newLabels) {
+		map.clear();
+		map.putAll(newLabels.map);
+	}
 }

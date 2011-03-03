@@ -179,16 +179,16 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	 */
 	public void paintLabel(Graphics2D g2, int x0, int y0, int width, int height) {
 		List<String> lines = new ArrayList<String>();
-		int maxWidth = commons.text.wrapText(label, width, 14, lines);
+		int maxWidth = commons.text().wrapText(label, width, 14, lines);
 		int y = height - lines.size() * 21 - 7;
 		Composite cp = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
 		g2.fillRect(x0 + (width - maxWidth) / 2 - 3, y0 + y - 3, maxWidth + 6, lines.size() * 21 + 6);
 		g2.setComposite(cp);
 		for (String s : lines) {
-			int tw = commons.text.getTextWidth(14, s);
+			int tw = commons.text().getTextWidth(14, s);
 			int x = (width - tw) / 2;
-			commons.text.paintTo(g2, x0 + x, y0 + y, 14, TextRenderer.WHITE, s);
+			commons.text().paintTo(g2, x0 + x, y0 + y, 14, TextRenderer.WHITE, s);
 			y += 21;
 		}
 	}

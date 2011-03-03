@@ -197,9 +197,9 @@ public class AchievementsScreen extends ScreenBase {
 		scrollUpTimer.setDelay(100);
 		
 		scrollUpButton = new ImageButton();
-		scrollUpButton.normalImage = commons.database.arrowUp[0];
-		scrollUpButton.selectedImage = commons.database.arrowUp[1];
-		scrollUpButton.pressedImage = commons.database.arrowUp[2];
+		scrollUpButton.normalImage = commons.database().arrowUp[0];
+		scrollUpButton.selectedImage = commons.database().arrowUp[1];
+		scrollUpButton.pressedImage = commons.database().arrowUp[2];
 		
 		scrollUpButton.onPress = new Act() {
 			@Override
@@ -222,9 +222,9 @@ public class AchievementsScreen extends ScreenBase {
 		};
 		
 		scrollDownButton = new ImageButton();
-		scrollDownButton.normalImage = commons.database.arrowDown[0];
-		scrollDownButton.selectedImage = commons.database.arrowDown[1];
-		scrollDownButton.pressedImage = commons.database.arrowDown[2];
+		scrollDownButton.normalImage = commons.database().arrowDown[0];
+		scrollDownButton.selectedImage = commons.database().arrowDown[1];
+		scrollDownButton.pressedImage = commons.database().arrowDown[2];
 		scrollDownButton.onPress = new Act() {
 			@Override
 			public void act() {
@@ -252,51 +252,51 @@ public class AchievementsScreen extends ScreenBase {
 		
 		bridge = new ImageButton();
 //		bridge.visible = true;
-		bridge.normalImage = commons.research.bridge[0];
-		bridge.selectedImage = commons.research.bridge[0];
-		bridge.pressedImage = commons.research.bridge[1];
+		bridge.normalImage = commons.research().bridge[0];
+		bridge.selectedImage = commons.research().bridge[0];
+		bridge.pressedImage = commons.research().bridge[1];
 		
 		starmap = new ImageButton();
 		starmap.visible = true;
-		starmap.normalImage = commons.info.starmap[0];
-		starmap.selectedImage = commons.info.starmap[0];
-		starmap.pressedImage = commons.info.starmap[1];
+		starmap.normalImage = commons.info().starmap[0];
+		starmap.selectedImage = commons.info().starmap[0];
+		starmap.pressedImage = commons.info().starmap[1];
 		
 		colony = new ImageButton();
 		colony.visible = true;
-		colony.normalImage = commons.info.colony[0];
-		colony.selectedImage = commons.info.colony[0];
-		colony.pressedImage = commons.info.colony[1];
+		colony.normalImage = commons.info().colony[0];
+		colony.selectedImage = commons.info().colony[0];
+		colony.pressedImage = commons.info().colony[1];
 		
 		equimpent = new ImageButton();
 		equimpent.visible = true;
-		equimpent.normalImage = commons.research.equipmentButton[0];
-		equimpent.selectedImage = commons.research.equipmentButton[0];
-		equimpent.pressedImage = commons.research.equipmentButton[1];
+		equimpent.normalImage = commons.research().equipmentButton[0];
+		equimpent.selectedImage = commons.research().equipmentButton[0];
+		equimpent.pressedImage = commons.research().equipmentButton[1];
 		
 		production = new ImageButton();
 		production.visible = true;
-		production.normalImage = commons.info.production[0];
-		production.selectedImage = commons.info.production[0];
-		production.pressedImage = commons.info.production[1];
+		production.normalImage = commons.info().production[0];
+		production.selectedImage = commons.info().production[0];
+		production.pressedImage = commons.info().production[1];
 		
 		research = new ImageButton();
 		research.visible = true;
-		research.normalImage = commons.info.research[0];
-		research.selectedImage = commons.info.research[0];
-		research.pressedImage = commons.info.research[1];
+		research.normalImage = commons.info().research[0];
+		research.selectedImage = commons.info().research[0];
+		research.pressedImage = commons.info().research[1];
 
 		info = new ImageButton();
 		info.visible = true;
-		info.normalImage = commons.starmap.info[0];
-		info.selectedImage = commons.starmap.info[0];
-		info.pressedImage = commons.starmap.info[1];
+		info.normalImage = commons.starmap().info[0];
+		info.selectedImage = commons.starmap().info[0];
+		info.pressedImage = commons.starmap().info[1];
 
 		diplomacy = new ImageButton();
 //		diplomacy.visible = true;
-		diplomacy.normalImage = commons.info.diplomacy[0];
-		diplomacy.selectedImage = commons.info.diplomacy[0];
-		diplomacy.pressedImage = commons.info.diplomacy[1];
+		diplomacy.normalImage = commons.info().diplomacy[0];
+		diplomacy.selectedImage = commons.info().diplomacy[0];
+		diplomacy.pressedImage = commons.info().diplomacy[1];
 		
 		buttons.add(bridge);
 		buttons.add(starmap);
@@ -487,10 +487,10 @@ public class AchievementsScreen extends ScreenBase {
 			int y = listRect.y;
 			for (int i = achievementIndex; i < achievements.size() && i < achievementIndex + achievementCount; i++) {
 				AchievementEntry ae = achievements.get(i);
-				String desc = commons.labels.get(ae.description);
+				String desc = commons.labels().get(ae.description);
 				int tw = listRect.width - commons.achievement.getWidth() - 10;
 				List<String> lines = new ArrayList<String>();
-				commons.text.wrapText(desc, tw, 10, lines);
+				commons.text().wrapText(desc, tw, 10, lines);
 				BufferedImage img = commons.achievement;
 				int color = 0xFF00FF00;
 				if (!ae.enabled) {
@@ -498,10 +498,10 @@ public class AchievementsScreen extends ScreenBase {
 					color = 0xFFC0C0C0;
 				}
 				g2.drawImage(img, listRect.x, y, null);
-				commons.text.paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y, 14, color, commons.labels.get(ae.title));
+				commons.text().paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y, 14, color, commons.labels().get(ae.title));
 				int y1 = y + 20;
 				for (int j = 0; j < lines.size(); j++) {
-					commons.text.paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y1, 10, color, lines.get(j));
+					commons.text().paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y1, 10, color, lines.get(j));
 					y1 += 12;
 				}
 				y += 50;
@@ -512,9 +512,9 @@ public class AchievementsScreen extends ScreenBase {
 			int h = 10;
 			for (int i = statisticsIndex; i < statistics.size() && i < statisticsIndex + statisticsCount; i++) {
 				StatisticsEntry se = statistics.get(i);
-				commons.text.paintTo(g2, listRect.x, y, h, 0xFF80FF80, commons.labels.get(se.label));
-				int w2 = commons.text.getTextWidth(h, se.value);
-				commons.text.paintTo(g2, listRect.x + listRect.width - w2 - 5, y, h, 0xFF8080FF, se.value);
+				commons.text().paintTo(g2, listRect.x, y, h, 0xFF80FF80, commons.labels().get(se.label));
+				int w2 = commons.text().getTextWidth(h, se.value);
+				commons.text().paintTo(g2, listRect.x + listRect.width - w2 - 5, y, h, 0xFF8080FF, se.value);
 				
 				y += 20;
 			}

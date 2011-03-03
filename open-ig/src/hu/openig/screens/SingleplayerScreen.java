@@ -213,7 +213,7 @@ public class SingleplayerScreen extends ScreenBase {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							commons.labels = labels;
+							commons.labels().replaceWith(labels);
 							commons.world = world;
 							commons.worldLoading = false;
 							barrier.release();
@@ -320,7 +320,7 @@ public class SingleplayerScreen extends ScreenBase {
 	final Rectangle descriptionRect = new Rectangle();
 	@Override
 	public void onEnter() {
-		background = commons.background.difficulty[rnd.nextInt(commons.background.difficulty.length)];
+		background = commons.background().difficulty[rnd.nextInt(commons.background().difficulty.length)];
 		selectedDefinition = null;
 		campaigns.clear();
 		for (String name : commons.rl.listDirectories(commons.config.language, "campaign/")) {
@@ -364,39 +364,39 @@ public class SingleplayerScreen extends ScreenBase {
 		g2.setComposite(cp);
 		
 		int y = campaignList.y;
-		commons.text.paintTo(g2, campaignList.x + 1, campaignList.y - 24, 20, 0xFF000000, commons.labels.get("singleplayer.campaigns"));
-		commons.text.paintTo(g2, campaignList.x, campaignList.y - 25, 20, 0xFFFFFF00, commons.labels.get("singleplayer.campaigns"));
+		commons.text().paintTo(g2, campaignList.x + 1, campaignList.y - 24, 20, 0xFF000000, commons.labels().get("singleplayer.campaigns"));
+		commons.text().paintTo(g2, campaignList.x, campaignList.y - 25, 20, 0xFFFFFF00, commons.labels().get("singleplayer.campaigns"));
 		for (GameDefinition gd : campaigns) {
 			int color = selectedDefinition == gd ? 0xFFFFCC00 : 0xFF80FF80;
-			commons.text.paintTo(g2, campaignList.x + 10, y + 2, 14, color, gd.title);
+			commons.text().paintTo(g2, campaignList.x + 10, y + 2, 14, color, gd.title);
 			y += 20;
 		}
-		g2.drawImage(commons.database.pictureEdge[0], pictureRect.x, pictureRect.y, null);
-		g2.drawImage(commons.database.pictureEdge[1], pictureRect.x + pictureRect.width - commons.database.pictureEdge[1].getWidth(), pictureRect.y, null);
-		g2.drawImage(commons.database.pictureEdge[2], pictureRect.x, pictureRect.y + pictureRect.height - commons.database.pictureEdge[2].getHeight(), null);
-		g2.drawImage(commons.database.pictureEdge[3], pictureRect.x + pictureRect.width - commons.database.pictureEdge[3].getWidth(), pictureRect.y + pictureRect.height - commons.database.pictureEdge[3].getHeight(), null);
+		g2.drawImage(commons.database().pictureEdge[0], pictureRect.x, pictureRect.y, null);
+		g2.drawImage(commons.database().pictureEdge[1], pictureRect.x + pictureRect.width - commons.database().pictureEdge[1].getWidth(), pictureRect.y, null);
+		g2.drawImage(commons.database().pictureEdge[2], pictureRect.x, pictureRect.y + pictureRect.height - commons.database().pictureEdge[2].getHeight(), null);
+		g2.drawImage(commons.database().pictureEdge[3], pictureRect.x + pictureRect.width - commons.database().pictureEdge[3].getWidth(), pictureRect.y + pictureRect.height - commons.database().pictureEdge[3].getHeight(), null);
 		
-		commons.text.paintTo(g2, descriptionRect.x + 1, descriptionRect.y - 24, 20, 0xFF000000, commons.labels.get("singleplayer.description"));
-		commons.text.paintTo(g2, descriptionRect.x, descriptionRect.y - 25, 20, 0xFFFFFF00, commons.labels.get("singleplayer.description"));
+		commons.text().paintTo(g2, descriptionRect.x + 1, descriptionRect.y - 24, 20, 0xFF000000, commons.labels().get("singleplayer.description"));
+		commons.text().paintTo(g2, descriptionRect.x, descriptionRect.y - 25, 20, 0xFFFFFF00, commons.labels().get("singleplayer.description"));
 		
-		commons.text.paintTo(g2, descriptionRect.x + 1, descriptionRect.y + descriptionRect.height + 6, 20, 0xFF000000, commons.labels.get("singleplayer.difficulty"));
-		commons.text.paintTo(g2, descriptionRect.x, descriptionRect.y + descriptionRect.height + 5, 20, 0xFFFFFF00, commons.labels.get("singleplayer.difficulty"));
+		commons.text().paintTo(g2, descriptionRect.x + 1, descriptionRect.y + descriptionRect.height + 6, 20, 0xFF000000, commons.labels().get("singleplayer.difficulty"));
+		commons.text().paintTo(g2, descriptionRect.x, descriptionRect.y + descriptionRect.height + 5, 20, 0xFFFFFF00, commons.labels().get("singleplayer.difficulty"));
 		
 		if (selectedDefinition != null) {
 			List<String> lines = new ArrayList<String>();
-			commons.text.wrapText(selectedDefinition.description, descriptionRect.width - 20, 14, lines);
+			commons.text().wrapText(selectedDefinition.description, descriptionRect.width - 20, 14, lines);
 			y = descriptionRect.y + 2;
 			for (String s : lines) {
-				commons.text.paintTo(g2, descriptionRect.x + 10, y, 14, 0xFF00FF00, s);
+				commons.text().paintTo(g2, descriptionRect.x + 10, y, 14, 0xFF00FF00, s);
 				y += 20;
 			}
 			g2.drawImage(selectedDefinition.image, pictureRect.x + (pictureRect.width - selectedDefinition.image.getWidth()) / 2,
 					pictureRect.y + (pictureRect.height - selectedDefinition.image.getHeight()) / 2, null);
 		}
 		
-		String diff = commons.labels.get(Difficulty.values()[difficulty].label);
-		int diffw = commons.text.getTextWidth(14, diff);
-		commons.text.paintTo(g2, difficultyRect.x + (difficultyRect.width - diffw) / 2, 
+		String diff = commons.labels().get(Difficulty.values()[difficulty].label);
+		int diffw = commons.text().getTextWidth(14, diff);
+		commons.text().paintTo(g2, difficultyRect.x + (difficultyRect.width - diffw) / 2, 
 				difficultyRect.y + (difficultyLeft.getHeight() - difficultyRect.height) / 2, 14, 0xFF00FFFF, diff);
 		
 		for (Button btn : buttons) {

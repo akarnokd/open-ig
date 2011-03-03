@@ -468,89 +468,58 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @author akarnokd, 2009.12.23.
 	 */
 	class MouseActions extends MouseAdapter {
-		@Override
-		public void mousePressed(MouseEvent e) {
+		/** 
+		 * Transform and invoke the mouse action on the current top screen. 
+		 * @param e the mouse event
+		 */
+		void invoke(MouseEvent e) {
 			ScreenBase pri = primary;
 			ScreenBase sec = secondary;
+			boolean rep = false;
 			if (movieVisible) {
-				movie.mouse(UIMouse.from(e));
+				rep = movie.mouse(UIMouse.from(e));
 			} else
 			if (sec != null) {
-				sec.mouse(UIMouse.from(e));
+				rep = sec.mouse(UIMouse.from(e));
 			} else
 			if (pri != null) {
-				pri.mouse(UIMouse.from(e));
+				rep = pri.mouse(UIMouse.from(e));
 			}
+			if (rep) {
+				repaint();
+			}
+		}
+		@Override
+		public void mousePressed(MouseEvent e) {
+			invoke(e);
 		}
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			ScreenBase pri = primary;
-			ScreenBase sec = secondary;
-			if (movieVisible) {
-				movie.mouse(UIMouse.from(e));
-			} else
-			if (sec != null) {
-				sec.mouse(UIMouse.from(e));
-			} else
-			if (pri != null) {
-				pri.mouse(UIMouse.from(e));
-			}
+			invoke(e);
 		}
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			ScreenBase pri = primary;
-			ScreenBase sec = secondary;
-			if (movieVisible) {
-				movie.mouse(UIMouse.from(e));
-			} else
-			if (sec != null) {
-				sec.mouse(UIMouse.from(e));
-			} else
-			if (pri != null) {
-				pri.mouse(UIMouse.from(e));
-			}
+			invoke(e);
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			ScreenBase pri = primary;
-			ScreenBase sec = secondary;
-			if (movieVisible) {
-				movie.mouse(UIMouse.from(e));
-			} else
-			if (sec != null) {
-				sec.mouse(UIMouse.from(e));
-			} else
-			if (pri != null) {
-				pri.mouse(UIMouse.from(e));
-			}
+			invoke(e);
 		}
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
-			ScreenBase pri = primary;
-			ScreenBase sec = secondary;
-			if (movieVisible) {
-				movie.mouse(UIMouse.from(e));
-			} else
-			if (sec != null) {
-				sec.mouse(UIMouse.from(e));
-			} else
-			if (pri != null) {
-				pri.mouse(UIMouse.from(e));
-			}
+			invoke(e);
 		}
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			ScreenBase pri = primary;
-			ScreenBase sec = secondary;
-			if (movieVisible) {
-				movie.mouse(UIMouse.from(e));
-			} else
-			if (sec != null) {
-				sec.mouse(UIMouse.from(e));
-			} else
-			if (pri != null) {
-				pri.mouse(UIMouse.from(e));
-			}
+			invoke(e);
+		}
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			invoke(e);
+		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+			invoke(e);
 		}
 	}
 	@Override

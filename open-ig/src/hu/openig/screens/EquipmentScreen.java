@@ -38,7 +38,7 @@ public class EquipmentScreen extends ScreenBase {
 	EquipmentMode mode;
 	@Override
 	public void onInitialize() {
-		equipment = commons.equipment;
+		equipment = commons.equipment();
 		panelBaseRect = new Rectangle(0, 0, 
 				equipment.base.getWidth(), equipment.base.getHeight());
 	}

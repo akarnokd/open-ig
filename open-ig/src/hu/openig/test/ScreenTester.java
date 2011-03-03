@@ -11,7 +11,6 @@ package hu.openig.test;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
-import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
@@ -380,8 +379,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					commons.world = new World();
 					commons.world.definition = SingleplayerScreen.parseDefinition(commons, "campaign/main");
 					commons.world.difficulty = Difficulty.values()[0];
-					commons.labels = new Labels(); 
-					commons.labels.load(commons.rl, commons.language(), commons.world.definition.name);
+					commons.labels().load(commons.rl, commons.language(), commons.world.definition.name);
 					commons.world.load(commons.rl, commons.language(), commons.world.definition.name);
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
 				} catch (Throwable t) {
@@ -490,7 +488,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	void prepareMainMenuMenu(ScreenBase screen) {
 		final MainMenu mm = (MainMenu)screen;
 		int i = 1;
-		for (final BufferedImage img : commons.background.start) {
+		for (final BufferedImage img : commons.background().start) {
 			JMenuItem mi = new JMenuItem("Background #" + i);
 			mi.addActionListener(new Act() {
 				@Override

@@ -200,13 +200,13 @@ public class SpacewarScreen extends ScreenBase {
 		 * @param y0 the reference y coordinate
 		 */
 		public void paintTo(Graphics2D g2, int x0, int y0) {
-			g2.drawImage(commons.spacewar.stat, x0 + x, y0 + y, null);
+			g2.drawImage(commons.spacewar().stat, x0 + x, y0 + y, null);
 			if (selected) {
-				g2.drawImage(phases[1 + animationIndex], x0 + x + (commons.spacewar.stat.getWidth() - phases[1 + animationIndex].getWidth()) / 2,
-						y0 + y + (commons.spacewar.stat.getHeight() - phases[1 + animationIndex].getHeight()) / 2, null);
+				g2.drawImage(phases[1 + animationIndex], x0 + x + (commons.spacewar().stat.getWidth() - phases[1 + animationIndex].getWidth()) / 2,
+						y0 + y + (commons.spacewar().stat.getHeight() - phases[1 + animationIndex].getHeight()) / 2, null);
 			} else {
-				g2.drawImage(phases[0], x0 + x + (commons.spacewar.stat.getWidth() - phases[0].getWidth()) / 2,
-						y0 + y + (commons.spacewar.stat.getHeight() - phases[0].getHeight()) / 2, null);
+				g2.drawImage(phases[0], x0 + x + (commons.spacewar().stat.getWidth() - phases[0].getWidth()) / 2,
+						y0 + y + (commons.spacewar().stat.getHeight() - phases[0].getHeight()) / 2, null);
 			}
 		}
 		/**
@@ -263,42 +263,42 @@ public class SpacewarScreen extends ScreenBase {
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
-		mainCommands.add(new ThreePhaseButton(33, 24, commons.spacewar.stop));
-		mainCommands.add(new ThreePhaseButton(33 + 72, 24, commons.spacewar.move));
-		mainCommands.add(new ThreePhaseButton(33, 24 + 35, commons.spacewar.kamikaze));
-		mainCommands.add(new ThreePhaseButton(33 + 72, 24 + 35, commons.spacewar.attack));
-		mainCommands.add(new ThreePhaseButton(33, 24 + 35 * 2, commons.spacewar.guard));
-		mainCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 2, commons.spacewar.rocket));
+		mainCommands.add(new ThreePhaseButton(33, 24, commons.spacewar().stop));
+		mainCommands.add(new ThreePhaseButton(33 + 72, 24, commons.spacewar().move));
+		mainCommands.add(new ThreePhaseButton(33, 24 + 35, commons.spacewar().kamikaze));
+		mainCommands.add(new ThreePhaseButton(33 + 72, 24 + 35, commons.spacewar().attack));
+		mainCommands.add(new ThreePhaseButton(33, 24 + 35 * 2, commons.spacewar().guard));
+		mainCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 2, commons.spacewar().rocket));
 		
 		viewCommands = new ArrayList<ThreePhaseButton>();
 		
-		viewCommands.add(new ThreePhaseButton(33, 24 + 35 * 3, commons.spacewar.command));
-		viewCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 3, commons.spacewar.damage));
-		viewCommands.add(new ThreePhaseButton(33, 24 + 35 * 3 + 30, commons.spacewar.fireRange));
-		viewCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 3 + 30, commons.spacewar.grid));
+		viewCommands.add(new ThreePhaseButton(33, 24 + 35 * 3, commons.spacewar().command));
+		viewCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 3, commons.spacewar().damage));
+		viewCommands.add(new ThreePhaseButton(33, 24 + 35 * 3 + 30, commons.spacewar().fireRange));
+		viewCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 3 + 30, commons.spacewar().grid));
 		
-		zoom = new TwoPhaseButton(3, 24, commons.spacewar.zoom);
+		zoom = new TwoPhaseButton(3, 24, commons.spacewar().zoom);
 		zoom.visible = true;
-		pause = new TwoPhaseButton(4, 19 + 170, commons.spacewar.pause);
+		pause = new TwoPhaseButton(4, 19 + 170, commons.spacewar().pause);
 		pause.visible = true;
-		retreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar.retreat);
+		retreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().retreat);
 		retreat.visible = true;
-		confirmRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar.sure);
-		stopRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar.stopTall);
+		confirmRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().sure);
+		stopRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().stopTall);
 		
 		leftButtons = new ArrayList<AnimatedRadioButton>();
-		leftButtons.add(new AnimatedRadioButton(0, 0, commons.spacewar.ships));
-		leftButtons.add(new AnimatedRadioButton(0, 40, commons.spacewar.statistics));
-		leftButtons.add(new AnimatedRadioButton(0, 80, commons.spacewar.fires));
-		leftButtons.add(new AnimatedRadioButton(0, 120, commons.spacewar.computers));
-		leftButtons.add(new AnimatedRadioButton(0, 160, commons.spacewar.movies));
+		leftButtons.add(new AnimatedRadioButton(0, 0, commons.spacewar().ships));
+		leftButtons.add(new AnimatedRadioButton(0, 40, commons.spacewar().statistics));
+		leftButtons.add(new AnimatedRadioButton(0, 80, commons.spacewar().fires));
+		leftButtons.add(new AnimatedRadioButton(0, 120, commons.spacewar().computers));
+		leftButtons.add(new AnimatedRadioButton(0, 160, commons.spacewar().movies));
 		
 		rightButtons = new ArrayList<AnimatedRadioButton>();
-		rightButtons.add(new AnimatedRadioButton(0, 0, commons.spacewar.ships));
-		rightButtons.add(new AnimatedRadioButton(0, 40, commons.spacewar.statistics));
-		rightButtons.add(new AnimatedRadioButton(0, 80, commons.spacewar.fires));
-		rightButtons.add(new AnimatedRadioButton(0, 120, commons.spacewar.computers));
-		rightButtons.add(new AnimatedRadioButton(0, 160, commons.spacewar.movies));
+		rightButtons.add(new AnimatedRadioButton(0, 0, commons.spacewar().ships));
+		rightButtons.add(new AnimatedRadioButton(0, 40, commons.spacewar().statistics));
+		rightButtons.add(new AnimatedRadioButton(0, 80, commons.spacewar().fires));
+		rightButtons.add(new AnimatedRadioButton(0, 120, commons.spacewar().computers));
+		rightButtons.add(new AnimatedRadioButton(0, 160, commons.spacewar().movies));
 		
 		buttonTimer = new Timer(100, new Act() {
 			@Override
@@ -329,7 +329,7 @@ public class SpacewarScreen extends ScreenBase {
 		boolean needRepaint = false;
 		switch (e.type) {
 		case DOWN:
-			if (e.x < commons.spacewar.commands.getWidth() && e.y < commons.spacewar.commands.getHeight() + 20 + commons.spacewar.frameTopLeft.getHeight()) {
+			if (e.x < commons.spacewar().commands.getWidth() && e.y < commons.spacewar().commands.getHeight() + 20 + commons.spacewar().frameTopLeft.getHeight()) {
 				for (ThreePhaseButton btn : mainCommands) {
 					if (btn.test(e.x, e.y)) {
 						btn.selected = true;
@@ -502,8 +502,8 @@ public class SpacewarScreen extends ScreenBase {
 	public void onResize() {
 		// TODO Auto-generated method stub
 		minimap.setBounds(62, 168 + 20, 110, 73);
-		mainmap.setBounds(175, 23, parent.getWidth() - 3 - commons.spacewar.commands.getWidth(),
-				parent.getHeight() - 38 - 3 - commons.spacewar.panelStatLeft.getHeight());
+		mainmap.setBounds(175, 23, parent.getWidth() - 3 - commons.spacewar().commands.getWidth(),
+				parent.getHeight() - 38 - 3 - commons.spacewar().panelStatLeft.getHeight());
 		leftPanel.setBounds(32, parent.getHeight() - 18 - 3 - 195, 286, 195);
 		rightPanel.setBounds(parent.getWidth() - 33 - 286, parent.getHeight() - 18 - 3 - 195, 286, 195);
 	}
@@ -513,35 +513,35 @@ public class SpacewarScreen extends ScreenBase {
 		onResize();
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
-		g2.drawImage(commons.spacewar.frameTopLeft, 0, 20, null);
+		g2.drawImage(commons.spacewar().frameTopLeft, 0, 20, null);
 		
-		g2.drawImage(commons.spacewar.frameTopRight, parent.getWidth() - commons.spacewar.frameTopRight.getWidth(), 20, null);
+		g2.drawImage(commons.spacewar().frameTopRight, parent.getWidth() - commons.spacewar().frameTopRight.getWidth(), 20, null);
 
-		g2.drawImage(commons.spacewar.commands, 0, 20 + commons.spacewar.frameTopLeft.getHeight(), null);
-		g2.drawImage(commons.spacewar.frameRight, parent.getWidth() - commons.spacewar.frameRight.getWidth(), 20 + commons.spacewar.frameTopRight.getHeight(), null);
+		g2.drawImage(commons.spacewar().commands, 0, 20 + commons.spacewar().frameTopLeft.getHeight(), null);
+		g2.drawImage(commons.spacewar().frameRight, parent.getWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight(), null);
 		
-		g2.drawImage(commons.spacewar.panelStatLeft, 0, parent.getHeight() - commons.spacewar.panelStatLeft.getHeight() - 18, null);
+		g2.drawImage(commons.spacewar().panelStatLeft, 0, parent.getHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, null);
 		
-		g2.drawImage(commons.spacewar.panelStatRight, parent.getWidth() - commons.spacewar.panelStatRight.getWidth(), parent.getHeight() - commons.spacewar.panelStatRight.getHeight() - 18, null);
+		g2.drawImage(commons.spacewar().panelStatRight, parent.getWidth() - commons.spacewar().panelStatRight.getWidth(), parent.getHeight() - commons.spacewar().panelStatRight.getHeight() - 18, null);
 
 		Paint p = g2.getPaint();
 
-		TexturePaint tp = new TexturePaint(commons.spacewar.frameTopFill, new Rectangle(commons.spacewar.frameTopLeft.getWidth(), 20, 1, commons.spacewar.frameTopFill.getHeight()));
+		TexturePaint tp = new TexturePaint(commons.spacewar().frameTopFill, new Rectangle(commons.spacewar().frameTopLeft.getWidth(), 20, 1, commons.spacewar().frameTopFill.getHeight()));
 		g2.setPaint(tp);
-		g2.fillRect(commons.spacewar.frameTopLeft.getWidth(), 20, parent.getWidth() - commons.spacewar.frameTopLeft.getWidth() - commons.spacewar.frameTopRight.getWidth(), commons.spacewar.frameTopFill.getHeight());
+		g2.fillRect(commons.spacewar().frameTopLeft.getWidth(), 20, parent.getWidth() - commons.spacewar().frameTopLeft.getWidth() - commons.spacewar().frameTopRight.getWidth(), commons.spacewar().frameTopFill.getHeight());
 		
-		tp = new TexturePaint(commons.spacewar.panelStatFill, new Rectangle(commons.spacewar.panelStatLeft.getWidth(), parent.getHeight() - commons.spacewar.panelStatLeft.getHeight() - 18, 1, commons.spacewar.panelStatFill.getHeight()));
+		tp = new TexturePaint(commons.spacewar().panelStatFill, new Rectangle(commons.spacewar().panelStatLeft.getWidth(), parent.getHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, 1, commons.spacewar().panelStatFill.getHeight()));
 		g2.setPaint(tp);
-		g2.fillRect(commons.spacewar.panelStatLeft.getWidth(), parent.getHeight() - commons.spacewar.panelStatLeft.getHeight() - 18, parent.getWidth() - commons.spacewar.frameTopRight.getWidth() - commons.spacewar.frameTopLeft.getWidth(), commons.spacewar.panelStatFill.getHeight());
+		g2.fillRect(commons.spacewar().panelStatLeft.getWidth(), parent.getHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, parent.getWidth() - commons.spacewar().frameTopRight.getWidth() - commons.spacewar().frameTopLeft.getWidth(), commons.spacewar().panelStatFill.getHeight());
 		
-		tp = new TexturePaint(commons.spacewar.frameRightFill, new Rectangle(parent.getWidth() - commons.spacewar.frameRight.getWidth(), 20 + commons.spacewar.frameTopRight.getHeight() + commons.spacewar.frameRight.getHeight(), commons.spacewar.frameRightFill.getWidth(), commons.spacewar.frameRightFill.getHeight()));
+		tp = new TexturePaint(commons.spacewar().frameRightFill, new Rectangle(parent.getWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight() + commons.spacewar().frameRight.getHeight(), commons.spacewar().frameRightFill.getWidth(), commons.spacewar().frameRightFill.getHeight()));
 		g2.setPaint(tp);
-		g2.fillRect(parent.getWidth() - commons.spacewar.frameRight.getWidth(), 20 + commons.spacewar.frameTopRight.getHeight() + commons.spacewar.frameRight.getHeight(), commons.spacewar.frameRightFill.getWidth(), parent.getHeight() - 38 - commons.spacewar.frameTopRight.getHeight() - commons.spacewar.frameRight.getHeight() - commons.spacewar.panelStatRight.getHeight());
+		g2.fillRect(parent.getWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight() + commons.spacewar().frameRight.getHeight(), commons.spacewar().frameRightFill.getWidth(), parent.getHeight() - 38 - commons.spacewar().frameTopRight.getHeight() - commons.spacewar().frameRight.getHeight() - commons.spacewar().panelStatRight.getHeight());
 		
-		tp = new TexturePaint(commons.spacewar.frameLeftFill, new Rectangle(0, 20 + commons.spacewar.frameTopLeft.getHeight() + commons.spacewar.commands.getHeight(), commons.spacewar.frameLeftFill.getWidth(), commons.spacewar.frameLeftFill.getHeight()));
+		tp = new TexturePaint(commons.spacewar().frameLeftFill, new Rectangle(0, 20 + commons.spacewar().frameTopLeft.getHeight() + commons.spacewar().commands.getHeight(), commons.spacewar().frameLeftFill.getWidth(), commons.spacewar().frameLeftFill.getHeight()));
 		g2.setPaint(tp);
-		g2.fillRect(0, 20 + commons.spacewar.frameTopLeft.getHeight() + commons.spacewar.commands.getHeight(), commons.spacewar.frameLeftFill.getWidth(), 
-				parent.getHeight() - 36 - commons.spacewar.frameTopLeft.getHeight() - commons.spacewar.commands.getHeight() - commons.spacewar.panelStatLeft.getHeight());
+		g2.fillRect(0, 20 + commons.spacewar().frameTopLeft.getHeight() + commons.spacewar().commands.getHeight(), commons.spacewar().frameLeftFill.getWidth(), 
+				parent.getHeight() - 36 - commons.spacewar().frameTopLeft.getHeight() - commons.spacewar().commands.getHeight() - commons.spacewar().panelStatLeft.getHeight());
 		
 		g2.setPaint(p);
 		
@@ -569,8 +569,8 @@ public class SpacewarScreen extends ScreenBase {
 		
 		g2.fill(mainmap);
 		
-		g2.drawImage(commons.spacewar.panelIg, leftPanel.x, leftPanel.y, null);
-		g2.drawImage(commons.spacewar.panelIg, rightPanel.x, rightPanel.y, null);
+		g2.drawImage(commons.spacewar().panelIg, leftPanel.x, leftPanel.y, null);
+		g2.drawImage(commons.spacewar().panelIg, rightPanel.x, rightPanel.y, null);
 	}
 	/** Zoom in. */
 	protected void doZoomIn() {

@@ -151,11 +151,11 @@ public class PlanetScreen extends ScreenBase {
 				askRepaint();
 			}
 		});
-		selection = new Tile(1, 1, ImageUtils.recolor(commons.colony.tileEdge, 0xFFFFFF00), null);
-		areaAccept = new Tile(1, 1, ImageUtils.recolor(commons.colony.tileEdge, 0xFF00FFFF), null);
-		areaEmpty = new Tile(1, 1, ImageUtils.recolor(commons.colony.tileEdge, 0xFF808080), null);
-		areaDeny = new Tile(1, 1, ImageUtils.recolor(commons.colony.tileCrossed, 0xFFFF0000), null);
-		areaCurrent  = new Tile(1, 1, ImageUtils.recolor(commons.colony.tileCrossed, 0xFFFFCC00), null);
+		selection = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFFFFFF00), null);
+		areaAccept = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
+		areaEmpty = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF808080), null);
+		areaDeny = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFF0000), null);
+		areaCurrent  = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFFCC00), null);
 		
 		selection.alpha = 1.0f;
 		areaAccept.alpha = 1.0f;
@@ -420,7 +420,7 @@ public class PlanetScreen extends ScreenBase {
 //				if (r == null) {
 //					continue;
 //				}
-				String label = commons.labels.get(b.type.label);
+				String label = commons.labels().get(b.type.label);
 				int nameLen = txt.getTextWidth(7, label);
 				int h = (r.height - 7) / 2;
 				int nx = r.x + (r.width - nameLen) / 2;
@@ -506,7 +506,7 @@ public class PlanetScreen extends ScreenBase {
 					}
 				} else {
 					int ey = r.y + h + 13;
-					String offline = commons.labels.get("buildings.offline");
+					String offline = commons.labels().get("buildings.offline");
 					int w = txt.getTextWidth(10, offline);
 					color = 0xFF8080FF;
 					if (!blink) {
