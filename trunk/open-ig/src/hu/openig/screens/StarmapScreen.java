@@ -192,8 +192,8 @@ public class StarmapScreen extends ScreenBase {
 		nextFleet = new Button2(commons.starmap().forwards[0], commons.starmap().forwards[1], disabledPattern);
 		colony = new Button2(commons.starmap().colony[0], commons.starmap().colony[1], disabledPattern);
 		equipment = new Button2(commons.starmap().equipment[0], commons.starmap().equipment[1], disabledPattern);
-		info = new Button2(commons.starmap().info[0], commons.starmap().info[1], disabledPattern);
-		bridge = new Button2(commons.starmap().bridge[0], commons.starmap().bridge[1], disabledPattern);
+		info = new Button2(commons.common().infoButton[0], commons.common().infoButton[1], disabledPattern);
+		bridge = new Button2(commons.common().bridgeButton[0], commons.common().bridgeButton[1], disabledPattern);
 		
 		rightPanelButtons.clear();
 		
@@ -602,19 +602,19 @@ public class StarmapScreen extends ScreenBase {
 					BufferedImage icon = null;
 					switch (p.problems.get(i)) {
 					case HOUSING:
-						icon = commons.houseIcon;
+						icon = commons.common().houseIcon;
 						break;
 					case FOOD:
-						icon = commons.foodIcon;
+						icon = commons.common().foodIcon;
 						break;
 					case HOSPITAL:
-						icon = commons.hospitalIcon;
+						icon = commons.common().hospitalIcon;
 						break;
 					case ENERGY:
-						icon = commons.energyIcon;
+						icon = commons.common().energyIcon;
 						break;
 					case WORKFORCE:
-						icon = commons.workerIcon;
+						icon = commons.common().workerIcon;
 						break;
 					default:
 					}
@@ -782,7 +782,7 @@ public class StarmapScreen extends ScreenBase {
 		// ..............................................................
 		// the right subpanels
 		buttonsPanel.width = commons.starmap().panelVerticalFill.getWidth() - 4;
-		buttonsPanel.height = commons.starmap().info[0].getHeight() + commons.starmap().bridge[0].getHeight() + 2;
+		buttonsPanel.height = commons.common().infoButton[0].getHeight() + commons.common().bridgeButton[0].getHeight() + 2;
 		buttonsPanel.x = rightPanel.x + 2;
 		buttonsPanel.y = rightPanel.y + rightPanel.height - buttonsPanel.height;
 		

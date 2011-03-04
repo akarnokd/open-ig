@@ -108,9 +108,6 @@ public class StarmapGFX {
 	/** Backwards. */
 	@Btn2(name = "starmap/button_backwards")
 	public BufferedImage[] backwards;
-	/** Bridge button. */
-	@Btn2(name = "starmap/button_bridge")
-	public BufferedImage[] bridge;
 	/** Colonize button. */
 	@Img(name = "starmap/button_colonize")
 	public BufferedImage colonize;
@@ -135,9 +132,6 @@ public class StarmapGFX {
 	/** Forwards button. */
 	@Btn2(name = "starmap/button_forwards")
 	public BufferedImage[] forwards;
-	/** Info button. */
-	@Btn2(name = "starmap/button_info")
-	public BufferedImage[] info;
 	/** Move button. */
 	@Cat(name = "starmap/button_move")
 	public BufferedImage[] move;

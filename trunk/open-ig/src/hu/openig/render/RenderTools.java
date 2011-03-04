@@ -12,8 +12,11 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.awt.TexturePaint;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -241,5 +244,30 @@ public final class RenderTools {
 			((int)((c1 & 0xFF0000) * rate + (c2 & 0xFF0000) * (1 - rate)) & 0xFF0000)
 			| ((int)((c1 & 0xFF00) * rate + (c2 & 0xFF00) * (1 - rate)) & 0xFF00)
 			| ((int)((c1 & 0xFF) * rate + (c2 & 0xFF) * (1 - rate)) & 0xFF);
+	}
+	/**
+	 * Flood-fill the area of the given rectangle with the given image. 
+	 * @param g2 the graphics context
+	 * @param rect the target rectangle
+	 * @param image the image to use
+	 */
+	public static void fill(Graphics2D g2, Rectangle rect, BufferedImage image) {
+		fill(g2, rect.x, rect.y, rect.width, rect.height, image);
+	}
+	/**
+	 * Flood-fill the area of the given rectangle with the given image. 
+	 * @param g2 the graphics context
+	 * @param x the left coordinate
+	 * @param y the top coordinate
+	 * @param width the area width
+	 * @param height the area height
+	 * @param image the image to use
+	 */
+	public static void fill(Graphics2D g2, int x, int y, int width, int height, BufferedImage image) {
+		Paint save = g2.getPaint();
+		TexturePaint tp = new TexturePaint(image, new Rectangle(x, y, image.getWidth(), image.getHeight()));
+		g2.setPaint(tp);
+		g2.fillRect(x, y, width, height);
+		g2.setPaint(save);
 	}
 }

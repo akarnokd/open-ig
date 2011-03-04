@@ -75,10 +75,10 @@ public class VideoScreen extends ScreenBase {
 	@Override
 	public void onResize() {
 		origin.setBounds(
-			(parent.getWidth() - commons.infoEmpty.getWidth()) / 2,
-			20 + (parent.getHeight() - commons.infoEmpty.getHeight() - 38) / 2,
-			commons.infoEmpty.getWidth(),
-			commons.infoEmpty.getHeight()
+			(parent.getWidth() - commons.common().infoEmpty.getWidth()) / 2,
+			20 + (parent.getHeight() - commons.common().infoEmpty.getHeight() - 38) / 2,
+			commons.common().infoEmpty.getWidth(),
+			commons.common().infoEmpty.getHeight()
 		);
 		listRect.setBounds(origin.x + 10, origin.y + 20, origin.width - 50, 360);
 		videoCount = listRect.height / 20;
@@ -376,7 +376,7 @@ public class VideoScreen extends ScreenBase {
 		resize();
 		Composite cp = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
-		g2.drawImage(commons.infoEmpty, origin.x, origin.y, null);
+		g2.drawImage(commons.common().infoEmpty, origin.x, origin.y, null);
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, parent.getWidth(), origin.y);
 		g2.fillRect(0, origin.y + origin.height, parent.getWidth(), parent.getHeight() - origin.y - origin.height);

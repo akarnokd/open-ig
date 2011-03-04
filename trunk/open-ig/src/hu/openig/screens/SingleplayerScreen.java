@@ -141,9 +141,9 @@ public class SingleplayerScreen extends ScreenBase {
 		difficultyLeft.commons = commons;
 		difficultyLeft.enabled = true;
 		difficultyLeft.visible = true;
-		difficultyLeft.normalImage = commons.moveLeft[0];
-		difficultyLeft.selectedImage = commons.moveLeft[0];
-		difficultyLeft.pressedImage = commons.moveLeft[1];
+		difficultyLeft.normalImage = commons.common().moveLeft[0];
+		difficultyLeft.selectedImage = commons.common().moveLeft[0];
+		difficultyLeft.pressedImage = commons.common().moveLeft[1];
 		difficultyLeft.onPress = new Act() { @Override public void act() { doDifficultyLess(); } };
 		difficultyLeft.onRelease = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
 		difficultyLeft.onLeave = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
@@ -152,9 +152,9 @@ public class SingleplayerScreen extends ScreenBase {
 		difficultyRight.commons = commons;
 		difficultyRight.enabled = true;
 		difficultyRight.visible = true;
-		difficultyRight.normalImage = commons.moveRight[0];
-		difficultyRight.selectedImage = commons.moveRight[0];
-		difficultyRight.pressedImage = commons.moveRight[1];
+		difficultyRight.normalImage = commons.common().moveRight[0];
+		difficultyRight.selectedImage = commons.common().moveRight[0];
+		difficultyRight.pressedImage = commons.common().moveRight[1];
 		difficultyRight.onPress = new Act() { @Override public void act() { doDifficultyMore(); } };
 		difficultyRight.onRelease = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
 		difficultyRight.onLeave = new Act() { @Override public void act() { adjustDifficultyButtons(); } };

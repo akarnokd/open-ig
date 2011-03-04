@@ -57,7 +57,7 @@ public class ImageButton extends Button {
 		if (visible) {
 			if (!enabled) {
 				g2.drawImage(normalImage, x0 + x, y0 + y, null);
-				TexturePaint tp = new TexturePaint(commons.disabledPattern, new Rectangle(x0 + x, y0 + y, 3, 3));
+				TexturePaint tp = new TexturePaint(commons.common().disabledPattern, new Rectangle(x0 + x, y0 + y, 3, 3));
 				Paint sp = g2.getPaint();
 				g2.setPaint(tp);
 				g2.fillRect(x0 + x, y0 + y, normalImage.getWidth(), normalImage.getHeight());
