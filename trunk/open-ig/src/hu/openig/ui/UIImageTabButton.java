@@ -21,10 +21,13 @@ import javax.swing.Timer;
  * Supports
  * the option to repeatedly call the <code>onClick</code>
  * handler when the user holds down a button.
+ * The difference from <code>UIImageButton</code>
+ * that when clicked, the button remains in the down state.
+ * You must manually remove the down state.
  * 
  * @author akarnokd, 2011.02.26.
  */
-public class UIImageButton extends UIComponent {
+public class UIImageTabButton extends UIComponent {
 	/** The normal state image. */
 	protected BufferedImage normal;
 	/** The pressed state image. */
@@ -49,14 +52,14 @@ public class UIImageButton extends UIComponent {
 	/** The timer to send pressed events periodically. */
 	protected Timer holdTimer;
 	/** Is the mouse pressed down on this component. */
-	protected boolean down;
+	public boolean down;
 	/**
 	 * Constructor with the default images.
 	 * @param normal the normal state image
 	 * @param pressed the pressed state image
 	 * @param hovered the hovered state image, if null, the normal image is used instead
 	 */
-	public UIImageButton(BufferedImage normal, BufferedImage pressed, BufferedImage hovered) {
+	public UIImageTabButton(BufferedImage normal, BufferedImage pressed, BufferedImage hovered) {
 		this.normal = normal;
 		this.pressed = pressed;
 		this.hovered = hovered != null ? hovered : normal;
@@ -80,7 +83,7 @@ public class UIImageButton extends UIComponent {
 	 * You may use this constructor with the resource BufferedImage arrays of buttons
 	 * @param images the array of images.
 	 */
-	public UIImageButton(BufferedImage[] images) {
+	public UIImageTabButton(BufferedImage[] images) {
 		this.normal = images[0];
 		this.pressed = images.length > 1 ? images[1] : images[0];
 		this.hovered = images.length > 2 ? images[2] : images[0];
@@ -157,7 +160,6 @@ public class UIImageButton extends UIComponent {
 			return false;
 		case UP:
 		case LEAVE:
-			down = false;
 			holdTimer.stop();
 			return true;
 		case ENTER:
@@ -171,7 +173,7 @@ public class UIImageButton extends UIComponent {
 	 * @param pattern the pattern to fill with the area of the button when it is disabled
 	 * @return this
 	 */
-	public UIImageButton setDisabledPattern(BufferedImage pattern) {
+	public UIImageTabButton setDisabledPattern(BufferedImage pattern) {
 		this.disabledPattern = pattern;
 		return this;
 	}

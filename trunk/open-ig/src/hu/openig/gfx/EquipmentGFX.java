@@ -83,8 +83,8 @@ public class EquipmentGFX {
 	@Btn2(name = "equipment/button_add")
 	public BufferedImage[] add;
 	/** Delete button. */
-	@Img(name = "equipment/button_delete")
-	public BufferedImage delete;
+	@Btn2(name = "equipment/button_delete")
+	public BufferedImage[] delete;
 	/** End join. */
 	@Btn2(name = "equipment/button_end_join")
 	public BufferedImage[] endJoin;

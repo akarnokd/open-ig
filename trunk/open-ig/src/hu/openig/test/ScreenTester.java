@@ -23,6 +23,7 @@ import hu.openig.screens.CommonResources;
 import hu.openig.screens.DatabaseScreen;
 import hu.openig.screens.DiplomacyScreen;
 import hu.openig.screens.EquipmentScreen;
+import hu.openig.screens.EquipmentScreen.EquipmentMode;
 import hu.openig.screens.GameControls;
 import hu.openig.screens.InfoScreen;
 import hu.openig.screens.LoadSaveScreen;
@@ -90,6 +91,8 @@ public class ScreenTester extends JFrame implements GameControls {
 	final String txtError = "An error occurred. Please check the console output.";
 	/** The parent text. */
 	volatile String parentText = txtLoad;
+	/** The UI language. */
+	volatile String language = "hu";
 	/** The render panel. */
 	final JComponent parent = new JComponent() {
 		/** */
@@ -269,16 +272,27 @@ public class ScreenTester extends JFrame implements GameControls {
 				doExit();
 			}
 		});
-		JMenuItem miReload = new JMenuItem("Reload resources");
-		miReload.addActionListener(new ActionListener() {
+		JMenuItem miReloadHu = new JMenuItem("Reload resources: Hungarian");
+		miReloadHu.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				language = "hu";
+				doReload();
+			}
+		});
+		JMenuItem miReloadEn = new JMenuItem("Reload resources: English");
+		miReloadEn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				language = "en";
 				doReload();
 			}
 		});
 		
 		menuAction.add(miRepaint);
-		menuAction.add(miReload);
+		menuAction.addSeparator();
+		menuAction.add(miReloadHu);
+		menuAction.add(miReloadEn);
 		menuAction.addSeparator();
 		menuAction.add(miExit);
 		
@@ -357,11 +371,14 @@ public class ScreenTester extends JFrame implements GameControls {
 	/** Reload game resources. */
 	void doReload() {
 		menuView.setVisible(false);
+		String screenClass = null;
 		if (screen != null) {
+			screenClass = screen.getClass().getName();
 			screen.onLeave();
 			screen.onFinish();
 			screen = null;
 		}
+		final String clazz = screenClass;
 		config = null;
 		commons = null;
 		rl = null;
@@ -374,6 +391,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				try {
 					config = new Configuration("open-ig-config.xml");
 					config.load();
+					config.language = language;
 					long t = System.nanoTime();
 					commons = new CommonResources(config, ScreenTester.this);
 					System.out.printf("Common resources: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
@@ -398,6 +416,19 @@ public class ScreenTester extends JFrame implements GameControls {
 				parentColor = new Color(0xFF80FF80);
 				parentText = txtScreen;
 				enableDisableMenu(true);
+				// restore the current screen
+				if (clazz != null) {
+					try {
+						screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
+						screen.initialize(commons, parent);
+						screen.onEnter();
+						screen.resize();
+						repaint();
+						onScreen(screen.getClass().getSimpleName(), screen);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
 				repaint();
 			}
 		};
@@ -483,6 +514,30 @@ public class ScreenTester extends JFrame implements GameControls {
 		if ("MainMenu".equals(className)) {
 			prepareMainMenuMenu(screen);
 			menuView.setVisible(true);
+		} else
+		if ("EquipmentScreen".equals(className)) {
+			prepareEquipmentMenu((EquipmentScreen)screen);
+			menuView.setVisible(true);
+		}
+	}
+	/**
+	 * Prepare the menu for the equipment screen.
+	 * @param screen the screen
+	 */
+	void prepareEquipmentMenu(final EquipmentScreen screen) {
+		JMenu mode = new JMenu("Mode");
+		menuView.add(mode);
+		
+		for (final EquipmentMode md : EquipmentMode.values()) {
+			JMenuItem mi = new JMenuItem(md.toString());
+			mi.addActionListener(new Act() {
+				@Override
+				public void act() {
+					screen.setEquipmentMode(md);
+					repaint();
+				}
+			});
+			mode.add(mi);
 		}
 	}
 	/**

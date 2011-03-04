@@ -67,7 +67,7 @@ public class UIContainer extends UIComponent {
 					result |= c.mouse(e.copy(Type.ENTER));
 				}
 				c.over = true;
-				if (zmax < c.z) {
+				if (zmax <= c.z) {
 					target = c;
 					zmax = c.z;
 				}

@@ -401,6 +401,15 @@
 	<entry key='mapeditor.edit_copy_surface'>Másolás: felszín</entry>
 	<entry key='mapeditor.edit_paste_building'>Beillesztés: épület</entry>
 	<entry key='mapeditor.edit_paste_surface'>Beillesztés: felszín</entry>
+	<entry key='equipment.spaceships'>Űrhajók :%d</entry>
+	<entry key='equipment.fighters'>Vadászok:%d</entry>
+	<entry key='equipment.vehicles'>Járművek:%d</entry>
+	<entry key='equipment.max'>max:%d</entry>
+	<entry key='equipment.maxpertype'>max:%d/típus</entry>
+	<entry key='equipment.secondary'>Másodlagos:</entry>
+	<entry key='equipment.vehiclesandmax'>Járművek:%d/%d</entry>
+	<entry key='equipment.innercount'>Akt:%d Max:%d</entry>
+	<entry key='equipment.selectednametype'>Név:%s   Típus:%s</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
