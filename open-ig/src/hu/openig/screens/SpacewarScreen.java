@@ -70,7 +70,7 @@ public class SpacewarScreen extends ScreenBase {
 			if (disabled) {
 				g2.drawImage(phases[0], x, y, null);
 				Paint p = g2.getPaint();
-				g2.setPaint(new TexturePaint(commons.disabledPattern, new Rectangle(x, y, 3, 3)));
+				g2.setPaint(new TexturePaint(commons.common().disabledPattern, new Rectangle(x, y, 3, 3)));
 				g2.fillRect(x, y, phases[0].getWidth(), phases[0].getHeight());
 				g2.setPaint(p);
 			} else

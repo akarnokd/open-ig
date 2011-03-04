@@ -124,10 +124,10 @@ public class AchievementsScreen extends ScreenBase {
 	@Override
 	public void onResize() {
 		origin.setBounds(
-			(parent.getWidth() - commons.infoEmpty.getWidth()) / 2,
-			20 + (parent.getHeight() - commons.infoEmpty.getHeight() - 38) / 2,
-			commons.infoEmpty.getWidth(),
-			commons.infoEmpty.getHeight()
+			(parent.getWidth() - commons.common().infoEmpty.getWidth()) / 2,
+			20 + (parent.getHeight() - commons.common().infoEmpty.getHeight() - 38) / 2,
+			commons.common().infoEmpty.getWidth(),
+			commons.common().infoEmpty.getHeight()
 		);
 		listRect.setBounds(origin.x + 10, origin.y + 20, origin.width - 50, 350);
 		achievementCount = listRect.height / 50;
@@ -252,9 +252,9 @@ public class AchievementsScreen extends ScreenBase {
 		
 		bridge = new ImageButton();
 //		bridge.visible = true;
-		bridge.normalImage = commons.research().bridge[0];
-		bridge.selectedImage = commons.research().bridge[0];
-		bridge.pressedImage = commons.research().bridge[1];
+		bridge.normalImage = commons.common().bridgeButton[0];
+		bridge.selectedImage = commons.common().bridgeButton[0];
+		bridge.pressedImage = commons.common().bridgeButton[1];
 		
 		starmap = new ImageButton();
 		starmap.visible = true;
@@ -288,9 +288,9 @@ public class AchievementsScreen extends ScreenBase {
 
 		info = new ImageButton();
 		info.visible = true;
-		info.normalImage = commons.starmap().info[0];
-		info.selectedImage = commons.starmap().info[0];
-		info.pressedImage = commons.starmap().info[1];
+		info.normalImage = commons.common().infoButton[0];
+		info.selectedImage = commons.common().infoButton[0];
+		info.pressedImage = commons.common().infoButton[1];
 
 		diplomacy = new ImageButton();
 //		diplomacy.visible = true;
@@ -479,7 +479,7 @@ public class AchievementsScreen extends ScreenBase {
 		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
 		g2.setComposite(cp);
 		
-		g2.drawImage(commons.infoEmpty, origin.x, origin.y, null);
+		g2.drawImage(commons.common().infoEmpty, origin.x, origin.y, null);
 		
 		Shape sp = g2.getClip();
 		g2.setClip(listRect);
@@ -488,20 +488,20 @@ public class AchievementsScreen extends ScreenBase {
 			for (int i = achievementIndex; i < achievements.size() && i < achievementIndex + achievementCount; i++) {
 				AchievementEntry ae = achievements.get(i);
 				String desc = commons.labels().get(ae.description);
-				int tw = listRect.width - commons.achievement.getWidth() - 10;
+				int tw = listRect.width - commons.common().achievement.getWidth() - 10;
 				List<String> lines = new ArrayList<String>();
 				commons.text().wrapText(desc, tw, 10, lines);
-				BufferedImage img = commons.achievement;
+				BufferedImage img = commons.common().achievement;
 				int color = 0xFF00FF00;
 				if (!ae.enabled) {
-					img = commons.achievementGrayed;
+					img = commons.common().achievementGrayed;
 					color = 0xFFC0C0C0;
 				}
 				g2.drawImage(img, listRect.x, y, null);
-				commons.text().paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y, 14, color, commons.labels().get(ae.title));
+				commons.text().paintTo(g2, listRect.x + commons.common().achievement.getWidth() + 10, y, 14, color, commons.labels().get(ae.title));
 				int y1 = y + 20;
 				for (int j = 0; j < lines.size(); j++) {
-					commons.text().paintTo(g2, listRect.x + commons.achievement.getWidth() + 10, y1, 10, color, lines.get(j));
+					commons.text().paintTo(g2, listRect.x + commons.common().achievement.getWidth() + 10, y1, 10, color, lines.get(j));
 					y1 += 12;
 				}
 				y += 50;

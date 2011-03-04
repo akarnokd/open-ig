@@ -8,14 +8,12 @@
 
 package hu.openig.screens;
 
-import hu.openig.core.Btn2;
 import hu.openig.core.Configuration;
-import hu.openig.core.GFXLoader;
-import hu.openig.core.Img;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.gfx.BackgroundGFX;
 import hu.openig.gfx.ColonyGFX;
+import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.DatabaseGFX;
 import hu.openig.gfx.EquipmentGFX;
 import hu.openig.gfx.InfoGFX;
@@ -24,13 +22,8 @@ import hu.openig.gfx.SpacewarGFX;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StatusbarGFX;
 import hu.openig.model.World;
-import hu.openig.render.GenericMediumButton;
 import hu.openig.render.TextRenderer;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
@@ -73,54 +66,12 @@ public class CommonResources {
 	private StarmapGFX starmap;
 	/** The database graphics. */
 	private DatabaseGFX database;
+	/** The common graphics. */
+	private CommonGFX common;
 	/** The text renderer. */
 	private TextRenderer text;
 	/** The general control interface. */
 	public GameControls control;
-	/** The disabled pattern. */
-	public BufferedImage disabledPattern;
-	/** The normal button renderer. */
-	public GenericMediumButton mediumButton;
-	/** The pressed button renderer. */
-	public GenericMediumButton mediumButtonPressed;
-	// --------------------------------------------
-	// The general images usable by multiple places
-	// --------------------------------------------
-	/** The achievement icon. */
-	@Img(name = "achievement")
-	public BufferedImage achievement;
-	/** The achievement icon grayed out. */
-	public BufferedImage achievementGrayed;
-	/** The empty background of the info panel. */
-	@Img(name = "info/info_empty")
-	public BufferedImage infoEmpty;
-	/** Move up arrow. */
-	@Btn2(name = "button_up")
-	public BufferedImage[] moveUp;
-	/** Move down arrow. */
-	@Btn2(name = "button_down")
-	public BufferedImage[] moveDown;
-	/** Move left arrow. */
-	@Btn2(name = "button_left")
-	public BufferedImage[] moveLeft;
-	/** Move right arrow. */
-	@Btn2(name = "button_right")
-	public BufferedImage[] moveRight;
-	/** Energy icon. */
-	@Img(name = "energy-icon")
-	public BufferedImage energyIcon;
-	/** Food icon. */
-	@Img(name = "food-icon")
-	public BufferedImage foodIcon;
-	/** Worker icon. */
-	@Img(name = "worker-icon")
-	public BufferedImage workerIcon;
-	/** Hospital icon. */
-	@Img(name = "hospital-icon")
-	public BufferedImage hospitalIcon;
-	/** Housing icon. */
-	@Img(name = "house-icon")
-	public BufferedImage houseIcon;
 	// --------------------------------------------
 	// The various screen objects
 	// --------------------------------------------
@@ -340,26 +291,7 @@ public class CommonResources {
 		starmap = null;
 		database = null;
 		text = null;
-		createCustomImages();
-	}
-	/** Create any custom images. */
-	private void createCustomImages() {
-		int[] disabled = { 0xFF000000, 0xFF000000, 0, 0, 0xFF000000, 0, 0, 0, 0 };
-		disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
-		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
-		GFXLoader.loadResources(this, rl, config.language);
-
-		achievementGrayed = new BufferedImage(achievement.getWidth(), achievement.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = achievementGrayed.createGraphics();
-		g2.drawImage(achievement, 0, 0, null);
-		g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, achievement.getWidth(), achievement.getHeight());
-		g2.dispose();
-
-		mediumButton = new GenericMediumButton("/hu/openig/gfx/button_medium.png");
-		mediumButtonPressed = new GenericMediumButton("/hu/openig/gfx/button_medium_pressed.png");
-
+		common = null;
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.
@@ -608,6 +540,19 @@ public class CommonResources {
 			}));
 		}
 		return text;
+	}
+	/** @return lazily initialize the text or return the existing one. */
+	public CommonGFX common() {
+		if (common == null) {
+			System.out.println("Loading common");
+			common = get(pool.submit(new Callable<CommonGFX>() {
+				@Override
+				public CommonGFX call() throws Exception {
+					return new CommonGFX().load(rl, config.language);
+				}
+			}));
+		}
+		return common;
 	}
 
 }

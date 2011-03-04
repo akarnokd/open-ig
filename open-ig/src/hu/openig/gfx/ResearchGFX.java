@@ -24,9 +24,6 @@ import java.awt.image.BufferedImage;
 public class ResearchGFX {
 	/** The resource locator. */
 	protected ResourceLocator rl;
-	/** Empty button large. */
-	@Img(name = "research/button_empty_large")
-	public BufferedImage empty;
 	/** Empty large. */
 	@Img(name = "research/button_empty_elevated_large")
 	public BufferedImage emptyElevated;
@@ -39,9 +36,6 @@ public class ResearchGFX {
 	/** Fund button. */
 	@Btn2(name = "research/button_fund")
 	public BufferedImage[] fund;
-	/** Info button. */
-	@Btn2(name = "research/button_info")
-	public BufferedImage[] info;
 	/** Minus one button. */
 	@Btn2(name = "research/button_minus_one")
 	public BufferedImage[] minusOne;
@@ -108,9 +102,6 @@ public class ResearchGFX {
 	/** Add research/production button. */
 	@Btn2(name = "research/button_add")
 	public BufferedImage[] add;
-	/** Go to bridge button. */
-	@Btn2(name = "starmap/button_bridge")
-	public BufferedImage[] bridge;
 	/** Go to research button. */
 	@Btn2(name = "research/button_research")
 	public BufferedImage[] research;
