@@ -9,28 +9,21 @@
 package hu.openig.ui;
 
 import hu.openig.core.Act;
+import hu.openig.render.GenericButtonRenderer;
 import hu.openig.render.RenderTools;
 
+import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Timer;
 
 /**
- * A three state image button with normal, pressed and hovered state.
- * Supports
- * the option to repeatedly call the <code>onClick</code>
- * handler when the user holds down a button.
- * 
- * @author akarnokd, 2011.02.26.
+ * An Imperium Galactica styled button component.
+ * @author karnok, 2011.03.04.
  */
-public class UIImageButton extends UIComponent {
-	/** The normal state image. */
-	protected BufferedImage normal;
-	/** The pressed state image. */
-	protected BufferedImage pressed;
-	/** The hovered state image. */
-	protected BufferedImage hovered;
+public class UIGenericButton extends UIComponent {
 	/** The disabled pattern to use for the button. */
 	protected BufferedImage disabledPattern;
 	/** The action to invoke when the button is clicked. */
@@ -50,42 +43,22 @@ public class UIImageButton extends UIComponent {
 	protected Timer holdTimer;
 	/** Is the mouse pressed down on this component. */
 	protected boolean down;
+	/** The text to display. */
+	protected String text;
+	/** The buttom renderer. */
+	protected final GenericButtonRenderer render;
 	/**
 	 * Constructor with the default images.
-	 * @param normal the normal state image
-	 * @param pressed the pressed state image
-	 * @param hovered the hovered state image, if null, the normal image is used instead
+	 * @param text the text label
+	 * @param fm the font metrics used to compute the size
+	 * @param render the actual button renderer
 	 */
-	public UIImageButton(BufferedImage normal, BufferedImage pressed, BufferedImage hovered) {
-		this.normal = normal;
-		this.pressed = pressed;
-		this.hovered = hovered != null ? hovered : normal;
-		this.width = normal.getWidth();
-		this.height = normal.getHeight();
-		this.holdTimer = new Timer(100, new Act() {
-			@Override
-			public void act() {
-				doClick();
-				if (holdDelay < 0 || !enabled || !visible) {
-					holdTimer.stop();
-				}
-			}
-		});
-	}
-	/**
-	 * Creates an image button by using the elements of the supplied array.
-	 * The first element is the normal image, the second should be the pressed image
-	 * and an optional third image should be the hovered image. If
-	 * no hovered image is specified, the normal image is used instead.
-	 * You may use this constructor with the resource BufferedImage arrays of buttons
-	 * @param images the array of images.
-	 */
-	public UIImageButton(BufferedImage[] images) {
-		this.normal = images[0];
-		this.pressed = images.length > 1 ? images[1] : images[0];
-		this.hovered = images.length > 2 ? images[2] : images[0];
-		this.width = normal.getWidth();
-		this.height = normal.getHeight();
+	public UIGenericButton(String text, FontMetrics fm, GenericButtonRenderer render) {
+		this.text = text;
+		this.render = render;
+		Dimension d = render.getPreferredSize(fm, text);
+		this.width = d.width;
+		this.height = d.height;
 		this.holdTimer = new Timer(100, new Act() {
 			@Override
 			public void act() {
@@ -109,6 +82,14 @@ public class UIImageButton extends UIComponent {
 		}
 	}
 	/**
+	 * Compute the preferred size in respect to the given font metrics.
+	 * @param fm the font metrics
+	 * @return the preferred dimension
+	 */
+	public Dimension getPreferredSize(FontMetrics fm) {
+		return render.getPreferredSize(fm, text);
+	}
+	/**
 	 * Stop all internal timers to allow cleanup and thread exit.
 	 */
 	public void stop() {
@@ -125,16 +106,13 @@ public class UIImageButton extends UIComponent {
 	@Override
 	public void draw(Graphics2D g2) {
 		if (!enabled && disabledPattern != null) {
-			g2.drawImage(normal, 0, 0, null);
+			render.paintTo(g2, 0, 0, width, height, false, text);
 			RenderTools.fill(g2, 0, 0, width, height, disabledPattern);
 		} else
 		if (down) {
-			g2.drawImage(pressed, 0, 0, null);
-		} else
-		if (over) {
-			g2.drawImage(hovered, 0, 0, null);
+			render.paintTo(g2, 0, 0, width, height, true, text);
 		} else {
-			g2.drawImage(normal, 0, 0, null);
+			render.paintTo(g2, 0, 0, width, height, false, text);
 		}
 	}
 	@Override
@@ -171,8 +149,17 @@ public class UIImageButton extends UIComponent {
 	 * @param pattern the pattern to fill with the area of the button when it is disabled
 	 * @return this
 	 */
-	public UIImageButton setDisabledPattern(BufferedImage pattern) {
+	public UIGenericButton disabledPattern(BufferedImage pattern) {
 		this.disabledPattern = pattern;
+		return this;
+	}
+	/**
+	 * Change the text of the button.
+	 * @param text the new text
+	 * @return this
+	 */
+	public UIGenericButton text(String text) {
+		this.text = text;
 		return this;
 	}
 }
