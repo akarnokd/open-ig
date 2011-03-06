@@ -1,5 +1,20 @@
 #summary News archive.
 
+<wiki:toc max_depth="1" />
+
+= February, 2011 =
+
+*February 24. 2011*
+
+I face two major inconvenience with the current screen design:
+
+  * long resource loading times -> deferred or lazy (image) resource loading,
+  * lack of composition -> component based approach instead of screen based approach.
+
+I'll have to design a component system similar to Swing containers to handle events, rendering and layout, but with less overhead and complexity (due Swings aims to be a generic UI).
+
+This way, building the remaining screens and reusing features such as arbitrarily labeled buttons and scroll-boxes should be much more convenient.
+
 *February 12. 2011*
 
 I've completed the Testbed application. In addition, the loading times should be now faster on multi-core systems. The testbed application is also available among the launcher downloadable modules.
@@ -14,6 +29,8 @@ After mining 1.7 million m^3^ cobblestone, dirt and sand, completing a major ind
 
 I'll try to set up some milestones about the following 6 months. See the
 [http://code.google.com/p/open-ig/wiki/ProjectPlan2011 project plan for 2011].
+
+= October, 2010 =
 
 *October 31. 2010*
 
@@ -31,6 +48,8 @@ I'm still working (thinking about) the promised launcher for Open-IG.
 It's the yearly article time for my PhD. Therefore, I am unable to do effective work in Open-IG right now.
 
 The next step in the development will be a Launcher with ability to automatically update the game files. In addition, the new Starmap and Planet screens will be integrated with the main game till the end of october.
+
+= September, 2010 =
 
 *September 18. 2010*
 
@@ -92,9 +111,13 @@ In addition, a pre-alpha version of the MapEditor has been uploaded. You can pla
 
 I'm working on the new Planet surface renderer and a cool [http://code.google.com/p/open-ig/wiki/MapEditor Map Editor]. It will be available later in this month for download along with the first upgrade pack.
 
+= August, 2010 =
+
 *August 21. 2010*
 
 I've freed up some time and continue the development of the 0.8 branch. Until the next release, please check out [http://code.google.com/p/open-ig/wiki/GameUpgradeSystem how to upgrade the game resource files].
+
+= April, 2010 =
 
 *April 8. 2010*
 
@@ -105,6 +128,8 @@ All resource files should be available now. [http://code.google.com/p/open-ig/wi
 Unfortunately, I have little time to develop Open-IG at the moment. I plan to upload the new game resource files and publish the available parts of version 0.8. See the [http://code.google.com/p/open-ig/wiki/Install_Instructions_08 install instructions] page for further details.
 
 I'm still uploading the resource files from a slow connection. Please be patient.
+
+= January, 2010 =
 
 *January 18. 2010*
 
@@ -119,6 +144,8 @@ Just a few [http://code.google.com/p/open-ig/wiki/Screenshots screenshots] conta
 I hope I'll be able to do the development more frequently now. As the game's (now independent) resources are practically available, all I need to do is to rebuild and rewire every screen. Still a tedious task because of those numerous and small pieces...
 
 Until then, you can enjoy the screenshot for the new [http://code.google.com/p/open-ig/wiki/MainMenu Main Menu].
+
+= November, 2009 =
 
 *November 20. 2009*
 
@@ -145,6 +172,8 @@ There is a slow and hidden progress behind the [http://code.google.com/p/open-ig
 
 To make thinks work standalone, I have to re-design all existing screens and re-model the backing data structures. There are simply too many pieces to compose and test.
 
+= October, 2009 =
+
 *October 7. 2009*
 
 Note again, that downloads marked as Deprecated and named with Developer is not meant for general download.
@@ -152,6 +181,8 @@ Note again, that downloads marked as Deprecated and named with Developer is not 
 *October 1. 2009*
 
 Note that the new VideoPlayer and video packs are currently for development purposes: this allows us to test the multilingual video playback and the creation of subtitles for the videos.
+
+= September, 2009 =
 
 *September 27. 2009*
 
@@ -201,6 +232,8 @@ I started to split and transcode the game images - I hope it will clear my resou
 I will create a package to contain common and language specific images. Expected combined size: ~50MB. Language specific audio: ~100MB per language. Animations: ~750MB total. I need to change the resource loading mechanism and the planned 0.8 version will be completely independent of the original game resources.
 
 If someone is willing to donate his German, French or other language version, I can create a small utility program, which extracts the language specific part from your version (~180MB) and you can submit that instead of the entire 1.2GB game.
+
+= August, 2009 =
 
 *August 31. 2009*
 
@@ -252,6 +285,8 @@ I put the four wife videos on youtube: <a href='http://www.youtube.com/watch?v=C
 
 I also updated the AnimPlay to have a playlist automatically filled in from the ANI files from a given directory, plus added a batch conversion to PNGs & WAV files. Just select the files you want to convert and hit the button. If you have multiple CPUs, the conversion will be even faster!
 
+= July, 2009 =
+
 *July 9. 2009*
 
 Unfortunately, I have to do my regular job and don't have time for Open-IG at the moment. It could take 2-3 months to develop it further. Good news is that I have now a pretty solid view about how I will implement the simulation part. Until then, the biggest unfinished properties are:
@@ -265,6 +300,8 @@ Unfortunately, I have to do my regular job and don't have time for Open-IG at th
   * AI
   * Achievement system and display
   * Multiplayer
+
+= June, 2009 =
 
 *June 19. 2009*
 
@@ -283,6 +320,8 @@ Unfortunately, I have to do my regular job and don't have time for Open-IG at th
   * Unresearched buildings do not show up on the buildings listing
   * User CTRL+R to completely research the currently selected technology
   * You might need to run the game with at least 160MB JVM memory: -Xmx160M
+
+= May, 2009 =
 
 *May 29. 2009*
   * Some navigation and UI behavior fixes
@@ -327,10 +366,14 @@ Unfortunately, I have to do my regular job and don't have time for Open-IG at th
   * Progress is slower than I expected. Creating a good and solid data model supporting skirmish, campaign and multiplayer is hard. But I uploaded the 0.6 version, which includes some style and bug fixes. 
   * Planet surface rendering is now correctly displaying multi-tile elements. Added the original campaign's ~100 planets with radar enabled. I also added the open source [http://www.jcraft.com/jorbis/ JOrbis] OGG player library. I had to slightly modify its source code to adhere the checkstyle rules used in the project and removed lots of unused codes from it. When the application will support custom campaigns, it will allow custom music/sound playback from .ogg or .wav files.
 
+= March, 2009 =
+
 *March 7. 2009*
   * Created a package for the newest version of the program. Now, along with the JAR file, I've put the source code into a ZIP file. As the program evolves, unfortunately, the default 64 MB memory for double-clicked JAR programs becomes too sort. There are several options:
     * Create/use a command line script with -Xmx128M parameter
     * Change the JAR file extension assignment and include the -Xmx128M parameter
+
+= February, 2009 =
 
 *February 19. 2009*
   * Thanks to Open-IG and a new wide screen monitor, I was able to find two bugs in the latest JDK regarding the new D3D rendering. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6801614 and http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6804860 for further details as soon as they are available.
@@ -338,6 +381,8 @@ Unfortunately, I have to do my regular job and don't have time for Open-IG at th
 *February 3. 2009*
 
   * Due some strange rendering behavior in 6u11 I strongly advise to use 6u7 on Windows for running Open-IG. The strange rendering occurs when the game windows are resized to a very large size (>1500 pixels). On these resolutions, the graphics gets misplaced, the dotted lines get garbled. Possible reason might be in the new D3D rendering pipeline (or just my videocard driver is too old).
+
+= January, 2009 =
 
 *January 28. 2009*
 
