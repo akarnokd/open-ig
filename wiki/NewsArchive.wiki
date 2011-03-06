@@ -2,7 +2,17 @@
 
 <wiki:toc max_depth="1" />
 
+= March, 2011 =
+
+*March 6. 2011*
+
+Equipment screen created. Not 100% functional as many things will depend on the actual data model coming later.
+
 = February, 2011 =
+
+*February 27. 2011*
+
+I added the promised new mini UI framework, which should allow me to implement screens more conveniently. In addition, I've improved the Testbed application with a proper ship walk screen. The equipment screen will come within a week.
 
 *February 24. 2011*
 
