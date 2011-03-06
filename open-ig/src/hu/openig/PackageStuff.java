@@ -214,13 +214,13 @@ public final class PackageStuff {
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
-				buildMapEditor(MapEditor.MAP_EDITOR_JAR_VERSION);
+				buildMapEditor(MapEditor.VERSION);
 			}
 		});
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
-				buildPatch("20110227a");
+				buildPatch("20110306a");
 			}
 		});
 		exec.execute(new Runnable() {

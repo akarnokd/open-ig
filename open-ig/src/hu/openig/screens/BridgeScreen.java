@@ -378,7 +378,7 @@ public class BridgeScreen extends ScreenBase {
 									
 									WalkShip ship = commons.world.getShip();
 									sws.next = ship.positions.get(tr.to);
-									sws.displayPrimary();
+									commons.control.displayPrimary(Screens.SHIPWALK);
 									final String media = tr.media;
 									SwingUtilities.invokeLater(new Runnable() {
 										@Override

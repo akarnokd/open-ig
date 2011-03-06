@@ -20,9 +20,12 @@ import hu.openig.ui.UILabel;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.Timer;
 
 
 
@@ -161,8 +164,14 @@ public class EquipmentScreen extends ScreenBase {
 	UILabel innerEquipmentSeparator;
 	/** The name and type of the current selected ship or equipment. */
 	UILabel selectedNameAndType;
+	/** The planet image. */
+	UIImage planet;
 	/** The equipment slot locations. */
-	final List<Rectangle> slots = new ArrayList<Rectangle>();
+	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
+	/** The rolling disk animation timer. */
+	Timer animation;
+	/** The current animation step counter. */
+	int animationStep;
 	/** The current equipment mode to render and behave. */
 	public enum EquipmentMode {
 		/** Manage an existing or new fleet. */
@@ -264,9 +273,29 @@ public class EquipmentScreen extends ScreenBase {
 		tanks.onPress = categoryAction(EquipmentCategory.TANKS);
 		vehicles.onPress = categoryAction(EquipmentCategory.VEHICLES);
 		
+		// TODO for testing purposes only!
 		for (int i = 0; i < 6; i++) {
-			slots.add(new Rectangle());
+			TechnologySlot ts = new TechnologySlot();
+			ts.name = "TODO";
+			ts.inventory = 1;
+			ts.researching = true;
+			ts.percent = 0.5f;
+			ts.visible = true;
+			ts.missingLab = true;
+			ts.image = rl.getImage(commons.language(), "inventions/spaceships/fighters/fighter_" + (i + 1) + "");
+			slots.add(ts);
 		}
+		slots.get(0).available = true;
+		slots.get(0).researching = false;
+		
+		slots.get(2).missingLab = false;
+		slots.get(2).missingPrerequisite = true;
+
+		slots.get(3).visible = false;
+		
+		slots.get(4).notResearchable = true;
+		
+		slots.get(5).visible = false;
 		
 		noPlanetNearby = new UIImage(commons.equipment().noPlanetNearby);
 		noSpaceport = new UIImage(commons.equipment().noSpaceport);
@@ -318,6 +347,20 @@ public class EquipmentScreen extends ScreenBase {
 		selectedNameAndType = new UILabel(commons.labels().format("equipment.selectednametype", "TODO", "TODO"), 10, commons.text());
 		selectedNameAndType.color(0xFF6DB269);
 		
+		planet = new UIImage(commons.equipment().planetOrbit);
+		
+		animation = new Timer(100, new Act() {
+			@Override
+			public void act() {
+				if (animationStep == Integer.MAX_VALUE) {
+					animationStep = 0;
+				} else {
+					animationStep ++;
+				}
+				askRepaint();
+			}
+		});
+		
 		for (Field f : getClass().getDeclaredFields()) {
 			if (UIComponent.class.isAssignableFrom(f.getType())
 					&& f.getDeclaringClass() == getClass()) {
@@ -350,18 +393,18 @@ public class EquipmentScreen extends ScreenBase {
 		if (mode == null) {
 			mode = EquipmentMode.MANAGE_FLEET;
 		}
+		animation.start();
 	}
 
 	@Override
 	public void onLeave() {
-		// TODO Auto-generated method stub
-		
+		animation.stop();
 	}
 
 	@Override
 	public void onFinish() {
-		// TODO Auto-generated method stub
-		
+		animation.stop();
+		animation = null;
 	}
 
 	@Override
@@ -420,7 +463,7 @@ public class EquipmentScreen extends ScreenBase {
 		vehiclesEmpty.location(vehicles.location());
 		
 		for (int i = 0; i < 6; i++) {
-			slots.get(i).setBounds(base.x + 1 + i * 106, base.y + 219 - 20, 106, 82);
+			slots.get(i).target.setBounds(base.x + 2 + i * 106, base.y + 219 - 20, 106, 82);
 		}
 
 		noPlanetNearby.location(base.x + 242, base.y + 194 - 20);
@@ -452,16 +495,16 @@ public class EquipmentScreen extends ScreenBase {
 		innerEquipmentValue.location(innerEquipmentName.x, innerEquipmentName.y + 20);
 		
 		selectedNameAndType.location(base.x + 326, base.y + 28 - 20);
+		
+		planet.location(leftPanel.x - 1, leftPanel.y - 1);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(equipment.base, base.x, base.y, null);
 		
-		g2.setColor(Color.RED);
-		for (Rectangle r : slots) {
-			g2.drawRect(r.x, r.y, r.width - 1, r.height - 1);
-			g2.drawRect(r.x + 1, r.y + 1, r.width - 3, r.height - 3);
+		for (TechnologySlot r : slots) {
+			r.draw(g2);
 		}
 		
 		if (innerEquipmentVisible) {
@@ -576,5 +619,91 @@ public class EquipmentScreen extends ScreenBase {
 		stations.down = cat == EquipmentCategory.STATIONS;
 		tanks.down = cat == EquipmentCategory.TANKS;
 		vehicles.down = cat == EquipmentCategory.VEHICLES;
+	}
+	/**
+	 * Represents the rendering for an equipment, production or research slot.
+	 * @author karnok, 2011.03.06.
+	 */
+	public class TechnologySlot {
+		/** The target rendering rectangle. */
+		final Rectangle target = new Rectangle();
+		/** The technology name. */
+		String name;
+		/** The inventory count. */
+		int inventory;
+		/** Is the slot visible? */
+		boolean visible;
+		/** Is the slot selected? */
+		boolean selected;
+		/** Is the technology researched and available. */
+		boolean available;
+		/** How much of the technology is researched? 0..1 */
+		float percent;
+		/** Is under research. */
+		boolean researching;
+		/** There is not enough powered laboratory to complete the research. */
+		boolean missingLab;
+		/** There is not enough total laboratory to complete the research. */
+		boolean missingPrerequisite;
+		/** Indicator that the technology has prerequisites to be researched first. */
+		boolean notResearchable;
+		/** The technology image. */
+		BufferedImage image;
+		/** The border color when a slot is present. */
+		final Color availableColor = new Color(0xFF752424);
+		/** The border color when a slot is selected. */
+		final Color selectedColor = Color.RED;
+		/** The invisible slot color. */
+		final Color invisibleColor = new Color(0xFF65496D);
+		/** The normal text color. */
+		final int textColor = 0xFF6DB269;
+		/** The selected text color. */
+		final int selectedTextColor = 0xFFFF0000;
+		/**
+		 * Render the technology based on its state.
+		 * @param g2 the target graphics context
+		 */
+		void draw(Graphics2D g2) {
+			if (visible) {
+				
+				g2.drawImage(image, target.x, target.y, null);
+				if (notResearchable) {
+					RenderTools.drawCentered(g2, target, commons.research().unavailable);
+				} else
+				if (researching) {
+					g2.setColor(Color.BLACK);
+					for (int i = 0; i < target.height - 7; i += 2) {
+						float perc = 1.0f * i / (target.height - 7);
+						if (perc >= percent) {
+							g2.drawLine(target.x + 2, target.y + 4 + i, target.x + target.width - 4, target.y + 4 + i);
+						}
+					}
+					BufferedImage[] rolling = commons.research().rolling;
+					g2.drawImage(rolling[animationStep % rolling.length], target.x + 5, target.y + 49, null);
+					if (missingLab) {
+						g2.drawImage(commons.research().researchMissingLab, target.x + 5 + 16, target.y + 49 + 5, null);
+					} else
+					if (missingPrerequisite) {
+						g2.drawImage(commons.research().researchMissingPrerequisite, target.x + 5 + 16, target.y + 49 + 5, null);
+					}
+				} else
+				if (available) {
+					commons.text().paintTo(g2, target.x + 5, target.y + 56, 10, 
+							selectedTextColor, Integer.toString(inventory));
+				}
+				commons.text().paintTo(g2, target.x + 5, target.y + 71, 7, 
+						selected ? selectedTextColor : textColor, name);
+			}
+			if (visible) {
+				g2.setColor(invisibleColor);
+			} else
+			if (selected) {
+				g2.setColor(selectedColor);
+			} else {
+				g2.setColor(availableColor);
+			}
+			g2.drawRect(target.x, target.y, target.width - 1, target.height - 1);
+			g2.drawRect(target.x + 1, target.y + 1, target.width - 3, target.height - 3);
+		}
 	}
 }

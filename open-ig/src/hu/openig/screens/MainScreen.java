@@ -26,7 +26,7 @@ import java.util.Random;
  * The main menu rendering and actions.
  * @author akarnokd, 2009.12.25.
  */
-public class MainMenu extends ScreenBase {
+public class MainScreen extends ScreenBase {
 	/**
 	 * The click label.
 	 * @author akarnokd, 2009.12.26.
@@ -143,7 +143,7 @@ public class MainMenu extends ScreenBase {
 		single.action = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(commons.screens.singleplayer);
+				commons.control.displayPrimary(Screens.SINGLEPLAYER);
 			}
 		};
 		clicklabels.add(single);
@@ -153,7 +153,7 @@ public class MainMenu extends ScreenBase {
 		load.action = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(commons.screens.loadSave);
+				commons.control.displayPrimary(Screens.LOAD_SAVE);
 			}
 		};
 		clicklabels.add(load);
@@ -173,7 +173,7 @@ public class MainMenu extends ScreenBase {
 		videosLabel.action = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(commons.screens.videos);
+				commons.control.displaySecondary(Screens.VIDEOS);
 			}
 		};
 		clicklabels.add(videosLabel);

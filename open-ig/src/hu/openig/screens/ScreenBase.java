@@ -62,14 +62,6 @@ public abstract class ScreenBase extends UIContainer {
 	public void askRepaint() {
 		parent.repaint();
 	}
-	/** Display this screen as the primary. */
-	public void displayPrimary() {
-		commons.control.displayPrimary(this);
-	}
-	/** Display this screen as the secondary. */
-	public void displaySecondary() {
-		commons.control.displaySecondary(this);
-	}
 	/**
 	 * Retrieve the parent swing component's width.
 	 * @return the width

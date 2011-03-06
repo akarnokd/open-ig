@@ -28,10 +28,11 @@ import hu.openig.screens.GameControls;
 import hu.openig.screens.InfoScreen;
 import hu.openig.screens.LoadSaveScreen;
 import hu.openig.screens.LoadingScreen;
-import hu.openig.screens.MainMenu;
+import hu.openig.screens.MainScreen;
 import hu.openig.screens.PlanetScreen;
 import hu.openig.screens.ResearchProductionScreen;
 import hu.openig.screens.ScreenBase;
+import hu.openig.screens.Screens;
 import hu.openig.screens.ShipwalkScreen;
 import hu.openig.screens.SingleplayerScreen;
 import hu.openig.screens.SpacewarScreen;
@@ -54,6 +55,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,7 +83,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	/** */
 	private static final long serialVersionUID = -3535790397080644321L;
 	/** The version number for packaging. */
-	public static final String VERSION = "0.15";
+	public static final String VERSION = "0.20";
 	/** The parent color to use. */
 	volatile Color parentColor = Color.LIGHT_GRAY;
 	/** The normal screen. */
@@ -177,6 +180,16 @@ public class ScreenTester extends JFrame implements GameControls {
 					}
 				}
 			}
+		});
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (screen != null) {
+					screen.onLeave();
+					screen.onFinish();
+					screen = null;
+				}
+			};
 		});
 		doReload();
 	}
@@ -310,7 +323,7 @@ public class ScreenTester extends JFrame implements GameControls {
 		menuScreen.add(addScreenItem("Bar", BarScreen.class));
 		menuScreen.add(addScreenItem("Statistics & Achievements", AchievementsScreen.class));
 		menuScreen.addSeparator();
-		menuScreen.add(addScreenItem("Main menu", MainMenu.class));
+		menuScreen.add(addScreenItem("Main menu", MainScreen.class));
 		menuScreen.add(addScreenItem("Single player menu", SingleplayerScreen.class));
 		menuScreen.add(addScreenItem("Loading", LoadingScreen.class));
 		menuScreen.add(addScreenItem("Status bar", StatusbarScreen.class));
@@ -454,13 +467,93 @@ public class ScreenTester extends JFrame implements GameControls {
 		
 	}
 	@Override
-	public void displayPrimary(ScreenBase screen) {
-		
+	public void displayPrimary(Screens newScreen) {
+		if (screen != null) {
+			screen.onLeave();
+			screen.onFinish();
+			screen = null;
+		}
+		String clazz = null;
+		switch (newScreen) {
+		case ACHIEVEMENTS:
+			clazz = AchievementsScreen.class.getName();
+			break;
+		case BAR:
+			clazz = BarScreen.class.getName();
+			break;
+		case BRIDGE:
+			clazz = BridgeScreen.class.getName();
+			break;
+		case COLONY:
+			clazz = PlanetScreen.class.getName();
+			break;
+		case EQUIPMENT:
+			clazz = EquipmentScreen.class.getName();
+			break;
+		case DIPLOMACY:
+			clazz = DiplomacyScreen.class.getName();
+			break;
+		case INFORMATION:
+			clazz = InfoScreen.class.getName();
+			break;
+		case PRODUCTION:
+			clazz = ResearchProductionScreen.class.getName();
+			break;
+		case RESEARCH:
+			clazz = ResearchProductionScreen.class.getName();
+			break;
+		case SPACEWAR:
+			clazz = SpacewarScreen.class.getName();
+			break;
+		case STARMAP:
+			clazz = StarmapScreen.class.getName();
+			break;
+		case SHIPWALK:
+			clazz = ShipwalkScreen.class.getName();
+			break;
+		case DATABASE:
+			clazz = DatabaseScreen.class.getName();
+			break;
+		case LOADING:
+			clazz = LoadingScreen.class.getName();
+			break;
+		case LOAD_SAVE:
+			clazz = LoadSaveScreen.class.getName();
+			break;
+		case MAIN:
+			clazz = MainScreen.class.getName();
+			break;
+		case MULTIPLAYER:
+			clazz = null; // TODO multiplayer screen
+			break;
+		case SINGLEPLAYER:
+			clazz = SingleplayerScreen.class.getName();
+			break;
+		case VIDEOS:
+			clazz = VideoScreen.class.getName();
+			break;
+		default:
+		}
+		if (clazz != null) {
+			try {
+				screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
+				screen.initialize(commons, parent);
+				screen.onEnter();
+				screen.resize();
+				repaint();
+				onScreen(screen.getClass().getSimpleName(), screen);
+			} catch (ClassNotFoundException ex) {
+				ex.printStackTrace();
+			} catch (IllegalAccessException ex) {
+				ex.printStackTrace();
+			} catch (InstantiationException ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 	@Override
-	public void displaySecondary(ScreenBase screen) {
-		// TODO Auto-generated method stub
-		
+	public void displaySecondary(Screens newScreen) {
+		displayPrimary(newScreen);
 	}
 	@Override
 	public void hideSecondary() {
@@ -545,7 +638,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	 * @param screen the screen
 	 */
 	void prepareMainMenuMenu(ScreenBase screen) {
-		final MainMenu mm = (MainMenu)screen;
+		final MainScreen mm = (MainScreen)screen;
 		int i = 1;
 		for (final BufferedImage img : commons.background().start) {
 			JMenuItem mi = new JMenuItem("Background #" + i);
