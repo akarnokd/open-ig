@@ -142,9 +142,9 @@
 			<desc lang='hu'>Felülbírálva: 2011-03-06A</desc>
 			<desc lang='en'>Overridden by: 2011-03-06A</desc>
 		</remove>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110227a.zip' sha1='f6d2c266d1aa1043d972e0a5e74815c55ded954c'>
+		<remove url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110227a.zip' sha1='f6d2c266d1aa1043d972e0a5e74815c55ded954c'>
 			<desc lang='hu'>Felülbírálva: 2011-03-06A</desc>
 			<desc lang='en'>Overridden by: 2011-03-06A</desc>
-		</file>
+		</remove>
 	</module>
 </update>
