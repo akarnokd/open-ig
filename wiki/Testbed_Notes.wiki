@@ -4,6 +4,11 @@ See the [Testbed testbed] page for the description of this application.
 
 <wiki:toc max_depth="1" />
 
+= Version 0.20 - Screen transition enabled =
+
+  * If a screen initiates a transition, the testbed will switch to that screen as if the user clicked on the menu
+  * Added the option to switch between languages.
+
 = Version 0.15 - New UI framework =
 
   * Added a more composable underlying UI framework for screens
