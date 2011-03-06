@@ -185,9 +185,13 @@ public class ScreenTester extends JFrame implements GameControls {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				if (screen != null) {
-					screen.onLeave();
-					screen.onFinish();
-					screen = null;
+					try {
+						screen.onLeave();
+						screen.onFinish();
+						screen = null;
+					} catch (Throwable t) {
+						t.printStackTrace();
+					}
 				}
 			};
 		});
@@ -374,16 +378,22 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	/** Exit the application. */
 	void doExit() {
-		if (screen != null) {
-			screen.onLeave();
-			screen.onFinish();
-			screen = null;
+		try {
+			if (screen != null) {
+				screen.onLeave();
+				screen.onFinish();
+				screen = null;
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		} finally {
+			dispose();
 		}
-		dispose();
 	}
 	/** Reload game resources. */
 	void doReload() {
 		menuView.setVisible(false);
+		menuView.removeAll();
 		String screenClass = null;
 		if (screen != null) {
 			screenClass = screen.getClass().getName();
@@ -426,23 +436,27 @@ public class ScreenTester extends JFrame implements GameControls {
 			}
 			@Override
 			protected void done() {
-				parentColor = new Color(0xFF80FF80);
-				parentText = txtScreen;
-				enableDisableMenu(true);
-				// restore the current screen
-				if (clazz != null) {
-					try {
-						screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
-						screen.initialize(commons, parent);
-						screen.onEnter();
-						screen.resize();
-						repaint();
-						onScreen(screen.getClass().getSimpleName(), screen);
-					} catch (Exception ex) {
-						ex.printStackTrace();
+				try {
+					parentColor = new Color(0xFF80FF80);
+					parentText = txtScreen;
+					enableDisableMenu(true);
+					// restore the current screen
+					if (clazz != null) {
+						try {
+							screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
+							screen.initialize(commons, parent);
+							screen.onEnter();
+							screen.resize();
+							repaint();
+							onScreen(screen.getClass().getSimpleName(), screen);
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
 					}
+					repaint();
+				} finally {
+					setTitle(String.format("Screen Tester: %d / %d MB", Runtime.getRuntime().freeMemory() / 1024 / 1024, Runtime.getRuntime().totalMemory() / 1024 / 1024));
 				}
-				repaint();
 			}
 		};
 		worker.execute();

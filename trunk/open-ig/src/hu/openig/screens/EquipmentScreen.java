@@ -9,7 +9,6 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
-import hu.openig.gfx.EquipmentGFX;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIImage;
@@ -36,8 +35,6 @@ import javax.swing.Timer;
 public class EquipmentScreen extends ScreenBase {
 	/** The panel base rectangle. */
 	final Rectangle base = new Rectangle();
-	/** The equipment. */
-	EquipmentGFX equipment;
 	/** The left panel. */
 	final Rectangle leftPanel = new Rectangle();
 	/** The right panel. */
@@ -200,9 +197,8 @@ public class EquipmentScreen extends ScreenBase {
 	EquipmentMode mode;
 	@Override
 	public void onInitialize() {
-		equipment = commons.equipment();
 		base.setBounds(0, 0, 
-				equipment.base.getWidth(), equipment.base.getHeight());
+				commons.equipment().base.getWidth(), commons.equipment().base.getHeight());
 		
 		infoButton = new UIImageButton(commons.common().infoButton);
 		bridgeButton = new UIImageButton(commons.common().bridgeButton);
@@ -501,7 +497,7 @@ public class EquipmentScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
-		g2.drawImage(equipment.base, base.x, base.y, null);
+		g2.drawImage(commons.equipment().base, base.x, base.y, null);
 		
 		for (TechnologySlot r : slots) {
 			r.draw(g2);
