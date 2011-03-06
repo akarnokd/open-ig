@@ -58,13 +58,13 @@ public class GameWindow extends JFrame implements GameControls {
 				@Override
 				public void componentResized(ComponentEvent e) {
 					if (primary != null) {
-						primary.onResize();
+						primary.resize();
 					}
 					if (secondary != null) {
-						secondary.onResize();
+						secondary.resize();
 					}
 					if (movie != null) {
-						movie.onResize();
+						movie.resize();
 					}
 				}
 			});
@@ -208,7 +208,7 @@ public class GameWindow extends JFrame implements GameControls {
 			sb.initialize(commons, surface);
 		}
 		
-		displayPrimary(commons.screens.mainmenu);
+		displayPrimary(commons.screens.main);
 	}
 	/** Unitialize the screens. */
 	protected void uninitScreens() {
@@ -222,10 +222,66 @@ public class GameWindow extends JFrame implements GameControls {
 		secondary = null;
 	}
 	/**
+	 * Returns a screen instance for the given screen enum.
+	 * @param screen the screen.
+	 * @return the instance
+	 */
+	ScreenBase getScreen(Screens screen) {
+		switch (screen) {
+		case ACHIEVEMENTS:
+			return commons.screens.statisticsAchievements;
+		case BAR:
+			return commons.screens.bar;
+		case BRIDGE:
+			return commons.screens.bridge;
+		case COLONY:
+			return commons.screens.colony;
+		case DIPLOMACY:
+			return commons.screens.diplomacy;
+		case EQUIPMENT:
+			return commons.screens.equipment;
+		case INFORMATION:
+			return commons.screens.info;
+		case PRODUCTION:
+			return commons.screens.researchProduction;
+		case RESEARCH:
+			return commons.screens.researchProduction;
+		case SPACEWAR:
+			return commons.screens.spacewar;
+		case STARMAP:
+			return commons.screens.starmap;
+		case SHIPWALK:
+			return commons.screens.shipwalk;
+		case DATABASE:
+			return commons.screens.database;
+		case LOADING:
+			return commons.screens.loading;
+		case LOAD_SAVE:
+			return commons.screens.loadSave;
+		case MAIN:
+			return commons.screens.main;
+		case MULTIPLAYER:
+			return null; // TODO multiplayer screen
+		case SINGLEPLAYER:
+			return commons.screens.singleplayer;
+		case VIDEOS:
+			return commons.screens.videos;
+		default:
+		}
+		return null;
+	}
+	@Override
+	public void displayPrimary(Screens screen) {
+		displayPrimary(getScreen(screen));
+	}
+	@Override
+	public void displaySecondary(Screens screen) {
+		displaySecondary(getScreen(screen));
+	}
+	/**
 	 * Display the given screen as the primary object. The secondary object, if any, will be removed.
 	 * @param screen the new screen to display
 	 */
-	@Override
 	public void displayPrimary(ScreenBase screen) {
 		hideMovie();
 		if (secondary != null) {
@@ -237,19 +293,19 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		primary = screen;
 		if (primary != null) {
-			primary.onEnter(); 
+			primary.onEnter();
+			primary.resize();
 			// send a mouse moved event so that if necessary, components can react to mouseOver immediately
 			if (surface.isShowing()) {
 				primary.mouse(UIMouse.createCurrent(surface));
 			}
+			surface.repaint();
 		}
-		surface.repaint();
 	}
 	/**
 	 * Display the given secondary screen.
 	 * @param screen the screen to display as secondary
 	 */
-	@Override
 	public void displaySecondary(ScreenBase screen) {
 		if (secondary != null && secondary != screen) {
 			secondary.onLeave();
@@ -257,6 +313,7 @@ public class GameWindow extends JFrame implements GameControls {
 		if (secondary != screen) {
 			secondary = screen;
 			secondary.onEnter();
+			secondary.resize();
 			if (surface.isShowing()) {
 				secondary.mouse(UIMouse.createCurrent(surface));
 			}
@@ -379,78 +436,78 @@ public class GameWindow extends JFrame implements GameControls {
 				result = true;
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_F1:
-					commons.screens.bridge.displayPrimary();
+					displayPrimary(commons.screens.bridge);
 					break;
 				case KeyEvent.VK_F2:
-					commons.screens.starmap.displayPrimary();
+					displayPrimary(commons.screens.starmap);
 					break;
 				case KeyEvent.VK_F3:
-					commons.screens.colony.displayPrimary();
+					displayPrimary(commons.screens.colony);
 					break;
 				case KeyEvent.VK_F4:
-					commons.screens.equipment.displayPrimary();
+					displaySecondary(commons.screens.equipment);
 					break;
 				case KeyEvent.VK_F5:
-					commons.screens.researchProduction.displayPrimary();
+					displaySecondary(commons.screens.researchProduction);
 					break;
 				case KeyEvent.VK_F6:
-					commons.screens.researchProduction.displayPrimary();
+					displaySecondary(commons.screens.researchProduction);
 					break;
 				case KeyEvent.VK_F7:
-					commons.screens.info.displaySecondary();
+					displaySecondary(commons.screens.info);
 					break;
 				case KeyEvent.VK_F8:
-					commons.screens.diplomacy.displayPrimary();
+					displayPrimary(commons.screens.diplomacy);
 					break;
 				case KeyEvent.VK_F9:
-					commons.screens.database.displayPrimary();
+					displayPrimary(commons.screens.database);
 					break;
 				case KeyEvent.VK_F10:
-					commons.screens.bar.displayPrimary();
+					displayPrimary(commons.screens.bar);
 					break;
 				case KeyEvent.VK_F11:
 					commons.screens.statisticsAchievements.mode = Mode.STATISTICS;
-					commons.screens.statisticsAchievements.displaySecondary();
+					displaySecondary(commons.screens.statisticsAchievements);
 					surface.repaint();
 					break;
 				case KeyEvent.VK_F12:
 					commons.screens.statisticsAchievements.mode = Mode.ACHIEVEMENTS;
-					commons.screens.statisticsAchievements.displaySecondary();
+					displaySecondary(commons.screens.statisticsAchievements);
 					surface.repaint();
 					break;
 				case KeyEvent.VK_1:
 					if (e.isControlDown()) {
 						commons.world.level = 1;
 						primary = null;
-						commons.screens.bridge.displayPrimary();
+						displayPrimary(commons.screens.bridge);
 					}
 					break;
 				case KeyEvent.VK_2:
 					if (e.isControlDown()) {
 						commons.world.level = 2;
 						primary = null;
-						commons.screens.bridge.displayPrimary();
+						displayPrimary(commons.screens.bridge);
 					}
 					break;
 				case KeyEvent.VK_3:
 					if (e.isControlDown()) {
 						commons.world.level = 3;
 						primary = null;
-						commons.screens.bridge.displayPrimary();
+						displayPrimary(commons.screens.bridge);
 					}
 					break;
 				case KeyEvent.VK_4:
 					if (e.isControlDown()) {
 						commons.world.level = 4;
 						primary = null;
-						commons.screens.bridge.displayPrimary();
+						displayPrimary(commons.screens.bridge);
 					}
 					break;
 				case KeyEvent.VK_5:
 					if (e.isControlDown()) {
 						commons.world.level = 5;
 						primary = null;
-						commons.screens.bridge.displayPrimary();
+						displayPrimary(commons.screens.bridge);
 					}
 					break;
 				default:

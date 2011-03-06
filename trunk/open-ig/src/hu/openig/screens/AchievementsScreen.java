@@ -10,11 +10,9 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Button;
+import hu.openig.render.RenderTools;
 import hu.openig.ui.UIMouse;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -473,16 +471,18 @@ public class AchievementsScreen extends ScreenBase {
 
 	@Override
 	public void draw(Graphics2D g2) {
-		g2.setColor(Color.BLACK);
-		Composite cp = g2.getComposite();
-		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
-		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
-		g2.setComposite(cp);
+//		g2.setColor(Color.BLACK);
+//		Composite cp = g2.getComposite();
+//		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
+//		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+//		g2.setComposite(cp);
+		RenderTools.darkenAround(origin, width, height, g2, 0.5f, true);
 		
 		g2.drawImage(commons.common().infoEmpty, origin.x, origin.y, null);
 		
 		Shape sp = g2.getClip();
 		g2.setClip(listRect);
+		adjustLabels();
 		if (mode == Mode.ACHIEVEMENTS) {
 			int y = listRect.y;
 			for (int i = achievementIndex; i < achievements.size() && i < achievementIndex + achievementCount; i++) {

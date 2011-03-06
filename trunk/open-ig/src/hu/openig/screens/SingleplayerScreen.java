@@ -127,7 +127,7 @@ public class SingleplayerScreen extends ScreenBase {
 			@Override
 			public void act() {
 				backLabel.selected = false;
-				commons.control.displayPrimary(commons.screens.mainmenu);
+				commons.control.displayPrimary(Screens.MAIN);
 			}
 		};
 		backLabel.onPressed = new Act() {
@@ -177,7 +177,7 @@ public class SingleplayerScreen extends ScreenBase {
 	void doStartGame() {
 		if (selectedDefinition != null) {
 			// display the loading screen.
-			commons.control.displaySecondary(commons.screens.loading);
+			commons.control.displaySecondary(Screens.LOADING);
 			final Semaphore barrier = new Semaphore(-1);
 			// the completion waiter thread
 			Thread t0 = new Thread("Start Game Video Waiter") {
@@ -188,7 +188,7 @@ public class SingleplayerScreen extends ScreenBase {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override 
 							public void run() {
-								commons.control.displayPrimary(commons.screens.bridge);
+								commons.control.displayPrimary(Screens.BRIDGE);
 							};
 						});
 					} catch (InterruptedException ex) {
@@ -237,7 +237,7 @@ public class SingleplayerScreen extends ScreenBase {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			playLabel.selected = false;
 			backLabel.selected = false;
-			commons.control.displayPrimary(commons.screens.mainmenu);
+			commons.control.displayPrimary(Screens.MAIN);
 		}
 		return false;
 	}

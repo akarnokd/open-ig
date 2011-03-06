@@ -76,15 +76,15 @@ public class CommonResources {
 	// The various screen objects
 	// --------------------------------------------
 	/** The record of screens. */
-	public final Screens screens = new Screens();
+	public final AllScreens screens = new AllScreens();
 	/** The record of screens. */
-	public final class Screens {
+	public final class AllScreens {
 		/** Private constructor. */
-		private Screens() {
+		private AllScreens() {
 
 		}
 		/** Main menu. */
-		public MainMenu mainmenu;
+		public MainScreen main;
 		/** Videos. */
 		public VideoScreen videos;
 		/** Bridge. */
@@ -314,35 +314,35 @@ public class CommonResources {
 	 */
 	public void switchScreen(String to) {
 		if ("*bridge".equals(to)) {
-			screens.bridge.displayPrimary();
+			control.displayPrimary(Screens.BRIDGE);
 		} else
-			if ("*starmap".equals(to)) {
-				screens.starmap.displayPrimary();
-			} else
-				if ("*colony".equals(to)) {
-					screens.colony.displayPrimary();
-				} else
-					if ("*equipment".equals(to)) {
-						screens.equipment.displaySecondary();
-					} else
-						if ("*research".equals(to)) {
-							screens.researchProduction.displaySecondary();
-						} else
-							if ("*production".equals(to)) {
-								screens.researchProduction.displaySecondary();
-							} else
-								if ("*information".equals(to)) {
-									screens.info.displaySecondary();
-								} else
-									if ("*database".equals(to)) {
-										screens.database.displayPrimary();
-									} else
-										if ("*bar".equals(to)) {
-											screens.bar.displayPrimary();
-										} else
-											if ("*diplomacy".equals(to)) {
-												screens.diplomacy.displayPrimary();
-											}
+		if ("*starmap".equals(to)) {
+			control.displayPrimary(Screens.STARMAP);
+		} else
+		if ("*colony".equals(to)) {
+			control.displayPrimary(Screens.COLONY);
+		} else
+		if ("*equipment".equals(to)) {
+			control.displaySecondary(Screens.EQUIPMENT);
+		} else
+		if ("*research".equals(to)) {
+			control.displaySecondary(Screens.RESEARCH);
+		} else
+		if ("*production".equals(to)) {
+			control.displaySecondary(Screens.PRODUCTION);
+		} else
+		if ("*information".equals(to)) {
+			control.displaySecondary(Screens.INFORMATION);
+		} else
+		if ("*database".equals(to)) {
+			control.displayPrimary(Screens.DATABASE);
+		} else
+		if ("*bar".equals(to)) {
+			control.displayPrimary(Screens.BAR);
+		} else
+		if ("*diplomacy".equals(to)) {
+			control.displayPrimary(Screens.DIPLOMACY);
+		}
 
 	}
 	/**

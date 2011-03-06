@@ -137,9 +137,9 @@ public class MapEditor extends JFrame {
 	/** The minimum memory required to run Open-IG. */
 	private static final long MINIMUM_MEMORY = 384L;
 	/** The map editor's JAR file version. */
-	public static final String MAP_EDITOR_JAR_VERSION = "0.42";
+	public static final String VERSION = "0.43";
 	/** The title text. */
-	public static final String TITLE = "Open-IG MapEditor v" + MAP_EDITOR_JAR_VERSION;
+	public static final String TITLE = "Open-IG MapEditor v" + VERSION;
 	/** The main resource locator. */
 	ResourceLocator rl;
 	/** The horizontal split between the tool listing and the rendering. */
@@ -612,10 +612,10 @@ public class MapEditor extends JFrame {
 	 */
 	private static boolean doLowMemory() {
 		ProcessBuilder pb = new ProcessBuilder();
-		if (!new File("open-ig-mapeditor-" + MAP_EDITOR_JAR_VERSION + ".jar").exists()) {
+		if (!new File("open-ig-mapeditor-" + VERSION + ".jar").exists()) {
 			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
 		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-mapeditor-" + MAP_EDITOR_JAR_VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-mapeditor-" + VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
 		}
 		try {
 			/* Process p = */pb.start();

@@ -270,4 +270,15 @@ public final class RenderTools {
 		g2.fillRect(x, y, width, height);
 		g2.setPaint(save);
 	}
+	/**
+	 * Render the target image centered relative to the given rectangle.
+	 * @param g2 the graphics object
+	 * @param rect the target rectangle
+	 * @param image the image to render
+	 */
+	public static void drawCentered(Graphics2D g2, Rectangle rect, BufferedImage image) {
+		int dw = (rect.width - image.getWidth()) / 2;
+		int dh = (rect.height - image.getHeight()) / 2;
+		g2.drawImage(image, rect.x + dw, rect.y + dh, null);
+	}
 }
