@@ -311,14 +311,14 @@ public class MainScreen extends ScreenBase {
 	@Override
 	public void onResize() {
 		// relocate objects if necessary
-		xOrigin = (parent.getWidth() - background.getWidth()) / 2;
-		yOrigin = (parent.getHeight() - background.getHeight()) / 2;
+		xOrigin = (commons.control.getInnerWidth() - background.getWidth()) / 2;
+		yOrigin = (commons.control.getInnerHeight() - background.getHeight()) / 2;
 	}
 	@Override
 	public void draw(Graphics2D g2) {
 		onResize(); // repaint might come before an onResize
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+		g2.fillRect(0, 0, commons.control.getInnerWidth(), commons.control.getInnerHeight());
 		g2.drawImage(background, xOrigin, yOrigin, null);
 	
 		commons.text().paintTo(g2, xOrigin + 121, yOrigin + 21, 14, 0xFF000000, "Open");

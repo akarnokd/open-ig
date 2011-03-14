@@ -55,7 +55,7 @@ public class BridgeScreen extends ScreenBase {
 	Polygon closeMessage;
 	@Override
 	public void onResize() {
-		origin.setBounds((parent.getWidth() - 640) / 2, 20 + (parent.getHeight() - 38 - 442) / 2, 640, 442);
+		origin.setBounds((commons.control.getInnerWidth() - 640) / 2, 20 + (commons.control.getInnerHeight() - 38 - 442) / 2, 640, 442);
 		messageOpenRect.setBounds(origin.x + 572, origin.y + 292, 68, 170);
 		projectorRect.setBounds(origin.x + (origin.width - 524) / 2 - 4, origin.y, 524, 258);
 		videoRect.setBounds(projectorRect.x + 99, projectorRect.y + 11, 320, 240);
@@ -433,7 +433,7 @@ public class BridgeScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+		g2.fillRect(0, 0, commons.control.getInnerWidth(), commons.control.getInnerHeight());
 		
 		g2.drawImage(background, origin.x, origin.y, null);
 		

@@ -33,8 +33,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JFrame;
-
 
 
 /**
@@ -124,8 +122,6 @@ public class CommonResources {
 		/** The status bar screen. */
 		public StatusbarScreen statusbar;
 	}
-	/** The game window. */
-	public JFrame window;
 	/** The game world. */
 	public World world;
 	/** Flag to indicate the game world is loading. */

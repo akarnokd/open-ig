@@ -122,8 +122,8 @@ public class AchievementsScreen extends ScreenBase {
 	@Override
 	public void onResize() {
 		origin.setBounds(
-			(parent.getWidth() - commons.common().infoEmpty.getWidth()) / 2,
-			20 + (parent.getHeight() - commons.common().infoEmpty.getHeight() - 38) / 2,
+			(commons.control.getInnerWidth() - commons.common().infoEmpty.getWidth()) / 2,
+			20 + (commons.control.getInnerHeight() - commons.common().infoEmpty.getHeight() - 38) / 2,
 			commons.common().infoEmpty.getWidth(),
 			commons.common().infoEmpty.getHeight()
 		);

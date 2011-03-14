@@ -97,7 +97,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	/** The UI language. */
 	volatile String language = "hu";
 	/** The render panel. */
-	final JComponent parent = new JComponent() {
+	final JComponent surface = new JComponent() {
 		/** */
 		private static final long serialVersionUID = 9211819397474717113L;
 		{
@@ -117,7 +117,7 @@ public class ScreenTester extends JFrame implements GameControls {
 		@Override
 		public void paint(Graphics g) {
 			g.setColor(parentColor);
-			g.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+			g.fillRect(0, 0, surface.getWidth(), surface.getHeight());
 			if (screen != null) {
 				screen.draw((Graphics2D)g);
 			} else {
@@ -155,11 +155,11 @@ public class ScreenTester extends JFrame implements GameControls {
 		
 		gl.setHorizontalGroup(
 			gl.createSequentialGroup()
-			.addComponent(parent, 640, 640, Short.MAX_VALUE)
+			.addComponent(surface, 640, 640, Short.MAX_VALUE)
 		);
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
-			.addComponent(parent, 480, 480, Short.MAX_VALUE)
+			.addComponent(surface, 480, 480, Short.MAX_VALUE)
 		);
 		
 		prepareMenu();
@@ -167,10 +167,10 @@ public class ScreenTester extends JFrame implements GameControls {
 		pack();
 		setMinimumSize(getSize());
 		MouseAdapter ma = getMouseAdapter();
-		parent.addMouseListener(ma);
-		parent.addMouseMotionListener(ma);
-		parent.addMouseWheelListener(ma);
-		parent.addKeyListener(new KeyAdapter() {
+		surface.addMouseListener(ma);
+		surface.addMouseMotionListener(ma);
+		surface.addMouseWheelListener(ma);
+		surface.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				ScreenBase sb = screen;
@@ -364,7 +364,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				}
 				try {
 					screen = clazz.getConstructor().newInstance();
-					screen.initialize(commons, parent);
+					screen.initialize(commons);
 					screen.onEnter();
 					screen.resize();
 					repaint();
@@ -444,7 +444,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					if (clazz != null) {
 						try {
 							screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
-							screen.initialize(commons, parent);
+							screen.initialize(commons);
 							screen.onEnter();
 							screen.resize();
 							repaint();
@@ -551,7 +551,7 @@ public class ScreenTester extends JFrame implements GameControls {
 		if (clazz != null) {
 			try {
 				screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
-				screen.initialize(commons, parent);
+				screen.initialize(commons);
 				screen.onEnter();
 				screen.resize();
 				repaint();
@@ -727,5 +727,22 @@ public class ScreenTester extends JFrame implements GameControls {
 			sw.position = last.positions.get("*bridge");
 			repaint();
 		}
+	}
+	@Override
+	public int getInnerHeight() {
+		return surface.getWidth();
+	}
+	@Override
+	public int getInnerWidth() {
+		// TODO Auto-generated method stub
+		return surface.getHeight();
+	}
+	@Override
+	public void repaintInner() {
+		surface.repaint();
+	}
+	@Override
+	public void repaintInner(int x, int y, int w, int h) {
+		surface.repaint(x, y, w, h);
 	}
 }

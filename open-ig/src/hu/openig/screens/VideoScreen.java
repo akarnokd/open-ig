@@ -75,8 +75,8 @@ public class VideoScreen extends ScreenBase {
 	@Override
 	public void onResize() {
 		origin.setBounds(
-			(parent.getWidth() - commons.common().infoEmpty.getWidth()) / 2,
-			20 + (parent.getHeight() - commons.common().infoEmpty.getHeight() - 38) / 2,
+			(commons.control.getInnerWidth() - commons.common().infoEmpty.getWidth()) / 2,
+			20 + (commons.control.getInnerHeight() - commons.common().infoEmpty.getHeight() - 38) / 2,
 			commons.common().infoEmpty.getWidth(),
 			commons.common().infoEmpty.getHeight()
 		);
@@ -378,10 +378,10 @@ public class VideoScreen extends ScreenBase {
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
 		g2.drawImage(commons.common().infoEmpty, origin.x, origin.y, null);
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, parent.getWidth(), origin.y);
-		g2.fillRect(0, origin.y + origin.height, parent.getWidth(), parent.getHeight() - origin.y - origin.height);
+		g2.fillRect(0, 0, commons.control.getInnerWidth(), origin.y);
+		g2.fillRect(0, origin.y + origin.height, commons.control.getInnerWidth(), commons.control.getInnerHeight() - origin.y - origin.height);
 		g2.fillRect(0, origin.y, origin.x, origin.height);
-		g2.fillRect(origin.x + origin.width, origin.y, parent.getWidth() - origin.width - origin.x, origin.height);
+		g2.fillRect(origin.x + origin.width, origin.y, commons.control.getInnerWidth() - origin.width - origin.x, origin.height);
 		g2.setComposite(cp);
 		
 		

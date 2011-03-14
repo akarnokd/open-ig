@@ -191,7 +191,7 @@ public class SpacewarScreen extends ScreenBase {
 		/** Move to the next animation. */
 		protected void doAnimate() {
 			animationIndex = (animationIndex + 1) % (phases.length - 1);
-			parent.repaint(x, y, phases[0].getWidth(), phases[0].getHeight());
+			commons.control.repaintInner(x, y, phases[0].getWidth(), phases[0].getHeight());
 		}
 		/**
 		 * Render the button.
@@ -502,46 +502,46 @@ public class SpacewarScreen extends ScreenBase {
 	public void onResize() {
 		// TODO Auto-generated method stub
 		minimap.setBounds(62, 168 + 20, 110, 73);
-		mainmap.setBounds(175, 23, parent.getWidth() - 3 - commons.spacewar().commands.getWidth(),
-				parent.getHeight() - 38 - 3 - commons.spacewar().panelStatLeft.getHeight());
-		leftPanel.setBounds(32, parent.getHeight() - 18 - 3 - 195, 286, 195);
-		rightPanel.setBounds(parent.getWidth() - 33 - 286, parent.getHeight() - 18 - 3 - 195, 286, 195);
+		mainmap.setBounds(175, 23, getInnerWidth() - 3 - commons.spacewar().commands.getWidth(),
+				getInnerHeight() - 38 - 3 - commons.spacewar().panelStatLeft.getHeight());
+		leftPanel.setBounds(32, getInnerHeight() - 18 - 3 - 195, 286, 195);
+		rightPanel.setBounds(getInnerWidth() - 33 - 286, getInnerHeight() - 18 - 3 - 195, 286, 195);
 	}
 
 	@Override
 	public void draw(Graphics2D g2) {
 		onResize();
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		g2.drawImage(commons.spacewar().frameTopLeft, 0, 20, null);
 		
-		g2.drawImage(commons.spacewar().frameTopRight, parent.getWidth() - commons.spacewar().frameTopRight.getWidth(), 20, null);
+		g2.drawImage(commons.spacewar().frameTopRight, getInnerWidth() - commons.spacewar().frameTopRight.getWidth(), 20, null);
 
 		g2.drawImage(commons.spacewar().commands, 0, 20 + commons.spacewar().frameTopLeft.getHeight(), null);
-		g2.drawImage(commons.spacewar().frameRight, parent.getWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight(), null);
+		g2.drawImage(commons.spacewar().frameRight, getInnerWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight(), null);
 		
-		g2.drawImage(commons.spacewar().panelStatLeft, 0, parent.getHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, null);
+		g2.drawImage(commons.spacewar().panelStatLeft, 0, getInnerHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, null);
 		
-		g2.drawImage(commons.spacewar().panelStatRight, parent.getWidth() - commons.spacewar().panelStatRight.getWidth(), parent.getHeight() - commons.spacewar().panelStatRight.getHeight() - 18, null);
+		g2.drawImage(commons.spacewar().panelStatRight, getInnerWidth() - commons.spacewar().panelStatRight.getWidth(), getInnerHeight() - commons.spacewar().panelStatRight.getHeight() - 18, null);
 
 		Paint p = g2.getPaint();
 
 		TexturePaint tp = new TexturePaint(commons.spacewar().frameTopFill, new Rectangle(commons.spacewar().frameTopLeft.getWidth(), 20, 1, commons.spacewar().frameTopFill.getHeight()));
 		g2.setPaint(tp);
-		g2.fillRect(commons.spacewar().frameTopLeft.getWidth(), 20, parent.getWidth() - commons.spacewar().frameTopLeft.getWidth() - commons.spacewar().frameTopRight.getWidth(), commons.spacewar().frameTopFill.getHeight());
+		g2.fillRect(commons.spacewar().frameTopLeft.getWidth(), 20, getInnerWidth() - commons.spacewar().frameTopLeft.getWidth() - commons.spacewar().frameTopRight.getWidth(), commons.spacewar().frameTopFill.getHeight());
 		
-		tp = new TexturePaint(commons.spacewar().panelStatFill, new Rectangle(commons.spacewar().panelStatLeft.getWidth(), parent.getHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, 1, commons.spacewar().panelStatFill.getHeight()));
+		tp = new TexturePaint(commons.spacewar().panelStatFill, new Rectangle(commons.spacewar().panelStatLeft.getWidth(), getInnerHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, 1, commons.spacewar().panelStatFill.getHeight()));
 		g2.setPaint(tp);
-		g2.fillRect(commons.spacewar().panelStatLeft.getWidth(), parent.getHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, parent.getWidth() - commons.spacewar().frameTopRight.getWidth() - commons.spacewar().frameTopLeft.getWidth(), commons.spacewar().panelStatFill.getHeight());
+		g2.fillRect(commons.spacewar().panelStatLeft.getWidth(), getInnerHeight() - commons.spacewar().panelStatLeft.getHeight() - 18, getInnerWidth() - commons.spacewar().frameTopRight.getWidth() - commons.spacewar().frameTopLeft.getWidth(), commons.spacewar().panelStatFill.getHeight());
 		
-		tp = new TexturePaint(commons.spacewar().frameRightFill, new Rectangle(parent.getWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight() + commons.spacewar().frameRight.getHeight(), commons.spacewar().frameRightFill.getWidth(), commons.spacewar().frameRightFill.getHeight()));
+		tp = new TexturePaint(commons.spacewar().frameRightFill, new Rectangle(getInnerWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight() + commons.spacewar().frameRight.getHeight(), commons.spacewar().frameRightFill.getWidth(), commons.spacewar().frameRightFill.getHeight()));
 		g2.setPaint(tp);
-		g2.fillRect(parent.getWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight() + commons.spacewar().frameRight.getHeight(), commons.spacewar().frameRightFill.getWidth(), parent.getHeight() - 38 - commons.spacewar().frameTopRight.getHeight() - commons.spacewar().frameRight.getHeight() - commons.spacewar().panelStatRight.getHeight());
+		g2.fillRect(getInnerWidth() - commons.spacewar().frameRight.getWidth(), 20 + commons.spacewar().frameTopRight.getHeight() + commons.spacewar().frameRight.getHeight(), commons.spacewar().frameRightFill.getWidth(), getInnerHeight() - 38 - commons.spacewar().frameTopRight.getHeight() - commons.spacewar().frameRight.getHeight() - commons.spacewar().panelStatRight.getHeight());
 		
 		tp = new TexturePaint(commons.spacewar().frameLeftFill, new Rectangle(0, 20 + commons.spacewar().frameTopLeft.getHeight() + commons.spacewar().commands.getHeight(), commons.spacewar().frameLeftFill.getWidth(), commons.spacewar().frameLeftFill.getHeight()));
 		g2.setPaint(tp);
 		g2.fillRect(0, 20 + commons.spacewar().frameTopLeft.getHeight() + commons.spacewar().commands.getHeight(), commons.spacewar().frameLeftFill.getWidth(), 
-				parent.getHeight() - 36 - commons.spacewar().frameTopLeft.getHeight() - commons.spacewar().commands.getHeight() - commons.spacewar().panelStatLeft.getHeight());
+				getInnerHeight() - 36 - commons.spacewar().frameTopLeft.getHeight() - commons.spacewar().commands.getHeight() - commons.spacewar().panelStatLeft.getHeight());
 		
 		g2.setPaint(p);
 		
