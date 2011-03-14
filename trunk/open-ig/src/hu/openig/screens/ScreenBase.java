@@ -13,8 +13,6 @@ import hu.openig.core.ResourceLocator;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
 
-import javax.swing.JComponent;
-
 /**
  * A screen base class.
  * @author akarnokd, 2009.12.23.
@@ -24,21 +22,17 @@ public abstract class ScreenBase extends UIContainer {
 	protected Configuration config;
 	/** The global resource locator. */
 	protected ResourceLocator rl;
-	/** The component used to render the screen. */
-	protected JComponent parent;
 	/** The common resources. */
 	protected CommonResources commons;
 	/** 
 	 * Initialize any resources that are required by the screen. 
 	 * Called by the rendering system to initialize a screen at startup.
 	 * @param commons the configuration object
-	 * @param parent the parent component for resizing
 	 */
-	public final void initialize(CommonResources commons, JComponent parent) {
+	public final void initialize(CommonResources commons) {
 		this.commons = commons;
 		this.config = commons.config;
 		this.rl = commons.rl;
-		this.parent = parent;
 		onInitialize();
 	}
 	/** The custom initialization routine. Override this to perform additional initialization, i.e., create sub-components. */
@@ -51,8 +45,8 @@ public abstract class ScreenBase extends UIContainer {
 	public abstract void onFinish();
 	/** Called by the rendering system when the parent swing component changed its size. */
 	public final void resize() {
-		width = getSwingWidth();
-		height = getSwingHeight();
+		width = getInnerWidth();
+		height = getInnerHeight();
 		onResize();
 	}
 	/** Called if the component size changed since the last call. */
@@ -60,21 +54,21 @@ public abstract class ScreenBase extends UIContainer {
 	/** Ask for the parent JComponent to repaint itself. */
 	@Override
 	public void askRepaint() {
-		parent.repaint();
+		commons.control.repaintInner();
 	}
 	/**
 	 * Retrieve the parent swing component's width.
 	 * @return the width
 	 */
-	public int getSwingWidth() {
-		return parent.getWidth();
+	public int getInnerWidth() {
+		return commons.control.getInnerWidth();
 	}
 	/**
 	 * Retrieve the parent swing component's height.
 	 * @return the height
 	 */
-	public int getSwingHeight() {
-		return parent.getHeight();
+	public int getInnerHeight() {
+		return commons.control.getInnerHeight();
 	}
 	@Override
 	public boolean mouse(UIMouse e) {

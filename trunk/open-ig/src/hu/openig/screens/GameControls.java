@@ -64,4 +64,18 @@ public interface GameControls {
 	void center();
 	/** Exit the game. */
 	void exit();
+	/** Repaint the window. */
+	void repaintInner();
+	/** @return Get the width of the rendering component. */
+	int getInnerWidth();
+	/** @return Get the height of the rendering component. */
+	int getInnerHeight();
+	/**
+	 * Repaint a particular region within the rendering component.
+	 * @param x the region X
+	 * @param y the region Y
+	 * @param w the region width
+	 * @param h the region height
+	 */
+	void repaintInner(int x, int y, int w, int h);
 }

@@ -768,7 +768,7 @@ public class StarmapScreen extends ScreenBase {
 				}
 			}
 		}
-		rightPanel.x = getSwingWidth() - commons.starmap().panelVerticalFill.getWidth();
+		rightPanel.x = getInnerWidth() - commons.starmap().panelVerticalFill.getWidth();
 		rightPanel.y = starmapWindow.y;
 		rightPanel.width = commons.starmap().panelVerticalFill.getWidth();
 		rightPanel.height = starmapWindow.height - saveY;

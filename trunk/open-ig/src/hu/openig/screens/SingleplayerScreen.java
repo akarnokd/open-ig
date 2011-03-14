@@ -57,7 +57,7 @@ public class SingleplayerScreen extends ScreenBase {
 	int difficulty;
 	@Override
 	public void onResize() {
-		origin.setBounds((parent.getWidth() - 640) / 2, (parent.getHeight() - 480) / 2, 640, 480);
+		origin.setBounds((getInnerWidth() - 640) / 2, (getInnerHeight() - 480) / 2, 640, 480);
 
 		int w = origin.width / 2;
 
@@ -349,7 +349,7 @@ public class SingleplayerScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		g2.drawImage(background, origin.x, origin.y, null);
 		
 		Composite cp = g2.getComposite();

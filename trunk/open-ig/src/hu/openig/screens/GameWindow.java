@@ -17,6 +17,8 @@ import hu.openig.ui.UIMouse;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -93,10 +95,10 @@ public class GameWindow extends JFrame implements GameControls {
 	ScreenBase secondary;
 	/** The status bar to display over the primary and secondary screens. */
 	ScreenBase statusbar;
-	/** Is the status bar visible? */
-	boolean statusbarVisible;
 	/** The top overlay for playing 'full screen' movies. */
 	MovieScreen movie;
+	/** Is the status bar visible? */
+	boolean statusbarVisible;
 	/** Is the movie visible. */
 	boolean movieVisible;
 	/** The configuration object. */
@@ -106,9 +108,9 @@ public class GameWindow extends JFrame implements GameControls {
 	/** The common resources. */
 	CommonResources commons;
 	/** The surface used to render the screens. */
-	private ScreenRenderer surface;
+	ScreenRenderer surface;
 	/** The list of screens. */
-	protected List<ScreenBase> screens;
+	List<ScreenBase> screens;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
@@ -123,22 +125,17 @@ public class GameWindow extends JFrame implements GameControls {
 				config.log("ERROR", e.getMessage(), e);
 			}
 		}
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				exit();
-			}
-		});
-		commons = new CommonResources(config, this);
+		
+		this.commons = new CommonResources(config, this);
 		this.config = config;
 		this.rl = commons.rl;
+		this.surface = new ScreenRenderer();
 		
 		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
 		c.setLayout(gl);
 		
-		surface = new ScreenRenderer();
+		
 		gl.setHorizontalGroup(
 			gl.createSequentialGroup()
 			.addComponent(surface, 640, 640, Short.MAX_VALUE)
@@ -153,12 +150,86 @@ public class GameWindow extends JFrame implements GameControls {
 //		if (config.width > 0) {
 //			setBounds(config.left, config.top, config.width, config.height);
 //		}
+		
+		// Event handling
+		
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				exit();
+			}
+		});
 		MouseActions ma = new MouseActions();
 		surface.addMouseListener(ma);
 		surface.addMouseMotionListener(ma);
 		surface.addMouseWheelListener(ma);
 		addKeyListener(new KeyEvents());
+		
+		// load resources
 		initScreens();
+	}
+	/** 
+	 * A copy constructor to save the state of a previous window without reloading
+	 * the resources. 
+	 * @param that the previous window
+	 * @param undecorated should it be undecorated?
+	 */
+	public GameWindow(GameWindow that, boolean undecorated) {
+		setUndecorated(undecorated);
+		this.setTitle(that.getTitle());
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				exit();
+			}
+		});
+
+		this.surface = new ScreenRenderer();
+		
+		this.commons = that.commons;
+		this.commons.control = this;
+		this.rl = that.rl;
+		this.config = that.config;
+		this.screens = that.screens;
+		setIconImage(that.getIconImage());
+		this.primary = that.primary;
+		this.secondary = that.secondary;
+		this.movie = that.movie;
+		this.movieVisible = that.movieVisible;
+		this.statusbar = that.statusbar;
+		this.statusbarVisible = that.statusbarVisible;
+		
+		Container c = getContentPane();
+		GroupLayout gl = new GroupLayout(c);
+		c.setLayout(gl);
+		
+		
+		gl.setHorizontalGroup(
+			gl.createSequentialGroup()
+			.addComponent(surface, 640, 640, Short.MAX_VALUE)
+		);
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addComponent(surface, 480, 480, Short.MAX_VALUE)
+		);
+		pack();
+		setMinimumSize(getSize());
+		setLocationRelativeTo(null);
+
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				exit();
+			}
+		});
+		MouseActions ma = new MouseActions();
+		surface.addMouseListener(ma);
+		surface.addMouseMotionListener(ma);
+		surface.addMouseWheelListener(ma);
+		addKeyListener(new KeyEvents());
 	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.screens.GameControls#exit()
@@ -183,7 +254,7 @@ public class GameWindow extends JFrame implements GameControls {
 		commons.reinit(newLanguage);
 		surface.repaint();
 		for (ScreenBase sb : screens) {
-			sb.initialize(commons, surface);
+			sb.initialize(commons);
 		}
 	}
 	/** Initialize the various screen renderers. */
@@ -205,7 +276,7 @@ public class GameWindow extends JFrame implements GameControls {
 		movie = commons.screens.movie;
 		statusbar = commons.screens.statusbar;
 		for (ScreenBase sb : screens) {
-			sb.initialize(commons, surface);
+			sb.initialize(commons);
 		}
 		
 		displayPrimary(commons.screens.main);
@@ -514,6 +585,28 @@ public class GameWindow extends JFrame implements GameControls {
 					result = false;
 				}
 			}
+			if (!result) {
+				if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+					GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			        for (final GraphicsDevice gs : ge.getScreenDevices()) {
+			        	if (gs.getDefaultConfiguration().getBounds().intersects(getBounds())) {
+		        			GameWindow gw = new GameWindow(GameWindow.this, gs.getFullScreenWindow() == null);
+			        		if (gs.getFullScreenWindow() == null) {
+				        		dispose();
+			        			gs.setFullScreenWindow(gw);
+			        			setSize(gs.getDefaultConfiguration().getBounds().getSize());
+			        		} else {
+				        		dispose();
+			        			gs.setFullScreenWindow(null);
+			        			gw.setVisible(true);
+			        		}
+			        		gw.doMoveMouseAgain();
+			        		result = true;
+			        		break;
+			        	}
+			        }
+				}
+			}
 			if (result) {
 				e.consume();
 			}
@@ -609,5 +702,21 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public Rectangle getWindowBounds() {
 		return getBounds();
+	}
+	@Override
+	public int getInnerHeight() {
+		return surface.getHeight();
+	}
+	@Override
+	public int getInnerWidth() {
+		return surface.getWidth();
+	}
+	@Override
+	public void repaintInner() {
+		surface.repaint();
+	}
+	@Override
+	public void repaintInner(int x, int y, int w, int h) {
+		surface.repaint(x, y, w, h);
 	}
 }

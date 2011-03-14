@@ -88,18 +88,18 @@ public class LoadingScreen extends ScreenBase {
 		Composite cp = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.7f));
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+		g2.fillRect(0, 0, commons.control.getInnerWidth(), commons.control.getInnerHeight());
 		g2.setComposite(cp);
 		
 		cd.height = commons.research().rolling[0].getHeight() * 2;
 		cd.width = commons.research().rolling[0].getWidth() * 2;
-		cd.y = (parent.getHeight() - cd.height) / 2;
+		cd.y = (commons.control.getInnerHeight() - cd.height) / 2;
 		text.height = 20;
 		text.width = commons.text().getTextWidth(text.height, commons.labels().get("loading") + "...");
-		text.y = (parent.getHeight() - text.height) / 2;
+		text.y = (commons.control.getInnerHeight() - text.height) / 2;
 		int tw = cd.width + 10 + text.width;
 		
-		cd.x = (parent.getWidth() - tw) / 2;
+		cd.x = (commons.control.getInnerWidth() - tw) / 2;
 		text.x = cd.x + cd.width + 10;
 		
 		g2.drawImage(commons.research().rolling[rollingPhase], cd.x, cd.y, cd.width, cd.height, null);

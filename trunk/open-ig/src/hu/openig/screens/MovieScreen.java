@@ -99,7 +99,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	}
 	@Override
 	public void onResize() {
-		movieRect.setBounds((parent.getWidth() - 640) / 2, (parent.getHeight() - 480) / 2, 640, 480);
+		movieRect.setBounds((commons.control.getInnerWidth() - 640) / 2, (commons.control.getInnerHeight() - 480) / 2, 640, 480);
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	public void draw(Graphics2D g2) {
 		onResize();
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
+		g2.fillRect(0, 0, commons.control.getInnerWidth(), commons.control.getInnerHeight());
 		if (frontBuffer != null) {
 			swapLock.lock();
 			try {
