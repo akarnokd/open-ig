@@ -730,12 +730,12 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	@Override
 	public int getInnerHeight() {
-		return surface.getWidth();
+		return surface.getHeight();
 	}
 	@Override
 	public int getInnerWidth() {
 		// TODO Auto-generated method stub
-		return surface.getHeight();
+		return surface.getWidth();
 	}
 	@Override
 	public void repaintInner() {

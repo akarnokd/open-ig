@@ -38,12 +38,29 @@ public class UIContainer extends UIComponent {
 			c.parent = this;
 			this.components.add(c);
 		}
+		sortComponents();
+	}
+	/** Sort the components array according to Z order. */
+	private void sortComponents() {
 		Collections.sort(this.components, new Comparator<UIComponent>() {
 			@Override
 			public int compare(UIComponent o1, UIComponent o2) {
 				return o1.z < o2.z ? -1 : (o1.z > o1.z ? 1 : 0);
 			}
 		});
+	}
+	/**
+	 * Add an iterable set of components to this container.
+	 * It keeps the internal components list sorted by z order.
+	 * Please do not assign components to multiple containers, instead,
+	 * create multiple instances (which might use the same data model in the background).
+	 * @param components the components
+	 */
+	public void add(Iterable<? extends UIComponent> components) {
+		for (UIComponent c : components) {
+			c.parent = this;
+			this.components.add(c);
+		}
 	}
 	@Override
 	public void draw(Graphics2D g2) {
