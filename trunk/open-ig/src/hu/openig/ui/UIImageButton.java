@@ -149,7 +149,6 @@ public class UIImageButton extends UIComponent {
 				onPress.act();
 			}
 			return true;
-		case CLICK:
 		case DOUBLE_CLICK:
 			for (int i = 0; i < e.z; i++) {
 				doClick();

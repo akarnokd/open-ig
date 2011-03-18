@@ -93,6 +93,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			TechnologySlot ts = new TechnologySlot(commons);
 			ts.name = "TODO";
 			ts.inventory = 1;
+			ts.cost = 1000;
 			ts.researching = true;
 			ts.percent = 0.5f;
 			ts.visible(true);
