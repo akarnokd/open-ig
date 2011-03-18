@@ -110,6 +110,7 @@ public class VideoScreen extends ScreenBase {
 		};
 		
 		scrollDownButton = new UIImageButton(commons.database().arrowDown);
+		scrollDownButton.setHoldDelay(100);
 		scrollDownButton.onClick = new Act() {
 			@Override
 			public void act() {

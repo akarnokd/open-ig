@@ -86,7 +86,7 @@ public class UIGenericButton extends UIComponent {
 	public void setHoldDelay(int delayMillis) {
 		this.holdDelay = delayMillis;
 		if (holdDelay >= 0) {
-			holdTimer.setInitialDelay(holdDelay);
+			holdTimer.setInitialDelay(2 * holdDelay);
 			holdTimer.setDelay(holdDelay);
 		}
 	}
@@ -139,13 +139,14 @@ public class UIGenericButton extends UIComponent {
 				onPress.act();
 			}
 			return true;
-		case CLICK:
-		case DOUBLE_CLICK:
-			for (int i = 0; i < e.z; i++) {
+		case UP:
+			if (down) {
+				down = false;
+				holdTimer.stop();
 				doClick();
+				return true;
 			}
 			return false;
-		case UP:
 		case LEAVE:
 			down = false;
 			holdTimer.stop();
