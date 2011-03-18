@@ -10,7 +10,7 @@ package hu.openig.test;
 
 
 import hu.openig.render.GenericButtonRenderer;
-import hu.openig.render.GenericLargeButton;
+import hu.openig.render.GenericMediumButton;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -93,8 +93,10 @@ public class DynamicButtonTest extends JFrame {
 		super("Dynamic button");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
-		normal = new GenericLargeButton("/hu/openig/gfx/button_large.png");
-		pressed = new GenericLargeButton("/hu/openig/gfx/button_large_pressed.png");
+//		normal = new GenericLargeButton("/hu/openig/gfx/button_large.png");
+//		pressed = new GenericLargeButton("/hu/openig/gfx/button_large_pressed.png");
+		normal = new GenericMediumButton("/hu/openig/gfx/button_medium.png");
+		pressed = new GenericMediumButton("/hu/openig/gfx/button_medium_pressed.png");
 		
 		
 		Container c = getContentPane();

@@ -24,8 +24,6 @@ public class TechnologySlot extends UIComponent {
 	String name;
 	/** The inventory count. */
 	int inventory;
-	/** Is the slot visible? */
-	boolean visible;
 	/** Is the slot selected? */
 	boolean selected;
 	/** Is the technology researched and available. */

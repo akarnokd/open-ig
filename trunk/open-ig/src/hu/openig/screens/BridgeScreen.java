@@ -405,7 +405,7 @@ public class BridgeScreen extends ScreenBase {
 	/** The level specific background. */
 	BufferedImage background;
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		background = commons.world.bridge.levels.get(commons.world.level).image;
 		onResize();
 		playMessageAppear();

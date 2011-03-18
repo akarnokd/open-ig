@@ -8,6 +8,7 @@
 
 package hu.openig.test;
 
+import hu.openig.Startup;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
@@ -16,6 +17,7 @@ import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.World;
 import hu.openig.screens.AchievementsScreen;
+import hu.openig.screens.AchievementsScreen.Mode;
 import hu.openig.screens.BarScreen;
 import hu.openig.screens.BattlefinishScreen;
 import hu.openig.screens.BridgeScreen;
@@ -24,6 +26,7 @@ import hu.openig.screens.DatabaseScreen;
 import hu.openig.screens.DiplomacyScreen;
 import hu.openig.screens.EquipmentScreen;
 import hu.openig.screens.EquipmentScreen.EquipmentMode;
+import hu.openig.screens.ResearchProductionScreen.RPMode;
 import hu.openig.screens.GameControls;
 import hu.openig.screens.InfoScreen;
 import hu.openig.screens.LoadSaveScreen;
@@ -43,6 +46,8 @@ import hu.openig.ui.UIMouse;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -215,7 +220,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				ScreenBase sb = screen;
-				if (sb != null && e.getClickCount() >= 2) {
+				if (sb != null) {
 					if (sb.mouse(UIMouse.from(e))) {
 						repaint();
 					}
@@ -275,6 +280,18 @@ public class ScreenTester extends JFrame implements GameControls {
 		
 		menuAction = new JMenu("Action");
 		
+		
+		JMenuItem miRunGame = new JMenuItem("Run Game");
+		miRunGame.addActionListener(new Act() {
+			@Override
+			public void act() {
+				Startup.main(new String[] { });
+			}
+		});
+		
+		menuAction.add(miRunGame);
+		menuAction.addSeparator();
+		
 		JMenuItem miRepaint = new JMenuItem("Repaint");
 		miRepaint.addActionListener(new ActionListener() {
 			@Override
@@ -316,26 +333,28 @@ public class ScreenTester extends JFrame implements GameControls {
 		
 		menuScreen = new JMenu("Screens");
 		
-		menuScreen.add(addScreenItem("Bridge", BridgeScreen.class));
-		menuScreen.add(addScreenItem("Starmap", StarmapScreen.class));
-		menuScreen.add(addScreenItem("Planet", PlanetScreen.class));
-		menuScreen.add(addScreenItem("Equipment", EquipmentScreen.class));
-		menuScreen.add(addScreenItem("Production & Research", ResearchProductionScreen.class));
-		menuScreen.add(addScreenItem("Information", InfoScreen.class));
-		menuScreen.add(addScreenItem("Diplomacy", DiplomacyScreen.class));
-		menuScreen.add(addScreenItem("Database", DatabaseScreen.class));
-		menuScreen.add(addScreenItem("Bar", BarScreen.class));
-		menuScreen.add(addScreenItem("Statistics & Achievements", AchievementsScreen.class));
+		menuScreen.add(addScreenItem("Bridge", BridgeScreen.class, null));
+		menuScreen.add(addScreenItem("Starmap", StarmapScreen.class, null));
+		menuScreen.add(addScreenItem("Planet", PlanetScreen.class, null));
+		menuScreen.add(addScreenItem("Equipment", EquipmentScreen.class, null));
+		menuScreen.add(addScreenItem("Production", ResearchProductionScreen.class, RPMode.PRODUCTION));
+		menuScreen.add(addScreenItem("Research", ResearchProductionScreen.class, RPMode.RESEARCH));
+		menuScreen.add(addScreenItem("Information", InfoScreen.class, null)); // TODO information subscreens!
+		menuScreen.add(addScreenItem("Diplomacy", DiplomacyScreen.class, null));
+		menuScreen.add(addScreenItem("Database", DatabaseScreen.class, null));
+		menuScreen.add(addScreenItem("Bar", BarScreen.class, null));
+		menuScreen.add(addScreenItem("Achievements", AchievementsScreen.class, Mode.ACHIEVEMENTS));
+		menuScreen.add(addScreenItem("Statistics", AchievementsScreen.class, Mode.STATISTICS));
 		menuScreen.addSeparator();
-		menuScreen.add(addScreenItem("Main menu", MainScreen.class));
-		menuScreen.add(addScreenItem("Single player menu", SingleplayerScreen.class));
-		menuScreen.add(addScreenItem("Loading", LoadingScreen.class));
-		menuScreen.add(addScreenItem("Status bar", StatusbarScreen.class));
-		menuScreen.add(addScreenItem("Load & Save", LoadSaveScreen.class));
-		menuScreen.add(addScreenItem("Shipwalk", ShipwalkScreen.class));
-		menuScreen.add(addScreenItem("Spacewar", SpacewarScreen.class));
-		menuScreen.add(addScreenItem("Battle finish", BattlefinishScreen.class));
-		menuScreen.add(addScreenItem("Videos", VideoScreen.class));
+		menuScreen.add(addScreenItem("Main menu", MainScreen.class, null));
+		menuScreen.add(addScreenItem("Single player menu", SingleplayerScreen.class, null));
+		menuScreen.add(addScreenItem("Loading", LoadingScreen.class, null));
+		menuScreen.add(addScreenItem("Status bar", StatusbarScreen.class, null));
+		menuScreen.add(addScreenItem("Load & Save", LoadSaveScreen.class, null));
+		menuScreen.add(addScreenItem("Shipwalk", ShipwalkScreen.class, null));
+		menuScreen.add(addScreenItem("Spacewar", SpacewarScreen.class, null));
+		menuScreen.add(addScreenItem("Battle finish", BattlefinishScreen.class, null));
+		menuScreen.add(addScreenItem("Videos", VideoScreen.class, null));
 		
 		menuView = new JMenu("View");
 		menuView.setVisible(false);
@@ -350,13 +369,16 @@ public class ScreenTester extends JFrame implements GameControls {
 	 * Add a screen to the menu.
 	 * @param name the menu item name
 	 * @param clazz the menu item class
+	 * @param mode the mode
 	 * @return the menu item
 	 */
-	JMenuItem addScreenItem(String name, final Class<? extends ScreenBase> clazz) {
+	JMenuItem addScreenItem(String name, 
+			final Class<? extends ScreenBase> clazz, final Object mode) {
 		JMenuItem item = new JMenuItem(name);
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				setTitle(String.format("Screen Tester: %d / %d MB", Runtime.getRuntime().freeMemory() / 1024 / 1024, Runtime.getRuntime().totalMemory() / 1024 / 1024));
 				if (screen != null) {
 					screen.onLeave();
 					screen.onFinish();
@@ -365,12 +387,14 @@ public class ScreenTester extends JFrame implements GameControls {
 				try {
 					screen = clazz.getConstructor().newInstance();
 					screen.initialize(commons);
-					screen.onEnter();
+					screen.onEnter(mode);
 					screen.resize();
 					repaint();
 					onScreen(clazz.getSimpleName(), screen);
 				} catch (Exception ex) {
 					ex.printStackTrace();
+				} finally {
+					setTitle(String.format("Screen Tester: %d / %d MB", Runtime.getRuntime().freeMemory() / 1024 / 1024, Runtime.getRuntime().totalMemory() / 1024 / 1024));
 				}
 			}
 		});
@@ -445,7 +469,7 @@ public class ScreenTester extends JFrame implements GameControls {
 						try {
 							screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
 							screen.initialize(commons);
-							screen.onEnter();
+							screen.onEnter(null);
 							screen.resize();
 							repaint();
 							onScreen(screen.getClass().getSimpleName(), screen);
@@ -488,6 +512,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			screen = null;
 		}
 		String clazz = null;
+		Object mode = null;
 		switch (newScreen) {
 		case ACHIEVEMENTS:
 			clazz = AchievementsScreen.class.getName();
@@ -512,9 +537,11 @@ public class ScreenTester extends JFrame implements GameControls {
 			break;
 		case PRODUCTION:
 			clazz = ResearchProductionScreen.class.getName();
+			mode = RPMode.PRODUCTION;
 			break;
 		case RESEARCH:
 			clazz = ResearchProductionScreen.class.getName();
+			mode = RPMode.RESEARCH;
 			break;
 		case SPACEWAR:
 			clazz = SpacewarScreen.class.getName();
@@ -552,7 +579,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			try {
 				screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
 				screen.initialize(commons);
-				screen.onEnter();
+				screen.onEnter(mode);
 				screen.resize();
 				repaint();
 				onScreen(screen.getClass().getSimpleName(), screen);
@@ -744,5 +771,9 @@ public class ScreenTester extends JFrame implements GameControls {
 	@Override
 	public void repaintInner(int x, int y, int w, int h) {
 		surface.repaint(x, y, w, h);
+	}
+	@Override
+	public FontMetrics fontMetrics(int size) {
+		return getFontMetrics(getFont().deriveFont((float)size).deriveFont(Font.BOLD));
 	}
 }

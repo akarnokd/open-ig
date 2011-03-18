@@ -30,9 +30,9 @@ public class UIComponent {
 	/** The parent UI component (e.g., container) or null if this is the top level component. */
 	public UIComponent parent;
 	/** The visibility indicator (e.g., no drawing and no events). */
-	public boolean visible = true;
+	protected boolean visible = true;
 	/** Enabledness indicator (e.g., no events). */
-	public boolean enabled = true;
+	protected boolean enabled = true;
 	/** The mouse is over this component, managed by the container. */
 	public boolean over;
 	/**
@@ -137,5 +137,31 @@ public class UIComponent {
 		if (parent != null) {
 			parent.askRepaint();
 		}
+	}
+	/**
+	 * Set the visibility of this component.
+	 * @param state the state
+	 * @return this
+	 */
+	public UIComponent visible(boolean state) {
+		this.visible = state;
+		return this;
+	}
+	/**
+	 * Set the enabledness of this component.
+	 * @param state the state
+	 * @return this
+	 */
+	public UIComponent enabled(boolean state) {
+		this.enabled = state;
+		return this;
+	}
+	/** @return is the component enabled? */
+	public boolean enabled() {
+		return enabled;
+	}
+	/** @return is the component visible? */
+	public boolean visible() {
+		return visible;
 	}
 }

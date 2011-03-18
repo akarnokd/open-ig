@@ -23,7 +23,7 @@ public class DatabaseScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		// TODO Auto-generated method stub
 		
 	}

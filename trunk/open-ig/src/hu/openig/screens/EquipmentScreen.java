@@ -10,7 +10,6 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.render.RenderTools;
-import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
@@ -19,7 +18,6 @@ import hu.openig.ui.UILabel;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,22 +202,47 @@ public class EquipmentScreen extends ScreenBase {
 		researchButton = new UIImageButton(commons.research().research);
 		productionButton = new UIImageButton(commons.research().production);
 		
+		researchButton.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.RESEARCH);
+			}
+		};
+		productionButton.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.PRODUCTION);
+			}
+		};
+		bridgeButton.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.BRIDGE);
+			}
+		};
+		infoButton.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.INFORMATION);
+			}
+		};
+		
 		starmapButton = new UIImageButton(commons.equipment().starmap);
 		colonyButton = new UIImageButton(commons.equipment().planet);
 		
 		noResearch = new UIImage(commons.common().emptyButton);
-		noResearch.visible = false;
+		noResearch.visible(false);
 		noProduction = new UIImage(commons.common().emptyButton);
-		noProduction.visible = false;
+		noProduction.visible(false);
 		noStarmap = new UIImage(commons.equipment().buttonMapEmpty);
-		noStarmap.visible = false;
+		noStarmap.visible(false);
 		noColony = new UIImage(commons.equipment().buttonMapEmpty);
-		noColony.visible = false;
+		noColony.visible(false);
 		
 		endSplit = new UIImageButton(commons.equipment().endSplit);
-		endSplit.visible = false;
+		endSplit.visible(false);
 		endJoin = new UIImageButton(commons.equipment().endJoin);
-		endJoin.visible = false;
+		endJoin.visible(false);
 		
 		prev = new UIImageButton(commons.starmap().backwards);
 		next = new UIImageButton(commons.starmap().forwards);
@@ -243,21 +266,21 @@ public class EquipmentScreen extends ScreenBase {
 		secondaryVehicles = new UILabel(commons.labels().format("equipment.vehiclesandmax", 0, 8), 10, commons.text());
 		
 		battleshipsAndStationsEmpty = new UIImage(commons.equipment().categoryEmpty);
-		battleshipsAndStationsEmpty.visible = false;
+		battleshipsAndStationsEmpty.visible(false);
 		cruisersEmpty = new UIImage(commons.equipment().categoryEmpty);
-		cruisersEmpty.visible = false;
+		cruisersEmpty.visible(false);
 		fightersEmpty = new UIImage(commons.equipment().categoryEmpty);
-		fightersEmpty.visible = false;
+		fightersEmpty.visible(false);
 		tanksEmpty = new UIImage(commons.equipment().categoryEmpty);
-		tanksEmpty.visible = false;
+		tanksEmpty.visible(false);
 		vehiclesEmpty = new UIImage(commons.equipment().categoryEmpty);
-		vehiclesEmpty.visible = false;
+		vehiclesEmpty.visible(false);
 		
 		battleships = new UIImageTabButton(commons.equipment().categoryBattleships);
 		cruisers = new UIImageTabButton(commons.equipment().categoryCruisers);
 		fighters = new UIImageTabButton(commons.equipment().categoryFighers);
 		stations = new UIImageTabButton(commons.equipment().categorySpaceStations);
-		stations.visible = false;
+		stations.visible(false);
 		tanks = new UIImageTabButton(commons.equipment().categoryTanks);
 		vehicles = new UIImageTabButton(commons.equipment().categoryVehicles);
 		
@@ -275,7 +298,7 @@ public class EquipmentScreen extends ScreenBase {
 			ts.inventory = 1;
 			ts.researching = true;
 			ts.percent = 0.5f;
-			ts.visible = true;
+			ts.visible(true);
 			ts.missingLab = true;
 			ts.image = rl.getImage(commons.language(), "inventions/spaceships/fighters/fighter_" + (i + 1) + "");
 			slots.add(ts);
@@ -286,58 +309,58 @@ public class EquipmentScreen extends ScreenBase {
 		slots.get(2).missingLab = false;
 		slots.get(2).missingPrerequisite = true;
 
-		slots.get(3).visible = false;
+		slots.get(3).visible(false);
 		
 		slots.get(4).notResearchable = true;
 		
-		slots.get(5).visible = false;
+		slots.get(5).visible(false);
 		
 		noPlanetNearby = new UIImage(commons.equipment().noPlanetNearby);
 		noSpaceport = new UIImage(commons.equipment().noSpaceport);
-		noSpaceport.visible = false;
+		noSpaceport.visible(false);
 		notYourPlanet = new UIImage(commons.equipment().notYourplanet);
-		notYourPlanet.visible = false;
+		notYourPlanet.visible(false);
 		
 		newButton = new UIImageButton(commons.equipment().newFleet);
-		newButton.visible = false;
+		newButton.visible(false);
 		addButton = new UIImageButton(commons.equipment().add);
-		addButton.visible = false;
+		addButton.visible(false);
 		deleteButton = new UIImageButton(commons.equipment().delete);
-		deleteButton.visible = false;
+		deleteButton.visible(false);
 		transferButton = new UIImageButton(commons.equipment().transfer);
-		transferButton.visible = false;
+		transferButton.visible(false);
 		splitButton = new UIImageButton(commons.equipment().split);
-		splitButton.visible = false;
+		splitButton.visible(false);
 
 		addOne = new UIImageButton(commons.equipment().addOne);
-		addOne.visible = false;
+		addOne.visible(false);
 		removeOne = new UIImageButton(commons.equipment().removeOne);
-		removeOne.visible = false;
+		removeOne.visible(false);
 		joinButton = new UIImageButton(commons.equipment().join);
-		joinButton.visible = false;
+		joinButton.visible(false);
 		
 		left1 = new UIImageButton(commons.equipment().moveLeft1);
-		left1.visible = false;
+		left1.visible(false);
 		left2 = new UIImageButton(commons.equipment().moveLeft2);
-		left2.visible = false;
+		left2.visible(false);
 		left3 = new UIImageButton(commons.equipment().moveLeft3);
-		left3.visible = false;
+		left3.visible(false);
 		right1 = new UIImageButton(commons.equipment().moveRight1);
-		right1.visible = false;
+		right1.visible(false);
 		right2 = new UIImageButton(commons.equipment().moveRight2);
-		right2.visible = false;
+		right2.visible(false);
 		right3 = new UIImageButton(commons.equipment().moveRight3);
-		right3.visible = false;
+		right3.visible(false);
 
 		listButton = new UIImageButton(commons.equipment().list);
 		
 		innerEquipment = new Rectangle();
 		innerEquipmentName = new UILabel("TODO", 7, commons.text());
-		innerEquipmentName.visible = false;
+		innerEquipmentName.visible(false);
 		innerEquipmentValue = new UILabel(commons.labels().format("equipment.innercount", 0, 0), 7, commons.text());
-		innerEquipmentValue.visible = false;
+		innerEquipmentValue.visible(false);
 		innerEquipmentSeparator = new UILabel("-----", 7, commons.text());
-		innerEquipmentSeparator.visible = false;
+		innerEquipmentSeparator.visible(false);
 		
 		selectedNameAndType = new UILabel(commons.labels().format("equipment.selectednametype", "TODO", "TODO"), 10, commons.text());
 		selectedNameAndType.color(0xFF6DB269);
@@ -351,18 +374,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		});
 		
-		for (Field f : getClass().getDeclaredFields()) {
-			if (UIComponent.class.isAssignableFrom(f.getType())
-					&& f.getDeclaringClass() == getClass()) {
-				try {
-					add(UIComponent.class.cast(f.get(this)));
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		addThis();
 		add(slots);
 	}
 	/**
@@ -379,10 +391,12 @@ public class EquipmentScreen extends ScreenBase {
 		};
 	}
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		onResize();
 		if (mode == null) {
-			mode = EquipmentMode.MANAGE_FLEET;
+			this.mode = EquipmentMode.MANAGE_FLEET;
+		} else {
+			this.mode = (EquipmentMode)mode; 
 		}
 		animation.start();
 	}
@@ -516,86 +530,86 @@ public class EquipmentScreen extends ScreenBase {
 		this.mode = mode;
 		switch (mode) {
 		case MANAGE_FLEET:
-			spaceshipsLabel.visible = true;
-			spaceshipsMaxLabel.visible = true;
-			fleetStatusLabel.visible = true;
-			secondaryLabel.visible = true;
-			secondaryValue.visible = true;
-			secondaryFighters.visible = true;
-			secondaryVehicles.visible = true;
+			spaceshipsLabel.visible(true);
+			spaceshipsMaxLabel.visible(true);
+			fleetStatusLabel.visible(true);
+			secondaryLabel.visible(true);
+			secondaryValue.visible(true);
+			secondaryFighters.visible(true);
+			secondaryVehicles.visible(true);
 			
-			battleships.visible = true;
-			stations.visible = false;
-			cruisers.visible = true;
-			cruisersEmpty.visible = false;
+			battleships.visible(true);
+			stations.visible(false);
+			cruisers.visible(true);
+			cruisersEmpty.visible(false);
 			
-			left1.visible = false;
-			left2.visible = false;
-			left3.visible = false;
-			right1.visible = false;
-			right2.visible = false;
-			right3.visible = false;
+			left1.visible(false);
+			left2.visible(false);
+			left3.visible(false);
+			right1.visible(false);
+			right2.visible(false);
+			right3.visible(false);
 
-			starmapButton.visible = true;
-			colonyButton.visible = true;
-			noStarmap.visible = false;
-			noColony.visible = false;
+			starmapButton.visible(true);
+			colonyButton.visible(true);
+			noStarmap.visible(false);
+			noColony.visible(false);
 			
 			break;
 		case MANAGE_PLANET:
-			fleetStatusLabel.visible = false;
-			secondaryLabel.visible = false;
-			secondaryValue.visible = false;
-			secondaryFighters.visible = false;
-			secondaryVehicles.visible = false;
-			spaceshipsLabel.visible = false;
-			spaceshipsMaxLabel.visible = false;
+			fleetStatusLabel.visible(false);
+			secondaryLabel.visible(false);
+			secondaryValue.visible(false);
+			secondaryFighters.visible(false);
+			secondaryVehicles.visible(false);
+			spaceshipsLabel.visible(false);
+			spaceshipsMaxLabel.visible(false);
 			
-			battleships.visible = false;
-			stations.visible = true;
-			cruisers.visible = false;
-			cruisersEmpty.visible = true;
+			battleships.visible(false);
+			stations.visible(true);
+			cruisers.visible(false);
+			cruisersEmpty.visible(true);
 			
 			battleships.down = false;
 			cruisers.down = false;
 			
-			left1.visible = false;
-			left2.visible = false;
-			left3.visible = false;
-			right1.visible = false;
-			right2.visible = false;
-			right3.visible = false;
+			left1.visible(false);
+			left2.visible(false);
+			left3.visible(false);
+			right1.visible(false);
+			right2.visible(false);
+			right3.visible(false);
 
-			starmapButton.visible = true;
-			colonyButton.visible = true;
-			noStarmap.visible = false;
-			noColony.visible = false;
+			starmapButton.visible(true);
+			colonyButton.visible(true);
+			noStarmap.visible(false);
+			noColony.visible(false);
 			break;
 		case SHARE_OR_COMBINE:
-			spaceshipsLabel.visible = true;
-			spaceshipsMaxLabel.visible = true;
-			fleetStatusLabel.visible = true;
-			secondaryLabel.visible = true;
-			secondaryValue.visible = true;
-			secondaryFighters.visible = true;
-			secondaryVehicles.visible = true;
+			spaceshipsLabel.visible(true);
+			spaceshipsMaxLabel.visible(true);
+			fleetStatusLabel.visible(true);
+			secondaryLabel.visible(true);
+			secondaryValue.visible(true);
+			secondaryFighters.visible(true);
+			secondaryVehicles.visible(true);
 			
-			battleships.visible = true;
-			stations.visible = false;
-			cruisers.visible = true;
-			cruisersEmpty.visible = false;
+			battleships.visible(true);
+			stations.visible(false);
+			cruisers.visible(true);
+			cruisersEmpty.visible(false);
 			
-			left1.visible = true;
-			left2.visible = true;
-			left3.visible = true;
-			right1.visible = true;
-			right2.visible = true;
-			right3.visible = true;
+			left1.visible(true);
+			left2.visible(true);
+			left3.visible(true);
+			right1.visible(true);
+			right2.visible(true);
+			right3.visible(true);
 			
-			starmapButton.visible = false;
-			colonyButton.visible = false;
-			noStarmap.visible = true;
-			noColony.visible = true;
+			starmapButton.visible(false);
+			colonyButton.visible(false);
+			noStarmap.visible(true);
+			noColony.visible(true);
 			break;
 		default:
 		}

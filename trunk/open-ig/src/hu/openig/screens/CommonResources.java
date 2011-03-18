@@ -550,5 +550,4 @@ public class CommonResources {
 		}
 		return common;
 	}
-
 }

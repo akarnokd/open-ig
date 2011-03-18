@@ -289,7 +289,7 @@ public class MainScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		selectRandomBackground();
 		onResize();
 	}
