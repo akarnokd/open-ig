@@ -24,6 +24,8 @@ public class TechnologySlot extends UIComponent {
 	String name;
 	/** The inventory count. */
 	int inventory;
+	/** The cost to produce/research. Use -1 to hide. */
+	int cost;
 	/** Is the slot selected? */
 	boolean selected;
 	/** Is the technology researched and available. */
@@ -71,28 +73,37 @@ public class TechnologySlot extends UIComponent {
 		if (visible) {
 			g2.drawImage(image, target.x, target.y, null);
 			if (notResearchable) {
-				RenderTools.drawCentered(g2, target, commons.research().unavailable);
-			} else
-			if (researching) {
 				g2.setColor(Color.BLACK);
 				for (int i = 0; i < target.height - 7; i += 2) {
-					float perc = 1.0f * i / (target.height - 7);
-					if (perc >= percent) {
-						g2.drawLine(target.x + 2, target.y + 4 + i, target.x + target.width - 4, target.y + 4 + i);
+					g2.drawLine(target.x + 2, target.y + 4 + i, target.x + target.width - 4, target.y + 4 + i);
+				}
+				RenderTools.drawCentered(g2, target, commons.research().unavailable);
+			} else {
+				if (researching) {
+					g2.setColor(Color.BLACK);
+					for (int i = 0; i < target.height - 7; i += 2) {
+						float perc = 1.0f * i / (target.height - 7);
+						if (perc >= percent) {
+							g2.drawLine(target.x + 2, target.y + 4 + i, target.x + target.width - 4, target.y + 4 + i);
+						}
 					}
-				}
-				BufferedImage[] rolling = commons.research().rolling;
-				g2.drawImage(rolling[animationStep % rolling.length], target.x + 5, target.y + 49, null);
-				if (missingLab) {
-					g2.drawImage(commons.research().researchMissingLab, target.x + 5 + 16, target.y + 49 + 5, null);
+					BufferedImage[] rolling = commons.research().rolling;
+					g2.drawImage(rolling[animationStep % rolling.length], target.x + 5, target.y + 49, null);
+					if (missingLab) {
+						g2.drawImage(commons.research().researchMissingLab, target.x + 5 + 16, target.y + 49 + 5, null);
+					} else
+					if (missingPrerequisite) {
+						g2.drawImage(commons.research().researchMissingPrerequisite, target.x + 5 + 16, target.y + 49 + 5, null);
+					}
 				} else
-				if (missingPrerequisite) {
-					g2.drawImage(commons.research().researchMissingPrerequisite, target.x + 5 + 16, target.y + 49 + 5, null);
+				if (available) {
+					commons.text().paintTo(g2, target.x + 5, target.y + 56, 10, 
+							selectedTextColor, Integer.toString(inventory));
 				}
-			} else
-			if (available) {
-				commons.text().paintTo(g2, target.x + 5, target.y + 56, 10, 
-						selectedTextColor, Integer.toString(inventory));
+				if (cost >= 0) {
+					commons.text().paintTo(g2, target.x + 5, target.y + 5, 10, 
+							selectedTextColor, Integer.toString(cost));
+				}
 			}
 			commons.text().paintTo(g2, target.x + 5, target.y + 71, 7, 
 					selected ? selectedTextColor : textColor, name);
