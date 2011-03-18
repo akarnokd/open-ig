@@ -20,7 +20,7 @@ See the [Game_Notes release notes] for details about the versions.
  * Any operating system with graphical user interface
  * A mouse with scroll wheel.
  * 384B RAM
- * 2-15 MB for Open-IG, 1.2 GB for original Imperium Galactica
+ * 1.2 GB disk space
  * 1.5 GHz P4 or equivalent (estimated)
  * Optional: GPU with DirectX/OpenGL hardware acceleration
 
