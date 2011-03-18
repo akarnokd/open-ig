@@ -73,6 +73,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -538,12 +539,15 @@ public class MapEditor extends JFrame {
 //		System.setProperty("sun.java2d.d3d", "false");
 //		System.setProperty("sun.java2d.noddraw", "true");
 //		System.setProperty("sun.java2d.translaccel", "true");
+		Set<String> argset = new HashSet<String>(Arrays.asList(args));
 		long maxMem = Runtime.getRuntime().maxMemory();
 		if (maxMem < MINIMUM_MEMORY * 1024 * 1024 * 95 / 100) {
-			if (!doLowMemory()) {
-				doWarnLowMemory(maxMem);
+			if (!argset.contains("-memonce")) {
+				if (!doLowMemory()) {
+					doWarnLowMemory(maxMem);
+				}
+				return;
 			}
-			return;
 		}
 		final Configuration config = new Configuration("open-ig-config.xml");
 		if (!config.load()) {
@@ -613,9 +617,9 @@ public class MapEditor extends JFrame {
 	private static boolean doLowMemory() {
 		ProcessBuilder pb = new ProcessBuilder();
 		if (!new File("open-ig-mapeditor-" + VERSION + ".jar").exists()) {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor", "-memonce");
 		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-mapeditor-" + VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-mapeditor-" + VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor", "-memonce");
 		}
 		try {
 			/* Process p = */pb.start();

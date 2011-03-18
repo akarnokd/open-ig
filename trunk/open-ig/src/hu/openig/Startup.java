@@ -40,15 +40,17 @@ public final class Startup {
 	 * @param args arguments
 	 */
 	public static void main(String[] args) {
+		Set<String> argset = new HashSet<String>(Arrays.asList(args));
 		long maxMem = Runtime.getRuntime().maxMemory();
 		if (maxMem < MINIMUM_MEMORY * 1024 * 1024 * 95 / 100) {
-			if (!doLowMemory()) {
-				doWarnLowMemory(maxMem);
+			if (!argset.contains("-memonce")) {
+				if (!doLowMemory()) {
+					doWarnLowMemory(maxMem);
+				}
+				return;
 			}
-			return;
 		}
 		Configuration config = new Configuration("open-ig-config.xml");
-		Set<String> argset = new HashSet<String>(Arrays.asList(args));
 		if (!config.load() || argset.contains("-config")) {
 			doStartConfiguration(config);
 		} else {
@@ -80,9 +82,9 @@ public final class Startup {
 	private static boolean doLowMemory() {
 		ProcessBuilder pb = new ProcessBuilder();
 		if (!new File("open-ig-" + Configuration.VERSION + ".jar").exists()) {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/gfx/OpenIG_Splash.png", "hu.openig.Startup");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/gfx/OpenIG_Splash.png", "hu.openig.Startup", "-memonce");
 		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-jar", "open-ig-" + Configuration.VERSION + ".jar");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-jar", "open-ig-" + Configuration.VERSION + ".jar", "-memonce");
 		}
 		try {
 			pb.start();
