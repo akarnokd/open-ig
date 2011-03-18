@@ -12,9 +12,12 @@ import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
 import hu.openig.screens.AchievementsScreen.Mode;
+import hu.openig.screens.ResearchProductionScreen.RPMode;
 import hu.openig.ui.UIMouse;
 
 import java.awt.Container;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
@@ -279,7 +282,7 @@ public class GameWindow extends JFrame implements GameControls {
 			sb.initialize(commons);
 		}
 		
-		displayPrimary(commons.screens.main);
+		displayPrimary(Screens.MAIN);
 	}
 	/** Unitialize the screens. */
 	protected void uninitScreens() {
@@ -295,101 +298,112 @@ public class GameWindow extends JFrame implements GameControls {
 	/**
 	 * Returns a screen instance for the given screen enum.
 	 * @param screen the screen.
-	 * @return the instance
+	 * @param asPrimary as primary screen?
 	 */
-	ScreenBase getScreen(Screens screen) {
+	void display(Screens screen, boolean asPrimary) {
+		ScreenBase sb = null;
+		Object mode = null;
 		switch (screen) {
 		case ACHIEVEMENTS:
-			return commons.screens.statisticsAchievements;
+			sb = commons.screens.statisticsAchievements;
+			mode = Mode.ACHIEVEMENTS;
+			break;
+		case STATISTICS:
+			sb = commons.screens.statisticsAchievements;
+			mode = Mode.STATISTICS;
+			break;
 		case BAR:
-			return commons.screens.bar;
+			sb = commons.screens.bar;
+			break;
 		case BRIDGE:
-			return commons.screens.bridge;
+			sb = commons.screens.bridge;
+			break;
 		case COLONY:
-			return commons.screens.colony;
+			sb = commons.screens.colony;
+			break;
 		case DIPLOMACY:
-			return commons.screens.diplomacy;
+			sb = commons.screens.diplomacy;
+			break;
 		case EQUIPMENT:
-			return commons.screens.equipment;
+			sb = commons.screens.equipment;
+			break;
 		case INFORMATION:
-			return commons.screens.info;
+			sb = commons.screens.info;
+			break;
 		case PRODUCTION:
-			return commons.screens.researchProduction;
+			sb = commons.screens.researchProduction;
+			mode = RPMode.PRODUCTION;
+			break;
 		case RESEARCH:
-			return commons.screens.researchProduction;
+			sb = commons.screens.researchProduction;
+			mode = RPMode.RESEARCH;
+			break;
 		case SPACEWAR:
-			return commons.screens.spacewar;
+			sb = commons.screens.spacewar;
+			break;
 		case STARMAP:
-			return commons.screens.starmap;
+			sb = commons.screens.starmap;
+			break;
 		case SHIPWALK:
-			return commons.screens.shipwalk;
+			sb = commons.screens.shipwalk;
+			break;
 		case DATABASE:
-			return commons.screens.database;
+			sb = commons.screens.database;
+			break;
 		case LOADING:
-			return commons.screens.loading;
+			sb = commons.screens.loading;
+			break;
 		case LOAD_SAVE:
-			return commons.screens.loadSave;
+			sb = commons.screens.loadSave;
+			break;
 		case MAIN:
-			return commons.screens.main;
+			sb = commons.screens.main;
+			break;
 		case MULTIPLAYER:
-			return null; // TODO multiplayer screen
+			sb = null; // TODO multiplayer screen
+			break;
 		case SINGLEPLAYER:
-			return commons.screens.singleplayer;
+			sb = commons.screens.singleplayer;
+			break;
 		case VIDEOS:
-			return commons.screens.videos;
+			sb = commons.screens.videos;
+			break;
 		default:
 		}
-		return null;
+		if (asPrimary) {
+			hideMovie();
+			if (secondary != null) {
+				secondary.onLeave();
+				secondary = null;
+			}
+			if (primary != null) {
+				primary.onLeave();
+			}
+			primary = sb;
+			if (primary != null) {
+				primary.onEnter(mode);
+				primary.resize();
+				surface.repaint();
+			}
+		} else {
+			if (secondary != null) {
+				secondary.onLeave();
+			}
+			secondary = sb;
+			if (secondary != null) {
+				secondary.onEnter(mode);
+				secondary.resize();
+				surface.repaint();
+			}
+		}
 	}
 	@Override
 	public void displayPrimary(Screens screen) {
-		displayPrimary(getScreen(screen));
+		display(screen, true);
 	}
 	@Override
 	public void displaySecondary(Screens screen) {
-		displaySecondary(getScreen(screen));
-	}
-	/**
-	 * Display the given screen as the primary object. The secondary object, if any, will be removed.
-	 * @param screen the new screen to display
-	 */
-	public void displayPrimary(ScreenBase screen) {
-		hideMovie();
-		if (secondary != null) {
-			secondary.onLeave();
-			secondary = null;
-		}
-		if (primary != null && primary != screen) {
-			primary.onLeave();
-		}
-		primary = screen;
-		if (primary != null) {
-			primary.onEnter();
-			primary.resize();
-			// send a mouse moved event so that if necessary, components can react to mouseOver immediately
-			if (surface.isShowing()) {
-				primary.mouse(UIMouse.createCurrent(surface));
-			}
-			surface.repaint();
-		}
-	}
-	/**
-	 * Display the given secondary screen.
-	 * @param screen the screen to display as secondary
-	 */
-	public void displaySecondary(ScreenBase screen) {
-		if (secondary != null && secondary != screen) {
-			secondary.onLeave();
-		}
-		if (secondary != screen) {
-			secondary = screen;
-			secondary.onEnter();
-			secondary.resize();
-			if (surface.isShowing()) {
-				secondary.mouse(UIMouse.createCurrent(surface));
-			}
-			surface.repaint();
-		}
+		display(screen, false);
 	}
 	/**
 	 * Display the movie window.
@@ -397,7 +411,7 @@ public class GameWindow extends JFrame implements GameControls {
 	public void displayMovie() {
 		if (!movieVisible) {
 			movieVisible = true;
-			movie.onEnter();
+			movie.onEnter(null);
 			doMoveMouseAgain();
 			surface.repaint();
 		}
@@ -420,7 +434,7 @@ public class GameWindow extends JFrame implements GameControls {
 	public void displayStatusbar() {
 		if (!statusbarVisible) {
 			statusbarVisible = true;
-			statusbar.onEnter();
+			statusbar.onEnter(null);
 			doMoveMouseAgain();
 			surface.repaint();
 		}
@@ -507,78 +521,89 @@ public class GameWindow extends JFrame implements GameControls {
 				result = true;
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_F1:
-					displayPrimary(commons.screens.bridge);
+					displayPrimary(Screens.BRIDGE);
 					break;
 				case KeyEvent.VK_F2:
-					displayPrimary(commons.screens.starmap);
+					displayPrimary(Screens.STARMAP);
 					break;
 				case KeyEvent.VK_F3:
-					displayPrimary(commons.screens.colony);
+					displayPrimary(Screens.COLONY);
 					break;
 				case KeyEvent.VK_F4:
-					displaySecondary(commons.screens.equipment);
+					displaySecondary(Screens.EQUIPMENT);
 					break;
 				case KeyEvent.VK_F5:
-					displaySecondary(commons.screens.researchProduction);
+					displaySecondary(Screens.PRODUCTION);
 					break;
 				case KeyEvent.VK_F6:
-					displaySecondary(commons.screens.researchProduction);
+					displaySecondary(Screens.RESEARCH);
 					break;
 				case KeyEvent.VK_F7:
-					displaySecondary(commons.screens.info);
+					displaySecondary(Screens.INFORMATION); // TODO information subscreens
 					break;
 				case KeyEvent.VK_F8:
-					displayPrimary(commons.screens.diplomacy);
+					displayPrimary(Screens.DIPLOMACY);
 					break;
 				case KeyEvent.VK_F9:
-					displayPrimary(commons.screens.database);
+					displayPrimary(Screens.DATABASE);
 					break;
 				case KeyEvent.VK_F10:
-					displayPrimary(commons.screens.bar);
+					displayPrimary(Screens.BAR);
 					break;
 				case KeyEvent.VK_F11:
-					commons.screens.statisticsAchievements.mode = Mode.STATISTICS;
-					displaySecondary(commons.screens.statisticsAchievements);
-					surface.repaint();
+					displaySecondary(Screens.STATISTICS);
 					break;
 				case KeyEvent.VK_F12:
-					commons.screens.statisticsAchievements.mode = Mode.ACHIEVEMENTS;
-					displaySecondary(commons.screens.statisticsAchievements);
-					surface.repaint();
+					displaySecondary(Screens.ACHIEVEMENTS);
 					break;
 				case KeyEvent.VK_1:
 					if (e.isControlDown()) {
 						commons.world.level = 1;
+						if (primary != null) {
+							primary.onLeave();
+						}
 						primary = null;
-						displayPrimary(commons.screens.bridge);
+						displayPrimary(Screens.BRIDGE);
 					}
 					break;
 				case KeyEvent.VK_2:
 					if (e.isControlDown()) {
 						commons.world.level = 2;
+						if (primary != null) {
+							primary.onLeave();
+						}
 						primary = null;
-						displayPrimary(commons.screens.bridge);
+						displayPrimary(Screens.BRIDGE);
 					}
 					break;
 				case KeyEvent.VK_3:
 					if (e.isControlDown()) {
 						commons.world.level = 3;
+						if (primary != null) {
+							primary.onLeave();
+						}
 						primary = null;
-						displayPrimary(commons.screens.bridge);
+						displayPrimary(Screens.BRIDGE);
 					}
 					break;
 				case KeyEvent.VK_4:
 					if (e.isControlDown()) {
 						commons.world.level = 4;
+						if (primary != null) {
+							primary.onLeave();
+						}
 						primary = null;
-						displayPrimary(commons.screens.bridge);
+						displayPrimary(Screens.BRIDGE);
 					}
 					break;
 				case KeyEvent.VK_5:
 					if (e.isControlDown()) {
 						commons.world.level = 5;
+						if (primary != null) {
+							primary.onLeave();
+						}
 						primary = null;
-						displayPrimary(commons.screens.bridge);
+						displayPrimary(Screens.BRIDGE);
 					}
 					break;
 				default:
@@ -718,5 +743,9 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void repaintInner(int x, int y, int w, int h) {
 		surface.repaint(x, y, w, h);
+	}
+	@Override
+	public FontMetrics fontMetrics(int size) {
+		return getFontMetrics(getFont().deriveFont((float)size).deriveFont(Font.BOLD));
 	}
 }

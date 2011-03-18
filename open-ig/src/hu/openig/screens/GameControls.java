@@ -10,6 +10,7 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 
+import java.awt.FontMetrics;
 import java.awt.Rectangle;
 
 /**
@@ -78,4 +79,10 @@ public interface GameControls {
 	 * @param h the region height
 	 */
 	void repaintInner(int x, int y, int w, int h);
+	/**
+	 * Ask for a font metrics.
+	 * @param size the target font size
+	 * @return the default font metrics object
+	 */
+	FontMetrics fontMetrics(int size);
 }

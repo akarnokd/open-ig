@@ -51,4 +51,6 @@ public enum Screens {
 	MULTIPLAYER,
 	/** The loading screen. */
 	LOADING,
+	/** The statistics screen. */
+	STATISTICS
 }

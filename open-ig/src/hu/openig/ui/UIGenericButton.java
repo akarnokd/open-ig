@@ -13,6 +13,7 @@ import hu.openig.render.GenericButtonRenderer;
 import hu.openig.render.RenderTools;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -46,17 +47,25 @@ public class UIGenericButton extends UIComponent {
 	/** The text to display. */
 	protected String text;
 	/** The buttom renderer. */
-	protected final GenericButtonRenderer render;
+	protected final GenericButtonRenderer normal;
+	/** The buttom renderer. */
+	protected final GenericButtonRenderer pressed;
+	/** The font size. */
+	protected int size;
 	/**
 	 * Constructor with the default images.
 	 * @param text the text label
 	 * @param fm the font metrics used to compute the size
-	 * @param render the actual button renderer
+	 * @param normal the actual button renderer
+	 * @param pressed the pressed state renderer
 	 */
-	public UIGenericButton(String text, FontMetrics fm, GenericButtonRenderer render) {
+	public UIGenericButton(String text, FontMetrics fm, 
+			GenericButtonRenderer normal, GenericButtonRenderer pressed) {
 		this.text = text;
-		this.render = render;
-		Dimension d = render.getPreferredSize(fm, text);
+		this.normal = normal;
+		this.pressed = pressed;
+		Dimension d = normal.getPreferredSize(fm, text);
+		size = fm.getFont().getSize();
 		this.width = d.width;
 		this.height = d.height;
 		this.holdTimer = new Timer(100, new Act() {
@@ -87,7 +96,7 @@ public class UIGenericButton extends UIComponent {
 	 * @return the preferred dimension
 	 */
 	public Dimension getPreferredSize(FontMetrics fm) {
-		return render.getPreferredSize(fm, text);
+		return normal.getPreferredSize(fm, text);
 	}
 	/**
 	 * Stop all internal timers to allow cleanup and thread exit.
@@ -105,15 +114,18 @@ public class UIGenericButton extends UIComponent {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		Font f1 = g2.getFont();
+		g2.setFont(f1.deriveFont(Font.BOLD).deriveFont((float)size));
 		if (!enabled && disabledPattern != null) {
-			render.paintTo(g2, 0, 0, width, height, false, text);
+			normal.paintTo(g2, 0, 0, width, height, false, text);
 			RenderTools.fill(g2, 0, 0, width, height, disabledPattern);
 		} else
 		if (down) {
-			render.paintTo(g2, 0, 0, width, height, true, text);
+			pressed.paintTo(g2, 0, 0, width, height, true, text);
 		} else {
-			render.paintTo(g2, 0, 0, width, height, false, text);
+			normal.paintTo(g2, 0, 0, width, height, false, text);
 		}
+		g2.setFont(f1);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {

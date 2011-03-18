@@ -9,11 +9,13 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
-import hu.openig.core.Button;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.World;
+import hu.openig.render.RenderTools;
+import hu.openig.ui.UIGenericButton;
+import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
 import hu.openig.utils.XElement;
 
@@ -39,16 +41,14 @@ import javax.swing.SwingUtilities;
 public class SingleplayerScreen extends ScreenBase {
 	/** The reference frame. */
 	final Rectangle origin = new Rectangle();
-	/** Scroll buttons. */
-	final List<Button> buttons = new ArrayList<Button>();
 	/** Statistics label. */
-	ClickLabel playLabel;
+	UIGenericButton playLabel;
 	/** Achievements label. */
-	ClickLabel backLabel;
+	UIGenericButton backLabel;
 	/** The left difficulty button. */
-	ImageButton difficultyLeft;
+	UIImageButton difficultyLeft;
 	/** The right difficulty button. */
-	ImageButton difficultyRight;
+	UIImageButton difficultyRight;
 	/** The picture rectangle. */
 	final Rectangle pictureRect = new Rectangle();
 	/** The difficulty rectangle. */
@@ -57,113 +57,80 @@ public class SingleplayerScreen extends ScreenBase {
 	int difficulty;
 	@Override
 	public void onResize() {
-		origin.setBounds((getInnerWidth() - 640) / 2, (getInnerHeight() - 480) / 2, 640, 480);
+		RenderTools.centerScreen(origin, getInnerWidth(), getInnerHeight(), true);
 
 		int w = origin.width / 2;
 
-		playLabel.x = w + (w - playLabel.getWidth()) / 2;
-		playLabel.y = origin.height - 30;
+		playLabel.x = origin.x + w + (w - playLabel.width) / 2;
+		playLabel.y = origin.y + origin.height - playLabel.height - 5;
 		
-		backLabel.x = (w - backLabel.getWidth()) / 2;
-		backLabel.y = origin.height - 30;
+		backLabel.x = origin.x + (w - backLabel.width) / 2;
+		backLabel.y = origin.y + origin.height - backLabel.height - 5;
 	
 		campaignList.setBounds(origin.x + 10, origin.y + 30, origin.width / 2 - 30, 100);
 		descriptionRect.setBounds(campaignList.x, campaignList.y + campaignList.height + 30, 
 				campaignList.width, 200);
 		pictureRect.setBounds(origin.x + origin.width / 2, origin.y + 30, 320, 400);
 		
-		difficultyLeft.x = 10;
-		difficultyLeft.y = descriptionRect.y - origin.y + descriptionRect.height + 30;
+		difficultyLeft.x = origin.x + 10;
+		difficultyLeft.y = origin.y + descriptionRect.y - origin.y + descriptionRect.height + 30;
 		
-		difficultyRight.x = 10 + campaignList.width - difficultyRight.getWidth();
+		difficultyRight.x = origin.x + 10 + campaignList.width - difficultyRight.width;
 		difficultyRight.y = difficultyLeft.y;
 		
-		difficultyRect.setBounds(origin.x + difficultyLeft.x + difficultyLeft.getWidth() + 5, origin.y + difficultyLeft.y + (difficultyLeft.getHeight() - 22) / 2, 				
-				difficultyRight.x - difficultyLeft.x - difficultyLeft.getWidth() - 10, 22);
+		difficultyRect.setBounds(
+				difficultyLeft.x + difficultyLeft.width + 5, 
+				difficultyLeft.y + (difficultyLeft.height - 22) / 2, 				
+				difficultyRight.x - difficultyLeft.x - difficultyLeft.width - 10, 
+				22);
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
 	@Override
 	public void onFinish() {
 		// TODO Auto-generated method stub
 
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
 	@Override
 	public void onInitialize() {
-		buttons.clear();
-		playLabel = new ClickLabel();
-		playLabel.visible = true;
-		playLabel.commons = commons;
-		playLabel.size = 20;
-		playLabel.label = "singleplayer.start_game";
-		playLabel.onLeave = new Act() { @Override public void act() { playLabel.selected = false; } };
-		playLabel.onReleased = new Act() {
+		origin.setSize(commons.background().difficulty[0].getWidth(), 
+				commons.background().difficulty[0].getHeight());
+		
+		playLabel = new UIGenericButton(
+				commons.labels().get("singleplayer.start_game"),
+				commons.control.fontMetrics(16),
+				commons.common().mediumButton,
+				commons.common().mediumButtonPressed
+				);
+		playLabel.onClick = new Act() {
 			@Override
 			public void act() {
-				playLabel.selected = false;
 				doStartGame();
 			}
 		};
-		playLabel.onPressed = new Act() {
-			@Override
-			public void act() {
-				playLabel.selected = true;
-			}
-		};
 		
-		backLabel = new ClickLabel();
-		backLabel.visible = true;
-		backLabel.commons = commons;
-		backLabel.size = 20;
-		backLabel.label = "singleplayer.back";
-		backLabel.onLeave = new Act() { @Override public void act() { backLabel.selected = false; } };
-		backLabel.onReleased = new Act() {
+		backLabel = new UIGenericButton(
+			commons.labels().get("singleplayer.back"),
+			commons.control.fontMetrics(16),
+			commons.common().mediumButton,
+			commons.common().mediumButtonPressed
+		);
+		backLabel.onClick = new Act() {
 			@Override
 			public void act() {
-				backLabel.selected = false;
 				commons.control.displayPrimary(Screens.MAIN);
 			}
 		};
-		backLabel.onPressed = new Act() {
-			@Override
-			public void act() {
-				backLabel.selected = true;
-			}
-		};
 		
-		difficultyLeft = new ImageButton();
-		difficultyLeft.commons = commons;
-		difficultyLeft.enabled = true;
-		difficultyLeft.visible = true;
-		difficultyLeft.normalImage = commons.common().moveLeft[0];
-		difficultyLeft.selectedImage = commons.common().moveLeft[0];
-		difficultyLeft.pressedImage = commons.common().moveLeft[1];
-		difficultyLeft.onPress = new Act() { @Override public void act() { doDifficultyLess(); } };
-		difficultyLeft.onRelease = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
-		difficultyLeft.onLeave = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
+		difficultyLeft = new UIImageButton(commons.common().moveLeft);
+		difficultyLeft.onClick = new Act() { @Override public void act() { doDifficultyLess(); adjustDifficultyButtons(); } };
+		difficultyLeft.setDisabledPattern(commons.common().disabledPattern);
 		
-		difficultyRight = new ImageButton();
-		difficultyRight.commons = commons;
-		difficultyRight.enabled = true;
-		difficultyRight.visible = true;
-		difficultyRight.normalImage = commons.common().moveRight[0];
-		difficultyRight.selectedImage = commons.common().moveRight[0];
-		difficultyRight.pressedImage = commons.common().moveRight[1];
-		difficultyRight.onPress = new Act() { @Override public void act() { doDifficultyMore(); } };
-		difficultyRight.onRelease = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
-		difficultyRight.onLeave = new Act() { @Override public void act() { adjustDifficultyButtons(); } };
+		difficultyRight = new UIImageButton(commons.common().moveRight);
+		difficultyRight.onClick = new Act() { @Override public void act() { doDifficultyMore(); adjustDifficultyButtons(); } };
+		difficultyRight.setDisabledPattern(commons.common().disabledPattern);
 		
-		buttons.add(playLabel);
-		buttons.add(backLabel);
-		buttons.add(difficultyLeft);
-		buttons.add(difficultyRight);
-
+		addThis();
 	}
 	/** Less difficulty. */
 	void doDifficultyLess() {
@@ -235,8 +202,6 @@ public class SingleplayerScreen extends ScreenBase {
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			playLabel.selected = false;
-			backLabel.selected = false;
 			commons.control.displayPrimary(Screens.MAIN);
 		}
 		return false;
@@ -246,37 +211,15 @@ public class SingleplayerScreen extends ScreenBase {
 	public boolean mouse(UIMouse e) {
 		boolean rep = false;
 		switch (e.type) {
-		case MOVE:
-			for (Button btn : buttons) {
-				if (btn.test(e.x, e.y, origin.x, origin.y)) {
-					if (!btn.mouseOver) {
-						btn.mouseOver = true;
-						btn.onEnter();
-						rep = true;
-					}
-				} else
-				if (btn.mouseOver || btn.pressed) {
-					btn.mouseOver = false;
-					btn.pressed = false;
-					btn.onLeave();
-					rep = true;
-				}
-			}
-			break;
 		case DOWN:
-			for (Button btn : buttons) {
-				if (btn.test(e.x, e.y, origin.x, origin.y)) {
-					btn.pressed = true;
-					btn.onPressed();
-					rep = true;
-				}
-			}
 			if (campaignList.contains(e.x, e.y)) {
 				int idx = (e.y - campaignList.y) / 20;
 				if (idx < campaigns.size()) {
 					selectedDefinition = campaigns.get(idx);
 					rep = true;
 				}
+			} else {
+				rep = super.mouse(e);
 			}
 			break;
 		case DOUBLE_CLICK:
@@ -287,20 +230,12 @@ public class SingleplayerScreen extends ScreenBase {
 					doStartGame();
 					rep = true;
 				}
-			}
-			break;
-		case UP:
-			for (Button btn : buttons) {
-				if (btn.pressed) {
-					btn.pressed = false;
-					if (btn.test(e.x, e.y, origin.x, origin.y)) {
-						btn.onReleased();
-					}
-					rep = true;
-				}
+			} else {
+				rep = super.mouse(e);
 			}
 			break;
 		default:
+			rep = super.mouse(e);
 		}
 		return rep;
 	}
@@ -319,7 +254,7 @@ public class SingleplayerScreen extends ScreenBase {
 	/** The definition. */
 	final Rectangle descriptionRect = new Rectangle();
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		background = commons.background().difficulty[rnd.nextInt(commons.background().difficulty.length)];
 		selectedDefinition = null;
 		campaigns.clear();
@@ -337,8 +272,8 @@ public class SingleplayerScreen extends ScreenBase {
 	}
 	/** Adjust difficulty buttons. */
 	void adjustDifficultyButtons() {
-		difficultyLeft.enabled = difficulty > 0;
-		difficultyRight.enabled = difficulty < Difficulty.values().length - 1;
+		difficultyLeft.enabled(difficulty > 0);
+		difficultyRight.enabled(difficulty < Difficulty.values().length - 1);
 	}
 	@Override
 	public void onLeave() {
@@ -397,11 +332,9 @@ public class SingleplayerScreen extends ScreenBase {
 		String diff = commons.labels().get(Difficulty.values()[difficulty].label);
 		int diffw = commons.text().getTextWidth(14, diff);
 		commons.text().paintTo(g2, difficultyRect.x + (difficultyRect.width - diffw) / 2, 
-				difficultyRect.y + (difficultyLeft.getHeight() - difficultyRect.height) / 2, 14, 0xFF00FFFF, diff);
-		
-		for (Button btn : buttons) {
-			btn.paintTo(g2, origin.x, origin.y);
-		}
+				difficultyRect.y + (difficultyLeft.height - difficultyRect.height) / 2, 14, 0xFF00FFFF, diff);
+
+		super.draw(g2);
 	}
 	/**
 	 * Parse the game definition from.

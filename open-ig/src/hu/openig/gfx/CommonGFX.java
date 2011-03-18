@@ -12,6 +12,7 @@ import hu.openig.core.Btn2;
 import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
 import hu.openig.core.ResourceLocator;
+import hu.openig.render.GenericLargeButton;
 import hu.openig.render.GenericMediumButton;
 
 import java.awt.AlphaComposite;
@@ -74,6 +75,10 @@ public class CommonGFX {
 	public GenericMediumButton mediumButton;
 	/** The pressed button renderer. */
 	public GenericMediumButton mediumButtonPressed;
+	/** The normal button renderer. */
+	public GenericLargeButton largeButton;
+	/** The pressed button renderer. */
+	public GenericLargeButton largeButtonPressed;
 	/** An empty 102x39 button. */
 	@Img(name = "button_empty_large")
 	public BufferedImage emptyButton;
@@ -99,6 +104,8 @@ public class CommonGFX {
 
 		mediumButton = new GenericMediumButton("/hu/openig/gfx/button_medium.png");
 		mediumButtonPressed = new GenericMediumButton("/hu/openig/gfx/button_medium_pressed.png");
+		largeButton = new GenericLargeButton("/hu/openig/gfx/button_large.png");
+		largeButtonPressed = new GenericLargeButton("/hu/openig/gfx/button_large_pressed.png");
 		
 		return this;
 	}

@@ -81,6 +81,9 @@ public class ResearchGFX {
 	/** Production base panel. */
 	@Img(name = "research/production_base")
 	public BufferedImage productionBasePanel;
+	/** The common production/research base panel. */
+	@Img(name = "research/research_base")
+	public BufferedImage basePanel;
 	/** Production line. */
 	@Img(name = "research/production_line")
 	public BufferedImage productionLine;

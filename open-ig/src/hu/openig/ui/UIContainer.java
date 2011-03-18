@@ -13,6 +13,7 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -109,5 +110,26 @@ public class UIContainer extends UIComponent {
 			}
 		}
 		return result;
+	}
+	/**
+	 * Add declared fields of Type UIComponent.
+	 */
+	public void addThis() {
+		for (Field f : getClass().getDeclaredFields()) {
+			if (UIComponent.class.isAssignableFrom(f.getType())
+					&& f.getDeclaringClass() == getClass()) {
+				try {
+					f.setAccessible(true);
+					UIComponent c = UIComponent.class.cast(f.get(this));
+					if (c != null) {
+						add(c);
+					}
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

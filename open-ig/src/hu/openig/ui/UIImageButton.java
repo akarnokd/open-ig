@@ -98,7 +98,7 @@ public class UIImageButton extends UIComponent {
 	}
 	/**
 	 * Set the mouse-hold delay to repeatedly fire the onClick
-	 * event. Use -1 to turn of repetition.
+	 * event. Use -1 to turn repetition off.
 	 * @param delayMillis the delay in milliseconds
 	 */
 	public void setHoldDelay(int delayMillis) {
@@ -156,6 +156,11 @@ public class UIImageButton extends UIComponent {
 			}
 			return false;
 		case UP:
+			if (down) {
+				down = false;
+				doClick();
+			}
+			return true;
 		case LEAVE:
 			down = false;
 			holdTimer.stop();
@@ -174,5 +179,23 @@ public class UIImageButton extends UIComponent {
 	public UIImageButton setDisabledPattern(BufferedImage pattern) {
 		this.disabledPattern = pattern;
 		return this;
+	}
+	@Override
+	public UIComponent visible(boolean state) {
+		down &= state;
+		over &= state;
+		if (!down) {
+			stop();
+		}
+		return super.visible(state);
+	}
+	@Override
+	public UIComponent enabled(boolean state) {
+		down &= state;
+		over &= state;
+		if (!down) {
+			stop();
+		}
+		return super.enabled(state);
 	}
 }

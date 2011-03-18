@@ -307,7 +307,7 @@ public class PlanetScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		animationTimer.start();
 		offsetX = -(surface.boundingRectangle.width - height) / 2;
 		offsetY = -(surface.boundingRectangle.height - width) / 2;

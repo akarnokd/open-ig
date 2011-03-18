@@ -37,8 +37,11 @@ public abstract class ScreenBase extends UIContainer {
 	}
 	/** The custom initialization routine. Override this to perform additional initialization, i.e., create sub-components. */
 	public abstract void onInitialize();
-	/** Perform actions when the player displays the screen (e.g start animation timers). */
-	public abstract void onEnter();
+	/** 
+	 * Perform actions when the player displays the screen (e.g start animation timers). 
+	 * @param mode the object to pass in (e.g., the tab selection, etc.) 
+	 */
+	public abstract void onEnter(Object mode);
 	/** Perform actions when the player leaves the screen (e.g. stop animation timers). */
 	public abstract void onLeave();
 	/** Release resources of the screen, and e.g. cancel any animation timers. */

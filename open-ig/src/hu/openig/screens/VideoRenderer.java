@@ -38,6 +38,10 @@ public class VideoRenderer extends Thread {
 	protected volatile int audioLength;
 	/** The associated video. */
 	protected final ResourcePlace video;
+	/** Play the video indefinitely? */
+	protected boolean repeat;
+	/** The frames per second override. */
+	protected Double fpsOverride;
 	/**
 	 * Constructor. Sets the synchronization and surface fields
 	 * @param audioSync the audio synchronization
@@ -60,75 +64,79 @@ public class VideoRenderer extends Thread {
 	@Override 
 	public void run() {
 		try {
-			DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
-			try {
-				int w = Integer.reverseBytes(in.readInt());
-				int h = Integer.reverseBytes(in.readInt());
-				final int frames = Integer.reverseBytes(in.readInt());
-				double fps = Integer.reverseBytes(in.readInt()) / 1000.0;
-				
-				surface.init(w, h);
-				
-				int[] palette = new int[256];
-				byte[] bytebuffer = new byte[w * h];
-				int[] currentImage = new int[w * h];
-				int frameCount = 0;
-				long starttime = 0;
-				int frames2 = frames;
-				while (!stopped) {
-					int c = in.read();
-					if (c < 0 || c == 'X') {
-						break;
-					} else
-					if (c == 'P') {
-						int len = in.read();
-						for (int j = 0; j < len; j++) {
-							int r = in.read() & 0xFF;
-							int g = in.read() & 0xFF;
-							int b = in.read() & 0xFF;
-							palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
-						}
-					} else
-					if (c == 'I') {
-						in.readFully(bytebuffer);
-						for (int i = 0; i < bytebuffer.length; i++) {
-							int c0 = palette[bytebuffer[i] & 0xFF];
-							if (c0 != 0) {
-								currentImage[i] = c0;
-							}
-						}
-						if (frameCount == 0) {
-							try {
-								audioSync.await();
-							} catch (InterruptedException ex) {
-								
-							} catch (BrokenBarrierException ex) {
-								
-							}
-							frames2 = (int)Math.ceil(audioLength * fps / 22050.0);
-							starttime = System.nanoTime();
-						}
-						surface.getBackbuffer().setRGB(0, 0, w, h, currentImage, 0, w);
-						surface.swap();
-						onFrame(fps, frameCount);
-						// wait the frame/sec
-						starttime += (1000000000.0 / fps);
-		       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
-		       			frameCount++;
+			do {
+				DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
+				try {
+					int w = Integer.reverseBytes(in.readInt());
+					int h = Integer.reverseBytes(in.readInt());
+					final int frames = Integer.reverseBytes(in.readInt());
+					double fps = Integer.reverseBytes(in.readInt()) / 1000.0;
+					if (fpsOverride != null) {
+						fps = fpsOverride;
 					}
-				}
-				// continue to emit reposition events
-				if (frames2 > frames && !stopped) {
-					for (int i = frames; i < frames2 && !stopped; i++) {
-						onFrame(fps, i);
-						// wait the frame/sec
-						starttime += (1000000000.0 / fps);
-		       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
+					surface.init(w, h);
+					
+					int[] palette = new int[256];
+					byte[] bytebuffer = new byte[w * h];
+					int[] currentImage = new int[w * h];
+					int frameCount = 0;
+					long starttime = 0;
+					int frames2 = frames;
+					while (!stopped) {
+						int c = in.read();
+						if (c < 0 || c == 'X') {
+							break;
+						} else
+						if (c == 'P') {
+							int len = in.read();
+							for (int j = 0; j < len; j++) {
+								int r = in.read() & 0xFF;
+								int g = in.read() & 0xFF;
+								int b = in.read() & 0xFF;
+								palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
+							}
+						} else
+						if (c == 'I') {
+							in.readFully(bytebuffer);
+							for (int i = 0; i < bytebuffer.length; i++) {
+								int c0 = palette[bytebuffer[i] & 0xFF];
+								if (c0 != 0) {
+									currentImage[i] = c0;
+								}
+							}
+							if (frameCount == 0) {
+								try {
+									audioSync.await();
+								} catch (InterruptedException ex) {
+									
+								} catch (BrokenBarrierException ex) {
+									
+								}
+								frames2 = (int)Math.ceil(audioLength * fps / 22050.0);
+								starttime = System.nanoTime();
+							}
+							surface.getBackbuffer().setRGB(0, 0, w, h, currentImage, 0, w);
+							surface.swap();
+							onFrame(fps, frameCount);
+							// wait the frame/sec
+							starttime += (1000000000.0 / fps);
+			       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
+			       			frameCount++;
+						}
 					}
+					// continue to emit reposition events
+					if (frames2 > frames && !stopped) {
+						for (int i = frames; i < frames2 && !stopped; i++) {
+							onFrame(fps, i);
+							// wait the frame/sec
+							starttime += (1000000000.0 / fps);
+			       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
+						}
+					}
+				} finally {
+					try { in.close(); } catch (IOException ex) {  }
 				}
-			} finally {
-				try { in.close(); } catch (IOException ex) {  }
-			}
+			} while (repeat && !stopped);
 		} catch (IOException ex) {
 			// TODO log
 			ex.printStackTrace();
@@ -179,5 +187,19 @@ public class VideoRenderer extends Thread {
 	 */
 	public void setAudioLength(int audioLength) {
 		this.audioLength = audioLength;
+	}
+	/**
+	 * Set the repeat value.
+	 * @param value the value
+	 */
+	public void setRepeat(boolean value) {
+		repeat = value;
+	}
+	/**
+	 * Set the framerate override value.
+	 * @param value the fps value or null to disable
+	 */
+	public void setFpsOverride(Double value) {
+		fpsOverride = value;
 	}
 }

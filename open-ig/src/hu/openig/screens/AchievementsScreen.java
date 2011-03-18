@@ -9,8 +9,8 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
-import hu.openig.core.Button;
 import hu.openig.render.RenderTools;
+import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
 
 import java.awt.Graphics2D;
@@ -20,8 +20,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import javax.swing.Timer;
 
 /**
  * The achievements and statistics listing screen.
@@ -81,31 +79,25 @@ public class AchievementsScreen extends ScreenBase {
 	/** The listing rectangle. */
 	final Rectangle listRect = new Rectangle();
 	/** Scroll up button. */
-	ImageButton scrollUpButton;
+	UIImageButton scrollUpButton;
 	/** Scroll down button. */
-	ImageButton scrollDownButton;
-	/** Scroll buttons. */
-	final List<Button> buttons = new ArrayList<Button>();
-	/** The timer for the continuous scroll down. */
-	Timer scrollDownTimer;
-	/** The timer for the continuous scroll up. */
-	Timer scrollUpTimer;
+	UIImageButton scrollDownButton;
 	/** Bridge button. */
-	ImageButton bridge;
+	UIImageButton bridge;
 	/** Starmap button. */
-	ImageButton starmap;
+	UIImageButton starmap;
 	/** Colony button. */
-	ImageButton colony;
+	UIImageButton colony;
 	/** Equipment button. */
-	ImageButton equimpent;
+	UIImageButton equimpent;
 	/** Production button. */
-	ImageButton production;
+	UIImageButton production;
 	/** Research button. */
-	ImageButton research;
+	UIImageButton research;
 	/** Diplomacy button. */
-	ImageButton diplomacy;
+	UIImageButton diplomacy;
 	/** Information button. */
-	ImageButton info;
+	UIImageButton info;
 	/** Statistics label. */
 	ClickLabel statisticsLabel;
 	/** Achievements label. */
@@ -121,194 +113,137 @@ public class AchievementsScreen extends ScreenBase {
 	public Mode mode = Mode.STATISTICS;
 	@Override
 	public void onResize() {
-		origin.setBounds(
-			(commons.control.getInnerWidth() - commons.common().infoEmpty.getWidth()) / 2,
-			20 + (commons.control.getInnerHeight() - commons.common().infoEmpty.getHeight() - 38) / 2,
-			commons.common().infoEmpty.getWidth(),
-			commons.common().infoEmpty.getHeight()
-		);
+		RenderTools.centerScreen(origin, getInnerWidth(), getInnerHeight(), true);
+
 		listRect.setBounds(origin.x + 10, origin.y + 20, origin.width - 50, 350);
 		achievementCount = listRect.height / 50;
 		statisticsCount = listRect.height / 20;
 		
-		scrollUpButton.x = listRect.width + 12;
-		scrollUpButton.y = 10 + (listRect.height / 2 - scrollUpButton.normalImage.getHeight()) / 2;
+		scrollUpButton.x = origin.x + listRect.width + 12;
+		scrollUpButton.y = origin.y + 10 + (listRect.height / 2 - scrollUpButton.height) / 2;
 		
 		scrollDownButton.x = scrollUpButton.x;
-		scrollDownButton.y = 10 + listRect.height / 2 + (listRect.height / 2 - scrollDownButton.normalImage.getHeight()) / 2;
+		scrollDownButton.y = origin.y + 10 + listRect.height / 2 + (listRect.height / 2 - scrollDownButton.height) / 2;
 
-		bridge.x = 4 - bridge.normalImage.getWidth();
-		bridge.y = origin.height - 2 - bridge.normalImage.getHeight();
-		bridge.visible = false;
-		starmap.x = bridge.x + bridge.normalImage.getWidth();
+		bridge.x = origin.x + 4 - bridge.width;
+		bridge.y = origin.y + origin.height - 2 - bridge.height;
+		starmap.x = bridge.x + bridge.width;
 		starmap.y = bridge.y;
-		colony.x = starmap.x + starmap.normalImage.getWidth();
+		colony.x = starmap.x + starmap.width;
 		colony.y = bridge.y;
-		equimpent.x = colony.x + colony.normalImage.getWidth();
+		equimpent.x = colony.x + colony.width;
 		equimpent.y = bridge.y;
-		production.x = equimpent.x + equimpent.normalImage.getWidth();
+		production.x = equimpent.x + equimpent.width;
 		production.y = bridge.y;
-		research.x = production.x + production.normalImage.getWidth();
+		research.x = production.x + production.width;
 		research.y = bridge.y;
-		info.x = research.x + research.normalImage.getWidth();
+		info.x = research.x + research.width;
 		info.y = production.y;
-		diplomacy.x = info.x + info.normalImage.getWidth();
+		diplomacy.x = info.x + info.width;
 		diplomacy.y = production.y;
-		diplomacy.visible = false;
 
-		statisticsLabel.commons = commons;
-		statisticsLabel.x = (origin.width / 2 - achievementLabel.getWidth()) / 2;
-		statisticsLabel.y = - achievementLabel.getHeight() / 2;
+		statisticsLabel.x = origin.x + (origin.width / 2 - achievementLabel.width) / 2;
+		statisticsLabel.y = origin.y - achievementLabel.height / 2;
 		
-		achievementLabel.commons = commons;
-		achievementLabel.x = origin.width / 2 + (origin.width / 2 - statisticsLabel.getWidth()) / 2;
-		achievementLabel.y = - statisticsLabel.getHeight() / 2;
+		achievementLabel.x = origin.x + origin.width / 2 + (origin.width / 2 - statisticsLabel.width) / 2;
+		achievementLabel.y = origin.y - statisticsLabel.height / 2;
 		
 	}
 
 	@Override
 	public void onFinish() {
-		scrollDownTimer.stop();
-		scrollUpTimer.stop();
 	}
 
 	@Override
 	public void onInitialize() {
 		
-		buttons.clear();
+		origin.setSize(commons.common().infoEmpty.getWidth(), commons.common().infoEmpty.getHeight());
 		achievements.clear();
 		statistics.clear();
 		
-		scrollDownTimer = new Timer(500, new Act() {
-			@Override
-			public void act() {
-				doScrollDown();
-			}
-		});
-		scrollDownTimer.setDelay(100);
-		scrollUpTimer = new Timer(500, new Act() {
+		scrollUpButton = new UIImageButton(commons.database().arrowUp);
+		scrollUpButton.setHoldDelay(100);
+		scrollUpButton.onClick = new Act() {
 			@Override
 			public void act() {
 				doScrollUp();
 			}
-		});
-		scrollUpTimer.setDelay(100);
-		
-		scrollUpButton = new ImageButton();
-		scrollUpButton.normalImage = commons.database().arrowUp[0];
-		scrollUpButton.selectedImage = commons.database().arrowUp[1];
-		scrollUpButton.pressedImage = commons.database().arrowUp[2];
-		
-		scrollUpButton.onPress = new Act() {
-			@Override
-			public void act() {
-				doScrollUp();
-				scrollUpTimer.start();
-			}
-		};
-		scrollUpButton.onLeave = new Act() {
-			@Override
-			public void act() {
-				scrollUpTimer.stop();
-			}
-		};
-		scrollUpButton.onRelease = new Act() {
-			@Override
-			public void act() {
-				scrollUpTimer.stop();
-			}
 		};
 		
-		scrollDownButton = new ImageButton();
-		scrollDownButton.normalImage = commons.database().arrowDown[0];
-		scrollDownButton.selectedImage = commons.database().arrowDown[1];
-		scrollDownButton.pressedImage = commons.database().arrowDown[2];
-		scrollDownButton.onPress = new Act() {
+		scrollDownButton = new UIImageButton(commons.database().arrowDown);
+		scrollDownButton.setHoldDelay(100);
+		scrollDownButton.onClick = new Act() {
 			@Override
 			public void act() {
 				doScrollDown();
-				scrollDownTimer.start();
 			}
 		};
-		scrollDownButton.onLeave = new Act() {
-			@Override
-			public void act() {
-				scrollDownTimer.stop();
-			}
-		};
-		scrollDownButton.onRelease = new Act() {
-			@Override
-			public void act() {
-				scrollDownTimer.stop();
-			}
-		};
-		
-		buttons.add(scrollUpButton);
-		buttons.add(scrollDownButton);
 		
 		// create buttons for the main screens.
 		
-		bridge = new ImageButton();
-//		bridge.visible = true;
-		bridge.normalImage = commons.common().bridgeButton[0];
-		bridge.selectedImage = commons.common().bridgeButton[0];
-		bridge.pressedImage = commons.common().bridgeButton[1];
+		bridge = new UIImageButton(commons.common().bridgeButton);
+		bridge.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.BRIDGE);
+			}
+		};
+		starmap = new UIImageButton(commons.info().starmap);
+		starmap.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.STARMAP);
+			}
+		};
+		colony = new UIImageButton(commons.info().colony);
+		colony.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.COLONY);
+			}
+		};
 		
-		starmap = new ImageButton();
-		starmap.visible = true;
-		starmap.normalImage = commons.info().starmap[0];
-		starmap.selectedImage = commons.info().starmap[0];
-		starmap.pressedImage = commons.info().starmap[1];
-		
-		colony = new ImageButton();
-		colony.visible = true;
-		colony.normalImage = commons.info().colony[0];
-		colony.selectedImage = commons.info().colony[0];
-		colony.pressedImage = commons.info().colony[1];
-		
-		equimpent = new ImageButton();
-		equimpent.visible = true;
-		equimpent.normalImage = commons.research().equipmentButton[0];
-		equimpent.selectedImage = commons.research().equipmentButton[0];
-		equimpent.pressedImage = commons.research().equipmentButton[1];
-		
-		production = new ImageButton();
-		production.visible = true;
-		production.normalImage = commons.info().production[0];
-		production.selectedImage = commons.info().production[0];
-		production.pressedImage = commons.info().production[1];
-		
-		research = new ImageButton();
-		research.visible = true;
-		research.normalImage = commons.info().research[0];
-		research.selectedImage = commons.info().research[0];
-		research.pressedImage = commons.info().research[1];
+		equimpent = new UIImageButton(commons.research().equipmentButton);
+		colony.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.COLONY);
+			}
+		};
 
-		info = new ImageButton();
-		info.visible = true;
-		info.normalImage = commons.common().infoButton[0];
-		info.selectedImage = commons.common().infoButton[0];
-		info.pressedImage = commons.common().infoButton[1];
+		production = new UIImageButton(commons.info().production);
+		production.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.PRODUCTION);
+			}
+		};
+		
+		research = new UIImageButton(commons.info().research);
+		research.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.RESEARCH);
+			}
+		};
 
-		diplomacy = new ImageButton();
-//		diplomacy.visible = true;
-		diplomacy.normalImage = commons.info().diplomacy[0];
-		diplomacy.selectedImage = commons.info().diplomacy[0];
-		diplomacy.pressedImage = commons.info().diplomacy[1];
+		info = new UIImageButton(commons.common().infoButton);
+		info.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.INFORMATION);
+			}
+		};
+
+		diplomacy = new UIImageButton(commons.info().diplomacy);
+		diplomacy.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.DIPLOMACY);
+			}
+		};
 		
-		buttons.add(bridge);
-		buttons.add(starmap);
-		buttons.add(colony);
-		buttons.add(equimpent);
-		buttons.add(production);
-		buttons.add(research);
-		buttons.add(info);
-		buttons.add(diplomacy);
-		
-		achievementLabel = new ClickLabel();
-		achievementLabel.commons = commons;
-		achievementLabel.size = 14;
-		achievementLabel.label = "achievements";
+		achievementLabel = new ClickLabel("achievements", 14, commons);
 		achievementLabel.onPressed = new Act() {
 			@Override
 			public void act() {
@@ -317,12 +252,8 @@ public class AchievementsScreen extends ScreenBase {
 				adjustScrollButtons();
 			}
 		};
-		buttons.add(achievementLabel);
 		
-		statisticsLabel = new ClickLabel();
-		statisticsLabel.commons = commons;
-		statisticsLabel.size = 14;
-		statisticsLabel.label = "statistics";
+		statisticsLabel = new ClickLabel("statistics", 14, commons);
 		statisticsLabel.onPressed = new Act() {
 			@Override
 			public void act() {
@@ -331,8 +262,9 @@ public class AchievementsScreen extends ScreenBase {
 				adjustScrollButtons();
 			}
 		};
-		buttons.add(statisticsLabel);
 		
+
+		addThis();
 		// FIXME find other ways to populate the achievement list
 		createTestEntries();
 	}
@@ -341,44 +273,6 @@ public class AchievementsScreen extends ScreenBase {
 	public boolean mouse(UIMouse e) {
 		boolean result = false;
 		switch (e.type) {
-		case MOVE:
-			for (Button btn : buttons) {
-				if (btn.test(e.x, e.y, origin.x, origin.y)) {
-					if (!btn.mouseOver) {
-						btn.mouseOver = true;
-						btn.onEnter();
-						result = true;
-					}
-				} else
-				if (btn.mouseOver || btn.pressed) {
-					btn.mouseOver = false;
-					btn.pressed = false;
-					btn.onLeave();
-					result = true;
-				}
-			}
-			break;
-		case DOWN:
-			for (Button btn : buttons) {
-				if (btn.test(e.x, e.y, origin.x, origin.y)) {
-					btn.pressed = true;
-					btn.onPressed();
-					result = true;
-				}
-			}
-			break;
-		case UP:
-		case LEAVE:
-			for (Button btn : buttons) {
-				if (btn.pressed) {
-					btn.pressed = false;
-					if (btn.test(e.x, e.y, origin.x, origin.y)) {
-						btn.onReleased();
-					}
-					result = true;
-				}
-			}
-			break;
 		case WHEEL:
 			if (listRect.contains(e.x, e.y)) {
 				if (e.z < 0) {
@@ -389,6 +283,7 @@ public class AchievementsScreen extends ScreenBase {
 			}
 			break;
 		default:
+			super.mouse(e);
 		}
 		return result;
 	}
@@ -434,26 +329,21 @@ public class AchievementsScreen extends ScreenBase {
 	/** Adjust the visibility of the scroll buttons. */
 	void adjustScrollButtons() {
 		if (mode == Mode.STATISTICS) {
-			scrollUpButton.visible = statisticsIndex > 0;
-			scrollDownButton.visible = statisticsIndex < statistics.size() - statisticsCount;
+			scrollUpButton.visible(statisticsIndex > 0);
+			scrollDownButton.visible(statisticsIndex < statistics.size() - statisticsCount);
 		} else
 		if (mode == Mode.ACHIEVEMENTS) {
-			scrollUpButton.visible = achievementIndex > 0;
-			scrollDownButton.visible = achievementIndex < achievements.size() - achievementCount;
+			scrollUpButton.visible(achievementIndex > 0);
+			scrollDownButton.visible(achievementIndex < achievements.size() - achievementCount);
 		}		
-		if (!scrollUpButton.visible) {
-			scrollUpTimer.stop();
-		}
-		if (!scrollDownButton.visible) {
-			scrollDownTimer.stop();
-		}
 		askRepaint();
 	}
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#onEnter()
 	 */
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
+		this.mode = mode == null ? Mode.STATISTICS : (Mode)mode;
 		onResize();
 		adjustScrollButtons();
 		adjustLabels();
@@ -471,14 +361,10 @@ public class AchievementsScreen extends ScreenBase {
 
 	@Override
 	public void draw(Graphics2D g2) {
-//		g2.setColor(Color.BLACK);
-//		Composite cp = g2.getComposite();
-//		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
-//		g2.fillRect(0, 0, parent.getWidth(), parent.getHeight());
-//		g2.setComposite(cp);
 		RenderTools.darkenAround(origin, width, height, g2, 0.5f, true);
 		
 		g2.drawImage(commons.common().infoEmpty, origin.x, origin.y, null);
+		super.draw(g2);
 		
 		Shape sp = g2.getClip();
 		g2.setClip(listRect);
@@ -520,10 +406,6 @@ public class AchievementsScreen extends ScreenBase {
 			}
 		}
 		g2.setClip(sp);
-		
-		for (Button btn : buttons) {
-			btn.paintTo(g2, origin.x, origin.y);
-		}
 		
 	}
 	/** Create the test achievements. */

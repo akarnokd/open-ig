@@ -131,7 +131,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	}
 
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		resize();
 	}
 

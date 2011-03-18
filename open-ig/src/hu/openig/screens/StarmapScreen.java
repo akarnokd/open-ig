@@ -247,6 +247,30 @@ public class StarmapScreen extends ScreenBase {
 			}
 		};
 
+		colony.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.COLONY);
+			}	
+		};
+		equipment.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.EQUIPMENT);
+			}
+		};
+		info.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.INFORMATION);
+			}
+		};
+		bridge.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.BRIDGE);
+			}
+		};
 	}
 	/**
 	 * Rotate the planets on screen.
@@ -511,7 +535,7 @@ public class StarmapScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#onEnter()
 	 */
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		rotationTimer.start();
 	}
 

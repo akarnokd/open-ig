@@ -15,7 +15,16 @@ package hu.openig.screens;
  * @author akarnokd, 2010.01.11.
  */
 public class InfoScreen extends ScreenBase {
-
+	/** The information screen modes. */
+	public enum InfoMode {
+		/** The planet listing. */
+		PLANETS,
+		/** The fleet listing. */
+		FLEETS,
+		/** The buildings listing. */
+		BUILDINGS
+		// TODO
+	}
 	@Override
 	public void onInitialize() {
 		// TODO Auto-generated method stub
@@ -23,7 +32,7 @@ public class InfoScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		// TODO Auto-generated method stub
 		
 	}

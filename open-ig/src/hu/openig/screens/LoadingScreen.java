@@ -67,7 +67,7 @@ public class LoadingScreen extends ScreenBase {
 	 * @see hu.openig.v1.screens.ScreenBase#onEnter()
 	 */
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		resize();
 		animation.start();
 	}

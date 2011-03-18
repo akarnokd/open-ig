@@ -482,7 +482,7 @@ public class SpacewarScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter() {
+	public void onEnter(Object mode) {
 		buttonTimer.start();
 	}
 
