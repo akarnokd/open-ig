@@ -26,7 +26,6 @@ import hu.openig.screens.DatabaseScreen;
 import hu.openig.screens.DiplomacyScreen;
 import hu.openig.screens.EquipmentScreen;
 import hu.openig.screens.EquipmentScreen.EquipmentMode;
-import hu.openig.screens.ResearchProductionScreen.RPMode;
 import hu.openig.screens.GameControls;
 import hu.openig.screens.InfoScreen;
 import hu.openig.screens.LoadSaveScreen;
@@ -34,6 +33,7 @@ import hu.openig.screens.LoadingScreen;
 import hu.openig.screens.MainScreen;
 import hu.openig.screens.PlanetScreen;
 import hu.openig.screens.ResearchProductionScreen;
+import hu.openig.screens.ResearchProductionScreen.RPMode;
 import hu.openig.screens.ScreenBase;
 import hu.openig.screens.Screens;
 import hu.openig.screens.ShipwalkScreen;
@@ -44,8 +44,10 @@ import hu.openig.screens.StatusbarScreen;
 import hu.openig.screens.VideoScreen;
 import hu.openig.ui.UIMouse;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -63,6 +65,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -70,7 +73,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.GroupLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -116,11 +118,13 @@ public class ScreenTester extends JFrame implements GameControls {
 					}
 					repaint();
 				}
+				
 			});
 			RepaintManager.currentManager(this).setDoubleBufferingEnabled(true);
 		}
 		@Override
 		public void paint(Graphics g) {
+			repaintOnce = false;
 			g.setColor(parentColor);
 			g.fillRect(0, 0, surface.getWidth(), surface.getHeight());
 			if (screen != null) {
@@ -149,28 +153,53 @@ public class ScreenTester extends JFrame implements GameControls {
 	private JMenu menuScreen;
 	/** The view menu. */
 	private JMenu menuView;
+	/** Coalesce the repaint requests. */
+	protected boolean repaintOnce;
 	/** Construct the GUI. */
 	public ScreenTester() {
 		super("Screen Tester");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		Container c = getContentPane();
-		GroupLayout gl = new GroupLayout(c);
-		c.setLayout(gl);
-		
-		gl.setHorizontalGroup(
-			gl.createSequentialGroup()
-			.addComponent(surface, 640, 640, Short.MAX_VALUE)
-		);
-		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addComponent(surface, 480, 480, Short.MAX_VALUE)
-		);
+//		GroupLayout gl = new GroupLayout(c);
+//		c.setLayout(gl);
+//		
+//		gl.setHorizontalGroup(
+//			gl.createSequentialGroup()
+//			.addComponent(surface, 640, 640, Short.MAX_VALUE)
+//		);
+//		gl.setVerticalGroup(
+//			gl.createSequentialGroup()
+//			.addComponent(surface, 480, 480, Short.MAX_VALUE)
+//		);
+
+		surface.setPreferredSize(new Dimension(640, 480));
+		c.add(surface, BorderLayout.CENTER);
 		
 		prepareMenu();
 		
 		pack();
-		setMinimumSize(getSize());
+		setResizable(false);
+		
+		addWindowListener(new WindowAdapter() {
+			/** Invoke once. */
+			boolean once;
+			@Override
+			public void windowActivated(WindowEvent e) {
+				if (!once) {
+					once = true;
+					setMinimumSize(getSize());
+					setResizable(true);
+				}
+			}
+		});
+//		addComponentListener(new ComponentAdapter() {
+//			@Override
+//			public void componentResized(ComponentEvent e) {
+//				System.out.printf("%d x %d%n", getWidth(), getHeight());
+//			}
+//		});
+		
 		MouseAdapter ma = getMouseAdapter();
 		surface.addMouseListener(ma);
 		surface.addMouseMotionListener(ma);
@@ -285,7 +314,7 @@ public class ScreenTester extends JFrame implements GameControls {
 		miRunGame.addActionListener(new Act() {
 			@Override
 			public void act() {
-				Startup.main(new String[] { });
+				doRunGame();
 			}
 		});
 		
@@ -387,8 +416,8 @@ public class ScreenTester extends JFrame implements GameControls {
 				try {
 					screen = clazz.getConstructor().newInstance();
 					screen.initialize(commons);
-					screen.onEnter(mode);
 					screen.resize();
+					screen.onEnter(mode);
 					repaint();
 					onScreen(clazz.getSimpleName(), screen);
 				} catch (Exception ex) {
@@ -469,8 +498,8 @@ public class ScreenTester extends JFrame implements GameControls {
 						try {
 							screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
 							screen.initialize(commons);
-							screen.onEnter(null);
 							screen.resize();
+							screen.onEnter(null);
 							repaint();
 							onScreen(screen.getClass().getSimpleName(), screen);
 						} catch (Exception ex) {
@@ -579,8 +608,8 @@ public class ScreenTester extends JFrame implements GameControls {
 			try {
 				screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
 				screen.initialize(commons);
-				screen.onEnter(mode);
 				screen.resize();
+				screen.onEnter(mode);
 				repaint();
 				onScreen(screen.getClass().getSimpleName(), screen);
 			} catch (ClassNotFoundException ex) {
@@ -766,7 +795,10 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	@Override
 	public void repaintInner() {
-		surface.repaint();
+		if (!repaintOnce) {
+			repaintOnce = true;
+			surface.repaint();
+		}
 	}
 	@Override
 	public void repaintInner(int x, int y, int w, int h) {
@@ -775,5 +807,16 @@ public class ScreenTester extends JFrame implements GameControls {
 	@Override
 	public FontMetrics fontMetrics(int size) {
 		return getFontMetrics(getFont().deriveFont((float)size).deriveFont(Font.BOLD));
+	}
+	/** Run the full game. */
+	void doRunGame() {
+		ProcessBuilder pb = new ProcessBuilder();
+		pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + Startup.MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/gfx/OpenIG_Splash.png", "hu.openig.Startup", "-memonce");
+		try {
+			pb.inheritIO();
+			pb.start();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 }
