@@ -13,18 +13,26 @@ import hu.openig.core.ResourceType;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.render.RenderTools;
+import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
+import hu.openig.ui.UILabel;
+import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIVideoImage;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CyclicBarrier;
@@ -38,6 +46,16 @@ import javax.swing.Timer;
  * @author akarnokd, 2010.01.11.
  */
 public class ResearchProductionScreen extends ScreenBase {
+	/** 
+	 * The annotation to indicate which UI elements should by default
+	 * be visible on the screen. Mark only uncommon elements.
+	 * @author akarnokd, Mar 19, 2011
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface ModeUI {
+		/** The expected screen mode. */
+		RPMode mode();
+	}
 	/** The equipment slot locations. */
 	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
 	/** The rolling disk animation timer. */
@@ -47,14 +65,18 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The panel base rectangle. */
 	final Rectangle base = new Rectangle();
 	/** The add production button. */
+	@ModeUI(mode = RPMode.PRODUCTION)
 	UIImageButton addButton;
 	/** The remove production button. */
+	@ModeUI(mode = RPMode.PRODUCTION)
 	UIImageButton removeButton;
 	/** The empty button. */
 	UIImage emptyButton;
 	/** The production button. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImageButton productionButton;
 	/** The research button. */
+	@ModeUI(mode = RPMode.PRODUCTION)
 	UIImageButton researchButton;
 	/** The equipment button. */
 	UIImageButton equipmentButton;
@@ -67,28 +89,40 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The main category panel. */
 	UIImage mainCategory;
 	/** The subcategory panel for the research screen. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImage subCategorySmall;
 	/** The subcategory panel for the production screen. */
+	@ModeUI(mode = RPMode.PRODUCTION)
 	UIImage subCategoryWide;
 	/** The prerequisites panel for the research screen. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImage prerequisites;
 	/** The base panel for the production listings. */
+	@ModeUI(mode = RPMode.PRODUCTION)
 	UIImage productionBase;
 	/** The research settings for the selected technology base panel. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImage selectedResearchBase;
 	/** The currenly running research base panel. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImage activeResearchBase;
 	/** The description of the selected technology base panel. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImage descriptionBase;
 	/** Start a new research button. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImageButton startNew;
 	/** Stop the current research. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImageButton stopActive;
 	/** Stop active empty button. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImage stopActiveEmpty;
 	/** View the active research. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImageButton viewActive;
 	/** View active empty button. */
+	@ModeUI(mode = RPMode.RESEARCH)
 	UIImage viewActiveEmpty;
 	/** The spaceships main category. */
 	UIImageTabButton spaceshipsLabel;
@@ -98,6 +132,171 @@ public class ResearchProductionScreen extends ScreenBase {
 	UIImageTabButton weaponsLabel;
 	/** The buildings main category. */
 	UIImageTabButton buildingsLabel;
+	/** The 3 requirements label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage requiresLabel;
+	/** The requirement #1 .*/
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel requires1;
+	/** The requirement #2 .*/
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel requires2;
+	/** The requirement #3 .*/
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel requires3;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage selectedTechName;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage selectedTechStatus;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage selectedComplete;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage selectedTime;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage selectedCivilLab;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage selectedMechLab;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage selectedCompLab;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage selectedAILab;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage selectedMilLab;
+	
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage activeTechName;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage activeMoney;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage activeCivilLab;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage activeMechLab;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage activeCompLab;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage activeAILab;
+	/** Static label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImage activeMilLab;
+
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel selectedTechNameValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel selectedTechStatusValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel selectedCompleteValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel selectedTimeValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel selectedCivilLabValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel selectedMechLabValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel selectedCompLabValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel selectedAILabValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel selectedMilLabValue;
+	
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel activeTechNameValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel activeMoneyValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel activeMoneyPercentValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel activeCivilLabValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel activeMechLabValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel activeCompLabValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel activeAILabValue;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel activeMilLabValue;
+
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel descriptionTitle;
+	/** Dynamic value label. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UILabel descriptionBody;
+	/** Increase / decrease money. */
+	@ModeUI(mode = RPMode.RESEARCH)
+	UIImageButton moneyButton;
+	/** The last mouse event on the funding button. */
+	UIMouse moneyMouseLast;
+	/** The product name. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImage productName;
+	/** The assigned capacity. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImage capacity;
+	/** The assigned capacity percent. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImage capacityPercent;
+	/** The completion. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImage productComplete;
+	/** Remove ten units. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImageButton removeTen;
+	/** Remove one unit. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImageButton removeOne;
+	/** Add one unit. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImageButton addOne;
+	/** Add ten units. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImageButton addTen;
+	/** Sell. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImageButton sell;
+	/** The production lines. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	final List<ProductionLine> productionLines = new ArrayList<ProductionLine>();
+	/** The total capacity label. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UIImage capacityLabel;
+	/** The available capacity value. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UILabel availableCapacityValue;
+	/** The total capacity value. */
+	@ModeUI(mode = RPMode.PRODUCTION)
+	UILabel totalCapacityValue;
 	/** Screen mode. */
 	public enum RPMode {
 		/** Production. */
@@ -279,10 +478,304 @@ public class ResearchProductionScreen extends ScreenBase {
 			}
 		};
 		
+		requiresLabel = new UIImage(commons.research().requirements);
+		
+		int textColor = 0xFF6DB269;
+		selectedTechName = new UIImage(commons.research().projectName);
+		selectedTechStatus = new UIImage(commons.research().projectStatus);
+		selectedComplete = new UIImage(commons.research().projectCompleted);
+		selectedTime = new UIImage(commons.research().remaining);
+		
+		selectedCivilLab = new UIImage(commons.research().civilLab);
+		selectedMechLab = new UIImage(commons.research().mechLab);
+		selectedCompLab = new UIImage(commons.research().compLab);
+		selectedAILab = new UIImage(commons.research().aiLab);
+		selectedMilLab = new UIImage(commons.research().milLab);
+
+		activeTechName = new UIImage(commons.research().project);
+		activeMoney = new UIImage(commons.research().money);
+
+		activeCivilLab = new UIImage(commons.research().civilLab);
+		activeMechLab = new UIImage(commons.research().mechLab);
+		activeCompLab = new UIImage(commons.research().compLab);
+		activeAILab = new UIImage(commons.research().aiLab);
+		activeMilLab = new UIImage(commons.research().milLab);
+
+
+		selectedTechNameValue = new UILabel("TODO", 10, commons.text());
+		selectedTechNameValue.color(textColor);
+		selectedTechStatusValue = new UILabel("TODO", 10, commons.text());
+		selectedTechStatusValue.color(textColor);
+		selectedCompleteValue = new UILabel("Kesz", 14, commons.text());
+		selectedCompleteValue.color(textColor);
+		selectedTimeValue = new UILabel("----", 14, commons.text());
+		selectedTimeValue.color(textColor);
+		selectedCivilLabValue = new UILabel("0", 14, commons.text());
+		selectedCivilLabValue.color(textColor);
+		selectedMechLabValue = new UILabel("0", 14, commons.text());
+		selectedMechLabValue.color(textColor);
+		selectedCompLabValue = new UILabel("0", 14, commons.text());
+		selectedCompLabValue.color(textColor);
+		selectedAILabValue = new UILabel("0", 14, commons.text());
+		selectedAILabValue.color(textColor);
+		selectedMilLabValue = new UILabel("0", 14, commons.text());
+		selectedMilLabValue.color(textColor);
+		
+		activeCivilLabValue = new UILabel("0", 14, commons.text());
+		activeCivilLabValue.color(textColor);
+		activeMechLabValue = new UILabel("0", 14, commons.text());
+		activeMechLabValue.color(textColor);
+		activeCompLabValue = new UILabel("0", 14, commons.text());
+		activeCompLabValue.color(textColor);
+		activeAILabValue = new UILabel("0", 14, commons.text());
+		activeAILabValue.color(textColor);
+		activeMilLabValue = new UILabel("0", 14, commons.text());
+		activeMilLabValue.color(textColor);
+		
+		activeMoneyValue = new UILabel("TODO", 10, commons.text());
+		activeMilLabValue.color(textColor);
+		activeMoneyPercentValue = new UILabel("100", 10, commons.text());
+		activeMoneyPercentValue.color(textColor);
+		
+		descriptionTitle = new UILabel("TODO", 10, commons.text());
+		descriptionTitle.color(0xFFFF0000);
+		descriptionTitle.horizontally(HorizontalAlignment.CENTER);
+		descriptionBody = new UILabel("TODO todo todo todo todo todo todo todo todo todo todo todo todo todo todo todo todo todo", 7, commons.text());
+		descriptionBody.color(textColor);
+		descriptionBody.wrap(true);
+		descriptionBody.spacing(5);
+		
+		activeTechNameValue = new UILabel("TODO", 10, commons.text());
+		
+		moneyButton = new UIImageButton(commons.research().fund) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				moneyMouseLast = e;
+				super.mouse(e);
+				return true;
+			};
+		};
+		moneyButton.onClick = new Act() {
+			@Override
+			public void act() {
+				doAdjustMoney(2.0f * (moneyMouseLast.x - moneyButton.x) / moneyButton.width - 1);
+			}
+		};
+		moneyButton.setHoldDelay(100);
+		
+		requires1 = new UILabel("TODO", 7, commons.text());
+		requires1.color(textColor);
+		requires2 = new UILabel("TODO", 7, commons.text());
+		requires2.color(textColor);
+		requires3 = new UILabel("TODO", 7, commons.text());
+		requires3.color(textColor);
+		
+		productName = new UIImage(commons.research().inventionName);
+		capacity = new UIImage(commons.research().cap);
+		capacityPercent = new UIImage(commons.research().capPercent);
+		productComplete = new UIImage(commons.research().completed);
+		
+		removeTen = new UIImageButton(commons.research().minusTen);
+		removeOne = new UIImageButton(commons.research().minusOne);
+		addOne = new UIImageButton(commons.research().plusOne);
+		addTen = new UIImageButton(commons.research().plusTen);
+		sell = new UIImageButton(commons.research().sell);
+		
+		for (int i = 0; i < 5; i++) {
+			ProductionLine pl = new ProductionLine();
+			productionLines.add(pl);
+		}
+		
+		capacityLabel = new UIImage(commons.research().capacity);
+		availableCapacityValue = new UILabel("1000", 14, commons.text());
+		availableCapacityValue.color(textColor);
+		totalCapacityValue = new UILabel("2000", 10, commons.text());
+		totalCapacityValue.horizontally(HorizontalAlignment.RIGHT);
+		totalCapacityValue.color(textColor);
+		
 		addThis();
 		add(slots);
+		add(productionLines);
 	}
+	@Override
+	public void onResize() {
+		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
+
+		addButton.location(base.x + 535, base.y + 303 - 20);
+		startNew.location(addButton.location());
+		removeButton.location(addButton.location());
+		emptyButton.location(addButton.location());
+
+		video.location(base.x + 2, base.y + 2);
+		video.size(316, 196);
+		
+		equipmentButton.location(addButton.x, addButton.y + addButton.height);
+		
+		productionButton.location(equipmentButton.x, equipmentButton.y + equipmentButton.height);
+		researchButton.location(productionButton.location());
+		
+		bridgeButton.location(researchButton.x, researchButton.y + researchButton.height);
+		
+		for (int i = 0; i < 6; i++) {
+			slots.get(i).location(base.x + 2 + i * 106, base.y + 219 - 20);
+			slots.get(i).size(106, 82);
+		}
+
+		mainCategory.location(base.x + 323, base.y + 3);
+		subCategorySmall.location(mainCategory.x, base.y + 103);
+		subCategoryWide.location(subCategorySmall.location());
+		prerequisites.location(base.x + 533, subCategorySmall.y);
+		
+		productionBase.location(base.x + 3, base.y + 303 - 20);
+		
+		selectedResearchBase.location(productionBase.location());
+		activeResearchBase.location(selectedResearchBase.x, selectedResearchBase.y + 50);
+		descriptionBase.location(activeResearchBase.x, activeResearchBase.y + 55);
+		
+		stopActive.location(activeResearchBase.x + 288, activeResearchBase.y + 27);
+		viewActive.location(activeResearchBase.x + 288 + 119, activeResearchBase.y + 27);
+		stopActiveEmpty.location(stopActive.location());
+		viewActiveEmpty.location(viewActive.location());
+		
+		distributeVertically(mainCategory.x + 18, mainCategory.bounds(), 
+				Arrays.asList(spaceshipsLabel, equipmentsLabel, weaponsLabel, buildingsLabel));
+		
+		for (ResearchMainCategory cat : ResearchMainCategory.values()) {
+			List<UIComponent> comps = new ArrayList<UIComponent>();
+			for (ResearchSubCategory scat : ResearchSubCategory.values()) {
+				if (scat.main == cat) {
+					comps.add(subComponents.get(scat));
+				}
+			}
+			distributeVertically(subCategorySmall.x + 18, subCategorySmall.bounds(), comps);
+		}
+		requiresLabel.location(prerequisites.x + (prerequisites.width - requiresLabel.width) / 2, prerequisites.y + (34 - requiresLabel.height) / 2);
+		
+		requires1.location(prerequisites.x + 6, prerequisites.y + 37);
+		requires2.location(requires1.x, requires1.y + 18);
+		requires3.location(requires2.x, requires2.y + 18);
+		
+		selectedTechName.location(selectedResearchBase.x + 123 - selectedTechName.width, selectedResearchBase.y + 5);
+		selectedTechNameValue.location(selectedResearchBase.x + 127, selectedResearchBase.y + 9);
+		selectedTechNameValue.size(152, 10); 
+		selectedTechStatus.location(selectedResearchBase.x + 123 - selectedTechStatus.width, selectedResearchBase.y + 24);
+		selectedTechStatusValue.location(selectedResearchBase.x + 127, selectedResearchBase.y + 28);
+		selectedTechStatusValue.size(152, 10); 
+		
+		moneyButton.location(activeResearchBase.x + 6, activeResearchBase.y + 28);
+		
+		selectedComplete.location(selectedResearchBase.x + 335 - selectedComplete.width, selectedResearchBase.y + 7);
+		selectedCompleteValue.location(selectedResearchBase.x + 340, selectedResearchBase.y + 7);
+		selectedCompleteValue.size(48, 14);
+		selectedTime.location(selectedResearchBase.x + 464 - selectedTime.width, selectedResearchBase.y + 7);
+		selectedTimeValue.location(selectedResearchBase.x + 470, selectedResearchBase.y + 7);
+		selectedTimeValue.size(48, 14);
+		
+		selectedCivilLab.location(selectedResearchBase.x + 314 - selectedCivilLab.width, selectedResearchBase.y + 28);
+		activeCivilLab.location(activeResearchBase.x + 314 - activeCivilLab.width, activeResearchBase.y + 9);
+		
+		selectedMechLab.location(selectedResearchBase.x + 368 - selectedMechLab.width, selectedResearchBase.y + 28);
+		activeMechLab.location(activeResearchBase.x + 368 - activeMechLab.width, activeResearchBase.y + 9);
+		
+		selectedCompLab.location(selectedResearchBase.x + 425 - selectedCompLab.width, selectedResearchBase.y + 28);
+		activeCompLab.location(activeResearchBase.x + 425 - activeCompLab.width, activeResearchBase.y + 9);
+		
+		selectedAILab.location(selectedResearchBase.x + 466 - selectedAILab.width, selectedResearchBase.y + 28);
+		activeAILab.location(activeResearchBase.x + 466 - activeAILab.width, activeResearchBase.y + 9);
+		
+		selectedMilLab.location(selectedResearchBase.x + 507 - selectedMilLab.width, selectedResearchBase.y + 28);
+		activeMilLab.location(activeResearchBase.x + 507 - activeMilLab.width, activeResearchBase.y + 9);
+		
+		activeTechName.location(activeResearchBase.x + 122 - activeTechName.width, activeResearchBase.y + 7);
+		activeMoney.location(activeResearchBase.x + 122 - activeMoney.width, activeResearchBase.y + 28);
+		
+		descriptionTitle.location(descriptionBase.x + 7, descriptionBase.y + 8);
+		descriptionTitle.size(513, 10);
+		
+		descriptionBody.location(descriptionBase.x + 7, descriptionBase.y + 24);
+		descriptionBody.size(513, 20);
 	
+		activeTechNameValue.location(activeResearchBase.x + 127, activeResearchBase.y + 11);
+		activeTechNameValue.size(152, 10);
+		
+		activeMoneyValue.location(activeResearchBase.x + 127, activeResearchBase.y + 32);
+		activeMoneyValue.size(120, 10);
+		
+		activeMoneyPercentValue.location(activeResearchBase.x + 127 + 120 + 11, activeResearchBase.y + 32);
+		activeMoneyPercentValue.size(23, 10);
+		
+		selectedCivilLabValue.location(selectedResearchBase.x + 316, selectedResearchBase.y + 28);
+		selectedCivilLabValue.size(11, 14);
+
+		activeCivilLabValue.location(activeResearchBase.x + 316, activeResearchBase.y + 9);
+		activeCivilLabValue.size(11, 14);
+		
+		selectedMechLabValue.location(selectedCivilLabValue.x + 54, selectedCivilLabValue.y);
+		selectedMechLabValue.size(11, 14);
+		
+		activeMechLabValue.location(activeCivilLabValue.x + 54, activeCivilLabValue.y);
+		activeMechLabValue.size(11, 14);
+
+		selectedCompLabValue.location(selectedMechLabValue.x + 57, selectedMechLabValue.y);
+		selectedCompLabValue.size(11, 14);
+		
+		activeCompLabValue.location(activeMechLabValue.x + 57, activeMechLabValue.y);
+		activeCompLabValue.size(11, 14);
+
+		selectedAILabValue.location(selectedCompLabValue.x + 41, selectedCompLabValue.y);
+		selectedAILabValue.size(11, 14);
+		
+		activeAILabValue.location(activeCompLabValue.x + 41, activeCompLabValue.y);
+		activeAILabValue.size(11, 14);
+
+		selectedMilLabValue.location(selectedAILabValue.x + 41, selectedAILabValue.y);
+		selectedMilLabValue.size(11, 14);
+		
+		activeMilLabValue.location(activeAILabValue.x + 41, activeAILabValue.y);
+		activeMilLabValue.size(11, 14);
+		
+		productName.location(productionBase.x + 5 + (168 - productName.width) / 2, productionBase.y + 3);
+		capacity.location(productionBase.x + 252 + (44 - capacity.width) / 2, productionBase.y + 4);
+		capacityPercent.location(productionBase.x + 252 + 44 + (54 - capacityPercent.width), productionBase.y + 4);
+		productComplete.location(productionBase.x + 404, productionBase.y + 4);
+		
+		int py = productionBase.y + 19;
+		for (ProductionLine pl : productionLines) {
+			pl.location(productionBase.x + 2, py);
+			py += 23;
+		}
+		removeTen.location(productionBase.x + 2, productionBase.y + 134);
+		removeOne.location(productionBase.x + 2 + 54, productionBase.y + 134);
+		addOne.location(productionBase.x + 2 + 54 * 2, productionBase.y + 134);
+		addTen.location(productionBase.x + 2 + 54 * 3, productionBase.y + 134);
+		sell.location(productionBase.x + 2 + 54 * 4, productionBase.y + 134);
+		
+		capacityLabel.location(productionBase.x + 394 - capacityLabel.width, productionBase.y + 133);
+		availableCapacityValue.location(productionBase.x + 398, productionBase.y + 137);
+		availableCapacityValue.size(60, 14);
+		totalCapacityValue.location(productionBase.x + 398 + 60, productionBase.y + 139);
+		totalCapacityValue.size(59, 10);
+	}
+	/**
+	 * A concrete production line.
+	 * @author akarnokd, Mar 19, 2011
+	 */
+	class ProductionLine extends UIContainer {
+		/** The base image. */
+		UIImage base;
+		/** Initialize the inner fields. */
+		public ProductionLine() {
+			base = new UIImage(commons.research().productionLine);
+			base.z = -1;
+			width = base.width;
+			height = base.height;
+			addThis();
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			super.draw(g2);
+		}
+	}
 	/**
 	 * Distribute the given components equally within the given target rectangle.
 	 * @param left the common left coordinate to use
@@ -351,60 +844,6 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onResize() {
-		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
-
-		addButton.location(base.x + 535, base.y + 303 - 20);
-		startNew.location(addButton.location());
-		removeButton.location(addButton.location());
-		emptyButton.location(addButton.location());
-
-		video.location(base.x + 2, base.y + 2);
-		video.size(316, 196);
-		
-		equipmentButton.location(addButton.x, addButton.y + addButton.height);
-		
-		productionButton.location(equipmentButton.x, equipmentButton.y + equipmentButton.height);
-		researchButton.location(productionButton.location());
-		
-		bridgeButton.location(researchButton.x, researchButton.y + researchButton.height);
-		
-		for (int i = 0; i < 6; i++) {
-			slots.get(i).location(base.x + 2 + i * 106, base.y + 219 - 20);
-			slots.get(i).size(106, 82);
-		}
-
-		mainCategory.location(base.x + 323, base.y + 3);
-		subCategorySmall.location(mainCategory.x, base.y + 103);
-		subCategoryWide.location(subCategorySmall.location());
-		prerequisites.location(base.x + 533, subCategorySmall.y);
-		
-		productionBase.location(base.x + 3, base.y + 303 - 20);
-		
-		selectedResearchBase.location(productionBase.location());
-		activeResearchBase.location(selectedResearchBase.x, selectedResearchBase.y + 50);
-		descriptionBase.location(activeResearchBase.x, activeResearchBase.y + 55);
-		
-		stopActive.location(activeResearchBase.x + 288, activeResearchBase.y + 27);
-		viewActive.location(activeResearchBase.x + 288 + 119, activeResearchBase.y + 27);
-		stopActiveEmpty.location(stopActive.location());
-		viewActiveEmpty.location(viewActive.location());
-		
-		distributeVertically(mainCategory.x + 18, mainCategory.bounds(), 
-				Arrays.asList(spaceshipsLabel, equipmentsLabel, weaponsLabel, buildingsLabel));
-		
-		for (ResearchMainCategory cat : ResearchMainCategory.values()) {
-			List<UIComponent> comps = new ArrayList<UIComponent>();
-			for (ResearchSubCategory scat : ResearchSubCategory.values()) {
-				if (scat.main == cat) {
-					comps.add(subComponents.get(scat));
-				}
-			}
-			distributeVertically(subCategorySmall.x + 18, subCategorySmall.bounds(), comps);
-		}
-
-	}
-	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.research().basePanel, base.x, base.y, null);
@@ -437,50 +876,51 @@ public class ResearchProductionScreen extends ScreenBase {
 	 */
 	void setMode(RPMode m) {
 		this.mode = m;
+		setUIVisibility();
+		// adjust the visibility further
 		switch (mode) {
 		case PRODUCTION:
-			productionButton.visible(false);
-			researchButton.visible(true);
-			
-			subCategorySmall.visible(false);
-			prerequisites.visible(false);
-			subCategoryWide.visible(true);
-			
-			selectedResearchBase.visible(false);
-			activeResearchBase.visible(false);
-			descriptionBase.visible(false);
-			
-			productionBase.visible(true);
-
-			startNew.visible(false);
-			stopActive.visible(false);
-			stopActiveEmpty.visible(false);
-			viewActive.visible(false);
-			viewActiveEmpty.visible(false);
-			
 			break;
 		case RESEARCH:
-			productionButton.visible(true);
-			researchButton.visible(false);
-			
-			subCategorySmall.visible(true);
-			prerequisites.visible(true);
-			subCategoryWide.visible(false);
-			
-			selectedResearchBase.visible(true);
-			activeResearchBase.visible(true);
-			descriptionBase.visible(true);
-			
-			productionBase.visible(false);
-			
-			startNew.visible(true);
-			stopActive.visible(true);
-			stopActiveEmpty.visible(true);
-			viewActive.visible(true);
-			viewActiveEmpty.visible(true);
-			
 			break;
 		default:
+		}
+	}
+	/**
+	 * Set the visibility of UI components based on their annotation.
+	 */
+	void setUIVisibility() {
+		for (Field f : getClass().getDeclaredFields()) {
+			ModeUI mi = f.getAnnotation(ModeUI.class);
+			if (mi != null) {
+				if (UIComponent.class.isAssignableFrom(f.getType())) {
+					try {
+						UIComponent c = UIComponent.class.cast(f.get(this));
+						if (c != null) {
+							c.visible(mi.mode() == mode);
+						}
+					} catch (IllegalAccessException ex) {
+						ex.printStackTrace();
+					}
+				} else
+				if (Iterable.class.isAssignableFrom(f.getType())) {
+					try {
+						Iterable<?> it = Iterable.class.cast(f.get(this));
+						if (it != null) {
+							Iterator<?> iter = it.iterator();
+							while (iter.hasNext()) {
+								Object o = iter.next();
+								if (UIComponent.class.isAssignableFrom(o.getClass())) {
+									UIComponent c = UIComponent.class.cast(o);
+									c.visible(mi.mode() == mode);
+								}
+							}
+						}
+					} catch (IllegalAccessException ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 	/**
@@ -521,5 +961,12 @@ public class ResearchProductionScreen extends ScreenBase {
 		b.visible(false);
 		add(b);
 		subComponents.put(cat, b);
+	}
+	/**
+	 * Adjust money based on the scale.
+	 * @param scale the scale factor -1.0 ... +1.0
+	 */
+	void doAdjustMoney(float scale) {
+		// TODO
 	}
 }

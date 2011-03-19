@@ -46,7 +46,7 @@ public class UIContainer extends UIComponent {
 		Collections.sort(this.components, new Comparator<UIComponent>() {
 			@Override
 			public int compare(UIComponent o1, UIComponent o2) {
-				return o1.z < o2.z ? -1 : (o1.z > o1.z ? 1 : 0);
+				return o1.z < o2.z ? -1 : (o1.z > o2.z ? 1 : 0);
 			}
 		});
 	}
@@ -62,6 +62,7 @@ public class UIContainer extends UIComponent {
 			c.parent = this;
 			this.components.add(c);
 		}
+		sortComponents();
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -117,7 +118,8 @@ public class UIContainer extends UIComponent {
 	public void addThis() {
 		for (Field f : getClass().getDeclaredFields()) {
 			if (UIComponent.class.isAssignableFrom(f.getType())
-					&& f.getDeclaringClass() == getClass()) {
+					&& f.getDeclaringClass() == getClass()
+					&& !f.isSynthetic()) {
 				try {
 					f.setAccessible(true);
 					UIComponent c = UIComponent.class.cast(f.get(this));

@@ -246,6 +246,9 @@ public class ResearchGFX {
 	/** Weapons category. */
 	@Cat(name = "research/label_weapons")
 	public BufferedImage[] weapons;
+	/** Artifical intelligence research label. */
+	@Img(name = "research/label_ai_lab")
+	public BufferedImage aiLab;
 	/**
 	 * Constructor.
 	 * @param rl the resource locator
