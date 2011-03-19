@@ -57,9 +57,9 @@ public class ResearchGFX {
 	/** Stop button. */
 	@Btn2(name = "research/button_stop")
 	public BufferedImage[] stop;
-	/** Current research panel. */
-	@Img(name = "research/panel_current_research")
-	public BufferedImage currentResearchPanel;
+	/** Current research panel. (The one with the stop and view buttons.) */
+	@Img(name = "research/panel_active_research")
+	public BufferedImage activeResearchPanel;
 	/** Main class panel. */
 	@Img(name = "research/panel_main_class")
 	public BufferedImage mainClassPanel;

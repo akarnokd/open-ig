@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * A static image display without any event handling.
- * @author karnokd
+ * @author akarnokd
  */
 public class UIImage extends UIComponent {
 	/** The image object. */

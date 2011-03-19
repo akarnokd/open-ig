@@ -11,9 +11,11 @@ package hu.openig.ui;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 /**
+ * The basic, light-weight user interface component.
  * @author akarnokd, 2011.02.25.
  */
 public class UIComponent {
@@ -163,5 +165,11 @@ public class UIComponent {
 	/** @return is the component visible? */
 	public boolean visible() {
 		return visible;
+	}
+	/**
+	 * @return the rectangle bounds of this component
+	 */
+	public Rectangle bounds() {
+		return new Rectangle(x, y, width, height);
 	}
 }
