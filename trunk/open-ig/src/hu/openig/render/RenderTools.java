@@ -80,6 +80,8 @@ public final class RenderTools {
 		Composite c = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(alpha));
 		g2.setColor(Color.BLACK);
+//		Paint p = g2.getPaint();
+//		g2.setPaint(new TexturePaint(holes(alpha), new Rectangle(panel.x, panel.y, 2, 2)));
 		
 		if (considerStatusbars) {
 			fillRectAbsolute(0, STATUS_BAR_TOP, screenWidth - 1, panel.y - 1, g2);
@@ -92,7 +94,44 @@ public final class RenderTools {
 		fillRectAbsolute(0, panel.y, panel.x - 1, panel.y + panel.height - 1, g2);
 		fillRectAbsolute(panel.x + panel.width, panel.y, screenWidth - 1, panel.y + panel.height - 1, g2);
 		
+//		g2.setPaint(p);
 		g2.setComposite(c);
+	}
+	/**
+	 * Create a transparent image which has holes.
+	 * @param alpha the effective transparency level
+	 * @return the image
+	 */
+	static BufferedImage holes(float alpha) {
+		int r = (int)(255 * (1 - alpha));
+		int size = 2;
+		int[] pixels = new int[size * size];
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				if (i % 2 != j % 2) {
+					pixels[i * size + j] = argb(255, r, r, r);
+				}
+			}
+		}
+		BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+		img.setRGB(0, 0, size, size, pixels, 0, size);
+		return img;
+	}
+	/**
+	 * Create an ARGB color from its components.
+	 * @param a The alpha channel value
+	 * @param r the RED component
+	 * @param g the GREEN component
+	 * @param b the BLUE component
+	 * @return the composite color
+	 */
+	public static int argb(int a, int r, int g, int b) {
+		return 
+			((a << 24) & 0xFF000000)
+			| ((r << 16) & 0x00FF0000)
+			| ((g << 8) & 0x0000FF00)
+			| ((b << 0) & 0x000000FF)
+		;
 	}
 	/**
 	 * Fill the rectangle given by absolute coordinates.

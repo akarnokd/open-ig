@@ -28,6 +28,8 @@ public class UILabel extends UIComponent {
 	private String text;
 	/** The font size. */
 	private int size;
+	/** The row spacing. */
+	private int spacing = 2;
 	/** The ARGB color to use when the label is disabled. */
 	private int disabledColor = 0xFF808080;
 	/** The ARGB color to use when drawing the label. */
@@ -85,7 +87,7 @@ public class UILabel extends UIComponent {
 			} else {
 				tr.wrapText(text, width - 1, size, lines);
 			}
-			int totalHeight = lines.size() * size;
+			int totalHeight = lines.size() * (size + spacing) - (lines.size() > 1 ? spacing : 0);
 			int py = 0;
 			switch (valign) {
 			case BOTTOM:
@@ -100,7 +102,7 @@ public class UILabel extends UIComponent {
 			for (String line : lines) {
 				row++;
 				drawAligned(g2, py, line);
-				py += size;
+				py += size + spacing;
 			}
 		} else {
 			int totalHeight = size;
@@ -131,15 +133,15 @@ public class UILabel extends UIComponent {
 			case LEFT:
 				break;
 			case CENTER:
-				px = (width - tr.getTextWidth(size, text)) / 2;
+				px = (width - tr.getTextWidth(size, line)) / 2;
 				break;
 			case RIGHT:
-				px = width - tr.getTextWidth(size, text);
+				px = width - tr.getTextWidth(size, line);
 				break;
 			default:
 			}
 			if (shadowColor != 0) {
-				tr.paintTo(g2, px + 1, py + 1, size, shadowColor, text);
+				tr.paintTo(g2, px + 1, py + 1, size, shadowColor, line);
 			}
 			int c = 0;
 			if (enabled || disabledColor == 0) {
@@ -147,7 +149,7 @@ public class UILabel extends UIComponent {
 			} else {
 				c = disabledColor;
 			}
-			tr.paintTo(g2, px, py, size, c, text);
+			tr.paintTo(g2, px, py, size, c, line);
 		} else {
 			if (line.length() > 0) {
 				String[] words = line.split("\\s+");
@@ -199,9 +201,9 @@ public class UILabel extends UIComponent {
 	 */
 	public UILabel text(String text) {
 		this.text = text;
-		if (!wrap) {
-			width = tr.getTextWidth(size, text);
-		}
+//		if (!wrap) {
+//			width = tr.getTextWidth(size, text);
+//		}
 		return this;
 	}
 	/**
@@ -247,9 +249,33 @@ public class UILabel extends UIComponent {
 	 */
 	public UILabel size(int h) {
 		this.size = h;
-		if (!wrap) {
-			width = tr.getTextWidth(size, text);
-		}
+//		if (!wrap) {
+//			width = tr.getTextWidth(size, text);
+//		}
+		return this;
+	}
+	/**
+	 * @return the unwrapped text width.
+	 */
+	public int getTextWidth() {
+		return tr.getTextWidth(size, text) + (shadowColor != 0 ? 1 : 0);
+	}
+	/**
+	 * Set the wrapping mode.
+	 * @param state the state
+	 * @return wrap
+	 */
+	public UILabel wrap(boolean state) {
+		this.wrap = state;
+		return this;
+	}
+	/**
+	 * Set the row spacing for multiline display.
+	 * @param value the spacing in pixels
+	 * @return this
+	 */
+	public UILabel spacing(int value) {
+		this.spacing = value;
 		return this;
 	}
 }
