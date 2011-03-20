@@ -4,6 +4,11 @@
 
 See the [Launcher] page about the application itself.
 
+= Version 0.12 - Bugfix release =
+
+  * Fixed a related bug where the application restarts itself infinitely, typically on Linux machines.
+  * Removed the Verify button - which did nothing.
+
 = Version 0.11 - Bugfix release =
 
   * Fixed a bug when the user quit the launcher by using the *Exit* button, the Launcher forgot what modules where installed. Fortunately, clicking on the Install buttons, the launcher recognized that the files are already there and intact, therefore, no unnecessary network bandwith was required.
