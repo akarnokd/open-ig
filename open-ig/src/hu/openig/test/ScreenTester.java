@@ -90,7 +90,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	/** */
 	private static final long serialVersionUID = -3535790397080644321L;
 	/** The version number for packaging. */
-	public static final String VERSION = "0.20";
+	public static final String VERSION = "0.25";
 	/** The parent color to use. */
 	volatile Color parentColor = Color.LIGHT_GRAY;
 	/** The normal screen. */

@@ -30,6 +30,7 @@ public abstract class ScreenBase extends UIContainer {
 	 * @param commons the configuration object
 	 */
 	public final void initialize(CommonResources commons) {
+		this.components.clear();
 		this.commons = commons;
 		this.config = commons.config;
 		this.rl = commons.rl;
