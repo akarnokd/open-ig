@@ -1,6 +1,12 @@
 #summary Contains screenshots from the game.
 #labels Featured
 
+= Version 0.85 screenshots =
+
+|| [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-starmap.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-starmap-tn.png]<br>Starmap. || [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-colony.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-colony-tn.png]<br>Colony. ||
+||[http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-equipment.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-equipment-tn.png]<br>Equipment. || [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-research.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-research-tn.png]<br>Research. ||
+||[http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-production.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-production-tn.png]<br>Production. ||
+
 = Version 0.80d screenshots =
 
 || [http://karnokd.uw.hu/images/open-ig-0.8-ld.png http://karnokd.uw.hu/images/open-ig-0.8-ld-tn.png]<br>The loading screen. || ||
