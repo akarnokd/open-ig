@@ -32,8 +32,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
- * @author karnokd
- *
+ * The import dialog to load the original surface maps or concrete planet layout.
+ * @author akarnokd
  */
 public class ImportDialog extends JDialog {
 	/** */
@@ -264,7 +264,7 @@ public class ImportDialog extends JDialog {
 	}
 	/**
 	 * The original planet definition (from v0.72 and before).
-	 * @author karnokd
+	 * @author akarnokd
 	 */
 	public class OriginalPlanet {
 		/** The planet name. */

@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Simple completion type port.
- * @author karnokd
+ * @author akarnokd
  * @param <T> the object type to pass around
  */
 public class Port<T> {

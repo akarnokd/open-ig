@@ -17,7 +17,7 @@ import java.util.LinkedList;
 
 /**
  * Utility class for missing java functionalities.
- * @author karnokd
+ * @author akarnokd
  */
 public final class JavaUtils {
 	/** Constructor. */

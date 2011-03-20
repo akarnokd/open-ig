@@ -29,7 +29,7 @@ import javax.swing.GroupLayout.Alignment;
 
 /**
  * The panel to define the worker/energy allocation strategy and compute the results.
- * @author karnokd
+ * @author akarnokd
  */
 public class AllocationPanel extends JPanel {
 	/** */

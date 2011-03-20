@@ -11,7 +11,7 @@ import java.io.File;
 
 /**
  * The save settings for the map editor.
- * @author karnokd
+ * @author akarnokd
  */
 public class MapSaveSettings {
 	/** The filename. */

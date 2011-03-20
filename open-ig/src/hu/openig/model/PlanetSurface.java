@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * The container class for the planetary surface objects, including the base surface map,
  * builings, roads and vehicles.
- * @author karnokd
+ * @author akarnokd
  */
 public class PlanetSurface {
 	/** 

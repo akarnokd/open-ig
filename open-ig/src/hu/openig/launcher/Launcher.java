@@ -59,7 +59,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -5640883678496406236L;
 	/** The launcher's version. */
-	static final String VERSION = "0.11";
+	static final String VERSION = "0.12";
 	/** The list of stuff. */
 	JPanel listPanel;
 	/** The exit buttom. */
@@ -287,7 +287,7 @@ public class Launcher extends JFrame {
 			});
 			
 			
-			mp.verify.setVisible(false);
+//			mp.verify.setVisible(false);
 			mp.install.setVisible(false);
 			mp.install.addActionListener(new ActionListener() {
 				@Override
@@ -383,7 +383,7 @@ public class Launcher extends JFrame {
 			mp.title.setText(m.id);
 			mp.install.setVisible(true);
 			mp.start.setVisible(false);
-			mp.verify.setVisible(false);
+//			mp.verify.setVisible(false);
 			mp.update.setVisible(false);
 			mp.remove.setVisible(false);
 			mp.updateAvailable.setVisible(true);
@@ -397,7 +397,7 @@ public class Launcher extends JFrame {
 				mp.update.setVisible(true);
 				mp.updateAvailable.setVisible(m.compareVersion(iv) > 0);
 			} else {
-				mp.verify.setVisible(c == 0);
+//				mp.verify.setVisible(c == 0);
 				mp.update.setVisible(false);
 				mp.updateAvailable.setVisible(false);
 			}
@@ -434,8 +434,8 @@ public class Launcher extends JFrame {
 		public JButton start;
 		/** Update the program. */
 		public JButton update;
-		/** Verify the program files. */
-		public JButton verify;
+//		/** Verify the program files. */
+//		public JButton verify;
 		/** Install the program. */
 		public JButton install;
 		/** Remove the program. */
@@ -465,7 +465,7 @@ public class Launcher extends JFrame {
 			
 			start = new JButton("Start");
 			update = new JButton("Update");
-			verify = new JButton("Verify");
+//			verify = new JButton("Verify");
 			install = new JButton("Install");
 			remove = new JButton("Remove");
 			cancel = new JButton("Cancel");
@@ -500,7 +500,7 @@ public class Launcher extends JFrame {
 						.addComponent(space)
 						.addComponent(start)
 						.addComponent(update)
-						.addComponent(verify)
+//						.addComponent(verify)
 						.addComponent(install)
 						.addComponent(remove)
 						.addComponent(cancel)
@@ -520,7 +520,7 @@ public class Launcher extends JFrame {
 					.addComponent(space)
 					.addComponent(start)
 					.addComponent(update)
-					.addComponent(verify)
+//					.addComponent(verify)
 					.addComponent(install)
 					.addComponent(remove)
 					.addComponent(cancel)
@@ -597,35 +597,6 @@ public class Launcher extends JFrame {
 			ex.printStackTrace();
 		}
 	}
-//	/**
-//	 * Start the installation of the given module.
-//	 * @param mp the module panel
-//	 * @param m the module definition
-//	 */
-//	protected void installModule(final ModulePanel mp, final LModule m) {
-//		mp.install.setVisible(false);
-//		mp.cancel.setVisible(true);
-//
-//		List<String> localFiles = new ArrayList<String>();
-//		long t = System.currentTimeMillis();
-//		for (LFile f : m.files) {
-//			int idx = f.url.lastIndexOf("/");
-//			localFiles.add(f.url.substring(idx + 1) + "." + t);
-//		}
-//		
-//		final Downloader[] currentDownloader = new Downloader[1];
-//		
-//		downloadLoop(localFiles, mp, m, 0, currentDownloader);
-//		
-//		mp.cancel.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				currentDownloader[0].cancel(true);
-//				mp.cancel.setVisible(false);
-//				setVisibleModuleButtons(m, mp);
-//			}
-//		});
-//	}
 	/** The file entry. */
 	class FileEntry {
 		/**
@@ -863,9 +834,9 @@ public class Launcher extends JFrame {
 	protected void startModule(ModulePanel mp, LModule m) {
 		ProcessBuilder pb = new ProcessBuilder();
 		if (m.memory > 0) {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + m.memory + "M", "-jar", String.format(m.executeFile, installedVersions.get(m.id)));
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + m.memory + "M", "-jar", String.format(m.executeFile, installedVersions.get(m.id)), "-memonce");
 		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-jar", String.format(m.executeFile, installedVersions.get(m.id)));
+			pb.command(System.getProperty("java.home") + "/bin/java", "-jar", String.format(m.executeFile, installedVersions.get(m.id)), "-memonce");
 		}
 		try {
 			pb.start();

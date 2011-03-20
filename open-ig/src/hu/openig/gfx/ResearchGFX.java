@@ -10,6 +10,7 @@ package hu.openig.gfx;
 
 import hu.openig.core.Anim;
 import hu.openig.core.Btn2;
+import hu.openig.core.Btn3H;
 import hu.openig.core.Cat;
 import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
@@ -249,6 +250,12 @@ public class ResearchGFX {
 	/** Artifical intelligence research label. */
 	@Img(name = "research/label_ai_lab")
 	public BufferedImage aiLab;
+	/** The production less button. */
+	@Btn3H(name = "research/button_less")
+	public BufferedImage[] less;
+	/** The production more button. */
+	@Btn3H(name = "research/button_more")
+	public BufferedImage[] more;
 	/**
 	 * Constructor.
 	 * @param rl the resource locator

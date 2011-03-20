@@ -29,7 +29,7 @@ import com.jcraft.jorbis.Info;
 
 /**
  * Plays back ogg music. Based on the com.craft.jorbis JOrbisPlayer.
- * @author karnokd
+ * @author akarnokd
  */
 public class OggMusic {
 	/** The current playback thread. */

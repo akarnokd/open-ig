@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Port that has a work in progress counter.
  * The port is complete when the work in progress counter returns to zero.
- * @author karnokd
+ * @author akarnokd
  */
 public class WipPort {
 	/** The lock object. */

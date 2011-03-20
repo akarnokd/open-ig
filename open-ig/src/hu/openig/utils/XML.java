@@ -26,8 +26,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * XML processing related helper functions.
- * @author karnokd
+ * XML DOM processing related helper functions.
+ * @author akarnokd
  */
 public final class XML {
 	/**

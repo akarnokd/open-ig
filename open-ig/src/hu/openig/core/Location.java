@@ -10,7 +10,7 @@ package hu.openig.core;
 
 /**
  * Immutable class/record representing an X,Y integral coordinate.
- * @author karnokd
+ * @author akarnokd
  */
 public final class Location {
 	/** The X coordinate. */

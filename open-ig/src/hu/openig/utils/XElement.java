@@ -27,7 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * A simplified XML element model.
- * @author karnokd
+ * @author akarnokd
  */
 public class XElement implements Iterable<XElement> {
 	/** The element name. */

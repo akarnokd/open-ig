@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * Image manipulation utilities.
- * @author karnokd
+ * @author akarnokd
  */
 public final class ImageUtils {
 	/** Use subimage or separate image. */

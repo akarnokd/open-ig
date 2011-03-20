@@ -12,7 +12,7 @@ import hu.openig.core.Tile;
 
 /**
  * The surface feature.
- * @author karnokd
+ * @author akarnokd
  */
 public class SurfaceFeature {
 	/** The location of the surface feature. */

@@ -84,7 +84,7 @@ import javax.swing.SwingWorker;
 
 /**
  * Utility program to improve the screen development and testing times.
- * @author karnokd
+ * @author akarnokd, 2011-02-15
  */
 public class ScreenTester extends JFrame implements GameControls {
 	/** */

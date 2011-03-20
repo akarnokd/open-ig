@@ -27,7 +27,7 @@ import javax.swing.table.AbstractTableModel;
 
 /**
  * The building information panel used in the map editor.
- * @author karnokd
+ * @author akarnokd
  */
 public class BuildingInfoPanel extends JPanel {
 	/**	 */

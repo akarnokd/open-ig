@@ -13,6 +13,7 @@ import hu.openig.core.ResourceType;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.render.RenderTools;
+import hu.openig.render.TextRenderer;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -21,6 +22,7 @@ import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UIVideoImage;
 
 import java.awt.Graphics2D;
@@ -418,7 +420,8 @@ public class ResearchProductionScreen extends ScreenBase {
 
 		// TODO for testing purposes only!
 		for (int i = 0; i < 6; i++) {
-			TechnologySlot ts = new TechnologySlot(commons);
+			final int j = i;
+			final TechnologySlot ts = new TechnologySlot(commons);
 			ts.name = "TODO";
 			ts.inventory = 1;
 			ts.cost = 1000;
@@ -427,6 +430,12 @@ public class ResearchProductionScreen extends ScreenBase {
 			ts.visible(true);
 			ts.missingLab = true;
 			ts.image = rl.getImage(commons.language(), "inventions/spaceships/fighters/fighter_" + (i + 1) + "");
+			ts.onPress = new Act() {
+				@Override
+				public void act() {
+					doSelectTechnology(ts, j);
+				}
+			};
 			slots.add(ts);
 		}
 		slots.get(0).available = true;
@@ -480,7 +489,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		
 		requiresLabel = new UIImage(commons.research().requirements);
 		
-		int textColor = 0xFF6DB269;
+		int textColor = TextRenderer.GREEN;
 		selectedTechName = new UIImage(commons.research().projectName);
 		selectedTechStatus = new UIImage(commons.research().projectStatus);
 		selectedComplete = new UIImage(commons.research().projectCompleted);
@@ -582,7 +591,14 @@ public class ResearchProductionScreen extends ScreenBase {
 		sell = new UIImageButton(commons.research().sell);
 		
 		for (int i = 0; i < 5; i++) {
-			ProductionLine pl = new ProductionLine();
+			final int j = i;
+			final ProductionLine pl = new ProductionLine();
+			pl.onPress = new Act() {
+				@Override
+				public void act() {
+					doSelectProductionLine(pl, j);
+				}
+			};
 			productionLines.add(pl);
 		}
 		
@@ -596,6 +612,16 @@ public class ResearchProductionScreen extends ScreenBase {
 		addThis();
 		add(slots);
 		add(productionLines);
+	}
+	/**
+	 * Select a specific production line.
+	 * @param pl the line
+	 * @param j the line index
+	 */
+	protected void doSelectProductionLine(ProductionLine pl, int j) {
+		for (ProductionLine pl0 : productionLines) {
+			pl0.select(pl0 == pl);
+		}
 	}
 	@Override
 	public void onResize() {
@@ -735,8 +761,8 @@ public class ResearchProductionScreen extends ScreenBase {
 		activeMilLabValue.size(11, 14);
 		
 		productName.location(productionBase.x + 5 + (168 - productName.width) / 2, productionBase.y + 3);
-		capacity.location(productionBase.x + 252 + (44 - capacity.width) / 2, productionBase.y + 4);
-		capacityPercent.location(productionBase.x + 252 + 44 + (54 - capacityPercent.width), productionBase.y + 4);
+		capacity.location(productionBase.x + 236 + (56 - capacity.width) / 2, productionBase.y + 4);
+		capacityPercent.location(productionBase.x + 236 + 57 + (56 - capacityPercent.width) / 2, productionBase.y + 4);
 		productComplete.location(productionBase.x + 404, productionBase.y + 4);
 		
 		int py = productionBase.y + 19;
@@ -755,26 +781,6 @@ public class ResearchProductionScreen extends ScreenBase {
 		availableCapacityValue.size(60, 14);
 		totalCapacityValue.location(productionBase.x + 398 + 60, productionBase.y + 139);
 		totalCapacityValue.size(59, 10);
-	}
-	/**
-	 * A concrete production line.
-	 * @author akarnokd, Mar 19, 2011
-	 */
-	class ProductionLine extends UIContainer {
-		/** The base image. */
-		UIImage base;
-		/** Initialize the inner fields. */
-		public ProductionLine() {
-			base = new UIImage(commons.research().productionLine);
-			base.z = -1;
-			width = base.width;
-			height = base.height;
-			addThis();
-		}
-		@Override
-		public void draw(Graphics2D g2) {
-			super.draw(g2);
-		}
 	}
 	/**
 	 * Distribute the given components equally within the given target rectangle.
@@ -968,5 +974,105 @@ public class ResearchProductionScreen extends ScreenBase {
 	 */
 	void doAdjustMoney(float scale) {
 		// TODO
+	}
+	/**
+	 * A concrete production line.
+	 * @author akarnokd, Mar 19, 2011
+	 */
+	class ProductionLine extends UIContainer {
+		/** The base image. */
+		UIImage base;
+		/** Less priority button. */
+		UIImageButton lessPriority;
+		/** More priority button. */
+		UIImageButton morePriority;
+		/** Less build button. */
+		UIImageButton lessBuild;
+		/** More build button. */
+		UIImageButton moreBuild;
+		/** Invention name. */
+		UILabel name;
+		/** Priority value. */
+		UILabel priority;
+		/** Assigned capacity. */
+		UILabel capacity;
+		/** Capacity percent. */
+		UILabel capacityPercent;
+		/** Production count. */
+		UILabel count;
+		/** Completion info. */
+		UILabel completion;
+		/** The activation event. */
+		public Act onPress;
+		/** Initialize the inner fields. */
+		public ProductionLine() {
+			base = new UIImage(commons.research().productionLine);
+			base.z = -1;
+			width = base.width;
+			height = base.height;
+			
+			lessPriority = new UIImageButton(commons.research().less);
+			lessBuild = new UIImageButton(commons.research().less);
+			morePriority = new UIImageButton(commons.research().more);
+			moreBuild = new UIImageButton(commons.research().more);
+			
+			name = new UILabel("TODO", 7, commons.text());
+			priority = new UILabel("50", 7, commons.text());
+			priority.horizontally(HorizontalAlignment.CENTER);
+			capacity = new UILabel("1000", 7, commons.text());
+			capacityPercent = new UILabel("50%", 7, commons.text());
+			capacityPercent.horizontally(HorizontalAlignment.CENTER);
+			count = new UILabel("1", 7, commons.text());
+			count.horizontally(HorizontalAlignment.CENTER);
+			completion = new UILabel("TODO", 7, commons.text());
+			
+			name.bounds(5, 4, 166, 14);
+			lessPriority.location(190, 5);
+			priority.bounds(198, 4, 24, 14);
+			morePriority.location(223, 5);
+			capacity.bounds(234, 2, 56, 18);
+			capacityPercent.bounds(234 + 57, 2, 56, 18);
+			lessBuild.location(350, 5);
+			count.bounds(358, 4, 24, 14);
+			moreBuild.location(383, 5);
+			completion.bounds(394, 2, 125, 18);
+			
+			addThis();
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			boolean rep = false;
+			if (e.has(Type.DOWN)) {
+				select(true);
+				if (onPress != null) {
+					onPress.act();
+				}
+				rep = true;
+			}
+			rep |= super.mouse(e);
+			return rep;
+		}
+		/** 
+		 * Change the coloring to select this line.
+		 * @param state the selection state
+		 */
+		public void select(boolean state) {
+			name.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+			priority.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+			capacity.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+			capacityPercent.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+			count.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+			completion.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+		}
+	}
+	/**
+	 * Select a technology slot.
+	 * @param ts the target technology slot.
+	 * @param j the slot index
+	 */
+	protected void doSelectTechnology(TechnologySlot ts, int j) {
+		for (TechnologySlot ts0 : slots) {
+			ts0.selected = ts0.visible() && ts0 == ts;
+		}
 	}
 }

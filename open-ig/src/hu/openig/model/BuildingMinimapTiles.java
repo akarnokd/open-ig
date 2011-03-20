@@ -11,7 +11,7 @@ import hu.openig.core.Tile;
 
 /**
  * Record for storing building state dependant filled and colored tiles. 
- * @author karnokd
+ * @author akarnokd
  */
 public class BuildingMinimapTiles {
 	/** The normal state tile. */

@@ -172,4 +172,25 @@ public class UIComponent {
 	public Rectangle bounds() {
 		return new Rectangle(x, y, width, height);
 	}
+	/**
+	 * Set the component bounds from the given rectangle.
+	 * @param rect the rectangle
+	 * @return this
+	 */
+	public UIComponent bounds(Rectangle rect) {
+		return bounds(rect.x, rect.y, rect.width, rect.height);
+	}
+	/**
+	 * Set the component bounds from the given positions and sizes.
+	 * @param x the left coordinate
+	 * @param y the top coordinate
+	 * @param width the width
+	 * @param height the height
+	 * @return this
+	 */
+	public UIComponent bounds(int x, int y, int width, int height) {
+		location(x, y);
+		size(width, height);
+		return this;
+	}
 }

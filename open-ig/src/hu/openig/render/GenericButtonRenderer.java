@@ -14,7 +14,7 @@ import java.awt.Graphics2D;
 
 /**
  * The base interface for small, medium and large generic button renderers.
- * @author karnokd
+ * @author akarnokd
  */
 public interface GenericButtonRenderer {
 	/**

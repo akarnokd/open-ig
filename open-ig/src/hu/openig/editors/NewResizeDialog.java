@@ -22,7 +22,7 @@ import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
 
 /**
- * @author karnokd
+ * @author akarnokd
  *
  */
 public class NewResizeDialog extends JDialog {

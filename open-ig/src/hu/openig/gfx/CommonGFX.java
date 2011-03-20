@@ -22,7 +22,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * The common graphics objects.
- * @author karnokd
+ * @author akarnokd
  */
 public class CommonGFX {
 	// --------------------------------------------

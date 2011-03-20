@@ -14,7 +14,7 @@ import javax.swing.ImageIcon;
 
 /**
  * A tile entry.
- * @author karnokd
+ * @author akarnokd
  */
 public class TileEntry {
 	/** A smaller preview image. */
