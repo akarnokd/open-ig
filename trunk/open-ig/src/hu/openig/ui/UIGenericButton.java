@@ -22,7 +22,7 @@ import javax.swing.Timer;
 
 /**
  * An Imperium Galactica styled button component.
- * @author karnok, 2011.03.04.
+ * @author akarnokd, 2011.03.04.
  */
 public class UIGenericButton extends UIComponent {
 	/** The disabled pattern to use for the button. */

@@ -28,12 +28,12 @@ import javax.imageio.ImageIO;
 
 /**
  * Text graphics drawer and container class.
- * @author karnokd
+ * @author akarnokd
  */
 public class TextRenderer {
 	/**
 	 * Record to store a particularly sized character series's width and height.
-	 * @author karnokd
+	 * @author akarnokd
 	 */
 	private static class SizedCharImages {
 		/** The uniform character width. */
@@ -54,31 +54,31 @@ public class TextRenderer {
 	/** Text height constant helper. */
 	public static final int SIZE_14 = 14;
 	/** Predefined color constant. */
-	public static final int YELLOW = 0xFCFC58;
+	public static final int YELLOW = 0xFFFCFC58;
 	/** Predefined color constant. */
-	public static final int GREEN = 0x6CB068;
+	public static final int GREEN = 0xFF6CB068;
 	/** Predefined color constant. */
-	public static final int GRAY = 0x949494;
+	public static final int GRAY = 0xFF949494;
 	/** Predefined color constant. */
-	public static final int DARK_GRAY = 0x6C6C6C;
+	public static final int DARK_GRAY = 0xFF6C6C6C;
 	/** Predefined color constant. */
-	public static final int RED = 0xFC2828;
+	public static final int RED = 0xFFFC2828;
 	/** Predefined color constant. */
-	public static final int DARK_GREEN = 0x009800;
+	public static final int DARK_GREEN = 0xFF009800;
 	/** Predefined color constant. */
-	public static final int ORANGE = 0xFCB000;
+	public static final int ORANGE = 0xFFFCB000;
 	/** Predefined color constant. */
-	public static final int WHITE = 0xFCFCFC;
+	public static final int WHITE = 0xFFFCFCFC;
 	/** Predefined color constant. */
-	public static final int CYAN = 0x00FCFC;
+	public static final int CYAN = 0xFF00FCFC;
 	/** Predefined color constant. */
-	public static final int PURPLE = 0xFC00FC;
+	public static final int PURPLE = 0xFFFC00FC;
 	/** Predefined color constant. */
-	public static final int LIGHT_GREEN = 0xB0FC6C;
+	public static final int LIGHT_GREEN = 0xFFB0FC6C;
 	/** Predefined color constant. */
-	public static final int BLUE = 0x3C3CFC;
+	public static final int BLUE = 0xFF3C3CFC;
 	/** Predefined color constant. */
-	public static final int LIGHT_BLUE = 0x94A4FC;
+	public static final int LIGHT_BLUE = 0xFF94A4FC;
 	/** Predefined color constant for a race. */
 	public static final int GALACTIC_EMPIRE = ORANGE;
 	/** Predefined color constant for a race and small text. */
@@ -356,7 +356,8 @@ public class TextRenderer {
 	public static int scaleColor(int color, float scale) {
 		return ((int)Math.min(((color & 0xFF0000) >> 16) * scale, 0xFC) << 16)
 		| ((int)Math.min(((color & 0xFF00) >> 8) * scale, 0xFC) << 8)
-		| ((int)Math.min(((color & 0xFF) >> 0) * scale, 0xFC) << 0);
+		| ((int)Math.min(((color & 0xFF) >> 0) * scale, 0xFC) << 0)
+		| (color & 0xFF000000);
 	}
 	/**
 	 * Wrap the text along the given width.

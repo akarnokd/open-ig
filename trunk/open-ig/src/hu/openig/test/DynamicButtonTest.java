@@ -32,7 +32,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * Destbed for the new dynamic buttons used for creating buttons labeled arbitrarily.
- * @author karnokd
+ * @author akarnokd
  *
  */
 public class DynamicButtonTest extends JFrame {

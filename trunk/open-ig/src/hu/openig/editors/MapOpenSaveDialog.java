@@ -25,7 +25,7 @@ import javax.swing.GroupLayout.Alignment;
 
 /**
  * The map save dialog.
- * @author karnokd
+ * @author akarnokd
  *
  */
 public class MapOpenSaveDialog extends JDialog {

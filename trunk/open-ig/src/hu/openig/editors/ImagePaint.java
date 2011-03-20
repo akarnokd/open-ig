@@ -17,7 +17,7 @@ import javax.swing.JComponent;
 
 /**
  * Paint a buffered image.
- * @author karnokd
+ * @author akarnokd
  */
 public class ImagePaint extends JComponent {
 	/** */

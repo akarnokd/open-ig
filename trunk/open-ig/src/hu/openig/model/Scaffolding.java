@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * The scaffolding tile definition.
- * @author karnokd
+ * @author akarnokd
  */
 public class Scaffolding {
 	/** The normal elements. */

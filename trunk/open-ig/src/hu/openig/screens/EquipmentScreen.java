@@ -293,7 +293,8 @@ public class EquipmentScreen extends ScreenBase {
 		
 		// TODO for testing purposes only!
 		for (int i = 0; i < 6; i++) {
-			TechnologySlot ts = new TechnologySlot(commons);
+			final int j = i;
+			final TechnologySlot ts = new TechnologySlot(commons);
 			ts.name = "TODO";
 			ts.inventory = 1;
 			ts.researching = true;
@@ -301,6 +302,12 @@ public class EquipmentScreen extends ScreenBase {
 			ts.visible(true);
 			ts.missingLab = true;
 			ts.image = rl.getImage(commons.language(), "inventions/spaceships/fighters/fighter_" + (i + 1) + "");
+			ts.onPress = new Act() {
+				@Override
+				public void act() {
+					doSelectTechnology(ts, j);
+				}
+			};
 			slots.add(ts);
 		}
 		slots.get(0).available = true;
@@ -639,5 +646,15 @@ public class EquipmentScreen extends ScreenBase {
 			sl.animationStep = animationStep;
 		}
 		askRepaint();
+	}
+	/**
+	 * Select a technology slot.
+	 * @param ts the target technology slot.
+	 * @param j the slot index
+	 */
+	protected void doSelectTechnology(TechnologySlot ts, int j) {
+		for (TechnologySlot ts0 : slots) {
+			ts0.selected = ts0.visible() && ts0 == ts;
+		}
 	}
 }

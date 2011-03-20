@@ -10,7 +10,7 @@ package hu.openig.ui;
 
 /**
  * The vertical alignment constants.
- * @author karnok, 2011.03.04.
+ * @author akarnokd, 2011.03.04.
  */
 public enum VerticalAlignment {
 	/** Align top. */

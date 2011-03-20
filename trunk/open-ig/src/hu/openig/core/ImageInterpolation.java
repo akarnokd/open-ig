@@ -12,7 +12,7 @@ import java.awt.RenderingHints;
 
 /**
  * Enumeration for various starmap interpolation settings.
- * @author karnokd
+ * @author akarnokd
  */
 public enum ImageInterpolation {
 	/** No/default interpolation. */

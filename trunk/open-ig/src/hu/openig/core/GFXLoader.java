@@ -49,6 +49,11 @@ public final class GFXLoader {
 								Anim ian = f.getAnnotation(Anim.class);
 								if (ian != null) {
 									f.set(target, rl.getAnimation(language, ian.name(), ian.width(), ian.step()));
+								} else {
+									Btn3H ib3h = f.getAnnotation(Btn3H.class);
+									if (ib3h !=  null) {
+										f.set(target, getButton3H(rl, language, ib3h.name()));
+									}
 								}
 							}
 						}
@@ -93,13 +98,27 @@ public final class GFXLoader {
 	 * @param rl the resource locator
 	 * @param language the target language
 	 * @param name the button name
-	 * @return the array cointaining the normal and the pressed state
+	 * @return the array cointaining the normal, selected and pressed state
 	 */
 	private static BufferedImage[] getButton3(ResourceLocator rl, String language, String name) {
 		return new BufferedImage[] {
 			rl.getImage(language, name),
 			rl.getImage(language, name + "_selected"),
 			rl.getImage(language, name + "_selected_pressed")
+		};
+	}
+	/**
+	 * Get a three phase button image (normal, _pressed, _hovered).
+	 * @param rl the resource locator
+	 * @param language the target language
+	 * @param name the button name
+	 * @return the array cointaining the normal, pressed and hovered state
+	 */
+	private static BufferedImage[] getButton3H(ResourceLocator rl, String language, String name) {
+		return new BufferedImage[] {
+			rl.getImage(language, name),
+			rl.getImage(language, name + "_pressed"),
+			rl.getImage(language, name + "_hovered")
 		};
 	}
 }

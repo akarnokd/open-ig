@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * The building models.
- * @author karnokd
+ * @author akarnokd
  */
 public class BuildingModel {
 	/** The list of all building types. Maps from building ID to building type definition. */

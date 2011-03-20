@@ -27,7 +27,7 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * Utility program to package the executable JAR file and upgrade packs for image+data.
- * @author karnokd
+ * @author akarnokd
  */
 public final class PackageStuff {
 	/** Utility class. */
@@ -220,7 +220,7 @@ public final class PackageStuff {
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
-				buildPatch("20110306a");
+				buildPatch("20110320a");
 			}
 		});
 		exec.execute(new Runnable() {

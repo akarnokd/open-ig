@@ -34,7 +34,7 @@ import java.util.Map;
  *   0x10 DWORD data_absolute_offset
  * }
  * </pre> 
- *
+ * @author akarnokd, 2009.01.10
  */
 public final class PACFile {
 	/** Private constructor. */
@@ -43,7 +43,7 @@ public final class PACFile {
 	}
 	/**
 	 * Record to store entry information about various entries in the Pack file.
-	 * @author karnokd
+	 * @author akarnokd
 	 */
 	public static class PACEntry {
 		/** The entry's filename. */

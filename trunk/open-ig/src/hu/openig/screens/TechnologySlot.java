@@ -7,8 +7,11 @@
  */
 package hu.openig.screens;
 
+import hu.openig.core.Act;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -56,6 +59,8 @@ public class TechnologySlot extends UIComponent {
 	CommonResources commons;
 	/** The current animation step for the rolling disk. */
 	public int animationStep;
+	/** The action to invoke when the user clicks on the slot. */
+	public Act onPress;
 	/**
 	 * Constructor.
 	 * @param commons the common resources
@@ -108,7 +113,7 @@ public class TechnologySlot extends UIComponent {
 			commons.text().paintTo(g2, target.x + 5, target.y + 71, 7, 
 					selected ? selectedTextColor : textColor, name);
 		}
-		if (visible) {
+		if (!visible) {
 			g2.setColor(invisibleColor);
 		} else
 		if (selected) {
@@ -118,5 +123,16 @@ public class TechnologySlot extends UIComponent {
 		}
 		g2.drawRect(target.x, target.y, target.width - 1, target.height - 1);
 		g2.drawRect(target.x + 1, target.y + 1, target.width - 3, target.height - 3);
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		if (e.has(Type.DOWN) && !selected) {
+			selected = true;
+			if (onPress != null) {
+				onPress.act();
+			}
+			return true;
+		}
+		return false;
 	}
 }

@@ -34,7 +34,7 @@ public final class IOUtils {
 	}
 	/**
 	 * An array wrapper with bit sized read operations.
-	 * @author karnokd
+	 * @author akarnokd
 	 */
 	public static class BitArray {
 		/** The data bytes. */
@@ -169,7 +169,7 @@ public final class IOUtils {
 	}
 	/**
 	 * RandomAccessFile to InputStream wrapper class.
-	 * @author karnokd
+	 * @author akarnokd
 	 */
 	private static class RAFtoInputStream extends InputStream implements DataInput {
 		/** The backing random access file object. */
@@ -375,7 +375,7 @@ public final class IOUtils {
 	}
 	/**
 	 * An iterable class that allows a string to be iterated over line by line.
-	 * @author karnokd
+	 * @author akarnokd
 	 */
 	private static class TextIterator implements Iterable<String> {
 		/** The string to operate on. */
@@ -473,7 +473,7 @@ public final class IOUtils {
 	}
 	/**
 	 * Read bitstream from a static array.
-	 * @author Karnok David, Apr 11, 2007
+	 * @author akarnokd, Apr 11, 2007
 	 * @version 1.0
 	 */
 	public static class BitReader {
@@ -530,7 +530,7 @@ public final class IOUtils {
 	}
 	/**
 	 * Write data to an output stream as bits. 
-	 * @author karnokd
+	 * @author akarnokd
 	 */
 	public static class BitWriter {
 		/** The current logical bit offset. */

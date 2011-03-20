@@ -12,7 +12,7 @@ import hu.openig.core.Tile;
 /**
  * The entity describing a particular Location on the planet surface. For multi-tile and building entities, this
  * class is used to 'mediate' the inner segments of a tile.
- * @author karnokd
+ * @author akarnokd
  */
 public final class SurfaceEntity {
 	/** 

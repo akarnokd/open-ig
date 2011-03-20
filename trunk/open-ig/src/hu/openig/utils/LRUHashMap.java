@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 
 /**
  * Least recently used map.
- * @author karnokd
+ * @author akarnokd
  * @param <K> the key type
  * @param <V> the value type
  */

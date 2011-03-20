@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * Utility class for parallel operations.
- * @author karnokd
+ * @author akarnokd
  *
  */
 public final class Parallels {

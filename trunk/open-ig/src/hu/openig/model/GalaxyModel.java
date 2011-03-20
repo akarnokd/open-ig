@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * The Galaxy Model describing the planet types and surface tiles.
- * @author karnokd
+ * @author akarnokd
  */
 public class GalaxyModel {
 	/** The default starmap. */

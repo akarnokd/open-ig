@@ -25,7 +25,7 @@ import java.util.Random;
 
 /**
  * Utility class for common rendering tasks and algorithms. 
- * @author karnokd
+ * @author akarnokd
  */
 public final class RenderTools {
 	/** Utility class. */

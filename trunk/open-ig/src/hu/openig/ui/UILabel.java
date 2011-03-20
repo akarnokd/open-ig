@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * A static label with option to set color, text, alignment
  * content and word wrapping.
- * @author karnok, 2011.03.04.
+ * @author akarnokd, 2011.03.04.
  */
 public class UILabel extends UIComponent {
 	/** The text renderer. */
@@ -31,9 +31,9 @@ public class UILabel extends UIComponent {
 	/** The row spacing. */
 	private int spacing = 2;
 	/** The ARGB color to use when the label is disabled. */
-	private int disabledColor = 0xFF808080;
+	private int disabledColor = TextRenderer.GRAY;
 	/** The ARGB color to use when drawing the label. */
-	private int textColor = 0xFF6DB269;
+	private int textColor = TextRenderer.GREEN;
 	/** 
 	 * The shadow ARGB color to use underneath the label text. Set it to zero
 	 * to disable shadowing.

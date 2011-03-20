@@ -19,7 +19,7 @@ import java.util.Set;
  * Used to uniformly access game resources on Windows and *nix systems where case sensitivity could
  * cause problems. Imperium Galactica does not have duplicate filenames in its subdirectories, therefore
  * the mapper only keeps the filename, not the path.
- * @author karnokd
+ * @author akarnokd
  */
 public class ResourceMapper {
 	/** The map of file names to file objects. */
