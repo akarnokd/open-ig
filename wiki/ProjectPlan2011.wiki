@@ -1,9 +1,12 @@
 #summary List of tasks to complete in 2011
 
+<wiki:toc max_depth="1" />
+
 = Introduction =
 
 This page lists tasks that I want to complete with expected times.
 
+= Plans =
 
 || *Task* || *Expected completion time* || *Status* || *Remarks* ||
 || Build a testbed for further screen developments || 2011-02-13 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Going through the entire menu for testing a screen is cumbersome and the current way of developing outside the game's context is ineffective. I want to create a fast environment to test out new screens and integrate the finished screens with the main game with less effort. ||
@@ -23,3 +26,12 @@ This page lists tasks that I want to complete with expected times.
 || Scripting for campaign || 2011-07-03 || - || Build a scriptable campaign engine. We will use the internal JavaScript support. ||
 || Create the Artifical Intelligence || 2011-08-21 || - || This is going to be a real challenge. ||
 || Beta release || 2011-09-04 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup. ||
+
+= TODO =
+
+List of things that need fixing, but without any due date other than hopefully the beta release
+
+|| *Issue* || *Notes* ||
+|| Missing lightmap for many buildings || The original game doesn't seem to have them, need to manually create. ||
+|| Research & Production category labels is hard to read || The unselected versions in hungarian and english both are ugly. ||
+|| Create a better launcher || The current version looks a bit ugly - apply more IG style and fix some functional inconsistencies (e.g., if there is a new version, you cannot start the current version unless you upgrade). Add launch alternatives, better download handling, etc. ||
