@@ -12,6 +12,7 @@ import hu.openig.core.Act;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -75,7 +76,7 @@ public class AchievementsScreen extends ScreenBase {
 	/** The saved achievements count. */
 	int achievementCount;
 	/** The screen origin. */
-	final Rectangle origin = new Rectangle();
+	final Rectangle base = new Rectangle();
 	/** The listing rectangle. */
 	final Rectangle listRect = new Rectangle();
 	/** Scroll up button. */
@@ -113,20 +114,20 @@ public class AchievementsScreen extends ScreenBase {
 	public Mode mode = Mode.STATISTICS;
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(origin, getInnerWidth(), getInnerHeight(), true);
+		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
 
-		listRect.setBounds(origin.x + 10, origin.y + 20, origin.width - 50, 350);
+		listRect.setBounds(base.x + 10, base.y + 20, base.width - 50, 350);
 		achievementCount = listRect.height / 50;
 		statisticsCount = listRect.height / 20;
 		
-		scrollUpButton.x = origin.x + listRect.width + 12;
-		scrollUpButton.y = origin.y + 10 + (listRect.height / 2 - scrollUpButton.height) / 2;
+		scrollUpButton.x = base.x + listRect.width + 12;
+		scrollUpButton.y = base.y + 10 + (listRect.height / 2 - scrollUpButton.height) / 2;
 		
 		scrollDownButton.x = scrollUpButton.x;
-		scrollDownButton.y = origin.y + 10 + listRect.height / 2 + (listRect.height / 2 - scrollDownButton.height) / 2;
+		scrollDownButton.y = base.y + 10 + listRect.height / 2 + (listRect.height / 2 - scrollDownButton.height) / 2;
 
-		bridge.x = origin.x + 4 - bridge.width;
-		bridge.y = origin.y + origin.height - 2 - bridge.height;
+		bridge.x = base.x + 4 - bridge.width;
+		bridge.y = base.y + base.height - 2 - bridge.height;
 		starmap.x = bridge.x + bridge.width;
 		starmap.y = bridge.y;
 		colony.x = starmap.x + starmap.width;
@@ -142,11 +143,11 @@ public class AchievementsScreen extends ScreenBase {
 		diplomacy.x = info.x + info.width;
 		diplomacy.y = production.y;
 
-		statisticsLabel.x = origin.x + (origin.width / 2 - achievementLabel.width) / 2;
-		statisticsLabel.y = origin.y - achievementLabel.height / 2;
+		statisticsLabel.x = base.x + (base.width / 2 - achievementLabel.width) / 2;
+		statisticsLabel.y = base.y - achievementLabel.height / 2;
 		
-		achievementLabel.x = origin.x + origin.width / 2 + (origin.width / 2 - statisticsLabel.width) / 2;
-		achievementLabel.y = origin.y - statisticsLabel.height / 2;
+		achievementLabel.x = base.x + base.width / 2 + (base.width / 2 - statisticsLabel.width) / 2;
+		achievementLabel.y = base.y - statisticsLabel.height / 2;
 		
 	}
 
@@ -157,7 +158,7 @@ public class AchievementsScreen extends ScreenBase {
 	@Override
 	public void onInitialize() {
 		
-		origin.setSize(commons.common().infoEmpty.getWidth(), commons.common().infoEmpty.getHeight());
+		base.setSize(commons.common().infoEmpty.getWidth(), commons.common().infoEmpty.getHeight());
 		achievements.clear();
 		statistics.clear();
 		
@@ -188,6 +189,7 @@ public class AchievementsScreen extends ScreenBase {
 				commons.control.displayPrimary(Screens.BRIDGE);
 			}
 		};
+		bridge.visible(false);
 		starmap = new UIImageButton(commons.info().starmap);
 		starmap.onClick = new Act() {
 			@Override
@@ -242,6 +244,7 @@ public class AchievementsScreen extends ScreenBase {
 				commons.control.displaySecondary(Screens.DIPLOMACY);
 			}
 		};
+		diplomacy.visible(false);
 		
 		achievementLabel = new ClickLabel("achievements", 14, commons);
 		achievementLabel.onPressed = new Act() {
@@ -271,6 +274,10 @@ public class AchievementsScreen extends ScreenBase {
 
 	@Override
 	public boolean mouse(UIMouse e) {
+		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
+			commons.control.hideSecondary();
+			return true;
+		}
 		boolean result = false;
 		switch (e.type) {
 		case WHEEL:
@@ -361,9 +368,9 @@ public class AchievementsScreen extends ScreenBase {
 
 	@Override
 	public void draw(Graphics2D g2) {
-		RenderTools.darkenAround(origin, width, height, g2, 0.5f, true);
+		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		
-		g2.drawImage(commons.common().infoEmpty, origin.x, origin.y, null);
+		g2.drawImage(commons.common().infoEmpty, base.x, base.y, null);
 		super.draw(g2);
 		
 		Shape sp = g2.getClip();

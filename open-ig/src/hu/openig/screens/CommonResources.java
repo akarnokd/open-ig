@@ -15,6 +15,7 @@ import hu.openig.gfx.BackgroundGFX;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.gfx.CommonGFX;
 import hu.openig.gfx.DatabaseGFX;
+import hu.openig.gfx.DiplomacyGFX;
 import hu.openig.gfx.EquipmentGFX;
 import hu.openig.gfx.InfoGFX;
 import hu.openig.gfx.ResearchGFX;
@@ -66,6 +67,8 @@ public class CommonResources {
 	private DatabaseGFX database;
 	/** The common graphics. */
 	private CommonGFX common;
+	/** The diplomacy graphics. */
+	private DiplomacyGFX diplomacy;
 	/** The text renderer. */
 	private TextRenderer text;
 	/** The general control interface. */
@@ -288,6 +291,7 @@ public class CommonResources {
 		database = null;
 		text = null;
 		common = null;
+		diplomacy = null;
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.
@@ -537,7 +541,7 @@ public class CommonResources {
 		}
 		return text;
 	}
-	/** @return lazily initialize the text or return the existing one. */
+	/** @return lazily initialize the common graphics or return the existing one. */
 	public CommonGFX common() {
 		if (common == null) {
 			System.out.println("Loading common");
@@ -549,5 +553,18 @@ public class CommonResources {
 			}));
 		}
 		return common;
+	}
+	/** @return lazily initialize the diplomacy graphics or return the existing one. */
+	public DiplomacyGFX diplomacy() {
+		if (diplomacy == null) {
+			System.out.println("Loading diplomacy");
+			diplomacy = get(pool.submit(new Callable<DiplomacyGFX>() {
+				@Override
+				public DiplomacyGFX call() throws Exception {
+					return new DiplomacyGFX().load(rl, config.language);
+				}
+			}));
+		}
+		return diplomacy;
 	}
 }
