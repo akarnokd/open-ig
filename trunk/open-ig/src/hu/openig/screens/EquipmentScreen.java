@@ -14,6 +14,8 @@ import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UILabel;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -228,7 +230,19 @@ public class EquipmentScreen extends ScreenBase {
 		};
 		
 		starmapButton = new UIImageButton(commons.equipment().starmap);
+		starmapButton.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.STARMAP);
+			}
+		};
 		colonyButton = new UIImageButton(commons.equipment().planet);
+		colonyButton.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.COLONY);
+			}
+		};
 		
 		noResearch = new UIImage(commons.common().emptyButton);
 		noResearch.visible(false);
@@ -655,6 +669,15 @@ public class EquipmentScreen extends ScreenBase {
 	protected void doSelectTechnology(TechnologySlot ts, int j) {
 		for (TechnologySlot ts0 : slots) {
 			ts0.selected = ts0.visible() && ts0 == ts;
+		}
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
+			commons.control.hideSecondary();
+			return true;
+		} else {
+			return super.mouse(e);
 		}
 	}
 }

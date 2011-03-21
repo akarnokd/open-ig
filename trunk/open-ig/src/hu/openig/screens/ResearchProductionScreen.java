@@ -1075,4 +1075,13 @@ public class ResearchProductionScreen extends ScreenBase {
 			ts0.selected = ts0.visible() && ts0 == ts;
 		}
 	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
+			commons.control.hideSecondary();
+			return true;
+		} else {
+			return super.mouse(e);
+		}
+	}
 }
