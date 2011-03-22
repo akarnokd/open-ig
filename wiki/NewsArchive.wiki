@@ -4,6 +4,18 @@
 
 = March, 2011 =
 
+*March 22. 2011*
+
+Open Imperium Galactica [http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7029238 helps] the Java 7 development :)
+
+*March 20. 2011*
+
+The new research and production screens are available as well as a hopeful fix for the infinitie restart bug on Linux machines.
+
+*March 18. 2011*
+
+Please use the project's [http://code.google.com/p/open-ig/issues/list Issues] page if you have trouble starting or running the game. Without feedback, I might think everything works if the game runs on my Windows 7 x86 machines. (It turns out the game has startup problems on Ubuntu machines.)
+
 *March 6. 2011*
 
 Equipment screen created. Not 100% functional as many things will depend on the actual data model coming later.
