@@ -11,6 +11,7 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.SwappableRenderer;
+import hu.openig.model.Bridge.Level;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.WalkTransition;
@@ -366,19 +367,20 @@ public class BridgeScreen extends ScreenBase {
 					if (messageOpenRect.contains(e.x, e.y)) {
 						playMessageOpen();
 					} else {
-						for (WalkTransition tr : commons.world.getCurrentLevel().walk.transitions) {
+						Level lvl = commons.world.getCurrentLevel();
+						for (WalkTransition tr : lvl.walk.transitions) {
 							if (tr.area.contains(e.x - origin.x, e.y - origin.y)) {
 								final String to = tr.to; 
 								if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty())) {
 									// move to the screen directly.
 									commons.switchScreen(to);
 								} else {
-									final ShipwalkScreen sws = commons.screens.shipwalk;
-									sws.position = commons.world.getCurrentLevel().walk;
+									final ShipwalkScreen sws = (ShipwalkScreen)commons.control.displayPrimary(Screens.SHIPWALK);
+									sws.position = lvl.walk;
 									
 									WalkShip ship = commons.world.getShip();
 									sws.next = ship.positions.get(tr.to);
-									commons.control.displayPrimary(Screens.SHIPWALK);
+									
 									final String media = tr.media;
 									SwingUtilities.invokeLater(new Runnable() {
 										@Override

@@ -8,6 +8,8 @@
 
 package hu.openig.screens;
 
+import hu.openig.model.WalkPosition;
+import hu.openig.model.WalkShip;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
@@ -58,6 +60,14 @@ public class BarScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
+
+		WalkShip ws = commons.world.walks.ships.get("" + commons.world.level);
+		if (ws != null) {
+			WalkPosition p = ws.positions.get("*bar");
+			if (p != null) {
+				g2.drawImage(p.picture, base.x, base.y, null);
+			}
+		}
 		
 		super.draw(g2);
 	}

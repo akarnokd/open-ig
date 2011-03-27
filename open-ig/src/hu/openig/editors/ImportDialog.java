@@ -57,13 +57,13 @@ public class ImportDialog extends JDialog {
 	/** The resource locator. */
 	ResourceLocator rl;
 	/** The orignal map's definition. */
-	public class MapType {
+	public static class MapType {
 		/** The name only. */
-		String name;
+		public String name;
 		/** The surface name id. */
-		String surfaceType;
+		public String surfaceType;
 		/** The full path to the resource. */
-		String fullPath;
+		public String fullPath;
 		/**
 		 * Constructor.
 		 * @param name the name
@@ -266,19 +266,19 @@ public class ImportDialog extends JDialog {
 	 * The original planet definition (from v0.72 and before).
 	 * @author akarnokd
 	 */
-	public class OriginalPlanet {
+	public static class OriginalPlanet {
 		/** The planet name. */
-		String name;
+		public String name;
 		/** The surface type. */
-		String surfaceType;
+		public String surfaceType;
 		/** The surface variant. */
-		int surfaceVariant;
+		public int surfaceVariant;
 		/** The race name. */
-		String race;
+		public String race;
 		/** The location on the galaxy map. */
-		final Point location = new Point();
+		public final Point location = new Point();
 		/** The list of buildings. */
-		final List<OriginalBuilding> buildings = new ArrayList<OriginalBuilding>();
+		public final List<OriginalBuilding> buildings = new ArrayList<OriginalBuilding>();
 		/** @return Create the map file name from the type and variants */
 		public String getMapName() {
 			if ("Desert".equals(surfaceType)) {
@@ -340,11 +340,11 @@ public class ImportDialog extends JDialog {
 		}
 	}
 	/** The origian building definition (from v0.72 and before). */
-	public class OriginalBuilding {
+	public static class OriginalBuilding {
 		/** The building name. */
-		String name;
+		public String name;
 		/** The location. */
-		Location location;
+		public Location location;
 		/** @return the new name from the old name. */
 		public String getName() {
 			Map<String, String> map = new HashMap<String, String>();

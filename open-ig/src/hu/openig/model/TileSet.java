@@ -9,6 +9,8 @@ package hu.openig.model;
 
 import hu.openig.core.Tile;
 
+import java.awt.image.BufferedImage;
+
 /** The tileset for complete buildings. */
 public class TileSet {
 	/** The normal building tile. */
@@ -17,4 +19,6 @@ public class TileSet {
 	public Tile nolight;
 	/** The damaged building tile. */
 	public Tile damaged;
+	/** The preview image. */
+	public BufferedImage preview;
 }

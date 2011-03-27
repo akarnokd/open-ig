@@ -156,6 +156,7 @@ public class BuildingModel {
 					final String normalImg = String.format(pattern, rid);
 					final String normalLight = normalImg + "_lights";
 					final String damagedImg = normalImg + "_damaged";
+					final String previewImg = normalImg + "_mini";
 					
 					wip.inc();
 					exec.execute(JavaUtils.checked(new Runnable() {
@@ -171,6 +172,7 @@ public class BuildingModel {
 								ts.normal = new Tile(width, height, image, lightMap);
 								ts.nolight = new Tile(width, height, image, null);
 								ts.damaged = new Tile(width, height, rl.getImage(language, damagedImg), null); // no lightmap for damaged building
+								ts.preview = rl.getImage(language, previewImg);
 								synchronized (b.tileset) {
 									b.tileset.put(rid, ts);
 								}
