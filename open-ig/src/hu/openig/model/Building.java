@@ -106,6 +106,10 @@ public class Building {
 	public boolean isConstructing() {
 		return buildProgress < type.hitpoints;
 	}
+	/** @return test if the building is damaged. */
+	public boolean isDamaged() {
+		return (isConstructing() ? buildProgress : type.hitpoints)  > hitpoints;
+	}
 	/**
 	 * @return is the building or construction severly damaged?
 	 */

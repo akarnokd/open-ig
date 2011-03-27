@@ -74,10 +74,10 @@ public class ColonyGFX {
 	/** Colony info button. */
 	@Btn2(name = "colony/button_colony_info")
 	public BufferedImage[] colonyInfo;
-	/** Constructing. */
+	/** Constructing with percent. */
 	@Img(name = "colony/button_constructing")
 	public BufferedImage constructing;
-	/** Damaged. */
+	/** Damaged with percent. */
 	@Img(name = "colony/button_damaged")
 	public BufferedImage damaged;
 	/** Demolish. */
@@ -86,7 +86,7 @@ public class ColonyGFX {
 	/** List button. */
 	@Btn2(name = "colony/button_list")
 	public BufferedImage[] list;
-	/** Repairing. */
+	/** Repairing with percent. */
 	@Img(name = "colony/button_repairing")
 	public BufferedImage repairing;
 	/** Planets button. */
@@ -110,7 +110,7 @@ public class ColonyGFX {
 	/** Offline status. */
 	@Img(name = "colony/button_status_offline")
 	public BufferedImage statusOffline;
-	/** Undamaged. */
+	/** Undamaged without a percent indicator. */
 	@Img(name = "colony/button_undamaged")
 	public BufferedImage undamaged;
 	/** Energy label. */

@@ -28,6 +28,7 @@ import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageFill;
@@ -175,41 +176,18 @@ public class PlanetScreen extends ScreenBase {
 	UIImageFill rightFill;
 	/** The buildings panel. */
 	@DragSensitive
-	UIImage buildingsPanel;
+	BuildingsPanel buildingsPanel;
 	/** The radar panel. */
 	@DragSensitive
 	UIImage radarPanel;
 	/** The buildingInfoPanel. */
 	@DragSensitive
-	UIImage buildingInfoPanel;
+	BuildingInfoPanel buildingInfoPanel;
 	/** The drawable radar rectangle. */
 	@DragSensitive
 	RadarRender radar;
 	/** The lighting level. */
 	float alpha = 1.0f;
-	/** The building preview. */
-	@DragSensitive
-	BuildingPreview preview;
-	/** The building list up button. */
-	@DragSensitive
-	UIImageButton buildingUp;
-	/** The building list up button empty. */
-	@DragSensitive
-	UIImage buildingUpEmpty;
-	/** The building list down button. */
-	@DragSensitive
-	UIImageButton buildingDown;
-	/** The building list down button empty. */
-	@DragSensitive
-	UIImage buildingDownEmpty;
-	/** The building list button. */
-	@DragSensitive
-	UIImageButton buildingList;
-	/** The build button. */
-	UIImageButton build;
-	/** The building name. */
-	@DragSensitive
-	UILabel buildingName;
 	@Override
 	public void onFinish() {
 		if (animationTimer != null) {
@@ -226,19 +204,19 @@ public class PlanetScreen extends ScreenBase {
 		boolean rep = false;
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
-			render.offsetY -= 28;
-			rep = true;
-			break;
-		case KeyEvent.VK_DOWN:
 			render.offsetY += 28;
 			rep = true;
 			break;
+		case KeyEvent.VK_DOWN:
+			render.offsetY -= 28;
+			rep = true;
+			break;
 		case KeyEvent.VK_LEFT:
-			render.offsetX -= 54;
+			render.offsetX += 54;
 			rep = true;
 			break;
 		case KeyEvent.VK_RIGHT:
-			render.offsetX += 54;
+			render.offsetX -= 54;
 			rep = true;
 			break;
 		default:
@@ -276,6 +254,7 @@ public class PlanetScreen extends ScreenBase {
 		render.offsetX = -(surface.boundingRectangle.width - width) / 2;
 		render.offsetY = -(surface.boundingRectangle.height - height) / 2;
 		focused = render;
+		importEarth(); // FIXME for testing purposes only
 	}
 
 	@Override
@@ -483,6 +462,8 @@ public class PlanetScreen extends ScreenBase {
 				if (drag || e.has(Button.RIGHT)) {
 					if (!drag) {
 						drag = true;
+						lastX = e.x;
+						lastY = e.y;
 						doDragMode();
 					}
 					offsetX += e.x - lastX;
@@ -520,11 +501,9 @@ public class PlanetScreen extends ScreenBase {
 					doDragMode();
 				} else
 				if (e.has(Button.MIDDLE)) {
-					offsetX = 0;
-					offsetY = 0;
-					if (e.has(Modifier.CTRL)) {
-						scale = 1;
-					}
+					render.offsetX = -(surface.boundingRectangle.width - width) / 2;
+					render.offsetY = -(surface.boundingRectangle.height - height) / 2;
+					scale = 1;
 					rep = true;
 				}
 				if (e.has(Button.LEFT) && surface != null) {
@@ -565,6 +544,19 @@ public class PlanetScreen extends ScreenBase {
 					offsetX += (int)(dx);
 					offsetY += (int)(dy);
 					rep = true;
+				} else
+				if (e.has(Modifier.SHIFT)) {
+					if (e.z < 0) {
+						offsetX += 54;
+					} else {
+						offsetX -= 54;
+					}
+				} else {
+					if (e.z < 0) {
+						offsetY += 28;
+					} else {
+						offsetY -= 28;
+					}
 				}
 				break;
 			default:
@@ -869,12 +861,72 @@ public class PlanetScreen extends ScreenBase {
 			
 			g2.setTransform(at);
 			
-			
-			
 			g2.setClip(save0);
 			RenderTools.setInterpolation(g2, false);
 		}
-		
+		@Override
+		public boolean mouse(UIMouse e) {
+			switch (e.type) {
+			case WHEEL:
+				if (e.has(Modifier.CTRL)) {
+					if (moveViewPort(e)) {
+						double pre = render.scale;
+						
+						int ex = render.width / 2;
+						int ey = render.height / 2;
+						
+						double mx = (ex - render.offsetX) * pre;
+						double my = (ey - render.offsetY) * pre;
+						if (e.z < 0) {
+							doZoomIn();
+						} else {
+							doZoomOut();
+						}
+						double mx0 = (ex - render.offsetX) * render.scale;
+						double my0 = (ey - render.offsetY) * render.scale;
+						double dx = (mx - mx0) / pre;
+						double dy = (my - my0) / pre;
+						render.offsetX += (int)(dx);
+						render.offsetY += (int)(dy);
+					
+					return true;
+					}
+				}
+				return false;
+			case DRAG:
+			case DOWN:
+				return moveViewPort(e);
+			default:
+				return super.mouse(e);
+			}
+		}
+		/**
+		 * Move the viewport based on the mouse event.
+		 * @param e the mouse event
+		 * @return true if the viewport was moved
+		 */
+		boolean moveViewPort(UIMouse e) {
+			Rectangle br = surface.boundingRectangle;
+
+			double scalex = width * 1.0 / br.width;
+			double scaley = height * 1.0 / br.height;
+			double scale = Math.min(scalex, scaley);
+			
+			double dx = -(br.width * scale - width) / 2;
+			double dy = -(br.height * scale - height) / 2;
+			double dw = br.width * scale;
+			double dh = br.height * scale;
+			
+			if (e.within((int)dx, (int)dy, (int)dw, (int)dh)) {
+				double rw = render.width * scale / render.scale / 2;
+				double rh = render.height * scale / render.scale / 2;
+				
+				render.offsetX = -(int)((e.x - dx - rw) * render.scale / scale);
+				render.offsetY = -(int)((e.y - dy - rh) * render.scale / scale);
+				return true;
+			}
+			return false;
+		}
 	}
 	/** Import the earth map. */
 	void importEarth() {
@@ -1159,7 +1211,6 @@ public class PlanetScreen extends ScreenBase {
 				}
 			}
 		}
-		build.enabled(!drag && preview.enabled);
 	}
 	/**
 	 * Update the UI based on the selected building.
@@ -1168,13 +1219,116 @@ public class PlanetScreen extends ScreenBase {
 	void doSelectBuilding(Building b) {
 		// TODO add code
 		if (b != null) {
-			preview.building = b.tileset.preview;
-			preview.cost = b.type.cost;
-			buildingName.text(commons.labels().get(b.type.label));
+			buildingsPanel.preview.building = b.tileset.preview;
+			buildingsPanel.preview.cost = b.type.cost;
+			buildingsPanel.buildingName.text(commons.labels().get(b.type.label));
+			
+			buildingInfoPanel.buildingInfoName.text(buildingsPanel.buildingName.text());
+			buildingInfoPanel.hideStates();
+//			b.hitpoints = b.type.hitpoints * 3 / 4;
+			
+			if (b.isConstructing()) {
+				buildingInfoPanel.energy.text("-");
+				buildingInfoPanel.energyPercent.text("-");
+				buildingInfoPanel.worker.text("-");
+				buildingInfoPanel.workerPercent.text("-");
+				buildingInfoPanel.operationPercent.text("-");
+				buildingInfoPanel.production.text("-");
+				
+				buildingInfoPanel.constructing.visible(true);
+				buildingInfoPanel.progressLower.visible(true);
+				buildingInfoPanel.progressLower.text(Integer.toString(b.buildProgress * 100 / b.type.hitpoints));
+				
+				if (b.isDamaged()) {
+					buildingInfoPanel.damaged.visible(true);
+					buildingInfoPanel.progressUpper.visible(true);
+					if (b.hitpoints > 0) {
+						buildingInfoPanel.progressUpper.text(Integer.toString((b.hitpoints - b.buildProgress) * 100 / b.hitpoints));
+					} else {
+						buildingInfoPanel.progressUpper.text("0");
+					}
+				} else {
+					buildingInfoPanel.undamaged.visible(true);
+				}
+			} else {
+				if (!b.enabled || b.isSeverlyDamaged()) {
+					buildingInfoPanel.energy.text("-");
+					buildingInfoPanel.energyPercent.text("-");
+					buildingInfoPanel.worker.text("-");
+					buildingInfoPanel.workerPercent.text("-");
+					buildingInfoPanel.operationPercent.text("-");
+					buildingInfoPanel.production.text("-");
+				} else {
+					if (b.getEnergy() < 0) {
+						buildingInfoPanel.energy.text(Integer.toString(-b.getEnergy()));
+						buildingInfoPanel.energyPercent.text(Integer.toString(Math.abs(b.assignedEnergy * 100 / b.getEnergy())));
+					} else {
+						buildingInfoPanel.energy.text("-");
+						buildingInfoPanel.energyPercent.text("-");
+					}
+					if (b.getWorkers() < 0) {
+						buildingInfoPanel.worker.text(Integer.toString(-b.getWorkers()));
+						buildingInfoPanel.workerPercent.text(Integer.toString(Math.abs(b.assignedWorker)));
+					} else {
+						buildingInfoPanel.worker.text("-");
+						buildingInfoPanel.workerPercent.text("-");
+					}
+					buildingInfoPanel.operationPercent.text(Integer.toString((int)(b.getEfficiency() * 100)));
+					if (b.type.primary != null) {
+						buildingInfoPanel.production.text(((int)b.getResource(b.type.primary)) + getUnit(b.type.primary));
+					} else {
+						buildingInfoPanel.production.text("");
+					}
+				}
+				if (!b.enabled) {
+					buildingInfoPanel.stateOffline.visible(true);
+				} else {
+					if (b.isDamaged()) {
+						buildingInfoPanel.stateDamaged.visible(true);
+					} else {
+						buildingInfoPanel.undamaged.visible(true);
+						if (b.isEnergyShortage()) {
+							buildingInfoPanel.stateNoEnergy.visible(true);
+						} else
+						if (b.isWorkerShortage()) {
+							buildingInfoPanel.stateInactive.visible(true);
+						}
+					}
+				}
+					
+				if (b.isDamaged()) {
+					if (b.repairing) {
+						buildingInfoPanel.repairing.visible(true);
+					} else {
+						buildingInfoPanel.damaged.visible(true);
+					}
+					buildingInfoPanel.progressUpper.visible(true);
+					buildingInfoPanel.progressUpper.text(Integer.toString((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints));
+				}
+			}
+			
 		} else {
-			preview.building = null;
-			buildingName.text("");
+//			buildingsPanel.preview.building = null;
+//			buildingsPanel.buildingName.text("");
+			buildingInfoPanel.hideStates();
+			buildingInfoPanel.buildingInfoName.text("-");
+			buildingInfoPanel.energy.text("-");
+			buildingInfoPanel.energyPercent.text("-");
+			buildingInfoPanel.worker.text("-");
+			buildingInfoPanel.workerPercent.text("-");
+			buildingInfoPanel.operationPercent.text("-");
+			buildingInfoPanel.production.text("-");
+			buildingInfoPanel.undamaged.visible(true);
+			buildingInfoPanel.stateInactive.visible(true);
 		}
+	}
+	/**
+	 * Return the unit label for the given resource type.
+	 * @param type the resource type
+	 * @return the unit string
+	 */
+	String getUnit(String type) {
+		return commons.labels().get("building.resource.type." + type);
 	}
 	/** The building preview component. */
 	class BuildingPreview extends UIComponent {
@@ -1201,12 +1355,234 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 	}
+	/** The building preview panel. */
+	class BuildingsPanel extends UIContainer {
+		/** The building preview. */
+		BuildingPreview preview;
+		/** The building list up button. */
+		UIImageButton buildingUp;
+		/** The building list up button empty. */
+		UIImage buildingUpEmpty;
+		/** The building list down button. */
+		UIImageButton buildingDown;
+		/** The building list down button empty. */
+		UIImage buildingDownEmpty;
+		/** The building list button. */
+		UIImageButton buildingList;
+		/** The build button. */
+		UIImageButton build;
+		/** The building name. */
+		UILabel buildingName;
+		/** Construct and place the UI. */
+		public BuildingsPanel() {
+			preview = new BuildingPreview();
+			
+			buildingUp = new UIImageButton(commons.colony().upwards);
+			buildingDown = new UIImageButton(commons.colony().downwards);
+			buildingUpEmpty = new UIImage(commons.colony().empty);
+			buildingUpEmpty.visible(false);
+			buildingDownEmpty = new UIImage(commons.colony().empty);
+			buildingDownEmpty.visible(false);
+			build = new UIImageButton(commons.colony().build);
+			build.setDisabledPattern(commons.common().disabledPattern);
+			build.enabled(false);
+			buildingList = new UIImageButton(commons.colony().list);
+			buildingName = new UILabel("", 10, commons.text());
+			buildingName.color(TextRenderer.YELLOW);
+			buildingName.horizontally(HorizontalAlignment.CENTER);
+			
+			preview.bounds(7, 7, 140, 103);
+			
+			buildingUp.location(153, 7);
+			buildingUpEmpty.location(buildingUp.location());
+			buildingDown.location(153, 62);
+			buildingDownEmpty.location(buildingDown.location());
+			buildingName.bounds(8, 117, 166, 18);
+			buildingList.location(7, 142);
+			build.location(94, 142);
+			
+			width = commons.colony().buildingsPanel.getWidth();
+			height = commons.colony().buildingsPanel.getHeight();
+			
+			addThis();
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.drawImage(commons.colony().buildingsPanel, 0, 0, null);
+			super.draw(g2);
+		}
+	}
+	/** The building info panel. */
+	class BuildingInfoPanel extends UIContainer {
+		/** The building name on the info panel. */
+		UILabel buildingInfoName;
+		/** The energy allocation percent. */
+		UILabel energyPercent;
+		/** The energy total. */
+		UILabel energy;
+		/** The worker allocated percent. */
+		UILabel workerPercent;
+		/** The worker total. */
+		UILabel worker;
+		/** The current production level. */
+		UILabel production;
+		/** The operation percent. */
+		UILabel operationPercent;
+		/** Demolish the building. */
+		UIImageButton demolish;
+		/** Construction Indicator with percent. */
+		UIImageButton constructing;
+		/** Damage indicator with percent. */
+		UIImageButton damaged;
+		/** Repairing indicator with percent. */
+		UIImageButton repairing;
+		/** The building is in normal operational condition. */
+		UIImageButton undamaged;
+		/** The building was manually put offline. */
+		UIImageButton stateOffline;
+		/** The building is inoperable due non-energy reasons. */
+		UIImageButton stateInactive;
+		/** The building is inoperable due low energy. */
+		UIImageButton stateNoEnergy;
+		/** The building is damaged. */
+		UIImageButton stateDamaged;
+		/** The active indicator. */
+		UIImageButton active;
+		/** The energy label. */
+		UIImage energyLabel;
+		/** The worker label. */
+		UIImage workerLabel;
+		/** The production label. */
+		UIImage productionLabel;
+		/** The operation label. */
+		UIImage operationLabel;
+		/** The build/damage/repair percent upper. */
+		UILabel progressUpper;
+		/** The build/damage/repair percent lower. */
+		UILabel progressLower;
+		/** Construct the sub-elements. */
+		public BuildingInfoPanel() {
+			buildingInfoName = new UILabel("-", 10, commons.text());
+			buildingInfoName.bounds(8, 6, 182, 16);
+			
+			energyPercent = new UILabel("-", 10, commons.text());
+			energyPercent.bounds(70, 29, 28, 12);
+			
+			energy = new UILabel("-", 10, commons.text());
+			energy.bounds(119, 29, 42, 12);
+			
+			workerPercent = new UILabel("-", 10, commons.text());
+			workerPercent.bounds(70, 45, 28, 12);
+			
+			worker = new UILabel("-", 10, commons.text());
+			worker.bounds(119, 45, 28, 12);
+			
+			operationPercent = new UILabel("-", 10, commons.text());
+			operationPercent.bounds(70, 61, 28, 12);
+			
+			production = new UILabel("-", 10, commons.text());
+			production.bounds(70, 77, 77, 12);
+			
+			energyLabel = new UIImage(commons.colony().energy);
+			leftTo(energyPercent, energyLabel);
+			
+			workerLabel = new UIImage(commons.colony().workers);
+			leftTo(workerPercent, workerLabel);
+
+			operationLabel = new UIImage(commons.colony().operational);
+			leftTo(operationPercent, operationLabel);
+
+			productionLabel = new UIImage(commons.colony().production);
+			leftTo(production, productionLabel);
+			
+			stateDamaged = new UIImageButton(commons.colony().statusDamaged);
+			stateInactive = new UIImageButton(commons.colony().statusInactive);
+			stateNoEnergy = new UIImageButton(commons.colony().statusNoEnergy);
+			active = new UIImageButton(commons.colony().active);
+			stateOffline = new UIImageButton(commons.colony().statusOffline);
+			constructing = new UIImageButton(commons.colony().constructing);
+			damaged = new UIImageButton(commons.colony().damaged);
+			repairing = new UIImageButton(commons.colony().repairing);
+			undamaged = new UIImageButton(commons.colony().undamaged);
+
+			damaged.location(8, 98);
+			repairing.location(8, 98);
+			undamaged.location(8, 98);
+
+			active.location(8, 122);
+			stateOffline.location(8, 122);
+			stateInactive.location(8, 122);
+			stateNoEnergy.location(8, 122);
+			stateDamaged.location(8, 122);
+			constructing.location(8, 122);
+
+			
+			progressUpper = new UILabel("-", 7, commons.text());
+			progressUpper.bounds(8 + 96, 98 + 3, 28, 10);
+			progressUpper.visible(false);
+			
+			progressLower = new UILabel("-", 7, commons.text());
+			progressLower.bounds(8 + 96, 122 + 3, 28, 10);
+			progressLower.visible(false);
+			
+			demolish = new UIImageButton(commons.colony().demolish);
+			demolish.location(161, 50);
+
+			centerYellow(buildingInfoName, energyPercent, energy, 
+					workerPercent, worker, operationPercent, production,
+					progressUpper, progressLower);
+
+			width = commons.colony().buildingInfoPanel.getWidth();
+			height = commons.colony().buildingInfoPanel.getHeight();
+			
+			addThis();
+		}
+		/**
+		 * Set the location of the target component so that it is left
+		 * to the source component directly and is centered along the same line.
+		 * @param source the source component
+		 * @param target the target component to set the location
+		 */
+		void leftTo(UIComponent source, UIComponent target) {
+			target.location(source.x - target.width - 4, source.y + (source.height - target.height) / 2);
+		}
+		/**
+		 * Center and set yellow color on the labels.
+		 * @param labels the labels
+		 */
+		void centerYellow(UILabel... labels) {
+			for (UILabel l : labels) {
+				l.color(TextRenderer.YELLOW);
+				l.horizontally(HorizontalAlignment.CENTER);
+			}
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.drawImage(commons.colony().buildingInfoPanel, 0, 0, null);
+			super.draw(g2);
+		}
+		/** Hide the state and progress buttons. */
+		public void hideStates() {
+			stateDamaged.visible(false);
+			stateInactive.visible(false);
+			stateNoEnergy.visible(false);
+			stateOffline.visible(false);
+			
+			
+			constructing.visible(false);
+			damaged.visible(false);
+			repairing.visible(false);
+			active.visible(false);
+			progressUpper.visible(false);
+			progressLower.visible(false);
+			undamaged.visible(false);
+		}
+	}
 	@Override
 	public void onInitialize() {
 		surface = new PlanetSurface();
 		surface.width = 33;
 		surface.height = 66;
-		importEarth(); // FIXME for testing purposes only
 		surface.computeRenderingLocations();
 		animationTimer = new Timer(100, new Act() {
 			@Override
@@ -1268,6 +1644,18 @@ public class PlanetScreen extends ScreenBase {
 				radarPanel.visible(!radarPanel.visible());
 			}
 		};
+		sidebarBuildingInfo.onClick = new Act() {
+			@Override
+			public void act() {
+				buildingInfoPanel.visible(!buildingInfoPanel.visible());
+			}
+		};
+		sidebarBuildings.onClick = new Act() {
+			@Override
+			public void act() {
+				buildingsPanel.visible(!buildingsPanel.visible());
+			}
+		};
 		colonyInfo.onClick = new Act() {
 			@Override
 			public void act() {
@@ -1297,24 +1685,10 @@ public class PlanetScreen extends ScreenBase {
 		radar = new RadarRender();
 		radar.z = 1;
 		
-		buildingsPanel = new UIImage(commons.colony().buildingsPanel);
-		buildingInfoPanel = new UIImage(commons.colony().buildingInfoPanel);
-		
-		preview = new BuildingPreview();
-		
-		buildingUp = new UIImageButton(commons.colony().upwards);
-		buildingDown = new UIImageButton(commons.colony().downwards);
-		buildingUpEmpty = new UIImage(commons.colony().empty);
-		buildingUpEmpty.visible(false);
-		buildingDownEmpty = new UIImage(commons.colony().empty);
-		buildingDownEmpty.visible(false);
-		build = new UIImageButton(commons.colony().build);
-		build.setDisabledPattern(commons.common().disabledPattern);
-		build.enabled(false);
-		buildingList = new UIImageButton(commons.colony().list);
-		buildingName = new UILabel("", 10, commons.text());
-		buildingName.color(TextRenderer.YELLOW);
-		buildingName.horizontally(HorizontalAlignment.CENTER);
+		buildingsPanel = new BuildingsPanel();
+		buildingsPanel.z = 1;
+		buildingInfoPanel = new BuildingInfoPanel();
+		buildingInfoPanel.z = 1;
 		
 		addThis();
 	}
@@ -1344,19 +1718,10 @@ public class PlanetScreen extends ScreenBase {
 		rightFill.bounds(sidebarBuildingInfo.x, sidebarBuildingInfo.y + sidebarBuildingInfo.height, 
 				sidebarBuildingInfo.width, sidebarColonyInfo.y - sidebarBuildingInfo.y - sidebarBuildingInfo.height);
 		
-		radarPanel.location(sidebarRadar.x + sidebarRadar.width, sidebarRadar.y);
+		radarPanel.location(sidebarRadar.x + sidebarRadar.width - 1, sidebarRadar.y);
 		radar.bounds(radarPanel.x + 13, radarPanel.y + 13, 154, 134);
-		buildingsPanel.location(sidebarBuildings.x + sidebarBuildings.width, sidebarBuildings.y);
+		buildingsPanel.location(sidebarBuildings.x + sidebarBuildings.width - 1, sidebarBuildings.y);
 		buildingInfoPanel.location(sidebarBuildingInfo.x - buildingInfoPanel.width, sidebarBuildingInfo.y);
 		
-		preview.bounds(buildingsPanel.x + 7, buildingsPanel.y + 7, 140, 103);
-		
-		buildingUp.location(buildingsPanel.x + 153, buildingsPanel.y + 7);
-		buildingUpEmpty.location(buildingUp.location());
-		buildingDown.location(buildingsPanel.x + 153, buildingsPanel.y + 62);
-		buildingDownEmpty.location(buildingDown.location());
-		buildingName.bounds(buildingsPanel.x + 8, buildingsPanel.y + 117, 166, 18);
-		buildingList.location(buildingsPanel.x + 7, buildingsPanel.y + 142);
-		build.location(buildingsPanel.x + 94, buildingsPanel.y + 142);
 	}
 }

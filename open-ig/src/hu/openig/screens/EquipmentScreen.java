@@ -429,8 +429,10 @@ public class EquipmentScreen extends ScreenBase {
 
 	@Override
 	public void onFinish() {
-		animation.stop();
-		animation = null;
+		if (animation != null) {
+			animation.stop();
+			animation = null;
+		}
 	}
 
 	@Override

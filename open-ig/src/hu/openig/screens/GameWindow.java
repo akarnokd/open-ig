@@ -125,7 +125,8 @@ public class GameWindow extends JFrame implements GameControls {
 			try {
 				setIconImage(ImageIO.read(icon));
 			} catch (IOException e) {
-				config.log("ERROR", e.getMessage(), e);
+				e.printStackTrace();
+//				config.log("ERROR", e.getMessage(), e);
 			}
 		}
 		
@@ -276,11 +277,11 @@ public class GameWindow extends JFrame implements GameControls {
 			ex.printStackTrace();
 		}
 		
-		movie = commons.screens.movie;
-		statusbar = commons.screens.statusbar;
 		for (ScreenBase sb : screens) {
 			sb.initialize(commons);
 		}
+		movie = commons.screens.movie;
+		statusbar = commons.screens.statusbar;
 		
 		displayPrimary(Screens.MAIN);
 	}
@@ -382,8 +383,8 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 			primary = sb;
 			if (primary != null) {
-				primary.onEnter(mode);
 				primary.resize();
+				primary.onEnter(mode);
 				surface.repaint();
 			}
 		} else {
@@ -392,8 +393,8 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 			secondary = sb;
 			if (secondary != null) {
-				secondary.onEnter(mode);
 				secondary.resize();
+				secondary.onEnter(mode);
 				surface.repaint();
 			}
 		}
