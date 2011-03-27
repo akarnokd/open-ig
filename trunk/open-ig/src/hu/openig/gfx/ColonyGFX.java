@@ -29,9 +29,9 @@ public class ColonyGFX {
 	/** Building smoke animations. */
 	@Anim(name = "colony/building_smoke", width = 16)
 	public BufferedImage[] buildingSmoke;
-	/** Information panel on the right. */
+	/** Building information panel on the right. */
 	@Img(name = "colony/building_information_panel")
-	public BufferedImage informationPanel;
+	public BufferedImage buildingInfoPanel;
 	/** Buildings list panel on the left. */
 	@Img(name = "colony/buildings_panel")
 	public BufferedImage buildingsPanel;
@@ -53,27 +53,6 @@ public class ColonyGFX {
 	/** Radar panel. */
 	@Img(name = "colony/radar_panel_slashed")
 	public BufferedImage radarPanel;
-	/** Sidebar left bottom. */
-	@Img(name = "colony/sidebar_left_bottom")
-	public BufferedImage sidebarLeftBottom;
-	/** Sidebar left bottom empty. */
-	@Img(name = "colony/sidebar_left_bottom_empty")
-	public BufferedImage sidebarLeftBottomEmpty;
-	/** Sidebar left filler. */
-	@Img(name = "colony/sidebar_left_fill")
-	public BufferedImage sidebarLeftFill;
-	/** Sidebar left top empty. */
-	@Img(name = "colony/sidebar_left_top_empty")
-	public BufferedImage sidebarLeftTopEntry;
-	/** Sidebar right bottom. */
-	@Img(name = "colony/sidebar_right_bottom")
-	public BufferedImage sidebarRightBottom;
-	/** Sidebar right fill. */
-	@Img(name = "colony/sidebar_right_fill")
-	public BufferedImage sidebarRightFill;
-//	/** The default filled tile. */
-//	@Img(name = "colony/tile_1x1")
-//	public BufferedImage tileFilled;
 	/** The tile edge for selection. */
 	@Img(name = "colony/tile_1x1_selected")
 	public BufferedImage tileEdge;
@@ -112,6 +91,9 @@ public class ColonyGFX {
 	public BufferedImage repairing;
 	/** Planets button. */
 	@Btn2(name = "colony/button_planets")
+	public BufferedImage[] planets;
+	/** Starmap button. */
+	@Btn2(name = "colony/button_starmap")
 	public BufferedImage[] starmap;
 	/** Start battle. */
 	@Btn2(name = "colony/button_start_battle")
@@ -146,12 +128,6 @@ public class ColonyGFX {
 	/** Offline animation. */
 	@Anim(name = "colony/off", step = 2)
 	public BufferedImage[] off;
-	/** Sidebar left top containing the buildings. */
-	@Img(name = "colony/sidebar_left_top")
-	public BufferedImage sidebarLeftTop;
-	/** Sidebar right top containing the status info. */
-	@Img(name = "colony/sidebar_right_top")
-	public BufferedImage sidebarRightTop;
 	/** The upgrade star. */
 	@Img(name = "colony/upgrade")
 	public BufferedImage upgrade;
@@ -164,6 +140,46 @@ public class ColonyGFX {
 	/** The unpowered animation. */
 	@Anim(name = "colony/unpowered", width = 20)
 	public BufferedImage[] unpowered;
+	/** Sidebar left top. */
+	@Img(name = "colony/sidebar_left_top")
+	public BufferedImage sidebarLeftTop;
+	/** Sidebar left bottom. */
+	@Img(name = "colony/sidebar_left_bottom")
+	public BufferedImage sidebarLeftBottom;
+	/** Sidebar right top. */
+	@Img(name = "colony/sidebar_right_top")
+	public BufferedImage sidebarRightTop;
+	/** Sidebar right top. */
+	@Img(name = "colony/sidebar_right_bottom")
+	public BufferedImage sidebarRightBottom;
+	/** Sidebar left filler. */
+	@Img(name = "colony/sidebar_left_fill")
+	public BufferedImage sidebarLeftFill;
+	/** Sidebar right fill. */
+	@Img(name = "colony/sidebar_right_fill")
+	public BufferedImage sidebarRightFill;
+	/** Buildings button. */
+	@Img(name = "colony/button_buildings")
+	public BufferedImage sidebarBuildings;
+	/** Buildings info button. */
+	@Img(name = "colony/button_building_info")
+	public BufferedImage sidebarBuildingInfo;
+	/** Radar button. */
+	@Img(name = "colony/button_radar")
+	public BufferedImage sidebarRadar;
+	/** Colony info. */
+	@Img(name = "colony/button_info")
+	public BufferedImage sidebarColonyInfo;
+	/** Buttons. */
+	@Img(name = "colony/button_navigation")
+	public BufferedImage sidebarButtons;
+	/** Buildings empty. */
+	@Img(name = "colony/sidebar_buildings_empty")
+	public BufferedImage sidebarBuildingsEmpty;
+	/** Radar empty. */
+	@Img(name = "colony/sidebar_radar_empty")
+	public BufferedImage sidebarRadarEmpty;
+	
 	/**
 	 * Constructor.
 	 * @param rl the resource locator

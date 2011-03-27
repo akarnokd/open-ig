@@ -11,7 +11,6 @@ package hu.openig.ui;
 import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -76,12 +75,12 @@ public class UIContainer extends UIComponent {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		Point pt = absLocation();
+//		Point pt = absLocation();
 		boolean result = false;
 		UIComponent target = null;
 		int zmax = -1;
 		for (UIComponent c : components) {
-			if (c.visible && c.enabled && e.within(pt.x + c.x, pt.y + c.y, c.width, c.height)) {
+			if (c.visible && c.enabled && e.within(c.x, c.y, c.width, c.height)) {
 				if (!c.over) {
 					result |= c.mouse(e.copy(Type.ENTER));
 				}
@@ -98,6 +97,9 @@ public class UIContainer extends UIComponent {
 			}
 		}
 		if (target != null) {
+			// Relativize to the target
+			e.x -= target.x;
+			e.y -= target.y;
 			result |= target.mouse(e);
 		}
 		return result;

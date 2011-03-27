@@ -80,7 +80,7 @@ public class UIImageButton extends UIComponent {
 	 * You may use this constructor with the resource BufferedImage arrays of buttons
 	 * @param images the array of images.
 	 */
-	public UIImageButton(BufferedImage[] images) {
+	public UIImageButton(BufferedImage... images) {
 		this.normal = images[0];
 		this.pressed = images.length > 1 ? images[1] : images[0];
 		this.hovered = images.length > 2 ? images[2] : images[0];

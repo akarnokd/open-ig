@@ -299,8 +299,9 @@ public class GameWindow extends JFrame implements GameControls {
 	 * Returns a screen instance for the given screen enum.
 	 * @param screen the screen.
 	 * @param asPrimary as primary screen?
+	 * @return the reference to the new screen.
 	 */
-	void display(Screens screen, boolean asPrimary) {
+	ScreenBase display(Screens screen, boolean asPrimary) {
 		ScreenBase sb = null;
 		Object mode = null;
 		switch (screen) {
@@ -396,14 +397,15 @@ public class GameWindow extends JFrame implements GameControls {
 				surface.repaint();
 			}
 		}
+		return sb;
 	}
 	@Override
-	public void displayPrimary(Screens screen) {
-		display(screen, true);
+	public ScreenBase displayPrimary(Screens screen) {
+		return display(screen, true);
 	}
 	@Override
-	public void displaySecondary(Screens screen) {
-		display(screen, false);
+	public ScreenBase displaySecondary(Screens screen) {
+		return display(screen, false);
 	}
 	/**
 	 * Display the movie window.
@@ -548,7 +550,9 @@ public class GameWindow extends JFrame implements GameControls {
 					displaySecondary(Screens.DATABASE);
 					break;
 				case KeyEvent.VK_F10:
-					displaySecondary(Screens.BAR);
+					if (commons.world.level > 1) {
+						displaySecondary(Screens.BAR);
+					}
 					break;
 				case KeyEvent.VK_F11:
 					displaySecondary(Screens.STATISTICS);

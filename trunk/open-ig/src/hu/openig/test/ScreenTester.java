@@ -291,6 +291,24 @@ public class ScreenTester extends JFrame implements GameControls {
 					}
 				}
 			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				ScreenBase sb = screen;
+				if (sb != null) {
+					if (sb.mouse(UIMouse.from(e))) {
+						repaint();
+					}
+				}
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				ScreenBase sb = screen;
+				if (sb != null) {
+					if (sb.mouse(UIMouse.from(e))) {
+						repaint();
+					}
+				}
+			}
 		};
 		return ma;
 	}
@@ -479,6 +497,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					commons.world.difficulty = Difficulty.values()[0];
 					commons.labels().load(commons.rl, commons.language(), commons.world.definition.name);
 					commons.world.load(commons.rl, commons.language(), commons.world.definition.name);
+					commons.world.level = 5;
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
 				} catch (Throwable t) {
 					t.printStackTrace();
@@ -534,7 +553,7 @@ public class ScreenTester extends JFrame implements GameControls {
 		
 	}
 	@Override
-	public void displayPrimary(Screens newScreen) {
+	public ScreenBase displayPrimary(Screens newScreen) {
 		if (screen != null) {
 			screen.onLeave();
 			screen.onFinish();
@@ -612,6 +631,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				screen.onEnter(mode);
 				repaint();
 				onScreen(screen.getClass().getSimpleName(), screen);
+				return screen;
 			} catch (ClassNotFoundException ex) {
 				ex.printStackTrace();
 			} catch (IllegalAccessException ex) {
@@ -620,10 +640,11 @@ public class ScreenTester extends JFrame implements GameControls {
 				ex.printStackTrace();
 			}
 		}
+		throw new IllegalArgumentException("screen = " + screen);
 	}
 	@Override
-	public void displaySecondary(Screens newScreen) {
-		displayPrimary(newScreen);
+	public ScreenBase displaySecondary(Screens newScreen) {
+		return displayPrimary(newScreen);
 	}
 	@Override
 	public void hideSecondary() {

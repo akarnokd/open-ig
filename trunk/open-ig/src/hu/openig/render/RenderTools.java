@@ -14,6 +14,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
@@ -319,5 +320,19 @@ public final class RenderTools {
 		int dw = (rect.width - image.getWidth()) / 2;
 		int dh = (rect.height - image.getHeight()) / 2;
 		g2.drawImage(image, rect.x + dw, rect.y + dh, null);
+	}
+	/**
+	 * Enable and disable the bilinear interpolation mode for the graphics.
+	 * @param g2 the target graphics object.
+	 * @param active activate?
+	 */
+	public static void setInterpolation(Graphics2D g2, boolean active) {
+		if (active) {
+			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+					RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		} else {
+			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+					RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+		}
 	}
 }

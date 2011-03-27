@@ -27,13 +27,15 @@ public interface GameControls {
 	/**
 	 * Display the given screen as the primary object. The secondary object, if any, will be removed.
 	 * @param screen the new screen to display
+	 * @return the reference to the new screen.
 	 */
-	void displayPrimary(Screens screen);
+	ScreenBase displayPrimary(Screens screen);
 	/**
 	 * Display the given secondary screen.
 	 * @param screen the screen to display as secondary
+	 * @return the reference to the new screen.
 	 */
-	void displaySecondary(Screens screen);
+	ScreenBase displaySecondary(Screens screen);
 	/** Hide the secondary screen. */
 	void hideSecondary();
 	/**

@@ -11,27 +11,52 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Location;
+import hu.openig.core.PlanetType;
+import hu.openig.core.RoadType;
+import hu.openig.core.Sides;
 import hu.openig.core.Tile;
-import hu.openig.gfx.ColonyGFX;
+import hu.openig.editors.ImportDialog.OriginalBuilding;
+import hu.openig.editors.ImportDialog.OriginalPlanet;
 import hu.openig.model.Building;
+import hu.openig.model.BuildingType;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
+import hu.openig.model.SurfaceFeature;
+import hu.openig.model.TileSet;
+import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
+import hu.openig.ui.HorizontalAlignment;
+import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIImage;
+import hu.openig.ui.UIImageButton;
+import hu.openig.ui.UIImageFill;
+import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
+import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.ImageUtils;
+import hu.openig.utils.XElement;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Timer;
 
@@ -40,12 +65,11 @@ import javax.swing.Timer;
  * @author akarnokd, 2010.01.11.
  */
 public class PlanetScreen extends ScreenBase {
+	/** Indicate if a component is drag sensitive. */
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface DragSensitive { }
 	/** The planet surface definition. */
 	PlanetSurface surface;
-	/** The offset X. */
-	int offsetX;
-	/** The offset Y. */
-	int offsetY;
 	/** The current location based on the mouse pointer. */
 	Location current;
 	/** 
@@ -65,20 +89,12 @@ public class PlanetScreen extends ScreenBase {
 	Tile areaDeny;
 	/** The current cell tile. */
 	Tile areaCurrent;
-	/** The current scaling factor. */
-	double scale = 1;
 	/** Used to place buildings on the surface. */
 	final Rectangle placementRectangle = new Rectangle();
 	/** The building bounding box. */
 	Rectangle buildingBox;
 	/** Are we in placement mode? */
 	boolean placementMode;
-	/** Render the buildings as symbolic cells. */ 
-	boolean minimapMode;
-	/** The text renderer. */
-	TextRenderer txt;
-	/** The colony graphics. */
-	ColonyGFX colonyGFX;
 	/** The simple blinking state. */
 	boolean blink;
 	/** The animation index. */
@@ -112,55 +128,94 @@ public class PlanetScreen extends ScreenBase {
 	boolean sel;
 	/** The originating location. */
 	Location orig;
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#doResize()
-	 */
-	@Override
-	public void onResize() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
+	/** The base rectangle. */
+	final Rectangle base = new Rectangle();
+	/** The planet view window. */
+	final Rectangle window = new Rectangle();
+	/** The buildings sidebar button. */
+	@DragSensitive
+	UIImageButton sidebarBuildings;
+	/** The radar sidebar button. */
+	@DragSensitive
+	UIImageButton sidebarRadar;
+	/** The building info sidebar button. */
+	@DragSensitive
+	UIImageButton sidebarBuildingInfo;
+	/** The colony info sidebar button. */
+	@DragSensitive
+	UIImageButton sidebarColonyInfo;
+	/** The empty image for the buildings. */
+	@DragSensitive
+	UIImage sidebarBuildingsEmpty;
+	/** The empty image for the radar. */
+	@DragSensitive
+	UIImage sidebarRadarEmpty;
+	/** Button to show/hide navigation buttons. */
+	@DragSensitive
+	UIImageButton sidebarNavigation;
+	/** The colony info navigation button. */
+	@DragSensitive
+	UIImageButton colonyInfo;
+	/** The bridge button. */
+	@DragSensitive
+	UIImageButton bridge;
+	/** The planets button navigation. */
+	@DragSensitive
+	UIImageButton planets;
+	/** The starmap button navigation. */
+	@DragSensitive
+	UIImageButton starmap;
+	/** The surface renderer. */
+	SurfaceRenderer render;
+	/** The left filler region. */
+	@DragSensitive
+	UIImageFill leftFill;
+	/** The right filler region. */
+	@DragSensitive
+	UIImageFill rightFill;
+	/** The buildings panel. */
+	@DragSensitive
+	UIImage buildingsPanel;
+	/** The radar panel. */
+	@DragSensitive
+	UIImage radarPanel;
+	/** The buildingInfoPanel. */
+	@DragSensitive
+	UIImage buildingInfoPanel;
+	/** The drawable radar rectangle. */
+	@DragSensitive
+	RadarRender radar;
+	/** The lighting level. */
+	float alpha = 1.0f;
+	/** The building preview. */
+	@DragSensitive
+	BuildingPreview preview;
+	/** The building list up button. */
+	@DragSensitive
+	UIImageButton buildingUp;
+	/** The building list up button empty. */
+	@DragSensitive
+	UIImage buildingUpEmpty;
+	/** The building list down button. */
+	@DragSensitive
+	UIImageButton buildingDown;
+	/** The building list down button empty. */
+	@DragSensitive
+	UIImage buildingDownEmpty;
+	/** The building list button. */
+	@DragSensitive
+	UIImageButton buildingList;
+	/** The build button. */
+	UIImageButton build;
+	/** The building name. */
+	@DragSensitive
+	UILabel buildingName;
 	@Override
 	public void onFinish() {
-		animationTimer.stop();
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
-	@Override
-	public void onInitialize() {
-		surface = new PlanetSurface();
-		surface.width = 33;
-		surface.height = 66;
-		surface.computeRenderingLocations();
-		animationTimer = new Timer(100, new Act() {
-			@Override
-			public void act() {
-				//wrap animation index
-				if (animation == Integer.MAX_VALUE) {
-					animation = -1;
-				}
-				animation++;
-				blink = (animation % 10) >= 5;
-				askRepaint();
-			}
-		});
-		selection = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFFFFFF00), null);
-		areaAccept = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
-		areaEmpty = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF808080), null);
-		areaDeny = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFF0000), null);
-		areaCurrent  = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFFCC00), null);
-		
-		selection.alpha = 1.0f;
-		areaAccept.alpha = 1.0f;
-		areaDeny.alpha = 1.0f;
-		areaCurrent.alpha = 1.0f;
+		if (animationTimer != null) {
+			animationTimer.stop();
+			animationTimer = null;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -171,19 +226,19 @@ public class PlanetScreen extends ScreenBase {
 		boolean rep = false;
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
-			offsetY -= 28;
+			render.offsetY -= 28;
 			rep = true;
 			break;
 		case KeyEvent.VK_DOWN:
-			offsetY += 28;
+			render.offsetY += 28;
 			rep = true;
 			break;
 		case KeyEvent.VK_LEFT:
-			offsetX -= 54;
+			render.offsetX -= 54;
 			rep = true;
 			break;
 		case KeyEvent.VK_RIGHT:
-			offsetX += 54;
+			render.offsetX += 54;
 			rep = true;
 			break;
 		default:
@@ -191,126 +246,36 @@ public class PlanetScreen extends ScreenBase {
 		return rep;
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseMoved(int, int, int, int)
-	 */
-	@Override
-	public boolean mouse(UIMouse e) {
-		boolean rep = false;
-		switch (e.type) {
-		case MOVE:
-		case DRAG:
-			if (drag) {
-				offsetX += e.x - lastX;
-				offsetY += e.y - lastY;
-				
-				lastX = e.x;
-				lastY = e.y;
-				rep = true;
-			} else
-			if (sel) {
-				Location loc = getLocationAt(e.x, e.y);
-				current = loc;
-				placementRectangle.x = current.x - placementRectangle.width / 2;
-				placementRectangle.y = current.y + placementRectangle.height / 2;
-				selectedRectangle.x = Math.min(orig.x, loc.x);
-				selectedRectangle.y = Math.max(orig.y, loc.y);
-				selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
-				selectedRectangle.height = - Math.min(orig.y, loc.y) + selectedRectangle.y + 1;
-				rep = true;
-			} else {
-				current = getLocationAt(e.x, e.y);
-				if (current != null) {
-					placementRectangle.x = current.x - placementRectangle.width / 2;
-					placementRectangle.y = current.y + placementRectangle.height / 2;
-					rep = true;
-				}
-			}
-			break;
-		case DOWN:
-			if (e.has(Button.RIGHT)) {
-				drag = true;
-				lastX = e.x;
-				lastY = e.y;
-			} else
-			if (e.has(Button.MIDDLE)) {
-				offsetX = 0;
-				offsetY = 0;
-				if (e.has(Modifier.CTRL)) {
-					scale = 1;
-				}
-				rep = true;
-			}
-			if (e.has(Button.LEFT) && surface != null) {
-				sel = true;
-				selectedRectangle = new Rectangle();
-				orig = getLocationAt(e.x, e.y);
-				selectedRectangle.x = orig.x;
-				selectedRectangle.y = orig.y;
-				selectedRectangle.width = 1;
-				selectedRectangle.height = 1;
-				rep = true;
-			}
-			break;
-		case UP:
-			if (e.has(Button.RIGHT)) {
-				drag = false;
-			}
-			if (e.has(Button.LEFT)) {
-				sel = false;
-			}
-			rep = true;
-			break;
-		case WHEEL:
-			if (e.has(Modifier.CTRL)) {
-				double pre = scale;
-				double mx = (e.x - offsetX) * pre;
-				double my = (e.y - offsetY) * pre;
-				if (e.z < 0) {
-					doZoomIn();
-				} else {
-					doZoomOut();
-				}
-				double mx0 = (e.x - offsetX) * scale;
-				double my0 = (e.y - offsetY) * scale;
-				double dx = (mx - mx0) / pre;
-				double dy = (my - my0) / pre;
-				offsetX += (int)(dx);
-				offsetY += (int)(dy);
-				rep = true;
-			}
-			break;
-		default:
-		}
-		return rep;
-	}
 
 
 	/**
 	 * Zoom to 100%.
 	 */
 	protected void doZoomNormal() {
-		scale = 1.0;
+		render.scale = 1.0;
 		askRepaint();
 	}
 	/**
 	 * Zoom out by decreasing the scale by 0.1.
 	 */
 	protected void doZoomOut() {
-		scale = Math.max(0.1, scale - 0.1);
+		render.scale = Math.max(0.1, render.scale - 0.1);
+		askRepaint();
 	}
 	/**
 	 * Zoom in by increasing the scale by 0.1.
 	 */
 	protected void doZoomIn() {
-		scale = Math.min(2.0, scale + 0.1);
+		render.scale = Math.min(2.0, render.scale + 0.1);
+		askRepaint();
 	}
 
 	@Override
 	public void onEnter(Object mode) {
 		animationTimer.start();
-		offsetX = -(surface.boundingRectangle.width - width) / 2;
-		offsetY = -(surface.boundingRectangle.height - height) / 2;
+		render.offsetX = -(surface.boundingRectangle.width - width) / 2;
+		render.offsetY = -(surface.boundingRectangle.height - height) / 2;
+		focused = render;
 	}
 
 	@Override
@@ -318,217 +283,6 @@ public class PlanetScreen extends ScreenBase {
 		animationTimer.stop();
 	}
 
-	@Override
-	public void draw(Graphics2D g2) {
-		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		
-		g2.setColor(new Color(96, 96, 96));
-		g2.fillRect(0, 0, width, height);
-		
-		if (surface == null) {
-			return;
-		}
-		AffineTransform at = g2.getTransform();
-		g2.translate(offsetX, offsetY);
-		g2.scale(scale, scale);
-		
-		int x0 = surface.baseXOffset;
-		int y0 = surface.baseYOffset;
-
-		Rectangle br = surface.boundingRectangle;
-		g2.setColor(new Color(128, 0, 0));
-		g2.fillRect(br.x, br.y, br.width, br.height);
-		g2.setColor(Color.YELLOW);
-		g2.drawRect(br.x, br.y, br.width, br.height);
-		
-		
-		BufferedImage empty = areaEmpty.getStrip(0);
-		Rectangle renderingWindow = new Rectangle(0, 0, width, height);
-		for (int i = 0; i < surface.renderingOrigins.size(); i++) {
-			Location loc = surface.renderingOrigins.get(i);
-			for (int j = 0; j < surface.renderingLength.get(i); j++) {
-				int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
-				int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
-				Location loc1 = Location.of(loc.x - j, loc.y);
-				SurfaceEntity se = surface.buildingmap.get(loc1);
-				if (se == null || !showBuildings) {
-					se = surface.basemap.get(loc1);
-				}
-				if (se != null) {
-					getImage(se, minimapMode, loc1, cell);
-					int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
-					if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
-						if (cell.image != null) {
-							g2.drawImage(cell.image, x, yref, null);
-						}
-					}
-				} else {
-					if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
-						g2.drawImage(empty, x, y, null);
-					}
-				}
-			}
-		}
-		if (placementHints) {
-			for (Location loc : surface.basemap.keySet()) {
-				if (!canPlaceBuilding(loc.x, loc.y)) {
-					int x = x0 + Tile.toScreenX(loc.x, loc.y);
-					int y = y0 + Tile.toScreenY(loc.x, loc.y);
-					g2.drawImage(areaDeny.getStrip(0), x, y, null);
-				}
-			}
-		}
-		if (!placementMode) {
-			if (selectedRectangle != null) {
-				for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
-					for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
-						int x = x0 + Tile.toScreenX(i, j);
-						int y = y0 + Tile.toScreenY(i, j);
-						g2.drawImage(selection.getStrip(0), x, y, null);
-					}
-				}
-			}
-			if (current != null) {
-				int x = x0 + Tile.toScreenX(current.x, current.y);
-				int y = y0 + Tile.toScreenY(current.x, current.y);
-				g2.drawImage(areaCurrent.getStrip(0), x, y, null);
-			}
-		} else
-		if (placementRectangle.width > 0) {
-			for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
-				for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
-					
-					BufferedImage img = areaAccept.getStrip(0);
-					// check for existing building
-					if (!canPlaceBuilding(i, j)) {
-						img = areaDeny.getStrip(0);
-					}
-					
-					int x = x0 + Tile.toScreenX(i, j);
-					int y = y0 + Tile.toScreenY(i, j);
-					g2.drawImage(img, x, y, null);
-				}
-			}
-		}
-		g2.setColor(Color.RED);
-		if (showBuildings) {
-			if (buildingBox != null) {
-				g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
-			}
-			for (Building b : surface.buildings) {
-				Rectangle r = getBoundingRect(b.location);
-//				if (r == null) {
-//					continue;
-//				}
-				String label = commons.labels().get(b.type.label);
-				int nameLen = txt.getTextWidth(7, label);
-				int h = (r.height - 7) / 2;
-				int nx = r.x + (r.width - nameLen) / 2;
-				int ny = r.y + h;
-				
-				Composite compositeSave = null;
-				Composite a1 = null;
-				
-				if (textBackgrounds) {
-					compositeSave = g2.getComposite();
-					a1 = AlphaComposite.SrcOver.derive(0.8f);
-					g2.setComposite(a1);
-					g2.setColor(Color.BLACK);
-					g2.fillRect(nx - 2, ny - 2, nameLen + 4, 12);
-					g2.setComposite(compositeSave);
-				}
-				
-				txt.paintTo(g2, nx + 1, ny + 1, 7, 0xFF8080FF, label);
-				txt.paintTo(g2, nx, ny, 7, 0xD4FC84, label);
-
-				// paint upgrade level indicator
-				int uw = b.upgradeLevel * colonyGFX.upgrade.getWidth();
-				int ux = r.x + (r.width - uw) / 2;
-				int uy = r.y + h - colonyGFX.upgrade.getHeight() - 4; 
-
-				String percent = null;
-				int color = 0xFF8080FF;
-				if (b.isConstructing()) {
-					percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
-				} else
-				if (b.hitpoints < b.type.hitpoints) {
-					percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
-					if (!blink) {
-						color = 0xFFFF0000;
-					}
-				}
-				if (percent != null) {
-					int pw = txt.getTextWidth(10, percent);
-					int px = r.x + (r.width - pw) / 2;
-					int py = uy - 14;
-
-					if (textBackgrounds) {
-						g2.setComposite(a1);
-						g2.setColor(Color.BLACK);
-						g2.fillRect(px - 2, py - 2, pw + 4, 15);
-						g2.setComposite(compositeSave);
-					}
-					
-					txt.paintTo(g2, px + 1, py + 1, 10, color, percent);
-					txt.paintTo(g2, px, py, 10, 0xD4FC84, percent);
-				}
-				
-				for (int i = 1; i <= b.upgradeLevel; i++) {
-					g2.drawImage(colonyGFX.upgrade, ux, uy, null);
-					ux += colonyGFX.upgrade.getWidth();
-				}
-				
-				if (b.enabled) {
-					int ey = r.y + h + 11;
-					int w = 0;
-					if (b.isEnergyShortage()) {
-						w += colonyGFX.unpowered[0].getWidth();
-					}
-					if (b.isWorkerShortage()) {
-						w += colonyGFX.worker[0].getWidth();
-					}
-					if (b.repairing) {
-						w += colonyGFX.repair[0].getWidth();
-					}
-					int ex = r.x + (r.width - w) / 2;
-					// paint power shortage
-					if (b.isEnergyShortage()) {
-						g2.drawImage(colonyGFX.unpowered[blink ? 0 : 1], ex, ey, null);
-						ex += colonyGFX.unpowered[0].getWidth();
-					}
-					if (b.isWorkerShortage()) {
-						g2.drawImage(colonyGFX.worker[blink ? 0 : 1], ex, ey, null);
-						ex += colonyGFX.worker[0].getWidth();
-					}
-					if (b.repairing) {
-						g2.drawImage(colonyGFX.repair[(animation / 3) % 3], ex, ey, null);
-						ex += colonyGFX.repair[0].getWidth();
-					}
-				} else {
-					int ey = r.y + h + 13;
-					String offline = commons.labels().get("buildings.offline");
-					int w = txt.getTextWidth(10, offline);
-					color = 0xFF8080FF;
-					if (!blink) {
-						color = 0xFFFF0000;
-					}
-					int ex = r.x + (r.width - w) / 2;
-					if (textBackgrounds) {
-						g2.setComposite(a1);
-						g2.setColor(Color.BLACK);
-						g2.fillRect(ex - 2, ey - 2, w + 4, 15);
-						g2.setComposite(compositeSave);
-					}
-					
-					txt.paintTo(g2, ex + 1, ey + 1, 10, color, offline);
-					txt.paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
-				}
-			}
-		}
-		
-		g2.setTransform(at);
-		g2.setColor(Color.WHITE);
-	}
 	/**
 	 * Return the image (strip) representing this surface entry.
 	 * The default behavior returns the tile strips along its lower 'V' arc.
@@ -664,22 +418,6 @@ public class PlanetScreen extends ScreenBase {
 		return true;
 	}
 	/**
-	 * Get a location based on the mouse coordinates.
-	 * @param mx the mouse X coordinate
-	 * @param my the mouse Y coordinate
-	 * @return the location
-	 */
-	public Location getLocationAt(int mx, int my) {
-		if (surface != null) {
-			double mx0 = mx - (surface.baseXOffset + 28) * scale - offsetX; // Half left
-			double my0 = my - (surface.baseYOffset + 27) * scale - offsetY; // Half up
-			int a = (int)Math.floor(Tile.toTileX((int)mx0, (int)my0) / scale);
-			int b = (int)Math.floor(Tile.toTileY((int)mx0, (int)my0) / scale) ;
-			return Location.of(a, b);
-		}
-		return null;
-	}
-	/**
 	 * Compute the bounding rectangle of the rendered building object.
 	 * @param loc the location to look for a building.
 	 * @return the bounding rectangle or null if the target does not contain a building
@@ -696,5 +434,929 @@ public class PlanetScreen extends ScreenBase {
 			return new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
 		}
 		return null;
+	}
+	/**
+	 * Return a building instance at the specified location.
+	 * @param loc the location
+	 * @return the building object or null
+	 */
+	public Building getBuildingAt(Location loc) {
+		SurfaceEntity se = surface.buildingmap.get(loc);
+		if (se != null && se.type == SurfaceEntityType.BUILDING) {
+			return se.building;
+		}
+		return null;
+	}
+	/**
+	 * The surface renderer component.
+	 * @author karnok, Mar 27, 2011
+	 */
+	class SurfaceRenderer extends UIComponent {
+		/** The current scaling factor. */
+		double scale = 1;
+		/** The offset X. */
+		int offsetX;
+		/** The offset Y. */
+		int offsetY;
+		/**
+		 * Get a location based on the mouse coordinates.
+		 * @param mx the mouse X coordinate
+		 * @param my the mouse Y coordinate
+		 * @return the location
+		 */
+		public Location getLocationAt(int mx, int my) {
+			if (surface != null) {
+				double mx0 = mx - (surface.baseXOffset + 28) * scale - offsetX; // Half left
+				double my0 = my - (surface.baseYOffset + 27) * scale - offsetY; // Half up
+				int a = (int)Math.floor(Tile.toTileX((int)mx0, (int)my0) / scale);
+				int b = (int)Math.floor(Tile.toTileY((int)mx0, (int)my0) / scale) ;
+				return Location.of(a, b);
+			}
+			return null;
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			boolean rep = false;
+			switch (e.type) {
+			case MOVE:
+			case DRAG:
+				if (drag || e.has(Button.RIGHT)) {
+					if (!drag) {
+						drag = true;
+						doDragMode();
+					}
+					offsetX += e.x - lastX;
+					offsetY += e.y - lastY;
+					
+					lastX = e.x;
+					lastY = e.y;
+					rep = true;
+				} 
+//				else
+//				if (sel) {
+//					Location loc = getLocationAt(e.x, e.y);
+//					current = loc;
+//					placementRectangle.x = current.x - placementRectangle.width / 2;
+//					placementRectangle.y = current.y + placementRectangle.height / 2;
+//					selectedRectangle.x = Math.min(orig.x, loc.x);
+//					selectedRectangle.y = Math.max(orig.y, loc.y);
+//					selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
+//					selectedRectangle.height = - Math.min(orig.y, loc.y) + selectedRectangle.y + 1;
+//					rep = true;
+//				} else {
+//					current = getLocationAt(e.x, e.y);
+//					if (current != null) {
+//						placementRectangle.x = current.x - placementRectangle.width / 2;
+//						placementRectangle.y = current.y + placementRectangle.height / 2;
+//						rep = true;
+//					}
+//				}
+				break;
+			case DOWN:
+				if (e.has(Button.RIGHT)) {
+					drag = true;
+					lastX = e.x;
+					lastY = e.y;
+					doDragMode();
+				} else
+				if (e.has(Button.MIDDLE)) {
+					offsetX = 0;
+					offsetY = 0;
+					if (e.has(Modifier.CTRL)) {
+						scale = 1;
+					}
+					rep = true;
+				}
+				if (e.has(Button.LEFT) && surface != null) {
+					Location loc = getLocationAt(e.x, e.y);
+					buildingBox = getBoundingRect(loc);
+					doSelectBuilding(getBuildingAt(loc));
+					rep = true;
+				}
+				break;
+			case UP:
+				if (e.has(Button.RIGHT)) {
+					drag = false;
+					doDragMode();
+				}
+//				if (e.has(Button.LEFT)) {
+//					sel = false;
+//				}
+				rep = true;
+				break;
+			case LEAVE:
+				drag = false;
+				doDragMode();
+				break;
+			case WHEEL:
+				if (e.has(Modifier.CTRL)) {
+					double pre = scale;
+					double mx = (e.x - offsetX) * pre;
+					double my = (e.y - offsetY) * pre;
+					if (e.z < 0) {
+						doZoomIn();
+					} else {
+						doZoomOut();
+					}
+					double mx0 = (e.x - offsetX) * scale;
+					double my0 = (e.y - offsetY) * scale;
+					double dx = (mx - mx0) / pre;
+					double dy = (my - my0) / pre;
+					offsetX += (int)(dx);
+					offsetY += (int)(dy);
+					rep = true;
+				}
+				break;
+			default:
+			}
+			return rep;
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			RenderTools.setInterpolation(g2, true);
+			
+			Shape save0 = g2.getClip();
+			g2.setClip(0, 0, width, height);
+			
+			g2.setColor(new Color(96, 96, 96));
+			g2.fillRect(0, 0, width, height);
+			
+			if (surface == null) {
+				return;
+			}
+			AffineTransform at = g2.getTransform();
+			g2.translate(offsetX, offsetY);
+			g2.scale(scale, scale);
+			
+			int x0 = surface.baseXOffset;
+			int y0 = surface.baseYOffset;
+
+			Rectangle br = surface.boundingRectangle;
+			g2.setColor(new Color(128, 0, 0));
+			g2.fillRect(br.x, br.y, br.width, br.height);
+			g2.setColor(Color.YELLOW);
+			g2.drawRect(br.x, br.y, br.width, br.height);
+			
+			
+			BufferedImage empty = areaEmpty.getStrip(0);
+			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
+			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
+				Location loc = surface.renderingOrigins.get(i);
+				for (int j = 0; j < surface.renderingLength.get(i); j++) {
+					int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
+					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
+					Location loc1 = Location.of(loc.x - j, loc.y);
+					SurfaceEntity se = surface.buildingmap.get(loc1);
+					if (se == null || !showBuildings) {
+						se = surface.basemap.get(loc1);
+					}
+					if (se != null) {
+						getImage(se, false, loc1, cell);
+						int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
+						if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
+							if (cell.image != null) {
+								g2.drawImage(cell.image, x, yref, null);
+							}
+						}
+					} else {
+						if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
+							g2.drawImage(empty, x, y, null);
+						}
+					}
+				}
+			}
+			if (placementHints) {
+				for (Location loc : surface.basemap.keySet()) {
+					if (!canPlaceBuilding(loc.x, loc.y)) {
+						int x = x0 + Tile.toScreenX(loc.x, loc.y);
+						int y = y0 + Tile.toScreenY(loc.x, loc.y);
+						g2.drawImage(areaDeny.getStrip(0), x, y, null);
+					}
+				}
+			}
+			if (!placementMode) {
+				if (selectedRectangle != null) {
+					for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
+						for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
+							int x = x0 + Tile.toScreenX(i, j);
+							int y = y0 + Tile.toScreenY(i, j);
+							g2.drawImage(selection.getStrip(0), x, y, null);
+						}
+					}
+				}
+				if (current != null) {
+					int x = x0 + Tile.toScreenX(current.x, current.y);
+					int y = y0 + Tile.toScreenY(current.x, current.y);
+					g2.drawImage(areaCurrent.getStrip(0), x, y, null);
+				}
+			}
+			if (placementMode) {
+				if (placementRectangle.width > 0) {
+					for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
+						for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
+							
+							BufferedImage img = areaAccept.getStrip(0);
+							// check for existing building
+							if (!canPlaceBuilding(i, j)) {
+								img = areaDeny.getStrip(0);
+							}
+							
+							int x = x0 + Tile.toScreenX(i, j);
+							int y = y0 + Tile.toScreenY(i, j);
+							g2.drawImage(img, x, y, null);
+						}
+					}
+				}
+			}
+			if (showBuildings) {
+				for (Building b : surface.buildings) {
+					Rectangle r = getBoundingRect(b.location);
+//					if (r == null) {
+//						continue;
+//					}
+					String label = commons.labels().get(b.type.label);
+					int nameLen = commons.text().getTextWidth(7, label);
+					int h = (r.height - 7) / 2;
+					int nx = r.x + (r.width - nameLen) / 2;
+					int ny = r.y + h;
+					
+					Composite compositeSave = null;
+					Composite a1 = null;
+					
+					if (textBackgrounds) {
+						compositeSave = g2.getComposite();
+						a1 = AlphaComposite.SrcOver.derive(0.8f);
+						g2.setComposite(a1);
+						g2.setColor(Color.BLACK);
+						g2.fillRect(nx - 2, ny - 2, nameLen + 4, 12);
+						g2.setComposite(compositeSave);
+					}
+					
+					commons.text().paintTo(g2, nx + 1, ny + 1, 7, 0xFF8080FF, label);
+					commons.text().paintTo(g2, nx, ny, 7, 0xD4FC84, label);
+
+					// paint upgrade level indicator
+					int uw = b.upgradeLevel * commons.colony().upgrade.getWidth();
+					int ux = r.x + (r.width - uw) / 2;
+					int uy = r.y + h - commons.colony().upgrade.getHeight() - 4; 
+
+					String percent = null;
+					int color = 0xFF8080FF;
+					if (b.isConstructing()) {
+						percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
+					} else
+					if (b.hitpoints < b.type.hitpoints) {
+						percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
+						if (!blink) {
+							color = 0xFFFF0000;
+						}
+					}
+					if (percent != null) {
+						int pw = commons.text().getTextWidth(10, percent);
+						int px = r.x + (r.width - pw) / 2;
+						int py = uy - 14;
+
+						if (textBackgrounds) {
+							g2.setComposite(a1);
+							g2.setColor(Color.BLACK);
+							g2.fillRect(px - 2, py - 2, pw + 4, 15);
+							g2.setComposite(compositeSave);
+						}
+						
+						commons.text().paintTo(g2, px + 1, py + 1, 10, color, percent);
+						commons.text().paintTo(g2, px, py, 10, 0xD4FC84, percent);
+					}
+					
+					for (int i = 1; i <= b.upgradeLevel; i++) {
+						g2.drawImage(commons.colony().upgrade, ux, uy, null);
+						ux += commons.colony().upgrade.getWidth();
+					}
+					
+					if (b.enabled) {
+						int ey = r.y + h + 11;
+						int w = 0;
+						if (b.isEnergyShortage()) {
+							w += commons.colony().unpowered[0].getWidth();
+						}
+						if (b.isWorkerShortage()) {
+							w += commons.colony().worker[0].getWidth();
+						}
+						if (b.repairing) {
+							w += commons.colony().repair[0].getWidth();
+						}
+						int ex = r.x + (r.width - w) / 2;
+						// paint power shortage
+						if (b.isEnergyShortage()) {
+							g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
+							ex += commons.colony().unpowered[0].getWidth();
+						}
+						if (b.isWorkerShortage()) {
+							g2.drawImage(commons.colony().worker[blink ? 0 : 1], ex, ey, null);
+							ex += commons.colony().worker[0].getWidth();
+						}
+						if (b.repairing) {
+							g2.drawImage(commons.colony().repair[(animation / 3) % 3], ex, ey, null);
+							ex += commons.colony().repair[0].getWidth();
+						}
+					} else {
+						int ey = r.y + h + 13;
+						String offline = commons.labels().get("buildings.offline");
+						int w = commons.text().getTextWidth(10, offline);
+						color = 0xFF8080FF;
+						if (!blink) {
+							color = 0xFFFF0000;
+						}
+						int ex = r.x + (r.width - w) / 2;
+						if (textBackgrounds) {
+							g2.setComposite(a1);
+							g2.setColor(Color.BLACK);
+							g2.fillRect(ex - 2, ey - 2, w + 4, 15);
+							g2.setComposite(compositeSave);
+						}
+						
+						commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
+						commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
+					}
+				}
+			}
+			if (showBuildings && buildingBox != null) {
+				g2.setColor(Color.RED);
+				g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+			}
+			
+			g2.setTransform(at);
+			g2.setColor(Color.WHITE);
+			
+			g2.setClip(save0);
+			RenderTools.setInterpolation(g2, false);
+		}
+		
+	}
+	/**
+	 * The radar renderer component.
+	 * @author akarnokd, Mar 27, 2011
+	 */
+	class RadarRender extends UIComponent {
+		@Override
+		public void draw(Graphics2D g2) {
+			RenderTools.setInterpolation(g2, true);
+			
+			Shape save0 = g2.getClip();
+			g2.setClip(0, 0, width, height);
+			
+			g2.setColor(new Color(96, 96, 96));
+			g2.fillRect(0, 0, width, height);
+			
+			if (surface == null) {
+				return;
+			}
+			Rectangle br = surface.boundingRectangle;
+
+			AffineTransform at = g2.getTransform();
+			float scalex = width * 1.0f / br.width;
+			float scaley = height * 1.0f / br.height;
+			float scale = Math.min(scalex, scaley);
+			g2.translate(-(br.width * scale - width) / 2, -(br.height * scale - height) / 2);
+			g2.scale(scale, scale);
+			
+			int x0 = surface.baseXOffset;
+			int y0 = surface.baseYOffset;
+
+			g2.setColor(new Color(128, 0, 0));
+			g2.fillRect(br.x, br.y, br.width, br.height);
+			g2.setColor(Color.YELLOW);
+			g2.drawRect(br.x, br.y, br.width - 1, br.height - 1);
+			
+			BufferedImage empty = areaEmpty.getStrip(0);
+			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
+			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
+				Location loc = surface.renderingOrigins.get(i);
+				for (int j = 0; j < surface.renderingLength.get(i); j++) {
+					int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
+					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
+					Location loc1 = Location.of(loc.x - j, loc.y);
+					SurfaceEntity se = surface.buildingmap.get(loc1);
+					if (se == null || !showBuildings) {
+						se = surface.basemap.get(loc1);
+					}
+					if (se != null) {
+						getImage(se, true, loc1, cell);
+						int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
+						if (renderingWindow.intersects(x * scale, yref * scale, 57 * scale, se.tile.imageHeight * scale)) {
+							if (cell.image != null) {
+								g2.drawImage(cell.image, x, yref, null);
+							}
+						}
+					} else {
+						if (renderingWindow.intersects(x * scale, y * scale, 57 * scale, 27 * scale)) {
+							g2.drawImage(empty, x, y, null);
+						}
+					}
+				}
+			}
+			g2.setColor(Color.RED);
+			if (showBuildings) {
+				if (buildingBox != null) {
+					g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+				}
+			}
+			g2.setColor(Color.WHITE);
+			g2.drawRect(
+					(int)(-render.offsetX / render.scale), 
+					(int)(-render.offsetY / render.scale), 
+					(int)(render.width / render.scale - 1), 
+					(int)(render.height / render.scale - 1));
+			
+			g2.setTransform(at);
+			
+			
+			
+			g2.setClip(save0);
+			RenderTools.setInterpolation(g2, false);
+		}
+		
+	}
+	/** Import the earth map. */
+	void importEarth() {
+		
+		OriginalPlanet planet = parseOriginalPlanet().get("Earth");
+		
+		placeTilesFromOriginalMap("colony/" + planet.getMapName(), planet.surfaceType.toLowerCase(), -1, -1);
+
+		for (OriginalBuilding ob : planet.buildings) {
+			BuildingType bt = commons.world.buildingModel.buildings.get(ob.getName()); 
+			String r = planet.getRaceTechId();
+			TileSet t = bt.tileset.get(r);
+			Building bld = new Building(bt, r);
+			bld.makeFullyBuilt();
+			bld.location = Location.of(ob.location.x + -1, ob.location.y + -1);
+			surface.buildings.add(bld);
+			placeTile(t.normal, ob.location.x + -1, ob.location.y + -1, SurfaceEntityType.BUILDING, bld);
+		}
+		placeRoads(planet.getRaceTechId());
+
+	}
+	/**
+	 * Place an original map tiles onto the current surface.
+	 * @param path the path to the original map file
+	 * @param surfaceType the surface type
+	 * @param shiftX the shift in X coordinates to place the map elements
+	 * @param shiftY the shift in Y coordinates to place the map elements
+	 */
+	private void placeTilesFromOriginalMap(String path, String surfaceType, int shiftX, int shiftY) {
+		byte[] map = rl.getData("en", path);
+		PlanetType pt = commons.world.galaxyModel.planetTypes.get(surfaceType);
+		int bias = 41; 
+		if ("neptoplasm".equals(surfaceType)) {
+			bias = 84;
+		}
+		for (int i = 0; i < 65 * 65; i++) {
+			int tile = (map[4 + i * 2] & 0xFF) - bias;
+			int strip = map[5 + i * 2] & 0xFF;
+			if (strip == 0 && tile != 255) {
+				Location loc = toOriginalLocation(i);
+				Tile t = pt.tiles.get(tile);
+				if (t != null) {
+					SurfaceFeature sf = new SurfaceFeature();
+					sf.location = Location.of(loc.x + shiftX, loc.y + shiftY);
+					sf.id = tile;
+					sf.type = surfaceType;
+					sf.tile = t;
+					surface.features.add(sf);
+					placeTile(t, loc.x + shiftX, loc.y + shiftY, SurfaceEntityType.BASE, null);
+				}
+			}
+		}
+	}
+	/**
+	 * Place a tile onto the current surface map.
+	 * @param tile the tile
+	 * @param x the tile's leftmost coordinate
+	 * @param y the tile's leftmost coordinate
+	 * @param type the tile type
+	 * @param building the building object to assign
+	 */
+	void placeTile(Tile tile, int x, int y, SurfaceEntityType type, Building building) {
+		for (int a = x; a < x + tile.width; a++) {
+			for (int b = y; b > y - tile.height; b--) {
+				SurfaceEntity se = new SurfaceEntity();
+				se.type = type;
+				se.virtualRow = y - b;
+				se.virtualColumn = a - x;
+				se.tile = tile;
+//				se.tile.alpha = alpha;
+				se.building = building;
+				if (type != SurfaceEntityType.BASE) {
+					surface.buildingmap.put(Location.of(a, b), se);
+				} else {
+					surface.basemap.put(Location.of(a, b), se);
+				}
+			}
+		}
+	}
+	/**
+	 * Convert the original index location of the map to actual (x, y) location.
+	 * @param index the index into the map block, starting at 0
+	 * @return the location
+	 */
+	public Location toOriginalLocation(int index) {
+		int row = index % 65;
+		int col = index / 65;
+		
+		int x0 = (col + 1) / 2;
+		int y0 = - col / 2;
+		
+		int x = x0 - row;
+		int y = y0 - row;
+		return Location.of(x, y);
+	}
+	/**
+	 * Place roads around buildings for the given race.
+	 * @param raceId the race who builds the roads
+	 */
+	void placeRoads(String raceId) {
+		Map<RoadType, Tile> rts = commons.world.buildingModel.roadTiles.get(raceId);
+		Map<Tile, RoadType> trs = commons.world.buildingModel.tileRoads.get(raceId);
+		// remove all roads
+		Iterator<SurfaceEntity> it = surface.buildingmap.values().iterator();
+		while (it.hasNext()) {
+			SurfaceEntity se = it.next();
+			if (se.type == SurfaceEntityType.ROAD) {
+				it.remove();
+			}
+		}
+		Set<Location> corners = new HashSet<Location>();
+		for (Building bld : surface.buildings) {
+			Rectangle rect = new Rectangle(bld.location.x - 1, bld.location.y + 1, bld.tileset.normal.width + 2, bld.tileset.normal.height + 2);
+			addRoadAround(rts, rect, corners);
+		}
+		SurfaceEntity[] neighbors = new SurfaceEntity[9];
+		for (Location l : corners) {
+			SurfaceEntity se = surface.buildingmap.get(l);
+			if (se == null || se.type != SurfaceEntityType.ROAD) {
+				continue;
+			}
+			setNeighbors(l.x, l.y, surface.buildingmap, neighbors);
+			int pattern = 0;
+			
+			RoadType rt1 = null;
+			if (neighbors[1] != null && neighbors[1].type == SurfaceEntityType.ROAD) {
+				pattern |= Sides.TOP;
+				rt1 = trs.get(neighbors[1].tile);
+			}
+			RoadType rt3 = null;
+			if (neighbors[3] != null && neighbors[3].type == SurfaceEntityType.ROAD) {
+				pattern |= Sides.LEFT;
+				rt3 = trs.get(neighbors[3].tile);
+			}
+			RoadType rt5 = null;
+			if (neighbors[5] != null && neighbors[5].type == SurfaceEntityType.ROAD) {
+				pattern |= Sides.RIGHT;
+				rt5 = trs.get(neighbors[5].tile);
+			}
+			RoadType rt7 = null;
+			if (neighbors[7] != null && neighbors[7].type == SurfaceEntityType.ROAD) {
+				pattern |= Sides.BOTTOM;
+				rt7 = trs.get(neighbors[7].tile);
+			}
+			RoadType rt = RoadType.get(pattern);
+			// place the new tile fragment onto the map
+			// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+			se = createRoadEntity(rts.get(rt));
+			surface.buildingmap.put(l, se);
+			// alter the four neighboring tiles to contain road back to this
+			if (rt1 != null) {
+				rt1 = RoadType.get(rt1.pattern | Sides.BOTTOM);
+				surface.buildingmap.put(l.delta(0, 1), createRoadEntity(rts.get(rt1)));
+			}
+			if (rt3 != null) {
+				rt3 = RoadType.get(rt3.pattern | Sides.RIGHT);
+				surface.buildingmap.put(l.delta(-1, 0), createRoadEntity(rts.get(rt3)));
+			}
+			if (rt5 != null) {
+				rt5 = RoadType.get(rt5.pattern | Sides.LEFT);
+				surface.buildingmap.put(l.delta(1, 0), createRoadEntity(rts.get(rt5)));
+			}
+			if (rt7 != null) {
+				rt7 = RoadType.get(rt7.pattern | Sides.TOP);
+				surface.buildingmap.put(l.delta(0, -1), createRoadEntity(rts.get(rt7)));
+			}
+			
+		}
+	}
+	/**
+	 * Create a road entity for the tile.
+	 * @param tile the tile
+	 * @return the entity
+	 */
+	SurfaceEntity createRoadEntity(Tile tile) {
+		SurfaceEntity result = new SurfaceEntity();
+		result.tile = tile;
+		result.tile.alpha = alpha;
+		result.type = SurfaceEntityType.ROAD;
+		return result;
+	}
+	/**
+	 * Fills the fragment array of the 3x3 rectangle centered around x and y.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param map the map
+	 * @param fragments the fragments
+	 */
+	void setNeighbors(int x, int y, Map<Location, SurfaceEntity> map, SurfaceEntity[] fragments) {
+		fragments[0] = map.get(Location.of(x - 1, y + 1));
+		fragments[1] = map.get(Location.of(x, y + 1));
+		fragments[2] = map.get(Location.of(x + 1, y + 1));
+		
+		fragments[3] = map.get(Location.of(x - 1, y));
+		fragments[4] = map.get(Location.of(x, y));
+		fragments[5] = map.get(Location.of(x + 1, y));
+		
+		fragments[6] = map.get(Location.of(x - 1, y - 1));
+		fragments[7] = map.get(Location.of(x, y - 1));
+		fragments[8] = map.get(Location.of(x + 1, y - 1));
+	}
+	/**
+	 * Places a road frame around the tilesToHighlight rectangle.
+	 * @param rts the road to tile map for a concrete race
+	 * @param rect the rectangle to use
+	 * @param corners where to place the created corners
+	 */
+	void addRoadAround(Map<RoadType, Tile> rts, Rectangle rect, Collection<Location> corners) {
+		Location la = Location.of(rect.x, rect.y);
+		Location lb = Location.of(rect.x + rect.width - 1, rect.y);
+		Location lc = Location.of(rect.x, rect.y - rect.height + 1);
+		Location ld = Location.of(rect.x + rect.width - 1, rect.y - rect.height + 1);
+		
+		corners.add(la);
+		corners.add(lb);
+		corners.add(lc);
+		corners.add(ld);
+		
+		surface.buildingmap.put(la, createRoadEntity(rts.get(RoadType.RIGHT_TO_BOTTOM)));
+		surface.buildingmap.put(lb, createRoadEntity(rts.get(RoadType.LEFT_TO_BOTTOM)));
+		surface.buildingmap.put(lc, createRoadEntity(rts.get(RoadType.TOP_TO_RIGHT)));
+		surface.buildingmap.put(ld, createRoadEntity(rts.get(RoadType.TOP_TO_LEFT)));
+		// add linear segments
+		
+		Tile ht = rts.get(RoadType.HORIZONTAL);
+		for (int i = rect.x + 1; i < rect.x + rect.width - 1; i++) {
+			surface.buildingmap.put(Location.of(i, rect.y), createRoadEntity(ht));
+			surface.buildingmap.put(Location.of(i, rect.y - rect.height + 1), createRoadEntity(ht));
+		}
+		Tile vt = rts.get(RoadType.VERTICAL);
+		for (int i = rect.y - 1; i > rect.y - rect.height + 1; i--) {
+			surface.buildingmap.put(Location.of(rect.x, i), createRoadEntity(vt));
+			surface.buildingmap.put(Location.of(rect.x + rect.width - 1, i), createRoadEntity(vt));
+		}
+	}
+	/** @return Parse the original planet definitions. */
+	Map<String, OriginalPlanet> parseOriginalPlanet() {
+		final Map<String, OriginalPlanet> originalPlanets = new LinkedHashMap<String, OriginalPlanet>();
+		XElement e = rl.getXML("en", "colony/planets");
+		for (XElement planet : e.childrenWithName("planet")) {
+			OriginalPlanet op = new OriginalPlanet();
+			op.name = planet.get("id");
+			op.surfaceType = planet.childValue("type");
+			op.location.x = Integer.parseInt(planet.childValue("location-x"));
+			op.location.y = Integer.parseInt(planet.childValue("location-y"));
+			op.surfaceVariant = Integer.parseInt(planet.childValue("variant"));
+			op.race = planet.childValue("race");
+			for (XElement building : planet.childElement("buildings").childrenWithName("building")) {
+				OriginalBuilding ob = new OriginalBuilding();
+				ob.name = building.childValue("id");
+				ob.location = Location.of(Integer.parseInt(building.childValue("x")), 
+						Integer.parseInt(building.childValue("y")));
+				op.buildings.add(ob);
+			}
+			originalPlanets.put(op.name, op);
+		}
+		return originalPlanets;
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		if (e.has(Type.UP) && e.has(Button.RIGHT)) {
+			drag = false;
+			doDragMode();
+		}
+		return super.mouse(e);
+	}
+	/** Set drag mode UI settings. */
+	void doDragMode() {
+		for (Field f : getClass().getDeclaredFields()) {
+			if (f.isAnnotationPresent(DragSensitive.class)) {
+				try {
+					Object o = f.get(this);
+					if (o != null) {
+						UIComponent.class.cast(o).enabled(!drag);
+					} else {
+						System.out.println(f.getName());
+					}
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		build.enabled(!drag && preview.enabled);
+	}
+	/**
+	 * Update the UI based on the selected building.
+	 * @param b the building selected
+	 */
+	void doSelectBuilding(Building b) {
+		// TODO add code
+		if (b != null) {
+			preview.building = b.tileset.preview;
+			preview.cost = b.type.cost;
+			buildingName.text(commons.labels().get(b.type.label));
+		} else {
+			preview.building = null;
+			buildingName.text("");
+		}
+	}
+	/** The building preview component. */
+	class BuildingPreview extends UIComponent {
+		/** The building image. */
+		public BufferedImage building;
+		/** Building can be built. */
+		public boolean enabled;
+		/** The building cost. */
+		public int cost;
+		@Override
+		public void draw(Graphics2D g2) {
+			if (building != null) {
+				int dx = (width - building.getWidth()) / 2;
+				int dy = (height - building.getHeight()) / 2;
+				g2.drawImage(building, dx, dy, null);
+				if (!enabled) {
+					g2.setColor(Color.RED);
+					g2.drawLine(0, 0, width - 1, height - 1);
+					g2.drawLine(width - 1, 0, 0, height - 1);
+				}
+				String cs = cost + " cr";
+				int w = commons.text().getTextWidth(10, cs);
+				commons.text().paintTo(g2, width - w - 2, height - 12, 10, TextRenderer.YELLOW, cs);
+			}
+		}
+	}
+	@Override
+	public void onInitialize() {
+		surface = new PlanetSurface();
+		surface.width = 33;
+		surface.height = 66;
+		importEarth(); // FIXME for testing purposes only
+		surface.computeRenderingLocations();
+		animationTimer = new Timer(100, new Act() {
+			@Override
+			public void act() {
+				//wrap animation index
+				if (animation == Integer.MAX_VALUE) {
+					animation = -1;
+				}
+				animation++;
+				blink = (animation % 10) >= 5;
+				askRepaint();
+			}
+		});
+		selection = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFFFFFF00), null);
+		areaAccept = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
+		areaEmpty = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF808080), null);
+		areaDeny = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFF0000), null);
+		areaCurrent  = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFFCC00), null);
+		
+		selection.alpha = 1.0f;
+		areaAccept.alpha = 1.0f;
+		areaDeny.alpha = 1.0f;
+		areaCurrent.alpha = 1.0f;
+		
+		sidebarBuildings = new UIImageButton(commons.colony().sidebarBuildings);
+		sidebarBuildingsEmpty = new UIImage(commons.colony().sidebarBuildingsEmpty);
+		sidebarBuildingsEmpty.visible(false);
+		sidebarRadar = new UIImageButton(commons.colony().sidebarRadar);
+		sidebarRadarEmpty = new UIImage(commons.colony().sidebarRadarEmpty);
+		sidebarRadarEmpty.visible(false);
+		sidebarBuildingInfo = new UIImageButton(commons.colony().sidebarBuildingInfo);
+		sidebarColonyInfo = new UIImageButton(commons.colony().sidebarColonyInfo);
+		sidebarNavigation = new UIImageButton(commons.colony().sidebarButtons);
+		
+		colonyInfo = new UIImageButton(commons.colony().colonyInfo);
+		bridge = new UIImageButton(commons.colony().bridge);
+		planets = new UIImageButton(commons.colony().planets);
+		starmap = new UIImageButton(commons.colony().starmap);
+		
+		render = new SurfaceRenderer();
+		render.z = -1;
+		
+		leftFill = new UIImageFill(commons.colony().sidebarLeftTop, commons.colony().sidebarLeftFill, commons.colony().sidebarLeftBottom, false);
+		rightFill = new UIImageFill(commons.colony().sidebarRightTop, commons.colony().sidebarRightFill, commons.colony().sidebarRightBottom, false);
+		
+		sidebarNavigation.onClick = new Act() {
+			@Override
+			public void act() {
+				colonyInfo.visible(!colonyInfo.visible());
+				bridge.visible(!bridge.visible());
+				planets.visible(!planets.visible());
+				starmap.visible(!starmap.visible());
+			}
+		};
+		sidebarRadar.onClick = new Act() {
+			@Override
+			public void act() {
+				radar.visible(!radar.visible());
+				radarPanel.visible(!radarPanel.visible());
+			}
+		};
+		colonyInfo.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.INFORMATION);
+			}
+		};
+		planets.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displaySecondary(Screens.INFORMATION);
+			}
+		};
+		starmap.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.STARMAP);
+			}
+		};
+		bridge.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.control.displayPrimary(Screens.BRIDGE);
+			}
+		};
+		
+		radarPanel = new UIImage(commons.colony().radarPanel);
+		radar = new RadarRender();
+		radar.z = 1;
+		
+		buildingsPanel = new UIImage(commons.colony().buildingsPanel);
+		buildingInfoPanel = new UIImage(commons.colony().buildingInfoPanel);
+		
+		preview = new BuildingPreview();
+		
+		buildingUp = new UIImageButton(commons.colony().upwards);
+		buildingDown = new UIImageButton(commons.colony().downwards);
+		buildingUpEmpty = new UIImage(commons.colony().empty);
+		buildingUpEmpty.visible(false);
+		buildingDownEmpty = new UIImage(commons.colony().empty);
+		buildingDownEmpty.visible(false);
+		build = new UIImageButton(commons.colony().build);
+		build.setDisabledPattern(commons.common().disabledPattern);
+		build.enabled(false);
+		buildingList = new UIImageButton(commons.colony().list);
+		buildingName = new UILabel("", 10, commons.text());
+		buildingName.color(TextRenderer.YELLOW);
+		buildingName.horizontally(HorizontalAlignment.CENTER);
+		
+		addThis();
+	}
+	@Override
+	public void onResize() {
+		base.setBounds(0, 20, getInnerWidth(), getInnerHeight() - 38);
+		window.setBounds(base.x + 20, base.y, base.width - 40, base.height);
+		
+		sidebarBuildings.location(base.x, base.y);
+		sidebarBuildingsEmpty.location(base.x, base.y);
+		sidebarRadar.location(base.x, base.y + base.height - sidebarRadar.height);
+		sidebarRadarEmpty.location(sidebarRadar.location());
+		
+		sidebarBuildingInfo.location(base.x + base.width - sidebarBuildingInfo.width, base.y);
+		sidebarNavigation.location(base.x + base.width - sidebarNavigation.width, base.y + base.height - sidebarNavigation.height);
+		sidebarColonyInfo.location(sidebarNavigation.x, sidebarNavigation.y - sidebarColonyInfo.height);
+		
+		bridge.location(sidebarNavigation.x - bridge.width, base.y + base.height - bridge.height);
+		starmap.location(bridge.x - starmap.width, base.y + base.height - starmap.height);
+		planets.location(starmap.x - planets.width, base.y + base.height - planets.height);
+		colonyInfo.location(planets.x - colonyInfo.width, base.y + base.height - colonyInfo.height);
+
+		render.bounds(window.x, window.y, window.width, window.height);
+		
+		leftFill.bounds(sidebarBuildings.x, sidebarBuildings.y + sidebarBuildings.height, 
+				sidebarBuildings.width, sidebarRadar.y - sidebarBuildings.y - sidebarBuildings.height);
+		rightFill.bounds(sidebarBuildingInfo.x, sidebarBuildingInfo.y + sidebarBuildingInfo.height, 
+				sidebarBuildingInfo.width, sidebarColonyInfo.y - sidebarBuildingInfo.y - sidebarBuildingInfo.height);
+		
+		radarPanel.location(sidebarRadar.x + sidebarRadar.width, sidebarRadar.y);
+		radar.bounds(radarPanel.x + 13, radarPanel.y + 13, 154, 134);
+		buildingsPanel.location(sidebarBuildings.x + sidebarBuildings.width, sidebarBuildings.y);
+		buildingInfoPanel.location(sidebarBuildingInfo.x - buildingInfoPanel.width, sidebarBuildingInfo.y);
+		
+		preview.bounds(buildingsPanel.x + 7, buildingsPanel.y + 7, 140, 103);
+		
+		buildingUp.location(buildingsPanel.x + 153, buildingsPanel.y + 7);
+		buildingUpEmpty.location(buildingUp.location());
+		buildingDown.location(buildingsPanel.x + 153, buildingsPanel.y + 62);
+		buildingDownEmpty.location(buildingDown.location());
+		buildingName.bounds(buildingsPanel.x + 8, buildingsPanel.y + 117, 166, 18);
+		buildingList.location(buildingsPanel.x + 7, buildingsPanel.y + 142);
+		build.location(buildingsPanel.x + 94, buildingsPanel.y + 142);
 	}
 }
