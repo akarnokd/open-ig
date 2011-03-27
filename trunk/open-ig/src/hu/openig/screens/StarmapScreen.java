@@ -17,6 +17,7 @@ import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
+import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -322,8 +323,13 @@ public class StarmapScreen extends ScreenBase {
 		switch (e.type) {
 		case MOVE:
 		case DRAG:
-			if (panning) {
+			if (panning || e.has(Type.DRAG)) {
 				if (starmapWindow.contains(e.x, e.y)) {
+					if (!panning) {
+						lastX = e.x;
+						lastY = e.y;
+						panning = true;
+					}
 					int dx = e.x - lastX;
 					int dy = e.y - lastY;
 					
@@ -334,11 +340,11 @@ public class StarmapScreen extends ScreenBase {
 				}
 			}
 			if (mouseDown) {
-				if (minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
+				if (e.has(Button.LEFT) && minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
 					scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 					rep = true;
 				}
-				if (pfSplitter && planetFleetSplitterRange.contains(e.x, e.y)) {
+				if (e.has(Button.LEFT) && pfSplitter && planetFleetSplitterRange.contains(e.x, e.y)) {
 					planetFleetSplitter = 1.0 * (e.y - planetFleetSplitterRange.y) / (planetFleetSplitterRange.height);
 					fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
 					planetsOffset = limitScrollBox(planetsOffset, planets.size(), planetsList.height, 10);
@@ -353,7 +359,7 @@ public class StarmapScreen extends ScreenBase {
 				lastY = e.y;
 			}
 			mouseDown = true;
-			if (minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
+			if (e.has(Button.LEFT) && minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
 				scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 				rep = true;
 			}
@@ -404,6 +410,11 @@ public class StarmapScreen extends ScreenBase {
 					rep = true;
 				}
 			}
+			break;
+		case LEAVE:
+			panning = false;
+			mouseDown = false;
+			pfSplitter = false;
 			break;
 		case WHEEL:
 			if (e.has(Modifier.CTRL) && starmapWindow.contains(e.x, e.y)) {

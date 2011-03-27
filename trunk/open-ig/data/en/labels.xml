@@ -337,7 +337,12 @@
 	<entry key='equipment.vehiclesandmax'>Vehicles:%d/%d</entry>
 	<entry key='equipment.innercount'>Act:%d Max:%d</entry>
 	<entry key='equipment.selectednametype'>Name:%s   Type:%s</entry>
-	<entry key=''></entry>
+	<entry key='building.resource.type.energy'> kWh</entry>
+	<entry key='building.resource.type.house'> men</entry>
+	<entry key='building.resource.type.food'> t</entry>
+	<entry key='building.resource.type.multiply'> x income</entry>
+	<entry key='building.resource.type.credit'> cr</entry>
+	<entry key='building.resource.type.hospital'> men</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

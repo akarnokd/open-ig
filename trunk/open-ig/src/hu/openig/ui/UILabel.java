@@ -206,6 +206,10 @@ public class UILabel extends UIComponent {
 //		}
 		return this;
 	}
+	/** @return the current textual label. */
+	public String text() {
+		return text;
+	}
 	/**
 	 * Set the label color.
 	 * @param textColor the text color to set

@@ -410,6 +410,12 @@
 	<entry key='equipment.vehiclesandmax'>Járművek:%d/%d</entry>
 	<entry key='equipment.innercount'>Akt:%d Max:%d</entry>
 	<entry key='equipment.selectednametype'>Név:%s   Típus:%s</entry>
+	<entry key='building.resource.type.energy'> kWh</entry>
+	<entry key='building.resource.type.house'> emb</entry>
+	<entry key='building.resource.type.food'> t</entry>
+	<entry key='building.resource.type.multiply'> x bevét</entry>
+	<entry key='building.resource.type.credit'> cr</entry>
+	<entry key='building.resource.type.hospital'> emb</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
