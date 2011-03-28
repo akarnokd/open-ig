@@ -138,7 +138,7 @@ public class MapEditor extends JFrame {
 	/** The minimum memory required to run Open-IG. */
 	private static final long MINIMUM_MEMORY = 384L;
 	/** The map editor's JAR file version. */
-	public static final String VERSION = "0.44";
+	public static final String VERSION = "0.45";
 	/** The title text. */
 	public static final String TITLE = "Open-IG MapEditor v" + VERSION;
 	/** The main resource locator. */
@@ -1453,9 +1453,9 @@ public class MapEditor extends JFrame {
 							SurfaceFeature sf = renderer.surface.features.get(i);
 							if (sf.containsLocation(a, b)) {
 								renderer.surface.features.remove(i);
-								if (sf.equals(currentBaseTile)) {
-									currentBaseTile = null;
-								}
+//								if (sf.equals(currentBaseTile)) {
+//									currentBaseTile = null;
+//								}
 							}
 						}
 					}
@@ -1685,9 +1685,10 @@ public class MapEditor extends JFrame {
 			renderer.placementRectangle.width = tileEntry.tile.width + 2;
 			renderer.placementRectangle.height = tileEntry.tile.height + 2;
 			surfaceTable.getSelectionModel().clearSelection();
-			currentBaseTile = null;
 			currentBuildingType = tileEntry.buildingType;
 			currentBuildingRace = tileEntry.surface;
+
+			currentBaseTile = null;
 		}
 	}
 	/**
@@ -2084,17 +2085,18 @@ public class MapEditor extends JFrame {
 		if (renderer.surface == null) {
 			return;
 		}
-		if (currentBaseTile != null) {
+		SurfaceFeature cbt = currentBaseTile;
+		if (cbt != null) {
 			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 			deleteEntitiesOf(renderer.surface.basemap, renderer.placementRectangle, false);
 			SurfaceFeature sf = new SurfaceFeature();
-			sf.id = currentBaseTile.id;
-			sf.type = currentBaseTile.type;
-			sf.tile = currentBaseTile.tile;
+			sf.id = cbt.id;
+			sf.type = cbt.type;
+			sf.tile = cbt.tile;
 			sf.location = Location.of(renderer.placementRectangle.x, renderer.placementRectangle.y);
 			renderer.surface.features.add(sf);
 			
-			placeTile(currentBaseTile.tile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE, null);
+			placeTile(cbt.tile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE, null);
 			
 			undo.setAfter();
 			addUndo(undo);
@@ -2127,7 +2129,7 @@ public class MapEditor extends JFrame {
 		Location loc = renderer.getLocationAt(mx, my);
 		SurfaceEntity se = renderer.surface.buildingmap.get(loc);
 		currentBuilding = null;
-		if (se != null && se.type == SurfaceEntityType.BUILDING) {
+		if (renderer.showBuildings && se != null && se.type == SurfaceEntityType.BUILDING) {
 			currentBuilding = se.building;
 		} else { 
 			se = renderer.surface.basemap.get(loc);
@@ -2923,9 +2925,9 @@ public class MapEditor extends JFrame {
 				for (int y = f.location.y; y > f.location.y - f.tile.height; y--) {
 					if (!renderer.surface.cellInMap(x, y)) {
 						renderer.surface.features.remove(i);
-						if (currentBaseTile == f) {
-							currentBaseTile = null;
-						}
+//						if (currentBaseTile == f) {
+//							currentBaseTile = null;
+//						}
 						tileCount++;
 						removeTiles(renderer.surface.basemap, f.location.x, f.location.y, f.tile.width, f.tile.height);
 						break inner;
