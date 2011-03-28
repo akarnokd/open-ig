@@ -17,6 +17,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,8 +160,24 @@ public class ImportDialog extends JDialog {
 		parseOriginalPlanet();
 		
 		for (OriginalPlanet op : originalPlanets) {
-			cbOriginalPlanets.addItem(op.name + " [" + op.surfaceType + ": " + op.race + "]");
+			cbOriginalPlanets.addItem(op.name + " [" + op.surfaceType + " (" + op.surfaceVariant + "): " + (op.race != null ? op.race : "-") + "]");
 		}
+		// sort by surface and variant then add it to the list again
+		List<OriginalPlanet> ops2 = new ArrayList<OriginalPlanet>(originalPlanets);
+		Collections.sort(ops2, new Comparator<OriginalPlanet>() {
+			@Override
+			public int compare(OriginalPlanet o1, OriginalPlanet o2) {
+				int c = o1.surfaceType.compareTo(o2.surfaceType);
+				if (c == 0) {
+					c = o1.surfaceVariant < o2.surfaceVariant ? -1 : (o1.surfaceVariant > o2.surfaceVariant ? 1 : 0);
+				}
+				return c;
+			}
+		});
+		for (OriginalPlanet op : ops2) {
+			cbOriginalPlanets.addItem(op.name + " [" + op.surfaceType + " (" + op.surfaceVariant + "): " + (op.race != null ? op.race : "-") + "]");
+		}
+		originalPlanets.addAll(ops2);
 		
 		cbWithSurface = new JCheckBox("Replace surface along with the buildings", true);
 		

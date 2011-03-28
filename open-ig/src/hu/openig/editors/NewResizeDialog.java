@@ -14,12 +14,13 @@ import hu.openig.core.Labels;
 import java.awt.Container;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.GroupLayout.Alignment;
 
 /**
  * @author akarnokd
@@ -35,9 +36,9 @@ public class NewResizeDialog extends JDialog {
 	/** Was OK pressed? */
 	public boolean success;
 	/** Width value. */
-	JTextField widthText;
+	JSpinner widthText;
 	/** Height value. */
-	JTextField heightText;
+	JSpinner heightText;
 	/**
 	 * Construct the GUI.
 	 * @param labels the UI labels
@@ -71,12 +72,8 @@ public class NewResizeDialog extends JDialog {
 			}
 		});
 		
-		widthText = new JTextField(6);
-		widthText.setText("33");
-		widthText.setHorizontalAlignment(JTextField.RIGHT);
-		heightText = new JTextField(6);
-		heightText.setText("66");
-		heightText.setHorizontalAlignment(JTextField.RIGHT);
+		widthText = new JSpinner(new SpinnerNumberModel(33, 1, 255, 1));
+		heightText = new JSpinner(new SpinnerNumberModel(66, 1, 255, 1));
 		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
@@ -132,8 +129,8 @@ public class NewResizeDialog extends JDialog {
 	 */
 	protected void doOk() {
 		success = true;
-		width = Integer.parseInt(widthText.getText());
-		height = Integer.parseInt(heightText.getText());
+		width = (Integer)widthText.getValue();
+		height = (Integer)heightText.getValue();
 		dispose();
 	}
 }
