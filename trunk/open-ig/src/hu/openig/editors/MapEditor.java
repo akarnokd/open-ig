@@ -407,6 +407,10 @@ public class MapEditor extends JFrame {
 		/** Paste surface only. */
 		@Rename(to = "mapeditor.edit_copy_building", tip = "")
 		public JMenuItem editCopyBuilding;
+		/** The current selection position. */
+		public JLabel cursorPosition;
+		/** The current map size. */
+		public JLabel mapsize;
 	}
 	/** The User Interface elements to rename. */
 	final UIElements ui = new UIElements();
@@ -842,6 +846,7 @@ public class MapEditor extends JFrame {
 		propertyTab.addTab("Allocation", ui.allocationPanel);
 		
 		split.setDoubleBuffered(true);
+		split.setOneTouchExpandable(true);
 		
 		Container c = getContentPane();
 		c.setLayout(new BorderLayout());
@@ -887,6 +892,20 @@ public class MapEditor extends JFrame {
 						doPlaceObject();
 					}
 				}
+			}
+		});
+		renderer.addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if (renderer.current != null) {
+					ui.cursorPosition.setText(renderer.current.x + ", " + renderer.current.y);
+				} else {
+					ui.cursorPosition.setText("");
+				}
+			}
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				this.mouseMoved(e);
 			}
 		});
 		
@@ -1185,6 +1204,9 @@ public class MapEditor extends JFrame {
 		ui.toolbarDarker = createFor("res/TipOfTheDayDark24.gif", "Night", ui.viewDarker, false);
 		ui.toolbarHelp = createFor("res/Help24.gif", "Help", ui.helpOnline, false);
 
+		ui.cursorPosition = new JLabel();
+		ui.mapsize = new JLabel();
+		
 		
 		ui.toolbar.add(ui.toolbarNew);
 		ui.toolbar.add(ui.toolbarOpen);
@@ -1212,6 +1234,10 @@ public class MapEditor extends JFrame {
 		ui.toolbar.add(ui.toolbarDarker);
 		ui.toolbar.addSeparator();
 		ui.toolbar.add(ui.toolbarHelp);
+		ui.toolbar.addSeparator();
+		ui.toolbar.add(ui.cursorPosition);
+		ui.toolbar.addSeparator();
+		ui.toolbar.add(ui.mapsize);
 		
 	}
 	/**
@@ -1695,7 +1721,6 @@ public class MapEditor extends JFrame {
 	 * Create a new, empty surface map.
 	 */
 	void doNew() {
-		
 		NewResizeDialog dlg = new NewResizeDialog(labels, true);
 		dlg.setLocationRelativeTo(this);
 		dlg.setVisible(true);
@@ -1714,6 +1739,7 @@ public class MapEditor extends JFrame {
 	 * @param height the vertical height (and not in coordinate amounts!) 
 	 */
 	void createPlanetSurface(int width, int height) {
+		ui.mapsize.setText(width + " x " + height);
 		renderer.surface = new PlanetSurface();
 		renderer.surface.width = width;
 		renderer.surface.height = height;
@@ -1835,6 +1861,7 @@ public class MapEditor extends JFrame {
 		if (imp == null) {
 			imp = new ImportDialog(rl);
 		}
+		imp.success = false;
 		imp.setLabels(labels);
 		imp.setLocationRelativeTo(this);
 		imp.setVisible(true);
@@ -2965,16 +2992,34 @@ public class MapEditor extends JFrame {
 			doNew();
 			return;
 		}
-		NewResizeDialog dlg = new NewResizeDialog(labels, false);
-		dlg.widthText.setText("" + renderer.surface.width);
-		dlg.heightText.setText("" + renderer.surface.height);
+		final NewResizeDialog dlg = new NewResizeDialog(labels, false);
+		dlg.widthText.setValue(renderer.surface.width);
+		dlg.heightText.setValue(renderer.surface.height);
+		int w0 = renderer.surface.width;
+		int h0 = renderer.surface.height;
+		// live adjustment
+		ChangeListener cl = new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				renderer.surface.width = (Integer)dlg.widthText.getValue();
+				renderer.surface.height = (Integer)dlg.heightText.getValue();
+				renderer.surface.computeRenderingLocations();
+				ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
+			}
+		};
+		dlg.widthText.addChangeListener(cl);
+		dlg.heightText.addChangeListener(cl);
 		dlg.setLocationRelativeTo(this);
 		dlg.setVisible(true);
 		if (dlg.success) {
 			renderer.surface.width = dlg.width;
 			renderer.surface.height = dlg.height;
-			renderer.surface.computeRenderingLocations();
+		} else {
+			renderer.surface.width = w0;
+			renderer.surface.height = h0;
 		}
+		renderer.surface.computeRenderingLocations();
+		ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
 	}
 	/** Toggle the standard font display mode. */
 	protected void doStandardFonts() {
