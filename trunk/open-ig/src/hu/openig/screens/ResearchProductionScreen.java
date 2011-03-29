@@ -417,6 +417,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		createSubCategory(ResearchSubCategory.BUILDINGS_GUNS, commons.research().planetaryGuns);
 
 		// TODO for testing purposes only!
+		slots.clear();
 		for (int i = 0; i < 6; i++) {
 			final int j = i;
 			final TechnologySlot ts = new TechnologySlot(commons);
@@ -587,7 +588,8 @@ public class ResearchProductionScreen extends ScreenBase {
 		addOne = new UIImageButton(commons.research().plusOne);
 		addTen = new UIImageButton(commons.research().plusTen);
 		sell = new UIImageButton(commons.research().sell);
-		
+
+		productionLines.clear();
 		for (int i = 0; i < 5; i++) {
 			final int j = i;
 			final ProductionLine pl = new ProductionLine();
@@ -811,7 +813,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		for (TechnologySlot sl : slots) {
 			sl.animationStep = animationStep;
 		}
-		askRepaint();
+		askRepaint(base);
 	}
 
 	@Override

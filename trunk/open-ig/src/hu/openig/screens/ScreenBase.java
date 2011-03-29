@@ -62,7 +62,7 @@ public abstract class ScreenBase extends UIContainer {
 	/** Ask for the parent JComponent to repaint itself. */
 	@Override
 	public void askRepaint() {
-		askRepaint(this);
+		commons.control.repaintInner();
 	}
 	/**
 	 * Ask for the repaint of the given  component area only.
@@ -71,6 +71,13 @@ public abstract class ScreenBase extends UIContainer {
 	public void askRepaint(UIComponent c) {
 		Point p = c.absLocation();
 		commons.control.repaintInner(p.x, p.y, c.width, c.height);
+	}
+	/**
+	 * Ask for the repaint of the given partial region.
+	 * @param rect the region to repaint
+	 */
+	public void askRepaint(Rectangle rect) {
+		commons.control.repaintInner(rect.x, rect.y, rect.width, rect.height);
 	}
 	/**
 	 * Retrieve the parent swing component's width.
