@@ -305,6 +305,7 @@ public class EquipmentScreen extends ScreenBase {
 		tanks.onPress = categoryAction(EquipmentCategory.TANKS);
 		vehicles.onPress = categoryAction(EquipmentCategory.VEHICLES);
 		
+		slots.clear();
 		// TODO for testing purposes only!
 		for (int i = 0; i < 6; i++) {
 			final int j = i;
@@ -661,7 +662,7 @@ public class EquipmentScreen extends ScreenBase {
 		for (TechnologySlot sl : slots) {
 			sl.animationStep = animationStep;
 		}
-		askRepaint();
+		askRepaint(base);
 	}
 	/**
 	 * Select a technology slot.

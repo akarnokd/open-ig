@@ -16,14 +16,17 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.locks.LockSupport;
 import java.util.zip.GZIPInputStream;
 
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
@@ -101,6 +104,7 @@ public class TechnologyVideoRenderer {
 				byte[] bytebuffer = new byte[w * h];
 				int[] currentImage = new int[w * h];
 				int frameCount = 0;
+				long starttime = System.nanoTime();
 				while (frameCount < frames && !stopped) {
 					int c = in.read();
 					if (c < 0 || c == 'X') {
@@ -123,13 +127,33 @@ public class TechnologyVideoRenderer {
 								currentImage[i] = c0;
 							}
 						}
-						BufferedImage fimg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+						final BufferedImage fimg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 						fimg.setRGB(0, 0, w, h, currentImage, 0, w);
 						fimg.setAccelerationPriority(1.0f);
+
+						if (frameCount == 0) {
+							starttime = System.nanoTime();
+						}
+						
+						SwingUtilities.invokeAndWait(new Runnable() {
+							@Override
+							public void run() {
+								if (!stopped) {
+									onFrame.invoke(fimg);
+								}
+							}
+						});
+						starttime += (1000000000.0 / fps);
+		       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
+
 						images.add(fimg);
 		       			frameCount++;
 					}
 				}
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			} finally {
 				try { in.close(); } catch (IOException ex) {  }
 			}
@@ -149,6 +173,7 @@ public class TechnologyVideoRenderer {
 					}
 				}
 			});
+			t.setInitialDelay(0);
 			t.start();
 			return t;
 		}

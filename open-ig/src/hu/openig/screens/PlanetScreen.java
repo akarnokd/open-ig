@@ -747,7 +747,7 @@ public class PlanetScreen extends ScreenBase {
 							ex += commons.colony().worker[0].getWidth();
 						}
 						if (b.repairing) {
-							g2.drawImage(commons.colony().repair[(animation / 3) % 3], ex, ey, null);
+							g2.drawImage(commons.colony().repair[(animation / 3)], ex, ey, null);
 							ex += commons.colony().repair[0].getWidth();
 						}
 					} else {
@@ -1585,11 +1585,8 @@ public class PlanetScreen extends ScreenBase {
 			animation = -1;
 		}
 		animation++;
-		boolean blink0 = blink;
-		blink = (animation % 10) >= 5;
-		if (blink0 != blink || (animation % 3 == 0)) {
-			askRepaint();
-		}
+		blink = animation % 2 == 0;
+		askRepaint();
 	}
 	@Override
 	public void onInitialize() {
@@ -1597,7 +1594,7 @@ public class PlanetScreen extends ScreenBase {
 		surface.width = 33;
 		surface.height = 66;
 		surface.computeRenderingLocations();
-		animationTimer = new Timer(100, new Act() {
+		animationTimer = new Timer(500, new Act() {
 			@Override
 			public void act() {
 				doAnimation();

@@ -71,38 +71,43 @@ public class GameWindow extends JFrame implements GameControls {
 					if (movie != null) {
 						movie.resize();
 					}
+					repaintRequest = true;
 				}
 			});
 		}
 		@Override
 		public void paint(Graphics g) {
+			boolean r0 = repaintRequest;
+			boolean r1 = repaintRequestPartial;
 			repaintRequest = false;
+			repaintRequestPartial = false;
+			
 			Graphics2D g2 = (Graphics2D)g;
 			if (movieVisible) {
 				movie.draw(g2);
 			} else {
-//				Shape save0 = g2.getClip();
-//				if (secondary != null) {
-//					Rectangle r = secondary.nontransparent();
-//					Area a = new Area(save0);
-//					a.subtract(new Area(r));
-//					g2.setClip(a);
-//				}
-				if (primary != null) {
-					primary.draw(g2);
-				}
-//				g2.setClip(save0);
-				if (secondary != null) {
-					secondary.draw(g2);
-				}
-				if (statusbarVisible) {
-					statusbar.draw(g2);
+				if (r1 && !r0) {
+					if (secondary != null) {
+						secondary.draw(g2);
+					}
+				} else {
+					if (primary != null) {
+						primary.draw(g2);
+					}
+					if (secondary != null) {
+						secondary.draw(g2);
+					}
+					if (statusbarVisible) {
+						statusbar.draw(g2);
+					}
 				}
 			}
 		}
 	}
 	/** A pending repaint request. */
 	boolean repaintRequest;
+	/** A partial repaint request. */
+	boolean repaintRequestPartial;
 	/** The primary screen. */
 	ScreenBase primary;
 	/** The secondary screen drawn over the first. */
@@ -131,7 +136,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	public GameWindow(Configuration config) {
 		super("Open Imperium Galactica " + Configuration.VERSION);
-		URL icon = this.getClass().getResource("/hu/openig/res/open-ig-logo.png");
+		URL icon = this.getClass().getResource("/hu/openig/gfx/open-ig-logo.png");
 		if (icon != null) {
 			try {
 				setIconImage(ImageIO.read(icon));
@@ -526,6 +531,14 @@ public class GameWindow extends JFrame implements GameControls {
 		 */
 		boolean handleScreenSwitch(KeyEvent e) {
 			boolean result = false;
+			if (e.isAltDown()) {
+				if (e.getKeyCode() == KeyEvent.VK_F4) {
+					exit();
+					return true;
+				}
+				e.consume();
+				return true;
+			}
 			if (!commons.worldLoading && commons.world != null && !movieVisible) {
 				result = true;
 				switch (e.getKeyCode()) {
@@ -757,6 +770,7 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void repaintInner(int x, int y, int w, int h) {
+		repaintRequestPartial = true;
 		surface.repaint(x, y, w, h);
 	}
 	@Override
