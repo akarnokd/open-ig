@@ -10,18 +10,17 @@ package hu.openig.editors;
 import hu.openig.core.Labels;
 import hu.openig.core.Location;
 import hu.openig.core.ResourceLocator;
+import hu.openig.model.OriginalBuilding;
+import hu.openig.model.OriginalPlanet;
 import hu.openig.utils.XElement;
 
 import java.awt.Container;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -280,149 +279,9 @@ public class ImportDialog extends JDialog {
 		success = false;
 		dispose();
 	}
-	/**
-	 * The original planet definition (from v0.72 and before).
-	 * @author akarnokd
-	 */
-	public static class OriginalPlanet {
-		/** The planet name. */
-		public String name;
-		/** The surface type. */
-		public String surfaceType;
-		/** The surface variant. */
-		public int surfaceVariant;
-		/** The race name. */
-		public String race;
-		/** The location on the galaxy map. */
-		public final Point location = new Point();
-		/** The list of buildings. */
-		public final List<OriginalBuilding> buildings = new ArrayList<OriginalBuilding>();
-		/** @return Create the map file name from the type and variants */
-		public String getMapName() {
-			if ("Desert".equals(surfaceType)) {
-				return "map_a" + surfaceVariant;
-			} else
-			if ("Neptoplasm".equals(surfaceType)) {
-				return "map_g" + surfaceVariant;
-			} else
-			if ("Earth".equals(surfaceType)) {
-				return "map_f" + surfaceVariant;
-			} else
-			if ("Rocky".equals(surfaceType)) {
-				return "map_d" + surfaceVariant;
-			} else
-			if ("Cratered".equals(surfaceType)) {
-				return "map_c" + surfaceVariant;
-			} else
-			if ("Frozen".equals(surfaceType)) {
-				return "map_b" + surfaceVariant;
-			} else
-			if ("Liquid".equals(surfaceType)) {
-				return "map_e" + surfaceVariant;
-			}
-			return "";
-		}
-		/** @return the new race name from the old. */
-		public String getRaceTechId() {
-			if ("Empire".equals(race)) {
-				return "human";
-			}
-			if ("Garthog".equals(race)) {
-				return "garthog";
-			}
-			if ("Morgath".equals(race)) {
-				return "morgath";
-			}
-			if ("Ychom".equals(race)) {
-				return "ychom";
-			}
-			if ("Dribs".equals(race)) {
-				return "dribs";
-			}
-			if ("Sullep".equals(race)) {
-				return "sullep";
-			}
-			if ("Dargslan".equals(race)) {
-				return "dargslan";
-			}
-			if ("Ecalep".equals(race)) {
-				return "ecalep";
-			}
-			if ("FreeTraders".equals(race)) {
-				return "human";
-			}
-			if ("FreeNations".equals(race)) {
-				return "human";
-			}
-			return "";
-		}
-	}
-	/** The origian building definition (from v0.72 and before). */
-	public static class OriginalBuilding {
-		/** The building name. */
-		public String name;
-		/** The location. */
-		public Location location;
-		/** @return the new name from the old name. */
-		public String getName() {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("ColonyHub", "ColonyHub");
-			map.put("PrefabHousing", "PrefabHousing");
-			map.put("ApartmentBlock", "ApartmentBlock");
-			map.put("Arcology", "Arcology");
-			map.put("NuclearPlant", "NuclearPlant");
-			
-			map.put("FusionPlant", "FusionPlant");
-			map.put("SolarPlant", "SolarPlant");
-			map.put("RadarTelescope", "RadarTelescope");
-			map.put("Church", "Church");
-			map.put("MilitarySpaceport", "MilitarySpaceport");
-			
-			map.put("MilitaryDevCentre", "MilitaryDevCenter");
-			map.put("PoliceStation", "PoliceStation");
-			map.put("FireBrigade", "FireBrigade");
-			map.put("PhoodFactory", "PhoodFactory");
-			map.put("HyperShield", "HyperShield");
-			
-			map.put("Hospital", "Hospital");
-			map.put("AIDevCentre", "AIDevCenter");
-			map.put("Fortress", "Fortress");
-			map.put("MesonProjector", "MesonProjector");
-			map.put("WeaponFactory", "WeaponFactory");
-			
-			map.put("TradeCentre", "TradeCenter");
-			map.put("PhasedTelescope", "PhasedTelescope");
-			map.put("SpaceshipFactory", "SpaceshipFactory");
-			map.put("FieldTelescope", "FieldTelescope");
-			map.put("EquipmentFactory", "EquipmentFactory");
-			
-			map.put("FusionProjector", "FusionProjector");
-			map.put("PlasmaProjector", "PlasmaProjector");
-			map.put("MechanicsDevCentre", "MechanicalDevCenter");
-			map.put("Bunker", "Bunker");
-			map.put("CivilEngDevCentre", "CivilDevCenter");
-			
-			map.put("InversionShield", "InversionShield");
-			map.put("IonProjector", "IonProjector");
-			map.put("ComputerDevCentre", "ComputerDevCenter");
-			map.put("Stadium", "Stadium");
-			map.put("Bar", "Bar");
-			
-			map.put("Bank", "Bank");
-			map.put("TradersSpaceport", "TradersSpaceport");
-			map.put("HydroponicFoodFarm", "HydroponicFoodFarm");
-			map.put("Barracks", "Barracks");
-			map.put("RecreationCentre", "RecreationCenter");
-			
-			map.put("Park", "Park");
-			map.put("Stronghold", "Stronghold");
-			
-			return map.get(name);
-		}
-	}
 	/** Parse the original planet definitions. */
 	void parseOriginalPlanet() {
-		XElement e = rl.getXML("en", "colony/planets");
+		XElement e = rl.getXML("en", "colony/planets_old");
 		for (XElement planet : e.childrenWithName("planet")) {
 			OriginalPlanet op = new OriginalPlanet();
 			op.name = planet.get("id");

@@ -24,12 +24,8 @@ public class WipPort {
 	private final Lock lock = new ReentrantLock();
 	/** The wait condition. */
 	private final Condition cond = lock.newCondition();
-	/** The done indicator. */
-	private boolean done;
 	/** The work in progress counter. */
 	private final AtomicInteger wip = new AtomicInteger();
-	/** The work in progress counter. */
-	private int waiters;
 	/**
 	 * Creates a WipPort with zero value.
 	 */
@@ -58,7 +54,6 @@ public class WipPort {
 		if (value == 0) {
 			lock.lock();
 			try {
-				done = true;
 				cond.signalAll();
 			} finally {
 				lock.unlock();
@@ -75,11 +70,9 @@ public class WipPort {
 	public void await() throws InterruptedException {
 		lock.lock();
 		try {
-			waiters++; 
-			while (!done) {
+			while (wip.get() != 0) {
 				cond.await();
 			}
-			done = (--waiters) != 0;
 		} finally {
 			lock.unlock();
 		}
@@ -94,11 +87,9 @@ public class WipPort {
 	public void await(long time, TimeUnit unit) throws InterruptedException, TimeoutException {
 		lock.lock();
 		try {
-			waiters++;
-			while (!done) {
+			while (wip.get() != 0) {
 				cond.await(time, unit);
 			}
-			done = (--waiters) != 0;
 		} finally {
 			lock.unlock();
 		}

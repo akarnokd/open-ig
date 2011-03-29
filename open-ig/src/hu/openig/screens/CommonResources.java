@@ -11,6 +11,8 @@ package hu.openig.screens;
 import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
+import hu.openig.core.ResourceLocator.ResourcePlace;
+import hu.openig.core.ResourceType;
 import hu.openig.gfx.BackgroundGFX;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.gfx.CommonGFX;
@@ -566,5 +568,21 @@ public class CommonResources {
 			}));
 		}
 		return diplomacy;
+	}
+	/**
+	 * Convenience method to return a video for the current language.
+	 * @param name the video name.
+	 * @return the resource place for the video
+	 */
+	public ResourcePlace video(String name) {
+		return rl.get(language(), name, ResourceType.VIDEO);
+	}
+	/**
+	 * Convenience method to return an audio for the current language.
+	 * @param name the video name.
+	 * @return the resource place for the video
+	 */
+	public ResourcePlace audio(String name) {
+		return rl.get(language(), name, ResourceType.AUDIO);
 	}
 }

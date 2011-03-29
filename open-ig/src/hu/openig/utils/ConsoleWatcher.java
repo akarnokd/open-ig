@@ -6,11 +6,9 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.editors;
+package hu.openig.utils;
 
 import java.awt.Font;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -45,7 +43,7 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	 */
 	public ConsoleWatcher() {
 		setTitle("Console Watcher");
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		originalOut = System.out;
 		originalErr = System.err;
 		
@@ -59,40 +57,29 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 		setSize(640, 480);
 		setLocationRelativeTo(null);
 		
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				try {
-					close();
-				} catch (IOException ex) {
-					
-				}
-			}
-		});
-		
-		PipedOutputStream outPO = new PipedOutputStream();
+//		PipedOutputStream outPO = new PipedOutputStream();
 		PipedOutputStream errPO = new PipedOutputStream();
 		
 		try {
-			final PipedInputStream outPI = new PipedInputStream(outPO);
+//			final PipedInputStream outPI = new PipedInputStream(outPO);
+//			System.setOut(new PrintStream(outPO));
+//			outWatcher = new Thread(new Runnable() {
+//				@Override
+//				public void run() {
+//					readEverything(outPI, originalOut);
+//				}			
+//			});
+
 			final PipedInputStream errPI = new PipedInputStream(errPO);
-			
-			System.setOut(new PrintStream(outPO));
 			System.setErr(new PrintStream(errPO));
-			
-			outWatcher = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					readEverything(outPI, originalOut);
-				}			
-			});
 			errWatcher = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					readEverything(errPI, originalErr);
 				}			
 			});
-			outWatcher.start();
+			
+//			outWatcher.start();
 			errWatcher.start();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -113,9 +100,7 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						if (!isVisible()) {
-							setVisible(true);
-						}
+						setVisible(true);
 						area.append(Character.toString((char)c));
 					}
 				});

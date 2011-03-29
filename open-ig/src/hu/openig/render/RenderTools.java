@@ -78,12 +78,18 @@ public final class RenderTools {
 	public static void darkenAround(
 			Rectangle panel, int screenWidth, int screenHeight, Graphics2D g2, float alpha,
 			boolean considerStatusbars) {
-		Composite c = g2.getComposite();
-		g2.setComposite(AlphaComposite.SrcOver.derive(alpha));
-		g2.setColor(Color.BLACK);
-//		Paint p = g2.getPaint();
-//		g2.setPaint(new TexturePaint(holes(alpha), new Rectangle(panel.x, panel.y, 2, 2)));
-		
+		Composite c = null;
+		Paint p = null;
+		if (fast) {
+			p = g2.getPaint();
+			BufferedImage fimg = holes((float)Math.min(1.0, alpha * 2));
+			g2.setPaint(new TexturePaint(fimg, new Rectangle(panel.x, panel.y, fimg.getWidth(), fimg.getHeight())));
+		} else {
+			g2.getComposite();
+			g2.setComposite(AlphaComposite.SrcOver.derive(alpha));
+			g2.setColor(Color.BLACK);
+			
+		}
 		if (considerStatusbars) {
 			fillRectAbsolute(0, STATUS_BAR_TOP, screenWidth - 1, panel.y - 1, g2);
 			fillRectAbsolute(0, panel.y + panel.height, screenWidth - 1, screenHeight - 1 - STATUS_BAR_BOTTOM, g2);
@@ -94,29 +100,42 @@ public final class RenderTools {
 		
 		fillRectAbsolute(0, panel.y, panel.x - 1, panel.y + panel.height - 1, g2);
 		fillRectAbsolute(panel.x + panel.width, panel.y, screenWidth - 1, panel.y + panel.height - 1, g2);
-		
-//		g2.setPaint(p);
-		g2.setComposite(c);
+		if (fast) {
+			g2.setPaint(p);
+		} else {
+			g2.setComposite(c);
+		}
 	}
+	/** Use a faster drawing trick for alpha composition? */
+	static boolean fast = true;
+	/** The cache for the last alpha blending. */
+	static float lastAlpha;
+	/** The image to use for the alpha blending. */
+	static BufferedImage lastHoles;
 	/**
 	 * Create a transparent image which has holes.
 	 * @param alpha the effective transparency level
 	 * @return the image
 	 */
 	static BufferedImage holes(float alpha) {
-		int r = (int)(255 * (1 - alpha));
-		int size = 2;
-		int[] pixels = new int[size * size];
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				if (i % 2 != j % 2) {
-					pixels[i * size + j] = argb(255, r, r, r);
+		if (alpha != lastAlpha) {
+			int r = (int)(255 * (1 - alpha));
+			int size = 16; // The pattern size
+			int[] pixels = new int[size * size];
+			for (int i = 0; i < size; i++) {
+				for (int j = 0; j < size; j++) {
+					if ((i % 2) == (j % 2)) {
+						pixels[i * size + j] = argb(255, r, r, r);
+					}
 				}
 			}
+			BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+			img.setRGB(0, 0, size, size, pixels, 0, size);
+			lastHoles = img;
+			lastAlpha = alpha;
+			return img;
 		}
-		BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-		img.setRGB(0, 0, size, size, pixels, 0, size);
-		return img;
+		return lastHoles;
 	}
 	/**
 	 * Create an ARGB color from its components.

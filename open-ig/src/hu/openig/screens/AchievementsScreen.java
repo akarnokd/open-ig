@@ -373,8 +373,8 @@ public class AchievementsScreen extends ScreenBase {
 		g2.drawImage(commons.common().infoEmpty, base.x, base.y, null);
 		super.draw(g2);
 		
-		Shape sp = g2.getClip();
-		g2.setClip(listRect);
+		Shape save0 = g2.getClip();
+		g2.clipRect(listRect.x, listRect.y, listRect.width, listRect.height);
 		adjustLabels();
 		if (mode == Mode.ACHIEVEMENTS) {
 			int y = listRect.y;
@@ -412,7 +412,7 @@ public class AchievementsScreen extends ScreenBase {
 				y += 20;
 			}
 		}
-		g2.setClip(sp);
+		g2.setClip(save0);
 		
 	}
 	/** Create the test achievements. */

@@ -10,8 +10,12 @@ package hu.openig.screens;
 
 import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
+import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
+
+import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  * A screen base class.
@@ -58,7 +62,15 @@ public abstract class ScreenBase extends UIContainer {
 	/** Ask for the parent JComponent to repaint itself. */
 	@Override
 	public void askRepaint() {
-		commons.control.repaintInner();
+		askRepaint(this);
+	}
+	/**
+	 * Ask for the repaint of the given  component area only.
+	 * @param c the target component
+	 */
+	public void askRepaint(UIComponent c) {
+		Point p = c.absLocation();
+		commons.control.repaintInner(p.x, p.y, c.width, c.height);
 	}
 	/**
 	 * Retrieve the parent swing component's width.
@@ -73,6 +85,13 @@ public abstract class ScreenBase extends UIContainer {
 	 */
 	public int getInnerHeight() {
 		return commons.control.getInnerHeight();
+	}
+	/**
+	 * @return The rectangle that represents the non-transparent region of this screen.
+	 * It may be used to optimize rendering of any underlying screen.
+	 */
+	public Rectangle nontransparent() {
+		return new Rectangle(0, 0, width, height);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {

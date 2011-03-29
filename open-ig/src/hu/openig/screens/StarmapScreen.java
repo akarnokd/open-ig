@@ -573,8 +573,9 @@ public class StarmapScreen extends ScreenBase {
 //		g2.drawRect(starmapWindow.x, starmapWindow.y, starmapWindow.width - 1, starmapWindow.height - 1);
 		
 		
-		Shape defaultClip = g2.getClip();
-		g2.setClip(starmapClip);
+		Shape save0 = g2.getClip();
+		
+		g2.clipRect(starmapClip.x, starmapClip.y, starmapClip.width, starmapClip.height);
 		g2.drawImage(commons.starmap().background, starmapRect.x, starmapRect.y, starmapRect.width, starmapRect.height, null);
 		
 		double zoom = getZoom();
@@ -673,7 +674,7 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 		
-		g2.setClip(defaultClip);
+		g2.setClip(save0);
 
 		// TODO panel rendering
 		
@@ -694,8 +695,8 @@ public class StarmapScreen extends ScreenBase {
 			for (Button2 btn : rightPanelButtons) {
 				btn.paint(g2);
 			}
-			Shape sp = g2.getClip();
-			g2.setClip(planetsList);
+			g2.setClip(save0);
+			g2.clipRect(planetsList.x, planetsList.y, planetsList.width, planetsList.height);
 			for (int i = planetsOffset; i < planets.size(); i++) {
 				Planet p = planets.get(i);
 				int color = TextRenderer.GREEN;
@@ -704,7 +705,8 @@ public class StarmapScreen extends ScreenBase {
 				}
 				commons.text().paintTo(g2, planetsList.x + 3, planetsList.y + (i - planetsOffset) * 10 + 2, 7, color, p.name);
 			}
-			g2.setClip(fleetsList);
+			g2.setClip(save0);
+			g2.clipRect(fleetsList.x, fleetsList.y, fleetsList.width, fleetsList.height);
 			for (int i = fleetsOffset; i < fleets.size(); i++) {
 				Fleet p = fleets.get(i);
 				int color = TextRenderer.GREEN;
@@ -714,8 +716,7 @@ public class StarmapScreen extends ScreenBase {
 				commons.text().paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, p.name);
 			}
 			
-			
-			g2.setClip(sp);
+			g2.setClip(save0);
 		}
 		if (bottomPanelVisible) {
 			paintHorizontally(g2, bottomPanel, commons.starmap().infoLeft, commons.starmap().infoRight, commons.starmap().infoFill);
@@ -730,7 +731,8 @@ public class StarmapScreen extends ScreenBase {
 			g2.drawImage(minimapBackground, minimapInnerRect.x, minimapInnerRect.y, null);
 			g2.setColor(Color.WHITE);
 			g2.drawRect(minimapViewportRect.x, minimapViewportRect.y, minimapViewportRect.width - 1, minimapViewportRect.height - 1);
-			g2.setClip(minimapInnerRect);
+			g2.setClip(save0);
+			g2.clipRect(minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height);
 			// render planets
 			for (Planet p : planets) {
 				if (p != currentPlanet || minimapPlanetBlink) {
@@ -740,8 +742,8 @@ public class StarmapScreen extends ScreenBase {
 					g2.fillRect(x0 - 1, y0 - 1, 3, 3);
 				}
 			}
-			g2.setClip(defaultClip);
 		}
+		g2.setClip(save0);
 	}
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
 	void computeRectangles() {

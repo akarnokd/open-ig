@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Difficulty;
+import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
 import hu.openig.utils.WipPort;
@@ -157,17 +158,59 @@ public class World {
 	
 		} finally {
 			wip.dec();
-			try {
-				wip.await();
-			} catch (InterruptedException ex) {
-				
+			await(wip);
+		}
+		wip.inc();
+		try {
+			for (final PlanetType pt : galaxyModel.planetTypes.values()) {
+				for (int i = pt.start; i <= pt.end; i++) {
+					final int j = i;
+					wip.inc();
+					final String n = String.format(pt.pattern, i);
+					exec.execute(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								XElement map = rl.getXML(language, n);
+								PlanetSurface ps = new PlanetSurface();
+								ps.parseMap(map, galaxyModel, buildingModel);
+								synchronized (pt.surfaces) {
+									pt.surfaces.put(j, ps);
+								}
+							} catch (Throwable t) {
+								System.err.println(n);
+								t.printStackTrace();
+							} finally {
+								wip.dec();
+							}
+						}
+					});
+				}
 			}
+		} finally {
+			wip.dec();
+			await(wip);
+		}
+
+		try {
 			exec.shutdown();
+		} finally {
 			try {
 				exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException ex) {
 				
 			}
+		}
+	}
+	/**
+	 * Await the port.
+	 * @param wip the port
+	 */
+	void await(WipPort wip) {
+		try {
+			wip.await();
+		} catch (InterruptedException ex) {
+			
 		}
 	}
 	/**

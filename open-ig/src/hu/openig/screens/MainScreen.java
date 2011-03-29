@@ -310,6 +310,9 @@ public class MainScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
+		if (background == null) {
+			selectRandomBackground();
+		}
 		// relocate objects if necessary
 		xOrigin = (commons.control.getInnerWidth() - background.getWidth()) / 2;
 		yOrigin = (commons.control.getInnerHeight() - background.getHeight()) / 2;

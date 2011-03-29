@@ -8,20 +8,14 @@
 
 package hu.openig.launcher;
 
-import hu.openig.utils.XML;
+import hu.openig.utils.XElement;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * The container for various module updates.
@@ -37,52 +31,47 @@ public class LUpdate {
 	 */
 	public void parse(byte[] data) throws IOException {
 		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(new ByteArrayInputStream(data));
-			process(doc.getDocumentElement());
-		} catch (SAXException ex) {
-			throw new IOException(ex);
-		} catch (ParserConfigurationException ex) {
-			throw new IOException(ex);
+			process(XElement.parseXML(new ByteArrayInputStream(data)));
+		} catch (XMLStreamException ex) {
+			ex.printStackTrace();
 		}
 	}
 	/**
 	 * Process the contents of the XML.
 	 * @param root the root node
 	 */
-	void process(Element root) {
-		for (Element module : XML.childrenWithName(root, "module")) {
+	void process(XElement root) {
+		for (XElement module : root.childrenWithName("module")) {
 			LModule mdl = new LModule();
 			modules.add(mdl);
 			
-			mdl.id = module.getAttribute("id");
-			mdl.version = module.getAttribute("version");
+			mdl.id = module.get("id");
+			mdl.version = module.get("version");
 			
-			Element gen = XML.childElement(module, "general");
-			mdl.general.url = gen.getAttribute("url");
+			XElement gen = module.childElement("general");
+			mdl.general.url = gen.get("url");
 			mdl.general.parse(gen);
 			
-			Element not = XML.childElement(module, "notes");
-			mdl.releaseNotes.url = not.getAttribute("url");
+			XElement not = module.childElement("notes");
+			mdl.releaseNotes.url = not.get("url");
 			mdl.releaseNotes.parse(not);
 			
-			Element exec = XML.childElement(module, "execute");
-			if (exec.hasAttribute("memory")) {
-				mdl.memory = Integer.parseInt(exec.getAttribute("memory"));
+			XElement exec = module.childElement("execute");
+			if (exec.get("memory") != null) {
+				mdl.memory = Integer.parseInt(exec.get("memory"));
 			}
-			mdl.executeFile = exec.getAttribute("file");
+			mdl.executeFile = exec.get("file");
 			
-			for (Element eFile : XML.childrenWithName(module, "file")) {
+			for (XElement eFile : module.childrenWithName("file")) {
 				LFile f = new LFile();
-				f.url = eFile.getAttribute("url");
-				f.sha1 = eFile.getAttribute("sha1");
+				f.url = eFile.get("url");
+				f.sha1 = eFile.get("sha1");
 				f.parse(eFile);
 				mdl.files.add(f);
 			}
-			for (Element eDelete : XML.childrenWithName(module, "remove")) {
+			for (XElement eDelete : module.childrenWithName("remove")) {
 				LRemoveFile f = new LRemoveFile();
-				f.file = eDelete.getAttribute("file");
+				f.file = eDelete.get("file");
 				f.parse(eDelete);
 				mdl.removeFiles.add(f);
 			}

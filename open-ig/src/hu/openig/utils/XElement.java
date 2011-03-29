@@ -100,11 +100,11 @@ public class XElement implements Iterable<XElement> {
 		return null;
 	}
 	/**
-	 * XML parzolása inputstream-ből és lightweight XElement formába.
-	 * Nem zárja be az inputstreamet.
-	 * @param in az InputStream objektum
-	 * @return az XElement objektum
-	 * @throws XMLStreamException kivétel esetén
+	 * Parse an XML document from the given input stream.
+	 * Does not close the stream.
+	 * @param in the input stream
+	 * @return az XElement object
+	 * @throws XMLStreamException on error
 	 */
 	public static XElement parseXML(InputStream in) throws XMLStreamException {
 		XMLInputFactory inf = XMLInputFactory.newInstance();
@@ -112,10 +112,10 @@ public class XElement implements Iterable<XElement> {
 		return parseXML(ir);
 	}
 	/**
-	 * A megadott XML Stream reader alapján az XElement fa felépítése.
-	 * @param in az XMLStreamReader
-	 * @return az XElement objektum
-	 * @throws XMLStreamException ha probléma adódik
+	 * Parse an XML from an XML stream reader. Does not close the stream
+	 * @param in the XMLStreamReader object
+	 * @return az XElement object
+	 * @throws XMLStreamException on error
 	 */
 	private static XElement parseXML(XMLStreamReader in) throws XMLStreamException {
 		XElement node = null;
@@ -130,16 +130,13 @@ public class XElement implements Iterable<XElement> {
 			switch(type) {
 			case XMLStreamConstants.START_ELEMENT:
 				if (b != null) {
-					// a megkezdett szöveg elmentése
 					stack.push(b);
 					b = null;
 				} else {
-					// nem volt text elem, így az üres elmentése
 					stack.push(emptyBuilder);
 				}
 				XElement n = new XElement(in.getName().getLocalPart());
 				n.parent = node;
-//				n.depth = depth++;
 				int attCount = in.getAttributeCount();
 				if (attCount > 0) {
 					for (int i = 0; i < attCount; i++) {
@@ -157,12 +154,6 @@ public class XElement implements Iterable<XElement> {
 			case XMLStreamConstants.CDATA:
 			case XMLStreamConstants.CHARACTERS:
 				if (node != null && !in.isWhiteSpace()) {
-					/*
-					if (node.value == null) {
-						node.value = new StringBuilder();
-					}
-					node.value.append(ir.getText());
-					*/
 					if (b == null) {
 						b = new StringBuilder();
 					}
@@ -170,16 +161,13 @@ public class XElement implements Iterable<XElement> {
 				}
 				break;
 			case XMLStreamConstants.END_ELEMENT:
-				// ha volt szöveg, akkor hozzárendeljük a csomópont értékéhez
 				if (b != null) {
 					node.content = b.toString();
 				}
 				if (node != null) {
 					node = node.parent;
 				}
-				// kiszedjük a szülőjének builderjét
 				b = stack.pop();
-				// ha ez az üres, akkor a szülőnek (még) nem volt szöveges tartalma
 				if (b == emptyBuilder) {
 					b = null;
 				}
@@ -193,11 +181,10 @@ public class XElement implements Iterable<XElement> {
 		return root;
 	}
 	/**
-	 * XML parzolása reader-ből és lightweight XElement formába.
-	 * Nem zárja be az inputstreamet.
-	 * @param in az InputStream objektum
-	 * @return az XElement objektum
-	 * @throws XMLStreamException kivétel esetén
+	 * Parse an XML document from the given reader. Does not close the stream.
+	 * @param in the InputStream object
+	 * @return az XElement object
+	 * @throws XMLStreamException on error
 	 */
 	public static XElement parseXML(Reader in) throws XMLStreamException {
 		XMLInputFactory inf = XMLInputFactory.newInstance();
@@ -205,18 +192,125 @@ public class XElement implements Iterable<XElement> {
 		return parseXML(ir);
 	}
 	/**
-	 * XML fájl parzolása fájlnév alapján.
-	 * @param fileName fálnév
-	 * @return az XElement objektum
-	 * @throws IOException ha hiba történt
-	 * @throws XMLStreamException ha hiba történt
+	 * Parse an XML from the given local filename.
+	 * @param fileName the file name
+	 * @return az XElement object
+	 * @throws XMLStreamException on error
 	 */
-	public static XElement parseXML(String fileName) throws IOException, XMLStreamException {
-		InputStream in = new FileInputStream(fileName);
+	public static XElement parseXML(String fileName) throws XMLStreamException {
 		try {
-			return parseXML(in);
-		} finally {
-			in.close();
+			InputStream in = new FileInputStream(fileName);
+			try {
+				return parseXML(in);
+			} finally {
+				in.close();
+			}
+		} catch (IOException ex) {
+			throw new XMLStreamException(ex);
 		}
+	}
+	/**
+	 * Connverts all sensitive characters to its HTML entity equivalent.
+	 * @param s the string to convert, can be null
+	 * @return the converted string, or an empty string
+	 */
+	public static String sanitize(String s) {
+		if (s != null) {
+			StringBuilder b = new StringBuilder(s.length());
+			for (int i = 0, count = s.length(); i < count; i++) {
+				char c = s.charAt(i);
+				switch (c) {
+				case '<':
+					b.append("&lt;");
+					break;
+				case '>':
+					b.append("&gt;");
+					break;
+				case '\'':
+					b.append("&#39;");
+					break;
+				case '"':
+					b.append("&quot;");
+					break;
+				case '&':
+					b.append("&amp;");
+					break;
+				default:
+					b.append(c);
+				}
+			}
+			return b.toString();
+		}
+		return "";
+	}
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		toStringRep("", new HashMap<String, String>(), b);
+		return b.toString();
+	}
+	/**
+	 * Convert the element into a pretty printed string representation.
+	 * @param indent the current line indentation
+	 * @param nss the namespace cache
+	 * @param out the output
+	 */
+	void toStringRep(String indent, Map<String, String> nss, StringBuilder out) {
+		out.append(indent).append("<");
+		out.append(name);
+		if (attributes.size() > 0) {
+			for (String an : attributes.keySet()) {
+				out.append(" ").append(an).append("='").append(sanitize(attributes.get(an))).append("'");
+			}
+		}
+		
+		if (children.size() == 0) {
+			if (content == null) {
+				out.append("/>");
+			} else {
+				out.append(sanitize(content));
+				out.append(indent).append("</");
+				out.append(name);
+				out.append(">");
+			}
+		} else {
+			if (content == null) {
+				out.append(String.format(">%n"));
+			} else {
+				out.append(">");
+				out.append(sanitize(content));
+				out.append(String.format("%n"));
+			}
+			for (XElement e : children) {
+				e.toStringRep(indent + "  ", nss, out);
+			}
+			out.append(indent).append("</");
+			out.append(name);
+			out.append(">");
+		}
+		out.append(String.format("%n"));
+	}
+	/**
+	 * Set an attribute value.
+	 * @param name the attribute name
+	 * @param value the content value, null will remove any existing
+	 */
+	public void set(String name, Object value) {
+		if (value != null) {
+			attributes.put(name, String.valueOf(value));
+		} else {
+			attributes.remove(name);
+		}
+		
+	}
+	/**
+	 * Add a new child element with the given name.
+	 * @param name the element name
+	 * @return the created XElement
+	 */
+	public XElement add(String name) {
+		XElement result = new XElement(name);
+		children.add(result);
+		return result;
 	}
 }

@@ -265,8 +265,8 @@ public class VideoScreen extends ScreenBase {
 		g2.fillRect(origin.x + (origin.width - w) / 2, origin.y - 9, w, 18);
 		commons.text().paintTo(g2, origin.x + (origin.width - w) / 2 + 5, origin.y - 7, 14, 0xFFFFCC00, s);
 		
-		Shape sp = g2.getClip();
-		g2.setClip(listRect);
+		Shape save0 = g2.getClip();
+		g2.clipRect(listRect.x, listRect.y, listRect.width, listRect.height);
 		
 		int y = listRect.y;
 		int h = 10;
@@ -277,7 +277,7 @@ public class VideoScreen extends ScreenBase {
 			y += 20;
 		}
 		
-		g2.setClip(sp);
+		g2.setClip(save0);
 		
 		super.draw(g2);
 	}
