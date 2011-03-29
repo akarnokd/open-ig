@@ -8,12 +8,10 @@
 
 package hu.openig.launcher;
 
-import hu.openig.utils.XML;
+import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.w3c.dom.Element;
 
 /**
  * The base item for various L* items.
@@ -39,11 +37,11 @@ public class LBaseItem {
 	 * Parse the element for &lt;desc&gt; tags.
 	 * @param element the element to parse
 	 */
-	public void parse(Element element) {
-		for (Element desc : XML.childrenWithName(element, "desc")) {
+	public void parse(XElement element) {
+		for (XElement desc : element.childrenWithName("desc")) {
 			LDescription descr = new LDescription();
-			descr.language = desc.getAttribute("lang");
-			descr.description = desc.getTextContent();
+			descr.language = desc.get("lang");
+			descr.description = desc.content;
 			descriptions.add(descr);
 		}
 	}

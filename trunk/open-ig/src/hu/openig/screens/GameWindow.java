@@ -76,13 +76,22 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		@Override
 		public void paint(Graphics g) {
+			repaintRequest = false;
 			Graphics2D g2 = (Graphics2D)g;
 			if (movieVisible) {
 				movie.draw(g2);
 			} else {
+//				Shape save0 = g2.getClip();
+//				if (secondary != null) {
+//					Rectangle r = secondary.nontransparent();
+//					Area a = new Area(save0);
+//					a.subtract(new Area(r));
+//					g2.setClip(a);
+//				}
 				if (primary != null) {
 					primary.draw(g2);
 				}
+//				g2.setClip(save0);
 				if (secondary != null) {
 					secondary.draw(g2);
 				}
@@ -92,6 +101,8 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}
 	}
+	/** A pending repaint request. */
+	boolean repaintRequest;
 	/** The primary screen. */
 	ScreenBase primary;
 	/** The secondary screen drawn over the first. */
@@ -235,24 +246,19 @@ public class GameWindow extends JFrame implements GameControls {
 		surface.addMouseWheelListener(ma);
 		addKeyListener(new KeyEvents());
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.GameControls#exit()
-	 */
 	@Override
 	public void exit() {
 		uninitScreens();
 		dispose();
+		try {
+			config.watcherWindow.close();
+		} catch (IOException e) {
+		}
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.screens.GameControls#setWindowBounds(int, int, int, int)
-	 */
 	@Override
 	public void setWindowBounds(int x, int y, int width, int height) {
 		setBounds(x, y, width, height);
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.GameControls#switchLanguage(java.lang.String)
-	 */
 	@Override
 	public void switchLanguage(String newLanguage) {
 		commons.reinit(newLanguage);
@@ -743,7 +749,11 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void repaintInner() {
-		surface.repaint();
+		// issue a single repaint, e.g., coalesce the repaints
+		if (!repaintRequest) {
+			repaintRequest = true;
+			surface.repaint();
+		}
 	}
 	@Override
 	public void repaintInner(int x, int y, int w, int h) {

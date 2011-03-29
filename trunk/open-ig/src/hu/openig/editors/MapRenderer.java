@@ -211,8 +211,13 @@ public class MapRenderer extends JComponent {
 					animation = -1;
 				}
 				animation++;
-				blink = (animation % 10) >= 5;
-				repaint();
+				if (surface != null && surface.buildings.size() > 0) {
+					boolean blink0 = blink;
+					blink = (animation % 10) >= 5;
+					if (blink0 != blink || (animation % 3 == 0)) {
+						repaint();
+					}
+				}
 			}
 		});
 		animationTimer.start();

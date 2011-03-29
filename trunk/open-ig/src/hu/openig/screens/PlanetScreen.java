@@ -15,10 +15,10 @@ import hu.openig.core.PlanetType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Sides;
 import hu.openig.core.Tile;
-import hu.openig.editors.ImportDialog.OriginalBuilding;
-import hu.openig.editors.ImportDialog.OriginalPlanet;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.OriginalBuilding;
+import hu.openig.model.OriginalPlanet;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
@@ -568,7 +568,7 @@ public class PlanetScreen extends ScreenBase {
 			RenderTools.setInterpolation(g2, true);
 			
 			Shape save0 = g2.getClip();
-			g2.setClip(0, 0, width, height);
+			g2.clipRect(0, 0, width, height);
 			
 			g2.setColor(new Color(96, 96, 96));
 			g2.fillRect(0, 0, width, height);
@@ -794,7 +794,7 @@ public class PlanetScreen extends ScreenBase {
 			RenderTools.setInterpolation(g2, true);
 			
 			Shape save0 = g2.getClip();
-			g2.setClip(0, 0, width, height);
+			g2.clipRect(0, 0, width, height);
 			
 			g2.setColor(new Color(96, 96, 96));
 			g2.fillRect(0, 0, width, height);
@@ -1165,7 +1165,7 @@ public class PlanetScreen extends ScreenBase {
 	/** @return Parse the original planet definitions. */
 	Map<String, OriginalPlanet> parseOriginalPlanet() {
 		final Map<String, OriginalPlanet> originalPlanets = new LinkedHashMap<String, OriginalPlanet>();
-		XElement e = rl.getXML("en", "colony/planets");
+		XElement e = rl.getXML("en", "campaign/main/planets_old");
 		for (XElement planet : e.childrenWithName("planet")) {
 			OriginalPlanet op = new OriginalPlanet();
 			op.name = planet.get("id");
@@ -1578,6 +1578,19 @@ public class PlanetScreen extends ScreenBase {
 			undamaged.visible(false);
 		}
 	}
+	/** Perform the animation. */
+	void doAnimation() {
+		//wrap animation index
+		if (animation == Integer.MAX_VALUE) {
+			animation = -1;
+		}
+		animation++;
+		boolean blink0 = blink;
+		blink = (animation % 10) >= 5;
+		if (blink0 != blink || (animation % 3 == 0)) {
+			askRepaint();
+		}
+	}
 	@Override
 	public void onInitialize() {
 		surface = new PlanetSurface();
@@ -1587,13 +1600,7 @@ public class PlanetScreen extends ScreenBase {
 		animationTimer = new Timer(100, new Act() {
 			@Override
 			public void act() {
-				//wrap animation index
-				if (animation == Integer.MAX_VALUE) {
-					animation = -1;
-				}
-				animation++;
-				blink = (animation % 10) >= 5;
-				askRepaint();
+				doAnimation();
 			}
 		});
 		selection = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFFFFFF00), null);

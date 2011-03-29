@@ -8,7 +8,9 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
+import hu.openig.core.PlanetType;
 import hu.openig.core.Tile;
+import hu.openig.utils.XElement;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ public class PlanetSurface {
 	public int width;
 	/** The height with in cells. The width is defined as a vertical dimension of the map, but in coordinate terms it is equal to the sequence 0,0 -1,-1, -2,-2 etc. */
 	public int height;
+	/** The current lighting level. */
+	public float alpha = 1.0f;
 	/**
 	 * The accessible rectangle of the surface defined in pixels. The accessible origin is encoded relative to the top-left corner of where the Location(0,0) is rendered.
 	 */
@@ -105,5 +109,183 @@ public class PlanetSurface {
 			return false;
 		}		
 		return true;
+	}
+	/**
+	 * Place a building tile onto the current surface map.
+	 * Does not check for overlapping.
+	 * @param tile the tile
+	 * @param x the tile's leftmost coordinate
+	 * @param y the tile's topmost coordinate
+	 * @param building the building object to assign
+	 */
+	public void placeBuilding(Tile tile, int x, int y, Building building) {
+		for (int a = x; a < x + tile.width; a++) {
+			for (int b = y; b > y - tile.height; b--) {
+				SurfaceEntity se = new SurfaceEntity();
+				se.type = SurfaceEntityType.BUILDING;
+				se.virtualRow = y - b;
+				se.virtualColumn = a - x;
+				se.tile = tile;
+				se.tile.alpha = alpha;
+				se.building = building;
+				buildingmap.put(Location.of(a, b), se);
+			}
+		}
+		buildings.add(building);
+	}
+	/**
+	 * Place a tile onto the current surface map.
+	 * Does not check for overlapping.
+	 * @param tile the tile
+	 * @param x the tile's leftmost coordinate
+	 * @param y the tile's topmost coordinate
+	 * @param id the base tile id
+	 * @param surface the surface type
+	 */
+	public void placeBase(Tile tile, int x, int y, int id, String surface) {
+		for (int a = x; a < x + tile.width; a++) {
+			for (int b = y; b > y - tile.height; b--) {
+				SurfaceEntity se = new SurfaceEntity();
+				se.type = SurfaceEntityType.BASE;
+				se.virtualRow = y - b;
+				se.virtualColumn = a - x;
+				se.tile = tile;
+				se.tile.alpha = alpha;
+				basemap.put(Location.of(a, b), se);
+			}
+		}
+		SurfaceFeature sf = new SurfaceFeature();
+		sf.id = id;
+		sf.type = surface;
+		sf.tile = tile;
+		sf.location = Location.of(x, y);
+		features.add(sf);
+	}
+	/**
+	 * Set the size of the surface map.
+	 * @param width the width (direction +1, -1)
+	 * @param height the height (direction -1, -1)
+	 */
+	public void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+		computeRenderingLocations();
+	}
+	/**
+	 * Parse a map definition XML.
+	 * @param map the map
+	 * @param gm the galaxy model, null if no surface needs to be loaded
+	 * @param bm the building model, null if no building needs to be loaded
+	 */
+	public void parseMap(XElement map, GalaxyModel gm, BuildingModel bm) {
+		if (gm != null) {
+			XElement surface = map.childElement("surface");
+			if (surface != null) {
+				int width = Integer.parseInt(surface.get("width"));
+				int height = Integer.parseInt(surface.get("height"));
+				setSize(width, height);
+				for (XElement tile : surface.childrenWithName("tile")) {
+					String type = tile.get("type");
+					int id = Integer.parseInt(tile.get("id"));
+					int x = Integer.parseInt(tile.get("x"));
+					int y = Integer.parseInt(tile.get("y"));
+					PlanetType pt = gm.planetTypes.get(type);
+					if (pt == null) {
+						System.err.println("Missing planet type: " + type);
+					}
+					Tile t = pt.tiles.get(id);
+					if (t == null) {
+						System.err.println("Missing tile: " + id + " on planet type " + type);
+					}
+					
+					placeBase(t, x, y, id, type);
+				}
+			}
+		}
+		if (bm != null) {
+			XElement buildings = map.childElement("buildings");
+			if (buildings != null) {
+				String tech = null;
+				for (XElement tile : buildings.childrenWithName("building")) {
+					String id = tile.get("id");
+					tech = tile.get("tech");
+					
+					Building b = new Building(bm.buildings.get(id), tech);
+					int x = Integer.parseInt(tile.get("x"));
+					int y = Integer.parseInt(tile.get("y"));
+				
+					b.location = Location.of(x, y);
+					
+					b.buildProgress = Integer.parseInt(tile.get("build"));
+					b.hitpoints = Integer.parseInt(tile.get("hp"));
+					b.setLevel(Integer.parseInt(tile.get("level")));
+					b.assignedEnergy = Integer.parseInt(tile.get("energy"));
+					b.assignedWorker = Integer.parseInt(tile.get("worker"));
+					b.enabled = "true".equals(tile.get("enabled"));
+					b.repairing = "true".equals(tile.get("repairing"));
+					
+					placeBuilding(b.tileset.normal, x, y, b);
+				}
+			}
+		}
+	}
+	/**
+	 * Store the map elements under the given XElement.
+	 * @param map the map to store the surface and/or buildings
+	 * @param withSurface store the surface
+	 * @param withBuildings store the buildings?
+	 */
+	public void storeMap(XElement map, boolean withSurface, boolean withBuildings) {
+		if (withSurface) {
+			XElement surfaces = map.add("surface");
+			surfaces.set("width", width);
+			surfaces.set("height", height);
+			for (SurfaceFeature sf : features) {
+				XElement tile = surfaces.add("tile");
+				tile.set("type", sf.type);
+				tile.set("id", sf.id);
+				tile.set("x", sf.location.x);
+				tile.set("y", sf.location.y);
+			}
+		}
+		if (withBuildings) {
+			XElement xbuildings = map.add("buildings");
+			for (Building b : buildings) {
+				XElement xb = xbuildings.add("building");
+				xb.set("id", b.type.id);
+				xb.set("tech", b.techId);
+				xb.set("x", b.location.x);
+				xb.set("y", b.location.y);
+				xb.set("build", b.buildProgress);
+				xb.set("hp", b.hitpoints);
+				xb.set("level", b.upgradeLevel);
+				xb.set("worker", b.assignedWorker);
+				xb.set("energy", b.assignedEnergy);
+				xb.set("enabled", b.enabled);
+				xb.set("repairing", b.repairing);
+			}
+		}
+	}
+	/**
+	 * @return the technology id of the last building placed on the planet, null if no buildings present
+	 */
+	public String getTechnology() {
+		if (buildings.size() > 0) {
+			return buildings.get(buildings.size() - 1).techId;
+		}
+		return null;
+	}
+	/**
+	 * Set the lighting level on the surface tiles.
+	 * @param alpha the new lighting level
+	 */
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
+		for (SurfaceFeature sf : features) {
+			sf.tile.alpha = alpha;
+		}
+		for (Building b : buildings) {
+			b.tileset.normal.alpha = alpha;
+		}
 	}
 }

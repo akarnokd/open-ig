@@ -8,6 +8,8 @@
 
 package hu.openig.core;
 
+import hu.openig.model.PlanetSurface;
+
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,5 +28,11 @@ public class PlanetType {
 	/** The available tileset. */
 	public Map<Integer, Tile> tiles = new HashMap<Integer, Tile>();
 	/** The surface map variations. */
-	public Map<Integer, byte[]> surfaces = new HashMap<Integer, byte[]>();
+	public Map<Integer, PlanetSurface> surfaces = new HashMap<Integer, PlanetSurface>();
+	/** The pattern with a single %d element to resolve the surface definitions. */
+	public String pattern;
+	/** The start index of the preset surface models. */
+	public int start;
+	/** The end index of the preset surface models. */
+	public int end;
 }

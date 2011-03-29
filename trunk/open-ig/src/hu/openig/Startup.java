@@ -11,6 +11,7 @@ package hu.openig;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.screens.GameWindow;
+import hu.openig.utils.ConsoleWatcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +52,7 @@ public final class Startup {
 			}
 		}
 		Configuration config = new Configuration("open-ig-config.xml");
+		config.watcherWindow = new ConsoleWatcher();
 		if (!config.load() || argset.contains("-config")) {
 			doStartConfiguration(config);
 		} else {

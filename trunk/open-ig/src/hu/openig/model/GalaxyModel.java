@@ -91,12 +91,9 @@ public class GalaxyModel {
 							}
 							
 							XElement map = planet.childElement("map");
-							String mapPattern = map.get("pattern");
-							int start = Integer.parseInt(map.get("start"));
-							int end = Integer.parseInt(map.get("end"));
-							for (int i = start; i <= end; i++) {
-								planetType.surfaces.put(i, rl.getData(language, String.format(mapPattern, i)));
-							}
+							planetType.pattern = map.get("pattern");
+							planetType.start = Integer.parseInt(map.get("start"));
+							planetType.end = Integer.parseInt(map.get("end"));
 							synchronized (planetTypes) {
 								planetTypes.put(planetType.type, planetType);
 							}
@@ -110,5 +107,4 @@ public class GalaxyModel {
 			wip.dec();
 		}
 	}
-
 }

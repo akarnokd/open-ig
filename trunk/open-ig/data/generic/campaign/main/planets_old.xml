@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Planetary information for the original campaign -->
-<planets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="planets.xsd">
+<planets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="planets_old.xsd">
 	<planet id="Achilles">
 		<name>Achilles</name>
 		<location-x>154</location-x>

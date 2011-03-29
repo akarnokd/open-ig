@@ -9,7 +9,7 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
-import hu.openig.core.ResourceType;
+import hu.openig.core.Action1;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.render.RenderTools;
@@ -23,7 +23,6 @@ import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.ui.UIVideoImage;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -37,7 +36,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CyclicBarrier;
 
 import javax.swing.Timer;
 
@@ -85,9 +83,9 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The bridge button. */
 	UIImageButton bridgeButton;
 	/** The video output. */
-	UIVideoImage video;
+	UIImage video;
 	/** The video renderer. */
-	VideoRenderer videoRenderer;
+	TechnologyVideoRenderer videoRenderer;
 	/** The main category panel. */
 	UIImage mainCategory;
 	/** The subcategory panel for the research screen. */
@@ -361,7 +359,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		viewActiveEmpty = new UIImage(commons.research().emptySmall);
 		viewActiveEmpty.z = -1;
 		
-		video = new UIVideoImage();
+		video = new UIImage();
 		
 		spaceshipsLabel = new UIImageTabButton(commons.research().spaceships);
 		spaceshipsLabel.onPress = new Act() {
@@ -632,8 +630,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		removeButton.location(addButton.location());
 		emptyButton.location(addButton.location());
 
-		video.location(base.x + 2, base.y + 2);
-		video.size(316, 196);
+		video.bounds(base.x + 2, base.y + 2, 316, 196);
 		
 		equipmentButton.location(addButton.x, addButton.y + addButton.height);
 		
@@ -826,26 +823,32 @@ public class ResearchProductionScreen extends ScreenBase {
 			setMode(RPMode.RESEARCH);
 		}
 		animation.start();
-		
-		videoRenderer = new VideoRenderer(new CyclicBarrier(1), new CyclicBarrier(1), video, 
-				rl.get(commons.language(), "technology/spaceships/fighters/fighter_1", ResourceType.VIDEO), "Research-Production-Video");
-		videoRenderer.setRepeat(true);
-//		videoRenderer.setFpsOverride(15d);
-		videoRenderer.start();
+		video.image(null);
+		videoRenderer = new TechnologyVideoRenderer(
+				commons.video("technology/spaceships/fighters/fighter_1"),
+				new Action1<BufferedImage>() {
+					@Override
+					public void invoke(BufferedImage value) {
+						video.image(value);
+						askRepaint(video);
+					}
+				}
+		);
+		videoRenderer.start(commons.pool);
 	}
 
 	@Override
 	public void onLeave() {
 		animation.stop();
 		if (videoRenderer != null) {
-			videoRenderer.stopPlayback();
+			videoRenderer.stop();
+			videoRenderer = null;
 		}
 	}
 
 	@Override
 	public void onFinish() {
 		onLeave();
-		videoRenderer = null;
 		animation = null;
 	}
 
@@ -1083,5 +1086,9 @@ public class ResearchProductionScreen extends ScreenBase {
 		} else {
 			return super.mouse(e);
 		}
+	}
+	@Override
+	public Rectangle nontransparent() {
+		return base;
 	}
 }

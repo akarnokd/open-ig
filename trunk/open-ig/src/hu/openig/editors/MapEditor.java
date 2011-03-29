@@ -18,12 +18,12 @@ import hu.openig.core.ResourceLocator;
 import hu.openig.core.RoadType;
 import hu.openig.core.Sides;
 import hu.openig.core.Tile;
-import hu.openig.editors.ImportDialog.OriginalBuilding;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingModel;
 import hu.openig.model.BuildingType;
 import hu.openig.model.GalaxyModel;
+import hu.openig.model.OriginalBuilding;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.Resource;
 import hu.openig.model.SurfaceEntity;
@@ -31,10 +31,11 @@ import hu.openig.model.SurfaceEntityType;
 import hu.openig.model.SurfaceFeature;
 import hu.openig.model.TileSet;
 import hu.openig.render.TextRenderer;
+import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.WipPort;
-import hu.openig.utils.XML;
+import hu.openig.utils.XElement;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -67,6 +68,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.net.URI;
@@ -125,8 +127,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
-
-import org.w3c.dom.Element;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Map editor.
@@ -486,14 +487,11 @@ public class MapEditor extends JFrame {
 						});
 					} finally {
 						wip.dec();
-						try {
-							wip.await();
-							exec.shutdown();
-							exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-						} catch (InterruptedException ex) {
-							
-						}
+						wip.await();
 					}
+					exec.shutdown();
+					exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+
 					colonyGraphics = new ColonyGFX(rl);
 					colonyGraphics.load("en");
 					
@@ -1373,12 +1371,7 @@ public class MapEditor extends JFrame {
 	 */
 	private void setAlphaOnTiles() {
 		if (renderer.surface != null) {
-			for (SurfaceEntity se : renderer.surface.basemap.values()) {
-				se.tile.alpha = alpha; 
-			}
-			for (SurfaceEntity se : renderer.surface.buildingmap.values()) {
-				se.tile.alpha = alpha;
-			}
+			renderer.surface.setAlpha(alpha);
 		}
 	}
 	/**
@@ -1741,37 +1734,35 @@ public class MapEditor extends JFrame {
 	void createPlanetSurface(int width, int height) {
 		ui.mapsize.setText(width + " x " + height);
 		renderer.surface = new PlanetSurface();
-		renderer.surface.width = width;
-		renderer.surface.height = height;
-		renderer.surface.computeRenderingLocations();
+		renderer.surface.setSize(width, height);
 		ui.allocationPanel.buildings = renderer.surface.buildings;
 	}
-	/**
-	 * Place a tile onto the current surface map.
-	 * @param tile the tile
-	 * @param x the tile's leftmost coordinate
-	 * @param y the tile's leftmost coordinate
-	 * @param type the tile type
-	 * @param building the building object to assign
-	 */
-	void placeTile(Tile tile, int x, int y, SurfaceEntityType type, Building building) {
-		for (int a = x; a < x + tile.width; a++) {
-			for (int b = y; b > y - tile.height; b--) {
-				SurfaceEntity se = new SurfaceEntity();
-				se.type = type;
-				se.virtualRow = y - b;
-				se.virtualColumn = a - x;
-				se.tile = tile;
-				se.tile.alpha = alpha;
-				se.building = building;
-				if (type != SurfaceEntityType.BASE) {
-					renderer.surface.buildingmap.put(Location.of(a, b), se);
-				} else {
-					renderer.surface.basemap.put(Location.of(a, b), se);
-				}
-			}
-		}
-	}
+//	/**
+//	 * Place a tile onto the current surface map.
+//	 * @param tile the tile
+//	 * @param x the tile's leftmost coordinate
+//	 * @param y the tile's leftmost coordinate
+//	 * @param type the tile type
+//	 * @param building the building object to assign
+//	 */
+//	void placeTile(Tile tile, int x, int y, SurfaceEntityType type, Building building) {
+//		for (int a = x; a < x + tile.width; a++) {
+//			for (int b = y; b > y - tile.height; b--) {
+//				SurfaceEntity se = new SurfaceEntity();
+//				se.type = type;
+//				se.virtualRow = y - b;
+//				se.virtualColumn = a - x;
+//				se.tile = tile;
+//				se.tile.alpha = alpha;
+//				se.building = building;
+//				if (type != SurfaceEntityType.BASE) {
+//					renderer.surface.buildingmap.put(Location.of(a, b), se);
+//				} else {
+//					renderer.surface.basemap.put(Location.of(a, b), se);
+//				}
+//			}
+//		}
+//	}
 	/**
 	 * Place the selected surface tile into the selection rectangle.
 	 */
@@ -1790,13 +1781,7 @@ public class MapEditor extends JFrame {
 				
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width) {
 					for (int y = renderer.selectedRectangle.y; y > renderer.selectedRectangle.y - renderer.selectedRectangle.height; y -= te.tile.height) {
-						SurfaceFeature sf = new SurfaceFeature();
-						sf.id = te.id;
-						sf.type = te.surface;
-						sf.location = Location.of(x, y);
-						sf.tile = te.tile;
-						renderer.surface.features.add(sf);
-						placeTile(te.tile, x, y, SurfaceEntityType.BASE, null);
+						renderer.surface.placeBase(te.tile, x, y, te.id, te.surface);
 					}
 				}
 				undo.setAfter();
@@ -1826,8 +1811,7 @@ public class MapEditor extends JFrame {
 						Building bld = new Building(te.buildingType, te.surface);
 						bld.makeFullyBuilt();
 						bld.location = Location.of(x + 1, y - 1);
-						renderer.surface.buildings.add(bld);
-						placeTile(te.tile, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING, bld);
+						renderer.surface.placeBuilding(te.tile, bld.location.x, bld.location.y, bld);
 					}
 				}
 				placeRoads(te.surface);
@@ -1838,7 +1822,7 @@ public class MapEditor extends JFrame {
 		}
 	}
 	/**
-	 * 
+	 * Display the help in a browser window.
 	 */
 	void doHelp() {
 		Desktop desktop = Desktop.getDesktop();
@@ -1851,7 +1835,7 @@ public class MapEditor extends JFrame {
 				JOptionPane.showMessageDialog(MapEditor.this, "Exception", stacktraceToString(ex), JOptionPane.ERROR_MESSAGE);
 			}
 		} else {
-			JOptionPane.showMessageDialog(MapEditor.this, "Desktop not supported. Please navigate to http://code.google.com/p/open-ig/wiki/MapEditor manually.");
+			JOptionPane.showInputDialog(MapEditor.this, "Desktop not supported. Please navigate to http://code.google.com/p/open-ig/wiki/MapEditor manually.", "http://code.google.com/p/open-ig/wiki/MapEditor");
 		}
 	}
 	/**
@@ -1894,8 +1878,8 @@ public class MapEditor extends JFrame {
 					Building bld = new Building(bt, r);
 					bld.makeFullyBuilt();
 					bld.location = Location.of(ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue);
-					renderer.surface.buildings.add(bld);
-					placeTile(t.normal, ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue, SurfaceEntityType.BUILDING, bld);
+					
+					renderer.surface.placeBuilding(t.normal, ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue, bld);
 				}
 				renderer.buildingBox = null;
 				currentBuilding = null;
@@ -1929,13 +1913,8 @@ public class MapEditor extends JFrame {
 				Location loc = toOriginalLocation(i);
 				Tile t = pt.tiles.get(tile);
 				if (t != null) {
-					SurfaceFeature sf = new SurfaceFeature();
-					sf.location = Location.of(loc.x + shiftX, loc.y + shiftY);
-					sf.id = tile;
-					sf.type = surfaceType;
-					sf.tile = t;
-					renderer.surface.features.add(sf);
-					placeTile(t, loc.x + shiftX, loc.y + shiftY, SurfaceEntityType.BASE, null);
+					renderer.surface.placeBase(t, loc.x + shiftX, 
+							loc.y + shiftY, tile, surfaceType);
 				}
 			}
 		}
@@ -2116,14 +2095,10 @@ public class MapEditor extends JFrame {
 		if (cbt != null) {
 			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 			deleteEntitiesOf(renderer.surface.basemap, renderer.placementRectangle, false);
-			SurfaceFeature sf = new SurfaceFeature();
-			sf.id = cbt.id;
-			sf.type = cbt.type;
-			sf.tile = cbt.tile;
-			sf.location = Location.of(renderer.placementRectangle.x, renderer.placementRectangle.y);
-			renderer.surface.features.add(sf);
 			
-			placeTile(cbt.tile, renderer.placementRectangle.x, renderer.placementRectangle.y, SurfaceEntityType.BASE, null);
+			renderer.surface.placeBase(cbt.tile, 
+					renderer.placementRectangle.x, 
+					renderer.placementRectangle.y, cbt.id, cbt.type);
 			
 			undo.setAfter();
 			addUndo(undo);
@@ -2134,9 +2109,9 @@ public class MapEditor extends JFrame {
 			Building bld = new Building(currentBuildingType, currentBuildingRace);
 			bld.makeFullyBuilt();
 			bld.location = Location.of(renderer.placementRectangle.x + 1, renderer.placementRectangle.y - 1); // leave room for the roads!
-			renderer.surface.buildings.add(bld);
 			
-			placeTile(bld.tileset.normal, bld.location.x, bld.location.y, SurfaceEntityType.BUILDING, bld);
+			renderer.surface.placeBuilding(bld.tileset.normal, 
+					bld.location.x, bld.location.y, bld);
 			placeRoads(currentBuildingRace);
 			
 			undo.setAfter();
@@ -2314,6 +2289,9 @@ public class MapEditor extends JFrame {
 	 * Display the building info.
 	 */
 	private void displayBuildingInfo() {
+		if (currentBuilding == null) {
+			return;
+		}
 		ui.buildingInfoPanel.buildingName.setText(currentBuilding.type.label);
 		ui.buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
 		ui.buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
@@ -2391,25 +2369,10 @@ public class MapEditor extends JFrame {
 			PrintWriter out = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(settings.fileName), 1024 * 1024), "UTF-8"));
 			try {
 				out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
-				out.printf("<planets>%n");
-				out.printf("  <planet id='%s' x='%d' y='%d' radius='%d' type='%s' rotation='%s'>%n", "", 0, 0, 30, "rocky", "left-to-right");
-				if (settings.surface) {
-					out.printf("    <surface width='%d' height='%d'>%n", renderer.surface.width, renderer.surface.height);
-					for (SurfaceFeature sf : renderer.surface.features) {
-						out.printf("      <tile type='%s' id='%s' x='%d' y='%d'/>%n", sf.type, sf.id, sf.location.x, sf.location.y);
-					}
-					out.printf("    </surface>%n");
-				}
-				if (settings.buildings) {
-					out.printf("    <buildings>%n");
-					for (Building b : renderer.surface.buildings) {
-						out.printf("      <building id='%s' tech='%s' x='%d' y='%d' build='%d' hp='%d' level='%d' worker='%d' energy='%d' enabled='%s' repairing='%s' />%n",
-								b.type.id, b.techId, b.location.x, b.location.y, b.buildProgress, b.hitpoints, b.upgradeLevel, b.assignedWorker, b.assignedEnergy, b.enabled, b.repairing);
-					}
-					out.printf("    </buildings>%n");
-				}
-				out.printf("  </planet>");
-				out.printf("</planets>");
+				XElement map = new XElement("map");
+				map.set("version", "1.0");
+				renderer.surface.storeMap(map, settings.surface, settings.buildings);
+				out.println(map.toString());
 			} finally {
 				out.close();
 			}
@@ -2464,66 +2427,27 @@ public class MapEditor extends JFrame {
 			if (renderer.surface == null) {
 				createPlanetSurface(33, 66);
 			}
-			Element root = XML.openXML(settings.fileName);
-			Element planet = XML.childElement(root, "planet");
+			XElement root = XElement.parseXML(settings.fileName.getAbsolutePath());
+			XElement planet = root;
+			if ("planets".equals(root.name)) {
+				planet = root.childElement("planet");
+			}
 			if (settings.surface) {
 				doClearSurfaces(false);
-				Element surface = XML.childElement(planet, "surface");
-				if (surface != null) {
-					int width = Integer.parseInt(surface.getAttribute("width"));
-					int height = Integer.parseInt(surface.getAttribute("height"));
-					createPlanetSurface(width, height);
-					for (Element tile : XML.childrenWithName(surface, "tile")) {
-						String type = tile.getAttribute("type");
-						int id = Integer.parseInt(tile.getAttribute("id"));
-						int x = Integer.parseInt(tile.getAttribute("x"));
-						int y = Integer.parseInt(tile.getAttribute("y"));
-						
-						Tile t = galaxyModel.planetTypes.get(type).tiles.get(id);
-						SurfaceFeature sf = new SurfaceFeature();
-						sf.id = id;
-						sf.type = type;
-						sf.location = Location.of(x, y);
-						sf.tile = t;
-						renderer.surface.features.add(sf);
-						
-						placeTile(t, x, y, SurfaceEntityType.BASE, null);
-					}
-				}
+				renderer.surface.parseMap(planet, galaxyModel, null);
 			}
 			if (settings.buildings) {
 				doClearBuildings(false);
-				Element buildings = XML.childElement(planet, "buildings");
-				if (buildings != null) {
-					String tech = null;
-					for (Element tile : XML.childrenWithName(buildings, "building")) {
-						String id = tile.getAttribute("id");
-						tech = tile.getAttribute("tech");
-						
-						Building b = new Building(buildingModel.buildings.get(id), tech);
-						int x = Integer.parseInt(tile.getAttribute("x"));
-						int y = Integer.parseInt(tile.getAttribute("y"));
-					
-						b.location = Location.of(x, y);
-						
-						b.buildProgress = Integer.parseInt(tile.getAttribute("build"));
-						b.hitpoints = Integer.parseInt(tile.getAttribute("hp"));
-						b.setLevel(Integer.parseInt(tile.getAttribute("level")));
-						b.assignedEnergy = Integer.parseInt(tile.getAttribute("energy"));
-						b.assignedWorker = Integer.parseInt(tile.getAttribute("worker"));
-						b.enabled = "true".equals(tile.getAttribute("enabled"));
-						b.repairing = "true".equals(tile.getAttribute("repairing"));
-						renderer.surface.buildings.add(b);
-						
-						placeTile(b.tileset.normal, x, y, SurfaceEntityType.BUILDING, b);
-					}
-					if (tech != null) {
-						placeRoads(tech);
-					}
+				String tech = renderer.surface.getTechnology();
+				renderer.surface.parseMap(planet, null, buildingModel);
+				if (tech != null) {
+					placeRoads(tech);
 				}
 			}
+			renderer.buildingBox = null;
+			currentBuilding = null;
 			renderer.repaint();
-		} catch (IOException ex) {
+		} catch (XMLStreamException ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -2707,6 +2631,7 @@ public class MapEditor extends JFrame {
 		@Override
 		public void redo() {
 			restoreAfter();
+			renderer.repaint();
 		}
 		@Override
 		public boolean replaceEdit(UndoableEdit anEdit) {
@@ -2715,6 +2640,7 @@ public class MapEditor extends JFrame {
 		@Override
 		public void undo() {
 			restoreBefore();
+			renderer.repaint();
 		}
 	}
 	/** Save the current editor state. */
@@ -2730,24 +2656,24 @@ public class MapEditor extends JFrame {
 				out.printf("  <editmode type='%s'/>%n", ui.buildButton.isSelected());
 				out.printf("  <tabs selected='%d'/>%n", propertyTab.getSelectedIndex());
 				out.printf("  <lights preview='%d' map='%s'/>%n", alphaSlider.getValue(), Float.toString(alpha));
-				out.printf("  <filter surface='%s' building='%s'/>%n", XML.toHTML(filterSurface.getText()), XML.toHTML(filterBuilding.getText()));
+				out.printf("  <filter surface='%s' building='%s'/>%n", XElement.sanitize(filterSurface.getText()), XElement.sanitize(filterBuilding.getText()));
 				out.printf("  <allocation worker='%s' strategy='%d'/>%n", ui.allocationPanel.availableWorkers.getText(), ui.allocationPanel.strategies.getSelectedIndex());
 				out.printf("  <view buildings='%s' minimap='%s' textboxes='%s' zoom='%s' standard-fonts='%s' placement-hints='%s'/>%n", ui.viewShowBuildings.isSelected(), 
 						ui.viewSymbolicBuildings.isSelected(), ui.viewTextBackgrounds.isSelected(), Double.toString(renderer.scale), ui.viewStandardFonts.isSelected()
 						, ui.viewPlacementHints.isSelected());
 				out.printf("  <custom-surface-names>%n");
 				for (TileEntry te : surfaceTableModel.rows) {
-					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XML.toHTML(te.surface), XML.toHTML(te.name));
+					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XElement.sanitize(te.surface), XElement.sanitize(te.name));
 				}
 				out.printf("  </custom-surface-names>%n");
 				out.printf("  <custom-building-names>%n");
 				for (TileEntry te : buildingTableModel.rows) {
-					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XML.toHTML(te.surface), XML.toHTML(te.name));
+					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XElement.sanitize(te.surface), XElement.sanitize(te.name));
 				}
 				out.printf("  </custom-building-names>%n");
 				out.printf("  <recent>%n");
 				for (int i = ui.fileRecent.getItemCount() - 1; i >= 2 ; i--) {
-					out.printf("    <entry file='%s'/>%n", XML.toHTML(ui.fileRecent.getItem(i).getText()));
+					out.printf("    <entry file='%s'/>%n", XElement.sanitize(ui.fileRecent.getItem(i).getText()));
 				}
 				out.printf("  </recent>%n");
 				out.printf("</mapeditor-config>%n");
@@ -2763,22 +2689,22 @@ public class MapEditor extends JFrame {
 		File file = new File("open-ig-mapeditor-config.xml");
 		if (file.canRead()) {
 			try {
-				Element root = XML.openXML(file);
+				XElement root = XElement.parseXML(file.getAbsolutePath());
 				
 				// reposition the window
-				Element eWindow = XML.childElement(root, "window");
+				XElement eWindow = root.childElement("window");
 				if (eWindow != null) {
 					setBounds(
-						Integer.parseInt(eWindow.getAttribute("x")),
-						Integer.parseInt(eWindow.getAttribute("y")),
-						Integer.parseInt(eWindow.getAttribute("width")),
-						Integer.parseInt(eWindow.getAttribute("height"))
+						Integer.parseInt(eWindow.get("x")),
+						Integer.parseInt(eWindow.get("y")),
+						Integer.parseInt(eWindow.get("width")),
+						Integer.parseInt(eWindow.get("height"))
 					);
-					setExtendedState(Integer.parseInt(eWindow.getAttribute("state")));
+					setExtendedState(Integer.parseInt(eWindow.get("state")));
 				}
-				Element eLanguage = XML.childElement(root, "language");
+				XElement eLanguage = root.childElement("language");
 				if (eLanguage != null) {
-					String langId = eLanguage.getAttribute("id");
+					String langId = eLanguage.get("id");
 					if ("hu".equals(langId)) {
 						ui.languageHu.setSelected(true);
 						ui.languageHu.doClick();
@@ -2788,95 +2714,91 @@ public class MapEditor extends JFrame {
 					}
 				}
 				
-				Element eSplitters = XML.childElement(root, "splitters");
+				XElement eSplitters = root.childElement("splitters");
 				if (eSplitters != null) {
-					split.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("main")));
-					toolSplit.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("preview")));
-					featuresSplit.setDividerLocation(Integer.parseInt(eSplitters.getAttribute("surfaces")));
+					split.setDividerLocation(Integer.parseInt(eSplitters.get("main")));
+					toolSplit.setDividerLocation(Integer.parseInt(eSplitters.get("preview")));
+					featuresSplit.setDividerLocation(Integer.parseInt(eSplitters.get("surfaces")));
 				}
 
-				Element eTabs = XML.childElement(root, "tabs");
+				XElement eTabs = root.childElement("tabs");
 				if (eTabs != null) {
-					propertyTab.setSelectedIndex(Integer.parseInt(eTabs.getAttribute("selected")));
+					propertyTab.setSelectedIndex(Integer.parseInt(eTabs.get("selected")));
 				}
 				
-				Element eLights = XML.childElement(root, "lights");
+				XElement eLights = root.childElement("lights");
 				if (eLights != null) {
-					alphaSlider.setValue(Integer.parseInt(eLights.getAttribute("preview")));
-					alpha = Float.parseFloat(eLights.getAttribute("map"));
+					alphaSlider.setValue(Integer.parseInt(eLights.get("preview")));
+					alpha = Float.parseFloat(eLights.get("map"));
 				}
 				
-				Element eMode = XML.childElement(root, "editmode");
+				XElement eMode = root.childElement("editmode");
 				if (eMode != null) {
-					if ("true".equals(eMode.getAttribute("type"))) {
+					if ("true".equals(eMode.get("type"))) {
 						ui.buildButton.doClick();
 					}
 				}
 				
-				Element eView = XML.childElement(root, "view");
+				XElement eView = root.childElement("view");
 				if (eView != null) {
 					ui.viewShowBuildings.setSelected(false);
-					if ("true".equals(eView.getAttribute("buildings"))) {
+					if ("true".equals(eView.get("buildings"))) {
 						ui.viewShowBuildings.doClick();
 					}
 					ui.viewSymbolicBuildings.setSelected(false);
-					if ("true".equals(eView.getAttribute("minimap"))) {
+					if ("true".equals(eView.get("minimap"))) {
 						ui.viewSymbolicBuildings.doClick();
 					}
 					
 					ui.viewTextBackgrounds.setSelected(false);
-					if ("true".equals(eView.getAttribute("textboxes"))) {
+					if ("true".equals(eView.get("textboxes"))) {
 						ui.viewTextBackgrounds.doClick();
 					}
-					ui.viewTextBackgrounds.setSelected(false);
-					if ("true".equals(eView.getAttribute("textboxes"))) {
-						ui.viewTextBackgrounds.doClick();
-					}
-					renderer.scale = Double.parseDouble(eView.getAttribute("zoom"));
+					renderer.scale = Double.parseDouble(eView.get("zoom"));
 					
-					ui.viewStandardFonts.setSelected("true".equals(eView.getAttribute("standard-fonts")));
-					ui.viewPlacementHints.setSelected(!"true".equals(eView.getAttribute("placement-hints")));
+					ui.viewStandardFonts.setSelected("true".equals(eView.get("standard-fonts")));
+					ui.viewPlacementHints.setSelected(!"true".equals(eView.get("placement-hints")));
 					ui.viewPlacementHints.doClick();
 				}
 				
-				Element eSurfaces = XML.childElement(root, "custom-surface-names");
+				XElement eSurfaces = root.childElement("custom-surface-names");
 				if (eSurfaces != null) {
-					for (Element tile : XML.childrenWithName(eSurfaces, "tile")) {
+					for (XElement tile : eSurfaces.childrenWithName("tile")) {
 						TileEntry te = new TileEntry();
-						te.id = Integer.parseInt(tile.getAttribute("id"));
-						te.surface = tile.getAttribute("type");
-						te.name = tile.getAttribute("name");
+						te.id = Integer.parseInt(tile.get("id"));
+						te.surface = tile.get("type");
+						te.name = tile.get("name");
 						customSurfaceNames.add(te);
 					}
 				}
 				
-				Element eBuildigns = XML.childElement(root, "custom-building-names");
+				XElement eBuildigns = root.childElement("custom-building-names");
 				if (eBuildigns != null) {
-					for (Element tile : XML.childrenWithName(eBuildigns, "tile")) {
+					for (XElement tile : eBuildigns.childrenWithName("tile")) {
 						TileEntry te = new TileEntry();
-						te.id = Integer.parseInt(tile.getAttribute("id"));
-						te.surface = tile.getAttribute("type");
-						te.name = tile.getAttribute("name");
+						te.id = Integer.parseInt(tile.get("id"));
+						te.surface = tile.get("type");
+						te.name = tile.get("name");
 						customBuildingNames.add(te);
 					}
 				}
-				Element eFilter = XML.childElement(root, "filter");
+				XElement eFilter = root.childElement("filter");
 				if (eFilter != null) {
-					filterSurface.setText(eFilter.getAttribute("surface"));
-					filterBuilding.setText(eFilter.getAttribute("building"));
+					filterSurface.setText(eFilter.get("surface"));
+					filterBuilding.setText(eFilter.get("building"));
 				}
-				Element eAlloc = XML.childElement(root, "allocation");
+				XElement eAlloc = root.childElement("allocation");
 				if (eAlloc != null) {
-					ui.allocationPanel.availableWorkers.setText(eAlloc.getAttribute("worker"));
-					ui.allocationPanel.strategies.setSelectedIndex(Integer.parseInt(eAlloc.getAttribute("strategy")));
+					ui.allocationPanel.availableWorkers.setText(eAlloc.get("worker"));
+					ui.allocationPanel.strategies.setSelectedIndex(Integer.parseInt(eAlloc.get("strategy")));
 				}
-				Element eRecent = XML.childElement(root, "recent");
+				XElement eRecent = root.childElement("recent");
 				if (eRecent != null) {
-					for (Element r : XML.childrenWithName(eRecent, "entry")) {
-						addRecentEntry(r.getAttribute("file")); 
+					for (XElement r : eRecent.childrenWithName("entry")) {
+						addRecentEntry(r.get("file")); 
 					}
 				}
-			} catch (IOException ex) {
+			} catch (XMLStreamException ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -2963,10 +2885,11 @@ public class MapEditor extends JFrame {
 			}
 		}		
 		if (renderer.surface.buildings.size() > 0) {
-			placeRoads(renderer.surface.buildings.get(0).techId);
+			placeRoads(renderer.surface.getTechnology());
 		}
 		undo.setAfter();
 		addUndo(undo);
+		repaint();
 		JOptionPane.showMessageDialog(this, String.format(labels.format("mapeditor.cleanup_result", buildingCount + tileCount, buildingCount, tileCount)));
 	}
 	/**
@@ -2980,7 +2903,7 @@ public class MapEditor extends JFrame {
 	void removeTiles(Map<Location, SurfaceEntity> map, int x, int y, int width, int height) {
 		for (int i = x; i < x + width; i++) {
 			for (int j = y; j > y - height; j--) {
-				map.remove(Location.of(x, y));
+				map.remove(Location.of(i, j));
 			}
 		}
 	}
@@ -3001,10 +2924,9 @@ public class MapEditor extends JFrame {
 		ChangeListener cl = new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				renderer.surface.width = (Integer)dlg.widthText.getValue();
-				renderer.surface.height = (Integer)dlg.heightText.getValue();
-				renderer.surface.computeRenderingLocations();
+				renderer.surface.setSize((Integer)dlg.widthText.getValue(), (Integer)dlg.heightText.getValue());
 				ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
+				renderer.repaint();
 			}
 		};
 		dlg.widthText.addChangeListener(cl);
@@ -3012,22 +2934,24 @@ public class MapEditor extends JFrame {
 		dlg.setLocationRelativeTo(this);
 		dlg.setVisible(true);
 		if (dlg.success) {
-			renderer.surface.width = dlg.width;
-			renderer.surface.height = dlg.height;
+			renderer.surface.setSize((Integer)dlg.widthText.getValue(), (Integer)dlg.heightText.getValue());
+			ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
+			renderer.repaint();
 		} else {
-			renderer.surface.width = w0;
-			renderer.surface.height = h0;
+			renderer.surface.setSize(w0, h0);
+			ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
+			renderer.repaint();
 		}
-		renderer.surface.computeRenderingLocations();
-		ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
 	}
 	/** Toggle the standard font display mode. */
 	protected void doStandardFonts() {
 		renderer.txt.setUseStandardFonts(ui.viewStandardFonts.isSelected());
+		renderer.repaint();
 	}
 	/** View placement hints. */
 	protected void doViewPlacementHints() {
 		renderer.placementHints = ui.viewPlacementHints.isSelected();
+		renderer.repaint();
 	}
 	/** 
 	 * Copy contents of the current selection box. 
@@ -3110,59 +3034,53 @@ public class MapEditor extends JFrame {
 			int originY = renderer.selectedRectangle.y;
 			
 			try {
-				Element root = XML.parse(s);
+				XElement root = XElement.parseXML(new StringReader(s));
 				
-				int ox = Integer.parseInt(root.getAttribute("x"));
-				int oy = Integer.parseInt(root.getAttribute("y"));
+				int ox = Integer.parseInt(root.get("x"));
+				int oy = Integer.parseInt(root.get("y"));
 				
 				UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 				
 				String tech = null;
 				
 				if (surface) {
-					for (Element tile : XML.childrenWithName(root, "tile")) {
-						String type = tile.getAttribute("type");
-						int id = Integer.parseInt(tile.getAttribute("id"));
-						int x = Integer.parseInt(tile.getAttribute("x"));
-						int y = Integer.parseInt(tile.getAttribute("y"));
+					for (XElement tile : root.childrenWithName("tile")) {
+						String type = tile.get("type");
+						int id = Integer.parseInt(tile.get("id"));
+						int x = Integer.parseInt(tile.get("x"));
+						int y = Integer.parseInt(tile.get("y"));
 						
 						Tile t = galaxyModel.planetTypes.get(type).tiles.get(id);
-						SurfaceFeature sf = new SurfaceFeature();
-						sf.id = id;
-						sf.type = type;
-						sf.location = Location.of(x - ox + originX, y - oy + originY);
-						sf.tile = t;
-						deleteEntitiesOf(renderer.surface.basemap, new Rectangle(sf.location.x, sf.location.y, t.width, t.height), false);
+						Location l0 = Location.of(x - ox + originX, y - oy + originY);
+						deleteEntitiesOf(renderer.surface.basemap, new Rectangle(l0.x, l0.y, t.width, t.height), false);
 
-						renderer.surface.features.add(sf);
-						placeTile(t, sf.location.x, sf.location.y, SurfaceEntityType.BASE, null);
+						renderer.surface.placeBase(t, l0.x, l0.y, id, type);
 								
 					}
 				}
 				if (building) {
-					for (Element tile : XML.childrenWithName(root, "building")) {
-						String id = tile.getAttribute("id");
-						tech = tile.getAttribute("tech");
+					for (XElement tile : root.childrenWithName("building")) {
+						String id = tile.get("id");
+						tech = tile.get("tech");
 						
 						Building b = new Building(buildingModel.buildings.get(id), tech);
-						int x = Integer.parseInt(tile.getAttribute("x"));
-						int y = Integer.parseInt(tile.getAttribute("y"));
+						int x = Integer.parseInt(tile.get("x"));
+						int y = Integer.parseInt(tile.get("y"));
 					
 						b.location = Location.of(x - ox + originX, y - oy + originY);
 						
-						b.buildProgress = Integer.parseInt(tile.getAttribute("build"));
-						b.hitpoints = Integer.parseInt(tile.getAttribute("hp"));
-						b.setLevel(Integer.parseInt(tile.getAttribute("level")));
-						b.assignedEnergy = Integer.parseInt(tile.getAttribute("energy"));
-						b.assignedWorker = Integer.parseInt(tile.getAttribute("worker"));
-						b.enabled = "true".equals(tile.getAttribute("enabled"));
-						b.repairing = "true".equals(tile.getAttribute("repairing"));
+						b.buildProgress = Integer.parseInt(tile.get("build"));
+						b.hitpoints = Integer.parseInt(tile.get("hp"));
+						b.setLevel(Integer.parseInt(tile.get("level")));
+						b.assignedEnergy = Integer.parseInt(tile.get("energy"));
+						b.assignedWorker = Integer.parseInt(tile.get("worker"));
+						b.enabled = "true".equals(tile.get("enabled"));
+						b.repairing = "true".equals(tile.get("repairing"));
 					
 						
 						deleteEntitiesOf(renderer.surface.buildingmap, new Rectangle(b.location.x, b.location.y, b.tileset.normal.width, b.tileset.normal.height), true);
 
-						renderer.surface.buildings.add(b);
-						placeTile(b.tileset.normal, b.location.x, b.location.y, SurfaceEntityType.BUILDING, b);
+						renderer.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
 						
 					}
 				}
@@ -3174,7 +3092,7 @@ public class MapEditor extends JFrame {
 				undo.setAfter();
 				addUndo(undo);
 				repaint();
-			} catch (IOException ex) {
+			} catch (XMLStreamException ex) {
 				ex.printStackTrace();
 			}
 		}

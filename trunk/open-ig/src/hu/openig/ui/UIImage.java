@@ -20,6 +20,12 @@ public class UIImage extends UIComponent {
 	/** Scale the image to the defined width and height? */
 	private boolean scale;
 	/**
+	 * Default constructor without any image. The component will have zero size.
+	 */
+	public UIImage() {
+		
+	}
+	/**
 	 * Create a non-scaled image component out of the supplied image.
 	 * @param image the image to use
 	 */
@@ -42,10 +48,21 @@ public class UIImage extends UIComponent {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		if (scale) {
-			g2.drawImage(image, 0, 0, width, height, 0, 0, image.getWidth(), image.getHeight(), null);
-		} else {
-			g2.drawImage(image, 0, 0, null);
+		if (image != null) {
+			if (scale) {
+				g2.drawImage(image, 0, 0, width, height, 0, 0, image.getWidth(), image.getHeight(), null);
+			} else {
+				g2.drawImage(image, 0, 0, null);
+			}
 		}
+	}
+	/**
+	 * Set the image content. Does not change the component dimensions.
+	 * @param image the image to set
+	 * @return this
+	 */
+	public UIImage image(BufferedImage image) {
+		this.image = image;
+		return this;
 	}
 }

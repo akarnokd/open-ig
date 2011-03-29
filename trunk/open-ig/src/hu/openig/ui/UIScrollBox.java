@@ -79,12 +79,12 @@ public class UIScrollBox extends UIContainer {
 		downButton.x = width - downButton.width - gaps;
 		upButton.y = hgap;
 		downButton.y = hgap * 2 + upButton.height;
-		Shape clipSave = g2.getClip();
-		g2.setClip(0, 0, width, height);
+		Shape save0 = g2.getClip();
+		g2.clipRect(0, 0, width, height);
 		g2.setColor(Color.BLACK);
 		g2.drawRect(0, 0, width - 1, height - 1);
 		super.draw(g2);
-		g2.setClip(clipSave);
+		g2.setClip(save0);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {

@@ -42,6 +42,8 @@ public class VideoRenderer extends Thread {
 	protected boolean repeat;
 	/** The frames per second override. */
 	protected Double fpsOverride;
+	/** Cache the images? Use in conjunction with the repeat property. */
+	protected boolean cacheImages;
 	/**
 	 * Constructor. Sets the synchronization and surface fields
 	 * @param audioSync the audio synchronization

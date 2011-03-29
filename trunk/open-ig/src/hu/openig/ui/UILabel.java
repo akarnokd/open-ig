@@ -11,7 +11,6 @@ package hu.openig.ui;
 import hu.openig.render.TextRenderer;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +77,8 @@ public class UILabel extends UIComponent {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		Shape clip = g2.getClip();
-		g2.setClip(new Rectangle(0, 0, width, height));
+		Shape save0 = g2.getClip();
+		g2.clipRect(0, 0, width, height);
 		if (wrap) {
 			List<String> lines = new ArrayList<String>();
 			if (shadowColor == 0) {
@@ -118,7 +117,7 @@ public class UILabel extends UIComponent {
 			}
 			drawAligned(g2, py, text);
 		}
-		g2.setClip(clip);
+		g2.setClip(save0);
 	}
 	/**
 	 * Draw the text with alignment.

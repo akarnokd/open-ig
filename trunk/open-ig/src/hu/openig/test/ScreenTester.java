@@ -43,6 +43,7 @@ import hu.openig.screens.StarmapScreen;
 import hu.openig.screens.StatusbarScreen;
 import hu.openig.screens.VideoScreen;
 import hu.openig.ui.UIMouse;
+import hu.openig.utils.ConsoleWatcher;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -190,6 +191,16 @@ public class ScreenTester extends JFrame implements GameControls {
 					once = true;
 					setMinimumSize(getSize());
 					setResizable(true);
+				}
+			}
+			@Override
+			public void windowClosing(WindowEvent e) {
+				Configuration c = config;
+				if (c != null) {
+					try {
+						c.watcherWindow.close();
+					} catch (IOException e1) {
+					}
 				}
 			}
 		});
@@ -485,6 +496,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				try {
 					config = new Configuration("open-ig-config.xml");
 					config.load();
+					config.watcherWindow = new ConsoleWatcher();
 					config.language = language;
 					long t = System.nanoTime();
 					commons = new CommonResources(config, ScreenTester.this);
