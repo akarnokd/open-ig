@@ -181,6 +181,8 @@ public class PlanetSurface {
 		if (gm != null) {
 			XElement surface = map.childElement("surface");
 			if (surface != null) {
+				this.features.clear();
+				this.basemap.clear();
 				int width = Integer.parseInt(surface.get("width"));
 				int height = Integer.parseInt(surface.get("height"));
 				setSize(width, height);
@@ -205,10 +207,12 @@ public class PlanetSurface {
 		if (bm != null) {
 			XElement buildings = map.childElement("buildings");
 			if (buildings != null) {
-				String tech = null;
+				this.buildings.clear();
+				this.buildingmap.clear();
+				
 				for (XElement tile : buildings.childrenWithName("building")) {
 					String id = tile.get("id");
-					tech = tile.get("tech");
+					String tech = tile.get("tech");
 					
 					Building b = new Building(bm.buildings.get(id), tech);
 					int x = Integer.parseInt(tile.get("x"));
@@ -216,8 +220,18 @@ public class PlanetSurface {
 				
 					b.location = Location.of(x, y);
 					
-					b.buildProgress = Integer.parseInt(tile.get("build"));
-					b.hitpoints = Integer.parseInt(tile.get("hp"));
+					String bp = tile.get("build");
+					if (bp == null || bp.isEmpty()) {
+						b.buildProgress = b.type.hitpoints;
+					} else {
+						b.buildProgress = Integer.parseInt(bp);
+					}
+					String hp = tile.get("hp");
+					if (hp == null || hp.isEmpty()) {
+						b.hitpoints = b.type.hitpoints;
+					} else {
+						b.hitpoints = Integer.parseInt(hp);
+					}
 					b.setLevel(Integer.parseInt(tile.get("level")));
 					b.assignedEnergy = Integer.parseInt(tile.get("energy"));
 					b.assignedWorker = Integer.parseInt(tile.get("worker"));
@@ -287,5 +301,32 @@ public class PlanetSurface {
 		for (Building b : buildings) {
 			b.tileset.normal.alpha = alpha;
 		}
+	}
+	/**
+	 * Create a deep copy of the surface by sharing the basemap but
+	 * copying the buildings.
+	 * @return the planet surface copy
+	 */
+	public PlanetSurface copy() {
+		PlanetSurface result = new PlanetSurface();
+		
+		result.setSize(width, height);
+		
+		for (Building b : buildings) {
+			Building bc = b.copy();
+			result.placeBuilding(bc.tileset.normal, bc.location.x, bc.location.y, bc);
+		}
+		for (SurfaceFeature f : features) {
+			result.placeBase(f.tile, f.location.x, f.location.y, f.id, f.type);
+		}
+		for (Map.Entry<Location, SurfaceEntity> se : buildingmap.entrySet()) {
+			if (se.getValue().type == SurfaceEntityType.ROAD) {
+				result.buildingmap.put(se.getKey(), se.getValue());
+			}
+		}
+		
+		result.setAlpha(alpha);
+		
+		return result;
 	}
 }

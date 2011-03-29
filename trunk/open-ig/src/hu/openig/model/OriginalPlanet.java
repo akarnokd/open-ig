@@ -55,6 +55,14 @@ public class OriginalPlanet {
 	}
 	/** @return the new race name from the old. */
 	public String getRaceTechId() {
+		return convertRaceTechId(race);
+	}
+	/**
+	 * Convert an original race description to the new technology id.
+	 * @param race the original race
+	 * @return the new technology
+	 */
+	public static String convertRaceTechId(String race) {
 		if ("Empire".equals(race)) {
 			return "human";
 		}

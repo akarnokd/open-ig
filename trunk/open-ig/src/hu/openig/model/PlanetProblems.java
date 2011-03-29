@@ -22,5 +22,7 @@ public enum PlanetProblems {
 	/** Not enough hospital. */
 	HOSPITAL,
 	/** Not enough workforce. */
-	WORKFORCE
+	WORKFORCE,
+	/** Other custom problems: e.g., virus, bar, stadium. */
+	OTHER
 }

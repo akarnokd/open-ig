@@ -8,13 +8,13 @@
 
 package hu.openig.model;
 
-import java.awt.image.BufferedImage;
-
 /**
- * A race description record.
- * @author akarnokd, 2009.10.25.
+ * The rotation direction enumeration.
+ * @author akarnokd, Mar 29, 2011
  */
-public class Race {
-	/** The picture for the database screen. */
-	public BufferedImage picture; 
+public enum RotationDirection {
+	/** Rotate left to right. */
+	LR,
+	/** Rotate right to left. */
+	RL
 }

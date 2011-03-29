@@ -12,6 +12,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
+import hu.openig.model.RotationDirection;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIMouse;
@@ -278,7 +279,7 @@ public class StarmapScreen extends ScreenBase {
 	 */
 	protected void rotatePlanets() {
 		for (Planet p : planets) {
-			if (p.rotationDirection) {
+			if (p.rotationDirection == RotationDirection.LR) {
 				p.rotationPhase = (p.rotationPhase + 1) % p.type.body.length;
 			} else {
 				if (p.rotationPhase > 0) {

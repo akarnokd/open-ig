@@ -22,14 +22,18 @@ import java.util.Set;
  * @author akarnokd, 2009.10.25.
  */
 public class Player {
+	/** The player id. */
+	public String id;
 	/** The player's name. */
 	public String name;
 	/** The coloring used for this player. */
 	public int color;
 	/** The fleet icon. */
 	public BufferedImage fleetIcon;
-	/** The race of the player. */
-	public Race race;
+	/** The picture used in the database screen. */
+	public BufferedImage picture;
+	/** The race of the player. Determines the technology tree to be used. */
+	public String race;
 	/** The in-progress production list. */
 	public final List<Production> production = new ArrayList<Production>();
 	/** The in-progress research. */

@@ -16,13 +16,13 @@ import java.util.List;
  * A per planet resource allocation settings.
  * @author akarnokd, 2010.09.15.
  */
-public class ResourceAllocationSettings implements Iterable<BuildingAW> {
+public class ResourceAllocationSettings implements Iterable<BuildingAllocationWorker> {
 	/** The available worker count. */
 	public final int availableWorkers;
 	/** The resource allocation strategy. */
 	public final ResourceAllocationStrategy strategy;
 	/** The list of building workers. */
-	public final List<BuildingAW> buildings;
+	public final List<BuildingAllocationWorker> buildings;
 	
 	/**
 	 * Constructor. Initializes the fields from a full building list.
@@ -33,7 +33,7 @@ public class ResourceAllocationSettings implements Iterable<BuildingAW> {
 	public ResourceAllocationSettings(List<Building> buildings, int availableWorkers, ResourceAllocationStrategy strategy) {
 		this.availableWorkers = availableWorkers;
 		this.strategy = strategy;
-		this.buildings = new ArrayList<BuildingAW>(buildings.size());
+		this.buildings = new ArrayList<BuildingAllocationWorker>(buildings.size());
 		for (Building b : buildings) {
 			if (b.isReady()) {
 				this.buildings.add(b.getAllocationWorker());
@@ -46,7 +46,7 @@ public class ResourceAllocationSettings implements Iterable<BuildingAW> {
 
 	}
 	@Override
-	public Iterator<BuildingAW> iterator() {
+	public Iterator<BuildingAllocationWorker> iterator() {
 		return buildings.iterator();
 	}
 }

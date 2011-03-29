@@ -44,7 +44,7 @@ public class Building {
 	/** Is the building under repair. */
 	public boolean repairing;
 	/** The allocation worker object. */
-	public final BuildingAW allocationWorker;
+	public final BuildingAllocationWorker allocationWorker;
 	/**
 	 * Constructs a building instance and assigns the prototype model.
 	 * @param type the building type
@@ -55,7 +55,7 @@ public class Building {
 		this.techId = techId;
 		this.tileset = type.tileset.get(techId);
 		this.scaffolding = type.scaffoldings.get(techId);
-		this.allocationWorker = new BuildingAW(this);
+		this.allocationWorker = new BuildingAllocationWorker(this);
 	}
 	/**
 	 * Tests wether the given location is within the base footprint of this placed building.
@@ -182,8 +182,22 @@ public class Building {
 	/**
 	 * @return returns an allocation worker object for this building
 	 */
-	public BuildingAW getAllocationWorker() {
+	public BuildingAllocationWorker getAllocationWorker() {
 		allocationWorker.read();
 		return allocationWorker;
+	}
+	/**
+	 * @return Create a copy of this building.
+	 */
+	public Building copy() {
+		Building result = new Building(type, techId);
+		result.buildProgress = buildProgress;
+		result.hitpoints = hitpoints;
+		result.setLevel(upgradeLevel);
+		result.enabled = enabled;
+		result.repairing = repairing;
+		result.location = location;
+		
+		return result;
 	}
 }

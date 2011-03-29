@@ -159,7 +159,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	/** Construct the GUI. */
 	public ScreenTester() {
 		super("Screen Tester");
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		Container c = getContentPane();
 //		GroupLayout gl = new GroupLayout(c);
@@ -202,6 +202,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					} catch (IOException e1) {
 					}
 				}
+				doExit();
 			}
 		});
 //		addComponentListener(new ComponentAdapter() {
@@ -508,6 +509,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					commons.world.definition = SingleplayerScreen.parseDefinition(commons, "campaign/main");
 					commons.world.difficulty = Difficulty.values()[0];
 					commons.labels().load(commons.rl, commons.language(), commons.world.definition.name);
+					commons.world.labels = commons.labels();
 					commons.world.load(commons.rl, commons.language(), commons.world.definition.name);
 					commons.world.level = 5;
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);

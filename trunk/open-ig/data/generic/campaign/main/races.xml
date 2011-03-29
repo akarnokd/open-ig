@@ -1,6 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<races>
-	<race id='human' label='races.human'>
-		<fleet-icon>starmap/fleets/human_fleet</fleet-icon>
-	</race>
-</races>

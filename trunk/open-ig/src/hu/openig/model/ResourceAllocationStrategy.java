@@ -14,16 +14,14 @@ package hu.openig.model;
  */
 public enum ResourceAllocationStrategy {
 	/** Zero strategy: set every allocation to zero. */
-	ZERO_STRATEGY,
+	ZERO,
 	/** Default strategy: the original game's strategy, allocates resources uniformly. */
-	DEFAULT_STRATEGY,
+	DEFAULT,
 	/** 
 	 * Damage aware default strategy: 
 	 * it considers the building's damage level when assigning resources uniformly.
 	 * Damaged buildings are computed with reduced energy/worker demands, giving room for
 	 * the rest of the buildings.
 	 */
-	DAMAGE_AWARE_DEFAULT_STRATEGY,
-	/** The maximum efficiency heuristics. */
-	MAX_EFFICIENCY
+	DAMAGE_AWARE,
 }
