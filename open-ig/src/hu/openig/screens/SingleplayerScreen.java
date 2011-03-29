@@ -176,6 +176,7 @@ public class SingleplayerScreen extends ScreenBase {
 					world.difficulty = Difficulty.values()[difficulty];
 					final Labels labels = new Labels(); 
 					labels.load(commons.rl, commons.language(), selectedDefinition.labels);
+					world.labels = labels;
 					world.load(commons.rl, commons.language(), selectedDefinition.name);
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override

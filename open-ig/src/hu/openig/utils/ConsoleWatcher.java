@@ -111,8 +111,12 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	}
 	@Override
 	public void close() throws IOException {
-		errWatcher.interrupt();
-		outWatcher.interrupt();
+		if (errWatcher != null) {
+			errWatcher.interrupt();
+		}
+		if (outWatcher != null) {
+			outWatcher.interrupt();
+		}
 		System.setErr(originalErr);
 		System.setOut(originalOut);
 		dispose();

@@ -18,60 +18,62 @@ public class OriginalBuilding {
 	public String name;
 	/** The location. */
 	public Location location;
+	/** The translation map. */
+	public static final Map<String, String> TRANSLATE = new HashMap<String, String>();
+	static {
+		TRANSLATE.put("ColonyHub", "ColonyHub");
+		TRANSLATE.put("PrefabHousing", "PrefabHousing");
+		TRANSLATE.put("ApartmentBlock", "ApartmentBlock");
+		TRANSLATE.put("Arcology", "Arcology");
+		TRANSLATE.put("NuclearPlant", "NuclearPlant");
+		
+		TRANSLATE.put("FusionPlant", "FusionPlant");
+		TRANSLATE.put("SolarPlant", "SolarPlant");
+		TRANSLATE.put("RadarTelescope", "RadarTelescope");
+		TRANSLATE.put("Church", "Church");
+		TRANSLATE.put("MilitarySpaceport", "MilitarySpaceport");
+		
+		TRANSLATE.put("MilitaryDevCentre", "MilitaryDevCenter");
+		TRANSLATE.put("PoliceStation", "PoliceStation");
+		TRANSLATE.put("FireBrigade", "FireBrigade");
+		TRANSLATE.put("PhoodFactory", "PhoodFactory");
+		TRANSLATE.put("HyperShield", "HyperShield");
+		
+		TRANSLATE.put("Hospital", "Hospital");
+		TRANSLATE.put("AIDevCentre", "AIDevCenter");
+		TRANSLATE.put("Fortress", "Fortress");
+		TRANSLATE.put("MesonProjector", "MesonProjector");
+		TRANSLATE.put("WeaponFactory", "WeaponFactory");
+		
+		TRANSLATE.put("TradeCentre", "TradeCenter");
+		TRANSLATE.put("PhasedTelescope", "PhasedTelescope");
+		TRANSLATE.put("SpaceshipFactory", "SpaceshipFactory");
+		TRANSLATE.put("FieldTelescope", "FieldTelescope");
+		TRANSLATE.put("EquipmentFactory", "EquipmentFactory");
+		
+		TRANSLATE.put("FusionProjector", "FusionProjector");
+		TRANSLATE.put("PlasmaProjector", "PlasmaProjector");
+		TRANSLATE.put("MechanicsDevCentre", "MechanicalDevCenter");
+		TRANSLATE.put("Bunker", "Bunker");
+		TRANSLATE.put("CivilEngDevCentre", "CivilDevCenter");
+		
+		TRANSLATE.put("InversionShield", "InversionShield");
+		TRANSLATE.put("IonProjector", "IonProjector");
+		TRANSLATE.put("ComputerDevCentre", "ComputerDevCenter");
+		TRANSLATE.put("Stadium", "Stadium");
+		TRANSLATE.put("Bar", "Bar");
+		
+		TRANSLATE.put("Bank", "Bank");
+		TRANSLATE.put("TradersSpaceport", "TradersSpaceport");
+		TRANSLATE.put("HydroponicFoodFarm", "HydroponicFoodFarm");
+		TRANSLATE.put("Barracks", "Barracks");
+		TRANSLATE.put("RecreationCentre", "RecreationCenter");
+		
+		TRANSLATE.put("Park", "Park");
+		TRANSLATE.put("Stronghold", "Stronghold");
+	}
 	/** @return the new name from the old name. */
 	public String getName() {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("ColonyHub", "ColonyHub");
-		map.put("PrefabHousing", "PrefabHousing");
-		map.put("ApartmentBlock", "ApartmentBlock");
-		map.put("Arcology", "Arcology");
-		map.put("NuclearPlant", "NuclearPlant");
-		
-		map.put("FusionPlant", "FusionPlant");
-		map.put("SolarPlant", "SolarPlant");
-		map.put("RadarTelescope", "RadarTelescope");
-		map.put("Church", "Church");
-		map.put("MilitarySpaceport", "MilitarySpaceport");
-		
-		map.put("MilitaryDevCentre", "MilitaryDevCenter");
-		map.put("PoliceStation", "PoliceStation");
-		map.put("FireBrigade", "FireBrigade");
-		map.put("PhoodFactory", "PhoodFactory");
-		map.put("HyperShield", "HyperShield");
-		
-		map.put("Hospital", "Hospital");
-		map.put("AIDevCentre", "AIDevCenter");
-		map.put("Fortress", "Fortress");
-		map.put("MesonProjector", "MesonProjector");
-		map.put("WeaponFactory", "WeaponFactory");
-		
-		map.put("TradeCentre", "TradeCenter");
-		map.put("PhasedTelescope", "PhasedTelescope");
-		map.put("SpaceshipFactory", "SpaceshipFactory");
-		map.put("FieldTelescope", "FieldTelescope");
-		map.put("EquipmentFactory", "EquipmentFactory");
-		
-		map.put("FusionProjector", "FusionProjector");
-		map.put("PlasmaProjector", "PlasmaProjector");
-		map.put("MechanicsDevCentre", "MechanicalDevCenter");
-		map.put("Bunker", "Bunker");
-		map.put("CivilEngDevCentre", "CivilDevCenter");
-		
-		map.put("InversionShield", "InversionShield");
-		map.put("IonProjector", "IonProjector");
-		map.put("ComputerDevCentre", "ComputerDevCenter");
-		map.put("Stadium", "Stadium");
-		map.put("Bar", "Bar");
-		
-		map.put("Bank", "Bank");
-		map.put("TradersSpaceport", "TradersSpaceport");
-		map.put("HydroponicFoodFarm", "HydroponicFoodFarm");
-		map.put("Barracks", "Barracks");
-		map.put("RecreationCentre", "RecreationCenter");
-		
-		map.put("Park", "Park");
-		map.put("Stronghold", "Stronghold");
-		
-		return map.get(name);
+		return TRANSLATE.get(name);
 	}
 }

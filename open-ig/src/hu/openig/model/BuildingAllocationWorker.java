@@ -12,7 +12,7 @@ package hu.openig.model;
  * The building allocation worker object to offload resource allocation to a different thread.
  * @author akarnokd, 2010.09.15.
  */
-public final class BuildingAW {
+public final class BuildingAllocationWorker {
 	/** The back reference to the building. */
 	public final Building building;
 	/** The nominal energy demand. */
@@ -31,7 +31,7 @@ public final class BuildingAW {
 	 * Constructor. Sets the building link
 	 * @param building the associated building
 	 */
-	public BuildingAW(Building building) {
+	public BuildingAllocationWorker(Building building) {
 		this.building = building;
 	}
 	/** Read the settings from the building object. */

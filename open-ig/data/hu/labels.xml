@@ -30,6 +30,7 @@
 	Ha az adózási szint magas, valószínű, hogy a lakosság nem lesz túl boldog. Ekkor a morál csökkenni fog, és előbb utóbb az emberek száma is. Kivételes esetekben lehet használni a magas adózási szintet, de hosszú távú stratégiaként elég kockázatos. Az adózási szintet több különböző módon növelhetjük.
 	A kereskedelmi bevételek nem függnek az adózási moráltól, így idegen lakosú bolygókon stabil pénzszerzési forrásként használhatók. Alacsony adózási szintnél idegen bolygókon is megnyugszik a lakosság.</entry>
 	<entry key='database.discovering_planets.details'>Nagyon fontos információt szerezni a bolygókról. Ha egy bolygó neve nem látszik, az azt jelenti, hogy nincs róla információ – lehet üres is, vagy akár idegenek is lakhatják. Az információszerzéshez először egy műholdat kell telepíteni (természtesen ehhez kell lennie egynek a raktárban). Ezek után a csillagtérképen ki kell választani a bolygót, majd telepíteni kell a műholdat a megfelelő ikonnal. Ha a bolygó már lakott, a műholdat könnyen észrevehetik és megsemmisítik. Ilyenkor egy kémműhold telepítésével többet megtudhatunk a bolygó lakóiról. A 2.0-ás kémműhold több információt szállít, így az idegen faj épületeit is láthatjuk már. Ez a műhold a bolygó védelmi rendszeréről is küld információkat.</entry>
+	
 	<entry key='race.free_traders_alliance'>Kereskedők Szövetsége</entry>
 	<entry key='race.free_nations_society'>Szabad Nemzetek Szöv.</entry>
 	<entry key='race.pirates'>Kalózok</entry>
@@ -416,7 +417,18 @@
 	<entry key='building.resource.type.multiply'> x bevét</entry>
 	<entry key='building.resource.type.credit'> cr</entry>
 	<entry key='building.resource.type.hospital'> emb</entry>
-	<entry key=''></entry>
+	<entry key='planets.earth'>Föld</entry>
+	<entry key='players.empire'>Galaktikus Birodalom</entry>
+	<entry key='players.free_traders'>Szabad Kereskedők Szövetsége</entry>
+	<entry key='players.free_nations'>Szabad Nemzetek Szervezete</entry>
+	<entry key='players.pirates'>Kalózok</entry>
+	<entry key='players.garthog'>Garthog Köztársaság</entry>
+	<entry key='players.ychom'>Ychom Birodalom</entry>
+	<entry key='players.morgath'>Morgath Birodalom</entry>
+	<entry key='players.dribs'>Dribs Birodalom</entry>
+	<entry key='players.ecalep'>Ecalep Köztársaság</entry>
+	<entry key='players.sullep'>Sullep Birodalom</entry>
+	<entry key='players.dargslan'>Dargslan Királyság</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

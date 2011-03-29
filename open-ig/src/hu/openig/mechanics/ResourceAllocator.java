@@ -8,7 +8,7 @@
 
 package hu.openig.mechanics;
 
-import hu.openig.model.BuildingAW;
+import hu.openig.model.BuildingAllocationWorker;
 import hu.openig.model.ResourceAllocationSettings;
 
 import java.util.ArrayList;
@@ -67,17 +67,15 @@ public class ResourceAllocator {
 	 */
 	protected void doComputationFor(ResourceAllocationSettings ras) {
 		switch (ras.strategy) {
-		case ZERO_STRATEGY:
+		case ZERO:
 			doZeroStrategy(ras);
 			break;
-		case DEFAULT_STRATEGY:
+		case DEFAULT:
 			doUniformStrategy(ras);
 			break;
-		case DAMAGE_AWARE_DEFAULT_STRATEGY:
+		case DAMAGE_AWARE:
 			doUniformStrategyWithDamage(ras);
 			break;
-		case MAX_EFFICIENCY:
-			doMaxEfficiency(ras);
 		default:
 		}
 		writeBack(ras);
@@ -90,7 +88,7 @@ public class ResourceAllocator {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				for (BuildingAW b : ras) {
+				for (BuildingAllocationWorker b : ras) {
 					b.write();
 				}
 			}
@@ -101,7 +99,7 @@ public class ResourceAllocator {
 	 * @param ras the resource allocation settings to work with
 	 */
 	void doZeroStrategy(ResourceAllocationSettings ras) {
-		for (BuildingAW b : ras) {
+		for (BuildingAllocationWorker b : ras) {
 			b.energyAllocated = 0;
 			b.workerAllocated = 0;
 		}
@@ -114,7 +112,7 @@ public class ResourceAllocator {
 		int availableWorker = ras.availableWorkers;
 		int demandWorker = 0;
 		int demandEnergy = 0;
-		for (BuildingAW b : ras) {
+		for (BuildingAllocationWorker b : ras) {
 			demandWorker += b.workerDemand;
 			demandEnergy += b.producesEnergy ? 0 : b.energyDemand;
 		}
@@ -124,7 +122,7 @@ public class ResourceAllocator {
 		}
 		float targetEfficiency = Math.min(1.0f, availableWorker / (float)demandWorker);
 		float availableEnergy = 0;
-		for (BuildingAW b : ras) {
+		for (BuildingAllocationWorker b : ras) {
 			int toAssign = Math.round(b.workerDemand * targetEfficiency);
 			b.workerAllocated = toAssign > availableWorker ? toAssign : availableWorker;
 			availableWorker -= b.workerAllocated;
@@ -138,7 +136,7 @@ public class ResourceAllocator {
 		}
 		targetEfficiency = Math.min(1.0f, availableEnergy / demandEnergy);
 		
-		for (BuildingAW b : ras) {
+		for (BuildingAllocationWorker b : ras) {
 			if (!b.producesEnergy) {
 				int toAssign = (int)(b.energyDemand * targetEfficiency);
 				b.energyAllocated = toAssign > availableEnergy ? toAssign : (int)availableEnergy;
@@ -154,7 +152,7 @@ public class ResourceAllocator {
 		int availableWorker = ras.availableWorkers;
 		int demandWorker = 0;
 		int demandEnergy = 0;
-		for (BuildingAW b : ras) {
+		for (BuildingAllocationWorker b : ras) {
 			demandWorker += b.workerDemand * b.efficiencyBound;
 			demandEnergy += b.producesEnergy ? 0 : b.energyDemand * b.efficiencyBound;
 		}
@@ -164,7 +162,7 @@ public class ResourceAllocator {
 		}
 		float targetEfficiency = Math.min(1.0f, availableWorker / (float)demandWorker);
 		float availableEnergy = 0;
-		for (BuildingAW b : ras) {
+		for (BuildingAllocationWorker b : ras) {
 			int toAssign = (int)(b.workerDemand * Math.min(targetEfficiency, b.efficiencyBound));
 			b.workerAllocated = toAssign > availableWorker ? toAssign : availableWorker;
 			availableWorker -= b.workerAllocated;
@@ -178,7 +176,7 @@ public class ResourceAllocator {
 		}
 		targetEfficiency = Math.min(1.0f, availableEnergy / demandEnergy);
 		
-		for (BuildingAW b : ras) {
+		for (BuildingAllocationWorker b : ras) {
 			if (!b.producesEnergy) {
 				int toAssign = (int)(b.energyDemand * Math.min(targetEfficiency, b.efficiencyBound));
 				b.energyAllocated = toAssign > availableEnergy ? toAssign : (int)availableEnergy;
@@ -197,10 +195,10 @@ public class ResourceAllocator {
 		double dEnergyOpen = 0;		// Energy that can be obtained with allocating more workers, but without switching on a new PP 
 		double dEnergyPrice = 0;	// Energy price expressed in nWorker
 		
-		List<BuildingAW> factoriesList = new ArrayList<BuildingAW>();
-		List<BuildingAW> powerplantsList = new ArrayList<BuildingAW>();
+		List<BuildingAllocationWorker> factoriesList = new ArrayList<BuildingAllocationWorker>();
+		List<BuildingAllocationWorker> powerplantsList = new ArrayList<BuildingAllocationWorker>();
 		
-		for (BuildingAW b : ras.buildings) {
+		for (BuildingAllocationWorker b : ras.buildings) {
 			if (b.producesEnergy) {
 				powerplantsList.add(b);
 			} else {
@@ -212,7 +210,7 @@ public class ResourceAllocator {
 		 * @author Andras Kovacs, MTA SZTAKI
 		 */
 		final class B {
-			BuildingAW link;
+			BuildingAllocationWorker link;
 			double wReq;
 			double eReq;
 //			double level;
@@ -222,7 +220,7 @@ public class ResourceAllocator {
 			 * Constructor.
 			 * @param link the link back to the original object.
 			 */
-			public B(BuildingAW link) {
+			public B(BuildingAllocationWorker link) {
 				this.link = link;
 			}
 		};

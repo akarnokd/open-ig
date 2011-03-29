@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Difficulty;
+import hu.openig.core.Labels;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
@@ -17,7 +18,9 @@ import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,8 +38,8 @@ public class World {
 	public int level;
 	/** The current player. */
 	public Player player;
-	/** The list of all players. */
-	public final List<Player> players = new ArrayList<Player>();
+	/** The map of player-id to player object. */
+	public final Map<String, Player> players = new HashMap<String, Player>();
 	/** The time. */
 	public final GregorianCalendar time = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 	/** All planets on the starmap. */
@@ -61,13 +64,21 @@ public class World {
 	public GalaxyModel galaxyModel;
 	/** The buildings model. */
 	public BuildingModel buildingModel;
+	/** The game specific labels. */
+	public Labels labels;
+	/** The resource locator. */
+	public ResourceLocator rl;
+	/** The language. */
+	public String language;
 	/**
 	 * Load the game world's resources.
-	 * @param rl the resource locator
-	 * @param language the current language
+	 * @param resLocator the resource locator
+	 * @param lang the current language
 	 * @param game the game directory
 	 */
-	public void load(final ResourceLocator rl, final String language, final String game) {
+	public void load(final ResourceLocator resLocator, final String lang, final String game) {
+		this.rl = resLocator;
+		this.language = lang;
 		final ExecutorService exec = 
 			new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 
 					Integer.MAX_VALUE, 1, TimeUnit.SECONDS, 
@@ -85,10 +96,8 @@ public class World {
 		final WipPort wip = new WipPort(5);
 		try {
 			level = definition.startingLevel;
-	//		Element races = rl.getXML(language, game + "/races");
-	//		Element tech = rl.getXML(language, game + "/tech");
-	//		Element planets = rl.getXML(language, game + "/planets");
 			
+			processPlayers(rl.getXML(language, game + "/players"));
 			
 			exec.submit(new Runnable() {
 				@Override
@@ -158,8 +167,8 @@ public class World {
 	
 		} finally {
 			wip.dec();
-			await(wip);
 		}
+		await(wip);
 		wip.inc();
 		try {
 			for (final PlanetType pt : galaxyModel.planetTypes.values()) {
@@ -189,8 +198,10 @@ public class World {
 			}
 		} finally {
 			wip.dec();
-			await(wip);
 		}
+		await(wip);
+		
+		processPlanets(rl.getXML(language, game + "/planets"));
 
 		try {
 			exec.shutdown();
@@ -301,5 +312,100 @@ public class World {
 	public WalkShip getShip() {
 		// TODO Auto-generated method stub
 		return getCurrentLevel().ship;
+	}
+	/**
+	 * Process the players XML.
+	 * @param players the players node
+	 */
+	public void processPlayers(XElement players) {
+		for (XElement player : players.childrenWithName("player")) {
+			processPlayer(player);
+		}
+	}
+	/**
+	 * Process a player.
+	 * @param player the player
+	 */
+	public void processPlayer(XElement player) {
+		Player p = new Player();
+		p.id = player.get("id");
+		p.color = (int)Long.parseLong(player.get("color"), 16);
+		p.race = player.get("race");
+		p.name = labels.get(player.get("name"));
+		
+		p.fleetIcon = rl.getImage(language, player.get("icon"));
+		String pic = player.get("picture");
+		if (pic != null) {
+			p.picture = rl.getImage(language, pic);
+		}
+		
+		if ("true".equals(player.get("user"))) {
+			this.player = p;
+		}
+		this.players.put(p.id, p);
+	}
+	/**
+	 * Process the planets listing XML.
+	 * @param planets the planets node
+	 */
+	public void processPlanets(XElement planets) {
+		for (XElement planet : planets.childrenWithName("planet")) {
+			processPlanet(planet);
+		}
+	}
+	/**
+	 * Process a planet node.
+	 * @param planet the 
+	 */
+	public void processPlanet(XElement planet) {
+		Planet p = new Planet();
+		p.id = planet.get("id");
+		p.name = planet.get("name");
+		String nameLabel = planet.get("label");
+		if (nameLabel != null) {
+			p.name = labels.get(nameLabel); 
+		}
+		p.owner = players.get(planet.get("owner"));
+		p.race = planet.get("race");
+		p.x = Integer.parseInt(planet.get("x"));
+		p.y = Integer.parseInt(planet.get("y"));
+		
+		p.diameter = Integer.parseInt(planet.get("size"));
+		p.population = Integer.parseInt(planet.get("population"));
+		
+		p.allocation = getEnum(ResourceAllocationStrategy.class, planet.get("allocation"));
+		p.autoBuild = getEnum(AutoBuild.class, planet.get("autobuild"));
+		p.tax = getEnum(TaxLevel.class, planet.get("tax"));
+		p.rotationDirection = getEnum(RotationDirection.class, planet.get("rotate"));
+		p.morale = Integer.parseInt(planet.get("morale"));
+		p.taxIncome = Integer.parseInt(planet.get("tax-income"));
+		p.tradeIncome = Integer.parseInt(planet.get("trade-income"));
+		
+		XElement surface = planet.childElement("surface");
+		String si = surface.get("id");
+		String st = surface.get("type");
+		p.type = galaxyModel.planetTypes.get(st);
+		p.surface = p.type.surfaces.get(Integer.parseInt(si)).copy();
+		p.surface.parseMap(planet, null, buildingModel);
+		
+		planets.add(p);
+		if (p.owner != null) {
+			p.owner.planets.put(p, PlanetKnowledge.OWNED);
+		}
+	}
+	/**
+	 * Locate an enumeration based on its string name.
+	 * @param <T> the enum type
+	 * @param e the enum class
+	 * @param value the string
+	 * @return the enum or null if not found
+	 */
+	public static <T extends Enum<T>> T getEnum(Class<T> e, String value) {
+		for (T ec : e.getEnumConstants()) {
+			if (ec.name().equals(value)) {
+				return ec;
+			}
+		}
+		return null;
 	}
 }

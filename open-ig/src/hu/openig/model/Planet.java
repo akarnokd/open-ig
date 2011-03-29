@@ -18,6 +18,8 @@ import java.util.List;
  * @author akarnokd, 2010.01.07.
  */
 public class Planet {
+	/** The planet's identifier. */
+	public String id;
 	/** The planet's display name. */
 	public String name;
 	/** The X coordinate on the unscaled starmap. */
@@ -29,13 +31,13 @@ public class Planet {
 	/** The owner. */
 	public Player owner;
 	/** The inhabitant race. */
-	public Race race;
+	public String race;
 	/** The current population. */
 	public int population;
 	/** The rendered rotation phase. */
 	public int rotationPhase;
 	/** The rotation direction. */
-	public boolean rotationDirection;
+	public RotationDirection rotationDirection;
 	/** The radar radius. */
 	public int radar;
 	/** The diameter in pixels up to 30 for the maximum zoom. */
@@ -46,4 +48,16 @@ public class Planet {
 	public boolean quarantine;
 	/** The contents of the planet. */
 	public PlanetSurface surface;
+	/** The resource allocation strategy. */
+	public ResourceAllocationStrategy allocation;
+	/** The taxation level. */
+	public TaxLevel tax;
+	/** The morale percent in hundreds. */
+	public int morale;
+	/** The auto build mode. */
+	public AutoBuild autoBuild;
+	/** The last day's tax income. */
+	public int taxIncome;
+	/** The last day's trade income. */
+	public int tradeIncome;
 }
