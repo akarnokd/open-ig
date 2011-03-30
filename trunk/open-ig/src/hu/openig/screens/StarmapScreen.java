@@ -15,6 +15,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.RotationDirection;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
+import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
@@ -89,10 +90,6 @@ public class StarmapScreen extends ScreenBase {
 	final Rectangle bottomPanel = new Rectangle();
 	/** To blink the currently selected planet on the minimap. */
 	boolean minimapPlanetBlink;
-	/** The currently selected planet. */
-	Planet currentPlanet;
-	/** The currently selected fleet. */
-	Fleet currentFleet;
 	/** The blink counter. */
 	int blinkCounter;
 	/** Show fleets. */
@@ -124,23 +121,21 @@ public class StarmapScreen extends ScreenBase {
 	/** The fleets scroled index. */
 	int fleetsOffset;
 	/** Button. */
-	Button2 prevPlanet;
+	UIImageButton prevPlanet;
 	/** Button. */
-	Button2 nextPlanet;
+	UIImageButton nextPlanet;
 	/** Button. */
-	Button2 colony;
+	UIImageButton colony;
 	/** Button. */
-	Button2 prevFleet;
+	UIImageButton prevFleet;
 	/** Button. */
-	Button2 nextFleet;
+	UIImageButton nextFleet;
 	/** Button. */
-	Button2 equipment;
+	UIImageButton equipment;
 	/** Button. */
-	Button2 info;
+	UIImageButton info;
 	/** Button. */
-	Button2 bridge;
-	/** The list of buttons. */
-	final List<Button2> rightPanelButtons = new ArrayList<Button2>();
+	UIImageButton bridge;
 	/** In panning mode? */
 	boolean panning;
 	/** Mouse down. */
@@ -188,32 +183,25 @@ public class StarmapScreen extends ScreenBase {
 		BufferedImage disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
 		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
 
-		prevPlanet = new Button2(commons.starmap().backwards[0], commons.starmap().backwards[1], disabledPattern);
-		nextPlanet = new Button2(commons.starmap().forwards[0], commons.starmap().forwards[1], disabledPattern);
-		prevFleet = new Button2(commons.starmap().backwards[0], commons.starmap().backwards[1], disabledPattern);
-		nextFleet = new Button2(commons.starmap().forwards[0], commons.starmap().forwards[1], disabledPattern);
-		colony = new Button2(commons.starmap().colony[0], commons.starmap().colony[1], disabledPattern);
-		equipment = new Button2(commons.starmap().equipment[0], commons.starmap().equipment[1], disabledPattern);
-		info = new Button2(commons.common().infoButton[0], commons.common().infoButton[1], disabledPattern);
-		bridge = new Button2(commons.common().bridgeButton[0], commons.common().bridgeButton[1], disabledPattern);
-		
-		rightPanelButtons.clear();
-		
-		rightPanelButtons.add(prevPlanet);
-		rightPanelButtons.add(nextPlanet);
-		rightPanelButtons.add(prevFleet);
-		rightPanelButtons.add(nextFleet);
-		rightPanelButtons.add(colony);
-		rightPanelButtons.add(equipment);
-		rightPanelButtons.add(info);
-		rightPanelButtons.add(bridge);
+		prevPlanet = new UIImageButton(commons.starmap().backwards);
+		prevPlanet.setDisabledPattern(commons.common().disabledPattern);
+		nextPlanet = new UIImageButton(commons.starmap().forwards);
+		nextPlanet.setDisabledPattern(commons.common().disabledPattern);
+		prevFleet = new UIImageButton(commons.starmap().backwards);
+		prevFleet.setDisabledPattern(commons.common().disabledPattern);
+		nextFleet = new UIImageButton(commons.starmap().forwards);
+		nextFleet.setDisabledPattern(commons.common().disabledPattern);
+		colony = new UIImageButton(commons.starmap().colony);
+		equipment = new UIImageButton(commons.starmap().equipment);
+		info = new UIImageButton(commons.common().infoButton);
+		bridge = new UIImageButton(commons.common().bridgeButton);
 		
 		prevPlanet.onClick = new Act() {
 			@Override 
 			public void act() {
-				int idx = planets.indexOf(currentPlanet);
+				int idx = planets.indexOf(commons.world.player.currentPlanet);
 				if (idx > 0 && planets.size() > 0) {
-					currentPlanet = planets.get(idx - 1);
+					commons.world.player.currentPlanet = planets.get(idx - 1);
 					planetsOffset = limitScrollBox(idx - 1, planets.size(), planetsList.height, 10);
 				}
 			}
@@ -221,9 +209,9 @@ public class StarmapScreen extends ScreenBase {
 		nextPlanet.onClick = new Act() {
 			@Override
 			public void act() {
-				int idx = planets.indexOf(currentPlanet);
+				int idx = planets.indexOf(commons.world.player.currentPlanet);
 				if (idx + 1 < planets.size()) {
-					currentPlanet = planets.get(idx + 1);
+					commons.world.player.currentPlanet = planets.get(idx + 1);
 					planetsOffset = limitScrollBox(idx + 1, planets.size(), planetsList.height, 10);
 				}
 			}
@@ -231,9 +219,9 @@ public class StarmapScreen extends ScreenBase {
 		prevFleet.onClick = new Act() {
 			@Override 
 			public void act() {
-				int idx = fleets.indexOf(currentFleet);
+				int idx = fleets.indexOf(commons.world.player.currentFleet);
 				if (idx > 0 && fleets.size() > 0) {
-					currentFleet = fleets.get(idx - 1);
+					commons.world.player.currentFleet = fleets.get(idx - 1);
 					fleetsOffset = limitScrollBox(idx - 1, fleets.size(), fleetsList.height, 10);
 				}
 			}
@@ -241,9 +229,9 @@ public class StarmapScreen extends ScreenBase {
 		nextFleet.onClick = new Act() {
 			@Override
 			public void act() {
-				int idx = fleets.indexOf(currentFleet);
+				int idx = fleets.indexOf(commons.world.player.currentFleet);
 				if (idx + 1 < fleets.size()) {
-					currentFleet = fleets.get(idx + 1);
+					commons.world.player.currentFleet = fleets.get(idx + 1);
 					fleetsOffset = limitScrollBox(idx + 1, fleets.size(), fleetsList.height, 10);
 				}
 			}
@@ -273,6 +261,8 @@ public class StarmapScreen extends ScreenBase {
 				commons.control.displayPrimary(Screens.BRIDGE);
 			}
 		};
+		
+		addThis();
 	}
 	/**
 	 * Rotate the planets on screen.
@@ -367,31 +357,34 @@ public class StarmapScreen extends ScreenBase {
 			if (e.has(Button.LEFT)) { 
 				if (starmapWindow.contains(e.x, e.y) 
 						&& !e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
-					currentPlanet = getPlanetAt(e.x, e.y);
-					currentFleet = getFleetAt(e.x, e.y);
+					Planet p = getPlanetAt(e.x, e.y);
+					Fleet f = getFleetAt(e.x, e.y);
+
+					if (p != null) {
+						commons.world.player.currentPlanet = p;
+					}
+					if (f != null) {
+						commons.world.player.currentFleet = f;
+					}
+					
 					rep = true;
 				} else
 				if (planetFleetSplitterRect.contains(e.x, e.y) && planetFleetSplitterRange.height > 0) {
 					pfSplitter = true;
 				}
 				if (rightPanelVisible) {
-					for (Button2 btn : rightPanelButtons) {
-						if (btn.containsPoint(e.x, e.y)) {
-							btn.down = true;
-							rep = true;
-							break;
-						}
-					}
 					if (planetsList.contains(e.x, e.y)) {
 						int idx = planetsOffset + (e.y - planetsList.y) / 10;
 						if (idx < planets.size()) {
-							currentPlanet = planets.get(idx);
+							commons.world.player.currentPlanet = planets.get(idx);
+							rep = true;
 						}
 					}
 					if (fleetsList.contains(e.x, e.y)) {
 						int idx = fleetsOffset + (e.y - fleetsList.y) / 10;
 						if (idx < fleets.size()) {
-							currentFleet = fleets.get(idx);
+							commons.world.player.currentFleet = fleets.get(idx);
+							rep = true;
 						}
 					}
 				}
@@ -401,16 +394,6 @@ public class StarmapScreen extends ScreenBase {
 			panning = false;
 			mouseDown = false;
 			pfSplitter = false;
-			for (Button2 btn : rightPanelButtons) {
-				if (btn.containsPoint(e.x, e.y)) {
-					btn.click();
-					rep = true;
-				}
-				if (btn.down) {
-					btn.down = false;
-					rep = true;
-				}
-			}
 			break;
 		case LEAVE:
 			panning = false;
@@ -446,84 +429,10 @@ public class StarmapScreen extends ScreenBase {
 			break;
 		default:
 		}
+		if (!rep) {
+			rep = super.mouse(e);
+		}
 		return rep;
-	}
-
-	/** Button with normal, pressed and disabled states. */
-	class Button2 {
-		/** The X coordinate. */
-		public int x;
-		/** The Y coordinate. */
-		public int y;
-		/** Is it down? */
-		public boolean down;
-		/** Enabled? */
-		public boolean enabled = true;
-		/** Normal image. */
-		public BufferedImage normalImage;
-		/** Down image. */
-		public BufferedImage downImage;
-		/** Disabled pattern. */
-		public BufferedImage disabledPattern;
-		/** The action to perform on clicking. */
-		public Act onClick;
-		/**
-		 * Constructor.
-		 * @param normal the normal image
-		 * @param downImage the down image
-		 * @param disabledPattern the disabled pattern
-		 */
-		public Button2(BufferedImage normal, BufferedImage downImage, BufferedImage disabledPattern) {
-			this.normalImage = normal;
-			this.downImage = downImage;
-			this.disabledPattern = disabledPattern;
-		}
-		/**
-		 * @return the width
-		 */
-		public int getWidth() {
-			return normalImage.getWidth();
-		}
-		/**
-		 * @return the height
-		 */
-		public int getHeight() {
-			return normalImage.getHeight();
-		}
-		/**
-		 * Render the button.
-		 * @param g2 the graphics object
-		 */
-		public void paint(Graphics2D g2) {
-			if (!enabled) {
-				g2.drawImage(normalImage, x, y, null);
-				TexturePaint tp = new TexturePaint(disabledPattern, new Rectangle(x, y, 3, 3));
-				Paint sp = g2.getPaint();
-				g2.setPaint(tp);
-				g2.fillRect(x, y, normalImage.getWidth(), normalImage.getHeight());
-				g2.setPaint(sp);
-			} else
-			if (down) {
-				g2.drawImage(downImage, x, y, null);
-			} else {
-				g2.drawImage(normalImage, x, y, null);
-			}
-		}
-		/**
-		 * Check if the point is within this button.
-		 * @param px the x coordinate
-		 * @param py the y coordinate
-		 * @return contains the point
-		 */
-		public boolean containsPoint(int px, int py) {
-			return enabled && x <= px && y <= py && px < x + getWidth() && py < y + getHeight();
-		}
-		/** Execute the click action. */
-		public void click() {
-			if (onClick != null) {
-				onClick.act();
-			}
-		}
 	}
 	/**
 	 * Limit the scroll box offset value based on the size of the box and rowheight.
@@ -543,12 +452,11 @@ public class StarmapScreen extends ScreenBase {
 		}
 		return offset; 
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter(Object mode) {
 		rotationTimer.start();
+		planets.clear();
+		planets.addAll(commons.world.planets);
 	}
 
 	/* (non-Javadoc)
@@ -616,8 +524,12 @@ public class StarmapScreen extends ScreenBase {
 			int tw = commons.text().getTextWidth(5, p.name);
 			int xt = (int)(starmapRect.x + p.x * zoom - tw / 2);
 			int yt = (int)(starmapRect.y + p.y * zoom + d / 2) + 4;
-			commons.text().paintTo(g2, xt, yt, 5, p.owner.color, p.name);
-			if (p == currentPlanet) {
+			int labelColor = TextRenderer.GRAY;
+			if (p.owner != null) {
+				labelColor = p.owner.color;
+			}
+			commons.text().paintTo(g2, xt, yt, 5, labelColor, p.name);
+			if (p == commons.world.player.currentPlanet) {
 				g2.setColor(Color.WHITE);
 				g2.drawLine(x0 - 1, y0 - 1, x0 + 2, y0 - 1);
 				g2.drawLine(x0 - 1, y0 + di + 1, x0 + 2, y0 + di + 1);
@@ -668,7 +580,7 @@ public class StarmapScreen extends ScreenBase {
 				int xt = (int)(starmapRect.x + f.x * zoom - tw / 2);
 				int yt = (int)(starmapRect.y + f.y * zoom + f.shipIcon.getHeight() / 2) + 3;
 				commons.text().paintTo(g2, xt, yt, 5, f.owner.color, f.name);
-				if (f == currentFleet) {
+				if (f == commons.world.player.currentFleet) {
 					g2.setColor(Color.WHITE);
 					g2.drawRect(x0 - 1, y0 - 1, f.shipIcon.getWidth() + 2, f.shipIcon.getHeight() + 2);
 				}
@@ -693,15 +605,12 @@ public class StarmapScreen extends ScreenBase {
 			g2.drawImage(commons.starmap().panelVerticalSeparator, zoomingPanel.x, zoomingPanel.y - 2, null);
 			g2.drawImage(commons.starmap().panelVerticalSeparator, buttonsPanel.x, buttonsPanel.y - 2, null);
 			
-			for (Button2 btn : rightPanelButtons) {
-				btn.paint(g2);
-			}
 			g2.setClip(save0);
 			g2.clipRect(planetsList.x, planetsList.y, planetsList.width, planetsList.height);
 			for (int i = planetsOffset; i < planets.size(); i++) {
 				Planet p = planets.get(i);
 				int color = TextRenderer.GREEN;
-				if (p == currentPlanet) {
+				if (p == commons.world.player.currentPlanet) {
 					color = TextRenderer.RED;
 				}
 				commons.text().paintTo(g2, planetsList.x + 3, planetsList.y + (i - planetsOffset) * 10 + 2, 7, color, p.name);
@@ -711,7 +620,7 @@ public class StarmapScreen extends ScreenBase {
 			for (int i = fleetsOffset; i < fleets.size(); i++) {
 				Fleet p = fleets.get(i);
 				int color = TextRenderer.GREEN;
-				if (p == currentFleet) {
+				if (p == commons.world.player.currentFleet) {
 					color = TextRenderer.RED;
 				}
 				commons.text().paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, p.name);
@@ -736,15 +645,21 @@ public class StarmapScreen extends ScreenBase {
 			g2.clipRect(minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height);
 			// render planets
 			for (Planet p : planets) {
-				if (p != currentPlanet || minimapPlanetBlink) {
+				if (p != commons.world.player.currentPlanet || minimapPlanetBlink) {
 					int x0 = minimapInnerRect.x + (p.x * minimapInnerRect.width / commons.starmap().background.getWidth());
 					int y0 = minimapInnerRect.y + (p.y * minimapInnerRect.height / commons.starmap().background.getHeight());
-					g2.setColor(new Color(p.owner.color));
+					int labelColor = TextRenderer.GRAY;
+					if (p.owner != null) {
+						labelColor = p.owner.color;
+					}
+					g2.setColor(new Color(labelColor));
 					g2.fillRect(x0 - 1, y0 - 1, 3, 3);
 				}
 			}
 		}
 		g2.setClip(save0);
+		
+		super.draw(g2);
 	}
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
 	void computeRectangles() {
@@ -853,52 +768,52 @@ public class StarmapScreen extends ScreenBase {
 		
 		prevPlanet.x = planetsListPanel.x + 2;
 		prevPlanet.y = planetsListPanel.y + 1;
-		nextPlanet.x = planetsListPanel.x + prevPlanet.getWidth() + 4;
+		nextPlanet.x = planetsListPanel.x + prevPlanet.width + 4;
 		nextPlanet.y = planetsListPanel.y + 1;
 
 		prevFleet.x = fleetsListPanel.x + 2;
 		prevFleet.y = fleetsListPanel.y + 1;
-		nextFleet.x = fleetsListPanel.x + prevFleet.getWidth() + 4;
+		nextFleet.x = fleetsListPanel.x + prevFleet.width + 4;
 		nextFleet.y = fleetsListPanel.y + 1;
 
 		colony.x = planetsListPanel.x + 1;
-		colony.y = planetsListPanel.y + planetsListPanel.height - colony.getHeight() - 1;
+		colony.y = planetsListPanel.y + planetsListPanel.height - colony.height - 1;
 
 		equipment.x = fleetsListPanel.x + 1;
-		equipment.y = fleetsListPanel.y + fleetsListPanel.height - equipment.getHeight() - 1;
+		equipment.y = fleetsListPanel.y + fleetsListPanel.height - equipment.height - 1;
 		
 		info.x = buttonsPanel.x + 1;
 		info.y = buttonsPanel.y + 1;
 		bridge.x = buttonsPanel.x + 1;
-		bridge.y = info.y + info.getHeight() + 1;
+		bridge.y = info.y + info.height + 1;
 		
 		if (planets.size() > 0) {
-			int idx = planets.indexOf(currentPlanet);
-			prevPlanet.enabled = idx > 0;
-			nextPlanet.enabled = idx + 1 < planets.size();
+			int idx = planets.indexOf(commons.world.player.currentPlanet);
+			prevPlanet.enabled(idx > 0);
+			nextPlanet.enabled(idx + 1 < planets.size());
 		} else {
-			prevPlanet.enabled = false;
-			nextPlanet.enabled = false;
+			prevPlanet.enabled(false);
+			nextPlanet.enabled(false);
 		}
 		
 		if (fleets.size() > 0) {
-			int idx = fleets.indexOf(currentFleet);
-			prevFleet.enabled = idx > 0;
-			nextFleet.enabled = idx + 1 < fleets.size();
+			int idx = fleets.indexOf(commons.world.player.currentFleet);
+			prevFleet.enabled(idx > 0);
+			nextFleet.enabled(idx + 1 < fleets.size());
 		} else {
-			prevFleet.enabled = false;
-			nextFleet.enabled = false;
+			prevFleet.enabled(false);
+			nextFleet.enabled(false);
 		}
 
 		// ..............................................................
 
 		planetsList.x = planetsListPanel.x;
-		planetsList.y = planetsListPanel.y + prevPlanet.getHeight() + 1;
+		planetsList.y = planetsListPanel.y + prevPlanet.height + 1;
 		planetsList.width = planetsListPanel.width;
 		planetsList.height = colony.y - planetsList.y;
 
 		fleetsList.x = fleetsListPanel.x;
-		fleetsList.y = fleetsListPanel.y + prevFleet.getHeight() + 1;
+		fleetsList.y = fleetsListPanel.y + prevFleet.height + 1;
 		fleetsList.width = fleetsListPanel.width;
 		fleetsList.height = equipment.y - fleetsList.y;
 

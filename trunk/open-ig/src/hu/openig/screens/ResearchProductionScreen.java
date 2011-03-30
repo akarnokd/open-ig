@@ -841,7 +841,9 @@ public class ResearchProductionScreen extends ScreenBase {
 
 	@Override
 	public void onLeave() {
-		animation.stop();
+		if (animation != null) {
+			animation.stop();
+		}
 		if (videoRenderer != null) {
 			videoRenderer.stop();
 			videoRenderer = null;
@@ -850,7 +852,6 @@ public class ResearchProductionScreen extends ScreenBase {
 
 	@Override
 	public void onFinish() {
-		onLeave();
 		animation = null;
 	}
 
