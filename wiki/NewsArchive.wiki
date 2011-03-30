@@ -4,6 +4,14 @@
 
 = March, 2011 =
 
+*March 30. 2011*
+
+The colony screen mostly working. You cannot build yet (the backing model is still incomplete), but you can demolish/disable buildings. See [http://code.google.com/p/open-ig/wiki/GameGuide the Game Guide] for a list of available keyboard/mouse options.
+
+There are two other notable changes in the application:
+  * A *Console Watcher* window should pop up on any program error. You can use it to report an issue.
+  * The memory requirements are now set to 512 MB.
+
 *March 22. 2011*
 
 Open Imperium Galactica [http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7029238 helps] the Java 7 development :)
