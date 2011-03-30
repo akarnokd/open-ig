@@ -5,7 +5,7 @@
 
 = Version 0.86 screenshots =
 
-|| [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-starmap.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-starmap-tn.png]<br>Starmap. || [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-colony.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-colony-tn.png]<br>Colony. ||
+|| [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-starmap-01.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-starmap-01-tn.png]<br>Starmap. || [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-colony-01.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-colony-01-tn.png]<br>Colony. ||
 
 = Version 0.85 screenshots =
 
