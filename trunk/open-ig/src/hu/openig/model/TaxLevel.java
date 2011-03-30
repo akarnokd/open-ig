@@ -16,19 +16,21 @@ public enum TaxLevel {
 	/** None. */
 	NONE(0),
 	/** 10%. */
-	VERY_LOW(10),
+	VERY_LOW(12),
 	/** 25%. */
 	LOW(25),
 	/** 40%. */
-	NORMAL(40),
+	NORMAL(37),
 	/** 55%. */
-	ABOVE_NORMAL(55),
+	ABOVE_NORMAL(50),
 	/** 70%. */
-	HIGH(70),
+	HIGH(62),
 	/** 85%. */
-	VERY_HIGH(85),
+	VERY_HIGH(75),
 	/** 100%. */
-	OPPRESSIVE(100)
+	OPPRESSIVE(87),
+	/** 100%. */
+	ULTIMATE(100)
 	;
 	/** The taxation percent. */
 	public final int percent;

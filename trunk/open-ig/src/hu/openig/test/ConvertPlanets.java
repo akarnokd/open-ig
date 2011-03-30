@@ -39,7 +39,7 @@ public final class ConvertPlanets {
 			XElement planet = root.add("planet");
 			planet.set("id", oplanet.get("id"));
 			planet.set("name", oplanet.childValue("name"));
-			if ("Earth".equals(oplanet.childValue("id"))) {
+			if ("Earth".equals(oplanet.get("id"))) {
 				planet.set("label", "planets.earth"); // the label override for Earth
 			}
 			planet.set("x", Integer.parseInt(oplanet.childValue("location-x")) * 2);

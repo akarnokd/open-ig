@@ -384,6 +384,19 @@ public class World {
 		p.taxIncome = Integer.parseInt(planet.get("tax-income"));
 		p.tradeIncome = Integer.parseInt(planet.get("trade-income"));
 		
+		String populationDelta = planet.get("population-last");
+		if (populationDelta != null && !populationDelta.isEmpty()) {
+			p.lastPopulation = Integer.parseInt(populationDelta);
+		} else {
+			p.lastPopulation = p.population;
+		}
+		String lastMorale = planet.get("morale-last");
+		if (lastMorale != null && !lastMorale.isEmpty()) {
+			p.lastMorale = Integer.parseInt(lastMorale);
+		} else {
+			p.lastMorale = p.morale;
+		}
+		
 		XElement surface = planet.childElement("surface");
 		String si = surface.get("id");
 		String st = surface.get("type");

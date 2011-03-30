@@ -428,7 +428,7 @@
       <building id='ColonyHub' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-34' x='-9'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='18' id='Earth' tax='NORMAL' trade-income='0' name='Earth' allocation='DEFAULT' owner='Empire' y='230' tax-income='0' x='110' population='12343'>
+  <planet rotate='RL' autobuild='OFF' label='planets.earth' race='human' morale='100' size='18' id='Earth' tax='NORMAL' trade-income='0' name='Earth' allocation='DEFAULT' owner='Empire' y='230' tax-income='0' x='110' population='12343'>
     <surface id='8' type='earth'/>
     <inventory/>
     <buildings>
