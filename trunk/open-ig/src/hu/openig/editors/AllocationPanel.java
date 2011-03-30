@@ -11,21 +11,25 @@ package hu.openig.editors;
 import hu.openig.core.Act;
 import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.Building;
-import hu.openig.model.ResourceAllocationSettings;
+import hu.openig.model.Planet;
+import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResourceAllocationStrategy;
 import hu.openig.utils.Parallels;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.GroupLayout.Alignment;
 
 /**
  * The panel to define the worker/energy allocation strategy and compute the results.
@@ -217,7 +221,10 @@ public class AllocationPanel extends JPanel {
 		gl.linkSize(SwingConstants.HORIZONTAL, availableWorkersLbl, availableEnergyLbl, strategiesLbl);
 		gl.linkSize(SwingConstants.HORIZONTAL, apply, refresh);
 		
-		resourceAllocator = new ResourceAllocator();
+		ThreadPoolExecutor exec = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+		exec.allowCoreThreadTimeOut(true);
+		
+		resourceAllocator = new ResourceAllocator(exec, null);
 	}
 	/**
 	 *  Refresh the total values.
@@ -255,14 +262,13 @@ public class AllocationPanel extends JPanel {
 	void doCompute() {
 		apply.setEnabled(false);
 		doRefresh();
-		int availableWorker = Integer.parseInt(availableWorkers.getText());
+
+		final Planet p = new Planet();
+		p.surface = new PlanetSurface();
+		p.population = Integer.parseInt(availableWorkers.getText());
+		p.surface.buildings.addAll(buildings);
 		
-		ResourceAllocationSettings ras = new ResourceAllocationSettings(
-				this.buildings
-				, -availableWorker
-				, ResourceAllocationStrategy.values()[strategies.getSelectedIndex()]);
-		
-		Parallels.waitForFutures(resourceAllocator.compute(Collections.singleton(ras))
+		Parallels.waitForFutures(resourceAllocator.compute(Collections.singleton(p))
 				, new Runnable() {
 			@Override
 			public void run() {

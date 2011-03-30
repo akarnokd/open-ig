@@ -253,6 +253,7 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void exit() {
+		commons.world.allocator.stop();
 		uninitScreens();
 		dispose();
 		try {

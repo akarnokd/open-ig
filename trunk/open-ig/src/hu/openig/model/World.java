@@ -12,6 +12,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
+import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.Bridge.Level;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
@@ -70,6 +71,8 @@ public class World {
 	public ResourceLocator rl;
 	/** The language. */
 	public String language;
+	/** The common resource allocator. */
+	public ResourceAllocator allocator;
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator

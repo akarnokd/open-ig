@@ -13,6 +13,7 @@ import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.ResourceLocator;
+import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.World;
@@ -461,6 +462,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	/** Exit the application. */
 	void doExit() {
+		commons.world.allocator.stop();
 		try {
 			if (screen != null) {
 				screen.onLeave();
@@ -512,6 +514,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					commons.world.labels = commons.labels();
 					commons.world.load(commons.rl, commons.language(), commons.world.definition.name);
 					commons.world.level = 5;
+					commons.world.allocator = new ResourceAllocator(commons.pool, commons.world.planets);
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
 				} catch (Throwable t) {
 					t.printStackTrace();
@@ -523,6 +526,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			@Override
 			protected void done() {
 				try {
+					commons.world.allocator.start();
 					parentColor = new Color(0xFF80FF80);
 					parentText = txtScreen;
 					enableDisableMenu(true);

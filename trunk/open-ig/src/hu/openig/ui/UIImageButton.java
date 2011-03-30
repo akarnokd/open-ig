@@ -154,9 +154,8 @@ public class UIImageButton extends UIComponent {
 				down = false;
 				holdTimer.stop();
 				doClick();
-				return true;
 			}
-			return false;
+			return true;
 		case LEAVE:
 			down = false;
 			holdTimer.stop();
@@ -178,18 +177,20 @@ public class UIImageButton extends UIComponent {
 	}
 	@Override
 	public UIComponent visible(boolean state) {
+		boolean pd = down;
 		down &= state;
 		over &= state;
-		if (!down) {
+		if (!down && pd) {
 			stop();
 		}
 		return super.visible(state);
 	}
 	@Override
 	public UIComponent enabled(boolean state) {
+		boolean pd = down;
 		down &= state;
 		over &= state;
-		if (!down) {
+		if (!down && pd) {
 			stop();
 		}
 		return super.enabled(state);
