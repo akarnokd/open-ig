@@ -19,4 +19,6 @@
   * [Testbed The development testbed]
     * [Testbed_Notes Release notes]
   * [UtilityPrograms Older utilities]
+    * [AnimPlay AnimPlay]
   * [Questions Questions & Answers]
+  * [Credits Credits]
