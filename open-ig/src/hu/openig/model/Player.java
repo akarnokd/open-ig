@@ -10,6 +10,8 @@ package hu.openig.model;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,4 +58,58 @@ public class Player {
 	public ResearchType currentResearch;
 	/** The actual building. */
 	public BuildingType currentBuilding;
+	/**
+	 * @return returns the next planet by goind top-bottom relative to the current planet
+	 */
+	public Planet moveNextPlanet() {
+		List<Planet> playerPlanets = getPlayerPlanets();
+		if (playerPlanets.size() > 0) {
+			Collections.sort(playerPlanets, PLANET_ORDER);
+			int idx = playerPlanets.indexOf(currentPlanet);
+			Planet p = playerPlanets.get((idx + 1) % playerPlanets.size());
+			currentPlanet = p;
+			return p;
+		}
+		return null;
+	}
+	/**
+	 * @return returns the previous planet by goind top-bottom relative to the current planet
+	 */
+	public Planet movePrevPlanet() {
+		List<Planet> playerPlanets = getPlayerPlanets();
+		if (playerPlanets.size() > 0) {
+			Collections.sort(playerPlanets, PLANET_ORDER);
+			int idx = playerPlanets.indexOf(currentPlanet);
+			if (idx == 0) {
+				idx = playerPlanets.size(); 
+			}
+			Planet p = playerPlanets.get((idx - 1) % playerPlanets.size());
+			currentPlanet = p;
+			return p;
+		}
+		return null;
+	}
+	/**
+	 * @return a list of the player-owned planets
+	 */
+	public List<Planet> getPlayerPlanets() {
+		List<Planet> result = new ArrayList<Planet>();
+		for (Planet p : planets.keySet()) {
+			if (planets.get(p) == PlanetKnowledge.OWNED) {
+				result.add(p);
+			}
+		}
+		return result;
+	}
+	/** The planet orderer by coordinates. */
+	public static final Comparator<Planet> PLANET_ORDER = new Comparator<Planet>() {
+		@Override
+		public int compare(Planet o1, Planet o2) {
+			int c = o1.y < o2.y ? -1 : (o1.y > o2.y ? 1 : 0);
+			if (c == 0) {
+				c = o1.x < o2.x ? -1 : (o1.x > o2.x ? 1 : 0);
+			}
+			return c;
+		}
+	};
 }

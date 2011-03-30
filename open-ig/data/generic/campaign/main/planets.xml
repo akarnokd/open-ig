@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <planets>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Achilles' tax='NORMAL' trade-income='0' name='Achilles' allocation='DEFAULT' owner='Empire' y='816' tax-income='0' x='616' population='8100'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Achilles' tax='NORMAL' trade-income='0' name='Achilles' allocation='DEFAULT' owner='Empire' y='408' tax-income='0' x='308' population='8100'>
     <surface id='2' type='desert'/>
     <inventory/>
     <buildings>
@@ -14,7 +14,7 @@
       <building id='PrefabHousing' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-44' x='0'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='ecalep' morale='100' size='18' id='Andromeda 1' tax='NORMAL' trade-income='0' name='Andromeda 1' allocation='DEFAULT' owner='Ecalep' y='1256' tax-income='0' x='1736' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='ecalep' morale='100' size='18' id='Andromeda 1' tax='NORMAL' trade-income='0' name='Andromeda 1' allocation='DEFAULT' owner='Ecalep' y='628' tax-income='0' x='868' population='10000'>
     <surface id='1' type='neptoplasm'/>
     <inventory/>
     <buildings>
@@ -41,7 +41,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ecalep' energy='0' y='-28' x='-13'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='ecalep' morale='100' size='30' id='Andromeda 2' tax='NORMAL' trade-income='0' name='Andromeda 2' allocation='DEFAULT' owner='Ecalep' y='1228' tax-income='0' x='1824' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='ecalep' morale='100' size='30' id='Andromeda 2' tax='NORMAL' trade-income='0' name='Andromeda 2' allocation='DEFAULT' owner='Ecalep' y='614' tax-income='0' x='912' population='10000'>
     <surface id='2' type='neptoplasm'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='ecalep'/>
@@ -70,7 +70,7 @@
       <building id='Arcology' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ecalep' energy='0' y='-27' x='-1'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='ecalep' morale='100' size='24' id='Andromeda 3' tax='NORMAL' trade-income='0' name='Andromeda 3' allocation='DEFAULT' owner='Ecalep' y='1180' tax-income='0' x='1764' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='ecalep' morale='100' size='24' id='Andromeda 3' tax='NORMAL' trade-income='0' name='Andromeda 3' allocation='DEFAULT' owner='Ecalep' y='590' tax-income='0' x='882' population='10000'>
     <surface id='3' type='neptoplasm'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='ecalep'/>
@@ -101,7 +101,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ecalep' energy='0' y='-21' x='3'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='ecalep' morale='100' size='18' id='Andromeda 4' tax='NORMAL' trade-income='0' name='Andromeda 4' allocation='DEFAULT' owner='Ecalep' y='1148' tax-income='0' x='1840' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='ecalep' morale='100' size='18' id='Andromeda 4' tax='NORMAL' trade-income='0' name='Andromeda 4' allocation='DEFAULT' owner='Ecalep' y='574' tax-income='0' x='920' population='10000'>
     <surface id='1' type='neptoplasm'/>
     <inventory>
       <item id='Base1' hp='' count='1' shield='' tech='ecalep'/>
@@ -133,22 +133,22 @@
       <building id='MesonProjector' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ecalep' energy='0' y='-37' x='2'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Andromeda 5' tax='NORMAL' trade-income='0' name='Andromeda 5' allocation='DEFAULT' y='988' x='1940' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Andromeda 5' tax='NORMAL' trade-income='0' name='Andromeda 5' allocation='DEFAULT' y='494' x='970' population='0' tax-income='0'>
     <surface id='4' type='neptoplasm'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Andromeda 6' tax='NORMAL' trade-income='0' name='Andromeda 6' allocation='DEFAULT' y='1084' x='1692' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Andromeda 6' tax='NORMAL' trade-income='0' name='Andromeda 6' allocation='DEFAULT' y='542' x='846' population='0' tax-income='0'>
     <surface id='3' type='earth'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Andromeda 7' tax='NORMAL' trade-income='0' name='Andromeda 7' allocation='DEFAULT' y='1176' x='1948' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Andromeda 7' tax='NORMAL' trade-income='0' name='Andromeda 7' allocation='DEFAULT' y='588' x='974' population='0' tax-income='0'>
     <surface id='3' type='neptoplasm'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='ychom' morale='100' size='18' id='Center 1' tax='NORMAL' trade-income='0' name='Center 1' allocation='DEFAULT' owner='Ychom' y='660' tax-income='0' x='624' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='ychom' morale='100' size='18' id='Center 1' tax='NORMAL' trade-income='0' name='Center 1' allocation='DEFAULT' owner='Ychom' y='330' tax-income='0' x='312' population='10000'>
     <surface id='1' type='rocky'/>
     <inventory/>
     <buildings>
@@ -180,7 +180,7 @@
       <building id='MilitarySpaceport' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ychom' energy='0' y='-41' x='-8'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='ychom' morale='100' size='30' id='Center 2' tax='NORMAL' trade-income='0' name='Center 2' allocation='DEFAULT' owner='Ychom' y='632' tax-income='0' x='700' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='ychom' morale='100' size='30' id='Center 2' tax='NORMAL' trade-income='0' name='Center 2' allocation='DEFAULT' owner='Ychom' y='316' tax-income='0' x='350' population='10000'>
     <surface id='8' type='cratered'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='ychom'/>
@@ -201,7 +201,7 @@
       <building id='MechanicalDevCenter' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ychom' energy='0' y='-28' x='-1'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='ychom' morale='100' size='18' id='Center 3' tax='NORMAL' trade-income='0' name='Center 3' allocation='DEFAULT' owner='Ychom' y='580' tax-income='0' x='632' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='ychom' morale='100' size='18' id='Center 3' tax='NORMAL' trade-income='0' name='Center 3' allocation='DEFAULT' owner='Ychom' y='290' tax-income='0' x='316' population='10000'>
     <surface id='1' type='rocky'/>
     <inventory>
       <item id='Base1' hp='' count='1' shield='' tech='ychom'/>
@@ -231,7 +231,7 @@
       <building id='Arcology' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ychom' energy='0' y='-54' x='-10'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='ychom' morale='100' size='24' id='Center 4' tax='NORMAL' trade-income='0' name='Center 4' allocation='DEFAULT' owner='Ychom' y='604' tax-income='0' x='556' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='ychom' morale='100' size='24' id='Center 4' tax='NORMAL' trade-income='0' name='Center 4' allocation='DEFAULT' owner='Ychom' y='302' tax-income='0' x='278' population='10000'>
     <surface id='3' type='frozen'/>
     <inventory/>
     <buildings>
@@ -260,7 +260,7 @@
       <building id='Arcology' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ychom' energy='0' y='-35' x='-12'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='ychom' morale='100' size='18' id='Center 5' tax='NORMAL' trade-income='0' name='Center 5' allocation='DEFAULT' owner='Ychom' y='552' tax-income='0' x='704' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='ychom' morale='100' size='18' id='Center 5' tax='NORMAL' trade-income='0' name='Center 5' allocation='DEFAULT' owner='Ychom' y='276' tax-income='0' x='352' population='10000'>
     <surface id='7' type='cratered'/>
     <inventory>
       <item id='Base1' hp='' count='1' shield='' tech='ychom'/>
@@ -285,7 +285,7 @@
       <building id='Fortress' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ychom' energy='0' y='-49' x='-23'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='ychom' morale='100' size='24' id='Center 6' tax='NORMAL' trade-income='0' name='Center 6' allocation='DEFAULT' owner='Ychom' y='500' tax-income='0' x='596' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='ychom' morale='100' size='24' id='Center 6' tax='NORMAL' trade-income='0' name='Center 6' allocation='DEFAULT' owner='Ychom' y='250' tax-income='0' x='298' population='10000'>
     <surface id='5' type='frozen'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='ychom'/>
@@ -308,7 +308,7 @@
       <building id='Fortress' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='ychom' energy='0' y='-37' x='-9'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='24' id='Center 7' tax='NORMAL' trade-income='0' name='Center 7' allocation='DEFAULT' owner='FreeTraders' y='616' tax-income='0' x='1012' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='24' id='Center 7' tax='NORMAL' trade-income='0' name='Center 7' allocation='DEFAULT' owner='FreeTraders' y='308' tax-income='0' x='506' population='10000'>
     <surface id='7' type='earth'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='human'/>
@@ -335,7 +335,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-27' x='-6'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Center 8' tax='NORMAL' trade-income='0' name='Center 8' allocation='DEFAULT' owner='FreeTraders' y='700' tax-income='0' x='1004' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Center 8' tax='NORMAL' trade-income='0' name='Center 8' allocation='DEFAULT' owner='FreeTraders' y='350' tax-income='0' x='502' population='10000'>
     <surface id='6' type='desert'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='human'/>
@@ -362,7 +362,7 @@
       <building id='Arcology' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-36' x='-18'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Center 9' tax='NORMAL' trade-income='0' name='Center 9' allocation='DEFAULT' owner='FreeTraders' y='664' tax-income='0' x='1080' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Center 9' tax='NORMAL' trade-income='0' name='Center 9' allocation='DEFAULT' owner='FreeTraders' y='332' tax-income='0' x='540' population='10000'>
     <surface id='8' type='desert'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='human'/>
@@ -381,42 +381,42 @@
       <building id='ColonyHub' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-31' x='-9'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Center 10' tax='NORMAL' trade-income='0' name='Center 10' allocation='DEFAULT' y='876' x='916' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Center 10' tax='NORMAL' trade-income='0' name='Center 10' allocation='DEFAULT' y='438' x='458' population='0' tax-income='0'>
     <surface id='5' type='cratered'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Center 11' tax='NORMAL' trade-income='0' name='Center 11' allocation='DEFAULT' y='688' x='908' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Center 11' tax='NORMAL' trade-income='0' name='Center 11' allocation='DEFAULT' y='344' x='454' population='0' tax-income='0'>
     <surface id='7' type='desert'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Center 12' tax='NORMAL' trade-income='0' name='Center 12' allocation='DEFAULT' y='636' x='392' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Center 12' tax='NORMAL' trade-income='0' name='Center 12' allocation='DEFAULT' y='318' x='196' population='0' tax-income='0'>
     <surface id='3' type='desert'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Center 13' tax='NORMAL' trade-income='0' name='Center 13' allocation='DEFAULT' y='552' x='484' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Center 13' tax='NORMAL' trade-income='0' name='Center 13' allocation='DEFAULT' y='276' x='242' population='0' tax-income='0'>
     <surface id='5' type='frozen'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Center 14' tax='NORMAL' trade-income='0' name='Center 14' allocation='DEFAULT' y='576' x='416' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Center 14' tax='NORMAL' trade-income='0' name='Center 14' allocation='DEFAULT' y='288' x='208' population='0' tax-income='0'>
     <surface id='4' type='earth'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Center 15' tax='NORMAL' trade-income='0' name='Center 15' allocation='DEFAULT' y='716' x='224' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Center 15' tax='NORMAL' trade-income='0' name='Center 15' allocation='DEFAULT' y='358' x='112' population='0' tax-income='0'>
     <surface id='5' type='rocky'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Center 16' tax='NORMAL' trade-income='0' name='Center 16' allocation='DEFAULT' y='752' x='596' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Center 16' tax='NORMAL' trade-income='0' name='Center 16' allocation='DEFAULT' y='376' x='298' population='0' tax-income='0'>
     <surface id='4' type='frozen'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Centronom' tax='NORMAL' trade-income='0' name='Centronom' allocation='DEFAULT' owner='Empire' y='764' tax-income='0' x='504' population='5212'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Centronom' tax='NORMAL' trade-income='0' name='Centronom' allocation='DEFAULT' owner='Empire' y='382' tax-income='0' x='252' population='5212'>
     <surface id='3' type='desert'/>
     <inventory/>
     <buildings>
@@ -428,7 +428,7 @@
       <building id='ColonyHub' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-34' x='-9'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='18' id='Earth' tax='NORMAL' trade-income='0' name='Earth' allocation='DEFAULT' owner='Empire' y='460' tax-income='0' x='220' population='12343'>
+  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='18' id='Earth' tax='NORMAL' trade-income='0' name='Earth' allocation='DEFAULT' owner='Empire' y='230' tax-income='0' x='110' population='12343'>
     <surface id='8' type='earth'/>
     <inventory/>
     <buildings>
@@ -453,7 +453,7 @@
       <building id='Stadium' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-40' x='-13'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Edgepolis' tax='NORMAL' trade-income='0' name='Edgepolis' allocation='DEFAULT' owner='Empire' y='612' tax-income='0' x='216' population='5133'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Edgepolis' tax='NORMAL' trade-income='0' name='Edgepolis' allocation='DEFAULT' owner='Empire' y='306' tax-income='0' x='108' population='5133'>
     <surface id='4' type='desert'/>
     <inventory/>
     <buildings>
@@ -466,7 +466,7 @@
       <building id='MilitarySpaceport' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-36' x='-17'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='morgath' morale='100' size='18' id='Exterior 1' tax='NORMAL' trade-income='0' name='Exterior 1' allocation='DEFAULT' owner='Morgath' y='1008' tax-income='0' x='312' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='morgath' morale='100' size='18' id='Exterior 1' tax='NORMAL' trade-income='0' name='Exterior 1' allocation='DEFAULT' owner='Morgath' y='504' tax-income='0' x='156' population='10000'>
     <surface id='9' type='frozen'/>
     <inventory/>
     <buildings>
@@ -483,7 +483,7 @@
       <building id='Hospital' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='morgath' energy='0' y='-34' x='-13'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='morgath' morale='100' size='30' id='Exterior 2' tax='NORMAL' trade-income='0' name='Exterior 2' allocation='DEFAULT' owner='Morgath' y='1072' tax-income='0' x='340' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='morgath' morale='100' size='30' id='Exterior 2' tax='NORMAL' trade-income='0' name='Exterior 2' allocation='DEFAULT' owner='Morgath' y='536' tax-income='0' x='170' population='10000'>
     <surface id='6' type='desert'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='morgath'/>
@@ -518,7 +518,7 @@
       <building id='Bunker' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='morgath' energy='0' y='-34' x='14'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='morgath' morale='100' size='30' id='Exterior 3' tax='NORMAL' trade-income='0' name='Exterior 3' allocation='DEFAULT' owner='Morgath' y='1112' tax-income='0' x='252' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='morgath' morale='100' size='30' id='Exterior 3' tax='NORMAL' trade-income='0' name='Exterior 3' allocation='DEFAULT' owner='Morgath' y='556' tax-income='0' x='126' population='10000'>
     <surface id='8' type='desert'/>
     <inventory/>
     <buildings>
@@ -540,7 +540,7 @@
       <building id='Arcology' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='morgath' energy='0' y='-43' x='-19'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='24' id='Exterior 4' tax='NORMAL' trade-income='0' name='Exterior 4' allocation='DEFAULT' owner='Sullep' y='1276' tax-income='0' x='472' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='24' id='Exterior 4' tax='NORMAL' trade-income='0' name='Exterior 4' allocation='DEFAULT' owner='Sullep' y='638' tax-income='0' x='236' population='10000'>
     <surface id='7' type='rocky'/>
     <inventory/>
     <buildings>
@@ -569,7 +569,7 @@
       <building id='HyperShield' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-35' x='-28'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='30' id='Exterior 5' tax='NORMAL' trade-income='0' name='Exterior 5' allocation='DEFAULT' owner='Sullep' y='1196' tax-income='0' x='580' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='30' id='Exterior 5' tax='NORMAL' trade-income='0' name='Exterior 5' allocation='DEFAULT' owner='Sullep' y='598' tax-income='0' x='290' population='10000'>
     <surface id='4' type='rocky'/>
     <inventory/>
     <buildings>
@@ -593,7 +593,7 @@
       <building id='PlasmaProjector' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-24' x='-5'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='30' id='Exterior 6' tax='NORMAL' trade-income='0' name='Exterior 6' allocation='DEFAULT' owner='Sullep' y='1256' tax-income='0' x='744' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='30' id='Exterior 6' tax='NORMAL' trade-income='0' name='Exterior 6' allocation='DEFAULT' owner='Sullep' y='628' tax-income='0' x='372' population='10000'>
     <surface id='2' type='cratered'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='sullep'/>
@@ -617,7 +617,7 @@
       <building id='PhoodFactory' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-32' x='-21'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='24' id='Exterior 7' tax='NORMAL' trade-income='0' name='Exterior 7' allocation='DEFAULT' owner='Sullep' y='1128' tax-income='0' x='892' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='24' id='Exterior 7' tax='NORMAL' trade-income='0' name='Exterior 7' allocation='DEFAULT' owner='Sullep' y='564' tax-income='0' x='446' population='10000'>
     <surface id='7' type='desert'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='sullep'/>
@@ -641,7 +641,7 @@
       <building id='ComputerDevCenter' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-38' x='3'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='24' id='Exterior 8' tax='NORMAL' trade-income='0' name='Exterior 8' allocation='DEFAULT' owner='Sullep' y='1220' tax-income='0' x='960' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='24' id='Exterior 8' tax='NORMAL' trade-income='0' name='Exterior 8' allocation='DEFAULT' owner='Sullep' y='610' tax-income='0' x='480' population='10000'>
     <surface id='7' type='liquid'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='sullep'/>
@@ -671,7 +671,7 @@
       <building id='WeaponFactory' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-41' x='-9'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='18' id='Exterior 9' tax='NORMAL' trade-income='0' name='Exterior 9' allocation='DEFAULT' owner='Sullep' y='1100' tax-income='0' x='1132' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='18' id='Exterior 9' tax='NORMAL' trade-income='0' name='Exterior 9' allocation='DEFAULT' owner='Sullep' y='550' tax-income='0' x='566' population='10000'>
     <surface id='6' type='frozen'/>
     <inventory/>
     <buildings>
@@ -710,7 +710,7 @@
       <building id='Hospital' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-44' x='-1'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='18' id='Exterior 10' tax='NORMAL' trade-income='0' name='Exterior 10' allocation='DEFAULT' owner='Sullep' y='1284' tax-income='0' x='1212' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='18' id='Exterior 10' tax='NORMAL' trade-income='0' name='Exterior 10' allocation='DEFAULT' owner='Sullep' y='642' tax-income='0' x='606' population='10000'>
     <surface id='7' type='frozen'/>
     <inventory/>
     <buildings>
@@ -724,7 +724,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-49' x='-18'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='24' id='Exterior 11' tax='NORMAL' trade-income='0' name='Exterior 11' allocation='DEFAULT' owner='Sullep' y='1056' tax-income='0' x='1264' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='sullep' morale='100' size='24' id='Exterior 11' tax='NORMAL' trade-income='0' name='Exterior 11' allocation='DEFAULT' owner='Sullep' y='528' tax-income='0' x='632' population='10000'>
     <surface id='8' type='liquid'/>
     <inventory/>
     <buildings>
@@ -746,7 +746,7 @@
       <building id='MilitaryDevCenter' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-29' x='-11'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='30' id='Exterior 12' tax='NORMAL' trade-income='0' name='Exterior 12' allocation='DEFAULT' owner='Sullep' y='1144' tax-income='0' x='1312' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='30' id='Exterior 12' tax='NORMAL' trade-income='0' name='Exterior 12' allocation='DEFAULT' owner='Sullep' y='572' tax-income='0' x='656' population='10000'>
     <surface id='8' type='desert'/>
     <inventory/>
     <buildings>
@@ -764,7 +764,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-34' x='-12'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='30' id='Exterior 13' tax='NORMAL' trade-income='0' name='Exterior 13' allocation='DEFAULT' owner='Sullep' y='1020' tax-income='0' x='1108' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='sullep' morale='100' size='30' id='Exterior 13' tax='NORMAL' trade-income='0' name='Exterior 13' allocation='DEFAULT' owner='Sullep' y='510' tax-income='0' x='554' population='10000'>
     <surface id='6' type='cratered'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='sullep'/>
@@ -795,57 +795,57 @@
       <building id='TradeCenter' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='sullep' energy='0' y='-42' x='-8'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Exterior 14' tax='NORMAL' trade-income='0' name='Exterior 14' allocation='DEFAULT' y='904' x='316' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Exterior 14' tax='NORMAL' trade-income='0' name='Exterior 14' allocation='DEFAULT' y='452' x='158' population='0' tax-income='0'>
     <surface id='8' type='rocky'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Exterior 15' tax='NORMAL' trade-income='0' name='Exterior 15' allocation='DEFAULT' y='1000' x='1060' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Exterior 15' tax='NORMAL' trade-income='0' name='Exterior 15' allocation='DEFAULT' y='500' x='530' population='0' tax-income='0'>
     <surface id='8' type='liquid'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Exterior 16' tax='NORMAL' trade-income='0' name='Exterior 16' allocation='DEFAULT' y='1176' x='476' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Exterior 16' tax='NORMAL' trade-income='0' name='Exterior 16' allocation='DEFAULT' y='588' x='238' population='0' tax-income='0'>
     <surface id='3' type='rocky'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Exterior 17' tax='NORMAL' trade-income='0' name='Exterior 17' allocation='DEFAULT' y='176' x='608' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Exterior 17' tax='NORMAL' trade-income='0' name='Exterior 17' allocation='DEFAULT' y='88' x='304' population='0' tax-income='0'>
     <surface id='1' type='rocky'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Exterior 18' tax='NORMAL' trade-income='0' name='Exterior 18' allocation='DEFAULT' y='1224' x='1504' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Exterior 18' tax='NORMAL' trade-income='0' name='Exterior 18' allocation='DEFAULT' y='612' x='752' population='0' tax-income='0'>
     <surface id='6' type='neptoplasm'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Exterior 19' tax='NORMAL' trade-income='0' name='Exterior 19' allocation='DEFAULT' y='872' x='84' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Exterior 19' tax='NORMAL' trade-income='0' name='Exterior 19' allocation='DEFAULT' y='436' x='42' population='0' tax-income='0'>
     <surface id='8' type='frozen'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Exterior 19' tax='NORMAL' trade-income='0' name='Exterior 19' allocation='DEFAULT' y='1196' x='32' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Exterior 19' tax='NORMAL' trade-income='0' name='Exterior 19' allocation='DEFAULT' y='598' x='16' population='0' tax-income='0'>
     <surface id='3' type='cratered'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Exterior 20' tax='NORMAL' trade-income='0' name='Exterior 20' allocation='DEFAULT' y='1244' x='212' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Exterior 20' tax='NORMAL' trade-income='0' name='Exterior 20' allocation='DEFAULT' y='622' x='106' population='0' tax-income='0'>
     <surface id='2' type='earth'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Exterior 21' tax='NORMAL' trade-income='0' name='Exterior 21' allocation='DEFAULT' y='1064' x='664' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Exterior 21' tax='NORMAL' trade-income='0' name='Exterior 21' allocation='DEFAULT' y='532' x='332' population='0' tax-income='0'>
     <surface id='4' type='liquid'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Exterior 22' tax='NORMAL' trade-income='0' name='Exterior 22' allocation='DEFAULT' y='1156' x='808' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Exterior 22' tax='NORMAL' trade-income='0' name='Exterior 22' allocation='DEFAULT' y='578' x='404' population='0' tax-income='0'>
     <surface id='6' type='frozen'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='garthog' morale='100' size='18' id='Garthog 1' tax='NORMAL' trade-income='0' name='Garthog 1' allocation='DEFAULT' owner='Garthog' y='772' tax-income='0' x='712' population='13000'>
+  <planet rotate='RL' autobuild='OFF' race='garthog' morale='100' size='18' id='Garthog 1' tax='NORMAL' trade-income='0' name='Garthog 1' allocation='DEFAULT' owner='Garthog' y='386' tax-income='0' x='356' population='13000'>
     <surface id='3' type='earth'/>
     <inventory/>
     <buildings>
@@ -869,7 +869,7 @@
       <building id='Fortress' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='garthog' energy='0' y='-28' x='-18'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='garthog' morale='100' size='18' id='Garthog 2' tax='NORMAL' trade-income='0' name='Garthog 2' allocation='DEFAULT' owner='Garthog' y='916' tax-income='0' x='836' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='garthog' morale='100' size='18' id='Garthog 2' tax='NORMAL' trade-income='0' name='Garthog 2' allocation='DEFAULT' owner='Garthog' y='458' tax-income='0' x='418' population='10000'>
     <surface id='1' type='frozen'/>
     <inventory/>
     <buildings>
@@ -882,7 +882,7 @@
       <building id='Hospital' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='garthog' energy='0' y='-42' x='-2'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='garthog' morale='100' size='24' id='Garthog 3' tax='NORMAL' trade-income='0' name='Garthog 3' allocation='DEFAULT' owner='Garthog' y='800' tax-income='0' x='840' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='garthog' morale='100' size='24' id='Garthog 3' tax='NORMAL' trade-income='0' name='Garthog 3' allocation='DEFAULT' owner='Garthog' y='400' tax-income='0' x='420' population='10000'>
     <surface id='4' type='frozen'/>
     <inventory/>
     <buildings>
@@ -902,7 +902,7 @@
       <building id='IonProjector' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='garthog' energy='0' y='-47' x='-12'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='garthog' morale='100' size='30' id='Garthog 4' tax='NORMAL' trade-income='0' name='Garthog 4' allocation='DEFAULT' owner='Garthog' y='884' tax-income='0' x='732' population='21000'>
+  <planet rotate='RL' autobuild='OFF' race='garthog' morale='100' size='30' id='Garthog 4' tax='NORMAL' trade-income='0' name='Garthog 4' allocation='DEFAULT' owner='Garthog' y='442' tax-income='0' x='366' population='21000'>
     <surface id='6' type='rocky'/>
     <inventory>
       <item id='Base1' hp='' count='1' shield='' tech='garthog'/>
@@ -935,7 +935,7 @@
       <building id='Hospital' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='garthog' energy='0' y='-28' x='3'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='garthog' morale='100' size='24' id='Garthog 5' tax='NORMAL' trade-income='0' name='Garthog 5' allocation='DEFAULT' owner='Garthog' y='944' tax-income='0' x='768' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='garthog' morale='100' size='24' id='Garthog 5' tax='NORMAL' trade-income='0' name='Garthog 5' allocation='DEFAULT' owner='Garthog' y='472' tax-income='0' x='384' population='10000'>
     <surface id='1' type='cratered'/>
     <inventory/>
     <buildings>
@@ -956,7 +956,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='garthog' energy='0' y='-38' x='-1'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='18' id='Giantropolis' tax='NORMAL' trade-income='0' name='Giantropolis' allocation='DEFAULT' owner='Empire' y='348' tax-income='0' x='308' population='5323'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='18' id='Giantropolis' tax='NORMAL' trade-income='0' name='Giantropolis' allocation='DEFAULT' owner='Empire' y='174' tax-income='0' x='154' population='5323'>
     <surface id='1' type='rocky'/>
     <inventory/>
     <buildings>
@@ -966,7 +966,7 @@
       <building id='PrefabHousing' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-49' x='-6'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='24' id='Magellan 1' tax='NORMAL' trade-income='0' name='Magellan 1' allocation='DEFAULT' owner='FreeNations' y='560' tax-income='0' x='1244' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='24' id='Magellan 1' tax='NORMAL' trade-income='0' name='Magellan 1' allocation='DEFAULT' owner='FreeNations' y='280' tax-income='0' x='622' population='10000'>
     <surface id='2' type='rocky'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='human'/>
@@ -996,7 +996,7 @@
       <building id='Arcology' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-40' x='-17'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='30' id='Magellan 2' tax='NORMAL' trade-income='0' name='Magellan 2' allocation='DEFAULT' owner='FreeNations' y='596' tax-income='0' x='1332' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='30' id='Magellan 2' tax='NORMAL' trade-income='0' name='Magellan 2' allocation='DEFAULT' owner='FreeNations' y='298' tax-income='0' x='666' population='10000'>
     <surface id='1' type='earth'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='human'/>
@@ -1013,7 +1013,7 @@
       <building id='ColonyHub' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-39' x='-13'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='18' id='Magellan 3' tax='NORMAL' trade-income='0' name='Magellan 3' allocation='DEFAULT' owner='FreeNations' y='628' tax-income='0' x='1272' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='18' id='Magellan 3' tax='NORMAL' trade-income='0' name='Magellan 3' allocation='DEFAULT' owner='FreeNations' y='314' tax-income='0' x='636' population='10000'>
     <surface id='8' type='earth'/>
     <inventory/>
     <buildings>
@@ -1035,7 +1035,7 @@
       <building id='Fortress' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-40' x='-2'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='18' id='Magellan 4' tax='NORMAL' trade-income='0' name='Magellan 4' allocation='DEFAULT' owner='FreeNations' y='720' tax-income='0' x='1332' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='18' id='Magellan 4' tax='NORMAL' trade-income='0' name='Magellan 4' allocation='DEFAULT' owner='FreeNations' y='360' tax-income='0' x='666' population='10000'>
     <surface id='7' type='rocky'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='human'/>
@@ -1062,7 +1062,7 @@
       <building id='Bunker' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-30' x='-6'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='18' id='Magellan 5' tax='NORMAL' trade-income='0' name='Magellan 5' allocation='DEFAULT' owner='FreeNations' y='812' tax-income='0' x='1272' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='18' id='Magellan 5' tax='NORMAL' trade-income='0' name='Magellan 5' allocation='DEFAULT' owner='FreeNations' y='406' tax-income='0' x='636' population='10000'>
     <surface id='2' type='rocky'/>
     <inventory/>
     <buildings>
@@ -1083,7 +1083,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-37' x='-7'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='18' id='Magellan 6' tax='NORMAL' trade-income='0' name='Magellan 6' allocation='DEFAULT' owner='FreeNations' y='688' tax-income='0' x='1424' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='18' id='Magellan 6' tax='NORMAL' trade-income='0' name='Magellan 6' allocation='DEFAULT' owner='FreeNations' y='344' tax-income='0' x='712' population='10000'>
     <surface id='2' type='cratered'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='human'/>
@@ -1106,7 +1106,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-54' x='-16'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='30' id='Magellan 7' tax='NORMAL' trade-income='0' name='Magellan 7' allocation='DEFAULT' owner='FreeNations' y='728' tax-income='0' x='1528' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='30' id='Magellan 7' tax='NORMAL' trade-income='0' name='Magellan 7' allocation='DEFAULT' owner='FreeNations' y='364' tax-income='0' x='764' population='10000'>
     <surface id='4' type='desert'/>
     <inventory>
       <item id='Base1' hp='' count='1' shield='' tech='human'/>
@@ -1126,27 +1126,27 @@
       <building id='Arcology' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-28' x='-18'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Magellan 8' tax='NORMAL' trade-income='0' name='Magellan 8' allocation='DEFAULT' y='768' x='1692' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Magellan 8' tax='NORMAL' trade-income='0' name='Magellan 8' allocation='DEFAULT' y='384' x='846' population='0' tax-income='0'>
     <surface id='4' type='neptoplasm'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Magellan 9' tax='NORMAL' trade-income='0' name='Magellan 9' allocation='DEFAULT' y='888' x='1700' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Magellan 9' tax='NORMAL' trade-income='0' name='Magellan 9' allocation='DEFAULT' y='444' x='850' population='0' tax-income='0'>
     <surface id='9' type='desert'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Magellan 10' tax='NORMAL' trade-income='0' name='Magellan 10' allocation='DEFAULT' y='952' x='1376' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='18' id='Magellan 10' tax='NORMAL' trade-income='0' name='Magellan 10' allocation='DEFAULT' y='476' x='688' population='0' tax-income='0'>
     <surface id='7' type='frozen'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Magellen 11' tax='NORMAL' trade-income='0' name='Magellen 11' allocation='DEFAULT' y='872' x='1136' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Magellen 11' tax='NORMAL' trade-income='0' name='Magellen 11' allocation='DEFAULT' y='436' x='568' population='0' tax-income='0'>
     <surface id='7' type='rocky'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='24' id='Myridan' tax='NORMAL' trade-income='0' name='Myridan' allocation='DEFAULT' owner='Empire' y='580' tax-income='0' x='288' population='4877'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='24' id='Myridan' tax='NORMAL' trade-income='0' name='Myridan' allocation='DEFAULT' owner='Empire' y='290' tax-income='0' x='144' population='4877'>
     <surface id='5' type='rocky'/>
     <inventory/>
     <buildings>
@@ -1156,7 +1156,7 @@
       <building id='ColonyHub' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-32' x='-9'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Naxos' tax='NORMAL' trade-income='0' name='Naxos' allocation='DEFAULT' owner='Empire' y='928' tax-income='0' x='640' population='4600'>
+  <planet rotate='LR' autobuild='OFF' race='human' morale='100' size='30' id='Naxos' tax='NORMAL' trade-income='0' name='Naxos' allocation='DEFAULT' owner='Empire' y='464' tax-income='0' x='320' population='4600'>
     <surface id='1' type='earth'/>
     <inventory/>
     <buildings>
@@ -1166,7 +1166,7 @@
       <building id='ColonyHub' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-39' x='-13'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='30' id='New Caroline' tax='NORMAL' trade-income='0' name='New Caroline' allocation='DEFAULT' owner='Empire' y='788' tax-income='0' x='408' population='6422'>
+  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='30' id='New Caroline' tax='NORMAL' trade-income='0' name='New Caroline' allocation='DEFAULT' owner='Empire' y='394' tax-income='0' x='204' population='6422'>
     <surface id='4' type='earth'/>
     <inventory/>
     <buildings>
@@ -1179,7 +1179,7 @@
       <building id='PrefabHousing' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-35' x='-17'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='dribs' morale='100' size='18' id='Outer 1' tax='NORMAL' trade-income='0' name='Outer 1' allocation='DEFAULT' owner='Dribs' y='244' tax-income='0' x='28' population='10000'>
+  <planet rotate='RL' autobuild='OFF' race='dribs' morale='100' size='18' id='Outer 1' tax='NORMAL' trade-income='0' name='Outer 1' allocation='DEFAULT' owner='Dribs' y='122' tax-income='0' x='14' population='10000'>
     <surface id='4' type='liquid'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='dribs'/>
@@ -1211,7 +1211,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dribs' energy='0' y='-37' x='-5'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='dribs' morale='100' size='30' id='Outer 2' tax='NORMAL' trade-income='0' name='Outer 2' allocation='DEFAULT' owner='Dribs' y='128' tax-income='0' x='116' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='dribs' morale='100' size='30' id='Outer 2' tax='NORMAL' trade-income='0' name='Outer 2' allocation='DEFAULT' owner='Dribs' y='64' tax-income='0' x='58' population='10000'>
     <surface id='5' type='desert'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='dribs'/>
@@ -1231,7 +1231,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dribs' energy='0' y='-38' x='-8'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='dribs' morale='100' size='24' id='Outer 3' tax='NORMAL' trade-income='0' name='Outer 3' allocation='DEFAULT' owner='Dribs' y='48' tax-income='0' x='200' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='dribs' morale='100' size='24' id='Outer 3' tax='NORMAL' trade-income='0' name='Outer 3' allocation='DEFAULT' owner='Dribs' y='24' tax-income='0' x='100' population='10000'>
     <surface id='2' type='rocky'/>
     <inventory/>
     <buildings>
@@ -1256,7 +1256,7 @@
       <building id='HyperShield' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dribs' energy='0' y='-43' x='-13'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='dribs' morale='100' size='30' id='Outer 4' tax='NORMAL' trade-income='0' name='Outer 4' allocation='DEFAULT' owner='Dribs' y='20' tax-income='0' x='44' population='10000'>
+  <planet rotate='LR' autobuild='OFF' race='dribs' morale='100' size='30' id='Outer 4' tax='NORMAL' trade-income='0' name='Outer 4' allocation='DEFAULT' owner='Dribs' y='10' tax-income='0' x='22' population='10000'>
     <surface id='8' type='rocky'/>
     <inventory/>
     <buildings>
@@ -1278,7 +1278,7 @@
       <building id='Fortress' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dribs' energy='0' y='-36' x='-11'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 5' tax='NORMAL' trade-income='0' name='Outer 5' allocation='DEFAULT' owner='Dargslan' y='40' tax-income='0' x='836' population='14000'>
+  <planet rotate='RL' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 5' tax='NORMAL' trade-income='0' name='Outer 5' allocation='DEFAULT' owner='Dargslan' y='20' tax-income='0' x='418' population='14000'>
     <surface id='2' type='earth'/>
     <inventory/>
     <buildings>
@@ -1295,7 +1295,7 @@
       <building id='WeaponFactory' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-33' x='-10'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='24' id='Outer 6' tax='NORMAL' trade-income='0' name='Outer 6' allocation='DEFAULT' owner='Dargslan' y='24' tax-income='0' x='1048' population='19000'>
+  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='24' id='Outer 6' tax='NORMAL' trade-income='0' name='Outer 6' allocation='DEFAULT' owner='Dargslan' y='12' tax-income='0' x='524' population='19000'>
     <surface id='5' type='earth'/>
     <inventory>
       <item id='Base3' hp='' count='1' shield='' tech='dargslan'/>
@@ -1323,7 +1323,7 @@
       <building id='MesonProjector' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-30' x='-12'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='dargslan' morale='100' size='30' id='Outer 7' tax='NORMAL' trade-income='0' name='Outer 7' allocation='DEFAULT' owner='Dargslan' y='184' tax-income='0' x='1124' population='15000'>
+  <planet rotate='RL' autobuild='OFF' race='dargslan' morale='100' size='30' id='Outer 7' tax='NORMAL' trade-income='0' name='Outer 7' allocation='DEFAULT' owner='Dargslan' y='92' tax-income='0' x='562' population='15000'>
     <surface id='1' type='desert'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='dargslan'/>
@@ -1347,7 +1347,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-31' x='-2'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 8' tax='NORMAL' trade-income='0' name='Outer 8' allocation='DEFAULT' owner='Dargslan' y='52' tax-income='0' x='1060' population='15000'>
+  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 8' tax='NORMAL' trade-income='0' name='Outer 8' allocation='DEFAULT' owner='Dargslan' y='26' tax-income='0' x='530' population='15000'>
     <surface id='7' type='earth'/>
     <inventory/>
     <buildings>
@@ -1365,7 +1365,7 @@
       <building id='PhoodFactory' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-27' x='-12'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 9' tax='NORMAL' trade-income='0' name='Outer 9' allocation='DEFAULT' owner='Dargslan' y='276' tax-income='0' x='1336' population='20000'>
+  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 9' tax='NORMAL' trade-income='0' name='Outer 9' allocation='DEFAULT' owner='Dargslan' y='138' tax-income='0' x='668' population='20000'>
     <surface id='3' type='liquid'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='dargslan'/>
@@ -1395,7 +1395,7 @@
       <building id='Fortress' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-53' x='-16'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 10' tax='NORMAL' trade-income='0' name='Outer 10' allocation='DEFAULT' owner='Dargslan' y='72' tax-income='0' x='1616' population='30000'>
+  <planet rotate='RL' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 10' tax='NORMAL' trade-income='0' name='Outer 10' allocation='DEFAULT' owner='Dargslan' y='36' tax-income='0' x='808' population='30000'>
     <surface id='6' type='earth'/>
     <inventory>
       <item id='Base3' hp='' count='1' shield='' tech='dargslan'/>
@@ -1434,7 +1434,7 @@
       <building id='NuclearPlant' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-31' x='-17'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='30' id='Outer 11' tax='NORMAL' trade-income='0' name='Outer 11' allocation='DEFAULT' owner='Dargslan' y='328' tax-income='0' x='1536' population='20000'>
+  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='30' id='Outer 11' tax='NORMAL' trade-income='0' name='Outer 11' allocation='DEFAULT' owner='Dargslan' y='164' tax-income='0' x='768' population='20000'>
     <surface id='1' type='liquid'/>
     <inventory>
       <item id='Base3' hp='' count='1' shield='' tech='dargslan'/>
@@ -1448,7 +1448,7 @@
       <building id='ColonyHub' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-27' x='-6'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='24' id='Outer 12' tax='NORMAL' trade-income='0' name='Outer 12' allocation='DEFAULT' owner='Dargslan' y='232' tax-income='0' x='1660' population='20000'>
+  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='24' id='Outer 12' tax='NORMAL' trade-income='0' name='Outer 12' allocation='DEFAULT' owner='Dargslan' y='116' tax-income='0' x='830' population='20000'>
     <surface id='5' type='liquid'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='dargslan'/>
@@ -1481,7 +1481,7 @@
       <building id='MechanicalDevCenter' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-32' x='-23'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='30' id='Outer 13' tax='NORMAL' trade-income='0' name='Outer 13' allocation='DEFAULT' owner='Dargslan' y='440' tax-income='0' x='1664' population='20000'>
+  <planet rotate='LR' autobuild='OFF' race='dargslan' morale='100' size='30' id='Outer 13' tax='NORMAL' trade-income='0' name='Outer 13' allocation='DEFAULT' owner='Dargslan' y='220' tax-income='0' x='832' population='20000'>
     <surface id='6' type='liquid'/>
     <inventory>
       <item id='Base2' hp='' count='1' shield='' tech='dargslan'/>
@@ -1505,7 +1505,7 @@
       <building id='MesonProjector' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-38' x='-3'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 14' tax='NORMAL' trade-income='0' name='Outer 14' allocation='DEFAULT' owner='Dargslan' y='320' tax-income='0' x='1780' population='20000'>
+  <planet rotate='RL' autobuild='OFF' race='dargslan' morale='100' size='18' id='Outer 14' tax='NORMAL' trade-income='0' name='Outer 14' allocation='DEFAULT' owner='Dargslan' y='160' tax-income='0' x='890' population='20000'>
     <surface id='7' type='liquid'/>
     <inventory/>
     <buildings>
@@ -1527,102 +1527,102 @@
       <building id='PhoodFactory' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='dargslan' energy='0' y='-35' x='-16'/>
     </buildings>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Outer 15' tax='NORMAL' trade-income='0' name='Outer 15' allocation='DEFAULT' y='424' x='44' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Outer 15' tax='NORMAL' trade-income='0' name='Outer 15' allocation='DEFAULT' y='212' x='22' population='0' tax-income='0'>
     <surface id='4' type='liquid'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Outer 16' tax='NORMAL' trade-income='0' name='Outer 16' allocation='DEFAULT' y='248' x='176' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Outer 16' tax='NORMAL' trade-income='0' name='Outer 16' allocation='DEFAULT' y='124' x='88' population='0' tax-income='0'>
     <surface id='6' type='earth'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Outer 17' tax='NORMAL' trade-income='0' name='Outer 17' allocation='DEFAULT' y='208' x='252' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Outer 17' tax='NORMAL' trade-income='0' name='Outer 17' allocation='DEFAULT' y='104' x='126' population='0' tax-income='0'>
     <surface id='1' type='earth'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Outer 18' tax='NORMAL' trade-income='0' name='Outer 18' allocation='DEFAULT' y='60' x='472' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Outer 18' tax='NORMAL' trade-income='0' name='Outer 18' allocation='DEFAULT' y='30' x='236' population='0' tax-income='0'>
     <surface id='8' type='desert'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Outer 19' tax='NORMAL' trade-income='0' name='Outer 19' allocation='DEFAULT' y='296' x='792' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Outer 19' tax='NORMAL' trade-income='0' name='Outer 19' allocation='DEFAULT' y='148' x='396' population='0' tax-income='0'>
     <surface id='6' type='desert'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Outer 20' tax='NORMAL' trade-income='0' name='Outer 20' allocation='DEFAULT' y='260' x='912' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Outer 20' tax='NORMAL' trade-income='0' name='Outer 20' allocation='DEFAULT' y='130' x='456' population='0' tax-income='0'>
     <surface id='3' type='frozen'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Outer 21' tax='NORMAL' trade-income='0' name='Outer 21' allocation='DEFAULT' y='160' x='972' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Outer 21' tax='NORMAL' trade-income='0' name='Outer 21' allocation='DEFAULT' y='80' x='486' population='0' tax-income='0'>
     <surface id='1' type='frozen'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Outer 22' tax='NORMAL' trade-income='0' name='Outer 22' allocation='DEFAULT' y='380' x='1140' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Outer 22' tax='NORMAL' trade-income='0' name='Outer 22' allocation='DEFAULT' y='190' x='570' population='0' tax-income='0'>
     <surface id='1' type='liquid'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Outer 23' tax='NORMAL' trade-income='0' name='Outer 23' allocation='DEFAULT' y='424' x='1348' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Outer 23' tax='NORMAL' trade-income='0' name='Outer 23' allocation='DEFAULT' y='212' x='674' population='0' tax-income='0'>
     <surface id='5' type='liquid'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Outer 24' tax='NORMAL' trade-income='0' name='Outer 24' allocation='DEFAULT' y='608' x='1624' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Outer 24' tax='NORMAL' trade-income='0' name='Outer 24' allocation='DEFAULT' y='304' x='812' population='0' tax-income='0'>
     <surface id='7' type='earth'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Outer 25' tax='NORMAL' trade-income='0' name='Outer 25' allocation='DEFAULT' y='216' x='1948' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Outer 25' tax='NORMAL' trade-income='0' name='Outer 25' allocation='DEFAULT' y='108' x='974' population='0' tax-income='0'>
     <surface id='5' type='neptoplasm'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Outer 26' tax='NORMAL' trade-income='0' name='Outer 26' allocation='DEFAULT' y='456' x='1864' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Outer 26' tax='NORMAL' trade-income='0' name='Outer 26' allocation='DEFAULT' y='228' x='932' population='0' tax-income='0'>
     <surface id='5' type='earth'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Outer 27' tax='NORMAL' trade-income='0' name='Outer 27' allocation='DEFAULT' y='40' x='1984' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Outer 27' tax='NORMAL' trade-income='0' name='Outer 27' allocation='DEFAULT' y='20' x='992' population='0' tax-income='0'>
     <surface id='9' type='frozen'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Outer 28' tax='NORMAL' trade-income='0' name='Outer 28' allocation='DEFAULT' y='56' x='1828' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='30' id='Outer 28' tax='NORMAL' trade-income='0' name='Outer 28' allocation='DEFAULT' y='28' x='914' population='0' tax-income='0'>
     <surface id='4' type='rocky'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Outer 29' tax='NORMAL' trade-income='0' name='Outer 29' allocation='DEFAULT' y='584' x='1900' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Outer 29' tax='NORMAL' trade-income='0' name='Outer 29' allocation='DEFAULT' y='292' x='950' population='0' tax-income='0'>
     <surface id='6' type='liquid'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Outer 30' tax='NORMAL' trade-income='0' name='Outer 30' allocation='DEFAULT' y='220' x='1872' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='18' id='Outer 30' tax='NORMAL' trade-income='0' name='Outer 30' allocation='DEFAULT' y='110' x='936' population='0' tax-income='0'>
     <surface id='7' type='cratered'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Persol 1' tax='NORMAL' trade-income='0' name='Persol 1' allocation='DEFAULT' y='344' x='500' population='0' tax-income='0'>
+  <planet rotate='LR' autobuild='OFF' race='' morale='100' size='24' id='Persol 1' tax='NORMAL' trade-income='0' name='Persol 1' allocation='DEFAULT' y='172' x='250' population='0' tax-income='0'>
     <surface id='6' type='cratered'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Persol 2' tax='NORMAL' trade-income='0' name='Persol 2' allocation='DEFAULT' y='492' x='908' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='30' id='Persol 2' tax='NORMAL' trade-income='0' name='Persol 2' allocation='DEFAULT' y='246' x='454' population='0' tax-income='0'>
     <surface id='7' type='liquid'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Persol 3' tax='NORMAL' trade-income='0' name='Persol 3' allocation='DEFAULT' y='304' x='632' population='0' tax-income='0'>
+  <planet rotate='RL' autobuild='OFF' race='' morale='100' size='24' id='Persol 3' tax='NORMAL' trade-income='0' name='Persol 3' allocation='DEFAULT' y='152' x='316' population='0' tax-income='0'>
     <surface id='3' type='liquid'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='24' id='San Sterling' tax='NORMAL' trade-income='0' name='San Sterling' allocation='DEFAULT' owner='Empire' y='852' tax-income='0' x='560' population='4900'>
+  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='24' id='San Sterling' tax='NORMAL' trade-income='0' name='San Sterling' allocation='DEFAULT' owner='Empire' y='426' tax-income='0' x='280' population='4900'>
     <surface id='2' type='frozen'/>
     <inventory/>
     <buildings>
@@ -1632,7 +1632,7 @@
       <building id='ColonyHub' enabled='true' hp='' level='0' worker='0' repairing='false' build='' tech='human' energy='0' y='-38' x='-23'/>
     </buildings>
   </planet>
-  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='24' id='Zeuson' tax='NORMAL' trade-income='0' name='Zeuson' allocation='DEFAULT' owner='Empire' y='740' tax-income='0' x='332' population='4232'>
+  <planet rotate='RL' autobuild='OFF' race='human' morale='100' size='24' id='Zeuson' tax='NORMAL' trade-income='0' name='Zeuson' allocation='DEFAULT' owner='Empire' y='370' tax-income='0' x='166' population='4232'>
     <surface id='7' type='rocky'/>
     <inventory/>
     <buildings>

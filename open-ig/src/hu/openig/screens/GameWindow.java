@@ -534,13 +534,23 @@ public class GameWindow extends JFrame implements GameControls {
 			if (e.isAltDown()) {
 				if (e.getKeyCode() == KeyEvent.VK_F4) {
 					exit();
-					return true;
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					switchFullscreen();
 				}
 				e.consume();
 				return true;
 			}
 			if (!commons.worldLoading && commons.world != null && !movieVisible) {
 				result = true;
+				if (e.getKeyChar() == '+') {
+					commons.world.player.moveNextPlanet();
+					repaintInner();
+				} else
+				if (e.getKeyChar() == '-') {
+					commons.world.player.movePrevPlanet();
+					repaintInner();
+				}
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_F1:
 					displayPrimary(Screens.BRIDGE);
@@ -634,32 +644,32 @@ public class GameWindow extends JFrame implements GameControls {
 					result = false;
 				}
 			}
-			if (!result) {
-				if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
-					GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			        for (final GraphicsDevice gs : ge.getScreenDevices()) {
-			        	if (gs.getDefaultConfiguration().getBounds().intersects(getBounds())) {
-		        			GameWindow gw = new GameWindow(GameWindow.this, gs.getFullScreenWindow() == null);
-			        		if (gs.getFullScreenWindow() == null) {
-				        		dispose();
-			        			gs.setFullScreenWindow(gw);
-			        			setSize(gs.getDefaultConfiguration().getBounds().getSize());
-			        		} else {
-				        		dispose();
-			        			gs.setFullScreenWindow(null);
-			        			gw.setVisible(true);
-			        		}
-			        		gw.doMoveMouseAgain();
-			        		result = true;
-			        		break;
-			        	}
-			        }
-				}
-			}
 			if (result) {
 				e.consume();
 			}
 			return result;
+		}
+		/**
+		 * Toggle between full screen mode.
+		 */
+		void switchFullscreen() {
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			for (final GraphicsDevice gs : ge.getScreenDevices()) {
+				if (gs.getDefaultConfiguration().getBounds().intersects(getBounds())) {
+					GameWindow gw = new GameWindow(GameWindow.this, gs.getFullScreenWindow() == null);
+					if (gs.getFullScreenWindow() == null) {
+			    		dispose();
+						gs.setFullScreenWindow(gw);
+						setSize(gs.getDefaultConfiguration().getBounds().getSize());
+					} else {
+			    		dispose();
+						gs.setFullScreenWindow(null);
+						gw.setVisible(true);
+					}
+					gw.doMoveMouseAgain();
+					break;
+				}
+			}
 		}
 	}
 	/**

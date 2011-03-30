@@ -42,8 +42,8 @@ public final class ConvertPlanets {
 			if ("Earth".equals(oplanet.childValue("id"))) {
 				planet.set("label", "planets.earth"); // the label override for Earth
 			}
-			planet.set("x", Integer.parseInt(oplanet.childValue("location-x")) * 4);
-			planet.set("y", Integer.parseInt(oplanet.childValue("location-y")) * 4);
+			planet.set("x", Integer.parseInt(oplanet.childValue("location-x")) * 2);
+			planet.set("y", Integer.parseInt(oplanet.childValue("location-y")) * 2);
 			
 			XElement surface = planet.add("surface");
 			surface.set("type", oplanet.childValue("type").toLowerCase());

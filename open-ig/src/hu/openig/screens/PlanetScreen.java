@@ -12,13 +12,12 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Location;
 import hu.openig.core.PlanetType;
-import hu.openig.core.RoadType;
-import hu.openig.core.Sides;
 import hu.openig.core.Tile;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.OriginalBuilding;
 import hu.openig.model.OriginalPlanet;
+import hu.openig.model.Planet;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
@@ -52,12 +51,8 @@ import java.awt.image.BufferedImage;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.Timer;
 
@@ -69,8 +64,6 @@ public class PlanetScreen extends ScreenBase {
 	/** Indicate if a component is drag sensitive. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface DragSensitive { }
-	/** The planet surface definition. */
-	PlanetSurface surface;
 	/** The current location based on the mouse pointer. */
 	Location current;
 	/** 
@@ -251,10 +244,12 @@ public class PlanetScreen extends ScreenBase {
 	@Override
 	public void onEnter(Object mode) {
 		animationTimer.start();
-		render.offsetX = -(surface.boundingRectangle.width - width) / 2;
-		render.offsetY = -(surface.boundingRectangle.height - height) / 2;
+		if (surface() != null) {
+			render.offsetX = -(surface().boundingRectangle.width - width) / 2;
+			render.offsetY = -(surface().boundingRectangle.height - height) / 2;
+		}
 		focused = render;
-		importEarth(); // FIXME for testing purposes only
+//		importEarth(); // FIXME for testing purposes only
 	}
 
 	@Override
@@ -381,14 +376,14 @@ public class PlanetScreen extends ScreenBase {
 	 * @return true if placement is allowed
 	 */
 	public boolean canPlaceBuilding(int x, int y) {
-		if (!surface.cellInMap(x, y)) {
+		if (!surface().cellInMap(x, y)) {
 			return false;
 		} else {
-			SurfaceEntity se = surface.buildingmap.get(Location.of(x, y));
+			SurfaceEntity se = surface().buildingmap.get(Location.of(x, y));
 			if (se != null && se.type == SurfaceEntityType.BUILDING) {
 				return false;
 			} else {
-				se = surface.basemap.get(Location.of(x, y));
+				se = surface().basemap.get(Location.of(x, y));
 				if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
 					return false;
 				}
@@ -402,13 +397,13 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the bounding rectangle or null if the target does not contain a building
 	 */
 	public Rectangle getBoundingRect(Location loc) {
-		SurfaceEntity se = surface.buildingmap.get(loc);
+		SurfaceEntity se = surface().buildingmap.get(loc);
 		if (se != null && se.type == SurfaceEntityType.BUILDING) {
 			int a0 = loc.x - se.virtualColumn;
 			int b0 = loc.y + se.virtualRow;
 			
-			int x = surface.baseXOffset + Tile.toScreenX(a0, b0);
-			int y = surface.baseYOffset + Tile.toScreenY(a0, b0 - se.tile.height + 1) + 27;
+			int x = surface().baseXOffset + Tile.toScreenX(a0, b0);
+			int y = surface().baseYOffset + Tile.toScreenY(a0, b0 - se.tile.height + 1) + 27;
 			
 			return new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
 		}
@@ -420,7 +415,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the building object or null
 	 */
 	public Building getBuildingAt(Location loc) {
-		SurfaceEntity se = surface.buildingmap.get(loc);
+		SurfaceEntity se = surface().buildingmap.get(loc);
 		if (se != null && se.type == SurfaceEntityType.BUILDING) {
 			return se.building;
 		}
@@ -444,9 +439,9 @@ public class PlanetScreen extends ScreenBase {
 		 * @return the location
 		 */
 		public Location getLocationAt(int mx, int my) {
-			if (surface != null) {
-				double mx0 = mx - (surface.baseXOffset + 28) * scale - offsetX; // Half left
-				double my0 = my - (surface.baseYOffset + 27) * scale - offsetY; // Half up
+			if (surface() != null) {
+				double mx0 = mx - (surface().baseXOffset + 28) * scale - offsetX; // Half left
+				double my0 = my - (surface().baseYOffset + 27) * scale - offsetY; // Half up
 				int a = (int)Math.floor(Tile.toTileX((int)mx0, (int)my0) / scale);
 				int b = (int)Math.floor(Tile.toTileY((int)mx0, (int)my0) / scale) ;
 				return Location.of(a, b);
@@ -501,12 +496,12 @@ public class PlanetScreen extends ScreenBase {
 					doDragMode();
 				} else
 				if (e.has(Button.MIDDLE)) {
-					render.offsetX = -(surface.boundingRectangle.width - width) / 2;
-					render.offsetY = -(surface.boundingRectangle.height - height) / 2;
+					render.offsetX = -(surface().boundingRectangle.width - width) / 2;
+					render.offsetY = -(surface().boundingRectangle.height - height) / 2;
 					scale = 1;
 					rep = true;
 				}
-				if (e.has(Button.LEFT) && surface != null) {
+				if (e.has(Button.LEFT) && surface() != null) {
 					Location loc = getLocationAt(e.x, e.y);
 					buildingBox = getBoundingRect(loc);
 					doSelectBuilding(getBuildingAt(loc));
@@ -572,6 +567,8 @@ public class PlanetScreen extends ScreenBase {
 			
 			g2.setColor(new Color(96, 96, 96));
 			g2.fillRect(0, 0, width, height);
+			
+			PlanetSurface surface = surface();
 			
 			if (surface == null) {
 				return;
@@ -777,7 +774,15 @@ public class PlanetScreen extends ScreenBase {
 			}
 			
 			g2.setTransform(at);
-			g2.setColor(Color.WHITE);
+			g2.setColor(Color.BLACK);
+			
+			String pn = commons.world.player.currentPlanet.name;
+			int nameHeight = 14;
+			int nameWidth = commons.text().getTextWidth(nameHeight, pn);
+			int nameLeft = (width - nameWidth) / 2;
+			g2.fillRect(nameLeft - 5, 0, nameWidth + 10, nameHeight + 4);
+			
+			commons.text().paintTo(g2, nameLeft, 2, nameHeight, commons.world.player.currentPlanet.owner.color, pn);
 			
 			g2.setClip(save0);
 			RenderTools.setInterpolation(g2, false);
@@ -798,6 +803,8 @@ public class PlanetScreen extends ScreenBase {
 			
 			g2.setColor(new Color(96, 96, 96));
 			g2.fillRect(0, 0, width, height);
+			
+			PlanetSurface surface = surface();
 			
 			if (surface == null) {
 				return;
@@ -906,7 +913,7 @@ public class PlanetScreen extends ScreenBase {
 		 * @return true if the viewport was moved
 		 */
 		boolean moveViewPort(UIMouse e) {
-			Rectangle br = surface.boundingRectangle;
+			Rectangle br = surface().boundingRectangle;
 
 			double scalex = width * 1.0 / br.width;
 			double scaley = height * 1.0 / br.height;
@@ -942,10 +949,10 @@ public class PlanetScreen extends ScreenBase {
 			Building bld = new Building(bt, r);
 			bld.makeFullyBuilt();
 			bld.location = Location.of(ob.location.x + -1, ob.location.y + -1);
-			surface.buildings.add(bld);
+			surface().buildings.add(bld);
 			placeTile(t.normal, ob.location.x + -1, ob.location.y + -1, SurfaceEntityType.BUILDING, bld);
 		}
-		placeRoads(planet.getRaceTechId());
+		surface().placeRoads(planet.getRaceTechId(), commons.world.buildingModel);
 
 	}
 	/**
@@ -974,7 +981,7 @@ public class PlanetScreen extends ScreenBase {
 					sf.id = tile;
 					sf.type = surfaceType;
 					sf.tile = t;
-					surface.features.add(sf);
+					surface().features.add(sf);
 					placeTile(t, loc.x + shiftX, loc.y + shiftY, SurfaceEntityType.BASE, null);
 				}
 			}
@@ -999,9 +1006,9 @@ public class PlanetScreen extends ScreenBase {
 //				se.tile.alpha = alpha;
 				se.building = building;
 				if (type != SurfaceEntityType.BASE) {
-					surface.buildingmap.put(Location.of(a, b), se);
+					surface().buildingmap.put(Location.of(a, b), se);
 				} else {
-					surface.basemap.put(Location.of(a, b), se);
+					surface().basemap.put(Location.of(a, b), se);
 				}
 			}
 		}
@@ -1021,146 +1028,6 @@ public class PlanetScreen extends ScreenBase {
 		int x = x0 - row;
 		int y = y0 - row;
 		return Location.of(x, y);
-	}
-	/**
-	 * Place roads around buildings for the given race.
-	 * @param raceId the race who builds the roads
-	 */
-	void placeRoads(String raceId) {
-		Map<RoadType, Tile> rts = commons.world.buildingModel.roadTiles.get(raceId);
-		Map<Tile, RoadType> trs = commons.world.buildingModel.tileRoads.get(raceId);
-		// remove all roads
-		Iterator<SurfaceEntity> it = surface.buildingmap.values().iterator();
-		while (it.hasNext()) {
-			SurfaceEntity se = it.next();
-			if (se.type == SurfaceEntityType.ROAD) {
-				it.remove();
-			}
-		}
-		Set<Location> corners = new HashSet<Location>();
-		for (Building bld : surface.buildings) {
-			Rectangle rect = new Rectangle(bld.location.x - 1, bld.location.y + 1, bld.tileset.normal.width + 2, bld.tileset.normal.height + 2);
-			addRoadAround(rts, rect, corners);
-		}
-		SurfaceEntity[] neighbors = new SurfaceEntity[9];
-		for (Location l : corners) {
-			SurfaceEntity se = surface.buildingmap.get(l);
-			if (se == null || se.type != SurfaceEntityType.ROAD) {
-				continue;
-			}
-			setNeighbors(l.x, l.y, surface.buildingmap, neighbors);
-			int pattern = 0;
-			
-			RoadType rt1 = null;
-			if (neighbors[1] != null && neighbors[1].type == SurfaceEntityType.ROAD) {
-				pattern |= Sides.TOP;
-				rt1 = trs.get(neighbors[1].tile);
-			}
-			RoadType rt3 = null;
-			if (neighbors[3] != null && neighbors[3].type == SurfaceEntityType.ROAD) {
-				pattern |= Sides.LEFT;
-				rt3 = trs.get(neighbors[3].tile);
-			}
-			RoadType rt5 = null;
-			if (neighbors[5] != null && neighbors[5].type == SurfaceEntityType.ROAD) {
-				pattern |= Sides.RIGHT;
-				rt5 = trs.get(neighbors[5].tile);
-			}
-			RoadType rt7 = null;
-			if (neighbors[7] != null && neighbors[7].type == SurfaceEntityType.ROAD) {
-				pattern |= Sides.BOTTOM;
-				rt7 = trs.get(neighbors[7].tile);
-			}
-			RoadType rt = RoadType.get(pattern);
-			// place the new tile fragment onto the map
-			// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-			se = createRoadEntity(rts.get(rt));
-			surface.buildingmap.put(l, se);
-			// alter the four neighboring tiles to contain road back to this
-			if (rt1 != null) {
-				rt1 = RoadType.get(rt1.pattern | Sides.BOTTOM);
-				surface.buildingmap.put(l.delta(0, 1), createRoadEntity(rts.get(rt1)));
-			}
-			if (rt3 != null) {
-				rt3 = RoadType.get(rt3.pattern | Sides.RIGHT);
-				surface.buildingmap.put(l.delta(-1, 0), createRoadEntity(rts.get(rt3)));
-			}
-			if (rt5 != null) {
-				rt5 = RoadType.get(rt5.pattern | Sides.LEFT);
-				surface.buildingmap.put(l.delta(1, 0), createRoadEntity(rts.get(rt5)));
-			}
-			if (rt7 != null) {
-				rt7 = RoadType.get(rt7.pattern | Sides.TOP);
-				surface.buildingmap.put(l.delta(0, -1), createRoadEntity(rts.get(rt7)));
-			}
-			
-		}
-	}
-	/**
-	 * Create a road entity for the tile.
-	 * @param tile the tile
-	 * @return the entity
-	 */
-	SurfaceEntity createRoadEntity(Tile tile) {
-		SurfaceEntity result = new SurfaceEntity();
-		result.tile = tile;
-		result.tile.alpha = alpha;
-		result.type = SurfaceEntityType.ROAD;
-		return result;
-	}
-	/**
-	 * Fills the fragment array of the 3x3 rectangle centered around x and y.
-	 * @param x the x coordinate
-	 * @param y the y coordinate
-	 * @param map the map
-	 * @param fragments the fragments
-	 */
-	void setNeighbors(int x, int y, Map<Location, SurfaceEntity> map, SurfaceEntity[] fragments) {
-		fragments[0] = map.get(Location.of(x - 1, y + 1));
-		fragments[1] = map.get(Location.of(x, y + 1));
-		fragments[2] = map.get(Location.of(x + 1, y + 1));
-		
-		fragments[3] = map.get(Location.of(x - 1, y));
-		fragments[4] = map.get(Location.of(x, y));
-		fragments[5] = map.get(Location.of(x + 1, y));
-		
-		fragments[6] = map.get(Location.of(x - 1, y - 1));
-		fragments[7] = map.get(Location.of(x, y - 1));
-		fragments[8] = map.get(Location.of(x + 1, y - 1));
-	}
-	/**
-	 * Places a road frame around the tilesToHighlight rectangle.
-	 * @param rts the road to tile map for a concrete race
-	 * @param rect the rectangle to use
-	 * @param corners where to place the created corners
-	 */
-	void addRoadAround(Map<RoadType, Tile> rts, Rectangle rect, Collection<Location> corners) {
-		Location la = Location.of(rect.x, rect.y);
-		Location lb = Location.of(rect.x + rect.width - 1, rect.y);
-		Location lc = Location.of(rect.x, rect.y - rect.height + 1);
-		Location ld = Location.of(rect.x + rect.width - 1, rect.y - rect.height + 1);
-		
-		corners.add(la);
-		corners.add(lb);
-		corners.add(lc);
-		corners.add(ld);
-		
-		surface.buildingmap.put(la, createRoadEntity(rts.get(RoadType.RIGHT_TO_BOTTOM)));
-		surface.buildingmap.put(lb, createRoadEntity(rts.get(RoadType.LEFT_TO_BOTTOM)));
-		surface.buildingmap.put(lc, createRoadEntity(rts.get(RoadType.TOP_TO_RIGHT)));
-		surface.buildingmap.put(ld, createRoadEntity(rts.get(RoadType.TOP_TO_LEFT)));
-		// add linear segments
-		
-		Tile ht = rts.get(RoadType.HORIZONTAL);
-		for (int i = rect.x + 1; i < rect.x + rect.width - 1; i++) {
-			surface.buildingmap.put(Location.of(i, rect.y), createRoadEntity(ht));
-			surface.buildingmap.put(Location.of(i, rect.y - rect.height + 1), createRoadEntity(ht));
-		}
-		Tile vt = rts.get(RoadType.VERTICAL);
-		for (int i = rect.y - 1; i > rect.y - rect.height + 1; i--) {
-			surface.buildingmap.put(Location.of(rect.x, i), createRoadEntity(vt));
-			surface.buildingmap.put(Location.of(rect.x + rect.width - 1, i), createRoadEntity(vt));
-		}
 	}
 	/** @return Parse the original planet definitions. */
 	Map<String, OriginalPlanet> parseOriginalPlanet() {
@@ -1226,6 +1093,8 @@ public class PlanetScreen extends ScreenBase {
 			buildingInfoPanel.buildingInfoName.text(buildingsPanel.buildingName.text());
 			buildingInfoPanel.hideStates();
 //			b.hitpoints = b.type.hitpoints * 3 / 4;
+			
+			commons.world.player.currentBuilding = b.type;
 			
 			if (b.isConstructing()) {
 				buildingInfoPanel.energy.text("-");
@@ -1590,10 +1459,6 @@ public class PlanetScreen extends ScreenBase {
 	}
 	@Override
 	public void onInitialize() {
-		surface = new PlanetSurface();
-		surface.width = 33;
-		surface.height = 66;
-		surface.computeRenderingLocations();
 		animationTimer = new Timer(500, new Act() {
 			@Override
 			public void act() {
@@ -1727,5 +1592,15 @@ public class PlanetScreen extends ScreenBase {
 		buildingsPanel.location(sidebarBuildings.x + sidebarBuildings.width - 1, sidebarBuildings.y);
 		buildingInfoPanel.location(sidebarBuildingInfo.x - buildingInfoPanel.width, sidebarBuildingInfo.y);
 		
+	}
+	/**
+	 * @return the current planet surface or selects one from the player's list.
+	 */
+	public PlanetSurface surface() {
+		if (commons.world.player.currentPlanet != null) {
+			return commons.world.player.currentPlanet.surface;
+		}
+		Planet p = commons.world.player.moveNextPlanet();
+		return p != null ? p.surface : null;
 	}
 }
