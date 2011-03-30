@@ -40,7 +40,7 @@
 			<desc lang='hu'>Kép erőforrások átszervezése, javítások, új mentési formátum</desc>
 			<desc lang='en'>Image resource refactoring, bug fixes, new save format</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-mapeditor-0.45.jar' sha1='49e973b1c79eba1c854a4a17c0c8202cd9e321a5'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-mapeditor-0.45.jar' sha1='60183a6888e60e52d54f050df2624ba8af56d898'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
@@ -80,7 +80,7 @@
 			<desc lang='hu'>Bolygó képernyő integrálva, kisebb javítások.</desc>
 			<desc lang='en'>Colony screen integrated, small fixes.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.86.jar' sha1='38db84203195bbfd064980f228818ead8b24e046'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.86.jar' sha1='0c1fb6a37926bd76eba607c4b933997ab28c474a'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
@@ -146,7 +146,7 @@
 			<desc lang='hu'>Bolygó képernyő integrálva, kisebb javítások.</desc>
 			<desc lang='en'>Colony screen integrated, small fixes.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-testbed-0.30.jar' sha1='bc5184235fb38057c83f67b31b943158158a43c7'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-testbed-0.30.jar' sha1='505ddb57b1d9283eb259aacefd13df0fc2e700f9'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
