@@ -1,6 +1,12 @@
 #summary Contains screenshots from the game.
 #labels Featured
 
+<wiki:toc max_depth="1" />
+
+= Version 0.86 screenshots =
+
+|| [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-starmap.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-starmap-tn.png]<br>Starmap. || [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-colony.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-colony-tn.png]<br>Colony. ||
+
 = Version 0.85 screenshots =
 
 || [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-starmap.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-starmap-tn.png]<br>Starmap. || [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-colony.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.85-colony-tn.png]<br>Colony. ||
