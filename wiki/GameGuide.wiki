@@ -1,0 +1,39 @@
+#summary The Game Guide
+
+<wiki:toc max_depth="3" />
+
+= Keyboard shortcuts =
+
+|| *Key* || *Screen* || *Description* ||
+|| ESC || Movie || Skip current movie ||
+|| Arrow keys || Colony || Move the map ||
+|| ALT+ENTER || Any || Toggle windowed and full screen mode ||
+|| CTRL+1 || Bridge || Switch to Game Level 1 ||
+|| CTRL+2 || Bridge || Switch to Game Level 2 ||
+|| CTRL+3 || Bridge || Switch to Game Level 3 ||
+|| CTRL+4 || Bridge || Switch to Game Level 4 ||
+|| CTRL+5 || Bridge || Switch to Game Level 5 ||
+|| F1 || Any || Bridge screen ||
+|| F2 || Any || Starmap screen ||
+|| F3 || Any || Colony screen ||
+|| F4 || Any || Display equipment overlay screen ||
+|| F5 || Any || Display production overlay screen ||
+|| F6 || Any || Display research overlay screen ||
+|| F7 || Any || Display information overlay screen (empty) ||
+|| F8 || Any || Diplomacy screen (Game Level 4 or above) ||
+|| F9 || Any || Database ||
+|| F10 || Any || Bar (Game Level 2 or above) ||
+|| F11 || Any || Statistics screen ||
+|| F12 || Any || Achievements screen ||
+|| Plus/Minus || Any || Move to next/previous player colony ||
+
+= Mouse gestures =
+
+|| *Gesture* || *Screen* || *Description* ||
+|| Click || Any overlay screen || Click outside the overlay screen (e.g., the grayed area) to hide the overlay screen ||
+|| CTRL+Mouse Wheel || Starmap<br>Colony || Zoom In/Out ||
+|| Mouse Wheel || Colony || Scroll up/down vertically ||
+|| Shift+Mouse Wheel || Colony || Scroll left/right horizontally ||
+|| Left Click || Minimap<br>Radar || Move viewport to the location ||
+|| Drag with right mouse button || Starmap<br>Colony || Pan the viewport ||
+|| Middle Click || Colony || Reset view to 100% zoom and center the view ||
