@@ -478,4 +478,17 @@ public class PlanetSurface {
 			buildingmap.put(Location.of(rect.x + rect.width - 1, i), createRoadEntity(vt));
 		}
 	}
+	/**
+	 * Removes the given building from the map.
+	 * @param building the building to remove
+	 */
+	public void removeBuilding(Building building) {
+		if (buildings.remove(building)) {
+			for (int a = building.location.x; a < building.location.x + building.tileset.normal.width; a++) {
+				for (int b = building.location.y; b > building.location.y - building.tileset.normal.height; b--) {
+					buildingmap.remove(Location.of(a, b));
+				}
+			}
+		}
+	}
 }

@@ -51,8 +51,12 @@ import java.awt.image.BufferedImage;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Timer;
 
@@ -179,8 +183,12 @@ public class PlanetScreen extends ScreenBase {
 	/** The drawable radar rectangle. */
 	@DragSensitive
 	RadarRender radar;
+	/** The last surface. */
+	PlanetSurface lastSurface;
 	/** The lighting level. */
 	float alpha = 1.0f;
+	/** The currently selected building. */
+	Building currentBuilding;
 	@Override
 	public void onFinish() {
 		if (animationTimer != null) {
@@ -189,9 +197,6 @@ public class PlanetScreen extends ScreenBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#keyTyped(int, int)
-	 */
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		boolean rep = false;
@@ -560,6 +565,15 @@ public class PlanetScreen extends ScreenBase {
 		}
 		@Override
 		public void draw(Graphics2D g2) {
+			
+			PlanetSurface surface = surface();
+			if (lastSurface != surface) {
+				buildingBox = null;
+				currentBuilding = null;
+				lastSurface = surface;
+			}
+			doSelectBuilding(currentBuilding);
+			
 			RenderTools.setInterpolation(g2, true);
 			
 			Shape save0 = g2.getClip();
@@ -568,7 +582,6 @@ public class PlanetScreen extends ScreenBase {
 			g2.setColor(new Color(96, 96, 96));
 			g2.fillRect(0, 0, width, height);
 			
-			PlanetSurface surface = surface();
 			
 			if (surface == null) {
 				return;
@@ -1084,17 +1097,29 @@ public class PlanetScreen extends ScreenBase {
 	 * @param b the building selected
 	 */
 	void doSelectBuilding(Building b) {
-		// TODO add code
+		currentBuilding = b;
 		if (b != null) {
 			buildingsPanel.preview.building = b.tileset.preview;
 			buildingsPanel.preview.cost = b.type.cost;
 			buildingsPanel.buildingName.text(commons.labels().get(b.type.label));
 			
 			buildingInfoPanel.buildingInfoName.text(buildingsPanel.buildingName.text());
-			buildingInfoPanel.hideStates();
 //			b.hitpoints = b.type.hitpoints * 3 / 4;
 			
 			commons.world.player.currentBuilding = b.type;
+			
+			Set<UIComponent> tohide = new HashSet<UIComponent>(Arrays.asList(
+					buildingInfoPanel.damaged,		
+					buildingInfoPanel.repairing,		
+					buildingInfoPanel.constructing,		
+					buildingInfoPanel.stateActive,		
+					buildingInfoPanel.stateDamaged,		
+					buildingInfoPanel.stateInactive,		
+					buildingInfoPanel.stateOffline,		
+					buildingInfoPanel.stateNoEnergy,		
+					buildingInfoPanel.progressLower,		
+					buildingInfoPanel.progressUpper		
+			));
 			
 			if (b.isConstructing()) {
 				buildingInfoPanel.energy.text("-");
@@ -1108,9 +1133,16 @@ public class PlanetScreen extends ScreenBase {
 				buildingInfoPanel.progressLower.visible(true);
 				buildingInfoPanel.progressLower.text(Integer.toString(b.buildProgress * 100 / b.type.hitpoints));
 				
+				tohide.remove(buildingInfoPanel.constructing);
+				tohide.remove(buildingInfoPanel.progressLower);
+				
 				if (b.isDamaged()) {
 					buildingInfoPanel.damaged.visible(true);
 					buildingInfoPanel.progressUpper.visible(true);
+					
+					tohide.remove(buildingInfoPanel.damaged);
+					tohide.remove(buildingInfoPanel.progressUpper);
+					
 					if (b.hitpoints > 0) {
 						buildingInfoPanel.progressUpper.text(Integer.toString((b.hitpoints - b.buildProgress) * 100 / b.hitpoints));
 					} else {
@@ -1118,6 +1150,8 @@ public class PlanetScreen extends ScreenBase {
 					}
 				} else {
 					buildingInfoPanel.undamaged.visible(true);
+					tohide.remove(buildingInfoPanel.undamaged);
+					
 				}
 			} else {
 				if (!b.enabled || b.isSeverlyDamaged()) {
@@ -1149,37 +1183,54 @@ public class PlanetScreen extends ScreenBase {
 						buildingInfoPanel.production.text("");
 					}
 				}
-				if (!b.enabled) {
-					buildingInfoPanel.stateOffline.visible(true);
-				} else {
-					if (b.isDamaged()) {
-						buildingInfoPanel.stateDamaged.visible(true);
-					} else {
-						buildingInfoPanel.undamaged.visible(true);
-						if (b.isEnergyShortage()) {
-							buildingInfoPanel.stateNoEnergy.visible(true);
-						} else
-						if (b.isWorkerShortage()) {
-							buildingInfoPanel.stateInactive.visible(true);
-						}
-					}
-				}
-					
+				
+				// set the upper status indicators
+				
 				if (b.isDamaged()) {
 					if (b.repairing) {
 						buildingInfoPanel.repairing.visible(true);
+						tohide.remove(buildingInfoPanel.repairing);
 					} else {
 						buildingInfoPanel.damaged.visible(true);
+						tohide.remove(buildingInfoPanel.damaged);
 					}
 					buildingInfoPanel.progressUpper.visible(true);
+					tohide.remove(buildingInfoPanel.progressUpper);
 					buildingInfoPanel.progressUpper.text(Integer.toString((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints));
+				} else {
+					buildingInfoPanel.undamaged.visible(true);
+					tohide.remove(buildingInfoPanel.undamaged);
 				}
+				
+				// set the lower status indicator
+				
+				if (b.enabled) {
+					if (b.isDamaged()) {
+						buildingInfoPanel.stateDamaged.visible(true);
+						tohide.remove(buildingInfoPanel.stateDamaged);
+					} else
+					if (b.isEnergyShortage()) {
+						buildingInfoPanel.stateNoEnergy.visible(true);
+						tohide.remove(buildingInfoPanel.stateNoEnergy);
+					} else
+					if (b.isWorkerShortage()) {
+						buildingInfoPanel.stateInactive.visible(true);
+						tohide.remove(buildingInfoPanel.stateInactive);
+					} else {
+						buildingInfoPanel.stateActive.visible(true);
+						tohide.remove(buildingInfoPanel.stateActive);
+					}
+
+				} else {
+					buildingInfoPanel.stateOffline.visible(true);
+					tohide.remove(buildingInfoPanel.stateOffline);
+				}
+			}
+			for (UIComponent c : tohide) {
+				c.visible(false);
 			}
 			
 		} else {
-//			buildingsPanel.preview.building = null;
-//			buildingsPanel.buildingName.text("");
-			buildingInfoPanel.hideStates();
 			buildingInfoPanel.buildingInfoName.text("-");
 			buildingInfoPanel.energy.text("-");
 			buildingInfoPanel.energyPercent.text("-");
@@ -1190,6 +1241,13 @@ public class PlanetScreen extends ScreenBase {
 			buildingInfoPanel.undamaged.visible(true);
 			buildingInfoPanel.stateInactive.visible(true);
 		}
+		buildingInfoPanel.demolish.enabled(commons.world.player.currentPlanet.owner == commons.world.player && currentBuilding != null);
+		buildingInfoPanel.stateActive.enabled(currentBuilding != null);
+		buildingInfoPanel.stateDamaged.enabled(currentBuilding != null);
+		buildingInfoPanel.stateNoEnergy.enabled(currentBuilding != null);
+		buildingInfoPanel.stateInactive.enabled(currentBuilding != null);
+		buildingInfoPanel.stateOffline.enabled(currentBuilding != null);
+		
 	}
 	/**
 	 * Return the unit label for the given resource type.
@@ -1316,7 +1374,7 @@ public class PlanetScreen extends ScreenBase {
 		/** The building is damaged. */
 		UIImageButton stateDamaged;
 		/** The active indicator. */
-		UIImageButton active;
+		UIImageButton stateActive;
 		/** The energy label. */
 		UIImage energyLabel;
 		/** The worker label. */
@@ -1367,7 +1425,7 @@ public class PlanetScreen extends ScreenBase {
 			stateDamaged = new UIImageButton(commons.colony().statusDamaged);
 			stateInactive = new UIImageButton(commons.colony().statusInactive);
 			stateNoEnergy = new UIImageButton(commons.colony().statusNoEnergy);
-			active = new UIImageButton(commons.colony().active);
+			stateActive = new UIImageButton(commons.colony().active);
 			stateOffline = new UIImageButton(commons.colony().statusOffline);
 			constructing = new UIImageButton(commons.colony().constructing);
 			damaged = new UIImageButton(commons.colony().damaged);
@@ -1378,7 +1436,7 @@ public class PlanetScreen extends ScreenBase {
 			repairing.location(8, 98);
 			undamaged.location(8, 98);
 
-			active.location(8, 122);
+			stateActive.location(8, 122);
 			stateOffline.location(8, 122);
 			stateInactive.location(8, 122);
 			stateNoEnergy.location(8, 122);
@@ -1396,6 +1454,12 @@ public class PlanetScreen extends ScreenBase {
 			
 			demolish = new UIImageButton(commons.colony().demolish);
 			demolish.location(161, 50);
+			demolish.setDisabledPattern(commons.common().disabledPattern);
+			stateActive.setDisabledPattern(commons.common().disabledPattern);
+			stateInactive.setDisabledPattern(commons.common().disabledPattern);
+			stateNoEnergy.setDisabledPattern(commons.common().disabledPattern);
+			stateDamaged.setDisabledPattern(commons.common().disabledPattern);
+			stateOffline.setDisabledPattern(commons.common().disabledPattern);
 
 			centerYellow(buildingInfoName, energyPercent, energy, 
 					workerPercent, worker, operationPercent, production,
@@ -1432,6 +1496,7 @@ public class PlanetScreen extends ScreenBase {
 		}
 		/** Hide the state and progress buttons. */
 		public void hideStates() {
+			stateActive.visible(false);
 			stateDamaged.visible(false);
 			stateInactive.visible(false);
 			stateNoEnergy.visible(false);
@@ -1441,7 +1506,6 @@ public class PlanetScreen extends ScreenBase {
 			constructing.visible(false);
 			damaged.visible(false);
 			repairing.visible(false);
-			active.visible(false);
 			progressUpper.visible(false);
 			progressLower.visible(false);
 			undamaged.visible(false);
@@ -1455,7 +1519,27 @@ public class PlanetScreen extends ScreenBase {
 		}
 		animation++;
 		blink = animation % 2 == 0;
+		
 		askRepaint();
+	}
+	/** Demolish the selected building. */
+	void doDemolish() {
+		surface().removeBuilding(currentBuilding);
+		surface().placeRoads(commons.world.player.currentPlanet.race, commons.world.buildingModel);
+		buildingBox = null;
+		doSelectBuilding(null);
+	}
+	/** Action for the Active button. */
+	void doActive() {
+		currentBuilding.enabled = false;
+		commons.world.allocator.compute(Collections.singleton(commons.world.player.currentPlanet));
+		doSelectBuilding(currentBuilding);
+	}
+	/** Action for the Offline button. */
+	void doOffline() {
+		currentBuilding.enabled = true;
+		commons.world.allocator.compute(Collections.singleton(commons.world.player.currentPlanet));
+		doSelectBuilding(currentBuilding);
 	}
 	@Override
 	public void onInitialize() {
@@ -1496,6 +1580,15 @@ public class PlanetScreen extends ScreenBase {
 		
 		leftFill = new UIImageFill(commons.colony().sidebarLeftTop, commons.colony().sidebarLeftFill, commons.colony().sidebarLeftBottom, false);
 		rightFill = new UIImageFill(commons.colony().sidebarRightTop, commons.colony().sidebarRightFill, commons.colony().sidebarRightBottom, false);
+		
+		radarPanel = new UIImage(commons.colony().radarPanel);
+		radar = new RadarRender();
+		radar.z = 1;
+		
+		buildingsPanel = new BuildingsPanel();
+		buildingsPanel.z = 1;
+		buildingInfoPanel = new BuildingInfoPanel();
+		buildingInfoPanel.z = 1;
 		
 		sidebarNavigation.onClick = new Act() {
 			@Override
@@ -1550,14 +1643,43 @@ public class PlanetScreen extends ScreenBase {
 			}
 		};
 		
-		radarPanel = new UIImage(commons.colony().radarPanel);
-		radar = new RadarRender();
-		radar.z = 1;
-		
-		buildingsPanel = new BuildingsPanel();
-		buildingsPanel.z = 1;
-		buildingInfoPanel = new BuildingInfoPanel();
-		buildingInfoPanel.z = 1;
+		buildingInfoPanel.demolish.onClick = new Act() {
+			@Override
+			public void act() {
+				doDemolish();
+			}
+		};
+		buildingInfoPanel.stateActive.onClick = new Act() {
+			@Override
+			public void act() {
+				doActive();
+			}
+		};
+		buildingInfoPanel.stateNoEnergy.onClick = new Act() {
+			@Override
+			public void act() {
+				doActive();
+			}
+		};
+		buildingInfoPanel.stateDamaged.onClick = new Act() {
+			@Override
+			public void act() {
+				doActive();
+			}
+		};
+		buildingInfoPanel.stateInactive.onClick = new Act() {
+			@Override
+			public void act() {
+				doActive();
+			}
+		};
+
+		buildingInfoPanel.stateOffline.onClick = new Act() {
+			@Override
+			public void act() {
+				doOffline();
+			}
+		};
 		
 		addThis();
 	}

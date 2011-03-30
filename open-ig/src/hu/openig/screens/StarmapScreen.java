@@ -390,6 +390,20 @@ public class StarmapScreen extends ScreenBase {
 				}
 			}
 			break;
+		case DOUBLE_CLICK:
+			Planet p = getPlanetAt(e.x, e.y);
+			if (p != null) {
+				commons.world.player.currentPlanet = p;
+				commons.control.displayPrimary(Screens.COLONY);
+				rep = true;
+			} else {
+				Fleet f = getFleetAt(e.x, e.y);
+				if (f != null) {
+					commons.world.player.currentFleet = f;
+					commons.control.displaySecondary(Screens.EQUIPMENT);
+				}
+			}
+			break;
 		case UP:
 			panning = false;
 			mouseDown = false;

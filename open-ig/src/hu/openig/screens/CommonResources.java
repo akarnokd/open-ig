@@ -31,6 +31,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -143,7 +145,7 @@ public class CommonResources {
 		this.control = control;
 
 		ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
-		scheduler.setKeepAliveTime(1, TimeUnit.SECONDS);
+		scheduler.setKeepAliveTime(1500, TimeUnit.MILLISECONDS);
 		scheduler.allowCoreThreadTimeOut(true);
 
 		/* 
@@ -171,129 +173,112 @@ public class CommonResources {
 	/** Initialize the resources in parallel. */
 	private void init() {
 		rl = config.newResourceLocator();
-		//		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		//		try {
-		//			try {
-		//				Future<Labels> loadLabels = exec.submit(new Callable<Labels>() {
-		//					@Override
-		//					public Labels call() throws Exception {
-		//						Labels result = new Labels();
-		//						result.load(rl, config.language, null);
-		//						return result;
-		//					}
-		//				});
-		//				Future<StatusbarGFX> loadSB = exec.submit(new Callable<StatusbarGFX>() {
-		//					@Override
-		//					public StatusbarGFX call() throws Exception {
-		//						StatusbarGFX result = new StatusbarGFX(rl);
-		//						result.load(config.language);
-		//						return result;
-		//					}
-		//				});
-		//				Future<BackgroundGFX> loadB = exec.submit(new Callable<BackgroundGFX>() {
-		//					@Override
-		//					public BackgroundGFX call() throws Exception {
-		//						BackgroundGFX result = new BackgroundGFX(rl);
-		//						result.load(config.language);
-		//						return result;
-		//					}
-		//				});
-		//				Future<EquipmentGFX> loadEq = exec.submit(new Callable<EquipmentGFX>() {
-		//					@Override
-		//					public EquipmentGFX call() throws Exception {
-		//						EquipmentGFX result = new EquipmentGFX(rl);
-		//						result.load(config.language);
-		//						return result;
-		//					}
-		//				});
-		//				Future<SpacewarGFX> loadSW = exec.submit(new Callable<SpacewarGFX>() {
-		//					@Override
-		//					public SpacewarGFX call() throws Exception {
-		//						SpacewarGFX result = new SpacewarGFX(rl);
-		//						result.load(config.language);
-		//						return result;
-		//					}
-		//				});
-		//				Future<InfoGFX> loadI = exec.submit(new Callable<InfoGFX>() {
-		//					@Override
-		//					public InfoGFX call() throws Exception {
-		//						InfoGFX result = new InfoGFX(rl);
-		//						result.load(config.language);
-		//						return result;
-		//					}
-		//				});
-		//				Future<ResearchGFX> loadR = exec.submit(new Callable<ResearchGFX>() {
-		//					@Override
-		//					public ResearchGFX call() throws Exception {
-		//						ResearchGFX result = new ResearchGFX(rl);
-		//						result.load(config.language);
-		//						return result;
-		//					}
-		//				});
-		//				Future<ColonyGFX> loadC = exec.submit(new Callable<ColonyGFX>() {
-		//					@Override
-		//					public ColonyGFX call() throws Exception {
-		//						ColonyGFX result = new ColonyGFX(rl);
-		//						result.load(config.language);
-		//						return result;
-		//					}
-		//				});
-		//				Future<StarmapGFX> loadSM = exec.submit(new Callable<StarmapGFX>() {
-		//					@Override
-		//					public StarmapGFX call() throws Exception {
-		//						StarmapGFX result = new StarmapGFX();
-		//						result.load(rl, config.language);
-		//						return result;
-		//					}
-		//				});
-		//				Future<DatabaseGFX> loadDB = exec.submit(new Callable<DatabaseGFX>() {
-		//					@Override
-		//					public DatabaseGFX call() throws Exception {
-		//						DatabaseGFX result = new DatabaseGFX(rl);
-		//						result.load(config.language);
-		//						return result;
-		//					}
-		//				});
-		//				Future<TextRenderer> loadTR = exec.submit(new Callable<TextRenderer>() {
-		//					@Override
-		//					public TextRenderer call() throws Exception {
-		//						return new TextRenderer(rl);
-		//					}
-		//				});
-		//
-		//				labels = loadLabels.get();
-		//				statusbar = loadSB.get();
-		//				background = loadB.get();
-		//				equipment = loadEq.get();
-		//				spacewar = loadSW.get();
-		//				info = loadI.get();
-		//				research = loadR.get();
-		//				colony = loadC.get();
-		//				starmap = loadSM.get();
-		//				database = loadDB.get();
-		//				text = loadTR.get();
-		//				createCustomImages();
-		//			} catch (ExecutionException ex) { 
-		//				config.log("ERROR", ex.getMessage(), ex);
-		//			} catch (InterruptedException ex) { 
-		//				config.log("ERROR", ex.getMessage(), ex);
-		//			} 
-		//		} finally {
-		//			exec.shutdown();
-		//		}
-		labels = null;
-		statusbar = null;
-		background = null;
-		equipment = null;
-		spacewar = null;
-		info = null;
-		research = null;
-		colony = null;
-		starmap = null;
-		database = null;
-		text = null;
-		common = null;
-		diplomacy = null;
+		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		try {
+			labels = get(exec.submit(new Callable<Labels>() {
+				@Override
+				public Labels call() throws Exception {
+					Labels result = new Labels();
+					result.load(rl, config.language, null);
+					return result;
+				}
+			}));
+			statusbar = get(exec.submit(new Callable<StatusbarGFX>() {
+				@Override
+				public StatusbarGFX call() throws Exception {
+					StatusbarGFX result = new StatusbarGFX(rl);
+					result.load(config.language);
+					return result;
+				}
+			}));
+			background = get(exec.submit(new Callable<BackgroundGFX>() {
+				@Override
+				public BackgroundGFX call() throws Exception {
+					BackgroundGFX result = new BackgroundGFX(rl);
+					result.load(config.language);
+					return result;
+				}
+			}));
+			equipment = get(exec.submit(new Callable<EquipmentGFX>() {
+				@Override
+				public EquipmentGFX call() throws Exception {
+					EquipmentGFX result = new EquipmentGFX(rl);
+					result.load(config.language);
+					return result;
+				}
+			}));
+			spacewar = get(exec.submit(new Callable<SpacewarGFX>() {
+				@Override
+				public SpacewarGFX call() throws Exception {
+					SpacewarGFX result = new SpacewarGFX(rl);
+					result.load(config.language);
+					return result;
+				}
+			}));
+			info = get(exec.submit(new Callable<InfoGFX>() {
+				@Override
+				public InfoGFX call() throws Exception {
+					InfoGFX result = new InfoGFX(rl);
+					result.load(config.language);
+					return result;
+				}
+			}));
+			research = get(exec.submit(new Callable<ResearchGFX>() {
+				@Override
+				public ResearchGFX call() throws Exception {
+					ResearchGFX result = new ResearchGFX(rl);
+					result.load(config.language);
+					return result;
+				}
+			}));
+			colony = get(exec.submit(new Callable<ColonyGFX>() {
+				@Override
+				public ColonyGFX call() throws Exception {
+					ColonyGFX result = new ColonyGFX(rl);
+					result.load(config.language);
+					return result;
+				}
+			}));
+			starmap = get(exec.submit(new Callable<StarmapGFX>() {
+				@Override
+				public StarmapGFX call() throws Exception {
+					StarmapGFX result = new StarmapGFX();
+					result.load(rl, config.language);
+					return result;
+				}
+			}));
+			database = get(exec.submit(new Callable<DatabaseGFX>() {
+				@Override
+				public DatabaseGFX call() throws Exception {
+					DatabaseGFX result = new DatabaseGFX(rl);
+					result.load(config.language);
+					return result;
+				}
+			}));
+			text = get(exec.submit(new Callable<TextRenderer>() {
+				@Override
+				public TextRenderer call() throws Exception {
+					return new TextRenderer(rl);
+				}
+			}));
+			diplomacy = get(exec.submit(new Callable<DiplomacyGFX>() {
+				@Override
+				public DiplomacyGFX call() throws Exception {
+					DiplomacyGFX result = new DiplomacyGFX();
+					result.load(rl, config.language);
+					return result;
+				}
+			}));
+			common = get(pool.submit(new Callable<CommonGFX>() {
+				@Override
+				public CommonGFX call() throws Exception {
+					return new CommonGFX().load(rl, config.language);
+				}
+			}));
+
+		} finally {
+			exec.shutdown();
+		}
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.
@@ -365,208 +350,54 @@ public class CommonResources {
 	}
 	/** @return lazily initialize the labels or return the existing one. */
 	public Labels labels() {
-		if (labels == null) {
-			System.out.println("Loading labels");
-			labels = get(pool.submit(new Callable<Labels>() {
-				@Override
-				public Labels call() {
-					Labels result = new Labels();
-					result.load(rl, config.language, null);
-					return result;
-				}
-			}));
-		}
 		return labels;
 	}
 	/** @return lazily initialize the status bar or return the existing one. */
 	public StatusbarGFX statusbar() {
-		if (statusbar == null) {
-			System.out.println("Loading statusbar");
-			statusbar = get(
-					pool.submit(new Callable<StatusbarGFX>() {
-						@Override
-						public StatusbarGFX call() throws Exception {
-							StatusbarGFX result = new StatusbarGFX(rl);
-							result.load(config.language);
-							return result;
-						}
-					})					
-			);
-		}
 		return statusbar;
 	}
 	/** @return lazily initialize the background or return the existing one. */
 	public BackgroundGFX background() {
-		if (background == null) {
-			System.out.println("Loading background");
-			background = get(
-					pool.submit(new Callable<BackgroundGFX>() {
-						@Override
-						public BackgroundGFX call() throws Exception {
-							BackgroundGFX result = new BackgroundGFX(rl);
-							result.load(config.language);
-							return result;
-						}
-					})					
-			);
-		}
 		return background;
 	}
 	/** @return lazily initialize the equipment or return the existing one. */
 	public EquipmentGFX equipment() {
-		if (equipment == null) {
-			System.out.println("Loading equipment");
-			equipment = get(
-					pool.submit(new Callable<EquipmentGFX>() {
-						@Override
-						public EquipmentGFX call() throws Exception {
-							EquipmentGFX result = new EquipmentGFX(rl);
-							result.load(config.language);
-							return result;
-						}
-					})		
-			);
-		}
 		return equipment;
 	}
 	/** @return lazily initialize the spacewar or return the existing one. */
 	public SpacewarGFX spacewar() {
-		if (spacewar == null) {
-			System.out.println("Loading spacewar");
-			spacewar = get(
-					pool.submit(new Callable<SpacewarGFX>() {
-						@Override
-						public SpacewarGFX call() throws Exception {
-							SpacewarGFX result = new SpacewarGFX(rl);
-							result.load(config.language);
-							return result;
-						}
-					})		
-			);
-		}
 		return spacewar;
 	}
 	/** @return lazily initialize the info or return the existing one. */
 	public InfoGFX info() {
-		if (info == null) {
-			System.out.println("Loading info");
-			info = get(
-					pool.submit(new Callable<InfoGFX>() {
-						@Override
-						public InfoGFX call() throws Exception {
-							InfoGFX result = new InfoGFX(rl);
-							result.load(config.language);
-							return result;
-						}
-					})
-			);
-		}
 		return info;
 	}
 	/** @return lazily initialize the research or return the existing one. */
 	public ResearchGFX research() {
-		if (research == null) {
-			System.out.println("Loading research");
-			research = get(pool.submit(new Callable<ResearchGFX>() {
-				@Override
-				public ResearchGFX call() throws Exception {
-					ResearchGFX result = new ResearchGFX(rl);
-					result.load(config.language);
-					return result;
-				}
-			})
-			);
-		}
 		return research;
 	}
 	/** @return lazily initialize the colony or return the existing one. */
 	public ColonyGFX colony() {
-		if (colony == null) {
-			System.out.println("Loading colony");
-			colony = get(
-					pool.submit(new Callable<ColonyGFX>() {
-						@Override
-						public ColonyGFX call() throws Exception {
-							ColonyGFX result = new ColonyGFX(rl);
-							result.load(config.language);
-							return result;
-						}
-					})	
-			);
-		}
 		return colony;
 	}
 	/** @return lazily initialize the starmap or return the existing one. */
 	public StarmapGFX starmap() {
-		if (starmap == null) {
-			System.out.println("Loading starmap");
-			starmap = get(
-					pool.submit(new Callable<StarmapGFX>() {
-						@Override
-						public StarmapGFX call() throws Exception {
-							StarmapGFX result = new StarmapGFX();
-							result.load(rl, config.language);
-							return result;
-						}
-					})	
-			);
-		}
 		return starmap;
 	}
 	/** @return lazily initialize the database or return the existing one. */
 	public DatabaseGFX database() {
-		if (database == null) {
-			System.out.println("Loading database");
-			database = get(
-					pool.submit(new Callable<DatabaseGFX>() {
-						@Override
-						public DatabaseGFX call() throws Exception {
-							DatabaseGFX result = new DatabaseGFX(rl);
-							result.load(config.language);
-							return result;
-						}
-					})	
-			);
-		}
 		return database;
 	}
 	/** @return lazily initialize the text or return the existing one. */
 	public TextRenderer text() {
-		if (text == null) {
-			System.out.println("Loading text");
-			text = get(pool.submit(new Callable<TextRenderer>() {
-				@Override
-				public TextRenderer call() throws Exception {
-					return new TextRenderer(rl);
-				}
-			}));
-		}
 		return text;
 	}
 	/** @return lazily initialize the common graphics or return the existing one. */
 	public CommonGFX common() {
-		if (common == null) {
-			System.out.println("Loading common");
-			common = get(pool.submit(new Callable<CommonGFX>() {
-				@Override
-				public CommonGFX call() throws Exception {
-					return new CommonGFX().load(rl, config.language);
-				}
-			}));
-		}
 		return common;
 	}
 	/** @return lazily initialize the diplomacy graphics or return the existing one. */
 	public DiplomacyGFX diplomacy() {
-		if (diplomacy == null) {
-			System.out.println("Loading diplomacy");
-			diplomacy = get(pool.submit(new Callable<DiplomacyGFX>() {
-				@Override
-				public DiplomacyGFX call() throws Exception {
-					return new DiplomacyGFX().load(rl, config.language);
-				}
-			}));
-		}
 		return diplomacy;
 	}
 	/**
@@ -584,5 +415,13 @@ public class CommonResources {
 	 */
 	public ResourcePlace audio(String name) {
 		return rl.get(language(), name, ResourceType.AUDIO);
+	}
+	/**
+	 * Close and stop resources.
+	 */
+	public void close() {
+		if (world != null) {
+			world.allocator.stop();
+		}
 	}
 }

@@ -15,8 +15,6 @@ import hu.openig.core.Labels;
 import hu.openig.core.Location;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
-import hu.openig.core.RoadType;
-import hu.openig.core.Sides;
 import hu.openig.core.Tile;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.model.Building;
@@ -76,13 +74,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -605,9 +601,9 @@ public class MapEditor extends JFrame {
 				JOptionPane.showMessageDialog(null, "<html><p>Unable to auto-start Open Imperium Galactica MapEditor for version " + Configuration.VERSION + ".<br>Please make sure you have at least " 
 						+ MINIMUM_MEMORY + "MB defined for running a Java program in either your<br>"
 						+ "operating system's configuration for Java programs,<br> or run the program from command line using the <code>-Xmx" + MINIMUM_MEMORY + "M</code> parameter.</p><br>"
-						+ "<p>Nem sikerült automatikusan elindítani az Open Imperium Galaktika " + Configuration.VERSION + " MapEditor programot.<br>Kérem ellenõrizze, hogy alapértelmezésben a Java programok futtatásához "
-						+ "legalább " + MINIMUM_MEMORY + "MB memória<br> van beállítva az Operációs Rendszerben,<br> vagy indítsa a program parancssorból a <code>-Xmx" + MINIMUM_MEMORY + "M</code> "
-						+ "paraméter megadásával.</p>"
+						+ "<p>Nem sikerï¿½lt automatikusan elindï¿½tani az Open Imperium Galaktika " + Configuration.VERSION + " MapEditor programot.<br>Kï¿½rem ellenï¿½rizze, hogy alapï¿½rtelmezï¿½sben a Java programok futtatï¿½sï¿½hoz "
+						+ "legalï¿½bb " + MINIMUM_MEMORY + "MB memï¿½ria<br> van beï¿½llï¿½tva az Operï¿½ciï¿½s Rendszerben,<br> vagy indï¿½tsa a program parancssorbï¿½l a <code>-Xmx" + MINIMUM_MEMORY + "M</code> "
+						+ "paramï¿½ter megadï¿½sï¿½val.</p>"
 				);
 			}
 		});
@@ -1481,7 +1477,7 @@ public class MapEditor extends JFrame {
 				}
 			}
 			if (checkBuildings && bld != null) {
-				placeRoads(bld.techId);
+				renderer.surface.placeRoads(bld.techId, buildingModel);
 			}
 		}
 	}
@@ -1643,7 +1639,7 @@ public class MapEditor extends JFrame {
 			mnuPlaceRoad.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					placeRoads(s);
+					renderer.surface.placeRoads(s, buildingModel);
 					repaint();
 				}
 			});
@@ -1814,7 +1810,7 @@ public class MapEditor extends JFrame {
 						renderer.surface.placeBuilding(te.tile, bld.location.x, bld.location.y, bld);
 					}
 				}
-				placeRoads(te.surface);
+				renderer.surface.placeRoads(te.surface, buildingModel);
 				undo.setAfter();
 				addUndo(undo);
 				renderer.repaint();
@@ -1883,7 +1879,7 @@ public class MapEditor extends JFrame {
 				}
 				renderer.buildingBox = null;
 				currentBuilding = null;
-				placeRoads(imp.planet.getRaceTechId());
+				renderer.surface.placeRoads(imp.planet.getRaceTechId(), buildingModel);
 			} else {
 				doClearBuildings(false);
 			}
@@ -1945,146 +1941,6 @@ public class MapEditor extends JFrame {
 		return Location.of(x, y);
 	}
 	/**
-	 * Place roads around buildings for the given race.
-	 * @param raceId the race who builds the roads
-	 */
-	void placeRoads(String raceId) {
-		Map<RoadType, Tile> rts = buildingModel.roadTiles.get(raceId);
-		Map<Tile, RoadType> trs = buildingModel.tileRoads.get(raceId);
-		// remove all roads
-		Iterator<SurfaceEntity> it = renderer.surface.buildingmap.values().iterator();
-		while (it.hasNext()) {
-			SurfaceEntity se = it.next();
-			if (se.type == SurfaceEntityType.ROAD) {
-				it.remove();
-			}
-		}
-		Set<Location> corners = new HashSet<Location>();
-		for (Building bld : renderer.surface.buildings) {
-			Rectangle rect = new Rectangle(bld.location.x - 1, bld.location.y + 1, bld.tileset.normal.width + 2, bld.tileset.normal.height + 2);
-			addRoadAround(rts, rect, corners);
-		}
-		SurfaceEntity[] neighbors = new SurfaceEntity[9];
-		for (Location l : corners) {
-			SurfaceEntity se = renderer.surface.buildingmap.get(l);
-			if (se == null || se.type != SurfaceEntityType.ROAD) {
-				continue;
-			}
-			setNeighbors(l.x, l.y, renderer.surface.buildingmap, neighbors);
-			int pattern = 0;
-			
-			RoadType rt1 = null;
-			if (neighbors[1] != null && neighbors[1].type == SurfaceEntityType.ROAD) {
-				pattern |= Sides.TOP;
-				rt1 = trs.get(neighbors[1].tile);
-			}
-			RoadType rt3 = null;
-			if (neighbors[3] != null && neighbors[3].type == SurfaceEntityType.ROAD) {
-				pattern |= Sides.LEFT;
-				rt3 = trs.get(neighbors[3].tile);
-			}
-			RoadType rt5 = null;
-			if (neighbors[5] != null && neighbors[5].type == SurfaceEntityType.ROAD) {
-				pattern |= Sides.RIGHT;
-				rt5 = trs.get(neighbors[5].tile);
-			}
-			RoadType rt7 = null;
-			if (neighbors[7] != null && neighbors[7].type == SurfaceEntityType.ROAD) {
-				pattern |= Sides.BOTTOM;
-				rt7 = trs.get(neighbors[7].tile);
-			}
-			RoadType rt = RoadType.get(pattern);
-			// place the new tile fragment onto the map
-			// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-			se = createRoadEntity(rts.get(rt));
-			renderer.surface.buildingmap.put(l, se);
-			// alter the four neighboring tiles to contain road back to this
-			if (rt1 != null) {
-				rt1 = RoadType.get(rt1.pattern | Sides.BOTTOM);
-				renderer.surface.buildingmap.put(l.delta(0, 1), createRoadEntity(rts.get(rt1)));
-			}
-			if (rt3 != null) {
-				rt3 = RoadType.get(rt3.pattern | Sides.RIGHT);
-				renderer.surface.buildingmap.put(l.delta(-1, 0), createRoadEntity(rts.get(rt3)));
-			}
-			if (rt5 != null) {
-				rt5 = RoadType.get(rt5.pattern | Sides.LEFT);
-				renderer.surface.buildingmap.put(l.delta(1, 0), createRoadEntity(rts.get(rt5)));
-			}
-			if (rt7 != null) {
-				rt7 = RoadType.get(rt7.pattern | Sides.TOP);
-				renderer.surface.buildingmap.put(l.delta(0, -1), createRoadEntity(rts.get(rt7)));
-			}
-			
-		}
-	}
-	/**
-	 * Fills the fragment array of the 3x3 rectangle centered around x and y.
-	 * @param x the x coordinate
-	 * @param y the y coordinate
-	 * @param map the map
-	 * @param fragments the fragments
-	 */
-	void setNeighbors(int x, int y, Map<Location, SurfaceEntity> map, SurfaceEntity[] fragments) {
-		fragments[0] = map.get(Location.of(x - 1, y + 1));
-		fragments[1] = map.get(Location.of(x, y + 1));
-		fragments[2] = map.get(Location.of(x + 1, y + 1));
-		
-		fragments[3] = map.get(Location.of(x - 1, y));
-		fragments[4] = map.get(Location.of(x, y));
-		fragments[5] = map.get(Location.of(x + 1, y));
-		
-		fragments[6] = map.get(Location.of(x - 1, y - 1));
-		fragments[7] = map.get(Location.of(x, y - 1));
-		fragments[8] = map.get(Location.of(x + 1, y - 1));
-	}
-	/**
-	 * Places a road frame around the tilesToHighlight rectangle.
-	 * @param rts the road to tile map for a concrete race
-	 * @param rect the rectangle to use
-	 * @param corners where to place the created corners
-	 */
-	void addRoadAround(Map<RoadType, Tile> rts, Rectangle rect, Collection<Location> corners) {
-		Location la = Location.of(rect.x, rect.y);
-		Location lb = Location.of(rect.x + rect.width - 1, rect.y);
-		Location lc = Location.of(rect.x, rect.y - rect.height + 1);
-		Location ld = Location.of(rect.x + rect.width - 1, rect.y - rect.height + 1);
-		
-		corners.add(la);
-		corners.add(lb);
-		corners.add(lc);
-		corners.add(ld);
-		
-		renderer.surface.buildingmap.put(la, createRoadEntity(rts.get(RoadType.RIGHT_TO_BOTTOM)));
-		renderer.surface.buildingmap.put(lb, createRoadEntity(rts.get(RoadType.LEFT_TO_BOTTOM)));
-		renderer.surface.buildingmap.put(lc, createRoadEntity(rts.get(RoadType.TOP_TO_RIGHT)));
-		renderer.surface.buildingmap.put(ld, createRoadEntity(rts.get(RoadType.TOP_TO_LEFT)));
-		// add linear segments
-		
-		Tile ht = rts.get(RoadType.HORIZONTAL);
-		for (int i = rect.x + 1; i < rect.x + rect.width - 1; i++) {
-			renderer.surface.buildingmap.put(Location.of(i, rect.y), createRoadEntity(ht));
-			renderer.surface.buildingmap.put(Location.of(i, rect.y - rect.height + 1), createRoadEntity(ht));
-		}
-		Tile vt = rts.get(RoadType.VERTICAL);
-		for (int i = rect.y - 1; i > rect.y - rect.height + 1; i--) {
-			renderer.surface.buildingmap.put(Location.of(rect.x, i), createRoadEntity(vt));
-			renderer.surface.buildingmap.put(Location.of(rect.x + rect.width - 1, i), createRoadEntity(vt));
-		}
-	}
-	/**
-	 * Create a road entity for the tile.
-	 * @param tile the tile
-	 * @return the entity
-	 */
-	SurfaceEntity createRoadEntity(Tile tile) {
-		SurfaceEntity result = new SurfaceEntity();
-		result.tile = tile;
-		result.tile.alpha = alpha;
-		result.type = SurfaceEntityType.ROAD;
-		return result;
-	}
-	/**
 	 * Place the currently selected object onto the surface.
 	 */
 	void doPlaceObject() {
@@ -2112,7 +1968,7 @@ public class MapEditor extends JFrame {
 			
 			renderer.surface.placeBuilding(bld.tileset.normal, 
 					bld.location.x, bld.location.y, bld);
-			placeRoads(currentBuildingRace);
+			renderer.surface.placeRoads(currentBuildingRace, buildingModel);
 			
 			undo.setAfter();
 			addUndo(undo);
@@ -2441,7 +2297,7 @@ public class MapEditor extends JFrame {
 				String tech = renderer.surface.getTechnology();
 				renderer.surface.parseMap(planet, null, buildingModel);
 				if (tech != null) {
-					placeRoads(tech);
+					renderer.surface.placeRoads(tech, buildingModel);
 				}
 			}
 			renderer.buildingBox = null;
@@ -2885,7 +2741,7 @@ public class MapEditor extends JFrame {
 			}
 		}		
 		if (renderer.surface.buildings.size() > 0) {
-			placeRoads(renderer.surface.getTechnology());
+			renderer.surface.placeRoads(renderer.surface.getTechnology(), buildingModel);
 		}
 		undo.setAfter();
 		addUndo(undo);
@@ -3086,7 +2942,7 @@ public class MapEditor extends JFrame {
 				}
 				
 				if (tech != null) {
-					placeRoads(tech);
+					renderer.surface.placeRoads(tech, buildingModel);
 				}
 				
 				undo.setAfter();
