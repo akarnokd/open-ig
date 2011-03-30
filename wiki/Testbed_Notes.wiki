@@ -4,6 +4,11 @@ See the [Testbed testbed] page for the description of this application.
 
 <wiki:toc max_depth="1" />
 
+= Version 0.30 - Colony screen =
+  * Released: 2011-03-30 22:00
+  * Some rendering improvements
+  * Bug fixes
+
 = Version 0.25 - Research & Production screen =
   * Released: 2011-03-20 14:30
   * Research and production screen added
