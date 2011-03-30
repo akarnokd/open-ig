@@ -19,6 +19,8 @@ This page lists tasks that I want to complete with expected times.
 || Screen: Bar || 2011-04-10 || - || Test implementation exists, only integration is required. ||
 || Screen: Database || 2011-04-17 || - || I have a test implementation, but I'm not satisfied with its behavior. ||
 || Screen: Statistics & Achievements || 2011-04-17 || - || Polish the current implementation, its look and behavior. ||
+|| Screen: Test || 2011-04-17 || - || A very simple screen for the test questions. ||
+|| Screen: Credits || 2011-04-24 || - || A simple scrolling credits. ||
 || Screen: Diplomacy || 2011-04-24 || - || I need to run the original game to figure out the available talk options. ||
 || Sound & Music integration || 2011-04-24 || - || Add sound and music. ||
 || Basic simulation || 2011-05-15 || - || Time elapse, running research and production, fleet movements. Gather achievements and statistics. No enemies. ||
