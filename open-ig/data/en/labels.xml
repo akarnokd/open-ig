@@ -355,6 +355,66 @@
 	<entry key='players.ecalep'>Ecalep Republic</entry>
 	<entry key='players.sullep'>Sullep Empire</entry>
 	<entry key='players.dargslan'>Dargslan Kingdom</entry>
+	
+	<entry key='planet.type.rocky'>rocky</entry>
+	<entry key='planet.type.cratered'>cratered</entry>
+	<entry key='planet.type.earth'>Earth-like</entry>
+	<entry key='planet.type.liquid'>liquid</entry>
+	<entry key='planet.type.neptoplasm'>neptoplasm</entry>
+	<entry key='planet.type.desert'>desert</entry>
+	<entry key='planet.type.frozen'>frozen</entry>
+	
+	<entry key='morale.revolt'>revolt</entry>
+	<entry key='morale.hate'>hate</entry>
+	<entry key='morale.dislike'>dislike</entry>
+	<entry key='morale.neutral'>neutral</entry>
+	<entry key='morale.like'>like</entry>
+	<entry key='morale.supportive'>supportive</entry>
+	<entry key='taxlevel.NONE'>None</entry>
+	<entry key='taxlevel.VERY_LOW'>Low</entry>
+	<entry key='taxlevel.NORMAL'>Normal</entry>
+	<entry key='taxlevel.ABOVE_NORMAL'>Above normal</entry>
+	<entry key='taxlevel.HIGH'>High</entry>
+	<entry key='taxlevel.VERY_HIGH'>Very high</entry>
+	<entry key='taxlevel.OPPRESSIVE'>Oppressive</entry>
+	<entry key='taxlevel.ULTIMATE'>Slavery</entry>
+	
+	<entry key='colonyinfo.planet'    >Planet : %s</entry>
+	<entry key='colonyinfo.owner'     >Owner        : %s</entry>
+	<entry key='colonyinfo.race'      >Race         : %s</entry>
+	<entry key='colonyinfo.surface'   >Surface      : %s</entry>
+	<entry key='colonyinfo.population'>Population   : %d %s (%s)</entry>
+	<entry key='colonyinfo.housing'   >Living space : %d / %d lakos</entry>
+	<entry key='colonyinfo.worker'    >Worker       : %d / %d lakos</entry>
+	<entry key='colonyinfo.hospital'  >Hospital     : %d / %d lakos</entry>
+	<entry key='colonyinfo.food'      >Food         : %d / %d lakos</entry>
+	<entry key='colonyinfo.energy'    >Energy       : %d / %d kWh</entry>
+	<entry key='colonyinfo.police'    >Police       : %d / %d lakos</entry>
+	<entry key='colonyinfo.tax'       >Tax income   : %d cr</entry>
+	<entry key='colonyinfo.trade'     >Trade income : %d cr</entry>
+	<entry key='colonyinfo.tax-morale'>Tax morale   : %d%% (%s)</entry>
+	<entry key='colonyinfo.tax-level' >Tax level    : %s</entry>
+	<entry key='colonyinfo.allocation'>Allocation   : %s</entry>
+	<entry key='colonyinfo.autobuild' >Auto-build   : %s</entry>
+	<entry key='colonyinfo.other'     >Other        : %s</entry>
+	
+	<entry key='race.human'>Human</entry>
+	<entry key='race.garthog'>Garthog</entry>
+	<entry key='race.morgath'>Morgath</entry>
+	<entry key='race.sullep'>Sullep</entry>
+	<entry key='race.ecalep'>Ecalep</entry>
+	<entry key='race.ychom'>Ychom</entry>
+	<entry key='race.dribs'>Dribs</entry>
+	<entry key='race.dargslan'>Dargslan</entry>
+	
+	<entry key='autobuild.OFF'>Off</entry>
+	<entry key='autobuild.CIVIL'>Civil buildings</entry>
+	
+	<entry key='allocation.ZERO'>None</entry>
+	<entry key='allocation.DEFAULT'>Uniform</entry>
+	<entry key='allocation.DAMAGE_AWARE'>Enhanced uniform</entry>
+	
+	
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -199,10 +199,19 @@ public class UILabel extends UIComponent {
 	 * @return this
 	 */
 	public UILabel text(String text) {
+		return text(text, false);
+	}
+	/**
+	 * Set the label's text and resize if necessary.
+	 * @param text the text
+	 * @param resize resize to the new text?
+	 * @return this
+	 */
+	public UILabel text(String text, boolean resize) {
 		this.text = text;
-//		if (!wrap) {
-//			width = tr.getTextWidth(size, text);
-//		}
+		if (resize) {
+			width = tr.getTextWidth(size, text);
+		}
 		return this;
 	}
 	/** @return the current textual label. */

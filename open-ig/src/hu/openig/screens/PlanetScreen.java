@@ -18,6 +18,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.OriginalBuilding;
 import hu.openig.model.OriginalPlanet;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
@@ -55,6 +56,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -189,6 +191,8 @@ public class PlanetScreen extends ScreenBase {
 	float alpha = 1.0f;
 	/** The currently selected building. */
 	Building currentBuilding;
+	/** The information panel. */
+	InfoPanel infoPanel;
 	@Override
 	public void onFinish() {
 		if (animationTimer != null) {
@@ -551,12 +555,14 @@ public class PlanetScreen extends ScreenBase {
 					} else {
 						offsetX -= 54;
 					}
+					rep = true;
 				} else {
 					if (e.z < 0) {
 						offsetY += 28;
 					} else {
 						offsetY -= 28;
 					}
+					rep = true;
 				}
 				break;
 			default:
@@ -573,6 +579,7 @@ public class PlanetScreen extends ScreenBase {
 				lastSurface = surface;
 			}
 			doSelectBuilding(currentBuilding);
+			infoPanel.update();
 			
 			RenderTools.setInterpolation(g2, true);
 			
@@ -1541,6 +1548,210 @@ public class PlanetScreen extends ScreenBase {
 		commons.world.allocator.compute(Collections.singleton(commons.world.player.currentPlanet));
 		doSelectBuilding(currentBuilding);
 	}
+	/** Toggle the repair state. */
+	void doToggleRepair() {
+		currentBuilding.repairing = !currentBuilding.repairing;
+		buildingInfoPanel.repairing.visible(currentBuilding.repairing);
+		buildingInfoPanel.damaged.visible(!currentBuilding.repairing);
+		doSelectBuilding(currentBuilding);
+	}
+	/**
+	 * The information panel showing some details.
+	 * @author akarnokd
+	 */
+	class InfoPanel extends UIContainer {
+		/** The planet name. */
+		UILabel planet;
+		/** Label field. */
+		UILabel owner;
+		/** Label field. */
+		UILabel race;
+		/** Label field. */
+		UILabel surface;
+		/** Label field. */
+		UILabel population;
+		/** Label field. */
+		UILabel housing;
+		/** Label field. */
+		UILabel worker;
+		/** Label field. */
+		UILabel hospital;
+		/** Label field. */
+		UILabel food;
+		/** Label field. */
+		UILabel energy;
+		/** Label field. */
+		UILabel police;
+		/** Label field. */
+		UILabel taxIncome;
+		/** Label field. */
+		UILabel tradeIncome;
+		/** Label field. */
+		UILabel taxMorale;
+		/** Label field. */
+		UILabel taxLevel;
+		/** Label field. */
+		UILabel allocation;
+		/** Label field. */
+		UILabel autobuild;
+		/** Label field. */
+		UILabel other;
+		/** The labels. */
+		List<UILabel> lines;
+		/** Construct the label elements. */
+		public InfoPanel() {
+			int textSize = 10;
+			planet = new UILabel("-", 14, commons.text());
+			planet.location(5, 5);
+			owner = new UILabel("-", textSize, commons.text());
+			race = new UILabel("-", textSize, commons.text());
+			surface = new UILabel("-", textSize, commons.text());
+			population = new UILabel("-", textSize, commons.text());
+			housing = new UILabel("-", textSize, commons.text());
+			worker = new UILabel("-", textSize, commons.text());
+			hospital = new UILabel("-", textSize, commons.text());
+			food = new UILabel("-", textSize, commons.text());
+			energy = new UILabel("-", textSize, commons.text());
+			police = new UILabel("-", textSize, commons.text());
+			taxIncome = new UILabel("-", textSize, commons.text());
+			tradeIncome = new UILabel("-", textSize, commons.text());
+			taxMorale = new UILabel("-", textSize, commons.text());
+			taxLevel = new UILabel("-", textSize, commons.text());
+			allocation = new UILabel("-", textSize, commons.text());
+			autobuild = new UILabel("-", textSize, commons.text());
+			other = new UILabel("-", textSize, commons.text());
+			
+			lines = Arrays.asList(
+					owner, race, surface, population, housing, worker, hospital, food, energy, police,
+					taxIncome, tradeIncome, taxMorale, taxLevel, allocation, autobuild, other
+			);
+			
+			enabled(false);
+			addThis();
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			Composite c = g2.getComposite();
+			g2.setComposite(AlphaComposite.SrcOver.derive(0.75f));
+			g2.fillRoundRect(0, 0, width, height, 10, 10);
+			g2.setComposite(c);
+			
+			super.draw(g2);
+		}
+		/** Compute the panel size based on its visible component sizes. */
+		public void computeSize() {
+			int textSize = 10;
+			int w = 0;
+			int h = 0;
+			int i = 0;
+			for (UILabel c : lines) {
+				if (c.visible()) {
+					c.x = 5;
+					c.y = 25 + (textSize + 3) * i;
+					c.size(textSize);
+					w = Math.max(w, c.x + c.width);
+					h = Math.max(h, c.y + c.height);
+					i++;
+				}
+			}
+			width = w + 5;
+			height = h + 5;
+		}
+		/**
+		 * Update the display values based on the current planet's settings.
+		 */
+		public void update() {
+			Planet p = commons.world.player.currentPlanet;
+			
+			planet.text(commons.labels().format("colonyinfo.planet", p.name), true);
+			
+			String s = p.owner != null ? p.owner.name : "-";
+			owner.text(commons.labels().format("colonyinfo.owner", s), true);
+			if (p.owner != null) {
+				owner.color(p.owner.color);
+				planet.color(p.owner.color);
+			}
+			s = p.race != null ? commons.labels().get(p.getRaceLabel()) : "-";
+			race.text(commons.labels().format("colonyinfo.race", s), true);
+			
+			s = commons.labels().get(p.type.label);
+			surface.text(commons.labels().format("colonyinfo.surface", s), true);
+			
+			population.text(commons.labels().format("colonyinfo.population", 
+					p.population, commons.labels().get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+			), true);
+			
+			PlanetStatistics ps = p.getStatistics();
+			
+			setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population);
+			setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand);
+			setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population);
+			setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population);
+			setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand);
+			setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population);
+			
+			taxIncome.text(commons.labels().format("colonyinfo.tax", 
+					p.taxIncome
+			), true);
+			tradeIncome.text(commons.labels().format("colonyinfo.trade",
+					p.tradeIncome
+			), true);
+			
+			taxMorale.text(commons.labels().format("colonyinfo.tax-morale",
+					p.morale, withSign(p.morale - p.lastMorale)
+			), true);
+			taxLevel.text(commons.labels().format("colonyinfo.tax-level",
+					commons.labels().get(p.getTaxLabel())
+			), true);
+			
+			allocation.text(commons.labels().format("colonyinfo.allocation",
+					commons.labels().get(p.getAllocationLabel())
+			), true);
+			
+			autobuild.text(commons.labels().format("colonyinfo.autobuild",
+					commons.labels().get(p.getAutoBuildLabel())
+			), true);
+
+			other.text(commons.labels().format("colonyinfo.other",
+					"" // FIXME list others
+			), true);
+
+			computeSize();
+			location(sidebarColonyInfo.x - width - 2, sidebarColonyInfo.y + sidebarColonyInfo.height - height - 2);
+		}
+		/** 
+		 * Color the label according to the relation between the demand and available.
+		 * @param label the target label
+		 * @param format the format string to use
+		 * @param demand the demand amount
+		 * @param avail the available amount
+		 */
+		void setLabel(UILabel label, String format, int avail, int demand) {
+			label.text(commons.labels().format(format, avail, demand), true);
+			if (demand <= avail) {
+				label.color(TextRenderer.GREEN);
+			} else
+			if (demand < avail * 2) {
+				label.color(TextRenderer.YELLOW);
+			} else {
+				label.color(TextRenderer.RED);
+			}
+		}
+		/**
+		 * Add the +/- sign for the given integer value.
+		 * @param i the value
+		 * @return the string
+		 */
+		String withSign(int i) {
+			if (i < 0) {
+				return Integer.toString(i);
+			} else
+			if (i > 0) {
+				return "+" + i;
+			}
+			return "0";
+		}
+	}
 	@Override
 	public void onInitialize() {
 		animationTimer = new Timer(500, new Act() {
@@ -1589,6 +1800,8 @@ public class PlanetScreen extends ScreenBase {
 		buildingsPanel.z = 1;
 		buildingInfoPanel = new BuildingInfoPanel();
 		buildingInfoPanel.z = 1;
+		
+		infoPanel = new InfoPanel();
 		
 		sidebarNavigation.onClick = new Act() {
 			@Override
@@ -1678,6 +1891,25 @@ public class PlanetScreen extends ScreenBase {
 			@Override
 			public void act() {
 				doOffline();
+			}
+		};
+		buildingInfoPanel.repairing.onClick = new Act() {
+			@Override
+			public void act() {
+				doToggleRepair();
+			}
+		};
+		buildingInfoPanel.damaged.onClick = new Act() {
+			@Override
+			public void act() {
+				doToggleRepair();
+			}
+		};
+		
+		sidebarColonyInfo.onClick = new Act() {
+			@Override
+			public void act() {
+				infoPanel.visible(!infoPanel.visible());
 			}
 		};
 		

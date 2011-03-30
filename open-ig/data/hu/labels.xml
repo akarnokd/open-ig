@@ -31,27 +31,27 @@
 	A kereskedelmi bevételek nem függnek az adózási moráltól, így idegen lakosú bolygókon stabil pénzszerzési forrásként használhatók. Alacsony adózási szintnél idegen bolygókon is megnyugszik a lakosság.</entry>
 	<entry key='database.discovering_planets.details'>Nagyon fontos információt szerezni a bolygókról. Ha egy bolygó neve nem látszik, az azt jelenti, hogy nincs róla információ – lehet üres is, vagy akár idegenek is lakhatják. Az információszerzéshez először egy műholdat kell telepíteni (természtesen ehhez kell lennie egynek a raktárban). Ezek után a csillagtérképen ki kell választani a bolygót, majd telepíteni kell a műholdat a megfelelő ikonnal. Ha a bolygó már lakott, a műholdat könnyen észrevehetik és megsemmisítik. Ilyenkor egy kémműhold telepítésével többet megtudhatunk a bolygó lakóiról. A 2.0-ás kémműhold több információt szállít, így az idegen faj épületeit is láthatjuk már. Ez a műhold a bolygó védelmi rendszeréről is küld információkat.</entry>
 	
-	<entry key='race.free_traders_alliance'>Kereskedők Szövetsége</entry>
-	<entry key='race.free_nations_society'>Szabad Nemzetek Szöv.</entry>
-	<entry key='race.pirates'>Kalózok</entry>
-	<entry key='race.garthogs'>Garthogok</entry>
-	<entry key='race.ychoms'>Ychomok</entry>
-	<entry key='race.morgaths'>Morgathok</entry>
-	<entry key='race.dribs'>Dribek</entry>
-	<entry key='race.ecaleps'>Ecalepek</entry>
-	<entry key='race.sulleps'>Sullepek</entry>
-	<entry key='race.dargslans'>Dargslanok</entry>
+	<entry key='database.race.free_traders_alliance'>Kereskedők Szövetsége</entry>
+	<entry key='database.race.free_nations_society'>Szabad Nemzetek Szöv.</entry>
+	<entry key='database.race.pirates'>Kalózok</entry>
+	<entry key='database.race.garthogs'>Garthogok</entry>
+	<entry key='database.race.ychoms'>Ychomok</entry>
+	<entry key='database.race.morgaths'>Morgathok</entry>
+	<entry key='database.race.dribs'>Dribek</entry>
+	<entry key='database.race.ecaleps'>Ecalepek</entry>
+	<entry key='database.race.sulleps'>Sullepek</entry>
+	<entry key='database.race.dargslans'>Dargslanok</entry>
 	
-	<entry key='race.free_traders_alliance.details'>A Régi Birodalom része voltak egykor, de a Kereskedők elhagyták, hogy létrehozzanak egy új birodalmat. Békés, kereskedő népség.</entry>
-	<entry key='race.free_nations_society.details'>Egykor a régi nagy Birodalom része voltak, de már régen kikiáltották függetlenségüket. Az SZNSZ gyorsan gyárt újabbnál újabb flottákat és könnyedén fogla el új területeket. Az SZNSZ vezetői rendkívül arrogánsak a Birodalommal szemben.</entry>
-	<entry key='race.pirates.details'>A kalózok több fajból összeállt törvényen kívüli banda. Előszeretettel támadnak meg védtelen kereskedelmi hajókat és gyakran állnak át hozzájuk a morálukat vesztett kolóniák is. Hadi flottákat eddig még szándékosan sosem támadtak meg.</entry>
-	<entry key='race.garthogs.details'>A Garthog rendkívül sunyi faj. Imádnak mindenféle gépet, és szí@esen ellopnak bármilyen új technologiát. A gépek iránti szeretetük akkora, hogy extra szenzorokat építenek be a gyerekeikbe is, amikor megszületnek. Állítólag kiírtották a Nub nevezetű fajt, hogy ellophassák technológiájukat. A Garthog birodalom közel van az emberi birodalmakhoz, és már több mint 10 éve háborúznak. Speciális földi fegyverrel - a radarzavaró járművel - is rendelkeznek.</entry>
-	<entry key='race.ychoms.details'>Békés, kereskedő nép. Jó kapcsolataik vannak a Kereskedők Szövetségével. Az Ychomok érdekes fegyverrel védik saját kolóniáikat - egy aknatelepítő gépezettel.</entry>
-	<entry key='race.morgaths.details'>A Morgathok nagyon barátságtalanok. Sose bíznak meg senkiben. Állítólag hatalmas űrhajóik vannak, és egy speciális földi egységük, a Kamikaze tank. Vigyázz, ha közel kerülsz hozzá!</entry>
-	<entry key='race.dribs.details'>Dribek egy büszke faj. A technikai fejlettségük megmutatkozik a mechanikai és építkezési tudományukban.</entry>
-	<entry key='race.ecaleps.details'>A birodalmuk gyorsan nő és átlagon felüliek az adóbevételeik. Talán ezért is szeretik annyira a pénzt. Kifejlesztettek egy új speciális földi egységet, a rakétazavaró tankot, amely amellett, hogy erős páncélzattal rendelkezik, a rakétákat is eltéríti, így lehetetlen rakétás egységgel kilőni.</entry>
-	<entry key='race.sulleps.details'>A Sullepek alaptermészete a háború. Nagyon szigorú szociális szervezetekben nőnek fel. Kicsinyeiket születésüktől fogva harcra tanítják. Soha nem adják meg magukat a harcban - sokkal nagyobb dicsőség a csatamezőn meghalniuk, mint vesztesként hazatérni.</entry>
-	<entry key='race.dargslans.details'>Nem sokat tudni a Dargslanokról, kivéve azt, hogy nagy erőkkel rendelkeznek a földön és az űrben egyaránt.</entry>
+	<entry key='database.race.free_traders_alliance.details'>A Régi Birodalom része voltak egykor, de a Kereskedők elhagyták, hogy létrehozzanak egy új birodalmat. Békés, kereskedő népség.</entry>
+	<entry key='database.race.free_nations_society.details'>Egykor a régi nagy Birodalom része voltak, de már régen kikiáltották függetlenségüket. Az SZNSZ gyorsan gyárt újabbnál újabb flottákat és könnyedén fogla el új területeket. Az SZNSZ vezetői rendkívül arrogánsak a Birodalommal szemben.</entry>
+	<entry key='database.race.pirates.details'>A kalózok több fajból összeállt törvényen kívüli banda. Előszeretettel támadnak meg védtelen kereskedelmi hajókat és gyakran állnak át hozzájuk a morálukat vesztett kolóniák is. Hadi flottákat eddig még szándékosan sosem támadtak meg.</entry>
+	<entry key='database.race.garthogs.details'>A Garthog rendkívül sunyi faj. Imádnak mindenféle gépet, és szí@esen ellopnak bármilyen új technologiát. A gépek iránti szeretetük akkora, hogy extra szenzorokat építenek be a gyerekeikbe is, amikor megszületnek. Állítólag kiírtották a Nub nevezetű fajt, hogy ellophassák technológiájukat. A Garthog birodalom közel van az emberi birodalmakhoz, és már több mint 10 éve háborúznak. Speciális földi fegyverrel - a radarzavaró járművel - is rendelkeznek.</entry>
+	<entry key='database.race.ychoms.details'>Békés, kereskedő nép. Jó kapcsolataik vannak a Kereskedők Szövetségével. Az Ychomok érdekes fegyverrel védik saját kolóniáikat - egy aknatelepítő gépezettel.</entry>
+	<entry key='database.race.morgaths.details'>A Morgathok nagyon barátságtalanok. Sose bíznak meg senkiben. Állítólag hatalmas űrhajóik vannak, és egy speciális földi egységük, a Kamikaze tank. Vigyázz, ha közel kerülsz hozzá!</entry>
+	<entry key='database.race.dribs.details'>Dribek egy büszke faj. A technikai fejlettségük megmutatkozik a mechanikai és építkezési tudományukban.</entry>
+	<entry key='database.race.ecaleps.details'>A birodalmuk gyorsan nő és átlagon felüliek az adóbevételeik. Talán ezért is szeretik annyira a pénzt. Kifejlesztettek egy új speciális földi egységet, a rakétazavaró tankot, amely amellett, hogy erős páncélzattal rendelkezik, a rakétákat is eltéríti, így lehetetlen rakétás egységgel kilőni.</entry>
+	<entry key='database.race.sulleps.details'>A Sullepek alaptermészete a háború. Nagyon szigorú szociális szervezetekben nőnek fel. Kicsinyeiket születésüktől fogva harcra tanítják. Soha nem adják meg magukat a harcban - sokkal nagyobb dicsőség a csatamezőn meghalniuk, mint vesztesként hazatérni.</entry>
+	<entry key='database.race.dargslans.details'>Nem sokat tudni a Dargslanokról, kivéve azt, hogy nagy erőkkel rendelkeznek a földön és az űrben egyaránt.</entry>
 
 	<entry key='database.map.1'></entry>
 	<entry key='database.map.2'></entry>
@@ -418,6 +418,7 @@
 	<entry key='building.resource.type.credit'> cr</entry>
 	<entry key='building.resource.type.hospital'> emb</entry>
 	<entry key='planets.earth'>Föld</entry>
+	
 	<entry key='players.empire'>Galaktikus Birodalom</entry>
 	<entry key='players.free_traders'>Szabad Kereskedők Szövetsége</entry>
 	<entry key='players.free_nations'>Szabad Nemzetek Szervezete</entry>
@@ -429,8 +430,63 @@
 	<entry key='players.ecalep'>Ecalep Köztársaság</entry>
 	<entry key='players.sullep'>Sullep Birodalom</entry>
 	<entry key='players.dargslan'>Dargslan Királyság</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+
+	<entry key='planet.type.rocky'>sziklás</entry>
+	<entry key='planet.type.cratered'>kráteres</entry>
+	<entry key='planet.type.earth'>Föld-szerű</entry>
+	<entry key='planet.type.liquid'>folyékony</entry>
+	<entry key='planet.type.neptoplasm'>idegen</entry>
+	<entry key='planet.type.desert'>sivatagos</entry>
+	<entry key='planet.type.frozen'>fagyott</entry>
+	
+	<entry key='morale.revolt'>lázad</entry>
+	<entry key='morale.hate'>gyűlöl</entry>
+	<entry key='morale.dislike'>nem kedvel</entry>
+	<entry key='morale.neutral'>semleges</entry>
+	<entry key='morale.like'>kedvel</entry>
+	<entry key='morale.supportive'>támogat</entry>
+	<entry key='taxlevel.NONE'>Nincs</entry>
+	<entry key='taxlevel.VERY_LOW'>Alacsony</entry>
+	<entry key='taxlevel.NORMAL'>Normális</entry>
+	<entry key='taxlevel.ABOVE_NORMAL'>Normális felett</entry>
+	<entry key='taxlevel.HIGH'>Magas</entry>
+	<entry key='taxlevel.VERY_HIGH'>Nagyon magas</entry>
+	<entry key='taxlevel.OPPRESSIVE'>Elnyomó</entry>
+	<entry key='taxlevel.ULTIMATE'>a la Bokros</entry>
+	
+	<entry key='colonyinfo.planet'    >Bolygó : %s</entry>
+	<entry key='colonyinfo.owner'     >Tulajdonos : %s</entry>
+	<entry key='colonyinfo.race'      >Faj        : %s</entry>
+	<entry key='colonyinfo.surface'   >Felszín    : %s</entry>
+	<entry key='colonyinfo.population'>Népesség   : %d %s (%s)</entry>
+	<entry key='colonyinfo.housing'   >Lakótér    : %d / %d lakos</entry>
+	<entry key='colonyinfo.worker'    >Munkás     : %d / %d lakos</entry>
+	<entry key='colonyinfo.hospital'  >Kórház     : %d / %d lakos</entry>
+	<entry key='colonyinfo.food'      >Élelmiszer : %d / %d lakos</entry>
+	<entry key='colonyinfo.energy'    >Energia    : %d / %d kWh</entry>
+	<entry key='colonyinfo.police'    >Rendőrség  : %d / %d lakos</entry>
+	<entry key='colonyinfo.tax'       >Adóbevétel   : %d cr</entry>
+	<entry key='colonyinfo.trade'     >Kereskedelem : %d cr</entry>
+	<entry key='colonyinfo.tax-morale'>Adómorál     : %d%% (%s)</entry>
+	<entry key='colonyinfo.tax-level' >Adózás       : %s</entry>
+	<entry key='colonyinfo.allocation'>Allokáció    : %s</entry>
+	<entry key='colonyinfo.autobuild' >Auto-építés  : %s</entry>
+	<entry key='colonyinfo.other'     >Egyéb gond   : %s</entry>
+	
+	<entry key='race.human'>Ember</entry>
+	<entry key='race.garthog'>Garthog</entry>
+	<entry key='race.morgath'>Morgath</entry>
+	<entry key='race.sullep'>Sullep</entry>
+	<entry key='race.ecalep'>Ecalep</entry>
+	<entry key='race.ychom'>Ychom</entry>
+	<entry key='race.dribs'>Dribs</entry>
+	<entry key='race.dargslan'>Dargslan</entry>
+	
+	<entry key='autobuild.OFF'>Kikapcsolva</entry>
+	<entry key='autobuild.CIVIL'>Civil épületek</entry>
+	
+	<entry key='allocation.ZERO'>Nincs</entry>
+	<entry key='allocation.DEFAULT'>Egyenletes</entry>
+	<entry key='allocation.DAMAGE_AWARE'>Fejlettebb egyenletes</entry>
+		
 </labels>

@@ -100,7 +100,9 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						setVisible(true);
+						if (!isVisible()) {
+							setVisible(true);
+						}
 						area.append(Character.toString((char)c));
 					}
 				});
