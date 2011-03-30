@@ -80,7 +80,7 @@
 			<desc lang='hu'>Bolygó képernyő integrálva, kisebb javítások.</desc>
 			<desc lang='en'>Colony screen integrated, small fixes.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.86.jar' sha1='0c1fb6a37926bd76eba607c4b933997ab28c474a'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.86.jar' sha1='c98f7b39705e876125b027d363a12bd68499e3dd'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
