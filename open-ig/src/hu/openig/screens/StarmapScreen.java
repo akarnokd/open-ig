@@ -559,30 +559,32 @@ public class StarmapScreen extends ScreenBase {
 				g2.setColor(Color.RED);
 				g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
 			}
-			if (p.problems.size() > 0 && !minimapPlanetBlink) {
+			if (!minimapPlanetBlink) {
 				p.getStatistics();
-				int w = p.problems.size() * 11 - 1;
-				for (int i = 0; i < p.problems.size(); i++) {
-					BufferedImage icon = null;
-					switch (p.problems.get(i)) {
-					case HOUSING:
-						icon = commons.common().houseIcon;
-						break;
-					case FOOD:
-						icon = commons.common().foodIcon;
-						break;
-					case HOSPITAL:
-						icon = commons.common().hospitalIcon;
-						break;
-					case ENERGY:
-						icon = commons.common().energyIcon;
-						break;
-					case WORKFORCE:
-						icon = commons.common().workerIcon;
-						break;
-					default:
+				if (p.problems.size() > 0) {
+					int w = p.problems.size() * 11 - 1;
+					for (int i = 0; i < p.problems.size(); i++) {
+						BufferedImage icon = null;
+						switch (p.problems.get(i)) {
+						case HOUSING:
+							icon = commons.common().houseIcon;
+							break;
+						case FOOD:
+							icon = commons.common().foodIcon;
+							break;
+						case HOSPITAL:
+							icon = commons.common().hospitalIcon;
+							break;
+						case ENERGY:
+							icon = commons.common().energyIcon;
+							break;
+						case WORKFORCE:
+							icon = commons.common().workerIcon;
+							break;
+						default:
+						}
+						g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
 					}
-					g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
 				}
 			}
 		}

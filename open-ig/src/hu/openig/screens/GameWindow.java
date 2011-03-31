@@ -674,6 +674,12 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			}
 		}
+		/** Create a second window with the same content. */
+		void newWindow() {
+			GameWindow gw = new GameWindow(GameWindow.this, false);
+			gw.setVisible(true);
+			gw.doMoveMouseAgain();
+		}
 	}
 	/**
 	 * The common mouse action manager.
