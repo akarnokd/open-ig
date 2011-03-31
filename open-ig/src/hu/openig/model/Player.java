@@ -95,9 +95,9 @@ public class Player {
 	public List<Planet> getPlayerPlanets() {
 		List<Planet> result = new ArrayList<Planet>();
 		for (Planet p : planets.keySet()) {
-			if (planets.get(p) == PlanetKnowledge.OWNED) {
+//			if (planets.get(p) == PlanetKnowledge.FULL) { FIXME temporary
 				result.add(p);
-			}
+//			}
 		}
 		return result;
 	}

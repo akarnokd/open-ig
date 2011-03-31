@@ -179,6 +179,15 @@ public class ColonyGFX {
 	/** Radar empty. */
 	@Img(name = "colony/sidebar_radar_empty")
 	public BufferedImage sidebarRadarEmpty;
+	/** Dark upgrade. */
+	@Img(name = "colony/upgrade_dark")
+	public BufferedImage upgradeDark;
+	/** The upgrade label. */
+	@Img(name = "colony/label_upgrade")
+	public BufferedImage upgradeLabel;
+	/** The no upgrades button. */
+	@Img(name = "colony/upgrade_none")
+	public BufferedImage upgradeNone;
 	
 	/**
 	 * Constructor.

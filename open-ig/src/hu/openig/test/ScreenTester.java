@@ -83,6 +83,7 @@ import javax.swing.JMenuItem;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.Timer;
 
 /**
  * Utility program to improve the screen development and testing times.
@@ -157,6 +158,8 @@ public class ScreenTester extends JFrame implements GameControls {
 	private JMenu menuView;
 	/** Coalesce the repaint requests. */
 	protected boolean repaintOnce;
+	/** The memory timer. */
+	private Timer timer;
 	/** Construct the GUI. */
 	public ScreenTester() {
 		super("Screen Tester");
@@ -242,6 +245,17 @@ public class ScreenTester extends JFrame implements GameControls {
 				}
 			};
 		});
+		
+		timer = new Timer(1000, new Act() {
+			@Override
+			public void act() {
+				setTitle(String.format("Screen Tester: %d / %d MB", 
+						Runtime.getRuntime().freeMemory() / 1024 / 1024, 
+						Runtime.getRuntime().totalMemory() / 1024 / 1024));
+			}
+		});
+		timer.start();
+		
 		doReload();
 	}
 	/**
@@ -438,7 +452,6 @@ public class ScreenTester extends JFrame implements GameControls {
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setTitle(String.format("Screen Tester: %d / %d MB", Runtime.getRuntime().freeMemory() / 1024 / 1024, Runtime.getRuntime().totalMemory() / 1024 / 1024));
 				if (screen != null) {
 					screen.onLeave();
 					screen.onFinish();
@@ -453,8 +466,6 @@ public class ScreenTester extends JFrame implements GameControls {
 					onScreen(clazz.getSimpleName(), screen);
 				} catch (Exception ex) {
 					ex.printStackTrace();
-				} finally {
-					setTitle(String.format("Screen Tester: %d / %d MB", Runtime.getRuntime().freeMemory() / 1024 / 1024, Runtime.getRuntime().totalMemory() / 1024 / 1024));
 				}
 			}
 		});
@@ -462,8 +473,11 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	/** Exit the application. */
 	void doExit() {
-		commons.world.allocator.stop();
 		try {
+			timer.stop();
+			if (commons.world != null) {
+				commons.world.allocator.stop();
+			}
 			if (screen != null) {
 				screen.onLeave();
 				screen.onFinish();
@@ -525,28 +539,24 @@ public class ScreenTester extends JFrame implements GameControls {
 			}
 			@Override
 			protected void done() {
-				try {
-					commons.world.allocator.start();
-					parentColor = new Color(0xFF80FF80);
-					parentText = txtScreen;
-					enableDisableMenu(true);
-					// restore the current screen
-					if (clazz != null) {
-						try {
-							screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
-							screen.initialize(commons);
-							screen.resize();
-							screen.onEnter(null);
-							repaint();
-							onScreen(screen.getClass().getSimpleName(), screen);
-						} catch (Exception ex) {
-							ex.printStackTrace();
-						}
+				commons.world.allocator.start();
+				parentColor = new Color(0xFF80FF80);
+				parentText = txtScreen;
+				enableDisableMenu(true);
+				// restore the current screen
+				if (clazz != null) {
+					try {
+						screen = ScreenBase.class.cast(Class.forName(clazz).newInstance());
+						screen.initialize(commons);
+						screen.resize();
+						screen.onEnter(null);
+						repaint();
+						onScreen(screen.getClass().getSimpleName(), screen);
+					} catch (Exception ex) {
+						ex.printStackTrace();
 					}
-					repaint();
-				} finally {
-					setTitle(String.format("Screen Tester: %d / %d MB", Runtime.getRuntime().freeMemory() / 1024 / 1024, Runtime.getRuntime().totalMemory() / 1024 / 1024));
 				}
+				repaint();
 			}
 		};
 		worker.execute();

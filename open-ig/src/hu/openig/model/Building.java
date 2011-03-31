@@ -171,6 +171,8 @@ public class Building {
 		this.upgradeLevel = level;
 		if (level > 0) {
 			this.currentUpgrade = type.upgrades.get(level - 1);
+		} else {
+			this.currentUpgrade = null;
 		}
 	}
 	/**
