@@ -184,19 +184,19 @@ public class Planet {
 		}
 		
 		problems.clear();
-		if (Math.abs(result.workerDemand) > population) {
+		if (Math.abs(result.workerDemand) > population * 2) {
 			problems.add(PlanetProblems.WORKFORCE);
 		}
-		if (Math.abs(result.energyDemand) > Math.abs(result.energyAvailable)) {
+		if (Math.abs(result.energyDemand) > Math.abs(result.energyAvailable) * 2) {
 			problems.add(PlanetProblems.ENERGY);
 		}
-		if (Math.abs(population) > Math.abs(result.foodAvailable)) {
+		if (Math.abs(population) > Math.abs(result.foodAvailable) * 2) {
 			problems.add(PlanetProblems.FOOD);
 		}
-		if (Math.abs(population) > Math.abs(result.hospitalAvailable)) {
+		if (Math.abs(population) > Math.abs(result.hospitalAvailable) * 2) {
 			problems.add(PlanetProblems.HOSPITAL);
 		}
-		if (Math.abs(population) > Math.abs(result.houseAvailable)) {
+		if (Math.abs(population) > Math.abs(result.houseAvailable) * 2) {
 			problems.add(PlanetProblems.HOUSING);
 		}
 		

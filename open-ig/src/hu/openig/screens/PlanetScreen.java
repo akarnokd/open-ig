@@ -774,7 +774,7 @@ public class PlanetScreen extends ScreenBase {
 							ex += commons.colony().worker[0].getWidth();
 						}
 						if (b.repairing) {
-							g2.drawImage(commons.colony().repair[(animation / 3)], ex, ey, null);
+							g2.drawImage(commons.colony().repair[(animation % 3)], ex, ey, null);
 							ex += commons.colony().repair[0].getWidth();
 						}
 					} else {
@@ -1130,6 +1130,7 @@ public class PlanetScreen extends ScreenBase {
 			commons.world.player.currentBuilding = b.type;
 			
 			Set<UIComponent> tohide = new HashSet<UIComponent>(Arrays.asList(
+					buildingInfoPanel.undamaged,
 					buildingInfoPanel.damaged,		
 					buildingInfoPanel.repairing,		
 					buildingInfoPanel.constructing,		
@@ -1466,11 +1467,11 @@ public class PlanetScreen extends ScreenBase {
 			constructing.location(8, 122);
 
 			
-			progressUpper = new UILabel("-", 7, commons.text());
+			progressUpper = new UILabel("-", 10, commons.text());
 			progressUpper.bounds(8 + 96, 98 + 3, 28, 10);
 			progressUpper.visible(false);
 			
-			progressLower = new UILabel("-", 7, commons.text());
+			progressLower = new UILabel("-", 10, commons.text());
 			progressLower.bounds(8 + 96, 122 + 3, 28, 10);
 			progressLower.visible(false);
 			

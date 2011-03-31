@@ -12,12 +12,14 @@ import hu.openig.core.Act;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkTransition;
+import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -36,6 +38,8 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	public WalkPosition position;
 	/** The next position after the transition. Might be null because of a special output. */
 	public WalkPosition next;
+	/** The next position's id. */
+	public String nextId;
 	/** Is video playing. */
 	boolean videoMode;
 	/** The video front buffer. */
@@ -49,12 +53,12 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	/** The transition video player. */
 	MediaPlayer video;
 	/** The rendering origin. */
-	final Rectangle origin = new Rectangle();
+	final Rectangle origin = new Rectangle(0, 0, 640, 442);
 	/** The action to call when the transition ends. */
 	public Act onCompleted;
 	@Override
 	public void onResize() {
-		origin.setBounds((commons.control.getInnerWidth() - 640) / 2, 20 + (commons.control.getInnerHeight() - 38 - 442) / 2, 640, 442);
+		RenderTools.centerScreen(origin, width, height, true);
 	}
 
 	@Override
@@ -112,6 +116,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 						for (WalkTransition wt : position.transitions) {
 							if (wt.area.contains(e.x - origin.x, e.y - origin.y)) {
 								next = position.ship.positions.get(wt.to);
+								nextId = wt.to;
 								if (!wt.media.isEmpty()) {
 									startTransition(wt.media);
 								} else {
@@ -151,7 +156,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		if (videoMode) {
 			swapLock.lock();
 			try {
-				if (frontBuffer != null) {
+				if (frontBuffer != null && position != null) {
 					g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 					g2.drawImage(frontBuffer, 0, 0, position.picture.getWidth(), position.picture.getHeight(), null);
 				}
@@ -163,6 +168,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 			if (position != null) {
 				g2.drawImage(position.picture, 0, 0, null);
 				
+				Composite save0 = g2.getComposite();
 				g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
 				g2.setColor(Color.WHITE);
 				for (WalkTransition wt : position.transitions) {
@@ -176,7 +182,11 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 						commons.text().paintTo(g2, rect.x + (rect.width - w) / 2, rect.y + (rect.height - 14) / 2, 14, TextRenderer.RED, pointerTransition.label);
 					}
 				}
+				g2.setComposite(save0);
 			}
+		}
+		if (position != null) {
+			g2.translate(-origin.x, -origin.y);
 		}
 	}
 	@Override
@@ -239,9 +249,10 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	 * Set the current position to the next position.
 	 */
 	protected void setNextPosition() {
-		position = next;
-		if (position != null && position.id.startsWith("*")) {
-			commons.switchScreen(position.id);
+		if (next == null && nextId.startsWith("*")) {
+			commons.switchScreen(nextId);
+		} else {
+			position = next;
 		}
 	}
 }

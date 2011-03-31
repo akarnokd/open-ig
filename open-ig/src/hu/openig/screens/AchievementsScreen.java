@@ -20,7 +20,6 @@ import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * The achievements and statistics listing screen.
@@ -453,10 +452,10 @@ public class AchievementsScreen extends ScreenBase {
 		achievements.add(new AchievementEntry("achievement.grand_admiral", "achievement.grand_admiral.desc", false));
 		achievements.add(new AchievementEntry("achievement.influenza", "achievement.influenza.desc", false));
 		
-		Random rnd = new Random();
-		for (AchievementEntry ae : achievements) {
-			ae.enabled = rnd.nextBoolean();
-		}
+//		Random rnd = new Random();
+//		for (AchievementEntry ae : achievements) {
+//			ae.enabled = rnd.nextBoolean();
+//		}
 		
 		statistics.add(new StatisticsEntry("statistics.total_gametime", "1 23:50.00"));
 		statistics.add(new StatisticsEntry("statistics.total_ingame_time", "50-03-01 12:50.00"));

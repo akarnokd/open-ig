@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -135,7 +134,7 @@ public class TechnologyVideoRenderer {
 							starttime = System.nanoTime();
 						}
 						
-						SwingUtilities.invokeAndWait(new Runnable() {
+						SwingUtilities.invokeLater(new Runnable() {
 							@Override
 							public void run() {
 								if (!stopped) {
@@ -150,10 +149,6 @@ public class TechnologyVideoRenderer {
 		       			frameCount++;
 					}
 				}
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			} finally {
 				try { in.close(); } catch (IOException ex) {  }
 			}

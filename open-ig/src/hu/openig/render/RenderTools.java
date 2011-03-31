@@ -85,7 +85,7 @@ public final class RenderTools {
 			BufferedImage fimg = holes((float)Math.min(1.0, alpha * 2));
 			g2.setPaint(new TexturePaint(fimg, new Rectangle(panel.x, panel.y, fimg.getWidth(), fimg.getHeight())));
 		} else {
-			g2.getComposite();
+			c = g2.getComposite();
 			g2.setComposite(AlphaComposite.SrcOver.derive(alpha));
 			g2.setColor(Color.BLACK);
 			
