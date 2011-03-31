@@ -20,9 +20,9 @@
 || F5 || Any || Display production overlay screen ||
 || F6 || Any || Display research overlay screen ||
 || F7 || Any || Display information overlay screen (empty) ||
-|| F8 || Any || Diplomacy screen (Game Level 4 or above) ||
-|| F9 || Any || Database ||
-|| F10 || Any || Bar (Game Level 2 or above) ||
+|| F8 || Any || Database ||
+|| F9 || Any || Bar (Game Level 2 or above) ||
+|| F10 || Any || Diplomacy screen (Game Level 4 or above) ||
 || F11 || Any || Statistics screen ||
 || F12 || Any || Achievements screen ||
 || Plus/Minus || Any || Move to next/previous player colony ||
