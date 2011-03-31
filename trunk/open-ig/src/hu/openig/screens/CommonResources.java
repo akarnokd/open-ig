@@ -322,13 +322,13 @@ public class CommonResources {
 			control.displaySecondary(Screens.INFORMATION);
 		} else
 		if ("*database".equals(to)) {
-			control.displayPrimary(Screens.DATABASE);
+			control.displaySecondary(Screens.DATABASE);
 		} else
 		if ("*bar".equals(to)) {
-			control.displayPrimary(Screens.BAR);
+			control.displaySecondary(Screens.BAR);
 		} else
 		if ("*diplomacy".equals(to)) {
-			control.displayPrimary(Screens.DIPLOMACY);
+			control.displaySecondary(Screens.DIPLOMACY);
 		}
 
 	}

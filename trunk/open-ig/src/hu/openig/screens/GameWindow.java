@@ -577,14 +577,16 @@ public class GameWindow extends JFrame implements GameControls {
 					displaySecondary(Screens.INFORMATION); // TODO information subscreens
 					break;
 				case KeyEvent.VK_F8:
-					displaySecondary(Screens.DIPLOMACY);
-					break;
-				case KeyEvent.VK_F9:
 					displaySecondary(Screens.DATABASE);
 					break;
-				case KeyEvent.VK_F10:
+				case KeyEvent.VK_F9:
 					if (commons.world.level > 1) {
 						displaySecondary(Screens.BAR);
+					}
+					break;
+				case KeyEvent.VK_F10:
+					if (commons.world.level > 4) {
+						displaySecondary(Screens.DIPLOMACY);
 					}
 					break;
 				case KeyEvent.VK_F11:

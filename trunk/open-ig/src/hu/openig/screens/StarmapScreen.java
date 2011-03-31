@@ -155,8 +155,7 @@ public class StarmapScreen extends ScreenBase {
 	 */
 	@Override
 	public void onResize() {
-		// TODO Auto-generated method stub
-
+		computeRectangles();
 	}
 
 	/* (non-Javadoc)

@@ -17,7 +17,8 @@
 			<resource type='worker'>-960</resource>
 			<resource type='food'>5000</resource>
 			<resource type='police'>5000</resource>
-			<resource type='hospital'>10000</resource>
+			<resource type='hospital'>5000</resource>
+			<resource type='house'>5000</resource>
 		</operation>	
 		<upgrades>
 		</upgrades>		
