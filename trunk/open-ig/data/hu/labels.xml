@@ -471,7 +471,7 @@
 	<entry key='colonyinfo.tax-level' >Adózás       : %s</entry>
 	<entry key='colonyinfo.allocation'>Allokáció    : %s</entry>
 	<entry key='colonyinfo.autobuild' >Auto-építés  : %s</entry>
-	<entry key='colonyinfo.other'     >Egyéb gond   : %s</entry>
+	<entry key='colonyinfo.other'     >Egyéb        : %s</entry>
 	
 	<entry key='race.human'>Ember</entry>
 	<entry key='race.garthog'>Garthog</entry>
@@ -488,5 +488,7 @@
 	<entry key='allocation.ZERO'>Nincs</entry>
 	<entry key='allocation.DEFAULT'>Egyenletes</entry>
 	<entry key='allocation.DAMAGE_AWARE'>Fejlettebb egyenletes</entry>
+	
+	<entry key='buildings.upgrade.default.description'>Alapértelmezett szint vissza- állítása (ahogy az építés után volt).</entry>
 		
 </labels>

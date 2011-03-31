@@ -83,24 +83,59 @@ public class ResourceAllocator {
 			Future<?> f = pool.submit(new Runnable() {
 				@Override
 				public void run() {
-					switch (strategy) {
-					case ZERO:
-						doZeroStrategy(baw);
-						break;
-					case DEFAULT:
-						doUniformStrategy(baw, workers);
-						break;
-					case DAMAGE_AWARE:
-						doUniformStrategyWithDamage(baw, workers);
-						break;
-					default:
-					}
+					compute(baw, strategy, workers);
 					writeBack(baw);
 				}
 			});
 			result.add(f);
 		}
 		return result;
+	}
+	/**
+	 * Dispatch the computation based on the strategy, then write back the results.
+	 * @param baw the building allocation worker
+	 * @param strategy the strategy
+	 * @param workers the available workers (negative)
+	 */
+	void compute(final List<BuildingAllocationWorker> baw,
+			final ResourceAllocationStrategy strategy,
+			final int workers) {
+		switch (strategy) {
+		case ZERO:
+			doZeroStrategy(baw);
+			break;
+		case DEFAULT:
+			doUniformStrategy(baw, workers);
+			break;
+		case DAMAGE_AWARE:
+			doUniformStrategyWithDamage(baw, workers);
+			break;
+		default:
+		}
+	}
+	/** 
+	 * Performs the computation of the planet in the current thread.
+	 * @param planet the planet to compute 
+	 */
+	public void computeNow(Planet planet) {
+		if (planet.surface.buildings.size() == 0) {
+			return;
+		}
+		final List<BuildingAllocationWorker> baw = JavaUtils.newArrayList();
+		for (Building b : planet.surface.buildings) {
+			if (b.enabled) {
+				baw.add(b.getAllocationWorker());
+			} else {
+				b.assignedWorker = 0;
+				b.assignedEnergy = 0;
+			}
+		}
+		final ResourceAllocationStrategy strategy = planet.allocation;
+		final int workers = -planet.population;
+		compute(baw, strategy, workers);
+		for (BuildingAllocationWorker b : baw) {
+			b.write();
+		}
 	}
 	/**
 	 * Write back the computation results to the underlying building object.

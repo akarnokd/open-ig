@@ -414,6 +414,7 @@
 	<entry key='allocation.DEFAULT'>Uniform</entry>
 	<entry key='allocation.DAMAGE_AWARE'>Enhanced uniform</entry>
 	
+	<entry key='buildings.upgrade.default.description'>Restore to default level (e.g., the post build level).</entry>
 	
 	<entry key=''></entry>
 	<entry key=''></entry>

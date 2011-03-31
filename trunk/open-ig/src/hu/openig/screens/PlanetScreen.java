@@ -37,6 +37,7 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.XElement;
 
@@ -52,8 +53,8 @@ import java.awt.image.BufferedImage;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -193,6 +194,9 @@ public class PlanetScreen extends ScreenBase {
 	Building currentBuilding;
 	/** The information panel. */
 	InfoPanel infoPanel;
+	/** The upgrade panel. */
+	@DragSensitive
+	UpgradePanel upgradePanel;
 	@Override
 	public void onFinish() {
 		if (animationTimer != null) {
@@ -802,7 +806,11 @@ public class PlanetScreen extends ScreenBase {
 			int nameLeft = (width - nameWidth) / 2;
 			g2.fillRect(nameLeft - 5, 0, nameWidth + 10, nameHeight + 4);
 			
-			commons.text().paintTo(g2, nameLeft, 2, nameHeight, commons.world.player.currentPlanet.owner.color, pn);
+			int pc = TextRenderer.GRAY;
+			if (commons.world.player.currentPlanet.owner != null) {
+				pc = commons.world.player.currentPlanet.owner.color;
+			}
+			commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
 			
 			g2.setClip(save0);
 			RenderTools.setInterpolation(g2, false);
@@ -1255,6 +1263,7 @@ public class PlanetScreen extends ScreenBase {
 		buildingInfoPanel.stateInactive.enabled(currentBuilding != null);
 		buildingInfoPanel.stateOffline.enabled(currentBuilding != null);
 		
+		upgradePanel.visible(b != null && b.type.upgrades.size() > 0 && buildingInfoPanel.visible());
 	}
 	/**
 	 * Return the unit label for the given resource type.
@@ -1533,19 +1542,20 @@ public class PlanetScreen extends ScreenBase {
 	void doDemolish() {
 		surface().removeBuilding(currentBuilding);
 		surface().placeRoads(commons.world.player.currentPlanet.race, commons.world.buildingModel);
+		doAllocation();
 		buildingBox = null;
 		doSelectBuilding(null);
 	}
 	/** Action for the Active button. */
 	void doActive() {
+		doAllocation();
 		currentBuilding.enabled = false;
-		commons.world.allocator.compute(Collections.singleton(commons.world.player.currentPlanet));
 		doSelectBuilding(currentBuilding);
 	}
 	/** Action for the Offline button. */
 	void doOffline() {
+		doAllocation();
 		currentBuilding.enabled = true;
-		commons.world.allocator.compute(Collections.singleton(commons.world.player.currentPlanet));
 		doSelectBuilding(currentBuilding);
 	}
 	/** Toggle the repair state. */
@@ -1554,6 +1564,10 @@ public class PlanetScreen extends ScreenBase {
 		buildingInfoPanel.repairing.visible(currentBuilding.repairing);
 		buildingInfoPanel.damaged.visible(!currentBuilding.repairing);
 		doSelectBuilding(currentBuilding);
+	}
+	/** Perform the resource allocation now! */
+	void doAllocation() {
+		commons.world.allocator.computeNow(commons.world.player.currentPlanet);
 	}
 	/**
 	 * The information panel showing some details.
@@ -1600,9 +1614,9 @@ public class PlanetScreen extends ScreenBase {
 		List<UILabel> lines;
 		/** Construct the label elements. */
 		public InfoPanel() {
-			int textSize = 10;
+			int textSize = 7;
 			planet = new UILabel("-", 14, commons.text());
-			planet.location(5, 5);
+			planet.location(10, 5);
 			owner = new UILabel("-", textSize, commons.text());
 			race = new UILabel("-", textSize, commons.text());
 			surface = new UILabel("-", textSize, commons.text());
@@ -1646,15 +1660,17 @@ public class PlanetScreen extends ScreenBase {
 			int i = 0;
 			for (UILabel c : lines) {
 				if (c.visible()) {
-					c.x = 5;
+					c.x = 10;
 					c.y = 25 + (textSize + 3) * i;
 					c.size(textSize);
+					c.height = textSize;
 					w = Math.max(w, c.x + c.width);
 					h = Math.max(h, c.y + c.height);
 					i++;
 				}
 			}
-			width = w + 5;
+			w = Math.max(w, this.planet.x + this.planet.width);
+			width = w + 10;
 			height = h + 5;
 		}
 		/**
@@ -1668,50 +1684,69 @@ public class PlanetScreen extends ScreenBase {
 			String s = p.owner != null ? p.owner.name : "-";
 			owner.text(commons.labels().format("colonyinfo.owner", s), true);
 			if (p.owner != null) {
-				owner.color(p.owner.color);
 				planet.color(p.owner.color);
+				owner.color(TextRenderer.GREEN);
+			} else {
+				planet.color(TextRenderer.GRAY);
+				owner.color(TextRenderer.GREEN);
 			}
-			s = p.race != null ? commons.labels().get(p.getRaceLabel()) : "-";
+			s = p.isPopulated() ? commons.labels().get(p.getRaceLabel()) : "-";
 			race.text(commons.labels().format("colonyinfo.race", s), true);
 			
 			s = commons.labels().get(p.type.label);
 			surface.text(commons.labels().format("colonyinfo.surface", s), true);
 			
-			population.text(commons.labels().format("colonyinfo.population", 
-					p.population, commons.labels().get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
-			), true);
+			if (p.isPopulated()) {
 			
-			PlanetStatistics ps = p.getStatistics();
-			
-			setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population);
-			setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand);
-			setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population);
-			setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population);
-			setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand);
-			setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population);
-			
-			taxIncome.text(commons.labels().format("colonyinfo.tax", 
-					p.taxIncome
-			), true);
-			tradeIncome.text(commons.labels().format("colonyinfo.trade",
-					p.tradeIncome
-			), true);
-			
-			taxMorale.text(commons.labels().format("colonyinfo.tax-morale",
-					p.morale, withSign(p.morale - p.lastMorale)
-			), true);
-			taxLevel.text(commons.labels().format("colonyinfo.tax-level",
-					commons.labels().get(p.getTaxLabel())
-			), true);
-			
-			allocation.text(commons.labels().format("colonyinfo.allocation",
-					commons.labels().get(p.getAllocationLabel())
-			), true);
-			
-			autobuild.text(commons.labels().format("colonyinfo.autobuild",
-					commons.labels().get(p.getAutoBuildLabel())
-			), true);
-
+				population.text(commons.labels().format("colonyinfo.population", 
+						p.population, commons.labels().get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+				), true).visible(true);
+				
+				PlanetStatistics ps = p.getStatistics();
+				
+				setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
+				setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
+				setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population).visible(true);
+				setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population).visible(true);
+				setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
+				setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
+				
+				taxIncome.text(commons.labels().format("colonyinfo.tax", 
+						p.taxIncome
+				), true).visible(true);
+				tradeIncome.text(commons.labels().format("colonyinfo.trade",
+						p.tradeIncome
+				), true).visible(true);
+				
+				taxMorale.text(commons.labels().format("colonyinfo.tax-morale",
+						p.morale, withSign(p.morale - p.lastMorale)
+				), true).visible(true);
+				taxLevel.text(commons.labels().format("colonyinfo.tax-level",
+						commons.labels().get(p.getTaxLabel())
+				), true).visible(true);
+				
+				allocation.text(commons.labels().format("colonyinfo.allocation",
+						commons.labels().get(p.getAllocationLabel())
+				), true).visible(true);
+				
+				autobuild.text(commons.labels().format("colonyinfo.autobuild",
+						commons.labels().get(p.getAutoBuildLabel())
+				), true).visible(true);
+			} else {
+				population.visible(false);
+				housing.visible(false);
+				worker.visible(false);
+				hospital.visible(false);
+				food.visible(false);
+				energy.visible(false);
+				police.visible(false);
+				taxIncome.visible(false);
+				tradeIncome.visible(false);
+				taxMorale.visible(false);
+				taxLevel.visible(false);
+				allocation.visible(false);
+				autobuild.visible(false);
+			}
 			other.text(commons.labels().format("colonyinfo.other",
 					"" // FIXME list others
 			), true);
@@ -1725,8 +1760,9 @@ public class PlanetScreen extends ScreenBase {
 		 * @param format the format string to use
 		 * @param demand the demand amount
 		 * @param avail the available amount
+		 * @return the label
 		 */
-		void setLabel(UILabel label, String format, int avail, int demand) {
+		UILabel setLabel(UILabel label, String format, int avail, int demand) {
 			label.text(commons.labels().format(format, avail, demand), true);
 			if (demand <= avail) {
 				label.color(TextRenderer.GREEN);
@@ -1736,6 +1772,7 @@ public class PlanetScreen extends ScreenBase {
 			} else {
 				label.color(TextRenderer.RED);
 			}
+			return label;
 		}
 		/**
 		 * Add the +/- sign for the given integer value.
@@ -1750,6 +1787,100 @@ public class PlanetScreen extends ScreenBase {
 				return "+" + i;
 			}
 			return "0";
+		}
+	}
+	/**
+	 * The upgrade panel.
+	 * @author akarnokd, 2011.03.31.
+	 */
+	class UpgradePanel extends UIContainer {
+		/** The upgrade static label. */
+		UIImage upgradeLabel;
+		/** The upgrade description. */
+		UILabel upgradeDescription;
+		/** The upgrade steps. */
+		final List<UIImageButton> steps = new ArrayList<UIImageButton>();
+		/** No upgrades. */
+		private UIImageButton none;
+		/** Construct the panel. */
+		public UpgradePanel() {
+			size(commons.colony().upgradePanel.getWidth(), commons.colony().upgradePanel.getHeight());
+			upgradeLabel = new UIImage(commons.colony().upgradeLabel);
+			upgradeLabel.location(8, 3);
+			upgradeDescription = new UILabel("-", 7, 182, commons.text());
+			upgradeDescription.location(8, 21);
+			upgradeDescription.height = 26;
+			upgradeDescription.vertically(VerticalAlignment.TOP);
+			upgradeDescription.color(TextRenderer.YELLOW);
+			
+			none = new UIImageButton(commons.colony().upgradeNone);
+			none.onClick = new Act() {
+				@Override
+				public void act() {
+					doUpgrade(0);
+				}
+			};
+			none.location(upgradeLabel.x + upgradeLabel.width + 16, upgradeLabel.y - 2);
+			for (int i = 1; i < 5; i++) {
+				UIImageButton up = new UIImageButton(commons.colony().upgradeDark);
+				up.location(upgradeLabel.x + upgradeLabel.width + i * 16 + 16, upgradeLabel.y - 2);
+				steps.add(up);
+				final int j = i;
+				up.onClick = new Act() {
+					@Override
+					public void act() {
+						doUpgrade(j);
+					}
+				};
+				add(up);
+			}
+			
+			addThis();
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.drawImage(commons.colony().upgradePanel, 0, 0, null);
+			int over = none.over ? 0 : -1;
+			for (int i = 0; i < steps.size(); i++) {
+				UIImageButton up = steps.get(i);
+				up.visible(i + 1 <= currentBuilding.type.upgrades.size());
+				if (currentBuilding.upgradeLevel <= i) {
+					up.normal(commons.colony().upgradeDark);
+					up.hovered(commons.colony().upgradeDark);
+					up.pressed(commons.colony().upgradeDark);
+				} else {
+					up.normal(commons.colony().upgrade);
+					up.hovered(commons.colony().upgrade);
+					up.pressed(commons.colony().upgrade);
+				}
+				if (up.over && up.visible()) {
+					over = i + 1;
+				}
+			}
+			if (over >= 1) {
+				upgradeDescription.text(
+						// FIXME create the labels for the various upgrades
+//						commons.labels().get(
+								currentBuilding.type.upgrades.get(over - 1).description
+//						)
+				);
+			} else
+			if (over == 0) {
+				upgradeDescription.text(commons.labels().get("buildings.upgrade.default.description"));
+			} else {
+				upgradeDescription.text("");
+			}
+			super.draw(g2);
+		}
+	}
+	/** 
+	 * Upgrade the current building. 
+	 * @param j level
+	 */
+	void doUpgrade(int j) {
+		if (currentBuilding != null) {
+			currentBuilding.setLevel(j);
+			doAllocation();
 		}
 	}
 	@Override
@@ -1823,6 +1954,7 @@ public class PlanetScreen extends ScreenBase {
 			@Override
 			public void act() {
 				buildingInfoPanel.visible(!buildingInfoPanel.visible());
+				upgradePanel.visible(currentBuilding != null && currentBuilding.type.upgrades.size() > 0 && buildingInfoPanel.visible());
 			}
 		};
 		sidebarBuildings.onClick = new Act() {
@@ -1912,6 +2044,7 @@ public class PlanetScreen extends ScreenBase {
 				infoPanel.visible(!infoPanel.visible());
 			}
 		};
+		upgradePanel = new UpgradePanel();
 		
 		addThis();
 	}
@@ -1946,6 +2079,7 @@ public class PlanetScreen extends ScreenBase {
 		buildingsPanel.location(sidebarBuildings.x + sidebarBuildings.width - 1, sidebarBuildings.y);
 		buildingInfoPanel.location(sidebarBuildingInfo.x - buildingInfoPanel.width, sidebarBuildingInfo.y);
 		
+		upgradePanel.location(buildingInfoPanel.x, buildingInfoPanel.y + buildingInfoPanel.height);
 	}
 	/**
 	 * @return the current planet surface or selects one from the player's list.

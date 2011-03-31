@@ -179,8 +179,10 @@ public class Planet {
 				}
 			}
 		}
-
-		
 		return result;
+	}
+	/** @return true if the planet is populated */
+	public boolean isPopulated() {
+		return race != null && !race.isEmpty();
 	}
 }

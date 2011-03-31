@@ -195,4 +195,31 @@ public class UIImageButton extends UIComponent {
 		}
 		return super.enabled(state);
 	}
+	/**
+	 * Set the normal image of this button.
+	 * @param image the image
+	 * @return this
+	 */
+	public UIImageButton normal(BufferedImage image) {
+		this.normal = image;
+		return this;
+	}
+	/**
+	 * Set the pressed image of this button.
+	 * @param image the image
+	 * @return this
+	 */
+	public UIImageButton pressed(BufferedImage image) {
+		this.pressed = image;
+		return this;
+	}
+	/**
+	 * Set the hovered image of this button.
+	 * @param image the image
+	 * @return this
+	 */
+	public UIImageButton hovered(BufferedImage image) {
+		this.hovered = image;
+		return this;
+	}
 }
