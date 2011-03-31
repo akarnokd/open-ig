@@ -559,7 +559,8 @@ public class StarmapScreen extends ScreenBase {
 				g2.setColor(Color.RED);
 				g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
 			}
-			if (p.problems.size() > 0) {
+			if (p.problems.size() > 0 && !minimapPlanetBlink) {
+				p.getStatistics();
 				int w = p.problems.size() * 11 - 1;
 				for (int i = 0; i < p.problems.size(); i++) {
 					BufferedImage icon = null;
