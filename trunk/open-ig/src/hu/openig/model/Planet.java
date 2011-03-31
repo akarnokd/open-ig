@@ -179,6 +179,24 @@ public class Planet {
 				}
 			}
 		}
+		
+		problems.clear();
+		if (Math.abs(result.workerDemand) > population) {
+			problems.add(PlanetProblems.WORKFORCE);
+		}
+		if (Math.abs(result.energyDemand) > Math.abs(result.energyAvailable)) {
+			problems.add(PlanetProblems.ENERGY);
+		}
+		if (Math.abs(population) > Math.abs(result.foodAvailable)) {
+			problems.add(PlanetProblems.FOOD);
+		}
+		if (Math.abs(population) > Math.abs(result.hospitalAvailable)) {
+			problems.add(PlanetProblems.HOSPITAL);
+		}
+		if (Math.abs(population) > Math.abs(result.houseAvailable)) {
+			problems.add(PlanetProblems.HOUSING);
+		}
+		
 		return result;
 	}
 	/** @return true if the planet is populated */

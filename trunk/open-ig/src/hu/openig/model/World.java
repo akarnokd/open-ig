@@ -35,6 +35,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author akarnokd, 2009.10.25.
  */
 public class World {
+	/** The name of the world. */
+	public String name;
 	/** The current world level. */
 	public int level;
 	/** The current player. */
@@ -80,6 +82,7 @@ public class World {
 	 * @param game the game directory
 	 */
 	public void load(final ResourceLocator resLocator, final String lang, final String game) {
+		this.name = game;
 		this.rl = resLocator;
 		this.language = lang;
 		final ExecutorService exec = 
