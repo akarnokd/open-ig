@@ -9,44 +9,44 @@ package hu.openig.model;
 
 /** The available subCategories. */
 public enum ResearchSubCategory {
-	/** Spaceships / Fighters. */
+	/** Spaceships / Fighters (1). */
 	SPACESHIPS_FIGHTERS(ResearchMainCategory.SPACESHIPS),
-	/** Spaceships / Cruisers. */
+	/** Spaceships / Cruisers (2). */
 	SPACESHIPS_CRUISERS(ResearchMainCategory.SPACESHIPS),
-	/** Spaceships / Battleships. */
+	/** Spaceships / Battleships (3). */
 	SPACESHIPS_BATTLESHIPS(ResearchMainCategory.SPACESHIPS),
-	/** Spaceships / Satellites. */
+	/** Spaceships / Satellites (4). */
 	SPACESHIPS_SATELLITES(ResearchMainCategory.SPACESHIPS),
-	/** Spaceships / Stations. */
+	/** Spaceships / Stations (5). */
 	SPACESHIPS_STATIONS(ResearchMainCategory.SPACESHIPS),
 	
-	/** Equipment / Hyperdrives. */
+	/** Equipment / Hyperdrives (1). */
 	EQUIPMENT_HYPERDRIVES(ResearchMainCategory.EQUIPMENT),
-	/** Equipment / Modules. */
+	/** Equipment / Modules (2). */
 	EQUIPMENT_MODULES(ResearchMainCategory.EQUIPMENT),
-	/** Equipment / Radars. */
+	/** Equipment / Radars (3). */
 	EQUIPMENT_RADARS(ResearchMainCategory.EQUIPMENT),
-	/** Equipment / Shields. */
+	/** Equipment / Shields (4). */
 	EQUIPMENT_SHIELDS(ResearchMainCategory.EQUIPMENT),
 	
-	/** Weapons / Lasers. */
+	/** Weapons / Lasers (1). */
 	WEAPONS_LASERS(ResearchMainCategory.WEAPONS),
-	/** Weapons / Cannons, e.g., meson cannon. */
+	/** Weapons / Cannons, e.g., meson cannon (2). */
 	WEAPONS_CANNONS(ResearchMainCategory.WEAPONS),
-	/** Weapons / Projectiles, e.g., rockets. */
+	/** Weapons / Projectiles, e.g., rockets (3). */
 	WEAPONS_PROJECTILES(ResearchMainCategory.WEAPONS),
-	/** Weapons / Tanks. */
+	/** Weapons / Tanks (4). */
 	WEAPONS_TANKS(ResearchMainCategory.WEAPONS),
-	/** Weapons / Vehicles, e.g., radar car. */
+	/** Weapons / Vehicles, e.g., radar car (5). */
 	WEAPONS_VEHICLES(ResearchMainCategory.WEAPONS),
 	
-	/** Buildings / Civil. */
+	/** Buildings / Civil (1). */
 	BUILDINGS_CIVIL(ResearchMainCategory.BUILDINS),
-	/** Buildings / Military. */
+	/** Buildings / Military (2). */
 	BUILDINGS_MILITARY(ResearchMainCategory.BUILDINS),
-	/** Buildings / Radars. */
+	/** Buildings / Radars (3). */
 	BUILDINGS_RADARS(ResearchMainCategory.BUILDINS),
-	/** Buildings / Guns, e.g., planetary defense cannons. */
+	/** Buildings / Guns, e.g., planetary defense cannons (4). */
 	BUILDINGS_GUNS(ResearchMainCategory.BUILDINS),
 	;
 	/** The main category reference. */
