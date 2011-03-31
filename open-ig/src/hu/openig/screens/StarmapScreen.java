@@ -12,6 +12,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.RotationDirection;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
@@ -513,13 +514,13 @@ public class StarmapScreen extends ScreenBase {
 		// render radar circles
 		if (showRadar) {
 			for (Planet p : planets) {
-				if (p.radar > 0) {
+				if (p.radar > 0 && p.owner == commons.world.player) {
 					paintRadar(g2, p.x, p.y, p.radar, zoom);
 				}
 			}
 			if (showFleets) {
 				for (Fleet f : fleets) {
-					if (f.radar > 0) {
+					if (f.radar > 0 && f.owner == commons.world.player) {
 						paintRadar(g2, f.x, f.y, f.radar, zoom);
 					}
 				}
@@ -527,6 +528,10 @@ public class StarmapScreen extends ScreenBase {
 		}
 
 		for (Planet p : planets) {
+			PlanetKnowledge pk = commons.world.player.planets.get(p);
+			if (pk == null) {
+				continue;
+			}
 			BufferedImage phase = p.type.body[p.rotationPhase];
 			double d = p.diameter * zoom / 4;
 			int di = (int)d;
@@ -538,10 +543,12 @@ public class StarmapScreen extends ScreenBase {
 			int xt = (int)(starmapRect.x + p.x * zoom - tw / 2);
 			int yt = (int)(starmapRect.y + p.y * zoom + d / 2) + 4;
 			int labelColor = TextRenderer.GRAY;
-			if (p.owner != null) {
+			if (p.owner != null && pk.ordinal() >= PlanetKnowledge.OWNED.ordinal()) {
 				labelColor = p.owner.color;
 			}
-			commons.text().paintTo(g2, xt, yt, 5, labelColor, p.name);
+			if (pk.ordinal() >= PlanetKnowledge.NAMED.ordinal()) {
+				commons.text().paintTo(g2, xt, yt, 5, labelColor, p.name);
+			}
 			if (p == commons.world.player.currentPlanet) {
 				g2.setColor(Color.WHITE);
 				g2.drawLine(x0 - 1, y0 - 1, x0 + 2, y0 - 1);
@@ -559,30 +566,32 @@ public class StarmapScreen extends ScreenBase {
 				g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
 			}
 			if (!minimapPlanetBlink) {
-				p.getStatistics();
-				if (p.problems.size() > 0) {
-					int w = p.problems.size() * 11 - 1;
-					for (int i = 0; i < p.problems.size(); i++) {
-						BufferedImage icon = null;
-						switch (p.problems.get(i)) {
-						case HOUSING:
-							icon = commons.common().houseIcon;
-							break;
-						case FOOD:
-							icon = commons.common().foodIcon;
-							break;
-						case HOSPITAL:
-							icon = commons.common().hospitalIcon;
-							break;
-						case ENERGY:
-							icon = commons.common().energyIcon;
-							break;
-						case WORKFORCE:
-							icon = commons.common().workerIcon;
-							break;
-						default:
+				if (pk == PlanetKnowledge.FULL) {
+					p.getStatistics();
+					if (p.problems.size() > 0) {
+						int w = p.problems.size() * 11 - 1;
+						for (int i = 0; i < p.problems.size(); i++) {
+							BufferedImage icon = null;
+							switch (p.problems.get(i)) {
+							case HOUSING:
+								icon = commons.common().houseIcon;
+								break;
+							case FOOD:
+								icon = commons.common().foodIcon;
+								break;
+							case HOSPITAL:
+								icon = commons.common().hospitalIcon;
+								break;
+							case ENERGY:
+								icon = commons.common().energyIcon;
+								break;
+							case WORKFORCE:
+								icon = commons.common().workerIcon;
+								break;
+							default:
+							}
+							g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
 						}
-						g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
 					}
 				}
 			}
@@ -661,11 +670,15 @@ public class StarmapScreen extends ScreenBase {
 			g2.clipRect(minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height);
 			// render planets
 			for (Planet p : planets) {
+				PlanetKnowledge pk = commons.world.player.planets.get(p);
+				if (pk == null || pk.ordinal() < PlanetKnowledge.DISCOVERED.ordinal()) {
+					continue;
+				}
 				if (p != commons.world.player.currentPlanet || minimapPlanetBlink) {
 					int x0 = minimapInnerRect.x + (p.x * minimapInnerRect.width / commons.starmap().background.getWidth());
 					int y0 = minimapInnerRect.y + (p.y * minimapInnerRect.height / commons.starmap().background.getHeight());
 					int labelColor = TextRenderer.GRAY;
-					if (p.owner != null) {
+					if (p.owner != null && pk.ordinal() >= PlanetKnowledge.OWNED.ordinal()) {
 						labelColor = p.owner.color;
 					}
 					g2.setColor(new Color(labelColor));
