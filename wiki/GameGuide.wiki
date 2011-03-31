@@ -37,3 +37,22 @@
 || Left Click || Minimap<br>Radar || Move viewport to the location ||
 || Drag with right mouse button || Starmap<br>Colony || Pan the viewport ||
 || Middle Click || Colony || Reset view to 100% zoom and center the view ||
+
+= Gameplay mechanics =
+
+== Building Upgrade System ==
+
+The *new Building Upgrade System* has been introduced to solve two problems coming from the original game:
+
+  * Allow the player to meet demands (energy, food, etc.) even when the current planet has no more building space.
+  * Fix the issue with the random power-outputs of power plants: Open-IG uses a constant for power and upgrades multiply the output to meet the initial demands of the alien planets.
+
+A new panel has been added to the colony screen under the existing building information panel:
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-upgrade-panel.png
+
+The user can click on the stars to upgrade a building to a certain level. It is still undecided whether to allow removing upgrades from a building (probably not). The only requirement is money: each upgrade level costs the building's own value (or more?).
+
+Not all buildings offer four levels of upgrade.
+
+When an upgraded building is demolished, the upgrade level is considered: the player will receive the half of the invested money.
