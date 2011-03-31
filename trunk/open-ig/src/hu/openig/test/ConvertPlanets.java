@@ -15,6 +15,10 @@ import hu.openig.utils.XElement;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Convert the planet definitions from the pre 0.8 version.
@@ -87,8 +91,9 @@ public final class ConvertPlanets {
 			}
 			
 			XElement buildings = planet.add("buildings");
+			List<XElement> bs = new ArrayList<XElement>();
 			for (XElement ob : oplanet.childElement("buildings").childrenWithName("building")) {
-				XElement b = buildings.add("building");
+				XElement b = new XElement("building");
 				b.set("id", OriginalBuilding.TRANSLATE.get(ob.childValue("id")));
 				b.set("tech", planet.get("race"));
 				b.set("x", Integer.parseInt(ob.childValue("x")) - 1);
@@ -101,7 +106,15 @@ public final class ConvertPlanets {
 				b.set("level", "0");
 				b.set("build", ""); // build progress: set to type.hitpoints on load
 				b.set("hp", ""); // hitpoints: set to type.hitpoints on load
+				bs.add(b);
 			}
+			Collections.sort(bs, new Comparator<XElement>() {
+				@Override
+				public int compare(XElement o1, XElement o2) {
+					return o1.get("id").compareToIgnoreCase(o2.get("id"));
+				}
+			});
+			buildings.add(bs);
 		}
 		
 		PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream("data/generic/campaign/main/planets.xml"), "UTF-8"));

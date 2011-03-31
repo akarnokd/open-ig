@@ -681,8 +681,6 @@ public class MapEditor extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				saveConfig();
-				dispose();
 				doExit();
 			}
 		});
@@ -920,12 +918,17 @@ public class MapEditor extends JFrame {
 	 * Exit the application.
 	 */
 	private void doExit() {
-		renderer.stopAnimations();
-		if (config.watcherWindow != null) {
-			try {
-				config.watcherWindow.close();
-			} catch (IOException ex) {
-				
+		try {
+			saveConfig();
+		} finally {
+			dispose();
+			renderer.stopAnimations();
+			if (config.watcherWindow != null) {
+				try {
+					config.watcherWindow.close();
+				} catch (IOException ex) {
+					
+				}
 			}
 		}
 	}
@@ -952,7 +955,7 @@ public class MapEditor extends JFrame {
 		ui.fileSave.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
 		
 		ui.fileImport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doImport(); } });
-		ui.fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { dispose(); doExit();  } });
+		ui.fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doExit();  } });
 		
 		ui.fileOpen.addActionListener(new Act() {
 			@Override
@@ -2302,6 +2305,7 @@ public class MapEditor extends JFrame {
 			}
 			renderer.buildingBox = null;
 			currentBuilding = null;
+			ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
 			renderer.repaint();
 		} catch (XMLStreamException ex) {
 			ex.printStackTrace();

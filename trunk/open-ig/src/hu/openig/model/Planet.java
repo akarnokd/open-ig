@@ -105,7 +105,7 @@ public class Planet {
 	 */
 	public PlanetStatistics getStatistics() {
 		PlanetStatistics result = new PlanetStatistics();
-		
+		radar = 0;
 		for (Building b : surface.buildings) {
 			if (b.isReady()) {
 				if (b.getEfficiency() >= 0.5) {
@@ -144,6 +144,9 @@ public class Planet {
 					}
 					if (b.hasResource("military")) {
 						result.milLabActive += b.getResource("military");
+					}
+					if (b.hasResource("radar")) {
+						radar = Math.max(radar, (int)b.getResource("radar"));
 					}
 				}
 				if (b.hasResource("spaceship")) {
@@ -196,6 +199,8 @@ public class Planet {
 		if (Math.abs(population) > Math.abs(result.houseAvailable)) {
 			problems.add(PlanetProblems.HOUSING);
 		}
+		
+		radar *= 35;
 		
 		return result;
 	}

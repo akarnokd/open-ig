@@ -270,6 +270,8 @@ public class SingleplayerScreen extends ScreenBase {
 			GameDefinition gd = parseDefinition(commons, "skirmish/" + name);
 			skirmishes.add(gd);
 		}
+		
+		selectedDefinition = campaigns.size() > 0 ? campaigns.get(0) : (skirmishes.size() > 0 ? skirmishes.get(0) : null);
 		difficulty = Difficulty.values().length / 2;
 		adjustDifficultyButtons();
 		onResize();

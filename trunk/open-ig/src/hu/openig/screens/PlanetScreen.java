@@ -197,6 +197,12 @@ public class PlanetScreen extends ScreenBase {
 	/** The upgrade panel. */
 	@DragSensitive
 	UpgradePanel upgradePanel;
+	/** Go to next planet. */
+	@DragSensitive
+	UIImageButton prev;
+	/** Go to previous planet. */
+	@DragSensitive
+	UIImageButton next;
 	@Override
 	public void onFinish() {
 		if (animationTimer != null) {
@@ -811,7 +817,7 @@ public class PlanetScreen extends ScreenBase {
 				pc = commons.world.player.currentPlanet.owner.color;
 			}
 			commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
-			
+
 			g2.setClip(save0);
 			RenderTools.setInterpolation(g2, false);
 		}
@@ -1646,7 +1652,7 @@ public class PlanetScreen extends ScreenBase {
 		@Override
 		public void draw(Graphics2D g2) {
 			Composite c = g2.getComposite();
-			g2.setComposite(AlphaComposite.SrcOver.derive(0.75f));
+			g2.setComposite(AlphaComposite.SrcOver.derive(0.85f));
 			g2.fillRoundRect(0, 0, width, height, 10, 10);
 			g2.setComposite(c);
 			
@@ -1807,8 +1813,8 @@ public class PlanetScreen extends ScreenBase {
 			size(commons.colony().upgradePanel.getWidth(), commons.colony().upgradePanel.getHeight());
 			upgradeLabel = new UIImage(commons.colony().upgradeLabel);
 			upgradeLabel.location(8, 3);
-			upgradeDescription = new UILabel("-", 7, 182, commons.text());
-			upgradeDescription.location(8, 21);
+			upgradeDescription = new UILabel("-", 7, 178, commons.text());
+			upgradeDescription.location(10, 21);
 			upgradeDescription.height = 26;
 			upgradeDescription.vertically(VerticalAlignment.TOP);
 			upgradeDescription.color(TextRenderer.YELLOW);
@@ -2046,6 +2052,23 @@ public class PlanetScreen extends ScreenBase {
 		};
 		upgradePanel = new UpgradePanel();
 		
+		prev = new UIImageButton(commons.starmap().backwards);
+		prev.setHoldDelay(250);
+		prev.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.world.player.movePrevPlanet();
+			}
+		};
+		next = new UIImageButton(commons.starmap().forwards);
+		next.setHoldDelay(250);
+		next.onClick = new Act() {
+			@Override
+			public void act() {
+				commons.world.player.moveNextPlanet();
+			}
+		};
+		
 		addThis();
 	}
 	@Override
@@ -2080,6 +2103,10 @@ public class PlanetScreen extends ScreenBase {
 		buildingInfoPanel.location(sidebarBuildingInfo.x - buildingInfoPanel.width, sidebarBuildingInfo.y);
 		
 		upgradePanel.location(buildingInfoPanel.x, buildingInfoPanel.y + buildingInfoPanel.height);
+		
+		prev.location(sidebarRadar.x + sidebarRadar.width + 2, sidebarRadar.y - prev.height - 2);
+		next.location(prev.x + prev.width + 2, prev.y);
+		
 	}
 	/**
 	 * @return the current planet surface or selects one from the player's list.

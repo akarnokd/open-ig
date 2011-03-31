@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <map version='1.0'>
-  <surface height='46' width='28'>
+  <surface height='46' width='29'>
     <tile id='45' type='earth' y='-1' x='-1'/>
     <tile id='52' type='earth' y='-2' x='-2'/>
     <tile id='38' type='earth' y='-3' x='-3'/>
@@ -2362,6 +2362,96 @@
     <tile id='38' type='earth' y='-70' x='-16'/>
     <tile id='38' type='earth' y='-71' x='-17'/>
     <tile id='65' type='earth' y='-72' x='-18'/>
+    <tile id='31' type='earth' y='-28' x='27'/>
+    <tile id='38' type='earth' y='-29' x='26'/>
+    <tile id='38' type='earth' y='-30' x='25'/>
+    <tile id='55' type='earth' y='-31' x='24'/>
+    <tile id='49' type='earth' y='-32' x='23'/>
+    <tile id='53' type='earth' y='-33' x='22'/>
+    <tile id='38' type='earth' y='-34' x='21'/>
+    <tile id='65' type='earth' y='-35' x='20'/>
+    <tile id='38' type='earth' y='-36' x='19'/>
+    <tile id='38' type='earth' y='-37' x='18'/>
+    <tile id='38' type='earth' y='-38' x='17'/>
+    <tile id='38' type='earth' y='-39' x='16'/>
+    <tile id='38' type='earth' y='-40' x='15'/>
+    <tile id='38' type='earth' y='-41' x='14'/>
+    <tile id='38' type='earth' y='-42' x='13'/>
+    <tile id='38' type='earth' y='-43' x='12'/>
+    <tile id='38' type='earth' y='-44' x='11'/>
+    <tile id='38' type='earth' y='-45' x='10'/>
+    <tile id='38' type='earth' y='-46' x='9'/>
+    <tile id='38' type='earth' y='-47' x='8'/>
+    <tile id='38' type='earth' y='-48' x='7'/>
+    <tile id='38' type='earth' y='-49' x='6'/>
+    <tile id='38' type='earth' y='-50' x='5'/>
+    <tile id='38' type='earth' y='-51' x='4'/>
+    <tile id='38' type='earth' y='-52' x='3'/>
+    <tile id='38' type='earth' y='-53' x='2'/>
+    <tile id='38' type='earth' y='-54' x='1'/>
+    <tile id='38' type='earth' y='-55' x='0'/>
+    <tile id='38' type='earth' y='-56' x='-1'/>
+    <tile id='38' type='earth' y='-57' x='-2'/>
+    <tile id='38' type='earth' y='-58' x='-3'/>
+    <tile id='38' type='earth' y='-59' x='-4'/>
+    <tile id='38' type='earth' y='-60' x='-5'/>
+    <tile id='38' type='earth' y='-61' x='-6'/>
+    <tile id='38' type='earth' y='-62' x='-7'/>
+    <tile id='38' type='earth' y='-63' x='-8'/>
+    <tile id='37' type='earth' y='-64' x='-9'/>
+    <tile id='38' type='earth' y='-65' x='-10'/>
+    <tile id='38' type='earth' y='-66' x='-11'/>
+    <tile id='38' type='earth' y='-67' x='-12'/>
+    <tile id='38' type='earth' y='-68' x='-13'/>
+    <tile id='38' type='earth' y='-69' x='-14'/>
+    <tile id='38' type='earth' y='-70' x='-15'/>
+    <tile id='38' type='earth' y='-71' x='-16'/>
+    <tile id='43' type='earth' y='-72' x='-17'/>
+    <tile id='44' type='earth' y='-29' x='27'/>
+    <tile id='23' type='earth' y='-30' x='26'/>
+    <tile id='61' type='earth' y='-31' x='25'/>
+    <tile id='28' type='earth' y='-32' x='24'/>
+    <tile id='66' type='earth' y='-33' x='23'/>
+    <tile id='49' type='earth' y='-34' x='22'/>
+    <tile id='47' type='earth' y='-35' x='21'/>
+    <tile id='21' type='earth' y='-36' x='20'/>
+    <tile id='58' type='earth' y='-37' x='19'/>
+    <tile id='29' type='earth' y='-38' x='18'/>
+    <tile id='65' type='earth' y='-39' x='17'/>
+    <tile id='35' type='earth' y='-40' x='16'/>
+    <tile id='59' type='earth' y='-41' x='15'/>
+    <tile id='54' type='earth' y='-42' x='14'/>
+    <tile id='37' type='earth' y='-43' x='13'/>
+    <tile id='38' type='earth' y='-44' x='12'/>
+    <tile id='38' type='earth' y='-45' x='11'/>
+    <tile id='38' type='earth' y='-46' x='10'/>
+    <tile id='64' type='earth' y='-47' x='9'/>
+    <tile id='38' type='earth' y='-48' x='8'/>
+    <tile id='38' type='earth' y='-49' x='7'/>
+    <tile id='38' type='earth' y='-50' x='6'/>
+    <tile id='38' type='earth' y='-51' x='5'/>
+    <tile id='38' type='earth' y='-52' x='4'/>
+    <tile id='38' type='earth' y='-53' x='3'/>
+    <tile id='38' type='earth' y='-54' x='2'/>
+    <tile id='53' type='earth' y='-55' x='1'/>
+    <tile id='38' type='earth' y='-56' x='0'/>
+    <tile id='38' type='earth' y='-57' x='-1'/>
+    <tile id='38' type='earth' y='-58' x='-2'/>
+    <tile id='38' type='earth' y='-59' x='-3'/>
+    <tile id='63' type='earth' y='-60' x='-4'/>
+    <tile id='38' type='earth' y='-61' x='-5'/>
+    <tile id='38' type='earth' y='-62' x='-6'/>
+    <tile id='38' type='earth' y='-63' x='-7'/>
+    <tile id='38' type='earth' y='-64' x='-8'/>
+    <tile id='50' type='earth' y='-65' x='-9'/>
+    <tile id='64' type='earth' y='-66' x='-10'/>
+    <tile id='38' type='earth' y='-67' x='-11'/>
+    <tile id='38' type='earth' y='-68' x='-12'/>
+    <tile id='38' type='earth' y='-69' x='-13'/>
+    <tile id='38' type='earth' y='-70' x='-14'/>
+    <tile id='38' type='earth' y='-71' x='-15'/>
+    <tile id='37' type='earth' y='-72' x='-16'/>
+    <tile id='39' type='earth' y='-73' x='-17'/>
     <tile id='38' type='earth' y='0' x='0'/>
     <tile id='38' type='earth' y='-1' x='1'/>
     <tile id='38' type='earth' y='-2' x='2'/>
@@ -2390,6 +2480,7 @@
     <tile id='38' type='earth' y='-25' x='25'/>
     <tile id='38' type='earth' y='-26' x='26'/>
     <tile id='38' type='earth' y='-27' x='27'/>
+    <tile id='38' type='earth' y='-28' x='28'/>
   </surface>
   <buildings/>
 </map>
