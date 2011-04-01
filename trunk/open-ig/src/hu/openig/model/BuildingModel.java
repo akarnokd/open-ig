@@ -146,7 +146,7 @@ public class BuildingModel {
 				b.scaffoldings = scaffoldings;
 				b.id = building.get("id");
 				b.name = labels.get(building.get("name"));
-				b.description = labels.get(building.get("label") + ".desc");
+				b.description = labels.get(building.get("name") + ".desc");
 				b.minimapTiles = bmt;
 				
 				XElement gfx = building.childElement("graphics");

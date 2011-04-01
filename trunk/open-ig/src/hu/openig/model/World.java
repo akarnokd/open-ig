@@ -480,6 +480,7 @@ public class World {
 		tech.equipmentImage = rl.getImage(image + "_tiny", true);
 		tech.equipmentCustomizeImage = rl.getImage(image + "_small", true);
 		tech.spaceBattleImage = rl.getImage(image + "_huge", true);
+		tech.index = item.getInt("index");
 		
 		BufferedImage rot = rl.getImage(image + "_rotate", true);
 		if (rot != null) {
@@ -503,5 +504,33 @@ public class World {
 			researches.put(id, tech);
 		}
 		return tech;
+	}
+	/**
+	 * List the available building types for the given player.
+	 * @param player the player
+	 * @param planet the target planet
+	 * @return the list of available building types
+	 */
+	public List<BuildingType> listBuildings(Player player, Planet planet) {
+		List<BuildingType> result = new ArrayList<BuildingType>();
+		
+		for (BuildingType bt : buildingModel.buildings.values()) {
+			if (bt.tileset.containsKey(planet.race != null ? planet.race : player.race)) {
+				if (bt.research == null || (planet.owner != player)
+						|| (player.availableResearch.contains(bt.research) || bt.research.level == 0)) {
+					result.add(bt);
+				}
+			}
+		}
+		
+		return result;
+	}
+	/**
+	 * List the available building types for the current player for the current planet.
+	 * @return the list of available building types
+	 */
+	public List<BuildingType> listBuildings() {
+		return listBuildings(player, 
+				player.currentPlanet);
 	}
 }

@@ -462,4 +462,8 @@ public class CommonResources {
 			world.allocator.stop();
 		}
 	}
+	/** @return the race of the buildings on the current planet or the player's race. */
+	public String race() {
+		return planet().race != null ? planet().race : player().race;
+	}
 }

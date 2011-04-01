@@ -128,17 +128,21 @@ public class ScreenTester extends JFrame implements GameControls {
 		@Override
 		public void paint(Graphics g) {
 			repaintOnce = false;
-			g.setColor(parentColor);
-			g.fillRect(0, 0, surface.getWidth(), surface.getHeight());
-			if (screen != null) {
-				screen.draw((Graphics2D)g);
-			} else {
-				g.setColor(Color.BLACK);
-				
-				int w = g.getFontMetrics().stringWidth(parentText);
-				int h = g.getFontMetrics().getHeight();
-				
-				g.drawString(parentText, (getWidth() - w) / 2, (getHeight() - h) / 2 + g.getFontMetrics().getAscent());
+			try {
+				g.setColor(parentColor);
+				g.fillRect(0, 0, surface.getWidth(), surface.getHeight());
+				if (screen != null) {
+					screen.draw((Graphics2D)g);
+				} else {
+					g.setColor(Color.BLACK);
+					
+					int w = g.getFontMetrics().stringWidth(parentText);
+					int h = g.getFontMetrics().getHeight();
+					
+					g.drawString(parentText, (getWidth() - w) / 2, (getHeight() - h) / 2 + g.getFontMetrics().getAscent());
+				}
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 		};
 	};

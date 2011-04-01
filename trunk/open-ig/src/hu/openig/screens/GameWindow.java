@@ -62,14 +62,18 @@ public class GameWindow extends JFrame implements GameControls {
 			addComponentListener(new ComponentAdapter() {
 				@Override
 				public void componentResized(ComponentEvent e) {
-					if (primary != null) {
-						primary.resize();
-					}
-					if (secondary != null) {
-						secondary.resize();
-					}
-					if (movie != null) {
-						movie.resize();
+					try {
+						if (primary != null) {
+							primary.resize();
+						}
+						if (secondary != null) {
+							secondary.resize();
+						}
+						if (movie != null) {
+							movie.resize();
+						}
+					} catch (Throwable t) {
+						t.printStackTrace();
 					}
 					repaintRequest = true;
 				}
@@ -83,24 +87,28 @@ public class GameWindow extends JFrame implements GameControls {
 			repaintRequestPartial = false;
 			
 			Graphics2D g2 = (Graphics2D)g;
-			if (movieVisible) {
-				movie.draw(g2);
-			} else {
-				if (r1 && !r0) {
-					if (secondary != null) {
-						secondary.draw(g2);
-					}
+			try {
+				if (movieVisible) {
+					movie.draw(g2);
 				} else {
-					if (primary != null) {
-						primary.draw(g2);
-					}
-					if (secondary != null) {
-						secondary.draw(g2);
-					}
-					if (statusbarVisible) {
-						statusbar.draw(g2);
+					if (r1 && !r0) {
+						if (secondary != null) {
+							secondary.draw(g2);
+						}
+					} else {
+						if (primary != null) {
+							primary.draw(g2);
+						}
+						if (secondary != null) {
+							secondary.draw(g2);
+						}
+						if (statusbarVisible) {
+							statusbar.draw(g2);
+						}
 					}
 				}
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 		}
 	}

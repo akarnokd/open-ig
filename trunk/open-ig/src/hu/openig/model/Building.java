@@ -202,4 +202,8 @@ public class Building {
 		
 		return result;
 	}
+	/** @return is the building completed? */
+	public boolean isComplete() {
+		return buildProgress == type.hitpoints;
+	}
 }

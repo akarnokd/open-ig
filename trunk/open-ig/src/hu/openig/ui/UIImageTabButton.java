@@ -14,8 +14,6 @@ import hu.openig.render.RenderTools;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import javax.swing.Timer;
-
 /**
  * A three state image button with normal, pressed and hovered state.
  * Supports
@@ -43,14 +41,6 @@ public class UIImageTabButton extends UIComponent {
 	 * Can be used to use this button as a tab.
 	 */
 	public Act onPress;
-	/** 
-	 * The optional delay to fire onClick events when
-	 * the mouse is pressed over the button.
-	 * Unit is in milliseconds.
-	 */
-	protected int holdDelay = -1;
-	/** The timer to send pressed events periodically. */
-	protected Timer holdTimer;
 	/** Is the mouse pressed down on this component. */
 	public boolean down;
 	/**
@@ -65,15 +55,6 @@ public class UIImageTabButton extends UIComponent {
 		this.hovered = hovered != null ? hovered : normal;
 		this.width = normal.getWidth();
 		this.height = normal.getHeight();
-		this.holdTimer = new Timer(100, new Act() {
-			@Override
-			public void act() {
-				doClick();
-				if (holdDelay < 0 || !enabled || !visible) {
-					holdTimer.stop();
-				}
-			}
-		});
 	}
 	/**
 	 * Creates an image button by using the elements of the supplied array.
@@ -89,33 +70,6 @@ public class UIImageTabButton extends UIComponent {
 		this.hovered = images.length > 2 ? images[2] : images[0];
 		this.width = normal.getWidth();
 		this.height = normal.getHeight();
-		this.holdTimer = new Timer(100, new Act() {
-			@Override
-			public void act() {
-				doClick();
-				if (holdDelay < 0 || !enabled || !visible) {
-					holdTimer.stop();
-				}
-			}
-		});
-	}
-	/**
-	 * Set the mouse-hold delay to repeatedly fire the onClick
-	 * event. Use -1 to turn of repetition.
-	 * @param delayMillis the delay in milliseconds
-	 */
-	public void setHoldDelay(int delayMillis) {
-		this.holdDelay = delayMillis;
-		if (holdDelay >= 0) {
-			holdTimer.setInitialDelay(holdDelay);
-			holdTimer.setDelay(holdDelay);
-		}
-	}
-	/**
-	 * Stop all internal timers to allow cleanup and thread exit.
-	 */
-	public void stop() {
-		holdTimer.stop();
 	}
 	/**
 	 * Call the click action if set.
@@ -123,6 +77,12 @@ public class UIImageTabButton extends UIComponent {
 	protected void doClick() {
 		if (onClick != null) {
 			onClick.act();
+		}
+	}
+	/** Call the press action if set. */
+	protected void doPress() {
+		if (onPress != null) {
+			onPress.act();
 		}
 	}
 	@Override
@@ -145,22 +105,18 @@ public class UIImageTabButton extends UIComponent {
 		switch (e.type) {
 		case DOWN:
 			down = true;
-			if (holdDelay >= 0) {
-				holdTimer.start();
-			}
-			if (onPress != null) {
-				onPress.act();
-			}
+			doPress();
 			return true;
 		case CLICK:
+			doClick();
+			return true;
 		case DOUBLE_CLICK:
-			for (int i = 0; i < e.z; i++) {
+			for (int i = 0; i < e.z - 1; i++) {
 				doClick();
 			}
-			return false;
+			return true;
 		case UP:
 		case LEAVE:
-			holdTimer.stop();
 			return true;
 		case ENTER:
 			return true;

@@ -66,6 +66,18 @@ public class XElement implements Iterable<XElement> {
 		String val = get(attributeName);
 		return val != null ? Integer.parseInt(val) : def;
 	}
+	/**
+	 * Get an integer attribute.
+	 * @param attributeName the attribute name
+	 * @return the integer value
+	 */
+	public int getInt(String attributeName) {
+		String val = get(attributeName);
+		if (val == null) {
+			throw new IllegalArgumentException("Missing attribute: " + attributeName + "\r\n" + this);
+		}
+		return Integer.parseInt(val);
+	}
 	@Override
 	public Iterator<XElement> iterator() {
 		return children.iterator();
