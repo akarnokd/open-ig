@@ -11,19 +11,14 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Location;
-import hu.openig.core.PlanetType;
 import hu.openig.core.Tile;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
-import hu.openig.model.OriginalBuilding;
-import hu.openig.model.OriginalPlanet;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
-import hu.openig.model.SurfaceFeature;
-import hu.openig.model.TileSet;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.HorizontalAlignment;
@@ -32,6 +27,7 @@ import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageFill;
+import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
@@ -39,7 +35,6 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.XElement;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -56,9 +51,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.Timer;
@@ -273,6 +266,7 @@ public class PlanetScreen extends ScreenBase {
 
 	@Override
 	public void onLeave() {
+		placementMode = false;
 		animationTimer.stop();
 	}
 
@@ -486,26 +480,15 @@ public class PlanetScreen extends ScreenBase {
 					lastX = e.x;
 					lastY = e.y;
 					rep = true;
-				} 
-//				else
-//				if (sel) {
-//					Location loc = getLocationAt(e.x, e.y);
-//					current = loc;
-//					placementRectangle.x = current.x - placementRectangle.width / 2;
-//					placementRectangle.y = current.y + placementRectangle.height / 2;
-//					selectedRectangle.x = Math.min(orig.x, loc.x);
-//					selectedRectangle.y = Math.max(orig.y, loc.y);
-//					selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
-//					selectedRectangle.height = - Math.min(orig.y, loc.y) + selectedRectangle.y + 1;
-//					rep = true;
-//				} else {
-//					current = getLocationAt(e.x, e.y);
-//					if (current != null) {
-//						placementRectangle.x = current.x - placementRectangle.width / 2;
-//						placementRectangle.y = current.y + placementRectangle.height / 2;
-//						rep = true;
-//					}
-//				}
+				} else
+				if (placementMode) {
+					current = getLocationAt(e.x, e.y);
+					if (current != null) {
+						placementRectangle.x = current.x - placementRectangle.width / 2;
+						placementRectangle.y = current.y + placementRectangle.height / 2;
+						rep = true;
+					}
+				}
 				break;
 			case DOWN:
 				if (e.has(Button.RIGHT)) {
@@ -520,11 +503,15 @@ public class PlanetScreen extends ScreenBase {
 					scale = 1;
 					rep = true;
 				}
-				if (e.has(Button.LEFT) && surface() != null) {
-					Location loc = getLocationAt(e.x, e.y);
-					buildingBox = getBoundingRect(loc);
-					doSelectBuilding(getBuildingAt(loc));
-					rep = true;
+				if (e.has(Button.LEFT)) {
+					if (placementMode) {
+						placeBuilding(e.has(Modifier.SHIFT));	
+					} else {
+						Location loc = getLocationAt(e.x, e.y);
+						buildingBox = getBoundingRect(loc);
+						doSelectBuilding(getBuildingAt(loc));
+						rep = true;
+					}
 				}
 				break;
 			case UP:
@@ -587,8 +574,10 @@ public class PlanetScreen extends ScreenBase {
 				buildingBox = null;
 				currentBuilding = null;
 				lastSurface = surface;
+				placementMode = false;
+				setBuildingList(0);
 			}
-			doSelectBuilding(currentBuilding);
+			buildingInfoPanel.update();
 			infoPanel.update();
 			
 			RenderTools.setInterpolation(g2, true);
@@ -663,11 +652,11 @@ public class PlanetScreen extends ScreenBase {
 						}
 					}
 				}
-				if (current != null) {
-					int x = x0 + Tile.toScreenX(current.x, current.y);
-					int y = y0 + Tile.toScreenY(current.x, current.y);
-					g2.drawImage(areaCurrent.getStrip(0), x, y, null);
-				}
+//				if (current != null) {
+//					int x = x0 + Tile.toScreenX(current.x, current.y);
+//					int y = y0 + Tile.toScreenY(current.x, current.y);
+//					g2.drawImage(areaCurrent.getStrip(0), x, y, null);
+//				}
 			}
 			if (placementMode) {
 				if (placementRectangle.width > 0) {
@@ -805,15 +794,15 @@ public class PlanetScreen extends ScreenBase {
 			g2.setTransform(at);
 			g2.setColor(Color.BLACK);
 			
-			String pn = commons.world.player.currentPlanet.name;
+			String pn = commons.planet().name;
 			int nameHeight = 14;
 			int nameWidth = commons.text().getTextWidth(nameHeight, pn);
 			int nameLeft = (width - nameWidth) / 2;
 			g2.fillRect(nameLeft - 5, 0, nameWidth + 10, nameHeight + 4);
 			
 			int pc = TextRenderer.GRAY;
-			if (commons.world.player.currentPlanet.owner != null) {
-				pc = commons.world.player.currentPlanet.owner.color;
+			if (commons.planet().owner != null) {
+				pc = commons.planet().owner.color;
 			}
 			commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
 
@@ -968,123 +957,6 @@ public class PlanetScreen extends ScreenBase {
 			return false;
 		}
 	}
-	/** Import the earth map. */
-	void importEarth() {
-		
-		OriginalPlanet planet = parseOriginalPlanet().get("Earth");
-		
-		placeTilesFromOriginalMap("colony/" + planet.getMapName(), planet.surfaceType.toLowerCase(), -1, -1);
-
-		for (OriginalBuilding ob : planet.buildings) {
-			BuildingType bt = commons.world.buildingModel.buildings.get(ob.getName()); 
-			String r = planet.getRaceTechId();
-			TileSet t = bt.tileset.get(r);
-			Building bld = new Building(bt, r);
-			bld.makeFullyBuilt();
-			bld.location = Location.of(ob.location.x + -1, ob.location.y + -1);
-			surface().buildings.add(bld);
-			placeTile(t.normal, ob.location.x + -1, ob.location.y + -1, SurfaceEntityType.BUILDING, bld);
-		}
-		surface().placeRoads(planet.getRaceTechId(), commons.world.buildingModel);
-
-	}
-	/**
-	 * Place an original map tiles onto the current surface.
-	 * @param path the path to the original map file
-	 * @param surfaceType the surface type
-	 * @param shiftX the shift in X coordinates to place the map elements
-	 * @param shiftY the shift in Y coordinates to place the map elements
-	 */
-	private void placeTilesFromOriginalMap(String path, String surfaceType, int shiftX, int shiftY) {
-		byte[] map = rl.getData(path);
-		PlanetType pt = commons.world.galaxyModel.planetTypes.get(surfaceType);
-		int bias = 41; 
-		if ("neptoplasm".equals(surfaceType)) {
-			bias = 84;
-		}
-		for (int i = 0; i < 65 * 65; i++) {
-			int tile = (map[4 + i * 2] & 0xFF) - bias;
-			int strip = map[5 + i * 2] & 0xFF;
-			if (strip == 0 && tile != 255) {
-				Location loc = toOriginalLocation(i);
-				Tile t = pt.tiles.get(tile);
-				if (t != null) {
-					SurfaceFeature sf = new SurfaceFeature();
-					sf.location = Location.of(loc.x + shiftX, loc.y + shiftY);
-					sf.id = tile;
-					sf.type = surfaceType;
-					sf.tile = t;
-					surface().features.add(sf);
-					placeTile(t, loc.x + shiftX, loc.y + shiftY, SurfaceEntityType.BASE, null);
-				}
-			}
-		}
-	}
-	/**
-	 * Place a tile onto the current surface map.
-	 * @param tile the tile
-	 * @param x the tile's leftmost coordinate
-	 * @param y the tile's leftmost coordinate
-	 * @param type the tile type
-	 * @param building the building object to assign
-	 */
-	void placeTile(Tile tile, int x, int y, SurfaceEntityType type, Building building) {
-		for (int a = x; a < x + tile.width; a++) {
-			for (int b = y; b > y - tile.height; b--) {
-				SurfaceEntity se = new SurfaceEntity();
-				se.type = type;
-				se.virtualRow = y - b;
-				se.virtualColumn = a - x;
-				se.tile = tile;
-//				se.tile.alpha = alpha;
-				se.building = building;
-				if (type != SurfaceEntityType.BASE) {
-					surface().buildingmap.put(Location.of(a, b), se);
-				} else {
-					surface().basemap.put(Location.of(a, b), se);
-				}
-			}
-		}
-	}
-	/**
-	 * Convert the original index location of the map to actual (x, y) location.
-	 * @param index the index into the map block, starting at 0
-	 * @return the location
-	 */
-	public Location toOriginalLocation(int index) {
-		int row = index % 65;
-		int col = index / 65;
-		
-		int x0 = (col + 1) / 2;
-		int y0 = - col / 2;
-		
-		int x = x0 - row;
-		int y = y0 - row;
-		return Location.of(x, y);
-	}
-	/** @return Parse the original planet definitions. */
-	Map<String, OriginalPlanet> parseOriginalPlanet() {
-		final Map<String, OriginalPlanet> originalPlanets = new LinkedHashMap<String, OriginalPlanet>();
-		XElement e = rl.getXML("campaign/main/planets_old");
-		for (XElement planet : e.childrenWithName("planet")) {
-			OriginalPlanet op = new OriginalPlanet();
-			op.name = planet.get("id");
-			op.surfaceType = planet.childValue("type");
-			op.location.x = Integer.parseInt(planet.childValue("location-x"));
-			op.location.y = Integer.parseInt(planet.childValue("location-y"));
-			op.surfaceVariant = Integer.parseInt(planet.childValue("variant"));
-			op.race = planet.childValue("race");
-			for (XElement building : planet.childElement("buildings").childrenWithName("building")) {
-				OriginalBuilding ob = new OriginalBuilding();
-				ob.name = building.childValue("id");
-				ob.location = Location.of(Integer.parseInt(building.childValue("x")), 
-						Integer.parseInt(building.childValue("y")));
-				op.buildings.add(ob);
-			}
-			originalPlanets.put(op.name, op);
-		}
-		return originalPlanets;
-	}
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (e.has(Type.UP) && e.has(Button.RIGHT)) {
@@ -1117,161 +989,15 @@ public class PlanetScreen extends ScreenBase {
 	 * @param b the building selected
 	 */
 	void doSelectBuilding(Building b) {
+		currentBuilding = b;
 		if (b != null) {
-			buildingsPanel.preview.building = b.tileset.preview;
-			buildingsPanel.preview.cost = b.type.cost;
-			buildingsPanel.buildingName.text(b.type.name);
-			
-			buildingInfoPanel.buildingInfoName.text(buildingsPanel.buildingName.text());
-//			b.hitpoints = b.type.hitpoints * 3 / 4;
-			
 			commons.player().currentBuilding = b.type;
 			if (b.type.research != null) {
 				commons.player().currentResearch = b.type.research;
 			}
-			
-			Set<UIComponent> tohide = new HashSet<UIComponent>(Arrays.asList(
-					buildingInfoPanel.undamaged,
-					buildingInfoPanel.damaged,		
-					buildingInfoPanel.repairing,		
-					buildingInfoPanel.constructing,		
-					buildingInfoPanel.stateActive,		
-					buildingInfoPanel.stateDamaged,		
-					buildingInfoPanel.stateInactive,		
-					buildingInfoPanel.stateOffline,		
-					buildingInfoPanel.stateNoEnergy,		
-					buildingInfoPanel.progressLower,		
-					buildingInfoPanel.progressUpper		
-			));
-			
-			if (b.isConstructing()) {
-				buildingInfoPanel.energy.text("-");
-				buildingInfoPanel.energyPercent.text("-");
-				buildingInfoPanel.worker.text("-");
-				buildingInfoPanel.workerPercent.text("-");
-				buildingInfoPanel.operationPercent.text("-");
-				buildingInfoPanel.production.text("-");
-				
-				buildingInfoPanel.constructing.visible(true);
-				buildingInfoPanel.progressLower.visible(true);
-				buildingInfoPanel.progressLower.text(Integer.toString(b.buildProgress * 100 / b.type.hitpoints));
-				
-				tohide.remove(buildingInfoPanel.constructing);
-				tohide.remove(buildingInfoPanel.progressLower);
-				
-				if (b.isDamaged()) {
-					buildingInfoPanel.damaged.visible(true);
-					buildingInfoPanel.progressUpper.visible(true);
-					
-					tohide.remove(buildingInfoPanel.damaged);
-					tohide.remove(buildingInfoPanel.progressUpper);
-					
-					if (b.hitpoints > 0) {
-						buildingInfoPanel.progressUpper.text(Integer.toString((b.hitpoints - b.buildProgress) * 100 / b.hitpoints));
-					} else {
-						buildingInfoPanel.progressUpper.text("0");
-					}
-				} else {
-					buildingInfoPanel.undamaged.visible(true);
-					tohide.remove(buildingInfoPanel.undamaged);
-					
-				}
-			} else {
-				if (!b.enabled || b.isSeverlyDamaged()) {
-					buildingInfoPanel.energy.text("-");
-					buildingInfoPanel.energyPercent.text("-");
-					buildingInfoPanel.worker.text("-");
-					buildingInfoPanel.workerPercent.text("-");
-					buildingInfoPanel.operationPercent.text("-");
-					buildingInfoPanel.production.text("-");
-				} else {
-					if (b.getEnergy() < 0) {
-						buildingInfoPanel.energy.text(Integer.toString(-b.getEnergy()));
-						buildingInfoPanel.energyPercent.text(Integer.toString(Math.abs(b.assignedEnergy * 100 / b.getEnergy())));
-					} else {
-						buildingInfoPanel.energy.text("-");
-						buildingInfoPanel.energyPercent.text("-");
-					}
-					if (b.getWorkers() < 0) {
-						buildingInfoPanel.worker.text(Integer.toString(-b.getWorkers()));
-						buildingInfoPanel.workerPercent.text(Integer.toString(Math.abs(b.assignedWorker)));
-					} else {
-						buildingInfoPanel.worker.text("-");
-						buildingInfoPanel.workerPercent.text("-");
-					}
-					buildingInfoPanel.operationPercent.text(Integer.toString((int)(b.getEfficiency() * 100)));
-					if (b.type.primary != null) {
-						buildingInfoPanel.production.text(((int)b.getResource(b.type.primary)) + getUnit(b.type.primary));
-					} else {
-						buildingInfoPanel.production.text("");
-					}
-				}
-				
-				// set the upper status indicators
-				
-				if (b.isDamaged()) {
-					if (b.repairing) {
-						buildingInfoPanel.repairing.visible(true);
-						tohide.remove(buildingInfoPanel.repairing);
-					} else {
-						buildingInfoPanel.damaged.visible(true);
-						tohide.remove(buildingInfoPanel.damaged);
-					}
-					buildingInfoPanel.progressUpper.visible(true);
-					tohide.remove(buildingInfoPanel.progressUpper);
-					buildingInfoPanel.progressUpper.text(Integer.toString((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints));
-				} else {
-					buildingInfoPanel.undamaged.visible(true);
-					tohide.remove(buildingInfoPanel.undamaged);
-				}
-				
-				// set the lower status indicator
-				
-				if (b.enabled) {
-					if (b.isDamaged()) {
-						buildingInfoPanel.stateDamaged.visible(true);
-						tohide.remove(buildingInfoPanel.stateDamaged);
-					} else
-					if (b.isEnergyShortage()) {
-						buildingInfoPanel.stateNoEnergy.visible(true);
-						tohide.remove(buildingInfoPanel.stateNoEnergy);
-					} else
-					if (b.isWorkerShortage()) {
-						buildingInfoPanel.stateInactive.visible(true);
-						tohide.remove(buildingInfoPanel.stateInactive);
-					} else {
-						buildingInfoPanel.stateActive.visible(true);
-						tohide.remove(buildingInfoPanel.stateActive);
-					}
-
-				} else {
-					buildingInfoPanel.stateOffline.visible(true);
-					tohide.remove(buildingInfoPanel.stateOffline);
-				}
-			}
-			for (UIComponent c : tohide) {
-				c.visible(false);
-			}
-			
-		} else {
-			buildingInfoPanel.buildingInfoName.text("-");
-			buildingInfoPanel.energy.text("-");
-			buildingInfoPanel.energyPercent.text("-");
-			buildingInfoPanel.worker.text("-");
-			buildingInfoPanel.workerPercent.text("-");
-			buildingInfoPanel.operationPercent.text("-");
-			buildingInfoPanel.production.text("-");
-			buildingInfoPanel.undamaged.visible(true);
-			buildingInfoPanel.stateInactive.visible(true);
+			setBuildingList(0);
 		}
-		buildingInfoPanel.demolish.enabled(commons.world.player.currentPlanet.owner == commons.world.player && currentBuilding != null);
-		buildingInfoPanel.stateActive.enabled(currentBuilding != null);
-		buildingInfoPanel.stateDamaged.enabled(currentBuilding != null);
-		buildingInfoPanel.stateNoEnergy.enabled(currentBuilding != null);
-		buildingInfoPanel.stateInactive.enabled(currentBuilding != null);
-		buildingInfoPanel.stateOffline.enabled(currentBuilding != null);
-		
-		upgradePanel.visible(b != null && b.type.upgrades.size() > 0 && buildingInfoPanel.visible());
+		buildingInfoPanel.update();
 	}
 	/**
 	 * Return the unit label for the given resource type.
@@ -1321,7 +1047,7 @@ public class PlanetScreen extends ScreenBase {
 		/** The building list button. */
 		UIImageButton buildingList;
 		/** The build button. */
-		UIImageButton build;
+		UIImageTabButton build;
 		/** The building name. */
 		UILabel buildingName;
 		/** Construct and place the UI. */
@@ -1334,7 +1060,7 @@ public class PlanetScreen extends ScreenBase {
 			buildingUpEmpty.visible(false);
 			buildingDownEmpty = new UIImage(commons.colony().empty);
 			buildingDownEmpty.visible(false);
-			build = new UIImageButton(commons.colony().build);
+			build = new UIImageTabButton(commons.colony().build);
 			build.setDisabledPattern(commons.common().disabledPattern);
 			build.enabled(false);
 			buildingList = new UIImageButton(commons.colony().list);
@@ -1355,12 +1081,60 @@ public class PlanetScreen extends ScreenBase {
 			width = commons.colony().buildingsPanel.getWidth();
 			height = commons.colony().buildingsPanel.getHeight();
 			
+			buildingDown.onClick = new Act() {
+				@Override
+				public void act() {
+					setBuildingList(1);
+				}
+			};
+			buildingDown.setHoldDelay(200);
+			buildingUp.onClick = new Act() {
+				@Override
+				public void act() {
+					setBuildingList(-1);
+				}
+			};
+			buildingUp.setHoldDelay(200);
+			
+			buildingList.onClick = new Act() {
+				@Override
+				public void act() {
+					placementMode = false;
+					commons.control.displaySecondary(Screens.INFORMATION);
+				}
+			};
+			build.onPress = new Act() {
+				@Override
+				public void act() {
+					placementMode = !placementMode;
+					if (placementMode) {
+						currentBuilding = null;
+						Tile t = commons.player().currentBuilding.tileset.get(commons.race()).normal;
+						placementRectangle.setSize(t.width + 2, t.height + 2);
+					} else {
+						build.down = false;
+					}
+				}
+			};
+			
 			addThis();
 		}
 		@Override
 		public void draw(Graphics2D g2) {
 			g2.drawImage(commons.colony().buildingsPanel, 0, 0, null);
 			super.draw(g2);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.WHEEL)) {
+				if (e.z < 0) {
+					setBuildingList(-1);
+				} else {
+					setBuildingList(+1);
+				}
+				return true;
+			}
+			return super.mouse(e);
 		}
 	}
 	/** The building info panel. */
@@ -1533,6 +1307,157 @@ public class PlanetScreen extends ScreenBase {
 			progressUpper.visible(false);
 			progressLower.visible(false);
 			undamaged.visible(false);
+		}
+		/**
+		 * Update the UI based on the current status.
+		 */
+		public void update() {
+			Building b = currentBuilding;
+			if (b != null) {
+				buildingInfoName.text(b.type.name);
+				
+				Set<UIComponent> tohide = new HashSet<UIComponent>(Arrays.asList(
+						undamaged,
+						damaged,		
+						repairing,		
+						constructing,		
+						stateActive,		
+						stateDamaged,		
+						stateInactive,		
+						stateOffline,		
+						stateNoEnergy,		
+						progressLower,		
+						progressUpper		
+				));
+				
+				if (b.isConstructing()) {
+					energy.text("-");
+					energyPercent.text("-");
+					worker.text("-");
+					workerPercent.text("-");
+					operationPercent.text("-");
+					production.text("-");
+					
+					constructing.visible(true);
+					progressLower.visible(true);
+					progressLower.text(Integer.toString(b.buildProgress * 100 / b.type.hitpoints));
+					
+					tohide.remove(constructing);
+					tohide.remove(progressLower);
+					
+					if (b.isDamaged()) {
+						buildingInfoPanel.damaged.visible(true);
+						buildingInfoPanel.progressUpper.visible(true);
+						
+						tohide.remove(buildingInfoPanel.damaged);
+						tohide.remove(buildingInfoPanel.progressUpper);
+						
+						if (b.hitpoints > 0) {
+							buildingInfoPanel.progressUpper.text(Integer.toString((b.hitpoints - b.buildProgress) * 100 / b.hitpoints));
+						} else {
+							buildingInfoPanel.progressUpper.text("0");
+						}
+					} else {
+						buildingInfoPanel.undamaged.visible(true);
+						tohide.remove(buildingInfoPanel.undamaged);
+						
+					}
+				} else {
+					if (!b.enabled || b.isSeverlyDamaged()) {
+						buildingInfoPanel.energy.text("-");
+						buildingInfoPanel.energyPercent.text("-");
+						buildingInfoPanel.worker.text("-");
+						buildingInfoPanel.workerPercent.text("-");
+						buildingInfoPanel.operationPercent.text("-");
+						buildingInfoPanel.production.text("-");
+					} else {
+						if (b.getEnergy() < 0) {
+							buildingInfoPanel.energy.text(Integer.toString(-b.getEnergy()));
+							buildingInfoPanel.energyPercent.text(Integer.toString(Math.abs(b.assignedEnergy * 100 / b.getEnergy())));
+						} else {
+							buildingInfoPanel.energy.text("-");
+							buildingInfoPanel.energyPercent.text("-");
+						}
+						if (b.getWorkers() < 0) {
+							buildingInfoPanel.worker.text(Integer.toString(-b.getWorkers()));
+							buildingInfoPanel.workerPercent.text(Integer.toString(Math.abs(b.assignedWorker)));
+						} else {
+							buildingInfoPanel.worker.text("-");
+							buildingInfoPanel.workerPercent.text("-");
+						}
+						buildingInfoPanel.operationPercent.text(Integer.toString((int)(b.getEfficiency() * 100)));
+						if (b.type.primary != null) {
+							buildingInfoPanel.production.text(((int)b.getResource(b.type.primary)) + getUnit(b.type.primary));
+						} else {
+							buildingInfoPanel.production.text("");
+						}
+					}
+					
+					// set the upper status indicators
+					
+					if (b.isDamaged()) {
+						if (b.repairing) {
+							buildingInfoPanel.repairing.visible(true);
+							tohide.remove(buildingInfoPanel.repairing);
+						} else {
+							buildingInfoPanel.damaged.visible(true);
+							tohide.remove(buildingInfoPanel.damaged);
+						}
+						buildingInfoPanel.progressUpper.visible(true);
+						tohide.remove(buildingInfoPanel.progressUpper);
+						buildingInfoPanel.progressUpper.text(Integer.toString((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints));
+					} else {
+						buildingInfoPanel.undamaged.visible(true);
+						tohide.remove(buildingInfoPanel.undamaged);
+					}
+					
+					// set the lower status indicator
+					
+					if (b.enabled) {
+						if (b.isDamaged()) {
+							buildingInfoPanel.stateDamaged.visible(true);
+							tohide.remove(buildingInfoPanel.stateDamaged);
+						} else
+						if (b.isEnergyShortage()) {
+							buildingInfoPanel.stateNoEnergy.visible(true);
+							tohide.remove(buildingInfoPanel.stateNoEnergy);
+						} else
+						if (b.isWorkerShortage()) {
+							buildingInfoPanel.stateInactive.visible(true);
+							tohide.remove(buildingInfoPanel.stateInactive);
+						} else {
+							buildingInfoPanel.stateActive.visible(true);
+							tohide.remove(buildingInfoPanel.stateActive);
+						}
+
+					} else {
+						buildingInfoPanel.stateOffline.visible(true);
+						tohide.remove(buildingInfoPanel.stateOffline);
+					}
+				}
+				for (UIComponent c : tohide) {
+					c.visible(false);
+				}
+				
+			} else {
+				buildingInfoPanel.buildingInfoName.text("-");
+				buildingInfoPanel.energy.text("-");
+				buildingInfoPanel.energyPercent.text("-");
+				buildingInfoPanel.worker.text("-");
+				buildingInfoPanel.workerPercent.text("-");
+				buildingInfoPanel.operationPercent.text("-");
+				buildingInfoPanel.production.text("-");
+				buildingInfoPanel.undamaged.visible(true);
+				buildingInfoPanel.stateInactive.visible(true);
+			}
+			buildingInfoPanel.demolish.enabled(commons.world.player.currentPlanet.owner == commons.world.player && currentBuilding != null);
+			buildingInfoPanel.stateActive.enabled(currentBuilding != null);
+			buildingInfoPanel.stateDamaged.enabled(currentBuilding != null);
+			buildingInfoPanel.stateNoEnergy.enabled(currentBuilding != null);
+			buildingInfoPanel.stateInactive.enabled(currentBuilding != null);
+			buildingInfoPanel.stateOffline.enabled(currentBuilding != null);
+			
+			upgradePanel.visible(b != null && b.type.upgrades.size() > 0 && buildingInfoPanel.visible() && b.isComplete());
 		}
 	}
 	/** Perform the animation. */
@@ -2116,5 +2041,69 @@ public class PlanetScreen extends ScreenBase {
 		}
 		Planet p = commons.world.player.moveNextPlanet();
 		return p != null ? p.surface : null;
+	}
+	/** 
+	 * Prepare the controls of the buildings panel. 
+	 * @param delta to go to the previous or next
+	 */
+	void setBuildingList(int delta) {
+		List<BuildingType> list = commons.world.listBuildings();
+		int idx = list.indexOf(commons.buildingType());
+		if (list.size() > 0) {
+			BuildingType bt = null; 
+			if (idx < 0) {
+				idx = 0;
+				bt = list.get(idx);
+				commons.player().currentBuilding = bt;
+			} else {
+				idx = Math.min(Math.max(0, idx + delta), list.size() - 1);
+				bt = list.get(idx);
+			}
+			if (delta != 0) {
+				commons.player().currentBuilding = bt;
+			}
+			String race = commons.race();
+			Tile t = commons.player().currentBuilding.tileset.get(race).normal;
+			placementRectangle.setSize(t.width + 2, t.height + 2);
+			
+			buildingsPanel.preview.building = bt.tileset.get(race).preview;
+			buildingsPanel.preview.cost = bt.cost;
+			buildingsPanel.preview.enabled = commons.planet().canBuild(bt) && commons.planet().owner == commons.player();
+			buildingsPanel.buildingName.text(bt.name);
+			buildingsPanel.build.enabled(buildingsPanel.preview.enabled);
+		} else {
+			buildingsPanel.build.enabled(false);
+			buildingsPanel.preview.building = null;
+		}
+		
+		buildingsPanel.buildingDown.visible(idx < list.size() - 1);
+		buildingsPanel.buildingUp.visible(idx > 0);
+		buildingsPanel.buildingDownEmpty.visible(!buildingsPanel.buildingDown.visible());
+		buildingsPanel.buildingUpEmpty.visible(!buildingsPanel.buildingUp.visible());
+	}
+	/**
+	 * Try placing a building to the current placementRectange.
+	 * @param more cancel the building mode on successful place?
+	 */
+	void placeBuilding(boolean more) {
+		if (canPlaceBuilding(placementRectangle)) {
+
+			Building b = new Building(commons.player().currentBuilding, commons.race());
+			b.location = Location.of(placementRectangle.x + 1, placementRectangle.y - 1);
+			
+			commons.planet().surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
+
+			commons.planet().surface.placeRoads(commons.race(), commons.world.buildingModel);
+			
+			placementMode = more && commons.planet().canBuild(commons.player().currentBuilding);
+			buildingsPanel.build.down = placementMode;
+
+			buildingBox = getBoundingRect(b.location);
+			doSelectBuilding(b);
+
+			
+			buildingInfoPanel.update();
+			setBuildingList(0);
+		}
 	}
 }

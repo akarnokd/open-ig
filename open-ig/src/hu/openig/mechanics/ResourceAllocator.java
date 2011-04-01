@@ -71,7 +71,7 @@ public class ResourceAllocator {
 			}
 			final List<BuildingAllocationWorker> baw = JavaUtils.newArrayList();
 			for (Building b : ras.surface.buildings) {
-				if (b.enabled) {
+				if (b.enabled && b.isComplete()) {
 					baw.add(b.getAllocationWorker());
 				} else {
 					b.assignedWorker = 0;

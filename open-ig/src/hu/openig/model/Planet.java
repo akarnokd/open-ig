@@ -208,4 +208,28 @@ public class Planet {
 	public boolean isPopulated() {
 		return race != null && !race.isEmpty();
 	}
+	/**
+	 * Test if another instance of the building type can be built on this planet.
+	 * It checks for the building limits and surface type.
+	 * @param bt the building type to test
+	 * @return can be built here?
+	 */
+	public boolean canBuild(BuildingType bt) {
+		if (bt.except.contains(type.type)) {
+			return false;
+		}
+		boolean hubFound = false;
+		int count = 0;
+		for (Building b : surface.buildings) {
+			if ("MainBuilding".equals(b.type.kind) && b.isComplete()) {
+				hubFound = true;
+			}
+			if ((bt.limit < 0 && b.type.kind.equals(bt.kind))
+					|| (bt.limit > 0 && b.type == bt)
+			) {
+					count++;
+			}
+		}
+		return (hubFound != "MainBuilding".equals(bt.kind)) && count < Math.abs(bt.limit);
+	}
 }

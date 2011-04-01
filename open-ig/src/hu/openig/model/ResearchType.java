@@ -55,6 +55,8 @@ public class ResearchType {
 	public int aiLab;
 	/** The military lab requirements. */
 	public int milLab;
+	/** The index on the screen listing. */
+	public int index;
 	/** The optional prerequisites. */
 	public final List<ResearchType> prerequisites = new ArrayList<ResearchType>();
 	/** The optional properties. */

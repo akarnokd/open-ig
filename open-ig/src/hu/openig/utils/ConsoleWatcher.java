@@ -12,9 +12,8 @@ import java.awt.Font;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -28,14 +27,10 @@ import javax.swing.SwingUtilities;
 public class ConsoleWatcher extends JFrame implements Closeable {
 	/** */
 	private static final long serialVersionUID = 8563889445922855434L;
-	/** The out watcher thread. */
-	Thread outWatcher;
 	/** The error watcher thread. */
 	Thread errWatcher;
 	/** The text area for data. */
 	JTextArea area;
-	/** Original stream. */
-	private PrintStream originalOut;
 	/** Original error. */
 	private PrintStream originalErr;
 	/**
@@ -44,7 +39,6 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	public ConsoleWatcher() {
 		setTitle("Console Watcher");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		originalOut = System.out;
 		originalErr = System.err;
 		
 		area = new JTextArea();
@@ -57,70 +51,33 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 		setSize(640, 480);
 		setLocationRelativeTo(null);
 		
-//		PipedOutputStream outPO = new PipedOutputStream();
-		PipedOutputStream errPO = new PipedOutputStream();
-		
-		try {
-//			final PipedInputStream outPI = new PipedInputStream(outPO);
-//			System.setOut(new PrintStream(outPO));
-//			outWatcher = new Thread(new Runnable() {
-//				@Override
-//				public void run() {
-//					readEverything(outPI, originalOut);
-//				}			
-//			});
-
-			final PipedInputStream errPI = new PipedInputStream(errPO);
-			System.setErr(new PrintStream(errPO));
-			errWatcher = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					readEverything(errPI, originalErr);
-				}			
-			});
-			
-//			outWatcher.start();
-			errWatcher.start();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
-	/**
-	 * Read everything from the piped input stream.
-	 * @param pin the piped input stream
-	 * @param original the original output stream
-	 */
-	void readEverything(PipedInputStream pin, OutputStream original) {
-		try {
-			while (!Thread.currentThread().isInterrupted()) {
-				final int c = pin.read();
-				if (c >= 0) {
-					original.write(c);
-				}
+		System.setErr(new PrintStream(new OutputStream() {
+			@Override
+			public void write(final int b) throws IOException {
+				write(new byte[] { (byte)b }, 0, 1);
+			}
+			@Override
+			public void write(final byte[] b, final int off, final int len) throws IOException {
+				originalErr.write(b, off, len);
+				final byte[] b2 = Arrays.copyOfRange(b, off, off + len);
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
 						if (!isVisible()) {
 							setVisible(true);
 						}
-						area.append(Character.toString((char)c));
+						area.append(new String(b2, off, len));
 					}
 				});
 			}
-		} catch (IOException ex) {
-			
-		}
+		}));
 	}
 	@Override
 	public void close() throws IOException {
 		if (errWatcher != null) {
 			errWatcher.interrupt();
 		}
-		if (outWatcher != null) {
-			outWatcher.interrupt();
-		}
 		System.setErr(originalErr);
-		System.setOut(originalOut);
 		dispose();
 	}
 }

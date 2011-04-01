@@ -875,7 +875,7 @@
 			<tech id="dargslan" height="2" width="2"/>
 			<tech id="ecalep" height="4" width="2"/>
 		</graphics>
-		<build limit="*" kind="Radar" cost="4000"/>
+		<build limit="*" kind="Radar" cost="4000" research='RadarTelescope'/>
 		<operation>
 			<resource type='radar'>1</resource>
 			<resource type='energy'>-2000</resource>
@@ -895,7 +895,7 @@
 			<tech id="dargslan" height="2" width="2"/>
 			<tech id="ecalep" height="4" width="2"/>
 		</graphics>
-		<build limit="*" kind="Radar" cost="10000"/>
+		<build limit="*" kind="Radar" cost="10000" research='FieldTelescope'/>
 		<operation>
 			<resource type="radar">2</resource>
 			<resource type='energy'>-2500</resource>
@@ -914,7 +914,7 @@
 			<tech id="dargslan" height="2" width="2"/>
 			<tech id="ecalep" height="4" width="2"/>
 		</graphics>
-		<build limit="*" kind="Radar" cost="25000"/>
+		<build limit="*" kind="Radar" cost="25000" research='PhasedTelescope'/>
 		<operation>
 			<resource type='radar'>3</resource>
 			<resource type='energy'>-2000</resource>
@@ -933,7 +933,7 @@
 			<tech id="dargslan" height="2" width="2"/>
 			<tech id="ecalep" height="2" width="2"/>
 		</graphics>
-		<build limit="1" kind="Military" cost="18000"/>
+		<build limit="1" kind="Military" cost="18000" research='Bunker'/>
 		<operation>
 			<resource type="survival">50</resource>
 			<resource type='energy'>-500</resource>
@@ -1013,7 +1013,7 @@
 			<tech id="dargslan" height="2" width="4"/>
 			<tech id="ecalep" height="2" width="2"/>
 		</graphics>
-		<build limit="-5" kind="Gun" cost="17800"/>
+		<build limit="-5" kind="Gun" cost="17800" research='PlasmaProjector'/>
 		<operation>
 			<resource type='plasma'>75</resource>
 			<resource type='energy'>-3000</resource>
@@ -1237,7 +1237,7 @@
 			<tech id="dargslan" height="3" width="2"/>
 			<tech id="ecalep" height="3" width="3"/>
 		</graphics>
-		<build limit="*" kind="Defensive" cost="30000"/>
+		<build limit="*" kind="Defensive" cost="30000" research='Fortress'/>
 		<operation>
 			<resource type='vehicles'>8</resource>
 			<resource type='laser'>4</resource>
@@ -1424,22 +1424,22 @@
 			<resource type='worker'>-350</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="buildings.bar.upgrade_1">
+			<upgrade desc="buildings.stadium.upgrade_1">
 				<resource type='morale'>1.2</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc="buildings.bar.upgrade_2">
+			<upgrade desc="buildings.stadium.upgrade_2">
 				<resource type='morale'>1.4</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
-			<upgrade desc="buildings.bar.upgrade_3">
+			<upgrade desc="buildings.stadium.upgrade_3">
 				<resource type='morale'>1.6</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
-			<upgrade desc="buildings.bar.upgrade_4">
+			<upgrade desc="buildings.stadium.upgrade_4">
 				<resource type='morale'>1.8</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
