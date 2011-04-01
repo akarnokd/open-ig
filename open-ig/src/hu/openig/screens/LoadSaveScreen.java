@@ -23,7 +23,7 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -45,5 +45,8 @@ public class LoadSaveScreen extends ScreenBase {
 		// TODO Auto-generated method stub
 		
 	}
-
+	@Override
+	public Screens screen() {
+		return Screens.LOAD_SAVE;
+	}
 }

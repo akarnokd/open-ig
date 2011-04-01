@@ -71,8 +71,6 @@ public class StarmapScreen extends ScreenBase {
 	final Rectangle minimapViewportRect = new Rectangle();
 	/** The minimap small image. */
 	private BufferedImage minimapBackground;
-	/** The visible list of planets. */
-	private List<Planet> planets = new ArrayList<Planet>();
 	/** The visible list of fleets. */
 	private List<Fleet> fleets = new ArrayList<Fleet>();
 	/** The current radar dot. */
@@ -151,25 +149,16 @@ public class StarmapScreen extends ScreenBase {
 	public StarmapScreen() {
 		scrollbarPainter = new ScrollBarPainter();
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#doResize()
-	 */
 	@Override
 	public void onResize() {
 		computeRectangles();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
 	@Override
 	public void onFinish() {
 		rotationTimer.stop();
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
 	@Override
 	public void onInitialize() {
 		rotationTimer = new Timer(75, new Act() {
@@ -199,9 +188,10 @@ public class StarmapScreen extends ScreenBase {
 		prevPlanet.onClick = new Act() {
 			@Override 
 			public void act() {
-				int idx = planets.indexOf(commons.world.player.currentPlanet);
+				List<Planet> planets = planets();
+				int idx = planets.indexOf(planet());
 				if (idx > 0 && planets.size() > 0) {
-					commons.world.player.currentPlanet = planets.get(idx - 1);
+					player().currentPlanet = planets.get(idx - 1);
 					planetsOffset = limitScrollBox(idx - 1, planets.size(), planetsList.height, 10);
 				}
 			}
@@ -209,9 +199,10 @@ public class StarmapScreen extends ScreenBase {
 		nextPlanet.onClick = new Act() {
 			@Override
 			public void act() {
-				int idx = planets.indexOf(commons.world.player.currentPlanet);
+				List<Planet> planets = planets();
+				int idx = planets.indexOf(planet());
 				if (idx + 1 < planets.size()) {
-					commons.world.player.currentPlanet = planets.get(idx + 1);
+					player().currentPlanet = planets.get(idx + 1);
 					planetsOffset = limitScrollBox(idx + 1, planets.size(), planetsList.height, 10);
 				}
 			}
@@ -219,9 +210,9 @@ public class StarmapScreen extends ScreenBase {
 		prevFleet.onClick = new Act() {
 			@Override 
 			public void act() {
-				int idx = fleets.indexOf(commons.world.player.currentFleet);
+				int idx = fleets.indexOf(fleet());
 				if (idx > 0 && fleets.size() > 0) {
-					commons.world.player.currentFleet = fleets.get(idx - 1);
+					player().currentFleet = fleets.get(idx - 1);
 					fleetsOffset = limitScrollBox(idx - 1, fleets.size(), fleetsList.height, 10);
 				}
 			}
@@ -229,9 +220,9 @@ public class StarmapScreen extends ScreenBase {
 		nextFleet.onClick = new Act() {
 			@Override
 			public void act() {
-				int idx = fleets.indexOf(commons.world.player.currentFleet);
+				int idx = fleets.indexOf(fleet());
 				if (idx + 1 < fleets.size()) {
-					commons.world.player.currentFleet = fleets.get(idx + 1);
+					player().currentFleet = fleets.get(idx + 1);
 					fleetsOffset = limitScrollBox(idx + 1, fleets.size(), fleetsList.height, 10);
 				}
 			}
@@ -240,25 +231,25 @@ public class StarmapScreen extends ScreenBase {
 		colony.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.COLONY);
+				displayPrimary(Screens.COLONY);
 			}	
 		};
 		equipment.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.EQUIPMENT);
+				displaySecondary(Screens.EQUIPMENT_PLANET);
 			}
 		};
 		info.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.INFORMATION);
+				displaySecondary(Screens.INFORMATION_PLANETS);
 			}
 		};
 		bridge.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.BRIDGE);
+				displayPrimary(Screens.BRIDGE);
 			}
 		};
 		
@@ -268,7 +259,7 @@ public class StarmapScreen extends ScreenBase {
 	 * Rotate the planets on screen.
 	 */
 	protected void rotatePlanets() {
-		for (Planet p : planets) {
+		for (Planet p : commons.world().planets) {
 			if (p.rotationDirection == RotationDirection.LR) {
 				p.rotationPhase = (p.rotationPhase + 1) % p.type.body.length;
 			} else {
@@ -338,7 +329,7 @@ public class StarmapScreen extends ScreenBase {
 				if (e.has(Button.LEFT) && pfSplitter && planetFleetSplitterRange.contains(e.x, e.y)) {
 					planetFleetSplitter = 1.0 * (e.y - planetFleetSplitterRange.y) / (planetFleetSplitterRange.height);
 					fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
-					planetsOffset = limitScrollBox(planetsOffset, planets.size(), planetsList.height, 10);
+					planetsOffset = limitScrollBox(planetsOffset, planets().size(), planetsList.height, 10);
 					rep = true;
 				}
 			}
@@ -361,10 +352,10 @@ public class StarmapScreen extends ScreenBase {
 					Fleet f = getFleetAt(e.x, e.y);
 
 					if (p != null) {
-						commons.world.player.currentPlanet = p;
+						player().currentPlanet = p;
 					}
 					if (f != null) {
-						commons.world.player.currentFleet = f;
+						player().currentFleet = f;
 					}
 					
 					rep = true;
@@ -375,15 +366,16 @@ public class StarmapScreen extends ScreenBase {
 				if (rightPanelVisible) {
 					if (planetsList.contains(e.x, e.y)) {
 						int idx = planetsOffset + (e.y - planetsList.y) / 10;
+						List<Planet> planets = planets();
 						if (idx < planets.size()) {
-							commons.world.player.currentPlanet = planets.get(idx);
+							player().currentPlanet = planets.get(idx);
 							rep = true;
 						}
 					}
 					if (fleetsList.contains(e.x, e.y)) {
 						int idx = fleetsOffset + (e.y - fleetsList.y) / 10;
 						if (idx < fleets.size()) {
-							commons.world.player.currentFleet = fleets.get(idx);
+							player().currentFleet = fleets.get(idx);
 							rep = true;
 						}
 					}
@@ -393,14 +385,30 @@ public class StarmapScreen extends ScreenBase {
 		case DOUBLE_CLICK:
 			Planet p = getPlanetAt(e.x, e.y);
 			if (p != null) {
-				commons.world.player.currentPlanet = p;
-				commons.control.displayPrimary(Screens.COLONY);
+				player().currentPlanet = p;
+				displayPrimary(Screens.COLONY);
 				rep = true;
 			} else {
 				Fleet f = getFleetAt(e.x, e.y);
 				if (f != null) {
-					commons.world.player.currentFleet = f;
-					commons.control.displaySecondary(Screens.EQUIPMENT);
+					player().currentFleet = f;
+					displaySecondary(Screens.EQUIPMENT_FLEET);
+				} else {
+					if (planetsList.contains(e.x, e.y)) {
+						int idx = planetsOffset + (e.y - planetsList.y) / 10;
+						List<Planet> planets = planets();
+						if (idx < planets.size()) {
+							player().currentPlanet = planets.get(idx);
+							displayPrimary(Screens.COLONY);
+						}
+					}
+					if (fleetsList.contains(e.x, e.y)) {
+						int idx = fleetsOffset + (e.y - fleetsList.y) / 10;
+						if (idx < fleets.size()) {
+							player().currentFleet = fleets.get(idx);
+							displaySecondary(Screens.EQUIPMENT_FLEET);
+						}
+					}
 				}
 			}
 			break;
@@ -415,13 +423,28 @@ public class StarmapScreen extends ScreenBase {
 			pfSplitter = false;
 			break;
 		case WHEEL:
-			if (e.has(Modifier.CTRL) && starmapWindow.contains(e.x, e.y)) {
-				if (e.z < 0) {
-					doZoomIn(e.x, e.y);
-					rep = true;
+			if (starmapWindow.contains(e.x, e.y)) {
+				if (e.has(Modifier.CTRL)) {
+					if (e.z < 0) {
+						doZoomIn(e.x, e.y);
+						rep = true;
+					} else {
+						doZoomOut(e.x, e.y);
+						rep = true;
+					}
+				} else
+				if (e.has(Modifier.SHIFT)) {
+					if (e.z < 0) {
+						pan(-30, 0);
+					} else {
+						pan(+30, 0);
+					}
 				} else {
-					doZoomOut(e.x, e.y);
-					rep = true;
+					if (e.z < 0) {
+						pan(0, -30);
+					} else {
+						pan(0, +30);
+					}
 				}
 			} else
 			if (fleetsList.contains(e.x, e.y)) {
@@ -438,7 +461,7 @@ public class StarmapScreen extends ScreenBase {
 				} else {
 					planetsOffset++;
 				}
-				planetsOffset = limitScrollBox(planetsOffset, planets.size(), planetsList.height, 10);
+				planetsOffset = limitScrollBox(planetsOffset, planets().size(), planetsList.height, 10);
 			}
 			break;
 		default:
@@ -467,10 +490,8 @@ public class StarmapScreen extends ScreenBase {
 		return offset; 
 	}
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		rotationTimer.start();
-		planets.clear();
-		planets.addAll(commons.world.planets);
 	}
 
 	/* (non-Javadoc)
@@ -513,17 +534,15 @@ public class StarmapScreen extends ScreenBase {
 		
 		// render radar circles
 		if (showRadar) {
-			for (Planet p : planets) {
-				if (p.owner == commons.world.player) {
-					p.getStatistics();
-					if (p.radar > 0) {
-						paintRadar(g2, p.x, p.y, p.radar, zoom);
-					}
+			for (Planet p : planets()) {
+				p.getStatistics();
+				if (p.radar > 0) {
+					paintRadar(g2, p.x, p.y, p.radar, zoom);
 				}
 			}
 			if (showFleets) {
 				for (Fleet f : fleets) {
-					if (f.owner == commons.world.player) {
+					if (f.owner == player()) {
 						f.getStatistics();
 						if (f.radar > 0) {
 							paintRadar(g2, f.x, f.y, f.radar, zoom);
@@ -533,8 +552,8 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 
-		for (Planet p : planets) {
-			PlanetKnowledge pk = commons.world.player.planets.get(p);
+		for (Planet p : commons.world().planets) {
+			PlanetKnowledge pk = knowledge(p);
 			if (pk == null) {
 				continue;
 			}
@@ -555,7 +574,7 @@ public class StarmapScreen extends ScreenBase {
 			if (pk.ordinal() >= PlanetKnowledge.NAMED.ordinal()) {
 				commons.text().paintTo(g2, xt, yt, 5, labelColor, p.name);
 			}
-			if (p == commons.world.player.currentPlanet) {
+			if (p == planet()) {
 				g2.setColor(Color.WHITE);
 				g2.drawLine(x0 - 1, y0 - 1, x0 + 2, y0 - 1);
 				g2.drawLine(x0 - 1, y0 + di + 1, x0 + 2, y0 + di + 1);
@@ -611,7 +630,7 @@ public class StarmapScreen extends ScreenBase {
 				int xt = (int)(starmapRect.x + f.x * zoom - tw / 2);
 				int yt = (int)(starmapRect.y + f.y * zoom + f.shipIcon.getHeight() / 2) + 3;
 				commons.text().paintTo(g2, xt, yt, 5, f.owner.color, f.name);
-				if (f == commons.world.player.currentFleet) {
+				if (f == fleet()) {
 					g2.setColor(Color.WHITE);
 					g2.drawRect(x0 - 1, y0 - 1, f.shipIcon.getWidth() + 2, f.shipIcon.getHeight() + 2);
 				}
@@ -638,10 +657,11 @@ public class StarmapScreen extends ScreenBase {
 			
 			g2.setClip(save0);
 			g2.clipRect(planetsList.x, planetsList.y, planetsList.width, planetsList.height);
+			List<Planet> planets = planets();
 			for (int i = planetsOffset; i < planets.size(); i++) {
 				Planet p = planets.get(i);
 				int color = TextRenderer.GREEN;
-				if (p == commons.world.player.currentPlanet) {
+				if (p == planet()) {
 					color = TextRenderer.RED;
 				}
 				commons.text().paintTo(g2, planetsList.x + 3, planetsList.y + (i - planetsOffset) * 10 + 2, 7, color, p.name);
@@ -649,12 +669,12 @@ public class StarmapScreen extends ScreenBase {
 			g2.setClip(save0);
 			g2.clipRect(fleetsList.x, fleetsList.y, fleetsList.width, fleetsList.height);
 			for (int i = fleetsOffset; i < fleets.size(); i++) {
-				Fleet p = fleets.get(i);
+				Fleet f = fleets.get(i);
 				int color = TextRenderer.GREEN;
-				if (p == commons.world.player.currentFleet) {
+				if (f == fleet()) {
 					color = TextRenderer.RED;
 				}
-				commons.text().paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, p.name);
+				commons.text().paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, f.name);
 			}
 			
 			g2.setClip(save0);
@@ -675,16 +695,15 @@ public class StarmapScreen extends ScreenBase {
 			g2.setClip(save0);
 			g2.clipRect(minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height);
 			// render planets
-			for (Planet p : planets) {
-				PlanetKnowledge pk = commons.world.player.planets.get(p);
-				if (pk == null || pk.ordinal() < PlanetKnowledge.DISCOVERED.ordinal()) {
+			for (Planet p : commons.world().planets) {
+				if (knowledge(p, PlanetKnowledge.DISCOVERED) >= 0) {
 					continue;
 				}
-				if (p != commons.world.player.currentPlanet || minimapPlanetBlink) {
+				if (p != planet() || minimapPlanetBlink) {
 					int x0 = minimapInnerRect.x + (p.x * minimapInnerRect.width / commons.starmap().background.getWidth());
 					int y0 = minimapInnerRect.y + (p.y * minimapInnerRect.height / commons.starmap().background.getHeight());
 					int labelColor = TextRenderer.GRAY;
-					if (p.owner != null && pk.ordinal() >= PlanetKnowledge.OWNED.ordinal()) {
+					if (p.owner != null && knowledge(p, PlanetKnowledge.OWNED) >= 0) {
 						labelColor = p.owner.color;
 					}
 					g2.setColor(new Color(labelColor));
@@ -822,8 +841,9 @@ public class StarmapScreen extends ScreenBase {
 		bridge.x = buttonsPanel.x + 1;
 		bridge.y = info.y + info.height + 1;
 		
+		List<Planet> planets = planets();
 		if (planets.size() > 0) {
-			int idx = planets.indexOf(commons.world.player.currentPlanet);
+			int idx = planets.indexOf(planet());
 			prevPlanet.enabled(idx > 0);
 			nextPlanet.enabled(idx + 1 < planets.size());
 		} else {
@@ -832,7 +852,7 @@ public class StarmapScreen extends ScreenBase {
 		}
 		
 		if (fleets.size() > 0) {
-			int idx = fleets.indexOf(commons.world.player.currentFleet);
+			int idx = fleets.indexOf(fleet());
 			prevFleet.enabled(idx > 0);
 			nextFleet.enabled(idx + 1 < fleets.size());
 		} else {
@@ -1177,7 +1197,7 @@ public class StarmapScreen extends ScreenBase {
 	 */
 	public Planet getPlanetAt(int x, int y) {
 		double zoom = getZoom();
-		for (Planet p : planets) {
+		for (Planet p : commons.world().planets) {
 			double d = p.diameter * zoom / 4;
 			int di = (int)d;
 			int x0 = (int)(starmapRect.x + p.x * zoom - d / 2);
@@ -1223,5 +1243,13 @@ public class StarmapScreen extends ScreenBase {
 		if (yOffset < 0) {
 			yOffset = 0;
 		}
+	}
+	/** @return the player's own planets. */
+	public List<Planet> planets() {
+		return player().getPlayerPlanets();
+	}
+	@Override
+	public Screens screen() {
+		return Screens.STARMAP;
 	}
 }

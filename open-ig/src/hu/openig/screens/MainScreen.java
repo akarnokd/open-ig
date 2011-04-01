@@ -82,8 +82,8 @@ public class MainScreen extends ScreenBase {
 			if (selected) {
 				color = 0xFFFFFFFF;
 			}
-			int textWidth = commons.text().getTextWidth(size, commons.labels().get(label));
-			commons.text().paintTo(g2, x0 + x + (width - textWidth) / 2, y0 + y, size, color, commons.labels().get(label));
+			int textWidth = commons.text().getTextWidth(size, get(label));
+			commons.text().paintTo(g2, x0 + x + (width - textWidth) / 2, y0 + y, size, color, get(label));
 		}
 		/**
 		 * Test if the mouse is within the label.
@@ -113,9 +113,6 @@ public class MainScreen extends ScreenBase {
 	private BufferedImage background;
 	/** The list of clickable labels. */
 	private List<ClickLabel> clicklabels;
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
 	@Override
 	public void onFinish() {
 		// TODO Auto-generated method stub
@@ -132,9 +129,6 @@ public class MainScreen extends ScreenBase {
 		background = newBackground;
 		askRepaint();
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
 	@Override
 	public void onInitialize() {
 		clicklabels = new LinkedList<ClickLabel>();
@@ -143,7 +137,7 @@ public class MainScreen extends ScreenBase {
 		single.action = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.SINGLEPLAYER);
+				displayPrimary(Screens.SINGLEPLAYER);
 			}
 		};
 		clicklabels.add(single);
@@ -153,7 +147,7 @@ public class MainScreen extends ScreenBase {
 		load.action = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.LOAD_SAVE);
+				displayPrimary(Screens.LOAD_SAVE);
 			}
 		};
 		clicklabels.add(load);
@@ -173,7 +167,7 @@ public class MainScreen extends ScreenBase {
 		videosLabel.action = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.VIDEOS);
+				displaySecondary(Screens.VIDEOS);
 			}
 		};
 		clicklabels.add(videosLabel);
@@ -210,7 +204,7 @@ public class MainScreen extends ScreenBase {
 			public void act() {
 				toEng.disabled = true;
 				toHu.disabled = false;
-				commons.control.switchLanguage("en");
+				switchLanguage("en");
 				selectRandomBackground();
 				askRepaint();
 			}
@@ -220,7 +214,7 @@ public class MainScreen extends ScreenBase {
 			public void act() {
 				toEng.disabled = false;
 				toHu.disabled = true;
-				commons.control.switchLanguage("hu");
+				switchLanguage("hu");
 				selectRandomBackground();
 				askRepaint();
 			}
@@ -231,19 +225,19 @@ public class MainScreen extends ScreenBase {
 	}
 	/** Perform the exit. */
 	void doExit() {
-		commons.control.exit();
+		exit();
 	}
 	/**
 	 * Play the intro videos.
 	 */
 	protected void doPlayIntro() {
-		commons.control.playVideos("intro/intro_1", "intro/intro_2", "intro/intro_3");
+		playVideos("intro/intro_1", "intro/intro_2", "intro/intro_3");
 	}
 	/**
 	 * Play the title video.
 	 */
 	protected void doPlayTitle() {
-		commons.control.playVideos("intro/gt_interactive_intro");
+		playVideos("intro/gt_interactive_intro");
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
@@ -289,7 +283,7 @@ public class MainScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		selectRandomBackground();
 		onResize();
 	}
@@ -314,14 +308,14 @@ public class MainScreen extends ScreenBase {
 			selectRandomBackground();
 		}
 		// relocate objects if necessary
-		xOrigin = (commons.control.getInnerWidth() - background.getWidth()) / 2;
-		yOrigin = (commons.control.getInnerHeight() - background.getHeight()) / 2;
+		xOrigin = (getInnerWidth() - background.getWidth()) / 2;
+		yOrigin = (getInnerHeight() - background.getHeight()) / 2;
 	}
 	@Override
 	public void draw(Graphics2D g2) {
 		onResize(); // repaint might come before an onResize
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, commons.control.getInnerWidth(), commons.control.getInnerHeight());
+		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		g2.drawImage(background, xOrigin, yOrigin, null);
 	
 		commons.text().paintTo(g2, xOrigin + 121, yOrigin + 21, 14, 0xFF000000, "Open");
@@ -345,10 +339,14 @@ public class MainScreen extends ScreenBase {
 		try {
 			Class<?> clazz = Class.forName("hu.openig.Setup");
 			Constructor<?> c = clazz.getConstructor(Configuration.class, GameControls.class);
-			Object instance = c.newInstance(commons.config, commons.control);
+			Object instance = c.newInstance(commons.config, commons);
 			clazz.getMethod("setVisible", Boolean.TYPE).invoke(instance, true);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	@Override
+	public Screens screen() {
+		return Screens.MAIN;
 	}
 }

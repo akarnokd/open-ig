@@ -409,8 +409,8 @@ public class World {
 		planets.add(p);
 		if (p.owner != null) {
 			p.owner.planets.put(p, PlanetKnowledge.FULL);
-			player.planets.put(p, PlanetKnowledge.OWNED);
 		}
+		player.planets.put(p, PlanetKnowledge.OWNED);
 	}
 	/**
 	 * Process a tech XML.

@@ -24,13 +24,6 @@ import hu.openig.gfx.ResearchGFX;
 import hu.openig.gfx.SpacewarGFX;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StatusbarGFX;
-import hu.openig.model.BuildingType;
-import hu.openig.model.Fleet;
-import hu.openig.model.FleetKnowledge;
-import hu.openig.model.Planet;
-import hu.openig.model.PlanetKnowledge;
-import hu.openig.model.Player;
-import hu.openig.model.ResearchType;
 import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
 
@@ -83,7 +76,7 @@ public class CommonResources {
 	/** The text renderer. */
 	private TextRenderer text;
 	/** The general control interface. */
-	public GameControls control;
+	private GameControls control;
 	// --------------------------------------------
 	// The various screen objects
 	// --------------------------------------------
@@ -137,7 +130,7 @@ public class CommonResources {
 		public StatusbarScreen statusbar;
 	}
 	/** The game world. */
-	public World world;
+	private World world;
 	/** Flag to indicate the game world is loading. */
 	public boolean worldLoading;
 	/** The common executor service. */
@@ -295,7 +288,7 @@ public class CommonResources {
 			control.displayPrimary(Screens.COLONY);
 		} else
 		if ("*equipment".equals(to)) {
-			control.displaySecondary(Screens.EQUIPMENT);
+			control.displaySecondary(Screens.EQUIPMENT_FLEET);
 		} else
 		if ("*research".equals(to)) {
 			control.displaySecondary(Screens.RESEARCH);
@@ -304,7 +297,7 @@ public class CommonResources {
 			control.displaySecondary(Screens.PRODUCTION);
 		} else
 		if ("*information".equals(to)) {
-			control.displaySecondary(Screens.INFORMATION);
+			control.displaySecondary(Screens.INFORMATION_PLANETS);
 		} else
 		if ("*database".equals(to)) {
 			control.displaySecondary(Screens.DATABASE);
@@ -334,7 +327,7 @@ public class CommonResources {
 		}
 	}
 	/** @return lazily initialize the labels or return the existing one. */
-	public Labels labels() {
+	public Labels labels0() {
 		return labels;
 	}
 	/** @return lazily initialize the status bar or return the existing one. */
@@ -402,59 +395,6 @@ public class CommonResources {
 		return rl.get(name, ResourceType.AUDIO);
 	}
 	/**
-	 * Returns a translation for the given label.
-	 * @param label the label
-	 * @return the translation
-	 */
-	public String get(String label) {
-		return labels().get(label);
-	}
-	/** 
-	 * Returns a formatted translation of the given label.
-	 * @param label the label
-	 * @param args the arguments to the formatter
-	 * @return the translation
-	 */
-	public String format(String label, Object... args) {
-		return labels().format(label, args);
-	}
-	/** @return the current player. */
-	public Player player() {
-		return world.player;
-	}
-	/** @return the current selected planet of the current player. */
-	public Planet planet() {
-		return player().currentPlanet;
-	}
-	/** @return the current selected building type of the current player. */
-	public BuildingType buildingType() {
-		return player().currentBuilding;
-	}
-	/** @return the current research type of the current player. */
-	public ResearchType researchType() {
-		return player().currentResearch;
-	}
-	/** @return the current fleet of the current player. */
-	public Fleet fleet() {
-		return player().currentFleet;
-	}
-	/**
-	 * Returns the planet knowledge about the given planet by the current player.
-	 * @param p the target planet
-	 * @return the knowledge
-	 */
-	public PlanetKnowledge knowledge(Planet p) {
-		return player().planets.get(p);
-	}
-	/**
-	 * Returns the fleet knowledge about the given fleet by the current player.
-	 * @param p the target planet
-	 * @return the knowledge
-	 */
-	public FleetKnowledge knowledge(Fleet p) {
-		return player().fleets.get(p);
-	}
-	/**
 	 * Close and stop resources.
 	 */
 	public void close() {
@@ -462,8 +402,30 @@ public class CommonResources {
 			world.allocator.stop();
 		}
 	}
-	/** @return the race of the buildings on the current planet or the player's race. */
-	public String race() {
-		return planet().race != null ? planet().race : player().race;
+	/** @return the world instance. */
+	public World world() {
+		return world;
+	}
+	/**
+	 * Set the world.
+	 * @param w the new world
+	 * @return this
+	 */
+	public CommonResources world(World w) {
+		this.world = w;
+		return this;
+	}
+	/**
+	 * Set the game control peer.
+	 * @param ctrl the new game control peer
+	 * @return this
+	 */
+	public CommonResources control(GameControls ctrl) {
+		this.control = ctrl;
+		return this;
+	}
+	/** @return the control object */
+	public GameControls control() {
+		return control;
 	}
 }

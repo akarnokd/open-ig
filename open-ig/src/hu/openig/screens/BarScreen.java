@@ -35,7 +35,7 @@ public class BarScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -61,7 +61,7 @@ public class BarScreen extends ScreenBase {
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 
-		WalkShip ws = commons.world.walks.ships.get("" + commons.world.level);
+		WalkShip ws = commons.world().walks.ships.get("" + commons.world().level);
 		if (ws != null) {
 			WalkPosition p = ws.positions.get("*bar");
 			if (p != null) {
@@ -74,11 +74,14 @@ public class BarScreen extends ScreenBase {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
-			commons.control.hideSecondary();
+			hideSecondary();
 			return true;
 		} else {
 			return super.mouse(e);
 		}
 	}
-
+	@Override
+	public Screens screen() {
+		return Screens.BAR;
+	}
 }

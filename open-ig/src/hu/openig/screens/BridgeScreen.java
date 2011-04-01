@@ -56,7 +56,7 @@ public class BridgeScreen extends ScreenBase {
 	Polygon closeMessage;
 	@Override
 	public void onResize() {
-		origin.setBounds((commons.control.getInnerWidth() - 640) / 2, 20 + (commons.control.getInnerHeight() - 38 - 442) / 2, 640, 442);
+		origin.setBounds((getInnerWidth() - 640) / 2, 20 + (getInnerHeight() - 38 - 442) / 2, 640, 442);
 		messageOpenRect.setBounds(origin.x + 572, origin.y + 292, 68, 170);
 		projectorRect.setBounds(origin.x + (origin.width - 524) / 2 - 4, origin.y, 524, 258);
 		videoRect.setBounds(projectorRect.x + 99, projectorRect.y + 11, 320, 240);
@@ -146,7 +146,7 @@ public class BridgeScreen extends ScreenBase {
 	 */
 	void playMessageAppear() {
 		openCloseAnimating = true;
-		messageAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().messageAppear, new SwappableRenderer() {
+		messageAnim = new MediaPlayer(commons, commons.world().getCurrentLevel().messageAppear, new SwappableRenderer() {
 			@Override
 			public BufferedImage getBackbuffer() {
 				return messageBack;
@@ -185,7 +185,7 @@ public class BridgeScreen extends ScreenBase {
 	 */
 	void playMessageOpen() {
 		openCloseAnimating = true;
-		messageAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().messageOpen, new SwappableRenderer() {
+		messageAnim = new MediaPlayer(commons, commons.world().getCurrentLevel().messageOpen, new SwappableRenderer() {
 			@Override
 			public BufferedImage getBackbuffer() {
 				return messageBack;
@@ -223,7 +223,7 @@ public class BridgeScreen extends ScreenBase {
 	/** Play message panel closing. */
 	void playMessageClose() {
 		openCloseAnimating = true;
-		messageAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().messageClose, new SwappableRenderer() {
+		messageAnim = new MediaPlayer(commons, commons.world().getCurrentLevel().messageClose, new SwappableRenderer() {
 			@Override
 			public BufferedImage getBackbuffer() {
 				return messageBack;
@@ -261,7 +261,7 @@ public class BridgeScreen extends ScreenBase {
 	/** Play message panel closing. */
 	void playProjectorOpen() {
 		openCloseAnimating = true;
-		projectorAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().projectorOpen, new SwappableRenderer() {
+		projectorAnim = new MediaPlayer(commons, commons.world().getCurrentLevel().projectorOpen, new SwappableRenderer() {
 			@Override
 			public BufferedImage getBackbuffer() {
 				return projectorBack;
@@ -299,7 +299,7 @@ public class BridgeScreen extends ScreenBase {
 	/** Play message panel closing. */
 	void playProjectorClose() {
 		openCloseAnimating = true;
-		projectorAnim = new MediaPlayer(commons, commons.world.getCurrentLevel().projectorClose, new SwappableRenderer() {
+		projectorAnim = new MediaPlayer(commons, commons.world().getCurrentLevel().projectorClose, new SwappableRenderer() {
 			@Override
 			public BufferedImage getBackbuffer() {
 				return projectorBack;
@@ -367,7 +367,7 @@ public class BridgeScreen extends ScreenBase {
 					if (messageOpenRect.contains(e.x, e.y)) {
 						playMessageOpen();
 					} else {
-						Level lvl = commons.world.getCurrentLevel();
+						Level lvl = commons.world().getCurrentLevel();
 						for (WalkTransition tr : lvl.walk.transitions) {
 							if (tr.area.contains(e.x - origin.x, e.y - origin.y)) {
 								final String to = tr.to; 
@@ -375,10 +375,10 @@ public class BridgeScreen extends ScreenBase {
 									// move to the screen directly.
 									commons.switchScreen(to);
 								} else {
-									final ShipwalkScreen sws = (ShipwalkScreen)commons.control.displayPrimary(Screens.SHIPWALK);
+									final ShipwalkScreen sws = (ShipwalkScreen)displayPrimary(Screens.SHIPWALK);
 									sws.position = lvl.walk;
 									
-									WalkShip ship = commons.world.getShip();
+									WalkShip ship = commons.world().getShip();
 									sws.next = ship.positions.get(tr.to);
 									
 									final String media = tr.media;
@@ -407,8 +407,8 @@ public class BridgeScreen extends ScreenBase {
 	/** The level specific background. */
 	BufferedImage background;
 	@Override
-	public void onEnter(Object mode) {
-		background = commons.world.bridge.levels.get(commons.world.level).image;
+	public void onEnter(Screens mode) {
+		background = commons.world().bridge.levels.get(commons.world().level).image;
 		onResize();
 		playMessageAppear();
 	}
@@ -435,7 +435,7 @@ public class BridgeScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, commons.control.getInnerWidth(), commons.control.getInnerHeight());
+		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		
 		g2.drawImage(background, origin.x, origin.y, null);
 		
@@ -478,7 +478,7 @@ public class BridgeScreen extends ScreenBase {
 		if (messageOpen) {
 			g2.fillPolygon(closeMessage);
 		} else {
-			WalkPosition wp = commons.world.getCurrentLevel().walk;
+			WalkPosition wp = commons.world().getCurrentLevel().walk;
 			AffineTransform tf = g2.getTransform();
 			g2.translate(origin.x, origin.y);
 			
@@ -512,5 +512,8 @@ public class BridgeScreen extends ScreenBase {
 			y += 21;
 		}
 	}
-
+	@Override
+	public Screens screen() {
+		return Screens.BRIDGE;
+	}
 }

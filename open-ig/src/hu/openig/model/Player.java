@@ -95,9 +95,9 @@ public class Player {
 	public List<Planet> getPlayerPlanets() {
 		List<Planet> result = new ArrayList<Planet>();
 		for (Planet p : planets.keySet()) {
-//			if (planets.get(p) == PlanetKnowledge.FULL) { FIXME temporary
+			if (p.owner == this) {
 				result.add(p);
-//			}
+			}
 		}
 		return result;
 	}
@@ -110,6 +110,13 @@ public class Player {
 				c = o1.x < o2.x ? -1 : (o1.x > o2.x ? 1 : 0);
 			}
 			return c;
+		}
+	};
+	/** The planet order by name. */
+	public static final Comparator<Planet> NAME_ORDER = new Comparator<Planet>() {
+		@Override
+		public int compare(Planet o1, Planet o2) {
+			return o1.name.compareTo(o2.name);
 		}
 	};
 }

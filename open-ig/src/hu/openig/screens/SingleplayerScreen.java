@@ -98,8 +98,8 @@ public class SingleplayerScreen extends ScreenBase {
 				commons.background().difficulty[0].getHeight());
 		
 		playLabel = new UIGenericButton(
-				commons.labels().get("singleplayer.start_game"),
-				commons.control.fontMetrics(16),
+				get("singleplayer.start_game"),
+				fontMetrics(16),
 				commons.common().mediumButton,
 				commons.common().mediumButtonPressed
 				);
@@ -111,15 +111,15 @@ public class SingleplayerScreen extends ScreenBase {
 		};
 		
 		backLabel = new UIGenericButton(
-			commons.labels().get("singleplayer.back"),
-			commons.control.fontMetrics(16),
+			get("singleplayer.back"),
+			fontMetrics(16),
 			commons.common().mediumButton,
 			commons.common().mediumButtonPressed
 		);
 		backLabel.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.MAIN);
+				displayPrimary(Screens.MAIN);
 			}
 		};
 		
@@ -145,7 +145,7 @@ public class SingleplayerScreen extends ScreenBase {
 	void doStartGame() {
 		if (selectedDefinition != null) {
 			// display the loading screen.
-			commons.control.displaySecondary(Screens.LOADING);
+			commons.control().displaySecondary(Screens.LOADING);
 			final Semaphore barrier = new Semaphore(-1);
 			// the completion waiter thread
 			Thread t0 = new Thread("Start Game Video Waiter") {
@@ -156,8 +156,9 @@ public class SingleplayerScreen extends ScreenBase {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override 
 							public void run() {
-								commons.world.allocator.start();
-								commons.control.displayPrimary(Screens.BRIDGE);
+								commons.world().allocator.start();
+								commons.control().displayPrimary(Screens.BRIDGE);
+								commons.control().displayStatusbar();
 							};
 						});
 					} catch (InterruptedException ex) {
@@ -167,7 +168,7 @@ public class SingleplayerScreen extends ScreenBase {
 			};
 			t0.setPriority(Thread.MIN_PRIORITY);
 			t0.start();
-			commons.world = null;
+			commons.world(null);
 			commons.worldLoading = true;
 			// the asynchronous loading
 			Thread t1 = new Thread("Start Game Loading") {
@@ -184,8 +185,8 @@ public class SingleplayerScreen extends ScreenBase {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							commons.labels().replaceWith(labels);
-							commons.world = world;
+							commons.labels0().replaceWith(labels);
+							commons.world(world);
 							commons.worldLoading = false;
 							barrier.release();
 						}
@@ -195,7 +196,7 @@ public class SingleplayerScreen extends ScreenBase {
 			t1.setPriority(Thread.MIN_PRIORITY);
 			t1.start();
 			// the video playback
-			commons.control.playVideos(new Act() {
+			playVideos(new Act() {
 				@Override
 				public void act() {
 					barrier.release();
@@ -206,7 +207,8 @@ public class SingleplayerScreen extends ScreenBase {
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			commons.control.displayPrimary(Screens.MAIN);
+			displayPrimary(Screens.MAIN);
+			displayStatusbar();
 		}
 		return false;
 	}
@@ -258,7 +260,7 @@ public class SingleplayerScreen extends ScreenBase {
 	/** The definition. */
 	final Rectangle descriptionRect = new Rectangle();
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		background = commons.background().difficulty[rnd.nextInt(commons.background().difficulty.length)];
 		selectedDefinition = null;
 		campaigns.clear();
@@ -305,8 +307,8 @@ public class SingleplayerScreen extends ScreenBase {
 		g2.setComposite(cp);
 		
 		int y = campaignList.y;
-		commons.text().paintTo(g2, campaignList.x + 1, campaignList.y - 24, 20, 0xFF000000, commons.labels().get("singleplayer.campaigns"));
-		commons.text().paintTo(g2, campaignList.x, campaignList.y - 25, 20, 0xFFFFFF00, commons.labels().get("singleplayer.campaigns"));
+		commons.text().paintTo(g2, campaignList.x + 1, campaignList.y - 24, 20, 0xFF000000, get("singleplayer.campaigns"));
+		commons.text().paintTo(g2, campaignList.x, campaignList.y - 25, 20, 0xFFFFFF00, get("singleplayer.campaigns"));
 		for (GameDefinition gd : campaigns) {
 			int color = selectedDefinition == gd ? 0xFFFFCC00 : 0xFF80FF80;
 			commons.text().paintTo(g2, campaignList.x + 10, y + 2, 14, color, gd.title);
@@ -317,11 +319,11 @@ public class SingleplayerScreen extends ScreenBase {
 		g2.drawImage(commons.database().pictureEdge[2], pictureRect.x, pictureRect.y + pictureRect.height - commons.database().pictureEdge[2].getHeight(), null);
 		g2.drawImage(commons.database().pictureEdge[3], pictureRect.x + pictureRect.width - commons.database().pictureEdge[3].getWidth(), pictureRect.y + pictureRect.height - commons.database().pictureEdge[3].getHeight(), null);
 		
-		commons.text().paintTo(g2, descriptionRect.x + 1, descriptionRect.y - 24, 20, 0xFF000000, commons.labels().get("singleplayer.description"));
-		commons.text().paintTo(g2, descriptionRect.x, descriptionRect.y - 25, 20, 0xFFFFFF00, commons.labels().get("singleplayer.description"));
+		commons.text().paintTo(g2, descriptionRect.x + 1, descriptionRect.y - 24, 20, 0xFF000000, get("singleplayer.description"));
+		commons.text().paintTo(g2, descriptionRect.x, descriptionRect.y - 25, 20, 0xFFFFFF00, get("singleplayer.description"));
 		
-		commons.text().paintTo(g2, descriptionRect.x + 1, descriptionRect.y + descriptionRect.height + 6, 20, 0xFF000000, commons.labels().get("singleplayer.difficulty"));
-		commons.text().paintTo(g2, descriptionRect.x, descriptionRect.y + descriptionRect.height + 5, 20, 0xFFFFFF00, commons.labels().get("singleplayer.difficulty"));
+		commons.text().paintTo(g2, descriptionRect.x + 1, descriptionRect.y + descriptionRect.height + 6, 20, 0xFF000000, get("singleplayer.difficulty"));
+		commons.text().paintTo(g2, descriptionRect.x, descriptionRect.y + descriptionRect.height + 5, 20, 0xFFFFFF00, get("singleplayer.difficulty"));
 		
 		if (selectedDefinition != null) {
 			List<String> lines = new ArrayList<String>();
@@ -335,7 +337,7 @@ public class SingleplayerScreen extends ScreenBase {
 					pictureRect.y + (pictureRect.height - selectedDefinition.image.getHeight()) / 2, null);
 		}
 		
-		String diff = commons.labels().get(Difficulty.values()[difficulty].label);
+		String diff = get(Difficulty.values()[difficulty].label);
 		int diffw = commons.text().getTextWidth(14, diff);
 		commons.text().paintTo(g2, difficultyRect.x + (difficultyRect.width - diffw) / 2, 
 				difficultyRect.y + (difficultyLeft.height - difficultyRect.height) / 2, 14, 0xFF00FFFF, diff);
@@ -374,5 +376,8 @@ public class SingleplayerScreen extends ScreenBase {
 		
 		return result;
 	}
-
+	@Override
+	public Screens screen() {
+		return Screens.SINGLEPLAYER;
+	}
 }

@@ -33,7 +33,7 @@ public class DatabaseScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -58,7 +58,7 @@ public class DatabaseScreen extends ScreenBase {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
-			commons.control.hideSecondary();
+			hideSecondary();
 			return true;
 		} else {
 			return super.mouse(e);
@@ -70,5 +70,9 @@ public class DatabaseScreen extends ScreenBase {
 		g2.drawImage(commons.database().background, base.x, base.y, null);
 		
 		super.draw(g2);
+	}
+	@Override
+	public Screens screen() {
+		return Screens.DATABASE;
 	}
 }

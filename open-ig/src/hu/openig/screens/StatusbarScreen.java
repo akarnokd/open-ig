@@ -8,6 +8,11 @@
 
 package hu.openig.screens;
 
+import hu.openig.core.Act;
+import hu.openig.ui.UIImageFill;
+
+import javax.swing.Timer;
+
 
 
 /**
@@ -15,35 +20,75 @@ package hu.openig.screens;
  * @author akarnokd, 2010.01.11.
  */
 public class StatusbarScreen extends ScreenBase {
-
+	/** The top bar. */
+	UIImageFill top;
+	/** The bottom bar. */
+	UIImageFill bottom;
+	/** The animation timer to show the status bar. */
+	Timer animation;
 	@Override
 	public void onInitialize() {
-		// TODO Auto-generated method stub
+		top = new UIImageFill(
+				commons.statusbar().ingameTopLeft, 
+				commons.statusbar().ingameTopFill,
+				commons.statusbar().ingameTopRight, true);
+		top.z = -1;
+		bottom = new UIImageFill(
+				commons.statusbar().ingameBottomLeft, 
+				commons.statusbar().ingameBottomFill,
+				commons.statusbar().ingameBottomRight, true);
+		bottom.z = -1;
 		
+		animation = new Timer(50, new Act() {
+			@Override
+			public void act() {
+				boolean s = true;
+				if (top.y < 0) {
+					top.y += 2;
+					s = false;
+				}
+				if (bottom.y > height - 18) {
+					bottom.y -= 2;
+					s = false;
+				}
+				askRepaint();
+				if (s) {
+					animation.stop();
+				}
+			}
+		});
+		
+		addThis();
 	}
 
 	@Override
-	public void onEnter(Object mode) {
-		// TODO Auto-generated method stub
-		
+	public void onEnter(Screens mode) {
+		top.bounds(0, -20, width, 20);
+		bottom.bounds(0, height, width, 18);
+		animation.start();
 	}
 
 	@Override
 	public void onLeave() {
-		// TODO Auto-generated method stub
-		
+		animation.stop();
 	}
 
 	@Override
 	public void onFinish() {
-		// TODO Auto-generated method stub
-		
+		animation = null;
 	}
 
 	@Override
 	public void onResize() {
-		// TODO Auto-generated method stub
-		
+		top.size(width, 20);
+		bottom.size(width, 18);
+		if (!animation.isRunning()) {
+			bottom.location(0, height - 18);
+		}
 	}
-
+	
+	@Override
+	public Screens screen() {
+		return Screens.STATUSBAR;
+	}
 }

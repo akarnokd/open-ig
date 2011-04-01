@@ -51,7 +51,7 @@ public class ClickLabel extends UIComponent {
 	}
 	/** Resize the component based on the content label. */
 	void resize() {
-		width = 10 + commons.text().getTextWidth(size, commons.labels().get(label));
+		width = 10 + commons.text().getTextWidth(size, commons.labels0().get(label));
 		height = size + 4;
 	}
 	@Override 
@@ -59,7 +59,7 @@ public class ClickLabel extends UIComponent {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, width, height);
 		int color = selected ? 0xFFFFCC00 : (over ? 0xFFFFEE00 : 0xFF00CC00);
-		commons.text().paintTo(g2, 5, 2, size, color, commons.labels().get(label));
+		commons.text().paintTo(g2, 5, 2, size, color, commons.labels0().get(label));
 	}
 	@Override
 	public boolean mouse(UIMouse e) {

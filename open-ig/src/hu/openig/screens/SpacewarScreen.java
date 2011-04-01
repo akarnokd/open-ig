@@ -191,7 +191,7 @@ public class SpacewarScreen extends ScreenBase {
 		/** Move to the next animation. */
 		protected void doAnimate() {
 			animationIndex = (animationIndex + 1) % (phases.length - 1);
-			commons.control.repaintInner(x, y, phases[0].getWidth(), phases[0].getHeight());
+			repaintInner(x, y, phases[0].getWidth(), phases[0].getHeight());
 		}
 		/**
 		 * Render the button.
@@ -482,7 +482,7 @@ public class SpacewarScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		buttonTimer.start();
 	}
 
@@ -613,5 +613,9 @@ public class SpacewarScreen extends ScreenBase {
 		for (ThreePhaseButton btn : mainCommands) {
 			btn.disabled = false;
 		}
+	}
+	@Override
+	public Screens screen() {
+		return Screens.SPACEWAR;
 	}
 }

@@ -18,7 +18,6 @@ import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.World;
 import hu.openig.screens.AchievementsScreen;
-import hu.openig.screens.AchievementsScreen.Mode;
 import hu.openig.screens.BarScreen;
 import hu.openig.screens.BattlefinishScreen;
 import hu.openig.screens.BridgeScreen;
@@ -34,7 +33,6 @@ import hu.openig.screens.LoadingScreen;
 import hu.openig.screens.MainScreen;
 import hu.openig.screens.PlanetScreen;
 import hu.openig.screens.ResearchProductionScreen;
-import hu.openig.screens.ResearchProductionScreen.RPMode;
 import hu.openig.screens.ScreenBase;
 import hu.openig.screens.Screens;
 import hu.openig.screens.ShipwalkScreen;
@@ -54,7 +52,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -415,14 +412,14 @@ public class ScreenTester extends JFrame implements GameControls {
 		menuScreen.add(addScreenItem("Starmap", StarmapScreen.class, null));
 		menuScreen.add(addScreenItem("Planet", PlanetScreen.class, null));
 		menuScreen.add(addScreenItem("Equipment", EquipmentScreen.class, null));
-		menuScreen.add(addScreenItem("Production", ResearchProductionScreen.class, RPMode.PRODUCTION));
-		menuScreen.add(addScreenItem("Research", ResearchProductionScreen.class, RPMode.RESEARCH));
-		menuScreen.add(addScreenItem("Information", InfoScreen.class, null)); // TODO information subscreens!
+		menuScreen.add(addScreenItem("Production", ResearchProductionScreen.class, Screens.PRODUCTION));
+		menuScreen.add(addScreenItem("Research", ResearchProductionScreen.class, Screens.RESEARCH));
+		menuScreen.add(addScreenItem("Information", InfoScreen.class, Screens.INFORMATION_PLANETS)); // TODO information subscreens!
 		menuScreen.add(addScreenItem("Diplomacy", DiplomacyScreen.class, null));
 		menuScreen.add(addScreenItem("Database", DatabaseScreen.class, null));
 		menuScreen.add(addScreenItem("Bar", BarScreen.class, null));
-		menuScreen.add(addScreenItem("Achievements", AchievementsScreen.class, Mode.ACHIEVEMENTS));
-		menuScreen.add(addScreenItem("Statistics", AchievementsScreen.class, Mode.STATISTICS));
+		menuScreen.add(addScreenItem("Achievements", AchievementsScreen.class, Screens.ACHIEVEMENTS));
+		menuScreen.add(addScreenItem("Statistics", AchievementsScreen.class, Screens.STATISTICS));
 		menuScreen.addSeparator();
 		menuScreen.add(addScreenItem("Main menu", MainScreen.class, null));
 		menuScreen.add(addScreenItem("Single player menu", SingleplayerScreen.class, null));
@@ -451,7 +448,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	 * @return the menu item
 	 */
 	JMenuItem addScreenItem(String name, 
-			final Class<? extends ScreenBase> clazz, final Object mode) {
+			final Class<? extends ScreenBase> clazz, final Screens mode) {
 		JMenuItem item = new JMenuItem(name);
 		item.addActionListener(new ActionListener() {
 			@Override
@@ -479,9 +476,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	void doExit() {
 		try {
 			timer.stop();
-			if (commons.world != null) {
-				commons.world.allocator.stop();
-			}
+			commons.close();
 			if (screen != null) {
 				screen.onLeave();
 				screen.onFinish();
@@ -525,14 +520,14 @@ public class ScreenTester extends JFrame implements GameControls {
 					rl = commons.rl;
 
 					t = System.nanoTime();
-					commons.world = new World();
-					commons.world.definition = SingleplayerScreen.parseDefinition(commons, "campaign/main");
-					commons.world.difficulty = Difficulty.values()[0];
-					commons.labels().load(commons.rl, commons.world.definition.name);
-					commons.world.labels = commons.labels();
-					commons.world.load(commons.rl, commons.world.definition.name);
-					commons.world.level = 5;
-					commons.world.allocator = new ResourceAllocator(commons.pool, commons.world.planets);
+					commons.world(new World());
+					commons.world().definition = SingleplayerScreen.parseDefinition(commons, "campaign/main");
+					commons.world().difficulty = Difficulty.values()[0];
+					commons.labels0().load(commons.rl, commons.world().definition.name);
+					commons.world().labels = commons.labels0();
+					commons.world().load(commons.rl, commons.world().definition.name);
+					commons.world().level = 5;
+					commons.world().allocator = new ResourceAllocator(commons.pool, commons.world().planets);
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
 				} catch (Throwable t) {
 					t.printStackTrace();
@@ -543,7 +538,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			}
 			@Override
 			protected void done() {
-				commons.world.allocator.start();
+				commons.world().allocator.start();
 				parentColor = new Color(0xFF80FF80);
 				parentText = txtScreen;
 				enableDisableMenu(true);
@@ -592,7 +587,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			screen = null;
 		}
 		String clazz = null;
-		Object mode = null;
+		Screens mode = null;
 		switch (newScreen) {
 		case ACHIEVEMENTS:
 			clazz = AchievementsScreen.class.getName();
@@ -606,22 +601,24 @@ public class ScreenTester extends JFrame implements GameControls {
 		case COLONY:
 			clazz = PlanetScreen.class.getName();
 			break;
-		case EQUIPMENT:
+		case EQUIPMENT_FLEET:
+		case EQUIPMENT_PLANET:
 			clazz = EquipmentScreen.class.getName();
+			mode = newScreen;
 			break;
 		case DIPLOMACY:
 			clazz = DiplomacyScreen.class.getName();
 			break;
-		case INFORMATION:
+		case INFORMATION_COLONY:
+		case INFORMATION_FLEETS:
+		case INFORMATION_PLANETS:
 			clazz = InfoScreen.class.getName();
+			mode = newScreen;
 			break;
 		case PRODUCTION:
-			clazz = ResearchProductionScreen.class.getName();
-			mode = RPMode.PRODUCTION;
-			break;
 		case RESEARCH:
 			clazz = ResearchProductionScreen.class.getName();
-			mode = RPMode.RESEARCH;
+			mode = newScreen;
 			break;
 		case SPACEWAR:
 			clazz = SpacewarScreen.class.getName();
@@ -688,18 +685,6 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	@Override
 	public void hideStatusbar() {
-		
-	}
-	@Override
-	public void setWindowBounds(int x, int y, int width, int height) {
-		
-	}
-	@Override
-	public Rectangle getWindowBounds() {
-		return null;
-	}
-	@Override
-	public void center() {
 		
 	}
 	@Override
@@ -782,7 +767,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	private void prepareShipWalkMenu(final ScreenBase screen) {
 		final ShipwalkScreen sw = (ShipwalkScreen)screen;
 		WalkShip last = null;
-		List<WalkShip> list = new ArrayList<WalkShip>(commons.world.walks.ships.values());
+		List<WalkShip> list = new ArrayList<WalkShip>(commons.world().walks.ships.values());
 		Collections.sort(list, new Comparator<WalkShip>() {
 			@Override
 			public int compare(WalkShip o1, WalkShip o2) {

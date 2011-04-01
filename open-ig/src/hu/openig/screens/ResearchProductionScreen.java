@@ -54,7 +54,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface ModeUI {
 		/** The expected screen mode. */
-		RPMode mode();
+		Screens mode();
 	}
 	/** The equipment slot locations. */
 	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
@@ -65,18 +65,18 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The panel base rectangle. */
 	final Rectangle base = new Rectangle();
 	/** The add production button. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton addButton;
 	/** The remove production button. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton removeButton;
 	/** The empty button. */
 	UIImage emptyButton;
 	/** The production button. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImageButton productionButton;
 	/** The research button. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton researchButton;
 	/** The equipment button. */
 	UIImageButton equipmentButton;
@@ -89,40 +89,40 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The main category panel. */
 	UIImage mainCategory;
 	/** The subcategory panel for the research screen. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage subCategorySmall;
 	/** The subcategory panel for the production screen. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImage subCategoryWide;
 	/** The prerequisites panel for the research screen. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage prerequisites;
 	/** The base panel for the production listings. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImage productionBase;
 	/** The research settings for the selected technology base panel. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedResearchBase;
 	/** The currenly running research base panel. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeResearchBase;
 	/** The description of the selected technology base panel. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage descriptionBase;
 	/** Start a new research button. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImageButton startNew;
 	/** Stop the current research. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImageButton stopActive;
 	/** Stop active empty button. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage stopActiveEmpty;
 	/** View the active research. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImageButton viewActive;
 	/** View active empty button. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage viewActiveEmpty;
 	/** The spaceships main category. */
 	UIImageTabButton spaceshipsLabel;
@@ -133,177 +133,170 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The buildings main category. */
 	UIImageTabButton buildingsLabel;
 	/** The 3 requirements label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage requiresLabel;
 	/** The requirement #1 .*/
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel requires1;
 	/** The requirement #2 .*/
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel requires2;
 	/** The requirement #3 .*/
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel requires3;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedTechName;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedTechStatus;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedComplete;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedTime;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedCivilLab;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedMechLab;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedCompLab;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedAILab;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedMilLab;
 	
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeTechName;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeMoney;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeCivilLab;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeMechLab;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeCompLab;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeAILab;
 	/** Static label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeMilLab;
 
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedTechNameValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedTechStatusValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedCompleteValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedTimeValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedCivilLabValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedMechLabValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedCompLabValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedAILabValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedMilLabValue;
 	
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeTechNameValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeMoneyValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeMoneyPercentValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeCivilLabValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeMechLabValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeCompLabValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeAILabValue;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeMilLabValue;
 
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel descriptionTitle;
 	/** Dynamic value label. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UILabel descriptionBody;
 	/** Increase / decrease money. */
-	@ModeUI(mode = RPMode.RESEARCH)
+	@ModeUI(mode = Screens.RESEARCH)
 	UIImageButton moneyButton;
 	/** The last mouse event on the funding button. */
 	UIMouse moneyMouseLast;
 	/** The product name. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImage productName;
 	/** The assigned capacity. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImage capacity;
 	/** The assigned capacity percent. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImage capacityPercent;
 	/** The completion. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImage productComplete;
 	/** Remove ten units. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton removeTen;
 	/** Remove one unit. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton removeOne;
 	/** Add one unit. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton addOne;
 	/** Add ten units. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton addTen;
 	/** Sell. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton sell;
 	/** The production lines. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	final List<ProductionLine> productionLines = new ArrayList<ProductionLine>();
 	/** The total capacity label. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UIImage capacityLabel;
 	/** The available capacity value. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UILabel availableCapacityValue;
 	/** The total capacity value. */
-	@ModeUI(mode = RPMode.PRODUCTION)
+	@ModeUI(mode = Screens.PRODUCTION)
 	UILabel totalCapacityValue;
-	/** Screen mode. */
-	public enum RPMode {
-		/** Production. */
-		PRODUCTION,
-		/** Research. */
-		RESEARCH,
-	}
 	/** The labels associated with various main categories. */
 	final Map<ResearchMainCategory, UIImageTabButton> mainComponents = new HashMap<ResearchMainCategory, UIImageTabButton>();
 	/** The labels associated with various sub categories. */
@@ -311,7 +304,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The indicator for the currently running research. */
 	ResearchSubCategory activeCategory = ResearchSubCategory.EQUIPMENT_HYPERDRIVES;
 	/** The screen mode mode. */
-	RPMode mode;
+	Screens mode;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -452,19 +445,19 @@ public class ResearchProductionScreen extends ScreenBase {
 		researchButton.onClick = new Act() {
 			@Override
 			public void act() {
-				setMode(RPMode.RESEARCH);
+				setMode(Screens.RESEARCH);
 			}
 		};
 		productionButton.onClick = new Act() {
 			@Override
 			public void act() {
-				setMode(RPMode.PRODUCTION);
+				setMode(Screens.PRODUCTION);
 			}
 		};
 		equipmentButton.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.EQUIPMENT);
+				displaySecondary(Screens.EQUIPMENT_FLEET);
 			}
 		};
 		addButton.onClick = new Act() {
@@ -482,7 +475,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		bridgeButton.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.BRIDGE);
+				displayPrimary(Screens.BRIDGE);
 			}
 		};
 		
@@ -817,12 +810,12 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		onResize();
-		if (mode == null || mode == RPMode.PRODUCTION) {
-			setMode(RPMode.PRODUCTION);
+		if (mode == null || mode == Screens.PRODUCTION) {
+			setMode(Screens.PRODUCTION);
 		} else {
-			setMode(RPMode.RESEARCH);
+			setMode(Screens.RESEARCH);
 		}
 		animation.start();
 		video.image(null);
@@ -886,7 +879,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * Change and set the visibility of components based on the mode.
 	 * @param m the new mode
 	 */
-	void setMode(RPMode m) {
+	void setMode(Screens m) {
 		this.mode = m;
 		setUIVisibility();
 		// adjust the visibility further
@@ -1084,7 +1077,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
-			commons.control.hideSecondary();
+			hideSecondary();
 			return true;
 		} else {
 			return super.mouse(e);
@@ -1093,5 +1086,9 @@ public class ResearchProductionScreen extends ScreenBase {
 	@Override
 	public Rectangle nontransparent() {
 		return base;
+	}
+	@Override
+	public Screens screen() {
+		return mode;
 	}
 }
