@@ -21,8 +21,6 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, 2009.11.13.
  */
 public class ColonyGFX {
-	/** The resource locator. */
-	protected ResourceLocator rl;
 	/** Building on fire animations. */
 	@Anim(name = "colony/building_fire", width = 20)
 	public BufferedImage[] buildingFire;
@@ -188,19 +186,13 @@ public class ColonyGFX {
 	/** The no upgrades button. */
 	@Img(name = "colony/upgrade_none")
 	public BufferedImage upgradeNone;
-	
-	/**
-	 * Constructor.
-	 * @param rl the resource locator
-	 */
-	public ColonyGFX(ResourceLocator rl) {
-		this.rl = rl;
-	}
 	/**
 	 * Load the resources for the given language.
-	 * @param language the language
+	 * @param rl the resource locator
+	 * @return this
 	 */
-	public void load(String language) {
-		GFXLoader.loadResources(this, rl, language);
+	public ColonyGFX load(ResourceLocator rl) {
+		GFXLoader.loadResources(this, rl);
+		return this;
 	}
 }

@@ -8,8 +8,8 @@
 
 package hu.openig.gfx;
 
-import hu.openig.utils.ImageUtils;
 import hu.openig.core.ResourceLocator;
+import hu.openig.utils.ImageUtils;
 
 import java.awt.image.BufferedImage;
 
@@ -18,8 +18,6 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, 2009.10.25.
  */
 public class DatabaseGFX {
-	/** The resource locator. */
-	private final ResourceLocator rl;
 	/** The background picture. */
 	public BufferedImage background;
 	/** The phases of up arrow: normal, highlight, down. */
@@ -51,20 +49,14 @@ public class DatabaseGFX {
 	/** The ship maps. */
 	public BufferedImage[] shipMap;
 	/**
-	 * Constructor.
-	 * @param rl the resource locator.
-	 */
-	public DatabaseGFX(ResourceLocator rl) {
-		this.rl = rl;
-	}
-	/**
 	 * Load graphics for the given language.
-	 * @param lang the language code
+	 * @param rl the resource locator.
+	 * @return this
 	 */
-	public void load(String lang) {
-		background = rl.getImage(lang, "information/database_background");
+	public DatabaseGFX load(ResourceLocator rl) {
+		background = rl.getImage("information/database_background");
 
-		BufferedImage arrows = rl.getImage(lang, "information/arrow_updown"); 
+		BufferedImage arrows = rl.getImage("information/arrow_updown"); 
 		arrowDown = new BufferedImage[] {
 			ImageUtils.newSubimage(arrows, 0 * 34, 0, 34, 45),	
 			ImageUtils.newSubimage(arrows, 1 * 34, 0, 34, 45),	
@@ -75,7 +67,7 @@ public class DatabaseGFX {
 			ImageUtils.newSubimage(arrows, 4 * 34, 0, 34, 45),	
 			ImageUtils.newSubimage(arrows, 5 * 34, 0, 34, 45),	
 		};
-		BufferedImage edges = rl.getImage(lang, "information/picture_edge");
+		BufferedImage edges = rl.getImage("information/picture_edge");
 		pictureEdge = new BufferedImage[] {
 			ImageUtils.newSubimage(edges, 0 * 18, 0 * 18, 18, 18),
 			ImageUtils.newSubimage(edges, 1 * 18, 0 * 18, 18, 18),
@@ -84,34 +76,34 @@ public class DatabaseGFX {
 		};
 		int n = 5;
 		recordMessage = new BufferedImage[n];
-		colorScaleImage(rl.getImage(lang, "information/record_message"), recordMessage);
+		colorScaleImage(rl.getImage("information/record_message"), recordMessage);
 		aliens = new BufferedImage[n];
-		colorScaleImage(rl.getImage(lang, "information/aliens"), aliens);
+		colorScaleImage(rl.getImage("information/aliens"), aliens);
 		map = new BufferedImage[n];
-		colorScaleImage(rl.getImage(lang, "information/ship_map"), map);
+		colorScaleImage(rl.getImage("information/ship_map"), map);
 		help = new BufferedImage[n];
-		colorScaleImage(rl.getImage(lang, "information/help"), help);
+		colorScaleImage(rl.getImage("information/help"), help);
 		exit = new BufferedImage[n];
-		colorScaleImage(rl.getImage(lang, "information/exit_database"), exit);
+		colorScaleImage(rl.getImage("information/exit_database"), exit);
 		bridge = new BufferedImage[n];
-		colorScaleImage(rl.getImage(lang, "information/bridge"), bridge);
+		colorScaleImage(rl.getImage("information/bridge"), bridge);
 		info = new BufferedImage[n];
-		colorScaleImage(rl.getImage(lang, "information/info"), info);
+		colorScaleImage(rl.getImage("information/info"), info);
 		starmap = new BufferedImage[n];
-		colorScaleImage(rl.getImage(lang, "information/starmap"), starmap);
+		colorScaleImage(rl.getImage("information/starmap"), starmap);
 		diplomacy = new BufferedImage[n];
-		colorScaleImage(rl.getImage(lang, "information/diplomacy"), diplomacy);
+		colorScaleImage(rl.getImage("information/diplomacy"), diplomacy);
 		
-		textPanel = rl.getImage(lang, "information/database_textpanel");
+		textPanel = rl.getImage("information/database_textpanel");
 		
 		shipMap = new BufferedImage[] {
-			rl.getImage(lang, "information/ship_map_level_1"),	
-			rl.getImage(lang, "information/ship_map_level_2"),	
-			rl.getImage(lang, "information/ship_map_level_3"),	
-			rl.getImage(lang, "information/ship_map_level_4"),	
-			rl.getImage(lang, "information/ship_map_level_5"),	
+			rl.getImage("information/ship_map_level_1"),	
+			rl.getImage("information/ship_map_level_2"),	
+			rl.getImage("information/ship_map_level_3"),	
+			rl.getImage("information/ship_map_level_4"),	
+			rl.getImage("information/ship_map_level_5"),	
 		};
-		
+		return this;
 	}
 	/**
 	 * Color scale an image into the output buffer.

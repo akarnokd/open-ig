@@ -17,11 +17,10 @@ import hu.openig.core.ResourceLocator;
 import java.awt.image.BufferedImage;
 
 /**
+ * The equipment screen graphics resources.
  * @author akarnokd, 2009.11.09.
  */
 public class EquipmentGFX {
-	/** The resource locator. */
-	protected ResourceLocator rl;
 	/** The base image. */
 	@Img(name = "equipment/panel_equipment_base")
 	public BufferedImage base;
@@ -125,17 +124,12 @@ public class EquipmentGFX {
 	@Img(name = "equipment/label_not_your_planet")
 	public BufferedImage notYourplanet;
 	/**
-	 * Constructor.
-	 * @param rl the resource locator
-	 */
-	public EquipmentGFX(ResourceLocator rl) {
-		this.rl = rl;
-	}
-	/**
 	 * Load the resources.
-	 * @param language the language
+	 * @param rl the resource locator
+	 * @return this
 	 */
-	public void load(String language) {
-		GFXLoader.loadResources(this, rl, language);
+	public EquipmentGFX load(ResourceLocator rl) {
+		GFXLoader.loadResources(this, rl);
+		return this;
 	}
 }

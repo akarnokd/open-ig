@@ -78,8 +78,6 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 	volatile boolean stop;
 	/** The resource locator. */
 	ResourceLocator rl;
-	/** The language. */
-	String lang;
 	/** The text renderer. */
 	TextRenderer txt;
 	/** The image swap lock. */
@@ -132,12 +130,10 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 	/**
 	 * Constructor.
 	 * @param rl the resource locator
-	 * @param lang the language
 	 * @param labels the labels
 	 */
-	public BarPainter(ResourceLocator rl, String lang, Labels labels) {
+	public BarPainter(ResourceLocator rl, Labels labels) {
 		this.rl = rl;
-		this.lang = lang;
 		this.labels = labels;
 		txt = new TextRenderer(rl);
 		swapLock = new ReentrantLock();
@@ -237,9 +233,9 @@ public class BarPainter extends JComponent implements SwappableRenderer {
 	 */
 	protected void startPlayback(final String media) {
 		final CyclicBarrier barrier = new CyclicBarrier(2);
-		final ResourcePlace audio = rl.get(lang, media, ResourceType.AUDIO);
-		final ResourcePlace video = rl.get(lang, media, ResourceType.VIDEO);
-		ResourcePlace sub = rl.get(lang, media, ResourceType.SUBTITLE);
+		final ResourcePlace audio = rl.get(media, ResourceType.AUDIO);
+		final ResourcePlace video = rl.get(media, ResourceType.VIDEO);
+		ResourcePlace sub = rl.get(media, ResourceType.SUBTITLE);
 		subtitle = new SubtitleManager(sub.open());
 		stop = false;
 		audioThread = new Thread(new Runnable() {

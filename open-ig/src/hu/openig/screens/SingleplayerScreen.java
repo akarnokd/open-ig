@@ -177,9 +177,9 @@ public class SingleplayerScreen extends ScreenBase {
 					world.definition = selectedDefinition;
 					world.difficulty = Difficulty.values()[difficulty];
 					final Labels labels = new Labels(); 
-					labels.load(commons.rl, commons.language(), selectedDefinition.labels);
+					labels.load(commons.rl, selectedDefinition.labels);
 					world.labels = labels;
-					world.load(commons.rl, commons.language(), selectedDefinition.name);
+					world.load(commons.rl, selectedDefinition.name);
 					world.allocator = new ResourceAllocator(commons.pool, world.planets);
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
@@ -351,7 +351,7 @@ public class SingleplayerScreen extends ScreenBase {
 	public static GameDefinition parseDefinition(CommonResources commons, String name) {
 		GameDefinition result = new GameDefinition();
 		result.name = name;
-		XElement root = commons.rl.getXML(commons.config.language, name + "/definition");
+		XElement root = commons.rl.getXML(name + "/definition");
 		for (XElement texts : root.childrenWithName("texts")) {
 			if (commons.config.language.equals(texts.get("language"))) {
 				result.title = texts.childValue("title");
@@ -360,7 +360,7 @@ public class SingleplayerScreen extends ScreenBase {
 			}
 		}
 		result.intro = root.childValue("intro");
-		result.image = commons.rl.getImage(commons.config.language, root.childValue("image"));
+		result.image = commons.rl.getImage(root.childValue("image"));
 		result.startingLevel = Integer.parseInt(root.childValue("level"));
 		result.labels = root.childValue("labels");
 		result.galaxy = root.childValue("galaxy");

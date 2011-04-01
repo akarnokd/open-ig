@@ -85,14 +85,14 @@ public class CommonGFX {
 	/**
 	 * Initialize the common resources.
 	 * @param rl the resource locator
-	 * @param language the target language
 	 * @return this
 	 */
-	public CommonGFX load(ResourceLocator rl, String language) {
+	public CommonGFX load(ResourceLocator rl) {
+		GFXLoader.loadResources(this, rl);
+		
 		int[] disabled = { 0xFF000000, 0xFF000000, 0, 0, 0xFF000000, 0, 0, 0, 0 };
 		disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
 		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
-		GFXLoader.loadResources(this, rl, language);
 
 		achievementGrayed = new BufferedImage(achievement.getWidth(), achievement.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2 = achievementGrayed.createGraphics();

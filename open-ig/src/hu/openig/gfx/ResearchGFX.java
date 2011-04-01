@@ -23,8 +23,6 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, 2009.11.09.
  */
 public class ResearchGFX {
-	/** The resource locator. */
-	protected ResourceLocator rl;
 	/** Empty large. */
 	@Img(name = "research/button_empty_elevated_large")
 	public BufferedImage emptyElevated;
@@ -257,17 +255,12 @@ public class ResearchGFX {
 	@Btn3H(name = "research/button_more")
 	public BufferedImage[] more;
 	/**
-	 * Constructor.
-	 * @param rl the resource locator
-	 */
-	public ResearchGFX(ResourceLocator rl) {
-		this.rl = rl;
-	}
-	/**
 	 * Load resources.
-	 * @param language the language
+	 * @param rl the resource locator
+	 * @return this;
 	 */
-	public void load(String language) {
-		GFXLoader.loadResources(this, rl, language);
+	public ResearchGFX load(ResourceLocator rl) {
+		GFXLoader.loadResources(this, rl);
+		return this;
 	}
 }

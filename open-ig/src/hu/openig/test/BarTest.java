@@ -44,8 +44,8 @@ public class BarTest extends JFrame {
 	 * @param lang the language
 	 */
 	void switchLanguage(String lang) {
-		barpainter.labels.load(rl, lang, "campaign/main");
-		barpainter.lang = lang;
+		rl.language = lang;
+		barpainter.labels.load(rl, "campaign/main");
 		barpainter.setState(barpainter.state);
 		repaint();
 	}
@@ -64,9 +64,8 @@ public class BarTest extends JFrame {
 	 * Constructor.
 	 * @param talks the talks
 	 * @param rl the resource locator
-	 * @param lang the language
 	 */
-	public BarTest(final Talks talks, ResourceLocator rl, String lang) {
+	public BarTest(final Talks talks, ResourceLocator rl) {
 		super("Bar test");
 		this.talks = talks;
 		this.rl = rl;
@@ -76,9 +75,9 @@ public class BarTest extends JFrame {
 		c.setLayout(gl);
 
 		Labels lbl = new Labels();
-		lbl.load(rl, lang, "campaign/main");
+		lbl.load(rl, "campaign/main");
 		
-		barpainter = new BarPainter(rl, lang, lbl);
+		barpainter = new BarPainter(rl, lbl);
 		
 		JMenuBar menu = new JMenuBar();
 		JMenu mnuOptions = new JMenu("Talks");
@@ -131,11 +130,11 @@ public class BarTest extends JFrame {
 		config.load();
 		final Talks w = new Talks();
 		final ResourceLocator rl = config.newResourceLocator();
-		w.load(rl, config.language, "campaign/main");
+		w.load(rl, "campaign/main");
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new BarTest(w, rl, config.language).setVisible(true);
+				new BarTest(w, rl).setVisible(true);
 			}
 		});
 	}

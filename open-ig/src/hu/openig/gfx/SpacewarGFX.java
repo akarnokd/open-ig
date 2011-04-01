@@ -14,7 +14,6 @@ import hu.openig.core.Btn3;
 import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
 import hu.openig.core.ResourceLocator;
-import hu.openig.core.ResourceSelfLoader;
 
 import java.awt.image.BufferedImage;
 
@@ -22,9 +21,7 @@ import java.awt.image.BufferedImage;
  * The spacewar graphics objects.
  * @author akarnokd, 2009.11.09.
  */
-public class SpacewarGFX implements ResourceSelfLoader {
-	/** The resource locator. */
-	protected ResourceLocator rl;
+public class SpacewarGFX {
 	/** The space background. */
 	@Img(name = "spacewar/battle_background")
 	public BufferedImage background;
@@ -161,23 +158,12 @@ public class SpacewarGFX implements ResourceSelfLoader {
 	@Btn2(name = "spacewar/button_sure")
 	public BufferedImage[] sure;
 	/**
-	 * Constructor.
-	 * @param rl the resource locator
-	 */
-	public SpacewarGFX(ResourceLocator rl) {
-		this.rl = rl;
-	}
-	/**
 	 * Load resources.
-	 * @param language the target language
+	 * @param rl the resource locator
+	 * @return this;
 	 */
-	public void load(String language) {
-		GFXLoader.loadResources(this, rl, language);
-	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.gfx.ResourceSelfLoader#load(hu.openig.v1.ResourceLocator, java.lang.String)
-	 */
-	@Override
-	public void load(ResourceLocator rl, String language) {
+	public SpacewarGFX load(ResourceLocator rl) {
+		GFXLoader.loadResources(this, rl);
+		return this;
 	}
 }

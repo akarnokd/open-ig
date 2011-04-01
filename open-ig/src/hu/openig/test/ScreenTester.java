@@ -524,9 +524,9 @@ public class ScreenTester extends JFrame implements GameControls {
 					commons.world = new World();
 					commons.world.definition = SingleplayerScreen.parseDefinition(commons, "campaign/main");
 					commons.world.difficulty = Difficulty.values()[0];
-					commons.labels().load(commons.rl, commons.language(), commons.world.definition.name);
+					commons.labels().load(commons.rl, commons.world.definition.name);
 					commons.world.labels = commons.labels();
-					commons.world.load(commons.rl, commons.language(), commons.world.definition.name);
+					commons.world.load(commons.rl, commons.world.definition.name);
 					commons.world.level = 5;
 					commons.world.allocator = new ResourceAllocator(commons.pool, commons.world.planets);
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);

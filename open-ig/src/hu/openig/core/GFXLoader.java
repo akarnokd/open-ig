@@ -25,43 +25,39 @@ public final class GFXLoader {
 	 * Load resources of the given annotated target object.
 	 * @param target the target object
 	 * @param rl the resource locator
-	 * @param language the language
 	 */
-	public static void loadResources(Object target, ResourceLocator rl, String language) {
+	public static void loadResources(Object target, ResourceLocator rl) {
 		try {
 			for (Field f : target.getClass().getFields()) {
 				Img ia = f.getAnnotation(Img.class);
 				if (ia != null) {
-					f.set(target, rl.getImage(language, ia.name()));
+					f.set(target, rl.getImage(ia.name()));
 				} else {
 					Btn2 ib2 = f.getAnnotation(Btn2.class);
 					if (ib2 != null) {
-						f.set(target, getButton2(rl, language, ib2.name()));
+						f.set(target, getButton2(rl, ib2.name()));
 					} else {
 						Btn3 ib3 = f.getAnnotation(Btn3.class);
 						if (ib3 != null) {
-							f.set(target, getButton3(rl, language, ib3.name()));
+							f.set(target, getButton3(rl, ib3.name()));
 						} else {
 							Cat ic = f.getAnnotation(Cat.class);
 							if (ic != null) {
-								f.set(target, getCategory(rl, language, ic.name()));
+								f.set(target, getCategory(rl, ic.name()));
 							} else {
 								Anim ian = f.getAnnotation(Anim.class);
 								if (ian != null) {
-									f.set(target, rl.getAnimation(language, ian.name(), ian.width(), ian.step()));
+									f.set(target, rl.getAnimation(ian.name(), ian.width(), ian.step()));
 								} else {
 									Btn3H ib3h = f.getAnnotation(Btn3H.class);
 									if (ib3h !=  null) {
-										f.set(target, getButton3H(rl, language, ib3h.name()));
+										f.set(target, getButton3H(rl, ib3h.name()));
 									}
 								}
 							}
 						}
 					}
 				}
-			}
-			if (target instanceof ResourceSelfLoader) {
-				((ResourceSelfLoader)target).load(rl, language);
 			}
 		} catch (IllegalAccessException ex) {
 			ex.printStackTrace();
@@ -70,55 +66,51 @@ public final class GFXLoader {
 	/**
 	 * Get a two phase button image (with and without _pressed).
 	 * @param rl the resource locator
-	 * @param language the target language
 	 * @param name the button name
 	 * @return the array cointaining the normal and the pressed state
 	 */
-	private static BufferedImage[] getButton2(ResourceLocator rl, String language, String name) {
+	private static BufferedImage[] getButton2(ResourceLocator rl, String name) {
 		return new BufferedImage[] {
-			rl.getImage(language, name),
-			rl.getImage(language, name + "_pressed")
+			rl.getImage(name),
+			rl.getImage(name + "_pressed")
 		};
 	}
 	/**
 	 * Get a two phase button image (with and without _selected).
 	 * @param rl the resource locator
-	 * @param language the target language
 	 * @param name the button name
 	 * @return the array cointaining the normal and the pressed state
 	 */
-	private static BufferedImage[] getCategory(ResourceLocator rl, String language, String name) {
+	private static BufferedImage[] getCategory(ResourceLocator rl, String name) {
 		return new BufferedImage[] {
-			rl.getImage(language, name),
-			rl.getImage(language, name + "_selected")
+			rl.getImage(name),
+			rl.getImage(name + "_selected")
 		};
 	}
 	/**
 	 * Get a three phase button image (normal, _selected_pressed, _selected).
 	 * @param rl the resource locator
-	 * @param language the target language
-	 * @param name the button name
+	 * @param name the resource name
 	 * @return the array cointaining the normal, selected and pressed state
 	 */
-	private static BufferedImage[] getButton3(ResourceLocator rl, String language, String name) {
+	private static BufferedImage[] getButton3(ResourceLocator rl, String name) {
 		return new BufferedImage[] {
-			rl.getImage(language, name),
-			rl.getImage(language, name + "_selected"),
-			rl.getImage(language, name + "_selected_pressed")
+			rl.getImage(name),
+			rl.getImage(name + "_selected"),
+			rl.getImage(name + "_selected_pressed")
 		};
 	}
 	/**
 	 * Get a three phase button image (normal, _pressed, _hovered).
 	 * @param rl the resource locator
-	 * @param language the target language
 	 * @param name the button name
 	 * @return the array cointaining the normal, pressed and hovered state
 	 */
-	private static BufferedImage[] getButton3H(ResourceLocator rl, String language, String name) {
+	private static BufferedImage[] getButton3H(ResourceLocator rl, String name) {
 		return new BufferedImage[] {
-			rl.getImage(language, name),
-			rl.getImage(language, name + "_pressed"),
-			rl.getImage(language, name + "_hovered")
+			rl.getImage(name),
+			rl.getImage(name + "_pressed"),
+			rl.getImage(name + "_hovered")
 		};
 	}
 }

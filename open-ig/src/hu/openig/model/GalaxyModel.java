@@ -35,18 +35,17 @@ public class GalaxyModel {
 	/**
 	 * Process the contents of the galaxy data.
 	 * @param rl the resource locator
-	 * @param language the current language
 	 * @param data the galaxy data file
 	 * @param exec the executor for parallel processing
 	 * @param wip the wip counter
 	 */
-	public void processGalaxy(final ResourceLocator rl, final String language, 
+	public void processGalaxy(final ResourceLocator rl, 
 			final String data, ExecutorService exec, final WipPort wip) {
 		wip.inc();
 		try {
-			XElement galaxy = rl.getXML(language, data);
+			XElement galaxy = rl.getXML(data);
 			XElement background = galaxy.childElement("background");
-			map = rl.getImage(language, background.get("image"));
+			map = rl.getImage(background.get("image"));
 			minScale = Float.parseFloat(background.get("min-scale"));
 			maxScale = Float.parseFloat(background.get("max-scale"));
 			
@@ -62,7 +61,7 @@ public class GalaxyModel {
 							planetType.label = planet.get("label");
 							
 							XElement bodyElement = planet.childElement("body");
-							planetType.body = rl.getAnimation(language, bodyElement.content, -1, 64);
+							planetType.body = rl.getAnimation(bodyElement.content, -1, 64);
 							XElement tileset = planet.childElement("tileset");
 							String tilePattern = tileset.get("pattern");
 							
@@ -75,7 +74,7 @@ public class GalaxyModel {
 									String hs = te.get("height");
 									int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
 									for (int id = start; id <= end; id++) {
-										Tile tile = new Tile(width, height, rl.getImage(language, String.format(tilePattern, id)), null);
+										Tile tile = new Tile(width, height, rl.getImage(String.format(tilePattern, id)), null);
 										planetType.tiles.put(id, tile);
 									}
 								} else
@@ -85,7 +84,7 @@ public class GalaxyModel {
 									int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
 									String hs = te.get("height");
 									int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
-									Tile tile = new Tile(width, height, rl.getImage(language, String.format(tilePattern, id)), null);
+									Tile tile = new Tile(width, height, rl.getImage(String.format(tilePattern, id)), null);
 									planetType.tiles.put(id, tile);
 								}
 							}

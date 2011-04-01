@@ -23,17 +23,18 @@ public class Labels {
 	/**
 	 * Load the language file(s).
 	 * @param rl the resource locator
-	 * @param language the language
 	 * @param gameLabel the optional game namings, ignored if null or empty
+	 * @return this
 	 */
-	public void load(ResourceLocator rl, String language, String gameLabel) {
+	public Labels load(ResourceLocator rl, String gameLabel) {
 		map.clear();
-		process(rl.getXML(language, "labels"));
+		process(rl.getXML("labels"));
 		if (gameLabel != null && !gameLabel.isEmpty()) {
-			if (rl.get(language, gameLabel, ResourceType.DATA) != null) {
-				process(rl.getXML(language, gameLabel));
+			if (rl.get(gameLabel, ResourceType.DATA) != null) {
+				process(rl.getXML(gameLabel));
 			}
 		}
+		return this;
 	}
 	/**
 	 * Process the document.
@@ -52,7 +53,9 @@ public class Labels {
 	public String get(String key) {
 		String value = map.get(key);
 		if (value == null) {
-			throw new AssertionError("Missing value for key: " + key);
+//			throw new AssertionError("Missing value for key: " + key);
+			System.err.println("\t<entry key='" + key + "'></entry>");
+			return key;
 		}
 		return value;
 	}

@@ -32,8 +32,6 @@ public class DatabaseTest extends JFrame {
 	private static final long serialVersionUID = -227388662977233871L;
 	/** The resource locator. */
 	protected ResourceLocator rl;
-	/** The current language. */
-	protected String lang;
 	/**
 	 * Constructor.
 	 * @param rl the resource locator
@@ -46,8 +44,7 @@ public class DatabaseTest extends JFrame {
 		GroupLayout gl = new GroupLayout(c);
 		c.setLayout(gl);
 
-		DatabaseGFX dbGFX = new DatabaseGFX(rl);
-		dbGFX.load(lang);
+		DatabaseGFX dbGFX = new DatabaseGFX().load(rl);
 		
 		TextRenderer txt = new TextRenderer(rl);
 		
@@ -69,8 +66,7 @@ public class DatabaseTest extends JFrame {
 		));
 		p.setWorld(w);
 		
-		Labels labels = new Labels();
-		labels.load(rl, lang, null);
+		Labels labels = new Labels().load(rl, null);
 		
 		p.setLabels(labels);
 		

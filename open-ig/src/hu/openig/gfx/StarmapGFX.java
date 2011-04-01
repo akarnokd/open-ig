@@ -176,9 +176,10 @@ public class StarmapGFX {
 	/**
 	 * Load the resources from the given locator and language.
 	 * @param rl the resource locator
-	 * @param language the language
+	 * @return this
 	 */
-	public void load(ResourceLocator rl, String language) {
-		GFXLoader.loadResources(this, rl, language);
+	public StarmapGFX load(ResourceLocator rl) {
+		GFXLoader.loadResources(this, rl);
+		return this;
 	}
 }

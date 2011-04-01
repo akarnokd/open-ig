@@ -326,8 +326,7 @@ public class MapRenderer extends JComponent {
 //				if (r == null) {
 //					continue;
 //				}
-				String label = labels.get(b.type.label);
-				int nameLen = txt.getTextWidth(7, label);
+				int nameLen = txt.getTextWidth(7, b.type.name);
 				int h = (r.height - 7) / 2;
 				int nx = r.x + (r.width - nameLen) / 2;
 				int ny = r.y + h;
@@ -344,8 +343,8 @@ public class MapRenderer extends JComponent {
 					g2.setComposite(compositeSave);
 				}
 				
-				txt.paintTo(g2, nx + 1, ny + 1, 7, 0xFF8080FF, label);
-				txt.paintTo(g2, nx, ny, 7, 0xD4FC84, label);
+				txt.paintTo(g2, nx + 1, ny + 1, 7, 0xFF8080FF, b.type.name);
+				txt.paintTo(g2, nx, ny, 7, 0xD4FC84, b.type.name);
 
 				// paint upgrade level indicator
 				int uw = b.upgradeLevel * colonyGFX.upgrade.getWidth();
