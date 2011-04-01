@@ -96,8 +96,8 @@ public final class GFXLoader {
 	private static BufferedImage[] getButton3(ResourceLocator rl, String name) {
 		return new BufferedImage[] {
 			rl.getImage(name),
-			rl.getImage(name + "_selected"),
-			rl.getImage(name + "_selected_pressed")
+			rl.getImage(name + "_selected_pressed"),
+			rl.getImage(name + "_selected")
 		};
 	}
 	/**

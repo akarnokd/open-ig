@@ -136,7 +136,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	}
 
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		resize();
 	}
 
@@ -149,7 +149,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	@Override
 	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, commons.control.getInnerWidth(), commons.control.getInnerHeight());
+		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		if (position != null) {
 			g2.translate(origin.x, origin.y);
 		}
@@ -254,5 +254,9 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		} else {
 			position = next;
 		}
+	}
+	@Override
+	public Screens screen() {
+		return Screens.SHIPWALK;
 	}
 }

@@ -32,7 +32,7 @@ public class DiplomacyScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -56,7 +56,7 @@ public class DiplomacyScreen extends ScreenBase {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
-			commons.control.hideSecondary();
+			hideSecondary();
 			return true;
 		} else {
 			return super.mouse(e);
@@ -68,5 +68,9 @@ public class DiplomacyScreen extends ScreenBase {
 		g2.drawImage(commons.diplomacy().base, base.x, base.y, null);
 		
 		super.draw(g2);
+	}
+	@Override
+	public Screens screen() {
+		return Screens.DIPLOMACY;
 	}
 }

@@ -11,8 +11,6 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
-import hu.openig.screens.AchievementsScreen.Mode;
-import hu.openig.screens.ResearchProductionScreen.RPMode;
 import hu.openig.ui.UIMouse;
 
 import java.awt.Container;
@@ -22,7 +20,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -71,6 +68,9 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						if (movie != null) {
 							movie.resize();
+						}
+						if (statusbarVisible) {
+							statusbar.resize();
 						}
 					} catch (Throwable t) {
 						t.printStackTrace();
@@ -217,7 +217,7 @@ public class GameWindow extends JFrame implements GameControls {
 		this.surface = new ScreenRenderer();
 		
 		this.commons = that.commons;
-		this.commons.control = this;
+		this.commons.control(this);
 		this.rl = that.rl;
 		this.config = that.config;
 		this.screens = that.screens;
@@ -261,19 +261,13 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void exit() {
-		if (commons.world != null) {
-			commons.world.allocator.stop();
-		}
+		commons.close();
 		uninitScreens();
 		dispose();
 		try {
 			config.watcherWindow.close();
 		} catch (IOException e) {
 		}
-	}
-	@Override
-	public void setWindowBounds(int x, int y, int width, int height) {
-		setBounds(x, y, width, height);
 	}
 	@Override
 	public void switchLanguage(String newLanguage) {
@@ -326,15 +320,15 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	ScreenBase display(Screens screen, boolean asPrimary) {
 		ScreenBase sb = null;
-		Object mode = null;
+		Screens mode = null;
 		switch (screen) {
 		case ACHIEVEMENTS:
 			sb = commons.screens.statisticsAchievements;
-			mode = Mode.ACHIEVEMENTS;
+			mode = Screens.ACHIEVEMENTS;
 			break;
 		case STATISTICS:
 			sb = commons.screens.statisticsAchievements;
-			mode = Mode.STATISTICS;
+			mode = Screens.STATISTICS;
 			break;
 		case BAR:
 			sb = commons.screens.bar;
@@ -348,19 +342,29 @@ public class GameWindow extends JFrame implements GameControls {
 		case DIPLOMACY:
 			sb = commons.screens.diplomacy;
 			break;
-		case EQUIPMENT:
+		case EQUIPMENT_FLEET:
+		case EQUIPMENT_PLANET:
 			sb = commons.screens.equipment;
+			mode = screen;
 			break;
-		case INFORMATION:
+		case INFORMATION_COLONY:
+		case INFORMATION_ALIENS:
+		case INFORMATION_BUILDINGS:
+		case INFORMATION_FINANCIAL:
+		case INFORMATION_FLEETS:
+		case INFORMATION_INVENTIONS:
+		case INFORMATION_MILITARY:
+		case INFORMATION_PLANETS:
 			sb = commons.screens.info;
+			mode = screen;
 			break;
 		case PRODUCTION:
 			sb = commons.screens.researchProduction;
-			mode = RPMode.PRODUCTION;
+			mode = Screens.PRODUCTION;
 			break;
 		case RESEARCH:
 			sb = commons.screens.researchProduction;
-			mode = RPMode.RESEARCH;
+			mode = Screens.RESEARCH;
 			break;
 		case SPACEWAR:
 			sb = commons.screens.spacewar;
@@ -400,24 +404,28 @@ public class GameWindow extends JFrame implements GameControls {
 				secondary.onLeave();
 				secondary = null;
 			}
-			if (primary != null) {
-				primary.onLeave();
-			}
-			primary = sb;
-			if (primary != null) {
-				primary.resize();
-				primary.onEnter(mode);
-				surface.repaint();
+			if (primary == null || primary.screen() != screen) {
+				if (primary != null) {
+					primary.onLeave();
+				}
+				primary = sb;
+				if (primary != null) {
+					primary.resize();
+					primary.onEnter(mode);
+					surface.repaint();
+				}
 			}
 		} else {
-			if (secondary != null) {
-				secondary.onLeave();
-			}
-			secondary = sb;
-			if (secondary != null) {
-				secondary.resize();
-				secondary.onEnter(mode);
-				surface.repaint();
+			if (secondary == null || secondary.screen() != screen) {
+				if (secondary != null) {
+					secondary.onLeave();
+				}
+				secondary = sb;
+				if (secondary != null) {
+					secondary.resize();
+					secondary.onEnter(mode);
+					surface.repaint();
+				}
 			}
 		}
 		return sb;
@@ -459,6 +467,7 @@ public class GameWindow extends JFrame implements GameControls {
 	public void displayStatusbar() {
 		if (!statusbarVisible) {
 			statusbarVisible = true;
+			statusbar.resize();
 			statusbar.onEnter(null);
 			doMoveMouseAgain();
 			surface.repaint();
@@ -552,14 +561,14 @@ public class GameWindow extends JFrame implements GameControls {
 				e.consume();
 				return true;
 			}
-			if (!commons.worldLoading && commons.world != null && !movieVisible) {
+			if (!commons.worldLoading && commons.world() != null && !movieVisible) {
 				result = true;
 				if (e.getKeyChar() == '+') {
-					commons.world.player.moveNextPlanet();
+					commons.world().player.moveNextPlanet();
 					repaintInner();
 				} else
 				if (e.getKeyChar() == '-') {
-					commons.world.player.movePrevPlanet();
+					commons.world().player.movePrevPlanet();
 					repaintInner();
 				}
 				switch (e.getKeyCode()) {
@@ -573,39 +582,149 @@ public class GameWindow extends JFrame implements GameControls {
 					displayPrimary(Screens.COLONY);
 					break;
 				case KeyEvent.VK_F4:
-					displaySecondary(Screens.EQUIPMENT);
+					if (secondary != null) {
+						if (secondary.screen() == Screens.EQUIPMENT_FLEET
+								|| secondary.screen() == Screens.EQUIPMENT_PLANET) {
+									hideSecondary();
+						} else
+						if (secondary.screen() == Screens.INFORMATION_COLONY
+								|| secondary.screen() == Screens.INFORMATION_PLANETS) {
+							displaySecondary(Screens.EQUIPMENT_PLANET);
+						} else {
+							displaySecondary(Screens.EQUIPMENT_FLEET);
+						}
+					} else {
+						switch (primary.screen()) {
+						case COLONY:
+							displaySecondary(Screens.EQUIPMENT_PLANET);
+							break;
+						default:
+							displaySecondary(Screens.EQUIPMENT_FLEET);
+						}
+					}
 					break;
 				case KeyEvent.VK_F5:
-					displaySecondary(Screens.PRODUCTION);
+					if (secondary != null) {
+						if (secondary.screen() == Screens.PRODUCTION) {
+							hideSecondary();
+						} else {
+							displaySecondary(Screens.PRODUCTION);
+						}
+					} else {
+						displaySecondary(Screens.PRODUCTION);
+					}
 					break;
 				case KeyEvent.VK_F6:
-					displaySecondary(Screens.RESEARCH);
+					if (secondary != null) {
+						if (secondary.screen() == Screens.RESEARCH) {
+							hideSecondary();
+						} else {
+							displaySecondary(Screens.RESEARCH);
+						}
+					} else {
+						displaySecondary(Screens.RESEARCH);
+					}
 					break;
 				case KeyEvent.VK_F7:
-					displaySecondary(Screens.INFORMATION); // TODO information subscreens
+					if (secondary != null) {
+						switch (secondary.screen()) {
+						case EQUIPMENT_FLEET:
+							displaySecondary(Screens.INFORMATION_INVENTIONS);
+							break;
+						case EQUIPMENT_PLANET:
+							displaySecondary(Screens.INFORMATION_COLONY);
+							break;
+						case DIPLOMACY:
+							displaySecondary(Screens.INFORMATION_ALIENS);
+							break;
+						case INFORMATION_ALIENS:
+						case INFORMATION_BUILDINGS:
+						case INFORMATION_COLONY:
+						case INFORMATION_FINANCIAL:
+						case INFORMATION_FLEETS:
+						case INFORMATION_INVENTIONS:
+						case INFORMATION_MILITARY:
+						case INFORMATION_PLANETS:
+							hideSecondary();
+							break;
+						default:
+							displaySecondary(Screens.INFORMATION_PLANETS);
+						}
+					} else {
+						switch (primary.screen()) {
+						case STARMAP:
+							displaySecondary(Screens.INFORMATION_PLANETS);
+							break;
+						case COLONY:
+							displaySecondary(Screens.INFORMATION_COLONY);
+							break;
+						default:
+							displaySecondary(Screens.INFORMATION_PLANETS);
+						} 
+					}
 					break;
 				case KeyEvent.VK_F8:
-					displaySecondary(Screens.DATABASE);
+					if (secondary != null) {
+						if (secondary.screen() == Screens.DATABASE) {
+							hideSecondary();
+						} else {
+							displaySecondary(Screens.DATABASE);
+						}
+					} else {
+						displaySecondary(Screens.DATABASE);
+					}
 					break;
 				case KeyEvent.VK_F9:
-					if (commons.world.level > 1) {
-						displaySecondary(Screens.BAR);
+					if (commons.world().level > 1) {
+						if (secondary != null) {
+							if (secondary.screen() == Screens.BAR) {
+								hideSecondary();
+							} else {
+								displaySecondary(Screens.BAR);
+							}
+						} else {
+							displaySecondary(Screens.BAR);
+						}
 					}
 					break;
 				case KeyEvent.VK_F10:
-					if (commons.world.level > 4) {
-						displaySecondary(Screens.DIPLOMACY);
+					if (commons.world().level > 3) {
+						if (secondary != null) {
+							if (secondary.screen() == Screens.DIPLOMACY) {
+								hideSecondary();
+							} else {
+								displaySecondary(Screens.DIPLOMACY);
+							}
+						} else {
+							displaySecondary(Screens.DIPLOMACY);
+						}
 					}
 					break;
 				case KeyEvent.VK_F11:
-					displaySecondary(Screens.STATISTICS);
+					if (secondary != null) {
+						if (secondary.screen() == Screens.STATISTICS) {
+							hideSecondary();
+						} else {
+							displaySecondary(Screens.STATISTICS);
+						}
+					} else {
+						displaySecondary(Screens.STATISTICS);
+					}
 					break;
 				case KeyEvent.VK_F12:
-					displaySecondary(Screens.ACHIEVEMENTS);
+					if (secondary != null) {
+						if (secondary.screen() == Screens.ACHIEVEMENTS) {
+							hideSecondary();
+						} else {
+							displaySecondary(Screens.ACHIEVEMENTS);
+						}
+					} else {
+						displaySecondary(Screens.ACHIEVEMENTS);
+					}
 					break;
 				case KeyEvent.VK_1:
 					if (e.isControlDown()) {
-						commons.world.level = 1;
+						commons.world().level = 1;
 						if (primary != null) {
 							primary.onLeave();
 						}
@@ -615,7 +734,7 @@ public class GameWindow extends JFrame implements GameControls {
 					break;
 				case KeyEvent.VK_2:
 					if (e.isControlDown()) {
-						commons.world.level = 2;
+						commons.world().level = 2;
 						if (primary != null) {
 							primary.onLeave();
 						}
@@ -625,7 +744,7 @@ public class GameWindow extends JFrame implements GameControls {
 					break;
 				case KeyEvent.VK_3:
 					if (e.isControlDown()) {
-						commons.world.level = 3;
+						commons.world().level = 3;
 						if (primary != null) {
 							primary.onLeave();
 						}
@@ -635,7 +754,7 @@ public class GameWindow extends JFrame implements GameControls {
 					break;
 				case KeyEvent.VK_4:
 					if (e.isControlDown()) {
-						commons.world.level = 4;
+						commons.world().level = 4;
 						if (primary != null) {
 							primary.onLeave();
 						}
@@ -645,7 +764,7 @@ public class GameWindow extends JFrame implements GameControls {
 					break;
 				case KeyEvent.VK_5:
 					if (e.isControlDown()) {
-						commons.world.level = 5;
+						commons.world().level = 5;
 						if (primary != null) {
 							primary.onLeave();
 						}
@@ -772,14 +891,6 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void playVideos(String... videos) {
 		playVideos(null, videos);
-	}
-	@Override
-	public void center() {
-		setLocationRelativeTo(null);
-	}
-	@Override
-	public Rectangle getWindowBounds() {
-		return getBounds();
 	}
 	@Override
 	public int getInnerHeight() {

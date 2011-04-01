@@ -15,21 +15,20 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
- * A three state image button with normal, pressed and hovered state.
- * handler when the user holds down a button.
+ * A three state image button with normal, select+pressed and selected state.
  * The difference from <code>UIImageButton</code>
  * that when clicked, the button remains in the down state.
  * You must manually remove the down state.
  * 
  * @author akarnokd, 2011.02.26.
  */
-public class UIImageTabButton extends UIComponent {
+public class UIImageTabButton2 extends UIComponent {
 	/** The normal state image. */
-	protected BufferedImage normal;
+	protected BufferedImage normalImage;
 	/** The pressed state image. */
-	protected BufferedImage pressed;
+	protected BufferedImage selectedPressedImage;
 	/** The hovered state image. */
-	protected BufferedImage hovered;
+	protected BufferedImage selectedImage;
 	/** The disabled pattern to use for the button. */
 	protected BufferedImage disabledPattern;
 	/** The action to invoke when the button is clicked. */
@@ -41,18 +40,21 @@ public class UIImageTabButton extends UIComponent {
 	public Act onPress;
 	/** Is the mouse pressed down on this component. */
 	public boolean down;
+	/** Indicates the button is in selected state. */
+	public boolean selected;
 	/**
 	 * Constructor with the default images.
-	 * @param normal the normal state image
-	 * @param pressed the pressed state image
-	 * @param hovered the hovered state image, if null, the normal image is used instead
+	 * @param normalImage the normal state image
+	 * @param selectedPressedImage the selected+pressed image
+	 * @param selectedImage the selected image
 	 */
-	public UIImageTabButton(BufferedImage normal, BufferedImage pressed, BufferedImage hovered) {
-		this.normal = normal;
-		this.pressed = pressed;
-		this.hovered = hovered != null ? hovered : normal;
-		this.width = normal.getWidth();
-		this.height = normal.getHeight();
+	public UIImageTabButton2(BufferedImage normalImage, 
+			BufferedImage selectedPressedImage, BufferedImage selectedImage) {
+		this.normalImage = normalImage;
+		this.selectedPressedImage = selectedPressedImage;
+		this.selectedImage = selectedImage;
+		this.width = normalImage.getWidth();
+		this.height = normalImage.getHeight();
 	}
 	/**
 	 * Creates an image button by using the elements of the supplied array.
@@ -62,12 +64,12 @@ public class UIImageTabButton extends UIComponent {
 	 * You may use this constructor with the resource BufferedImage arrays of buttons
 	 * @param images the array of images.
 	 */
-	public UIImageTabButton(BufferedImage[] images) {
-		this.normal = images[0];
-		this.pressed = images.length > 1 ? images[1] : images[0];
-		this.hovered = images.length > 2 ? images[2] : images[0];
-		this.width = normal.getWidth();
-		this.height = normal.getHeight();
+	public UIImageTabButton2(BufferedImage[] images) {
+		this.normalImage = images[0];
+		this.selectedPressedImage = images[1];
+		this.selectedImage = images.length > 1 ? images[2] : images[1];
+		this.width = normalImage.getWidth();
+		this.height = normalImage.getHeight();
 	}
 	/**
 	 * Call the click action if set.
@@ -86,16 +88,16 @@ public class UIImageTabButton extends UIComponent {
 	@Override
 	public void draw(Graphics2D g2) {
 		if (!enabled && disabledPattern != null) {
-			g2.drawImage(normal, 0, 0, null);
+			g2.drawImage(normalImage, 0, 0, null);
 			RenderTools.fill(g2, 0, 0, width, height, disabledPattern);
 		} else
 		if (down) {
-			g2.drawImage(pressed, 0, 0, null);
+			g2.drawImage(selectedPressedImage, 0, 0, null);
 		} else
-		if (over) {
-			g2.drawImage(hovered, 0, 0, null);
+		if (selected) {
+			g2.drawImage(selectedImage, 0, 0, null);
 		} else {
-			g2.drawImage(normal, 0, 0, null);
+			g2.drawImage(normalImage, 0, 0, null);
 		}
 	}
 	@Override
@@ -103,6 +105,7 @@ public class UIImageTabButton extends UIComponent {
 		switch (e.type) {
 		case DOWN:
 			down = true;
+			selected = true;
 			doPress();
 			return true;
 		case CLICK:
@@ -115,6 +118,7 @@ public class UIImageTabButton extends UIComponent {
 			return true;
 		case UP:
 		case LEAVE:
+			down = false;
 			return true;
 		case ENTER:
 			return true;
@@ -127,7 +131,7 @@ public class UIImageTabButton extends UIComponent {
 	 * @param pattern the pattern to fill with the area of the button when it is disabled
 	 * @return this
 	 */
-	public UIImageTabButton setDisabledPattern(BufferedImage pattern) {
+	public UIImageTabButton2 setDisabledPattern(BufferedImage pattern) {
 		this.disabledPattern = pattern;
 		return this;
 	}

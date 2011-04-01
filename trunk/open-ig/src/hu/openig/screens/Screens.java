@@ -20,13 +20,29 @@ public enum Screens {
 	/** The colony screen. */
 	COLONY,
 	/** The equipment screen. */
-	EQUIPMENT,
+	EQUIPMENT_FLEET,
+	/** The equipment screen. */
+	EQUIPMENT_PLANET,
 	/** The production screen. */
 	PRODUCTION,
 	/** The research screen. */
 	RESEARCH,
 	/** The information screen. */
-	INFORMATION,
+	INFORMATION_PLANETS,
+	/** The information screen. */
+	INFORMATION_FLEETS,
+	/** The information screen. */
+	INFORMATION_COLONY,
+	/** The information screen. */
+	INFORMATION_MILITARY,
+	/** The information screen. */
+	INFORMATION_FINANCIAL,
+	/** The information screen. */
+	INFORMATION_BUILDINGS,
+	/** The information screen. */
+	INFORMATION_INVENTIONS,
+	/** The information screen. */
+	INFORMATION_ALIENS,
 	/** The diplomacy screen. */
 	DIPLOMACY,
 	/** The bar screen. */
@@ -52,5 +68,13 @@ public enum Screens {
 	/** The loading screen. */
 	LOADING,
 	/** The statistics screen. */
-	STATISTICS
+	STATISTICS,
+	/** The game credits. */
+	CREDITS,
+	/** Battle finish screen. */
+	BATTLE_FINISH,
+	/** Not actually a screen. */
+	STATUSBAR,
+	/** Full screen movie playback. */
+	MOVIE
 }

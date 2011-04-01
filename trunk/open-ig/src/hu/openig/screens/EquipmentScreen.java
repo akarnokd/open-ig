@@ -193,7 +193,7 @@ public class EquipmentScreen extends ScreenBase {
 		STATIONS
 	}
 	/** The equipment mode. */
-	EquipmentMode mode;
+	Screens mode;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -207,25 +207,25 @@ public class EquipmentScreen extends ScreenBase {
 		researchButton.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.RESEARCH);
+				displaySecondary(Screens.RESEARCH);
 			}
 		};
 		productionButton.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.PRODUCTION);
+				displaySecondary(Screens.PRODUCTION);
 			}
 		};
 		bridgeButton.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.BRIDGE);
+				displayPrimary(Screens.BRIDGE);
 			}
 		};
 		infoButton.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.INFORMATION);
+				displaySecondary(Screens.INFORMATION_INVENTIONS);
 			}
 		};
 		
@@ -233,14 +233,14 @@ public class EquipmentScreen extends ScreenBase {
 		starmapButton.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.STARMAP);
+				displayPrimary(Screens.STARMAP);
 			}
 		};
 		colonyButton = new UIImageButton(commons.equipment().planet);
 		colonyButton.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.COLONY);
+				displayPrimary(Screens.COLONY);
 			}
 		};
 		
@@ -264,20 +264,20 @@ public class EquipmentScreen extends ScreenBase {
 		fleetName = new UILabel("Fleet1", 14, commons.text());
 		fleetName.color(0xFFFF0000);
 		
-		spaceshipsLabel = new UILabel(commons.labels().format("equipment.spaceships", 0), 10, commons.text());
-		fightersLabel = new UILabel(commons.labels().format("equipment.fighters", 0), 10, commons.text());
-		vehiclesLabel = new UILabel(commons.labels().format("equipment.vehicles", 0), 10, commons.text());
-		spaceshipsMaxLabel = new UILabel(commons.labels().format("equipment.max", 25), 10, commons.text());
-		fightersMaxLabel = new UILabel(commons.labels().format("equipment.maxpertype", 30), 10, commons.text());
-		vehiclesMaxLabel = new UILabel(commons.labels().format("equipment.max", 0), 10, commons.text());
+		spaceshipsLabel = new UILabel(format("equipment.spaceships", 0), 10, commons.text());
+		fightersLabel = new UILabel(format("equipment.fighters", 0), 10, commons.text());
+		vehiclesLabel = new UILabel(format("equipment.vehicles", 0), 10, commons.text());
+		spaceshipsMaxLabel = new UILabel(format("equipment.max", 25), 10, commons.text());
+		fightersMaxLabel = new UILabel(format("equipment.maxpertype", 30), 10, commons.text());
+		vehiclesMaxLabel = new UILabel(format("equipment.max", 0), 10, commons.text());
 		fleetStatusLabel = new UILabel("TODO", 10, commons.text());
 
-		secondaryLabel = new UILabel(commons.labels().get("equipment.secondary"), 10, commons.text());
+		secondaryLabel = new UILabel(get("equipment.secondary"), 10, commons.text());
 		secondaryValue = new UILabel("TODO", 10, commons.text());
 		secondaryValue.color(0xFFFF0000);
 		
-		secondaryFighters = new UILabel(commons.labels().format("equipment.fighters", 0), 10, commons.text());
-		secondaryVehicles = new UILabel(commons.labels().format("equipment.vehiclesandmax", 0, 8), 10, commons.text());
+		secondaryFighters = new UILabel(format("equipment.fighters", 0), 10, commons.text());
+		secondaryVehicles = new UILabel(format("equipment.vehiclesandmax", 0, 8), 10, commons.text());
 		
 		battleshipsAndStationsEmpty = new UIImage(commons.equipment().categoryEmpty);
 		battleshipsAndStationsEmpty.visible(false);
@@ -379,12 +379,12 @@ public class EquipmentScreen extends ScreenBase {
 		innerEquipment = new Rectangle();
 		innerEquipmentName = new UILabel("TODO", 7, commons.text());
 		innerEquipmentName.visible(false);
-		innerEquipmentValue = new UILabel(commons.labels().format("equipment.innercount", 0, 0), 7, commons.text());
+		innerEquipmentValue = new UILabel(format("equipment.innercount", 0, 0), 7, commons.text());
 		innerEquipmentValue.visible(false);
 		innerEquipmentSeparator = new UILabel("-----", 7, commons.text());
 		innerEquipmentSeparator.visible(false);
 		
-		selectedNameAndType = new UILabel(commons.labels().format("equipment.selectednametype", "TODO", "TODO"), 10, commons.text());
+		selectedNameAndType = new UILabel(format("equipment.selectednametype", "TODO", "TODO"), 10, commons.text());
 		selectedNameAndType.color(0xFF6DB269);
 		
 		planet = new UIImage(commons.equipment().planetOrbit);
@@ -413,12 +413,12 @@ public class EquipmentScreen extends ScreenBase {
 		};
 	}
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		onResize();
 		if (mode == null) {
-			this.mode = EquipmentMode.MANAGE_FLEET;
+			this.mode = Screens.EQUIPMENT_FLEET;
 		} else {
-			this.mode = (EquipmentMode)mode; 
+			this.mode = mode; 
 		}
 		animation.start();
 	}
@@ -551,7 +551,6 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param mode the screen mode
 	 */
 	public void setEquipmentMode(EquipmentMode mode) {
-		this.mode = mode;
 		switch (mode) {
 		case MANAGE_FLEET:
 			spaceshipsLabel.visible(true);
@@ -677,10 +676,14 @@ public class EquipmentScreen extends ScreenBase {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
-			commons.control.hideSecondary();
+			hideSecondary();
 			return true;
 		} else {
 			return super.mouse(e);
 		}
+	}
+	@Override
+	public Screens screen() {
+		return mode;
 	}
 }

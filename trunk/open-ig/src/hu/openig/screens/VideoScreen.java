@@ -119,8 +119,8 @@ public class VideoScreen extends ScreenBase {
 		};
 		
 		playLabel = new UIGenericButton(
-				commons.labels().get("videos.play"),
-				commons.control.fontMetrics(16),
+				get("videos.play"),
+				fontMetrics(16),
 				commons.common().mediumButton,
 				commons.common().mediumButtonPressed
 				);
@@ -128,21 +128,21 @@ public class VideoScreen extends ScreenBase {
 			@Override
 			public void act() {
 				if (selectedVideo != null) {
-					commons.control.playVideos(selectedVideo.fullName);
+					playVideos(selectedVideo.fullName);
 				}
 			}
 		};
 		
 		backLabel = new UIGenericButton(
-			commons.labels().get("videos.back"),
-			commons.control.fontMetrics(16),
+			get("videos.back"),
+			fontMetrics(16),
 			commons.common().mediumButton,
 			commons.common().mediumButtonPressed
 		);
 		backLabel.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.hideSecondary();
+				hideSecondary();
 			}
 		};
 
@@ -152,7 +152,7 @@ public class VideoScreen extends ScreenBase {
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			commons.control.hideSecondary();
+			hideSecondary();
 		}
 		return false;
 	}
@@ -168,7 +168,7 @@ public class VideoScreen extends ScreenBase {
 				if (idx < videos.size()) {
 					selectedVideo = videos.get(idx);
 					if (e.type == Type.DOUBLE_CLICK) {
-						commons.control.playVideos(selectedVideo.fullName);
+						playVideos(selectedVideo.fullName);
 					}
 					rep = true;
 				}
@@ -222,7 +222,7 @@ public class VideoScreen extends ScreenBase {
 		askRepaint();
 	}
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		videos.clear();
 		for (String lang : Arrays.asList("generic", commons.config.language)) {
 			for (ResourcePlace rp : rl.resourceMap.get(ResourceType.VIDEO).get(lang).values()) {
@@ -259,7 +259,7 @@ public class VideoScreen extends ScreenBase {
 		RenderTools.darkenAround(origin, getInnerWidth(), getInnerHeight(), g2, 0.5f, true);
 		g2.drawImage(commons.common().infoEmpty, origin.x, origin.y, null);
 		
-		String s = commons.labels().get("videos.all_videos");
+		String s = get("videos.all_videos");
 		int w = commons.text().getTextWidth(14, s) + 10;
 		g2.setColor(Color.BLACK);
 		g2.fillRect(origin.x + (origin.width - w) / 2, origin.y - 9, w, 18);
@@ -280,5 +280,9 @@ public class VideoScreen extends ScreenBase {
 		g2.setClip(save0);
 		
 		super.draw(g2);
+	}
+	@Override
+	public Screens screen() {
+		return Screens.VIDEOS;
 	}
 }

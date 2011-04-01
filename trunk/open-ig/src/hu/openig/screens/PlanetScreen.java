@@ -64,8 +64,6 @@ public class PlanetScreen extends ScreenBase {
 	/** Indicate if a component is drag sensitive. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface DragSensitive { }
-	/** The current location based on the mouse pointer. */
-	Location current;
 	/** 
 	 * The selected rectangular region. The X coordinate is the smallest, the Y coordinate is the largest
 	 * the width points to +X and height points to -Y direction
@@ -229,8 +227,6 @@ public class PlanetScreen extends ScreenBase {
 		return rep;
 	}
 
-
-
 	/**
 	 * Zoom to 100%.
 	 */
@@ -254,7 +250,7 @@ public class PlanetScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onEnter(Object mode) {
+	public void onEnter(Screens mode) {
 		animationTimer.start();
 		if (surface() != null) {
 			render.offsetX = -(surface().boundingRectangle.width - width) / 2;
@@ -482,7 +478,16 @@ public class PlanetScreen extends ScreenBase {
 					rep = true;
 				} else
 				if (placementMode) {
-					current = getLocationAt(e.x, e.y);
+					int mx = e.x;
+					int my = e.y;
+					// FIXME compensate for even sized tiles
+					if (placementRectangle.width % 2 == 0) {
+						mx += 28;
+					}
+					if (placementRectangle.height % 2 == 0) {
+						my += 13;
+					}
+					Location current = getLocationAt(mx, my);
 					if (current != null) {
 						placementRectangle.x = current.x - placementRectangle.width / 2;
 						placementRectangle.y = current.y + placementRectangle.height / 2;
@@ -767,7 +772,7 @@ public class PlanetScreen extends ScreenBase {
 						}
 					} else {
 						int ey = r.y + h + 13;
-						String offline = commons.get("buildings.offline");
+						String offline = get("buildings.offline");
 						int w = commons.text().getTextWidth(10, offline);
 						color = 0xFF8080FF;
 						if (!blink) {
@@ -794,15 +799,15 @@ public class PlanetScreen extends ScreenBase {
 			g2.setTransform(at);
 			g2.setColor(Color.BLACK);
 			
-			String pn = commons.planet().name;
+			String pn = planet().name;
 			int nameHeight = 14;
 			int nameWidth = commons.text().getTextWidth(nameHeight, pn);
 			int nameLeft = (width - nameWidth) / 2;
 			g2.fillRect(nameLeft - 5, 0, nameWidth + 10, nameHeight + 4);
 			
 			int pc = TextRenderer.GRAY;
-			if (commons.planet().owner != null) {
-				pc = commons.planet().owner.color;
+			if (planet().owner != null) {
+				pc = planet().owner.color;
 			}
 			commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
 
@@ -991,9 +996,9 @@ public class PlanetScreen extends ScreenBase {
 	void doSelectBuilding(Building b) {
 		currentBuilding = b;
 		if (b != null) {
-			commons.player().currentBuilding = b.type;
+			player().currentBuilding = b.type;
 			if (b.type.research != null) {
-				commons.player().currentResearch = b.type.research;
+				player().currentResearch = b.type.research;
 			}
 			setBuildingList(0);
 		}
@@ -1005,7 +1010,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the unit string
 	 */
 	String getUnit(String type) {
-		return commons.get("building.resource.type." + type);
+		return get("building.resource.type." + type);
 	}
 	/** The building preview component. */
 	class BuildingPreview extends UIComponent {
@@ -1100,7 +1105,7 @@ public class PlanetScreen extends ScreenBase {
 				@Override
 				public void act() {
 					placementMode = false;
-					commons.control.displaySecondary(Screens.INFORMATION);
+					displaySecondary(Screens.INFORMATION_BUILDINGS);
 				}
 			};
 			build.onPress = new Act() {
@@ -1109,7 +1114,7 @@ public class PlanetScreen extends ScreenBase {
 					placementMode = !placementMode;
 					if (placementMode) {
 						currentBuilding = null;
-						Tile t = commons.player().currentBuilding.tileset.get(commons.race()).normal;
+						Tile t = player().currentBuilding.tileset.get(race()).normal;
 						placementRectangle.setSize(t.width + 2, t.height + 2);
 					} else {
 						build.down = false;
@@ -1450,7 +1455,7 @@ public class PlanetScreen extends ScreenBase {
 				buildingInfoPanel.undamaged.visible(true);
 				buildingInfoPanel.stateInactive.visible(true);
 			}
-			buildingInfoPanel.demolish.enabled(commons.world.player.currentPlanet.owner == commons.world.player && currentBuilding != null);
+			buildingInfoPanel.demolish.enabled(planet().owner == player() && currentBuilding != null);
 			buildingInfoPanel.stateActive.enabled(currentBuilding != null);
 			buildingInfoPanel.stateDamaged.enabled(currentBuilding != null);
 			buildingInfoPanel.stateNoEnergy.enabled(currentBuilding != null);
@@ -1474,7 +1479,7 @@ public class PlanetScreen extends ScreenBase {
 	/** Demolish the selected building. */
 	void doDemolish() {
 		surface().removeBuilding(currentBuilding);
-		surface().placeRoads(commons.world.player.currentPlanet.race, commons.world.buildingModel);
+		surface().placeRoads(planet().race, commons.world().buildingModel);
 		doAllocation();
 		buildingBox = null;
 		doSelectBuilding(null);
@@ -1500,7 +1505,7 @@ public class PlanetScreen extends ScreenBase {
 	}
 	/** Perform the resource allocation now! */
 	void doAllocation() {
-		commons.world.allocator.computeNow(commons.world.player.currentPlanet);
+		commons.world().allocator.computeNow(planet());
 	}
 	/**
 	 * The information panel showing some details.
@@ -1610,12 +1615,12 @@ public class PlanetScreen extends ScreenBase {
 		 * Update the display values based on the current planet's settings.
 		 */
 		public void update() {
-			Planet p = commons.world.player.currentPlanet;
+			Planet p = planet();
 			
-			planet.text(commons.format("colonyinfo.planet", p.name), true);
+			planet.text(format("colonyinfo.planet", p.name), true);
 			
 			String s = p.owner != null ? p.owner.name : "-";
-			owner.text(commons.format("colonyinfo.owner", s), true);
+			owner.text(format("colonyinfo.owner", s), true);
 			if (p.owner != null) {
 				planet.color(p.owner.color);
 				owner.color(TextRenderer.GREEN);
@@ -1623,16 +1628,16 @@ public class PlanetScreen extends ScreenBase {
 				planet.color(TextRenderer.GRAY);
 				owner.color(TextRenderer.GREEN);
 			}
-			s = p.isPopulated() ? commons.get(p.getRaceLabel()) : "-";
-			race.text(commons.format("colonyinfo.race", s), true);
+			s = p.isPopulated() ? get(p.getRaceLabel()) : "-";
+			race.text(format("colonyinfo.race", s), true);
 			
-			s = commons.get(p.type.label);
-			surface.text(commons.format("colonyinfo.surface", s), true);
+			s = get(p.type.label);
+			surface.text(format("colonyinfo.surface", s), true);
 			
 			if (p.isPopulated()) {
 			
-				population.text(commons.format("colonyinfo.population", 
-						p.population, commons.get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+				population.text(format("colonyinfo.population", 
+						p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
 				), true).visible(true);
 				
 				PlanetStatistics ps = p.getStatistics();
@@ -1644,26 +1649,26 @@ public class PlanetScreen extends ScreenBase {
 				setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
 				setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
 				
-				taxIncome.text(commons.format("colonyinfo.tax", 
+				taxIncome.text(format("colonyinfo.tax", 
 						p.taxIncome
 				), true).visible(true);
-				tradeIncome.text(commons.format("colonyinfo.trade",
+				tradeIncome.text(format("colonyinfo.trade",
 						p.tradeIncome
 				), true).visible(true);
 				
-				taxMorale.text(commons.format("colonyinfo.tax-morale",
+				taxMorale.text(format("colonyinfo.tax-morale",
 						p.morale, withSign(p.morale - p.lastMorale)
 				), true).visible(true);
-				taxLevel.text(commons.format("colonyinfo.tax-level",
-						commons.get(p.getTaxLabel())
+				taxLevel.text(format("colonyinfo.tax-level",
+						get(p.getTaxLabel())
 				), true).visible(true);
 				
-				allocation.text(commons.format("colonyinfo.allocation",
-						commons.get(p.getAllocationLabel())
+				allocation.text(format("colonyinfo.allocation",
+						get(p.getAllocationLabel())
 				), true).visible(true);
 				
-				autobuild.text(commons.format("colonyinfo.autobuild",
-						commons.get(p.getAutoBuildLabel())
+				autobuild.text(format("colonyinfo.autobuild",
+						get(p.getAutoBuildLabel())
 				), true).visible(true);
 			} else {
 				population.visible(false);
@@ -1680,7 +1685,7 @@ public class PlanetScreen extends ScreenBase {
 				allocation.visible(false);
 				autobuild.visible(false);
 			}
-			other.text(commons.format("colonyinfo.other",
+			other.text(format("colonyinfo.other",
 					"" // FIXME list others
 			), true);
 
@@ -1696,7 +1701,7 @@ public class PlanetScreen extends ScreenBase {
 		 * @return the label
 		 */
 		UILabel setLabel(UILabel label, String format, int avail, int demand) {
-			label.text(commons.format(format, avail, demand), true);
+			label.text(format(format, avail, demand), true);
 			if (demand <= avail) {
 				label.color(TextRenderer.GREEN);
 			} else
@@ -1796,7 +1801,7 @@ public class PlanetScreen extends ScreenBase {
 				);
 			} else
 			if (over == 0) {
-				upgradeDescription.text(commons.get("buildings.upgrade.default.description"));
+				upgradeDescription.text(get("buildings.upgrade.default.description"));
 			} else {
 				upgradeDescription.text("");
 			}
@@ -1896,25 +1901,25 @@ public class PlanetScreen extends ScreenBase {
 		colonyInfo.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.INFORMATION);
+				displaySecondary(Screens.INFORMATION_COLONY);
 			}
 		};
 		planets.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.INFORMATION);
+				displaySecondary(Screens.INFORMATION_PLANETS);
 			}
 		};
 		starmap.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.STARMAP);
+				displayPrimary(Screens.STARMAP);
 			}
 		};
 		bridge.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.BRIDGE);
+				displayPrimary(Screens.BRIDGE);
 			}
 		};
 		
@@ -1981,7 +1986,7 @@ public class PlanetScreen extends ScreenBase {
 		prev.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.world.player.movePrevPlanet();
+				player().movePrevPlanet();
 			}
 		};
 		next = new UIImageButton(commons.starmap().forwards);
@@ -1989,7 +1994,7 @@ public class PlanetScreen extends ScreenBase {
 		next.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.world.player.moveNextPlanet();
+				player().moveNextPlanet();
 			}
 		};
 		
@@ -2036,10 +2041,10 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the current planet surface or selects one from the player's list.
 	 */
 	public PlanetSurface surface() {
-		if (commons.world.player.currentPlanet != null) {
-			return commons.world.player.currentPlanet.surface;
+		if (planet() != null) {
+			return planet().surface;
 		}
-		Planet p = commons.world.player.moveNextPlanet();
+		Planet p = player().moveNextPlanet();
 		return p != null ? p.surface : null;
 	}
 	/** 
@@ -2047,28 +2052,28 @@ public class PlanetScreen extends ScreenBase {
 	 * @param delta to go to the previous or next
 	 */
 	void setBuildingList(int delta) {
-		List<BuildingType> list = commons.world.listBuildings();
-		int idx = list.indexOf(commons.buildingType());
+		List<BuildingType> list = commons.world().listBuildings();
+		int idx = list.indexOf(building());
 		if (list.size() > 0) {
 			BuildingType bt = null; 
 			if (idx < 0) {
 				idx = 0;
 				bt = list.get(idx);
-				commons.player().currentBuilding = bt;
+				player().currentBuilding = bt;
 			} else {
 				idx = Math.min(Math.max(0, idx + delta), list.size() - 1);
 				bt = list.get(idx);
 			}
 			if (delta != 0) {
-				commons.player().currentBuilding = bt;
+				player().currentBuilding = bt;
 			}
-			String race = commons.race();
-			Tile t = commons.player().currentBuilding.tileset.get(race).normal;
+			String race = race();
+			Tile t = player().currentBuilding.tileset.get(race).normal;
 			placementRectangle.setSize(t.width + 2, t.height + 2);
 			
 			buildingsPanel.preview.building = bt.tileset.get(race).preview;
 			buildingsPanel.preview.cost = bt.cost;
-			buildingsPanel.preview.enabled = commons.planet().canBuild(bt) && commons.planet().owner == commons.player();
+			buildingsPanel.preview.enabled = planet().canBuild(bt) && planet().owner == player();
 			buildingsPanel.buildingName.text(bt.name);
 			buildingsPanel.build.enabled(buildingsPanel.preview.enabled);
 		} else {
@@ -2088,22 +2093,25 @@ public class PlanetScreen extends ScreenBase {
 	void placeBuilding(boolean more) {
 		if (canPlaceBuilding(placementRectangle)) {
 
-			Building b = new Building(commons.player().currentBuilding, commons.race());
+			Building b = new Building(player().currentBuilding, race());
 			b.location = Location.of(placementRectangle.x + 1, placementRectangle.y - 1);
 			
-			commons.planet().surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
+			planet().surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
 
-			commons.planet().surface.placeRoads(commons.race(), commons.world.buildingModel);
+			planet().surface.placeRoads(race(), commons.world().buildingModel);
 			
-			placementMode = more && commons.planet().canBuild(commons.player().currentBuilding);
+			placementMode = more && planet().canBuild(building());
 			buildingsPanel.build.down = placementMode;
 
 			buildingBox = getBoundingRect(b.location);
 			doSelectBuilding(b);
-
 			
 			buildingInfoPanel.update();
 			setBuildingList(0);
 		}
+	}
+	@Override
+	public Screens screen() {
+		return Screens.COLONY;
 	}
 }

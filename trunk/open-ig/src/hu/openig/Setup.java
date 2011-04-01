@@ -22,7 +22,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -55,6 +54,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -74,7 +74,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -958,28 +957,14 @@ public class Setup extends JFrame {
 	}
 	/** Get the current bounds. */
 	void doCurrentBounds() {
-		if (gameControls != null) {
-			Rectangle rect = gameControls.getWindowBounds();
-			edLeft.setText(Integer.toString(rect.x));
-			edTop.setText(Integer.toString(rect.y));
-			edWidth.setText(Integer.toString(rect.width));
-			edHeight.setText(Integer.toString(rect.height));
-		}
 	}
 	/** Center the window. */
 	void doCenter() {
-		if (gameControls != null) {
-			gameControls.center();
-		}		
 	}
 	/**
 	 * Apply the size settings from the input boxes.
 	 */
 	void doApplyBounds() {
-		if (gameControls != null) {
-			gameControls.setWindowBounds(Integer.parseInt(edLeft.getText()), Integer.parseInt(edTop.getText()), 
-					Integer.parseInt(edWidth.getText()), Integer.parseInt(edHeight.getText()));
-		}
 	}
 	/**
 	 * Create language panel.

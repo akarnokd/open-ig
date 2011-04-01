@@ -102,15 +102,8 @@ public class AchievementsScreen extends ScreenBase {
 	ClickLabel statisticsLabel;
 	/** Achievements label. */
 	ClickLabel achievementLabel;
-	/** The rendering mode. */
-	public enum Mode {
-		/** Statistics screen. */
-		STATISTICS,
-		/** Achievements screen. */
-		ACHIEVEMENTS
-	}
 	/** The current display mode. */
-	public Mode mode = Mode.STATISTICS;
+	public Screens mode = Screens.STATISTICS;
 	@Override
 	public void onResize() {
 		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
@@ -185,7 +178,7 @@ public class AchievementsScreen extends ScreenBase {
 		bridge.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.BRIDGE);
+				displayPrimary(Screens.BRIDGE);
 			}
 		};
 		bridge.visible(false);
@@ -193,14 +186,14 @@ public class AchievementsScreen extends ScreenBase {
 		starmap.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.STARMAP);
+				displayPrimary(Screens.STARMAP);
 			}
 		};
 		colony = new UIImageButton(commons.info().colony);
 		colony.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.COLONY);
+				displayPrimary(Screens.COLONY);
 			}
 		};
 		
@@ -208,7 +201,7 @@ public class AchievementsScreen extends ScreenBase {
 		colony.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displayPrimary(Screens.COLONY);
+				displayPrimary(Screens.COLONY);
 			}
 		};
 
@@ -216,7 +209,7 @@ public class AchievementsScreen extends ScreenBase {
 		production.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.PRODUCTION);
+				displaySecondary(Screens.PRODUCTION);
 			}
 		};
 		
@@ -224,7 +217,7 @@ public class AchievementsScreen extends ScreenBase {
 		research.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.RESEARCH);
+				displaySecondary(Screens.RESEARCH);
 			}
 		};
 
@@ -232,7 +225,7 @@ public class AchievementsScreen extends ScreenBase {
 		info.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.INFORMATION);
+				displaySecondary(Screens.INFORMATION_COLONY);
 			}
 		};
 
@@ -240,7 +233,7 @@ public class AchievementsScreen extends ScreenBase {
 		diplomacy.onClick = new Act() {
 			@Override
 			public void act() {
-				commons.control.displaySecondary(Screens.DIPLOMACY);
+				displaySecondary(Screens.DIPLOMACY);
 			}
 		};
 		diplomacy.visible(false);
@@ -249,7 +242,7 @@ public class AchievementsScreen extends ScreenBase {
 		achievementLabel.onPressed = new Act() {
 			@Override
 			public void act() {
-				mode = Mode.ACHIEVEMENTS;
+				mode = Screens.ACHIEVEMENTS;
 				adjustLabels();
 				adjustScrollButtons();
 			}
@@ -259,7 +252,7 @@ public class AchievementsScreen extends ScreenBase {
 		statisticsLabel.onPressed = new Act() {
 			@Override
 			public void act() {
-				mode = Mode.STATISTICS;
+				mode = Screens.STATISTICS;
 				adjustLabels();
 				adjustScrollButtons();
 			}
@@ -274,7 +267,7 @@ public class AchievementsScreen extends ScreenBase {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
-			commons.control.hideSecondary();
+			hideSecondary();
 			return true;
 		}
 		boolean result = false;
@@ -296,14 +289,14 @@ public class AchievementsScreen extends ScreenBase {
 
 	/** Scoll the list up. */
 	void doScrollUp() {
-		if (mode == Mode.STATISTICS) {
+		if (mode == Screens.STATISTICS) {
 			int oldIndex = statisticsIndex;
 			statisticsIndex = Math.max(0, statisticsIndex - 1);
 			if (oldIndex != statisticsIndex) {
 				adjustScrollButtons();
 			}
 		} else
-		if (mode == Mode.ACHIEVEMENTS) {
+		if (mode == Screens.ACHIEVEMENTS) {
 			int oldIndex = achievementIndex;
 			achievementIndex = Math.max(0, achievementIndex - 1);
 			if (oldIndex != achievementIndex) {
@@ -313,7 +306,7 @@ public class AchievementsScreen extends ScreenBase {
 	}
 	/** Scroll the list down. */
 	void doScrollDown() {
-		if (mode == Mode.STATISTICS) {
+		if (mode == Screens.STATISTICS) {
 			if (statistics.size() > statisticsCount) {
 				int oldIndex = statisticsIndex;
 				statisticsIndex = Math.min(statisticsIndex + 1, statistics.size() - statisticsCount);
@@ -322,7 +315,7 @@ public class AchievementsScreen extends ScreenBase {
 				}
 			}
 		} else
-		if (mode == Mode.ACHIEVEMENTS) {
+		if (mode == Screens.ACHIEVEMENTS) {
 			if (achievements.size() > achievementCount) {
 				int oldIndex = achievementIndex;
 				achievementIndex = Math.min(achievementIndex + 1, achievements.size() - achievementCount);
@@ -334,11 +327,11 @@ public class AchievementsScreen extends ScreenBase {
 	}
 	/** Adjust the visibility of the scroll buttons. */
 	void adjustScrollButtons() {
-		if (mode == Mode.STATISTICS) {
+		if (mode == Screens.STATISTICS) {
 			scrollUpButton.visible(statisticsIndex > 0);
 			scrollDownButton.visible(statisticsIndex < statistics.size() - statisticsCount);
 		} else
-		if (mode == Mode.ACHIEVEMENTS) {
+		if (mode == Screens.ACHIEVEMENTS) {
 			scrollUpButton.visible(achievementIndex > 0);
 			scrollDownButton.visible(achievementIndex < achievements.size() - achievementCount);
 		}		
@@ -348,16 +341,16 @@ public class AchievementsScreen extends ScreenBase {
 	 * @see hu.openig.v1.ScreenBase#onEnter()
 	 */
 	@Override
-	public void onEnter(Object mode) {
-		this.mode = mode == null ? Mode.STATISTICS : (Mode)mode;
+	public void onEnter(Screens mode) {
+		this.mode = mode == null ? Screens.STATISTICS : mode;
 		onResize();
 		adjustScrollButtons();
 		adjustLabels();
 	}
 	/** Adjust label selection. */
 	void adjustLabels() {
-		achievementLabel.selected = mode == Mode.ACHIEVEMENTS;
-		statisticsLabel.selected = mode == Mode.STATISTICS;
+		achievementLabel.selected = mode == Screens.ACHIEVEMENTS;
+		statisticsLabel.selected = mode == Screens.STATISTICS;
 	}
 	@Override
 	public void onLeave() {
@@ -375,11 +368,11 @@ public class AchievementsScreen extends ScreenBase {
 		Shape save0 = g2.getClip();
 		g2.clipRect(listRect.x, listRect.y, listRect.width, listRect.height);
 		adjustLabels();
-		if (mode == Mode.ACHIEVEMENTS) {
+		if (mode == Screens.ACHIEVEMENTS) {
 			int y = listRect.y;
 			for (int i = achievementIndex; i < achievements.size() && i < achievementIndex + achievementCount; i++) {
 				AchievementEntry ae = achievements.get(i);
-				String desc = commons.labels().get(ae.description);
+				String desc = get(ae.description);
 				int tw = listRect.width - commons.common().achievement.getWidth() - 10;
 				List<String> lines = new ArrayList<String>();
 				commons.text().wrapText(desc, tw, 10, lines);
@@ -390,7 +383,7 @@ public class AchievementsScreen extends ScreenBase {
 					color = 0xFFC0C0C0;
 				}
 				g2.drawImage(img, listRect.x, y, null);
-				commons.text().paintTo(g2, listRect.x + commons.common().achievement.getWidth() + 10, y, 14, color, commons.labels().get(ae.title));
+				commons.text().paintTo(g2, listRect.x + commons.common().achievement.getWidth() + 10, y, 14, color, get(ae.title));
 				int y1 = y + 20;
 				for (int j = 0; j < lines.size(); j++) {
 					commons.text().paintTo(g2, listRect.x + commons.common().achievement.getWidth() + 10, y1, 10, color, lines.get(j));
@@ -399,12 +392,12 @@ public class AchievementsScreen extends ScreenBase {
 				y += 50;
 			}
 		} else
-		if (mode == Mode.STATISTICS) {
+		if (mode == Screens.STATISTICS) {
 			int y = listRect.y;
 			int h = 10;
 			for (int i = statisticsIndex; i < statistics.size() && i < statisticsIndex + statisticsCount; i++) {
 				StatisticsEntry se = statistics.get(i);
-				commons.text().paintTo(g2, listRect.x, y, h, 0xFF80FF80, commons.labels().get(se.label));
+				commons.text().paintTo(g2, listRect.x, y, h, 0xFF80FF80, get(se.label));
 				int w2 = commons.text().getTextWidth(h, se.value);
 				commons.text().paintTo(g2, listRect.x + listRect.width - w2 - 5, y, h, 0xFF8080FF, se.value);
 				
@@ -502,5 +495,9 @@ public class AchievementsScreen extends ScreenBase {
 		statistics.add(new StatisticsEntry("statistics.galaxy_total_hospital", "1.150.000 (115%)"));
 		statistics.add(new StatisticsEntry("statistics.galaxy_total_police", "1.200.000 (120%)"));
 //		statistics.add(new StatisticsEntry("", ""));
+	}
+	@Override
+	public Screens screen() {
+		return mode;
 	}
 }

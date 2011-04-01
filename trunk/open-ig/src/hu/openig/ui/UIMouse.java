@@ -190,7 +190,12 @@ public class UIMouse {
 		UIMouse m = new UIMouse();
 		m.type = UIMouse.Type.MOVE;
 		Point pm = MouseInfo.getPointerInfo().getLocation();
-		Point pc = c.getLocationOnScreen();
+		Point pc = new Point(0, 0);
+		try {
+			pc = c.getLocationOnScreen();
+		} catch (IllegalStateException ex) {
+			// ignored
+		}
 		m.x = pc.x - pm.x;
 		m.y = pc.y - pm.y;
 		return m;
