@@ -15,7 +15,7 @@ import java.util.Map;
  * @author akarnokd, 2010.01.07.
  */
 public class Upgrade {
-	/** The upgrade description. */
+	/** The display upgrade description. */
 	public String description;
 	/** The resources associated with this upgrade. */
 	public final Map<String, Resource> resources = new HashMap<String, Resource>();

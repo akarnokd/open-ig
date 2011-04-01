@@ -11,7 +11,6 @@ package hu.openig.gfx;
 import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
 import hu.openig.core.ResourceLocator;
-import hu.openig.core.ResourceSelfLoader;
 
 import java.awt.image.BufferedImage;
 
@@ -20,9 +19,7 @@ import java.awt.image.BufferedImage;
  * including menu, options and battle end screens.
  * @author akarnokd, 2009.11.09.
  */
-public class BackgroundGFX implements ResourceSelfLoader {
-	/** The resource locator. */
-	protected ResourceLocator rl;
+public class BackgroundGFX {
 	/** The start backgrounds. */
 	public BufferedImage[] start;
 	/** The options backgrounds. */
@@ -39,37 +36,26 @@ public class BackgroundGFX implements ResourceSelfLoader {
 	@Img(name = "gameover")
 	public BufferedImage gameover;
 	/**
-	 * Constructor.
-	 * @param rl the resource locator.
-	 */
-	public BackgroundGFX(ResourceLocator rl) {
-		this.rl = rl;
-	}
-	/**
 	 * Load resources.
-	 * @param language the target language
+	 * @param rl the resource locator
+	 * @return this
 	 */
-	public void load(String language) {
-		GFXLoader.loadResources(this, rl, language);
-	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.gfx.ResourceSelfLoader#load(hu.openig.v1.ResourceLocator, java.lang.String)
-	 */
-	@Override
-	public void load(ResourceLocator rl, String language) {
+	public BackgroundGFX load(ResourceLocator rl) {
+		GFXLoader.loadResources(this, rl);
 		start = new BufferedImage[] {
-			rl.getImage(language, "start_1"),
-			rl.getImage(language, "start_2"),
-			rl.getImage(language, "start_3")
+			rl.getImage("start_1"),
+			rl.getImage("start_2"),
+			rl.getImage("start_3")
 		};
 		options = new BufferedImage[] {
-			rl.getImage(language, "options_1"),
-			rl.getImage(language, "options_2"),
-			rl.getImage(language, "options_3")
+			rl.getImage("options_1"),
+			rl.getImage("options_2"),
+			rl.getImage("options_3")
 		};
 		difficulty = new BufferedImage[] {
-			rl.getImage(language, "difficulty_1"),
-			rl.getImage(language, "difficulty_2")
+			rl.getImage("difficulty_1"),
+			rl.getImage("difficulty_2")
 		};
+		return this;
 	}
 }

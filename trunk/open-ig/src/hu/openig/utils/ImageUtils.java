@@ -72,4 +72,48 @@ public final class ImageUtils {
 		result.setRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
 		return result;
 	}
+	/**
+	 * Split the image into equally sized sub-images.
+	 * @param img the image to split
+	 * @param width the split width
+	 * @return the array of images
+	 */
+	public static BufferedImage[] splitByWidth(BufferedImage img, int width) {
+		if (img.getWidth() > 0) {
+			BufferedImage[] result = new BufferedImage[(img.getWidth() + width - 1) / width];
+			int x = 0;
+			for (int i = 0; i < result.length; i++) {
+				int x2 = Math.min(x + width - 1, img.getWidth() - 1);
+				result[i] = newSubimage(img, x, 0, x2 - x + 1, img.getHeight());
+				x += width;
+			}
+			return result;
+		}
+		return new BufferedImage[0];
+	}
+	/**
+	 * Split the image into equally sized sub-images.
+	 * @param img the image to split
+	 * @param width the split width
+	 * @param height the split height
+	 * @return the array of array images, the first dimension are the image rows
+	 */
+	public static BufferedImage[][] split(BufferedImage img, int width, int height) {
+		if (img.getWidth() > 0) {
+			
+			BufferedImage[][] result = new BufferedImage[(img.getHeight() + height - 1) / height][(img.getWidth() + width - 1) / width];
+			int y = 0;
+			for (int j = 0; j < result.length; j++) {
+				int x = 0;
+				int y2 = Math.min(y + height - 1, img.getHeight() - 1);
+				for (int i = 0; i < result.length; i++) {
+					int x2 = Math.min(x + width - 1, img.getWidth() - 1);
+					result[j][i] = newSubimage(img, x, y, x2 - x + 1, y2 - y + 1);
+					x += width;
+				}
+				y += height;
+			}
+		}
+		return new BufferedImage[0][];
+	}
 }

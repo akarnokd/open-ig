@@ -21,8 +21,6 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, 2009.11.09.
  */
 public class InfoGFX {
-	/** The resource locator. */
-	protected ResourceLocator rl;
 	/** The base image. */
 	@Img(name = "info/info_base")
 	public BufferedImage base;
@@ -78,17 +76,12 @@ public class InfoGFX {
 	@Btn2(name = "info/button_tax_more")
 	public BufferedImage[] taxMore;
 	/**
-	 * Constructor.
-	 * @param rl the resource locator
-	 */
-	public InfoGFX(ResourceLocator rl) {
-		this.rl = rl;
-	}
-	/**
 	 * Load settings to the given language.
-	 * @param language the language
+	 * @param rl the resource locator
+	 * @return this
 	 */
-	public void load(String language) {
-		GFXLoader.loadResources(this, rl, language);
+	public InfoGFX load(ResourceLocator rl) {
+		GFXLoader.loadResources(this, rl);
+		return this;
 	}
 }

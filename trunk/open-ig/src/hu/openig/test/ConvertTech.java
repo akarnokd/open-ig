@@ -8,13 +8,12 @@
 
 package hu.openig.test;
 
+import hu.openig.model.ResearchSubCategory;
+import hu.openig.utils.XElement;
+
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-
-import hu.openig.model.ResearchMainCategory;
-import hu.openig.model.ResearchSubCategory;
-import hu.openig.utils.XElement;
 
 /**
  * Convert the old technology XML to the new format.
@@ -50,87 +49,83 @@ public final class ConvertTech {
 			String clazz = oitem.childValue("class");
 			String type = oitem.childValue("type");
 			if ("Spaceships".equals(clazz)) {
-				item.set("category", ResearchMainCategory.SPACESHIPS);
 				if (type.equals("Fighters")) {
-					item.set("sub-category", ResearchSubCategory.SPACESHIPS_FIGHTERS);
-					item.set("image", "inventions/spaceships/fighters/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.SPACESHIPS_FIGHTERS);
+					item.set("image", "inventions/spaceships/fighters/" + underscore(id));
 				} else
 				if (type.equals("Cruisers")) {
-					item.set("sub-category", ResearchSubCategory.SPACESHIPS_CRUISERS);
-					item.set("image", "inventions/spaceships/cruisers/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.SPACESHIPS_CRUISERS);
+					item.set("image", "inventions/spaceships/cruisers/" + underscore(id));
 				} else
 				if (type.equals("Battleships")) {
-					item.set("sub-category", ResearchSubCategory.SPACESHIPS_BATTLESHIPS);
-					item.set("image", "inventions/spaceships/battleships/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.SPACESHIPS_BATTLESHIPS);
+					item.set("image", "inventions/spaceships/battleships/" + underscore(id));
 				} else
 				if (type.equals("Satellites")) {
-					item.set("sub-category", ResearchSubCategory.SPACESHIPS_SATELLITES);
-					item.set("image", "inventions/spaceships/satellites/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.SPACESHIPS_SATELLITES);
+					item.set("image", "inventions/spaceships/satellites/" + underscore(id));
 				} else
 				if (type.equals("SpaceStations")) {
-					item.set("sub-category", ResearchSubCategory.SPACESHIPS_STATIONS);
-					item.set("image", "inventions/spaceships/stations/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.SPACESHIPS_STATIONS);
+					item.set("image", "inventions/spaceships/stations/" + underscore(id));
 				}
 			} else
 			if ("Equipments".equals(clazz)) {
-				item.set("category", ResearchMainCategory.EQUIPMENT);
 				if (type.equals("HyperDrives")) {
-					item.set("sub-category", ResearchSubCategory.EQUIPMENT_HYPERDRIVES);
-					item.set("image", "inventions/equipments/hyperdrives/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.EQUIPMENT_HYPERDRIVES);
+					item.set("image", "inventions/equipments/hyperdrives/" + underscore(id));
 				} else
 				if (type.equals("Modules")) {
-					item.set("sub-category", ResearchSubCategory.EQUIPMENT_MODULES);
-					item.set("image", "inventions/equipments/modules/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.EQUIPMENT_MODULES);
+					item.set("image", "inventions/equipments/modules/" + underscore(id));
 				} else
 				if (type.equals("Radars")) {
-					item.set("sub-category", ResearchSubCategory.EQUIPMENT_RADARS);
-					item.set("image", "inventions/equipments/radars/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.EQUIPMENT_RADARS);
+					item.set("image", "inventions/equipments/radars/" + underscore(id));
 				} else
 				if (type.equals("Shields")) {
-					item.set("sub-category", ResearchSubCategory.EQUIPMENT_SHIELDS);
-					item.set("image", "inventions/equipments/shields/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.EQUIPMENT_SHIELDS);
+					item.set("image", "inventions/equipments/shields/" + underscore(id));
 				}
 			} else
 			if ("Weapons".equals(clazz)) {
-				item.set("category", ResearchMainCategory.WEAPONS);
 				if (type.equals("Lasers")) {
-					item.set("sub-category", ResearchSubCategory.WEAPONS_LASERS);
-					item.set("image", "inventions/weapons/lasers/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.WEAPONS_LASERS);
+					item.set("image", "inventions/weapons/lasers/" + underscore(id));
 				} else
 				if (type.equals("Cannons")) {
-					item.set("sub-category", ResearchSubCategory.WEAPONS_CANNONS);
-					item.set("image", "inventions/weapons/cannons/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.WEAPONS_CANNONS);
+					item.set("image", "inventions/weapons/cannons/" + underscore(id));
 				} else
 				if (type.equals("Projectiles")) {
-					item.set("sub-category", ResearchSubCategory.WEAPONS_PROJECTILES);
-					item.set("image", "inventions/weapons/projectiles/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.WEAPONS_PROJECTILES);
+					item.set("image", "inventions/weapons/projectiles/" + underscore(id));
 				} else
 				if (type.equals("Tanks")) {
-					item.set("sub-category", ResearchSubCategory.WEAPONS_TANKS);
-					item.set("image", "inventions/weapons/tanks/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.WEAPONS_TANKS);
+					item.set("image", "inventions/weapons/tanks/" + underscore(id));
 				} else
 				if (type.equals("Vehicles")) {
-					item.set("sub-category", ResearchSubCategory.WEAPONS_VEHICLES);
-					item.set("image", "inventions/weapons/vehicles/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.WEAPONS_VEHICLES);
+					item.set("image", "inventions/weapons/vehicles/" + underscore(id));
 				}
 			} else
-			if ("Buildings".equals("clazz")) {
-				item.set("category", ResearchMainCategory.BUILDINS);
+			if ("Buildings".equals(clazz)) {
 				if (type.equals("Civil")) {
-					item.set("sub-category", ResearchSubCategory.BUILDINGS_CIVIL);
-					item.set("image", "inventions/buildings/civil/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.BUILDINGS_CIVIL);
+					item.set("image", "inventions/buildings/civil/" + underscore(id));
 				} else
 				if (type.equals("Military")) {
-					item.set("sub-category", ResearchSubCategory.BUILDINGS_MILITARY);
-					item.set("image", "inventions/buildings/military/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.BUILDINGS_MILITARY);
+					item.set("image", "inventions/buildings/military/" + underscore(id));
 				} else
 				if (type.equals("Radars")) {
-					item.set("sub-category", ResearchSubCategory.BUILDINGS_RADARS);
-					item.set("image", "inventions/buildings/radars/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.BUILDINGS_RADARS);
+					item.set("image", "inventions/buildings/radars/" + underscore(id));
 				} else
 				if (type.equals("Guns")) {
-					item.set("sub-category", ResearchSubCategory.BUILDINGS_GUNS);
-					item.set("image", "inventions/buildings/guns/" + id.toLowerCase());
+					item.set("category", ResearchSubCategory.BUILDINGS_GUNS);
+					item.set("image", "inventions/buildings/guns/" + underscore(id));
 				}
 			}
 			item.set("factory", oitem.childValue("factory"));
@@ -148,10 +143,9 @@ public final class ConvertTech {
 			item.set("mil", oitem.childValue("military"));
 			
 			XElement oequipment = oitem.childElement("equipment");
-			if (oequipment != null) {
-				XElement equipment = item.add("equipment");
+			if (oequipment != null && oequipment.hasChildren()) {
 				for (XElement oslot : oequipment.childrenWithName("slot")) {
-					XElement slot = equipment.add("slot");
+					XElement slot = item.add("slot");
 					
 					slot.set("x", oslot.get("x"));
 					slot.set("y", oslot.get("y"));
@@ -161,7 +155,7 @@ public final class ConvertTech {
 					slot.set("items", oslot.childValue("ids"));
 				}
 				for (XElement props : oequipment.childrenWithName("property")) {
-					XElement prop = equipment.add("property");
+					XElement prop = item.add("property");
 					prop.set("name", props.get("name"));
 					prop.set("value", props.content);
 				}
@@ -178,5 +172,15 @@ public final class ConvertTech {
 		}
 
 	}
-
+	/**
+	 * If the <code>id</code> ends in a digit, then it is prefixed by an underscore.
+	 * @param id the input text
+	 * @return the modified text
+	 */
+	static String underscore(String id) {
+		if (Character.isDigit(id.charAt(id.length() - 1))) {
+			return id.substring(0, id.length() - 1).toLowerCase() + "_" + id.substring(id.length() - 1);
+		}
+		return id.toLowerCase();
+	}
 }

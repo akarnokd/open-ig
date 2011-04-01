@@ -28,19 +28,17 @@ public class Walks {
 	/**
 	 * Load the shipwalk.xml from the resoure locator.
 	 * @param rl the resource locator
-	 * @param lang the current language
 	 * @param data the path to the resource
 	 */
-	public void load(ResourceLocator rl, String lang, String data) {
-		process(rl.getXML(lang, data), rl, lang);
+	public void load(ResourceLocator rl, String data) {
+		process(rl.getXML(data), rl);
 	}
 	/**
 	 * Process the document.
 	 * @param root the root element
 	 * @param rl the resource locator
-	 * @param lang the current language
 	 */
-	protected void process(XElement root, ResourceLocator rl, String lang) {
+	protected void process(XElement root, ResourceLocator rl) {
 		for (XElement ship : root.childrenWithName("ship")) {
 			WalkShip ws = new WalkShip();
 			ws.level = ship.get("id");
@@ -54,7 +52,7 @@ public class Walks {
 					wp.ship = ws;
 					wp.id = position.get("id");
 					ws.positions.put(wp.id, wp);
-					wp.picture = rl.getImage(lang, position.get("picture"));
+					wp.picture = rl.getImage(position.get("picture"));
 					for (XElement transition : position.childrenWithName("transition")) {
 						WalkTransition wt = new WalkTransition();
 						wp.transitions.add(wt);

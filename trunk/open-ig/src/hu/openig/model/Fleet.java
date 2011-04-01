@@ -27,4 +27,10 @@ public class Fleet {
 	public int radar;
 	/** The fleet name. */
 	public String name;
+	/** @return calculate the fleet statistics. */
+	public FleetStatistics getStatistics() {
+		FleetStatistics result = new FleetStatistics();
+		
+		return result;
+	}
 }

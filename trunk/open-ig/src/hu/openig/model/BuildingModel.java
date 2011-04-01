@@ -7,6 +7,7 @@
  */
 package hu.openig.model;
 
+import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
@@ -39,18 +40,22 @@ public class BuildingModel {
 	public final Map<String, Map<Tile, RoadType>> tileRoads = new HashMap<String, Map<Tile, RoadType>>();
 	/**
 	 * Process the contents of the buildings definition.
-	 * @param data the buildings definition
 	 * @param rl the resource locator
-	 * @param language the language
+	 * @param data the buildings definition
+	 * @param researches the map of researches
+	 * @param labels the labels 
 	 * @param exec the executor service for the parallel processing
 	 * @param wip the wip counter
 	 */
 	public void processBuildings(final ResourceLocator rl, 
-			final String language, String data, 
-			final ExecutorService exec, final WipPort wip) {
+			String data, 
+			Map<String, ResearchType> researches,
+			final Labels labels,
+			final ExecutorService exec, 
+			final WipPort wip) {
 		wip.inc();
 		try {
-			BufferedImage solidTile = rl.getImage(language, "colony/tile_1x1");
+			BufferedImage solidTile = rl.getImage("colony/tile_1x1");
 			
 			BuildingMinimapTiles bmt = new BuildingMinimapTiles();
 			bmt.normal = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF00C000), null);
@@ -60,7 +65,7 @@ public class BuildingModel {
 			bmt.constructing = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF0040FF), null);
 			bmt.constructingDamaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF40FF), null);
 			
-			XElement buildings = rl.getXML(language, data);
+			XElement buildings = rl.getXML(data);
 			
 			XElement scaff = buildings.childElement("scaffolding");
 			XElement scaffGraph = scaff.childElement("graphics");
@@ -87,11 +92,11 @@ public class BuildingModel {
 						public void run() {
 							try {
 								BufferedImage lightMap = null;
-								ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+								ResourcePlace rp = rl.get(normalLight, ResourceType.IMAGE);
 								if (rp != null) {
-									lightMap = rl.getImage(language, normalLight);
+									lightMap = rl.getImage(normalLight);
 								}
-								BufferedImage image = rl.getImage(language, normalImg);
+								BufferedImage image = rl.getImage(normalImg);
 								
 								synchronized (scaffolding.normal) {
 									scaffolding.normal.add(new Tile(1, 1, image, lightMap));
@@ -118,11 +123,11 @@ public class BuildingModel {
 						public void run() {
 							try {
 								BufferedImage lightMap = null;
-								ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+								ResourcePlace rp = rl.get(normalLight, ResourceType.IMAGE);
 								if (rp != null) {
-									lightMap = rl.getImage(language, normalLight);
+									lightMap = rl.getImage(normalLight);
 								}
-								BufferedImage image = rl.getImage(language, normalImg);
+								BufferedImage image = rl.getImage(normalImg);
 								
 								synchronized (scaffolding.damaged) {
 									scaffolding.damaged.add(new Tile(1, 1, image, lightMap));
@@ -140,8 +145,8 @@ public class BuildingModel {
 				final BuildingType b = new BuildingType();
 				b.scaffoldings = scaffoldings;
 				b.id = building.get("id");
-				b.label = building.get("label");
-				b.description = b.label + ".desc";
+				b.name = labels.get(building.get("name"));
+				b.description = labels.get(building.get("label") + ".desc");
 				b.minimapTiles = bmt;
 				
 				XElement gfx = building.childElement("graphics");
@@ -164,15 +169,15 @@ public class BuildingModel {
 						public void run() {
 							try {
 								BufferedImage lightMap = null;
-								ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+								ResourcePlace rp = rl.get(normalLight, ResourceType.IMAGE);
 								if (rp != null) {
-									lightMap = rl.getImage(language, normalLight);
+									lightMap = rl.getImage(normalLight);
 								}
-								BufferedImage image = rl.getImage(language, normalImg);
+								BufferedImage image = rl.getImage(normalImg);
 								ts.normal = new Tile(width, height, image, lightMap);
 								ts.nolight = new Tile(width, height, image, null);
-								ts.damaged = new Tile(width, height, rl.getImage(language, damagedImg), null); // no lightmap for damaged building
-								ts.preview = rl.getImage(language, previewImg);
+								ts.damaged = new Tile(width, height, rl.getImage(damagedImg), null); // no lightmap for damaged building
+								ts.preview = rl.getImage(previewImg);
 								synchronized (b.tileset) {
 									b.tileset.put(rid, ts);
 								}
@@ -192,7 +197,11 @@ public class BuildingModel {
 				} else {
 					b.limit = Integer.parseInt(limit);
 				}
-				b.research = bld.get("research");
+				String research = bld.get("research");
+				b.research = researches.get(research);
+				if (research != null && b.research == null) {
+					throw new AssertionError("Missing research: Building = " + b.id + ", Research = " + research);
+				}
 				String except = bld.get("except");
 				if (except != null && !except.isEmpty()) {
 					b.except.addAll(Arrays.asList(except.split("\\s*,\\s*")));
@@ -212,7 +221,7 @@ public class BuildingModel {
 				XElement ug = building.childElement("upgrades");
 				for (XElement u : ug.childrenWithName("upgrade")) {
 					Upgrade upg = new Upgrade();
-					upg.description = u.get("desc");
+					upg.description = labels.get(u.get("desc"));
 					for (XElement re : u.childrenWithName("resource")) {
 						Resource res = new Resource();
 						res.type = re.get("type");
@@ -245,11 +254,11 @@ public class BuildingModel {
 						public void run() {
 							try {
 								BufferedImage lightMap = null;
-								ResourcePlace rp = rl.get(language, normalLight, ResourceType.IMAGE);
+								ResourcePlace rp = rl.get(normalLight, ResourceType.IMAGE);
 								if (rp != null) {
-									lightMap = rl.getImage(language, normalLight);
+									lightMap = rl.getImage(normalLight);
 								}
-								Tile t = new Tile(1, 1, rl.getImage(language, normalImg), lightMap);
+								Tile t = new Tile(1, 1, rl.getImage(normalImg), lightMap);
 								RoadType rt = RoadType.getByIndex(index);
 								addRoadType(rid, rt, t);
 							} finally {

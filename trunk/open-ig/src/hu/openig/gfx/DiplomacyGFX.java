@@ -31,11 +31,10 @@ public class DiplomacyGFX {
 	/**
 	 * Initialize the common resources.
 	 * @param rl the resource locator
-	 * @param language the target language
 	 * @return this
 	 */
-	public DiplomacyGFX load(ResourceLocator rl, String language) {
-		GFXLoader.loadResources(this, rl, language);
+	public DiplomacyGFX load(ResourceLocator rl) {
+		GFXLoader.loadResources(this, rl);
 		return this;
 	}
 }

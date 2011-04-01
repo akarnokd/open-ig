@@ -56,6 +56,16 @@ public class XElement implements Iterable<XElement> {
 	public String get(String attributeName) {
 		return attributes.get(attributeName);
 	}
+	/**
+	 * Get an integer attribute or return the default value if not present.
+	 * @param attributeName the attribute name
+	 * @param def the default value if the attribute is not present
+	 * @return the integer value
+	 */
+	public int getInt(String attributeName, int def) {
+		String val = get(attributeName);
+		return val != null ? Integer.parseInt(val) : def;
+	}
 	@Override
 	public Iterator<XElement> iterator() {
 		return children.iterator();
@@ -331,5 +341,9 @@ public class XElement implements Iterable<XElement> {
 		for (XElement e : elements) {
 			children.add(e);
 		}
+	}
+	/** @return are there any children? */
+	public boolean hasChildren() {
+		return !children.isEmpty();
 	}
 }

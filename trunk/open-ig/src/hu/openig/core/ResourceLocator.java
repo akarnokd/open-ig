@@ -41,6 +41,8 @@ public class ResourceLocator {
 	private final List<String> containers = new ArrayList<String>();
 	/** The resource map from type to language to path. */
 	public final Map<ResourceType, Map<String, Map<String, ResourcePlace>>> resourceMap = new HashMap<ResourceType, Map<String, Map<String, ResourcePlace>>>();
+	/** The default language to use. */
+	public String language;
 	/** The pre-opened ZIP containers. */
 	private final ThreadLocal<Map<String, ZipFile>> zipContainers = 
 		new ThreadLocal<Map<String, ZipFile>>() {
@@ -49,9 +51,12 @@ public class ResourceLocator {
 			return new HashMap<String, ZipFile>();
 		};
 	};
-	/** Package-private. Use Configuration.newResourceLocator() instead. */
-	ResourceLocator() {
-		
+	/** 
+	 * Package-private. Use Configuration.newResourceLocator() instead.
+	 * @param language the default language to use 
+	 */
+	ResourceLocator(String language) {
+		this.language = language;
 	}
 	/**
 	 * A concrete resource place.
@@ -282,12 +287,11 @@ public class ResourceLocator {
 	}
 	/**
 	 * Get resource for a language, type and resource name.
-	 * @param language the language
 	 * @param resourceName the resource name with dash
 	 * @param type the resource type
 	 * @return the resource place
 	 */
-	public ResourcePlace get(String language, String resourceName, ResourceType type) {
+	public ResourcePlace get(String resourceName, ResourceType type) {
 		resourceName = resourceName.replaceAll("/{2,}", "/");
 		Map<String, Map<String, ResourcePlace>> res = resourceMap.get(type);
 		if (res != null) {
@@ -334,14 +338,25 @@ public class ResourceLocator {
 	}
 	/**
 	 * Get the given resource as image.
-	 * @param language the language
 	 * @param resourceName the resource name, don't start it with slash
 	 * @return the buffered image
 	 */
-	public BufferedImage getImage(String language, String resourceName) {
-		ResourcePlace rp = get(language, resourceName, ResourceType.IMAGE);
+	public BufferedImage getImage(String resourceName) {
+		return getImage(resourceName, false);
+	}
+	/**
+	 * Get the given resource as image.
+	 * @param resourceName the resource name, don't start it with slash
+	 * @param optional do not throw an AssertionError if the resource is missing?
+	 * @return the buffered image or null if non-existent
+	 */
+	public BufferedImage getImage(String resourceName, boolean optional) {
+		ResourcePlace rp = get(resourceName, ResourceType.IMAGE);
 		if (rp == null) {
-			throw new AssertionError("Missing resource: " + language + " " + resourceName);
+			if (!optional) {
+				throw new AssertionError("Missing resource: " + language + " " + resourceName);
+			}
+			return null;
 		}
 		InputStream in = rp.open();
 		try {
@@ -360,14 +375,13 @@ public class ResourceLocator {
 	}
 	/**
 	 * Returns the given resource as byte data.
-	 * @param language the language
 	 * @param resourceName the resource name.
 	 * @return the byte data of the resource
 	 */
-	public byte[] getData(String language, String resourceName) {
-		ResourcePlace rp = get(language, resourceName, ResourceType.DATA);
+	public byte[] getData(String resourceName) {
+		ResourcePlace rp = get(resourceName, ResourceType.DATA);
 		if (rp == null) {
-			rp = get(language, resourceName, ResourceType.OTHER);
+			rp = get(resourceName, ResourceType.OTHER);
 		}
 		if (rp == null) {
 			throw new AssertionError("Missing resource: " + language + " " + resourceName);
@@ -447,13 +461,12 @@ public class ResourceLocator {
 	}
 	/**
 	 * Get the given XML resource.
-	 * @param language the language.
 	 * @param resourceName the resource name omitting any leading slash.
 	 * @return the element
 	 */
-	public XElement getXML(String language, String resourceName) {
+	public XElement getXML(String resourceName) {
 		try {
-			ResourcePlace rp = get(language, resourceName, ResourceType.DATA);
+			ResourcePlace rp = get(resourceName, ResourceType.DATA);
 			if (rp == null) {
 				throw new AssertionError("Missing resource: " + language + " " + resourceName);
 			}
@@ -478,14 +491,13 @@ public class ResourceLocator {
 	}
 	/**
 	 * Get a multi-phase animation by splitting the target image.
-	 * @param language the target language
 	 * @param name the button name
 	 * @param width the phase width or -1 if not applicable
 	 * @param step the number of steps or -1 if not applicable
 	 * @return the array.
 	 */
-	public BufferedImage[] getAnimation(String language, String name, int width, int step) {
-		BufferedImage img = getImage(language, name);
+	public BufferedImage[] getAnimation(String name, int width, int step) {
+		BufferedImage img = getImage(name);
 		int n = width >= 0 ? img.getWidth() / width : step;
 		int w = width >= 0 ? width : img.getWidth() / step;
 		BufferedImage[] result = new BufferedImage[n];

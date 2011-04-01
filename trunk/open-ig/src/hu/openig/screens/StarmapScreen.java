@@ -514,14 +514,20 @@ public class StarmapScreen extends ScreenBase {
 		// render radar circles
 		if (showRadar) {
 			for (Planet p : planets) {
-				if (p.radar > 0 && p.owner == commons.world.player) {
-					paintRadar(g2, p.x, p.y, p.radar, zoom);
+				if (p.owner == commons.world.player) {
+					p.getStatistics();
+					if (p.radar > 0) {
+						paintRadar(g2, p.x, p.y, p.radar, zoom);
+					}
 				}
 			}
 			if (showFleets) {
 				for (Fleet f : fleets) {
-					if (f.radar > 0 && f.owner == commons.world.player) {
-						paintRadar(g2, f.x, f.y, f.radar, zoom);
+					if (f.owner == commons.world.player) {
+						f.getStatistics();
+						if (f.radar > 0) {
+							paintRadar(g2, f.x, f.y, f.radar, zoom);
+						}
 					}
 				}
 			}

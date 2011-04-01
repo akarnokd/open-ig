@@ -428,7 +428,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			ts.percent = 0.5f;
 			ts.visible(true);
 			ts.missingLab = true;
-			ts.image = rl.getImage(commons.language(), "inventions/spaceships/fighters/fighter_" + (i + 1) + "");
+			ts.image = rl.getImage("inventions/spaceships/fighters/fighter_" + (i + 1) + "");
 			ts.onPress = new Act() {
 				@Override
 				public void act() {

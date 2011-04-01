@@ -14,9 +14,11 @@ import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.Bridge.Level;
+import hu.openig.utils.ImageUtils;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -50,7 +52,7 @@ public class World {
 	/** All fleets on the starmap. */
 	public final List<Fleet> fleets = new ArrayList<Fleet>();
 	/** The list of available researches. */
-	public final List<ResearchType> researches = new ArrayList<ResearchType>();
+	public final Map<String, ResearchType> researches = new HashMap<String, ResearchType>();
 	/** Achievements. */
 	public final List<Achievement> achievements = new ArrayList<Achievement>();
 	/** The available crew-talks. */
@@ -71,20 +73,16 @@ public class World {
 	public Labels labels;
 	/** The resource locator. */
 	public ResourceLocator rl;
-	/** The language. */
-	public String language;
 	/** The common resource allocator. */
 	public ResourceAllocator allocator;
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
-	 * @param lang the current language
 	 * @param game the game directory
 	 */
-	public void load(final ResourceLocator resLocator, final String lang, final String game) {
+	public void load(final ResourceLocator resLocator, final String game) {
 		this.name = game;
 		this.rl = resLocator;
-		this.language = lang;
 		final ExecutorService exec = 
 			new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 
 					Integer.MAX_VALUE, 1, TimeUnit.SECONDS, 
@@ -103,7 +101,9 @@ public class World {
 		try {
 			level = definition.startingLevel;
 			
-			processPlayers(rl.getXML(language, game + "/players"));
+			processPlayers(rl.getXML(game + "/players"));
+			
+			processResearches(rl.getXML(definition.tech));
 			
 			exec.submit(new Runnable() {
 				@Override
@@ -111,7 +111,7 @@ public class World {
 					try {
 						long t = System.nanoTime();
 						talks = new Talks();
-						talks.load(rl, language, definition.talk);
+						talks.load(rl, definition.talk);
 						System.out.printf("Loading talks: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
@@ -126,12 +126,12 @@ public class World {
 					try {
 						long t = System.nanoTime();
 						walks = new Walks();
-						walks.load(rl, language, definition.walk);
+						walks.load(rl, definition.walk);
 						System.out.printf("Loading walks: %d%n", (System.nanoTime() - t) / 1000000);
 						
 						t = System.nanoTime();
 						bridge = new Bridge();
-						processBridge(rl, language, definition.bridge);
+						processBridge(rl, definition.bridge);
 						System.out.printf("Loading bridge: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
@@ -146,7 +146,7 @@ public class World {
 					try {
 						long t = System.nanoTime();
 						buildingModel = new BuildingModel();
-						buildingModel.processBuildings(rl, language, definition.build, exec, wip);
+						buildingModel.processBuildings(rl, definition.build, researches, labels, exec, wip);
 						System.out.printf("Loading building: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
@@ -161,7 +161,7 @@ public class World {
 					try {
 						long t = System.nanoTime();
 						galaxyModel = new GalaxyModel();
-						galaxyModel.processGalaxy(rl, language, definition.galaxy, exec, wip);
+						galaxyModel.processGalaxy(rl, definition.galaxy, exec, wip);
 						System.out.printf("Loading galaxy: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
@@ -186,7 +186,7 @@ public class World {
 						@Override
 						public void run() {
 							try {
-								XElement map = rl.getXML(language, n);
+								XElement map = rl.getXML(n);
 								PlanetSurface ps = new PlanetSurface();
 								ps.parseMap(map, galaxyModel, buildingModel);
 								synchronized (pt.surfaces) {
@@ -207,7 +207,7 @@ public class World {
 		}
 		await(wip);
 		
-		processPlanets(rl.getXML(language, game + "/planets"));
+		processPlanets(rl.getXML(game + "/planets"));
 
 		try {
 			exec.shutdown();
@@ -240,16 +240,15 @@ public class World {
 	/**
 	 * Process the bridge definition resources.
 	 * @param rl the resource locator
-	 * @param language the language
 	 * @param data the data resource to load
 	 */
-	protected void processBridge(ResourceLocator rl, String language, String data) {
-		XElement root = rl.getXML(language, data);
+	protected void processBridge(ResourceLocator rl, String data) {
+		XElement root = rl.getXML(data);
 		XElement graphics = root.childElement("graphics");
 		for (XElement level : graphics.childrenWithName("level")) {
 			Bridge.Level lvl = new Bridge.Level();
 			lvl.id = Integer.parseInt(level.get("id"));
-			lvl.image = rl.getImage(language, level.get("image"));
+			lvl.image = rl.getImage(level.get("image"));
 			lvl.ship = walks.ships.get(level.get("ship-id"));
 			lvl.walk = lvl.ship.positions.get("*bridge");
 			XElement mp = level.childElement("message-panel");
@@ -268,19 +267,19 @@ public class World {
 			
 			XElement mpButtons = mp.childElement("buttons");
 			String up = mpButtons.get("up");
-			lvl.up[0] = rl.getImage(language, up);
-			lvl.up[0] = rl.getImage(language, up + "_pressed");
-			lvl.up[0] = rl.getImage(language, up + "_empty");
+			lvl.up[0] = rl.getImage(up);
+			lvl.up[0] = rl.getImage(up + "_pressed");
+			lvl.up[0] = rl.getImage(up + "_empty");
 			String down = mpButtons.get("down");
-			lvl.down[0] = rl.getImage(language, down);
-			lvl.down[0] = rl.getImage(language, down + "_pressed");
-			lvl.down[0] = rl.getImage(language, down + "_empty");
+			lvl.down[0] = rl.getImage(down);
+			lvl.down[0] = rl.getImage(down + "_pressed");
+			lvl.down[0] = rl.getImage(down + "_empty");
 			String send = mpButtons.get("send");
-			lvl.send[0] = rl.getImage(language, send);
-			lvl.send[0] = rl.getImage(language, send + "_pressed");
+			lvl.send[0] = rl.getImage(send);
+			lvl.send[0] = rl.getImage(send + "_pressed");
 			String receive = mpButtons.get("receive");
-			lvl.receive[0] = rl.getImage(language, receive);
-			lvl.receive[0] = rl.getImage(language, receive + "_pressed");
+			lvl.receive[0] = rl.getImage(receive);
+			lvl.receive[0] = rl.getImage(receive + "_pressed");
 			
 			XElement cp = level.childElement("comm-panel");
 			XElement cpOpen = cp.childElement("open");
@@ -339,10 +338,10 @@ public class World {
 		p.race = player.get("race");
 		p.name = labels.get(player.get("name"));
 		
-		p.fleetIcon = rl.getImage(language, player.get("icon"));
+		p.fleetIcon = rl.getImage(player.get("icon"));
 		String pic = player.get("picture");
 		if (pic != null) {
-			p.picture = rl.getImage(language, pic);
+			p.picture = rl.getImage(pic);
 		}
 		
 		if ("true".equals(player.get("user"))) {
@@ -379,10 +378,10 @@ public class World {
 		p.diameter = Integer.parseInt(planet.get("size"));
 		p.population = Integer.parseInt(planet.get("population"));
 		
-		p.allocation = getEnum(ResourceAllocationStrategy.class, planet.get("allocation"));
-		p.autoBuild = getEnum(AutoBuild.class, planet.get("autobuild"));
-		p.tax = getEnum(TaxLevel.class, planet.get("tax"));
-		p.rotationDirection = getEnum(RotationDirection.class, planet.get("rotate"));
+		p.allocation = ResourceAllocationStrategy.valueOf(planet.get("allocation"));
+		p.autoBuild = AutoBuild.valueOf(planet.get("autobuild"));
+		p.tax = TaxLevel.valueOf(planet.get("tax"));
+		p.rotationDirection = RotationDirection.valueOf(planet.get("rotate"));
 		p.morale = Integer.parseInt(planet.get("morale"));
 		p.taxIncome = Integer.parseInt(planet.get("tax-income"));
 		p.tradeIncome = Integer.parseInt(planet.get("trade-income"));
@@ -414,18 +413,95 @@ public class World {
 		}
 	}
 	/**
-	 * Locate an enumeration based on its string name.
-	 * @param <T> the enum type
-	 * @param e the enum class
-	 * @param value the string
-	 * @return the enum or null if not found
+	 * Process a tech XML.
+	 * @param tech the root node of the tech XML
 	 */
-	public static <T extends Enum<T>> T getEnum(Class<T> e, String value) {
-		for (T ec : e.getEnumConstants()) {
-			if (ec.name().equals(value)) {
-				return ec;
+	public void processResearches(XElement tech) {
+		for (XElement item : tech.childrenWithName("item")) {
+			processResearch(item);
+		}
+	}
+	/**
+	 * Process a research/technology node.
+	 * @param item the <code>item</code> node
+	 */
+	public void processResearch(XElement item) {
+		ResearchType tech = getResearch(item.get("id"));
+		
+		tech.category = ResearchSubCategory.valueOf(item.get("category"));
+		
+		tech.name = labels.get(item.get("name"));
+		tech.longName = labels.get(item.get("long-name"));
+		tech.description = labels.get(item.get("description"));
+		
+		String image = item.get("image");
+		
+		tech.image = rl.getImage(image);
+		tech.infoImage = rl.getImage(image + "_large", true);
+		tech.infoImageWired = rl.getImage(image + "_wired_large", true);
+		
+		tech.factory = item.get("factory");
+		tech.race = item.get("race");
+		tech.productionCost = Integer.parseInt(item.get("production-cost"));
+		tech.researchCost = Integer.parseInt(item.get("research-cost"));
+		tech.level = Integer.parseInt(item.get("level"));
+		
+		tech.civilLab = item.getInt("civil", 0);
+		tech.mechLab = item.getInt("mech", 0);
+		tech.compLab = item.getInt("comp", 0);
+		tech.aiLab = item.getInt("ai", 0);
+		tech.milLab = item.getInt("mil", 0);
+		
+		String prereqs = item.get("requires");
+		if (prereqs != null) {
+			for (String si : prereqs.split("\\s*,\\s*")) {
+				tech.prerequisites.add(getResearch(si));
 			}
 		}
-		return null;
+		
+		for (XElement slot : item.childrenWithName("slot")) {
+			EquipmentSlot s = new EquipmentSlot();
+			
+			s.x = slot.getInt("x", 0);
+			s.y = slot.getInt("y", 0);
+			s.width = slot.getInt("width", 0);
+			s.height = slot.getInt("height", 0);
+			
+			for (String si : slot.get("items").split("\\s*,\\s*")) {
+				s.items.add(getResearch(si));
+			}
+			
+			tech.slots.add(s);
+		}
+		for (XElement prop : item.childrenWithName("property")) {
+			tech.properties.put(prop.get("name"), prop.get("value"));
+		}
+		
+		tech.equipmentImage = rl.getImage(image + "_tiny", true);
+		tech.equipmentCustomizeImage = rl.getImage(image + "_small", true);
+		tech.spaceBattleImage = rl.getImage(image + "_huge", true);
+		
+		BufferedImage rot = rl.getImage(image + "_rotate", true);
+		if (rot != null) {
+			tech.rotation = ImageUtils.splitByWidth(rot, rot.getHeight());
+		}
+		BufferedImage matrix = rl.getImage(image + "_matrix", true);
+		if (matrix != null) {
+			tech.fireAndTotation = ImageUtils.split(matrix, matrix.getHeight() / 5, matrix.getHeight() / 5);
+		}
+	}
+	/**
+	 * Retrieve or create a research type.
+	 * @param id the id
+	 * @return the research type
+	 */
+	ResearchType getResearch(String id) {
+		ResearchType tech = researches.get(id);
+		if (tech == null) {
+			tech = new ResearchType();
+			tech.id = id;
+			researches.put(id, tech);
+		}
+		return tech;
 	}
 }

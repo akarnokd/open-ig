@@ -8,8 +8,6 @@
 package hu.openig.render;
 
 import hu.openig.core.ResourceLocator;
-import hu.openig.core.ResourceType;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.utils.LRUHashMap;
 
 import java.awt.Color;
@@ -18,13 +16,9 @@ import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 
 /**
  * Text graphics drawer and container class.
@@ -137,20 +131,7 @@ public class TextRenderer {
 	 */
 	public TextRenderer(ResourceLocator rl) {
 		frc = new FontRenderContext(null, false, false);
-		try {
-			ResourcePlace rp = rl.get("generic", "charset", ResourceType.IMAGE);
-			if (rp == null) {
-				throw new AssertionError("Missing charset");
-			}
-			InputStream in = rp.open();
-			try {
-				charImage = ImageIO.read(in);
-			} finally {
-				in.close();
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
+		charImage = rl.getImage("charset");
 		// map some colors
 		split(YELLOW);
 		split(GREEN);

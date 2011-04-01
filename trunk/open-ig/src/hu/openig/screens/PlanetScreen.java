@@ -693,8 +693,7 @@ public class PlanetScreen extends ScreenBase {
 //					if (r == null) {
 //						continue;
 //					}
-					String label = commons.labels().get(b.type.label);
-					int nameLen = commons.text().getTextWidth(7, label);
+					int nameLen = commons.text().getTextWidth(7, b.type.name);
 					int h = (r.height - 7) / 2;
 					int nx = r.x + (r.width - nameLen) / 2;
 					int ny = r.y + h;
@@ -711,8 +710,8 @@ public class PlanetScreen extends ScreenBase {
 						g2.setComposite(compositeSave);
 					}
 					
-					commons.text().paintTo(g2, nx + 1, ny + 1, 7, 0xFF8080FF, label);
-					commons.text().paintTo(g2, nx, ny, 7, 0xD4FC84, label);
+					commons.text().paintTo(g2, nx + 1, ny + 1, 7, 0xFF8080FF, b.type.name);
+					commons.text().paintTo(g2, nx, ny, 7, 0xD4FC84, b.type.name);
 
 					// paint upgrade level indicator
 					int uw = b.upgradeLevel * commons.colony().upgrade.getWidth();
@@ -779,7 +778,7 @@ public class PlanetScreen extends ScreenBase {
 						}
 					} else {
 						int ey = r.y + h + 13;
-						String offline = commons.labels().get("buildings.offline");
+						String offline = commons.get("buildings.offline");
 						int w = commons.text().getTextWidth(10, offline);
 						color = 0xFF8080FF;
 						if (!blink) {
@@ -997,7 +996,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @param shiftY the shift in Y coordinates to place the map elements
 	 */
 	private void placeTilesFromOriginalMap(String path, String surfaceType, int shiftX, int shiftY) {
-		byte[] map = rl.getData("en", path);
+		byte[] map = rl.getData(path);
 		PlanetType pt = commons.world.galaxyModel.planetTypes.get(surfaceType);
 		int bias = 41; 
 		if ("neptoplasm".equals(surfaceType)) {
@@ -1066,7 +1065,7 @@ public class PlanetScreen extends ScreenBase {
 	/** @return Parse the original planet definitions. */
 	Map<String, OriginalPlanet> parseOriginalPlanet() {
 		final Map<String, OriginalPlanet> originalPlanets = new LinkedHashMap<String, OriginalPlanet>();
-		XElement e = rl.getXML("en", "campaign/main/planets_old");
+		XElement e = rl.getXML("campaign/main/planets_old");
 		for (XElement planet : e.childrenWithName("planet")) {
 			OriginalPlanet op = new OriginalPlanet();
 			op.name = planet.get("id");
@@ -1118,16 +1117,18 @@ public class PlanetScreen extends ScreenBase {
 	 * @param b the building selected
 	 */
 	void doSelectBuilding(Building b) {
-		currentBuilding = b;
 		if (b != null) {
 			buildingsPanel.preview.building = b.tileset.preview;
 			buildingsPanel.preview.cost = b.type.cost;
-			buildingsPanel.buildingName.text(commons.labels().get(b.type.label));
+			buildingsPanel.buildingName.text(b.type.name);
 			
 			buildingInfoPanel.buildingInfoName.text(buildingsPanel.buildingName.text());
 //			b.hitpoints = b.type.hitpoints * 3 / 4;
 			
-			commons.world.player.currentBuilding = b.type;
+			commons.player().currentBuilding = b.type;
+			if (b.type.research != null) {
+				commons.player().currentResearch = b.type.research;
+			}
 			
 			Set<UIComponent> tohide = new HashSet<UIComponent>(Arrays.asList(
 					buildingInfoPanel.undamaged,
@@ -1278,7 +1279,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the unit string
 	 */
 	String getUnit(String type) {
-		return commons.labels().get("building.resource.type." + type);
+		return commons.get("building.resource.type." + type);
 	}
 	/** The building preview component. */
 	class BuildingPreview extends UIComponent {
@@ -1686,10 +1687,10 @@ public class PlanetScreen extends ScreenBase {
 		public void update() {
 			Planet p = commons.world.player.currentPlanet;
 			
-			planet.text(commons.labels().format("colonyinfo.planet", p.name), true);
+			planet.text(commons.format("colonyinfo.planet", p.name), true);
 			
 			String s = p.owner != null ? p.owner.name : "-";
-			owner.text(commons.labels().format("colonyinfo.owner", s), true);
+			owner.text(commons.format("colonyinfo.owner", s), true);
 			if (p.owner != null) {
 				planet.color(p.owner.color);
 				owner.color(TextRenderer.GREEN);
@@ -1697,16 +1698,16 @@ public class PlanetScreen extends ScreenBase {
 				planet.color(TextRenderer.GRAY);
 				owner.color(TextRenderer.GREEN);
 			}
-			s = p.isPopulated() ? commons.labels().get(p.getRaceLabel()) : "-";
-			race.text(commons.labels().format("colonyinfo.race", s), true);
+			s = p.isPopulated() ? commons.get(p.getRaceLabel()) : "-";
+			race.text(commons.format("colonyinfo.race", s), true);
 			
-			s = commons.labels().get(p.type.label);
-			surface.text(commons.labels().format("colonyinfo.surface", s), true);
+			s = commons.get(p.type.label);
+			surface.text(commons.format("colonyinfo.surface", s), true);
 			
 			if (p.isPopulated()) {
 			
-				population.text(commons.labels().format("colonyinfo.population", 
-						p.population, commons.labels().get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+				population.text(commons.format("colonyinfo.population", 
+						p.population, commons.get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
 				), true).visible(true);
 				
 				PlanetStatistics ps = p.getStatistics();
@@ -1718,26 +1719,26 @@ public class PlanetScreen extends ScreenBase {
 				setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
 				setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
 				
-				taxIncome.text(commons.labels().format("colonyinfo.tax", 
+				taxIncome.text(commons.format("colonyinfo.tax", 
 						p.taxIncome
 				), true).visible(true);
-				tradeIncome.text(commons.labels().format("colonyinfo.trade",
+				tradeIncome.text(commons.format("colonyinfo.trade",
 						p.tradeIncome
 				), true).visible(true);
 				
-				taxMorale.text(commons.labels().format("colonyinfo.tax-morale",
+				taxMorale.text(commons.format("colonyinfo.tax-morale",
 						p.morale, withSign(p.morale - p.lastMorale)
 				), true).visible(true);
-				taxLevel.text(commons.labels().format("colonyinfo.tax-level",
-						commons.labels().get(p.getTaxLabel())
+				taxLevel.text(commons.format("colonyinfo.tax-level",
+						commons.get(p.getTaxLabel())
 				), true).visible(true);
 				
-				allocation.text(commons.labels().format("colonyinfo.allocation",
-						commons.labels().get(p.getAllocationLabel())
+				allocation.text(commons.format("colonyinfo.allocation",
+						commons.get(p.getAllocationLabel())
 				), true).visible(true);
 				
-				autobuild.text(commons.labels().format("colonyinfo.autobuild",
-						commons.labels().get(p.getAutoBuildLabel())
+				autobuild.text(commons.format("colonyinfo.autobuild",
+						commons.get(p.getAutoBuildLabel())
 				), true).visible(true);
 			} else {
 				population.visible(false);
@@ -1754,7 +1755,7 @@ public class PlanetScreen extends ScreenBase {
 				allocation.visible(false);
 				autobuild.visible(false);
 			}
-			other.text(commons.labels().format("colonyinfo.other",
+			other.text(commons.format("colonyinfo.other",
 					"" // FIXME list others
 			), true);
 
@@ -1770,7 +1771,7 @@ public class PlanetScreen extends ScreenBase {
 		 * @return the label
 		 */
 		UILabel setLabel(UILabel label, String format, int avail, int demand) {
-			label.text(commons.labels().format(format, avail, demand), true);
+			label.text(commons.format(format, avail, demand), true);
 			if (demand <= avail) {
 				label.color(TextRenderer.GREEN);
 			} else
@@ -1866,14 +1867,11 @@ public class PlanetScreen extends ScreenBase {
 			}
 			if (over >= 1) {
 				upgradeDescription.text(
-						// FIXME create the labels for the various upgrades
-//						commons.labels().get(
-								currentBuilding.type.upgrades.get(over - 1).description
-//						)
+					currentBuilding.type.upgrades.get(over - 1).description
 				);
 			} else
 			if (over == 0) {
-				upgradeDescription.text(commons.labels().get("buildings.upgrade.default.description"));
+				upgradeDescription.text(commons.get("buildings.upgrade.default.description"));
 			} else {
 				upgradeDescription.text("");
 			}

@@ -708,12 +708,12 @@ public class VideoPlayer extends JFrame {
 	 * @param subtitle the subtitle language
 	 */
 	public void playVideo(String language, String path, String name, String audio, String subtitle) {
-		final ResourcePlace video = rl.get(language, path + "/" + name, ResourceType.VIDEO);
+		final ResourcePlace video = rl.get(path + "/" + name, ResourceType.VIDEO);
 		if (video == null) {
 			return;
 		}
 		if (subtitle != null && !subtitle.isEmpty()) {
-			final ResourcePlace sub = rl.get(subtitle, path + "/" + name, ResourceType.SUBTITLE);
+			final ResourcePlace sub = rl.get(path + "/" + name, ResourceType.SUBTITLE);
 			subs = new SubtitleManager(sub.open());
 		} else {
 			subs = null;
@@ -729,7 +729,7 @@ public class VideoPlayer extends JFrame {
 			}
 		};
 		if (audio != null && !audio.isEmpty()) {
-			final ResourcePlace sound = rl.get(audio, path + "/" + name, ResourceType.AUDIO);
+			final ResourcePlace sound = rl.getExactly(audio, path + "/" + name, ResourceType.AUDIO);
 			audioWorker = createAudioWorker(sound);
 			audioWorker.start();
 			barrier = new CyclicBarrier(2);

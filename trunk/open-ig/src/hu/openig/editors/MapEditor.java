@@ -23,6 +23,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.GalaxyModel;
 import hu.openig.model.OriginalBuilding;
 import hu.openig.model.PlanetSurface;
+import hu.openig.model.ResearchType;
 import hu.openig.model.Resource;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
@@ -464,7 +465,7 @@ public class MapEditor extends JFrame {
 							public void run() {
 								try {
 									galaxyMap = new GalaxyModel();
-									galaxyMap.processGalaxy(rl, "en", "campaign/main/galaxy", exec, wip);
+									galaxyMap.processGalaxy(rl, "campaign/main/galaxy", exec, wip);
 								} finally {
 									wip.dec();
 								}
@@ -475,7 +476,8 @@ public class MapEditor extends JFrame {
 							public void run() {
 								try {
 									buildingMap = new BuildingModel();
-									buildingMap.processBuildings(rl, "en", "campaign/main/buildings", exec, wip);
+									buildingMap.processBuildings(rl, "campaign/main/buildings", 
+											new HashMap<String, ResearchType>(), labels, exec, wip);
 								} finally {
 									wip.dec();
 								}
@@ -488,11 +490,10 @@ public class MapEditor extends JFrame {
 					exec.shutdown();
 					exec.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 
-					colonyGraphics = new ColonyGFX(rl);
-					colonyGraphics.load("en");
+					colonyGraphics = new ColonyGFX().load(rl);
 					
 					txt = new TextRenderer(rl);
-					labels.load(rl, "en", "campaign/main");
+					labels.load(rl, "campaign/main");
 					
 					prepareLists(galaxyMap, buildingMap, surfaces, buildings, races);
 				} catch (Throwable t) {
@@ -1899,7 +1900,7 @@ public class MapEditor extends JFrame {
 	 * @param shiftY the shift in Y coordinates to place the map elements
 	 */
 	private void placeTilesFromOriginalMap(String path, String surfaceType, int shiftX, int shiftY) {
-		byte[] map = rl.getData("en", path);
+		byte[] map = rl.getData(path);
 		PlanetType pt = galaxyModel.planetTypes.get(surfaceType);
 		int bias = 41; 
 		if ("neptoplasm".equals(surfaceType)) {
@@ -2151,7 +2152,7 @@ public class MapEditor extends JFrame {
 		if (currentBuilding == null) {
 			return;
 		}
-		ui.buildingInfoPanel.buildingName.setText(currentBuilding.type.label);
+		ui.buildingInfoPanel.buildingName.setText(currentBuilding.type.name);
 		ui.buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
 		ui.buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
 		ui.buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
@@ -2320,7 +2321,7 @@ public class MapEditor extends JFrame {
 			deferredLanguage = language;
 			return;
 		}
-		labels.load(rl, language, "campaign/main");
+		labels.load(rl, "campaign/main");
 		renameFieldsOf(ui);
 		renameFieldsOf(ui.allocationPanel);
 		renameFieldsOf(ui.buildingInfoPanel);

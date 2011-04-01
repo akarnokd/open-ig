@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <buildings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="buildings.xsd">
-	<building id='ColonyHub' label='buildings.colony_hub'>
+	<building id='ColonyHub' name='buildings.colony_hub'>
 		<graphics base="colony/buildings/%s/colony_hub">
 			<tech id='human' width="8" height="7"/>
 			<tech id="garthog" height="6" width="3"/>
@@ -23,7 +23,7 @@
 		<upgrades>
 		</upgrades>		
 	</building>
-	<building id='PrefabHousing' label='buildings.prefab_housing'>
+	<building id='PrefabHousing' name='buildings.prefab_housing'>
 		<graphics base="colony/buildings/%s/prefab_housing">
 			<tech id='human' width="4" height="3"/>
 		</graphics>
@@ -56,7 +56,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building id="ApartmentBlock" label="buildings.apartment_block">
+	<building id="ApartmentBlock" name="buildings.apartment_block">
 		<graphics base='colony/buildings/%s/apartment_block'>
 			<tech id='human' width='4' height='3'/>
 		</graphics>
@@ -89,7 +89,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.arcology" id="Arcology">
+	<building name="buildings.arcology" id="Arcology">
 		<graphics base="colony/buildings/%s/arcology">
 			<tech id='human' height="4" width="3"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -129,7 +129,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.nuclear_plant" id="NuclearPlant">
+	<building name="buildings.nuclear_plant" id="NuclearPlant">
 		<graphics base="colony/buildings/%s/nuclear_plant">
 			<tech height="5" width="5" id="human"/>
 			<tech id="garthog" height="3" width="3"/>
@@ -164,7 +164,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.fusion_plant" id="FusionPlant">
+	<building name="buildings.fusion_plant" id="FusionPlant">
 		<graphics base="colony/buildings/%s/fusion_plant">
 			<tech height="5" width="5" id="human"/>
 		</graphics>
@@ -192,7 +192,7 @@
 			</upgrade>
 		</upgrades>			
 	</building>
-	<building label="buildings.solar_plant" id="SolarPlant">
+	<building name="buildings.solar_plant" id="SolarPlant">
 		<graphics base="colony/buildings/%s/solar_plant">
 			<tech id='human' height="5" width="5"/>
 		</graphics>
@@ -220,7 +220,7 @@
 			</upgrade>
 		</upgrades>			
 	</building>
-	<building label="buildings.water_vaporator" id="WaterVaporator">
+	<building name="buildings.water_vaporator" id="WaterVaporator">
 		<graphics base="colony/buildings/%s/water_vaporator">
 			<tech id='human' height="5" width="5"/>
 		</graphics>
@@ -253,7 +253,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.hydroponic_food_farm" id="HydroponicFoodFarm">
+	<building name="buildings.hydroponic_food_farm" id="HydroponicFoodFarm">
 		<graphics base="colony/buildings/%s/hydroponic_food_farm">
 			<tech id='human' height="5" width="3"/>
 		</graphics>
@@ -286,7 +286,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.phood_factory" id="PhoodFactory">
+	<building name="buildings.phood_factory" id="PhoodFactory">
 		<graphics base="colony/buildings/%s/phood_factory">
 			<tech id='human' height="5" width="5"/>
 			<tech id="garthog" height="3" width="3"/>
@@ -326,7 +326,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.spaceship_factory" id="SpaceshipFactory">
+	<building name="buildings.spaceship_factory" id="SpaceshipFactory">
 		<graphics base="colony/buildings/%s/spaceship_factory">
 			<tech id='human' height="6" width="4"/>
 			<tech id="garthog" height="5" width="4"/>
@@ -366,7 +366,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.equipment_factory" id="EquipmentFactory">
+	<building name="buildings.equipment_factory" id="EquipmentFactory">
 		<graphics base="colony/buildings/%s/equipment_factory">
 			<tech height="5" width="5" id="human"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -406,7 +406,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.weapon_factory" id="WeaponFactory">
+	<building name="buildings.weapon_factory" id="WeaponFactory">
 		<graphics base="colony/buildings/%s/weapons_factory">
 			<tech id='human' height="5" width="5"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -446,7 +446,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.civil_dev_center" id="CivilDevCenter">
+	<building name="buildings.civil_dev_center" id="CivilDevCenter">
 		<graphics base="colony/buildings/%s/civil_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -482,7 +482,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.mechanical_dev_center" id="MechanicalDevCenter">
+	<building name="buildings.mechanical_dev_center" id="MechanicalDevCenter">
 		<graphics base="colony/buildings/%s/mechanical_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -518,7 +518,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.computer_dev_center" id="ComputerDevCenter">
+	<building name="buildings.computer_dev_center" id="ComputerDevCenter">
 		<graphics base="colony/buildings/%s/computer_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -554,7 +554,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.ai_dev_center" id="AIDevCenter">
+	<building name="buildings.ai_dev_center" id="AIDevCenter">
 		<graphics base="colony/buildings/%s/ai_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -590,7 +590,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.military_dev_center" id="MilitaryDevCenter">
+	<building name="buildings.military_dev_center" id="MilitaryDevCenter">
 		<graphics base="colony/buildings/%s/military_dev_center">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -626,7 +626,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.traders_spaceport" id="TradersSpaceport">
+	<building name="buildings.traders_spaceport" id="TradersSpaceport">
 		<graphics base="colony/buildings/%s/traders_spaceport">
 			<tech id='human' height="6" width="7"/>
 		</graphics>
@@ -659,7 +659,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.military_spaceport" id="MilitarySpaceport">
+	<building name="buildings.military_spaceport" id="MilitarySpaceport">
 		<graphics base="colony/buildings/%s/military_spaceport">
 			<tech id='human' height="5" width="6"/>
 			<tech id="garthog" height="5" width="3"/>
@@ -678,7 +678,7 @@
 		<upgrades>
 		</upgrades>
 	</building>
-	<building label="buildings.bank" id="Bank">
+	<building name="buildings.bank" id="Bank">
 		<graphics base="colony/buildings/%s/bank">
 			<tech id='human' height="4" width="3"/>
 		</graphics>
@@ -711,7 +711,7 @@
 			</upgrade>
 		</upgrades>		
 	</building>
-	<building label="buildings.trade_center" id="TradeCenter">
+	<building name="buildings.trade_center" id="TradeCenter">
 		<graphics base="colony/buildings/%s/trade_center">
 			<tech id='human' height="5" width="5"/>
 			<tech id="garthog" height="4" width="2"/>
@@ -751,7 +751,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.hospital" id="Hospital">
+	<building name="buildings.hospital" id="Hospital">
 		<graphics base="colony/buildings/%s/hospital">
 			<tech id='human' height="5" width="4"/>
 			<tech id="garthog" height="5" width="3"/>
@@ -791,7 +791,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.police_station" id="PoliceStation">
+	<building name="buildings.police_station" id="PoliceStation">
 		<graphics base='colony/buildings/%s/police_station'>
 			<tech id='human' height='5' width='5'/>
 			<tech id="garthog" height="3" width="5"/>
@@ -831,7 +831,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.fire_brigade" id="FireBrigade">
+	<building name="buildings.fire_brigade" id="FireBrigade">
 		<graphics base="colony/buildings/%s/fire_brigade">
 			<tech id='human' height="4" width="3"/>
 		</graphics>
@@ -864,7 +864,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.radar_telescope" id="RadarTelescope">
+	<building name="buildings.radar_telescope" id="RadarTelescope">
 		<graphics base="colony/buildings/%s/radar_telescope">
 			<tech id='human' height="2" width="2"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -884,7 +884,7 @@
 		<upgrades>
 		</upgrades>
 	</building>
-	<building label="buildings.field_telescope" id="FieldTelescope">
+	<building name="buildings.field_telescope" id="FieldTelescope">
 		<graphics base="colony/buildings/%s/field_telescope">
 			<tech id='human' height="2" width="3"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -903,7 +903,7 @@
 		</operation>
 		<upgrades></upgrades>
 	</building>
-	<building label="buildings.phased_telescope" id="PhasedTelescope">
+	<building name="buildings.phased_telescope" id="PhasedTelescope">
 		<graphics base="colony/buildings/%s/phased_telescope">
 			<tech id='human' height="3" width="3"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -922,7 +922,7 @@
 		</operation>
 		<upgrades></upgrades>
 	</building>
-	<building label='buildings.bunker' id='Bunker'>
+	<building name='buildings.bunker' id='Bunker'>
 		<graphics base="colony/buildings/%s/bunker">
 			<tech id='human' height="4" width="5"/>
 			<tech id="garthog" height="4" width="4"/>
@@ -962,7 +962,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.ion_projector" id="IonProjector">
+	<building name="buildings.ion_projector" id="IonProjector">
 		<graphics base="colony/buildings/%s/ion_projector">
 			<tech id='human' height="3" width="3"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1002,7 +1002,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.plasma_projector" id="PlasmaProjector">
+	<building name="buildings.plasma_projector" id="PlasmaProjector">
 		<graphics base="colony/buildings/%s/plasma_projector">
 			<tech id='human' height="3" width="3"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1042,7 +1042,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.fusion_projector" id="FusionProjector">
+	<building name="buildings.fusion_projector" id="FusionProjector">
 		<graphics base="colony/buildings/%s/fusion_projector">
 			<tech height="3" width="3" id="human"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1082,7 +1082,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.meson_projector" id="MesonProjector">
+	<building name="buildings.meson_projector" id="MesonProjector">
 		<graphics base="colony/buildings/%s/meson_projector">
 			<tech height="3" width="3" id="human"/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1122,7 +1122,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.inversion_shield" id="InversionShield">
+	<building name="buildings.inversion_shield" id="InversionShield">
 		<graphics base="colony/buildings/%s/inversion_shield">
 			<tech id='human' height='2' width='3'/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1162,7 +1162,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.hypershield" id="HyperShield">
+	<building name="buildings.hypershield" id="HyperShield">
 		<graphics base="colony/buildings/%s/hypershield">
 			<tech id='human' height='4' width='4'/>
 			<tech id="garthog" height="2" width="3"/>
@@ -1202,7 +1202,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.barracks" id="Barracks">
+	<building name="buildings.barracks" id="Barracks">
 		<graphics base="colony/buildings/%s/barracks">
 			<tech id='human' height='3' width='3'/>
 		</graphics>
@@ -1226,7 +1226,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label='buildings.fortress' id='Fortress'>
+	<building name='buildings.fortress' id='Fortress'>
 		<graphics base="colony/buildings/%s/fortress">
 			<tech id='human' height='3' width='3'/>
 			<tech id="garthog" height="4" width="4"/>
@@ -1257,7 +1257,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label='buildings.stronghold' id='Stronghold'>
+	<building name='buildings.stronghold' id='Stronghold'>
 		<graphics base="colony/buildings/%s/stronghold">
 			<tech id='human' height='4' width='4'/>
 		</graphics>
@@ -1281,7 +1281,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.recreation_center" id="RecreationCenter">
+	<building name="buildings.recreation_center" id="RecreationCenter">
 		<graphics base="colony/buildings/%s/recreation_center">
 			<tech id='human' height='4' width='3'/>
 		</graphics>
@@ -1314,7 +1314,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.park" id="Park">
+	<building name="buildings.park" id="Park">
 		<graphics base="colony/buildings/%s/park">
 			<tech id='human' height='6' width='6'/>
 		</graphics>
@@ -1347,7 +1347,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.church" id="Church">
+	<building name="buildings.church" id="Church">
 		<graphics base="colony/buildings/%s/church">
 			<tech id='human' height='3' width='3'/>
 		</graphics>
@@ -1380,7 +1380,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.bar" id="Bar">
+	<building name="buildings.bar" id="Bar">
 		<graphics base="colony/buildings/%s/bar">
 			<tech id='human' height='4' width='4'/>
 		</graphics>
@@ -1413,7 +1413,7 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building label="buildings.stadium" id="Stadium">
+	<building name="buildings.stadium" id="Stadium">
 		<graphics base="colony/buildings/%s/stadium">
 			<tech id='human' height='6' width='5'/>
 		</graphics>

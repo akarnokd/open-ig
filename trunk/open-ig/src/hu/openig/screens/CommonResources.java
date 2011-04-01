@@ -24,6 +24,13 @@ import hu.openig.gfx.ResearchGFX;
 import hu.openig.gfx.SpacewarGFX;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StatusbarGFX;
+import hu.openig.model.BuildingType;
+import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
+import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.Player;
+import hu.openig.model.ResearchType;
 import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
 
@@ -178,81 +185,61 @@ public class CommonResources {
 			labels = get(exec.submit(new Callable<Labels>() {
 				@Override
 				public Labels call() throws Exception {
-					Labels result = new Labels();
-					result.load(rl, config.language, null);
-					return result;
+					return new Labels().load(rl, null);
 				}
 			}));
 			statusbar = get(exec.submit(new Callable<StatusbarGFX>() {
 				@Override
 				public StatusbarGFX call() throws Exception {
-					StatusbarGFX result = new StatusbarGFX(rl);
-					result.load(config.language);
-					return result;
+					return new StatusbarGFX().load(rl);
 				}
 			}));
 			background = get(exec.submit(new Callable<BackgroundGFX>() {
 				@Override
 				public BackgroundGFX call() throws Exception {
-					BackgroundGFX result = new BackgroundGFX(rl);
-					result.load(config.language);
-					return result;
+					return new BackgroundGFX().load(rl);
 				}
 			}));
 			equipment = get(exec.submit(new Callable<EquipmentGFX>() {
 				@Override
 				public EquipmentGFX call() throws Exception {
-					EquipmentGFX result = new EquipmentGFX(rl);
-					result.load(config.language);
-					return result;
+					return new EquipmentGFX().load(rl);
 				}
 			}));
 			spacewar = get(exec.submit(new Callable<SpacewarGFX>() {
 				@Override
 				public SpacewarGFX call() throws Exception {
-					SpacewarGFX result = new SpacewarGFX(rl);
-					result.load(config.language);
-					return result;
+					return new SpacewarGFX().load(rl);
 				}
 			}));
 			info = get(exec.submit(new Callable<InfoGFX>() {
 				@Override
 				public InfoGFX call() throws Exception {
-					InfoGFX result = new InfoGFX(rl);
-					result.load(config.language);
-					return result;
+					return new InfoGFX().load(rl);
 				}
 			}));
 			research = get(exec.submit(new Callable<ResearchGFX>() {
 				@Override
 				public ResearchGFX call() throws Exception {
-					ResearchGFX result = new ResearchGFX(rl);
-					result.load(config.language);
-					return result;
+					return new ResearchGFX().load(rl);
 				}
 			}));
 			colony = get(exec.submit(new Callable<ColonyGFX>() {
 				@Override
 				public ColonyGFX call() throws Exception {
-					ColonyGFX result = new ColonyGFX(rl);
-					result.load(config.language);
-					return result;
+					return new ColonyGFX().load(rl);
 				}
 			}));
 			starmap = get(exec.submit(new Callable<StarmapGFX>() {
 				@Override
 				public StarmapGFX call() throws Exception {
-					StarmapGFX result = new StarmapGFX();
-					result.load(rl, config.language);
-					return result;
+					return new StarmapGFX().load(rl);
 				}
 			}));
 			database = get(exec.submit(new Callable<DatabaseGFX>() {
 				@Override
 				public DatabaseGFX call() throws Exception {
-					DatabaseGFX result = new DatabaseGFX(rl);
-					result.load(config.language);
-					return result;
+					return new DatabaseGFX().load(rl);
 				}
 			}));
 			text = get(exec.submit(new Callable<TextRenderer>() {
@@ -264,15 +251,13 @@ public class CommonResources {
 			diplomacy = get(exec.submit(new Callable<DiplomacyGFX>() {
 				@Override
 				public DiplomacyGFX call() throws Exception {
-					DiplomacyGFX result = new DiplomacyGFX();
-					result.load(rl, config.language);
-					return result;
+					return new DiplomacyGFX().load(rl);
 				}
 			}));
 			common = get(pool.submit(new Callable<CommonGFX>() {
 				@Override
 				public CommonGFX call() throws Exception {
-					return new CommonGFX().load(rl, config.language);
+					return new CommonGFX().load(rl);
 				}
 			}));
 
@@ -406,7 +391,7 @@ public class CommonResources {
 	 * @return the resource place for the video
 	 */
 	public ResourcePlace video(String name) {
-		return rl.get(language(), name, ResourceType.VIDEO);
+		return rl.get(name, ResourceType.VIDEO);
 	}
 	/**
 	 * Convenience method to return an audio for the current language.
@@ -414,7 +399,60 @@ public class CommonResources {
 	 * @return the resource place for the video
 	 */
 	public ResourcePlace audio(String name) {
-		return rl.get(language(), name, ResourceType.AUDIO);
+		return rl.get(name, ResourceType.AUDIO);
+	}
+	/**
+	 * Returns a translation for the given label.
+	 * @param label the label
+	 * @return the translation
+	 */
+	public String get(String label) {
+		return labels().get(label);
+	}
+	/** 
+	 * Returns a formatted translation of the given label.
+	 * @param label the label
+	 * @param args the arguments to the formatter
+	 * @return the translation
+	 */
+	public String format(String label, Object... args) {
+		return labels().format(label, args);
+	}
+	/** @return the current player. */
+	public Player player() {
+		return world.player;
+	}
+	/** @return the current selected planet of the current player. */
+	public Planet planet() {
+		return player().currentPlanet;
+	}
+	/** @return the current selected building type of the current player. */
+	public BuildingType buildingType() {
+		return player().currentBuilding;
+	}
+	/** @return the current research type of the current player. */
+	public ResearchType researchType() {
+		return player().currentResearch;
+	}
+	/** @return the current fleet of the current player. */
+	public Fleet fleet() {
+		return player().currentFleet;
+	}
+	/**
+	 * Returns the planet knowledge about the given planet by the current player.
+	 * @param p the target planet
+	 * @return the knowledge
+	 */
+	public PlanetKnowledge knowledge(Planet p) {
+		return player().planets.get(p);
+	}
+	/**
+	 * Returns the fleet knowledge about the given fleet by the current player.
+	 * @param p the target planet
+	 * @return the knowledge
+	 */
+	public FleetKnowledge knowledge(Fleet p) {
+		return player().fleets.get(p);
 	}
 	/**
 	 * Close and stop resources.

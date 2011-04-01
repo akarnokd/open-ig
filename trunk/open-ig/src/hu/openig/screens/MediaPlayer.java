@@ -89,11 +89,11 @@ public class MediaPlayer {
 	 */
 	private void init(final CommonResources commons, final VideoAudio media,
 			SwappableRenderer surface) {
-		final ResourcePlace audio = commons.rl.get(commons.config.language, media.audio, ResourceType.AUDIO);
-		final ResourcePlace video = commons.rl.get(commons.config.language, media.video, ResourceType.VIDEO);
+		final ResourcePlace audio = commons.audio(media.audio);
+		final ResourcePlace video = commons.video(media.video);
 		final CyclicBarrier barrier = new CyclicBarrier(audio != null ? 2 : 1);
 		final CyclicBarrier continuation = new CyclicBarrier(barrier.getParties() + 1);
-		ResourcePlace sub = commons.rl.get(commons.config.language, media.video, ResourceType.SUBTITLE);
+		ResourcePlace sub = commons.rl.get(media.video, ResourceType.SUBTITLE);
 		if (sub != null) {
 			subtitle = new SubtitleManager(sub.open());
 		} else {

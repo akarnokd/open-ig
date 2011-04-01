@@ -281,7 +281,7 @@ public class ImportDialog extends JDialog {
 	}
 	/** Parse the original planet definitions. */
 	void parseOriginalPlanet() {
-		XElement e = rl.getXML("en", "campaign/main/planets_old");
+		XElement e = rl.getXML("campaign/main/planets_old");
 		for (XElement planet : e.childrenWithName("planet")) {
 			OriginalPlanet op = new OriginalPlanet();
 			op.name = planet.get("id");

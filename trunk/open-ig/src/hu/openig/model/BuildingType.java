@@ -23,9 +23,9 @@ import java.util.Set;
 public class BuildingType {
 	/** The identifier. */
 	public String id;
-	/** The label. */
-	public String label;
-	/** The description label. */
+	/** The display name. */
+	public String name;
+	/** The display description. */
 	public String description;
 	/** The tile set for various race (more like techraces). */
 	public final Map<String, TileSet> tileset = new HashMap<String, TileSet>();
@@ -40,7 +40,7 @@ public class BuildingType {
 	/** The planet type (surface) exception set. */
 	public final Set<String> except = new HashSet<String>();
 	/** The required research to be available. */
-	public String research;
+	public ResearchType research;
 	/** Is the operation level dependent on the supplied energy and worker amounts? */
 	public boolean percentable;
 	/** The primary resource to display in the info panel. */

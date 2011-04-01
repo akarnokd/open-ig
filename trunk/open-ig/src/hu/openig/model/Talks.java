@@ -24,19 +24,17 @@ public class Talks {
 	/**
 	 * Load the talks from the given game.
 	 * @param rl the resource locator
-	 * @param language the language
 	 * @param data the data resource
 	 */
-	public void load(ResourceLocator rl, String language, String data) {
-		process(rl.getXML(language, data), rl, language);
+	public void load(ResourceLocator rl, String data) {
+		process(rl.getXML(data), rl);
 	}
 	/**
 	 * Process the document.
 	 * @param root the root element
 	 * @param rl the resource locator
-	 * @param lang the current language
 	 */
-	protected void process(XElement root, ResourceLocator rl, String lang) {
+	protected void process(XElement root, ResourceLocator rl) {
 		for (XElement talk : root.childrenWithName("talk")) {
 			TalkPerson tp = new TalkPerson();
 			tp.id = talk.get("with");
@@ -44,7 +42,7 @@ public class Talks {
 			for (XElement state : talk.childrenWithName("state")) {
 				TalkState ts = new TalkState();
 				ts.id = state.get("id");
-				ts.picture = rl.getImage(lang, state.get("picture"));
+				ts.picture = rl.getImage(state.get("picture"));
 				tp.states.put(ts.id, ts);
 				for (XElement tr : state.childrenWithName("transition")) {
 					TalkSpeech tsp = new TalkSpeech();
