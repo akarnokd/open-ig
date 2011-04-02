@@ -49,8 +49,6 @@ public class World {
 	public final GregorianCalendar time = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 	/** All planets on the starmap. */
 	public final List<Planet> planets = new ArrayList<Planet>();
-	/** All fleets on the starmap. */
-	public final List<Fleet> fleets = new ArrayList<Fleet>();
 	/** The list of available researches. */
 	public final Map<String, ResearchType> researches = new HashMap<String, ResearchType>();
 	/** Achievements. */

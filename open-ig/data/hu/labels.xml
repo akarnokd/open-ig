@@ -465,13 +465,15 @@
 	<entry key='colonyinfo.food'      >Élelmiszer : %d / %d lakos</entry>
 	<entry key='colonyinfo.energy'    >Energia    : %d / %d kWh</entry>
 	<entry key='colonyinfo.police'    >Rendőrség  : %d / %d lakos</entry>
+	<entry key='colonyinfo.tax-trade' >Adó        : %d cr / Kereskedelem : %d cr</entry>
 	<entry key='colonyinfo.tax'       >Adóbevétel   : %d cr</entry>
 	<entry key='colonyinfo.trade'     >Kereskedelem : %d cr</entry>
+	<entry key='colonyinfo.tax-info'  >Adózás     : %s / Adómorál : %d%% (%s)</entry>
 	<entry key='colonyinfo.tax-morale'>Adómorál     : %d%% (%s)</entry>
 	<entry key='colonyinfo.tax-level' >Adózás       : %s</entry>
 	<entry key='colonyinfo.allocation'>Allokáció    : %s</entry>
 	<entry key='colonyinfo.autobuild' >Auto-építés  : %s</entry>
-	<entry key='colonyinfo.other'     >Egyéb        : %s</entry>
+	<entry key='colonyinfo.other'     >Egyéb      : %s</entry>
 	
 	<entry key='race.human'>Ember</entry>
 	<entry key='race.garthog'>Garthog</entry>
