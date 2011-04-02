@@ -1535,13 +1535,9 @@ public class PlanetScreen extends ScreenBase {
 		/** Label field. */
 		UILabel police;
 		/** Label field. */
-		UILabel taxIncome;
+		UILabel taxTradeIncome;
 		/** Label field. */
-		UILabel tradeIncome;
-		/** Label field. */
-		UILabel taxMorale;
-		/** Label field. */
-		UILabel taxLevel;
+		UILabel taxInfo;
 		/** Label field. */
 		UILabel allocation;
 		/** Label field. */
@@ -1565,17 +1561,15 @@ public class PlanetScreen extends ScreenBase {
 			food = new UILabel("-", textSize, commons.text());
 			energy = new UILabel("-", textSize, commons.text());
 			police = new UILabel("-", textSize, commons.text());
-			taxIncome = new UILabel("-", textSize, commons.text());
-			tradeIncome = new UILabel("-", textSize, commons.text());
-			taxMorale = new UILabel("-", textSize, commons.text());
-			taxLevel = new UILabel("-", textSize, commons.text());
+			taxTradeIncome = new UILabel("-", textSize, commons.text());
+			taxInfo = new UILabel("-", textSize, commons.text());
 			allocation = new UILabel("-", textSize, commons.text());
 			autobuild = new UILabel("-", textSize, commons.text());
 			other = new UILabel("-", textSize, commons.text());
 			
 			lines = Arrays.asList(
 					owner, race, surface, population, housing, worker, hospital, food, energy, police,
-					taxIncome, tradeIncome, taxMorale, taxLevel, allocation, autobuild, other
+					taxTradeIncome, taxInfo, allocation, autobuild, other
 			);
 			
 			enabled(false);
@@ -1618,7 +1612,7 @@ public class PlanetScreen extends ScreenBase {
 		public void update() {
 			Planet p = planet();
 			
-			planet.text(format("colonyinfo.planet", p.name), true);
+			planet.text(p.name, true);
 			
 			String s = p.owner != null ? p.owner.name : "-";
 			owner.text(format("colonyinfo.owner", s), true);
@@ -1650,18 +1644,12 @@ public class PlanetScreen extends ScreenBase {
 				setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
 				setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
 				
-				taxIncome.text(format("colonyinfo.tax", 
-						p.taxIncome
-				), true).visible(true);
-				tradeIncome.text(format("colonyinfo.trade",
-						p.tradeIncome
+				taxTradeIncome.text(format("colonyinfo.tax-trade", 
+						p.taxIncome, p.tradeIncome
 				), true).visible(true);
 				
-				taxMorale.text(format("colonyinfo.tax-morale",
-						p.morale, withSign(p.morale - p.lastMorale)
-				), true).visible(true);
-				taxLevel.text(format("colonyinfo.tax-level",
-						get(p.getTaxLabel())
+				taxInfo.text(format("colonyinfo.tax-info",
+						get(p.getTaxLabel()), p.morale, withSign(p.morale - p.lastMorale)
 				), true).visible(true);
 				
 				allocation.text(format("colonyinfo.allocation",
@@ -1679,10 +1667,8 @@ public class PlanetScreen extends ScreenBase {
 				food.visible(false);
 				energy.visible(false);
 				police.visible(false);
-				taxIncome.visible(false);
-				tradeIncome.visible(false);
-				taxMorale.visible(false);
-				taxLevel.visible(false);
+				taxTradeIncome.visible(false);
+				taxInfo.visible(false);
 				allocation.visible(false);
 				autobuild.visible(false);
 			}

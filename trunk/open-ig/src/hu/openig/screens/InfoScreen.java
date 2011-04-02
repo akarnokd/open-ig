@@ -9,7 +9,10 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.TaxLevel;
 import hu.openig.render.RenderTools;
@@ -23,8 +26,10 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -113,6 +118,16 @@ public class InfoScreen extends ScreenBase {
 	InfoPanel colonyInfo;
 	/** The display mode. */
 	Screens mode = Screens.INFORMATION_PLANETS;
+	/** The minimap renderer. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_PLANETS, 
+			Screens.INFORMATION_FINANCIAL, 
+			Screens.INFORMATION_MILITARY, 
+			Screens.INFORMATION_FLEETS, 
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_ALIENS
+	})
+	Minimap minimap;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -186,6 +201,8 @@ public class InfoScreen extends ScreenBase {
 		
 		colonyInfo = new InfoPanel();
 		
+		minimap = new Minimap();
+		
 		addThis();
 	}
 	/**
@@ -227,6 +244,7 @@ public class InfoScreen extends ScreenBase {
 		inventionsTab.selected = mode == Screens.INFORMATION_INVENTIONS;
 		aliensTab.selected = mode == Screens.INFORMATION_ALIENS;
 		
+		minimap.displayFleets = mode == Screens.INFORMATION_FLEETS;
 	}
 
 	@Override
@@ -271,6 +289,8 @@ public class InfoScreen extends ScreenBase {
 		equipment.location(empty1.location());
 		
 		colonyInfo.location(base.x + 10, base.y + 10);
+		
+		minimap.bounds(base.x + 415, base.y + 211, 202, 169);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -625,6 +645,132 @@ public class InfoScreen extends ScreenBase {
 			if (l.ordinal() > 0) {
 				p.tax = TaxLevel.values()[l.ordinal() - 1];
 			}
+		}
+	}
+	/**
+	 * The minimap renderer.
+	 * @author akarnokd, Apr 2, 2011
+	 */
+	class Minimap extends UIComponent {
+		/** Display fleets? */
+		public boolean displayFleets;
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.drawImage(commons.world().galaxyModel.map, 0, 0, width, height, null);
+			Shape save0 = g2.getClip();
+			g2.clipRect(0, 0, width, height);
+			RenderTools.paintGrid(g2, new Rectangle(0, 0, width, height), commons.starmap().gridColor, commons.text());
+			// render planets
+			for (Planet p : commons.world().planets) {
+				if (knowledge(p, PlanetKnowledge.DISCOVERED) < 0) {
+					continue;
+				}
+				int x0 = (p.x * width / commons.starmap().background.getWidth());
+				int y0 = (p.y * height / commons.starmap().background.getHeight());
+				int labelColor = TextRenderer.GRAY;
+				if (p.owner != null && knowledge(p, PlanetKnowledge.OWNED) >= 0) {
+					labelColor = p.owner.color;
+				}
+				g2.setColor(new Color(labelColor));
+				g2.fillRect(x0 - 1, y0 - 1, 3, 3);
+				if (p == planet()) {
+					g2.setColor(new Color(TextRenderer.GRAY));
+					g2.drawRect(x0 - 3, y0 - 3, 6, 6);
+				}
+			}
+			if (displayFleets) {
+				for (Fleet f : player().fleets.keySet()) {
+					if (knowledge(f, FleetKnowledge.VISIBLE) >= 0) {
+						int x0 = (f.x * width / commons.starmap().background.getWidth());
+						int y0 = (f.y * height / commons.starmap().background.getHeight());
+						int x1 = x0 - f.owner.fleetIcon.getWidth() / 2;
+						int y1 = y0 - f.owner.fleetIcon.getHeight() / 2;
+						g2.drawImage(f.owner.fleetIcon, x1, y1, null);
+						if (f == fleet()) {
+							g2.setColor(new Color(f.owner.color));
+							g2.drawRect(x1 - 2, y1 - 2, f.owner.fleetIcon.getWidth() + 4, f.owner.fleetIcon.getHeight() + 4);
+						}
+					}
+				}
+			}
+			g2.setClip(save0);
+		}
+		/** 
+		 * Locate a planet at the given coordinates.
+		 * @param x the mouse X coordinate
+		 * @param y the mouse Y coordinate
+		 * @return the planet or null if no planet is present
+		 */
+		public Planet getPlanetAt(int x, int y) {
+			for (Planet p : commons.world().planets) {
+				if (knowledge(p, PlanetKnowledge.DISCOVERED) < 0) {
+					continue;
+				}
+				int x0 = (p.x * width / commons.starmap().background.getWidth());
+				int y0 = (p.y * height / commons.starmap().background.getHeight());
+				
+				if (x >= x0 - 2 && x <= x0 + 2 && y >= y0 - 2 && y <= y0 + 2) {
+					return p;
+				}
+			}		
+			return null;
+		}
+		/** 
+		 * Locate a fleet at the given coordinates.
+		 * @param x the mouse X coordinate
+		 * @param y the mouse Y coordinate
+		 * @return the fleet or null if no planet is present
+		 */
+		public Fleet getFleetAt(int x, int y) {
+			for (Fleet f : player().fleets.keySet()) {
+				if (knowledge(f, FleetKnowledge.VISIBLE) >= 0) {
+					int x0 = (f.x * width / commons.starmap().background.getWidth());
+					int y0 = (f.y * height / commons.starmap().background.getHeight());
+					int w = f.owner.fleetIcon.getWidth();
+					int h = y0 - f.owner.fleetIcon.getHeight();
+					int x1 = x0 - w / 2;
+					int y1 = h / 2;
+					
+					if (x >= x1 - 1 && x <= x1 + w + 2 && y >= y1 - 1 && y <= y1 + h + 2) {
+						return f;
+					}
+				}
+			}		
+			return null;
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				if (displayFleets) {
+					Fleet f = getFleetAt(e.x, e.y);
+					if (f != null) {
+						player().currentFleet = f;
+						return true;
+					}
+				}
+				Planet p = getPlanetAt(e.x, e.y);
+				if (p != null) {
+					player().currentPlanet = p;
+					return true;
+				}
+			} else
+			if (e.has(Type.DOUBLE_CLICK)) {
+				if (displayFleets) {
+					Fleet f = getFleetAt(e.x, e.y);
+					if (f != null) {
+						player().currentFleet = f;
+						displaySecondary(Screens.EQUIPMENT_FLEET);
+						return true;
+					}
+				}
+				Planet p = getPlanetAt(e.x, e.y);
+				if (p != null) {
+					player().currentPlanet = p;
+					displayPrimary(Screens.COLONY);
+					return true;
+				}
+			}
+			return super.mouse(e);
 		}
 	}
 }

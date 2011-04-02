@@ -171,6 +171,25 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 		return k.ordinal() < expected.ordinal() ? -1 : 1;
 	}
 	/**
+	 * Compare the current knowledge level of the given fleet by the expected level.
+	 * @param planet the target planet
+	 * @param expected the expected level
+	 * @return -1 if less known, 0 if exactly on the same level, +1 if more
+	 */
+	public int knowledge(Fleet planet, FleetKnowledge expected) {
+		FleetKnowledge k = player().fleets.get(planet);
+		if (k == expected) {
+			return 0;
+		}
+		if (k != null && expected == null) {
+			return 1;
+		}
+		if (k == null && expected != null) {
+			return -1;
+		}
+		return k.ordinal() < expected.ordinal() ? -1 : 1;
+	}
+	/**
 	 * Returns the fleet knowledge about the given fleet by the current player.
 	 * @param p the target planet
 	 * @return the knowledge

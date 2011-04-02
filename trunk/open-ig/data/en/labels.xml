@@ -390,8 +390,10 @@
 	<entry key='colonyinfo.food'      >Food         : %d / %d lakos</entry>
 	<entry key='colonyinfo.energy'    >Energy       : %d / %d kWh</entry>
 	<entry key='colonyinfo.police'    >Police       : %d / %d lakos</entry>
+	<entry key='colonyinfo.tax-trade' >Tax : %d cr    Trade : %d cr</entry>
 	<entry key='colonyinfo.tax'       >Tax income   : %d cr</entry>
 	<entry key='colonyinfo.trade'     >Trade income : %d cr</entry>
+	<entry key='colonyinfo.tax-info'>Tax level : %s    Tax morale : %d%% (%s)</entry>
 	<entry key='colonyinfo.tax-morale'>Tax morale   : %d%% (%s)</entry>
 	<entry key='colonyinfo.tax-level' >Tax level    : %s</entry>
 	<entry key='colonyinfo.allocation'>Allocation   : %s</entry>
