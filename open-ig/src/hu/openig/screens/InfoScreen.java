@@ -9,11 +9,17 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.model.Planet;
+import hu.openig.model.PlanetStatistics;
+import hu.openig.model.TaxLevel;
 import hu.openig.render.RenderTools;
+import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton2;
+import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 
@@ -22,7 +28,9 @@ import java.awt.Rectangle;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 
 
@@ -100,6 +108,9 @@ public class InfoScreen extends ScreenBase {
 	UIImage empty1;
 	/** The empty switch button. */
 	UIImage empty2;
+	/** Colony info page. */
+	@ModeUI(mode = { Screens.INFORMATION_COLONY })
+	InfoPanel colonyInfo;
 	/** The display mode. */
 	Screens mode = Screens.INFORMATION_PLANETS;
 	@Override
@@ -172,6 +183,8 @@ public class InfoScreen extends ScreenBase {
 		aliensEmpty.z = -1;
 		empty1.z = -1;
 		empty2.z = -1;
+		
+		colonyInfo = new InfoPanel();
 		
 		addThis();
 	}
@@ -256,11 +269,17 @@ public class InfoScreen extends ScreenBase {
 		research.location(empty2.location());
 		diplomacy.location(empty1.location());
 		equipment.location(empty1.location());
+		
+		colonyInfo.location(base.x + 10, base.y + 10);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.info().base, base.x, base.y, null);
+		
+		if (mode == Screens.INFORMATION_COLONY) {
+			colonyInfo.update();
+		}
 		
 		super.draw(g2);
 	}
@@ -328,5 +347,284 @@ public class InfoScreen extends ScreenBase {
 			}
 		}
 		return false;
+	}
+	/**
+	 * The information panel showing some details.
+	 * @author akarnokd
+	 */
+	class InfoPanel extends UIContainer {
+		/** The planet name. */
+		UILabel planet;
+		/** Label field. */
+		UILabel owner;
+		/** Label field. */
+		UILabel race;
+		/** Label field. */
+		UILabel surface;
+		/** Label field. */
+		UILabel population;
+		/** Label field. */
+		UILabel housing;
+		/** Label field. */
+		UILabel worker;
+		/** Label field. */
+		UILabel hospital;
+		/** Label field. */
+		UILabel food;
+		/** Label field. */
+		UILabel energy;
+		/** Label field. */
+		UILabel police;
+		/** Label field. */
+		UILabel taxIncome;
+		/** Label field. */
+		UILabel tradeIncome;
+		/** Label field. */
+		UILabel taxMorale;
+		/** Label field. */
+		UILabel taxLevel;
+		/** Label field. */
+		UILabel allocation;
+		/** Label field. */
+		UILabel autobuild;
+		/** Label field. */
+		UILabel other;
+		/** The labels. */
+		List<UILabel> lines;
+		/** More tax. */
+		UIImageButton taxMore;
+		/** Less tax. */
+		UIImageButton taxLess;
+		/** Construct the label elements. */
+		public InfoPanel() {
+			int textSize = 10;
+			planet = new UILabel("-", 14, commons.text());
+			planet.location(10, 5);
+			owner = new UILabel("-", textSize, commons.text());
+			race = new UILabel("-", textSize, commons.text());
+			surface = new UILabel("-", textSize, commons.text());
+			population = new UILabel("-", textSize, commons.text());
+			housing = new UILabel("-", textSize, commons.text());
+			worker = new UILabel("-", textSize, commons.text());
+			hospital = new UILabel("-", textSize, commons.text());
+			food = new UILabel("-", textSize, commons.text());
+			energy = new UILabel("-", textSize, commons.text());
+			police = new UILabel("-", textSize, commons.text());
+			taxIncome = new UILabel("-", textSize, commons.text());
+			tradeIncome = new UILabel("-", textSize, commons.text());
+			taxMorale = new UILabel("-", textSize, commons.text());
+			taxLevel = new UILabel("-", textSize, commons.text());
+			allocation = new UILabel("-", textSize, commons.text());
+			autobuild = new UILabel("-", textSize, commons.text());
+			other = new UILabel("-", textSize, commons.text());
+			
+			lines = Arrays.asList(
+					owner, race, surface, population, housing, worker, hospital, food, energy, police,
+					taxIncome, tradeIncome, taxMorale, taxLevel, allocation, autobuild, other
+			);
+
+			taxMore = new UIImageButton(commons.info().taxMore);
+			taxMore.onClick = new Act() {
+				@Override
+				public void act() {
+					doTaxMore();
+				}
+			};
+			taxLess = new UIImageButton(commons.info().taxLess);
+			taxLess.onClick = new Act() {
+				@Override
+				public void act() {
+					doTaxLess();
+				}
+			};
+			taxMore.setDisabledPattern(commons.common().disabledPattern);
+			taxLess.setDisabledPattern(commons.common().disabledPattern);
+
+			addThis();
+		}
+		/** Compute the panel size based on its visible component sizes. */
+		public void computeSize() {
+			int textSize = 10;
+			int w = 0;
+			int h = 0;
+			int i = 0;
+			for (UILabel c : lines) {
+				if (c.visible()) {
+					c.x = 10;
+					c.y = 25 + (textSize + 5) * i;
+					c.size(textSize);
+					c.height = textSize;
+					w = Math.max(w, c.x + c.width);
+					h = Math.max(h, c.y + c.height);
+					i++;
+				}
+			}
+			w = Math.max(w, this.planet.x + this.planet.width);
+			
+//			taxLess.location(taxLevel.x + 240, taxLevel.y + (taxLevel.height - taxLess.height) / 2);
+			taxLess.location(taxIncome.x + 240, taxIncome.y);
+			taxMore.location(taxLess.x + taxLess.width + 5, taxLess.y);
+			
+			w = Math.max(w, taxMore.x + taxMore.width);
+			
+			width = w + 10;
+			height = h + 5;
+		}
+		/**
+		 * Update the display values based on the current planet's settings.
+		 */
+		public void update() {
+			Planet p = planet();
+			
+			if (p == null) {
+				return;
+			}
+			
+			planet.text(p.name, true);
+			
+			String s = p.owner != null ? p.owner.name : "-";
+			owner.text(format("colonyinfo.owner", s), true);
+			if (p.owner != null) {
+				planet.color(p.owner.color);
+				owner.color(TextRenderer.GREEN);
+			} else {
+				planet.color(TextRenderer.GRAY);
+				owner.color(TextRenderer.GREEN);
+			}
+			s = p.isPopulated() ? get(p.getRaceLabel()) : "-";
+			race.text(format("colonyinfo.race", s), true);
+			
+			s = get(p.type.label);
+			surface.text(format("colonyinfo.surface", s), true);
+			
+			if (p.isPopulated()) {
+			
+				population.text(format("colonyinfo.population", 
+						p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+				), true).visible(true);
+				
+				PlanetStatistics ps = p.getStatistics();
+				
+				setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
+				setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
+				setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population).visible(true);
+				setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population).visible(true);
+				setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
+				setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
+				
+				taxIncome.text(format("colonyinfo.tax", 
+						p.taxIncome
+				), true).visible(true);
+				tradeIncome.text(format("colonyinfo.trade",
+						p.tradeIncome
+				), true).visible(true);
+				
+				taxMorale.text(format("colonyinfo.tax-morale",
+						p.morale, withSign(p.morale - p.lastMorale)
+				), true).visible(true);
+				taxLevel.text(format("colonyinfo.tax-level",
+						get(p.getTaxLabel())
+				), true).visible(true);
+				
+				allocation.text(format("colonyinfo.allocation",
+						get(p.getAllocationLabel())
+				), true).visible(true);
+				
+				autobuild.text(format("colonyinfo.autobuild",
+						get(p.getAutoBuildLabel())
+				), true).visible(true);
+				
+				doAdjustTaxButtons();
+				taxLess.visible(p.owner == player());
+				taxMore.visible(p.owner == player());
+			} else {
+				population.visible(false);
+				housing.visible(false);
+				worker.visible(false);
+				hospital.visible(false);
+				food.visible(false);
+				energy.visible(false);
+				police.visible(false);
+				taxIncome.visible(false);
+				tradeIncome.visible(false);
+				taxMorale.visible(false);
+				taxLevel.visible(false);
+				allocation.visible(false);
+				autobuild.visible(false);
+				taxLess.visible(false);
+				taxMore.visible(false);
+			}
+			other.text(format("colonyinfo.other",
+					"" // FIXME list others
+			), true);
+
+			computeSize();
+		}
+		/** 
+		 * Color the label according to the relation between the demand and available.
+		 * @param label the target label
+		 * @param format the format string to use
+		 * @param demand the demand amount
+		 * @param avail the available amount
+		 * @return the label
+		 */
+		UILabel setLabel(UILabel label, String format, int avail, int demand) {
+			label.text(format(format, avail, demand), true);
+			if (demand <= avail) {
+				label.color(TextRenderer.GREEN);
+			} else
+			if (demand < avail * 2) {
+				label.color(TextRenderer.YELLOW);
+			} else {
+				label.color(TextRenderer.RED);
+			}
+			return label;
+		}
+		/**
+		 * Add the +/- sign for the given integer value.
+		 * @param i the value
+		 * @return the string
+		 */
+		String withSign(int i) {
+			if (i < 0) {
+				return Integer.toString(i);
+			} else
+			if (i > 0) {
+				return "+" + i;
+			}
+			return "0";
+		}
+	}
+	/** Increase the taxation level. */
+	void doTaxMore() {
+		Planet p = planet();
+		if (p != null) {
+			TaxLevel l = p.tax;
+			if (l.ordinal() < TaxLevel.values().length - 1) {
+				p.tax = TaxLevel.values()[l.ordinal() + 1];
+			}
+		}
+	}
+	/** Adjust the tax button based on the current taxation level. */
+	void doAdjustTaxButtons() {
+		Planet p = planet();
+		if (p != null) {
+			TaxLevel l = p.tax;
+			colonyInfo.taxMore.enabled(l.ordinal() < TaxLevel.values().length - 1);
+			colonyInfo.taxLess.enabled(l.ordinal() > 0);
+		} else {
+			colonyInfo.taxMore.enabled(false);
+			colonyInfo.taxLess.enabled(false);
+		}
+	}
+	/** Decrease the taxation level. */
+	void doTaxLess() {
+		Planet p = planet();
+		if (p != null) {
+			TaxLevel l = p.tax;
+			if (l.ordinal() > 0) {
+				p.tax = TaxLevel.values()[l.ordinal() - 1];
+			}
+		}
 	}
 }

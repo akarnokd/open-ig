@@ -1552,7 +1552,7 @@ public class PlanetScreen extends ScreenBase {
 		List<UILabel> lines;
 		/** Construct the label elements. */
 		public InfoPanel() {
-			int textSize = 7;
+			int textSize = 10;
 			planet = new UILabel("-", 14, commons.text());
 			planet.location(10, 5);
 			owner = new UILabel("-", textSize, commons.text());
@@ -1585,6 +1585,7 @@ public class PlanetScreen extends ScreenBase {
 		public void draw(Graphics2D g2) {
 			Composite c = g2.getComposite();
 			g2.setComposite(AlphaComposite.SrcOver.derive(0.85f));
+			g2.setColor(Color.BLACK);
 			g2.fillRoundRect(0, 0, width, height, 10, 10);
 			g2.setComposite(c);
 			

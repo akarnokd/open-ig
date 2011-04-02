@@ -104,7 +104,11 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 	}
 	/** @return the current planet. */
 	public Planet planet() {
-		return player().currentPlanet;
+		Planet p = player().currentPlanet;
+		if (p == null) {
+			p = player().moveNextPlanet();
+		}
+		return p;
 	}
 	/** @return the current building type. */
 	public BuildingType building() {
