@@ -57,3 +57,9 @@ The user can click on the stars to upgrade a building to a certain level. It is 
 Not all buildings offer four levels of upgrade.
 
 When an upgraded building is demolished, the upgrade level is considered: the player will receive the half of the invested money.
+
+The general rule for the upgrade system is that each level will increase the output, the energy and worker demand of the building. Three exceptional case exist:
+
+  * Upgrading from Level 3 to Level 4 does not increase the energy and worker demand, but only the capacity.
+  * Factories (Spaceship, Equipment, Weapons) increase capacity but their demands increase more rapidly: a necessary balance option.
+  * Research centers do not increase their capacity, but instead, they reduce the energy and worker requirements: again, a necessary balance option.
