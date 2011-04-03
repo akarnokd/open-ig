@@ -1180,22 +1180,22 @@
 			<resource type='worker'>-120</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="buildings.hypershield_shield.upgrade_1">
+			<upgrade desc="buildings.hypershield.upgrade_1">
 				<resource type='shield'>1.2</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc="buildings.hypershield_shield.upgrade_2">
+			<upgrade desc="buildings.hypershield.upgrade_2">
 				<resource type='shield'>1.4</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
-			<upgrade desc="buildings.hypershield_shield.upgrade_3">
+			<upgrade desc="buildings.hypershield.upgrade_3">
 				<resource type='shield'>1.6</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
-			<upgrade desc="buildings.hypershield_shield.upgrade_4">
+			<upgrade desc="buildings.hypershield.upgrade_4">
 				<resource type='shield'>1.8</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
