@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<bridge xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="bridge.xsd">
+<bridge>
 	<graphics>
 		<level id='1' image='flagship/bridge_level_1' ship-id='1'>
 			<message-panel>
