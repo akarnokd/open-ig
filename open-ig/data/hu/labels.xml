@@ -807,7 +807,7 @@
 	<entry key='buildings.fire_brigade.upgrade_1'>55%-ra növeli a javítást, 150%-ra a munkás- és energiaigényt.</entry>
 	<entry key='buildings.fire_brigade.upgrade_2'>61%-ra növeli a javítást, 175%-ra a munkás- és energiaigényt.</entry>
 	<entry key='buildings.fire_brigade.upgrade_3'>68%-ra növeli a javítást, 200%-ra a munkás- és energiaigényt.</entry>
-	<entry key='buildings.fire_brigade.upgrade_4'>77-ra növeli a javítást, 200%-ra a munkás- és energiaigényt.</entry>
+	<entry key='buildings.fire_brigade.upgrade_4'>77%-ra növeli a javítást, 200%-ra a munkás- és energiaigényt.</entry>
 	<entry key='buildings.radar_telescope.desc'>A bolygó közelébe merészkedő ellenséges flották felderítésére használható. Radaregység nélküli bolygóinkat az ellenség gyakorlatilag észrevétlenül közelítheti meg, és foglalhatja el.</entry>
 	<entry key='buildings.field_telescope.desc'>Hasonló funkciót lát el, mint elődje, csak a radarmodul hatékonyságának megnövelésével nagyobb terület figyelésére képes.</entry>
 	<entry key='buildings.phased_telescope.desc'>Speciális sugarakat használva ez a radar képes áthatolni távoli bolygók légkörén is, így információt szolgáltat a bolygó felszínéről, a benépesítő fajról is.</entry>
