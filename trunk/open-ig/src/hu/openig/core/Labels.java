@@ -50,11 +50,12 @@ public class Labels {
 	 * @param key the key
 	 * @return the associated value
 	 */
-	public String get(String key) {
+	public synchronized String get(String key) { // FIXME temporary
 		String value = map.get(key);
 		if (value == null) {
 //			throw new AssertionError("Missing value for key: " + key);
 			System.err.println("\t<entry key='" + key + "'></entry>");
+			map.put(key, key);
 			return key;
 		}
 		return value;

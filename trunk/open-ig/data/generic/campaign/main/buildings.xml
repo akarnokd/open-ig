@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<buildings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="buildings.xsd">
+<buildings>
 	<building id='ColonyHub' name='buildings.colony_hub'>
 		<graphics base="colony/buildings/%s/colony_hub">
 			<tech id='human' width="8" height="7"/>
@@ -1358,22 +1358,22 @@
 			<resource type='worker'>-90</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="buildings.park.upgrade_1">
+			<upgrade desc="buildings.church.upgrade_1">
 				<resource type='morale'>1.2</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
-			<upgrade desc="buildings.park.upgrade_2">
+			<upgrade desc="buildings.church.upgrade_2">
 				<resource type='morale'>1.4</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
-			<upgrade desc="buildings.park.upgrade_3">
+			<upgrade desc="buildings.church.upgrade_3">
 				<resource type='morale'>1.6</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
-			<upgrade desc="buildings.park.upgrade_4">
+			<upgrade desc="buildings.church.upgrade_4">
 				<resource type='morale'>1.8</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
