@@ -808,4 +808,8 @@
 	<entry key='buildinginfo.building.energy'>Energy : %d kWh</entry>
 	<entry key='buildinginfo.building.worker'>Worker : %d</entry>
 	<entry key='buildinginfo.planet.surface'>%s surface</entry>
+	
+	<entry key='colonyinfo.population.alien'>%d alien</entry>
+	<entry key='colonyinfo.population.own'>%d %s %s</entry>
+	
 </labels>
