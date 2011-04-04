@@ -45,6 +45,7 @@
 			<transition media='flagship/bridge_to_equipment_level_3' label='flagship.moveto.equipment' area='546,115 639,115 639,294 546,294' to='equipment'/>
 			<transition media='' label='flagship.moveto.colony' area='168,314 137,433 487,433 456,314' to='*colony'/>
 			<transition media='flagship/bridge_to_lift_level_3' label='flagship.moveto.lift' area='96,320 44,441 579,441 533,320 457,314 488,434 136,434 167,314' to='lift'/>
+			<transition label='flagship.moveto.information' area='0,325 94,320 42,440 0,440' to='*information'/>
 		</position>
 		<position id='lift' picture='flagship/lift_level_3'>
 			<transition media='flagship/lift_to_bridge_level_3' label='flagship.moveto.bridge' area='0,342 639,342 639,441 0,441' to='*bridge'/>
@@ -108,6 +109,7 @@
 			<transition media='flagship/bridge_to_equipment_level_3' label='flagship.moveto.equipment' area='546,115 639,115 639,294 546,294' to='equipment'/>
 			<transition media='' label='flagship.moveto.colony' area='168,314 137,433 487,433 456,314' to='*colony'/>
 			<transition media='flagship/bridge_to_lift_level_3' label='flagship.moveto.lift' area='96,320 44,441 579,441 533,320 457,314 488,434 136,434 167,314' to='lift'/>
+			<transition label='flagship.moveto.information' area='0,325 94,320 42,440 0,440' to='*information'/>
 		</position>
 		<position id='lift' picture='flagship/lift_level_3'>
 			<transition media='flagship/lift_to_bridge_level_3' label='flagship.moveto.bridge' area='0,342 639,342 639,441 0,441' to='*bridge'/>

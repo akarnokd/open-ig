@@ -446,7 +446,8 @@
 	<entry key='morale.like'>kedvel</entry>
 	<entry key='morale.supportive'>támogat</entry>
 	<entry key='taxlevel.NONE'>Nincs</entry>
-	<entry key='taxlevel.VERY_LOW'>Alacsony</entry>
+	<entry key='taxlevel.VERY_LOW'>Nagyon alacsony</entry>
+	<entry key='taxlevel.LOW'>Alacsony</entry>
 	<entry key='taxlevel.NORMAL'>Normális</entry>
 	<entry key='taxlevel.ABOVE_NORMAL'>Normális felett</entry>
 	<entry key='taxlevel.HIGH'>Magas</entry>
@@ -886,5 +887,12 @@
 	
 	<entry key='colonyinfo.population.alien'>%d idegen</entry>
 	<entry key='colonyinfo.population.own'>%d %s %s</entry>
+	
+	<entry key='financialinfo.yesterday'>Tegnap</entry>
+	<entry key='financialinfo.today'>Ma</entry>
+	<entry key='financialinfo.production_cost'>Gyártási költség : %d cr</entry>
+	<entry key='financialinfo.research_cost'  >Kutatási költség : %d cr</entry>
+	<entry key='financialinfo.repair_cost'    >Javítási költség : %d cr</entry>
+	<entry key='financialinfo.build_cost'     >Építési költség  : %d cr</entry>
 	
 </labels>

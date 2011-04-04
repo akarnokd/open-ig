@@ -8,6 +8,9 @@
 
 package hu.openig.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Record to store the planet wide statistics used by the information screens.
  * @author akarnokd
@@ -59,6 +62,8 @@ public class PlanetStatistics {
 	public int spaceshipActive;
 	/** The spaceship factory capacity. */
 	public int spaceship;
+	/** The current list of problems. */
+	public final Set<PlanetProblems> problems = new HashSet<PlanetProblems>();
 	/**
 	 * Add the other planet statistics to this one.
 	 * @param other the other statistics
@@ -87,5 +92,14 @@ public class PlanetStatistics {
 		weapons = other.weapons;
 		spaceshipActive = other.spaceshipActive;
 		spaceship = other.spaceship;
+		problems.addAll(other.problems);
+	}
+	/**
+	 * The planet has the specified problem?
+	 * @param probl the problem
+	 * @return present
+	 */
+	public boolean has(PlanetProblems probl) {
+		return problems.contains(probl);
 	}
 }

@@ -117,7 +117,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 							if (wt.area.contains(e.x - origin.x, e.y - origin.y)) {
 								next = position.ship.positions.get(wt.to);
 								nextId = wt.to;
-								if (!wt.media.isEmpty()) {
+								if (wt.media != null && !wt.media.isEmpty()) {
 									startTransition(wt.media);
 								} else {
 									setNextPosition();
@@ -249,7 +249,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	 * Set the current position to the next position.
 	 */
 	protected void setNextPosition() {
-		if (next == null && nextId.startsWith("*")) {
+		if (nextId.startsWith("*")) {
 			commons.switchScreen(nextId);
 		} else {
 			position = next;

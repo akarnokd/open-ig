@@ -10,9 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.PlanetType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,8 +44,6 @@ public class Planet implements Named, Owned {
 	public int radar;
 	/** The diameter in pixels up to 30 for the maximum zoom. */
 	public int diameter;
-	/** The current list of problems. */
-	public List<PlanetProblems> problems = new ArrayList<PlanetProblems>();
 	/** The planet is under quarantine: display red frame. */
 	public boolean quarantine;
 	/** The contents of the planet. */
@@ -68,6 +64,14 @@ public class Planet implements Named, Owned {
 	public int tradeIncome;
 	/** @return the morale label for the current morale level. */
 	public String getMoraleLabel() {
+		return getMoraleLabel(morale);
+	}
+	/**
+	 * Return the morale label for the given level.
+	 * @param morale the morale 0..100%
+	 * @return the label
+	 */
+	public static String getMoraleLabel(int morale) {
 		if (morale < 5) {
 			return "morale.revolt";
 		}
@@ -108,6 +112,8 @@ public class Planet implements Named, Owned {
 	public PlanetStatistics getStatistics() {
 		PlanetStatistics result = new PlanetStatistics();
 		radar = 0;
+		int stadiumCount = 0;
+		boolean damage = false;
 		for (Building b : surface.buildings) {
 			if (b.isReady()) {
 				if (b.getEfficiency() >= 0.5) {
@@ -150,6 +156,9 @@ public class Planet implements Named, Owned {
 					if (b.hasResource("radar")) {
 						radar = Math.max(radar, (int)b.getResource("radar"));
 					}
+					if (b.type.id.equals("Stadium")) {
+						stadiumCount++;
+					}
 				}
 				if (b.hasResource("spaceship")) {
 					result.spaceship += b.getResource("spaceship");
@@ -183,23 +192,37 @@ public class Planet implements Named, Owned {
 					result.energyAvailable += e * b.getEfficiency();
 				}
 			}
+			damage |= b.hitpoints < b.type.hitpoints;
 		}
 		
-		problems.clear();
+		if (quarantine) {
+			result.hospitalAvailable /= 4;
+		}
+		
+		result.problems.clear();
 		if (Math.abs(result.workerDemand) > population * 2) {
-			problems.add(PlanetProblems.WORKFORCE);
+			result.problems.add(PlanetProblems.WORKFORCE);
 		}
 		if (Math.abs(result.energyDemand) > Math.abs(result.energyAvailable) * 2) {
-			problems.add(PlanetProblems.ENERGY);
+			result.problems.add(PlanetProblems.ENERGY);
 		}
 		if (Math.abs(population) > Math.abs(result.foodAvailable) * 2) {
-			problems.add(PlanetProblems.FOOD);
+			result.problems.add(PlanetProblems.FOOD);
 		}
 		if (Math.abs(population) > Math.abs(result.hospitalAvailable) * 2) {
-			problems.add(PlanetProblems.HOSPITAL);
+			result.problems.add(PlanetProblems.HOSPITAL);
 		}
 		if (Math.abs(population) > Math.abs(result.houseAvailable) * 2) {
-			problems.add(PlanetProblems.HOUSING);
+			result.problems.add(PlanetProblems.HOUSING);
+		}
+		if (population / 50000 > stadiumCount) {
+			result.problems.add(PlanetProblems.STADIUM);
+		}
+		if (quarantine) {
+			result.problems.add(PlanetProblems.VIRUS);
+		}
+		if (damage) {
+			result.problems.add(PlanetProblems.REPAIR);
 		}
 		
 		radar *= 35;

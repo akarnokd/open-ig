@@ -13,6 +13,8 @@ import hu.openig.core.Act;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.PlanetProblems;
+import hu.openig.model.PlanetStatistics;
 import hu.openig.model.RotationDirection;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
@@ -243,7 +245,7 @@ public class StarmapScreen extends ScreenBase {
 		info.onClick = new Act() {
 			@Override
 			public void act() {
-				displaySecondary(Screens.INFORMATION_PLANETS);
+				displaySecondary(Screens.INFORMATION_COLONY);
 			}
 		};
 		bridge.onClick = new Act() {
@@ -590,13 +592,14 @@ public class StarmapScreen extends ScreenBase {
 				g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
 			}
 			if (!minimapPlanetBlink) {
-				if (knowledge(p, PlanetKnowledge.FULL) >= 0) {
-					p.getStatistics();
-					if (p.problems.size() > 0) {
-						int w = p.problems.size() * 11 - 1;
-						for (int i = 0; i < p.problems.size(); i++) {
+				if (p.owner == player()) {
+					PlanetStatistics ps = p.getStatistics();
+					if (ps.problems.size() > 0) {
+						int w = ps.problems.size() * 11 - 1;
+						int i = 0;
+						for (PlanetProblems pp : ps.problems) {
 							BufferedImage icon = null;
-							switch (p.problems.get(i)) {
+							switch (pp) {
 							case HOUSING:
 								icon = commons.common().houseIcon;
 								break;
@@ -612,9 +615,19 @@ public class StarmapScreen extends ScreenBase {
 							case WORKFORCE:
 								icon = commons.common().workerIcon;
 								break;
+							case STADIUM:
+								icon = commons.common().virusIcon;
+								break;
+							case VIRUS:
+								icon = commons.common().stadiumIcon;
+								break;
+							case REPAIR:
+								icon = commons.common().repairIcon;
+								break;
 							default:
 							}
 							g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
+							i++;
 						}
 					}
 				}
