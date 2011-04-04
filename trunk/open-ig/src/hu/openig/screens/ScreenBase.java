@@ -124,7 +124,7 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 	}
 	/** @return the race of the buildings on the current planet or the player's race. */
 	public String race() {
-		return planet().race != null ? planet().race : player().race;
+		return planet().isPopulated() ? planet().race : player().race;
 	}
 	/**
 	 * Returns a translation for the given label.
@@ -256,6 +256,7 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 		return commons.control().fontMetrics(size);
 	}
 	/** Ask for repaint. */
+	@Override
 	public void askRepaint() {
 		repaintInner();
 	}

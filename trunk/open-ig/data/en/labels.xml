@@ -804,4 +804,8 @@
 	<entry key='buildings.stadium.upgrade_3'>Increase the morale by 32%, energy- and worker-demand to 250%.</entry>
 	<entry key='buildings.stadium.upgrade_4'>Increase the morale by 36%, energy- and worker-demand to 250%.</entry>
 	
+	<entry key='buildinginfo.building.cost'  >Cost   : %d cr</entry>
+	<entry key='buildinginfo.building.energy'>Energy : %d kWh</entry>
+	<entry key='buildinginfo.building.worker'>Worker : %d</entry>
+	<entry key='buildinginfo.planet.surface'>%s surface</entry>
 </labels>

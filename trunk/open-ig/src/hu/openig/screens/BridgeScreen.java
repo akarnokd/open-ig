@@ -380,6 +380,7 @@ public class BridgeScreen extends ScreenBase {
 									
 									WalkShip ship = commons.world().getShip();
 									sws.next = ship.positions.get(tr.to);
+									sws.nextId = tr.to;
 									
 									final String media = tr.media;
 									SwingUtilities.invokeLater(new Runnable() {

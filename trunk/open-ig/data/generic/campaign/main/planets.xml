@@ -1141,7 +1141,7 @@
     <inventory/>
     <buildings/>
   </planet>
-  <planet id='Magellen 11' name='Magellen 11' x='568' y='436' size='30' race='' rotate='LR' population='0' allocation='DEFAULT' autobuild='OFF' morale='100' tax='NORMAL' tax-income='0' trade-income='0'>
+  <planet id='Magellan 11' name='Magellen 11' x='568' y='436' size='30' race='' rotate='LR' population='0' allocation='DEFAULT' autobuild='OFF' morale='100' tax='NORMAL' tax-income='0' trade-income='0'>
     <surface type='rocky' id='7'/>
     <inventory/>
     <buildings/>

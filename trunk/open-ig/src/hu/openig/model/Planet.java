@@ -11,13 +11,15 @@ package hu.openig.model;
 import hu.openig.core.PlanetType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A planet.
  * @author akarnokd, 2010.01.07.
  */
-public class Planet {
+public class Planet implements Named, Owned {
 	/** The planet's identifier. */
 	public String id;
 	/** The planet's display name. */
@@ -231,5 +233,24 @@ public class Planet {
 			}
 		}
 		return (hubFound != "MainBuilding".equals(bt.kind)) && count < Math.abs(bt.limit);
+	}
+	@Override
+	public String name() {
+		return name;
+	}
+	@Override
+	public Player owner() {
+		return owner;
+	}
+	/**
+	 * @return the number of built buildings per type
+	 */
+	public Map<BuildingType, Integer> countBuildings() {
+		Map<BuildingType, Integer> result = new HashMap<BuildingType, Integer>();
+		for (Building b : surface.buildings) {
+			Integer cnt = result.get(b.type);
+			result.put(b.type, cnt != null ? cnt + 1 : 1);
+		}
+		return result;
 	}
 }

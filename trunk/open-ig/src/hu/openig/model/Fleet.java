@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
  * A fleet.
  * @author akarnokd, 2010.01.07.
  */
-public class Fleet {
+public class Fleet implements Named, Owned {
 	/** The owner of the fleet. */
 	public Player owner;
 	/** The X coordinate. */
@@ -32,5 +32,14 @@ public class Fleet {
 		FleetStatistics result = new FleetStatistics();
 		
 		return result;
+	}
+	@Override
+	public String name() {
+		return name;
+	}
+	@Override
+	public Player owner() {
+		// TODO Auto-generated method stub
+		return owner;
 	}
 }

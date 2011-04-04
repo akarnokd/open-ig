@@ -119,4 +119,19 @@ public class Player {
 			return o1.name.compareTo(o2.name);
 		}
 	};
+	/**
+	 * @return the number of built buildings per type
+	 */
+	public Map<BuildingType, Integer> countBuildings() {
+		Map<BuildingType, Integer> result = new HashMap<BuildingType, Integer>();
+		for (Planet p : planets.keySet()) {
+			if (p.owner == this) {
+				for (Building b : p.surface.buildings) {
+					Integer cnt = result.get(b.type);
+					result.put(b.type, cnt != null ? cnt + 1 : 1);
+				}
+			}
+		}
+		return result;
+	}
 }
