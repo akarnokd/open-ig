@@ -10,7 +10,7 @@
 	</texts>
 	<image>campaign/main/main_campaign_image</image>
 	<intro>interlude/campaign_start</intro>
-	<level>1</level>
+	<level>5</level>
 	<labels>campaign/main/labels</labels>
 	<galaxy>campaign/main/galaxy</galaxy>
 	<races>campaign/main/races</races>

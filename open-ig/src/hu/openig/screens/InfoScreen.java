@@ -9,14 +9,21 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.core.Action1;
+import hu.openig.core.Func1;
+import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
+import hu.openig.model.Named;
+import hu.openig.model.Owned;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.TaxLevel;
+import hu.openig.model.TileSet;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
+import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIImage;
@@ -24,18 +31,24 @@ import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton2;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.KeyEvent;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 
@@ -116,6 +129,15 @@ public class InfoScreen extends ScreenBase {
 	/** Colony info page. */
 	@ModeUI(mode = { Screens.INFORMATION_COLONY })
 	InfoPanel colonyInfo;
+	/** The planet listing. */
+	@ModeUI(mode = { Screens.INFORMATION_PLANETS })
+	Listing<Planet> colonies;
+	/** The fleet listing. */
+	@ModeUI(mode = { Screens.INFORMATION_FLEETS })
+	Listing<Fleet> fleets;
+	/** The building listing. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	BuildingListing buildings;
 	/** The display mode. */
 	Screens mode = Screens.INFORMATION_PLANETS;
 	/** The minimap renderer. */
@@ -128,6 +150,58 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_ALIENS
 	})
 	Minimap minimap;
+	/** The building description title. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel descriptionTitle;
+	/** The building description text. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel descriptionText;
+	/** The building description text. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UIImage descriptionImage;
+	/** The title text to display. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel buildingTitle;
+	/** The planet name. */
+	@ModeUI(mode = { Screens.INFORMATION_PLANETS, Screens.INFORMATION_COLONY, Screens.INFORMATION_FINANCIAL, Screens.INFORMATION_MILITARY })
+	UILabel planetTitle;
+	/** Building cost label. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel buildingCost;
+	/** Building energy label. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel buildingEnergy;
+	/** Building worker label. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel buildingWorker;
+	/** The current planet. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel buildingPlanet;
+	/** The current planet's owner. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel buildingPlanetOwner;
+	/** The current planet's race. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel buildingPlanetRace;
+	/** The current planet's surface. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UILabel buildingPlanetSurface;
+	/** Problem indicator icon. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UIImage problemsHouse;
+	/** Problem indicator icon. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UIImage problemsEnergy;
+	/** Problem indicator icon. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UIImage problemsFood;
+	/** Problem indicator icon. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	/** Problem indicator icon. */
+	UIImage problemsHospital;
+	/** Problem indicator icon. */
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	UIImage problemsWorker;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -203,8 +277,223 @@ public class InfoScreen extends ScreenBase {
 		
 		minimap = new Minimap();
 		
+		colonies = new Listing<Planet>();
+		colonies.getList = new Func1<Void, List<Planet>>() {
+			@Override
+			public List<Planet> invoke(Void value) {
+				return planetsList();
+			}
+		};
+		colonies.getColor = new Func1<Planet, Integer>() {
+			@Override
+			public Integer invoke(Planet value) {
+				if (value.owner == null) {
+					return TextRenderer.GRAY;
+				}
+				return value.owner.color;
+			}
+		};
+		colonies.getText = new Func1<Planet, String>() {
+			@Override
+			public String invoke(Planet value) {
+				return value.name;
+			}
+		};
+		colonies.getCurrent = new Func1<Void, Planet>() {
+			@Override
+			public Planet invoke(Void value) {
+				return planet();
+			}
+		};
+		colonies.onSelect = new Action1<Planet>() {
+			@Override
+			public void invoke(Planet value) {
+				player().currentPlanet = value;
+				displayPlanetInfo();
+			}
+		};
+		colonies.onDoubleClick = new Action1<Planet>() {
+			@Override
+			public void invoke(Planet value) {
+				player().currentPlanet = value;
+				displayPlanetInfo();
+				displayPrimary(Screens.COLONY);
+			}
+		};
+		
+		
+		fleets = new Listing<Fleet>();
+		fleets.columns = 3;
+		fleets.getList = new Func1<Void, List<Fleet>>() {
+			@Override
+			public List<Fleet> invoke(Void value) {
+				return fleetsList();
+			}
+		};
+		fleets.getColor = new Func1<Fleet, Integer>() {
+			@Override
+			public Integer invoke(Fleet value) {
+				if (value.owner == null) {
+					return TextRenderer.GRAY;
+				}
+				return value.owner.color;
+			}
+		};
+		fleets.getText = new Func1<Fleet, String>() {
+			@Override
+			public String invoke(Fleet value) {
+				return value.name;
+			}
+		};
+		fleets.getCurrent = new Func1<Void, Fleet>() {
+			@Override
+			public Fleet invoke(Void value) {
+				return fleet();
+			}
+		};
+		fleets.onSelect = new Action1<Fleet>() {
+			@Override
+			public void invoke(Fleet value) {
+				player().currentFleet = value;
+			}
+		};
+		fleets.onDoubleClick = new Action1<Fleet>() {
+			@Override
+			public void invoke(Fleet value) {
+				player().currentFleet = value;
+				displayPrimary(Screens.EQUIPMENT_FLEET);
+			}
+		};
+		
+		buildings = new BuildingListing();
+		buildings.onSelect = new Action1<BuildingType>() {
+			@Override
+			public void invoke(BuildingType value) {
+				player().currentBuilding = value;
+				displayBuildingInfo();
+			}
+		};
+		buildings.onDoubleClick = new Action1<BuildingType>() {
+			@Override
+			public void invoke(BuildingType value) {
+				player().currentBuilding = value;
+				displayBuildingInfo();
+				if (planet().canBuild(value)) {
+					PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
+					ps.buildingsPanel.build.onPress.act();
+				}
+			}
+		};
+		
+		descriptionText = new UILabel("", 7, commons.text());
+		descriptionText.wrap(true);
+		descriptionText.horizontally(HorizontalAlignment.LEFT);
+		descriptionImage = new UIImage();
+		descriptionImage.center(true);
+		descriptionTitle = new UILabel("", 10, commons.text());
+		descriptionTitle.color(TextRenderer.RED);
+		descriptionTitle.horizontally(HorizontalAlignment.CENTER);
+		
+		buildingCost = new UILabel("", 10, commons.text());
+		buildingEnergy = new UILabel("", 10, commons.text());
+		buildingWorker = new UILabel("", 10, commons.text());
+		
+		buildingTitle = new UILabel("", 10, commons.text());
+		buildingTitle.color(TextRenderer.RED);
+		buildingTitle.size(10);
+		buildingTitle.horizontally(HorizontalAlignment.CENTER);
+
+		planetTitle = new UILabel("", 14, commons.text());
+		planetTitle.horizontally(HorizontalAlignment.CENTER);
+
+		
+		buildingPlanet = new UILabel("", 10, commons.text());
+		buildingPlanet.color(TextRenderer.GRAY);
+		buildingPlanetOwner = new UILabel("", 10, commons.text());
+		buildingPlanetOwner.color(TextRenderer.GRAY);
+		buildingPlanetRace = new UILabel("", 10, commons.text());
+		buildingPlanetRace.color(TextRenderer.GRAY);
+		buildingPlanetSurface = new UILabel("", 10, commons.text());
+		buildingPlanetSurface.color(TextRenderer.GRAY);
+		
+		problemsHouse = new UIImage(commons.common().houseIcon);
+		problemsEnergy = new UIImage(commons.common().energyIcon);
+		problemsWorker = new UIImage(commons.common().workerIcon);
+		problemsFood = new UIImage(commons.common().foodIcon);
+		problemsHospital = new UIImage(commons.common().hospitalIcon);
+
+		
 		addThis();
 	}
+	/** Display the information about the given building type. */
+	void displayBuildingInfo() {
+		BuildingType bt = building();
+		TileSet ts = bt != null ? bt.tileset.get(race()) : null;
+		if (ts == null) {
+			List<BuildingType> bs = buildings.getList.invoke(null);
+			if (bs.size() > 0) {
+				bt = bs.get(0);
+				player().currentBuilding = bt;
+				ts = bt.tileset.get(race());
+			}
+		}
+		if (bt != null && ts != null) {
+			descriptionTitle.text(bt.name);
+			descriptionText.text(bt.description);
+			descriptionImage.image(ts.preview);
+			
+			buildingTitle.text(bt.name);
+			
+			buildingCost.text(format("buildinginfo.building.cost", bt.cost), true);
+			int e = (int)(bt.resources.get("energy").amount);
+			int w = (int)(bt.resources.get("worker").amount);
+			buildingEnergy.text(format("buildinginfo.building.energy", e < 0 ? -e : e), true);
+			buildingWorker.text(format("buildinginfo.building.worker", w < 0 ? -w : 0), true);
+		} else {
+			descriptionTitle.text("", true);
+			descriptionText.text("", true);
+			descriptionImage.image(null);
+			
+			buildingTitle.text("");
+			buildingCost.text("", true);
+			buildingEnergy.text("", true);
+			buildingWorker.text("", true);
+		}
+		Planet p = planet();
+		buildingPlanet.text(p.name, true);
+		if (p.owner != null) {
+			buildingPlanetOwner.text(p.owner.name, true);
+		} else {
+			buildingPlanetOwner.text("-", true);
+		}
+		if (p.race != null) {
+			buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+		} else {
+			buildingPlanetRace.text("-", true);
+		}
+		buildingPlanetSurface.text(format("buildinginfo.planet.surface", get(p.type.label)), true);
+		
+		if (p.owner == player()) {
+			PlanetStatistics ps = p.getStatistics();
+			problemsHouse.visible(ps.houseAvailable * 2 <= p.population);
+			problemsEnergy.visible(ps.energyAvailable * 2 <= ps.energyDemand);
+			problemsWorker.visible(p.population * 2 <= ps.workerDemand);
+			problemsFood.visible(ps.foodAvailable * 2 <= p.population);
+			problemsHospital.visible(ps.hospitalAvailable * 2 <= p.population);
+		} else {
+			problemsHouse.visible(false);
+			problemsEnergy.visible(false);
+			problemsWorker.visible(false);
+			problemsFood.visible(false);
+			problemsHospital.visible(false);
+		}
+	}
+	/** Display the planet info on the current selected planet. */
+	void displayPlanetInfo() {
+		planetTitle.text(planet().name);
+		planetTitle.color(planet().isPopulated() ? planet().owner.color : TextRenderer.GRAY);
+	}
+
 	/**
 	 * Add an onPress handler which changes the display mode.
 	 * @param button the button to append to
@@ -278,7 +567,7 @@ public class InfoScreen extends ScreenBase {
 		aliensEmpty.location(aliensTab.location());
 		
 		empty1.location(aliensEmpty.x + aliensEmpty.width + 2, base.y + base.height - empty1.height);
-		empty2.location(empty1.x + empty1.width, empty1.y);
+		empty2.location(empty1.x + empty1.width + 1, empty1.y);
 		
 		colony.location(empty1.location());
 		starmap.location(empty2.location());
@@ -291,6 +580,33 @@ public class InfoScreen extends ScreenBase {
 		colonyInfo.location(base.x + 10, base.y + 10);
 		
 		minimap.bounds(base.x + 415, base.y + 211, 202, 169);
+		
+		colonies.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
+		fleets.bounds(colonies.bounds());
+		buildings.bounds(base.x + 10, base.y + 10, 400, 22 * 14);
+		
+		descriptionTitle.bounds(base.x + 10, base.y + 22 * buildings.rowHeight + 14, 400, 10);
+		descriptionText.bounds(base.x + 5, base.y + 22 * buildings.rowHeight + 26, 405, 30);
+		descriptionImage.bounds(minimap.bounds());
+		
+		buildingTitle.bounds(base.x + 415, base.y + 2, 203, 26);
+		buildingCost.location(base.x + 420, base.y + 34);
+		buildingEnergy.location(base.x + 420, base.y + 34 + 17);
+		buildingWorker.location(base.x + 420, base.y + 34 + 17 * 2);
+		
+		buildingPlanet.location(base.x + 420, buildingWorker.y + 62);
+		buildingPlanetOwner.location(base.x + 420, buildingWorker.y  + 62 + 17 * 1);
+		buildingPlanetRace.location(base.x + 420, buildingWorker.y + 62  + 17 * 2);
+		buildingPlanetSurface.location(base.x + 420, buildingWorker.y + 62  + 17 * 3);
+		
+		problemsHouse.location(base.x + 420, buildingWorker.y + 62 + 17 * 4);
+		problemsEnergy.location(base.x + 436, buildingWorker.y + 62  + 17 * 4);
+		problemsWorker.location(base.x + 452, buildingWorker.y + 62 + 17 * 4);
+		problemsFood.location(base.x + 468, buildingWorker.y + 62 + 17 * 4);
+		problemsHospital.location(base.x + 484, buildingWorker.y + 62 + 17 * 4);
+
+		planetTitle.bounds(buildingTitle.bounds());
+		
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -299,7 +615,13 @@ public class InfoScreen extends ScreenBase {
 		
 		if (mode == Screens.INFORMATION_COLONY) {
 			colonyInfo.update();
+		} else
+		if (mode == Screens.INFORMATION_BUILDINGS) {
+			displayBuildingInfo();
+			g2.setColor(new Color(0xFF4C6CB4));
+			g2.drawLine(base.x + 2, descriptionTitle.y - 2, base.x + 413, descriptionTitle.y - 2);
 		}
+		displayPlanetInfo();
 		
 		super.draw(g2);
 	}
@@ -772,5 +1094,407 @@ public class InfoScreen extends ScreenBase {
 			}
 			return super.mouse(e);
 		}
+	}
+	/**
+	 * Displays a list of names and uses callbacks to query for the list and element properties.
+	 * @author akarnokd, 2011.04.04.
+	 * @param <T> the element type
+	 */
+	class Listing<T> extends UIComponent {
+		/** How many columns to display. */
+		int columns = 4;
+		/** The start column to display. */
+		int columnIndex;
+		/** The target font size. */
+		int fontSize = 10;
+		/** A row height. */
+		int rowHeight = fontSize + 3;
+		/** Retrieve the list. */
+		Func1<Void, List<T>> getList;
+		/** Retrieve the color of the list element. */
+		Func1<T, Integer> getColor;
+		/** Retrieve the text to display. */
+		Func1<T, String> getText;
+		/** Returns the current item. */
+		Func1<Void, T> getCurrent;
+		/** The action to invoke when the user selects an item. */
+		Action1<T> onSelect;
+		/** The action to invoke when the user double-clicks on an item. */
+		Action1<T> onDoubleClick;
+		@Override
+		public void draw(Graphics2D g2) {
+			int rowCount = (height + rowHeight - 1) / rowHeight;
+			int columnWidth = width / columns;
+			
+			List<T> planets = getList.invoke(null);
+			for (int j = 0; j < columns; j++) {
+				int x0 = j * columnWidth;  
+				for (int i = 0; i < rowCount; i++) {
+					int y0 = i * rowHeight;
+					int pidx = (j + columnIndex) * rowCount + i; 
+					if (pidx >= 0 && pidx < planets.size()) {
+						T p = planets.get(pidx);
+						int c = getColor.invoke(p);
+						String t = getText.invoke(p);
+						commons.text().paintTo(g2, x0, y0 + 1, fontSize, c, t);
+						if (p == getCurrent.invoke(null)) {
+							g2.setColor(new Color(player().color));
+							g2.drawRect(x0 - 2, y0 - 1, columnWidth, rowHeight);
+						}
+					}
+				}
+			}
+		}
+		/** @return the maximum number of columns to display. */
+		public int maxColumns() {
+			int rowCount = (height + rowHeight - 1) / rowHeight;
+			return (getList.invoke(null).size() + rowCount - 1) / rowCount;
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				T p = getItemAt(e.x, e.y);
+				if (p != null) {
+					onSelect.invoke(p);
+					return true;
+				}
+			} else
+			if (e.has(Type.DOUBLE_CLICK)) {
+				T p = getItemAt(e.x, e.y);
+				if (p != null) {
+					onDoubleClick.invoke(p);
+					return true;
+				}
+			} else
+			if (e.has(Type.WHEEL)) {
+				if (e.has(Modifier.SHIFT)) {
+					if (e.z < 0) {
+						columnIndex = Math.max(0, columnIndex - 1);
+					} else {
+						columnIndex = Math.max(0, Math.min(maxColumns() - columns, columnIndex + 1));
+					}
+				} else {
+					select(e.z < 0 ? -1 : 1);
+				}
+				return true;
+			}
+			return super.mouse(e);
+		}
+		/**
+		 * Move the selection by a delta value.
+		 * @param delta the delta
+		 */
+		public void select(int delta) {
+			List<T> pl = getList.invoke(null);
+			if (pl.size() > 0) {
+				int idx = pl.indexOf(getCurrent.invoke(null));
+				if (idx < 0) {
+					idx = 0;
+				} else {
+					if (delta < 0) {
+						idx = (idx + (pl.size() + delta % pl.size())) % pl.size();
+					} else {
+						idx = (idx + delta) % pl.size();
+					}
+				}
+				onSelect.invoke(pl.get(idx));
+			}
+		}
+		/** 
+		 * Find a planet at the given render coordinates.
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 * @return the planet or null if there is none
+		 */
+		public T getItemAt(int x, int y) {
+			int rowCount = (height + rowHeight - 1) / rowHeight;
+			int columnWidth = width / columns;
+			int col = x / columnWidth;
+			int row = Math.min(y / rowHeight, rowCount - 1);
+			int idx = (col + columnIndex) * rowCount + row;
+			List<T> items = getList.invoke(null);
+			if (idx >= 0 && idx < items.size()) {
+				return items.get(idx);
+			}
+			return null;
+		}
+	}
+	/**
+	 * Sort the planets list by owner and name, putting the player's planets at the beginning.
+	 * @param planets the list of planets
+	 * @param <T> a named and owned object
+	 */
+	<T extends Named & Owned> void sortByOwnerAndName(List<T> planets) {
+		Collections.sort(planets, new Comparator<T>() {
+			@Override
+			public int compare(T o1, T o2) {
+				if (o1.owner() == null && o2.owner() != null) {
+					return 1;
+				} else
+				if (o1.owner() != null && o2.owner() == null) {
+					return -1;
+				} else
+				if (o1.owner() == null && o2.owner() == null) {
+					return compareString(o1.name(), o2.name());
+				} else
+				if (o1.owner() == player() && o2.owner() != player()) {
+					return -1;
+				} else
+				if (o1.owner() != player() && o2.owner() == player()) {
+					return 1;
+				} else
+				if (o1.owner() == player() && o2.owner() == player()) {
+					return o1.name().compareTo(o2.name());
+				}
+				int c = o1.owner().name.compareTo(o2.owner().name);
+				if (c == 0) {
+					return compareString(o1.name(), o2.name());
+				}
+				return c;
+			}
+		});
+	}
+	/**
+	 * Compare two strings which may have a tailing number.
+	 * @param s1 the first string
+	 * @param s2 the second string
+	 * @return the comparison result
+	 */
+	int compareString(String s1, String s2) {
+		char c1 = s1.charAt(s1.length() - 1);
+		char c2 = s2.charAt(s2.length() - 1);
+		if (Character.isDigit(c1) && Character.isDigit(c2)) {
+			int sp1 = s1.lastIndexOf(' ');
+			int sp2 = s2.lastIndexOf(' ');
+			
+			if (sp1 >= 0 && sp2 >= 0) {
+				int c = s1.substring(0, sp1).compareTo(s2.substring(0, sp2));
+				if (c == 0) {
+					c = Integer.parseInt(s1.substring(sp1 + 1)) - Integer.parseInt(s2.substring(sp2 + 1));
+				}
+				return c;
+			}
+		}
+		return s1.compareTo(s2);
+	}
+	/** @return an ordered list of planets to display. */
+	List<Planet> planetsList() {
+		List<Planet> planets = new ArrayList<Planet>();
+		for (Planet p : player().planets.keySet()) {
+			if (knowledge(p, PlanetKnowledge.OWNED) >= 0) {
+				planets.add(p);
+			}
+		}
+		sortByOwnerAndName(planets);
+		return planets;
+	}
+	/** @return an ordered list of planets to display. */
+	List<Fleet> fleetsList() {
+		List<Fleet> fleets = new ArrayList<Fleet>();
+		for (Fleet f : player().fleets.keySet()) {
+			if (knowledge(f, FleetKnowledge.VISIBLE) >= 0) {
+				fleets.add(f);
+			}
+		}
+		sortByOwnerAndName(fleets);
+		return fleets;
+	}
+	/**
+	 * Displays a list of names and uses callbacks to query for the list and element properties.
+	 * @author akarnokd, 2011.04.04.
+	 */
+	class BuildingListing extends UIComponent {
+		/** How many columns to display. */
+		int columns = 2;
+		/** The start column to display. */
+		int columnIndex;
+		/** The target font size. */
+		int fontSize = 10;
+		/** A row height. */
+		int rowHeight = fontSize + 4;
+		/** Retrieve the list. */
+		Func1<Void, List<BuildingType>> getList = new Func1<Void, List<BuildingType>>() {
+			@Override
+			public List<BuildingType> invoke(Void value) {
+				return commons.world().listBuildings();
+			}
+		};
+		/** The action to invoke when the user selects an item. */
+		Action1<BuildingType> onSelect;
+		/** The action to invoke when the user double-clicks on an item. */
+		Action1<BuildingType> onDoubleClick;
+		@Override
+		public void draw(Graphics2D g2) {
+			int rowCount = (height + rowHeight - 1) / rowHeight;
+			int columnWidth = width / columns;
+			
+			List<BuildingType> planets = getList.invoke(null);
+			Map<BuildingType, Integer> counts = player().countBuildings();
+			Map<BuildingType, Integer> current = planet().countBuildings();
+			
+			for (int j = 0; j < columns; j++) {
+				int x0 = j * columnWidth;  
+				for (int i = 0; i < rowCount; i++) {
+					int y0 = i * rowHeight;
+					int pidx = (j + columnIndex) * rowCount + i; 
+					if (pidx >= 0 && pidx < planets.size()) {
+						BuildingType p = planets.get(pidx);
+						int c = planet().canBuild(p) && planet().owner == player() ? TextRenderer.YELLOW : TextRenderer.GRAY;
+						String t = p.name;
+						commons.text().paintTo(g2, x0 + 30, y0 + 2, fontSize, c, t);
+						
+						Integer c0 = current.get(p);
+						Integer c1 = counts.get(p);
+						
+						String n = (c0 != null ? c0 : 0) + "/" + (c1 != null ? c1 : 0);
+						commons.text().paintTo(g2, x0, y0 + 4, 7, c1 != null ? TextRenderer.GREEN : TextRenderer.GRAY, n);
+						
+						if (p == player().currentBuilding) {
+							g2.setColor(new Color(player().color));
+							g2.drawRect(x0 - 2 + 30, y0, columnWidth - 30, rowHeight);
+						}
+					}
+				}
+			}
+		}
+		/** @return the maximum number of columns to display. */
+		public int maxColumns() {
+			int rowCount = (height + rowHeight - 1) / rowHeight;
+			return (getList.invoke(null).size() + rowCount - 1) / rowCount;
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				BuildingType p = getItemAt(e.x, e.y);
+				if (p != null) {
+					onSelect.invoke(p);
+					return true;
+				}
+			} else
+			if (e.has(Type.DOUBLE_CLICK)) {
+				BuildingType p = getItemAt(e.x, e.y);
+				if (p != null && planet().canBuild(p) && planet().owner == player()) {
+					onDoubleClick.invoke(p);
+					return true;
+				}
+			} else
+			if (e.has(Type.WHEEL)) {
+				if (e.has(Modifier.SHIFT)) {
+					if (e.z < 0) {
+						columnIndex = Math.max(0, columnIndex - 1);
+					} else {
+						columnIndex = Math.max(0, Math.min(maxColumns() - columns, columnIndex + 1));
+					}
+				} else {
+					selectBuilding(e.z < 0 ? -1 : 1);
+				}
+				return true;
+			}
+			return super.mouse(e);
+		}
+		/** 
+		 * Select a building relative to the current building.
+		 * @param delta the delta
+		 */
+		public void selectBuilding(int delta) {
+			List<BuildingType> pl = getList.invoke(null);
+			if (pl.size() > 0) {
+				int idx = pl.indexOf(building());
+				if (idx < 0) {
+					idx = 0;
+				} else {
+					if (delta < 0) {
+						idx = (idx + (pl.size() + delta % pl.size())) % pl.size();
+					} else {
+						idx = (idx + delta) % pl.size();
+					}
+				}
+				onSelect.invoke(pl.get(idx));
+			}
+		}
+		/** 
+		 * Find a planet at the given render coordinates.
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 * @return the planet or null if there is none
+		 */
+		public BuildingType getItemAt(int x, int y) {
+			int rowCount = (height + rowHeight - 1) / rowHeight;
+			int columnWidth = width / columns;
+			int col = x / columnWidth;
+			int row = Math.min(y / rowHeight, rowCount - 1);
+			int idx = (col + columnIndex) * rowCount + row;
+			List<BuildingType> items = getList.invoke(null);
+			if (idx >= 0 && idx < items.size()) {
+				return items.get(idx);
+			}
+			return null;
+		}
+	}
+	@Override
+	public boolean keyboard(KeyEvent e) {
+		switch (mode) {
+		case INFORMATION_BUILDINGS:
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				buildings.selectBuilding(-1);
+				return true;
+			case KeyEvent.VK_DOWN:
+				buildings.selectBuilding(1);
+				return true;
+			case KeyEvent.VK_LEFT:
+				buildings.selectBuilding(-22);
+				return true;
+			case KeyEvent.VK_RIGHT:
+				buildings.selectBuilding(22);
+				return true;
+			case KeyEvent.VK_ENTER:
+				BuildingType bt = building();
+				if (bt != null && planet().canBuild(bt) && planet().owner == player()) {
+					buildings.onDoubleClick.invoke(building());
+					return true;
+				}
+			default:
+			}
+			break;
+		case INFORMATION_FLEETS:
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				fleets.select(-1);
+				return true;
+			case KeyEvent.VK_DOWN:
+				fleets.select(1);
+				return true;
+			case KeyEvent.VK_LEFT:
+				fleets.select(-27);
+				return true;
+			case KeyEvent.VK_RIGHT:
+				fleets.select(27);
+				return true;
+			default:
+			}
+			break;
+		case INFORMATION_PLANETS:
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				colonies.select(-1);
+				return true;
+			case KeyEvent.VK_DOWN:
+				colonies.select(1);
+				return true;
+			case KeyEvent.VK_LEFT:
+				colonies.select(-27);
+				return true;
+			case KeyEvent.VK_RIGHT:
+				colonies.select(27);
+				return true;
+			case KeyEvent.VK_ENTER:
+				colonies.onDoubleClick.invoke(planet());
+			default:
+			}
+			break;
+		default:
+		}
+		return super.keyboard(e);
 	}
 }

@@ -107,10 +107,8 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						long t = System.nanoTime();
 						talks = new Talks();
 						talks.load(rl, definition.talk);
-						System.out.printf("Loading talks: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -122,15 +120,11 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						long t = System.nanoTime();
 						walks = new Walks();
 						walks.load(rl, definition.walk);
-						System.out.printf("Loading walks: %d%n", (System.nanoTime() - t) / 1000000);
 						
-						t = System.nanoTime();
 						bridge = new Bridge();
 						processBridge(rl, definition.bridge);
-						System.out.printf("Loading bridge: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -142,10 +136,8 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						long t = System.nanoTime();
 						buildingModel = new BuildingModel();
 						buildingModel.processBuildings(rl, definition.build, researches, labels, exec, wip);
-						System.out.printf("Loading building: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -157,10 +149,8 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						long t = System.nanoTime();
 						galaxyModel = new GalaxyModel();
 						galaxyModel.processGalaxy(rl, definition.galaxy, exec, wip);
-						System.out.printf("Loading galaxy: %d%n", (System.nanoTime() - t) / 1000000);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -488,6 +478,9 @@ public class World {
 		if (matrix != null) {
 			tech.fireAndTotation = ImageUtils.split(matrix, matrix.getHeight() / 5, matrix.getHeight() / 5);
 		}
+		
+		// FIXME for testing
+		player.availableResearch.add(tech);
 	}
 	/**
 	 * Retrieve or create a research type.
@@ -513,7 +506,7 @@ public class World {
 		List<BuildingType> result = new ArrayList<BuildingType>();
 		
 		for (BuildingType bt : buildingModel.buildings.values()) {
-			if (bt.tileset.containsKey(planet.race != null ? planet.race : player.race)) {
+			if (bt.tileset.containsKey(planet.isPopulated() ? planet.race : player.race)) {
 				if (bt.research == null || (planet.owner != player)
 						|| (player.availableResearch.contains(bt.research) || bt.research.level == 0)) {
 					result.add(bt);

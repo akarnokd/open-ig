@@ -19,6 +19,8 @@ public class UIImage extends UIComponent {
 	private BufferedImage image;
 	/** Scale the image to the defined width and height? */
 	private boolean scale;
+	/** Center the image? */
+	private boolean center;
 	/**
 	 * Default constructor without any image. The component will have zero size.
 	 */
@@ -49,6 +51,11 @@ public class UIImage extends UIComponent {
 	@Override
 	public void draw(Graphics2D g2) {
 		if (image != null) {
+			if (center) {
+				int dx = (width - image.getWidth()) / 2;
+				int dy = (height - image.getHeight()) / 2;
+				g2.drawImage(image, dx, dy, null);
+			} else
 			if (scale) {
 				g2.drawImage(image, 0, 0, width, height, 0, 0, image.getWidth(), image.getHeight(), null);
 			} else {
@@ -63,6 +70,24 @@ public class UIImage extends UIComponent {
 	 */
 	public UIImage image(BufferedImage image) {
 		this.image = image;
+		return this;
+	}
+	/** 
+	 * Center the image.
+	 * @param state center?
+	 * @return this
+	 */
+	public UIImage center(boolean state) {
+		this.center = state;
+		return this;
+	}
+	/** 
+	 * Scale the image to the current size.
+	 * @param state the state
+	 * @return this
+	 */
+	public UIImage scale(boolean state) {
+		this.scale = state;
 		return this;
 	}
 }

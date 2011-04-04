@@ -333,15 +333,15 @@
 	<entry key='buildings.spaceship_factory'>Űrhajógyár</entry>
 	<entry key='buildings.equipment_factory'>Felszerelésgyár</entry>
 	<entry key='buildings.weapon_factory'>Fegyvergyár</entry>
-	<entry key='buildings.civil_dev_center'>Civil fejl. közp.</entry>
-	<entry key='buildings.mechanical_dev_center'>Mechanikai fejl. közp.</entry>
-	<entry key='buildings.computer_dev_center'>Számítógép fejl. közp.</entry>
-	<entry key='buildings.ai_dev_center'>MI fejl. közp.</entry>
-	<entry key='buildings.military_dev_center'>Katonai fejl. közp.</entry>
+	<entry key='buildings.civil_dev_center'>Civil fejl. kp.</entry>
+	<entry key='buildings.mechanical_dev_center'>Mechanikai fejl. kp.</entry>
+	<entry key='buildings.computer_dev_center'>Számítógép fejl. kp.</entry>
+	<entry key='buildings.ai_dev_center'>MI fejl. kp.</entry>
+	<entry key='buildings.military_dev_center'>Katonai fejl. kp.</entry>
 	<entry key='buildings.traders_spaceport'>Kereskedői űrkikötő</entry>
 	<entry key='buildings.military_spaceport'>Katonai űrkikötő</entry>
 	<entry key='buildings.bank'>Bank</entry>
-	<entry key='buildings.trade_center'>Kereskedelmi központ</entry>
+	<entry key='buildings.trade_center'>Kereskedelmi kp.</entry>
 	<entry key='buildings.hospital'>Kórház</entry>
 	<entry key='buildings.police_station'>Rendőrség</entry>
 	<entry key='buildings.fire_brigade'>Tűzoltóság</entry>
@@ -773,10 +773,10 @@
 	<entry key='buildings.science.upgrade_2'>50%-ra csökkenti a munkás- és energiaigényt.</entry>
 	<entry key='buildings.science.upgrade_3'>25%-ra csökkenti a munkás- és energiaigényt.</entry>
 	<entry key='buildings.science.upgrade_4'>5%-ra csökkenti a munkás- és energiaigényt.</entry>
-	<entry key='buildings.mechanical_dev_center.desc'>Sok tudományos fejlesztés alapja a megfelelő mechanikai kutatóbázis(ok) felépítése. Egy-egy bolygó csak egy ilyen központot képes fenntartani, s a központok összeköttetésben vannak egymással.</entry>
-	<entry key='buildings.computer_dev_center.desc'>Sok tudományos fejlesztés alapja a megfelelő számítástudományi kutatóbázis(ok) felépítése. Egy-egy bolygó csak egy ilyen központot képes fenntartani, s a központok összeköttetésben vannak egymással.</entry>
+	<entry key='buildings.mechanical_dev_center.desc'>Sok tudományos fejlesztés alapja a megfelelő mechanikai kutató- bázis(ok) felépítése. Egy-egy bolygó csak egy ilyen központot képes fenntartani, s a központok összeköttetésben vannak egymással.</entry>
+	<entry key='buildings.computer_dev_center.desc'>Sok tudományos fejlesztés alapja a megfelelő számítógép kutató- bázis(ok) felépítése. Egy-egy bolygó csak egy ilyen központot képes fenntartani, s a központok összeköttetésben vannak egymással.</entry>
 	<entry key='buildings.ai_dev_center.desc'>Sok tudományos fejlesztés alapja a megfelelő M.I. kutatóbázis(ok) felépítése. Egy-egy bolygó csak egy ilyen központot képes fenntartani, s a központok összeköttetésben vannak egymással.</entry>
-	<entry key='buildings.military_dev_center.desc'>Sok tudományos fejlesztés alapja a megfelelő katonai kutatóbázis(ok) felépítése. Egy-egy bolygó csak egy ilyen központot képes fenntartani, s a központok összeköttetésben vannak egymással.</entry>
+	<entry key='buildings.military_dev_center.desc'>Sok tudományos fejlesztés alapja a megfelelő katonai kutató- bázis(ok) felépítése. Egy-egy bolygó csak egy ilyen központot képes fenntartani, s a központok összeköttetésben vannak egymással.</entry>
 	<entry key='buildings.traders_spaceport.desc'>Megépítése után 600 credit fix napi bevételt biztosít a bolygóközi kereskedelem fellendítésével.</entry>
 	<entry key='buildings.traders_spaceport.upgrade_1'>125%-ra növeli a credit bevételt, a munkás- és energiaigényt.</entry>
 	<entry key='buildings.traders_spaceport.upgrade_2'>150%-ra növeli a credit bevételt, a munkás- és energiaigényt.</entry>
@@ -879,5 +879,9 @@
 	<entry key='buildings.stadium.upgrade_3'>32%-kal növeli a morált, 250%-ra a munkás- és energiaigényt.</entry>
 	<entry key='buildings.stadium.upgrade_4'>36%-kal növeli a morált, 250%-ra a munkás- és energiaigényt.</entry>
 	
+	<entry key='buildinginfo.building.cost'  >Ár      : %d cr</entry>
+	<entry key='buildinginfo.building.energy'>Energia : %d kWh</entry>
+	<entry key='buildinginfo.building.worker'>Dolgozó : %d</entry>
+	<entry key='buildinginfo.planet.surface'>%s felszín</entry>
 	
 </labels>

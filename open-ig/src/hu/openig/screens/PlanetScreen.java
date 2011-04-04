@@ -580,8 +580,8 @@ public class PlanetScreen extends ScreenBase {
 				currentBuilding = null;
 				lastSurface = surface;
 				placementMode = false;
-				setBuildingList(0);
 			}
+			setBuildingList(0);
 			buildingInfoPanel.update();
 			infoPanel.update();
 			
@@ -1113,6 +1113,7 @@ public class PlanetScreen extends ScreenBase {
 				public void act() {
 					placementMode = !placementMode;
 					if (placementMode) {
+						build.down = true;
 						currentBuilding = null;
 						Tile t = player().currentBuilding.tileset.get(race()).normal;
 						placementRectangle.setSize(t.width + 2, t.height + 2);
@@ -1454,6 +1455,8 @@ public class PlanetScreen extends ScreenBase {
 				buildingInfoPanel.production.text("-");
 				buildingInfoPanel.undamaged.visible(true);
 				buildingInfoPanel.stateInactive.visible(true);
+				buildingInfoPanel.progressLower.visible(false);
+				buildingInfoPanel.progressUpper.visible(false);
 			}
 			buildingInfoPanel.demolish.enabled(planet().owner == player() && currentBuilding != null);
 			buildingInfoPanel.stateActive.enabled(currentBuilding != null);
