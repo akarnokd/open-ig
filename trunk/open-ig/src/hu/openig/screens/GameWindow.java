@@ -403,6 +403,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if (secondary != null) {
 				secondary.onLeave();
 				secondary = null;
+				surface.repaint();
 			}
 			if (primary == null || primary.screen() != screen) {
 				if (primary != null) {

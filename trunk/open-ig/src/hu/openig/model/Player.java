@@ -58,6 +58,29 @@ public class Player {
 	public ResearchType currentResearch;
 	/** The actual building. */
 	public BuildingType currentBuilding;
+	/** The current money amount. */
+	public int money;
+	/** The player's finance status at a particular day. */
+	public class PlayerFinances {
+		/** The production cost. */
+		public int productionCost;
+		/** The research cost. */
+		public int researchCost;
+		/** The build cost. */
+		public int buildCost;
+		/** The repair cost. */
+		public int repairCost;
+		/** The tax income. */
+		public int taxIncome;
+		/** The trade income. */
+		public int tradeIncome;
+		/** The average tax morale. */
+		public int taxMorale;
+	}
+	/** The global financial information yesterday. */
+	public final PlayerFinances yesterday = new PlayerFinances();
+	/** The global finalcial information today. */
+	public final PlayerFinances today = new PlayerFinances();
 	/**
 	 * @return returns the next planet by goind top-bottom relative to the current planet
 	 */

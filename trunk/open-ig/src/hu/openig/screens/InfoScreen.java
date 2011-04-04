@@ -18,6 +18,7 @@ import hu.openig.model.Named;
 import hu.openig.model.Owned;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
@@ -187,33 +188,55 @@ public class InfoScreen extends ScreenBase {
 	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
 	UILabel buildingPlanetSurface;
 	/** Problem indicator icon. */
-	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
 	UIImage problemsHouse;
 	/** Problem indicator icon. */
-	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
 	UIImage problemsEnergy;
 	/** Problem indicator icon. */
-	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
 	UIImage problemsFood;
 	/** Problem indicator icon. */
-	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
 	/** Problem indicator icon. */
 	UIImage problemsHospital;
 	/** Problem indicator icon. */
-	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
 	UIImage problemsWorker;
+	/** Problem indicator icon. */
+	UIImage problemsVirus;
+	/** Problem indicator icon. */
+	UIImage problemsStadium;
+	/** Problem indicator icon. */
+	UIImage problemsRepair;
 	/** The current planet's owner. */
-	@ModeUI(mode = { Screens.INFORMATION_COLONY, Screens.INFORMATION_PLANETS })
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_COLONY, 
+			Screens.INFORMATION_PLANETS 
+			})
 	UILabel colonyOwner;
 	/** The current planet's race. */
-	@ModeUI(mode = { Screens.INFORMATION_COLONY, Screens.INFORMATION_PLANETS })
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_COLONY, 
+			Screens.INFORMATION_PLANETS 
+			})
 	UILabel colonyRace;
 	/** The current planet's surface. */
-	@ModeUI(mode = { Screens.INFORMATION_COLONY, Screens.INFORMATION_PLANETS })
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_COLONY, 
+			Screens.INFORMATION_PLANETS 
+			})
 	UILabel colonySurface;
 	/** The current planet's surface. */
-	@ModeUI(mode = { Screens.INFORMATION_COLONY, Screens.INFORMATION_PLANETS })
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_COLONY, 
+			Screens.INFORMATION_PLANETS 
+			})
 	UILabel colonyPopulation;
+	/** The financial info panel. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FINANCIAL
+	})
+	FinancialInfo financialInfo;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -433,112 +456,110 @@ public class InfoScreen extends ScreenBase {
 		problemsWorker = new UIImage(commons.common().workerIcon);
 		problemsFood = new UIImage(commons.common().foodIcon);
 		problemsHospital = new UIImage(commons.common().hospitalIcon);
+		problemsVirus = new UIImage(commons.common().virusIcon);
+		problemsStadium = new UIImage(commons.common().stadiumIcon);
+		problemsRepair = new UIImage(commons.common().repairIcon);
 
 		colonyOwner = new UILabel("", 10, commons.text());
 		colonyRace = new UILabel("", 10, commons.text());
 		colonySurface = new UILabel("", 10, commons.text());
 		colonyPopulation = new UILabel("", 10, commons.text());
 		
+		financialInfo = new FinancialInfo();
+		
 		addThis();
 	}
-	/** Display the information about the given building type. */
-	void displayBuildingInfo() {
-		BuildingType bt = building();
-		TileSet ts = bt != null ? bt.tileset.get(race()) : null;
-		if (ts == null) {
-			List<BuildingType> bs = buildings.getList.invoke(null);
-			if (bs.size() > 0) {
-				bt = bs.get(0);
-				player().currentBuilding = bt;
-				ts = bt.tileset.get(race());
-			}
-		}
-		if (bt != null && ts != null) {
-			descriptionTitle.text(bt.name);
-			descriptionText.text(bt.description);
-			descriptionImage.image(ts.preview);
-			
-			buildingTitle.text(bt.name);
-			
-			buildingCost.text(format("buildinginfo.building.cost", bt.cost), true);
-			int e = (int)(bt.resources.get("energy").amount);
-			int w = (int)(bt.resources.get("worker").amount);
-			buildingEnergy.text(format("buildinginfo.building.energy", e < 0 ? -e : e), true);
-			buildingWorker.text(format("buildinginfo.building.worker", w < 0 ? -w : 0), true);
-		} else {
-			descriptionTitle.text("", true);
-			descriptionText.text("", true);
-			descriptionImage.image(null);
-			
-			buildingTitle.text("");
-			buildingCost.text("", true);
-			buildingEnergy.text("", true);
-			buildingWorker.text("", true);
-		}
-		Planet p = planet();
-		buildingPlanet.text(p.name, true);
-		if (p.owner != null) {
-			buildingPlanetOwner.text(p.owner.name, true);
-		} else {
-			buildingPlanetOwner.text("-", true);
-		}
-		buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+	@Override
+	public void onResize() {
+		RenderTools.centerScreen(base, width, height, true);
 		
-		buildingPlanetSurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
+		planetsTab.location(base.x, base.y + base.height - planetsTab.height - fleetsTab.height);
+		fleetsTab.location(base.x, base.y + base.height - fleetsTab.height);
 		
-		if (p.owner == player()) {
-			PlanetStatistics ps = p.getStatistics();
-			problemsHouse.visible(ps.houseAvailable * 2 <= p.population);
-			problemsEnergy.visible(ps.energyAvailable * 2 <= ps.energyDemand);
-			problemsWorker.visible(p.population * 2 <= ps.workerDemand);
-			problemsFood.visible(ps.foodAvailable * 2 <= p.population);
-			problemsHospital.visible(ps.hospitalAvailable * 2 <= p.population);
-		} else {
-			problemsHouse.visible(false);
-			problemsEnergy.visible(false);
-			problemsWorker.visible(false);
-			problemsFood.visible(false);
-			problemsHospital.visible(false);
-		}
-	}
-	/** Display the planet info on the current selected planet. */
-	void displayPlanetInfo() {
+		colonyTab.location(planetsTab.x + planetsTab.width + 1, planetsTab.y);
+		militaryTab.location(colonyTab.x + colonyTab.width + 1, colonyTab.y);
+		financialTab.location(militaryTab.x + militaryTab.width + 1, militaryTab.y);
 		
-		Planet p = planet();
+		buildingsTab.location(fleetsTab.x + fleetsTab.width + 1, fleetsTab.y);
+		inventionsTab.location(buildingsTab.x + buildingsTab.width + 1, buildingsTab.y);
+		aliensTab.location(inventionsTab.x + inventionsTab.width + 1, inventionsTab.y);
 		
-		planetTitle.text(p.name);
-		planetTitle.color(p.isPopulated() ? p.owner.color : TextRenderer.GRAY);
+		inventionsEmpty.location(inventionsTab.location());
+		aliensEmpty.location(aliensTab.location());
 		
-		colonyOwner.text(p.owner != null ? p.owner.name : "", true);
-		colonyRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
-		colonySurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
+		empty1.location(aliensEmpty.x + aliensEmpty.width + 2, base.y + base.height - empty1.height);
+		empty2.location(empty1.x + empty1.width + 1, empty1.y);
+		
+		colony.location(empty1.location());
+		starmap.location(empty2.location());
+		
+		production.location(empty1.location());
+		research.location(empty2.location());
+		diplomacy.location(empty1.location());
+		equipment.location(empty1.location());
+		
+		colonyInfo.location(base.x + 10, base.y + 10);
+		
+		minimap.bounds(base.x + 415, base.y + 211, 202, 169);
+		
+		colonies.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
+		fleets.bounds(colonies.bounds());
+		buildings.bounds(base.x + 10, base.y + 10, 400, 22 * 14);
+		
+		descriptionTitle.bounds(base.x + 10, base.y + 22 * buildings.rowHeight + 14, 400, 10);
+		descriptionText.bounds(base.x + 5, base.y + 22 * buildings.rowHeight + 26, 405, 30);
+		descriptionImage.bounds(minimap.bounds());
+		
+		buildingTitle.bounds(base.x + 415, base.y + 2, 203, 26);
+		buildingCost.location(base.x + 420, base.y + 34);
+		buildingEnergy.location(base.x + 420, base.y + 34 + 17);
+		buildingWorker.location(base.x + 420, base.y + 34 + 17 * 2);
+		
+		buildingPlanet.location(base.x + 420, buildingWorker.y + 62);
+		buildingPlanetOwner.location(base.x + 420, buildingWorker.y  + 62 + 17 * 1);
+		buildingPlanetRace.location(base.x + 420, buildingWorker.y + 62  + 17 * 2);
+		buildingPlanetSurface.location(base.x + 420, buildingWorker.y + 62  + 17 * 3);
+		
+		problemsHouse.location(base.x + 420, buildingWorker.y + 62 + 17 * 4);
+		problemsEnergy.location(base.x + 436, buildingWorker.y + 62  + 17 * 4);
+		problemsWorker.location(base.x + 452, buildingWorker.y + 62 + 17 * 4);
+		problemsFood.location(base.x + 468, buildingWorker.y + 62 + 17 * 4);
+		problemsHospital.location(base.x + 484, buildingWorker.y + 62 + 17 * 4);
+		problemsVirus.location(base.x + 484 + 16, buildingWorker.y + 62 + 17 * 4);
+		problemsStadium.location(base.x + 484 + 16 * 2, buildingWorker.y + 62 + 17 * 4);
+		problemsRepair.location(base.x + 484 + 16 * 3, buildingWorker.y + 62 + 17 * 4);
 
+		planetTitle.bounds(buildingTitle.bounds());
 		
-		if (p.owner == player()) {
-			colonyPopulation.text(format("colonyinfo.population.own", 
-					p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
-			), true).visible(true);
-			
-			PlanetStatistics ps = p.getStatistics();
-			problemsHouse.visible(ps.houseAvailable * 2 <= p.population);
-			problemsEnergy.visible(ps.energyAvailable * 2 <= ps.energyDemand);
-			problemsWorker.visible(p.population * 2 <= ps.workerDemand);
-			problemsFood.visible(ps.foodAvailable * 2 <= p.population);
-			problemsHospital.visible(ps.hospitalAvailable * 2 <= p.population);
-		} else {
-			problemsHouse.visible(false);
-			problemsEnergy.visible(false);
-			problemsWorker.visible(false);
-			problemsFood.visible(false);
-			problemsHospital.visible(false);
-			if (knowledge(p, PlanetKnowledge.BUILDINGS) >= 0) {
-				colonyPopulation.text(format("colonyinfo.population.alien", 
-						p.population
-				), true).visible(true);
-			} else {
-				colonyPopulation.visible(false);
-			}
+		colonyOwner.location(base.x + 420, base.y + 34);
+		colonyRace.location(base.x + 420, base.y + 34 + 17);
+		colonySurface.location(base.x + 420, base.y + 34 + 17 * 2);
+		colonyPopulation.location(base.x + 420, base.y + 34 + 17 * 3);
+		
+		financialInfo.location(base.x + 10, base.y + 10);
+	}
+	@Override
+	public void draw(Graphics2D g2) {
+		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
+		g2.drawImage(commons.info().base, base.x, base.y, null);
+
+		if (mode == Screens.INFORMATION_PLANETS) {
+			displayPlanetInfo();
+		} else
+		if (mode == Screens.INFORMATION_COLONY) {
+			colonyInfo.update();
+			displayPlanetInfo();
+		} else
+		if (mode == Screens.INFORMATION_BUILDINGS) {
+			displayBuildingInfo();
+			g2.setColor(new Color(0xFF4C6CB4));
+			g2.drawLine(base.x + 2, descriptionTitle.y - 2, base.x + 413, descriptionTitle.y - 2);
+		} else
+		if (mode == Screens.INFORMATION_FINANCIAL) {
+			financialInfo.update();
 		}
+		
+		super.draw(g2);
 	}
 	/** 
 	 * First letter to uppercase.
@@ -618,92 +639,8 @@ public class InfoScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onResize() {
-		RenderTools.centerScreen(base, width, height, true);
-		
-		planetsTab.location(base.x, base.y + base.height - planetsTab.height - fleetsTab.height);
-		fleetsTab.location(base.x, base.y + base.height - fleetsTab.height);
-		
-		colonyTab.location(planetsTab.x + planetsTab.width + 1, planetsTab.y);
-		militaryTab.location(colonyTab.x + colonyTab.width + 1, colonyTab.y);
-		financialTab.location(militaryTab.x + militaryTab.width + 1, militaryTab.y);
-		
-		buildingsTab.location(fleetsTab.x + fleetsTab.width + 1, fleetsTab.y);
-		inventionsTab.location(buildingsTab.x + buildingsTab.width + 1, buildingsTab.y);
-		aliensTab.location(inventionsTab.x + inventionsTab.width + 1, inventionsTab.y);
-		
-		inventionsEmpty.location(inventionsTab.location());
-		aliensEmpty.location(aliensTab.location());
-		
-		empty1.location(aliensEmpty.x + aliensEmpty.width + 2, base.y + base.height - empty1.height);
-		empty2.location(empty1.x + empty1.width + 1, empty1.y);
-		
-		colony.location(empty1.location());
-		starmap.location(empty2.location());
-		
-		production.location(empty1.location());
-		research.location(empty2.location());
-		diplomacy.location(empty1.location());
-		equipment.location(empty1.location());
-		
-		colonyInfo.location(base.x + 10, base.y + 10);
-		
-		minimap.bounds(base.x + 415, base.y + 211, 202, 169);
-		
-		colonies.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
-		fleets.bounds(colonies.bounds());
-		buildings.bounds(base.x + 10, base.y + 10, 400, 22 * 14);
-		
-		descriptionTitle.bounds(base.x + 10, base.y + 22 * buildings.rowHeight + 14, 400, 10);
-		descriptionText.bounds(base.x + 5, base.y + 22 * buildings.rowHeight + 26, 405, 30);
-		descriptionImage.bounds(minimap.bounds());
-		
-		buildingTitle.bounds(base.x + 415, base.y + 2, 203, 26);
-		buildingCost.location(base.x + 420, base.y + 34);
-		buildingEnergy.location(base.x + 420, base.y + 34 + 17);
-		buildingWorker.location(base.x + 420, base.y + 34 + 17 * 2);
-		
-		buildingPlanet.location(base.x + 420, buildingWorker.y + 62);
-		buildingPlanetOwner.location(base.x + 420, buildingWorker.y  + 62 + 17 * 1);
-		buildingPlanetRace.location(base.x + 420, buildingWorker.y + 62  + 17 * 2);
-		buildingPlanetSurface.location(base.x + 420, buildingWorker.y + 62  + 17 * 3);
-		
-		problemsHouse.location(base.x + 420, buildingWorker.y + 62 + 17 * 4);
-		problemsEnergy.location(base.x + 436, buildingWorker.y + 62  + 17 * 4);
-		problemsWorker.location(base.x + 452, buildingWorker.y + 62 + 17 * 4);
-		problemsFood.location(base.x + 468, buildingWorker.y + 62 + 17 * 4);
-		problemsHospital.location(base.x + 484, buildingWorker.y + 62 + 17 * 4);
-
-		planetTitle.bounds(buildingTitle.bounds());
-		
-		colonyOwner.location(base.x + 420, base.y + 34);
-		colonyRace.location(base.x + 420, base.y + 34 + 17);
-		colonySurface.location(base.x + 420, base.y + 34 + 17 * 2);
-		colonyPopulation.location(base.x + 420, base.y + 34 + 17 * 3);
-	}
-	@Override
-	public void draw(Graphics2D g2) {
-		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
-		g2.drawImage(commons.info().base, base.x, base.y, null);
-
-		if (mode == Screens.INFORMATION_PLANETS) {
-			displayPlanetInfo();
-		} else
-		if (mode == Screens.INFORMATION_COLONY) {
-			colonyInfo.update();
-			displayPlanetInfo();
-		} else
-		if (mode == Screens.INFORMATION_BUILDINGS) {
-			displayBuildingInfo();
-			g2.setColor(new Color(0xFF4C6CB4));
-			g2.drawLine(base.x + 2, descriptionTitle.y - 2, base.x + 413, descriptionTitle.y - 2);
-		}
-		
-		super.draw(g2);
-	}
-	@Override
 	public boolean mouse(UIMouse e) {
-		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
+		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
 			hideSecondary();
 			return true;
 		} else {
@@ -848,6 +785,7 @@ public class InfoScreen extends ScreenBase {
 					doTaxMore();
 				}
 			};
+			taxMore.z = 1;
 			taxLess = new UIImageButton(commons.info().taxLess);
 			taxLess.onClick = new Act() {
 				@Override
@@ -855,6 +793,7 @@ public class InfoScreen extends ScreenBase {
 					doTaxLess();
 				}
 			};
+			taxLess.z = 1;
 			taxMore.setDisabledPattern(commons.common().disabledPattern);
 			taxLess.setDisabledPattern(commons.common().disabledPattern);
 
@@ -928,8 +867,6 @@ public class InfoScreen extends ScreenBase {
 			taxLevel.visible(false);
 			allocation.visible(false);
 			autobuild.visible(false);
-			taxLess.visible(false);
-			taxMore.visible(false);
 
 			if (p.isPopulated()) {
 				if (knowledge(p, PlanetKnowledge.BUILDINGS) >= 0) {
@@ -979,6 +916,9 @@ public class InfoScreen extends ScreenBase {
 					taxLess.visible(true);
 					taxMore.visible(true);
 				}
+			} else {
+				taxLess.visible(false);
+				taxMore.visible(false);
 			}
 			other.text(format("colonyinfo.other",
 					"" // FIXME list others
@@ -1580,5 +1520,241 @@ public class InfoScreen extends ScreenBase {
 		default:
 		}
 		return super.keyboard(e);
+	}
+	/**
+	 * The financial info panel.
+	 * @author akarnokd, Apr 4, 2011
+	 */
+	class FinancialInfo extends UIContainer {
+		/** Static field. */
+		UILabel yesterday;
+		/** Global yesterday value. */
+		UILabel yesterdayTaxIncome;
+		/** Global yesterday value. */
+		UILabel yesterdayTradeIncome;
+		/** Global yesterday value. */
+		UILabel yesterdayTaxMorale;
+		/** Global yesterday value. */
+		UILabel yesterdayProductionCost;
+		/** Global yesterday value. */
+		UILabel yesterdayResearchCost;
+		/** Global yesterday value. */
+		UILabel yesterdayRepairCost;
+		/** Global yesterday value. */
+		UILabel yesterdayBuildCost;
+		/** Static field. */
+		UILabel today;
+		/** Global today value. */
+		UILabel todayProductionCost;
+		/** Global today value. */
+		UILabel todayResearchCost;
+		/** Global today value. */
+		UILabel todayRepairCost;
+		/** Global today value. */
+		UILabel todayBuildCost;
+		/** Static field. */
+		UILabel planetCurrent;
+		/** Selected own planet value. */
+		UILabel planetTaxIncome;
+		/** Selected own planet value. */
+		UILabel planetTradeIncome;
+		/** Selected own planet value. */
+		UILabel planetTaxMorale;
+		
+		/** Construct the fields. */
+		public FinancialInfo() {
+			yesterday = new UILabel(get("financialinfo.yesterday"), 14, commons.text());
+			yesterday.color(TextRenderer.RED);
+			today = new UILabel(get("financialinfo.today"), 14, commons.text());
+			today.color(TextRenderer.RED);
+			planetCurrent = new UILabel("", 14, commons.text());
+			planetCurrent.color(TextRenderer.RED);
+			
+			yesterdayTaxIncome = new UILabel("", 10, commons.text());
+			yesterdayTradeIncome = new UILabel("", 10, commons.text());
+			yesterdayTaxMorale = new UILabel("", 10, commons.text());
+
+			yesterdayProductionCost = new UILabel("", 10, commons.text());
+			yesterdayResearchCost = new UILabel("", 10, commons.text());
+			yesterdayRepairCost = new UILabel("", 10, commons.text());
+			yesterdayBuildCost = new UILabel("", 10, commons.text());
+			
+			todayProductionCost = new UILabel("", 10, commons.text());
+			todayResearchCost = new UILabel("", 10, commons.text());
+			todayRepairCost = new UILabel("", 10, commons.text());
+			todayBuildCost = new UILabel("", 10, commons.text());
+			
+			planetTaxIncome = new UILabel("", 10, commons.text());
+			planetTradeIncome = new UILabel("", 10, commons.text());
+			planetTaxMorale = new UILabel("", 10, commons.text());
+			
+			yesterday.location(0, 0);
+			yesterdayTaxIncome.location(10, 25);
+			yesterdayTradeIncome.location(10, 25 + 18);
+			yesterdayTaxMorale.location(10, 25 + 18 * 2);
+			
+			yesterdayProductionCost.location(10, 25 + 18 * 3);
+			yesterdayResearchCost.location(10, 25 + 18 * 4);
+			yesterdayRepairCost.location(10, 25 + 18 * 5);
+			yesterdayBuildCost.location(10, 25 + 18 * 6);
+			
+			today.location(0, 50 + 18 * 6);
+			todayProductionCost.location(10, today.y + 25);
+			todayResearchCost.location(10, today.y + 25 + 18);
+			todayRepairCost.location(10, today.y + 25 + 18 * 2);
+			todayBuildCost.location(10, today.y + 25 + 18 * 3);
+			
+			planetCurrent.location(0, today.y + 50 + 18 * 3);
+			planetTaxIncome.location(10, planetCurrent.y + 25);
+			planetTradeIncome.location(10, planetCurrent.y + 25 + 18);
+			planetTaxMorale.location(10, planetCurrent.y + 25 + 18 * 2);
+			
+			size(400, planetTaxMorale.y + 12);
+			
+			addThis();
+		}
+		/**
+		 * Update display values.
+		 */
+		public void update() {
+			Planet p = planet();
+			
+			yesterdayTaxIncome.text(format("colonyinfo.tax", player().yesterday.taxIncome), true);
+			yesterdayTradeIncome.text(format("colonyinfo.trade", player().yesterday.tradeIncome), true);
+			yesterdayTaxMorale.text(format("colonyinfo.tax-morale", 
+					player().yesterday.taxMorale, 
+					get(Planet.getMoraleLabel(player().yesterday.taxMorale))), true);
+			yesterdayProductionCost.text(format("financialinfo.production_cost", player().yesterday.productionCost), true);
+			yesterdayResearchCost.text(format("financialinfo.research_cost", player().yesterday.researchCost), true);
+			yesterdayRepairCost.text(format("financialinfo.repair_cost", player().yesterday.repairCost), true);
+			yesterdayBuildCost.text(format("financialinfo.build_cost", player().yesterday.buildCost), true);
+			
+			todayProductionCost.text(format("financialinfo.production_cost", player().today.productionCost), true);
+			todayResearchCost.text(format("financialinfo.research_cost", player().today.researchCost), true);
+			todayRepairCost.text(format("financialinfo.repair_cost", player().today.repairCost), true);
+			todayBuildCost.text(format("financialinfo.build_cost", player().today.buildCost), true);
+			
+			if (p.owner == player()) {
+				planetCurrent.text(p.name, true);
+				
+				planetTaxIncome.text(format("colonyinfo.tax", p.taxIncome), true);
+				planetTradeIncome.text(format("colonyinfo.trade", p.tradeIncome), true);
+				planetTaxMorale.text(format("colonyinfo.tax-morale", p.morale, get(p.getMoraleLabel())), true);
+				
+				planetCurrent.visible(true);
+				planetTaxIncome.visible(true);
+				planetTradeIncome.visible(true);
+				planetTaxMorale.visible(true);
+				
+			} else {
+				planetCurrent.visible(false);
+				planetTaxIncome.visible(false);
+				planetTradeIncome.visible(false);
+				planetTaxMorale.visible(false);
+			}
+			displayColonyProblems(p);
+		}
+	}
+	/** Display the information about the given building type. */
+	void displayBuildingInfo() {
+		BuildingType bt = building();
+		TileSet ts = bt != null ? bt.tileset.get(race()) : null;
+		if (ts == null) {
+			List<BuildingType> bs = buildings.getList.invoke(null);
+			if (bs.size() > 0) {
+				bt = bs.get(0);
+				player().currentBuilding = bt;
+				ts = bt.tileset.get(race());
+			}
+		}
+		if (bt != null && ts != null) {
+			descriptionTitle.text(bt.name);
+			descriptionText.text(bt.description);
+			descriptionImage.image(ts.preview);
+			
+			buildingTitle.text(bt.name);
+			
+			buildingCost.text(format("buildinginfo.building.cost", bt.cost), true);
+			int e = (int)(bt.resources.get("energy").amount);
+			int w = (int)(bt.resources.get("worker").amount);
+			buildingEnergy.text(format("buildinginfo.building.energy", e < 0 ? -e : e), true);
+			buildingWorker.text(format("buildinginfo.building.worker", w < 0 ? -w : 0), true);
+		} else {
+			descriptionTitle.text("", true);
+			descriptionText.text("", true);
+			descriptionImage.image(null);
+			
+			buildingTitle.text("");
+			buildingCost.text("", true);
+			buildingEnergy.text("", true);
+			buildingWorker.text("", true);
+		}
+		Planet p = planet();
+		buildingPlanet.text(p.name, true);
+		if (p.owner != null) {
+			buildingPlanetOwner.text(p.owner.name, true);
+		} else {
+			buildingPlanetOwner.text("-", true);
+		}
+		buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+		
+		buildingPlanetSurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
+		
+		displayColonyProblems(p);
+	}
+	/**
+	 * Display the colony problem icons for the own planets.
+	 * @param p the planet
+	 */
+	void displayColonyProblems(Planet p) {
+		if (p.owner == player()) {
+			PlanetStatistics ps = p.getStatistics();
+			problemsHouse.visible(ps.has(PlanetProblems.HOUSING));
+			problemsEnergy.visible(ps.has(PlanetProblems.ENERGY));
+			problemsWorker.visible(ps.has(PlanetProblems.WORKFORCE));
+			problemsFood.visible(ps.has(PlanetProblems.FOOD));
+			problemsHospital.visible(ps.has(PlanetProblems.HOSPITAL));
+			problemsVirus.visible(ps.has(PlanetProblems.VIRUS));
+			problemsStadium.visible(ps.has(PlanetProblems.STADIUM));
+			problemsRepair.visible(ps.has(PlanetProblems.REPAIR));
+		} else {
+			problemsHouse.visible(false);
+			problemsEnergy.visible(false);
+			problemsWorker.visible(false);
+			problemsFood.visible(false);
+			problemsHospital.visible(false);
+			problemsVirus.visible(false);
+			problemsStadium.visible(false);
+			problemsRepair.visible(false);
+		}
+	}
+	/** Display the planet info on the current selected planet. */
+	void displayPlanetInfo() {
+		
+		Planet p = planet();
+		
+		planetTitle.text(p.name);
+		planetTitle.color(p.isPopulated() ? p.owner.color : TextRenderer.GRAY);
+		
+		colonyOwner.text(p.owner != null ? p.owner.name : "", true);
+		colonyRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+		colonySurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
+
+		
+		if (p.owner == player()) {
+			colonyPopulation.text(format("colonyinfo.population.own", 
+					p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
+			), true).visible(true);
+			
+		} else {
+			if (knowledge(p, PlanetKnowledge.BUILDINGS) >= 0) {
+				colonyPopulation.text(format("colonyinfo.population.alien", 
+						p.population
+				), true).visible(true);
+			} else {
+				colonyPopulation.visible(false);
+			}
+		}
+		displayColonyProblems(p);
 	}
 }

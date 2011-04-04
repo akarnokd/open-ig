@@ -57,6 +57,15 @@ public class CommonGFX {
 	/** Worker icon. */
 	@Img(name = "worker-icon")
 	public BufferedImage workerIcon;
+	/** Virus icon. */
+	@Img(name = "virus-icon")
+	public BufferedImage virusIcon;
+	/** Stadium icon. */
+	@Img(name = "stadium-icon")
+	public BufferedImage stadiumIcon;
+	/** Repair icon. */
+	@Img(name = "repair-icon")
+	public BufferedImage repairIcon;
 	/** Hospital icon. */
 	@Img(name = "hospital-icon")
 	public BufferedImage hospitalIcon;

@@ -371,7 +371,8 @@
 	<entry key='morale.like'>like</entry>
 	<entry key='morale.supportive'>supportive</entry>
 	<entry key='taxlevel.NONE'>None</entry>
-	<entry key='taxlevel.VERY_LOW'>Low</entry>
+	<entry key='taxlevel.VERY_LOW'>Very low</entry>
+	<entry key='taxlevel.LOW'>Low</entry>
 	<entry key='taxlevel.NORMAL'>Normal</entry>
 	<entry key='taxlevel.ABOVE_NORMAL'>Above normal</entry>
 	<entry key='taxlevel.HIGH'>High</entry>
@@ -811,5 +812,12 @@
 	
 	<entry key='colonyinfo.population.alien'>%d alien</entry>
 	<entry key='colonyinfo.population.own'>%d %s %s</entry>
+	
+	<entry key='financialinfo.yesterday'>Yesterday</entry>
+	<entry key='financialinfo.today'>Today</entry>
+	<entry key='financialinfo.production_cost'>Production cost : %d cr</entry>
+	<entry key='financialinfo.research_cost'  >Research cost   : %d cr</entry>
+	<entry key='financialinfo.repair_cost'    >Repair cost     : %d cr</entry>
+	<entry key='financialinfo.build_cost'     >Build cost      : %d cr</entry>
 	
 </labels>
