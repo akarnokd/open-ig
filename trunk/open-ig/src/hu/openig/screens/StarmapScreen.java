@@ -305,7 +305,7 @@ public class StarmapScreen extends ScreenBase {
 		switch (e.type) {
 		case MOVE:
 		case DRAG:
-			if (panning || e.has(Type.DRAG)) {
+			if (panning || (e.has(Button.RIGHT) && e.has(Type.DRAG))) {
 				if (starmapWindow.contains(e.x, e.y)) {
 					if (!panning) {
 						lastX = e.x;

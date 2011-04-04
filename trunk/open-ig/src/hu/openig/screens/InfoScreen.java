@@ -202,6 +202,18 @@ public class InfoScreen extends ScreenBase {
 	/** Problem indicator icon. */
 	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
 	UIImage problemsWorker;
+	/** The current planet's owner. */
+	@ModeUI(mode = { Screens.INFORMATION_COLONY, Screens.INFORMATION_PLANETS })
+	UILabel colonyOwner;
+	/** The current planet's race. */
+	@ModeUI(mode = { Screens.INFORMATION_COLONY, Screens.INFORMATION_PLANETS })
+	UILabel colonyRace;
+	/** The current planet's surface. */
+	@ModeUI(mode = { Screens.INFORMATION_COLONY, Screens.INFORMATION_PLANETS })
+	UILabel colonySurface;
+	/** The current planet's surface. */
+	@ModeUI(mode = { Screens.INFORMATION_COLONY, Screens.INFORMATION_PLANETS })
+	UILabel colonyPopulation;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -422,6 +434,10 @@ public class InfoScreen extends ScreenBase {
 		problemsFood = new UIImage(commons.common().foodIcon);
 		problemsHospital = new UIImage(commons.common().hospitalIcon);
 
+		colonyOwner = new UILabel("", 10, commons.text());
+		colonyRace = new UILabel("", 10, commons.text());
+		colonySurface = new UILabel("", 10, commons.text());
+		colonyPopulation = new UILabel("", 10, commons.text());
 		
 		addThis();
 	}
@@ -466,12 +482,9 @@ public class InfoScreen extends ScreenBase {
 		} else {
 			buildingPlanetOwner.text("-", true);
 		}
-		if (p.race != null) {
-			buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
-		} else {
-			buildingPlanetRace.text("-", true);
-		}
-		buildingPlanetSurface.text(format("buildinginfo.planet.surface", get(p.type.label)), true);
+		buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+		
+		buildingPlanetSurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
 		
 		if (p.owner == player()) {
 			PlanetStatistics ps = p.getStatistics();
@@ -490,8 +503,64 @@ public class InfoScreen extends ScreenBase {
 	}
 	/** Display the planet info on the current selected planet. */
 	void displayPlanetInfo() {
-		planetTitle.text(planet().name);
-		planetTitle.color(planet().isPopulated() ? planet().owner.color : TextRenderer.GRAY);
+		
+		Planet p = planet();
+		
+		planetTitle.text(p.name);
+		planetTitle.color(p.isPopulated() ? p.owner.color : TextRenderer.GRAY);
+		
+		colonyOwner.text(p.owner != null ? p.owner.name : "", true);
+		colonyRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+		colonySurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
+
+		
+		if (p.owner == player()) {
+			colonyPopulation.text(format("colonyinfo.population.own", 
+					p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
+			), true).visible(true);
+			
+			PlanetStatistics ps = p.getStatistics();
+			problemsHouse.visible(ps.houseAvailable * 2 <= p.population);
+			problemsEnergy.visible(ps.energyAvailable * 2 <= ps.energyDemand);
+			problemsWorker.visible(p.population * 2 <= ps.workerDemand);
+			problemsFood.visible(ps.foodAvailable * 2 <= p.population);
+			problemsHospital.visible(ps.hospitalAvailable * 2 <= p.population);
+		} else {
+			problemsHouse.visible(false);
+			problemsEnergy.visible(false);
+			problemsWorker.visible(false);
+			problemsFood.visible(false);
+			problemsHospital.visible(false);
+			if (knowledge(p, PlanetKnowledge.BUILDINGS) >= 0) {
+				colonyPopulation.text(format("colonyinfo.population.alien", 
+						p.population
+				), true).visible(true);
+			} else {
+				colonyPopulation.visible(false);
+			}
+		}
+	}
+	/** 
+	 * First letter to uppercase.
+	 * @param s the string
+	 * @return the modified string
+	 */
+	String firstUpper(String s) {
+		return s.substring(0, 1).toUpperCase() + s.substring(1);
+	}
+	/**
+	 * Add the +/- sign for the given integer value.
+	 * @param i the value
+	 * @return the string
+	 */
+	String withSign(int i) {
+		if (i < 0) {
+			return Integer.toString(i);
+		} else
+		if (i > 0) {
+			return "+" + i;
+		}
+		return "0";
 	}
 
 	/**
@@ -607,21 +676,28 @@ public class InfoScreen extends ScreenBase {
 
 		planetTitle.bounds(buildingTitle.bounds());
 		
+		colonyOwner.location(base.x + 420, base.y + 34);
+		colonyRace.location(base.x + 420, base.y + 34 + 17);
+		colonySurface.location(base.x + 420, base.y + 34 + 17 * 2);
+		colonyPopulation.location(base.x + 420, base.y + 34 + 17 * 3);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.info().base, base.x, base.y, null);
-		
+
+		if (mode == Screens.INFORMATION_PLANETS) {
+			displayPlanetInfo();
+		} else
 		if (mode == Screens.INFORMATION_COLONY) {
 			colonyInfo.update();
+			displayPlanetInfo();
 		} else
 		if (mode == Screens.INFORMATION_BUILDINGS) {
 			displayBuildingInfo();
 			g2.setColor(new Color(0xFF4C6CB4));
 			g2.drawLine(base.x + 2, descriptionTitle.y - 2, base.x + 413, descriptionTitle.y - 2);
 		}
-		displayPlanetInfo();
 		
 		super.draw(g2);
 	}
@@ -837,64 +913,72 @@ public class InfoScreen extends ScreenBase {
 			race.text(format("colonyinfo.race", s), true);
 			
 			s = get(p.type.label);
-			surface.text(format("colonyinfo.surface", s), true);
-			
+			surface.text(format("colonyinfo.surface", firstUpper(s)), true);
+
+			population.visible(false);
+			housing.visible(false);
+			worker.visible(false);
+			hospital.visible(false);
+			food.visible(false);
+			energy.visible(false);
+			police.visible(false);
+			taxIncome.visible(false);
+			tradeIncome.visible(false);
+			taxMorale.visible(false);
+			taxLevel.visible(false);
+			allocation.visible(false);
+			autobuild.visible(false);
+			taxLess.visible(false);
+			taxMore.visible(false);
+
 			if (p.isPopulated()) {
-			
-				population.text(format("colonyinfo.population", 
-						p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
-				), true).visible(true);
-				
-				PlanetStatistics ps = p.getStatistics();
-				
-				setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
-				setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
-				setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population).visible(true);
-				setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population).visible(true);
-				setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
-				setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
-				
-				taxIncome.text(format("colonyinfo.tax", 
-						p.taxIncome
-				), true).visible(true);
-				tradeIncome.text(format("colonyinfo.trade",
-						p.tradeIncome
-				), true).visible(true);
-				
-				taxMorale.text(format("colonyinfo.tax-morale",
-						p.morale, withSign(p.morale - p.lastMorale)
-				), true).visible(true);
-				taxLevel.text(format("colonyinfo.tax-level",
-						get(p.getTaxLabel())
-				), true).visible(true);
-				
-				allocation.text(format("colonyinfo.allocation",
-						get(p.getAllocationLabel())
-				), true).visible(true);
-				
-				autobuild.text(format("colonyinfo.autobuild",
-						get(p.getAutoBuildLabel())
-				), true).visible(true);
-				
-				doAdjustTaxButtons();
-				taxLess.visible(p.owner == player());
-				taxMore.visible(p.owner == player());
-			} else {
-				population.visible(false);
-				housing.visible(false);
-				worker.visible(false);
-				hospital.visible(false);
-				food.visible(false);
-				energy.visible(false);
-				police.visible(false);
-				taxIncome.visible(false);
-				tradeIncome.visible(false);
-				taxMorale.visible(false);
-				taxLevel.visible(false);
-				allocation.visible(false);
-				autobuild.visible(false);
-				taxLess.visible(false);
-				taxMore.visible(false);
+				if (knowledge(p, PlanetKnowledge.BUILDINGS) >= 0) {
+					if (p.owner == player()) {
+						population.text(format("colonyinfo.population", 
+								p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+						), true).visible(true);
+					} else {
+						population.text(format("colonyinfo.population.alien", 
+								p.population
+						), true).visible(true);
+					}
+				}
+				if (p.owner == player()) {
+					PlanetStatistics ps = p.getStatistics();
+					
+					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
+					setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
+					setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population).visible(true);
+					setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population).visible(true);
+					setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
+					setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
+					
+					taxIncome.text(format("colonyinfo.tax", 
+							p.taxIncome
+					), true).visible(true);
+					tradeIncome.text(format("colonyinfo.trade",
+							p.tradeIncome
+					), true).visible(true);
+					
+					taxMorale.text(format("colonyinfo.tax-morale",
+							p.morale, withSign(p.morale - p.lastMorale)
+					), true).visible(true);
+					taxLevel.text(format("colonyinfo.tax-level",
+							get(p.getTaxLabel())
+					), true).visible(true);
+					
+					allocation.text(format("colonyinfo.allocation",
+							get(p.getAllocationLabel())
+					), true).visible(true);
+					
+					autobuild.text(format("colonyinfo.autobuild",
+							get(p.getAutoBuildLabel())
+					), true).visible(true);
+					
+					doAdjustTaxButtons();
+					taxLess.visible(true);
+					taxMore.visible(true);
+				}
 			}
 			other.text(format("colonyinfo.other",
 					"" // FIXME list others

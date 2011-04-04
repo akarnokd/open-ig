@@ -428,7 +428,7 @@
 	<entry key='players.morgath'>Morgath Birodalom</entry>
 	<entry key='players.dribs'>Dribs Birodalom</entry>
 	<entry key='players.ecalep'>Ecalep Köztársaság</entry>
-	<entry key='players.sullep'>Sullep Birodalom</entry>
+	<entry key='players.sullep'>Sullep Klán</entry>
 	<entry key='players.dargslan'>Dargslan Királyság</entry>
 
 	<entry key='planet.type.rocky'>sziklás</entry>
@@ -883,5 +883,8 @@
 	<entry key='buildinginfo.building.energy'>Energia : %d kWh</entry>
 	<entry key='buildinginfo.building.worker'>Dolgozó : %d</entry>
 	<entry key='buildinginfo.planet.surface'>%s felszín</entry>
+	
+	<entry key='colonyinfo.population.alien'>%d idegen</entry>
+	<entry key='colonyinfo.population.own'>%d %s %s</entry>
 	
 </labels>

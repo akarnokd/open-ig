@@ -15,6 +15,7 @@ import hu.openig.core.Tile;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
@@ -1630,50 +1631,58 @@ public class PlanetScreen extends ScreenBase {
 			race.text(format("colonyinfo.race", s), true);
 			
 			s = get(p.type.label);
-			surface.text(format("colonyinfo.surface", s), true);
+			surface.text(format("colonyinfo.surface", firstUpper(s)), true);
+			
+			population.visible(false);
+			housing.visible(false);
+			worker.visible(false);
+			hospital.visible(false);
+			food.visible(false);
+			energy.visible(false);
+			police.visible(false);
+			taxTradeIncome.visible(false);
+			taxInfo.visible(false);
+			allocation.visible(false);
+			autobuild.visible(false);
 			
 			if (p.isPopulated()) {
 			
-				population.text(format("colonyinfo.population", 
-						p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
-				), true).visible(true);
-				
-				PlanetStatistics ps = p.getStatistics();
-				
-				setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
-				setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
-				setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population).visible(true);
-				setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population).visible(true);
-				setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
-				setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
-				
-				taxTradeIncome.text(format("colonyinfo.tax-trade", 
-						p.taxIncome, p.tradeIncome
-				), true).visible(true);
-				
-				taxInfo.text(format("colonyinfo.tax-info",
-						get(p.getTaxLabel()), p.morale, withSign(p.morale - p.lastMorale)
-				), true).visible(true);
-				
-				allocation.text(format("colonyinfo.allocation",
-						get(p.getAllocationLabel())
-				), true).visible(true);
-				
-				autobuild.text(format("colonyinfo.autobuild",
-						get(p.getAutoBuildLabel())
-				), true).visible(true);
-			} else {
-				population.visible(false);
-				housing.visible(false);
-				worker.visible(false);
-				hospital.visible(false);
-				food.visible(false);
-				energy.visible(false);
-				police.visible(false);
-				taxTradeIncome.visible(false);
-				taxInfo.visible(false);
-				allocation.visible(false);
-				autobuild.visible(false);
+				if (p.owner == player()) {
+					population.text(format("colonyinfo.population", 
+							p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+					), true).visible(true);
+					
+					PlanetStatistics ps = p.getStatistics();
+					
+					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
+					setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
+					setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population).visible(true);
+					setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population).visible(true);
+					setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
+					setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
+					
+					taxTradeIncome.text(format("colonyinfo.tax-trade", 
+							p.taxIncome, p.tradeIncome
+					), true).visible(true);
+					
+					taxInfo.text(format("colonyinfo.tax-info",
+							get(p.getTaxLabel()), p.morale, withSign(p.morale - p.lastMorale)
+					), true).visible(true);
+					
+					allocation.text(format("colonyinfo.allocation",
+							get(p.getAllocationLabel())
+					), true).visible(true);
+					
+					autobuild.text(format("colonyinfo.autobuild",
+							get(p.getAutoBuildLabel())
+					), true).visible(true);
+				} else {
+					if (knowledge(p, PlanetKnowledge.BUILDINGS) >= 0) {
+						population.text(format("colonyinfo.population.alien", 
+								p.population
+						), true).visible(true);
+					}
+				}
 			}
 			other.text(format("colonyinfo.other",
 					"" // FIXME list others
@@ -1716,6 +1725,14 @@ public class PlanetScreen extends ScreenBase {
 			}
 			return "0";
 		}
+	}
+	/** 
+	 * First letter to uppercase.
+	 * @param s the string
+	 * @return the modified string
+	 */
+	String firstUpper(String s) {
+		return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
 	/**
 	 * The upgrade panel.
