@@ -336,10 +336,10 @@ public class DatabasePainter extends JComponent {
 //		if (aliensVisible) {
 			lastHighlight = highlightAliens;
 			highlightAliens = -1;
-			for (int i = 0; i < world.player.discoveredAliens.size(); i++) {
+			for (int i = 0; i < world.player.discoveredPlayers.size(); i++) {
 				int x = x0 + 20;
 				int y = y0 + 25 + 8 + i * 20;
-				int x1 = x + text.getTextWidth(14, labels.get(world.player.discoveredAliens.get(i)));
+				int x1 = x + text.getTextWidth(14, labels.get(world.player.discoveredPlayers.get(i).race));
 				int y1 = y + 14;
 				if (e.getX() >= x && e.getX() <= x1 && e.getY() >= y && e.getY() <= y1) {
 					highlightAliens = i;
@@ -384,14 +384,14 @@ public class DatabasePainter extends JComponent {
 			repaint();
 		}
 		if (aliensVisible) {
-			for (int i = 0; i < world.player.discoveredAliens.size(); i++) {
+			for (int i = 0; i < world.player.discoveredPlayers.size(); i++) {
 				int x = x0 + 20;
 				int y = y0 + 25 + 8 + i * 20;
-				int x1 = x + text.getTextWidth(14, labels.get(world.player.discoveredAliens.get(i)));
+				int x1 = x + text.getTextWidth(14, labels.get(world.player.discoveredPlayers.get(i).race));
 				int y1 = y + 14;
 				if (e.getX() >= x && e.getX() <= x1 && e.getY() >= y && e.getY() <= y1) {
 					if (selectedAliens != i) {
-						splitRows(labels.get(world.player.discoveredAliens.get(i) + ".details"));
+						splitRows(labels.get(world.player.discoveredPlayers.get(i).race + ".details"));
 						alienDetails = true;
 						doShowAlienText();
 					}
@@ -559,20 +559,20 @@ public class DatabasePainter extends JComponent {
 					
 					g2.drawImage(m, x2, y2, w2, h2, null);
 					
-					if (selectedAliens >= 0) {
-						int x = x0 + 20;
-						int y = y0 + 2 + 8 + 202;
-						text.paintTo(g2, x, y, 14, 0xFFFFFF00, labels.get(world.player.discoveredAliens.get(selectedAliens)));
-						text.paintTo(g2, x, y + 20, 14, 0xFFFFFF00, labels.get(world.player.discoveredAliens.get(selectedAliens)));
-					}
-				} else {
-					int x = x0 + 20;
-					int y = y0 + 25 + 8;
-					for (int i = 0; i < world.player.discoveredAliens.size(); i++) {
-						int c = selectedAliens == i ? (highlightAliens == i ? 0xFFF9090 : 0xFFFF0000) 
-								: (highlightAliens == i ? 0xFFFFFFFF : 0xFFFFFF00);  
-						text.paintTo(g2, x, y + i * 20, 14, c, labels.get(world.player.discoveredAliens.get(i)));
-					}
+//					if (selectedAliens >= 0) {
+//						int x = x0 + 20;
+//						int y = y0 + 2 + 8 + 202;
+////						text.paintTo(g2, x, y, 14, 0xFFFFFF00, labels.get(world.player.discoveredAliens.get(selectedAliens)));
+////						text.paintTo(g2, x, y + 20, 14, 0xFFFFFF00, labels.get(world.player.discoveredAliens.get(selectedAliens)));
+//					}
+//				} else {
+//					int x = x0 + 20;
+//					int y = y0 + 25 + 8;
+////					for (int i = 0; i < world.player.discoveredAliens.size(); i++) {
+////						int c = selectedAliens == i ? (highlightAliens == i ? 0xFFF9090 : 0xFFFF0000) 
+////								: (highlightAliens == i ? 0xFFFFFFFF : 0xFFFFFF00);  
+////						text.paintTo(g2, x, y + i * 20, 14, c, labels.get(world.player.discoveredAliens.get(i)));
+////					}
 				}
 			}
 

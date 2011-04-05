@@ -527,7 +527,7 @@ public class World {
 		for (BuildingType bt : buildingModel.buildings.values()) {
 			if (bt.tileset.containsKey(planet.isPopulated() ? planet.race : player.race)) {
 				if (bt.research == null || (planet.owner != player)
-						|| (player.availableResearch.contains(bt.research) || bt.research.level == 0)) {
+						|| (player.isAvailable(bt.research) || bt.research.level == 0)) {
 					result.add(bt);
 				}
 			}
@@ -568,10 +568,10 @@ public class World {
 	 * @return true
 	 */
 	public boolean canResearch(ResearchType rt) {
-		if (!player.availableResearch.contains(rt)) {
+		if (!player.isAvailable(rt)) {
 			if (rt.level <= level) {
 				for (ResearchType rt0 : rt.prerequisites) {
-					if (!player.availableResearch.contains(rt0)) {
+					if (!player.isAvailable(rt0)) {
 						return false;
 					}
 				}
@@ -586,6 +586,6 @@ public class World {
 	 * @return true if display
 	 */
 	public boolean canDisplayResearch(ResearchType rt) {
-		return player.availableResearch.contains(rt) || rt.level <= level;
+		return player.isAvailable(rt) || rt.level <= level;
 	}
 }

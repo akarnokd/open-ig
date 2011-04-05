@@ -420,54 +420,54 @@
 	
 	<entry key='buildings.upgrade.default.description'>Restore to default level (e.g., the post build level).</entry>
 
-	<entry key='tech.fighter1.name'>Fighter 1</entry>
+	<entry key='tech.fighter1.name'>Fighter v1</entry>
 	<entry key='tech.fighter1.longname'>Fighter 1: "Raptor"</entry>
 	<entry key='tech.fighter1.description'>The Raptor is a simple no-frills fighter craft. It is armed with dual laser cannons and has a low powered magnetic deflection shield for defense.</entry>
-	<entry key='tech.fighter2.name'>Fighter 2</entry>
+	<entry key='tech.fighter2.name'>Fighter v2</entry>
 	<entry key='tech.fighter2.longname'>Fighter 2: "Valkyrie"</entry>
 	<entry key='tech.fighter2.description'>The Valkyrie is a superior fighter to the Raptor in every respect. It has a quad laser battery for firepower, a higher gauss mag-def shield and more powerful drives.</entry>
-	<entry key='tech.fighter3.name'>Fighter 3</entry>
+	<entry key='tech.fighter3.name'>Fighter v3</entry>
 	<entry key='tech.fighter3.longname'>Fighter 3: "Hammerhead"</entry>
 	<entry key='tech.fighter3.description'>Carrying a dual twin laser weapons load the Hammerhead is an incremental improvement on the Valkyrie. It also has a new shield design with high capacity field inductors.</entry>
-	<entry key='tech.fighter4.name'>Fighter 4</entry>
+	<entry key='tech.fighter4.name'>Fighter v4</entry>
 	<entry key='tech.fighter4.longname'>Fighter 4: "Streak"</entry>
 	<entry key='tech.fighter4.description'>The Streak is a deadly craft, swift and lethal. 4 twin lasers, coupled with the most advanced drive tech available. When designed, it became a serious threat in combat.</entry>
-	<entry key='tech.fighter5.name'>Fighter 5</entry>
+	<entry key='tech.fighter5.name'>Fighter v5</entry>
 	<entry key='tech.fighter5.longname'>Fighter 5: "WraithFighter"</entry>
 	<entry key='tech.fighter5.description'>The WraithFighter utilizes advances in stealth technology combined with a new phase coupled dipole mag deflector shield array to achieve an almost unhittable fighter.</entry>
-	<entry key='tech.fighter6.name'>Fighter 6</entry>
+	<entry key='tech.fighter6.name'>Fighter v6</entry>
 	<entry key='tech.fighter6.longname'>Fighter 6: "Strikebomber"</entry>
 	<entry key='tech.fighter6.description'>The Strikebomber is a heavy craft designed for dropping unguided high yield bombs on heavy craft. It is a real threat but must have a fighter escort for optimal effect.</entry>
 	
-	<entry key='tech.destroyer1.name'>Destroyer 1</entry>
+	<entry key='tech.destroyer1.name'>Destroyer v1</entry>
 	<entry key='tech.destroyer1.longname'>Destroyer 1: "Guardian"</entry>
 	<entry key='tech.destroyer1.description'>This is the most commonly encountered light destroyer. A leftover from the times of the Old Empire, its main advantage is its low cost and ready availability.</entry>
-	<entry key='tech.destroyer2.name'>Destroyer 2</entry>
+	<entry key='tech.destroyer2.name'>Destroyer v2</entry>
 	<entry key='tech.destroyer2.longname'>Destroyer 2: "Warrior"</entry>
 	<entry key='tech.destroyer2.description'>The Warrior Class are just refitted Guardian Class destroyers, well equipped with more modern weaponry, but still vulnerable due to a low power shield generator.</entry>
-	<entry key='tech.destroyer3.name'>Destroyer 3</entry>
+	<entry key='tech.destroyer3.name'>Destroyer v3</entry>
 	<entry key='tech.destroyer3.longname'>Destroyer 3: "Jabberwocky"</entry>
 	<entry key='tech.destroyer3.description'>The Jabberwocky Class is the pinnacle of destroyer development. Good shields, heavy firepower, and a dual magnetic ram-pump drive system for high speed and versatility.</entry>
-	<entry key='tech.cruiser1.name'>Cruiser 1</entry>
+	<entry key='tech.cruiser1.name'>Cruiser v1</entry>
 	<entry key='tech.cruiser1.longname'>Cruiser 1: "Thunder"</entry>
 	<entry key='tech.cruiser1.description'>Another leftover from the Old Empire, it is outdated but cheap and readily available.</entry>
-	<entry key='tech.cruiser2.name'>Cruiser 2</entry>
+	<entry key='tech.cruiser2.name'>Cruiser v2</entry>
 	<entry key='tech.cruiser2.longname'>Cruiser 2: "Thunder-II"</entry>
 	<entry key='tech.cruiser2.description'>The designers concentrated on the shield generators of this upgrade to the Thunder Class, but this additional mass without stronger drives made it a bit sluggish.</entry>
-	<entry key='tech.cruiser3.name'>Cruiser 3</entry>
+	<entry key='tech.cruiser3.name'>Cruiser v3</entry>
 	<entry key='tech.cruiser3.longname'>Cruiser 3: "Cahudhri"</entry>
 	<entry key='tech.cruiser3.description'>Advanced drive systems, coupled with heavier armor, and cutting edge targeting and fire control make this the most feared cruiser in the Empire's arsenal.</entry>
 	
-	<entry key='tech.battleship1.name'>Battleship 1</entry>
+	<entry key='tech.battleship1.name'>Battleship v1</entry>
 	<entry key='tech.battleship1.longname'>Battleship 1: "Mammoth"</entry>
 	<entry key='tech.battleship1.description'>Powerful shields, heavy weaponry, and capable of carrying ground assault forces. Since these has to be built in space, an orbital factory is needed to produce them.</entry>
-	<entry key='tech.battleship2.name'>Battleship 2</entry>
+	<entry key='tech.battleship2.name'>Battleship v2</entry>
 	<entry key='tech.battleship2.longname'>Battleship 2: "Python"</entry>
 	<entry key='tech.battleship2.description'>A bit slower than the Mammoth, the Python's firepower is far superior. The ground unit payload has also been enlarged and its shields are much stronger.</entry>
-	<entry key='tech.battleship3.name'>Battleship 3</entry>
+	<entry key='tech.battleship3.name'>Battleship v3</entry>
 	<entry key='tech.battleship3.longname'>Battleship 3: "Kraken"</entry>
 	<entry key='tech.battleship3.description'>The Kraken has heavy shields, massive firepower, and the capability to land a fully equipped army on enemy worlds. The Kraken is the jewel of the Empire's fleets.</entry>
-	<entry key='tech.colonyship.name'>Colonization ship</entry>
+	<entry key='tech.colonyship.name'>Colony ship</entry>
 	<entry key='tech.colonyship.longname'>Colonization ship</entry>
 	<entry key='tech.colonyship.description'>The Colonization ship is used to establish colonies. These immense vessels carry construction tools, colonists, everything needed for a new start on a virgin planet.</entry>
 	<entry key='tech.flagship.name'>Thorin</entry>
@@ -480,7 +480,7 @@
 	<entry key='tech.spysatellite1.name'>Spy Satellite</entry>
 	<entry key='tech.spysatellite1.longname'>Spy Satellite</entry>
 	<entry key='tech.spysatellite1.description'>Spy Satellites are used to detect and monitor alien communications, activities and fleet movements.</entry>
-	<entry key='tech.spysatellite2.name'>Adv. Spy Satellite</entry>
+	<entry key='tech.spysatellite2.name'>Adv. Spy Sat.</entry>
 	<entry key='tech.spysatellite2.longname'>Advanced Spy Satellite</entry>
 	<entry key='tech.spysatellite2.description'>This upgraded Spy Satellite has significant stealth enhancements and better sensors to detect and report on the ships and space bases around enemy planets.</entry>
 	<entry key='tech.hubble2.name'>Hubble 2</entry>
@@ -500,26 +500,26 @@
 	<entry key='tech.spacestation3.longname'>Space Station 3: "Colossus"</entry>
 	<entry key='tech.spacestation3.description'>The Colossus is the largest of all defensive stations. It can be a formidable foe for even the largest of starships.</entry>
 	
-	<entry key='tech.hyperdrive1.name'>Hyperdrive 1</entry>
+	<entry key='tech.hyperdrive1.name'>Hyperdrive v1</entry>
 	<entry key='tech.hyperdrive1.longname'>Hyperdrive v1.0</entry>
 	<entry key='tech.hyperdrive1.description'>This upgrades some of your spaceships. They will be able to travel 15% faster with this improved drive system.</entry>
-	<entry key='tech.hyperdrive2.name'>Hyperdrive 2</entry>
+	<entry key='tech.hyperdrive2.name'>Hyperdrive v2</entry>
 	<entry key='tech.hyperdrive2.longname'>Hyperdrive v2.0</entry>
 	<entry key='tech.hyperdrive2.description'>The upgraded spaceships will be able to travel 20% faster, with 15% less fuel consumption.</entry>
-	<entry key='tech.hyperdrive3.name'>Hyperdrive 3</entry>
+	<entry key='tech.hyperdrive3.name'>Hyperdrive v3</entry>
 	<entry key='tech.hyperdrive3.longname'>Hyperdrive v3.0</entry>
 	<entry key='tech.hyperdrive3.description'>This module upgrades your flagships. Two extra boosters help increase the speed of the ship by 22%.</entry>
-	<entry key='tech.hyperdrive4.name'>Hyperdrive 4</entry>
+	<entry key='tech.hyperdrive4.name'>Hyperdrive v4</entry>
 	<entry key='tech.hyperdrive4.longname'>Hyperdrive v4.0</entry>
 	<entry key='tech.hyperdrive4.description'>Your upgraded ships will be able to travel 30% faster than their original speed.</entry>
-	<entry key='tech.hyperdrive5.name'>Hyperdrive 5</entry>
+	<entry key='tech.hyperdrive5.name'>Hyperdrive v5</entry>
 	<entry key='tech.hyperdrive5.longname'>Hyperdrive v5.0</entry>
 	<entry key='tech.hyperdrive5.description'>High fuel consuption is the only disadvantage of this thruster system. It provides a 35% speed upgrade, with a 20% boost in maneuverability.</entry>
 	
-	<entry key='tech.ecm1.name'>ECM 1</entry>
+	<entry key='tech.ecm1.name'>ECM v1</entry>
 	<entry key='tech.ecm1.longname'>ECM 1: "Fuzzbox"</entry>
 	<entry key='tech.ecm1.description'>The Electronic Counter Measureme detects incoming missiles, and redirects them. The more time the ECM has to detect the missile, the more reliable it is.</entry>
-	<entry key='tech.ecm2.name'>ECM 2</entry>
+	<entry key='tech.ecm2.name'>ECM v2</entry>
 	<entry key='tech.ecm2.longname'>ECM 2: "Shocker"</entry>
 	<entry key='tech.ecm2.description'>The Shocker ECM is an active countermeasures system. Using lasers, radio burst beams gravitic pulse fields and neutrino emitters it confuses and diverts missile attacks.</entry>
 	<entry key='tech.storage1.name'>Cargo Pod</entry>
@@ -548,7 +548,7 @@
 	<entry key='tech.shield3.name'>Heavy Shield</entry>
 	<entry key='tech.shield3.longname'>Heavy Shield</entry>
 	<entry key='tech.shield3.description'>This unit upgrades the shield power by 20%. It uses a pulsed field technology.</entry>
-	<entry key='tech.shield4.name'>Super Shield</entry>
+	<entry key='tech.shield4.name'>SuperHvy Shield</entry>
 	<entry key='tech.shield4.longname'>Super Heavy Shield</entry>
 	<entry key='tech.shield4.description'>Like the Medium Shield, this is a redesign of the core mag-def technology. Pulsed EM fields upgrade the shield power of flagships by 25%.</entry>
 	
@@ -578,22 +578,22 @@
 	<entry key='tech.mesoncannon.longname'>Meson Gun</entry>
 	<entry key='tech.mesoncannon.description'>The ultimate weapon, the Meson Gun sprays short lived micro-singularities, easily crippling fleets of fighter craft.</entry>
 	
-	<entry key='tech.bomb1.name'>Bomb 1</entry>
+	<entry key='tech.bomb1.name'>Bomb v1</entry>
 	<entry key='tech.bomb1.longname'>Bomb v1.0: "Destructor""</entry>
 	<entry key='tech.bomb1.description'>Destructors are used for attacking ground based targets from space. They are needed to take out ground based defenses.</entry>
-	<entry key='tech.bomb2.name'>Bomb 2</entry>
+	<entry key='tech.bomb2.name'>Bomb v2</entry>
 	<entry key='tech.bomb2.longname'>Bomb v2.0: "Heavy Destructor""</entry>
 	<entry key='tech.bomb2.description'>An improved destructor, it has a large blast radius and kills thousands of colony inhabitants if they are unprotected.</entry>
 	<entry key='tech.virusbomb.name'>Virus bomb</entry>
 	<entry key='tech.virusbomb.longname'>Virus bomb</entry>
 	<entry key='tech.virusbomb.description'>The Virus bomb carries a payload of particularly virulent prions which are capable of killing all known lifeforms. After the planet is 'cleansed' the virus dies out.</entry>
-	<entry key='tech.rocket1.name'>Missile 1</entry>
+	<entry key='tech.rocket1.name'>Missile v1</entry>
 	<entry key='tech.rocket1.longname'>STK-1 Missile v1.0</entry>
 	<entry key='tech.rocket1.description'>The STK-1 is a simple missile, carrying a high explosive load and using an uncomplicated turn and track targeting system. Maneuverability: 6  Speed: 500</entry>
-	<entry key='tech.rocket2.name'>Missile 2</entry>
+	<entry key='tech.rocket2.name'>Missile v2</entry>
 	<entry key='tech.rocket2.longname'>STK-1F Missile v2.0</entry>
 	<entry key='tech.rocket2.description'>This new version of the STK-1 is more manuverable and faster. Manuverability: 8  Speed: 850</entry>
-	<entry key='tech.multiheadedrocket.name'>Multi-head missile</entry>
+	<entry key='tech.multiheadedrocket.name'>Mul-head missile</entry>
 	<entry key='tech.multiheadedrocket.longname'>Multi-head missile</entry>
 	<entry key='tech.multiheadedrocket.description'>This missile when explodes will burst into small multi-head explosives, which clear a large area of fighter aircrafts.</entry>
 	
@@ -616,14 +616,14 @@
 	<entry key='tech.rocketlauncher1.name'>Rocket Sled</entry>
 	<entry key='tech.rocketlauncher1.longname'>Rocket Sled</entry>
 	<entry key='tech.rocketlauncher1.description'>Vulnerable, but fast and agile, the Rocket Sled is a hit and run raider. Fire range: 7, Speed: 6.5, Armor: 2</entry>
-	<entry key='tech.rocketlauncher2.name'>Heavy Rocket Sled</entry>
+	<entry key='tech.rocketlauncher2.name'>Hvy Rocket Sled</entry>
 	<entry key='tech.rocketlauncher2.longname'>Heavy Rocket Sled</entry>
 	<entry key='tech.rocketlauncher2.description'>The Heavy Rocket Sled sacrifices armor for speed and more powerful rockets. Fire range: 8, Speed: 7, Armor: 1</entry>
 	
 	<entry key='tech.solarplant.name'>Solar Plant</entry>
 	<entry key='tech.solarplant.longname'>Solar Plant</entry>
 	<entry key='tech.solarplant.description'>Advances in key technologies such as magnetohydrodynamics, optics, photovoltaics, and superconductors, are needed for the construction of this advanced power source.</entry>
-	<entry key='tech.phoodfactory.name'>Phood(TM) Factory</entry>
+	<entry key='tech.phoodfactory.name'>Phood(TM)Factory</entry>
 	<entry key='tech.phoodfactory.longname'>Phood(TM) Factory</entry>
 	<entry key='tech.phoodfactory.description'>With a few key breakthroughs in nanotechnology, genetic engineering, and marketing to sell the repulsive slop, the Phood(TM) Factory is an effective food source.</entry>
 	<entry key='tech.tradecenter.name'>Trade center</entry>
@@ -656,12 +656,12 @@
 	<entry key='tech.phasedtelescope.longname'>Phased Telescope</entry>
 	<entry key='tech.phasedtelescope.description'>The Phased Telescope is the ultimate in long range sensing equipment, accurately locating enemy fleets at extreme ranges.</entry>
 	
-	<entry key='tech.plasmaprojector.name'>Plasma Projectors</entry>
-	<entry key='tech.plasmaprojector.longname'>Plasma Projectors</entry>
-	<entry key='tech.plasmaprojector.description'>Plasma Projectors fire bolts of superheated matter that can inflict heavy damage on enemy starships.</entry>
-	<entry key='tech.particleprojector.name'>Fusion Projectors</entry>
-	<entry key='tech.particleprojector.longname'>Fusion Projectors</entry>
-	<entry key='tech.particleprojector.description'>The Fusion Projectors fires a magnetic bottle fusing hydrogen. It inflicts severe damage on enemy starships that stray into its range.</entry>
+	<entry key='tech.plasmaprojector.name'>Plasma Projector</entry>
+	<entry key='tech.plasmaprojector.longname'>Plasma Projector</entry>
+	<entry key='tech.plasmaprojector.description'>Plasma Projector fires bolts of superheated matter that can inflict heavy damage on enemy starships.</entry>
+	<entry key='tech.particleprojector.name'>Fusion Projector</entry>
+	<entry key='tech.particleprojector.longname'>Fusion Projector</entry>
+	<entry key='tech.particleprojector.description'>The Fusion Projector fires a magnetic bottle fusing hydrogen. It inflicts severe damage on enemy starships that stray into its range.</entry>
 	<entry key='tech.mesonprojector.name'>Meson Projector</entry>
 	<entry key='tech.mesonprojector.longname'>Meson Projector</entry>
 	<entry key='tech.mesonprojector.description'>The Meson Projector fires a stream of subatomic particles that decay into highly explosive matter. These projectors can easily cripple an unsuspecting starship.</entry>
@@ -821,4 +821,14 @@
 	<entry key='financialinfo.repair_cost'    >Repair cost     : %d cr</entry>
 	<entry key='financialinfo.build_cost'     >Build cost      : %d cr</entry>
 	
+	<entry key='researchinfo.progress.done'>Done</entry>
+	<entry key='researchinfo.progress.running'>Running... %d%%</entry>
+	<entry key='researchinfo.progress.paused'>Paused... %d%%</entry>
+	<entry key='researchinfo.progress.can'>Researchable</entry>
+	<entry key='researchinfo.progress.cant'>Not researchable</entry>
+	<entry key='researchinfo.progress.inventory'>Inventory : %d</entry>
+	<entry key='researchinfo.progress.cost'     >Cost      : %d cr</entry>
+	<entry key='researchinfo.progress.price'    >Price     : %d cr</entry>
+	<entry key='researchinfo.progress.pre'      >Prerequisites:</entry>
+	<entry key='colonyinfo.tax'>Tax: %s</entry>
 </labels>

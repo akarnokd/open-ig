@@ -17,7 +17,6 @@ import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
 
 import java.awt.Container;
-import java.util.Arrays;
 
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -52,18 +51,18 @@ public class DatabaseTest extends JFrame {
 		World w = new World();
 		w.level = 5;
 		w.player = new Player();
-		w.player.discoveredAliens.addAll(Arrays.asList(
-				"race.free_traders_alliance", 
-				"race.free_nations_society",
-				"race.pirates",
-				"race.garthogs",
-				"race.ychoms",
-				"race.morgaths",
-				"race.dribs",
-				"race.ecaleps",
-				"race.sulleps",
-				"race.dargslans"
-		));
+//		w.player.discoveredAliens.addAll(Arrays.asList(
+//				"race.free_traders_alliance", 
+//				"race.free_nations_society",
+//				"race.pirates",
+//				"race.garthogs",
+//				"race.ychoms",
+//				"race.morgaths",
+//				"race.dribs",
+//				"race.ecaleps",
+//				"race.sulleps",
+//				"race.dargslans"
+//		));
 		p.setWorld(w);
 		
 		Labels labels = new Labels().load(rl, null);
