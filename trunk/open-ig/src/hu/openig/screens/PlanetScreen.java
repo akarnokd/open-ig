@@ -15,9 +15,11 @@ import hu.openig.core.Tile;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetInventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.render.RenderTools;
@@ -70,8 +72,6 @@ public class PlanetScreen extends ScreenBase {
 	 * the width points to +X and height points to -Y direction
 	 */
 	Rectangle selectedRectangle;
-	/** Show the buildings? */
-	boolean showBuildings = true;
 	/** The selection tile. */
 	Tile selection;
 	/** The placement tile for allowed area. */
@@ -294,7 +294,9 @@ public class PlanetScreen extends ScreenBase {
 		}
 		if (symbolic) {
 			Tile tile = null;
-
+			if (knowledge(planet(), PlanetKnowledge.BUILDING) < 0) {
+				tile = se.building.type.minimapTiles.destroyed;
+			} else
 			if (se.building.isConstructing()) {
 				if (se.building.isSeverlyDamaged()) {
 					tile = se.building.type.minimapTiles.constructingDamaged;
@@ -513,10 +515,14 @@ public class PlanetScreen extends ScreenBase {
 					if (placementMode) {
 						placeBuilding(e.has(Modifier.SHIFT));	
 					} else {
-						Location loc = getLocationAt(e.x, e.y);
-						buildingBox = getBoundingRect(loc);
-						doSelectBuilding(getBuildingAt(loc));
-						rep = true;
+						if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 || planet().owner == player()) {
+							Location loc = getLocationAt(e.x, e.y);
+							buildingBox = getBoundingRect(loc);
+							doSelectBuilding(getBuildingAt(loc));
+							rep = true;
+						} else {
+							doSelectBuilding(null);
+						}
 					}
 				}
 				break;
@@ -621,11 +627,11 @@ public class PlanetScreen extends ScreenBase {
 					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
 					Location loc1 = Location.of(loc.x - j, loc.y);
 					SurfaceEntity se = surface.buildingmap.get(loc1);
-					if (se == null || !showBuildings) {
+					if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
 						se = surface.basemap.get(loc1);
 					}
 					if (se != null) {
-						getImage(se, false, loc1, cell);
+						getImage(se, knowledge(planet(), PlanetKnowledge.BUILDING) < 0, loc1, cell);
 						int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
 						if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
 							if (cell.image != null) {
@@ -682,7 +688,7 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 			}
-			if (showBuildings) {
+			if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0) {
 				for (Building b : surface.buildings) {
 					Rectangle r = getBoundingRect(b.location);
 //					if (r == null) {
@@ -739,60 +745,61 @@ public class PlanetScreen extends ScreenBase {
 						commons.text().paintTo(g2, px + 1, py + 1, 10, color, percent);
 						commons.text().paintTo(g2, px, py, 10, 0xD4FC84, percent);
 					}
-					
-					for (int i = 1; i <= b.upgradeLevel; i++) {
-						g2.drawImage(commons.colony().upgrade, ux, uy, null);
-						ux += commons.colony().upgrade.getWidth();
-					}
-					
-					if (b.enabled) {
-						int ey = r.y + h + 11;
-						int w = 0;
-						if (b.isEnergyShortage()) {
-							w += commons.colony().unpowered[0].getWidth();
-						}
-						if (b.isWorkerShortage()) {
-							w += commons.colony().worker[0].getWidth();
-						}
-						if (b.repairing) {
-							w += commons.colony().repair[0].getWidth();
-						}
-						int ex = r.x + (r.width - w) / 2;
-						// paint power shortage
-						if (b.isEnergyShortage()) {
-							g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
-							ex += commons.colony().unpowered[0].getWidth();
-						}
-						if (b.isWorkerShortage()) {
-							g2.drawImage(commons.colony().worker[blink ? 0 : 1], ex, ey, null);
-							ex += commons.colony().worker[0].getWidth();
-						}
-						if (b.repairing) {
-							g2.drawImage(commons.colony().repair[(animation % 3)], ex, ey, null);
-							ex += commons.colony().repair[0].getWidth();
-						}
-					} else {
-						int ey = r.y + h + 13;
-						String offline = get("buildings.offline");
-						int w = commons.text().getTextWidth(10, offline);
-						color = 0xFF8080FF;
-						if (!blink) {
-							color = 0xFFFF0000;
-						}
-						int ex = r.x + (r.width - w) / 2;
-						if (textBackgrounds) {
-							g2.setComposite(a1);
-							g2.setColor(Color.BLACK);
-							g2.fillRect(ex - 2, ey - 2, w + 4, 15);
-							g2.setComposite(compositeSave);
+					if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
+						for (int i = 1; i <= b.upgradeLevel; i++) {
+							g2.drawImage(commons.colony().upgrade, ux, uy, null);
+							ux += commons.colony().upgrade.getWidth();
 						}
 						
-						commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
-						commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
+						if (b.enabled) {
+							int ey = r.y + h + 11;
+							int w = 0;
+							if (b.isEnergyShortage()) {
+								w += commons.colony().unpowered[0].getWidth();
+							}
+							if (b.isWorkerShortage()) {
+								w += commons.colony().worker[0].getWidth();
+							}
+							if (b.repairing) {
+								w += commons.colony().repair[0].getWidth();
+							}
+							int ex = r.x + (r.width - w) / 2;
+							// paint power shortage
+							if (b.isEnergyShortage()) {
+								g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
+								ex += commons.colony().unpowered[0].getWidth();
+							}
+							if (b.isWorkerShortage()) {
+								g2.drawImage(commons.colony().worker[blink ? 0 : 1], ex, ey, null);
+								ex += commons.colony().worker[0].getWidth();
+							}
+							if (b.repairing) {
+								g2.drawImage(commons.colony().repair[(animation % 3)], ex, ey, null);
+								ex += commons.colony().repair[0].getWidth();
+							}
+						} else {
+							int ey = r.y + h + 13;
+							String offline = get("buildings.offline");
+							int w = commons.text().getTextWidth(10, offline);
+							color = 0xFF8080FF;
+							if (!blink) {
+								color = 0xFFFF0000;
+							}
+							int ex = r.x + (r.width - w) / 2;
+							if (textBackgrounds) {
+								g2.setComposite(a1);
+								g2.setColor(Color.BLACK);
+								g2.fillRect(ex - 2, ey - 2, w + 4, 15);
+								g2.setComposite(compositeSave);
+							}
+							
+							commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
+							commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
+						}
 					}
 				}
 			}
-			if (showBuildings && buildingBox != null) {
+			if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && buildingBox != null) {
 				g2.setColor(Color.RED);
 				g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
 			}
@@ -807,7 +814,7 @@ public class PlanetScreen extends ScreenBase {
 			g2.fillRect(nameLeft - 5, 0, nameWidth + 10, nameHeight + 4);
 			
 			int pc = TextRenderer.GRAY;
-			if (planet().owner != null) {
+			if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && planet().owner != null) {
 				pc = planet().owner.color;
 			}
 			commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
@@ -863,7 +870,7 @@ public class PlanetScreen extends ScreenBase {
 					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
 					Location loc1 = Location.of(loc.x - j, loc.y);
 					SurfaceEntity se = surface.buildingmap.get(loc1);
-					if (se == null || !showBuildings) {
+					if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
 						se = surface.basemap.get(loc1);
 					}
 					if (se != null) {
@@ -882,7 +889,7 @@ public class PlanetScreen extends ScreenBase {
 				}
 			}
 			g2.setColor(Color.RED);
-			if (showBuildings) {
+			if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0) {
 				if (buildingBox != null) {
 					g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
 				}
@@ -1466,7 +1473,12 @@ public class PlanetScreen extends ScreenBase {
 			buildingInfoPanel.stateInactive.enabled(currentBuilding != null);
 			buildingInfoPanel.stateOffline.enabled(currentBuilding != null);
 			
-			upgradePanel.visible(b != null && b.type.upgrades.size() > 0 && buildingInfoPanel.visible() && b.isComplete());
+			upgradePanel.visible(
+					b != null && b.type.upgrades.size() > 0 
+					&& buildingInfoPanel.visible() 
+					&& b.isComplete()
+					&& planet().owner == player()
+			);
 		}
 	}
 	/** Perform the animation. */
@@ -1569,11 +1581,12 @@ public class PlanetScreen extends ScreenBase {
 			taxInfo = new UILabel("-", textSize, commons.text());
 			allocation = new UILabel("-", textSize, commons.text());
 			autobuild = new UILabel("-", textSize, commons.text());
-			other = new UILabel("-", textSize, commons.text());
+			other = new UILabel("-", 7, commons.text());
+			other.wrap(true);
 			
 			lines = Arrays.asList(
 					owner, race, surface, population, housing, worker, hospital, food, energy, police,
-					taxTradeIncome, taxInfo, allocation, autobuild, other
+					taxTradeIncome, taxInfo, allocation, autobuild
 			);
 			
 			enabled(false);
@@ -1607,6 +1620,9 @@ public class PlanetScreen extends ScreenBase {
 				}
 			}
 			w = Math.max(w, this.planet.x + this.planet.width);
+			other.bounds(10, 25 + (textSize + 3) * i, w, 0);
+			other.size(w, other.getWrappedHeight());
+			h = Math.max(h, other.y + other.height);
 			width = w + 10;
 			height = h + 5;
 		}
@@ -1618,20 +1634,28 @@ public class PlanetScreen extends ScreenBase {
 			
 			planet.text(p.name, true);
 			
-			String s = p.owner != null ? p.owner.name : "-";
-			owner.text(format("colonyinfo.owner", s), true);
-			if (p.owner != null) {
-				planet.color(p.owner.color);
-				owner.color(TextRenderer.GREEN);
+			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+				String s = p.owner != null ? p.owner.name : "-";
+				owner.text(format("colonyinfo.owner", s), true);
+				
+				if (p.owner != null) {
+					planet.color(p.owner.color);
+					owner.color(TextRenderer.GREEN);
+				} else {
+					planet.color(TextRenderer.GRAY);
+					owner.color(TextRenderer.GREEN);
+				}
+				s = p.isPopulated() ? get(p.getRaceLabel()) : "-";
+				race.text(format("colonyinfo.race", s), true);
+				owner.visible(true);
+				race.visible(true);
 			} else {
+				owner.visible(false);
+				race.visible(false);
 				planet.color(TextRenderer.GRAY);
-				owner.color(TextRenderer.GREEN);
 			}
-			s = p.isPopulated() ? get(p.getRaceLabel()) : "-";
-			race.text(format("colonyinfo.race", s), true);
 			
-			s = get(p.type.label);
-			surface.text(format("colonyinfo.surface", firstUpper(s)), true);
+			surface.text(format("colonyinfo.surface", firstUpper(get(p.type.label))), true);
 			
 			population.visible(false);
 			housing.visible(false);
@@ -1677,15 +1701,31 @@ public class PlanetScreen extends ScreenBase {
 							get(p.getAutoBuildLabel())
 					), true).visible(true);
 				} else {
-					if (knowledge(p, PlanetKnowledge.BUILDINGS) >= 0) {
+					if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 						population.text(format("colonyinfo.population.alien", 
 								p.population
 						), true).visible(true);
 					}
 				}
 			}
+			// list orbital stuff: satellites, bases
+			StringBuilder os = new StringBuilder();
+			for (PlanetInventoryItem pii : planet().inventory) {
+				if (pii.owner == player() && pii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
+					if (os.length() > 0) {
+						os.append(", ");
+					}
+					os.append(pii.type.name);
+				} else
+				if (pii.owner == player() && pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					if (os.length() > 0) {
+						os.append(", ");
+					}
+					os.append(pii.type.name);
+				}
+			}
 			other.text(format("colonyinfo.other",
-					"" // FIXME list others
+					os
 			), true);
 
 			computeSize();

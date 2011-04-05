@@ -10,7 +10,9 @@ package hu.openig.model;
 
 import hu.openig.core.PlanetType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,6 +64,8 @@ public class Planet implements Named, Owned {
 	public int taxIncome;
 	/** The last day's trade income. */
 	public int tradeIncome;
+	/** The planet's inventory. */
+	public final List<PlanetInventoryItem> inventory = new ArrayList<PlanetInventoryItem>();
 	/** @return the morale label for the current morale level. */
 	public String getMoraleLabel() {
 		return getMoraleLabel(morale);
@@ -223,6 +227,12 @@ public class Planet implements Named, Owned {
 		}
 		if (damage) {
 			result.problems.add(PlanetProblems.REPAIR);
+		}
+		
+		for (PlanetInventoryItem pii : inventory) {
+			if (pii.owner == owner && pii.type.get("radar") != null) {
+				radar = Math.max(radar, Integer.parseInt(pii.type.get("radar")));
+			}
 		}
 		
 		radar *= 35;

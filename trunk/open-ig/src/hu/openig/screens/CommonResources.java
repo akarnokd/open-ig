@@ -399,7 +399,7 @@ public class CommonResources {
 	 */
 	public void close() {
 		if (world != null) {
-			world.allocator.stop();
+			world.close();
 		}
 	}
 	/** @return the world instance. */

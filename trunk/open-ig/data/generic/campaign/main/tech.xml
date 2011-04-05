@@ -109,11 +109,17 @@
     <property name='vehicles' value='15'/>
     <property name='needsOrbitalFactory' value='true'/>
   </item>
-  <item id='Satellite' name='tech.satellite.name' long-name='tech.satellite.longname' description='tech.satellite.description' category='SPACESHIPS_SATELLITES' image='inventions/spaceships/satellites/satellite' factory='spaceship' research-cost='0' production-cost='120' level='0' race='human' comp='1' ai='1' index='0'/>
-  <item id='SpySatellite1' name='tech.spysatellite1.name' long-name='tech.spysatellite1.longname' description='tech.spysatellite1.description' category='SPACESHIPS_SATELLITES' image='inventions/spaceships/satellites/spy_satellite_1' factory='spaceship' research-cost='8000' production-cost='1000' level='3' race='human' mech='1' comp='1' ai='1' index='1'/>
-  <item id='SpySatellite2' name='tech.spysatellite2.name' long-name='tech.spysatellite2.longname' description='tech.spysatellite2.description' category='SPACESHIPS_SATELLITES' image='inventions/spaceships/satellites/spy_satellite_2' factory='spaceship' research-cost='12000' production-cost='1000' level='4' race='human' requires='SpySatellite1' mech='2' comp='3' ai='3' mil='2' index='2'/>
+  <item id='Satellite' name='tech.satellite.name' long-name='tech.satellite.longname' description='tech.satellite.description' category='SPACESHIPS_SATELLITES' image='inventions/spaceships/satellites/satellite' factory='spaceship' research-cost='0' production-cost='120' level='0' race='human' comp='1' ai='1' index='0'>
+    <property name='radar' value='1'/>
+  </item>
+  <item id='SpySatellite1' name='tech.spysatellite1.name' long-name='tech.spysatellite1.longname' description='tech.spysatellite1.description' category='SPACESHIPS_SATELLITES' image='inventions/spaceships/satellites/spy_satellite_1' factory='spaceship' research-cost='8000' production-cost='1000' level='3' race='human' mech='1' comp='1' ai='1' index='1'>
+    <property name='radar' value='2'/>
+  </item>
+  <item id='SpySatellite2' name='tech.spysatellite2.name' long-name='tech.spysatellite2.longname' description='tech.spysatellite2.description' category='SPACESHIPS_SATELLITES' image='inventions/spaceships/satellites/spy_satellite_2' factory='spaceship' research-cost='12000' production-cost='1000' level='4' race='human' requires='SpySatellite1' mech='2' comp='3' ai='3' mil='2' index='2'>ű
+    <property name='radar' value='3'/>
+  </item>
   <item id='Hubble2' name='tech.hubble2.name' long-name='tech.hubble2.longname' description='tech.hubble2.description' category='SPACESHIPS_SATELLITES' image='inventions/spaceships/satellites/hubble' factory='spaceship' research-cost='10000' production-cost='2100' level='4' race='human' requires='SpySatellite1, Radar2' mech='5' comp='5' ai='6' mil='4' index='3'>
-    <property name='radar' value='90'/>
+    <property name='radar' value='4'/>
   </item>
   <item id='SpaceStation1' name='tech.spacestation1.name' long-name='tech.spacestation1.longname' description='tech.spacestation1.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_1' factory='spaceship' research-cost='0' production-cost='65000' level='0' race='human' civil='2' mech='2' comp='2' ai='1' mil='3' index='0'/>
   <item id='OrbitalFactory' name='tech.orbitalfactory.name' long-name='tech.orbitalfactory.longname' description='tech.orbitalfactory.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/orbital_factory' factory='spaceship' research-cost='40000' production-cost='80000' level='3' race='human' civil='1' mech='1' comp='1' ai='1' mil='1' index='3'/>
@@ -147,14 +153,13 @@
     <property name='vehicles' value='5'/>
   </item>
   <item id='Radar1' name='tech.radar1.name' long-name='tech.radar1.longname' description='tech.radar1.description' category='EQUIPMENT_RADARS' image='inventions/equipments/radars/radar_1' factory='equipment' research-cost='0' production-cost='5000' level='0' race='human' mil='1' index='0'>
-    <property name='radar' value='15'/>
+    <property name='radar' value='1'/>
   </item>
   <item id='Radar2' name='tech.radar2.name' long-name='tech.radar2.longname' description='tech.radar2.description' category='EQUIPMENT_RADARS' image='inventions/equipments/radars/radar_2' factory='equipment' research-cost='18000' production-cost='9000' level='3' race='human' requires='Radar1' mech='2' comp='2' ai='1' mil='2' index='1'>
-    <property name='radar' value='30'/>
+    <property name='radar' value='2'/>
   </item>
   <item id='Radar3' name='tech.radar3.name' long-name='tech.radar3.longname' description='tech.radar3.description' category='EQUIPMENT_RADARS' image='inventions/equipments/radars/radar_3' factory='equipment' research-cost='22000' production-cost='16000' level='4' race='human' requires='Radar2' civil='1' mech='4' comp='4' ai='2' mil='4' index='2'>
-    <property name='radar' value='60'/>
-    <property name='enemydetect' value='1'/>
+    <property name='radar' value='3'/>
   </item>
   <item id='Shield1' name='tech.shield1.name' long-name='tech.shield1.longname' description='tech.shield1.description' category='EQUIPMENT_SHIELDS' image='inventions/equipments/shields/shield_1' factory='equipment' research-cost='0' production-cost='4000' level='0' race='human' civil='1' comp='1' mil='1' index='0'>
     <property name='shield' value='25'/>

@@ -18,6 +18,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.World;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
@@ -259,5 +260,9 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 	@Override
 	public void askRepaint() {
 		repaintInner();
+	}
+	/** @return the world. */
+	public World world() {
+		return commons.world();
 	}
 }

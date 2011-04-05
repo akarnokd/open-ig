@@ -648,6 +648,10 @@ public class GameWindow extends JFrame implements GameControls {
 						case INFORMATION_PLANETS:
 							hideSecondary();
 							break;
+						case RESEARCH:
+						case PRODUCTION:
+							displaySecondary(Screens.INFORMATION_INVENTIONS);
+							break;
 						default:
 							displaySecondary(Screens.INFORMATION_PLANETS);
 						}
@@ -771,6 +775,14 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
+					}
+					break;
+				case KeyEvent.VK_R:
+					if (e.isControlDown()) { // reload labels
+						commons.world().labels.load(commons.rl, commons.world().name);
+						repaint();
+					} else {
+						result = false;
 					}
 					break;
 				default:

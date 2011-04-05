@@ -12,6 +12,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
+import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.Bridge.Level;
 import hu.openig.utils.ImageUtils;
@@ -73,6 +74,8 @@ public class World {
 	public ResourceLocator rl;
 	/** The common resource allocator. */
 	public ResourceAllocator allocator;
+	/** The radar computation. */
+	public Radar radar;
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -396,9 +399,23 @@ public class World {
 		
 		planets.add(p);
 		if (p.owner != null) {
-			p.owner.planets.put(p, PlanetKnowledge.FULL);
+			p.owner.planets.put(p, PlanetKnowledge.BUILDING);
+			if (p.owner == player) {
+				PlanetInventoryItem sat = new PlanetInventoryItem();
+				sat.owner = player;
+				sat.count = 1;
+				sat.type = researches.get("Hubble2");
+				p.inventory.add(sat);
+			}
 		}
-		player.planets.put(p, PlanetKnowledge.OWNED);
+		if (p.owner == null || p.owner != player) {
+			// FIXME for testing the radar/info
+			PlanetInventoryItem sat = new PlanetInventoryItem();
+			sat.owner = player;
+			sat.count = 1;
+			sat.type = researches.get("Satellite");
+			p.inventory.add(sat);
+		}
 	}
 	/**
 	 * Process a tech XML.
@@ -478,9 +495,11 @@ public class World {
 		if (matrix != null) {
 			tech.fireAndTotation = ImageUtils.split(matrix, matrix.getHeight() / 5, matrix.getHeight() / 5);
 		}
-		
-		// FIXME for testing
-		player.availableResearch.add(tech);
+		for (Player p : players.values()) {
+			if (p.race.equals(tech.race) && tech.level == 0) {
+				p.availableResearch.add(tech);
+			}
+		}
 	}
 	/**
 	 * Retrieve or create a research type.
@@ -523,5 +542,50 @@ public class World {
 	public List<BuildingType> listBuildings() {
 		return listBuildings(player, 
 				player.currentPlanet);
+	}
+	/** Close the resources. */
+	public void close() {
+		if (allocator != null) {
+			allocator.stop();
+		}
+		if (radar != null) {
+			radar.stop();
+		}
+	}
+	/** Start the timed actions. */
+	public void start() {
+		if (allocator != null) {
+			allocator.start();
+		}
+		if (radar != null) {
+			radar.start();
+		}
+	}
+	/**
+	 * Returns true if all prerequisites of the given research type have been met.
+	 * If a research is available, it will result as false
+	 * @param rt the research type
+	 * @return true
+	 */
+	public boolean canResearch(ResearchType rt) {
+		if (!player.availableResearch.contains(rt)) {
+			if (rt.level <= level) {
+				for (ResearchType rt0 : rt.prerequisites) {
+					if (!player.availableResearch.contains(rt0)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Can the research be shown in listings?
+	 * @param rt the research type
+	 * @return true if display
+	 */
+	public boolean canDisplayResearch(ResearchType rt) {
+		return player.availableResearch.contains(rt) || rt.level <= level;
 	}
 }
