@@ -12,9 +12,8 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
-import hu.openig.mechanics.Radar;
-import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.Bridge.Level;
+import hu.openig.render.TextRenderer;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
@@ -73,9 +72,20 @@ public class World {
 	/** The resource locator. */
 	public ResourceLocator rl;
 	/** The common resource allocator. */
-	public ResourceAllocator allocator;
+	public final ResourceAllocator allocator;
 	/** The radar computation. */
-	public Radar radar;
+	public final Radar radar;
+	/** The progress simulator. */
+	public final Simulator simulator;
+	/**
+	 * Construct the world.
+	 * @param pool the executor service
+	 */
+	public World(ExecutorService pool) {
+		allocator = new ResourceAllocator(pool, planets);
+		radar = new Radar(1000, this);
+		simulator = new Simulator(1000, this);
+	}
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -486,6 +496,7 @@ public class World {
 		tech.equipmentCustomizeImage = rl.getImage(image + "_small", true);
 		tech.spaceBattleImage = rl.getImage(image + "_huge", true);
 		tech.index = item.getInt("index");
+		tech.video = item.get("video");
 		
 		BufferedImage rot = rl.getImage(image + "_rotate", true);
 		if (rot != null) {
@@ -545,21 +556,15 @@ public class World {
 	}
 	/** Close the resources. */
 	public void close() {
-		if (allocator != null) {
-			allocator.stop();
-		}
-		if (radar != null) {
-			radar.stop();
-		}
+		allocator.stop();
+		radar.stop();
+		simulator.stop();
 	}
 	/** Start the timed actions. */
 	public void start() {
-		if (allocator != null) {
-			allocator.start();
-		}
-		if (radar != null) {
-			radar.start();
-		}
+		allocator.start();
+		radar.start();
+		simulator.start();
 	}
 	/**
 	 * Returns true if all prerequisites of the given research type have been met.
@@ -588,4 +593,23 @@ public class World {
 	public boolean canDisplayResearch(ResearchType rt) {
 		return player.isAvailable(rt) || rt.level <= level;
 	}
+	/**
+	 * Get the research color for the given research type.
+	 * @param rt the research type
+	 * @return the color
+	 */
+	public int getResearchColor(ResearchType rt) {
+		int c = TextRenderer.GRAY;
+		if (player.isAvailable(rt)) {
+			c = TextRenderer.ORANGE;
+		} else
+		if (player.research.containsKey(rt)) {
+			c = TextRenderer.YELLOW;
+		} else
+		if (canResearch(rt)) {
+			c = TextRenderer.GREEN;
+		}
+		return c;
+	}
+
 }

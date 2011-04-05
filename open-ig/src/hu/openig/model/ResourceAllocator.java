@@ -6,13 +6,9 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.mechanics;
+package hu.openig.model;
 
 import hu.openig.core.Act;
-import hu.openig.model.Building;
-import hu.openig.model.BuildingAllocationWorker;
-import hu.openig.model.Planet;
-import hu.openig.model.ResourceAllocationStrategy;
 import hu.openig.utils.JavaUtils;
 
 import java.util.ArrayList;

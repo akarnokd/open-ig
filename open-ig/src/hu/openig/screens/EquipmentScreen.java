@@ -315,7 +315,7 @@ public class EquipmentScreen extends ScreenBase {
 			ts.researching = true;
 			ts.percent = 0.5f;
 			ts.visible(true);
-			ts.missingLab = true;
+			ts.missingActiveLab = true;
 			ts.image = rl.getImage("inventions/spaceships/fighters/fighter_" + (i + 1) + "");
 			ts.onPress = new Act() {
 				@Override
@@ -328,8 +328,8 @@ public class EquipmentScreen extends ScreenBase {
 		slots.get(0).available = true;
 		slots.get(0).researching = false;
 		
-		slots.get(2).missingLab = false;
-		slots.get(2).missingPrerequisite = true;
+		slots.get(2).missingActiveLab = false;
+		slots.get(2).missingLab = true;
 
 		slots.get(3).visible(false);
 		

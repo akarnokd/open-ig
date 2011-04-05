@@ -179,4 +179,55 @@ public class Player {
 	public boolean isAvailable(ResearchType rt) {
 		return availableResearch.contains(rt);
 	}
+	/**
+	 * Is there enough labs to research the technology? Does
+	 * not consider the operational state of the labs.
+	 * @param rt the technology
+	 * @return true if there are at least the required lab
+	 */
+	public boolean hasEnoughLabs(ResearchType rt) {
+		PlanetStatistics ps = getPlanetStatistics();
+		if (ps.civilLab < rt.civilLab) {
+			return false;
+		}
+		if (ps.mechLab < rt.mechLab) {
+			return false;
+		}
+		if (ps.compLab < rt.compLab) {
+			return false;
+		}
+		if (ps.aiLab < rt.aiLab) {
+			return false;
+		}
+		if (ps.milLab < rt.milLab) {
+			return false;
+		}
+		
+		return true;
+	}
+	/**
+	 * Is there enough active labs to research the technology?
+	 * @param rt the technology
+	 * @return true if there are at least the required lab
+	 */
+	public boolean hasEnoughActiveLabs(ResearchType rt) {
+		PlanetStatistics ps = getPlanetStatistics();
+		if (ps.civilLabActive < rt.civilLab) {
+			return false;
+		}
+		if (ps.mechLabActive < rt.mechLab) {
+			return false;
+		}
+		if (ps.compLabActive < rt.compLab) {
+			return false;
+		}
+		if (ps.aiLabActive < rt.aiLab) {
+			return false;
+		}
+		if (ps.milLabActive < rt.milLab) {
+			return false;
+		}
+		
+		return true;
+	}
 }

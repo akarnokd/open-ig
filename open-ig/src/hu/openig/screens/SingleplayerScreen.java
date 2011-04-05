@@ -11,8 +11,6 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
-import hu.openig.mechanics.Radar;
-import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.World;
 import hu.openig.render.RenderTools;
@@ -175,15 +173,13 @@ public class SingleplayerScreen extends ScreenBase {
 			Thread t1 = new Thread("Start Game Loading") {
 				@Override 
 				public void run() {
-					final World world = new World();
+					final World world = new World(commons.pool);
 					world.definition = selectedDefinition;
 					world.difficulty = Difficulty.values()[difficulty];
 					final Labels labels = new Labels(); 
 					labels.load(commons.rl, selectedDefinition.labels);
 					world.labels = labels;
 					world.load(commons.rl, selectedDefinition.name);
-					world.allocator = new ResourceAllocator(commons.pool, world.planets);
-					world.radar = new Radar(1000, world);
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {

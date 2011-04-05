@@ -2096,7 +2096,7 @@ public class InfoScreen extends ScreenBase {
 							g2.drawLine(col * colWidth, row * 12 - 1, (col + 1) * colWidth, row * 12 - 1);
 						}
 						for (ResearchType rt : res) {
-							int c = getResearchColor(rt);
+							int c = world().getResearchColor(rt);
 							commons.text().paintTo(g2, col * colWidth + 3, row * 12 + 2, 7, c, rt.name);
 							if (rt == player().currentResearch) {
 								g2.setColor(new Color(TextRenderer.ORANGE));
@@ -2232,15 +2232,15 @@ public class InfoScreen extends ScreenBase {
 			if (rt.prerequisites.size() > 0) {
 				researchPrerequisites.visible(true);
 				researchPre1.text(rt.prerequisites.get(0).name, true).visible(true);
-				researchPre1.color(getResearchColor(rt.prerequisites.get(0)));
+				researchPre1.color(world().getResearchColor(rt.prerequisites.get(0)));
 			}
 			if (rt.prerequisites.size() > 1) {
 				researchPre2.text(rt.prerequisites.get(1).name, true).visible(true);
-				researchPre2.color(getResearchColor(rt.prerequisites.get(1)));
+				researchPre2.color(world().getResearchColor(rt.prerequisites.get(1)));
 			}
 			if (rt.prerequisites.size() > 2) {
 				researchPre3.text(rt.prerequisites.get(2).name, true).visible(true);
-				researchPre3.color(getResearchColor(rt.prerequisites.get(2)));
+				researchPre3.color(world().getResearchColor(rt.prerequisites.get(2)));
 			}
 			
 			researchLabs.get(0).text(Integer.toString(rt.civilLab));
@@ -2277,24 +2277,6 @@ public class InfoScreen extends ScreenBase {
 						: (ps.milLab > ps.milLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
 		}
-	}
-	/**
-	 * Get the research color for the given research type.
-	 * @param rt the research type
-	 * @return the color
-	 */
-	int getResearchColor(ResearchType rt) {
-		int c = TextRenderer.GRAY;
-		if (player().isAvailable(rt)) {
-			c = TextRenderer.ORANGE;
-		} else
-		if (player().research.containsKey(rt)) {
-			c = TextRenderer.YELLOW;
-		} else
-		if (world().canResearch(rt)) {
-			c = TextRenderer.GREEN;
-		}
-		return c;
 	}
 	/**
 	 * The information panel showing some details.

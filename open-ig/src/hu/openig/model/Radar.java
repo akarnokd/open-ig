@@ -6,19 +6,9 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.mechanics;
+package hu.openig.model;
 
 import hu.openig.core.Act;
-import hu.openig.model.Building;
-import hu.openig.model.Fleet;
-import hu.openig.model.FleetInventoryItem;
-import hu.openig.model.FleetInventorySlot;
-import hu.openig.model.FleetKnowledge;
-import hu.openig.model.Planet;
-import hu.openig.model.PlanetInventoryItem;
-import hu.openig.model.PlanetKnowledge;
-import hu.openig.model.Player;
-import hu.openig.model.World;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +18,7 @@ import java.util.Map;
 import javax.swing.Timer;
 
 /**
- * The algorithm that ajdusts the knowledge level of planets and fleets for all players.
+ * The algorithm that adjusts the knowledge level of planets and fleets for all players.
  * @author akarnokd, 2011.04.05.
  */
 public class Radar {
