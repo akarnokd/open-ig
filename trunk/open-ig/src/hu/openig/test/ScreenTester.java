@@ -13,8 +13,6 @@ import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.ResourceLocator;
-import hu.openig.mechanics.Radar;
-import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.World;
@@ -521,15 +519,13 @@ public class ScreenTester extends JFrame implements GameControls {
 					rl = commons.rl;
 
 					t = System.nanoTime();
-					commons.world(new World());
+					commons.world(new World(commons.pool));
 					commons.world().definition = SingleplayerScreen.parseDefinition(commons, "campaign/main");
 					commons.world().difficulty = Difficulty.values()[0];
 					commons.labels0().load(commons.rl, commons.world().definition.name);
 					commons.world().labels = commons.labels0();
 					commons.world().load(commons.rl, commons.world().definition.name);
 					commons.world().level = 5;
-					commons.world().allocator = new ResourceAllocator(commons.pool, commons.world().planets);
-					commons.world().radar = new Radar(1000, commons.world());
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
 				} catch (Throwable t) {
 					t.printStackTrace();

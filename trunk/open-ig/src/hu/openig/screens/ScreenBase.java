@@ -84,13 +84,6 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 	public void askRepaint(Rectangle rect) {
 		commons.control().repaintInner(rect.x, rect.y, rect.width, rect.height);
 	}
-	/**
-	 * @return The rectangle that represents the non-transparent region of this screen.
-	 * It may be used to optimize rendering of any underlying screen.
-	 */
-	public Rectangle nontransparent() {
-		return new Rectangle(0, 0, width, height);
-	}
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (super.mouse(e)) {

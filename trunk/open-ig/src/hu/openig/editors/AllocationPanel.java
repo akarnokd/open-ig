@@ -9,11 +9,11 @@
 package hu.openig.editors;
 
 import hu.openig.core.Act;
-import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.Building;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResourceAllocationStrategy;
+import hu.openig.model.ResourceAllocator;
 import hu.openig.utils.Parallels;
 
 import java.util.Collections;

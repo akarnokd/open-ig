@@ -10,8 +10,11 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Action1;
+import hu.openig.model.BuildingType;
+import hu.openig.model.PlanetStatistics;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.HorizontalAlignment;
@@ -301,8 +304,6 @@ public class ResearchProductionScreen extends ScreenBase {
 	final Map<ResearchMainCategory, UIImageTabButton> mainComponents = new HashMap<ResearchMainCategory, UIImageTabButton>();
 	/** The labels associated with various sub categories. */
 	final Map<ResearchSubCategory, UIImageTabButton> subComponents = new HashMap<ResearchSubCategory, UIImageTabButton>();
-	/** The indicator for the currently running research. */
-	ResearchSubCategory activeCategory = ResearchSubCategory.EQUIPMENT_HYPERDRIVES;
 	/** The screen mode mode. */
 	Screens mode;
 	@Override
@@ -320,7 +321,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		removeButton = new UIImageButton(commons.research().remove);
 		removeButton.visible(false);
 		emptyButton = new UIImage(commons.research().emptyElevated);
-		emptyButton.visible(false);
+		emptyButton.z = -1;
 		bridgeButton = new UIImageButton(commons.common().bridgeButton);
 		researchButton = new UIImageButton(commons.research().research);
 		productionButton = new UIImageButton(commons.research().production);
@@ -409,39 +410,6 @@ public class ResearchProductionScreen extends ScreenBase {
 		createSubCategory(ResearchSubCategory.BUILDINGS_RADARS, commons.research().radarBuildings);
 		createSubCategory(ResearchSubCategory.BUILDINGS_GUNS, commons.research().planetaryGuns);
 
-		// TODO for testing purposes only!
-		slots.clear();
-		for (int i = 0; i < 6; i++) {
-			final int j = i;
-			final TechnologySlot ts = new TechnologySlot(commons);
-			ts.name = "TODO";
-			ts.inventory = 1;
-			ts.cost = 1000;
-			ts.researching = true;
-			ts.percent = 0.5f;
-			ts.visible(true);
-			ts.missingLab = true;
-			ts.image = rl.getImage("inventions/spaceships/fighters/fighter_" + (i + 1) + "");
-			ts.onPress = new Act() {
-				@Override
-				public void act() {
-					doSelectTechnology(ts, j);
-				}
-			};
-			slots.add(ts);
-		}
-		slots.get(0).available = true;
-		slots.get(0).researching = false;
-		
-		slots.get(2).missingLab = false;
-		slots.get(2).missingPrerequisite = true;
-
-		slots.get(3).visible(false);
-		
-		slots.get(4).notResearchable = true;
-		
-		slots.get(5).visible(false);
-
 		researchButton.onClick = new Act() {
 			@Override
 			public void act() {
@@ -509,6 +477,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		selectedTechStatusValue.color(textColor);
 		selectedCompleteValue = new UILabel("Kesz", 14, commons.text());
 		selectedCompleteValue.color(textColor);
+		selectedCompleteValue.horizontally(HorizontalAlignment.RIGHT);
 		selectedTimeValue = new UILabel("----", 14, commons.text());
 		selectedTimeValue.color(textColor);
 		selectedCivilLabValue = new UILabel("0", 14, commons.text());
@@ -593,6 +562,11 @@ public class ResearchProductionScreen extends ScreenBase {
 				}
 			};
 			productionLines.add(pl);
+		}
+		for (int i = 0; i < 6; i++) {
+			TechnologySlot slot = new TechnologySlot(commons);
+			slot.visible(false);
+			slots.add(slot);
 		}
 		
 		capacityLabel = new UIImage(commons.research().capacity);
@@ -819,17 +793,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 		animation.start();
 		video.image(null);
-		videoRenderer = new TechnologyVideoRenderer(
-				commons.video("technology/spaceships/fighters/fighter_1"),
-				new Action1<BufferedImage>() {
-					@Override
-					public void invoke(BufferedImage value) {
-						video.image(value);
-						askRepaint(video);
-					}
-				}
-		);
-		videoRenderer.start(commons.pool);
+		update();
 	}
 
 	@Override
@@ -861,14 +825,14 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param g2 the graphics context
 	 */
 	void drawResearchArrow(Graphics2D g2) {
-		if (activeCategory == null) {
+		if (player().runningResearch == null) {
 			return;
 		}
-		UIImageTabButton c = mainComponents.get(activeCategory.main);
+		UIImageTabButton c = mainComponents.get(player().runningResearch.category.main);
 		g2.drawImage(commons.research().current, 
 				mainCategory.x + 5, c.y + (c.height - commons.research().current.getHeight()) / 2, null);
 		if (c.down) {
-			c = subComponents.get(activeCategory);
+			c = subComponents.get(player().runningResearch.category);
 			if (c != null) {
 				g2.drawImage(commons.research().current, 
 						subCategorySmall.x + 5, c.y + (c.height - commons.research().current.getHeight()) / 2, null);
@@ -949,6 +913,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		for (Map.Entry<ResearchSubCategory, UIImageTabButton> e : subComponents.entrySet()) {
 			e.getValue().down = (e.getKey() == cat);
 		}
+		displayCategory(cat);
 	}
 	/**
 	 * Create a sub category image button with the given graphics.
@@ -1076,7 +1041,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
+		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
 			hideSecondary();
 			return true;
 		} else {
@@ -1084,11 +1049,242 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 	}
 	@Override
-	public Rectangle nontransparent() {
-		return base;
-	}
-	@Override
 	public Screens screen() {
 		return mode;
+	}
+	/** Display values based on the current technology. */
+	public void update() {
+		final ResearchType rt = player().currentResearch;
+		if (rt != null) {
+			displayCategory(player().currentResearch.category);
+
+			if (rt.prerequisites.size() > 0) {
+				requires1.text(rt.prerequisites.get(0).name, true).visible(true);
+				requires1.color(world().getResearchColor(rt.prerequisites.get(0)));
+				requires1.onPress = new Act() {
+					@Override
+					public void act() {
+						selectResearch(rt.prerequisites.get(0));
+						update();
+					}
+				};
+			} else {
+				requires1.visible(false);
+			}
+			if (rt.prerequisites.size() > 1) {
+				requires2.text(rt.prerequisites.get(1).name, true).visible(true);
+				requires2.color(world().getResearchColor(rt.prerequisites.get(1)));
+				requires2.onPress = new Act() {
+					@Override
+					public void act() {
+						selectResearch(rt.prerequisites.get(1));
+						update();
+					}
+				};
+			} else {
+				requires2.visible(false);
+			}
+			if (rt.prerequisites.size() > 2) {
+				requires3.text(rt.prerequisites.get(2).name, true).visible(true);
+				requires3.color(world().getResearchColor(rt.prerequisites.get(2)));
+			} else {
+				requires3.visible(false);
+				requires3.onPress = new Act() {
+					@Override
+					public void act() {
+						selectResearch(rt.prerequisites.get(1));
+						update();
+					}
+				};
+
+			}
+			
+			descriptionTitle.text(rt.longName);
+			if (player().isAvailable(rt) || world().canResearch(rt)) {
+				descriptionBody.text(rt.description);
+			} else {
+				descriptionBody.text("");
+			}
+			
+			PlanetStatistics ps = player().getPlanetStatistics();
+			
+			selectedCivilLabValue.text("" + rt.civilLab);
+			selectedCivilLabValue.color(labColor(ps.civilLab, ps.civilLabActive, rt.civilLab));
+			selectedMechLabValue.text("" + rt.mechLab);
+			selectedMechLabValue.color(labColor(ps.mechLab, ps.mechLabActive, rt.mechLab));
+			selectedCompLabValue.text("" + rt.compLab);
+			selectedCompLabValue.color(labColor(ps.compLab, ps.compLabActive, rt.compLab));
+			selectedAILabValue.text("" + rt.aiLab);
+			selectedAILabValue.color(labColor(ps.aiLab, ps.aiLabActive, rt.aiLab));
+			selectedMilLabValue.text("" + rt.milLab);
+			selectedMilLabValue.color(labColor(ps.milLab, ps.milLabActive, rt.milLab));
+
+			selectedTechNameValue.text(rt.name);
+			if (player().isAvailable(rt)) {
+				selectedTechStatusValue.text(get("researchinfo.progress.done"));
+				selectedCompleteValue.text(get("researchinfo.progress.done"));
+			} else {
+				if (world().canResearch(rt)) {
+					if (player().research.containsKey(rt)) {
+						if (player().runningResearch == rt) {
+							selectedTechStatusValue.text(format("researchinfo.progress.running", player().research.get(rt).getPercent()), true).visible(true);
+							selectedCompleteValue.text(player().research.get(rt).getPercent() + "%");
+						} else {
+							selectedTechStatusValue.text(format("researchinfo.progress.paused", player().research.get(rt).getPercent()), true).visible(true);
+							selectedCompleteValue.text(player().research.get(rt).getPercent() + "%");
+						}
+					} else {
+						selectedTechStatusValue.text(get("researchinfo.progress.can"));
+						selectedCompleteValue.text("0%");
+					}
+				} else {
+					selectedTechStatusValue.text(get("researchinfo.progress.cant"));
+					selectedCompleteValue.text("----");
+				}
+			}
+			
+			
+			startNew.visible(player().runningResearch != rt && world().canResearch(rt));
+		} else {
+			for (TechnologySlot slot : slots) {
+				slot.visible(false);
+			}
+			startNew.visible(false);
+			requires1.visible(false);
+			requires2.visible(false);
+			requires3.visible(false);
+			descriptionTitle.text("");
+			descriptionBody.text("");
+			
+			selectedCivilLabValue.text("");
+			selectedMechLabValue.text("");
+			selectedCompLabValue.text("");
+			selectedAILabValue.text("");
+			selectedMilLabValue.text("");
+
+			selectedCompleteValue.text("----");
+			selectedTechStatusValue.text("----");
+			selectedTechNameValue.text("-");
+			selectedTechStatusValue.text("-");
+		}
+	}
+	/** 
+	 * Select the given research and its building type if any.
+	 * @param rt the non-null research type
+	 */
+	public void selectResearch(ResearchType rt) {
+		player().currentResearch = rt;
+		if (rt.category.main == ResearchMainCategory.BUILDINS) {
+			// select the appropriate building type
+			for (BuildingType bt : world().buildingModel.buildings.values()) {
+				if (bt.research == rt) {
+					player().currentBuilding = bt;
+					break;
+				}
+			}
+		}
+	}
+	/**
+	 * Returns the coloring for the lab amounts. 
+	 * @param total the total lab amount
+	 * @param active the active lab amount
+	 * @param required the required lab amount
+	 * @return the color
+	 */
+	int labColor(int total, int active, int required) {
+		if (total < required) {
+			return TextRenderer.RED;
+		} else
+		if (active < required) {
+			return TextRenderer.YELLOW;
+		}
+		return TextRenderer.GREEN;
+	}
+	/**
+	 * Display technologies in the slots.
+	 * @param cat the category
+	 */
+	public void displayCategory(ResearchSubCategory cat) {
+		for (TechnologySlot slot : slots) {
+			slot.visible(false);
+		}
+		for (final ResearchType rt : world().researches.values()) {
+			if (rt.category == cat) {
+				if (world().canDisplayResearch(rt)) {
+					if (rt.index >= 0 && rt.index < 6) {
+						TechnologySlot slot = slots.get(rt.index);
+						slot.visible(true);
+						slot.cost = mode == Screens.PRODUCTION ? rt.productionCost : rt.researchCost;
+						Integer inv = player().inventory.get(rt);
+						slot.inventory = inv != null ? inv.intValue() : 0;
+						slot.name = rt.name;
+						slot.selected = player().currentResearch == rt;
+						slot.available = player().isAvailable(rt);
+						slot.percent = 0;
+						if (!slot.available) {
+							slot.researching = player().research.containsKey(rt);
+							if (slot.researching) {
+								slot.percent =  player().research.get(rt).getPercent() / 100.0f;
+							}
+							slot.missingActiveLab = player().hasEnoughActiveLabs(rt);
+							slot.missingLab = player().hasEnoughLabs(rt);
+							slot.notResearchable = !world().canResearch(rt);
+						} else {
+							slot.percent = 1;
+							slot.researching = false;
+							slot.notResearchable = false;
+							slot.missingActiveLab = false;
+							slot.missingLab = false;
+						}
+						
+						slot.image = rt.image;
+						
+						slot.onPress = new Act() {
+							@Override
+							public void act() {
+								player().currentResearch = rt;
+								update();
+								playAnim(rt);
+							}
+						};
+						if (slot.selected) {
+							playAnim(rt);
+						}
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Play animation for the given research.
+	 * @param rt the target research
+	 */
+	public void playAnim(ResearchType rt) {
+		if (videoRenderer != null) {
+			videoRenderer.stop();
+			videoRenderer = null;
+		}
+		video.image(null);
+		if (rt != null) {
+			if (player().isAvailable(rt)) {
+				video.image(rt.infoImage);
+			} else
+			if (world().canResearch(rt)) {
+				video.image(rt.infoImageWired);
+			}
+			video.center(true);
+			if (rt.video != null) {
+				videoRenderer = new TechnologyVideoRenderer(commons.video(rt.video), 
+				new Action1<BufferedImage>() {
+					@Override
+					public void invoke(BufferedImage value) {
+						video.image(value);
+						askRepaint(video);
+					}
+				}
+				);
+				videoRenderer.start(commons.pool);
+			}
+		}
 	}
 }

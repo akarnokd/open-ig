@@ -17,6 +17,7 @@ import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
 
 import java.awt.Container;
+import java.util.concurrent.Executors;
 
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -48,7 +49,7 @@ public class DatabaseTest extends JFrame {
 		TextRenderer txt = new TextRenderer(rl);
 		
 		DatabasePainter p = new DatabasePainter(dbGFX, txt);
-		World w = new World();
+		World w = new World(Executors.newCachedThreadPool());
 		w.level = 5;
 		w.player = new Player();
 //		w.player.discoveredAliens.addAll(Arrays.asList(

@@ -57,6 +57,8 @@ public class ResearchType {
 	public int milLab;
 	/** The index on the screen listing. */
 	public int index;
+	/** The video resource name. */
+	public String video;
 	/** The optional prerequisites. */
 	public final List<ResearchType> prerequisites = new ArrayList<ResearchType>();
 	/** The optional properties. */
