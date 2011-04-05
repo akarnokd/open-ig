@@ -11,6 +11,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
+import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.ResourceAllocator;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.World;
@@ -156,7 +157,7 @@ public class SingleplayerScreen extends ScreenBase {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override 
 							public void run() {
-								commons.world().allocator.start();
+								commons.world().start();
 								commons.control().displayPrimary(Screens.BRIDGE);
 								commons.control().displayStatusbar();
 							};
@@ -182,6 +183,7 @@ public class SingleplayerScreen extends ScreenBase {
 					world.labels = labels;
 					world.load(commons.rl, selectedDefinition.name);
 					world.allocator = new ResourceAllocator(commons.pool, world.planets);
+					world.radar = new Radar(1000, world);
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {

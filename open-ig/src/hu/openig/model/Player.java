@@ -58,6 +58,8 @@ public class Player {
 	public ResearchType currentResearch;
 	/** The actual building. */
 	public BuildingType currentBuilding;
+	/** The type of the last selected thing: planet or fleet. */
+	public SelectionMode selectionMode;
 	/** The current money amount. */
 	public int money;
 	/** The player's finance status at a particular day. */

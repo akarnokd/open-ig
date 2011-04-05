@@ -9,6 +9,8 @@
 package hu.openig.model;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fleet.
@@ -27,6 +29,8 @@ public class Fleet implements Named, Owned {
 	public int radar;
 	/** The fleet name. */
 	public String name;
+	/** The fleet inventory: ships and tanks. */
+	public final List<FleetInventoryItem> inventory = new ArrayList<FleetInventoryItem>();
 	/** @return calculate the fleet statistics. */
 	public FleetStatistics getStatistics() {
 		FleetStatistics result = new FleetStatistics();

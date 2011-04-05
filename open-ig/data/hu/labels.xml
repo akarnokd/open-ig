@@ -460,6 +460,7 @@
 	<entry key='colonyinfo.race'      >Faj        : %s</entry>
 	<entry key='colonyinfo.surface'   >Felszín    : %s</entry>
 	<entry key='colonyinfo.population'>Népesség   : %d %s (%s)</entry>
+	<entry key='colonyinfo.population.alien'>Népesség   : %d idegen</entry>
 	<entry key='colonyinfo.housing'   >Lakótér    : %d / %d lakos</entry>
 	<entry key='colonyinfo.worker'    >Munkás     : %d / %d lakos</entry>
 	<entry key='colonyinfo.hospital'  >Kórház     : %d / %d lakos</entry>
@@ -564,7 +565,7 @@
 	<entry key='tech.spacestation1.name'>Űrbázis v1.0</entry>
 	<entry key='tech.spacestation1.longname'>Űrbázis v1.0: "Védő"</entry>
 	<entry key='tech.spacestation1.description'>Az űrbázisok - a földi ágyúkkal együtt - az adott bolygó föld-űr védelmét látják el.</entry>
-	<entry key='tech.orbitalfactory.name'>Orbitális hajógyár</entry>
+	<entry key='tech.orbitalfactory.name'>Orbitális gyár</entry>
 	<entry key='tech.orbitalfactory.longname'>Orbitális hajógyár</entry>
 	<entry key='tech.orbitalfactory.description'>Zászlóshajók gyártásához elengedhetetlen: a különböző bolygókról szállított részegységek csak egy ilyen űrállomás segítségével szerelhetők össze.</entry>
 	<entry key='tech.spacestation2.name'>Űrbázis v2.0</entry>
@@ -574,68 +575,68 @@
 	<entry key='tech.spacestation3.longname'>Űrbázis v3.0: "Kolosszus"</entry>
 	<entry key='tech.spacestation3.description'>Kielégítő kísérettel a bolygó felszíne gyakorlatilag elérhetetlenné tehető megfelelő számú Kolosszus telepítésével.</entry>
 
-	<entry key='tech.hyperdrive1.name'>Hiperhajtómű 1</entry>
+	<entry key='tech.hyperdrive1.name'>Hiperhajtómű v1</entry>
 	<entry key='tech.hyperdrive1.longname'>Hiperhajtómű v1.0</entry>
 	<entry key='tech.hyperdrive1.description'>A számos hajón alapfelszereltségként szereplő hajtómű elengedhetetlen a csillagközi közlekedéshez.</entry>
-	<entry key='tech.hyperdrive2.name'>Hiperhajtómű 2</entry>
+	<entry key='tech.hyperdrive2.name'>Hiperhajtómű v2</entry>
 	<entry key='tech.hyperdrive2.longname'>Hiperhajtómű v2.0</entry>
 	<entry key='tech.hyperdrive2.description'>Ilyen hajtóművek felszerelésével a flotta sebessége növelhető, mely az ellenséges űrhajó becserkészését (illetve a menekülést) jelentősen megkönnyíti.</entry>
-	<entry key='tech.hyperdrive3.name'>Hiperhajtómű 3</entry>
+	<entry key='tech.hyperdrive3.name'>Hiperhajtómű v3</entry>
 	<entry key='tech.hyperdrive3.longname'>Hiperhajtómű v3.0</entry>
 	<entry key='tech.hyperdrive3.description'>A Birodalom kémtevékenységének köszönhetően sikerült jelentősen javítani a hajtóművek hatékonyságát, s így a hajók elérhető végsebességet is.</entry>
-	<entry key='tech.hyperdrive4.name'>Hiperhajtómű 4</entry>
+	<entry key='tech.hyperdrive4.name'>Hiperhajtómű v4</entry>
 	<entry key='tech.hyperdrive4.longname'>Hiperhajtómű v4.0</entry>
 	<entry key='tech.hyperdrive4.description'>A földi tudósok találékonyságát dicséri az idegen technológiák továbbfejlesztésével született szubatom-hajtómű. Sokan az elérhető abszolút legjobbnak tekintették...</entry>
-	<entry key='tech.hyperdrive5.name'>Hiperhajtómű 5</entry>
+	<entry key='tech.hyperdrive5.name'>Hiperhajtómű v5</entry>
 	<entry key='tech.hyperdrive5.longname'>Hiperhajtómű v5.0</entry>
 	<entry key='tech.hyperdrive5.description'>Csak a Dargslanokkal való találkozás serkentette újabb erőfeszítésre a földieket. Az új hajtómű - tömege miatt - sajnos nem minden földi hajón alkalmazható.</entry>
 	
-	<entry key='tech.ecm1.name'>Rakétazavaró 1</entry>
+	<entry key='tech.ecm1.name'>Rakétazavaró v1</entry>
 	<entry key='tech.ecm1.longname'>Rakétazavaró egység v1.0:</entry>
 	<entry key='tech.ecm1.description'>Az ellenséges rakéták célkövető rendszerét zavarja és megpróbálja azt új célra állítani. Szerencsés esetben ez akár az ellenfél hajója is lehet!</entry>
-	<entry key='tech.ecm2.name'>Rakétazavaró 2</entry>
+	<entry key='tech.ecm2.name'>Rakétazavaró v2</entry>
 	<entry key='tech.ecm2.longname'>Rakétazavaró egység v2.0</entry>
 	<entry key='tech.ecm2.description'>A korábbi rakétazavaró egység továbbfejlesztése, mely gyorsabban és nagyobb hatékonysággal dolgozik.</entry>
-	<entry key='tech.storage1.name'>Raktármodul 1</entry>
+	<entry key='tech.storage1.name'>Raktármodul v1</entry>
 	<entry key='tech.storage1.longname'>Raktármodul v1.0</entry>
 	<entry key='tech.storage1.description'>A zászlóshajókra kívülről rászerelhető egység, mely további 3 tank szállítását teszi lehetővé.</entry>
-	<entry key='tech.storage2.name'>Raktármodul 2</entry>
+	<entry key='tech.storage2.name'>Raktármodul v2</entry>
 	<entry key='tech.storage2.longname'>Raktármodul v2.0</entry>
 	<entry key='tech.storage2.description'>A zászlóshajók statikájának egyensúlya sokáig lehetetlenné tette nagyméretű külső egységek csatlakoztatását. Ez az 5 tankot tárolni képes egység az elérhető maximum.</entry>
 
-	<entry key='tech.radar1.name'>Radar 1</entry>
+	<entry key='tech.radar1.name'>Radar v1</entry>
 	<entry key='tech.radar1.longname'>Radar v1.0</entry>
 	<entry key='tech.radar1.description'>Nagyobb hajókra telepíthető radaregység, mely 2 SGE (Standard Galaktikus Egység) távolságból képes ellenséges egységeket detektálni.</entry>
-	<entry key='tech.radar2.name'>Radar 2</entry>
+	<entry key='tech.radar2.name'>Radar v2</entry>
 	<entry key='tech.radar2.longname'>Radar v2.0</entry>
 	<entry key='tech.radar2.description'>A korábbi rakétamodul továbbfejlesztése 5 SGE hatásos hatótávolsággal.</entry>
-	<entry key='tech.radar3.name'>Radar 3</entry>
+	<entry key='tech.radar3.name'>Radar v3</entry>
 	<entry key='tech.radar3.longname'>Radar v3.0</entry>
 	<entry key='tech.radar3.description'>A korábbi verzióknál érzékenyebb (az ellenséges flotta hozzávetőleges összetételét is detektáló) radaregység 10 SGE hatótávolsággal.</entry>
 	
-	<entry key='tech.shield1.name'>Védőpajzs 1</entry>
+	<entry key='tech.shield1.name'>Védőpajzs v1</entry>
 	<entry key='tech.shield1.longname'>Védőpajzs v1.0</entry>
 	<entry key='tech.shield1.description'>Ez a viszonylag kis hatásfokú védőpajzs a hajók védelmét mintegy 25%-al növeli.</entry>
-	<entry key='tech.shield2.name'>Védőpajzs 2</entry>
+	<entry key='tech.shield2.name'>Védőpajzs v2</entry>
 	<entry key='tech.shield2.longname'>Védőpajzs v2.0</entry>
 	<entry key='tech.shield2.description'>Nagyobb energiafogyasztással sikerült a pajzs védőerejét még 10%-al növelni. A megnövekedett energiaigény miatti fúziós generátor kis hajókra nem telepíthető.</entry>
-	<entry key='tech.shield3.name'>Védőpajzs 3</entry>
+	<entry key='tech.shield3.name'>Védőpajzs v3</entry>
 	<entry key='tech.shield3.longname'>Védőpajzs v3.0</entry>
 	<entry key='tech.shield3.description'>A hajók erejét több mint 45%-al képes növelni ez a pajzsegység. Csak nagyméretű és/vagy speciálisan erre átalakított hajókra telepíthető.</entry>
-	<entry key='tech.shield4.name'>Védőpajzs 4</entry>
+	<entry key='tech.shield4.name'>Védőpajzs v4</entry>
 	<entry key='tech.shield4.longname'>Védőpajzs v4.0</entry>
 	<entry key='tech.shield4.description'>A jelenleg ismert legerősebb pajzstípus, mely a hajók erejét 60%-al növeli.</entry>
 	
-	<entry key='tech.laser1.name'>Lézer 1</entry>
+	<entry key='tech.laser1.name'>Lézer v1</entry>
 	<entry key='tech.laser1.longname'>Lézer v1.0</entry>
 	<entry key='tech.laser1.description'>A XX. század óta ismert a fegyver elve, de tényleges katonai alkalmazásra csak két évszázaddal később került. Viszonylag gyenge, de pontos fegyver.</entry>
-	<entry key='tech.laser2.name'>Lézer 2</entry>
+	<entry key='tech.laser2.name'>Lézer v2</entry>
 	<entry key='tech.laser2.longname'>Lézer v2.0</entry>
 	<entry key='tech.laser2.description'>Az ikerlézerágyú elvében nem különbözik elődjétől, csak a hatásfok és a pontosság javult. Ugyanakkora helyen immár két lézerágyú helyezhető el.</entry>
-	<entry key='tech.laser3.name'>Lézer 3</entry>
+	<entry key='tech.laser3.name'>Lézer v3</entry>
 	<entry key='tech.laser3.longname'>Lézer v3.0</entry>
 	<entry key='tech.laser3.description'>A hűtőrendszer jelentős javításával sikerült a teljesítményt jelentősen fokozni, amely a harci lézerek még hatékonyabb alkalmazását tette lehetővé.</entry>
-	<entry key='tech.laser4.name'>Lézer 4</entry>
+	<entry key='tech.laser4.name'>Lézer v4</entry>
 	<entry key='tech.laser4.longname'>Lézer v4.0</entry>
 	<entry key='tech.laser4.description'>A két korábbi verzió ötvözésével készült ez a fegyver, amely az ikerrendszerű felépítés mellett az új hűtőrendszert is alkalmazza.</entry>
 	
@@ -667,7 +668,7 @@
 	<entry key='tech.rocket2.name'>Rakéta 2</entry>
 	<entry key='tech.rocket2.longname'>Rakéta v2.0</entry>
 	<entry key='tech.rocket2.description'>Gyorsabb és erősebb változata a korábbi rakétatípusnak. Intelligensebb célkövető rendszere miatt a találati valószínűség is lényegesen nagyobb.</entry>
-	<entry key='tech.multiheadedrocket.name'>Robbanófejes rakéta</entry>
+	<entry key='tech.multiheadedrocket.name'>Többfejes rakéta</entry>
 	<entry key='tech.multiheadedrocket.longname'>Robbanófejes rakéta</entry>
 	<entry key='tech.multiheadedrocket.description'>Elődeivel ellentétben nem a robbanófej méretével értek el nagyobb pusztítóerőt a fejlesztők, hanem a robbanófejek számát növelték meg. Vadászok ellen javasolt.</entry>
 
@@ -683,13 +684,13 @@
 	<entry key='tech.behemoth.name'>Behemót</entry>
 	<entry key='tech.behemoth.longname'>Behemót</entry>
 	<entry key='tech.behemoth.description'>Különleges titánium-ötvözetből készült páncélzatú, viszonylag lassú tank. Hatótávolság: 5  Sebesség: 3  Páncélzat:7</entry>
-	<entry key='tech.radarcar.name'>Radaros kocsi</entry>
+	<entry key='tech.radarcar.name'>Felderítő egység</entry>
 	<entry key='tech.radarcar.longname'>Felderítő radar egység</entry>
 	<entry key='tech.radarcar.description'>Földi csatákban az ellenséges csapatmozgások nyomonkövetését megkönnyítő egység.</entry>
-	<entry key='tech.rocketlauncher1.name'>Rakétavető 1</entry>
+	<entry key='tech.rocketlauncher1.name'>Rakétavető v1</entry>
 	<entry key='tech.rocketlauncher1.longname'>Rakétavető v1.0 "Kobra"</entry>
 	<entry key='tech.rocketlauncher1.description'>Könnyen sebezhető, de gyors és meglehetősen erős rakétás egység. Hatótávolság: 7  Sebesség: 6.5  Páncélzat: 2</entry>
-	<entry key='tech.rocketlauncher2.name'>Rakétavető 2</entry>
+	<entry key='tech.rocketlauncher2.name'>Rakétavető v2</entry>
 	<entry key='tech.rocketlauncher2.longname'>Rakétavető v2.0 "Katyusa"</entry>
 	<entry key='tech.rocketlauncher2.description'>Ennél az egységnél a tervezők a tűzerő rovására feláldoztak valamennyit a páncélból. Hatótávolság: 8  Sebesség: 7  Páncélzat: 1</entry>
 
@@ -699,14 +700,14 @@
 	<entry key='tech.phoodfactory.name'>Élelmiszerüzem</entry>
 	<entry key='tech.phoodfactory.longname'>Élelmiszerüzem</entry>
 	<entry key='tech.phoodfactory.description'>Az élelmiszerellátó központ továbbfejlesztett változata ez az élelmiszer nagyüzem, ami 20.000 ember ellátását biztosítja.</entry>
-	<entry key='tech.tradecenter.name'>Kereskedelmi központ</entry>
+	<entry key='tech.tradecenter.name'>Kereskedelmi kp.</entry>
 	<entry key='tech.tradecenter.longname'>Kereskedelmi központ</entry>
 	<entry key='tech.tradecenter.description'>A kereskedelmi élet irányítóközpontja, s a helyi tőzsde is itt kap helyet. Megépítése után 1.200 credit napi bevételt biztosít.</entry>
 
-	<entry key='tech.inversionshield.name'>Bolygópajzs 1</entry>
+	<entry key='tech.inversionshield.name'>Bolygópajzs v1</entry>
 	<entry key='tech.inversionshield.longname'>Planetáris védőpajzs v1.0</entry>
 	<entry key='tech.inversionshield.description'>Viszonylag kezdetleges és gyenge pajzs a teljes bolygófelszín védelmére.</entry>
-	<entry key='tech.hypershield.name'>Bolygópajzs 2</entry>
+	<entry key='tech.hypershield.name'>Bolygópajzs v2</entry>
 	<entry key='tech.hypershield.longname'>Planetáris védőpajzs v2.0</entry>
 	<entry key='tech.hypershield.description'>A korábbi planetáris pajzs továbbfejlesztett változata, jóval erősebb védőképességgel, de nagyobb energiafogyasztással.</entry>
 
@@ -720,20 +721,20 @@
 	<entry key='tech.bunker.longname'>Bunker</entry>
 	<entry key='tech.bunker.description'>Űrből érkező és felszíni támadások esetén a lakosság menedéket találhat az óvóhelyen, így a polgári lakosság veszteségei kisebbek lesznek.</entry>
 
-	<entry key='tech.radartelescope.name'>Kolónia Radar 1</entry>
+	<entry key='tech.radartelescope.name'>Radar v1</entry>
 	<entry key='tech.radartelescope.longname'>Kolónia Radar v1.0</entry>
 	<entry key='tech.radartelescope.description'>A bolygó közelébe merészkedő ellenséges flották felderítésére használható. Radar nélküli bolygóinkat az ellenség észrevétlenül közelítheti meg, és foglalhatja el.</entry>
-	<entry key='tech.fieldtelescope.name'>Kolónia Radar 2</entry>
+	<entry key='tech.fieldtelescope.name'>Radar v2</entry>
 	<entry key='tech.fieldtelescope.longname'>Kolónia Radar v2.0</entry>
 	<entry key='tech.fieldtelescope.description'>Hasonló funkciót lát el, mint elődje, csak a radarmodul hatékonyságának megnövelésével nagyobb terület figyelésére képes.</entry>
-	<entry key='tech.phasedtelescope.name'>Kolónia Radar 3</entry>
+	<entry key='tech.phasedtelescope.name'>Radar v3</entry>
 	<entry key='tech.phasedtelescope.longname'>Kolónia Radar v3.0</entry>
 	<entry key='tech.phasedtelescope.description'>Speciális sugarakat használva ez a radar képes áthatolni távoli bolygók légkörén is, így információt szolgáltat a bolygó felszínéről, a benépesítő fajról is.</entry>
 
 	<entry key='tech.plasmaprojector.name'>Plazmavető</entry>
 	<entry key='tech.plasmaprojector.longname'>Plazmavető</entry>
 	<entry key='tech.plasmaprojector.description'>Jóval hatékonyabb, mint az ionágyú, de energia fogyasztása is magasabb.</entry>
-	<entry key='tech.particleprojector.name'>Részecskevető ágyú</entry>
+	<entry key='tech.particleprojector.name'>Részecskevető</entry>
 	<entry key='tech.particleprojector.longname'>Részecskevető ágyú</entry>
 	<entry key='tech.particleprojector.description'>Sok ellenséges flottát állított már meg ezekből az ágyúkból álló védelem! Egyetlen hátrányuk óriási energiafogyasztásuk:egy-egy ágyú egy gyár energiáját használja fel!</entry>
 	<entry key='tech.mesonprojector.name'>Mezonlöveg</entry>
@@ -885,7 +886,7 @@
 	<entry key='buildinginfo.building.worker'>Dolgozó : %d</entry>
 	<entry key='buildinginfo.planet.surface'>%s felszín</entry>
 	
-	<entry key='colonyinfo.population.alien'>%d idegen</entry>
+	<entry key='colonyinfo.population.short.alien'>%d idegen</entry>
 	<entry key='colonyinfo.population.own'>%d %s %s</entry>
 	
 	<entry key='financialinfo.yesterday'>Tegnap</entry>

@@ -9,9 +9,12 @@
 package hu.openig.model;
 
 /**
- * A ship.
- * @author akarnokd, 2010.01.07.
+ * Indicate the type of the last user selection.
+ * @author akarnokd, 2011.04.05.
  */
-public class Ship {
-
+public enum SelectionMode {
+	/** A planet was selected. */
+	PLANET,
+	/** A fleet was selected. */
+	FLEET
 }

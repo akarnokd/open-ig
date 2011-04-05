@@ -555,7 +555,7 @@ public class StarmapScreen extends ScreenBase {
 		}
 
 		for (Planet p : commons.world().planets) {
-			if (knowledge(p, PlanetKnowledge.DISCOVERED) < 0) {
+			if (knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
 				continue;
 			}
 			BufferedImage phase = p.type.body[p.rotationPhase];
@@ -569,10 +569,10 @@ public class StarmapScreen extends ScreenBase {
 			int xt = (int)(starmapRect.x + p.x * zoom - tw / 2);
 			int yt = (int)(starmapRect.y + p.y * zoom + d / 2) + 4;
 			int labelColor = TextRenderer.GRAY;
-			if (p.owner != null && knowledge(p, PlanetKnowledge.OWNED) >= 0) {
+			if (p.owner != null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				labelColor = p.owner.color;
 			}
-			if (knowledge(p, PlanetKnowledge.NAMED) >= 0) {
+			if (knowledge(p, PlanetKnowledge.NAME) >= 0) {
 				commons.text().paintTo(g2, xt, yt, 5, labelColor, p.name);
 			}
 			if (p == planet()) {
@@ -708,14 +708,14 @@ public class StarmapScreen extends ScreenBase {
 			g2.clipRect(minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height);
 			// render planets
 			for (Planet p : commons.world().planets) {
-				if (knowledge(p, PlanetKnowledge.DISCOVERED) < 0) {
+				if (knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
 					continue;
 				}
 				if (p != planet() || minimapPlanetBlink) {
 					int x0 = minimapInnerRect.x + (p.x * minimapInnerRect.width / commons.starmap().background.getWidth());
 					int y0 = minimapInnerRect.y + (p.y * minimapInnerRect.height / commons.starmap().background.getHeight());
 					int labelColor = TextRenderer.GRAY;
-					if (p.owner != null && knowledge(p, PlanetKnowledge.OWNED) >= 0) {
+					if (p.owner != null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 						labelColor = p.owner.color;
 					}
 					g2.setColor(new Color(labelColor));

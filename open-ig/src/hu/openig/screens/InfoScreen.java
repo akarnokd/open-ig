@@ -17,9 +17,13 @@ import hu.openig.model.FleetKnowledge;
 import hu.openig.model.Named;
 import hu.openig.model.Owned;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetInventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.ResearchMainCategory;
+import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.render.RenderTools;
@@ -34,6 +38,7 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.ui.VerticalAlignment;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -152,19 +157,25 @@ public class InfoScreen extends ScreenBase {
 	})
 	Minimap minimap;
 	/** The building description title. */
-	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS, Screens.INFORMATION_INVENTIONS })
 	UILabel descriptionTitle;
 	/** The building description text. */
-	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS, Screens.INFORMATION_INVENTIONS })
 	UILabel descriptionText;
 	/** The building description text. */
-	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
+	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS, Screens.INFORMATION_INVENTIONS })
 	UIImage descriptionImage;
 	/** The title text to display. */
 	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
 	UILabel buildingTitle;
 	/** The planet name. */
-	@ModeUI(mode = { Screens.INFORMATION_PLANETS, Screens.INFORMATION_COLONY, Screens.INFORMATION_FINANCIAL, Screens.INFORMATION_MILITARY })
+	@ModeUI(mode = { 
+			Screens.INFORMATION_PLANETS, 
+			Screens.INFORMATION_COLONY, 
+			Screens.INFORMATION_FINANCIAL, 
+			Screens.INFORMATION_INVENTIONS, 
+			Screens.INFORMATION_MILITARY 
+		})
 	UILabel planetTitle;
 	/** Building cost label. */
 	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
@@ -232,11 +243,23 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_PLANETS 
 			})
 	UILabel colonyPopulation;
+	/** Other things with the planet. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_COLONY, 
+			Screens.INFORMATION_PLANETS 
+			})
+	UILabel colonyOther;
 	/** The financial info panel. */
 	@ModeUI(mode = { 
 			Screens.INFORMATION_FINANCIAL
 	})
 	FinancialInfo financialInfo;
+	/** The research info panel. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	ResearchInfo researchInfo;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -405,6 +428,9 @@ public class InfoScreen extends ScreenBase {
 			@Override
 			public void invoke(BuildingType value) {
 				player().currentBuilding = value;
+				if (value.research != null) {
+					player().currentResearch = value.research;
+				}
 				displayBuildingInfo();
 			}
 		};
@@ -412,6 +438,9 @@ public class InfoScreen extends ScreenBase {
 			@Override
 			public void invoke(BuildingType value) {
 				player().currentBuilding = value;
+				if (value.research != null) {
+					player().currentResearch = value.research;
+				}
 				displayBuildingInfo();
 				if (planet().canBuild(value)) {
 					PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
@@ -423,8 +452,11 @@ public class InfoScreen extends ScreenBase {
 		descriptionText = new UILabel("", 7, commons.text());
 		descriptionText.wrap(true);
 		descriptionText.horizontally(HorizontalAlignment.LEFT);
+		descriptionText.vertically(VerticalAlignment.TOP);
+		
 		descriptionImage = new UIImage();
 		descriptionImage.center(true);
+		
 		descriptionTitle = new UILabel("", 10, commons.text());
 		descriptionTitle.color(TextRenderer.RED);
 		descriptionTitle.horizontally(HorizontalAlignment.CENTER);
@@ -464,8 +496,12 @@ public class InfoScreen extends ScreenBase {
 		colonyRace = new UILabel("", 10, commons.text());
 		colonySurface = new UILabel("", 10, commons.text());
 		colonyPopulation = new UILabel("", 10, commons.text());
+		colonyOther = new UILabel("", 7, commons.text());
+		colonyOther.wrap(true);
+		colonyOther.vertically(VerticalAlignment.TOP);
 		
 		financialInfo = new FinancialInfo();
+		researchInfo = new ResearchInfo();
 		
 		addThis();
 	}
@@ -535,8 +571,10 @@ public class InfoScreen extends ScreenBase {
 		colonyRace.location(base.x + 420, base.y + 34 + 17);
 		colonySurface.location(base.x + 420, base.y + 34 + 17 * 2);
 		colonyPopulation.location(base.x + 420, base.y + 34 + 17 * 3);
+		colonyOther.bounds(base.x + 420, base.y + 34 + 17 * 4, 193, 12 * 3);
 		
 		financialInfo.location(base.x + 10, base.y + 10);
+		researchInfo.bounds(base.x + 2, base.y + 6, 412, 22 * 14 + 5);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -549,6 +587,11 @@ public class InfoScreen extends ScreenBase {
 		if (mode == Screens.INFORMATION_COLONY) {
 			colonyInfo.update();
 			displayPlanetInfo();
+		} else
+		if (mode == Screens.INFORMATION_INVENTIONS) {
+			displayInventionInfo();
+			g2.setColor(new Color(0xFF4C6CB4));
+			g2.drawLine(base.x + 2, descriptionTitle.y - 2, base.x + 413, descriptionTitle.y - 2);
 		} else
 		if (mode == Screens.INFORMATION_BUILDINGS) {
 			displayBuildingInfo();
@@ -608,11 +651,11 @@ public class InfoScreen extends ScreenBase {
 	/** Adjust the visibility of fields and buttons. */
 	void applyMode() {
 		setUIVisibility();
-		production.visible(production.visible() && commons.world().level >= 2);
-		research.visible(research.visible() && commons.world().level >= 3);
+		production.visible(production.visible() && world().level >= 2);
+		research.visible(research.visible() && world().level >= 3);
 
-		inventionsTab.visible(commons.world().level >= 2);
-		aliensTab.visible(commons.world().level >= 4);
+//		inventionsTab.visible(world().level >= 2);
+		aliensTab.visible(world().level >= 4);
 		
 		planetsTab.selected = mode == Screens.INFORMATION_PLANETS;
 		colonyTab.selected = mode == Screens.INFORMATION_COLONY;
@@ -772,6 +815,9 @@ public class InfoScreen extends ScreenBase {
 			allocation = new UILabel("-", textSize, commons.text());
 			autobuild = new UILabel("-", textSize, commons.text());
 			other = new UILabel("-", textSize, commons.text());
+			other.wrap(true);
+			other.vertically(VerticalAlignment.TOP);
+			other.size(397, (textSize + 2) * 3);
 			
 			lines = Arrays.asList(
 					owner, race, surface, population, housing, worker, hospital, food, energy, police,
@@ -839,20 +885,27 @@ public class InfoScreen extends ScreenBase {
 			
 			planet.text(p.name, true);
 			
-			String s = p.owner != null ? p.owner.name : "-";
-			owner.text(format("colonyinfo.owner", s), true);
-			if (p.owner != null) {
-				planet.color(p.owner.color);
-				owner.color(TextRenderer.GREEN);
+			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+				String s = p.owner != null ? p.owner.name : "-";
+				owner.text(format("colonyinfo.owner", s), true);
+				
+				if (p.owner != null) {
+					planet.color(p.owner.color);
+					owner.color(TextRenderer.GREEN);
+				} else {
+					planet.color(TextRenderer.GRAY);
+					owner.color(TextRenderer.GREEN);
+				}
+				s = p.isPopulated() ? get(p.getRaceLabel()) : "-";
+				race.text(format("colonyinfo.race", s), true);
+				owner.visible(true);
+				race.visible(true);
 			} else {
+				owner.visible(false);
+				race.visible(false);
 				planet.color(TextRenderer.GRAY);
-				owner.color(TextRenderer.GREEN);
 			}
-			s = p.isPopulated() ? get(p.getRaceLabel()) : "-";
-			race.text(format("colonyinfo.race", s), true);
-			
-			s = get(p.type.label);
-			surface.text(format("colonyinfo.surface", firstUpper(s)), true);
+			surface.text(format("colonyinfo.surface", firstUpper(get(p.type.label))), true);
 
 			population.visible(false);
 			housing.visible(false);
@@ -869,7 +922,7 @@ public class InfoScreen extends ScreenBase {
 			autobuild.visible(false);
 
 			if (p.isPopulated()) {
-				if (knowledge(p, PlanetKnowledge.BUILDINGS) >= 0) {
+				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 					if (p.owner == player()) {
 						population.text(format("colonyinfo.population", 
 								p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
@@ -915,13 +968,16 @@ public class InfoScreen extends ScreenBase {
 					doAdjustTaxButtons();
 					taxLess.visible(true);
 					taxMore.visible(true);
+				} else {
+					taxLess.visible(false);
+					taxMore.visible(false);
 				}
 			} else {
 				taxLess.visible(false);
 				taxMore.visible(false);
 			}
 			other.text(format("colonyinfo.other",
-					"" // FIXME list others
+					getOtherItems()
 			), true);
 
 			computeSize();
@@ -960,6 +1016,25 @@ public class InfoScreen extends ScreenBase {
 			}
 			return "0";
 		}
+	}
+	/** @return Return the list of other important items. */
+	String getOtherItems() {
+		StringBuilder os = new StringBuilder();
+		for (PlanetInventoryItem pii : planet().inventory) {
+			if (pii.owner == player() && pii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
+				if (os.length() > 0) {
+					os.append(", ");
+				}
+				os.append(pii.type.name);
+			} else
+			if (pii.owner == player() && pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+				if (os.length() > 0) {
+					os.append(", ");
+				}
+				os.append(pii.type.name);
+			}
+		}
+		return os.toString();
 	}
 	/** Increase the taxation level. */
 	void doTaxMore() {
@@ -1002,19 +1077,19 @@ public class InfoScreen extends ScreenBase {
 		public boolean displayFleets;
 		@Override
 		public void draw(Graphics2D g2) {
-			g2.drawImage(commons.world().galaxyModel.map, 0, 0, width, height, null);
+			g2.drawImage(world().galaxyModel.map, 0, 0, width, height, null);
 			Shape save0 = g2.getClip();
 			g2.clipRect(0, 0, width, height);
 			RenderTools.paintGrid(g2, new Rectangle(0, 0, width, height), commons.starmap().gridColor, commons.text());
 			// render planets
-			for (Planet p : commons.world().planets) {
-				if (knowledge(p, PlanetKnowledge.DISCOVERED) < 0) {
+			for (Planet p : world().planets) {
+				if (knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
 					continue;
 				}
 				int x0 = (p.x * width / commons.starmap().background.getWidth());
 				int y0 = (p.y * height / commons.starmap().background.getHeight());
 				int labelColor = TextRenderer.GRAY;
-				if (p.owner != null && knowledge(p, PlanetKnowledge.OWNED) >= 0) {
+				if (p.owner != null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 					labelColor = p.owner.color;
 				}
 				g2.setColor(new Color(labelColor));
@@ -1048,8 +1123,8 @@ public class InfoScreen extends ScreenBase {
 		 * @return the planet or null if no planet is present
 		 */
 		public Planet getPlanetAt(int x, int y) {
-			for (Planet p : commons.world().planets) {
-				if (knowledge(p, PlanetKnowledge.DISCOVERED) < 0) {
+			for (Planet p : world().planets) {
+				if (knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
 					continue;
 				}
 				int x0 = (p.x * width / commons.starmap().background.getWidth());
@@ -1305,7 +1380,7 @@ public class InfoScreen extends ScreenBase {
 	List<Planet> planetsList() {
 		List<Planet> planets = new ArrayList<Planet>();
 		for (Planet p : player().planets.keySet()) {
-			if (knowledge(p, PlanetKnowledge.OWNED) >= 0) {
+			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				planets.add(p);
 			}
 		}
@@ -1340,7 +1415,7 @@ public class InfoScreen extends ScreenBase {
 		Func1<Void, List<BuildingType>> getList = new Func1<Void, List<BuildingType>>() {
 			@Override
 			public List<BuildingType> invoke(Void value) {
-				return commons.world().listBuildings();
+				return world().listBuildings();
 			}
 		};
 		/** The action to invoke when the user selects an item. */
@@ -1355,7 +1430,7 @@ public class InfoScreen extends ScreenBase {
 			List<BuildingType> planets = getList.invoke(null);
 			Map<BuildingType, Integer> counts = player().countBuildings();
 			Map<BuildingType, Integer> current = planet().countBuildings();
-			
+			boolean showCounts = knowledge(planet(), PlanetKnowledge.OWNER) >= 0;
 			for (int j = 0; j < columns; j++) {
 				int x0 = j * columnWidth;  
 				for (int i = 0; i < rowCount; i++) {
@@ -1367,12 +1442,13 @@ public class InfoScreen extends ScreenBase {
 						String t = p.name;
 						commons.text().paintTo(g2, x0 + 30, y0 + 2, fontSize, c, t);
 						
-						Integer c0 = current.get(p);
-						Integer c1 = counts.get(p);
-						
-						String n = (c0 != null ? c0 : 0) + "/" + (c1 != null ? c1 : 0);
-						commons.text().paintTo(g2, x0, y0 + 4, 7, c1 != null ? TextRenderer.GREEN : TextRenderer.GRAY, n);
-						
+						if (showCounts) {
+							Integer c0 = current.get(p);
+							Integer c1 = counts.get(p);
+							
+							String n = (c0 != null ? c0 : 0) + "/" + (c1 != null ? c1 : 0);
+							commons.text().paintTo(g2, x0, y0 + 4, 7, c1 != null ? TextRenderer.GREEN : TextRenderer.GRAY, n);
+						}
 						if (p == player().currentBuilding) {
 							g2.setColor(new Color(player().color));
 							g2.drawRect(x0 - 2 + 30, y0, columnWidth - 30, rowHeight);
@@ -1690,13 +1766,30 @@ public class InfoScreen extends ScreenBase {
 			buildingWorker.text("", true);
 		}
 		Planet p = planet();
-		buildingPlanet.text(p.name, true);
-		if (p.owner != null) {
-			buildingPlanetOwner.text(p.owner.name, true);
+		if (knowledge(p, PlanetKnowledge.NAME) >= 0) {
+			buildingPlanet.text(p.name, true);
 		} else {
-			buildingPlanetOwner.text("-", true);
+			buildingPlanet.text("", true);
 		}
-		buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+		if (knowledge(p, PlanetKnowledge.OWNER) >= 0 && p.owner != null) {
+			buildingPlanetOwner.text(p.owner.name, true);
+			if (p.owner == player()) {
+				buildingPlanetRace.text(format("colonyinfo.population.own", 
+						p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
+				), true);
+			} else {
+				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
+					buildingPlanetRace.text(format("colonyinfo.population.short.alien", 
+							p.population
+					), true);
+				} else {
+					buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "", true);
+				}
+			}
+		} else {
+			buildingPlanetOwner.text("", true);
+			buildingPlanetRace.text("", true);
+		}
 		
 		buildingPlanetSurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
 		
@@ -1733,28 +1826,182 @@ public class InfoScreen extends ScreenBase {
 		
 		Planet p = planet();
 		
-		planetTitle.text(p.name);
-		planetTitle.color(p.isPopulated() ? p.owner.color : TextRenderer.GRAY);
+		if (knowledge(p, PlanetKnowledge.NAME) >= 0) {
+			planetTitle.text(p.name);
+			int c = TextRenderer.GRAY;
+			if (knowledge(p, PlanetKnowledge.OWNER) >= 0 && p.isPopulated()) {
+				c = p.owner.color;
+			}
+			planetTitle.color(c);
+			planetTitle.visible(true);
+		} else {
+			planetTitle.visible(false);
+		}
 		
-		colonyOwner.text(p.owner != null ? p.owner.name : "", true);
-		colonyRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+		if (knowledge(p, PlanetKnowledge.OWNER) >= 0 && p.isPopulated()) {
+			colonyOwner.text(p.owner != null ? p.owner.name : "", true);
+			colonyRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+			colonyOwner.visible(true);
+			colonyRace.visible(true);
+		} else {
+			colonyOwner.visible(false);
+			colonyRace.visible(false);
+		}
 		colonySurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
-
 		
 		if (p.owner == player()) {
 			colonyPopulation.text(format("colonyinfo.population.own", 
 					p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
 			), true).visible(true);
-			
 		} else {
-			if (knowledge(p, PlanetKnowledge.BUILDINGS) >= 0) {
-				colonyPopulation.text(format("colonyinfo.population.alien", 
+			if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
+				colonyPopulation.text(format("colonyinfo.population.short.alien", 
 						p.population
 				), true).visible(true);
 			} else {
 				colonyPopulation.visible(false);
 			}
 		}
+		colonyOther.text(getOtherItems());
+		
 		displayColonyProblems(p);
+	}
+	/** The research listing panel. */
+	class ResearchInfo extends UIComponent {
+		@Override
+		public void draw(Graphics2D g2) {
+			int col = 0;
+			int colWidth = width / 4;
+			g2.setColor(new Color(0xFF4C6CB4));
+			for (int i = 1; i < 4; i++) {
+				g2.drawLine(i * colWidth, 0, i * colWidth, height);
+			}
+			for (ResearchMainCategory mc : ResearchMainCategory.values()) {
+				int row = 0;
+				int cat = 0;
+				for (ResearchSubCategory sc : ResearchSubCategory.values()) {
+					if (sc.main == mc) {
+						List<ResearchType> res = new ArrayList<ResearchType>();
+						for (ResearchType rt : world().researches.values()) {
+							if (rt.category == sc && world().canDisplayResearch(rt)) {
+								res.add(rt);
+							}
+						}
+						cat++;
+						Collections.sort(res, new Comparator<ResearchType>() {
+							@Override
+							public int compare(ResearchType o1, ResearchType o2) {
+								return o1.index - o2.index;
+							}
+						});
+						if (cat > 1) {
+							g2.setColor(new Color(TextRenderer.GRAY));
+							g2.drawLine(col * colWidth, row * 12 - 1, (col + 1) * colWidth, row * 12 - 1);
+						}
+						for (ResearchType rt : res) {
+							int c = TextRenderer.GRAY;
+							if (player().availableResearch.contains(rt)) {
+								c = TextRenderer.ORANGE;
+							} else
+							if (player().research.containsKey(rt)) {
+								c = TextRenderer.YELLOW;
+							} else
+							if (world().canResearch(rt)) {
+								c = TextRenderer.GREEN;
+							}
+							commons.text().paintTo(g2, col * colWidth + 3, row * 12 + 2, 7, c, rt.name);
+							if (rt == player().currentResearch) {
+								g2.setColor(new Color(TextRenderer.ORANGE));
+								g2.drawRect(col * colWidth + 1, row * 12, colWidth - 2, 10);
+							}
+							row++;
+						}
+					}
+				}
+				col++;
+			}
+			super.draw(g2);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				int col = e.x * 4 / width;
+				List<ResearchType> res = getResearchColumn(col);
+				int row = e.y / 12;
+				if (row < res.size()) {
+					ResearchType rt = res.get(row);
+					player().currentResearch = rt;
+					if (rt.category.main == ResearchMainCategory.BUILDINS) {
+						// select the appropriate building type
+						for (BuildingType bt : world().buildingModel.buildings.values()) {
+							if (bt.research == rt) {
+								player().currentBuilding = bt;
+								break;
+							}
+						}
+					}
+					return true;
+				}
+			}
+			return super.mouse(e);
+		};
+	}
+	/**
+	 * Get the list of research items for the given column.
+	 * @param column the column index
+	 * @return the list of reseaches in that column
+	 */
+	public List<ResearchType> getResearchColumn(int column) {
+		List<ResearchType> res = new ArrayList<ResearchType>();
+		for (ResearchSubCategory sc : ResearchSubCategory.values()) {
+			if (sc.main == ResearchMainCategory.values()[column]) {
+				for (ResearchType rt : world().researches.values()) {
+					if (rt.category == sc && world().canDisplayResearch(rt)) {
+						res.add(rt);
+					}
+				}
+			}
+		}
+		Collections.sort(res, new Comparator<ResearchType>() {
+			@Override
+			public int compare(ResearchType o1, ResearchType o2) {
+				int c = o1.category.ordinal() - o2.category.ordinal();
+				if (c == 0) {
+					c = o1.index - o2.index; 
+				}
+				return c;
+			}
+		});
+		return res;
+	}
+	/**
+	 * Display the details of the currently selected invention.
+	 */
+	void displayInventionInfo() {
+		ResearchType rt = player().currentResearch;
+		if (rt != null) {
+			planetTitle.text(rt.name);
+			if (player().availableResearch.contains(rt)) {
+				descriptionImage.image(rt.infoImage);
+				descriptionText.text(rt.description);
+				descriptionTitle.text(rt.longName);
+				planetTitle.color(TextRenderer.ORANGE);
+			} else {
+				descriptionImage.image(rt.infoImageWired);
+				descriptionText.text("");
+				descriptionTitle.text(rt.longName);
+				if (world().canResearch(rt)) {
+					planetTitle.color(TextRenderer.GREEN);
+				} else {
+					planetTitle.color(TextRenderer.GRAY);
+				}
+			}
+			
+		} else {
+			planetTitle.text("");
+			descriptionImage.image(null);
+			descriptionText.text("");
+			descriptionTitle.text("");
+		}
 	}
 }

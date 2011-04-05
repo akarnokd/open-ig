@@ -14,13 +14,11 @@ package hu.openig.model;
  */
 public enum PlanetKnowledge {
 	/** The planet has been discovered, the name is not displayed on the starmap and the surface does not show any buildings. */
-	DISCOVERED,
+	VISIBLE,
 	/** The planet name is known and displayed, but in gray color. */
-	NAMED,
+	NAME,
 	/** The owner of the planet is known and its colored label indicates this. Buildings are outlined as black cells. */
-	OWNED,
+	OWNER,
 	/** The buildings are also drawn. */
-	BUILDINGS,
-	/** All statistics are available about the planet. Player owned planets have this flag. */
-	FULL
+	BUILDING,
 }

@@ -385,6 +385,7 @@
 	<entry key='colonyinfo.race'      >Race         : %s</entry>
 	<entry key='colonyinfo.surface'   >Surface      : %s</entry>
 	<entry key='colonyinfo.population'>Population   : %d %s (%s)</entry>
+	<entry key='colonyinfo.population.alien'>Population   : %d alien</entry>
 	<entry key='colonyinfo.housing'   >Living space : %d / %d lakos</entry>
 	<entry key='colonyinfo.worker'    >Worker       : %d / %d lakos</entry>
 	<entry key='colonyinfo.hospital'  >Hospital     : %d / %d lakos</entry>
@@ -810,7 +811,7 @@
 	<entry key='buildinginfo.building.worker'>Worker : %d</entry>
 	<entry key='buildinginfo.planet.surface'>%s surface</entry>
 	
-	<entry key='colonyinfo.population.alien'>%d alien</entry>
+	<entry key='colonyinfo.population.short.alien'>%d alien</entry>
 	<entry key='colonyinfo.population.own'>%d %s %s</entry>
 	
 	<entry key='financialinfo.yesterday'>Yesterday</entry>
