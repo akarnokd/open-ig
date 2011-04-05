@@ -69,29 +69,29 @@ public class PlanetStatistics {
 	 * @param other the other statistics
 	 */
 	public void add(PlanetStatistics other) {
-		houseAvailable = other.houseAvailable;
-		workerDemand = other.workerDemand;
-		hospitalAvailable = other.hospitalAvailable;
-		foodAvailable = other.foodAvailable;
-		policeAvailable = other.policeAvailable;
-		energyDemand = other.energyDemand;
-		energyAvailable = other.energyAvailable;
-		civilLabActive = other.civilLabActive;
-		civilLab = other.civilLab;
-		mechLabActive = other.mechLabActive;
-		mechLab = other.mechLab;
-		compLabActive = other.compLabActive;
-		compLab = other.compLab;
-		aiLabActive = other.aiLabActive;
-		aiLab = other.aiLab;
-		milLabActive = other.milLabActive;
-		milLab = other.milLab;
-		equipmentActive = other.equipmentActive;
-		equipment = other.equipment;
-		weaponsActive = other.weaponsActive;
-		weapons = other.weapons;
-		spaceshipActive = other.spaceshipActive;
-		spaceship = other.spaceship;
+		houseAvailable += other.houseAvailable;
+		workerDemand += other.workerDemand;
+		hospitalAvailable += other.hospitalAvailable;
+		foodAvailable += other.foodAvailable;
+		policeAvailable += other.policeAvailable;
+		energyDemand += other.energyDemand;
+		energyAvailable += other.energyAvailable;
+		civilLabActive += other.civilLabActive;
+		civilLab += other.civilLab;
+		mechLabActive += other.mechLabActive;
+		mechLab += other.mechLab;
+		compLabActive += other.compLabActive;
+		compLab += other.compLab;
+		aiLabActive += other.aiLabActive;
+		aiLab += other.aiLab;
+		milLabActive += other.milLabActive;
+		milLab += other.milLab;
+		equipmentActive += other.equipmentActive;
+		equipment += other.equipment;
+		weaponsActive += other.weaponsActive;
+		weapons += other.weapons;
+		spaceshipActive += other.spaceshipActive;
+		spaceship += other.spaceship;
 		problems.addAll(other.problems);
 	}
 	/**

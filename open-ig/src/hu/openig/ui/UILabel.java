@@ -8,7 +8,9 @@
 
 package hu.openig.ui;
 
+import hu.openig.core.Act;
 import hu.openig.render.TextRenderer;
+import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -44,6 +46,8 @@ public class UILabel extends UIComponent {
 	private HorizontalAlignment align = HorizontalAlignment.LEFT;
 	/** The vertical alignment. */
 	private VerticalAlignment valign = VerticalAlignment.MIDDLE;
+	/** The event handler for the mouse press. */
+	public Act onPress;
 	/**
 	 * Construct a non wrapping label with the given text size.
 	 * The label's dimensions are adjusted to the text width and height.
@@ -289,5 +293,15 @@ public class UILabel extends UIComponent {
 	public UILabel spacing(int value) {
 		this.spacing = value;
 		return this;
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		if (e.has(Type.DOWN)) {
+			if (onPress != null) {
+				onPress.act();
+				return true;
+			}
+		}
+		return super.mouse(e);
 	}
 }

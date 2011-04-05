@@ -37,7 +37,7 @@ public class Player {
 	/** The race of the player. Determines the technology tree to be used. */
 	public String race;
 	/** The in-progress production list. */
-	public final List<Production> production = new ArrayList<Production>();
+	public final Map<ResearchType, Production> production = new HashMap<ResearchType, Production>();
 	/** The in-progress research. */
 	public final Map<ResearchType, Research> research = new HashMap<ResearchType, Research>();
 	/** The completed research. */
@@ -48,8 +48,10 @@ public class Player {
 	public final Map<Fleet, FleetKnowledge> fleets = new HashMap<Fleet, FleetKnowledge>();
 	/** The planets owned. */
 	public final Map<Planet, PlanetKnowledge> planets = new HashMap<Planet, PlanetKnowledge>();
-	/** The list of aliens discovered this far. */
-	public final List<String> discoveredAliens = new ArrayList<String>();
+	/** The inventory counts. */
+	public final Map<ResearchType, Integer> inventory = new HashMap<ResearchType, Integer>();
+	/** The current running research. */
+	public ResearchType runningResearch;
 	/** The actual planet. */
 	public Planet currentPlanet;
 	/** The actual fleet. */
@@ -158,5 +160,23 @@ public class Player {
 			}
 		}
 		return result;
+	}
+	/** @return the global planet statistics. */
+	public PlanetStatistics getPlanetStatistics() {
+		PlanetStatistics ps = new PlanetStatistics();
+		for (Planet p : planets.keySet()) {
+			if (p.owner == this) {
+				ps.add(p.getStatistics());
+			}
+		}
+		return ps;
+	}
+	/**
+	 * Test if the given research is available.
+	 * @param rt the research
+	 * @return true if available
+	 */
+	public boolean isAvailable(ResearchType rt) {
+		return availableResearch.contains(rt);
 	}
 }

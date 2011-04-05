@@ -199,24 +199,88 @@ public class InfoScreen extends ScreenBase {
 	@ModeUI(mode = { Screens.INFORMATION_BUILDINGS })
 	UILabel buildingPlanetSurface;
 	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+	})
 	UIImage problemsHouse;
 	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+	})
 	UIImage problemsEnergy;
 	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+	})
 	UIImage problemsFood;
 	/** Problem indicator icon. */
-	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+	})
 	UIImage problemsHospital;
 	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+	})
 	UIImage problemsWorker;
 	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+	})
 	UIImage problemsVirus;
 	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+	})
 	UIImage problemsStadium;
 	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+	})
 	UIImage problemsRepair;
 	/** The current planet's owner. */
 	@ModeUI(mode = { 
+			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
 			Screens.INFORMATION_PLANETS 
@@ -224,6 +288,7 @@ public class InfoScreen extends ScreenBase {
 	UILabel colonyOwner;
 	/** The current planet's race. */
 	@ModeUI(mode = { 
+			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
 			Screens.INFORMATION_PLANETS 
@@ -231,20 +296,31 @@ public class InfoScreen extends ScreenBase {
 	UILabel colonyRace;
 	/** The current planet's surface. */
 	@ModeUI(mode = { 
+			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
 			Screens.INFORMATION_PLANETS 
 			})
 	UILabel colonySurface;
-	/** The current planet's surface. */
+	/** The current planet's population. */
 	@ModeUI(mode = { 
+			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
 			Screens.INFORMATION_PLANETS 
 			})
 	UILabel colonyPopulation;
+	/** The current planet's taxation. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_COLONY, 
+			Screens.INFORMATION_PLANETS 
+			})
+	UILabel colonyTax;
 	/** Other things with the planet. */
 	@ModeUI(mode = { 
+			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
 			Screens.INFORMATION_PLANETS 
@@ -260,6 +336,56 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_INVENTIONS
 	})
 	ResearchInfo researchInfo;
+	/** The research progress. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	UILabel researchProgress;
+	/** The inventory level. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	UILabel researchInventory;
+	/** The research/build cost. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	UILabel researchCost;
+	/** The research requirements. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	UILabel researchPrerequisites;
+	/** The first prerequisite. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	UILabel researchPre1;
+	/** The second prerequisite. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	UILabel researchPre2;
+	/** The third prerequisite. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	UILabel researchPre3;
+	/** The required research lab. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	final List<UILabel> researchLabs = new ArrayList<UILabel>();
+	/** The available research labs. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	final List<UILabel> researchAvailable = new ArrayList<UILabel>();
+	/** The military info panel. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_MILITARY
+	})
+	MilitaryInfoPanel militaryInfo;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -496,12 +622,60 @@ public class InfoScreen extends ScreenBase {
 		colonyRace = new UILabel("", 10, commons.text());
 		colonySurface = new UILabel("", 10, commons.text());
 		colonyPopulation = new UILabel("", 10, commons.text());
+		colonyTax = new UILabel("", 10, commons.text());
 		colonyOther = new UILabel("", 7, commons.text());
 		colonyOther.wrap(true);
 		colonyOther.vertically(VerticalAlignment.TOP);
 		
 		financialInfo = new FinancialInfo();
 		researchInfo = new ResearchInfo();
+		
+		researchProgress = new UILabel("", 10, commons.text());
+		researchInventory = new UILabel("", 10, commons.text());
+		researchCost = new UILabel("", 10, commons.text());
+
+		researchPrerequisites = new UILabel(get("researchinfo.progress.pre"), 10, commons.text());
+		researchPre1 = new UILabel("", 10, commons.text());
+		researchPre2 = new UILabel("", 10, commons.text());
+		researchPre3 = new UILabel("", 10, commons.text());
+
+		researchPre1.onPress = new Act() {
+			@Override
+			public void act() {
+				ResearchType rt = player().currentResearch;
+				if (rt != null && rt.prerequisites.size() > 0) {
+					selectResearch(rt.prerequisites.get(0));
+				}
+			}
+		};
+		researchPre2.onPress = new Act() {
+			@Override
+			public void act() {
+				ResearchType rt = player().currentResearch;
+				if (rt != null && rt.prerequisites.size() > 1) {
+					selectResearch(rt.prerequisites.get(1));
+				}
+			}
+		};
+		researchPre3.onPress = new Act() {
+			@Override
+			public void act() {
+				ResearchType rt = player().currentResearch;
+				if (rt != null && rt.prerequisites.size() > 2) {
+					selectResearch(rt.prerequisites.get(2));
+				}
+			}
+		};
+		
+		for (int i = 0; i < 5; i++) {
+			researchLabs.add(new UILabel("", 14, commons.text()).horizontally(HorizontalAlignment.CENTER));
+			researchAvailable.add(new UILabel("", 14, commons.text()).horizontally(HorizontalAlignment.CENTER));
+		}
+		
+		add(researchLabs);
+		add(researchAvailable);
+		
+		militaryInfo = new MilitaryInfoPanel();
 		
 		addThis();
 	}
@@ -571,10 +745,27 @@ public class InfoScreen extends ScreenBase {
 		colonyRace.location(base.x + 420, base.y + 34 + 17);
 		colonySurface.location(base.x + 420, base.y + 34 + 17 * 2);
 		colonyPopulation.location(base.x + 420, base.y + 34 + 17 * 3);
-		colonyOther.bounds(base.x + 420, base.y + 34 + 17 * 4, 193, 12 * 3);
+		colonyTax.location(base.x + 420, base.y + 34 + 17 *  4);
+		colonyOther.bounds(base.x + 420, base.y + 34 + 17 * 5, 193, 12 * 3);
 		
 		financialInfo.location(base.x + 10, base.y + 10);
-		researchInfo.bounds(base.x + 2, base.y + 6, 412, 22 * 14 + 5);
+		researchInfo.bounds(base.x + 2, base.y + 6, 410, 22 * 14 + 5);
+		
+		researchProgress.location(base.x + 420, base.y + 34);
+		researchInventory.location(base.x + 420, base.y + 34 + 17);
+		researchCost.location(base.x + 420, base.y + 34 + 17 * 2);
+
+		researchPrerequisites.location(base.x + 420, base.y + 34 + 17 * 6);
+		researchPre1.location(base.x + 430, base.y + 34 + 17 * 7);
+		researchPre2.location(base.x + 430, base.y + 34 + 17 * 8);
+		researchPre3.location(base.x + 430, base.y + 34 + 17 * 9);
+
+		for (int i = 0; i < 5; i++) {
+			researchLabs.get(i).bounds(base.x + 415 + i * 40, base.y + 40 + 17 * 3, 40, 14);
+			researchAvailable.get(i).bounds(base.x + 415 + i * 40, base.y + 44 + 17 * 4, 40, 14);
+		}
+		
+		militaryInfo.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -597,6 +788,10 @@ public class InfoScreen extends ScreenBase {
 			displayBuildingInfo();
 			g2.setColor(new Color(0xFF4C6CB4));
 			g2.drawLine(base.x + 2, descriptionTitle.y - 2, base.x + 413, descriptionTitle.y - 2);
+		} else
+		if (mode == Screens.INFORMATION_MILITARY) {
+			militaryInfo.update();
+			displayPlanetInfo();
 		} else
 		if (mode == Screens.INFORMATION_FINANCIAL) {
 			financialInfo.update();
@@ -1821,7 +2016,7 @@ public class InfoScreen extends ScreenBase {
 			problemsRepair.visible(false);
 		}
 	}
-	/** Display the planet info on the current selected planet. */
+	/** Display the right panel's planet info on the current selected planet. */
 	void displayPlanetInfo() {
 		
 		Planet p = planet();
@@ -1853,6 +2048,7 @@ public class InfoScreen extends ScreenBase {
 			colonyPopulation.text(format("colonyinfo.population.own", 
 					p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
 			), true).visible(true);
+			colonyTax.text(format("colonyinfo.tax", get(p.getTaxLabel())), true).visible(true);
 		} else {
 			if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 				colonyPopulation.text(format("colonyinfo.population.short.alien", 
@@ -1861,6 +2057,7 @@ public class InfoScreen extends ScreenBase {
 			} else {
 				colonyPopulation.visible(false);
 			}
+			colonyTax.visible(false);
 		}
 		colonyOther.text(getOtherItems());
 		
@@ -1899,16 +2096,7 @@ public class InfoScreen extends ScreenBase {
 							g2.drawLine(col * colWidth, row * 12 - 1, (col + 1) * colWidth, row * 12 - 1);
 						}
 						for (ResearchType rt : res) {
-							int c = TextRenderer.GRAY;
-							if (player().availableResearch.contains(rt)) {
-								c = TextRenderer.ORANGE;
-							} else
-							if (player().research.containsKey(rt)) {
-								c = TextRenderer.YELLOW;
-							} else
-							if (world().canResearch(rt)) {
-								c = TextRenderer.GREEN;
-							}
+							int c = getResearchColor(rt);
 							commons.text().paintTo(g2, col * colWidth + 3, row * 12 + 2, 7, c, rt.name);
 							if (rt == player().currentResearch) {
 								g2.setColor(new Color(TextRenderer.ORANGE));
@@ -1930,21 +2118,28 @@ public class InfoScreen extends ScreenBase {
 				int row = e.y / 12;
 				if (row < res.size()) {
 					ResearchType rt = res.get(row);
-					player().currentResearch = rt;
-					if (rt.category.main == ResearchMainCategory.BUILDINS) {
-						// select the appropriate building type
-						for (BuildingType bt : world().buildingModel.buildings.values()) {
-							if (bt.research == rt) {
-								player().currentBuilding = bt;
-								break;
-							}
-						}
-					}
+					selectResearch(rt);
 					return true;
 				}
 			}
 			return super.mouse(e);
 		};
+	}
+	/** 
+	 * Select the given research and its building type if any.
+	 * @param rt the non-null research type
+	 */
+	public void selectResearch(ResearchType rt) {
+		player().currentResearch = rt;
+		if (rt.category.main == ResearchMainCategory.BUILDINS) {
+			// select the appropriate building type
+			for (BuildingType bt : world().buildingModel.buildings.values()) {
+				if (bt.research == rt) {
+					player().currentBuilding = bt;
+					break;
+				}
+			}
+		}
 	}
 	/**
 	 * Get the list of research items for the given column.
@@ -1979,13 +2174,26 @@ public class InfoScreen extends ScreenBase {
 	 */
 	void displayInventionInfo() {
 		ResearchType rt = player().currentResearch;
+		planetTitle.text("");
+		descriptionImage.image(null);
+		descriptionText.text("");
+		descriptionTitle.text("");
+		researchProgress.visible(false);
+		researchCost.visible(false);
+		researchInventory.visible(false);
+		researchPrerequisites.visible(false);
+		researchPre1.visible(false);
+		researchPre2.visible(false);
+		researchPre3.visible(false);
+		
 		if (rt != null) {
 			planetTitle.text(rt.name);
-			if (player().availableResearch.contains(rt)) {
+			if (player().isAvailable(rt)) {
 				descriptionImage.image(rt.infoImage);
 				descriptionText.text(rt.description);
 				descriptionTitle.text(rt.longName);
 				planetTitle.color(TextRenderer.ORANGE);
+				
 			} else {
 				descriptionImage.image(rt.infoImageWired);
 				descriptionText.text("");
@@ -1996,12 +2204,249 @@ public class InfoScreen extends ScreenBase {
 					planetTitle.color(TextRenderer.GRAY);
 				}
 			}
+			if (player().research.containsKey(rt)) {
+				if (player().runningResearch == rt) {
+					researchProgress.text(format("researchinfo.progress.running", player().research.get(rt).getPercent()), true).visible(true);
+				} else {
+					researchProgress.text(format("researchinfo.progress.paused", player().research.get(rt).getPercent()), true).visible(true);
+				}
+				researchCost.text(format("researchinfo.progress.cost", rt.researchCost)).visible(true);
+			} else {
+				if (player().isAvailable(rt)) {
+					researchProgress.text(get("researchinfo.progress.done"), true).visible(true);
+					researchCost.text(format("researchinfo.progress.price", rt.productionCost), true).visible(true);
+					Integer cnt = player().inventory.get(rt);
+					if (rt.category.main != ResearchMainCategory.BUILDINS) {
+						researchInventory.text(format("researchinfo.progress.inventory", cnt != null ? cnt : 0), true).visible(true);
+					}
+				} else {
+					if (world().canResearch(rt)) {
+						researchProgress.text(get("researchinfo.progress.can"), true).visible(true);
+						researchCost.text(format("researchinfo.progress.cost", rt.researchCost), true).visible(true);
+					} else {
+						researchProgress.text(get("researchinfo.progress.cant"), true).visible(true);
+						descriptionImage.image(null);
+					}
+				}
+			}
+			if (rt.prerequisites.size() > 0) {
+				researchPrerequisites.visible(true);
+				researchPre1.text(rt.prerequisites.get(0).name, true).visible(true);
+				researchPre1.color(getResearchColor(rt.prerequisites.get(0)));
+			}
+			if (rt.prerequisites.size() > 1) {
+				researchPre2.text(rt.prerequisites.get(1).name, true).visible(true);
+				researchPre2.color(getResearchColor(rt.prerequisites.get(1)));
+			}
+			if (rt.prerequisites.size() > 2) {
+				researchPre3.text(rt.prerequisites.get(2).name, true).visible(true);
+				researchPre3.color(getResearchColor(rt.prerequisites.get(2)));
+			}
 			
-		} else {
-			planetTitle.text("");
-			descriptionImage.image(null);
-			descriptionText.text("");
-			descriptionTitle.text("");
+			researchLabs.get(0).text(Integer.toString(rt.civilLab));
+			researchLabs.get(1).text(Integer.toString(rt.mechLab));
+			researchLabs.get(2).text(Integer.toString(rt.compLab));
+			researchLabs.get(3).text(Integer.toString(rt.aiLab));
+			researchLabs.get(4).text(Integer.toString(rt.milLab));
+			
+			PlanetStatistics ps = player().getPlanetStatistics();
+
+			researchAvailable.get(0).text(Integer.toString(ps.civilLabActive));
+			researchAvailable.get(0).color(
+					ps.civilLab < rt.civilLab ? TextRenderer.RED 
+						: (ps.civilLab > ps.civilLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+			);
+			researchAvailable.get(1).text(Integer.toString(ps.mechLabActive));
+			researchAvailable.get(1).color(
+					ps.mechLab < rt.mechLab ? TextRenderer.RED 
+						: (ps.mechLab > ps.mechLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+			);
+			researchAvailable.get(2).text(Integer.toString(ps.compLabActive));
+			researchAvailable.get(2).color(
+					ps.compLab < rt.compLab ? TextRenderer.RED 
+						: (ps.compLab > ps.compLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+			);
+			researchAvailable.get(3).text(Integer.toString(ps.aiLabActive));
+			researchAvailable.get(3).color(
+					ps.aiLab < rt.aiLab ? TextRenderer.RED 
+						: (ps.aiLab > ps.aiLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+			);
+			researchAvailable.get(4).text(Integer.toString(ps.milLabActive));
+			researchAvailable.get(4).color(
+					ps.milLab < rt.milLab ? TextRenderer.RED 
+						: (ps.milLab > ps.milLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+			);
+		}
+	}
+	/**
+	 * Get the research color for the given research type.
+	 * @param rt the research type
+	 * @return the color
+	 */
+	int getResearchColor(ResearchType rt) {
+		int c = TextRenderer.GRAY;
+		if (player().isAvailable(rt)) {
+			c = TextRenderer.ORANGE;
+		} else
+		if (player().research.containsKey(rt)) {
+			c = TextRenderer.YELLOW;
+		} else
+		if (world().canResearch(rt)) {
+			c = TextRenderer.GREEN;
+		}
+		return c;
+	}
+	/**
+	 * The information panel showing some details.
+	 * @author akarnokd
+	 */
+	class MilitaryInfoPanel extends UIContainer {
+		/** The planet name. */
+		UILabel planet;
+		/** Label field. */
+		UILabel owner;
+		/** Label field. */
+		UILabel race;
+		/** Label field. */
+		UILabel surface;
+		/** Label field. */
+		UILabel population;
+		
+		/** Construct the label elements. */
+		public MilitaryInfoPanel() {
+			int textSize = 10;
+			planet = new UILabel("-", 14, commons.text());
+			planet.location(10, 5);
+			owner = new UILabel("-", textSize, commons.text());
+			owner.location(10, 25);
+			race = new UILabel("-", textSize, commons.text());
+			race.location(10, 40);
+			surface = new UILabel("-", textSize, commons.text());
+			surface.location(10, 55);
+			population = new UILabel("-", textSize, commons.text());
+			population.location(10, 70);
+
+			addThis();
+		}
+		/**
+		 * Update the display values based on the current planet's settings.
+		 */
+		public void update() {
+			Planet p = planet();
+			
+			if (p == null) {
+				return;
+			}
+			
+			planet.text(p.name, true);
+			
+			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+				String s = p.owner != null ? p.owner.name : "-";
+				owner.text(format("colonyinfo.owner", s), true);
+				
+				if (p.owner != null) {
+					planet.color(p.owner.color);
+					owner.color(TextRenderer.GREEN);
+				} else {
+					planet.color(TextRenderer.GRAY);
+					owner.color(TextRenderer.GREEN);
+				}
+				s = p.isPopulated() ? get(p.getRaceLabel()) : "-";
+				race.text(format("colonyinfo.race", s), true);
+				owner.visible(true);
+				race.visible(true);
+			} else {
+				owner.visible(false);
+				race.visible(false);
+				planet.color(TextRenderer.GRAY);
+			}
+			surface.text(format("colonyinfo.surface", firstUpper(get(p.type.label))), true);
+
+			population.visible(false);
+
+			if (p.isPopulated()) {
+				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
+					if (p.owner == player()) {
+						population.text(format("colonyinfo.population", 
+								p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+						), true).visible(true);
+					} else {
+						population.text(format("colonyinfo.population.alien", 
+								p.population
+						), true).visible(true);
+					}
+				}
+			}
+		}
+		/** 
+		 * Color the label according to the relation between the demand and available.
+		 * @param label the target label
+		 * @param format the format string to use
+		 * @param demand the demand amount
+		 * @param avail the available amount
+		 * @return the label
+		 */
+		UILabel setLabel(UILabel label, String format, int avail, int demand) {
+			label.text(format(format, avail, demand), true);
+			if (demand <= avail) {
+				label.color(TextRenderer.GREEN);
+			} else
+			if (demand < avail * 2) {
+				label.color(TextRenderer.YELLOW);
+			} else {
+				label.color(TextRenderer.RED);
+			}
+			return label;
+		}
+		/**
+		 * Add the +/- sign for the given integer value.
+		 * @param i the value
+		 * @return the string
+		 */
+		String withSign(int i) {
+			if (i < 0) {
+				return Integer.toString(i);
+			} else
+			if (i > 0) {
+				return "+" + i;
+			}
+			return "0";
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			
+			List<ResearchType> res = getResearchColumn(2);
+			
+			int row = 0;
+			for (ResearchType rt : res) {
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS 
+						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+
+					int cnt = planet().getInventoryCount(rt);
+					
+					if (player().isAvailable(rt) 
+							|| (planet().owner != player() && cnt > 0)) {
+						commons.text().paintTo(g2, 10, row * 15 + 20 + population.y, 10, TextRenderer.GREEN, rt.name);
+
+						String cntStr = "";
+						
+						if (planet().owner != player()) {
+							if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
+								cntStr = ": " + ((cnt / 10) * 10) + ".." + ((cnt / 10 + 1) * 10);
+							} else {
+								cntStr = ": ?";
+							}
+						} else {
+							cntStr = (cnt > 0 ? ": " + cnt : ": -");
+						}
+						commons.text().paintTo(g2, 150, row * 15 + 20 + population.y, 10, TextRenderer.GREEN, cntStr);
+						
+						row++;
+					}
+				}
+			}
+			
+			super.draw(g2);
 		}
 	}
 }

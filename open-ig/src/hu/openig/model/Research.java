@@ -14,4 +14,10 @@ package hu.openig.model;
  */
 public class Research {
 
+	/** @return the research progress as 100s percent. */
+	public int getPercent() {
+		// TODO proper percent computation
+		return 0;
+	}
+
 }

@@ -119,82 +119,80 @@ public class Planet implements Named, Owned {
 		int stadiumCount = 0;
 		boolean damage = false;
 		for (Building b : surface.buildings) {
-			if (b.isReady()) {
-				if (b.getEfficiency() >= 0.5) {
-					if (b.hasResource("house")) {
-						result.houseAvailable += b.getResource("house");
-					}
-					if (b.hasResource("food")) {
-						result.foodAvailable += b.getResource("food");
-					}
-					if (b.hasResource("police")) {
-						result.policeAvailable += b.getResource("police");
-					}
-					if (b.hasResource("hospital")) {
-						result.hospitalAvailable += b.getResource("hospital");
-					}
-					if (b.hasResource("spaceship")) {
-						result.spaceshipActive += b.getResource("spaceship");
-					}
-					if (b.hasResource("equipment")) {
-						result.equipmentActive += b.getResource("equipment");
-					}
-					if (b.hasResource("weapon")) {
-						result.weaponsActive += b.getResource("weapon");
-					}
-					if (b.hasResource("civil")) {
-						result.civilLabActive += b.getResource("civil");
-					}
-					if (b.hasResource("mechanical")) {
-						result.mechLabActive += b.getResource("mechanical");
-					}
-					if (b.hasResource("computer")) {
-						result.compLabActive += b.getResource("computer");
-					}
-					if (b.hasResource("ai")) {
-						result.aiLabActive += b.getResource("ai");
-					}
-					if (b.hasResource("military")) {
-						result.milLabActive += b.getResource("military");
-					}
-					if (b.hasResource("radar")) {
-						radar = Math.max(radar, (int)b.getResource("radar"));
-					}
-					if (b.type.id.equals("Stadium")) {
-						stadiumCount++;
-					}
+			if (b.getEfficiency() >= 0.5) {
+				if (b.hasResource("house")) {
+					result.houseAvailable += b.getResource("house");
+				}
+				if (b.hasResource("food")) {
+					result.foodAvailable += b.getResource("food");
+				}
+				if (b.hasResource("police")) {
+					result.policeAvailable += b.getResource("police");
+				}
+				if (b.hasResource("hospital")) {
+					result.hospitalAvailable += b.getResource("hospital");
 				}
 				if (b.hasResource("spaceship")) {
-					result.spaceship += b.getResource("spaceship");
+					result.spaceshipActive += b.getResource("spaceship");
 				}
 				if (b.hasResource("equipment")) {
-					result.equipment += b.getResource("equipment");
+					result.equipmentActive += b.getResource("equipment");
 				}
 				if (b.hasResource("weapon")) {
-					result.weapons += b.getResource("weapon");
+					result.weaponsActive += b.getResource("weapon");
 				}
 				if (b.hasResource("civil")) {
-					result.civilLab += b.getResource("civil");
+					result.civilLabActive += b.getResource("civil");
 				}
 				if (b.hasResource("mechanical")) {
-					result.mechLab += b.getResource("mechanical");
+					result.mechLabActive += b.getResource("mechanical");
 				}
 				if (b.hasResource("computer")) {
-					result.compLab += b.getResource("computer");
+					result.compLabActive += b.getResource("computer");
 				}
 				if (b.hasResource("ai")) {
-					result.aiLab += b.getResource("ai");
+					result.aiLabActive += b.getResource("ai");
 				}
 				if (b.hasResource("military")) {
-					result.milLab += b.getResource("military");
+					result.milLabActive += b.getResource("military");
 				}
-				result.workerDemand += Math.abs(b.getWorkers());
-				int e = b.getEnergy();
-				if (e < 0) {
-					result.energyDemand += -e;
-				} else {
-					result.energyAvailable += e * b.getEfficiency();
+				if (b.hasResource("radar")) {
+					radar = Math.max(radar, (int)b.getResource("radar"));
 				}
+				if (b.type.id.equals("Stadium")) {
+					stadiumCount++;
+				}
+			}
+			if (b.hasResource("spaceship")) {
+				result.spaceship += b.getResource("spaceship");
+			}
+			if (b.hasResource("equipment")) {
+				result.equipment += b.getResource("equipment");
+			}
+			if (b.hasResource("weapon")) {
+				result.weapons += b.getResource("weapon");
+			}
+			if (b.hasResource("civil")) {
+				result.civilLab += b.getResource("civil");
+			}
+			if (b.hasResource("mechanical")) {
+				result.mechLab += b.getResource("mechanical");
+			}
+			if (b.hasResource("computer")) {
+				result.compLab += b.getResource("computer");
+			}
+			if (b.hasResource("ai")) {
+				result.aiLab += b.getResource("ai");
+			}
+			if (b.hasResource("military")) {
+				result.milLab += b.getResource("military");
+			}
+			result.workerDemand += Math.abs(b.getWorkers());
+			int e = b.getEnergy();
+			if (e < 0) {
+				result.energyDemand += -e;
+			} else {
+				result.energyAvailable += e * b.getEfficiency();
 			}
 			damage |= b.hitpoints < b.type.hitpoints;
 		}
@@ -283,6 +281,20 @@ public class Planet implements Named, Owned {
 		for (Building b : surface.buildings) {
 			Integer cnt = result.get(b.type);
 			result.put(b.type, cnt != null ? cnt + 1 : 1);
+		}
+		return result;
+	}
+	/**
+	 * Returns the invetory count of the given technology.
+	 * @param rt the research technology.
+	 * @return the count
+	 */
+	public int getInventoryCount(ResearchType rt) {
+		int result = 0;
+		for (PlanetInventoryItem pii : inventory) {
+			if (pii.type == rt) {
+				result++;
+			}
 		}
 		return result;
 	}
