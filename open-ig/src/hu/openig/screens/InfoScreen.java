@@ -1996,9 +1996,13 @@ public class InfoScreen extends ScreenBase {
 				), true);
 			} else {
 				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
-					buildingPlanetRace.text(format("colonyinfo.population.short.alien", 
-							p.population
-					), true);
+					if (p.isPopulated()) {
+						buildingPlanetRace.text(format("colonyinfo.population.short.alien", 
+								p.population
+						), true);
+					} else {
+						buildingPlanetRace.text("");
+					}
 				} else {
 					buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "", true);
 				}
@@ -2073,9 +2077,13 @@ public class InfoScreen extends ScreenBase {
 			colonyTax.text(format("colonyinfo.tax", get(p.getTaxLabel())), true).visible(true);
 		} else {
 			if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
-				colonyPopulation.text(format("colonyinfo.population.short.alien", 
-						p.population
-				), true).visible(true);
+				if (p.isPopulated()) {
+					colonyPopulation.text(format("colonyinfo.population.short.alien", 
+							p.population
+					), true).visible(true);
+				} else {
+					colonyPopulation.visible(false);
+				}
 			} else {
 				colonyPopulation.visible(false);
 			}
@@ -2214,21 +2222,21 @@ public class InfoScreen extends ScreenBase {
 				Research rs = player().research.get(rt);
 				switch (rs.state) {
 				case RUNNING:
-					researchProgress.text(format("researchinfo.progress.running", rs.getPercent()), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.running", (int)rs.getPercent()), true).visible(true);
 					break;
 				case STOPPED:
-					researchProgress.text(format("researchinfo.progress.paused", rs.getPercent()), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.paused", (int)rs.getPercent()), true).visible(true);
 					break;
 				case LAB:
-					researchProgress.text(format("researchinfo.progress.lab", rs.getPercent()), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.lab", (int)rs.getPercent()), true).visible(true);
 					break;
 				case MONEY:
-					researchProgress.text(format("researchinfo.progress.money", rs.getPercent()), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.money", (int)rs.getPercent()), true).visible(true);
 					break;
 				default:
 					researchProgress.text("");
 				}
-				researchCost.text(format("researchinfo.progress.cost", rt.researchCost)).visible(true);
+				researchCost.text(format("researchinfo.progress.cost", rt.researchCost), true).visible(true);
 			} else {
 				if (player().isAvailable(rt)) {
 					researchProgress.text(get("researchinfo.progress.done"), true).visible(true);

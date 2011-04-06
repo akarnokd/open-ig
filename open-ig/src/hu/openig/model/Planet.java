@@ -187,12 +187,14 @@ public class Planet implements Named, Owned {
 			if (b.hasResource("military")) {
 				result.milLab += b.getResource("military");
 			}
-			result.workerDemand += Math.abs(b.getWorkers());
-			int e = b.getEnergy();
-			if (e < 0) {
-				result.energyDemand += -e;
-			} else {
-				result.energyAvailable += e * b.getEfficiency();
+			if (b.isReady()) {
+				result.workerDemand += Math.abs(b.getWorkers());
+				int e = b.getEnergy();
+				if (e < 0) {
+					result.energyDemand += -e;
+				} else {
+					result.energyAvailable += e * b.getEfficiency();
+				}
 			}
 			damage |= b.hitpoints < b.type.hitpoints;
 		}

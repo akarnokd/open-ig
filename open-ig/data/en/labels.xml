@@ -822,10 +822,10 @@
 	<entry key='financialinfo.build_cost'     >Build cost      : %d cr</entry>
 	
 	<entry key='researchinfo.progress.done'>Done</entry>
-	<entry key='researchinfo.progress.running'>Running... %d%%</entry>
-	<entry key='researchinfo.progress.paused'>Paused... %d%%</entry>
-	<entry key='researchinfo.progress.money'>Money shortage... %d%%</entry>
-	<entry key='researchinfo.progress.lab'>Capacity shortage... %d%%</entry>
+	<entry key='researchinfo.progress.running'>Running: %d%%</entry>
+	<entry key='researchinfo.progress.paused'>Paused: %d%%</entry>
+	<entry key='researchinfo.progress.money'>Money shortage: %d%%</entry>
+	<entry key='researchinfo.progress.lab'>Cap. shortage: %d%%</entry>
 	<entry key='researchinfo.progress.can'>Researchable</entry>
 	<entry key='researchinfo.progress.cant'>Not researchable</entry>
 	<entry key='researchinfo.progress.inventory'>Inventory : %d</entry>

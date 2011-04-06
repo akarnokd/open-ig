@@ -8,6 +8,7 @@
 
 package hu.openig.test;
 
+import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
@@ -15,8 +16,12 @@ import hu.openig.gfx.DatabaseGFX;
 import hu.openig.model.Player;
 import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
+import hu.openig.screens.GameControls;
+import hu.openig.screens.ScreenBase;
+import hu.openig.screens.Screens;
 
 import java.awt.Container;
+import java.awt.FontMetrics;
 import java.util.concurrent.Executors;
 
 import javax.swing.GroupLayout;
@@ -32,6 +37,95 @@ public class DatabaseTest extends JFrame {
 	private static final long serialVersionUID = -227388662977233871L;
 	/** The resource locator. */
 	protected ResourceLocator rl;
+	/** @return The game controls. */
+	public GameControls controls() {
+		return new GameControls() {
+
+			@Override
+			public void switchLanguage(String newLanguage) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public ScreenBase displayPrimary(Screens screen) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public ScreenBase displaySecondary(Screens screen) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public void hideSecondary() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void playVideos(String... videos) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void playVideos(Act onComplete, String... videos) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void displayStatusbar() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void hideStatusbar() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void exit() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void repaintInner() {
+				repaint();
+				
+			}
+
+			@Override
+			public int getInnerWidth() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getInnerHeight() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public void repaintInner(int x, int y, int w, int h) {
+				repaint();
+			}
+
+			@Override
+			public FontMetrics fontMetrics(int size) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+		};
+	}
 	/**
 	 * Constructor.
 	 * @param rl the resource locator
@@ -49,7 +143,7 @@ public class DatabaseTest extends JFrame {
 		TextRenderer txt = new TextRenderer(rl);
 		
 		DatabasePainter p = new DatabasePainter(dbGFX, txt);
-		World w = new World(Executors.newCachedThreadPool());
+		World w = new World(Executors.newCachedThreadPool(), controls());
 		w.level = 5;
 		w.player = new Player();
 //		w.player.discoveredAliens.addAll(Arrays.asList(

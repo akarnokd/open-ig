@@ -173,7 +173,7 @@ public class SingleplayerScreen extends ScreenBase {
 			Thread t1 = new Thread("Start Game Loading") {
 				@Override 
 				public void run() {
-					final World world = new World(commons.pool);
+					final World world = new World(commons.pool, commons.control());
 					world.definition = selectedDefinition;
 					world.difficulty = Difficulty.values()[difficulty];
 					final Labels labels = new Labels(); 
