@@ -20,6 +20,8 @@ import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -611,5 +613,40 @@ public class World {
 		}
 		return c;
 	}
-
+	/**
+	 * @return Returns an ordered list of the research types.
+	 */
+	public List<ResearchType> getResearch() {
+		List<ResearchType> res = new ArrayList<ResearchType>(researches.values());
+		Collections.sort(res, new Comparator<ResearchType>() {
+			@Override
+			public int compare(ResearchType o1, ResearchType o2) {
+				int c = o1.category.main.ordinal() - o2.category.main.ordinal();
+				if (c == 0) {
+					c = o1.category.ordinal() - o2.category.ordinal();
+					if (c == 0) {
+						c = o1.index - o2.index;
+					}
+				}
+				return c;
+			}
+		});
+		return res;
+	}
+	/** 
+	 * Select the given research and its building type if any.
+	 * @param rt the non-null research type
+	 */
+	public void selectResearch(ResearchType rt) {
+		player.currentResearch = rt;
+		if (rt.category.main == ResearchMainCategory.BUILDINS) {
+			// select the appropriate building type
+			for (BuildingType bt : buildingModel.buildings.values()) {
+				if (bt.research == rt) {
+					player.currentBuilding = bt;
+					break;
+				}
+			}
+		}
+	}
 }

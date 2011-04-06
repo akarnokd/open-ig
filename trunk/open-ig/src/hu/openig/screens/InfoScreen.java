@@ -21,6 +21,7 @@ import hu.openig.model.PlanetInventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
@@ -371,6 +372,11 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_INVENTIONS
 	})
 	UILabel researchPre3;
+	/** The required lab label. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_INVENTIONS
+	})
+	UILabel researchRequiredLabs;
 	/** The required research lab. */
 	@ModeUI(mode = { 
 			Screens.INFORMATION_INVENTIONS
@@ -644,7 +650,7 @@ public class InfoScreen extends ScreenBase {
 			public void act() {
 				ResearchType rt = player().currentResearch;
 				if (rt != null && rt.prerequisites.size() > 0) {
-					selectResearch(rt.prerequisites.get(0));
+					world().selectResearch(rt.prerequisites.get(0));
 				}
 			}
 		};
@@ -653,7 +659,7 @@ public class InfoScreen extends ScreenBase {
 			public void act() {
 				ResearchType rt = player().currentResearch;
 				if (rt != null && rt.prerequisites.size() > 1) {
-					selectResearch(rt.prerequisites.get(1));
+					world().selectResearch(rt.prerequisites.get(1));
 				}
 			}
 		};
@@ -662,7 +668,7 @@ public class InfoScreen extends ScreenBase {
 			public void act() {
 				ResearchType rt = player().currentResearch;
 				if (rt != null && rt.prerequisites.size() > 2) {
-					selectResearch(rt.prerequisites.get(2));
+					world().selectResearch(rt.prerequisites.get(2));
 				}
 			}
 		};
@@ -671,6 +677,8 @@ public class InfoScreen extends ScreenBase {
 			researchLabs.add(new UILabel("", 14, commons.text()).horizontally(HorizontalAlignment.CENTER));
 			researchAvailable.add(new UILabel("", 14, commons.text()).horizontally(HorizontalAlignment.CENTER));
 		}
+		
+		researchRequiredLabs = new UILabel(get("researchinfo.required_labs"), 7, commons.text());
 		
 		add(researchLabs);
 		add(researchAvailable);
@@ -755,15 +763,18 @@ public class InfoScreen extends ScreenBase {
 		researchInventory.location(base.x + 420, base.y + 34 + 17);
 		researchCost.location(base.x + 420, base.y + 34 + 17 * 2);
 
-		researchPrerequisites.location(base.x + 420, base.y + 34 + 17 * 6);
-		researchPre1.location(base.x + 430, base.y + 34 + 17 * 7);
-		researchPre2.location(base.x + 430, base.y + 34 + 17 * 8);
-		researchPre3.location(base.x + 430, base.y + 34 + 17 * 9);
+		researchPrerequisites.location(base.x + 420, base.y + 60 + 17 * 5);
+		researchPre1.location(base.x + 430, base.y + 60 + 17 * 6);
+		researchPre2.location(base.x + 430, base.y + 60 + 17 * 7);
+		researchPre3.location(base.x + 430, base.y + 60 + 17 * 8);
 
 		for (int i = 0; i < 5; i++) {
-			researchLabs.get(i).bounds(base.x + 415 + i * 40, base.y + 40 + 17 * 3, 40, 14);
-			researchAvailable.get(i).bounds(base.x + 415 + i * 40, base.y + 44 + 17 * 4, 40, 14);
+			researchLabs.get(i).bounds(base.x + 415 + i * 40, base.y + 50 + 17 * 3, 40, 14);
+			researchAvailable.get(i).bounds(base.x + 415 + i * 40, base.y + 54 + 17 * 4, 40, 14);
 		}
+		
+		researchRequiredLabs.location(base.x + 420, base.y + 34 + 17 * 3);
+		
 		
 		militaryInfo.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
 	}
@@ -862,6 +873,17 @@ public class InfoScreen extends ScreenBase {
 		aliensTab.selected = mode == Screens.INFORMATION_ALIENS;
 		
 		minimap.displayFleets = mode == Screens.INFORMATION_FLEETS;
+		
+		if (mode == Screens.INFORMATION_INVENTIONS) {
+			ResearchType rt = player().currentResearch;
+			if (rt == null) {
+				List<ResearchType> rts = world().getResearch();
+				if (rts.size() > 0) {
+					rt = rts.get(0);
+					world().selectResearch(rt);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -2118,28 +2140,12 @@ public class InfoScreen extends ScreenBase {
 				int row = e.y / 12;
 				if (row < res.size()) {
 					ResearchType rt = res.get(row);
-					selectResearch(rt);
+					world().selectResearch(rt);
 					return true;
 				}
 			}
 			return super.mouse(e);
 		};
-	}
-	/** 
-	 * Select the given research and its building type if any.
-	 * @param rt the non-null research type
-	 */
-	public void selectResearch(ResearchType rt) {
-		player().currentResearch = rt;
-		if (rt.category.main == ResearchMainCategory.BUILDINS) {
-			// select the appropriate building type
-			for (BuildingType bt : world().buildingModel.buildings.values()) {
-				if (bt.research == rt) {
-					player().currentBuilding = bt;
-					break;
-				}
-			}
-		}
 	}
 	/**
 	 * Get the list of research items for the given column.
@@ -2205,10 +2211,22 @@ public class InfoScreen extends ScreenBase {
 				}
 			}
 			if (player().research.containsKey(rt)) {
-				if (player().runningResearch == rt) {
-					researchProgress.text(format("researchinfo.progress.running", player().research.get(rt).getPercent()), true).visible(true);
-				} else {
-					researchProgress.text(format("researchinfo.progress.paused", player().research.get(rt).getPercent()), true).visible(true);
+				Research rs = player().research.get(rt);
+				switch (rs.state) {
+				case RUNNING:
+					researchProgress.text(format("researchinfo.progress.running", rs.getPercent()), true).visible(true);
+					break;
+				case STOPPED:
+					researchProgress.text(format("researchinfo.progress.paused", rs.getPercent()), true).visible(true);
+					break;
+				case LAB:
+					researchProgress.text(format("researchinfo.progress.lab", rs.getPercent()), true).visible(true);
+					break;
+				case MONEY:
+					researchProgress.text(format("researchinfo.progress.money", rs.getPercent()), true).visible(true);
+					break;
+				default:
+					researchProgress.text("");
 				}
 				researchCost.text(format("researchinfo.progress.cost", rt.researchCost)).visible(true);
 			} else {

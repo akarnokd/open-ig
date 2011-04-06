@@ -38,7 +38,7 @@ public class TechnologyVideoRenderer {
 	/** The associated video. */
 	protected final ResourcePlace video;
 	/** The technology frames. */
-	protected List<BufferedImage> images;
+	protected List<BufferedImage> images = new ArrayList<BufferedImage>();
 	/** The frames per second override. */
 	public Double fpsOverride;
 	/** The action to invoke on the EDT for each frame. */
@@ -98,7 +98,6 @@ public class TechnologyVideoRenderer {
 				if (fpsOverride != null) {
 					fps = fpsOverride;
 				}
-				images = new ArrayList<BufferedImage>(frames + 1);
 				int[] palette = new int[256];
 				byte[] bytebuffer = new byte[w * h];
 				int[] currentImage = new int[w * h];
@@ -152,7 +151,7 @@ public class TechnologyVideoRenderer {
 			} finally {
 				try { in.close(); } catch (IOException ex) {  }
 			}
-		} catch (IOException ex) {
+		} catch (Throwable ex) {
 			ex.printStackTrace();
 		}
 		if (images.size() > 0 && !stopped) {

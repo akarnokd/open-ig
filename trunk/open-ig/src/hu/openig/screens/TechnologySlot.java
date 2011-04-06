@@ -98,10 +98,10 @@ public class TechnologySlot extends UIComponent {
 					BufferedImage[] rolling = commons.research().rolling;
 					g2.drawImage(rolling[animationStep % rolling.length], target.x + 5, target.y + 49, null);
 				}
-				if (missingActiveLab) {
+				if (missingLab) {
 					g2.drawImage(commons.research().researchMissingLab, target.x + 5 + 16, target.y + 49 + 5, null);
 				} else
-				if (missingLab) {
+				if (missingActiveLab) {
 					g2.drawImage(commons.research().researchMissingPrerequisite, target.x + 5 + 16, target.y + 49 + 5, null);
 				}
 
