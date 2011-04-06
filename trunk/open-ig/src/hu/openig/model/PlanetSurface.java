@@ -301,12 +301,14 @@ public class PlanetSurface {
 	 * @param alpha the new lighting level
 	 */
 	public void setAlpha(float alpha) {
+		if (Math.abs(alpha - this.alpha) >= 0.001) {
 		this.alpha = alpha;
-		for (SurfaceFeature sf : features) {
-			sf.tile.alpha = alpha;
-		}
-		for (Building b : buildings) {
-			b.tileset.normal.alpha = alpha;
+			for (SurfaceFeature sf : features) {
+				sf.tile.alpha = alpha;
+			}
+			for (SurfaceEntity se : buildingmap.values()) {
+				se.tile.alpha = alpha;
+			}
 		}
 	}
 	/**

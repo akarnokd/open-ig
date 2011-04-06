@@ -17,8 +17,8 @@ import java.awt.image.BufferedImage;
 /**
  * A three state image button with normal, select+pressed and selected state.
  * The difference from <code>UIImageButton</code>
- * that when clicked, the button remains in the down state.
- * You must manually remove the down state.
+ * that when clicked, the button remains in the selected state.
+ * You must manually remove the selected state.
  * 
  * @author akarnokd, 2011.02.26.
  */
@@ -67,7 +67,7 @@ public class UIImageTabButton2 extends UIComponent {
 	public UIImageTabButton2(BufferedImage[] images) {
 		this.normalImage = images[0];
 		this.selectedPressedImage = images[1];
-		this.selectedImage = images.length > 1 ? images[2] : images[1];
+		this.selectedImage = images.length > 2 ? images[2] : selectedPressedImage;
 		this.width = normalImage.getWidth();
 		this.height = normalImage.getHeight();
 	}

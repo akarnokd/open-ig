@@ -907,7 +907,7 @@
 	<entry key='researchinfo.progress.cost'     >Költség : %d cr</entry>
 	<entry key='researchinfo.progress.price'    >Ár      : %d cr</entry>
 	<entry key='researchinfo.progress.pre'      >Előkövetelmények:</entry>
-	<entry key='colonyinfo.tax'>Adó: %s</entry>
+	<entry key='colonyinfo.tax_short'>Adó: %s</entry>
 	<entry key='researchinfo.required_labs'>Szükséges / Elérhető:</entry>
 	
 </labels>

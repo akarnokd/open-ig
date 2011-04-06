@@ -11,6 +11,10 @@ package hu.openig.model;
 import hu.openig.core.Act;
 import hu.openig.screens.GameControls;
 
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.Map;
+
 import javax.swing.Timer;
 
 /**
@@ -43,6 +47,7 @@ public class Simulator {
 				}
 			}
 		});
+		timer.setCoalesce(false);
 		timer.setInitialDelay(0);
 	}
 	/** 
@@ -50,23 +55,37 @@ public class Simulator {
 	 * @return true if repaint will be needed 
 	 */
 	public boolean compute() {
+		int day0 = world.time.get(GregorianCalendar.DATE);
+		world.time.add(GregorianCalendar.MINUTE, 10);
+		int day1 = world.time.get(GregorianCalendar.DATE);
+
 		boolean result = false;
+		
 		for (Player player : world.players.values()) {
+			if (day0 != day1) {
+				player.yesterday.assign(player.today);
+				player.today.clear();
+			}
 			result |= progressResearch(player) && player == world.player;
+		}
+		for (Player player : world.players.values()) {
+			result |= progressProduction(player) && player == world.player;
 		}
 		for (Planet p : world.planets) {
 			if (p.owner != null) {
-				result |= progressPlanet(p) && p == world.player.currentPlanet;
+				result |= progressPlanet(p, day0 != day1) && p == world.player.currentPlanet;
 			}
 		}
-		return result;
+//		return result;
+		return true;
 	}
 	/**
 	 * Make progress on the buildings of the planet.
 	 * @param planet the planet
+	 * @param dayChange consider day change
 	 * @return true if repaint will be needed 
 	 */
-	public boolean progressPlanet(Planet planet) {
+	public boolean progressPlanet(Planet planet, boolean dayChange) {
 		boolean result = false;
 		float freeRepair = 0;
 		for (Building b : planet.surface.buildings) {
@@ -76,6 +95,10 @@ public class Simulator {
 		}
 		final int repairCost = 20;
 		final int repairAmount = 50;
+		int tradeIncome = 0;
+		float multiply = 1.0f;
+		float moraleBoost = 0;
+		PlanetStatistics ps = planet.getStatistics();
 		for (Building b : planet.surface.buildings) {
 			if (b.isConstructing()) {
 				b.buildProgress += 200;
@@ -110,7 +133,41 @@ public class Simulator {
 				b.repairing = false;
 				result = true;
 			}
+			if (b.getEfficiency() >= 0.5) {
+				if (b.hasResource("credit")) {
+					tradeIncome += b.getResource("credit");
+				}
+				if (b.hasResource("multiply")) {
+					multiply = b.getResource("multiply");
+				}
+				if (b.hasResource("morale")) {
+					moraleBoost += b.getResource("morale");
+				}
+			}
 		}
+		
+		if (dayChange) {
+			// FIXME morale computation
+			float newMorale = planet.morale + moraleBoost - 8 * ps.problems.size() - planet.tax.percent / 4;
+			
+			newMorale = Math.max(0, Math.min(100, newMorale));
+			
+			planet.morale = (int)(planet.morale * 0.8f + 0.2f * newMorale);
+			
+			planet.tradeIncome = (int)(tradeIncome * multiply);
+			planet.taxIncome = planet.population * planet.morale * planet.tax.percent / 10000;
+
+			planet.owner.money += planet.tradeIncome + planet.taxIncome;
+			
+			planet.lastMorale = planet.morale;
+			planet.lastPopulation = planet.population;
+
+			planet.owner.yesterday.taxIncome += planet.taxIncome;
+			planet.owner.yesterday.tradeIncome += planet.tradeIncome;
+			planet.owner.yesterday.taxMorale += planet.morale;
+			planet.owner.yesterday.taxMoraleCount++;
+		}
+		
 		return result;
 	}
 	/**
@@ -169,5 +226,71 @@ public class Simulator {
 	/** @return Is the timer running? */
 	public boolean isRunning() {
 		return timer.isRunning();
+	}
+	/**
+	 * Perform the next step of the production process.
+	 * @param player the player
+	 * @return need for repaint?
+	 */
+	public boolean progressProduction(Player player) {
+		boolean result = false;
+		PlanetStatistics ps = player.getPlanetStatistics();
+		for (Map.Entry<ResearchMainCategory, Map<ResearchType, Production>> prs : player.production.entrySet()) {
+			int capacity = 0;
+			if (prs.getKey() == ResearchMainCategory.SPACESHIPS) {
+				capacity = ps.spaceshipActive;
+			} else
+			if (prs.getKey() == ResearchMainCategory.WEAPONS) {
+				capacity = ps.weaponsActive;
+			} else
+			if (prs.getKey() == ResearchMainCategory.EQUIPMENT) {
+				capacity = ps.equipmentActive;
+			}
+			int prioritySum = 0;
+			for (Production pr : prs.getValue().values()) {
+				if (pr.count > 0) {
+					prioritySum += pr.priority;
+				}
+			}
+			if (prioritySum > 0) {
+				for (Production pr : new ArrayList<Production>(prs.getValue().values())) {
+					int targetCap = (capacity * pr.priority / prioritySum) / 50;
+					if (pr.count == 0) {
+						targetCap = 0;
+					}
+					int currentCap = Math.min(Math.min(
+							player.money, 
+							targetCap
+							),
+							pr.count * pr.type.productionCost - pr.progress
+					);
+					if (currentCap > 0) {
+						player.money -= currentCap;
+						player.today.productionCost += currentCap;
+						
+						int progress = pr.progress + currentCap;
+						
+						int countDelta = progress / pr.type.productionCost;
+						int progressDelta = progress % pr.type.productionCost;
+						
+						int count0 = pr.count;
+						pr.count = Math.max(0, pr.count - countDelta);
+						pr.progress = progressDelta;
+						
+						int intoInventory = count0 - pr.count;
+						Integer invCount = player.inventory.get(pr.type);
+						player.inventory.put(pr.type, invCount != null ? invCount + intoInventory : intoInventory);
+						
+						result = true;
+					}
+				}			
+			}
+		}
+		
+		return result;
+	}
+	/** @return the current timer delay. */
+	public int getDelay() {
+		return timer.getDelay();
 	}
 }

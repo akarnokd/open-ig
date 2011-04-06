@@ -11,7 +11,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
-import hu.openig.model.ResearchType;
+import hu.openig.model.Planet;
 import hu.openig.ui.UIMouse;
 
 import java.awt.Container;
@@ -773,6 +773,7 @@ public class GameWindow extends JFrame implements GameControls {
 					} else {
 						commons.world().simulator.start();
 					}
+					repaintInner();
 					break;
 				case KeyEvent.VK_4:
 					if (e.isControlDown()) {
@@ -794,34 +795,48 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					}
 					break;
-				case KeyEvent.VK_R:
-					if (e.isControlDown()) { // reload labels
-						commons.world().labels.load(commons.rl, commons.world().name);
-						repaintInner();
-					} else {
-						result = false;
-					}
-					break;
-				case KeyEvent.VK_T:
-					if (e.isControlDown()) { // reload labels
-						if (commons.world().player.currentResearch != null) {
-							ResearchType rt = commons.world().player.currentResearch;
-							if (commons.world().player.runningResearch == rt) {
-								commons.world().player.runningResearch = null;
-								commons.world().player.research.remove(rt);
+				case KeyEvent.VK_O:
+					if (e.isControlDown()) {
+						Planet p = commons.world().player.currentPlanet; 
+						if (p != null) {
+							p.owner = commons.world().player;
+							if (p.race == null || !p.race.isEmpty()) {
+								p.race = p.owner.race;
 							}
-							commons.world().player.availableResearch.add(rt);
-							if (secondary != null 
-									&& (secondary.screen() == Screens.RESEARCH || secondary.screen() == Screens.PRODUCTION)) {
-								ResearchProductionScreen rps = ((ResearchProductionScreen)secondary);
-								rps.displayCategory(rt.category);
-							}
+							repaintInner();
 						}
-						repaintInner();
 					} else {
 						result = false;
 					}
 					break;
+//				case KeyEvent.VK_R:
+//					if (e.isControlDown()) { // reload labels
+//						commons.world().labels.load(commons.rl, commons.world().name);
+//						repaintInner();
+//					} else {
+//						result = false;
+//					}
+//					break;
+//				case KeyEvent.VK_T:
+//					if (e.isControlDown()) { // reload labels
+//						if (commons.world().player.currentResearch != null) {
+//							ResearchType rt = commons.world().player.currentResearch;
+//							if (commons.world().player.runningResearch == rt) {
+//								commons.world().player.runningResearch = null;
+//								commons.world().player.research.remove(rt);
+//							}
+//							commons.world().player.availableResearch.add(rt);
+//							if (secondary != null 
+//									&& (secondary.screen() == Screens.RESEARCH || secondary.screen() == Screens.PRODUCTION)) {
+//								ResearchProductionScreen rps = ((ResearchProductionScreen)secondary);
+//								rps.displayCategory(rt.category);
+//							}
+//						}
+//						repaintInner();
+//					} else {
+//						result = false;
+//					}
+//					break;
 				default:
 					result = false;
 				}
@@ -876,6 +891,12 @@ public class GameWindow extends JFrame implements GameControls {
 			if (movieVisible) {
 				rep = movie.mouse(UIMouse.from(e));
 			} else
+			if (statusbarVisible) {
+				if (statusbar.mouse(UIMouse.from(e))) {
+					repaintInner();
+					return;
+				}
+			}
 			if (sec != null) {
 				rep = sec.mouse(UIMouse.from(e));
 			} else
@@ -883,7 +904,7 @@ public class GameWindow extends JFrame implements GameControls {
 				rep = pri.mouse(UIMouse.from(e));
 			}
 			if (rep) {
-				repaint();
+				repaintInner();
 			}
 		}
 		@Override
