@@ -87,8 +87,9 @@ public class SingleplayerScreen extends ScreenBase {
 
 	@Override
 	public void onFinish() {
-		// TODO Auto-generated method stub
-
+		if (videoWaiter != null) {
+			videoWaiter.interrupt();
+		}
 	}
 
 	@Override
@@ -146,8 +147,7 @@ public class SingleplayerScreen extends ScreenBase {
 			// display the loading screen.
 			commons.control().displaySecondary(Screens.LOADING);
 			final Semaphore barrier = new Semaphore(-1);
-			// the completion waiter thread
-			Thread t0 = new Thread("Start Game Video Waiter") {
+			videoWaiter = new Thread("Start Game Video Waiter") {
 				@Override 
 				public void run() {
 					try {
@@ -165,8 +165,8 @@ public class SingleplayerScreen extends ScreenBase {
 					}
 				};
 			};
-			t0.setPriority(Thread.MIN_PRIORITY);
-			t0.start();
+			videoWaiter.setPriority(Thread.MIN_PRIORITY);
+			videoWaiter.start();
 			commons.world(null);
 			commons.worldLoading = true;
 			// the asynchronous loading
@@ -257,6 +257,8 @@ public class SingleplayerScreen extends ScreenBase {
 	final Rectangle campaignList = new Rectangle();
 	/** The definition. */
 	final Rectangle descriptionRect = new Rectangle();
+	/** The video playback completion waiter. */
+	private Thread videoWaiter;
 	@Override
 	public void onEnter(Screens mode) {
 		background = commons.background().difficulty[rnd.nextInt(commons.background().difficulty.length)];

@@ -11,6 +11,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
+import hu.openig.model.ResearchType;
 import hu.openig.ui.UIMouse;
 
 import java.awt.Container;
@@ -780,7 +781,27 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_R:
 					if (e.isControlDown()) { // reload labels
 						commons.world().labels.load(commons.rl, commons.world().name);
-						repaint();
+						repaintInner();
+					} else {
+						result = false;
+					}
+					break;
+				case KeyEvent.VK_T:
+					if (e.isControlDown()) { // reload labels
+						if (commons.world().player.currentResearch != null) {
+							ResearchType rt = commons.world().player.currentResearch;
+							if (commons.world().player.runningResearch == rt) {
+								commons.world().player.runningResearch = null;
+								commons.world().player.research.remove(rt);
+							}
+							commons.world().player.availableResearch.add(rt);
+							if (secondary != null 
+									&& (secondary.screen() == Screens.RESEARCH || secondary.screen() == Screens.PRODUCTION)) {
+								ResearchProductionScreen rps = ((ResearchProductionScreen)secondary);
+								rps.displayCategory(rt.category);
+							}
+						}
+						repaintInner();
 					} else {
 						result = false;
 					}

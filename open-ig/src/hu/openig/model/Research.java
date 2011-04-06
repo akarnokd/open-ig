@@ -13,11 +13,39 @@ package hu.openig.model;
  * @author akarnokd, 2010.01.07.
  */
 public class Research {
-
+	/** The research should progress. */
+	public ResearchState state;
+	/** The thing to research. */
+	public ResearchType type;
+	/** The assigned money amount. */
+	public int assignedMoney;
+	/** The remaining money amount. */
+	public int remainingMoney;
 	/** @return the research progress as 100s percent. */
 	public int getPercent() {
-		// TODO proper percent computation
-		return 0;
+		return (type.researchCost - remainingMoney) * 100 / type.researchCost;
 	}
-
+	/** @return Get the research time amount. */
+	public int getTime() {
+		if (remainingMoney == 0) {
+			return 0;
+		}
+		return type.researchCost * (100 - getPercent()) * remainingMoney / 2000 / assignedMoney;
+		
+	}
+	/**
+	 * The maximum percent of the research with the current active lab capacity.
+	 * @param ps the planet statistics
+	 * @return the max percent in 100s
+	 */
+	public int getResearchMaxPercent(PlanetStatistics ps) {
+		return 100 * (
+				Math.min(ps.civilLabActive, type.civilLab)
+				+ Math.min(ps.mechLabActive, type.mechLab)
+				+ Math.min(ps.compLabActive, type.compLab)
+				+ Math.min(ps.aiLab, type.aiLab)
+				+ Math.min(ps.milLab, type.milLab)
+		) 
+		/ (type.civilLab + type.mechLab + type.compLab + type.aiLab + type.milLab);
+	}
 }

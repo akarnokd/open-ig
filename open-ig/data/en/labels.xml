@@ -824,6 +824,8 @@
 	<entry key='researchinfo.progress.done'>Done</entry>
 	<entry key='researchinfo.progress.running'>Running... %d%%</entry>
 	<entry key='researchinfo.progress.paused'>Paused... %d%%</entry>
+	<entry key='researchinfo.progress.money'>Money shortage... %d%%</entry>
+	<entry key='researchinfo.progress.lab'>Capacity shortage... %d%%</entry>
 	<entry key='researchinfo.progress.can'>Researchable</entry>
 	<entry key='researchinfo.progress.cant'>Not researchable</entry>
 	<entry key='researchinfo.progress.inventory'>Inventory : %d</entry>
@@ -831,4 +833,7 @@
 	<entry key='researchinfo.progress.price'    >Price     : %d cr</entry>
 	<entry key='researchinfo.progress.pre'      >Prerequisites:</entry>
 	<entry key='colonyinfo.tax'>Tax: %s</entry>
+	<entry key='researchinfo.required_labs'>Required / Available:</entry>
+	
+	
 </labels>
