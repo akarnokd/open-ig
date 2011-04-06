@@ -32,8 +32,10 @@
 || *Gesture* || *Screen* || *Description* ||
 || Click || Any overlay screen || Click outside the overlay screen (e.g., the grayed area) to hide the overlay screen ||
 || CTRL+Mouse Wheel || Starmap<br>Colony || Zoom In/Out ||
-|| Mouse Wheel || Colony || Scroll up/down vertically ||
-|| Shift+Mouse Wheel || Colony || Scroll left/right horizontally ||
+|| Mouse Wheel || Starmap<br>Colony || Scroll up/down vertically ||
+|| Mouse Wheel || Information: Planets || Move to next/previous planet ||
+|| Mouse Wheel || Information: Buildings || Move to next/previous building ||
+|| Shift+Mouse Wheel || Starmap<br>Colony || Scroll left/right horizontally ||
 || Left Click || Minimap<br>Radar || Move viewport to the location ||
 || Drag with right mouse button || Starmap<br>Colony || Pan the viewport ||
 || Middle Click || Colony || Reset view to 100% zoom and center the view ||
