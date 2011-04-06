@@ -2,6 +2,20 @@
 
 <wiki:toc max_depth="1" />
 
+= April, 2011 =
+
+*April 6. 2011*
+
+I'm happy to announce that Open-IG is now playable - sort of. I've implemented most information screen tabs (except the aliens and fleets tabs). The rest of the tabs should work as expected. 
+
+I've also updated the research and production screens to reflect the true status of the world in terms of capacities and technologies.
+
+The third major improvements is the introduction of simulation: you can now build, upgrade, repair and demolish buildings; research a technology if you have enough laboratories; build ships and equipment; see how the planet morale evolves over the days; see the day-night cycles.
+
+A temporary cheat: hit CTRL+O to take ownership of an empty or enemy planet, if you need to build more laboratories or factories.
+
+*Note:* no options or load/save implemented yet.
+
 = March, 2011 =
 
 *March 30. 2011*
