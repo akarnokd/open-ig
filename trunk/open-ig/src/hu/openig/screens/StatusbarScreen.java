@@ -9,7 +9,12 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.render.TextRenderer;
+import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIImageFill;
+import hu.openig.ui.UILabel;
+
+import java.awt.Graphics2D;
 
 import javax.swing.Timer;
 
@@ -24,6 +29,8 @@ public class StatusbarScreen extends ScreenBase {
 	UIImageFill top;
 	/** The bottom bar. */
 	UIImageFill bottom;
+	/** The money label. */
+	UILabel money;
 	/** The animation timer to show the status bar. */
 	Timer animation;
 	@Override
@@ -58,6 +65,10 @@ public class StatusbarScreen extends ScreenBase {
 			}
 		});
 		
+		money = new UILabel("", 10, commons.text());
+		money.horizontally(HorizontalAlignment.CENTER);
+		money.color(TextRenderer.YELLOW);
+		
 		addThis();
 	}
 
@@ -90,5 +101,15 @@ public class StatusbarScreen extends ScreenBase {
 	@Override
 	public Screens screen() {
 		return Screens.STATUSBAR;
+	}
+	@Override
+	public void draw(Graphics2D g2) {
+		update();
+		super.draw(g2);
+	}
+	/** Update the state displays. */
+	public void update() {
+		money.bounds(top.x + 75, top.y + 3, 66, 14);
+		money.text("" + player().money);
 	}
 }

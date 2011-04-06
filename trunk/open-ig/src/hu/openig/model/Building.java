@@ -82,6 +82,9 @@ public class Building {
 	 * @return the operational efficiency
 	 */
 	public float getEfficiency() {
+		if (!enabled) {
+			return 0.0f;
+		}
 		// if the building is incomplete or is more than 50% damaged
 		if (buildProgress < type.hitpoints || hitpoints * 2 < type.hitpoints) {
 			return 0.0f;

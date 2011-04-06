@@ -736,6 +736,9 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
+					} else {
+						commons.world().simulator.setDelay(1000);
+						commons.world().simulator.start();
 					}
 					break;
 				case KeyEvent.VK_2:
@@ -746,6 +749,9 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
+					} else {
+						commons.world().simulator.setDelay(500);
+						commons.world().simulator.start();
 					}
 					break;
 				case KeyEvent.VK_3:
@@ -756,6 +762,16 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
+					} else {
+						commons.world().simulator.setDelay(250);
+						commons.world().simulator.start();
+					}
+					break;
+				case KeyEvent.VK_SPACE:
+					if (commons.world().simulator.isRunning()) {
+						commons.world().simulator.stop();
+					} else {
+						commons.world().simulator.start();
 					}
 					break;
 				case KeyEvent.VK_4:

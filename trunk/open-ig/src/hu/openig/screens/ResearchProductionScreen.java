@@ -307,6 +307,10 @@ public class ResearchProductionScreen extends ScreenBase {
 	final Map<ResearchSubCategory, UIImageTabButton> subComponents = new HashMap<ResearchSubCategory, UIImageTabButton>();
 	/** The screen mode mode. */
 	Screens mode;
+	/** The animated research type. */
+	ResearchType animationResearch;
+	/** The research status when the animation began. */
+	boolean animationResearchReady;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -1188,21 +1192,21 @@ public class ResearchProductionScreen extends ScreenBase {
 						Research rs = player().research.get(rt);
 						switch (rs.state) {
 						case RUNNING:
-							selectedTechStatusValue.text(format("researchinfo.progress.running", rs.getPercent()), true).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.running", (int)rs.getPercent()), true).visible(true);
 							break;
 						case STOPPED:
-							selectedTechStatusValue.text(format("researchinfo.progress.paused", rs.getPercent()), true).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.paused", (int)rs.getPercent()), true).visible(true);
 							break;
 						case LAB:
-							selectedTechStatusValue.text(format("researchinfo.progress.lab", rs.getPercent()), true).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.lab", (int)rs.getPercent()), true).visible(true);
 							break;
 						case MONEY:
-							selectedTechStatusValue.text(format("researchinfo.progress.money", rs.getPercent()), true).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.money", (int)rs.getPercent()), true).visible(true);
 							break;
 						default:
 							selectedTechStatusValue.text("");
 						}
-						selectedCompleteValue.text(rs.getPercent() + "%");
+						selectedCompleteValue.text((int)(rs.getPercent()) + "%");
 						selectedTimeValue.text("" + rs.getTime());
 						selectedTimeValue.color(
 								player().hasEnoughActiveLabs(rs.type) ? TextRenderer.GREEN 
@@ -1339,6 +1343,9 @@ public class ResearchProductionScreen extends ScreenBase {
 				playAnim(rt);
 			}
 		};
+		if (animationResearch == rt && animationResearchReady != slot.available) {
+			playAnim(rt);
+		}
 		return slot;
 	}
 	/**
@@ -1352,11 +1359,14 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 		video.image(null);
 		if (rt != null) {
+			animationResearch = rt;
 			if (player().isAvailable(rt)) {
 				video.image(rt.infoImage);
+				animationResearchReady = true;
 			} else
 			if (world().canResearch(rt)) {
 				video.image(rt.infoImageWired);
+				animationResearchReady = false;
 			}
 			video.center(true);
 			String vid = null;
@@ -1414,7 +1424,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			Research rs = player().research.get(rt);
 			
 			activeMoneyValue.text(rs.assignedMoney + "/" + rs.remainingMoney).visible(true);
-			activeMoneyPercentValue.text(rs.getPercent() + "%").visible(true);
+			activeMoneyPercentValue.text(((int)rs.getPercent()) + "%").visible(true);
 			
 			moneyButton.enabled(true);
 			viewActive.visible(true);

@@ -22,16 +22,18 @@ public class Research {
 	/** The remaining money amount. */
 	public int remainingMoney;
 	/** @return the research progress as 100s percent. */
-	public int getPercent() {
-		return (type.researchCost - remainingMoney) * 100 / type.researchCost;
+	public float getPercent() {
+		return (type.researchCost - remainingMoney) * 100f / type.researchCost;
 	}
 	/** @return Get the research time amount. */
 	public int getTime() {
 		if (remainingMoney == 0) {
 			return 0;
 		}
-		return type.researchCost * (100 - getPercent()) * remainingMoney / 2000 / assignedMoney;
-		
+		int normalFullTime = (type.researchCost / 20);
+		float remainingPercent = (100 - getPercent()) / 100;
+		float fundingPercent = 0.5f * remainingMoney / assignedMoney;
+		return (int)(normalFullTime * fundingPercent * remainingPercent);
 	}
 	/**
 	 * The maximum percent of the research with the current active lab capacity.

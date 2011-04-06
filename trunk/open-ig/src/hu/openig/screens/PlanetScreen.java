@@ -1860,9 +1860,18 @@ public class PlanetScreen extends ScreenBase {
 	 * @param j level
 	 */
 	void doUpgrade(int j) {
-		if (currentBuilding != null) {
-			currentBuilding.setLevel(j);
-			doAllocation();
+		if (currentBuilding != null && currentBuilding.upgradeLevel < j) {
+			int delta = (j - currentBuilding.upgradeLevel) * currentBuilding.type.cost;
+			if (player().money >= delta) {
+				player().money -= delta;
+				player().today.buildCost += delta;
+				currentBuilding.setLevel(j);
+				
+				currentBuilding.buildProgress = currentBuilding.type.hitpoints * 1 / 4;
+				currentBuilding.hitpoints = currentBuilding.buildProgress;
+				
+				doAllocation();
+			}
 		}
 	}
 	@Override
@@ -2140,21 +2149,26 @@ public class PlanetScreen extends ScreenBase {
 	void placeBuilding(boolean more) {
 		if (canPlaceBuilding(placementRectangle)) {
 
-			Building b = new Building(player().currentBuilding, race());
-			b.location = Location.of(placementRectangle.x + 1, placementRectangle.y - 1);
-			
-			planet().surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
-
-			planet().surface.placeRoads(race(), commons.world().buildingModel);
-			
-			placementMode = more && planet().canBuild(building());
-			buildingsPanel.build.down = placementMode;
-
-			buildingBox = getBoundingRect(b.location);
-			doSelectBuilding(b);
-			
-			buildingInfoPanel.update();
-			setBuildingList(0);
+			if (player().money >= player().currentBuilding.cost) {
+				player().money -= player().currentBuilding.cost;
+				player().today.buildCost += player().currentBuilding.cost;
+				
+				Building b = new Building(player().currentBuilding, race());
+				b.location = Location.of(placementRectangle.x + 1, placementRectangle.y - 1);
+				
+				planet().surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
+	
+				planet().surface.placeRoads(race(), commons.world().buildingModel);
+				
+				placementMode = more && planet().canBuild(building());
+				buildingsPanel.build.down = placementMode;
+	
+				buildingBox = getBoundingRect(b.location);
+				doSelectBuilding(b);
+				
+				buildingInfoPanel.update();
+				setBuildingList(0);
+			}
 		}
 	}
 	@Override

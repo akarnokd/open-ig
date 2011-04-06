@@ -14,6 +14,7 @@ import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
 import hu.openig.render.TextRenderer;
+import hu.openig.screens.GameControls;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
@@ -82,11 +83,12 @@ public class World {
 	/**
 	 * Construct the world.
 	 * @param pool the executor service
+	 * @param controls the game world controls
 	 */
-	public World(ExecutorService pool) {
+	public World(ExecutorService pool, GameControls controls) {
 		allocator = new ResourceAllocator(pool, planets);
 		radar = new Radar(1000, this);
-		simulator = new Simulator(1000, this);
+		simulator = new Simulator(1000, this, controls);
 	}
 	/**
 	 * Load the game world's resources.
@@ -212,6 +214,9 @@ public class World {
 		
 		processPlanets(rl.getXML(game + "/planets"));
 
+		// FIXME for testing the building/research
+		player.money = 2000000;
+		
 		try {
 			exec.shutdown();
 		} finally {

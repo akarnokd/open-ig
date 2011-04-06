@@ -519,7 +519,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					rl = commons.rl;
 
 					t = System.nanoTime();
-					commons.world(new World(commons.pool));
+					commons.world(new World(commons.pool, commons.control()));
 					commons.world().definition = SingleplayerScreen.parseDefinition(commons, "campaign/main");
 					commons.world().difficulty = Difficulty.values()[0];
 					commons.labels0().load(commons.rl, commons.world().definition.name);

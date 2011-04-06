@@ -897,10 +897,10 @@
 	<entry key='financialinfo.build_cost'     >Építési költség  : %d cr</entry>
 	
 	<entry key='researchinfo.progress.done'>Kész</entry>
-	<entry key='researchinfo.progress.running'>Fut... %d%%</entry>
-	<entry key='researchinfo.progress.paused'>Szünetel... %d%%</entry>
-	<entry key='researchinfo.progress.money'>Pénzhiány... %d%%</entry>
-	<entry key='researchinfo.progress.lab'>Kapacitáshiány... %d%%</entry>
+	<entry key='researchinfo.progress.running'>Fut: %d%%</entry>
+	<entry key='researchinfo.progress.paused'>Szünetel: %d%%</entry>
+	<entry key='researchinfo.progress.money'>Pénzhiány: %d%%</entry>
+	<entry key='researchinfo.progress.lab'>Kapacitáshiány: %d%%</entry>
 	<entry key='researchinfo.progress.can'>Kutatható</entry>
 	<entry key='researchinfo.progress.cant'>Nem kutatható</entry>
 	<entry key='researchinfo.progress.inventory'>Készlet : %d</entry>
