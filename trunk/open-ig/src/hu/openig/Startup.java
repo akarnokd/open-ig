@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
  */
 public final class Startup {
 	/** The minimum memory required to run Open-IG. */
-	public static final long MINIMUM_MEMORY = 384L;
+	public static final long MINIMUM_MEMORY = 512L;
 	/** Constructor. */
 	private Startup() {
 		// private constructor.

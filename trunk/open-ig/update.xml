@@ -25,47 +25,7 @@
 			<desc lang='en'>The program's main file</desc>
 		</file>
 	</module>
-	<module id='MapEditor' version='0.45'>
-		<general url='http://code.google.com/p/open-ig/wiki/MapEditor'>
-			<desc lang='hu'>
-				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.
-			</desc>
-			<desc lang='en'>
-				The Map Editor for the Open Imperium Galactica, which can create a new or edit an existing map.
-			</desc>
-		</general>
-		<execute file='open-ig-mapeditor-%s.jar' memory='384'/>
-		<!-- Release notes -->
-		<notes url='http://code.google.com/p/open-ig/wiki/MapEditor_Notes'>
-			<desc lang='hu'>Kép erőforrások átszervezése, javítások, új mentési formátum</desc>
-			<desc lang='en'>Image resource refactoring, bug fixes, new save format</desc>
-		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-mapeditor-0.45.jar' sha1='60183a6888e60e52d54f050df2624ba8af56d898'>
-			<desc lang='hu'>A program fő fájlja.</desc>
-			<desc lang='en'>The program's main file.</desc>
-		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110330a.zip' sha1='6122d3e4899d75c9cc5bf83caa4e318cc879c43d'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 március 30 / A</desc>
-			<desc lang='en'>The upgraded resource file. 30th March, 2011 / A</desc>
-		</file>
-		<remove file='open-ig-upgrade-20110320a.zip' sha1='8b48e7db75a0c8e7180805bd164f50c5aef8174c'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 március 20 / A</desc>
-			<desc lang='en'>The upgraded resource file. 20th March, 2011 / A</desc>
-		</remove>
-		<remove file='open-ig-upgrade-20110306a.zip' sha1='ab74be7ca4a2ff5842d32441f770d1da53fb67f7'>
-			<desc lang='hu'>Felülbírálva: 2011-03-20A</desc>
-			<desc lang='en'>Overridden by: 2011-03-20A</desc>
-		</remove>
-		<remove file='open-ig-upgrade-20110227a.zip' sha1='f6d2c266d1aa1043d972e0a5e74815c55ded954c'>
-			<desc lang='hu'>Felülbírálva: 2011-03-06A</desc>
-			<desc lang='en'>Overridden by: 2011-03-06A</desc>
-		</remove>
-		<remove file='open-ig-upgrade-20100917a.zip' sha1='99869e75dc928b8403b5a66407dd29b9c11fd671'>
-			<desc lang='hu'>Felülbírálva: 2011-02-27A</desc>
-			<desc lang='en'>Overridden by: 2011-02-27A</desc>
-		</remove>
-	</module>
-	<module id='Game' version='0.86'>
+	<module id='Game' version='0.87'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -77,10 +37,10 @@
 		<execute file='open-ig-%s.jar' memory='512'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>Bolygó képernyő integrálva, kisebb javítások.</desc>
-			<desc lang='en'>Colony screen integrated, small fixes.</desc>
+			<desc lang='hu'>Rengeteg javítás, új képességek: építés, kutatás, szimuláció és információ.</desc>
+			<desc lang='en'>Many fixes, new features: build, research, simulation and information.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.86.jar' sha1='c98f7b39705e876125b027d363a12bd68499e3dd'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.87.jar' sha1='0c94246c8c80f609327b779173b304e706c54d7e'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
@@ -108,11 +68,15 @@
 			<desc lang='hu'>A 2011 february 27 / A frissítés teljesen felülbírálja.</desc>
 			<desc lang='en'>The upgrade 27th February, 2010 / A overrides this file completely.</desc>
 		</remove>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110330a.zip' sha1='6122d3e4899d75c9cc5bf83caa4e318cc879c43d'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110406a.zip' sha1='17b71421a270e404ebd9150951c3fddaa0147317'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 április 6 / A</desc>
+			<desc lang='en'>The upgraded resource file. 6th April, 2011 / A</desc>
+		</file>
+		<remove file='open-ig-upgrade-20110330a.zip' sha1='6122d3e4899d75c9cc5bf83caa4e318cc879c43d'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 március 30 / A</desc>
 			<desc lang='en'>The upgraded resource file. 30th March, 2011 / A</desc>
-		</file>
-		<remove file='http://open-ig.googlecode.com/files/open-ig-upgrade-20110320a.zip' sha1='8b48e7db75a0c8e7180805bd164f50c5aef8174c'>
+		</remove>
+		<remove file='open-ig-upgrade-20110320a.zip' sha1='8b48e7db75a0c8e7180805bd164f50c5aef8174c'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 március 20 / A</desc>
 			<desc lang='en'>The upgraded resource file. 20th March, 2011 / A</desc>
 		</remove>
@@ -129,7 +93,51 @@
 			<desc lang='en'>The upgrade 27th February, 2010 / A overrides this file completely.</desc>
 		</remove>
 	</module>
-	<module id='Testbed' version='0.30'>
+	<module id='MapEditor' version='0.50'>
+		<general url='http://code.google.com/p/open-ig/wiki/MapEditor'>
+			<desc lang='hu'>
+				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.
+			</desc>
+			<desc lang='en'>
+				The Map Editor for the Open Imperium Galactica, which can create a new or edit an existing map.
+			</desc>
+		</general>
+		<execute file='open-ig-mapeditor-%s.jar' memory='512'/>
+		<!-- Release notes -->
+		<notes url='http://code.google.com/p/open-ig/wiki/MapEditor_Notes'>
+			<desc lang='hu'>Kép erőforrások átszervezése.</desc>
+			<desc lang='en'>Image resource refactoring.</desc>
+		</notes>
+		<file url='http://open-ig.googlecode.com/files/open-ig-mapeditor-0.50.jar' sha1='f69f6f845d8576235cdc996cf4a4c42d4dc8037a'>
+			<desc lang='hu'>A program fő fájlja.</desc>
+			<desc lang='en'>The program's main file.</desc>
+		</file>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110406a.zip' sha1='17b71421a270e404ebd9150951c3fddaa0147317'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 április 6 / A</desc>
+			<desc lang='en'>The upgraded resource file. 6th April, 2011 / A</desc>
+		</file>
+		<remove file='open-ig-upgrade-20110330a.zip' sha1='6122d3e4899d75c9cc5bf83caa4e318cc879c43d'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 március 30 / A</desc>
+			<desc lang='en'>The upgraded resource file. 30th March, 2011 / A</desc>
+		</remove>
+		<remove file='open-ig-upgrade-20110320a.zip' sha1='8b48e7db75a0c8e7180805bd164f50c5aef8174c'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 március 20 / A</desc>
+			<desc lang='en'>The upgraded resource file. 20th March, 2011 / A</desc>
+		</remove>
+		<remove file='open-ig-upgrade-20110306a.zip' sha1='ab74be7ca4a2ff5842d32441f770d1da53fb67f7'>
+			<desc lang='hu'>Felülbírálva: 2011-03-20A</desc>
+			<desc lang='en'>Overridden by: 2011-03-20A</desc>
+		</remove>
+		<remove file='open-ig-upgrade-20110227a.zip' sha1='f6d2c266d1aa1043d972e0a5e74815c55ded954c'>
+			<desc lang='hu'>Felülbírálva: 2011-03-06A</desc>
+			<desc lang='en'>Overridden by: 2011-03-06A</desc>
+		</remove>
+		<remove file='open-ig-upgrade-20100917a.zip' sha1='99869e75dc928b8403b5a66407dd29b9c11fd671'>
+			<desc lang='hu'>Felülbírálva: 2011-02-27A</desc>
+			<desc lang='en'>Overridden by: 2011-02-27A</desc>
+		</remove>
+	</module>
+	<module id='Testbed' version='0.35'>
 		<general url='http://code.google.com/p/open-ig/wiki/Testbed'>
 			<desc lang='hu'>
 				Teszt alkalmazás, amivel megtekinthető és kipróbálható a képernyők nagyrésze anélkül, hogy a szokványos
@@ -143,18 +151,22 @@
 		<execute file='open-ig-testbed-%s.jar' memory='512'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Testbed_Notes'>
-			<desc lang='hu'>Bolygó képernyő integrálva, kisebb javítások.</desc>
-			<desc lang='en'>Colony screen integrated, small fixes.</desc>
+			<desc lang='hu'>Rengeteg javítás, új képességek: építés, kutatás, szimuláció és információ.</desc>
+			<desc lang='en'>Many fixes, new features: build, research, simulation and information.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-testbed-0.30.jar' sha1='505ddb57b1d9283eb259aacefd13df0fc2e700f9'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-testbed-0.35.jar' sha1='a31d9c45ae98d3185b4320a64320d99dff3415d6'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110330a.zip' sha1='6122d3e4899d75c9cc5bf83caa4e318cc879c43d'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110406a.zip' sha1='17b71421a270e404ebd9150951c3fddaa0147317'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 április 6 / A</desc>
+			<desc lang='en'>The upgraded resource file. 6th April, 2011 / A</desc>
+		</file>
+		<remove file='open-ig-upgrade-20110330a.zip' sha1='6122d3e4899d75c9cc5bf83caa4e318cc879c43d'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 március 30 / A</desc>
 			<desc lang='en'>The upgraded resource file. 30th March, 2011 / A</desc>
-		</file>
-		<remove file='http://open-ig.googlecode.com/files/open-ig-upgrade-20110320a.zip' sha1='8b48e7db75a0c8e7180805bd164f50c5aef8174c'>
+		</remove>
+		<remove file='open-ig-upgrade-20110320a.zip' sha1='8b48e7db75a0c8e7180805bd164f50c5aef8174c'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 március 20 / A</desc>
 			<desc lang='en'>The upgraded resource file. 20th March, 2011 / A</desc>
 		</remove>

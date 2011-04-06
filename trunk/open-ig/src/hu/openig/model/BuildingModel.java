@@ -199,7 +199,7 @@ public class BuildingModel {
 				}
 				String research = bld.get("research");
 				b.research = researches.get(research);
-				if (research != null && b.research == null) {
+				if (research != null && b.research == null && researches.size() > 0) {
 					throw new AssertionError("Missing research: Building = " + b.id + ", Research = " + research);
 				}
 				String except = bld.get("except");
