@@ -136,7 +136,7 @@ public class MapEditor extends JFrame {
 	/** The minimum memory required to run Open-IG. */
 	private static final long MINIMUM_MEMORY = 384L;
 	/** The map editor's JAR file version. */
-	public static final String VERSION = "0.45";
+	public static final String VERSION = "0.50";
 	/** The title text. */
 	public static final String TITLE = "Open-IG MapEditor v" + VERSION;
 	/** The main resource locator. */
