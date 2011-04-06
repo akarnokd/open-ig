@@ -1914,9 +1914,16 @@ public class InfoScreen extends ScreenBase {
 			
 			yesterdayTaxIncome.text(format("colonyinfo.tax", player().yesterday.taxIncome), true);
 			yesterdayTradeIncome.text(format("colonyinfo.trade", player().yesterday.tradeIncome), true);
-			yesterdayTaxMorale.text(format("colonyinfo.tax-morale", 
-					player().yesterday.taxMorale, 
-					get(Planet.getMoraleLabel(player().yesterday.taxMorale))), true);
+			if (player().yesterday.taxMoraleCount > 0) {
+				yesterdayTaxMorale.text(format("colonyinfo.tax-morale", 
+						player().yesterday.taxMorale / player().yesterday.taxMoraleCount, 
+						get(Planet.getMoraleLabel(player().yesterday.taxMorale / player().yesterday.taxMoraleCount))), true);
+			} else {
+				yesterdayTaxMorale.text(format("colonyinfo.tax-morale", 
+						50, 
+						get(Planet.getMoraleLabel(50))), true);
+				
+			}
 			yesterdayProductionCost.text(format("financialinfo.production_cost", player().yesterday.productionCost), true);
 			yesterdayResearchCost.text(format("financialinfo.research_cost", player().yesterday.researchCost), true);
 			yesterdayRepairCost.text(format("financialinfo.repair_cost", player().yesterday.repairCost), true);
@@ -2074,7 +2081,7 @@ public class InfoScreen extends ScreenBase {
 			colonyPopulation.text(format("colonyinfo.population.own", 
 					p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
 			), true).visible(true);
-			colonyTax.text(format("colonyinfo.tax", get(p.getTaxLabel())), true).visible(true);
+			colonyTax.text(format("colonyinfo.tax_short", get(p.getTaxLabel())), true).visible(true);
 		} else {
 			if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 				if (p.isPopulated()) {

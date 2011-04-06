@@ -9,6 +9,8 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
@@ -177,21 +179,6 @@ public class EquipmentScreen extends ScreenBase {
 		/** Manage a planet. */
 		MANAGE_PLANET
 	}
-	/** The equipment categories. */
-	public enum EquipmentCategory {
-		/** Battleships. */
-		BATTLESHIPS,
-		/** Cruisers. */
-		CRUISERS,
-		/** Fighters. */
-		FIGHTERS,
-		/** Tanks. */
-		TANKS,
-		/** Vehicles. */
-		VEHICLES,
-		/** Stations. */
-		STATIONS
-	}
 	/** The equipment mode. */
 	Screens mode;
 	@Override
@@ -298,44 +285,20 @@ public class EquipmentScreen extends ScreenBase {
 		tanks = new UIImageTabButton(commons.equipment().categoryTanks);
 		vehicles = new UIImageTabButton(commons.equipment().categoryVehicles);
 		
-		battleships.onPress = categoryAction(EquipmentCategory.BATTLESHIPS);
-		cruisers.onPress = categoryAction(EquipmentCategory.CRUISERS);
-		fighters.onPress = categoryAction(EquipmentCategory.FIGHTERS);
-		stations.onPress = categoryAction(EquipmentCategory.STATIONS);
-		tanks.onPress = categoryAction(EquipmentCategory.TANKS);
-		vehicles.onPress = categoryAction(EquipmentCategory.VEHICLES);
+		battleships.onPress = categoryAction(ResearchSubCategory.SPACESHIPS_BATTLESHIPS);
+		cruisers.onPress = categoryAction(ResearchSubCategory.SPACESHIPS_CRUISERS);
+		fighters.onPress = categoryAction(ResearchSubCategory.SPACESHIPS_FIGHTERS);
+		stations.onPress = categoryAction(ResearchSubCategory.SPACESHIPS_STATIONS);
+		tanks.onPress = categoryAction(ResearchSubCategory.WEAPONS_TANKS);
+		vehicles.onPress = categoryAction(ResearchSubCategory.WEAPONS_VEHICLES);
 		
 		slots.clear();
 		// TODO for testing purposes only!
 		for (int i = 0; i < 6; i++) {
-			final int j = i;
 			final TechnologySlot ts = new TechnologySlot(commons);
-			ts.name = "TODO";
-			ts.inventory = 1;
-			ts.researching = true;
-			ts.percent = 0.5f;
-			ts.visible(true);
-			ts.missingActiveLab = true;
-			ts.image = rl.getImage("inventions/spaceships/fighters/fighter_" + (i + 1) + "");
-			ts.onPress = new Act() {
-				@Override
-				public void act() {
-					doSelectTechnology(ts, j);
-				}
-			};
+			ts.visible(false);
 			slots.add(ts);
 		}
-		slots.get(0).available = true;
-		slots.get(0).researching = false;
-		
-		slots.get(2).missingActiveLab = false;
-		slots.get(2).missingLab = true;
-
-		slots.get(3).visible(false);
-		
-		slots.get(4).notResearchable = true;
-		
-		slots.get(5).visible(false);
 		
 		noPlanetNearby = new UIImage(commons.equipment().noPlanetNearby);
 		noSpaceport = new UIImage(commons.equipment().noSpaceport);
@@ -403,7 +366,7 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param cat the category to set 
 	 * @return Create an action which selects the given category. 
 	 */
-	Act categoryAction(final EquipmentCategory cat) {
+	Act categoryAction(final ResearchSubCategory cat) {
 		return new Act() {
 			@Override
 			public void act() {
@@ -421,6 +384,15 @@ public class EquipmentScreen extends ScreenBase {
 			this.mode = mode; 
 		}
 		animation.start();
+		ResearchType rt = player().currentResearch;
+		if (rt == null) {
+			List<ResearchType> rts = world().getResearch();
+			if (rts.size() > 0) {
+				rt = rts.get(0);
+				world().selectResearch(rt);
+			}
+		}
+		selectCategory(rt.category);
 	}
 
 	@Override
@@ -641,13 +613,70 @@ public class EquipmentScreen extends ScreenBase {
 	 * Select/deselect a category button. Does not ask for repaint.
 	 * @param cat the category, use null to deselect all
 	 */
-	public void selectCategory(EquipmentCategory cat) {
-		battleships.down = cat == EquipmentCategory.BATTLESHIPS;
-		cruisers.down = cat == EquipmentCategory.CRUISERS;
-		fighters.down = cat == EquipmentCategory.FIGHTERS;
-		stations.down = cat == EquipmentCategory.STATIONS;
-		tanks.down = cat == EquipmentCategory.TANKS;
-		vehicles.down = cat == EquipmentCategory.VEHICLES;
+	public void selectCategory(ResearchSubCategory cat) {
+		battleships.down = cat == ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
+		cruisers.down = cat == ResearchSubCategory.SPACESHIPS_CRUISERS;
+		fighters.down = cat == ResearchSubCategory.SPACESHIPS_FIGHTERS;
+		stations.down = cat == ResearchSubCategory.SPACESHIPS_STATIONS;
+		tanks.down = cat == ResearchSubCategory.WEAPONS_TANKS;
+		vehicles.down = cat == ResearchSubCategory.WEAPONS_VEHICLES;
+		
+		for (TechnologySlot slot : slots) {
+			slot.visible(false);
+		}
+		for (final ResearchType rt : world().researches.values()) {
+			if (rt.category == cat) {
+				if (world().canDisplayResearch(rt)) {
+					if (rt.index >= 0 && rt.index < 6) {
+						updateSlot(rt);
+					}
+				}
+			}
+		}
+
+	}
+	/**
+	 * Update the slot belonging to the specified technology.
+	 * @param rt the research technology
+	 * @return the slot
+	 */
+	public TechnologySlot updateSlot(final ResearchType rt) {
+		final TechnologySlot slot = slots.get(rt.index);
+		slot.visible(true);
+		Integer inv = player().inventory.get(rt);
+		slot.inventory = inv != null ? inv.intValue() : 0;
+		slot.name = rt.name;
+		slot.selected = player().currentResearch == rt;
+		slot.available = player().isAvailable(rt);
+		slot.percent = 0;
+		if (!slot.available) {
+			slot.researching = player().research.containsKey(rt);
+			if (slot.researching) {
+				slot.percent =  player().research.get(rt).getPercent() / 100.0f;
+			}
+			slot.missingActiveLab = !player().hasEnoughActiveLabs(rt);
+			slot.missingLab = !player().hasEnoughLabs(rt);
+			slot.notResearchable = !world().canResearch(rt);
+			slot.cost = -1;
+		} else {
+			slot.cost = rt.productionCost;
+			slot.percent = 1;
+			slot.researching = false;
+			slot.notResearchable = false;
+			slot.missingActiveLab = false;
+			slot.missingLab = false;
+		}
+		
+		slot.image = rt.image;
+		
+		slot.onPress = new Act() {
+			@Override
+			public void act() {
+				doSelectTechnology(slot, rt.index);
+				world().selectResearch(rt);
+			}
+		};
+		return slot;
 	}
 	/**
 	 * Update animating components.

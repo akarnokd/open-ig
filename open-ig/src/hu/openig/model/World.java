@@ -50,6 +50,13 @@ public class World {
 	public final Map<String, Player> players = new HashMap<String, Player>();
 	/** The time. */
 	public final GregorianCalendar time = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+	{
+		time.set(GregorianCalendar.YEAR, 3427);
+		time.set(GregorianCalendar.MONTH, GregorianCalendar.AUGUST);
+		time.set(GregorianCalendar.DATE, 13);
+		time.set(GregorianCalendar.HOUR_OF_DAY, 8);
+		time.set(GregorianCalendar.MINUTE, 50);
+	}
 	/** All planets on the starmap. */
 	public final List<Planet> planets = new ArrayList<Planet>();
 	/** The list of available researches. */
@@ -430,8 +437,20 @@ public class World {
 			PlanetInventoryItem sat = new PlanetInventoryItem();
 			sat.owner = player;
 			sat.count = 1;
-			sat.type = researches.get("Satellite");
-			p.inventory.add(sat);
+			if (planets.size() % 2 == 0) {
+				sat.type = researches.get("Satellite");
+				p.inventory.add(sat);
+			} else {
+				if (p.owner != null && p.owner != player) {
+					if (planets.size() % 3 == 0) {
+						sat.type = researches.get("SpySatellite1");
+						p.inventory.add(sat);
+					} else {
+						sat.type = researches.get("SpySatellite2");
+						p.inventory.add(sat);
+					}
+				}
+			}
 		}
 	}
 	/**

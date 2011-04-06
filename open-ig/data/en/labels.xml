@@ -832,7 +832,7 @@
 	<entry key='researchinfo.progress.cost'     >Cost      : %d cr</entry>
 	<entry key='researchinfo.progress.price'    >Price     : %d cr</entry>
 	<entry key='researchinfo.progress.pre'      >Prerequisites:</entry>
-	<entry key='colonyinfo.tax'>Tax: %s</entry>
+	<entry key='colonyinfo.tax_short'>Tax: %s cr</entry>
 	<entry key='researchinfo.required_labs'>Required / Available:</entry>
 	
 	

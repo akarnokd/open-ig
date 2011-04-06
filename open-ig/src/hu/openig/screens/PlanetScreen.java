@@ -53,6 +53,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -591,6 +592,22 @@ public class PlanetScreen extends ScreenBase {
 			setBuildingList(0);
 			buildingInfoPanel.update();
 			infoPanel.update();
+			
+			int time = world().time.get(GregorianCalendar.HOUR_OF_DAY) * 6
+			+ world().time.get(GregorianCalendar.MINUTE) / 10;
+			
+			if (time < 6 * 4 || time >= 6 * 22) {
+				surface.setAlpha(0.4f);
+			} else
+			if (time >= 6 * 4 && time < 6 * 10) {
+				surface.setAlpha(0.45f + 0.5f * (time - 6 * 4) / 36);
+			} else
+			if (time >= 6 * 10 && time < 6 * 16) {
+				surface.setAlpha(1.0f);
+			} else 
+			if (time >= 6 * 16 && time < 6 * 22) {
+				surface.setAlpha(0.95f - 0.5f * (time - 6 * 16) / 36);
+			}
 			
 			RenderTools.setInterpolation(g2, true);
 			
@@ -1496,6 +1513,9 @@ public class PlanetScreen extends ScreenBase {
 	void doDemolish() {
 		surface().removeBuilding(currentBuilding);
 		surface().placeRoads(planet().race, commons.world().buildingModel);
+		
+		player().money += currentBuilding.type.cost * (1 + currentBuilding.upgradeLevel) / 2;
+		
 		doAllocation();
 		buildingBox = null;
 		doSelectBuilding(null);

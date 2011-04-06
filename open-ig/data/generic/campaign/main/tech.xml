@@ -50,7 +50,7 @@
     <slot x='207' y='56' width='15' height='14' max='10' items='PlasmaCannon, ParticleCannon, MesonCannon'/>
     <slot x='235' y='55' width='23' height='21' max='1' items='HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5'/>
   </item>
-  <item id='Battleship1' name='tech.battleship1.name' long-name='tech.battleship1.longname' description='tech.battleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/battleship_1' factory='spaceship' research-cost='0' production-cost='80000' level='0' race='human' requires='OrbitalFactory' civil='1' mech='1' comp='1' ai='1' mil='1' index='0' video='technology/spaceships/battleships/battleship_1'>
+  <item id='Battleship1' name='tech.battleship1.name' long-name='tech.battleship1.longname' description='tech.battleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/battleship_1' factory='spaceship' research-cost='0' production-cost='80000' level='3' race='human' requires='OrbitalFactory' civil='1' mech='1' comp='1' ai='1' mil='1' index='0' video='technology/spaceships/battleships/battleship_1'>
     <slot x='45' y='53' width='21' height='10' max='14' items='Laser1, Laser2, Laser3, Laser4'/>
     <slot x='80' y='64' width='22' height='13' max='8' items='Bomb1, Bomb2'/>
     <slot x='115' y='65' width='23' height='17' max='6' items='Rocket1, Rocket2, MultiheadedRocket'/>

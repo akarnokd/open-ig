@@ -11,6 +11,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Action1;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.Production;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
@@ -455,13 +456,13 @@ public class ResearchProductionScreen extends ScreenBase {
 		addButton.onClick = new Act() {
 			@Override
 			public void act() {
-				// TODO
+				doAddProduction();
 			}
 		};
 		removeButton.onClick = new Act() {
 			@Override
 			public void act() {
-				// TODO
+				doRemoveProduction();
 			}
 		};
 		bridgeButton.onClick = new Act() {
@@ -574,10 +575,45 @@ public class ResearchProductionScreen extends ScreenBase {
 		productComplete = new UIImage(commons.research().completed);
 		
 		removeTen = new UIImageButton(commons.research().minusTen);
+		removeTen.setDisabledPattern(commons.common().disabledPattern);
+		removeTen.onClick = new Act() {
+			@Override
+			public void act() {
+				doChangeCount(-10);
+			}
+		};
 		removeOne = new UIImageButton(commons.research().minusOne);
+		removeOne.setDisabledPattern(commons.common().disabledPattern);
+		removeOne.onClick = new Act() {
+			@Override
+			public void act() {
+				doChangeCount(-1);
+			}
+		};
 		addOne = new UIImageButton(commons.research().plusOne);
+		addOne.setDisabledPattern(commons.common().disabledPattern);
+		addOne.onClick = new Act() {
+			@Override
+			public void act() {
+				doChangeCount(1);
+			}
+		};
 		addTen = new UIImageButton(commons.research().plusTen);
+		addTen.setDisabledPattern(commons.common().disabledPattern);
+		addTen.onClick = new Act() {
+			@Override
+			public void act() {
+				doChangeCount(10);
+			}
+		};
 		sell = new UIImageButton(commons.research().sell);
+		sell.setDisabledPattern(commons.common().disabledPattern);
+		sell.onClick = new Act() {
+			@Override
+			public void act() {
+				doSell();
+			}
+		};
 
 		productionLines.clear();
 		for (int i = 0; i < 5; i++) {
@@ -625,6 +661,17 @@ public class ResearchProductionScreen extends ScreenBase {
 	protected void doSelectProductionLine(ProductionLine pl, int j) {
 		for (ProductionLine pl0 : productionLines) {
 			pl0.select(pl0 == pl);
+			ResearchMainCategory cat = getCurrentMainCategory();
+			Map<ResearchType, Production> productions = player().production.get(cat);
+			int row = 0;
+			for (Production pr : productions.values()) {
+				if (row++ == j) {
+					if (pr.type != player().currentResearch) {
+						displayResearch(pr.type);
+					}
+					break;
+				}
+			}
 		}
 	}
 	@Override
@@ -635,6 +682,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		startNew.location(addButton.location());
 		removeButton.location(addButton.location());
 		emptyButton.location(addButton.location());
+		emptyButton.z = -1;
 
 		video.bounds(base.x + 2, base.y + 2, 316, 196);
 		
@@ -859,6 +907,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		
 		update();
 		updateActive();
+		updateProduction();
 		
 		super.draw(g2);
 		
@@ -1032,19 +1081,47 @@ public class ResearchProductionScreen extends ScreenBase {
 			height = base.height;
 			
 			lessPriority = new UIImageButton(commons.research().less);
+			lessPriority.setHoldDelay(200);
+			lessPriority.onClick = new Act() {
+				@Override
+				public void act() {
+					doLessPriority();
+				}
+			};
 			lessBuild = new UIImageButton(commons.research().less);
+			lessBuild.setHoldDelay(200);
+			lessBuild.onClick = new Act() {
+				@Override
+				public void act() {
+					doChangeCount(-1);
+				}
+			};
 			morePriority = new UIImageButton(commons.research().more);
+			morePriority.setHoldDelay(200);
+			morePriority.onClick = new Act() {
+				@Override
+				public void act() {
+					doMorePriority();
+				}
+			};
 			moreBuild = new UIImageButton(commons.research().more);
+			moreBuild.setHoldDelay(200);
+			moreBuild.onClick = new Act() {
+				@Override
+				public void act() {
+					doChangeCount(1);
+				}
+			};
 			
-			name = new UILabel("TODO", 7, commons.text());
-			priority = new UILabel("50", 7, commons.text());
+			name = new UILabel("TODO", 10, commons.text());
+			priority = new UILabel("50", 10, commons.text());
 			priority.horizontally(HorizontalAlignment.CENTER);
-			capacity = new UILabel("1000", 7, commons.text());
-			capacityPercent = new UILabel("50%", 7, commons.text());
+			capacity = new UILabel("1000", 10, commons.text());
+			capacityPercent = new UILabel("50%", 10, commons.text());
 			capacityPercent.horizontally(HorizontalAlignment.CENTER);
-			count = new UILabel("1", 7, commons.text());
+			count = new UILabel("1", 10, commons.text());
 			count.horizontally(HorizontalAlignment.CENTER);
-			completion = new UILabel("TODO", 7, commons.text());
+			completion = new UILabel("TODO", 10, commons.text());
 			
 			name.bounds(5, 4, 166, 14);
 			lessPriority.location(190, 5);
@@ -1078,11 +1155,20 @@ public class ResearchProductionScreen extends ScreenBase {
 		 */
 		public void select(boolean state) {
 			name.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-			priority.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-			capacity.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-			capacityPercent.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-			count.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-			completion.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+//			priority.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+//			capacity.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+//			capacityPercent.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+//			count.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+//			completion.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+		}
+		/** Clear the textual values of the line. */
+		public void clear() {
+			name.text("");
+			priority.text("");
+			capacity.text("");
+			capacityPercent.text("");
+			count.text("");
+			completion.text("");
 		}
 	}
 	/**
@@ -1124,7 +1210,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		final ResearchType rt1 = rt;
 		if (rt != null) {
 			if (rt.prerequisites.size() > 0) {
-				requires1.text(rt.prerequisites.get(0).name, true).visible(true);
+				requires1.text(rt.prerequisites.get(0).name, true);
 				requires1.color(world().getResearchColor(rt.prerequisites.get(0)));
 				requires1.onPress = new Act() {
 					@Override
@@ -1133,10 +1219,10 @@ public class ResearchProductionScreen extends ScreenBase {
 					}
 				};
 			} else {
-				requires1.visible(false);
+				requires1.text("");
 			}
 			if (rt.prerequisites.size() > 1) {
-				requires2.text(rt.prerequisites.get(1).name, true).visible(true);
+				requires2.text(rt.prerequisites.get(1).name, true);
 				requires2.color(world().getResearchColor(rt.prerequisites.get(1)));
 				requires2.onPress = new Act() {
 					@Override
@@ -1145,10 +1231,10 @@ public class ResearchProductionScreen extends ScreenBase {
 					}
 				};
 			} else {
-				requires2.visible(false);
+				requires2.text("");
 			}
 			if (rt.prerequisites.size() > 2) {
-				requires3.text(rt.prerequisites.get(2).name, true).visible(true);
+				requires3.text(rt.prerequisites.get(2).name, true);
 				requires3.color(world().getResearchColor(rt.prerequisites.get(2)));
 				requires3.onPress = new Act() {
 					@Override
@@ -1157,7 +1243,7 @@ public class ResearchProductionScreen extends ScreenBase {
 					}
 				};
 			} else {
-				requires3.visible(false);
+				requires3.text("");
 
 			}
 			
@@ -1227,7 +1313,10 @@ public class ResearchProductionScreen extends ScreenBase {
 				}
 			}
 			
-			startNew.visible(player().runningResearch != rt && world().canResearch(rt));
+			startNew.visible(
+					mode == Screens.RESEARCH
+					&& player().runningResearch != rt 
+					&& world().canResearch(rt));
 			
 			if (getCurrentCategory() == rt.category) {
 				updateSlot(rt);
@@ -1237,9 +1326,9 @@ public class ResearchProductionScreen extends ScreenBase {
 				slot.visible(false);
 			}
 			startNew.visible(false);
-			requires1.visible(false);
-			requires2.visible(false);
-			requires3.visible(false);
+			requires1.text("");
+			requires2.text("");
+			requires3.text("");
 			descriptionTitle.text("");
 			descriptionBody.text("");
 			
@@ -1360,13 +1449,13 @@ public class ResearchProductionScreen extends ScreenBase {
 		video.image(null);
 		if (rt != null) {
 			animationResearch = rt;
+			animationResearchReady = false;
 			if (player().isAvailable(rt)) {
 				video.image(rt.infoImage);
 				animationResearchReady = true;
 			} else
 			if (world().canResearch(rt)) {
 				video.image(rt.infoImageWired);
-				animationResearchReady = false;
 			}
 			video.center(true);
 			String vid = null;
@@ -1462,5 +1551,165 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 		rs.state = ResearchState.RUNNING;
 		update();
+	}
+	/** @return the current main category. */
+	ResearchMainCategory getCurrentMainCategory() {
+		for (Map.Entry<ResearchMainCategory, UIImageTabButton> cat : mainComponents.entrySet()) {
+			if (cat.getValue().down) {
+				return cat.getKey();
+			}
+		}
+		return null;
+	}
+	/** Update the production lines. */
+	void updateProduction() {
+		PlanetStatistics ps = player().getPlanetStatistics();
+
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		int capacity = 0;
+		if (cat == ResearchMainCategory.SPACESHIPS) {
+			capacity = ps.spaceshipActive;
+			availableCapacityValue.text("" + ps.spaceshipActive);
+			totalCapacityValue.text("" + ps.spaceship);
+			totalCapacityValue.color(ps.spaceship > ps.spaceshipActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
+		} else
+		if (cat == ResearchMainCategory.WEAPONS) {
+			capacity = ps.weaponsActive;
+			availableCapacityValue.text("" + ps.weaponsActive);
+			totalCapacityValue.text("" + ps.weapons);
+			totalCapacityValue.color(ps.weapons > ps.weaponsActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
+		} else
+		if (cat == ResearchMainCategory.EQUIPMENT) {
+			capacity = ps.equipmentActive;
+			availableCapacityValue.text("" + ps.equipmentActive);
+			totalCapacityValue.text("" + ps.equipment);
+			totalCapacityValue.color(ps.equipmentActive > ps.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);
+		} else {
+			availableCapacityValue.text("");
+			totalCapacityValue.text("");
+		}
+
+		int prioritySum = 0;
+		for (Production pr : productions.values()) {
+			if (pr.count > 0) {
+				prioritySum += pr.priority;
+			}
+		}
+		
+		
+		int row = 0;
+		Production selected = null;
+		for (Production pr : productions.values()) {
+			ProductionLine pl = productionLines.get(row);
+			pl.enabled(true);
+			
+			if (pr.type == player().currentResearch) {
+				pl.select(true);
+				selected = pr;
+			} else {
+				pl.select(false);
+			}
+			
+			pl.name.text(pr.type.name);
+			pl.priority.text("" + pr.priority);
+			if (prioritySum > 0 && pr.count > 0) {
+				pl.capacity.text("" + (capacity * pr.priority / prioritySum));
+				pl.capacityPercent.text("" + (pr.priority * 100 / prioritySum) + "%");
+			} else {
+				pl.capacity.text("0");
+				pl.capacityPercent.text("0%");
+			}
+			pl.count.text("" + pr.count);
+			pl.completion.text(String.format(" %3s%%   %s", (pr.progress * 100 / pr.type.productionCost), pr.count * pr.type.productionCost));
+			row++;
+		}
+		for (int i = row; i < 5; i++) {
+			ProductionLine pl = productionLines.get(i);
+			pl.enabled(false);
+			pl.clear();
+		}
+		ResearchType rt = player().currentResearch;
+		addButton.visible(
+				mode == Screens.PRODUCTION
+				&& player().isAvailable(rt) 
+				&& !productions.containsKey(rt) 
+				&& productions.size() < 5
+				&& cat != ResearchMainCategory.BUILDINS);
+		removeButton.visible(
+				mode == Screens.PRODUCTION
+				&& productions.containsKey(rt)
+		);
+		
+		Integer count = player().inventory.get(player().currentResearch);
+		sell.enabled(count != null && count > 0);
+		if (selected != null) {
+			addOne.enabled(true);
+			addTen.enabled(true);
+			removeTen.enabled(selected.count > 10);
+			removeOne.enabled(selected.count > 1);
+		} else {
+			addOne.enabled(false);
+			addTen.enabled(false);
+			removeTen.enabled(false);
+			removeOne.enabled(false);
+		}
+	}
+	/** Add a new production. */
+	void doAddProduction() {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		Production prod = new Production();
+		prod.type = player().currentResearch;
+		prod.count = 0;
+		prod.priority = 50;
+		productions.put(prod.type, prod);
+	}
+	/** Remove the selected production. */
+	void doRemoveProduction() {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		productions.remove(player().currentResearch);
+	}
+	/** 
+	 * Increase the priority of a line.
+	 */
+	void doLessPriority() {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		Production prod = productions.get(player().currentResearch);
+		if (prod != null) {
+			prod.priority = Math.max(0, prod.priority - 5);
+		}
+	}
+	/**
+	 * Decrease the priority of a line.
+	 */
+	void doMorePriority() {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		Production prod = productions.get(player().currentResearch);
+		if (prod != null) {
+			prod.priority = Math.min(100, prod.priority + 5);
+		}
+	}
+	/**
+	 * Increase the count.
+	 * @param delta the amount
+	 */
+	void doChangeCount(int delta) {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		Production prod = productions.get(player().currentResearch);
+		if (prod != null) {
+			prod.count = Math.max(0, prod.count + delta);
+		}
+	}
+	/** Sell one of the current research. */
+	void doSell() {
+		Integer count = player().inventory.get(player().currentResearch);
+		if (count != null && count > 0) {
+			player().inventory.put(player().currentResearch, count - 1);
+		}
 	}
 }

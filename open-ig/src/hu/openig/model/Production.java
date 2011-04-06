@@ -13,5 +13,12 @@ package hu.openig.model;
  * @author akarnokd, 2010.01.07.
  */
 public class Production {
-
+	/** The research type. */
+	public ResearchType type;
+	/** The number of items to produce. */
+	public int count;
+	/** The progress into the current item. */
+	public int progress;
+	/** The priority value. */
+	public int priority;
 }

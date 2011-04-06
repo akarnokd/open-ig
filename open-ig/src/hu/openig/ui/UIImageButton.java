@@ -48,8 +48,6 @@ public class UIImageButton extends UIComponent {
 	protected int holdDelay = -1;
 	/** The timer to send pressed events periodically. */
 	protected Timer holdTimer;
-	/** The timer fired already. */
-	protected boolean timerFired;
 	/** Is the mouse pressed down on this component. */
 	protected boolean down;
 	/**
@@ -70,7 +68,6 @@ public class UIImageButton extends UIComponent {
 				if (holdDelay < 0 || !enabled || !visible) {
 					holdTimer.stop();
 				} else {
-					timerFired = true;
 					doClick();
 				}
 			}
@@ -96,7 +93,6 @@ public class UIImageButton extends UIComponent {
 				if (holdDelay < 0 || !enabled || !visible) {
 					holdTimer.stop();
 				} else {
-					timerFired = true;
 					doClick();
 				}
 			}
@@ -149,9 +145,9 @@ public class UIImageButton extends UIComponent {
 		case DOWN:
 			down = true;
 			if (holdDelay >= 0) {
-				timerFired = false;
 				holdTimer.start();
-			}
+				doClick();
+			} else
 			if (onPress != null) {
 				onPress.act();
 			}
@@ -160,16 +156,14 @@ public class UIImageButton extends UIComponent {
 			if (down) {
 				down = false;
 				holdTimer.stop();
-				if (!timerFired) {
+				if (holdDelay < 0) {
 					doClick();
 				}
-				timerFired = false;
 			}
 			return true;
 		case LEAVE:
 			down = false;
 			holdTimer.stop();
-			timerFired = false;
 			return true;
 		case ENTER:
 			return true;

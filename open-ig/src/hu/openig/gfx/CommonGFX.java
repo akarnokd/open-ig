@@ -9,6 +9,7 @@
 package hu.openig.gfx;
 
 import hu.openig.core.Btn2;
+import hu.openig.core.Cat;
 import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
 import hu.openig.core.ResourceLocator;
@@ -91,6 +92,18 @@ public class CommonGFX {
 	/** An empty 102x39 button. */
 	@Img(name = "button_empty_large")
 	public BufferedImage emptyButton;
+	/** The pause button. */
+	@Cat(name = "button_pause")
+	public BufferedImage[] pause;
+	/** The 1x speed button. */
+	@Cat(name = "button_speed_1")
+	public BufferedImage[] speed1;
+	/** The 2x speed button. */
+	@Cat(name = "button_speed_2")
+	public BufferedImage[] speed2;
+	/** The 4x speed button. */
+	@Cat(name = "button_speed_4")
+	public BufferedImage[] speed4;
 	/**
 	 * Initialize the common resources.
 	 * @param rl the resource locator

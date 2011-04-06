@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +38,12 @@ public class Player {
 	/** The race of the player. Determines the technology tree to be used. */
 	public String race;
 	/** The in-progress production list. */
-	public final Map<ResearchType, Production> production = new HashMap<ResearchType, Production>();
+	public final Map<ResearchMainCategory, Map<ResearchType, Production>> production = new HashMap<ResearchMainCategory, Map<ResearchType, Production>>();
+	{
+		for (ResearchMainCategory cat : ResearchMainCategory.values()) {
+			production.put(cat, new LinkedHashMap<ResearchType, Production>());
+		}
+	}
 	/** The in-progress research. */
 	public final Map<ResearchType, Research> research = new HashMap<ResearchType, Research>();
 	/** The completed research. */
@@ -80,6 +86,30 @@ public class Player {
 		public int tradeIncome;
 		/** The average tax morale. */
 		public int taxMorale;
+		/** The tax morale count. */
+		public int taxMoraleCount;
+		/**
+		 * Assign a different instance values.
+		 * @param other the other instance
+		 */
+		public void assign(PlayerFinances other) {
+			productionCost = other.productionCost;
+			researchCost = other.researchCost;
+			buildCost = other.buildCost;
+			repairCost = other.repairCost;
+			taxIncome = other.taxIncome;
+			tradeIncome = other.tradeIncome;
+			taxMorale = other.taxMorale;
+		}
+		/** Clear values. */
+		public void clear() {
+			productionCost = 0;
+			researchCost = 0;
+			buildCost = 0;
+			repairCost = 0;
+			taxIncome = 0;
+			tradeIncome = 0;
+		}
 	}
 	/** The global financial information yesterday. */
 	public final PlayerFinances yesterday = new PlayerFinances();
