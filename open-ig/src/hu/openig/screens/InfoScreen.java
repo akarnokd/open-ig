@@ -32,6 +32,7 @@ import hu.openig.render.TextRenderer;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
+import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton2;
@@ -46,6 +47,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -392,6 +394,18 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY
 	})
 	MilitaryInfoPanel militaryInfo;
+	/** The planet list details. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_PLANETS
+	})
+	PlanetListDetails planetListDetais;
+	/** The toggle for planet list details. */
+	boolean showPlanetListDetails;
+	/** Toggle the planet list details view. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_PLANETS
+	})
+	UIGenericButton togglePlanetListDetails;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -685,6 +699,23 @@ public class InfoScreen extends ScreenBase {
 		
 		militaryInfo = new MilitaryInfoPanel();
 		
+		planetListDetais = new PlanetListDetails();
+		togglePlanetListDetails = new UIGenericButton(get("info.list_details"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		
+		togglePlanetListDetails.onClick = new Act() {
+			@Override
+			public void act() {
+				showPlanetListDetails = !showPlanetListDetails;
+				if (showPlanetListDetails) {
+					togglePlanetListDetails.text(get("info.hide_details"));
+				} else {
+					togglePlanetListDetails.text(get("info.list_details"));
+				}
+				colonies.visible(!showPlanetListDetails);
+				planetListDetais.visible(showPlanetListDetails);
+			}
+		};
+		
 		addThis();
 	}
 	@Override
@@ -775,6 +806,8 @@ public class InfoScreen extends ScreenBase {
 		
 		researchRequiredLabs.location(base.x + 420, base.y + 34 + 17 * 3);
 		
+		planetListDetais.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
+		togglePlanetListDetails.location(base.x + 420, colonyOther.y + colonyOther.height + 5);
 		
 		militaryInfo.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
 	}
@@ -873,6 +906,10 @@ public class InfoScreen extends ScreenBase {
 		aliensTab.selected = mode == Screens.INFORMATION_ALIENS;
 		
 		minimap.displayFleets = mode == Screens.INFORMATION_FLEETS;
+		if (mode == Screens.INFORMATION_PLANETS) {
+			planetListDetais.visible(showPlanetListDetails);
+			colonies.visible(!showPlanetListDetails);
+		}
 		
 		if (mode == Screens.INFORMATION_INVENTIONS) {
 			ResearchType rt = player().currentResearch;
@@ -1048,6 +1085,8 @@ public class InfoScreen extends ScreenBase {
 					doTaxMore();
 				}
 			};
+			taxMore.setHoldDelay(150);
+			
 			taxMore.z = 1;
 			taxLess = new UIImageButton(commons.info().taxLess);
 			taxLess.onClick = new Act() {
@@ -1056,6 +1095,7 @@ public class InfoScreen extends ScreenBase {
 					doTaxLess();
 				}
 			};
+			taxLess.setHoldDelay(150);
 			taxLess.z = 1;
 			taxMore.setDisabledPattern(commons.common().disabledPattern);
 			taxLess.setDisabledPattern(commons.common().disabledPattern);
@@ -1218,20 +1258,6 @@ public class InfoScreen extends ScreenBase {
 				label.color(TextRenderer.RED);
 			}
 			return label;
-		}
-		/**
-		 * Add the +/- sign for the given integer value.
-		 * @param i the value
-		 * @return the string
-		 */
-		String withSign(int i) {
-			if (i < 0) {
-				return Integer.toString(i);
-			} else
-			if (i > 0) {
-				return "+" + i;
-			}
-			return "0";
 		}
 	}
 	/** @return Return the list of other important items. */
@@ -2413,20 +2439,6 @@ public class InfoScreen extends ScreenBase {
 			}
 			return label;
 		}
-		/**
-		 * Add the +/- sign for the given integer value.
-		 * @param i the value
-		 * @return the string
-		 */
-		String withSign(int i) {
-			if (i < 0) {
-				return Integer.toString(i);
-			} else
-			if (i > 0) {
-				return "+" + i;
-			}
-			return "0";
-		}
 		@Override
 		public void draw(Graphics2D g2) {
 			
@@ -2462,6 +2474,133 @@ public class InfoScreen extends ScreenBase {
 			}
 			
 			super.draw(g2);
+		}
+	}
+	/**
+	 * The component lists the planets in a tabular format, showing the problems and
+	 * tax/morale info. 
+	 * @author akarnokd, 2011.04.07.
+	 */
+	class PlanetListDetails extends UIComponent {
+		/** The top display offset. */
+		int top;
+		@Override
+		public void draw(Graphics2D g2) {
+			List<Planet> list = colonies.getList.invoke(null);
+			int y = 0;
+			Planet cp = colonies.getCurrent.invoke(null);
+			int idx = list.indexOf(cp); 
+			if (idx < top) {
+				top = idx;
+			} else
+			if (idx >= top + 26) {
+				top = idx - 26;
+			}
+			g2.setColor(Color.BLACK);
+			g2.fillRect(101, - 13, 300, 13);
+			
+			commons.text().paintTo(g2, 105, -13, 10, TextRenderer.YELLOW, get("info.population_details"));
+			commons.text().paintTo(g2, 240, -13, 10, TextRenderer.YELLOW, get("info.morale_details"));
+			commons.text().paintTo(g2, 320, -13, 10, TextRenderer.YELLOW, get("info.problem_details"));
+
+			for (int i = top; i < list.size() && i < top + 27; i++) {
+				Planet p = list.get(i);
+				
+				String name = colonies.getText.invoke(p);
+				int color = colonies.getColor.invoke(p);
+				
+				commons.text().paintTo(g2, 0, y + 1, 10, color, name);
+				if (p == cp) {
+					g2.setColor(new Color(TextRenderer.ORANGE));
+					g2.drawRect(-2, y - 1, 101, 13);
+				}
+				
+				if (p.owner == player() || knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
+					String pop = Integer.toString(p.population);
+					int popWidth = commons.text().getTextWidth(10, pop);
+					commons.text().paintTo(g2, 160 - popWidth, y + 1, 10, TextRenderer.GREEN, pop);
+					commons.text().paintTo(g2, 170, y + 1, 10, TextRenderer.GREEN, "(" + withSign(p.population - p.lastPopulation) + ")");
+					
+					if (p.owner == player()) {
+
+						commons.text().paintTo(g2, 240, y + 1, 10, TextRenderer.GREEN, p.morale + "% (" + withSign(p.morale - p.lastMorale) + ")");
+						
+						PlanetStatistics ps = p.getStatistics();
+						if (ps.problems.size() > 0) {
+							int j = 0;
+							for (PlanetProblems pp : ps.problems.values()) {
+								BufferedImage icon = null;
+								switch (pp) {
+								case HOUSING:
+									icon = commons.common().houseIcon;
+									break;
+								case FOOD:
+									icon = commons.common().foodIcon;
+									break;
+								case HOSPITAL:
+									icon = commons.common().hospitalIcon;
+									break;
+								case ENERGY:
+									icon = commons.common().energyIcon;
+									break;
+								case WORKFORCE:
+									icon = commons.common().workerIcon;
+									break;
+								case STADIUM:
+									icon = commons.common().virusIcon;
+									break;
+								case VIRUS:
+									icon = commons.common().stadiumIcon;
+									break;
+								case REPAIR:
+									icon = commons.common().repairIcon;
+									break;
+								default:
+								}
+								g2.drawImage(icon, 320 + j * 11, y + 2, null);
+								j++;
+							}
+						}
+					}
+				}
+				y += 13;
+			}
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.WHEEL)) {
+				List<Planet> list = colonies.getList.invoke(null);
+				if (list.size() > 0) {
+					Planet cp = colonies.getCurrent.invoke(null);
+					int idx = list.indexOf(cp); 
+					if (e.z < 0) {
+						idx = Math.max(0, idx - 1);
+					} else {
+						idx = Math.min(list.size() - 1, idx + 1);
+					}
+					colonies.onSelect.invoke(list.get(idx));
+					return true;
+				}
+			} else
+			if (e.has(Type.DOWN)) {
+				List<Planet> list = colonies.getList.invoke(null);
+				int idx = e.y / 13 + top;
+				if (idx >= 0 && idx < list.size()) {
+					colonies.onSelect.invoke(list.get(idx));
+					return true;
+				}
+			} else
+			if (e.has(Type.DOUBLE_CLICK)) {
+				List<Planet> list = colonies.getList.invoke(null);
+				int idx = e.y / 13 + top;
+				if (idx >= 0 && idx < list.size()) {
+					colonies.onDoubleClick.invoke(list.get(idx));
+					return true;
+				}
+			}
+			
+				
+			return false;
 		}
 	}
 }

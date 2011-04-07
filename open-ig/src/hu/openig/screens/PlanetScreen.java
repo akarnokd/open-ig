@@ -334,6 +334,7 @@ public class PlanetScreen extends ScreenBase {
 				int constructIndex = se.building.buildProgress * se.building.scaffolding.normal.size() / se.building.type.hitpoints;
 				tile =  se.building.scaffolding.normal.get(constructIndex);
 			}
+			tile.alpha = se.tile.alpha;
 			cell.yCompensation = 27 - tile.imageHeight;
 			cell.image = tile.getStrip(0);
 			cell.a = loc1.x;
@@ -583,6 +584,10 @@ public class PlanetScreen extends ScreenBase {
 		public void draw(Graphics2D g2) {
 			
 			PlanetSurface surface = surface();
+			if (surface == null) {
+				return;
+			}
+
 			if (lastSurface != surface) {
 				buildingBox = null;
 				currentBuilding = null;
@@ -597,30 +602,28 @@ public class PlanetScreen extends ScreenBase {
 			+ world().time.get(GregorianCalendar.MINUTE) / 10;
 			
 			if (time < 6 * 4 || time >= 6 * 22) {
-				surface.setAlpha(0.4f);
+				alpha = (0.4f);
 			} else
 			if (time >= 6 * 4 && time < 6 * 10) {
-				surface.setAlpha(0.45f + 0.5f * (time - 6 * 4) / 36);
+				alpha = (0.45f + 0.5f * (time - 6 * 4) / 36);
 			} else
 			if (time >= 6 * 10 && time < 6 * 16) {
-				surface.setAlpha(1.0f);
+				alpha = (1.0f);
 			} else 
 			if (time >= 6 * 16 && time < 6 * 22) {
-				surface.setAlpha(0.95f - 0.5f * (time - 6 * 16) / 36);
+				alpha = (0.95f - 0.5f * (time - 6 * 16) / 36);
 			}
+			surface.setAlpha(alpha);
 			
 			RenderTools.setInterpolation(g2, true);
 			
 			Shape save0 = g2.getClip();
 			g2.clipRect(0, 0, width, height);
 			
-			g2.setColor(new Color(96, 96, 96));
+			g2.setColor(new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255));
 			g2.fillRect(0, 0, width, height);
 			
 			
-			if (surface == null) {
-				return;
-			}
 			AffineTransform at = g2.getTransform();
 			g2.translate(offsetX, offsetY);
 			g2.scale(scale, scale);
@@ -629,8 +632,8 @@ public class PlanetScreen extends ScreenBase {
 			int y0 = surface.baseYOffset;
 
 			Rectangle br = surface.boundingRectangle;
-			g2.setColor(new Color(128, 0, 0));
-			g2.fillRect(br.x, br.y, br.width, br.height);
+//			g2.setColor(new Color(128, 0, 0));
+//			g2.fillRect(br.x, br.y, br.width, br.height);
 			g2.setColor(Color.YELLOW);
 			g2.drawRect(br.x, br.y, br.width, br.height);
 			
@@ -711,8 +714,9 @@ public class PlanetScreen extends ScreenBase {
 //					if (r == null) {
 //						continue;
 //					}
-					int nameLen = commons.text().getTextWidth(7, b.type.name);
-					int h = (r.height - 7) / 2;
+					int nameSize = 10;
+					int nameLen = commons.text().getTextWidth(nameSize, b.type.name);
+					int h = (r.height - nameSize) / 2;
 					int nx = r.x + (r.width - nameLen) / 2;
 					int ny = r.y + h;
 					
@@ -724,12 +728,12 @@ public class PlanetScreen extends ScreenBase {
 						a1 = AlphaComposite.SrcOver.derive(0.8f);
 						g2.setComposite(a1);
 						g2.setColor(Color.BLACK);
-						g2.fillRect(nx - 2, ny - 2, nameLen + 4, 12);
+						g2.fillRect(nx - 2, ny - 2, nameLen + 4, nameSize + 5);
 						g2.setComposite(compositeSave);
 					}
 					
-					commons.text().paintTo(g2, nx + 1, ny + 1, 7, 0xFF8080FF, b.type.name);
-					commons.text().paintTo(g2, nx, ny, 7, 0xD4FC84, b.type.name);
+					commons.text().paintTo(g2, nx + 1, ny + 1, nameSize, 0xFF8080FF, b.type.name);
+					commons.text().paintTo(g2, nx, ny, nameSize, 0xD4FC84, b.type.name);
 
 					// paint upgrade level indicator
 					int uw = b.upgradeLevel * commons.colony().upgrade.getWidth();
@@ -838,6 +842,11 @@ public class PlanetScreen extends ScreenBase {
 
 			g2.setClip(save0);
 			RenderTools.setInterpolation(g2, false);
+			
+			if (prev.visible() && next.visible()) {
+				g2.setColor(Color.BLACK);
+				g2.fillRect(prev.x - this.x - 1, prev.y - this.y - 1, prev.width + next.width + 4, prev.height + 2);
+			}
 		}
 		
 	}
@@ -852,9 +861,6 @@ public class PlanetScreen extends ScreenBase {
 			
 			Shape save0 = g2.getClip();
 			g2.clipRect(0, 0, width, height);
-			
-			g2.setColor(new Color(96, 96, 96));
-			g2.fillRect(0, 0, width, height);
 			
 			PlanetSurface surface = surface();
 			
@@ -873,7 +879,9 @@ public class PlanetScreen extends ScreenBase {
 			int x0 = surface.baseXOffset;
 			int y0 = surface.baseYOffset;
 
-			g2.setColor(new Color(128, 0, 0));
+//			g2.setColor(new Color(128, 0, 0));
+//			g2.fillRect(br.x, br.y, br.width, br.height);
+			g2.setColor(new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255));
 			g2.fillRect(br.x, br.y, br.width, br.height);
 			g2.setColor(Color.YELLOW);
 			g2.drawRect(br.x, br.y, br.width - 1, br.height - 1);
@@ -1140,6 +1148,7 @@ public class PlanetScreen extends ScreenBase {
 					if (placementMode) {
 						build.down = true;
 						currentBuilding = null;
+						buildingBox = null;
 						Tile t = player().currentBuilding.tileset.get(race()).normal;
 						placementRectangle.setSize(t.width + 2, t.height + 2);
 					} else {
@@ -1418,7 +1427,7 @@ public class PlanetScreen extends ScreenBase {
 						}
 						buildingInfoPanel.operationPercent.text(Integer.toString((int)(b.getEfficiency() * 100)));
 						if (b.type.primary != null) {
-							buildingInfoPanel.production.text(((int)b.getResource(b.type.primary)) + getUnit(b.type.primary));
+							buildingInfoPanel.production.text(((int)b.getPrimary()) + getUnit(b.type.primary));
 						} else {
 							buildingInfoPanel.production.text("");
 						}
@@ -1494,6 +1503,7 @@ public class PlanetScreen extends ScreenBase {
 					b != null && b.type.upgrades.size() > 0 
 					&& buildingInfoPanel.visible() 
 					&& b.isComplete()
+					&& !b.isSeverlyDamaged()
 					&& planet().owner == player()
 			);
 		}

@@ -134,7 +134,8 @@ public class UIGenericButton extends UIComponent {
 			down = true;
 			if (holdDelay >= 0) {
 				holdTimer.start();
-			}
+				doClick();
+			} else
 			if (onPress != null) {
 				onPress.act();
 			}
@@ -143,10 +144,11 @@ public class UIGenericButton extends UIComponent {
 			if (down) {
 				down = false;
 				holdTimer.stop();
-				doClick();
-				return true;
+				if (holdDelay < 0) {
+					doClick();
+				}
 			}
-			return false;
+			return true;
 		case LEAVE:
 			down = false;
 			holdTimer.stop();

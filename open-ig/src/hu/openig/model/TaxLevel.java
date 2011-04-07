@@ -14,31 +14,32 @@ package hu.openig.model;
  */
 public enum TaxLevel {
 	/** None. */
-	NONE(0),
-	/** 10%. */
-	VERY_LOW(12),
-	/** 25%. */
-	LOW(25),
-	/** 40%. */
-	NORMAL(37),
-	/** 55%. */
-	ABOVE_NORMAL(50),
-	/** 70%. */
-	HIGH(62),
-	/** 85%. */
-	VERY_HIGH(75),
-	/** 100%. */
-	OPPRESSIVE(87),
-	/** 100%. */
-	ULTIMATE(100)
+	NONE,
+	/** Very low. */
+	VERY_LOW,
+	/** Low. */
+	LOW,
+	/** Moderate. */
+	MODERATE,
+	/** Above moderate. */
+	ABOVE_MODERATE,
+	/** High.*/
+	HIGH,
+	/** Very hight. */
+	VERY_HIGH,
+	/** Oppressive. */
+	OPPRESSIVE,
+	/** Exploiter. */
+	EXPLOITER,
+	/** Slavery. */
+	SLAVERY
 	;
 	/** The taxation percent. */
 	public final int percent;
 	/**
 	 * Constructor.
-	 * @param percent the taxation percent.
 	 */
-	TaxLevel(int percent) {
-		this.percent = percent;
+	TaxLevel() {
+		this.percent = 100 * ordinal() / 9;
 	}
 }

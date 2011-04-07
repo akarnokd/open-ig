@@ -53,7 +53,7 @@ public class Planet implements Named, Owned {
 	/** The resource allocation strategy. */
 	public ResourceAllocationStrategy allocation = ResourceAllocationStrategy.DEFAULT;
 	/** The taxation level. */
-	public TaxLevel tax = TaxLevel.NORMAL;
+	public TaxLevel tax = TaxLevel.MODERATE;
 	/** The morale percent in hundreds. */
 	public int morale = 50;
 	/** The last day's morale percent in hundreds. */
@@ -121,25 +121,25 @@ public class Planet implements Named, Owned {
 		for (Building b : surface.buildings) {
 			if (b.getEfficiency() >= 0.5) {
 				if (b.hasResource("house")) {
-					result.houseAvailable += b.getResource("house");
+					result.houseAvailable += b.getResource("house") * b.getEfficiency();
 				}
 				if (b.hasResource("food")) {
-					result.foodAvailable += b.getResource("food");
+					result.foodAvailable += b.getResource("food") * b.getEfficiency();
 				}
 				if (b.hasResource("police")) {
-					result.policeAvailable += b.getResource("police");
+					result.policeAvailable += b.getResource("police") * b.getEfficiency();
 				}
 				if (b.hasResource("hospital")) {
-					result.hospitalAvailable += b.getResource("hospital");
+					result.hospitalAvailable += b.getResource("hospital") * b.getEfficiency();
 				}
 				if (b.hasResource("spaceship")) {
-					result.spaceshipActive += b.getResource("spaceship");
+					result.spaceshipActive += b.getResource("spaceship") * b.getEfficiency();
 				}
 				if (b.hasResource("equipment")) {
-					result.equipmentActive += b.getResource("equipment");
+					result.equipmentActive += b.getResource("equipment") * b.getEfficiency();
 				}
 				if (b.hasResource("weapon")) {
-					result.weaponsActive += b.getResource("weapon");
+					result.weaponsActive += b.getResource("weapon") * b.getEfficiency();
 				}
 				if (b.hasResource("civil")) {
 					result.civilLabActive += b.getResource("civil");
@@ -193,7 +193,7 @@ public class Planet implements Named, Owned {
 				if (e < 0) {
 					result.energyDemand += -e;
 				} else {
-					result.energyAvailable += e * b.getEfficiency();
+					result.energyAvailable += e;
 				}
 			}
 			damage |= b.hitpoints < b.type.hitpoints;
@@ -205,28 +205,28 @@ public class Planet implements Named, Owned {
 		
 		result.problems.clear();
 		if (Math.abs(result.workerDemand) > population * 2) {
-			result.problems.add(PlanetProblems.WORKFORCE);
+			result.add(PlanetProblems.WORKFORCE);
 		}
 		if (Math.abs(result.energyDemand) > Math.abs(result.energyAvailable) * 2) {
-			result.problems.add(PlanetProblems.ENERGY);
+			result.add(PlanetProblems.ENERGY);
 		}
 		if (Math.abs(population) > Math.abs(result.foodAvailable) * 2) {
-			result.problems.add(PlanetProblems.FOOD);
+			result.add(PlanetProblems.FOOD);
 		}
 		if (Math.abs(population) > Math.abs(result.hospitalAvailable) * 2) {
-			result.problems.add(PlanetProblems.HOSPITAL);
+			result.add(PlanetProblems.HOSPITAL);
 		}
 		if (Math.abs(population) > Math.abs(result.houseAvailable) * 2) {
-			result.problems.add(PlanetProblems.HOUSING);
+			result.add(PlanetProblems.HOUSING);
 		}
 		if (population / 50000 > stadiumCount) {
-			result.problems.add(PlanetProblems.STADIUM);
+			result.add(PlanetProblems.STADIUM);
 		}
 		if (quarantine) {
-			result.problems.add(PlanetProblems.VIRUS);
+			result.add(PlanetProblems.VIRUS);
 		}
 		if (damage) {
-			result.problems.add(PlanetProblems.REPAIR);
+			result.add(PlanetProblems.REPAIR);
 		}
 		
 		for (PlanetInventoryItem pii : inventory) {

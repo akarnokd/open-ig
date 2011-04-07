@@ -107,7 +107,7 @@ public final class RenderTools {
 		}
 	}
 	/** Use a faster drawing trick for alpha composition? */
-	static boolean fast = true;
+	static boolean fast = false;
 	/** The cache for the last alpha blending. */
 	static float lastAlpha;
 	/** The image to use for the alpha blending. */

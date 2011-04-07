@@ -222,7 +222,7 @@ public class World {
 		processPlanets(rl.getXML(game + "/planets"));
 
 		// FIXME for testing the building/research
-		player.money = 2000000;
+		player.money = 32000;
 		
 		try {
 			exec.shutdown();

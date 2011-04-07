@@ -142,7 +142,7 @@ public class Simulator {
 					multiply = b.getResource("multiply");
 				}
 				if (b.hasResource("morale")) {
-					moraleBoost += b.getResource("morale");
+					moraleBoost += b.getResource("morale") * b.getEfficiency();
 				}
 			}
 		}
@@ -153,31 +153,34 @@ public class Simulator {
 			planet.lastPopulation = planet.population;
 			
 			// FIXME morale computation
-			int problemcount = ps.problems.size();
-			float newMorale = planet.morale + moraleBoost - 8 * problemcount - planet.tax.percent / 3;
+			float newMorale = planet.morale + moraleBoost;
+			if (planet.tax.ordinal() <= TaxLevel.MODERATE.ordinal()) {
+				newMorale -= planet.tax.percent / 6;
+			} else {
+				newMorale -= planet.tax.percent / 3;
+			}
 			if (ps.houseAvailable < planet.population) {
-				newMorale += (ps.houseAvailable - planet.population) * 50 / planet.population;
+				newMorale += (ps.houseAvailable - planet.population) * 75 / planet.population;
 			}
 			if (ps.hospitalAvailable < planet.population) {
-				newMorale += (ps.hospitalAvailable - planet.population) * 50 / planet.population;
+				newMorale += (ps.hospitalAvailable - planet.population) * 75 / planet.population;
 			}
 			if (ps.foodAvailable < planet.population) {
-				newMorale += (ps.foodAvailable - planet.population) * 50 / planet.population;
+				newMorale += (ps.foodAvailable - planet.population) * 75 / planet.population;
 			}
 			if (ps.policeAvailable < planet.population) {
 				newMorale += (ps.policeAvailable - planet.population) * 50 / planet.population;
+			} else {
+				newMorale += (ps.policeAvailable - planet.population) * 5 / planet.population;
 			}
 			
 			
 			newMorale = Math.max(0, Math.min(100, newMorale));
-
-			if (planet.population < 5000) {
-				planet.population = (int)Math.max(0, planet.population + 10000 * (newMorale - 50) / 1000);
-			} else {
-				planet.population = (int)Math.max(0, planet.population + 4 * planet.population * (newMorale - 50) / 1000);
-			}
-			
+			int diff = planet.morale;
 			planet.morale = (int)(planet.morale * 0.8f + 0.2f * newMorale);
+			diff -= planet.morale;
+
+			planet.population = Math.max(0, planet.population - planet.population * diff / 100);
 			
 			planet.tradeIncome = (int)(tradeIncome * multiply);
 			planet.taxIncome = planet.population * planet.morale * planet.tax.percent / 10000;
