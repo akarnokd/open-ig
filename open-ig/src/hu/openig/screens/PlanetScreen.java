@@ -1849,7 +1849,7 @@ public class PlanetScreen extends ScreenBase {
 				};
 				add(up);
 			}
-			
+			none.visible(false);
 			addThis();
 		}
 		@Override
