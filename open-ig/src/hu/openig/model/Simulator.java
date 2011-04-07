@@ -63,6 +63,7 @@ public class Simulator {
 		
 		for (Player player : world.players.values()) {
 			if (day0 != day1) {
+				player.yesterday.clear();
 				player.yesterday.assign(player.today);
 				player.today.clear();
 			}
@@ -152,14 +153,28 @@ public class Simulator {
 			planet.lastPopulation = planet.population;
 			
 			// FIXME morale computation
-			float newMorale = planet.morale + moraleBoost - 8 * ps.problems.size() - planet.tax.percent / 4;
+			int problemcount = ps.problems.size();
+			float newMorale = planet.morale + moraleBoost - 8 * problemcount - planet.tax.percent / 3;
+			if (ps.houseAvailable < planet.population) {
+				newMorale += (ps.houseAvailable - planet.population) * 50 / planet.population;
+			}
+			if (ps.hospitalAvailable < planet.population) {
+				newMorale += (ps.hospitalAvailable - planet.population) * 50 / planet.population;
+			}
+			if (ps.foodAvailable < planet.population) {
+				newMorale += (ps.foodAvailable - planet.population) * 50 / planet.population;
+			}
+			if (ps.policeAvailable < planet.population) {
+				newMorale += (ps.policeAvailable - planet.population) * 50 / planet.population;
+			}
+			
 			
 			newMorale = Math.max(0, Math.min(100, newMorale));
 
 			if (planet.population < 5000) {
 				planet.population = (int)Math.max(0, planet.population + 10000 * (newMorale - 50) / 1000);
 			} else {
-				planet.population = (int)Math.max(0, planet.population + 2 * planet.population * (newMorale - 50) / 1000);
+				planet.population = (int)Math.max(0, planet.population + 4 * planet.population * (newMorale - 50) / 1000);
 			}
 			
 			planet.morale = (int)(planet.morale * 0.8f + 0.2f * newMorale);
@@ -173,6 +188,13 @@ public class Simulator {
 			planet.owner.yesterday.tradeIncome += planet.tradeIncome;
 			planet.owner.yesterday.taxMorale += planet.morale;
 			planet.owner.yesterday.taxMoraleCount++;
+			
+			if (planet.population == 0) {
+				planet.race = null;
+				planet.owner = null;
+				planet.surface.buildingmap.clear();
+				planet.surface.buildings.clear();
+			}
 		}
 		
 		return result;

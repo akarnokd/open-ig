@@ -109,6 +109,7 @@ public class Player {
 			repairCost = 0;
 			taxIncome = 0;
 			tradeIncome = 0;
+			taxMoraleCount = 0;
 		}
 	}
 	/** The global financial information yesterday. */

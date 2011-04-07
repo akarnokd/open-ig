@@ -386,10 +386,10 @@
 	<entry key='colonyinfo.surface'   >Surface      : %s</entry>
 	<entry key='colonyinfo.population'>Population   : %d %s (%s)</entry>
 	<entry key='colonyinfo.population.alien'>Population   : %d alien</entry>
-	<entry key='colonyinfo.housing'   >Living space : %d / %d lakos</entry>
-	<entry key='colonyinfo.worker'    >Worker       : %d / %d lakos</entry>
-	<entry key='colonyinfo.hospital'  >Hospital     : %d / %d lakos</entry>
-	<entry key='colonyinfo.food'      >Food         : %d / %d lakos</entry>
+	<entry key='colonyinfo.housing'   >Living space : %d / %d men</entry>
+	<entry key='colonyinfo.worker'    >Worker       : %d / %d men</entry>
+	<entry key='colonyinfo.hospital'  >Hospital     : %d / %d men</entry>
+	<entry key='colonyinfo.food'      >Food         : %d / %d men</entry>
 	<entry key='colonyinfo.energy'    >Energy       : %d / %d kWh</entry>
 	<entry key='colonyinfo.police'    >Police       : %d / %d lakos</entry>
 	<entry key='colonyinfo.tax-trade' >Tax : %d cr    Trade : %d cr</entry>
@@ -832,7 +832,7 @@
 	<entry key='researchinfo.progress.cost'     >Cost      : %d cr</entry>
 	<entry key='researchinfo.progress.price'    >Price     : %d cr</entry>
 	<entry key='researchinfo.progress.pre'      >Prerequisites:</entry>
-	<entry key='colonyinfo.tax_short'>Tax: %s cr</entry>
+	<entry key='colonyinfo.tax_short'>Tax: %s</entry>
 	<entry key='researchinfo.required_labs'>Required / Available:</entry>
 	
 	
