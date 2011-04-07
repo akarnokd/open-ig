@@ -2523,7 +2523,7 @@ public class InfoScreen extends ScreenBase {
 					
 					if (p.owner == player()) {
 
-						commons.text().paintTo(g2, 240, y + 1, 10, TextRenderer.GREEN, p.morale + "% (" + withSign(p.morale - p.lastMorale) + ")");
+						commons.text().paintTo(g2, 240, y + 1, 10, p.morale >= 30 ? TextRenderer.GREEN : TextRenderer.RED, p.morale + "% (" + withSign(p.morale - p.lastMorale) + ")");
 						
 						PlanetStatistics ps = p.getStatistics();
 						if (ps.problems.size() > 0) {
