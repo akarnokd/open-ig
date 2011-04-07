@@ -147,10 +147,20 @@ public class Simulator {
 		}
 		
 		if (dayChange) {
+
+			planet.lastMorale = planet.morale;
+			planet.lastPopulation = planet.population;
+			
 			// FIXME morale computation
 			float newMorale = planet.morale + moraleBoost - 8 * ps.problems.size() - planet.tax.percent / 4;
 			
 			newMorale = Math.max(0, Math.min(100, newMorale));
+
+			if (planet.population < 5000) {
+				planet.population = (int)Math.max(0, planet.population + 10000 * (newMorale - 50) / 1000);
+			} else {
+				planet.population = (int)Math.max(0, planet.population + 2 * planet.population * (newMorale - 50) / 1000);
+			}
 			
 			planet.morale = (int)(planet.morale * 0.8f + 0.2f * newMorale);
 			
@@ -159,9 +169,6 @@ public class Simulator {
 
 			planet.owner.money += planet.tradeIncome + planet.taxIncome;
 			
-			planet.lastMorale = planet.morale;
-			planet.lastPopulation = planet.population;
-
 			planet.owner.yesterday.taxIncome += planet.taxIncome;
 			planet.owner.yesterday.tradeIncome += planet.tradeIncome;
 			planet.owner.yesterday.taxMorale += planet.morale;
