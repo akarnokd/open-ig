@@ -445,15 +445,17 @@
 	<entry key='morale.neutral'>semleges</entry>
 	<entry key='morale.like'>kedvel</entry>
 	<entry key='morale.supportive'>támogat</entry>
+	
 	<entry key='taxlevel.NONE'>Nincs</entry>
 	<entry key='taxlevel.VERY_LOW'>Nagyon alacsony</entry>
 	<entry key='taxlevel.LOW'>Alacsony</entry>
-	<entry key='taxlevel.NORMAL'>Normális</entry>
-	<entry key='taxlevel.ABOVE_NORMAL'>Normális felett</entry>
+	<entry key='taxlevel.MODERATE'>Közepes</entry>
+	<entry key='taxlevel.ABOVE_MODERATE'>Közepes felett</entry>
 	<entry key='taxlevel.HIGH'>Magas</entry>
 	<entry key='taxlevel.VERY_HIGH'>Nagyon magas</entry>
 	<entry key='taxlevel.OPPRESSIVE'>Elnyomó</entry>
-	<entry key='taxlevel.ULTIMATE'>a la Bokros</entry>
+	<entry key='taxlevel.EXPLOITER'>Kizsákmányoló</entry>
+	<entry key='taxlevel.SLAVERY'>a la Bokros</entry>
 	
 	<entry key='colonyinfo.planet'    >Bolygó : %s</entry>
 	<entry key='colonyinfo.owner'     >Tulajdonos : %s</entry>
@@ -909,5 +911,11 @@
 	<entry key='researchinfo.progress.pre'      >Előkövetelmények:</entry>
 	<entry key='colonyinfo.tax_short'>Adó: %s</entry>
 	<entry key='researchinfo.required_labs'>Szükséges / Elérhető:</entry>
+	
+	<entry key='info.list_details'>Részletek</entry>
+	<entry key='info.hide_details'>Lista</entry>
+	<entry key='info.population_details'>Népesség</entry>
+	<entry key='info.morale_details'>Morál</entry>
+	<entry key='info.problem_details'>Probléma</entry>
 	
 </labels>

@@ -370,15 +370,17 @@
 	<entry key='morale.neutral'>neutral</entry>
 	<entry key='morale.like'>like</entry>
 	<entry key='morale.supportive'>supportive</entry>
+
 	<entry key='taxlevel.NONE'>None</entry>
 	<entry key='taxlevel.VERY_LOW'>Very low</entry>
 	<entry key='taxlevel.LOW'>Low</entry>
-	<entry key='taxlevel.NORMAL'>Normal</entry>
-	<entry key='taxlevel.ABOVE_NORMAL'>Above normal</entry>
+	<entry key='taxlevel.MODERATE'>Moderate</entry>
+	<entry key='taxlevel.ABOVE_MODERATE'>Above moderate</entry>
 	<entry key='taxlevel.HIGH'>High</entry>
 	<entry key='taxlevel.VERY_HIGH'>Very high</entry>
 	<entry key='taxlevel.OPPRESSIVE'>Oppressive</entry>
-	<entry key='taxlevel.ULTIMATE'>Slavery</entry>
+	<entry key='taxlevel.EXPLOITER'>Exploiter</entry>
+	<entry key='taxlevel.SLAVERY'>Slavery</entry>
 	
 	<entry key='colonyinfo.planet'    >Planet : %s</entry>
 	<entry key='colonyinfo.owner'     >Owner        : %s</entry>
@@ -835,5 +837,9 @@
 	<entry key='colonyinfo.tax_short'>Tax: %s</entry>
 	<entry key='researchinfo.required_labs'>Required / Available:</entry>
 	
-	
+	<entry key='info.list_details'>Details</entry>
+	<entry key='info.hide_details'>List</entry>
+	<entry key='info.population_details'>Population</entry>
+	<entry key='info.morale_details'>Morale</entry>
+	<entry key='info.problem_details'>Problems</entry>
 </labels>

@@ -76,7 +76,11 @@ public class Building {
 	 * @return Returns the required (&lt;0) or produced (&gt;0) energy amount, taking the upgrade level into account
 	 */
 	public int getEnergy() {
-		return (int)getResource("energy");
+		int e = (int)getResource("energy");
+		if (e >= 0) {
+			e = (int)(e * getEfficiency());
+		}
+		return e;
 	}
 	/**
 	 * @return the operational efficiency
@@ -90,18 +94,20 @@ public class Building {
 			return 0.0f;
 		}
 		int workerDemand = getWorkers();
-		int energyDemand = getEnergy();
+		int energyDemand = (int)getResource("energy");
 		if (assignedWorker * 2 > workerDemand) {
 			return 0.0f;
 		}
 		// if the building doesn't need energy
 		if (energyDemand >= 0) {
-			return assignedWorker / (float)workerDemand;
+			return Math.min(assignedWorker / (float)workerDemand, hitpoints / (float)type.hitpoints);
 		}
 		if (assignedEnergy * 2 > energyDemand) {
 			return 0.0f;
 		}
-		return Math.min(Math.min(assignedEnergy / (float)energyDemand, assignedWorker / (float)workerDemand), hitpoints / (float)type.hitpoints);
+		return Math.min(
+				Math.min(assignedEnergy / (float)energyDemand, assignedWorker / (float)workerDemand), 
+				hitpoints / (float)type.hitpoints);
 	}
 	/**
 	 * @return is the building in construction phase?
@@ -165,6 +171,11 @@ public class Building {
 			}
 		}
 		return res.amount;
+	}
+	/** @return the primary resource adjusted by the efficiency level. */
+	public float getPrimary() {
+		float res = getResource(type.primary);
+		return res * getEfficiency();
 	}
 	/**
 	 * Set the upgrade level.

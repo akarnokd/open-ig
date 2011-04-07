@@ -137,6 +137,10 @@ public class StarmapScreen extends ScreenBase {
 	UIImageButton info;
 	/** Button. */
 	UIImageButton bridge;
+	/** The zoom button. */
+	UIImageButton zoom;
+	/** The zoom direction. */
+	boolean zoomDirection;
 	/** In panning mode? */
 	boolean panning;
 	/** Mouse down. */
@@ -252,6 +256,25 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				displayPrimary(Screens.BRIDGE);
+			}
+		};
+		
+		zoom = new UIImageButton(commons.starmap().zoom) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				zoomDirection = (e.has(Button.LEFT));
+				return super.mouse(e);
+			};
+		};
+		zoom.setHoldDelay(100);
+		zoom.onClick = new Act() {
+			@Override
+			public void act() {
+				if (zoomDirection) {
+					doZoomIn(starmapWindow.width / 2, starmapWindow.height / 2);
+				} else {
+					doZoomOut(starmapWindow.width / 2, starmapWindow.height / 2);
+				}
 			}
 		};
 		
@@ -597,7 +620,7 @@ public class StarmapScreen extends ScreenBase {
 					if (ps.problems.size() > 0) {
 						int w = ps.problems.size() * 11 - 1;
 						int i = 0;
-						for (PlanetProblems pp : ps.problems) {
+						for (PlanetProblems pp : ps.problems.values()) {
 							BufferedImage icon = null;
 							switch (pp) {
 							case HOUSING:
@@ -809,7 +832,9 @@ public class StarmapScreen extends ScreenBase {
 		zoomingPanel.height = commons.starmap().zoom[0].getHeight() + 2;
 		zoomingPanel.x = buttonsPanel.x;
 		zoomingPanel.y = buttonsPanel.y - zoomingPanel.height - 2;
-		
+
+		zoom.location(zoomingPanel.x + zoomingPanel.width - zoom.width - 1, zoomingPanel.y + 1);
+
 		planetFleetSplitterRange.x = zoomingPanel.x;
 		planetFleetSplitterRange.width = zoomingPanel.width;
 		planetFleetSplitterRange.y = rightPanel.y + 16 + commons.starmap().backwards[0].getHeight()

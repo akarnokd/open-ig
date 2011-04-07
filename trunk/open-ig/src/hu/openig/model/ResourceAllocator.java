@@ -101,7 +101,8 @@ public class ResourceAllocator {
 			doZeroStrategy(baw);
 			break;
 		case DEFAULT:
-			doUniformStrategy(baw, workers);
+//			doUniformStrategy(baw, workers);
+			doUniformStrategyWithDamage(baw, workers);
 			break;
 		case DAMAGE_AWARE:
 			doUniformStrategyWithDamage(baw, workers);
@@ -208,8 +209,13 @@ public class ResourceAllocator {
 		int demandWorker = 0;
 		int demandEnergy = 0;
 		for (BuildingAllocationWorker b : ras) {
-			demandWorker += b.workerDemand * b.efficiencyBound;
-			demandEnergy += b.producesEnergy ? 0 : b.energyDemand * b.efficiencyBound;
+			if (b.efficiencyBound >= 0.5) {
+				demandWorker += b.workerDemand * b.efficiencyBound;
+				demandEnergy += b.producesEnergy ? 0 : b.energyDemand * b.efficiencyBound;
+			} else {
+				b.workerAllocated = 0;
+				b.energyAllocated = 0;
+			}
 		}
 		// no need to assign workers
 		if (demandWorker == 0) {
@@ -218,11 +224,13 @@ public class ResourceAllocator {
 		float targetEfficiency = Math.min(1.0f, availableWorker / (float)demandWorker);
 		float availableEnergy = 0;
 		for (BuildingAllocationWorker b : ras) {
-			int toAssign = (int)(b.workerDemand * Math.min(targetEfficiency, b.efficiencyBound));
-			b.workerAllocated = toAssign > availableWorker ? toAssign : availableWorker;
-			availableWorker -= b.workerAllocated;
-			if (b.producesEnergy) {
-				availableEnergy -= b.energyDemand * b.getEfficiency();
+			if (b.efficiencyBound >= 0.5) {
+				int toAssign = (int)(b.workerDemand * Math.min(targetEfficiency, b.efficiencyBound));
+				b.workerAllocated = toAssign > availableWorker ? toAssign : availableWorker;
+				availableWorker -= b.workerAllocated;
+				if (b.producesEnergy) {
+					availableEnergy -= b.energyDemand * b.getEfficiency();
+				}
 			}
 		}
 		// no need assign energy: everything is either colonyhub or power plant
@@ -232,10 +240,12 @@ public class ResourceAllocator {
 		targetEfficiency = Math.min(1.0f, availableEnergy / demandEnergy);
 		
 		for (BuildingAllocationWorker b : ras) {
-			if (!b.producesEnergy) {
-				int toAssign = (int)(b.energyDemand * Math.min(targetEfficiency, b.efficiencyBound));
-				b.energyAllocated = toAssign > availableEnergy ? toAssign : (int)availableEnergy;
-				availableEnergy -= b.energyAllocated;
+			if (b.efficiencyBound >= 0.5) {
+				if (!b.producesEnergy) {
+					int toAssign = (int)(b.energyDemand * Math.min(targetEfficiency, b.efficiencyBound));
+					b.energyAllocated = toAssign > availableEnergy ? toAssign : (int)availableEnergy;
+					availableEnergy -= b.energyAllocated;
+				}
 			}
 		}
 	}
