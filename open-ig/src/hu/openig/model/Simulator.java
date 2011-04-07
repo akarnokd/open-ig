@@ -154,6 +154,9 @@ public class Simulator {
 			
 			// FIXME morale computation
 			float newMorale = planet.morale + moraleBoost;
+			if (planet.tax == TaxLevel.NONE) {
+				newMorale += 5;
+			} else
 			if (planet.tax.ordinal() <= TaxLevel.MODERATE.ordinal()) {
 				newMorale -= planet.tax.percent / 6;
 			} else {
