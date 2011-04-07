@@ -803,7 +803,7 @@ public class GameWindow extends JFrame implements GameControls {
 								p.population = 5000; // initial colony
 							}
 							p.owner = commons.world().player;
-							if (p.race == null || !p.race.isEmpty()) {
+							if (p.race == null || p.race.isEmpty()) {
 								p.race = p.owner.race;
 							}
 							repaintInner();
