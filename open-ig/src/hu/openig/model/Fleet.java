@@ -17,6 +17,8 @@ import java.util.List;
  * @author akarnokd, 2010.01.07.
  */
 public class Fleet implements Named, Owned {
+	/** The unique fleet identifier. */
+	public int id;
 	/** The owner of the fleet. */
 	public Player owner;
 	/** The X coordinate. */

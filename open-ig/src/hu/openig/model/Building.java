@@ -15,8 +15,6 @@ import hu.openig.core.Location;
  * @author akarnokd, 2010.01.07.
  */
 public class Building {
-	/** Build speed, hit points per game second. */
-	public static final int BUILD_SPEED = 100;
 	/** The building type definition. */
 	public final BuildingType type;
 	/** The technology ID for selecting a Tileset from the building type. */

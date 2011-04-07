@@ -19,4 +19,6 @@ public class FleetInventorySlot {
 	public ResearchType type;
 	/** The item count. */
 	public int count;
+	/** The item's hitpoints. */
+	public int hp;
 }
