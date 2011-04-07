@@ -2184,6 +2184,17 @@ public class InfoScreen extends ScreenBase {
 					world().selectResearch(rt);
 					return true;
 				}
+			} else
+			if (e.has(Type.DOUBLE_CLICK)) {
+				int col = e.x * 4 / width;
+				List<ResearchType> res = getResearchColumn(col);
+				int row = e.y / 12;
+				if (row < res.size()) {
+					ResearchType rt = res.get(row);
+					world().selectResearch(rt);
+					displaySecondary(Screens.RESEARCH);
+					return true;
+				}
 			}
 			return super.mouse(e);
 		};
@@ -2520,7 +2531,7 @@ public class InfoScreen extends ScreenBase {
 					int popWidth = commons.text().getTextWidth(10, pop);
 					commons.text().paintTo(g2, 160 - popWidth, y + 1, 10, TextRenderer.GREEN, pop);
 					commons.text().paintTo(g2, 170, y + 1, 10, TextRenderer.GREEN, "(" + withSign(p.population - p.lastPopulation) + ")");
-					
+					 
 					if (p.owner == player()) {
 
 						commons.text().paintTo(g2, 240, y + 1, 10, p.morale >= 30 ? TextRenderer.GREEN : TextRenderer.RED, p.morale + "% (" + withSign(p.morale - p.lastMorale) + ")");
