@@ -20,4 +20,6 @@ public class PlanetInventoryItem {
 	public ResearchType type;
 	/** The item's count. */
 	public int count;
+	/** The current hit points. */
+	public int hp;
 }

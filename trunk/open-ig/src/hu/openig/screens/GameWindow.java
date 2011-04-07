@@ -14,6 +14,7 @@ import hu.openig.core.ResourceLocator;
 import hu.openig.model.Building;
 import hu.openig.model.Planet;
 import hu.openig.ui.UIMouse;
+import hu.openig.utils.XElement;
 
 import java.awt.Container;
 import java.awt.Font;
@@ -31,10 +32,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -818,6 +825,13 @@ public class GameWindow extends JFrame implements GameControls {
 						result = false;
 					}
 					break;
+				case KeyEvent.VK_S:
+					if (e.isControlDown()) {
+						saveWorld();
+					} else {
+						result = false;
+					}
+					break;
 //				case KeyEvent.VK_R:
 //					if (e.isControlDown()) { // reload labels
 //						commons.world().labels.load(commons.rl, commons.world().name);
@@ -996,5 +1010,34 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public FontMetrics fontMetrics(int size) {
 		return getFontMetrics(getFont().deriveFont((float)size).deriveFont(Font.BOLD));
+	}
+	/** Save the world. */
+	public void saveWorld() {
+		final XElement world = commons.world().saveState();
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				File dir = new File("save/default");
+				if (dir.exists() || dir.mkdirs()) {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
+					
+					File fout = new File("save/default/" + sdf.format(new Date()) + ".xml");
+					try {
+						PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fout), "UTF-8"));
+						try {
+							out.println("<?xml version='1.0' encoding='UTF-8'?>");
+							out.print(world);
+						} finally {
+							out.close();
+						}
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+				} else {
+					System.err.println("Could not create save/default.");
+				}
+			}
+		}, "Save");
+		t.start();
 	}
 }

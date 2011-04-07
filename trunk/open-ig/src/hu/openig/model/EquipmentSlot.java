@@ -16,6 +16,8 @@ import java.util.List;
  * @author akarnokd, 2011.04.01.
  */
 public class EquipmentSlot {
+	/** The slot's identifier. */
+	public String id;
 	/** The slot's display location. */
 	public int x;
 	/** The slot's display location. */
