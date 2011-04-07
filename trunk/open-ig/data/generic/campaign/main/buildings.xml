@@ -722,7 +722,7 @@
 			<tech id="dargslan" height="4" width="4"/>
 			<tech id="ecalep" height="3" width="3"/>
 		</graphics>
-		<build limit="1" kind="Economic" cost="1700"/>
+		<build limit="1" kind="Economic" cost="17000" research='TradeCenter'/>
 		<operation>
 			<resource type="credit" display="true">1200</resource>
 			<resource type="energy">-1000</resource>
