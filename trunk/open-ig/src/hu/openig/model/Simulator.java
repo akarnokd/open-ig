@@ -164,6 +164,8 @@ public class Simulator {
 			}
 			if (ps.houseAvailable < planet.population) {
 				newMorale += (ps.houseAvailable - planet.population) * 75 / planet.population;
+			} else {
+				newMorale += (ps.houseAvailable - planet.population) * 2 / planet.population;
 			}
 			if (ps.hospitalAvailable < planet.population) {
 				newMorale += (ps.hospitalAvailable - planet.population) * 75 / planet.population;
