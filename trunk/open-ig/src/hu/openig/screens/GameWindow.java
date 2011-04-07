@@ -11,6 +11,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
+import hu.openig.model.Building;
 import hu.openig.model.Planet;
 import hu.openig.ui.UIMouse;
 
@@ -805,6 +806,11 @@ public class GameWindow extends JFrame implements GameControls {
 							p.owner = commons.world().player;
 							if (p.race == null || p.race.isEmpty()) {
 								p.race = p.owner.race;
+							}
+							for (Building b : p.surface.buildings) {
+								if (b.type.research != null) {
+									commons.world().player.availableResearch.add(b.type.research);
+								}
 							}
 							repaintInner();
 						}
