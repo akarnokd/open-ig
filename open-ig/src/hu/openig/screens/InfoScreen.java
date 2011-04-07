@@ -2235,7 +2235,7 @@ public class InfoScreen extends ScreenBase {
 		
 		if (rt != null) {
 			planetTitle.text(rt.name);
-			if (player().isAvailable(rt)) {
+			if (player().isAvailable(rt) || world().canResearch(rt)) {
 				descriptionImage.image(rt.infoImage);
 				descriptionText.text(rt.description);
 				descriptionTitle.text(rt.longName);
