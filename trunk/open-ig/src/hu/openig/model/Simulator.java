@@ -176,8 +176,9 @@ public class Simulator {
 			
 			
 			newMorale = Math.max(0, Math.min(100, newMorale));
-			float diff = planet.morale - planet.morale * 0.8f + 0.2f * newMorale;
-			planet.morale = (int)(planet.morale * 0.8f + 0.2f * newMorale);
+			float nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
+			float diff = planet.morale - nextMorale;
+			planet.morale = (int)nextMorale;
 			
 			planet.population = (int)Math.max(0, planet.population - planet.population * diff / 100);
 			
