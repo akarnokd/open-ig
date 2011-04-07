@@ -799,6 +799,9 @@ public class GameWindow extends JFrame implements GameControls {
 					if (e.isControlDown()) {
 						Planet p = commons.world().player.currentPlanet; 
 						if (p != null) {
+							if (p.owner == null) {
+								p.population = 5000; // initial colony
+							}
 							p.owner = commons.world().player;
 							if (p.race == null || !p.race.isEmpty()) {
 								p.race = p.owner.race;
