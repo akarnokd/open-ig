@@ -17,7 +17,6 @@ import hu.openig.render.RenderTools;
 import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
-import hu.openig.utils.XElement;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -39,6 +38,22 @@ import javax.swing.SwingUtilities;
  * @author akarnokd, 2010.01.11.
  */
 public class SingleplayerScreen extends ScreenBase {
+	/** The random used for background selection. */
+	final Random rnd = new Random();
+	/** The background image. */
+	BufferedImage background;
+	/** The list of campaigns. */
+	final List<GameDefinition> campaigns = new ArrayList<GameDefinition>();
+	/** The list of campaigns. */
+	final List<GameDefinition> skirmishes = new ArrayList<GameDefinition>();
+	/** The currently selected definition. */
+	GameDefinition selectedDefinition;
+	/** The campaign list. */
+	final Rectangle campaignList = new Rectangle();
+	/** The definition. */
+	final Rectangle descriptionRect = new Rectangle();
+	/** The video playback completion waiter. */
+	private Thread videoWaiter;
 	/** The reference frame. */
 	final Rectangle origin = new Rectangle();
 	/** Statistics label. */
@@ -243,33 +258,17 @@ public class SingleplayerScreen extends ScreenBase {
 		}
 		return rep;
 	}
-	/** The random used for background selection. */
-	final Random rnd = new Random();
-	/** The background image. */
-	BufferedImage background;
-	/** The list of campaigns. */
-	final List<GameDefinition> campaigns = new ArrayList<GameDefinition>();
-	/** The list of campaigns. */
-	final List<GameDefinition> skirmishes = new ArrayList<GameDefinition>();
-	/** The currently selected definition. */
-	GameDefinition selectedDefinition;
-	/** The campaign list. */
-	final Rectangle campaignList = new Rectangle();
-	/** The definition. */
-	final Rectangle descriptionRect = new Rectangle();
-	/** The video playback completion waiter. */
-	private Thread videoWaiter;
 	@Override
 	public void onEnter(Screens mode) {
 		background = commons.background().difficulty[rnd.nextInt(commons.background().difficulty.length)];
 		selectedDefinition = null;
 		campaigns.clear();
 		for (String name : commons.rl.listDirectories(commons.config.language, "campaign/")) {
-			GameDefinition gd = parseDefinition(commons, "campaign/" + name);
+			GameDefinition gd = GameDefinition.parse(commons, "campaign/" + name);
 			campaigns.add(gd);
 		}
 		for (String name : commons.rl.listDirectories(commons.config.language, "skirmish/")) {
-			GameDefinition gd = parseDefinition(commons, "skirmish/" + name);
+			GameDefinition gd = GameDefinition.parse(commons, "skirmish/" + name);
 			skirmishes.add(gd);
 		}
 		
@@ -344,40 +343,13 @@ public class SingleplayerScreen extends ScreenBase {
 
 		super.draw(g2);
 	}
-	/**
-	 * Parse the game definition from.
-	 * @param commons the common resources
-	 * @param name the definition/game name
-	 * @return the parsed definition.
-	 */
-	public static GameDefinition parseDefinition(CommonResources commons, String name) {
-		GameDefinition result = new GameDefinition();
-		result.name = name;
-		XElement root = commons.rl.getXML(name + "/definition");
-		for (XElement texts : root.childrenWithName("texts")) {
-			if (commons.config.language.equals(texts.get("language"))) {
-				result.title = texts.childValue("title");
-				result.description = texts.childValue("description");
-				break;
-			}
-		}
-		result.intro = root.childValue("intro");
-		result.image = commons.rl.getImage(root.childValue("image"));
-		result.startingLevel = Integer.parseInt(root.childValue("level"));
-		result.labels = root.childValue("labels");
-		result.galaxy = root.childValue("galaxy");
-		result.races = root.childValue("races");
-		result.tech = root.childValue("tech");
-		result.build = root.childValue("build");
-		result.planets = root.childValue("planets");
-		result.bridge = root.childValue("bridge");
-		result.walk = root.childValue("walk");
-		result.talk = root.childValue("talk");
-		
-		return result;
-	}
 	@Override
 	public Screens screen() {
 		return Screens.SINGLEPLAYER;
+	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
 	}
 }

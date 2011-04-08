@@ -11,6 +11,7 @@ package hu.openig.model;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +75,7 @@ public class ResearchType {
 	 */
 	public BufferedImage equipmentCustomizeImage;
 	/** The available equipment slots. */
-	public final List<EquipmentSlot> slots = new ArrayList<EquipmentSlot>();
+	public final Map<String, EquipmentSlot> slots = new LinkedHashMap<String, EquipmentSlot>();
 	// -------------------------------------------------
 	// Resources for the Space battle screen.
 	/** 

@@ -69,9 +69,9 @@ public class GalaxyModel {
 								if (te.name.equals("tile-range")) {
 									int start = Integer.parseInt(te.get("start"));
 									int end = Integer.parseInt(te.get("end"));
-									String ws = te.get("width");
+									String ws = te.get("width", null);
 									int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
-									String hs = te.get("height");
+									String hs = te.get("height", null);
 									int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
 									for (int id = start; id <= end; id++) {
 										Tile tile = new Tile(width, height, rl.getImage(String.format(tilePattern, id)), null);
@@ -80,9 +80,9 @@ public class GalaxyModel {
 								} else
 								if (te.name.equals("tile")) {
 									int id = Integer.parseInt(te.get("id"));
-									String ws = te.get("width");
+									String ws = te.get("width", null);
 									int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
-									String hs = te.get("height");
+									String hs = te.get("height", null);
 									int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
 									Tile tile = new Tile(width, height, rl.getImage(String.format(tilePattern, id)), null);
 									planetType.tiles.put(id, tile);

@@ -123,7 +123,16 @@ public class DatabaseTest extends JFrame {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+			@Override
+			public void save() {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void load(String name) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 	}
 	/**

@@ -17,10 +17,14 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.reflect.Constructor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import javax.swing.SwingUtilities;
 
 /**
  * The main menu rendering and actions.
@@ -65,6 +69,12 @@ public class MainScreen extends ScreenBase {
 			this.size = size;
 			this.label = label;
 		}
+		/** Invoke the associated action. */
+		public void invoke() {
+			if (action != null) {
+				action.act();
+			}
+		}
 		/**
 		 * Paint the label.
 		 * @param g2 the graphics context
@@ -98,12 +108,6 @@ public class MainScreen extends ScreenBase {
 			return !disabled && (x0 + x) <= mx && (x0 + x + w) > mx
 			&& (y0 + y) <= my && (y0 + y + size) > my;
 		}
-		/** Invoke the associated action. */
-		public void invoke() {
-			if (action != null) {
-				action.act();
-			}
-		}
 	}
 	/** The screen X origin. */
 	private int xOrigin;
@@ -113,22 +117,153 @@ public class MainScreen extends ScreenBase {
 	private BufferedImage background;
 	/** The list of clickable labels. */
 	private List<ClickLabel> clicklabels;
+	/** The random used for background selection. */
+	Random rnd = new Random();
+	/** The continue labe. */
+	private ClickLabel continueLabel;
+	/** Resume the last gameplay. */
+	void doContinue() {
+		load(null);
+	}
+	/** Perform the exit. */
+	void doExit() {
+		exit();
+	}
+	/**
+	 * Play the intro videos.
+	 */
+	protected void doPlayIntro() {
+		playVideos("intro/intro_1", "intro/intro_2", "intro/intro_3");
+	}
+	/**
+	 * Play the title video.
+	 */
+	protected void doPlayTitle() {
+		playVideos("intro/gt_interactive_intro");
+	}
+	/** Display the settings video. */
+	void doSettings() {
+		// do a small reflection trick to avoid circular dependency
+		try {
+			Class<?> clazz = Class.forName("hu.openig.Setup");
+			Constructor<?> c = clazz.getConstructor(Configuration.class, GameControls.class);
+			Object instance = c.newInstance(commons.config, commons);
+			clazz.getMethod("setVisible", Boolean.TYPE).invoke(instance, true);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	@Override
+	public void draw(Graphics2D g2) {
+		onResize(); // repaint might come before an onResize
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
+		g2.drawImage(background, xOrigin, yOrigin, null);
+	
+		commons.text().paintTo(g2, xOrigin + 121, yOrigin + 21, 14, 0xFF000000, "Open");
+		commons.text().paintTo(g2, xOrigin + 120, yOrigin + 20, 14, 0xFFFFFF00, "Open");
+		commons.text().paintTo(g2, xOrigin + 501, yOrigin + 65, 14, 0xFF000000, Configuration.VERSION);
+		commons.text().paintTo(g2, xOrigin + 500, yOrigin + 64, 14, 0xFFFF0000, Configuration.VERSION);
+		
+		Composite c0 = g2.getComposite();
+		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
+		
+		g2.fillRoundRect(xOrigin + 60, yOrigin + 100, 640 - 120, 442 - 100 - 20, 40, 40);
+		g2.setComposite(c0);
+	
+		for (ClickLabel cl : clicklabels) {
+			cl.paintTo(g2, xOrigin, yOrigin);
+		}
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		boolean needRepaint = false;
+		switch (e.type) {
+		case MOVE:
+		case DRAG:
+		case ENTER:
+		case LEAVE:
+			for (ClickLabel cl : clicklabels) {
+				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
+					needRepaint |= !cl.selected;
+					cl.selected = true;
+				} else {
+					needRepaint |= cl.selected;
+					cl.selected = false;
+				}
+			}
+			break;
+		case DOWN:
+			for (ClickLabel cl : clicklabels) {
+				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
+					needRepaint |= !cl.pressed;
+					cl.pressed = true;
+				} else {
+					needRepaint |= cl.pressed;
+					cl.pressed = false;
+				}
+			}
+			break;
+		case UP:
+			for (ClickLabel cl : clicklabels) {
+				if (cl.test(e.x, e.y, xOrigin, yOrigin) && cl.pressed) {
+					cl.invoke();
+				}
+				needRepaint |= cl.pressed;
+				cl.pressed = false;
+			}
+			break;
+		default:
+		}
+		return needRepaint;
+	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onEnter(Screens mode) {
+		selectRandomBackground();
+		onResize();
+		
+		doContinueListing();
+	}
+	/**
+	 * Search for previous saves.
+	 */
+	void doContinueListing() {
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				File dir = new File("save/default");
+				if (dir.exists()) {
+					File[] files = dir.listFiles(new FilenameFilter() {
+						@Override
+						public boolean accept(File dir, String name) {
+							return name.startsWith("save-") && name.endsWith(".xml");
+						}
+					});
+					final boolean found = files != null && files.length > 0;
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							continueLabel.disabled = !found;
+							repaintInner();
+						}
+					});
+				}
+			}
+		}, "Save-Lookup");
+		t.start();
+	}
 	@Override
 	public void onFinish() {
 		// TODO Auto-generated method stub
 
 	}
-	/**
-	 * Use the given background for the main menu.
-	 * @param newBackground the new background
-	 */
-	public void useBackground(BufferedImage newBackground) {
-		if (newBackground == null) {
-			throw new IllegalArgumentException("newBackground is null");
-		}
-		background = newBackground;
-		askRepaint();
-	}
+
 	@Override
 	public void onInitialize() {
 		clicklabels = new LinkedList<ClickLabel>();
@@ -142,7 +277,15 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(single);
 
-		clicklabels.add(new ClickLabel(120, 155, 400, 14, "mainmenu.continue"));
+		continueLabel = new ClickLabel(120, 155, 400, 14, "mainmenu.continue");
+		continueLabel.action = new Act() {
+			@Override
+			public void act() {
+				doContinue();
+			}
+		};
+		continueLabel.disabled = true;
+		clicklabels.add(continueLabel);
 		ClickLabel load = new ClickLabel(120, 180, 400, 14, "mainmenu.load");
 		load.action = new Act() {
 			@Override
@@ -150,6 +293,7 @@ public class MainScreen extends ScreenBase {
 				displayPrimary(Screens.LOAD_SAVE);
 			}
 		};
+		load.disabled = true;
 		clicklabels.add(load);
 		
 		ClickLabel multiplayer = new ClickLabel(120, 215, 400, 20 , "mainmenu.multiplayer");
@@ -223,85 +367,12 @@ public class MainScreen extends ScreenBase {
 		clicklabels.add(toEng);
 		clicklabels.add(toHu);
 	}
-	/** Perform the exit. */
-	void doExit() {
-		exit();
-	}
-	/**
-	 * Play the intro videos.
-	 */
-	protected void doPlayIntro() {
-		playVideos("intro/intro_1", "intro/intro_2", "intro/intro_3");
-	}
-	/**
-	 * Play the title video.
-	 */
-	protected void doPlayTitle() {
-		playVideos("intro/gt_interactive_intro");
-	}
-	@Override
-	public boolean mouse(UIMouse e) {
-		boolean needRepaint = false;
-		switch (e.type) {
-		case MOVE:
-		case DRAG:
-		case ENTER:
-		case LEAVE:
-			for (ClickLabel cl : clicklabels) {
-				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
-					needRepaint |= !cl.selected;
-					cl.selected = true;
-				} else {
-					needRepaint |= cl.selected;
-					cl.selected = false;
-				}
-			}
-			break;
-		case DOWN:
-			for (ClickLabel cl : clicklabels) {
-				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
-					needRepaint |= !cl.pressed;
-					cl.pressed = true;
-				} else {
-					needRepaint |= cl.pressed;
-					cl.pressed = false;
-				}
-			}
-			break;
-		case UP:
-			for (ClickLabel cl : clicklabels) {
-				if (cl.test(e.x, e.y, xOrigin, yOrigin) && cl.pressed) {
-					cl.invoke();
-				}
-				needRepaint |= cl.pressed;
-				cl.pressed = false;
-			}
-			break;
-		default:
-		}
-		return needRepaint;
-	}
-
-	@Override
-	public void onEnter(Screens mode) {
-		selectRandomBackground();
-		onResize();
-	}
-	/** The random used for background selection. */
-	Random rnd = new Random();
-	/**
-	 * Set the background randomly.
-	 */
-	protected void selectRandomBackground() {
-		background = commons.background().start[rnd.nextInt(commons.background().start.length)];
-	}
 
 	@Override
 	public void onLeave() {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void onResize() {
 		if (background == null) {
@@ -312,41 +383,28 @@ public class MainScreen extends ScreenBase {
 		yOrigin = (getInnerHeight() - background.getHeight()) / 2;
 	}
 	@Override
-	public void draw(Graphics2D g2) {
-		onResize(); // repaint might come before an onResize
-		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
-		g2.drawImage(background, xOrigin, yOrigin, null);
-	
-		commons.text().paintTo(g2, xOrigin + 121, yOrigin + 21, 14, 0xFF000000, "Open");
-		commons.text().paintTo(g2, xOrigin + 120, yOrigin + 20, 14, 0xFFFFFF00, "Open");
-		commons.text().paintTo(g2, xOrigin + 501, yOrigin + 65, 14, 0xFF000000, Configuration.VERSION);
-		commons.text().paintTo(g2, xOrigin + 500, yOrigin + 64, 14, 0xFFFF0000, Configuration.VERSION);
-		
-		Composite c0 = g2.getComposite();
-		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
-		
-		g2.fillRoundRect(xOrigin + 60, yOrigin + 100, 640 - 120, 442 - 100 - 20, 40, 40);
-		g2.setComposite(c0);
-	
-		for (ClickLabel cl : clicklabels) {
-			cl.paintTo(g2, xOrigin, yOrigin);
-		}
-	}
-	/** Display the settings video. */
-	void doSettings() {
-		// do a small reflection trick to avoid circular dependency
-		try {
-			Class<?> clazz = Class.forName("hu.openig.Setup");
-			Constructor<?> c = clazz.getConstructor(Configuration.class, GameControls.class);
-			Object instance = c.newInstance(commons.config, commons);
-			clazz.getMethod("setVisible", Boolean.TYPE).invoke(instance, true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	@Override
 	public Screens screen() {
 		return Screens.MAIN;
+	}
+	/**
+	 * Set the background randomly.
+	 */
+	protected void selectRandomBackground() {
+		background = commons.background().start[rnd.nextInt(commons.background().start.length)];
+	}
+	/**
+	 * Use the given background for the main menu.
+	 * @param newBackground the new background
+	 */
+	public void useBackground(BufferedImage newBackground) {
+		if (newBackground == null) {
+			throw new IllegalArgumentException("newBackground is null");
+		}
+		background = newBackground;
+		askRepaint();
+	}
+	@Override
+	public void load(String name) {
+		commons.control().load(name);
 	}
 }

@@ -10,9 +10,12 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
+import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Building;
+import hu.openig.model.GameDefinition;
 import hu.openig.model.Planet;
+import hu.openig.model.World;
 import hu.openig.ui.UIMouse;
 import hu.openig.utils.XElement;
 
@@ -34,6 +37,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -41,6 +45,8 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +54,7 @@ import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  * The base game window which handles paint and input events.
@@ -501,7 +508,7 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override 
 	public void hideStatusbar() {
 		if (statusbarVisible) {
-			statusbarVisible = true;
+			statusbarVisible = false;
 			statusbar.onLeave();
 			doMoveMouseAgain();
 			surface.repaint();
@@ -832,34 +839,13 @@ public class GameWindow extends JFrame implements GameControls {
 						result = false;
 					}
 					break;
-//				case KeyEvent.VK_R:
-//					if (e.isControlDown()) { // reload labels
-//						commons.world().labels.load(commons.rl, commons.world().name);
-//						repaintInner();
-//					} else {
-//						result = false;
-//					}
-//					break;
-//				case KeyEvent.VK_T:
-//					if (e.isControlDown()) { // reload labels
-//						if (commons.world().player.currentResearch != null) {
-//							ResearchType rt = commons.world().player.currentResearch;
-//							if (commons.world().player.runningResearch == rt) {
-//								commons.world().player.runningResearch = null;
-//								commons.world().player.research.remove(rt);
-//							}
-//							commons.world().player.availableResearch.add(rt);
-//							if (secondary != null 
-//									&& (secondary.screen() == Screens.RESEARCH || secondary.screen() == Screens.PRODUCTION)) {
-//								ResearchProductionScreen rps = ((ResearchProductionScreen)secondary);
-//								rps.displayCategory(rt.category);
-//							}
-//						}
-//						repaintInner();
-//					} else {
-//						result = false;
-//					}
-//					break;
+				case KeyEvent.VK_L:
+					if (e.isControlDown()) {
+						loadWorld(null);
+					} else {
+						result = false;
+					}
+					break;
 				default:
 					result = false;
 				}
@@ -1017,27 +1003,139 @@ public class GameWindow extends JFrame implements GameControls {
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				File dir = new File("save/default");
-				if (dir.exists() || dir.mkdirs()) {
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
-					
-					File fout = new File("save/default/" + sdf.format(new Date()) + ".xml");
-					try {
-						PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fout), "UTF-8"));
+				try {
+					File dir = new File("save/default");
+					if (dir.exists() || dir.mkdirs()) {
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
+						
+						File fout = new File("save/default/save-" + sdf.format(new Date()) + ".xml");
 						try {
-							out.println("<?xml version='1.0' encoding='UTF-8'?>");
-							out.print(world);
-						} finally {
-							out.close();
+							PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fout), "UTF-8"));
+							try {
+								out.println("<?xml version='1.0' encoding='UTF-8'?>");
+								out.print(world);
+							} finally {
+								out.close();
+							}
+						} catch (IOException ex) {
+							ex.printStackTrace();
 						}
-					} catch (IOException ex) {
-						ex.printStackTrace();
+					} else {
+						System.err.println("Could not create save/default.");
 					}
-				} else {
-					System.err.println("Could not create save/default.");
+				} catch (Throwable t) {
+					t.printStackTrace();
 				}
 			}
 		}, "Save");
+		t.start();
+	}
+	@Override
+	public void save() {
+		saveWorld();
+	}
+	@Override
+	public void load(String name) {
+		loadWorld(name);
+	}
+	/** 
+	 * Load a the specified world save. 
+	 * @param name the full save name
+	 */
+	public void loadWorld(final String name) {
+		final Screens pri = primary != null ? primary.screen() : null;
+		final Screens sec = secondary != null ? secondary.screen() : null;
+		final boolean status = statusbarVisible;
+		
+		displayPrimary(Screens.LOADING);
+		hideStatusbar();
+		
+		for (ScreenBase sb : screens) {
+			sb.onEndGame();
+		}
+		final String currentGame = commons.world() != null ? commons.world().name : null; 
+		commons.worldLoading = true;
+		if (commons.world() != null) {
+			commons.world().close();
+		}
+		
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					String lname = name;
+					if (lname == null) {
+						File dir = new File("save/default");
+						if (dir.exists()) {
+							File[] files = dir.listFiles(new FilenameFilter() {
+								@Override
+								public boolean accept(File dir, String name) {
+									return name.startsWith("save-") && name.endsWith(".xml");
+								}
+							});
+							if (files != null && files.length > 0) {
+								Arrays.sort(files, new Comparator<File>() {
+									@Override
+									public int compare(File o1, File o2) {
+										return o2.getName().compareTo(o1.getName());
+									}
+								});
+								lname = files[0].getAbsolutePath();
+							} else {
+								System.err.println("No saves!");
+							}
+						} else {
+							System.err.println("save/default not found");
+						}
+					}
+
+					
+					XElement xworld = XElement.parseXML(lname);
+					
+					String game = xworld.get("game");
+					World world = commons.world(); 
+					if (!game.equals(currentGame)) {
+						commons.world(null);
+						// load world model
+						world = new World(commons.pool, commons.control());
+						world.definition = GameDefinition.parse(commons, game);
+						world.labels = new Labels();
+						world.labels.load(commons.rl, world.definition.labels);
+						world.load(commons.rl, world.definition.name);
+					}
+					
+					world.loadState(xworld);
+					
+					final World fworld = world;
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							commons.labels0().replaceWith(fworld.labels);
+							commons.world(fworld);
+							commons.worldLoading = false;
+							
+							if (pri == Screens.MAIN || pri == Screens.LOAD_SAVE || pri == Screens.SINGLEPLAYER) {
+								displayPrimary(Screens.BRIDGE);
+								displayStatusbar();
+							} else
+							if (pri != null) {
+								displayPrimary(pri);
+							}
+							if (sec != null) {
+								displaySecondary(sec);
+							}
+							if (status) {
+								displayStatusbar();
+							}
+							fworld.start();
+						}
+					});
+
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+		}, "Load");
 		t.start();
 	}
 }

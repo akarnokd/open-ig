@@ -49,12 +49,26 @@ public class XElement implements Iterable<XElement> {
 		this.name = name;
 	}
 	/**
-	 * Retrieve an attribute.
+	 * Retrieve an attribute or throw an IllegalArgumentException.
 	 * @param attributeName the attribute name
 	 * @return the attribute value or null if no such attribute
 	 */
 	public String get(String attributeName) {
-		return attributes.get(attributeName);
+		String s = attributes.get(attributeName);
+		if (s == null) {
+			throw new IllegalArgumentException(name + ": missing attribute: " + attributeName);
+		}
+		return s;
+	}
+	/**
+	 * Retrieve an attribute.
+	 * @param attributeName the attribute name
+	 * @param def the default value if not present
+	 * @return the attribute value or null if no such attribute
+	 */
+	public String get(String attributeName, String def) {
+		String s = attributes.get(attributeName); 
+		return s != null ? s : def;
 	}
 	/**
 	 * Get an integer attribute or return the default value if not present.
@@ -63,7 +77,7 @@ public class XElement implements Iterable<XElement> {
 	 * @return the integer value
 	 */
 	public int getInt(String attributeName, int def) {
-		String val = get(attributeName);
+		String val = attributes.get(attributeName);
 		return val != null ? Integer.parseInt(val) : def;
 	}
 	/**
@@ -73,9 +87,6 @@ public class XElement implements Iterable<XElement> {
 	 */
 	public int getInt(String attributeName) {
 		String val = get(attributeName);
-		if (val == null) {
-			throw new IllegalArgumentException("Missing attribute: " + attributeName + "\r\n" + this);
-		}
 		return Integer.parseInt(val);
 	}
 	@Override

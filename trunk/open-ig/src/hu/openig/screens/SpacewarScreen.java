@@ -618,4 +618,9 @@ public class SpacewarScreen extends ScreenBase {
 	public Screens screen() {
 		return Screens.SPACEWAR;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

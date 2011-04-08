@@ -12,6 +12,7 @@ import hu.openig.core.PlanetType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -299,5 +300,32 @@ public class Planet implements Named, Owned {
 			}
 		}
 		return result;
+	}
+	/**
+	 * Remove everything from the planet and reset to its default stance.
+	 */
+	public void die() {
+		// remove equipment of the owner
+		Iterator<PlanetInventoryItem> pit = inventory.iterator();
+		while (pit.hasNext()) {
+			PlanetInventoryItem pii = pit.next();
+			if (pii.owner == owner) {
+				pit.remove();
+			}
+		}
+		owner = null;
+		race = null;
+		quarantine = false;
+		allocation = ResourceAllocationStrategy.DEFAULT;
+		tax = TaxLevel.MODERATE;
+		morale = 50;
+		lastMorale = 50;
+		population = 0;
+		lastPopulation = 0;
+		autoBuild = AutoBuild.OFF;
+		taxIncome = 0;
+		tradeIncome = 0;
+		surface.buildings.clear();
+		surface.buildingmap.clear();
 	}
 }

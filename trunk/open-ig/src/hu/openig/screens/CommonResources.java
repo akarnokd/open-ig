@@ -175,84 +175,97 @@ public class CommonResources {
 		rl = config.newResourceLocator();
 		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		try {
-			labels = get(exec.submit(new Callable<Labels>() {
+			final Future<Labels> labelFuture = exec.submit(new Callable<Labels>() {
 				@Override
 				public Labels call() throws Exception {
 					return new Labels().load(rl, null);
 				}
-			}));
-			statusbar = get(exec.submit(new Callable<StatusbarGFX>() {
+			});
+			final Future<StatusbarGFX> statusbarFuture = exec.submit(new Callable<StatusbarGFX>() {
 				@Override
 				public StatusbarGFX call() throws Exception {
 					return new StatusbarGFX().load(rl);
 				}
-			}));
-			background = get(exec.submit(new Callable<BackgroundGFX>() {
+			});
+			final Future<BackgroundGFX> backgroundFuture = exec.submit(new Callable<BackgroundGFX>() {
 				@Override
 				public BackgroundGFX call() throws Exception {
 					return new BackgroundGFX().load(rl);
 				}
-			}));
-			equipment = get(exec.submit(new Callable<EquipmentGFX>() {
+			});
+			final Future<EquipmentGFX> equipmentFuture = exec.submit(new Callable<EquipmentGFX>() {
 				@Override
 				public EquipmentGFX call() throws Exception {
 					return new EquipmentGFX().load(rl);
 				}
-			}));
-			spacewar = get(exec.submit(new Callable<SpacewarGFX>() {
+			});
+			final Future<SpacewarGFX> spacewarFuture = exec.submit(new Callable<SpacewarGFX>() {
 				@Override
 				public SpacewarGFX call() throws Exception {
 					return new SpacewarGFX().load(rl);
 				}
-			}));
-			info = get(exec.submit(new Callable<InfoGFX>() {
+			});
+			final Future<InfoGFX> infoFuture = exec.submit(new Callable<InfoGFX>() {
 				@Override
 				public InfoGFX call() throws Exception {
 					return new InfoGFX().load(rl);
 				}
-			}));
-			research = get(exec.submit(new Callable<ResearchGFX>() {
+			});
+			final Future<ResearchGFX> researchFuture = exec.submit(new Callable<ResearchGFX>() {
 				@Override
 				public ResearchGFX call() throws Exception {
 					return new ResearchGFX().load(rl);
 				}
-			}));
-			colony = get(exec.submit(new Callable<ColonyGFX>() {
+			});
+			final Future<ColonyGFX> colonyFuture = exec.submit(new Callable<ColonyGFX>() {
 				@Override
 				public ColonyGFX call() throws Exception {
 					return new ColonyGFX().load(rl);
 				}
-			}));
-			starmap = get(exec.submit(new Callable<StarmapGFX>() {
+			});
+			final Future<StarmapGFX> starmapFuture = exec.submit(new Callable<StarmapGFX>() {
 				@Override
 				public StarmapGFX call() throws Exception {
 					return new StarmapGFX().load(rl);
 				}
-			}));
-			database = get(exec.submit(new Callable<DatabaseGFX>() {
+			});
+			final Future<DatabaseGFX> databaseFuture = exec.submit(new Callable<DatabaseGFX>() {
 				@Override
 				public DatabaseGFX call() throws Exception {
 					return new DatabaseGFX().load(rl);
 				}
-			}));
-			text = get(exec.submit(new Callable<TextRenderer>() {
+			});
+			final Future<TextRenderer> textFuture = exec.submit(new Callable<TextRenderer>() {
 				@Override
 				public TextRenderer call() throws Exception {
 					return new TextRenderer(rl);
 				}
-			}));
-			diplomacy = get(exec.submit(new Callable<DiplomacyGFX>() {
+			});
+			final Future<DiplomacyGFX> diplomacyFuture = exec.submit(new Callable<DiplomacyGFX>() {
 				@Override
 				public DiplomacyGFX call() throws Exception {
 					return new DiplomacyGFX().load(rl);
 				}
-			}));
-			common = get(pool.submit(new Callable<CommonGFX>() {
+			});
+			final Future<CommonGFX> commonFuture = pool.submit(new Callable<CommonGFX>() {
 				@Override
 				public CommonGFX call() throws Exception {
 					return new CommonGFX().load(rl);
 				}
-			}));
+			});
+			labels = get(labelFuture);
+			statusbar = get(statusbarFuture);
+			background = get(backgroundFuture);
+			equipment = get(equipmentFuture);
+			spacewar = get(spacewarFuture);
+			info = get(infoFuture);
+			research = get(researchFuture);
+			colony = get(colonyFuture);
+			starmap = get(starmapFuture);
+			database = get(databaseFuture);
+			text = get(textFuture);
+			diplomacy = get(diplomacyFuture);
+			common = get(commonFuture);
 
 		} finally {
 			exec.shutdown();

@@ -1712,4 +1712,9 @@ public class ResearchProductionScreen extends ScreenBase {
 			player().inventory.put(player().currentResearch, count - 1);
 		}
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

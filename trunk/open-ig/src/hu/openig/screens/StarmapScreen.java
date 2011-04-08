@@ -284,7 +284,7 @@ public class StarmapScreen extends ScreenBase {
 	 * Rotate the planets on screen.
 	 */
 	protected void rotatePlanets() {
-		for (Planet p : commons.world().planets) {
+		for (Planet p : commons.world().planets.values()) {
 			if (p.rotationDirection == RotationDirection.LR) {
 				p.rotationPhase = (p.rotationPhase + 1) % p.type.body.length;
 			} else {
@@ -577,7 +577,7 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 
-		for (Planet p : commons.world().planets) {
+		for (Planet p : commons.world().planets.values()) {
 			if (knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
 				continue;
 			}
@@ -730,7 +730,7 @@ public class StarmapScreen extends ScreenBase {
 			g2.setClip(save0);
 			g2.clipRect(minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height);
 			// render planets
-			for (Planet p : commons.world().planets) {
+			for (Planet p : commons.world().planets.values()) {
 				if (knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
 					continue;
 				}
@@ -1234,7 +1234,7 @@ public class StarmapScreen extends ScreenBase {
 	 */
 	public Planet getPlanetAt(int x, int y) {
 		double zoom = getZoom();
-		for (Planet p : commons.world().planets) {
+		for (Planet p : commons.world().planets.values()) {
 			double d = p.diameter * zoom / 4;
 			int di = (int)d;
 			int x0 = (int)(starmapRect.x + p.x * zoom - d / 2);
@@ -1288,5 +1288,10 @@ public class StarmapScreen extends ScreenBase {
 	@Override
 	public Screens screen() {
 		return Screens.STARMAP;
+	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
 	}
 }

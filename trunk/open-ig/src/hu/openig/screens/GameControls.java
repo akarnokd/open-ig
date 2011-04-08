@@ -74,4 +74,11 @@ public interface GameControls {
 	 * @return the default font metrics object
 	 */
 	FontMetrics fontMetrics(int size);
+	/** Save the world state. */
+	void save();
+	/**
+	 * Load the world state.
+	 * @param name the save name or null to load the most recent.
+	 */
+	void load(String name);
 }

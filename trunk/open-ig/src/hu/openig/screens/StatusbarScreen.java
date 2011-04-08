@@ -194,4 +194,9 @@ public class StatusbarScreen extends ScreenBase {
 				world().time.get(GregorianCalendar.HOUR_OF_DAY),
 				world().time.get(GregorianCalendar.MINUTE)));
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

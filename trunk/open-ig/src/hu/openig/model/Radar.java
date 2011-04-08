@@ -107,7 +107,7 @@ public class Radar {
 			}
 		}
 		// traverse each planet
-		for (Planet p : world.planets) {
+		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
 				updateKnowledge(p.owner.planets, p, PlanetKnowledge.BUILDING);
 			}
@@ -200,7 +200,7 @@ public class Radar {
 	 */
 	public List<Planet> findPlanetsInRange(int x, int y, int range) {
 		List<Planet> result = new ArrayList<Planet>();
-		for (Planet p : world.planets) {
+		for (Planet p : world.planets.values()) {
 			if ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) < range * range) {
 				result.add(p);
 			}

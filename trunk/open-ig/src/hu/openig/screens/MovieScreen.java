@@ -224,4 +224,9 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	public Screens screen() {
 		return Screens.MOVIE;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

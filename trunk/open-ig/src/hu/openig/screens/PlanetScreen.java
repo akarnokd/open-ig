@@ -198,6 +198,7 @@ public class PlanetScreen extends ScreenBase {
 	UIImageButton next;
 	@Override
 	public void onFinish() {
+		onEndGame();
 		if (animationTimer != null) {
 			animationTimer.stop();
 			animationTimer = null;
@@ -2204,5 +2205,11 @@ public class PlanetScreen extends ScreenBase {
 	@Override
 	public Screens screen() {
 		return Screens.COLONY;
+	}
+	@Override
+	public void onEndGame() {
+		currentBuilding = null;
+		buildingBox = null;
+		lastSurface = null;
 	}
 }

@@ -84,4 +84,9 @@ public class BarScreen extends ScreenBase {
 	public Screens screen() {
 		return Screens.BAR;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

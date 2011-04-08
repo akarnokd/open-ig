@@ -197,23 +197,23 @@ public class BuildingModel {
 				} else {
 					b.limit = Integer.parseInt(limit);
 				}
-				String research = bld.get("research");
+				String research = bld.get("research", null);
 				b.research = researches.get(research);
 				if (research != null && b.research == null && researches.size() > 0) {
 					throw new AssertionError("Missing research: Building = " + b.id + ", Research = " + research);
 				}
-				String except = bld.get("except");
+				String except = bld.get("except", null);
 				if (except != null && !except.isEmpty()) {
 					b.except.addAll(Arrays.asList(except.split("\\s*,\\s*")));
 				}
 				XElement op = building.childElement("operation");
-				b.percentable = "true".equals(op.get("percent"));
+				b.percentable = "true".equals(op.get("percent", "false"));
 				for (XElement re : op.childrenWithName("resource")) {
 					Resource res = new Resource();
 					res.type = re.get("type");
 					res.amount = Float.parseFloat(re.content);
 					b.resources.put(res.type, res);
-					if ("true".equals(re.get("display"))) {
+					if ("true".equals(re.get("display", "false"))) {
 						b.primary = res.type;
 					}
 				}

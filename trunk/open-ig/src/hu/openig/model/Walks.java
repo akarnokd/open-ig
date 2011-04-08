@@ -42,7 +42,7 @@ public class Walks {
 		for (XElement ship : root.childrenWithName("ship")) {
 			WalkShip ws = new WalkShip();
 			ws.level = ship.get("id");
-			String ref = ship.get("ref");
+			String ref = ship.get("ref", null);
 			if (ref != null) {
 				ships.put(ws.level, ships.get(ref));
 			} else {
@@ -56,7 +56,7 @@ public class Walks {
 					for (XElement transition : position.childrenWithName("transition")) {
 						WalkTransition wt = new WalkTransition();
 						wp.transitions.add(wt);
-						wt.media = transition.get("media");
+						wt.media = transition.get("media", null);
 						wt.label = transition.get("label");
 						wt.to = transition.get("to");
 						String area = transition.get("area");

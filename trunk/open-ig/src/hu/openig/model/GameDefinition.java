@@ -8,6 +8,9 @@
 
 package hu.openig.model;
 
+import hu.openig.screens.CommonResources;
+import hu.openig.utils.XElement;
+
 import java.awt.image.BufferedImage;
 
 /**
@@ -47,5 +50,38 @@ public class GameDefinition {
 	public String walk;
 	/** The talk description. */
 	public String talk;
+	/**
+	 * Parse the game definition from.
+	 * @param commons the common resources
+	 * @param name the definition/game name
+	 * @return the parsed definition.
+	 */
+	public static GameDefinition parse(CommonResources commons, String name) {
+		GameDefinition result = new GameDefinition();
+		result.name = name;
+		XElement root = commons.rl.getXML(name + "/definition");
+		for (XElement texts : root.childrenWithName("texts")) {
+			if (commons.config.language.equals(texts.get("language"))) {
+				result.title = texts.childValue("title");
+				result.description = texts.childValue("description");
+				break;
+			}
+		}
+		result.intro = root.childValue("intro");
+		result.image = commons.rl.getImage(root.childValue("image"));
+		result.startingLevel = Integer.parseInt(root.childValue("level"));
+		result.labels = root.childValue("labels");
+		result.galaxy = root.childValue("galaxy");
+		result.races = root.childValue("races");
+		result.tech = root.childValue("tech");
+		result.build = root.childValue("build");
+		result.planets = root.childValue("planets");
+		result.bridge = root.childValue("bridge");
+		result.walk = root.childValue("walk");
+		result.talk = root.childValue("talk");
+		
+		return result;
+	}
+
 
 }
