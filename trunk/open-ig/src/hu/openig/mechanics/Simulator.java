@@ -148,25 +148,25 @@ public final class Simulator {
 				newMorale += 5;
 			} else
 			if (planet.tax.ordinal() <= TaxLevel.MODERATE.ordinal()) {
-				newMorale -= planet.tax.percent / 6;
+				newMorale -= planet.tax.percent / 6f;
 			} else {
-				newMorale -= planet.tax.percent / 3;
+				newMorale -= planet.tax.percent / 3f;
 			}
 			if (ps.houseAvailable < planet.population) {
-				newMorale += (ps.houseAvailable - planet.population) * 75 / planet.population;
+				newMorale += (ps.houseAvailable - planet.population) * 75f / planet.population;
 			} else {
-				newMorale += (ps.houseAvailable - planet.population) * 2 / planet.population;
+				newMorale += (ps.houseAvailable - planet.population) * 2f / planet.population;
 			}
 			if (ps.hospitalAvailable < planet.population) {
-				newMorale += (ps.hospitalAvailable - planet.population) * 75 / planet.population;
+				newMorale += (ps.hospitalAvailable - planet.population) * 75f / planet.population;
 			}
 			if (ps.foodAvailable < planet.population) {
-				newMorale += (ps.foodAvailable - planet.population) * 75 / planet.population;
+				newMorale += (ps.foodAvailable - planet.population) * 75f / planet.population;
 			}
 			if (ps.policeAvailable < planet.population) {
-				newMorale += (ps.policeAvailable - planet.population) * 50 / planet.population;
+				newMorale += (ps.policeAvailable - planet.population) * 50f / planet.population;
 			} else {
-				newMorale += (ps.policeAvailable - planet.population) * 5 / planet.population;
+				newMorale += (ps.policeAvailable - planet.population) * 10f / planet.population;
 			}
 			
 			
@@ -174,7 +174,7 @@ public final class Simulator {
 			float nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
 			planet.morale = (int)nextMorale;
 			
-			planet.population = Math.max(0, planet.population + planet.population * (planet.morale - 50) / 10000);
+			planet.population = (int)Math.max(0, planet.population + planet.population * (nextMorale - 50) / 500);
 			
 			planet.tradeIncome = (int)(tradeIncome * multiply);
 			planet.taxIncome = planet.population * planet.morale * planet.tax.percent / 10000;
