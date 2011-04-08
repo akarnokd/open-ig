@@ -64,6 +64,8 @@ public class PlanetStatistics {
 	public int spaceship;
 	/** The current list of problems. */
 	public final Map<PlanetProblems, PlanetProblems> problems = new LinkedHashMap<PlanetProblems, PlanetProblems>();
+	/** The current list of warnings. */
+	public final Map<PlanetProblems, PlanetProblems> warnings = new LinkedHashMap<PlanetProblems, PlanetProblems>();
 	/**
 	 * Add the other planet statistics to this one.
 	 * @param other the other statistics
@@ -93,20 +95,36 @@ public class PlanetStatistics {
 		spaceshipActive += other.spaceshipActive;
 		spaceship += other.spaceship;
 		problems.putAll(other.problems);
+		warnings.putAll(other.warnings);
 	}
 	/**
 	 * The planet has the specified problem?
 	 * @param probl the problem
 	 * @return present
 	 */
-	public boolean has(PlanetProblems probl) {
+	public boolean hasProblem(PlanetProblems probl) {
 		return problems.containsKey(probl);
 	}
 	/** 
 	 * Add the given planet problem to the map.
 	 * @param probl the planet problem
 	 */
-	public void add(PlanetProblems probl) {
+	public void addProblem(PlanetProblems probl) {
 		problems.put(probl, probl);
+	}
+	/**
+	 * The planet has the specified problem?
+	 * @param probl the problem
+	 * @return present
+	 */
+	public boolean hasWarning(PlanetProblems probl) {
+		return warnings.containsKey(probl);
+	}
+	/** 
+	 * Add the given planet problem to the map.
+	 * @param probl the planet problem
+	 */
+	public void addWarning(PlanetProblems probl) {
+		warnings.put(probl, probl);
 	}
 }
