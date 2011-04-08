@@ -9,8 +9,11 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.model.Screens;
+import hu.openig.model.World;
 
 import java.awt.FontMetrics;
+import java.io.Closeable;
 
 /**
  * Interface for interacting with the game window or other objects in a global manner.
@@ -81,4 +84,17 @@ public interface GameControls {
 	 * @param name the save name or null to load the most recent.
 	 */
 	void load(String name);
+	/**
+	 * Register a periodic timer action with the given delay.
+	 * @param delay the delay in milliseconds.
+	 * @param action the action
+	 * @return the handler to cancel the registration
+	 */
+	Closeable register(int delay, Act action);
+	/** @return The current world. */
+	World world();
+	/** @return the current primary screen type or null if none. */
+	Screens primary();
+	/** @return the current secondary screen type or null if none. */
+	Screens secondary();
 }

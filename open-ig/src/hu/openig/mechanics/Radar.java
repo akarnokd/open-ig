@@ -6,45 +6,37 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.model;
+package hu.openig.mechanics;
 
-import hu.openig.core.Act;
+import hu.openig.model.Building;
+import hu.openig.model.Fleet;
+import hu.openig.model.FleetInventoryItem;
+import hu.openig.model.FleetInventorySlot;
+import hu.openig.model.FleetKnowledge;
+import hu.openig.model.Planet;
+import hu.openig.model.PlanetInventoryItem;
+import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.Player;
+import hu.openig.model.World;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Timer;
-
 /**
  * The algorithm that adjusts the knowledge level of planets and fleets for all players.
  * @author akarnokd, 2011.04.05.
  */
-public class Radar {
-	/** The timer to perform the periodic computation. */
-	protected Timer timer;
-	/** The world to compute. */
-	protected World world;
-	/**
-	 * Constructor.
-	 * @param delay the between delay
-	 * @param world the world to compute
-	 */
-	public Radar(int delay, World world) {
-		this.world = world;
-		this.timer = new Timer(delay, new Act() {
-			@Override
-			public void act() {
-				compute();
-			}
-		});
-		this.timer.setInitialDelay(0);
+public final class Radar {
+	/** Utility class. */
+	private Radar() {
 	}
 	/**
 	 * Compute for all players.
+	 * @param world the world
 	 */
-	public void compute() {
+	public static void compute(World world) {
 		// clear knowledge
 		for (Player player : world.players.values()) {
 			// reset known planets to discovered state
@@ -80,7 +72,7 @@ public class Radar {
 					}
 					int ri = Integer.parseInt(radar);
 					if (ri > 0) {
-						for (Planet q : findPlanetsInRange(f.x, f.y, ri * 35)) {
+						for (Planet q : findPlanetsInRange(world, f.x, f.y, ri * 35)) {
 							if (ri == 1) {
 								updateKnowledge(player.planets, q, PlanetKnowledge.VISIBLE);
 							} else
@@ -91,7 +83,7 @@ public class Radar {
 								updateKnowledge(player.planets, q, PlanetKnowledge.BUILDING);
 							}
 						}
-						for (Fleet f1 : findFleetsInRange(f.x, f.y, ri * 35)) {
+						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, ri * 35)) {
 							if (ri == 1) {
 								updateKnowledge(player.fleets, f1, FleetKnowledge.VISIBLE);
 							} else
@@ -124,10 +116,10 @@ public class Radar {
 						updateKnowledge(pii.owner.planets, p, PlanetKnowledge.BUILDING);
 					}
 					if ("4".equals(radar)) {
-						for (Planet q : findPlanetsInRange(p.x, p.y, 4 * 35)) {
+						for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * 35)) {
 							updateKnowledge(pii.owner.planets, q, PlanetKnowledge.BUILDING);
 						}
-						for (Fleet f : findFleetsInRange(p.x, p.y, 4 * 35)) {
+						for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * 35)) {
 							updateKnowledge(pii.owner.fleets, f, FleetKnowledge.FULL);
 						}
 					}
@@ -142,7 +134,7 @@ public class Radar {
 				}
 			}
 			if (radar > 0) {
-				for (Planet q : findPlanetsInRange(p.x, p.y, radar * 35)) {
+				for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * 35)) {
 					if (radar == 3) {
 						updateKnowledge(p.owner.planets, q, PlanetKnowledge.BUILDING);
 					} else
@@ -153,7 +145,7 @@ public class Radar {
 						updateKnowledge(p.owner.planets, q, PlanetKnowledge.VISIBLE);
 					}
 				}
-				for (Fleet f1 : findFleetsInRange(p.x, p.y, radar * 35)) {
+				for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * 35)) {
 					if (radar == 1) {
 						updateKnowledge(p.owner.fleets, f1, FleetKnowledge.VISIBLE);
 					} else
@@ -173,7 +165,7 @@ public class Radar {
 	 * @param p the planet
 	 * @param k the new knowledge
 	 */
-	void updateKnowledge(Map<Planet, PlanetKnowledge> map, Planet p, PlanetKnowledge k) {
+	static void updateKnowledge(Map<Planet, PlanetKnowledge> map, Planet p, PlanetKnowledge k) {
 		PlanetKnowledge k0 = map.get(p);
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			map.put(p, k);
@@ -185,7 +177,7 @@ public class Radar {
 	 * @param p the planet
 	 * @param k the new knowledge
 	 */
-	void updateKnowledge(Map<Fleet, FleetKnowledge> map, Fleet p, FleetKnowledge k) {
+	static void updateKnowledge(Map<Fleet, FleetKnowledge> map, Fleet p, FleetKnowledge k) {
 		FleetKnowledge k0 = map.get(p);
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			map.put(p, k);
@@ -193,12 +185,13 @@ public class Radar {
 	}
 	/**
 	 * Locate planets within the given circle.
+	 * @param world the game world
 	 * @param x the center coordinate
 	 * @param y the center coordinate
 	 * @param range the range
 	 * @return the list of planets in range
 	 */
-	public List<Planet> findPlanetsInRange(int x, int y, int range) {
+	static List<Planet> findPlanetsInRange(World world, int x, int y, int range) {
 		List<Planet> result = new ArrayList<Planet>();
 		for (Planet p : world.planets.values()) {
 			if ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) < range * range) {
@@ -210,12 +203,13 @@ public class Radar {
 	}
 	/**
 	 * Locate fleets within the given circle.
+	 * @param world the game world
 	 * @param x the center coordinate
 	 * @param y the center coordinate
 	 * @param range the range
 	 * @return the list of planets in range
 	 */
-	public List<Fleet> findFleetsInRange(int x, int y, int range) {
+	static List<Fleet> findFleetsInRange(World world, int x, int y, int range) {
 		List<Fleet> result = new ArrayList<Fleet>();
 		for (Player p : world.players.values()) {
 			for (Fleet f : p.fleets.keySet()) {
@@ -225,13 +219,5 @@ public class Radar {
 			}
 		}
 		return result;
-	}
-	/** Stop the timer. */
-	public void stop() {
-		timer.stop();
-	}
-	/** Start the timer. */
-	public void start() {
-		timer.start();
 	}
 }

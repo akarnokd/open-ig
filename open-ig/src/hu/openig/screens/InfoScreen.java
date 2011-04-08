@@ -25,6 +25,7 @@ import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
+import hu.openig.model.Screens;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.render.RenderTools;

@@ -9,6 +9,7 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;

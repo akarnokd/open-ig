@@ -14,7 +14,6 @@ import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
 import hu.openig.render.TextRenderer;
-import hu.openig.screens.GameControls;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
@@ -86,22 +85,6 @@ public class World {
 	public Labels labels;
 	/** The resource locator. */
 	public ResourceLocator rl;
-	/** The common resource allocator. */
-	public final ResourceAllocator allocator;
-	/** The radar computation. */
-	public final Radar radar;
-	/** The progress simulator. */
-	public final Simulator simulator;
-	/**
-	 * Construct the world.
-	 * @param pool the executor service
-	 * @param controls the game world controls
-	 */
-	public World(ExecutorService pool, GameControls controls) {
-		allocator = new ResourceAllocator(pool, planets.values());
-		radar = new Radar(1000, this);
-		simulator = new Simulator(1000, this, controls);
-	}
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -586,18 +569,6 @@ public class World {
 	public List<BuildingType> listBuildings() {
 		return listBuildings(player, 
 				player.currentPlanet);
-	}
-	/** Close the resources. */
-	public void close() {
-		allocator.stop();
-		radar.stop();
-		simulator.stop();
-	}
-	/** Start the timed actions. */
-	public void start() {
-		allocator.start();
-		radar.start();
-		simulator.start();
 	}
 	/**
 	 * Returns true if all prerequisites of the given research type have been met.

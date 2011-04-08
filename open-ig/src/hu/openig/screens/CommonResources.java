@@ -8,6 +8,7 @@
 
 package hu.openig.screens;
 
+import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
@@ -24,12 +25,22 @@ import hu.openig.gfx.ResearchGFX;
 import hu.openig.gfx.SpacewarGFX;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StatusbarGFX;
+import hu.openig.mechanics.Radar;
+import hu.openig.mechanics.Allocator;
+import hu.openig.mechanics.Simulator;
+import hu.openig.model.Screens;
 import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +48,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.Timer;
 
 
 
@@ -135,6 +148,31 @@ public class CommonResources {
 	public boolean worldLoading;
 	/** The common executor service. */
 	public final ScheduledExecutorService pool;
+	/** The combined timer for synchronized frequency updates. */
+	final Timer timer;
+	/** The timer tick. */
+	long tick;
+	/** The registration map. */
+	final Map<Closeable, TimerAction> timerHandlers = new HashMap<Closeable, TimerAction>();
+	/** The timer action. */
+	static class TimerAction {
+		/** The operation frequency. */
+		public int delay;
+		/** The action to invoke. */
+		public Act action;
+		/** The flag to indicate the action was cancelled. */
+		public boolean cancelled;
+	}
+	/** The current speed delay in milliseconds. */
+	protected int speed = 1000;
+	/** Is the simulation paused? */
+	protected boolean paused;
+	/** The radar handler. */
+	protected Closeable radarHandler;
+	/** The allocator handler. */
+	protected Closeable allocatorHandler;
+	/** The simulator handler. */
+	protected Closeable simulatorHandler;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -168,6 +206,15 @@ public class CommonResources {
 		}
 		pool = scheduler;
 
+		timer = new Timer(25, new Act() {
+			@Override
+			public void act() {
+				tick++;
+				doTimerTick();
+			}
+		});
+		timer.start();
+		
 		init();
 	}
 	/** Initialize the resources in parallel. */
@@ -407,13 +454,99 @@ public class CommonResources {
 	public ResourcePlace audio(String name) {
 		return rl.get(name, ResourceType.AUDIO);
 	}
+	/** Close the resources. */
+	public void stop() {
+		close0(allocatorHandler);
+		close0(radarHandler);
+		close0(simulatorHandler);
+		
+		allocatorHandler = null;
+		radarHandler = null;
+		simulatorHandler = null;
+
+		paused = false;
+		speed = 1000;
+		
+		timer.stop();
+	}
 	/**
-	 * Close and stop resources.
+	 * Close the given closeable silently.
+	 * @param c the closeable
 	 */
-	public void close() {
-		if (world != null) {
-			world.close();
+	void close0(Closeable c) {
+		try {
+			if (c != null) {
+				c.close();
+			}
+		} catch (IOException ex) {
+			// Ignored
 		}
+	}
+	/** Start the timed actions. */
+	public void start() {
+		stop();
+		radarHandler = register(1000, new Act() {
+			@Override
+			public void act() {
+				Radar.compute(world);
+				if (control.primary() == Screens.STARMAP) {
+					control.repaintInner();
+				}
+			}
+		});
+		resume();
+		allocatorHandler = register(1000, new Act() {
+			@Override
+			public void act() {
+				Allocator.compute(world, pool);
+				control.repaintInner();
+			}
+		});
+		timer.start();
+	}
+	/** 
+	 * Replace the simulator with the given delayed new simulator.
+	 * @param delay the simulator delay
+	 */
+	void replaceSimulator(int delay) {
+		close0(simulatorHandler);
+		simulatorHandler = register(delay, new Act() {
+			@Override
+			public void act() {
+				if (Simulator.compute(world)) {
+					control.save();
+				}
+				control.repaintInner();
+			}
+		});
+	}
+	/** @return Is the simulation paused? */
+	public boolean paused() {
+		return paused;
+	}
+	/** Pause the simulation. */
+	public void pause() {
+		paused = true;
+		close0(simulatorHandler);
+		simulatorHandler = null;
+	}
+	/** Resume the simulator. */
+	public void resume() {
+		replaceSimulator(speed);
+	}
+	/**
+	 * Change the simulator speed.
+	 * @param delay the delay
+	 */
+	public void speed(int delay) {
+		if (speed != delay) {
+			this.speed = delay;
+			resume();
+		}
+	}
+	/** @return Get the current speed. */
+	public int speed() {
+		return speed;
 	}
 	/** @return the world instance. */
 	public World world() {
@@ -440,5 +573,45 @@ public class CommonResources {
 	/** @return the control object */
 	public GameControls control() {
 		return control;
+	}
+	/** Execute the timer tick actions. */
+	void doTimerTick() {
+		for (TimerAction act : new ArrayList<TimerAction>(timerHandlers.values())) {
+			if (!act.cancelled) {
+				if ((tick * timer.getDelay()) % act.delay == 0) {
+					try {
+						act.action.act();
+					} catch (CancellationException ex) {
+						act.cancelled = true;
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Register an action with the given delay.
+	 * @param delay the reqested frequency in milliseconds
+	 * @param action the action to invoke
+	 * @return the handler to close this instance
+	 */
+	public Closeable register(int delay, Act action) {
+		if (delay % timer.getDelay() != 0 || delay == 0) {
+			throw new IllegalArgumentException("The delay must be in multiples of " + timer.getDelay() + " milliseconds!");
+		}
+		if (action == null) {
+			throw new IllegalArgumentException("action is null");
+		}
+		final TimerAction ta = new TimerAction();
+		ta.delay = delay;
+		ta.action = action;
+		Closeable res = new Closeable() {
+			@Override
+			public void close() throws IOException {
+				ta.cancelled = true;
+				timerHandlers.remove(this);
+			}
+		};
+		timerHandlers.put(res, ta);
+		return res;
 	}
 }

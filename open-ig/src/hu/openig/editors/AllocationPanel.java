@@ -9,14 +9,12 @@
 package hu.openig.editors;
 
 import hu.openig.core.Act;
+import hu.openig.mechanics.Allocator;
 import hu.openig.model.Building;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResourceAllocationStrategy;
-import hu.openig.model.ResourceAllocator;
-import hu.openig.utils.Parallels;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -60,8 +58,6 @@ public class AllocationPanel extends JPanel {
 	JTextField operationCount;
 	/** Total efficiency. */
 	JTextField totalEfficiency;
-	/** The resource allocator. */
-	ResourceAllocator resourceAllocator;
 	/** Available workers. */
 	@Rename(to = "mapeditor.allocation_available_workers")
 	JLabel availableWorkersLbl;
@@ -223,8 +219,6 @@ public class AllocationPanel extends JPanel {
 		
 		ThreadPoolExecutor exec = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 		exec.allowCoreThreadTimeOut(true);
-		
-		resourceAllocator = new ResourceAllocator(exec, null);
 	}
 	/**
 	 *  Refresh the total values.
@@ -268,13 +262,8 @@ public class AllocationPanel extends JPanel {
 		p.population = Integer.parseInt(availableWorkers.getText());
 		p.surface.buildings.addAll(buildings);
 		
-		Parallels.waitForFutures(resourceAllocator.compute(Collections.singleton(p))
-				, new Runnable() {
-			@Override
-			public void run() {
-				doRefresh();
-				apply.setEnabled(true);
-			}
-		});
+		Allocator.computeNow(p);
+		doRefresh();
+		apply.setEnabled(true);
 	}
 }

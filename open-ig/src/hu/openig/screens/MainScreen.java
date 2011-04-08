@@ -10,6 +10,7 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
+import hu.openig.model.Screens;
 import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
@@ -133,13 +134,13 @@ public class MainScreen extends ScreenBase {
 	 * Play the intro videos.
 	 */
 	protected void doPlayIntro() {
-		playVideos("intro/intro_1", "intro/intro_2", "intro/intro_3");
+		commons.control().playVideos("intro/intro_1", "intro/intro_2", "intro/intro_3");
 	}
 	/**
 	 * Play the title video.
 	 */
 	protected void doPlayTitle() {
-		playVideos("intro/gt_interactive_intro");
+		commons.control().playVideos("intro/gt_interactive_intro");
 	}
 	/** Display the settings video. */
 	void doSettings() {
@@ -250,7 +251,7 @@ public class MainScreen extends ScreenBase {
 						@Override
 						public void run() {
 							continueLabel.disabled = !found;
-							repaintInner();
+							askRepaint();
 						}
 					});
 				}
@@ -348,7 +349,7 @@ public class MainScreen extends ScreenBase {
 			public void act() {
 				toEng.disabled = true;
 				toHu.disabled = false;
-				switchLanguage("en");
+				commons.control().switchLanguage("en");
 				selectRandomBackground();
 				askRepaint();
 			}
@@ -358,7 +359,7 @@ public class MainScreen extends ScreenBase {
 			public void act() {
 				toEng.disabled = false;
 				toHu.disabled = true;
-				switchLanguage("hu");
+				commons.control().switchLanguage("hu");
 				selectRandomBackground();
 				askRepaint();
 			}

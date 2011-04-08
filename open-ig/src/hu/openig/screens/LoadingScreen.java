@@ -9,6 +9,7 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.model.Screens;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

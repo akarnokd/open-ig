@@ -6,62 +6,40 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.model;
+package hu.openig.mechanics;
 
-import hu.openig.core.Act;
+import hu.openig.model.Building;
+import hu.openig.model.BuildingAllocationWorker;
+import hu.openig.model.Planet;
+import hu.openig.model.ResourceAllocationStrategy;
+import hu.openig.model.World;
 import hu.openig.utils.JavaUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 
 /**
  * Computes the resource allocations for planets asynchronously.
  * @author akarnokd, 2010.09.15.
  */
-public class ResourceAllocator {
-	/** The thread pool used for computations. */
-	final ExecutorService pool;
-	/** The world. */
-	final Collection<Planet> world;
-	/** The periodic timer to compute the allocation. */
-	final Timer timer;
-	/**
-	 * Constructor.
-	 * @param pool the thread pool to use
-	 * @param world the world to compute
-	 */
-	public ResourceAllocator(ExecutorService pool, Collection<Planet> world) {
-		this.pool = pool;
-		this.world = world;
-		timer = new Timer(1000, new Act() {
-			@Override
-			public void act() {
-				compute();
-			}
-		});
-		timer.setInitialDelay(0);
+public final class Allocator {
+	/** Utility class. */
+	private Allocator() {
+		// utility class
 	}
 	/**
 	 * Submit allocation computation tasks.
+	 * @param world the world to compute
+	 * @param pool the computation pool
 	 * @return a list of Future objects if the caller wants to do something when they are complete
 	 */
-	public List<Future<?>> compute() {
-		return compute(world);
-	}	
-	/**
-	 * Submit allocation computation tasks.
-	 * @param planets the collection of distinct building groups
-	 * @return a list of Future objects if the caller wants to do something when they are complete
-	 */
-	public List<Future<?>> compute(Collection<Planet> planets) {
+	public static List<Future<?>> compute(World world, ExecutorService pool) {
 		List<Future<?>> result = new ArrayList<Future<?>>();
-		for (final Planet ras : planets) {
+		for (final Planet ras : world.planets.values()) {
 			if (ras.surface.buildings.size() == 0) {
 				continue;
 			}
@@ -93,7 +71,7 @@ public class ResourceAllocator {
 	 * @param strategy the strategy
 	 * @param workers the available workers (negative)
 	 */
-	void compute(final List<BuildingAllocationWorker> baw,
+	static void compute(final List<BuildingAllocationWorker> baw,
 			final ResourceAllocationStrategy strategy,
 			final int workers) {
 		switch (strategy) {
@@ -114,7 +92,7 @@ public class ResourceAllocator {
 	 * Performs the computation of the planet in the current thread.
 	 * @param planet the planet to compute 
 	 */
-	public void computeNow(Planet planet) {
+	public static void computeNow(Planet planet) {
 		if (planet.surface.buildings.size() == 0) {
 			return;
 		}
@@ -138,7 +116,7 @@ public class ResourceAllocator {
 	 * Write back the computation results to the underlying building object.
 	 * @param ras the resource allocation settings
 	 */
-	void writeBack(final List<BuildingAllocationWorker> ras) {
+	static void writeBack(final List<BuildingAllocationWorker> ras) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -152,7 +130,7 @@ public class ResourceAllocator {
 	 * Zero all assignments. 
 	 * @param ras the resource allocation settings to work with
 	 */
-	void doZeroStrategy(List<BuildingAllocationWorker> ras) {
+	static void doZeroStrategy(List<BuildingAllocationWorker> ras) {
 		for (BuildingAllocationWorker b : ras) {
 			b.energyAllocated = 0;
 			b.workerAllocated = 0;
@@ -163,7 +141,7 @@ public class ResourceAllocator {
 	 * @param ras the allocation settings
 	 * @param availableWorkers the number of workers available
 	 */
-	void doUniformStrategy(List<BuildingAllocationWorker> ras, int availableWorkers) {
+	static void doUniformStrategy(List<BuildingAllocationWorker> ras, int availableWorkers) {
 		int availableWorker = availableWorkers;
 		int demandWorker = 0;
 		int demandEnergy = 0;
@@ -204,7 +182,7 @@ public class ResourceAllocator {
 	 * @param ras the allocation settings
 	 * @param availableWorkers the number of workers available
 	 */
-	void doUniformStrategyWithDamage(List<BuildingAllocationWorker> ras, int availableWorkers) {
+	static void doUniformStrategyWithDamage(List<BuildingAllocationWorker> ras, int availableWorkers) {
 		int availableWorker = availableWorkers;
 		int demandWorker = 0;
 		int demandEnergy = 0;
@@ -248,17 +226,5 @@ public class ResourceAllocator {
 				}
 			}
 		}
-	}
-	/**
-	 * Start the timer.
-	 */
-	public void start() {
-		timer.start();
-	}
-	/**
-	 * Stop the timer.
-	 */
-	public void stop() {
-		timer.stop();
 	}
 }

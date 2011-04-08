@@ -15,6 +15,7 @@ import hu.openig.core.ResourceLocator;
 import hu.openig.model.Building;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Planet;
+import hu.openig.model.Screens;
 import hu.openig.model.World;
 import hu.openig.ui.UIMouse;
 import hu.openig.utils.XElement;
@@ -35,6 +36,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
@@ -277,7 +279,7 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void exit() {
-		commons.close();
+		commons.stop();
 		uninitScreens();
 		dispose();
 		try {
@@ -752,8 +754,7 @@ public class GameWindow extends JFrame implements GameControls {
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
 					} else {
-						commons.world().simulator.setDelay(1000);
-						commons.world().simulator.start();
+						commons.speed(1000);
 					}
 					break;
 				case KeyEvent.VK_2:
@@ -765,8 +766,7 @@ public class GameWindow extends JFrame implements GameControls {
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
 					} else {
-						commons.world().simulator.setDelay(500);
-						commons.world().simulator.start();
+						commons.speed(500);
 					}
 					break;
 				case KeyEvent.VK_3:
@@ -778,15 +778,14 @@ public class GameWindow extends JFrame implements GameControls {
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
 					} else {
-						commons.world().simulator.setDelay(250);
-						commons.world().simulator.start();
+						commons.speed(250);
 					}
 					break;
 				case KeyEvent.VK_SPACE:
-					if (commons.world().simulator.isRunning()) {
-						commons.world().simulator.stop();
+					if (commons.paused()) {
+						commons.resume();
 					} else {
-						commons.world().simulator.start();
+						commons.pause();
 					}
 					repaintInner();
 					break;
@@ -1056,7 +1055,7 @@ public class GameWindow extends JFrame implements GameControls {
 		final String currentGame = commons.world() != null ? commons.world().name : null; 
 		commons.worldLoading = true;
 		if (commons.world() != null) {
-			commons.world().close();
+			commons.stop();
 		}
 		
 		Thread t = new Thread(new Runnable() {
@@ -1097,7 +1096,7 @@ public class GameWindow extends JFrame implements GameControls {
 					if (!game.equals(currentGame)) {
 						commons.world(null);
 						// load world model
-						world = new World(commons.pool, commons.control());
+						world = new World();
 						world.definition = GameDefinition.parse(commons, game);
 						world.labels = new Labels();
 						world.labels.load(commons.rl, world.definition.labels);
@@ -1127,7 +1126,7 @@ public class GameWindow extends JFrame implements GameControls {
 							if (status) {
 								displayStatusbar();
 							}
-							fworld.start();
+							commons.start();
 						}
 					});
 
@@ -1137,5 +1136,21 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}, "Load");
 		t.start();
+	}
+	@Override
+	public Screens primary() {
+		return primary != null ? primary.screen() : null;
+	}
+	@Override
+	public Screens secondary() {
+		return secondary != null ? secondary.screen() : null;
+	}
+	@Override
+	public World world() {
+		return commons.world();
+	}
+	@Override
+	public Closeable register(int delay, Act action) {
+		return commons.register(delay, action);
 	}
 }

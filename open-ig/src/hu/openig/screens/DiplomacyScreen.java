@@ -11,6 +11,7 @@ package hu.openig.screens;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;

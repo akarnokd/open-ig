@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.screens;
+package hu.openig.model;
 
 /**
  * The enumeration to refer to a screen for switching.
