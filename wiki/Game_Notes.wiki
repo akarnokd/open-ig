@@ -14,6 +14,9 @@ This page (will) describe the differences between released versions of the Open 
   * Fixed the CTRL+O planet takeover to put an initial 5000 person population onto empty planets
   * Planets information tab: added a new list view which shows the planets in a table: name, population and delta, morale and delta and current problems
   * A blinking icons now indicate warning conditions (e.g., living space is a bit low), steady icons represents significant problems
+  * Quick save  (CTRL+S) and quick load (CTRL+L) feature added. Saves are stored as {{{save/default/save-YYYY-MM-DD-HH-mm-ss-SSS.xml}}}
+  * Autosave at midnight
+  * The main menu screen has a disabled *Load* option but a working *Continue* option which loads the last save.
 
 = Version 0.87 - Information screen =
   * Released: 2011-04-06 23:30
