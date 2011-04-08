@@ -33,6 +33,7 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -43,7 +44,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Timer;
 
 
 
@@ -65,7 +65,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The equipment slot locations. */
 	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
 	/** The rolling disk animation timer. */
-	Timer animation;
+	Closeable animation;
 	/** The current animation step counter. */
 	int animationStep;
 	/** The panel base rectangle. */
@@ -317,12 +317,6 @@ public class ResearchProductionScreen extends ScreenBase {
 	public void onInitialize() {
 		base.setBounds(0, 0, 
 				commons.equipment().base.getWidth(), commons.equipment().base.getHeight());
-		animation = new Timer(100, new Act() {
-			@Override
-			public void act() {
-				doAnimation();
-			}
-		});
 		
 		addButton = new UIImageButton(commons.research().add);
 		removeButton = new UIImageButton(commons.research().remove);
@@ -877,19 +871,23 @@ public class ResearchProductionScreen extends ScreenBase {
 		} else {
 			setMode(Screens.RESEARCH);
 		}
-		animation.start();
 		video.image(null);
 		update();
 		if (player().currentResearch != null) {
 			displayCategory(player().currentResearch.category);
 		}
+		animation = commons.register(100, new Act() {
+			@Override
+			public void act() {
+				doAnimation();
+			}
+		});
 	}
 
 	@Override
 	public void onLeave() {
-		if (animation != null) {
-			animation.stop();
-		}
+		close0(animation);
+		animation = null;
 		if (videoRenderer != null) {
 			videoRenderer.stop();
 			videoRenderer = null;
@@ -898,7 +896,6 @@ public class ResearchProductionScreen extends ScreenBase {
 
 	@Override
 	public void onFinish() {
-		animation = null;
 	}
 
 	@Override
@@ -1477,7 +1474,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				}
 			}
 			if (vid != null) {
-				videoRenderer = new TechnologyVideoRenderer(commons.video(vid), 
+				videoRenderer = new TechnologyVideoRenderer(commons, commons.video(vid), 
 				new Action1<BufferedImage>() {
 					@Override
 					public void invoke(BufferedImage value) {

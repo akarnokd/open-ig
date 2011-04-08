@@ -33,12 +33,11 @@ import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.Timer;
 
 /**
  * The starmap screen.
@@ -83,7 +82,7 @@ public class StarmapScreen extends ScreenBase {
 	/** Show the radar? */
 	private boolean showRadar = true;
 	/** The rotation animation timer. */
-	Timer rotationTimer;
+	Closeable rotationTimer;
 	/** The starmap clipping rectangle. */
 	Rectangle starmapClip;
 	/** The scrollbar painter. */
@@ -165,22 +164,10 @@ public class StarmapScreen extends ScreenBase {
 
 	@Override
 	public void onFinish() {
-		rotationTimer.stop();
 	}
 
 	@Override
 	public void onInitialize() {
-		rotationTimer = new Timer(75, new Act() {
-			@Override
-			public void act() {
-				rotatePlanets();
-				askRepaint();
-			}
-		});
-		int[] disabled = { 0xFF000000, 0xFF000000, 0, 0, 0xFF000000, 0, 0, 0, 0 };
-		BufferedImage disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
-		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
-
 		prevPlanet = new UIImageButton(commons.starmap().backwards);
 		prevPlanet.setDisabledPattern(commons.common().disabledPattern);
 		nextPlanet = new UIImageButton(commons.starmap().forwards);
@@ -519,7 +506,13 @@ public class StarmapScreen extends ScreenBase {
 	}
 	@Override
 	public void onEnter(Screens mode) {
-		rotationTimer.start();
+		rotationTimer = commons.register(75, new Act() {
+			@Override
+			public void act() {
+				rotatePlanets();
+				askRepaint();
+			}
+		});
 	}
 
 	/* (non-Javadoc)
@@ -527,7 +520,8 @@ public class StarmapScreen extends ScreenBase {
 	 */
 	@Override
 	public void onLeave() {
-		rotationTimer.stop();
+		close0(rotationTimer);
+		rotationTimer = null;
 	}
 
 	/* (non-Javadoc)

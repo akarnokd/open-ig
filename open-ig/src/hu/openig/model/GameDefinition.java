@@ -8,7 +8,7 @@
 
 package hu.openig.model;
 
-import hu.openig.screens.CommonResources;
+import hu.openig.core.ResourceLocator;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
@@ -52,23 +52,23 @@ public class GameDefinition {
 	public String talk;
 	/**
 	 * Parse the game definition from.
-	 * @param commons the common resources
+	 * @param rl the resource locator
 	 * @param name the definition/game name
 	 * @return the parsed definition.
 	 */
-	public static GameDefinition parse(CommonResources commons, String name) {
+	public static GameDefinition parse(ResourceLocator rl, String name) {
 		GameDefinition result = new GameDefinition();
 		result.name = name;
-		XElement root = commons.rl.getXML(name + "/definition");
+		XElement root = rl.getXML(name + "/definition");
 		for (XElement texts : root.childrenWithName("texts")) {
-			if (commons.config.language.equals(texts.get("language"))) {
+			if (rl.language.equals(texts.get("language"))) {
 				result.title = texts.childValue("title");
 				result.description = texts.childValue("description");
 				break;
 			}
 		}
 		result.intro = root.childValue("intro");
-		result.image = commons.rl.getImage(root.childValue("image"));
+		result.image = rl.getImage(root.childValue("image"));
 		result.startingLevel = Integer.parseInt(root.childValue("level"));
 		result.labels = root.childValue("labels");
 		result.galaxy = root.childValue("galaxy");

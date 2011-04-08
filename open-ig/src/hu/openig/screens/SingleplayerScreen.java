@@ -265,11 +265,11 @@ public class SingleplayerScreen extends ScreenBase {
 		selectedDefinition = null;
 		campaigns.clear();
 		for (String name : commons.rl.listDirectories(commons.config.language, "campaign/")) {
-			GameDefinition gd = GameDefinition.parse(commons, "campaign/" + name);
+			GameDefinition gd = GameDefinition.parse(commons.rl, "campaign/" + name);
 			campaigns.add(gd);
 		}
 		for (String name : commons.rl.listDirectories(commons.config.language, "skirmish/")) {
-			GameDefinition gd = GameDefinition.parse(commons, "skirmish/" + name);
+			GameDefinition gd = GameDefinition.parse(commons.rl, "skirmish/" + name);
 			skirmishes.add(gd);
 		}
 		

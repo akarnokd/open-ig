@@ -1097,7 +1097,7 @@ public class GameWindow extends JFrame implements GameControls {
 						commons.world(null);
 						// load world model
 						world = new World();
-						world.definition = GameDefinition.parse(commons, game);
+						world.definition = GameDefinition.parse(commons.rl, game);
 						world.labels = new Labels();
 						world.labels.load(commons.rl, world.definition.labels);
 						world.load(commons.rl, world.definition.name);

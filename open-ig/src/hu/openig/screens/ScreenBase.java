@@ -26,6 +26,8 @@ import hu.openig.ui.UIMouse;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * A screen base class.
@@ -275,5 +277,18 @@ public abstract class ScreenBase extends UIContainer {
 	 */
 	public void load(String name) {
 		commons.control().load(name);
+	}
+	/**
+	 * Close the given closeable and consume the IOException.
+	 * @param c the closeable
+	 */
+	public void close0(Closeable c) {
+		try {
+			if (c != null) {
+				c.close();
+			}
+		} catch (IOException ex) {
+			
+		}
 	}
 }
