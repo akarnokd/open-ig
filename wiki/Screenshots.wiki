@@ -3,6 +3,28 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.88 screenshots =
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-starmap.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-info-01.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-info-02.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-info-03.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-info-04.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-info-05.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-info-06.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-info-07.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-info-08.png
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.88-info-09.png
+
 = Version 0.86 screenshots =
 
 || [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-starmap-01.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-0.86-starmap-01-tn.png]<br>Starmap. ||
