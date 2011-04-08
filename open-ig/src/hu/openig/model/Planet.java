@@ -349,4 +349,19 @@ public class Planet implements Named, Owned {
 		surface.buildings.clear();
 		surface.buildingmap.clear();
 	}
+	/**
+	 * Test if the given planet contains anything from the
+	 * given player.
+	 * @param rt the research type
+	 * @param owner the owner
+	 * @return the owner
+	 */
+	public boolean hasInventory(ResearchType rt, Player owner) {
+		for (PlanetInventoryItem pii : inventory) {
+			if (pii.type == rt && pii.owner == owner) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

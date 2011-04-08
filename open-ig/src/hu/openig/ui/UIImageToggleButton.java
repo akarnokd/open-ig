@@ -15,43 +15,33 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
- * A three state image button with normal, select+pressed and selected state.
- * The difference from <code>UIImageButton</code>
- * that when clicked, the button remains in the selected state.
- * You must manually remove the selected state.
  * 
+ * A two state image button to toggle between.
  * @author akarnokd, 2011.02.26.
  */
-public class UIImageTabButton2 extends UIComponent {
+public class UIImageToggleButton extends UIComponent {
 	/** The normal state image. */
 	protected BufferedImage normalImage;
-	/** The pressed state image. */
-	protected BufferedImage selectedPressedImage;
 	/** The hovered state image. */
 	protected BufferedImage selectedImage;
 	/** The disabled pattern to use for the button. */
 	protected BufferedImage disabledPattern;
 	/** The action to invoke when the button is clicked. */
 	public Act onClick;
-	/** 
-	 * The action to invoke when the button is pressed down.
-	 * Can be used to use this button as a tab.
-	 */
-	public Act onPress;
 	/** Is the mouse pressed down on this component. */
-	public boolean down;
+	protected boolean down;
 	/** Indicates the button is in selected state. */
 	public boolean selected;
+	/** 
+	public boolean mayDeselect;
 	/**
 	 * Constructor with the default images.
 	 * @param normalImage the normal state image
-	 * @param selectedPressedImage the selected+pressed image
 	 * @param selectedImage the selected image
 	 */
-	public UIImageTabButton2(BufferedImage normalImage, 
-			BufferedImage selectedPressedImage, BufferedImage selectedImage) {
+	public UIImageToggleButton(BufferedImage normalImage, 
+			BufferedImage selectedImage) {
 		this.normalImage = normalImage;
-		this.selectedPressedImage = selectedPressedImage;
 		this.selectedImage = selectedImage;
 		this.width = normalImage.getWidth();
 		this.height = normalImage.getHeight();
@@ -64,10 +54,9 @@ public class UIImageTabButton2 extends UIComponent {
 	 * You may use this constructor with the resource BufferedImage arrays of buttons
 	 * @param images the array of images.
 	 */
-	public UIImageTabButton2(BufferedImage[] images) {
+	public UIImageToggleButton(BufferedImage[] images) {
 		this.normalImage = images[0];
-		this.selectedPressedImage = images[1];
-		this.selectedImage = images.length > 2 ? images[2] : selectedPressedImage;
+		this.selectedImage = images[1];
 		this.width = normalImage.getWidth();
 		this.height = normalImage.getHeight();
 	}
@@ -79,20 +68,11 @@ public class UIImageTabButton2 extends UIComponent {
 			onClick.act();
 		}
 	}
-	/** Call the press action if set. */
-	protected void doPress() {
-		if (onPress != null) {
-			onPress.act();
-		}
-	}
 	@Override
 	public void draw(Graphics2D g2) {
 		if (!enabled && disabledPattern != null) {
 			g2.drawImage(normalImage, 0, 0, null);
 			RenderTools.fill(g2, 0, 0, width, height, disabledPattern);
-		} else
-		if (down) {
-			g2.drawImage(selectedPressedImage, 0, 0, null);
 		} else
 		if (selected) {
 			g2.drawImage(selectedImage, 0, 0, null);
@@ -104,19 +84,20 @@ public class UIImageTabButton2 extends UIComponent {
 	public boolean mouse(UIMouse e) {
 		switch (e.type) {
 		case DOWN:
-			down = true;
-			selected = true;
-			doPress();
-			return true;
-		case CLICK:
-			doClick();
-			return true;
-		case DOUBLE_CLICK:
-			for (int i = 0; i < e.z - 1; i++) {
+			if (!selected) {
+				selected = true;
 				doClick();
+			} else {
+				down = true;
 			}
 			return true;
 		case UP:
+			if (down) {
+				selected = false;
+				doClick();
+				down = false;
+			}
+			return true;
 		case LEAVE:
 			down = false;
 			return true;
@@ -129,7 +110,7 @@ public class UIImageTabButton2 extends UIComponent {
 	 * @param pattern the pattern to fill with the area of the button when it is disabled
 	 * @return this
 	 */
-	public UIImageTabButton2 setDisabledPattern(BufferedImage pattern) {
+	public UIImageToggleButton setDisabledPattern(BufferedImage pattern) {
 		this.disabledPattern = pattern;
 		return this;
 	}

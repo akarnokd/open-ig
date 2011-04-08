@@ -1644,8 +1644,8 @@ public class ResearchProductionScreen extends ScreenBase {
 		if (selected != null) {
 			addOne.enabled(true);
 			addTen.enabled(true);
-			removeTen.enabled(selected.count > 10);
-			removeOne.enabled(selected.count > 1);
+			removeTen.enabled(selected.count > 0);
+			removeOne.enabled(selected.count > 0);
 		} else {
 			addOne.enabled(false);
 			addTen.enabled(false);
@@ -1708,6 +1708,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		Integer count = player().inventory.get(player().currentResearch);
 		if (count != null && count > 0) {
 			player().inventory.put(player().currentResearch, count - 1);
+			player().money += player().currentResearch.productionCost / 2;
 		}
 	}
 	@Override

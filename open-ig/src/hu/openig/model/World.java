@@ -981,4 +981,23 @@ public class World {
 			p.die();
 		}
 	}
+	/** @return Return the list of other important items. */
+	public String getOtherItems() {
+		StringBuilder os = new StringBuilder();
+		for (PlanetInventoryItem pii : player.currentPlanet.inventory) {
+			if (pii.owner == player && pii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
+				if (os.length() > 0) {
+					os.append(", ");
+				}
+				os.append(pii.type.name);
+			} else
+			if (pii.owner == player && pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+				if (os.length() > 0) {
+					os.append(", ");
+				}
+				os.append(pii.type.name);
+			}
+		}
+		return os.toString();
+	}
 }

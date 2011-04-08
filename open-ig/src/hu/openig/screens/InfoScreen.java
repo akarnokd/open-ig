@@ -17,7 +17,6 @@ import hu.openig.model.FleetKnowledge;
 import hu.openig.model.Named;
 import hu.openig.model.Owned;
 import hu.openig.model.Planet;
-import hu.openig.model.PlanetInventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
@@ -1246,7 +1245,7 @@ public class InfoScreen extends ScreenBase {
 				taxMore.visible(false);
 			}
 			other.text(format("colonyinfo.other",
-					getOtherItems()
+					world().getOtherItems()
 			), true);
 
 			computeSize();
@@ -1271,25 +1270,6 @@ public class InfoScreen extends ScreenBase {
 			}
 			return label;
 		}
-	}
-	/** @return Return the list of other important items. */
-	String getOtherItems() {
-		StringBuilder os = new StringBuilder();
-		for (PlanetInventoryItem pii : planet().inventory) {
-			if (pii.owner == player() && pii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
-				if (os.length() > 0) {
-					os.append(", ");
-				}
-				os.append(pii.type.name);
-			} else
-			if (pii.owner == player() && pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-				if (os.length() > 0) {
-					os.append(", ");
-				}
-				os.append(pii.type.name);
-			}
-		}
-		return os.toString();
 	}
 	/** Increase the taxation level. */
 	void doTaxMore() {
@@ -2134,7 +2114,7 @@ public class InfoScreen extends ScreenBase {
 			}
 			colonyTax.visible(false);
 		}
-		colonyOther.text(getOtherItems());
+		colonyOther.text(world().getOtherItems());
 		
 		displayColonyProblems(p);
 	}
@@ -2204,7 +2184,11 @@ public class InfoScreen extends ScreenBase {
 				if (row < res.size()) {
 					ResearchType rt = res.get(row);
 					world().selectResearch(rt);
-					displaySecondary(Screens.RESEARCH);
+					if (player().isAvailable(rt)) {
+						displaySecondary(Screens.PRODUCTION);
+					} else {
+						displaySecondary(Screens.RESEARCH);
+					}
 					return true;
 				}
 			}

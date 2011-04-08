@@ -126,6 +126,7 @@ public class Player {
 			int idx = playerPlanets.indexOf(currentPlanet);
 			Planet p = playerPlanets.get((idx + 1) % playerPlanets.size());
 			currentPlanet = p;
+			selectionMode = SelectionMode.PLANET;
 			return p;
 		}
 		return null;
@@ -143,6 +144,7 @@ public class Player {
 			}
 			Planet p = playerPlanets.get((idx - 1) % playerPlanets.size());
 			currentPlanet = p;
+			selectionMode = SelectionMode.PLANET;
 			return p;
 		}
 		return null;
@@ -260,5 +262,13 @@ public class Player {
 		}
 		
 		return true;
+	}
+	/**
+	 * @param type the research type 
+	 * @return the inventory count of the given research type. 
+	 */
+	public int count(ResearchType type) {
+		Integer c = inventory.get(type);
+		return c != null ? c.intValue() : 0;
 	}
 }
