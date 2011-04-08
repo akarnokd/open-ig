@@ -6,7 +6,7 @@
 
 This page (will) describe the differences between released versions of the Open Imperium Galactica Game (open-ig-xxx.jar)
 
-= Version 0.88 - Information screen =
+= Version 0.88 - Behavior changes =
   * Released: 2011-04-08 21:00
   * Gameplay fixes: the simulation now affects the population count
   * Starmap screen improvements: added a zoom button, added visibility toggle buttons.
