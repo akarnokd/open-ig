@@ -4,6 +4,14 @@
 
 = April, 2011 =
 
+*April 8. 2011*
+
+Improvements to the game mechanics and user interface. Quick save (CTRL+S) and quick load (CTRL+L) feature added. See the [http://code.google.com/p/open-ig/wiki/Release_Notes release notes] for further details.
+
+A long standing issue will be the morale and population calculation of the game. It is hard to design a proper mechanics which considers the tax, shortages, stadiums, etc. 
+
+Please, start playing Open Imperium Galactica and if you encounter some strange situation, report it via the [http://code.google.com/p/open-ig/issues/list issues] page. 
+
 *April 6. 2011*
 
 I'm happy to announce that Open-IG is now playable - sort of. I've implemented most information screen tabs (except the aliens and fleets tabs). The rest of the tabs should work as expected. 
