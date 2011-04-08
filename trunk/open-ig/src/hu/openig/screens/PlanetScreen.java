@@ -617,6 +617,7 @@ public class PlanetScreen extends ScreenBase {
 			if (time >= 6 * 16 && time < 6 * 22) {
 				alpha = (0.95f - 0.5f * (time - 6 * 16) / 36);
 			}
+			
 			surface.setAlpha(alpha);
 			
 			RenderTools.setInterpolation(g2, true);
