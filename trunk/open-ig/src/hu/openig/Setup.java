@@ -295,7 +295,7 @@ public class Setup extends JFrame {
 	 */
 	public Setup(Configuration config) {
 		this.config = config;
-		setTitle("Open Imperium Galactica Setup/Be�ll�t�s");
+		setTitle("Open Imperium Galactica Setup/Beállítás");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		try {
 			background = ImageIO.read(getClass().getResource("/hu/openig/gfx/setup.png"));
@@ -561,6 +561,7 @@ public class Setup extends JFrame {
 		
 		autoResources = new JCheckBox("Automatically manage game files");
 		autoResources.setOpaque(false);
+		autoResources.setForeground(Color.WHITE);
 		
 		pathLabel = new JLabel("File path:");
 		path = new AlphaTextField(0.85f);
@@ -1630,73 +1631,75 @@ public class Setup extends JFrame {
 	/** Change to hungarian labels. */
 	void changeToHungarian() {
 		btnLanguage.setText("Nyelv / Language");
-		btnResources.setText("F�jlok");
+		btnResources.setText("Fájlok");
 		btnGraphics.setText("Grafika");
-		btnAudio.setText("Audi�");
-		btnCheats.setText("Csal�sok");
+		btnAudio.setText("Audió");
+		btnCheats.setText("Csalások");
 		btnLogs.setText("Logok");
 		btnSaveAndRun.setText("Ment & Futtat");
-		btnSave.setText("Ment�s");
-		btnClose.setText("Kil�p�s");
+		btnSave.setText("Mentés");
+		btnClose.setText("Kilépés");
 		
 		rbHungarian.setText("Magyar");
 		rbEnglish.setText("Angol / English");
 
-		pathLabel.setText("F�jl �tvonal:");
-		fileListLabel.setText("Kiv�lasztott f�jlok:");
-		btnOpen.setText("Megnyit�s...");
-		btnLocate.setText("Auto-keres�s");
-		btnAdd.setText("Hozz�ad");
+		pathLabel.setText("Fájl útvonal:");
+		fileListLabel.setText("Kiválasztott fájlok:");
+		btnOpen.setText("Megnyitás...");
+		btnLocate.setText("Auto-keresés");
+		btnAdd.setText("Hozzáad");
 		btnMoveUp.setText("Fel");
 		btnMoveDown.setText("Le");
-		btnRemove.setText("Elt�vol�t");
+		btnRemove.setText("Eltávolít");
 
 		btnApplyBounds.setText("Alkalmaz");
 		lblLeft.setText("Bal:");
-		lblTop.setText("Fels�:");
-		lblWidth.setText("Sz�less�g:");
-		lblHeight.setText("Magass�g:");
-		diagnosticBorder.setTitle(" Hibakeres�si opci�k* ");
-		gameWindowBorder.setTitle(" J�t�k ablak ");
-		cbDisableD3D.setText("D3D letilt�sa");
-		cbDisableDDraw.setText("DirectDraw letilt�sa");
-		cbDisableOpenGL.setText("OpenGL letilt�sa");
-		lblRestartNeeded.setText("* ak�r az eg�sz programot �jra kell ind�tani");
+		lblTop.setText("Felső:");
+		lblWidth.setText("Szélesség:");
+		lblHeight.setText("Magasság:");
+		diagnosticBorder.setTitle(" Hibakeresési opciók* ");
+		gameWindowBorder.setTitle(" Játék ablak ");
+		cbDisableD3D.setText("D3D letiltása");
+		cbDisableDDraw.setText("DirectDraw letiltása");
+		cbDisableOpenGL.setText("OpenGL letiltása");
+		lblRestartNeeded.setText("* akár az egész programot újra kell indítani");
 		
-		lblAudioChannels.setText("Audio csatorn�k sz�ma:");
+		lblAudioChannels.setText("Audio csatornák száma:");
 		btnTestAudioChannels.setText("Teszt");
-		lblMusicVolume.setText("Zene hanger�:");
+		lblMusicVolume.setText("Zene hangerő:");
 		btnTestMusic.setText("Teszt");
-		lblEffectVolume.setText("Effektus hanger�:");
+		lblEffectVolume.setText("Effektus hangerő:");
 		btnTestEffects.setText("Teszt");
-		lblVideoVolume.setText("Video hanger�:");
+		lblVideoVolume.setText("Video hangerő:");
 		btnTestVideo.setText("Teszt");
 		
-		lblEffectFilter.setText("�tlagol� sz�r� l�p�ssz�m:");
-		lblVideoFilter.setText("�tlagol� sz�r� l�p�ssz�m:");
+		lblEffectFilter.setText("Átlagoló szűrő lépésszám:");
+		lblVideoFilter.setText("Átlagoló szűrű lépésszám:");
 
-		lblPlayer.setText("J�t�kos:");
-		lblMoney.setText("P�nz:");
-		lblAIMode.setText("MI m�d:");
+		lblPlayer.setText("Játékos:");
+		lblMoney.setText("Pénz:");
+		lblAIMode.setText("MI mód:");
 		int idx = cbAIMode.getSelectedIndex();
-		cbAIMode.setModel(new DefaultComboBoxModel(new String[] { "Nincs AI", "Neh�z v�dekez�", "K�zepes v�dekez�", 
-				"K�nny� v�dekez�", "Norm�l", "K�nny� t�mad�", "K�zepes t�mad�", "Neh�z t�mad�" }));
+		cbAIMode.setModel(new DefaultComboBoxModel(
+				new String[] { "Nincs AI", "Nehéz védekező", "Közepes védekező", 
+				"Könnyű védekező", "Normál", "Könnyű támadó", "Közepes támadó", "Nehéz támadó" }));
 		cbAIMode.setSelectedIndex(idx);
 		
-		lblPlanet.setText("Bolyg�:");
+		lblPlanet.setText("Bolygó:");
 		lblOwner.setText("Tulajdonos:");
-		lblPopCount.setText("Popul�ci�:");
+		lblPopCount.setText("Populuciá:");
 
-		btnSetVisual.setText("J�t�kos mutat�sa");
+		btnSetVisual.setText("Játékos mutatása");
 		btnApplyPlayer.setText("Alkalmaz");
 		btnApplyPlanet.setText("Alkalmaz");
 		
-		btnCenterBounds.setText("K�z�pre");
-		btnCurrentBounds.setText("Jelenlegi poz�ci�");
+		btnCenterBounds.setText("Középre");
+		btnCurrentBounds.setText("Jelenlegi pozíció");
 		
-		autoResources.setText("Automatikusan kezelje a j�t�k f�jljait");
+		autoResources.setText("Automatikusan kezelje a játék fájljait");
 		
-		logModel.columnNames = new String[] { "Id�b�lyeg", "Fontoss�g", "�zenet", "Hibahely" };
+		logModel.columnNames = new String[] { 
+				"Időbélyeg", "Fontosság", "Üzenet", "Hibahely" };
 		refreshLogTableColumns();		
 	}
 	/** Change to english labels. */
