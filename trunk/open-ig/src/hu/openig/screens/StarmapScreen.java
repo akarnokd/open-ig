@@ -33,7 +33,9 @@ import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.Timer;
 
@@ -295,8 +297,8 @@ public class StarmapScreen extends ScreenBase {
 				}
 			}
 		}
-		minimapPlanetBlink = blinkCounter < 5;
-		blinkCounter = (blinkCounter + 1) % 10;
+		minimapPlanetBlink = blinkCounter < 6;
+		blinkCounter = (blinkCounter + 1) % 12;
 	}
 
 	@Override
@@ -614,44 +616,49 @@ public class StarmapScreen extends ScreenBase {
 				g2.setColor(Color.RED);
 				g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
 			}
-			if (!minimapPlanetBlink) {
-				if (p.owner == player()) {
-					PlanetStatistics ps = p.getStatistics();
-					if (ps.problems.size() > 0) {
-						int w = ps.problems.size() * 11 - 1;
-						int i = 0;
-						for (PlanetProblems pp : ps.problems.values()) {
-							BufferedImage icon = null;
-							switch (pp) {
-							case HOUSING:
-								icon = commons.common().houseIcon;
-								break;
-							case FOOD:
-								icon = commons.common().foodIcon;
-								break;
-							case HOSPITAL:
-								icon = commons.common().hospitalIcon;
-								break;
-							case ENERGY:
-								icon = commons.common().energyIcon;
-								break;
-							case WORKFORCE:
-								icon = commons.common().workerIcon;
-								break;
-							case STADIUM:
-								icon = commons.common().virusIcon;
-								break;
-							case VIRUS:
-								icon = commons.common().stadiumIcon;
-								break;
-							case REPAIR:
-								icon = commons.common().repairIcon;
-								break;
-							default:
-							}
-							g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
-							i++;
+			if (p.owner == player()) {
+				PlanetStatistics ps = p.getStatistics();
+				
+				Set<PlanetProblems> combined = new HashSet<PlanetProblems>();
+				combined.addAll(ps.problems.keySet());
+				combined.addAll(ps.warnings.keySet());
+				
+				if (combined.size() > 0) {
+					int w = combined.size() * 11 - 1;
+					int i = 0;
+					for (PlanetProblems pp : combined) {
+						BufferedImage icon = null;
+						switch (pp) {
+						case HOUSING:
+							icon = commons.common().houseIcon;
+							break;
+						case FOOD:
+							icon = commons.common().foodIcon;
+							break;
+						case HOSPITAL:
+							icon = commons.common().hospitalIcon;
+							break;
+						case ENERGY:
+							icon = commons.common().energyIcon;
+							break;
+						case WORKFORCE:
+							icon = commons.common().workerIcon;
+							break;
+						case STADIUM:
+							icon = commons.common().virusIcon;
+							break;
+						case VIRUS:
+							icon = commons.common().stadiumIcon;
+							break;
+						case REPAIR:
+							icon = commons.common().repairIcon;
+							break;
+						default:
 						}
+						if (ps.hasProblem(pp) || (minimapPlanetBlink && ps.hasWarning(pp))) {
+							g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
+						}
+						i++;
 					}
 				}
 			}

@@ -206,28 +206,49 @@ public class Planet implements Named, Owned {
 		
 		result.problems.clear();
 		if (Math.abs(result.workerDemand) > population * 2) {
-			result.add(PlanetProblems.WORKFORCE);
+			result.addProblem(PlanetProblems.WORKFORCE);
+		} else
+		if (Math.abs(result.workerDemand) > population) {
+			result.addWarning(PlanetProblems.WORKFORCE);
 		}
+		
 		if (Math.abs(result.energyDemand) > Math.abs(result.energyAvailable) * 2) {
-			result.add(PlanetProblems.ENERGY);
+			result.addProblem(PlanetProblems.ENERGY);
+		} else
+		if (Math.abs(result.energyDemand) > Math.abs(result.energyAvailable)) {
+			result.addWarning(PlanetProblems.ENERGY);
 		}
+		
 		if (Math.abs(population) > Math.abs(result.foodAvailable) * 2) {
-			result.add(PlanetProblems.FOOD);
+			result.addProblem(PlanetProblems.FOOD);
+		} else
+		if (Math.abs(population) > Math.abs(result.foodAvailable)) {
+			result.addWarning(PlanetProblems.FOOD);
 		}
+		
 		if (Math.abs(population) > Math.abs(result.hospitalAvailable) * 2) {
-			result.add(PlanetProblems.HOSPITAL);
+			result.addProblem(PlanetProblems.HOSPITAL);
+		} else
+		if (Math.abs(population) > Math.abs(result.hospitalAvailable)) {
+			result.addWarning(PlanetProblems.HOSPITAL);
 		}
+		
 		if (Math.abs(population) > Math.abs(result.houseAvailable) * 2) {
-			result.add(PlanetProblems.HOUSING);
+			result.addProblem(PlanetProblems.HOUSING);
+		} else
+		if (Math.abs(population) > Math.abs(result.houseAvailable)) {
+			result.addWarning(PlanetProblems.HOUSING);
 		}
+		
 		if (population / 50000 > stadiumCount) {
-			result.add(PlanetProblems.STADIUM);
+			result.addProblem(PlanetProblems.STADIUM);
 		}
+		
 		if (quarantine) {
-			result.add(PlanetProblems.VIRUS);
+			result.addProblem(PlanetProblems.VIRUS);
 		}
 		if (damage) {
-			result.add(PlanetProblems.REPAIR);
+			result.addProblem(PlanetProblems.REPAIR);
 		}
 		
 		for (PlanetInventoryItem pii : inventory) {
