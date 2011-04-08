@@ -28,7 +28,7 @@ public class ResourceAllocator {
 	/** The thread pool used for computations. */
 	final ExecutorService pool;
 	/** The world. */
-	final List<Planet> world;
+	final Collection<Planet> world;
 	/** The periodic timer to compute the allocation. */
 	final Timer timer;
 	/**
@@ -36,7 +36,7 @@ public class ResourceAllocator {
 	 * @param pool the thread pool to use
 	 * @param world the world to compute
 	 */
-	public ResourceAllocator(ExecutorService pool, List<Planet> world) {
+	public ResourceAllocator(ExecutorService pool, Collection<Planet> world) {
 		this.pool = pool;
 		this.world = world;
 		timer = new Timer(1000, new Act() {

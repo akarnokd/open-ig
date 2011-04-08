@@ -49,4 +49,9 @@ public class LoadSaveScreen extends ScreenBase {
 	public Screens screen() {
 		return Screens.LOAD_SAVE;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

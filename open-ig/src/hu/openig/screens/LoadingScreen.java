@@ -99,4 +99,9 @@ public class LoadingScreen extends ScreenBase {
 	public Screens screen() {
 		return Screens.LOADING;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

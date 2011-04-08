@@ -285,4 +285,9 @@ public class VideoScreen extends ScreenBase {
 	public Screens screen() {
 		return Screens.VIDEOS;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

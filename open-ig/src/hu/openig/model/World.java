@@ -20,14 +20,18 @@ import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -59,7 +63,7 @@ public class World {
 		time.set(GregorianCalendar.MINUTE, 50);
 	}
 	/** All planets on the starmap. */
-	public final List<Planet> planets = new ArrayList<Planet>();
+	public final Map<String, Planet> planets = new LinkedHashMap<String, Planet>();
 	/** The list of available researches. */
 	public final Map<String, ResearchType> researches = new HashMap<String, ResearchType>();
 	/** Achievements. */
@@ -94,7 +98,7 @@ public class World {
 	 * @param controls the game world controls
 	 */
 	public World(ExecutorService pool, GameControls controls) {
-		allocator = new ResourceAllocator(pool, planets);
+		allocator = new ResourceAllocator(pool, planets.values());
 		radar = new Radar(1000, this);
 		simulator = new Simulator(1000, this, controls);
 	}
@@ -360,7 +364,7 @@ public class World {
 			p.picture = rl.getImage(pic);
 		}
 		
-		if ("true".equals(player.get("user"))) {
+		if ("true".equals(player.get("user", "false"))) {
 			this.player = p;
 		}
 		this.players.put(p.id, p);
@@ -382,11 +386,11 @@ public class World {
 		Planet p = new Planet();
 		p.id = planet.get("id");
 		p.name = planet.get("name");
-		String nameLabel = planet.get("label");
+		String nameLabel = planet.get("label", null);
 		if (nameLabel != null) {
 			p.name = labels.get(nameLabel); 
 		}
-		p.owner = players.get(planet.get("owner"));
+		p.owner = players.get(planet.get("owner", null));
 		p.race = planet.get("race");
 		p.x = Integer.parseInt(planet.get("x"));
 		p.y = Integer.parseInt(planet.get("y"));
@@ -402,13 +406,13 @@ public class World {
 		p.taxIncome = Integer.parseInt(planet.get("tax-income"));
 		p.tradeIncome = Integer.parseInt(planet.get("trade-income"));
 		
-		String populationDelta = planet.get("population-last");
+		String populationDelta = planet.get("population-last", null);
 		if (populationDelta != null && !populationDelta.isEmpty()) {
 			p.lastPopulation = Integer.parseInt(populationDelta);
 		} else {
 			p.lastPopulation = p.population;
 		}
-		String lastMorale = planet.get("morale-last");
+		String lastMorale = planet.get("morale-last", null);
 		if (lastMorale != null && !lastMorale.isEmpty()) {
 			p.lastMorale = Integer.parseInt(lastMorale);
 		} else {
@@ -422,7 +426,9 @@ public class World {
 		p.surface = p.type.surfaces.get(Integer.parseInt(si)).copy();
 		p.surface.parseMap(planet, null, buildingModel);
 		
-		planets.add(p);
+		planets.put(p.id, p);
+
+		// FIXME for testing the radar/info
 		if (p.owner != null) {
 			p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 			if (p.owner == player) {
@@ -494,7 +500,7 @@ public class World {
 		tech.aiLab = item.getInt("ai", 0);
 		tech.milLab = item.getInt("mil", 0);
 		
-		String prereqs = item.get("requires");
+		String prereqs = item.get("requires", null);
 		if (prereqs != null) {
 			for (String si : prereqs.split("\\s*,\\s*")) {
 				tech.prerequisites.add(getResearch(si));
@@ -503,17 +509,17 @@ public class World {
 		
 		for (XElement slot : item.childrenWithName("slot")) {
 			EquipmentSlot s = new EquipmentSlot();
-			
-			s.x = slot.getInt("x", 0);
-			s.y = slot.getInt("y", 0);
-			s.width = slot.getInt("width", 0);
-			s.height = slot.getInt("height", 0);
+			s.id = slot.get("id");
+			s.x = slot.getInt("x");
+			s.y = slot.getInt("y");
+			s.width = slot.getInt("width");
+			s.height = slot.getInt("height");
 			
 			for (String si : slot.get("items").split("\\s*,\\s*")) {
 				s.items.add(getResearch(si));
 			}
 			
-			tech.slots.add(s);
+			tech.slots.put(s.id, s);
 		}
 		for (XElement prop : item.childrenWithName("property")) {
 			tech.properties.put(prop.get("name"), prop.get("value"));
@@ -720,7 +726,7 @@ public class World {
 					XElement xprod = xp.add("production");
 					xprod.set("category", prods.getKey());
 					for (Map.Entry<ResearchType, Production> pe : prods.getValue().entrySet()) {
-						XElement xproditem = xprod.add("progress");
+						XElement xproditem = xprod.add("line");
 						xproditem.set("id", pe.getKey().id);
 						xproditem.set("count", pe.getValue().count);
 						xproditem.set("priority", pe.getValue().priority);
@@ -744,8 +750,8 @@ public class World {
 			xp.set("available", sb);
 			
 			for (Map.Entry<Fleet, FleetKnowledge> fl : p.fleets.entrySet()) {
-				XElement xfleet = xp.add("fleet");
 				if (fl.getKey().owner == p) {
+					XElement xfleet = xp.add("fleet");
 					xfleet.set("id", fl.getKey().id);
 					xfleet.set("x", fl.getKey().x);
 					xfleet.set("y", fl.getKey().y);
@@ -785,20 +791,20 @@ public class World {
 			}
 		}
 		
-		for (Planet p : planets) {
-			if (p.owner != null) {
+		for (Planet p : planets.values()) {
+			if (p.surface.buildings.size() > 0) {
 				XElement xp = world.add("planet");
 				xp.set("id", p.id);
 				xp.set("owner", p.owner.id);
 				xp.set("race", p.race);
 				xp.set("quarantine", p.quarantine);
 				xp.set("allocation", p.allocation);
-				xp.set("tax-level", p.tax);
+				xp.set("tax", p.tax);
 				xp.set("morale", p.morale);
-				xp.set("last-morale", p.lastMorale);
+				xp.set("morale-last", p.lastMorale);
 				xp.set("population", p.population);
-				xp.set("last-population", p.lastPopulation);
-				xp.set("auto-build", p.autoBuild);
+				xp.set("population-last", p.lastPopulation);
+				xp.set("autobuild", p.autoBuild);
 				xp.set("tax-income", p.taxIncome);
 				xp.set("trade-income", p.tradeIncome);
 				for (PlanetInventoryItem pii : p.inventory) {
@@ -812,12 +818,12 @@ public class World {
 					XElement xb = xp.add("building");
 					xb.set("x", b.location.x);
 					xb.set("y", b.location.y);
-					xb.set("type", b.type.id);
-					xb.set("race", b.techId);
+					xb.set("id", b.type.id);
+					xb.set("tech", b.techId);
 					xb.set("enabled", b.enabled);
-					xb.set("repair", b.repairing);
+					xb.set("repairing", b.repairing);
 					xb.set("hp", b.hitpoints);
-					xb.set("bp", b.buildProgress);
+					xb.set("build", b.buildProgress);
 					xb.set("level", b.upgradeLevel);
 					xb.set("energy", b.assignedEnergy);
 					xb.set("worker", b.assignedWorker);
@@ -826,5 +832,180 @@ public class World {
 		}
 		
 		return world;
+	}
+	/**
+	 * Load the world state.
+	 * @param xworld the world XElement
+	 */
+	public void loadState(XElement xworld) {
+		difficulty = Difficulty.valueOf(xworld.get("difficulty"));
+		level = xworld.getInt("level");
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		sdf.setCalendar(time);
+		try {
+			time.setTime(sdf.parse(xworld.get("time")));
+		} catch (ParseException ex) {
+			ex.printStackTrace();
+		}
+		
+		player = players.get(xworld.get("player"));
+		
+		for (XElement xplayer : xworld.childrenWithName("player")) {
+			Player p = players.get(xplayer.get("id"));
+			
+			p.money = xplayer.getInt("money");
+			p.currentPlanet = planets.get(xplayer.get("planet", null));
+			
+			p.currentBuilding = buildingModel.buildings.get(xplayer.get("building", null));
+			p.currentResearch = researches.get(xplayer.get("research", null));
+			p.runningResearch = researches.get(xplayer.get("running", null));
+			p.selectionMode = SelectionMode.valueOf(xplayer.get("mode", SelectionMode.PLANET.toString()));
+			
+			XElement xyesterday = xplayer.childElement("yesterday");
+			
+			p.yesterday.buildCost = xyesterday.getInt("build");
+			p.yesterday.repairCost = xyesterday.getInt("repair");
+			p.yesterday.researchCost = xyesterday.getInt("research");
+			p.yesterday.productionCost = xyesterday.getInt("production");
+			p.yesterday.taxIncome = xyesterday.getInt("tax");
+			p.yesterday.tradeIncome = xyesterday.getInt("trade");
+			p.yesterday.taxMorale = xyesterday.getInt("morale");
+			p.yesterday.taxMoraleCount = xyesterday.getInt("count");
+			
+			XElement xtoday = xplayer.childElement("today");
+			p.today.buildCost = xtoday.getInt("build");
+			p.today.repairCost = xtoday.getInt("repair");
+			p.today.researchCost = xtoday.getInt("research");
+			p.today.productionCost = xtoday.getInt("production");
+			
+			p.production.clear();
+			for (XElement xprod : xplayer.childrenWithName("production")) {
+				ResearchMainCategory cat = ResearchMainCategory.valueOf(xprod.get("category"));
+				Map<ResearchType, Production> prod = new LinkedHashMap<ResearchType, Production>();
+				for (XElement xline : xprod.childrenWithName("line")) {
+					ResearchType rt = researches.get(xline.get("id"));
+					Production pr = new Production();
+					pr.type = rt;
+					pr.count = xline.getInt("count");
+					pr.priority = xline.getInt("priority");
+					pr.progress = xline.getInt("progress");
+					prod.put(rt, pr);
+				}
+				p.production.put(cat, prod);
+			}
+			p.research.clear();
+			for (XElement xres : xplayer.childrenWithName("research")) {
+				ResearchType rt = researches.get(xres.get("id"));
+				if (rt == null) {
+					throw new IllegalArgumentException("research technology not found: " + xres.get("id"));
+				}
+				Research rs = new Research();
+				rs.type = rt;
+				rs.state = rt == p.currentResearch ? ResearchState.RUNNING : ResearchState.STOPPED; 
+				rs.assignedMoney = xres.getInt("assigned");
+				rs.remainingMoney = xres.getInt("remaining");
+				p.research.put(rt, rs);
+			}
+			p.availableResearch.clear();
+			for (String avail : xplayer.get("available").split("\\s*,\\s*")) {
+				if (avail.length() > 0) {
+					ResearchType rt = researches.get(avail);
+					if (rt == null) {
+						throw new IllegalArgumentException("available technology not found: " + avail);
+					}
+					p.availableResearch.add(rt);
+				}
+			}
+			
+			for (XElement xfleet : xplayer.childrenWithName("fleet")) {
+				Fleet f = new Fleet();
+				f.owner = p;
+				f.id = xfleet.getInt("id");
+				f.x = xfleet.getInt("x");
+				f.y = xfleet.getInt("y");
+				f.name = xfleet.get("name");
+				for (XElement xfii : xfleet.childrenWithName("item")) {
+					FleetInventoryItem fii = new FleetInventoryItem();
+					fii.type = researches.get(xfii.get("id"));
+					fii.count = xfii.getInt("count");
+					fii.shield = xfii.getInt("shield");
+					fii.hp = xfii.getInt("hp");
+					for (XElement xfis : xfii.childrenWithName("slot")) {
+						FleetInventorySlot fis = new FleetInventorySlot();
+						fis.type = researches.get(xfis.get("type"));
+						fis.slot = fis.type.slots.get(xfis.get("id"));
+						fis.count = xfis.getInt("count");
+						fis.hp = xfis.getInt("hp");
+						fii.slots.add(fis);
+					}
+					f.inventory.add(fii);
+				}
+				p.fleets.put(f, FleetKnowledge.FULL);
+			}
+			
+			p.planets.clear();
+			for (String pl : xplayer.get("discovered").split("\\s*,\\s*")) {
+				if (pl.length() > 0) {
+					Planet p0 = planets.get(pl);
+					if (p0 == null) {
+						throw new IllegalArgumentException("discovered planet not found: " + pl);
+					}
+					p.planets.put(p0, PlanetKnowledge.VISIBLE);
+				}
+			}
+			p.inventory.clear();
+			for (XElement xinv : xplayer.childrenWithName("inventory")) {
+				p.inventory.put(researches.get(xinv.get("id")), xinv.getInt("count"));
+			}
+			p.currentFleet = null;
+			int currentFleet = xplayer.getInt("fleet", -1);
+			if (currentFleet >= 0) {
+				for (Fleet f : p.fleets.keySet()) {
+					if (f.id == currentFleet) {
+						p.currentFleet = f;
+						break;
+					}
+				}
+			}
+		}
+		Set<String> allPlanets = new HashSet<String>(planets.keySet());
+		for (XElement xplanet : xworld.childrenWithName("planet")) {
+			Planet p = planets.get(xplanet.get("id"));
+
+			p.owner = players.get(xplanet.get("owner"));
+			p.race = xplanet.get("race");
+			p.quarantine = "true".equals(xplanet.get("quarantine"));
+			p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
+			p.tax = TaxLevel.valueOf(xplanet.get("tax"));
+			p.morale = xplanet.getInt("morale");
+			p.lastMorale = xplanet.getInt("morale-last", p.morale);
+			p.population = xplanet.getInt("population");
+			p.lastPopulation = xplanet.getInt("population-last", p.population);
+			p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));
+			p.taxIncome = xplanet.getInt("tax-income");
+			p.tradeIncome = xplanet.getInt("trade-income");
+
+			p.inventory.clear();
+			p.surface.buildings.clear();
+			p.surface.buildingmap.clear();
+
+			for (XElement xpii : xplanet.childrenWithName("item")) {
+				PlanetInventoryItem pii = new PlanetInventoryItem();
+				pii.owner = players.get(xpii.get("owner"));
+				pii.type = researches.get(xpii.get("id"));
+				pii.count = xpii.getInt("count");
+				pii.hp = xpii.getInt("hp");
+				p.inventory.add(pii);
+			}
+
+			p.surface.setBuildings(buildingModel, xplanet);
+			
+			allPlanets.remove(p.id);
+		}
+		for (String rest : allPlanets) {
+			Planet p = planets.get(rest);
+			p.die();
+		}
 	}
 }

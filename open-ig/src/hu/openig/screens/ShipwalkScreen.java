@@ -63,8 +63,10 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 
 	@Override
 	public void onFinish() {
+		onEndGame();
 		if (video != null) {
 			video.stop();
+			video = null;
 		}
 	}
 
@@ -258,5 +260,11 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	@Override
 	public Screens screen() {
 		return Screens.SHIPWALK;
+	}
+	@Override
+	public void onEndGame() {
+		next = null;
+		position = null;
+		pointerTransition = null;
 	}
 }

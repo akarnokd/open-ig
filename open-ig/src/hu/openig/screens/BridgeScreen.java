@@ -517,4 +517,9 @@ public class BridgeScreen extends ScreenBase {
 	public Screens screen() {
 		return Screens.BRIDGE;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

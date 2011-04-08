@@ -75,4 +75,9 @@ public class DatabaseScreen extends ScreenBase {
 	public Screens screen() {
 		return Screens.DATABASE;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

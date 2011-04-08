@@ -13,6 +13,7 @@ import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.ResourceLocator;
+import hu.openig.model.GameDefinition;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.World;
@@ -520,7 +521,7 @@ public class ScreenTester extends JFrame implements GameControls {
 
 					t = System.nanoTime();
 					commons.world(new World(commons.pool, commons.control()));
-					commons.world().definition = SingleplayerScreen.parseDefinition(commons, "campaign/main");
+					commons.world().definition = GameDefinition.parse(commons, "campaign/main");
 					commons.world().difficulty = Difficulty.values()[0];
 					commons.labels0().load(commons.rl, commons.world().definition.name);
 					commons.world().labels = commons.labels0();
@@ -854,5 +855,13 @@ public class ScreenTester extends JFrame implements GameControls {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+	@Override
+	public void save() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void load(String name) {
 	}
 }

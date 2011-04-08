@@ -49,4 +49,9 @@ public class BattlefinishScreen extends ScreenBase {
 	public Screens screen() {
 		return Screens.BATTLE_FINISH;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

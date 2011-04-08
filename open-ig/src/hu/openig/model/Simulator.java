@@ -72,12 +72,15 @@ public class Simulator {
 		for (Player player : world.players.values()) {
 			result |= progressProduction(player) && player == world.player;
 		}
-		for (Planet p : world.planets) {
+		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
 				result |= progressPlanet(p, day0 != day1) && p == world.player.currentPlanet;
 			}
 		}
 //		return result;
+		if (day0 != day1) {
+			controls.save();
+		}
 		return true;
 	}
 	/**
@@ -182,10 +185,9 @@ public class Simulator {
 			
 			newMorale = Math.max(0, Math.min(100, newMorale));
 			float nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
-			float diff = planet.morale - nextMorale;
 			planet.morale = (int)nextMorale;
 			
-			planet.population = (int)Math.max(0, planet.population - planet.population * diff / 100);
+			planet.population = Math.max(0, planet.population - planet.population * (planet.morale - 50) / 10000);
 			
 			planet.tradeIncome = (int)(tradeIncome * multiply);
 			planet.taxIncome = planet.population * planet.morale * planet.tax.percent / 10000;
@@ -198,10 +200,7 @@ public class Simulator {
 			planet.owner.yesterday.taxMoraleCount++;
 			
 			if (planet.population == 0) {
-				planet.race = null;
-				planet.owner = null;
-				planet.surface.buildingmap.clear();
-				planet.surface.buildings.clear();
+				planet.die();
 			}
 		}
 		

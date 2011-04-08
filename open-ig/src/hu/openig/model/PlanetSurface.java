@@ -213,42 +213,50 @@ public class PlanetSurface {
 		if (bm != null) {
 			XElement buildings = map.childElement("buildings");
 			if (buildings != null) {
-				this.buildings.clear();
-				this.buildingmap.clear();
-				
-				for (XElement tile : buildings.childrenWithName("building")) {
-					String id = tile.get("id");
-					String tech = tile.get("tech");
-					
-					Building b = new Building(bm.buildings.get(id), tech);
-					int x = Integer.parseInt(tile.get("x"));
-					int y = Integer.parseInt(tile.get("y"));
-				
-					b.location = Location.of(x, y);
-					
-					String bp = tile.get("build");
-					if (bp == null || bp.isEmpty()) {
-						b.buildProgress = b.type.hitpoints;
-					} else {
-						b.buildProgress = Integer.parseInt(bp);
-					}
-					String hp = tile.get("hp");
-					if (hp == null || hp.isEmpty()) {
-						b.hitpoints = b.type.hitpoints;
-					} else {
-						b.hitpoints = Integer.parseInt(hp);
-					}
-					b.setLevel(Integer.parseInt(tile.get("level")));
-					b.assignedEnergy = Integer.parseInt(tile.get("energy"));
-					b.assignedWorker = Integer.parseInt(tile.get("worker"));
-					b.enabled = "true".equals(tile.get("enabled"));
-					b.repairing = "true".equals(tile.get("repairing"));
-					
-					placeBuilding(b.tileset.normal, x, y, b);
-				}
-				placeRoads(getTechnology(), bm);
+				setBuildings(bm, buildings);
 			}
 		}
+	}
+	/**
+	 * Set the surface buildings from the given XElement.
+	 * @param bm the building model
+	 * @param buildings the buildings XElement
+	 */
+	void setBuildings(BuildingModel bm, XElement buildings) {
+		this.buildings.clear();
+		this.buildingmap.clear();
+		
+		for (XElement tile : buildings.childrenWithName("building")) {
+			String id = tile.get("id");
+			String tech = tile.get("tech");
+			
+			Building b = new Building(bm.buildings.get(id), tech);
+			int x = Integer.parseInt(tile.get("x"));
+			int y = Integer.parseInt(tile.get("y"));
+		
+			b.location = Location.of(x, y);
+			
+			String bp = tile.get("build");
+			if (bp == null || bp.isEmpty()) {
+				b.buildProgress = b.type.hitpoints;
+			} else {
+				b.buildProgress = Integer.parseInt(bp);
+			}
+			String hp = tile.get("hp");
+			if (hp == null || hp.isEmpty()) {
+				b.hitpoints = b.type.hitpoints;
+			} else {
+				b.hitpoints = Integer.parseInt(hp);
+			}
+			b.setLevel(Integer.parseInt(tile.get("level")));
+			b.assignedEnergy = Integer.parseInt(tile.get("energy"));
+			b.assignedWorker = Integer.parseInt(tile.get("worker"));
+			b.enabled = "true".equals(tile.get("enabled"));
+			b.repairing = "true".equals(tile.get("repairing"));
+			
+			placeBuilding(b.tileset.normal, x, y, b);
+		}
+		placeRoads(getTechnology(), bm);
 	}
 	/**
 	 * Store the map elements under the given XElement.

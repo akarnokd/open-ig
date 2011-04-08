@@ -1325,7 +1325,7 @@ public class InfoScreen extends ScreenBase {
 			g2.clipRect(0, 0, width, height);
 			RenderTools.paintGrid(g2, new Rectangle(0, 0, width, height), commons.starmap().gridColor, commons.text());
 			// render planets
-			for (Planet p : world().planets) {
+			for (Planet p : world().planets.values()) {
 				if (knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
 					continue;
 				}
@@ -1366,7 +1366,7 @@ public class InfoScreen extends ScreenBase {
 		 * @return the planet or null if no planet is present
 		 */
 		public Planet getPlanetAt(int x, int y) {
-			for (Planet p : world().planets) {
+			for (Planet p : world().planets.values()) {
 				if (knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
 					continue;
 				}
@@ -2613,5 +2613,10 @@ public class InfoScreen extends ScreenBase {
 				
 			return false;
 		}
+	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
 	}
 }

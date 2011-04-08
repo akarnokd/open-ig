@@ -715,4 +715,9 @@ public class EquipmentScreen extends ScreenBase {
 	public Screens screen() {
 		return mode;
 	}
+	@Override
+	public void onEndGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

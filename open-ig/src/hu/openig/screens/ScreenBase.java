@@ -258,4 +258,17 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 	public World world() {
 		return commons.world();
 	}
+	/**
+	 * Called when a game is ending. Implement this so the UI does not hold any reference
+	 * to the game world anymore.
+	 */
+	public abstract void onEndGame();
+	@Override
+	public void save() {
+		commons.control().save();
+	}
+	@Override
+	public void load(String name) {
+		commons.control().load(name);
+	}
 }
