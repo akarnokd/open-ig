@@ -12,9 +12,11 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetInventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.ResearchType;
 import hu.openig.model.RotationDirection;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
@@ -619,19 +621,21 @@ public class StarmapScreen extends ScreenBase {
 
 		surveySatellite.visible(
 				p.owner != player()
-				&& knowledge(p, PlanetKnowledge.NAME) < 0
+				&& (knowledge(p, PlanetKnowledge.NAME) <= 0 || !p.isPopulated())
 				&& player().count(world().researches.get("Satellite")) > 0
 				&& !p.hasInventory(world().researches.get("Satellite"), player())
 		);
 		spySatellite1.visible(
-				p.owner != player()
-				&& knowledge(p, PlanetKnowledge.NAME) >= 0
+				p.owner != player() 
+				&& p.owner != null
+				&& knowledge(p, PlanetKnowledge.OWNER) >= 0
 				&& player().count(world().researches.get("SpySatellite1")) > 0
 				&& !p.hasInventory(world().researches.get("SpySatellite1"), player())
 		);
 		spySatellite2.visible(
 				p.owner != player()
-				&& knowledge(p, PlanetKnowledge.NAME) >= 0
+				&& p.owner != null
+				&& knowledge(p, PlanetKnowledge.OWNER) >= 0
 				&& player().count(world().researches.get("SpySatellite2")) > 0
 				&& !p.hasInventory(world().researches.get("SpySatellite2"), player())
 		);
@@ -1387,9 +1391,37 @@ public class StarmapScreen extends ScreenBase {
 		problemsRepair = new UIImage(commons.common().repairIcon);
 
 		surveySatellite = new UIImageButton(commons.starmap().deploySatellite);
+		surveySatellite.onClick = new Act() {
+			@Override
+			public void act() {
+				surveySatellite.visible(false);
+				deploySatellite("Satellite", "interlude/deploy_satellite");
+			}
+		};
 		spySatellite1 = new UIImageButton(commons.starmap().deploySpySat1);
+		spySatellite1.onClick = new Act() {
+			@Override
+			public void act() {
+				surveySatellite.visible(false);
+				deploySatellite("SpySatellite1", "interlude/deploy_spy_satellite_1");
+			}
+		};
 		spySatellite2 = new UIImageButton(commons.starmap().deploySpySat2);
+		spySatellite2.onClick = new Act() {
+			@Override
+			public void act() {
+				surveySatellite.visible(false);
+				deploySatellite("SpySatellite2", "interlude/deploy_spy_satellite_2");
+			}
+		};
 		hubble2 = new UIImageButton(commons.starmap().deployHubble);
+		hubble2.onClick = new Act() {
+			@Override
+			public void act() {
+				surveySatellite.visible(false);
+				deploySatellite("Hubble2", "interlude/deploy_hubble_2");
+			}
+		};
 		
 		showRadarButton = new UIImageToggleButton(commons.starmap().viewRadar);
 		showRadarButton.selected = true;
@@ -1452,9 +1484,35 @@ public class StarmapScreen extends ScreenBase {
 
 		addThis();
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
+	/**
+	 * Deploy a satellite with an animation.
+	 * @param typeId the satellite id
+	 * @param media the media to play
 	 */
+	void deploySatellite(final String typeId, String media) {
+		final Planet p = planet();
+		final boolean isPaused = commons.paused();
+		if (!isPaused) {
+			commons.pause();
+		}
+		commons.control().playVideos(new Act() {
+			@Override
+			public void act() {
+				ResearchType rt = world().researches.get(typeId);
+				
+				PlanetInventoryItem pii = new PlanetInventoryItem();
+				pii.count = 1;
+				pii.owner = player();
+				pii.type = rt;
+				
+				p.inventory.add(pii);
+				
+				if (!isPaused) {
+					commons.resume();
+				}
+			}
+		}, media);
+	}
 	@Override
 	public void onLeave() {
 		close0(rotationTimer);

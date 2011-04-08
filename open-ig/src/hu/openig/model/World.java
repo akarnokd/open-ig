@@ -422,26 +422,6 @@ public class World {
 				p.inventory.add(sat);
 			}
 		}
-		if (p.owner == null || p.owner != player) {
-			// FIXME for testing the radar/info
-			PlanetInventoryItem sat = new PlanetInventoryItem();
-			sat.owner = player;
-			sat.count = 1;
-			if (planets.size() % 2 == 0) {
-				sat.type = researches.get("Satellite");
-				p.inventory.add(sat);
-			} else {
-				if (p.owner != null && p.owner != player) {
-					if (planets.size() % 3 == 0) {
-						sat.type = researches.get("SpySatellite1");
-						p.inventory.add(sat);
-					} else {
-						sat.type = researches.get("SpySatellite2");
-						p.inventory.add(sat);
-					}
-				}
-			}
-		}
 	}
 	/**
 	 * Process a tech XML.
