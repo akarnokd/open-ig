@@ -23,10 +23,9 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.Timer;
 
 
 
@@ -168,7 +167,7 @@ public class EquipmentScreen extends ScreenBase {
 	/** The equipment slot locations. */
 	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
 	/** The rolling disk animation timer. */
-	Timer animation;
+	Closeable animation;
 	/** The current animation step counter. */
 	int animationStep;
 	/** The current equipment mode to render and behave. */
@@ -353,13 +352,6 @@ public class EquipmentScreen extends ScreenBase {
 		
 		planet = new UIImage(commons.equipment().planetOrbit);
 		
-		animation = new Timer(100, new Act() {
-			@Override
-			public void act() {
-				doAnimation();
-			}
-		});
-		
 		addThis();
 		add(slots);
 	}
@@ -384,7 +376,6 @@ public class EquipmentScreen extends ScreenBase {
 		} else {
 			this.mode = mode; 
 		}
-		animation.start();
 		ResearchType rt = player().currentResearch;
 		if (rt == null) {
 			List<ResearchType> rts = world().getResearch();
@@ -394,19 +385,24 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		}
 		selectCategory(rt.category);
+		
+		animation = commons.register(100, new Act() {
+			@Override
+			public void act() {
+				doAnimation();
+			}
+		});
+
 	}
 
 	@Override
 	public void onLeave() {
-		animation.stop();
+		close0(animation);
+		animation = null;
 	}
 
 	@Override
 	public void onFinish() {
-		if (animation != null) {
-			animation.stop();
-			animation = null;
-		}
 	}
 
 	@Override

@@ -50,6 +50,7 @@ import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -59,8 +60,6 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.Timer;
 
 /**
  * The planet surface rendering screen.
@@ -96,7 +95,7 @@ public class PlanetScreen extends ScreenBase {
 	/** The animation index. */
 	int animation;
 	/** The animation timer. */
-	Timer animationTimer;
+	Closeable animationTimer;
 	/** Enable the drawing of black boxes behind building names and percentages. */
 	boolean textBackgrounds = true;
 	/** Render placement hints on the surface. */
@@ -201,10 +200,6 @@ public class PlanetScreen extends ScreenBase {
 	@Override
 	public void onFinish() {
 		onEndGame();
-		if (animationTimer != null) {
-			animationTimer.stop();
-			animationTimer = null;
-		}
 	}
 
 	@Override
@@ -256,7 +251,12 @@ public class PlanetScreen extends ScreenBase {
 
 	@Override
 	public void onEnter(Screens mode) {
-		animationTimer.start();
+		animationTimer = commons.register(500, new Act() {
+			@Override
+			public void act() {
+				doAnimation();
+			}
+		});
 		if (surface() != null) {
 			render.offsetX = -(surface().boundingRectangle.width - width) / 2;
 			render.offsetY = -(surface().boundingRectangle.height - height) / 2;
@@ -268,7 +268,8 @@ public class PlanetScreen extends ScreenBase {
 	@Override
 	public void onLeave() {
 		placementMode = false;
-		animationTimer.stop();
+		close0(animationTimer);
+		animationTimer = null;
 	}
 
 	/**
@@ -1909,12 +1910,6 @@ public class PlanetScreen extends ScreenBase {
 	}
 	@Override
 	public void onInitialize() {
-		animationTimer = new Timer(500, new Act() {
-			@Override
-			public void act() {
-				doAnimation();
-			}
-		});
 		selection = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFFFFFF00), null);
 		areaAccept = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
 		areaEmpty = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF808080), null);

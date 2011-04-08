@@ -19,10 +19,9 @@ import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.Timer;
 
 /**
  * The spacewar screen.
@@ -229,14 +228,11 @@ public class SpacewarScreen extends ScreenBase {
 		}
 	}
 	/** The animation timer. */
-	Timer buttonTimer;
+	Closeable buttonTimer;
 	
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
 	@Override
 	public void onFinish() {
-		buttonTimer.stop();
+		
 	}
 	/** The group for the main buttons. */
 	List<ThreePhaseButton> mainCommands;
@@ -300,13 +296,6 @@ public class SpacewarScreen extends ScreenBase {
 		rightButtons.add(new AnimatedRadioButton(0, 80, commons.spacewar().fires));
 		rightButtons.add(new AnimatedRadioButton(0, 120, commons.spacewar().computers));
 		rightButtons.add(new AnimatedRadioButton(0, 160, commons.spacewar().movies));
-		
-		buttonTimer = new Timer(100, new Act() {
-			@Override
-			public void act() {
-				doButtonAnimations();
-			}
-		});
 	}
 	/**
 	 * Animate selected buttons.
@@ -484,12 +473,18 @@ public class SpacewarScreen extends ScreenBase {
 
 	@Override
 	public void onEnter(Screens mode) {
-		buttonTimer.start();
+		buttonTimer = commons.register(100, new Act() {
+			@Override
+			public void act() {
+				doButtonAnimations();
+			}
+		});
 	}
 
 	@Override
 	public void onLeave() {
-		buttonTimer.stop();
+		close0(buttonTimer);
+		buttonTimer = null;
 	}
 	/** The location of the minimap. */
 	Rectangle minimap = new Rectangle();

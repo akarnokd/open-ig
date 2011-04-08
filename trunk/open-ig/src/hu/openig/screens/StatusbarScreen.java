@@ -17,10 +17,10 @@ import hu.openig.ui.UIImageTabButton2;
 import hu.openig.ui.UILabel;
 
 import java.awt.Graphics2D;
+import java.io.Closeable;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-
-import javax.swing.Timer;
+import java.util.concurrent.CancellationException;
 
 
 
@@ -36,7 +36,7 @@ public class StatusbarScreen extends ScreenBase {
 	/** The money label. */
 	UILabel money;
 	/** The animation timer to show the status bar. */
-	Timer animation;
+	Closeable animation;
 	/** The helper variable for the bottom animation. */
 	int bottomY;
 	/** Pause the game. */
@@ -67,25 +67,6 @@ public class StatusbarScreen extends ScreenBase {
 				commons.statusbar().ingameBottomFill,
 				commons.statusbar().ingameBottomRight, true);
 		bottom.z = -1;
-		
-		animation = new Timer(50, new Act() {
-			@Override
-			public void act() {
-				boolean s = true;
-				if (top.y < 0) {
-					top.y += 2;
-					s = false;
-				}
-				if (bottomY < 18) {
-					bottomY += 2;
-					s = false;
-				}
-				askRepaint();
-				if (s) {
-					animation.stop();
-				}
-			}
-		});
 		
 		money = new UILabel("", 10, commons.text());
 		money.horizontally(HorizontalAlignment.CENTER);
@@ -137,12 +118,30 @@ public class StatusbarScreen extends ScreenBase {
 	public void onEnter(Screens mode) {
 		top.bounds(0, -20, width, 20);
 		bottom.bounds(0, height, width, 18);
-		animation.start();
+		animation = commons.register(50, new Act() {
+			@Override
+			public void act() {
+				boolean s = true;
+				if (top.y < 0) {
+					top.y += 2;
+					s = false;
+				}
+				if (bottomY < 18) {
+					bottomY += 2;
+					s = false;
+				}
+				askRepaint();
+				if (s) {
+					throw new CancellationException();
+				}
+			}
+		});
 	}
 
 	@Override
 	public void onLeave() {
-		animation.stop();
+		close0(animation);
+		animation = null;
 	}
 
 	@Override

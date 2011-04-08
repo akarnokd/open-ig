@@ -849,8 +849,10 @@ public class World {
 			p.today.repairCost = xtoday.getInt("repair");
 			p.today.researchCost = xtoday.getInt("research");
 			p.today.productionCost = xtoday.getInt("production");
-			
-			p.production.clear();
+
+			for (Map<ResearchType, Production> prod : p.production.values()) {
+				prod.clear();
+			}
 			for (XElement xprod : xplayer.childrenWithName("production")) {
 				ResearchMainCategory cat = ResearchMainCategory.valueOf(xprod.get("category"));
 				Map<ResearchType, Production> prod = new LinkedHashMap<ResearchType, Production>();

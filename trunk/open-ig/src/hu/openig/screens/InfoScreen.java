@@ -48,6 +48,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
+import java.io.Closeable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -58,8 +59,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.Timer;
 
 
 
@@ -409,7 +408,7 @@ public class InfoScreen extends ScreenBase {
 	})
 	UIGenericButton togglePlanetListDetails;
 	/** The animation timer. */
-	Timer animation;
+	Closeable animation;
 	/** The blink state. */
 	boolean animationBlink;
 	@Override
@@ -722,14 +721,6 @@ public class InfoScreen extends ScreenBase {
 			}
 		};
 		
-		animation = new Timer(500, new Act() {
-			@Override
-			public void act() {
-				animationBlink = !animationBlink;
-				askRepaint(base);
-			}
-		});
-		
 		addThis();
 	}
 	@Override
@@ -900,7 +891,13 @@ public class InfoScreen extends ScreenBase {
 	public void onEnter(Screens mode) {
 		this.mode = mode != null ? mode : Screens.INFORMATION_PLANETS;
 		applyMode();
-		animation.start();
+		animation = commons.register(500, new Act() {
+			@Override
+			public void act() {
+				animationBlink = !animationBlink;
+				askRepaint(base);
+			}
+		});
 	}
 	/** Adjust the visibility of fields and buttons. */
 	void applyMode() {
@@ -940,7 +937,8 @@ public class InfoScreen extends ScreenBase {
 
 	@Override
 	public void onLeave() {
-		animation.stop();
+		close0(animation);
+		animation = null;
 	}
 
 	@Override

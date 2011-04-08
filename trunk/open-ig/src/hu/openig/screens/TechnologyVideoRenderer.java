@@ -14,6 +14,7 @@ import hu.openig.core.ResourceLocator.ResourcePlace;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import java.util.concurrent.locks.LockSupport;
 import java.util.zip.GZIPInputStream;
 
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 
 /**
  * The video renderer thread for technology screens.
@@ -44,13 +44,18 @@ public class TechnologyVideoRenderer {
 	/** The action to invoke on the EDT for each frame. */
 	public final Action1<BufferedImage> onFrame;
 	/** The future for the video runnable. */
-	protected Future<Timer> videoRun;
+	protected Future<Closeable> videoRun;
+	/** The common resources. */
+	private final CommonResources commons;
 	/**
 	 * Constructor. Sets the synchronization and surface fields
+	 * @param commons the common resources
 	 * @param video the resource place
 	 * @param onFrame the action to invoke for every frame
 	 */
-	public TechnologyVideoRenderer(ResourcePlace video, final Action1<BufferedImage> onFrame) {
+	public TechnologyVideoRenderer(CommonResources commons, 
+			ResourcePlace video, final Action1<BufferedImage> onFrame) {
+		this.commons = commons;
 		this.video = video;
 		this.onFrame = onFrame;
 	}
@@ -59,9 +64,9 @@ public class TechnologyVideoRenderer {
 	 * @param pool the scheduler
 	 */
 	public void start(final ScheduledExecutorService pool) {
-		videoRun = pool.submit(new Callable<Timer>() {
+		videoRun = pool.submit(new Callable<Closeable>() {
 			@Override
-			public Timer call() throws Exception {
+			public Closeable call() throws Exception {
 				return prepare(pool);
 			}
 		});
@@ -70,9 +75,13 @@ public class TechnologyVideoRenderer {
 	public void stop() {
 		stopped = true;
 		try {
-			Timer loop = videoRun.get();
+			Closeable loop = videoRun.get();
 			if (loop != null) {
-				loop.stop();
+				try {
+					loop.close();
+				} catch (IOException ex) {
+					// ignored
+				}
 			}
 		} catch (InterruptedException ex) {
 			
@@ -85,7 +94,7 @@ public class TechnologyVideoRenderer {
 	 * @param pool the scheduler pool
 	 * @return the future representing the frame loop
 	 */
-	Timer prepare(final ScheduledExecutorService pool) {
+	Closeable prepare(final ScheduledExecutorService pool) {
 		double fps = 0.0;
 		int frames = 0;
 		try {
@@ -156,7 +165,8 @@ public class TechnologyVideoRenderer {
 		}
 		if (images.size() > 0 && !stopped) {
 			final int frameSize = frames; 
-			Timer t = new Timer((int)(1000 / fps), new Act() {
+			int delay = (((int)(1000 / fps)) / 25) * 25; // round frames down
+			Closeable t = commons.register(delay, new Act() {
 				int frameIndex = 0;
 				@Override
 				public void act() {
@@ -167,8 +177,6 @@ public class TechnologyVideoRenderer {
 					}
 				}
 			});
-			t.setInitialDelay(0);
-			t.start();
 			return t;
 		}
 		return null;
