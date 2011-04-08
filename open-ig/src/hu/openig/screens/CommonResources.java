@@ -532,6 +532,7 @@ public class CommonResources {
 	}
 	/** Resume the simulator. */
 	public void resume() {
+		paused = false;
 		replaceSimulator(speed);
 	}
 	/**
@@ -539,7 +540,7 @@ public class CommonResources {
 	 * @param delay the delay
 	 */
 	public void speed(int delay) {
-		if (speed != delay) {
+		if (speed != delay || paused) {
 			this.speed = delay;
 			resume();
 		}
