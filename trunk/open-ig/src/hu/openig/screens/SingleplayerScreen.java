@@ -12,6 +12,7 @@ import hu.openig.core.Act;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.Screens;
 import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIGenericButton;
@@ -170,7 +171,7 @@ public class SingleplayerScreen extends ScreenBase {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override 
 							public void run() {
-								commons.world().start();
+								commons.start();
 								commons.control().displayPrimary(Screens.BRIDGE);
 								commons.control().displayStatusbar();
 							};
@@ -188,7 +189,7 @@ public class SingleplayerScreen extends ScreenBase {
 			Thread t1 = new Thread("Start Game Loading") {
 				@Override 
 				public void run() {
-					final World world = new World(commons.pool, commons.control());
+					final World world = new World();
 					world.definition = selectedDefinition;
 					world.difficulty = Difficulty.values()[difficulty];
 					final Labels labels = new Labels(); 
@@ -209,7 +210,7 @@ public class SingleplayerScreen extends ScreenBase {
 			t1.setPriority(Thread.MIN_PRIORITY);
 			t1.start();
 			// the video playback
-			playVideos(new Act() {
+			commons.control().playVideos(new Act() {
 				@Override
 				public void act() {
 					barrier.release();

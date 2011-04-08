@@ -8,6 +8,8 @@
 
 package hu.openig.screens;
 
+import hu.openig.model.Screens;
+
 
 
 /**

@@ -10,6 +10,7 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.SwappableRenderer;
+import hu.openig.model.Screens;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.RenderTools;

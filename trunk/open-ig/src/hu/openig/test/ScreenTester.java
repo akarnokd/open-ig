@@ -14,6 +14,7 @@ import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.Screens;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.World;
@@ -34,7 +35,6 @@ import hu.openig.screens.MainScreen;
 import hu.openig.screens.PlanetScreen;
 import hu.openig.screens.ResearchProductionScreen;
 import hu.openig.screens.ScreenBase;
-import hu.openig.screens.Screens;
 import hu.openig.screens.ShipwalkScreen;
 import hu.openig.screens.SingleplayerScreen;
 import hu.openig.screens.SpacewarScreen;
@@ -64,6 +64,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -476,7 +477,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	void doExit() {
 		try {
 			timer.stop();
-			commons.close();
+			commons.stop();
 			if (screen != null) {
 				screen.onLeave();
 				screen.onFinish();
@@ -520,7 +521,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					rl = commons.rl;
 
 					t = System.nanoTime();
-					commons.world(new World(commons.pool, commons.control()));
+					commons.world(new World());
 					commons.world().definition = GameDefinition.parse(commons, "campaign/main");
 					commons.world().difficulty = Difficulty.values()[0];
 					commons.labels0().load(commons.rl, commons.world().definition.name);
@@ -537,7 +538,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			}
 			@Override
 			protected void done() {
-				commons.world().start();
+				commons.start();
 				parentColor = new Color(0xFF80FF80);
 				parentText = txtScreen;
 				enableDisableMenu(true);
@@ -863,5 +864,21 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	@Override
 	public void load(String name) {
+	}
+	@Override
+	public Screens primary() {
+		return screen != null ? screen.screen() : null;
+	}
+	@Override
+	public Screens secondary() {
+		return screen != null ? screen.screen() : null;
+	}
+	@Override
+	public World world() {
+		return commons.world();
+	}
+	@Override
+	public Closeable register(int delay, Act action) {
+		return commons.register(delay, action);
 	}
 }

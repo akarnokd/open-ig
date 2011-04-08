@@ -8,7 +8,6 @@
 
 package hu.openig.screens;
 
-import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.BuildingType;
@@ -18,6 +17,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.Screens;
 import hu.openig.model.World;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -31,7 +31,7 @@ import java.awt.Rectangle;
  * A screen base class.
  * @author akarnokd, 2009.12.23.
  */
-public abstract class ScreenBase extends UIContainer implements GameControls {
+public abstract class ScreenBase extends UIContainer {
 	/** The global configuration object. */
 	protected Configuration config;
 	/** The global resource locator. */
@@ -83,6 +83,16 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 	 */
 	public void askRepaint(Rectangle rect) {
 		commons.control().repaintInner(rect.x, rect.y, rect.width, rect.height);
+	}
+	/**
+	 * Ask for the repaint of the given partial region.
+	 * @param x left coordinate
+	 * @param y top coordinate
+	 * @param width the width
+	 * @param height the height
+	 */
+	public void askRepaint(int x, int y, int width, int height) {
+		commons.control().repaintInner(x, y, width, height);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
@@ -193,66 +203,58 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 	}
 	/** @return the screen's type. */
 	public abstract Screens screen();
-	@Override
-	public void switchLanguage(String newLanguage) {
-		commons.control().switchLanguage(newLanguage);
-	}
-	@Override
+	/**
+	 * Jump to the given primary screen.
+	 * @param screen the new screen
+	 * @return the screen object
+	 */
 	public ScreenBase displayPrimary(Screens screen) {
 		return commons.control().displayPrimary(screen);
 	}
-	@Override
+	/**
+	 * Jump to the given secondary screen.
+	 * @param screen the new screen
+	 * @return the screen object
+	 */
 	public ScreenBase displaySecondary(Screens screen) {
 		return commons.control().displaySecondary(screen);
 	}
-	@Override
+	/** Hide the secondary screen. */
 	public void hideSecondary() {
 		commons.control().hideSecondary();
 	}
-	@Override
-	public void playVideos(String... videos) {
-		commons.control().playVideos(videos);
-	}
-	@Override
-	public void playVideos(Act onComplete, String... videos) {
-		commons.control().playVideos(onComplete, videos);
-	}
-	@Override
+	/** Display the status bars. */
 	public void displayStatusbar() {
 		commons.control().displayStatusbar();
 	}
-	@Override
+	/** Hide the status bars. */
 	public void hideStatusbar() {
 		commons.control().hideStatusbar();
 	}
-	@Override
+	/** Exit the game. */
 	public void exit() {
 		commons.control().exit();
 	}
-	@Override
-	public void repaintInner() {
-		commons.control().repaintInner();
-	}
-	@Override
+	/** @return the rendering component's width */ 
 	public int getInnerWidth() {
 		return commons.control().getInnerWidth();
 	}
-	@Override
+	/** @return the rendering component's height. */
 	public int getInnerHeight() {
 		return commons.control().getInnerHeight();
 	}
-	@Override
-	public void repaintInner(int x, int y, int w, int h) {
-		commons.control().repaintInner(x, y, w, h);
-	}
-	@Override
+	/**
+	 * Returns a font metrics for the default bold font with the given size.
+	 * @param size the size
+	 * @return the font metrics
+	 */
 	public FontMetrics fontMetrics(int size) {
 		return commons.control().fontMetrics(size);
 	}
 	/** Ask for repaint. */
 	@Override
 	public void askRepaint() {
-		repaintInner();
+		commons.control().repaintInner();
 	}
 	/** @return the world. */
 	public World world() {
@@ -263,11 +265,14 @@ public abstract class ScreenBase extends UIContainer implements GameControls {
 	 * to the game world anymore.
 	 */
 	public abstract void onEndGame();
-	@Override
+	/** Save the game. */
 	public void save() {
 		commons.control().save();
 	}
-	@Override
+	/** 
+	 * Load a specific save.
+	 * @param name the save name
+	 */
 	public void load(String name) {
 		commons.control().load(name);
 	}

@@ -10,6 +10,7 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.SwappableRenderer;
+import hu.openig.model.Screens;
 import hu.openig.render.TextRenderer;
 import hu.openig.screens.MediaPlayer.LabelEvent;
 import hu.openig.ui.UIMouse;

@@ -12,6 +12,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Location;
 import hu.openig.core.Tile;
+import hu.openig.mechanics.Allocator;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
@@ -20,6 +21,7 @@ import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.Screens;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.render.RenderTools;
@@ -1552,7 +1554,7 @@ public class PlanetScreen extends ScreenBase {
 	}
 	/** Perform the resource allocation now! */
 	void doAllocation() {
-		commons.world().allocator.computeNow(planet());
+		Allocator.computeNow(planet());
 	}
 	/**
 	 * The information panel showing some details.

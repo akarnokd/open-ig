@@ -6,16 +6,24 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.model;
+package hu.openig.mechanics;
 
-import hu.openig.core.Act;
-import hu.openig.screens.GameControls;
+
+import hu.openig.model.Building;
+import hu.openig.model.Planet;
+import hu.openig.model.PlanetStatistics;
+import hu.openig.model.Player;
+import hu.openig.model.Production;
+import hu.openig.model.Research;
+import hu.openig.model.ResearchMainCategory;
+import hu.openig.model.ResearchState;
+import hu.openig.model.ResearchType;
+import hu.openig.model.TaxLevel;
+import hu.openig.model.World;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Map;
-
-import javax.swing.Timer;
 
 /**
  * Collection of algorithms which update the world
@@ -23,38 +31,17 @@ import javax.swing.Timer;
  * research, production, fleet movement, etc.
  * @author akarnokd, Apr 5, 2011
  */
-public class Simulator {
-	/** The timer to periodically change things. */
-	protected final Timer timer;
-	/** The world object. */
-	protected final World world;
-	/** The general game world controls. */
-	protected final GameControls controls;
-	/**
-	 * Construct the simulator.
-	 * @param delay the real time delay between calculations
-	 * @param world the world object
-	 * @param controls the game world controls
-	 */
-	public Simulator(int delay, World world, GameControls controls) {
-		this.controls = controls;
-		this.world = world;
-		timer = new Timer(delay, new Act() {
-			@Override
-			public void act() {
-				if (compute()) {
-					Simulator.this.controls.repaintInner();
-				}
-			}
-		});
-		timer.setCoalesce(false);
-		timer.setInitialDelay(0);
+public final class Simulator {
+	/** Utility class. */
+	private Simulator() {
 	}
 	/** 
 	 * The main computation. 
-	 * @return true if repaint will be needed 
+	 * @param world the world to compute
+	 * @return true if the a quicksave is needed 
 	 */
-	public boolean compute() {
+	public static boolean compute(World world) {
+		
 		int day0 = world.time.get(GregorianCalendar.DATE);
 		world.time.add(GregorianCalendar.MINUTE, 10);
 		int day1 = world.time.get(GregorianCalendar.DATE);
@@ -79,9 +66,9 @@ public class Simulator {
 		}
 //		return result;
 		if (day0 != day1) {
-			controls.save();
+			return true;
 		}
-		return true;
+		return false;
 	}
 	/**
 	 * Make progress on the buildings of the planet.
@@ -89,7 +76,7 @@ public class Simulator {
 	 * @param dayChange consider day change
 	 * @return true if repaint will be needed 
 	 */
-	public boolean progressPlanet(Planet planet, boolean dayChange) {
+	static boolean progressPlanet(Planet planet, boolean dayChange) {
 		boolean result = false;
 		float freeRepair = 0;
 		for (Building b : planet.surface.buildings) {
@@ -211,7 +198,7 @@ public class Simulator {
 	 * @return true if repaint will be needed 
 	 * @param player the player
 	 */
-	public boolean progressResearch(Player player) {
+	static boolean progressResearch(Player player) {
 		if (player.runningResearch != null) {
 			Research rs = player.research.get(player.runningResearch);
 			int maxpc = rs.getResearchMaxPercent(player.getPlanetStatistics());
@@ -244,31 +231,12 @@ public class Simulator {
 		}
 		return false;
 	}
-	/** Start the timer. */
-	public void start() {
-		timer.start();
-	}
-	/** Stop the timer. */
-	public void stop() {
-		timer.stop();
-	}
-	/**
-	 * Set the time delay between calculations.
-	 * @param delay the delay in milliseconds
-	 */
-	public void setDelay(int delay) {
-		timer.setDelay(delay);
-	}
-	/** @return Is the timer running? */
-	public boolean isRunning() {
-		return timer.isRunning();
-	}
 	/**
 	 * Perform the next step of the production process.
 	 * @param player the player
 	 * @return need for repaint?
 	 */
-	public boolean progressProduction(Player player) {
+	static boolean progressProduction(Player player) {
 		boolean result = false;
 		PlanetStatistics ps = player.getPlanetStatistics();
 		for (Map.Entry<ResearchMainCategory, Map<ResearchType, Production>> prs : player.production.entrySet()) {
@@ -324,9 +292,5 @@ public class Simulator {
 		}
 		
 		return result;
-	}
-	/** @return the current timer delay. */
-	public int getDelay() {
-		return timer.getDelay();
 	}
 }

@@ -8,6 +8,7 @@
 
 package hu.openig.screens;
 
+import hu.openig.model.Screens;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.render.RenderTools;

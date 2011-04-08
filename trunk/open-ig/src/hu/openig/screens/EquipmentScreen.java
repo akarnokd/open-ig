@@ -11,6 +11,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
+import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;

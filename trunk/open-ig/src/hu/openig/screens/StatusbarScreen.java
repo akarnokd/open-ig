@@ -9,6 +9,7 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.model.Screens;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIImageFill;
@@ -99,10 +100,10 @@ public class StatusbarScreen extends ScreenBase {
 		pause.onPress = new Act() {
 			@Override
 			public void act() {
-				if (world().simulator.isRunning()) {
-					world().simulator.stop();
+				if (commons.paused()) {
+					commons.resume();
 				} else {
-					world().simulator.start();
+					commons.pause();
 				}
 			}
 		};
@@ -110,24 +111,21 @@ public class StatusbarScreen extends ScreenBase {
 		speed1.onPress = new Act() {
 			@Override
 			public void act() {
-				world().simulator.setDelay(1000);
-				world().simulator.start();
+				commons.speed(1000);
 			}
 		};
 		speed2 = new UIImageTabButton2(commons.common().speed2);
 		speed2.onPress = new Act() {
 			@Override
 			public void act() {
-				world().simulator.setDelay(500);
-				world().simulator.start();
+				commons.speed(500);
 			}
 		};
 		speed4 = new UIImageTabButton2(commons.common().speed4);
 		speed4.onPress = new Act() {
 			@Override
 			public void act() {
-				world().simulator.setDelay(250);
-				world().simulator.start();
+				commons.speed(250);
 			}
 		};
 		
@@ -177,10 +175,10 @@ public class StatusbarScreen extends ScreenBase {
 		speed2.location(top.x + 31, top.y + 2);
 		speed4.location(top.x + 46, top.y + 2);
 		
-		pause.selected = !world().simulator.isRunning();
-		speed1.selected = 1000 == world().simulator.getDelay();
-		speed2.selected = 500 == world().simulator.getDelay();
-		speed4.selected = 250 == world().simulator.getDelay();
+		pause.selected = commons.paused();
+		speed1.selected = 1000 == commons.speed();
+		speed2.selected = 500 == commons.speed();
+		speed4.selected = 250 == commons.speed();
 		
 		year.bounds(top.x + 155, top.y + 3, 34, 14);
 		month.bounds(top.x + 195, top.y + 3, 74, 14);

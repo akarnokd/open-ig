@@ -11,6 +11,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
+import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImageButton;
@@ -128,7 +129,7 @@ public class VideoScreen extends ScreenBase {
 			@Override
 			public void act() {
 				if (selectedVideo != null) {
-					playVideos(selectedVideo.fullName);
+					commons.control().playVideos(selectedVideo.fullName);
 				}
 			}
 		};
@@ -168,7 +169,7 @@ public class VideoScreen extends ScreenBase {
 				if (idx < videos.size()) {
 					selectedVideo = videos.get(idx);
 					if (e.type == Type.DOUBLE_CLICK) {
-						playVideos(selectedVideo.fullName);
+						commons.control().playVideos(selectedVideo.fullName);
 					}
 					rep = true;
 				}

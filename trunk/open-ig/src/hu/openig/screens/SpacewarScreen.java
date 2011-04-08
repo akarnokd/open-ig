@@ -9,6 +9,7 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.model.Screens;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 
@@ -191,7 +192,7 @@ public class SpacewarScreen extends ScreenBase {
 		/** Move to the next animation. */
 		protected void doAnimate() {
 			animationIndex = (animationIndex + 1) % (phases.length - 1);
-			repaintInner(x, y, phases[0].getWidth(), phases[0].getHeight());
+			askRepaint(x, y, phases[0].getWidth(), phases[0].getHeight());
 		}
 		/**
 		 * Render the button.

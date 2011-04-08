@@ -12,6 +12,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Bridge.Level;
+import hu.openig.model.Screens;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
 import hu.openig.model.WalkTransition;
