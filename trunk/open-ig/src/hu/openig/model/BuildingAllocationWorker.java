@@ -36,8 +36,8 @@ public final class BuildingAllocationWorker {
 	}
 	/** Read the settings from the building object. */
 	public void read() {
-		this.energyDemand = building.getEnergy();
-		this.workerDemand = building.getWorkers();
+		this.energyDemand = (int)building.getResource("energy");
+		this.workerDemand = (int)building.getResource("worker");
 		this.producesEnergy = energyDemand >= 0;
 		this.efficiencyBound = building.hitpoints / (float)building.type.hitpoints;
 	}

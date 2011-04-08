@@ -82,9 +82,6 @@ public final class Allocator {
 //			doUniformStrategy(baw, workers);
 			doUniformStrategyWithDamage(baw, workers);
 			break;
-		case DAMAGE_AWARE:
-			doUniformStrategyWithDamage(baw, workers);
-			break;
 		default:
 		}
 	}
@@ -141,55 +138,12 @@ public final class Allocator {
 	 * @param ras the allocation settings
 	 * @param availableWorkers the number of workers available
 	 */
-	static void doUniformStrategy(List<BuildingAllocationWorker> ras, int availableWorkers) {
-		int availableWorker = availableWorkers;
-		int demandWorker = 0;
-		int demandEnergy = 0;
-		for (BuildingAllocationWorker b : ras) {
-			demandWorker += b.workerDemand;
-			demandEnergy += b.producesEnergy ? 0 : b.energyDemand;
-		}
-		// no need to assign workers
-		if (demandWorker == 0) {
-			return;
-		}
-		float targetEfficiency = Math.min(1.0f, availableWorker / (float)demandWorker);
-		float availableEnergy = 0;
-		for (BuildingAllocationWorker b : ras) {
-			int toAssign = Math.round(b.workerDemand * targetEfficiency);
-			b.workerAllocated = toAssign > availableWorker ? toAssign : availableWorker;
-			availableWorker -= b.workerAllocated;
-			if (b.producesEnergy) {
-				availableEnergy -= b.energyDemand * b.getEfficiency();
-			}
-		}
-		// no need assign energy: everything is either colonyhub or power plant
-		if (demandEnergy == 0) {
-			return;
-		}
-		targetEfficiency = Math.min(1.0f, availableEnergy / demandEnergy);
-		
-		for (BuildingAllocationWorker b : ras) {
-			if (!b.producesEnergy) {
-				int toAssign = (int)(b.energyDemand * targetEfficiency);
-				b.energyAllocated = toAssign > availableEnergy ? toAssign : (int)availableEnergy;
-				availableEnergy -= b.energyAllocated;
-			}
-		}
-	}
-	/** 
-	 * Do an uniform distribution strategy. 
-	 * @param ras the allocation settings
-	 * @param availableWorkers the number of workers available
-	 */
 	static void doUniformStrategyWithDamage(List<BuildingAllocationWorker> ras, int availableWorkers) {
 		int availableWorker = availableWorkers;
 		int demandWorker = 0;
-		int demandEnergy = 0;
 		for (BuildingAllocationWorker b : ras) {
-			if (b.efficiencyBound >= 0.5) {
+			if (b.efficiencyBound >= 0.5f) {
 				demandWorker += b.workerDemand * b.efficiencyBound;
-				demandEnergy += b.producesEnergy ? 0 : b.energyDemand * b.efficiencyBound;
 			} else {
 				b.workerAllocated = 0;
 				b.energyAllocated = 0;
@@ -200,14 +154,20 @@ public final class Allocator {
 			return;
 		}
 		float targetEfficiency = Math.min(1.0f, availableWorker / (float)demandWorker);
+		
+		int demandEnergy = 0;
 		float availableEnergy = 0;
+		
 		for (BuildingAllocationWorker b : ras) {
-			if (b.efficiencyBound >= 0.5) {
-				int toAssign = (int)(b.workerDemand * Math.min(targetEfficiency, b.efficiencyBound));
+			if (b.efficiencyBound >= 0.5f) {
+				int toAssign = (int)(b.workerDemand * b.efficiencyBound * targetEfficiency);
 				b.workerAllocated = toAssign > availableWorker ? toAssign : availableWorker;
 				availableWorker -= b.workerAllocated;
+				float workerPercent = 1.0f * b.workerAllocated / b.workerDemand;
 				if (b.producesEnergy) {
-					availableEnergy -= b.energyDemand * b.getEfficiency();
+					availableEnergy -= b.energyDemand * Math.min(workerPercent, b.efficiencyBound);
+				} else {
+					demandEnergy += b.energyDemand * Math.min(workerPercent, b.efficiencyBound);
 				}
 			}
 		}
@@ -217,14 +177,21 @@ public final class Allocator {
 		}
 		targetEfficiency = Math.min(1.0f, availableEnergy / demandEnergy);
 		
+		int demandEnergy2 = 0;
+		
 		for (BuildingAllocationWorker b : ras) {
-			if (b.efficiencyBound >= 0.5) {
+			if (b.efficiencyBound >= 0.5f) {
 				if (!b.producesEnergy) {
-					int toAssign = (int)(b.energyDemand * Math.min(targetEfficiency, b.efficiencyBound));
+					float workerPercent = 1.0f * b.workerAllocated / b.workerDemand;
+					float allocPercent = workerPercent * targetEfficiency;
+					
+					demandEnergy2 += b.energyDemand * allocPercent;
+					int toAssign = (int)(b.energyDemand * allocPercent);
 					b.energyAllocated = toAssign > availableEnergy ? toAssign : (int)availableEnergy;
 					availableEnergy -= b.energyAllocated;
 				}
 			}
 		}
+		
 	}
 }
