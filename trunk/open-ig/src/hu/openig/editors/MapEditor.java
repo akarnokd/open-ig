@@ -173,8 +173,6 @@ public class MapEditor extends JFrame {
 	TableRowSorter<TileList> buildingSorter;
 	/** The colony graphics. */
 	ColonyGFX colonyGFX;
-	/** The current alpha level. */
-	float alpha = 1.0f;
 	/** The import dialog. */
 	ImportDialog imp;
 	/** The current base tile object. */
@@ -1362,36 +1360,24 @@ public class MapEditor extends JFrame {
 	 * Decrease the light amount on the tiles.
 	 */
 	protected void doLessLight() {
-		alpha = Math.max(0, alpha - 0.05f);
-		setAlphaOnTiles();
+		renderer.alpha = Math.max(0, renderer.alpha - 0.05f);
 		repaint();
-	}
-	/**
-	 * 
-	 */
-	private void setAlphaOnTiles() {
-		if (renderer.surface != null) {
-			renderer.surface.setAlpha(alpha);
-		}
 	}
 	/**
 	 * Increase the light amount on the tiles.
 	 */
 	protected void doMoreLight() {
-		alpha = Math.min(1f, alpha + 0.05f);;
-		setAlphaOnTiles();
+		renderer.alpha = Math.min(1f, renderer.alpha + 0.05f);;
 		repaint();
 	}
 	/** Set lighting to half. */
 	protected void doDark() {
-		alpha = 0.5f;
-		setAlphaOnTiles();
+		renderer.alpha = 0.5f;
 		repaint();
 	}
 	/** Set lighting to full. */
 	protected void doBright() {
-		alpha = 1.0f;
-		setAlphaOnTiles();
+		renderer.alpha = 1.0f;
 		repaint();
 	}
 	/**
@@ -2516,7 +2502,7 @@ public class MapEditor extends JFrame {
 				out.printf("  <splitters main='%d' preview='%d' surfaces='%d'/>%n", split.getDividerLocation(), toolSplit.getDividerLocation(), featuresSplit.getDividerLocation());
 				out.printf("  <editmode type='%s'/>%n", ui.buildButton.isSelected());
 				out.printf("  <tabs selected='%d'/>%n", propertyTab.getSelectedIndex());
-				out.printf("  <lights preview='%d' map='%s'/>%n", alphaSlider.getValue(), Float.toString(alpha));
+				out.printf("  <lights preview='%d' map='%s'/>%n", alphaSlider.getValue(), Float.toString(renderer.alpha));
 				out.printf("  <filter surface='%s' building='%s'/>%n", XElement.sanitize(filterSurface.getText()), XElement.sanitize(filterBuilding.getText()));
 				out.printf("  <allocation worker='%s' strategy='%d'/>%n", ui.allocationPanel.availableWorkers.getText(), ui.allocationPanel.strategies.getSelectedIndex());
 				out.printf("  <view buildings='%s' minimap='%s' textboxes='%s' zoom='%s' standard-fonts='%s' placement-hints='%s'/>%n", ui.viewShowBuildings.isSelected(), 
@@ -2590,7 +2576,7 @@ public class MapEditor extends JFrame {
 				XElement eLights = root.childElement("lights");
 				if (eLights != null) {
 					alphaSlider.setValue(Integer.parseInt(eLights.get("preview")));
-					alpha = Float.parseFloat(eLights.get("map"));
+					renderer.alpha = Float.parseFloat(eLights.get("map"));
 				}
 				
 				XElement eMode = root.childElement("editmode");

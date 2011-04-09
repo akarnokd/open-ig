@@ -91,6 +91,8 @@ public class MapRenderer extends JComponent {
 	boolean textBackgrounds = true;
 	/** Render placement hints on the surface. */
 	boolean placementHints;
+	/** The current alpha level. */
+	float alpha = 1.0f;
 	/** The surface cell image. */
 	static class SurfaceCell {
 		/** The tile target. */
@@ -453,10 +455,12 @@ public class MapRenderer extends JComponent {
 			cell.a = loc1.x - se.virtualColumn;
 			cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
 			if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
+				se.tile.alpha = alpha;
 				cell.image = se.tile.getStrip(se.virtualRow);
 				return;
 			} else
 			if (se.virtualRow == se.tile.height - 1) {
+				se.tile.alpha = alpha;
 				cell.image = se.tile.getStrip(se.tile.height - 1 + se.virtualColumn);
 				return;
 			}
@@ -503,6 +507,7 @@ public class MapRenderer extends JComponent {
 				tile =  se.building.scaffolding.normal.get(constructIndex);
 			}
 			cell.yCompensation = 27 - tile.imageHeight;
+			tile.alpha = alpha;
 			cell.image = tile.getStrip(0);
 			cell.a = loc1.x;
 			cell.b = loc1.y;
@@ -521,10 +526,12 @@ public class MapRenderer extends JComponent {
 			cell.a = loc1.x - se.virtualColumn;
 			cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
 			if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
+				tile.alpha = alpha;
 				cell.image = tile.getStrip(se.virtualRow);
 				return;
 			} else
 			if (se.virtualRow == se.tile.height - 1) {
+				tile.alpha = alpha;
 				cell.image = tile.getStrip(se.tile.height - 1 + se.virtualColumn);
 				return;
 			}

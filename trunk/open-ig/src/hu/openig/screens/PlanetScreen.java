@@ -292,10 +292,12 @@ public class PlanetScreen extends ScreenBase {
 			cell.a = loc1.x - se.virtualColumn;
 			cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
 			if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
+				se.tile.alpha = alpha;
 				cell.image = se.tile.getStrip(se.virtualRow);
 				return;
 			} else
 			if (se.virtualRow == se.tile.height - 1) {
+				se.tile.alpha = alpha;
 				cell.image = se.tile.getStrip(se.tile.height - 1 + se.virtualColumn);
 				return;
 			}
@@ -343,8 +345,8 @@ public class PlanetScreen extends ScreenBase {
 				int constructIndex = se.building.buildProgress * se.building.scaffolding.normal.size() / se.building.type.hitpoints;
 				tile =  se.building.scaffolding.normal.get(constructIndex);
 			}
-			tile.alpha = se.tile.alpha;
 			cell.yCompensation = 27 - tile.imageHeight;
+			tile.alpha = alpha;
 			cell.image = tile.getStrip(0);
 			cell.a = loc1.x;
 			cell.b = loc1.y;
@@ -358,15 +360,16 @@ public class PlanetScreen extends ScreenBase {
 			} else {
 				tile = se.building.tileset.normal;
 			}
-			tile.alpha = se.tile.alpha;
 			cell.yCompensation = 27 - tile.imageHeight;
 			cell.a = loc1.x - se.virtualColumn;
 			cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
 			if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
+				tile.alpha = alpha;
 				cell.image = tile.getStrip(se.virtualRow);
 				return;
 			} else
 			if (se.virtualRow == se.tile.height - 1) {
+				tile.alpha = alpha;
 				cell.image = tile.getStrip(se.tile.height - 1 + se.virtualColumn);
 				return;
 			}
@@ -623,13 +626,6 @@ public class PlanetScreen extends ScreenBase {
 			if (time >= 6 * 16 && time < 6 * 22) {
 				alpha = (1f - 0.65f * (time - 6 * 16) / 36);
 			}
-			
-			if (Math.abs(surface.alpha - alpha) >= 0.001) {
-				surface.setAlpha(alpha);
-//				prepareTilesAsync(surface);
-			}
-			
-			
 			
 			RenderTools.setInterpolation(g2, true);
 			

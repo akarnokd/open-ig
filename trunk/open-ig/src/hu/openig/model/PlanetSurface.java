@@ -39,8 +39,6 @@ public class PlanetSurface {
 	public int width;
 	/** The height with in cells. The width is defined as a vertical dimension of the map, but in coordinate terms it is equal to the sequence 0,0 -1,-1, -2,-2 etc. */
 	public int height;
-	/** The current lighting level. */
-	public float alpha = 1f;
 	/**
 	 * The accessible rectangle of the surface defined in pixels. The accessible origin is encoded relative to the top-left corner of where the Location(0,0) is rendered.
 	 */
@@ -132,7 +130,6 @@ public class PlanetSurface {
 				se.virtualRow = y - b;
 				se.virtualColumn = a - x;
 				se.tile = tile;
-				se.tile.alpha = alpha;
 				se.building = building;
 				buildingmap.put(Location.of(a, b), se);
 			}
@@ -159,7 +156,6 @@ public class PlanetSurface {
 				basemap.put(Location.of(a, b), se);
 			}
 		}
-		tile.alpha = alpha;
 		SurfaceFeature sf = new SurfaceFeature();
 		sf.id = id;
 		sf.type = surface;
@@ -305,28 +301,6 @@ public class PlanetSurface {
 		return null;
 	}
 	/**
-	 * Set the lighting level on the surface tiles.
-	 * @param alpha the new lighting level
-	 */
-	public void setAlpha(float alpha) {
-		if (Math.abs(alpha - this.alpha) >= 0.001) {
-			this.alpha = alpha;
-			for (SurfaceFeature sf : features) {
-				sf.tile.alpha = alpha;
-			}
-			for (SurfaceEntity se : buildingmap.values()) {
-				if (se.building != null) {
-					se.building.tileset.damaged.alpha = alpha;
-					se.building.tileset.nolight.alpha = alpha;
-					se.building.tileset.normal.alpha = alpha;
-				} else {
-					se.tile.alpha = alpha;
-				}
-			}
-			
-		}
-	}
-	/**
 	 * Create a deep copy of the surface by sharing the basemap but
 	 * copying the buildings.
 	 * @return the planet surface copy
@@ -348,8 +322,6 @@ public class PlanetSurface {
 				result.buildingmap.put(se.getKey(), se.getValue());
 			}
 		}
-		
-		result.setAlpha(alpha);
 		
 		return result;
 	}
@@ -437,7 +409,6 @@ public class PlanetSurface {
 	SurfaceEntity createRoadEntity(Tile tile) {
 		SurfaceEntity result = new SurfaceEntity();
 		result.tile = tile;
-		result.tile.alpha = alpha;
 		result.type = SurfaceEntityType.ROAD;
 		return result;
 	}
