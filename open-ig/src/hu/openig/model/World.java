@@ -960,6 +960,10 @@ public class World {
 			Planet p = planets.get(rest);
 			p.die();
 		}
+		// reset alpha
+		for (Planet p : planets.values()) {
+			p.surface.alpha = 0; 
+		}
 	}
 	/** @return Return the list of other important items. */
 	public String getOtherItems() {

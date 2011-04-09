@@ -125,7 +125,8 @@ public class Tile {
 	 * @return the partial image
 	 */
 	public BufferedImage getStrip(int stripIndex) {
-		if (alpha != cachedAlpha) {
+		float da = alpha - cachedAlpha;
+		if (da > 0.001 || da < -0.001) {
 			computeImageWithLights();
 		}
 		return stripCache[stripIndex];
@@ -206,6 +207,12 @@ public class Tile {
 	protected int withAlpha(int c) {
 		if ((c & 0xFF000000) == 0) {
 			return c;
+		}
+		if (alpha < lightThreshold) {
+			return 0xFF000000
+			| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
+			| (((int)((c & 0xFF00) * alpha)) & 0xFF00)
+			| (((int)((c & 0xFF) * ((alpha + lightThreshold) / 2))) & 0xFF);
 		}
 		return 0xFF000000
 		| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)

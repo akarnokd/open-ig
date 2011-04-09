@@ -1614,7 +1614,7 @@ public class InfoScreen extends ScreenBase {
 	/** @return an ordered list of planets to display. */
 	List<Planet> planetsList() {
 		List<Planet> planets = new ArrayList<Planet>();
-		for (Planet p : player().planets.keySet()) {
+		for (Planet p : world().planets.values()) {
 			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				planets.add(p);
 			}
