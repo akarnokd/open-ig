@@ -606,16 +606,16 @@ public class PlanetScreen extends ScreenBase {
 			+ world().time.get(GregorianCalendar.MINUTE) / 10;
 			
 			if (time < 6 * 4 || time >= 6 * 22) {
-				alpha = (0.4f);
+				alpha = (0.35f);
 			} else
 			if (time >= 6 * 4 && time < 6 * 10) {
-				alpha = (0.40f + 0.6f * (time - 6 * 4) / 36);
+				alpha = (0.35f + 0.65f * (time - 6 * 4) / 36);
 			} else
 			if (time >= 6 * 10 && time < 6 * 16) {
 				alpha = (1.0f);
 			} else 
 			if (time >= 6 * 16 && time < 6 * 22) {
-				alpha = (1f - 0.6f * (time - 6 * 16) / 36);
+				alpha = (1f - 0.65f * (time - 6 * 16) / 36);
 			}
 			
 			surface.setAlpha(alpha);

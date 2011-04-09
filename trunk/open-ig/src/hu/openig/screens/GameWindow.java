@@ -1054,9 +1054,12 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		final String currentGame = commons.world() != null ? commons.world().name : null; 
 		commons.worldLoading = true;
+		boolean running = false;
 		if (commons.world() != null) {
+			running = !commons.paused();
 			commons.stop();
 		}
+		final boolean frunning = running;
 		
 		Thread t = new Thread(new Runnable() {
 			@Override
@@ -1127,6 +1130,9 @@ public class GameWindow extends JFrame implements GameControls {
 								displayStatusbar();
 							}
 							commons.start();
+							if (!frunning) {
+								commons.pause();
+							}
 						}
 					});
 

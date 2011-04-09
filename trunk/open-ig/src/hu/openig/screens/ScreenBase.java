@@ -164,7 +164,7 @@ public abstract class ScreenBase extends UIContainer {
 	 * @return -1 if less known, 0 if exactly on the same level, +1 if more
 	 */
 	public int knowledge(Planet planet, PlanetKnowledge expected) {
-		PlanetKnowledge k = player().planets.get(planet);
+		PlanetKnowledge k = planet.owner == player() ? PlanetKnowledge.BUILDING : player().planets.get(planet);
 		if (k == expected) {
 			return 0;
 		}

@@ -502,6 +502,8 @@ public class CommonResources {
 				control.repaintInner();
 			}
 		});
+		Allocator.compute(world, pool);
+		Radar.compute(world);
 		timer.start();
 	}
 	/** 
