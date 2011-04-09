@@ -875,6 +875,7 @@
 	<entry key='statistics.galaxy_total_food_production'>Galaxy total food production</entry>
 	<entry key='statistics.galaxy_money_tax_income'>Galaxy tax income</entry>
 	<entry key='statistics.galaxy_money_trade_income'>Galaxy trade income</entry>
+	<entry key='info.statistics'>Statistics</entry>
 	
 	
 </labels>

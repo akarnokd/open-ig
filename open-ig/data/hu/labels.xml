@@ -948,5 +948,6 @@
 	<entry key='statistics.galaxy_total_food_production'>Galaxis élelem termelés</entry>
 	<entry key='statistics.galaxy_money_tax_income'>Galaxis adóbevétel</entry>
 	<entry key='statistics.galaxy_money_trade_income'>Galaxis kereskedelmi bevétel</entry>
+	<entry key='info.statistics'>Statisztika</entry>
 	
 </labels>
