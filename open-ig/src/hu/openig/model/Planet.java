@@ -249,7 +249,8 @@ public class Planet implements Named, Owned {
 			result.addWarning(PlanetProblems.HOUSING);
 		}
 		
-		if (population / 50000 > stadiumCount) {
+		// FIXME stadium count
+		if (population > 50000 && 0 == stadiumCount && ("human".equals(race))) {
 			result.addProblem(PlanetProblems.STADIUM);
 		}
 		

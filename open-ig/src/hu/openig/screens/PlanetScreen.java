@@ -18,6 +18,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetInventoryItem;
 import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResearchSubCategory;
@@ -600,11 +601,12 @@ public class PlanetScreen extends ScreenBase {
 				currentBuilding = null;
 				lastSurface = surface;
 				placementMode = false;
+				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
 			}
 			setBuildingList(0);
 			buildingInfoPanel.update();
-			infoPanel.update();
+			PlanetStatistics ps = infoPanel.update();
 			
 			int time = world().time.get(GregorianCalendar.HOUR_OF_DAY) * 6
 			+ world().time.get(GregorianCalendar.MINUTE) / 10;
@@ -849,6 +851,8 @@ public class PlanetScreen extends ScreenBase {
 			}
 			commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
 
+			renderProblems(g2, ps);
+			
 			g2.setClip(save0);
 			RenderTools.setInterpolation(g2, false);
 			
@@ -857,6 +861,58 @@ public class PlanetScreen extends ScreenBase {
 				g2.fillRect(prev.x - this.x - 1, prev.y - this.y - 1, prev.width + next.width + 4, prev.height + 2);
 			}
 			
+		}
+		/**
+		 * Render the problem icons.
+		 * @param g2 the graphics
+		 * @param ps the statistics
+		 */
+		void renderProblems(Graphics2D g2, PlanetStatistics ps) {
+			Set<PlanetProblems> combined = new HashSet<PlanetProblems>();
+			combined.addAll(ps.problems.keySet());
+			combined.addAll(ps.warnings.keySet());
+			
+			if (combined.size() > 0) {
+				int w = combined.size() * 11 - 1;
+				g2.setColor(Color.BLACK);
+				g2.fillRect((width - w) / 2 - 2, 18, w + 4, 15);
+				int i = 0;
+				for (PlanetProblems pp : combined) {
+					BufferedImage icon = null;
+					switch (pp) {
+					case HOUSING:
+						icon = commons.common().houseIcon;
+						break;
+					case FOOD:
+						icon = commons.common().foodIcon;
+						break;
+					case HOSPITAL:
+						icon = commons.common().hospitalIcon;
+						break;
+					case ENERGY:
+						icon = commons.common().energyIcon;
+						break;
+					case WORKFORCE:
+						icon = commons.common().workerIcon;
+						break;
+					case STADIUM:
+						icon = commons.common().stadiumIcon;
+						break;
+					case VIRUS:
+						icon = commons.common().virusIcon;
+						break;
+					case REPAIR:
+						icon = commons.common().repairIcon;
+						break;
+					default:
+					}
+					if (ps.hasProblem(pp) || (blink && ps.hasWarning(pp))) {
+						g2.drawImage(icon, (width - w) / 2 + i * 11, 20, null);
+					}
+					i++;
+				}
+			}
+
 		}
 		
 	}
@@ -1686,8 +1742,9 @@ public class PlanetScreen extends ScreenBase {
 		}
 		/**
 		 * Update the display values based on the current planet's settings.
+		 * @return the planet statistics used
 		 */
-		public void update() {
+		public PlanetStatistics update() {
 			Planet p = planet();
 			
 			planet.text(p.name, true);
@@ -1727,6 +1784,8 @@ public class PlanetScreen extends ScreenBase {
 			allocation.visible(false);
 			autobuild.visible(false);
 			
+			PlanetStatistics ps = null;
+			
 			if (p.isPopulated()) {
 			
 				if (p.owner == player()) {
@@ -1734,7 +1793,7 @@ public class PlanetScreen extends ScreenBase {
 							p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
 					), true).visible(true);
 					
-					PlanetStatistics ps = p.getStatistics();
+					ps = p.getStatistics();
 					
 					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
 					setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
@@ -1788,6 +1847,8 @@ public class PlanetScreen extends ScreenBase {
 
 			computeSize();
 			location(sidebarColonyInfo.x - width - 2, sidebarColonyInfo.y + sidebarColonyInfo.height - height - 2);
+			
+			return ps;
 		}
 		/** 
 		 * Color the label according to the relation between the demand and available.

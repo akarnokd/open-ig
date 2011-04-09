@@ -179,7 +179,7 @@ public final class Simulator {
 			}
 			
 			planet.tradeIncome = (int)(tradeIncome * multiply);
-			planet.taxIncome = planet.population * planet.morale * planet.tax.percent / 10000;
+			planet.taxIncome = (int)(1.0f * planet.population * planet.morale * planet.tax.percent / 10000);
 
 			planet.owner.money += planet.tradeIncome + planet.taxIncome;
 			
