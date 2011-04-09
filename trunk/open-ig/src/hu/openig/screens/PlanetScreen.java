@@ -1054,8 +1054,6 @@ public class PlanetScreen extends ScreenBase {
 	class BuildingPreview extends UIComponent {
 		/** The building image. */
 		public BufferedImage building;
-		/** Building can be built. */
-		public boolean enabled;
 		/** The building cost. */
 		public int cost;
 		@Override
@@ -1130,14 +1128,14 @@ public class PlanetScreen extends ScreenBase {
 					setBuildingList(1);
 				}
 			};
-			buildingDown.setHoldDelay(200);
+			buildingDown.setHoldDelay(150);
 			buildingUp.onClick = new Act() {
 				@Override
 				public void act() {
 					setBuildingList(-1);
 				}
 			};
-			buildingUp.setHoldDelay(200);
+			buildingUp.setHoldDelay(150);
 			
 			buildingList.onClick = new Act() {
 				@Override
@@ -2158,9 +2156,9 @@ public class PlanetScreen extends ScreenBase {
 			
 			buildingsPanel.preview.building = bt.tileset.get(race).preview;
 			buildingsPanel.preview.cost = bt.cost;
-			buildingsPanel.preview.enabled = planet().canBuild(bt) && planet().owner == player();
+			buildingsPanel.preview.enabled(planet().canBuild(bt) && planet().owner == player());
 			buildingsPanel.buildingName.text(bt.name);
-			buildingsPanel.build.enabled(buildingsPanel.preview.enabled);
+			buildingsPanel.build.enabled(buildingsPanel.preview.enabled());
 		} else {
 			buildingsPanel.build.enabled(false);
 			buildingsPanel.preview.building = null;

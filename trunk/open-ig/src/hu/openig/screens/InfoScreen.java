@@ -2526,11 +2526,39 @@ public class InfoScreen extends ScreenBase {
 					String pop = Integer.toString(p.population);
 					int popWidth = commons.text().getTextWidth(10, pop);
 					commons.text().paintTo(g2, 160 - popWidth, y + 1, 10, TextRenderer.GREEN, pop);
-					commons.text().paintTo(g2, 170, y + 1, 10, TextRenderer.GREEN, "(" + withSign(p.population - p.lastPopulation) + ")");
+					int pc = TextRenderer.GREEN;
+					if (p.population - p.lastPopulation < -150) {
+						pc = TextRenderer.RED;
+					} else
+					if (p.population - p.lastPopulation < 0) {
+						pc = TextRenderer.YELLOW;
+					} else
+					if (p.population - p.lastPopulation > 80) {
+						pc = TextRenderer.ORANGE;
+					}
+					
+					commons.text().paintTo(g2, 175, y + 1, 10, pc, withSign(p.population - p.lastPopulation));
 					 
 					if (p.owner == player()) {
 
-						commons.text().paintTo(g2, 240, y + 1, 10, p.morale >= 30 ? TextRenderer.GREEN : TextRenderer.RED, p.morale + "% (" + withSign(p.morale - p.lastMorale) + ")");
+						commons.text().paintTo(g2, 240, y + 1, 10, 
+								p.morale >= 30 ? TextRenderer.GREEN : TextRenderer.RED, 
+										p.morale + "%");
+
+						int mc = TextRenderer.GREEN;
+						if (p.morale - p.lastMorale < -4) {
+							mc = TextRenderer.RED;
+						} else
+						if (p.morale - p.lastMorale < 0) {
+							mc = TextRenderer.YELLOW;
+						} else
+						if (p.morale - p.lastMorale > 3) {
+							mc = TextRenderer.ORANGE;
+						}
+								
+						commons.text().paintTo(g2, 270, y + 1, 10,
+								mc,  
+										 withSign(p.morale - p.lastMorale));
 						
 						PlanetStatistics ps = p.getStatistics();
 						
