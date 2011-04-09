@@ -65,8 +65,6 @@ public class World {
 	public final Map<String, Planet> planets = new LinkedHashMap<String, Planet>();
 	/** The list of available researches. */
 	public final Map<String, ResearchType> researches = new HashMap<String, ResearchType>();
-	/** Achievements. */
-	public final List<Achievement> achievements = new ArrayList<Achievement>();
 	/** The available crew-talks. */
 	public Talks talks;
 	/** The ship-walk definitions. */
@@ -85,6 +83,8 @@ public class World {
 	public Labels labels;
 	/** The resource locator. */
 	public ResourceLocator rl;
+	/** The global world statistics. */
+	public final WorldStatistics statistics = new WorldStatistics();
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -650,6 +650,9 @@ public class World {
 		sdf.setCalendar(time);
 		world.set("time", sdf.format(time.getTime()));
 		
+		statistics.save(world.add("statistics"));
+		
+		
 		for (Player p : players.values()) {
 			XElement xp = world.add("player");
 			xp.set("id", p.id);
@@ -660,6 +663,10 @@ public class World {
 			xp.set("research", p.currentResearch != null ? p.currentResearch.id : null);
 			xp.set("running", p.runningResearch != null ? p.runningResearch.id : null);
 			xp.set("mode", p.selectionMode);
+			
+			player.statistics.save(xp.add("statistics"));
+
+			
 			XElement xyesterday = xp.add("yesterday");
 			xyesterday.set("build", p.yesterday.buildCost);
 			xyesterday.set("repair", p.yesterday.repairCost);
@@ -730,7 +737,7 @@ public class World {
 			// save discovered planets only
 			sb = new StringBuilder();
 			for (Map.Entry<Planet, PlanetKnowledge> pk : p.planets.entrySet()) {
-				if (pk.getKey().owner != p && pk.getValue() == PlanetKnowledge.VISIBLE) {
+				if (pk.getKey().owner != p) {
 					if (sb.length() > 0) {
 						sb.append(", ");
 					}
@@ -806,6 +813,11 @@ public class World {
 		
 		player = players.get(xworld.get("player"));
 		
+		XElement stats = xworld.childElement("statistics");
+		if (stats != null) {
+			statistics.load(stats);
+		}
+		
 		for (XElement xplayer : xworld.childrenWithName("player")) {
 			Player p = players.get(xplayer.get("id"));
 			
@@ -837,6 +849,12 @@ public class World {
 			for (Map<ResearchType, Production> prod : p.production.values()) {
 				prod.clear();
 			}
+			
+			XElement pstats = xplayer.childElement("statistics");
+			if (pstats != null) {
+				p.statistics.load(pstats);
+			}
+
 			for (XElement xprod : xplayer.childrenWithName("production")) {
 				ResearchMainCategory cat = ResearchMainCategory.valueOf(xprod.get("category"));
 				Map<ResearchType, Production> prod = new LinkedHashMap<ResearchType, Production>();

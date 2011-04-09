@@ -74,13 +74,13 @@ public final class Radar {
 					if (ri > 0) {
 						for (Planet q : findPlanetsInRange(world, f.x, f.y, ri * 35)) {
 							if (ri == 1) {
-								updateKnowledge(player.planets, q, PlanetKnowledge.VISIBLE);
+								updateKnowledge(player, player.planets, q, PlanetKnowledge.VISIBLE);
 							} else
 							if (ri == 2) {
-								updateKnowledge(player.planets, q, PlanetKnowledge.OWNER);
+								updateKnowledge(player, player.planets, q, PlanetKnowledge.OWNER);
 							} else
 							if (ri == 3) {
-								updateKnowledge(player.planets, q, PlanetKnowledge.BUILDING);
+								updateKnowledge(player, player.planets, q, PlanetKnowledge.BUILDING);
 							}
 						}
 						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, ri * 35)) {
@@ -101,23 +101,23 @@ public final class Radar {
 		// traverse each planet
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
-				updateKnowledge(p.owner.planets, p, PlanetKnowledge.BUILDING);
+				updateKnowledge(p.owner, p.owner.planets, p, PlanetKnowledge.BUILDING);
 			}
 			for (PlanetInventoryItem pii : p.inventory) {
 				String radar = pii.type.get("radar");
 				if (radar != null) {
 					if ("1".equals(radar)) {
-						updateKnowledge(pii.owner.planets, p, PlanetKnowledge.NAME);
+						updateKnowledge(pii.owner, pii.owner.planets, p, PlanetKnowledge.NAME);
 					}
 					if ("2".equals(radar)) {
-						updateKnowledge(pii.owner.planets, p, PlanetKnowledge.OWNER);
+						updateKnowledge(pii.owner, pii.owner.planets, p, PlanetKnowledge.OWNER);
 					}
 					if ("3".equals(radar)) {
-						updateKnowledge(pii.owner.planets, p, PlanetKnowledge.BUILDING);
+						updateKnowledge(pii.owner, pii.owner.planets, p, PlanetKnowledge.BUILDING);
 					}
 					if ("4".equals(radar)) {
 						for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * 35)) {
-							updateKnowledge(pii.owner.planets, q, PlanetKnowledge.BUILDING);
+							updateKnowledge(pii.owner, pii.owner.planets, q, PlanetKnowledge.BUILDING);
 						}
 						for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * 35)) {
 							updateKnowledge(pii.owner.fleets, f, FleetKnowledge.FULL);
@@ -136,13 +136,13 @@ public final class Radar {
 			if (radar > 0) {
 				for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * 35)) {
 					if (radar == 3) {
-						updateKnowledge(p.owner.planets, q, PlanetKnowledge.BUILDING);
+						updateKnowledge(p.owner, p.owner.planets, q, PlanetKnowledge.BUILDING);
 					} else
 					if (radar == 2) {
-						updateKnowledge(p.owner.planets, q, PlanetKnowledge.OWNER);
+						updateKnowledge(p.owner, p.owner.planets, q, PlanetKnowledge.OWNER);
 					} else
 					if (radar == 1) {
-						updateKnowledge(p.owner.planets, q, PlanetKnowledge.VISIBLE);
+						updateKnowledge(p.owner, p.owner.planets, q, PlanetKnowledge.VISIBLE);
 					}
 				}
 				for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * 35)) {
@@ -161,12 +161,16 @@ public final class Radar {
 	}
 	/**
 	 * Update the planet knowledge by only increasing it in the given mapping.
+	 * @param player the player object
 	 * @param map the target knowledge map
 	 * @param p the planet
 	 * @param k the new knowledge
 	 */
-	static void updateKnowledge(Map<Planet, PlanetKnowledge> map, Planet p, PlanetKnowledge k) {
+	static void updateKnowledge(Player player, Map<Planet, PlanetKnowledge> map, Planet p, PlanetKnowledge k) {
 		PlanetKnowledge k0 = map.get(p);
+		if (k0 == null && p.owner != player) {
+			player.statistics.planetsDiscovered++;
+		}
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			map.put(p, k);
 		}

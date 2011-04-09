@@ -1736,6 +1736,15 @@ public class ResearchProductionScreen extends ScreenBase {
 		if (count != null && count > 0) {
 			player().inventory.put(player().currentResearch, count - 1);
 			player().money += player().currentResearch.productionCost / 2;
+			
+			player().statistics.moneySellIncome += player().currentResearch.productionCost / 2;
+			player().statistics.moneyIncome += player().currentResearch.productionCost / 2;
+			player().statistics.sellCount++;
+			
+			world().statistics.moneySellIncome += player().currentResearch.productionCost / 2;
+			world().statistics.moneyIncome += player().currentResearch.productionCost / 2;
+			world().statistics.sellCount++;
+
 		}
 	}
 	@Override

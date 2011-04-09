@@ -877,7 +877,7 @@
       <building id='Arcology' tech='garthog' x='-9' y='-36' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='ColonyHub' tech='garthog' x='-13' y='-38' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='garthog' x='-2' y='-42' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='NuclearPlant' tech='garthog' x='-13' y='-45' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='NuclearPlant' tech='garthog' x='-13' y='-45' enabled='true' repairing='false' energy='0' worker='0' level='4' build='' hp=''/>
       <building id='PhoodFactory' tech='garthog' x='-9' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='SpaceshipFactory' tech='garthog' x='-5' y='-36' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
     </buildings>
