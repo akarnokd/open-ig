@@ -310,14 +310,15 @@ public class Comment {
 	 */
 	@Override
 	public String toString() {
-		String foo = "Vendor: " + new String(vendor, 0, vendor.length - 1);
+		StringBuilder foo = new StringBuilder();
+		foo.append("Vendor: ");
+		foo.append(new String(vendor, 0, vendor.length - 1));
 		for (int i = 0; i < comments; i++) {
-			foo = foo
-					+ "\nComment: "
-					+ new String(userComments[i], 0,
-							userComments[i].length - 1);
+			foo.append("\nComment: ")
+			.append(new String(userComments[i], 0,
+							userComments[i].length - 1));
 		}
-		foo = foo + "\n";
-		return foo;
+		foo.append("\n");
+		return foo.toString();
 	}
 }

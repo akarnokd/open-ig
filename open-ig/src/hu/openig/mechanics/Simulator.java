@@ -79,9 +79,11 @@ public final class Simulator {
 	static boolean progressPlanet(Planet planet, boolean dayChange) {
 		boolean result = false;
 		float freeRepair = 0;
+		float freeRepairEff = 0;
 		for (Building b : planet.surface.buildings) {
 			if (b.getEfficiency() >= 0.5 && b.hasResource("repair")) {
 				freeRepair = Math.max(b.getResource("repair"), freeRepair);
+				freeRepairEff = Math.max(b.getEfficiency(), freeRepairEff);
 			}
 		}
 		final int repairCost = 20;
@@ -100,7 +102,7 @@ public final class Simulator {
 			} else
 			if (b.repairing) {
 				if (b.hitpoints * 100 / b.type.hitpoints < freeRepair) {
-					b.hitpoints += repairAmount;
+					b.hitpoints += repairAmount * freeRepairEff;
 					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 					result = true;
 				} else {
@@ -114,8 +116,8 @@ public final class Simulator {
 				}
 			} else
 			if (b.isDamaged()) {
-				if (b.hitpoints * 100 / b.type.hitpoints < freeRepair) {
-					b.hitpoints += repairAmount;
+				if (b.hitpoints * 100f / b.type.hitpoints < freeRepair) {
+					b.hitpoints += repairAmount * freeRepairEff;
 					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 					result = true;
 				}
@@ -143,7 +145,7 @@ public final class Simulator {
 			planet.lastPopulation = planet.population;
 			
 			// FIXME morale computation
-			float newMorale = planet.morale + moraleBoost;
+			float newMorale = 50 + moraleBoost;
 			if (planet.tax == TaxLevel.NONE) {
 				newMorale += 5;
 			} else
