@@ -91,8 +91,10 @@ public class TechnologySlot extends UIComponent {
 				}
 			}
 			if (available) {
-				commons.text().paintTo(g2, target.x + 5, target.y + 56, 10, 
-						selectedTextColor, Integer.toString(inventory));
+				if (inventory >= 0) {
+					commons.text().paintTo(g2, target.x + 5, target.y + 56, 10, 
+							selectedTextColor, Integer.toString(inventory));
+				}
 			} else {
 				if (researching) {
 					BufferedImage[] rolling = commons.research().rolling;

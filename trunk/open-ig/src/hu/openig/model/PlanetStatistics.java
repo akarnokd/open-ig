@@ -66,6 +66,10 @@ public class PlanetStatistics {
 	public final Map<PlanetProblems, PlanetProblems> problems = new LinkedHashMap<PlanetProblems, PlanetProblems>();
 	/** The current list of warnings. */
 	public final Map<PlanetProblems, PlanetProblems> warnings = new LinkedHashMap<PlanetProblems, PlanetProblems>();
+	/** Free repair percent. */
+	public float freeRepair = 0;
+	/** Free repair efficiency. */
+	public float freeRepairEff = 0;
 	/**
 	 * Add the other planet statistics to this one.
 	 * @param other the other statistics

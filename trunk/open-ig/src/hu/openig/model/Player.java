@@ -180,6 +180,14 @@ public class Player {
 		}
 	};
 	/**
+	 * Test if the given research is available.
+	 * @param rt the research
+	 * @return true if available
+	 */
+	public boolean isAvailable(ResearchType rt) {
+		return availableResearch.contains(rt);
+	}
+	/**
 	 * @return the number of built buildings per type
 	 */
 	public Map<BuildingType, Integer> countBuildings() {
@@ -194,23 +202,21 @@ public class Player {
 		}
 		return result;
 	}
-	/** @return the global planet statistics. */
-	public PlanetStatistics getPlanetStatistics() {
+	/** 
+	 * @param map the optional map per planet.
+	 * @return the global planet statistics. */
+	public PlanetStatistics getPlanetStatistics(Map<Planet, PlanetStatistics> map) {
 		PlanetStatistics ps = new PlanetStatistics();
 		for (Planet p : planets.keySet()) {
 			if (p.owner == this) {
-				ps.add(p.getStatistics());
+				PlanetStatistics ps0 = p.getStatistics();
+				if (map != null) {
+					map.put(p, ps0);
+				}
+				ps.add(ps0);
 			}
 		}
 		return ps;
-	}
-	/**
-	 * Test if the given research is available.
-	 * @param rt the research
-	 * @return true if available
-	 */
-	public boolean isAvailable(ResearchType rt) {
-		return availableResearch.contains(rt);
 	}
 	/**
 	 * Is there enough labs to research the technology? Does
@@ -218,50 +224,40 @@ public class Player {
 	 * @param rt the technology
 	 * @return true if there are at least the required lab
 	 */
-	public boolean hasEnoughLabs(ResearchType rt) {
-		PlanetStatistics ps = getPlanetStatistics();
+	public LabLevel hasEnoughLabs(ResearchType rt) {
+		PlanetStatistics ps = getPlanetStatistics(null);
 		if (ps.civilLab < rt.civilLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
 		if (ps.mechLab < rt.mechLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
 		if (ps.compLab < rt.compLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
 		if (ps.aiLab < rt.aiLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
 		if (ps.milLab < rt.milLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
-		
-		return true;
-	}
-	/**
-	 * Is there enough active labs to research the technology?
-	 * @param rt the technology
-	 * @return true if there are at least the required lab
-	 */
-	public boolean hasEnoughActiveLabs(ResearchType rt) {
-		PlanetStatistics ps = getPlanetStatistics();
 		if (ps.civilLabActive < rt.civilLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
 		if (ps.mechLabActive < rt.mechLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
 		if (ps.compLabActive < rt.compLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
 		if (ps.aiLabActive < rt.aiLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
 		if (ps.milLabActive < rt.milLab) {
-			return false;
+			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
 		
-		return true;
+		return LabLevel.ENOUGH;
 	}
 	/**
 	 * @param type the research type 

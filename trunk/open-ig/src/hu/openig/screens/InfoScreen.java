@@ -2315,7 +2315,7 @@ public class InfoScreen extends ScreenBase {
 			researchLabs.get(3).text(Integer.toString(rt.aiLab));
 			researchLabs.get(4).text(Integer.toString(rt.milLab));
 			
-			PlanetStatistics ps = player().getPlanetStatistics();
+			PlanetStatistics ps = player().getPlanetStatistics(null);
 
 			researchAvailable.get(0).text(Integer.toString(ps.civilLabActive));
 			researchAvailable.get(0).color(

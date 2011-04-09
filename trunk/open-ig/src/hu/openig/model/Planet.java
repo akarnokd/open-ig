@@ -120,6 +120,7 @@ public class Planet implements Named, Owned {
 		int stadiumCount = 0;
 		boolean buildup = false;
 		boolean damage = false;
+		
 		for (Building b : surface.buildings) {
 			if (b.getEfficiency() >= 0.5) {
 				if (b.hasResource("house")) {
@@ -163,6 +164,10 @@ public class Planet implements Named, Owned {
 				}
 				if (b.type.id.equals("Stadium")) {
 					stadiumCount++;
+				}
+				if (b.hasResource("repair")) {
+					result.freeRepair = Math.max(b.getResource("repair"), result.freeRepair);
+					result.freeRepairEff = Math.max(b.getEfficiency(), result.freeRepairEff);
 				}
 			}
 			if (b.hasResource("spaceship")) {
@@ -340,6 +345,9 @@ public class Planet implements Named, Owned {
 			if (pii.owner == owner) {
 				pit.remove();
 			}
+		}
+		if (owner != null) {
+			owner.planets.remove(this);
 		}
 		owner = null;
 		race = null;

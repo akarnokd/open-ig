@@ -10,12 +10,14 @@ package hu.openig.core;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A tiled object.
  * @author akarnokd, 2010.01.07.
  */
-public class Tile {
+public class Tile0 {
 	/** The tile width, points top-right, e.g. in &lt;> the length of the //. */
 	public final int width;
 	/** The tile height, points bottom-right, e.e. in &lt;> the length of the \\ sides. */
@@ -32,10 +34,6 @@ public class Tile {
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
 	protected final float lightThreshold = 0.65f;
-//	/** The cached image. */
-//	private final BufferedImage cached;
-	/** The cached alpha level. */
-	private float cachedAlpha = -1;
 	/** The shared working buffeer. Therefore, the alpha adjustments should be done in a single thread! */
 	private static ThreadLocal<int[][]> work = new ThreadLocal<int[][]>() {
 		@Override
@@ -47,6 +45,8 @@ public class Tile {
 	};
 	/** The strip cache. */
 	private final BufferedImage[] stripCache;
+	/** The alpha cache for this tile. */
+	private final Map<Integer, BufferedImage[]> alphaCache = new HashMap<Integer, BufferedImage[]>();
 	/**
 	 * Constructor. Sets the fields.
 	 * @param width the width in top-right angle.
@@ -54,7 +54,7 @@ public class Tile {
 	 * @param image the entire tile image.
 	 * @param lightMap the image for lights turned on
 	 */
-	public Tile(int width, int height, BufferedImage image, BufferedImage lightMap) {
+	public Tile0(int width, int height, BufferedImage image, BufferedImage lightMap) {
 		this.width = width;
 		this.height = height;
 		this.imageWidth = image.getWidth();
@@ -99,7 +99,7 @@ public class Tile {
 	 * Copy constructor.
 	 * @param other the other tile
 	 */
-	protected Tile(Tile other) {
+	protected Tile0(Tile0 other) {
 		this.width = other.width;
 		this.height = other.height;
 		this.image = other.image;
@@ -114,8 +114,8 @@ public class Tile {
 	 * Create a copy of this tile.
 	 * @return the tile
 	 */
-	public Tile copy() {
-		return new Tile(this);
+	public Tile0 copy() {
+		return new Tile0(this);
 	}
 	/**
 	 * Get a strip of the cached image.
@@ -123,10 +123,15 @@ public class Tile {
 	 * @return the partial image
 	 */
 	public BufferedImage getStrip(int stripIndex) {
-		if (alpha - cachedAlpha >= 0.001 || alpha - cachedAlpha <= -0.001) {
+		int a = (int)((alpha - 0.35f) / 0.7 * 32);
+		BufferedImage[] ac = alphaCache.get(a);
+		if (ac == null) {
+			prepareStripCache();
 			computeImageWithLights();
+			alphaCache.put(a, stripCache.clone());
+			ac = stripCache;
 		}
-		return stripCache[stripIndex];
+		return ac[stripIndex];
 	}
 	/**
 	 * Create an alpha blent image from the reference tile image.
@@ -136,7 +141,6 @@ public class Tile {
 		applyLightMap();
 		// compute strips
 		createStrips();
-		cachedAlpha = alpha;
 	}
 	/**
 	 * Create the rendering helper strips of the image.
@@ -147,7 +151,7 @@ public class Tile {
 			stripCache[0].setRGB(0, 0, Math.min(57, imageWidth), imageHeight, w, 0, imageWidth);
 		} else {
 			for (int stripIndex = 0; stripIndex < width + height - 1; stripIndex++) {
-				int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
+				int x0 = stripIndex >= height ? Tile0.toScreenX(stripIndex - height + 1, -height + 1) : Tile0.toScreenX(0, -stripIndex);
 				int w0 = 57;
 				if (stripIndex < height - 1) {
 					w0 = 28;
@@ -186,7 +190,7 @@ public class Tile {
 	private void prepareStripCache() {
 		// compute strips
 		for (int stripIndex = 0; stripIndex < width + height - 1; stripIndex++) {
-			int x0 = stripIndex >= height ? Tile.toScreenX(stripIndex - height + 1, -height + 1) : Tile.toScreenX(0, -stripIndex);
+			int x0 = stripIndex >= height ? Tile0.toScreenX(stripIndex - height + 1, -height + 1) : Tile0.toScreenX(0, -stripIndex);
 			int w0 = 57;
 			if (stripIndex < height - 1) {
 				w0 = 28;

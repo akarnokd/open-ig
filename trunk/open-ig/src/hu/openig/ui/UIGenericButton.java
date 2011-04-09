@@ -153,8 +153,6 @@ public class UIGenericButton extends UIComponent {
 			down = false;
 			holdTimer.stop();
 			return true;
-		case ENTER:
-			return true;
 		default:
 			return false;
 		}

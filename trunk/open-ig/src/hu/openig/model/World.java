@@ -411,6 +411,10 @@ public class World {
 		
 		planets.put(p.id, p);
 
+		if (p.owner != null) {
+			p.owner.planets.put(p, PlanetKnowledge.BUILDING);
+		}
+		
 //		// FIXME for testing the radar/info
 //		if (p.owner != null) {
 //			p.owner.planets.put(p, PlanetKnowledge.BUILDING);
@@ -953,6 +957,10 @@ public class World {
 			}
 
 			p.surface.setBuildings(buildingModel, xplanet);
+			
+			if (p.owner != null) {
+				p.owner.planets.put(p, PlanetKnowledge.BUILDING);
+			}
 			
 			allPlanets.remove(p.id);
 		}

@@ -166,7 +166,7 @@ public class UIImageButton extends UIComponent {
 			holdTimer.stop();
 			return true;
 		case ENTER:
-			return true;
+			return hovered != normal;
 		default:
 			return false;
 		}

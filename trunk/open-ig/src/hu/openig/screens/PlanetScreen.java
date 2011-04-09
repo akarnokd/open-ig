@@ -24,6 +24,7 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
+import hu.openig.model.SurfaceFeature;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.HorizontalAlignment;
@@ -40,6 +41,7 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.ImageUtils;
+import hu.openig.utils.Parallels;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -58,8 +60,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 /**
  * The planet surface rendering screen.
@@ -258,8 +262,8 @@ public class PlanetScreen extends ScreenBase {
 			}
 		});
 		if (surface() != null) {
-			render.offsetX = -(surface().boundingRectangle.width - width) / 2;
-			render.offsetY = -(surface().boundingRectangle.height - height) / 2;
+			render.offsetX = -(int)((surface().boundingRectangle.width * render.scale - width) / 2);
+			render.offsetY = -(int)((surface().boundingRectangle.height * render.scale - height) / 2);
 		}
 		focused = render;
 //		importEarth(); // FIXME for testing purposes only
@@ -586,7 +590,6 @@ public class PlanetScreen extends ScreenBase {
 		}
 		@Override
 		public void draw(Graphics2D g2) {
-			
 			PlanetSurface surface = surface();
 			if (surface == null) {
 				return;
@@ -619,7 +622,12 @@ public class PlanetScreen extends ScreenBase {
 				alpha = (1f - 0.65f * (time - 6 * 16) / 36);
 			}
 			
-			surface.setAlpha(alpha);
+			if (Math.abs(surface.alpha - alpha) >= 0.001) {
+				surface.setAlpha(alpha);
+//				prepareTilesAsync(surface);
+			}
+			
+			
 			
 			RenderTools.setInterpolation(g2, true);
 			
@@ -638,12 +646,11 @@ public class PlanetScreen extends ScreenBase {
 			int y0 = surface.baseYOffset;
 
 			Rectangle br = surface.boundingRectangle;
-//			g2.setColor(new Color(128, 0, 0));
-//			g2.fillRect(br.x, br.y, br.width, br.height);
 			g2.setColor(Color.YELLOW);
 			g2.drawRect(br.x, br.y, br.width, br.height);
 			
 			
+//			long timestamp = System.nanoTime();
 			BufferedImage empty = areaEmpty.getStrip(0);
 			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
 			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
@@ -671,6 +678,7 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 			}
+//			System.out.println("draw: " + (1E9 / (System.nanoTime() - timestamp)));
 			if (placementHints) {
 				for (Location loc : surface.basemap.keySet()) {
 					if (!canPlaceBuilding(loc.x, loc.y)) {
@@ -690,11 +698,6 @@ public class PlanetScreen extends ScreenBase {
 						}
 					}
 				}
-//				if (current != null) {
-//					int x = x0 + Tile.toScreenX(current.x, current.y);
-//					int y = y0 + Tile.toScreenY(current.x, current.y);
-//					g2.drawImage(areaCurrent.getStrip(0), x, y, null);
-//				}
 			}
 			if (placementMode) {
 				if (placementRectangle.width > 0) {
@@ -853,9 +856,29 @@ public class PlanetScreen extends ScreenBase {
 				g2.setColor(Color.BLACK);
 				g2.fillRect(prev.x - this.x - 1, prev.y - this.y - 1, prev.width + next.width + 4, prev.height + 2);
 			}
+			
 		}
 		
 	}
+	/**
+	 * Prepare the surface tiles in parallel.
+	 * @param surface the target planet surface
+	 */
+	void prepareTilesAsync(PlanetSurface surface) {
+		long time = System.nanoTime();
+		List<Future<?>> futures = new LinkedList<Future<?>>();
+		for (final SurfaceFeature sf : surface.features) {
+			futures.add(commons.pool.submit(new Runnable() {
+				@Override
+				public void run() {
+					sf.tile.getStrip(0);
+				}
+			}));
+		}
+		Parallels.waitForAll(futures);
+		System.out.println("PrepareTilesAsync: " + (1E9 / (System.nanoTime() - time)));
+	}
+
 	/**
 	 * The radar renderer component.
 	 * @author akarnokd, Mar 27, 2011

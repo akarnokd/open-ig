@@ -23,6 +23,7 @@ import hu.openig.model.World;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -48,20 +49,21 @@ public final class Simulator {
 
 		boolean result = false;
 		
+		Map<Planet, PlanetStatistics> planetStats = new HashMap<Planet, PlanetStatistics>();
 		for (Player player : world.players.values()) {
+			PlanetStatistics all = player.getPlanetStatistics(planetStats);
+			
 			if (day0 != day1) {
 				player.yesterday.clear();
 				player.yesterday.assign(player.today);
 				player.today.clear();
 			}
-			result |= progressResearch(player) && player == world.player;
-		}
-		for (Player player : world.players.values()) {
-			result |= progressProduction(player) && player == world.player;
+			result |= progressResearch(player, all) && player == world.player;
+			result |= progressProduction(player, all) && player == world.player;
 		}
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
-				result |= progressPlanet(p, day0 != day1) && p == world.player.currentPlanet;
+				result |= progressPlanet(p, day0 != day1, planetStats.get(p)) && p == world.player.currentPlanet;
 			}
 		}
 //		return result;
@@ -74,24 +76,17 @@ public final class Simulator {
 	 * Make progress on the buildings of the planet.
 	 * @param planet the planet
 	 * @param dayChange consider day change
+	 * @param ps the planet statistics
 	 * @return true if repaint will be needed 
 	 */
-	static boolean progressPlanet(Planet planet, boolean dayChange) {
+	static boolean progressPlanet(Planet planet, boolean dayChange,
+			PlanetStatistics ps) {
 		boolean result = false;
-		float freeRepair = 0;
-		float freeRepairEff = 0;
-		for (Building b : planet.surface.buildings) {
-			if (b.getEfficiency() >= 0.5 && b.hasResource("repair")) {
-				freeRepair = Math.max(b.getResource("repair"), freeRepair);
-				freeRepairEff = Math.max(b.getEfficiency(), freeRepairEff);
-			}
-		}
 		final int repairCost = 20;
 		final int repairAmount = 50;
 		int tradeIncome = 0;
 		float multiply = 1.0f;
 		float moraleBoost = 0;
-		PlanetStatistics ps = planet.getStatistics();
 		for (Building b : planet.surface.buildings) {
 			if (b.isConstructing()) {
 				b.buildProgress += 200;
@@ -101,8 +96,8 @@ public final class Simulator {
 				result = true;
 			} else
 			if (b.repairing) {
-				if (b.hitpoints * 100 / b.type.hitpoints < freeRepair) {
-					b.hitpoints += repairAmount * freeRepairEff;
+				if (b.hitpoints * 100 / b.type.hitpoints < ps.freeRepair) {
+					b.hitpoints += repairAmount * ps.freeRepairEff;
 					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 					result = true;
 				} else {
@@ -116,8 +111,8 @@ public final class Simulator {
 				}
 			} else
 			if (b.isDamaged()) {
-				if (b.hitpoints * 100f / b.type.hitpoints < freeRepair) {
-					b.hitpoints += repairAmount * freeRepairEff;
+				if (b.hitpoints * 100f / b.type.hitpoints < ps.freeRepair) {
+					b.hitpoints += repairAmount * ps.freeRepairEff;
 					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 					result = true;
 				}
@@ -202,13 +197,14 @@ public final class Simulator {
 	}
 	/**
 	 * Make progress on the active research if any.
+	 * @param all the total planet statistics of the player
 	 * @return true if repaint will be needed 
 	 * @param player the player
 	 */
-	static boolean progressResearch(Player player) {
+	static boolean progressResearch(Player player, PlanetStatistics all) {
 		if (player.runningResearch != null) {
 			Research rs = player.research.get(player.runningResearch);
-			int maxpc = rs.getResearchMaxPercent(player.getPlanetStatistics());
+			int maxpc = rs.getResearchMaxPercent(all);
 			// test for money
 			// test for max percentage
 			if (rs.remainingMoney > 0) {
@@ -241,21 +237,21 @@ public final class Simulator {
 	/**
 	 * Perform the next step of the production process.
 	 * @param player the player
+	 * @param all the all planet statistics of the player
 	 * @return need for repaint?
 	 */
-	static boolean progressProduction(Player player) {
+	static boolean progressProduction(Player player, PlanetStatistics all) {
 		boolean result = false;
-		PlanetStatistics ps = player.getPlanetStatistics();
 		for (Map.Entry<ResearchMainCategory, Map<ResearchType, Production>> prs : player.production.entrySet()) {
 			int capacity = 0;
 			if (prs.getKey() == ResearchMainCategory.SPACESHIPS) {
-				capacity = ps.spaceshipActive;
+				capacity = all.spaceshipActive;
 			} else
 			if (prs.getKey() == ResearchMainCategory.WEAPONS) {
-				capacity = ps.weaponsActive;
+				capacity = all.weaponsActive;
 			} else
 			if (prs.getKey() == ResearchMainCategory.EQUIPMENT) {
-				capacity = ps.equipmentActive;
+				capacity = all.equipmentActive;
 			}
 			int prioritySum = 0;
 			for (Production pr : prs.getValue().values()) {
