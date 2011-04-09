@@ -16,6 +16,7 @@ import hu.openig.ui.UIImageFill;
 import hu.openig.ui.UIImageTabButton2;
 import hu.openig.ui.UILabel;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.Closeable;
 import java.util.GregorianCalendar;
@@ -161,6 +162,9 @@ public class StatusbarScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, width, 20);
+		g2.fillRect(0, height - 18, width, 18);
 		bottom.y = height - bottomY;
 		update();
 		super.draw(g2);

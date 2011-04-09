@@ -311,12 +311,19 @@ public class PlanetSurface {
 	public void setAlpha(float alpha) {
 		if (Math.abs(alpha - this.alpha) >= 0.001) {
 			this.alpha = alpha;
-			for (SurfaceEntity sf : basemap.values()) {
+			for (SurfaceFeature sf : features) {
 				sf.tile.alpha = alpha;
 			}
 			for (SurfaceEntity se : buildingmap.values()) {
-				se.tile.alpha = alpha;
+				if (se.building != null) {
+					se.building.tileset.damaged.alpha = alpha;
+					se.building.tileset.nolight.alpha = alpha;
+					se.building.tileset.normal.alpha = alpha;
+				} else {
+					se.tile.alpha = alpha;
+				}
 			}
+			
 		}
 	}
 	/**

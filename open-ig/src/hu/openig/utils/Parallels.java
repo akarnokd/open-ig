@@ -103,4 +103,19 @@ public final class Parallels {
 		}, "Waiter for " + futures.size() + " futures to finish");
 		waiter.start();
 	}
+	/**
+	 * Wait for all futures to complete and silently drop the exceptions.
+	 * @param futures the iterable of futures
+	 */
+	public static void waitForAll(final Iterable<Future<?>> futures) {
+		for (Future<?> f : futures) {
+			try {
+				f.get();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

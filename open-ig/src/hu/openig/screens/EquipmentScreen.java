@@ -9,6 +9,8 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.model.LabLevel;
+import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
@@ -506,6 +508,8 @@ public class EquipmentScreen extends ScreenBase {
 //			r.draw(g2);
 //		}
 		
+		updateSlots();
+		
 		if (innerEquipmentVisible) {
 			g2.setColor(new Color(0xFF4D7DB6));
 			g2.drawRect(innerEquipment.x, innerEquipment.y, innerEquipment.width - 1, innerEquipment.height - 1);
@@ -617,10 +621,39 @@ public class EquipmentScreen extends ScreenBase {
 		stations.down = cat == ResearchSubCategory.SPACESHIPS_STATIONS;
 		tanks.down = cat == ResearchSubCategory.WEAPONS_TANKS;
 		vehicles.down = cat == ResearchSubCategory.WEAPONS_VEHICLES;
-		
+		updateSlots();
+	}
+	/** @return The current display category. */
+	ResearchSubCategory getCurrentCategory() {
+		if (battleships.down) {
+			return ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
+		}
+		if (cruisers.down) {
+			return ResearchSubCategory.SPACESHIPS_CRUISERS;
+		}
+		if (fighters.down) {
+			return ResearchSubCategory.SPACESHIPS_FIGHTERS;
+		}
+		if (stations.down) {
+			return ResearchSubCategory.SPACESHIPS_STATIONS;
+		}
+		if (tanks.down) {
+			return ResearchSubCategory.WEAPONS_TANKS;
+		}
+		if (vehicles.down) {
+			return ResearchSubCategory.WEAPONS_VEHICLES;
+		}
+		if (player().currentResearch != null) {
+			return player().currentResearch.category;
+		}
+		return null;
+	}
+	/** Update the slot display. */
+	void updateSlots() {
 		for (TechnologySlot slot : slots) {
 			slot.visible(false);
 		}
+		ResearchSubCategory cat = getCurrentCategory();
 		for (final ResearchType rt : world().researches.values()) {
 			if (rt.category == cat) {
 				if (world().canDisplayResearch(rt)) {
@@ -630,7 +663,6 @@ public class EquipmentScreen extends ScreenBase {
 				}
 			}
 		}
-
 	}
 	/**
 	 * Update the slot belonging to the specified technology.
@@ -640,8 +672,12 @@ public class EquipmentScreen extends ScreenBase {
 	public TechnologySlot updateSlot(final ResearchType rt) {
 		final TechnologySlot slot = slots.get(rt.index);
 		slot.visible(true);
-		Integer inv = player().inventory.get(rt);
-		slot.inventory = inv != null ? inv.intValue() : 0;
+		if (rt.category.main != ResearchMainCategory.BUILDINS) {
+			Integer inv = player().inventory.get(rt);
+			slot.inventory = inv != null ? inv.intValue() : 0;
+		} else {
+			slot.inventory = -1;
+		}
 		slot.name = rt.name;
 		slot.selected = player().currentResearch == rt;
 		slot.available = player().isAvailable(rt);
@@ -651,8 +687,9 @@ public class EquipmentScreen extends ScreenBase {
 			if (slot.researching) {
 				slot.percent =  player().research.get(rt).getPercent() / 100.0f;
 			}
-			slot.missingActiveLab = !player().hasEnoughActiveLabs(rt);
-			slot.missingLab = !player().hasEnoughLabs(rt);
+			LabLevel llvl = player().hasEnoughLabs(rt);
+			slot.missingActiveLab = llvl == LabLevel.NOT_ENOUGH_ACTIVE;
+			slot.missingLab = llvl == LabLevel.NOT_ENOUGH_TOTAL;
 			slot.notResearchable = !world().canResearch(rt);
 			slot.cost = -1;
 		} else {

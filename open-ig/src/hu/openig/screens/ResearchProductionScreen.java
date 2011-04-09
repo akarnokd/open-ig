@@ -10,6 +10,7 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Action1;
+import hu.openig.model.LabLevel;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
@@ -872,7 +873,8 @@ public class ResearchProductionScreen extends ScreenBase {
 			setMode(Screens.RESEARCH);
 		}
 		video.image(null);
-		update();
+
+		selectCurrentOrFirst();
 		if (player().currentResearch != null) {
 			displayCategory(player().currentResearch.category);
 		}
@@ -903,9 +905,11 @@ public class ResearchProductionScreen extends ScreenBase {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.research().basePanel, base.x, base.y, null);
 		
-		update();
-		updateActive();
-		updateProduction();
+		PlanetStatistics all = player().getPlanetStatistics(null);
+		
+		update(all);
+		updateActive(all);
+		updateProduction(all);
 		
 		super.draw(g2);
 		
@@ -937,24 +941,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	void setMode(Screens m) {
 		this.mode = m;
 		setUIVisibility();
-		// adjust the visibility further
-		switch (mode) {
-		case PRODUCTION:
-			update();
-			if (player().currentResearch != null) {
-				update();
-				displayResearch(player().currentResearch);
-			}
-			break;
-		case RESEARCH:
-			update();
-			if (player().currentResearch != null) {
-				update();
-				displayResearch(player().currentResearch);
-			}
-			break;
-		default:
-		}
+		displayResearch(selectCurrentOrFirst());
 	}
 	/**
 	 * Set the visibility of UI components based on their annotation.
@@ -1192,8 +1179,11 @@ public class ResearchProductionScreen extends ScreenBase {
 	public Screens screen() {
 		return mode;
 	}
-	/** Display values based on the current technology. */
-	public void update() {
+	/**
+	 * Select the first research if the current is null.
+	 * @return the research
+	 */
+	public ResearchType selectCurrentOrFirst() {
 		ResearchType rt = player().currentResearch;
 		if (rt == null) {
 			List<ResearchType> rts = world().getResearch();
@@ -1205,6 +1195,14 @@ public class ResearchProductionScreen extends ScreenBase {
 				playAnim(rt);
 			}
 		}
+		return rt;
+	}
+	/** 
+	 * Display values based on the current technology.
+	 * @param ps the all planet statistics. 
+	 */
+	public void update(PlanetStatistics ps) {
+		ResearchType rt = selectCurrentOrFirst();
 		final ResearchType rt1 = rt;
 		if (rt != null) {
 			if (rt.prerequisites.size() > 0) {
@@ -1258,8 +1256,6 @@ public class ResearchProductionScreen extends ScreenBase {
 			selectedAILabValue.text("" + rt.aiLab);
 			selectedMilLabValue.text("" + rt.milLab);
 			
-			PlanetStatistics ps = player().getPlanetStatistics();
-
 			selectedCivilLabValue.color(labColor(ps.civilLab, ps.civilLabActive, rt.civilLab));
 			selectedMechLabValue.color(labColor(ps.mechLab, ps.mechLabActive, rt.mechLab));
 			selectedCompLabValue.color(labColor(ps.compLab, ps.compLabActive, rt.compLab));
@@ -1292,16 +1288,36 @@ public class ResearchProductionScreen extends ScreenBase {
 						}
 						selectedCompleteValue.text((int)(rs.getPercent()) + "%");
 						selectedTimeValue.text("" + rs.getTime());
-						selectedTimeValue.color(
-								player().hasEnoughActiveLabs(rs.type) ? TextRenderer.GREEN 
-										: (player().hasEnoughLabs(rs.type) ? TextRenderer.YELLOW : TextRenderer.RED));
+						
+						switch (player().hasEnoughLabs(rs.type)) {
+						case ENOUGH:
+							selectedTimeValue.color(TextRenderer.GREEN);
+							break;
+						case NOT_ENOUGH_ACTIVE:
+							selectedTimeValue.color(TextRenderer.YELLOW);
+							break;
+						case NOT_ENOUGH_TOTAL:
+							selectedTimeValue.color(TextRenderer.RED);
+							break;
+						default:
+						}
 					} else {
 						selectedTechStatusValue.text(get("researchinfo.progress.can"));
 						selectedCompleteValue.text("----");
 						selectedTimeValue.text("" + (rt.researchCost / 20));
-						selectedTimeValue.color(
-								player().hasEnoughActiveLabs(rt) ? TextRenderer.GREEN 
-										: (player().hasEnoughLabs(rt) ? TextRenderer.YELLOW : TextRenderer.RED));
+						
+						switch (player().hasEnoughLabs(rt)) {
+						case ENOUGH:
+							selectedTimeValue.color(TextRenderer.GREEN);
+							break;
+						case NOT_ENOUGH_ACTIVE:
+							selectedTimeValue.color(TextRenderer.YELLOW);
+							break;
+						case NOT_ENOUGH_TOTAL:
+							selectedTimeValue.color(TextRenderer.RED);
+							break;
+						default:
+						}
 					}
 				} else {
 					selectedTechStatusValue.text(get("researchinfo.progress.cant"));
@@ -1316,8 +1332,11 @@ public class ResearchProductionScreen extends ScreenBase {
 					&& player().runningResearch != rt 
 					&& world().canResearch(rt));
 			
-			if (getCurrentCategory() == rt.category) {
-				updateSlot(rt);
+			ResearchSubCategory cat = getCurrentCategory();
+			for (ResearchType rt0 : world().researches.values()) {
+				if (rt0.category == cat && world().canDisplayResearch(rt0)) {
+					updateSlot(rt0);
+				}
 			}
 		} else {
 			for (TechnologySlot slot : slots) {
@@ -1396,8 +1415,12 @@ public class ResearchProductionScreen extends ScreenBase {
 	public TechnologySlot updateSlot(final ResearchType rt) {
 		final TechnologySlot slot = slots.get(rt.index);
 		slot.visible(true);
-		Integer inv = player().inventory.get(rt);
-		slot.inventory = inv != null ? inv.intValue() : 0;
+		if (rt.category.main != ResearchMainCategory.BUILDINS) {
+			Integer inv = player().inventory.get(rt);
+			slot.inventory = inv != null ? inv.intValue() : 0;
+		} else {
+			slot.inventory = -1;
+		}
 		slot.name = rt.name;
 		slot.selected = player().currentResearch == rt;
 		slot.available = player().isAvailable(rt);
@@ -1407,8 +1430,9 @@ public class ResearchProductionScreen extends ScreenBase {
 			if (slot.researching) {
 				slot.percent =  player().research.get(rt).getPercent() / 100.0f;
 			}
-			slot.missingActiveLab = !player().hasEnoughActiveLabs(rt);
-			slot.missingLab = !player().hasEnoughLabs(rt);
+			LabLevel llvl = player().hasEnoughLabs(rt);
+			slot.missingActiveLab = llvl == LabLevel.NOT_ENOUGH_ACTIVE;
+			slot.missingLab = llvl == LabLevel.NOT_ENOUGH_TOTAL;
 			slot.notResearchable = !world().canResearch(rt);
 			slot.cost = mode == Screens.PRODUCTION ? -1 : rt.researchCost / 2;
 		} else {
@@ -1487,10 +1511,12 @@ public class ResearchProductionScreen extends ScreenBase {
 			}
 		}
 	}
-	/** Update values for the active research. */
-	void updateActive() {
+	/** 
+	 * Update values for the active research. 
+	 * @param ps the all planet statistics
+	 */
+	void updateActive(PlanetStatistics ps) {
 		ResearchType rt = player().runningResearch;
-		PlanetStatistics ps = player().getPlanetStatistics();
 		
 		activeCivilLabValue.text("" + ps.civilLabActive);
 		activeMechLabValue.text("" + ps.mechLabActive);
@@ -1548,7 +1574,6 @@ public class ResearchProductionScreen extends ScreenBase {
 			displayCategory(rt.category);
 		}
 		rs.state = ResearchState.RUNNING;
-		update();
 	}
 	/** @return the current main category. */
 	ResearchMainCategory getCurrentMainCategory() {
@@ -1559,9 +1584,11 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 		return null;
 	}
-	/** Update the production lines. */
-	void updateProduction() {
-		PlanetStatistics ps = player().getPlanetStatistics();
+	/** 
+	 * Update the production lines. 
+	 * @param ps the planet statistics.
+	 */
+	void updateProduction(PlanetStatistics ps) {
 
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);

@@ -117,7 +117,7 @@ public class UIImageTabButton extends UIComponent {
 		case LEAVE:
 			return true;
 		case ENTER:
-			return true;
+			return hovered != normal;
 		default:
 			return false;
 		}

@@ -15,6 +15,7 @@ import hu.openig.core.ResourceLocator;
 import hu.openig.model.Building;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Screens;
 import hu.openig.model.World;
 import hu.openig.ui.UIMouse;
@@ -56,6 +57,7 @@ import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
 /**
@@ -177,6 +179,8 @@ public class GameWindow extends JFrame implements GameControls {
 		this.rl = commons.rl;
 		this.surface = new ScreenRenderer();
 		
+		RepaintManager.currentManager(this).setDoubleBufferingEnabled(true);
+		
 		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
 		c.setLayout(gl);
@@ -290,10 +294,10 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void switchLanguage(String newLanguage) {
 		commons.reinit(newLanguage);
-		surface.repaint();
 		for (ScreenBase sb : screens) {
 			sb.initialize(commons);
 		}
+		repaintInner();
 	}
 	/** Initialize the various screen renderers. */
 	protected void initScreens() {
@@ -421,7 +425,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if (secondary != null) {
 				secondary.onLeave();
 				secondary = null;
-				surface.repaint();
+				repaintInner();
 			}
 			if (primary == null || primary.screen() != screen) {
 				if (primary != null) {
@@ -431,7 +435,7 @@ public class GameWindow extends JFrame implements GameControls {
 				if (primary != null) {
 					primary.resize();
 					primary.onEnter(mode);
-					surface.repaint();
+					repaintInner();
 				}
 			}
 		} else {
@@ -443,7 +447,7 @@ public class GameWindow extends JFrame implements GameControls {
 				if (secondary != null) {
 					secondary.resize();
 					secondary.onEnter(mode);
-					surface.repaint();
+					repaintInner();
 				}
 			}
 		}
@@ -465,7 +469,7 @@ public class GameWindow extends JFrame implements GameControls {
 			movieVisible = true;
 			movie.onEnter(null);
 			doMoveMouseAgain();
-			surface.repaint();
+			repaintInner();
 		}
 	}
 	/**
@@ -476,7 +480,7 @@ public class GameWindow extends JFrame implements GameControls {
 			movieVisible = false;
 			movie.onLeave();
 			doMoveMouseAgain();
-			surface.repaint();
+			repaintInner();
 		}
 	}
 	/**
@@ -489,7 +493,7 @@ public class GameWindow extends JFrame implements GameControls {
 			statusbar.resize();
 			statusbar.onEnter(null);
 			doMoveMouseAgain();
-			surface.repaint();
+			repaintInner();
 		}
 	}
 	/* (non-Javadoc)
@@ -501,7 +505,7 @@ public class GameWindow extends JFrame implements GameControls {
 			secondary.onLeave();
 			secondary = null;
 			doMoveMouseAgain();
-			surface.repaint();
+			repaintInner();
 		}
 	}
 	/**
@@ -513,7 +517,7 @@ public class GameWindow extends JFrame implements GameControls {
 			statusbarVisible = false;
 			statusbar.onLeave();
 			doMoveMouseAgain();
-			surface.repaint();
+			repaintInner();
 		}
 	}
 	/**
@@ -559,7 +563,7 @@ public class GameWindow extends JFrame implements GameControls {
 					rep |= pri.keyboard(e);
 				}
 				if (rep) {
-					repaint();
+					repaintInner();
 				}
 			}
 		}
@@ -825,6 +829,7 @@ public class GameWindow extends JFrame implements GameControls {
 									commons.world().player.availableResearch.add(b.type.research);
 								}
 							}
+							p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 							repaintInner();
 						}
 					} else {

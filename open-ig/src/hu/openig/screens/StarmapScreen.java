@@ -833,10 +833,10 @@ public class StarmapScreen extends ScreenBase {
 							icon = commons.common().workerIcon;
 							break;
 						case STADIUM:
-							icon = commons.common().virusIcon;
+							icon = commons.common().stadiumIcon;
 							break;
 						case VIRUS:
-							icon = commons.common().stadiumIcon;
+							icon = commons.common().virusIcon;
 							break;
 						case REPAIR:
 							icon = commons.common().repairIcon;

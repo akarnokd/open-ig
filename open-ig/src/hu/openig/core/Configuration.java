@@ -36,7 +36,7 @@ import javax.swing.SwingUtilities;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.88";
+	public static final String VERSION = "0.89";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
