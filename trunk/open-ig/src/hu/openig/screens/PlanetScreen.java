@@ -609,13 +609,13 @@ public class PlanetScreen extends ScreenBase {
 				alpha = (0.4f);
 			} else
 			if (time >= 6 * 4 && time < 6 * 10) {
-				alpha = (0.45f + 0.5f * (time - 6 * 4) / 36);
+				alpha = (0.40f + 0.6f * (time - 6 * 4) / 36);
 			} else
 			if (time >= 6 * 10 && time < 6 * 16) {
 				alpha = (1.0f);
 			} else 
 			if (time >= 6 * 16 && time < 6 * 22) {
-				alpha = (0.95f - 0.5f * (time - 6 * 16) / 36);
+				alpha = (1f - 0.6f * (time - 6 * 16) / 36);
 			}
 			
 			surface.setAlpha(alpha);

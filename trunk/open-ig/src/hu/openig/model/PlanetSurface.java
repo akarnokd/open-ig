@@ -40,7 +40,7 @@ public class PlanetSurface {
 	/** The height with in cells. The width is defined as a vertical dimension of the map, but in coordinate terms it is equal to the sequence 0,0 -1,-1, -2,-2 etc. */
 	public int height;
 	/** The current lighting level. */
-	public float alpha = 1.0f;
+	public float alpha = 1f;
 	/**
 	 * The accessible rectangle of the surface defined in pixels. The accessible origin is encoded relative to the top-left corner of where the Location(0,0) is rendered.
 	 */
@@ -156,10 +156,10 @@ public class PlanetSurface {
 				se.virtualRow = y - b;
 				se.virtualColumn = a - x;
 				se.tile = tile;
-				se.tile.alpha = alpha;
 				basemap.put(Location.of(a, b), se);
 			}
 		}
+		tile.alpha = alpha;
 		SurfaceFeature sf = new SurfaceFeature();
 		sf.id = id;
 		sf.type = surface;
@@ -310,8 +310,8 @@ public class PlanetSurface {
 	 */
 	public void setAlpha(float alpha) {
 		if (Math.abs(alpha - this.alpha) >= 0.001) {
-		this.alpha = alpha;
-			for (SurfaceFeature sf : features) {
+			this.alpha = alpha;
+			for (SurfaceEntity sf : basemap.values()) {
 				sf.tile.alpha = alpha;
 			}
 			for (SurfaceEntity se : buildingmap.values()) {

@@ -2541,8 +2541,23 @@ public class InfoScreen extends ScreenBase {
 					 
 					if (p.owner == player()) {
 
+						int mmc = TextRenderer.GREEN;
+						
+						if (p.morale < 30) {
+							mmc = TextRenderer.GREEN;
+						} else
+						if (p.morale < 45) {
+							mmc = TextRenderer.YELLOW;
+						} else
+						if (p.morale >= 85) {
+							mmc = TextRenderer.LIGHT_BLUE;
+						} else
+						if (p.morale >= 65) {
+							mmc = TextRenderer.ORANGE;
+						}
+						
 						commons.text().paintTo(g2, 240, y + 1, 10, 
-								p.morale >= 30 ? TextRenderer.GREEN : TextRenderer.RED, 
+								mmc, 
 										p.morale + "%");
 
 						int mc = TextRenderer.GREEN;
