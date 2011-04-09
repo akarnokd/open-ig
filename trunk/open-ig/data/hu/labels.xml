@@ -205,11 +205,10 @@
 	<entry key='statistics.research_acquired'>Megszerzett találmányok</entry>
 	<entry key='statistics.total_population'>Össznépesség</entry>
 	<entry key='statistics.total_houses'>Összes lakóhely</entry>
-	<entry key='statistics.total_energy'>Elméleti energiatermelés</entry>
-	<entry key='statistics.actual_energy'>Gyakorlati energiatermelés</entry>
+	<entry key='statistics.total_energy'>Összes energiatermelés</entry>
 	<entry key='statistics.total_energy_demand'>Összes energiaigény</entry>
 	<entry key='statistics.total_buildings'>Épületek száma</entry>
-	<entry key='statistics.actual_buildings'>Épületek állapota</entry>
+	<entry key='statistics.actual_buildings'>Működő épületek száma</entry>
 	<entry key='statistics.total_food_production'>Összes élelmiszer termelés</entry>
 	<entry key='statistics.total_hospital'>Összes kórház</entry>
 	<entry key='statistics.total_worker'>Összes munkásigény</entry>
@@ -917,5 +916,37 @@
 	<entry key='info.population_details'>Népesség</entry>
 	<entry key='info.morale_details'>Morál</entry>
 	<entry key='info.problem_details'>Probléma</entry>
+	
+	<entry key='statistics.total_pause_time'>Összes szünet idő</entry>
+	<entry key='statistics.money_tax_income'>Adóbevétel</entry>
+	<entry key='statistics.money_trade_income'>Kereskedelmi bevétel</entry>
+	<entry key='statistics.money_demolish_income'>Lerombolás bevétel</entry>
+	<entry key='statistics.money_sell_income'>Eladás bevétel</entry>
+	<entry key='statistics.money_spent_repair'>Javítás kiadás</entry>
+	<entry key='statistics.money_spent_upgade'>Épület fejlesztés kiadás</entry>
+	<entry key='statistics.build_count'>Építés darabszám</entry>
+	<entry key='statistics.demolish_count'>Lerombolás darabszám</entry>
+	<entry key='statistics.sell_count'>Eladás darabszám</entry>
+	<entry key='statistics.production_count'>Gyártás darabszám</entry>
+	<entry key='statistics.upgrade_count'>Épület fejlesztés darabszám</entry>
+	<entry key='statistics.planet_conquered'>Meghódított bolygók</entry>
+	<entry key='statistics.galaxy_money_aquired'>Galaxis összed bevétel</entry>
+	<entry key='statistics.galaxy_money_demolish_income'>Galaxis lerombolás bevétel</entry>
+	<entry key='statistics.galaxy_money_sell_income'>Galaxis eladás bevétel</entry>
+	<entry key='statistics.galaxy_money_spent_building'>Galaxis építési költség</entry>
+	<entry key='statistics.galaxy_money_spent_repair'>Galaxis javítási költség</entry>
+	<entry key='statistics.galaxy_money_spent_production'>Galaxis gyártási költség</entry>
+	<entry key='statistics.galaxy_money_spent_research'>Galaxis kutatási költség</entry>
+	<entry key='statistics.galaxy_money_spent_upgade'>Galaxis épület fejlesztés költség</entry>
+	<entry key='statistics.galaxy_build_count'>Galaxis építés darabszám</entry>
+	<entry key='statistics.galaxy_demolish_count'>Galaxis lerombolsá darabszám</entry>
+	<entry key='statistics.galaxy_sell_count'>Galaxis eladás darabszám</entry>
+	<entry key='statistics.galaxy_production_count'>Galaxis gyártás darabszám</entry>
+	<entry key='statistics.galaxy_research_count'>Galaxis kutatás darabszám</entry>
+	<entry key='statistics.galaxy_upgrade_count'>Galaxis épület fejlesztés darabszám</entry>
+	<entry key='statistics.galaxy_actual_buildings'>Galaxis működő épület darabszám</entry>
+	<entry key='statistics.galaxy_total_food_production'>Galaxis élelem termelés</entry>
+	<entry key='statistics.galaxy_money_tax_income'>Galaxis adóbevétel</entry>
+	<entry key='statistics.galaxy_money_trade_income'>Galaxis kereskedelmi bevétel</entry>
 	
 </labels>

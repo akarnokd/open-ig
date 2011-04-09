@@ -823,6 +823,9 @@ public class GameWindow extends JFrame implements GameControls {
 							p.owner = commons.world().player;
 							if (p.race == null || p.race.isEmpty()) {
 								p.race = p.owner.race;
+								p.owner.statistics.planetsColonized++;
+							} else {
+								p.owner.statistics.planetsConquered++;
 							}
 							for (Building b : p.surface.buildings) {
 								if (b.type.research != null) {

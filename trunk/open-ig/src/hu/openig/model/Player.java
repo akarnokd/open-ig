@@ -70,6 +70,8 @@ public class Player {
 	public SelectionMode selectionMode;
 	/** The current money amount. */
 	public int money;
+	/** The player level statistics. */
+	public final PlayerStatistics statistics = new PlayerStatistics();
 	/** The player's finance status at a particular day. */
 	public class PlayerFinances {
 		/** The production cost. */

@@ -43,29 +43,78 @@ public final class Simulator {
 	 */
 	public static boolean compute(World world) {
 		
+		world.statistics.simulationTime++;
+		
 		int day0 = world.time.get(GregorianCalendar.DATE);
 		world.time.add(GregorianCalendar.MINUTE, 10);
 		int day1 = world.time.get(GregorianCalendar.DATE);
 
 		boolean result = false;
 		
+		// Prepare global statistics
+		// -------------------------
+		world.statistics.totalPopulation = 0;
+		world.statistics.totalBuilding = 0;
+		world.statistics.totalAvailableBuilding = 0;
+		
+		world.statistics.totalWorkerDemand = 0;
+		world.statistics.totalEnergyDemand = 0;
+		world.statistics.totalAvailableEnergy = 0;
+		world.statistics.totalAvailableHouse = 0;
+		world.statistics.totalAvailableFood = 0;
+		world.statistics.totalAvailableHospital = 0;
+		world.statistics.totalAvailablePolice = 0;
+		
+		// -------------------------
+		
+		
 		Map<Planet, PlanetStatistics> planetStats = new HashMap<Planet, PlanetStatistics>();
 		for (Player player : world.players.values()) {
 			PlanetStatistics all = player.getPlanetStatistics(planetStats);
+			
+			// -------------------------
+			// Prepare player statistics
+			
+			player.statistics.totalPopulation = 0;
+			player.statistics.totalBuilding = 0;
+			player.statistics.totalAvailableBuilding = 0;
+			
+			player.statistics.totalWorkerDemand = all.workerDemand;
+			player.statistics.totalEnergyDemand = all.energyDemand;
+			player.statistics.totalAvailableEnergy = all.energyAvailable;
+			player.statistics.totalAvailableHouse = all.houseAvailable;
+			player.statistics.totalAvailableFood = all.foodAvailable;
+			player.statistics.totalAvailableHospital = all.hospitalAvailable;
+			player.statistics.totalAvailablePolice = all.policeAvailable;
+
+			world.statistics.totalWorkerDemand += all.workerDemand;
+			world.statistics.totalEnergyDemand += all.energyDemand;
+			world.statistics.totalAvailableEnergy += all.energyAvailable;
+			world.statistics.totalAvailableHouse += all.houseAvailable;
+			world.statistics.totalAvailableFood += all.foodAvailable;
+			world.statistics.totalAvailableHospital += all.hospitalAvailable;
+			world.statistics.totalAvailablePolice += all.policeAvailable;
+			
+			player.statistics.planetsOwned = 0;
+			
+			// -------------------------
 			
 			if (day0 != day1) {
 				player.yesterday.clear();
 				player.yesterday.assign(player.today);
 				player.today.clear();
 			}
-			result |= progressResearch(player, all) && player == world.player;
-			result |= progressProduction(player, all) && player == world.player;
+			result |= progressResearch(world, player, all) && player == world.player;
+			result |= progressProduction(world, player, all) && player == world.player;
 		}
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
-				result |= progressPlanet(p, day0 != day1, planetStats.get(p)) && p == world.player.currentPlanet;
+				result |= progressPlanet(world, p, day0 != day1, planetStats.get(p)) && p == world.player.currentPlanet;
 			}
 		}
+		
+		testAchievements(world);
+		
 //		return result;
 		if (day0 != day1) {
 			return true;
@@ -74,12 +123,13 @@ public final class Simulator {
 	}
 	/**
 	 * Make progress on the buildings of the planet.
+	 * @param world the world
 	 * @param planet the planet
 	 * @param dayChange consider day change
 	 * @param ps the planet statistics
 	 * @return true if repaint will be needed 
 	 */
-	static boolean progressPlanet(Planet planet, boolean dayChange,
+	static boolean progressPlanet(World world, Planet planet, boolean dayChange,
 			PlanetStatistics ps) {
 		boolean result = false;
 		final int repairCost = 20;
@@ -88,6 +138,14 @@ public final class Simulator {
 		float multiply = 1.0f;
 		float moraleBoost = 0;
 		for (Building b : planet.surface.buildings) {
+			
+			planet.owner.statistics.totalBuilding++;
+			world.statistics.totalBuilding++;
+			if (b.getEfficiency() >= 0.5f) {
+				planet.owner.statistics.totalAvailableBuilding++;
+				world.statistics.totalAvailableBuilding++;
+			}
+			
 			if (b.isConstructing()) {
 				b.buildProgress += 200;
 				b.buildProgress = Math.min(b.type.hitpoints, b.buildProgress);
@@ -107,6 +165,12 @@ public final class Simulator {
 						b.hitpoints += repairAmount;
 						b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 						result = true;
+						
+						planet.owner.statistics.moneyRepair += repairCost;
+						planet.owner.statistics.moneySpent += repairCost;
+
+						world.statistics.moneyRepair += repairCost;
+						world.statistics.moneySpent += repairCost;
 					}
 				}
 			} else
@@ -163,7 +227,11 @@ public final class Simulator {
 			if (ps.policeAvailable < planet.population) {
 				newMorale += (ps.policeAvailable - planet.population) * 50f / planet.population;
 			} else {
-				newMorale += (ps.policeAvailable - planet.population) * 10f / planet.population;
+				if (!planet.owner.race.equals(planet.race)) {
+					newMorale += (ps.policeAvailable - planet.population) * 25f / planet.population;
+				} else {
+					newMorale += (ps.policeAvailable - planet.population) * 10f / planet.population;
+				}
 			}
 			
 			
@@ -183,6 +251,14 @@ public final class Simulator {
 
 			planet.owner.money += planet.tradeIncome + planet.taxIncome;
 			
+			planet.owner.statistics.moneyIncome += planet.tradeIncome + planet.taxIncome;
+			planet.owner.statistics.moneyTaxIncome += planet.taxIncome;
+			planet.owner.statistics.moneyTradeIncome += planet.tradeIncome;
+
+			world.statistics.moneyIncome += planet.tradeIncome + planet.taxIncome;
+			world.statistics.moneyTaxIncome += planet.taxIncome;
+			world.statistics.moneyTradeIncome += planet.tradeIncome;
+			
 			planet.owner.yesterday.taxIncome += planet.taxIncome;
 			planet.owner.yesterday.tradeIncome += planet.tradeIncome;
 			planet.owner.yesterday.taxMorale += planet.morale;
@@ -190,18 +266,24 @@ public final class Simulator {
 			
 			if (planet.population == 0) {
 				planet.die();
+			} else {
+				planet.owner.statistics.planetsOwned++;
 			}
 		}
+		
+		planet.owner.statistics.totalPopulation += planet.population;
+		world.statistics.totalPopulation += planet.population;
 		
 		return result;
 	}
 	/**
 	 * Make progress on the active research if any.
+	 * @param world the world
+	 * @param player the player
 	 * @param all the total planet statistics of the player
 	 * @return true if repaint will be needed 
-	 * @param player the player
 	 */
-	static boolean progressResearch(Player player, PlanetStatistics all) {
+	static boolean progressResearch(World world, Player player, PlanetStatistics all) {
 		if (player.runningResearch != null) {
 			Research rs = player.research.get(player.runningResearch);
 			int maxpc = rs.getResearchMaxPercent(all);
@@ -216,6 +298,13 @@ public final class Simulator {
 						rs.assignedMoney = Math.min((int)(rs.remainingMoney * rel) + 1, rs.remainingMoney);
 						player.today.researchCost += dmoney;
 						player.money -= dmoney;
+						
+						player.statistics.moneyResearch += dmoney;
+						player.statistics.moneySpent += dmoney;
+
+						world.statistics.moneyResearch += dmoney;
+						world.statistics.moneySpent += dmoney;
+						
 						rs.state = ResearchState.RUNNING;
 					} else {
 						rs.state = ResearchState.MONEY;
@@ -229,6 +318,8 @@ public final class Simulator {
 				player.runningResearch = null;
 				player.research.remove(rs.type);
 				player.availableResearch.add(rs.type);
+				
+				player.statistics.researchCount++;
 			}
 			return true;
 		}
@@ -236,11 +327,12 @@ public final class Simulator {
 	}
 	/**
 	 * Perform the next step of the production process.
+	 * @param world the world
 	 * @param player the player
 	 * @param all the all planet statistics of the player
 	 * @return need for repaint?
 	 */
-	static boolean progressProduction(Player player, PlanetStatistics all) {
+	static boolean progressProduction(World world, Player player, PlanetStatistics all) {
 		boolean result = false;
 		for (Map.Entry<ResearchMainCategory, Map<ResearchType, Production>> prs : player.production.entrySet()) {
 			int capacity = 0;
@@ -288,6 +380,15 @@ public final class Simulator {
 						Integer invCount = player.inventory.get(pr.type);
 						player.inventory.put(pr.type, invCount != null ? invCount + intoInventory : intoInventory);
 						
+						player.statistics.moneyProduction += currentCap;
+						player.statistics.moneySpent += currentCap;
+						
+						world.statistics.moneyProduction += currentCap;
+						world.statistics.moneySpent += currentCap;
+						
+						player.statistics.productionCount += intoInventory;
+						world.statistics.productionCount += intoInventory;
+						
 						result = true;
 					}
 				}			
@@ -296,4 +397,12 @@ public final class Simulator {
 		
 		return result;
 	}
+	/**
+	 * Run the tests for achievements.
+	 * @param world the world to test for achievements
+	 */
+	static void testAchievements(World world) {
+		// FIXME implement
+	}
+
 }

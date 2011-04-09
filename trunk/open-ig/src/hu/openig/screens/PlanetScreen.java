@@ -847,7 +847,9 @@ public class PlanetScreen extends ScreenBase {
 			}
 			commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
 
-			renderProblems(g2, ps);
+			if (ps != null) {
+				renderProblems(g2, ps);
+			}
 			
 			g2.setClip(save0);
 			RenderTools.setInterpolation(g2, false);
@@ -1604,8 +1606,18 @@ public class PlanetScreen extends ScreenBase {
 		surface().removeBuilding(currentBuilding);
 		surface().placeRoads(planet().race, commons.world().buildingModel);
 		
-		player().money += currentBuilding.type.cost * (1 + currentBuilding.upgradeLevel) / 2;
+		int moneyBack = currentBuilding.type.cost * (1 + currentBuilding.upgradeLevel) / 2;
 		
+		player().money += moneyBack;
+		
+		player().statistics.demolishCount++;
+		player().statistics.moneyDemolishIncome += moneyBack;
+		player().statistics.moneyIncome += moneyBack;
+
+		world().statistics.demolishCount++;
+		world().statistics.moneyDemolishIncome += moneyBack;
+		world().statistics.moneyDemolishIncome += moneyBack;
+
 		doAllocation();
 		buildingBox = null;
 		doSelectBuilding(null);
@@ -2010,6 +2022,15 @@ public class PlanetScreen extends ScreenBase {
 				doAllocation();
 				
 				upgradePanel.hideUpgradeSelection();
+				
+				player().statistics.upgradeCount += j - currentBuilding.upgradeLevel;
+				player().statistics.moneyUpgrade += delta;
+				player().statistics.moneySpent += delta;
+				
+				world().statistics.upgradeCount += j - currentBuilding.upgradeLevel;
+				world().statistics.moneyUpgrade += delta;
+				world().statistics.moneySpent += delta;
+				
 			}
 		}
 	}
@@ -2306,6 +2327,15 @@ public class PlanetScreen extends ScreenBase {
 				
 				buildingInfoPanel.update();
 				setBuildingList(0);
+				
+				player().statistics.buildCount++;
+				player().statistics.moneyBuilding += player().currentBuilding.cost;
+				player().statistics.moneySpent += player().currentBuilding.cost;
+				
+				world().statistics.buildCount++;
+				world().statistics.moneyBuilding += player().currentBuilding.cost;
+				world().statistics.moneySpent += player().currentBuilding.cost;
+
 			}
 		}
 	}

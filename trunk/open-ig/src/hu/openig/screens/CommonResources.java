@@ -25,9 +25,10 @@ import hu.openig.gfx.ResearchGFX;
 import hu.openig.gfx.SpacewarGFX;
 import hu.openig.gfx.StarmapGFX;
 import hu.openig.gfx.StatusbarGFX;
-import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Allocator;
+import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Simulator;
+import hu.openig.model.Profile;
 import hu.openig.model.Screens;
 import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
@@ -90,6 +91,8 @@ public class CommonResources {
 	private TextRenderer text;
 	/** The general control interface. */
 	private GameControls control;
+	/** The current player's profile. */
+	public Profile profile = new Profile();
 	// --------------------------------------------
 	// The various screen objects
 	// --------------------------------------------
@@ -488,6 +491,7 @@ public class CommonResources {
 		radarHandler = register(1000, new Act() {
 			@Override
 			public void act() {
+				world.statistics.playTime++;
 				Radar.compute(world);
 				if (control.primary() == Screens.STARMAP) {
 					control.repaintInner();

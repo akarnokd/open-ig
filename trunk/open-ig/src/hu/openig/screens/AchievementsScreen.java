@@ -9,16 +9,20 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
+import hu.openig.core.Func1;
 import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
+import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,37 +32,37 @@ import java.util.List;
  */
 public class AchievementsScreen extends ScreenBase {
 	/** An achievement entry. */
-	class AchievementEntry {
-		/** Is this achieved? */
-		public boolean enabled;
+	public class AchievementEntry {
 		/** The achievement title label. */
 		public String title;
 		/** The achievement description. */
 		public String description;
 		/**
 		 * Constructor. 
-		 * @param title the title label
+		 * @param title the title label and the achievement ID
 		 * @param description the description label
-		 * @param enabled is achieved?
 		 */
-		public AchievementEntry(String title, String description, boolean enabled) {
-			this.enabled = enabled;
+		public AchievementEntry(String title, String description) {
 			this.title = title;
 			this.description = description;
 		}
+		/** @return Is the achievement available? */
+		public boolean enabled() {
+			return commons.profile.hasAchievement(title);
+		}
 	}
 	/** The statistics entry. */
-	class StatisticsEntry {
+	public static class StatisticsEntry {
 		/** The label of the statistics. */
 		public String label;
 		/** The value of the statistics. */
-		public String value;
+		public Func1<Void, String> value;
 		/**
 		 * Constructor.
 		 * @param label the label
 		 * @param value the value
 		 */
-		public StatisticsEntry(String label, String value) {
+		public StatisticsEntry(String label, Func1<Void, String> value) {
 			this.label = label;
 			this.value = value;
 		}
@@ -267,9 +271,12 @@ public class AchievementsScreen extends ScreenBase {
 
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
-			hideSecondary();
-			return true;
+		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
+			if (!e.within(statisticsLabel.x, statisticsLabel.y, statisticsLabel.width, statisticsLabel.height)
+					&& !e.within(achievementLabel.x, achievementLabel.y, achievementLabel.width, achievementLabel.height)) {
+				hideSecondary();
+				return true;
+			}
 		}
 		boolean result = false;
 		switch (e.type) {
@@ -379,13 +386,14 @@ public class AchievementsScreen extends ScreenBase {
 				commons.text().wrapText(desc, tw, 10, lines);
 				BufferedImage img = commons.common().achievement;
 				int color = 0xFF00FF00;
-				if (!ae.enabled) {
+				if (!ae.enabled()) {
 					img = commons.common().achievementGrayed;
 					color = 0xFFC0C0C0;
 				}
 				g2.drawImage(img, listRect.x, y, null);
 				commons.text().paintTo(g2, listRect.x + commons.common().achievement.getWidth() + 10, y, 14, color, get(ae.title));
 				int y1 = y + 20;
+				
 				for (int j = 0; j < lines.size(); j++) {
 					commons.text().paintTo(g2, listRect.x + commons.common().achievement.getWidth() + 10, y1, 10, color, lines.get(j));
 					y1 += 12;
@@ -395,12 +403,19 @@ public class AchievementsScreen extends ScreenBase {
 		} else
 		if (mode == Screens.STATISTICS) {
 			int y = listRect.y;
-			int h = 10;
+			int h = 14;
 			for (int i = statisticsIndex; i < statistics.size() && i < statisticsIndex + statisticsCount; i++) {
 				StatisticsEntry se = statistics.get(i);
-				commons.text().paintTo(g2, listRect.x, y, h, 0xFF80FF80, get(se.label));
-				int w2 = commons.text().getTextWidth(h, se.value);
-				commons.text().paintTo(g2, listRect.x + listRect.width - w2 - 5, y, h, 0xFF8080FF, se.value);
+				int w1 = commons.text().getTextWidth(h, get(se.label));
+				commons.text().paintTo(g2, listRect.x, y, h, TextRenderer.GREEN, get(se.label));
+				String s = se.value.invoke(null);
+				int w2 = commons.text().getTextWidth(h, s);
+				
+				g2.setColor(Color.GRAY);
+				
+				g2.drawLine(listRect.x + w1 + 5, y + 10, listRect.x + listRect.width - w2 - 10, y + 10);
+				
+				commons.text().paintTo(g2, listRect.x + listRect.width - w2 - 5, y, h, TextRenderer.YELLOW, s);
 				
 				y += 20;
 			}
@@ -410,92 +425,558 @@ public class AchievementsScreen extends ScreenBase {
 	}
 	/** Create the test achievements. */
 	void createTestEntries() {
-		achievements.add(new AchievementEntry("achievement.conqueror", "achievement.conqueror.desc", false));
-		achievements.add(new AchievementEntry("achievement.millionaire", "achievement.millionaire.desc", false));
-		achievements.add(new AchievementEntry("achievement.student_of_bokros", "achievement.student_of_bokros.desc", false));
-		achievements.add(new AchievementEntry("achievement.pirate_bay", "achievement.pirate_bay.desc", false));
-		achievements.add(new AchievementEntry("achievement.dargslayer", "achievement.dargslayer.desc", false));
-		achievements.add(new AchievementEntry("achievement.energizer", "achievement.energizer.desc", false));
-		achievements.add(new AchievementEntry("achievement.death_star", "achievement.death_star.desc", false));
-		achievements.add(new AchievementEntry("achievement.research_assistant", "achievement.research_assistant.desc", false));
-		achievements.add(new AchievementEntry("achievement.scientist", "achievement.scientist.desc", false));
-		achievements.add(new AchievementEntry("achievement.nobel_prize", "achievement.nobel_prize.desc", false));
-		achievements.add(new AchievementEntry("achievement.popular", "achievement.popular.desc", false));
-		achievements.add(new AchievementEntry("achievement.apeh", "achievement.apeh.desc", false));
-		achievements.add(new AchievementEntry("achievement.ultimate_leader", "achievement.ultimate_leader.desc", false));
-		achievements.add(new AchievementEntry("achievement.revolutioner", "achievement.revolutioner.desc", false));
-		achievements.add(new AchievementEntry("achievement.mass_effect", "achievement.mass_effect.desc", false));
-		achievements.add(new AchievementEntry("achievement.defender", "achievement.defender.desc", false));
-		achievements.add(new AchievementEntry("achievement.embargo", "achievement.embargo.desc", false));
-		achievements.add(new AchievementEntry("achievement.colombus", "achievement.colombus.desc", false));
-		achievements.add(new AchievementEntry("achievement.quarter", "achievement.quarter.desc", false));
-		achievements.add(new AchievementEntry("achievement.manufacturer", "achievement.manufacturer.desc", false));
-		achievements.add(new AchievementEntry("achievement.salvage", "achievement.salvage.desc", false));
-		achievements.add(new AchievementEntry("achievement.living_space", "achievement.living_space.desc", false));
-		achievements.add(new AchievementEntry("achievement.food", "achievement.food.desc", false));
-		achievements.add(new AchievementEntry("achievement.decade", "achievement.decade.desc", false));
-		achievements.add(new AchievementEntry("achievement.oldest_man", "achievement.oldest_man.desc", false));
-		achievements.add(new AchievementEntry("achievement.all_your_base", "achievement.all_your_base.desc", false));
-		achievements.add(new AchievementEntry("achievement.et", "achievement.et.desc", false));
-		achievements.add(new AchievementEntry("achievement.defense_contract", "achievement.defense_contract.desc", false));
-		achievements.add(new AchievementEntry("achievement.coffee_break", "achievement.coffee_break.desc", false));
-		achievements.add(new AchievementEntry("achievement.all_seeing_eye", "achievement.all_seeing_eye.desc", false));
-		achievements.add(new AchievementEntry("achievement.newbie", "achievement.newbie.desc", false));
-		achievements.add(new AchievementEntry("achievement.commander", "achievement.commander.desc", false));
-		achievements.add(new AchievementEntry("achievement.admiral", "achievement.admiral.desc", false));
-		achievements.add(new AchievementEntry("achievement.grand_admiral", "achievement.grand_admiral.desc", false));
-		achievements.add(new AchievementEntry("achievement.influenza", "achievement.influenza.desc", false));
+		achievements.add(new AchievementEntry("achievement.conqueror", "achievement.conqueror.desc"));
+		achievements.add(new AchievementEntry("achievement.millionaire", "achievement.millionaire.desc"));
+		achievements.add(new AchievementEntry("achievement.student_of_bokros", "achievement.student_of_bokros.desc"));
+		achievements.add(new AchievementEntry("achievement.pirate_bay", "achievement.pirate_bay.desc"));
+		achievements.add(new AchievementEntry("achievement.dargslayer", "achievement.dargslayer.desc"));
+		achievements.add(new AchievementEntry("achievement.energizer", "achievement.energizer.desc"));
+		achievements.add(new AchievementEntry("achievement.death_star", "achievement.death_star.desc"));
+		achievements.add(new AchievementEntry("achievement.research_assistant", "achievement.research_assistant.desc"));
+		achievements.add(new AchievementEntry("achievement.scientist", "achievement.scientist.desc"));
+		achievements.add(new AchievementEntry("achievement.nobel_prize", "achievement.nobel_prize.desc"));
+		achievements.add(new AchievementEntry("achievement.popular", "achievement.popular.desc"));
+		achievements.add(new AchievementEntry("achievement.apeh", "achievement.apeh.desc"));
+		achievements.add(new AchievementEntry("achievement.ultimate_leader", "achievement.ultimate_leader.desc"));
+		achievements.add(new AchievementEntry("achievement.revolutioner", "achievement.revolutioner.desc"));
+		achievements.add(new AchievementEntry("achievement.mass_effect", "achievement.mass_effect.desc"));
+		achievements.add(new AchievementEntry("achievement.defender", "achievement.defender.desc"));
+		achievements.add(new AchievementEntry("achievement.embargo", "achievement.embargo.desc"));
+		achievements.add(new AchievementEntry("achievement.colombus", "achievement.colombus.desc"));
+		achievements.add(new AchievementEntry("achievement.quarter", "achievement.quarter.desc"));
+		achievements.add(new AchievementEntry("achievement.manufacturer", "achievement.manufacturer.desc"));
+		achievements.add(new AchievementEntry("achievement.salvage", "achievement.salvage.desc"));
+		achievements.add(new AchievementEntry("achievement.living_space", "achievement.living_space.desc"));
+		achievements.add(new AchievementEntry("achievement.food", "achievement.food.desc"));
+		achievements.add(new AchievementEntry("achievement.decade", "achievement.decade.desc"));
+		achievements.add(new AchievementEntry("achievement.oldest_man", "achievement.oldest_man.desc"));
+		achievements.add(new AchievementEntry("achievement.all_your_base", "achievement.all_your_base.desc"));
+		achievements.add(new AchievementEntry("achievement.et", "achievement.et.desc"));
+		achievements.add(new AchievementEntry("achievement.defense_contract", "achievement.defense_contract.desc"));
+		achievements.add(new AchievementEntry("achievement.coffee_break", "achievement.coffee_break.desc"));
+		achievements.add(new AchievementEntry("achievement.all_seeing_eye", "achievement.all_seeing_eye.desc"));
+		achievements.add(new AchievementEntry("achievement.newbie", "achievement.newbie.desc"));
+		achievements.add(new AchievementEntry("achievement.commander", "achievement.commander.desc"));
+		achievements.add(new AchievementEntry("achievement.admiral", "achievement.admiral.desc"));
+		achievements.add(new AchievementEntry("achievement.grand_admiral", "achievement.grand_admiral.desc"));
+		achievements.add(new AchievementEntry("achievement.influenza", "achievement.influenza.desc"));
 		
-//		Random rnd = new Random();
-//		for (AchievementEntry ae : achievements) {
-//			ae.enabled = rnd.nextBoolean();
-//		}
+		statistics.add(new StatisticsEntry("statistics.total_gametime",
+		new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return toTime(world().statistics.playTime);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.total_ingame_time", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return toTime(world().statistics.simulationTime);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.total_pause_time", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return toTime(world().statistics.playTime - world().statistics.simulationTime);
+			}
+		}
+		));
 		
-		statistics.add(new StatisticsEntry("statistics.total_gametime", "1 23:50.00"));
-		statistics.add(new StatisticsEntry("statistics.total_ingame_time", "50-03-01 12:50.00"));
-		statistics.add(new StatisticsEntry("statistics.money_aquired", "32.000"));
-		statistics.add(new StatisticsEntry("statistics.money_aquired_trade", "0"));
-		statistics.add(new StatisticsEntry("statistics.money_spent", "0 (0%)"));
-		statistics.add(new StatisticsEntry("statistics.money_spent_building", "0 (0%)"));
-		statistics.add(new StatisticsEntry("statistics.money_spent_production", "0 (0%)"));
-		statistics.add(new StatisticsEntry("statistics.money_spent_research", "0 (0%)"));
-		statistics.add(new StatisticsEntry("statistics.equipment_sold_money", "0 (0%)"));
-		statistics.add(new StatisticsEntry("statistics.planet_discovered", "0 (0%)"));
-		statistics.add(new StatisticsEntry("statistics.planet_own", "3 (3%)"));
-		statistics.add(new StatisticsEntry("statistics.planet_colonized", "0 (0%)"));
-		statistics.add(new StatisticsEntry("statistics.races_discovered", "1 (9%)"));
-		statistics.add(new StatisticsEntry("statistics.produced_items", "0"));
-		statistics.add(new StatisticsEntry("statistics.sold_items", "0"));
-		statistics.add(new StatisticsEntry("statistics.research_count", "5 (2%)"));
-		statistics.add(new StatisticsEntry("statistics.research_acquired", "0 (0%)"));
-		statistics.add(new StatisticsEntry("statistics.total_population", "350.000"));
-		statistics.add(new StatisticsEntry("statistics.total_houses", "170.000"));
-		statistics.add(new StatisticsEntry("statistics.total_energy", "121.000"));
-		statistics.add(new StatisticsEntry("statistics.actual_energy", "121.000 (100%)"));
-		statistics.add(new StatisticsEntry("statistics.total_energy_demand", "100.000 (89%)"));
-		statistics.add(new StatisticsEntry("statistics.total_buildings", "62"));
-		statistics.add(new StatisticsEntry("statistics.actual_buildings", "47 (75%)"));
-		statistics.add(new StatisticsEntry("statistics.total_food_production", "85.000"));
-		statistics.add(new StatisticsEntry("statistics.total_hospital", "130.000"));
-		statistics.add(new StatisticsEntry("statistics.total_worker", "45.000"));
-		statistics.add(new StatisticsEntry("statistics.total_police", "150.000"));
-		statistics.add(new StatisticsEntry("statistics.total_fleet", "6"));
-		statistics.add(new StatisticsEntry("statistics.total_own_firepower", "4.025"));
-		statistics.add(new StatisticsEntry("statistics.total_enemy_firepower", "19.200"));
-		statistics.add(new StatisticsEntry("statistics.ships_destroyed", "60"));
-		statistics.add(new StatisticsEntry("statistics.ships_destroyed_value", "125.000"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_money_acquired", "900.000"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_money_spent", "420.000"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_total_population", "1.000.000"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_total_buildings", "120"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_total_houses", "1.200.000 (120%)"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_total_energy", "1.000.000"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_total_energy_demand", "1.000.000 (100%)"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_total_worker", "700.000 (70%)"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_total_food", "1.100.000 (110%)"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_total_hospital", "1.150.000 (115%)"));
-		statistics.add(new StatisticsEntry("statistics.galaxy_total_police", "1.200.000 (120%)"));
-//		statistics.add(new StatisticsEntry("", ""));
+		final DecimalFormat df = new DecimalFormat("#,###"); 
+		
+		statistics.add(new StatisticsEntry("statistics.money_aquired", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneyIncome);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.money_tax_income", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneyTaxIncome);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.money_trade_income", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneyTradeIncome);
+			}
+		}
+		));
+
+		statistics.add(new StatisticsEntry("statistics.money_demolish_income", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneyDemolishIncome);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.money_sell_income", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneySellIncome);
+			}
+		}
+		));
+
+		statistics.add(new StatisticsEntry("statistics.money_spent", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneySpent);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.money_spent_building", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneyBuilding);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.money_spent_repair", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneyRepair);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.money_spent_production", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneyProduction);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.money_spent_research", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneyResearch);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.money_spent_upgade", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.moneyUpgrade);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.build_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.buildCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.demolish_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.demolishCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.sell_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.sellCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.production_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.productionCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.research_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.researchCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.upgrade_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.upgradeCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.planet_own", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.planetsOwned);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.planet_discovered", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.planetsDiscovered);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.planet_colonized", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.planetsColonized);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.planet_conquered", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.planetsConquered);
+			}
+		}
+		));
+		
+		statistics.add(new StatisticsEntry("statistics.total_buildings", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalBuilding);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.actual_buildings", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalAvailableBuilding);
+			}
+		}
+		));
+		
+		statistics.add(new StatisticsEntry("statistics.total_population", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalPopulation);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.total_houses", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalAvailableHouse);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.total_worker", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalWorkerDemand);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.total_energy", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalAvailableEnergy);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.total_energy_demand", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalEnergyDemand);
+			}
+		}
+		));
+
+		statistics.add(new StatisticsEntry("statistics.total_food_production", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalAvailableFood);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.total_hospital", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalAvailableHospital);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.total_police", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.totalAvailablePolice);
+			}
+		}
+		));
+		
+		// ************************************************************************
+
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_aquired", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneyIncome);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_tax_income", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneyTaxIncome);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_trade_income", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneyTradeIncome);
+			}
+		}
+		));
+
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_demolish_income", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneyDemolishIncome);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_sell_income", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneySellIncome);
+			}
+		}
+		));
+
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_spent", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneySpent);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_building", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneyBuilding);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_repair", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneyRepair);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_production", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneyProduction);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_research", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneyResearch);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_upgade", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.moneyUpgrade);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_build_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.buildCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_demolish_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.demolishCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_sell_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.sellCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_production_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.productionCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_research_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.researchCount);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_upgrade_count", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.upgradeCount);
+			}
+		}
+		));
+		
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_buildings", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalBuilding);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_actual_buildings", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalAvailableBuilding);
+			}
+		}
+		));
+		
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_population", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalPopulation);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_houses", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalAvailableHouse);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_worker", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalWorkerDemand);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_energy", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalAvailableEnergy);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_energy_demand", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalEnergyDemand);
+			}
+		}
+		));
+
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_food_production", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalAvailableFood);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_hospital", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalAvailableHospital);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.galaxy_total_police", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(world().statistics.totalAvailablePolice);
+			}
+		}
+		));
+
+	}
+	/**
+	 * Convert to time string.
+	 * @param seconds the number of seconds.
+	 * @return the string
+	 */
+	String toTime(long seconds) {
+		long secs = seconds % 60;
+		long mins = (seconds / 60) % 60;
+		long hours = (seconds / 60 / 60);
+		return String.format("%02d:%02d:%02d", hours, mins, secs);
 	}
 	@Override
 	public Screens screen() {
