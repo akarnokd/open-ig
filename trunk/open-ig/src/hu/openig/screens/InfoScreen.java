@@ -2505,10 +2505,12 @@ public class InfoScreen extends ScreenBase {
 			}
 			g2.setColor(Color.BLACK);
 			g2.fillRect(101, - 13, 300, 13);
-			
+
+			int probLeft = 310;
+
 			commons.text().paintTo(g2, 105, -13, 10, TextRenderer.YELLOW, get("info.population_details"));
 			commons.text().paintTo(g2, 240, -13, 10, TextRenderer.YELLOW, get("info.morale_details"));
-			commons.text().paintTo(g2, 320, -13, 10, TextRenderer.YELLOW, get("info.problem_details"));
+			commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, get("info.problem_details"));
 
 			for (int i = top; i < list.size() && i < top + 27; i++) {
 				Planet p = list.get(i);
@@ -2532,6 +2534,9 @@ public class InfoScreen extends ScreenBase {
 					} else
 					if (p.population - p.lastPopulation < 0) {
 						pc = TextRenderer.YELLOW;
+					} else
+					if (p.population - p.lastPopulation > 300) {
+						pc = TextRenderer.LIGHT_BLUE;
 					} else
 					if (p.population - p.lastPopulation > 80) {
 						pc = TextRenderer.ORANGE;
@@ -2560,27 +2565,29 @@ public class InfoScreen extends ScreenBase {
 								mmc, 
 										p.morale + "%");
 
-						int mc = TextRenderer.GREEN;
-						if (p.morale - p.lastMorale < -4) {
-							mc = TextRenderer.RED;
-						} else
-						if (p.morale - p.lastMorale < 0) {
-							mc = TextRenderer.YELLOW;
-						} else
-						if (p.morale - p.lastMorale > 3) {
-							mc = TextRenderer.ORANGE;
+						if (p.morale - p.lastMorale != 0) {
+							int mc = TextRenderer.GREEN;
+							if (p.morale - p.lastMorale < -4) {
+								mc = TextRenderer.RED;
+							} else
+							if (p.morale - p.lastMorale < 0) {
+								mc = TextRenderer.YELLOW;
+							} else
+							if (p.morale - p.lastMorale > 3) {
+								mc = TextRenderer.ORANGE;
+							}
+									
+							commons.text().paintTo(g2, 270, y + 1, 10,
+									mc,  
+											 withSign(p.morale - p.lastMorale));
 						}
-								
-						commons.text().paintTo(g2, 270, y + 1, 10,
-								mc,  
-										 withSign(p.morale - p.lastMorale));
 						
 						PlanetStatistics ps = p.getStatistics();
 						
 						int j = 0;
 						
 						if (ps.hasProblem(PlanetProblems.HOUSING) || (animationBlink && ps.hasWarning(PlanetProblems.HOUSING))) {
-							g2.drawImage(commons.common().houseIcon, 320 + j * 11, y + 2, null);
+							g2.drawImage(commons.common().houseIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.HOUSING)) {
@@ -2588,7 +2595,7 @@ public class InfoScreen extends ScreenBase {
 						}
 						
 						if (ps.hasProblem(PlanetProblems.ENERGY) || (animationBlink && ps.hasWarning(PlanetProblems.ENERGY))) {
-							g2.drawImage(commons.common().energyIcon, 320 + j * 11, y + 2, null);
+							g2.drawImage(commons.common().energyIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.ENERGY)) {
@@ -2596,7 +2603,7 @@ public class InfoScreen extends ScreenBase {
 						}
 						
 						if (ps.hasProblem(PlanetProblems.WORKFORCE) || (animationBlink && ps.hasWarning(PlanetProblems.WORKFORCE))) {
-							g2.drawImage(commons.common().workerIcon, 320 + j * 11, y + 2, null);
+							g2.drawImage(commons.common().workerIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.WORKFORCE)) {
@@ -2604,7 +2611,7 @@ public class InfoScreen extends ScreenBase {
 						}
 						
 						if (ps.hasProblem(PlanetProblems.FOOD) || (animationBlink && ps.hasWarning(PlanetProblems.FOOD))) {
-							g2.drawImage(commons.common().foodIcon, 320 + j * 11, y + 2, null);
+							g2.drawImage(commons.common().foodIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.FOOD)) {
@@ -2612,7 +2619,7 @@ public class InfoScreen extends ScreenBase {
 						}
 						
 						if (ps.hasProblem(PlanetProblems.HOSPITAL) || (animationBlink && ps.hasWarning(PlanetProblems.HOSPITAL))) {
-							g2.drawImage(commons.common().hospitalIcon, 320 + j * 11, y + 2, null);
+							g2.drawImage(commons.common().hospitalIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.HOSPITAL)) {
@@ -2620,7 +2627,7 @@ public class InfoScreen extends ScreenBase {
 						}
 						
 						if (ps.hasProblem(PlanetProblems.VIRUS) || (animationBlink && ps.hasWarning(PlanetProblems.VIRUS))) {
-							g2.drawImage(commons.common().virusIcon, 320 + j * 11, y + 2, null);
+							g2.drawImage(commons.common().virusIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.VIRUS)) {
@@ -2628,7 +2635,7 @@ public class InfoScreen extends ScreenBase {
 						}
 						
 						if (ps.hasProblem(PlanetProblems.STADIUM) || (animationBlink && ps.hasWarning(PlanetProblems.STADIUM))) {
-							g2.drawImage(commons.common().stadiumIcon, 320 + j * 11, y + 2, null);
+							g2.drawImage(commons.common().stadiumIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.STADIUM)) {
@@ -2636,7 +2643,7 @@ public class InfoScreen extends ScreenBase {
 						}
 						
 						if (ps.hasProblem(PlanetProblems.REPAIR) || (animationBlink && ps.hasWarning(PlanetProblems.REPAIR))) {
-							g2.drawImage(commons.common().repairIcon, 320 + j * 11, y + 2, null);
+							g2.drawImage(commons.common().repairIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.REPAIR)) {
