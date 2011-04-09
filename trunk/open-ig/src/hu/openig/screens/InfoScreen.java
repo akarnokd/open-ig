@@ -406,6 +406,11 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_PLANETS
 	})
 	UIGenericButton togglePlanetListDetails;
+	/** The general statistics button. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FINANCIAL
+	})
+	UIGenericButton statisticsButton;
 	/** The animation timer. */
 	Closeable animation;
 	/** The blink state. */
@@ -705,7 +710,7 @@ public class InfoScreen extends ScreenBase {
 		
 		planetListDetais = new PlanetListDetails();
 		togglePlanetListDetails = new UIGenericButton(get("info.list_details"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
-		
+
 		togglePlanetListDetails.onClick = new Act() {
 			@Override
 			public void act() {
@@ -717,6 +722,14 @@ public class InfoScreen extends ScreenBase {
 				}
 				colonies.visible(!showPlanetListDetails);
 				planetListDetais.visible(showPlanetListDetails);
+			}
+		};
+
+		statisticsButton = new UIGenericButton(get("info.statistics"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		statisticsButton.onClick = new Act() {
+			@Override
+			public void act() {
+				displaySecondary(Screens.STATISTICS);
 			}
 		};
 		
@@ -812,6 +825,7 @@ public class InfoScreen extends ScreenBase {
 		
 		planetListDetais.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
 		togglePlanetListDetails.location(base.x + 420, colonyOther.y + colonyOther.height + 5);
+		statisticsButton.location(togglePlanetListDetails.location());
 		
 		militaryInfo.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
 	}

@@ -15,6 +15,7 @@ import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -147,8 +148,9 @@ public class MainScreen extends ScreenBase {
 		// do a small reflection trick to avoid circular dependency
 		try {
 			Class<?> clazz = Class.forName("hu.openig.Setup");
-			Constructor<?> c = clazz.getConstructor(Configuration.class, GameControls.class);
-			Object instance = c.newInstance(commons.config, commons);
+			Constructor<?> c = clazz.getConstructor(Configuration.class);
+			Object instance = c.newInstance(commons.config);
+			clazz.getMethod("setLocationRelativeTo", Component.class).invoke(instance, new Object[] { null });
 			clazz.getMethod("setVisible", Boolean.TYPE).invoke(instance, true);
 		} catch (Exception ex) {
 			ex.printStackTrace();

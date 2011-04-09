@@ -271,8 +271,10 @@ public final class Simulator {
 			}
 		}
 		
-		planet.owner.statistics.totalPopulation += planet.population;
-		world.statistics.totalPopulation += planet.population;
+		if (planet.owner != null) {
+			planet.owner.statistics.totalPopulation += planet.population;
+			world.statistics.totalPopulation += planet.population;
+		}
 		
 		return result;
 	}
