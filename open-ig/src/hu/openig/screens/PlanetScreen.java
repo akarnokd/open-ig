@@ -597,6 +597,7 @@ public class PlanetScreen extends ScreenBase {
 				currentBuilding = null;
 				lastSurface = surface;
 				placementMode = false;
+				upgradePanel.hideUpgradeSelection();
 			}
 			setBuildingList(0);
 			buildingInfoPanel.update();
@@ -1141,6 +1142,7 @@ public class PlanetScreen extends ScreenBase {
 				@Override
 				public void act() {
 					placementMode = false;
+					upgradePanel.hideUpgradeSelection();
 					displaySecondary(Screens.INFORMATION_BUILDINGS);
 				}
 			};
@@ -1858,7 +1860,7 @@ public class PlanetScreen extends ScreenBase {
 		@Override
 		public void draw(Graphics2D g2) {
 			g2.drawImage(commons.colony().upgradePanel, 0, 0, null);
-			int over = none.over ? 0 : -1;
+			int over = -1;
 			for (int i = 0; i < steps.size(); i++) {
 				UIImageButton up = steps.get(i);
 				up.visible(i + 1 <= currentBuilding.type.upgrades.size());
@@ -1887,6 +1889,28 @@ public class PlanetScreen extends ScreenBase {
 			}
 			super.draw(g2);
 		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.LEAVE)) {
+				hideUpgradeSelection();
+				return true;
+			}
+			return super.mouse(e);
+		}
+		/** Hide the selection of the upgrade panel. */
+		public void hideUpgradeSelection() {
+			for (UIImageButton img : upgradePanel.steps) {
+				img.over = false;
+			}
+			upgradeDescription.text("");
+		}
+		@Override
+		public UIComponent visible(boolean state) {
+			if (!state) {
+				hideUpgradeSelection();
+			}
+			return super.visible(state);
+		}
 	}
 	/** 
 	 * Upgrade the current building. 
@@ -1904,6 +1928,8 @@ public class PlanetScreen extends ScreenBase {
 				currentBuilding.hitpoints = currentBuilding.buildProgress;
 				
 				doAllocation();
+				
+				upgradePanel.hideUpgradeSelection();
 			}
 		}
 	}
@@ -1984,24 +2010,28 @@ public class PlanetScreen extends ScreenBase {
 		colonyInfo.onClick = new Act() {
 			@Override
 			public void act() {
+				upgradePanel.hideUpgradeSelection();
 				displaySecondary(Screens.INFORMATION_COLONY);
 			}
 		};
 		planets.onClick = new Act() {
 			@Override
 			public void act() {
+				upgradePanel.hideUpgradeSelection();
 				displaySecondary(Screens.INFORMATION_PLANETS);
 			}
 		};
 		starmap.onClick = new Act() {
 			@Override
 			public void act() {
+				upgradePanel.hideUpgradeSelection();
 				displayPrimary(Screens.STARMAP);
 			}
 		};
 		bridge.onClick = new Act() {
 			@Override
 			public void act() {
+				upgradePanel.hideUpgradeSelection();
 				displayPrimary(Screens.BRIDGE);
 			}
 		};
@@ -2009,6 +2039,7 @@ public class PlanetScreen extends ScreenBase {
 		buildingInfoPanel.demolish.onClick = new Act() {
 			@Override
 			public void act() {
+				upgradePanel.hideUpgradeSelection();
 				doDemolish();
 			}
 		};

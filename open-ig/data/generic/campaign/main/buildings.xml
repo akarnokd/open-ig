@@ -632,7 +632,7 @@
 		</graphics>
 		<build limit="1" kind="Economic" cost="10000"/>
 		<operation>
-			<resource type="credit">600</resource>
+			<resource type="credit" display="true">600</resource>
 			<resource type='energy'>-1700</resource>
 			<resource type='worker'>-250</resource>
 		</operation>

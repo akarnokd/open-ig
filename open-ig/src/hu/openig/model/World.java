@@ -411,17 +411,17 @@ public class World {
 		
 		planets.put(p.id, p);
 
-		// FIXME for testing the radar/info
-		if (p.owner != null) {
-			p.owner.planets.put(p, PlanetKnowledge.BUILDING);
-			if (p.owner == player) {
-				PlanetInventoryItem sat = new PlanetInventoryItem();
-				sat.owner = player;
-				sat.count = 1;
-				sat.type = researches.get("Hubble2");
-				p.inventory.add(sat);
-			}
-		}
+//		// FIXME for testing the radar/info
+//		if (p.owner != null) {
+//			p.owner.planets.put(p, PlanetKnowledge.BUILDING);
+//			if (p.owner == player) {
+//				PlanetInventoryItem sat = new PlanetInventoryItem();
+//				sat.owner = player;
+//				sat.count = 1;
+//				sat.type = researches.get("Hubble2");
+//				p.inventory.add(sat);
+//			}
+//		}
 	}
 	/**
 	 * Process a tech XML.

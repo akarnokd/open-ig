@@ -118,6 +118,7 @@ public class Planet implements Named, Owned {
 		PlanetStatistics result = new PlanetStatistics();
 		radar = 0;
 		int stadiumCount = 0;
+		boolean buildup = false;
 		boolean damage = false;
 		for (Building b : surface.buildings) {
 			if (b.getEfficiency() >= 0.5) {
@@ -199,7 +200,8 @@ public class Planet implements Named, Owned {
 					result.energyAvailable += e;
 				}
 			}
-			damage |= b.hitpoints < b.type.hitpoints;
+			damage |= b.isDamaged();
+			buildup |= b.isConstructing();
 		}
 		
 		if (quarantine) {
@@ -251,6 +253,9 @@ public class Planet implements Named, Owned {
 		}
 		if (damage) {
 			result.addProblem(PlanetProblems.REPAIR);
+		}
+		if (buildup) {
+			result.addWarning(PlanetProblems.REPAIR);
 		}
 		
 		for (PlanetInventoryItem pii : inventory) {
