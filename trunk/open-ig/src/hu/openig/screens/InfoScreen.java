@@ -2854,7 +2854,8 @@ public class InfoScreen extends ScreenBase {
 			int cellSize = 22;
 			
 			int maxw = commons.text().getTextWidth(textSize, player().shortName);
-			int maxh = 0;
+			int maxh = player().shortName.length() * 12;
+			
 			List<Player> pl = new ArrayList<Player>();
 			List<Player> war = new ArrayList<Player>();
 			List<Player> ally = new ArrayList<Player>();
