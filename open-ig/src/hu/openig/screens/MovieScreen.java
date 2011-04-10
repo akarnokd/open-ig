@@ -11,16 +11,17 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Screens;
+import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screens.MediaPlayer.LabelEvent;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Type;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -133,7 +134,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (e.buttons.contains(UIMouse.Button.LEFT) && e.type == UIMouse.Type.UP) {
+		if (e.has(Type.CLICK)) {
 			stopPlayback();
 		}
 		return false;
@@ -158,12 +159,13 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		if (frontBuffer != null) {
 			swapLock.lock();
 			try {
-				g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+				RenderTools.setInterpolation(g2, true);
 				g2.drawImage(frontBuffer, movieRect.x, movieRect.y, 
 						movieRect.width, movieRect.height, null);
 				if (label != null) {
 					paintLabel(g2, movieRect.x, movieRect.y, movieRect.width, movieRect.height);
 				}
+				RenderTools.setInterpolation(g2, false);
 			} finally {
 				swapLock.unlock();
 			}
