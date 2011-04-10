@@ -120,7 +120,8 @@ public class Planet implements Named, Owned {
 		int stadiumCount = 0;
 		boolean buildup = false;
 		boolean damage = false;
-		
+		boolean colonyHub = false;
+		boolean colonyHubOperable = false;
 		for (Building b : surface.buildings) {
 			if (b.getEfficiency() >= 0.5) {
 				if (b.hasResource("house")) {
@@ -169,6 +170,7 @@ public class Planet implements Named, Owned {
 					result.freeRepair = Math.max(b.getResource("repair"), result.freeRepair);
 					result.freeRepairEff = Math.max(b.getEfficiency(), result.freeRepairEff);
 				}
+				colonyHubOperable |= "MainBuilding".equals(b.type.kind);
 			}
 			if (b.hasResource("spaceship")) {
 				result.spaceship += b.getResource("spaceship");
@@ -207,6 +209,7 @@ public class Planet implements Named, Owned {
 			}
 			damage |= b.isDamaged();
 			buildup |= b.isConstructing();
+			colonyHub |= "MainBuilding".equals(b.type.kind) && !b.isConstructing();
 		}
 		
 		if (quarantine) {
@@ -262,6 +265,12 @@ public class Planet implements Named, Owned {
 		}
 		if (buildup) {
 			result.addWarning(PlanetProblems.REPAIR);
+		}
+		if (!colonyHub) {
+			result.addProblem(PlanetProblems.COLONY_HUB);
+		} else
+		if (!colonyHubOperable) {
+			result.addWarning(PlanetProblems.COLONY_HUB);
 		}
 		
 		for (PlanetInventoryItem pii : inventory) {

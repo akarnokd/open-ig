@@ -64,6 +64,9 @@ public class CommonGFX {
 	/** Stadium icon. */
 	@Img(name = "stadium-icon")
 	public BufferedImage stadiumIcon;
+	/** Colony hub icon. */
+	@Img(name = "colony-hub-icon")
+	public BufferedImage colonyHubIcon;
 	/** Repair icon. */
 	@Img(name = "repair-icon")
 	public BufferedImage repairIcon;
@@ -73,6 +76,33 @@ public class CommonGFX {
 	/** Housing icon. */
 	@Img(name = "house-icon")
 	public BufferedImage houseIcon;
+	/** Energy icon. */
+	@Img(name = "energy-icon-dark")
+	public BufferedImage energyIconDark;
+	/** Food icon. */
+	@Img(name = "food-icon-dark")
+	public BufferedImage foodIconDark;
+	/** Worker icon. */
+	@Img(name = "worker-icon-dark")
+	public BufferedImage workerIconDark;
+	/** Virus icon. */
+	@Img(name = "virus-icon-dark")
+	public BufferedImage virusIconDark;
+	/** Stadium icon. */
+	@Img(name = "stadium-icon-dark")
+	public BufferedImage stadiumIconDark;
+	/** Repair icon. */
+	@Img(name = "repair-icon-dark")
+	public BufferedImage repairIconDark;
+	/** Hospital icon. */
+	@Img(name = "hospital-icon-dark")
+	public BufferedImage hospitalIconDark;
+	/** Housing icon. */
+	@Img(name = "house-icon-dark")
+	public BufferedImage houseIconDark;
+	/** Colony hub icon. */
+	@Img(name = "colony-hub-icon-dark")
+	public BufferedImage colonyHubIconDark;
 	/** A 102x39 bridge button. */
 	@Btn2(name = "button_bridge")
 	public BufferedImage[] bridgeButton;

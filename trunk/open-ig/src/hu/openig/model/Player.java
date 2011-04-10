@@ -49,8 +49,6 @@ public class Player {
 	public final Map<ResearchType, Research> research = new HashMap<ResearchType, Research>();
 	/** The completed research. */
 	public final Set<ResearchType> availableResearch = new HashSet<ResearchType>();
-	/** The discovered players. */
-	public final List<Player> discoveredPlayers = new ArrayList<Player>();
 	/** The fleets owned. */
 	public final Map<Fleet, FleetKnowledge> fleets = new HashMap<Fleet, FleetKnowledge>();
 	/** The planets owned. */

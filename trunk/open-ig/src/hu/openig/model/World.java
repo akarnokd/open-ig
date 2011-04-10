@@ -654,7 +654,7 @@ public class World {
 			xp.set("running", p.runningResearch != null ? p.runningResearch.id : null);
 			xp.set("mode", p.selectionMode);
 			
-			player.statistics.save(xp.add("statistics"));
+			p.statistics.save(xp.add("statistics"));
 
 			if (p.knownPlayers.size() > 0) {
 				XElement stances = xp.add("stance");
@@ -870,7 +870,12 @@ public class World {
 			XElement xstance = xplayer.childElement("stance");
 			if (xstance != null) {
 				for (XElement xwith : xstance.childrenWithName("with")) {
-					p.setStance(players.get(xwith.get("player")), xwith.getInt("value"));
+					Player pl = players.get(xwith.get("player"));
+					if (pl != null) {
+						p.setStance(pl, xwith.getInt("value"));
+					} else {
+						throw new AssertionError("Missing player for stance " + p.name + " vs. " + xwith.get("player"));
+					}
 				}
 			}
 

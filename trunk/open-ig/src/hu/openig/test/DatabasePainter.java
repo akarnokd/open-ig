@@ -11,6 +11,7 @@ package hu.openig.test;
 import hu.openig.core.Act;
 import hu.openig.core.Labels;
 import hu.openig.gfx.DatabaseGFX;
+import hu.openig.model.Player;
 import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
 
@@ -336,14 +337,16 @@ public class DatabasePainter extends JComponent {
 //		if (aliensVisible) {
 			lastHighlight = highlightAliens;
 			highlightAliens = -1;
-			for (int i = 0; i < world.player.discoveredPlayers.size(); i++) {
+			int i = 0;
+			for (Player p : world.player.knownPlayers.keySet()) {
 				int x = x0 + 20;
 				int y = y0 + 25 + 8 + i * 20;
-				int x1 = x + text.getTextWidth(14, labels.get(world.player.discoveredPlayers.get(i).race));
+				int x1 = x + text.getTextWidth(14, labels.get(p.race));
 				int y1 = y + 14;
 				if (e.getX() >= x && e.getX() <= x1 && e.getY() >= y && e.getY() <= y1) {
 					highlightAliens = i;
 				}
+				i++;
 			}
 			if (lastHighlight != highlightAliens) {
 				repaint();
@@ -384,14 +387,15 @@ public class DatabasePainter extends JComponent {
 			repaint();
 		}
 		if (aliensVisible) {
-			for (int i = 0; i < world.player.discoveredPlayers.size(); i++) {
+			int i = 0;
+			for (Player p : world.player.knownPlayers.keySet()) {
 				int x = x0 + 20;
 				int y = y0 + 25 + 8 + i * 20;
-				int x1 = x + text.getTextWidth(14, labels.get(world.player.discoveredPlayers.get(i).race));
+				int x1 = x + text.getTextWidth(14, labels.get(p.race));
 				int y1 = y + 14;
 				if (e.getX() >= x && e.getX() <= x1 && e.getY() >= y && e.getY() <= y1) {
 					if (selectedAliens != i) {
-						splitRows(labels.get(world.player.discoveredPlayers.get(i).race + ".details"));
+						splitRows(labels.get(p.race + ".details"));
 						alienDetails = true;
 						doShowAlienText();
 					}

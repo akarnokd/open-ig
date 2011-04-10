@@ -34,34 +34,52 @@
 	<entry key='database.race.free_traders_alliance'>Kereskedők Szövetsége</entry>
 	<entry key='database.race.free_nations_society'>Szabad Nemzetek Szöv.</entry>
 	<entry key='database.race.pirates'>Kalózok</entry>
-	<entry key='database.race.garthogs'>Garthogok</entry>
-	<entry key='database.race.ychoms'>Ychomok</entry>
-	<entry key='database.race.morgaths'>Morgathok</entry>
+	<entry key='database.race.garthog'>Garthogok</entry>
+	<entry key='database.race.ychom'>Ychomok</entry>
+	<entry key='database.race.morgath'>Morgathok</entry>
 	<entry key='database.race.dribs'>Dribek</entry>
-	<entry key='database.race.ecaleps'>Ecalepek</entry>
-	<entry key='database.race.sulleps'>Sullepek</entry>
-	<entry key='database.race.dargslans'>Dargslanok</entry>
+	<entry key='database.race.ecalep'>Ecalepek</entry>
+	<entry key='database.race.sullep'>Sullepek</entry>
+	<entry key='database.race.dargslan'>Dargslanok</entry>
 	
-	<entry key='database.race.free_traders_alliance.details'>A Régi Birodalom része voltak egykor, de a Kereskedők elhagyták, hogy létrehozzanak egy új birodalmat. Békés, kereskedő népség.</entry>
+	<entry key='database.race.free_traders_alliance.details'>A Régi Birodalom része voltak egykor, de a Kereskedők elhagyták, hogy létrehozzanak egy új birodalmat. Békés, kereskedő népség és jó kapcsolatokat ápolnak az Ychomokkal.</entry>
 	<entry key='database.race.free_nations_society.details'>Egykor a régi nagy Birodalom része voltak, de már régen kikiáltották függetlenségüket. Az SZNSZ gyorsan gyárt újabbnál újabb flottákat és könnyedén fogla el új területeket. Az SZNSZ vezetői rendkívül arrogánsak a Birodalommal szemben.</entry>
 	<entry key='database.race.pirates.details'>A kalózok több fajból összeállt törvényen kívüli banda. Előszeretettel támadnak meg védtelen kereskedelmi hajókat és gyakran állnak át hozzájuk a morálukat vesztett kolóniák is. Hadi flottákat eddig még szándékosan sosem támadtak meg.</entry>
-	<entry key='database.race.garthogs.details'>A Garthog rendkívül sunyi faj. Imádnak mindenféle gépet, és szí@esen ellopnak bármilyen új technologiát. A gépek iránti szeretetük akkora, hogy extra szenzorokat építenek be a gyerekeikbe is, amikor megszületnek. Állítólag kiírtották a Nub nevezetű fajt, hogy ellophassák technológiájukat. A Garthog birodalom közel van az emberi birodalmakhoz, és már több mint 10 éve háborúznak. Speciális földi fegyverrel - a radarzavaró járművel - is rendelkeznek.</entry>
-	<entry key='database.race.ychoms.details'>Békés, kereskedő nép. Jó kapcsolataik vannak a Kereskedők Szövetségével. Az Ychomok érdekes fegyverrel védik saját kolóniáikat - egy aknatelepítő gépezettel.</entry>
-	<entry key='database.race.morgaths.details'>A Morgathok nagyon barátságtalanok. Sose bíznak meg senkiben. Állítólag hatalmas űrhajóik vannak, és egy speciális földi egységük, a Kamikaze tank. Vigyázz, ha közel kerülsz hozzá!</entry>
-	<entry key='database.race.dribs.details'>Dribek egy büszke faj. A technikai fejlettségük megmutatkozik a mechanikai és építkezési tudományukban.</entry>
-	<entry key='database.race.ecaleps.details'>A birodalmuk gyorsan nő és átlagon felüliek az adóbevételeik. Talán ezért is szeretik annyira a pénzt. Kifejlesztettek egy új speciális földi egységet, a rakétazavaró tankot, amely amellett, hogy erős páncélzattal rendelkezik, a rakétákat is eltéríti, így lehetetlen rakétás egységgel kilőni.</entry>
-	<entry key='database.race.sulleps.details'>A Sullepek alaptermészete a háború. Nagyon szigorú szociális szervezetekben nőnek fel. Kicsinyeiket születésüktől fogva harcra tanítják. Soha nem adják meg magukat a harcban - sokkal nagyobb dicsőség a csatamezőn meghalniuk, mint vesztesként hazatérni.</entry>
-	<entry key='database.race.dargslans.details'>Nem sokat tudni a Dargslanokról, kivéve azt, hogy nagy erőkkel rendelkeznek a földön és az űrben egyaránt.</entry>
+	<entry key='database.race.garthog.details'>A Garthog rendkívül sunyi faj. Imádnak mindenféle gépet, és szí@esen ellopnak bármilyen új technologiát. A gépek iránti szeretetük akkora, hogy extra szenzorokat építenek be a gyerekeikbe is, amikor megszületnek. Állítólag kiírtották a Nub nevezetű fajt, hogy ellophassák technológiájukat. A Garthog birodalom közel van az emberi birodalmakhoz, és már több mint 10 éve háborúznak. Speciális földi fegyverrel - a radarzavaró járművel - is rendelkeznek.</entry>
+	<entry key='database.race.ychom.details'>Békés, kereskedő nép. Jó kapcsolataik vannak a Kereskedők Szövetségével. Az Ychomok érdekes fegyverrel védik saját kolóniáikat - egy aknatelepítő gépezettel.</entry>
+	<entry key='database.race.morgath.details'>A Morgathok nagyon barátságtalanok. Sose bíznak meg senkiben. Állítólag hatalmas űrhajóik vannak, és egy speciális földi egységük, a Kamikaze tank. Vigyázz, ha közel kerülsz hozzá!</entry>
+	<entry key='database.race.drib.details'>Dribek egy büszke faj. A technikai fejlettségük megmutatkozik a mechanikai és építkezési tudományukban.</entry>
+	<entry key='database.race.ecalep.details'>A birodalmuk gyorsan nő és átlagon felüliek az adóbevételeik. Talán ezért is szeretik annyira a pénzt. Kifejlesztettek egy új speciális földi egységet, a rakétazavaró tankot, amely amellett, hogy erős páncélzattal rendelkezik, a rakétákat is eltéríti, így lehetetlen rakétás egységgel kilőni.</entry>
+	<entry key='database.race.sullep.details'>A Sullepek alaptermészete a háború. Nagyon szigorú szociális szervezetekben nőnek fel. Kicsinyeiket születésüktől fogva harcra tanítják. Soha nem adják meg magukat a harcban - sokkal nagyobb dicsőség a csatamezőn meghalniuk, mint vesztesként hazatérni.</entry>
+	<entry key='database.race.dargslan.details'>Nem sokat tudni a Dargslanokról, kivéve azt, hogy nagy erőkkel rendelkeznek a földön és az űrben egyaránt.</entry>
 
-	<entry key='database.map.1'></entry>
-	<entry key='database.map.2'></entry>
-	<entry key='database.map.3'></entry>
+	<entry key='database.map.1'>
+	
+	1. Híd
+	2. A hadnagy szobája
+	3. Legénységi szállás
+	</entry>
+	<entry key='database.map.2'>
+	1. Híd
+	2. A főhadnagy szobája
+	3. Legénységi szállás
+	4. Bár
+	</entry>
+	<entry key='database.map.3'>
+	
+	1. Híd
+	2. Kutatás-gyártás terminálok
+	3. Felszerelés terminál
+	4. A százados szobája
+	5. Bár
+	6. Legénységi szállás
+	</entry>
 	<entry key='database.map.4'>
 	
 	1. Híd
 	2. Kutatás-gyártás terminálok
 	3. Felszerelés terminál
-	4. Az admirális szobája
+	4. Az ezredes szobája
 	5. Bár
 	6. Legénységi szállás
 	7. Diplomáciai kapcsolatok szobája</entry>
@@ -74,11 +92,12 @@
 	5. Bár
 	6. Legénységi szállás
 	7. Diplomáciai kapcsolatok szobája</entry>
-	<entry key='database.map.1.title'></entry>
-	<entry key='database.map.2.title'></entry>
+	<entry key='database.map.1.title'>A Romboló térképe</entry>
+	<entry key='database.map.2.title'>A Cirkáló térképe</entry>
 	<entry key='database.map.3.title'>A Thorin zászlóshajó térképe</entry>
 	<entry key='database.map.4.title'>A Thorin zászlóshajó térképe</entry>
 	<entry key='database.map.5.title'>A Thorin zászlóshajó térképe</entry>
+	
 	<entry key='bar.phsychologist.101'>Üdvözlöm, doktornő. Tudna rám fordítani egy kis időt?</entry>
 	<entry key='bar.phsychologist.111'>Szeretném, ha mesélne arról a tesztről, amit ki kellett töltenem.</entry>
 	<entry key='bar.phsychologist.112'>Van egy-két érdekes álmom, ami megfejtésre vár...</entry>
