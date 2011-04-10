@@ -6,7 +6,7 @@
 
 *April 10. 2011*
 
-I've implemented the bar and database screen, improved and fixed the presentation on many screens.
+I've implemented the bar and database screens, improved and fixed the presentation on many screens.
 
 Reminder: hit CTRL+O to take ownership of an empty or enemy planet, if you need to build more laboratories or factories.
 
