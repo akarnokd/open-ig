@@ -2851,18 +2851,22 @@ public class InfoScreen extends ScreenBase {
 		public void draw(Graphics2D g2) {
 			
 			int textSize = 10;
-			int cellSize = 22;
+			int cellSize = 18;
 			
 			int maxw = commons.text().getTextWidth(textSize, player().shortName);
-			int maxh = player().shortName.length() * 12;
+			int hlimit = 6;
+			int maxh = hlimit * 9;
 			
 			List<Player> pl = new ArrayList<Player>();
 			List<Player> war = new ArrayList<Player>();
 			List<Player> ally = new ArrayList<Player>();
 			pl.add(player());
 			for (Player p : player().knownPlayers.keySet()) {
+				if (p == player() || p.race.equals("pirates")) {
+					continue;
+				}
 				maxw = Math.max(maxw, commons.text().getTextWidth(textSize, p.shortName));
-				maxh = Math.max(maxh, p.shortName.length() * 12);
+//				maxh = Math.max(maxh, p.shortName.length() * 9);
 				pl.add(p);
 				if (player().knows(p)) {
 					int s = player().getStance(p);
@@ -2887,8 +2891,8 @@ public class InfoScreen extends ScreenBase {
 				if (i < pl.size()) {
 					Player p = pl.get(i);
 					commons.text().paintTo(g2, 0, maxh + i * cellSize + (cellSize - textSize) / 2, textSize, p.color, p.shortName);
-					for (int j = 0; j < p.shortName.length(); j++) {
-						commons.text().paintTo(g2, maxw + i * cellSize + (cellSize - textSize) / 2, j * 12, textSize, p.color, p.shortName.substring(j, j + 1));
+					for (int j = 0; j < p.shortName.length() && j < hlimit; j++) {
+						commons.text().paintTo(g2, maxw + i * cellSize + (cellSize - 7) / 2, j * 9, 7, p.color, p.shortName.substring(j, j + 1));
 					}
 				}
 			}
@@ -2934,8 +2938,8 @@ public class InfoScreen extends ScreenBase {
 			
 			commons.text().paintTo(g2, 0, maxh + pl.size() * cellSize + cellSize, 10, TextRenderer.GREEN, get("relations.allies"));
 
-			int tx = 10;
-			int ty = maxh + pl.size() * cellSize + cellSize * 2;
+			int tx = commons.text().getTextWidth(10, get("relations.allies")) + 5;
+			int ty = maxh + pl.size() * cellSize + cellSize;
 
 			// paint allies
 			int sep = commons.text().getTextWidth(textSize, ", ");
@@ -2956,13 +2960,12 @@ public class InfoScreen extends ScreenBase {
 					i++;
 				}
 			} else {
-				commons.text().paintTo(g2, 10, ty, textSize, TextRenderer.GREEN, "-");
+				commons.text().paintTo(g2, tx, ty, textSize, TextRenderer.GREEN, "-");
 				ty += textSize + 2;
 			}
 			ty += 20;
-			tx = 10;
+			tx = commons.text().getTextWidth(10, get("relations.enemies")) + 5;
 			commons.text().paintTo(g2, 0, ty, 10, TextRenderer.GREEN, get("relations.enemies"));
-			ty += cellSize;
 			// paint enemies
 			i = 0;
 			if (war.size() > 0) {
@@ -2981,7 +2984,7 @@ public class InfoScreen extends ScreenBase {
 					i++;
 				}
 			} else {
-				commons.text().paintTo(g2, 10, ty, 10, TextRenderer.GREEN, "-");
+				commons.text().paintTo(g2, tx, ty, 10, TextRenderer.GREEN, "-");
 			}
 		}
 	}
