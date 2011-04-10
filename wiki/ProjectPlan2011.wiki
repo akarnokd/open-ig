@@ -19,12 +19,12 @@ This page lists tasks that I want to complete with expected times.
 || Screen: Bar || 2011-04-10 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Test implementation exists, only integration is required. *v0.89* ||
 || Screen: Database || 2011-04-10 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || I have a test implementation, but I'm not satisfied with its behavior. ||
 || Screen: Statistics & Achievements || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Polish the current implementation, its look and behavior. *v0.89* ||
+|| Basic simulation || 2011-05-15 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Time elapse, running research and production, fleet movements. Gather achievements and statistics. No enemies. *v0.87* ||
 || Screen: Test || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || A very simple screen for the test questions. ||
 || Screen: Credits || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || A simple scrolling credits. ||
 || Screen: Credits || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Finish the Equipment screen. ||
 || Screen: Diplomacy || 2011-04-24 || - || I need to run the original game to figure out the available talk options. ||
 || Sound & Music integration || 2011-04-24 || - || Add sound and music. ||
-|| Basic simulation || 2011-05-15 || - || Time elapse, running research and production, fleet movements. Gather achievements and statistics. No enemies. ||
 || Screen: Save, Load & Options || 2011-05-15 || - || Will come in handy when testing. ||
 || Surface & Space battles || 2011-06-05 || - || Rendering and basic simulation ||
 || Scripting for campaign || 2011-07-03 || - || Build a scriptable campaign engine. We will use the internal JavaScript support. ||
