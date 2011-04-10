@@ -18,7 +18,7 @@ This page lists tasks that I want to complete with expected times.
 || Screen: Information || 2011-04-03 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || It contains 8 different tabs with different content and behavior. *v0.87* ||
 || Screen: Bar || 2011-04-10 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Test implementation exists, only integration is required. ||
 || Screen: Database || 2011-04-10 || - || I have a test implementation, but I'm not satisfied with its behavior. ||
-|| Screen: Statistics & Achievements || 2011-04-17 || - || Polish the current implementation, its look and behavior. ||
+|| Screen: Statistics & Achievements || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Polish the current implementation, its look and behavior. *v0.89* ||
 || Screen: Test || 2011-04-17 || - || A very simple screen for the test questions. ||
 || Screen: Credits || 2011-04-24 || - || A simple scrolling credits. ||
 || Screen: Diplomacy || 2011-04-24 || - || I need to run the original game to figure out the available talk options. ||
