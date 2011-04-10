@@ -17,7 +17,7 @@ This page lists tasks that I want to complete with expected times.
 || Screen: Colony || 2011-04-03 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Integrate properly with the main game, add controls. Transform all old planets via the map editor. *v0.86* ||
 || Screen: Information || 2011-04-03 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || It contains 8 different tabs with different content and behavior. *v0.87* ||
 || Screen: Bar || 2011-04-10 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Test implementation exists, only integration is required. *v0.89* ||
-|| Screen: Database || 2011-04-10 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || I have a test implementation, but I'm not satisfied with its behavior. ||
+|| Screen: Database || 2011-04-10 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || I have a test implementation, but I'm not satisfied with its behavior. *v0.89* ||
 || Screen: Statistics & Achievements || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Polish the current implementation, its look and behavior. *v0.89* ||
 || Basic simulation || 2011-05-15 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Time elapse, running research and production, fleet movements. Gather achievements and statistics. No enemies. *v0.87* ||
 || Screen: Test || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || A very simple screen for the test questions. ||
