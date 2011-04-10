@@ -20,6 +20,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.Player;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
@@ -177,7 +178,8 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_COLONY, 
 			Screens.INFORMATION_FINANCIAL, 
 			Screens.INFORMATION_INVENTIONS, 
-			Screens.INFORMATION_MILITARY 
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_ALIENS 
 		})
 	UILabel planetTitle;
 	/** Building cost label. */
@@ -209,6 +211,7 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsHouse;
 	/** Problem indicator icon. */
@@ -219,6 +222,7 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsEnergy;
 	/** Problem indicator icon. */
@@ -229,6 +233,7 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsFood;
 	/** Problem indicator icon. */
@@ -239,6 +244,7 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsHospital;
 	/** Problem indicator icon. */
@@ -249,6 +255,7 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsWorker;
 	/** Problem indicator icon. */
@@ -259,6 +266,7 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsVirus;
 	/** Problem indicator icon. */
@@ -269,6 +277,7 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsStadium;
 	/** Problem indicator icon. */
@@ -279,6 +288,7 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsRepair;
 	/** Problem indicator icon. */
@@ -289,6 +299,7 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsColonyHub;
 	/** The current planet's owner. */
@@ -296,7 +307,8 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
-			Screens.INFORMATION_PLANETS 
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_ALIENS 
 			})
 	UILabel colonyOwner;
 	/** The current planet's race. */
@@ -304,7 +316,8 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
-			Screens.INFORMATION_PLANETS 
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_ALIENS
 			})
 	UILabel colonyRace;
 	/** The current planet's surface. */
@@ -312,7 +325,8 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
-			Screens.INFORMATION_PLANETS 
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_ALIENS 
 			})
 	UILabel colonySurface;
 	/** The current planet's population. */
@@ -320,7 +334,8 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
-			Screens.INFORMATION_PLANETS 
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_ALIENS 
 			})
 	UILabel colonyPopulation;
 	/** The current planet's taxation. */
@@ -328,7 +343,8 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
-			Screens.INFORMATION_PLANETS 
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_ALIENS 
 			})
 	UILabel colonyTax;
 	/** Other things with the planet. */
@@ -336,7 +352,8 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_MILITARY,
 			Screens.INFORMATION_FINANCIAL,
 			Screens.INFORMATION_COLONY, 
-			Screens.INFORMATION_PLANETS 
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_ALIENS
 			})
 	UILabel colonyOther;
 	/** The financial info panel. */
@@ -421,6 +438,11 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_FINANCIAL
 	})
 	UIGenericButton statisticsButton;
+	/** The diplomacy panel. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_ALIENS
+	})
+	DiplomacyPanel diplomacyPanel;
 	/** The animation timer. */
 	Closeable animation;
 	/** The blink state. */
@@ -744,6 +766,8 @@ public class InfoScreen extends ScreenBase {
 			}
 		};
 		
+		diplomacyPanel = new DiplomacyPanel();
+		
 		addThis();
 	}
 	@Override
@@ -841,6 +865,8 @@ public class InfoScreen extends ScreenBase {
 		statisticsButton.location(togglePlanetListDetails.location());
 		
 		militaryInfo.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
+		
+		diplomacyPanel.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -870,6 +896,9 @@ public class InfoScreen extends ScreenBase {
 		} else
 		if (mode == Screens.INFORMATION_FINANCIAL) {
 			financialInfo.update();
+		} else
+		if (mode == Screens.INFORMATION_ALIENS) {
+			displayPlanetInfo();
 		}
 		
 		super.draw(g2);
@@ -2793,5 +2822,150 @@ public class InfoScreen extends ScreenBase {
 	public void onEndGame() {
 		// TODO Auto-generated method stub
 		
+	}
+	/** The diplomacy screen. */
+	class DiplomacyPanel extends UIComponent {
+		/**
+		 * Construct the labels. 
+		 */
+		public DiplomacyPanel() {
+			// TODO Auto-generated constructor stub
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			
+			int textSize = 10;
+			int cellSize = 22;
+			
+			int maxw = commons.text().getTextWidth(textSize, player().shortName);
+			int maxh = 0;
+			List<Player> pl = new ArrayList<Player>();
+			List<Player> war = new ArrayList<Player>();
+			List<Player> ally = new ArrayList<Player>();
+			pl.add(player());
+			for (Player p : player().knownPlayers.keySet()) {
+				maxw = Math.max(maxw, commons.text().getTextWidth(textSize, p.shortName));
+				maxh = Math.max(maxh, p.shortName.length() * 12);
+				pl.add(p);
+				if (player().knows(p)) {
+					int s = player().getStance(p);
+					if (s < 10) {
+						war.add(p);
+					} else
+					if (s > 90) {
+						ally.add(p);
+					}
+				}
+			}
+			
+			maxw += 5;
+			maxh += 5;
+			
+			g2.setColor(new Color(0xFF087B73));
+			
+			for (int i = 0; i <= pl.size(); i++) {
+				g2.drawLine(maxw, maxh + i * cellSize, maxw + pl.size() * cellSize, maxh + i * cellSize);
+				g2.drawLine(maxw + i * cellSize, maxh, maxw + i * cellSize,  maxh + pl.size() * cellSize);
+
+				if (i < pl.size()) {
+					Player p = pl.get(i);
+					commons.text().paintTo(g2, 0, maxh + i * cellSize + (cellSize - textSize) / 2, textSize, p.color, p.shortName);
+					for (int j = 0; j < p.shortName.length(); j++) {
+						commons.text().paintTo(g2, maxw + i * cellSize + (cellSize - textSize) / 2, j * 12, textSize, p.color, p.shortName.substring(j, j + 1));
+					}
+				}
+			}
+			
+			int stanceHeight = 7;
+			for (int i = 0; i < pl.size(); i++) {
+				Player row = pl.get(i);
+				for (int j = 0; j < pl.size(); j++) {
+					Player col = pl.get(j);
+					
+					String stance = "-";
+					int st = -1;
+					if (i != j && row.knows(col)) {
+						st = row.getStance(col);
+						stance = Integer.toString(st);
+					}
+					int stanceColor = TextRenderer.GREEN;
+					if (st >= 0) {
+						if (st < 30) {
+							stanceColor = TextRenderer.RED;
+						} else
+						if (st < 40) {
+							stanceColor = TextRenderer.YELLOW;
+						} else
+						if (st > 80) {
+							stanceColor = TextRenderer.LIGHT_BLUE;
+						} else
+						if (st > 60) {
+							stanceColor = TextRenderer.LIGHT_GREEN;
+						}
+					}
+					
+					int sw = commons.text().getTextWidth(stanceHeight, stance);
+					commons.text().paintTo(g2, 
+							maxw + j * cellSize + (cellSize - sw) / 2,
+							maxh + i * cellSize + (cellSize - stanceHeight) / 2,
+							stanceHeight,
+							stanceColor,
+							stance
+					);
+				}				
+			}
+			
+			commons.text().paintTo(g2, 0, maxh + pl.size() * cellSize + cellSize, 10, TextRenderer.GREEN, get("relations.allies"));
+
+			int tx = 10;
+			int ty = maxh + pl.size() * cellSize + cellSize * 2;
+
+			// paint allies
+			int sep = commons.text().getTextWidth(textSize, ", ");
+			int i = 0;
+			if (ally.size() > 0) {
+				for (Player ally0 : ally) {
+					int w = commons.text().getTextWidth(textSize, ally0.name);
+					if (tx + w >= width) {
+						tx = 10;
+						ty += textSize + 2;
+					}
+					commons.text().paintTo(g2, tx, ty, textSize, ally0.color, ally0.name);
+					tx += w;
+					if (i < ally.size() - 1) {
+						commons.text().paintTo(g2, tx, ty, textSize, TextRenderer.GREEN, ",");
+						tx += sep;
+					}
+					i++;
+				}
+			} else {
+				commons.text().paintTo(g2, 10, ty, textSize, TextRenderer.GREEN, "-");
+				ty += textSize + 2;
+			}
+			ty += 20;
+			tx = 10;
+			commons.text().paintTo(g2, 0, ty, 10, TextRenderer.GREEN, get("relations.enemies"));
+			ty += cellSize;
+			// paint enemies
+			i = 0;
+			if (war.size() > 0) {
+				for (Player war0 : war) {
+					int w = commons.text().getTextWidth(textSize, war0.name);
+					if (tx + w >= width) {
+						tx = 10;
+						ty += textSize + 2;
+					}
+					commons.text().paintTo(g2, tx, ty, textSize, war0.color, war0.name);
+					tx += w;
+					if (i < ally.size() - 1) {
+						commons.text().paintTo(g2, tx, ty, textSize, TextRenderer.GREEN, ",");
+						tx += sep;
+					}
+					i++;
+				}
+			} else {
+				commons.text().paintTo(g2, 10, ty, 10, TextRenderer.GREEN, "-");
+			}
+		}
 	}
 }

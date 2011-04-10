@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -98,7 +97,7 @@ public class World {
 	public void load(final ResourceLocator resLocator, final String game) {
 		this.name = game;
 		this.rl = resLocator;
-		final ExecutorService exec = 
+		final ThreadPoolExecutor exec = 
 			new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 
 					Integer.MAX_VALUE, 1, TimeUnit.SECONDS, 
 					new LinkedBlockingQueue<Runnable>(),
@@ -112,6 +111,7 @@ public class World {
 					return t;
 				}
 			});
+		exec.allowCoreThreadTimeOut(true);
 		final WipPort wip = new WipPort(5);
 		try {
 			level = definition.startingLevel;
@@ -341,6 +341,7 @@ public class World {
 		p.color = (int)Long.parseLong(player.get("color"), 16);
 		p.race = player.get("race");
 		p.name = labels.get(player.get("name"));
+		p.shortName = labels.get(player.get("name") + ".short");
 		
 		p.money = player.getInt("money");
 		p.initialStance = player.getInt("initial-stance");

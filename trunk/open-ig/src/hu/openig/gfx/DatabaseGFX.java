@@ -54,9 +54,9 @@ public class DatabaseGFX {
 	 * @return this
 	 */
 	public DatabaseGFX load(ResourceLocator rl) {
-		background = rl.getImage("information/database_background");
+		background = rl.getImage("database/database_background");
 
-		BufferedImage arrows = rl.getImage("information/arrow_updown"); 
+		BufferedImage arrows = rl.getImage("database/arrow_updown"); 
 		arrowDown = new BufferedImage[] {
 			ImageUtils.newSubimage(arrows, 0 * 34, 0, 34, 45),	
 			ImageUtils.newSubimage(arrows, 1 * 34, 0, 34, 45),	
@@ -67,7 +67,7 @@ public class DatabaseGFX {
 			ImageUtils.newSubimage(arrows, 4 * 34, 0, 34, 45),	
 			ImageUtils.newSubimage(arrows, 5 * 34, 0, 34, 45),	
 		};
-		BufferedImage edges = rl.getImage("information/picture_edge");
+		BufferedImage edges = rl.getImage("database/picture_edge");
 		pictureEdge = new BufferedImage[] {
 			ImageUtils.newSubimage(edges, 0 * 18, 0 * 18, 18, 18),
 			ImageUtils.newSubimage(edges, 1 * 18, 0 * 18, 18, 18),

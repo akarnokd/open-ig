@@ -30,6 +30,8 @@ public class Player {
 	public String id;
 	/** The player's name. */
 	public String name;
+	/** The player's name. */
+	public String shortName;
 	/** The coloring used for this player. */
 	public int color;
 	/** The fleet icon. */
