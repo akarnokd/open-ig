@@ -449,6 +449,18 @@
 	<entry key='players.sullep'>Sullep Klán</entry>
 	<entry key='players.dargslan'>Dargslan Királyság</entry>
 
+	<entry key='players.empire.short'>Birodalom</entry>
+	<entry key='players.free_traders.short'>Sz. Kereskedők</entry>
+	<entry key='players.free_nations.short'>Sz. Nemzetek</entry>
+	<entry key='players.pirates.short'>Pirates</entry>
+	<entry key='players.garthog.short'>Garthog</entry>
+	<entry key='players.ychom.short'>Ychom</entry>
+	<entry key='players.morgath.short'>Morgath</entry>
+	<entry key='players.dribs.short'>Dribs</entry>
+	<entry key='players.ecalep.short'>Ecalep</entry>
+	<entry key='players.sullep.short'>Sullep</entry>
+	<entry key='players.dargslan.short'>Dargslan</entry>
+
 	<entry key='planet.type.rocky'>sziklás</entry>
 	<entry key='planet.type.cratered'>kráteres</entry>
 	<entry key='planet.type.earth'>Föld-szerű</entry>

@@ -447,6 +447,7 @@
 	<entry key='building.resource.type.credit'> cr</entry>
 	<entry key='building.resource.type.hospital'> men</entry>
 	<entry key='planets.earth'>Earth</entry>
+	
 	<entry key='players.empire'>Galactic Empire</entry>
 	<entry key='players.free_traders'>Free Traders Alliance</entry>
 	<entry key='players.free_nations'>Free Nations Society</entry>
@@ -458,6 +459,18 @@
 	<entry key='players.ecalep'>Ecalep Republic</entry>
 	<entry key='players.sullep'>Sullep Empire</entry>
 	<entry key='players.dargslan'>Dargslan Kingdom</entry>
+
+	<entry key='players.empire.short'>Empire</entry>
+	<entry key='players.free_traders.short'>Free Traders</entry>
+	<entry key='players.free_nations.short'>Free Nations</entry>
+	<entry key='players.pirates.short'>Pirates</entry>
+	<entry key='players.garthog.short'>Garthog</entry>
+	<entry key='players.ychom.short'>Ychom</entry>
+	<entry key='players.morgath.short'>Morgath</entry>
+	<entry key='players.dribs.short'>Dribs</entry>
+	<entry key='players.ecalep.short'>Ecalep</entry>
+	<entry key='players.sullep.short'>Sullep</entry>
+	<entry key='players.dargslan.short'>Dargslan</entry>
 	
 	<entry key='planet.type.rocky'>rocky</entry>
 	<entry key='planet.type.cratered'>cratered</entry>
@@ -981,5 +994,6 @@
 	<entry key='statistics.galaxy_money_trade_income'>Galaxy trade income</entry>
 	<entry key='info.statistics'>Statistics</entry>
 	
-	
+	<entry key='relations.allies'>Allies:</entry>
+	<entry key='relations.enemies'>Enemies:</entry>
 </labels>
