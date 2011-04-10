@@ -134,7 +134,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (e.has(Type.CLICK)) {
+		if (e.has(Type.UP)) {
 			stopPlayback();
 		}
 		return false;

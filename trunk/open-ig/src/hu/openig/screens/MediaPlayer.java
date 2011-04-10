@@ -8,18 +8,20 @@
 
 package hu.openig.screens;
 
-import hu.openig.core.SwappableRenderer;
-import hu.openig.sound.AudioThread;
 import hu.openig.core.Act;
+import hu.openig.core.Action1;
+import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.core.SubtitleManager;
-import hu.openig.core.ResourceLocator.ResourcePlace;
+import hu.openig.core.SwappableRenderer;
 import hu.openig.model.VideoAudio;
+import hu.openig.sound.AudioThread;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -60,8 +62,6 @@ public class MediaPlayer {
 	public volatile Act onComplete;
 	/** The label event. */
 	public volatile LabelEvent onLabel;
-	/** The continuation thread. */
-	protected Thread continueThread;
 	/**
 	 * Constructor.
 	 * @param commons the commons resources
@@ -91,8 +91,11 @@ public class MediaPlayer {
 			SwappableRenderer surface) {
 		final ResourcePlace audio = commons.audio(media.audio);
 		final ResourcePlace video = commons.video(media.video);
+
 		final CyclicBarrier barrier = new CyclicBarrier(audio != null ? 2 : 1);
-		final CyclicBarrier continuation = new CyclicBarrier(barrier.getParties() + 1);
+		
+		final AtomicInteger continuation = new AtomicInteger(barrier.getParties());
+		
 		ResourcePlace sub = commons.rl.get(media.video, ResourceType.SUBTITLE);
 		if (sub != null) {
 			subtitle = new SubtitleManager(sub.open());
@@ -129,16 +132,18 @@ public class MediaPlayer {
 							videoThread.setAudioLength(buffer.length);
 							try {
 								barrier.await();
+								if (!stop) {
+									sdl.start();
+									sdl.write(buffer2, 0, buffer2.length);
+									sdl.drain();
+									sdl.stop();
+									sdl.close();
+								}
 							} catch (InterruptedException ex) {
 								
 							} catch (BrokenBarrierException ex) {
 								
 							}
-							sdl.start();
-							sdl.write(buffer2, 0, buffer2.length);
-							sdl.drain();
-							sdl.stop();
-							sdl.close();
 						} catch (LineUnavailableException ex) {
 							// TODO log
 						}
@@ -152,43 +157,39 @@ public class MediaPlayer {
 					// TODO log
 					ex.printStackTrace();
 				} finally {
-					try {
-						continuation.await();
-					} catch (InterruptedException ex) {
-						
-					} catch (BrokenBarrierException ex) {
-						
+					if (continuation.decrementAndGet() == 0) {
+						invokeComplete();
 					}
 				}
 			}
 		}, "Movie Audio");
-		videoThread = new VideoRenderer(barrier, continuation, surface, video, "Movie Video") {
+		
+		videoThread = new VideoRenderer(barrier, surface, video, "Movie Video",
+			new Action1<Void>() {
+				@Override
+				public void invoke(Void value) {
+					if (continuation.decrementAndGet() == 0) {
+						invokeComplete();
+					}
+				}
+			}
+		) {
 			@Override
 			public void onFrame(double fps, int frameIndex) {
 				setPosition(fps, frameIndex);
 			}
 		};
-		
-		continueThread = new Thread(new Runnable() {
+	}
+	/** Invoke the completion action. */
+	void invokeComplete() {
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					continuation.await();
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							if (onComplete != null && !terminated) {
-								onComplete.act();
-							}
-						}
-					});
-				} catch (InterruptedException ex) {
-					
-				} catch (BrokenBarrierException ex) {
-					
+				if (onComplete != null && !terminated) {
+					onComplete.act();
 				}
 			}
-		}, "Movie Completion Waiter");
+		});
 	}
 	/**
 	 * Upscale the 8 bit signed values to 16 bit signed values.
@@ -222,7 +223,6 @@ public class MediaPlayer {
 	 * Start the media playback.
 	 */
 	public void start() {
-		continueThread.start();
 		if (audioThread != null) {
 			audioThread.start();
 		}
@@ -235,6 +235,7 @@ public class MediaPlayer {
 		stop = true;
 		if (sdl != null) {
 			sdl.stop();
+			audioThread.interrupt();
 		}
 		if (videoThread != null) {
 			videoThread.stopPlayback();

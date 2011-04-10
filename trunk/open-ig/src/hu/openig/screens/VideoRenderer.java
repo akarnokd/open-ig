@@ -8,8 +8,9 @@
 
 package hu.openig.screens;
 
-import hu.openig.core.SwappableRenderer;
+import hu.openig.core.Action1;
 import hu.openig.core.ResourceLocator.ResourcePlace;
+import hu.openig.core.SwappableRenderer;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -26,8 +27,6 @@ import java.util.zip.GZIPInputStream;
 public class VideoRenderer extends Thread {
 	/** The audio synchronization. */
 	protected final CyclicBarrier audioSync;
-	/** The Completion synchronization. */
-	protected final CyclicBarrier completionSync;
 	/** The stopping flag. */
 	protected volatile boolean stopped;
 	/** The termination flag. */
@@ -44,27 +43,35 @@ public class VideoRenderer extends Thread {
 	protected Double fpsOverride;
 	/** Cache the images? Use in conjunction with the repeat property. */
 	protected boolean cacheImages;
+	/** The completion action. */
+	protected Action1<Void> onComplete;
 	/**
 	 * Constructor. Sets the synchronization and surface fields
 	 * @param audioSync the audio synchronization
-	 * @param completionSync the completion synchronization
 	 * @param surface the rendering surface
 	 * @param video the resource place
 	 * @param name the thread name
+	 * @param onComplete the completion action
 	 */
-	public VideoRenderer(CyclicBarrier audioSync, CyclicBarrier completionSync, SwappableRenderer surface,
-			ResourcePlace video, String name) {
+	public VideoRenderer(
+			CyclicBarrier audioSync, 
+			SwappableRenderer surface,
+			ResourcePlace video, 
+			String name,
+			Action1<Void> onComplete
+	) {
 		super(name);
 		this.audioSync = audioSync;
-		this.completionSync = completionSync;
 		this.surface = surface;
 		this.video = video;
+		this.onComplete = onComplete;
 	}
 	/**
 	 * The main decoding loop.
 	 */
 	@Override 
 	public void run() {
+		
 		try {
 			do {
 				DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
@@ -143,15 +150,8 @@ public class VideoRenderer extends Thread {
 			// TODO log
 			ex.printStackTrace();
 		} finally {
-			try {
-				completionSync.await();
-			} catch (InterruptedException ex) {
-				
-			} catch (BrokenBarrierException ex) {
-				
-			}
-			if (!terminated) {
-				onComplete();
+			if (!terminated && onComplete != null) {
+				onComplete.invoke(null);
 			}
 		}
 			
@@ -161,6 +161,7 @@ public class VideoRenderer extends Thread {
 	 */
 	public void stopPlayback() {
 		this.stopped = true;
+		this.interrupt();
 	}
 	/**
 	 * Stop and terminate the playback without waiting on the completion sync or calling onComplete. 
@@ -175,12 +176,6 @@ public class VideoRenderer extends Thread {
 	 * @param frameIndex the current frame index
 	 */
 	public void onFrame(double fps, int frameIndex) {
-		
-	}
-	/**
-	 * Completion callback when the playback (and audio both) have ended.
-	 */
-	public void onComplete() {
 		
 	}
 	/**
