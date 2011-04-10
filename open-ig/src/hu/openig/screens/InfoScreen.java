@@ -281,6 +281,16 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_BUILDINGS,
 	})
 	UIImage problemsRepair;
+	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+	})
+	UIImage problemsColonyHub;
 	/** The current planet's owner. */
 	@ModeUI(mode = { 
 			Screens.INFORMATION_MILITARY,
@@ -646,6 +656,7 @@ public class InfoScreen extends ScreenBase {
 		problemsVirus = new UIImage(commons.common().virusIcon);
 		problemsStadium = new UIImage(commons.common().stadiumIcon);
 		problemsRepair = new UIImage(commons.common().repairIcon);
+		problemsColonyHub = new UIImage(commons.common().colonyHubIcon);
 
 		colonyOwner = new UILabel("", 10, commons.text());
 		colonyRace = new UILabel("", 10, commons.text());
@@ -786,14 +797,16 @@ public class InfoScreen extends ScreenBase {
 		buildingPlanetRace.location(base.x + 420, buildingWorker.y + 62  + 17 * 2);
 		buildingPlanetSurface.location(base.x + 420, buildingWorker.y + 62  + 17 * 3);
 		
-		problemsHouse.location(base.x + 420, buildingWorker.y + 62 + 17 * 4);
-		problemsEnergy.location(base.x + 436, buildingWorker.y + 62  + 17 * 4);
-		problemsWorker.location(base.x + 452, buildingWorker.y + 62 + 17 * 4);
-		problemsFood.location(base.x + 468, buildingWorker.y + 62 + 17 * 4);
-		problemsHospital.location(base.x + 484, buildingWorker.y + 62 + 17 * 4);
-		problemsVirus.location(base.x + 484 + 16, buildingWorker.y + 62 + 17 * 4);
-		problemsStadium.location(base.x + 484 + 16 * 2, buildingWorker.y + 62 + 17 * 4);
-		problemsRepair.location(base.x + 484 + 16 * 3, buildingWorker.y + 62 + 17 * 4);
+		int probcount = 0;
+		problemsHouse.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
+		problemsEnergy.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62  + 17 * 4);
+		problemsWorker.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
+		problemsFood.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
+		problemsHospital.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
+		problemsVirus.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
+		problemsStadium.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
+		problemsRepair.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
+		problemsColonyHub.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
 
 		planetTitle.bounds(buildingTitle.bounds());
 		
@@ -2060,25 +2073,79 @@ public class InfoScreen extends ScreenBase {
 	 * @param p the planet
 	 */
 	void displayColonyProblems(Planet p) {
+		problemsHouse.visible(false);
+		problemsEnergy.visible(false);
+		problemsWorker.visible(false);
+		problemsFood.visible(false);
+		problemsHospital.visible(false);
+		problemsVirus.visible(false);
+		problemsStadium.visible(false);
+		problemsRepair.visible(false);
+		problemsColonyHub.visible(false);
 		if (p.owner == player()) {
 			PlanetStatistics ps = p.getStatistics();
-			problemsHouse.visible(ps.hasProblem(PlanetProblems.HOUSING) || (animationBlink && ps.hasWarning(PlanetProblems.HOUSING)));
-			problemsEnergy.visible(ps.hasProblem(PlanetProblems.ENERGY) || (animationBlink && ps.hasWarning(PlanetProblems.ENERGY)));
-			problemsWorker.visible(ps.hasProblem(PlanetProblems.WORKFORCE) || (animationBlink && ps.hasWarning(PlanetProblems.WORKFORCE)));
-			problemsFood.visible(ps.hasProblem(PlanetProblems.FOOD) || (animationBlink && ps.hasWarning(PlanetProblems.FOOD)));
-			problemsHospital.visible(ps.hasProblem(PlanetProblems.HOSPITAL) || (animationBlink && ps.hasWarning(PlanetProblems.HOSPITAL)));
-			problemsVirus.visible(ps.hasProblem(PlanetProblems.VIRUS) || (animationBlink && ps.hasWarning(PlanetProblems.VIRUS)));
-			problemsStadium.visible(ps.hasProblem(PlanetProblems.STADIUM) || (animationBlink && ps.hasWarning(PlanetProblems.STADIUM)));
-			problemsRepair.visible(ps.hasProblem(PlanetProblems.REPAIR) || (animationBlink && ps.hasWarning(PlanetProblems.REPAIR)));
-		} else {
-			problemsHouse.visible(false);
-			problemsEnergy.visible(false);
-			problemsWorker.visible(false);
-			problemsFood.visible(false);
-			problemsHospital.visible(false);
-			problemsVirus.visible(false);
-			problemsStadium.visible(false);
-			problemsRepair.visible(false);
+			if (ps.hasProblem(PlanetProblems.HOUSING)) {
+				problemsHouse.image(commons.common().houseIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.HOUSING)) {
+				problemsHouse.image(commons.common().houseIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.ENERGY)) {
+				problemsEnergy.image(commons.common().energyIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.ENERGY)) {
+				problemsEnergy.image(commons.common().energyIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.WORKFORCE)) {
+				problemsWorker.image(commons.common().workerIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.WORKFORCE)) {
+				problemsWorker.image(commons.common().workerIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.FOOD)) {
+				problemsFood.image(commons.common().foodIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.FOOD)) {
+				problemsFood.image(commons.common().foodIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.HOSPITAL)) {
+				problemsHospital.image(commons.common().hospitalIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.HOSPITAL)) {
+				problemsHospital.image(commons.common().hospitalIconDark).visible(true);
+			}
+
+			if (ps.hasProblem(PlanetProblems.VIRUS)) {
+				problemsVirus.image(commons.common().virusIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.VIRUS)) {
+				problemsVirus.image(commons.common().virusIconDark).visible(true);
+			}
+
+			if (ps.hasProblem(PlanetProblems.STADIUM)) {
+				problemsStadium.image(commons.common().stadiumIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.STADIUM)) {
+				problemsStadium.image(commons.common().stadiumIconDark).visible(true);
+			}
+
+			if (ps.hasProblem(PlanetProblems.REPAIR)) {
+				problemsRepair.image(commons.common().repairIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.REPAIR)) {
+				problemsRepair.image(commons.common().repairIconDark).visible(true);
+			}
+
+			if (ps.hasProblem(PlanetProblems.COLONY_HUB)) {
+				problemsColonyHub.image(commons.common().colonyHubIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.COLONY_HUB)) {
+				problemsColonyHub.image(commons.common().colonyHubIconDark).visible(true);
+			}
 		}
 	}
 	/** Display the right panel's planet info on the current selected planet. */
@@ -2600,67 +2667,84 @@ public class InfoScreen extends ScreenBase {
 						
 						int j = 0;
 						
-						if (ps.hasProblem(PlanetProblems.HOUSING) || (animationBlink && ps.hasWarning(PlanetProblems.HOUSING))) {
+						if (ps.hasProblem(PlanetProblems.HOUSING)) {
 							g2.drawImage(commons.common().houseIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.HOUSING)) {
+							g2.drawImage(commons.common().houseIconDark, probLeft + j * 11, y + 2, null);
 							j++;
 						}
 						
-						if (ps.hasProblem(PlanetProblems.ENERGY) || (animationBlink && ps.hasWarning(PlanetProblems.ENERGY))) {
+						if (ps.hasProblem(PlanetProblems.ENERGY)) {
 							g2.drawImage(commons.common().energyIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.ENERGY)) {
+							g2.drawImage(commons.common().energyIconDark, probLeft + j * 11, y + 2, null);
 							j++;
 						}
 						
-						if (ps.hasProblem(PlanetProblems.WORKFORCE) || (animationBlink && ps.hasWarning(PlanetProblems.WORKFORCE))) {
+						if (ps.hasProblem(PlanetProblems.WORKFORCE)) {
 							g2.drawImage(commons.common().workerIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.WORKFORCE)) {
+							g2.drawImage(commons.common().workerIconDark, probLeft + j * 11, y + 2, null);
 							j++;
 						}
 						
-						if (ps.hasProblem(PlanetProblems.FOOD) || (animationBlink && ps.hasWarning(PlanetProblems.FOOD))) {
+						if (ps.hasProblem(PlanetProblems.FOOD)) {
 							g2.drawImage(commons.common().foodIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.FOOD)) {
+							g2.drawImage(commons.common().foodIconDark, probLeft + j * 11, y + 2, null);
 							j++;
 						}
 						
-						if (ps.hasProblem(PlanetProblems.HOSPITAL) || (animationBlink && ps.hasWarning(PlanetProblems.HOSPITAL))) {
+						if (ps.hasProblem(PlanetProblems.HOSPITAL)) {
 							g2.drawImage(commons.common().hospitalIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.HOSPITAL)) {
+							g2.drawImage(commons.common().hospitalIconDark, probLeft + j * 11, y + 2, null);
 							j++;
 						}
 						
-						if (ps.hasProblem(PlanetProblems.VIRUS) || (animationBlink && ps.hasWarning(PlanetProblems.VIRUS))) {
+						if (ps.hasProblem(PlanetProblems.VIRUS)) {
 							g2.drawImage(commons.common().virusIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.VIRUS)) {
+							g2.drawImage(commons.common().virusIconDark, probLeft + j * 11, y + 2, null);
 							j++;
 						}
 						
-						if (ps.hasProblem(PlanetProblems.STADIUM) || (animationBlink && ps.hasWarning(PlanetProblems.STADIUM))) {
+						if (ps.hasProblem(PlanetProblems.STADIUM)) {
 							g2.drawImage(commons.common().stadiumIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.STADIUM)) {
+							g2.drawImage(commons.common().stadiumIconDark, probLeft + j * 11, y + 2, null);
 							j++;
 						}
 						
-						if (ps.hasProblem(PlanetProblems.REPAIR) || (animationBlink && ps.hasWarning(PlanetProblems.REPAIR))) {
+						if (ps.hasProblem(PlanetProblems.REPAIR)) {
 							g2.drawImage(commons.common().repairIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						} else
 						if (ps.hasWarning(PlanetProblems.REPAIR)) {
+							g2.drawImage(commons.common().repairIconDark, probLeft + j * 11, y + 2, null);
+							j++;
+						}
+						
+						if (ps.hasProblem(PlanetProblems.COLONY_HUB)) {
+							g2.drawImage(commons.common().colonyHubIcon, probLeft + j * 11, y + 2, null);
+							j++;
+						} else
+						if (ps.hasWarning(PlanetProblems.COLONY_HUB)) {
+							g2.drawImage(commons.common().colonyHubIconDark, probLeft + j * 11, y + 2, null);
 							j++;
 						}
 					}

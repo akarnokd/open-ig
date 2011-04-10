@@ -263,6 +263,8 @@ public class StarmapScreen extends ScreenBase {
 	UIImage problemsStadium;
 	/** Problem indicator icon. */
 	UIImage problemsRepair;
+	/** Problem indicator icon. */
+	UIImage problemsColonyHub;
 	/** Deploy satellite button. */
 	UIImageButton surveySatellite;
 	/** Deploy spy satellite 1 button. */
@@ -480,14 +482,16 @@ public class StarmapScreen extends ScreenBase {
 		colonyPopulationTax.location(bottomPanel.x + 10, bottomPanel.y + 54);
 		colonyOther.location(bottomPanel.x + 10, bottomPanel.y + 70);
 
-		problemsHouse.location(bottomPanel.x + bottomPanel.width - 215 - 11 * 7, bottomPanel.y + 70);
-		problemsEnergy.location(bottomPanel.x + bottomPanel.width - 215 - 11 * 6, bottomPanel.y + 70);
-		problemsWorker.location(bottomPanel.x + bottomPanel.width - 215 - 11 * 5, bottomPanel.y + 70);
-		problemsFood.location(bottomPanel.x + bottomPanel.width - 215 - 11 * 4, bottomPanel.y + 70);
-		problemsHospital.location(bottomPanel.x + bottomPanel.width - 215 - 11 * 3, bottomPanel.y + 70);
-		problemsVirus.location(bottomPanel.x + bottomPanel.width - 215 - 11 * 2, bottomPanel.y + 70);
-		problemsStadium.location(bottomPanel.x + bottomPanel.width - 215 - 11 * 1, bottomPanel.y + 70);
-		problemsRepair.location(bottomPanel.x + bottomPanel.width - 215 - 11 * 0, bottomPanel.y + 70);
+		int probcnt = 8;
+		problemsHouse.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsEnergy.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsWorker.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsFood.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsHospital.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsVirus.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsStadium.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsRepair.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsColonyHub.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 
 		surveySatellite.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 4);
 		spySatellite1.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 24);
@@ -570,25 +574,79 @@ public class StarmapScreen extends ScreenBase {
 	 * @param p the planet
 	 */
 	void displayColonyProblems(Planet p) {
+		problemsHouse.visible(false);
+		problemsEnergy.visible(false);
+		problemsWorker.visible(false);
+		problemsFood.visible(false);
+		problemsHospital.visible(false);
+		problemsVirus.visible(false);
+		problemsStadium.visible(false);
+		problemsRepair.visible(false);
+		problemsColonyHub.visible(false);
 		if (p.owner == player()) {
 			PlanetStatistics ps = p.getStatistics();
-			problemsHouse.visible(ps.hasProblem(PlanetProblems.HOUSING) || (minimapPlanetBlink && ps.hasWarning(PlanetProblems.HOUSING)));
-			problemsEnergy.visible(ps.hasProblem(PlanetProblems.ENERGY) || (minimapPlanetBlink && ps.hasWarning(PlanetProblems.ENERGY)));
-			problemsWorker.visible(ps.hasProblem(PlanetProblems.WORKFORCE) || (minimapPlanetBlink && ps.hasWarning(PlanetProblems.WORKFORCE)));
-			problemsFood.visible(ps.hasProblem(PlanetProblems.FOOD) || (minimapPlanetBlink && ps.hasWarning(PlanetProblems.FOOD)));
-			problemsHospital.visible(ps.hasProblem(PlanetProblems.HOSPITAL) || (minimapPlanetBlink && ps.hasWarning(PlanetProblems.HOSPITAL)));
-			problemsVirus.visible(ps.hasProblem(PlanetProblems.VIRUS) || (minimapPlanetBlink && ps.hasWarning(PlanetProblems.VIRUS)));
-			problemsStadium.visible(ps.hasProblem(PlanetProblems.STADIUM) || (minimapPlanetBlink && ps.hasWarning(PlanetProblems.STADIUM)));
-			problemsRepair.visible(ps.hasProblem(PlanetProblems.REPAIR) || (minimapPlanetBlink && ps.hasWarning(PlanetProblems.REPAIR)));
-		} else {
-			problemsHouse.visible(false);
-			problemsEnergy.visible(false);
-			problemsWorker.visible(false);
-			problemsFood.visible(false);
-			problemsHospital.visible(false);
-			problemsVirus.visible(false);
-			problemsStadium.visible(false);
-			problemsRepair.visible(false);
+			if (ps.hasProblem(PlanetProblems.HOUSING)) {
+				problemsHouse.image(commons.common().houseIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.HOUSING)) {
+				problemsHouse.image(commons.common().houseIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.ENERGY)) {
+				problemsEnergy.image(commons.common().energyIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.ENERGY)) {
+				problemsEnergy.image(commons.common().energyIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.WORKFORCE)) {
+				problemsWorker.image(commons.common().workerIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.WORKFORCE)) {
+				problemsWorker.image(commons.common().workerIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.FOOD)) {
+				problemsFood.image(commons.common().foodIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.FOOD)) {
+				problemsFood.image(commons.common().foodIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.HOSPITAL)) {
+				problemsHospital.image(commons.common().hospitalIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.HOSPITAL)) {
+				problemsHospital.image(commons.common().hospitalIconDark).visible(true);
+			}
+
+			if (ps.hasProblem(PlanetProblems.VIRUS)) {
+				problemsVirus.image(commons.common().virusIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.VIRUS)) {
+				problemsVirus.image(commons.common().virusIconDark).visible(true);
+			}
+
+			if (ps.hasProblem(PlanetProblems.STADIUM)) {
+				problemsStadium.image(commons.common().stadiumIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.STADIUM)) {
+				problemsStadium.image(commons.common().stadiumIconDark).visible(true);
+			}
+
+			if (ps.hasProblem(PlanetProblems.REPAIR)) {
+				problemsRepair.image(commons.common().repairIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.REPAIR)) {
+				problemsRepair.image(commons.common().repairIconDark).visible(true);
+			}
+
+			if (ps.hasProblem(PlanetProblems.COLONY_HUB)) {
+				problemsColonyHub.image(commons.common().colonyHubIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.COLONY_HUB)) {
+				problemsColonyHub.image(commons.common().colonyHubIconDark).visible(true);
+			}
 		}
 	}
 	/** Display the right panel's planet info on the current selected planet. */
@@ -816,35 +874,51 @@ public class StarmapScreen extends ScreenBase {
 					int i = 0;
 					for (PlanetProblems pp : combined) {
 						BufferedImage icon = null;
+						BufferedImage iconDark = null;
 						switch (pp) {
 						case HOUSING:
 							icon = commons.common().houseIcon;
+							iconDark = commons.common().houseIconDark;
 							break;
 						case FOOD:
 							icon = commons.common().foodIcon;
+							iconDark = commons.common().foodIconDark;
 							break;
 						case HOSPITAL:
 							icon = commons.common().hospitalIcon;
+							iconDark = commons.common().hospitalIconDark;
 							break;
 						case ENERGY:
 							icon = commons.common().energyIcon;
+							iconDark = commons.common().energyIconDark;
 							break;
 						case WORKFORCE:
 							icon = commons.common().workerIcon;
+							iconDark = commons.common().workerIconDark;
 							break;
 						case STADIUM:
 							icon = commons.common().stadiumIcon;
+							iconDark = commons.common().stadiumIconDark;
 							break;
 						case VIRUS:
 							icon = commons.common().virusIcon;
+							iconDark = commons.common().virusIconDark;
 							break;
 						case REPAIR:
 							icon = commons.common().repairIcon;
+							iconDark = commons.common().repairIconDark;
+							break;
+						case COLONY_HUB:
+							icon = commons.common().colonyHubIcon;
+							iconDark = commons.common().colonyHubIconDark;
 							break;
 						default:
 						}
-						if (ps.hasProblem(pp) || (minimapPlanetBlink && ps.hasWarning(pp))) {
+						if (ps.hasProblem(pp)) {
 							g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
+						} else
+						if (ps.hasWarning(pp)) {
+							g2.drawImage(iconDark, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);						
 						}
 						i++;
 					}
@@ -1389,6 +1463,7 @@ public class StarmapScreen extends ScreenBase {
 		problemsVirus = new UIImage(commons.common().virusIcon);
 		problemsStadium = new UIImage(commons.common().stadiumIcon);
 		problemsRepair = new UIImage(commons.common().repairIcon);
+		problemsColonyHub = new UIImage(commons.common().colonyHubIcon);
 
 		surveySatellite = new UIImageButton(commons.starmap().deploySatellite);
 		surveySatellite.onClick = new Act() {

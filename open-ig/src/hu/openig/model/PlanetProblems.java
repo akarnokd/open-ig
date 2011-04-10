@@ -28,5 +28,7 @@ public enum PlanetProblems {
 	/** Population demands a stadium. */
 	STADIUM,
 	/** Buildings need repair. */
-	REPAIR
+	REPAIR,
+	/** Colony hub missing. */
+	COLONY_HUB
 }

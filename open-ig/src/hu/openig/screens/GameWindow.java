@@ -436,6 +436,7 @@ public class GameWindow extends JFrame implements GameControls {
 					primary.resize();
 					primary.onEnter(mode);
 					repaintInner();
+					doMoveMouseAgain();
 				}
 			}
 		} else {
@@ -448,6 +449,7 @@ public class GameWindow extends JFrame implements GameControls {
 					secondary.resize();
 					secondary.onEnter(mode);
 					repaintInner();
+					doMoveMouseAgain();
 				}
 			}
 		}
@@ -532,14 +534,14 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		ScreenBase pri = primary;
 		ScreenBase sec = secondary;
-		if (pri != null) {
-			result |= pri.mouse(m);
-		} else
 		if (sec != null) {
 			result |= sec.mouse(m);
+		} else
+		if (pri != null) {
+			result |= pri.mouse(m);
 		}
 		if (result) {
-			repaint();
+			repaintInner();
 		}
 	}
 	/**

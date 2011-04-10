@@ -877,35 +877,51 @@ public class PlanetScreen extends ScreenBase {
 				int i = 0;
 				for (PlanetProblems pp : combined) {
 					BufferedImage icon = null;
+					BufferedImage iconDark = null;
 					switch (pp) {
 					case HOUSING:
 						icon = commons.common().houseIcon;
+						iconDark = commons.common().houseIconDark;
 						break;
 					case FOOD:
 						icon = commons.common().foodIcon;
+						iconDark = commons.common().foodIconDark;
 						break;
 					case HOSPITAL:
 						icon = commons.common().hospitalIcon;
+						iconDark = commons.common().hospitalIconDark;
 						break;
 					case ENERGY:
 						icon = commons.common().energyIcon;
+						iconDark = commons.common().energyIconDark;
 						break;
 					case WORKFORCE:
 						icon = commons.common().workerIcon;
+						iconDark = commons.common().workerIconDark;
 						break;
 					case STADIUM:
 						icon = commons.common().stadiumIcon;
+						iconDark = commons.common().stadiumIconDark;
 						break;
 					case VIRUS:
 						icon = commons.common().virusIcon;
+						iconDark = commons.common().virusIconDark;
 						break;
 					case REPAIR:
 						icon = commons.common().repairIcon;
+						iconDark = commons.common().repairIconDark;
+						break;
+					case COLONY_HUB:
+						icon = commons.common().colonyHubIcon;
+						iconDark = commons.common().colonyHubIconDark;
 						break;
 					default:
 					}
-					if (ps.hasProblem(pp) || (blink && ps.hasWarning(pp))) {
+					if (ps.hasProblem(pp)) {
 						g2.drawImage(icon, (width - w) / 2 + i * 11, 20, null);
+					} else
+					if (ps.hasWarning(pp)) {
+						g2.drawImage(iconDark, (width - w) / 2 + i * 11, 20, null);
 					}
 					i++;
 				}

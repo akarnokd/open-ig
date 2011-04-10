@@ -178,7 +178,7 @@ public class UIMouse {
 	public static Point current(Component c) {
 		Point pm = MouseInfo.getPointerInfo().getLocation();
 		Point pc = c.getLocationOnScreen();
-		return new Point(pc.x - pm.x, pc.y - pm.y);
+		return new Point(pm.x - pc.x, pm.y - pc.y);
 	}
 	/**
 	 * Create a mouse movement event as if the mouse just
@@ -196,8 +196,8 @@ public class UIMouse {
 		} catch (IllegalStateException ex) {
 			// ignored
 		}
-		m.x = pc.x - pm.x;
-		m.y = pc.y - pm.y;
+		m.x = pm.x - pc.x;
+		m.y = pm.y - pc.y;
 		return m;
 	}
 	/**

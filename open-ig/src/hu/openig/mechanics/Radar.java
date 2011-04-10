@@ -173,7 +173,7 @@ public final class Radar {
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			player.planets.put(planet, k);
 		}
-		if (planet.owner != player && !player.knows(planet.owner)) {
+		if (planet.owner != null && planet.owner != player && !player.knows(planet.owner)) {
 			player.setStance(planet.owner, player.initialStance);
 			// FIXME send discover message
 		}
@@ -189,7 +189,7 @@ public final class Radar {
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			player.fleets.put(fleet, k);
 		}
-		if (fleet.owner != player && !player.knows(fleet.owner)) {
+		if (fleet.owner != null && fleet.owner != player && !player.knows(fleet.owner)) {
 			player.setStance(fleet.owner, player.initialStance);
 			// FIXME send discover message
 		}
