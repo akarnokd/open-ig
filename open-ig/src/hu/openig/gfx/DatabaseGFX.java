@@ -76,32 +76,32 @@ public class DatabaseGFX {
 		};
 		int n = 5;
 		recordMessage = new BufferedImage[n];
-		colorScaleImage(rl.getImage("information/record_message"), recordMessage);
+		colorScaleImage(rl.getImage("database/record_message"), recordMessage);
 		aliens = new BufferedImage[n];
-		colorScaleImage(rl.getImage("information/aliens"), aliens);
+		colorScaleImage(rl.getImage("database/aliens"), aliens);
 		map = new BufferedImage[n];
-		colorScaleImage(rl.getImage("information/ship_map"), map);
+		colorScaleImage(rl.getImage("database/ship_map"), map);
 		help = new BufferedImage[n];
-		colorScaleImage(rl.getImage("information/help"), help);
+		colorScaleImage(rl.getImage("database/help"), help);
 		exit = new BufferedImage[n];
-		colorScaleImage(rl.getImage("information/exit_database"), exit);
+		colorScaleImage(rl.getImage("database/exit_database"), exit);
 		bridge = new BufferedImage[n];
-		colorScaleImage(rl.getImage("information/bridge"), bridge);
+		colorScaleImage(rl.getImage("database/bridge"), bridge);
 		info = new BufferedImage[n];
-		colorScaleImage(rl.getImage("information/info"), info);
+		colorScaleImage(rl.getImage("database/info"), info);
 		starmap = new BufferedImage[n];
-		colorScaleImage(rl.getImage("information/starmap"), starmap);
+		colorScaleImage(rl.getImage("database/starmap"), starmap);
 		diplomacy = new BufferedImage[n];
-		colorScaleImage(rl.getImage("information/diplomacy"), diplomacy);
+		colorScaleImage(rl.getImage("database/diplomacy"), diplomacy);
 		
-		textPanel = rl.getImage("information/database_textpanel");
+		textPanel = rl.getImage("database/database_textpanel");
 		
 		shipMap = new BufferedImage[] {
-			rl.getImage("information/ship_map_level_1"),	
-			rl.getImage("information/ship_map_level_2"),	
-			rl.getImage("information/ship_map_level_3"),	
-			rl.getImage("information/ship_map_level_4"),	
-			rl.getImage("information/ship_map_level_5"),	
+			rl.getImage("database/ship_map_level_1"),	
+			rl.getImage("database/ship_map_level_2"),	
+			rl.getImage("database/ship_map_level_3"),	
+			rl.getImage("database/ship_map_level_4"),	
+			rl.getImage("database/ship_map_level_5"),	
 		};
 		return this;
 	}

@@ -353,6 +353,8 @@ public class MainScreen extends ScreenBase {
 				toHu.disabled = false;
 				commons.control().switchLanguage("en");
 				selectRandomBackground();
+				doContinueListing();
+
 				askRepaint();
 			}
 		};
@@ -363,6 +365,7 @@ public class MainScreen extends ScreenBase {
 				toHu.disabled = true;
 				commons.control().switchLanguage("hu");
 				selectRandomBackground();
+				doContinueListing();
 				askRepaint();
 			}
 		};
