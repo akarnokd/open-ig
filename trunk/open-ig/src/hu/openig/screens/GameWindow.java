@@ -906,6 +906,8 @@ public class GameWindow extends JFrame implements GameControls {
 			boolean rep = false;
 			if (movieVisible) {
 				rep = movie.mouse(UIMouse.from(e));
+				repaintInner();
+				return;
 			} else
 			if (statusbarVisible) {
 				if (statusbar.mouse(UIMouse.from(e))) {
