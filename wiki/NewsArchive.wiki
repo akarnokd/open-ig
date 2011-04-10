@@ -4,6 +4,14 @@
 
 = April, 2011 =
 
+*April 10. 2011*
+
+I've implemented the bar and database screen, improved and fixed the presentation on many screens.
+
+Reminder: hit CTRL+O to take ownership of an empty or enemy planet, if you need to build more laboratories or factories.
+
+[http://code.google.com/p/open-ig/wiki/Game_Notes#Version_0.89_-_Bar_and_Database Release Notes]
+
 *April 8. 2011*
 
 Improvements to the game mechanics and user interface. Quick save (CTRL+S) and quick load (CTRL+L) feature added. See the [http://code.google.com/p/open-ig/wiki/Release_Notes release notes] and the [http://code.google.com/p/open-ig/wiki/Screenshots#Version_0.88_screenshots Screenshots] for further details.
