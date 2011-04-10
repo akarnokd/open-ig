@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 /**
@@ -72,52 +73,18 @@ public class Player {
 	public int money;
 	/** The player level statistics. */
 	public final PlayerStatistics statistics = new PlayerStatistics();
-	/** The player's finance status at a particular day. */
-	public class PlayerFinances {
-		/** The production cost. */
-		public int productionCost;
-		/** The research cost. */
-		public int researchCost;
-		/** The build cost. */
-		public int buildCost;
-		/** The repair cost. */
-		public int repairCost;
-		/** The tax income. */
-		public int taxIncome;
-		/** The trade income. */
-		public int tradeIncome;
-		/** The average tax morale. */
-		public int taxMorale;
-		/** The tax morale count. */
-		public int taxMoraleCount;
-		/**
-		 * Assign a different instance values.
-		 * @param other the other instance
-		 */
-		public void assign(PlayerFinances other) {
-			productionCost = other.productionCost;
-			researchCost = other.researchCost;
-			buildCost = other.buildCost;
-			repairCost = other.repairCost;
-			taxIncome = other.taxIncome;
-			tradeIncome = other.tradeIncome;
-			taxMorale = other.taxMorale;
-		}
-		/** Clear values. */
-		public void clear() {
-			productionCost = 0;
-			researchCost = 0;
-			buildCost = 0;
-			repairCost = 0;
-			taxIncome = 0;
-			tradeIncome = 0;
-			taxMoraleCount = 0;
-		}
-	}
+	/** The other players that are known. */
+	public final Map<Player, Integer> knownPlayers = new LinkedHashMap<Player, Integer>();
 	/** The global financial information yesterday. */
 	public final PlayerFinances yesterday = new PlayerFinances();
 	/** The global finalcial information today. */
 	public final PlayerFinances today = new PlayerFinances();
+	/** Initial stance for the newly discovered races. */
+	public int initialStance;
+	/** The priority queue for the messages. */
+	public final PriorityQueue<Message> messageQueue = new PriorityQueue<Message>();
+	/** The message history of the already displayes messages. */
+	public final List<Message> messageHistory = new ArrayList<Message>();
 	/**
 	 * @return returns the next planet by goind top-bottom relative to the current planet
 	 */
@@ -268,5 +235,29 @@ public class Player {
 	public int count(ResearchType type) {
 		Integer c = inventory.get(type);
 		return c != null ? c.intValue() : 0;
+	}
+	/**
+	 * Retrieve the this player's stance to the other player.
+	 * @param p the other player
+	 * @return the stance level 0..100
+	 */
+	public int getStance(Player p) {
+		Integer i = knownPlayers.get(p);
+		return i != null ? i.intValue() : 0;
+	}
+	/**
+	 * Set the stance with the given other player.
+	 * @param p the other player
+	 * @param value the value 0..100
+	 */
+	public void setStance(Player p, int value) {
+		knownPlayers.put(p, value);
+	}
+	/** 
+	 * Does this player know the other player?
+	 * @param p the other player
+	 * @return does this player know the other player? */
+	public boolean knows(Player p) {
+		return knownPlayers.containsKey(p);
 	}
 }

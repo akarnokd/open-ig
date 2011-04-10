@@ -85,6 +85,11 @@ public class World {
 	public ResourceLocator rl;
 	/** The global world statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();
+	/** The date formatter. */
+	public SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	{
+		dateFormat.setCalendar(time);
+	}
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -209,9 +214,6 @@ public class World {
 		
 		processPlanets(rl.getXML(game + "/planets"));
 
-		// FIXME for testing the building/research
-		player.money = 32000;
-		
 		try {
 			exec.shutdown();
 		} finally {
@@ -318,7 +320,6 @@ public class World {
 	 * @return the ship for the current level
 	 */
 	public WalkShip getShip() {
-		// TODO Auto-generated method stub
 		return getCurrentLevel().ship;
 	}
 	/**
@@ -340,6 +341,9 @@ public class World {
 		p.color = (int)Long.parseLong(player.get("color"), 16);
 		p.race = player.get("race");
 		p.name = labels.get(player.get("name"));
+		
+		p.money = player.getInt("money");
+		p.initialStance = player.getInt("initial-stance");
 		
 		p.fleetIcon = rl.getImage(player.get("icon"));
 		String pic = player.get("picture");
@@ -414,18 +418,6 @@ public class World {
 		if (p.owner != null) {
 			p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 		}
-		
-//		// FIXME for testing the radar/info
-//		if (p.owner != null) {
-//			p.owner.planets.put(p, PlanetKnowledge.BUILDING);
-//			if (p.owner == player) {
-//				PlanetInventoryItem sat = new PlanetInventoryItem();
-//				sat.owner = player;
-//				sat.count = 1;
-//				sat.type = researches.get("Hubble2");
-//				p.inventory.add(sat);
-//			}
-//		}
 	}
 	/**
 	 * Process a tech XML.
@@ -646,9 +638,7 @@ public class World {
 		world.set("game", name);
 		world.set("player", player.id);
 		world.set("difficulty", difficulty);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		sdf.setCalendar(time);
-		world.set("time", sdf.format(time.getTime()));
+		world.set("time", dateFormat.format(time.getTime()));
 		
 		statistics.save(world.add("statistics"));
 		
@@ -666,6 +656,28 @@ public class World {
 			
 			player.statistics.save(xp.add("statistics"));
 
+			if (p.knownPlayers.size() > 0) {
+				XElement stances = xp.add("stance");
+				for (Map.Entry<Player, Integer> se : p.knownPlayers.entrySet()) {
+					XElement st1 = stances.add("with");
+					st1.set("player", se.getKey().id);
+					st1.set("value", se.getValue());
+				}
+			}
+			if (p.messageQueue.size() > 0) {
+				XElement xqueue = xp.add("message-queue");
+				for (Message msg : p.messageQueue) {
+					XElement xmessage = xqueue.add("message");
+					msg.save(xmessage, dateFormat);
+				}
+			}
+			if (p.messageHistory.size() > 0) {
+				XElement xqueue = xp.add("message-history");
+				for (Message msg : p.messageHistory) {
+					XElement xmessage = xqueue.add("message");
+					msg.save(xmessage, dateFormat);
+				}
+			}
 			
 			XElement xyesterday = xp.add("yesterday");
 			xyesterday.set("build", p.yesterday.buildCost);
@@ -853,6 +865,30 @@ public class World {
 			XElement pstats = xplayer.childElement("statistics");
 			if (pstats != null) {
 				p.statistics.load(pstats);
+			}
+			
+			XElement xstance = xplayer.childElement("stance");
+			if (xstance != null) {
+				for (XElement xwith : xstance.childrenWithName("with")) {
+					p.setStance(players.get(xwith.get("player")), xwith.getInt("value"));
+				}
+			}
+
+			XElement xqueue = xplayer.childElement("message-queue");
+			if (xqueue != null) {
+				for (XElement xmessage : xqueue.childrenWithName("message")) {
+					Message msg = new Message();
+					msg.load(xmessage, dateFormat);
+					player.messageQueue.add(msg);
+				}
+			}
+			XElement xhistory = xplayer.childElement("message-queue");
+			if (xhistory != null) {
+				for (XElement xmessage : xhistory.childrenWithName("message")) {
+					Message msg = new Message();
+					msg.load(xmessage, dateFormat);
+					player.messageHistory.add(msg);
+				}
 			}
 
 			for (XElement xprod : xplayer.childrenWithName("production")) {

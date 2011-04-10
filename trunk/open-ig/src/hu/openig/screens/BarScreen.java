@@ -146,6 +146,7 @@ public class BarScreen extends ScreenBase {
 	@Override
 	public void onEnter(Screens mode) {
 		talkMode = false;
+		choices.clear();
 	}
 
 	@Override
