@@ -997,6 +997,7 @@ public class StarmapScreen extends ScreenBase {
 			g2.drawImage(commons.starmap().minimap, minimapRect.x, minimapRect.y, null);
 			g2.drawImage(minimapBackground, minimapInnerRect.x, minimapInnerRect.y, null);
 			g2.setColor(Color.WHITE);
+			g2.drawImage(world().galaxyModel.map, minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height, null);
 			g2.drawRect(minimapViewportRect.x, minimapViewportRect.y, minimapViewportRect.width - 1, minimapViewportRect.height - 1);
 			g2.setClip(save0);
 			g2.clipRect(minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height);
