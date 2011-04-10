@@ -22,10 +22,10 @@ This page lists tasks that I want to complete with expected times.
 || Basic simulation || 2011-05-15 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Time elapse, running research and production, fleet movements. Gather achievements and statistics. No enemies. *v0.87* ||
 || Screen: Test || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || A very simple screen for the test questions. ||
 || Screen: Credits || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || A simple scrolling credits. ||
-|| Screen: Credits || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Finish the Equipment screen. ||
+|| Screen: Equipment || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Finish the Equipment screen. ||
 || Screen: Diplomacy || 2011-04-24 || - || I need to run the original game to figure out the available talk options. ||
 || Sound & Music integration || 2011-04-24 || - || Add sound and music. ||
-|| Screen: Save, Load & Options || 2011-05-15 || - || Will come in handy when testing. ||
+|| Screen: Save, Load & Options || 2011-05-01 || - || Will come in handy when testing. ||
 || Surface & Space battles || 2011-06-05 || - || Rendering and basic simulation ||
 || Scripting for campaign || 2011-07-03 || - || Build a scriptable campaign engine. We will use the internal JavaScript support. ||
 || Create the Artifical Intelligence || 2011-08-21 || - || This is going to be a real challenge. ||
