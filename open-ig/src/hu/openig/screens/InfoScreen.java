@@ -1463,6 +1463,7 @@ public class InfoScreen extends ScreenBase {
 				Planet p = getPlanetAt(e.x, e.y);
 				if (p != null) {
 					player().currentPlanet = p;
+					adjustPlanetListView();
 					return true;
 				}
 			} else
@@ -1866,27 +1867,54 @@ public class InfoScreen extends ScreenBase {
 			}
 			break;
 		case INFORMATION_PLANETS:
+			boolean rep = false;
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
 				colonies.select(-1);
-				return true;
+				rep = true;
+				break;
 			case KeyEvent.VK_DOWN:
 				colonies.select(1);
-				return true;
+				rep = true;
+				break;
 			case KeyEvent.VK_LEFT:
 				colonies.select(-27);
-				return true;
+				rep = true;
+				break;
 			case KeyEvent.VK_RIGHT:
 				colonies.select(27);
-				return true;
+				rep = true;
+				break;
 			case KeyEvent.VK_ENTER:
 				colonies.onDoubleClick.invoke(planet());
+				rep = true;
+				break;
+			case KeyEvent.VK_PLUS:
+			case KeyEvent.VK_MINUS:
+				adjustPlanetListView();
+				break;
 			default:
 			}
-			break;
+			if (showPlanetListDetails) {
+				// FIXME
+				adjustPlanetListView();
+			}
+			return rep;
 		default:
 		}
 		return super.keyboard(e);
+	}
+	/** Adjust the highlight on the planet list view. */
+	void adjustPlanetListView() {
+		List<Planet> list = colonies.getList.invoke(null);
+		Planet cp = colonies.getCurrent.invoke(null);
+		int idx = list.indexOf(cp); 
+		if (idx < planetListDetais.top) {
+			planetListDetais.top = idx;
+		} else
+		if (idx >= planetListDetais.top + 26) {
+			planetListDetais.top = idx - 26;
+		}
 	}
 	/**
 	 * The financial info panel.
@@ -2606,13 +2634,6 @@ public class InfoScreen extends ScreenBase {
 			List<Planet> list = colonies.getList.invoke(null);
 			int y = 0;
 			Planet cp = colonies.getCurrent.invoke(null);
-			int idx = list.indexOf(cp); 
-			if (idx < top) {
-				top = idx;
-			} else
-			if (idx >= top + 26) {
-				top = idx - 26;
-			}
 			g2.setColor(Color.BLACK);
 			g2.fillRect(101, - 13, 300, 13);
 
@@ -2786,14 +2807,11 @@ public class InfoScreen extends ScreenBase {
 			if (e.has(Type.WHEEL)) {
 				List<Planet> list = colonies.getList.invoke(null);
 				if (list.size() > 0) {
-					Planet cp = colonies.getCurrent.invoke(null);
-					int idx = list.indexOf(cp); 
 					if (e.z < 0) {
-						idx = Math.max(0, idx - 1);
+						top = Math.max(0, top - 1);
 					} else {
-						idx = Math.min(list.size() - 1, idx + 1);
+						top = Math.min(list.size() - 27, top + 1); // FIXME
 					}
-					colonies.onSelect.invoke(list.get(idx));
 					return true;
 				}
 			} else
@@ -2825,12 +2843,6 @@ public class InfoScreen extends ScreenBase {
 	}
 	/** The diplomacy screen. */
 	class DiplomacyPanel extends UIComponent {
-		/**
-		 * Construct the labels. 
-		 */
-		public DiplomacyPanel() {
-			// TODO Auto-generated constructor stub
-		}
 		@Override
 		public void draw(Graphics2D g2) {
 			
