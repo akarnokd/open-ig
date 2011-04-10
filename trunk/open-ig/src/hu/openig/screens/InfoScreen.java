@@ -755,6 +755,7 @@ public class InfoScreen extends ScreenBase {
 				}
 				colonies.visible(!showPlanetListDetails);
 				planetListDetais.visible(showPlanetListDetails);
+				adjustPlanetListView();
 			}
 		};
 
@@ -953,6 +954,7 @@ public class InfoScreen extends ScreenBase {
 				askRepaint(base);
 			}
 		});
+		adjustPlanetListView();
 	}
 	/** Adjust the visibility of fields and buttons. */
 	void applyMode() {
@@ -1384,7 +1386,9 @@ public class InfoScreen extends ScreenBase {
 					labelColor = p.owner.color;
 				}
 				g2.setColor(new Color(labelColor));
-				g2.fillRect(x0 - 1, y0 - 1, 3, 3);
+//				if (p != planet() || (p == planet() && animationBlink)) {
+					g2.fillRect(x0 - 1, y0 - 1, 3, 3);
+//				}
 				if (p == planet()) {
 					g2.setColor(new Color(TextRenderer.GRAY));
 					g2.drawRect(x0 - 3, y0 - 3, 6, 6);
