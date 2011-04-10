@@ -2,6 +2,11 @@
 
 <wiki:toc max_depth="3" />
 
+= Gameplay Tips =
+
+  * Planetary accounting and statistics gathering are performed at midnight. Morale affecting factors such as shortages are considered exactly at this moment. Therefore, plan your building upgdares and reconstruction accordingly, i.e., do not start upgrading your Arcologies at 23:50, because you may get a massive morale loss due the temporary living space shortage.
+  * If you have the money but not enough planets, you should start as many research as possible. They may not run to completion but you get a headstart.
+
 = Keyboard shortcuts =
 
 || *Key* || *Screen* || *Description* ||
@@ -54,14 +59,46 @@ A new panel has been added to the colony screen under the existing building info
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-upgrade-panel.png
 
-The user can click on the stars to upgrade a building to a certain level. It is still undecided whether to allow removing upgrades from a building (probably not). The only requirement is money: each upgrade level costs the building's own value (or more?).
+The user can click on the stars to upgrade a building to a certain level. You may only increase the upgrade level.
 
 Not all buildings offer four levels of upgrade.
 
-When an upgraded building is demolished, the upgrade level is considered: the player will receive the half of the invested money.
+When an upgraded building is demolished, the upgrade level is considered: the player will receive the half of the total invested money.
 
 The general rule for the upgrade system is that each level will increase the output, the energy and worker demand of the building. Three exceptional case exist:
 
   * Upgrading from Level 3 to Level 4 does not increase the energy and worker demand, but only the capacity.
-  * Factories (Spaceship, Equipment, Weapons) increase capacity but their demands increase more rapidly: a necessary balance option.
+  * Some buildings (e.g., Spaceship, Equipment, Weapons) increase capacity but their demands increase more rapidly: a necessary balance option.
   * Research centers do not increase their capacity, but instead, they reduce the energy and worker requirements: again, a necessary balance option.
+
+== Research ==
+
+The research mechanics probably differs from the original game's behavior (I couldn't figure it out).
+
+Two independent factors are considered during the research.
+
+  * Research time depends on the research cost and allocated money. The default research time is the Research Cost value in game minutes. You may assing between 1/4 and 2 times the research cost, which will increase or reduce the research time inversely. 
+
+{{{
+Research Time = (Research Cost / 10) / allocation multiplier
+}}}
+
+For example, a 6000 credit research would take 6000 game minutes. Game time advances in 10 minutes per step, and the screen displays 600 for convenience. On normal speed, this would take 600 seconds or 10 real minutes to complete. If you increase the research money to 12000, the research time decreases to 300 real seconds. If you decrease the money to 1500 credits, the research time jumps to 2400 seconds.
+
+  * The research progress depends on the percent of required and available research labs, but more labs of any kind will not mean greater percent.
+
+For example, a technology uses 1 civil and 1 mechanical development centers. If you have 0 civil and 1 mechanical centers, the research will progress up to 50% and stop there. If you have 0 civil and 2 mechanical centers, the research will still go up to 50%.
+
+== Production ==
+
+The production speed depends mainly on how many factories you have and what efficiency they operate. The production progress is proportional to this capacity. 
+
+{{{
+Production time = Cost * 50 / capacity
+}}}
+
+For example, you want to produce one fighter of cost 600 credits and you have 1000 spaceship capacity. The production will create a 20 credits worth of fighter per 10 ingame minutes, which translates to 30 real time seconds to complete a single fighter.
+
+Of course, if the capacity would be 60000, it would construct 2 fighters per real time seconds.
+
+== Construction ==
