@@ -38,5 +38,5 @@ List of things that need fixing, but without any due date other than hopefully t
 || Missing lightmap for many buildings || The original game doesn't seem to have them, need to manually create. ||
 || Research & Production category labels is hard to read || The unselected versions in hungarian and english both are ugly. ||
 || Create a better launcher || The current version looks a bit ugly - apply more IG style and fix some functional inconsistencies (e.g., if there is a new version, you cannot start the current version unless you upgrade). Add launch alternatives, better download handling, etc. ||
-|| Add building upgrade UI to the colony screen || I need to find room on the colony screen. ||
-|| Add issue icons to the colony screen || Similar to 0.72 feature. ||
+|| ~~Add building upgrade UI to the colony screen~~ || ~~I need to find room on the colony screen.~~ ||
+|| ~~Add issue icons to the colony screen~~ || ~~Similar to 0.72 feature.~~ ||
