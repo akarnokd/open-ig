@@ -101,4 +101,30 @@ For example, you want to produce one fighter of cost 600 credits and you have 10
 
 Of course, if the capacity would be 60000, it would construct 2 fighters per real time seconds.
 
-== Construction ==
+== Construction & Upgrading ==
+
+The construction has a simple mechanic. A building has a hitpoint value equal to its cost. The construction increased 200 hit points per 10 ingame minutes.
+
+{{{
+Construction time = Cost / 200
+}}}
+
+For example, constructing a colony hub of 40000 credits takes 200 seconds or 2000 ingame minutes (about 1 day and 9 hours).
+
+If you upgrade a building. It will switch back to 25% of construction level and is inoperable until it reaches its 100% completion again.
+
+== Repairing ==
+
+The repairing mechanics has a twist. 
+
+If you have a *Fire Brigade* on your planet, it will repair your buildings up to 50% health (or more, depending on the ugrade level of the Fire Brigade) for free. If you have a heavily damaged building and turn the repair on manually, it won't cost you money until it reaches this 50% health. Starting from 50%, it works as a regular repair.
+
+The repair will improve 50 hitpoints for 20 credits per 10 ingame minutes. 
+
+However, if the Fire Brigade is damaged itself, but still operational, it will only repair a proportion of this 50 hitpoints for free (at least 25 hitpoints, because it is the 50% efficiency mark). 
+
+Regular repair is always fixing 50 hipoints per turn.
+
+
+
+
