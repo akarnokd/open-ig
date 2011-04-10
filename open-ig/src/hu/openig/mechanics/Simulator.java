@@ -266,6 +266,7 @@ public final class Simulator {
 			
 			if (planet.population == 0) {
 				planet.die();
+				// FIXME send planet died message
 			} else {
 				planet.owner.statistics.planetsOwned++;
 			}
@@ -322,6 +323,8 @@ public final class Simulator {
 				player.availableResearch.add(rs.type);
 				
 				player.statistics.researchCount++;
+				
+				// FIXME send research complete message
 			}
 			return true;
 		}
@@ -392,6 +395,8 @@ public final class Simulator {
 						world.statistics.productionCount += intoInventory;
 						
 						result = true;
+						
+						// FIXME send production complete message
 					}
 				}			
 			}
