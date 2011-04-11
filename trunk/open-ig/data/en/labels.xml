@@ -35,8 +35,8 @@
 	First, you need to deploy a satellite to establish contact and retrieve vital statistics, e.g. if the planet is habitable or not. If you have a SAT in stock and click on an empty planet on the starmap you can deploy it by clicking on the add sat icon. It will soon start to relay information on the planet.
 	The information relay will become more substantial as time progresses. If the planet is already inhabited, the satellite may be spotted, and destroyed. The next step would be to deploy a spy satellite. Spy sat 2.0 will relay more information and enable you spy on the alien race's colony of buildings when you select a planet. It will also relay information about the planetary defence forces.</entry>
 	
-	<entry key='database.race.free_traders_alliance'>Free Traders Alliance</entry>
-	<entry key='database.race.free_nations_society'>Free Nations Society</entry>
+	<entry key='database.race.freetraders'>Free Traders Alliance</entry>
+	<entry key='database.race.freenations'>Free Nations Society</entry>
 	<entry key='database.race.pirates'>Pirates</entry>
 	<entry key='database.race.garthog'>Garthogs</entry>
 	<entry key='database.race.ychom'>Ychoms</entry>
@@ -46,13 +46,13 @@
 	<entry key='database.race.sullep'>Sulleps</entry>
 	<entry key='database.race.dargslan'>Dargslans</entry>
 	
-	<entry key='database.race.free_traders_alliance.details'>Once part of the Old Empire, the traders left to create a new empire for themselves. They are a peaceful race of traders and enjoy good relations with the Ychoms</entry>
-	<entry key='database.race.free_nations_society.details'>Once part of the Old Empire, they declared themselves independent a long time ago. The Free Nations Society has developed rapidly, occupying territories with ease. The Society is well known for their arrogant attitude and contempt for the Empire.</entry>
+	<entry key='database.race.freetraders.details'>Once part of the Old Empire, the traders left to create a new empire for themselves. They are a peaceful race of traders and enjoy good relations with the Ychoms</entry>
+	<entry key='database.race.freenations.details'>Once part of the Old Empire, they declared themselves independent a long time ago. The Free Nations Society has developed rapidly, occupying territories with ease. The Society is well known for their arrogant attitude and contempt for the Empire.</entry>
 	<entry key='database.race.pirates.details'>The Pirates are a bunch of outlaws coming from multiple races. They prefer attacking defenseless trade ships and colonies lost all their morale may likely to join them. They have, so far, never attacked a military fleet deliberately.</entry>
 	<entry key='database.race.garthog.details'>The Garthogs are a contemptible and un-trustworthy race, who implant their young with bio-mechanical devices. They have a special interest in mechanics and are renowned for stealing the technology of other races. It is rumored that they destroyed and entire race, known as the Nubs, to obtain their secrets. The Garthog Empire is close to the Human Empire and there has been conflict for 10 years. The Garthogs possess a special ground weapon: the radar jammer vehicle.</entry>
 	<entry key='database.race.ychom.details'>A Peaceful, trader race. That enjoys good relations with the Free Traders Alliance. Ychoms have a unique way of defending their colonies: each has a mine-deploying saucer.</entry>
 	<entry key='database.race.morgath.details'>The Morgaths are an insular and hostile race. It is rumored that they have powerful spaceships and a special ground weapon: a kamikaze tank. This weapon should be avoided at all costs!</entry>
-	<entry key='database.race.drib.details'>The Dribs are a proud race with advanced technology, especially in the fields of mechanics and architecture. They have known of the Dargslan race for a long time, since the Dargslans occupied some Drib territory. Since then, they have hated the Dargslan race.</entry>
+	<entry key='database.race.dribs.details'>The Dribs are a proud race with advanced technology, especially in the fields of mechanics and architecture. They have known of the Dargslan race for a long time, since the Dargslans occupied some Drib territory. Since then, they have hated the Dargslan race.</entry>
 	<entry key='database.race.ecalep.details'>With the rapid expansion of their empire, tax revenue has increased to a very high level. This partially explains their obsession with money. They have developed a new ground weapon called the anti-missile tank, which is immune to rocket launchers.</entry>
 	<entry key='database.race.sullep.details'>The Sulleps' are a walike race with a very strict social structure. From a very young age, Sulleps' are subjected to military training. Such is their code of combat, it is more honourable for them to die in battle than surrender.</entry>
 	<entry key='database.race.dargslan.details'>Very little is known about the Dargslans. Intelligence reports show that they have extremely powerful ground attack forces, as well as a competent space fleet.</entry>
