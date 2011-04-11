@@ -978,6 +978,7 @@ public class InfoScreen extends ScreenBase {
 		if (mode == Screens.INFORMATION_PLANETS) {
 			planetListDetais.visible(showPlanetListDetails);
 			colonies.visible(!showPlanetListDetails);
+			adjustPlanetListView();
 		}
 		
 		if (mode == Screens.INFORMATION_INVENTIONS) {
@@ -1913,11 +1914,13 @@ public class InfoScreen extends ScreenBase {
 		List<Planet> list = colonies.getList.invoke(null);
 		Planet cp = colonies.getCurrent.invoke(null);
 		int idx = list.indexOf(cp); 
-		if (idx < planetListDetais.top) {
-			planetListDetais.top = idx;
-		} else
-		if (idx >= planetListDetais.top + 26) {
-			planetListDetais.top = idx - 26;
+		if (idx >= 0) {
+			if (idx < planetListDetais.top) {
+				planetListDetais.top = idx;
+			} else
+			if (idx >= planetListDetais.top + 26) {
+				planetListDetais.top = idx - 26;
+			}
 		}
 	}
 	/**
@@ -2646,7 +2649,9 @@ public class InfoScreen extends ScreenBase {
 			commons.text().paintTo(g2, 105, -13, 10, TextRenderer.YELLOW, get("info.population_details"));
 			commons.text().paintTo(g2, 240, -13, 10, TextRenderer.YELLOW, get("info.morale_details"));
 			commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, get("info.problem_details"));
-
+			if (top < 0) {
+				top = 0;
+			}
 			for (int i = top; i < list.size() && i < top + 27; i++) {
 				Planet p = list.get(i);
 				
