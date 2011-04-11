@@ -158,6 +158,14 @@ public class GameWindow extends JFrame implements GameControls {
 	ScreenRenderer surface;
 	/** The list of screens. */
 	List<ScreenBase> screens;
+	/** The location save to switch back from full-screen. */
+	public int saveX;
+	/** The location save to switch back from full-screen. */
+	public int saveY;
+	/** The location save to switch back from full-screen. */
+	public int saveWidth;
+	/** The location save to switch back from full-screen. */
+	public int saveHeight;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
@@ -178,6 +186,10 @@ public class GameWindow extends JFrame implements GameControls {
 		this.config = config;
 		this.rl = commons.rl;
 		this.surface = new ScreenRenderer();
+		
+		if (config.fullScreen) {
+			this.setUndecorated(true);
+		}
 		
 		RepaintManager.currentManager(this).setDoubleBufferingEnabled(true);
 		
@@ -218,6 +230,35 @@ public class GameWindow extends JFrame implements GameControls {
 		
 		// load resources
 		initScreens();
+		if (config.left != null && config.top != null) {
+			this.setLocation(config.left, config.top);
+			saveX = config.left;
+			saveY = config.top;
+		}
+		if (config.width != null && config.height != null) {
+			this.setSize(config.width, config.height);
+			saveWidth = config.width;
+			saveHeight = config.height;
+		}
+		if (config.maximized) {
+			this.setExtendedState(MAXIMIZED_BOTH);
+		}
+
+		if (config.fullScreen) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+					for (final GraphicsDevice gs : ge.getScreenDevices()) {
+						if (gs.getDefaultConfiguration().getBounds().intersects(getBounds())) {
+							gs.setFullScreenWindow(GameWindow.this);
+							setSize(gs.getDefaultConfiguration().getBounds().getSize());
+							break;
+						}
+					}
+				}
+			});
+		}
 	}
 	/** 
 	 * A copy constructor to save the state of a previous window without reloading
@@ -285,6 +326,24 @@ public class GameWindow extends JFrame implements GameControls {
 	public void exit() {
 		commons.stop();
 		uninitScreens();
+		
+		config.fullScreen = isUndecorated();
+		if (!config.fullScreen) {
+			config.maximized = (getExtendedState() & MAXIMIZED_BOTH) != 0;
+			if (!config.maximized) {
+				config.left = getX();
+				config.top = getY();
+				config.width = getWidth();
+				config.height = getHeight();
+			}
+		} else {
+			config.left = saveX;
+			config.top = saveY;
+			config.width = saveWidth;
+			config.height = saveHeight;
+		}
+		config.save();
+		
 		dispose();
 		try {
 			config.watcherWindow.close();
@@ -864,34 +923,39 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 			return result;
 		}
-		/**
-		 * Toggle between full screen mode.
-		 */
-		void switchFullscreen() {
-			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			for (final GraphicsDevice gs : ge.getScreenDevices()) {
-				if (gs.getDefaultConfiguration().getBounds().intersects(getBounds())) {
-					GameWindow gw = new GameWindow(GameWindow.this, gs.getFullScreenWindow() == null);
-					if (gs.getFullScreenWindow() == null) {
-			    		dispose();
-						gs.setFullScreenWindow(gw);
-						setSize(gs.getDefaultConfiguration().getBounds().getSize());
-					} else {
-			    		dispose();
-						gs.setFullScreenWindow(null);
-						gw.setVisible(true);
-					}
-					gw.doMoveMouseAgain();
-					break;
+	}
+	/**
+	 * Toggle between full screen mode.
+	 */
+	void switchFullscreen() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		for (final GraphicsDevice gs : ge.getScreenDevices()) {
+			if (gs.getDefaultConfiguration().getBounds().intersects(getBounds())) {
+				GameWindow gw = new GameWindow(GameWindow.this, gs.getFullScreenWindow() == null);
+				if (gs.getFullScreenWindow() == null) {
+					gw.saveX = getX();
+					gw.saveY = getY();
+					gw.saveWidth = getWidth();
+					gw.saveHeight = getHeight();
+		    		dispose();
+					gs.setFullScreenWindow(gw);
+					setSize(gs.getDefaultConfiguration().getBounds().getSize());
+				} else {
+		    		dispose();
+					gs.setFullScreenWindow(null);
+					gw.setBounds(saveX, saveY, saveWidth, saveHeight);
+					gw.setVisible(true);
 				}
+				gw.doMoveMouseAgain();
+				break;
 			}
 		}
-		/** Create a second window with the same content. */
-		void newWindow() {
-			GameWindow gw = new GameWindow(GameWindow.this, false);
-			gw.setVisible(true);
-			gw.doMoveMouseAgain();
-		}
+	}
+	/** Create a second window with the same content. */
+	void newWindow() {
+		GameWindow gw = new GameWindow(GameWindow.this, false);
+		gw.setVisible(true);
+		gw.doMoveMouseAgain();
 	}
 	/**
 	 * The common mouse action manager.

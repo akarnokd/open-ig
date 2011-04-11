@@ -26,7 +26,6 @@ import hu.openig.screens.CommonResources;
 import hu.openig.screens.DatabaseScreen;
 import hu.openig.screens.DiplomacyScreen;
 import hu.openig.screens.EquipmentScreen;
-import hu.openig.screens.EquipmentScreen.EquipmentMode;
 import hu.openig.screens.GameControls;
 import hu.openig.screens.InfoScreen;
 import hu.openig.screens.LoadSaveScreen;
@@ -729,17 +728,17 @@ public class ScreenTester extends JFrame implements GameControls {
 		JMenu mode = new JMenu("Mode");
 		menuView.add(mode);
 		
-		for (final EquipmentMode md : EquipmentMode.values()) {
-			JMenuItem mi = new JMenuItem(md.toString());
-			mi.addActionListener(new Act() {
-				@Override
-				public void act() {
-					screen.setEquipmentMode(md);
-					repaint();
-				}
-			});
-			mode.add(mi);
-		}
+//		for (final EquipmentMode md : EquipmentMode.values()) {
+//			JMenuItem mi = new JMenuItem(md.toString());
+//			mi.addActionListener(new Act() {
+//				@Override
+//				public void act() {
+//					screen.setEquipmentMode(md);
+//					repaint();
+//				}
+//			});
+//			mode.add(mi);
+//		}
 	}
 	/**
 	 * Prepare the menu for the main menu screen.

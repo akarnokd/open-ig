@@ -295,7 +295,6 @@ public class EquipmentScreen extends ScreenBase {
 		vehicles.onPress = categoryAction(ResearchSubCategory.WEAPONS_VEHICLES);
 		
 		slots.clear();
-		// TODO for testing purposes only!
 		for (int i = 0; i < 6; i++) {
 			final TechnologySlot ts = new TechnologySlot(commons);
 			ts.visible(false);
@@ -504,10 +503,6 @@ public class EquipmentScreen extends ScreenBase {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.equipment().base, base.x, base.y, null);
 		
-//		for (TechnologySlot r : slots) {
-//			r.draw(g2);
-//		}
-		
 		updateSlots();
 		
 		if (innerEquipmentVisible) {
@@ -515,100 +510,6 @@ public class EquipmentScreen extends ScreenBase {
 			g2.drawRect(innerEquipment.x, innerEquipment.y, innerEquipment.width - 1, innerEquipment.height - 1);
 		}
 		super.draw(g2);
-	}
-	/**
-	 * Set the equipment rendering mode. Use this before
-	 * switching to the equipment screen.
-	 * Based on this mode, the screen will use the current planet,
-	 * the current fleet (with the nearest other fleet)
-	 * @param mode the screen mode
-	 */
-	public void setEquipmentMode(EquipmentMode mode) {
-		switch (mode) {
-		case MANAGE_FLEET:
-			spaceshipsLabel.visible(true);
-			spaceshipsMaxLabel.visible(true);
-			fleetStatusLabel.visible(true);
-			secondaryLabel.visible(true);
-			secondaryValue.visible(true);
-			secondaryFighters.visible(true);
-			secondaryVehicles.visible(true);
-			
-			battleships.visible(true);
-			stations.visible(false);
-			cruisers.visible(true);
-			cruisersEmpty.visible(false);
-			
-			left1.visible(false);
-			left2.visible(false);
-			left3.visible(false);
-			right1.visible(false);
-			right2.visible(false);
-			right3.visible(false);
-
-			starmapButton.visible(true);
-			colonyButton.visible(true);
-			noStarmap.visible(false);
-			noColony.visible(false);
-			
-			break;
-		case MANAGE_PLANET:
-			fleetStatusLabel.visible(false);
-			secondaryLabel.visible(false);
-			secondaryValue.visible(false);
-			secondaryFighters.visible(false);
-			secondaryVehicles.visible(false);
-			spaceshipsLabel.visible(false);
-			spaceshipsMaxLabel.visible(false);
-			
-			battleships.visible(false);
-			stations.visible(true);
-			cruisers.visible(false);
-			cruisersEmpty.visible(true);
-			
-			battleships.down = false;
-			cruisers.down = false;
-			
-			left1.visible(false);
-			left2.visible(false);
-			left3.visible(false);
-			right1.visible(false);
-			right2.visible(false);
-			right3.visible(false);
-
-			starmapButton.visible(true);
-			colonyButton.visible(true);
-			noStarmap.visible(false);
-			noColony.visible(false);
-			break;
-		case SHARE_OR_COMBINE:
-			spaceshipsLabel.visible(true);
-			spaceshipsMaxLabel.visible(true);
-			fleetStatusLabel.visible(true);
-			secondaryLabel.visible(true);
-			secondaryValue.visible(true);
-			secondaryFighters.visible(true);
-			secondaryVehicles.visible(true);
-			
-			battleships.visible(true);
-			stations.visible(false);
-			cruisers.visible(true);
-			cruisersEmpty.visible(false);
-			
-			left1.visible(true);
-			left2.visible(true);
-			left3.visible(true);
-			right1.visible(true);
-			right2.visible(true);
-			right3.visible(true);
-			
-			starmapButton.visible(false);
-			colonyButton.visible(false);
-			noStarmap.visible(true);
-			noColony.visible(true);
-			break;
-		default:
-		}
 	}
 	/**
 	 * Select/deselect a category button. Does not ask for repaint.
