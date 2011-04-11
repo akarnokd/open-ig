@@ -16,6 +16,7 @@ import hu.openig.model.PlanetInventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.RotationDirection;
 import hu.openig.model.Screens;
@@ -41,6 +42,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -1633,7 +1635,9 @@ public class StarmapScreen extends ScreenBase {
 	}
 	/** @return the player's own planets. */
 	public List<Planet> planets() {
-		return player().getPlayerPlanets();
+		List<Planet> pls = player().getPlayerPlanets();
+		Collections.sort(pls, Player.NAME_ORDER);
+		return pls;
 	}
 	/**
 	 * @param x the mouse coordinate
