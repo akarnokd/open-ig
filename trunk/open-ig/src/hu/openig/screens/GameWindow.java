@@ -623,7 +623,7 @@ public class GameWindow extends JFrame implements GameControls {
 				rep |= pri.keyboard(e);
 			}
 			if (!e.isConsumed()) {
-				rep |= handleScreenSwitch(e);
+				handleScreenSwitch(e);
 			}
 			if (rep) {
 				repaintInner();
@@ -632,10 +632,8 @@ public class GameWindow extends JFrame implements GameControls {
 		/**
 		 * Handle the screen switch if the appropriate key is pressed.
 		 * @param e the key event
-		 * @return true if the key event was handled
 		 */
-		boolean handleScreenSwitch(KeyEvent e) {
-			boolean result = false;
+		void handleScreenSwitch(KeyEvent e) {
 			if (e.isAltDown()) {
 				if (e.getKeyCode() == KeyEvent.VK_F4) {
 					exit();
@@ -644,27 +642,30 @@ public class GameWindow extends JFrame implements GameControls {
 					switchFullscreen();
 				}
 				e.consume();
-				return true;
 			}
 			if (!commons.worldLoading && commons.world() != null && !movieVisible) {
-				result = true;
 				if (e.getKeyChar() == '+') {
 					commons.world().player.moveNextPlanet();
 					repaintInner();
+					e.consume();
 				} else
 				if (e.getKeyChar() == '-') {
 					commons.world().player.movePrevPlanet();
 					repaintInner();
+					e.consume();
 				}
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_F1:
 					displayPrimary(Screens.BRIDGE);
+					e.consume();
 					break;
 				case KeyEvent.VK_F2:
 					displayPrimary(Screens.STARMAP);
+					e.consume();
 					break;
 				case KeyEvent.VK_F3:
 					displayPrimary(Screens.COLONY);
+					e.consume();
 					break;
 				case KeyEvent.VK_F4:
 					if (secondary != null) {
@@ -687,6 +688,7 @@ public class GameWindow extends JFrame implements GameControls {
 							displaySecondary(Screens.EQUIPMENT_FLEET);
 						}
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_F5:
 					if (secondary != null) {
@@ -698,6 +700,7 @@ public class GameWindow extends JFrame implements GameControls {
 					} else {
 						displaySecondary(Screens.PRODUCTION);
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_F6:
 					if (secondary != null) {
@@ -709,6 +712,7 @@ public class GameWindow extends JFrame implements GameControls {
 					} else {
 						displaySecondary(Screens.RESEARCH);
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_F7:
 					if (secondary != null) {
@@ -751,6 +755,7 @@ public class GameWindow extends JFrame implements GameControls {
 							displaySecondary(Screens.INFORMATION_PLANETS);
 						} 
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_F8:
 					if (secondary != null) {
@@ -762,6 +767,7 @@ public class GameWindow extends JFrame implements GameControls {
 					} else {
 						displaySecondary(Screens.DATABASE);
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_F9:
 					if (commons.world().level > 1) {
@@ -775,6 +781,7 @@ public class GameWindow extends JFrame implements GameControls {
 							displaySecondary(Screens.BAR);
 						}
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_F10:
 					if (commons.world().level > 3) {
@@ -788,6 +795,7 @@ public class GameWindow extends JFrame implements GameControls {
 							displaySecondary(Screens.DIPLOMACY);
 						}
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_F11:
 					if (secondary != null) {
@@ -799,6 +807,7 @@ public class GameWindow extends JFrame implements GameControls {
 					} else {
 						displaySecondary(Screens.STATISTICS);
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_F12:
 					if (secondary != null) {
@@ -810,6 +819,7 @@ public class GameWindow extends JFrame implements GameControls {
 					} else {
 						displaySecondary(Screens.ACHIEVEMENTS);
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_1:
 					if (e.isControlDown()) {
@@ -821,7 +831,9 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.speed(1000);
+						repaintInner();
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_2:
 					if (e.isControlDown()) {
@@ -833,7 +845,9 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.speed(500);
+						repaintInner();
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_3:
 					if (e.isControlDown()) {
@@ -845,7 +859,9 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.speed(250);
+						repaintInner();
 					}
+					e.consume();
 					break;
 				case KeyEvent.VK_SPACE:
 					if (commons.paused()) {
@@ -854,6 +870,7 @@ public class GameWindow extends JFrame implements GameControls {
 						commons.pause();
 					}
 					repaintInner();
+					e.consume();
 					break;
 				case KeyEvent.VK_4:
 					if (e.isControlDown()) {
@@ -863,6 +880,7 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
+						e.consume();
 					}
 					break;
 				case KeyEvent.VK_5:
@@ -873,6 +891,7 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
+						e.consume();
 					}
 					break;
 				case KeyEvent.VK_O:
@@ -897,32 +916,24 @@ public class GameWindow extends JFrame implements GameControls {
 							p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 							repaintInner();
 						}
-					} else {
-						result = false;
+						e.consume();
 					}
 					break;
 				case KeyEvent.VK_S:
 					if (e.isControlDown()) {
 						saveWorld();
-					} else {
-						result = false;
+						e.consume();
 					}
 					break;
 				case KeyEvent.VK_L:
 					if (e.isControlDown()) {
 						loadWorld(null);
-					} else {
-						result = false;
+						e.consume();
 					}
 					break;
 				default:
-					result = false;
 				}
 			}
-			if (result) {
-				e.consume();
-			}
-			return result;
 		}
 	}
 	/**
