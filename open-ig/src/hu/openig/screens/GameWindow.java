@@ -610,22 +610,23 @@ public class GameWindow extends JFrame implements GameControls {
 	class KeyEvents extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (!handleScreenSwitch(e)) {
-				boolean rep = false;
-				ScreenBase pri = primary;
-				ScreenBase sec = secondary;
-				if (movieVisible) {
-					rep |= movie.keyboard(e);
-				} else
-				if (sec != null) {
-					rep |= sec.keyboard(e);
-				} else
-				if (pri != null) {
-					rep |= pri.keyboard(e);
-				}
-				if (rep) {
-					repaintInner();
-				}
+			boolean rep = false;
+			ScreenBase pri = primary;
+			ScreenBase sec = secondary;
+			if (movieVisible) {
+				rep |= movie.keyboard(e);
+			} else
+			if (sec != null) {
+				rep |= sec.keyboard(e);
+			} else
+			if (pri != null) {
+				rep |= pri.keyboard(e);
+			}
+			if (!e.isConsumed()) {
+				rep |= handleScreenSwitch(e);
+			}
+			if (rep) {
+				repaintInner();
 			}
 		}
 		/**
