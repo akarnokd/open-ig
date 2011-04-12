@@ -616,7 +616,7 @@ public class InfoScreen extends ScreenBase {
 			public void invoke(BuildingType value) {
 				player().currentBuilding = value;
 				if (value.research != null) {
-					player().currentResearch = value.research;
+					research(value.research);
 				}
 				displayBuildingInfo();
 			}
@@ -626,7 +626,7 @@ public class InfoScreen extends ScreenBase {
 			public void invoke(BuildingType value) {
 				player().currentBuilding = value;
 				if (value.research != null) {
-					player().currentResearch = value.research;
+					research(value.research);
 				}
 				displayBuildingInfo();
 				if (planet().canBuild(value)) {
@@ -704,7 +704,7 @@ public class InfoScreen extends ScreenBase {
 		researchPre1.onPress = new Act() {
 			@Override
 			public void act() {
-				ResearchType rt = player().currentResearch;
+				ResearchType rt = research();
 				if (rt != null && rt.prerequisites.size() > 0) {
 					world().selectResearch(rt.prerequisites.get(0));
 				}
@@ -713,7 +713,7 @@ public class InfoScreen extends ScreenBase {
 		researchPre2.onPress = new Act() {
 			@Override
 			public void act() {
-				ResearchType rt = player().currentResearch;
+				ResearchType rt = research();
 				if (rt != null && rt.prerequisites.size() > 1) {
 					world().selectResearch(rt.prerequisites.get(1));
 				}
@@ -722,7 +722,7 @@ public class InfoScreen extends ScreenBase {
 		researchPre3.onPress = new Act() {
 			@Override
 			public void act() {
-				ResearchType rt = player().currentResearch;
+				ResearchType rt = research();
 				if (rt != null && rt.prerequisites.size() > 2) {
 					world().selectResearch(rt.prerequisites.get(2));
 				}
@@ -982,7 +982,7 @@ public class InfoScreen extends ScreenBase {
 		}
 		
 		if (mode == Screens.INFORMATION_INVENTIONS) {
-			ResearchType rt = player().currentResearch;
+			ResearchType rt = research();
 			if (rt == null) {
 				List<ResearchType> rts = world().getResearch();
 				if (rts.size() > 0) {
@@ -2298,7 +2298,7 @@ public class InfoScreen extends ScreenBase {
 						for (ResearchType rt : res) {
 							int c = world().getResearchColor(rt);
 							commons.text().paintTo(g2, col * colWidth + 3, row * 12 + 2, 7, c, rt.name);
-							if (rt == player().currentResearch) {
+							if (rt == research()) {
 								g2.setColor(new Color(TextRenderer.ORANGE));
 								g2.drawRect(col * colWidth + 1, row * 12, colWidth - 2, 10);
 							}
@@ -2372,7 +2372,7 @@ public class InfoScreen extends ScreenBase {
 	 * Display the details of the currently selected invention.
 	 */
 	void displayInventionInfo() {
-		ResearchType rt = player().currentResearch;
+		ResearchType rt = research();
 		planetTitle.text("");
 		descriptionImage.image(null);
 		descriptionText.text("");

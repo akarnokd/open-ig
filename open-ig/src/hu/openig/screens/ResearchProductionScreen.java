@@ -492,7 +492,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
 		Production prod = new Production();
-		prod.type = player().currentResearch;
+		prod.type = research();
 		prod.count = 0;
 		prod.priority = 50;
 		productions.put(prod.type, prod);
@@ -503,7 +503,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param scale the scale factor -1.0 ... +1.0
 	 */
 	void doAdjustMoney(float scale) {
-		Research r = player().research.get(player().currentResearch);
+		Research r = player().research.get(research());
 		r.assignedMoney += scale * r.type.researchCost / 20;
 		r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);
 	}
@@ -530,7 +530,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	void doChangeCount(int delta) {
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = productions.get(player().currentResearch);
+		Production prod = productions.get(research());
 		if (prod != null) {
 			prod.count = Math.max(0, prod.count + delta);
 		}
@@ -542,7 +542,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	void doLessPriority() {
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = productions.get(player().currentResearch);
+		Production prod = productions.get(research());
 		if (prod != null) {
 			prod.priority = Math.max(0, prod.priority - 5);
 		}
@@ -553,7 +553,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	void doMorePriority() {
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = productions.get(player().currentResearch);
+		Production prod = productions.get(research());
 		if (prod != null) {
 			prod.priority = Math.min(100, prod.priority + 5);
 		}
@@ -562,7 +562,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	void doRemoveProduction() {
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
-		productions.remove(player().currentResearch);
+		productions.remove(research());
 	}
 	/**
 	 * Select a specific production line.
@@ -577,7 +577,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			int row = 0;
 			for (Production pr : productions.values()) {
 				if (row++ == j) {
-					if (pr.type != player().currentResearch) {
+					if (pr.type != research()) {
 						doSelectTechnology(pr.type);
 					}
 					break;
@@ -590,7 +590,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param rt the new technology
 	 */
 	void doSelectTechnology(ResearchType rt) {
-		if (rt != player().currentResearch) {
+		if (rt != research()) {
 			playAnim(rt);
 		}
 		world().selectResearch(rt);
@@ -599,17 +599,17 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 	/** Sell one of the current research. */
 	void doSell() {
-		Integer count = player().inventory.get(player().currentResearch);
+		Integer count = player().inventory.get(research());
 		if (count != null && count > 0) {
-			player().inventory.put(player().currentResearch, count - 1);
-			player().money += player().currentResearch.productionCost / 2;
+			player().inventory.put(research(), count - 1);
+			player().money += research().productionCost / 2;
 			
-			player().statistics.moneySellIncome += player().currentResearch.productionCost / 2;
-			player().statistics.moneyIncome += player().currentResearch.productionCost / 2;
+			player().statistics.moneySellIncome += research().productionCost / 2;
+			player().statistics.moneyIncome += research().productionCost / 2;
 			player().statistics.sellCount++;
 			
-			world().statistics.moneySellIncome += player().currentResearch.productionCost / 2;
-			world().statistics.moneyIncome += player().currentResearch.productionCost / 2;
+			world().statistics.moneySellIncome += research().productionCost / 2;
+			world().statistics.moneyIncome += research().productionCost / 2;
 			world().statistics.sellCount++;
 
 		}
@@ -619,7 +619,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		if (player().runningResearch != null) {
 			player().research.get(player().runningResearch).state = ResearchState.STOPPED;
 		}
-		ResearchType rt = player().currentResearch;
+		ResearchType rt = research();
 		player().runningResearch = rt;
 		Research rs = player().research.get(rt);
 		if (rs == null) {
@@ -1292,7 +1292,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @return the research
 	 */
 	public ResearchType selectCurrentOrFirst() {
-		ResearchType rt = player().currentResearch;
+		ResearchType rt = research();
 		if (rt == null) {
 			List<ResearchType> rts = world().getResearch();
 			if (rts.size() > 0) {
@@ -1388,7 +1388,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param ps the all planet statistics. 
 	 */
 	public void update(PlanetStatistics ps) {
-		final ResearchType rt = player().currentResearch;
+		final ResearchType rt = research();
 		if (rt != null) {
 			if (rt.prerequisites.size() > 0) {
 				requires1.text(rt.prerequisites.get(0).name, true);
@@ -1631,7 +1631,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			ProductionLine pl = productionLines.get(row);
 			pl.enabled(true);
 			
-			if (pr.type == player().currentResearch) {
+			if (pr.type == research()) {
 				pl.select(true);
 				selected = pr;
 			} else {
@@ -1656,7 +1656,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			pl.enabled(false);
 			pl.clear();
 		}
-		ResearchType rt = player().currentResearch;
+		ResearchType rt = research();
 		addButton.visible(
 				mode == Screens.PRODUCTION
 				&& player().isAvailable(rt) 
@@ -1668,7 +1668,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				&& productions.containsKey(rt)
 		);
 		
-		Integer count = player().inventory.get(player().currentResearch);
+		Integer count = player().inventory.get(research());
 		sell.enabled(count != null && count > 0);
 		if (selected != null) {
 			addOne.enabled(true);

@@ -617,7 +617,7 @@ public class World {
 	 * @param rt the non-null research type
 	 */
 	public void selectResearch(ResearchType rt) {
-		player.currentResearch = rt;
+		player.currentResearch(rt);
 		if (rt.category.main == ResearchMainCategory.BUILDINS) {
 			// select the appropriate building type
 			for (BuildingType bt : buildingModel.buildings.values()) {
@@ -651,7 +651,7 @@ public class World {
 			xp.set("planet", p.currentPlanet != null ? p.currentPlanet.id : null);
 			xp.set("fleet", p.currentFleet != null ? p.currentFleet.id : null);
 			xp.set("building", p.currentBuilding != null ? p.currentBuilding.id : null);
-			xp.set("research", p.currentResearch != null ? p.currentResearch.id : null);
+			xp.set("research", p.currentResearch() != null ? p.currentResearch().id : null);
 			xp.set("running", p.runningResearch != null ? p.runningResearch.id : null);
 			xp.set("mode", p.selectionMode);
 			
@@ -838,7 +838,7 @@ public class World {
 			p.currentPlanet = planets.get(xplayer.get("planet", null));
 			
 			p.currentBuilding = buildingModel.buildings.get(xplayer.get("building", null));
-			p.currentResearch = researches.get(xplayer.get("research", null));
+			p.currentResearch(researches.get(xplayer.get("research", null)));
 			p.runningResearch = researches.get(xplayer.get("running", null));
 			p.selectionMode = SelectionMode.valueOf(xplayer.get("mode", SelectionMode.PLANET.toString()));
 			
@@ -919,7 +919,7 @@ public class World {
 				}
 				Research rs = new Research();
 				rs.type = rt;
-				rs.state = rt == p.currentResearch ? ResearchState.RUNNING : ResearchState.STOPPED; 
+				rs.state = rt == p.currentResearch() ? ResearchState.RUNNING : ResearchState.STOPPED; 
 				rs.assignedMoney = xres.getInt("assigned");
 				rs.remainingMoney = xres.getInt("remaining");
 				p.research.put(rt, rs);

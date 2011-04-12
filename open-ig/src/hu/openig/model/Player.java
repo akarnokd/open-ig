@@ -64,7 +64,7 @@ public class Player {
 	/** The actual fleet. */
 	public Fleet currentFleet;
 	/** The actual research. */
-	public ResearchType currentResearch;
+	private ResearchType currentResearch;
 	/** The actual building. */
 	public BuildingType currentBuilding;
 	/** The type of the last selected thing: planet or fleet. */
@@ -275,5 +275,18 @@ public class Player {
 			}
 		}
 		return result;
+	}
+	/** @return the current research. */
+	public ResearchType currentResearch() {
+		return currentResearch;
+	}
+	/**
+	 * Change the current research type.
+	 * @param type the research type
+	 * @return this
+	 */
+	public Player currentResearch(ResearchType type) {
+		this.currentResearch = type;
+		return this;
 	}
 }

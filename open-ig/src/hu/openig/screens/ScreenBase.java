@@ -122,7 +122,14 @@ public abstract class ScreenBase extends UIContainer {
 	}
 	/** @return the current research type. */
 	public ResearchType research() {
-		return player().currentResearch;
+		return player().currentResearch();
+	}
+	/**
+	 * Change the current research type.
+	 * @param type new the research type
+	 */
+	public void research(ResearchType type) {
+		world().selectResearch(type);
 	}
 	/** @return the current fleet. */
 	public Fleet fleet() {
