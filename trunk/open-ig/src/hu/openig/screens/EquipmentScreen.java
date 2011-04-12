@@ -10,10 +10,12 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.model.LabLevel;
+import hu.openig.model.PlanetStatistics;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
+import hu.openig.model.SelectionMode;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
@@ -654,5 +656,18 @@ public class EquipmentScreen extends ScreenBase {
 	public void onEndGame() {
 		// TODO Auto-generated method stub
 		
+	}
+	/**
+	 * Update the display values based on the current selection.
+	 */
+	void update() {
+		if (player().selectionMode == SelectionMode.PLANET) {
+			planet.visible(true);
+			PlanetStatistics ps = planet().getStatistics();
+			newButton.visible(ps.hasMilitarySpaceport);
+			noSpaceport.visible(!ps.hasMilitarySpaceport);
+		} else {
+			planet.visible(false);
+		}
 	}
 }

@@ -68,7 +68,7 @@ public class Player {
 	/** The actual building. */
 	public BuildingType currentBuilding;
 	/** The type of the last selected thing: planet or fleet. */
-	public SelectionMode selectionMode;
+	public SelectionMode selectionMode = SelectionMode.PLANET;
 	/** The current money amount. */
 	public int money;
 	/** The player level statistics. */

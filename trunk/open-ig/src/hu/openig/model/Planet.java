@@ -171,6 +171,12 @@ public class Planet implements Named, Owned {
 					result.freeRepairEff = Math.max(b.getEfficiency(), result.freeRepairEff);
 				}
 				colonyHubOperable |= "MainBuilding".equals(b.type.kind);
+				if ("TradersSpaceport".equals(b.type.id)) {
+					result.hasTradersSpaceport = true;
+				}
+				if ("MilitarySpaceport".equals(b.type.id)) {
+					result.hasMilitarySpaceport = true;
+				}
 			}
 			if (b.hasResource("spaceship")) {
 				result.spaceship += b.getResource("spaceship");
@@ -274,8 +280,13 @@ public class Planet implements Named, Owned {
 		}
 		
 		for (PlanetInventoryItem pii : inventory) {
-			if (pii.owner == owner && pii.type.get("radar") != null) {
-				radar = Math.max(radar, Integer.parseInt(pii.type.get("radar")));
+			if (pii.owner == owner) {
+				if (pii.type.get("radar") != null) {
+					radar = Math.max(radar, Integer.parseInt(pii.type.get("radar")));
+				}
+				if ("OrbitalFactory".equals(pii.type.id)) {
+					result.orbitalFactory++;
+				}
 			}
 		}
 		
