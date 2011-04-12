@@ -16,7 +16,6 @@ import hu.openig.model.PlanetInventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
-import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.RotationDirection;
 import hu.openig.model.Screens;
@@ -41,7 +40,7 @@ import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -169,8 +168,6 @@ public class StarmapScreen extends ScreenBase {
 	final Rectangle minimapViewportRect = new Rectangle();
 	/** The minimap small image. */
 	private BufferedImage minimapBackground;
-	/** The visible list of fleets. */
-	private List<Fleet> fleets = new ArrayList<Fleet>();
 	/** The current radar dot. */
 	private BufferedImage radarDot;
 	/** The rotation animation timer. */
@@ -437,6 +434,7 @@ public class StarmapScreen extends ScreenBase {
 			nextPlanet.enabled(false);
 		}
 		
+		List<Fleet> fleets = player().ownFleets();
 		if (fleets.size() > 0) {
 			int idx = fleets.indexOf(fleet());
 			prevFleet.enabled(idx > 0);
@@ -807,6 +805,8 @@ public class StarmapScreen extends ScreenBase {
 			RenderTools.paintGrid(g2, starmapRect, commons.starmap().gridColor, commons.text());
 		}
 		
+		Collection<Fleet> fleets = player().visibleFleets();
+		
 		// render radar circles
 		if (showRadarButton.selected) {
 			for (Planet p : planets()) {
@@ -976,8 +976,9 @@ public class StarmapScreen extends ScreenBase {
 			}
 			g2.setClip(save0);
 			g2.clipRect(fleetsList.x, fleetsList.y, fleetsList.width, fleetsList.height);
-			for (int i = fleetsOffset; i < fleets.size(); i++) {
-				Fleet f = fleets.get(i);
+			List<Fleet> playersFleet = player().ownFleets();
+			for (int i = fleetsOffset; i < playersFleet.size(); i++) {
+				Fleet f = playersFleet.get(i);
 				int color = TextRenderer.GREEN;
 				if (f == fleet()) {
 					color = TextRenderer.RED;
@@ -1034,7 +1035,7 @@ public class StarmapScreen extends ScreenBase {
 	 */
 	public Fleet getFleetAt(int x, int y) {
 		double zoom = getZoom();
-		for (Fleet f : fleets) {
+		for (Fleet f : player().visibleFleets()) {
 			int w = f.shipIcon.getWidth();
 			int h = f.shipIcon.getHeight();
 			int x0 = (int)(starmapRect.x + f.x * zoom - w * 0.5);
@@ -1182,7 +1183,7 @@ public class StarmapScreen extends ScreenBase {
 				}
 				if (e.has(Button.LEFT) && pfSplitter && planetFleetSplitterRange.contains(e.x, e.y)) {
 					planetFleetSplitter = 1.0 * (e.y - planetFleetSplitterRange.y) / (planetFleetSplitterRange.height);
-					fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
+					fleetsOffset = limitScrollBox(fleetsOffset, player().ownFleets().size(), fleetsList.height, 10);
 					planetsOffset = limitScrollBox(planetsOffset, planets().size(), planetsList.height, 10);
 					rep = true;
 				}
@@ -1231,6 +1232,7 @@ public class StarmapScreen extends ScreenBase {
 					}
 					if (fleetsList.contains(e.x, e.y)) {
 						int idx = fleetsOffset + (e.y - fleetsList.y) / 10;
+						List<Fleet> fleets = player().ownFleets();
 						if (idx < fleets.size()) {
 							player().currentFleet = fleets.get(idx);
 							player().selectionMode = SelectionMode.FLEET;
@@ -1267,6 +1269,7 @@ public class StarmapScreen extends ScreenBase {
 			} else
 			if (fleetsList.contains(e.x, e.y)) {
 				int idx = fleetsOffset + (e.y - fleetsList.y) / 10;
+				List<Fleet> fleets = player().ownFleets();
 				if (idx < fleets.size()) {
 					player().currentFleet = fleets.get(idx);
 					displaySecondary(Screens.EQUIPMENT_FLEET);
@@ -1314,6 +1317,7 @@ public class StarmapScreen extends ScreenBase {
 				} else {
 					fleetsOffset++;
 				}
+				List<Fleet> fleets = player().ownFleets();
 				fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
 			} else
 			if (planetsList.contains(e.x, e.y)) {
@@ -1390,6 +1394,7 @@ public class StarmapScreen extends ScreenBase {
 		prevFleet.onClick = new Act() {
 			@Override 
 			public void act() {
+				List<Fleet> fleets = player().ownFleets();
 				int idx = fleets.indexOf(fleet());
 				if (idx > 0 && fleets.size() > 0) {
 					player().currentFleet = fleets.get(idx - 1);
@@ -1400,6 +1405,7 @@ public class StarmapScreen extends ScreenBase {
 		nextFleet.onClick = new Act() {
 			@Override
 			public void act() {
+				List<Fleet> fleets = player().ownFleets();
 				int idx = fleets.indexOf(fleet());
 				if (idx + 1 < fleets.size()) {
 					player().currentFleet = fleets.get(idx + 1);
@@ -1636,7 +1642,7 @@ public class StarmapScreen extends ScreenBase {
 	/** @return the player's own planets. */
 	public List<Planet> planets() {
 		List<Planet> pls = player().getPlayerPlanets();
-		Collections.sort(pls, Player.NAME_ORDER);
+		Collections.sort(pls, Planet.NAME_ORDER);
 		return pls;
 	}
 	/**

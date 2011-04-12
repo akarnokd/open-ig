@@ -50,7 +50,6 @@ public class BackgroundGFX {
 		options = new BufferedImage[] {
 			rl.getImage("options_1"),
 			rl.getImage("options_2"),
-			rl.getImage("options_3")
 		};
 		difficulty = new BufferedImage[] {
 			rl.getImage("difficulty_1"),

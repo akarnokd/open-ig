@@ -76,6 +76,14 @@ public class PlanetStatistics {
 	public boolean hasTradersSpaceport;
 	/** Number of orbital factories. */
 	public int orbitalFactory;
+	/** The figher count. */
+	public int fighterCount;
+	/** The vehicle count. */
+	public int vehicleCount;
+	/** The maximum vehicles. */
+	public int vehicleMax;
+	/** A space station is deployed. */
+	public boolean hasSpaceStation;
 	/**
 	 * Add the other planet statistics to this one.
 	 * @param other the other statistics

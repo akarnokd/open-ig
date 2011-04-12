@@ -271,7 +271,7 @@
     <property name='armor' value='3'/>
     <property name='surfaceradar' value='true'/>
   </item>
-  <item id='RocketLauncher1' name='tech.rocketlauncher1.name' long-name='tech.rocketlauncher1.longname' description='tech.rocketlauncher1.description' category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/rocket_launcher_1' factory='weapon' research-cost='14000' production-cost='10000' level='3' race='human' civil='1' mech='2' comp='2' ai='1' mil='2' index='3' video='technology/weapons/vehicles/rocket_launcher_1'>
+  <item id='RocketLauncher1' name='tech.rocketlauncher1.name' long-name='tech.rocketlauncher1.longname' description='tech.rocketlauncher1.description' category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/rocket_launcher_1' factory='weapon' research-cost='14000' production-cost='10000' level='3' race='human' civil='1' mech='2' comp='2' ai='1' mil='2' index='1' video='technology/weapons/vehicles/rocket_launcher_1'>
     <property name='range' value='7'/>
     <property name='speed' value='6.5'/>
     <property name='armor' value='2'/>
@@ -279,7 +279,7 @@
     <property name='area' value='2'/>
     <property name='projectile' value='surfacerocket'/>
   </item>
-  <item id='RocketLauncher2' name='tech.rocketlauncher2.name' long-name='tech.rocketlauncher2.longname' description='tech.rocketlauncher2.description' category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/rocket_launcher_2' factory='weapon' research-cost='24000' production-cost='24200' level='4' race='human' requires='RocketLauncher1' civil='2' mech='5' comp='4' ai='3' mil='6' index='4' video='technology/weapons/vehicles/rocket_launcher_2'>
+  <item id='RocketLauncher2' name='tech.rocketlauncher2.name' long-name='tech.rocketlauncher2.longname' description='tech.rocketlauncher2.description' category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/rocket_launcher_2' factory='weapon' research-cost='24000' production-cost='24200' level='4' race='human' requires='RocketLauncher1' civil='2' mech='5' comp='4' ai='3' mil='6' index='2' video='technology/weapons/vehicles/rocket_launcher_2'>
     <property name='range' value='8'/>
     <property name='speed' value='7'/>
     <property name='armor' value='1'/>

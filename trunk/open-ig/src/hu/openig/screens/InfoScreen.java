@@ -506,7 +506,7 @@ public class InfoScreen extends ScreenBase {
 		equipment.onClick = new Act() {
 			@Override
 			public void act() {
-				displaySecondary(Screens.COLONY);
+				displaySecondary(Screens.EQUIPMENT_FLEET);
 			}
 		};
 		
