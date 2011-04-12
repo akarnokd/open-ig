@@ -31,6 +31,10 @@ public class TechnologySlot extends UIComponent {
 	final CommonResources commons;
 	/** The research type shown. */
 	public ResearchType type;
+	/** Display the research cost (screen dependant)? */
+	public boolean displayResearchCost;
+	/** Display the production cost (screen dependant)? */
+	public boolean displayProductionCost;
 	/** The border color when a slot is present. */
 	final Color availableColor = new Color(0xFF752424);
 	/** The border color when a slot is selected. */
@@ -66,7 +70,7 @@ public class TechnologySlot extends UIComponent {
 				commons.text().paintTo(g2, target.x + 5, target.y + 56, 10, 
 						selectedTextColor, Integer.toString(commons.world().player.count(type)));
 			}
-			if (type.category.main != ResearchMainCategory.BUILDINS) {
+			if (displayProductionCost && type.category.main != ResearchMainCategory.BUILDINS) {
 				commons.text().paintTo(g2, target.x + 5, target.y + 5, 10, 
 						selectedTextColor, Integer.toString(type.productionCost));
 			}
@@ -96,8 +100,10 @@ public class TechnologySlot extends UIComponent {
 			if (lvl == LabLevel.NOT_ENOUGH_ACTIVE) {
 				g2.drawImage(commons.research().researchMissingLab, target.x + 5 + 16, target.y + 49 + 5, null);
 			}
-			commons.text().paintTo(g2, target.x + 5, target.y + 5, 10, 
-					selectedTextColor, Integer.toString(type.researchCost));
+			if (displayResearchCost) {
+				commons.text().paintTo(g2, target.x + 5, target.y + 5, 10, 
+						selectedTextColor, Integer.toString(type.researchCost));
+			}
 		} else {
 			g2.setColor(Color.BLACK);
 			for (int i = 0; i < target.height - 7; i += 2) {
