@@ -143,7 +143,9 @@ public class EquipmentScreen extends ScreenBase {
 	UIImageButton newButton;
 	/** Add ship to fleet. */
 	UIImageButton addButton;
-	/** Delete ship from fleet. */
+	/** Delete ship to fleet. */
+	UIImageButton delButton;
+	/** Delete a fleet. */
 	UIImageButton deleteButton;
 	/** Transfer ships between fleets or planet. */
 	UIImageButton transferButton;
@@ -364,8 +366,33 @@ public class EquipmentScreen extends ScreenBase {
 		
 		addButton = new UIImageButton(commons.equipment().add);
 		addButton.visible(false);
+		addButton.onClick = new Act() {
+			@Override
+			public void act() {
+				doAddItem();
+			}
+		};
+		addButton.setHoldDelay(100);
+		
+		delButton = new UIImageButton(commons.equipment().remove);
+		delButton.visible(false);
+		delButton.onClick = new Act() {
+			@Override
+			public void act() {
+				doRemoveItem();
+			}
+		};
+		delButton.setHoldDelay(100);
+		
 		deleteButton = new UIImageButton(commons.equipment().delete);
 		deleteButton.visible(false);
+		deleteButton.onClick = new Act() {
+			@Override
+			public void act() {
+				// delete fleet
+			}
+		};
+		
 		transferButton = new UIImageButton(commons.equipment().transfer);
 		transferButton.visible(false);
 		splitButton = new UIImageButton(commons.equipment().split);
@@ -569,6 +596,7 @@ public class EquipmentScreen extends ScreenBase {
 		addButton.location(base.x + 322, base.y + 194 - 20);
 		addOne.location(addButton.location());
 		deleteButton.location(base.x + 242, base.y + 194 - 20);
+		delButton.location(deleteButton.location());
 		removeOne.location(deleteButton.location());
 		
 		listButton.location(base.x + 620, base.y + 49 - 20);
@@ -688,6 +716,7 @@ public class EquipmentScreen extends ScreenBase {
 		PlanetStatistics ps = planet().getStatistics();
 		newButton.visible(ps.hasMilitarySpaceport);
 		noSpaceport.visible(!ps.hasMilitarySpaceport);
+		ResearchType rt = research();
 		if (player().selectionMode == SelectionMode.PLANET) {
 			planet.visible(true);
 			List<Planet> planets = player().ownPlanets();
@@ -725,6 +754,37 @@ public class EquipmentScreen extends ScreenBase {
 			cruisers.visible(false);
 			cruisersEmpty.visible(true);
 			stations.visible(true);
+			
+			
+			if (ps.hasMilitarySpaceport) {
+				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					addButton.visible(player().inventoryCount(rt) > 0
+							&& planet().inventoryCount(rt, player()) < 30);
+					delButton.visible(planet().inventoryCount(rt, player()) > 0);
+					preview.image(rt.equipmentCustomizeImage);
+				} else
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
+						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					addButton.visible(player().inventoryCount(rt) > 0
+							&& planet().inventoryCount(rt.category, player()) < ps.vehicleMax);
+					delButton.visible(
+							planet().inventoryCount(rt.category, player()) > 0);
+					preview.image(rt.equipmentCustomizeImage);
+				} else
+				if (rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					addButton.visible(player().inventoryCount(rt) > 0
+							&& planet().inventoryCount(rt.category, player()) < 3);
+					delButton.visible(false);
+					preview.image(rt.equipmentCustomizeImage);
+				} else {
+					addButton.visible(false);
+					delButton.visible(false);
+					preview.image(rt.equipmentCustomizeImage);
+				}
+			} else {
+				addButton.visible(false);
+				delButton.visible(false);
+			}
 		} else {
 			Fleet f = fleet();
 			planet.visible(false);
@@ -737,7 +797,7 @@ public class EquipmentScreen extends ScreenBase {
 			cruisersEmpty.visible(false);
 			stations.visible(false);
 		}
-		doSelectVehicle(research());
+		doSelectVehicle(rt);
 	}
 	/** 
 	 * Clear the cells. 
@@ -906,5 +966,19 @@ public class EquipmentScreen extends ScreenBase {
 		tanks.down = cat == ResearchSubCategory.WEAPONS_TANKS;
 		vehicles.down = cat == ResearchSubCategory.WEAPONS_VEHICLES;
 		stations.down = cat == ResearchSubCategory.SPACESHIPS_STATIONS;
+	}
+	/** Add a ship or vehicle to the planet or fleet. */
+	void doAddItem() {
+		if (player().selectionMode == SelectionMode.PLANET) {
+			planet().changeInventory(research(), player(), 1);
+			player().changeInventoryCount(research(), -1);
+		}
+	}
+	/** Remove a fighter or vehicle from the planet or fleet. */
+	void doRemoveItem() {
+		if (player().selectionMode == SelectionMode.PLANET) {
+			planet().changeInventory(research(), player(), -1);
+			player().changeInventoryCount(research(), +1);
+		}
 	}
 }

@@ -68,7 +68,7 @@ public class TechnologySlot extends UIComponent {
 		if (commons.world().player.isAvailable(type)) {
 			if (type.category.main != ResearchMainCategory.BUILDINS) {
 				commons.text().paintTo(g2, target.x + 5, target.y + 56, 10, 
-						selectedTextColor, Integer.toString(commons.world().player.count(type)));
+						selectedTextColor, Integer.toString(commons.world().player.inventoryCount(type)));
 			}
 			if (displayProductionCost && type.category.main != ResearchMainCategory.BUILDINS) {
 				commons.text().paintTo(g2, target.x + 5, target.y + 5, 10, 

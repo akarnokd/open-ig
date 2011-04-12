@@ -919,6 +919,24 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				case KeyEvent.VK_I:
+					if (e.isControlDown()) {
+						if (commons.world().player.currentResearch() != null) {
+							boolean researched = commons.world().player.availableResearch.add(commons.world().player.currentResearch());
+							Integer cnt = commons.world().player.inventory.get(commons.world().player.currentResearch());
+							cnt = cnt != null ? cnt + 1 : 1;
+							commons.world().player.inventory.put(commons.world().player.currentResearch(), cnt);
+							if (secondary.screen() == Screens.RESEARCH
+									|| secondary.screen() == Screens.PRODUCTION) {
+								if (researched) {
+									((ResearchProductionScreen)secondary).playAnim(commons.world().player.currentResearch());
+								}
+							}
+							repaintInner();
+						}
+						e.consume();
+					}
+					break;
 				case KeyEvent.VK_S:
 					if (e.isControlDown()) {
 						saveWorld();
