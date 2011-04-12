@@ -680,26 +680,26 @@ public class StarmapScreen extends ScreenBase {
 		surveySatellite.visible(
 				p.owner != player()
 				&& (knowledge(p, PlanetKnowledge.NAME) <= 0 || !p.isPopulated())
-				&& player().count(world().researches.get("Satellite")) > 0
+				&& player().inventoryCount(world().researches.get("Satellite")) > 0
 				&& !p.hasInventory(world().researches.get("Satellite"), player())
 		);
 		spySatellite1.visible(
 				p.owner != player() 
 				&& p.owner != null
 				&& knowledge(p, PlanetKnowledge.OWNER) >= 0
-				&& player().count(world().researches.get("SpySatellite1")) > 0
+				&& player().inventoryCount(world().researches.get("SpySatellite1")) > 0
 				&& !p.hasInventory(world().researches.get("SpySatellite1"), player())
 		);
 		spySatellite2.visible(
 				p.owner != player()
 				&& p.owner != null
 				&& knowledge(p, PlanetKnowledge.OWNER) >= 0
-				&& player().count(world().researches.get("SpySatellite2")) > 0
+				&& player().inventoryCount(world().researches.get("SpySatellite2")) > 0
 				&& !p.hasInventory(world().researches.get("SpySatellite2"), player())
 		);
 		hubble2.visible(
 				p.owner == player()
-				&& player().count(world().researches.get("Hubble2")) > 0
+				&& player().inventoryCount(world().researches.get("Hubble2")) > 0
 				&& !p.hasInventory(world().researches.get("Hubble2"), player())
 		);
 

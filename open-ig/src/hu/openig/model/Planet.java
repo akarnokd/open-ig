@@ -428,6 +428,49 @@ public class Planet implements Named, Owned {
 		}
 		return count;
 	}
+	/**
+	 * Returns the number of items of the give category of the given owner.
+	 * @param cat the research sub-category
+	 * @param owner the owner
+	 * @return the count
+	 */
+	public int inventoryCount(ResearchSubCategory cat, Player owner) {
+		int count = 0;
+		for (PlanetInventoryItem pii : inventory) {
+			if (pii.type.category == cat && pii.owner == owner) {
+				count += pii.count;
+			}
+		}
+		return count;
+	}
+	/** 
+	 * Change the inventory amount of a given technology. 
+	 * @param type the item type
+	 * @param owner the owner
+	 * @param amount the amount delta
+	 */
+	public void changeInventory(ResearchType type, Player owner, int amount) {
+		int idx = 0;
+		boolean found = false;
+		for (PlanetInventoryItem pii : inventory) {
+			if (pii.type == type && pii.owner == owner) {
+				pii.count += amount;
+				if (pii.count <= 0) {
+					inventory.remove(idx);
+				}
+				found = true;
+				break;
+			}
+			idx++;
+		}
+		if (!found && amount > 0) {
+			PlanetInventoryItem pii = new PlanetInventoryItem();
+			pii.type = type;
+			pii.owner = owner;
+			pii.count = amount;
+			inventory.add(pii);
+		}
+	}
 	/** The planet orderer by coordinates. */
 	public static final Comparator<Planet> PLANET_ORDER = new Comparator<Planet>() {
 		@Override

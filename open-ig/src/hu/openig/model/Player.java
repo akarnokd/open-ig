@@ -214,9 +214,28 @@ public class Player {
 	 * @param type the research type 
 	 * @return the inventory count of the given research type. 
 	 */
-	public int count(ResearchType type) {
+	public int inventoryCount(ResearchType type) {
 		Integer c = inventory.get(type);
 		return c != null ? c.intValue() : 0;
+	}
+	/**
+	 * Add or remove a given amount of inventory item.
+	 * @param type the type
+	 * @param amount the delta
+	 */
+	public void changeInventoryCount(ResearchType type, int amount) {
+		Integer c = inventory.get(type);
+		if (c == null) {
+			if (amount > 0) {
+				inventory.put(type, amount);
+			}
+		} else {
+			if (amount < 0 && c + amount <= 0) {
+				inventory.remove(type);
+			} else {
+				inventory.put(type, c + amount);
+			}
+		}
 	}
 	/**
 	 * Retrieve the this player's stance to the other player.
