@@ -983,5 +983,6 @@
 	
 	<entry key='relations.allies'>Szövetséges:</entry>
 	<entry key='relations.enemies'>Ellenség:</entry>
-	
+
+	<entry key='newfleet.name'>Új flotta</entry>	
 </labels>

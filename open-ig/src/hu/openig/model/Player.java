@@ -91,7 +91,7 @@ public class Player {
 	public Planet moveNextPlanet() {
 		List<Planet> playerPlanets = getPlayerPlanets();
 		if (playerPlanets.size() > 0) {
-			Collections.sort(playerPlanets, PLANET_ORDER);
+			Collections.sort(playerPlanets, Planet.PLANET_ORDER);
 			int idx = playerPlanets.indexOf(currentPlanet);
 			Planet p = playerPlanets.get((idx + 1) % playerPlanets.size());
 			currentPlanet = p;
@@ -106,7 +106,7 @@ public class Player {
 	public Planet movePrevPlanet() {
 		List<Planet> playerPlanets = getPlayerPlanets();
 		if (playerPlanets.size() > 0) {
-			Collections.sort(playerPlanets, PLANET_ORDER);
+			Collections.sort(playerPlanets, Planet.PLANET_ORDER);
 			int idx = playerPlanets.indexOf(currentPlanet);
 			if (idx == 0) {
 				idx = playerPlanets.size(); 
@@ -130,24 +130,6 @@ public class Player {
 		}
 		return result;
 	}
-	/** The planet orderer by coordinates. */
-	public static final Comparator<Planet> PLANET_ORDER = new Comparator<Planet>() {
-		@Override
-		public int compare(Planet o1, Planet o2) {
-			int c = o1.y < o2.y ? -1 : (o1.y > o2.y ? 1 : 0);
-			if (c == 0) {
-				c = o1.x < o2.x ? -1 : (o1.x > o2.x ? 1 : 0);
-			}
-			return c;
-		}
-	};
-	/** The planet order by name. */
-	public static final Comparator<Planet> NAME_ORDER = new Comparator<Planet>() {
-		@Override
-		public int compare(Planet o1, Planet o2) {
-			return o1.name.compareTo(o2.name);
-		}
-	};
 	/**
 	 * Test if the given research is available.
 	 * @param rt the research
@@ -259,5 +241,39 @@ public class Player {
 	 * @return does this player know the other player? */
 	public boolean knows(Player p) {
 		return knownPlayers.containsKey(p);
+	}
+	/**
+	 * @return The collection of all visible fleets. 
+	 */
+	public List<Fleet> visibleFleets() {
+		return new ArrayList<Fleet>(fleets.keySet());
+	}
+	/**
+	 * @return the list of player owned fleets sorted by name
+	 */
+	public List<Fleet> ownFleets() {
+		List<Fleet> result = new ArrayList<Fleet>();
+		for (Fleet f : fleets.keySet()) {
+			if (f.owner == this) {
+				result.add(f);
+			}
+		}
+		Collections.sort(result, new Comparator<Fleet>() {
+			@Override
+			public int compare(Fleet o1, Fleet o2) {
+				return o1.name.compareTo(o2.name);
+			}
+		});
+		return result;
+	}
+	/** @return List the own planets. */
+	public List<Planet> ownPlanets() {
+		List<Planet> result = new ArrayList<Planet>();
+		for (Planet p : planets.keySet()) {
+			if (p.owner == this) {
+				result.add(p);
+			}
+		}
+		return result;
 	}
 }

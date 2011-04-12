@@ -996,4 +996,6 @@
 	
 	<entry key='relations.allies'>Allies:</entry>
 	<entry key='relations.enemies'>Enemies:</entry>
+	
+	<entry key='newfleet.name'>New Fleet</entry>
 </labels>

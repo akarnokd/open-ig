@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,21 @@ public class Fleet implements Named, Owned {
 	public String name;
 	/** The fleet inventory: ships and tanks. */
 	public final List<FleetInventoryItem> inventory = new ArrayList<FleetInventoryItem>();
+	/** The current list of movement waypoints. */
+	public final List<Point> waypoints = new ArrayList<Point>();
+	/** If the fleet should follow the other fleet. */
+	public Fleet targetFleet;
+	/** If the fleet should move to the planet. */
+	public Planet targetPlanet;
+	/** The movement mode. */
+	public enum FleetMode {
+		/** Simply move there. */
+		MOVE,
+		/** Attack the target. */
+		ATTACK
+	}
+	/** The fleet movement mode. */
+	public FleetMode mode;
 	/** @return calculate the fleet statistics. */
 	public FleetStatistics getStatistics() {
 		FleetStatistics result = new FleetStatistics();
@@ -47,5 +63,19 @@ public class Fleet implements Named, Owned {
 	public Player owner() {
 		// TODO Auto-generated method stub
 		return owner;
+	}
+	/**
+	 * Returns the number of items of the give research type.
+	 * @param rt the research type to count
+	 * @return the count
+	 */
+	public int inventoryCount(ResearchType rt) {
+		int count = 0;
+		for (FleetInventoryItem pii : inventory) {
+			if (pii.type == rt) {
+				count += pii.count;
+			}
+		}
+		return count;
 	}
 }

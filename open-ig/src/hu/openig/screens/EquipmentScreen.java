@@ -9,19 +9,24 @@
 package hu.openig.screens;
 
 import hu.openig.core.Act;
-import hu.openig.model.LabLevel;
+import hu.openig.core.Action1;
+import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
+import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
-import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.render.RenderTools;
+import hu.openig.render.TextRenderer;
+import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
@@ -29,6 +34,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.io.Closeable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -38,6 +44,15 @@ import java.util.List;
  * @author akarnokd, 2010.01.11.
  */
 public class EquipmentScreen extends ScreenBase {
+	/** The current equipment mode to render and behave. */
+	public enum EquipmentMode {
+		/** Manage an existing or new fleet. */
+		MANAGE_FLEET,
+		/** Share or combine existing fleets. */
+		SHARE_OR_COMBINE,
+		/** Manage a planet. */
+		MANAGE_PLANET
+	}
 	/** The panel base rectangle. */
 	final Rectangle base = new Rectangle();
 	/** The left panel. */
@@ -174,17 +189,18 @@ public class EquipmentScreen extends ScreenBase {
 	Closeable animation;
 	/** The current animation step counter. */
 	int animationStep;
-	/** The current equipment mode to render and behave. */
-	public enum EquipmentMode {
-		/** Manage an existing or new fleet. */
-		MANAGE_FLEET,
-		/** Share or combine existing fleets. */
-		SHARE_OR_COMBINE,
-		/** Manage a planet. */
-		MANAGE_PLANET
-	}
+	/** The preview of a selected vehicle or ship. */
+	UIImage preview;
 	/** The equipment mode. */
 	Screens mode;
+	/** The left fighter cells. */
+	final List<VehicleCell> leftFighterCells = new ArrayList<VehicleCell>();
+	/** The left tank cells. */
+	final List<VehicleCell> leftTankCells = new ArrayList<VehicleCell>();
+	/** The right fighter cells. */
+	final List<VehicleCell> rightFighterCells = new ArrayList<VehicleCell>();
+	/** The right tank cells. */
+	final List<VehicleCell> rightTankCells = new ArrayList<VehicleCell>();
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -250,17 +266,34 @@ public class EquipmentScreen extends ScreenBase {
 		endJoin.visible(false);
 		
 		prev = new UIImageButton(commons.starmap().backwards);
+		prev.onClick = new Act() {
+			@Override
+			public void act() {
+				doPrev();
+			}
+		};
+		prev.setDisabledPattern(commons.common().disabledPattern);
 		next = new UIImageButton(commons.starmap().forwards);
+		next.onClick = new Act() {
+			@Override
+			public void act() {
+				doNext();
+			}
+		};
+		next.setDisabledPattern(commons.common().disabledPattern);
 		
 		fleetName = new UILabel("Fleet1", 14, commons.text());
 		fleetName.color(0xFFFF0000);
 		
+		// TODO move text
 		spaceshipsLabel = new UILabel(format("equipment.spaceships", 0), 10, commons.text());
 		fightersLabel = new UILabel(format("equipment.fighters", 0), 10, commons.text());
 		vehiclesLabel = new UILabel(format("equipment.vehicles", 0), 10, commons.text());
+		
 		spaceshipsMaxLabel = new UILabel(format("equipment.max", 25), 10, commons.text());
 		fightersMaxLabel = new UILabel(format("equipment.maxpertype", 30), 10, commons.text());
 		vehiclesMaxLabel = new UILabel(format("equipment.max", 0), 10, commons.text());
+		
 		fleetStatusLabel = new UILabel("TODO", 10, commons.text());
 
 		secondaryLabel = new UILabel(get("equipment.secondary"), 10, commons.text());
@@ -297,13 +330,24 @@ public class EquipmentScreen extends ScreenBase {
 		vehicles.onPress = categoryAction(ResearchSubCategory.WEAPONS_VEHICLES);
 		
 		slots.clear();
+		
+		Action1<ResearchType> selectSlot = new Action1<ResearchType>() {
+			@Override
+			public void invoke(ResearchType value) {
+				world().selectResearch(value);
+			}
+		};
+		
 		for (int i = 0; i < 6; i++) {
 			final TechnologySlot ts = new TechnologySlot(commons);
 			ts.visible(false);
+			ts.onPress = selectSlot; 
+			
 			slots.add(ts);
 		}
 		
 		noPlanetNearby = new UIImage(commons.equipment().noPlanetNearby);
+		noPlanetNearby.visible(false);
 		noSpaceport = new UIImage(commons.equipment().noSpaceport);
 		noSpaceport.visible(false);
 		notYourPlanet = new UIImage(commons.equipment().notYourplanet);
@@ -311,6 +355,13 @@ public class EquipmentScreen extends ScreenBase {
 		
 		newButton = new UIImageButton(commons.equipment().newFleet);
 		newButton.visible(false);
+		newButton.onClick = new Act() {
+			@Override
+			public void act() {
+				doCreateFleet();
+			}
+		};
+		
 		addButton = new UIImageButton(commons.equipment().add);
 		addButton.visible(false);
 		deleteButton = new UIImageButton(commons.equipment().delete);
@@ -351,12 +402,50 @@ public class EquipmentScreen extends ScreenBase {
 		innerEquipmentSeparator.visible(false);
 		
 		selectedNameAndType = new UILabel(format("equipment.selectednametype", "TODO", "TODO"), 10, commons.text());
+		selectedNameAndType.visible(false);
 		selectedNameAndType.color(0xFF6DB269);
 		
 		planet = new UIImage(commons.equipment().planetOrbit);
 		
-		addThis();
+		preview = new UIImage();
+		preview.z = -1;
+		
+		Action1<ResearchType> selectVehicle = new Action1<ResearchType>() {
+			@Override
+			public void invoke(ResearchType value) {
+				world().selectResearch(value);
+				displayCategory(value.category);
+				doSelectVehicle(value);
+			}
+		};
+		
+		for (int i = 0; i < 6; i++) {
+			VehicleCell vc = new VehicleCell();
+			vc.onSelect = selectVehicle;
+			vc.topCenter = true;
+			leftFighterCells.add(vc);
+
+			vc = new VehicleCell();
+			vc.topCenter = true;
+			vc.onSelect = selectVehicle;
+			rightFighterCells.add(vc);
+		}
+		for (int i = 0; i < 7; i++) {
+			VehicleCell vc = new VehicleCell();
+			vc.onSelect = selectVehicle;
+			leftTankCells.add(vc);
+			
+			vc = new VehicleCell();
+			vc.onSelect = selectVehicle;
+			rightTankCells.add(vc);
+		}
+		
+		add(leftFighterCells);
+		add(rightFighterCells);
+		add(leftTankCells);
+		add(rightTankCells);
 		add(slots);
+		addThis();
 	}
 	/**
 	 * @param cat the category to set 
@@ -366,7 +455,7 @@ public class EquipmentScreen extends ScreenBase {
 		return new Act() {
 			@Override
 			public void act() {
-				selectCategory(cat);
+				displayCategory(cat);
 				askRepaint();
 			}
 		};
@@ -387,7 +476,7 @@ public class EquipmentScreen extends ScreenBase {
 				world().selectResearch(rt);
 			}
 		}
-		selectCategory(rt.category);
+		displayCategory(rt.category);
 		
 		animation = commons.register(100, new Act() {
 			@Override
@@ -496,16 +585,34 @@ public class EquipmentScreen extends ScreenBase {
 		innerEquipmentSeparator.location(innerEquipmentName.x, innerEquipmentName.y + 10);
 		innerEquipmentValue.location(innerEquipmentName.x, innerEquipmentName.y + 20);
 		
-		selectedNameAndType.location(base.x + 326, base.y + 28 - 20);
+		selectedNameAndType.location(base.x + 326, base.y + 56 - 20);
 		
 		planet.location(leftPanel.x - 1, leftPanel.y - 1);
+		
+		preview.bounds(rightPanel.x, rightPanel.y + 28, 298, 128);
+		
+		for (int i = 0; i < 6; i++) {
+			VehicleCell vc = leftFighterCells.get(i);
+			vc.bounds(leftPanel.x + leftPanel.width - 2 - (6 - i) * (vc.width + 1), leftPanel.y + 2, 33, 38);
+
+			vc = rightFighterCells.get(i);
+			vc.bounds(rightPanel.x + 2 + i * (vc.width + 1), rightPanel.y + 2, 33, 38);
+		}
+		for (int i = 0; i < 7; i++) {
+			VehicleCell vc = leftTankCells.get(i);
+			vc.bounds(leftPanel.x + leftPanel.width - 2 - (7 - i) * (vc.width + 1), leftPanel.y + leftPanel.height - 56, 33, 28);
+			
+			vc = rightTankCells.get(i);
+			vc.bounds(rightPanel.x + 2 + i * (vc.width + 1), rightPanel.y + rightPanel.height - 56, 33, 28);
+		}
+
 	}
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.equipment().base, base.x, base.y, null);
 		
-		updateSlots();
+		update();
 		
 		if (innerEquipmentVisible) {
 			g2.setColor(new Color(0xFF4D7DB6));
@@ -514,106 +621,13 @@ public class EquipmentScreen extends ScreenBase {
 		super.draw(g2);
 	}
 	/**
-	 * Select/deselect a category button. Does not ask for repaint.
-	 * @param cat the category, use null to deselect all
-	 */
-	public void selectCategory(ResearchSubCategory cat) {
-		battleships.down = cat == ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
-		cruisers.down = cat == ResearchSubCategory.SPACESHIPS_CRUISERS;
-		fighters.down = cat == ResearchSubCategory.SPACESHIPS_FIGHTERS;
-		stations.down = cat == ResearchSubCategory.SPACESHIPS_STATIONS;
-		tanks.down = cat == ResearchSubCategory.WEAPONS_TANKS;
-		vehicles.down = cat == ResearchSubCategory.WEAPONS_VEHICLES;
-		updateSlots();
-	}
-	/** @return The current display category. */
-	ResearchSubCategory getCurrentCategory() {
-		if (battleships.down) {
-			return ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
-		}
-		if (cruisers.down) {
-			return ResearchSubCategory.SPACESHIPS_CRUISERS;
-		}
-		if (fighters.down) {
-			return ResearchSubCategory.SPACESHIPS_FIGHTERS;
-		}
-		if (stations.down) {
-			return ResearchSubCategory.SPACESHIPS_STATIONS;
-		}
-		if (tanks.down) {
-			return ResearchSubCategory.WEAPONS_TANKS;
-		}
-		if (vehicles.down) {
-			return ResearchSubCategory.WEAPONS_VEHICLES;
-		}
-		if (player().currentResearch != null) {
-			return player().currentResearch.category;
-		}
-		return null;
-	}
-	/** Update the slot display. */
-	void updateSlots() {
-		for (TechnologySlot slot : slots) {
-			slot.visible(false);
-		}
-		ResearchSubCategory cat = getCurrentCategory();
-		for (final ResearchType rt : world().researches.values()) {
-			if (rt.category == cat) {
-				if (world().canDisplayResearch(rt)) {
-					if (rt.index >= 0 && rt.index < 6) {
-						updateSlot(rt);
-					}
-				}
-			}
-		}
-	}
-	/**
 	 * Update the slot belonging to the specified technology.
 	 * @param rt the research technology
-	 * @return the slot
 	 */
-	public TechnologySlot updateSlot(final ResearchType rt) {
+	public void updateSlot(final ResearchType rt) {
 		final TechnologySlot slot = slots.get(rt.index);
+		slot.type = rt;
 		slot.visible(true);
-		if (rt.category.main != ResearchMainCategory.BUILDINS) {
-			Integer inv = player().inventory.get(rt);
-			slot.inventory = inv != null ? inv.intValue() : 0;
-		} else {
-			slot.inventory = -1;
-		}
-		slot.name = rt.name;
-		slot.selected = player().currentResearch == rt;
-		slot.available = player().isAvailable(rt);
-		slot.percent = 0;
-		if (!slot.available) {
-			slot.researching = player().research.containsKey(rt);
-			if (slot.researching) {
-				slot.percent =  player().research.get(rt).getPercent() / 100.0f;
-			}
-			LabLevel llvl = player().hasEnoughLabs(rt);
-			slot.missingActiveLab = llvl == LabLevel.NOT_ENOUGH_ACTIVE;
-			slot.missingLab = llvl == LabLevel.NOT_ENOUGH_TOTAL;
-			slot.notResearchable = !world().canResearch(rt);
-			slot.cost = -1;
-		} else {
-			slot.cost = rt.productionCost;
-			slot.percent = 1;
-			slot.researching = false;
-			slot.notResearchable = false;
-			slot.missingActiveLab = false;
-			slot.missingLab = false;
-		}
-		
-		slot.image = rt.image;
-		
-		slot.onPress = new Act() {
-			@Override
-			public void act() {
-				doSelectTechnology(slot, rt.index);
-				world().selectResearch(rt);
-			}
-		};
-		return slot;
 	}
 	/**
 	 * Update animating components.
@@ -628,16 +642,6 @@ public class EquipmentScreen extends ScreenBase {
 			sl.animationStep = animationStep;
 		}
 		askRepaint(base);
-	}
-	/**
-	 * Select a technology slot.
-	 * @param ts the target technology slot.
-	 * @param j the slot index
-	 */
-	protected void doSelectTechnology(TechnologySlot ts, int j) {
-		for (TechnologySlot ts0 : slots) {
-			ts0.selected = ts0.visible() && ts0 == ts;
-		}
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
@@ -654,20 +658,251 @@ public class EquipmentScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
+		for (TechnologySlot ts : slots) {
+			ts.type = null;
+		}
+		clearCells(leftFighterCells);
+		clearCells(rightFighterCells);
+		clearCells(leftTankCells);
+		clearCells(rightTankCells);
+	}
+	/** Create a new fleet. */
+	void doCreateFleet() {
+		Fleet f = new Fleet();
+		f.owner = player();
+		f.name = get("newfleet.name");
+		f.shipIcon = f.owner.fleetIcon;
+		f.x = planet().x + 5;
+		f.y = planet().y + 5;
 		
+		player().currentFleet = f;
+		player().selectionMode = SelectionMode.FLEET;
+		player().fleets.put(f, FleetKnowledge.FULL);
 	}
 	/**
 	 * Update the display values based on the current selection.
 	 */
 	void update() {
+		PlanetStatistics ps = planet().getStatistics();
+		newButton.visible(ps.hasMilitarySpaceport);
+		noSpaceport.visible(!ps.hasMilitarySpaceport);
 		if (player().selectionMode == SelectionMode.PLANET) {
 			planet.visible(true);
-			PlanetStatistics ps = planet().getStatistics();
-			newButton.visible(ps.hasMilitarySpaceport);
-			noSpaceport.visible(!ps.hasMilitarySpaceport);
+			List<Planet> planets = player().ownPlanets();
+			Collections.sort(planets, Planet.NAME_ORDER);
+			int idx = planets.indexOf(planet());
+			prev.enabled(idx > 0);
+			next.enabled(idx < planets.size() - 1);
+			fleetName.text(planet().name);
+			
+			spaceshipsLabel.visible(false);
+			spaceshipsMaxLabel.visible(false);
+			fightersLabel.text(format("equipment.fighters", ps.fighterCount), true);
+			vehiclesLabel.text(format("equipment.vehicles", ps.vehicleCount), true);
+			
+			if (ps.hasSpaceStation) {
+				fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
+			} else {
+				fightersMaxLabel.text(format("equipment.max", 0), true);
+			}
+			vehiclesMaxLabel.text(format("equipment.max", ps.vehicleMax), true);
+			
+			fleetStatusLabel.visible(false);
+			
+			secondaryLabel.visible(false);
+			secondaryFighters.visible(false);
+			secondaryVehicles.visible(false);
+			secondaryValue.visible(false);
+			
+			prepareCells(planet(), null, leftFighterCells, leftTankCells);
+//			prepareCells(planet(), null, rightFighterCells, rightTankCells);
+			clearCells(rightFighterCells);
+			clearCells(rightTankCells);
+			
+			battleships.visible(false);
+			cruisers.visible(false);
+			cruisersEmpty.visible(true);
+			stations.visible(true);
 		} else {
+			Fleet f = fleet();
 			planet.visible(false);
+			fleetName.text(f.name);
+			
+			prepareCells(null, f, leftFighterCells, leftTankCells);
+
+			battleships.visible(true);
+			cruisers.visible(true);
+			cruisersEmpty.visible(false);
+			stations.visible(false);
 		}
+		doSelectVehicle(player().currentResearch);
+	}
+	/** 
+	 * Clear the cells. 
+	 * @param cells the list cells
+	 */
+	void clearCells(List<VehicleCell> cells) {
+		for (VehicleCell vc : cells) {
+			vc.type = null;
+//			vc.selected = false;
+			vc.count = 0;
+		}
+	}
+	/** 
+	 * Initialize the cells according to the available fighter and vehicles.
+	 * @param p the planet to use for the inventory count
+	 * @param f the fleet to use for the inventory count 
+	 * @param fighters the fighter cells to use
+	 * @param tanks the tank cells
+	 */
+	void prepareCells(Planet p, Fleet f, 
+			List<VehicleCell> fighters, List<VehicleCell> tanks) {
+		clearCells(fighters);
+		clearCells(tanks);
+		
+		for (ResearchType rt : world().researches.values()) {
+			VehicleCell vc = null;
+			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				vc = fighters.get(rt.index);
+			} else
+			if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+				vc = tanks.get(rt.index);
+			} else
+			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				vc = tanks.get(rt.index + 4);
+			}
+			
+			if (vc != null && player().isAvailable(rt)) {
+				vc.type = rt;
+				if (p != null) {
+					vc.count = p.inventoryCount(rt, player());
+				} else
+				if (f != null) {
+					vc.count = f.inventoryCount(rt);
+				}
+			}
+		}
+	}
+	/** Go to previous planet/fleet. */
+	void doPrev() {
+		if (player().selectionMode == SelectionMode.PLANET) {
+			List<Planet> planets = player().ownPlanets();
+			Collections.sort(planets, Planet.NAME_ORDER);
+			int idx = planets.indexOf(planet());
+			if (idx > 0) {
+				player().currentPlanet = planets.get(idx - 1);
+			}
+		} else {
+			List<Fleet> fleets = player().ownFleets();
+			int idx = fleets.indexOf(fleet());
+			if (idx > 0) {
+				player().currentFleet = fleets.get(idx - 1);
+			}
+		}
+	}
+	/** Go to next planet/fleet. */
+	void doNext() {
+		if (player().selectionMode == SelectionMode.PLANET) {
+			List<Planet> planets = player().ownPlanets();
+			Collections.sort(planets, Planet.NAME_ORDER);
+			int idx = planets.indexOf(planet());
+			if (idx < planets.size() - 1 && planets.size() > 0) {
+				player().currentPlanet = planets.get(idx + 1);
+			}
+		} else {
+			List<Fleet> fleets = player().ownFleets();
+			int idx = fleets.indexOf(fleet());
+			if (idx < fleets.size() - 1 && fleets.size() > 0) {
+				player().currentFleet = fleets.get(idx + 1);
+			}
+		}
+	}
+	
+	/**
+	 * The renderer for a concrete vehicle. 
+	 * @author akarnokd, 2011.04.12.
+	 */
+	class VehicleCell extends UIComponent {
+		/** The type. */
+		public ResearchType type;
+		/** The count. */
+		public int count;
+		/** Indicate a selection? */
+		public boolean selected;
+		/** Place the image top center (true) or right middle (false)? */
+		public boolean topCenter;
+		/** The action to invoke when the user selects this cell. */
+		public Action1<ResearchType> onSelect;
+		@Override
+		public void draw(Graphics2D g2) {
+			if (type != null) {
+				if (topCenter) {
+					g2.drawImage(type.equipmentImage, (width - type.equipmentImage.getWidth()) / 2, 2, null);
+				} else {
+					g2.drawImage(type.equipmentImage, width - type.equipmentImage.getWidth() - 2, (height - type.equipmentImage.getHeight()) / 2, null);
+				}
+				
+				int textHeight = 7;
+				
+				String n = Integer.toString(count);
+				commons.text().paintTo(g2, 2, height - 2 - textHeight, textHeight, TextRenderer.GREEN, n);
+				
+				if (selected) {
+					g2.setColor(Color.ORANGE);
+					g2.drawRect(0, 0, width - 1, height - 1);
+				}
+			}
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Button.LEFT) && e.has(Type.DOWN) && type != null) {
+				this.selected = true;
+				if (onSelect != null) {
+					onSelect.invoke(type);
+				}
+				return true;
+			}
+			return false;
+		}
+	}
+	/**
+	 * Select the given vehicle.
+	 * @param rt the research type
+	 */
+	void doSelectVehicle(ResearchType rt) {
+		for (VehicleCell vc : leftFighterCells) {
+			vc.selected = vc.type == rt;
+		}
+		for (VehicleCell vc : rightFighterCells) {
+			vc.selected = vc.type == rt;
+		}
+		for (VehicleCell vc : leftTankCells) {
+			vc.selected = vc.type == rt;
+		}
+		for (VehicleCell vc : rightTankCells) {
+			vc.selected = vc.type == rt;
+		}
+	}
+	/**
+	 * Display the elements of the given sub-category in the slots.
+	 * @param cat the target category
+	 */
+	void displayCategory(ResearchSubCategory cat) {
+		for (TechnologySlot ts : slots) {
+			ts.type = null;
+			ts.visible(false);
+		}
+		for (ResearchType rt : world().researches.values()) {
+			if (world().canDisplayResearch(rt) && rt.category == cat) {
+				updateSlot(rt);
+			}
+		}
+		
+		battleships.down = cat == ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
+		cruisers.down = cat == ResearchSubCategory.SPACESHIPS_CRUISERS;
+		fighters.down = cat == ResearchSubCategory.SPACESHIPS_FIGHTERS;
+		tanks.down = cat == ResearchSubCategory.WEAPONS_TANKS;
+		vehicles.down = cat == ResearchSubCategory.WEAPONS_VEHICLES;
+		stations.down = cat == ResearchSubCategory.SPACESHIPS_STATIONS;
 	}
 }

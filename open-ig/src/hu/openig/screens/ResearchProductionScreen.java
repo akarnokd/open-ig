@@ -10,7 +10,6 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.core.Action1;
-import hu.openig.model.LabLevel;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
@@ -62,6 +61,128 @@ public class ResearchProductionScreen extends ScreenBase {
 	@interface ModeUI {
 		/** The expected screen mode. */
 		Screens mode();
+	}
+	/**
+	 * A concrete production line.
+	 * @author akarnokd, Mar 19, 2011
+	 */
+	class ProductionLine extends UIContainer {
+		/** The base image. */
+		UIImage base;
+		/** Less priority button. */
+		UIImageButton lessPriority;
+		/** More priority button. */
+		UIImageButton morePriority;
+		/** Less build button. */
+		UIImageButton lessBuild;
+		/** More build button. */
+		UIImageButton moreBuild;
+		/** Invention name. */
+		UILabel name;
+		/** Priority value. */
+		UILabel priority;
+		/** Assigned capacity. */
+		UILabel capacity;
+		/** Capacity percent. */
+		UILabel capacityPercent;
+		/** Production count. */
+		UILabel count;
+		/** Completion info. */
+		UILabel completion;
+		/** The activation event. */
+		public Act onPress;
+		/** Initialize the inner fields. */
+		public ProductionLine() {
+			base = new UIImage(commons.research().productionLine);
+			base.z = -1;
+			width = base.width;
+			height = base.height;
+			
+			lessPriority = new UIImageButton(commons.research().less);
+			lessPriority.setHoldDelay(200);
+			lessPriority.onClick = new Act() {
+				@Override
+				public void act() {
+					doLessPriority();
+				}
+			};
+			lessBuild = new UIImageButton(commons.research().less);
+			lessBuild.setHoldDelay(200);
+			lessBuild.onClick = new Act() {
+				@Override
+				public void act() {
+					doChangeCount(-1);
+				}
+			};
+			morePriority = new UIImageButton(commons.research().more);
+			morePriority.setHoldDelay(200);
+			morePriority.onClick = new Act() {
+				@Override
+				public void act() {
+					doMorePriority();
+				}
+			};
+			moreBuild = new UIImageButton(commons.research().more);
+			moreBuild.setHoldDelay(200);
+			moreBuild.onClick = new Act() {
+				@Override
+				public void act() {
+					doChangeCount(1);
+				}
+			};
+			
+			name = new UILabel("TODO", 10, commons.text());
+			priority = new UILabel("50", 10, commons.text());
+			priority.horizontally(HorizontalAlignment.CENTER);
+			capacity = new UILabel("1000", 10, commons.text());
+			capacityPercent = new UILabel("50%", 10, commons.text());
+			capacityPercent.horizontally(HorizontalAlignment.CENTER);
+			count = new UILabel("1", 10, commons.text());
+			count.horizontally(HorizontalAlignment.CENTER);
+			completion = new UILabel("TODO", 10, commons.text());
+			
+			name.bounds(5, 4, 166, 14);
+			lessPriority.location(190, 5);
+			priority.bounds(198, 4, 24, 14);
+			morePriority.location(223, 5);
+			capacity.bounds(234, 2, 56, 18);
+			capacityPercent.bounds(234 + 57, 2, 56, 18);
+			lessBuild.location(350, 5);
+			count.bounds(358, 4, 24, 14);
+			moreBuild.location(383, 5);
+			completion.bounds(394, 2, 125, 18);
+			
+			addThis();
+		}
+		/** Clear the textual values of the line. */
+		public void clear() {
+			name.text("");
+			priority.text("");
+			capacity.text("");
+			capacityPercent.text("");
+			count.text("");
+			completion.text("");
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			boolean rep = false;
+			if (e.has(Type.DOWN)) {
+				select(true);
+				if (onPress != null) {
+					onPress.act();
+				}
+				rep = true;
+			}
+			rep |= super.mouse(e);
+			return rep;
+		}
+		/** 
+		 * Change the coloring to select this line.
+		 * @param state the selection state
+		 */
+		public void select(boolean state) {
+			name.color(state ? TextRenderer.RED : TextRenderer.GREEN);
+		}
 	}
 	/** The equipment slot locations. */
 	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
@@ -175,10 +296,10 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** Static label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedAILab;
+	
 	/** Static label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedMilLab;
-	
 	/** Static label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeTechName;
@@ -197,10 +318,10 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** Static label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeAILab;
+
 	/** Static label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeMilLab;
-
 	/** Dynamic value label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedTechNameValue;
@@ -225,10 +346,10 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** Dynamic value label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedAILabValue;
+	
 	/** Dynamic value label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UILabel selectedMilLabValue;
-	
 	/** Dynamic value label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeTechNameValue;
@@ -250,10 +371,10 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** Dynamic value label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeAILabValue;
+
 	/** Dynamic value label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UILabel activeMilLabValue;
-
 	/** Dynamic value label. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UILabel descriptionTitle;
@@ -314,6 +435,297 @@ public class ResearchProductionScreen extends ScreenBase {
 	ResearchType animationResearch;
 	/** The research status when the animation began. */
 	boolean animationResearchReady;
+	/**
+	 * Create a sub category image button with the given graphics.
+	 * @param cat the target category
+	 * @param buttonImage the button images
+	 */
+	void createSubCategory(final ResearchSubCategory cat, BufferedImage[] buttonImage) {
+		UIImageTabButton b = new UIImageTabButton(buttonImage);
+		b.onPress = new Act() {
+			@Override
+			public void act() {
+				selectSubCategory(cat);
+			}
+		};
+		b.visible(false);
+		add(b);
+		subComponents.put(cat, b);
+	}
+	/**
+	 * Display technologies in the slots.
+	 * @param cat the category
+	 */
+	public void displayTechnologies(ResearchSubCategory cat) {
+		for (TechnologySlot slot : slots) {
+			slot.type = null;
+			slot.visible(false);
+		}
+		for (final ResearchType rt : world().researches.values()) {
+			if (world().canDisplayResearch(rt) && rt.category == cat) {
+				updateSlot(rt);
+			}
+		}
+	}
+	/**
+	 * Distribute the given components equally within the given target rectangle.
+	 * @param left the common left coordinate to use
+	 * @param target the target rectangle
+	 * @param items the list of components
+	 */
+	void distributeVertically(int left, Rectangle target, List<? extends UIComponent> items) {
+		int sum = 0;
+		for (UIComponent c : items) {
+			c.x = left;
+			sum += c.height;
+		}
+		float space = (target.height - sum) * 1.0f / (items.size() + 1);
+		float top = space + target.y;
+		for (int i = 0; i < items.size(); i++) {
+			UIComponent c = items.get(i);
+			c.y = (int)top;
+			top += space + c.height;
+		}
+	}
+	/** Add a new production. */
+	void doAddProduction() {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		Production prod = new Production();
+		prod.type = player().currentResearch;
+		prod.count = 0;
+		prod.priority = 50;
+		productions.put(prod.type, prod);
+	}
+
+	/**
+	 * Adjust money based on the scale.
+	 * @param scale the scale factor -1.0 ... +1.0
+	 */
+	void doAdjustMoney(float scale) {
+		Research r = player().research.get(player().currentResearch);
+		r.assignedMoney += scale * r.type.researchCost / 20;
+		r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);
+	}
+
+	/**
+	 * Update animating components.
+	 */
+	void doAnimation() {
+		if (animationStep == Integer.MAX_VALUE) {
+			animationStep = 0;
+		} else {
+			animationStep ++;
+		}
+		for (TechnologySlot sl : slots) {
+			sl.animationStep = animationStep;
+		}
+		askRepaint(base);
+	}
+
+	/**
+	 * Increase the count.
+	 * @param delta the amount
+	 */
+	void doChangeCount(int delta) {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		Production prod = productions.get(player().currentResearch);
+		if (prod != null) {
+			prod.count = Math.max(0, prod.count + delta);
+		}
+	}
+
+	/** 
+	 * Increase the priority of a line.
+	 */
+	void doLessPriority() {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		Production prod = productions.get(player().currentResearch);
+		if (prod != null) {
+			prod.priority = Math.max(0, prod.priority - 5);
+		}
+	}
+	/**
+	 * Decrease the priority of a line.
+	 */
+	void doMorePriority() {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		Production prod = productions.get(player().currentResearch);
+		if (prod != null) {
+			prod.priority = Math.min(100, prod.priority + 5);
+		}
+	}
+	/** Remove the selected production. */
+	void doRemoveProduction() {
+		ResearchMainCategory cat = getCurrentMainCategory();
+		Map<ResearchType, Production> productions = player().production.get(cat);
+		productions.remove(player().currentResearch);
+	}
+	/**
+	 * Select a specific production line.
+	 * @param pl the line
+	 * @param j the line index
+	 */
+	protected void doSelectProductionLine(ProductionLine pl, int j) {
+		for (ProductionLine pl0 : productionLines) {
+			pl0.select(pl0 == pl);
+			ResearchMainCategory cat = getCurrentMainCategory();
+			Map<ResearchType, Production> productions = player().production.get(cat);
+			int row = 0;
+			for (Production pr : productions.values()) {
+				if (row++ == j) {
+					if (pr.type != player().currentResearch) {
+						doSelectTechnology(pr.type);
+					}
+					break;
+				}
+			}
+		}
+	}
+	/**
+	 * Select the given technology.
+	 * @param rt the new technology
+	 */
+	void doSelectTechnology(ResearchType rt) {
+		if (rt != player().currentResearch) {
+			playAnim(rt);
+		}
+		world().selectResearch(rt);
+		selectMainCategory(rt.category.main);
+		selectSubCategory(rt.category);
+	}
+	/** Sell one of the current research. */
+	void doSell() {
+		Integer count = player().inventory.get(player().currentResearch);
+		if (count != null && count > 0) {
+			player().inventory.put(player().currentResearch, count - 1);
+			player().money += player().currentResearch.productionCost / 2;
+			
+			player().statistics.moneySellIncome += player().currentResearch.productionCost / 2;
+			player().statistics.moneyIncome += player().currentResearch.productionCost / 2;
+			player().statistics.sellCount++;
+			
+			world().statistics.moneySellIncome += player().currentResearch.productionCost / 2;
+			world().statistics.moneyIncome += player().currentResearch.productionCost / 2;
+			world().statistics.sellCount++;
+
+		}
+	}
+	/** Start a new research. */
+	void doStartNew() {
+		if (player().runningResearch != null) {
+			player().research.get(player().runningResearch).state = ResearchState.STOPPED;
+		}
+		ResearchType rt = player().currentResearch;
+		player().runningResearch = rt;
+		Research rs = player().research.get(rt);
+		if (rs == null) {
+			rs = new Research();
+			rs.type = rt;
+			player().research.put(rt, rs);
+			rs.remainingMoney = rt.researchCost;
+			rs.assignedMoney = rt.researchCost / 2;
+		}
+		rs.state = ResearchState.RUNNING;
+	}
+	@Override
+	public void draw(Graphics2D g2) {
+		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
+		g2.drawImage(commons.research().basePanel, base.x, base.y, null);
+		
+		PlanetStatistics all = player().getPlanetStatistics(null);
+		
+		update(all);
+		updateActive(all);
+		updateProduction(all);
+		
+		super.draw(g2);
+		
+		drawResearchArrow(g2);
+	}
+	/** 
+	 * Paint the research arrow for the actualSubCategory. 
+	 * @param g2 the graphics context
+	 */
+	void drawResearchArrow(Graphics2D g2) {
+		if (player().runningResearch == null) {
+			return;
+		}
+		UIImageTabButton c = mainComponents.get(player().runningResearch.category.main);
+		g2.drawImage(commons.research().current, 
+				mainCategory.x + 5, c.y + (c.height - commons.research().current.getHeight()) / 2, null);
+		if (c.down) {
+			c = subComponents.get(player().runningResearch.category);
+			if (c != null) {
+				g2.drawImage(commons.research().current, 
+						subCategorySmall.x + 5, c.y + (c.height - commons.research().current.getHeight()) / 2, null);
+			}
+		}
+	}
+	/** @return the current main category. */
+	ResearchMainCategory getCurrentMainCategory() {
+		for (Map.Entry<ResearchMainCategory, UIImageTabButton> cat : mainComponents.entrySet()) {
+			if (cat.getValue().down) {
+				return cat.getKey();
+			}
+		}
+		return null;
+	}
+	/**
+	 * Returns the coloring for the lab amounts. 
+	 * @param total the total lab amount
+	 * @param active the active lab amount
+	 * @param required the required lab amount
+	 * @return the color
+	 */
+	int labColor(int total, int active, int required) {
+		if (total < required) {
+			return TextRenderer.RED;
+		} else
+		if (active < required) {
+			return TextRenderer.YELLOW;
+		}
+		return TextRenderer.GREEN;
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
+			hideSecondary();
+			return true;
+		} else {
+			return super.mouse(e);
+		}
+	}
+	@Override
+	public void onEndGame() {
+		for (TechnologySlot ts : slots) {
+			ts.type = null;
+		}
+	}
+	@Override
+	public void onEnter(Screens mode) {
+		if (mode == null || mode == Screens.PRODUCTION) {
+			setMode(Screens.PRODUCTION);
+		} else {
+			setMode(Screens.RESEARCH);
+		}
+		video.image(null);
+
+		playAnim(selectCurrentOrFirst());
+
+		animation = commons.register(100, new Act() {
+			@Override
+			public void act() {
+				doAnimation();
+			}
+		});
+	}
+	@Override
+	public void onFinish() {
+	}
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -357,15 +769,16 @@ public class ResearchProductionScreen extends ScreenBase {
 		stopActive.onClick = new Act() {
 			@Override
 			public void act() {
-				displayResearch(player().runningResearch);
+				doSelectTechnology(player().runningResearch);
 				player().runningResearch = null;
+				
 			}
 		};
 		viewActive = new UIImageButton(commons.research().view);
 		viewActive.onClick = new Act() {
 			@Override
 			public void act() {
-				displayResearch(player().runningResearch);
+				doSelectTechnology(player().runningResearch);
 			}
 		};
 		
@@ -623,9 +1036,18 @@ public class ResearchProductionScreen extends ScreenBase {
 			};
 			productionLines.add(pl);
 		}
+		
+		Action1<ResearchType> selectSlot = new Action1<ResearchType>() {
+			@Override
+			public void invoke(ResearchType value) {
+				doSelectTechnology(value);
+			}
+		};
+		
 		for (int i = 0; i < 6; i++) {
 			TechnologySlot slot = new TechnologySlot(commons);
 			slot.visible(false);
+			slot.onPress = selectSlot;
 			slots.add(slot);
 		}
 		
@@ -640,34 +1062,13 @@ public class ResearchProductionScreen extends ScreenBase {
 		add(slots);
 		add(productionLines);
 	}
-	/**
-	 * Navigate the view to the given research and select it.
-	 * @param rt the research to display
-	 */
-	void displayResearch(ResearchType rt) {
-		world().selectResearch(rt);
-		selectMainCategory(rt.category.main);
-		selectSubCategory(rt.category);
-	}
-	/**
-	 * Select a specific production line.
-	 * @param pl the line
-	 * @param j the line index
-	 */
-	protected void doSelectProductionLine(ProductionLine pl, int j) {
-		for (ProductionLine pl0 : productionLines) {
-			pl0.select(pl0 == pl);
-			ResearchMainCategory cat = getCurrentMainCategory();
-			Map<ResearchType, Production> productions = player().production.get(cat);
-			int row = 0;
-			for (Production pr : productions.values()) {
-				if (row++ == j) {
-					if (pr.type != player().currentResearch) {
-						displayResearch(pr.type);
-					}
-					break;
-				}
-			}
+	@Override
+	public void onLeave() {
+		close0(animation);
+		animation = null;
+		if (videoRenderer != null) {
+			videoRenderer.stop();
+			videoRenderer = null;
 		}
 	}
 	@Override
@@ -830,109 +1231,101 @@ public class ResearchProductionScreen extends ScreenBase {
 		totalCapacityValue.size(59, 10);
 	}
 	/**
-	 * Distribute the given components equally within the given target rectangle.
-	 * @param left the common left coordinate to use
-	 * @param target the target rectangle
-	 * @param items the list of components
+	 * Play animation for the given research.
+	 * @param rt the target research
 	 */
-	void distributeVertically(int left, Rectangle target, List<? extends UIComponent> items) {
-		int sum = 0;
-		for (UIComponent c : items) {
-			c.x = left;
-			sum += c.height;
-		}
-		float space = (target.height - sum) * 1.0f / (items.size() + 1);
-		float top = space + target.y;
-		for (int i = 0; i < items.size(); i++) {
-			UIComponent c = items.get(i);
-			c.y = (int)top;
-			top += space + c.height;
-		}
-	}
-	/**
-	 * Update animating components.
-	 */
-	void doAnimation() {
-		if (animationStep == Integer.MAX_VALUE) {
-			animationStep = 0;
-		} else {
-			animationStep ++;
-		}
-		for (TechnologySlot sl : slots) {
-			sl.animationStep = animationStep;
-		}
-		askRepaint(base);
-	}
-
-	@Override
-	public void onEnter(Screens mode) {
-		onResize();
-		if (mode == null || mode == Screens.PRODUCTION) {
-			setMode(Screens.PRODUCTION);
-		} else {
-			setMode(Screens.RESEARCH);
-		}
-		video.image(null);
-
-		selectCurrentOrFirst();
-		if (player().currentResearch != null) {
-			displayCategory(player().currentResearch.category);
-		}
-		animation = commons.register(100, new Act() {
-			@Override
-			public void act() {
-				doAnimation();
-			}
-		});
-	}
-
-	@Override
-	public void onLeave() {
-		close0(animation);
-		animation = null;
+	public void playAnim(ResearchType rt) {
 		if (videoRenderer != null) {
 			videoRenderer.stop();
 			videoRenderer = null;
 		}
-	}
-
-	@Override
-	public void onFinish() {
-	}
-
-	@Override
-	public void draw(Graphics2D g2) {
-		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
-		g2.drawImage(commons.research().basePanel, base.x, base.y, null);
-		
-		PlanetStatistics all = player().getPlanetStatistics(null);
-		
-		update(all);
-		updateActive(all);
-		updateProduction(all);
-		
-		super.draw(g2);
-		
-		drawResearchArrow(g2);
-	}
-	/** 
-	 * Paint the research arrow for the actualSubCategory. 
-	 * @param g2 the graphics context
-	 */
-	void drawResearchArrow(Graphics2D g2) {
-		if (player().runningResearch == null) {
-			return;
-		}
-		UIImageTabButton c = mainComponents.get(player().runningResearch.category.main);
-		g2.drawImage(commons.research().current, 
-				mainCategory.x + 5, c.y + (c.height - commons.research().current.getHeight()) / 2, null);
-		if (c.down) {
-			c = subComponents.get(player().runningResearch.category);
-			if (c != null) {
-				g2.drawImage(commons.research().current, 
-						subCategorySmall.x + 5, c.y + (c.height - commons.research().current.getHeight()) / 2, null);
+		video.image(null);
+		animationResearch = rt;
+		if (rt != null) {
+			animationResearch = rt;
+			animationResearchReady = false;
+			if (player().isAvailable(rt)) {
+				video.image(rt.infoImage);
+				animationResearchReady = true;
+			} else
+			if (world().canResearch(rt)) {
+				video.image(rt.infoImageWired);
+			}
+			video.center(true);
+			String vid = null;
+			if (rt.video != null) {
+				if (player().isAvailable(rt)) {
+					vid = rt.video;
+					if (commons.video(vid) == null) {
+						vid = null;
+					}
+				} else
+				if (world().canResearch(rt)) {
+					vid = rt.video + "_wired";
+					if (commons.video(vid) == null) {
+						vid = null;
+					}
+				} else {
+					vid = "technology/unknown_invention";
+				}
+			}
+			if (vid != null) {
+				videoRenderer = new TechnologyVideoRenderer(commons, commons.video(vid), 
+				new Action1<BufferedImage>() {
+					@Override
+					public void invoke(BufferedImage value) {
+						video.image(value);
+						askRepaint(video);
+					}
+				}
+				);
+				videoRenderer.start(commons.pool);
 			}
 		}
+	}
+	@Override
+	public Screens screen() {
+		return mode;
+	}
+	/**
+	 * Select the first research if the current is null.
+	 * @return the research
+	 */
+	public ResearchType selectCurrentOrFirst() {
+		ResearchType rt = player().currentResearch;
+		if (rt == null) {
+			List<ResearchType> rts = world().getResearch();
+			if (rts.size() > 0) {
+				rt = rts.get(0);
+				world().selectResearch(rt);
+			}
+		}
+		selectMainCategory(rt.category.main);
+		selectSubCategory(rt.category);
+		return rt;
+	}
+	/**
+	 * Select the given research category and display its subcategory labels.
+	 * @param cat the main category
+	 */
+	void selectMainCategory(ResearchMainCategory cat) {
+		for (Map.Entry<ResearchMainCategory, UIImageTabButton> e : mainComponents.entrySet()) {
+			e.getValue().down = cat == e.getKey();
+		}
+		for (Map.Entry<ResearchSubCategory, UIImageTabButton> e : subComponents.entrySet()) {
+			e.getValue().visible(e.getKey().main == cat);
+		}
+	}
+	/**
+	 * Perform actions when the specified sub-category is selected,
+	 * e.g., change the technology slot contents, etc.
+	 * @param cat the sub category
+	 */
+	void selectSubCategory(ResearchSubCategory cat) {
+		for (Map.Entry<ResearchSubCategory, UIImageTabButton> e : subComponents.entrySet()) {
+			e.getValue().down = (e.getKey() == cat);
+		}
+		displayTechnologies(cat);
 	}
 	/**
 	 * Change and set the visibility of components based on the mode.
@@ -941,7 +1334,6 @@ public class ResearchProductionScreen extends ScreenBase {
 	void setMode(Screens m) {
 		this.mode = m;
 		setUIVisibility();
-		displayResearch(selectCurrentOrFirst());
 	}
 	/**
 	 * Set the visibility of UI components based on their annotation.
@@ -980,223 +1372,6 @@ public class ResearchProductionScreen extends ScreenBase {
 			}
 		}
 	}
-	/**
-	 * Select the given research category and display its subcategory labels.
-	 * @param cat the main category
-	 */
-	void selectMainCategory(ResearchMainCategory cat) {
-		for (Map.Entry<ResearchMainCategory, UIImageTabButton> e : mainComponents.entrySet()) {
-			e.getValue().down = cat == e.getKey();
-		}
-		for (Map.Entry<ResearchSubCategory, UIImageTabButton> e : subComponents.entrySet()) {
-			e.getValue().visible(e.getKey().main == cat);
-		}
-	}
-	/**
-	 * Perform actions when the specified sub-category is selected,
-	 * e.g., change the technology slot contents, etc.
-	 * @param cat the sub category
-	 */
-	void selectSubCategory(ResearchSubCategory cat) {
-		for (Map.Entry<ResearchSubCategory, UIImageTabButton> e : subComponents.entrySet()) {
-			e.getValue().down = (e.getKey() == cat);
-		}
-		displayCategory(cat);
-	}
-	/**
-	 * Create a sub category image button with the given graphics.
-	 * @param cat the target category
-	 * @param buttonImage the button images
-	 */
-	void createSubCategory(final ResearchSubCategory cat, BufferedImage[] buttonImage) {
-		UIImageTabButton b = new UIImageTabButton(buttonImage);
-		b.onPress = new Act() {
-			@Override
-			public void act() {
-				selectSubCategory(cat);
-			}
-		};
-		b.visible(false);
-		add(b);
-		subComponents.put(cat, b);
-	}
-	/**
-	 * Adjust money based on the scale.
-	 * @param scale the scale factor -1.0 ... +1.0
-	 */
-	void doAdjustMoney(float scale) {
-		Research r = player().research.get(player().currentResearch);
-		r.assignedMoney += scale * r.type.researchCost / 20;
-		r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);
-	}
-	/**
-	 * A concrete production line.
-	 * @author akarnokd, Mar 19, 2011
-	 */
-	class ProductionLine extends UIContainer {
-		/** The base image. */
-		UIImage base;
-		/** Less priority button. */
-		UIImageButton lessPriority;
-		/** More priority button. */
-		UIImageButton morePriority;
-		/** Less build button. */
-		UIImageButton lessBuild;
-		/** More build button. */
-		UIImageButton moreBuild;
-		/** Invention name. */
-		UILabel name;
-		/** Priority value. */
-		UILabel priority;
-		/** Assigned capacity. */
-		UILabel capacity;
-		/** Capacity percent. */
-		UILabel capacityPercent;
-		/** Production count. */
-		UILabel count;
-		/** Completion info. */
-		UILabel completion;
-		/** The activation event. */
-		public Act onPress;
-		/** Initialize the inner fields. */
-		public ProductionLine() {
-			base = new UIImage(commons.research().productionLine);
-			base.z = -1;
-			width = base.width;
-			height = base.height;
-			
-			lessPriority = new UIImageButton(commons.research().less);
-			lessPriority.setHoldDelay(200);
-			lessPriority.onClick = new Act() {
-				@Override
-				public void act() {
-					doLessPriority();
-				}
-			};
-			lessBuild = new UIImageButton(commons.research().less);
-			lessBuild.setHoldDelay(200);
-			lessBuild.onClick = new Act() {
-				@Override
-				public void act() {
-					doChangeCount(-1);
-				}
-			};
-			morePriority = new UIImageButton(commons.research().more);
-			morePriority.setHoldDelay(200);
-			morePriority.onClick = new Act() {
-				@Override
-				public void act() {
-					doMorePriority();
-				}
-			};
-			moreBuild = new UIImageButton(commons.research().more);
-			moreBuild.setHoldDelay(200);
-			moreBuild.onClick = new Act() {
-				@Override
-				public void act() {
-					doChangeCount(1);
-				}
-			};
-			
-			name = new UILabel("TODO", 10, commons.text());
-			priority = new UILabel("50", 10, commons.text());
-			priority.horizontally(HorizontalAlignment.CENTER);
-			capacity = new UILabel("1000", 10, commons.text());
-			capacityPercent = new UILabel("50%", 10, commons.text());
-			capacityPercent.horizontally(HorizontalAlignment.CENTER);
-			count = new UILabel("1", 10, commons.text());
-			count.horizontally(HorizontalAlignment.CENTER);
-			completion = new UILabel("TODO", 10, commons.text());
-			
-			name.bounds(5, 4, 166, 14);
-			lessPriority.location(190, 5);
-			priority.bounds(198, 4, 24, 14);
-			morePriority.location(223, 5);
-			capacity.bounds(234, 2, 56, 18);
-			capacityPercent.bounds(234 + 57, 2, 56, 18);
-			lessBuild.location(350, 5);
-			count.bounds(358, 4, 24, 14);
-			moreBuild.location(383, 5);
-			completion.bounds(394, 2, 125, 18);
-			
-			addThis();
-		}
-		@Override
-		public boolean mouse(UIMouse e) {
-			boolean rep = false;
-			if (e.has(Type.DOWN)) {
-				select(true);
-				if (onPress != null) {
-					onPress.act();
-				}
-				rep = true;
-			}
-			rep |= super.mouse(e);
-			return rep;
-		}
-		/** 
-		 * Change the coloring to select this line.
-		 * @param state the selection state
-		 */
-		public void select(boolean state) {
-			name.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-//			priority.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-//			capacity.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-//			capacityPercent.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-//			count.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-//			completion.color(state ? TextRenderer.RED : TextRenderer.GREEN);
-		}
-		/** Clear the textual values of the line. */
-		public void clear() {
-			name.text("");
-			priority.text("");
-			capacity.text("");
-			capacityPercent.text("");
-			count.text("");
-			completion.text("");
-		}
-	}
-	/**
-	 * Select a technology slot.
-	 * @param ts the target technology slot.
-	 * @param j the slot index
-	 */
-	protected void doSelectTechnology(TechnologySlot ts, int j) {
-		for (TechnologySlot ts0 : slots) {
-			ts0.selected = ts0.visible() && ts0 == ts;
-		}
-	}
-	@Override
-	public boolean mouse(UIMouse e) {
-		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
-			hideSecondary();
-			return true;
-		} else {
-			return super.mouse(e);
-		}
-	}
-	@Override
-	public Screens screen() {
-		return mode;
-	}
-	/**
-	 * Select the first research if the current is null.
-	 * @return the research
-	 */
-	public ResearchType selectCurrentOrFirst() {
-		ResearchType rt = player().currentResearch;
-		if (rt == null) {
-			List<ResearchType> rts = world().getResearch();
-			if (rts.size() > 0) {
-				rt = rts.get(0);
-				world().selectResearch(rt);
-				selectMainCategory(rt.category.main);
-				selectSubCategory(rt.category);
-				playAnim(rt);
-			}
-		}
-		return rt;
-	}
 	/** 
 	 * Display values based on the current technology.
 	 * @param ps the all planet statistics. 
@@ -1211,7 +1386,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				requires1.onPress = new Act() {
 					@Override
 					public void act() {
-						displayResearch(rt1.prerequisites.get(0));
+						doSelectTechnology(rt1.prerequisites.get(0));
 					}
 				};
 			} else {
@@ -1223,7 +1398,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				requires2.onPress = new Act() {
 					@Override
 					public void act() {
-						displayResearch(rt1.prerequisites.get(1));
+						doSelectTechnology(rt1.prerequisites.get(1));
 					}
 				};
 			} else {
@@ -1235,7 +1410,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				requires3.onPress = new Act() {
 					@Override
 					public void act() {
-						displayResearch(rt1.prerequisites.get(2));
+						doSelectTechnology(rt1.prerequisites.get(2));
 					}
 				};
 			} else {
@@ -1331,13 +1506,6 @@ public class ResearchProductionScreen extends ScreenBase {
 					mode == Screens.RESEARCH
 					&& player().runningResearch != rt 
 					&& world().canResearch(rt));
-			
-			ResearchSubCategory cat = getCurrentCategory();
-			for (ResearchType rt0 : world().researches.values()) {
-				if (rt0.category == cat && world().canDisplayResearch(rt0)) {
-					updateSlot(rt0);
-				}
-			}
 		} else {
 			for (TechnologySlot slot : slots) {
 				slot.visible(false);
@@ -1360,155 +1528,6 @@ public class ResearchProductionScreen extends ScreenBase {
 			selectedTechNameValue.text("-");
 			selectedTechStatusValue.text("-");
 			selectedTimeValue.text("----");
-		}
-	}
-	/** @return the currently selected category. */
-	ResearchSubCategory getCurrentCategory() {
-		for (Map.Entry<ResearchSubCategory, UIImageTabButton> btn : subComponents.entrySet()) {
-			if (btn.getValue().down) {
-				return btn.getKey();
-			}
-		}
-		return null;
-	}
-	/**
-	 * Returns the coloring for the lab amounts. 
-	 * @param total the total lab amount
-	 * @param active the active lab amount
-	 * @param required the required lab amount
-	 * @return the color
-	 */
-	int labColor(int total, int active, int required) {
-		if (total < required) {
-			return TextRenderer.RED;
-		} else
-		if (active < required) {
-			return TextRenderer.YELLOW;
-		}
-		return TextRenderer.GREEN;
-	}
-	/**
-	 * Display technologies in the slots.
-	 * @param cat the category
-	 */
-	public void displayCategory(ResearchSubCategory cat) {
-		for (TechnologySlot slot : slots) {
-			slot.visible(false);
-		}
-		for (final ResearchType rt : world().researches.values()) {
-			if (rt.category == cat) {
-				if (world().canDisplayResearch(rt)) {
-					if (rt.index >= 0 && rt.index < 6) {
-						if (updateSlot(rt).selected) {
-							playAnim(rt);
-						}
-					}
-				}
-			}
-		}
-	}
-	/**
-	 * Update the slot belonging to the specified technology.
-	 * @param rt the research technology
-	 * @return the slot
-	 */
-	public TechnologySlot updateSlot(final ResearchType rt) {
-		final TechnologySlot slot = slots.get(rt.index);
-		slot.visible(true);
-		if (rt.category.main != ResearchMainCategory.BUILDINS) {
-			Integer inv = player().inventory.get(rt);
-			slot.inventory = inv != null ? inv.intValue() : 0;
-		} else {
-			slot.inventory = -1;
-		}
-		slot.name = rt.name;
-		slot.selected = player().currentResearch == rt;
-		slot.available = player().isAvailable(rt);
-		slot.percent = 0;
-		if (!slot.available) {
-			slot.researching = player().research.containsKey(rt);
-			if (slot.researching) {
-				slot.percent =  player().research.get(rt).getPercent() / 100.0f;
-			}
-			LabLevel llvl = player().hasEnoughLabs(rt);
-			slot.missingActiveLab = llvl == LabLevel.NOT_ENOUGH_ACTIVE;
-			slot.missingLab = llvl == LabLevel.NOT_ENOUGH_TOTAL;
-			slot.notResearchable = !world().canResearch(rt);
-			slot.cost = mode == Screens.PRODUCTION ? -1 : rt.researchCost / 2;
-		} else {
-			slot.cost = mode == Screens.PRODUCTION ? rt.productionCost : -1;
-			slot.percent = 1;
-			slot.researching = false;
-			slot.notResearchable = false;
-			slot.missingActiveLab = false;
-			slot.missingLab = false;
-		}
-		
-		slot.image = rt.image;
-		
-		slot.onPress = new Act() {
-			@Override
-			public void act() {
-				displayResearch(rt);
-				doSelectTechnology(slot, rt.index);
-				playAnim(rt);
-			}
-		};
-		if (animationResearch == rt && animationResearchReady != slot.available) {
-			playAnim(rt);
-		}
-		return slot;
-	}
-	/**
-	 * Play animation for the given research.
-	 * @param rt the target research
-	 */
-	public void playAnim(ResearchType rt) {
-		if (videoRenderer != null) {
-			videoRenderer.stop();
-			videoRenderer = null;
-		}
-		video.image(null);
-		if (rt != null) {
-			animationResearch = rt;
-			animationResearchReady = false;
-			if (player().isAvailable(rt)) {
-				video.image(rt.infoImage);
-				animationResearchReady = true;
-			} else
-			if (world().canResearch(rt)) {
-				video.image(rt.infoImageWired);
-			}
-			video.center(true);
-			String vid = null;
-			if (rt.video != null) {
-				if (player().isAvailable(rt)) {
-					vid = rt.video;
-					if (commons.video(vid) == null) {
-						vid = null;
-					}
-				} else
-				if (world().canResearch(rt)) {
-					vid = rt.video + "_wired";
-					if (commons.video(vid) == null) {
-						vid = null;
-					}
-				} else {
-					vid = "technology/unknown_invention";
-				}
-			}
-			if (vid != null) {
-				videoRenderer = new TechnologyVideoRenderer(commons, commons.video(vid), 
-				new Action1<BufferedImage>() {
-					@Override
-					public void invoke(BufferedImage value) {
-						video.image(value);
-						askRepaint(video);
-					}
-				}
-				);
-				videoRenderer.start(commons.pool);
-			}
 		}
 	}
 	/** 
@@ -1556,33 +1575,6 @@ public class ResearchProductionScreen extends ScreenBase {
 			activeAILabValue.color(labColor(ps.aiLab, ps.aiLabActive, ps.aiLab));
 			activeMilLabValue.color(labColor(ps.milLab, ps.milLabActive, ps.milLab));
 		}
-	}
-	/** Start a new research. */
-	void doStartNew() {
-		if (player().runningResearch != null) {
-			player().research.get(player().runningResearch).state = ResearchState.STOPPED;
-		}
-		ResearchType rt = player().currentResearch;
-		player().runningResearch = rt;
-		Research rs = player().research.get(rt);
-		if (rs == null) {
-			rs = new Research();
-			rs.type = rt;
-			player().research.put(rt, rs);
-			rs.remainingMoney = rt.researchCost;
-			rs.assignedMoney = rt.researchCost / 2;
-			displayCategory(rt.category);
-		}
-		rs.state = ResearchState.RUNNING;
-	}
-	/** @return the current main category. */
-	ResearchMainCategory getCurrentMainCategory() {
-		for (Map.Entry<ResearchMainCategory, UIImageTabButton> cat : mainComponents.entrySet()) {
-			if (cat.getValue().down) {
-				return cat.getKey();
-			}
-		}
-		return null;
 	}
 	/** 
 	 * Update the production lines. 
@@ -1680,76 +1672,13 @@ public class ResearchProductionScreen extends ScreenBase {
 			removeOne.enabled(false);
 		}
 	}
-	/** Add a new production. */
-	void doAddProduction() {
-		ResearchMainCategory cat = getCurrentMainCategory();
-		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = new Production();
-		prod.type = player().currentResearch;
-		prod.count = 0;
-		prod.priority = 50;
-		productions.put(prod.type, prod);
-	}
-	/** Remove the selected production. */
-	void doRemoveProduction() {
-		ResearchMainCategory cat = getCurrentMainCategory();
-		Map<ResearchType, Production> productions = player().production.get(cat);
-		productions.remove(player().currentResearch);
-	}
-	/** 
-	 * Increase the priority of a line.
-	 */
-	void doLessPriority() {
-		ResearchMainCategory cat = getCurrentMainCategory();
-		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = productions.get(player().currentResearch);
-		if (prod != null) {
-			prod.priority = Math.max(0, prod.priority - 5);
-		}
-	}
 	/**
-	 * Decrease the priority of a line.
+	 * Update the slot belonging to the specified technology.
+	 * @param rt the research technology
 	 */
-	void doMorePriority() {
-		ResearchMainCategory cat = getCurrentMainCategory();
-		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = productions.get(player().currentResearch);
-		if (prod != null) {
-			prod.priority = Math.min(100, prod.priority + 5);
-		}
-	}
-	/**
-	 * Increase the count.
-	 * @param delta the amount
-	 */
-	void doChangeCount(int delta) {
-		ResearchMainCategory cat = getCurrentMainCategory();
-		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = productions.get(player().currentResearch);
-		if (prod != null) {
-			prod.count = Math.max(0, prod.count + delta);
-		}
-	}
-	/** Sell one of the current research. */
-	void doSell() {
-		Integer count = player().inventory.get(player().currentResearch);
-		if (count != null && count > 0) {
-			player().inventory.put(player().currentResearch, count - 1);
-			player().money += player().currentResearch.productionCost / 2;
-			
-			player().statistics.moneySellIncome += player().currentResearch.productionCost / 2;
-			player().statistics.moneyIncome += player().currentResearch.productionCost / 2;
-			player().statistics.sellCount++;
-			
-			world().statistics.moneySellIncome += player().currentResearch.productionCost / 2;
-			world().statistics.moneyIncome += player().currentResearch.productionCost / 2;
-			world().statistics.sellCount++;
-
-		}
-	}
-	@Override
-	public void onEndGame() {
-		// TODO Auto-generated method stub
-		
+	public void updateSlot(final ResearchType rt) {
+		final TechnologySlot slot = slots.get(rt.index);
+		slot.visible(true);
+		slot.type = rt;
 	}
 }

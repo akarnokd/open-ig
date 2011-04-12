@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.PlanetType;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -122,6 +123,9 @@ public class Planet implements Named, Owned {
 		boolean damage = false;
 		boolean colonyHub = false;
 		boolean colonyHubOperable = false;
+		
+		result.vehicleMax = 8; // default per planet
+		
 		for (Building b : surface.buildings) {
 			if (b.getEfficiency() >= 0.5) {
 				if (b.hasResource("house")) {
@@ -176,6 +180,9 @@ public class Planet implements Named, Owned {
 				}
 				if ("MilitarySpaceport".equals(b.type.id)) {
 					result.hasMilitarySpaceport = true;
+				}
+				if (b.hasResource("vehicles")) {
+					result.vehicleMax += b.getResource("vehicles");
 				}
 			}
 			if (b.hasResource("spaceship")) {
@@ -286,6 +293,12 @@ public class Planet implements Named, Owned {
 				}
 				if ("OrbitalFactory".equals(pii.type.id)) {
 					result.orbitalFactory++;
+				}
+				if (pii.type.category == ResearchSubCategory.WEAPONS_TANKS || pii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					result.vehicleCount++;
+				}
+				if (pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					result.hasSpaceStation = true;
 				}
 			}
 		}
@@ -400,4 +413,37 @@ public class Planet implements Named, Owned {
 		}
 		return false;
 	}
+	/**
+	 * Returns the number of items of the give research type of the given owner.
+	 * @param rt the research type to count
+	 * @param owner the owner
+	 * @return the count
+	 */
+	public int inventoryCount(ResearchType rt, Player owner) {
+		int count = 0;
+		for (PlanetInventoryItem pii : inventory) {
+			if (pii.type == rt && pii.owner == owner) {
+				count += pii.count;
+			}
+		}
+		return count;
+	}
+	/** The planet orderer by coordinates. */
+	public static final Comparator<Planet> PLANET_ORDER = new Comparator<Planet>() {
+		@Override
+		public int compare(Planet o1, Planet o2) {
+			int c = o1.y < o2.y ? -1 : (o1.y > o2.y ? 1 : 0);
+			if (c == 0) {
+				c = o1.x < o2.x ? -1 : (o1.x > o2.x ? 1 : 0);
+			}
+			return c;
+		}
+	};
+	/** The planet order by name. */
+	public static final Comparator<Planet> NAME_ORDER = new Comparator<Planet>() {
+		@Override
+		public int compare(Planet o1, Planet o2) {
+			return o1.name.compareTo(o2.name);
+		}
+	};
 }
