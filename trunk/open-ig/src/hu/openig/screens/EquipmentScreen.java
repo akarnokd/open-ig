@@ -468,7 +468,7 @@ public class EquipmentScreen extends ScreenBase {
 		} else {
 			this.mode = mode; 
 		}
-		ResearchType rt = player().currentResearch;
+		ResearchType rt = research();
 		if (rt == null) {
 			List<ResearchType> rts = world().getResearch();
 			if (rts.size() > 0) {
@@ -737,7 +737,7 @@ public class EquipmentScreen extends ScreenBase {
 			cruisersEmpty.visible(false);
 			stations.visible(false);
 		}
-		doSelectVehicle(player().currentResearch);
+		doSelectVehicle(research());
 	}
 	/** 
 	 * Clear the cells. 

@@ -1130,7 +1130,7 @@ public class PlanetScreen extends ScreenBase {
 		if (b != null) {
 			player().currentBuilding = b.type;
 			if (b.type.research != null) {
-				player().currentResearch = b.type.research;
+				research(b.type.research);
 			}
 			setBuildingList(0);
 		}

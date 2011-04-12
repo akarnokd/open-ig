@@ -111,7 +111,7 @@ public class TechnologySlot extends UIComponent {
 			}
 			RenderTools.drawCentered(g2, target, commons.research().unavailable);
 		}
-		boolean selected = commons.world().player.currentResearch == type;
+		boolean selected = commons.world().player.currentResearch() == type;
 		commons.text().paintTo(g2, target.x + 5, target.y + 71, 7, 
 				selected ? selectedTextColor : textColor, type.name);
 		if (selected) {
