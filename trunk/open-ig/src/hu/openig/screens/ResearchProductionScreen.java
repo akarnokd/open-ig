@@ -39,8 +39,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -426,9 +426,9 @@ public class ResearchProductionScreen extends ScreenBase {
 	@ModeUI(mode = Screens.PRODUCTION)
 	UILabel totalCapacityValue;
 	/** The labels associated with various main categories. */
-	final Map<ResearchMainCategory, UIImageTabButton> mainComponents = new HashMap<ResearchMainCategory, UIImageTabButton>();
+	final Map<ResearchMainCategory, UIImageTabButton> mainComponents = new LinkedHashMap<ResearchMainCategory, UIImageTabButton>();
 	/** The labels associated with various sub categories. */
-	final Map<ResearchSubCategory, UIImageTabButton> subComponents = new HashMap<ResearchSubCategory, UIImageTabButton>();
+	final Map<ResearchSubCategory, UIImageTabButton> subComponents = new LinkedHashMap<ResearchSubCategory, UIImageTabButton>();
 	/** The screen mode mode. */
 	Screens mode;
 	/** The animated research type. */
@@ -1312,8 +1312,15 @@ public class ResearchProductionScreen extends ScreenBase {
 		for (Map.Entry<ResearchMainCategory, UIImageTabButton> e : mainComponents.entrySet()) {
 			e.getValue().down = cat == e.getKey();
 		}
+		int i = 0;
 		for (Map.Entry<ResearchSubCategory, UIImageTabButton> e : subComponents.entrySet()) {
-			e.getValue().visible(e.getKey().main == cat);
+			boolean sub = e.getKey().main == cat;
+			e.getValue().visible(sub);
+			if (sub) {
+				if (i++ == 0) {
+					selectSubCategory(e.getKey());
+				}
+			}
 		}
 	}
 	/**
@@ -1334,6 +1341,10 @@ public class ResearchProductionScreen extends ScreenBase {
 	void setMode(Screens m) {
 		this.mode = m;
 		setUIVisibility();
+		for (TechnologySlot slot : slots) {
+			slot.displayResearchCost = mode == Screens.RESEARCH;
+			slot.displayProductionCost = mode == Screens.PRODUCTION;
+		}
 	}
 	/**
 	 * Set the visibility of UI components based on their annotation.
@@ -1377,8 +1388,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param ps the all planet statistics. 
 	 */
 	public void update(PlanetStatistics ps) {
-		ResearchType rt = selectCurrentOrFirst();
-		final ResearchType rt1 = rt;
+		final ResearchType rt = player().currentResearch;
 		if (rt != null) {
 			if (rt.prerequisites.size() > 0) {
 				requires1.text(rt.prerequisites.get(0).name, true);
@@ -1386,7 +1396,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				requires1.onPress = new Act() {
 					@Override
 					public void act() {
-						doSelectTechnology(rt1.prerequisites.get(0));
+						doSelectTechnology(rt.prerequisites.get(0));
 					}
 				};
 			} else {
@@ -1398,7 +1408,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				requires2.onPress = new Act() {
 					@Override
 					public void act() {
-						doSelectTechnology(rt1.prerequisites.get(1));
+						doSelectTechnology(rt.prerequisites.get(1));
 					}
 				};
 			} else {
@@ -1410,7 +1420,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				requires3.onPress = new Act() {
 					@Override
 					public void act() {
-						doSelectTechnology(rt1.prerequisites.get(2));
+						doSelectTechnology(rt.prerequisites.get(2));
 					}
 				};
 			} else {

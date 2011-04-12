@@ -627,6 +627,8 @@ public class EquipmentScreen extends ScreenBase {
 	public void updateSlot(final ResearchType rt) {
 		final TechnologySlot slot = slots.get(rt.index);
 		slot.type = rt;
+		slot.displayResearchCost = false;
+		slot.displayProductionCost = false;
 		slot.visible(true);
 	}
 	/**
