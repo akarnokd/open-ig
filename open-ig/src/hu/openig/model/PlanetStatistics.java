@@ -70,6 +70,12 @@ public class PlanetStatistics {
 	public float freeRepair = 0;
 	/** Free repair efficiency. */
 	public float freeRepairEff = 0;
+	/** Has a functioning military spaceport. */
+	public boolean hasMilitarySpaceport;
+	/** Has a functioning trader's spaceport. */
+	public boolean hasTradersSpaceport;
+	/** Number of orbital factories. */
+	public int orbitalFactory;
 	/**
 	 * Add the other planet statistics to this one.
 	 * @param other the other statistics
@@ -98,6 +104,7 @@ public class PlanetStatistics {
 		weapons += other.weapons;
 		spaceshipActive += other.spaceshipActive;
 		spaceship += other.spaceship;
+		orbitalFactory += other.orbitalFactory;
 		problems.putAll(other.problems);
 		warnings.putAll(other.warnings);
 	}
