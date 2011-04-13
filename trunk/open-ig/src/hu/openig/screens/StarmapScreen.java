@@ -12,7 +12,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
-import hu.openig.model.PlanetInventoryItem;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
@@ -1584,7 +1584,7 @@ public class StarmapScreen extends ScreenBase {
 			public void act() {
 				ResearchType rt = world().researches.get(typeId);
 				
-				PlanetInventoryItem pii = new PlanetInventoryItem();
+				InventoryItem pii = new InventoryItem();
 				pii.count = 1;
 				pii.owner = player();
 				pii.type = rt;

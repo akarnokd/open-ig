@@ -12,6 +12,8 @@ import hu.openig.core.Act;
 import hu.openig.core.Action1;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
+import hu.openig.model.FleetStatistics;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.ResearchSubCategory;
@@ -21,6 +23,7 @@ import hu.openig.model.SelectionMode;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
@@ -32,10 +35,14 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 
@@ -203,6 +210,14 @@ public class EquipmentScreen extends ScreenBase {
 	final List<VehicleCell> rightFighterCells = new ArrayList<VehicleCell>();
 	/** The right tank cells. */
 	final List<VehicleCell> rightTankCells = new ArrayList<VehicleCell>();
+	/** The left vehicle listing. */
+	VehicleList leftList;
+	/** The right vehicle listing. */
+	VehicleList rightList;
+	/** The currently displayed planet. */
+	Planet planetShown;
+	/** The currently displayed fleet. */
+	Fleet fleetShown;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -337,6 +352,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void invoke(ResearchType value) {
 				world().selectResearch(value);
+				updateListSelection(value);
 			}
 		};
 		
@@ -436,6 +452,8 @@ public class EquipmentScreen extends ScreenBase {
 		
 		preview = new UIImage();
 		preview.z = -1;
+		preview.scale(true);
+		preview.size(298, 128);
 		
 		Action1<ResearchType> selectVehicle = new Action1<ResearchType>() {
 			@Override
@@ -443,6 +461,7 @@ public class EquipmentScreen extends ScreenBase {
 				world().selectResearch(value);
 				displayCategory(value.category);
 				doSelectVehicle(value);
+				leftList.selectedItem = null;
 			}
 		};
 		
@@ -466,6 +485,22 @@ public class EquipmentScreen extends ScreenBase {
 			vc.onSelect = selectVehicle;
 			rightTankCells.add(vc);
 		}
+		
+		leftList = new VehicleList();
+		
+		leftList.onSelect = new Action1<InventoryItem>() {
+			@Override
+			public void invoke(InventoryItem value) {
+				leftList.selectedItem = value;
+				world().selectResearch(value.type);
+				displayCategory(value.type.category);
+				doSelectVehicle(value.type);
+			}
+		};
+		
+		
+		rightList = new VehicleList();
+		rightList.visible(false);
 		
 		add(leftFighterCells);
 		add(rightFighterCells);
@@ -504,6 +539,8 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		}
 		displayCategory(rt.category);
+		
+		updateCurrentInventory();
 		
 		animation = commons.register(100, new Act() {
 			@Override
@@ -634,6 +671,8 @@ public class EquipmentScreen extends ScreenBase {
 			vc.bounds(rightPanel.x + 2 + i * (vc.width + 1), rightPanel.y + rightPanel.height - 56, 33, 28);
 		}
 
+		leftList.bounds(leftPanel.x + 72, leftPanel.y + 40, leftPanel.width - 74, leftPanel.height - 56 - 38);
+		rightList.bounds(rightPanel.x, rightPanel.y + 40, rightPanel.width - 22, rightPanel.height - 56 - 38);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -695,10 +734,14 @@ public class EquipmentScreen extends ScreenBase {
 		clearCells(rightFighterCells);
 		clearCells(leftTankCells);
 		clearCells(rightTankCells);
+		
+		leftList.clear();
+		rightList.clear();
 	}
 	/** Create a new fleet. */
 	void doCreateFleet() {
 		Fleet f = new Fleet();
+		f.id = world().fleetIdSequence++;
 		f.owner = player();
 		f.name = get("newfleet.name");
 		f.shipIcon = f.owner.fleetIcon;
@@ -718,6 +761,12 @@ public class EquipmentScreen extends ScreenBase {
 		noSpaceport.visible(!ps.hasMilitarySpaceport);
 		ResearchType rt = research();
 		if (player().selectionMode == SelectionMode.PLANET) {
+			
+			if (planetShown != planet()) {
+				planetShown = planet();
+				updateCurrentInventory();
+			}
+			
 			planet.visible(true);
 			List<Planet> planets = player().ownPlanets();
 			Collections.sort(planets, Planet.NAME_ORDER);
@@ -746,7 +795,6 @@ public class EquipmentScreen extends ScreenBase {
 			secondaryValue.visible(false);
 			
 			prepareCells(planet(), null, leftFighterCells, leftTankCells);
-//			prepareCells(planet(), null, rightFighterCells, rightTankCells);
 			clearCells(rightFighterCells);
 			clearCells(rightTankCells);
 			
@@ -754,6 +802,7 @@ public class EquipmentScreen extends ScreenBase {
 			cruisers.visible(false);
 			cruisersEmpty.visible(true);
 			stations.visible(true);
+			
 			
 			
 			if (ps.hasMilitarySpaceport) {
@@ -786,9 +835,33 @@ public class EquipmentScreen extends ScreenBase {
 				delButton.visible(false);
 			}
 		} else {
+			if (fleetShown != fleet()) {
+				fleetShown = fleet();
+				updateCurrentInventory();
+			}
+			
 			Fleet f = fleet();
+			FleetStatistics fs = f.getStatistics();
 			planet.visible(false);
 			fleetName.text(f.name);
+			spaceshipsLabel.visible(true);
+			spaceshipsMaxLabel.visible(true);
+			fightersLabel.text(format("equipment.fighters", fs.fighterCount), true);
+			vehiclesLabel.text(format("equipment.vehicles", fs.vehicleCount), true);
+			
+			if (ps.hasSpaceStation) {
+				fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
+			} else {
+				fightersMaxLabel.text(format("equipment.max", 0), true);
+			}
+			vehiclesMaxLabel.text(format("equipment.max", fs.vehicleMax), true);
+			
+			fleetStatusLabel.visible(false);
+			
+			secondaryLabel.visible(false);
+			secondaryFighters.visible(false);
+			secondaryVehicles.visible(false);
+			secondaryValue.visible(false);
 			
 			prepareCells(null, f, leftFighterCells, leftTankCells);
 
@@ -796,6 +869,43 @@ public class EquipmentScreen extends ScreenBase {
 			cruisers.visible(true);
 			cruisersEmpty.visible(false);
 			stations.visible(false);
+			
+			if (ps.hasMilitarySpaceport) {
+				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					addButton.visible(player().inventoryCount(rt) > 0
+							&& fleet().inventoryCount(rt) < 30);
+					delButton.visible(fleet().inventoryCount(rt) > 0);
+					preview.image(rt.equipmentCustomizeImage);
+				} else
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
+						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					addButton.visible(player().inventoryCount(rt) > 0
+							&& fleet().inventoryCount(rt.category) < ps.vehicleMax);
+					delButton.visible(
+							fleet().inventoryCount(rt.category) > 0);
+					preview.image(rt.equipmentCustomizeImage);
+				} else
+				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+					addButton.visible(player().inventoryCount(rt) > 0
+							&& fleet().inventoryCount(rt.category) < 3);
+					delButton.visible(false);
+					preview.image(rt.equipmentCustomizeImage);
+				} else
+				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+					addButton.visible(player().inventoryCount(rt) > 0
+							&& fleet().inventoryCount(rt.category) < 25);
+					delButton.visible(false);
+					preview.image(rt.equipmentCustomizeImage);
+				} else {
+					addButton.visible(false);
+					delButton.visible(false);
+					preview.image(rt.equipmentCustomizeImage);
+				}
+			} else {
+				addButton.visible(false);
+				delButton.visible(false);
+			}
+			
 		}
 		doSelectVehicle(rt);
 	}
@@ -854,12 +964,14 @@ public class EquipmentScreen extends ScreenBase {
 			if (idx > 0) {
 				player().currentPlanet = planets.get(idx - 1);
 			}
+			updateInventory(planet(), null, leftList);
 		} else {
 			List<Fleet> fleets = player().ownFleets();
 			int idx = fleets.indexOf(fleet());
 			if (idx > 0) {
 				player().currentFleet = fleets.get(idx - 1);
 			}
+			updateInventory(null, fleet(), leftList);
 		}
 	}
 	/** Go to next planet/fleet. */
@@ -871,15 +983,46 @@ public class EquipmentScreen extends ScreenBase {
 			if (idx < planets.size() - 1 && planets.size() > 0) {
 				player().currentPlanet = planets.get(idx + 1);
 			}
+			updateInventory(planet(), null, leftList);
 		} else {
 			List<Fleet> fleets = player().ownFleets();
 			int idx = fleets.indexOf(fleet());
 			if (idx < fleets.size() - 1 && fleets.size() > 0) {
 				player().currentFleet = fleets.get(idx + 1);
 			}
+			updateInventory(null, fleet(), leftList);
 		}
 	}
-	
+	/** 
+	 * Update inventory listing. 
+	 * @param p the planet to use
+	 * @param f the fleet to use
+	 * @param list the target listing
+	 */
+	void updateInventory(Planet p, Fleet f, VehicleList list) {
+		list.clear();
+		
+		if (p != null) {
+			list.group = false;
+			for (InventoryItem pii : p.inventory) {
+				if (pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					list.items.add(pii);
+				}
+			}
+		} else {		
+			list.group = true;
+			for (InventoryItem pii : f.inventory) {
+				if (pii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+						|| pii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+				) {
+					list.items.add(pii);
+				}
+			}
+		}
+
+		list.compute();
+		
+	}
 	/**
 	 * The renderer for a concrete vehicle. 
 	 * @author akarnokd, 2011.04.12.
@@ -969,16 +1112,385 @@ public class EquipmentScreen extends ScreenBase {
 	}
 	/** Add a ship or vehicle to the planet or fleet. */
 	void doAddItem() {
-		if (player().selectionMode == SelectionMode.PLANET) {
-			planet().changeInventory(research(), player(), 1);
-			player().changeInventoryCount(research(), -1);
-		}
+		addRemoveItem(1);
 	}
 	/** Remove a fighter or vehicle from the planet or fleet. */
 	void doRemoveItem() {
+		addRemoveItem(-1);
+	}
+	/**
+	 * Add or remove a given amount of the currently selected research.
+	 * @param delta the delta
+	 */
+	void addRemoveItem(int delta) {
 		if (player().selectionMode == SelectionMode.PLANET) {
-			planet().changeInventory(research(), player(), -1);
-			player().changeInventoryCount(research(), +1);
+			if (research().category == ResearchSubCategory.SPACESHIPS_STATIONS
+			) {
+				if (delta > 0) {
+					InventoryItem pii = new InventoryItem();
+					pii.owner = player();
+					pii.type = research();
+					pii.count = 1;
+					pii.hp = pii.type.productionCost;
+					// FIXME set shield
+					planet().inventory.add(pii);
+					leftList.items.add(pii);
+					leftList.compute();
+				}
+			} else {
+				planet().changeInventory(research(), player(), delta);
+			}
+		} else {
+			if (delta > 0) {
+				leftList.items.clear();
+				fleet().addInventory(research(), delta);
+				leftList.items.addAll(fleet().inventory);
+				leftList.compute();
+			}
+		}
+		player().changeInventoryCount(research(), -delta);
+		updateListSelection(research());
+	}
+	/** List vehicles in a scrollable region. */
+	class VehicleList extends UIContainer {
+		/** The scroll-up indicator. */
+		UIImageButton scrollUp;
+		/** The scroll down indicator. */
+		UIImageButton scrollDown;
+		/** The scroll amount. */
+		public int yOffset;
+		/** The maximum scroll height. */
+		int maxHeight;
+		/** The maximum width of the images. */
+		int maxWidth;
+		/** The selection action. */
+		public Action1<InventoryItem> onSelect;
+		/** Group types? */
+		public boolean group;
+		/** The independent indicator for the current selection. */
+		public InventoryItem selectedItem;
+		/** The items. */
+		public final List<InventoryItem> items = new ArrayList<InventoryItem>();
+		/** The grouping map. */
+		private final Map<ResearchType, ItemGroup> map = new LinkedHashMap<ResearchType, ItemGroup>();
+		/** Construct. */
+		public VehicleList() {
+			scrollUp = new UIImageButton(commons.common().moveUp);
+			scrollUp.setHoldDelay(100);
+			scrollUp.onClick = new Act() {
+				@Override
+				public void act() {
+					doScrollUp();
+				}
+			};
+			scrollDown = new UIImageButton(commons.common().moveDown);
+			scrollDown.setHoldDelay(100);
+			scrollDown.onClick = new Act() {
+				@Override
+				public void act() {
+					doScrollDown();
+				}
+			};
+			
+			addThis();
+		}
+		/** Sort the items by category ascending (battleships first) and version descending. */
+		void sort() {
+			Collections.sort(items, new Comparator<InventoryItem>() {
+				@Override
+				public int compare(InventoryItem o1,
+						InventoryItem o2) {
+					int c = o2.type.category.ordinal() - o1.type.category.ordinal();
+					if (c == 0) {
+						c = o2.type.index - o1.type.index; 
+					}
+					return c;
+				}
+			});
+		}
+		/** Compute the scrollable region height and its items. */
+		public void compute() {
+			sort();
+			int row = 0;
+			maxHeight = 0;
+			maxWidth = 0;
+			if (group) {
+				map.clear();
+				for (InventoryItem pii : items) {
+					ItemGroup list = map.get(pii.type);
+					if (list == null) {
+						list = new ItemGroup();
+						map.put(pii.type, list);
+					}
+					maxWidth = Math.max(maxWidth, pii.type.equipmentImage.getWidth());
+					list.add(pii);
+				}			
+				for (ResearchType rt : map.keySet()) {
+					if (row++ > 0) {
+						maxHeight += 5;
+					}
+					maxHeight += rt.equipmentImage.getHeight();
+				}
+			} else {
+				for (InventoryItem pii : items) {
+					if (row++ > 0) {
+						maxHeight += 5;
+					}
+					maxHeight += pii.type.equipmentImage.getHeight();
+					maxWidth = Math.max(maxWidth, pii.type.equipmentImage.getWidth());
+				}
+			}
+			yOffset = Math.max(0, Math.min(yOffset, maxHeight - height));
+		}
+		/**
+		 * Return the inventory item at the specified Y coordinates.
+		 * @param y the coordinate
+		 * @return the item or null
+		 */
+		public InventoryItem getItemAt(final int y) {
+			int row = 0;
+			int y0 = -yOffset;
+			for (InventoryItem pii : items) {
+				if (y >= y0 && y < y0 + pii.type.equipmentImage.getHeight()) {
+					return pii;
+				}
+				if (row++ > 0) {
+					y0 += 5;
+				}
+				y0 += pii.type.equipmentImage.getHeight();
+			}
+			return null;
+		}
+		/**
+		 * Return the inventory item at the specified Y coordinates.
+		 * @param y the coordinate
+		 * @return the item or null
+		 */
+		public ItemGroup getGroupAt(final int y) {
+			int row = 0;
+			int y0 = -yOffset;
+			for (Map.Entry<ResearchType, ItemGroup> e : map.entrySet()) {
+				if (y >= y0 && y < y0 + e.getKey().equipmentImage.getHeight()) {
+					return e.getValue();
+				}
+				if (row++ > 0) {
+					y0 += 5;
+				}
+				y0 += e.getKey().equipmentImage.getHeight();
+			}
+			return null;
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.WHEEL)) {
+				if (e.z < 0) {
+					doScrollUp();
+				} else {
+					doScrollDown();
+				}
+				return true;
+			} else
+			if (e.has(Type.DOWN) && e.x < width - scrollDown.width && onSelect != null) {
+				if (group) {
+					ItemGroup ig = getGroupAt(e.y);
+					if (ig != null) {
+						if (ig.items.contains(selectedItem)) {
+							if (e.has(Button.LEFT)) {
+								ig.index = (ig.index + 1) % ig.items.size();
+							} else 
+							if (e.has(Button.RIGHT)) {
+								ig.index--;
+								if (ig.index < 0) {
+									ig.index = ig.items.size() - 1;
+								}
+							}
+						}
+						onSelect.invoke(ig.items.get(ig.index));
+					}
+				} else {
+					InventoryItem pii = getItemAt(e.y);
+					if (pii != null) {
+						onSelect.invoke(pii);
+					}
+				}
+				return true;
+			}
+			return super.mouse(e);
+		}
+		/** Scroll up. */
+		void doScrollUp() {
+			yOffset = Math.max(0, Math.min(yOffset - 16, maxHeight - height));
+		}
+		/** Scroll down. */
+		void doScrollDown() {
+			yOffset = Math.max(0, Math.min(yOffset + 16, maxHeight - height));
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			scrollUp.location(width - scrollUp.width, 0);
+			scrollDown.location(width - scrollDown.width, height - scrollDown.height);
+			
+			Shape save0 = g2.getClip();
+			
+			int availableWidth = width - scrollUp.width - 2;
+			g2.clipRect(0, 0, availableWidth, height);
+			g2.translate(0, -yOffset);
+			
+			int row = 0;
+			int y = 0;
+			if (group) {
+				for (Map.Entry<ResearchType, ItemGroup> e : map.entrySet()) {
+					if (row++ > 0) {
+						y += 5;
+					}
+					g2.drawImage(e.getKey().equipmentImage, 0, y, null);
+					if (selectedItem != null && selectedItem.type == e.getKey()) {
+						g2.setColor(Color.ORANGE);
+						g2.drawRect(0, y, e.getKey().equipmentImage.getWidth() - 1, e.getKey().equipmentImage.getHeight() - 1);
+					}
+					// damage and shield indicators
+					
+					long hpMax = e.getKey().productionCost * (long)e.getValue().items.size();
+					int hpx = (int)((availableWidth - maxWidth) * e.getValue().hp() / hpMax);
+					
+					g2.setColor(Color.GREEN);
+					g2.fillRect(maxWidth + 5, y, hpx, 4);
+					g2.setColor(Color.RED);
+					g2.fillRect(maxWidth + 5 + hpx, y, (availableWidth - hpx - 5 - maxWidth), 4);
+					
+					long s0 = e.getValue().shield();
+					if (s0 >= 0) {
+						int shx = (int)((availableWidth - maxWidth) * s0 / hpMax);
+						g2.setColor(Color.ORANGE);
+						g2.drawRect(maxWidth + 5, y + 5, (availableWidth - 5 - maxWidth) - 1, 4 - 1);
+						g2.fillRect(maxWidth + 5, y + 5, shx, 4);
+					}
+
+					// name
+					
+					commons.text().paintTo(g2, 
+							maxWidth + 5, y + 10, 
+							7, TextRenderer.GREEN, e.getKey().name);
+					
+					commons.text().paintTo(g2, 
+							maxWidth + 5, y + 20, 
+							7, TextRenderer.GREEN, 
+							String.format("%d / %d", e.getValue().index + 1, e.getValue().items.size())
+					);
+					
+					y += e.getKey().equipmentImage.getHeight();
+				}
+			} else {
+				for (InventoryItem pii : items) {
+					if (row++ > 0) {
+						y += 5;
+					}
+					g2.drawImage(pii.type.equipmentImage, 0, y, null);
+					if (selectedItem == pii) {
+						g2.setColor(Color.ORANGE);
+						g2.drawRect(0, y, pii.type.equipmentImage.getWidth() - 1, pii.type.equipmentImage.getHeight() - 1);
+					}
+					
+					// damage and shield indicators
+					
+					long hpMax = pii.type.productionCost;
+					int hpx = (int)((availableWidth - maxWidth) * pii.hp / hpMax);
+					
+					g2.setColor(Color.GREEN);
+					g2.fillRect(maxWidth + 5, y, hpx, 4);
+					g2.setColor(Color.RED);
+					g2.fillRect(maxWidth + 5 + hpx, y, (availableWidth - hpx - 5 - maxWidth), 4);
+					
+					if (pii.shieldMax() >= 0) {
+						int shx = (int)((availableWidth - maxWidth) * pii.shield / hpMax);
+						g2.setColor(Color.ORANGE);
+						g2.drawRect(maxWidth + 5, y + 5, (availableWidth - 5 - maxWidth) - 1, 4 - 1);
+						g2.fillRect(maxWidth + 5, y + 5, shx, 4);
+					}
+
+					// name
+					
+					commons.text().paintTo(g2, 
+							maxWidth + 5, y + 10, 
+							7, TextRenderer.GREEN, pii.type.name);
+
+					y += pii.type.equipmentImage.getHeight();
+				}
+			}
+			
+			g2.translate(0, yOffset);
+			g2.setClip(save0);
+			
+			scrollUp.visible(yOffset > 0);
+			scrollDown.visible(yOffset < maxHeight - height);
+			
+			super.draw(g2);
+		}
+		/** Clear the items. */
+		public void clear() {
+			map.clear();
+			items.clear();
+		}
+	}
+	/** An item group. */
+	class ItemGroup {
+		/** The selected index, -1 if none. */
+		public int index = 0;
+		/** @return The total hit points. */
+		public long hp() {
+			long result = 0;
+			for (InventoryItem pii : items) {
+				result += pii.hp;
+			}
+			return result;
+		}
+		/** @return The total shield points. */
+		public long shield() {
+			long result = 0;
+			int shielded = 0;
+			for (InventoryItem pii : items) {
+				if (pii.shieldMax() >= 0) {
+					result += pii.shield;
+					shielded = 0;
+				}
+			}
+			return shielded > 0 ? result : -1;
+		}
+		/** The list of the group items. */
+		public final List<InventoryItem> items = new ArrayList<InventoryItem>();
+		/** 
+		 * Add an inventory item. 
+		 * @param pii the inventory item
+		 */
+		public void add(InventoryItem pii) {
+			items.add(pii);
+		}
+	}
+	/** Update the inventory display based on the current selection. */
+	void updateCurrentInventory() {
+		if (player().selectionMode == SelectionMode.PLANET) {
+			updateInventory(planet(), null, leftList);
+		} else {
+			updateInventory(null, fleet(), leftList);
+		}
+		updateListSelection(research());
+	}
+	/** 
+	 * Update the list selection.
+	 * @param value the new selected type
+	 */
+	void updateListSelection(ResearchType value) {
+		if (leftList.selectedItem != null) {
+			if (leftList.selectedItem.type != value) {
+				leftList.selectedItem = null;
+			}
+		} else {
+			for (InventoryItem pii : leftList.items) {
+				if (pii.type == value) {
+					leftList.selectedItem = pii;
+					break;
+				}
+			}
 		}
 	}
 }

@@ -910,7 +910,7 @@ public class GameWindow extends JFrame implements GameControls {
 							}
 							for (Building b : p.surface.buildings) {
 								if (b.type.research != null) {
-									commons.world().player.availableResearch.add(b.type.research);
+									commons.world().player.setAvailable(b.type.research);
 								}
 							}
 							p.owner.planets.put(p, PlanetKnowledge.BUILDING);
@@ -922,7 +922,7 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_I:
 					if (e.isControlDown()) {
 						if (commons.world().player.currentResearch() != null) {
-							boolean researched = commons.world().player.availableResearch.add(commons.world().player.currentResearch());
+							boolean researched = commons.world().player.setAvailable(commons.world().player.currentResearch());
 							Integer cnt = commons.world().player.inventory.get(commons.world().player.currentResearch());
 							cnt = cnt != null ? cnt + 1 : 1;
 							commons.world().player.inventory.put(commons.world().player.currentResearch(), cnt);

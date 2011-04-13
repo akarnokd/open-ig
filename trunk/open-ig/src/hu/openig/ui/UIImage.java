@@ -57,7 +57,12 @@ public class UIImage extends UIComponent {
 				g2.drawImage(image, dx, dy, null);
 			} else
 			if (scale) {
-				g2.drawImage(image, 0, 0, width, height, 0, 0, image.getWidth(), image.getHeight(), null);
+				float fx = width * 1.0f / image.getWidth();
+				float fy = height * 1.0f / image.getHeight();
+				float f = Math.min(fx, fy);
+				int dx = (int)((width - image.getWidth() * f) / 2);
+				int dy = (int)((height - image.getHeight() * f) / 2);
+				g2.drawImage(image, dx, dy, (int)(image.getWidth() * f), (int)(image.getHeight() * f), null);
 			} else {
 				g2.drawImage(image, 0, 0, null);
 			}

@@ -16,7 +16,7 @@ import hu.openig.mechanics.Allocator;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
-import hu.openig.model.PlanetInventoryItem;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
@@ -1851,7 +1851,7 @@ public class PlanetScreen extends ScreenBase {
 			}
 			// list orbital stuff: satellites, bases
 			StringBuilder os = new StringBuilder();
-			for (PlanetInventoryItem pii : planet().inventory) {
+			for (InventoryItem pii : planet().inventory) {
 				if (pii.owner == player() && pii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
 					if (os.length() > 0) {
 						os.append(", ");

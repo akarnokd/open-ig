@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,8 @@ public class World {
 	{
 		dateFormat.setCalendar(time);
 	}
+	/** The sequence to assign unique ids to fleets. */
+	public int fleetIdSequence;
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -428,6 +431,15 @@ public class World {
 		for (XElement item : tech.childrenWithName("item")) {
 			processResearch(item);
 		}
+		// make the default researches available to each respective players
+		for (Player p : players.values()) {
+			for (ResearchType rt : researches.values()) {
+				if (p.race.equals(rt.race) && rt.level == 0) {
+					p.setAvailable(rt);
+				}
+			}
+		}
+
 	}
 	/**
 	 * Process a research/technology node.
@@ -486,8 +498,11 @@ public class World {
 		}
 		
 		tech.equipmentImage = rl.getImage(image + "_tiny", true);
-		tech.equipmentCustomizeImage = rl.getImage(image + "_small", true);
 		tech.spaceBattleImage = rl.getImage(image + "_huge", true);
+		tech.equipmentCustomizeImage = rl.getImage(image + "_small", true);
+		if (tech.equipmentCustomizeImage == null) {
+			tech.equipmentCustomizeImage = tech.spaceBattleImage;
+		}
 		tech.index = item.getInt("index");
 		tech.video = item.get("video");
 		
@@ -498,11 +513,6 @@ public class World {
 		BufferedImage matrix = rl.getImage(image + "_matrix", true);
 		if (matrix != null) {
 			tech.fireAndTotation = ImageUtils.split(matrix, matrix.getHeight() / 5, matrix.getHeight() / 5);
-		}
-		for (Player p : players.values()) {
-			if (p.race.equals(tech.race) && tech.level == 0) {
-				p.availableResearch.add(tech);
-			}
 		}
 	}
 	/**
@@ -715,15 +725,21 @@ public class World {
 				xres.set("assigned", res.getValue().assignedMoney);
 				xres.set("remaining", res.getValue().remainingMoney);
 			}
-			StringBuilder sb = new StringBuilder();
-			for (ResearchType avail : p.availableResearch) {
-				if (sb.length() > 0) {
-					sb.append(", ");
-				}
-				sb.append(avail.id);
-			}
-			xp.set("available", sb);
 			
+			XElement res = xp.add("available");
+			for (Map.Entry<ResearchType, List<ResearchType>> ae : p.available().entrySet()) {
+				XElement av = res.add("type");
+				av.set("id", ae.getKey().id);
+				StringBuilder sb = new StringBuilder();
+				for (ResearchType aert : ae.getValue()) {
+					if (sb.length() > 0) {
+						sb.append(", ");
+					}
+					sb.append(aert.id);
+				}
+				
+				av.set("list", sb.toString());
+			}
 			for (Map.Entry<Fleet, FleetKnowledge> fl : p.fleets.entrySet()) {
 				if (fl.getKey().owner == p) {
 					XElement xfleet = xp.add("fleet");
@@ -731,24 +747,26 @@ public class World {
 					xfleet.set("x", fl.getKey().x);
 					xfleet.set("y", fl.getKey().y);
 					xfleet.set("name", fl.getKey().name);
-					for (FleetInventoryItem fii : fl.getKey().inventory) {
+					for (InventoryItem fii : fl.getKey().inventory) {
 						XElement xfii = xfleet.add("item");
 						xfii.set("id", fii.type.id);
 						xfii.set("count", fii.count);
 						xfii.set("hp", fii.hp);
 						xfii.set("shield", fii.shield);
-						for (FleetInventorySlot fis : fii.slots) {
+						for (InventorySlot fis : fii.slots) {
 							XElement xfs = xfii.add("slot");
 							xfs.set("id", fis.slot.id);
-							xfs.set("type", fis.type.id);
-							xfs.set("count", fis.count);
-							xfs.set("hp", fis.hp);
+							if (fis.type != null) {
+								xfs.set("type", fis.type.id);
+								xfs.set("count", fis.count);
+								xfs.set("hp", fis.hp);
+							}
 						}
 					}
 				}
 			}
 			// save discovered planets only
-			sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
 			for (Map.Entry<Planet, PlanetKnowledge> pk : p.planets.entrySet()) {
 				if (pk.getKey().owner != p) {
 					if (sb.length() > 0) {
@@ -782,7 +800,7 @@ public class World {
 				xp.set("autobuild", p.autoBuild);
 				xp.set("tax-income", p.taxIncome);
 				xp.set("trade-income", p.tradeIncome);
-				for (PlanetInventoryItem pii : p.inventory) {
+				for (InventoryItem pii : p.inventory) {
 					XElement xpii = xp.add("item");
 					xpii.set("id", pii.type.id);
 					xpii.set("owner", pii.owner.id);
@@ -815,6 +833,7 @@ public class World {
 	public void loadState(XElement xworld) {
 		difficulty = Difficulty.valueOf(xworld.get("difficulty"));
 		level = xworld.getInt("level");
+		fleetIdSequence = 0;
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		sdf.setCalendar(time);
@@ -924,36 +943,58 @@ public class World {
 				rs.remainingMoney = xres.getInt("remaining");
 				p.research.put(rt, rs);
 			}
-			p.availableResearch.clear();
-			for (String avail : xplayer.get("available").split("\\s*,\\s*")) {
-				if (avail.length() > 0) {
-					ResearchType rt = researches.get(avail);
-					if (rt == null) {
-						throw new IllegalArgumentException("available technology not found: " + avail);
-					}
-					p.availableResearch.add(rt);
+			
+			// remove non-zero researches
+			for (Iterator<ResearchType> it = player.research.keySet().iterator(); it.hasNext();) {
+				ResearchType rt = it.next();
+				if (rt.level != 0) {
+					it.remove();
 				}
 			}
-			
+			XElement xavail0 = xplayer.childElement("available");
+			if (xavail0 != null) {
+				for (XElement xavail : xplayer.childrenWithName("type")) {
+					ResearchType rt = researches.get(xavail.get("id"));
+					if (rt == null) {
+						throw new IllegalArgumentException("available technology not found: " + xavail);
+					}
+					player.add(rt);
+					
+					for (String liste : xavail.get("list", "").split("\\s*,\\s*")) {
+						if (liste.length() > 0) {
+							ResearchType rt0 = researches.get(liste);
+							if (rt0 == null) {
+								throw new IllegalArgumentException("available technology not found: " + liste + " in " + xavail);
+							}
+							player.availableLevel(rt).add(rt0);
+						}
+					}
+				}
+			}
 			for (XElement xfleet : xplayer.childrenWithName("fleet")) {
 				Fleet f = new Fleet();
 				f.owner = p;
 				f.id = xfleet.getInt("id");
+				
+				fleetIdSequence = Math.max(fleetIdSequence, f.id);
+				
 				f.x = xfleet.getInt("x");
 				f.y = xfleet.getInt("y");
 				f.name = xfleet.get("name");
 				for (XElement xfii : xfleet.childrenWithName("item")) {
-					FleetInventoryItem fii = new FleetInventoryItem();
+					InventoryItem fii = new InventoryItem();
 					fii.type = researches.get(xfii.get("id"));
 					fii.count = xfii.getInt("count");
 					fii.shield = xfii.getInt("shield");
 					fii.hp = xfii.getInt("hp");
 					for (XElement xfis : xfii.childrenWithName("slot")) {
-						FleetInventorySlot fis = new FleetInventorySlot();
-						fis.type = researches.get(xfis.get("type"));
+						InventorySlot fis = new InventorySlot();
 						fis.slot = fis.type.slots.get(xfis.get("id"));
-						fis.count = xfis.getInt("count");
-						fis.hp = xfis.getInt("hp");
+						fis.type = researches.get(xfis.get("type", null));
+						if (fis.type != null) {
+							fis.count = xfis.getInt("count");
+							fis.hp = xfis.getInt("hp");
+						}
 						fii.slots.add(fis);
 					}
 					f.inventory.add(fii);
@@ -1008,7 +1049,7 @@ public class World {
 			p.surface.buildingmap.clear();
 
 			for (XElement xpii : xplanet.childrenWithName("item")) {
-				PlanetInventoryItem pii = new PlanetInventoryItem();
+				InventoryItem pii = new InventoryItem();
 				pii.owner = players.get(xpii.get("owner"));
 				pii.type = researches.get(xpii.get("id"));
 				pii.count = xpii.getInt("count");
@@ -1028,11 +1069,12 @@ public class World {
 			Planet p = planets.get(rest);
 			p.die();
 		}
+		fleetIdSequence++;
 	}
 	/** @return Return the list of other important items. */
 	public String getOtherItems() {
 		StringBuilder os = new StringBuilder();
-		for (PlanetInventoryItem pii : player.currentPlanet.inventory) {
+		for (InventoryItem pii : player.currentPlanet.inventory) {
 			if (pii.owner == player && pii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
 				if (os.length() > 0) {
 					os.append(", ");

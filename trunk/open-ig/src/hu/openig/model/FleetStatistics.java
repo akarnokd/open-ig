@@ -13,5 +13,18 @@ package hu.openig.model;
  * @author akarnokd, 2011.04.01.
  */
 public class FleetStatistics {
-
+	/** The battleship count. */
+	public int battleshipCount;
+	/** The cruiser count. */
+	public int cruiserCount;
+	/** The fighter count. */
+	public int fighterCount;
+	/** The vehicle count. */
+	public int vehicleCount;
+	/** Maximum vehicle capacity. */
+	public int vehicleMax;
+	/** The maximum speed. */
+	public int speed;
+	/** The firepower. */
+	public int firepower;
 }

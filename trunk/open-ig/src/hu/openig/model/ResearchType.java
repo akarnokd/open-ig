@@ -102,4 +102,20 @@ public class ResearchType {
 	public String get(String property) {
 		return properties.get(property);
 	}
+	/**
+	 * Does the property exist.
+	 * @param property the property name
+	 * @return true if exists
+	 */
+	public boolean has(String property) {
+		return properties.containsKey(property);
+	}
+	/**
+	 * Get a property as an integer value.
+	 * @param property the property name
+	 * @return the value
+	 */
+	public int getInt(String property) {
+		return Integer.parseInt(get(property));
+	}
 }

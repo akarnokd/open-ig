@@ -10,11 +10,10 @@ package hu.openig.mechanics;
 
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
-import hu.openig.model.FleetInventoryItem;
-import hu.openig.model.FleetInventorySlot;
 import hu.openig.model.FleetKnowledge;
+import hu.openig.model.InventoryItem;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
-import hu.openig.model.PlanetInventoryItem;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.World;
@@ -60,8 +59,8 @@ public final class Radar {
 				if (f.owner == player) {
 					// find the max radar
 					String radar = "0";
-					for (FleetInventoryItem fi : f.inventory) {
-						for (FleetInventorySlot fis : fi.slots) {
+					for (InventoryItem fi : f.inventory) {
+						for (InventorySlot fis : fi.slots) {
 							if (fis.type != null) {
 								String r = fis.type.get("radar");
 								if (r != null && radar.compareTo(r) < 0) {
@@ -103,7 +102,7 @@ public final class Radar {
 			if (p.owner != null) {
 				updateKnowledge(p.owner, p, PlanetKnowledge.BUILDING);
 			}
-			for (PlanetInventoryItem pii : p.inventory) {
+			for (InventoryItem pii : p.inventory) {
 				String radar = pii.type.get("radar");
 				if (radar != null) {
 					if ("1".equals(radar)) {
