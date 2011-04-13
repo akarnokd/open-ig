@@ -849,7 +849,11 @@ public class StarmapScreen extends ScreenBase {
 				commons.text().paintTo(g2, xt, yt, 5, labelColor, p.name);
 			}
 			if (p == planet()) {
-				g2.setColor(Color.WHITE);
+				if (player().selectionMode == SelectionMode.PLANET) {
+					g2.setColor(Color.WHITE);
+				} else {
+					g2.setColor(Color.GRAY);
+				}
 				g2.drawLine(x0 - 1, y0 - 1, x0 + 2, y0 - 1);
 				g2.drawLine(x0 - 1, y0 + di + 1, x0 + 2, y0 + di + 1);
 				g2.drawLine(x0 + di - 2, y0 - 1, x0 + di + 1, y0 - 1);
@@ -939,7 +943,11 @@ public class StarmapScreen extends ScreenBase {
 					commons.text().paintTo(g2, xt, yt, 5, f.owner.color, f.name);
 				}
 				if (f == fleet()) {
-					g2.setColor(Color.WHITE);
+					if (player().selectionMode == SelectionMode.FLEET) {
+						g2.setColor(Color.WHITE);
+					} else {
+						g2.setColor(Color.GRAY);
+					}
 					g2.drawRect(x0 - 1, y0 - 1, f.shipIcon.getWidth() + 2, f.shipIcon.getHeight() + 2);
 				}
 			}

@@ -37,7 +37,7 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	 * Create the gui.
 	 */
 	public ConsoleWatcher() {
-		setTitle("Console Watcher");
+		setTitle("Error");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		originalErr = System.err;
 		
