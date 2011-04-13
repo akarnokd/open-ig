@@ -12,7 +12,7 @@ package hu.openig.model;
  * A concrete slot settings for an inventory item, e.g., cruisers and battleships.
  * @author akarnokd, 2011.04.05.
  */
-public class FleetInventorySlot {
+public class InventorySlot {
 	/**  The slots definition. */
 	public EquipmentSlot slot;
 	/** The current entity in the slot, may be null! */

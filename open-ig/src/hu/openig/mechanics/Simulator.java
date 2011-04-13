@@ -320,7 +320,7 @@ public final class Simulator {
 			if (rs.remainingMoney == 0) {
 				player.runningResearch = null;
 				player.research.remove(rs.type);
-				player.availableResearch.add(rs.type);
+				player.setAvailable(rs.type);
 				
 				player.statistics.researchCount++;
 				

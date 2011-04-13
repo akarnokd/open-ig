@@ -13,12 +13,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Set;
 
 /**
  * The object describing the player's status and associated
@@ -50,7 +48,7 @@ public class Player {
 	/** The in-progress research. */
 	public final Map<ResearchType, Research> research = new HashMap<ResearchType, Research>();
 	/** The completed research. */
-	public final Set<ResearchType> availableResearch = new HashSet<ResearchType>();
+	private final Map<ResearchType, List<ResearchType>> availableResearch = new LinkedHashMap<ResearchType, List<ResearchType>>();
 	/** The fleets owned. */
 	public final Map<Fleet, FleetKnowledge> fleets = new HashMap<Fleet, FleetKnowledge>();
 	/** The planets owned. */
@@ -136,7 +134,7 @@ public class Player {
 	 * @return true if available
 	 */
 	public boolean isAvailable(ResearchType rt) {
-		return availableResearch.contains(rt);
+		return availableResearch.containsKey(rt);
 	}
 	/**
 	 * @return the number of built buildings per type
@@ -307,5 +305,62 @@ public class Player {
 	public Player currentResearch(ResearchType type) {
 		this.currentResearch = type;
 		return this;
+	}
+	/** 
+	 * Add a research type without setting the equipment levels.
+	 * @param rt the research to add
+	 * @return true if this was a new research
+	 */
+	public boolean add(ResearchType rt) {
+		if (!availableResearch.containsKey(rt)) {
+			availableResearch.put(rt, new ArrayList<ResearchType>()) ;
+			return true;
+		}
+		return false; 
+	}
+	/** 
+	 * Set the availability of the given research.
+	 * @param rt the research type
+	 * @return this was a new research?
+	 */
+	public boolean setAvailable(ResearchType rt) {
+		if (!availableResearch.containsKey(rt)) {
+			
+			List<ResearchType> avail = new ArrayList<ResearchType>();
+			
+			for (EquipmentSlot slot : rt.slots.values()) {
+				ResearchType et0 = null;
+				for (ResearchType et : slot.items) {
+					if (isAvailable(et)) {
+						et0 = et;
+					} else {
+						break;
+					}
+				}
+				if (et0 != null) {
+					avail.add(et0);
+				}
+			}
+			
+			availableResearch.put(rt, avail);
+			
+			return true;
+		}
+		return false;
+	}
+	/** @return map set of of the available research. */
+	public Map<ResearchType, List<ResearchType>> available() {
+		return availableResearch;
+	}
+	/**
+	 * Returns a list of available researches used by the given research when it was completed.
+	 * @param rt the base research
+	 * @return the level of researches used by the base research
+	 */
+	public List<ResearchType> availableLevel(ResearchType rt) {
+		if (availableResearch.containsKey(rt)) {
+			return availableResearch.get(rt);
+		}
+		return Collections.emptyList();
 	}
 }

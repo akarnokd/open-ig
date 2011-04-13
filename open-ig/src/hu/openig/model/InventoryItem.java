@@ -8,12 +8,15 @@
 
 package hu.openig.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Defines a planet's inventory. A planet may 'own' multiple things from multiple players, e.g.,
  * spy satellites. In planet listings, only the current player's items are considered.
  * @author akarnokd, 2011.04.05.
  */
-public class PlanetInventoryItem {
+public class InventoryItem {
 	/** The owner. */
 	public Player owner;
 	/** The item's type. */
@@ -22,4 +25,20 @@ public class PlanetInventoryItem {
 	public int count;
 	/** The current hit points. */
 	public int hp;
+	/** The current shield points. */
+	public int shield;
+	/** The fleet's inventory slots. */
+	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
+	/**
+	 * @return the maximum shield amount or -1 for no shielding
+	 */
+	public int shieldMax() {
+		int result = -1;
+		for (InventorySlot sl : slots) {
+			if (sl.type != null && sl.type.properties.containsKey("shield")) {
+				result = Math.max(result, Integer.parseInt(sl.type.get("shield")));
+			}
+		}
+		return result * type.productionCost / 100;
+	}
 }

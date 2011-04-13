@@ -67,7 +67,7 @@ public class Planet implements Named, Owned {
 	/** The last day's trade income. */
 	public int tradeIncome;
 	/** The planet's inventory. */
-	public final List<PlanetInventoryItem> inventory = new ArrayList<PlanetInventoryItem>();
+	public final List<InventoryItem> inventory = new ArrayList<InventoryItem>();
 	/** @return the morale label for the current morale level. */
 	public String getMoraleLabel() {
 		return getMoraleLabel(morale);
@@ -286,7 +286,7 @@ public class Planet implements Named, Owned {
 			result.addWarning(PlanetProblems.COLONY_HUB);
 		}
 		
-		for (PlanetInventoryItem pii : inventory) {
+		for (InventoryItem pii : inventory) {
 			if (pii.owner == owner) {
 				if (pii.type.get("radar") != null) {
 					radar = Math.max(radar, Integer.parseInt(pii.type.get("radar")));
@@ -294,8 +294,13 @@ public class Planet implements Named, Owned {
 				if ("OrbitalFactory".equals(pii.type.id)) {
 					result.orbitalFactory++;
 				}
-				if (pii.type.category == ResearchSubCategory.WEAPONS_TANKS || pii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-					result.vehicleCount++;
+				if (pii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					result.fighterCount += pii.count;
+				}
+						
+				if (pii.type.category == ResearchSubCategory.WEAPONS_TANKS 
+						|| pii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					result.vehicleCount += pii.count;
 				}
 				if (pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 					result.hasSpaceStation = true;
@@ -361,7 +366,7 @@ public class Planet implements Named, Owned {
 	 */
 	public int getInventoryCount(ResearchType rt) {
 		int result = 0;
-		for (PlanetInventoryItem pii : inventory) {
+		for (InventoryItem pii : inventory) {
 			if (pii.type == rt) {
 				result++;
 			}
@@ -373,9 +378,9 @@ public class Planet implements Named, Owned {
 	 */
 	public void die() {
 		// remove equipment of the owner
-		Iterator<PlanetInventoryItem> pit = inventory.iterator();
+		Iterator<InventoryItem> pit = inventory.iterator();
 		while (pit.hasNext()) {
-			PlanetInventoryItem pii = pit.next();
+			InventoryItem pii = pit.next();
 			if (pii.owner == owner) {
 				pit.remove();
 			}
@@ -406,7 +411,7 @@ public class Planet implements Named, Owned {
 	 * @return the owner
 	 */
 	public boolean hasInventory(ResearchType rt, Player owner) {
-		for (PlanetInventoryItem pii : inventory) {
+		for (InventoryItem pii : inventory) {
 			if (pii.type == rt && pii.owner == owner) {
 				return true;
 			}
@@ -421,7 +426,7 @@ public class Planet implements Named, Owned {
 	 */
 	public int inventoryCount(ResearchType rt, Player owner) {
 		int count = 0;
-		for (PlanetInventoryItem pii : inventory) {
+		for (InventoryItem pii : inventory) {
 			if (pii.type == rt && pii.owner == owner) {
 				count += pii.count;
 			}
@@ -436,7 +441,7 @@ public class Planet implements Named, Owned {
 	 */
 	public int inventoryCount(ResearchSubCategory cat, Player owner) {
 		int count = 0;
-		for (PlanetInventoryItem pii : inventory) {
+		for (InventoryItem pii : inventory) {
 			if (pii.type.category == cat && pii.owner == owner) {
 				count += pii.count;
 			}
@@ -452,7 +457,7 @@ public class Planet implements Named, Owned {
 	public void changeInventory(ResearchType type, Player owner, int amount) {
 		int idx = 0;
 		boolean found = false;
-		for (PlanetInventoryItem pii : inventory) {
+		for (InventoryItem pii : inventory) {
 			if (pii.type == type && pii.owner == owner) {
 				pii.count += amount;
 				if (pii.count <= 0) {
@@ -464,7 +469,7 @@ public class Planet implements Named, Owned {
 			idx++;
 		}
 		if (!found && amount > 0) {
-			PlanetInventoryItem pii = new PlanetInventoryItem();
+			InventoryItem pii = new InventoryItem();
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
