@@ -996,4 +996,20 @@
 	<entry key='fleetstatus.speed'>Sebesség: %d</entry>
 	<entry key='fleetstatus.nearby'>Közeli bolygó: %s</entry>
 		
+	<entry key='inventoryslot.laser'>Lézerek</entry>
+	<entry key='inventoryslot.laser1'>Lézerek</entry>
+	<entry key='inventoryslot.laser2'>Lézerek</entry>
+	<entry key='inventoryslot.shield'>Pajzs</entry>
+	<entry key='inventoryslot.hyperdrive'>Hiperhajtómű</entry>
+	<entry key='inventoryslot.radar'>Radar</entry>
+	<entry key='inventoryslot.cannon'>Ágyúk</entry>
+	<entry key='inventoryslot.cannon1'>Ágyúk</entry>
+	<entry key='inventoryslot.cannon2'>Ágyúk</entry>
+	<entry key='inventoryslot.bomb'>Bombák</entry>
+	<entry key='inventoryslot.rocket'>Rakéták</entry>
+	<entry key='inventoryslot.rocket1'>Rakéták</entry>
+	<entry key='inventoryslot.rocket2'>Rakéták</entry>
+	<entry key='inventoryslot.storage'>Tárolók</entry>
+	<entry key='inventoryslot.ecm'>ECM</entry>
+		
 </labels>

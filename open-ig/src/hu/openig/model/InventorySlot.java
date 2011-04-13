@@ -21,4 +21,8 @@ public class InventorySlot {
 	public int count;
 	/** The item's hitpoints. */
 	public int hp;
+	/** @return is the slot filled to max? */
+	public boolean isFilled() {
+		return count >= slot.max;
+	}
 }

@@ -184,8 +184,10 @@ public class Fleet implements Named, Owned {
 	 * Add a given number of inventory item to this fleet.
 	 * @param type the technology to add
 	 * @param amount the amount to add
+	 * @return result the items added
 	 */
-	public void addInventory(ResearchType type, int amount) {
+	public List<InventoryItem> addInventory(ResearchType type, int amount) {
+		List<InventoryItem> result = new ArrayList<InventoryItem>();
 		if (type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 			|| type.category == ResearchSubCategory.WEAPONS_TANKS
 			|| type.category == ResearchSubCategory.WEAPONS_VEHICLES
@@ -222,8 +224,10 @@ public class Fleet implements Named, Owned {
 				}
 				
 				inventory.add(ii);
+				result.add(ii);
 			}
 		}
+		return result;
 	}
 	/** @return the non-fighter and non-vehicular inventory items. */
 	public List<InventoryItem> getSingleItems() {
@@ -237,5 +241,18 @@ public class Fleet implements Named, Owned {
 			}
 		}
 		return result;
+	}
+	/**
+	 * Retrieve the first inventory item with the given type.
+	 * @param rt the type
+	 * @return the inventory item or null if not present
+	 */
+	public InventoryItem getInventoryItem(ResearchType rt) {
+		for (InventoryItem ii : inventory) {
+			if (ii.type == rt) {
+				return ii;
+			}
+		}
+		return null;
 	}
 }

@@ -486,6 +486,7 @@ public class World {
 			s.y = slot.getInt("y");
 			s.width = slot.getInt("width");
 			s.height = slot.getInt("height");
+			s.max = slot.getInt("max");
 			
 			for (String si : slot.get("items").split("\\s*,\\s*")) {
 				s.items.add(getResearch(si));
