@@ -11,6 +11,7 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Action1;
 import hu.openig.model.Fleet;
+import hu.openig.model.Fleet.FleetMode;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.InventoryItem;
@@ -756,11 +757,15 @@ public class EquipmentScreen extends ScreenBase {
 	 * Update the display values based on the current selection.
 	 */
 	void update() {
-		PlanetStatistics ps = planet().getStatistics();
-		newButton.visible(ps.hasMilitarySpaceport);
-		noSpaceport.visible(!ps.hasMilitarySpaceport);
 		ResearchType rt = research();
 		if (player().selectionMode == SelectionMode.PLANET) {
+
+			PlanetStatistics ps = planet().getStatistics();
+			
+			newButton.visible(planet().owner == player() && ps.hasMilitarySpaceport);
+			noSpaceport.visible(planet().owner == player() && !ps.hasMilitarySpaceport);
+			notYourPlanet.visible(planet().owner != player());
+			noPlanetNearby.visible(false);
 			
 			if (planetShown != planet()) {
 				planetShown = planet();
@@ -842,21 +847,50 @@ public class EquipmentScreen extends ScreenBase {
 			
 			Fleet f = fleet();
 			FleetStatistics fs = f.getStatistics();
+
+			PlanetStatistics ps = fs.planet != null ? fs.planet.getStatistics() : null;
+			
+			List<Fleet> fleets = player().ownFleets();
+			int idx = fleets.indexOf(f);
+			prev.enabled(idx > 0);
+			next.enabled(idx < fleets.size() - 1);
+			
 			planet.visible(false);
 			fleetName.text(f.name);
-			spaceshipsLabel.visible(true);
-			spaceshipsMaxLabel.visible(true);
+			spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount), true).visible(true);
+			spaceshipsMaxLabel.text(format("equipment.max", 25), true).visible(true);
 			fightersLabel.text(format("equipment.fighters", fs.fighterCount), true);
 			vehiclesLabel.text(format("equipment.vehicles", fs.vehicleCount), true);
-			
-			if (ps.hasSpaceStation) {
-				fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
-			} else {
-				fightersMaxLabel.text(format("equipment.max", 0), true);
-			}
+			fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
 			vehiclesMaxLabel.text(format("equipment.max", fs.vehicleMax), true);
 			
-			fleetStatusLabel.visible(false);
+			
+			fleetStatusLabel.visible(true);
+			if (f.targetFleet == null && f.targetPlanet == null) {
+				if (f.waypoints.size() > 0) {
+					fleetStatusLabel.text(format("fleetstatus.moving"), true);
+				} else {
+					if (fs.planet != null) {
+						fleetStatusLabel.text(format("fleetstatus.stopped.at", fs.planet.name), true);
+					} else {
+						fleetStatusLabel.text(format("fleetstatus.stopped"), true);
+					}
+				}
+			} else {
+				if (f.mode == FleetMode.ATTACK) {
+					if (f.targetFleet != null) {
+						fleetStatusLabel.text(format("fleetstatus.attack", f.targetFleet.name), true);
+					} else {
+						fleetStatusLabel.text(format("fleetstatus.attack", f.targetPlanet.name), true);
+					}
+				} else {
+					if (f.targetFleet != null) {
+						fleetStatusLabel.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
+					} else {
+						fleetStatusLabel.text(format("fleetstatus.moving.to", f.targetPlanet.name), true);
+					}
+				}
+			}
 			
 			secondaryLabel.visible(false);
 			secondaryFighters.visible(false);
@@ -870,7 +904,12 @@ public class EquipmentScreen extends ScreenBase {
 			cruisersEmpty.visible(false);
 			stations.visible(false);
 			
-			if (ps.hasMilitarySpaceport) {
+			newButton.visible(ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
+			noSpaceport.visible(ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
+			notYourPlanet.visible(ps != null && fs.planet.owner != f.owner);
+			noPlanetNearby.visible(ps == null);
+
+			if (ps != null && ps.hasMilitarySpaceport) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					addButton.visible(player().inventoryCount(rt) > 0
 							&& fleet().inventoryCount(rt) < 30);
@@ -880,7 +919,7 @@ public class EquipmentScreen extends ScreenBase {
 				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
 						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 					addButton.visible(player().inventoryCount(rt) > 0
-							&& fleet().inventoryCount(rt.category) < ps.vehicleMax);
+							&& fleet().inventoryCount(rt.category) < fs.vehicleMax);
 					delButton.visible(
 							fleet().inventoryCount(rt.category) > 0);
 					preview.image(rt.equipmentCustomizeImage);
@@ -905,6 +944,8 @@ public class EquipmentScreen extends ScreenBase {
 				addButton.visible(false);
 				delButton.visible(false);
 			}
+			
+			splitButton.visible(true);
 			
 		}
 		doSelectVehicle(rt);
@@ -1144,7 +1185,7 @@ public class EquipmentScreen extends ScreenBase {
 			if (delta > 0) {
 				leftList.items.clear();
 				fleet().addInventory(research(), delta);
-				leftList.items.addAll(fleet().inventory);
+				leftList.items.addAll(fleet().getSingleItems());
 				leftList.compute();
 			}
 		}

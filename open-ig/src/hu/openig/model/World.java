@@ -730,15 +730,17 @@ public class World {
 			for (Map.Entry<ResearchType, List<ResearchType>> ae : p.available().entrySet()) {
 				XElement av = res.add("type");
 				av.set("id", ae.getKey().id);
-				StringBuilder sb = new StringBuilder();
-				for (ResearchType aert : ae.getValue()) {
-					if (sb.length() > 0) {
-						sb.append(", ");
+				if (ae.getValue().size() > 0) {
+					StringBuilder sb = new StringBuilder();
+					for (ResearchType aert : ae.getValue()) {
+						if (sb.length() > 0) {
+							sb.append(", ");
+						}
+						sb.append(aert.id);
 					}
-					sb.append(aert.id);
+					
+					av.set("list", sb.toString());
 				}
-				
-				av.set("list", sb.toString());
 			}
 			for (Map.Entry<Fleet, FleetKnowledge> fl : p.fleets.entrySet()) {
 				if (fl.getKey().owner == p) {
@@ -989,7 +991,7 @@ public class World {
 					fii.hp = xfii.getInt("hp");
 					for (XElement xfis : xfii.childrenWithName("slot")) {
 						InventorySlot fis = new InventorySlot();
-						fis.slot = fis.type.slots.get(xfis.get("id"));
+						fis.slot = fii.type.slots.get(xfis.get("id"));
 						fis.type = researches.get(xfis.get("type", null));
 						if (fis.type != null) {
 							fis.count = xfis.getInt("count");

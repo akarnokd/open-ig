@@ -173,6 +173,19 @@ public class Fleet implements Named, Owned {
 			result.speed = 6;
 		}
 		
+		int dmin = Integer.MAX_VALUE; 
+		Planet pmin = null;
+		for (Planet p : owner.planets.keySet()) {
+			int d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+			if (d < dmin) {
+				dmin = d;
+				pmin = p;
+			}
+		}
+		if (dmin < 30 * 30) {
+			result.planet = pmin;
+		}
+		
 		return result;
 	}
 	/** 
@@ -218,5 +231,18 @@ public class Fleet implements Named, Owned {
 				inventory.add(ii);
 			}
 		}
+	}
+	/** @return the non-fighter and non-vehicular inventory items. */
+	public List<InventoryItem> getSingleItems() {
+		List<InventoryItem> result = new ArrayList<InventoryItem>();
+		for (InventoryItem ii : inventory) {
+			if (ii.type.category != ResearchSubCategory.SPACESHIPS_FIGHTERS
+					&& ii.type.category != ResearchSubCategory.WEAPONS_TANKS
+					&& ii.type.category != ResearchSubCategory.WEAPONS_VEHICLES
+				) {
+				result.add(ii);
+			}
+		}
+		return result;
 	}
 }

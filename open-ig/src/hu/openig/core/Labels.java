@@ -55,6 +55,8 @@ public class Labels {
 		if (value == null) {
 //			throw new AssertionError("Missing value for key: " + key);
 			System.err.println("\t<entry key='" + key + "'></entry>");
+			AssertionError ex = new AssertionError();
+			ex.printStackTrace();
 			map.put(key, key);
 			return key;
 		}
