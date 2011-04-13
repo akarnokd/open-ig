@@ -11,8 +11,11 @@ package hu.openig.screens;
 
 import hu.openig.core.Act;
 import hu.openig.model.Fleet;
-import hu.openig.model.Planet;
+import hu.openig.model.FleetKnowledge;
+import hu.openig.model.FleetMode;
+import hu.openig.model.FleetStatistics;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
@@ -24,6 +27,7 @@ import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
+import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UIImageToggleButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
@@ -38,6 +42,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.Collection;
@@ -288,6 +293,32 @@ public class StarmapScreen extends ScreenBase {
 	UIImageButton showNamesFleet;
 	/** Show name. */
 	UIImageButton showNamesBoth;
+	/** The fleet name. */
+	UILabel fleetName;
+	/** The fleet owner. */
+	UILabel fleetOwner;
+	/** The fleet status. */
+	UILabel fleetStatus;
+	/** The fleet composition. */
+	UILabel fleetComposition;
+	/** The fleet nearby planet. */
+	UILabel fleetPlanet;
+	/** The fleet speed. */
+	UILabel fleetSpeed;
+	/** The fleet firepower. */
+	UILabel fleetFirepower;
+	/** Move fleet. */
+	UIImageTabButton fleetMove;
+	/** Attack with the fleet. */
+	UIImageTabButton fleetAttack;
+	/** Stop the fleet. */
+	UIImageTabButton fleetStop;
+	/** Colonize with the fleet. */
+	UIImageButton fleetColonize;
+	/** The fleet separator image. */
+	UIImage fleetSeparator;
+	/** The current fleet control mode. */
+	FleetMode fleetMode;
 	/** Show the planet names. */
 	boolean showPlanetNames = true;
 	/** Show the fleet names. */
@@ -509,6 +540,28 @@ public class StarmapScreen extends ScreenBase {
 		showNamesBoth.location(bottomPanel.x + bottomPanel.width - 110, bottomPanel.y + 65);
 
 		
+		fleetName.location(colonyName.location());
+		fleetOwner.location(colonyOwner.location());
+		fleetStatus.location(colonySurface.location());
+		fleetPlanet.location(colonyPopulationTax.location());
+		
+		fleetComposition.location(fleetPlanet.x, fleetPlanet.y + 16);
+		int ff = Math.max(fleetSpeed.width, fleetFirepower.width);
+		
+		int fleetcmd = 214;
+		
+		fleetSpeed.location(bottomPanel.x + bottomPanel.width - fleetcmd - ff - 10, fleetOwner.y);
+		fleetFirepower.location(bottomPanel.x + bottomPanel.width - fleetcmd - ff - 10, fleetSpeed.y + 10);
+		
+		fleetMove.location(bottomPanel.x + bottomPanel.width - fleetcmd, bottomPanel.y + 5);
+		fleetAttack.location(bottomPanel.x + bottomPanel.width - fleetcmd, bottomPanel.y + 32);
+		fleetStop.location(bottomPanel.x + bottomPanel.width - fleetcmd, bottomPanel.y + 59);
+		
+		fleetSeparator.location(bottomPanel.x + bottomPanel.width - fleetcmd - 4, bottomPanel.y + 2);
+
+		fleetColonize.location(bottomPanel.x + bottomPanel.width - 110, bottomPanel.y + 4);
+
+		
 		computeViewport();
 	}
 
@@ -649,6 +702,81 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 	}
+	/** Display the current fleet info. */
+	void displayFleetInfo() {
+		
+		boolean fleetMode = player().selectionMode == SelectionMode.FLEET;
+
+		Fleet f = fleet();
+
+		fleetName.color(f.owner.color);
+		fleetName.visible(fleetMode);
+		fleetOwner.visible(fleetMode);
+		fleetStatus.visible(fleetMode);
+		fleetPlanet.visible(fleetMode);
+		fleetComposition.visible(fleetMode && knowledge(f, FleetKnowledge.COMPOSITION) >= 0);
+		fleetAttack.visible(fleetMode && f.owner == player());
+		fleetStop.visible(fleetMode && f.owner == player());
+		fleetMove.visible(fleetMode && f.owner == player());
+		fleetSeparator.visible(fleetMode && f.owner == player());
+		fleetColonize.visible(fleetMode && f.owner == player());
+		fleetFirepower.visible(fleetMode && knowledge(f, FleetKnowledge.FULL) >= 0);
+		fleetSpeed.visible(fleetMode);
+		
+		if (!fleetMode) {
+			return;
+		}
+		
+		if (this.fleetMode == null) {
+			fleetAttack.down = f.mode == FleetMode.ATTACK;
+			fleetMove.down = f.mode == FleetMode.MOVE;
+			fleetStop.down = f.mode == null;
+		}
+		
+		FleetStatistics fs = f.getStatistics();
+		fleetName.text(f.name, true);
+		fleetOwner.text(f.owner.name, true);
+		fleetComposition.text(format("fleetstatus.composition", fs.battleshipCount, fs.cruiserCount, fs.fighterCount, fs.vehicleCount), true);
+		fleetSpeed.text(format("fleetstatus.speed", fs.speed), true);
+		fleetFirepower.text(format("fleetstatus.firepower", fs.firepower), true);
+		if (fs.planet != null) {
+			fleetPlanet.text(format("fleetstatus.nearby", fs.planet.name), true);
+		} else {
+			fleetPlanet.text(format("fleetstatus.nearby", "----"), true);
+		}
+		if (f.targetFleet == null && f.targetPlanet == null) {
+			if (f.waypoints.size() > 0) {
+				fleetStatus.text(format("fleetstatus.moving"), true);
+			} else {
+				fleetStatus.text(format("fleetstatus.stopped"), true);
+			}
+		} else {
+			if (f.mode == FleetMode.ATTACK) {
+				if (f.targetFleet != null) {
+					fleetStatus.text(format("fleetstatus.attack", f.targetFleet.name), true);
+				} else {
+					fleetStatus.text(format("fleetstatus.attack", f.targetPlanet.name), true);
+				}
+			} else {
+				if (f.targetFleet != null) {
+					fleetStatus.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
+				} else {
+					fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet.name), true);
+				}
+			}
+		}
+	}
+	/**
+	 * Replace the value with a dash if the value is zero.
+	 * @param i the value
+	 * @return a dash or the value as string
+	 */
+	String zeroDash(int i) {
+		if (i == 0) {
+			return "-";
+		}
+		return Integer.toString(i);
+	}
 	/** Display the right panel's planet info on the current selected planet. */
 	void displayPlanetInfo() {
 		if (player().selectionMode != SelectionMode.PLANET) {
@@ -786,6 +914,9 @@ public class StarmapScreen extends ScreenBase {
 
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, width, height);
+		
+		displayPlanetInfo();
+		displayFleetInfo();
 
 		computeRectangles();
 		
@@ -819,9 +950,7 @@ public class StarmapScreen extends ScreenBase {
 				for (Fleet f : fleets) {
 					if (f.owner == player()) {
 						f.getStatistics();
-						if (f.radar > 0) {
-							paintRadar(g2, f.x, f.y, f.radar, zoom);
-						}
+						paintRadar(g2, (int)f.x, (int)f.y, f.radar, zoom);
 					}
 				}
 			}
@@ -933,12 +1062,63 @@ public class StarmapScreen extends ScreenBase {
 		}
 		if (showFleetButton.selected) {
 			for (Fleet f : fleets) {
-				int x0 = (int)(starmapRect.x + f.x * zoom - f.shipIcon.getWidth() / 2);
-				int y0 = (int)(starmapRect.y + f.y * zoom - f.shipIcon.getHeight() / 2);
-				g2.drawImage(f.shipIcon, x0, y0, null);
+				if (f.owner == player()) {
+					if (f.mode == FleetMode.ATTACK) {
+						if (f.targetFleet != null) {
+							g2.setColor(new Color(255, 0, 0, 128));
+							g2.drawLine(
+									(int)(starmapRect.x + f.x * zoom), 
+									(int)(starmapRect.y + f.y * zoom), 
+									(int)(starmapRect.x + f.targetFleet.x * zoom), 
+									(int)(starmapRect.y + f.targetFleet.y * zoom));
+						} else
+						if (f.targetPlanet != null) {
+							g2.setColor(new Color(255, 0, 0, 128));
+							g2.drawLine(
+									(int)(starmapRect.x + f.x * zoom), 
+									(int)(starmapRect.y + f.y * zoom), 
+									(int)(starmapRect.x + f.targetPlanet.x * zoom), 
+									(int)(starmapRect.y + f.targetPlanet.y * zoom));
+						}
+					} else {
+						float lastx = f.x;
+						float lasty = f.y;
+						if (f.targetFleet != null) {
+							g2.setColor(new Color(255, 255, 255, 128));
+							g2.drawLine(
+									(int)(starmapRect.x + f.x * zoom), 
+									(int)(starmapRect.y + f.y * zoom), 
+									(int)(starmapRect.x + f.targetFleet.x * zoom), 
+									(int)(starmapRect.y + f.targetFleet.y * zoom));
+						} else
+						if (f.targetPlanet != null) {
+							g2.setColor(new Color(255, 255, 255, 128));
+							g2.drawLine(
+									(int)(starmapRect.x + f.x * zoom), 
+									(int)(starmapRect.y + f.y * zoom), 
+									(int)(starmapRect.x + f.targetPlanet.x * zoom), 
+									(int)(starmapRect.y + f.targetPlanet.y * zoom));
+						} else 
+						if (f.waypoints.size() > 0) {
+							g2.setColor(new Color(255, 255, 255, 128));
+							for (Point2D.Float pt : f.waypoints) {
+								g2.drawLine(
+									(int)(starmapRect.x + lastx * zoom), 
+									(int)(starmapRect.y + lasty * zoom), 
+									(int)(starmapRect.x + pt.x * zoom), 
+									(int)(starmapRect.y + pt.y * zoom));
+								lastx = pt.x;
+								lasty = pt.y;
+							}
+						}
+					}
+				}
+				int x0 = (int)(starmapRect.x + f.x * zoom - f.owner.fleetIcon.getWidth() / 2);
+				int y0 = (int)(starmapRect.y + f.y * zoom - f.owner.fleetIcon.getHeight() / 2);
+				g2.drawImage(f.owner.fleetIcon, x0, y0, null);
 				int tw = commons.text().getTextWidth(5, f.name);
 				int xt = (int)(starmapRect.x + f.x * zoom - tw / 2);
-				int yt = (int)(starmapRect.y + f.y * zoom + f.shipIcon.getHeight() / 2) + 3;
+				int yt = (int)(starmapRect.y + f.y * zoom + f.owner.fleetIcon.getHeight() / 2) + 3;
 				if (showFleetNames) {
 					commons.text().paintTo(g2, xt, yt, 5, f.owner.color, f.name);
 				}
@@ -948,7 +1128,7 @@ public class StarmapScreen extends ScreenBase {
 					} else {
 						g2.setColor(Color.GRAY);
 					}
-					g2.drawRect(x0 - 1, y0 - 1, f.shipIcon.getWidth() + 2, f.shipIcon.getHeight() + 2);
+					g2.drawRect(x0 - 1, y0 - 1, f.owner.fleetIcon.getWidth() + 2, f.owner.fleetIcon.getHeight() + 2);
 				}
 			}
 		}
@@ -1031,7 +1211,6 @@ public class StarmapScreen extends ScreenBase {
 		}
 		g2.setClip(save0);
 		
-		displayPlanetInfo();
 		
 		super.draw(g2);
 	}
@@ -1044,8 +1223,8 @@ public class StarmapScreen extends ScreenBase {
 	public Fleet getFleetAt(int x, int y) {
 		double zoom = getZoom();
 		for (Fleet f : player().visibleFleets()) {
-			int w = f.shipIcon.getWidth();
-			int h = f.shipIcon.getHeight();
+			int w = f.owner.fleetIcon.getWidth();
+			int h = f.owner.fleetIcon.getHeight();
 			int x0 = (int)(starmapRect.x + f.x * zoom - w * 0.5);
 			int y0 = (int)(starmapRect.y + f.y * zoom - h * 0.5);
 			if (x0 <= x && x <= x0 + w && y0 <= y && y <= y0 + h) {
@@ -1072,6 +1251,18 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Convert the screen coordinates to map coordinates.
+	 * @param x the screen X coordinate
+	 * @param y the screen Y coordinate
+	 * @return the map point
+	 */
+	public Point2D.Float toMapCoordinates(int x, int y) {
+		float zoom = (float)getZoom();
+		float nx = (x - starmapRect.x) / zoom;
+		float ny = (y - starmapRect.y) / zoom;
+		return new Point2D.Float(nx, ny);
 	}
 	/**
 	 * @return computes the current zoom factor.
@@ -1208,21 +1399,115 @@ public class StarmapScreen extends ScreenBase {
 				scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 				rep = true;
 			}
-			if (e.has(Button.LEFT)) { 
-				if (starmapWindow.contains(e.x, e.y) 
-						&& !e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
+			if (starmapWindow.contains(e.x, e.y) && e.has(Button.RIGHT) && player().selectionMode == SelectionMode.FLEET && fleet().owner == player()) {
+				if (e.has(Modifier.CTRL)) {
+					// attack move
 					Planet p = getPlanetAt(e.x, e.y);
-					Fleet f = getFleetAt(e.x, e.y);
-
+					if (p != null && p.owner != player() && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+						fleetMode = null;
+						fleet().targetPlanet = p;
+						fleet().targetFleet = null;
+						fleet().mode = FleetMode.ATTACK;
+					} else {
+						Fleet f = getFleetAt(e.x, e.y);
+						if (f != null && f.owner != player() && f != fleet()) {
+							fleetMode = null;
+							fleet().targetPlanet = null;
+							fleet().targetFleet = f;
+							fleet().mode = FleetMode.ATTACK;
+						} else {
+							fleet().targetPlanet = null;
+							fleet().targetFleet = null;
+							fleet().mode = FleetMode.MOVE;
+							fleet().waypoints.clear();
+							fleet().waypoints.add(toMapCoordinates(e.x, e.y));
+						}
+					}
+				} else
+				if (e.has(Modifier.SHIFT)) {
+					Planet p = getPlanetAt(e.x, e.y);
 					if (p != null) {
-						player().currentPlanet = p;
-						player().selectionMode = SelectionMode.PLANET;
+						fleet().targetPlanet = p;
+						fleet().targetFleet = null;
+						fleet().mode = FleetMode.MOVE;
+					} else {
+						Fleet f = getFleetAt(e.x, e.y);
+						if (f != null && f != fleet()) {
+							fleet().targetPlanet = null;
+							fleet().targetFleet = f;
+							fleet().mode = FleetMode.MOVE;
+						} else {
+							fleet().targetPlanet = null;
+							fleet().targetFleet = null;
+							fleet().mode = FleetMode.MOVE;
+							fleet().waypoints.clear();
+							fleet().waypoints.add(toMapCoordinates(e.x, e.y));
+						}
 					}
-					if (f != null) {
-						player().currentFleet = f;
-						player().selectionMode = SelectionMode.FLEET;
+					fleetMode = null;
+				}
+			} else
+			if (e.has(Button.LEFT)) {
+				if (starmapWindow.contains(e.x, e.y)) {
+					if (fleetMode == FleetMode.ATTACK) {
+						Planet p = getPlanetAt(e.x, e.y);
+						if (p != null && p.owner != player() && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+							fleetMode = null;
+							fleet().targetPlanet = p;
+							fleet().targetFleet = null;
+							fleet().mode = FleetMode.ATTACK;
+						} else {
+							Fleet f = getFleetAt(e.x, e.y);
+							if (f != null && f.owner != player()) {
+								fleetMode = null;
+								fleet().targetPlanet = null;
+								fleet().targetFleet = f;
+								fleet().mode = FleetMode.ATTACK;
+							}
+						}
+					} else
+					if (fleetMode == FleetMode.MOVE) {
+						if (e.has(Modifier.SHIFT)) {
+							fleet().targetPlanet = null;
+							fleet().targetFleet = null;
+							fleet().mode = FleetMode.MOVE;
+							fleet().waypoints.add(toMapCoordinates(e.x, e.y));
+						} else {
+							Planet p = getPlanetAt(e.x, e.y);
+							if (p != null) {
+								fleet().targetPlanet = p;
+								fleet().targetFleet = null;
+								fleet().mode = FleetMode.MOVE;
+							} else {
+								Fleet f = getFleetAt(e.x, e.y);
+								if (f != null && f != fleet()) {
+									fleet().targetPlanet = null;
+									fleet().targetFleet = f;
+									fleet().mode = FleetMode.MOVE;
+								} else {
+									fleet().targetPlanet = null;
+									fleet().targetFleet = null;
+									fleet().mode = FleetMode.MOVE;
+									fleet().waypoints.clear();
+									fleet().waypoints.add(toMapCoordinates(e.x, e.y));
+								}
+							}
+							fleetMode = null;
+						}
+					} else
+					if (!e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
+						Planet p = getPlanetAt(e.x, e.y);
+						Fleet f = getFleetAt(e.x, e.y);
+	
+						if (p != null) {
+							player().currentPlanet = p;
+							player().selectionMode = SelectionMode.PLANET;
+						}
+						if (f != null) {
+							player().currentFleet = f;
+							player().selectionMode = SelectionMode.FLEET;
+						}
 					}
-					
 					rep = true;
 				} else
 				if (planetFleetSplitterRect.contains(e.x, e.y) && planetFleetSplitterRange.height > 0) {
@@ -1573,6 +1858,38 @@ public class StarmapScreen extends ScreenBase {
 				showPlanetNames = false;
 			}
 		};
+		
+		fleetName = new UILabel("", 14, commons.text());
+		fleetOwner = new UILabel("", 10, commons.text());
+		fleetStatus = new UILabel("", 10, commons.text());
+		fleetPlanet = new UILabel("", 10, commons.text());
+		fleetComposition = new UILabel("", 7, commons.text());
+		fleetSpeed = new UILabel("", 7, commons.text());
+		fleetFirepower = new UILabel("", 7, commons.text());
+		fleetMove = new UIImageTabButton(commons.starmap().move);
+		fleetAttack = new UIImageTabButton(commons.starmap().attack);
+		fleetStop = new UIImageTabButton(commons.starmap().stop);
+		fleetColonize = new UIImageButton(commons.starmap().colonize);
+		fleetSeparator = new UIImage(commons.starmap().commandSeparator);
+
+		fleetMove.onPress = new Act() {
+			@Override
+			public void act() {
+				doFleetMove();
+			}
+		};
+		fleetAttack.onPress = new Act() {
+			@Override
+			public void act() {
+				doFleetAttack();
+			}
+		};
+		fleetStop.onPress = new Act() {
+			@Override
+			public void act() {
+				doFleetStop();
+			}
+		};
 
 		addThis();
 	}
@@ -1622,7 +1939,10 @@ public class StarmapScreen extends ScreenBase {
 	 * @param radius the radius
 	 * @param zoom the zoom factor
 	 */
-	void paintRadar(Graphics2D g2, int x, int y, int radius, double zoom) {
+	void paintRadar(Graphics2D g2, int x, int y, float radius, double zoom) {
+		if (radius <= 0) {
+			radius = 0.3f * 35;
+		}
 		double angle = 0;
 		int n = (int)(2 * radius * Math.PI * zoom / 10);
 		double dangle = Math.PI * 2 / n;
@@ -1744,5 +2064,30 @@ public class StarmapScreen extends ScreenBase {
 	 */
 	public void setScrollbarsVisible(boolean scrollbarsVisible) {
 		this.scrollbarsVisible = scrollbarsVisible;
+	}
+	/** Move the fleet (turns on movement selection mode. */
+	void doFleetMove() {
+		fleetMove.down = true;
+		fleetAttack.down = false;
+		fleetStop.down = false;
+		fleetMode = FleetMode.MOVE;
+	}
+	/** Attack with the fleet (turns on attach selection mode. */
+	void doFleetAttack() {
+		fleetMove.down = false;
+		fleetAttack.down = true;
+		fleetStop.down = false;
+		fleetMode = FleetMode.ATTACK;
+	}
+	/** Stop the current fleet. */
+	void doFleetStop() {
+		fleetMove.down = false;
+		fleetAttack.down = false;
+		fleetStop.down = true;
+		fleet().waypoints.clear();
+		fleet().targetFleet = null;
+		fleet().targetPlanet = null;
+		fleet().mode = null;
+		fleetMode = null;
 	}
 }

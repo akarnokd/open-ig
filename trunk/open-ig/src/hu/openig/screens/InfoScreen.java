@@ -1398,8 +1398,8 @@ public class InfoScreen extends ScreenBase {
 			if (displayFleets) {
 				for (Fleet f : player().fleets.keySet()) {
 					if (knowledge(f, FleetKnowledge.VISIBLE) >= 0) {
-						int x0 = (f.x * width / commons.starmap().background.getWidth());
-						int y0 = (f.y * height / commons.starmap().background.getHeight());
+						int x0 = (int)(f.x * width / commons.starmap().background.getWidth());
+						int y0 = (int)(f.y * height / commons.starmap().background.getHeight());
 						int x1 = x0 - f.owner.fleetIcon.getWidth() / 2;
 						int y1 = y0 - f.owner.fleetIcon.getHeight() / 2;
 						g2.drawImage(f.owner.fleetIcon, x1, y1, null);
@@ -1441,8 +1441,8 @@ public class InfoScreen extends ScreenBase {
 		public Fleet getFleetAt(int x, int y) {
 			for (Fleet f : player().fleets.keySet()) {
 				if (knowledge(f, FleetKnowledge.VISIBLE) >= 0) {
-					int x0 = (f.x * width / commons.starmap().background.getWidth());
-					int y0 = (f.y * height / commons.starmap().background.getHeight());
+					int x0 = (int)(f.x * width / commons.starmap().background.getWidth());
+					int y0 = (int)(f.y * height / commons.starmap().background.getHeight());
 					int w = f.owner.fleetIcon.getWidth();
 					int h = y0 - f.owner.fleetIcon.getHeight();
 					int x1 = x0 - w / 2;

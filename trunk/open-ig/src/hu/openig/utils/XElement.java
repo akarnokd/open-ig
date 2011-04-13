@@ -89,6 +89,15 @@ public class XElement implements Iterable<XElement> {
 		String val = get(attributeName);
 		return Integer.parseInt(val);
 	}
+	/**
+	 * Get an float attribute.
+	 * @param attributeName the attribute name
+	 * @return the float value
+	 */
+	public float getFloat(String attributeName) {
+		String val = get(attributeName);
+		return Float.parseFloat(val);
+	}
 	@Override
 	public Iterator<XElement> iterator() {
 		return children.iterator();

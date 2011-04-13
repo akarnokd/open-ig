@@ -980,8 +980,8 @@ public class World {
 				
 				fleetIdSequence = Math.max(fleetIdSequence, f.id);
 				
-				f.x = xfleet.getInt("x");
-				f.y = xfleet.getInt("y");
+				f.x = xfleet.getFloat("x");
+				f.y = xfleet.getFloat("y");
 				f.name = xfleet.get("name");
 				for (XElement xfii : xfleet.childrenWithName("item")) {
 					InventoryItem fii = new InventoryItem();

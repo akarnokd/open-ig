@@ -185,12 +185,12 @@ public abstract class ScreenBase extends UIContainer {
 	}
 	/**
 	 * Compare the current knowledge level of the given fleet by the expected level.
-	 * @param planet the target planet
+	 * @param fleet the target planet
 	 * @param expected the expected level
 	 * @return -1 if less known, 0 if exactly on the same level, +1 if more
 	 */
-	public int knowledge(Fleet planet, FleetKnowledge expected) {
-		FleetKnowledge k = player().fleets.get(planet);
+	public int knowledge(Fleet fleet, FleetKnowledge expected) {
+		FleetKnowledge k = fleet.owner == player() ? FleetKnowledge.FULL : player().fleets.get(fleet);
 		if (k == expected) {
 			return 0;
 		}
