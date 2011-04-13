@@ -1008,4 +1008,22 @@
 	<entry key='fleetstatus.firepower'>Firepower: %d</entry>
 	<entry key='fleetstatus.speed'>Speed: %d</entry>
 	<entry key='fleetstatus.nearby'>Planet near by: %s</entry>
+	
+	<entry key='inventoryslot.laser'>Lasers</entry>
+	<entry key='inventoryslot.laser1'>Lasers</entry>
+	<entry key='inventoryslot.laser2'>Lasers</entry>
+	<entry key='inventoryslot.shield'>Shield</entry>
+	<entry key='inventoryslot.hyperdrive'>Hyperdrive</entry>
+	<entry key='inventoryslot.radar'>Radar</entry>
+	<entry key='inventoryslot.cannon'>Cannons</entry>
+	<entry key='inventoryslot.cannon1'>Cannons</entry>
+	<entry key='inventoryslot.cannon2'>Cannons</entry>
+	<entry key='inventoryslot.bomb'>Bombs</entry>
+	<entry key='inventoryslot.rocket'>Rockets</entry>
+	<entry key='inventoryslot.rocket1'>Rockets</entry>
+	<entry key='inventoryslot.rocket2'>Rockets</entry>
+	<entry key='inventoryslot.storage'>Storage</entry>
+	<entry key='inventoryslot.ecm'>ECM</entry>
+	
+	
 </labels>

@@ -494,4 +494,17 @@ public class Planet implements Named, Owned {
 			return o1.name.compareTo(o2.name);
 		}
 	};
+	/**
+	 * Retrieve the first inventory item with the given type.
+	 * @param rt the type
+	 * @return the inventory item or null if not present
+	 */
+	public InventoryItem getInventoryItem(ResearchType rt) {
+		for (InventoryItem ii : inventory) {
+			if (ii.type == rt) {
+				return ii;
+			}
+		}
+		return null;
+	}
 }

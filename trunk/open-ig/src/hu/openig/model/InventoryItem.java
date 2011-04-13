@@ -41,4 +41,17 @@ public class InventoryItem {
 		}
 		return result * type.productionCost / 100;
 	}
+	/**
+	 * Return the inventory slot with the given identifier.
+	 * @param id the slot id
+	 * @return the the slot or null if no such slot
+	 */
+	public InventorySlot getSlot(String id) {
+		for (InventorySlot is : slots) {
+			if (is.slot.id.equals(id)) {
+				return is;
+			}
+		}
+		return null;
+	}
 }

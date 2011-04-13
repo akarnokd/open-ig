@@ -705,11 +705,9 @@ public class StarmapScreen extends ScreenBase {
 	/** Display the current fleet info. */
 	void displayFleetInfo() {
 		
-		boolean fleetMode = player().selectionMode == SelectionMode.FLEET;
-
 		Fleet f = fleet();
+		boolean fleetMode = f != null && player().selectionMode == SelectionMode.FLEET;
 
-		fleetName.color(f.owner.color);
 		fleetName.visible(fleetMode);
 		fleetOwner.visible(fleetMode);
 		fleetStatus.visible(fleetMode);
@@ -726,6 +724,7 @@ public class StarmapScreen extends ScreenBase {
 		if (!fleetMode) {
 			return;
 		}
+		fleetName.color(f.owner.color);
 		
 		if (this.fleetMode == null) {
 			fleetAttack.down = f.mode == FleetMode.ATTACK;
@@ -794,6 +793,7 @@ public class StarmapScreen extends ScreenBase {
 			problemsVirus.visible(false);
 			problemsStadium.visible(false);
 			problemsRepair.visible(false);
+			problemsColonyHub.visible(false);
 // FIXME
 			surveySatellite.visible(false);
 			spySatellite1.visible(false);
