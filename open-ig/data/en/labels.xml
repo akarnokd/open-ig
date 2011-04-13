@@ -998,4 +998,14 @@
 	<entry key='relations.enemies'>Enemies:</entry>
 	
 	<entry key='newfleet.name'>New Fleet</entry>
+	<entry key='fleetstatus.stopped'>Stopped</entry>
+	<entry key='fleetstatus.stopped.at'>Stopped near %s</entry>
+	<entry key='fleetstatus.attack'>Attacking %s</entry>
+	<entry key='fleetstatus.moving'>Moving</entry>
+	<entry key='fleetstatus.moving.to'>Moving to %s</entry>
+	<entry key='fleetstatus.moving.after'>Following %s</entry>
+	<entry key='fleetstatus.composition'>Battleships:%s Cruisers:%s Fighters: %s Tanks:%s</entry>
+	<entry key='fleetstatus.firepower'>Firepower: %d</entry>
+	<entry key='fleetstatus.speed'>Speed: %d</entry>
+	<entry key='fleetstatus.nearby'>Planet near by: %s</entry>
 </labels>

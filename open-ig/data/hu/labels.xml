@@ -984,5 +984,16 @@
 	<entry key='relations.allies'>Szövetséges:</entry>
 	<entry key='relations.enemies'>Ellenség:</entry>
 
-	<entry key='newfleet.name'>Új flotta</entry>	
+	<entry key='newfleet.name'>Új flotta</entry>
+	<entry key='fleetstatus.stopped'>Áll</entry>
+	<entry key='fleetstatus.stopped.at'>Áll a(z) %s közelében</entry>
+	<entry key='fleetstatus.attack'>Támad: %s</entry>
+	<entry key='fleetstatus.moving'>Mozog</entry>
+	<entry key='fleetstatus.moving.to'>Irány: %s</entry>
+	<entry key='fleetstatus.moving.after'>Követés: %s</entry>
+	<entry key='fleetstatus.composition'>Csatahajó:%s Cirkáló:%s Vadász: %s Tank:%s</entry>
+	<entry key='fleetstatus.firepower'>Tűzerő: %d</entry>
+	<entry key='fleetstatus.speed'>Sebesség: %d</entry>
+	<entry key='fleetstatus.nearby'>Közeli bolygó: %s</entry>
+		
 </labels>
