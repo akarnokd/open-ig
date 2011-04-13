@@ -10,6 +10,7 @@ package hu.openig.mechanics;
 
 
 import hu.openig.model.Building;
+import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
@@ -21,9 +22,11 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.World;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,7 +69,7 @@ public final class Simulator {
 		world.statistics.totalAvailablePolice = 0;
 		
 		// -------------------------
-		
+		boolean invokeRadar = false;
 		
 		Map<Planet, PlanetStatistics> planetStats = new HashMap<Planet, PlanetStatistics>();
 		for (Player player : world.players.values()) {
@@ -106,6 +109,7 @@ public final class Simulator {
 			}
 			result |= progressResearch(world, player, all) && player == world.player;
 			result |= progressProduction(world, player, all) && player == world.player;
+			invokeRadar |= moveFleets(player.ownFleets());
 		}
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
@@ -114,9 +118,11 @@ public final class Simulator {
 		}
 		
 		testAchievements(world);
-		
-//		return result;
-		if (day0 != day1) {
+
+		if (invokeRadar) {
+			Radar.compute(world);
+		}
+		if (day0 != day1 || invokeRadar) {
 			return true;
 		}
 		return false;
@@ -410,6 +416,50 @@ public final class Simulator {
 	 */
 	static void testAchievements(World world) {
 		// FIXME implement
+	}
+	/**
+	 * Move fleets.
+	 * @param playerFleets the list of fleets
+	 * @return true if a fleet was moved and the radar needs to be recalculated
+	 */
+	static boolean moveFleets(List<Fleet> playerFleets) {
+		boolean invokeRadar = false;
+		
+		for (Fleet f : playerFleets) {
+			Point2D.Float target = null;
+			boolean removeWp = false;
+			if (f.targetFleet != null) {
+				target = new Point2D.Float(f.targetFleet.x, f.targetFleet.y);
+			} else
+			if (f.targetPlanet != null) {
+				target = new Point2D.Float(f.targetPlanet.x, f.targetPlanet.y);
+			} else
+			if (f.waypoints.size() > 0) {
+				target = f.waypoints.get(0);
+				removeWp = true;
+			}
+			if (target != null) {
+				double dist = Math.sqrt((f.x - target.x) * (f.x - target.x) + (f.y - target.y) * (f.y - target.y));
+				double dx = f.getStatistics().speed / 4;
+				
+				if (dx >= dist) {
+					f.x = target.x;
+					f.y = target.y;
+					if (removeWp) {
+						f.waypoints.remove(0);
+					}
+				} else {
+					double angle = Math.atan2(target.y - f.y, target.x - f.x);
+					f.x = (float)(f.x + Math.cos(angle) * dx);
+					f.y = (float)(f.y + Math.sin(angle) * dx);
+				}
+				invokeRadar = true;
+			} else {
+				f.mode = null;
+			}
+		}
+		
+		return invokeRadar;
 	}
 
 }

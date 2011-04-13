@@ -11,8 +11,8 @@ package hu.openig.screens;
 import hu.openig.core.Act;
 import hu.openig.core.Action1;
 import hu.openig.model.Fleet;
-import hu.openig.model.Fleet.FleetMode;
 import hu.openig.model.FleetKnowledge;
+import hu.openig.model.FleetMode;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
@@ -745,7 +745,6 @@ public class EquipmentScreen extends ScreenBase {
 		f.id = world().fleetIdSequence++;
 		f.owner = player();
 		f.name = get("newfleet.name");
-		f.shipIcon = f.owner.fleetIcon;
 		f.x = planet().x + 5;
 		f.y = planet().y + 5;
 		

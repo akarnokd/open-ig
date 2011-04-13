@@ -58,7 +58,7 @@ public final class Radar {
 			for (Fleet f : new ArrayList<Fleet>(player.fleets.keySet())) {
 				if (f.owner == player) {
 					// find the max radar
-					String radar = "0";
+					String radar = "0.3";
 					for (InventoryItem fi : f.inventory) {
 						for (InventorySlot fis : fi.slots) {
 							if (fis.type != null) {
@@ -69,27 +69,30 @@ public final class Radar {
 							}
 						}
 					}
-					int ri = Integer.parseInt(radar);
+					float ri = Float.parseFloat(radar);
 					if (ri > 0) {
 						for (Planet q : findPlanetsInRange(world, f.x, f.y, ri * 35)) {
-							if (ri == 1) {
+							if (ri < 1f) {
 								updateKnowledge(player, q, PlanetKnowledge.VISIBLE);
 							} else
-							if (ri == 2) {
+							if (ri < 1.1f) {
+								updateKnowledge(player, q, PlanetKnowledge.NAME);
+							} else
+							if (ri < 2.1f) {
 								updateKnowledge(player, q, PlanetKnowledge.OWNER);
 							} else
-							if (ri == 3) {
+							if (ri < 3.1f) {
 								updateKnowledge(player, q, PlanetKnowledge.BUILDING);
 							}
 						}
 						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, ri * 35)) {
-							if (ri == 1) {
+							if (ri < 1.1) {
 								updateKnowledge(player, f1, FleetKnowledge.VISIBLE);
 							} else
-							if (ri == 2) {
+							if (ri < 2.1) {
 								updateKnowledge(player, f1, FleetKnowledge.COMPOSITION);
 							} else
-							if (ri == 3) {
+							if (ri < 3.1) {
 								updateKnowledge(player, f1, FleetKnowledge.FULL);
 							}
 						}
@@ -201,7 +204,7 @@ public final class Radar {
 	 * @param range the range
 	 * @return the list of planets in range
 	 */
-	static List<Planet> findPlanetsInRange(World world, int x, int y, int range) {
+	static List<Planet> findPlanetsInRange(World world, float x, float y, float range) {
 		List<Planet> result = new ArrayList<Planet>();
 		for (Planet p : world.planets.values()) {
 			if ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) < range * range) {
@@ -219,7 +222,7 @@ public final class Radar {
 	 * @param range the range
 	 * @return the list of planets in range
 	 */
-	static List<Fleet> findFleetsInRange(World world, int x, int y, int range) {
+	static List<Fleet> findFleetsInRange(World world, float x, float y, float range) {
 		List<Fleet> result = new ArrayList<Fleet>();
 		for (Player p : world.players.values()) {
 			for (Fleet f : p.fleets.keySet()) {

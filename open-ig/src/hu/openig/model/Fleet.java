@@ -8,8 +8,7 @@
 
 package hu.openig.model;
 
-import java.awt.Point;
-import java.awt.image.BufferedImage;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +22,11 @@ public class Fleet implements Named, Owned {
 	/** The owner of the fleet. */
 	public Player owner;
 	/** The X coordinate. */
-	public int x;
+	public float x;
 	/** The Y coordinate. */
-	public int y;
-	/** The associated ship icon. */
-	public BufferedImage shipIcon;
+	public float y;
+//	/** The associated ship icon. */
+//	public BufferedImage shipIcon;
 	/** The radar radius. */
 	public int radar;
 	/** The fleet name. */
@@ -35,18 +34,11 @@ public class Fleet implements Named, Owned {
 	/** The fleet inventory: ships and tanks. */
 	public final List<InventoryItem> inventory = new ArrayList<InventoryItem>();
 	/** The current list of movement waypoints. */
-	public final List<Point> waypoints = new ArrayList<Point>();
+	public final List<Point2D.Float> waypoints = new ArrayList<Point2D.Float>();
 	/** If the fleet should follow the other fleet. */
 	public Fleet targetFleet;
 	/** If the fleet should move to the planet. */
 	public Planet targetPlanet;
-	/** The movement mode. */
-	public enum FleetMode {
-		/** Simply move there. */
-		MOVE,
-		/** Attack the target. */
-		ATTACK
-	}
 	/** The fleet movement mode. */
 	public FleetMode mode;
 	@Override
@@ -173,10 +165,10 @@ public class Fleet implements Named, Owned {
 			result.speed = 6;
 		}
 		
-		int dmin = Integer.MAX_VALUE; 
+		float dmin = Integer.MAX_VALUE; 
 		Planet pmin = null;
 		for (Planet p : owner.planets.keySet()) {
-			int d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+			float d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
 			if (d < dmin) {
 				dmin = d;
 				pmin = p;
@@ -222,6 +214,7 @@ public class Fleet implements Named, Owned {
 							} else {
 								is.count = es.max / 2;
 							}
+							is.hp = rt1.productionCost;
 						}
 					}
 					
