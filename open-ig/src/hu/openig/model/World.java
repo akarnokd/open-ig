@@ -769,16 +769,25 @@ public class World {
 				}
 			}
 			// save discovered planets only
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb1 = new StringBuilder();
+			StringBuilder sb2 = new StringBuilder();
 			for (Map.Entry<Planet, PlanetKnowledge> pk : p.planets.entrySet()) {
 				if (pk.getKey().owner != p) {
-					if (sb.length() > 0) {
-						sb.append(", ");
+					if (pk.getValue().ordinal() >= PlanetKnowledge.NAME.ordinal()) {
+						if (sb2.length() > 0) {
+							sb2.append(", ");
+						}
+						sb2.append(pk.getKey().id);
+					} else {
+						if (sb1.length() > 0) {
+							sb1.append(", ");
+						}
+						sb1.append(pk.getKey().id);
 					}
-					sb.append(pk.getKey().id);
 				}
 			}
-			xp.set("discovered", sb.toString());
+			xp.set("discovered", sb1.toString());
+			xp.set("discovered-named", sb2.toString());
 			
 			for (Map.Entry<ResearchType, Integer> inv : p.inventory.entrySet()) {
 				XElement xinv = xp.add("inventory");
@@ -1014,6 +1023,15 @@ public class World {
 						throw new IllegalArgumentException("discovered planet not found: " + pl);
 					}
 					p.planets.put(p0, PlanetKnowledge.VISIBLE);
+				}
+			}
+			for (String pl : xplayer.get("discovered-named", "").split("\\s*,\\s*")) {
+				if (pl.length() > 0) {
+					Planet p0 = planets.get(pl);
+					if (p0 == null) {
+						throw new IllegalArgumentException("discovered-named planet not found: " + pl);
+					}
+					p.planets.put(p0, PlanetKnowledge.NAME);
 				}
 			}
 			p.inventory.clear();

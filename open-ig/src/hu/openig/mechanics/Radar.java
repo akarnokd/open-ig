@@ -41,7 +41,9 @@ public final class Radar {
 			// reset known planets to discovered state
 			for (Map.Entry<Planet, PlanetKnowledge> p : player.planets.entrySet()) {
 				if (p.getKey().owner != player) {
-					p.setValue(PlanetKnowledge.VISIBLE);
+					if (p.getValue().ordinal() > PlanetKnowledge.NAME.ordinal()) {
+						p.setValue(PlanetKnowledge.NAME);
+					}
 				}
 			}
 			// cleanup fleets
