@@ -20,9 +20,7 @@ public enum Screens {
 	/** The colony screen. */
 	COLONY,
 	/** The equipment screen. */
-	EQUIPMENT_FLEET,
-	/** The equipment screen. */
-	EQUIPMENT_PLANET,
+	EQUIPMENT,
 	/** The production screen. */
 	PRODUCTION,
 	/** The research screen. */

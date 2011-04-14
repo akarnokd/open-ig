@@ -1006,7 +1006,7 @@
 	<entry key='fleetstatus.moving.after'>Following %s</entry>
 	<entry key='fleetstatus.composition'>Battleships:%s Cruisers:%s Fighters: %s Tanks:%s</entry>
 	<entry key='fleetstatus.firepower'>Firepower: %d</entry>
-	<entry key='fleetstatus.speed'>Speed: %d</entry>
+	<entry key='fleetstatus.speed'    >Speed    : %d</entry>
 	<entry key='fleetstatus.nearby'>Planet near by: %s</entry>
 	
 	<entry key='inventoryslot.laser'>Lasers</entry>
@@ -1025,5 +1025,10 @@
 	<entry key='inventoryslot.storage'>Storage</entry>
 	<entry key='inventoryslot.ecm'>ECM</entry>
 	
+	<entry key='fleetinformation.battleships'>Battleships: %s</entry>
+	<entry key='fleetinformation.cruisers'   >Cruisers   : %s</entry>
+	<entry key='fleetinformation.fighters'   >Fighters   : %s</entry>
+	<entry key='fleetinformation.vehicles'   >Vehicles   : %s</entry>
 	
+	<entry key='info.empty-list'>None</entry>
 </labels>

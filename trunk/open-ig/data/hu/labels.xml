@@ -992,8 +992,8 @@
 	<entry key='fleetstatus.moving.to'>Irány: %s</entry>
 	<entry key='fleetstatus.moving.after'>Követés: %s</entry>
 	<entry key='fleetstatus.composition'>Csatahajó:%s Cirkáló:%s Vadász: %s Tank:%s</entry>
-	<entry key='fleetstatus.firepower'>Tűzerő: %d</entry>
-	<entry key='fleetstatus.speed'>Sebesség: %d</entry>
+	<entry key='fleetstatus.firepower'>Tűzerő  : %d</entry>
+	<entry key='fleetstatus.speed'    >Sebesség: %d</entry>
 	<entry key='fleetstatus.nearby'>Közeli bolygó: %s</entry>
 		
 	<entry key='inventoryslot.laser'>Lézerek</entry>
@@ -1011,5 +1011,12 @@
 	<entry key='inventoryslot.rocket2'>Rakéták</entry>
 	<entry key='inventoryslot.storage'>Tárolók</entry>
 	<entry key='inventoryslot.ecm'>ECM</entry>
+		
+	<entry key='fleetinformation.battleships'>Csatahajó: %s</entry>
+	<entry key='fleetinformation.cruisers'   >Cirkáló  : %s</entry>
+	<entry key='fleetinformation.fighters'   >Vadász   : %s</entry>
+	<entry key='fleetinformation.vehicles'   >Jármű    : %s</entry>
+	
+	<entry key='info.empty-list'>Nincs</entry>
 		
 </labels>

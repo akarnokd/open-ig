@@ -14,6 +14,8 @@ import hu.openig.core.Func1;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
+import hu.openig.model.FleetMode;
+import hu.openig.model.FleetStatistics;
 import hu.openig.model.Named;
 import hu.openig.model.Owned;
 import hu.openig.model.Planet;
@@ -26,6 +28,7 @@ import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
+import hu.openig.model.SelectionMode;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.render.RenderTools;
@@ -448,6 +451,61 @@ public class InfoScreen extends ScreenBase {
 	Closeable animation;
 	/** The blink state. */
 	boolean animationBlink;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetName;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetOwner;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetStatus;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetPlanetLabel;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetPlanet;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetSpeed;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetFirepower;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetBattleships;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetCruisers;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetFighters;
+	/** Fleet property. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_FLEETS
+	})
+	UILabel fleetVehicles;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -507,7 +565,7 @@ public class InfoScreen extends ScreenBase {
 		equipment.onClick = new Act() {
 			@Override
 			public void act() {
-				displaySecondary(Screens.EQUIPMENT_FLEET);
+				displaySecondary(Screens.EQUIPMENT);
 			}
 		};
 		
@@ -607,7 +665,7 @@ public class InfoScreen extends ScreenBase {
 			@Override
 			public void invoke(Fleet value) {
 				player().currentFleet = value;
-				displayPrimary(Screens.EQUIPMENT_FLEET);
+				displayPrimary(Screens.EQUIPMENT);
 			}
 		};
 		
@@ -769,7 +827,19 @@ public class InfoScreen extends ScreenBase {
 		};
 		
 		diplomacyPanel = new DiplomacyPanel();
-		
+
+		fleetName = new UILabel("", 14, commons.text());
+		fleetOwner = new UILabel("", 10, commons.text());
+		fleetStatus = new UILabel("", 10, commons.text());
+		fleetPlanetLabel = new UILabel(format("fleetstatus.nearby", ""), 10, commons.text());
+		fleetPlanet = new UILabel("", 10, commons.text());
+		fleetSpeed = new UILabel("", 7, commons.text());
+		fleetFirepower = new UILabel("", 7, commons.text());
+		fleetBattleships = new UILabel("", 7, commons.text());
+		fleetCruisers = new UILabel("", 7, commons.text());
+		fleetFighters = new UILabel("", 7, commons.text());
+		fleetVehicles = new UILabel("", 7, commons.text());
+
 		addThis();
 	}
 	@Override
@@ -869,6 +939,19 @@ public class InfoScreen extends ScreenBase {
 		militaryInfo.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
 		
 		diplomacyPanel.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
+		
+		fleetName.bounds(planetTitle.bounds());
+		fleetOwner.location(colonyOwner.location());
+		fleetStatus.location(fleetOwner.x, fleetOwner.y + 17);
+		fleetPlanetLabel.location(fleetOwner.x, fleetOwner.y + 17 * 2);
+		fleetPlanet.location(fleetOwner.x + 10, fleetOwner.y + 17 * 3);
+		fleetSpeed.location(fleetOwner.x, fleetOwner.y + 17 * 4);
+		fleetFirepower.location(fleetOwner.x, fleetOwner.y + 17 * 4 + 10);
+		fleetBattleships.location(fleetOwner.x, fleetOwner.y + 17 * 4 + 10 * 3);
+		fleetCruisers.location(fleetOwner.x, fleetOwner.y + 17 * 4 + 10 * 4);
+		fleetFighters.location(fleetOwner.x, fleetOwner.y + 17 * 4 + 10 * 5);
+		fleetVehicles.location(fleetOwner.x, fleetOwner.y + 17 * 4 + 10 * 6);
+
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -901,6 +984,9 @@ public class InfoScreen extends ScreenBase {
 		} else
 		if (mode == Screens.INFORMATION_ALIENS) {
 			displayPlanetInfo();
+		} else
+		if (mode == Screens.INFORMATION_FLEETS) {
+			displayFleetInfo();
 		}
 		
 		super.draw(g2);
@@ -1463,12 +1549,14 @@ public class InfoScreen extends ScreenBase {
 					Fleet f = getFleetAt(e.x, e.y);
 					if (f != null) {
 						player().currentFleet = f;
+						player().selectionMode = SelectionMode.FLEET;
 						return true;
 					}
 				}
 				Planet p = getPlanetAt(e.x, e.y);
 				if (p != null) {
 					player().currentPlanet = p;
+					player().selectionMode = SelectionMode.PLANET;
 					adjustPlanetListView();
 					return true;
 				}
@@ -1478,7 +1566,15 @@ public class InfoScreen extends ScreenBase {
 					Fleet f = getFleetAt(e.x, e.y);
 					if (f != null) {
 						player().currentFleet = f;
-						displaySecondary(Screens.EQUIPMENT_FLEET);
+						player().selectionMode = SelectionMode.FLEET;
+						displaySecondary(Screens.EQUIPMENT);
+						return true;
+					}
+					Planet p = getPlanetAt(e.x, e.y);
+					if (p != null) {
+						player().currentPlanet = p;
+						player().selectionMode = SelectionMode.PLANET;
+						displaySecondary(Screens.EQUIPMENT);
 						return true;
 					}
 				}
@@ -1524,6 +1620,9 @@ public class InfoScreen extends ScreenBase {
 			int columnWidth = width / columns;
 			
 			List<T> planets = getList.invoke(null);
+			if (planets.size() == 0) {
+				commons.text().paintTo(g2, 0, 0, 14, TextRenderer.GRAY, get("info.empty-list"));
+			}
 			for (int j = 0; j < columns; j++) {
 				int x0 = j * columnWidth;  
 				for (int i = 0; i < rowCount; i++) {
@@ -2993,5 +3092,102 @@ public class InfoScreen extends ScreenBase {
 				commons.text().paintTo(g2, tx, ty, 10, TextRenderer.GREEN, "-");
 			}
 		}
+	}
+	/** Display information about the selected fleet. */
+	void displayFleetInfo() {
+		Fleet f = fleet();
+		if (f == null) {
+			fleetName.visible(false);
+			fleetOwner.visible(false);
+			fleetStatus.visible(false);
+			fleetPlanet.visible(false);
+			fleetPlanetLabel.visible(false);
+			fleetFirepower.visible(false);
+			fleetSpeed.visible(false);
+			fleetBattleships.visible(false);
+			fleetCruisers.visible(false);
+			fleetFighters.visible(false);
+			fleetVehicles.visible(false);
+			return;
+		}
+		
+		fleetName.text(f.name).visible(true);
+		fleetName.color(f.owner.color);
+		fleetOwner.text(f.owner.name, true).visible(true);
+		fleetOwner.color(f.owner.color);
+		
+		if (knowledge(f, FleetKnowledge.FULL) >= 0) {
+			if (f.targetFleet == null && f.targetPlanet == null) {
+				if (f.waypoints.size() > 0) {
+					fleetStatus.text(format("fleetstatus.moving"), true);
+				} else {
+					fleetStatus.text(format("fleetstatus.stopped"), true);
+				}
+			} else {
+				if (f.mode == FleetMode.ATTACK) {
+					if (f.targetFleet != null) {
+						fleetStatus.text(format("fleetstatus.attack", f.targetFleet.name), true);
+					} else {
+						fleetStatus.text(format("fleetstatus.attack", f.targetPlanet.name), true);
+					}
+				} else {
+					if (f.targetFleet != null) {
+						fleetStatus.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
+					} else {
+						fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet.name), true);
+					}
+				}
+			}
+		} else {
+			if (f.waypoints.size() > 0 || f.targetFleet != null || f.targetPlanet != null) {
+				fleetStatus.text(format("fleetstatus.moving"), true);
+			} else {
+				fleetStatus.text(format("fleetstatus.stopped"), true);
+			}
+		}
+		FleetStatistics fs = f.getStatistics();
+		
+		if (fs.planet != null && knowledge(fs.planet, PlanetKnowledge.VISIBLE) >= 0) {
+			fleetPlanet.text(fs.planet.name, true).visible(true);
+			if (knowledge(fs.planet, PlanetKnowledge.OWNER) >= 0 && fs.planet.owner != null) {
+				fleetPlanet.color(fs.planet.owner.color);
+			} else {
+				fleetPlanet.color(TextRenderer.GRAY);
+			}
+		} else {
+			fleetPlanet.text("----", true).color(TextRenderer.GREEN).visible(true);
+		}
+		if (knowledge(f, FleetKnowledge.FULL) >= 0) {
+			fleetFirepower.text(format("fleetstatus.firepower", fs.firepower), true).visible(true);
+			fleetBattleships.text(format("fleetinformation.battleships", zeroDash(fs.battleshipCount)), true).visible(true);
+			fleetCruisers.text(format("fleetinformation.cruisers", zeroDash(fs.cruiserCount)), true).visible(true);
+			fleetFighters.text(format("fleetinformation.fighters", zeroDash(fs.fighterCount)), true).visible(true);
+			fleetVehicles.text(format("fleetinformation.vehicles", zeroDash(fs.vehicleCount)), true).visible(true);
+		} else	
+		if (knowledge(f, FleetKnowledge.COMPOSITION) >= 0) {
+			fleetFirepower.visible(false);
+			fleetBattleships.text(format("fleetinformation.battleships", ((fs.battleshipCount / 10) * 10) + ".." + ((fs.battleshipCount  / 10 + 1) * 10)), true).visible(true);
+			fleetCruisers.text(format("fleetinformation.cruisers", ((fs.cruiserCount / 10) * 10) + ".." + ((fs.cruiserCount  / 10 + 1) * 10)), true).visible(true);
+			fleetFighters.text(format("fleetinformation.fighters", ((fs.fighterCount / 10) * 10) + ".." + ((fs.fighterCount  / 10 + 1) * 10)), true).visible(true);
+			fleetVehicles.text(format("fleetinformation.vehicles", ((fs.vehicleCount / 10) * 10) + ".." + ((fs.vehicleCount  / 10 + 1) * 10)), true).visible(true);
+		} else {
+			fleetFirepower.visible(false);
+			fleetBattleships.visible(false);
+			fleetCruisers.visible(false);
+			fleetFighters.visible(false);
+			fleetVehicles.visible(false);
+		}
+		fleetSpeed.text(format("fleetstatus.speed", fs.speed), true).visible(true);
+	}
+	/**
+	 * Replace the value with a dash if the value is zero.
+	 * @param i the value
+	 * @return a dash or the value as string
+	 */
+	String zeroDash(int i) {
+		if (i == 0) {
+			return "-";
+		}
+		return Integer.toString(i);
 	}
 }

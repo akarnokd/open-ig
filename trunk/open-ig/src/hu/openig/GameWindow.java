@@ -17,6 +17,7 @@ import hu.openig.model.GameDefinition;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Screens;
+import hu.openig.model.SelectionMode;
 import hu.openig.model.World;
 import hu.openig.screen.CommonResources;
 import hu.openig.screen.GameControls;
@@ -495,10 +496,8 @@ public class GameWindow extends JFrame implements GameControls {
 		case DIPLOMACY:
 			sb = allScreens.diplomacy;
 			break;
-		case EQUIPMENT_FLEET:
-		case EQUIPMENT_PLANET:
+		case EQUIPMENT:
 			sb = allScreens.equipment;
-			mode = screen;
 			break;
 		case INFORMATION_COLONY:
 		case INFORMATION_ALIENS:
@@ -741,23 +740,19 @@ public class GameWindow extends JFrame implements GameControls {
 					break;
 				case KeyEvent.VK_F4:
 					if (secondary != null) {
-						if (secondary.screen() == Screens.EQUIPMENT_FLEET
-								|| secondary.screen() == Screens.EQUIPMENT_PLANET) {
-									hideSecondary();
-						} else
-						if (secondary.screen() == Screens.INFORMATION_COLONY
-								|| secondary.screen() == Screens.INFORMATION_PLANETS) {
-							displaySecondary(Screens.EQUIPMENT_PLANET);
+						if (secondary.screen() == Screens.EQUIPMENT) {
+							hideSecondary();
 						} else {
-							displaySecondary(Screens.EQUIPMENT_FLEET);
+							displaySecondary(Screens.EQUIPMENT);
 						}
 					} else {
 						switch (primary.screen()) {
 						case COLONY:
-							displaySecondary(Screens.EQUIPMENT_PLANET);
+							commons.world().player.selectionMode = SelectionMode.PLANET;
+							displaySecondary(Screens.EQUIPMENT);
 							break;
 						default:
-							displaySecondary(Screens.EQUIPMENT_FLEET);
+							displaySecondary(Screens.EQUIPMENT);
 						}
 					}
 					e.consume();
@@ -789,11 +784,8 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_F7:
 					if (secondary != null) {
 						switch (secondary.screen()) {
-						case EQUIPMENT_FLEET:
+						case EQUIPMENT:
 							displaySecondary(Screens.INFORMATION_INVENTIONS);
-							break;
-						case EQUIPMENT_PLANET:
-							displaySecondary(Screens.INFORMATION_COLONY);
 							break;
 						case DIPLOMACY:
 							displaySecondary(Screens.INFORMATION_ALIENS);

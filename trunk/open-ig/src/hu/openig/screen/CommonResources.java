@@ -302,7 +302,7 @@ public class CommonResources {
 			control.displayPrimary(Screens.COLONY);
 		} else
 		if ("*equipment".equals(to)) {
-			control.displaySecondary(Screens.EQUIPMENT_FLEET);
+			control.displaySecondary(Screens.EQUIPMENT);
 		} else
 		if ("*research".equals(to)) {
 			control.displaySecondary(Screens.RESEARCH);
