@@ -45,9 +45,6 @@ public final class Simulator {
 	 * @return true if the a quicksave is needed 
 	 */
 	public static boolean compute(World world) {
-		
-		world.statistics.simulationTime++;
-		
 		int day0 = world.time.get(GregorianCalendar.DATE);
 		world.time.add(GregorianCalendar.MINUTE, 10);
 		int day1 = world.time.get(GregorianCalendar.DATE);

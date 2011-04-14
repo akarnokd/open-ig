@@ -1551,6 +1551,9 @@ public class ResearchProductionScreen extends ScreenBase {
 			selectedTechStatusValue.text("-");
 			selectedTimeValue.text("----");
 		}
+		if (rt == animationResearch && player().isAvailable(rt) !=  animationResearchReady) {
+			playAnim(rt);
+		}
 	}
 	/** 
 	 * Update values for the active research. 
