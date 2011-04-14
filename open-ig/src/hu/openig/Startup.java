@@ -10,7 +10,6 @@ package hu.openig;
 
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
-import hu.openig.screens.GameWindow;
 import hu.openig.utils.ConsoleWatcher;
 
 import java.io.File;
@@ -70,9 +69,9 @@ public final class Startup {
 				JOptionPane.showMessageDialog(null, "<html><p>Unable to auto-start Open Imperium Galactica version " + Configuration.VERSION + ".<br>Please make sure you have at least " 
 						+ MINIMUM_MEMORY + "MB defined for running a Java program in either your<br>"
 						+ "operating system's configuration for Java programs,<br> or run the program from command line using the <code>-Xmx" + MINIMUM_MEMORY + "M</code> parameter.</p><br>"
-						+ "<p>Nem sikerült automatikusan elindítani az Open Imperium Galactika " + Configuration.VERSION + " programot.<br>Kérem ellenõrizze, hogy alapértelmezésben a Java programok futtatásához "
-						+ "legalább " + MINIMUM_MEMORY + "MB memória<br> van beállítva az Operációs Rendszerben,<br> vagy indítsa a program parancssorból a <code>-Xmx" + MINIMUM_MEMORY + "M</code> "
-						+ "paraméter megadásával.</p>"
+						+ "<p>Nem sikerï¿½lt automatikusan elindï¿½tani az Open Imperium Galactika " + Configuration.VERSION + " programot.<br>Kï¿½rem ellenï¿½rizze, hogy alapï¿½rtelmezï¿½sben a Java programok futtatï¿½sï¿½hoz "
+						+ "legalï¿½bb " + MINIMUM_MEMORY + "MB memï¿½ria<br> van beï¿½llï¿½tva az Operï¿½ciï¿½s Rendszerben,<br> vagy indï¿½tsa a program parancssorbï¿½l a <code>-Xmx" + MINIMUM_MEMORY + "M</code> "
+						+ "paramï¿½ter megadï¿½sï¿½val.</p>"
 				);
 			}
 		});

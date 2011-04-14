@@ -12,7 +12,7 @@ import hu.openig.core.Act;
 import hu.openig.core.ConfigButton;
 import hu.openig.core.Configuration;
 import hu.openig.core.LogEntry;
-import hu.openig.screens.GameControls;
+import hu.openig.screen.GameControls;
 import hu.openig.sound.AudioThread;
 
 import java.awt.AlphaComposite;
