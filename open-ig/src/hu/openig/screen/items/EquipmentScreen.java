@@ -1685,6 +1685,27 @@ public class EquipmentScreen extends ScreenBase {
 						break;
 					}
 				}
+				
+				// move some vehicles if they would not fin onto the src fleet
+				FleetStatistics fs = src.getStatistics();
+				if (fs.vehicleCount > fs.vehicleMax) {
+					int delta = fs.vehicleCount - fs.vehicleMax;
+					for (int j = src.inventory.size() - 1; j >= 0; j--) {
+						InventoryItem ii = src.inventory.get(j);
+						if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+							|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
+						) {
+							int toremove = delta > ii.count ? ii.count : delta;
+							dst.changeInventory(ii.type, toremove);
+							src.changeInventory(ii.type, -toremove);
+							delta -= toremove;
+							if (delta == 0) {
+								break;
+							}
+						}
+					}
+				}
+				
 				updateInventory(null, fleet(), leftList);
 				updateInventory(null, secondary, rightList);
 			} else {

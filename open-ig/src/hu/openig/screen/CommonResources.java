@@ -443,6 +443,9 @@ public class CommonResources {
 			@Override
 			public void act() {
 				world.statistics.playTime++;
+				if (!paused()) {
+					world.statistics.simulationTime++;
+				}
 				Radar.compute(world);
 				if (control.primary() == Screens.STARMAP) {
 					control.repaintInner();
