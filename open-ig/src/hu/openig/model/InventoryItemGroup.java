@@ -25,26 +25,41 @@ public class InventoryItemGroup {
 	public InventoryItemGroup(ResearchType type) {
 		this.type = type;
 	}
-	/** @return The total hit points. */
-	public long hp() {
-		long result = 0;
-		for (InventoryItem pii : items) {
-			result += pii.hp;
-		}
-		return result;
-	}
-	/** @return The total shield points. */
-	public long shield() {
-		long result = 0;
-		int shielded = 0;
-		for (InventoryItem pii : items) {
-			if (pii.shieldMax() >= 0) {
-				result += pii.shield;
-				shielded = 0;
-			}
-		}
-		return shielded > 0 ? result : -1;
-	}
+//	/** @return The total hit points. */
+//	public long hp() {
+//		long result = 0;
+//		for (InventoryItem pii : items) {
+//			result += pii.hp;
+//		}
+//		return result;
+//	}
+//	/** @return The total shield points. */
+//	public long shield() {
+//		long result = 0;
+//		int shielded = 0;
+//		for (InventoryItem pii : items) {
+//			if (pii.shieldMax() >= 0) {
+//				result += pii.shield;
+//				shielded++;
+//			}
+//		}
+//		return shielded > 0 ? result : -1;
+//	}
+//	/** @return the total theoretical shield level. */
+//	public long shieldMax() {
+//		long result = 0;
+//		int shielded = 0;
+//		int count = 0;
+//		for (InventoryItem pii : items) {
+//			long sm = pii.shieldMax();
+//			if (sm >= 0) {
+//				result += pii.shieldMax();
+//				shielded++;
+//			}
+//			count += pii.count;
+//		}
+//		return shielded > 0 ? result : -1;
+//	}
 	/** The list of the group items. */
 	public final List<InventoryItem> items = new ArrayList<InventoryItem>();
 	/** 

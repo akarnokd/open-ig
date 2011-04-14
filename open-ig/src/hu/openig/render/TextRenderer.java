@@ -408,4 +408,15 @@ public class TextRenderer {
 	public boolean isUseStandardFonts() {
 		return useStandardFonts;
 	}
+	/**
+	 * Is the given character supported by the charmap?
+	 * @param c the character to test
+	 * @return true if supported
+	 */
+	public boolean isSupported(char c) {
+		if (Character.isWhitespace(c)) {
+			return true;
+		}
+		return coloredCharImages.values().iterator().next().values().iterator().next().chars.containsKey(c);		
+	}
 }

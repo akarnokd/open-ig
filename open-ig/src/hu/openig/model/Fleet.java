@@ -67,14 +67,13 @@ public class Fleet implements Named, Owned {
 	/** 
 	 * Change the inventory amount of a given technology. 
 	 * @param type the item type
-	 * @param owner the owner
 	 * @param amount the amount delta
 	 */
-	public void changeInventory(ResearchType type, Player owner, int amount) {
+	public void changeInventory(ResearchType type, int amount) {
 		int idx = 0;
 		boolean found = false;
 		for (InventoryItem pii : inventory) {
-			if (pii.type == type && pii.owner == owner) {
+			if (pii.type == type) {
 				pii.count += amount;
 				if (pii.count <= 0) {
 					inventory.remove(idx);
@@ -174,7 +173,7 @@ public class Fleet implements Named, Owned {
 				pmin = p;
 			}
 		}
-		if (dmin < 30 * 30) {
+		if (dmin < 20 * 20) {
 			result.planet = pmin;
 		}
 		
@@ -192,7 +191,7 @@ public class Fleet implements Named, Owned {
 			|| type.category == ResearchSubCategory.WEAPONS_TANKS
 			|| type.category == ResearchSubCategory.WEAPONS_VEHICLES
 		) {
-			changeInventory(type, owner, amount);
+			changeInventory(type, amount);
 		} else {
 			for (int i = 0; i < amount; i++) {
 				InventoryItem ii = new InventoryItem();
@@ -254,5 +253,43 @@ public class Fleet implements Named, Owned {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Compute how many of the supplied items can be added without violating the limit constraints. 
+	 * @param rt the item type
+	 * @return the currently alloved
+	 */
+	public int getAddLimit(ResearchType rt) {
+		FleetStatistics fs = getStatistics();
+		switch (rt.category) {
+		case SPACESHIPS_BATTLESHIPS:
+			return 3 - fs.battleshipCount;
+		case SPACESHIPS_CRUISERS:
+			return 25 - fs.cruiserCount;
+		case SPACESHIPS_FIGHTERS:
+			return 30 - inventoryCount(rt);
+		case WEAPONS_TANKS:
+		case WEAPONS_VEHICLES:
+			return fs.vehicleMax - fs.vehicleCount;
+		default:
+			return 0;
+		}
+	}
+	/** 
+	 * Returns a list of same-owned fleets within the given radius.
+	 * @param limit the radius
+	 * @return the list of nearby fleets
+	 */
+	public List<Fleet> fleetsInRange(float limit) {
+		List<Fleet> result = new ArrayList<Fleet>();
+		for (Fleet f : owner.fleets.keySet()) {
+			if (f.owner == owner && f != this) {
+				float dist = (x - f.x) * (x - f.x) + (y - f.y) * (y - f.y);
+				if (dist <= limit * limit) {
+					result.add(f);
+				}
+			}
+		}
+		return result;
 	}
 }

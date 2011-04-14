@@ -24,6 +24,8 @@ import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.render.RenderTools;
 import hu.openig.screen.EquipmentConfigure;
+import hu.openig.screen.EquipmentMinimap;
+import hu.openig.screen.FleetListing;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.TechnologySlot;
 import hu.openig.screen.VehicleCell;
@@ -38,10 +40,13 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 /**
  * The equipment screen.
@@ -146,8 +151,8 @@ public class EquipmentScreen extends ScreenBase {
 	UIImageButton transferButton;
 	/** Split a fleet. */
 	UIImageButton splitButton;
-	/** Join two fleets. */
-	UIImageButton joinButton;
+//	/** Join two fleets. */
+//	UIImageButton joinButton;
 	/** Move one left. */
 	UIImageButton left1;
 	/** Move multiple left. */
@@ -206,6 +211,20 @@ public class EquipmentScreen extends ScreenBase {
 	Fleet fleetShown;
 	/** The configuration component. */
 	EquipmentConfigure configure;
+	/** The fleet listing. */
+	FleetListing fleetListing;
+	/** The equipment minimap. */
+	EquipmentMinimap minimap;
+	/** Edit the primary name. */
+	public boolean editPrimary;
+	/** Edit the secondary name. */
+	public boolean editSecondary;
+	/** Are we in transfer mode? */
+	public boolean transferMode;
+	/** The secondary fleet. */
+	Fleet secondary;
+	/** The random placement. */
+	public final Random rnd = new Random();
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -267,8 +286,21 @@ public class EquipmentScreen extends ScreenBase {
 		
 		endSplit = new UIImageButton(commons.equipment().endSplit);
 		endSplit.visible(false);
+		endSplit.onClick = new Act() {
+			@Override
+			public void act() {
+				doEndSplit();
+			}
+		};
+		
 		endJoin = new UIImageButton(commons.equipment().endJoin);
 		endJoin.visible(false);
+		endJoin.onClick = new Act() {
+			@Override
+			public void act() {
+				doEndJoin();
+			}
+		};
 		
 		prev = new UIImageButton(commons.starmap().backwards);
 		prev.onClick = new Act() {
@@ -287,7 +319,16 @@ public class EquipmentScreen extends ScreenBase {
 		};
 		next.setDisabledPattern(commons.common().disabledPattern);
 		
-		fleetName = new UILabel("Fleet1", 14, commons.text());
+		fleetName = new UILabel("Fleet1", 14, commons.text()) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				if (e.has(Type.DOUBLE_CLICK) && player().selectionMode == SelectionMode.FLEET && fleet() != null) {
+					editPrimary = true;
+					editSecondary = false;
+				}
+				return super.mouse(e);
+			}
+		};
 		fleetName.color(0xFFFF0000);
 		
 		spaceshipsLabel = new UILabel(format("equipment.spaceships", 0), 10, commons.text());
@@ -300,8 +341,27 @@ public class EquipmentScreen extends ScreenBase {
 		
 		fleetStatusLabel = new UILabel("TODO", 10, commons.text());
 
-		secondaryLabel = new UILabel(get("equipment.secondary"), 10, commons.text());
-		secondaryValue = new UILabel("TODO", 10, commons.text());
+		// TODO
+		secondaryLabel = new UILabel(get("equipment.secondary"), 10, commons.text()) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				if (e.has(Type.DOUBLE_CLICK) && player().selectionMode == SelectionMode.FLEET && secondary != null) {
+					editPrimary = false;
+					editSecondary = true;
+				}
+				return super.mouse(e);
+			}
+		};
+		secondaryValue = new UILabel("TODO", 10, commons.text()) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				if (e.has(Type.DOUBLE_CLICK) && player().selectionMode == SelectionMode.FLEET && secondary != null) {
+					editPrimary = false;
+					editSecondary = true;
+				}
+				return super.mouse(e);
+			}
+		};
 		secondaryValue.color(0xFFFF0000);
 		
 		secondaryFighters = new UILabel(format("equipment.fighters", 0), 10, commons.text());
@@ -347,7 +407,7 @@ public class EquipmentScreen extends ScreenBase {
 		newButton.onClick = new Act() {
 			@Override
 			public void act() {
-				doCreateFleet();
+				doCreateFleet(true);
 			}
 		};
 		
@@ -359,7 +419,7 @@ public class EquipmentScreen extends ScreenBase {
 				doAddItem();
 			}
 		};
-		addButton.setHoldDelay(100);
+		addButton.setHoldDelay(150);
 		
 		delButton = new UIImageButton(commons.equipment().remove);
 		delButton.visible(false);
@@ -369,21 +429,34 @@ public class EquipmentScreen extends ScreenBase {
 				doRemoveItem();
 			}
 		};
-		delButton.setHoldDelay(100);
+		delButton.setHoldDelay(150);
 		
 		deleteButton = new UIImageButton(commons.equipment().delete);
 		deleteButton.visible(false);
 		deleteButton.onClick = new Act() {
 			@Override
 			public void act() {
-				// delete fleet
+				doDeleteFleet();
 			}
 		};
 		
 		transferButton = new UIImageButton(commons.equipment().transfer);
 		transferButton.visible(false);
+		transferButton.onClick = new Act() {
+			@Override
+			public void act() {
+				doTransfer();
+			}
+		};
+		
 		splitButton = new UIImageButton(commons.equipment().split);
 		splitButton.visible(false);
+		splitButton.onClick = new Act() {
+			@Override
+			public void act() {
+				doSplit();
+			}
+		};
 
 		addOne = new UIImageButton(commons.equipment().addOne);
 		addOne.visible(false);
@@ -393,7 +466,7 @@ public class EquipmentScreen extends ScreenBase {
 				doAddOne();
 			}
 		};
-		addOne.setHoldDelay(100);
+		addOne.setHoldDelay(150);
 		
 		removeOne = new UIImageButton(commons.equipment().removeOne);
 		removeOne.visible(false);
@@ -403,27 +476,76 @@ public class EquipmentScreen extends ScreenBase {
 				doRemoveOne();
 			}
 		};
-		removeOne.setHoldDelay(100);
+		removeOne.setHoldDelay(150);
 
 		
 		
-		joinButton = new UIImageButton(commons.equipment().join);
-		joinButton.visible(false);
+//		joinButton = new UIImageButton(commons.equipment().join);
+//		joinButton.visible(false);
 		
 		left1 = new UIImageButton(commons.equipment().moveLeft1);
 		left1.visible(false);
+		left1.onClick = new Act() {
+			@Override
+			public void act() {
+				doMoveItem(secondary, fleet(), research(), 1);
+			}
+		};
 		left2 = new UIImageButton(commons.equipment().moveLeft2);
 		left2.visible(false);
+		left2.onClick = new Act() {
+			@Override
+			public void act() {
+				doMoveItem(secondary, fleet(), research(), 2);
+			}
+		};
 		left3 = new UIImageButton(commons.equipment().moveLeft3);
 		left3.visible(false);
+		left3.onClick = new Act() {
+			@Override
+			public void act() {
+				doMoveItem(secondary, fleet(), research(), 3);
+			}
+		};
 		right1 = new UIImageButton(commons.equipment().moveRight1);
 		right1.visible(false);
+		right1.onClick = new Act() {
+			@Override
+			public void act() {
+				doMoveItem(fleet(), secondary, research(), 1);
+			}
+		};
 		right2 = new UIImageButton(commons.equipment().moveRight2);
 		right2.visible(false);
+		right2.onClick = new Act() {
+			@Override
+			public void act() {
+				doMoveItem(fleet(), secondary, research(), 2);
+			}
+		};
 		right3 = new UIImageButton(commons.equipment().moveRight3);
 		right3.visible(false);
+		right3.onClick = new Act() {
+			@Override
+			public void act() {
+				doMoveItem(fleet(), secondary, research(), 3);
+			}
+		};
 
 		listButton = new UIImageButton(commons.equipment().list);
+		listButton.onClick = new Act() {
+			@Override
+			public void act() {
+				fleetListing.visible(!fleetListing.visible());
+				if (fleetListing.visible()) {
+					if (transferMode) {
+						fleetListing.show(secondary);
+					} else {
+						fleetListing.show(fleet());
+					}
+				}
+			}
+		};
 		
 		innerEquipment = new Rectangle();
 		innerEquipmentName = new UILabel("TODO", 7, commons.text());
@@ -439,6 +561,8 @@ public class EquipmentScreen extends ScreenBase {
 		
 		planet = new UIImage(commons.equipment().planetOrbit);
 		leftList = new VehicleList(commons);
+		rightList = new VehicleList(commons);
+		rightList.visible(false);
 		
 		configure = new EquipmentConfigure();
 		configure.z = -1;
@@ -463,6 +587,12 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		};
 		leftList.onSelect = new Action1<InventoryItem>() {
+			@Override
+			public void invoke(InventoryItem value) {
+				onSelectInventoryItem(value);
+			}
+		};
+		rightList.onSelect = new Action1<InventoryItem>() {
 			@Override
 			public void invoke(InventoryItem value) {
 				onSelectInventoryItem(value);
@@ -499,8 +629,28 @@ public class EquipmentScreen extends ScreenBase {
 		}
 		
 		
-		rightList = new VehicleList(commons);
-		rightList.visible(false);
+		fleetListing = new FleetListing(commons);
+		fleetListing.z = 2;
+		fleetListing.visible(false);
+		fleetListing.onSelect = new Action1<Fleet>() {
+			@Override
+			public void invoke(Fleet value) {
+				if (!transferMode) {
+					player().currentFleet = value;
+					player().selectionMode = SelectionMode.FLEET;
+				} else {
+					secondary = value;
+					fleetListing.visible(false);
+				}
+				configure.type = null;
+				configure.item = null;
+				configure.selectedSlot = null;
+				doSelectListVehicle(null);
+				doSelectVehicle(null);
+			}
+		};
+		
+		minimap = new EquipmentMinimap(commons);
 		
 		add(leftFighterCells);
 		add(rightFighterCells);
@@ -544,6 +694,17 @@ public class EquipmentScreen extends ScreenBase {
 		configure.item = leftList.selectedItem;
 		configure.selectedSlot = null;
 		
+		if (player().selectionMode == SelectionMode.FLEET && fleet() != null) {
+			minimap.moveTo(fleet().x, fleet().y);
+		} else
+		if (player().selectionMode == SelectionMode.PLANET || player().selectionMode == null) {
+			minimap.moveTo(planet().x, planet().y);
+		}
+		
+		editPrimary = false;
+		editSecondary = false;
+		fleetListing.nearby = false;
+		secondary = null;
 		
 		animation = commons.register(100, new Act() {
 			@Override
@@ -558,6 +719,7 @@ public class EquipmentScreen extends ScreenBase {
 	public void onLeave() {
 		close0(animation);
 		animation = null;
+		fleetListing.visible(false);
 	}
 
 	@Override
@@ -603,6 +765,7 @@ public class EquipmentScreen extends ScreenBase {
 		
 		secondaryLabel.location(fightersLabel.x, fleetStatusLabel.y + 22);
 		secondaryValue.location(secondaryLabel.x + secondaryLabel.width + 8, secondaryLabel.y);
+		secondaryValue.width = base.x + 250 - secondaryValue.x;
 		secondaryFighters.location(secondaryLabel.x, secondaryLabel.y + 14);
 		secondaryVehicles.location(secondaryLabel.x, secondaryFighters.y + 14);
 		
@@ -629,7 +792,7 @@ public class EquipmentScreen extends ScreenBase {
 		notYourPlanet.location(noSpaceport.location());
 		
 		transferButton.location(base.x + 401, base.y + 194 - 20);
-		joinButton.location(transferButton.location());
+//		joinButton.location(transferButton.location());
 		splitButton.location(base.x + 480, base.y + 194 - 20);
 		
 		newButton.location(base.x + 560, base.y + 194 - 20);
@@ -676,7 +839,10 @@ public class EquipmentScreen extends ScreenBase {
 		rightList.bounds(rightPanel.x, rightPanel.y + 40, rightPanel.width - 22, rightPanel.height - 56 - 38);
 		
 		configure.bounds(rightPanel.x, rightPanel.y + 28, 298, 128);
+		
+		fleetListing.bounds(rightPanel.x + 5, listButton.y, rightPanel.width - 26, listButton.height);
 
+		minimap.bounds(base.x + 254, base.y + 281, 225, 161);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -719,10 +885,16 @@ public class EquipmentScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
+		if (!base.contains(e.x, e.y) && e.has(Type.UP) && !minimap.panMode) {
 			hideSecondary();
 			return true;
 		} else {
+			if (e.has(Type.DOWN)) {
+				if (!e.within(fleetListing.x, fleetListing.y, fleetListing.width, fleetListing.height) 
+						&& !e.within(listButton.x, listButton.y, listButton.width, listButton.height)) {
+					fleetListing.visible(false);
+				}
+			}
 			return super.mouse(e);
 		}
 	}
@@ -742,19 +914,35 @@ public class EquipmentScreen extends ScreenBase {
 		
 		leftList.clear();
 		rightList.clear();
+		leftList.selectedItem = null;
+		rightList.selectedItem = null;
+		
+		secondary = null;
+		fleetShown = null;
+		planetShown = null;
 	}
-	/** Create a new fleet. */
-	void doCreateFleet() {
+	/** 
+	 * Create a new fleet. 
+	 * @param select the new fleet?
+	 * @return the new fleet
+	 */
+	Fleet doCreateFleet(boolean select) {
 		Fleet f = new Fleet();
 		f.id = world().fleetIdSequence++;
 		f.owner = player();
 		f.name = get("newfleet.name");
-		f.x = planet().x + 5;
-		f.y = planet().y + 5;
 		
-		player().currentFleet = f;
-		player().selectionMode = SelectionMode.FLEET;
+		int r = rnd.nextInt(14) + 5;
+		double k = rnd.nextDouble() * 2 * Math.PI;
+		f.x = (float)(planet().x + Math.cos(k) * r);
+		f.y = (float)(planet().y + Math.sin(k) * r);
+		
+		if (select) {
+			player().currentFleet = f;
+			player().selectionMode = SelectionMode.FLEET;
+		}
 		player().fleets.put(f, FleetKnowledge.FULL);
+		return f;
 	}
 	/**
 	 * Update the display values based on the current selection.
@@ -777,6 +965,7 @@ public class EquipmentScreen extends ScreenBase {
 			if (planetShown != planet()) {
 				planetShown = planet();
 				updateCurrentInventory();
+				minimap.moveTo(planet().x, planet().y);
 			}
 			
 			planet.visible(true);
@@ -815,7 +1004,7 @@ public class EquipmentScreen extends ScreenBase {
 			cruisersEmpty.visible(true);
 			stations.visible(true);
 			
-			
+			configure.selectedSlot = null;
 			
 			if (ps.hasMilitarySpaceport) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -844,10 +1033,30 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			addOne.visible(false);
 			removeOne.visible(false);
+			editPrimary = false;
+			editSecondary = false;
+			transferMode = false;
+			secondary = null;
+			configure.item = null;
+			configure.selectedSlot = null;
+			deleteButton.visible(false);
+			splitButton.visible(false);
+			transferButton.visible(false);
 		} else {
 			if (fleetShown != fleet()) {
 				fleetShown = fleet();
 				updateCurrentInventory();
+				minimap.moveTo(fleet().x, fleet().y);
+				editPrimary = false;
+				editSecondary = false;
+				if (configure.item != null) {
+					configure.item = fleet().getInventoryItem(configure.item.type);
+				}
+				configure.selectedSlot = null;
+				transferMode = false;
+				secondary = null;
+				doSelectVehicle(research());
+				doSelectListVehicle(research());
 			}
 			
 			Fleet f = fleet();
@@ -863,7 +1072,11 @@ public class EquipmentScreen extends ScreenBase {
 			next.enabled(idx < fleets.size() - 1);
 			
 			planet.visible(false);
-			fleetName.text(f.name);
+			if (editPrimary && (animationStep % 10) < 5) {
+				fleetName.text(f.name + "-");
+			} else {
+				fleetName.text(f.name);
+			}
 			spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount), true).visible(true);
 			spaceshipsMaxLabel.text(format("equipment.max", 25), true).visible(true);
 			fightersLabel.text(format("equipment.fighters", fs.fighterCount), true);
@@ -871,6 +1084,79 @@ public class EquipmentScreen extends ScreenBase {
 			fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
 			vehiclesMaxLabel.text(format("equipment.max", fs.vehicleMax), true);
 			
+			if (secondary != null) {
+				secondaryLabel.visible(true);
+				if (editSecondary && (animationStep % 10) < 5) {
+					secondaryValue.text(secondary.name + "-").visible(true);
+				} else {
+					secondaryValue.text(secondary.name).visible(true);
+				}
+				FleetStatistics fs2 = secondary.getStatistics();
+				secondaryFighters.text(format("equipment.fighters", fs2.fighterCount)).visible(true);
+				secondaryVehicles.text(format("equipment.vehiclesandmax", fs2.vehicleCount, fs2.vehicleMax)).visible(true);
+				
+				boolean bleft = false;
+				boolean bright = false;
+				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					bleft = fleet().inventoryCount(rt) < 30 && secondary.inventoryCount(rt) > 0;
+					bright = fleet().inventoryCount(rt) > 0 && secondary.inventoryCount(rt) < 30;
+				} else
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
+						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					bleft = fs.vehicleCount < fs.vehicleMax && secondary.inventoryCount(rt) > 0;
+					bright = fs2.vehicleCount < fs.vehicleMax && fleet().inventoryCount(rt) > 0;
+				} else
+				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+					bleft = fs.battleshipCount < 3 && secondary.inventoryCount(rt) > 0;
+					bright = fleet().inventoryCount(rt) > 0 && fs.battleshipCount < 3;
+				} else
+				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+					bleft = fs.cruiserCount < 25 && secondary.inventoryCount(rt) > 0;
+					bright = fleet().inventoryCount(rt) > 0 && fs2.cruiserCount < 25;
+				}
+				left1.visible(bleft);
+				left2.visible(bleft);
+				left3.visible(bleft);
+				
+				right1.visible(bright);
+				right2.visible(bright);
+				right3.visible(bright);
+
+				listButton.visible(transferMode);
+				endSplit.visible(!transferMode);
+				endJoin.visible(transferMode);
+				
+				infoButton.visible(false);
+				configure.visible(false);
+				rightList.visible(true);
+				prepareCells(null, secondary, rightFighterCells, rightTankCells);
+				
+				transferButton.visible(false);
+				splitButton.visible(false);
+				deleteButton.visible(false);
+			} else {
+				infoButton.visible(true);
+				endSplit.visible(false);
+				endJoin.visible(false);
+				secondaryLabel.visible(false);
+				secondaryValue.visible(false);
+				secondaryFighters.visible(false);
+				secondaryVehicles.visible(false);
+				editSecondary = false;
+				listButton.visible(true);
+				configure.visible(true);
+				clearCells(rightFighterCells);
+				clearCells(rightTankCells);
+				
+				left1.visible(false);
+				left2.visible(false);
+				left3.visible(false);
+				
+				right1.visible(false);
+				right2.visible(false);
+				right3.visible(false);
+				rightList.visible(false);
+			}
 			
 			fleetStatusLabel.visible(true);
 			if (f.targetFleet == null && f.targetPlanet == null) {
@@ -899,22 +1185,17 @@ public class EquipmentScreen extends ScreenBase {
 				}
 			}
 			
-			secondaryLabel.visible(false);
-			secondaryFighters.visible(false);
-			secondaryVehicles.visible(false);
-			secondaryValue.visible(false);
-			
 			battleships.visible(true);
 			cruisers.visible(true);
 			cruisersEmpty.visible(false);
 			stations.visible(false);
 			
-			newButton.visible(ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
+			newButton.visible(secondary == null && ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
 			noSpaceport.visible(ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
 			notYourPlanet.visible(ps != null && fs.planet.owner != f.owner);
 			noPlanetNearby.visible(ps == null);
 
-			if (ps != null && ps.hasMilitarySpaceport) {
+			if (ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport && secondary == null) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					addButton.visible(player().inventoryCount(rt) > 0
 							&& fleet().inventoryCount(rt) < 30);
@@ -969,8 +1250,9 @@ public class EquipmentScreen extends ScreenBase {
 				removeOne.visible(false);
 			}
 			
-			splitButton.visible(true);
-			
+			splitButton.visible(secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
+			transferButton.visible(secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && fleet().fleetsInRange(20).size() > 0);
+			deleteButton.visible(secondary == null && f.inventory.size() == 0 && f.owner == player());
 		}
 	}
 	/** 
@@ -1037,6 +1319,9 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			updateInventory(null, fleet(), leftList);
 		}
+		configure.type = null;
+		configure.item = null;
+		configure.selectedSlot = null;
 	}
 	/** Go to next planet/fleet. */
 	void doNext() {
@@ -1048,6 +1333,7 @@ public class EquipmentScreen extends ScreenBase {
 				player().currentPlanet = planets.get(idx + 1);
 			}
 			updateInventory(planet(), null, leftList);
+			minimap.moveTo(planet().x, planet().y);
 		} else {
 			List<Fleet> fleets = player().ownFleets();
 			int idx = fleets.indexOf(fleet());
@@ -1055,7 +1341,11 @@ public class EquipmentScreen extends ScreenBase {
 				player().currentFleet = fleets.get(idx + 1);
 			}
 			updateInventory(null, fleet(), leftList);
+			minimap.moveTo(fleet().x, fleet().y);
 		}
+		configure.type = null;
+		configure.item = null;
+		configure.selectedSlot = null;
 	}
 	/** 
 	 * Update inventory listing. 
@@ -1093,16 +1383,16 @@ public class EquipmentScreen extends ScreenBase {
 	 */
 	void doSelectVehicle(ResearchType rt) {
 		for (VehicleCell vc : leftFighterCells) {
-			vc.selected = vc.type == rt;
+			vc.selected = vc.type == rt && rt != null;
 		}
 		for (VehicleCell vc : rightFighterCells) {
-			vc.selected = vc.type == rt;
+			vc.selected = vc.type == rt && rt != null;
 		}
 		for (VehicleCell vc : leftTankCells) {
-			vc.selected = vc.type == rt;
+			vc.selected = vc.type == rt && rt != null;
 		}
 		for (VehicleCell vc : rightTankCells) {
-			vc.selected = vc.type == rt;
+			vc.selected = vc.type == rt && rt != null;
 		}
 	}
 	/**
@@ -1164,16 +1454,22 @@ public class EquipmentScreen extends ScreenBase {
 				planet().changeInventory(research(), player(), delta);
 			}
 		} else {
-			if (delta > 0) {
-				int cnt = fleet().inventoryCount(research());
-				List<InventoryItem> iss = fleet().addInventory(research(), delta);
-				
-				leftList.items.clear();
-				leftList.items.addAll(fleet().getSingleItems());
-				leftList.compute();
-				configure.item = iss.get(0);
-				
-				leftList.map.get(research()).index = cnt;
+			if (research().category == ResearchSubCategory.SPACESHIPS_CRUISERS
+					|| research().category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+			) {
+				if (delta > 0) {
+					int cnt = fleet().inventoryCount(research());
+					List<InventoryItem> iss = fleet().addInventory(research(), delta);
+					
+					leftList.items.clear();
+					leftList.items.addAll(fleet().getSingleItems());
+					leftList.compute();
+					configure.item = iss.get(0);
+					
+					leftList.map.get(research()).index = cnt;
+				}
+			} else {
+				fleet().changeInventory(research(), delta);
 			}
 		}
 		player().changeInventoryCount(research(), -delta);
@@ -1193,6 +1489,18 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param value the new selected type
 	 */
 	void doSelectListVehicle(ResearchType value) {
+		if (rightList.selectedItem != null) {
+			if (rightList.selectedItem.type != value) {
+				rightList.selectedItem = null;
+			}
+		} else {
+			for (InventoryItem pii : rightList.items) {
+				if (pii.type == value) {
+					rightList.selectedItem = pii;
+					break;
+				}
+			}
+		}
 		if (leftList.selectedItem != null) {
 			if (leftList.selectedItem.type != value) {
 				leftList.selectedItem = null;
@@ -1238,6 +1546,7 @@ public class EquipmentScreen extends ScreenBase {
 			research(value.type);
 		}
 		leftList.selectedItem = value;
+		rightList.selectedItem = value;
 		configure.type = value.type;
 		configure.item = value;
 		if (configure.selectedSlot != null) {
@@ -1253,6 +1562,7 @@ public class EquipmentScreen extends ScreenBase {
 		world().selectResearch(value);
 		displayCategory(value.category);
 		leftList.selectedItem = null;
+		rightList.selectedItem = null;
 		configure.type = value;
 		configure.item = null;
 		configure.selectedSlot = null;
@@ -1277,6 +1587,9 @@ public class EquipmentScreen extends ScreenBase {
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 1;
 			configure.selectedSlot.hp = research().productionCost;
+			if (research().has("shield")) {
+				configure.item.shield = configure.item.shieldMax();
+			}
 		} else {
 			configure.selectedSlot.count++;
 		}
@@ -1286,8 +1599,134 @@ public class EquipmentScreen extends ScreenBase {
 	void doRemoveOne() {
 		player().changeInventoryCount(configure.selectedSlot.type, 1);
 		configure.selectedSlot.count--;
+		if (configure.selectedSlot.type.has("shield")) {
+			configure.item.shield = 0;
+		}
 		if (configure.selectedSlot.count == 0) {
 			configure.selectedSlot.type = null;
+		}
+	}
+	@Override
+	public boolean keyboard(KeyEvent e) {
+		if (editPrimary || editSecondary) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				editPrimary = false;
+				editSecondary = false;
+				e.consume();
+			}
+			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+				if (editPrimary) {
+					if (fleet().name.length() > 0) {
+						fleet().name = fleet().name.substring(0, fleet().name.length() - 1);
+					}
+				}
+				if (editSecondary) {
+					if (secondary.name.length() > 0) {
+						secondary.name = secondary.name.substring(0, secondary.name.length() - 1);
+					}
+				}
+				e.consume();
+			} else
+			if (commons.text().isSupported(e.getKeyChar())) {
+				if (editPrimary) {
+					fleet().name += e.getKeyChar();
+				}
+				if (editSecondary) {
+					secondary.name += e.getKeyChar();
+				}
+				e.consume();
+			}
+		}
+		return super.keyboard(e);
+	}
+	/**
+	 * Split the current fleet to another.
+	 */
+	void doSplit() {
+		secondary = doCreateFleet(false);
+		clearCells(rightFighterCells);
+		clearCells(rightTankCells);
+		rightList.clear();
+		fleetListing.nearby = false;
+		editSecondary = true;
+	}
+	/** End split. */
+	void doEndSplit() {
+		if (secondary.inventory.size() == 0) {
+			player().fleets.remove(secondary);
+		}
+		secondary = null;
+		editSecondary = false;
+	}
+	/**
+	 * Move the given amount of the inventory item into the destination fleet.
+	 * @param src the source fleet
+	 * @param dst the destination fleet
+	 * @param type the item type to move
+	 * @param mode the transfer mode: 1 - one, 2 - half, 3 - full
+	 */
+	void doMoveItem(Fleet src, Fleet dst, ResearchType type, int mode) {
+		int srcCount = src.inventoryCount(type); 
+		if (srcCount > 0) {
+			int transferCount = 1;
+			if (mode == 2) {
+				transferCount = (srcCount + 1) / 2;
+			} else
+			if (mode == 3) {
+				transferCount = srcCount;
+			}
+			transferCount = Math.min(transferCount, dst.getAddLimit(type));
+			
+			if (type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+					|| type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+				for (Iterator<InventoryItem> it = src.inventory.iterator(); it.hasNext();) {
+					InventoryItem ii = it.next();
+					if (ii.type == type) {
+						it.remove();
+						dst.inventory.add(ii);
+						transferCount--;
+					}
+					if (transferCount == 0) {
+						break;
+					}
+				}
+				updateInventory(null, fleet(), leftList);
+				updateInventory(null, secondary, rightList);
+			} else {
+				src.changeInventory(type, -transferCount);
+				dst.changeInventory(type, transferCount);
+			}
+		}
+	}
+	/** End join. */
+	void doEndJoin() {
+		transferMode = false;
+		fleetListing.nearby = false;
+		fleetListing.selected = null;
+		doEndSplit();
+	}
+	/** Initiate the transfer mode. */
+	void doTransfer() {
+		transferMode = true;
+		fleetListing.nearby = true;
+		fleetListing.visible(true);
+	}
+	/** Delete an empty fleet. */
+	void doDeleteFleet() {
+		Fleet f = fleet();
+		if (f != null && f.owner == player() && f.inventory.size() == 0) {
+			List<Fleet> fs = player().ownFleets();
+			int idx = fs.indexOf(f);
+			player().fleets.remove(fleet());
+			if (idx >= 0 && player().fleets.size() > 0) {
+				if (idx < fs.size()) {
+					player().currentFleet = fs.get(idx > 0 ? idx - 1 : 1);
+					minimap.moveTo(fleet().x, fleet().y);
+				}
+			} else {
+				player().currentFleet = null;
+				player().selectionMode = SelectionMode.PLANET;
+			}
 		}
 	}
 }

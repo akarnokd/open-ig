@@ -363,4 +363,42 @@ public class Player {
 		}
 		return Collections.emptyList();
 	}
+	/**
+	 * Compare the current knowledge level of the given planet by the expected level.
+	 * @param planet the target planet
+	 * @param expected the expected level
+	 * @return -1 if less known, 0 if exactly on the same level, +1 if more
+	 */
+	public int knowledge(Planet planet, PlanetKnowledge expected) {
+		PlanetKnowledge k = planet.owner == this ? PlanetKnowledge.BUILDING : planets.get(planet);
+		if (k == expected) {
+			return 0;
+		}
+		if (k != null && expected == null) {
+			return 1;
+		}
+		if (k == null && expected != null) {
+			return -1;
+		}
+		return k.ordinal() < expected.ordinal() ? -1 : 1;
+	}
+	/**
+	 * Compare the current knowledge level of the given fleet by the expected level.
+	 * @param fleet the target planet
+	 * @param expected the expected level
+	 * @return -1 if less known, 0 if exactly on the same level, +1 if more
+	 */
+	public int knowledge(Fleet fleet, FleetKnowledge expected) {
+		FleetKnowledge k = fleet.owner == this ? FleetKnowledge.FULL : fleets.get(fleet);
+		if (k == expected) {
+			return 0;
+		}
+		if (k != null && expected == null) {
+			return 1;
+		}
+		if (k == null && expected != null) {
+			return -1;
+		}
+		return k.ordinal() < expected.ordinal() ? -1 : 1;
+	}
 }
