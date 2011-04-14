@@ -1031,4 +1031,5 @@
 	<entry key='fleetinformation.vehicles'   >Vehicles   : %s</entry>
 	
 	<entry key='info.empty-list'>None</entry>
+	<entry key='production.needs_orbital_factory'>Orbital Factory</entry>
 </labels>
