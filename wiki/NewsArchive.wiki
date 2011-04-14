@@ -4,6 +4,14 @@
 
 = April, 2011 =
 
+*April 14. 2011*
+
+The equipment screen is complete and it is possible now to manage the fleets and move them around on the starmap.
+
+However, we reached the point where the default quicksave/quickload is not enough to help in testing various scenarios. Therefore, I moved the Load/Save/Options screen development earlier and will release the new v0.90 with it.
+
+Consequently, the game becomes more and more playable, which puts on the demand for thorough testing. Unfortunately, the gameplay mechanics lets you develop your first colony ship around after 3 hours of playtime; can't develop and play at the same time. This is where you, the community can help to diverse and multiply the testing power and coverage.
+
 *April 10. 2011*
 
 I've implemented the bar and database screens, improved and fixed the presentation on many screens.
