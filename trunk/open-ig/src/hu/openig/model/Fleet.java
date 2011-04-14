@@ -218,7 +218,9 @@ public class Fleet implements Named, Owned {
 							is.hp = rt1.productionCost;
 						}
 					}
-					
+					if (is.count == 0) {
+						is.type = null;
+					}
 					ii.slots.add(is);
 				}
 				

@@ -718,7 +718,9 @@ public class StarmapScreen extends ScreenBase {
 		fleetStop.visible(fleetMode && f.owner == player());
 		fleetMove.visible(fleetMode && f.owner == player());
 		fleetSeparator.visible(fleetMode && f.owner == player());
-		fleetColonize.visible(fleetMode && f.owner == player());
+
+		fleetColonize.visible(false);
+		
 		fleetFirepower.visible(fleetMode && knowledge(f, FleetKnowledge.FULL) >= 0);
 		fleetSpeed.visible(fleetMode);
 		
@@ -734,6 +736,15 @@ public class StarmapScreen extends ScreenBase {
 		}
 		
 		FleetStatistics fs = f.getStatistics();
+		
+		fleetColonize.visible(
+				fleetMode && f.owner == player()
+				&& fs.planet != null && fs.planet.owner == null
+				&& f.inventoryCount(world().researches.get("ColonyShip")) > 0
+		);
+
+		
+		
 		fleetName.text(f.name, true);
 		fleetOwner.text(f.owner.name, true);
 		fleetComposition.text(format("fleetstatus.composition", fs.battleshipCount, fs.cruiserCount, fs.fighterCount, fs.vehicleCount), true);
@@ -951,7 +962,7 @@ public class StarmapScreen extends ScreenBase {
 				for (Fleet f : fleets) {
 					if (f.owner == player()) {
 						f.getStatistics();
-						paintRadar(g2, (int)f.x, (int)f.y, f.radar, zoom);
+						paintRadar(g2, (int)f.x, (int)f.y, f.radar * 35, zoom);
 					}
 				}
 			}
