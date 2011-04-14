@@ -448,6 +448,11 @@ public final class Simulator {
 					if (removeWp) {
 						f.waypoints.remove(0);
 					}
+					if (f.waypoints.size() == 0) {
+						f.mode = null;
+						f.targetFleet = null;
+						f.targetPlanet = null;
+					}
 				} else {
 					double angle = Math.atan2(target.y - f.y, target.x - f.x);
 					f.x = (float)(f.x + Math.cos(angle) * dx);

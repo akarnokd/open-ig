@@ -171,17 +171,7 @@ public abstract class ScreenBase extends UIContainer {
 	 * @return -1 if less known, 0 if exactly on the same level, +1 if more
 	 */
 	public int knowledge(Planet planet, PlanetKnowledge expected) {
-		PlanetKnowledge k = planet.owner == player() ? PlanetKnowledge.BUILDING : player().planets.get(planet);
-		if (k == expected) {
-			return 0;
-		}
-		if (k != null && expected == null) {
-			return 1;
-		}
-		if (k == null && expected != null) {
-			return -1;
-		}
-		return k.ordinal() < expected.ordinal() ? -1 : 1;
+		return player().knowledge(planet, expected);
 	}
 	/**
 	 * Compare the current knowledge level of the given fleet by the expected level.
@@ -190,17 +180,7 @@ public abstract class ScreenBase extends UIContainer {
 	 * @return -1 if less known, 0 if exactly on the same level, +1 if more
 	 */
 	public int knowledge(Fleet fleet, FleetKnowledge expected) {
-		FleetKnowledge k = fleet.owner == player() ? FleetKnowledge.FULL : player().fleets.get(fleet);
-		if (k == expected) {
-			return 0;
-		}
-		if (k != null && expected == null) {
-			return 1;
-		}
-		if (k == null && expected != null) {
-			return -1;
-		}
-		return k.ordinal() < expected.ordinal() ? -1 : 1;
+		return player().knowledge(fleet, expected);
 	}
 	/**
 	 * Returns the fleet knowledge about the given fleet by the current player.

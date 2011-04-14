@@ -974,6 +974,7 @@ public class World {
 					}
 				}
 			}
+			p.fleets.clear();
 			for (XElement xfleet : xplayer.childrenWithName("fleet")) {
 				Fleet f = new Fleet();
 				f.owner = p;
