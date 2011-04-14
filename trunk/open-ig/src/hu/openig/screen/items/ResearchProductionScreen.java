@@ -438,6 +438,8 @@ public class ResearchProductionScreen extends ScreenBase {
 	ResearchType animationResearch;
 	/** The research status when the animation began. */
 	boolean animationResearchReady;
+	/** If an orbital factory is needed. */
+	UILabel needsOrbitalFactory;
 	/**
 	 * Create a sub category image button with the given graphics.
 	 * @param cat the target category
@@ -1061,6 +1063,11 @@ public class ResearchProductionScreen extends ScreenBase {
 		totalCapacityValue.horizontally(HorizontalAlignment.RIGHT);
 		totalCapacityValue.color(textColor);
 		
+		needsOrbitalFactory = new UILabel(get("production.needs_orbital_factory"), 10, commons.text());
+		needsOrbitalFactory.color(TextRenderer.RED);
+		needsOrbitalFactory.visible(false);
+		needsOrbitalFactory.horizontally(HorizontalAlignment.CENTER);
+		
 		addThis();
 		add(slots);
 		add(productionLines);
@@ -1232,6 +1239,8 @@ public class ResearchProductionScreen extends ScreenBase {
 		availableCapacityValue.size(60, 14);
 		totalCapacityValue.location(productionBase.x + 398 + 60, productionBase.y + 139);
 		totalCapacityValue.size(59, 10);
+		
+		needsOrbitalFactory.bounds(productionBase.x + 398, productionBase.y + 137, 120, 14);
 	}
 	/**
 	 * Play animation for the given research.
@@ -1594,27 +1603,34 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param ps the planet statistics.
 	 */
 	void updateProduction(PlanetStatistics ps) {
+		ResearchType rt = research();
+		needsOrbitalFactory.visible(player().isAvailable(rt) && rt.has("needsOrbitalFactory") && ps.orbitalFactory == 0);
 
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
 		int capacity = 0;
-		if (cat == ResearchMainCategory.SPACESHIPS) {
-			capacity = ps.spaceshipActive;
-			availableCapacityValue.text("" + ps.spaceshipActive);
-			totalCapacityValue.text("" + ps.spaceship);
-			totalCapacityValue.color(ps.spaceship > ps.spaceshipActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
-		} else
-		if (cat == ResearchMainCategory.WEAPONS) {
-			capacity = ps.weaponsActive;
-			availableCapacityValue.text("" + ps.weaponsActive);
-			totalCapacityValue.text("" + ps.weapons);
-			totalCapacityValue.color(ps.weapons > ps.weaponsActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
-		} else
-		if (cat == ResearchMainCategory.EQUIPMENT) {
-			capacity = ps.equipmentActive;
-			availableCapacityValue.text("" + ps.equipmentActive);
-			totalCapacityValue.text("" + ps.equipment);
-			totalCapacityValue.color(ps.equipmentActive > ps.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);
+		if (!needsOrbitalFactory.visible()) {
+			if (cat == ResearchMainCategory.SPACESHIPS) {
+				capacity = ps.spaceshipActive;
+				availableCapacityValue.text("" + ps.spaceshipActive);
+				totalCapacityValue.text("" + ps.spaceship);
+				totalCapacityValue.color(ps.spaceship > ps.spaceshipActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
+			} else
+			if (cat == ResearchMainCategory.WEAPONS) {
+				capacity = ps.weaponsActive;
+				availableCapacityValue.text("" + ps.weaponsActive);
+				totalCapacityValue.text("" + ps.weapons);
+				totalCapacityValue.color(ps.weapons > ps.weaponsActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
+			} else
+			if (cat == ResearchMainCategory.EQUIPMENT) {
+				capacity = ps.equipmentActive;
+				availableCapacityValue.text("" + ps.equipmentActive);
+				totalCapacityValue.text("" + ps.equipment);
+				totalCapacityValue.color(ps.equipmentActive > ps.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);
+			} else {
+				availableCapacityValue.text("");
+				totalCapacityValue.text("");
+			}
 		} else {
 			availableCapacityValue.text("");
 			totalCapacityValue.text("");
@@ -1659,13 +1675,15 @@ public class ResearchProductionScreen extends ScreenBase {
 			pl.enabled(false);
 			pl.clear();
 		}
-		ResearchType rt = research();
 		addButton.visible(
 				mode == Screens.PRODUCTION
 				&& player().isAvailable(rt) 
 				&& !productions.containsKey(rt) 
 				&& productions.size() < 5
-				&& cat != ResearchMainCategory.BUILDINS);
+				&& cat != ResearchMainCategory.BUILDINS
+				&& (!rt.has("needsOrbitalFactory") || ps.orbitalFactory > 0)
+		);
+		
 		removeButton.visible(
 				mode == Screens.PRODUCTION
 				&& productions.containsKey(rt)
