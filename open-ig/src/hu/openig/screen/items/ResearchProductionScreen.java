@@ -862,7 +862,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		equipmentButton.onClick = new Act() {
 			@Override
 			public void act() {
-				displaySecondary(Screens.EQUIPMENT_FLEET);
+				displaySecondary(Screens.EQUIPMENT);
 			}
 		};
 		addButton.onClick = new Act() {

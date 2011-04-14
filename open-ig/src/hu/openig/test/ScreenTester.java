@@ -600,10 +600,8 @@ public class ScreenTester extends JFrame implements GameControls {
 		case COLONY:
 			clazz = PlanetScreen.class.getName();
 			break;
-		case EQUIPMENT_FLEET:
-		case EQUIPMENT_PLANET:
+		case EQUIPMENT:
 			clazz = EquipmentScreen.class.getName();
-			mode = newScreen;
 			break;
 		case DIPLOMACY:
 			clazz = DiplomacyScreen.class.getName();

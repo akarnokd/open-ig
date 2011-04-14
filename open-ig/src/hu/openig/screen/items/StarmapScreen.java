@@ -747,9 +747,31 @@ public class StarmapScreen extends ScreenBase {
 		
 		fleetName.text(f.name, true);
 		fleetOwner.text(f.owner.name, true);
+		
+		if (knowledge(f, FleetKnowledge.FULL) >= 0) {
+			fleetFirepower.text(format("fleetstatus.firepower", fs.firepower), true).visible(true);
+			fleetComposition.text(format("fleetstatus.composition",
+					zeroDash(fs.battleshipCount),
+					zeroDash(fs.cruiserCount),
+					zeroDash(fs.fighterCount),
+					zeroDash(fs.vehicleCount)
+			), true).visible(true);
+		} else	
+		if (knowledge(f, FleetKnowledge.COMPOSITION) >= 0) {
+			fleetFirepower.visible(false);
+			fleetComposition.text(format("fleetstatus.composition",
+					((fs.battleshipCount / 10) * 10) + ".." + ((fs.battleshipCount  / 10 + 1) * 10),
+					((fs.cruiserCount / 10) * 10) + ".." + ((fs.cruiserCount  / 10 + 1) * 10),
+					((fs.fighterCount / 10) * 10) + ".." + ((fs.fighterCount  / 10 + 1) * 10),
+					((fs.vehicleCount / 10) * 10) + ".." + ((fs.vehicleCount  / 10 + 1) * 10)
+			), true).visible(true);
+		} else {
+			fleetFirepower.visible(false);
+			fleetComposition.visible(false);
+		}
+
 		fleetComposition.text(format("fleetstatus.composition", fs.battleshipCount, fs.cruiserCount, fs.fighterCount, fs.vehicleCount), true);
 		fleetSpeed.text(format("fleetstatus.speed", fs.speed), true);
-		fleetFirepower.text(format("fleetstatus.firepower", fs.firepower), true);
 		if (fs.planet != null) {
 			fleetPlanet.text(format("fleetstatus.nearby", fs.planet.name), true);
 		} else {
@@ -1560,7 +1582,7 @@ public class StarmapScreen extends ScreenBase {
 					if (f != null) {
 						player().currentFleet = f;
 						player().selectionMode = SelectionMode.FLEET;
-						displaySecondary(Screens.EQUIPMENT_FLEET);
+						displaySecondary(Screens.EQUIPMENT);
 					}
 				}
 			} else 
@@ -1577,7 +1599,7 @@ public class StarmapScreen extends ScreenBase {
 				List<Fleet> fleets = player().ownFleets();
 				if (idx < fleets.size()) {
 					player().currentFleet = fleets.get(idx);
-					displaySecondary(Screens.EQUIPMENT_FLEET);
+					displaySecondary(Screens.EQUIPMENT);
 				}
 			}
 			break;
@@ -1728,7 +1750,7 @@ public class StarmapScreen extends ScreenBase {
 		equipment.onClick = new Act() {
 			@Override
 			public void act() {
-				displaySecondary(Screens.EQUIPMENT_PLANET);
+				displaySecondary(Screens.EQUIPMENT);
 			}
 		};
 		info.onClick = new Act() {

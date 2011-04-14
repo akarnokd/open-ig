@@ -191,8 +191,6 @@ public class EquipmentScreen extends ScreenBase {
 	Closeable animation;
 	/** The current animation step counter. */
 	int animationStep;
-	/** The equipment mode. */
-	Screens mode;
 	/** The left fighter cells. */
 	final List<VehicleCell> leftFighterCells = new ArrayList<VehicleCell>();
 	/** The left tank cells. */
@@ -407,7 +405,7 @@ public class EquipmentScreen extends ScreenBase {
 		newButton.onClick = new Act() {
 			@Override
 			public void act() {
-				doCreateFleet(true);
+				doCreateFleet(true, planet().x, planet().y);
 			}
 		};
 		
@@ -674,11 +672,6 @@ public class EquipmentScreen extends ScreenBase {
 	}
 	@Override
 	public void onEnter(Screens mode) {
-		if (mode == null) {
-			this.mode = Screens.EQUIPMENT_FLEET;
-		} else {
-			this.mode = mode; 
-		}
 		ResearchType rt = research();
 		if (rt == null) {
 			List<ResearchType> rts = world().getResearch();
@@ -900,7 +893,7 @@ public class EquipmentScreen extends ScreenBase {
 	}
 	@Override
 	public Screens screen() {
-		return mode;
+		return Screens.EQUIPMENT;
 	}
 	@Override
 	public void onEndGame() {
@@ -924,9 +917,11 @@ public class EquipmentScreen extends ScreenBase {
 	/** 
 	 * Create a new fleet. 
 	 * @param select the new fleet?
+	 * @param whereX where to create
+	 * @param whereY where to create
 	 * @return the new fleet
 	 */
-	Fleet doCreateFleet(boolean select) {
+	Fleet doCreateFleet(boolean select, float whereX, float whereY) {
 		Fleet f = new Fleet();
 		f.id = world().fleetIdSequence++;
 		f.owner = player();
@@ -934,8 +929,8 @@ public class EquipmentScreen extends ScreenBase {
 		
 		int r = rnd.nextInt(14) + 5;
 		double k = rnd.nextDouble() * 2 * Math.PI;
-		f.x = (float)(planet().x + Math.cos(k) * r);
-		f.y = (float)(planet().y + Math.sin(k) * r);
+		f.x = (float)(whereX + Math.cos(k) * r);
+		f.y = (float)(whereY + Math.sin(k) * r);
 		
 		if (select) {
 			player().currentFleet = f;
@@ -1191,9 +1186,9 @@ public class EquipmentScreen extends ScreenBase {
 			stations.visible(false);
 			
 			newButton.visible(secondary == null && ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
-			noSpaceport.visible(ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
-			notYourPlanet.visible(ps != null && fs.planet.owner != f.owner);
-			noPlanetNearby.visible(ps == null);
+			noSpaceport.visible(secondary == null && ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
+			notYourPlanet.visible(secondary == null && ps != null && fs.planet.owner != f.owner);
+			noPlanetNearby.visible(secondary == null && ps == null);
 
 			if (ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport && secondary == null) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -1643,7 +1638,7 @@ public class EquipmentScreen extends ScreenBase {
 	 * Split the current fleet to another.
 	 */
 	void doSplit() {
-		secondary = doCreateFleet(false);
+		secondary = doCreateFleet(false, fleet().x, fleet().y);
 		clearCells(rightFighterCells);
 		clearCells(rightTankCells);
 		rightList.clear();
