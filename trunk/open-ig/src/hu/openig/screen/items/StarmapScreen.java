@@ -2167,6 +2167,9 @@ public class StarmapScreen extends ScreenBase {
 						
 						player().planets.put(p, PlanetKnowledge.BUILDING);
 						player().currentPlanet = p;
+						
+						player().statistics.planetsColonized++;
+						
 						displayPrimary(Screens.COLONY);
 						return;
 					}

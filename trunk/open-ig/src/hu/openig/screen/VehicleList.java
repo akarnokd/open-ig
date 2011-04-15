@@ -320,4 +320,17 @@ public class VehicleList extends UIContainer {
 		map.clear();
 		items.clear();
 	}
+	/**
+	 * Return the current group index of the given research type or the default value.
+	 * @param rt the research
+	 * @param def the default index
+	 * @return the index
+	 */
+	public int groupIndex(ResearchType rt, int def) {
+		InventoryItemGroup ig = map.get(rt);
+		if (ig != null) {
+			return ig.index;
+		}
+		return def;
+	}
 }
