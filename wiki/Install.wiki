@@ -10,7 +10,7 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 1) Download the main game JAR file from the downloads page:
 
-[http://open-ig.googlecode.com/files/open-ig-0.89.jar open-ig-0.89.jar]
+[http://open-ig.googlecode.com/files/open-ig-0.90.jar open-ig-0.90.jar]
 
 2) Download the game resource files (1.1 GB!):
 
@@ -28,24 +28,19 @@ This page details the manual installation instructions for Open Imperium Galacti
 [http://open-ig.googlecode.com/files/open-ig-video-09-0.8.zip Video 9], <br>
 [http://open-ig.googlecode.com/files/open-ig-video-10-0.8.zip Video 10],[http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip Video 11],  [http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip Video 12]
 
-[http://open-ig.googlecode.com/files/open-ig-upgrade-20110410a.zip Upgrade 2011-04-10-a]
+[http://open-ig.googlecode.com/files/open-ig-upgrade-20110415a.zip Upgrade 2011-04-10-a]
 
 3) Place all these files into the same directory
 
 4) Run the game:
 
- * double click on {{{open-ig-0.89.jar}}}, or
- * run the following command line: {{{java -Xmx512M -jar open-ig-0.89.jar}}}, or
- * create a shell script/batch file and put in: {{{javaw -Xmx512M -jar open-ig-0.89.jar}}}
+ * double click on {{{open-ig-0.90.jar}}}, or
+ * run the following command line: 
 
-5) When the game loads, it should display the setup screen. Choose your preferred language:
+{{{java -Xmx512M -jar open-ig-0.90.jar}}}
 
-http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-1.png
+ * create a shell script/batch file and put in: 
 
-6) On the *Files* page, click on the *Auto-locate* button. It should find all 17 zip files in the current directory:
-
-http://darksideunderflow.com/images/resources.php?id=open-ig-setup-0.8-2.png
-
-7) Click on the *Save & Run* button. The main menu should popup.
+{{{javaw -Xmx512M -jar open-ig-0.90.jar}}}
 
 http://karnokd.uw.hu/images/open-ig-mainmenu.png
