@@ -16,13 +16,11 @@ import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.lang.reflect.Constructor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -146,16 +144,19 @@ public class MainScreen extends ScreenBase {
 	}
 	/** Display the settings video. */
 	void doSettings() {
-		// do a small reflection trick to avoid circular dependency
-		try {
-			Class<?> clazz = Class.forName("hu.openig.Setup");
-			Constructor<?> c = clazz.getConstructor(Configuration.class);
-			Object instance = c.newInstance(commons.config);
-			clazz.getMethod("setLocationRelativeTo", Component.class).invoke(instance, new Object[] { null });
-			clazz.getMethod("setVisible", Boolean.TYPE).invoke(instance, true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
+		scr.maySave = false;
+		scr.settingsMode = true;
+//		// do a small reflection trick to avoid circular dependency
+//		try {
+//			Class<?> clazz = Class.forName("hu.openig.Setup");
+//			Constructor<?> c = clazz.getConstructor(Configuration.class);
+//			Object instance = c.newInstance(commons.config);
+//			clazz.getMethod("setLocationRelativeTo", Component.class).invoke(instance, new Object[] { null });
+//			clazz.getMethod("setVisible", Boolean.TYPE).invoke(instance, true);
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		}
 	}
 
 	@Override
@@ -171,7 +172,7 @@ public class MainScreen extends ScreenBase {
 		commons.text().paintTo(g2, xOrigin + 500, yOrigin + 64, 14, 0xFFFF0000, Configuration.VERSION);
 		
 		Composite c0 = g2.getComposite();
-		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
+		g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
 		
 		g2.fillRoundRect(xOrigin + 60, yOrigin + 100, 640 - 120, 442 - 100 - 20, 40, 40);
 		g2.setComposite(c0);
@@ -294,10 +295,11 @@ public class MainScreen extends ScreenBase {
 		load.action = new Act() {
 			@Override
 			public void act() {
-				displayPrimary(Screens.LOAD_SAVE);
+				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
+				scr.maySave = false;
+				
 			}
 		};
-		load.disabled = true;
 		clicklabels.add(load);
 		
 		ClickLabel multiplayer = new ClickLabel(120, 215, 400, 20 , "mainmenu.multiplayer");

@@ -120,6 +120,7 @@ public class GameWindow extends JFrame implements GameControls {
 						t.printStackTrace();
 					}
 					repaintRequest = true;
+					repaintRequestPartial = false;
 				}
 			});
 		}
@@ -470,11 +471,11 @@ public class GameWindow extends JFrame implements GameControls {
 	 * Returns a screen instance for the given screen enum.
 	 * @param screen the screen.
 	 * @param asPrimary as primary screen?
+	 * @param mode the mode to pass into the screen, might be overridden
 	 * @return the reference to the new screen.
 	 */
-	ScreenBase display(Screens screen, boolean asPrimary) {
+	ScreenBase display(Screens screen, boolean asPrimary, Screens mode) {
 		ScreenBase sb = null;
-		Screens mode = null;
 		switch (screen) {
 		case ACHIEVEMENTS:
 			sb = allScreens.statisticsAchievements;
@@ -587,11 +588,11 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public ScreenBase displayPrimary(Screens screen) {
-		return display(screen, true);
+		return display(screen, true, null);
 	}
 	@Override
 	public ScreenBase displaySecondary(Screens screen) {
-		return display(screen, false);
+		return display(screen, false, null);
 	}
 	/**
 	 * Display the movie window.
@@ -981,6 +982,9 @@ public class GameWindow extends JFrame implements GameControls {
 							repaintInner();
 						}
 						e.consume();
+					} else {
+						LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
+						scr.maySave = true;
 					}
 					break;
 				case KeyEvent.VK_I:
@@ -1012,6 +1016,11 @@ public class GameWindow extends JFrame implements GameControls {
 						loadWorld(null);
 						e.consume();
 					}
+					break;
+				case KeyEvent.VK_ESCAPE:
+					LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
+					scr.maySave = true;
+					e.consume();
 					break;
 				default:
 				}
@@ -1222,6 +1231,7 @@ public class GameWindow extends JFrame implements GameControls {
 		for (ScreenBase sb : screens) {
 			sb.onEndGame();
 		}
+		
 		final String currentGame = commons.world() != null ? commons.world().name : null; 
 		commons.worldLoading = true;
 		boolean running = false;
@@ -1328,5 +1338,14 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public Closeable register(int delay, Act action) {
 		return commons.register(delay, action);
+	}
+	@Override
+	public void endGame() {
+		hideStatusbar();
+		commons.stop();
+		commons.world(null);
+		for (ScreenBase sb : screens) {
+			sb.onEndGame();
+		}
 	}
 }

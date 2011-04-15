@@ -119,7 +119,7 @@ public final class Simulator {
 		if (invokeRadar) {
 			Radar.compute(world);
 		}
-		if (day0 != day1 || invokeRadar) {
+		if (day0 != day1) {
 			return true;
 		}
 		return false;
@@ -365,7 +365,7 @@ public final class Simulator {
 					if (pr.count == 0) {
 						targetCap = 0;
 					}
-					int currentCap = Math.min(Math.min(
+					int currentCap = (int)Math.min(Math.min(
 							player.money, 
 							targetCap
 							),

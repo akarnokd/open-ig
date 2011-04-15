@@ -85,6 +85,25 @@ public class XElement implements Iterable<XElement> {
 	 * @param attributeName the attribute name
 	 * @return the integer value
 	 */
+	public long getLong(String attributeName) {
+		String val = get(attributeName);
+		return Long.parseLong(val);
+	}
+	/**
+	 * Get an integer attribute or return the default value if not present.
+	 * @param attributeName the attribute name
+	 * @param def the default value if the attribute is not present
+	 * @return the integer value
+	 */
+	public long getLong(String attributeName, long def) {
+		String val = attributes.get(attributeName);
+		return val != null ? Long.parseLong(val) : def;
+	}
+	/**
+	 * Get an integer attribute.
+	 * @param attributeName the attribute name
+	 * @return the integer value
+	 */
 	public int getInt(String attributeName) {
 		String val = get(attributeName);
 		return Integer.parseInt(val);

@@ -68,7 +68,7 @@ public class Player {
 	/** The type of the last selected thing: planet or fleet. */
 	public SelectionMode selectionMode = SelectionMode.PLANET;
 	/** The current money amount. */
-	public int money;
+	public long money;
 	/** The player level statistics. */
 	public final PlayerStatistics statistics = new PlayerStatistics();
 	/** The other players that are known. */

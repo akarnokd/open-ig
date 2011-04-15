@@ -1019,4 +1019,13 @@
 	
 	<entry key='info.empty-list'>Nincs</entry>
 	<entry key='production.needs_orbital_factory'>Orbitális gyár</entry>
+	
+	<entry key='load'>Betöltés</entry>
+	<entry key='save'>Mentés</entry>
+	<entry key='settings'>Beállítások</entry>
+	<entry key='mainmenu'>Főmenü</entry>
+	<entry key='delete'>Törlés</entry>
+	<entry key='no_saves'>Nincs elérhető mentés</entry>
+	<entry key='load_save'>Tölt / Ment</entry>
+	
 </labels>
