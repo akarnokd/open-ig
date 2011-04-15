@@ -5,7 +5,7 @@
 
 = Version 0.90 screenshots =
 
-http://code.google.com/p/open-ig/source/browse/trunk/open-ig/doc/equipment-07.png
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/equipment-07.png
 
 = Version 0.88 screenshots =
 
