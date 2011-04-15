@@ -21,6 +21,12 @@ This page describes the differences between released versions of the Open Imperi
   * Load and Save screen added. You may now load any previous saves. Saving is just simply adding a new save with the current time, similarly to CTRL+S. Note that the Settings view is not implemented.
     * You may now return to the Main menu to start a new game instead of relaunching the application
   * The old setup screen is now hidden. Will be replaced by the new ingame Settings screen mentioned before.
+  * Issue fixes
+    * [http://code.google.com/p/open-ig/issues/detail?id=6 Issue #6] bugs and most missing features
+    * [http://code.google.com/p/open-ig/issues/detail?id=7 Issue #7] bugs and missing features
+    * [http://code.google.com/p/open-ig/issues/detail?id=9 Issue #9] database screen missing labels
+    * [http://code.google.com/p/open-ig/issues/detail?id=10 Issue #10] starmap screen planet listing ordering
+    * [http://code.google.com/p/open-ig/issues/detail?id=11 Issue #11] crash on the information planet listing table
 
 = Version 0.89 - Bar and Database =
   * Released: 2011-04-10 21:00
