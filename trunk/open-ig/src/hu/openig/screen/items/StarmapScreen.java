@@ -10,6 +10,9 @@ package hu.openig.screen.items;
 
 
 import hu.openig.core.Act;
+import hu.openig.core.Location;
+import hu.openig.model.Building;
+import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
@@ -23,6 +26,7 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.RotationDirection;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
+import hu.openig.model.TileSet;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
@@ -39,6 +43,7 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.TexturePaint;
@@ -719,12 +724,11 @@ public class StarmapScreen extends ScreenBase {
 		fleetMove.visible(fleetMode && f.owner == player());
 		fleetSeparator.visible(fleetMode && f.owner == player());
 
-		fleetColonize.visible(false);
-		
 		fleetFirepower.visible(fleetMode && knowledge(f, FleetKnowledge.FULL) >= 0);
 		fleetSpeed.visible(fleetMode);
 		
 		if (!fleetMode) {
+			fleetColonize.visible(false);
 			return;
 		}
 		fleetName.color(f.owner.color);
@@ -1904,6 +1908,12 @@ public class StarmapScreen extends ScreenBase {
 		fleetAttack = new UIImageTabButton(commons.starmap().attack);
 		fleetStop = new UIImageTabButton(commons.starmap().stop);
 		fleetColonize = new UIImageButton(commons.starmap().colonize);
+		fleetColonize.onClick = new Act() {
+			@Override
+			public void act() {
+				doColonize();
+			}
+		};
 		fleetSeparator = new UIImage(commons.starmap().commandSeparator);
 
 		fleetMove.onPress = new Act() {
@@ -2123,5 +2133,46 @@ public class StarmapScreen extends ScreenBase {
 		fleet().targetPlanet = null;
 		fleet().mode = null;
 		fleetMode = null;
+	}
+	/** Colonize the fleet nearby planet. */
+	void doColonize() {
+		if (fleet() == null) {
+			return;
+		}
+		Planet p = fleet().getStatistics().planet;
+		if (p == null || p.owner != null) {
+			// FIXME message: colonize failed
+			return;
+		}
+		for (BuildingType bt : world().buildingModel.buildings.values()) {
+			if ("MainBuilding".equals(bt.kind)) {
+				TileSet ts = bt.tileset.get(player().race);
+				if (ts != null) {
+					Point pt = p.surface.findLocation(ts.normal.width, ts.normal.height);
+					if (pt != null) {
+						
+						fleet().changeInventory(world().researches.get("ColonyShip"), -1);
+						
+						Building b = new Building(bt, player().race);
+						p.race = player().race;
+						p.population = 5000;
+						p.morale = 50;
+						p.lastMorale = 50;
+						p.lastPopulation = 5000;
+						p.owner = player();
+						b.location = Location.of(pt.x + 1, pt.y + 1);
+						
+						p.surface.placeBuilding(ts.normal, pt.x + 1, pt.y + 1, b);
+						p.surface.placeRoads(player().race, world().buildingModel);
+						
+						player().planets.put(p, PlanetKnowledge.BUILDING);
+						player().currentPlanet = p;
+						displayPrimary(Screens.COLONY);
+						return;
+					}
+				}
+			}
+		}
+		// FIXME message: colonize failed
 	}
 }

@@ -14,6 +14,7 @@ import hu.openig.core.Sides;
 import hu.openig.core.Tile;
 import hu.openig.utils.XElement;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,13 +32,14 @@ import java.util.Set;
  */
 public class PlanetSurface {
 	/** 
-	 * The map's with in cells. 
+	 * The map's width in cells. 
 	 * The width is defined as a slightly descending horizontal dimension of the map, 
 	 * but in coordinate terms it is equal to the sequence 0,0 1,-1, 2,-2 etc.
 	 * Note that the rendering coordinate system is different from the original IG's map definition. 
 	 */
 	public int width;
-	/** The height with in cells. The width is defined as a vertical dimension of the map, but in coordinate terms it is equal to the sequence 0,0 -1,-1, -2,-2 etc. */
+	/** The height with in cells. The width is defined as a vertical dimension of the map,
+	 *  but in coordinate terms it is equal to the sequence 0,0 -1,-1, -2,-2 etc. */
 	public int height;
 	/**
 	 * The accessible rectangle of the surface defined in pixels. The accessible origin is encoded relative to the top-left corner of where the Location(0,0) is rendered.
@@ -478,5 +480,84 @@ public class PlanetSurface {
 				}
 			}
 		}
+	}
+	/**
+	 * Test if the given rectangular region is eligible for building placement, e.g.:
+	 * all cells are within the map's boundary, no other buildings are present within the given bounds,
+	 * no multi-tile surface object is present at the location.
+	 * @param rect the surface rectangle
+	 * @return true if the building can be placed
+	 */
+	public boolean canPlaceBuilding(Rectangle rect) {
+		return canPlaceBuilding(rect.x, rect.y, rect.width, rect.height);
+	}
+	/**
+	 * Test if the given rectangular region is eligible for building placement, e.g.:
+	 * all cells are within the map's boundary, no other buildings are present within the given bounds,
+	 * no multi-tile surface object is present at the location.
+	 * @param x the left coordinate
+	 * @param y the top coordinate
+	 * @param width the width into +X direction
+	 * @param height the height into -Y direction
+	 * @return true if the building can be placed
+	 */
+	public boolean canPlaceBuilding(int x, int y, int width, int height) {
+		for (int i = x; i < x + width; i++) {
+			for (int j = y; j > y - height; j--) {
+				if (!canPlaceBuilding(i, j)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	/**
+	 * Test if the coordinates are suitable for building placement.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return true if placement is allowed
+	 */
+	public boolean canPlaceBuilding(int x, int y) {
+		if (!cellInMap(x, y)) {
+			return false;
+		} else {
+			SurfaceEntity se = buildingmap.get(Location.of(x, y));
+			if (se != null && se.type == SurfaceEntityType.BUILDING) {
+				return false;
+			} else {
+				se = basemap.get(Location.of(x, y));
+				if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	/**
+	 * Find a location on the surface which can support a building (and surrounding roads)
+	 * with the given size. The location search starts of from the center of the map
+	 * @param width should be the building tile width + 2
+	 * @param height should be the builindg tile height + 2
+	 * @return the top-left point where this building could be built, null indicates that
+	 * no suitable location is present
+	 */
+	public Point findLocation(int width, int height) {
+		int cx = this.width / 2 - this.height / 2;
+		int cy = -this.width / 2 - this.height / 2;
+		
+		// the square size
+		for (int i = 0; i < Math.abs(cy); i++) {
+			for (int j = cx - i; j <= cx + i; j++) {
+				for (int k = cy + i; k >= cy - i; k--) {
+					if ((j == cx - i || j == cx + i) && (k == cy + i || k == cy - i)) { 
+						if (canPlaceBuilding(j - width / 2, k + height / 2, width, height)) {
+							return new Point(j - width / 2, k + height / 2);
+						}
+					}
+				}
+			}
+		}
+		
+		return null;
 	}
 }

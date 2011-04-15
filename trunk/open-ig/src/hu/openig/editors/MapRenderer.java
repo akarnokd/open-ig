@@ -279,7 +279,7 @@ public class MapRenderer extends JComponent {
 		}
 		if (placementHints) {
 			for (Location loc : surface.basemap.keySet()) {
-				if (!canPlaceBuilding(loc.x, loc.y)) {
+				if (!surface.canPlaceBuilding(loc.x, loc.y)) {
 					int x = x0 + Tile.toScreenX(loc.x, loc.y);
 					int y = y0 + Tile.toScreenY(loc.x, loc.y);
 					g2.drawImage(areaDeny.getStrip(0), x, y, null);
@@ -308,7 +308,7 @@ public class MapRenderer extends JComponent {
 					
 					BufferedImage img = areaAccept.getStrip(0);
 					// check for existing building
-					if (!canPlaceBuilding(i, j)) {
+					if (!surface.canPlaceBuilding(i, j)) {
 						img = areaDeny.getStrip(0);
 					}
 					
@@ -539,45 +539,6 @@ public class MapRenderer extends JComponent {
 			return;
 		}
 			
-	}
-	/**
-	 * Test if the given rectangular region is eligible for building placement, e.g.:
-	 * all cells are within the map's boundary, no other buildings are present within the given bounds,
-	 * no multi-tile surface object is present at the location.
-	 * @param rect the surface rectangle
-	 * @return true if the building can be placed
-	 */
-	public boolean canPlaceBuilding(Rectangle rect) {
-		for (int i = rect.x; i < rect.x + rect.width; i++) {
-			for (int j = rect.y; j > rect.y - rect.height; j--) {
-				if (!canPlaceBuilding(i, j)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	/**
-	 * Test if the coordinates are suitable for building placement.
-	 * @param x the X coordinate
-	 * @param y the Y coordinate
-	 * @return true if placement is allowed
-	 */
-	public boolean canPlaceBuilding(int x, int y) {
-		if (!surface.cellInMap(x, y)) {
-			return false;
-		} else {
-			SurfaceEntity se = surface.buildingmap.get(Location.of(x, y));
-			if (se != null && se.type == SurfaceEntityType.BUILDING) {
-				return false;
-			} else {
-				se = surface.basemap.get(Location.of(x, y));
-				if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 	/**
 	 * Get a location based on the mouse coordinates.

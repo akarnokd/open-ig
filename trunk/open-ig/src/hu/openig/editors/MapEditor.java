@@ -1950,7 +1950,7 @@ public class MapEditor extends JFrame {
 			addUndo(undo);
 			renderer.repaint();
 		} else
-		if (currentBuildingType != null && renderer.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
+		if (currentBuildingType != null && renderer.surface.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
 			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
 			Building bld = new Building(currentBuildingType, currentBuildingRace);
 			bld.makeFullyBuilt();
