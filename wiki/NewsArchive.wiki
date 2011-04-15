@@ -4,6 +4,12 @@
 
 = April, 2011 =
 
+*April 15., 2011*
+
+Yet another weekend and yet another playable version to test. Please welcome version 0.90 with the long awaited fleet management features. You can now create, move and manage fleets, colonize empty planets. 
+
+[http://code.google.com/p/open-ig/wiki/Game_Notes#Version_0.90_-_Fleets See the release notes.]
+
 *April 14. 2011*
 
 The equipment screen is complete and it is possible now to manage the fleets and move them around on the starmap.
