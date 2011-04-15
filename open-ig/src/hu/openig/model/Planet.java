@@ -507,4 +507,18 @@ public class Planet implements Named, Owned {
 		}
 		return null;
 	}
+	/**
+	 * Retrieve the first inventory item with the given type and owner.
+	 * @param rt the type
+	 * @param owner the owner
+	 * @return the inventory item or null if not present
+	 */
+	public InventoryItem getInventoryItem(ResearchType rt, Player owner) {
+		for (InventoryItem ii : inventory) {
+			if (ii.type == rt && ii.owner == owner) {
+				return ii;
+			}
+		}
+		return null;
+	}
 }

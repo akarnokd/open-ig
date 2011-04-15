@@ -123,6 +123,9 @@ public class EquipmentGFX {
 	/** Not your planet. */
 	@Img(name = "equipment/label_not_your_planet")
 	public BufferedImage notYourplanet;
+	/** Sell button. */
+	@Btn2(name = "equipment/button_sell")
+	public BufferedImage[] sell;
 	/**
 	 * Load the resources.
 	 * @param rl the resource locator

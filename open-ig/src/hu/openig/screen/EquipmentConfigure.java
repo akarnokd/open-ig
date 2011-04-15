@@ -90,9 +90,10 @@ public class EquipmentConfigure extends UIComponent {
 			for (InventorySlot es : item.slots) {
 				if (e.within(es.slot.x, es.slot.y, es.slot.width, es.slot.height)) {
 					onSelect.invoke(es);
-					break;
+					return true;
 				}
 			}
+			onSelect.invoke(null);
 			return true;
 		}
 		return super.mouse(e);

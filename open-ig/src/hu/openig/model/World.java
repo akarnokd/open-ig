@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -956,16 +955,17 @@ public class World {
 				p.research.put(rt, rs);
 			}
 			
-			// remove non-zero researches
-			for (Iterator<ResearchType> it = player.research.keySet().iterator(); it.hasNext();) {
-				ResearchType rt = it.next();
-				if (rt.level != 0) {
-					it.remove();
+			// add free technologies
+			p.available().clear();
+			for (ResearchType rt : researches.values()) {
+				if (rt.level == 0 && rt.race.equals(p.race)) {
+					p.add(rt);
 				}
 			}
+			
 			XElement xavail0 = xplayer.childElement("available");
 			if (xavail0 != null) {
-				for (XElement xavail : xplayer.childrenWithName("type")) {
+				for (XElement xavail : xavail0.childrenWithName("type")) {
 					ResearchType rt = researches.get(xavail.get("id"));
 					if (rt == null) {
 						throw new IllegalArgumentException("available technology not found: " + xavail);
