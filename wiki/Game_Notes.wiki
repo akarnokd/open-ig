@@ -8,7 +8,7 @@ This page describes the differences between released versions of the Open Imperi
 
 = Version 0.90 - Fleets =
   * Released: 2011-04-15 23:30
-  * Added functionality to the Equipment screen. 
+  * Added functionality to the Equipment screen. [http://code.google.com/p/open-ig/source/browse/trunk/open-ig/doc/equipment-07.png Screenshot].
     * You may now split fleets, transfer between fleets.
     * *Cheat:* CTRL+I will make the currently selected item researched and adds one to the inventory
     * *New feature:* Sell a fleet member. You may now sell even the larger ships from the fleet. You'll get back half of the production cost of the ship and its equipment.
