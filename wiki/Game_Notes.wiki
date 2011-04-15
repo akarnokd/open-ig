@@ -10,7 +10,7 @@ This page describes the differences between released versions of the Open Imperi
   * Released: 2011-04-15 23:30
   * Added functionality to the Equipment screen. 
     * You may now split fleets, transfer between fleets.
-    * *cheat:* CTRL+I will make the currently selected item researched and adds one to the inventory
+    * *Cheat:* CTRL+I will make the currently selected item researched and adds one to the inventory
     * *New feature:* Sell a fleet member. You may now sell even the larger ships from the fleet. You'll get back half of the production cost of the ship and its equipment.
   * Added functionality to the starmap screen.
     * Move fleets, attack with the fleet (just visual indicator, no space battle so far)
