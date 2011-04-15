@@ -28,7 +28,7 @@ This page details the manual installation instructions for Open Imperium Galacti
 [http://open-ig.googlecode.com/files/open-ig-video-09-0.8.zip Video 9], <br>
 [http://open-ig.googlecode.com/files/open-ig-video-10-0.8.zip Video 10],[http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip Video 11],  [http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip Video 12]
 
-[http://open-ig.googlecode.com/files/open-ig-upgrade-20110415a.zip Upgrade 2011-04-10-a]
+[http://open-ig.googlecode.com/files/open-ig-upgrade-20110415a.zip Upgrade 2011-04-15-a]
 
 3) Place all these files into the same directory
 
