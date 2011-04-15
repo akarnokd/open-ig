@@ -12,6 +12,7 @@ This page describes the differences between released versions of the Open Imperi
     * You may now split fleets, transfer between fleets.
     * *Cheat:* CTRL+I will make the currently selected item researched and adds one to the inventory
     * *New feature:* Sell a fleet member. You may now sell even the larger ships from the fleet. You'll get back half of the production cost of the ship and its equipment.
+    * Heavier ships are now presented in a scrollable list instead of randomly placing them around. The list shows the health, shield level.
   * Added functionality to the starmap screen.
     * Move fleets, attack with the fleet (just visual indicator, no space battle so far)
     * *New feature:* Waypoint mode. Click on the MOVE command, then hold SHIFT and left click to chain up movements.
