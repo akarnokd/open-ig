@@ -37,10 +37,14 @@ This page details the manual installation instructions for Open Imperium Galacti
  * double click on {{{open-ig-0.90.jar}}}, or
  * run the following command line: 
 
-{{{java -Xmx512M -jar open-ig-0.90.jar}}}
+{{{
+java -Xmx512M -jar open-ig-0.90.jar
+}}}
 
  * create a shell script/batch file and put in: 
 
-{{{javaw -Xmx512M -jar open-ig-0.90.jar}}}
+{{{
+javaw -Xmx512M -jar open-ig-0.90.jar
+}}}
 
 http://karnokd.uw.hu/images/open-ig-mainmenu.png
