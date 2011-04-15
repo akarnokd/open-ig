@@ -52,11 +52,11 @@ public final class Startup {
 		}
 		Configuration config = new Configuration("open-ig-config.xml");
 		config.watcherWindow = new ConsoleWatcher();
-		if (!config.load() || argset.contains("-config")) {
-			doStartConfiguration(config);
-		} else {
+//		if (!config.load() || argset.contains("-config")) {
+//			doStartConfiguration(config);
+//		} else {
 			doStartGame(config);
-		}
+//		}
 	}
 	/**
 	 * Put up warning dialog for failed attempt to run the program with appropriate memory.
@@ -134,7 +134,7 @@ public final class Startup {
 	 * Display the configuration window for setup.
 	 * @param config the configuration
 	 */
-	private static void doStartConfiguration(final Configuration config) {
+	static void doStartConfiguration(final Configuration config) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

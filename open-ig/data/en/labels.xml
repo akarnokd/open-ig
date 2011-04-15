@@ -1032,4 +1032,13 @@
 	
 	<entry key='info.empty-list'>None</entry>
 	<entry key='production.needs_orbital_factory'>Orbital Factory</entry>
+	
+	<entry key='load'>Load</entry>
+	<entry key='save'>Save</entry>
+	<entry key='settings'>Settings</entry>
+	<entry key='mainmenu'>Main menu</entry>
+	<entry key='delete'>Delete</entry>
+	<entry key='no_saves'>No saves available</entry>
+	<entry key='load_save'>Load / Save</entry>
+	
 </labels>

@@ -100,6 +100,8 @@ public class CommonResources {
 	private World world;
 	/** Flag to indicate the game world is loading. */
 	public boolean worldLoading;
+	/** Flag indicating the statusbar screen to show a non-game statusbar. */
+	public boolean nongame;
 	/** The common executor service. */
 	public final ScheduledExecutorService pool;
 	/** The combined timer for synchronized frequency updates. */

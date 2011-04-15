@@ -97,4 +97,6 @@ public interface GameControls {
 	Screens primary();
 	/** @return the current secondary screen type or null if none. */
 	Screens secondary();
+	/** End the current game. */
+	void endGame();
 }

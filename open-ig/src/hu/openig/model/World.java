@@ -59,6 +59,8 @@ public class World {
 		time.set(GregorianCalendar.DATE, 13);
 		time.set(GregorianCalendar.HOUR_OF_DAY, 8);
 		time.set(GregorianCalendar.MINUTE, 50);
+		time.set(GregorianCalendar.SECOND, 0);
+		time.set(GregorianCalendar.MILLISECOND, 0);
 	}
 	/** All planets on the starmap. */
 	public final Map<String, Planet> planets = new LinkedHashMap<String, Planet>();
@@ -85,7 +87,7 @@ public class World {
 	/** The global world statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();
 	/** The date formatter. */
-	public SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	public final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	{
 		dateFormat.setCalendar(time);
 	}
@@ -345,7 +347,7 @@ public class World {
 		p.name = labels.get(player.get("name"));
 		p.shortName = labels.get(player.get("name") + ".short");
 		
-		p.money = player.getInt("money");
+		p.money = player.getLong("money");
 		p.initialStance = player.getInt("initial-stance");
 		
 		p.fleetIcon = rl.getImage(player.get("icon"));

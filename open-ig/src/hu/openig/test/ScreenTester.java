@@ -878,4 +878,9 @@ public class ScreenTester extends JFrame implements GameControls {
 	public Closeable register(int delay, Act action) {
 		return commons.register(delay, action);
 	}
+	@Override
+	public void endGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

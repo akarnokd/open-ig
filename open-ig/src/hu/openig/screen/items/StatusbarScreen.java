@@ -35,6 +35,10 @@ public class StatusbarScreen extends ScreenBase {
 	UIImageFill top;
 	/** The bottom bar. */
 	UIImageFill bottom;
+	/** The top bar non-game. */
+	UIImageFill top2;
+	/** The bottom bar non-game. */
+	UIImageFill bottom2;
 	/** The money label. */
 	UILabel money;
 	/** The animation timer to show the status bar. */
@@ -69,6 +73,18 @@ public class StatusbarScreen extends ScreenBase {
 				commons.statusbar().ingameBottomFill,
 				commons.statusbar().ingameBottomRight, true);
 		bottom.z = -1;
+		top2 = new UIImageFill(
+				commons.statusbar().nongameTopLeft, 
+				commons.statusbar().nongameTopFill,
+				commons.statusbar().nongameTopRight, true);
+		top2.z = 1;
+		top2.visible(false);
+		bottom2 = new UIImageFill(
+				commons.statusbar().nongameBottomLeft, 
+				commons.statusbar().nongameBottomFill,
+				commons.statusbar().nongameBottomRight, true);
+		bottom2.z = 1;
+		bottom2.visible(false);
 		
 		money = new UILabel("", 10, commons.text());
 		money.horizontally(HorizontalAlignment.CENTER);
@@ -168,6 +184,13 @@ public class StatusbarScreen extends ScreenBase {
 		g2.fillRect(0, height - 18, width, 18);
 		bottom.y = height - bottomY;
 		update();
+		
+		top2.bounds(top.bounds());
+		bottom2.bounds(bottom.bounds());
+		
+		top2.visible(commons.nongame);
+		bottom2.visible(commons.nongame);
+		
 		super.draw(g2);
 	}
 	/** Update the state displays. */
