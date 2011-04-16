@@ -176,6 +176,11 @@ public class Fleet implements Named, Owned {
 		if (dmin < 20 * 20) {
 			result.planet = pmin;
 		}
+		if (!inventory.isEmpty() && radar == 0) {
+			radar = 12;
+		} else {
+			radar *= 25;
+		}
 		
 		return result;
 	}

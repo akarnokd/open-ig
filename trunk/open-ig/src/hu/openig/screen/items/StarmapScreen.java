@@ -988,7 +988,7 @@ public class StarmapScreen extends ScreenBase {
 				for (Fleet f : fleets) {
 					if (f.owner == player()) {
 						f.getStatistics();
-						paintRadar(g2, (int)f.x, (int)f.y, f.radar * 35, zoom);
+						paintRadar(g2, (int)f.x, (int)f.y, f.radar, zoom);
 					}
 				}
 			}
