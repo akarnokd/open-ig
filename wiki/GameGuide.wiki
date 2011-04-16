@@ -52,11 +52,21 @@
 
 In order to help manage the colonies and their needs, status icons have been introduced. These icons are visible on the starmap, on the colony and on many information screen tabs. The following table summarizes these icons and their meaning.
 
-<table border='1'>
-<tr><td><b>Icon</b></td><td>Description</td></tr>
-<tr><td style='background-color: black;'><img src='http://open-ig.googlecode.com/svn/trunk/open-ig/images/generic/colony-hub-icon-dark.png'/></td><td></td></tr>
-</table>
-
+|| *Icon* || *Description* ||
+|| || Missing colony hub ||
+|| || Inoperable colony hub ||
+|| || Minor energy shortage ({{{demand < available * 2}}}) ||
+|| || Major energy shortage ({{{demand >= available * 2}}}) ||
+|| || Minor worker shortage ({{{demand < available * 2}}}) ||
+|| || Major worker shortage ({{{demand >= available * 2}}}) ||
+|| || Minor food shortage ({{{demand < available * 2}}}) ||
+|| || Major food shortage ({{{demand >= available * 2}}}) ||
+|| || Minor hospital shortage ({{{demand < available * 2}}}) ||
+|| || Major hospital shortage ({{{demand >= available * 2}}}) ||
+|| || Construction in progress ||
+|| || Damaged buildings ||
+|| || Virus infection ||
+|| || Stadium required ||
 
 == Building Upgrade System ==
 
