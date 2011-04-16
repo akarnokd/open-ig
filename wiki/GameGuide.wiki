@@ -54,6 +54,7 @@ In order to help manage the colonies and their needs, status icons have been int
 
 <table border='1'>
 <tr><td><b>Icon</b></td><td>Description</td></tr>
+<tr><td style='background-color: black;'><img src='http://open-ig.googlecode.com/svn/trunk/open-ig/images/generic/colony-hub-icon-dark.png'></td><td></td></tr>
 </table>
 
 
@@ -133,5 +134,3 @@ The repair will improve 50 hitpoints for 20 credits per 10 ingame minutes.
 However, if the Fire Brigade is damaged itself, but still operational, it will only repair a proportion of this 50 hitpoints for free (at least 25 hitpoints, because it is the 50% efficiency mark). 
 
 Regular repair is always fixing 50 hipoints per turn.
-
-
