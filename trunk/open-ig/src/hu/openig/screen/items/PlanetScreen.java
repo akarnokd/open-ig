@@ -320,7 +320,7 @@ public class PlanetScreen extends ScreenBase {
 				if (se.building.isDestroyed()) {
 					tile = se.building.type.minimapTiles.destroyed;
 				} else
-				if (se.building.isSeverlyDamaged()) {
+				if (se.building.isDamaged()) {
 					tile = se.building.type.minimapTiles.damaged;
 				} else
 				if (se.building.getEfficiency() < 0.5f) {

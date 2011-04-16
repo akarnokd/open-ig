@@ -218,6 +218,8 @@ public class EquipmentScreen extends ScreenBase {
 	public boolean editPrimary;
 	/** Edit the secondary name. */
 	public boolean editSecondary;
+	/** Signal the editing of new primary name. */
+	public boolean editNew;
 	/** Are we in transfer mode? */
 	public boolean transferMode;
 	/** The secondary fleet. */
@@ -409,6 +411,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void act() {
 				doCreateFleet(true, planet().x, planet().y);
+				editNew = true;
 			}
 		};
 		
@@ -709,6 +712,7 @@ public class EquipmentScreen extends ScreenBase {
 		
 		editPrimary = false;
 		editSecondary = false;
+		editNew = false;
 		fleetListing.nearby = false;
 		secondary = null;
 		
@@ -726,6 +730,20 @@ public class EquipmentScreen extends ScreenBase {
 		close0(animation);
 		animation = null;
 		fleetListing.visible(false);
+		// delete empty fleets
+		for (Fleet f : new ArrayList<Fleet>(player().fleets.keySet())) {
+			if (f.inventory.isEmpty()) {
+				player().fleets.remove(f);
+			}
+		}
+		if (fleet() != null && fleet().inventory.isEmpty()) {
+			if (player().fleets.isEmpty()) {
+				player().currentFleet = null;
+				player().selectionMode = SelectionMode.PLANET;
+			} else {
+				player().currentFleet = player().fleets.keySet().iterator().next();
+			}
+		}
 	}
 
 	@Override
@@ -1018,9 +1036,13 @@ public class EquipmentScreen extends ScreenBase {
 			
 			if (ps.hasMilitarySpaceport) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-					addButton.visible(player().inventoryCount(rt) > 0
+					addButton.visible(
+							ps.hasSpaceStation
+							&& player().inventoryCount(rt) > 0
 							&& planet().inventoryCount(rt, player()) < 30);
-					delButton.visible(planet().inventoryCount(rt, player()) > 0);
+					delButton.visible(
+							planet().inventoryCount(rt, player()) > 0
+					);
 					sell.visible(delButton.visible());
 				} else
 				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
@@ -1061,7 +1083,8 @@ public class EquipmentScreen extends ScreenBase {
 				fleetShown = fleet();
 				updateCurrentInventory();
 				minimap.moveTo(fleet().x, fleet().y);
-				editPrimary = false;
+				editPrimary = editNew;
+				editNew = false;
 				editSecondary = false;
 				if (configure.item != null) {
 					configure.item = fleet().getInventoryItem(configure.item.type);
