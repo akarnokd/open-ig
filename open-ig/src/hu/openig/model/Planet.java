@@ -521,4 +521,18 @@ public class Planet implements Named, Owned {
 		}
 		return null;
 	}
+	/**
+	 * Count the number of buildings on this planet.
+	 * @param bt the building type
+	 * @return the count
+	 */
+	public int countBuilding(BuildingType bt) {
+		int count = 0;
+		for (Building b : surface.buildings) {
+			if (b.type == bt) {
+				count++;
+			}
+		}
+		return count;
+	}
 }

@@ -228,6 +228,8 @@ public class EquipmentScreen extends ScreenBase {
 	public final Random rnd = new Random();
 	/** Sell the selected equipment. */
 	UIImageButton sell;
+	/** The last selection mode. */
+	SelectionMode lastSelection;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -990,8 +992,9 @@ public class EquipmentScreen extends ScreenBase {
 			notYourPlanet.visible(planet().owner != player());
 			noPlanetNearby.visible(false);
 			
-			if (planetShown != planet()) {
+			if (planetShown != planet() || lastSelection != player().selectionMode) {
 				planetShown = planet();
+				lastSelection = player().selectionMode;
 				updateCurrentInventory();
 				minimap.moveTo(planet().x, planet().y);
 			}
@@ -1061,6 +1064,7 @@ public class EquipmentScreen extends ScreenBase {
 				} else {
 					addButton.visible(false);
 					delButton.visible(false);
+					sell.visible(false);
 				}
 			} else {
 				addButton.visible(false);
@@ -1079,16 +1083,16 @@ public class EquipmentScreen extends ScreenBase {
 			splitButton.visible(false);
 			transferButton.visible(false);
 		} else {
-			if (fleetShown != fleet()) {
+			if (fleetShown != fleet() || lastSelection != player().selectionMode) {
 				fleetShown = fleet();
+				lastSelection = player().selectionMode;
 				updateCurrentInventory();
 				minimap.moveTo(fleet().x, fleet().y);
 				editPrimary = editNew;
 				editNew = false;
 				editSecondary = false;
-				if (configure.item != null) {
-					configure.item = fleet().getInventoryItem(configure.item.type);
-				}
+				configure.type = research();
+				configure.item = fleet().getInventoryItem(research());
 				configure.selectedSlot = null;
 				transferMode = false;
 				secondary = null;
@@ -1594,8 +1598,7 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param value select the given inventory item
 	 */
 	void onSelectInventoryItem(InventoryItem value) {
-		if (leftList.selectedItem == null
-				|| value.type != leftList.selectedItem.type
+		if (value.type != research()
 		) {
 			displayCategory(value.type.category);
 			research(value.type);
