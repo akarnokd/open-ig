@@ -53,20 +53,22 @@
 In order to help manage the colonies and their needs, status icons have been introduced. These icons are visible on the starmap, on the colony and on many information screen tabs. The following table summarizes these icons and their meaning.
 
 || *Icon* || *Description* ||
-|| || Missing colony hub ||
-|| || Inoperable colony hub ||
-|| || Minor energy shortage ({{{demand < available * 2}}}) ||
-|| || Major energy shortage ({{{demand >= available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/colony-hub-icon.png || Missing colony hub ||
+||http://open-ig.googlecode.com/svn/trunk/open-ig/doc/colony-hub-icon-dark.png || Inoperable colony hub ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/house-icon-dark.png || Minor house shortage ({{{demand < available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/house-icon.png || Major house shortage ({{{demand >= available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/energy-icon-dark.png || Minor energy shortage ({{{demand < available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/energy-icon.png || Major energy shortage ({{{demand >= available * 2}}}) ||
 || || Minor worker shortage ({{{demand < available * 2}}}) ||
 || || Major worker shortage ({{{demand >= available * 2}}}) ||
-|| || Minor food shortage ({{{demand < available * 2}}}) ||
-|| || Major food shortage ({{{demand >= available * 2}}}) ||
-|| || Minor hospital shortage ({{{demand < available * 2}}}) ||
-|| || Major hospital shortage ({{{demand >= available * 2}}}) ||
-|| || Construction in progress ||
-|| || Damaged buildings ||
-|| || Virus infection ||
-|| || Stadium required ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/food-icon-dark.png || Minor food shortage ({{{demand < available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/food-icon.png || Major food shortage ({{{demand >= available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/hospital-icon-dark.png || Minor hospital shortage ({{{demand < available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/hospital-icon.png || Major hospital shortage ({{{demand >= available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/repair-icon-dark.png || Construction in progress ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/repair-icon.png || Damaged buildings ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/virus-icon.png || Virus infection ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/stadium-icon.png || Stadium required ||
 
 == Building Upgrade System ==
 
