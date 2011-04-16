@@ -73,7 +73,7 @@ public final class Radar {
 					}
 					float ri = Float.parseFloat(radar);
 					if (ri > 0) {
-						for (Planet q : findPlanetsInRange(world, f.x, f.y, ri * 35)) {
+						for (Planet q : findPlanetsInRange(world, f.x, f.y, ri * 25)) {
 							if (ri < 1f) {
 								updateKnowledge(player, q, PlanetKnowledge.VISIBLE);
 							} else

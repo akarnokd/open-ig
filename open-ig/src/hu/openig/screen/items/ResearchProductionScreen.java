@@ -1463,6 +1463,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			if (player().isAvailable(rt)) {
 				selectedTechStatusValue.text(get("researchinfo.progress.done"));
 				selectedCompleteValue.text(get("researchinfo.progress.done"));
+				selectedTimeValue.text("----");
 			} else {
 				if (world().canResearch(rt)) {
 					if (player().research.containsKey(rt)) {
