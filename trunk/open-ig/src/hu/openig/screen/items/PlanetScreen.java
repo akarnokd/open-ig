@@ -228,6 +228,14 @@ public class PlanetScreen extends ScreenBase {
 			render.offsetX -= 54;
 			rep = true;
 			break;
+		case KeyEvent.VK_ESCAPE:
+			if (placementMode) {
+				placementMode = false;
+				buildingsPanel.build.down = false;
+				e.consume();
+				rep = true;
+			}
+			break;
 		default:
 		}
 		return rep;
@@ -1112,6 +1120,8 @@ public class PlanetScreen extends ScreenBase {
 		public BufferedImage building;
 		/** The building cost. */
 		public int cost;
+		/** The count on this planet. */
+		public int count;
 		@Override
 		public void draw(Graphics2D g2) {
 			if (building != null) {
@@ -1126,6 +1136,7 @@ public class PlanetScreen extends ScreenBase {
 				String cs = cost + " cr";
 				int w = commons.text().getTextWidth(10, cs);
 				commons.text().paintTo(g2, width - w - 2, height - 12, 10, TextRenderer.YELLOW, cs);
+				commons.text().paintTo(g2, 2, height - 12, 10, TextRenderer.GREEN, Integer.toString(count));
 			}
 		}
 	}
@@ -2266,6 +2277,7 @@ public class PlanetScreen extends ScreenBase {
 			
 			buildingsPanel.preview.building = bt.tileset.get(race).preview;
 			buildingsPanel.preview.cost = bt.cost;
+			buildingsPanel.preview.count = planet().countBuilding(bt);
 			buildingsPanel.preview.enabled(planet().canBuild(bt) && planet().owner == player());
 			buildingsPanel.buildingName.text(bt.name);
 			buildingsPanel.build.enabled(buildingsPanel.preview.enabled());

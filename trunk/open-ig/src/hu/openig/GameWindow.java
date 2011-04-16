@@ -52,8 +52,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -98,38 +96,38 @@ public class GameWindow extends JFrame implements GameControls {
 	class ScreenRenderer extends JComponent {
 		/** */
 		private static final long serialVersionUID = -4538476567504582641L;
-		/** Constructor. */
-		public ScreenRenderer() {
-			addComponentListener(new ComponentAdapter() {
-				@Override
-				public void componentResized(ComponentEvent e) {
-					try {
-						if (primary != null) {
-							primary.resize();
-						}
-						if (secondary != null) {
-							secondary.resize();
-						}
-						if (movie != null) {
-							movie.resize();
-						}
-						if (statusbarVisible) {
-							statusbar.resize();
-						}
-					} catch (Throwable t) {
-						t.printStackTrace();
-					}
-					repaintRequest = true;
-					repaintRequestPartial = false;
-				}
-			});
-		}
+		/** The last width. */
+		int lastW = -1;
+		/** The last height. */
+		int lastH = -1;
 		@Override
 		public void paint(Graphics g) {
 			boolean r0 = repaintRequest;
 			boolean r1 = repaintRequestPartial;
 			repaintRequest = false;
 			repaintRequestPartial = false;
+			
+			if (getWidth() != lastW || getHeight() != lastH) {
+				r0 = true;
+				lastW = getWidth();
+				lastH = getHeight();
+				try {
+					if (primary != null) {
+						primary.resize();
+					}
+					if (secondary != null) {
+						secondary.resize();
+					}
+					if (movie != null) {
+						movie.resize();
+					}
+					if (statusbarVisible) {
+						statusbar.resize();
+					}
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
 			
 			Graphics2D g2 = (Graphics2D)g;
 			try {
