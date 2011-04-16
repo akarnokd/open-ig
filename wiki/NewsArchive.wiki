@@ -4,6 +4,19 @@
 
 = April, 2011 =
 
+*April 16., 2011*
+
+Now that Open-IG is playable, I wonder whether the [http://code.google.com/p/open-ig/wiki/GameGuide#Gameplay_mechanics gameplay mechanics] are working as one would expect. I have doubts about the following properties:
+
+  * Building construction speed (200 hp / 10 game minutes): maybe too fast
+  * Building repair speed (50 hp / 10 game minutes, 20 credits / minutes): maybe slow
+  * Research speed (e.g., a 100.000 credit research taking 50000 game minutes): maybe too slow
+  * Production speed (e.g., with 1000 capacity, 20 credits / 10 game minutes worth of product): maybe slow
+  * Colony morale effects: medium and large shortages decrease, extra living space increase, morale buildings increase
+  * Upgrade system: you can upgrade banks and churches, but doesn't it ridiculously increase the money income later?
+
+What do you think? What was your gameplay experience?
+
 *April 15., 2011*
 
 Yet another weekend and yet another playable version to test. Please welcome version 0.90 with the long awaited fleet management features. You can now create, move and manage fleets, colonize empty planets. 
