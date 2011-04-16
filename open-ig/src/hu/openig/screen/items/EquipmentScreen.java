@@ -412,7 +412,16 @@ public class EquipmentScreen extends ScreenBase {
 		newButton.onClick = new Act() {
 			@Override
 			public void act() {
-				doCreateFleet(true, planet().x, planet().y);
+				if (player().selectionMode == SelectionMode.PLANET) {
+					doCreateFleet(true, planet().x, planet().y);
+				} else {
+					if (fleet() != null) {
+						FleetStatistics fs = fleet().getStatistics();
+						if (fs.planet != null && fs.planet.owner == player()) {
+							doCreateFleet(true, fs.planet.x, fs.planet.y);
+						}
+					}
+				}
 				editNew = true;
 			}
 		};
@@ -1598,7 +1607,7 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param value select the given inventory item
 	 */
 	void onSelectInventoryItem(InventoryItem value) {
-		if (value.type != research()
+		if (value.type != research() && configure.selectedSlot == null
 		) {
 			displayCategory(value.type.category);
 			research(value.type);

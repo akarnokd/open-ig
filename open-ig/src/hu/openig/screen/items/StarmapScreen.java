@@ -2153,6 +2153,16 @@ public class StarmapScreen extends ScreenBase {
 						
 						fleet().changeInventory(world().researches.get("ColonyShip"), -1);
 						
+						if (fleet().inventory.isEmpty()) {
+							player().fleets.remove(fleet());
+							if (player().fleets.size() > 0) {
+								player().currentFleet = player().fleets.keySet().iterator().next();
+							} else {
+								player().currentFleet = null;
+								player().selectionMode = SelectionMode.PLANET;
+							}
+						}
+						
 						Building b = new Building(bt, player().race);
 						p.race = player().race;
 						p.population = 5000;
