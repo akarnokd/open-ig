@@ -224,29 +224,34 @@
 		<graphics base="colony/buildings/%s/water_vaporator">
 			<tech id='human' height="5" width="5"/>
 		</graphics>
-		<build limit="*" kind="House" cost="45000" except="earth,frozen,liquid,rocky,cratered,neptoplasm"/>
+		<build limit="1" kind="House" cost="45000" except="earth,frozen,liquid,rocky,cratered,neptoplasm"/>
 		<operation>
 			<resource type="house" display="true">12000</resource>
+			<resource type="morale">10</resource>
 			<resource type="energy">-800</resource>
 			<resource type="worker">-210</resource>
 		</operation>
 		<upgrades>
 			<upgrade desc='buildings.housing.upgrade_1'>
-				<resource type='house'>1.25</resource>
+				<resource type='house'>1.2</resource>
+				<resource type='morale'>1.25</resource>
 				<resource type='energy'>1.25</resource>
 				<resource type='worker'>1.25</resource>
 			</upgrade>
 			<upgrade desc='buildings.housing.upgrade_2'>
+				<resource type='house'>1.4</resource>
 				<resource type='house'>1.5</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
 			<upgrade desc='buildings.housing.upgrade_3'>
+				<resource type='house'>1.6</resource>
 				<resource type='house'>2</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>1.75</resource>
 			</upgrade>
 			<upgrade desc='buildings.housing.upgrade_4'>
+				<resource type='house'>1.8</resource>
 				<resource type='house'>2.5</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>1.75</resource>
