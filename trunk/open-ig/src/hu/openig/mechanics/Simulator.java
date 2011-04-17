@@ -214,7 +214,7 @@ public final class Simulator {
 			}
 			// there is one step when the building is ready but not yet allocated
 			if (b.enabled 
-					&& (b.assignedWorker == 0 || (b.getEnergy() < 0 && b.assignedEnergy == 0))) {
+					&& (b.assignedWorker == 0 || (ps.energyAvailable > 0 && b.getEnergy() < 0 && b.assignedEnergy == 0))) {
 				buildInProgress = true;
 			}
 		}
