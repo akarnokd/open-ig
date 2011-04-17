@@ -223,7 +223,7 @@
     <property name='damage' value='20'/>
     <property name='rate' value='1'/>
   </item>
-  <item id='VirusBomb' name='tech.virusbomb.name' long-name='tech.virusbomb.longname' description='tech.virusbomb.description' category='WEAPONS_PROJECTILES' image='inventions/weapons/projectiles/virus_bomb' factory='weapon' research-cost='30000' production-cost='5000' level='4' race='human' requires='Bomb2' civil='1' mech='2' comp='2' ai='2' mil='7' index='2' video='technology/weapons/projectiles/virus_bomb_1'>
+  <item id='VirusBomb' name='tech.virusbomb.name' long-name='tech.virusbomb.longname' description='tech.virusbomb.description' category='WEAPONS_PROJECTILES' image='inventions/weapons/projectiles/virus_bomb' factory='weapon' research-cost='30000' production-cost='5000' level='4' race='human' requires='Bomb2' civil='1' mech='2' comp='2' ai='2' mil='7' index='2' video='technology/weapons/projectiles/virus_bomb'>
     <property name='projectile' value='rocket'/>
     <property name='virus' value='1'/>
     <property name='rate' value='1'/>

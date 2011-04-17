@@ -2007,7 +2007,6 @@ public class PlanetScreen extends ScreenBase {
 			if (player().money >= delta) {
 				player().money -= delta;
 				player().today.buildCost += delta;
-				currentBuilding.setLevel(j);
 				
 				currentBuilding.buildProgress = currentBuilding.type.hitpoints * 1 / 4;
 				currentBuilding.hitpoints = currentBuilding.buildProgress;
@@ -2023,7 +2022,8 @@ public class PlanetScreen extends ScreenBase {
 				world().statistics.upgradeCount += j - currentBuilding.upgradeLevel;
 				world().statistics.moneyUpgrade += delta;
 				world().statistics.moneySpent += delta;
-				
+
+				currentBuilding.setLevel(j);
 			}
 		}
 	}

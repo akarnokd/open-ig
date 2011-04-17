@@ -270,14 +270,13 @@ public final class Simulator {
 			if (planet.population == 0) {
 				planet.die();
 				// FIXME send planet died message
-			} else {
-				planet.owner.statistics.planetsOwned++;
 			}
 		}
 		
 		if (planet.owner != null) {
 			planet.owner.statistics.totalPopulation += planet.population;
 			world.statistics.totalPopulation += planet.population;
+			planet.owner.statistics.planetsOwned++;
 		}
 		
 		return result;
