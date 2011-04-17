@@ -282,6 +282,8 @@ public class PlanetScreen extends ScreenBase {
 	@Override
 	public void onLeave() {
 		placementMode = false;
+		buildingsPanel.build.down = false;
+
 		close0(animationTimer);
 		animationTimer = null;
 	}
@@ -1212,6 +1214,7 @@ public class PlanetScreen extends ScreenBase {
 				@Override
 				public void act() {
 					placementMode = false;
+					build.down = false;
 					upgradePanel.hideUpgradeSelection();
 					displaySecondary(Screens.INFORMATION_BUILDINGS);
 				}
@@ -2104,6 +2107,8 @@ public class PlanetScreen extends ScreenBase {
 		colonyInfo.onClick = new Act() {
 			@Override
 			public void act() {
+				placementMode = false;
+				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
 				displaySecondary(Screens.INFORMATION_COLONY);
 			}
@@ -2111,6 +2116,8 @@ public class PlanetScreen extends ScreenBase {
 		planets.onClick = new Act() {
 			@Override
 			public void act() {
+				placementMode = false;
+				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
 				displaySecondary(Screens.INFORMATION_PLANETS);
 			}
