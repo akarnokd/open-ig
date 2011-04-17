@@ -265,6 +265,13 @@ public class Planet implements Named, Owned {
 			result.addWarning(PlanetProblems.HOUSING);
 		}
 		
+		if (Math.abs(population) > Math.abs(result.policeAvailable) * 2) {
+			result.addProblem(PlanetProblems.POLICE);
+		} else
+		if (Math.abs(population) > Math.abs(result.policeAvailable)) {
+			result.addWarning(PlanetProblems.POLICE);
+		}
+		
 		// FIXME stadium count
 		if (population > 50000 && 0 == stadiumCount && ("human".equals(race))) {
 			result.addProblem(PlanetProblems.STADIUM);

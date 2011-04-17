@@ -195,7 +195,7 @@ public class StatusbarScreen extends ScreenBase {
 	}
 	/** Update the state displays. */
 	public void update() {
-		money.bounds(top.x + 75, top.y + 3, 66, 14);
+		money.bounds(top.x + 75, top.y + 3, 82, 14);
 		money.text("" + player().money);
 		pause.location(top.x + 1, top.y + 2);
 		speed1.location(top.x + 16, top.y + 2);
@@ -207,10 +207,10 @@ public class StatusbarScreen extends ScreenBase {
 		speed2.selected = 500 == commons.speed();
 		speed4.selected = 250 == commons.speed();
 		
-		year.bounds(top.x + 155, top.y + 3, 34, 14);
-		month.bounds(top.x + 195, top.y + 3, 74, 14);
-		day.bounds(top.x + 275, top.y + 3, 18, 14);
-		time.bounds(top.x + 307, top.y + 3, 42, 14);
+		year.bounds(top.x + 171, top.y + 3, 34, 14);
+		month.bounds(top.x + 211, top.y + 3, 82, 14);
+		day.bounds(top.x + 299, top.y + 3, 18, 14);
+		time.bounds(top.x + 331, top.y + 3, 42, 14);
 		
 		year.text("" + world().time.get(GregorianCalendar.YEAR));
 		month.text("" + world().time.getDisplayName(GregorianCalendar.MONTH, GregorianCalendar.LONG, new Locale(commons.language())));

@@ -1684,7 +1684,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				&& player().isAvailable(rt) 
 				&& !productions.containsKey(rt) 
 				&& productions.size() < 5
-				&& cat != ResearchMainCategory.BUILDINS
+				&& rt.category.main != ResearchMainCategory.BUILDINS
 				&& (!rt.has("needsOrbitalFactory") || ps.orbitalFactory > 0)
 		);
 		

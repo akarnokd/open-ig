@@ -885,6 +885,10 @@ public class PlanetScreen extends ScreenBase {
 						icon = commons.common().colonyHubIcon;
 						iconDark = commons.common().colonyHubIconDark;
 						break;
+					case POLICE:
+						icon = commons.common().policeIcon;
+						iconDark = commons.common().policeIconDark;
+						break;
 					default:
 					}
 					if (ps.hasProblem(pp)) {
