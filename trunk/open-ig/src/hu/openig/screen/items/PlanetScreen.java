@@ -2313,8 +2313,6 @@ public class PlanetScreen extends ScreenBase {
 				&& player().money >= player().currentBuilding.cost
 				&& planet().canBuild(player().currentBuilding)
 		) {
-				player().money -= player().currentBuilding.cost;
-				player().today.buildCost += player().currentBuilding.cost;
 				
 				Building b = new Building(player().currentBuilding, race());
 				b.location = Location.of(placementRectangle.x + 1, placementRectangle.y - 1);
@@ -2331,6 +2329,9 @@ public class PlanetScreen extends ScreenBase {
 				
 				buildingInfoPanel.update();
 				setBuildingList(0);
+
+				player().money -= player().currentBuilding.cost;
+				player().today.buildCost += player().currentBuilding.cost;
 				
 				player().statistics.buildCount++;
 				player().statistics.moneyBuilding += player().currentBuilding.cost;

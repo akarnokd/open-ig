@@ -9,9 +9,14 @@
 package hu.openig.mechanics;
 
 
+import hu.openig.core.Func1;
+import hu.openig.core.Location;
+import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
+import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
@@ -19,11 +24,16 @@ import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
+import hu.openig.model.Resource;
 import hu.openig.model.TaxLevel;
+import hu.openig.model.TileSet;
 import hu.openig.model.World;
 
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -140,6 +150,8 @@ public final class Simulator {
 		int tradeIncome = 0;
 		float multiply = 1.0f;
 		float moraleBoost = 0;
+		boolean buildInProgress = false;
+		
 		for (Building b : planet.surface.buildings) {
 			
 			planet.owner.statistics.totalBuilding++;
@@ -150,6 +162,7 @@ public final class Simulator {
 			}
 			
 			if (b.isConstructing()) {
+				buildInProgress = true;
 				b.buildProgress += 200;
 				b.buildProgress = Math.min(b.type.hitpoints, b.buildProgress);
 				b.hitpoints += 200;
@@ -198,6 +211,20 @@ public final class Simulator {
 				if (b.hasResource("morale")) {
 					moraleBoost += b.getResource("morale") * b.getEfficiency();
 				}
+			}
+			// there is one step when the building is ready but not yet allocated
+			if (b.enabled 
+					&& (b.assignedWorker == 0 || (b.getEnergy() < 0 && b.assignedEnergy == 0))) {
+				buildInProgress = true;
+			}
+		}
+		
+		if (planet.autoBuild != AutoBuild.OFF) {
+			if (!buildInProgress 
+					&& !ps.hasWarning(PlanetProblems.COLONY_HUB)
+					&& !ps.hasProblem(PlanetProblems.COLONY_HUB)
+			) {
+				performAutoBuild(world, planet, ps);
 			}
 		}
 		
@@ -463,6 +490,252 @@ public final class Simulator {
 		}
 		
 		return invokeRadar;
+	}
+	/**
+	 * Perform the auto-build if necessary.
+	 * @param world the world
+	 * @param planet the planet
+	 * @param ps the planet statistics
+	 */
+	static void performAutoBuild(final World world, final Planet planet, final PlanetStatistics ps) {
+		// if there is a worker shortage, it may be the root clause
+		if (ps.workerDemand > planet.population) {
+			return;
+		}
+		// if energy shortage
+		if (ps.energyAvailable < ps.energyDemand) {
+			findOptions(world, planet, 
+			new Func1<Building, Boolean>() {
+				@Override
+				public Boolean invoke(Building b) {
+					return b.getEnergy() > 0 && planet.owner.money >= b.type.cost;
+				}
+			},
+			new Func1<BuildingType, Boolean>() {
+				@Override
+				public Boolean invoke(BuildingType value) {
+					Resource res = value.resources.get("energy");
+					return res != null && res.amount > 0;
+				}
+			}
+			);
+			return;
+		}
+		// if living space shortage
+		if (ps.houseAvailable < planet.population) {
+			findOptions(world, planet, 
+			new Func1<Building, Boolean>() {
+				@Override
+				public Boolean invoke(Building b) {
+					return b.hasResource("house");
+				}
+			},
+			new Func1<BuildingType, Boolean>() {
+				@Override
+				public Boolean invoke(BuildingType value) {
+					Resource res = value.resources.get("house");
+					return res != null;
+				}
+			}
+			);
+			return;
+		}
+		// if food shortage
+		if (ps.foodAvailable < planet.population) {
+			findOptions(world, planet, 
+			new Func1<Building, Boolean>() {
+				@Override
+				public Boolean invoke(Building b) {
+					return b.hasResource("food");
+				}
+			},
+			new Func1<BuildingType, Boolean>() {
+				@Override
+				public Boolean invoke(BuildingType value) {
+					Resource res = value.resources.get("food");
+					return res != null;
+				}
+			}
+			);
+			return;
+		}
+		// if hospital shortage
+		if (ps.hospitalAvailable < planet.population) {
+			findOptions(world, planet, 
+			new Func1<Building, Boolean>() {
+				@Override
+				public Boolean invoke(Building b) {
+					return b.hasResource("hospital");
+				}
+			},
+			new Func1<BuildingType, Boolean>() {
+				@Override
+				public Boolean invoke(BuildingType value) {
+					Resource res = value.resources.get("hospital");
+					return res != null;
+				}
+			}
+			);
+			return;
+		}
+		// if living space shortage
+		if (ps.policeAvailable < planet.population) {
+			findOptions(world, planet, 
+			new Func1<Building, Boolean>() {
+				@Override
+				public Boolean invoke(Building b) {
+					return b.hasResource("police");
+				}
+			},
+			new Func1<BuildingType, Boolean>() {
+				@Override
+				public Boolean invoke(BuildingType value) {
+					Resource res = value.resources.get("police");
+					return res != null;
+				}
+			}
+			);
+			return;
+		}
+		if (ps.hasProblem(PlanetProblems.STADIUM) || ps.hasWarning(PlanetProblems.STADIUM)) {
+			findOptions(world, planet, 
+				new Func1<Building, Boolean>() {
+					@Override
+					public Boolean invoke(Building b) {
+						return b.type.id.equals("Stadium");
+					}
+				},
+				new Func1<BuildingType, Boolean>() {
+					@Override
+					public Boolean invoke(BuildingType value) {
+						return value.id.equals("Stadium");
+					}
+				}
+				);
+		}
+	}
+	/**
+	 * Find and invoke options for the given world and planet and use
+	 * the building upgrade and build selectors to find suitable buildings.
+	 * @param world the world
+	 * @param planet the planet
+	 * @param upgradeSelector the selector to find upgradable buildings
+	 * @param buildSelector the selector to find building types to construct
+	 */
+	static void findOptions(World world, Planet planet, Func1<Building, Boolean> upgradeSelector, Func1<BuildingType, Boolean> buildSelector) {
+		List<Building> upgr = findUpgradables(planet, upgradeSelector);
+		if (upgr.size() > 0) {
+			doUpgrade(world, planet, upgr.get(0));
+			return;
+		}
+		// look for energy producing buildings in the model
+		List<BuildingType> bts = findBuildables(world, planet, buildSelector);
+		// build the most costly building if it can be placed
+		for (BuildingType bt : bts) {
+			TileSet ts = bt.tileset.get(planet.race);
+			Point pt = planet.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
+			if (pt != null) {
+				doConstruct(world, planet, bt, pt);
+				return;
+			}
+		}
+		// no room at all, turn off autobuild and let the user do it
+		// FIXME notify user
+		if (bts.size() > 0) {
+			planet.autoBuild = AutoBuild.OFF;
+		}
+
+	}
+	/**
+	 * Locate buildings which satisfy a given filter and have available upgrade levels.
+	 * @param planet the target planet
+	 * @param filter the building filter
+	 * @return the list of potential buildings
+	 */
+	static List<Building> findUpgradables(Planet planet, Func1<Building, Boolean> filter) {
+		List<Building> result = new ArrayList<Building>();
+		for (Building b : planet.surface.buildings) {
+			if (b.upgradeLevel < b.type.upgrades.size()
+				&& filter.invoke(b)
+			) {
+				result.add(b);
+			}
+		}
+		return result;
+	}
+	/**
+	 * Locate building types which satisfy a given filter.
+	 * @param world the world
+	 * @param planet the target planet
+	 * @param filter the building filter
+	 * @return the list of potential building types
+	 */
+	static List<BuildingType> findBuildables(World world, Planet planet, Func1<BuildingType, Boolean> filter) {
+		List<BuildingType> result = new ArrayList<BuildingType>();
+		for (BuildingType bt : world.buildingModel.buildings.values()) {
+			if (
+					bt.tileset.containsKey(planet.race)
+					&& (bt.research == null || planet.owner.isAvailable(bt.research))
+					&& planet.owner.money >= bt.cost
+					&& planet.canBuild(bt)
+					&& filter.invoke(bt)
+			) {
+				result.add(bt);
+			}
+		}
+		Collections.sort(result, new Comparator<BuildingType>() {
+			@Override
+			public int compare(BuildingType o1, BuildingType o2) {
+				return o2.cost - o1.cost;
+			}
+		});
+		return result;
+	}
+	/**
+	 * Construct a building on the given planet.
+	 * @param world the world for the model
+	 * @param planet the target planet
+	 * @param bt the building type to build
+	 * @param pt the place to build (the top-left corner of the roaded building base rectangle).
+	 */
+	static void doConstruct(World world, Planet planet, BuildingType bt,
+			Point pt) {
+		Building b = new Building(bt, planet.race);
+		b.location = Location.of(pt.x + 1, pt.y - 1);
+
+		planet.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
+		planet.surface.placeRoads(planet.race, world.buildingModel);
+
+		planet.owner.money -= bt.cost;
+		planet.owner.today.buildCost += bt.cost;
+		
+		planet.owner.statistics.buildCount++;
+		planet.owner.statistics.moneyBuilding += bt.cost;
+		planet.owner.statistics.moneySpent += bt.cost;
+		
+		world.statistics.buildCount++;
+		world.statistics.moneyBuilding += bt.cost;
+		world.statistics.moneySpent += bt.cost;
+	}
+	/**
+	 * Increase the level of the given building by one.
+	 * @param world the world for the models
+	 * @param planet the target planet
+	 * @param b the building to upgrade
+	 */
+	static void doUpgrade(World world, Planet planet, Building b) {
+		b.setLevel(b.upgradeLevel + 1);
+		b.buildProgress = b.type.hitpoints * 1 / 4;
+		b.hitpoints = b.buildProgress;
+		
+		planet.owner.money -= b.type.cost;
+		planet.owner.statistics.upgradeCount++;
+		planet.owner.statistics.moneySpent += b.type.cost;
+		planet.owner.statistics.moneyUpgrade += b.type.cost;
+		
+		world.statistics.upgradeCount++;
+		world.statistics.moneySpent += b.type.cost;
+		world.statistics.moneyUpgrade += b.type.cost;
 	}
 
 }

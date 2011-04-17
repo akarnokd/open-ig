@@ -542,22 +542,70 @@ public class PlanetSurface {
 	 * no suitable location is present
 	 */
 	public Point findLocation(int width, int height) {
-		int cx = this.width / 2 - this.height / 2;
-		int cy = -this.width / 2 - this.height / 2;
+		int cx = this.width / 2 - this.height / 2 - width / 2;
+		int cy = -this.width / 2 - this.height / 2 + height / 2;
 		
 		// the square size
+		Point pt = null;
+		long dist = -1L; 
 		for (int i = 0; i < Math.abs(cy); i++) {
 			for (int j = cx - i; j <= cx + i; j++) {
 				for (int k = cy + i; k >= cy - i; k--) {
-					if ((j == cx - i || j == cx + i) && (k == cy + i || k == cy - i)) { 
-						if (canPlaceBuilding(j - width / 2, k + height / 2, width, height)) {
-							return new Point(j - width / 2, k + height / 2);
+					if (
+						j < cx - i + 1 || j > cx + i - 1
+						|| k > cy + i - 1 || k < cy - i + 1
+					) { 
+						if (canPlaceBuilding(j, k, width, height)) {
+							Point pt1 = new Point(j, k);
+							long d1 = (j - cx) * (j - cx) + (k - cy) * (k - cy);
+							if (dist < 0 || d1 <= dist) {
+								pt = pt1;
+								dist = d1;
+							}
 						}
 					}
 				}
 			}
+			if (pt != null) {
+				break;
+			}
 		}
 		
-		return null;
+		
+		
+//		for (int j = cx; j >= cx - i; j--) {
+//			if (canPlaceBuilding(j, cy + i, width, height)) {
+//				return new Point(j, cy + i);
+//			}
+//			if (canPlaceBuilding(j, cy - i, width, height)) {
+//				return new Point(j, cy - i);
+//			}
+//		}
+//		for (int j = cx; j <= cx + i; j++) {
+//			if (canPlaceBuilding(j, cy + i, width, height)) {
+//				return new Point(j, cy + i);
+//			}
+//			if (canPlaceBuilding(j, cy - i, width, height)) {
+//				return new Point(j, cy - i);
+//			}
+//		}
+//		for (int k = cy; k <= cy + i; k++) {
+//			if (canPlaceBuilding(cx - i, k, width, height)) {
+//				return new Point(cx - i, k);
+//			}
+//			if (canPlaceBuilding(cx + i, k, width, height)) {
+//				return new Point(cx + i, k);
+//			}
+//		}
+//		for (int k = cy; k >= cy - i; k--) {
+//			if (canPlaceBuilding(cx - i, k, width, height)) {
+//				return new Point(cx - i, k);
+//			}
+//			if (canPlaceBuilding(cx + i, k, width, height)) {
+//				return new Point(cx + i, k);
+//			}
+//		}
+		
+		return pt;
 	}
 }
