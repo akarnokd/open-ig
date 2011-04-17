@@ -183,7 +183,7 @@
     <property name='damage' value='2'/>
     <property name='rate' value='1'/>
   </item>
-  <item id='Laser3' name='tech.laser3.name' long-name='tech.laser3.longname' description='tech.laser3.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_3' factory='weapon' research-cost='12' production-cost='1400' level='4' race='human' requires='Laser2, SolarPlant' mech='2' comp='3' ai='1' mil='4' index='2' video='technology/weapons/lasers/laser_3'>
+  <item id='Laser3' name='tech.laser3.name' long-name='tech.laser3.longname' description='tech.laser3.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_3' factory='weapon' research-cost='12000' production-cost='1400' level='4' race='human' requires='Laser2, SolarPlant' mech='2' comp='3' ai='1' mil='4' index='2' video='technology/weapons/lasers/laser_3'>
     <property name='projectile' value='beam'/>
     <property name='damage' value='3'/>
     <property name='rate' value='1'/>

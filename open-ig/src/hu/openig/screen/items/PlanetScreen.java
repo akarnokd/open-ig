@@ -2283,6 +2283,8 @@ public class PlanetScreen extends ScreenBase {
 			buildingsPanel.preview.cost = bt.cost;
 			buildingsPanel.preview.count = planet().countBuilding(bt);
 			buildingsPanel.preview.enabled(planet().canBuild(bt) && planet().owner == player());
+			placementMode &= planet().canBuild(bt);
+			buildingsPanel.build.down &= planet().canBuild(bt);
 			buildingsPanel.buildingName.text(bt.name);
 			buildingsPanel.build.enabled(buildingsPanel.preview.enabled());
 		} else {
@@ -2300,9 +2302,10 @@ public class PlanetScreen extends ScreenBase {
 	 * @param more cancel the building mode on successful place?
 	 */
 	void placeBuilding(boolean more) {
-		if (surface().canPlaceBuilding(placementRectangle)) {
-
-			if (player().money >= player().currentBuilding.cost) {
+		if (surface().canPlaceBuilding(placementRectangle)
+				&& player().money >= player().currentBuilding.cost
+				&& planet().canBuild(player().currentBuilding)
+		) {
 				player().money -= player().currentBuilding.cost;
 				player().today.buildCost += player().currentBuilding.cost;
 				
@@ -2329,8 +2332,6 @@ public class PlanetScreen extends ScreenBase {
 				world().statistics.buildCount++;
 				world().statistics.moneyBuilding += player().currentBuilding.cost;
 				world().statistics.moneySpent += player().currentBuilding.cost;
-
-			}
 		}
 	}
 	@Override
