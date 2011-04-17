@@ -385,22 +385,22 @@
 		</operation>
 		<upgrades>
 			<upgrade desc="buildings.factory.upgrade_1">
-				<resource type="spaceship">1.25</resource>
+				<resource type="equipment">1.25</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
 			<upgrade desc="buildings.factory.upgrade_2">
-				<resource type="spaceship">1.5</resource>
+				<resource type="equipment">1.5</resource>
 				<resource type='energy'>2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
 			<upgrade desc="buildings.factory.upgrade_3">
-				<resource type="spaceship">1.75</resource>
+				<resource type="equipment">1.75</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 			<upgrade desc="buildings.factory.upgrade_4">
-				<resource type="spaceship">2</resource>
+				<resource type="equipment">2</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
@@ -425,22 +425,22 @@
 		</operation>
 		<upgrades>
 			<upgrade desc="buildings.factory.upgrade_1">
-				<resource type="spaceship">1.25</resource>
+				<resource type="weapon">1.25</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
 			<upgrade desc="buildings.factory.upgrade_2">
-				<resource type="spaceship">1.5</resource>
+				<resource type="weapon">1.5</resource>
 				<resource type='energy'>2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
 			<upgrade desc="buildings.factory.upgrade_3">
-				<resource type="spaceship">1.75</resource>
+				<resource type="weapon">1.75</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
 			<upgrade desc="buildings.factory.upgrade_4">
-				<resource type="spaceship">2</resource>
+				<resource type="weapon">2</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
