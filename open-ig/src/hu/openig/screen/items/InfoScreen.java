@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Act;
 import hu.openig.core.Action1;
 import hu.openig.core.Func1;
+import hu.openig.model.AutoBuild;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
@@ -1286,6 +1287,12 @@ public class InfoScreen extends ScreenBase {
 			taxLevel = new UILabel("-", textSize, commons.text());
 			allocation = new UILabel("-", textSize, commons.text());
 			autobuild = new UILabel("-", textSize, commons.text());
+			autobuild.onPress = new Act() {
+				@Override
+				public void act() {
+					doAutoBuild();
+				}
+			};
 			other = new UILabel("-", textSize, commons.text());
 			other.wrap(true);
 			other.vertically(VerticalAlignment.TOP);
@@ -3445,5 +3452,11 @@ public class InfoScreen extends ScreenBase {
 			return "-";
 		}
 		return Integer.toString(i);
+	}
+	/** Toggle the auto-build states. */
+	void doAutoBuild() {
+		AutoBuild ab = planet().autoBuild;
+		int idx = (ab.ordinal() + 1) % AutoBuild.values().length;
+		planet().autoBuild = AutoBuild.values()[idx];
 	}
 }

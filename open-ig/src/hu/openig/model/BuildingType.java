@@ -53,4 +53,5 @@ public class BuildingType {
 	public Map<String, Scaffolding> scaffoldings;
 	/** The common minimap tiles for various building states. */
 	public BuildingMinimapTiles minimapTiles;
+	
 }
