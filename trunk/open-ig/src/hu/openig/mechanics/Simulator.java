@@ -538,7 +538,6 @@ public final class Simulator {
 				}
 			}
 			);
-			return;
 		}
 		// if food shortage
 		if (ps.foodAvailable < planet.population) {
@@ -557,7 +556,6 @@ public final class Simulator {
 				}
 			}
 			);
-			return;
 		}
 		// if hospital shortage
 		if (ps.hospitalAvailable < planet.population) {
@@ -576,7 +574,6 @@ public final class Simulator {
 				}
 			}
 			);
-			return;
 		}
 		// if living space shortage
 		if (ps.policeAvailable < planet.population) {
@@ -595,7 +592,6 @@ public final class Simulator {
 				}
 			}
 			);
-			return;
 		}
 		if (ps.hasProblem(PlanetProblems.STADIUM) || ps.hasWarning(PlanetProblems.STADIUM)) {
 			findOptions(world, planet, 
