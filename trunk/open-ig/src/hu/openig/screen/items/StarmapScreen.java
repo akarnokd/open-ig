@@ -275,6 +275,8 @@ public class StarmapScreen extends ScreenBase {
 	UIImage problemsRepair;
 	/** Problem indicator icon. */
 	UIImage problemsColonyHub;
+	/** Problem indicator icon. */
+	UIImage problemsPolice;
 	/** Deploy satellite button. */
 	UIImageButton surveySatellite;
 	/** Deploy spy satellite 1 button. */
@@ -519,7 +521,7 @@ public class StarmapScreen extends ScreenBase {
 		colonyPopulationTax.location(bottomPanel.x + 10, bottomPanel.y + 54);
 		colonyOther.location(bottomPanel.x + 10, bottomPanel.y + 70);
 
-		int probcnt = 8;
+		int probcnt = 9;
 		problemsHouse.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsEnergy.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsWorker.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
@@ -529,6 +531,7 @@ public class StarmapScreen extends ScreenBase {
 		problemsStadium.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsRepair.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsColonyHub.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsPolice.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 
 		surveySatellite.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 4);
 		spySatellite1.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 24);
@@ -642,6 +645,7 @@ public class StarmapScreen extends ScreenBase {
 		problemsStadium.visible(false);
 		problemsRepair.visible(false);
 		problemsColonyHub.visible(false);
+		problemsPolice.visible(false);
 		if (p.owner == player()) {
 			PlanetStatistics ps = p.getStatistics();
 			if (ps.hasProblem(PlanetProblems.HOUSING)) {
@@ -705,6 +709,13 @@ public class StarmapScreen extends ScreenBase {
 			} else
 			if (ps.hasWarning(PlanetProblems.COLONY_HUB)) {
 				problemsColonyHub.image(commons.common().colonyHubIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.POLICE)) {
+				problemsPolice.image(commons.common().policeIcon).visible(true);
+			} else
+			if (ps.hasWarning(PlanetProblems.POLICE)) {
+				problemsPolice.image(commons.common().policeIconDark).visible(true);
 			}
 		}
 	}
@@ -832,7 +843,8 @@ public class StarmapScreen extends ScreenBase {
 			problemsStadium.visible(false);
 			problemsRepair.visible(false);
 			problemsColonyHub.visible(false);
-// FIXME
+			problemsPolice.visible(false);
+			
 			surveySatellite.visible(false);
 			spySatellite1.visible(false);
 			spySatellite2.visible(false);
@@ -1084,6 +1096,10 @@ public class StarmapScreen extends ScreenBase {
 						case COLONY_HUB:
 							icon = commons.common().colonyHubIcon;
 							iconDark = commons.common().colonyHubIconDark;
+							break;
+						case POLICE:
+							icon = commons.common().policeIcon;
+							iconDark = commons.common().policeIconDark;
 							break;
 						default:
 						}
@@ -1804,6 +1820,7 @@ public class StarmapScreen extends ScreenBase {
 		problemsStadium = new UIImage(commons.common().stadiumIcon);
 		problemsRepair = new UIImage(commons.common().repairIcon);
 		problemsColonyHub = new UIImage(commons.common().colonyHubIcon);
+		problemsPolice = new UIImage(commons.common().policeIcon);
 
 		surveySatellite = new UIImageButton(commons.starmap().deploySatellite);
 		surveySatellite.onClick = new Act() {
@@ -2170,9 +2187,9 @@ public class StarmapScreen extends ScreenBase {
 						p.lastMorale = 50;
 						p.lastPopulation = 5000;
 						p.owner = player();
-						b.location = Location.of(pt.x + 1, pt.y + 1);
+						b.location = Location.of(pt.x + 1, pt.y - 1);
 						
-						p.surface.placeBuilding(ts.normal, pt.x + 1, pt.y + 1, b);
+						p.surface.placeBuilding(ts.normal, b.location.x, b.location.y, b);
 						p.surface.placeRoads(player().race, world().buildingModel);
 						
 						player().planets.put(p, PlanetKnowledge.BUILDING);

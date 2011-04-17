@@ -103,6 +103,12 @@ public class CommonGFX {
 	/** Colony hub icon. */
 	@Img(name = "colony-hub-icon-dark")
 	public BufferedImage colonyHubIconDark;
+	/** Colony hub icon. */
+	@Img(name = "police-icon")
+	public BufferedImage policeIcon;
+	/** Colony hub icon. */
+	@Img(name = "police-icon-dark")
+	public BufferedImage policeIconDark;
 	/** A 102x39 bridge button. */
 	@Btn2(name = "button_bridge")
 	public BufferedImage[] bridgeButton;
