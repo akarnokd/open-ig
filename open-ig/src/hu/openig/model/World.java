@@ -745,7 +745,7 @@ public class World {
 				}
 			}
 			for (Map.Entry<Fleet, FleetKnowledge> fl : p.fleets.entrySet()) {
-				if (fl.getKey().owner == p) {
+				if (fl.getKey().owner == p && !fl.getKey().inventory.isEmpty()) {
 					XElement xfleet = xp.add("fleet");
 					xfleet.set("id", fl.getKey().id);
 					xfleet.set("x", fl.getKey().x);
@@ -798,7 +798,7 @@ public class World {
 		}
 		
 		for (Planet p : planets.values()) {
-			if (p.surface.buildings.size() > 0) {
+			if (p.owner != null) {
 				XElement xp = world.add("planet");
 				xp.set("id", p.id);
 				xp.set("owner", p.owner.id);
@@ -1014,7 +1014,9 @@ public class World {
 					}
 					f.inventory.add(fii);
 				}
-				p.fleets.put(f, FleetKnowledge.FULL);
+				if (!f.inventory.isEmpty()) {
+					p.fleets.put(f, FleetKnowledge.FULL);
+				}
 			}
 			
 			p.planets.clear();

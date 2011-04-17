@@ -334,6 +334,7 @@ public class LoadSaveScreen extends ScreenBase {
 		public void draw(Graphics2D g2) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			dateFormat2.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
 			
 			if (listWorker != null && !listWorker.isDone()) {
 				commons.text().paintTo(g2, 0, 0, 14, TextRenderer.GRAY, get("loading") + "...");

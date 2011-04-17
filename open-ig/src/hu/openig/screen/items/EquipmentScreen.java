@@ -346,7 +346,6 @@ public class EquipmentScreen extends ScreenBase {
 		
 		fleetStatusLabel = new UILabel("TODO", 10, commons.text());
 
-		// TODO
 		secondaryLabel = new UILabel(get("equipment.secondary"), 10, commons.text()) {
 			@Override
 			public boolean mouse(UIMouse e) {
@@ -833,9 +832,8 @@ public class EquipmentScreen extends ScreenBase {
 		newButton.location(base.x + 560, base.y + 194 - 20);
 		addButton.location(base.x + 322, base.y + 194 - 20);
 		addOne.location(addButton.location());
-		deleteButton.location(base.x + 242, base.y + 194 - 20);
-		delButton.location(deleteButton.location());
-		removeOne.location(deleteButton.location());
+		delButton.location(base.x + 242, base.y + 194 - 20);
+		removeOne.location(base.x + 242, base.y + 194 - 20);
 		
 		listButton.location(base.x + 620, base.y + 49 - 20);
 		
@@ -880,6 +878,7 @@ public class EquipmentScreen extends ScreenBase {
 		minimap.bounds(base.x + 254, base.y + 281, 225, 161);
 		
 		sell.location(delButton.x - delButton.width - 2, delButton.y);
+		deleteButton.location(sell.x - sell.width, sell.y);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -1607,7 +1606,10 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param value select the given inventory item
 	 */
 	void onSelectInventoryItem(InventoryItem value) {
-		if (value.type != research() && configure.selectedSlot == null
+		if (value.type != research() 
+				&& (configure.selectedSlot == null
+						|| configure.item == null
+						|| configure.item.type != value.type)
 		) {
 			displayCategory(value.type.category);
 			research(value.type);
