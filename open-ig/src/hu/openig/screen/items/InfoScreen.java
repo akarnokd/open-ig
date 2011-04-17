@@ -2102,7 +2102,7 @@ public class InfoScreen extends ScreenBase {
 	}
 	/** Adjust the highlight on the planet list view. */
 	void adjustPlanetListView() {
-		List<Planet> list = colonies.getList.invoke(null);
+		List<Planet> list = planetListDetais.getPlanets();
 		Planet cp = colonies.getCurrent.invoke(null);
 		int idx = list.indexOf(cp); 
 		if (idx >= 0) {
