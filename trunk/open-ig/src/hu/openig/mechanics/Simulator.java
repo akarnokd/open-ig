@@ -427,9 +427,11 @@ public final class Simulator {
 			boolean removeWp = false;
 			if (f.targetFleet != null) {
 				target = new Point2D.Float(f.targetFleet.x, f.targetFleet.y);
+				f.waypoints.clear();
 			} else
 			if (f.targetPlanet != null) {
 				target = new Point2D.Float(f.targetPlanet.x, f.targetPlanet.y);
+				f.waypoints.clear();
 			} else
 			if (f.waypoints.size() > 0) {
 				target = f.waypoints.get(0);

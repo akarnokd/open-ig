@@ -60,9 +60,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 
@@ -1107,8 +1110,53 @@ public class InfoScreen extends ScreenBase {
 
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
-			hideSecondary();
+		if (e.has(Type.DOWN)) {
+			if (showPlanetListDetails) {
+				if (e.within(planetListDetais.x + 10, planetListDetais.y - 13, 90, 12)) {
+					if (planetListDetais.sortBy != 0 || !planetListDetais.ascending) {
+						planetListDetais.ascending = true;
+						planetListDetais.sortBy = 0;
+					} else {
+						planetListDetais.ascending = false;
+					}
+				} else
+				if (e.within(planetListDetais.x + 105, planetListDetais.y - 13, 130, 12)) {
+					if (planetListDetais.sortBy != 1 || !planetListDetais.ascending) {
+						planetListDetais.ascending = true;
+						planetListDetais.sortBy = 1;
+					} else {
+						planetListDetais.ascending = false;
+					}
+				} else
+				if (e.within(planetListDetais.x + 240, planetListDetais.y - 13, 85, 12)) {
+					if (planetListDetais.sortBy != 2 || !planetListDetais.ascending) {
+						planetListDetais.ascending = true;
+						planetListDetais.sortBy = 2;
+					} else {
+						planetListDetais.ascending = false;
+					}
+				} else
+				if (e.within(planetListDetais.x + 310, planetListDetais.y - 13, 80, 12)) {
+					if (planetListDetais.sortBy != 3 || !planetListDetais.ascending) {
+						planetListDetais.ascending = true;
+						planetListDetais.sortBy = 3;
+					} else {
+						planetListDetais.ascending = false;
+					}
+				} else {
+					if (!base.contains(e.x, e.y)) {
+						hideSecondary();
+					} else {
+						return super.mouse(e);
+					}
+				}
+			} else {
+				if (!base.contains(e.x, e.y)) {
+					hideSecondary();
+				} else {
+					return super.mouse(e);
+				}
+			}
 			return true;
 		} else {
 			return super.mouse(e);
@@ -1762,6 +1810,36 @@ public class InfoScreen extends ScreenBase {
 				return c;
 			}
 		});
+	}
+	/**
+	 * Comparator for the owner ordering but a custom inner ordering.
+	 * @param <T> the named-owned object
+	 * @param o1 the first object
+	 * @param o2 the second object
+	 * @param inner the secondary comparator
+	 * @return the order
+	 */
+	<T extends Named & Owned> int compare2(T o1, T o2, Comparator<T> inner) {
+		if (o1.owner() == null && o2.owner() != null) {
+			return 1;
+		} else
+		if (o1.owner() != null && o2.owner() == null) {
+			return -1;
+		} else
+		if (o1.owner() == null && o2.owner() == null) {
+			return compareString(o1.name(), o2.name());
+		} else
+		if (o1.owner() == player() && o2.owner() != player()) {
+			return -1;
+		} else
+		if (o1.owner() != player() && o2.owner() == player()) {
+			return 1;
+		}
+		int c = o1.owner().name.compareTo(o2.owner().name);
+		if (c == 0) {
+			c = inner.compare(o1, o2);
+		}
+		return c;
 	}
 	/**
 	 * Compare two strings which may have a tailing number.
@@ -2756,22 +2834,171 @@ public class InfoScreen extends ScreenBase {
 	class PlanetListDetails extends UIComponent {
 		/** The top display offset. */
 		int top;
+		/** Sort by column. */
+		public int sortBy;
+		/** Sort ascending? */
+		public boolean ascending = true;
+		/** @return Get the ordered planet list. */
+		List<Planet> getPlanets() {
+			List<Planet> list = colonies.getList.invoke(null);
+			switch (sortBy) {
+			case 0:
+				if (!ascending) {
+					Collections.sort(list, new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, new Comparator<Planet>() {
+								@Override
+								public int compare(Planet o1, Planet o2) {
+									return compareString(o2.name, o1.name);
+								}
+							});
+						}
+					});
+				}
+				break;
+			case 1:
+				if (ascending) {
+					Collections.sort(list, new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, new Comparator<Planet>() {
+								@Override
+								public int compare(Planet o1, Planet o2) {
+									return o1.population - o2.population;
+								}
+							});
+						}
+					});
+					
+				} else {
+					
+					Collections.sort(list, new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, new Comparator<Planet>() {
+								@Override
+								public int compare(Planet o1, Planet o2) {
+									return o2.population - o1.population;
+								}
+							});
+						}
+					});
+				}
+				break;
+			case 2:
+				if (ascending) {
+					Collections.sort(list, new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, new Comparator<Planet>() {
+								@Override
+								public int compare(Planet o1, Planet o2) {
+									return o1.morale - o2.morale;
+								}
+							});
+						}
+					});
+				} else {
+					Collections.sort(list, new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, new Comparator<Planet>() {
+								@Override
+								public int compare(Planet o1, Planet o2) {
+									return o2.morale - o1.morale;
+								}
+							});
+						}
+					});
+				}
+				break;
+			case 3:
+				final Map<Planet, Set<PlanetProblems>> ppc = new HashMap<Planet, Set<PlanetProblems>>();
+				if (ascending) {
+					Collections.sort(list, new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, new Comparator<Planet>() {
+								@Override
+								public int compare(Planet o1, Planet o2) {
+									
+									Set<PlanetProblems> pp1 = ppc.get(o1);
+									if (pp1 == null) {
+										pp1 = new HashSet<PlanetProblems>();
+										PlanetStatistics ps = o1.getStatistics();
+										pp1.addAll(ps.problems.keySet());
+										pp1.addAll(ps.warnings.keySet());
+										ppc.put(o1, pp1);
+									}
+									Set<PlanetProblems> pp2 = ppc.get(o2);
+									if (pp2 == null) {
+										pp2 = new HashSet<PlanetProblems>();
+										PlanetStatistics ps = o2.getStatistics();
+										pp2.addAll(ps.problems.keySet());
+										pp2.addAll(ps.warnings.keySet());
+										ppc.put(o2, pp2);
+									}
+									
+									return pp1.size() - pp2.size();
+								}
+							});
+						}
+					});
+				} else {
+					Collections.sort(list, new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, new Comparator<Planet>() {
+								@Override
+								public int compare(Planet o1, Planet o2) {
+									
+									Set<PlanetProblems> pp1 = ppc.get(o1);
+									if (pp1 == null) {
+										pp1 = new HashSet<PlanetProblems>();
+										PlanetStatistics ps = o1.getStatistics();
+										pp1.addAll(ps.problems.keySet());
+										pp1.addAll(ps.warnings.keySet());
+										ppc.put(o1, pp1);
+									}
+									Set<PlanetProblems> pp2 = ppc.get(o2);
+									if (pp2 == null) {
+										pp2 = new HashSet<PlanetProblems>();
+										PlanetStatistics ps = o2.getStatistics();
+										pp2.addAll(ps.problems.keySet());
+										pp2.addAll(ps.warnings.keySet());
+										ppc.put(o2, pp2);
+									}
+									
+									return pp2.size() - pp1.size();
+								}
+							});
+						}
+					});
+				}
+				break;
+			default:
+			}
+			return list;
+		}
 		@Override
 		public void draw(Graphics2D g2) {
-			List<Planet> list = colonies.getList.invoke(null);
 			int y = 0;
 			Planet cp = colonies.getCurrent.invoke(null);
 			g2.setColor(Color.BLACK);
-			g2.fillRect(101, - 13, 300, 13);
+			g2.fillRect(5, - 13, 390, 13);
 
 			int probLeft = 310;
-
+			// TODO
+			commons.text().paintTo(g2, 10, -13, 10, TextRenderer.YELLOW, get("info.planet_name"));
 			commons.text().paintTo(g2, 105, -13, 10, TextRenderer.YELLOW, get("info.population_details"));
 			commons.text().paintTo(g2, 240, -13, 10, TextRenderer.YELLOW, get("info.morale_details"));
 			commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, get("info.problem_details"));
 			if (top < 0) {
 				top = 0;
 			}
+			List<Planet> list = getPlanets();
+			
 			for (int i = top; i < list.size() && i < top + 27; i++) {
 				Planet p = list.get(i);
 				
@@ -2943,7 +3170,7 @@ public class InfoScreen extends ScreenBase {
 		@Override
 		public boolean mouse(UIMouse e) {
 			if (e.has(Type.WHEEL)) {
-				List<Planet> list = colonies.getList.invoke(null);
+				List<Planet> list = getPlanets();
 				if (list.size() > 0) {
 					if (e.z < 0) {
 						top = Math.max(0, top - 1);
@@ -2954,7 +3181,7 @@ public class InfoScreen extends ScreenBase {
 				}
 			} else
 			if (e.has(Type.DOWN)) {
-				List<Planet> list = colonies.getList.invoke(null);
+				List<Planet> list = getPlanets();
 				int idx = e.y / 13 + top;
 				if (idx >= 0 && idx < list.size()) {
 					colonies.onSelect.invoke(list.get(idx));
@@ -2962,7 +3189,7 @@ public class InfoScreen extends ScreenBase {
 				}
 			} else
 			if (e.has(Type.DOUBLE_CLICK)) {
-				List<Planet> list = colonies.getList.invoke(null);
+				List<Planet> list = getPlanets();
 				int idx = e.y / 13 + top;
 				if (idx >= 0 && idx < list.size()) {
 					colonies.onDoubleClick.invoke(list.get(idx));
