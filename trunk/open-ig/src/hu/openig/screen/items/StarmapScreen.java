@@ -1355,20 +1355,51 @@ public class StarmapScreen extends ScreenBase {
 		case KeyEvent.VK_UP:
 			pan(0, -30);
 			rep = true;
+			e.consume();
 			break;
 		case KeyEvent.VK_DOWN:
 			pan(0, 30);
 			rep = true;
+			e.consume();
 			break;
 		case KeyEvent.VK_LEFT:
 			pan(-30, 0);
 			rep = true;
+			e.consume();
 			break;
 		case KeyEvent.VK_RIGHT:
 			pan(30, 0);
 			rep = true;
+			e.consume();
 			break;
 		default:
+			char c = Character.toUpperCase(e.getKeyChar());
+			if (c == 'M') {
+				if (fleet() != null) {
+					if (fleet() != null) {
+						fleetMove.down = true;
+						fleetMove.onPress.act();
+						rep = true;
+						e.consume();
+					}
+				}
+			} else
+			if (c == 'A') {
+				if (fleet() != null) {
+					fleetAttack.down = true;
+					fleetAttack.onPress.act();
+					rep = true;
+					e.consume();
+				}
+			} else
+			if (c == 'S') {
+				if (fleet() != null) {
+					fleetStop.down = true;
+					fleetStop.onPress.act();
+					rep = true;
+					e.consume();
+				}
+			}
 		}
 		return rep;
 	}
@@ -1457,46 +1488,44 @@ public class StarmapScreen extends ScreenBase {
 				if (e.has(Modifier.CTRL)) {
 					// attack move
 					Planet p = getPlanetAt(e.x, e.y);
+					Fleet f = getFleetAt(e.x, e.y);
+					if (f != null && f.owner != player() && f != fleet()) {
+						fleetMode = null;
+						fleet().targetPlanet = null;
+						fleet().targetFleet = f;
+						fleet().mode = FleetMode.ATTACK;
+					} else
 					if (p != null && p.owner != player() && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 						fleetMode = null;
 						fleet().targetPlanet = p;
 						fleet().targetFleet = null;
 						fleet().mode = FleetMode.ATTACK;
 					} else {
-						Fleet f = getFleetAt(e.x, e.y);
-						if (f != null && f.owner != player() && f != fleet()) {
-							fleetMode = null;
-							fleet().targetPlanet = null;
-							fleet().targetFleet = f;
-							fleet().mode = FleetMode.ATTACK;
-						} else {
-							fleet().targetPlanet = null;
-							fleet().targetFleet = null;
-							fleet().mode = FleetMode.MOVE;
-							fleet().waypoints.clear();
-							fleet().waypoints.add(toMapCoordinates(e.x, e.y));
-						}
+						fleet().targetPlanet = null;
+						fleet().targetFleet = null;
+						fleet().mode = FleetMode.MOVE;
+						fleet().waypoints.clear();
+						fleet().waypoints.add(toMapCoordinates(e.x, e.y));
 					}
 				} else
 				if (e.has(Modifier.SHIFT)) {
 					Planet p = getPlanetAt(e.x, e.y);
+					Fleet f = getFleetAt(e.x, e.y);
+					if (f != null && f != fleet()) {
+						fleet().targetPlanet = null;
+						fleet().targetFleet = f;
+						fleet().mode = FleetMode.MOVE;
+					} else
 					if (p != null) {
 						fleet().targetPlanet = p;
 						fleet().targetFleet = null;
 						fleet().mode = FleetMode.MOVE;
 					} else {
-						Fleet f = getFleetAt(e.x, e.y);
-						if (f != null && f != fleet()) {
-							fleet().targetPlanet = null;
-							fleet().targetFleet = f;
-							fleet().mode = FleetMode.MOVE;
-						} else {
-							fleet().targetPlanet = null;
-							fleet().targetFleet = null;
-							fleet().mode = FleetMode.MOVE;
-							fleet().waypoints.clear();
-							fleet().waypoints.add(toMapCoordinates(e.x, e.y));
-						}
+						fleet().targetPlanet = null;
+						fleet().targetFleet = null;
+						fleet().mode = FleetMode.MOVE;
+						fleet().waypoints.clear();
+						fleet().waypoints.add(toMapCoordinates(e.x, e.y));
 					}
 					fleetMode = null;
 				}
@@ -1504,20 +1533,19 @@ public class StarmapScreen extends ScreenBase {
 			if (e.has(Button.LEFT)) {
 				if (starmapWindow.contains(e.x, e.y)) {
 					if (fleetMode == FleetMode.ATTACK) {
+						Fleet f = getFleetAt(e.x, e.y);
 						Planet p = getPlanetAt(e.x, e.y);
+						if (f != null && f.owner != player()) {
+							fleetMode = null;
+							fleet().targetPlanet = null;
+							fleet().targetFleet = f;
+							fleet().mode = FleetMode.ATTACK;
+						} else
 						if (p != null && p.owner != player() && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 							fleetMode = null;
 							fleet().targetPlanet = p;
 							fleet().targetFleet = null;
 							fleet().mode = FleetMode.ATTACK;
-						} else {
-							Fleet f = getFleetAt(e.x, e.y);
-							if (f != null && f.owner != player()) {
-								fleetMode = null;
-								fleet().targetPlanet = null;
-								fleet().targetFleet = f;
-								fleet().mode = FleetMode.ATTACK;
-							}
 						}
 					} else
 					if (fleetMode == FleetMode.MOVE) {
@@ -1528,12 +1556,12 @@ public class StarmapScreen extends ScreenBase {
 							fleet().waypoints.add(toMapCoordinates(e.x, e.y));
 						} else {
 							Planet p = getPlanetAt(e.x, e.y);
+							Fleet f = getFleetAt(e.x, e.y);
 							if (p != null) {
 								fleet().targetPlanet = p;
 								fleet().targetFleet = null;
 								fleet().mode = FleetMode.MOVE;
 							} else {
-								Fleet f = getFleetAt(e.x, e.y);
 								if (f != null && f != fleet()) {
 									fleet().targetPlanet = null;
 									fleet().targetFleet = f;
@@ -1553,13 +1581,13 @@ public class StarmapScreen extends ScreenBase {
 						Planet p = getPlanetAt(e.x, e.y);
 						Fleet f = getFleetAt(e.x, e.y);
 	
-						if (p != null) {
-							player().currentPlanet = p;
-							player().selectionMode = SelectionMode.PLANET;
-						}
 						if (f != null) {
 							player().currentFleet = f;
 							player().selectionMode = SelectionMode.FLEET;
+						} else
+						if (p != null) {
+							player().currentPlanet = p;
+							player().selectionMode = SelectionMode.PLANET;
 						}
 					}
 					rep = true;
@@ -1592,18 +1620,18 @@ public class StarmapScreen extends ScreenBase {
 		case DOUBLE_CLICK:
 			if (starmapWindow.contains(e.x, e.y)) {
 				Planet p = getPlanetAt(e.x, e.y);
+				Fleet f = getFleetAt(e.x, e.y);
+				if (f != null) {
+					player().currentFleet = f;
+					player().selectionMode = SelectionMode.FLEET;
+					displaySecondary(Screens.EQUIPMENT);
+					rep = true;
+				} else
 				if (p != null) {
 					player().currentPlanet = p;
 					player().selectionMode = SelectionMode.PLANET;
 					displayPrimary(Screens.COLONY);
 					rep = true;
-				} else {
-					Fleet f = getFleetAt(e.x, e.y);
-					if (f != null) {
-						player().currentFleet = f;
-						player().selectionMode = SelectionMode.FLEET;
-						displaySecondary(Screens.EQUIPMENT);
-					}
 				}
 			} else 
 			if (planetsList.contains(e.x, e.y)) {
