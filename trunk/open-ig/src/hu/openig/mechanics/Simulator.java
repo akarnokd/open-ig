@@ -522,7 +522,7 @@ public final class Simulator {
 			return;
 		}
 		// if living space shortage
-		if (ps.houseAvailable < planet.population) {
+		if (ps.houseAvailable < planet.population && planet.population <= 5000) {
 			findOptions(world, planet, 
 			new Func1<Building, Boolean>() {
 				@Override
