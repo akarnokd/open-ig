@@ -65,6 +65,8 @@ In order to help manage the colonies and their needs, status icons have been int
 || http://open-ig.googlecode.com/svn/trunk/open-ig/doc/worker-icon.png || Major worker shortage ({{{demand >= available * 2}}}) ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/doc/food-icon-dark.png || Minor food shortage ({{{demand < available * 2}}}) ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/doc/food-icon.png || Major food shortage ({{{demand >= available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/police-icon-dark.png || Minor police shortage ({{{demand < available * 2}}}) ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/police-icon.png || Major police shortage ({{{demand >= available * 2}}}) ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/doc/hospital-icon-dark.png || Minor hospital shortage ({{{demand < available * 2}}}) ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/doc/hospital-icon.png || Major hospital shortage ({{{demand >= available * 2}}}) ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/doc/repair-icon-dark.png || Construction in progress ||
