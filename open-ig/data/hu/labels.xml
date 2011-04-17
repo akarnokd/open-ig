@@ -1028,4 +1028,6 @@
 	<entry key='no_saves'>Nincs elérhető mentés</entry>
 	<entry key='load_save'>Tölt / Ment</entry>
 	
+	<entry key='info.planet_name'>Bolygó</entry>
+	
 </labels>

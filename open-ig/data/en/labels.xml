@@ -1041,4 +1041,6 @@
 	<entry key='no_saves'>No saves available</entry>
 	<entry key='load_save'>Load / Save</entry>
 	
+	<entry key='info.planet_name'>Planet</entry>
+	
 </labels>
