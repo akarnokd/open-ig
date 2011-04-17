@@ -6,7 +6,7 @@
   <item id='Fighter4' name='tech.fighter4.name' long-name='tech.fighter4.longname' description='tech.fighter4.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_4' factory='spaceship' research-cost='18000' production-cost='7500' level='4' race='human' requires='Fighter3' mech='3' comp='2' ai='2' mil='4' index='3' video='technology/spaceships/fighters/fighter_4'/>
   <item id='Fighter5' name='tech.fighter5.name' long-name='tech.fighter5.longname' description='tech.fighter5.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_5' factory='spaceship' research-cost='22000' production-cost='10000' level='4' race='human' civil='1' mech='5' comp='4' ai='4' mil='5' index='4' video='technology/spaceships/fighters/fighter_5'/>
   <item id='Fighter6' name='tech.fighter6.name' long-name='tech.fighter6.longname' description='tech.fighter6.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_6' factory='spaceship' research-cost='24000' production-cost='12000' level='5' race='human' requires='Rocket2' mech='4' comp='4' ai='5' mil='7' index='5' video='technology/spaceships/fighters/fighter_6'/>
-  <item id='Destroyer1' name='tech.destroyer1.name' long-name='tech.destroyer1.longname' description='tech.destroyer1.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/destroyer_1' factory='spaceship' research-cost='0' production-cost='12000' level='0' race='human' comp='1' ai='1' mil='1' index='0' video='technology/spaceships/cruisers/destroyer_1'>
+  <item id='Destroyer1' name='tech.destroyer1.name' long-name='tech.destroyer1.longname' description='tech.destroyer1.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/destroyer_1' factory='spaceship' research-cost='10000' production-cost='12000' level='0' race='human' comp='1' ai='1' mil='1' index='0' video='technology/spaceships/cruisers/destroyer_1'>
     <slot id='shield' x='109' y='58' width='26' height='12' max='1' items='Shield1, Shield2'/>
     <slot id='laser' x='163' y='46' width='16' height='15' max='6' items='Laser1, Laser2, Laser3'/>
     <slot id='hyperdrive' x='203' y='56' width='24' height='11' max='1' items='HyperDrive1, HyperDrive2'/>
@@ -50,7 +50,7 @@
     <slot id='cannon2' x='207' y='56' width='15' height='14' max='10' items='PlasmaCannon, ParticleCannon, MesonCannon'/>
     <slot id='hyperdrive' x='235' y='55' width='23' height='21' max='1' items='HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5'/>
   </item>
-  <item id='Battleship1' name='tech.battleship1.name' long-name='tech.battleship1.longname' description='tech.battleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/battleship_1' factory='spaceship' research-cost='0' production-cost='80000' level='3' race='human' requires='OrbitalFactory' civil='1' mech='1' comp='1' ai='1' mil='1' index='0' video='technology/spaceships/battleships/battleship_1'>
+  <item id='Battleship1' name='tech.battleship1.name' long-name='tech.battleship1.longname' description='tech.battleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/battleship_1' factory='spaceship' research-cost='100000' production-cost='80000' level='3' race='human' requires='OrbitalFactory' civil='1' mech='1' comp='1' ai='1' mil='1' index='0' video='technology/spaceships/battleships/battleship_1'>
     <slot id='laser' x='45' y='53' width='21' height='10' max='14' items='Laser1, Laser2, Laser3, Laser4'/>
     <slot id='bomb' x='80' y='64' width='22' height='13' max='8' items='Bomb1, Bomb2'/>
     <slot id='rocket' x='115' y='65' width='23' height='17' max='6' items='Rocket1, Rocket2, MultiheadedRocket'/>
@@ -121,11 +121,11 @@
   <item id='Hubble2' name='tech.hubble2.name' long-name='tech.hubble2.longname' description='tech.hubble2.description' category='SPACESHIPS_SATELLITES' image='inventions/spaceships/satellites/hubble' factory='spaceship' research-cost='10000' production-cost='2100' level='4' race='human' requires='SpySatellite1, Radar2' mech='5' comp='5' ai='6' mil='4' index='3' video='technology/spaceships/satellites/hubble'>
     <property name='radar' value='4'/>
   </item>
-  <item id='SpaceStation1' name='tech.spacestation1.name' long-name='tech.spacestation1.longname' description='tech.spacestation1.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_1' factory='spaceship' research-cost='0' production-cost='65000' level='0' race='human' civil='2' mech='2' comp='2' ai='1' mil='3' index='0' video='technology/spaceships/stations/space_station_1'/>
+  <item id='SpaceStation1' name='tech.spacestation1.name' long-name='tech.spacestation1.longname' description='tech.spacestation1.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_1' factory='spaceship' research-cost='20000' production-cost='65000' level='0' race='human' civil='2' mech='2' comp='2' ai='1' mil='3' index='0' video='technology/spaceships/stations/space_station_1'/>
   <item id='OrbitalFactory' name='tech.orbitalfactory.name' long-name='tech.orbitalfactory.longname' description='tech.orbitalfactory.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/orbital_factory' factory='spaceship' research-cost='40000' production-cost='80000' level='3' race='human' civil='1' mech='1' comp='1' ai='1' mil='1' index='3' video='technology/spaceships/stations/orbital_factory'/>
   <item id='SpaceStation2' name='tech.spacestation2.name' long-name='tech.spacestation2.longname' description='tech.spacestation2.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_2' factory='spaceship' research-cost='110000' production-cost='90000' level='4' race='human' requires='Laser2, IonCannon, SpaceStation1' civil='3' mech='3' comp='4' ai='3' mil='5' index='1' video='technology/spaceships/stations/space_station_2'/>
   <item id='SpaceStation3' name='tech.spacestation3.name' long-name='tech.spacestation3.longname' description='tech.spacestation3.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_3' factory='spaceship' research-cost='200000' production-cost='125000' level='5' race='human' requires='Laser4, IonCannon, Rocket2' civil='6' mech='4' comp='5' ai='3' mil='6' index='2' video='technology/spaceships/stations/space_station_3'/>
-  <item id='HyperDrive1' name='tech.hyperdrive1.name' long-name='tech.hyperdrive1.longname' description='tech.hyperdrive1.description' category='EQUIPMENT_HYPERDRIVES' image='inventions/equipments/hyperdrives/hyperdrive_1' factory='equipment' research-cost='0' production-cost='2000' level='0' race='human' mech='1' mil='1' index='0' video='technology/equipments/hyperdrives/hyperdrive_1'>
+  <item id='HyperDrive1' name='tech.hyperdrive1.name' long-name='tech.hyperdrive1.longname' description='tech.hyperdrive1.description' category='EQUIPMENT_HYPERDRIVES' image='inventions/equipments/hyperdrives/hyperdrive_1' factory='equipment' research-cost='5000' production-cost='2000' level='0' race='human' mech='1' mil='1' index='0' video='technology/equipments/hyperdrives/hyperdrive_1'>
     <property name='speed' value='28'/>
   </item>
   <item id='HyperDrive2' name='tech.hyperdrive2.name' long-name='tech.hyperdrive2.longname' description='tech.hyperdrive2.description' category='EQUIPMENT_HYPERDRIVES' image='inventions/equipments/hyperdrives/hyperdrive_2' factory='equipment' research-cost='14000' production-cost='3200' level='3' race='human' requires='HyperDrive1' mech='2' mil='1' index='1' video='technology/equipments/hyperdrives/hyperdrive_2'>
@@ -152,7 +152,7 @@
   <item id='Storage2' name='tech.storage2.name' long-name='tech.storage2.longname' description='tech.storage2.description' category='EQUIPMENT_MODULES' image='inventions/equipments/modules/storage_2' factory='equipment' research-cost='14000' production-cost='10000' level='4' race='human' requires='Storage1' civil='3' mech='4' comp='2' mil='2' index='4' video='technology/equipments/modules/storage_2'>
     <property name='vehicles' value='5'/>
   </item>
-  <item id='Radar1' name='tech.radar1.name' long-name='tech.radar1.longname' description='tech.radar1.description' category='EQUIPMENT_RADARS' image='inventions/equipments/radars/radar_1' factory='equipment' research-cost='0' production-cost='5000' level='0' race='human' mil='1' index='0' video='technology/equipments/radars/radar_1'>
+  <item id='Radar1' name='tech.radar1.name' long-name='tech.radar1.longname' description='tech.radar1.description' category='EQUIPMENT_RADARS' image='inventions/equipments/radars/radar_1' factory='equipment' research-cost='8000' production-cost='5000' level='0' race='human' mil='1' index='0' video='technology/equipments/radars/radar_1'>
     <property name='radar' value='1'/>
   </item>
   <item id='Radar2' name='tech.radar2.name' long-name='tech.radar2.longname' description='tech.radar2.description' category='EQUIPMENT_RADARS' image='inventions/equipments/radars/radar_2' factory='equipment' research-cost='18000' production-cost='9000' level='3' race='human' requires='Radar1' mech='2' comp='2' ai='1' mil='2' index='1' video='technology/equipments/radars/radar_2'>
@@ -161,7 +161,7 @@
   <item id='Radar3' name='tech.radar3.name' long-name='tech.radar3.longname' description='tech.radar3.description' category='EQUIPMENT_RADARS' image='inventions/equipments/radars/radar_3' factory='equipment' research-cost='22000' production-cost='16000' level='4' race='human' requires='Radar2' civil='1' mech='4' comp='4' ai='2' mil='4' index='2' video='technology/equipments/radars/radar_3'>
     <property name='radar' value='3'/>
   </item>
-  <item id='Shield1' name='tech.shield1.name' long-name='tech.shield1.longname' description='tech.shield1.description' category='EQUIPMENT_SHIELDS' image='inventions/equipments/shields/shield_1' factory='equipment' research-cost='0' production-cost='4000' level='0' race='human' civil='1' comp='1' mil='1' index='0' video='technology/equipments/shields/shield_1'>
+  <item id='Shield1' name='tech.shield1.name' long-name='tech.shield1.longname' description='tech.shield1.description' category='EQUIPMENT_SHIELDS' image='inventions/equipments/shields/shield_1' factory='equipment' research-cost='10000' production-cost='4000' level='0' race='human' civil='1' comp='1' mil='1' index='0' video='technology/equipments/shields/shield_1'>
     <property name='shield' value='25'/>
   </item>
   <item id='Shield2' name='tech.shield2.name' long-name='tech.shield2.longname' description='tech.shield2.description' category='EQUIPMENT_SHIELDS' image='inventions/equipments/shields/shield_2' factory='equipment' research-cost='20000' production-cost='7500' level='4' race='human' requires='Shield1' comp='3' ai='1' mil='4' index='1' video='technology/equipments/shields/shield_2'>
@@ -173,7 +173,7 @@
   <item id='Shield4' name='tech.shield4.name' long-name='tech.shield4.longname' description='tech.shield4.description' category='EQUIPMENT_SHIELDS' image='inventions/equipments/shields/shield_4' factory='equipment' research-cost='30000' production-cost='19000' level='5' race='human' civil='1' mech='3' comp='6' ai='4' mil='7' index='3' video='technology/equipments/shields/shield_4'>
     <property name='shield' value='60'/>
   </item>
-  <item id='Laser1' name='tech.laser1.name' long-name='tech.laser1.longname' description='tech.laser1.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_1' factory='weapon' research-cost='0' production-cost='620' level='0' race='human' mech='1' comp='1' mil='1' index='0' video='technology/weapons/lasers/laser_1'>
+  <item id='Laser1' name='tech.laser1.name' long-name='tech.laser1.longname' description='tech.laser1.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_1' factory='weapon' research-cost='3000' production-cost='620' level='0' race='human' mech='1' comp='1' mil='1' index='0' video='technology/weapons/lasers/laser_1'>
     <property name='projectile' value='beam'/>
     <property name='damage' value='1'/>
     <property name='rate' value='1'/>
@@ -213,7 +213,7 @@
     <property name='damage' value='6'/>
     <property name='rate' value='2'/>
   </item>
-  <item id='Bomb1' name='tech.bomb1.name' long-name='tech.bomb1.longname' description='tech.bomb1.description' category='WEAPONS_PROJECTILES' image='inventions/weapons/projectiles/bomb_1' factory='weapon' research-cost='0' production-cost='1400' level='0' race='human' mech='1' comp='1' mil='1' index='0' video='technology/weapons/projectiles/bomb_1'>
+  <item id='Bomb1' name='tech.bomb1.name' long-name='tech.bomb1.longname' description='tech.bomb1.description' category='WEAPONS_PROJECTILES' image='inventions/weapons/projectiles/bomb_1' factory='weapon' research-cost='5000' production-cost='1400' level='0' race='human' mech='1' comp='1' mil='1' index='0' video='technology/weapons/projectiles/bomb_1'>
     <property name='projectile' value='rocket'/>
     <property name='damage' value='10'/>
     <property name='rate' value='1'/>
@@ -228,7 +228,7 @@
     <property name='virus' value='1'/>
     <property name='rate' value='1'/>
   </item>
-  <item id='Rocket1' name='tech.rocket1.name' long-name='tech.rocket1.longname' description='tech.rocket1.description' category='WEAPONS_PROJECTILES' image='inventions/weapons/projectiles/rocket_1' factory='weapon' research-cost='0' production-cost='900' level='0' race='human' mech='1' comp='1' ai='1' mil='1' index='3' video='technology/weapons/projectiles/rocket_1'>
+  <item id='Rocket1' name='tech.rocket1.name' long-name='tech.rocket1.longname' description='tech.rocket1.description' category='WEAPONS_PROJECTILES' image='inventions/weapons/projectiles/rocket_1' factory='weapon' research-cost='6000' production-cost='900' level='0' race='human' mech='1' comp='1' ai='1' mil='1' index='3' video='technology/weapons/projectiles/rocket_1'>
     <property name='projectile' value='rocket'/>
     <property name='damage' value='15'/>
     <property name='rate' value='1'/>
@@ -243,7 +243,7 @@
     <property name='damage' value='45'/>
     <property name='rate' value='1'/>
   </item>
-  <item id='LightTank' name='tech.lighttank.name' long-name='tech.lighttank.longname' description='tech.lighttank.description' category='WEAPONS_TANKS' image='inventions/weapons/tanks/light_tank' factory='weapon' research-cost='0' production-cost='3000' level='0' race='human' comp='1' ai='1' mil='1' index='0' video='technology/weapons/tanks/light_tank'>
+  <item id='LightTank' name='tech.lighttank.name' long-name='tech.lighttank.longname' description='tech.lighttank.description' category='WEAPONS_TANKS' image='inventions/weapons/tanks/light_tank' factory='weapon' research-cost='10000' production-cost='3000' level='0' race='human' comp='1' ai='1' mil='1' index='0' video='technology/weapons/tanks/light_tank'>
     <property name='range' value='2'/>
     <property name='speed' value='5'/>
     <property name='armor' value='3'/>
@@ -267,7 +267,7 @@
     <property name='armor' value='7'/>
     <property name='damage' value='4'/>
   </item>
-  <item id='RadarCar' name='tech.radarcar.name' long-name='tech.radarcar.longname' description='tech.radarcar.description' category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/radar_car' factory='weapon' research-cost='0' production-cost='10000' level='0' race='human' mech='1' ai='1' mil='1' index='0' video='technology/weapons/vehicles/radar_car'>
+  <item id='RadarCar' name='tech.radarcar.name' long-name='tech.radarcar.longname' description='tech.radarcar.description' category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/radar_car' factory='weapon' research-cost='5000' production-cost='10000' level='0' race='human' mech='1' ai='1' mil='1' index='0' video='technology/weapons/vehicles/radar_car'>
     <property name='armor' value='3'/>
     <property name='surfaceradar' value='true'/>
   </item>
@@ -295,7 +295,7 @@
   <item id='Fortress' name='tech.fortress.name' long-name='tech.fortress.longname' description='tech.fortress.description' category='BUILDINGS_MILITARY' image='inventions/buildings/military/fortress' factory='building' research-cost='18000' production-cost='30000' level='4' race='human' requires='IonCannon' civil='4' mech='3' comp='2' ai='1' mil='4' index='2' video='technology/buildings/military/fortress'/>
   <item id='Stronghold' name='tech.stronghold.name' long-name='tech.stronghold.longname' description='tech.stronghold.description' category='BUILDINGS_MILITARY' image='inventions/buildings/military/stronghold' factory='building' research-cost='29600' production-cost='50000' level='4' race='human' requires='PlasmaCannon' civil='5' mech='4' comp='4' ai='2' mil='5' index='3' video='technology/buildings/military/stronghold'/>
   <item id='Bunker' name='tech.bunker.name' long-name='tech.bunker.longname' description='tech.bunker.description' category='BUILDINGS_MILITARY' image='inventions/buildings/military/bunker' factory='building' research-cost='8000' production-cost='18000' level='4' race='human' civil='3' mech='3' comp='2' mil='3' index='4' video='technology/buildins/military/bunker'/>
-  <item id='RadarTelescope' name='tech.radartelescope.name' long-name='tech.radartelescope.longname' description='tech.radartelescope.description' category='BUILDINGS_RADARS' image='inventions/buildings/radars/radar_telescope' factory='building' research-cost='0' production-cost='4000' level='0' race='human' mech='1' comp='1' ai='1' mil='1' index='0' video='technology/buildins/radars/radar_telescope'/>
+  <item id='RadarTelescope' name='tech.radartelescope.name' long-name='tech.radartelescope.longname' description='tech.radartelescope.description' category='BUILDINGS_RADARS' image='inventions/buildings/radars/radar_telescope' factory='building' research-cost='7000' production-cost='4000' level='0' race='human' mech='1' comp='1' ai='1' mil='1' index='0' video='technology/buildins/radars/radar_telescope'/>
   <item id='FieldTelescope' name='tech.fieldtelescope.name' long-name='tech.fieldtelescope.longname' description='tech.fieldtelescope.description' category='BUILDINGS_RADARS' image='inventions/buildings/radars/field_telescope' factory='building' research-cost='14000' production-cost='10000' level='3' race='human' civil='1' mech='1' comp='2' ai='2' mil='2' index='1' video='technology/buildings/radars/field_telescope'/>
   <item id='PhasedTelescope' name='tech.phasedtelescope.name' long-name='tech.phasedtelescope.longname' description='tech.phasedtelescope.description' category='BUILDINGS_RADARS' image='inventions/buildings/radars/phased_telescope' factory='building' research-cost='20000' production-cost='25000' level='4' race='human' civil='2' mech='2' comp='3' ai='4' mil='2' index='2' video='technology/buildings/radars/phased_telescope'/>
   <item id='PlasmaProjector' name='tech.plasmaprojector.name' long-name='tech.plasmaprojector.longname' description='tech.plasmaprojector.description' category='BUILDINGS_GUNS' image='inventions/buildings/guns/plasma_projector' factory='building' research-cost='14000' production-cost='17800' level='3' race='human' civil='2' mech='1' comp='2' ai='1' mil='2' index='0' video='technology/buildings/guns/plasma_projector'/>

@@ -1437,7 +1437,7 @@ public class StarmapScreen extends ScreenBase {
 				scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 				rep = true;
 			}
-			if (starmapWindow.contains(e.x, e.y) && e.has(Button.RIGHT) && player().selectionMode == SelectionMode.FLEET && fleet().owner == player()) {
+			if (starmapWindow.contains(e.x, e.y) && e.has(Button.RIGHT) && player().selectionMode == SelectionMode.FLEET && fleet() != null && fleet().owner == player()) {
 				if (e.has(Modifier.CTRL)) {
 					// attack move
 					Planet p = getPlanetAt(e.x, e.y);
@@ -2148,7 +2148,7 @@ public class StarmapScreen extends ScreenBase {
 			if ("MainBuilding".equals(bt.kind)) {
 				TileSet ts = bt.tileset.get(player().race);
 				if (ts != null) {
-					Point pt = p.surface.findLocation(ts.normal.width, ts.normal.height);
+					Point pt = p.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
 					if (pt != null) {
 						
 						fleet().changeInventory(world().researches.get("ColonyShip"), -1);
