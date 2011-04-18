@@ -8,9 +8,13 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 = Details =
 
-1) Download the main game JAR file from the downloads page:
+1) Download the current upgrade pack and main game JAR file from the downloads page:
+
+[http://open-ig.googlecode.com/files/open-ig-upgrade-20110415a.zip Upgrade 2011-04-15-a]
 
 [http://open-ig.googlecode.com/files/open-ig-0.90.jar open-ig-0.90.jar]
+
+Note that the *essential* upgrade pack contains the ever changing game model and image resources. Without it, the game might not work and behave properly.
 
 2) Download the game resource files (1.1 GB!):
 
@@ -27,8 +31,6 @@ This page details the manual installation instructions for Open Imperium Galacti
 [http://open-ig.googlecode.com/files/open-ig-video-08-0.8.zip Video 8], 
 [http://open-ig.googlecode.com/files/open-ig-video-09-0.8.zip Video 9], <br>
 [http://open-ig.googlecode.com/files/open-ig-video-10-0.8.zip Video 10],[http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip Video 11],  [http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip Video 12]
-
-[http://open-ig.googlecode.com/files/open-ig-upgrade-20110415a.zip Upgrade 2011-04-15-a]
 
 3) Place all these files into the same directory
 
