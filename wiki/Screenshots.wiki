@@ -3,6 +3,10 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.91 screenshots =
+
+[http://open-ig.googlecode.com/svn/trunk/open-ig/doc/one_million_colony.png http://open-ig.googlecode.com/svn/trunk/open-ig/doc/one_million_colony_tn.png]
+
 = Version 0.90 screenshots =
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/equipment-07.png
