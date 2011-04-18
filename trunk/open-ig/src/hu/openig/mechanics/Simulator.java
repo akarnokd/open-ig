@@ -16,6 +16,7 @@ import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
@@ -129,6 +130,9 @@ public final class Simulator {
 		if (invokeRadar) {
 			Radar.compute(world);
 		}
+		
+		verify(world);
+		
 		if (day0 != day1) {
 			return true;
 		}
@@ -773,5 +777,27 @@ public final class Simulator {
 			// maximize upgrade level if the player has enough money relative to the building's cost
 		} while (b.upgradeLevel < b.type.upgrades.size() && planet.owner.money >= 30 * b.type.cost);
 	}
-
+	/**
+	 * A world diagnostic to check for mechanics consistency errors.
+	 * @param world the world to test
+	 */
+	static void verify(World world) {
+		// Owner knows about its planet
+		for (Planet p : world.planets.values()) {
+			if (p.owner != null && p.owner.planets.get(p) != PlanetKnowledge.BUILDING) {
+				System.err.printf("Planet knowledge error | Player: %s, Planet: %s, Knowledge: %s%n", p.owner.id, p.id, p.owner.planets.get(p));
+			}
+			for (Building b : p.surface.buildings) {
+				if (b.upgradeLevel > b.type.upgrades.size()) {
+					System.err.printf("Upgrade limit error | Player: %s, Planet: %s, Building: %s, Location: %d;%d, Level: %d, Limit: %d%n", 
+							p.owner.id, p.id, b.type.id, b.location.x, b.location.y, b.upgradeLevel, b.type.upgrades.size());
+				}
+			}
+		}
+		for (Player p : world.players.values()) {
+			if (p.money < 0) {
+				System.err.printf("Negative money | Player %s, Money %d%n", p.id, p.money);
+			}
+		}
+	}
 }
