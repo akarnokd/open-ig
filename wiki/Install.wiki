@@ -48,5 +48,3 @@ java -Xmx512M -jar open-ig-0.90.jar
 {{{
 javaw -Xmx512M -jar open-ig-0.90.jar
 }}}
-
-http://karnokd.uw.hu/images/open-ig-mainmenu.png
