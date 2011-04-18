@@ -162,7 +162,7 @@ The build strategy is as follows:
   * Handle energy shortages first, and don't handle other shortages yet. Usually, the root cause of a shortage may be simply the lack of energy.
   * Handle other shortages later but simultaneously.
   * Upgrade first, construct second: space is limited, and in long term, using the upgrade path reserves more space for later problems.
-  * Upgrade one level at a time: this may seem slow, but reduces the side-effects of jumping too many levels at once (increased energy and worker demands). This strategy might not be the best for neglected planets which would need several upgrades and new construction, but applied continuously should keep the planets in good shape.
+  * Upgrade multiple levels if the player has 30 times the required cost, upgrade a single level otherwise.
   * Try upgrading or constructing expensive buildings first.
   * If a new construction is required, consider the available build space. For example: if you could afford an Arcology but you only have room for Prefab housing, the auto-build will choose the latter.
 
