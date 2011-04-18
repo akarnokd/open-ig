@@ -520,6 +520,8 @@
 	
 	<entry key='autobuild.OFF'>Kikapcsolva</entry>
 	<entry key='autobuild.CIVIL'>Civil épületek</entry>
+	<entry key='autobuild.ECONOMIC'>Gazdasági épületek</entry>
+	<entry key='autobuild.FACTORY'>Gyárépületek</entry>
 	
 	<entry key='allocation.ZERO'>Nincs</entry>
 	<entry key='allocation.DEFAULT'>Egyenletes</entry>

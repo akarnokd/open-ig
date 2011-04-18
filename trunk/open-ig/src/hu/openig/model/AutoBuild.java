@@ -22,4 +22,8 @@ public enum AutoBuild {
 	 * If necessary, power plants are built too.
 	 */
 	CIVIL,
+	/** Construct economic buildings and upgrade them. */
+	ECONOMIC,
+	/** Construct factory buildings and upgrade them. */
+	FACTORY
 }

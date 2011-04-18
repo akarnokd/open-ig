@@ -521,93 +521,127 @@ public final class Simulator {
 			);
 			return;
 		}
-		// if living space shortage
-		if (ps.houseAvailable < planet.population || (planet.population <= 5000 && ps.houseAvailable <= 5000)) {
-			findOptions(world, planet, 
-			new Func1<Building, Boolean>() {
-				@Override
-				public Boolean invoke(Building b) {
-					return b.hasResource("house");
-				}
-			},
-			new Func1<BuildingType, Boolean>() {
-				@Override
-				public Boolean invoke(BuildingType value) {
-					Resource res = value.resources.get("house");
-					return res != null;
-				}
-			}
-			);
-		}
-		// if food shortage
-		if (ps.foodAvailable < planet.population) {
-			findOptions(world, planet, 
-			new Func1<Building, Boolean>() {
-				@Override
-				public Boolean invoke(Building b) {
-					return b.hasResource("food");
-				}
-			},
-			new Func1<BuildingType, Boolean>() {
-				@Override
-				public Boolean invoke(BuildingType value) {
-					Resource res = value.resources.get("food");
-					return res != null;
-				}
-			}
-			);
-		}
-		// if hospital shortage
-		if (ps.hospitalAvailable < planet.population) {
-			findOptions(world, planet, 
-			new Func1<Building, Boolean>() {
-				@Override
-				public Boolean invoke(Building b) {
-					return b.hasResource("hospital");
-				}
-			},
-			new Func1<BuildingType, Boolean>() {
-				@Override
-				public Boolean invoke(BuildingType value) {
-					Resource res = value.resources.get("hospital");
-					return res != null;
-				}
-			}
-			);
-		}
-		// if living space shortage
-		if (ps.policeAvailable < planet.population) {
-			findOptions(world, planet, 
-			new Func1<Building, Boolean>() {
-				@Override
-				public Boolean invoke(Building b) {
-					return b.hasResource("police");
-				}
-			},
-			new Func1<BuildingType, Boolean>() {
-				@Override
-				public Boolean invoke(BuildingType value) {
-					Resource res = value.resources.get("police");
-					return res != null;
-				}
-			}
-			);
-		}
-		if (ps.hasProblem(PlanetProblems.STADIUM) || ps.hasWarning(PlanetProblems.STADIUM)) {
-			findOptions(world, planet, 
+		if (planet.autoBuild == AutoBuild.CIVIL) {
+			// if living space shortage
+			if (ps.houseAvailable < planet.population || (planet.population <= 5000 && ps.houseAvailable <= 5000)) {
+				findOptions(world, planet, 
 				new Func1<Building, Boolean>() {
 					@Override
 					public Boolean invoke(Building b) {
-						return b.type.id.equals("Stadium");
+						return b.hasResource("house");
 					}
 				},
 				new Func1<BuildingType, Boolean>() {
 					@Override
 					public Boolean invoke(BuildingType value) {
-						return value.id.equals("Stadium");
+						Resource res = value.resources.get("house");
+						return res != null;
 					}
 				}
 				);
+			}
+			// if food shortage
+			if (ps.foodAvailable < planet.population) {
+				findOptions(world, planet, 
+				new Func1<Building, Boolean>() {
+					@Override
+					public Boolean invoke(Building b) {
+						return b.hasResource("food");
+					}
+				},
+				new Func1<BuildingType, Boolean>() {
+					@Override
+					public Boolean invoke(BuildingType value) {
+						Resource res = value.resources.get("food");
+						return res != null;
+					}
+				}
+				);
+			}
+			// if hospital shortage
+			if (ps.hospitalAvailable < planet.population) {
+				findOptions(world, planet, 
+				new Func1<Building, Boolean>() {
+					@Override
+					public Boolean invoke(Building b) {
+						return b.hasResource("hospital");
+					}
+				},
+				new Func1<BuildingType, Boolean>() {
+					@Override
+					public Boolean invoke(BuildingType value) {
+						Resource res = value.resources.get("hospital");
+						return res != null;
+					}
+				}
+				);
+			}
+			// if living space shortage
+			if (ps.policeAvailable < planet.population) {
+				findOptions(world, planet, 
+				new Func1<Building, Boolean>() {
+					@Override
+					public Boolean invoke(Building b) {
+						return b.hasResource("police");
+					}
+				},
+				new Func1<BuildingType, Boolean>() {
+					@Override
+					public Boolean invoke(BuildingType value) {
+						Resource res = value.resources.get("police");
+						return res != null;
+					}
+				}
+				);
+			}
+			if (ps.hasProblem(PlanetProblems.STADIUM) || ps.hasWarning(PlanetProblems.STADIUM)) {
+				findOptions(world, planet, 
+					new Func1<Building, Boolean>() {
+						@Override
+						public Boolean invoke(Building b) {
+							return b.type.id.equals("Stadium");
+						}
+					},
+					new Func1<BuildingType, Boolean>() {
+						@Override
+						public Boolean invoke(BuildingType value) {
+							return value.id.equals("Stadium");
+						}
+					}
+					);
+			}
+		} else
+		if (planet.autoBuild == AutoBuild.ECONOMIC) {
+			findOptions(world, planet, 
+				new Func1<Building, Boolean>() {
+					@Override
+					public Boolean invoke(Building b) {
+						return b.type.kind.equals("Economic");
+					}
+				},
+				new Func1<BuildingType, Boolean>() {
+					@Override
+					public Boolean invoke(BuildingType value) {
+						return value.kind.equals("Economic");
+					}
+				}
+			);
+		} else
+		if (planet.autoBuild == AutoBuild.FACTORY) {
+			findOptions(world, planet, 
+				new Func1<Building, Boolean>() {
+					@Override
+					public Boolean invoke(Building b) {
+						return b.type.kind.equals("Factory");
+					}
+				},
+				new Func1<BuildingType, Boolean>() {
+					@Override
+					public Boolean invoke(BuildingType value) {
+						return value.kind.equals("Factory");
+					}
+				}
+			);
 		}
 	}
 	/**

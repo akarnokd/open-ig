@@ -508,7 +508,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param scale the scale factor -1.0 ... +1.0
 	 */
 	void doAdjustMoney(float scale) {
-		Research r = player().research.get(research());
+		Research r = player().research.get(player().runningResearch);
 		r.assignedMoney += scale * r.type.researchCost / 20;
 		r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);
 	}
