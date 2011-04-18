@@ -522,7 +522,7 @@ public final class Simulator {
 			return;
 		}
 		// if living space shortage
-		if (ps.houseAvailable < planet.population || planet.population <= 5000) {
+		if (ps.houseAvailable < planet.population || (planet.population <= 5000 && ps.houseAvailable <= 5000)) {
 			findOptions(world, planet, 
 			new Func1<Building, Boolean>() {
 				@Override
@@ -652,6 +652,7 @@ public final class Simulator {
 		List<Building> result = new ArrayList<Building>();
 		for (Building b : planet.surface.buildings) {
 			if (b.upgradeLevel < b.type.upgrades.size()
+				&& b.type.cost <= planet.owner.money
 				&& filter.invoke(b)
 			) {
 				result.add(b);

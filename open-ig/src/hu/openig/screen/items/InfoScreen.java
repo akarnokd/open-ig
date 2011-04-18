@@ -1286,12 +1286,15 @@ public class InfoScreen extends ScreenBase {
 			taxMorale = new UILabel("-", textSize, commons.text());
 			taxLevel = new UILabel("-", textSize, commons.text());
 			allocation = new UILabel("-", textSize, commons.text());
-			autobuild = new UILabel("-", textSize, commons.text());
-			autobuild.onPress = new Act() {
+			autobuild = new UILabel("-", textSize, commons.text()) {
 				@Override
-				public void act() {
-					doAutoBuild();
-				}
+				public boolean mouse(UIMouse e) {
+					if (e.has(Type.DOWN)) {
+						doAutoBuild(e.has(Modifier.SHIFT));
+						return true;
+					}
+					return super.mouse(e);
+				};
 			};
 			other = new UILabel("-", textSize, commons.text());
 			other.wrap(true);
@@ -3453,10 +3456,18 @@ public class InfoScreen extends ScreenBase {
 		}
 		return Integer.toString(i);
 	}
-	/** Toggle the auto-build states. */
-	void doAutoBuild() {
+	/** 
+	 * Toggle the auto-build states. 
+	 * @param all set on all planets?
+	 */
+	void doAutoBuild(boolean all) {
 		AutoBuild ab = planet().autoBuild;
 		int idx = (ab.ordinal() + 1) % AutoBuild.values().length;
 		planet().autoBuild = AutoBuild.values()[idx];
+		if (all) {
+			for (Planet p : player().ownPlanets()) {
+				p.autoBuild = planet().autoBuild;
+			}
+		}
 	}
 }
