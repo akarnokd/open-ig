@@ -755,18 +755,23 @@ public final class Simulator {
 	 * @param b the building to upgrade
 	 */
 	static void doUpgrade(World world, Planet planet, Building b) {
-		b.setLevel(b.upgradeLevel + 1);
-		b.buildProgress = b.type.hitpoints * 1 / 4;
-		b.hitpoints = b.buildProgress;
-		
-		planet.owner.money -= b.type.cost;
-		planet.owner.statistics.upgradeCount++;
-		planet.owner.statistics.moneySpent += b.type.cost;
-		planet.owner.statistics.moneyUpgrade += b.type.cost;
-		
-		world.statistics.upgradeCount++;
-		world.statistics.moneySpent += b.type.cost;
-		world.statistics.moneyUpgrade += b.type.cost;
+		do {
+			b.setLevel(b.upgradeLevel + 1);
+			b.buildProgress = b.type.hitpoints * 1 / 4;
+			b.hitpoints = b.buildProgress;
+			
+			planet.owner.today.buildCost += b.type.cost;
+			
+			planet.owner.money -= b.type.cost;
+			planet.owner.statistics.upgradeCount++;
+			planet.owner.statistics.moneySpent += b.type.cost;
+			planet.owner.statistics.moneyUpgrade += b.type.cost;
+			
+			world.statistics.upgradeCount++;
+			world.statistics.moneySpent += b.type.cost;
+			world.statistics.moneyUpgrade += b.type.cost;
+			// maximize upgrade level if the player has enough money relative to the building's cost
+		} while (b.upgradeLevel < b.type.upgrades.size() && planet.owner.money >= 30 * b.type.cost);
 	}
 
 }

@@ -13,10 +13,11 @@ import hu.openig.core.Act;
 import hu.openig.core.Location;
 import hu.openig.core.Tile;
 import hu.openig.mechanics.Allocator;
+import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
-import hu.openig.model.Planet;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
@@ -1821,6 +1822,11 @@ public class PlanetScreen extends ScreenBase {
 					autobuild.text(format("colonyinfo.autobuild",
 							get(p.getAutoBuildLabel())
 					), true).visible(true);
+					if (p.autoBuild != AutoBuild.OFF) {
+						autobuild.color(TextRenderer.YELLOW);
+					} else {
+						autobuild.color(TextRenderer.GREEN);
+					}
 				} else {
 					if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 						population.text(format("colonyinfo.population.alien", 

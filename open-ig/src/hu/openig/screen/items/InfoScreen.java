@@ -1449,6 +1449,11 @@ public class InfoScreen extends ScreenBase {
 					autobuild.text(format("colonyinfo.autobuild",
 							get(p.getAutoBuildLabel())
 					), true).visible(true);
+					if (p.autoBuild != AutoBuild.OFF) {
+						autobuild.color(TextRenderer.YELLOW);
+					} else {
+						autobuild.color(TextRenderer.GREEN);
+					}
 					
 					doAdjustTaxButtons();
 					taxLess.visible(true);
