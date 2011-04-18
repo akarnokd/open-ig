@@ -150,3 +150,20 @@ The repair will improve 50 hitpoints for 20 credits per 10 ingame minutes.
 However, if the Fire Brigade is damaged itself, but still operational, it will only repair a proportion of this 50 hitpoints for free (at least 25 hitpoints, because it is the 50% efficiency mark). 
 
 Regular repair is always fixing 50 hipoints per turn.
+
+== Auto-Build ==
+
+One of the old game's nasty property was that it became really tedious to manage a more than 20 planet empire later on within the game. Imperium Galactica 2 made improvements on this by introducing an auto-build feature. This feature removed the burden of micromanage the planets whenever they report a food or hospital shortage.
+
+Therefore, a similar auto-build has been introduced into Open Imperium Galactica. You can toggle the auto-build on the colony information screen by clicking on the label. You can hold down the SHIFT key while clicking on the label to set the state on all of your planets.
+
+The build strategy is as follows:
+  * If a construction or worker shortage is present on the planet, do nothing. The first constraint prevents building indefinitely due the lack of statistical evidence. The second one is a heuristic, because if a planet suffers from worker shortage, adding another building would usually make things worse (less men to operate more buildings, some may fall below the 50% operation limit, causing even more shortages).
+  * Handle energy shortages first, and don't handle other shortages yet. Usually, the root cause of a shortage may be simply the lack of energy.
+  * Handle other shortages later but simultaneously.
+  * Upgrade first, construct second: space is limited, and in long term, using the upgrade path reserves more space for later problems.
+  * Upgrade one level at a time: this may seem slow, but reduces the side-effects of jumping too many levels at once (increased energy and worker demands). This strategy might not be the best for neglected planets which would need several upgrades and new construction, but applied continuously should keep the planets in good shape.
+  * Try upgrading or constructing expensive buildings first.
+  * If a new construction is required, consider the available build space. For example: if you could afford an Arcology but you only have room for Prefab housing, the auto-build will choose the latter.
+
+The downside of the auto-build is that it may hold your overall progress back in the early game time where your biggest shortage will be the money.
