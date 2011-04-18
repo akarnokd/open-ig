@@ -393,7 +393,7 @@ public class Planet implements Named, Owned {
 			}
 		}
 		if (owner != null) {
-			owner.planets.remove(this);
+			owner.planets.put(this, PlanetKnowledge.NAME);
 		}
 		owner = null;
 		race = null;

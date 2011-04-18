@@ -3050,8 +3050,11 @@ public class InfoScreen extends ScreenBase {
 
 						int mmc = TextRenderer.GREEN;
 						
+						if (p.morale < 10) {
+							mmc = TextRenderer.RED;
+						} else
 						if (p.morale < 30) {
-							mmc = TextRenderer.GREEN;
+							mmc = 0xFFFF8080;
 						} else
 						if (p.morale < 45) {
 							mmc = TextRenderer.YELLOW;

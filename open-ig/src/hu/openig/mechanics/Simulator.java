@@ -275,7 +275,11 @@ public final class Simulator {
 			
 			// avoid a practically infinite population descent
 			if (planet.population < 1000 && nextMorale < 50) {
-				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
+				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
+			} else 
+			if (nextMorale < 50) {
+				// lower morale should decrease population more rapidly
+				planet.population = (int)Math.max(0, planet.population + planet.population * (nextMorale - 50) / 250);
 			} else {
 				planet.population = (int)Math.max(0, planet.population + planet.population * (nextMorale - 50) / 500);
 			}
