@@ -1031,5 +1031,12 @@
 	<entry key='load_save'>Tölt / Ment</entry>
 	
 	<entry key='info.planet_name'>Bolygó</entry>
+	<entry key='settings.sound_volume'>Hanghatás hangerő</entry>
+	<entry key='settings.music_volume'>Zene hangerő</entry>
+	<entry key='settings.video_volume'>Videó hangerő</entry>
+	<entry key='settings.reequip_tanks'>Tankok újrafeltöltése csata után</entry>
+	<entry key='settings.reequip_bombs'>Bombák/rakéták újrafeltöltése csata után</entry>
+	<entry key='settings.computer_voice'>Számítógép hang</entry>
+	<entry key='settings.autobuild_limit'>Auto-Építés pénzkorlát</entry>
 	
 </labels>

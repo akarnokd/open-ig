@@ -29,7 +29,7 @@ import javax.sound.sampled.SourceDataLine;
  */
 public class AudioThread extends Thread {
 	/** The queue for asynchronus music play. */
-	private final BlockingQueue<byte[]> queue = new LinkedBlockingQueue<byte[]>();
+	private final BlockingQueue<byte[]> queue;
 	/** The output audio line. */
 	private final SourceDataLine sdl;
 	/** The start semaphore. */
@@ -47,6 +47,17 @@ public class AudioThread extends Thread {
 	 */
 	public AudioThread() {
 		super("AudioPlayback");
+		queue = new LinkedBlockingQueue<byte[]>();
+		sdl = createAudioOutput();
+	}
+	/**
+	 * COnstructor. Use the given queue.
+	 * @param idx the index
+	 * @param queue the queue to use
+	 */
+	public AudioThread(int idx, BlockingQueue<byte[]> queue) {
+		super("AudioPlayback-" + idx);
+		this.queue = queue;
 		sdl = createAudioOutput();
 	}
 	/**
@@ -121,13 +132,13 @@ public class AudioThread extends Thread {
 	public static DataLine.Info createAudioInfo(AudioFormat af) {
 		return new DataLine.Info(SourceDataLine.class, af);
 	}
-	/**
-	 * Create the default audio format.
-	 * @return the audio format
-	 */
-	public static AudioFormat createAudioFormat() {
-		return new AudioFormat(22050, 8, 1, true, false);
-	}
+//	/**
+//	 * Create the default audio format.
+//	 * @return the audio format
+//	 */
+//	public static AudioFormat createAudioFormat() {
+//		return new AudioFormat(22050, 8, 1, true, false);
+//	}
 	/**
 	 * Create the default audio format.
 	 * @return the audio format
@@ -242,6 +253,7 @@ public class AudioThread extends Thread {
 		} finally {
 			lock.unlock();
 		}
+		interrupt();
 	}
 	/**
 	 * Set the master gain on the source data line.
@@ -258,5 +270,22 @@ public class AudioThread extends Thread {
 	public void setMute(boolean mute) {
 		BooleanControl bc = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
 		bc.setValue(mute);
+	}
+	/**
+	 * Set the linear volume.
+	 * @param volume the volume 0..100, volume 0 mutes the sound
+	 */
+	public void setVolume(int volume) {
+		if (volume == 0) {
+			setMute(true);
+		} else {
+			setMute(false);
+			FloatControl fc = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
+			if (fc != null) {
+				double minLinear = Math.pow(10, fc.getMinimum() / 20);
+				double maxLinear = Math.pow(10, fc.getMaximum() / 20);
+				fc.setValue((float)(20 * Math.log10(minLinear + volume * (maxLinear - minLinear) / 100)));
+			}
+		}
 	}
 }

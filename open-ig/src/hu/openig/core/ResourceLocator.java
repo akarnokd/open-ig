@@ -8,6 +8,7 @@
 
 package hu.openig.core;
 
+import hu.openig.utils.IOUtils;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.XElement;
 
@@ -120,6 +121,19 @@ public class ResourceLocator {
 			} catch (IOException ex) {
 				throw new RuntimeException(ex);
 			} 
+		}
+		/** @return get the data as byte array */
+		public byte[] get() {
+			try {
+				InputStream in = open();
+				try {
+					return IOUtils.load(in);
+				} finally {
+					in.close();
+				}
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
 		}
 		/**
 		 * @return the resource path and name separated by slashes

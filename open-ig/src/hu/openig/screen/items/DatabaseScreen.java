@@ -14,6 +14,7 @@ import hu.openig.model.Player;
 import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.screen.ScreenBase;
+import hu.openig.sound.SoundType;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 
@@ -410,6 +411,13 @@ public class DatabaseScreen extends ScreenBase {
 		info = new DatabaseButton(x, y + 1 * 34 - gfx.info[0].getHeight(), gfx.info, null);
 		starmap = new DatabaseButton(x, y + 2 * 34 - gfx.starmap[0].getHeight(), gfx.starmap, null);
 		diplomacy = new DatabaseButton(x, y + 3 * 34 - gfx.diplomacy[0].getHeight(), gfx.diplomacy, null);
+		
+		recordMessage.action = new Act() {
+			@Override
+			public void act() {
+				commons.sounds.play(SoundType.RECORD_MESSAGE_NO);
+			}
+		};
 		
 		bridge.action = new Act() {
 			@Override

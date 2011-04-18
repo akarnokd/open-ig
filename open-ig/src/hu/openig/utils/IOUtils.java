@@ -9,6 +9,7 @@
 package hu.openig.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
 import java.io.EOFException;
 import java.io.File;
@@ -628,5 +629,28 @@ public final class IOUtils {
 				break;
 			}
 		} while (!Thread.currentThread().isInterrupted());
+	}
+	/**
+	 * Load everything from the given input stream.
+	 * @param in the input stream
+	 * @return the bytes
+	 */
+	public static byte[] load(InputStream in) {
+		byte[] buffer = new byte[64 * 1024];
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(64 * 1024);
+		try {
+			do {
+				int r = in.read(buffer);
+				if (r > 0) {
+					bout.write(buffer, 0, r);
+				} else
+				if (r < 0) {
+					break;
+				}
+			} while (true);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return bout.toByteArray();
 	}
 }

@@ -140,6 +140,9 @@ public class CommonGFX {
 	/** The 4x speed button. */
 	@Cat(name = "button_speed_4")
 	public BufferedImage[] speed4;
+	/** The check mark. */
+	@Img(name = "checkmark")
+	public BufferedImage checkmark;
 	/**
 	 * Initialize the common resources.
 	 * @param rl the resource locator

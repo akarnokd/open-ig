@@ -1045,4 +1045,15 @@
 	
 	<entry key='info.planet_name'>Planet</entry>
 	
+	<entry key='settings.sound_volume'>Sound volume</entry>
+	<entry key='settings.music_volume'>Music volume</entry>
+	<entry key='settings.video_volume'>Video volume</entry>
+	<entry key='settings.reequip_tanks'>Reequip tanks after battle</entry>
+	<entry key='settings.reequip_bombs'>Reequip bombs/rockets after battle</entry>
+	<entry key='settings.computer_voice'>Computer voice</entry>
+	<entry key='settings.autobuild_limit'>Auto-Build credit limit</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	
 </labels>

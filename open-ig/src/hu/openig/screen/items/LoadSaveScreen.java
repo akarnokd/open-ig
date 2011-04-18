@@ -10,14 +10,21 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Act;
 import hu.openig.core.Difficulty;
+import hu.openig.core.Func1;
 import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.sound.SoundType;
+import hu.openig.ui.UICheckBox;
+import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIGenericButton;
+import hu.openig.ui.UIImageButton;
+import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.ui.UISpinner;
 import hu.openig.utils.XElement;
 
 import java.awt.AlphaComposite;
@@ -29,6 +36,9 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +58,9 @@ import javax.swing.SwingWorker;
  * @author akarnokd, 2010.01.11.
  */
 public class LoadSaveScreen extends ScreenBase {
+	/** The fields for the settings screen. */
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface Settings { }
 	/** The panel base rectangle. */
 	final Rectangle base = new Rectangle(0, 0, 640, 442);
 	/** The random background. */
@@ -76,6 +89,39 @@ public class LoadSaveScreen extends ScreenBase {
 	SwingWorker<Void, Void> listWorker;
 	/** The file list. */
 	FileList list;
+	/** The sound volume. */
+	@Settings
+	UISpinner soundVolume;
+	/** The sound label. */
+	@Settings
+	UILabel soundLabel;
+	/** The music volume. */
+	@Settings
+	UISpinner musicVolume;
+	/** The music label. */
+	@Settings
+	UILabel musicLabel;
+	/** The video volume. */
+	@Settings
+	UISpinner videoVolume;
+	/** The video volume. */
+	@Settings
+	UILabel videoLabel;
+	/** Re-equip tanks? */
+	@Settings
+	UICheckBox reequipTanks;
+	/** Re-equip bombs? */
+	@Settings
+	UICheckBox reequipBombs;
+	/** Enable computer voice. */
+	@Settings
+	UICheckBox computerVoice;
+	/** Auto-build credit limit. */
+	@Settings
+	UISpinner autoBuildLimit;
+	/** Auto build label. */
+	@Settings
+	UILabel autoBuildLabel;
 	@Override
 	public void onInitialize() {
 		save = new UIGenericButton(get("save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
@@ -126,6 +172,158 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		list = new FileList();
 
+		// -----------------------------------------------------------------------------------------------
+		
+		final UIImageButton sprev = new UIImageButton(commons.common().moveLeft);
+		sprev.setDisabledPattern(commons.common().disabledPattern);
+		sprev.setHoldDelay(250);
+		final UIImageButton snext = new UIImageButton(commons.common().moveRight);
+		snext.setDisabledPattern(commons.common().disabledPattern);
+		snext.setHoldDelay(250);
+
+		sprev.onClick = new Act() {
+			@Override
+			public void act() {
+				config.effectVolume = Math.max(0, config.effectVolume - 5);
+				commons.sounds.setVolume(config.effectVolume);
+				commons.sounds.play(SoundType.BAR);
+				askRepaint(base);
+			}
+		};
+		snext.onClick = new Act() {
+			@Override
+			public void act() {
+				config.effectVolume = Math.min(100, config.effectVolume + 5);
+				commons.sounds.setVolume(config.effectVolume);
+				commons.sounds.play(SoundType.BAR);
+				askRepaint(base);
+			}
+		};
+		
+		soundVolume = new UISpinner(14, sprev, snext, commons.text());
+		soundVolume.getValue = new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return config.effectVolume + "%";
+			}
+		};
+		soundLabel = new UILabel(get("settings.sound_volume"), 14, commons.text());
+		
+		final UIImageButton mprev = new UIImageButton(commons.common().moveLeft);
+		mprev.setDisabledPattern(commons.common().disabledPattern);
+		mprev.setHoldDelay(250);
+		final UIImageButton mnext = new UIImageButton(commons.common().moveRight);
+		mnext.setDisabledPattern(commons.common().disabledPattern);
+		mnext.setHoldDelay(250);
+
+		mprev.onClick = new Act() {
+			@Override
+			public void act() {
+				config.musicVolume = Math.max(0, config.musicVolume - 5);
+				askRepaint(base);
+			}
+		};
+		mnext.onClick = new Act() {
+			@Override
+			public void act() {
+				config.musicVolume = Math.min(100, config.musicVolume + 5);
+				askRepaint(base);
+			}
+		};
+
+		musicVolume = new UISpinner(14, mprev, mnext, commons.text());
+		musicVolume.getValue = new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return config.musicVolume + "%";
+			}
+		};
+		musicLabel = new UILabel(get("settings.music_volume"), 14, commons.text());
+		
+		final UIImageButton vprev = new UIImageButton(commons.common().moveLeft);
+		vprev.setDisabledPattern(commons.common().disabledPattern);
+		vprev.setHoldDelay(250);
+		vprev.onClick = new Act() {
+			@Override
+			public void act() {
+				config.videoVolume = Math.max(0, config.videoVolume - 5);
+				askRepaint(base);
+			}
+		};
+		final UIImageButton vnext = new UIImageButton(commons.common().moveRight);
+		vnext.setDisabledPattern(commons.common().disabledPattern);
+		vnext.setHoldDelay(250);
+		vnext.onClick = new Act() {
+			@Override
+			public void act() {
+				config.videoVolume = Math.min(100, config.videoVolume + 5);
+				askRepaint(base);
+			}
+		};
+
+		videoVolume = new UISpinner(14, vprev, vnext, commons.text());
+		videoVolume.getValue = new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return config.videoVolume + "%";
+			}
+		};
+		videoLabel = new UILabel(get("settings.video_volume"), 14, commons.text());
+		
+		reequipTanks = new UICheckBox(get("settings.reequip_tanks"), 14, commons.common().checkmark, commons.text());
+		reequipTanks.onChange = new Act() {
+			@Override
+			public void act() {
+				config.reequipTanks = reequipTanks.selected();
+			}
+		};
+		reequipBombs = new UICheckBox(get("settings.reequip_bombs"), 14, commons.common().checkmark, commons.text());
+		reequipBombs.onChange = new Act() {
+			@Override
+			public void act() {
+				config.reequipBombs = reequipBombs.selected();
+			}
+		};
+		computerVoice = new UICheckBox(get("settings.computer_voice"), 14, commons.common().checkmark, commons.text());
+		computerVoice.onChange = new Act() {
+			@Override
+			public void act() {
+				config.computerVoice = computerVoice.selected();
+			}
+		};
+	
+		final UIImageButton aprev = new UIImageButton(commons.common().moveLeft);
+		aprev.setDisabledPattern(commons.common().disabledPattern);
+		aprev.setHoldDelay(250);
+		final UIImageButton anext = new UIImageButton(commons.common().moveRight);
+		anext.setDisabledPattern(commons.common().disabledPattern);
+		anext.setHoldDelay(250);
+		
+		aprev.onClick = new Act() {
+			@Override
+			public void act() {
+				config.autoBuildLimit = Math.max(0, config.autoBuildLimit - 1000);
+				askRepaint(base);
+			}
+		};
+		anext.onClick = new Act() {
+			@Override
+			public void act() {
+				config.autoBuildLimit = Math.min(Integer.MAX_VALUE, config.autoBuildLimit + 1000);
+				askRepaint(base);
+			}
+		};
+		
+		autoBuildLimit = new UISpinner(14, aprev, anext, commons.text());
+		autoBuildLimit.getValue = new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return config.autoBuildLimit + " cr";
+			}
+		};
+		autoBuildLabel = new UILabel(get("settings.autobuild_limit"), 14, commons.text());
+		
+		
 		addThis();
 	}
 
@@ -141,6 +339,11 @@ public class LoadSaveScreen extends ScreenBase {
 		list.items.clear();
 		list.selected = null;
 		startWorker();
+		
+		reequipTanks.selected(config.reequipTanks);
+		reequipBombs.selected(config.reequipBombs);
+		computerVoice.selected(config.computerVoice);
+
 	}
 
 	@Override
@@ -151,6 +354,7 @@ public class LoadSaveScreen extends ScreenBase {
 			listWorker.cancel(true);
 			listWorker = null;
 		}
+		config.save();
 	}
 
 	@Override
@@ -171,6 +375,27 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		list.location(base.x + 10, load.y + load.height + 10);
 		list.size(base.width - 20, base.height - list.y + base.y - 10);
+		
+		soundLabel.location(base.x + 30, base.y + 70 + 8);
+		musicLabel.location(base.x + 30, base.y + 100 + 8);
+		videoLabel.location(base.x + 30, base.y + 130 + 8);
+		
+		int vol = Math.max(soundLabel.width, Math.max(musicLabel.width, videoLabel.width));
+		
+		soundVolume.location(base.x + 50 + vol, base.y + 70);
+		soundVolume.width = 130;
+		musicVolume.location(base.x + 50 + vol, base.y + 100);
+		musicVolume.width = 130;
+		videoVolume.location(base.x + 50 + vol, base.y + 130);
+		videoVolume.width = 130;
+		
+		reequipTanks.location(base.x + 30, base.y + 160 + 8);
+		reequipBombs.location(base.x + 30, base.y + 190 + 8);
+		computerVoice.location(base.x + 30, base.y + 220 + 8);
+		
+		autoBuildLabel.location(base.x + 30, base.y + 250 + 8);
+		autoBuildLimit.location(base.x + 50 + autoBuildLabel.width, base.y + 250);
+		autoBuildLimit.width = 200;
 	}
 	@Override
 	public Screens screen() {
@@ -186,13 +411,35 @@ public class LoadSaveScreen extends ScreenBase {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 
 		if (settingsMode) {
+			if (!soundVolume.visible()) {
+				showHideSettings();
+			}
 			g2.drawImage(commons.background().setup, base.x, base.y, null);
 			list.visible(false);
 			save.visible(false);
 			load.visible(false);
 			delete.visible(false);
 			settings.text(get("load_save"));
+			
+			soundVolume.prev.enabled(config.effectVolume > 0);
+			soundVolume.next.enabled(config.effectVolume < 100);
+
+			musicVolume.prev.enabled(config.musicVolume > 0);
+			musicVolume.next.enabled(config.musicVolume < 100);
+
+			videoVolume.prev.enabled(config.videoVolume > 0);
+			videoVolume.next.enabled(config.videoVolume < 100);
+
+			autoBuildLimit.prev.enabled(config.autoBuildLimit > 0);
+			autoBuildLimit.next.enabled(config.autoBuildLimit < Integer.MAX_VALUE);
+
+			g2.setColor(new Color(0, 0, 0, 192));
+			g2.fillRect(base.x + 20, base.y + 60, base.width - 40, base.height - 80);
+			
 		} else {
+			if (soundVolume.visible()) {
+				showHideSettings();
+			}
 			g2.drawImage(background, base.x, base.y, null);
 			list.visible(true);
 			save.visible(true);
@@ -467,4 +714,19 @@ public class LoadSaveScreen extends ScreenBase {
 	void doSettings() {
 		settingsMode = !settingsMode;
 	}
+	/** Show/hide settings. */
+	void showHideSettings() {
+		for (Field f : getClass().getDeclaredFields()) {
+			if (f.isAnnotationPresent(Settings.class) && UIComponent.class.isAssignableFrom(f.getType())) {
+				try {
+					UIComponent.class.cast(f.get(this)).visible(settingsMode);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 }

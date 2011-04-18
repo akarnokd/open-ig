@@ -12,6 +12,7 @@ import hu.openig.Startup;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
+import hu.openig.core.Func1;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Screens;
@@ -526,6 +527,13 @@ public class ScreenTester extends JFrame implements GameControls {
 					commons.labels0().load(commons.rl, commons.world().definition.name);
 					commons.world().labels = commons.labels0();
 					commons.world().load(commons.rl, commons.world().definition.name);
+					commons.world().getAutoBuildLimit = new Func1<Void, Integer>() {
+						@Override
+						public Integer invoke(Void value) {
+							return config.autoBuildLimit;
+						}
+					};
+
 					commons.world().level = 5;
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
 				} catch (Throwable t) {

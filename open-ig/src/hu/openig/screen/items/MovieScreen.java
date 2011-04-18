@@ -57,18 +57,6 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	 */
 	private MediaPlayer player;
 	/**
-	 * Upscale the 8 bit signed values to 16 bit signed values.
-	 * @param data the data to upscale
-	 * @return the upscaled data
-	 */
-	public static short[] upscale8To16AndSignify(byte[] data) {
-		short[] result = new short[data.length];
-		for (int i = 0; i < data.length; i++) {
-			result[i] = (short)(((data[i] & 0xFF) - 128) * 256);
-		}
-		return result;
-	}
-	/**
 	 * Start playback.
 	 * @param media the media
 	 */
