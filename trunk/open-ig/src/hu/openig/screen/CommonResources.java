@@ -32,6 +32,7 @@ import hu.openig.model.Profile;
 import hu.openig.model.Screens;
 import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
+import hu.openig.sound.Sounds;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -129,6 +130,8 @@ public class CommonResources {
 	protected Closeable allocatorHandler;
 	/** The simulator handler. */
 	protected Closeable simulatorHandler;
+	/** The sound objects.*/
+	public Sounds sounds;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -270,6 +273,9 @@ public class CommonResources {
 			diplomacy = get(diplomacyFuture);
 			common = get(commonFuture);
 
+			sounds = new Sounds(rl);
+			sounds.start(config.audioChannels);
+			sounds.setVolume(config.effectVolume);
 		} finally {
 			exec.shutdown();
 		}
@@ -281,6 +287,7 @@ public class CommonResources {
 	public void reinit(String newLanguage) {
 		config.language = newLanguage;
 		config.save();
+		sounds.stop();
 		init();
 	}
 	/**

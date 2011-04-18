@@ -10,6 +10,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Act;
 import hu.openig.core.Difficulty;
+import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Screens;
@@ -197,6 +198,12 @@ public class SingleplayerScreen extends ScreenBase {
 					labels.load(commons.rl, selectedDefinition.labels);
 					world.labels = labels;
 					world.load(commons.rl, selectedDefinition.name);
+					world.getAutoBuildLimit = new Func1<Void, Integer>() {
+						@Override
+						public Integer invoke(Void value) {
+							return config.autoBuildLimit;
+						}
+					};
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {

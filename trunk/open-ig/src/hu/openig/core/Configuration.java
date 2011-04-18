@@ -116,6 +116,18 @@ public class Configuration {
 	/** Automatically find resource files instead of fixed set. */
 	@LoadSave
 	public boolean autoResources = true;
+	/** Reequip tanks after battles. */
+	@LoadSave
+	public boolean reequipTanks = true;
+	/** Reequip bombs after battles. */
+	@LoadSave
+	public boolean reequipBombs = true;
+	/** Computer voice. */
+	@LoadSave
+	public boolean computerVoice = true;
+	/** Build limit. */
+	@LoadSave
+	public int autoBuildLimit;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

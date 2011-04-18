@@ -10,6 +10,7 @@ package hu.openig;
 
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
+import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Building;
@@ -42,6 +43,7 @@ import hu.openig.screen.items.SpacewarScreen;
 import hu.openig.screen.items.StarmapScreen;
 import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.VideoScreen;
+import hu.openig.sound.SoundType;
 import hu.openig.ui.UIMouse;
 import hu.openig.utils.XElement;
 
@@ -397,6 +399,7 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void exit() {
 		commons.stop();
+		commons.sounds.stop();
 		uninitScreens();
 		
 		config.fullScreen = isUndecorated();
@@ -474,6 +477,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	ScreenBase display(Screens screen, boolean asPrimary, Screens mode) {
 		ScreenBase sb = null;
+		SoundType sound = null;
 		switch (screen) {
 		case ACHIEVEMENTS:
 			sb = allScreens.statisticsAchievements;
@@ -485,49 +489,87 @@ public class GameWindow extends JFrame implements GameControls {
 			break;
 		case BAR:
 			sb = allScreens.bar;
+			sound = (SoundType.BAR);
 			break;
 		case BRIDGE:
 			sb = allScreens.bridge;
+			sound = (SoundType.BRIDGE);
 			break;
 		case COLONY:
 			sb = allScreens.colony;
+			sound = (SoundType.COLONY);
 			break;
 		case DIPLOMACY:
 			sb = allScreens.diplomacy;
+			sound = (SoundType.DIPLOMACY);
 			break;
 		case EQUIPMENT:
 			sb = allScreens.equipment;
+			sound = (SoundType.EQUIPMENT);
 			break;
 		case INFORMATION_COLONY:
+			sb = allScreens.info;
+			mode = screen;
+			sound = (SoundType.INFORMATION_COLONY);
+			break;
 		case INFORMATION_ALIENS:
+			sb = allScreens.info;
+			mode = screen;
+			sound = (SoundType.INFORMATION_ALIENS);
+			break;
 		case INFORMATION_BUILDINGS:
+			sb = allScreens.info;
+			mode = screen;
+			sound = (SoundType.INFORMATION_BUILDINGS);
+			break;
 		case INFORMATION_FINANCIAL:
+			sb = allScreens.info;
+			mode = screen;
+			sound = (SoundType.INFORMATION_FINANCIAL);
+			break;
 		case INFORMATION_FLEETS:
+			sb = allScreens.info;
+			mode = screen;
+			sound = (SoundType.INFORMATION_FLEETS);
+			break;
 		case INFORMATION_INVENTIONS:
+			sb = allScreens.info;
+			mode = screen;
+			sound = (SoundType.INFORMATION_INVENTIONS);
+			break;
 		case INFORMATION_MILITARY:
+			sb = allScreens.info;
+			mode = screen;
+			sound = (SoundType.INFORMATION_MILITARY);
+			break;
 		case INFORMATION_PLANETS:
 			sb = allScreens.info;
 			mode = screen;
+			sound = (SoundType.INFORMATION_PLANETS);
 			break;
 		case PRODUCTION:
 			sb = allScreens.researchProduction;
 			mode = Screens.PRODUCTION;
+			sound = (SoundType.PRODUCTION);
 			break;
 		case RESEARCH:
 			sb = allScreens.researchProduction;
 			mode = Screens.RESEARCH;
+			sound = (SoundType.RESEARCH);
 			break;
 		case SPACEWAR:
 			sb = allScreens.spacewar;
 			break;
 		case STARMAP:
 			sb = allScreens.starmap;
+			sound = (SoundType.STARMAP);
 			break;
 		case SHIPWALK:
 			sb = allScreens.shipwalk;
 			break;
 		case DATABASE:
 			sb = allScreens.database;
+			sound = (SoundType.DATABASE);
 			break;
 		case LOADING:
 			sb = allScreens.loading;
@@ -551,14 +593,19 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		if (asPrimary) {
 			hideMovie();
+			boolean playSec = false;
 			if (secondary != null) {
 				secondary.onLeave();
 				secondary = null;
 				repaintInner();
+				playSec = true;
 			}
 			if (primary == null || primary.screen() != screen) {
 				if (primary != null) {
 					primary.onLeave();
+				}
+				if (sound != null && config.computerVoice) {
+					commons.sounds.play(sound);
 				}
 				primary = sb;
 				if (primary != null) {
@@ -567,11 +614,20 @@ public class GameWindow extends JFrame implements GameControls {
 					repaintInner();
 					doMoveMouseAgain();
 				}
+			} else
+			if (playSec) {
+				if (sound != null && config.computerVoice) {
+					commons.sounds.play(sound);
+				}
 			}
+			
 		} else {
 			if (secondary == null || secondary.screen() != screen) {
 				if (secondary != null) {
 					secondary.onLeave();
+				}
+				if (sound != null && config.computerVoice) {
+					commons.sounds.play(sound);
 				}
 				secondary = sb;
 				if (secondary != null) {
@@ -1282,6 +1338,12 @@ public class GameWindow extends JFrame implements GameControls {
 						world.labels = new Labels();
 						world.labels.load(commons.rl, world.definition.labels);
 						world.load(commons.rl, world.definition.name);
+						world.getAutoBuildLimit = new Func1<Void, Integer>() {
+							@Override
+							public Integer invoke(Void value) {
+								return config.autoBuildLimit;
+							}
+						};
 					}
 					
 					world.loadState(xworld);

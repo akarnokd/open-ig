@@ -31,6 +31,7 @@ import hu.openig.screen.ScreenBase;
 import hu.openig.screen.TechnologySlot;
 import hu.openig.screen.VehicleCell;
 import hu.openig.screen.VehicleList;
+import hu.openig.sound.SoundType;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
@@ -422,6 +423,9 @@ public class EquipmentScreen extends ScreenBase {
 					}
 				}
 				editNew = true;
+				if (config.computerVoice) {
+					commons.sounds.play(SoundType.NEW_FLEET);
+				}
 			}
 		};
 		
@@ -460,6 +464,9 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void act() {
 				doTransfer();
+				if (config.computerVoice) {
+					commons.sounds.play(SoundType.JOIN_FLEETS);
+				}
 			}
 		};
 		
@@ -469,6 +476,9 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void act() {
 				doSplit();
+				if (config.computerVoice) {
+					commons.sounds.play(SoundType.SPLIT_FLEET);
+				}
 			}
 		};
 
@@ -1522,6 +1532,9 @@ public class EquipmentScreen extends ScreenBase {
 					configure.item = iss.get(0);
 					
 					leftList.map.get(research()).index = cnt;
+				}
+				if (config.computerVoice) {
+					commons.sounds.play(SoundType.SHIP_DEPLOYED);
 				}
 			} else {
 				fleet().changeInventory(research(), delta);

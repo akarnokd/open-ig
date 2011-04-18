@@ -35,6 +35,7 @@ import hu.openig.model.TileSet;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.sound.SoundType;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -1042,6 +1043,35 @@ public class InfoScreen extends ScreenBase {
 			@Override
 			public void act() {
 				InfoScreen.this.mode = mode;
+				if (config.computerVoice) {
+					switch (mode) {
+					case INFORMATION_PLANETS:
+						commons.sounds.play(SoundType.INFORMATION_PLANETS);
+						break;
+					case INFORMATION_COLONY:
+						commons.sounds.play(SoundType.INFORMATION_COLONY);
+						break;
+					case INFORMATION_MILITARY:
+						commons.sounds.play(SoundType.INFORMATION_MILITARY);
+						break;
+					case INFORMATION_FINANCIAL:
+						commons.sounds.play(SoundType.INFORMATION_FINANCIAL);
+						break;
+					case INFORMATION_FLEETS:
+						commons.sounds.play(SoundType.INFORMATION_FLEETS);
+						break;
+					case INFORMATION_BUILDINGS:
+						commons.sounds.play(SoundType.INFORMATION_BUILDINGS);
+						break;
+					case INFORMATION_INVENTIONS:
+						commons.sounds.play(SoundType.INFORMATION_INVENTIONS);
+						break;
+					case INFORMATION_ALIENS:
+						commons.sounds.play(SoundType.INFORMATION_ALIENS);
+						break;
+					default:
+				}
+				}
 				applyMode();
 			}
 		};

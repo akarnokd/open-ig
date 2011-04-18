@@ -223,7 +223,7 @@ public final class Simulator {
 			}
 		}
 		
-		if (planet.autoBuild != AutoBuild.OFF) {
+		if (planet.autoBuild != AutoBuild.OFF && planet.owner.money >= world.getAutoBuildLimit.invoke(null)) {
 			if (!buildInProgress 
 					&& !ps.hasWarning(PlanetProblems.COLONY_HUB)
 					&& !ps.hasProblem(PlanetProblems.COLONY_HUB)
