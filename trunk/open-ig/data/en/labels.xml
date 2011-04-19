@@ -1052,6 +1052,17 @@
 	<entry key='settings.reequip_bombs'>Reequip bombs/rockets after battle</entry>
 	<entry key='settings.computer_voice'>Computer voice</entry>
 	<entry key='settings.autobuild_limit'>Auto-Build credit limit</entry>
+	<entry key='welcome'>Welcome to Open Imperium Galactica</entry>
+	<entry key='message.colony_hub_completed'>Colony Hub completed on planet %s.</entry>
+	<entry key='message.research_completed'>Research of %s completed.</entry>
+	<entry key='message.production_completed'>Production of %s completed.</entry>
+	<entry key='message.planet_died'>Planet %s has been abandoned.</entry>
+	<entry key='message.planet_revolt'>People revolt on planet %s.</entry>
+	<entry key='message.yesterday_tax_income'>Yesterday's tax income was %s credits.</entry>
+	<entry key='message.new_planet_discovered'>You discovered the planet %s.</entry>
+	<entry key='message.new_race_discovered'>You discovered the race %s.</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

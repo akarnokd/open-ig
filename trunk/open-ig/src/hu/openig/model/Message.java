@@ -37,6 +37,8 @@ public class Message implements Comparable<Message> {
 	public ResearchType targetResearch;
 	/** The formatted text to display. */
 	public String text;
+	/** The parameter value. */
+	public String value;
 	@Override
 	public int compareTo(Message o) {
 		int c = priority - o.priority;
@@ -69,6 +71,9 @@ public class Message implements Comparable<Message> {
 		if (targetProduct != null) {
 			xmessage.set("product", targetProduct.id);
 		}
+		if (value != null) {
+			xmessage.set("value", value);
+		}
 		xmessage.set("text", text);
 	}
 	/** 
@@ -79,8 +84,8 @@ public class Message implements Comparable<Message> {
 	public void load(XElement xmessage, World world) {
 		priority = xmessage.getInt("priority");
 		try {
-			gametime = world.dateFormat.parse(xmessage.get("gametime")).getTime();
-			timestamp = world.dateFormat.parse(xmessage.get("timestamp")).getTime();
+			gametime = world.dateFormat.get().parse(xmessage.get("gametime")).getTime();
+			timestamp = world.dateFormat.get().parse(xmessage.get("timestamp")).getTime();
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 		}
@@ -103,6 +108,7 @@ public class Message implements Comparable<Message> {
 		if (s != null) {
 			targetResearch = world.researches.get(s);
 		}
+		value = xmessage.get("value", null);
 		
 		text = xmessage.get("text");
 	}

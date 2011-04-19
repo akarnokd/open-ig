@@ -1038,5 +1038,29 @@
 	<entry key='settings.reequip_bombs'>Bombák/rakéták újrafeltöltése csata után</entry>
 	<entry key='settings.computer_voice'>Számítógép hang</entry>
 	<entry key='settings.autobuild_limit'>Auto-Építés pénzkorlát</entry>
+	<entry key='welcome'>Üdvözöllek az Open Imperium Galacticában</entry>
+	<entry key='message.colony_hub_completed'>A Főépület elkészült a(z) %s bolygón.</entry>
+	<entry key='message.research_completed'>A(z) %s kutatása befejeződött.</entry>
+	<entry key='message.production_completed'>A(z) %s gyártása befejeződött.</entry>
+	<entry key='message.planet_died'>A(z) %s bolygó kihalt.</entry>
+	<entry key='message.planet_revolt'>A(z) %s bolygó lakosai lázadoznak.</entry>
+	<entry key='message.yesterday_tax_income'>A tegnapi adóbevételed %s credit volt.</entry>
+	<entry key='message.new_planet_discovered'>Fölfedezted a(z) %s bolygót.</entry>
+	<entry key='message.new_race_discovered'>Fölfedezted a(z) %s fajt.</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	
 </labels>
