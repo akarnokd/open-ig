@@ -401,7 +401,7 @@ public class StatusbarScreen extends ScreenBase {
 				Message msg = player().messageQueue.peek();
 				if (msg != null) {
 					notification.currentMessage = msg;
-					if (msg.sound != null && config.computerVoice) {
+					if (msg.sound != null && config.computerVoiceNotify) {
 						commons.sounds.play(msg.sound);
 					}
 					askRepaint();

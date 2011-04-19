@@ -1050,7 +1050,8 @@
 	<entry key='settings.video_volume'>Video volume</entry>
 	<entry key='settings.reequip_tanks'>Reequip tanks after battle</entry>
 	<entry key='settings.reequip_bombs'>Reequip bombs/rockets after battle</entry>
-	<entry key='settings.computer_voice'>Computer voice</entry>
+	<entry key='settings.computer_voice_screen'>Computer voice for screen switch</entry>
+	<entry key='settings.computer_voice_notify'>Computer voice for notification</entry>
 	<entry key='settings.autobuild_limit'>Auto-Build credit limit</entry>
 	<entry key='welcome'>Welcome to Open Imperium Galactica</entry>
 	<entry key='message.colony_hub_completed'>Colony Hub completed on planet %s.</entry>

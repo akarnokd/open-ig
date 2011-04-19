@@ -1043,7 +1043,7 @@ public class InfoScreen extends ScreenBase {
 			@Override
 			public void act() {
 				InfoScreen.this.mode = mode;
-				if (config.computerVoice) {
+				if (config.computerVoiceScreen) {
 					switch (mode) {
 					case INFORMATION_PLANETS:
 						commons.sounds.play(SoundType.INFORMATION_PLANETS);
