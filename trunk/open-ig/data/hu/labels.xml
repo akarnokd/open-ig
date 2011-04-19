@@ -1036,7 +1036,8 @@
 	<entry key='settings.video_volume'>Videó hangerő</entry>
 	<entry key='settings.reequip_tanks'>Tankok újrafeltöltése csata után</entry>
 	<entry key='settings.reequip_bombs'>Bombák/rakéták újrafeltöltése csata után</entry>
-	<entry key='settings.computer_voice'>Számítógép hang</entry>
+	<entry key='settings.computer_voice_screen'>Számítógép hang képernyőváltáskor</entry>
+	<entry key='settings.computer_voice_notify'>Számítógép hang értesítéseknél</entry>
 	<entry key='settings.autobuild_limit'>Auto-Építés pénzkorlát</entry>
 	<entry key='welcome'>Üdvözöllek az Open Imperium Galacticában</entry>
 	<entry key='message.colony_hub_completed'>A Főépület elkészült a(z) %s bolygón.</entry>

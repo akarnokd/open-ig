@@ -502,7 +502,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		prod.count = 0;
 		prod.priority = 50;
 		productions.put(prod.type, prod);
-		if (config.computerVoice) {
+		if (config.computerVoiceScreen) {
 			commons.sounds.play(SoundType.ADD_PRODUCTION);
 		}
 	}
@@ -572,7 +572,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
 		productions.remove(research());
-		if (config.computerVoice) {
+		if (config.computerVoiceScreen) {
 			commons.sounds.play(SoundType.DEL_PRODUCTION);
 		}
 	}
@@ -642,7 +642,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			rs.assignedMoney = rt.researchCost / 2;
 		}
 		rs.state = ResearchState.RUNNING;
-		if (config.computerVoice) {
+		if (config.computerVoiceScreen) {
 			commons.sounds.play(SoundType.START_RESEARCH);
 		}
 	}
@@ -862,7 +862,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			@Override
 			public void act() {
 				setMode(Screens.RESEARCH);
-				if (config.computerVoice) {
+				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.RESEARCH);
 				}
 			}
@@ -871,7 +871,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			@Override
 			public void act() {
 				setMode(Screens.PRODUCTION);
-				if (config.computerVoice) {
+				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.PRODUCTION);
 				}
 			}
@@ -1735,7 +1735,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	void doStopResearch() {
 		doSelectTechnology(player().runningResearch);
 		player().runningResearch = null;
-		if (config.computerVoice) {
+		if (config.computerVoiceScreen) {
 			commons.sounds.play(SoundType.STOP_RESEARCH);
 		}
 	}

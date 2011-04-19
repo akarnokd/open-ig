@@ -113,9 +113,12 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Re-equip bombs? */
 	@Settings
 	UICheckBox reequipBombs;
-	/** Enable computer voice. */
+	/** Enable computer voice for screen switches. */
 	@Settings
-	UICheckBox computerVoice;
+	UICheckBox computerVoiceScreen;
+	/** Enable computer voice for notifications. */
+	@Settings
+	UICheckBox computerVoiceNotify;
 	/** Auto-build credit limit. */
 	@Settings
 	UISpinner autoBuildLimit;
@@ -284,11 +287,18 @@ public class LoadSaveScreen extends ScreenBase {
 				config.reequipBombs = reequipBombs.selected();
 			}
 		};
-		computerVoice = new UICheckBox(get("settings.computer_voice"), 14, commons.common().checkmark, commons.text());
-		computerVoice.onChange = new Act() {
+		computerVoiceScreen = new UICheckBox(get("settings.computer_voice_screen"), 14, commons.common().checkmark, commons.text());
+		computerVoiceScreen.onChange = new Act() {
 			@Override
 			public void act() {
-				config.computerVoice = computerVoice.selected();
+				config.computerVoiceScreen = computerVoiceScreen.selected();
+			}
+		};
+		computerVoiceNotify = new UICheckBox(get("settings.computer_voice_notify"), 14, commons.common().checkmark, commons.text());
+		computerVoiceNotify.onChange = new Act() {
+			@Override
+			public void act() {
+				config.computerVoiceNotify = computerVoiceNotify.selected();
 			}
 		};
 	
@@ -342,7 +352,8 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		reequipTanks.selected(config.reequipTanks);
 		reequipBombs.selected(config.reequipBombs);
-		computerVoice.selected(config.computerVoice);
+		computerVoiceScreen.selected(config.computerVoiceScreen);
+		computerVoiceNotify.selected(config.computerVoiceNotify);
 
 	}
 
@@ -391,10 +402,11 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		reequipTanks.location(base.x + 30, base.y + 160 + 8);
 		reequipBombs.location(base.x + 30, base.y + 190 + 8);
-		computerVoice.location(base.x + 30, base.y + 220 + 8);
+		computerVoiceScreen.location(base.x + 30, base.y + 220 + 8);
+		computerVoiceNotify.location(base.x + 30, base.y + 250 + 8);
 		
-		autoBuildLabel.location(base.x + 30, base.y + 250 + 8);
-		autoBuildLimit.location(base.x + 50 + autoBuildLabel.width, base.y + 250);
+		autoBuildLabel.location(base.x + 30, base.y + 280 + 8);
+		autoBuildLimit.location(base.x + 50 + autoBuildLabel.width, base.y + 280);
 		autoBuildLimit.width = 200;
 	}
 	@Override

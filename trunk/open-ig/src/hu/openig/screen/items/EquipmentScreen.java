@@ -423,7 +423,7 @@ public class EquipmentScreen extends ScreenBase {
 					}
 				}
 				editNew = true;
-				if (config.computerVoice) {
+				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.NEW_FLEET);
 				}
 			}
@@ -464,7 +464,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void act() {
 				doTransfer();
-				if (config.computerVoice) {
+				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.JOIN_FLEETS);
 				}
 			}
@@ -476,7 +476,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void act() {
 				doSplit();
-				if (config.computerVoice) {
+				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.SPLIT_FLEET);
 				}
 			}
@@ -1533,7 +1533,7 @@ public class EquipmentScreen extends ScreenBase {
 					
 					leftList.map.get(research()).index = cnt;
 				}
-				if (config.computerVoice) {
+				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.SHIP_DEPLOYED);
 				}
 			} else {

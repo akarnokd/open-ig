@@ -604,7 +604,7 @@ public class GameWindow extends JFrame implements GameControls {
 				if (primary != null) {
 					primary.onLeave();
 				}
-				if (sound != null && config.computerVoice) {
+				if (sound != null && config.computerVoiceScreen) {
 					commons.sounds.play(sound);
 				}
 				primary = sb;
@@ -616,7 +616,7 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			} else
 			if (playSec) {
-				if (sound != null && config.computerVoice) {
+				if (sound != null && config.computerVoiceScreen) {
 					commons.sounds.play(sound);
 				}
 			}
@@ -626,7 +626,7 @@ public class GameWindow extends JFrame implements GameControls {
 				if (secondary != null) {
 					secondary.onLeave();
 				}
-				if (sound != null && config.computerVoice) {
+				if (sound != null && config.computerVoiceScreen) {
 					commons.sounds.play(sound);
 				}
 				secondary = sb;

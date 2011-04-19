@@ -177,6 +177,8 @@ public class SingleplayerScreen extends ScreenBase {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override 
 							public void run() {
+								final boolean csw = config.computerVoiceScreen;
+								config.computerVoiceScreen = false;
 								commons.start();
 								commons.control().displayPrimary(Screens.BRIDGE);
 								commons.control().displayStatusbar();
@@ -187,6 +189,7 @@ public class SingleplayerScreen extends ScreenBase {
 										SwingUtilities.invokeLater(new Runnable() {
 											@Override
 											public void run() {
+												config.computerVoiceScreen = csw;
 												Message msg = new Message();
 												msg.gametime = world().time.getTimeInMillis();
 												msg.timestamp = System.currentTimeMillis();

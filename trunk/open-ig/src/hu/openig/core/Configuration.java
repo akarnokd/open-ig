@@ -122,9 +122,12 @@ public class Configuration {
 	/** Reequip bombs after battles. */
 	@LoadSave
 	public boolean reequipBombs = true;
-	/** Computer voice. */
+	/** Computer voice for screen switches. */
 	@LoadSave
-	public boolean computerVoice = true;
+	public boolean computerVoiceScreen = true;
+	/** Computer voice for notifications. */
+	@LoadSave
+	public boolean computerVoiceNotify = true;
 	/** Build limit. */
 	@LoadSave
 	public int autoBuildLimit;
