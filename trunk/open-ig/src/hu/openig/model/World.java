@@ -865,6 +865,8 @@ public class World {
 		if (stats != null) {
 			statistics.load(stats);
 		}
+
+		Map<Player, XElement[]> deferredMessages = new HashMap<Player, XElement[]>();
 		
 		for (XElement xplayer : xworld.childrenWithName("player")) {
 			Player p = players.get(xplayer.get("id"));
@@ -915,23 +917,6 @@ public class World {
 				}
 			}
 
-			XElement xqueue = xplayer.childElement("message-queue");
-			if (xqueue != null) {
-				for (XElement xmessage : xqueue.childrenWithName("message")) {
-					Message msg = new Message();
-					msg.load(xmessage, dateFormat);
-					player.messageQueue.add(msg);
-				}
-			}
-			XElement xhistory = xplayer.childElement("message-queue");
-			if (xhistory != null) {
-				for (XElement xmessage : xhistory.childrenWithName("message")) {
-					Message msg = new Message();
-					msg.load(xmessage, dateFormat);
-					player.messageHistory.add(msg);
-				}
-			}
-
 			for (XElement xprod : xplayer.childrenWithName("production")) {
 				ResearchMainCategory cat = ResearchMainCategory.valueOf(xprod.get("category"));
 				Map<ResearchType, Production> prod = new LinkedHashMap<ResearchType, Production>();
@@ -975,7 +960,7 @@ public class World {
 					if (rt == null) {
 						throw new IllegalArgumentException("available technology not found: " + xavail);
 					}
-					player.add(rt);
+					p.add(rt);
 					
 					for (String liste : xavail.get("list", "").split("\\s*,\\s*")) {
 						if (liste.length() > 0) {
@@ -983,7 +968,7 @@ public class World {
 							if (rt0 == null) {
 								throw new IllegalArgumentException("available technology not found: " + liste + " in " + xavail);
 							}
-							player.availableLevel(rt).add(rt0);
+							p.availableLevel(rt).add(rt0);
 						}
 					}
 				}
@@ -1055,6 +1040,9 @@ public class World {
 					}
 				}
 			}
+			XElement xqueue = xplayer.childElement("message-queue");
+			XElement xhistory = xplayer.childElement("message-history");
+			deferredMessages.put(p, new XElement[] { xqueue, xhistory });
 		}
 		Set<String> allPlanets = new HashSet<String>(planets.keySet());
 		for (XElement xplanet : xworld.childrenWithName("planet")) {
@@ -1099,6 +1087,22 @@ public class World {
 			p.die();
 		}
 		fleetIdSequence++;
+		for (Map.Entry<Player, XElement[]> e : deferredMessages.entrySet()) {
+			if (e.getValue()[0] != null) {
+				for (XElement xmessage : e.getValue()[0].childrenWithName("message")) {
+					Message msg = new Message();
+					msg.load(xmessage, this);
+					e.getKey().messageQueue.add(msg);
+				}
+			}
+			if (e.getValue()[1] != null) {
+				for (XElement xmessage : e.getValue()[1].childrenWithName("message")) {
+					Message msg = new Message();
+					msg.load(xmessage, this);
+					e.getKey().messageHistory.add(msg);
+				}
+			}
+		}
 	}
 	/** @return Return the list of other important items. */
 	public String getOtherItems() {
@@ -1118,5 +1122,20 @@ public class World {
 			}
 		}
 		return os.toString();
+	}
+	/**
+	 * Locate a fleet with the given ID.
+	 * @param id the fleet unique id
+	 * @return the fleet or null if not found
+	 */
+	public Fleet findFleet(int id) {
+		for (Player p : players.values()) {
+			for (Fleet f : p.fleets.keySet()) {
+				if (f.id == id) {
+					return f;
+				}
+			}
+		}
+		return null;
 	}
 }

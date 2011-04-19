@@ -24,6 +24,7 @@ import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.model.SurfaceFeature;
@@ -1618,6 +1619,7 @@ public class PlanetScreen extends ScreenBase {
 		doAllocation();
 		buildingBox = null;
 		doSelectBuilding(null);
+		commons.sounds.play(SoundType.DEMOLISH_BUILDING);
 	}
 	/** Action for the Active button. */
 	void doActive() {
@@ -2346,6 +2348,8 @@ public class PlanetScreen extends ScreenBase {
 				world().statistics.buildCount++;
 				world().statistics.moneyBuilding += player().currentBuilding.cost;
 				world().statistics.moneySpent += player().currentBuilding.cost;
+				
+				commons.sounds.play(SoundType.DEPLOY_BUILDING);
 		}
 	}
 	@Override

@@ -19,6 +19,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
+import hu.openig.model.SoundType;
 import hu.openig.model.World;
 import hu.openig.screen.CommonResources;
 import hu.openig.screen.GameControls;
@@ -43,7 +44,6 @@ import hu.openig.screen.items.SpacewarScreen;
 import hu.openig.screen.items.StarmapScreen;
 import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.VideoScreen;
-import hu.openig.sound.SoundType;
 import hu.openig.ui.UIMouse;
 import hu.openig.utils.XElement;
 

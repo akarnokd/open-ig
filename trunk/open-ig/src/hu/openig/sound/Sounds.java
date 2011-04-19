@@ -10,6 +10,7 @@ package hu.openig.sound;
 
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceType;
+import hu.openig.model.SoundType;
 import hu.openig.utils.IOUtils;
 
 import java.io.ByteArrayInputStream;

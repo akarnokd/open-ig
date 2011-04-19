@@ -25,6 +25,18 @@ public class Message implements Comparable<Message> {
 	public long gametime;
 	/** The real time this message was submitted. */
 	public long timestamp;
+	/** The optional sound to play. */
+	public SoundType sound;
+	/** The targeted planet. */
+	public Planet targetPlanet;
+	/** The targeted fleet. */
+	public Fleet targetFleet;
+	/** The targeted product. */
+	public ResearchType targetProduct;
+	/** The targeted fleet. */
+	public ResearchType targetResearch;
+	/** The formatted text to display. */
+	public String text;
 	@Override
 	public int compareTo(Message o) {
 		int c = priority - o.priority;
@@ -42,21 +54,56 @@ public class Message implements Comparable<Message> {
 		xmessage.set("priority", priority);
 		xmessage.set("gametime", sdf.format(new Date(gametime)));
 		xmessage.set("timestamp", sdf.format(new Date(timestamp)));
-		// FIXME other properties
+		if (sound != null) {
+			xmessage.set("sound", sound.toString());
+		}
+		if (targetPlanet != null) {
+			xmessage.set("planet", targetPlanet.id);
+		}
+		if (targetFleet != null) {
+			xmessage.set("fleet", targetFleet.id);
+		}
+		if (targetResearch != null) {
+			xmessage.set("research", targetResearch.id);
+		}
+		if (targetProduct != null) {
+			xmessage.set("product", targetProduct.id);
+		}
+		xmessage.set("text", text);
 	}
 	/** 
 	 * Load the message. 
 	 * @param xmessage the source element
-	 * @param sdf the date formatter 
+	 * @param world the world
 	 */
-	public void load(XElement xmessage, SimpleDateFormat sdf) {
+	public void load(XElement xmessage, World world) {
 		priority = xmessage.getInt("priority");
 		try {
-			gametime = sdf.parse(xmessage.get("gametime")).getTime();
-			timestamp = sdf.parse(xmessage.get("timestamp")).getTime();
+			gametime = world.dateFormat.parse(xmessage.get("gametime")).getTime();
+			timestamp = world.dateFormat.parse(xmessage.get("timestamp")).getTime();
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 		}
-		// FIXME other properties
+		String s = xmessage.get("sound", null);
+		
+		s = xmessage.get("planet", null);
+		if (s != null) {
+			targetPlanet = world.planets.get(s);
+		}
+		s = xmessage.get("fleet", null);
+		if (s != null) {
+			targetFleet = world.findFleet(Integer.parseInt(s));
+		}
+		s = xmessage.get("production", null);
+		if (s != null) {
+			targetProduct = world.researches.get(s);
+		}
+		
+		s = xmessage.get("research", null);
+		if (s != null) {
+			targetResearch = world.researches.get(s);
+		}
+		
+		text = xmessage.get("text");
 	}
 }

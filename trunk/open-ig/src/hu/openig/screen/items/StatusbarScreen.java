@@ -9,20 +9,27 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Act;
+import hu.openig.model.Message;
 import hu.openig.model.Screens;
+import hu.openig.model.SelectionMode;
+import hu.openig.model.SoundType;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.HorizontalAlignment;
+import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIImageFill;
 import hu.openig.ui.UIImageTabButton2;
 import hu.openig.ui.UILabel;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
+import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.io.Closeable;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.concurrent.CancellationException;
 
 
 
@@ -61,6 +68,14 @@ public class StatusbarScreen extends ScreenBase {
 	UILabel day;
 	/** The time. */
 	UILabel time;
+	/** The moving notification text at the bottom bar. */
+	MovingNotification notification;
+	/** The acceleration step. */ 
+	final int accelerationStep = 40;
+	/** The stay in center step. */
+	final int stayStep = 60;
+	/** The current animation step. */
+	int animationStep;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -128,6 +143,7 @@ public class StatusbarScreen extends ScreenBase {
 			}
 		};
 		
+		notification = new MovingNotification();
 		
 		addThis();
 	}
@@ -135,23 +151,35 @@ public class StatusbarScreen extends ScreenBase {
 	@Override
 	public void onEnter(Screens mode) {
 		top.bounds(0, -20, width, 20);
+		bottomY = 0;
 		bottom.bounds(0, height, width, 18);
 		animation = commons.register(50, new Act() {
+			/** Fire message once. */
+			boolean once;
 			@Override
 			public void act() {
 				boolean s = true;
 				if (top.y < 0) {
 					top.y += 2;
 					s = false;
+					askRepaint();
 				}
 				if (bottomY < 18) {
 					bottomY += 2;
 					s = false;
+					askRepaint();
 				}
-				askRepaint();
-				if (s) {
-					throw new CancellationException();
+				if (s && !once) {
+					once = true;
+					Message msg = new Message();
+					msg.gametime = world().time.getTimeInMillis();
+					msg.timestamp = System.currentTimeMillis();
+					msg.sound = SoundType.WELCOME;
+					msg.text = "Welcome to Open Imperium Galactica";
+					
+					player().messageQueue.add(msg);
 				}
+				doAnimation();
 			}
 		});
 	}
@@ -191,6 +219,8 @@ public class StatusbarScreen extends ScreenBase {
 		top2.visible(commons.nongame);
 		bottom2.visible(commons.nongame);
 		
+		notification.bounds(12, bottom.y + 3, width - 190, 12);
+		
 		super.draw(g2);
 	}
 	/** Update the state displays. */
@@ -223,5 +253,165 @@ public class StatusbarScreen extends ScreenBase {
 	public void onEndGame() {
 		// TODO Auto-generated method stub
 		
+	}
+	/** The moving status indicator. */
+	class MovingNotification extends UIComponent {
+		/** The current message. */
+		Message currentMessage;
+		@Override
+		public void draw(Graphics2D g2) {
+			Shape save0 = g2.getClip();
+			g2.clipRect(0, 0, width, height);
+			
+			if (currentMessage == null) {
+				String s = "Open Imperium Galactica";
+				int w = commons.text().getTextWidth(10, s);
+				commons.text().paintTo(g2, (width - w) / 2, 1, 10, TextRenderer.YELLOW, s);
+			} else {
+				
+				int mw = getTextWidth();
+				int renderX = 0;
+				int totalWidth = (mw + width) / 2;
+				double frequency = 20;
+				boolean blink = false;
+				if (animationStep <= accelerationStep) {
+					double time = animationStep * 1.0 / frequency;
+					double v0 = 2 * totalWidth * frequency / accelerationStep;
+					double acc = -2.0 * totalWidth * frequency * frequency / accelerationStep / accelerationStep;
+					renderX = (int)(width / 2 + totalWidth - (v0 * time + acc / 2 * time * time));
+				} else
+				if (animationStep <= accelerationStep + stayStep) {
+					int time = animationStep - accelerationStep;
+					blink = time % 10 < 5;
+					renderX = width / 2;
+				} else
+				if (animationStep <= accelerationStep * 2 + stayStep) {
+					double time = 1.0 * (animationStep - accelerationStep - stayStep) / frequency;
+					double acc = 2.0 * totalWidth * frequency * frequency / accelerationStep / accelerationStep;
+					renderX = (int)(width / 2 - acc / 2 * time * time);
+				}
+				
+				int idx = currentMessage.text.indexOf("%s");
+				if (idx < 0) {
+					int w = commons.text().getTextWidth(10, currentMessage.text);
+					commons.text().paintTo(g2, renderX - w / 2, 1, 10, 
+							blink ? TextRenderer.YELLOW : TextRenderer.GREEN, currentMessage.text);
+				} else {
+					String pre = currentMessage.text.substring(0, idx);
+					String post = currentMessage.text.substring(idx + 2);
+					String param = null;
+					if (currentMessage.targetPlanet != null) {
+						param = currentMessage.targetPlanet.name;
+					} else
+					if (currentMessage.targetFleet != null) {
+						param = currentMessage.targetFleet.name;
+					} else
+					if (currentMessage.targetProduct != null) {
+						param = currentMessage.targetProduct.name;
+					} else
+					if (currentMessage.targetResearch != null) {
+						param = currentMessage.targetResearch.name;
+					}
+					int w0 = commons.text().getTextWidth(10, pre);
+					int w1 = commons.text().getTextWidth(10, param);
+					int w2 = commons.text().getTextWidth(10, post);
+					
+					int dx = (w0 + w1 + w2) / 2;
+					int x = renderX - dx;
+
+					commons.text().paintTo(g2, x, 1, 10, 
+							blink ? TextRenderer.YELLOW : TextRenderer.GREEN, pre);
+					commons.text().paintTo(g2, x + w0, 1, 10, 
+							blink ? TextRenderer.RED : TextRenderer.YELLOW, param);
+					commons.text().paintTo(g2, x + w0 + w1, 1, 10, 
+							blink ? TextRenderer.YELLOW : TextRenderer.GREEN, post);
+					
+				}
+			}
+			g2.setClip(save0);
+		}
+		/** @return the current message's text width or zero if no message is present. */
+		public int getTextWidth() {
+			if (currentMessage == null) {
+				return 0;
+			}
+			int idx = currentMessage.text.indexOf("%s");
+			if (idx < 0) {
+				return commons.text().getTextWidth(10, currentMessage.text);
+			} else {
+				String pre = currentMessage.text.substring(0, idx);
+				String post = currentMessage.text.substring(idx + 2);
+				String param = null;
+				if (currentMessage.targetPlanet != null) {
+					param = currentMessage.targetPlanet.name;
+				} else
+				if (currentMessage.targetFleet != null) {
+					param = currentMessage.targetFleet.name;
+				} else
+				if (currentMessage.targetProduct != null) {
+					param = currentMessage.targetProduct.name;
+				} else
+				if (currentMessage.targetResearch != null) {
+					param = currentMessage.targetResearch.name;
+				}
+				int w0 = commons.text().getTextWidth(10, pre);
+				int w1 = commons.text().getTextWidth(10, param);
+				int w2 = commons.text().getTextWidth(10, post);
+				return w0 + w1 + w2;
+			}
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (currentMessage != null && e.has(Button.LEFT) && e.has(Type.DOUBLE_CLICK)) {
+				if (currentMessage.targetPlanet != null) {
+					player().currentPlanet = currentMessage.targetPlanet;
+					player().selectionMode = SelectionMode.PLANET;
+					displayPrimary(Screens.COLONY);
+				} else
+				if (currentMessage.targetFleet != null) {
+					player().currentFleet = currentMessage.targetFleet;
+					player().selectionMode = SelectionMode.FLEET;
+					displayPrimary(Screens.EQUIPMENT);
+				} else
+				if (currentMessage.targetProduct != null) {
+					world().selectResearch(currentMessage.targetProduct);
+					displaySecondary(Screens.PRODUCTION);
+				} else
+				if (currentMessage.targetProduct != null) {
+					world().selectResearch(currentMessage.targetResearch);
+					displaySecondary(Screens.RESEARCH);
+				}
+//			} else
+//			if (e.has(Type.DOWN) && e.has(Button.RIGHT)) {
+				
+			}
+			return super.mouse(e);
+		}
+	}
+	/**
+	 * Animate the message.
+	 */
+	void doAnimation() {
+		if (notification.currentMessage != null) {
+			if (animationStep == accelerationStep * 2 + stayStep) {
+				player().messageHistory.add(player().messageQueue.remove());
+				notification.currentMessage = null;
+				animationStep = 0;
+				askRepaint();
+			} else {
+				animationStep++;
+				askRepaint();
+			}
+		} else
+		if (animationStep == 0) {
+			Message msg = player().messageQueue.peek();
+			if (msg != null) {
+				notification.currentMessage = msg;
+				if (msg.sound != null) {
+					commons.sounds.play(msg.sound);
+				}
+				askRepaint();
+			}
+		}
 	}
 }
