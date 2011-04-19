@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.sound;
+package hu.openig.model;
 
 /**
  * The built-in sounds.
@@ -99,6 +99,12 @@ public enum SoundType {
 	UNKNOWN_FLEET("ui/unknown_fleet"),
 	/** Sound. */
 	UNKNOWN_SHIP("ui/unknown_ship"),
+	/** Sound. */
+	DEPLOY_BUILDING("ui/deploy_building"),
+	/** Sound. */
+	DEMOLISH_BUILDING("ui/demolish_building"),
+	/** The welcome message. */
+	WELCOME("ui/welcome")
 	;
 	/** The associated resource location. */
 	public final String resource;

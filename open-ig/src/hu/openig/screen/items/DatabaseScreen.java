@@ -12,9 +12,9 @@ import hu.openig.core.Act;
 import hu.openig.gfx.DatabaseGFX;
 import hu.openig.model.Player;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
 import hu.openig.screen.ScreenBase;
-import hu.openig.sound.SoundType;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 
