@@ -12,7 +12,6 @@ import hu.openig.core.Act;
 import hu.openig.model.Message;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
-import hu.openig.model.SoundType;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.HorizontalAlignment;
@@ -154,30 +153,15 @@ public class StatusbarScreen extends ScreenBase {
 		bottomY = 0;
 		bottom.bounds(0, height, width, 18);
 		animation = commons.register(50, new Act() {
-			/** Fire message once. */
-			boolean once;
 			@Override
 			public void act() {
-				boolean s = true;
 				if (top.y < 0) {
 					top.y += 2;
-					s = false;
 					askRepaint();
 				}
 				if (bottomY < 18) {
 					bottomY += 2;
-					s = false;
 					askRepaint();
-				}
-				if (s && !once) {
-					once = true;
-					Message msg = new Message();
-					msg.gametime = world().time.getTimeInMillis();
-					msg.timestamp = System.currentTimeMillis();
-					msg.sound = SoundType.WELCOME;
-					msg.text = "Welcome to Open Imperium Galactica";
-					
-					player().messageQueue.add(msg);
 				}
 				doAnimation();
 			}
@@ -291,14 +275,15 @@ public class StatusbarScreen extends ScreenBase {
 					renderX = (int)(width / 2 - acc / 2 * time * time);
 				}
 				
-				int idx = currentMessage.text.indexOf("%s");
+				String msgText = get(currentMessage.text);
+				int idx = msgText.indexOf("%s");
 				if (idx < 0) {
-					int w = commons.text().getTextWidth(10, currentMessage.text);
+					int w = commons.text().getTextWidth(10, msgText);
 					commons.text().paintTo(g2, renderX - w / 2, 1, 10, 
-							blink ? TextRenderer.YELLOW : TextRenderer.GREEN, currentMessage.text);
+							blink ? TextRenderer.YELLOW : TextRenderer.GREEN, msgText);
 				} else {
-					String pre = currentMessage.text.substring(0, idx);
-					String post = currentMessage.text.substring(idx + 2);
+					String pre = msgText.substring(0, idx);
+					String post = msgText.substring(idx + 2);
 					String param = null;
 					if (currentMessage.targetPlanet != null) {
 						param = currentMessage.targetPlanet.name;
@@ -311,6 +296,9 @@ public class StatusbarScreen extends ScreenBase {
 					} else
 					if (currentMessage.targetResearch != null) {
 						param = currentMessage.targetResearch.name;
+					} else
+					if (currentMessage.value != null) {
+						param = currentMessage.value;
 					}
 					int w0 = commons.text().getTextWidth(10, pre);
 					int w1 = commons.text().getTextWidth(10, param);
@@ -335,12 +323,13 @@ public class StatusbarScreen extends ScreenBase {
 			if (currentMessage == null) {
 				return 0;
 			}
-			int idx = currentMessage.text.indexOf("%s");
+			String msgText = get(currentMessage.text);
+			int idx = msgText.indexOf("%s");
 			if (idx < 0) {
-				return commons.text().getTextWidth(10, currentMessage.text);
+				return commons.text().getTextWidth(10, msgText);
 			} else {
-				String pre = currentMessage.text.substring(0, idx);
-				String post = currentMessage.text.substring(idx + 2);
+				String pre = msgText.substring(0, idx);
+				String post = msgText.substring(idx + 2);
 				String param = null;
 				if (currentMessage.targetPlanet != null) {
 					param = currentMessage.targetPlanet.name;
@@ -353,6 +342,9 @@ public class StatusbarScreen extends ScreenBase {
 				} else
 				if (currentMessage.targetResearch != null) {
 					param = currentMessage.targetResearch.name;
+				} else
+				if (currentMessage.value != null) {
+					param = currentMessage.value;
 				}
 				int w0 = commons.text().getTextWidth(10, pre);
 				int w1 = commons.text().getTextWidth(10, param);
@@ -392,25 +384,28 @@ public class StatusbarScreen extends ScreenBase {
 	 * Animate the message.
 	 */
 	void doAnimation() {
-		if (notification.currentMessage != null) {
-			if (animationStep == accelerationStep * 2 + stayStep) {
-				player().messageHistory.add(player().messageQueue.remove());
-				notification.currentMessage = null;
-				animationStep = 0;
-				askRepaint();
-			} else {
-				animationStep++;
-				askRepaint();
-			}
-		} else
-		if (animationStep == 0) {
-			Message msg = player().messageQueue.peek();
-			if (msg != null) {
-				notification.currentMessage = msg;
-				if (msg.sound != null) {
-					commons.sounds.play(msg.sound);
+		if (!commons.nongame) {
+			if (notification.currentMessage != null) {
+				if (animationStep == accelerationStep * 2 + stayStep) {
+					player().messageQueue.remove(notification.currentMessage);
+					player().messageHistory.add(notification.currentMessage);
+					notification.currentMessage = null;
+					animationStep = 0;
+					askRepaint();
+				} else {
+					animationStep++;
+					askRepaint();
 				}
-				askRepaint();
+			} else
+			if (animationStep == 0) {
+				Message msg = player().messageQueue.peek();
+				if (msg != null) {
+					notification.currentMessage = msg;
+					if (msg.sound != null && config.computerVoice) {
+						commons.sounds.play(msg.sound);
+					}
+					askRepaint();
+				}
 			}
 		}
 	}

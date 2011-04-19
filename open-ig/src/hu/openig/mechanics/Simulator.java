@@ -15,6 +15,7 @@ import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
+import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
@@ -26,6 +27,7 @@ import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Resource;
+import hu.openig.model.SoundType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.model.World;
@@ -134,6 +136,12 @@ public final class Simulator {
 		verify(world);
 		
 		if (day0 != day1) {
+			
+			Message msg = world.newMessage("message.yesterday_tax_income");
+			msg.priority = 20;
+			msg.value = "" + world.player.yesterday.taxIncome;
+			world.player.messageQueue.add(msg);
+
 			return true;
 		}
 		return false;
@@ -171,6 +179,15 @@ public final class Simulator {
 				b.buildProgress = Math.min(b.type.hitpoints, b.buildProgress);
 				b.hitpoints += 200;
 				b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
+				
+				if (b.hitpoints == b.type.hitpoints && b.type.kind.equals("MainBuilding")) {
+					Message msg = world.newMessage("message.colony_hub_completed");
+					msg.priority = 60;
+					msg.targetPlanet = planet;
+					
+					planet.owner.messageQueue.add(msg);
+				}
+				
 				result = true;
 			} else
 			if (b.repairing) {
@@ -303,8 +320,20 @@ public final class Simulator {
 			planet.owner.yesterday.taxMoraleCount++;
 			
 			if (planet.population == 0) {
+				Message msg = world.newMessage("message.planet_died");
+				msg.priority = 80;
+				msg.targetPlanet = planet;
+				planet.owner.messageQueue.add(msg);
+				
 				planet.die();
-				// FIXME send planet died message
+			} else {
+				if (planet.morale <= 15) {
+					Message msg = world.newMessage("message.planet_revolt");
+					msg.priority = 100;
+					msg.sound = SoundType.REVOLT;
+					msg.targetPlanet = planet;
+					planet.owner.messageQueue.add(msg);
+				}
 			}
 		}
 		
@@ -361,7 +390,11 @@ public final class Simulator {
 				
 				player.statistics.researchCount++;
 				
-				// FIXME send research complete message
+				Message msg = world.newMessage("message.research_completed");
+				msg.priority = 40;
+				msg.sound = SoundType.RESEARCH_COMPLETE;
+				msg.targetResearch = rs.type;
+				player.messageQueue.add(msg);
 			}
 			return true;
 		}
@@ -433,7 +466,13 @@ public final class Simulator {
 						
 						result = true;
 						
-						// FIXME send production complete message
+						if (pr.count == 0) {
+							Message msg = world.newMessage("message.production_completed");
+							msg.priority = 40;
+							msg.sound = SoundType.PRODUCTION_COMPLETE;
+							msg.targetProduct = pr.type;
+							player.messageQueue.add(msg);
+						}
 					}
 				}			
 			}

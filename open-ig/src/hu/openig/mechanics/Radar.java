@@ -13,6 +13,7 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
@@ -75,27 +76,27 @@ public final class Radar {
 					if (ri > 0) {
 						for (Planet q : findPlanetsInRange(world, f.x, f.y, ri * 25)) {
 							if (ri < 1f) {
-								updateKnowledge(player, q, PlanetKnowledge.VISIBLE);
+								updateKnowledge(world, player, q, PlanetKnowledge.VISIBLE);
 							} else
 							if (ri < 1.1f) {
-								updateKnowledge(player, q, PlanetKnowledge.NAME);
+								updateKnowledge(world, player, q, PlanetKnowledge.NAME);
 							} else
 							if (ri < 2.1f) {
-								updateKnowledge(player, q, PlanetKnowledge.OWNER);
+								updateKnowledge(world, player, q, PlanetKnowledge.OWNER);
 							} else
 							if (ri < 3.1f) {
-								updateKnowledge(player, q, PlanetKnowledge.BUILDING);
+								updateKnowledge(world, player, q, PlanetKnowledge.BUILDING);
 							}
 						}
 						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, ri * 35)) {
 							if (ri < 1.1) {
-								updateKnowledge(player, f1, FleetKnowledge.VISIBLE);
+								updateKnowledge(world, player, f1, FleetKnowledge.VISIBLE);
 							} else
 							if (ri < 2.1) {
-								updateKnowledge(player, f1, FleetKnowledge.COMPOSITION);
+								updateKnowledge(world, player, f1, FleetKnowledge.COMPOSITION);
 							} else
 							if (ri < 3.1) {
-								updateKnowledge(player, f1, FleetKnowledge.FULL);
+								updateKnowledge(world, player, f1, FleetKnowledge.FULL);
 							}
 						}
 					}
@@ -105,26 +106,26 @@ public final class Radar {
 		// traverse each planet
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
-				updateKnowledge(p.owner, p, PlanetKnowledge.BUILDING);
+				updateKnowledge(world, p.owner, p, PlanetKnowledge.BUILDING);
 			}
 			for (InventoryItem pii : p.inventory) {
 				String radar = pii.type.get("radar");
 				if (radar != null) {
 					if ("1".equals(radar)) {
-						updateKnowledge(pii.owner, p, PlanetKnowledge.NAME);
+						updateKnowledge(world, pii.owner, p, PlanetKnowledge.NAME);
 					}
 					if ("2".equals(radar)) {
-						updateKnowledge(pii.owner, p, PlanetKnowledge.OWNER);
+						updateKnowledge(world, pii.owner, p, PlanetKnowledge.OWNER);
 					}
 					if ("3".equals(radar)) {
-						updateKnowledge(pii.owner, p, PlanetKnowledge.BUILDING);
+						updateKnowledge(world, pii.owner, p, PlanetKnowledge.BUILDING);
 					}
 					if ("4".equals(radar)) {
 						for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * 35)) {
-							updateKnowledge(pii.owner, q, PlanetKnowledge.BUILDING);
+							updateKnowledge(world, pii.owner, q, PlanetKnowledge.BUILDING);
 						}
 						for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * 35)) {
-							updateKnowledge(pii.owner, f, FleetKnowledge.FULL);
+							updateKnowledge(world, pii.owner, f, FleetKnowledge.FULL);
 						}
 					}
 				}
@@ -140,24 +141,24 @@ public final class Radar {
 			if (radar > 0) {
 				for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * 35)) {
 					if (radar == 3) {
-						updateKnowledge(p.owner, q, PlanetKnowledge.BUILDING);
+						updateKnowledge(world, p.owner, q, PlanetKnowledge.BUILDING);
 					} else
 					if (radar == 2) {
-						updateKnowledge(p.owner, q, PlanetKnowledge.OWNER);
+						updateKnowledge(world, p.owner, q, PlanetKnowledge.OWNER);
 					} else
 					if (radar == 1) {
-						updateKnowledge(p.owner, q, PlanetKnowledge.VISIBLE);
+						updateKnowledge(world, p.owner, q, PlanetKnowledge.VISIBLE);
 					}
 				}
 				for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * 35)) {
 					if (radar == 1) {
-						updateKnowledge(p.owner, f1, FleetKnowledge.VISIBLE);
+						updateKnowledge(world, p.owner, f1, FleetKnowledge.VISIBLE);
 					} else
 					if (radar == 2) {
-						updateKnowledge(p.owner, f1, FleetKnowledge.COMPOSITION);
+						updateKnowledge(world, p.owner, f1, FleetKnowledge.COMPOSITION);
 					} else
 					if (radar == 3) {
-						updateKnowledge(p.owner, f1, FleetKnowledge.FULL);
+						updateKnowledge(world, p.owner, f1, FleetKnowledge.FULL);
 					}
 				}
 			}
@@ -165,30 +166,43 @@ public final class Radar {
 	}
 	/**
 	 * Update the planet knowledge by only increasing it in the given mapping.
+	 * @param world the world
 	 * @param player the player object
 	 * @param planet the planet
 	 * @param k the new knowledge
 	 */
-	static void updateKnowledge(Player player, Planet planet, PlanetKnowledge k) {
+	static void updateKnowledge(World world, Player player, Planet planet, PlanetKnowledge k) {
 		PlanetKnowledge k0 = player.planets.get(planet);
 		if (k0 == null && planet.owner != player) {
 			player.statistics.planetsDiscovered++;
+
+			Message msg = world.newMessage("message.new_planet_discovered");
+			msg.targetPlanet = planet;
+			msg.priority = 20;
+			player.messageQueue.add(msg);
+			
 		}
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			player.planets.put(planet, k);
 		}
 		if (planet.owner != null && planet.owner != player && !player.knows(planet.owner)) {
 			player.setStance(planet.owner, player.initialStance);
-			// FIXME send discover message
+
+			Message msg = world.newMessage("message.new_race_discovered");
+			msg.priority = 20;
+			msg.value = planet.owner.race;
+			player.messageQueue.add(msg);
+
 		}
 	}
 	/**
 	 * Update the planet knowledge by only increasing it in the given mapping.
+	 * @param world the world
 	 * @param player the player
 	 * @param fleet the fleet
 	 * @param k the new knowledge
 	 */
-	static void updateKnowledge(Player player, Fleet fleet, FleetKnowledge k) {
+	static void updateKnowledge(World world, Player player, Fleet fleet, FleetKnowledge k) {
 		FleetKnowledge k0 = player.fleets.get(fleet);
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			player.fleets.put(fleet, k);
@@ -196,6 +210,10 @@ public final class Radar {
 		if (fleet.owner != null && fleet.owner != player && !player.knows(fleet.owner)) {
 			player.setStance(fleet.owner, player.initialStance);
 			// FIXME send discover message
+			Message msg = world.newMessage("message.new_race_discovered");
+			msg.priority = 20;
+			msg.value = fleet.owner.race;
+			player.messageQueue.add(msg);
 		}
 	}
 	/**

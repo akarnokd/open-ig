@@ -90,10 +90,14 @@ public class World {
 	/** The global world statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();
 	/** The date formatter. */
-	public final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	{
-		dateFormat.setCalendar(time);
-	}
+	public final ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>() {
+		@Override
+		protected SimpleDateFormat initialValue() {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+			sdf.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
+			return sdf;
+		}
+	};
 	/** The sequence to assign unique ids to fleets. */
 	public int fleetIdSequence;
 	/**
@@ -654,7 +658,7 @@ public class World {
 		world.set("game", name);
 		world.set("player", player.id);
 		world.set("difficulty", difficulty);
-		world.set("time", dateFormat.format(time.getTime()));
+		world.set("time", dateFormat.get().format(time.getTime()));
 		
 		statistics.save(world.add("statistics"));
 		
@@ -684,14 +688,14 @@ public class World {
 				XElement xqueue = xp.add("message-queue");
 				for (Message msg : p.messageQueue) {
 					XElement xmessage = xqueue.add("message");
-					msg.save(xmessage, dateFormat);
+					msg.save(xmessage, dateFormat.get());
 				}
 			}
 			if (p.messageHistory.size() > 0) {
 				XElement xqueue = xp.add("message-history");
 				for (Message msg : p.messageHistory) {
 					XElement xmessage = xqueue.add("message");
-					msg.save(xmessage, dateFormat);
+					msg.save(xmessage, dateFormat.get());
 				}
 			}
 			
@@ -851,10 +855,11 @@ public class World {
 		level = xworld.getInt("level");
 		fleetIdSequence = 0;
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		sdf.setCalendar(time);
 		try {
-			time.setTime(sdf.parse(xworld.get("time")));
+			time.setTime(dateFormat.get().parse(xworld.get("time")));
+			time.set(GregorianCalendar.MINUTE, (time.get(GregorianCalendar.MINUTE) / 10) * 10);
+			time.set(GregorianCalendar.SECOND, 0);
+			time.set(GregorianCalendar.MILLISECOND, 0);
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 		}
@@ -1137,5 +1142,17 @@ public class World {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Construct a new message without target and only the label.
+	 * @param text the label identifier
+	 * @return the message
+	 */
+	public Message newMessage(String text) {
+		Message message = new Message();
+		message.gametime = time.getTimeInMillis();
+		message.timestamp = System.currentTimeMillis();
+		message.text = text;
+		return message;
 	}
 }
