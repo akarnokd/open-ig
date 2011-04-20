@@ -16,6 +16,8 @@ import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIContainer;
+import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageFill;
 import hu.openig.ui.UIImageTabButton2;
 import hu.openig.ui.UILabel;
@@ -27,8 +29,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.io.Closeable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 
 
@@ -75,6 +80,10 @@ public class StatusbarScreen extends ScreenBase {
 	final int stayStep = 60;
 	/** The current animation step. */
 	int animationStep;
+	/** The screen menu. */
+	ScreenMenu screenMenu;
+	/** The notification history. */
+	NotificationHistory notificationHistory;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -144,6 +153,11 @@ public class StatusbarScreen extends ScreenBase {
 		
 		notification = new MovingNotification();
 		
+		screenMenu = new ScreenMenu();
+		screenMenu.visible(false);
+		notificationHistory = new NotificationHistory();
+		notificationHistory.visible(false);
+		
 		addThis();
 	}
 
@@ -204,6 +218,9 @@ public class StatusbarScreen extends ScreenBase {
 		bottom2.visible(commons.nongame);
 		
 		notification.bounds(12, bottom.y + 3, width - 190, 12);
+		
+		screenMenu.location(width - screenMenu.width, 20);
+		notificationHistory.bounds(12, bottom.y - 140, width - 190, 140);
 		
 		super.draw(g2);
 	}
@@ -266,7 +283,7 @@ public class StatusbarScreen extends ScreenBase {
 				} else
 				if (animationStep <= accelerationStep + stayStep) {
 					int time = animationStep - accelerationStep;
-					blink = time % 10 < 5;
+					blink = time % 20 < 10;
 					renderX = width / 2;
 				} else
 				if (animationStep <= accelerationStep * 2 + stayStep) {
@@ -373,9 +390,10 @@ public class StatusbarScreen extends ScreenBase {
 					world().selectResearch(currentMessage.targetResearch);
 					displaySecondary(Screens.RESEARCH);
 				}
-//			} else
-//			if (e.has(Type.DOWN) && e.has(Button.RIGHT)) {
-				
+			} else
+			if (e.has(Type.DOWN) && e.has(Button.RIGHT)) {
+				notificationHistory.visible(!notificationHistory.visible());
+				return true;
 			}
 			return super.mouse(e);
 		}
@@ -407,6 +425,325 @@ public class StatusbarScreen extends ScreenBase {
 					askRepaint();
 				}
 			}
+		}
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		if (e.has(Type.UP) && screenMenu.visible() && !e.within(screenMenu.x, screenMenu.y, screenMenu.width, screenMenu.height)) {
+			screenMenu.visible(false);
+			return true;
+		}
+		if (e.within(0, 0, width, 20) 
+			|| e.within(0, height - 18, width, 18)
+			|| (screenMenu.visible() && e.within(screenMenu.x, screenMenu.y, screenMenu.width, screenMenu.height))
+			|| (notificationHistory.visible() && e.within(notificationHistory.x, notificationHistory.y, notificationHistory.width, notificationHistory.height))
+		) { 
+			if (e.has(Type.DOWN) && e.within(width - screenMenu.width, 0, screenMenu.width, 20)) {
+				screenMenu.highlight = -1;
+				screenMenu.visible(true);
+				return true;
+			}
+			return super.mouse(e);
+		}
+		return false;
+	}
+	/**
+	 * A popup menu to switch to arbitrary screen by the mouse.
+	 * @author akarnokd, 2011.04.20.
+	 */
+	class ScreenMenu extends UIContainer {
+		/** The current highlight index. */
+		int highlight = -1;
+		/** The screen name labels. */
+		final String[] labels = {
+			"screens.bridge",
+			"screens.starmap",
+			"screens.colony",
+			"screens.equipment",
+			"screens.production",
+			"screens.research",
+			"screens.information",
+			"screens.database",
+			"screens.bar",
+			"screens.diplomacy",
+			"screens.statistics",
+			"screens.achievements",
+			"screens.options",
+		};
+		/** Set the dimensions. */
+		public ScreenMenu() {
+			height = 18 * labels.length + 10;
+			width = 0;
+			for (String s : labels) {
+				width = Math.max(width, commons.text().getTextWidth(14, get(s)));
+			}
+			width += 10;
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.setColor(new Color(0, 0, 0, 224));
+			g2.fillRect(0, 0, width, height);
+			g2.setColor(Color.GRAY);
+			g2.drawRect(0, 0, width - 1, height - 1);
+			int y = 7;
+			int idx = 0;
+			for (String s0 : labels) {
+				String s = get(s0);
+				int c = idx == highlight ? TextRenderer.WHITE : TextRenderer.ORANGE;
+				if ((idx == 5 && world().level < 2) 
+						|| (idx == 6 && world().level < 3)
+						|| (idx == 9 && world().level < 2)
+						|| (idx == 10 && world().level < 4)
+				) {
+					c = TextRenderer.GRAY;
+				}
+				commons.text().paintTo(g2, 5, y, 14, c, s);
+				y += 18;
+				idx++;
+			}
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			int idx = (e.y - 7) / 18;
+			if (idx >= 0 && idx < labels.length) {
+				highlight = idx;
+			} else {
+				highlight = -1;
+			}
+			if (e.has(Type.UP)) {
+				switchScreen();
+			}
+			super.mouse(e);
+			return true;
+		}
+		/**
+		 * Switch to the higlighted screen or hide the menu.
+		 */
+		void switchScreen() {
+			switch (highlight) {
+			case 0:
+				displayPrimary(Screens.BRIDGE);
+				break;
+			case 1:
+				displayPrimary(Screens.STARMAP);
+				break;
+			case 2:
+				displayPrimary(Screens.COLONY);
+				break;
+			case 3:
+				displaySecondary(Screens.EQUIPMENT);
+				break;
+			case 4:
+				if (world().level >= 2) {
+					displaySecondary(Screens.PRODUCTION);
+				}
+				break;
+			case 5:
+				if (world().level >= 3) {
+					displaySecondary(Screens.RESEARCH);
+				}
+				break;
+			case 6:
+				displaySecondary(Screens.INFORMATION_PLANETS);
+				break;
+			case 7:
+				displaySecondary(Screens.DATABASE);
+				break;
+			case 8:
+				if (world().level >= 2) {
+					displaySecondary(Screens.BAR);
+				}
+				break;
+			case 9:
+				if (world().level >= 4) {
+					displaySecondary(Screens.DIPLOMACY);
+				}
+				break;
+			case 10:
+				displaySecondary(Screens.STATISTICS);
+				break;
+			case 11:
+				displaySecondary(Screens.ACHIEVEMENTS);
+				break;
+			case 12:
+				displaySecondary(Screens.LOAD_SAVE);
+				break;
+			default:
+			}
+			visible(false);
+		}
+	}
+	
+	/** The scrollable list of notification history. */
+	class NotificationHistory extends UIContainer {
+		/** The bottom row index counted from the last element. */
+		int bottom = 0;
+		/** Scroll up. */
+		UIImageButton scrollUp;
+		/** Scroll down. */
+		UIImageButton scrollDown;
+		/** The event time format. */
+		SimpleDateFormat sdf;
+		/** Construct the buttons. */
+		public NotificationHistory() {
+			scrollUp = new UIImageButton(commons.common().moveUp);
+			scrollUp.onClick = new Act() {
+				@Override
+				public void act() {
+					doScrollUp();
+				}
+			};
+			scrollUp.setHoldDelay(250);
+			scrollDown = new UIImageButton(commons.common().moveDown);
+			scrollDown.onClick = new Act() {
+				@Override
+				public void act() {
+					doScrollDown();
+				}
+			};
+			scrollDown.setHoldDelay(250);
+			
+			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			sdf.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
+			addThis();
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.setColor(new Color(0, 0, 0, 224));
+			g2.fillRect(0, 0, width, height);
+			g2.setColor(Color.GRAY);
+			g2.drawRect(0, 0, width - 1, height - 1);
+			
+			Shape save0 = g2.getClip();
+			g2.clipRect(0, 0, width - 30, height);
+			
+			int rowHeight = 20;
+			int rows = height / rowHeight;
+			int start = player().messageHistory.size() - bottom - 1;
+			int y = height - rowHeight; 
+			for (int i = start; i >= start - rows && i >= 0; i--) {
+				Message msg = player().messageHistory.get(i);
+				
+				// use an icon
+				if ("message.yesterday_tax_income".equals(msg.text)) {
+					g2.drawImage(commons.statusbar().moneyNotification, 4, y + 2, null);
+				} else
+				if (msg.targetProduct != null) {
+					g2.drawImage(commons.statusbar().productionNotify, 4, y + 2, null);
+				} else
+				if (msg.targetResearch != null) {
+					g2.drawImage(commons.statusbar().researchNotify, 4, y + 2, null);
+				} else
+				if (msg.targetPlanet != null) {
+					g2.drawImage(msg.targetPlanet.type.body[0], 4, y + 2, 16, 16, null);
+				} else
+				if (msg.targetFleet != null) {
+					int dx = (20 - msg.targetFleet.owner.fleetIcon.getWidth()) / 2;
+					int dy = (20 - msg.targetFleet.owner.fleetIcon.getHeight()) / 2;
+					g2.drawImage(msg.targetPlanet.type.body[0], dx, y + dy, null);
+				}
+				
+				String msgText = get(msg.text);
+				int idx = msgText.indexOf("%s");
+				if (idx < 0) {
+					commons.text().paintTo(g2, 26, y + 5, 10, 
+							TextRenderer.GREEN, msgText);
+				} else {
+					String pre = msgText.substring(0, idx);
+					String post = msgText.substring(idx + 2);
+					String param = null;
+					if (msg.targetPlanet != null) {
+						param = msg.targetPlanet.name;
+					} else
+					if (msg.targetFleet != null) {
+						param = msg.targetFleet.name;
+					} else
+					if (msg.targetProduct != null) {
+						param = msg.targetProduct.name;
+					} else
+					if (msg.targetResearch != null) {
+						param = msg.targetResearch.name;
+					} else
+					if (msg.value != null) {
+						param = msg.value;
+					}
+					int w0 = commons.text().getTextWidth(10, pre);
+					int w1 = commons.text().getTextWidth(10, param);
+					int w2 = commons.text().getTextWidth(10, post);
+					
+					commons.text().paintTo(g2, 26, y + 5, 10, 
+							TextRenderer.GREEN, pre);
+					commons.text().paintTo(g2, 26 + w0, y + 5, 10, 
+							TextRenderer.YELLOW, param);
+					commons.text().paintTo(g2, 26 + w0 + w1, y + 5, 10, 
+							TextRenderer.GREEN, post);
+					
+					commons.text().paintTo(g2, 26 + w0 + w1 + w2 + 20, y + 7, 7, TextRenderer.GRAY, sdf.format(new Date(msg.gametime)));
+					
+				}
+				y -= rowHeight;
+			}
+			g2.setClip(save0);
+			
+			scrollUp.location(width - 30, 1);
+			scrollDown.location(width - 30, height - 30);
+			
+			scrollUp.visible(bottom + rows < player().messageHistory.size());
+			scrollDown.visible(bottom > 0);
+			
+			super.draw(g2);
+		}
+		/** Scroll up. */
+		void doScrollUp() {
+			bottom = Math.max(0, Math.min(bottom + 1, player().messageHistory.size() - (height / 20)));
+		}
+		/** Scroll down. */
+		void doScrollDown() {
+			bottom = Math.max(0, Math.min(bottom - 1, player().messageHistory.size() - (height / 20)));
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.WHEEL)) {
+				if (e.z < 0) {
+					doScrollUp();
+				} else {
+					doScrollDown();
+				}
+				return true;
+			} else
+			if (e.has(Type.DOUBLE_CLICK) && e.x < width - 31) {
+				int idx = player().messageHistory.size() - 1 - bottom - ((height - e.y) / 20);
+				if (idx >= 0 && idx < player().messageHistory.size()) {
+					Message currentMessage = player().messageHistory.get(idx);
+					if (currentMessage.targetPlanet != null) {
+						player().currentPlanet = currentMessage.targetPlanet;
+						player().selectionMode = SelectionMode.PLANET;
+						displayPrimary(Screens.COLONY);
+						visible(false);
+						return true;
+					} else
+					if (currentMessage.targetFleet != null) {
+						player().currentFleet = currentMessage.targetFleet;
+						player().selectionMode = SelectionMode.FLEET;
+						displayPrimary(Screens.EQUIPMENT);
+						visible(false);
+						return true;
+					} else
+					if (currentMessage.targetProduct != null) {
+						world().selectResearch(currentMessage.targetProduct);
+						displaySecondary(Screens.PRODUCTION);
+						visible(false);
+						return true;
+					} else
+					if (currentMessage.targetProduct != null) {
+						world().selectResearch(currentMessage.targetResearch);
+						displaySecondary(Screens.RESEARCH);
+						visible(false);
+						return true;
+					}
+				}
+			}
+			return super.mouse(e);
 		}
 	}
 }

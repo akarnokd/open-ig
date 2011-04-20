@@ -91,6 +91,7 @@ public class AudioThread extends Thread {
 				}
 				byte[] data16 = convert8To16(data); //split16To8(movingAverage(upscale8To16(data), ));
 				sdl.write(data16, 0, data16.length);
+				sdl.drain();
 			}
 		} catch (InterruptedException ex) {
 			// time to quit;

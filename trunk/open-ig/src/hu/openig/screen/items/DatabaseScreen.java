@@ -428,7 +428,7 @@ public class DatabaseScreen extends ScreenBase {
 		info.action = new Act() {
 			@Override
 			public void act() {
-				displayPrimary(Screens.INFORMATION_ALIENS);
+				displaySecondary(Screens.INFORMATION_ALIENS);
 			}
 		};
 		starmap.action = new Act() {
@@ -440,7 +440,7 @@ public class DatabaseScreen extends ScreenBase {
 		diplomacy.action = new Act() {
 			@Override
 			public void act() {
-				displayPrimary(Screens.DIPLOMACY);
+				displaySecondary(Screens.DIPLOMACY);
 			}
 		};
 		
