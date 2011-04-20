@@ -52,6 +52,7 @@ public class TestQuestion {
 				ta.id = xa.get("id");
 				ta.label = xa.get("label");
 				ta.selected = "true".equals(xa.get("selected", "false"));
+				ta.points = xa.getInt("points");
 				tq.answers.add(ta);
 			}
 			result.put(tq.id, tq);

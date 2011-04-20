@@ -1231,4 +1231,29 @@ public class World {
 		message.text = text;
 		return message;
 	}
+	/** @return Compute the maximum test points. */
+	public int testMax() {
+		int sum = 0;
+		for (TestQuestion tq : test.values()) {
+			int max = 0;
+			for (TestAnswer ta : tq.answers) {
+				max = Math.max(max, ta.points);
+			}
+			sum += max;
+		}
+		return sum;
+	}
+	/** @return compute the test score based on the user selections. */
+	public int testScore() {
+		int sum = 0;
+		for (TestQuestion tq : test.values()) {
+			for (TestAnswer ta : tq.answers) {
+				if (ta.selected) {
+					sum += ta.points;
+				}
+			}
+		}
+		return sum;
+		
+	}
 }
