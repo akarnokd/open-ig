@@ -74,5 +74,7 @@ public enum Screens {
 	/** Not actually a screen. */
 	STATUSBAR,
 	/** Full screen movie playback. */
-	MOVIE
+	MOVIE,
+	/** The phsychologist test screen. */
+	TEST
 }
