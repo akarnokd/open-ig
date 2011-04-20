@@ -64,6 +64,15 @@ public class StatusbarGFX {
 	public BufferedImage[] timex2;
 	/** Time x 4 animation phases. */
 	public BufferedImage[] timex4;
+	/** Research notification icon. */
+	@Img(name = "research_notify")
+	public BufferedImage researchNotify;
+	/** Production notification icon. */
+	@Img(name = "production_notify")
+	public BufferedImage productionNotify;
+	/** Money notification icon. */
+	@Img(name = "money_notify")
+	public BufferedImage moneyNotification;
 	/**
 	 * Load the resources.
 	 * @param rl the resource locator
