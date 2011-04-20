@@ -659,27 +659,43 @@ public final class Simulator {
 			}
 		} else
 		if (planet.autoBuild == AutoBuild.ECONOMIC) {
-			findOptions(world, planet, 
-				new Func1<Building, Boolean>() {
-					@Override
-					public Boolean invoke(Building b) {
-						return b.type.kind.equals("Economic");
+			if (!findOptions(world, planet, 
+					new Func1<Building, Boolean>() {
+						@Override
+						public Boolean invoke(Building b) {
+							return false;
+						}
+					},
+					new Func1<BuildingType, Boolean>() {
+						@Override
+						public Boolean invoke(BuildingType value) {
+							return value.kind.equals("Economic");
+						}
 					}
-				},
-				new Func1<BuildingType, Boolean>() {
-					@Override
-					public Boolean invoke(BuildingType value) {
-						return value.kind.equals("Economic");
-					}
+				)) {
+					findOptions(world, planet, 
+						new Func1<Building, Boolean>() {
+							@Override
+							public Boolean invoke(Building b) {
+								return b.type.kind.equals("Economic");
+							}
+						},
+						new Func1<BuildingType, Boolean>() {
+							@Override
+							public Boolean invoke(BuildingType value) {
+								return false;
+							}
+						}
+					);
 				}
-			);
 		} else
 		if (planet.autoBuild == AutoBuild.FACTORY) {
-			findOptions(world, planet, 
+			// construct first before upgrading
+			if (!findOptions(world, planet, 
 				new Func1<Building, Boolean>() {
 					@Override
 					public Boolean invoke(Building b) {
-						return b.type.kind.equals("Factory");
+						return false;
 					}
 				},
 				new Func1<BuildingType, Boolean>() {
@@ -688,7 +704,22 @@ public final class Simulator {
 						return value.kind.equals("Factory");
 					}
 				}
-			);
+			)) {
+				findOptions(world, planet, 
+					new Func1<Building, Boolean>() {
+						@Override
+						public Boolean invoke(Building b) {
+							return b.type.kind.equals("Factory");
+						}
+					},
+					new Func1<BuildingType, Boolean>() {
+						@Override
+						public Boolean invoke(BuildingType value) {
+							return false;
+						}
+					}
+				);
+			}
 		}
 	}
 	/**
@@ -698,12 +729,13 @@ public final class Simulator {
 	 * @param planet the planet
 	 * @param upgradeSelector the selector to find upgradable buildings
 	 * @param buildSelector the selector to find building types to construct
+	 * @return was there a construction/upgrade?
 	 */
-	static void findOptions(World world, Planet planet, Func1<Building, Boolean> upgradeSelector, Func1<BuildingType, Boolean> buildSelector) {
+	static boolean findOptions(World world, Planet planet, Func1<Building, Boolean> upgradeSelector, Func1<BuildingType, Boolean> buildSelector) {
 		List<Building> upgr = findUpgradables(planet, upgradeSelector);
 		if (upgr.size() > 0) {
 			doUpgrade(world, planet, upgr.get(0));
-			return;
+			return true;
 		}
 		// look for energy producing buildings in the model
 		List<BuildingType> bts = findBuildables(world, planet, buildSelector);
@@ -713,7 +745,7 @@ public final class Simulator {
 			Point pt = planet.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
 			if (pt != null) {
 				doConstruct(world, planet, bt, pt);
-				return;
+				return true;
 			}
 		}
 		// no room at all, turn off autobuild and let the user do it
@@ -721,7 +753,7 @@ public final class Simulator {
 		if (bts.size() > 0) {
 			planet.autoBuild = AutoBuild.OFF;
 		}
-
+		return false;
 	}
 	/**
 	 * Locate buildings which satisfy a given filter and have available upgrade levels.

@@ -19,4 +19,6 @@ public class TestAnswer {
 	public String label;
 	/** Is this option selected? */
 	boolean selected;
+	/** The points awarded for this answer. */
+	public int points;
 }
