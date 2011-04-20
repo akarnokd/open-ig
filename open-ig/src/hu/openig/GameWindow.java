@@ -28,6 +28,7 @@ import hu.openig.screen.items.AchievementsScreen;
 import hu.openig.screen.items.BarScreen;
 import hu.openig.screen.items.BattlefinishScreen;
 import hu.openig.screen.items.BridgeScreen;
+import hu.openig.screen.items.CreditsScreen;
 import hu.openig.screen.items.DatabaseScreen;
 import hu.openig.screen.items.DiplomacyScreen;
 import hu.openig.screen.items.EquipmentScreen;
@@ -43,6 +44,7 @@ import hu.openig.screen.items.SingleplayerScreen;
 import hu.openig.screen.items.SpacewarScreen;
 import hu.openig.screen.items.StarmapScreen;
 import hu.openig.screen.items.StatusbarScreen;
+import hu.openig.screen.items.TestScreen;
 import hu.openig.screen.items.VideoScreen;
 import hu.openig.ui.UIMouse;
 import hu.openig.utils.XElement;
@@ -205,6 +207,10 @@ public class GameWindow extends JFrame implements GameControls {
 		public ShipwalkScreen shipwalk;
 		/** The status bar screen. */
 		public StatusbarScreen statusbar;
+		/** The phsychologist test. */
+		public TestScreen test;
+		/** The credits. */
+		public CreditsScreen credits;
 	}
 	/** A pending repaint request. */
 	boolean repaintRequest;
@@ -588,6 +594,14 @@ public class GameWindow extends JFrame implements GameControls {
 			break;
 		case VIDEOS:
 			sb = allScreens.videos;
+			break;
+		case TEST:
+			sb = allScreens.test;
+			break;
+		case CREDITS:
+			sb = allScreens.credits;
+			break;
+		case BATTLE_FINISH:
 			break;
 		default:
 		}

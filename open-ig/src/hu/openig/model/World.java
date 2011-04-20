@@ -19,6 +19,7 @@ import hu.openig.utils.ImageUtils;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -100,6 +101,8 @@ public class World {
 	};
 	/** The sequence to assign unique ids to fleets. */
 	public int fleetIdSequence;
+	/** The test questions. */
+	public Map<String, TestQuestion> test;
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -130,6 +133,8 @@ public class World {
 			processPlayers(rl.getXML(game + "/players"));
 			
 			processResearches(rl.getXML(definition.tech));
+			
+			test = TestQuestion.parse(rl.getXML(game + "/test"));
 			
 			exec.submit(new Runnable() {
 				@Override
@@ -662,6 +667,16 @@ public class World {
 		
 		statistics.save(world.add("statistics"));
 		
+		XElement test = world.add("test");
+		for (TestQuestion tq : this.test.values()) {
+			for (TestAnswer ta : tq.answers) {
+				if (ta.selected) {
+					XElement testentry = test.add("q-a");
+					testentry.set("question", tq.id);
+					testentry.set("answer", ta.id);
+				}
+			}
+		}
 		
 		for (Player p : players.values()) {
 			XElement xp = world.add("player");
@@ -752,13 +767,32 @@ public class World {
 				}
 			}
 			for (Map.Entry<Fleet, FleetKnowledge> fl : p.fleets.entrySet()) {
-				if (fl.getKey().owner == p && !fl.getKey().inventory.isEmpty()) {
+				Fleet f = fl.getKey();
+				if (f.owner == p && !f.inventory.isEmpty()) {
 					XElement xfleet = xp.add("fleet");
-					xfleet.set("id", fl.getKey().id);
-					xfleet.set("x", fl.getKey().x);
-					xfleet.set("y", fl.getKey().y);
-					xfleet.set("name", fl.getKey().name);
-					for (InventoryItem fii : fl.getKey().inventory) {
+					xfleet.set("id", f.id);
+					xfleet.set("x", f.x);
+					xfleet.set("y", f.y);
+					xfleet.set("name", f.name);
+					if (f.targetFleet != null) {
+						xfleet.set("target-fleet", f.targetFleet.id);
+					} else
+					if (f.targetPlanet != null) {
+						xfleet.set("target-planet", f.targetPlanet.id);
+					}
+					xfleet.set("mode", f.mode);
+					if (f.waypoints.size() > 0) {
+						StringBuilder wp = new StringBuilder();
+						for (Point2D.Float pt : f.waypoints) {
+							if (wp.length() > 0) {
+								wp.append(" ");
+							}
+							wp.append(pt.x).append(";").append(pt.y);
+						}
+						xfleet.set("waypoints", wp.toString());
+					}
+					
+					for (InventoryItem fii : f.inventory) {
 						XElement xfii = xfleet.add("item");
 						xfii.set("id", fii.type.id);
 						xfii.set("count", fii.count);
@@ -871,7 +905,17 @@ public class World {
 			statistics.load(stats);
 		}
 
+		XElement test = xworld.childElement("test");
+		if (test != null) {
+			for (XElement qa : test.childrenWithName("q-a")) {
+				TestQuestion tq = this.test.get(qa.get("question"));
+				tq.choose(qa.get("answer"));
+			}
+		}
+		
 		Map<Player, XElement[]> deferredMessages = new HashMap<Player, XElement[]>();
+		/** The deferred fleet-to-fleet targeting. */
+		Map<Fleet, Integer> deferredTargets = new HashMap<Fleet, Integer>();
 		
 		for (XElement xplayer : xworld.childrenWithName("player")) {
 			Player p = players.get(xplayer.get("id"));
@@ -989,6 +1033,27 @@ public class World {
 				f.x = xfleet.getFloat("x");
 				f.y = xfleet.getFloat("y");
 				f.name = xfleet.get("name");
+				
+				String s0 = xfleet.get("target-fleet", null);
+				if (s0 != null) {
+					deferredTargets.put(f, Integer.parseInt(s0));
+				}
+				s0 = xfleet.get("target-planet", null);
+				if (s0 != null) {
+					f.targetPlanet = planets.get(s0);
+				}
+				s0 = xfleet.get("mode", null);
+				if (s0 != null) {
+					f.mode = FleetMode.valueOf(s0);
+				}
+				s0 = xfleet.get("waypoints", null);
+				if (s0 != null) {
+					for (String wp : s0.split("\\s+")) {
+						String[] xy = wp.split(";");
+						f.waypoints.add(new Point2D.Float(Float.parseFloat(xy[0]), Float.parseFloat(xy[1])));
+					}
+				}
+				
 				for (XElement xfii : xfleet.childrenWithName("item")) {
 					InventoryItem fii = new InventoryItem();
 					fii.type = researches.get(xfii.get("id"));
@@ -1105,6 +1170,17 @@ public class World {
 					Message msg = new Message();
 					msg.load(xmessage, this);
 					e.getKey().messageHistory.add(msg);
+				}
+			}
+		}
+		for (Map.Entry<Fleet, Integer> ft : deferredTargets.entrySet()) {
+			outer:
+			for (Player p : players.values()) {
+				for (Fleet f : p.ownFleets()) {
+					if (f.id == ft.getValue().intValue()) {
+						ft.getKey().targetFleet = f;
+						break outer;
+					}
 				}
 			}
 		}
