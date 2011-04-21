@@ -43,3 +43,5 @@ List of things that need fixing, but without any due date other than hopefully t
 || ~~Add building upgrade UI to the colony screen~~ || ~~I need to find room on the colony screen.~~ ||
 || ~~Add issue icons to the colony screen~~ || ~~Similar to 0.72 feature.~~ ||
 || Add scrollbars to the starmap screen || I use the right-button pan all the time. ||
+|| Create XSD's for the XML files || They should become relatively stable now. ||
+|| Create a Campaign editor || More convenient than editing XMLs ||
