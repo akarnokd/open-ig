@@ -354,4 +354,18 @@ public final class RenderTools {
 					RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 		}
 	}
+	/**
+	 * Enable and disable the bilinear interpolation mode for the graphics.
+	 * @param g2 the target graphics object.
+	 * @param active activate?
+	 */
+	public static void setAntiailas(Graphics2D g2, boolean active) {
+		if (active) {
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, 
+					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		} else {
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, 
+					RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+		}
+	}
 }
