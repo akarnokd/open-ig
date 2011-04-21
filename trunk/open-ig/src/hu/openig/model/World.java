@@ -88,6 +88,8 @@ public class World {
 	public ResourceLocator rl;
 	/** Retrieve the auto build limit. */
 	public Func1<Void, Integer> getAutoBuildLimit;
+	/** Retrieve the auto repair settings. */
+	public Func1<Void, Boolean> isAutoRepair;
 	/** The global world statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();
 	/** The date formatter. */
@@ -1159,6 +1161,7 @@ public class World {
 		fleetIdSequence++;
 		for (Map.Entry<Player, XElement[]> e : deferredMessages.entrySet()) {
 			if (e.getValue()[0] != null) {
+				e.getKey().messageQueue.clear();
 				for (XElement xmessage : e.getValue()[0].childrenWithName("message")) {
 					Message msg = new Message();
 					msg.load(xmessage, this);
@@ -1166,6 +1169,7 @@ public class World {
 				}
 			}
 			if (e.getValue()[1] != null) {
+				e.getKey().messageHistory.clear();
 				for (XElement xmessage : e.getValue()[1].childrenWithName("message")) {
 					Message msg = new Message();
 					msg.load(xmessage, this);

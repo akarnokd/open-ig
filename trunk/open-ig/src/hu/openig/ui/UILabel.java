@@ -90,7 +90,7 @@ public class UILabel extends UIComponent {
 			} else {
 				tr.wrapText(text, width - 1, size, lines);
 			}
-			int totalHeight = lines.size() * (size + spacing) - (lines.size() > 1 ? spacing : 0);
+			int totalHeight = lines.size() * (size + spacing) - (lines.size() > 0 ? spacing : 0);
 			int py = 0;
 			switch (valign) {
 			case BOTTOM:
@@ -195,7 +195,7 @@ public class UILabel extends UIComponent {
 		} else {
 			tr.wrapText(text, width - 1, size, lines);
 		}
-		return lines.size() * size + 1;
+		return lines.size() * (size + spacing) - (lines.size() > 0 ? spacing : 0);
 	}
 	/**
 	 * Set the label text.

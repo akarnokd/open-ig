@@ -1107,7 +1107,8 @@
 	<entry key='test.q8.a1'>At the drop of a hat.</entry>
 	<entry key='test.q8.a2'>Only in extenuating circumstances.</entry>
 	<entry key='test.q8.a3'>A compromise will suffice.</entry>
-	<entry key=''></entry>
+	<entry key='settings.auto_repair'>Auto-Repair buildings</entry>
+	<entry key='test.done'>Done</entry>
 	<entry key=''></entry>
 	
 </labels>
