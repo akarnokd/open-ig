@@ -8,8 +8,8 @@ This page describes the differences between released versions of the Open Imperi
 
 = Version 0.91 - General improvements =
   * Released: 2011-04-21 17:30
-  * Added the *Credits* screen. The main menu has been reordered to contain a label for it. To stop the credits, hit ESC.
-  * Added the [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/questionare.png Test screen]. You can only see it from the *TestBed* application. You may scroll the list via the mouse wheel.
+  * *Credits* screen added. The main menu has been reordered to contain a label for it. To stop the credits, hit ESC.
+  * [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/questionare.png Test screen] added. You can only see it from the *Testbed* application. You may scroll the list via the mouse wheel.
   * Created an [http://code.google.com/p/open-ig/wiki/GameGuide#Auto-Build Auto-Build] option.
   * The *Options* screen has been implemented. Reachable through the main menu or via *ESC* or *O* key within the game.
     * You can adjust the volume of effects, music and video.
