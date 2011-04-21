@@ -27,6 +27,7 @@ This page describes the differences between released versions of the Open Imperi
     * Lower than 50% morale now reduces the population twice as fast
     * You may only build 1 Water vaporator per planet but gives you +10 morale.
     * Added shortage notification icons for police.
+  * The planet list table can now be sorted by the columns both ascending and descending: planets, population, morale and problems.
 
 = Version 0.90 - Fleets =
   * Released: 2011-04-15 23:30
