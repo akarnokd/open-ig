@@ -1093,6 +1093,8 @@
 	<entry key='test.q8.a1'>Egyetértek, gyakran van rá szükség.</entry>
 	<entry key='test.q8.a2'>Csak kivételes esetben.</entry>
 	<entry key='test.q8.a3'>Soha.</entry>
+	<entry key='settings.auto_repair'>Épületek automatikus javítása</entry>
+	<entry key='test.done'>Kész</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -190,7 +190,7 @@ public final class Simulator {
 				
 				result = true;
 			} else
-			if (b.repairing) {
+			if (b.repairing || (planet.owner == world.player && world.isAutoRepair.invoke(null))) {
 				if (b.hitpoints * 100 / b.type.hitpoints < ps.freeRepair) {
 					b.hitpoints += repairAmount * ps.freeRepairEff;
 					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
@@ -240,7 +240,8 @@ public final class Simulator {
 			}
 		}
 		
-		if (planet.autoBuild != AutoBuild.OFF && planet.owner.money >= world.getAutoBuildLimit.invoke(null)) {
+		if (planet.autoBuild != AutoBuild.OFF 
+				&& (planet.owner == world.player && planet.owner.money >= world.getAutoBuildLimit.invoke(null))) {
 			if (!buildInProgress 
 					&& !ps.hasWarning(PlanetProblems.COLONY_HUB)
 					&& !ps.hasProblem(PlanetProblems.COLONY_HUB)

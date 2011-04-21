@@ -125,6 +125,9 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Auto build label. */
 	@Settings
 	UILabel autoBuildLabel;
+	/** Enable automatic repair. */
+	@Settings
+	UICheckBox autoRepair;
 	@Override
 	public void onInitialize() {
 		save = new UIGenericButton(get("save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
@@ -312,14 +315,14 @@ public class LoadSaveScreen extends ScreenBase {
 		aprev.onClick = new Act() {
 			@Override
 			public void act() {
-				config.autoBuildLimit = Math.max(0, config.autoBuildLimit - 1000);
+				config.autoBuildLimit = Math.max(0, config.autoBuildLimit - 5000);
 				askRepaint(base);
 			}
 		};
 		anext.onClick = new Act() {
 			@Override
 			public void act() {
-				config.autoBuildLimit = Math.min(Integer.MAX_VALUE, config.autoBuildLimit + 1000);
+				config.autoBuildLimit = Math.min(Integer.MAX_VALUE, config.autoBuildLimit + 5000);
 				askRepaint(base);
 			}
 		};
@@ -332,7 +335,15 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 		autoBuildLabel = new UILabel(get("settings.autobuild_limit"), 14, commons.text());
-		
+
+		autoRepair = new UICheckBox(get("settings.auto_repair"), 14, commons.common().checkmark, commons.text());
+		autoRepair.onChange = new Act() {
+			@Override
+			public void act() {
+				config.autoRepair = autoRepair.selected();
+			}
+		};
+
 		
 		addThis();
 	}
@@ -402,11 +413,12 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		reequipTanks.location(base.x + 30, base.y + 160 + 8);
 		reequipBombs.location(base.x + 30, base.y + 190 + 8);
-		computerVoiceScreen.location(base.x + 30, base.y + 220 + 8);
-		computerVoiceNotify.location(base.x + 30, base.y + 250 + 8);
+		autoRepair.location(base.x + 30, base.y + + 220 + 8);
+		computerVoiceScreen.location(base.x + 30, base.y + 250 + 8);
+		computerVoiceNotify.location(base.x + 30, base.y + 280 + 8);
 		
-		autoBuildLabel.location(base.x + 30, base.y + 280 + 8);
-		autoBuildLimit.location(base.x + 50 + autoBuildLabel.width, base.y + 280);
+		autoBuildLabel.location(base.x + 30, base.y + 310 + 8);
+		autoBuildLimit.location(base.x + 50 + autoBuildLabel.width, base.y + 310);
 		autoBuildLimit.width = 200;
 	}
 	@Override

@@ -131,6 +131,9 @@ public class Configuration {
 	/** Build limit. */
 	@LoadSave
 	public int autoBuildLimit;
+	/** Automatic repair. */
+	@LoadSave
+	public boolean autoRepair;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

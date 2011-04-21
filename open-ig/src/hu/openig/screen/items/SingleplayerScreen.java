@@ -231,6 +231,12 @@ public class SingleplayerScreen extends ScreenBase {
 							return config.autoBuildLimit;
 						}
 					};
+					world.isAutoRepair = new Func1<Void, Boolean>() {
+						@Override
+						public Boolean invoke(Void value) {
+							return config.autoRepair;
+						}
+					};
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {

@@ -1358,6 +1358,12 @@ public class GameWindow extends JFrame implements GameControls {
 								return config.autoBuildLimit;
 							}
 						};
+						world.isAutoRepair = new Func1<Void, Boolean>() {
+							@Override
+							public Boolean invoke(Void value) {
+								return config.autoRepair;
+							}
+						};
 					}
 					
 					world.loadState(xworld);

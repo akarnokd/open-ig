@@ -26,6 +26,7 @@ import hu.openig.screen.items.AchievementsScreen;
 import hu.openig.screen.items.BarScreen;
 import hu.openig.screen.items.BattlefinishScreen;
 import hu.openig.screen.items.BridgeScreen;
+import hu.openig.screen.items.CreditsScreen;
 import hu.openig.screen.items.DatabaseScreen;
 import hu.openig.screen.items.DiplomacyScreen;
 import hu.openig.screen.items.EquipmentScreen;
@@ -40,6 +41,7 @@ import hu.openig.screen.items.SingleplayerScreen;
 import hu.openig.screen.items.SpacewarScreen;
 import hu.openig.screen.items.StarmapScreen;
 import hu.openig.screen.items.StatusbarScreen;
+import hu.openig.screen.items.TestScreen;
 import hu.openig.screen.items.VideoScreen;
 import hu.openig.ui.UIMouse;
 import hu.openig.utils.ConsoleWatcher;
@@ -240,6 +242,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					try {
 						screen.onLeave();
 						screen.onFinish();
+						screen.onEndGame();
 						screen = null;
 					} catch (Throwable t) {
 						t.printStackTrace();
@@ -431,6 +434,8 @@ public class ScreenTester extends JFrame implements GameControls {
 		menuScreen.add(addScreenItem("Spacewar", SpacewarScreen.class, null));
 		menuScreen.add(addScreenItem("Battle finish", BattlefinishScreen.class, null));
 		menuScreen.add(addScreenItem("Videos", VideoScreen.class, null));
+		menuScreen.add(addScreenItem("Test", TestScreen.class, null));
+		menuScreen.add(addScreenItem("Credits", CreditsScreen.class, null));
 		
 		menuView = new JMenu("View");
 		menuView.setVisible(false);
@@ -481,6 +486,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			if (screen != null) {
 				screen.onLeave();
 				screen.onFinish();
+				screen.onEndGame();
 				screen = null;
 			}
 		} catch (Throwable t) {
@@ -498,7 +504,12 @@ public class ScreenTester extends JFrame implements GameControls {
 			screenClass = screen.getClass().getName();
 			screen.onLeave();
 			screen.onFinish();
+			screen.onEndGame();
 			screen = null;
+		}
+		if (commons != null && commons.world() != null) {
+			commons.stop();
+			commons.sounds.stop();
 		}
 		final String clazz = screenClass;
 		config = null;
@@ -531,6 +542,12 @@ public class ScreenTester extends JFrame implements GameControls {
 						@Override
 						public Integer invoke(Void value) {
 							return config.autoBuildLimit;
+						}
+					};
+					commons.world().isAutoRepair = new Func1<Void, Boolean>() {
+						@Override
+						public Boolean invoke(Void value) {
+							return config.autoRepair;
 						}
 					};
 

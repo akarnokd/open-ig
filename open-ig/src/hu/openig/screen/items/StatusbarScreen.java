@@ -252,8 +252,7 @@ public class StatusbarScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
-		
+		notification.currentMessage = null;
 	}
 	/** The moving status indicator. */
 	class MovingNotification extends UIComponent {
