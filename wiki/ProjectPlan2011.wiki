@@ -45,3 +45,4 @@ List of things that need fixing, but without any due date other than hopefully t
 || Add scrollbars to the starmap screen || I use the right-button pan all the time. ||
 || Create XSD's for the XML files || They should become relatively stable now. ||
 || Create a Campaign editor || More convenient than editing XMLs ||
+|| Make the population growth planet-type dependant || Currently, its constant. Need to figure out the percentage rules for all races ||
