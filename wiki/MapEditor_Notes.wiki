@@ -2,6 +2,10 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.51: bug fixes =
+  * Released: 2011-04-21 17:30
+  * Resource refactoring.
+
 = Version 0.50: bug fixes =
   * Released: 2011-04-06 23:30
   * Resource refactoring.
