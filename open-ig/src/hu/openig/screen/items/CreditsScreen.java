@@ -8,28 +8,42 @@
 
 package hu.openig.screen.items;
 
+import hu.openig.core.Act;
 import hu.openig.model.Screens;
 import hu.openig.screen.ScreenBase;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * The credits.
  * @author akarnokd, 2011.04.20.
  */
 public class CreditsScreen extends ScreenBase {
+	/** The animation timer. */
+	Closeable animation;
+	/** The rendering offset relative to the bottom of the screen. */
+	int offset;
 	@Override
 	public void onInitialize() {
 	}
 
 	@Override
 	public void onEnter(Screens mode) {
-		// TODO Auto-generated method stub
-
+		animation = commons.register(50, new Act() {
+			@Override
+			public void act() {
+				doAnimation();
+			}
+		});
 	}
 
 	@Override
 	public void onLeave() {
-		// TODO Auto-generated method stub
-
+		if (animation != null) {
+			try { animation.close(); } catch (IOException ex) { ex.printStackTrace(); }
+			animation = null;
+		}
 	}
 
 	@Override
@@ -51,5 +65,9 @@ public class CreditsScreen extends ScreenBase {
 	public void onEndGame() {
 		// TODO Auto-generated method stub
 
+	}
+	/** Perform the animation. */
+	void doAnimation() {
+		// TODO
 	}
 }
