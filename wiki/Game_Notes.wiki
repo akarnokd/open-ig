@@ -6,6 +6,28 @@
 
 This page describes the differences between released versions of the Open Imperium Galactica Game (open-ig-xxx.jar)
 
+= Version 0.91 - General improvements =
+  * Released: 2011-04-21 17:30
+  * Added the *Credits* screen. The main menu has been reordered to contain a label for it. To stop the credits, hit ESC.
+  * Added the [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/questionare.png Test screen]. You can only see it from the *TestBed* application. You may scroll the list via the mouse wheel.
+  * Created an [http://code.google.com/p/open-ig/wiki/GameGuide#Auto-Build Auto-Build] option.
+  * The *Options* screen has been implemented. Reachable through the main menu or via *ESC* or *O* key within the game.
+    * You can adjust the volume of effects, music and video.
+    * You can turn on auto-repair just like in the original
+    * *New:* Computer voice is fun but only for a few hours. After that, it becomes annoying. However, it is still useful if the computer reports a production or research to be completed or warns about an enemy fleet. Therefore, you may disable the screen switch commentary and notifications separately.
+    * *New:* adjust the credit limit for the Auto-Build option.
+  * In the colony screen within the building panel, the current count of the selected building type is displayed.
+  * Various building and research related amount fixes (money, upgrade, etc.)
+  * *Fix:* The waypoints and targets of the fleet are now saved.
+  * *New:* [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/message_history_screen_menu.png Jump screen menu]. Hold any mouse button down at the top-right corner of the status bar to display the list of available screens (just like in Imperium Galactica 2)
+  * Bottom status bar notifications implemented.
+    * If a message is visible, double click on it to go to its destination (a planet, a production or a research).
+    * *New:* Right click on this bar to show the [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/message_history_screen_menu.png message history]. The history shows the event text, an icon and the game time when it happened. You may double click on any item to go to its target if applicable. You can hide the list by right clicking on the statusbar again. You may use the mouse scroll wheel over the list.
+  * Gameplay changes:
+    * Lower than 50% morale now reduces the population twice as fast
+    * You may only build 1 Water vaporator per planet but gives you +10 morale.
+    * Added shortage notification icons for police.
+
 = Version 0.90 - Fleets =
   * Released: 2011-04-15 23:30
   * Added functionality to the Equipment screen. [http://code.google.com/p/open-ig/source/browse/trunk/open-ig/doc/equipment-07.png Screenshot].
