@@ -240,19 +240,19 @@
 			</upgrade>
 			<upgrade desc='buildings.housing.upgrade_2'>
 				<resource type='house'>1.4</resource>
-				<resource type='house'>1.5</resource>
+				<resource type='morale'>1.5</resource>
 				<resource type='energy'>1.5</resource>
 				<resource type='worker'>1.5</resource>
 			</upgrade>
 			<upgrade desc='buildings.housing.upgrade_3'>
 				<resource type='house'>1.6</resource>
-				<resource type='house'>2</resource>
+				<resource type='morale'>2</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>1.75</resource>
 			</upgrade>
 			<upgrade desc='buildings.housing.upgrade_4'>
 				<resource type='house'>1.8</resource>
-				<resource type='house'>2.5</resource>
+				<resource type='morale'>2.5</resource>
 				<resource type='energy'>2</resource>
 				<resource type='worker'>1.75</resource>
 			</upgrade>
