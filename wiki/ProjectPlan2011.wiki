@@ -26,6 +26,7 @@ This page lists tasks that I want to complete with expected times.
 || Screen: Credits || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || A simple scrolling credits. *v0.91* ||
 || Sound & Music integration || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Add sound and music, add statusbar notification and message history. *v0.91* music deferred. ||
 || Screen: Diplomacy || 2011-05-01 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || I need to run the original game to figure out the available talk options. ||
+|| Music || 2011-05-01 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Add music ||
 || Surface & Space battles || 2011-06-05 || - || Rendering and basic simulation ||
 || Scripting for campaign || 2011-07-03 || - || Build a scriptable campaign engine. We will use the internal JavaScript support. ||
 || Create the Artifical Intelligence || 2011-08-21 || - || This is going to be a real challenge. ||
