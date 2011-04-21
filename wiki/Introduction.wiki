@@ -1,20 +1,6 @@
 #summary Open Imperium Galactica Introduction
 #labels Featured
 
-*Open Imperium Galactica* (Open-IG)  is an open source Java^TM^ clone of the [http://www.digitalreality.hu Digital Reality] game [http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica], a popular real time space strategy game developed around 1997 in Hungary. 
-
-Open-IG attempts to mimic the original game as closely as it makes sense in 2011, while extending it with new features.
-
-The game is standalone, therefore, you don't need the original game files from the 1997 release.
-
-Open-IG is licensed under the GNU Lesser General Public License.
-
-Some teaser images can be found on the [http://code.google.com/p/open-ig/wiki/Screenshots screenshots] page.
-
-Check out the [http://code.google.com/p/open-ig/wiki/Questions Questions and answers] page.
-
-See the [Game_Notes release notes] for details about the versions.
-
 == System requirements ==
  * Java JRE/JDK 1.6.X or 1.7.X, *Java 7 recommended*
  * Any operating system with graphical user interface
