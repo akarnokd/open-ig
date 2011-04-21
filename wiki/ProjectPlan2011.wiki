@@ -23,9 +23,9 @@ This page lists tasks that I want to complete with expected times.
 || Screen: Equipment || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Finish the Equipment screen. *v0.90* ||
 || Screen: Save, Load & Options || 2011-04-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Will come in handy when testing. *v0.91* ||
 || Screen: Test || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || A very simple screen for the test questions. *0.91* ||
-|| Screen: Credits || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || A simple scrolling credits. ||
-|| Sound & Music integration || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Add sound and music, add statusbar notification and message history. ||
-|| Screen: Diplomacy || 2011-05-01 || - || I need to run the original game to figure out the available talk options. ||
+|| Screen: Credits || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || A simple scrolling credits. *v0.91* ||
+|| Sound & Music integration || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Add sound and music, add statusbar notification and message history. *v0.91* music deferred. ||
+|| Screen: Diplomacy || 2011-05-01 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || I need to run the original game to figure out the available talk options. ||
 || Surface & Space battles || 2011-06-05 || - || Rendering and basic simulation ||
 || Scripting for campaign || 2011-07-03 || - || Build a scriptable campaign engine. We will use the internal JavaScript support. ||
 || Create the Artifical Intelligence || 2011-08-21 || - || This is going to be a real challenge. ||
