@@ -322,7 +322,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(videosLabel);
 		
-		ClickLabel introLabel = new ClickLabel(120, 320, 400, 14, "mainmenu.videos.intro");
+		ClickLabel introLabel = new ClickLabel(120, 320, 180, 14, "mainmenu.videos.intro");
 		introLabel.action = new Act() {
 			@Override
 			public void act() {
@@ -330,7 +330,7 @@ public class MainScreen extends ScreenBase {
 			}
 		};
 		clicklabels.add(introLabel);
-		ClickLabel titleLabel = new ClickLabel(120, 345, 400, 14, "mainmenu.videos.title");
+		ClickLabel titleLabel = new ClickLabel(340, 320, 180, 14, "mainmenu.videos.title");
 		titleLabel.action = new Act() {
 			@Override
 			public void act() {
@@ -338,6 +338,15 @@ public class MainScreen extends ScreenBase {
 			}
 		};
 		clicklabels.add(titleLabel);
+		
+		ClickLabel creditsLabel = new ClickLabel(120, 345, 400, 14, "credits");
+		creditsLabel.action = new Act() {
+			@Override
+			public void act() {
+				doPlayCredits();
+			}
+		};
+		clicklabels.add(creditsLabel);
 		
 		ClickLabel exit = new ClickLabel(120, 380, 400, 20, "mainmenu.exit");
 		exit.action = new Act() { @Override public void act() { doExit(); } };
@@ -415,5 +424,9 @@ public class MainScreen extends ScreenBase {
 	@Override
 	public void load(String name) {
 		commons.control().load(name);
+	}
+	/** Play the credits. */
+	void doPlayCredits() {
+		displayPrimary(Screens.CREDITS);
 	}
 }

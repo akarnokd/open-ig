@@ -671,6 +671,11 @@ public class ScreenTester extends JFrame implements GameControls {
 			break;
 		case VIDEOS:
 			clazz = VideoScreen.class.getName();
+		case CREDITS:
+			clazz = CreditsScreen.class.getName();
+			break;
+		case TEST:
+			clazz = TestScreen.class.getName();
 			break;
 		default:
 		}
