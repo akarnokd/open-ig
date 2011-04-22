@@ -4,6 +4,15 @@
 
 = April, 2011 =
 
+*April 22, 2011*
+
+Going through the hundreds of diplomatic options reminded me about some testing related to-do where the community could help:
+  * the consistent naming of the other races in various contexts (database, alien info, etc.),
+  * typos or grammar errors, or
+  * other kind of inconsistencies.
+
+Some of these issues may originate from the original game, others are new, but I'd like to have a better game clone.
+
 *April 21, 2011*
 
 Here comes the next release of the game: version 0.91! It contains various bugfixes and improvements of the user interface, some gameplay mechanics adjustments. The Options, Credits and Test screens have been implemented. Please see the [http://code.google.com/p/open-ig/wiki/Game_Notes#Version_0.91_-_General_improvements release notes] for further details.
