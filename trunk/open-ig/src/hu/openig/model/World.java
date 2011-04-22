@@ -105,6 +105,8 @@ public class World {
 	public int fleetIdSequence;
 	/** The test questions. */
 	public Map<String, TestQuestion> test;
+	/** The diplomacy definition. */
+	public Map<String, Diplomacy> diplomacy;
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -137,6 +139,8 @@ public class World {
 			processResearches(rl.getXML(definition.tech));
 			
 			test = TestQuestion.parse(rl.getXML(game + "/test"));
+			
+			diplomacy = Diplomacy.parse(rl.getXML(game + "/diplomacy"));
 			
 			exec.submit(new Runnable() {
 				@Override
