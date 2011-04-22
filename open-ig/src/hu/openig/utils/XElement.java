@@ -61,6 +61,14 @@ public class XElement implements Iterable<XElement> {
 		return s;
 	}
 	/**
+	 * The element has the given attribute.
+	 * @param attributeName the name
+	 * @return attribute exists?
+	 */
+	public boolean has(String attributeName) {
+		return attributes.containsKey(attributeName);
+	}
+	/**
 	 * Retrieve an attribute.
 	 * @param attributeName the attribute name
 	 * @param def the default value if not present
@@ -330,8 +338,9 @@ public class XElement implements Iterable<XElement> {
 			if (content == null) {
 				out.append("/>");
 			} else {
+				out.append(">");
 				out.append(sanitize(content));
-				out.append(indent).append("</");
+				out.append("</");
 				out.append(name);
 				out.append(">");
 			}
@@ -383,6 +392,13 @@ public class XElement implements Iterable<XElement> {
 		for (XElement e : elements) {
 			children.add(e);
 		}
+	}
+	/**
+	 * Add the array of elements as children.
+	 * @param element the element to add
+	 */
+	public void add(XElement element) {
+		children.add(element);
 	}
 	/**
 	 * Add the iterable of elements as children.

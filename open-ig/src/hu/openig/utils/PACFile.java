@@ -16,7 +16,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -152,7 +152,7 @@ public final class PACFile {
 	 * @return a map from PACEntry.filename to PACEntry objects
 	 */
 	public static Map<String, PACEntry> mapByName(Collection<? extends PACEntry> it) {
-		Map<String, PACEntry> result = new HashMap<String, PACEntry>(it.size());
+		Map<String, PACEntry> result = new LinkedHashMap<String, PACEntry>(it.size());
 		for (PACEntry e : it) {
 			result.put(e.filename, e);
 		}
