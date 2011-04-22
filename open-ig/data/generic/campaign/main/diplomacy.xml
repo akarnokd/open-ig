@@ -1,0 +1,2334 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<diplomacy>
+	<negotiation id='Negotiate Diplomatic Relations'>
+		<approach id='aggressive-1'>
+			<player id='FreeNations'>
+				Ha a Szövetség tényleg "szabad" akar maradni, ennek
+				egyetlen módja a Birodalommal való baráti viszony.
+			</player>
+			<player id='Morgath'>
+				Śgy vesszük észre, szükségetek van erôs barátokra.
+				Szövetkezzetek velünk és megvédünk mindenkitôl!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			A Drib Protektorátus erôs a szektor népei között,
+de a Birodalom még erôsebb. A jó viszony mindkettônk
+elônyére válna, a háború csak a miénkére.
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Elônyös lenne számotokra, ha szövetséget kötnétek
+				a Birodalommal, különben soha nem szľnnek meg a
+				kalóztámadások a kereskedelmi konvojok ellen!
+			</player>
+		</approach>
+		<approach id='aggressive-2'>
+			<player id='FreeNations'>
+				A Birodalom felajánlja barátságát a Szövetségnek.
+				A
+				másik lehetôségrôl ne is beszéljünk...
+			</player>
+			<player id='Morgath'>
+				Baráti jobbot nyújtunk a Morgath konföderációnak.
+				Śgy hisszük, erre a segítségre szükség lehet, ha le
+				akarjuk gyôzni
+				közös ellenségeinket.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			Egy erôs birodalommal való szövetség csak
+megbecsülést hozhat a Drib népnek, a háború csak
+megvetést. 
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A Birodalom csak akkor tudja garantálni az Ychom
+				kereskedôk biztonságát, ha a hivatalos kapcsolatok
+				ezt indokolják. A Tanács csak nyerhet a kapcsolatok
+				javulásával és veszíthet azok romlásával. 
+			</player>
+		</approach>
+		<approach id='aggressive-3'>
+			<player id='FreeNations'>
+				Mindenki, aki a Birodalom ellen van elpusztul. Eme
+				rövid emlékeztetô után felajánljuk a Szövetségnek
+				baráti jobbunkat.
+			</player>
+			<player id='Morgath'>
+				Az emberiség ellenségei a Morgathok ellenségei is.
+				A bölcs egyesíti erôit, a bolond visszalöki a segítô
+				kezet. A
+				választás a tiétek...
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			A Birodalom nem akar erôszakhoz folyamodni, mert úgy
+érezzük a Drib Protektorátus érdemes a szövetségesi
+rangra.
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A Birodalom felajánlja barátságát és támogatását
+				a Tanácsnak. Ne utasítsátok vissza, vagy igencsak
+				ráfizethet valamelyikünk... Segítségül: a vesztes
+				neve Y-al kezdôdik...
+			</player>
+		</approach>
+		<approach id='neutral-1'>
+			<player id='FreeNations'>
+				A Birodalom és a Szövetség egyaránt profitálna
+				a két
+				birodalom közötti szorosabb kapcsolatokból.
+			</player>
+			<player id='Morgath'>
+				A Birodalom mindig is a jószomszédi viszonyban volt
+				érdekelt. A Morgath konföderáció gondjait is a
+				magunkénak érezzük...
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			A javuló kapcsolatok a Birodalom és a Protektorátus
+között mindkét faj javát szolgálnák.
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A Birodalomnak érdeke a Tanáccsal a kapcsolatok
+				kölcsönös javítása.
+			</player>
+		</approach>
+		<approach id='neutral-2'>
+			<player id='FreeNations'>
+				Śgy véljük, mindkettônk kölcsönös érdeke a
+				diplomáciai viszony javítása.
+			</player>
+			<player id='Morgath'>
+				Baráti jobbot nyújtunk a Konföderációnak. A további
+				párbeszéd és javuló kereskedelmi kapcsolatok mindkét
+				faj érdekeit
+				szolgálják.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			Felajánljuk barátságunkat és megbecsülésünket a
+Drib népnek.
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A Tanács rendkívül sokat nyerne a kapcsolatok
+				javításával az ezzel együtt járó kereskedelmi
+				többletbevételrôl nem is beszélve.
+			</player>
+		</approach>
+		<approach id='neutral-3'>
+			<player id='FreeNations'>
+				Ha a Szabad Nemzetek Szövetsége IS hajlandó
+				elfelejteni múltbéli "civódásainkat", akkor
+				újratárgyalhatnánk a két
+				birodalom kapcsolatát.
+			</player>
+			<player id='Morgath'>
+				A Birodalom nem ellenségeket keres, hanem barátokat
+				és szövetségeseket. Kezdôdjék most ezzel a
+				beszélgetéssel az
+				együttmľködés új korszaka! 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			A Birodalom mindenkivel a béke lehetôségét keresi. A
+Drip Protektorátus nyilvánvalóan érdemes lenne
+egy szövetségre.
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A földiek a kapcsolatok javulását szeretnék az
+				emberek és a nagyrabecsült Ychomok között. A békés
+				kereskedelem a mi érdekünk is, és úgy tudjuk az
+				Ychomok hasonlóképpen gondolkodnak.
+			</player>
+		</approach>
+		<approach id='humble-1'>
+			<player id='FreeNations'>
+				A Birodalom kéri a Szövetséget, hogy lépjen be
+				legmegbecsültebb barátai sorába.
+			</player>
+			<player id='Morgath'>
+				Hallottuk hírét a hatalmas Morgath birodalomnak.
+				Felajánlanánk baráti (és tisztára mosott)
+				békejobbunkat... 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			Hallottunk a hatalmas Drib birodalomról.
+Felajánlanánk örök barátságunkat és lojalitásunkat.
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A Birodalom az Ychomok lekötelezettjének érezné
+				magát, ha a Tanács elfogádná baráti jobbunkat.
+			</player>
+		</approach>
+		<approach id='humble-2'>
+			<player id='FreeNations'>
+				A Szövetség bizonyította, hogy a politikai
+				rendszere
+				stabil, népe barátságos, flottája erôs. A Földi
+				Birodalom
+				megtisztelve érezné magát, ha ismét javul-
+				nának a két nép közötti
+				diplomáciai kapcsolatok.
+			</player>
+			<player id='Morgath'>
+				A Morgath konföderáció nemes tetteirôl beszélnek
+				az
+				egész szektorban. Ily nemes faj csak nem
+				utasítja vissza
+				békejobbunkat?
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			A Birodalom felajánlja barátságát a hôsi Drib
+népnek.
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Az Ychom nép jólétének és gazdagságának híre a
+				Birodalom fülébe is eljutott. Épp ezért felajánljuk
+				barátságunk, mely mindkét népnek csak jót hozhat.
+			</player>
+		</approach>
+		<approach id='humble-3'>
+			<player id='FreeNations'>
+				A Birodalomnak van mit tanulnia a Szövetségtôl. De
+				ez csak a diplomáciai kapcsolatok javulásával lenne
+				lehetséges...
+			</player>
+			<player id='Morgath'>
+				Szándékaink tiszták és nemesek: békét szeretnénk
+				a
+				Morgath konföderációval.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			A Birodalom megtiszteltetésnerk venné, ha a Drib
+Protektorátus a barátai közé sorolná.
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Némi erkölcsi támogatást szeretnék kérni a Biro-
+				dalom számára. Az Ychom nép is nagymértékben gazda-
+				godna, ha legyôzzük ellenfeleinket!
+			</player>
+		</approach>
+		<response id='aggressive-yes-1'>
+			<player id='FreeNations' change='150'>
+				A Szövetség értékeli a...a...
+				bölcsességet a
+				szavaiban, Admirális.
+			</player>
+			<player id='Morgath' change='180'>
+				Az univerzum kegyetlen a
+				gyengékhez. Ti
+				emberek úgy tľnik fel tudtok mutatni valamit...
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='150'>
+				Kétségtelenül lehet némi haszna az
+				együttmľködésnek. Szádból az ôsi bölcsesség szólt.
+			</player>
+		</response>
+		<response id='aggressive-yes-2'>
+			<player id='FreeNations' change='120'>
+				Az Adminisztratív Tanács is
+				komoly lehetôségeket
+				lát a kapcsolatok javulásában.
+			</player>
+			<player id='Morgath' change='150'>
+				&lt;közvetítési hiba miatt
+				érthetetlen szavak>
+				elfogadjuk és majd meglátjuk mit hoz a jövô.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='120'>
+				A Tanács mindig is érdekelt volt a fizetôképes
+				vev...khmmm... népekkel való jó kapcsolatban.
+			</player>
+		</response>
+		<response id='aggressive-yes-3'>
+			<player id='FreeNations' change='100'>
+				A Birodalom népe méltó a
+				diplomáciai kapcsolatok
+				felvételére és folyamatos javítására.
+			</player>
+			<player id='Morgath' change='120'>
+				Ellenségeinket ti is ellenségként
+				fogadtátok.
+				Ezért és CSAK ezért elfogadjuk az ajánlatot.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='100'>
+				Az Ychom nép hallja szavaidat. A Tanács úgy
+				döntött, hogy a javuló diplomáciai kapcsolatok
+				mindkét nép iparát fellendíthetik.
+			</player>
+		</response>
+		<response id='aggressive-maybe-1'>
+			<player id='FreeNations' change='-80'>
+				Az Adminisztratív Tanács
+				népszavazásra fogja
+				bocsájtani a kérését, Admirális.
+			</player>
+			<player id='Morgath' change='-20'>
+				Halottunk felôled. Ha úgy döntünk,
+				hogy
+				beszélni óhajtunk a földiek képviselôjével, majd
+				értesítünk!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='20'>
+				Kérésedet az Ychom szakszervezet "J"
+				bizottságának 2. albizottsága napirendre tľzi.
+			</player>
+		</response>
+		<response id='aggressive-maybe-2'>
+			<player id='FreeNations' change='-70'>
+				A Szabad Nemzetek Szövetsége
+				fontolóra veszi az
+				ajánlatát, Admirális.
+			</player>
+			<player id='Morgath' change='-30'>
+				A Morgath Konföderációnak nincs
+				érdemi
+				mondanivalója ebben a pillanatban. 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='10'>
+				Az Ann-Hiva konzorcium gazdasági tanácsadói
+				részletes költség-haszon elemzést fognak adni
+				a javaslatodról. 
+			</player>
+		</response>
+		<response id='aggressive-maybe-3'>
+			<player id='FreeNations' change='-50'>
+				Ha úgy döntünk, érdemes
+				elôrelépni az ügyben,
+				értesíteni fogjuk a Földi Birodalom vezetôit.
+			</player>
+			<player id='Morgath' change='-40'>
+				A Quorom megfontolja a javaslatot
+				és értesít
+				majd, ha meghozták a döntést.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-20'>
+				Közvéleménykutatásokat folytatunk a kérés
+				várható elbírálásával kapcsolatban.
+			</player>
+		</response>
+		<response id='aggressive-no-1' notalk='true'>
+			<player id='FreeNations' change='-150'>
+				A Birodalom ugyanolyan
+				hangnemet használ, mint
+				eddig bármikor. Ugyanolyan sikerrel...
+			</player>
+			<player id='Morgath' change='-100'>
+				A Birodalom "barátsága" már
+				ismerôs nekünk.
+				A Szabad Népek Szövetsége már elôre figyelmeztetett
+				a
+				módszerekrôl, amelyekkel dolgoztok.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-80'>
+				Nincs profit a Birodalommal való szoros
+				együttmľködésbôl! A Tanács távol tartja magát az
+				ilyen sokba kerülô "ügyektôl".
+			</player>
+		</response>
+		<response id='aggressive-no-2' notalk='true'>
+			<player id='FreeNations' change='-250'>
+				Arrogáns fellépése nem
+				szerzett Önnek barátokat
+				a Tanácsban, Admirális.
+			</player>
+			<player id='Morgath' change='-130'>
+				Hadd döntsük el MI, mi a MI
+				érdekünk!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-100'>
+				A hozzáállásod nem igazán üzleti jellegľ.
+				A tôkénk bizony másfelé fog menni...
+			</player>
+		</response>
+		<response id='aggressive-no-3' notalk='true'>
+			<player id='FreeNations' change='-270'>
+				Nincs szükségünk a dekadens
+				birodalmiakra!
+			</player>
+			<player id='Morgath' change='-170'>
+				A Konföderációnak nincs ideje
+				diplomáciai
+				játszadozásokra!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-140'>
+				Igen kis esélyt látunk a kérés
+				teljesítésére!
+				Elôbb tornászd fel kissé a bevételeidet, mert nem
+				szeretnénk, ha állandóan pénzzel kellene tömnünk
+				a Birodalmat!
+			</player>
+		</response>
+		<response id='neutral-yes-1'>
+			<player id='FreeNations' change='160'>
+				A Birodalom némi haladást
+				mutat a megfelelô
+				hangnem kialakítása terén. Elfogadjuk a javaslatot.
+			</player>
+			<player id='Morgath' change='150'>
+				Kitüntetésnek vesszük, hogy javíthatjuk
+				a kapcsolatokat nemzeteink között.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='180'>
+				Valóban sokat nyerhetünk a kapcsolatok
+				fejlesztésével. Nagy piac, nagy profit, ahogy
+				nálunk mondanák - sôt mondják is!
+			</player>
+		</response>
+		<response id='neutral-yes-2'>
+			<player id='FreeNations' change='150'>
+				Az Adminisztratív Tanács
+				elégedett a Birodalmon
+				belüli szociológiai változásokkal. A jobb
+				kapcsolatok kérdése is napirendre kerülhet.
+			</player>
+			<player id='Morgath' change='120'>
+				A Konföderáció örömmel látja az Ön megfelelô
+				hozzáállását, Admirális. Meglátjuk hogyan segíti
+				ez kapcsolataink javulását.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='150'>
+				A Tanács üdvözöl minden olyan kezdeményezést,
+				mely a piacaink közötti falak lebontását segíti.
+			</player>
+		</response>
+		<response id='neutral-yes-3'>
+			<player id='FreeNations' change='140'>
+				Az egyenlôk erejére épülô
+				kapcsolatok a
+				legerôsebbek. Elfogadjuk a javaslatot.
+			</player>
+			<player id='Morgath' change='80'>
+				Talán a Konföderációnak tényleg lehet némi
+				haszna a Birodalommal való együttmľködésbôl.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='140'>
+				A Birodalom sokat segíthet nekünk. Elfogadjuk
+				az ajánlatodat.
+			</player>
+		</response>
+		<response id='neutral-maybe-1'>
+			<player id='FreeNations' change='0'>
+				Gondolkodunk a dologról.
+			</player>
+			<player id='Morgath' change='30'>
+				A Konföderáció átgondolja a
+				javaslatot.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Emlékszem az Összesített Viselkedéstan 7.
+				paragrafusának 3. bekezdésére, ami jelenleg
+				megtiltja az ilyen tárgyalásokat. 
+			</player>
+		</response>
+		<response id='neutral-maybe-2'>
+			<player id='FreeNations' change='10'>
+				Az Adminisztratív Tanács
+				átgondolja a javaslatát,
+				Admirális.
+			</player>
+			<player id='Morgath'>
+				Ha egyéb feladataink engedik, átgondoljuk
+				a javaslatot. 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Sajnálom, de a Fô-felügyelôtanács alelnökének
+				titkára személyes memorandumot intézett hozzám,
+				hogy kérésed a jelen pillanatban nem bírálható el.
+			</player>
+		</response>
+		<response id='neutral-maybe-3'>
+			<player id='FreeNations' change='0'>
+				A kérdést csatolták a
+				következô tanácsi ülésen
+				megvitatandó problémák dossziéjához.
+			</player>
+			<player id='Morgath' change='0'>
+				Megvan a lehetôség a szorosabb
+				kapcsolatra
+				a két birodalom között. De csak a jövôben!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Mindig van esély, még a legbolondabb számára is,
+				hogy profitot csináljon. Értesíteni fogunk, ha a
+				dötés megszületett!
+			</player>
+		</response>
+		<response id='neutral-no-1'>
+			<player id='FreeNations' change='-100'>
+				Śgy tľnik nincs közös bázis az
+				ésszerľ vitához
+				a Birodalom és a Szövetség között.
+			</player>
+			<player id='Morgath' change='-170'>
+				Ne gondold, hogy elaltathatod
+				éberségünket!
+				Ismerjük a Birodalom valódi szándékait.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-100'>
+				A Birodalom jelenleg J-3-as osztályú kereskedelmi
+				egység. Ezt azt jelenti, hogy a kötvény- és
+				értékpapír-törvény nem engedi a szabad kereskedelmet!
+			</player>
+		</response>
+		<response id='neutral-no-2'>
+			<player id='FreeNations' change='-120'>
+				A Szövetségnek nem érdeke
+				pillanatnyilag a túl
+				szoros kapcsolatok ápolása a Birodalommal.
+			</player>
+			<player id='Morgath' change='-200'>
+				Az érdekeink nem egyeznek a földiekével! Ezt
+				soha ne felejtse el, Admirális!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-140'>
+				A Szabad Kereskedôk Szövetségével kötött kétoldalú
+				egyezményünk kerülne veszélybe, ha elfogadnánk ezt
+				az ajánlatot.
+			</player>
+		</response>
+		<response id='neutral-no-3'>
+			<player id='FreeNations' change='-150'>
+				A saját utunkat kell járnunk.
+			</player>
+			<player id='Morgath' change='-250'>
+				Mi nem olyanok vagyunk, mint az
+				emberek. Mi
+				Morgathok vagyunk és megvédjük ami a miénk!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-190'>
+				Nem látunk profitot a veletek való viszonyban.
+				Milliókat fektettünk már be abba a területbe, és
+				semmi kedvünk további hasonló befektetéseket tenni.
+			</player>
+		</response>
+		<response id='humble-yes-1'>
+			<player id='FreeNations' change='80'>
+				Mindig is filozófiánk központi
+				gondolata volt
+				az elesettek gyámolítása. Ezért hajlandók vagyunk
+				a
+				diplomáciai kapcsolatok javítására.
+			</player>
+			<player id='Morgath' change='70'>
+				Lehet, hogy érdemes segíteni a
+				gyengébbet?
+				Bocsánat, Admirális! Csak hangosan gondolkodtam!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='150'>
+				Sok profit nyerhetô a könnyen
+				manipulálhatókból!
+				Elfogadjuk az ajánlatot, Admirális!
+			</player>
+		</response>
+		<response id='humble-yes-2'>
+			<player id='FreeNations' change='60'>
+				A Szabad Nemzetek Szövetsége
+				örömmel veszi, ha
+				megoszthatja kultúrális és politikai fejlôdésének
+				eredményeit a Birodalommal.
+			</player>
+			<player id='Morgath' change='50'>
+				Gyenge vagy földi - de ezúttal
+				szerencséd van.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='100'>
+				Ahhh...Szinte érzem a pénz szagát! A Tanács
+				együttmľködik Önnel, Admirális.
+			</player>
+		</response>
+		<response id='humble-yes-3'>
+			<player id='FreeNations' change='50'>
+				Az Adminisztratív Tanács úgy
+				döntött, hogy
+				jóindulattal kezeli a kérést.
+			</player>
+			<player id='Morgath' change='20'>
+				Akár segíthetünk is nektek a
+				jövôben. Azt
+				hiszem tôletek nem kell félnünk...
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='60'>
+				Mi is nyerhetünk az üzleten... Az ajánlatot vegye
+				elfogadottnak, Admirális.
+			</player>
+		</response>
+		<response id='humble-maybe-1'>
+			<player id='FreeNations' change='-50'>
+				A Szabad Nemzetek
+				Szövetségének fontosabb dolgai
+				is vannak, mint ilyen másodrendľ
+				kérdésekkel
+				foglalkozni.
+			</player>
+			<player id='Morgath' change='-10'>
+				Azt hittük erôsebbek vagytok. A
+				túl gyenge
+				fajok kiszámíthatatlanok és veszélyesek!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-20'>
+				Gondolkodóba ejtett minket, Admirális. Ćt kell
+				gondolnunk üzleti ügyeinket, melyek a Birodalomhoz
+				kötnek bennönket!
+			</player>
+		</response>
+		<response id='humble-maybe-2'>
+			<player id='FreeNations' change='-50'>
+				Iktattuk a kérést a megfelelô
+				helyen.
+			</player>
+			<player id='Morgath' change='-20'>
+				A Morgath Konföderáció nem
+				vesztegeti
+				idejét olyanokra, akik nem érdemesek rá! 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-50'>
+				Az instabilitás az üzlet halála. A Tanács
+				felülvizsgálja a Birodalom pénzügyi fejlesztésének
+				lehetôségeit.
+			</player>
+		</response>
+		<response id='humble-maybe-3'>
+			<player id='FreeNations' change='-50'>
+				Az Adminisztratív Tanács
+				meghallgatta a kérését,
+				Admirális, és foglalkozni fog vele a
+				megfelelô
+				idôben.
+			</player>
+			<player id='Morgath' change='-50'>
+				Nem fogjuk meggyengíteni magunkat
+				azzal,
+				hogy a ti oldalatokon harcolunk!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-70'>
+				Az Ann-Hiva konzorcium átvizsgálja a földiek
+				birodalmának átstruktúrálására tett javaslatait.
+				Természetesen azonnal értesítjük Önt, ha valami
+				érdemleges eredményre jutottak...
+			</player>
+		</response>
+		<response id='humble-no-1'>
+			<player id='FreeNations' change='-200'>
+				Ilyen gyenge a Birodalom? Jól
+				tettük, hogy
+				annakidején elszakadtunk tôletek...
+			</player>
+			<player id='Morgath' change='-100'>
+				Nem foglalkozunk alacsonyabbrendľ
+				fajok
+				helyi perpatvaraival, Admirális!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-80'>
+				Némi egyet-nem-értés van a Tanács és az Ann-Hiva
+				konzorcium között a Birodalommal fennálló viszony
+				kérdésében. Azonnal értesítjük, ha a dolog
+				megoldódott.
+			</player>
+		</response>
+		<response id='humble-no-2'>
+			<player id='FreeNations' change='-200'>
+				Ha ez a Birodalom "erejének"
+				látványos
+				demonstrációja akart lenni, akkor köszönjük, de
+				nem kérünk
+				belôle.
+			</player>
+			<player id='Morgath' change='-130'>
+				A Konföderációnak elege van a
+				szánalmas
+				nyavajgásokból. Ti, emberek arra sem vagytok
+				érdemesek, hogy a szolgáink legyetek!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-90'>
+				A Birodalmat 4E osztályú katonai egységgé
+				degradáltuk. Ez természetesen a hitelbesorolást
+				jelentôsen rontotta...
+			</player>
+		</response>
+		<response id='humble-no-3'>
+			<player id='FreeNations' change='-200'>
+				Nem fogjuk ezen a módon sem
+				támogatni a
+				fasiszta kormányt, amely a Birodalmat vezeti!
+			</player>
+			<player id='Morgath' change='-200'>
+				Śgy? Hát idáig süllyedt a
+				Birodalom? Śgy
+				látszik az erôtökrôl és harcias természetetekrôl
+				szóló hírek nagyon távol vannak a valóságtól.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-120'>
+				A Tanács nem fecsérli idejét és pénzét
+				szénbôl gyémántot gyártó csalókra. Elegünk van
+				a Birodalom aljas trükkjeibôl! 
+			</player>
+		</response>
+	</negotiation>
+	<negotiation id='Offer money' money='true'>
+		<approach id='offer-percent'>
+			<player id='FreeNations'>
+				A Birodalom elkülönített %s creditet az Idegen
+				Fajok Segélyezési Alapjából a Szövetség számára.
+			</player>
+			<player id='Morgath'>
+				Śgy döntöttünk felajánlunk %s creditet a
+				Konföderáció céljaira.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Śgy döntöttünk, hogy %s creditet befektetnénk az
+				Ychom Központi Tôzsdén!
+			</player>
+		</approach>
+		<response id='yes-1'>
+			<player id='FreeNations' change='120'>
+				Az Adminisztratív Tanács
+				örömmel fogadja a
+				barátságnak és a jóakaratnak ezt a
+				megnyilvánulását.
+			</player>
+			<player id='Morgath' change='180'>
+				Nagylelkľségedet nem felejtjük el, Földi!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='250'>
+				A Tanács örömét fejezi ki, hogy felismerted
+				az Ychomok gazdasági jelentôségét!
+			</player>
+		</response>
+		<response id='yes-2'>
+			<player id='FreeNations' change='80'>
+				A Szövetség üdvözli a
+				Birodalom nagylelkľségét.
+			</player>
+			<player id='Morgath' change='110'>
+				A Konföderáció hálásan fogadja a
+				segítséget.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='220'>
+				Az Ychom Gazdasági Kamara háláját fejezi
+				ki a befektetett összeg miatt. Az a pénz komoly
+				gazdasági fellendülést okozhat egy ipari
+				szektorban! 
+			</player>
+		</response>
+		<response id='yes-3'>
+			<player id='FreeNations' change='60'>
+				A Tanács nem fogja elfelejteni
+				a Birodalom
+				nehéz idôkben adott segítségét!
+			</player>
+			<player id='Morgath' change='80'>
+				A Birodalom nagylelkľ, a Morgathok
+				pedig nem
+				felejtenek.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='180'>
+				A Tanács örül, hogy a Birodalmat a barátai
+				közé sorolhatja.
+			</player>
+		</response>
+		<response id='no-1' notalk='true'>
+			<player id='FreeNations' change='-50'>
+				Az ideáljaink az önállóságról
+				nem megvásárolhatók,
+				Admirális!
+			</player>
+			<player id='Morgath' change='-50'>
+				Eddig is megvoltunk a pénzed nélkül, ezután
+				is megleszünk nélküle!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Jelen pillanatban bizonyos nem tisztázott
+				tôkepiaci viszonyok miatt a pénzt nem fogadhatjuk
+				el.
+			</player>
+		</response>
+		<response id='no-2' notalk='true'>
+			<player id='FreeNations' change='-100'>
+				Az Adminisztratív Tanács
+				tagjai felháborodtak
+				ezen a nyilvánvaló megvesztegetési kísérleten.
+			</player>
+			<player id='Morgath' change='-100'>
+				Ez inzultálás akarna lenni? Mi nem vagyunk
+				olyan mohók, mint azok a ... Ecalepsek.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-20'>
+				Az Ann-Hiva konzorcium belsô szabályzata csak
+				korlátozott mértékben engedi a ...eeeee... nem
+				bírom elolvasni ezt a macskakaparást! Szóval a ...
+				osztályba sorolt kereskekedelmi egységek számára.
+			</player>
+		</response>
+		<response id='no-3' notalk='true'>
+			<player id='FreeNations' change='-150'>
+				Nem vagyunk megvásárolható
+				rabszolgák! A
+				Birodalom tartsa csak meg mások vére és verítéke
+				árán
+				szerzett pénzét!
+			</player>
+			<player id='Morgath' change='-120'>
+				A Morgath Konföderáció még nem olyan gyenge,
+				hogy morzsákra szorulna a Birodalom asztaláról.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-50'>
+				Az Ychom opciós piac már egyszer összeomlott
+				a pénzügyi "befektetéseitektôl". Köszönjük, még
+				egyszer nem kérünk belôle!
+			</player>
+		</response>
+	</negotiation>
+	<negotiation id='Improve trade relations'>
+		<approach id='ask-trade-contract'>
+			<player id='FreeNations'>
+				Mindkettônk számára hasznos lenne egy kereskedelmi
+				szerzôdés megkötése.
+			</player>
+			<player id='Morgath'>
+				A Birodalom gazdasági szakemberei úgy érzik, hogy
+				mindkettônknek hasznára válna egy kereskedelmi
+				szerzôdés.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A Birodalom szeretné a kereskedelmet korlátozó
+				akadályokat felszámolni az Ychomok és az emberek
+				között.
+			</player>
+		</approach>
+		<response id='yes-1'>
+			<player id='FreeNations' change='150'>
+				Az Adminisztratív Tanács
+				megfontolta és elfogadta
+				a javaslatot.
+			</player>
+			<player id='Morgath' change='110'>
+				Sok bölcsesség van szavaidban -
+				elfogadjuk
+				az ajánlatot.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='230'>
+				Legyen! Tľnjön el az utolsó akadály is a
+				szabad kereskedelem útjából!
+			</player>
+		</response>
+		<response id='yes-2'>
+			<player id='FreeNations' change='130'>
+				Ahogy mondta, Admirális, ez
+				komoly elônnyel járna
+				a Szövetség számára. Elfogadjuk.
+			</player>
+			<player id='Morgath' change='80'>
+				A kereskedelem és a gazdaság a nagy birodalmak
+				építôkövei. Kérésed értô fülekre talált.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='190'>
+				Az Ychomi Tôzsdetanács is sürgeti a pozitív
+				elbírálást. Źgy nem mondhatunk nemet...
+			</player>
+		</response>
+		<response id='yes-3'>
+			<player id='FreeNations' change='110'>
+				Valóban sokat nyerhetünk egy
+				ilyen egyezménnyel.
+			</player>
+			<player id='Morgath' change='60'>
+				Rendben. Elfogadjuk az ajánlatot.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='120'>
+				Akárhová megy is a profit, az Ychomok követik.
+				A Tanács beleegyezett a kereskedelmet akadályozó
+				tényezôk jelentôs csökkentésébe.
+			</player>
+		</response>
+		<response id='no-1'>
+			<player id='FreeNations' change='0'>
+				A Végrehajtó Csoport
+				önkénteseket keres a
+				javaslattal való foglalkozásra.
+			</player>
+			<player id='Morgath' change='0'>
+				Meg kell fontolnunk a javaslatot.
+				A Quorom
+				napirendre tľzi a következô ülésszakán.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Jelen pillanatban nem csökkenthetjük a hazai ipart
+				védô vámokat. 
+			</player>
+		</response>
+		<response id='no-2'>
+			<player id='FreeNations' change='-20'>
+				Pillanatnyilag nem áll
+				érdekünkben egy ilyen
+				szerzôdés a Birodalommal, Admirális.
+			</player>
+			<player id='Morgath' change='-10'>
+				A Konföderációnak jelen pillanatban nem érdeke,
+				hogy földi kereskedôket engedjen be területére.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				A Tanács legfôbb gondja a hazai ipar segítése. A
+				kereskedelem csak akkor jöhet szóba, ha ennek a
+				célnak alárendelhetô.
+			</player>
+		</response>
+		<response id='no-3'>
+			<player id='FreeNations' change='-20'>
+				Ez a szerzôdés egyáltalán nem
+				szolgálná a Szabad
+				Nemzetek Szövetségének érdekeit.
+			</player>
+			<player id='Morgath' change='-20'>
+				Nem bízunk benned. Ez csak egy
+				újabb kísérlet,
+				hogy kémeket és szabotôröket jutassatok be a
+				Konföderációba.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Śgy állunk, hogy se nem nyernénk, se nem
+				veszítenénk a deregulációval a jelen pillanatban.
+			</player>
+		</response>
+	</negotiation>
+	<negotiation id='Ally against another race' race='true'> <!-- indicate an alien list is required, which is not you, the dargslans 
+			and the called race -->
+		<approach id='ally-against'>
+			<player id='FreeNations'>
+				A %s minden békeszeretô fajt fenyeget ebben
+				a
+				szektorban. Stratégáink szerint együttes
+				erôvel most döntô csapást
+				mérhetnénk rájuk.
+			</player>
+			<player id='Morgath'>
+				A stratégiai vezetés elérkezettnek látja az
+				idôt, hogy végsô csapást mérjünk a
+				%s bolygóira.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Śgy gondoljuk, hogy mindkét faj számára az lenne
+				a legolcsóbb megoldás, ha egyesítenénk erôinket a
+				%s ellen.
+			</player>
+		</approach>
+		<response id='yes-1'>
+			<player id='FreeNations' change='150'>
+				A %s sorozatosan megsérti
+				azokat az
+				elveket, amelyek jegyében a Szövetség fogant.
+				Segíteni
+				fogunk a Birodalomnak az eltörlésükben.
+			</player>
+			<player id='Morgath' change='200'>
+				Mintha csak a mi bölcseinket
+				hallanám,
+				Admirális. Elérkezett az idô, hogy összefogjunk
+				a %s ellen és szétszórjuk ôket!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='180'>
+				Igen, a költségmegosztás ilyen formája jóval
+				kedvezôbbé teszi a probléma megoldását. Gratulálunk
+				a merész (és költségcsökkentô) javaslathoz!
+			</player>
+		</response>
+		<response id='yes-2'>
+			<player id='FreeNations' change='120'>
+				Szabó Elnök Śr az
+				Adminisztratív tanács elé
+				terjesztette a tervezetet, miszerint teljes
+				mértékben támogassuk a Birodalmat a %s
+				elleni háborúban.
+			</player>
+			<player id='Morgath' change='150'>
+				Elérkezett az idô! Már régóta szálka
+				szemünkben a gonosz %s!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='150'>
+				A %s nem becsületesen kereskedik
+				velünk. Bizonyítékunk van rá, hogy kalózokat is
+				pénzelnek. Boldogan segítünk az elpusztításukban!
+			</player>
+		</response>
+		<response id='yes-3'>
+			<player id='FreeNations' change='100'>
+				Az Adminisztratív Tanács
+				egyetért, hogy a
+				%s bolygóit el kell pusztítani. Együttmľködünk
+				a
+				Birodalommal.
+			</player>
+			<player id='Morgath' change='120'>
+				Teljes mértékben a Birodalom
+				oldalán állunk
+				ebben a kérdésben. Számíthat a segítségünkre,
+				Admirális.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='110'>
+				Az Ychom kereskedelmi társaságok tavaly komoly
+				veszteségeket szenvedtek a %s miatt. Ki
+				kell irtanunk ezt a kereskedelem gyökerét rágó
+				férget!
+			</player>
+		</response>
+		<response id='no-1'>
+			<player id='FreeNations' change='-40'>
+				A Szabad Nemzetek Szövetsége
+				nem lesz partner
+				a Birodalom gátlástalan terjeszkedési törekvéseinek
+				megvalósításában.
+			</player>
+			<player id='Morgath' change='-20'>
+				Sajnos elsô gondolatunk a Morgath
+				Konföderáció
+				biztonsága kell legyen... 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-30'>
+				A Tanács nem lát elônyöket ebbôl az akcióból.
+			</player>
+		</response>
+		<response id='no-2'>
+			<player id='FreeNations' change='-50'>
+				Szabó Elnök Śr a javaslat
+				ellen szólalt fel a
+				Tanácsban, így el is utasították azt. A háború
+				nem
+				szolgálná a Szövetség érdekeit.
+			</player>
+			<player id='Morgath' change='-40'>
+				Semmi hasznunk nem lenne ebbôl a
+				harcból! 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-90'>
+				Sokkal többe kerülne ez nekünk, mint amennyire a
+				Birodalom gondol!
+			</player>
+		</response>
+		<response id='no-3'>
+			<player id='FreeNations' change='-90'>
+				A Szövetség nem a Birodalom
+				kifutófiúja. Ennek
+				a kalandorakciónak csak káros következményei
+				lennének ránk nézve!
+			</player>
+			<player id='Morgath' change='-70'>
+				Ne gondolja a Birodalom, hogy
+				feláldozzuk
+				magunkat az emberek érdekeiért!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-120'>
+				Feláldoznád a vérünket, sôt mi több a pénzünket
+				a saját érdekedben? Hát erre mi nem vagyunk kaphatók! 
+			</player>
+		</response>
+	</negotiation>
+	<negotiation id='Unite against the dargslans'>
+		<approach id='unite'>
+			<player id='FreeNations'>
+				A Dargslanok a legnagyobb fenyegetést jelentik,
+				amivel BĆRMELY emberi birodalom valaha szembenézett.
+				Együtt kell
+				mľködnünk a megsemmisítésükre, mielôtt
+				túl késô lenne!
+			</player>
+			<player id='Morgath'>
+				A Dargslan birodalom egyre növekvô fenyegetést
+				jelent mindkettônk számára. Csak összefogva lehet
+				esélyünk ellenük!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A Dargslan Birodalom egyre komolyabb fenyegetést
+				jelent ebben a szektorban. Egyesítsük erôinket,
+				hogy legyen esélyünk ellenük!
+			</player>
+		</approach>
+		<response id='yes-1' ally='true'>
+			<player id='FreeNations' change='200'>
+				Igaza van, Admirális. A
+				Szövetség csatlakozni
+				fog a Birodalomhoz, akármilyen rögös út vezet
+				majd
+				el minket a gyôzelemhez.
+			</player>
+			<player id='Morgath' change='220'>
+				A Birodalom erôs. A Konföderáció
+				is erôs.
+				Együtt legyôzhetetlenek leszünk és véget vetünk
+				a Dargslan fenyegetésnek!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='290'>
+				Igaza van, Admirális. A Dargslanok nagyon nem
+				jól viszonyulnak a szabad kereskedelemhez.
+			</player>
+		</response>
+		<response id='yes-2' ally='true'>
+			<player id='FreeNations' change='180'>
+				A Szabad Nemzetek Szövetsége
+				is úgy látja, hogy
+				a Dargslanok semmibe veszi az egyes népek
+				önrendelkezési jogait. Szabó Elnök Śr még ebben az
+				órában elküldi
+				nekik hadüzenetünket.
+			</player>
+			<player id='Morgath' change='170'>
+				A Morgath Konföderáció a Te
+				oldaladon fog
+				harcolni ebben a háborúban, mert a mi érdekünk
+				véletlenül egybeesik a Tiéddel.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='260'>
+				Admirális, a Tanács örömmel áll melléd a Dargslanok
+				elleni háborúban. Már így is túl sokba kerültek
+				nekünk.
+			</player>
+		</response>
+		<response id='yes-3' ally='true'>
+			<player id='FreeNations' change='160'>
+				A Dargslan Birodalom
+				ellenségünknek bizonyult,
+				de egyedül nem volt esélyünk ellenük. Ez a
+				szövetség
+				most megváltoztatja az erôviszonyokat!
+			</player>
+			<player id='Morgath' change='120'>
+				A Dargslanok ellenségeink. Követünk Téged
+				a harcba!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='230'>
+				A Dargslanok maguknak követelték a leggazdagabb
+				bolygókat a szektorban. Kötelességünk segíteni, hogy
+				ezek a bolygók megfelelô kézbe kerüljenek, ahol
+				szakszerľen végzik majd a kiaknázásukat.
+			</player>
+		</response>
+		<response id='no-1'>
+			<player id='FreeNations' change='0'>
+				A Birodalomnak elôbb
+				bizonyítania kellene, hogy
+				egyedül is képes valamit tenni a
+				Dargslanok ellen.
+				A Tanács nem fogja feláldozni katonáit a gyôzelem
+				legkisebb esélye nélkül.
+			</player>
+			<player id='Morgath' change='0'>
+				A Dargslanok hatalmasok. Miért
+				indulnánk ellenük
+				egy "admiráliska" szavára? Elôbb bizonyítsd be,
+				hogy érsz valamit, utána újra beszélhetünk errôl.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Rettentô veszélyes lenne most a Dargslanokat
+				magunkra haragítanunk!
+			</player>
+		</response>
+		<response id='no-2'>
+			<player id='FreeNations' change='0'>
+				Nincs értelme most errôl
+				tárgyalni. Elôbb
+				bizonyítékra van szükségünk, hogy a Birodalom képes
+				vezetni egy szövetséget a Dargslanok ellen!
+			</player>
+			<player id='Morgath' change='0'>
+				Ha eljön az idô, megindulunk. De még nem jött el!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				A várható veszteségek mértéke jóval meghaladja a
+				nyereségét ebben a kalandorakcióban.
+			</player>
+		</response>
+		<response id='no-3'>
+			<player id='FreeNations' change='0'>
+				Nem fogunk katonákat áldozni
+				egy veszett ügy
+				érdekében. Elôbb megvárjuk, mi lesz az elôcsatáro-
+				zások eredménye.
+			</player>
+			<player id='Morgath' change='-50'>
+				Csak a bolond ébreszti föl az alvó Vrore-t!
+				Puszta szimpátiából nem érdemes a gyengébb oldalra
+				állni egy háborúban! A mi esetünkben pedig még
+				szimpátiáról sem lehet beszélni...
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Ha az idô megfelelô: csapj oda keményen. De ha túl
+				korán ütsz, az ellenfeled észreveszi a mozdulatot,
+				és csak a levegôt markolod. 
+			</player>
+		</response>
+	</negotiation>
+	<negotiation id='Demand surrender'>
+		<approach id='surrender'>
+			<player id='FreeNations'>
+				A Szövetség "önállósodási törekvései" kudarcot
+				vallottak. A flottánk a gyôzelem küszöbén áll -
+				csak feltétel nélküli
+				megadást fogadunk el!
+			</player>
+			<player id='Morgath'>
+				A Birodalom kegyes. Adjátok meg magatokat, és
+				élni fogtok, folytassátok a háborút, és az utolsó
+				Morgath is elpusztul!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Nemcsak katonailag, de gazdaságilag is elsöprô
+				fölénybe kerültünk. Minden további akció a termelés
+				és kereskedelem teljes összeomlásához vezethet.
+				Ha megadjátok magatokat, kegyesek leszünk, ha nem...
+			</player>
+		</approach>
+		<response id='yes-1' surrender='true'>
+			<player id='FreeNations' change='0'>
+				Nincs már remény számunkra.
+				Minden, amit fontosnak
+				tartottunk összeomlott a Birodalom nyers
+				erôpolitikájának csapásai alatt. Élünk a felkínált
+				lehetôséggel.
+			</player>
+			<player id='Morgath' change='0'>
+				Ha nincs fészek, nincsenek madarak
+				sem. Megadjuk
+				magunkat a Birodalom admirálisa elôtt.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Valóban nem sokat nyernénk a további harccal!
+			</player>
+		</response>
+		<response id='yes-2' surrender='true'>
+			<player id='FreeNations' change='0'>
+				A Birodalom legyôzött
+				bennünket. Feláldozzuk
+				szabadságunkat az életünkért cserébe.
+			</player>
+			<player id='Morgath' change='0'>
+				Nincs más választásunk: megadjuk
+				magunkat.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Nincs már esélyünk! Feladjuk!
+			</player>
+		</response>
+		<response id='yes-3' surrender='true'>
+			<player id='FreeNations' change='0'>
+				Az Elnök halálával megtört az
+				ellenállásba vetett
+				hitünk. Megadjuk magunkat a Birodalom
+				admirálisának.
+			</player>
+			<player id='Morgath' change='0'>
+				A Quorom úgy döntött, hogy
+				túlélésünk egyetlen
+				esélye a megadás. Letesszük a fegyvert a Birodalom
+				elôtt, Admirális.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='0'>
+				Nem látunk ígéretes profitlehetôséget a háború
+				folytatásában!
+			</player>
+		</response>
+		<response id='no-1' notalk='true'>
+			<player id='FreeNations' change='-200'>
+				Üres fenyegetések és
+				rémisztgetések! Szeretnénk
+				végre látni a flottát, amely valóra is
+				váltja ôket!
+			</player>
+			<player id='Morgath' change='-240'>
+				Nem nyugszunk, amíg egyetlen egy
+				is él a
+				fajtádból, földi! Hamarosan Te fogsz könyörögni
+				nekünk!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-200'>
+				Ha megadnánk magunkat azonnal elvennétek
+				mindenünket. Már hallottunk ilyen tettekrôl a
+				régmúltból!
+			</player>
+		</response>
+		<response id='no-2' notalk='true'>
+			<player id='FreeNations' change='-200'>
+				Ellenállunk az elnyomóknak az
+				utolsó emberig!
+			</player>
+			<player id='Morgath' change='-280'>
+				Erôsebbek vagyunk, mint gondolnád,
+				földi
+				ember. Ez az inzultus volt az utolsó ilyen sértés,
+				amit elkövettél!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-250'>
+				Azt gondolod, hogy diktálhatsz nekünk? A mi
+				gyáraink nagyobbak, módszereink hatékonyabbak -
+				hamarosan legyôzünk titeket és koponyáitokkal
+				díszítjük házainkat (hacsak fel nem dolgozzuk).
+			</player>
+		</response>
+		<response id='no-3' notalk='true'>
+			<player id='FreeNations' change='-200'>
+				Ne is reméld, hogy legyôzhetsz
+				bennünket! A
+				szívünkben mindig is szabadok leszünk és ez átsegít
+				bennünket minden nehézségen, amit a Birodalom az
+				utunkba gördíthet.
+			</player>
+			<player id='Morgath' change='-320'>
+				Erônk töretlen. Harcolunk, amíg az utolsó
+				Morgath harcos fegyvert tud fogni a kezébe! 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom' change='-300'>
+				A veled való vita idôpocsékolás és az idô
+				pénz. Hamarosan jelentkezünk a költségkimutatással,
+				és nem lesztek abban a helyzetben, hogy vitassátok
+				az egyes tételeket!
+			</player>
+		</response>
+	</negotiation>
+	<terminate>
+		<player id='FreeNations'>
+			A Birodalom fontos ügyei elszólítanak.
+		</player>
+		<player id='Morgath'>
+			Köszönet az audenciáért, de sürgôs ügyeim
+			elszólítanak.
+		</player>
+		<player id='Sullep'>
+		</player>
+		<player id='Ecalep'>
+		</player>
+		<player id='Dribs'>
+		</player>
+		<player id='FreeTraders'>
+		</player>
+		<player id='Ychom'>
+			Sajnos más fontos feladatokkal is törôdnöm kell.
+			Búcsúzom!
+		</player>
+	</terminate>
+	<call id='Alien surrender' mode='SURRENDER'>
+		<approach id='surrender-1'>
+			<player id='FreeNations'>
+				Az Adminisztratív Tanács elhatározta, hogy
+				felhagyunk az értelmetlen ellenállással és megadjuk
+				magunkat.
+			</player>
+			<player id='Morgath'>
+				A Birodalom erôs, túl erôs számunkra, Admirális.
+				Letesszük a fegyvert. 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Békét keresünk. Nincs értelme a további erôforrás-
+				pazarlásnak ebben az értelmetlen konfliktusban.
+			</player>
+		</approach>
+		<approach id='surrender-2'>
+			<player id='FreeNations'>
+				Szabó Elnök Śr felszólította a Tanácsot, hogy
+				fontolja meg a fegyverletétel lehetôségét. A
+				javaslatot hosszas vita
+				után megszavazták.
+			</player>
+			<player id='Morgath'>
+				A Morgath Konföderáció megadja magát. Még mindig
+				inkább az embereknek, mint többi ellenségünknek.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Nem nyerünk semmit, de sokat veszíthetünk, ha ez
+				a háború tovább folyik. Nem lehetne tárgyalni egy
+				békés rendezésrôl?
+			</player>
+		</approach>
+		<approach id='surrender-3'>
+			<player id='FreeNations'>
+				A Szövetségnek életben kell maradnia, még ha csak
+				tagjai szívében is. Letesszük a fegyvert a
+				túlerôben lévô Birodalom
+				elôtt.
+			</player>
+			<player id='Morgath'>
+				A Konföderáció nem látja értelmét a további
+				vérontásnak. Megadjuk magunkat!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A Tanács nem szeretne további összegeket ölni az
+				improduktív katonai szférába. Szeretnénk, ha ismét
+				béke uralkodna népeink között!
+			</player>
+		</approach>
+	</call>
+	<call id='Alien alliance' mode='ALLIANCE'>
+		<approach id='ally-1'>
+			<player id='FreeNations'>
+				A Birodalom lényegesen érettebbnek és bölcsebbnek
+				bizonyult, mint azt vártuk. Felajánljuk erôinket
+				egy közös szövetségi
+				rendszerbe, Admirális.
+			</player>
+			<player id='Morgath'>
+				Śgy döntöttünk, hogy a Földi Birodalom méltó
+				arra, hogy mellettünk álljon és osztozzon
+				dicsôségünkben. Mi lenne, ha egyesítenénk erôinket?
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Hatalmas profitlehetôségeket tártunk fel, ha a
+				két birodalom szövetségre lépne! Egyetért a
+				kérésünkkel, Admirális?
+			</player>
+		</approach>
+		<approach id='ally-2'>
+			<player id='FreeNations'>
+				A viszony kölcsönös javulásával lehetségessé vált,
+				hogy kapcsolatunkat mostantól szövetségesi szintre
+				emeljük,
+				Admirális.
+			</player>
+			<player id='Morgath'>
+				A Konföderáció felajánlja békejobbját a Földi
+				Birodalomnak. Uralkodjon béke és egyetértés
+				közöttünk mindörökre.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Ha rá tudnánk venni a Birodalmat a békekötésre, az
+				mindkét nép hosszútávú érdekeit szolgálná.
+			</player>
+		</approach>
+		<approach id='ally-3'>
+			<player id='FreeNations'>
+				Szabó Elnök Śr személyes közbenjárására a Tanács
+				megszavazta a szövetségi viszonyt a Birodalom és a
+				Szabad Nemzetek
+				Szövetsége között.
+			</player>
+			<player id='Morgath'>
+				A Birodalmad erôs, Admirális. A Morgathok
+				szívesen vennék, ha szoros együttmľködés alakulna
+				ki közöttünk.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A pénzügyi együttmľködés nyereséges lenne mindkét
+				nép számára. Csak elôbb a rendezés feltételeiben
+				kellene megegyeznünk. Egyetért, Admirális?
+			</player>
+		</approach>
+	</call>
+	<call id='Alien ask for peace' mode='PEACE'>
+		<approach id='peace-1'>
+			<player id='FreeNations'>
+				A Birodalom és a Szövetség közötti konfliktusnak
+				már mindenki elfelejtette az okát. Nem tárgyal-
+				hatnánk kissé
+				BÉKÉSEBB körülmények között,
+				Admirális?
+			</player>
+			<player id='Morgath'>
+				Ez a háborúskodás csak árt mindkét fajnak. Ha nem
+				vetünk véget neki idôben, a galaxis aljanépei
+				megtámadnak és megsemmisítenek mindkettônket. A
+				viszálynak meg KELL szľnnie!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A háborúzás költségei magasak, a béke bevételei
+				óriásiak. Nem dönthetnénk az utóbbi mellett,
+				Admirális?
+			</player>
+		</approach>
+		<approach id='peace-2'>
+			<player id='FreeNations'>
+				Ez a vérontás szégyen két, szinte testvérnek
+				számító birodalom között. A Tanács kidolgozott egy
+				tľzszüneti
+				egyezményt, amelyet átnyújtunk Önnek,
+				Admirális.
+			</player>
+			<player id='Morgath'>
+				A Konföderáció nem kíván megsemmisíteni benneteket.
+				Békét szeretnénk az emberekkel, Admirális. 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Nincs semmi haszon ebbôl a konfliktusból. Nem
+				egyezhetnénk meg egy tľzszünetben?
+			</player>
+		</approach>
+		<approach id='peace-3'>
+			<player id='FreeNations'>
+				Elnökünk úgy véli az elmúlt néhány hét "leckéi" a
+				Birodalmat is meggyôzték arról, hogy a béke jobb
+				mindkét félnek.
+				Elfogadna egy ilyen javaslatot,
+				Admirális?
+			</player>
+			<player id='Morgath'>
+				A Morgathok nem harcolnak vénasszonyokkal. Vessünk
+				véget ennek a háborúnak, Admirális, mielôtt meg
+				kellene semmisítenünk a Birodalmat! 
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A béke gyógyító balzsam lenne mindkettônk sok sebtôl
+				vérzô gazdaságára! Fejezzük be az értelmetlen
+				vérontást! 
+			</player>
+		</approach>
+	</call>
+	<call id='Alien ask for money' mode='MONEY'>
+		<approach id='ask-1'>
+			<player id='FreeNations'>
+				Katonai törekvéseink további anyagi áldozatokat
+				igényelnek. Ha a Birodalom kész lenne %s
+				creditet áldozni erre a
+				célra, nem felejtenénk el,
+				ha esetleg késôbb megváltozna a helyzet...
+			</player>
+			<player id='Morgath'>
+				Háborús erôfeszítéseink még több pénzt kívánnak.
+				Ha %s credittel segítetek bennünket, mi is így
+				teszünk majd, ha szükségetek lesz rá.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Egy %s credites tôkeinjekció a Birodalom
+				részérôl nagyban segítené terjeszkedési terveinket.
+				A Tanács mindig visszafizeti adósságát és nem
+				felejti el barátait!
+			</player>
+		</approach>
+		<approach id='ask-2'>
+			<player id='FreeNations'>
+				Lekötelezve éreznénk magunkat, ha a Birodalom
+				támogatni tudná a Szövetséget %s credittel,
+				melyet kizárólag
+				újjáépítési célokra használnánk
+				fel.
+			</player>
+			<player id='Morgath'>
+				Nem harcolni szeretnénk veletek, csak némi anyagi
+				hozzájárulást - mondjuk %s creditet - kérünk
+				közös ellenségeink elpusztításához. Ne felejtse el,
+				Admirális: ez az emberek érdeke is!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A háborús erôfeszítéseink pénzt igényelnek. Ha a
+				Birodalom hajlandó támogatni minket %s
+				credittel, nem felejtenénk el! 
+			</player>
+		</approach>
+		<approach id='ask-3'>
+			<player id='FreeNations'>
+				Admirális, ha sikerülne %s creditet szerznie
+				a
+				Szövetségnek, mindörökre lekötelezettjei lennénk.
+			</player>
+			<player id='Morgath'>
+				Közös ellenségeink vannak. Ha kapnánk %s
+				creditnyi anyagi segítséget, azt megjegyezzük és a
+				jövôben sem felejtjük el.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Ha a Birodalom hajlandó lenne %s credit
+				készpénz befektetésére, bizonyosan megtalálnánk a
+				módját, hogyan viszonozhatnánk.
+			</player>
+		</approach>
+	</call>
+	<call id='Alien declares war' mode='WAR'>
+		<approach id='declare-1'>
+			<player id='FreeNations'>
+				A Szövetség nem tľrhet meg egy ilyen totalitárius
+				rendszert a határai közelében. Halál az elnyomókra!
+			</player>
+			<player id='Morgath'>
+				Halál a tojáslopókra! A Morgathok mostantól
+				háborúban állnak az emberekkel!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Az emberek komoly fenyegetést jelentenek a szabad
+				kereskedelemre a szektorban! Piacaink tudatos
+				szétzilálását nem nézhetjük tovább tétlenül!
+			</player>
+		</approach>
+		<approach id='declare-2'>
+			<player id='FreeNations'>
+				A szabadságért érdemes harcolni. És ez az, amit a
+				Birodalom el szeretne venni tôlünk!
+			</player>
+			<player id='Morgath'>
+				Túl sokáig veszélyeztetted a Konföderáció létét!
+				Meg kell erôsítenünk határainkat a semleges zóna
+				megszállásával.
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Nem engedhetjük meg, hogy a bolygók tudatos
+				lerombolása folytatódjék! Hivatalosan benyújtjuk
+				igényünket az összes birodalmi fennhatóság alatt
+				lévô planétára! De addig is meggyorsítjuk a
+				döntéshozatalt...
+			</player>
+		</approach>
+		<approach id='declare-3'>
+			<player id='FreeNations'>
+				Szabó Elnök Urat elszomorították a Birodalom
+				felelôtlen és veszélyes akcióiról érkezô hírek. Nem
+				maradt más
+				választásunk, mint a fegyveres
+				"gyógyítókúra".
+			</player>
+			<player id='Morgath'>
+				Nem fogjuk tovább tľrni egy ilyen vérszomjas faj
+				jelenlétét a galaxisban. Irtóhadjáratot hirdetünk
+				minden egyes emberi lény ellen!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Már így is túl sokba került a fajotok a Tanácsnak.
+				A Birodalom befolyása kezd tľrhetetlen méreteket
+				ölteni a szektorban. További beszélgetésnek csak a
+				fegyverek nyelvén látjuk értelmét!
+			</player>
+		</approach>
+	</call>
+	<call id='Alien demands surrender' mode='GIVEUP'>
+		<approach id='giveup-1'>
+			<player id='FreeNations'>
+				A Birodalom kudarcot vallott: a népek
+				szabadságvágya mindig erôsebb az elnyomó
+				fegyvereinél. De az eszméink
+				tisztasága nem engedi
+				a népirtást, így felajánljuk a megadás
+				lehetôségét.
+			</player>
+			<player id='Morgath'>
+				Megadod magad Földi, vagy kutassunk fel és irtsunk
+				ki benneteket egyenként?
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Gazdaságilag nem a legkifizetôdôbb eltaposni
+				benneteket, de ha rákényszerítetek megtesszük.
+				Adjátok meg magatokat AZONNAL a Tanács
+				hivatalos küldöttjének!
+			</player>
+		</approach>
+		<approach id='giveup-2'>
+			<player id='FreeNations'>
+				A Szövetség két utat lát a Birodalom elôtt:
+				fegyverletétel vagy totális pusztulás. Mi az
+				elôbbit javasolnánk,
+				Admirális...
+			</player>
+			<player id='Morgath'>
+				Egy szent ember közületek, Schreiber barát,
+				megmutatta nekünk az igaz utat. Rá való tekintettel
+				felajánljuk a kapituláció lehetôségét az
+				embereknek!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				A Tanács könyörületes lesz. Felajánljuk a megadás
+				lehetôségét, mielôtt az emberek írmagját is
+				kiirtanánk. 
+			</player>
+		</approach>
+		<approach id='giveup-3'>
+			<player id='FreeNations'>
+				Az Adminisztratív Tanács úgy érzi, hogy a megadás
+				lehetôségének felvillantása a legyôzött ellenfél
+				elôtt jó példája a
+				magasabbrendľ kultúrális
+				szintnek.
+			</player>
+			<player id='Morgath'>
+				Bebizonyítottad, hogy kiváló harcos vagy, Admirális.
+				De egy tehetséges vezetônek fel kell ismernie, mikor
+				nincs remény a folytatásra. Add meg magad, Admirális,
+				és a fajtád élni fog!
+			</player>
+			<player id='Sullep'>
+			</player>
+			<player id='Ecalep'>
+			</player>
+			<player id='Dribs'>
+			</player>
+			<player id='FreeTraders'>
+			</player>
+			<player id='Ychom'>
+				Mindazok után, amibe az Ychom birodalomnak került
+				ez a háború, még mindig nagylelkľek leszünk. Ha
+				megadjátok magatokat, esetleg túléli a fajotok ezt
+				a konfliktust!
+			</player>
+		</approach>
+	</call>
+</diplomacy>
