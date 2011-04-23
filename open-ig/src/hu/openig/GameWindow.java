@@ -148,6 +148,9 @@ public class GameWindow extends JFrame implements GameControls {
 						if (secondary != null) {
 							secondary.draw(g2);
 						}
+						if (statusbarVisible) {
+							statusbar.draw(g2);
+						}
 					} else {
 						if (primary != null) {
 							primary.draw(g2);
