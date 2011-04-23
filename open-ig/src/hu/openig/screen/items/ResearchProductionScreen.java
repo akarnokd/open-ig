@@ -440,6 +440,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The research status when the animation began. */
 	boolean animationResearchReady;
 	/** If an orbital factory is needed. */
+	@ModeUI(mode = Screens.PRODUCTION)
 	UILabel needsOrbitalFactory;
 	/**
 	 * Create a sub category image button with the given graphics.
@@ -1584,7 +1585,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		activeAILabValue.text("" + ps.aiLabActive);
 		activeMilLabValue.text("" + ps.milLabActive);
 		
-		if (rt != null) {
+		if (rt != null && mode == Screens.RESEARCH) {
 
 			activeCivilLabValue.color(labColor(ps.civilLab, ps.civilLabActive, rt.civilLab));
 			activeMechLabValue.color(labColor(ps.mechLab, ps.mechLabActive, rt.mechLab));
@@ -1623,7 +1624,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 */
 	void updateProduction(PlanetStatistics ps) {
 		ResearchType rt = research();
-		needsOrbitalFactory.visible(player().isAvailable(rt) && rt.has("needsOrbitalFactory") && ps.orbitalFactory == 0);
+		needsOrbitalFactory.visible(mode == Screens.PRODUCTION && player().isAvailable(rt) && rt.has("needsOrbitalFactory") && ps.orbitalFactory == 0);
 
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
