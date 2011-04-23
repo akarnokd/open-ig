@@ -386,7 +386,7 @@ public class StatusbarScreen extends ScreenBase {
 					world().selectResearch(currentMessage.targetProduct);
 					displaySecondary(Screens.PRODUCTION);
 				} else
-				if (currentMessage.targetProduct != null) {
+				if (currentMessage.targetResearch != null) {
 					world().selectResearch(currentMessage.targetResearch);
 					displaySecondary(Screens.RESEARCH);
 				}
@@ -743,7 +743,7 @@ public class StatusbarScreen extends ScreenBase {
 						visible(false);
 						return true;
 					} else
-					if (currentMessage.targetProduct != null) {
+					if (currentMessage.targetResearch != null) {
 						world().selectResearch(currentMessage.targetResearch);
 						displaySecondary(Screens.RESEARCH);
 						visible(false);
