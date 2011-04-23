@@ -104,6 +104,12 @@ public class GameWindow extends JFrame implements GameControls {
 		int lastW = -1;
 		/** The last height. */
 		int lastH = -1;
+		/**
+		 * Set opacity. 
+		 */
+		public ScreenRenderer() {
+			setOpaque(true);
+		}
 		@Override
 		public void paint(Graphics g) {
 			boolean r0 = repaintRequest;

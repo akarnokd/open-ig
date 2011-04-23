@@ -74,10 +74,12 @@ public class StatusbarScreen extends ScreenBase {
 	UILabel time;
 	/** The moving notification text at the bottom bar. */
 	MovingNotification notification;
+	/** The animation frequency. */
+	double frequency = 20;
 	/** The acceleration step. */ 
-	final int accelerationStep = 40;
+	final int accelerationStep = (int)(frequency * 2);
 	/** The stay in center step. */
-	final int stayStep = 60;
+	final int stayStep = (int)(frequency * 3);
 	/** The current animation step. */
 	int animationStep;
 	/** The screen menu. */
@@ -166,7 +168,7 @@ public class StatusbarScreen extends ScreenBase {
 		top.bounds(0, -20, width, 20);
 		bottomY = 0;
 		bottom.bounds(0, height, width, 18);
-		animation = commons.register(50, new Act() {
+		animation = commons.register(75, new Act() {
 			@Override
 			public void act() {
 				if (top.y < 0) {
@@ -272,7 +274,6 @@ public class StatusbarScreen extends ScreenBase {
 				int mw = getTextWidth();
 				int renderX = 0;
 				int totalWidth = (mw + width) / 2;
-				double frequency = 20;
 				boolean blink = false;
 				if (animationStep <= accelerationStep) {
 					double time = animationStep * 1.0 / frequency;
@@ -282,7 +283,7 @@ public class StatusbarScreen extends ScreenBase {
 				} else
 				if (animationStep <= accelerationStep + stayStep) {
 					int time = animationStep - accelerationStep;
-					blink = time % 20 < 10;
+					blink = time % ((int)frequency) < frequency / 2;
 					renderX = width / 2;
 				} else
 				if (animationStep <= accelerationStep * 2 + stayStep) {
@@ -411,7 +412,15 @@ public class StatusbarScreen extends ScreenBase {
 					askRepaint();
 				} else {
 					animationStep++;
-					askRepaint();
+					if (animationStep < accelerationStep) {
+						askRepaint();
+					} else
+					if (animationStep < accelerationStep + stayStep && animationStep % ((int)(frequency / 2)) == 0) {
+						askRepaint();
+					} else
+					if (animationStep >= accelerationStep + stayStep) {
+						askRepaint();
+					}
 				}
 			} else
 			if (animationStep == 0) {
