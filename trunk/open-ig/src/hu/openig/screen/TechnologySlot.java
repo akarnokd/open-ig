@@ -13,6 +13,7 @@ import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.render.RenderTools;
+import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
@@ -92,6 +93,10 @@ public class TechnologySlot extends UIComponent {
 			if (commons.world().player.research.containsKey(type)) {
 				BufferedImage[] rolling = commons.research().rolling;
 				g2.drawImage(rolling[animationStep % rolling.length], target.x + 5, target.y + 49, null);
+
+				commons.text().paintTo(g2, target.x + 28, target.y + 54, 10, 
+						TextRenderer.YELLOW, Integer.toString((int)commons.world().player.research.get(type).getPercent()) + "%");
+				
 			}
 			LabLevel lvl = commons.world().player.hasEnoughLabs(type);
 			if (lvl == LabLevel.NOT_ENOUGH_TOTAL) {
