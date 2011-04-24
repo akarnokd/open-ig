@@ -53,8 +53,10 @@ import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -331,6 +333,8 @@ public class StarmapScreen extends ScreenBase {
 	boolean showPlanetNames = true;
 	/** Show the fleet names. */
 	boolean showFleetNames = true;
+	/** The statistics cache delayed by ~450ms. */
+	final Map<Planet, PlanetStatistics> cache = new HashMap<Planet, PlanetStatistics>();
 	/** Construct the screen. */
 	public StarmapScreen() {
 		scrollbarPainter = new ScrollBarPainter();
@@ -961,7 +965,9 @@ public class StarmapScreen extends ScreenBase {
 
 	@Override
 	public void draw(Graphics2D g2) {
-
+		if (blinkCounter == 0) {
+			cache.clear();
+		}
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, width, height);
 		
@@ -991,7 +997,11 @@ public class StarmapScreen extends ScreenBase {
 		// render radar circles
 		if (showRadarButton.selected) {
 			for (Planet p : planets()) {
-				p.getStatistics();
+				PlanetStatistics ps = cache.get(p);
+				if (ps == null) {
+					ps = p.getStatistics();
+					cache.put(p, ps);
+				}
 				if (p.radar > 0) {
 					paintRadar(g2, p.x, p.y, p.radar, zoom);
 				}
@@ -1048,7 +1058,11 @@ public class StarmapScreen extends ScreenBase {
 				g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
 			}
 			if (p.owner == player()) {
-				PlanetStatistics ps = p.getStatistics();
+				PlanetStatistics ps = cache.get(p);
+				if (ps == null) {
+					ps = p.getStatistics();
+					cache.put(p, ps);
+				}
 				
 				Set<PlanetProblems> combined = new HashSet<PlanetProblems>();
 				combined.addAll(ps.problems.keySet());
@@ -1713,8 +1727,7 @@ public class StarmapScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
-		
+		cache.clear();
 	}
 	@Override
 	public void onEnter(Screens mode) {
@@ -1725,6 +1738,7 @@ public class StarmapScreen extends ScreenBase {
 				askRepaint();
 			}
 		});
+		cache.clear();
 	}
 	@Override
 	public void onFinish() {
