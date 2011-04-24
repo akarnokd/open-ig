@@ -674,6 +674,8 @@ public class StatusbarScreen extends ScreenBase {
 					} else
 					if (msg.value != null) {
 						param = msg.value;
+					} else {
+						param = "";
 					}
 					int w0 = commons.text().getTextWidth(10, pre);
 					int w1 = commons.text().getTextWidth(10, param);
