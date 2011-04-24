@@ -99,7 +99,7 @@ public class Message implements Comparable<Message> {
 		if (s != null) {
 			targetFleet = world.findFleet(Integer.parseInt(s));
 		}
-		s = xmessage.get("production", null);
+		s = xmessage.get("product", null);
 		if (s != null) {
 			targetProduct = world.researches.get(s);
 		}
