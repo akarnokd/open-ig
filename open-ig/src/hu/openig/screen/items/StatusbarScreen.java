@@ -223,7 +223,7 @@ public class StatusbarScreen extends ScreenBase {
 		
 		screenMenu.location(width - screenMenu.width, 20);
 		notificationHistory.bounds(12, bottom.y - 140, width - 190, 140);
-		
+		notificationHistory.visible(notificationHistory.visible() && !commons.nongame);
 		super.draw(g2);
 	}
 	/** Update the state displays. */
@@ -251,6 +251,7 @@ public class StatusbarScreen extends ScreenBase {
 		time.text(String.format("%02d:%02d",
 				world().time.get(GregorianCalendar.HOUR_OF_DAY),
 				world().time.get(GregorianCalendar.MINUTE)));
+		
 	}
 	@Override
 	public void onEndGame() {
@@ -316,6 +317,9 @@ public class StatusbarScreen extends ScreenBase {
 					} else
 					if (currentMessage.value != null) {
 						param = currentMessage.value;
+					} else
+					if (currentMessage.label != null) {
+						param = get(currentMessage.label);
 					}
 					int w0 = commons.text().getTextWidth(10, pre);
 					int w1 = commons.text().getTextWidth(10, param);
@@ -362,6 +366,9 @@ public class StatusbarScreen extends ScreenBase {
 				} else
 				if (currentMessage.value != null) {
 					param = currentMessage.value;
+				} else
+				if (currentMessage.label != null) {
+					param = get(currentMessage.label);
 				}
 				int w0 = commons.text().getTextWidth(10, pre);
 				int w1 = commons.text().getTextWidth(10, param);
@@ -674,8 +681,9 @@ public class StatusbarScreen extends ScreenBase {
 					} else
 					if (msg.value != null) {
 						param = msg.value;
-					} else {
-						param = "";
+					} else 
+					if (msg.label != null) {
+						param = get(msg.label);
 					}
 					int w0 = commons.text().getTextWidth(10, pre);
 					int w1 = commons.text().getTextWidth(10, param);
