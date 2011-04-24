@@ -246,7 +246,8 @@ public class PlanetSurface {
 			} else {
 				b.hitpoints = Integer.parseInt(hp);
 			}
-			b.setLevel(Math.max(Integer.parseInt(tile.get("level")), b.type.upgrades.size()));
+			b.setLevel(Math.min(Integer.parseInt(tile.get("level")), b.type.upgrades.size())
+			);
 			b.assignedEnergy = Integer.parseInt(tile.get("energy"));
 			b.assignedWorker = Integer.parseInt(tile.get("worker"));
 			b.enabled = "true".equals(tile.get("enabled"));
