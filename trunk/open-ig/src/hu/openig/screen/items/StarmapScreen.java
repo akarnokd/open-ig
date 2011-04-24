@@ -996,14 +996,16 @@ public class StarmapScreen extends ScreenBase {
 		
 		// render radar circles
 		if (showRadarButton.selected) {
-			for (Planet p : planets()) {
-				PlanetStatistics ps = cache.get(p);
-				if (ps == null) {
-					ps = p.getStatistics();
-					cache.put(p, ps);
-				}
-				if (p.radar > 0) {
-					paintRadar(g2, p.x, p.y, p.radar, zoom);
+			for (Planet p : world().planets.values()) {
+				if (p.owner == player()) {
+					PlanetStatistics ps = cache.get(p);
+					if (ps == null) {
+						ps = p.getStatistics();
+						cache.put(p, ps);
+					}
+					if (p.radar > 0) {
+						paintRadar(g2, p.x, p.y, p.radar, zoom);
+					}
 				}
 			}
 			if (showFleetButton.selected) {
@@ -2072,7 +2074,7 @@ public class StarmapScreen extends ScreenBase {
 	}
 	/** @return the player's own planets. */
 	public List<Planet> planets() {
-		List<Planet> pls = player().getPlayerPlanets();
+		List<Planet> pls = player().ownPlanets();
 		Collections.sort(pls, Planet.NAME_ORDER);
 		return pls;
 	}

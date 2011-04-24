@@ -87,7 +87,7 @@ public class Player {
 	 * @return returns the next planet by goind top-bottom relative to the current planet
 	 */
 	public Planet moveNextPlanet() {
-		List<Planet> playerPlanets = getPlayerPlanets();
+		List<Planet> playerPlanets = ownPlanets();
 		if (playerPlanets.size() > 0) {
 			Collections.sort(playerPlanets, Planet.PLANET_ORDER);
 			int idx = playerPlanets.indexOf(currentPlanet);
@@ -102,7 +102,7 @@ public class Player {
 	 * @return returns the previous planet by goind top-bottom relative to the current planet
 	 */
 	public Planet movePrevPlanet() {
-		List<Planet> playerPlanets = getPlayerPlanets();
+		List<Planet> playerPlanets = ownPlanets();
 		if (playerPlanets.size() > 0) {
 			Collections.sort(playerPlanets, Planet.PLANET_ORDER);
 			int idx = playerPlanets.indexOf(currentPlanet);
@@ -115,18 +115,6 @@ public class Player {
 			return p;
 		}
 		return null;
-	}
-	/**
-	 * @return a list of the player-owned planets
-	 */
-	public List<Planet> getPlayerPlanets() {
-		List<Planet> result = new ArrayList<Planet>();
-		for (Planet p : planets.keySet()) {
-			if (p.owner == this) {
-				result.add(p);
-			}
-		}
-		return result;
 	}
 	/**
 	 * Test if the given research is available.

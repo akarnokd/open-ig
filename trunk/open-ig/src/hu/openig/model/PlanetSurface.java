@@ -49,7 +49,7 @@ public class PlanetSurface {
 	 * The base map of the surface. Kept separate from the building maps for the case the user
 	 * demolishes a building.
 	 */
-	public final Map<Location, SurfaceEntity> basemap = new HashMap<Location, SurfaceEntity>();
+	public Map<Location, SurfaceEntity> basemap = new HashMap<Location, SurfaceEntity>();
 	/**
 	 * The buildings and roads map.
 	 */
@@ -67,7 +67,7 @@ public class PlanetSurface {
 	/** The list of building instances. */
 	public final List<Building> buildings = new ArrayList<Building>();
 	/** The list of surface features. */
-	public final List<SurfaceFeature> features = new ArrayList<SurfaceFeature>();
+	public List<SurfaceFeature> features = new ArrayList<SurfaceFeature>();
 	/** Compute the rendering start-stop locations. */
 	public void computeRenderingLocations() {
 		renderingOrigins.clear();
@@ -317,9 +317,10 @@ public class PlanetSurface {
 			Building bc = b.copy();
 			result.placeBuilding(bc.tileset.normal, bc.location.x, bc.location.y, bc);
 		}
-		for (SurfaceFeature f : features) {
-			result.placeBase(f.tile, f.location.x, f.location.y, f.id, f.type);
-		}
+		// share basemap
+		result.basemap = basemap;
+		result.features = features;
+		
 		for (Map.Entry<Location, SurfaceEntity> se : buildingmap.entrySet()) {
 			if (se.getValue().type == SurfaceEntityType.ROAD) {
 				result.buildingmap.put(se.getKey(), se.getValue());
