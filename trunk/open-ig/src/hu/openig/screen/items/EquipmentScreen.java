@@ -1565,7 +1565,8 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param value the new selected type
 	 */
 	void doSelectListVehicle(ResearchType value) {
-		if (rightList.selectedItem != null && rightList.selectedItem.type != value) {
+		if ((rightList.selectedItem != null && rightList.selectedItem.type != value)
+				||  (rightList.items.size() == 0)) {
 			rightList.selectedItem = null;
 		} else {
 			for (InventoryItem pii : rightList.items) {
@@ -1580,7 +1581,8 @@ public class EquipmentScreen extends ScreenBase {
 				}
 			}
 		}
-		if (leftList.selectedItem != null && leftList.selectedItem.type != value) {
+		if ((leftList.selectedItem != null 
+				&& leftList.selectedItem.type != value) || (leftList.items.size() == 0)) {
 			leftList.selectedItem = null;
 		} else {
 			for (InventoryItem pii : leftList.items) {

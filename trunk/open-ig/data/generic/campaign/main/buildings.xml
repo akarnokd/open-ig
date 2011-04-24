@@ -469,21 +469,9 @@
 			<resource type='worker'>-560</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="buildings.science.upgrade_1">
-				<resource type="energy">0.75</resource>
-				<resource type="worker">0.75</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_2">
-				<resource type="energy">0.5</resource>
-				<resource type="worker">0.5</resource>
-			</upgrade>
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_4">
-				<resource type="energy">0.05</resource>
-				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
@@ -505,21 +493,9 @@
 			<resource type='worker'>-620</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="buildings.science.upgrade_1">
-				<resource type="energy">0.75</resource>
-				<resource type="worker">0.75</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_2">
-				<resource type="energy">0.5</resource>
-				<resource type="worker">0.5</resource>
-			</upgrade>
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_4">
-				<resource type="energy">0.05</resource>
-				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
@@ -541,21 +517,9 @@
 			<resource type='worker'>-560</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="buildings.science.upgrade_1">
-				<resource type="energy">0.75</resource>
-				<resource type="worker">0.75</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_2">
-				<resource type="energy">0.5</resource>
-				<resource type="worker">0.5</resource>
-			</upgrade>
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_4">
-				<resource type="energy">0.05</resource>
-				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
@@ -577,21 +541,9 @@
 			<resource type='worker'>-360</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="buildings.science.upgrade_1">
-				<resource type="energy">0.75</resource>
-				<resource type="worker">0.75</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_2">
-				<resource type="energy">0.5</resource>
-				<resource type="worker">0.5</resource>
-			</upgrade>
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_4">
-				<resource type="energy">0.05</resource>
-				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
@@ -613,21 +565,9 @@
 			<resource type='worker'>-420</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="buildings.science.upgrade_1">
-				<resource type="energy">0.75</resource>
-				<resource type="worker">0.75</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_2">
-				<resource type="energy">0.5</resource>
-				<resource type="worker">0.5</resource>
-			</upgrade>
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
-			</upgrade>
-			<upgrade desc="buildings.science.upgrade_4">
-				<resource type="energy">0.05</resource>
-				<resource type="worker">0.05</resource>
 			</upgrade>
 		</upgrades>
 	</building>
