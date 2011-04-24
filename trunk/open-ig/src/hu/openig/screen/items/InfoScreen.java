@@ -1294,8 +1294,12 @@ public class InfoScreen extends ScreenBase {
 		List<UILabel> lines;
 		/** More tax. */
 		UIImageButton taxMore;
+		/** Tax more for all? */
+		boolean taxMoreAll;
 		/** Less tax. */
 		UIImageButton taxLess;
+		/** Tax less for all? */
+		boolean taxLessAll;
 		/** Construct the label elements. */
 		public InfoPanel() {
 			int textSize = 10;
@@ -1336,7 +1340,13 @@ public class InfoScreen extends ScreenBase {
 					taxIncome, tradeIncome, taxMorale, taxLevel, allocation, autobuild, other
 			);
 
-			taxMore = new UIImageButton(commons.info().taxMore);
+			taxMore = new UIImageButton(commons.info().taxMore) {
+				@Override
+				public boolean mouse(UIMouse e) {
+					taxMoreAll = e.has(Modifier.SHIFT);
+					return super.mouse(e);
+				};
+			};
 			taxMore.onClick = new Act() {
 				@Override
 				public void act() {
@@ -1346,7 +1356,13 @@ public class InfoScreen extends ScreenBase {
 			taxMore.setHoldDelay(150);
 			
 			taxMore.z = 1;
-			taxLess = new UIImageButton(commons.info().taxLess);
+			taxLess = new UIImageButton(commons.info().taxLess) {
+				@Override
+				public boolean mouse(UIMouse e) {
+					taxLessAll = e.has(Modifier.SHIFT);
+					return super.mouse(e);
+				};
+			};
 			taxLess.onClick = new Act() {
 				@Override
 				public void act() {
@@ -1532,6 +1548,11 @@ public class InfoScreen extends ScreenBase {
 				p.tax = TaxLevel.values()[l.ordinal() + 1];
 			}
 		}
+		if (colonyInfo.taxMoreAll) {
+			for (Planet q : player().ownPlanets()) {
+				q.tax = p.tax;
+			}
+		}
 	}
 	/** Adjust the tax button based on the current taxation level. */
 	void doAdjustTaxButtons() {
@@ -1552,6 +1573,11 @@ public class InfoScreen extends ScreenBase {
 			TaxLevel l = p.tax;
 			if (l.ordinal() > 0) {
 				p.tax = TaxLevel.values()[l.ordinal() - 1];
+			}
+		}
+		if (colonyInfo.taxLessAll) {
+			for (Planet q : player().ownPlanets()) {
+				q.tax = p.tax;
 			}
 		}
 	}
