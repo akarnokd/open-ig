@@ -39,6 +39,8 @@ public class Message implements Comparable<Message> {
 	public String text;
 	/** The parameter value. */
 	public String value;
+	/** The parameter value label to lookup. */
+	public String label;
 	@Override
 	public int compareTo(Message o) {
 		int c = priority - o.priority;
@@ -73,6 +75,9 @@ public class Message implements Comparable<Message> {
 		}
 		if (value != null) {
 			xmessage.set("value", value);
+		}
+		if (label != null) {
+			xmessage.set("label", label);
 		}
 		xmessage.set("text", text);
 	}
@@ -109,6 +114,8 @@ public class Message implements Comparable<Message> {
 			targetResearch = world.researches.get(s);
 		}
 		value = xmessage.get("value", null);
+		
+		label = xmessage.get("label", null);
 		
 		text = xmessage.get("text");
 	}

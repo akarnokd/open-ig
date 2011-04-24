@@ -434,7 +434,9 @@ public class EquipmentScreen extends ScreenBase {
 		addButton.onClick = new Act() {
 			@Override
 			public void act() {
-				doAddItem();
+				if (addButton.visible()) {
+					doAddItem();
+				}
 			}
 		};
 		addButton.setHoldDelay(150);
@@ -444,7 +446,9 @@ public class EquipmentScreen extends ScreenBase {
 		delButton.onClick = new Act() {
 			@Override
 			public void act() {
-				doRemoveItem();
+				if (delButton.visible()) {
+					doRemoveItem();
+				}
 			}
 		};
 		delButton.setHoldDelay(150);
@@ -487,7 +491,9 @@ public class EquipmentScreen extends ScreenBase {
 		addOne.onClick = new Act() {
 			@Override
 			public void act() {
-				doAddOne();
+				if (addOne.visible()) {
+					doAddOne();
+				}
 			}
 		};
 		addOne.setHoldDelay(150);
@@ -497,7 +503,9 @@ public class EquipmentScreen extends ScreenBase {
 		removeOne.onClick = new Act() {
 			@Override
 			public void act() {
-				doRemoveOne();
+				if (removeOne.visible()) {
+					doRemoveOne();
+				}
 			}
 		};
 		removeOne.setHoldDelay(150);

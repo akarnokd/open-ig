@@ -187,12 +187,12 @@ public final class Radar {
 		}
 		if (planet.owner != null && planet.owner != player && !player.knows(planet.owner)) {
 			player.setStance(planet.owner, player.initialStance);
-
-			Message msg = world.newMessage("message.new_race_discovered");
-			msg.priority = 20;
-			msg.value = planet.owner.race;
-			player.messageQueue.add(msg);
-
+			if (!world.player.race.equals(planet.owner.race)) {
+				Message msg = world.newMessage("message.new_race_discovered");
+				msg.priority = 20;
+				msg.label = planet.getRaceLabel();
+				player.messageQueue.add(msg);
+			}
 		}
 	}
 	/**
