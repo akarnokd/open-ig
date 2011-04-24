@@ -926,7 +926,7 @@ public class World {
 		for (XElement xplayer : xworld.childrenWithName("player")) {
 			Player p = players.get(xplayer.get("id"));
 			
-			p.money = xplayer.getInt("money");
+			p.money = xplayer.getLong("money");
 			p.currentPlanet = planets.get(xplayer.get("planet", null));
 			
 			p.currentBuilding = buildingModel.buildings.get(xplayer.get("building", null));

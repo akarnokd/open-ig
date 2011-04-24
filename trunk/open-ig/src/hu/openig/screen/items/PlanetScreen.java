@@ -278,7 +278,6 @@ public class PlanetScreen extends ScreenBase {
 			render.offsetY = -(int)((surface().boundingRectangle.height * render.scale - height) / 2);
 		}
 		focused = render;
-//		importEarth(); // FIXME for testing purposes only
 	}
 
 	@Override

@@ -442,6 +442,8 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** If an orbital factory is needed. */
 	@ModeUI(mode = Screens.PRODUCTION)
 	UILabel needsOrbitalFactory;
+	/** The statistics display cache deferred by ~500ms. */
+	PlanetStatistics statistics;
 	/**
 	 * Create a sub category image button with the given graphics.
 	 * @param cat the target category
@@ -650,11 +652,13 @@ public class ResearchProductionScreen extends ScreenBase {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.research().basePanel, base.x, base.y, null);
 		
-		PlanetStatistics all = player().getPlanetStatistics(null);
+		if (statistics == null || animationStep % 5 == 0) {
+			statistics = player().getPlanetStatistics(null);
+		}
 		
-		update(all);
-		updateActive(all);
-		updateProduction(all);
+		update(statistics);
+		updateActive(statistics);
+		updateProduction(statistics);
 		
 		super.draw(g2);
 		
@@ -736,6 +740,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				doAnimation();
 			}
 		});
+		statistics = null;
 	}
 	@Override
 	public void onFinish() {
