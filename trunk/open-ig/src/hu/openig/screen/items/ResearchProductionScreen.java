@@ -1250,7 +1250,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		
 		capacityLabel.location(productionBase.x + 394 - capacityLabel.width, productionBase.y + 133);
 		availableCapacityValue.location(productionBase.x + 398, productionBase.y + 137);
-		availableCapacityValue.size(60, 14);
+		availableCapacityValue.size(66, 14);
 		totalCapacityValue.location(productionBase.x + 398 + 60, productionBase.y + 139);
 		totalCapacityValue.size(59, 10);
 		
@@ -1631,18 +1631,33 @@ public class ResearchProductionScreen extends ScreenBase {
 			if (cat == ResearchMainCategory.SPACESHIPS) {
 				capacity = ps.spaceshipActive;
 				availableCapacityValue.text("" + ps.spaceshipActive);
+				if (ps.spaceshipActive >= 100000) {
+					availableCapacityValue.size(10);
+				} else {
+					availableCapacityValue.size(14);
+				}
 				totalCapacityValue.text("" + ps.spaceship);
 				totalCapacityValue.color(ps.spaceship > ps.spaceshipActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
 			} else
 			if (cat == ResearchMainCategory.WEAPONS) {
 				capacity = ps.weaponsActive;
 				availableCapacityValue.text("" + ps.weaponsActive);
+				if (ps.weaponsActive >= 100000) {
+					availableCapacityValue.size(10);
+				} else {
+					availableCapacityValue.size(14);
+				}
 				totalCapacityValue.text("" + ps.weapons);
 				totalCapacityValue.color(ps.weapons > ps.weaponsActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
 			} else
 			if (cat == ResearchMainCategory.EQUIPMENT) {
 				capacity = ps.equipmentActive;
 				availableCapacityValue.text("" + ps.equipmentActive);
+				if (ps.equipmentActive >= 100000) {
+					availableCapacityValue.size(10);
+				} else {
+					availableCapacityValue.size(14);
+				}
 				totalCapacityValue.text("" + ps.equipment);
 				totalCapacityValue.color(ps.equipmentActive > ps.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);
 			} else {
