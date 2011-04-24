@@ -590,9 +590,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			int row = 0;
 			for (Production pr : productions.values()) {
 				if (row++ == j) {
-					if (pr.type != research()) {
-						doSelectTechnology(pr.type);
-					}
+					doSelectTechnology(pr.type);
 					break;
 				}
 			}
