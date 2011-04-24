@@ -1500,6 +1500,11 @@ public class ResearchProductionScreen extends ScreenBase {
 						}
 						selectedCompleteValue.text((int)(rs.getPercent()) + "%");
 						selectedTimeValue.text("" + rs.getTime());
+						if (rs.getTime() >= 10000) {
+							selectedTimeValue.size(10);
+						} else {
+							selectedTimeValue.size(14);
+						}
 						
 						switch (player().hasEnoughLabs(rs.type)) {
 						case ENOUGH:
@@ -1517,6 +1522,11 @@ public class ResearchProductionScreen extends ScreenBase {
 						selectedTechStatusValue.text(get("researchinfo.progress.can"));
 						selectedCompleteValue.text("----");
 						selectedTimeValue.text("" + (rt.researchCost / 20));
+						if ((rt.researchCost / 20) >= 10000) {
+							selectedTimeValue.size(10);
+						} else {
+							selectedTimeValue.size(14);
+						}
 						
 						switch (player().hasEnoughLabs(rt)) {
 						case ENOUGH:
@@ -1536,6 +1546,7 @@ public class ResearchProductionScreen extends ScreenBase {
 					selectedCompleteValue.text("----");
 					selectedTimeValue.text("----");
 					selectedTimeValue.color(TextRenderer.GREEN);
+					selectedTimeValue.size(14);
 				}
 			}
 			
@@ -1565,6 +1576,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			selectedTechNameValue.text("-");
 			selectedTechStatusValue.text("-");
 			selectedTimeValue.text("----");
+			selectedTimeValue.size(14);
 		}
 		if (rt == animationResearch && player().isAvailable(rt) !=  animationResearchReady) {
 			playAnim(rt);
