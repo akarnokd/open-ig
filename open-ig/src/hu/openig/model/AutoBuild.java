@@ -25,5 +25,9 @@ public enum AutoBuild {
 	/** Construct economic buildings and upgrade them. */
 	ECONOMIC,
 	/** Construct factory buildings and upgrade them. */
-	FACTORY
+	FACTORY,
+	/** Place one morale building per type. */
+	SOCIAL,
+	/** Upgrade buildings. */
+	UPGRADE,
 }

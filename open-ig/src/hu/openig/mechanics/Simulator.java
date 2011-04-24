@@ -721,7 +721,40 @@ public final class Simulator {
 					}
 				);
 			}
+		} else
+		if (planet.autoBuild == AutoBuild.UPGRADE) {
+			findOptions(world, planet, 
+					new Func1<Building, Boolean>() {
+						@Override
+						public Boolean invoke(Building b) {
+							return b.upgradeLevel < b.type.upgrades.size();
+						}
+					},
+					new Func1<BuildingType, Boolean>() {
+						@Override
+						public Boolean invoke(BuildingType value) {
+							return false;
+						}
+					}
+				);
+		} else
+		if (planet.autoBuild == AutoBuild.SOCIAL) {
+			findOptions(world, planet, 
+				new Func1<Building, Boolean>() {
+					@Override
+					public Boolean invoke(Building b) {
+						return b.type.kind.equals("Social");
+					}
+				},
+				new Func1<BuildingType, Boolean>() {
+					@Override
+					public Boolean invoke(BuildingType value) {
+						return value.kind.equals("Social") && planet.countBuilding(value) == 0;
+					}
+				}
+			);
 		}
+		
 	}
 	/**
 	 * Find and invoke options for the given world and planet and use

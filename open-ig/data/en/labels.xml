@@ -533,6 +533,8 @@
 	<entry key='autobuild.CIVIL'>Civil buildings</entry>
 	<entry key='autobuild.ECONOMIC'>Economic buildings</entry>
 	<entry key='autobuild.FACTORY'>Factory buildings</entry>
+	<entry key='autobuild.SOCIAL'>Social buildings</entry>
+	<entry key='autobuild.UPGRADE'>Upgrade buildings</entry>
 	
 	<entry key='allocation.ZERO'>None</entry>
 	<entry key='allocation.DEFAULT'>Uniform</entry>
