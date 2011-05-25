@@ -2,6 +2,22 @@
 
 <wiki:toc max_depth="1" />
 
+= May, 2011 =
+
+*May 25, 2011*
+
+It's conference time again, therefore, I had to pause the development.
+
+The following additional changes are planned:
+
+  * Remove upgrade options from morale-boosting buildings (Church, Bar, etc.). Their effect on the population and tax income make the late game too simple.
+  * Reduce the morale effect of the Police station on planets where the owner has the same race as the population.
+  * Remove upgrade options of research laboratories.
+  * Introduce population demand for a fire brigade.
+  * Introduce earthquake on earth-like and rocky planets.
+  * Add Time-to-Live for satellites.
+
+
 = April, 2011 =
 
 *April 22, 2011*
