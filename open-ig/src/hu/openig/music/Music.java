@@ -388,15 +388,21 @@ public class Music {
 		if (sdl != null) {
 			BooleanControl b = (BooleanControl) sdl
 					.getControl(BooleanControl.Type.MUTE);
-			b.setValue(mute);
+			if (b != null) {
+				b.setValue(mute);
+			}
 		} else if (soundClip != null) {
 			BooleanControl b = (BooleanControl) soundClip
 					.getControl(BooleanControl.Type.MUTE);
-			b.setValue(mute);
+			if (b != null) {
+				b.setValue(mute);
+			}
 		} else if (oggMusic != null && oggMusic.outputLine != null) {
 			BooleanControl b = (BooleanControl) oggMusic.outputLine
 					.getControl(BooleanControl.Type.MUTE);
-			b.setValue(mute);
+			if (b != null) {
+				b.setValue(mute);
+			}
 		}
 		this.mute = mute;
 	}

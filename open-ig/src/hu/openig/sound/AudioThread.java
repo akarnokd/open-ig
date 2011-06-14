@@ -270,7 +270,9 @@ public class AudioThread extends Thread {
 	 */
 	public void setMute(boolean mute) {
 		BooleanControl bc = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
-		bc.setValue(mute);
+		if (bc != null) {
+			bc.setValue(mute);
+		}
 	}
 	/**
 	 * Set the linear volume.
