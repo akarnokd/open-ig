@@ -292,7 +292,9 @@ public class OggMusic {
 			FloatControl f = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
 			f.setValue(initialGain);
 			BooleanControl b = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
-			b.setValue(initialMute);
+			if (b != null) {
+				b.setValue(initialMute);
+			}
 			
 			
 			while (eos == 0) {
