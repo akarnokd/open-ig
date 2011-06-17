@@ -2,6 +2,13 @@
 
 <wiki:toc max_depth="1" />
 
+= June, 2011 =
+
+*June 17, 2011*
+
+It's deliverable time again for FP7; and I'm a bit tired these days. Hopefully, I will be able to continue development in July (see the updated project plan).
+
+
 = May, 2011 =
 
 *May 25, 2011*
