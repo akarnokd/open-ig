@@ -161,7 +161,7 @@ public class ResourceLocator {
 			// scan backwards and let the newer overrule the existing resource
 			for (int i = containers.size() - 1; i >= 0; i--) {
 				String c = containers.get(i);
-				if (c.toLowerCase().endsWith(".zip")) {
+				if (c.toLowerCase().endsWith(".zip") && !new File(c).isDirectory()) {
 					analyzeZip(c);
 				} else {
 					c = c.replaceAll("\\\\", "/");
