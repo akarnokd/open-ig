@@ -1,4 +1,5 @@
 #summary The Setup program description.
+#labels Deprecated
 
 = Introduction =
 
