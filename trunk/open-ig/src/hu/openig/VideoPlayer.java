@@ -11,13 +11,13 @@ package hu.openig;
 import hu.openig.core.Act;
 import hu.openig.core.ConfigButton;
 import hu.openig.core.Configuration;
-import hu.openig.core.ResourceLocator;
-import hu.openig.core.ResourceType;
-import hu.openig.core.SubtitleManager;
-import hu.openig.core.ResourceLocator.ResourcePlace;
+import hu.openig.core.ImageInterpolation;
 import hu.openig.core.MovieSurface;
 import hu.openig.core.MovieSurface.ScalingMode;
-import hu.openig.core.ImageInterpolation;
+import hu.openig.core.ResourceLocator;
+import hu.openig.core.ResourceLocator.ResourcePlace;
+import hu.openig.core.ResourceType;
+import hu.openig.core.SubtitleManager;
 import hu.openig.sound.AudioThread;
 
 import java.awt.Container;
@@ -25,9 +25,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +45,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.LockSupport;
 import java.util.zip.GZIPInputStream;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -49,23 +54,28 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.RowSorter.SortKey;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
@@ -435,9 +445,13 @@ public class VideoPlayer extends JFrame {
 		JMenuItem mnuSetup = new JMenuItem("Setup");
 		mnuSetup.addActionListener(new Act() { @Override public void act() { doSetup(); } });
 
+		JMenuItem mnuExport = new JMenuItem("Export...");
+		mnuExport.addActionListener(new Act() { @Override public void act() { doExport(); } });
 		
 		mnuFile.add(mnuRescan);
 		mnuFile.add(mnuSetup);
+		mnuFile.addSeparator();
+		mnuFile.add(mnuExport);
 		mnuFile.addSeparator();
 		mnuFile.add(mnuFileExit);
 		menuBar.add(mnuFile);
@@ -933,6 +947,251 @@ public class VideoPlayer extends JFrame {
 		} catch (IOException ex) {
 			config.error(ex);
 		}
+	}
+	/** The last known export dir. */
+	File lastDir;
+	/** The export record. */
+	class AVExport {
+		/** Video location. */
+		ResourcePlace video;
+		/** Audio location. */
+		ResourcePlace audio;
+		/** File naming. */
+		String naming;
+	}
+	/** Export the selected videos as PNG images. */
+	void doExport() {
+		JFileChooser jfc = new JFileChooser(lastDir != null ? lastDir : new File("."));
+		jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		if (jfc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			lastDir = jfc.getSelectedFile();
+			int[] sels = videoTable.getSelectedRows();
+			final List<AVExport> exportList = new ArrayList<AVExport>();
+			for (int i = 0; i < sels.length; i++) {
+				VideoEntry ve = videoModel.rows.get(videoTable.convertRowIndexToModel(sels[i]));
+				
+				AVExport ave = new AVExport();
+				ave.video = rl.get(ve.path + "/" + ve.name, ResourceType.VIDEO);
+				if (ve.audio != null && !ve.audio.isEmpty()) {
+					ave.audio = rl.getExactly(ve.audio, ve.path + "/" + ve.name, ResourceType.AUDIO);
+				}
+				ave.naming = lastDir.getAbsolutePath() + "/" + ve.name + "_%05d.png";
+				exportList.add(ave);
+			}
+			doExportGUI(exportList);
+		}
+	}
+	/**
+	 * Construct an export indicator dialog.
+	 * @param exportList the list to export
+	 */
+	void doExportGUI(final List<AVExport> exportList) {
+		final JDialog exportDialog = new JDialog(this, true);
+		exportDialog.setTitle("Export progress");
+		final JLabel totalLabel = new JLabel("Total");
+		final JLabel currentLabel = new JLabel("Current");
+		final JProgressBar totalProgress = new JProgressBar(0, exportList.size());
+		final JProgressBar currentProgress = new JProgressBar();
+		final JButton cancel = new JButton("Cancel");
+		
+		Container c = exportDialog.getContentPane();
+		c.setLayout(new BoxLayout(c, BoxLayout.PAGE_AXIS));
+		c.add(totalLabel);
+		c.add(totalProgress);
+		c.add(currentLabel);
+		c.add(currentProgress);
+		c.add(cancel);
+		
+		final Worker worker = new Worker() {
+			@Override
+			protected void work() {
+				try {
+					int count = 0;
+					for (AVExport ave : exportList) {
+						if (Thread.currentThread().isInterrupted()) {
+							break;
+						}
+						final int j = ++count;
+						
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								totalLabel.setText("Total: " + j + " of " + exportList.size());
+								totalProgress.setValue(j - 1);
+							}
+						});
+						exportVideo(ave.video, ave.audio, ave.naming, currentLabel, currentProgress);
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								totalProgress.setValue(j);
+							}
+						});
+					}
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+			@Override
+			protected void done() {
+				exportDialog.dispose();
+			}
+		};
+		cancel.addActionListener(new Act() {
+			@Override
+			public void act() {
+				worker.interrupt();
+			}
+		});
+		
+		worker.start();
+
+		exportDialog.pack();
+		exportDialog.setSize(400, exportDialog.getHeight());
+		exportDialog.setLocationRelativeTo(this);
+		exportDialog.setVisible(true);
+		exportDialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				worker.interrupt();
+			}
+		});
+	}
+	/**
+	 * Export the contents of the video into a sequence of PNG files.
+	 * @param video the resource place to use
+	 * @param audio the optional audio for balancing the frames and the audio length
+	 * @param fileNameBase the formatter for the filename base.
+	 * @param currentLabel the label to use for the current status display
+	 * @param currentProgress the progress bar to use for the current frame value
+	 */
+	void exportVideo(ResourcePlace video, ResourcePlace audio, 
+			final String fileNameBase, final JLabel currentLabel, final JProgressBar currentProgress) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				currentProgress.setValue(0);
+				currentLabel.setText("Current file: " + fileNameBase);
+			}
+		});
+		try {
+			DataInputStream in = new DataInputStream(
+					new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
+			try {
+				int w = Integer.reverseBytes(in.readInt());
+				int h = Integer.reverseBytes(in.readInt());
+				final int frames = Integer.reverseBytes(in.readInt());
+				double fps = Integer.reverseBytes(in.readInt()) / 1000.0;
+				
+				int[] palette = new int[256];
+				byte[] bytebuffer = new byte[w * h];
+				int[] currentImage = new int[w * h];
+				int frameCount = 0;
+				
+				int frames2 = frames;
+				if (audio != null) {
+					try {
+						AudioInputStream ain = AudioSystem.getAudioInputStream(new BufferedInputStream(
+								audio.open(), 256 * 1024));
+						try {
+							frames2 = (int)Math.ceil(ain.available() * fps / 22050.0);
+						} finally {
+							ain.close();
+						}
+					} catch (UnsupportedAudioFileException ex) {
+						ex.printStackTrace();
+					}
+				}
+				final int f = Math.max(frames, frames2);
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						currentProgress.setMaximum(f);
+						currentLabel.setText("Current file: " + fileNameBase + ", 0 of " + f);
+					}
+				});
+				if (audio != null) {
+					// make a copy of the audio
+					String audioNaming = fileNameBase.substring(0, fileNameBase.length() - 9) + ".wav";
+					InputStream asrc = audio.open();
+					try {
+						FileOutputStream acopy = new FileOutputStream(audioNaming);
+						try {
+							byte[] ab = new byte[1024 * 1024];
+							while (!Thread.currentThread().isInterrupted()) {
+								int read = asrc.read(ab);
+								if (read < 0) {
+									break;
+								} else
+								if (read > 0) {
+									acopy.write(ab, 0, read);
+								}
+							}
+						} finally {
+							acopy.close();
+						}
+					} finally {
+						asrc.close();
+					}
+				}
+				
+				BufferedImage frameImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+				while (!Thread.currentThread().isInterrupted()) {
+					int c = in.read();
+					if (c < 0 || c == 'X') {
+						break;
+					} else
+					if (c == 'P') {
+						int len = in.read();
+						for (int j = 0; j < len; j++) {
+							int r = in.read() & 0xFF;
+							int g = in.read() & 0xFF;
+							int b = in.read() & 0xFF;
+							palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
+						}
+					} else
+					if (c == 'I') {
+						in.readFully(bytebuffer);
+						for (int i = 0; i < bytebuffer.length; i++) {
+							int c0 = palette[bytebuffer[i] & 0xFF];
+							if (c0 != 0) {
+								currentImage[i] = c0;
+							}
+						}
+						frameImage.setRGB(0, 0, w, h, currentImage, 0, w);
+		       			ImageIO.write(frameImage, "png", new File(String.format(fileNameBase, frameCount)));
+		       			frameCount++;
+		       			final int fc = frameCount;
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								currentProgress.setValue(fc);
+								currentLabel.setText("Current file: " + String.format(fileNameBase, fc) + ", " + fc + " of " + f);
+							}
+						});
+					}
+				}
+				// continue to emit reposition events
+				if (frames2 > frames && !Thread.currentThread().isInterrupted()) {
+					for (int i = frames; i < frames2 && !Thread.currentThread().isInterrupted(); i++) {
+		       			ImageIO.write(frameImage, "png", new File(String.format(fileNameBase, frameCount)));
+		       			frameCount++;
+		       			final int fc = frameCount;
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								currentProgress.setValue(fc);
+								currentLabel.setText("Current file: " + String.format(fileNameBase, fc) + ", " + fc + " of " + f);
+							}
+						});
+					}
+				}
+			} finally {
+				try { in.close(); } catch (IOException ex) { ex.printStackTrace(); }
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} 
 	}
 	/**
 	 * Set the maximum frame.
