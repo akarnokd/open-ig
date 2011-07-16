@@ -1135,8 +1135,7 @@ public class InfoScreen extends ScreenBase {
 
 	@Override
 	public void onFinish() {
-		// TODO Auto-generated method stub
-		
+		// nothing to do here
 	}
 
 	@Override
@@ -2163,7 +2162,6 @@ public class InfoScreen extends ScreenBase {
 			default:
 			}
 			if (showPlanetListDetails) {
-				// FIXME
 				adjustPlanetListView();
 			}
 			return rep;
@@ -3060,7 +3058,7 @@ public class InfoScreen extends ScreenBase {
 			g2.fillRect(5, - 13, 390, 13);
 
 			int probLeft = 310;
-			// TODO
+			
 			commons.text().paintTo(g2, 10, -13, 10, TextRenderer.YELLOW, get("info.planet_name"));
 			commons.text().paintTo(g2, 105, -13, 10, TextRenderer.YELLOW, get("info.population_details"));
 			commons.text().paintTo(g2, 240, -13, 10, TextRenderer.YELLOW, get("info.morale_details"));
@@ -3249,7 +3247,7 @@ public class InfoScreen extends ScreenBase {
 					if (e.z < 0) {
 						top = Math.max(0, top - 1);
 					} else {
-						top = Math.min(list.size() - 27, top + 1); // FIXME
+						top = Math.min(list.size() - 27, top + 1);
 					}
 					return true;
 				}
@@ -3277,8 +3275,7 @@ public class InfoScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
-		
+		// nothing to do here
 	}
 	/** The diplomacy screen. */
 	class DiplomacyPanel extends UIComponent {

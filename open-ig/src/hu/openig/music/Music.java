@@ -7,11 +7,12 @@
  */
 package hu.openig.music;
 
+import hu.openig.core.ResourceLocator;
+import hu.openig.core.ResourceLocator.ResourcePlace;
+import hu.openig.core.ResourceType;
+import hu.openig.sound.AudioThread;
 import hu.openig.utils.IOUtils;
-import hu.openig.utils.ResourceMapper;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -39,11 +40,9 @@ public class Music {
 	/** The background playback thread. */
 	private volatile Thread playbackThread;
 	/** Adjust master gain in dB. */
-	private volatile float gain;
-	/** Mute sound. */
-	private volatile boolean mute;
+	private volatile int volume;
 	/** The resource manager. */
-	private final ResourceMapper resMap;
+	private final ResourceLocator rl;
 	/** The clip for sound playback. */
 	private volatile Clip soundClip;
 	/** Use soundClip for playback. */
@@ -52,11 +51,11 @@ public class Music {
 	private volatile OggMusic oggMusic;
 
 	/**
-	 * Constructor. Initializes the audio output.
-	 * @param resMap the resource mapper
+	 * Constructor.
+	 * @param rl the resource locator instance.
 	 */
-	public Music(ResourceMapper resMap) {
-		this.resMap = resMap;
+	public Music(ResourceLocator rl) {
+		this.rl = rl;
 	}
 	/** Initialize wave playback format. */
 	private void initWave() {
@@ -68,7 +67,7 @@ public class Music {
 		try {
 			sdl = (SourceDataLine) AudioSystem.getLine(dli);
 			sdl.open(af);
-			setMasterGain(0);
+			setVolume(volume);
 		} catch (LineUnavailableException ex) {
 		}
 	}
@@ -154,20 +153,23 @@ public class Music {
 	private void playbackLoop(String... fileNames) {
 		int fails = 0;
 		while (checkStop() && fails < fileNames.length) {
-			for (String fileName : fileNames) {
+			for (String name : fileNames) {
+				ResourcePlace rp = rl.get(name, ResourceType.AUDIO);
+				String fileName = rp.getFileName();
 				if (!checkStop()) {
 					break;
 				}
 				if (useClip) {
-					playBackClip(fileName);
+					playBackClip(rp);
 				} else {
 					try {
 						if (fileName.toUpperCase().endsWith(".WAV")) {
-							if (!playbackWav(fileName)) {
+							if (!playbackWav(rp)) {
 								fails++;
 							}
-						} else if (fileName.toUpperCase().endsWith(".OGG")) {
-							if (!playbackOgg(fileName)) {
+						} else 
+						if (fileName.toUpperCase().endsWith(".OGG")) {
+							if (!playbackOgg(rp)) {
 								fails++;
 							}
 						} else {
@@ -190,26 +192,16 @@ public class Music {
 	}
 	/**
 	 * Plays back the given filename as an OGG audio file.
-	 * @param fileName the file or resource to play
+	 * @param res the resource place representing the music
 	 * @return true if the file was accessible
 	 * @throws IOException on IO error
 	 */
-	private boolean playbackOgg(String fileName) throws IOException {
-		InputStream raf = null;
+	private boolean playbackOgg(ResourcePlace res) throws IOException {
+		InputStream raf = res.openNew();
 		try {
-			if (fileName.startsWith("res:")) {
-				raf = Music.class.getResourceAsStream(fileName.substring(4));
-			} else {
-				raf = new FileInputStream(resMap.get(fileName));
-			}
-			if (raf != null) {
-				oggMusic = new OggMusic(Thread.currentThread(), gain, mute);
-				oggMusic.playOgg(raf);
-				return true;
-			} else {
-				System.err.println("Music inaccessible: " + fileName);
-			}
-			return false;
+			oggMusic = new OggMusic(Thread.currentThread(), volume);
+			oggMusic.playOgg(raf);
+			return true;
 		} finally {
 			if (raf != null) {
 				raf.close();
@@ -218,64 +210,47 @@ public class Music {
 	}
 	/**
 	 * Plays back the given filename as a WAV file.
-	 * @param fileName the wav file name to play
+	 * @param rp the resource place
 	 * @return true if the file is accessible
 	 * @throws IOException if there is problem with the IO
 	 */
-	private boolean playbackWav(String fileName) throws IOException {
-		InputStream raf = null;
-		if (fileName.startsWith("res:")) {
-			raf = Music.class.getResourceAsStream(fileName.substring(4));
-		} else {
-			raf = new FileInputStream(resMap.get(fileName));
-		}
-		if (raf != null) {
-			// skip chunks
-			try {
-				long startOffset = findData(raf);
-				raf.close();
-				byte[] buffer = new byte[16384];
-				// compensate for signed
-				// playback loop
-				initWave();
-				sdl.start();
-				while (checkStop()) {
-					if (fileName.startsWith("res:")) {
-						raf = Music.class.getResourceAsStream(fileName.substring(4));
-					} else {
-						raf = new FileInputStream(resMap.get(fileName));
+	private boolean playbackWav(ResourcePlace rp) throws IOException {
+		InputStream raf = rp.openNew();
+		// skip chunks
+		try {
+			long startOffset = findData(raf);
+			raf.close();
+			byte[] buffer = new byte[16384];
+			// compensate for signed
+			// playback loop
+			initWave();
+			sdl.start();
+			while (checkStop()) {
+				raf = rp.openNew();
+				// skip wav header
+				IOUtils.skipFully(raf, startOffset);
+				int read = 0;
+				do {
+					read = raf.read(buffer);
+					if (read > 0) {
+						// signifySound(buffer, read);
+						sdl.write(buffer, 0, read);
 					}
-					// skip wav header
-					IOUtils.skipFully(raf, startOffset);
-					int read = 0;
-					do {
-						read = raf.read(buffer);
-						if (read > 0) {
-							// signifySound(buffer, read);
-							sdl.write(buffer, 0, read);
-						}
-					} while (checkStop() && read >= 0);
-				}
-			} finally {
-				raf.close();
+				} while (checkStop() && read >= 0);
 			}
-			return true;
+		} finally {
+			raf.close();
 		}
-		return false;
+		return true;
 	}
 	/**
 	 * Play back music using the Clip object.
-	 * @param fileName the file or resource to playback
+	 * @param rp the resource to play back
 	 */
-	private void playBackClip(String fileName) {
+	private void playBackClip(ResourcePlace rp) {
 		try {
-			AudioInputStream soundStream = null;
-			if (fileName.startsWith("res:")) {
-				soundStream = AudioSystem.getAudioInputStream(Music.class.getResourceAsStream(fileName.substring(4)));
-			} else {
-				File audioFile = resMap.get(fileName);
-				soundStream = AudioSystem.getAudioInputStream(audioFile);
-			}
+			AudioInputStream soundStream = AudioSystem.getAudioInputStream(rp.openNew());
+			
 			AudioFormat streamFormat = soundStream.getFormat();
 			DataLine.Info clipInfo = new DataLine.Info(Clip.class,
 					streamFormat);
@@ -284,8 +259,7 @@ public class Music {
 			soundClip = clip;
 			clip.open(soundStream);
 			clip.setLoopPoints(0, -1);
-			setMasterGain(gain);
-			setMute(mute);
+			setVolume(volume);
 			clip.start();
 		} catch (UnsupportedAudioFileException e) {
 			e.printStackTrace();
@@ -347,37 +321,6 @@ public class Music {
 		}
 	}
 
-
-	/**
-	 * Set the master gain in dB.
-	 * 
-	 * @param gain
-	 *            the gain to set
-	 */
-	public void setMasterGain(float gain) {
-		if (sdl != null) {
-			FloatControl f = (FloatControl) sdl
-					.getControl(FloatControl.Type.MASTER_GAIN);
-			f.setValue(gain);
-		} else if (soundClip != null) {
-			FloatControl f = (FloatControl) soundClip
-					.getControl(FloatControl.Type.MASTER_GAIN);
-			f.setValue(gain);
-		} else if (oggMusic != null) {
-			FloatControl f = (FloatControl) oggMusic.outputLine
-			.getControl(FloatControl.Type.MASTER_GAIN);
-			f.setValue(gain);
-		}
-		this.gain = gain;
-	}
-
-	/**
-	 * @return the gain
-	 */
-	public float getGain() {
-		return gain;
-	}
-
 	/**
 	 * Mute or unmute the sound.
 	 * 
@@ -404,13 +347,38 @@ public class Music {
 				b.setValue(mute);
 			}
 		}
-		this.mute = mute;
 	}
-
 	/**
-	 * @return the mute
+	 * Set the linear volume.
+	 * @param volume the volume 0..100, volume 0 mutes the sound
 	 */
-	public boolean isMute() {
-		return mute;
+	public void setVolume(int volume) {
+		this.volume = volume;
+		if (volume == 0) {
+			setMute(true);
+		} else {
+			setMute(false);
+			if (sdl != null) {
+				FloatControl f = (FloatControl) sdl
+						.getControl(FloatControl.Type.MASTER_GAIN);
+				if (f != null) {
+					f.setValue(AudioThread.computeGain(f, volume));
+				}
+			} else 
+			if (soundClip != null) {
+				FloatControl f = (FloatControl) soundClip
+						.getControl(FloatControl.Type.MASTER_GAIN);
+				if (f != null) {
+					f.setValue(AudioThread.computeGain(f, volume));
+				}
+			} else 
+			if (oggMusic != null) {
+				FloatControl f = (FloatControl) oggMusic.outputLine
+				.getControl(FloatControl.Type.MASTER_GAIN);
+				if (f != null) {
+					f.setValue(AudioThread.computeGain(f, volume));
+				}
+			}
+		}
 	}
 }

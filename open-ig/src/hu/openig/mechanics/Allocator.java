@@ -177,15 +177,12 @@ public final class Allocator {
 		}
 		targetEfficiency = Math.min(1.0f, availableEnergy / demandEnergy);
 		
-		int demandEnergy2 = 0;
-		
 		for (BuildingAllocationWorker b : ras) {
 			if (b.efficiencyBound >= 0.5f) {
 				if (!b.producesEnergy) {
 					float workerPercent = 1.0f * b.workerAllocated / b.workerDemand;
 					float allocPercent = workerPercent * targetEfficiency;
 					
-					demandEnergy2 += b.energyDemand * allocPercent;
 					int toAssign = (int)(b.energyDemand * allocPercent);
 					b.energyAllocated = toAssign > availableEnergy ? toAssign : (int)availableEnergy;
 					availableEnergy -= b.energyAllocated;

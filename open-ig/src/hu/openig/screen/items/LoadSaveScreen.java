@@ -226,6 +226,7 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void act() {
 				config.musicVolume = Math.max(0, config.musicVolume - 5);
+				commons.music.setVolume(config.musicVolume);
 				askRepaint(base);
 			}
 		};
@@ -233,6 +234,7 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void act() {
 				config.musicVolume = Math.min(100, config.musicVolume + 5);
+				commons.music.setVolume(config.musicVolume);
 				askRepaint(base);
 			}
 		};
