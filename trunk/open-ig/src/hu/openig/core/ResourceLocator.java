@@ -122,6 +122,28 @@ public class ResourceLocator {
 				throw new RuntimeException(ex);
 			} 
 		}
+		/** @return open a completely new input stream to the given resource (to avoid sharing a single zip file.) */
+		public InputStream openNew() {
+			try {
+				if (zipContainer) {
+					final ZipFile zf = new ZipFile(container);
+					final InputStream in = zf.getInputStream(zf.getEntry(fileName));
+					BufferedInputStream bin = new BufferedInputStream(in) {
+						@Override
+						public void close() throws IOException {
+							super.close();
+							zf.close();
+						}
+					};
+					return bin;
+				} else {
+					return new FileInputStream(container + "/" + fileName);
+				}
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			} 
+			
+		}
 		/** @return get the data as byte array */
 		public byte[] get() {
 			try {
@@ -140,6 +162,10 @@ public class ResourceLocator {
 		 */
 		public String getName() {
 			return name;
+		}
+		/** @return the original filename within the container. */
+		public String getFileName() {
+			return fileName;
 		}
 	}
 	/**

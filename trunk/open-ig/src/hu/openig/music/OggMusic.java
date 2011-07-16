@@ -7,6 +7,8 @@
  */
 package hu.openig.music;
 
+import hu.openig.sound.AudioThread;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -64,19 +66,18 @@ public class OggMusic {
 	/** The current playback source data line. */
 	public volatile SourceDataLine outputLine = null;
 	/** Current/initial sound gain. */
-	private float initialGain;
+	private int initialVolume;
 	/** Current/initial mute state. */
 	private boolean initialMute; 
 	/**
 	 * Constructor.
 	 * @param me the playback thread running the run() method
-	 * @param gain the initial sound gain
-	 * @param mute the initial mute state
+	 * @param volume the initial volume
 	 */
-	public OggMusic(Thread me, float gain, boolean mute) {
+	public OggMusic(Thread me, int volume) {
 		this.playbackThread = me;
-		this.initialGain = gain;
-		this.initialMute = mute;
+		this.initialVolume = volume;
+		this.initialMute = volume == 0;
 		
 	}
 	/** Close playback thread. */
@@ -290,7 +291,7 @@ public class OggMusic {
 			// Preset initial gain and mute
 			SourceDataLine sdl = getOutputLine(vi.channels, vi.rate);
 			FloatControl f = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
-			f.setValue(initialGain);
+			f.setValue(AudioThread.computeGain(f, initialVolume));
 			BooleanControl b = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
 			if (b != null) {
 				b.setValue(initialMute);

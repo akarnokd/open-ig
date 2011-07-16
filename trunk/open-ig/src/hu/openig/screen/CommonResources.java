@@ -31,6 +31,7 @@ import hu.openig.mechanics.Simulator;
 import hu.openig.model.Profile;
 import hu.openig.model.Screens;
 import hu.openig.model.World;
+import hu.openig.music.Music;
 import hu.openig.render.TextRenderer;
 import hu.openig.sound.Sounds;
 
@@ -132,6 +133,8 @@ public class CommonResources {
 	protected Closeable simulatorHandler;
 	/** The sound objects.*/
 	public Sounds sounds;
+	/** The music player. */
+	public Music music;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -276,6 +279,10 @@ public class CommonResources {
 			sounds = new Sounds(rl);
 			sounds.start(config.audioChannels);
 			sounds.setVolume(config.effectVolume);
+			
+			music = new Music(rl);
+			music.setVolume(config.musicVolume);
+			
 		} finally {
 			exec.shutdown();
 		}
@@ -431,6 +438,8 @@ public class CommonResources {
 		speed = 1000;
 		
 		timer.stop();
+		
+		stopMusic();
 	}
 	/**
 	 * Close the given closeable silently.
@@ -472,6 +481,7 @@ public class CommonResources {
 		Allocator.compute(world, pool);
 		Radar.compute(world);
 		timer.start();
+		playRegularMusic();
 	}
 	/** 
 	 * Replace the simulator with the given delayed new simulator.
@@ -583,5 +593,23 @@ public class CommonResources {
 		};
 		timerHandlers.put(res, ta);
 		return res;
+	}
+	/**
+	 * Convenience method to start playing the original three musics.
+	 */
+	public void playRegularMusic() {
+		stopMusic();
+		music.setVolume(config.musicVolume);
+		music.playFile("music/Music1", "music/Music2", "music/Music3");
+	}
+	/** Convenience method to start playing the original battle music. */
+	public void playBattleMusic() {
+		stopMusic();
+		music.setVolume(config.musicVolume);
+		music.playFile("music/Spacewar");
+	}
+	/** Stop the current music playback. */
+	public void stopMusic() {
+		music.close();
 	}
 }

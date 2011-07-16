@@ -101,9 +101,7 @@ public class UILabel extends UIComponent {
 				break;
 			default:
 			}
-			int row = 0;
 			for (String line : lines) {
-				row++;
 				drawAligned(g2, py, line);
 				py += size + spacing;
 			}
