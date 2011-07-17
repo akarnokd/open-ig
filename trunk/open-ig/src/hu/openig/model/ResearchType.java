@@ -118,4 +118,17 @@ public class ResearchType {
 	public int getInt(String property) {
 		return Integer.parseInt(get(property));
 	}
+	/**
+	 * Get a property as an integer value or return the default value.
+	 * @param property the property name
+	 * @param def the default value if the property does not exist.
+	 * @return the value
+	 */
+	public int getInt(String property, int def) {
+		String s = get(property);
+		if (s == null) {
+			return def;
+		}
+		return Integer.parseInt(s);
+	}
 }

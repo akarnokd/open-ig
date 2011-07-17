@@ -2555,6 +2555,8 @@
 	<entry key='diplomacy.FreeTraders.RESIGN.89'>The Alliance is willing to accept the surrender of the Empire rather than wipe it out entirely. The choice is yours, Admiral.</entry>
 	<entry key='diplomacy.FreeTraders.RESIGN.90'>The Executive Group is willing to offer amnesty to the Empire&#39;s military and political leaders if you surrender immediately to the authority of the Alliance of Free Traders.</entry>
 
+	<entry key='message.satellite_destroyed'>Satellite orbiting %s has been destroyed.</entry>
+
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

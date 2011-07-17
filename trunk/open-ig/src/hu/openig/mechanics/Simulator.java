@@ -15,6 +15,7 @@ import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
@@ -62,7 +63,7 @@ public final class Simulator {
 		world.time.add(GregorianCalendar.MINUTE, 10);
 		int day1 = world.time.get(GregorianCalendar.DATE);
 
-		boolean result = false;
+		// boolean result = false;
 		
 		// Prepare global statistics
 		// -------------------------
@@ -117,13 +118,16 @@ public final class Simulator {
 				player.yesterday.assign(player.today);
 				player.today.clear();
 			}
-			result |= progressResearch(world, player, all) && player == world.player;
-			result |= progressProduction(world, player, all) && player == world.player;
+			// result |= player == world.player
+			progressResearch(world, player, all);
+			// result |= player == world.player
+			progressProduction(world, player, all);
 			invokeRadar |= moveFleets(player.ownFleets());
 		}
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
-				result |= progressPlanet(world, p, day0 != day1, planetStats.get(p)) && p == world.player.currentPlanet;
+				// result |=  && p == world.player.currentPlanet;
+				progressPlanet(world, p, day0 != day1, planetStats.get(p));
 			}
 		}
 		
@@ -163,6 +167,7 @@ public final class Simulator {
 		float multiply = 1.0f;
 		float moraleBoost = 0;
 		boolean buildInProgress = false;
+		int radar = 0;
 		
 		for (Building b : planet.surface.buildings) {
 			
@@ -232,6 +237,9 @@ public final class Simulator {
 				if (b.hasResource("morale")) {
 					moraleBoost += b.getResource("morale") * b.getEfficiency();
 				}
+				if (b.hasResource("radar")) {
+					radar = Math.max(radar, (int)b.getResource("radar"));
+				}
 			}
 			// there is one step when the building is ready but not yet allocated
 			if (b.enabled 
@@ -239,7 +247,33 @@ public final class Simulator {
 				buildInProgress = true;
 			}
 		}
-		
+		// search for radar capable inventory
+		for (InventoryItem pii : planet.inventory) {
+			if (pii.owner == planet.owner) {
+				radar = Math.max(radar, pii.type.getInt("radar", 0));
+			}
+		}		
+		if (radar != 0) {
+			for (Map.Entry<InventoryItem, Integer> ittl : new ArrayList<Map.Entry<InventoryItem, Integer>>(planet.timeToLive.entrySet())) {
+				if (ittl.getKey().owner != planet.owner) {
+					Integer cttl = ittl.getValue();
+					int cttl2 = cttl.intValue() - radar;
+					if (cttl2 <= 0) {
+						planet.timeToLive.remove(ittl.getKey());
+						planet.inventory.remove(ittl.getKey());
+	
+						Message msg = world.newMessage("message.satellite_destroyed");
+						msg.priority = 50;
+						msg.sound = SoundType.SATELLITE_DESTROYED;
+						msg.targetPlanet = planet;
+						planet.owner.messageQueue.add(msg);
+	
+					} else {
+						ittl.setValue(cttl2);
+					}
+				}
+			}
+		}
 		if (planet.autoBuild != AutoBuild.OFF 
 				&& (planet.owner == world.player && planet.owner.money >= world.getAutoBuildLimit.invoke(null))) {
 			if (!buildInProgress 
@@ -282,7 +316,7 @@ public final class Simulator {
 				if (!planet.owner.race.equals(planet.race)) {
 					newMorale += (ps.policeAvailable - planet.population) * 25f / planet.population;
 				} else {
-					newMorale += (ps.policeAvailable - planet.population) * 10f / planet.population;
+					newMorale += (ps.policeAvailable - planet.population) * 5f / planet.population;
 				}
 			}
 			

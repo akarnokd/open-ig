@@ -1871,7 +1871,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				surveySatellite.visible(false);
-				deploySatellite("Satellite", "interlude/deploy_satellite");
+				deploySatellite("Satellite", "interlude/deploy_satellite", 12 * 6);
 			}
 		};
 		spySatellite1 = new UIImageButton(commons.starmap().deploySpySat1);
@@ -1879,7 +1879,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				surveySatellite.visible(false);
-				deploySatellite("SpySatellite1", "interlude/deploy_spy_satellite_1");
+				deploySatellite("SpySatellite1", "interlude/deploy_spy_satellite_1", 24 * 6);
 			}
 		};
 		spySatellite2 = new UIImageButton(commons.starmap().deploySpySat2);
@@ -1887,7 +1887,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				surveySatellite.visible(false);
-				deploySatellite("SpySatellite2", "interlude/deploy_spy_satellite_2");
+				deploySatellite("SpySatellite2", "interlude/deploy_spy_satellite_2", 96 * 6);
 			}
 		};
 		hubble2 = new UIImageButton(commons.starmap().deployHubble);
@@ -1895,7 +1895,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				surveySatellite.visible(false);
-				deploySatellite("Hubble2", "interlude/deploy_hubble_2");
+				deploySatellite("Hubble2", "interlude/deploy_hubble_2", 0);
 			}
 		};
 		
@@ -2002,8 +2002,9 @@ public class StarmapScreen extends ScreenBase {
 	 * Deploy a satellite with an animation.
 	 * @param typeId the satellite id
 	 * @param media the media to play
+	 * @param ttl the time to live value in 10s of ingame minutes
 	 */
-	void deploySatellite(final String typeId, String media) {
+	void deploySatellite(final String typeId, String media, final int ttl) {
 		final Planet p = planet();
 		final boolean isPaused = commons.paused();
 		if (!isPaused) {
@@ -2020,6 +2021,9 @@ public class StarmapScreen extends ScreenBase {
 				pii.type = rt;
 				
 				p.inventory.add(pii);
+				if (ttl > 0) {
+					p.timeToLive.put(pii, ttl);
+				}
 				
 				if (!isPaused) {
 					commons.resume();
