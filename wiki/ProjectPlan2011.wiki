@@ -50,3 +50,4 @@ List of things that need fixing, but without any due date other than hopefully t
 || Create XSD's for the XML files || They should become relatively stable now. ||
 || Create a Campaign editor || More convenient than editing XMLs ||
 || Make the population growth planet-type dependant || Currently, its constant. Need to figure out the percentage rules for all races ||
+|| Move the simulation constants to the game definition file as parameters. || To avoid hard coding those constants. ||
