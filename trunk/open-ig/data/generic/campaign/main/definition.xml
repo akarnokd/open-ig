@@ -21,4 +21,10 @@
 	<walk>campaign/main/walks</walk>
 	<talk>campaign/main/talks</talk>
 	<script>campaign/main/scripts</script>
+	<!-- Simulation helping parameters. -->
+	<param name='p1' type='int' value='1'/>
+	<param name='p2' type='long' value='1'/>
+	<param name='p3' type='float' value='1.0'/>
+	<param name='p4' type='double' value='1.0'/>
+	<param name='p5' value='string'/>
 </definition>
