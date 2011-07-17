@@ -56,6 +56,7 @@ import java.util.TimeZone;
 import java.util.concurrent.CancellationException;
 
 import javax.swing.SwingWorker;
+import javax.xml.stream.XMLStreamException;
 
 
 
@@ -563,10 +564,15 @@ public class LoadSaveScreen extends ScreenBase {
 						
 						String fn = f.getName();
 						if (fn.startsWith("savex-")) {
-							shortMemory.add(fn);
-							w = XElement.parseXML(f.getAbsolutePath());
-							fi.name = "save-" + f.getName().substring(6);
-							fi.money = w.getLong("money");
+							try {
+								w = XElement.parseXML(f.getAbsolutePath());
+								fi.name = "save-" + f.getName().substring(6);
+								fi.money = w.getLong("money");
+								shortMemory.add(fn);
+							} catch (XMLStreamException ex) {
+								ex.printStackTrace();
+								continue;
+							}
 						} else {
 							String fn2 = "savex-" + fn.substring(5);
 							if (!shortMemory.contains(fn2)) {
