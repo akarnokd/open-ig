@@ -51,3 +51,6 @@ List of things that need fixing, but without any due date other than hopefully t
 || Create a Campaign editor || More convenient than editing XMLs ||
 || Make the population growth planet-type dependant || Currently, its constant. Need to figure out the percentage rules for all races ||
 || Move the simulation constants to the game definition file as parameters. || To avoid hard coding those constants. ||
+|| Add demand for fire brigade || I guess it is a simple rule of population >= 25000. ||
+|| Add earthquake to earth and rocky planets || With a probability of 1 in two months. Damages buildings by 25% and power planets by 55%. ||
+|| Add smoke and fire animation to buildings || The animation is simple but where to place them? ||
