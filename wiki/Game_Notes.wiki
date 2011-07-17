@@ -16,6 +16,7 @@ This page describes the differences between released versions of the Open Imperi
     * The better radar is available to the planet the faster it discovers a radar, e.g., a planet with hubble 2 (radar = 4) and an enemy survey satellite (12 hours) will be discovered within 3 hours.
   * Improvements to the Load/Save screen to use a smaller XML file for the list of available saves which will reduce the population time for longer lists. Previously existing saves will become a companion XML on the next screen display.
   * The Main Menu button is now hidden on the settings part of the load/save screen to avoid accidentally leaving the game instead of returning to the previous screen.
+  * Added music playback with the original 3 tunes.
   * ...
 
 = Version 0.91 - General improvements =
