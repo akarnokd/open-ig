@@ -6,6 +6,18 @@
 
 This page describes the differences between released versions of the Open Imperium Galactica Game (open-ig-xxx.jar)
 
+= Version 0.92 - Music, achievements, diplomacy =
+  * Released: TBD
+  * Removed upgrade options from Church, Bar, Recreation Center, Park, Stadium, Civil Lab, Mechanical Lab, Computer Lab, AI Lab and Military Lab. When you load a save, these buildings will return to their non-upgraded status (without money reclaim).
+  * Decreased the morale boosting effect of Police stations where the owner race is the same as the population race.
+  * Added time-to-live options to planetary inventory where satellites reside. 
+    * If a planet does not have any radar building or Hubble2 satellite, the satellites of other races may remain there forever. 
+    * Time-to-live is defined in 10s of game minutes; Survey satellite = 12 hours, Spy satellite = 24 hours, Spy satellite 2 = 96 hours.
+    * The better radar is available to the planet the faster it discovers a radar, e.g., a planet with hubble 2 (radar = 4) and an enemy survey satellite (12 hours) will be discovered within 3 hours.
+  * Improvements to the Load/Save screen to use a smaller XML file for the list of available saves which will reduce the population time for longer lists. Previously existing saves will become a companion XML on the next screen display.
+  * The Main Menu button is now hidden on the settings part of the load/save screen to avoid accidentally leaving the game instead of returning to the previous screen.
+  * ...
+
 = Version 0.91 - General improvements =
   * Released: 2011-04-21 17:30
   * *Credits* screen added. The main menu has been reordered to contain a label for it. To stop the credits, hit ESC.
