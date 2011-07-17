@@ -2,6 +2,19 @@
 
 <wiki:toc max_depth="1" />
 
+= July, 2011 =
+
+*July 17., 2011*
+
+Development resumes, but a bit slowly due the heat.
+
+On a different note, I always wanted to create some "Let's play Open Imperium Galactica" videos. They could be handy tutorials for the game. Unfortunately, creating such videos takes too much time away from development tasks. 
+
+Therefore, here is an open call to anybody who has the time and willingness to *record and narrate one or more*. Language should be mainly English or Hungarian, but you  could just record it in your own language and (I, we, etc.) create English subtitles later on. Upload it to youtube and notify me. As the "reward", the video will be linked here and the author(s) get a nice place in the Acknowledgements and the in-game Credits.
+
+Note that by Murphy's Law we may expect some fine bugs or functional inconveniences to pop up during the recording.
+
+
 = June, 2011 =
 
 *June 17, 2011*
