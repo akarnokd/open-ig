@@ -8,9 +8,14 @@
 
 package hu.openig.utils;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -410,5 +415,27 @@ public class XElement implements Iterable<XElement> {
 	/** @return are there any children? */
 	public boolean hasChildren() {
 		return !children.isEmpty();
+	}
+	/**
+	 * Save this XML into the given file.
+	 * @param fileName the file name
+	 * @throws IOException on error
+	 */
+	public void save(String fileName) throws IOException {
+		save(new File(fileName));
+	}
+	/**
+	 * Save this XML into the given file.
+	 * @param file the file
+	 * @throws IOException on error
+	 */
+	public void save(File file) throws IOException {
+		PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
+		try {
+			out.println("<?xml version='1.0' encoding='UTF-8'?>");
+			out.print(toString());
+		} finally {
+			out.close();
+		}
 	}
 }

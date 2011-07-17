@@ -11,8 +11,10 @@ package hu.openig.screen.items;
 import hu.openig.core.Act;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
+import hu.openig.model.FileItem;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
+import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
@@ -36,6 +38,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -44,8 +47,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.CancellationException;
 
@@ -445,6 +451,7 @@ public class LoadSaveScreen extends ScreenBase {
 			save.visible(false);
 			load.visible(false);
 			delete.visible(false);
+			mainmenu.visible(false);
 			settings.text(get("load_save"));
 			
 			soundVolume.prev.enabled(config.effectVolume > 0);
@@ -471,6 +478,7 @@ public class LoadSaveScreen extends ScreenBase {
 			save.visible(true);
 			load.visible(true);
 			delete.visible(true);
+			mainmenu.visible(true);
 			settings.text(get("settings"));
 		}
 		
@@ -514,50 +522,84 @@ public class LoadSaveScreen extends ScreenBase {
 					if (!dir.exists()) {
 						dir.mkdirs();
 					}
+					
+					LinkedList<File> fileLst = new LinkedList<File>();
+					
+					// fetch quick
 					File[] files = dir.listFiles(new FilenameFilter() {
 						@Override
 						public boolean accept(File dir, String name) {
 							if (isCancelled()) {
 								throw new CancellationException();
 							}
-							return name.startsWith("save-") && name.endsWith(".xml");
+							return (name.startsWith("save-") || name.startsWith("savex-")) && name.endsWith(".xml");
 						}
 					});
+					if (files != null) {
+						for (File f : files) {
+							if (f.getName().startsWith("save-")) {
+								fileLst.addLast(f);
+							} else {
+								fileLst.addFirst(f);
+							}
+						}
+					}
 					
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 					dateFormat.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
 					
-					if (files != null) {
-						for (File f : files) {
-							if (isCancelled()) {
-								break;
-							}
-							final FileItem fi = new FileItem();
-							
-							fi.name = f.getName();
-							fi.saveDate = new Date(f.lastModified());
-							
-							XElement w = XElement.parseXML(f.getAbsolutePath());
-							
-							if (isCancelled()) {
-								break;
-							}
-	
-							fi.gameDate = dateFormat.parse(w.get("time"));
-							fi.difficulty = Difficulty.valueOf(w.get("difficulty"));
-							fi.level = w.getInt("level");
-							
-							String pid = w.get("player");
-							for (XElement pl : w.childrenWithName("player")) {
-								if (pid.equals(pl.get("id"))) {
-									fi.money = pl.getLong("money");
-									break;
-								}
-							}
-							flist.add(fi);
+					Set<String> shortMemory = new HashSet<String>();
+					
+					for (File f : fileLst) {
+						if (isCancelled()) {
+							break;
 						}
-						Collections.sort(flist);
+						final FileItem fi = new FileItem();
+						
+						XElement w = null;
+						if (isCancelled()) {
+							break;
+						}
+						
+						String fn = f.getName();
+						if (fn.startsWith("savex-")) {
+							shortMemory.add(fn);
+							w = XElement.parseXML(f.getAbsolutePath());
+							fi.name = "save-" + f.getName().substring(6);
+							fi.money = w.getLong("money");
+						} else {
+							String fn2 = "savex-" + fn.substring(5);
+							if (!shortMemory.contains(fn2)) {
+								fi.name = f.getName();
+								
+								w = XElement.parseXML(f.getAbsolutePath());
+								
+								String pid = w.get("player");
+								for (XElement pl : w.childrenWithName("player")) {
+									if (pid.equals(pl.get("id"))) {
+										fi.money = pl.getLong("money");
+										break;
+									}
+								}
+								// resave a sort description
+								try {
+									World.deriveShortWorldState(w).save(new File(dir, fn2));
+								} catch (IOException ex) {
+									ex.printStackTrace();
+								}
+							} else {
+								continue;
+							}
+						}
+						fi.saveDate = new Date(f.lastModified());
+
+						fi.gameDate = dateFormat.parse(w.get("time"));
+						fi.difficulty = Difficulty.valueOf(w.get("difficulty"));
+						fi.level = w.getInt("level");
+						
+						flist.add(fi);
 					}
+					Collections.sort(flist);
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
@@ -571,25 +613,6 @@ public class LoadSaveScreen extends ScreenBase {
 			};
 		};
 		listWorker.execute();
-	}
-	/** The file item. */
-	class FileItem implements Comparable<FileItem> {
-		/** The save name. */
-		public String name;
-		/** The level. */
-		public int level;
-		/** The difficulty. */
-		public Difficulty difficulty;
-		/** The ingame date. */
-		public Date gameDate;
-		/** The save date. */
-		public Date saveDate;
-		/** The player money. */
-		public long money;
-		@Override
-		public int compareTo(FileItem o) {
-			return o.saveDate.compareTo(saveDate);
-		}
 	}
 	/** The file list. */
 	class FileList extends UIContainer {

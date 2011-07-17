@@ -659,6 +659,26 @@ public class World {
 		}
 	}
 	/**
+	 * Derive a short state for the loading screen.
+	 * @param worldSave the full world state.
+	 * @return the short state
+	 */
+	public static XElement deriveShortWorldState(XElement worldSave) {
+		XElement sstate = new XElement("world-short");
+		sstate.set("level", worldSave.get("level"));
+		sstate.set("difficulty", worldSave.get("difficulty"));
+		sstate.set("time", worldSave.get("time"));
+		String pid = worldSave.get("player");
+		for (XElement pl : worldSave.childrenWithName("player")) {
+			if (pid.equals(pl.get("id"))) {
+				sstate.set("money", pl.get("money"));
+				break;
+			}
+		}
+
+		return sstate;
+	}
+	/**
 	 * Save the world state.
 	 * @return the world state as XElement tree.
 	 */
@@ -866,6 +886,10 @@ public class World {
 					xpii.set("owner", pii.owner.id);
 					xpii.set("count", pii.count);
 					xpii.set("hp", pii.hp);
+					Integer ttl = p.timeToLive.get(pii); 
+					if (ttl != null && ttl > 0) {
+						xpii.set("ttl", ttl);
+					}
 				}
 				for (Building b : p.surface.buildings) {
 					XElement xb = xp.add("building");
@@ -1147,6 +1171,24 @@ public class World {
 				pii.type = researches.get(xpii.get("id"));
 				pii.count = xpii.getInt("count");
 				pii.hp = xpii.getInt("hp");
+				
+				int ttl = xpii.getInt("ttl", 0);
+				if (ttl > 0) {
+					p.timeToLive.put(pii, ttl);
+				} else
+				// set TTL to satellites which have been deployed prior the TTL introduction.
+				if (pii.owner != p.owner) {
+					if (pii.type.id.equals("Satellite")) {
+						p.timeToLive.put(pii, 12 * 6);
+					} else
+					if (pii.type.id.equals("SpySatellite1")) {
+						p.timeToLive.put(pii, 24 * 6);
+					} else
+					if (pii.type.id.equals("SpySatellite2")) {
+						p.timeToLive.put(pii, 96 * 6);
+					}
+				}
+				
 				p.inventory.add(pii);
 			}
 

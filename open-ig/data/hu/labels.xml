@@ -1820,6 +1820,8 @@
 	<entry key='diplomacy.FreeTraders.RESIGN.89'>A Szövetség hajlandó elfogadni a Birodalom feltétel nélküli megadását. Ha ez nem történik meg, kénytelenek leszünk minden bolygót kiirtani, amely birodalmi fennhatóság alatt áll.</entry>
 	<entry key='diplomacy.FreeTraders.RESIGN.90'>A Végrehajtó Tanács hajlandó amnesztiát adni mindenkinek, aki fegyvert fogott ellene. A fegyverletétel az egyetlen esély a polgári lakosság megmentésére is!</entry>
 
+	<entry key='message.satellite_destroyed'>A(z) %s körül keringő műholdat megsemmisítették.</entry>
+
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

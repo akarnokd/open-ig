@@ -469,10 +469,12 @@
 			<resource type='worker'>-560</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.mechanical_dev_center" id="MechanicalDevCenter">
@@ -493,10 +495,12 @@
 			<resource type='worker'>-620</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.computer_dev_center" id="ComputerDevCenter">
@@ -517,10 +521,12 @@
 			<resource type='worker'>-560</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.ai_dev_center" id="AIDevCenter">
@@ -541,10 +547,12 @@
 			<resource type='worker'>-360</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.military_dev_center" id="MilitaryDevCenter">
@@ -565,10 +573,12 @@
 			<resource type='worker'>-420</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.science.upgrade_3">
 				<resource type="energy">0.25</resource>
 				<resource type="worker">0.25</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.traders_spaceport" id="TradersSpaceport">
@@ -1237,6 +1247,7 @@
 			<resource type='worker'>-230</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.recreation_center.upgrade_1">
 				<resource type='morale'>1.2</resource>
 				<resource type='energy'>1.5</resource>
@@ -1257,6 +1268,7 @@
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
+			 -->
 		</upgrades>
 	</building>
 	<building name="buildings.park" id="Park">
@@ -1270,6 +1282,7 @@
 			<resource type='worker'>-100</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.park.upgrade_1">
 				<resource type='morale'>1.2</resource>
 				<resource type='energy'>1.5</resource>
@@ -1290,6 +1303,7 @@
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
+			 -->
 		</upgrades>
 	</building>
 	<building name="buildings.church" id="Church">
@@ -1303,6 +1317,7 @@
 			<resource type='worker'>-90</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.church.upgrade_1">
 				<resource type='morale'>1.2</resource>
 				<resource type='energy'>1.5</resource>
@@ -1323,6 +1338,7 @@
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.bar" id="Bar">
@@ -1336,6 +1352,7 @@
 			<resource type='worker'>-410</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.bar.upgrade_1">
 				<resource type='morale'>1.2</resource>
 				<resource type='energy'>1.5</resource>
@@ -1356,6 +1373,7 @@
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
+			 -->
 		</upgrades>
 	</building>
 	<building name="buildings.stadium" id="Stadium">
@@ -1368,7 +1386,9 @@
 			<resource type='energy'>-1000</resource>
 			<resource type='worker'>-350</resource>
 		</operation>
+		
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.stadium.upgrade_1">
 				<resource type='morale'>1.2</resource>
 				<resource type='energy'>1.5</resource>
@@ -1388,7 +1408,8 @@
 				<resource type='morale'>1.8</resource>
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
-			</upgrade>
+			</upgrade> 
+		 -->
 		</upgrades>
 	</building>
 	<roads>

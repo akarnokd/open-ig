@@ -65,11 +65,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -1254,24 +1251,21 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	/** Save the world. */
 	public void saveWorld() {
+		final String pn = commons.profile.name;
 		final XElement world = commons.world().saveState();
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					File dir = new File("save/default");
+					File dir = new File("save/" + pn);
 					if (dir.exists() || dir.mkdirs()) {
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 						
-						File fout = new File("save/default/save-" + sdf.format(new Date()) + ".xml");
+						File fout = new File(dir, "save-" + sdf.format(new Date()) + ".xml");
+						File foutx = new File(dir, "savex-" + sdf.format(new Date()) + ".xml");
 						try {
-							PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fout), "UTF-8"));
-							try {
-								out.println("<?xml version='1.0' encoding='UTF-8'?>");
-								out.print(world);
-							} finally {
-								out.close();
-							}
+							world.save(fout);
+							World.deriveShortWorldState(world).save(foutx);
 						} catch (IOException ex) {
 							ex.printStackTrace();
 						}

@@ -68,6 +68,8 @@ public class Planet implements Named, Owned {
 	public int tradeIncome;
 	/** The planet's inventory. */
 	public final List<InventoryItem> inventory = new ArrayList<InventoryItem>();
+	/** The time to live counter for objects which need to be removed after the given simulation step (which is 10 ingame minutes. */
+	public final Map<InventoryItem, Integer> timeToLive = new HashMap<InventoryItem, Integer>();
 	/** @return the morale label for the current morale level. */
 	public String getMoraleLabel() {
 		return getMoraleLabel(morale);
