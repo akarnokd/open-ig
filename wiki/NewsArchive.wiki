@@ -4,6 +4,10 @@
 
 = July, 2011 =
 
+*July 19., 2011*
+
+Version 0.92 is out. I decided to release it due some small but annoying bugs in 0.91 and 0.92b.
+
 *July 17., 2011*
 
 Development resumes, but a bit slowly due the heat.
