@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -99,6 +100,15 @@ public class World {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 			sdf.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
 			return sdf;
+		}
+	};
+	/**
+	 * The random number generator for simulation/AI activities.
+	 */
+	public final ThreadLocal<Random> random = new ThreadLocal<Random>() {
+		@Override
+		public Random get() {
+			return new Random();
 		}
 	};
 	/** The sequence to assign unique ids to fleets. */
@@ -880,6 +890,8 @@ public class World {
 				xp.set("autobuild", p.autoBuild);
 				xp.set("tax-income", p.taxIncome);
 				xp.set("trade-income", p.tradeIncome);
+				xp.set("earthquake-ttl", p.earthQuakeTTL);
+				
 				for (InventoryItem pii : p.inventory) {
 					XElement xpii = xp.add("item");
 					xpii.set("id", pii.type.id);
@@ -1160,6 +1172,7 @@ public class World {
 			p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));
 			p.taxIncome = xplanet.getInt("tax-income");
 			p.tradeIncome = xplanet.getInt("trade-income");
+			p.earthQuakeTTL = xplanet.getInt("earthquake-ttl", 0);
 
 			p.inventory.clear();
 			p.surface.buildings.clear();

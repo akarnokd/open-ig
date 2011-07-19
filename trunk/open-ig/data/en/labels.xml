@@ -2556,8 +2556,7 @@
 	<entry key='diplomacy.FreeTraders.RESIGN.90'>The Executive Group is willing to offer amnesty to the Empire&#39;s military and political leaders if you surrender immediately to the authority of the Alliance of Free Traders.</entry>
 
 	<entry key='message.satellite_destroyed'>Satellite orbiting %s has been destroyed.</entry>
-
-	<entry key=''></entry>
+	<entry key='message.earthquake'>Earthquake on planet %s.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

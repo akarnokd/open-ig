@@ -169,7 +169,26 @@ public final class Simulator {
 		boolean buildInProgress = false;
 		int radar = 0;
 		
-		for (Building b : planet.surface.buildings) {
+		if (planet.type.type.equals("earth") || planet.type.type.equals("rocky")) {
+			if (planet.earthQuakeTTL <= 0) {
+				// cause earthquake once in every 2 months
+				if (world.random.get().nextInt(6 * 24 * 60) < 1) {
+					planet.earthQuakeTTL = 6; // 1 hour
+					
+					Message msg = world.newMessage("message.earthquake");
+					msg.priority = 25;
+					msg.targetPlanet = planet;
+					planet.owner.messageQueue.add(msg);
+					
+				}
+			} else {
+				planet.earthQuakeTTL--;
+			}
+		}
+		
+		boolean rebuildroads = false;
+		
+		for (Building b : new ArrayList<Building>(planet.surface.buildings)) {
 			
 			planet.owner.statistics.totalBuilding++;
 			world.statistics.totalBuilding++;
@@ -246,6 +265,22 @@ public final class Simulator {
 					&& (b.assignedWorker == 0 || (ps.energyAvailable > 0 && b.getEnergy() < 0 && b.assignedEnergy == 0))) {
 				buildInProgress = true;
 			}
+			if (planet.earthQuakeTTL > 0) {
+				if (b.getEnergy() <= 0) {
+					// reduce regular building health by 25% of its total hitpoints during the earthquake duration
+					b.hitpoints -= b.type.hitpoints * 25 / 600;
+				} else {
+					// reduce energy building health by 55% of its total hitpoints during the earthquake duration
+					b.hitpoints -= b.type.hitpoints * 55 / 600;
+				}
+				if (b.hitpoints <= 0) {
+					planet.surface.removeBuilding(b);
+					rebuildroads = true;
+				}
+			}
+		}
+		if (rebuildroads) {
+			planet.surface.placeRoads(planet.race, world.buildingModel);
 		}
 		// search for radar capable inventory
 		for (InventoryItem pii : planet.inventory) {

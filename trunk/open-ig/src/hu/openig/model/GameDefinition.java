@@ -85,16 +85,17 @@ public class GameDefinition {
 		result.talk = root.childValue("talk");
 		
 		for (XElement param : root.childrenWithName("param")) {
-			if ("int".equals(param.get("type"))) {
+			String t = param.get("type", "");
+			if ("int".equals(t)) {
 				result.parameters.put(param.get("name"), Integer.parseInt(param.get("value")));
 			} else
-			if ("long".equals(param.get("type"))) {
+			if ("long".equals(t)) {
 				result.parameters.put(param.get("name"), Long.parseLong(param.get("value")));
 			} else
-			if ("float".equals(param.get("type"))) {
+			if ("float".equals(t)) {
 				result.parameters.put(param.get("name"), Float.parseFloat(param.get("value")));
 			} else
-			if ("double".equals(param.get("type"))) {
+			if ("double".equals(t)) {
 				result.parameters.put(param.get("name"), Double.parseDouble(param.get("value")));
 			} else {
 				result.parameters.put(param.get("name"), param.get("value"));
