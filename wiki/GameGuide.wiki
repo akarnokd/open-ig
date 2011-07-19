@@ -170,12 +170,29 @@ The build strategy is as follows:
 
 The downside of the auto-build is that it may hold your overall progress back in the early game time where your biggest shortage will be the money.
 
+== Satellite survival ==
+
+Placing satellites around alien and enemy planets will take their attention sooner or later and destroy it. The same is true for alien satellites around the planets you own.
+
+The better radar a planet has the faster satellites will be detected. The following table displays the survival time (ingame minutes) for each satellite and radar type:
+
+|| *Satellite* || *No radar* || *Radar 1.0* || *Radar 2.0* || *Radar 3.0* || *Hubble 2* ||
+|| Satellite || infinite || 12 hours || 6 hours || 4 hours || 3 hours ||
+|| Spy Satellite 1 || infinite || 24 hours || 12 hours || 8 hours || 6 hours ||
+|| Spy Satellite 2 || infinite || 96 hours || 48 hours || 32 hours || 24 hours ||
+
+*Hubble 2* orbital radars placed around neighboring planets won't detect the devices if the target planet has no radar by itself (_you could say, they are much smaller than a fleet to be detectable_). 
+
+_I'm not sure whether the original game had any sanction for these satellites in terms of diplomatic relations, because there was no way to recall the devices. In the current version, they are just destroyed._
+
 == Earthquake ==
 
-Earthquakes may happen on Earth-like or Rocky planets *once in every two ingame months*. Earthquake affects buildings by reducing their hitpoints. The amount of hitpoints reduced depends on the building type:
+Earthquakes may happen on Earth-like or Rocky planets *once in every two ingame months* and last *60 ingame minutes* (so you might catch it and see the shaking :). Earthquake affects buildings by reducing their hitpoints. The amount of hitpoints reduced depends on the building type:
 
   * for energy producing buildings, the earthquake reduces their status by 55% of their total hitpoints. For example, a Nuclear Plant having 8000 points will be reduced to 3600 points.
   * other buildings take 25% damage, e.g., a Colony hub of 40000 points will be reduced to 30000 points.
+
+When an earthquake happens, the player is notified and double clicking on the bottom status bar should bring up the colony affected. 
 
 It is possible, that unattended planets might be completely destroyed by earthquakes.
 
