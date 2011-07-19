@@ -104,6 +104,8 @@ public class PlanetScreen extends ScreenBase {
 	int animation;
 	/** The animation timer. */
 	Closeable animationTimer;
+	/** The animation timer. */
+	Closeable earthQuakeTimer;
 	/** Enable the drawing of black boxes behind building names and percentages. */
 	boolean textBackgrounds = true;
 	/** Render placement hints on the surface. */
@@ -273,6 +275,12 @@ public class PlanetScreen extends ScreenBase {
 				doAnimation();
 			}
 		});
+		earthQuakeTimer = commons.register(100, new Act() {
+			@Override
+			public void act() {
+				doEarthquake();
+			}
+		});
 		if (surface() != null) {
 			render.offsetX = -(int)((surface().boundingRectangle.width * render.scale - width) / 2);
 			render.offsetY = -(int)((surface().boundingRectangle.height * render.scale - height) / 2);
@@ -287,6 +295,8 @@ public class PlanetScreen extends ScreenBase {
 
 		close0(animationTimer);
 		animationTimer = null;
+		close0(earthQuakeTimer);
+		earthQuakeTimer = null;
 	}
 
 	/**
@@ -1597,6 +1607,16 @@ public class PlanetScreen extends ScreenBase {
 		blink = animation % 2 == 0;
 		
 		askRepaint();
+	}
+	/** Animate the shaking during an earthquake. */
+	void doEarthquake() {
+		if (planet().earthQuakeTTL > 0) {
+			if (!commons.paused()) {
+				render.offsetX += (2 - world().random.get().nextInt(5)) * 2;
+				render.offsetY += (1 - world().random.get().nextInt(3));
+				askRepaint();
+			}
+		}
 	}
 	/** Demolish the selected building. */
 	void doDemolish() {
