@@ -7,7 +7,7 @@
 This page describes the differences between released versions of the Open Imperium Galactica Game (open-ig-xxx.jar)
 
 = Version 0.92 - Music, achievements, diplomacy =
-  * Released: TBD
+  * Released: 2011-07-19 23:00
   * Removed upgrade options from Church, Bar, Recreation Center, Park, Stadium, Civil Lab, Mechanical Lab, Computer Lab, AI Lab and Military Lab. When you load a save, these buildings will return to their non-upgraded status (without money reclaim).
   * Decreased the morale boosting effect of Police stations where the owner race is the same as the population race.
   * *New:* Added time-to-live options to planetary inventory where satellites reside. 
@@ -19,7 +19,7 @@ This page describes the differences between released versions of the Open Imperi
   * *New:* Added music playback with the original 3 tunes.
   * *Fix:* Some platforms may not support the MUTE audio control in Java which caused NPE. 
   * *Fix:* The Windows feature of treating ZIP files as folders caused some resource loading problems. From now, the resource locator checks whether a .zip file is actually a directory or not and reads files accordingly.
-  * ...
+  * *New:* Added earthquake effect and notifications.
 
 = Version 0.91 - General improvements =
   * Released: 2011-04-21 17:30
