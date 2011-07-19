@@ -151,6 +151,8 @@ However, if the Fire Brigade is damaged itself, but still operational, it will o
 
 Regular repair is always fixing 50 hipoints per turn.
 
+The options screen features an option to automatically repair damaged buildings, therefore, you don't need to manually turn repairs on and off for each and every building.
+
 == Auto-Build ==
 
 One of the old game's nasty property was that it became really tedious to manage a more than 20 planet empire later on within the game. Imperium Galactica 2 made improvements on this by introducing an auto-build feature. This feature removed the burden of micromanage the planets whenever they report a food or hospital shortage.
@@ -167,3 +169,14 @@ The build strategy is as follows:
   * If a new construction is required, consider the available build space. For example: if you could afford an Arcology but you only have room for Prefab housing, the auto-build will choose the latter.
 
 The downside of the auto-build is that it may hold your overall progress back in the early game time where your biggest shortage will be the money.
+
+== Earthquake ==
+
+Earthquakes may happen on Earth-like or Rocky planets *once in every two ingame months*. Earthquake affects buildings by reducing their hitpoints. The amount of hitpoints reduced depends on the building type:
+
+  * for energy producing buildings, the earthquake reduces their status by 55% of their total hitpoints. For example, a Nuclear Plant having 8000 points will be reduced to 3600 points.
+  * other buildings take 25% damage, e.g., a Colony hub of 40000 points will be reduced to 30000 points.
+
+It is possible, that unattended planets might be completely destroyed by earthquakes.
+
+_Depending on playtester's response, the mechanics might change. Having earthquakes tear down the initial colonies at the start might be too much._
