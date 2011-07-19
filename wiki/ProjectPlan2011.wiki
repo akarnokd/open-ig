@@ -55,3 +55,4 @@ List of things that need fixing, but without any due date other than hopefully t
 || ~~Add earthquake to earth and rocky planets~~ || ~~With a probability of 1 in two months. Damages buildings by 25% and power planets by 55%.~~ ||
 || Add smoke and fire animation to buildings || The animation is simple but where to place them? ||
 || Make the equipment screen resize with the game window. || This will simplify the management of larger fleets where the mini scroll panel is tedious now. ||
+|| Add explicite mute options to volumes || Currently, 0 means mute but some platforms do not have the MUTE command for Java audio stream. They need to stop playing music, ignore sound effects and movie. ||
