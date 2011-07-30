@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
@@ -490,7 +491,7 @@ public class World {
 		tech.infoImageWired = rl.getImage(image + "_wired_large", true);
 		
 		tech.factory = item.get("factory");
-		tech.race = item.get("race");
+		tech.race.addAll(Arrays.asList(item.get("race").split("\\s*,\\s*")));
 		tech.productionCost = Integer.parseInt(item.get("production-cost"));
 		tech.researchCost = Integer.parseInt(item.get("research-cost"));
 		tech.level = Integer.parseInt(item.get("level"));
