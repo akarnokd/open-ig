@@ -1,11 +1,29 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <tech>
-  <item id='Fighter1' name='tech.fighter1.name' long-name='tech.fighter1.longname' description='tech.fighter1.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_1' factory='spaceship' research-cost='3000' production-cost='2000' level='0' race='human' ai='1' mil='1' index='0' video='technology/spaceships/fighters/fighter_1'/>
-  <item id='Fighter2' name='tech.fighter2.name' long-name='tech.fighter2.longname' description='tech.fighter2.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_2' factory='spaceship' research-cost='4000' production-cost='3200' level='2' race='human' mech='1' ai='1' mil='1' index='1' video='technology/spaceships/fighters/fighter_2'/>
-  <item id='Fighter3' name='tech.fighter3.name' long-name='tech.fighter3.longname' description='tech.fighter3.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_3' factory='spaceship' research-cost='12000' production-cost='5000' level='3' race='human' mech='1' comp='2' ai='2' mil='2' index='2' video='technology/spaceships/fighters/fighter_3'/>
-  <item id='Fighter4' name='tech.fighter4.name' long-name='tech.fighter4.longname' description='tech.fighter4.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_4' factory='spaceship' research-cost='18000' production-cost='7500' level='4' race='human' requires='Fighter3' mech='3' comp='2' ai='2' mil='4' index='3' video='technology/spaceships/fighters/fighter_4'/>
-  <item id='Fighter5' name='tech.fighter5.name' long-name='tech.fighter5.longname' description='tech.fighter5.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_5' factory='spaceship' research-cost='22000' production-cost='10000' level='4' race='human' civil='1' mech='5' comp='4' ai='4' mil='5' index='4' video='technology/spaceships/fighters/fighter_5'/>
-  <item id='Fighter6' name='tech.fighter6.name' long-name='tech.fighter6.longname' description='tech.fighter6.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_6' factory='spaceship' research-cost='24000' production-cost='12000' level='5' race='human' requires='Rocket2' mech='4' comp='4' ai='5' mil='7' index='5' video='technology/spaceships/fighters/fighter_6'/>
+  <item id='Fighter1' name='tech.fighter1.name' long-name='tech.fighter1.longname' description='tech.fighter1.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_1' factory='spaceship' research-cost='3000' production-cost='2000' level='0' race='human' ai='1' mil='1' index='0' video='technology/spaceships/fighters/fighter_1'>
+		<property name='projectile' value='Laser1'/>
+		<property name='damage' value='1'/>
+  </item>
+  <item id='Fighter2' name='tech.fighter2.name' long-name='tech.fighter2.longname' description='tech.fighter2.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_2' factory='spaceship' research-cost='4000' production-cost='3200' level='2' race='human' mech='1' ai='1' mil='1' index='1' video='technology/spaceships/fighters/fighter_2'>
+		<property name='projectile' value='Laser2'/>
+		<property name='damage' value='2'/>
+  </item>
+  <item id='Fighter3' name='tech.fighter3.name' long-name='tech.fighter3.longname' description='tech.fighter3.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_3' factory='spaceship' research-cost='12000' production-cost='5000' level='3' race='human' mech='1' comp='2' ai='2' mil='2' index='2' video='technology/spaceships/fighters/fighter_3'>
+		<property name='projectile' value='Laser2'/>
+		<property name='damage' value='3'/>
+  </item>
+  <item id='Fighter4' name='tech.fighter4.name' long-name='tech.fighter4.longname' description='tech.fighter4.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_4' factory='spaceship' research-cost='18000' production-cost='7500' level='4' race='human' requires='Fighter3' mech='3' comp='2' ai='2' mil='4' index='3' video='technology/spaceships/fighters/fighter_4'>
+		<property name='projectile' value='Laser3'/>
+		<property name='damage' value='4'/>
+  </item>
+  <item id='Fighter5' name='tech.fighter5.name' long-name='tech.fighter5.longname' description='tech.fighter5.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_5' factory='spaceship' research-cost='22000' production-cost='10000' level='4' race='human' civil='1' mech='5' comp='4' ai='4' mil='5' index='4' video='technology/spaceships/fighters/fighter_5' requires='Fighter4'>
+		<property name='projectile' value='Laser3'/>
+		<property name='damage' value='5'/>
+  </item>
+  <item id='Fighter6' name='tech.fighter6.name' long-name='tech.fighter6.longname' description='tech.fighter6.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/fighter_6' factory='spaceship' research-cost='24000' production-cost='12000' level='5' race='human' requires='Rocket2,Fighter5' mech='4' comp='4' ai='5' mil='7' index='5' video='technology/spaceships/fighters/fighter_6'>
+		<property name='projectile' value='Laser4'/>
+		<property name='damage' value='6'/>
+  </item>
   <item id='Destroyer1' name='tech.destroyer1.name' long-name='tech.destroyer1.longname' description='tech.destroyer1.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/destroyer_1' factory='spaceship' research-cost='10000' production-cost='12000' level='0' race='human' comp='1' ai='1' mil='1' index='0' video='technology/spaceships/cruisers/destroyer_1'>
     <slot id='shield' x='109' y='58' width='26' height='12' max='1' items='Shield1, Shield2'/>
     <slot id='laser' x='163' y='46' width='16' height='15' max='6' items='Laser1, Laser2, Laser3'/>
@@ -174,44 +192,36 @@
     <property name='shield' value='60'/>
   </item>
   <item id='Laser1' name='tech.laser1.name' long-name='tech.laser1.longname' description='tech.laser1.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_1' factory='weapon' research-cost='3000' production-cost='620' level='0' race='human' mech='1' comp='1' mil='1' index='0' video='technology/weapons/lasers/laser_1'>
-    <property name='projectile' value='beam'/>
+    <property name='projectile' value='Laser1'/>
     <property name='damage' value='1'/>
-    <property name='rate' value='1'/>
   </item>
   <item id='Laser2' name='tech.laser2.name' long-name='tech.laser2.longname' description='tech.laser2.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_2' factory='weapon' research-cost='8000' production-cost='900' level='3' race='human' requires='Laser1' mech='2' comp='1' mil='2' index='1' video='technology/weapons/lasers/laser_2'>
-    <property name='projectile' value='dualbeam'/>
+    <property name='projectile' value='Laser2'/>
     <property name='damage' value='2'/>
-    <property name='rate' value='1'/>
   </item>
   <item id='Laser3' name='tech.laser3.name' long-name='tech.laser3.longname' description='tech.laser3.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_3' factory='weapon' research-cost='12000' production-cost='1400' level='4' race='human' requires='Laser2, SolarPlant' mech='2' comp='3' ai='1' mil='4' index='2' video='technology/weapons/lasers/laser_3'>
-    <property name='projectile' value='beam'/>
+    <property name='projectile' value='Laser3'/>
     <property name='damage' value='3'/>
-    <property name='rate' value='1'/>
   </item>
   <item id='Laser4' name='tech.laser4.name' long-name='tech.laser4.longname' description='tech.laser4.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_4' factory='weapon' research-cost='14000' production-cost='1750' level='4' race='human' requires='Laser3' mech='4' comp='4' ai='2' mil='5' index='3' video='technology/weapons/lasers/laser_4'>
-    <property name='projectile' value='dualbeam'/>
+    <property name='projectile' value='Laser4'/>
     <property name='damage' value='6'/>
-    <property name='rate' value='1'/>
   </item>
   <item id='IonCannon' name='tech.ioncannon.name' long-name='tech.ioncannon.longname' description='tech.ioncannon.description' category='WEAPONS_CANNONS' image='inventions/weapons/cannons/ion_cannon' factory='weapon' research-cost='8000' production-cost='1200' level='3' race='human' mech='1' comp='1' ai='1' mil='1' index='0' video='technology/weapons/cannons/ion_cannon'>
-    <property name='projectile' value='ion'/>
+    <property name='projectile' value='Ion'/>
     <property name='damage' value='3'/>
-    <property name='rate' value='1'/>
   </item>
   <item id='PlasmaCannon' name='tech.plasmacannon.name' long-name='tech.plasmacannon.longname' description='tech.plasmacannon.description' category='WEAPONS_CANNONS' image='inventions/weapons/cannons/plasma_cannon' factory='weapon' research-cost='12000' production-cost='3200' level='4' race='human' requires='IonCannon' mech='2' comp='4' ai='2' mil='4' index='1' video='technology/weapons/cannons/plasma_cannon'>
-    <property name='projectile' value='plasma'/>
+    <property name='projectile' value='Plasma'/>
     <property name='damage' value='6'/>
-    <property name='rate' value='1'/>
   </item>
   <item id='ParticleCannon' name='tech.particlecannon.name' long-name='tech.particlecannon.longname' description='tech.particlecannon.description' category='WEAPONS_CANNONS' image='inventions/weapons/cannons/particle_cannon' factory='weapon' research-cost='18000' production-cost='3200' level='4' race='human' requires='PlasmaCannon' mech='3' comp='5' ai='3' mil='6' index='2' video='technology/weapons/cannons/particle_cannon'>
-    <property name='projectile' value='particle'/>
-    <property name='damage' value='4'/>
-    <property name='rate' value='2'/>
+    <property name='projectile' value='Particle'/>
+    <property name='damage' value='9'/>
   </item>
   <item id='MesonCannon' name='tech.mesoncannon.name' long-name='tech.mesoncannon.longname' description='tech.mesoncannon.description' category='WEAPONS_CANNONS' image='inventions/weapons/cannons/meson_cannon' factory='weapon' research-cost='28000' production-cost='4000' level='5' race='human' requires='ParticleCannon' mech='5' comp='6' ai='4' mil='8' index='3' video='technology/weapons/cannons/meson_cannon'>
-    <property name='projectile' value='meson'/>
-    <property name='damage' value='6'/>
-    <property name='rate' value='2'/>
+    <property name='projectile' value='Meson'/>
+    <property name='damage' value='12'/>
   </item>
   <item id='Bomb1' name='tech.bomb1.name' long-name='tech.bomb1.longname' description='tech.bomb1.description' category='WEAPONS_PROJECTILES' image='inventions/weapons/projectiles/bomb_1' factory='weapon' research-cost='5000' production-cost='1400' level='0' race='human' mech='1' comp='1' mil='1' index='0' video='technology/weapons/projectiles/bomb_1'>
     <property name='projectile' value='rocket'/>
@@ -363,6 +373,62 @@
 		<property name='speed' value='5'/>
 		<property name='armor' value='2'/>
 		<property name='rocketjammer' value='true'/>
+	</item>
+	<item id='EcalepSpecialUnit' name='tech.ecalepspecialunit.name' long-name='tech.ecalepspecialunit.longname' description='tech.ecalepspecialunit.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='32000' production-cost='20000' race='dribs' image='inventions/weapons/vehicles/ecalep_special_unit'>
+		<property name='range' value='5'/>
+		<property name='speed' value='5'/>
+		<property name='armor' value='2'/>
+		<property name='special' value='true'/>
+	</item>
+	<item id='GarthogRadarJammer' name='tech.garthogradarjammer.name' long-name='tech.garthogradarjammer.longname' description='tech.garthogradarjammer.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='24000' production-cost='12000' race='garthog' image='inventions/weapons/vehicles/garthog_radar_jammer'>
+		<property name='speed' value='4'/>
+		<property name='armor' value='3'/>
+		<property name='radarjammer' value='true'/>
+	</item>
+	<item id='MorgathKamikazeTank' name='tech.morgathkamikazetank.name' long-name='tech.morgathkamikazetank.longname' description='tech.morgathkamikazetank.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='24000' production-cost='12000' race='morgath' image='inventions/weapons/vehicles/morgath_kamikaze_tank'>
+		<property name='speed' value='4'/>
+		<property name='armor' value='8'/>
+		<property name='damage' value='8'/>
+		<property name='area' value='3'/>
+		<property name='kamikaze' value='true'/>
+	</item>
+	<item id='SullepArtillery' name='tech.sullepartillery.name' long-name='tech.sullepartillery.longname' description='tech.sullepartillery.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='24000' production-cost='12000' race='sullep' image='inventions/weapons/vehicles/sullep_artillery'>
+		<property name='speed' value='4'/>
+		<property name='armor' value='4'/>
+		<property name='damage' value='4'/>
+		<property name='area' value='1'/>
+		<property name='range' value='10'/>
+		<property name='range-minimum' value='3'/>
+		<property name='kamikaze' value='true'/>
+	</item>
+	<item id='YchomMineLayer' name='tech.ychomminelayer.name' long-name='tech.ychomminelayer.longname' description='tech.ychomminelayer.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='24000' production-cost='12000' race='ychom' image='inventions/weapons/vehicles/ychom_mine_layer'>
+		<property name='speed' value='4'/>
+		<property name='armor' value='4'/>
+		<property name='minelayer' value='true'/>
+	</item>
+	<item id='AlienFighter1' name='tech.alienfighter1.name' long-name='tech.alienfighter1.longname' description='tech.alienfighter1.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/alien_fighter_1' factory='spaceship' research-cost='3000' production-cost='2000' level='0' race='garthog,morgath,sullep,ychom,dribs,dargslan,ecalep'>
+		<property name='projectile' value='Laser1'/>
+		<property name='damage' value='1'/>
+	</item>
+	<item id='AlienFighter2' name='tech.alienfighter2.name' long-name='tech.alienfighter2.longname' description='tech.alienfighter2.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/alien_fighter_2' factory='spaceship' research-cost='4000' production-cost='3200' level='2' race='garthog,morgath,sullep,ychom,dribs,dargslan,ecalep'>
+		<property name='projectile' value='Laser2'/>
+		<property name='damage' value='2'/>
+	</item>
+	<item id='AlienFighter3' name='tech.alienfighter3.name' long-name='tech.alienfighter3.longname' description='tech.alienfighter3.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/alien_fighter_3' factory='spaceship' research-cost='12000' production-cost='5000' level='3' race='garthog,morgath,sullep,ychom,dribs,dargslan,ecalep'>
+		<property name='projectile' value='Laser2'/>
+		<property name='damage' value='3'/>
+	</item>
+	<item id='AlienFighter4' name='tech.alienfighter4.name' long-name='tech.alienfighter4.longname' description='tech.alienfighter4.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/alien_fighter_4' factory='spaceship' research-cost='18000' production-cost='7500' level='4' race='morgath,sullep,ychom,dribs,dargslan,ecalep'>
+		<property name='projectile' value='Laser3'/>
+		<property name='damage' value='4'/>
+	</item>
+	<item id='AlienFighter5' name='tech.alienfighter5.name' long-name='tech.alienfighter5.longname' description='tech.alienfighter5.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/alien_fighter_5' factory='spaceship' research-cost='22000' production-cost='10000' level='4' race='morgath,sullep,ychom,dribs,dargslan,ecalep'>
+		<property name='projectile' value='Laser3'/>
+		<property name='damage' value='5'/>
+	</item>
+	<item id='AlienFighter6' name='tech.alienfighter6.name' long-name='tech.alienfighter6.longname' description='tech.alienfighter6.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/alien_fighter_6' factory='spaceship' research-cost='24000' production-cost='12000' level='5' race='garthog,morgath,sullep,ychom,dribs,dargslan,ecalep'>
+		<property name='projectile' value='Laser4'/>
+		<property name='damage' value='6'/>
 	</item>
 </tech>
 
