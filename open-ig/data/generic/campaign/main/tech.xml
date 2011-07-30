@@ -249,7 +249,7 @@
     <property name='armor' value='3'/>
     <property name='damage' value='1'/>
   </item>
-  <item id='MediumTank' name='tech.mediumtank.name' long-name='tech.mediumtank.longname' description='tech.mediumtank.description' category='WEAPONS_TANKS' image='inventions/weapons/tanks/medium_tank' factory='weapon' research-cost='20000' production-cost='3000' level='3' race='human' requires='LightTank' civil='1' mech='1' comp='1' ai='1' mil='2' index='1' video='technology/weapons/tanks/medium_tank'>
+  <item id='MediumTank' name='tech.mediumtank.name' long-name='tech.mediumtank.longname' description='tech.mediumtank.description' category='WEAPONS_TANKS' image='inventions/weapons/tanks/medium_tank' factory='weapon' research-cost='20000' production-cost='4800' level='3' race='human' requires='LightTank' civil='1' mech='1' comp='1' ai='1' mil='2' index='1' video='technology/weapons/tanks/medium_tank'>
     <property name='range' value='4'/>
     <property name='speed' value='4'/>
     <property name='armor' value='4'/>
@@ -277,7 +277,7 @@
     <property name='armor' value='2'/>
     <property name='damage' value='3'/>
     <property name='area' value='2'/>
-    <property name='projectile' value='surfacerocket'/>
+    <property name='projectile' value='rocket'/>
   </item>
   <item id='RocketLauncher2' name='tech.rocketlauncher2.name' long-name='tech.rocketlauncher2.longname' description='tech.rocketlauncher2.description' category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/rocket_launcher_2' factory='weapon' research-cost='24000' production-cost='24200' level='4' race='human' requires='RocketLauncher1' civil='2' mech='5' comp='4' ai='3' mil='6' index='2' video='technology/weapons/vehicles/rocket_launcher_2'>
     <property name='range' value='8'/>
@@ -285,7 +285,7 @@
     <property name='armor' value='1'/>
     <property name='damage' value='4'/>
     <property name='area' value='3'/>
-    <property name='projectile' value='surfacerocket'/>
+    <property name='projectile' value='rocket'/>
   </item>
   <item id='SolarPlant' name='tech.solarplant.name' long-name='tech.solarplant.longname' description='tech.solarplant.description' category='BUILDINGS_CIVIL' image='inventions/buildings/civil/solar_plant' factory='building' research-cost='12000' production-cost='16000' level='3' race='human' civil='2' mech='1' comp='1' ai='1' mil='1' index='0' video='technology/buildings/civil/solar_plant'/>
   <item id='PhoodFactory' name='tech.phoodfactory.name' long-name='tech.phoodfactory.longname' description='tech.phoodfactory.description' category='BUILDINGS_CIVIL' image='inventions/buildings/civil/phood_factory' factory='building' research-cost='10000' production-cost='10000' level='3' race='human' civil='2' mech='2' comp='2' index='1' video='technology/buildings/civil/phood_factory'/>
@@ -301,5 +301,68 @@
   <item id='PlasmaProjector' name='tech.plasmaprojector.name' long-name='tech.plasmaprojector.longname' description='tech.plasmaprojector.description' category='BUILDINGS_GUNS' image='inventions/buildings/guns/plasma_projector' factory='building' research-cost='14000' production-cost='17800' level='3' race='human' civil='2' mech='1' comp='2' ai='1' mil='2' index='0' video='technology/buildings/guns/plasma_projector'/>
   <item id='ParticleProjector' name='tech.particleprojector.name' long-name='tech.particleprojector.longname' description='tech.particleprojector.description' category='BUILDINGS_GUNS' image='inventions/buildings/guns/particle_projector' factory='building' research-cost='34000' production-cost='32000' level='4' race='human' requires='PlasmaProjector' civil='4' mech='3' comp='3' ai='2' mil='4' index='1' video='technology/buildings/guns/particle_projector'/>
   <item id='MesonProjector' name='tech.mesonprojector.name' long-name='tech.mesonprojector.longname' description='tech.mesonprojector.description' category='BUILDINGS_GUNS' image='inventions/buildings/guns/meson_projector' factory='building' research-cost='60' production-cost='40000' level='5' race='human' requires='ParticleProjector' civil='5' mech='4' comp='4' ai='4' mil='6' index='2' video='technology/buildings/guns/meson_projector'/>
+
+  <!-- Alien technology -->
+
+	<item id='AlienLightTank' factory='weapon' category='WEAPONS_TANKS' name='tech.alienlighttank.name' long-name='tech.alienlighttank.longname' description='tech.alienlighttank.description' research-cost='10000' production-cost='3000' level='0' race='garthog,morgath,sullep,ychom,dribs,dargslan,ecalep' image='inventions/weapons/tanks/alien_light_tank'>
+		<property name='range' value='2'/>
+		<property name='speed' value='5'/>
+		<property name='armor' value='3'/>
+		<property name='damage' value='1'/>
+	</item>
+
+	<item id='AlienMediumTank' factory='weapon' category='WEAPONS_TANKS' name='tech.alienmediumtank.name' long-name='tech.alienmediumtank.longname' description='tech.alienmediumtank.description' research-cost='20000' production-cost='4800' level='0' race='garthog,morgath,sullep,ychom,dribs,dargslan,ecalep' image='inventions/weapons/tanks/alien_medium_tank'>
+		<property name='range' value='4'/>
+		<property name='speed' value='4'/>
+		<property name='armor' value='4'/>
+		<property name='damage' value='2'/>
+	</item>
+
+	<item id='AlienHeavyTank' factory='weapon' category='WEAPONS_TANKS' name='tech.alienheavytank.name' long-name='tech.alienheavytank.longname' description='tech.alienheavytank.description' research-cost='24000' production-cost='4800' level='0' race='morgath,sullep,ychom,dribs,dargslan,ecalep' image='inventions/weapons/tanks/alien_heavy_tank'>
+		<property name='range' value='4'/>
+		<property name='speed' value='4'/>
+		<property name='armor' value='6'/>
+		<property name='damage' value='3'/>
+	</item>
+
+	<item id='AlienBehemoth' factory='weapon' category='WEAPONS_TANKS' name='tech.alienbehemoth.name' long-name='tech.alienbehemoth.longname' description='tech.alienbehemoth.description' research-cost='32000' production-cost='17500' level='0' race='morgath,sullep,ychom,dribs,dargslan,ecalep' image='inventions/weapons/tanks/alien_behemoth'>
+		<property name='range' value='5'/>
+		<property name='speed' value='3'/>
+		<property name='armor' value='7'/>
+		<property name='damage' value='4'/>
+	</item>
+	<item id='AlienRadarCar' factory='weapon' category='WEAPONS_VEHICLES' name='tech.alienradarcar.name' long-name='tech.alienradarcar.longname' description='tech.alienradarcar.description' research-cost='5000' production-cost='10000' level='0' race='morgath,sullep,ychom,dribs,dargslan,ecalep' image='inventions/weapons/vehicles/alien_radar_car'>
+		<property name='armor' value='3'/>
+		<property name='surfaceradar' value='true'/>
+	</item>
+	<item id='AlienRocketLauncher1' name='tech.alienrocketlauncher1.name' long-name='tech.alienrocketlauncher1.longname' description='tech.alienrocketlauncher1.description' category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/alien_rocket_launcher_1' factory='weapon' research-cost='14000' production-cost='10000' level='0' race='garthog,morgath,sullep,ychom,dribs,dargslan,ecalep'>
+		<property name='range' value='7'/>
+		<property name='speed' value='6.5'/>
+		<property name='armor' value='2'/>
+		<property name='damage' value='3'/>
+		<property name='area' value='2'/>
+		<property name='projectile' value='rocket'/>
+	</item>
+	<item id='AlienRocketLauncher2' name='tech.alienrocketlauncher2.name' long-name='tech.alienrocketlauncher2.longname' description='tech.alienrocketlauncher2.description' category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/alien_rocket_launcher_2' factory='weapon' research-cost='24000' production-cost='24200' level='0' race='morgath,sullep,ychom,dribs,dargslan,ecalep'>
+		<property name='range' value='8'/>
+		<property name='speed' value='7'/>
+		<property name='armor' value='1'/>
+		<property name='damage' value='4'/>
+		<property name='area' value='3'/>
+		<property name='projectile' value='rocket'/>
+	</item>
+	<item id='DargslanSelfRepairTank' name='tech.dargslanselfrepairtank.name' long-name='tech.dargslanselfrepairtank.longname' description='tech.dargslanselfrepairtank.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='32000' production-cost='20000' race='dargslan' image='inventions/weapons/vehicles/dargslan_self_repair_tank'>
+		<property name='range' value='5'/>
+		<property name='speed' value='3'/>
+		<property name='armor' value='7'/>
+		<property name='damage' value='4'/>
+		<property name='selfrepair' value='true'/>
+	</item>
+	<item id='DribsRocketJammer' name='tech.dribsrocketjammer.name' long-name='tech.dribsrocketjammer.longname' description='tech.dribsrocketjammer.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='32000' production-cost='20000' race='dribs' image='inventions/weapons/vehicles/dribs_rocket_jammer'>
+		<property name='range' value='8'/>
+		<property name='speed' value='5'/>
+		<property name='armor' value='2'/>
+		<property name='rocketjammer' value='true'/>
+	</item>
 </tech>
 
