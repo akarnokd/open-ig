@@ -118,6 +118,28 @@
 		<projectile id='Rocket' matrix='inventions/weapons/vehicles/rocket_matrix' width='16' height='3'/>
 		<projectile id='Mine' matrix='groundwar/mine' width='1' height='1'/>
 		<!-- Space bombs and rockets already have their own rotates -->
-		
 	</projectiles>
+	<!-- The alternative spaceship representation when your enemy uses human technology as well. -->
+	<alternative-spaceships>
+		<ship id='Fighter1' race='human' rotate='inventions/spaceships/fighters/alien_fighter_1'/>
+		<ship id='Fighter2' race='human' rotate='inventions/spaceships/fighters/alien_fighter_2'/>
+		<ship id='Fighter3' race='human' rotate='inventions/spaceships/fighters/alien_fighter_3'/>
+		<ship id='Fighter4' race='human' rotate='inventions/spaceships/fighters/alien_fighter_4'/>
+		<ship id='Fighter5' race='human' rotate='inventions/spaceships/fighters/alien_fighter_5'/>
+		<ship id='Fighter6' race='human' rotate='inventions/spaceships/fighters/alien_fighter_6'/>
+
+		<ship id='Cruiser1' race='human' rotate='inventions/spaceships/cruisers/alien_cruiser_1'/>
+		<ship id='Cruiser2' race='human' rotate='inventions/spaceships/cruisers/alien_cruiser_2'/>
+		<ship id='Cruiser3' race='human' rotate='inventions/spaceships/cruisers/alien_cruiser_3'/>
+		<ship id='Destroyer1' race='human' rotate='inventions/spaceships/cruisers/alien_destroyer_1'/>
+		<ship id='Destroyer2' race='human' rotate='inventions/spaceships/cruisers/alien_destroyer_2'/>
+		<ship id='Destroyer3' race='human' rotate='inventions/spaceships/cruisers/alien_destroyer_3'/>
+
+		<ship id='Battleship1' race='human' rotate='inventions/spaceships/battleships/alien_battleship_1'/>
+		<ship id='Battleship2' race='human' rotate='inventions/spaceships/battleships/alien_battleship_2'/>
+		<ship id='Battleship3' race='human' rotate='inventions/spaceships/battleships/alien_battleship_3'/>
+		<ship id='Thorin' race='human' rotate='inventions/spaceships/battleships/alien_thorin_1'/>
+		
+		
+	</alternative-spaceships>
 </battle>

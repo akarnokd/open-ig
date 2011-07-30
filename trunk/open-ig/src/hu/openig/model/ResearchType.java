@@ -11,9 +11,11 @@ package hu.openig.model;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A technologycal research base.
@@ -42,8 +44,8 @@ public class ResearchType {
 	public int researchCost;
 	/** The cost of production. */
 	public int productionCost;
-	/** The target race. */
-	public String race;
+	/** The target races. */
+	public final Set<String> race = new HashSet<String>();
 	/** The level when this item becomes available for research. Zero means always available. */
 	public int level;
 	/** The civil lab requirements. */
