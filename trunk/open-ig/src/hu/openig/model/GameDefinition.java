@@ -34,24 +34,6 @@ public class GameDefinition {
 	public String name;
 	/** The starting level of the game. */
 	public int startingLevel;
-	/** The labels associated with this game if any. */
-	public String labels;
-	/** The galaxy description. */
-	public String galaxy;
-	/** The reaces description. */
-	public String races;
-	/** The technology description. */
-	public String tech;
-	/** The building description. */
-	public String build;
-	/** The planets description. */
-	public String planets;
-	/** The bridge description. */
-	public String bridge;
-	/** The walk description. */
-	public String walk;
-	/** The talk description. */
-	public String talk;
 	/** The various parameters. */
 	private final Map<String, Object> parameters = new HashMap<String, Object>();
 	/**
@@ -74,15 +56,6 @@ public class GameDefinition {
 		result.intro = root.childValue("intro");
 		result.image = rl.getImage(root.childValue("image"));
 		result.startingLevel = Integer.parseInt(root.childValue("level"));
-		result.labels = root.childValue("labels");
-		result.galaxy = root.childValue("galaxy");
-		result.races = root.childValue("races");
-		result.tech = root.childValue("tech");
-		result.build = root.childValue("build");
-		result.planets = root.childValue("planets");
-		result.bridge = root.childValue("bridge");
-		result.walk = root.childValue("walk");
-		result.talk = root.childValue("talk");
 		
 		for (XElement param : root.childrenWithName("param")) {
 			String t = param.get("type", "");

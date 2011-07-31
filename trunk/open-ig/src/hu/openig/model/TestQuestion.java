@@ -11,7 +11,6 @@ package hu.openig.model;
 import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,11 +37,11 @@ public class TestQuestion {
 	/**
 	 * Parse a test.xml.
 	 * @param test the test XML
+	 * @param result the target output
 	 * @return the list of questions
 	 */
-	public static Map<String, TestQuestion> parse(XElement test) {
-		Map<String, TestQuestion> result = new LinkedHashMap<String, TestQuestion>();
-		
+	public static Map<String, TestQuestion> parse(XElement test, 
+			Map<String, TestQuestion> result) {
 		for (XElement xq : test.childrenWithName("question")) {
 			TestQuestion tq = new TestQuestion();
 			tq.id = xq.get("id");

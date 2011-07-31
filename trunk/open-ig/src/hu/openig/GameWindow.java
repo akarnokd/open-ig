@@ -1353,7 +1353,7 @@ public class GameWindow extends JFrame implements GameControls {
 						world = new World();
 						world.definition = GameDefinition.parse(commons.rl, game);
 						world.labels = new Labels();
-						world.labels.load(commons.rl, world.definition.labels);
+						world.labels.load(commons.rl, game + "/labels");
 						world.load(commons.rl, world.definition.name);
 						world.getAutoBuildLimit = new Func1<Void, Integer>() {
 							@Override

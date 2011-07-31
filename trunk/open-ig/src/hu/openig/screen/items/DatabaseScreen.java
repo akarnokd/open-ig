@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -305,7 +306,7 @@ public class DatabaseScreen extends ScreenBase {
 			lastHighlight = highlightAliens;
 			highlightAliens = -1;
 			int i = 0;
-			for (Player p : player().knownPlayers.keySet()) {
+			for (Player p : getKnownOtherPlayers()) {
 				int x = base.x + 20;
 				int y = base.y + 25 + 8 + i * 20;
 				int x1 = x + commons.text().getTextWidth(14, get("database.race." + p.id.toLowerCase()));
@@ -319,6 +320,18 @@ public class DatabaseScreen extends ScreenBase {
 				askRepaint(base);
 			}
 		}
+	}
+	/**
+	 * @return the set of other players who may appear in the database screen.
+	 */
+	private Iterable<Player> getKnownOtherPlayers() {
+		List<Player> p = new LinkedList<Player>();
+		for (Player q : player().knownPlayers.keySet()) {
+			if (!q.noDatabase) {
+				p.add(q);
+			}
+		}
+		return p;
 	}
 	/**
 	 * Do actions on mouse click.
@@ -351,7 +364,7 @@ public class DatabaseScreen extends ScreenBase {
 		}
 		if (aliensVisible && !alienDetails) {
 			int i = 0;
-			for (Player p : player().knownPlayers.keySet()) {
+			for (Player p : getKnownOtherPlayers()) {
 				int x = base.x + 20;
 				int y = base.y + 25 + 8 + i * 20;
 				int x1 = x + commons.text().getTextWidth(14, get("database.race." + p.id.toLowerCase()));
@@ -958,7 +971,7 @@ public class DatabaseScreen extends ScreenBase {
 					BufferedImage m = null;
 					Player selectedAlien = null;
 					int i = 0;
-					for (Player p : player().knownPlayers.keySet()) {
+					for (Player p : getKnownOtherPlayers()) {
 						if (i++ == selectedAliens) {
 							m = p.picture;
 							selectedAlien = p;
@@ -986,7 +999,7 @@ public class DatabaseScreen extends ScreenBase {
 					int x = x0 + 20;
 					int y = y0 + 25 + 8;
 					int i = 0;
-					for (Player p  : player().knownPlayers.keySet()) {
+					for (Player p  : getKnownOtherPlayers()) {
 						int c = selectedAliens == i ? (highlightAliens == i ? 0xFFF9090 : 0xFFFF0000) 
 								: (highlightAliens == i ? 0xFFFFFFFF : 0xFFFFFF00);  
 						commons.text().paintTo(g2, x, y + i * 20, 14, c, get("database.race." + p.id.toLowerCase()));
