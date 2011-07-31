@@ -525,5 +525,8 @@
     <property name='needsOrbitalFactory' value='true'/>
   </item>
  
+	<item id='TradersFreight1'  name='tech.tradersfreight1.name' long-name='tech.tradersfreight1.longname' description='tech.tradersfreight1.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/traders_freight_1' factory='spaceship' research-cost='10000' production-cost='5000' level='0' race='traders' index='0'></item>
+	<item id='TradersFreight2'  name='tech.tradersfreight2.name' long-name='tech.tradersfreight2.longname' description='tech.tradersfreight2.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/traders_freight_2' factory='spaceship' research-cost='10000' production-cost='5000' level='0' race='traders' index='1'></item>
+ 
 </tech>
 
