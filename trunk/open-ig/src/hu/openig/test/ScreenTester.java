@@ -562,7 +562,8 @@ public class ScreenTester extends JFrame implements GameControls {
 			}
 			@Override
 			protected void done() {
-				commons.start();
+				commons.start(false);
+				
 				parentColor = new Color(0xFF80FF80);
 				parentText = txtScreen;
 				enableDisableMenu(true);

@@ -179,7 +179,7 @@ public class SingleplayerScreen extends ScreenBase {
 							public void run() {
 								final boolean csw = config.computerVoiceScreen;
 								config.computerVoiceScreen = false;
-								commons.start();
+								commons.start(true);
 								commons.control().displayPrimary(Screens.BRIDGE);
 								commons.control().displayStatusbar();
 								
