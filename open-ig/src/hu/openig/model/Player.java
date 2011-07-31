@@ -83,6 +83,20 @@ public class Player {
 	public final PriorityQueue<Message> messageQueue = new PriorityQueue<Message>();
 	/** The message history of the already displayes messages. */
 	public final List<Message> messageHistory = new ArrayList<Message>();
+	/** The AI behavior mode. */
+	public AIMode aiMode;
+	/** The defensive ratio for AI player. Ratios sum up to 1. */
+	public double aiDefensiveRatio = 1.0 / 3;
+	/** The offensive ratio for AI player. Ratios sum up to 1. */
+	public double aiOffensiveRatio = 1.0 / 3;
+	/** @return the socual ratio for AI player. Ratios sum up to 1. */
+	public double aiSocialRatio() {
+		return Math.max(0, 1.0d - aiOffensiveRatio - aiDefensiveRatio);
+	}
+	/** Do not list this player on the database screen. */
+	public boolean noDatabase;
+	/** Do not list this player in diplomacy tables. */
+	public boolean noDiplomacy;
 	/**
 	 * @return returns the next planet by goind top-bottom relative to the current planet
 	 */

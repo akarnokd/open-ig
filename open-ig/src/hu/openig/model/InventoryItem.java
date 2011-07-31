@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Defines a planet's inventory. A planet may 'own' multiple things from multiple players, e.g.,
+ * Defines a planet's or fleet's inventory. A planet may 'own' multiple things from multiple players, e.g.,
  * spy satellites. In planet listings, only the current player's items are considered.
  * @author akarnokd, 2011.04.05.
  */

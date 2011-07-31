@@ -3294,7 +3294,7 @@ public class InfoScreen extends ScreenBase {
 			List<Player> ally = new ArrayList<Player>();
 			pl.add(player());
 			for (Player p : player().knownPlayers.keySet()) {
-				if (p == player() || p.race.equals("pirates")) {
+				if (p == player() || p.noDiplomacy) {
 					continue;
 				}
 				maxw = Math.max(maxw, commons.text().getTextWidth(textSize, p.shortName));

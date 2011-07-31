@@ -16,6 +16,7 @@ import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ImageUtils;
+import hu.openig.utils.JavaUtils;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
@@ -118,6 +119,8 @@ public class World {
 	public Map<String, TestQuestion> test;
 	/** The diplomacy definition. */
 	public Map<String, Diplomacy> diplomacy;
+	/** The battle object. */
+	public Battle battle;
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -141,24 +144,65 @@ public class World {
 				}
 			});
 		exec.allowCoreThreadTimeOut(true);
-		final WipPort wip = new WipPort(5);
+		final WipPort wip = new WipPort(8);
 		try {
 			level = definition.startingLevel;
 			
-			processPlayers(rl.getXML(game + "/players"));
+			processResearches(rl.getXML(game + "/tech"));
 			
-			processResearches(rl.getXML(definition.tech));
+			processPlayers(rl.getXML(game + "/players")); 
 			
-			test = TestQuestion.parse(rl.getXML(game + "/test"));
-			
-			diplomacy = Diplomacy.parse(rl.getXML(game + "/diplomacy"));
+			talks = new Talks();
+			walks = new Walks();
+			buildingModel = new BuildingModel();
+			galaxyModel = new GalaxyModel();
+			test = JavaUtils.newLinkedHashMap();
+			diplomacy = JavaUtils.newLinkedHashMap();
 			
 			exec.submit(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						talks = new Talks();
-						talks.load(rl, definition.talk);
+						TestQuestion.parse(rl.getXML(game + "/test"), test);
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						wip.dec();
+					}
+				}
+			});
+
+			exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Diplomacy.parse(rl.getXML(game + "/diplomacy"), diplomacy);
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						wip.dec();
+					}
+				}
+			});
+
+			exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						processBattle(rl.getXML(game + "/battle"));
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						wip.dec();
+					}
+				}
+			});
+			
+			exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						talks.load(rl, game + "/talks");
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -170,11 +214,10 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						walks = new Walks();
-						walks.load(rl, definition.walk);
+						walks.load(rl, game + "/walks");
 						
 						bridge = new Bridge();
-						processBridge(rl, definition.bridge);
+						processBridge(rl, game + "/bridge");
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -186,8 +229,7 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						buildingModel = new BuildingModel();
-						buildingModel.processBuildings(rl, definition.build, researches, labels, exec, wip);
+						buildingModel.processBuildings(rl, game + "/buildings", researches, labels, exec, wip);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -199,8 +241,7 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						galaxyModel = new GalaxyModel();
-						galaxyModel.processGalaxy(rl, definition.galaxy, exec, wip);
+						galaxyModel.processGalaxy(rl, game + "/galaxy", exec, wip);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -357,100 +398,133 @@ public class World {
 	}
 	/**
 	 * Process the players XML.
-	 * @param players the players node
+	 * @param xplayers the players node
 	 */
-	public void processPlayers(XElement players) {
-		for (XElement player : players.childrenWithName("player")) {
-			processPlayer(player);
-		}
-	}
-	/**
-	 * Process a player.
-	 * @param player the player
-	 */
-	public void processPlayer(XElement player) {
-		Player p = new Player();
-		p.id = player.get("id");
-		p.color = (int)Long.parseLong(player.get("color"), 16);
-		p.race = player.get("race");
-		p.name = labels.get(player.get("name"));
-		p.shortName = labels.get(player.get("name") + ".short");
+	public void processPlayers(XElement xplayers) {
+		Map<Fleet, Integer> deferredFleets = JavaUtils.newHashMap();
 		
-		p.money = player.getLong("money");
-		p.initialStance = player.getInt("initial-stance");
-		
-		p.fleetIcon = rl.getImage(player.get("icon"));
-		String pic = player.get("picture");
-		if (pic != null) {
-			p.picture = rl.getImage(pic);
+		for (XElement xplayer : xplayers.childrenWithName("player")) {
+			Player p = new Player();
+			p.id = xplayer.get("id");
+			p.color = (int)Long.parseLong(xplayer.get("color"), 16);
+			p.race = xplayer.get("race");
+			p.name = labels.get(xplayer.get("name"));
+			p.shortName = labels.get(xplayer.get("name") + ".short");
+			
+			p.money = xplayer.getLong("money");
+			p.initialStance = xplayer.getInt("initial-stance");
+			
+			p.fleetIcon = rl.getImage(xplayer.get("icon"));
+			String pic = xplayer.get("picture");
+			if (pic != null) {
+				p.picture = rl.getImage(pic);
+			}
+			
+			if ("true".equals(xplayer.get("user", "false"))) {
+				this.player = p;
+			}
+			
+			if ("true".equals(xplayer.get("nodiplomacy", "false"))) {
+				p.noDiplomacy = true;
+			}
+			if ("true".equals(xplayer.get("nodatabase", "false"))) {
+				p.noDatabase = true;
+			}
+			
+			String aim = xplayer.get("ai", "");
+			if (aim.length() > 0) {
+				p.aiMode = AIMode.valueOf(aim);
+			}
+			String rat = xplayer.get("ratios", "");
+			if (rat.length() > 0) {
+				String[] rts = rat.split("\\s*,\\s*");
+				if (rts.length == 3) {
+					double r1 = Double.parseDouble(rts[0]);
+					double r2 = Double.parseDouble(rts[1]);
+					double r3 = Double.parseDouble(rts[2]);
+					double sum = r1 + r2 + r3;
+					p.aiDefensiveRatio = r1 / sum;
+					p.aiOffensiveRatio = r2 / sum;
+				}
+			}
+			
+			for (XElement xinventory : xplayer.childrenWithName("inventory")) {
+				String rid = xinventory.get("id");
+				ResearchType rt = researches.get(rid);
+				if (rt == null) {
+					System.err.printf("Missing research %s for player %s%n", rid, player.id);
+				} else {
+					p.setAvailable(rt);
+					p.changeInventoryCount(rt, xinventory.getInt("count"));
+				}
+			}
+			setTechAvailability(xplayer, p);
+			
+			setFleets(deferredFleets, xplayer, p);
+			
+			this.players.put(p.id, p);
+			for (ResearchType rt : researches.values()) {
+				if (p.race.equals(rt.race) && rt.level == 0) {
+					p.setAvailable(rt);
+				}
+			}
 		}
-		
-		if ("true".equals(player.get("user", "false"))) {
-			this.player = p;
-		}
-		this.players.put(p.id, p);
+		linkDeferredFleetTargets(deferredFleets);
 	}
 	/**
 	 * Process the planets listing XML.
-	 * @param planets the planets node
+	 * @param xplanets the planets node
 	 */
-	public void processPlanets(XElement planets) {
-		for (XElement planet : planets.childrenWithName("planet")) {
-			processPlanet(planet);
-		}
-	}
-	/**
-	 * Process a planet node.
-	 * @param planet the 
-	 */
-	public void processPlanet(XElement planet) {
-		Planet p = new Planet();
-		p.id = planet.get("id");
-		p.name = planet.get("name");
-		String nameLabel = planet.get("label", null);
-		if (nameLabel != null) {
-			p.name = labels.get(nameLabel); 
-		}
-		p.owner = players.get(planet.get("owner", null));
-		p.race = planet.get("race");
-		p.x = Integer.parseInt(planet.get("x"));
-		p.y = Integer.parseInt(planet.get("y"));
-		
-		p.diameter = Integer.parseInt(planet.get("size"));
-		p.population = Integer.parseInt(planet.get("population"));
-		
-		p.allocation = ResourceAllocationStrategy.valueOf(planet.get("allocation"));
-		p.autoBuild = AutoBuild.valueOf(planet.get("autobuild"));
-		p.tax = TaxLevel.valueOf(planet.get("tax"));
-		p.rotationDirection = RotationDirection.valueOf(planet.get("rotate"));
-		p.morale = Integer.parseInt(planet.get("morale"));
-		p.taxIncome = Integer.parseInt(planet.get("tax-income"));
-		p.tradeIncome = Integer.parseInt(planet.get("trade-income"));
-		
-		String populationDelta = planet.get("population-last", null);
-		if (populationDelta != null && !populationDelta.isEmpty()) {
-			p.lastPopulation = Integer.parseInt(populationDelta);
-		} else {
-			p.lastPopulation = p.population;
-		}
-		String lastMorale = planet.get("morale-last", null);
-		if (lastMorale != null && !lastMorale.isEmpty()) {
-			p.lastMorale = Integer.parseInt(lastMorale);
-		} else {
-			p.lastMorale = p.morale;
-		}
-		
-		XElement surface = planet.childElement("surface");
-		String si = surface.get("id");
-		String st = surface.get("type");
-		p.type = galaxyModel.planetTypes.get(st);
-		p.surface = p.type.surfaces.get(Integer.parseInt(si)).copy();
-		p.surface.parseMap(planet, null, buildingModel);
-		
-		planets.put(p.id, p);
+	public void processPlanets(XElement xplanets) {
+		for (XElement xplanet : xplanets.childrenWithName("planet")) {
+			Planet p = new Planet();
+			p.id = xplanet.get("id");
+			p.name = xplanet.get("name");
+			String nameLabel = xplanet.get("label", null);
+			if (nameLabel != null) {
+				p.name = labels.get(nameLabel); 
+			}
+			p.owner = players.get(xplanet.get("owner", null));
+			p.race = xplanet.get("race");
+			p.x = Integer.parseInt(xplanet.get("x"));
+			p.y = Integer.parseInt(xplanet.get("y"));
+			
+			p.diameter = Integer.parseInt(xplanet.get("size"));
+			p.population = Integer.parseInt(xplanet.get("population"));
+			
+			p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
+			p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));
+			p.tax = TaxLevel.valueOf(xplanet.get("tax"));
+			p.rotationDirection = RotationDirection.valueOf(xplanet.get("rotate"));
+			p.morale = Integer.parseInt(xplanet.get("morale"));
+			p.taxIncome = Integer.parseInt(xplanet.get("tax-income"));
+			p.tradeIncome = Integer.parseInt(xplanet.get("trade-income"));
+			
+			String populationDelta = xplanet.get("population-last", null);
+			if (populationDelta != null && !populationDelta.isEmpty()) {
+				p.lastPopulation = Integer.parseInt(populationDelta);
+			} else {
+				p.lastPopulation = p.population;
+			}
+			String lastMorale = xplanet.get("morale-last", null);
+			if (lastMorale != null && !lastMorale.isEmpty()) {
+				p.lastMorale = Integer.parseInt(lastMorale);
+			} else {
+				p.lastMorale = p.morale;
+			}
+			
+			XElement surface = xplanet.childElement("surface");
+			String si = surface.get("id");
+			String st = surface.get("type");
+			p.type = galaxyModel.planetTypes.get(st);
+			p.surface = p.type.surfaces.get(Integer.parseInt(si)).copy();
+			p.surface.parseMap(xplanet, null, buildingModel);
+			
+			this.planets.put(p.id, p);
 
-		if (p.owner != null) {
-			p.owner.planets.put(p, PlanetKnowledge.BUILDING);
+			if (p.owner != null) {
+				p.owner.planets.put(p, PlanetKnowledge.BUILDING);
+			}
 		}
 	}
 	/**
@@ -460,14 +534,6 @@ public class World {
 	public void processResearches(XElement tech) {
 		for (XElement item : tech.childrenWithName("item")) {
 			processResearch(item);
-		}
-		// make the default researches available to each respective players
-		for (Player p : players.values()) {
-			for (ResearchType rt : researches.values()) {
-				if (p.race.equals(rt.race) && rt.level == 0) {
-					p.setAvailable(rt);
-				}
-			}
 		}
 
 	}
@@ -524,6 +590,9 @@ public class World {
 			
 			tech.slots.put(s.id, s);
 		}
+		for (XElement slotFixed : item.childrenWithName("slot-fixed")) {
+			tech.fixedSlots.put(getResearch(slotFixed.get("item")), slotFixed.getInt("count"));
+		}
 		for (XElement prop : item.childrenWithName("property")) {
 			tech.properties.put(prop.get("name"), prop.get("value"));
 		}
@@ -543,7 +612,7 @@ public class World {
 		}
 		BufferedImage matrix = rl.getImage(image + "_matrix", true);
 		if (matrix != null) {
-			tech.fireAndTotation = ImageUtils.split(matrix, matrix.getHeight() / 5, matrix.getHeight() / 5);
+			tech.fireAndRotation = ImageUtils.split(matrix, matrix.getHeight() / 5, matrix.getHeight() / 5);
 		}
 	}
 	/**
@@ -1045,80 +1114,9 @@ public class World {
 				}
 			}
 			
-			XElement xavail0 = xplayer.childElement("available");
-			if (xavail0 != null) {
-				for (XElement xavail : xavail0.childrenWithName("type")) {
-					ResearchType rt = researches.get(xavail.get("id"));
-					if (rt == null) {
-						throw new IllegalArgumentException("available technology not found: " + xavail);
-					}
-					p.add(rt);
-					
-					for (String liste : xavail.get("list", "").split("\\s*,\\s*")) {
-						if (liste.length() > 0) {
-							ResearchType rt0 = researches.get(liste);
-							if (rt0 == null) {
-								throw new IllegalArgumentException("available technology not found: " + liste + " in " + xavail);
-							}
-							p.availableLevel(rt).add(rt0);
-						}
-					}
-				}
-			}
-			p.fleets.clear();
-			for (XElement xfleet : xplayer.childrenWithName("fleet")) {
-				Fleet f = new Fleet();
-				f.owner = p;
-				f.id = xfleet.getInt("id");
-				
-				fleetIdSequence = Math.max(fleetIdSequence, f.id);
-				
-				f.x = xfleet.getFloat("x");
-				f.y = xfleet.getFloat("y");
-				f.name = xfleet.get("name");
-				
-				String s0 = xfleet.get("target-fleet", null);
-				if (s0 != null) {
-					deferredTargets.put(f, Integer.parseInt(s0));
-				}
-				s0 = xfleet.get("target-planet", null);
-				if (s0 != null) {
-					f.targetPlanet = planets.get(s0);
-				}
-				s0 = xfleet.get("mode", null);
-				if (s0 != null) {
-					f.mode = FleetMode.valueOf(s0);
-				}
-				s0 = xfleet.get("waypoints", null);
-				if (s0 != null) {
-					for (String wp : s0.split("\\s+")) {
-						String[] xy = wp.split(";");
-						f.waypoints.add(new Point2D.Float(Float.parseFloat(xy[0]), Float.parseFloat(xy[1])));
-					}
-				}
-				
-				for (XElement xfii : xfleet.childrenWithName("item")) {
-					InventoryItem fii = new InventoryItem();
-					fii.type = researches.get(xfii.get("id"));
-					fii.count = xfii.getInt("count");
-					fii.shield = xfii.getInt("shield");
-					fii.hp = xfii.getInt("hp");
-					for (XElement xfis : xfii.childrenWithName("slot")) {
-						InventorySlot fis = new InventorySlot();
-						fis.slot = fii.type.slots.get(xfis.get("id"));
-						fis.type = researches.get(xfis.get("type", null));
-						if (fis.type != null) {
-							fis.count = xfis.getInt("count");
-							fis.hp = xfis.getInt("hp");
-						}
-						fii.slots.add(fis);
-					}
-					f.inventory.add(fii);
-				}
-				if (!f.inventory.isEmpty()) {
-					p.fleets.put(f, FleetKnowledge.FULL);
-				}
-			}
+			setTechAvailability(xplayer, p);
+			
+			setFleets(deferredTargets, xplayer, p);
 			
 			p.planets.clear();
 			for (String pl : xplayer.get("discovered").split("\\s*,\\s*")) {
@@ -1237,6 +1235,13 @@ public class World {
 				}
 			}
 		}
+		linkDeferredFleetTargets(deferredTargets);
+	}
+	/**
+	 * Link the fleet's targetFleet value with the fleet given by the ID.
+	 * @param deferredTargets the map from source fleet to target fleet ID
+	 */
+	private void linkDeferredFleetTargets(Map<Fleet, Integer> deferredTargets) {
 		for (Map.Entry<Fleet, Integer> ft : deferredTargets.entrySet()) {
 			outer:
 			for (Player p : players.values()) {
@@ -1244,6 +1249,101 @@ public class World {
 					if (f.id == ft.getValue().intValue()) {
 						ft.getKey().targetFleet = f;
 						break outer;
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Set the fleets from the given player definition into the player object.
+	 * @param deferredTargets the deferred targets if a fleet targets another
+	 * @param xplayer the source definition
+	 * @param p the target player object
+	 */
+	private void setFleets(Map<Fleet, Integer> deferredTargets,
+			XElement xplayer, Player p) {
+		p.fleets.clear();
+		for (XElement xfleet : xplayer.childrenWithName("fleet")) {
+			Fleet f = new Fleet();
+			f.owner = p;
+			f.id = xfleet.getInt("id", -1);
+			// if no id automatically assign a new sequence
+			boolean noTargetFleet = false;
+			if (f.id < 0) {
+				f.id = fleetIdSequence++;
+				noTargetFleet = true; // ignore target fleet in this case
+			}
+			fleetIdSequence = Math.max(fleetIdSequence, f.id);
+			
+			f.x = xfleet.getFloat("x");
+			f.y = xfleet.getFloat("y");
+			f.name = xfleet.get("name");
+			
+			String s0 = xfleet.get("target-fleet", null);
+			if (s0 != null && !noTargetFleet) {
+				deferredTargets.put(f, Integer.parseInt(s0));
+			}
+			s0 = xfleet.get("target-planet", null);
+			if (s0 != null) {
+				f.targetPlanet = planets.get(s0);
+			}
+			s0 = xfleet.get("mode", null);
+			if (s0 != null) {
+				f.mode = FleetMode.valueOf(s0);
+			}
+			s0 = xfleet.get("waypoints", null);
+			if (s0 != null) {
+				for (String wp : s0.split("\\s+")) {
+					String[] xy = wp.split(";");
+					f.waypoints.add(new Point2D.Float(Float.parseFloat(xy[0]), Float.parseFloat(xy[1])));
+				}
+			}
+			
+			for (XElement xfii : xfleet.childrenWithName("item")) {
+				InventoryItem fii = new InventoryItem();
+				fii.type = researches.get(xfii.get("id"));
+				fii.count = xfii.getInt("count");
+				fii.shield = xfii.getInt("shield");
+				fii.hp = xfii.getInt("hp");
+				for (XElement xfis : xfii.childrenWithName("slot")) {
+					InventorySlot fis = new InventorySlot();
+					fis.slot = fii.type.slots.get(xfis.get("id"));
+					fis.type = researches.get(xfis.get("type", null));
+					if (fis.type != null) {
+						fis.count = xfis.getInt("count");
+						fis.hp = xfis.getInt("hp");
+					}
+					fii.slots.add(fis);
+				}
+				f.inventory.add(fii);
+			}
+			if (!f.inventory.isEmpty()) {
+				p.fleets.put(f, FleetKnowledge.FULL);
+			}
+		}
+	}
+	/**
+	 * Set the available technologies for the given player.
+	 * @param xplayer the player definition
+	 * @param p the player object to load
+	 */
+	private void setTechAvailability(XElement xplayer, Player p) {
+		XElement xavail0 = xplayer.childElement("available");
+		if (xavail0 != null) {
+			for (XElement xavail : xavail0.childrenWithName("type")) {
+				ResearchType rt = researches.get(xavail.get("id"));
+				if (rt == null) {
+					throw new IllegalArgumentException("available technology not found: " + xavail);
+				}
+				p.add(rt);
+				
+				for (String liste : xavail.get("list", "").split("\\s*,\\s*")) {
+					if (liste.length() > 0) {
+						ResearchType rt0 = researches.get(liste);
+						if (rt0 == null) {
+							throw new IllegalArgumentException("available technology not found: " + liste + " in " + xavail);
+						}
+						p.availableLevel(rt).add(rt0);
 					}
 				}
 			}
@@ -1318,6 +1418,13 @@ public class World {
 			}
 		}
 		return sum;
+		
+	}
+	/**
+	 * Process the battle definition XML.
+	 * @param xbattle the battle definition
+	 */
+	void processBattle(XElement xbattle) {
 		
 	}
 }

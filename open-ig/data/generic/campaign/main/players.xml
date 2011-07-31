@@ -7,13 +7,31 @@
 		user='true'
 		money='32000'
 		initial-stance='50'
-	/>
+		ai='NONE'
+	>
+	<!-- Initial inventory.
+		<inventory id='' count=''/>
+	 -->
+	<!-- Available technology override.
+		<available>
+			<type id='' list=''/>
+		</available>
+	-->
+	<!-- Initial fleets. 
+		<fleet id='' x='' y='' name=''>
+			<item id='' type='' count='' hp='' shield=''>
+				<slot id='' type='' count='' hp=''/>
+			</item>
+		</fleet>
+	-->
+	</player>
 	<player id='Garthog' race='garthog' name='players.garthog'
 		icon='starmap/fleets/garthog_fleet'
 		color='FFFC2828'
 		picture='database/garthog'
 		money='32000'
 		initial-stance='40'
+		ai='DEFAULT' ratios='1,2,1'
 	/>
 	<player id='Morgath' race='morgath' name='players.morgath'
 		icon='starmap/fleets/morgath_fleet'
@@ -77,5 +95,17 @@
 		picture='database/pirates'
 		money='32000'
 		initial-stance='10'
+		ai='PIRATES'
+		nodiplomacy='true'
+	/>
+	<player id='Traders' race='traders' name='players.free_traders'
+		icon='starmap/fleets/traders_fleet'
+		color='FFA7A7A7'
+		picture='database/freenations'
+		money='0'
+		initial-stance='100'
+		ai='TRADERS'
+		nodiplomacy='true'
+		nodatabase='true'
 	/>
 </players>

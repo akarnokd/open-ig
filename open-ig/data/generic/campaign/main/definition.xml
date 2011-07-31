@@ -11,16 +11,6 @@
 	<image>campaign/main/main_campaign_image</image>
 	<intro>interlude/campaign_start</intro>
 	<level>5</level>
-	<labels>campaign/main/labels</labels>
-	<galaxy>campaign/main/galaxy</galaxy>
-	<races>campaign/main/races</races>
-	<tech>campaign/main/tech</tech>
-	<build>campaign/main/buildings</build>
-	<planets>campaign/main/planets</planets>
-	<bridge>campaign/main/bridge</bridge>
-	<walk>campaign/main/walks</walk>
-	<talk>campaign/main/talks</talk>
-	<script>campaign/main/scripts</script>
 	<!-- Simulation helping parameters. -->
 	<param name='p1' type='int' value='1'/>
 	<param name='p2' type='long' value='1'/>

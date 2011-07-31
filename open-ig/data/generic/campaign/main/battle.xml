@@ -119,27 +119,39 @@
 		<projectile id='Mine' matrix='groundwar/mine' width='1' height='1'/>
 		<!-- Space bombs and rockets already have their own rotates -->
 	</projectiles>
-	<!-- The alternative spaceship representation when your enemy uses human technology as well. -->
-	<alternative-spaceships>
-		<ship id='Fighter1' race='human' rotate='inventions/spaceships/fighters/alien_fighter_1'/>
-		<ship id='Fighter2' race='human' rotate='inventions/spaceships/fighters/alien_fighter_2'/>
-		<ship id='Fighter3' race='human' rotate='inventions/spaceships/fighters/alien_fighter_3'/>
-		<ship id='Fighter4' race='human' rotate='inventions/spaceships/fighters/alien_fighter_4'/>
-		<ship id='Fighter5' race='human' rotate='inventions/spaceships/fighters/alien_fighter_5'/>
-		<ship id='Fighter6' race='human' rotate='inventions/spaceships/fighters/alien_fighter_6'/>
+	<!-- The alternative spaceship/vehicle representation when your enemy uses the same technology. -->
+	<alternatives>
+		<tech id='Fighter1' rotate='inventions/spaceships/fighters/alien_fighter_1'/>
+		<tech id='Fighter2' rotate='inventions/spaceships/fighters/alien_fighter_2'/>
+		<tech id='Fighter3' rotate='inventions/spaceships/fighters/alien_fighter_3'/>
+		<tech id='Fighter4' rotate='inventions/spaceships/fighters/alien_fighter_4'/>
+		<tech id='Fighter5' rotate='inventions/spaceships/fighters/alien_fighter_5'/>
+		<tech id='Fighter6' rotate='inventions/spaceships/fighters/alien_fighter_6'/>
 
-		<ship id='Cruiser1' race='human' rotate='inventions/spaceships/cruisers/alien_cruiser_1'/>
-		<ship id='Cruiser2' race='human' rotate='inventions/spaceships/cruisers/alien_cruiser_2'/>
-		<ship id='Cruiser3' race='human' rotate='inventions/spaceships/cruisers/alien_cruiser_3'/>
-		<ship id='Destroyer1' race='human' rotate='inventions/spaceships/cruisers/alien_destroyer_1'/>
-		<ship id='Destroyer2' race='human' rotate='inventions/spaceships/cruisers/alien_destroyer_2'/>
-		<ship id='Destroyer3' race='human' rotate='inventions/spaceships/cruisers/alien_destroyer_3'/>
+		<tech id='Cruiser1' rotate='inventions/spaceships/cruisers/alien_cruiser_1'/>
+		<tech id='Cruiser2' rotate='inventions/spaceships/cruisers/alien_cruiser_2'/>
+		<tech id='Cruiser3' rotate='inventions/spaceships/cruisers/alien_cruiser_3'/>
+		<tech id='Destroyer1' rotate='inventions/spaceships/cruisers/alien_destroyer_1'/>
+		<tech id='Destroyer2' rotate='inventions/spaceships/cruisers/alien_destroyer_2'/>
+		<tech id='Destroyer3' rotate='inventions/spaceships/cruisers/alien_destroyer_3'/>
 
-		<ship id='Battleship1' race='human' rotate='inventions/spaceships/battleships/alien_battleship_1'/>
-		<ship id='Battleship2' race='human' rotate='inventions/spaceships/battleships/alien_battleship_2'/>
-		<ship id='Battleship3' race='human' rotate='inventions/spaceships/battleships/alien_battleship_3'/>
-		<ship id='Thorin' race='human' rotate='inventions/spaceships/battleships/alien_thorin_1'/>
+		<tech id='Battleship1' rotate='inventions/spaceships/battleships/alien_battleship_1'/>
+		<tech id='Battleship2' rotate='inventions/spaceships/battleships/alien_battleship_2'/>
+		<tech id='Battleship3' rotate='inventions/spaceships/battleships/alien_battleship_3'/>
+		<tech id='Thorin' rotate='inventions/spaceships/battleships/alien_thorin_1'/>
 		
+		<tech id='LightTank' rotate='inventions/weapons/tanks/alien_light_tank'/>
+		<tech id='MediumTank' rotate='inventions/weapons/tanks/alien_medium_tank'/>
+		<tech id='HeavyTank' rotate='inventions/weapons/tanks/alien_heavy_tank'/>
+		<tech id='Behemoth' rotate='inventions/weapons/tanks/alien_behemoth'/>
+		<tech id='RadarCar' rotate='inventions/weapons/vehicles/alien_radar_car'/>
+		<tech id='RocketLauncher1' rotate='inventions/weapons/vehicles/alien_rocket_launcher_1'/>
+		<tech id='RocketLauncher2' rotate='inventions/weapons/vehicles/alien_rocket_launcher_2'/>
+
+		<tech id='SpaceStation1' rotate='inventions/spaceships/stations/alien_space_station_1'/>
+		<tech id='SpaceStation2' rotate='inventions/spaceships/stations/alien_space_station_2'/>
+		<tech id='SpaceStation3' rotate='inventions/spaceships/stations/alien_space_station_3'/>
+		<tech id='OrbitalFactory' rotate='inventions/spaceships/stations/alien_orbital_factory'/>
 		
-	</alternative-spaceships>
+	</alternatives>
 </battle>

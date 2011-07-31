@@ -78,6 +78,8 @@ public class ResearchType {
 	public BufferedImage equipmentCustomizeImage;
 	/** The available equipment slots. */
 	public final Map<String, EquipmentSlot> slots = new LinkedHashMap<String, EquipmentSlot>();
+	/** Contains fixed equipment with predefined type and count. */
+	public final Map<ResearchType, Integer> fixedSlots = new LinkedHashMap<ResearchType, Integer>();
 	// -------------------------------------------------
 	// Resources for the Space battle screen.
 	/** 
@@ -95,7 +97,7 @@ public class ResearchType {
 	 * a rotation phase. The initial rotation faces the negative y axis of the surface.
 	 * Uses the <code>_matrix</code> suffix.
 	 */
-	public BufferedImage[][] fireAndTotation;
+	public BufferedImage[][] fireAndRotation;
 	/**
 	 * Retrieve a property value.
 	 * @param property the property name

@@ -222,7 +222,7 @@ public class SingleplayerScreen extends ScreenBase {
 					world.definition = selectedDefinition;
 					world.difficulty = Difficulty.values()[difficulty];
 					final Labels labels = new Labels(); 
-					labels.load(commons.rl, selectedDefinition.labels);
+					labels.load(commons.rl, selectedDefinition.name + "/labels");
 					world.labels = labels;
 					world.load(commons.rl, selectedDefinition.name);
 					world.getAutoBuildLimit = new Func1<Void, Integer>() {

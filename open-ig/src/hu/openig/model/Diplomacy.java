@@ -11,7 +11,6 @@ package hu.openig.model;
 import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,10 +68,10 @@ public class Diplomacy {
 	/**
 	 * Parse the diplomacy description XML.
 	 * @param root the root node of the XML
+	 * @param result the target output
 	 * @return the map of player ID to diplomacy
 	 */
-	public static Map<String, Diplomacy> parse(XElement root) {
-		Map<String, Diplomacy> result = new HashMap<String, Diplomacy>();
+	public static Map<String, Diplomacy> parse(XElement root, Map<String, Diplomacy> result) {
 		
 		for (XElement xplayer : root.childrenWithName("player")) {
 			Diplomacy d = new Diplomacy();
