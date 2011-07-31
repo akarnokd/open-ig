@@ -29,6 +29,9 @@ public final class TransformImage {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
+		
+		ImageIO.write(PCXImage.from("c:\\games\\IG\\SP_WAR.PAC ION300X1.PCX" , -2), "png", new File("meson_projectile_matrix.png"));
+		
 		BufferedImage[] bimg = {
 			PCXImage.from("c:\\games\\IG\\SP_WAR.PAC CRG200X1.PCX" , -2),
 			PCXImage.from("c:\\games\\IG\\SP_WAR.PAC CRG200X2.PCX" , -2),

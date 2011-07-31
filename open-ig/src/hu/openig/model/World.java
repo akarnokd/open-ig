@@ -158,6 +158,7 @@ public class World {
 			galaxyModel = new GalaxyModel();
 			test = JavaUtils.newLinkedHashMap();
 			diplomacy = JavaUtils.newLinkedHashMap();
+			battle = new Battle();
 			
 			exec.submit(new Runnable() {
 				@Override
@@ -1446,7 +1447,7 @@ public class World {
 			battle.projectiles.put(id, matrix);
 			
 		}
-		for (XElement xspace : xbattle.childElement("space-entitites").childrenWithName("tech")) {
+		for (XElement xspace : xbattle.childElement("space-entities").childrenWithName("tech")) {
 			String id = xspace.get("id");
 			int nx = xspace.getInt("width");
 			
