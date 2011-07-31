@@ -510,6 +510,11 @@ public class ScreenTester extends JFrame implements GameControls {
 		if (commons != null && commons.world() != null) {
 			commons.stop();
 			commons.sounds.stop();
+			try {
+				commons.config.watcherWindow.close();
+			} catch (IOException ex) {
+				// ignore
+			}
 		}
 		final String clazz = screenClass;
 		config = null;

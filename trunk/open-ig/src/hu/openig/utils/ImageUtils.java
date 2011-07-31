@@ -106,7 +106,7 @@ public final class ImageUtils {
 			for (int j = 0; j < result.length; j++) {
 				int x = 0;
 				int y2 = Math.min(y + height - 1, img.getHeight() - 1);
-				for (int i = 0; i < result.length; i++) {
+				for (int i = 0; i < result[j].length; i++) {
 					int x2 = Math.min(x + width - 1, img.getWidth() - 1);
 					result[j][i] = newSubimage(img, x, y, x2 - x + 1, y2 - y + 1);
 					x += width;
