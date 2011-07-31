@@ -598,22 +598,12 @@ public class World {
 		}
 		
 		tech.equipmentImage = rl.getImage(image + "_tiny", true);
-		tech.spaceBattleImage = rl.getImage(image + "_huge", true);
 		tech.equipmentCustomizeImage = rl.getImage(image + "_small", true);
 		if (tech.equipmentCustomizeImage == null) {
-			tech.equipmentCustomizeImage = tech.spaceBattleImage;
+			tech.equipmentCustomizeImage = rl.getImage(image + "_huge", true);
 		}
 		tech.index = item.getInt("index");
 		tech.video = item.get("video", null);
-		
-		BufferedImage rot = rl.getImage(image + "_rotate", true);
-		if (rot != null) {
-			tech.rotation = ImageUtils.splitByWidth(rot, rot.getHeight());
-		}
-		BufferedImage matrix = rl.getImage(image + "_matrix", true);
-		if (matrix != null) {
-			tech.fireAndRotation = ImageUtils.split(matrix, matrix.getHeight() / 5, matrix.getHeight() / 5);
-		}
 	}
 	/**
 	 * Retrieve or create a research type.
@@ -1425,6 +1415,73 @@ public class World {
 	 * @param xbattle the battle definition
 	 */
 	void processBattle(XElement xbattle) {
+		for (XElement xturret : xbattle.childElement("buildings").childrenWithName("building-turret")) {
+
+			int nx = xturret.getInt("width");
+			int ny = xturret.getInt("height");
+			String id = xturret.get("id");
+			
+			BufferedImage m = rl.getImage(xturret.get("matrix"));
+			BufferedImage[][] matrix = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
+
+			for (XElement xrace : xturret.childrenWithName("race")) {
+				String rid = xrace.get("id");
+				for (XElement xport : xrace.childrenWithName("port")) {
+					BuildingTurret tr = new BuildingTurret();
+					tr.strip = xport.getInt("strip");
+					tr.dx = xport.getInt("dx");
+					tr.dy = xport.getInt("dy");
+					tr.matrix = matrix;
+					battle.addTurret(id, rid, tr);
+				}
+			}
+			
+		}
+		for (XElement xproj : xbattle.childElement("projectiles").childrenWithName("projectile")) {
+			String id = xproj.get("id");
+			int nx = xproj.getInt("width");
+			int ny = xproj.getInt("height");
+			BufferedImage m = rl.getImage(xproj.get("matrix"));
+			BufferedImage[][] matrix = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
+			battle.projectiles.put(id, matrix);
+			
+		}
+		for (XElement xspace : xbattle.childElement("space-entitites").childrenWithName("tech")) {
+			String id = xspace.get("id");
+			int nx = xspace.getInt("width");
+			
+			BattleSpaceEntity se = new BattleSpaceEntity();
+			
+			BufferedImage ni = rl.getImage(xspace.get("normal"));
+			se.normal = ImageUtils.splitByWidth(ni, ni.getWidth() / nx);
+			
+			if (xspace.has("alternative")) {
+				BufferedImage ai = rl.getImage(xspace.get("alternative"));
+				se.alternative = ImageUtils.splitByWidth(ai, ai.getWidth() / nx);
+			} else {
+				se.alternative = se.normal;
+			}
+			se.image = rl.getImage(xspace.get("image"));
+			
+			battle.spaceEntities.put(id, se);
+		}
+		for (XElement xground : xbattle.childElement("ground-entities").childrenWithName("tech")) {
+			String id = xground.get("id");
+			int nx = xground.getInt("width");
+			int ny = xground.getInt("height");
+			BattleGroundEntity ge = new BattleGroundEntity();
+
+			BufferedImage ni = rl.getImage(xground.get("normal"));
+			ge.normal = ImageUtils.split(ni, ni.getWidth() / nx, ni.getHeight() / ny);
+			
+			if (xground.has("alternative")) {
+				BufferedImage ai = rl.getImage(xground.get("alternative"));
+				ge.alternative = ImageUtils.split(ai, ai.getWidth() / nx, ai.getWidth() / ny);
+			} else {
+				ge.alternative = ge.normal;
+			}
+			battle.groundEntities.put(id, ge);
+		}
 		
 	}
 }

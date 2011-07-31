@@ -75,7 +75,7 @@ public final class ImageUtils {
 	/**
 	 * Split the image into equally sized sub-images.
 	 * @param img the image to split
-	 * @param width the split width
+	 * @param width the split width in pixels
 	 * @return the array of images
 	 */
 	public static BufferedImage[] splitByWidth(BufferedImage img, int width) {
@@ -94,8 +94,8 @@ public final class ImageUtils {
 	/**
 	 * Split the image into equally sized sub-images.
 	 * @param img the image to split
-	 * @param width the split width
-	 * @param height the split height
+	 * @param width the split width in pixels
+	 * @param height the split height in pixels
 	 * @return the array of array images, the first dimension are the image rows
 	 */
 	public static BufferedImage[][] split(BufferedImage img, int width, int height) {

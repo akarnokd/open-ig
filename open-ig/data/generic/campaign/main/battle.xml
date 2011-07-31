@@ -44,67 +44,6 @@
 			<race id='ecalep'>
 			</race>
 		</building-turret>
-		<!-- Definition of how a building looks like from orbit in space battle -->
-		<building-orbit id='InversionShield'>
-			<race id='human' rotate='inventions/buildings/military/inversion_shield_rotate' width='1' height='1'/>
-			<race id='garthog' rotate='inventions/buildings/military/alien_inversion_shield_rotate' width='1' height='1'/>
-			<race id='morgath' rotate='inventions/buildings/military/alien_inversion_shield_rotate' width='1' height='1'/>
-			<race id='sullep' rotate='inventions/buildings/military/alien_inversion_shield_rotate' width='1' height='1'/>
-			<race id='ychom' rotate='inventions/buildings/military/alien_inversion_shield_rotate' width='1' height='1'/>
-			<race id='dribs' rotate='inventions/buildings/military/alien_inversion_shield_rotate' width='1' height='1'/>
-			<race id='dargslan' rotate='inventions/buildings/military/alien_inversion_shield_rotate' width='1' height='1'/>
-			<race id='ecalep' rotate='inventions/buildings/military/alien_inversion_shield_rotate' width='1' height='1'/>
-		</building-orbit>
-		<building-orbit id='HyperShield'>
-			<race id='human' rotate='inventions/buildings/military/hypershield_rotate' width='1' height='1'/>
-			<race id='garthog' rotate='inventions/buildings/military/alien_hypershield_rotate' width='1' height='1'/>
-			<race id='morgath' rotate='inventions/buildings/military/alien_hypershield_rotate' width='1' height='1'/>
-			<race id='sullep' rotate='inventions/buildings/military/alien_hypershield_rotate' width='1' height='1'/>
-			<race id='ychom' rotate='inventions/buildings/military/alien_hypershield_rotate' width='1' height='1'/>
-			<race id='dribs' rotate='inventions/buildings/military/alien_hypershield_rotate' width='1' height='1'/>
-			<race id='dargslan' rotate='inventions/buildings/military/alien_hypershield_rotate' width='1' height='1'/>
-			<race id='ecalep' rotate='inventions/buildings/military/alien_hypershield_rotate' width='1' height='1'/>
-		</building-orbit>
-		<building-orbit id='IonProjector'>
-			<race id='human' rotate='inventions/buildings/guns/ion_projector_rotate' width='64' height='1'/>
-			<race id='garthog' rotate='inventions/buildings/guns/alien_ion_projector_rotate' width='64' height='1'/>
-			<race id='morgath' rotate='inventions/buildings/guns/alien_ion_projector_rotate' width='64' height='1'/>
-			<race id='sullep' rotate='inventions/buildings/guns/alien_ion_projector_rotate' width='64' height='1'/>
-			<race id='ychom' rotate='inventions/buildings/guns/alien_ion_projector_rotate' width='64' height='1'/>
-			<race id='dribs' rotate='inventions/buildings/guns/alien_ion_projector_rotate' width='64' height='1'/>
-			<race id='dargslan' rotate='inventions/buildings/guns/alien_ion_projector_rotate' width='64' height='1'/>
-			<race id='ecalep' rotate='inventions/buildings/guns/alien_ion_projector_rotate' width='64' height='1'/>
-		</building-orbit>
-		<building-orbit id='PlasmaProjector'>
-			<race id='human' rotate='inventions/buildings/guns/plasma_projector_rotate' width='64' height='1'/>
-			<race id='garthog' rotate='inventions/buildings/guns/alien_plasma_projector_rotate' width='64' height='1'/>
-			<race id='morgath' rotate='inventions/buildings/guns/alien_plasma_projector_rotate' width='64' height='1'/>
-			<race id='sullep' rotate='inventions/buildings/guns/alien_plasma_projector_rotate' width='64' height='1'/>
-			<race id='ychom' rotate='inventions/buildings/guns/alien_plasma_projector_rotate' width='64' height='1'/>
-			<race id='dribs' rotate='inventions/buildings/guns/alien_plasma_projector_rotate' width='64' height='1'/>
-			<race id='dargslan' rotate='inventions/buildings/guns/alien_plasma_projector_rotate' width='64' height='1'/>
-			<race id='ecalep' rotate='inventions/buildings/guns/alien_plasma_projector_rotate' width='64' height='1'/>
-		</building-orbit>
-		<building-orbit id='ParticleProjector'>
-			<race id='human' rotate='inventions/buildings/guns/particle_projector_rotate' width='64' height='1'/>
-			<race id='garthog' rotate='inventions/buildings/guns/alien_particle_projector_rotate' width='64' height='1'/>
-			<race id='morgath' rotate='inventions/buildings/guns/alien_particle_projector_rotate' width='64' height='1'/>
-			<race id='sullep' rotate='inventions/buildings/guns/alien_particle_projector_rotate' width='64' height='1'/>
-			<race id='ychom' rotate='inventions/buildings/guns/alien_particle_projector_rotate' width='64' height='1'/>
-			<race id='dribs' rotate='inventions/buildings/guns/alien_particle_projector_rotate' width='64' height='1'/>
-			<race id='dargslan' rotate='inventions/buildings/guns/alien_particle_projector_rotate' width='64' height='1'/>
-			<race id='ecalep' rotate='inventions/buildings/guns/alien_particle_projector_rotate' width='64' height='1'/>
-		</building-orbit>
-		<building-orbit id='MesonProjector'>
-			<race id='human' rotate='inventions/buildings/guns/meson_projector_rotate' width='64' height='1'/>
-			<race id='garthog' rotate='inventions/buildings/guns/alien_meson_projector_rotate' width='64' height='1'/>
-			<race id='morgath' rotate='inventions/buildings/guns/alien_meson_projector_rotate' width='64' height='1'/>
-			<race id='sullep' rotate='inventions/buildings/guns/alien_meson_projector_rotate' width='64' height='1'/>
-			<race id='ychom' rotate='inventions/buildings/guns/alien_meson_projector_rotate' width='64' height='1'/>
-			<race id='dribs' rotate='inventions/buildings/guns/alien_meson_projector_rotate' width='64' height='1'/>
-			<race id='dargslan' rotate='inventions/buildings/guns/alien_meson_projector_rotate' width='64' height='1'/>
-			<race id='ecalep' rotate='inventions/buildings/guns/alien_meson_projector_rotate' width='64' height='1'/>
-		</building-orbit>
 	</buildings>
 	<projectiles>
 		<projectile id='Laser1' matrix='inventions/weapons/lasers/laser_1_rotate' width='16' height='1'/>
@@ -119,39 +58,88 @@
 		<projectile id='Mine' matrix='groundwar/mine' width='1' height='1'/>
 		<!-- Space bombs and rockets already have their own rotates -->
 	</projectiles>
-	<!-- The alternative spaceship/vehicle representation when your enemy uses the same technology. -->
-	<alternatives>
-		<tech id='Fighter1' rotate='inventions/spaceships/fighters/alien_fighter_1'/>
-		<tech id='Fighter2' rotate='inventions/spaceships/fighters/alien_fighter_2'/>
-		<tech id='Fighter3' rotate='inventions/spaceships/fighters/alien_fighter_3'/>
-		<tech id='Fighter4' rotate='inventions/spaceships/fighters/alien_fighter_4'/>
-		<tech id='Fighter5' rotate='inventions/spaceships/fighters/alien_fighter_5'/>
-		<tech id='Fighter6' rotate='inventions/spaceships/fighters/alien_fighter_6'/>
+	<!-- Entities for spacewar with rotation info for regular and alternative appearances. -->
+	<space-entities>
+		<tech id='Fighter1' normal='inventions/spaceships/fighters/fighter_1_rotate' alternative='inventions/spaceships/fighters/alien_fighter_1_rotate' image='inventions/spaceships/fighters/fighter_1_huge' width='64'/>
+		<tech id='Fighter2'  normal='inventions/spaceships/fighters/fighter_2_rotate' alternative='inventions/spaceships/fighters/alien_fighter_2_rotate' image='inventions/spaceships/fighters/fighter_2_huge' width='64'/>
+		<tech id='Fighter3' normal='inventions/spaceships/fighters/fighter_3_rotate' alternative='inventions/spaceships/fighters/alien_fighter_3_rotate' image='inventions/spaceships/fighters/fighter_3_huge' width='64'/>
+		<tech id='Fighter4' normal='inventions/spaceships/fighters/fighter_4_rotate' alternative='inventions/spaceships/fighters/alien_fighter_4_rotate' image='inventions/spaceships/fighters/fighter_4_huge' width='64'/>
+		<tech id='Fighter5' normal='inventions/spaceships/fighters/fighter_5_rotate' alternative='inventions/spaceships/fighters/alien_fighter_5_rotate' image='inventions/spaceships/fighters/fighter_5_huge' width='64'/>
+		<tech id='Fighter6' normal='inventions/spaceships/fighters/fighter_6_rotate' alternative='inventions/spaceships/fighters/alien_fighter_6_rotate' image='inventions/spaceships/fighters/fighter_6_huge' width='64'/>
 
-		<tech id='Cruiser1' rotate='inventions/spaceships/cruisers/alien_cruiser_1'/>
-		<tech id='Cruiser2' rotate='inventions/spaceships/cruisers/alien_cruiser_2'/>
-		<tech id='Cruiser3' rotate='inventions/spaceships/cruisers/alien_cruiser_3'/>
-		<tech id='Destroyer1' rotate='inventions/spaceships/cruisers/alien_destroyer_1'/>
-		<tech id='Destroyer2' rotate='inventions/spaceships/cruisers/alien_destroyer_2'/>
-		<tech id='Destroyer3' rotate='inventions/spaceships/cruisers/alien_destroyer_3'/>
+		<tech id='Cruiser1' normal='inventions/spaceships/cruisers/cruiser_1_rotate' alternative='inventions/spaceships/cruisers/alien_cruiser_1_rotate' image='inventions/spaceships/cruisers/cruiser_1_huge' width='64'/>
+		<tech id='Cruiser2' normal='inventions/spaceships/cruisers/cruiser_2_rotate' alternative='inventions/spaceships/cruisers/alien_cruiser_2_rotate' image='inventions/spaceships/cruisers/cruiser_2_huge' width='64'/>
+		<tech id='Cruiser3' normal='inventions/spaceships/cruisers/cruiser_3_rotate' alternative='inventions/spaceships/cruisers/alien_cruiser_3_rotate' image='inventions/spaceships/cruisers/cruiser_3_huge' width='64'/>
+		<tech id='Destroyer1' normal='inventions/spaceships/cruisers/destroyer_1_rotate' alternative='inventions/spaceships/cruisers/alien_destroyer_1_rotate' image='inventions/spaceships/cruisers/destroyer_1_huge' width='64'/>
+		<tech id='Destroyer2' normal='inventions/spaceships/cruisers/destroyer_2_rotate' alternative='inventions/spaceships/cruisers/alien_destroyer_2_rotate' image='inventions/spaceships/cruisers/destroyer_2_huge' width='64'/>
+		<tech id='Destroyer3' normal='inventions/spaceships/cruisers/destroyer_3_rotate' alternative='inventions/spaceships/cruisers/alien_destroyer_3_rotate' image='inventions/spaceships/cruisers/destroyer_3_huge' width='64'/>
 
-		<tech id='Battleship1' rotate='inventions/spaceships/battleships/alien_battleship_1'/>
-		<tech id='Battleship2' rotate='inventions/spaceships/battleships/alien_battleship_2'/>
-		<tech id='Battleship3' rotate='inventions/spaceships/battleships/alien_battleship_3'/>
-		<tech id='Thorin' rotate='inventions/spaceships/battleships/alien_thorin_1'/>
+		<tech id='Battleship1' normal='inventions/spaceships/battleships/battleship_1_rotate' alternative='inventions/spaceships/battleships/alien_battleship_1_rotate' image='inventions/spaceships/battleships/battleship_1_huge' width='64'/>
+		<tech id='Battleship2' normal='inventions/spaceships/battleships/battleship_2_rotate' alternative='inventions/spaceships/battleships/alien_battleship_2_rotate' image='inventions/spaceships/battleships/battleship_2_huge' width='64'/>
+		<tech id='Battleship3' normal='inventions/spaceships/battleships/battleship_3_rotate' alternative='inventions/spaceships/battleships/alien_battleship_3_rotate' image='inventions/spaceships/battleships/battleship_3_huge' width='64'/>
+		<tech id='Thorin' normal='inventions/spaceships/battleships/thorin_rotate' alternative='inventions/spaceships/battleships/alien_thorin_rotate' image='inventions/spaceships/battleships/thorin_huge' width='64'/>
 		
-		<tech id='LightTank' rotate='inventions/weapons/tanks/alien_light_tank'/>
-		<tech id='MediumTank' rotate='inventions/weapons/tanks/alien_medium_tank'/>
-		<tech id='HeavyTank' rotate='inventions/weapons/tanks/alien_heavy_tank'/>
-		<tech id='Behemoth' rotate='inventions/weapons/tanks/alien_behemoth'/>
-		<tech id='RadarCar' rotate='inventions/weapons/vehicles/alien_radar_car'/>
-		<tech id='RocketLauncher1' rotate='inventions/weapons/vehicles/alien_rocket_launcher_1'/>
-		<tech id='RocketLauncher2' rotate='inventions/weapons/vehicles/alien_rocket_launcher_2'/>
+		<tech id='SpaceStation1' normal='inventions/spaceships/stations/space_station_1_rotate' alternative='inventions/spaceships/stations/alien_space_station_1_rotate' image='inventions/spaceships/stations/space_station_1_huge' width='64'/>
+		<tech id='SpaceStation2' normal='inventions/spaceships/stations/space_station_2_rotate' alternative='inventions/spaceships/stations/alien_space_station_2_rotate' image='inventions/spaceships/stations/space_station_2_huge' width='64'/>
+		<tech id='SpaceStation3' normal='inventions/spaceships/stations/space_station_3_rotate' alternative='inventions/spaceships/stations/alien_space_station_3_rotate' image='inventions/spaceships/stations/space_station_3_huge' width='64'/>
+		<tech id='OrbitalFactory' normal='inventions/spaceships/stations/orbital_factory_rotate' alternative='inventions/spaceships/stations/alien_orbital_factory_rotate' image='inventions/spaceships/stations/orbital_factory_huge' width='64'/>
 
-		<tech id='SpaceStation1' rotate='inventions/spaceships/stations/alien_space_station_1'/>
-		<tech id='SpaceStation2' rotate='inventions/spaceships/stations/alien_space_station_2'/>
-		<tech id='SpaceStation3' rotate='inventions/spaceships/stations/alien_space_station_3'/>
-		<tech id='OrbitalFactory' rotate='inventions/spaceships/stations/alien_orbital_factory'/>
+		<tech id='InversionShield' normal='inventions/buildings/military/inversion_shield_rotate' alternative='inventions/buildings/military/alien_inversion_shield_rotate' image='inventions/buildings/military/inversion_shield_huge' width='64'/>
+		<tech id='HyperShield' normal='inventions/buildings/military/hypershield_rotate' alternative='inventions/buildings/military/alien_hypershield_rotate' image='inventions/buildings/military/hypershield_huge' width='64'/>
+
+		<tech id='IonProjector' normal='inventions/buildings/guns/ion_projector_rotate' alternative='inventions/buildings/guns/alien_ion_projector_rotate' image='inventions/buildings/guns/ion_projector_huge' width='64'/>
+		<tech id='PlasmaProjector' normal='inventions/buildings/guns/plasma_projector_rotate' alternative='inventions/buildings/guns/alien_plasma_projector_rotate' image='inventions/buildings/guns/plasma_projector_huge' width='64'/>
+		<tech id='ParticleProjector' normal='inventions/buildings/guns/particle_projector_rotate' alternative='inventions/buildings/guns/alien_particle_projector_rotate' image='inventions/buildings/guns/particle_projector_huge' width='64'/>
+		<tech id='MesonProjector' normal='inventions/buildings/guns/meson_projector_rotate' alternative='inventions/buildings/guns/alien_meson_projector_rotate' image='inventions/buildings/guns/meson_projector_huge' width='64'/>
+
+		<tech id='ColonyShip' normal='inventions/spaceships/battleships/colony_ship_rotate' alternative='inventions/spaceships/battleships/alien_colony_ship_rotate' image='inventions/spaceships/battleships/colony_ship_huge' width='64'/>
+		<tech id='DargslanFighter' normal=''  image='' width='64'/>
+		<tech id='DribsFighter' normal=''  image='' width='64'/>
+		<tech id='EcalepFighter' normal=''  image='' width='64'/>
+		<tech id='GarthogFighter' normal=''  image='' width='64'/>
+		<tech id='MorgathFighter' normal=''  image='' width='64'/>
+		<tech id='PirateFighter' normal=''  image='' width='64'/>
+		<tech id='SullepFighter1' normal=''  image='' width='64'/>
+		<tech id='SullepFighter2' normal=''  image='' width='64'/>
+		<tech id='YchomFighter' normal='' image='' width='64'/>
+
+		<tech id='DargslanDestroyer' normal='' image='' width='64'/>
+		<tech id='DribsDestroyer' normal='' image='' width='64'/>
+		<tech id='EcalepDestroyer' normal='' image='' width='64'/>
+		<tech id='GarthogDestroyer' normal='' image='' width='64'/>
+		<tech id='MorgathDestroyer' normal='' image='' width='64'/>
+		<tech id='PirateDestroyer' normal='' image='' width='64'/>
+		<tech id='YchomDestroyer' normal='' image='' width='64'/>
+
+		<tech id='DargslanBattleship' normal='' image='' width='64'/>
+		<tech id='DribsBattleship' normal='' image='' width='64'/>
+		<tech id='EcalepBattleship' normal='' image='' width='64'/>
+		<tech id='GarthogBattleship' normal='' image='' width='64'/>
+		<tech id='MorgathBattleship' normal='' image='' width='64'/>
+		<tech id='PirateBattleship' normal='' image='' width='64'/>
+		<tech id='SullepBattleship' normal='' image='' width='64'/>
+		<tech id='YchomBattleship' normal='' image='' width='64'/>
+
+		<tech id='TradersFreight1' normal='' image='' width='64'/>
+		<tech id='TradersFreight2' normal='' image='' width='64'/>
 		
-	</alternatives>
+	</space-entities>
+	<!-- The rotation-fire phase matrixes for surface tanks and vehicles -->
+	<ground-entities>
+		<tech id='LightTank' normal='inventions/weapons/tanks/light_tank_rotate' alternative='inventions/weapons/tanks/light_tank_rotate' width='16' height='5'/>
+		<tech id='MediumTank' normal='inventions/weapons/tanks/medium_tank_rotate' alternative='inventions/weapons/tanks/alien_medium_tank_rotate' width='16' height='5'/>
+		<tech id='HeavyTank' normal='inventions/weapons/tanks/heavy_tank_rotate' alternative='inventions/weapons/tanks/alien_heavy_tank_rotate' width='16' height='5'/>
+		<tech id='Behemoth' normal='inventions/weapons/tanks/behemoth_rotate' alternative='inventions/weapons/tanks/alien_behemoth_rotate' width='16' height='5'/>
+		<tech id='RadarCar' normal='inventions/weapons/vehicles/radar_car_rotate' alternative='inventions/weapons/vehicles/alien_radar_car_rotate' width='16' height='5'/>
+		<tech id='RocketLauncher1' normal='inventions/weapons/vehicles/rocket_launcher_1_rotate' alternative='inventions/weapons/vehicles/alien_rocket_launcher_1_rotate' width='16' height='5'/>
+		<tech id='RocketLauncher2' normal='inventions/weapons/vehicles/rocket_launcher_2_rotate' alternative='inventions/weapons/vehicles/alien_rocket_launcher_2_rotate' width='16' height='5'/>
+
+		<tech id='DargslanSelfRepairTank' normal='' width='16' height='5'/>
+		<tech id='DribsRocketJammer' normal='' width='16' height='5'/>
+		<tech id='EcalepSpecialUnit' normal='' width='16' height='5'/>
+		<tech id='GarthogRadarJammer' normal='' width='16' height='5'/>
+		<tech id='MorgathKamikazeTank' normal='' width='16' height='5'/>
+		<tech id='SullepArtillery' normal='' width='16' height='5'/>
+		<tech id='YchomMineLayer' normal='' width='16' height='5'/>
+	</ground-entities>
 </battle>

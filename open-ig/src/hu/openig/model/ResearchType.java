@@ -82,22 +82,22 @@ public class ResearchType {
 	public final Map<ResearchType, Integer> fixedSlots = new LinkedHashMap<ResearchType, Integer>();
 	// -------------------------------------------------
 	// Resources for the Space battle screen.
-	/** 
-	 * The 286x197 image to display during the space battle in the information panel. 
-	 * Uses the <code>_huge</code> postfix.
-	 * Projectiles may not use this. 
-	 */
-	public BufferedImage spaceBattleImage;
-	/** The image sequence to rotate a ship. The first image is at angle zero relative to the screen-x coordinate. */
-	public BufferedImage[] rotation;
-	// -------------------------------------------------
-	// Resources for the ground battle screen
-	/** 
-	 * The image matrix where the first dimension indicates a firing phase and the second indicates
-	 * a rotation phase. The initial rotation faces the negative y axis of the surface.
-	 * Uses the <code>_matrix</code> suffix.
-	 */
-	public BufferedImage[][] fireAndRotation;
+//	/** 
+//	 * The 286x197 image to display during the space battle in the information panel. 
+//	 * Uses the <code>_huge</code> postfix.
+//	 * Projectiles may not use this. 
+//	 */
+//	public BufferedImage spaceBattleImage;
+//	/** The image sequence to rotate a ship. The first image is at angle zero relative to the screen-x coordinate. */
+//	public BufferedImage[] rotation;
+//	// -------------------------------------------------
+//	// Resources for the ground battle screen
+//	/** 
+//	 * The image matrix where the first dimension indicates a firing phase and the second indicates
+//	 * a rotation phase. The initial rotation faces the negative y axis of the surface.
+//	 * Uses the <code>_matrix</code> suffix.
+//	 */
+//	public BufferedImage[][] fireAndRotation;
 	/**
 	 * Retrieve a property value.
 	 * @param property the property name

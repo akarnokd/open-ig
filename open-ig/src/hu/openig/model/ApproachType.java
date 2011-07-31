@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 /**
+ * The approach type for addressing the opponent in diplomatic talks. 
  * @author akarnokd, Apr 22, 2011
  */
 public enum ApproachType {
