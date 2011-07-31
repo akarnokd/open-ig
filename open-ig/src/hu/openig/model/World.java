@@ -535,7 +535,7 @@ public class World {
 			tech.equipmentCustomizeImage = tech.spaceBattleImage;
 		}
 		tech.index = item.getInt("index");
-		tech.video = item.get("video");
+		tech.video = item.get("video", null);
 		
 		BufferedImage rot = rl.getImage(image + "_rotate", true);
 		if (rot != null) {

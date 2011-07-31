@@ -454,8 +454,11 @@ public class CommonResources {
 			// Ignored
 		}
 	}
-	/** Start the timed actions. */
-	public void start() {
+	/** 
+	 * Start the timed actions.
+	 * @param withMusic set if play music 
+	 */
+	public void start(boolean withMusic) {
 		stop();
 		radarHandler = register(1000, new Act() {
 			@Override
@@ -481,7 +484,9 @@ public class CommonResources {
 		Allocator.compute(world, pool);
 		Radar.compute(world);
 		timer.start();
-		playRegularMusic();
+		if (withMusic) {
+			playRegularMusic();
+		}
 	}
 	/** 
 	 * Replace the simulator with the given delayed new simulator.

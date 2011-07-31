@@ -53,10 +53,9 @@ public class Labels {
 	public synchronized String get(String key) { // FIXME temporary
 		String value = map.get(key);
 		if (value == null) {
-//			throw new AssertionError("Missing value for key: " + key);
 			System.err.println("\t<entry key='" + key + "'></entry>");
-			AssertionError ex = new AssertionError();
-			ex.printStackTrace();
+//			AssertionError ex = new AssertionError();
+//			ex.printStackTrace();
 			map.put(key, key);
 			return key;
 		}

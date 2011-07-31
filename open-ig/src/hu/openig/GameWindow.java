@@ -1392,7 +1392,7 @@ public class GameWindow extends JFrame implements GameControls {
 							if (status) {
 								displayStatusbar();
 							}
-							commons.start();
+							commons.start(true);
 							if (!frunning) {
 								commons.pause();
 							}

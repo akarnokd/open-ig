@@ -78,6 +78,10 @@ public class StarmapScreen extends ScreenBase {
 		final Rectangle vscrollInnerRect = new Rectangle();
 		/** Vertical scrollknob rectangle. */
 		final Rectangle vscrollKnobRect = new Rectangle();
+		/** Minimum knob height constant. */
+		final int minimumKnobHeight = commons.starmap().vKnobTop.getHeight() + commons.starmap().vKnobBottom.getHeight();
+		/** Minimum knob width constant. */
+		final int minimumKnobWidth = commons.starmap().hKnobLeft.getHeight() + commons.starmap().hKnobRight.getHeight();
 		/**
 		 * Paint the scrollbars to the given graphics.
 		 * @param g2 the graphics
@@ -85,6 +89,9 @@ public class StarmapScreen extends ScreenBase {
 		public void paint(Graphics2D g2) {
 			paintHorizontally(g2, hscrollRect, commons.starmap().hScrollLeft, commons.starmap().hScrollRight, commons.starmap().hScrollFill);
 			paintVertically(g2, vscrollRect, commons.starmap().vScrollTop, commons.starmap().vScrollBottom, commons.starmap().vScrollFill);
+
+			paintHorizontally(g2, hscrollKnobRect, commons.starmap().hKnobLeft, commons.starmap().hKnobRight, commons.starmap().hKnobFill);
+			paintVertically(g2, vscrollKnobRect, commons.starmap().vKnobTop, commons.starmap().vKnobBottom, commons.starmap().vKnobFill);
 		}
 		/**
 		 * Reposition the scrollbar graphics.
@@ -107,6 +114,68 @@ public class StarmapScreen extends ScreenBase {
 			hscrollInnerRect.setSize(hscrollRect.width - 4, hscrollRect.height - 4);
 			vscrollInnerRect.setLocation(vscrollRect.x + 2, vscrollRect.y + 2);
 			vscrollInnerRect.setSize(vscrollRect.width - 4, vscrollRect.height - 4);
+			
+			vscrollKnobRect.setLocation(vscrollInnerRect.x + 1, vscrollInnerRect.y + 1);
+			vscrollKnobRect.setSize(vscrollInnerRect.width - 2, vscrollInnerRect.height - 2);
+
+			hscrollKnobRect.setLocation(hscrollInnerRect.x + 1, hscrollInnerRect.y + 1);
+			hscrollKnobRect.setSize(hscrollInnerRect.width - 2, hscrollInnerRect.height - 2);
+			
+			// adjust position and size based on the current zoom and window
+			
+			int vPixelsAvailable = Math.max(starmapRect.height - starmapWindow.height, 0);
+			int hPixelsAvailable = Math.max(starmapRect.width - starmapWindow.width, 0);
+			
+			if (vPixelsAvailable > 0) {
+				int maxVScroll = vscrollKnobRect.height - minimumKnobHeight;
+				if (vPixelsAvailable <= maxVScroll) {
+					vscrollKnobRect.y += yOffset;
+					vscrollKnobRect.height -= vPixelsAvailable;
+				} else {
+					vscrollKnobRect.y += yOffset * maxVScroll / (starmapRect.height - starmapWindow.height) ;
+					vscrollKnobRect.height = minimumKnobHeight;
+				}
+			}
+			if (hPixelsAvailable > 0) {
+				int maxHScroll = hscrollKnobRect.width - minimumKnobWidth;
+				if (hPixelsAvailable <= maxHScroll) {
+					hscrollKnobRect.x += xOffset;
+					hscrollKnobRect.width -= hPixelsAvailable;
+				} else {
+					hscrollKnobRect.x +=  xOffset * maxHScroll / (starmapRect.width - starmapWindow.width);
+					hscrollKnobRect.width = minimumKnobWidth;
+				}
+			}
+		}
+		/**
+		 * @param dx the horizontal knob movement 
+		 * @return computes a one pixel horizontal movement would equal to a X pixels of panning on screen. 
+		 */ 
+		public int getHorizontalPanAmount(int dx) {
+			int hPixelsAvailable = Math.max(starmapRect.width - starmapWindow.width, 0);
+			if (hPixelsAvailable > 0) {
+				int maxHScroll = hscrollInnerRect.width - 2 - minimumKnobWidth;
+				if (hPixelsAvailable <= maxHScroll) {
+					return dx;
+				}
+				return dx * (starmapRect.width - starmapWindow.width) / maxHScroll;
+			}
+			return 0;
+		}
+		/**
+		 * @param dy the vertical knob movement 
+		 * @return computes a one pixel vertical movement would equal to a Y pixels of panning on screen. 
+		 */ 
+		public int getVerticalPanAmount(int dy) {
+			int vPixelsAvailable = Math.max(starmapRect.height - starmapWindow.height, 0);
+			if (vPixelsAvailable > 0) {
+				int maxVScroll = vscrollInnerRect.height - 2 - minimumKnobHeight;
+				if (vPixelsAvailable <= maxVScroll) {
+					return dy;
+				}
+				return dy * (starmapRect.height - starmapWindow.height) / maxVScroll;
+			}
+			return 0;
 		}
 	}
 	/**
@@ -169,9 +238,9 @@ public class StarmapScreen extends ScreenBase {
 	private boolean minimapVisible = true;
 	/** Are the scrollbars visible? */
 	private boolean scrollbarsVisible = true;
-	/** The main starmap window's coordinates. */
+	/** The main starmap window's coordinates. (E.g., the rectangle where the map is drawn.) */
 	final Rectangle starmapWindow = new Rectangle();
-	/** The rendering rectangle of the starmap. */
+	/** The rendering rectangle of the starmap. (E.g., the entire, scaled rectangle of the map.) */
 	final Rectangle starmapRect = new Rectangle();
 	/** The minimap rectangle. */
 	final Rectangle minimapRect = new Rectangle();
@@ -188,7 +257,7 @@ public class StarmapScreen extends ScreenBase {
 	/** The starmap clipping rectangle. */
 	Rectangle starmapClip;
 	/** The scrollbar painter. */
-	final ScrollBarPainter scrollbarPainter;
+	ScrollBarPainter scrollbarPainter;
 	/** The right panel rectangle. */
 	final Rectangle rightPanel = new Rectangle();
 	/** The bottom panel rectangle. */
@@ -241,6 +310,10 @@ public class StarmapScreen extends ScreenBase {
 	boolean zoomDirection;
 	/** In panning mode? */
 	boolean panning;
+	/** Scrolling vertically. */
+	boolean scrollX;
+	/** Scrolling horizontally. */
+	boolean scrollY;
 	/** Mouse down. */
 	boolean mouseDown;
 	/** Moving the planets fleets splitter. */
@@ -335,10 +408,6 @@ public class StarmapScreen extends ScreenBase {
 	boolean showFleetNames = true;
 	/** The statistics cache delayed by ~450ms. */
 	final Map<Planet, PlanetStatistics> cache = new HashMap<Planet, PlanetStatistics>();
-	/** Construct the screen. */
-	public StarmapScreen() {
-		scrollbarPainter = new ScrollBarPainter();
-	}
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
 	void computeRectangles() {
 		starmapWindow.x = 0;
@@ -831,7 +900,9 @@ public class StarmapScreen extends ScreenBase {
 	}
 	/** Display the right panel's planet info on the current selected planet. */
 	void displayPlanetInfo() {
-		if (player().selectionMode != SelectionMode.PLANET) {
+		Planet p = planet();
+		
+		if (p == null || player().selectionMode != SelectionMode.PLANET) {
 			colonyName.visible(false);
 			colonyOwner.visible(false);
 			colonySurface.visible(false);
@@ -857,8 +928,6 @@ public class StarmapScreen extends ScreenBase {
 			return;
 		} 
 		
-		Planet p = planet();
-
 		surveySatellite.visible(
 				p.owner != player()
 				&& (knowledge(p, PlanetKnowledge.NAME) <= 0 || !p.isPopulated())
@@ -1476,7 +1545,33 @@ public class StarmapScreen extends ScreenBase {
 					rep = true;
 				}
 			}
-			if (mouseDown) {
+			if (scrollX || (e.has(Button.LEFT) && e.has(Type.DRAG) && scrollbarPainter.hscrollKnobRect.contains(e.x, e.y))) {
+				if (!scrollX) {
+					lastX = e.x;
+					lastY = e.y;
+					scrollX = true;
+				}
+				int dx = scrollbarPainter.getHorizontalPanAmount(lastX - e.x);;
+				
+				pan(dx, 0);
+				lastX = e.x;
+				lastY = e.y;
+				rep = true;
+			}
+			if (scrollY || (e.has(Button.LEFT) && e.has(Type.DRAG) && scrollbarPainter.vscrollKnobRect.contains(e.x, e.y))) {
+				if (!scrollY) {
+					lastX = e.x;
+					lastY = e.y;
+					scrollY = true;
+				}
+				int dy = scrollbarPainter.getVerticalPanAmount(lastY - e.y);;
+				
+				pan(0, dy);
+				lastX = e.x;
+				lastY = e.y;
+				rep = true;
+			}
+			if (mouseDown && !scrollX && !scrollY && !panning) {
 				if (e.has(Button.LEFT) && minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
 					scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 					rep = true;
@@ -1490,10 +1585,16 @@ public class StarmapScreen extends ScreenBase {
 			}
 			break;
 		case DOWN:
-			if (e.has(Button.RIGHT)) {
+			lastX = e.x;
+			lastY = e.y;
+			if (e.has(Button.RIGHT) && starmapWindow.contains(e.x, e.y)) {
 				panning = true;
-				lastX = e.x;
-				lastY = e.y;
+			}
+			if (e.has(Button.LEFT) && scrollbarPainter.vscrollKnobRect.contains(e.x, e.y)) {
+				scrollY = true;
+			}
+			if (e.has(Button.LEFT) && scrollbarPainter.hscrollKnobRect.contains(e.x, e.y)) {
+				scrollX = true;
 			}
 			mouseDown = true;
 			if (e.has(Button.LEFT) && minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
@@ -1669,11 +1770,15 @@ public class StarmapScreen extends ScreenBase {
 			break;
 		case UP:
 			panning = false;
+			scrollX = false;
+			scrollY = false;
 			mouseDown = false;
 			pfSplitter = false;
 			break;
 		case LEAVE:
 			panning = false;
+			scrollX = false;
+			scrollY = false;
 			mouseDown = false;
 			pfSplitter = false;
 			break;
@@ -1747,6 +1852,7 @@ public class StarmapScreen extends ScreenBase {
 	}
 	@Override
 	public void onInitialize() {
+		scrollbarPainter = new ScrollBarPainter();
 		prevPlanet = new UIImageButton(commons.starmap().backwards);
 		prevPlanet.setDisabledPattern(commons.common().disabledPattern);
 		nextPlanet = new UIImageButton(commons.starmap().forwards);

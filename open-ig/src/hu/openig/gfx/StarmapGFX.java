@@ -97,10 +97,10 @@ public class StarmapGFX {
 	@Img(name = "starmap/scrollknob_vertical_fill")
 	public BufferedImage vKnobFill;
 	/** Scrollknob vertical top. */
-	@Img(name = "starmap/scrollknob_vertical_top")
+	@Img(name = "starmap/scrollknob_vertical_bottom")
 	public BufferedImage vKnobBottom;
 	/** Scrollknob vertical bottom. */
-	@Img(name = "starmap/scrollknob_vertical_bottom")
+	@Img(name = "starmap/scrollknob_vertical_top")
 	public BufferedImage vKnobTop;
 	/** Attack. */
 	@Cat(name = "starmap/button_attack")
