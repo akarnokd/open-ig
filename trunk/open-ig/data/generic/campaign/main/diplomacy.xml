@@ -11,27 +11,27 @@
       <approach type='HUMBLE'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.HUMBLE.7</approach>
       <approach type='HUMBLE'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.HUMBLE.8</approach>
       <approach type='HUMBLE'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.HUMBLE.9</approach>
-      <response type='AGGRESSIVE' mode='YES' change='+150'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
-      <response type='AGGRESSIVE' mode='YES' change='+120'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
-      <response type='AGGRESSIVE' mode='YES' change='+100'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
+      <response type='AGGRESSIVE' mode='YES' change='150'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
+      <response type='AGGRESSIVE' mode='YES' change='120'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
+      <response type='AGGRESSIVE' mode='YES' change='100'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-80'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-70'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-50'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.15</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-150'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-250'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-270'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18</response>
-      <response type='NEUTRAL' mode='YES' change='+160'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
-      <response type='NEUTRAL' mode='YES' change='+140'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
+      <response type='NEUTRAL' mode='YES' change='160'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
+      <response type='NEUTRAL' mode='YES' change='140'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.24</response>
       <response type='NEUTRAL' mode='NO' change='-100'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
       <response type='NEUTRAL' mode='NO' change='-120'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
       <response type='NEUTRAL' mode='NO' change='-150'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-      <response type='AGGRESSIVE' mode='YES' change='+80'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-      <response type='AGGRESSIVE' mode='YES' change='+60'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+      <response type='AGGRESSIVE' mode='YES' change='80'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+      <response type='AGGRESSIVE' mode='YES' change='60'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
@@ -41,36 +41,36 @@
     </negotiate>
     <negotiate type='MONEY'>
       <approach>diplomacy.FreeNations.MONEY.37</approach>
-      <response mode='YES' change='+120'>diplomacy.FreeNations.MONEY.YES.38</response>
-      <response mode='YES' change='+80'>diplomacy.FreeNations.MONEY.YES.39</response>
-      <response mode='YES' change='+60'>diplomacy.FreeNations.MONEY.YES.40</response>
+      <response mode='YES' change='120'>diplomacy.FreeNations.MONEY.YES.38</response>
+      <response mode='YES' change='80'>diplomacy.FreeNations.MONEY.YES.39</response>
+      <response mode='YES' change='60'>diplomacy.FreeNations.MONEY.YES.40</response>
       <response mode='NO' notalk='true' change='-50'>diplomacy.FreeNations.MONEY.NO.41</response>
       <response mode='NO' notalk='true' change='-100'>diplomacy.FreeNations.MONEY.NO.42</response>
       <response mode='NO' notalk='true' change='-150'>diplomacy.FreeNations.MONEY.NO.43</response>
     </negotiate>
     <negotiate type='TRADE'>
       <approach>diplomacy.FreeNations.TRADE.44</approach>
-      <response mode='YES' change='+150'>diplomacy.FreeNations.TRADE.YES.45</response>
-      <response mode='YES' change='+130'>diplomacy.FreeNations.TRADE.YES.46</response>
-      <response mode='YES' change='+110'>diplomacy.FreeNations.TRADE.YES.47</response>
+      <response mode='YES' change='150'>diplomacy.FreeNations.TRADE.YES.45</response>
+      <response mode='YES' change='130'>diplomacy.FreeNations.TRADE.YES.46</response>
+      <response mode='YES' change='110'>diplomacy.FreeNations.TRADE.YES.47</response>
       <response mode='NO' change='0'>diplomacy.FreeNations.TRADE.NO.48</response>
       <response mode='NO' change='-20'>diplomacy.FreeNations.TRADE.NO.49</response>
       <response mode='NO' change='-20'>diplomacy.FreeNations.TRADE.NO.50</response>
     </negotiate>
     <negotiate type='ALLY'>
       <approach>diplomacy.FreeNations.ALLY.51</approach>
-      <response mode='YES' change='+150'>diplomacy.FreeNations.ALLY.YES.52</response>
-      <response mode='YES' change='+120'>diplomacy.FreeNations.ALLY.YES.53</response>
-      <response mode='YES' change='+100'>diplomacy.FreeNations.ALLY.YES.54</response>
+      <response mode='YES' change='150'>diplomacy.FreeNations.ALLY.YES.52</response>
+      <response mode='YES' change='120'>diplomacy.FreeNations.ALLY.YES.53</response>
+      <response mode='YES' change='100'>diplomacy.FreeNations.ALLY.YES.54</response>
       <response mode='NO' change='-40'>diplomacy.FreeNations.ALLY.NO.55</response>
       <response mode='NO' change='-50'>diplomacy.FreeNations.ALLY.NO.56</response>
       <response mode='NO' change='-90'>diplomacy.FreeNations.ALLY.NO.57</response>
     </negotiate>
     <negotiate type='DARGSLAN'>
       <approach>diplomacy.FreeNations.DARGSLAN.58</approach>
-      <response mode='YES' change='+200'>diplomacy.FreeNations.DARGSLAN.YES.59</response>
-      <response mode='YES' change='+180'>diplomacy.FreeNations.DARGSLAN.YES.60</response>
-      <response mode='YES' change='+160'>diplomacy.FreeNations.DARGSLAN.YES.61</response>
+      <response mode='YES' change='200'>diplomacy.FreeNations.DARGSLAN.YES.59</response>
+      <response mode='YES' change='180'>diplomacy.FreeNations.DARGSLAN.YES.60</response>
+      <response mode='YES' change='160'>diplomacy.FreeNations.DARGSLAN.YES.61</response>
       <response mode='NO' change='0'>diplomacy.FreeNations.DARGSLAN.NO.62</response>
       <response mode='NO' change='0'>diplomacy.FreeNations.DARGSLAN.NO.63</response>
       <response mode='NO' change='0'>diplomacy.FreeNations.DARGSLAN.NO.64</response>
@@ -127,27 +127,27 @@
       <approach type='HUMBLE'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.7</approach>
       <approach type='HUMBLE'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.8</approach>
       <approach type='HUMBLE'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.9</approach>
-      <response type='AGGRESSIVE' mode='YES' change='+180'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
-      <response type='AGGRESSIVE' mode='YES' change='+150'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
-      <response type='AGGRESSIVE' mode='YES' change='+120'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
+      <response type='AGGRESSIVE' mode='YES' change='180'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
+      <response type='AGGRESSIVE' mode='YES' change='150'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
+      <response type='AGGRESSIVE' mode='YES' change='120'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-20'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-30'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-40'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.15</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-100'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-130'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-170'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
-      <response type='NEUTRAL' mode='YES' change='+120'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
-      <response type='NEUTRAL' mode='YES' change='+80'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
-      <response type='NEUTRAL' mode='MAYBE' change='+30'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22</response>
-      <response type='NEUTRAL' mode='MAYBE' change='+10'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
+      <response type='NEUTRAL' mode='YES' change='120'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
+      <response type='NEUTRAL' mode='YES' change='80'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
+      <response type='NEUTRAL' mode='MAYBE' change='30'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22</response>
+      <response type='NEUTRAL' mode='MAYBE' change='10'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.24</response>
       <response type='NEUTRAL' mode='NO' change='-170'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
       <response type='NEUTRAL' mode='NO' change='-200'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
       <response type='NEUTRAL' mode='NO' change='-250'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-      <response type='AGGRESSIVE' mode='YES' change='+70'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-      <response type='AGGRESSIVE' mode='YES' change='+20'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+      <response type='AGGRESSIVE' mode='YES' change='70'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+      <response type='AGGRESSIVE' mode='YES' change='20'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-10'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-20'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
@@ -157,36 +157,36 @@
     </negotiate>
     <negotiate type='MONEY'>
       <approach>diplomacy.Morgath.MONEY.37</approach>
-      <response mode='YES' change='+180'>diplomacy.Morgath.MONEY.YES.38</response>
-      <response mode='YES' change='+110'>diplomacy.Morgath.MONEY.YES.39</response>
-      <response mode='YES' change='+80'>diplomacy.Morgath.MONEY.YES.40</response>
+      <response mode='YES' change='180'>diplomacy.Morgath.MONEY.YES.38</response>
+      <response mode='YES' change='110'>diplomacy.Morgath.MONEY.YES.39</response>
+      <response mode='YES' change='80'>diplomacy.Morgath.MONEY.YES.40</response>
       <response mode='NO' notalk='true' change='-50'>diplomacy.Morgath.MONEY.NO.41</response>
       <response mode='NO' notalk='true' change='-100'>diplomacy.Morgath.MONEY.NO.42</response>
       <response mode='NO' notalk='true' change='-120'>diplomacy.Morgath.MONEY.NO.43</response>
     </negotiate>
     <negotiate type='TRADE'>
       <approach>diplomacy.Morgath.TRADE.44</approach>
-      <response mode='YES' change='+110'>diplomacy.Morgath.TRADE.YES.45</response>
-      <response mode='YES' change='+80'>diplomacy.Morgath.TRADE.YES.46</response>
-      <response mode='YES' change='+60'>diplomacy.Morgath.TRADE.YES.47</response>
+      <response mode='YES' change='110'>diplomacy.Morgath.TRADE.YES.45</response>
+      <response mode='YES' change='80'>diplomacy.Morgath.TRADE.YES.46</response>
+      <response mode='YES' change='60'>diplomacy.Morgath.TRADE.YES.47</response>
       <response mode='NO' change='0'>diplomacy.Morgath.TRADE.NO.48</response>
       <response mode='NO' change='-10'>diplomacy.Morgath.TRADE.NO.49</response>
       <response mode='NO' change='-20'>diplomacy.Morgath.TRADE.NO.50</response>
     </negotiate>
     <negotiate type='ALLY'>
       <approach>diplomacy.Morgath.ALLY.51</approach>
-      <response mode='YES' change='+200'>diplomacy.Morgath.ALLY.YES.52</response>
-      <response mode='YES' change='+150'>diplomacy.Morgath.ALLY.YES.53</response>
-      <response mode='YES' change='+120'>diplomacy.Morgath.ALLY.YES.54</response>
+      <response mode='YES' change='200'>diplomacy.Morgath.ALLY.YES.52</response>
+      <response mode='YES' change='150'>diplomacy.Morgath.ALLY.YES.53</response>
+      <response mode='YES' change='120'>diplomacy.Morgath.ALLY.YES.54</response>
       <response mode='NO' change='-20'>diplomacy.Morgath.ALLY.NO.55</response>
       <response mode='NO' change='-40'>diplomacy.Morgath.ALLY.NO.56</response>
       <response mode='NO' change='-70'>diplomacy.Morgath.ALLY.NO.57</response>
     </negotiate>
     <negotiate type='DARGSLAN'>
       <approach>diplomacy.Morgath.DARGSLAN.58</approach>
-      <response mode='YES' change='+220'>diplomacy.Morgath.DARGSLAN.YES.59</response>
-      <response mode='YES' change='+170'>diplomacy.Morgath.DARGSLAN.YES.60</response>
-      <response mode='YES' change='+120'>diplomacy.Morgath.DARGSLAN.YES.61</response>
+      <response mode='YES' change='220'>diplomacy.Morgath.DARGSLAN.YES.59</response>
+      <response mode='YES' change='170'>diplomacy.Morgath.DARGSLAN.YES.60</response>
+      <response mode='YES' change='120'>diplomacy.Morgath.DARGSLAN.YES.61</response>
       <response mode='NO' change='0'>diplomacy.Morgath.DARGSLAN.NO.62</response>
       <response mode='NO' change='0'>diplomacy.Morgath.DARGSLAN.NO.63</response>
       <response mode='NO' change='-50'>diplomacy.Morgath.DARGSLAN.NO.64</response>
@@ -243,27 +243,27 @@
       <approach type='HUMBLE'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.HUMBLE.7</approach>
       <approach type='HUMBLE'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.HUMBLE.8</approach>
       <approach type='HUMBLE'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.HUMBLE.9</approach>
-      <response type='AGGRESSIVE' mode='YES' change='+150'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
-      <response type='AGGRESSIVE' mode='YES' change='+120'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
-      <response type='AGGRESSIVE' mode='YES' change='+100'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
-      <response type='AGGRESSIVE' mode='MAYBE' change='+20'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
-      <response type='AGGRESSIVE' mode='MAYBE' change='+10'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14</response>
+      <response type='AGGRESSIVE' mode='YES' change='150'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
+      <response type='AGGRESSIVE' mode='YES' change='120'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
+      <response type='AGGRESSIVE' mode='YES' change='100'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
+      <response type='AGGRESSIVE' mode='MAYBE' change='20'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
+      <response type='AGGRESSIVE' mode='MAYBE' change='10'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-20'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.15</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-80'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-100'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-140'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18</response>
-      <response type='NEUTRAL' mode='YES' change='+180'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
-      <response type='NEUTRAL' mode='YES' change='+140'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
+      <response type='NEUTRAL' mode='YES' change='180'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
+      <response type='NEUTRAL' mode='YES' change='140'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.24</response>
       <response type='NEUTRAL' mode='NO' change='-100'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
       <response type='NEUTRAL' mode='NO' change='-140'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
       <response type='NEUTRAL' mode='NO' change='-190'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-      <response type='AGGRESSIVE' mode='YES' change='+150'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-      <response type='AGGRESSIVE' mode='YES' change='+100'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-      <response type='AGGRESSIVE' mode='YES' change='+60'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+      <response type='AGGRESSIVE' mode='YES' change='150'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+      <response type='AGGRESSIVE' mode='YES' change='100'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+      <response type='AGGRESSIVE' mode='YES' change='60'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-20'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-70'>diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
@@ -273,36 +273,36 @@
     </negotiate>
     <negotiate type='MONEY'>
       <approach>diplomacy.Ychom.MONEY.37</approach>
-      <response mode='YES' change='+250'>diplomacy.Ychom.MONEY.YES.38</response>
-      <response mode='YES' change='+220'>diplomacy.Ychom.MONEY.YES.39</response>
-      <response mode='YES' change='+180'>diplomacy.Ychom.MONEY.YES.40</response>
+      <response mode='YES' change='250'>diplomacy.Ychom.MONEY.YES.38</response>
+      <response mode='YES' change='220'>diplomacy.Ychom.MONEY.YES.39</response>
+      <response mode='YES' change='180'>diplomacy.Ychom.MONEY.YES.40</response>
       <response mode='NO' change='0'>diplomacy.Ychom.MONEY.NO.41</response>
       <response mode='NO' notalk='true' change='-20'>diplomacy.Ychom.MONEY.NO.42</response>
       <response mode='NO' notalk='true' change='-50'>diplomacy.Ychom.MONEY.NO.43</response>
     </negotiate>
     <negotiate type='TRADE'>
       <approach>diplomacy.Ychom.TRADE.44</approach>
-      <response mode='YES' change='+230'>diplomacy.Ychom.TRADE.YES.45</response>
-      <response mode='YES' change='+190'>diplomacy.Ychom.TRADE.YES.46</response>
-      <response mode='YES' change='+120'>diplomacy.Ychom.TRADE.YES.47</response>
+      <response mode='YES' change='230'>diplomacy.Ychom.TRADE.YES.45</response>
+      <response mode='YES' change='190'>diplomacy.Ychom.TRADE.YES.46</response>
+      <response mode='YES' change='120'>diplomacy.Ychom.TRADE.YES.47</response>
       <response mode='NO' change='0'>diplomacy.Ychom.TRADE.NO.48</response>
       <response mode='NO' change='0'>diplomacy.Ychom.TRADE.NO.49</response>
       <response mode='NO' change='0'>diplomacy.Ychom.TRADE.NO.50</response>
     </negotiate>
     <negotiate type='ALLY'>
       <approach>diplomacy.Ychom.ALLY.51</approach>
-      <response mode='YES' change='+180'>diplomacy.Ychom.ALLY.YES.52</response>
-      <response mode='YES' change='+150'>diplomacy.Ychom.ALLY.YES.53</response>
-      <response mode='YES' change='+110'>diplomacy.Ychom.ALLY.YES.54</response>
+      <response mode='YES' change='180'>diplomacy.Ychom.ALLY.YES.52</response>
+      <response mode='YES' change='150'>diplomacy.Ychom.ALLY.YES.53</response>
+      <response mode='YES' change='110'>diplomacy.Ychom.ALLY.YES.54</response>
       <response mode='NO' change='-30'>diplomacy.Ychom.ALLY.NO.55</response>
       <response mode='NO' change='-90'>diplomacy.Ychom.ALLY.NO.56</response>
       <response mode='NO' change='-120'>diplomacy.Ychom.ALLY.NO.57</response>
     </negotiate>
     <negotiate type='DARGSLAN'>
       <approach>diplomacy.Ychom.DARGSLAN.58</approach>
-      <response mode='YES' change='+290'>diplomacy.Ychom.DARGSLAN.YES.59</response>
-      <response mode='YES' change='+260'>diplomacy.Ychom.DARGSLAN.YES.60</response>
-      <response mode='YES' change='+230'>diplomacy.Ychom.DARGSLAN.YES.61</response>
+      <response mode='YES' change='290'>diplomacy.Ychom.DARGSLAN.YES.59</response>
+      <response mode='YES' change='260'>diplomacy.Ychom.DARGSLAN.YES.60</response>
+      <response mode='YES' change='230'>diplomacy.Ychom.DARGSLAN.YES.61</response>
       <response mode='NO' change='0'>diplomacy.Ychom.DARGSLAN.NO.62</response>
       <response mode='NO' change='0'>diplomacy.Ychom.DARGSLAN.NO.63</response>
       <response mode='NO' change='0'>diplomacy.Ychom.DARGSLAN.NO.64</response>
@@ -359,27 +359,27 @@
       <approach type='HUMBLE'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.HUMBLE.7</approach>
       <approach type='HUMBLE'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.HUMBLE.8</approach>
       <approach type='HUMBLE'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.HUMBLE.9</approach>
-      <response type='AGGRESSIVE' mode='YES' change='+170'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
-      <response type='AGGRESSIVE' mode='YES' change='+120'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
-      <response type='AGGRESSIVE' mode='YES' change='+90'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
+      <response type='AGGRESSIVE' mode='YES' change='170'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
+      <response type='AGGRESSIVE' mode='YES' change='120'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
+      <response type='AGGRESSIVE' mode='YES' change='90'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-10'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-20'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-50'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.15</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-130'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-190'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-250'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18</response>
-      <response type='NEUTRAL' mode='YES' change='+230'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
-      <response type='NEUTRAL' mode='YES' change='+180'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
+      <response type='NEUTRAL' mode='YES' change='230'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
+      <response type='NEUTRAL' mode='YES' change='180'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.24</response>
       <response type='NEUTRAL' mode='NO' change='-100'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
       <response type='NEUTRAL' mode='NO' change='-160'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
       <response type='NEUTRAL' mode='NO' change='-210'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-      <response type='AGGRESSIVE' mode='YES' change='+230'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-      <response type='AGGRESSIVE' mode='YES' change='+200'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-      <response type='AGGRESSIVE' mode='YES' change='+170'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+      <response type='AGGRESSIVE' mode='YES' change='230'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+      <response type='AGGRESSIVE' mode='YES' change='200'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+      <response type='AGGRESSIVE' mode='YES' change='170'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='0'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='0'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='0'>diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
@@ -389,36 +389,36 @@
     </negotiate>
     <negotiate type='MONEY'>
       <approach>diplomacy.Dribs.MONEY.37</approach>
-      <response mode='YES' change='+200'>diplomacy.Dribs.MONEY.YES.38</response>
-      <response mode='YES' change='+180'>diplomacy.Dribs.MONEY.YES.39</response>
-      <response mode='YES' change='+150'>diplomacy.Dribs.MONEY.YES.40</response>
+      <response mode='YES' change='200'>diplomacy.Dribs.MONEY.YES.38</response>
+      <response mode='YES' change='180'>diplomacy.Dribs.MONEY.YES.39</response>
+      <response mode='YES' change='150'>diplomacy.Dribs.MONEY.YES.40</response>
       <response mode='NO' notalk='true' change='-50'>diplomacy.Dribs.MONEY.NO.41</response>
       <response mode='NO' notalk='true' change='-100'>diplomacy.Dribs.MONEY.NO.42</response>
       <response mode='NO' notalk='true' change='-120'>diplomacy.Dribs.MONEY.NO.43</response>
     </negotiate>
     <negotiate type='TRADE'>
       <approach>diplomacy.Dribs.TRADE.44</approach>
-      <response mode='YES' change='+190'>diplomacy.Dribs.TRADE.YES.45</response>
-      <response mode='YES' change='+160'>diplomacy.Dribs.TRADE.YES.46</response>
-      <response mode='YES' change='+130'>diplomacy.Dribs.TRADE.YES.47</response>
+      <response mode='YES' change='190'>diplomacy.Dribs.TRADE.YES.45</response>
+      <response mode='YES' change='160'>diplomacy.Dribs.TRADE.YES.46</response>
+      <response mode='YES' change='130'>diplomacy.Dribs.TRADE.YES.47</response>
       <response mode='NO' change='0'>diplomacy.Dribs.TRADE.NO.48</response>
       <response mode='NO' change='-20'>diplomacy.Dribs.TRADE.NO.49</response>
       <response mode='NO' change='-50'>diplomacy.Dribs.TRADE.NO.50</response>
     </negotiate>
     <negotiate type='ALLY'>
       <approach>diplomacy.Dribs.ALLY.51</approach>
-      <response mode='YES' change='+270'>diplomacy.Dribs.ALLY.YES.52</response>
-      <response mode='YES' change='+240'>diplomacy.Dribs.ALLY.YES.53</response>
-      <response mode='YES' change='+200'>diplomacy.Dribs.ALLY.YES.54</response>
+      <response mode='YES' change='270'>diplomacy.Dribs.ALLY.YES.52</response>
+      <response mode='YES' change='240'>diplomacy.Dribs.ALLY.YES.53</response>
+      <response mode='YES' change='200'>diplomacy.Dribs.ALLY.YES.54</response>
       <response mode='NO' change='-40'>diplomacy.Dribs.ALLY.NO.55</response>
       <response mode='NO' change='-50'>diplomacy.Dribs.ALLY.NO.56</response>
       <response mode='NO' change='-90'>diplomacy.Dribs.ALLY.NO.57</response>
     </negotiate>
     <negotiate type='DARGSLAN'>
       <approach>diplomacy.Dribs.DARGSLAN.58</approach>
-      <response mode='YES' change='+300'>diplomacy.Dribs.DARGSLAN.YES.59</response>
-      <response mode='YES' change='+230'>diplomacy.Dribs.DARGSLAN.YES.60</response>
-      <response mode='YES' change='+200'>diplomacy.Dribs.DARGSLAN.YES.61</response>
+      <response mode='YES' change='300'>diplomacy.Dribs.DARGSLAN.YES.59</response>
+      <response mode='YES' change='230'>diplomacy.Dribs.DARGSLAN.YES.60</response>
+      <response mode='YES' change='200'>diplomacy.Dribs.DARGSLAN.YES.61</response>
       <response mode='NO' change='0'>diplomacy.Dribs.DARGSLAN.NO.62</response>
       <response mode='NO' change='0'>diplomacy.Dribs.DARGSLAN.NO.63</response>
       <response mode='NO' change='0'>diplomacy.Dribs.DARGSLAN.NO.64</response>
@@ -475,27 +475,27 @@
       <approach type='HUMBLE'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.HUMBLE.7</approach>
       <approach type='HUMBLE'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.HUMBLE.8</approach>
       <approach type='HUMBLE'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.HUMBLE.9</approach>
-      <response type='AGGRESSIVE' mode='YES' change='+200'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
-      <response type='AGGRESSIVE' mode='YES' change='+180'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
-      <response type='AGGRESSIVE' mode='YES' change='+150'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
-      <response type='AGGRESSIVE' mode='MAYBE' change='+20'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
+      <response type='AGGRESSIVE' mode='YES' change='200'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
+      <response type='AGGRESSIVE' mode='YES' change='180'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
+      <response type='AGGRESSIVE' mode='YES' change='150'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
+      <response type='AGGRESSIVE' mode='MAYBE' change='20'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-10'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-20'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.15</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-100'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-140'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-200'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18</response>
-      <response type='NEUTRAL' mode='YES' change='+120'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
-      <response type='NEUTRAL' mode='YES' change='+100'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
-      <response type='NEUTRAL' mode='YES' change='+70'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
+      <response type='NEUTRAL' mode='YES' change='120'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
+      <response type='NEUTRAL' mode='YES' change='100'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
+      <response type='NEUTRAL' mode='YES' change='70'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.24</response>
       <response type='NEUTRAL' mode='NO' change='-180'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
       <response type='NEUTRAL' mode='NO' notalk='true' change='-200'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
       <response type='NEUTRAL' mode='NO' notalk='true' change='-250'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-      <response type='AGGRESSIVE' mode='YES' change='+90'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-      <response type='AGGRESSIVE' mode='YES' change='+70'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+      <response type='AGGRESSIVE' mode='YES' change='90'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+      <response type='AGGRESSIVE' mode='YES' change='70'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-80'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-90'>diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
@@ -505,36 +505,36 @@
     </negotiate>
     <negotiate type='MONEY'>
       <approach>diplomacy.Sullep.MONEY.37</approach>
-      <response mode='YES' change='+200'>diplomacy.Sullep.MONEY.YES.38</response>
-      <response mode='YES' change='+160'>diplomacy.Sullep.MONEY.YES.39</response>
-      <response mode='YES' change='+100'>diplomacy.Sullep.MONEY.YES.40</response>
+      <response mode='YES' change='200'>diplomacy.Sullep.MONEY.YES.38</response>
+      <response mode='YES' change='160'>diplomacy.Sullep.MONEY.YES.39</response>
+      <response mode='YES' change='100'>diplomacy.Sullep.MONEY.YES.40</response>
       <response mode='NO' notalk='true' change='-70'>diplomacy.Sullep.MONEY.NO.41</response>
       <response mode='NO' notalk='true' change='-120'>diplomacy.Sullep.MONEY.NO.42</response>
       <response mode='NO' notalk='true' change='-160'>diplomacy.Sullep.MONEY.NO.43</response>
     </negotiate>
     <negotiate type='TRADE'>
       <approach>diplomacy.Sullep.TRADE.44</approach>
-      <response mode='YES' change='+190'>diplomacy.Sullep.TRADE.YES.45</response>
-      <response mode='YES' change='+150'>diplomacy.Sullep.TRADE.YES.46</response>
-      <response mode='YES' change='+120'>diplomacy.Sullep.TRADE.YES.47</response>
+      <response mode='YES' change='190'>diplomacy.Sullep.TRADE.YES.45</response>
+      <response mode='YES' change='150'>diplomacy.Sullep.TRADE.YES.46</response>
+      <response mode='YES' change='120'>diplomacy.Sullep.TRADE.YES.47</response>
       <response mode='NO' change='0'>diplomacy.Sullep.TRADE.NO.48</response>
       <response mode='NO' change='-50'>diplomacy.Sullep.TRADE.NO.49</response>
       <response mode='NO' change='-70'>diplomacy.Sullep.TRADE.NO.50</response>
     </negotiate>
     <negotiate type='ALLY'>
       <approach>diplomacy.Sullep.ALLY.51</approach>
-      <response mode='YES' change='+300'>diplomacy.Sullep.ALLY.YES.52</response>
-      <response mode='YES' change='+260'>diplomacy.Sullep.ALLY.YES.53</response>
-      <response mode='YES' change='+200'>diplomacy.Sullep.ALLY.YES.54</response>
+      <response mode='YES' change='300'>diplomacy.Sullep.ALLY.YES.52</response>
+      <response mode='YES' change='260'>diplomacy.Sullep.ALLY.YES.53</response>
+      <response mode='YES' change='200'>diplomacy.Sullep.ALLY.YES.54</response>
       <response mode='NO' change='-40'>diplomacy.Sullep.ALLY.NO.55</response>
       <response mode='NO' change='-70'>diplomacy.Sullep.ALLY.NO.56</response>
       <response mode='NO' change='-110'>diplomacy.Sullep.ALLY.NO.57</response>
     </negotiate>
     <negotiate type='DARGSLAN'>
       <approach>diplomacy.Sullep.DARGSLAN.58</approach>
-      <response mode='YES' change='+300'>diplomacy.Sullep.DARGSLAN.YES.59</response>
-      <response mode='YES' change='+280'>diplomacy.Sullep.DARGSLAN.YES.60</response>
-      <response mode='YES' change='+220'>diplomacy.Sullep.DARGSLAN.YES.61</response>
+      <response mode='YES' change='300'>diplomacy.Sullep.DARGSLAN.YES.59</response>
+      <response mode='YES' change='280'>diplomacy.Sullep.DARGSLAN.YES.60</response>
+      <response mode='YES' change='220'>diplomacy.Sullep.DARGSLAN.YES.61</response>
       <response mode='NO' change='0'>diplomacy.Sullep.DARGSLAN.NO.62</response>
       <response mode='NO' change='0'>diplomacy.Sullep.DARGSLAN.NO.63</response>
       <response mode='NO' change='0'>diplomacy.Sullep.DARGSLAN.NO.64</response>
@@ -591,27 +591,27 @@
       <approach type='HUMBLE'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.HUMBLE.7</approach>
       <approach type='HUMBLE'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.HUMBLE.8</approach>
       <approach type='HUMBLE'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.HUMBLE.9</approach>
-      <response type='AGGRESSIVE' mode='YES' change='+180'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
-      <response type='AGGRESSIVE' mode='YES' change='+150'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
-      <response type='AGGRESSIVE' mode='YES' change='+120'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
+      <response type='AGGRESSIVE' mode='YES' change='180'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
+      <response type='AGGRESSIVE' mode='YES' change='150'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
+      <response type='AGGRESSIVE' mode='YES' change='120'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-100'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-100'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-100'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.15</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-200'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-200'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-200'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.24</response>
       <response type='NEUTRAL' mode='NO' change='-250'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
       <response type='NEUTRAL' mode='NO' change='-250'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
       <response type='NEUTRAL' mode='NO' change='-250'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
@@ -621,27 +621,27 @@
     </negotiate>
     <negotiate type='MONEY'>
       <approach>diplomacy.Dargslan.MONEY.37</approach>
-      <response mode='YES' change='+120'>diplomacy.Dargslan.MONEY.YES.38</response>
-      <response mode='YES' change='+80'>diplomacy.Dargslan.MONEY.YES.39</response>
-      <response mode='YES' change='+40'>diplomacy.Dargslan.MONEY.YES.40</response>
+      <response mode='YES' change='120'>diplomacy.Dargslan.MONEY.YES.38</response>
+      <response mode='YES' change='80'>diplomacy.Dargslan.MONEY.YES.39</response>
+      <response mode='YES' change='40'>diplomacy.Dargslan.MONEY.YES.40</response>
       <response mode='NO' notalk='true' change='-100'>diplomacy.Dargslan.MONEY.NO.41</response>
       <response mode='NO' notalk='true' change='-80'>diplomacy.Dargslan.MONEY.NO.42</response>
       <response mode='NO' notalk='true' change='-50'>diplomacy.Dargslan.MONEY.NO.43</response>
     </negotiate>
     <negotiate type='TRADE'>
       <approach>diplomacy.Dargslan.TRADE.44</approach>
-      <response mode='YES' change='+120'>diplomacy.Dargslan.TRADE.YES.45</response>
-      <response mode='YES' change='+100'>diplomacy.Dargslan.TRADE.YES.46</response>
-      <response mode='YES' change='+50'>diplomacy.Dargslan.TRADE.YES.47</response>
+      <response mode='YES' change='120'>diplomacy.Dargslan.TRADE.YES.45</response>
+      <response mode='YES' change='100'>diplomacy.Dargslan.TRADE.YES.46</response>
+      <response mode='YES' change='50'>diplomacy.Dargslan.TRADE.YES.47</response>
       <response mode='NO' change='-50'>diplomacy.Dargslan.TRADE.NO.48</response>
       <response mode='NO' change='-30'>diplomacy.Dargslan.TRADE.NO.49</response>
       <response mode='NO' change='-20'>diplomacy.Dargslan.TRADE.NO.50</response>
     </negotiate>
     <negotiate type='ALLY'>
       <approach>diplomacy.Dargslan.ALLY.51</approach>
-      <response mode='YES' change='+100'>diplomacy.Dargslan.ALLY.YES.52</response>
-      <response mode='YES' change='+90'>diplomacy.Dargslan.ALLY.YES.53</response>
-      <response mode='YES' change='+80'>diplomacy.Dargslan.ALLY.YES.54</response>
+      <response mode='YES' change='100'>diplomacy.Dargslan.ALLY.YES.52</response>
+      <response mode='YES' change='90'>diplomacy.Dargslan.ALLY.YES.53</response>
+      <response mode='YES' change='80'>diplomacy.Dargslan.ALLY.YES.54</response>
       <response mode='NO' change='-40'>diplomacy.Dargslan.ALLY.NO.55</response>
       <response mode='NO' change='-50'>diplomacy.Dargslan.ALLY.NO.56</response>
       <response mode='NO' change='-90'>diplomacy.Dargslan.ALLY.NO.57</response>
@@ -707,27 +707,27 @@
       <approach type='HUMBLE'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.HUMBLE.7</approach>
       <approach type='HUMBLE'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.HUMBLE.8</approach>
       <approach type='HUMBLE'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.HUMBLE.9</approach>
-      <response type='AGGRESSIVE' mode='YES' change='+180'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
-      <response type='AGGRESSIVE' mode='YES' change='+150'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
-      <response type='AGGRESSIVE' mode='YES' change='+110'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
-      <response type='AGGRESSIVE' mode='MAYBE' change='+10'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
+      <response type='AGGRESSIVE' mode='YES' change='180'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
+      <response type='AGGRESSIVE' mode='YES' change='150'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
+      <response type='AGGRESSIVE' mode='YES' change='110'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
+      <response type='AGGRESSIVE' mode='MAYBE' change='10'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='0'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-30'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.15</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-100'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-130'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-160'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18</response>
-      <response type='NEUTRAL' mode='YES' change='+170'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
-      <response type='NEUTRAL' mode='YES' change='+110'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
+      <response type='NEUTRAL' mode='YES' change='170'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
+      <response type='NEUTRAL' mode='YES' change='110'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.24</response>
       <response type='NEUTRAL' mode='NO' change='-120'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
       <response type='NEUTRAL' mode='NO' change='-170'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
       <response type='NEUTRAL' mode='NO' change='-220'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-      <response type='AGGRESSIVE' mode='YES' change='+100'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-      <response type='AGGRESSIVE' mode='YES' change='+70'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+      <response type='AGGRESSIVE' mode='YES' change='100'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+      <response type='AGGRESSIVE' mode='YES' change='70'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-20'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-70'>diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
@@ -737,36 +737,36 @@
     </negotiate>
     <negotiate type='MONEY'>
       <approach>diplomacy.Ecalep.MONEY.37</approach>
-      <response mode='YES' change='+300'>diplomacy.Ecalep.MONEY.YES.38</response>
-      <response mode='YES' change='+250'>diplomacy.Ecalep.MONEY.YES.39</response>
-      <response mode='YES' change='+200'>diplomacy.Ecalep.MONEY.YES.40</response>
+      <response mode='YES' change='300'>diplomacy.Ecalep.MONEY.YES.38</response>
+      <response mode='YES' change='250'>diplomacy.Ecalep.MONEY.YES.39</response>
+      <response mode='YES' change='200'>diplomacy.Ecalep.MONEY.YES.40</response>
       <response mode='NO' notalk='true' change='-50'>diplomacy.Ecalep.MONEY.NO.41</response>
       <response mode='NO' notalk='true' change='-80'>diplomacy.Ecalep.MONEY.NO.42</response>
       <response mode='NO' notalk='true' change='-120'>diplomacy.Ecalep.MONEY.NO.43</response>
     </negotiate>
     <negotiate type='TRADE'>
       <approach>diplomacy.Ecalep.TRADE.44</approach>
-      <response mode='YES' change='+180'>diplomacy.Ecalep.TRADE.YES.45</response>
-      <response mode='YES' change='+150'>diplomacy.Ecalep.TRADE.YES.46</response>
-      <response mode='YES' change='+140'>diplomacy.Ecalep.TRADE.YES.47</response>
+      <response mode='YES' change='180'>diplomacy.Ecalep.TRADE.YES.45</response>
+      <response mode='YES' change='150'>diplomacy.Ecalep.TRADE.YES.46</response>
+      <response mode='YES' change='140'>diplomacy.Ecalep.TRADE.YES.47</response>
       <response mode='NO' change='0'>diplomacy.Ecalep.TRADE.NO.48</response>
       <response mode='NO' change='-20'>diplomacy.Ecalep.TRADE.NO.49</response>
       <response mode='NO' change='-40'>diplomacy.Ecalep.TRADE.NO.50</response>
     </negotiate>
     <negotiate type='ALLY'>
       <approach>diplomacy.Ecalep.ALLY.51</approach>
-      <response mode='YES' change='+240'>diplomacy.Ecalep.ALLY.YES.52</response>
-      <response mode='YES' change='+200'>diplomacy.Ecalep.ALLY.YES.53</response>
-      <response mode='YES' change='+140'>diplomacy.Ecalep.ALLY.YES.54</response>
+      <response mode='YES' change='240'>diplomacy.Ecalep.ALLY.YES.52</response>
+      <response mode='YES' change='200'>diplomacy.Ecalep.ALLY.YES.53</response>
+      <response mode='YES' change='140'>diplomacy.Ecalep.ALLY.YES.54</response>
       <response mode='NO' change='-40'>diplomacy.Ecalep.ALLY.NO.55</response>
       <response mode='NO' change='-90'>diplomacy.Ecalep.ALLY.NO.56</response>
       <response mode='NO' change='-130'>diplomacy.Ecalep.ALLY.NO.57</response>
     </negotiate>
     <negotiate type='DARGSLAN'>
       <approach>diplomacy.Ecalep.DARGSLAN.58</approach>
-      <response mode='YES' change='+300'>diplomacy.Ecalep.DARGSLAN.YES.59</response>
-      <response mode='YES' change='+200'>diplomacy.Ecalep.DARGSLAN.YES.60</response>
-      <response mode='YES' change='+160'>diplomacy.Ecalep.DARGSLAN.YES.61</response>
+      <response mode='YES' change='300'>diplomacy.Ecalep.DARGSLAN.YES.59</response>
+      <response mode='YES' change='200'>diplomacy.Ecalep.DARGSLAN.YES.60</response>
+      <response mode='YES' change='160'>diplomacy.Ecalep.DARGSLAN.YES.61</response>
       <response mode='NO' change='0'>diplomacy.Ecalep.DARGSLAN.NO.62</response>
       <response mode='NO' change='0'>diplomacy.Ecalep.DARGSLAN.NO.63</response>
       <response mode='NO' change='0'>diplomacy.Ecalep.DARGSLAN.NO.64</response>
@@ -823,27 +823,27 @@
       <approach type='HUMBLE'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.HUMBLE.7</approach>
       <approach type='HUMBLE'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.HUMBLE.8</approach>
       <approach type='HUMBLE'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.HUMBLE.9</approach>
-      <response type='AGGRESSIVE' mode='YES' change='+150'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
-      <response type='AGGRESSIVE' mode='YES' change='+135'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
-      <response type='AGGRESSIVE' mode='YES' change='+120'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
+      <response type='AGGRESSIVE' mode='YES' change='150'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10</response>
+      <response type='AGGRESSIVE' mode='YES' change='135'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11</response>
+      <response type='AGGRESSIVE' mode='YES' change='120'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14</response>
       <response type='AGGRESSIVE' mode='MAYBE' change='-50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.15</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-200'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-200'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17</response>
       <response type='AGGRESSIVE' mode='NO' notalk='true' change='-200'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
-      <response type='NEUTRAL' mode='YES' change='+150'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20</response>
+      <response type='NEUTRAL' mode='YES' change='150'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23</response>
       <response type='NEUTRAL' mode='MAYBE' change='0'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.24</response>
       <response type='NEUTRAL' mode='NO' change='-100'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
       <response type='NEUTRAL' mode='NO' change='-100'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
       <response type='NEUTRAL' mode='NO' change='-100'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-      <response type='AGGRESSIVE' mode='YES' change='+50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+      <response type='AGGRESSIVE' mode='YES' change='50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
       <response type='AGGRESSIVE' mode='MAYBE' notalk='true' change='-50'>diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
@@ -853,36 +853,36 @@
     </negotiate>
     <negotiate type='MONEY'>
       <approach>diplomacy.FreeTraders.MONEY.37</approach>
-      <response mode='YES' change='+200'>diplomacy.FreeTraders.MONEY.YES.38</response>
-      <response mode='YES' change='+180'>diplomacy.FreeTraders.MONEY.YES.39</response>
-      <response mode='YES' change='+160'>diplomacy.FreeTraders.MONEY.YES.40</response>
+      <response mode='YES' change='200'>diplomacy.FreeTraders.MONEY.YES.38</response>
+      <response mode='YES' change='180'>diplomacy.FreeTraders.MONEY.YES.39</response>
+      <response mode='YES' change='160'>diplomacy.FreeTraders.MONEY.YES.40</response>
       <response mode='NO' notalk='true' change='-50'>diplomacy.FreeTraders.MONEY.NO.41</response>
       <response mode='NO' notalk='true' change='-100'>diplomacy.FreeTraders.MONEY.NO.42</response>
       <response mode='NO' notalk='true' change='-120'>diplomacy.FreeTraders.MONEY.NO.43</response>
     </negotiate>
     <negotiate type='TRADE'>
       <approach>diplomacy.FreeTraders.TRADE.44</approach>
-      <response mode='YES' change='+250'>diplomacy.FreeTraders.TRADE.YES.45</response>
-      <response mode='YES' change='+250'>diplomacy.FreeTraders.TRADE.YES.46</response>
-      <response mode='YES' change='+250'>diplomacy.FreeTraders.TRADE.YES.47</response>
+      <response mode='YES' change='250'>diplomacy.FreeTraders.TRADE.YES.45</response>
+      <response mode='YES' change='250'>diplomacy.FreeTraders.TRADE.YES.46</response>
+      <response mode='YES' change='250'>diplomacy.FreeTraders.TRADE.YES.47</response>
       <response mode='NO' change='0'>diplomacy.FreeTraders.TRADE.NO.48</response>
       <response mode='NO' change='-20'>diplomacy.FreeTraders.TRADE.NO.49</response>
       <response mode='NO' change='-20'>diplomacy.FreeTraders.TRADE.NO.50</response>
     </negotiate>
     <negotiate type='ALLY'>
       <approach>diplomacy.FreeTraders.ALLY.51</approach>
-      <response mode='YES' change='+300'>diplomacy.FreeTraders.ALLY.YES.52</response>
-      <response mode='YES' change='+280'>diplomacy.FreeTraders.ALLY.YES.53</response>
-      <response mode='YES' change='+260'>diplomacy.FreeTraders.ALLY.YES.54</response>
+      <response mode='YES' change='300'>diplomacy.FreeTraders.ALLY.YES.52</response>
+      <response mode='YES' change='280'>diplomacy.FreeTraders.ALLY.YES.53</response>
+      <response mode='YES' change='260'>diplomacy.FreeTraders.ALLY.YES.54</response>
       <response mode='NO' change='-80'>diplomacy.FreeTraders.ALLY.NO.55</response>
       <response mode='NO' change='-100'>diplomacy.FreeTraders.ALLY.NO.56</response>
       <response mode='NO' change='-12'>diplomacy.FreeTraders.ALLY.NO.57</response>
     </negotiate>
     <negotiate type='DARGSLAN'>
       <approach>diplomacy.FreeTraders.DARGSLAN.58</approach>
-      <response mode='YES' change='+300'>diplomacy.FreeTraders.DARGSLAN.YES.59</response>
-      <response mode='YES' change='+280'>diplomacy.FreeTraders.DARGSLAN.YES.60</response>
-      <response mode='YES' change='+240'>diplomacy.FreeTraders.DARGSLAN.YES.61</response>
+      <response mode='YES' change='300'>diplomacy.FreeTraders.DARGSLAN.YES.59</response>
+      <response mode='YES' change='280'>diplomacy.FreeTraders.DARGSLAN.YES.60</response>
+      <response mode='YES' change='240'>diplomacy.FreeTraders.DARGSLAN.YES.61</response>
       <response mode='NO' change='0'>diplomacy.FreeTraders.DARGSLAN.NO.62</response>
       <response mode='NO' change='0'>diplomacy.FreeTraders.DARGSLAN.NO.63</response>
       <response mode='NO' change='0'>diplomacy.FreeTraders.DARGSLAN.NO.64</response>
