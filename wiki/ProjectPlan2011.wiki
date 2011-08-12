@@ -26,12 +26,12 @@ This page lists tasks that I want to complete with expected times.
 || Screen: Credits || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || A simple scrolling credits. *v0.91* ||
 || Sound & Music integration || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Add sound and music, add statusbar notification and message history. *v0.91* music deferred. ||
 || Music || 2011-07-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Add music. *v0.92* ||
-|| Surface & Space battles || 2011-08-07 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Rendering and basic simulation ||
-|| Profile & Achievements || 2011-08-14 || - || Create a profile system and add achievement display & tracking. ||
+|| Surface & Space battles || 2011-08-21 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Rendering and basic simulation ||
+|| Profile & Achievements || 2011-08-21 || - || Create a profile system and add achievement display & tracking. ||
 || Screen: Diplomacy || 2011-08-28 || - || I need to run the original game to figure out the available talk options. ||
 || Create the Artificial Intelligence || 2011-08-15 || - || This is going to be a real challenge. ||
-|| Scripting for campaign || 2011-08-28 || - || Build a scriptable campaign engine. We will use the internal !JavaScript support. ||
 || Screen: Bridge || 2011-08-28 || - || Complete the bridge screen with working communications. ||
+|| Scripting for campaign || 2011-09-04 || - || Build a scriptable campaign engine. We will use the internal !JavaScript support. ||
 || Beta release || 2011-09-04 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup. ||
 || Multiplayer || 2011-11-13 || - || Multiplayer will be like a remote control: receive status changes and submit commands to the host. Human vs. Human with some technology tree simplifications (e.g., build colony ship from start). ||
 || Android version || 2011-12-31 || - || Create a port for the single player part to Android 2.2+ devices. The interface, however, will be redesigned and restructured for those devices with smaller screen and touch based input. ||
