@@ -9,6 +9,7 @@
 package hu.openig.mechanics;
 
 
+import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
 import hu.openig.model.AutoBuild;
@@ -168,11 +169,18 @@ public final class Simulator {
 		float moraleBoost = 0;
 		boolean buildInProgress = false;
 		int radar = 0;
-		
-		if (planet.type.type.equals("earth") || planet.type.type.equals("rocky")) {
+		long eqPlaytime = 6L * 60 * 60 * 1000;
+		if (world.statistics.playTime >= eqPlaytime && (planet.type.type.equals("earth") || planet.type.type.equals("rocky"))) {
 			if (planet.earthQuakeTTL <= 0) {
-				// cause earthquake once in every 2 months
-				if (world.random.get().nextInt(6 * 24 * 60) < 1) {
+				// cause earthquake once in every 12, 6 or 3 months
+				int eqDelta = 36 * 24 * 60;
+				if (world.difficulty == Difficulty.NORMAL) {
+					eqDelta /= 2;
+				} else
+				if (world.difficulty == Difficulty.HARD) {
+					eqDelta /= 4;
+				}
+				if (world.random.get().nextInt(eqDelta) < 1) {
 					planet.earthQuakeTTL = 6; // 1 hour
 					
 					Message msg = world.newMessage("message.earthquake");
@@ -214,7 +222,8 @@ public final class Simulator {
 				
 				result = true;
 			} else
-			if (b.repairing || (planet.owner == world.player && world.isAutoRepair.invoke(null))) {
+			// repair an unit if autorepair or explicitly requested
+			if (b.repairing || (planet.owner == world.player && world.isAutoRepair.invoke(null) && b.isDamaged())) {
 				if (b.hitpoints * 100 / b.type.hitpoints < ps.freeRepair) {
 					b.hitpoints += repairAmount * ps.freeRepairEff;
 					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
@@ -235,13 +244,13 @@ public final class Simulator {
 					}
 				}
 			} else
-			if (b.isDamaged()) {
-				if (b.hitpoints * 100f / b.type.hitpoints < ps.freeRepair) {
-					b.hitpoints += repairAmount * ps.freeRepairEff;
-					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
-					result = true;
-				}
+			// free repair buildings 
+			if (b.isDamaged() && (b.hitpoints * 100 / b.type.hitpoints < ps.freeRepair)) {
+				b.hitpoints += repairAmount * ps.freeRepairEff;
+				b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
+				result = true;
 			}
+			// turn of repairing when hitpoints are reached
 			if (b.repairing && b.hitpoints == b.type.hitpoints) {
 				b.repairing = false;
 				result = true;

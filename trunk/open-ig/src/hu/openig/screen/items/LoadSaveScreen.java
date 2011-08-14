@@ -197,7 +197,7 @@ public class LoadSaveScreen extends ScreenBase {
 		sprev.onClick = new Act() {
 			@Override
 			public void act() {
-				config.effectVolume = Math.max(0, config.effectVolume - 5);
+				config.effectVolume = Math.max(0, config.effectVolume - 1);
 				commons.sounds.setVolume(config.effectVolume);
 				commons.sounds.play(SoundType.BAR);
 				askRepaint(base);
@@ -206,7 +206,7 @@ public class LoadSaveScreen extends ScreenBase {
 		snext.onClick = new Act() {
 			@Override
 			public void act() {
-				config.effectVolume = Math.min(100, config.effectVolume + 5);
+				config.effectVolume = Math.min(100, config.effectVolume + 1);
 				commons.sounds.setVolume(config.effectVolume);
 				commons.sounds.play(SoundType.BAR);
 				askRepaint(base);
@@ -232,7 +232,7 @@ public class LoadSaveScreen extends ScreenBase {
 		mprev.onClick = new Act() {
 			@Override
 			public void act() {
-				config.musicVolume = Math.max(0, config.musicVolume - 5);
+				config.musicVolume = Math.max(0, config.musicVolume - 1);
 				commons.music.setVolume(config.musicVolume);
 				askRepaint(base);
 			}
@@ -240,7 +240,7 @@ public class LoadSaveScreen extends ScreenBase {
 		mnext.onClick = new Act() {
 			@Override
 			public void act() {
-				config.musicVolume = Math.min(100, config.musicVolume + 5);
+				config.musicVolume = Math.min(100, config.musicVolume + 1);
 				commons.music.setVolume(config.musicVolume);
 				askRepaint(base);
 			}
@@ -261,7 +261,7 @@ public class LoadSaveScreen extends ScreenBase {
 		vprev.onClick = new Act() {
 			@Override
 			public void act() {
-				config.videoVolume = Math.max(0, config.videoVolume - 5);
+				config.videoVolume = Math.max(0, config.videoVolume - 1);
 				askRepaint(base);
 			}
 		};
@@ -271,7 +271,7 @@ public class LoadSaveScreen extends ScreenBase {
 		vnext.onClick = new Act() {
 			@Override
 			public void act() {
-				config.videoVolume = Math.min(100, config.videoVolume + 5);
+				config.videoVolume = Math.min(100, config.videoVolume + 1);
 				askRepaint(base);
 			}
 		};

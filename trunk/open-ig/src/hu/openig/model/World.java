@@ -465,7 +465,7 @@ public class World {
 			
 			this.players.put(p.id, p);
 			for (ResearchType rt : researches.values()) {
-				if (p.race.equals(rt.race) && rt.level == 0) {
+				if (rt.race.contains(p.race) && rt.level == 0) {
 					p.setAvailable(rt);
 				}
 			}
@@ -673,7 +673,7 @@ public class World {
 	 * @return true if display
 	 */
 	public boolean canDisplayResearch(ResearchType rt) {
-		return player.isAvailable(rt) || rt.level <= level;
+		return rt.race.contains(player.race) && (player.isAvailable(rt) || rt.level <= level);
 	}
 	/**
 	 * Get the research color for the given research type.
