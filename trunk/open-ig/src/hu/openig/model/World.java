@@ -1450,9 +1450,8 @@ public class World {
 				m = rl.getImage(xproj.get("alternative"));
 				bp.alternative = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
 			}
-			bp.sound = SpaceEffectsType.valueOf(xproj.get("sound"));
-			if (bp.sound == null) {
-				System.err.println("Missing sound " + xproj.get("sound") + " for " + id);
+			if (xproj.has("sound")) {
+				bp.sound = WarEffectsType.valueOf(xproj.get("sound"));
 			}
 			battle.projectiles.put(id, bp);
 			
@@ -1473,7 +1472,7 @@ public class World {
 				se.alternative = se.normal;
 			}
 			se.image = rl.getImage(xspace.get("image"));
-			se.sound = SpaceEffectsType.valueOf(xspace.get("sound"));
+			se.sound = WarEffectsType.valueOf(xspace.get("sound"));
 			if (se.sound == null) {
 				System.err.println("Missing sound " + xspace.get("sound") + " for " + id);
 			}
@@ -1495,6 +1494,11 @@ public class World {
 			} else {
 				ge.alternative = ge.normal;
 			}
+			ge.destroy = WarEffectsType.valueOf(xground.get("destroy"));
+			if (xground.has("fire")) {
+				ge.fire = WarEffectsType.valueOf(xground.get("fire"));
+			}
+			
 			battle.groundEntities.put(id, ge);
 		}
 		

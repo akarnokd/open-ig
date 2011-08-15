@@ -9,15 +9,19 @@
 package hu.openig.model;
 
 /** The enumeration for space effect types. */
-public enum SpaceEffectsType {
+public enum WarEffectsType {
 	/** Acknowledge command. */
-	ACKNOWLEDGE("spacewar/acknowledge_1"),
+	ACKNOWLEDGE_1("spacewar/acknowledge_1"),
+	/** Acknowledge command. */
+	ACKNOWLEDGE_2("groundwar/acknowledge_2"),
 	/** Click response. */
 	CLICK("spacewar/click_1"),
 	/** Long explosion. */
 	EXPLOSION_LONG("spacewar/explosion_long"),
 	/** Medium explosion. */
 	EXPLOSION_MEDIUM("spacewar/explosion_medium"),
+	/** Medium explosion. */
+	EXPLOSION_MEDIUM_2("groundwar/explosion_medium"),
 	/** Short explosion. */
 	EXPLOSION_SHORT("spacewar/explosion_short"),
 	/** Fire type 1. */
@@ -26,6 +30,20 @@ public enum SpaceEffectsType {
 	FIRE_2("spacewar/fire_2"),
 	/** Fire type 3. */
 	FIRE_3("spacewar/fire_3"),
+	/** Ground fire type 1. */
+	GROUND_FIRE_1("groundwar/fire_1"),
+	/** Ground fire type 1. */
+	GROUND_FIRE_2("groundwar/fire_2"),
+	/** Ground fire type 1. */
+	GROUND_FIRE_3("groundwar/fire_3"),
+	/** Ground fire type 1. */
+	GROUND_FIRE_4("groundwar/fire_4"),
+	/** Ground fire type 1. */
+	GROUND_FIRE_5("groundwar/fire_5"),
+	/** Ground fire type 1. */
+	GROUND_FIRE_6("groundwar/fire_6"),
+	/** Ground fire type 1. */
+	GROUND_FIRE_7("groundwar/fire_7"),
 	/** Fire lasers. */
 	FIRE_LASER("spacewar/fire_laser"),
 	/** Fire meson cannon. */
@@ -37,7 +55,9 @@ public enum SpaceEffectsType {
 	/** Fire rocket v2. */
 	FIRE_ROCKET_2("spacewar/fire_rocket_2"),
 	/** Rocket hit? */
-	HIT("spacewar/hit")
+	HIT("spacewar/hit"),
+	/** Fire ground rocket. */
+	FIRE_ROCKET("groundwar/fire_rocket")
 	;
 	/** The associated resource. */
 	public final String resource;
@@ -45,7 +65,7 @@ public enum SpaceEffectsType {
 	 * Constructor.
 	 * @param resource the associated resource.
 	 */
-	SpaceEffectsType(String resource) {
+	WarEffectsType(String resource) {
 		this.resource = resource;
 	}
 }

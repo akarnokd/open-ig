@@ -11,12 +11,12 @@ package hu.openig.screen.items;
 import hu.openig.core.Act;
 import hu.openig.model.Screens;
 import hu.openig.model.SpaceBeam;
-import hu.openig.model.SpaceEffectsType;
+import hu.openig.model.WarEffectsType;
 import hu.openig.model.SpaceExplosion;
 import hu.openig.model.SpaceProjectile;
 import hu.openig.model.SpaceShipStationDefense;
 import hu.openig.screen.ScreenBase;
-import hu.openig.sound.SpaceEffects;
+import hu.openig.sound.WarEffects;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 
@@ -270,10 +270,10 @@ public class SpacewarScreen extends ScreenBase {
 	/** The space explosions for animation. */
 	final List<SpaceExplosion> explosions = new ArrayList<SpaceExplosion>();
 	/** The space effects. */
-	SpaceEffects effects;
+	WarEffects effects;
 	@Override
 	public void onInitialize() {
-		effects = new SpaceEffects(rl);
+		effects = new WarEffects(rl);
 		
 		mainCommands = new ArrayList<ThreePhaseButton>();
 		mainCommands.add(new ThreePhaseButton(33, 24, commons.spacewar().stop));
