@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
  */
 public class BattleProjectile {
 	/** The sound effect to play when fired. */
-	public SpaceEffectsType sound;
+	public WarEffectsType sound;
 	/** The normal [rotation][phase] image matrix. */
 	public BufferedImage[][] matrix;
 	/** The alternative [rotation][phase] image matrix. */

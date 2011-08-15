@@ -10,7 +10,7 @@ package hu.openig.sound;
 
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceType;
-import hu.openig.model.SpaceEffectsType;
+import hu.openig.model.WarEffectsType;
 import hu.openig.utils.IOUtils;
 
 import java.io.ByteArrayInputStream;
@@ -45,21 +45,21 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * regular audiothread can't play it.
  * @author akarnokd, 2011.08.15.
  */
-public class SpaceEffects {
+public class WarEffects {
 	/** The list of audio outputs. */
 	final List<SourceDataLine> outputs = new ArrayList<SourceDataLine>();
 	/** The available sound output lines. */
 	final BlockingQueue<SourceDataLine> available = new LinkedBlockingQueue<SourceDataLine>();
 	/** The sound map of 16 bit upscaled audio data. */
-	final Map<SpaceEffectsType, byte[]> soundMap = new HashMap<SpaceEffectsType, byte[]>();
+	final Map<WarEffectsType, byte[]> soundMap = new HashMap<WarEffectsType, byte[]>();
 	/** The sound pool. */
 	ExecutorService exec;
 	/**
 	 * Initialize the sound pool.
 	 * @param rl the resource locator
 	 */
-	public SpaceEffects(ResourceLocator rl) {
-		for (SpaceEffectsType st : SpaceEffectsType.values()) {
+	public WarEffects(ResourceLocator rl) {
+		for (WarEffectsType st : WarEffectsType.values()) {
 			try {
 				AudioInputStream ain = AudioSystem.getAudioInputStream(new ByteArrayInputStream(rl.get(st.resource, ResourceType.AUDIO).get()));
 				try {
@@ -171,7 +171,7 @@ public class SpaceEffects {
 	 * Play the specific effect. 
 	 * @param effect the effect to play
 	 */
-	public void play(final SpaceEffectsType effect) {
+	public void play(final WarEffectsType effect) {
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {

@@ -54,13 +54,14 @@
 		<projectile id='Plasma' matrix='inventions/weapons/cannons/plasma_projectile_rotate' width='64' height='1' sound='FIRE_PARTICLE'/>
 		<projectile id='Particle' matrix='inventions/weapons/cannons/particle_projectile_rotate' width='64' height='1' sound='FIRE_PARTICLE'/>
 		<projectile id='Meson' matrix='inventions/weapons/cannons/meson_projectile_matrix' width='1' height='12' sound='FIRE_MESON'/>
-		<projectile id='Rocket' matrix='inventions/weapons/vehicles/rocket_matrix' width='16' height='3'/>
-		<projectile id='Rocket1' matrix='inventions/weapons/projectiles/rocket_1_rotate' alternative='inventions/weapons/projectiles/alien_rocket_1_rotate' width='64' height='1' sound='ROCKET_1'/>
-		<projectile id='Rocket2' matrix='inventions/weapons/projectiles/rocket_2_rotate' alternative='inventions/weapons/projectiles/alien_rocket_2_rotate' width='64' height='1' sound='ROCKET_2'/>
-		<projectile id='MultiheadedRocket' matrix='inventions/weapons/projectiles/multi_headed_rocket_rotate' alternative='inventions/weapons/projectiles/alien_multi_headed_rocket_rotate' width='64' height='1' sound='ROCKET_2'/>
-		<projectile id='Bomb1' matrix='inventions/weapons/projectiles/bomb_1_rotate' alternative='inventions/weapons/projectiles/alien_bomb_1_rotate' width='64' height='1' sound='ROCKET_1'/>
-		<projectile id='Bomb2' matrix='inventions/weapons/projectiles/bomb_2_rotate' alternative='inventions/weapons/projectiles/alien_bomb_2_rotate' width='64' height='1' sound='ROCKET_2'/>
-		<projectile id='VirusBomb' matrix='inventions/weapons/projectiles/virus_bomb_rotate' alternative='inventions/weapons/projectiles/alien_virus_bomb_rotate' width='64' height='1' sound='ROCKET_2'/>
+		<projectile id='Rocket1' matrix='inventions/weapons/projectiles/rocket_1_rotate' alternative='inventions/weapons/projectiles/alien_rocket_1_rotate' width='64' height='1' sound='FIRE_ROCKET_1'/>
+		<projectile id='Rocket2' matrix='inventions/weapons/projectiles/rocket_2_rotate' alternative='inventions/weapons/projectiles/alien_rocket_2_rotate' width='64' height='1' sound='FIRE_ROCKET_2'/>
+		<projectile id='MultiheadedRocket' matrix='inventions/weapons/projectiles/multi_headed_rocket_rotate' alternative='inventions/weapons/projectiles/alien_multi_headed_rocket_rotate' width='64' height='1' sound='FIRE_ROCKET_2'/>
+		<projectile id='Bomb1' matrix='inventions/weapons/projectiles/bomb_1_rotate' alternative='inventions/weapons/projectiles/alien_bomb_1_rotate' width='64' height='1' sound='FIRE_ROCKET_1'/>
+		<projectile id='Bomb2' matrix='inventions/weapons/projectiles/bomb_2_rotate' alternative='inventions/weapons/projectiles/alien_bomb_2_rotate' width='64' height='1' sound='FIRE_ROCKET_2'/>
+		<projectile id='VirusBomb' matrix='inventions/weapons/projectiles/virus_bomb_rotate' alternative='inventions/weapons/projectiles/alien_virus_bomb_rotate' width='64' height='1' sound='FIRE_ROCKET_2'/>
+		<projectile id='Mine' matrix='groundwar/mine' width='1' height='1'/>
+		<projectile id='Rocket' matrix='inventions/weapons/vehicles/rocket_matrix' width='16' height='3' sound='FIRE_ROCKET'/>
 	</projectiles>
 	<!-- Entities for spacewar with rotation info for regular and alternative appearances. -->
 	<space-entities>
@@ -129,23 +130,21 @@
 	</space-entities>
 	<!-- The rotation-fire phase matrixes for surface tanks and vehicles -->
 	<ground-entities>
-		<tech id='LightTank' normal='inventions/weapons/tanks/light_tank_matrix' alternative='inventions/weapons/tanks/light_tank_matrix' width='16' height='5'/>
-		<tech id='MediumTank' normal='inventions/weapons/tanks/medium_tank_matrix' alternative='inventions/weapons/tanks/alien_medium_tank_matrix' width='16' height='5'/>
-		<tech id='HeavyTank' normal='inventions/weapons/tanks/heavy_tank_matrix' alternative='inventions/weapons/tanks/alien_heavy_tank_matrix' width='16' height='5'/>
-		<tech id='Behemoth' normal='inventions/weapons/tanks/behemoth_matrix' alternative='inventions/weapons/tanks/alien_behemoth_matrix' width='16' height='5'/>
-		<tech id='RadarCar' normal='inventions/weapons/vehicles/radar_car_matrix' alternative='inventions/weapons/vehicles/alien_radar_car_matrix' width='16' height='5'/>
-		<tech id='RocketLauncher1' normal='inventions/weapons/vehicles/rocket_launcher_1_matrix' alternative='inventions/weapons/vehicles/alien_rocket_launcher_1_matrix' width='16' height='5'/>
-		<tech id='RocketLauncher2' normal='inventions/weapons/vehicles/rocket_launcher_2_matrix' alternative='inventions/weapons/vehicles/alien_rocket_launcher_2_matrix' width='16' height='5'/>
+		<tech id='LightTank' normal='inventions/weapons/tanks/light_tank_matrix' alternative='inventions/weapons/tanks/light_tank_matrix' width='16' height='5' destroy='EXPLOSION_SHORT' fire='GROUND_FIRE_6'/>
+		<tech id='MediumTank' normal='inventions/weapons/tanks/medium_tank_matrix' alternative='inventions/weapons/tanks/alien_medium_tank_matrix' width='16' height='5' destroy='EXPLOSION_MEDIUM' fire='GROUND_FIRE_6'/>
+		<tech id='HeavyTank' normal='inventions/weapons/tanks/heavy_tank_matrix' alternative='inventions/weapons/tanks/alien_heavy_tank_matrix' width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='GROUND_FIRE_6'/>
+		<tech id='Behemoth' normal='inventions/weapons/tanks/behemoth_matrix' alternative='inventions/weapons/tanks/alien_behemoth_matrix' width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6'/>
+		<tech id='RadarCar' normal='inventions/weapons/vehicles/radar_car_matrix' alternative='inventions/weapons/vehicles/alien_radar_car_matrix' width='16' height='5' destroy='EXPLOSION_MEDIUM'/>
+		<tech id='RocketLauncher1' normal='inventions/weapons/vehicles/rocket_launcher_1_matrix' alternative='inventions/weapons/vehicles/alien_rocket_launcher_1_matrix' width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET'/>
+		<tech id='RocketLauncher2' normal='inventions/weapons/vehicles/rocket_launcher_2_matrix' alternative='inventions/weapons/vehicles/alien_rocket_launcher_2_matrix' width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET'/>
 
-		<tech id='DargslanSelfRepairTank' normal='inventions/weapons/vehicles/dargslan_self_repair_tank_matrix' width='16' height='5'/>
-		<tech id='DribsRocketJammer' normal='inventions/weapons/vehicles/dribs_rocket_jammer_matrix' width='16' height='5'/>
-		<tech id='EcalepSpecialUnit' normal='inventions/weapons/vehicles/ecalep_special_unit_matrix' width='16' height='5'/>
-		<tech id='GarthogRadarJammer' normal='inventions/weapons/vehicles/garthog_radar_jammer_matrix' width='16' height='5'/>
-		<tech id='MorgathKamikazeTank' normal='inventions/weapons/vehicles/morgath_kamikaze_tank_matrix' width='16' height='5'/>
-		<tech id='SullepArtillery' normal='inventions/weapons/vehicles/sullep_artillery_matrix' width='16' height='5'/>
-		<tech id='YchomMineLayer' normal='inventions/weapons/vehicles/ychom_mine_layer_matrix' width='16' height='5'/>
-		<tech id='Mine' normal='groundwar/mine' width='1' height='1'/>
-
+		<tech id='DargslanSelfRepairTank' normal='inventions/weapons/vehicles/dargslan_self_repair_tank_matrix' width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6'/>
+		<tech id='DribsRocketJammer' normal='inventions/weapons/vehicles/dribs_paralizer_matrix' width='16' height='5' destroy='EXPLOSION_MEDIUM_2'/>
+		<tech id='EcalepSpecialUnit' normal='inventions/weapons/vehicles/ecalep_rocket_jammer_matrix' width='16' height='5' destroy='EXPLOSION_MEDIUM_2'/>
+		<tech id='GarthogRadarJammer' normal='inventions/weapons/vehicles/garthog_radar_jammer_matrix' width='16' height='5' destroy='EXPLOSION_MEDIUM_2'/>
+		<tech id='MorgathKamikazeTank' normal='inventions/weapons/vehicles/morgath_kamikaze_tank_matrix' width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6'/>
+		<tech id='SullepArtillery' normal='inventions/weapons/vehicles/sullep_artillery_matrix' width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_3'/>
+		<tech id='YchomMineLayer' normal='inventions/weapons/vehicles/ychom_mine_layer_matrix' width='16' height='5' destroy='EXPLOSION_MEDIUM_2'/>
 	</ground-entities>
 	<!-- Initial battle layouts. -->
 	<layouts>

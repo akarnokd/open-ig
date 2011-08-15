@@ -19,4 +19,8 @@ public class BattleGroundEntity {
 	public BufferedImage[][] normal;
 	/** The alternative [rotation][fire-phase] of the entity. */
 	public BufferedImage[][] alternative;
+	/** The destruction sound. */
+	public WarEffectsType destroy;
+	/** The fire sound if non null. */
+	public WarEffectsType fire;
 }

@@ -314,17 +314,17 @@
 		<property name='damage' value='4'/>
 		<property name='selfrepair' value='true'/>
 	</item>
-	<item id='DribsRocketJammer' name='tech.dribsrocketjammer.name' long-name='tech.dribsrocketjammer.longname' description='tech.dribsrocketjammer.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='32000' production-cost='20000' race='dribs' image='inventions/weapons/vehicles/dribs_rocket_jammer' index='3'>
+	<item id='DribsParalizer' name='tech.dribsparalizer.name' long-name='tech.dribsparalizer.longname' description='tech.dribsparalizer.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='32000' production-cost='20000' race='dribs' image='inventions/weapons/vehicles/dribs_paralizer' index='3'>
 		<property name='range' value='8'/>
 		<property name='speed' value='5'/>
 		<property name='armor' value='2'/>
-		<property name='rocketjammer' value='true'/>
+		<property name='paralizer' value='true'/>
 	</item>
-	<item id='EcalepSpecialUnit' name='tech.ecalepspecialunit.name' long-name='tech.ecalepspecialunit.longname' description='tech.ecalepspecialunit.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='32000' production-cost='20000' race='dribs' image='inventions/weapons/vehicles/ecalep_special_unit' index='3'>
+	<item id='EcalepRocketJammer' name='tech.ecaleprocketjammer.name' long-name='tech.ecaleprocketjammer.longname' description='tech.ecaleprocketjammer.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='32000' production-cost='20000' race='ecalep' image='inventions/weapons/vehicles/ecalep_rocket_jammer' index='3'>
 		<property name='range' value='5'/>
 		<property name='speed' value='5'/>
 		<property name='armor' value='2'/>
-		<property name='special' value='true'/>
+		<property name='rocketjammer' value='true'/>
 	</item>
 	<item id='GarthogRadarJammer' name='tech.garthogradarjammer.name' long-name='tech.garthogradarjammer.longname' description='tech.garthogradarjammer.description' category='WEAPONS_VEHICLES' factory='weapon' level='0' research-cost='24000' production-cost='12000' race='garthog' image='inventions/weapons/vehicles/garthog_radar_jammer' index='3'>
 		<property name='speed' value='4'/>
@@ -376,7 +376,7 @@
 		<property name='projectile' value='Laser1'/>
 		<property name='damage' value='1'/>
   </item>
-  <item id='SullepFighter1' name='tech.sullepfighter1.name' long-name='tech.sullepfighter1.longname' description='tech.sullepfighter.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/sullep_fighter_1' factory='spaceship' research-cost='18000' production-cost='7500' level='0' race='sullep' index='0'>
+  <item id='SullepFighter1' name='tech.sullepfighter1.name' long-name='tech.sullepfighter1.longname' description='tech.sullepfighter1.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/sullep_fighter_1' factory='spaceship' research-cost='18000' production-cost='7500' level='0' race='sullep' index='0'>
 		<property name='projectile' value='Laser3'/>
 		<property name='damage' value='4'/>
   </item>
