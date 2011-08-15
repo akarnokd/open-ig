@@ -168,7 +168,7 @@
 		<graphics base="colony/buildings/%s/fusion_plant">
 			<tech height="5" width="5" id="human"/>
 		</graphics>
-		<build limit="*" kind="Power" cost="24000" except='desert,neptoplasm,rocky,liquid,cratered'/>
+		<build limit="*" kind="Power" cost="24000" except='desert,neptoplasm,rocky'/>
 		<operation percent="true">
 			<resource type='energy' display="true">9000</resource>
 			<resource type="worker">-500</resource>
@@ -196,7 +196,7 @@
 		<graphics base="colony/buildings/%s/solar_plant">
 			<tech id='human' height="5" width="5"/>
 		</graphics>
-		<build limit="*" kind="Power" cost="16000" except="frozen,liquid,neptoplasm,cratered" research="SolarPlant"/>
+		<build limit="*" kind="Power" cost="16000" except="frozen,liquid" research="SolarPlant"/>
 		<operation percent="true">
 			<resource type='energy' display="true">6000</resource>
 			<resource type='worker'>-350</resource>

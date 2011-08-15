@@ -275,12 +275,15 @@ public final class Simulator {
 				buildInProgress = true;
 			}
 			if (planet.earthQuakeTTL > 0) {
+				if (b.type.kind.equals("Factory")) {
+					b.hitpoints -= b.type.hitpoints * 15 / 600;
+				} else
 				if (b.getEnergy() <= 0) {
 					// reduce regular building health by 25% of its total hitpoints during the earthquake duration
-					b.hitpoints -= b.type.hitpoints * 25 / 600;
+					b.hitpoints -= b.type.hitpoints * 10 / 600;
 				} else {
 					// reduce energy building health by 55% of its total hitpoints during the earthquake duration
-					b.hitpoints -= b.type.hitpoints * 55 / 600;
+					b.hitpoints -= b.type.hitpoints * 20 / 600;
 				}
 				if (b.hitpoints <= 0) {
 					planet.surface.removeBuilding(b);

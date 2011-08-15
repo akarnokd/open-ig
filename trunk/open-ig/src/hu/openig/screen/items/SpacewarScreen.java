@@ -10,7 +10,13 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Act;
 import hu.openig.model.Screens;
+import hu.openig.model.SpaceBeam;
+import hu.openig.model.SpaceEffectsType;
+import hu.openig.model.SpaceExplosion;
+import hu.openig.model.SpaceProjectile;
+import hu.openig.model.SpaceShipStationDefense;
 import hu.openig.screen.ScreenBase;
+import hu.openig.sound.SpaceEffects;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 
@@ -255,11 +261,20 @@ public class SpacewarScreen extends ScreenBase {
 	List<AnimatedRadioButton> leftButtons;
 	/** The right animated buttons. */
 	List<AnimatedRadioButton> rightButtons;
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
+	/** The space entities for animation. */
+	final List<SpaceShipStationDefense> entities = new ArrayList<SpaceShipStationDefense>();
+	/** The beams for animation. */
+	final List<SpaceBeam> beams = new ArrayList<SpaceBeam>();
+	/** The projectiles for animation. */
+	final List<SpaceProjectile> projectiles = new ArrayList<SpaceProjectile>();
+	/** The space explosions for animation. */
+	final List<SpaceExplosion> explosions = new ArrayList<SpaceExplosion>();
+	/** The space effects. */
+	SpaceEffects effects;
 	@Override
 	public void onInitialize() {
+		effects = new SpaceEffects(rl);
+		
 		mainCommands = new ArrayList<ThreePhaseButton>();
 		mainCommands.add(new ThreePhaseButton(33, 24, commons.spacewar().stop));
 		mainCommands.add(new ThreePhaseButton(33 + 72, 24, commons.spacewar().move));
@@ -480,12 +495,15 @@ public class SpacewarScreen extends ScreenBase {
 				doButtonAnimations();
 			}
 		});
+		effects.initialize(config.audioChannels, config.effectVolume);
 	}
 
 	@Override
 	public void onLeave() {
 		close0(buttonTimer);
 		buttonTimer = null;
+		
+		effects.close();
 	}
 	/** The location of the minimap. */
 	Rectangle minimap = new Rectangle();
