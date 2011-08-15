@@ -10,7 +10,6 @@ package hu.openig.model;
 
 import hu.openig.utils.JavaUtils;
 
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,7 @@ public class Battle {
 	/** The ground entity definitions. */
 	public final Map<String, BattleGroundEntity> groundEntities = JavaUtils.newHashMap();
 	/** The map from projectile ID to [rotation][fire-phase] images. */
-	public final Map<String, BufferedImage[][]> projectiles = JavaUtils.newHashMap();
+	public final Map<String, BattleProjectile> projectiles = JavaUtils.newHashMap();
 	/**
 	 * Add a turret definition to the {@code turrets} mapping.
 	 * @param buildingId the building identifier.

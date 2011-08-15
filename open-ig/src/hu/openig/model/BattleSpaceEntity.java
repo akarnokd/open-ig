@@ -22,4 +22,6 @@ public class BattleSpaceEntity {
 	public BufferedImage[] normal;
 	/** The alternative rotation image. */
 	public BufferedImage[] alternative;
+	/** The sound effect for explosion. */
+	public SpaceEffectsType sound;
 }

@@ -1442,9 +1442,19 @@ public class World {
 			String id = xproj.get("id");
 			int nx = xproj.getInt("width");
 			int ny = xproj.getInt("height");
+			BattleProjectile bp = new BattleProjectile();
+			
 			BufferedImage m = rl.getImage(xproj.get("matrix"));
-			BufferedImage[][] matrix = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
-			battle.projectiles.put(id, matrix);
+			bp.matrix = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
+			if (xproj.has("alternative")) {
+				m = rl.getImage(xproj.get("alternative"));
+				bp.alternative = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
+			}
+			bp.sound = SpaceEffectsType.valueOf(xproj.get("sound"));
+			if (bp.sound == null) {
+				System.err.println("Missing sound " + xproj.get("sound") + " for " + id);
+			}
+			battle.projectiles.put(id, bp);
 			
 		}
 		for (XElement xspace : xbattle.childElement("space-entities").childrenWithName("tech")) {
@@ -1463,6 +1473,10 @@ public class World {
 				se.alternative = se.normal;
 			}
 			se.image = rl.getImage(xspace.get("image"));
+			se.sound = SpaceEffectsType.valueOf(xspace.get("sound"));
+			if (se.sound == null) {
+				System.err.println("Missing sound " + xspace.get("sound") + " for " + id);
+			}
 			
 			battle.spaceEntities.put(id, se);
 		}
