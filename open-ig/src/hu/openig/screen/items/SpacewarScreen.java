@@ -513,6 +513,21 @@ public class SpacewarScreen extends ScreenBase {
 					doZoomOut(e.x, e.y);
 				}
 				needRepaint = true;
+			} else
+			if (e.has(Modifier.SHIFT)) {
+				if (e.z < 0) {
+					pan(-30, 0);
+				} else {
+					pan(30, 0);
+				}
+				needRepaint = true;
+			} else {
+				if (e.z < 0) {
+					pan(0, -30);
+				} else {
+					pan(0, 30);
+				}
+				needRepaint = true;
 			}
 			break;
 		case UP:
@@ -960,21 +975,26 @@ public class SpacewarScreen extends ScreenBase {
 		drawSpacewarStructuresMinimap(shields, g2);
 		drawSpacewarStructuresMinimap(projectors, g2);
 		
+		g2.setColor(Color.WHITE);
+		Rectangle rect = computeMinimapViewport();
+		g2.drawRect(rect.x, rect.y, rect.width - 1, rect.height - 1);
+		g2.setClip(save0);
+	}
+	/** @return calculates the minimap viewport rectangle coordinates. */
+	Rectangle computeMinimapViewport() {
 		int vx = 0;
 		int vy = 0;
 		int vx2 = minimap.width - 1;
 		int vy2 = minimap.height - 1;
-		if (ox == -offsetX) {
+		if (space.width * scale >= mainmap.width) {
 			vx = (int)(offsetX * minimap.width / space.width / scale + 0.5);
 			vx2 = (int)((offsetX + mainmap.width - 1) * minimap.width / space.width / scale + 0.5);
 		}
-		if (oy == -offsetY) {
+		if (space.height * scale >= mainmap.height) {
 			vy = (int)(offsetY * minimap.height / space.height / scale + 0.5);
 			vy2 = (int)((offsetY + mainmap.height - 1) * minimap.height / space.height / scale + 0.5);
 		}
-		g2.setColor(Color.WHITE);
-		g2.drawRect(minimap.x + vx, minimap.y + vy, vx2 - vx, vy2 - vy);
-		g2.setClip(save0);
+		return new Rectangle(minimap.x + vx, minimap.y + vy, vx2 - vx + 1, vy2 - vy + 1);
 	}
 	/**
 	 * Draw the spacewar structures to the main screen.

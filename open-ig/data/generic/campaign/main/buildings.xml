@@ -721,7 +721,7 @@
 		<operation>
 			<resource type='hospital' display="true">20000</resource>
 			<resource type='energy'>-900</resource>
-			<resource type='worker'>-28</resource>
+			<resource type='worker'>-280</resource>
 		</operation>
 		<upgrades>
 			<upgrade desc='buildings.hospital.upgrade_1'>
@@ -1384,7 +1384,7 @@
 		<operation>
 			<resource type='morale'>20</resource>
 			<resource type='energy'>-1000</resource>
-			<resource type='worker'>-350</resource>
+			<resource type='worker'>-860</resource>
 		</operation>
 		
 		<upgrades>

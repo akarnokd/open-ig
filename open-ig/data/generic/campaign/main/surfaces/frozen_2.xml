@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <map version='1.0'>
-  <surface width='32' height='44'>
+  <surface width='32' height='49'>
     <tile type='frozen' id='25' x='-1' y='-1'/>
     <tile type='frozen' id='28' x='-2' y='-2'/>
     <tile type='frozen' id='23' x='-3' y='-3'/>
@@ -44,6 +44,11 @@
     <tile type='frozen' id='26' x='-41' y='-41'/>
     <tile type='frozen' id='24' x='-42' y='-42'/>
     <tile type='frozen' id='30' x='-43' y='-43'/>
+    <tile type='frozen' id='30' x='-44' y='-44'/>
+    <tile type='frozen' id='26' x='-45' y='-45'/>
+    <tile type='frozen' id='23' x='-46' y='-46'/>
+    <tile type='frozen' id='25' x='-47' y='-47'/>
+    <tile type='frozen' id='24' x='-48' y='-48'/>
     <tile type='frozen' id='26' x='0' y='-1'/>
     <tile type='frozen' id='21' x='-1' y='-2'/>
     <tile type='frozen' id='27' x='-2' y='-3'/>
@@ -87,6 +92,11 @@
     <tile type='frozen' id='28' x='-40' y='-41'/>
     <tile type='frozen' id='29' x='-41' y='-42'/>
     <tile type='frozen' id='29' x='-42' y='-43'/>
+    <tile type='frozen' id='27' x='-43' y='-44'/>
+    <tile type='frozen' id='29' x='-44' y='-45'/>
+    <tile type='frozen' id='22' x='-45' y='-46'/>
+    <tile type='frozen' id='24' x='-46' y='-47'/>
+    <tile type='frozen' id='30' x='-47' y='-48'/>
     <tile type='frozen' id='25' x='0' y='-2'/>
     <tile type='frozen' id='21' x='-1' y='-3'/>
     <tile type='frozen' id='22' x='-2' y='-4'/>
@@ -130,6 +140,11 @@
     <tile type='frozen' id='21' x='-40' y='-42'/>
     <tile type='frozen' id='29' x='-41' y='-43'/>
     <tile type='frozen' id='21' x='-42' y='-44'/>
+    <tile type='frozen' id='21' x='-43' y='-45'/>
+    <tile type='frozen' id='23' x='-44' y='-46'/>
+    <tile type='frozen' id='26' x='-45' y='-47'/>
+    <tile type='frozen' id='21' x='-46' y='-48'/>
+    <tile type='frozen' id='22' x='-47' y='-49'/>
     <tile type='frozen' id='24' x='1' y='-2'/>
     <tile type='frozen' id='24' x='0' y='-3'/>
     <tile type='frozen' id='30' x='-1' y='-4'/>
@@ -173,6 +188,11 @@
     <tile type='frozen' id='23' x='-39' y='-42'/>
     <tile type='frozen' id='21' x='-40' y='-43'/>
     <tile type='frozen' id='21' x='-41' y='-44'/>
+    <tile type='frozen' id='21' x='-42' y='-45'/>
+    <tile type='frozen' id='23' x='-43' y='-46'/>
+    <tile type='frozen' id='26' x='-44' y='-47'/>
+    <tile type='frozen' id='25' x='-45' y='-48'/>
+    <tile type='frozen' id='24' x='-46' y='-49'/>
     <tile type='frozen' id='27' x='1' y='-3'/>
     <tile type='frozen' id='30' x='0' y='-4'/>
     <tile type='frozen' id='21' x='-1' y='-5'/>
@@ -216,6 +236,11 @@
     <tile type='frozen' id='21' x='-39' y='-43'/>
     <tile type='frozen' id='21' x='-40' y='-44'/>
     <tile type='frozen' id='21' x='-41' y='-45'/>
+    <tile type='frozen' id='21' x='-42' y='-46'/>
+    <tile type='frozen' id='24' x='-43' y='-47'/>
+    <tile type='frozen' id='29' x='-44' y='-48'/>
+    <tile type='frozen' id='22' x='-45' y='-49'/>
+    <tile type='frozen' id='27' x='-46' y='-50'/>
     <tile type='frozen' id='26' x='2' y='-3'/>
     <tile type='frozen' id='27' x='1' y='-4'/>
     <tile type='frozen' id='23' x='0' y='-5'/>
@@ -257,6 +282,11 @@
     <tile type='frozen' id='21' x='-38' y='-43'/>
     <tile type='frozen' id='59' x='-39' y='-44'/>
     <tile type='frozen' id='21' x='-40' y='-45'/>
+    <tile type='frozen' id='21' x='-41' y='-46'/>
+    <tile type='frozen' id='21' x='-42' y='-47'/>
+    <tile type='frozen' id='24' x='-43' y='-48'/>
+    <tile type='frozen' id='22' x='-44' y='-49'/>
+    <tile type='frozen' id='23' x='-45' y='-50'/>
     <tile type='frozen' id='27' x='2' y='-4'/>
     <tile type='frozen' id='25' x='1' y='-5'/>
     <tile type='frozen' id='24' x='0' y='-6'/>
@@ -296,6 +326,11 @@
     <tile type='frozen' id='21' x='-36' y='-42'/>
     <tile type='frozen' id='24' x='-37' y='-43'/>
     <tile type='frozen' id='21' x='-40' y='-46'/>
+    <tile type='frozen' id='21' x='-41' y='-47'/>
+    <tile type='frozen' id='30' x='-42' y='-48'/>
+    <tile type='frozen' id='21' x='-43' y='-49'/>
+    <tile type='frozen' id='24' x='-44' y='-50'/>
+    <tile type='frozen' id='21' x='-45' y='-51'/>
     <tile type='frozen' id='30' x='3' y='-4'/>
     <tile type='frozen' id='27' x='2' y='-5'/>
     <tile type='frozen' id='21' x='1' y='-6'/>
@@ -335,6 +370,11 @@
     <tile type='frozen' id='24' x='-35' y='-42'/>
     <tile type='frozen' id='21' x='-36' y='-43'/>
     <tile type='frozen' id='21' x='-39' y='-46'/>
+    <tile type='frozen' id='21' x='-40' y='-47'/>
+    <tile type='frozen' id='21' x='-41' y='-48'/>
+    <tile type='frozen' id='22' x='-42' y='-49'/>
+    <tile type='frozen' id='28' x='-43' y='-50'/>
+    <tile type='frozen' id='21' x='-44' y='-51'/>
     <tile type='frozen' id='21' x='3' y='-5'/>
     <tile type='frozen' id='24' x='2' y='-6'/>
     <tile type='frozen' id='24' x='1' y='-7'/>
@@ -376,6 +416,11 @@
     <tile type='frozen' id='29' x='-36' y='-44'/>
     <tile type='frozen' id='28' x='-38' y='-46'/>
     <tile type='frozen' id='21' x='-39' y='-47'/>
+    <tile type='frozen' id='21' x='-40' y='-48'/>
+    <tile type='frozen' id='29' x='-41' y='-49'/>
+    <tile type='frozen' id='21' x='-42' y='-50'/>
+    <tile type='frozen' id='26' x='-43' y='-51'/>
+    <tile type='frozen' id='25' x='-44' y='-52'/>
     <tile type='frozen' id='23' x='4' y='-5'/>
     <tile type='frozen' id='24' x='3' y='-6'/>
     <tile type='frozen' id='22' x='2' y='-7'/>
@@ -419,6 +464,11 @@
     <tile type='frozen' id='24' x='-36' y='-45'/>
     <tile type='frozen' id='29' x='-37' y='-46'/>
     <tile type='frozen' id='22' x='-38' y='-47'/>
+    <tile type='frozen' id='23' x='-39' y='-48'/>
+    <tile type='frozen' id='21' x='-40' y='-49'/>
+    <tile type='frozen' id='24' x='-41' y='-50'/>
+    <tile type='frozen' id='24' x='-42' y='-51'/>
+    <tile type='frozen' id='23' x='-43' y='-52'/>
     <tile type='frozen' id='23' x='4' y='-6'/>
     <tile type='frozen' id='22' x='3' y='-7'/>
     <tile type='frozen' id='23' x='2' y='-8'/>
@@ -462,6 +512,11 @@
     <tile type='frozen' id='21' x='-36' y='-46'/>
     <tile type='frozen' id='21' x='-37' y='-47'/>
     <tile type='frozen' id='21' x='-38' y='-48'/>
+    <tile type='frozen' id='23' x='-39' y='-49'/>
+    <tile type='frozen' id='26' x='-40' y='-50'/>
+    <tile type='frozen' id='22' x='-41' y='-51'/>
+    <tile type='frozen' id='27' x='-42' y='-52'/>
+    <tile type='frozen' id='29' x='-43' y='-53'/>
     <tile type='frozen' id='23' x='5' y='-6'/>
     <tile type='frozen' id='26' x='4' y='-7'/>
     <tile type='frozen' id='21' x='3' y='-8'/>
@@ -503,6 +558,11 @@
     <tile type='frozen' id='21' x='-35' y='-46'/>
     <tile type='frozen' id='21' x='-36' y='-47'/>
     <tile type='frozen' id='23' x='-37' y='-48'/>
+    <tile type='frozen' id='24' x='-38' y='-49'/>
+    <tile type='frozen' id='21' x='-39' y='-50'/>
+    <tile type='frozen' id='24' x='-40' y='-51'/>
+    <tile type='frozen' id='29' x='-41' y='-52'/>
+    <tile type='frozen' id='22' x='-42' y='-53'/>
     <tile type='frozen' id='22' x='5' y='-7'/>
     <tile type='frozen' id='21' x='4' y='-8'/>
     <tile type='frozen' id='29' x='3' y='-9'/>
@@ -545,6 +605,11 @@
     <tile type='frozen' id='21' x='-35' y='-47'/>
     <tile type='frozen' id='21' x='-36' y='-48'/>
     <tile type='frozen' id='21' x='-37' y='-49'/>
+    <tile type='frozen' id='21' x='-38' y='-50'/>
+    <tile type='frozen' id='22' x='-39' y='-51'/>
+    <tile type='frozen' id='21' x='-40' y='-52'/>
+    <tile type='frozen' id='26' x='-41' y='-53'/>
+    <tile type='frozen' id='24' x='-42' y='-54'/>
     <tile type='frozen' id='30' x='6' y='-7'/>
     <tile type='frozen' id='30' x='5' y='-8'/>
     <tile type='frozen' id='21' x='4' y='-9'/>
@@ -588,6 +653,11 @@
     <tile type='frozen' id='21' x='-34' y='-47'/>
     <tile type='frozen' id='21' x='-35' y='-48'/>
     <tile type='frozen' id='21' x='-36' y='-49'/>
+    <tile type='frozen' id='21' x='-37' y='-50'/>
+    <tile type='frozen' id='27' x='-38' y='-51'/>
+    <tile type='frozen' id='21' x='-39' y='-52'/>
+    <tile type='frozen' id='21' x='-40' y='-53'/>
+    <tile type='frozen' id='21' x='-41' y='-54'/>
     <tile type='frozen' id='27' x='6' y='-8'/>
     <tile type='frozen' id='21' x='5' y='-9'/>
     <tile type='frozen' id='21' x='4' y='-10'/>
@@ -626,6 +696,11 @@
     <tile type='frozen' id='21' x='-34' y='-48'/>
     <tile type='frozen' id='21' x='-35' y='-49'/>
     <tile type='frozen' id='21' x='-36' y='-50'/>
+    <tile type='frozen' id='21' x='-37' y='-51'/>
+    <tile type='frozen' id='21' x='-38' y='-52'/>
+    <tile type='frozen' id='21' x='-39' y='-53'/>
+    <tile type='frozen' id='21' x='-40' y='-54'/>
+    <tile type='frozen' id='28' x='-41' y='-55'/>
     <tile type='frozen' id='26' x='7' y='-8'/>
     <tile type='frozen' id='22' x='6' y='-9'/>
     <tile type='frozen' id='21' x='5' y='-10'/>
@@ -666,6 +741,11 @@
     <tile type='frozen' id='21' x='-33' y='-48'/>
     <tile type='frozen' id='25' x='-34' y='-49'/>
     <tile type='frozen' id='21' x='-35' y='-50'/>
+    <tile type='frozen' id='21' x='-36' y='-51'/>
+    <tile type='frozen' id='22' x='-37' y='-52'/>
+    <tile type='frozen' id='25' x='-38' y='-53'/>
+    <tile type='frozen' id='22' x='-39' y='-54'/>
+    <tile type='frozen' id='25' x='-40' y='-55'/>
     <tile type='frozen' id='21' x='7' y='-9'/>
     <tile type='frozen' id='21' x='6' y='-10'/>
     <tile type='frozen' id='21' x='5' y='-11'/>
@@ -707,6 +787,11 @@
     <tile type='frozen' id='21' x='-33' y='-49'/>
     <tile type='frozen' id='21' x='-34' y='-50'/>
     <tile type='frozen' id='21' x='-35' y='-51'/>
+    <tile type='frozen' id='21' x='-36' y='-52'/>
+    <tile type='frozen' id='26' x='-37' y='-53'/>
+    <tile type='frozen' id='23' x='-38' y='-54'/>
+    <tile type='frozen' id='21' x='-39' y='-55'/>
+    <tile type='frozen' id='24' x='-40' y='-56'/>
     <tile type='frozen' id='22' x='8' y='-9'/>
     <tile type='frozen' id='23' x='7' y='-10'/>
     <tile type='frozen' id='21' x='6' y='-11'/>
@@ -748,6 +833,11 @@
     <tile type='frozen' id='21' x='-30' y='-47'/>
     <tile type='frozen' id='29' x='-33' y='-50'/>
     <tile type='frozen' id='21' x='-34' y='-51'/>
+    <tile type='frozen' id='21' x='-35' y='-52'/>
+    <tile type='frozen' id='28' x='-36' y='-53'/>
+    <tile type='frozen' id='22' x='-37' y='-54'/>
+    <tile type='frozen' id='21' x='-38' y='-55'/>
+    <tile type='frozen' id='23' x='-39' y='-56'/>
     <tile type='frozen' id='22' x='8' y='-10'/>
     <tile type='frozen' id='22' x='7' y='-11'/>
     <tile type='frozen' id='22' x='6' y='-12'/>
@@ -789,6 +879,11 @@
     <tile type='frozen' id='22' x='-32' y='-50'/>
     <tile type='frozen' id='21' x='-33' y='-51'/>
     <tile type='frozen' id='23' x='-34' y='-52'/>
+    <tile type='frozen' id='23' x='-35' y='-53'/>
+    <tile type='frozen' id='28' x='-36' y='-54'/>
+    <tile type='frozen' id='21' x='-37' y='-55'/>
+    <tile type='frozen' id='21' x='-38' y='-56'/>
+    <tile type='frozen' id='23' x='-39' y='-57'/>
     <tile type='frozen' id='28' x='9' y='-10'/>
     <tile type='frozen' id='28' x='8' y='-11'/>
     <tile type='frozen' id='21' x='7' y='-12'/>
@@ -830,6 +925,11 @@
     <tile type='frozen' id='21' x='-31' y='-50'/>
     <tile type='frozen' id='24' x='-32' y='-51'/>
     <tile type='frozen' id='21' x='-33' y='-52'/>
+    <tile type='frozen' id='23' x='-34' y='-53'/>
+    <tile type='frozen' id='29' x='-35' y='-54'/>
+    <tile type='frozen' id='22' x='-36' y='-55'/>
+    <tile type='frozen' id='21' x='-37' y='-56'/>
+    <tile type='frozen' id='27' x='-38' y='-57'/>
     <tile type='frozen' id='25' x='9' y='-11'/>
     <tile type='frozen' id='28' x='8' y='-12'/>
     <tile type='frozen' id='21' x='7' y='-13'/>
@@ -870,6 +970,11 @@
     <tile type='frozen' id='24' x='-31' y='-51'/>
     <tile type='frozen' id='23' x='-32' y='-52'/>
     <tile type='frozen' id='22' x='-33' y='-53'/>
+    <tile type='frozen' id='26' x='-34' y='-54'/>
+    <tile type='frozen' id='21' x='-35' y='-55'/>
+    <tile type='frozen' id='21' x='-36' y='-56'/>
+    <tile type='frozen' id='21' x='-37' y='-57'/>
+    <tile type='frozen' id='28' x='-38' y='-58'/>
     <tile type='frozen' id='26' x='10' y='-11'/>
     <tile type='frozen' id='29' x='9' y='-12'/>
     <tile type='frozen' id='38' x='8' y='-13'/>
@@ -912,6 +1017,11 @@
     <tile type='frozen' id='21' x='-30' y='-51'/>
     <tile type='frozen' id='24' x='-31' y='-52'/>
     <tile type='frozen' id='28' x='-32' y='-53'/>
+    <tile type='frozen' id='21' x='-33' y='-54'/>
+    <tile type='frozen' id='21' x='-34' y='-55'/>
+    <tile type='frozen' id='21' x='-35' y='-56'/>
+    <tile type='frozen' id='21' x='-36' y='-57'/>
+    <tile type='frozen' id='25' x='-37' y='-58'/>
     <tile type='frozen' id='22' x='10' y='-12'/>
     <tile type='frozen' id='21' x='9' y='-13'/>
     <tile type='frozen' id='22' x='7' y='-15'/>
@@ -952,6 +1062,11 @@
     <tile type='frozen' id='21' x='-30' y='-52'/>
     <tile type='frozen' id='21' x='-31' y='-53'/>
     <tile type='frozen' id='21' x='-32' y='-54'/>
+    <tile type='frozen' id='27' x='-33' y='-55'/>
+    <tile type='frozen' id='22' x='-34' y='-56'/>
+    <tile type='frozen' id='24' x='-35' y='-57'/>
+    <tile type='frozen' id='21' x='-36' y='-58'/>
+    <tile type='frozen' id='28' x='-37' y='-59'/>
     <tile type='frozen' id='21' x='11' y='-12'/>
     <tile type='frozen' id='21' x='10' y='-13'/>
     <tile type='frozen' id='52' x='9' y='-14'/>
@@ -993,6 +1108,11 @@
     <tile type='frozen' id='28' x='-29' y='-52'/>
     <tile type='frozen' id='21' x='-30' y='-53'/>
     <tile type='frozen' id='21' x='-31' y='-54'/>
+    <tile type='frozen' id='26' x='-32' y='-55'/>
+    <tile type='frozen' id='28' x='-33' y='-56'/>
+    <tile type='frozen' id='22' x='-34' y='-57'/>
+    <tile type='frozen' id='26' x='-35' y='-58'/>
+    <tile type='frozen' id='28' x='-36' y='-59'/>
     <tile type='frozen' id='27' x='11' y='-13'/>
     <tile type='frozen' id='25' x='8' y='-16'/>
     <tile type='frozen' id='28' x='7' y='-17'/>
@@ -1029,6 +1149,11 @@
     <tile type='frozen' id='21' x='-29' y='-53'/>
     <tile type='frozen' id='26' x='-30' y='-54'/>
     <tile type='frozen' id='30' x='-31' y='-55'/>
+    <tile type='frozen' id='23' x='-32' y='-56'/>
+    <tile type='frozen' id='22' x='-33' y='-57'/>
+    <tile type='frozen' id='29' x='-34' y='-58'/>
+    <tile type='frozen' id='26' x='-35' y='-59'/>
+    <tile type='frozen' id='23' x='-36' y='-60'/>
     <tile type='frozen' id='28' x='12' y='-13'/>
     <tile type='frozen' id='23' x='11' y='-14'/>
     <tile type='frozen' id='52' x='9' y='-16'/>
@@ -1068,6 +1193,11 @@
     <tile type='frozen' id='46' x='-28' y='-53'/>
     <tile type='frozen' id='22' x='-29' y='-54'/>
     <tile type='frozen' id='28' x='-30' y='-55'/>
+    <tile type='frozen' id='28' x='-31' y='-56'/>
+    <tile type='frozen' id='26' x='-32' y='-57'/>
+    <tile type='frozen' id='21' x='-33' y='-58'/>
+    <tile type='frozen' id='29' x='-34' y='-59'/>
+    <tile type='frozen' id='24' x='-35' y='-60'/>
     <tile type='frozen' id='27' x='12' y='-14'/>
     <tile type='frozen' id='27' x='11' y='-15'/>
     <tile type='frozen' id='21' x='8' y='-18'/>
@@ -1099,6 +1229,11 @@
     <tile type='frozen' id='21' x='-24' y='-50'/>
     <tile type='frozen' id='21' x='-29' y='-55'/>
     <tile type='frozen' id='24' x='-30' y='-56'/>
+    <tile type='frozen' id='21' x='-31' y='-57'/>
+    <tile type='frozen' id='22' x='-32' y='-58'/>
+    <tile type='frozen' id='23' x='-33' y='-59'/>
+    <tile type='frozen' id='25' x='-34' y='-60'/>
+    <tile type='frozen' id='23' x='-35' y='-61'/>
     <tile type='frozen' id='26' x='13' y='-14'/>
     <tile type='frozen' id='27' x='12' y='-15'/>
     <tile type='frozen' id='21' x='11' y='-16'/>
@@ -1134,6 +1269,11 @@
     <tile type='frozen' id='23' x='-26' y='-53'/>
     <tile type='frozen' id='21' x='-28' y='-55'/>
     <tile type='frozen' id='21' x='-29' y='-56'/>
+    <tile type='frozen' id='21' x='-30' y='-57'/>
+    <tile type='frozen' id='22' x='-31' y='-58'/>
+    <tile type='frozen' id='24' x='-32' y='-59'/>
+    <tile type='frozen' id='24' x='-33' y='-60'/>
+    <tile type='frozen' id='21' x='-34' y='-61'/>
     <tile type='frozen' id='23' x='13' y='-15'/>
     <tile type='frozen' id='24' x='12' y='-16'/>
     <tile type='frozen' id='23' x='11' y='-17'/>
@@ -1167,6 +1307,11 @@
     <tile type='frozen' id='28' x='-27' y='-55'/>
     <tile type='frozen' id='22' x='-28' y='-56'/>
     <tile type='frozen' id='21' x='-29' y='-57'/>
+    <tile type='frozen' id='21' x='-30' y='-58'/>
+    <tile type='frozen' id='23' x='-31' y='-59'/>
+    <tile type='frozen' id='26' x='-32' y='-60'/>
+    <tile type='frozen' id='21' x='-33' y='-61'/>
+    <tile type='frozen' id='26' x='-34' y='-62'/>
     <tile type='frozen' id='25' x='14' y='-15'/>
     <tile type='frozen' id='29' x='13' y='-16'/>
     <tile type='frozen' id='30' x='12' y='-17'/>
@@ -1197,6 +1342,11 @@
     <tile type='frozen' id='21' x='-26' y='-55'/>
     <tile type='frozen' id='24' x='-27' y='-56'/>
     <tile type='frozen' id='30' x='-28' y='-57'/>
+    <tile type='frozen' id='21' x='-29' y='-58'/>
+    <tile type='frozen' id='23' x='-30' y='-59'/>
+    <tile type='frozen' id='23' x='-31' y='-60'/>
+    <tile type='frozen' id='21' x='-32' y='-61'/>
+    <tile type='frozen' id='26' x='-33' y='-62'/>
     <tile type='frozen' id='25' x='14' y='-16'/>
     <tile type='frozen' id='24' x='13' y='-17'/>
     <tile type='frozen' id='21' x='12' y='-18'/>
@@ -1229,6 +1379,11 @@
     <tile type='frozen' id='28' x='-26' y='-56'/>
     <tile type='frozen' id='28' x='-27' y='-57'/>
     <tile type='frozen' id='29' x='-28' y='-58'/>
+    <tile type='frozen' id='21' x='-29' y='-59'/>
+    <tile type='frozen' id='24' x='-30' y='-60'/>
+    <tile type='frozen' id='21' x='-31' y='-61'/>
+    <tile type='frozen' id='21' x='-32' y='-62'/>
+    <tile type='frozen' id='23' x='-33' y='-63'/>
     <tile type='frozen' id='28' x='15' y='-16'/>
     <tile type='frozen' id='22' x='14' y='-17'/>
     <tile type='frozen' id='26' x='13' y='-18'/>
@@ -1263,6 +1418,11 @@
     <tile type='frozen' id='21' x='-25' y='-56'/>
     <tile type='frozen' id='24' x='-26' y='-57'/>
     <tile type='frozen' id='21' x='-27' y='-58'/>
+    <tile type='frozen' id='21' x='-28' y='-59'/>
+    <tile type='frozen' id='24' x='-29' y='-60'/>
+    <tile type='frozen' id='28' x='-30' y='-61'/>
+    <tile type='frozen' id='24' x='-31' y='-62'/>
+    <tile type='frozen' id='29' x='-32' y='-63'/>
     <tile type='frozen' id='24' x='15' y='-17'/>
     <tile type='frozen' id='23' x='14' y='-18'/>
     <tile type='frozen' id='21' x='13' y='-19'/>
@@ -1298,6 +1458,11 @@
     <tile type='frozen' id='22' x='-25' y='-57'/>
     <tile type='frozen' id='21' x='-26' y='-58'/>
     <tile type='frozen' id='24' x='-27' y='-59'/>
+    <tile type='frozen' id='24' x='-28' y='-60'/>
+    <tile type='frozen' id='21' x='-29' y='-61'/>
+    <tile type='frozen' id='21' x='-30' y='-62'/>
+    <tile type='frozen' id='22' x='-31' y='-63'/>
+    <tile type='frozen' id='22' x='-32' y='-64'/>
     <tile type='frozen' id='26' x='16' y='-17'/>
     <tile type='frozen' id='26' x='15' y='-18'/>
     <tile type='frozen' id='21' x='14' y='-19'/>
@@ -1335,6 +1500,11 @@
     <tile type='frozen' id='21' x='-24' y='-57'/>
     <tile type='frozen' id='68' x='-25' y='-58'/>
     <tile type='frozen' id='21' x='-26' y='-59'/>
+    <tile type='frozen' id='26' x='-27' y='-60'/>
+    <tile type='frozen' id='27' x='-28' y='-61'/>
+    <tile type='frozen' id='21' x='-29' y='-62'/>
+    <tile type='frozen' id='28' x='-30' y='-63'/>
+    <tile type='frozen' id='24' x='-31' y='-64'/>
     <tile type='frozen' id='24' x='16' y='-18'/>
     <tile type='frozen' id='25' x='15' y='-19'/>
     <tile type='frozen' id='29' x='14' y='-20'/>
@@ -1373,6 +1543,11 @@
     <tile type='frozen' id='21' x='-22' y='-56'/>
     <tile type='frozen' id='21' x='-23' y='-57'/>
     <tile type='frozen' id='23' x='-26' y='-60'/>
+    <tile type='frozen' id='29' x='-27' y='-61'/>
+    <tile type='frozen' id='24' x='-28' y='-62'/>
+    <tile type='frozen' id='28' x='-29' y='-63'/>
+    <tile type='frozen' id='30' x='-30' y='-64'/>
+    <tile type='frozen' id='22' x='-31' y='-65'/>
     <tile type='frozen' id='27' x='17' y='-18'/>
     <tile type='frozen' id='29' x='16' y='-19'/>
     <tile type='frozen' id='21' x='15' y='-20'/>
@@ -1406,6 +1581,11 @@
     <tile type='frozen' id='21' x='-19' y='-54'/>
     <tile type='frozen' id='21' x='-21' y='-56'/>
     <tile type='frozen' id='29' x='-22' y='-57'/>
+    <tile type='frozen' id='29' x='-26' y='-61'/>
+    <tile type='frozen' id='24' x='-27' y='-62'/>
+    <tile type='frozen' id='24' x='-28' y='-63'/>
+    <tile type='frozen' id='21' x='-29' y='-64'/>
+    <tile type='frozen' id='22' x='-30' y='-65'/>
     <tile type='frozen' id='24' x='17' y='-19'/>
     <tile type='frozen' id='24' x='16' y='-20'/>
     <tile type='frozen' id='21' x='15' y='-21'/>
@@ -1439,6 +1619,11 @@
     <tile type='frozen' id='21' x='-21' y='-57'/>
     <tile type='frozen' id='27' x='-22' y='-58'/>
     <tile type='frozen' id='23' x='-25' y='-61'/>
+    <tile type='frozen' id='21' x='-26' y='-62'/>
+    <tile type='frozen' id='21' x='-27' y='-63'/>
+    <tile type='frozen' id='29' x='-28' y='-64'/>
+    <tile type='frozen' id='27' x='-29' y='-65'/>
+    <tile type='frozen' id='22' x='-30' y='-66'/>
     <tile type='frozen' id='25' x='18' y='-19'/>
     <tile type='frozen' id='22' x='17' y='-20'/>
     <tile type='frozen' id='21' x='16' y='-21'/>
@@ -1475,6 +1660,11 @@
     <tile type='frozen' id='21' x='-21' y='-58'/>
     <tile type='frozen' id='21' x='-22' y='-59'/>
     <tile type='frozen' id='21' x='-24' y='-61'/>
+    <tile type='frozen' id='21' x='-25' y='-62'/>
+    <tile type='frozen' id='21' x='-26' y='-63'/>
+    <tile type='frozen' id='21' x='-27' y='-64'/>
+    <tile type='frozen' id='23' x='-28' y='-65'/>
+    <tile type='frozen' id='27' x='-29' y='-66'/>
     <tile type='frozen' id='21' x='18' y='-20'/>
     <tile type='frozen' id='24' x='17' y='-21'/>
     <tile type='frozen' id='27' x='16' y='-22'/>
@@ -1511,6 +1701,11 @@
     <tile type='frozen' id='21' x='-22' y='-60'/>
     <tile type='frozen' id='29' x='-23' y='-61'/>
     <tile type='frozen' id='24' x='-24' y='-62'/>
+    <tile type='frozen' id='29' x='-25' y='-63'/>
+    <tile type='frozen' id='23' x='-26' y='-64'/>
+    <tile type='frozen' id='21' x='-27' y='-65'/>
+    <tile type='frozen' id='22' x='-28' y='-66'/>
+    <tile type='frozen' id='21' x='-29' y='-67'/>
     <tile type='frozen' id='21' x='19' y='-20'/>
     <tile type='frozen' id='24' x='18' y='-21'/>
     <tile type='frozen' id='21' x='17' y='-22'/>
@@ -1547,6 +1742,11 @@
     <tile type='frozen' id='28' x='-21' y='-60'/>
     <tile type='frozen' id='21' x='-22' y='-61'/>
     <tile type='frozen' id='21' x='-23' y='-62'/>
+    <tile type='frozen' id='23' x='-24' y='-63'/>
+    <tile type='frozen' id='28' x='-25' y='-64'/>
+    <tile type='frozen' id='26' x='-26' y='-65'/>
+    <tile type='frozen' id='21' x='-27' y='-66'/>
+    <tile type='frozen' id='24' x='-28' y='-67'/>
     <tile type='frozen' id='27' x='19' y='-21'/>
     <tile type='frozen' id='28' x='18' y='-22'/>
     <tile type='frozen' id='29' x='17' y='-23'/>
@@ -1578,6 +1778,11 @@
     <tile type='frozen' id='21' x='-21' y='-61'/>
     <tile type='frozen' id='55' x='-22' y='-62'/>
     <tile type='frozen' id='21' x='-23' y='-63'/>
+    <tile type='frozen' id='28' x='-24' y='-64'/>
+    <tile type='frozen' id='21' x='-25' y='-65'/>
+    <tile type='frozen' id='25' x='-26' y='-66'/>
+    <tile type='frozen' id='27' x='-27' y='-67'/>
+    <tile type='frozen' id='21' x='-28' y='-68'/>
     <tile type='frozen' id='21' x='20' y='-21'/>
     <tile type='frozen' id='28' x='19' y='-22'/>
     <tile type='frozen' id='21' x='18' y='-23'/>
@@ -1605,6 +1810,11 @@
     <tile type='frozen' id='28' x='-18' y='-59'/>
     <tile type='frozen' id='29' x='-19' y='-60'/>
     <tile type='frozen' id='28' x='-20' y='-61'/>
+    <tile type='frozen' id='21' x='-23' y='-64'/>
+    <tile type='frozen' id='29' x='-24' y='-65'/>
+    <tile type='frozen' id='28' x='-25' y='-66'/>
+    <tile type='frozen' id='21' x='-26' y='-67'/>
+    <tile type='frozen' id='28' x='-27' y='-68'/>
     <tile type='frozen' id='25' x='20' y='-22'/>
     <tile type='frozen' id='28' x='19' y='-23'/>
     <tile type='frozen' id='21' x='18' y='-24'/>
@@ -1639,6 +1849,11 @@
     <tile type='frozen' id='24' x='-18' y='-60'/>
     <tile type='frozen' id='26' x='-19' y='-61'/>
     <tile type='frozen' id='21' x='-22' y='-64'/>
+    <tile type='frozen' id='26' x='-23' y='-65'/>
+    <tile type='frozen' id='29' x='-24' y='-66'/>
+    <tile type='frozen' id='26' x='-25' y='-67'/>
+    <tile type='frozen' id='21' x='-26' y='-68'/>
+    <tile type='frozen' id='25' x='-27' y='-69'/>
     <tile type='frozen' id='26' x='21' y='-22'/>
     <tile type='frozen' id='29' x='20' y='-23'/>
     <tile type='frozen' id='30' x='19' y='-24'/>
@@ -1676,6 +1891,11 @@
     <tile type='frozen' id='28' x='-18' y='-61'/>
     <tile type='frozen' id='22' x='-19' y='-62'/>
     <tile type='frozen' id='21' x='-21' y='-64'/>
+    <tile type='frozen' id='21' x='-22' y='-65'/>
+    <tile type='frozen' id='21' x='-23' y='-66'/>
+    <tile type='frozen' id='21' x='-24' y='-67'/>
+    <tile type='frozen' id='21' x='-25' y='-68'/>
+    <tile type='frozen' id='30' x='-26' y='-69'/>
     <tile type='frozen' id='28' x='21' y='-23'/>
     <tile type='frozen' id='28' x='20' y='-24'/>
     <tile type='frozen' id='29' x='19' y='-25'/>
@@ -1717,6 +1937,11 @@
     <tile type='frozen' id='23' x='-19' y='-63'/>
     <tile type='frozen' id='28' x='-20' y='-64'/>
     <tile type='frozen' id='21' x='-21' y='-65'/>
+    <tile type='frozen' id='24' x='-22' y='-66'/>
+    <tile type='frozen' id='23' x='-23' y='-67'/>
+    <tile type='frozen' id='23' x='-24' y='-68'/>
+    <tile type='frozen' id='29' x='-25' y='-69'/>
+    <tile type='frozen' id='29' x='-26' y='-70'/>
     <tile type='frozen' id='27' x='22' y='-23'/>
     <tile type='frozen' id='23' x='21' y='-24'/>
     <tile type='frozen' id='23' x='20' y='-25'/>
@@ -1759,6 +1984,11 @@
     <tile type='frozen' id='21' x='-18' y='-63'/>
     <tile type='frozen' id='23' x='-19' y='-64'/>
     <tile type='frozen' id='21' x='-20' y='-65'/>
+    <tile type='frozen' id='24' x='-21' y='-66'/>
+    <tile type='frozen' id='29' x='-22' y='-67'/>
+    <tile type='frozen' id='23' x='-23' y='-68'/>
+    <tile type='frozen' id='24' x='-24' y='-69'/>
+    <tile type='frozen' id='22' x='-25' y='-70'/>
     <tile type='frozen' id='23' x='22' y='-24'/>
     <tile type='frozen' id='23' x='21' y='-25'/>
     <tile type='frozen' id='21' x='20' y='-26'/>
@@ -1800,6 +2030,11 @@
     <tile type='frozen' id='29' x='-18' y='-64'/>
     <tile type='frozen' id='21' x='-19' y='-65'/>
     <tile type='frozen' id='29' x='-20' y='-66'/>
+    <tile type='frozen' id='29' x='-21' y='-67'/>
+    <tile type='frozen' id='28' x='-22' y='-68'/>
+    <tile type='frozen' id='29' x='-23' y='-69'/>
+    <tile type='frozen' id='28' x='-24' y='-70'/>
+    <tile type='frozen' id='24' x='-25' y='-71'/>
     <tile type='frozen' id='24' x='23' y='-24'/>
     <tile type='frozen' id='21' x='22' y='-25'/>
     <tile type='frozen' id='21' x='21' y='-26'/>
@@ -1837,6 +2072,11 @@
     <tile type='frozen' id='21' x='-15' y='-62'/>
     <tile type='frozen' id='21' x='-18' y='-65'/>
     <tile type='frozen' id='30' x='-19' y='-66'/>
+    <tile type='frozen' id='21' x='-20' y='-67'/>
+    <tile type='frozen' id='26' x='-21' y='-68'/>
+    <tile type='frozen' id='29' x='-22' y='-69'/>
+    <tile type='frozen' id='27' x='-23' y='-70'/>
+    <tile type='frozen' id='25' x='-24' y='-71'/>
     <tile type='frozen' id='25' x='23' y='-25'/>
     <tile type='frozen' id='30' x='22' y='-26'/>
     <tile type='frozen' id='28' x='21' y='-27'/>
@@ -1874,6 +2114,11 @@
     <tile type='frozen' id='24' x='-14' y='-62'/>
     <tile type='frozen' id='21' x='-18' y='-66'/>
     <tile type='frozen' id='29' x='-19' y='-67'/>
+    <tile type='frozen' id='21' x='-20' y='-68'/>
+    <tile type='frozen' id='22' x='-21' y='-69'/>
+    <tile type='frozen' id='21' x='-22' y='-70'/>
+    <tile type='frozen' id='21' x='-23' y='-71'/>
+    <tile type='frozen' id='27' x='-24' y='-72'/>
     <tile type='frozen' id='29' x='24' y='-25'/>
     <tile type='frozen' id='21' x='23' y='-26'/>
     <tile type='frozen' id='21' x='22' y='-27'/>
@@ -1910,6 +2155,11 @@
     <tile type='frozen' id='22' x='-12' y='-61'/>
     <tile type='frozen' id='21' x='-13' y='-62'/>
     <tile type='frozen' id='21' x='-18' y='-67'/>
+    <tile type='frozen' id='21' x='-19' y='-68'/>
+    <tile type='frozen' id='21' x='-20' y='-69'/>
+    <tile type='frozen' id='21' x='-21' y='-70'/>
+    <tile type='frozen' id='30' x='-22' y='-71'/>
+    <tile type='frozen' id='21' x='-23' y='-72'/>
     <tile type='frozen' id='21' x='24' y='-26'/>
     <tile type='frozen' id='21' x='23' y='-27'/>
     <tile type='frozen' id='28' x='22' y='-28'/>
@@ -1944,6 +2194,11 @@
     <tile type='frozen' id='28' x='-13' y='-63'/>
     <tile type='frozen' id='21' x='-17' y='-67'/>
     <tile type='frozen' id='21' x='-18' y='-68'/>
+    <tile type='frozen' id='28' x='-19' y='-69'/>
+    <tile type='frozen' id='23' x='-20' y='-70'/>
+    <tile type='frozen' id='21' x='-21' y='-71'/>
+    <tile type='frozen' id='29' x='-22' y='-72'/>
+    <tile type='frozen' id='29' x='-23' y='-73'/>
     <tile type='frozen' id='30' x='25' y='-26'/>
     <tile type='frozen' id='30' x='24' y='-27'/>
     <tile type='frozen' id='21' x='23' y='-28'/>
@@ -1979,6 +2234,11 @@
     <tile type='frozen' id='21' x='-13' y='-64'/>
     <tile type='frozen' id='21' x='-16' y='-67'/>
     <tile type='frozen' id='21' x='-17' y='-68'/>
+    <tile type='frozen' id='21' x='-18' y='-69'/>
+    <tile type='frozen' id='29' x='-19' y='-70'/>
+    <tile type='frozen' id='21' x='-20' y='-71'/>
+    <tile type='frozen' id='21' x='-21' y='-72'/>
+    <tile type='frozen' id='28' x='-22' y='-73'/>
     <tile type='frozen' id='26' x='25' y='-27'/>
     <tile type='frozen' id='21' x='24' y='-28'/>
     <tile type='frozen' id='21' x='23' y='-29'/>
@@ -2014,6 +2274,11 @@
     <tile type='frozen' id='21' x='-15' y='-67'/>
     <tile type='frozen' id='28' x='-16' y='-68'/>
     <tile type='frozen' id='21' x='-17' y='-69'/>
+    <tile type='frozen' id='21' x='-18' y='-70'/>
+    <tile type='frozen' id='21' x='-19' y='-71'/>
+    <tile type='frozen' id='21' x='-20' y='-72'/>
+    <tile type='frozen' id='27' x='-21' y='-73'/>
+    <tile type='frozen' id='30' x='-22' y='-74'/>
     <tile type='frozen' id='28' x='26' y='-27'/>
     <tile type='frozen' id='29' x='25' y='-28'/>
     <tile type='frozen' id='29' x='24' y='-29'/>
@@ -2053,6 +2318,11 @@
     <tile type='frozen' id='21' x='-14' y='-67'/>
     <tile type='frozen' id='21' x='-15' y='-68'/>
     <tile type='frozen' id='21' x='-16' y='-69'/>
+    <tile type='frozen' id='21' x='-17' y='-70'/>
+    <tile type='frozen' id='21' x='-18' y='-71'/>
+    <tile type='frozen' id='26' x='-19' y='-72'/>
+    <tile type='frozen' id='22' x='-20' y='-73'/>
+    <tile type='frozen' id='21' x='-21' y='-74'/>
     <tile type='frozen' id='30' x='26' y='-28'/>
     <tile type='frozen' id='23' x='25' y='-29'/>
     <tile type='frozen' id='28' x='24' y='-30'/>
@@ -2090,6 +2360,11 @@
     <tile type='frozen' id='21' x='-14' y='-68'/>
     <tile type='frozen' id='21' x='-15' y='-69'/>
     <tile type='frozen' id='23' x='-16' y='-70'/>
+    <tile type='frozen' id='21' x='-17' y='-71'/>
+    <tile type='frozen' id='29' x='-18' y='-72'/>
+    <tile type='frozen' id='24' x='-19' y='-73'/>
+    <tile type='frozen' id='21' x='-20' y='-74'/>
+    <tile type='frozen' id='21' x='-21' y='-75'/>
     <tile type='frozen' id='27' x='27' y='-28'/>
     <tile type='frozen' id='21' x='26' y='-29'/>
     <tile type='frozen' id='22' x='25' y='-30'/>
@@ -2130,6 +2405,11 @@
     <tile type='frozen' id='21' x='-13' y='-68'/>
     <tile type='frozen' id='28' x='-14' y='-69'/>
     <tile type='frozen' id='21' x='-15' y='-70'/>
+    <tile type='frozen' id='21' x='-16' y='-71'/>
+    <tile type='frozen' id='26' x='-17' y='-72'/>
+    <tile type='frozen' id='21' x='-18' y='-73'/>
+    <tile type='frozen' id='21' x='-19' y='-74'/>
+    <tile type='frozen' id='29' x='-20' y='-75'/>
     <tile type='frozen' id='26' x='27' y='-29'/>
     <tile type='frozen' id='24' x='26' y='-30'/>
     <tile type='frozen' id='21' x='25' y='-31'/>
@@ -2166,6 +2446,11 @@
     <tile type='frozen' id='21' x='-13' y='-69'/>
     <tile type='frozen' id='21' x='-14' y='-70'/>
     <tile type='frozen' id='21' x='-15' y='-71'/>
+    <tile type='frozen' id='21' x='-16' y='-72'/>
+    <tile type='frozen' id='23' x='-17' y='-73'/>
+    <tile type='frozen' id='26' x='-18' y='-74'/>
+    <tile type='frozen' id='27' x='-19' y='-75'/>
+    <tile type='frozen' id='25' x='-20' y='-76'/>
     <tile type='frozen' id='22' x='28' y='-29'/>
     <tile type='frozen' id='29' x='27' y='-30'/>
     <tile type='frozen' id='21' x='26' y='-31'/>
@@ -2204,6 +2489,11 @@
     <tile type='frozen' id='21' x='-12' y='-69'/>
     <tile type='frozen' id='21' x='-13' y='-70'/>
     <tile type='frozen' id='21' x='-14' y='-71'/>
+    <tile type='frozen' id='21' x='-15' y='-72'/>
+    <tile type='frozen' id='29' x='-16' y='-73'/>
+    <tile type='frozen' id='21' x='-17' y='-74'/>
+    <tile type='frozen' id='22' x='-18' y='-75'/>
+    <tile type='frozen' id='21' x='-19' y='-76'/>
     <tile type='frozen' id='26' x='28' y='-30'/>
     <tile type='frozen' id='21' x='27' y='-31'/>
     <tile type='frozen' id='21' x='26' y='-32'/>
@@ -2243,6 +2533,11 @@
     <tile type='frozen' id='21' x='-12' y='-70'/>
     <tile type='frozen' id='21' x='-13' y='-71'/>
     <tile type='frozen' id='21' x='-14' y='-72'/>
+    <tile type='frozen' id='28' x='-15' y='-73'/>
+    <tile type='frozen' id='24' x='-16' y='-74'/>
+    <tile type='frozen' id='21' x='-17' y='-75'/>
+    <tile type='frozen' id='26' x='-18' y='-76'/>
+    <tile type='frozen' id='28' x='-19' y='-77'/>
     <tile type='frozen' id='23' x='29' y='-30'/>
     <tile type='frozen' id='30' x='28' y='-31'/>
     <tile type='frozen' id='22' x='27' y='-32'/>
@@ -2285,6 +2580,11 @@
     <tile type='frozen' id='24' x='-11' y='-70'/>
     <tile type='frozen' id='21' x='-12' y='-71'/>
     <tile type='frozen' id='23' x='-13' y='-72'/>
+    <tile type='frozen' id='21' x='-14' y='-73'/>
+    <tile type='frozen' id='25' x='-15' y='-74'/>
+    <tile type='frozen' id='21' x='-16' y='-75'/>
+    <tile type='frozen' id='28' x='-17' y='-76'/>
+    <tile type='frozen' id='30' x='-18' y='-77'/>
     <tile type='frozen' id='30' x='29' y='-31'/>
     <tile type='frozen' id='28' x='28' y='-32'/>
     <tile type='frozen' id='26' x='27' y='-33'/>
@@ -2326,6 +2626,11 @@
     <tile type='frozen' id='23' x='-11' y='-71'/>
     <tile type='frozen' id='21' x='-12' y='-72'/>
     <tile type='frozen' id='29' x='-13' y='-73'/>
+    <tile type='frozen' id='21' x='-14' y='-74'/>
+    <tile type='frozen' id='21' x='-15' y='-75'/>
+    <tile type='frozen' id='23' x='-16' y='-76'/>
+    <tile type='frozen' id='22' x='-17' y='-77'/>
+    <tile type='frozen' id='28' x='-18' y='-78'/>
     <tile type='frozen' id='30' x='30' y='-31'/>
     <tile type='frozen' id='22' x='29' y='-32'/>
     <tile type='frozen' id='28' x='28' y='-33'/>
@@ -2368,6 +2673,11 @@
     <tile type='frozen' id='23' x='-10' y='-71'/>
     <tile type='frozen' id='28' x='-11' y='-72'/>
     <tile type='frozen' id='26' x='-12' y='-73'/>
+    <tile type='frozen' id='23' x='-13' y='-74'/>
+    <tile type='frozen' id='23' x='-14' y='-75'/>
+    <tile type='frozen' id='23' x='-15' y='-76'/>
+    <tile type='frozen' id='23' x='-16' y='-77'/>
+    <tile type='frozen' id='22' x='-17' y='-78'/>
     <tile type='frozen' id='22' x='30' y='-32'/>
     <tile type='frozen' id='27' x='29' y='-33'/>
     <tile type='frozen' id='22' x='28' y='-34'/>
@@ -2411,39 +2721,12 @@
     <tile type='frozen' id='21' x='-10' y='-72'/>
     <tile type='frozen' id='21' x='-11' y='-73'/>
     <tile type='frozen' id='26' x='-12' y='-74'/>
-    <tile type='frozen' id='21' x='0' y='0'/>
-    <tile type='frozen' id='21' x='1' y='-1'/>
-    <tile type='frozen' id='21' x='2' y='-2'/>
-    <tile type='frozen' id='21' x='3' y='-3'/>
-    <tile type='frozen' id='21' x='4' y='-4'/>
-    <tile type='frozen' id='21' x='5' y='-5'/>
-    <tile type='frozen' id='21' x='6' y='-6'/>
-    <tile type='frozen' id='21' x='7' y='-7'/>
-    <tile type='frozen' id='21' x='8' y='-8'/>
-    <tile type='frozen' id='21' x='9' y='-9'/>
-    <tile type='frozen' id='21' x='10' y='-10'/>
-    <tile type='frozen' id='21' x='11' y='-11'/>
-    <tile type='frozen' id='21' x='12' y='-12'/>
-    <tile type='frozen' id='21' x='13' y='-13'/>
-    <tile type='frozen' id='21' x='14' y='-14'/>
-    <tile type='frozen' id='21' x='15' y='-15'/>
-    <tile type='frozen' id='21' x='16' y='-16'/>
-    <tile type='frozen' id='21' x='17' y='-17'/>
-    <tile type='frozen' id='21' x='18' y='-18'/>
-    <tile type='frozen' id='21' x='19' y='-19'/>
-    <tile type='frozen' id='21' x='20' y='-20'/>
-    <tile type='frozen' id='21' x='21' y='-21'/>
-    <tile type='frozen' id='21' x='22' y='-22'/>
-    <tile type='frozen' id='21' x='23' y='-23'/>
-    <tile type='frozen' id='21' x='24' y='-24'/>
-    <tile type='frozen' id='21' x='25' y='-25'/>
-    <tile type='frozen' id='21' x='26' y='-26'/>
-    <tile type='frozen' id='21' x='27' y='-27'/>
-    <tile type='frozen' id='21' x='28' y='-28'/>
-    <tile type='frozen' id='21' x='29' y='-29'/>
-    <tile type='frozen' id='21' x='30' y='-30'/>
-    <tile type='frozen' id='21' x='31' y='-31'/>
+    <tile type='frozen' id='29' x='-13' y='-75'/>
+    <tile type='frozen' id='30' x='-14' y='-76'/>
+    <tile type='frozen' id='29' x='-15' y='-77'/>
+    <tile type='frozen' id='26' x='-16' y='-78'/>
+    <tile type='frozen' id='29' x='-17' y='-79'/>
   </surface>
-  <buildings>
-  </buildings>
+  <buildings/>
 </map>
+

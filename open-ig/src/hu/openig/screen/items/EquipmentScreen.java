@@ -1063,35 +1063,29 @@ public class EquipmentScreen extends ScreenBase {
 			
 			configure.selectedSlot = null;
 			
-			if (ps.hasMilitarySpaceport) {
-				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-					addButton.visible(
-							ps.hasSpaceStation
-							&& player().inventoryCount(rt) > 0
-							&& planet().inventoryCount(rt, player()) < 30);
-					delButton.visible(
-							planet().inventoryCount(rt, player()) > 0
-					);
-					sell.visible(delButton.visible());
-				} else
-				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
-						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-					addButton.visible(player().inventoryCount(rt) > 0
-							&& planet().inventoryCount(rt.category, player()) < ps.vehicleMax);
-					delButton.visible(
-							planet().inventoryCount(rt, player()) > 0);
-					sell.visible(delButton.visible());
-				} else
-				if (rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					addButton.visible(player().inventoryCount(rt) > 0
-							&& planet().inventoryCount(rt.category, player()) < 3);
-					delButton.visible(false);
-					sell.visible(planet().inventoryCount(rt, player()) > 0);
-				} else {
-					addButton.visible(false);
-					delButton.visible(false);
-					sell.visible(false);
-				}
+			if (rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+				addButton.visible(player().inventoryCount(rt) > 0
+						&& planet().inventoryCount(rt.category, player()) < 3);
+				delButton.visible(false);
+				sell.visible(planet().inventoryCount(rt, player()) > 0);
+			} else
+			if (ps.hasMilitarySpaceport && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				addButton.visible(
+						ps.hasSpaceStation
+						&& player().inventoryCount(rt) > 0
+						&& planet().inventoryCount(rt, player()) < 30);
+				delButton.visible(
+						planet().inventoryCount(rt, player()) > 0
+				);
+				sell.visible(delButton.visible());
+			} else
+			if (rt.category == ResearchSubCategory.WEAPONS_TANKS
+					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				addButton.visible(player().inventoryCount(rt) > 0
+						&& planet().inventoryCount(rt.category, player()) < ps.vehicleMax);
+				delButton.visible(
+						planet().inventoryCount(rt, player()) > 0);
+				sell.visible(delButton.visible());
 			} else {
 				addButton.visible(false);
 				delButton.visible(false);
