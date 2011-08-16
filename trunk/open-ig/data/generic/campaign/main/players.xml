@@ -17,13 +17,11 @@
 			<type id='' list=''/>
 		</available>
 	-->
-	<!-- Initial fleets. 
-		<fleet id='' x='' y='' name=''>
-			<item id='' type='' count='' hp='' shield=''>
-				<slot id='' type='' count='' hp=''/>
-			</item>
+	<!-- Initial fleets. -->
+		<fleet id='0' x='330' y='440' name='Főflotta'>
+			<item id='Destroyer1' count='1' hp='12000' shield='0'/>
+			<item id='Fighter1' count='3' hp='2000' shield='0'/>
 		</fleet>
-	-->
 	</player>
 	<player id='Garthog' race='garthog' name='players.garthog'
 		icon='starmap/fleets/garthog_fleet'

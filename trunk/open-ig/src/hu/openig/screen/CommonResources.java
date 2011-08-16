@@ -10,6 +10,7 @@ package hu.openig.screen;
 
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
+import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceLocator.ResourcePlace;
@@ -102,6 +103,8 @@ public class CommonResources {
 	private World world;
 	/** Flag to indicate the game world is loading. */
 	public boolean worldLoading;
+	/** The game is in battle mode. */
+	public boolean battleMode;
 	/** Flag indicating the statusbar screen to show a non-game statusbar. */
 	public boolean nongame;
 	/** The common executor service. */
@@ -135,6 +138,18 @@ public class CommonResources {
 	public Sounds sounds;
 	/** The music player. */
 	public Music music;
+	/** 
+	 * Callback function to set the simulation speed of the current mode.
+	 * -1 means toggle pause, 0 means pause, >0 means set speed to that value.
+	 * <p>Call {@link #restoreMainSimulationSpeedFunction()} to reset it back to the normal space simulation controls.</p> 
+	 */
+	public Func1<Integer, Void> setSimulationSpeed;
+	/**
+	 * Retrieves the current simulation speed settings.
+	 * Negative value means paused at the given speed settings.
+	 * <p>Call {@link #restoreMainSimulationSpeedFunction()} to reset it back to the normal space simulation controls.</p> 
+	 */
+	public Func1<Void, Integer> getSimulationSpeed;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -277,8 +292,7 @@ public class CommonResources {
 			common = get(commonFuture);
 
 			sounds = new Sounds(rl);
-			sounds.start(config.audioChannels);
-			sounds.setVolume(config.effectVolume);
+			sounds.initialize(config.audioChannels, config.effectVolume);
 			
 			music = new Music(rl);
 			music.setVolume(config.musicVolume);
@@ -294,7 +308,7 @@ public class CommonResources {
 	public void reinit(String newLanguage) {
 		config.language = newLanguage;
 		config.save();
-		sounds.stop();
+		sounds.close();
 		init();
 	}
 	/**
@@ -454,6 +468,38 @@ public class CommonResources {
 			// Ignored
 		}
 	}
+	/** Restore the main simulation speed function. Call this function after the battle completes. */
+	public void restoreMainSimulationSpeedFunction() {
+		setSimulationSpeed = new Func1<Integer, Void>() {
+			@Override
+			public Void invoke(Integer value) {
+				// toggle pause
+				if (value < 0) {
+					if (paused()) {
+						resume();
+					} else {
+						pause();
+					}
+				} else
+				// explicitely pause
+				if (value == 0) {
+					pause();
+				} else {
+					speed(value);
+				}
+				return null;
+			}
+		};
+		getSimulationSpeed = new Func1<Void, Integer>() {
+			@Override
+			public Integer invoke(Void value) {
+				if (paused()) {
+					return -speed;
+				}
+				return speed;
+			}
+		};
+	}
 	/** 
 	 * Start the timed actions.
 	 * @param withMusic set if play music 
@@ -484,6 +530,7 @@ public class CommonResources {
 		Allocator.compute(world, pool);
 		Radar.compute(world);
 		timer.start();
+		restoreMainSimulationSpeedFunction();
 		if (withMusic) {
 			playRegularMusic();
 		}

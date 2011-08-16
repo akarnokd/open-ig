@@ -14,6 +14,7 @@ import hu.openig.core.Location;
 import hu.openig.core.Tile;
 import hu.openig.mechanics.Allocator;
 import hu.openig.model.AutoBuild;
+import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.InventoryItem;
@@ -2380,5 +2381,12 @@ public class PlanetScreen extends ScreenBase {
 		currentBuilding = null;
 		buildingBox = null;
 		lastSurface = null;
+	}
+	/**
+	 * Initiate a battle with the given settings.
+	 * @param battle the battle information
+	 */
+	public void initiateBattle(BattleInfo battle) {
+		// TODO prepare battle
 	}
 }

@@ -12,6 +12,7 @@ import hu.openig.core.Act;
 import hu.openig.model.Message;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
+import hu.openig.model.SoundType;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.HorizontalAlignment;
@@ -124,32 +125,32 @@ public class StatusbarScreen extends ScreenBase {
 		pause.onPress = new Act() {
 			@Override
 			public void act() {
-				if (commons.paused()) {
-					commons.resume();
-				} else {
-					commons.pause();
-				}
+				commons.sounds.play(SoundType.CLICK_LOW_1);
+				commons.setSimulationSpeed.invoke(-1);
 			}
 		};
 		speed1 = new UIImageTabButton2(commons.common().speed1);
 		speed1.onPress = new Act() {
 			@Override
 			public void act() {
-				commons.speed(1000);
+				commons.sounds.play(SoundType.CLICK_LOW_1);
+				commons.setSimulationSpeed.invoke(1000);
 			}
 		};
 		speed2 = new UIImageTabButton2(commons.common().speed2);
 		speed2.onPress = new Act() {
 			@Override
 			public void act() {
-				commons.speed(500);
+				commons.sounds.play(SoundType.CLICK_LOW_1);
+				commons.setSimulationSpeed.invoke(500);
 			}
 		};
 		speed4 = new UIImageTabButton2(commons.common().speed4);
 		speed4.onPress = new Act() {
 			@Override
 			public void act() {
-				commons.speed(250);
+				commons.sounds.play(SoundType.CLICK_LOW_1);
+				commons.setSimulationSpeed.invoke(250);
 			}
 		};
 		
@@ -235,10 +236,11 @@ public class StatusbarScreen extends ScreenBase {
 		speed2.location(top.x + 31, top.y + 2);
 		speed4.location(top.x + 46, top.y + 2);
 		
-		pause.selected = commons.paused();
-		speed1.selected = 1000 == commons.speed();
-		speed2.selected = 500 == commons.speed();
-		speed4.selected = 250 == commons.speed();
+		int spd = commons.getSimulationSpeed.invoke(null);
+		pause.selected = spd < 0;
+		speed1.selected = 1000 == spd || -1000 == spd;
+		speed2.selected = 500 == spd || -500 == spd;
+		speed4.selected = 250 == spd || -250 == spd;
 		
 		year.bounds(top.x + 171, top.y + 3, 34, 14);
 		month.bounds(top.x + 211, top.y + 3, 82, 14);

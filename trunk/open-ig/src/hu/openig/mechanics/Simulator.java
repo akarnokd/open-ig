@@ -13,9 +13,11 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
 import hu.openig.model.AutoBuild;
+import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetMode;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Message;
 import hu.openig.model.Planet;
@@ -33,6 +35,7 @@ import hu.openig.model.SoundType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.model.World;
+import hu.openig.screen.GameControls;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -64,7 +67,7 @@ public final class Simulator {
 		world.time.add(GregorianCalendar.MINUTE, 10);
 		int day1 = world.time.get(GregorianCalendar.DATE);
 
-		// boolean result = false;
+		 boolean result = false;
 		
 		// Prepare global statistics
 		// -------------------------
@@ -123,7 +126,7 @@ public final class Simulator {
 			progressResearch(world, player, all);
 			// result |= player == world.player
 			progressProduction(world, player, all);
-			invokeRadar |= moveFleets(player.ownFleets());
+			invokeRadar |= moveFleets(player.ownFleets(), world);
 		}
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
@@ -147,9 +150,13 @@ public final class Simulator {
 			msg.value = "" + world.player.yesterday.taxIncome;
 			world.player.messageQueue.add(msg);
 
-			return true;
+			result = true;
 		}
-		return false;
+		if (!world.pendingBattles.isEmpty()) {
+			world.startBattle.invoke(null);
+			result = true;
+		}
+		return result;
 	}
 	/**
 	 * Make progress on the buildings of the planet.
@@ -572,9 +579,10 @@ public final class Simulator {
 	/**
 	 * Move fleets.
 	 * @param playerFleets the list of fleets
+	 * @param world the world object to indicate battle scenarios
 	 * @return true if a fleet was moved and the radar needs to be recalculated
 	 */
-	static boolean moveFleets(List<Fleet> playerFleets) {
+	static boolean moveFleets(List<Fleet> playerFleets, World world) {
 		boolean invokeRadar = false;
 		
 		for (Fleet f : playerFleets) {
@@ -603,6 +611,13 @@ public final class Simulator {
 						f.waypoints.remove(0);
 					}
 					if (f.waypoints.size() == 0) {
+						if (f.mode == FleetMode.ATTACK) {
+							BattleInfo bi = new BattleInfo();
+							bi.attacker = f;
+							bi.targetFleet = f.targetFleet;
+							bi.targetPlanet = f.targetPlanet;
+							world.pendingBattles.add(bi);
+						}
 						f.mode = null;
 						f.targetFleet = null;
 						f.targetPlanet = null;
@@ -989,5 +1004,14 @@ public final class Simulator {
 				System.err.printf("Negative money | Player %s, Money %d%n", p.id, p.money);
 			}
 		}
+	}
+	/**
+	 * Run the given battle automatically.
+	 * @param world the world object
+	 * @param controls the game controls
+	 * @param battle the battle information
+	 */
+	public static void autoBattle(World world, GameControls controls, BattleInfo battle) {
+		// TODO  implement
 	}
 }

@@ -730,17 +730,20 @@ public class LoadSaveScreen extends ScreenBase {
 		if (idx >= 0) {
 			
 			File f = new File("save/" + commons.profile.name + "/" + list.selected.name);
-			if (f.delete()) {
-				list.items.remove(idx);
-				
-				idx = Math.min(idx, list.items.size() - 1);
-				if (idx >= 0) {
-					list.selected = list.items.get(idx);
-				} else {
-					list.selected = null;
-				}
-			} else {
+			if (!f.delete()) {
 				System.err.println("Could not delete " + f);
+			}
+			f = new File("save/" + commons.profile.name + "/savex-" + list.selected.name.substring(5));
+			if (f.exists() && !f.delete()) {
+				System.err.println("Could not delete " + f);
+			}
+			list.items.remove(idx);
+			
+			idx = Math.min(idx, list.items.size() - 1);
+			if (idx >= 0) {
+				list.selected = list.items.get(idx);
+			} else {
+				list.selected = null;
 			}
 		}
 	}

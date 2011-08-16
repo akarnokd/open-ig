@@ -99,4 +99,6 @@ public interface GameControls {
 	Screens secondary();
 	/** End the current game. */
 	void endGame();
+	/** Start the next battle from the pending battles. */
+	void startBattle();
 }

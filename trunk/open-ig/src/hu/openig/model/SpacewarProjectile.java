@@ -8,32 +8,33 @@
 
 package hu.openig.model;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
- * A straight travelling beam (laser, etc.).
- * Once created, beams travel with the same graphics angle.
+ * A projectile representing a rocket or bomb, 
+ * capable of changing directions in flight.
+ * They don't have any animation phase in general.
  * @author akarnokd, 2011.08.15.
  */
-public class SpaceBeam extends SpaceObject {
+public class SpacewarProjectile extends SpacewarObject {
 	/** The beam speed per simulation tick. */
 	public double speed;
-	/** The phase counter for the animation if any. */
-	public int phase;
-	/** The phase image of the beam (e.g., the rotating meson bubble). */
-	public BufferedImage[] phases;
+	/** The angle images of the projectile. */
+	public BufferedImage[] angles;
+	/** ECM distraction limit 1..2 .*/
+	public int ecmLimit;
 	/** The damage to inflict. */
 	public int damage;
+	/** The beam angle in an X-Y screen directed coordinate system, 0..2*PI. */
+	public double angle;
 	@Override
-	public void draw(Graphics2D g2, int x, int y) {
-		BufferedImage img = phases[phase];
-		g2.drawImage(img, x - img.getWidth() / 2, y - img.getHeight() / 2, null);
+	public BufferedImage get() {
+		double a = angle / 2 / Math.PI; // angle to percentage
+		return angles[((int)Math.round(angles.length * a)) % angles.length];
 	}
 	/** Move the beam to the next location. */
 	public void move() {
 		x += speed * Math.cos(angle);
 		y += speed * Math.sin(angle);
-		phase = (phase + 1) % phases.length;
 	}
 }

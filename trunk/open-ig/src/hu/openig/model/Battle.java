@@ -26,6 +26,10 @@ public class Battle {
 	public final Map<String, BattleGroundEntity> groundEntities = JavaUtils.newHashMap();
 	/** The map from projectile ID to [rotation][fire-phase] images. */
 	public final Map<String, BattleProjectile> projectiles = JavaUtils.newHashMap();
+	/** The ground projectors definitions. */
+	public final Map<String, BattleGroundProjector> groundProjectors = JavaUtils.newHashMap();
+	/** The ground shield definitions. */
+	public final Map<String, BattleGroundShield> groundShields = JavaUtils.newHashMap();
 	/**
 	 * Add a turret definition to the {@code turrets} mapping.
 	 * @param buildingId the building identifier.

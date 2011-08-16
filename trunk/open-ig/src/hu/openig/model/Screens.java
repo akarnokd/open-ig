@@ -17,8 +17,10 @@ public enum Screens {
 	BRIDGE,
 	/** The starmap screen. */
 	STARMAP,
-	/** The colony screen. */
+	/** The colony screen in normal mode. */
 	COLONY,
+	/** The colony screen in battle mode. */
+	COLONY_BATTLE,
 	/** The equipment screen. */
 	EQUIPMENT,
 	/** The production screen. */

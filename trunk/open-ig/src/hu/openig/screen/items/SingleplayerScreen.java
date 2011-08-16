@@ -237,6 +237,13 @@ public class SingleplayerScreen extends ScreenBase {
 							return config.autoRepair;
 						}
 					};
+					world.startBattle = new Func1<Void, Void>() {
+						@Override
+						public Void invoke(Void value) {
+							commons.control().startBattle();
+							return null;
+						}
+					};
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {

@@ -509,7 +509,7 @@ public class ScreenTester extends JFrame implements GameControls {
 		}
 		if (commons != null && commons.world() != null) {
 			commons.stop();
-			commons.sounds.stop();
+			commons.sounds.close();
 			try {
 				commons.config.watcherWindow.close();
 			} catch (IOException ex) {
@@ -553,6 +553,13 @@ public class ScreenTester extends JFrame implements GameControls {
 						@Override
 						public Boolean invoke(Void value) {
 							return config.autoRepair;
+						}
+					};
+					commons.world().startBattle = new Func1<Void, Void>() {
+						@Override
+						public Void invoke(Void value) {
+							commons.control().startBattle();
+							return null;
 						}
 					};
 
@@ -630,6 +637,10 @@ public class ScreenTester extends JFrame implements GameControls {
 			break;
 		case COLONY:
 			clazz = PlanetScreen.class.getName();
+			break;
+		case COLONY_BATTLE:
+			clazz = PlanetScreen.class.getName();
+			mode = newScreen;
 			break;
 		case EQUIPMENT:
 			clazz = EquipmentScreen.class.getName();
@@ -916,6 +927,11 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	@Override
 	public void endGame() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void startBattle() {
 		// TODO Auto-generated method stub
 		
 	}
