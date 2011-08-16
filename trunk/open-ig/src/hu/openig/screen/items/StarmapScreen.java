@@ -2362,4 +2362,42 @@ public class StarmapScreen extends ScreenBase {
 		}
 		// FIXME message: colonize failed
 	}
+	/** @return the current X offset. */
+	public int getXOffset() {
+		return xOffset;
+	}
+	/** @return the current Y offset. */
+	public int getYOffset() {
+		return yOffset;
+	}
+	/** @return the current zoom index. */
+	public int getZoomIndex() {
+		return zoomIndex;
+	}
+	/**
+	 * Set the X offset.
+	 * @param x the X offste
+	 */
+	public void setXOffset(int x) {
+		xOffset = x;
+		pan(0, 0);
+	}
+	/**
+	 * Set the Y offset.
+	 * @param y the Y offset
+	 */
+	public void setYOffset(int y) {
+		yOffset = y;
+		pan(0, 0);
+	}
+	/**
+	 * Set the zoom index.
+	 * @param z the zoom index
+	 */
+	public void setZoomIndex(int z) {
+		zoomIndex = Math.max(0, Math.min(z, zoomLevelCount - 1));
+		selectRadarDot();
+		limitOffsets();
+		computeViewport();
+	}
 }

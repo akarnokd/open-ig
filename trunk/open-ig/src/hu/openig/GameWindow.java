@@ -417,9 +417,9 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void exit() {
+		uninitScreens();
 		commons.stop();
 		commons.sounds.close();
-		uninitScreens();
 		
 		config.fullScreen = isUndecorated();
 		if (!config.fullScreen) {
@@ -801,7 +801,7 @@ public class GameWindow extends JFrame implements GameControls {
 				e.consume();
 			}
 			if (!commons.worldLoading && commons.world() != null 
-					&& !movieVisible && !commons.battleMode) {
+					&& !movieVisible /* && !commons.battleMode */) {
 				if (e.getKeyChar() == '+') {
 					commons.world().player.moveNextPlanet();
 					repaintInner();
@@ -1265,6 +1265,9 @@ public class GameWindow extends JFrame implements GameControls {
 	public void saveWorld() {
 		final String pn = commons.profile.name;
 		final XElement world = commons.world().saveState();
+		world.set("starmap-x", allScreens.starmap.getXOffset());
+		world.set("starmap-y", allScreens.starmap.getYOffset());
+		world.set("starmap-z", allScreens.starmap.getZoomIndex());
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -1355,7 +1358,7 @@ public class GameWindow extends JFrame implements GameControls {
 					}
 
 					
-					XElement xworld = XElement.parseXML(lname);
+					final XElement xworld = XElement.parseXML(lname);
 					
 					String game = xworld.get("game");
 					World world = commons.world(); 
@@ -1410,6 +1413,15 @@ public class GameWindow extends JFrame implements GameControls {
 							}
 							if (status) {
 								displayStatusbar();
+							}
+							if (xworld.has("starmap-z")) {
+								allScreens.starmap.setZoomIndex(xworld.getInt("starmap-z"));
+							}
+							if (xworld.has("starmap-x")) {
+								allScreens.starmap.setXOffset(xworld.getInt("starmap-x"));
+							}
+							if (xworld.has("starmap-y")) {
+								allScreens.starmap.setYOffset(xworld.getInt("starmap-y"));
 							}
 							commons.start(true);
 							if (!frunning) {

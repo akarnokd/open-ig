@@ -8,7 +8,6 @@
 
 package hu.openig;
 
-import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.utils.ConsoleWatcher;
 
@@ -130,27 +129,6 @@ public final class Startup {
 				}
 			}
 		};
-	}
-	/**
-	 * Display the configuration window for setup.
-	 * @param config the configuration
-	 */
-	static void doStartConfiguration(final Configuration config) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				Setup setup = new Setup(config);
-				setup.setLocationRelativeTo(null);
-				setup.setVisible(true);
-				setup.pack();
-				setup.onRun.add(new Act() {
-					@Override
-					public void act() {
-						doStartGame(config);
-					}
-				});
-			}
-		});
 	}
 	/**
 	 * Start the game.

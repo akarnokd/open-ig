@@ -8,7 +8,6 @@
 
 package hu.openig.editors;
 
-import hu.openig.Setup;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
@@ -547,9 +546,7 @@ public class MapEditor extends JFrame {
 			}
 		}
 		final Configuration config = new Configuration("open-ig-config.xml");
-		if (!config.load()) {
-			doStartConfiguration(config);
-		} else {
+		if (config.load()) {
 			doStartProgram(config);
 		}
 	}
@@ -569,27 +566,6 @@ public class MapEditor extends JFrame {
 		});
 	}
 	/**
-	 * Display the configuration window for setup.
-	 * @param config the configuration
-	 */
-	private static void doStartConfiguration(final Configuration config) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				Setup setup = new Setup(config);
-				setup.setLocationRelativeTo(null);
-				setup.setVisible(true);
-				setup.pack();
-				setup.onRun.add(new Act() {
-					@Override
-					public void act() {
-						doStartProgram(config);
-					}
-				});
-			}
-		});
-	}
-	/**
 	 * Put up warning dialog for failed attempt to run the program with appropriate memory.
 	 * @param maxMem the detected memory
 	 */
@@ -600,9 +576,6 @@ public class MapEditor extends JFrame {
 				JOptionPane.showMessageDialog(null, "<html><p>Unable to auto-start Open Imperium Galactica MapEditor for version " + Configuration.VERSION + ".<br>Please make sure you have at least " 
 						+ MINIMUM_MEMORY + "MB defined for running a Java program in either your<br>"
 						+ "operating system's configuration for Java programs,<br> or run the program from command line using the <code>-Xmx" + MINIMUM_MEMORY + "M</code> parameter.</p><br>"
-						+ "<p>Nem siker�lt automatikusan elind�tani az Open Imperium Galaktika " + Configuration.VERSION + " MapEditor programot.<br>K�rem ellen�rizze, hogy alap�rtelmez�sben a Java programok futtat�s�hoz "
-						+ "legal�bb " + MINIMUM_MEMORY + "MB mem�ria<br> van be�ll�tva az Oper�ci�s Rendszerben,<br> vagy ind�tsa a program parancssorb�l a <code>-Xmx" + MINIMUM_MEMORY + "M</code> "
-						+ "param�ter megad�s�val.</p>"
 				);
 			}
 		});

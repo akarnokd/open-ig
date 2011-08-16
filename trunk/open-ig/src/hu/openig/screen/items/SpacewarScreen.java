@@ -314,6 +314,14 @@ public class SpacewarScreen extends ScreenBase {
 	int lastX;
 	/** The last Y coordinate. */
 	int lastY;
+	/** View commands. */
+	private ThreePhaseButton viewCommand;
+	/** View damages. */
+	private ThreePhaseButton viewDamage;
+	/** View range. */
+	private ThreePhaseButton viewRange;
+	/** View grids. */
+	private ThreePhaseButton viewGrid;
 	@Override
 	public void onInitialize() {
 		effects = new WarEffects(rl);
@@ -328,10 +336,15 @@ public class SpacewarScreen extends ScreenBase {
 		
 		viewCommands = new ArrayList<ThreePhaseButton>();
 		
-		viewCommands.add(new ThreePhaseButton(33, 24 + 35 * 3, commons.spacewar().command));
-		viewCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 3, commons.spacewar().damage));
-		viewCommands.add(new ThreePhaseButton(33, 24 + 35 * 3 + 30, commons.spacewar().fireRange));
-		viewCommands.add(new ThreePhaseButton(33 + 72, 24 + 35 * 3 + 30, commons.spacewar().grid));
+		viewCommand = new ThreePhaseButton(33, 24 + 35 * 3, commons.spacewar().command);
+		viewDamage = new ThreePhaseButton(33 + 72, 24 + 35 * 3, commons.spacewar().damage);
+		viewRange = new ThreePhaseButton(33, 24 + 35 * 3 + 30, commons.spacewar().fireRange);
+		viewGrid = new ThreePhaseButton(33 + 72, 24 + 35 * 3 + 30, commons.spacewar().grid);
+		
+		viewCommands.add(viewCommand);
+		viewCommands.add(viewDamage);
+		viewCommands.add(viewRange);
+		viewCommands.add(viewGrid);
 		
 		zoom = new TwoPhaseButton(3, 24, commons.spacewar().zoom);
 		zoom.visible = true;
@@ -476,7 +489,10 @@ public class SpacewarScreen extends ScreenBase {
 				panning = true;
 			}
 			if (e.has(Button.MIDDLE) && mainmap.contains(e.x, e.y)) {
-				scale = 0.45;
+				double xscale = mainmap.width * 1.0 / space.width;
+				double yscale = mainmap.height * 1.0 / space.height;
+				double s = Math.min(xscale, yscale) * 20;
+				scale = Math.round(s) / 20.0;
 				needRepaint = true;
 				pan(0, 0);
 			}
@@ -578,6 +594,9 @@ public class SpacewarScreen extends ScreenBase {
 		buttonTimer = null;
 		
 		effects.close();
+		commons.restoreMainSimulationSpeedFunction();
+		commons.battleMode = false;
+		commons.playRegularMusic();
 	}
 	@Override
 	public void onResize() {
@@ -587,6 +606,7 @@ public class SpacewarScreen extends ScreenBase {
 				getInnerHeight() - 38 - 3 - commons.spacewar().panelStatLeft.getHeight());
 		leftPanel.setBounds(32, getInnerHeight() - 18 - 3 - 195, 286, 195);
 		rightPanel.setBounds(getInnerWidth() - 33 - 286, getInnerHeight() - 18 - 3 - 195, 286, 195);
+		pan(0, 0);
 	}
 
 	@Override
@@ -750,6 +770,16 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param battle the battle information
 	 */
 	public void initiateBattle(BattleInfo battle) {
+		shields.clear();
+		projectors.clear();
+
+		ships.clear();
+		stations.clear();
+		
+		projectiles.clear();
+		beams.clear();
+		explosions.clear();
+		
 		this.battle = battle;
 		
 		Planet nearbyPlanet = battle.targetPlanet;
@@ -800,6 +830,7 @@ public class SpacewarScreen extends ScreenBase {
 					shieldValue = Math.max(shieldValue, b.getEfficiency() * bge.shields);
 
 					shields.add(sws);
+					surface.add(sws);
 				}
 			}
 			// add projectors
@@ -824,6 +855,7 @@ public class SpacewarScreen extends ScreenBase {
 					sp.ports.add(wp);
 					
 					projectors.add(sp);
+					surface.add(sp);
 				}
 			}
 			if (surface.size() > 0) {
@@ -834,7 +866,7 @@ public class SpacewarScreen extends ScreenBase {
 					o.x = space.width - commons.spacewar().planet.getWidth() / 2;
 					o.y = y;
 					o.shield = (int)(o.hp * shieldValue / 100);
-					o.shieldMax = o.shieldMax; 
+					o.shieldMax = o.shield; 
 					y += dy;
 				}
 			}
@@ -920,22 +952,29 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		g2.setColor(Color.WHITE);
 		
+		save0 = g2.getClip();
+		g2.clipRect(minimap.x, minimap.y, minimap.width, minimap.height);
+		
 		drawSpacewarStructuresMinimap(ships, g2);
 		drawSpacewarStructuresMinimap(stations, g2);
 		drawSpacewarStructuresMinimap(shields, g2);
 		drawSpacewarStructuresMinimap(projectors, g2);
 		
-		Rectangle viewport = new Rectangle(minimap);
+		int vx = 0;
+		int vy = 0;
+		int vx2 = minimap.width - 1;
+		int vy2 = minimap.height - 1;
 		if (ox == -offsetX) {
-			viewport.x += ox * minimap.width / space.width;
-			viewport.width = mainmap.width * minimap.width / space.width;
+			vx = (int)(offsetX * minimap.width / space.width / scale + 0.5);
+			vx2 = (int)((offsetX + mainmap.width - 1) * minimap.width / space.width / scale + 0.5);
 		}
 		if (oy == -offsetY) {
-			viewport.y += oy * minimap.height / space.height;
-			viewport.height = mainmap.height * minimap.height / space.height;
+			vy = (int)(offsetY * minimap.height / space.height / scale + 0.5);
+			vy2 = (int)((offsetY + mainmap.height - 1) * minimap.height / space.height / scale + 0.5);
 		}
 		g2.setColor(Color.WHITE);
-		g2.draw(viewport);
+		g2.drawRect(minimap.x + vx, minimap.y + vy, vx2 - vx, vy2 - vy);
+		g2.setClip(save0);
 	}
 	/**
 	 * Draw the spacewar structures to the main screen.
@@ -946,10 +985,31 @@ public class SpacewarScreen extends ScreenBase {
 		for (SpacewarStructure e : structures) {
 			BufferedImage img = e.get();
 			drawCenter(img, e.x, e.y, g2);
+			int w = img.getWidth();
+			int w2 = w / 2;
+			int h = img.getHeight();
+			int h2 = h / 2;
 			if (e.selected) {
 				g2.setColor(Color.YELLOW);
-				g2.drawRect((int)e.x - img.getWidth() / 2 - 1, 
-						(int)e.y - img.getHeight() / 2 - 1, img.getWidth() + 2, img.getHeight() + 2);
+				g2.drawRect((int)e.x - w2 - 1, 
+						(int)e.y - h2 - 1, w + 2, h + 2);
+			}
+			if (viewDamage.selected) {
+				int y = (int)e.y - h2 - 5;
+				if (e.shieldMax > 0) {
+					y -= 4;
+				}
+				g2.setColor(Color.BLACK);
+				g2.fillRect((int)e.x - w2, y, w, 3);
+				g2.setColor(Color.GREEN);
+				g2.fillRect((int)e.x - w2, y, e.hp * w / e.hpMax, 3);
+				if (e.shieldMax > 0) {
+					g2.setColor(Color.BLACK);
+					y += 4;
+					g2.fillRect((int)e.x - w2, y, w, 3);
+					g2.setColor(new Color(0xFFFFCC00));
+					g2.fillRect((int)e.x - w2, y, e.shield * w / e.shieldMax, 3);
+				}
 			}
 		}
 	}
@@ -960,8 +1020,8 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	void drawSpacewarStructuresMinimap(Iterable<? extends SpacewarStructure> structures, Graphics2D g2) {
 		for (SpacewarObject e : structures) {
-			int x = (int)(e.x * minimap.width / space.width);
-			int y = (int)(e.y * minimap.height / space.height);
+			int x = minimap.x + (int)(e.x * minimap.width / space.width);
+			int y = minimap.y + (int)(e.y * minimap.height / space.height);
 			g2.drawLine(x, y, x, y);
 		}
 	}
