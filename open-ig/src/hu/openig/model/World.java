@@ -28,10 +28,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -121,6 +123,10 @@ public class World {
 	public Map<String, Diplomacy> diplomacy;
 	/** The battle object. */
 	public Battle battle;
+	/** The list of pending battles. */
+	public Deque<BattleInfo> pendingBattles = new LinkedList<BattleInfo>();
+	/** The callback function to initiate a battle. */
+	public Func1<Void, Void> startBattle;
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -1453,6 +1459,16 @@ public class World {
 			if (xproj.has("sound")) {
 				bp.sound = WarEffectsType.valueOf(xproj.get("sound"));
 			}
+			bp.damage = xproj.getInt("damage");
+			bp.range = xproj.getInt("range");
+			bp.delay = xproj.getInt("delay");
+			if (xproj.has("area")) {
+				bp.area = xproj.getInt("area");
+			} else {
+				bp.area = 1;
+			}
+			bp.mode = BattleProjectile.Mode.valueOf(xproj.get("mode"));
+			
 			battle.projectiles.put(id, bp);
 			
 		}
@@ -1479,7 +1495,56 @@ public class World {
 			
 			battle.spaceEntities.put(id, se);
 		}
-		for (XElement xground : xbattle.childElement("ground-entities").childrenWithName("tech")) {
+		for (XElement xdefense : xbattle.childElement("ground-projectors").childrenWithName("tech")) {
+			String id = xdefense.get("id");
+			int nx = xdefense.getInt("width");
+
+			BattleGroundProjector se = new BattleGroundProjector();
+			
+			BufferedImage ni = rl.getImage(xdefense.get("normal"));
+			se.normal = ImageUtils.splitByWidth(ni, ni.getWidth() / nx);
+			
+			if (xdefense.has("alternative")) {
+				BufferedImage ai = rl.getImage(xdefense.get("alternative"));
+				se.alternative = ImageUtils.splitByWidth(ai, ai.getWidth() / nx);
+			} else {
+				se.alternative = se.normal;
+			}
+			se.image = rl.getImage(xdefense.get("image"));
+			if (xdefense.has("sound")) {
+				se.destruction = WarEffectsType.valueOf(xdefense.get("sound"));
+			} else {
+				System.err.println("Missing sound for " + id);
+			}
+			se.projectile = xdefense.get("projectile");
+			
+			battle.groundProjectors.put(id, se);
+		}
+		for (XElement xdefense : xbattle.childElement("ground-shields").childrenWithName("tech")) {
+			String id = xdefense.get("id");
+
+			BattleGroundShield se = new BattleGroundShield();
+			
+			BufferedImage ni = rl.getImage(xdefense.get("normal"));
+			se.normal = ni;
+			
+			if (xdefense.has("alternative")) {
+				BufferedImage ai = rl.getImage(xdefense.get("alternative"));
+				se.alternative = ai;
+			} else {
+				se.alternative = se.normal;
+			}
+			se.infoImage = rl.getImage(xdefense.get("image"));
+			if (xdefense.has("sound")) {
+				se.destruction = WarEffectsType.valueOf(xdefense.get("sound"));
+			} else {
+				System.err.println("Missing sound for " + id);
+			}
+			se.shields = xdefense.getInt("shield");
+			
+			battle.groundShields.put(id, se);
+		}
+		for (XElement xground : xbattle.childElement("ground-vehicles").childrenWithName("tech")) {
 			String id = xground.get("id");
 			int nx = xground.getInt("width");
 			int ny = xground.getInt("height");
@@ -1501,6 +1566,16 @@ public class World {
 			
 			battle.groundEntities.put(id, ge);
 		}
-		
+	}
+	/**
+	 * Compute the distance square between two points.
+	 * @param x1 the first X
+	 * @param y1 the first Y
+	 * @param x2 the second X
+	 * @param y2 the second Y
+	 * @return the distance square
+	 */
+	public static double dist(double x1, double y1, double x2, double y2) {
+		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 	}
 }

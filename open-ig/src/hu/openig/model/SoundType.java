@@ -104,7 +104,11 @@ public enum SoundType {
 	/** Sound. */
 	DEMOLISH_BUILDING("ui/demolish_building"),
 	/** The welcome message. */
-	WELCOME("ui/welcome")
+	WELCOME("ui/welcome"),
+	/** The function is not available. */
+	NOT_AVAILABLE("ui/not_available"),
+	/** Low frequency click sound. */
+	CLICK_LOW_1("ui/click_low_1")
 	;
 	/** The associated resource location. */
 	public final String resource;

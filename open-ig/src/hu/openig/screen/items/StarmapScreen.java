@@ -26,6 +26,7 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.RotationDirection;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
+import hu.openig.model.SoundType;
 import hu.openig.model.TileSet;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
@@ -1663,6 +1664,8 @@ public class StarmapScreen extends ScreenBase {
 							fleet().targetPlanet = p;
 							fleet().targetFleet = null;
 							fleet().mode = FleetMode.ATTACK;
+						} else {
+							commons.sounds.play(SoundType.NOT_AVAILABLE);
 						}
 					} else
 					if (fleetMode == FleetMode.MOVE) {

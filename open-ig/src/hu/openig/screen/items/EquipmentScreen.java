@@ -1352,6 +1352,9 @@ public class EquipmentScreen extends ScreenBase {
 		clearCells(tanks);
 		
 		for (ResearchType rt : world().researches.values()) {
+			if (!world().canDisplayResearch(rt)) {
+				continue;
+			}
 			VehicleCell vc = null;
 			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				vc = fighters.get(rt.index);

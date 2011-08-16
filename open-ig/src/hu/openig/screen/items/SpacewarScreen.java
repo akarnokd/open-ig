@@ -9,22 +9,38 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Act;
+import hu.openig.model.BattleGroundProjector;
+import hu.openig.model.BattleGroundShield;
+import hu.openig.model.BattleInfo;
+import hu.openig.model.BattleProjectile;
+import hu.openig.model.Building;
+import hu.openig.model.Planet;
 import hu.openig.model.Screens;
-import hu.openig.model.SpaceBeam;
-import hu.openig.model.WarEffectsType;
-import hu.openig.model.SpaceExplosion;
-import hu.openig.model.SpaceProjectile;
-import hu.openig.model.SpaceShipStationDefense;
+import hu.openig.model.SpacewarBeam;
+import hu.openig.model.SpacewarExplosion;
+import hu.openig.model.SpacewarObject;
+import hu.openig.model.SpacewarProjectile;
+import hu.openig.model.SpacewarProjector;
+import hu.openig.model.SpacewarShield;
+import hu.openig.model.SpacewarShip;
+import hu.openig.model.SpacewarStation;
+import hu.openig.model.SpacewarStructure;
+import hu.openig.model.SpacewarWeaponPort;
+import hu.openig.model.World;
 import hu.openig.screen.ScreenBase;
 import hu.openig.sound.WarEffects;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
+import hu.openig.ui.UIMouse.Modifier;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.TexturePaint;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -236,11 +252,6 @@ public class SpacewarScreen extends ScreenBase {
 	}
 	/** The animation timer. */
 	Closeable buttonTimer;
-	
-	@Override
-	public void onFinish() {
-		
-	}
 	/** The group for the main buttons. */
 	List<ThreePhaseButton> mainCommands;
 	/** The view toggle buttons. */
@@ -261,16 +272,48 @@ public class SpacewarScreen extends ScreenBase {
 	List<AnimatedRadioButton> leftButtons;
 	/** The right animated buttons. */
 	List<AnimatedRadioButton> rightButtons;
-	/** The space entities for animation. */
-	final List<SpaceShipStationDefense> entities = new ArrayList<SpaceShipStationDefense>();
+	/** The space ships for animation. */
+	final List<SpacewarShip> ships = new ArrayList<SpacewarShip>();
+	/** The space stations for animation. */
+	final List<SpacewarStation> stations = new ArrayList<SpacewarStation>();
+	/** The shields on the planet below for animation. */
+	final List<SpacewarShield> shields = new ArrayList<SpacewarShield>();
+	/** The the projectors on the planet below for animation. */
+	final List<SpacewarProjector> projectors = new ArrayList<SpacewarProjector>();
 	/** The beams for animation. */
-	final List<SpaceBeam> beams = new ArrayList<SpaceBeam>();
+	final List<SpacewarBeam> beams = new ArrayList<SpacewarBeam>();
 	/** The projectiles for animation. */
-	final List<SpaceProjectile> projectiles = new ArrayList<SpaceProjectile>();
+	final List<SpacewarProjectile> projectiles = new ArrayList<SpacewarProjectile>();
 	/** The space explosions for animation. */
-	final List<SpaceExplosion> explosions = new ArrayList<SpaceExplosion>();
+	final List<SpacewarExplosion> explosions = new ArrayList<SpacewarExplosion>();
 	/** The space effects. */
 	WarEffects effects;
+	/** The location of the minimap. */
+	final Rectangle minimap = new Rectangle();
+	/** The location of the main window area. */
+	final Rectangle mainmap = new Rectangle();
+	/** The left inner panel. */
+	final Rectangle leftPanel = new Rectangle();
+	/** The right inner panel. */
+	final Rectangle rightPanel = new Rectangle();
+	/** The initial battle settings. */
+	BattleInfo battle;
+	/** Show the planet. */
+	boolean planetVisible;
+	/** The main map rendering offset X. */
+	int offsetX;
+	/** The main map rendering offset Y. */
+	int offsetY;
+	/** The rendering scale. */
+	double scale = 1.0;
+	/** The operational space at 1:1 zoom. */
+	final Rectangle space = new Rectangle(0, 0, 462 * 504 / 238, 504);
+	/** Panning the view. */
+	boolean panning;
+	/** The last X coordinate. */
+	int lastX;
+	/** The last Y coordinate. */
+	int lastY;
 	@Override
 	public void onInitialize() {
 		effects = new WarEffects(rl);
@@ -364,12 +407,12 @@ public class SpacewarScreen extends ScreenBase {
 					if (e.has(Button.LEFT)) {
 						zoom.pressed = true;
 						needRepaint = true;
-						doZoomIn();
+						doZoomIn(mainmap.x + mainmap.width / 2, mainmap.y + mainmap.height / 2);
 					} else
 					if (e.has(Button.RIGHT)) {
 						zoom.pressed = true;
 						needRepaint = true;
-						doZoomOut();
+						doZoomOut(mainmap.x + mainmap.width / 2, mainmap.y + mainmap.height / 2);
 					}
 				}
 				if (pause.test(e.x, e.y)) {
@@ -427,8 +470,39 @@ public class SpacewarScreen extends ScreenBase {
 					}
 				}
 			}
+			if (e.has(Button.RIGHT) && mainmap.contains(e.x, e.y)) {
+				lastX = e.x;
+				lastY = e.y;
+				panning = true;
+			}
+			if (e.has(Button.MIDDLE) && mainmap.contains(e.x, e.y)) {
+				scale = 0.45;
+				needRepaint = true;
+				pan(0, 0);
+			}
+			break;
+		case DRAG:
+			if (panning) {
+				pan(lastX - e.x, lastY - e.y);
+				lastX = e.x;
+				lastY = e.y;
+				needRepaint = true;
+			}
+			break;
+		case WHEEL:
+			if (e.has(Modifier.CTRL)) {
+				if (e.z < 0) {
+					doZoomIn(e.x, e.y);
+				} else {
+					doZoomOut(e.x, e.y);
+				}
+				needRepaint = true;
+			}
 			break;
 		case UP:
+			if (e.has(Button.RIGHT)) {
+				panning = false;
+			}
 			for (ThreePhaseButton btn : mainCommands) {
 				if (btn.pressed) {
 					btn.pressed = false;
@@ -505,14 +579,6 @@ public class SpacewarScreen extends ScreenBase {
 		
 		effects.close();
 	}
-	/** The location of the minimap. */
-	Rectangle minimap = new Rectangle();
-	/** The location of the main window area. */
-	Rectangle mainmap = new Rectangle();
-	/** The left inner panel. */
-	Rectangle leftPanel = new Rectangle();
-	/** The right inner panel. */
-	Rectangle rightPanel = new Rectangle();
 	@Override
 	public void onResize() {
 		// TODO Auto-generated method stub
@@ -586,14 +652,50 @@ public class SpacewarScreen extends ScreenBase {
 		
 		g2.drawImage(commons.spacewar().panelIg, leftPanel.x, leftPanel.y, null);
 		g2.drawImage(commons.spacewar().panelIg, rightPanel.x, rightPanel.y, null);
-	}
-	/** Zoom in. */
-	protected void doZoomIn() {
 		
+		drawBattle(g2);
 	}
-	/** Zoom out. */
-	protected void doZoomOut() {
+	/** 
+	 * Zoom in.
+	 * @param x the mouse position to keep steady
+	 * @param y the mouse position to keep steady 
+	 */
+	protected void doZoomIn(int x, int y) {
+		Point p0 = mouseToSpace(x, y);
+		scale = Math.min(scale + 0.05, 1.0);
+		Point p1 = mouseToSpace(x, y);
+		pan(p0.x - p1.x, p0.y - p1.y);
+	}
+	/** 
+	 * Zoom out.
+	 * @param x the mouse position to keep steady
+	 * @param y the mouse position to keep steady 
+	 */
+	protected void doZoomOut(int x, int y) {
+		Point p0 = mouseToSpace(x, y);
+		scale = Math.max(scale - 0.05, 0.45);
+		Point p1 = mouseToSpace(x, y);
+		pan(p0.x - p1.x, p0.y - p1.y);
+	}
+	/**
+	 * Convert the mouse coordinate to space coordinates.
+	 * @param x the current mouse X on the screen
+	 * @param y the current mouse Y on the screen
+	 * @return the space coordinates
+	 */
+	Point mouseToSpace(int x, int y) {
+		int ox = -offsetX;
+		int oy = -offsetY;
+		if (space.width * scale < mainmap.width) {
+			ox = (int)((mainmap.width - space.width * scale) / 2);
+		}
+		if (space.height * scale < mainmap.height) {
+			oy = (int)((mainmap.height - space.height * scale) / 2);
+		}
 		
+		int x0 = x - mainmap.x - ox;
+		int y0 = y - mainmap.y - oy;
+		return new Point(x0, y0);
 	}
 	/** Pause. */
 	protected void doPause() {
@@ -637,5 +739,240 @@ public class SpacewarScreen extends ScreenBase {
 	public void onEndGame() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void onFinish() {
+		
+	}
+	/**
+	 * Initiate a battle with the given settings.
+	 * @param battle the battle information
+	 */
+	public void initiateBattle(BattleInfo battle) {
+		this.battle = battle;
+		
+		Planet nearbyPlanet = battle.targetPlanet;
+		if (battle.targetFleet != null) {
+			// locate the nearest planet if the target is a fleet
+			double minDistance = Double.MAX_VALUE;
+			for (Planet p : world().planets.values()) {
+				double d1 = World.dist(p.x, p.y, battle.attacker.x, battle.attacker.y);
+				if (d1 < minDistance) {
+					minDistance = d1;
+					if (minDistance < 20) {
+						nearbyPlanet = p;
+					}
+				}
+				double d2 = World.dist(p.x, p.y, battle.targetFleet.x, battle.targetFleet.y);
+				if (d2 < minDistance) {
+					minDistance = d1;
+					if (minDistance < 20) {
+						nearbyPlanet = p;
+					}
+				}
+			}
+		}
+		if (nearbyPlanet != null 
+				&& (nearbyPlanet.owner == battle.attacker.owner 
+				|| nearbyPlanet == battle.targetPlanet 
+				|| nearbyPlanet.owner == battle.targetFleet.owner)) {
+			planetVisible = true;
+			
+			// place planetary defenses
+			boolean alien = nearbyPlanet.owner != player();
+			
+			List<SpacewarStructure> surface = new ArrayList<SpacewarStructure>();
+			double shieldValue = 0;
+			// add shields
+			for (Building b : nearbyPlanet.surface.buildings) {
+				if (b.getEfficiency() >= 0.5 && b.type.kind.equals("Shield")) {
+					BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
+					
+					SpacewarShield sws = new SpacewarShield();
+					sws.image = alien ? bge.alternative : bge.normal;
+					sws.infoImage = bge.infoImage;
+					sws.hp = b.hitpoints;
+					sws.hpMax = b.type.hitpoints;
+					sws.owner = nearbyPlanet.owner;
+					sws.destruction = bge.destruction;
+
+					shieldValue = Math.max(shieldValue, b.getEfficiency() * bge.shields);
+
+					shields.add(sws);
+				}
+			}
+			// add projectors
+			for (Building b : nearbyPlanet.surface.buildings) {
+				if (b.getEfficiency() >= 0.5 && b.type.kind.equals("Gun")) {
+					BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
+					SpacewarProjector sp = new SpacewarProjector();
+
+					sp.angles = alien ? bge.alternative : bge.normal;
+					sp.angle = Math.PI;
+					sp.infoImage = bge.image;
+					sp.hp = b.hitpoints;
+					sp.hpMax = b.type.hitpoints;
+					sp.owner = nearbyPlanet.owner;
+					sp.destruction = bge.destruction;
+
+					BattleProjectile pr = world().battle.projectiles.get(bge.projectile);
+					
+					SpacewarWeaponPort wp = new SpacewarWeaponPort();
+					wp.projectile = pr;
+					
+					sp.ports.add(wp);
+					
+					projectors.add(sp);
+				}
+			}
+			if (surface.size() > 0) {
+				// place and align surface objects equally
+				int dy = space.height / surface.size();
+				int y = dy / 2;
+				for (SpacewarStructure o : surface) {
+					o.x = space.width - commons.spacewar().planet.getWidth() / 2;
+					o.y = y;
+					o.shield = (int)(o.hp * shieldValue / 100);
+					o.shieldMax = o.shieldMax; 
+					y += dy;
+				}
+			}
+
+			
+			
+		} else {
+			planetVisible = false;
+		}
+	}
+	/**
+	 * Pan the view by the given amount.
+	 * @param dx the delta X
+	 * @param dy the delta Y
+	 */
+	void pan(int dx, int dy) {
+		offsetX += dx;
+		offsetY += dy;
+		
+		offsetX = (int)Math.max(0, Math.min(offsetX, space.width * scale - mainmap.width));
+		offsetY = (int)Math.max(0, Math.min(offsetY, space.height * scale - mainmap.height));
+	}
+	/**
+	 * Render the battle.
+	 * @param g2 the graphics context.
+	 */
+	void drawBattle(Graphics2D g2) {
+		// TODO space battle surface
+		
+		Shape save0 = g2.getClip();
+		AffineTransform af = g2.getTransform();
+		
+		g2.clipRect(mainmap.x, mainmap.y, mainmap.width, mainmap.height);
+		
+		int ox = -offsetX;
+		int oy = -offsetY;
+		if (space.width * scale < mainmap.width) {
+			ox = (int)((mainmap.width - space.width * scale) / 2);
+		}
+		if (space.height * scale < mainmap.height) {
+			oy = (int)((mainmap.height - space.height * scale) / 2);
+		}
+		g2.translate(mainmap.x + ox, mainmap.y + oy);
+		g2.scale(scale, scale);
+		
+		g2.setColor(Color.GRAY);
+		g2.fill(space);
+		
+		if (planetVisible) {
+			g2.drawImage(commons.spacewar().planet, space.width - commons.spacewar().planet.getWidth(), 0, null);
+		}
+		
+		drawSpacewarStructures(ships, g2);
+		drawSpacewarStructures(stations, g2);
+		drawSpacewarStructures(shields, g2);
+		drawSpacewarStructures(projectors, g2);
+		
+		for (SpacewarProjectile e : projectiles) {
+			drawCenter(e.get(), e.x, e.y, g2);
+		}
+		for (SpacewarBeam e : beams) {
+			drawCenter(e.get(), e.x, e.y, g2);
+		}
+		for (SpacewarExplosion e : explosions) {
+			drawCenter(e.get(), e.x, e.y, g2);
+		}
+		
+		g2.setTransform(af);
+		g2.setClip(save0);
+		
+		// draw minimap
+		g2.setColor(Color.GRAY);
+		for (SpacewarProjectile e : projectiles) {
+			int x = (int)(e.x * minimap.width / space.width);
+			int y = (int)(e.y * minimap.height / space.height);
+			g2.drawLine(x, y, x, y);
+		}
+		g2.setColor(Color.LIGHT_GRAY);
+		for (SpacewarBeam e : beams) {
+			int x = (int)(e.x * minimap.width / space.width);
+			int y = (int)(e.y * minimap.height / space.height);
+			g2.drawLine(x, y, x, y);
+		}
+		g2.setColor(Color.WHITE);
+		
+		drawSpacewarStructuresMinimap(ships, g2);
+		drawSpacewarStructuresMinimap(stations, g2);
+		drawSpacewarStructuresMinimap(shields, g2);
+		drawSpacewarStructuresMinimap(projectors, g2);
+		
+		Rectangle viewport = new Rectangle(minimap);
+		if (ox == -offsetX) {
+			viewport.x += ox * minimap.width / space.width;
+			viewport.width = mainmap.width * minimap.width / space.width;
+		}
+		if (oy == -offsetY) {
+			viewport.y += oy * minimap.height / space.height;
+			viewport.height = mainmap.height * minimap.height / space.height;
+		}
+		g2.setColor(Color.WHITE);
+		g2.draw(viewport);
+	}
+	/**
+	 * Draw the spacewar structures to the main screen.
+	 * @param structures the sequence of structures
+	 * @param g2 the graphics context
+	 */
+	void drawSpacewarStructures(Iterable<? extends SpacewarStructure> structures, Graphics2D g2) {
+		for (SpacewarStructure e : structures) {
+			BufferedImage img = e.get();
+			drawCenter(img, e.x, e.y, g2);
+			if (e.selected) {
+				g2.setColor(Color.YELLOW);
+				g2.drawRect((int)e.x - img.getWidth() / 2 - 1, 
+						(int)e.y - img.getHeight() / 2 - 1, img.getWidth() + 2, img.getHeight() + 2);
+			}
+		}
+	}
+	/**
+	 * Draw the spacewar structures symbolically onto the minimap.
+	 * @param structures the sequence of structures
+	 * @param g2 the graphics context
+	 */
+	void drawSpacewarStructuresMinimap(Iterable<? extends SpacewarStructure> structures, Graphics2D g2) {
+		for (SpacewarObject e : structures) {
+			int x = (int)(e.x * minimap.width / space.width);
+			int y = (int)(e.y * minimap.height / space.height);
+			g2.drawLine(x, y, x, y);
+		}
+	}
+	/**
+	 * Draw the image centered to the given coordinates.
+	 * @param img the image to draw
+	 * @param x the center X coordinate
+	 * @param y the center Y coordinate
+	 * @param g2 the graphics context
+	 */
+	void drawCenter(BufferedImage img, double x, double y, Graphics2D g2) {
+		g2.drawImage(img, (int)(x - img.getWidth() / 2), (int)(y - img.getHeight() / 2), null);
 	}
 }

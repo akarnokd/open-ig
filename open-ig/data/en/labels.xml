@@ -449,8 +449,8 @@
 	<entry key='planets.earth'>Earth</entry>
 	
 	<entry key='players.empire'>Galactic Empire</entry>
-	<entry key='players.free_traders'>Free Traders Alliance</entry>
-	<entry key='players.free_nations'>Free Nations Society</entry>
+	<entry key='players.free_traders'>Traders Alliance</entry>
+	<entry key='players.free_nations'>Free Nations</entry>
 	<entry key='players.pirates'>Pirates</entry>
 	<entry key='players.garthog'>Garthog Republic</entry>
 	<entry key='players.ychom'>Ychom Empire</entry>
@@ -2655,8 +2655,10 @@
 	<entry key='tech.tradersfreight2.longname'>Traders Freight v2.0</entry>
 	<entry key='tech.tradersfreight2.description'>Advanced ship capable of transporting 250 metric tons of equipment or material and 150 passengers.</entry>
 
+	<entry key='message.planet_lost'>The planet %s has been lost.</entry>
+	<entry key='message.planet_conquered'>You conquered the planet %s.</entry>
 
-	<entry key=''></entry>
+	<entry key='message.no_vehicles_for_assault'>Your fleet does not have vehicles to assault the planet %s.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	

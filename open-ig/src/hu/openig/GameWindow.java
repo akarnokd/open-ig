@@ -13,10 +13,17 @@ import hu.openig.core.Configuration;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
+import hu.openig.mechanics.Simulator;
+import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
+import hu.openig.model.Fleet;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.InventoryItem;
+import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.Player;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
@@ -411,7 +418,7 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void exit() {
 		commons.stop();
-		commons.sounds.stop();
+		commons.sounds.close();
 		uninitScreens();
 		
 		config.fullScreen = isUndecorated();
@@ -510,6 +517,10 @@ public class GameWindow extends JFrame implements GameControls {
 		case COLONY:
 			sb = allScreens.colony;
 			sound = (SoundType.COLONY);
+			break;
+		case COLONY_BATTLE:
+			sb = allScreens.colony;
+			mode = screen;
 			break;
 		case DIPLOMACY:
 			sb = allScreens.diplomacy;
@@ -789,7 +800,8 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 				e.consume();
 			}
-			if (!commons.worldLoading && commons.world() != null && !movieVisible) {
+			if (!commons.worldLoading && commons.world() != null 
+					&& !movieVisible && !commons.battleMode) {
 				if (e.getKeyChar() == '+') {
 					commons.world().player.moveNextPlanet();
 					repaintInner();
@@ -1367,6 +1379,13 @@ public class GameWindow extends JFrame implements GameControls {
 								return config.autoRepair;
 							}
 						};
+						world.startBattle = new Func1<Void, Void>() {
+							@Override
+							public Void invoke(Void value) {
+								startBattle();
+								return null;
+							}
+						};
 					}
 					
 					world.loadState(xworld);
@@ -1430,5 +1449,140 @@ public class GameWindow extends JFrame implements GameControls {
 		for (ScreenBase sb : screens) {
 			sb.onEndGame();
 		}
+	}
+	@Override
+	public void startBattle() {
+		// TODO Auto-generated method stub
+		while (true) {
+			final BattleInfo bi = world().pendingBattles.poll();
+			// exit when no more battle is pending
+			if (bi == null) {
+				break;
+			}
+			// check if the source fleet still exists
+			if (!bi.attacker.owner.fleets.containsKey(bi.attacker)) {
+				continue;
+			}
+			// check if the target fleet is still exists
+			if (bi.targetFleet != null && !bi.targetFleet.owner.fleets.containsKey(bi.targetFleet)) {
+				continue;
+			}
+			// check if the target planet already belongs to the attacker
+			if (bi.targetPlanet != null && bi.targetPlanet.owner == bi.attacker.owner) {
+				continue;
+			}
+			if (bi.attacker.owner != world().player 
+					&& ((bi.targetFleet != null && bi.targetFleet.owner != world().player)
+							|| (bi.targetPlanet != null && bi.targetPlanet.owner != world().player))) {
+				Simulator.autoBattle(world(), this, bi);
+				continue;
+			}
+			// do a space battle
+			if (bi.targetFleet != null) {
+				SpacewarScreen sws = (SpacewarScreen)displayPrimary(Screens.SPACEWAR);
+				sws.initiateBattle(bi);
+			} else {
+				// check orbital defenses and nearby fleet
+				
+				boolean spaceBattle = false;
+				boolean groundBattle = false;
+				// check inventory for defensive items
+				for (InventoryItem ii : bi.targetPlanet.inventory) {
+					if (ii.owner == bi.targetPlanet.owner) {
+						if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+								|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+							spaceBattle = true;
+						}
+						if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS 
+								|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+							groundBattle = true;
+						}
+					}
+				}
+				// check surface for defensive structures
+				for (Building b : bi.targetPlanet.surface.buildings) {
+					if (b.getEfficiency() >= 0.5 && "Defensive".equals(b.type.kind)) {
+						groundBattle = true;
+					}
+					if (b.getEfficiency() >= 0.5 && "Gun".equals(b.type.kind)) {
+						spaceBattle = true;
+					}
+				}
+				for (Fleet f : bi.targetPlanet.owner.fleets.keySet()) {
+					if (f.owner == bi.targetPlanet.owner) {
+						if (World.dist(f.x, f.y, bi.targetPlanet.x, bi.targetPlanet.y) < 20) {
+							spaceBattle = true;
+							break;
+						}
+					}
+				}
+				
+				if (spaceBattle) {
+					commons.battleMode = true;
+					commons.stopMusic();
+					commons.pause();
+					SpacewarScreen sws = (SpacewarScreen)displayPrimary(Screens.SPACEWAR);
+					sws.initiateBattle(bi);
+					commons.playBattleMusic();
+				} else {
+					// check if the attacker has ground vehicles at all
+					boolean ableToGroundBattle = false;
+					for (InventoryItem ii : bi.attacker.inventory) {
+						if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+								|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+							ableToGroundBattle = true;
+							break;
+						}
+					}
+					if (!ableToGroundBattle) {
+						Message msgLost = world().newMessage("message.no_vehicles_for_assault");
+						msgLost.priority = 100;
+						msgLost.targetPlanet = bi.targetPlanet;
+						bi.attacker.owner.messageQueue.add(msgLost);
+						continue;
+					}
+					if (groundBattle) {
+						commons.battleMode = true;
+						commons.stopMusic();
+						commons.pause();
+						playVideos(new Act() {
+							@Override
+							public void act() {
+								PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY_BATTLE);
+								ps.initiateBattle(bi);
+								commons.playBattleMusic();
+							}
+						}, "groundwar/felall");
+						
+					} else {
+						// just take ownership
+						Player lastOwner = bi.targetPlanet.owner;
+						bi.targetPlanet.owner = bi.attacker.owner;
+						bi.targetPlanet.owner.statistics.planetsConquered++;
+						for (Building b : bi.targetPlanet.surface.buildings) {
+							if (b.type.research != null) {
+								commons.world().player.setAvailable(b.type.research);
+							}
+						}
+						bi.targetPlanet.owner.planets.put(bi.targetPlanet, PlanetKnowledge.BUILDING);
+						
+						// notify about ownership change
+						Message msgLost = world().newMessage("message.planet_lost");
+						msgLost.priority = 100;
+						msgLost.targetPlanet = bi.targetPlanet;
+						lastOwner.messageQueue.add(msgLost);
+						
+						Message msgConq = world().newMessage("message.planet_conquered");
+						msgConq.priority = 100;
+						msgConq.targetPlanet = bi.targetPlanet;
+						bi.attacker.owner.messageQueue.add(msgConq);
+						
+						continue;
+					}
+				}
+			}
+			break;
+		}
+		repaintInner();
 	}
 }
