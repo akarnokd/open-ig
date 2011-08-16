@@ -35,7 +35,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -347,8 +346,7 @@ public class VideoPlayer extends JFrame {
 	 */
 	public static void main(String[] args) {
 		Configuration config = new Configuration("open-ig-config.xml");
-		Set<String> argset = new HashSet<String>(Arrays.asList(args));
-		if (config.load() && !argset.contains("-config")) {
+		if (config.load()) {
 			if (config.disableD3D) {
 				System.setProperty("sun.java2d.d3d", "false");
 			}
@@ -359,8 +357,6 @@ public class VideoPlayer extends JFrame {
 				System.setProperty("sun.java2d.opengl", "false");
 			}
 			showMainWindow(config);
-		} else {
-			showConfigWindow(config);
 		}
 	}
 	/** 
@@ -372,21 +368,6 @@ public class VideoPlayer extends JFrame {
 			@Override
 			public void run() {
 				VideoPlayer wp = new VideoPlayer(config);
-				wp.setLocationRelativeTo(null);
-				wp.setVisible(true);
-			}
-		});
-	}
-	/** 
-	 * Display the main window. 
-	 * @param config the configuration
-	 */
-	static void showConfigWindow(final Configuration config) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				Setup wp = new Setup(config);
-				wp.onRun.add(new Act() { @Override public void act() { showMainWindow(config); } });
 				wp.setLocationRelativeTo(null);
 				wp.setVisible(true);
 			}
@@ -442,14 +423,10 @@ public class VideoPlayer extends JFrame {
 		JMenuItem mnuRescan = new JMenuItem("Rescan");
 		mnuRescan.addActionListener(new Act() { @Override public void act() { doRescan(); } });
 
-		JMenuItem mnuSetup = new JMenuItem("Setup");
-		mnuSetup.addActionListener(new Act() { @Override public void act() { doSetup(); } });
-
 		JMenuItem mnuExport = new JMenuItem("Export...");
 		mnuExport.addActionListener(new Act() { @Override public void act() { doExport(); } });
 		
 		mnuFile.add(mnuRescan);
-		mnuFile.add(mnuSetup);
 		mnuFile.addSeparator();
 		mnuFile.add(mnuExport);
 		mnuFile.addSeparator();
@@ -576,14 +553,6 @@ public class VideoPlayer extends JFrame {
 				scan();
 			}
 		});
-	}
-	/**
-	 * Show setup window.
-	 */
-	protected void doSetup() {
-		Setup s = new Setup(config);
-		s.setLocationRelativeTo(this);
-		s.setVisible(true);
 	}
 	/**
 	 * Set scaling mode.

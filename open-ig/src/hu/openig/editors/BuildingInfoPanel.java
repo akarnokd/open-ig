@@ -108,7 +108,7 @@ public class BuildingInfoPanel extends JPanel {
 	@Rename(to = "mapeditor.repairing")
 	JCheckBox buildingRepairing;
 	/** Upgrade list. */
-	JComboBox upgradeList;
+	JComboBox<String> upgradeList;
 	/** The other resources table. */
 	JTable resourceTable;
 	/** The completion percent. */
@@ -253,7 +253,7 @@ public class BuildingInfoPanel extends JPanel {
 		buildingRepairing = new JCheckBox("Repairing");
 		
 		upgradeLbl = new JLabel("Upgrades:");
-		upgradeList = new JComboBox();
+		upgradeList = new JComboBox<String>();
 		upgradeList.addItem("None");
 		
 		resourceTableModel = new ResourceTableModel();

@@ -82,7 +82,7 @@ public class ImportDialog extends JDialog {
 	/** The list of original planet ids. */
 	List<OriginalPlanet> originalPlanets = new ArrayList<OriginalPlanet>();
 	/** The original map to select. */
-	JComboBox cbOriginalMap;
+	JComboBox<String> cbOriginalMap;
 	/** The number of coordinates to shift the original map. */
 	JTextField edShiftX;
 	/** The number of coordinates to shift the original map. */
@@ -96,7 +96,7 @@ public class ImportDialog extends JDialog {
 	/** Replace current buildings? */
 	JCheckBox cbReplaceBuildings;
 	/** The settings for the original planet definitions. */
-	JComboBox cbOriginalPlanets;
+	JComboBox<String> cbOriginalPlanets;
 	/** Update the surface settings along with the building settings. */
 	JCheckBox cbWithSurface;
 	/** Original map label. */
@@ -125,7 +125,7 @@ public class ImportDialog extends JDialog {
 		buildMap(8, 'f', "earth");
 		buildMap(6, 'g', "neptoplasm");
 		
-		cbOriginalMap = new JComboBox();
+		cbOriginalMap = new JComboBox<String>();
 		cbOriginalMap.addItem("-Don't import any-");
 		for (MapType mt : originalMaps) {
 			cbOriginalMap.addItem(mt.surfaceType + " " + mt.name);
@@ -153,7 +153,7 @@ public class ImportDialog extends JDialog {
 		btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCancel(); } });
 		
-		cbOriginalPlanets = new JComboBox();
+		cbOriginalPlanets = new JComboBox<String>();
 		cbOriginalPlanets.addItem("-Don't import any-");
 		
 		parseOriginalPlanet();

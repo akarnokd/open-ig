@@ -67,7 +67,7 @@ public class Launcher extends JFrame {
 	/** The language label. */
 	private JLabel lang;
 	/** The language combobox. */
-	private JComboBox langList;
+	private JComboBox<String> langList;
 	/** The update object. */
 	LUpdate update;
 	/** The current language. */
@@ -114,7 +114,7 @@ public class Launcher extends JFrame {
 		JPanel top = new JPanel(new FlowLayout());
 		
 		lang = new JLabel("Language:");
-		langList = new JComboBox(new String[] { "English - Angol", "Hungarian - Magyar" });
+		langList = new JComboBox<String>(new String[] { "English - Angol", "Hungarian - Magyar" });
 		langList.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

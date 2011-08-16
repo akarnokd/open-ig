@@ -181,6 +181,7 @@ public class WarEffects {
 					sdl.start();
 					sdl.write(data, 0, data.length);
 					sdl.drain();
+					sdl.stop();
 					available.add(sdl);
 				}
 			}

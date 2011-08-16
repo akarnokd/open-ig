@@ -67,7 +67,7 @@ public class Sounds {
 							snd[i] = (byte)((snd[i] & 0xFF) - 128);
 						}
 					}
-					soundMap.put(st, snd);
+					soundMap.put(st, AudioThread.convert8To16(snd));
 				} finally {
 					ain.close();
 				}
@@ -179,6 +179,7 @@ public class Sounds {
 						sdl.start();
 						sdl.write(data, 0, data.length);
 						sdl.drain();
+						sdl.stop();
 					} finally {
 						available.add(sdl);
 					}

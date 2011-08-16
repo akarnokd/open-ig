@@ -44,7 +44,7 @@ public class AllocationPanel extends JPanel {
 	@Rename(to = "mapeditor.apply")
 	public JButton apply;
 	/** The allocation strategies. */
-	public JComboBox strategies;
+	public JComboBox<ResourceAllocationStrategy> strategies;
 	/** Refresh the requirements from the model. */
 	@Rename(to = "mapeditor.refresh")
 	public JButton refresh;
@@ -98,7 +98,7 @@ public class AllocationPanel extends JPanel {
 		
 		apply = new JButton("Apply");
 		refresh = new JButton("Refresh");
-		strategies = new JComboBox(ResourceAllocationStrategy.values());
+		strategies = new JComboBox<ResourceAllocationStrategy>(ResourceAllocationStrategy.values());
 		
 		workerDemand = new JTextField(6);
 		workerDemand.setEditable(false);

@@ -1122,7 +1122,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 	/** The panel. */
 	JPanel panel;
 	/** The combobox. */
-	JComboBox cb;
+	JComboBox<String> cb;
 	/** Start button. */
 	JButton startButton;
 	/** Statistics button. */
@@ -1131,7 +1131,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 	void initUI() {
 		panel = new JPanel();
 
-		cb = new JComboBox(playlist);
+		cb = new JComboBox<String>(playlist);
 		cb.setEditable(true);
 		panel.add(cb);
 

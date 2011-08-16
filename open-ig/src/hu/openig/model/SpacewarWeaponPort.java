@@ -15,4 +15,6 @@ package hu.openig.model;
 public class SpacewarWeaponPort {
 	/** The projectile ID of the weapon port. */
 	public BattleProjectile projectile;
+	/** The number of items. */
+	public int count = 1;
 }
