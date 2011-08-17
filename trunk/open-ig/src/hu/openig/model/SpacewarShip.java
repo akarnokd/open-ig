@@ -24,18 +24,19 @@ public class SpacewarShip extends SpacewarStructure {
 	public final List<SpacewarWeaponPort> ports = new ArrayList<SpacewarWeaponPort>();
 	/** The beam angle in an X-Y screen directed coordinate system, 0..2*PI. */
 	public double angle;
+	/** The rotation speed. */
+	public int rotationSpeed;
 	/** The movement speed. */
-	public double speed;
+	public int movementSpeed; 
 	/** The referenced inventory item. */
 	public InventoryItem item;
+	/** The ecm level of the ship. */
+	public int ecmLevel;
+	/** The number of batched fighters. Once hp reaches zero, this number is reduced, the batch will disappear when the count reaches zero. */
+	public int count;
 	@Override
 	public BufferedImage get() {
 		double a = angle / 2 / Math.PI; // angle to percentage
 		return angles[((int)Math.round(angles.length * a)) % angles.length];
-	}
-	/** Move the beam to the next location. */
-	public void move() {
-		x += speed * Math.cos(angle);
-		y += speed * Math.sin(angle);
 	}
 }

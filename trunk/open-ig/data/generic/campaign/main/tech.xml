@@ -133,10 +133,32 @@
   <item id='Hubble2' name='tech.hubble2.name' long-name='tech.hubble2.longname' description='tech.hubble2.description' category='SPACESHIPS_SATELLITES' image='inventions/spaceships/satellites/hubble' factory='spaceship' research-cost='10000' production-cost='2100' level='4' race='human' requires='SpySatellite1, Radar2' mech='5' comp='5' ai='6' mil='4' index='3' video='technology/spaceships/satellites/hubble'>
     <property name='radar' value='4'/>
   </item>
-  <item id='SpaceStation1' name='tech.spacestation1.name' long-name='tech.spacestation1.longname' description='tech.spacestation1.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_1' factory='spaceship' research-cost='20000' production-cost='65000' level='0' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='2' mech='2' comp='2' ai='1' mil='3' index='0' video='technology/spaceships/stations/space_station_1'/>
-  <item id='OrbitalFactory' name='tech.orbitalfactory.name' long-name='tech.orbitalfactory.longname' description='tech.orbitalfactory.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/orbital_factory' factory='spaceship' research-cost='40000' production-cost='80000' level='3' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='1' mech='1' comp='1' ai='1' mil='1' index='3' video='technology/spaceships/stations/orbital_factory'/>
-  <item id='SpaceStation2' name='tech.spacestation2.name' long-name='tech.spacestation2.longname' description='tech.spacestation2.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_2' factory='spaceship' research-cost='110000' production-cost='90000' level='4' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' requires='Laser2, IonCannon, SpaceStation1' civil='3' mech='3' comp='4' ai='3' mil='5' index='1' video='technology/spaceships/stations/space_station_2'/>
-  <item id='SpaceStation3' name='tech.spacestation3.name' long-name='tech.spacestation3.longname' description='tech.spacestation3.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_3' factory='spaceship' research-cost='200000' production-cost='125000' level='5' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' requires='Laser4, IonCannon, Rocket2' civil='6' mech='4' comp='5' ai='3' mil='6' index='2' video='technology/spaceships/stations/space_station_3'/>
+  <item id='SpaceStation1' name='tech.spacestation1.name' long-name='tech.spacestation1.longname' description='tech.spacestation1.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_1' factory='spaceship' research-cost='20000' production-cost='65000' level='0' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='2' mech='2' comp='2' ai='1' mil='3' index='0' video='technology/spaceships/stations/space_station_1'>
+	  <slot-fixed item='Laser1' count='32'/>
+	  <slot-fixed item='Shield1' count='1'/>
+	  <slot-fixed item='Rocket1' count='4'/>
+  </item>
+  <item id='OrbitalFactory' name='tech.orbitalfactory.name' long-name='tech.orbitalfactory.longname' description='tech.orbitalfactory.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/orbital_factory' factory='spaceship' research-cost='40000' production-cost='80000' level='3' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='1' mech='1' comp='1' ai='1' mil='1' index='3' video='technology/spaceships/stations/orbital_factory'>
+	  <slot-fixed item='Shield1' count='1'/>
+  </item>
+  <item id='SpaceStation2' name='tech.spacestation2.name' long-name='tech.spacestation2.longname' description='tech.spacestation2.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_2' factory='spaceship' research-cost='110000' production-cost='90000' level='4' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' requires='Laser2, IonCannon, SpaceStation1' civil='3' mech='3' comp='4' ai='3' mil='5' index='1' video='technology/spaceships/stations/space_station_2'>
+	  <slot-fixed item='Laser1' count='32'/>
+	  <slot-fixed item='IonCannon' count='16'/>
+	  <slot-fixed item='Laser2' count='16'/>
+	  <slot-fixed item='Shield2' count='1'/>
+	  <slot-fixed item='Rocket1' count='4'/>
+	  <slot-fixed item='ECM1' count='1'/>
+  </item>
+  <item id='SpaceStation3' name='tech.spacestation3.name' long-name='tech.spacestation3.longname' description='tech.spacestation3.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_3' factory='spaceship' research-cost='200000' production-cost='125000' level='5' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' requires='Laser4, IonCannon, Rocket2' civil='6' mech='4' comp='5' ai='3' mil='6' index='2' video='technology/spaceships/stations/space_station_3'>
+	  <slot-fixed item='Laser3' count='32'/>
+	  <slot-fixed item='IonCannon' count='16'/>
+	  <slot-fixed item='ParticleCannon' count='8'/>
+	  <slot-fixed item='PlasmaCannon' count='4'/>
+	  <slot-fixed item='Laser4' count='16'/>
+	  <slot-fixed item='Shield3' count='1'/>
+	  <slot-fixed item='Rocket2' count='4'/>
+	  <slot-fixed item='ECM2' count='1'/>
+  </item>
   <item id='HyperDrive1' name='tech.hyperdrive1.name' long-name='tech.hyperdrive1.longname' description='tech.hyperdrive1.description' category='EQUIPMENT_HYPERDRIVES' image='inventions/equipments/hyperdrives/hyperdrive_1' factory='equipment' research-cost='5000' production-cost='2000' level='0' race='human' mech='1' mil='1' index='0' video='technology/equipments/hyperdrives/hyperdrive_1'>
     <property name='speed' value='28'/>
   </item>

@@ -44,9 +44,9 @@
   <planet id='Andromeda 2' name='Andromeda 2' x='912' y='614' size='30' owner='Ecalep' race='ecalep' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='neptoplasm' id='2'/>
     <inventory>
-      <item id='Base2' tech='ecalep' shield='' hp='' count='1'/>
-      <item id='Base1' tech='ecalep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='ecalep' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Ecalep' count='1'/>
+      <item id='SpaceStation1' owner='Ecalep' count='1'/>
+      <item id='SpaceStation2' owner='Ecalep' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='ecalep' x='-7' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -73,9 +73,9 @@
   <planet id='Andromeda 3' name='Andromeda 3' x='882' y='590' size='24' owner='Ecalep' race='ecalep' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='neptoplasm' id='3'/>
     <inventory>
-      <item id='Base2' tech='ecalep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='ecalep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='ecalep' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Ecalep' count='1'/>
+      <item id='SpaceStation2' owner='Ecalep' count='1'/>
+      <item id='SpaceStation2' owner='Ecalep' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='ecalep' x='2' y='-38' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -104,9 +104,9 @@
   <planet id='Andromeda 4' name='Andromeda 4' x='920' y='574' size='18' owner='Ecalep' race='ecalep' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='neptoplasm' id='1'/>
     <inventory>
-      <item id='Base1' tech='ecalep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='ecalep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='ecalep' shield='' hp='' count='1'/>
+      <item id='SpaceStation1' owner='Ecalep' count='1'/>
+      <item id='SpaceStation2' owner='Ecalep' count='1'/>
+      <item id='SpaceStation2' owner='Ecalep' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='ecalep' x='-8' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -183,7 +183,7 @@
   <planet id='Center 2' name='Center 2' x='350' y='316' size='30' owner='Ychom' race='ychom' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='cratered' id='8'/>
     <inventory>
-      <item id='Base2' tech='ychom' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Ychom' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='ychom' x='-12' y='-32' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -204,9 +204,9 @@
   <planet id='Center 3' name='Center 3' x='316' y='290' size='18' owner='Ychom' race='ychom' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='rocky' id='1'/>
     <inventory>
-      <item id='Base1' tech='ychom' shield='' hp='' count='1'/>
-      <item id='Base2' tech='ychom' shield='' hp='' count='1'/>
-      <item id='Base1' tech='ychom' shield='' hp='' count='1'/>
+      <item id='SpaceStation1' owner='Ychom' count='1'/>
+      <item id='SpaceStation2' owner='Ychom' count='1'/>
+      <item id='SpaceStation1' owner='Ychom' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='ychom' x='-3' y='-51' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -263,9 +263,9 @@
   <planet id='Center 5' name='Center 5' x='352' y='276' size='18' owner='Ychom' race='ychom' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='cratered' id='7'/>
     <inventory>
-      <item id='Base1' tech='ychom' shield='' hp='' count='1'/>
-      <item id='Base1' tech='ychom' shield='' hp='' count='1'/>
-      <item id='Base1' tech='ychom' shield='' hp='' count='1'/>
+      <item id='SpaceStation1' owner='Ychom' count='1'/>
+      <item id='SpaceStation1' owner='Ychom' count='1'/>
+      <item id='SpaceStation1' owner='Ychom' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='ychom' x='-9' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -288,7 +288,7 @@
   <planet id='Center 6' name='Center 6' x='298' y='250' size='24' owner='Ychom' race='ychom' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='frozen' id='5'/>
     <inventory>
-      <item id='Base2' tech='ychom' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Ychom' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='ychom' x='-8' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -311,9 +311,9 @@
   <planet id='Center 7' name='Center 7' x='506' y='308' size='24' owner='FreeTraders' race='human' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='earth' id='7'/>
     <inventory>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='FreeTraders' count='1'/>
+      <item id='SpaceStation2' owner='FreeTraders' count='1'/>
+      <item id='SpaceStation2' owner='FreeTraders' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='human' x='-16' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -338,9 +338,9 @@
   <planet id='Center 8' name='Center 8' x='502' y='350' size='30' owner='FreeTraders' race='human' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='6'/>
     <inventory>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base3' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='FreeTraders' count='1'/>
+      <item id='SpaceStation3' owner='FreeTraders' count='1'/>
+      <item id='SpaceStation2' owner='FreeTraders' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='human' x='-16' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -365,9 +365,9 @@
   <planet id='Center 9' name='Center 9' x='540' y='332' size='30' owner='FreeTraders' race='human' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='8'/>
     <inventory>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base3' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='FreeTraders' count='1'/>
+      <item id='SpaceStation3' owner='FreeTraders' count='1'/>
+      <item id='SpaceStation2' owner='FreeTraders' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='human' x='0' y='-36' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -486,9 +486,9 @@
   <planet id='Exterior 2' name='Exterior 2' x='170' y='536' size='30' owner='Morgath' race='morgath' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='6'/>
     <inventory>
-      <item id='Base2' tech='morgath' shield='' hp='' count='1'/>
-      <item id='Base1' tech='morgath' shield='' hp='' count='1'/>
-      <item id='Base2' tech='morgath' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Morgath' count='1'/>
+      <item id='SpaceStation1' owner='Morgath' count='1'/>
+      <item id='SpaceStation2' owner='Morgath' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='morgath' x='-7' y='-36' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -596,8 +596,8 @@
   <planet id='Exterior 6' name='Exterior 6' x='372' y='628' size='30' owner='Sullep' race='sullep' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='cratered' id='2'/>
     <inventory>
-      <item id='Base2' tech='sullep' shield='' hp='' count='1'/>
-      <item id='Base3' tech='sullep' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Sullep' count='1'/>
+      <item id='SpaceStation3' owner='Sullep' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='sullep' x='-11' y='-38' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -620,9 +620,9 @@
   <planet id='Exterior 7' name='Exterior 7' x='446' y='564' size='24' owner='Sullep' race='sullep' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='7'/>
     <inventory>
-      <item id='Base2' tech='sullep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='sullep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='sullep' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Sullep' count='1'/>
+      <item id='SpaceStation2' owner='Sullep' count='1'/>
+      <item id='SpaceStation2' owner='Sullep' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='sullep' x='-5' y='-26' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -644,9 +644,9 @@
   <planet id='Exterior 8' name='Exterior 8' x='480' y='610' size='24' owner='Sullep' race='sullep' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='liquid' id='7'/>
     <inventory>
-      <item id='Base2' tech='sullep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='sullep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='sullep' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Sullep' count='1'/>
+      <item id='SpaceStation2' owner='Sullep' count='1'/>
+      <item id='SpaceStation2' owner='Sullep' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='sullep' x='-3' y='-29' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -767,9 +767,9 @@
   <planet id='Exterior 13' name='Exterior 13' x='554' y='510' size='30' owner='Sullep' race='sullep' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='cratered' id='6'/>
     <inventory>
-      <item id='Base2' tech='sullep' shield='' hp='' count='1'/>
-      <item id='Base1' tech='sullep' shield='' hp='' count='1'/>
-      <item id='Base2' tech='sullep' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Sullep' count='1'/>
+      <item id='SpaceStation1' owner='Sullep' count='1'/>
+      <item id='SpaceStation2' owner='Sullep' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='sullep' x='-6' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -905,8 +905,8 @@
   <planet id='Garthog 4' name='Garthog 4' x='366' y='442' size='30' owner='Garthog' race='garthog' rotate='RL' population='21000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='rocky' id='6'/>
     <inventory>
-      <item id='Base1' tech='garthog' shield='' hp='' count='1'/>
-      <item id='Base1' tech='garthog' shield='' hp='' count='1'/>
+      <item id='SpaceStation1' owner='Garthog' count='1'/>
+      <item id='SpaceStation1' owner='Garthog' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='garthog' x='-18' y='-54' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -969,8 +969,8 @@
   <planet id='Magellan 1' name='Magellan 1' x='622' y='280' size='24' owner='FreeNations' race='human' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='rocky' id='2'/>
     <inventory>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='human' x='-19' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -999,9 +999,9 @@
   <planet id='Magellan 2' name='Magellan 2' x='666' y='298' size='30' owner='FreeNations' race='human' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='earth' id='1'/>
     <inventory>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='human' x='-19' y='-58' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1038,9 +1038,9 @@
   <planet id='Magellan 4' name='Magellan 4' x='666' y='360' size='18' owner='FreeNations' race='human' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='rocky' id='7'/>
     <inventory>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base3' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
+      <item id='SpaceStation3' owner='FreeNations' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='human' x='-12' y='-44' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1086,9 +1086,9 @@
   <planet id='Magellan 6' name='Magellan 6' x='712' y='344' size='18' owner='FreeNations' race='human' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='cratered' id='2'/>
     <inventory>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
-      <item id='Base2' tech='human' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
+      <item id='SpaceStation2' owner='FreeNations' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='human' x='-3' y='-42' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1109,9 +1109,9 @@
   <planet id='Magellan 7' name='Magellan 7' x='764' y='364' size='30' owner='FreeNations' race='human' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='4'/>
     <inventory>
-      <item id='Base1' tech='human' shield='' hp='' count='1'/>
-      <item id='Base3' tech='human' shield='' hp='' count='1'/>
-      <item id='Base1' tech='human' shield='' hp='' count='1'/>
+      <item id='SpaceStation1' owner='FreeNations' count='1'/>
+      <item id='SpaceStation3' owner='FreeNations' count='1'/>
+      <item id='SpaceStation1' owner='FreeNations' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='human' x='-19' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1182,9 +1182,9 @@
   <planet id='Outer 1' name='Outer 1' x='14' y='122' size='18' owner='Dribs' race='dribs' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='liquid' id='4'/>
     <inventory>
-      <item id='Base2' tech='dribs' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dribs' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dribs' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Dribs' count='1'/>
+      <item id='SpaceStation2' owner='Dribs' count='1'/>
+      <item id='SpaceStation2' owner='Dribs' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='dribs' x='-10' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1214,8 +1214,8 @@
   <planet id='Outer 2' name='Outer 2' x='58' y='64' size='30' owner='Dribs' race='dribs' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='5'/>
     <inventory>
-      <item id='Base2' tech='dribs' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dribs' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Dribs' count='1'/>
+      <item id='SpaceStation2' owner='Dribs' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='dribs' x='-2' y='-23' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1298,9 +1298,9 @@
   <planet id='Outer 6' name='Outer 6' x='524' y='12' size='24' owner='Dargslan' race='dargslan' rotate='LR' population='19000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='earth' id='5'/>
     <inventory>
-      <item id='Base3' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base3' tech='dargslan' shield='' hp='' count='1'/>
+      <item id='SpaceStation3' owner='Dargslan' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
+      <item id='SpaceStation3' owner='Dargslan' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='dargslan' x='-9' y='-42' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1326,9 +1326,9 @@
   <planet id='Outer 7' name='Outer 7' x='562' y='92' size='30' owner='Dargslan' race='dargslan' rotate='RL' population='15000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='1'/>
     <inventory>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='dargslan' x='-6' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1368,9 +1368,9 @@
   <planet id='Outer 9' name='Outer 9' x='668' y='138' size='18' owner='Dargslan' race='dargslan' rotate='LR' population='20000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='liquid' id='3'/>
     <inventory>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base3' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
+      <item id='SpaceStation3' owner='Dargslan' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='dargslan' x='-2' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1398,9 +1398,9 @@
   <planet id='Outer 10' name='Outer 10' x='808' y='36' size='18' owner='Dargslan' race='dargslan' rotate='RL' population='30000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='earth' id='6'/>
     <inventory>
-      <item id='Base3' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base3' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base3' tech='dargslan' shield='' hp='' count='1'/>
+      <item id='SpaceStation3' owner='Dargslan' count='1'/>
+      <item id='SpaceStation3' owner='Dargslan' count='1'/>
+      <item id='SpaceStation3' owner='Dargslan' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='dargslan' x='-5' y='-36' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1437,8 +1437,8 @@
   <planet id='Outer 11' name='Outer 11' x='768' y='164' size='30' owner='Dargslan' race='dargslan' rotate='LR' population='20000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='liquid' id='1'/>
     <inventory>
-      <item id='Base3' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
+      <item id='SpaceStation3' owner='Dargslan' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='dargslan' x='0' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1451,9 +1451,9 @@
   <planet id='Outer 12' name='Outer 12' x='830' y='116' size='24' owner='Dargslan' race='dargslan' rotate='LR' population='20000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='liquid' id='5'/>
     <inventory>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base3' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
+      <item id='SpaceStation3' owner='Dargslan' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='dargslan' x='-6' y='-23' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1484,9 +1484,9 @@
   <planet id='Outer 13' name='Outer 13' x='832' y='220' size='30' owner='Dargslan' race='dargslan' rotate='LR' population='20000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='liquid' id='6'/>
     <inventory>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base2' tech='dargslan' shield='' hp='' count='1'/>
-      <item id='Base3' tech='dargslan' shield='' hp='' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
+      <item id='SpaceStation2' owner='Dargslan' count='1'/>
+      <item id='SpaceStation3' owner='Dargslan' count='1'/>
     </inventory>
     <buildings>
       <building id='Arcology' tech='dargslan' x='-7' y='-42' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>

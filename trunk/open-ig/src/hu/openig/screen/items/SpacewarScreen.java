@@ -13,10 +13,14 @@ import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile;
+import hu.openig.model.BattleSpaceEntity;
 import hu.openig.model.Building;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
+import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SpacewarBeam;
 import hu.openig.model.SpacewarExplosion;
@@ -33,6 +37,7 @@ import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
+import hu.openig.utils.JavaUtils;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -45,7 +50,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The spacewar screen.
@@ -815,6 +823,9 @@ public class SpacewarScreen extends ScreenBase {
 				}
 			}
 		}
+		
+		int xmax = space.width;
+		
 		if (nearbyPlanet != null 
 				&& (nearbyPlanet.owner == battle.attacker.owner 
 				|| nearbyPlanet == battle.targetPlanet 
@@ -883,19 +894,155 @@ public class SpacewarScreen extends ScreenBase {
 					o.shieldMax = o.shield; 
 					y += dy;
 				}
+				xmax -= commons.spacewar().planet.getWidth();
 			}
 			surface.clear();
+			int maxw = 0;
+			
 			// add space stations
 			for (InventoryItem ii : nearbyPlanet.inventory) {
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS && ii.owner == nearbyPlanet.owner) {
 					
+					BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
+					
+					SpacewarStation st = new SpacewarStation();
+					st.item = ii;
+					st.owner = nearbyPlanet.owner;
+					st.destruction = bse.destruction;
+					st.image = alien ? bse.alternative[0] : bse.normal[0];
+					st.infoImage = bse.infoImage;
+					st.shield = ii.shield;
+					st.shieldMax = Math.max(0, ii.shieldMax());
+					st.hp = ii.hp;
+					st.hpMax = ii.type.productionCost;
+					
+					maxw = Math.max(maxw, st.image.getWidth());
+					
+					st.ecmLevel = setWeaponPorts(ii, st.ports);
+					
+					surface.add(st);
+					stations.add(st);
+				}
+			}
+
+			// distribute the stations equally
+			if (surface.size() > 0) {
+				int dy = space.height / surface.size();
+				int y = dy / 2;
+				for (SpacewarStructure s : surface) {
+					s.x = xmax - maxw;
+					s.y = y;
+					y += dy;
 				}
 			}
 			
+			// reduce space for fleet layouts
+			xmax -= 3 * maxw / 2;
+			
+			// add fighters of the planet
+			
+			surface.clear();
+			List<SpacewarShip> shipWall = JavaUtils.newArrayList();
+			createSpacewarShips(nearbyPlanet.inventory, nearbyPlanet.owner, EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
 			
 		} else {
 			planetVisible = false;
 		}
+	}
+	/**
+	 * Create a wall of fighters by distributing their numbers to new items. 
+	 * @param items the list of items to distribute
+	 * @param out the output for the new distributions
+	 * @return the width of the wall
+	 */
+	int createFighterBatchWall(Collection<SpacewarShip> items, Collection<SpacewarShip> out) {
+		int maxWidth = 0;
+		int maxHeight = 0;
+		// determine number of slots
+		for (SpacewarShip e : items) {
+			maxWidth = Math.max(maxWidth, e.angles[0].getWidth());
+			maxHeight = Math.max(maxHeight, e.angles[0].getHeight());
+		}
+		
+		return maxWidth;
+	}
+	/**
+	 * Create the spacewar ships from the given inventory list and category filters.
+	 * @param inventory the sequence of inventory
+	 * @param owner the owner filter
+	 * @param categories the categories to use
+	 * @param ships the output of ships
+	 */
+	void createSpacewarShips(Iterable<? extends InventoryItem> inventory,
+			Player owner,
+			EnumSet<ResearchSubCategory> categories,
+			Collection<? super SpacewarShip> ships
+			) {
+		for (InventoryItem ii : inventory) {
+			if (categories.contains(ii.type.category) && ii.owner == owner) {
+				BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
+				
+				SpacewarShip sws = new SpacewarShip();
+
+				sws.item = ii;
+				sws.owner = nearbyPlanet.owner;
+				sws.destruction = bse.destruction;
+				sws.angles = owner != player() ? bse.alternative : bse.normal;
+				sws.infoImage = bse.infoImage;
+				sws.shield = ii.shield;
+				sws.shieldMax = Math.max(0, ii.shieldMax());
+				sws.hp = ii.type.productionCost;
+				sws.hpMax = ii.type.productionCost;
+				sws.count = ii.count;
+				sws.rotationSpeed = bse.rotationSpeed;
+				sws.movementSpeed = bse.movementSpeed;
+				
+				sws.ecmLevel = setWeaponPorts(ii, sws.ports);
+				
+				ships.add(sws);
+			}
+		}
+		
+	}
+	/**
+	 * Set the weapon ports based on the configuration of the inventory item,
+	 * considering its slot and fixed-slot equipment.
+	 * @param ii the inventory item object
+	 * @param ports the output for weapon ports
+	 * @return the ecm level
+	 */
+	int setWeaponPorts(InventoryItem ii, Collection<? super SpacewarWeaponPort> ports) {
+		int ecmLevel = 0;
+		// add weapons
+		for (InventorySlot is : ii.slots) {
+			if (is.type != null 
+					&& (is.type.category == ResearchSubCategory.WEAPONS_CANNONS
+					|| is.type.category == ResearchSubCategory.WEAPONS_LASERS
+					|| is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES)) {
+				SpacewarWeaponPort wp = new SpacewarWeaponPort();
+				wp.count = is.count;
+				wp.projectile = world().battle.projectiles.get(is.type.id);
+				ports.add(wp);
+			}
+			if (is.type != null && is.type.has("ecm")) {
+				ecmLevel = Math.max(ecmLevel, is.type.getInt("ecm"));
+			}
+		}
+		for (Map.Entry<ResearchType, Integer> e : ii.type.fixedSlots.entrySet()) {
+			ResearchType type = e.getKey();
+			if ((type.category == ResearchSubCategory.WEAPONS_CANNONS
+					|| type.category == ResearchSubCategory.WEAPONS_LASERS
+					|| type.category == ResearchSubCategory.WEAPONS_PROJECTILES)) {
+				SpacewarWeaponPort wp = new SpacewarWeaponPort();
+				wp.count = e.getValue();
+				wp.projectile = world().battle.projectiles.get(type.id);
+				ports.add(wp);
+			}
+			if (type.has("ecm")) {
+				ecmLevel = Math.max(ecmLevel, type.getInt("ecm"));
+			}
+		}
+		return ecmLevel;
 	}
 	/**
 	 * Pan the view by the given amount.
