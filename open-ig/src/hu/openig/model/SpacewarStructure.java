@@ -29,6 +29,6 @@ public abstract class SpacewarStructure extends SpacewarObject {
 	/** The maximum shield hitpoints. */
 	public int shieldMax;
 	/** The destruction sound. */
-	public WarEffectsType destruction;
+	public SoundType destruction;
 
 }

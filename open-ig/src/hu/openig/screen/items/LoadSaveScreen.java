@@ -198,7 +198,6 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void act() {
 				config.effectVolume = Math.max(0, config.effectVolume - 1);
-				commons.sounds.setVolume(config.effectVolume);
 				commons.sounds.play(SoundType.BAR);
 				askRepaint(base);
 			}
@@ -207,7 +206,6 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void act() {
 				config.effectVolume = Math.min(100, config.effectVolume + 1);
-				commons.sounds.setVolume(config.effectVolume);
 				commons.sounds.play(SoundType.BAR);
 				askRepaint(base);
 			}

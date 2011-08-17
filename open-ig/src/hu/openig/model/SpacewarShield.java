@@ -17,6 +17,8 @@ import java.awt.image.BufferedImage;
 public class SpacewarShield extends SpacewarStructure {
 	/** The image on the battlefield. */
 	public BufferedImage image;
+	/** The building reference. */
+	public Building building;
 	@Override
 	public BufferedImage get() {
 		return image;

@@ -14,7 +14,9 @@ import hu.openig.model.BattleGroundShield;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile;
 import hu.openig.model.Building;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SpacewarBeam;
 import hu.openig.model.SpacewarExplosion;
@@ -28,7 +30,6 @@ import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWeaponPort;
 import hu.openig.model.World;
 import hu.openig.screen.ScreenBase;
-import hu.openig.sound.WarEffects;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
@@ -286,8 +287,6 @@ public class SpacewarScreen extends ScreenBase {
 	final List<SpacewarProjectile> projectiles = new ArrayList<SpacewarProjectile>();
 	/** The space explosions for animation. */
 	final List<SpacewarExplosion> explosions = new ArrayList<SpacewarExplosion>();
-	/** The space effects. */
-	WarEffects effects;
 	/** The location of the minimap. */
 	final Rectangle minimap = new Rectangle();
 	/** The location of the main window area. */
@@ -322,10 +321,10 @@ public class SpacewarScreen extends ScreenBase {
 	private ThreePhaseButton viewRange;
 	/** View grids. */
 	private ThreePhaseButton viewGrid;
+	/** The nearby planet. */
+	Planet nearbyPlanet;
 	@Override
 	public void onInitialize() {
-		effects = new WarEffects(rl);
-		
 		mainCommands = new ArrayList<ThreePhaseButton>();
 		mainCommands.add(new ThreePhaseButton(33, 24, commons.spacewar().stop));
 		mainCommands.add(new ThreePhaseButton(33 + 72, 24, commons.spacewar().move));
@@ -600,7 +599,6 @@ public class SpacewarScreen extends ScreenBase {
 				doButtonAnimations();
 			}
 		});
-		effects.initialize(config.audioChannels, config.effectVolume);
 	}
 
 	@Override
@@ -608,7 +606,6 @@ public class SpacewarScreen extends ScreenBase {
 		close0(buttonTimer);
 		buttonTimer = null;
 		
-		effects.close();
 		commons.restoreMainSimulationSpeedFunction();
 		commons.battleMode = false;
 		commons.playRegularMusic();
@@ -797,7 +794,7 @@ public class SpacewarScreen extends ScreenBase {
 		
 		this.battle = battle;
 		
-		Planet nearbyPlanet = battle.targetPlanet;
+		nearbyPlanet = battle.targetPlanet;
 		if (battle.targetFleet != null) {
 			// locate the nearest planet if the target is a fleet
 			double minDistance = Double.MAX_VALUE;
@@ -841,6 +838,7 @@ public class SpacewarScreen extends ScreenBase {
 					sws.hpMax = b.type.hitpoints;
 					sws.owner = nearbyPlanet.owner;
 					sws.destruction = bge.destruction;
+					sws.building = b;
 
 					shieldValue = Math.max(shieldValue, b.getEfficiency() * bge.shields);
 
@@ -861,6 +859,7 @@ public class SpacewarScreen extends ScreenBase {
 					sp.hpMax = b.type.hitpoints;
 					sp.owner = nearbyPlanet.owner;
 					sp.destruction = bge.destruction;
+					sp.building = b;
 
 					BattleProjectile pr = world().battle.projectiles.get(bge.projectile);
 					
@@ -885,7 +884,13 @@ public class SpacewarScreen extends ScreenBase {
 					y += dy;
 				}
 			}
-
+			surface.clear();
+			// add space stations
+			for (InventoryItem ii : nearbyPlanet.inventory) {
+				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS && ii.owner == nearbyPlanet.owner) {
+					
+				}
+			}
 			
 			
 		} else {

@@ -292,7 +292,12 @@ public class CommonResources {
 			common = get(commonFuture);
 
 			sounds = new Sounds(rl);
-			sounds.initialize(config.audioChannels, config.effectVolume);
+			sounds.initialize(config.audioChannels, new Func1<Void, Integer>() {
+				@Override
+				public Integer invoke(Void value) {
+					return config.effectVolume;
+				}
+			});
 			
 			music = new Music(rl);
 			music.setVolume(config.musicVolume);

@@ -26,6 +26,8 @@ public class SpacewarShip extends SpacewarStructure {
 	public double angle;
 	/** The movement speed. */
 	public double speed;
+	/** The referenced inventory item. */
+	public InventoryItem item;
 	@Override
 	public BufferedImage get() {
 		double a = angle / 2 / Math.PI; // angle to percentage

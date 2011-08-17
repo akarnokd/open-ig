@@ -20,7 +20,7 @@ public class BattleGroundProjector {
 	/** The alien/alternative image. */
 	public BufferedImage[] alternative;
 	/** The destruction sound. */
-	public WarEffectsType destruction;
+	public SoundType destruction;
 	/** The projectile used. */
 	public String projectile;
 	/** The information image. */

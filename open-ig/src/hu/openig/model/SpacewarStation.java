@@ -19,6 +19,8 @@ import java.util.List;
 public class SpacewarStation extends SpacewarStructure {
 	/** The image on the battlefield. */
 	public BufferedImage image;
+	/** The referenced inventory item. */
+	public InventoryItem item;
 	/** The available weapon ports. */
 	public final List<SpacewarWeaponPort> ports = new ArrayList<SpacewarWeaponPort>();
 	@Override

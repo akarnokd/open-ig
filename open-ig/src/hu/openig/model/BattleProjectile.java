@@ -29,7 +29,7 @@ public class BattleProjectile {
 		MULTI_ROCKET
 	}
 	/** The sound effect to play when fired. */
-	public WarEffectsType sound;
+	public SoundType sound;
 	/** The normal [rotation][phase] image matrix. */
 	public BufferedImage[][] matrix;
 	/** The alternative [rotation][phase] image matrix. */
