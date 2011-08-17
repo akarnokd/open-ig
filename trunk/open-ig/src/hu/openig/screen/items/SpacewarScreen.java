@@ -958,11 +958,15 @@ public class SpacewarScreen extends ScreenBase {
 	int createFighterBatchWall(Collection<SpacewarShip> items, Collection<SpacewarShip> out) {
 		int maxWidth = 0;
 		int maxHeight = 0;
+		int totalCount = 0;
 		// determine number of slots
 		for (SpacewarShip e : items) {
 			maxWidth = Math.max(maxWidth, e.angles[0].getWidth());
 			maxHeight = Math.max(maxHeight, e.angles[0].getHeight());
+			totalCount += e.count;
 		}
+		
+		int slots = Math.min(totalCount, space.height / maxHeight);
 		
 		return maxWidth;
 	}
