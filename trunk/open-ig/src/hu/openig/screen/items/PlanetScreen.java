@@ -17,13 +17,11 @@ import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
-import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.model.SurfaceEntity;
@@ -1857,25 +1855,7 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 			}
-			// list orbital stuff: satellites, bases
-			StringBuilder os = new StringBuilder();
-			for (InventoryItem pii : planet().inventory) {
-				if (pii.owner == player() && pii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
-					if (os.length() > 0) {
-						os.append(", ");
-					}
-					os.append(pii.type.name);
-				} else
-				if (pii.owner == player() && pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					if (os.length() > 0) {
-						os.append(", ");
-					}
-					os.append(pii.type.name);
-				}
-			}
-			other.text(format("colonyinfo.other",
-					os
-			), true);
+			other.text(format("colonyinfo.other", world().getOtherItems()), true);
 
 			computeSize();
 			location(sidebarColonyInfo.x - width - 2, sidebarColonyInfo.y + sidebarColonyInfo.height - height - 2);

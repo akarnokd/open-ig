@@ -39,4 +39,32 @@ public class SpacewarShip extends SpacewarStructure {
 		double a = angle / 2 / Math.PI; // angle to percentage
 		return angles[((int)Math.round(angles.length * a)) % angles.length];
 	}
+	/**
+	 * @return Creates a new deep copy of this record.
+	 */
+	public SpacewarShip copy() {
+		SpacewarShip r = new SpacewarShip();
+		r.x = x;
+		r.y = y;
+		r.owner = owner;
+		r.angle = angle;
+		r.angles = angles;
+		r.count = count;
+		r.destruction = destruction;
+		r.ecmLevel = ecmLevel;
+		r.hp = hp;
+		r.hpMax = hpMax;
+		r.infoImage = infoImage;
+		r.item = item;
+		r.movementSpeed = movementSpeed;
+		for (SpacewarWeaponPort w : ports) {
+			r.ports.add(w.copy());
+		}
+		r.rotationSpeed = rotationSpeed;
+		r.selected = selected;
+		r.shield = shield;
+		r.shieldMax = shieldMax;
+		
+		return r;
+	}
 }

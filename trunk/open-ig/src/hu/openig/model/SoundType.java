@@ -154,7 +154,11 @@ public enum SoundType {
 	/** Rocket hit? */
 	HIT("spacewar/hit"),
 	/** Fire ground rocket. */
-	FIRE_ROCKET("groundwar/fire_rocket")
+	FIRE_ROCKET("groundwar/fire_rocket"),
+	/** Pause the game. */
+	PAUSE("ui/pause"),
+	/** Unpause the game. */
+	UNPAUSE("ui/acknowledge_1")
 	;
 	/** The associated resource location. */
 	public final String resource;

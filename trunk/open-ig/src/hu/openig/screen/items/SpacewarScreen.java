@@ -52,6 +52,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -496,12 +497,8 @@ public class SpacewarScreen extends ScreenBase {
 				panning = true;
 			}
 			if (e.has(Button.MIDDLE) && mainmap.contains(e.x, e.y)) {
-				double xscale = mainmap.width * 1.0 / space.width;
-				double yscale = mainmap.height * 1.0 / space.height;
-				double s = Math.min(xscale, yscale) * 20;
-				scale = Math.round(s) / 20.0;
+				zoomToFit();
 				needRepaint = true;
-				pan(0, 0);
 			}
 			break;
 		case DRAG:
@@ -597,6 +594,14 @@ public class SpacewarScreen extends ScreenBase {
 		default:
 		}
 		return needRepaint;
+	}
+	/** Zoom in/out to fit the available main map space. */
+	void zoomToFit() {
+		double xscale = mainmap.width * 1.0 / space.width;
+		double yscale = mainmap.height * 1.0 / space.height;
+		double s = Math.min(xscale, yscale) * 20;
+		scale = Math.round(s) / 20.0;
+		pan(0, 0);
 	}
 
 	@Override
@@ -945,28 +950,72 @@ public class SpacewarScreen extends ScreenBase {
 			List<SpacewarShip> shipWall = JavaUtils.newArrayList();
 			createSpacewarShips(nearbyPlanet.inventory, nearbyPlanet.owner, EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
 			
+			if (shipWall.size() > 0) {
+				maxw = createFighterBatchWall(xmax, shipWall, ships);
+				xmax -= 3 * maxw / 2;
+			}
 		} else {
 			planetVisible = false;
 		}
+		zoomToFit();
 	}
 	/**
-	 * Create a wall of fighters by distributing their numbers to new items. 
+	 * Create a wall of fighters by distributing their numbers to new items.
+	 * @param x the  
 	 * @param items the list of items to distribute
 	 * @param out the output for the new distributions
 	 * @return the width of the wall
 	 */
-	int createFighterBatchWall(Collection<SpacewarShip> items, Collection<SpacewarShip> out) {
+	int createFighterBatchWall(int x,
+			Collection<SpacewarShip> items, Collection<SpacewarShip> out) {
 		int maxWidth = 0;
 		int maxHeight = 0;
-		int totalCount = 0;
 		// determine number of slots
 		for (SpacewarShip e : items) {
 			maxWidth = Math.max(maxWidth, e.angles[0].getWidth());
 			maxHeight = Math.max(maxHeight, e.angles[0].getHeight());
-			totalCount += e.count;
 		}
 		
-		int slots = Math.min(totalCount, space.height / maxHeight);
+		int slots = Math.max(items.size(), space.height / maxHeight);
+		
+		LinkedList<SpacewarShip> slotShip = new LinkedList<SpacewarShip>(items);
+		
+		// create half until all slots are filled
+		while (slots >= slotShip.size()) {
+			// create copy
+			SpacewarShip sws = slotShip.removeFirst();
+			SpacewarShip sws2 = sws.copy();
+			slotShip.addLast(sws);
+			slotShip.addLast(sws2);
+
+			int count = 1;
+			for (SpacewarShip s2 : slotShip) {
+				if (s2.item == sws.item) {
+					count++;
+				}
+			}
+			// even out the counts
+			int n = sws.item.count / count;
+			for (SpacewarShip s2 : slotShip) {
+				if (s2.item == sws2.item) {
+					if (s2 == sws2) {
+						s2.count = count;
+					} else {
+						s2.count = n;
+						count -= n;
+					}
+				}
+			}
+		}
+
+		int dy = space.height / slotShip.size();
+		int y = dy / 2;
+		for (SpacewarShip sws : slotShip) {
+			sws.x = x - maxWidth;
+			sws.y = y;
+			y += dy;
+		}
+		out.addAll(slotShip);
 		
 		return maxWidth;
 	}

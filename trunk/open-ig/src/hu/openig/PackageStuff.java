@@ -47,25 +47,15 @@ public final class PackageStuff {
 				zout.setLevel(9);
 				processDirectory(".\\data\\", ".\\data", zout, null);
 				processDirectory(".\\images\\", ".\\images", zout, null);
-			} finally {
-				zout.close();
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
-	/**
-	 * Build the generic audio file.
-	 * @param version the version number in the file
-	 */
-	static void buildGenericAudio(String version) {
-		try {
-			ZipOutputStream zout = new ZipOutputStream(
-					new BufferedOutputStream(
-							new FileOutputStream("open-ig-audio-generic-" + version + ".zip"), 1024 * 1024));
-			try {
-				zout.setLevel(9);
-				processDirectory(".\\audio\\", ".\\audio\\generic", zout, null);
+				processDirectory(".\\audio\\", ".\\audio", zout, new FilenameFilter() {
+					@Override
+					public boolean accept(File dir, String name) {
+						String d = dir.toString().replace('\\', '/');
+						return d.contains("/ui") || d.contains("/groundwar")
+								|| d.contains("/spacewar")
+								;
+					}
+				});
 			} finally {
 				zout.close();
 			}
@@ -239,7 +229,7 @@ public final class PackageStuff {
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
-				buildPatch("20110816a");
+				buildPatch("20110818a");
 			}
 		});
 		exec.execute(new Runnable() {
@@ -249,13 +239,6 @@ public final class PackageStuff {
 			}
 		});
 
-		exec.execute(new Runnable() {
-			@Override
-			public void run() {
-				buildGenericAudio(Configuration.VERSION);
-			}
-		});
-		
 		exec.shutdown();
 		exec.awaitTermination(1, TimeUnit.DAYS);
 	}

@@ -819,8 +819,8 @@ public class StarmapScreen extends ScreenBase {
 		fleetName.color(f.owner.color);
 		
 		if (this.fleetMode == null) {
-			fleetAttack.down = f.mode == FleetMode.ATTACK;
-			fleetMove.down = f.mode == FleetMode.MOVE;
+			fleetAttack.down = f.mode == FleetMode.ATTACK && minimapPlanetBlink;
+			fleetMove.down = f.mode == FleetMode.MOVE && minimapPlanetBlink;
 			fleetStop.down = f.mode == null;
 		}
 		
@@ -2119,6 +2119,7 @@ public class StarmapScreen extends ScreenBase {
 		if (!isPaused) {
 			commons.pause();
 		}
+//		commons.stopMusic();
 		commons.control().playVideos(new Act() {
 			@Override
 			public void act() {
@@ -2137,6 +2138,7 @@ public class StarmapScreen extends ScreenBase {
 				if (!isPaused) {
 					commons.resume();
 				}
+//				commons.playRegularMusic();
 			}
 		}, media);
 	}

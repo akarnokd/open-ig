@@ -25,7 +25,7 @@
 			<desc lang='en'>The program's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.92'>
+	<module id='Game' version='0.93.100'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -34,17 +34,16 @@
 				The Open Imperium Galactica game.
 			</desc>
 		</general>
-		<execute file='open-ig-%s.jar' memory='512'/>
+		<execute file='open-ig-%s.jar' memory='640'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
 			<desc lang='hu'>Javítások és apró fejlesztések.</desc>
 			<desc lang='en'>Bug fixes and small improvements.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.92.jar' sha1='0c1e731dbc478f93dd86c63163f6e23f761f2c8d'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.100.jar' sha1='fd6c0baf3fda4718a670fe7adcb04cf22cbf540f'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-audio-generic-0.8.zip' sha1='f40888f264da209e045d0a3b4c54377c7928341e'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-hu-0.8.zip' sha1='72c37794f47945a4a0651d7a676b78e4b9196b7b'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-en-0.8.zip' sha1='eb43f19c85d4763259bcf2b08a7291a17693f9da'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip' sha1='11f432bd74803da8ab159bc46350d7bb1025a856'/>
@@ -60,10 +59,15 @@
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip' sha1='123225ba78e3a02d1d3e43227e4dfd67a9bbcdfe'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip' sha1='2964a6bbf5dad6f43c5712c9662024b6808c6010'/>
 
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110719a.zip' sha1='9a7ce39a2c1b1882577cc60aba4612c15116d777'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110818a.zip' sha1='4ef017a14b2e9f8722b077e8845715aa17478a8b'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 18 / A</desc>
+			<desc lang='en'>The upgraded resource file. 18th August, 2011 / A</desc>
+		</file>
+		<remove file='open-ig-upgrade-20110719a.zip' sha1='9a7ce39a2c1b1882577cc60aba4612c15116d777'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 július 19 / A</desc>
 			<desc lang='en'>The upgraded resource file. 19th July, 2011 / A</desc>
-		</file>
+		</remove>
+		<remove file='open-ig-audio-generic-0.8.zip' sha1='f40888f264da209e045d0a3b4c54377c7928341e'/>
 		<remove file='open-ig-upgrade-20110421a.zip' sha1='a23ee616e19881bae51f0210ae64812a11c45bda'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 április 15 / A</desc>
 			<desc lang='en'>The upgraded resource file. 15th April, 2011 / A</desc>

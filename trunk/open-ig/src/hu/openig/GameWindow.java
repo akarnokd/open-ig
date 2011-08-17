@@ -982,6 +982,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.speed(1000);
+						commons.sounds.play(SoundType.UNPAUSE);
 						repaintInner();
 					}
 					e.consume();
@@ -996,6 +997,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.speed(500);
+						commons.sounds.play(SoundType.UNPAUSE);
 						repaintInner();
 					}
 					e.consume();
@@ -1010,6 +1012,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.speed(250);
+						commons.sounds.play(SoundType.UNPAUSE);
 						repaintInner();
 					}
 					e.consume();
@@ -1017,8 +1020,10 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_SPACE:
 					if (commons.paused()) {
 						commons.resume();
+						commons.sounds.play(SoundType.UNPAUSE);
 					} else {
 						commons.pause();
+						commons.sounds.play(SoundType.PAUSE);
 					}
 					repaintInner();
 					e.consume();
