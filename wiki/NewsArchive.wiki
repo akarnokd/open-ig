@@ -2,6 +2,16 @@
 
 <wiki:toc max_depth="1" />
 
+= August, 2011 =
+
+*August 18, 2011*
+
+A developer build has been released (we are working on the game sound effects). It contains some bug fixes and gui improvements, and a small space battle implementation. If you attack an alien planet, the game switches to the spacewar screen and displays ground and space defenses. That's all. Just press F2 or F3 to return to the normal view. If you are lucky and the targeted planet has no defenses at all, you'll conquer the planet without fight.
+
+*August 12, 2011*
+
+Finally, I have some free time and willingness to resume the development. The next big thing is surface and space battles.
+
 = July, 2011 =
 
 *July 29, 2011*
