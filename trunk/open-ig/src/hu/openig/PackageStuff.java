@@ -52,7 +52,7 @@ public final class PackageStuff {
 					public boolean accept(File dir, String name) {
 						String d = dir.toString().replace('\\', '/');
 						return d.contains("/ui") || d.contains("/groundwar")
-								|| d.contains("/spacewar")
+								|| d.contains("/spacewar") || d.contains("generic")
 								;
 					}
 				});
@@ -229,7 +229,7 @@ public final class PackageStuff {
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
-				buildPatch("20110818a");
+				buildPatch("20110818b");
 			}
 		});
 		exec.execute(new Runnable() {
