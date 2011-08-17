@@ -7,14 +7,17 @@
 This page describes the differences between released versions of the Open Imperium Galactica Game (open-ig-xxx.jar)
 
 = Version 0.93 - Small improvements =
-  * *New* scrollbars to the starmap screen
-  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=16 Issue #16]: Auto-repair buildings consumed money even when no building had damage
+  * *New* Player now starts with a small fleet when starting a new campaign.
+  * *New* Alien planets now have space stations deployed to them like in the original game. You have to start a new campaign.
+  * *New* scrollbars to the starmap screen.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=16 Issue #16]: Auto-repair buildings consumed money even when no building had damage.
   * *Fix* presentation issue when deleting a save failed.
   * *Update* [http://code.google.com/p/open-ig/issues/detail?id=20 Issue #20] earthquakes occur rarer and do less damage.
-  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=21 Issue #21] Fusion Plant buildable except desert, rocky, neptoplasm; Solar Plant buildable except frozen, liquid
-  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=23 Issue #23] Free Nations and Free Traders name was too long on the information screen in Hungarian
-  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=24 Issue #24] You should be able to deploy space stations and vehicles to a planet without Military spaceport
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=21 Issue #21] Fusion Plant buildable except desert, rocky, neptoplasm; Solar Plant buildable except frozen, liquid.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=23 Issue #23] Free Nations and Free Traders name was too long on the information screen in Hungarian.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=24 Issue #24] You should be able to deploy space stations and vehicles to a planet without Military spaceport.
   * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=29 Issue #29] Hospitals and Stadiums had too few worker demands (80 -> 280, 350 -> 860).
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=31 Issue #31] San Sterling was to small, increased the vertical row number by 5 cells.
 
 = Version 0.92 - Music, few fixes and improvements =
   * Released: 2011-07-19 23:00
