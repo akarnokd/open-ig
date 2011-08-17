@@ -17,4 +17,11 @@ public class SpacewarWeaponPort {
 	public BattleProjectile projectile;
 	/** The number of items. */
 	public int count = 1;
+	/** @return create a copy of this record. */
+	public SpacewarWeaponPort copy() {
+		SpacewarWeaponPort r = new SpacewarWeaponPort();
+		r.projectile = projectile;
+		r.count = count;
+		return r;
+	}
 }

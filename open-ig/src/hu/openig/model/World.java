@@ -534,6 +534,7 @@ public class World {
 				ii.hp = xinv.getInt("hp", ii.type.productionCost);
 				ii.shield = xinv.getInt("shield", ii.shieldMax());
 				ii.owner = players.get(xinv.get("owner"));
+				p.inventory.add(ii);
 			}
 			
 			this.planets.put(p.id, p);
@@ -712,7 +713,12 @@ public class World {
 	 * @return Returns an ordered list of the research types.
 	 */
 	public List<ResearchType> getResearch() {
-		List<ResearchType> res = new ArrayList<ResearchType>(researches.values());
+		List<ResearchType> res = new ArrayList<ResearchType>();
+		for (ResearchType rt0 : researches.values()) {
+			if (canDisplayResearch(rt0)) {
+				res.add(rt0);
+			}
+		}
 		Collections.sort(res, new Comparator<ResearchType>() {
 			@Override
 			public int compare(ResearchType o1, ResearchType o2) {
@@ -1367,7 +1373,8 @@ public class World {
 				}
 				os.append(pii.type.name);
 			} else
-			if (pii.owner == player && pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+			if (pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS
+			&& (pii.owner == player || player.knowledge(player.currentPlanet, PlanetKnowledge.BUILDING) >= 0)) {
 				if (os.length() > 0) {
 					os.append(", ");
 				}
