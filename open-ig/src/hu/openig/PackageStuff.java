@@ -55,6 +55,25 @@ public final class PackageStuff {
 		}
 	}
 	/**
+	 * Build the generic audio file.
+	 * @param version the version number in the file
+	 */
+	static void buildGenericAudio(String version) {
+		try {
+			ZipOutputStream zout = new ZipOutputStream(
+					new BufferedOutputStream(
+							new FileOutputStream("open-ig-audio-generic-" + version + ".zip"), 1024 * 1024));
+			try {
+				zout.setLevel(9);
+				processDirectory(".\\audio\\", ".\\audio\\generic", zout, null);
+			} finally {
+				zout.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
 	 * Build the map editor with the target version number.
 	 * @param version the target version number
 	 */
@@ -227,6 +246,13 @@ public final class PackageStuff {
 			@Override
 			public void run() {
 				buildTestbed(ScreenTester.VERSION);
+			}
+		});
+
+		exec.execute(new Runnable() {
+			@Override
+			public void run() {
+				buildGenericAudio(Configuration.VERSION);
 			}
 		});
 		

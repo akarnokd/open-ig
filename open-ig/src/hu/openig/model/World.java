@@ -527,6 +527,15 @@ public class World {
 			p.surface = p.type.surfaces.get(Integer.parseInt(si)).copy();
 			p.surface.parseMap(xplanet, null, buildingModel);
 			
+			for (XElement xinv : xplanet.childElement("inventory").childrenWithName("item")) {
+				InventoryItem ii = new InventoryItem();
+				ii.type = researches.get(xinv.get("id"));
+				ii.count = xinv.getInt("count");
+				ii.hp = xinv.getInt("hp", ii.type.productionCost);
+				ii.shield = xinv.getInt("shield", ii.shieldMax());
+				ii.owner = players.get(xinv.get("owner"));
+			}
+			
 			this.planets.put(p.id, p);
 
 			if (p.owner != null) {
@@ -965,6 +974,7 @@ public class World {
 					xpii.set("owner", pii.owner.id);
 					xpii.set("count", pii.count);
 					xpii.set("hp", pii.hp);
+					xpii.set("shield", pii.shield);
 					Integer ttl = p.timeToLive.get(pii); 
 					if (ttl != null && ttl > 0) {
 						xpii.set("ttl", ttl);
@@ -1179,7 +1189,8 @@ public class World {
 				pii.owner = players.get(xpii.get("owner"));
 				pii.type = researches.get(xpii.get("id"));
 				pii.count = xpii.getInt("count");
-				pii.hp = xpii.getInt("hp");
+				pii.hp = xpii.getInt("hp", pii.type.productionCost);
+				pii.shield = xpii.getInt("shield", pii.shieldMax());
 				
 				int ttl = xpii.getInt("ttl", 0);
 				if (ttl > 0) {
@@ -1487,10 +1498,16 @@ public class World {
 			} else {
 				se.alternative = se.normal;
 			}
-			se.image = rl.getImage(xspace.get("image"));
-			se.sound = SoundType.valueOf(xspace.get("sound"));
-			if (se.sound == null) {
+			se.infoImage = rl.getImage(xspace.get("image"));
+			se.destruction = SoundType.valueOf(xspace.get("sound"));
+			if (se.destruction == null) {
 				System.err.println("Missing sound " + xspace.get("sound") + " for " + id);
+			}
+			if (xspace.has("movement-speed")) {
+				se.movementSpeed = xspace.getInt("movement-speed");
+			}
+			if (xspace.has("rotation-speed")) {
+				se.rotationSpeed = xspace.getInt("rotation-speed");
 			}
 			
 			battle.spaceEntities.put(id, se);

@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Defines a planet's or fleet's inventory. A planet may 'own' multiple things from multiple players, e.g.,
@@ -34,9 +35,17 @@ public class InventoryItem {
 	 */
 	public int shieldMax() {
 		int result = -1;
+		if (type.has("shield")) {
+			result = type.getInt("shield");
+		}
 		for (InventorySlot sl : slots) {
 			if (sl.type != null && sl.type.properties.containsKey("shield")) {
-				result = Math.max(result, Integer.parseInt(sl.type.get("shield")));
+				result = Math.max(result, sl.type.getInt("shield"));
+			}
+		}
+		for (Map.Entry<ResearchType, Integer> e : type.fixedSlots.entrySet()) {
+			if (e.getKey().has("shield")) {
+				result = Math.max(result, e.getKey().getInt("shield"));
 			}
 		}
 		return result * type.productionCost / 100;

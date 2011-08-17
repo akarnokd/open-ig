@@ -23,6 +23,8 @@ public class SpacewarStation extends SpacewarStructure {
 	public InventoryItem item;
 	/** The available weapon ports. */
 	public final List<SpacewarWeaponPort> ports = new ArrayList<SpacewarWeaponPort>();
+	/** The ECM level. */
+	public int ecmLevel;
 	@Override
 	public BufferedImage get() {
 		return image;

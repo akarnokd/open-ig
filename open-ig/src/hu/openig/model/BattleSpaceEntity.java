@@ -17,11 +17,15 @@ import java.awt.image.BufferedImage;
  */
 public class BattleSpaceEntity {
 	/** The image used for displaying details of the selected entity. */
-	public BufferedImage image;
+	public BufferedImage infoImage;
 	/** The normal rotation image. */
 	public BufferedImage[] normal;
 	/** The alternative rotation image. */
 	public BufferedImage[] alternative;
 	/** The sound effect for explosion. */
-	public SoundType sound;
+	public SoundType destruction;
+	/** The rotation speed. */
+	public int rotationSpeed;
+	/** The movement speed. */
+	public int movementSpeed; 
 }
