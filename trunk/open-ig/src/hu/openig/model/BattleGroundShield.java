@@ -20,7 +20,7 @@ public class BattleGroundShield {
 	/** The alien/alternative image. */
 	public BufferedImage alternative;
 	/** The destruction sound. */
-	public WarEffectsType destruction;
+	public SoundType destruction;
 	/** The projectile used. */
 	public int shields;
 	/** The information image. */

@@ -23,6 +23,8 @@ public class SpacewarProjector extends SpacewarStructure {
 	public final List<SpacewarWeaponPort> ports = new ArrayList<SpacewarWeaponPort>();
 	/** The beam angle in an X-Y screen directed coordinate system, 0..2*PI. */
 	public double angle;
+	/** The building reference. */
+	public Building building;
 	@Override
 	public BufferedImage get() {
 		double a = angle / 2 / Math.PI; // angle to percentage

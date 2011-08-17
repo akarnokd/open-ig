@@ -125,7 +125,7 @@ public class StatusbarScreen extends ScreenBase {
 		pause.onPress = new Act() {
 			@Override
 			public void act() {
-				commons.sounds.play(SoundType.CLICK_LOW_1);
+				commons.sounds.play(SoundType.ACKNOWLEDGE_2);
 				commons.setSimulationSpeed.invoke(-1);
 			}
 		};
@@ -133,7 +133,7 @@ public class StatusbarScreen extends ScreenBase {
 		speed1.onPress = new Act() {
 			@Override
 			public void act() {
-				commons.sounds.play(SoundType.CLICK_LOW_1);
+				commons.sounds.play(SoundType.ACKNOWLEDGE_1);
 				commons.setSimulationSpeed.invoke(1000);
 			}
 		};
@@ -141,7 +141,7 @@ public class StatusbarScreen extends ScreenBase {
 		speed2.onPress = new Act() {
 			@Override
 			public void act() {
-				commons.sounds.play(SoundType.CLICK_LOW_1);
+				commons.sounds.play(SoundType.ACKNOWLEDGE_1);
 				commons.setSimulationSpeed.invoke(500);
 			}
 		};
@@ -149,7 +149,7 @@ public class StatusbarScreen extends ScreenBase {
 		speed4.onPress = new Act() {
 			@Override
 			public void act() {
-				commons.sounds.play(SoundType.CLICK_LOW_1);
+				commons.sounds.play(SoundType.ACKNOWLEDGE_1);
 				commons.setSimulationSpeed.invoke(250);
 			}
 		};

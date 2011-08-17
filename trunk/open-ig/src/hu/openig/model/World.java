@@ -1457,7 +1457,7 @@ public class World {
 				bp.alternative = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
 			}
 			if (xproj.has("sound")) {
-				bp.sound = WarEffectsType.valueOf(xproj.get("sound"));
+				bp.sound = SoundType.valueOf(xproj.get("sound"));
 			}
 			bp.damage = xproj.getInt("damage");
 			bp.range = xproj.getInt("range");
@@ -1488,7 +1488,7 @@ public class World {
 				se.alternative = se.normal;
 			}
 			se.image = rl.getImage(xspace.get("image"));
-			se.sound = WarEffectsType.valueOf(xspace.get("sound"));
+			se.sound = SoundType.valueOf(xspace.get("sound"));
 			if (se.sound == null) {
 				System.err.println("Missing sound " + xspace.get("sound") + " for " + id);
 			}
@@ -1512,7 +1512,7 @@ public class World {
 			}
 			se.image = rl.getImage(xdefense.get("image"));
 			if (xdefense.has("sound")) {
-				se.destruction = WarEffectsType.valueOf(xdefense.get("sound"));
+				se.destruction = SoundType.valueOf(xdefense.get("sound"));
 			} else {
 				System.err.println("Missing sound for " + id);
 			}
@@ -1536,7 +1536,7 @@ public class World {
 			}
 			se.infoImage = rl.getImage(xdefense.get("image"));
 			if (xdefense.has("sound")) {
-				se.destruction = WarEffectsType.valueOf(xdefense.get("sound"));
+				se.destruction = SoundType.valueOf(xdefense.get("sound"));
 			} else {
 				System.err.println("Missing sound for " + id);
 			}
@@ -1559,9 +1559,9 @@ public class World {
 			} else {
 				ge.alternative = ge.normal;
 			}
-			ge.destroy = WarEffectsType.valueOf(xground.get("destroy"));
+			ge.destroy = SoundType.valueOf(xground.get("destroy"));
 			if (xground.has("fire")) {
-				ge.fire = WarEffectsType.valueOf(xground.get("fire"));
+				ge.fire = SoundType.valueOf(xground.get("fire"));
 			}
 			
 			battle.groundEntities.put(id, ge);
