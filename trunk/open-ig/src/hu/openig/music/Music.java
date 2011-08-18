@@ -381,4 +381,8 @@ public class Music {
 			}
 		}
 	}
+	/** @return is a music playing? */
+	public boolean isRunning() {
+		return (sdl != null && sdl.isActive()) || (soundClip != null && soundClip.isActive()) || (oggMusic != null && oggMusic.outputLine != null && oggMusic.outputLine.isActive());
+	}
 }

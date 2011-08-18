@@ -935,4 +935,10 @@ public class ScreenTester extends JFrame implements GameControls {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void moveMouse() {
+		if (screen != null && screen.mouse(UIMouse.createCurrent(surface))) {
+			repaintInner();
+		}
+	}
 }

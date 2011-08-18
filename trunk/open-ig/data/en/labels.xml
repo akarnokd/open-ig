@@ -2659,6 +2659,23 @@
 	<entry key='message.planet_conquered'>You conquered the planet %s.</entry>
 
 	<entry key='message.no_vehicles_for_assault'>Your fleet does not have vehicles to assault the planet %s.</entry>
+
+	<entry key='flagship.moveto.starmap'>Starmap screen</entry>
+	<entry key='flagship.moveto.colony'>Colony screen</entry>
+	<entry key='flagship.moveto.lift'>Lift</entry>
+	<entry key='flagship.moveto.equipment'>Equipment room</entry>
+	<entry key='flagship.moveto.information'>Information screen</entry>
+	<entry key='flagship.moveto.production'>Production room</entry>
+	<entry key='flagship.moveto.productionscreen'>Production screen</entry>
+	<entry key='flagship.moveto.corridor'>Corridor</entry>
+	<entry key='flagship.moveto.bridge'>Bridge</entry>
+	<entry key='flagship.moveto.window'>Window</entry>
+	<entry key='flagship.moveto.research'>Research screen</entry>
+	<entry key='flagship.moveto.cabin'>Cabin</entry>
+	<entry key='flagship.moveto.diplomacy'>Diplomacy room</entry>
+	<entry key='flagship.moveto.bar'>Bar</entry>
+	<entry key='settings.button_sounds'>Button sounds</entry>
+	<entry key='settings.satellite_deplay'>Deploy satellite video</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	

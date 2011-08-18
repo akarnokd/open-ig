@@ -14,7 +14,7 @@
 	<ship id='2'>
 		<position id='*bridge' picture='flagship/bridge_level_2'>
 			<transition media='flagship/bridge_to_colony_level_2' label='flagship.moveto.colony' area='453,126 639,126 639,212 453,212' to='*colony'/>
-			<transition media='flagship/bridge_to_production_level_2' label='flagship.moveto.production' area='10,128 190,128 190,213 10,213' to='*production'/>
+			<transition media='flagship/bridge_to_production_level_2' label='flagship.moveto.productionscreen' area='10,128 190,128 190,213 10,213' to='*production'/>
 			<transition media='flagship/bridge_to_starmap_level_2' label='flagship.moveto.starmap' area='223,80 423,80 423,255 223,255' to='*starmap'/>
 			<transition media='flagship/bridge_to_corridor_level_2' label='flagship.moveto.corridor' area='0,346 639,346 639,441 0,441' to='corridor_bridge'/>
 		</position>
@@ -117,7 +117,7 @@
 		</position>
 		<position id='production' picture='flagship/production_level_3'>
 			<transition media='flagship/production_to_bridge_level_3' label='flagship.moveto.bridge' area='0,279 211,279 211,441 0,441' to='*bridge'/>
-			<transition media='flagship/production_to_production_level_3' label='flagship.moveto.production' area='410,30 616,16 604,177 406,173' to='*production'/>
+			<transition media='flagship/production_to_production_level_3' label='flagship.moveto.productionscreen' area='410,30 616,16 604,177 406,173' to='*production'/>
 			<transition media='flagship/production_to_research_level_3' label='flagship.moveto.research' area='226,29 20,15 31,174 230,173' to='*research'/>
 			<transition media='flagship/production_to_corridor_level_3' label='flagship.moveto.corridor' area='639,218 492,279 575,441 639,441' to='corridor2'/>
 		</position>		

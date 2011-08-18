@@ -14,7 +14,6 @@ import hu.openig.model.TalkPerson;
 import hu.openig.model.TalkSpeech;
 import hu.openig.model.TalkState;
 import hu.openig.model.WalkPosition;
-import hu.openig.model.WalkShip;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
@@ -28,8 +27,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.SwingUtilities;
 
 
 
@@ -66,6 +63,8 @@ public class BarScreen extends ScreenBase {
 	TalkState next;
 	/** The highlighted speech. */
 	TalkSpeech highlight;
+	/** The transition the mouse is pointing at. */
+	WalkTransition pointerTransition;
 	/** The list of choices. */
 	final List<Choice> choices = new ArrayList<Choice>();
 	/** A talk choice. */
@@ -190,6 +189,11 @@ public class BarScreen extends ScreenBase {
 				}
 			}
 		}
+		if (!talkMode) {
+			if (pointerTransition != null) {
+				ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
+			}
+		}
 		
 		super.draw(g2);
 	}
@@ -208,17 +212,6 @@ public class BarScreen extends ScreenBase {
 			return talkDoctor;
 		}
 		return bar3;
-	}
-	/**
-	 * @return Retrieve the walk position for the bar. 
-	 */
-	WalkPosition getWalk() {
-		WalkShip ws = commons.world().walks.ships.get("" + commons.world().level);
-		if (ws != null) {
-			WalkPosition p = ws.positions.get("*bar");
-			return p;
-		}
-		return null;
 	}
 	/** @return the current talk person. */
 	TalkPerson getPerson() {
@@ -260,15 +253,6 @@ public class BarScreen extends ScreenBase {
 				}
 				askRepaint();
 			} else
-			if (e.within(base.x, base.y + 400, base.width, 42)) {
-				WalkPosition p = getWalk();
-				if (p != null && p.transitions.size() > 0) {
-					doTransition(p, p.transitions.get(0));
-				} else {
-					displayPrimary(Screens.BRIDGE);
-					return true;
-				}
-			} else
 			if (enableTalk && e.within(base.x, base.y, base.width, 400)) {
 				// FIXME talkmode
 				TalkPerson tp = getPerson();
@@ -280,58 +264,49 @@ public class BarScreen extends ScreenBase {
 				}
 			}
 		} else
-		if (talkMode && (e.has(Type.MOVE) || e.has(Type.DRAG))) {
-			Point pt = new Point(e.x, e.y);
-			int idx = 0;
-			highlight = null;
-			for (Choice c : choices) {
-				if (c.test(base.x, base.y, pt)) {
-					highlight = state.speeches.get(idx);
-					askRepaint();
-					break;
+		if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
+			if (talkMode) {
+				Point pt = new Point(e.x, e.y);
+				int idx = 0;
+				highlight = null;
+				for (Choice c : choices) {
+					if (c.test(base.x, base.y, pt)) {
+						highlight = state.speeches.get(idx);
+						askRepaint();
+						break;
+					}
+					idx++;
 				}
-				idx++;
+			} else {
+				
+				WalkTransition prev = pointerTransition;
+				pointerTransition = null;
+				WalkPosition position = ScreenUtils.getWalk("*bar", world());
+				for (WalkTransition wt : position.transitions) {
+					if (wt.area.contains(e.x - base.x, e.y - base.y)) {
+						pointerTransition = wt;
+						break;
+					}
+				}
+				if (prev != pointerTransition) {
+					askRepaint();
+				}
 			}
 		} else
 		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
 			hideSecondary();
 			return true;
+		} else
+		if (e.has(Type.DOWN) && !talkMode) {
+			WalkPosition position = ScreenUtils.getWalk("*bar", world());
+			for (WalkTransition wt : position.transitions) {
+				if (wt.area.contains(e.x - base.x, e.y - base.y)) {
+					ScreenUtils.doTransition(position, wt, commons);
+					return true;
+				}
+			}
 		}
 		return super.mouse(e);
-	}
-	/**
-	 * Do the transition from the given position through the given transition.
-	 * @param position the position to start from
-	 * @param tr the transition to perform
-	 */
-	void doTransition(final WalkPosition position, final WalkTransition tr) {
-		final String to = tr.to; 
-		if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty())) {
-			// move to the screen directly.
-			commons.switchScreen(to);
-		} else {
-			final ShipwalkScreen sws = (ShipwalkScreen)displayPrimary(Screens.SHIPWALK);
-			sws.position = position;
-			
-			WalkShip ship = commons.world().getShip();
-			sws.next = ship.positions.get(tr.to);
-			sws.nextId = tr.to;
-			
-			final String media = tr.media;
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					sws.startTransition(media);
-					sws.onCompleted = new Act() {
-						@Override
-						public void act() {
-							commons.switchScreen(to);
-							sws.onCompleted = null;
-						}
-					};
-				}
-			});
-		}
 	}
 	@Override
 	public Screens screen() {

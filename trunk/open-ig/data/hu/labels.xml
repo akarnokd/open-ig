@@ -1922,10 +1922,22 @@
 	<entry key='message.planet_lost'>Elfoglalták a(z) %s bolygódat.</entry>
 	<entry key='message.planet_conquered'>Meghódítottad a(z) %s bolygót.</entry>
 	<entry key='message.no_vehicles_for_assault'>A flottád nem rendelkezik földi egységekkel, hogy megtámadhasd a(z) %s bolygót.</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+
+	<entry key='flagship.moveto.starmap'>Csillagtérkép képernyő</entry>
+	<entry key='flagship.moveto.colony'>Kolónia képernyő</entry>
+	<entry key='flagship.moveto.lift'>Lift</entry>
+	<entry key='flagship.moveto.equipment'>Felszerelés szoba</entry>
+	<entry key='flagship.moveto.information'>Információs képernyő</entry>
+	<entry key='flagship.moveto.production'>Gyártás szoba</entry>
+	<entry key='flagship.moveto.corridor'>Korridor</entry>
+	<entry key='flagship.moveto.bridge'>Híd</entry>
+	<entry key='flagship.moveto.window'>Ablak</entry>
+	<entry key='flagship.moveto.database'>Adatbázis képernyő</entry>
+	<entry key='flagship.moveto.cabin'>Saját szoba</entry>
+	<entry key='flagship.moveto.diplomacy'>Diplomácia szoba</entry>
+	<entry key='flagship.moveto.bar'>Bár</entry>
+	<entry key='settings.button_sounds'>Gombhangok</entry>
+	<entry key='settings.satellite_deplay'>Műhold telepítés videó</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

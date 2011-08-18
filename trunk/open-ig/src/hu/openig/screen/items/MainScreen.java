@@ -144,6 +144,8 @@ public class MainScreen extends ScreenBase {
 	}
 	/** Display the settings video. */
 	void doSettings() {
+		// reload global configuration
+		config.load();
 		LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
 		scr.maySave = false;
 		scr.settingsMode = true;

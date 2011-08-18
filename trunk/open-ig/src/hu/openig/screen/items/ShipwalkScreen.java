@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Act;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.RenderTools;
@@ -96,18 +97,21 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		boolean rep = false;
 		switch (e.type) {
 		case MOVE:
-			WalkTransition prev = pointerTransition;
-			pointerTransition = null;
-			if (position != null) {
-				for (WalkTransition wt : position.transitions) {
-					if (wt.area.contains(e.x - origin.x, e.y - origin.y)) {
-						pointerTransition = wt;
-						break;
+		case DRAG:
+			if (!videoMode) {
+				WalkTransition prev = pointerTransition;
+				pointerTransition = null;
+				if (position != null) {
+					for (WalkTransition wt : position.transitions) {
+						if (wt.area.contains(e.x - origin.x, e.y - origin.y)) {
+							pointerTransition = wt;
+							break;
+						}
 					}
 				}
-			}
-			if (prev != pointerTransition) {
-				rep = true;
+				if (prev != pointerTransition) {
+					rep = true;
+				}
 			}
 			break;
 		case DOWN:
@@ -164,6 +168,9 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 				if (frontBuffer != null && position != null) {
 					g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 					g2.drawImage(frontBuffer, 0, 0, position.picture.getWidth(), position.picture.getHeight(), null);
+				} else 
+				if (position != null) {
+					g2.drawImage(position.picture, 0, 0, null);
 				}
 			} finally {
 				swapLock.unlock();
@@ -173,21 +180,37 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 			if (position != null) {
 				g2.drawImage(position.picture, 0, 0, null);
 				
-				Composite save0 = g2.getComposite();
-				g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-				g2.setColor(Color.WHITE);
-				for (WalkTransition wt : position.transitions) {
-					g2.setColor(Color.WHITE);
-					g2.fill(wt.area);
-					Rectangle rect = wt.area.getBounds();
+				if (pointerTransition != null) {
+					String gotoLocation = get(pointerTransition.label);
+					Rectangle r = pointerTransition.area.getBounds();
 					
-					if (pointerTransition == wt) {
-						g2.setColor(Color.BLACK);
-						int w = commons.text().getTextWidth(14, pointerTransition.label);
-						commons.text().paintTo(g2, rect.x + (rect.width - w) / 2, rect.y + (rect.height - 14) / 2, 14, TextRenderer.RED, pointerTransition.label);
+					int tw = commons.text().getTextWidth(14, gotoLocation) + 10;
+					int th = 20;
+					
+					
+					int tx = r.x + (r.width - tw) / 2;
+					int ty = r.y + (r.height - th) / 2;
+					// do not let the text slide out of the viewport
+					if (tx < 0) {
+						tx = 0;
 					}
+					if (tx + tw >= origin.width) {
+						tx = origin.width - tw;
+					}
+					if (ty < 0) {
+						ty = 0;
+					}
+					if (ty + th >= origin.height) {
+						ty = origin.height - th;
+					}
+					
+					Composite cp = g2.getComposite();
+					g2.setComposite(AlphaComposite.SrcOver.derive(0.85f));
+					g2.setColor(Color.BLACK);
+					g2.fillRect(tx, ty, tw, th);
+					g2.setComposite(cp);
+					commons.text().paintTo(g2, tx + 5, ty + 3, 14, TextRenderer.YELLOW, gotoLocation);
 				}
-				g2.setComposite(save0);
 			}
 		}
 		if (position != null) {
@@ -258,6 +281,12 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 			commons.switchScreen(nextId);
 		} else {
 			position = next;
+			pointerTransition = null;
+			commons.control().moveMouse();
+			// simple sound hack for cabin
+			if (position != null && position.id.equals("cabin")) {
+				commons.sounds.play(SoundType.CABIN);
+			}
 		}
 	}
 	@Override
