@@ -52,7 +52,7 @@ List of things that need fixing, but without any due date other than hopefully t
 || Make the population growth planet-type dependant || Currently, its constant. Need to figure out the percentage rules for all races ||
 || Move the simulation constants to the game definition file as parameters. || To avoid hard coding those constants. ||
 || Add demand for fire brigade || I guess it is a simple rule of population >= 25000. ||
-|| ~~Add earthquake to earth and rocky planets~~ || ~~With a probability of 1 in two months. Damages buildings by 25% and power planets by 55%.~~ ||
+|| ~~Add earthquake to earth and rocky planets~~ || ~~With a probability of 1 in two months. Damages buildings by 25% and power planets by 55%.~~  *v0.92*||
 || Add smoke and fire animation to buildings || The animation is simple but where to place them? ||
 || Make the equipment screen resize with the game window. || This will simplify the management of larger fleets where the mini scroll panel is tedious now. ||
 || Add explicite mute options to volumes || Currently, 0 means mute but some platforms do not have the MUTE command for Java audio stream. They need to stop playing music, ignore sound effects and movie. ||
