@@ -226,6 +226,11 @@ public class StatusbarScreen extends ScreenBase {
 		notificationHistory.bounds(12, bottom.y - 140, width - 190, 140);
 		notificationHistory.visible(notificationHistory.visible() && !commons.nongame);
 		super.draw(g2);
+		if (commons.nongame) {
+			String s = "Open Imperium Galactica";
+			int w = commons.text().getTextWidth(10, s);
+			commons.text().paintTo(g2, notification.x + (notification.width - w) / 2, notification.y + 1, 10, TextRenderer.YELLOW, s);
+		}
 	}
 	/** Update the state displays. */
 	public void update() {

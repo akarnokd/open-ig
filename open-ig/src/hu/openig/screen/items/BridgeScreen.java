@@ -11,15 +11,14 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Act;
 import hu.openig.core.SwappableRenderer;
-import hu.openig.model.Bridge.Level;
 import hu.openig.model.Screens;
 import hu.openig.model.WalkPosition;
-import hu.openig.model.WalkShip;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.MediaPlayer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Type;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -27,14 +26,11 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import javax.swing.SwingUtilities;
 
 /**
  * The bridge rendering screen.
@@ -42,7 +38,7 @@ import javax.swing.SwingUtilities;
  */
 public class BridgeScreen extends ScreenBase {
 	/** The screen origins. */
-	final Rectangle origin = new Rectangle();
+	final Rectangle base = new Rectangle();
 	/** The message panel open rectangle. */
 	final Rectangle messageOpenRect = new Rectangle();
 	/** The message list rectangle. */
@@ -59,40 +55,40 @@ public class BridgeScreen extends ScreenBase {
 	Polygon closeMessage;
 	@Override
 	public void onResize() {
-		origin.setBounds((getInnerWidth() - 640) / 2, 20 + (getInnerHeight() - 38 - 442) / 2, 640, 442);
-		messageOpenRect.setBounds(origin.x + 572, origin.y + 292, 68, 170);
-		projectorRect.setBounds(origin.x + (origin.width - 524) / 2 - 4, origin.y, 524, 258);
+		base.setBounds((getInnerWidth() - 640) / 2, 20 + (getInnerHeight() - 38 - 442) / 2, 640, 442);
+		messageOpenRect.setBounds(base.x + 572, base.y + 292, 68, 170);
+		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 4, base.y, 524, 258);
 		videoRect.setBounds(projectorRect.x + 99, projectorRect.y + 11, 320, 240);
-		messageRect.setBounds(origin.x + origin.width - 298, origin.y + origin.height - 182, 298, 182);
+		messageRect.setBounds(base.x + base.width - 298, base.y + base.height - 182, 298, 182);
 
 		
 		
 		closeProjector = new Polygon(
 			new int[] { 
-					origin.x, projectorRect.x, 
+					base.x, projectorRect.x, 
 					projectorRect.x, projectorRect.x + projectorRect.width, 
-					projectorRect.x + projectorRect.width, origin.x + origin.width - 1, 
-					origin.x + origin.width - 1, messageRect.x, 
-					messageRect.x, origin.x
+					projectorRect.x + projectorRect.width, base.x + base.width - 1, 
+					base.x + base.width - 1, messageRect.x, 
+					messageRect.x, base.x
 				},
 			new int[] { 
-					origin.y, origin.y, 
+					base.y, base.y, 
 					projectorRect.y + projectorRect.height, projectorRect.y + projectorRect.height, 
-					origin.y, origin.y, 
+					base.y, base.y, 
 					messageRect.y, messageRect.y, 
-					origin.y + origin.height - 1, origin.y + origin.height - 1
+					base.y + base.height - 1, base.y + base.height - 1
 					
 				},
 			10
 		);
 		closeMessage = new Polygon(
 			new int[] {
-				origin.x, origin.x + origin.width - 1, origin.x + origin.width - 1, messageRect.x,
-				messageRect.x, origin.x
+				base.x, base.x + base.width - 1, base.x + base.width - 1, messageRect.x,
+				messageRect.x, base.x
 			},
 			new int[] {
-				origin.y, origin.y, messageRect.y, messageRect.y, origin.y + origin.height - 1, 
-				origin.y + origin.height - 1
+				base.y, base.y, messageRect.y, messageRect.y, base.y + base.height - 1, 
+				base.y + base.height - 1
 			},
 			6
 		);
@@ -129,6 +125,8 @@ public class BridgeScreen extends ScreenBase {
 	boolean projectorOpen;
 	/** The opening/closing animation is in progress. */
 	boolean openCloseAnimating;
+	/** The transition the mouse is pointing at. */
+	WalkTransition pointerTransition;
 	/* (non-Javadoc)
 	 * @see hu.openig.v1.ScreenBase#finish()
 	 */
@@ -354,12 +352,12 @@ public class BridgeScreen extends ScreenBase {
 		if (e.type == UIMouse.Type.UP) {
 			if (!openCloseAnimating) {
 				if (messageOpen && !projectorOpen) {
-					if (closeMessage.contains(e.x - origin.x, e.y - origin.y)) {
+					if (closeMessage.contains(e.x - base.x, e.y - base.y)) {
 						playMessageClose();
 					}
 				} else
 				if (projectorOpen) {
-					if (closeProjector.contains(e.x - origin.x, e.y - origin.y)) {
+					if (closeProjector.contains(e.x - base.x, e.y - base.y)) {
 						if (videoAnim != null) {
 							videoAnim.stop();
 						}
@@ -370,40 +368,29 @@ public class BridgeScreen extends ScreenBase {
 					if (messageOpenRect.contains(e.x, e.y)) {
 						playMessageOpen();
 					} else {
-						Level lvl = commons.world().getCurrentLevel();
-						for (WalkTransition tr : lvl.walk.transitions) {
-							if (tr.area.contains(e.x - origin.x, e.y - origin.y)) {
-								final String to = tr.to; 
-								if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty())) {
-									// move to the screen directly.
-									commons.switchScreen(to);
-								} else {
-									final ShipwalkScreen sws = (ShipwalkScreen)displayPrimary(Screens.SHIPWALK);
-									sws.position = lvl.walk;
-									
-									WalkShip ship = commons.world().getShip();
-									sws.next = ship.positions.get(tr.to);
-									sws.nextId = tr.to;
-									
-									final String media = tr.media;
-									SwingUtilities.invokeLater(new Runnable() {
-										@Override
-										public void run() {
-											sws.startTransition(media);
-											sws.onCompleted = new Act() {
-												@Override
-												public void act() {
-													commons.switchScreen(to);
-													sws.onCompleted = null;
-												}
-											};
-										}
-									});
-								}
+						WalkPosition position = ScreenUtils.getWalk("*bridge", world());
+						for (WalkTransition wt : position.transitions) {
+							if (wt.area.contains(e.x - base.x, e.y - base.y)) {
+								ScreenUtils.doTransition(position, wt, commons);
+								break;
 							}
 						}
 					}
 				}
+			}
+		} else
+		if (e.has(Type.MOVE) || e.has(Type.DRAG) || e.has(Type.ENTER)) {
+			WalkTransition prev = pointerTransition;
+			pointerTransition = null;
+			WalkPosition position = ScreenUtils.getWalk("*bridge", world());
+			for (WalkTransition wt : position.transitions) {
+				if (wt.area.contains(e.x - base.x, e.y - base.y)) {
+					pointerTransition = wt;
+					break;
+				}
+			}
+			if (prev != pointerTransition) {
+				askRepaint();
 			}
 		}
 		return false;
@@ -441,7 +428,7 @@ public class BridgeScreen extends ScreenBase {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		
-		g2.drawImage(background, origin.x, origin.y, null);
+		g2.drawImage(background, base.x, base.y, null);
 		
 		
 		messageLock.lock();
@@ -467,32 +454,16 @@ public class BridgeScreen extends ScreenBase {
 			if (videoFront != null) {
 				g2.drawImage(projectorFront, videoRect.x, videoRect.y, videoRect.width, videoRect.height, null);
 				if (videoSubtitle != null) {
-					paintLabel(g2, origin.x, videoRect.y + videoRect.height, origin.width);
+					paintLabel(g2, base.x, videoRect.y + videoRect.height, base.width);
 				}
 			}
 		} finally {
 			videoLock.unlock();
 		}
-		Composite cp = g2.getComposite();
-		g2.setComposite(AlphaComposite.SrcOver.derive(0.6f));
-		g2.setColor(Color.WHITE);
-		if (projectorOpen) {
-			g2.fillPolygon(closeProjector);
-		} else
-		if (messageOpen) {
-			g2.fillPolygon(closeMessage);
-		} else {
-			WalkPosition wp = commons.world().getCurrentLevel().walk;
-			AffineTransform tf = g2.getTransform();
-			g2.translate(origin.x, origin.y);
-			
-			for (WalkTransition tr : wp.transitions) {
-				g2.fillPolygon(tr.area);
-			}
-			
-			g2.setTransform(tf);
+		
+		if (!projectorOpen && !messageOpen && pointerTransition != null) {
+			ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
 		}
-		g2.setComposite(cp);
 	}
 	/**
 	 * Paint a word-wrapped label.

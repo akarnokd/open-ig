@@ -643,7 +643,7 @@ public class GameWindow extends JFrame implements GameControls {
 					primary.resize();
 					primary.onEnter(mode);
 					repaintInner();
-					doMoveMouseAgain();
+					moveMouse();
 				}
 			} else
 			if (playSec) {
@@ -665,7 +665,7 @@ public class GameWindow extends JFrame implements GameControls {
 					secondary.resize();
 					secondary.onEnter(mode);
 					repaintInner();
-					doMoveMouseAgain();
+					moveMouse();
 				}
 			}
 		}
@@ -686,7 +686,7 @@ public class GameWindow extends JFrame implements GameControls {
 		if (!movieVisible) {
 			movieVisible = true;
 			movie.onEnter(null);
-			doMoveMouseAgain();
+			moveMouse();
 			repaintInner();
 		}
 	}
@@ -697,7 +697,7 @@ public class GameWindow extends JFrame implements GameControls {
 		if (movieVisible) {
 			movieVisible = false;
 			movie.onLeave();
-			doMoveMouseAgain();
+			moveMouse();
 			repaintInner();
 		}
 	}
@@ -710,7 +710,7 @@ public class GameWindow extends JFrame implements GameControls {
 			statusbarVisible = true;
 			statusbar.resize();
 			statusbar.onEnter(null);
-			doMoveMouseAgain();
+			moveMouse();
 			repaintInner();
 		}
 	}
@@ -722,7 +722,7 @@ public class GameWindow extends JFrame implements GameControls {
 		if (secondary != null) {
 			secondary.onLeave();
 			secondary = null;
-			doMoveMouseAgain();
+			moveMouse();
 			repaintInner();
 		}
 	}
@@ -734,14 +734,12 @@ public class GameWindow extends JFrame implements GameControls {
 		if (statusbarVisible) {
 			statusbarVisible = false;
 			statusbar.onLeave();
-			doMoveMouseAgain();
+			moveMouse();
 			repaintInner();
 		}
 	}
-	/**
-	 * On screen transitions, issue a fake mouse moved events to support the highlighting.
-	 */
-	public void doMoveMouseAgain() {
+	@Override
+	public void moveMouse() {
 		boolean result = false;
 		ScreenBase sb = statusbar;
 		UIMouse m = UIMouse.createCurrent(surface);
@@ -1140,7 +1138,7 @@ public class GameWindow extends JFrame implements GameControls {
 					gw.setBounds(saveX, saveY, saveWidth, saveHeight);
 					gw.setVisible(true);
 				}
-				gw.doMoveMouseAgain();
+				gw.moveMouse();
 				break;
 			}
 		}
@@ -1149,7 +1147,7 @@ public class GameWindow extends JFrame implements GameControls {
 	void newWindow() {
 		GameWindow gw = new GameWindow(GameWindow.this, false);
 		gw.setVisible(true);
-		gw.doMoveMouseAgain();
+		gw.moveMouse();
 	}
 	/**
 	 * The common mouse action manager.
@@ -1269,10 +1267,8 @@ public class GameWindow extends JFrame implements GameControls {
 	/** Save the world. */
 	public void saveWorld() {
 		final String pn = commons.profile.name;
-		final XElement world = commons.world().saveState();
-		world.set("starmap-x", allScreens.starmap.getXOffset());
-		world.set("starmap-y", allScreens.starmap.getYOffset());
-		world.set("starmap-z", allScreens.starmap.getZoomIndex());
+		final XElement xworld = commons.world().saveState();
+		saveSettings(xworld);
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -1284,8 +1280,8 @@ public class GameWindow extends JFrame implements GameControls {
 						File fout = new File(dir, "save-" + sdf.format(new Date()) + ".xml");
 						File foutx = new File(dir, "savex-" + sdf.format(new Date()) + ".xml");
 						try {
-							world.save(fout);
-							World.deriveShortWorldState(world).save(foutx);
+							xworld.save(fout);
+							World.deriveShortWorldState(xworld).save(foutx);
 						} catch (IOException ex) {
 							ex.printStackTrace();
 						}
@@ -1315,13 +1311,15 @@ public class GameWindow extends JFrame implements GameControls {
 		final Screens pri = primary != null ? primary.screen() : null;
 		final Screens sec = secondary != null ? secondary.screen() : null;
 		final boolean status = statusbarVisible;
-		
-		displayPrimary(Screens.LOADING);
-		hideStatusbar();
-		
+
+		commons.stopMusic();
 		for (ScreenBase sb : screens) {
 			sb.onEndGame();
 		}
+
+		displayPrimary(Screens.LOADING);
+		hideStatusbar();
+		
 		
 		final String currentGame = commons.world() != null ? commons.world().name : null; 
 		commons.worldLoading = true;
@@ -1419,15 +1417,7 @@ public class GameWindow extends JFrame implements GameControls {
 							if (status) {
 								displayStatusbar();
 							}
-							if (xworld.has("starmap-z")) {
-								allScreens.starmap.setZoomIndex(xworld.getInt("starmap-z"));
-							}
-							if (xworld.has("starmap-x")) {
-								allScreens.starmap.setXOffset(xworld.getInt("starmap-x"));
-							}
-							if (xworld.has("starmap-y")) {
-								allScreens.starmap.setYOffset(xworld.getInt("starmap-y"));
-							}
+							restoreSettings(xworld);
 							commons.start(true);
 							if (!frunning) {
 								commons.pause();
@@ -1441,6 +1431,34 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}, "Load");
 		t.start();
+	}
+	/**
+	 * Save the game related settings such as position and configuration values.
+	 * @param xworld the world object
+	 */
+	void saveSettings(XElement xworld) {
+		xworld.set("starmap-x", allScreens.starmap.getXOffset());
+		xworld.set("starmap-y", allScreens.starmap.getYOffset());
+		xworld.set("starmap-z", allScreens.starmap.getZoomIndex());
+		
+		config.saveProperties(xworld);
+	}
+	/**
+	 * Restore the game related settings such as position and configuration values.
+	 * @param xworld the world XElement
+	 */
+	void restoreSettings(XElement xworld) {
+		// restore starmap location and zoom
+		if (xworld.has("starmap-z")) {
+			allScreens.starmap.setZoomIndex(xworld.getInt("starmap-z"));
+		}
+		if (xworld.has("starmap-x")) {
+			allScreens.starmap.setXOffset(xworld.getInt("starmap-x"));
+		}
+		if (xworld.has("starmap-y")) {
+			allScreens.starmap.setYOffset(xworld.getInt("starmap-y"));
+		}
+		config.loadProperties(xworld);
 	}
 	@Override
 	public Screens primary() {

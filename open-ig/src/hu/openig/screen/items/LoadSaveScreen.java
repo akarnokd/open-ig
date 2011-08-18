@@ -135,6 +135,12 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Enable automatic repair. */
 	@Settings
 	UICheckBox autoRepair;
+	/** Allow button sounds. */
+	@Settings
+	UICheckBox buttonSounds;
+	/** Play satellite deploy animation? */
+	@Settings
+	UICheckBox satelliteDeploy;
 	@Override
 	public void onInitialize() {
 		save = new UIGenericButton(get("save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
@@ -232,6 +238,12 @@ public class LoadSaveScreen extends ScreenBase {
 			public void act() {
 				config.musicVolume = Math.max(0, config.musicVolume - 1);
 				commons.music.setVolume(config.musicVolume);
+				if (!commons.music.isRunning()) {
+					int e = config.effectVolume;
+					config.effectVolume = config.musicVolume;
+					commons.sounds.play(SoundType.BAR);
+					config.effectVolume = e;
+				}
 				askRepaint(base);
 			}
 		};
@@ -240,6 +252,12 @@ public class LoadSaveScreen extends ScreenBase {
 			public void act() {
 				config.musicVolume = Math.min(100, config.musicVolume + 1);
 				commons.music.setVolume(config.musicVolume);
+				if (!commons.music.isRunning()) {
+					int e = config.effectVolume;
+					config.effectVolume = config.musicVolume;
+					commons.sounds.play(SoundType.BAR);
+					config.effectVolume = e;
+				}
 				askRepaint(base);
 			}
 		};
@@ -260,6 +278,12 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void act() {
 				config.videoVolume = Math.max(0, config.videoVolume - 1);
+
+				int e = config.effectVolume;
+				config.effectVolume = config.videoVolume;
+				commons.sounds.play(SoundType.BAR);
+				config.effectVolume = e;
+				
 				askRepaint(base);
 			}
 		};
@@ -270,6 +294,12 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void act() {
 				config.videoVolume = Math.min(100, config.videoVolume + 1);
+
+				int e = config.effectVolume;
+				config.effectVolume = config.videoVolume;
+				commons.sounds.play(SoundType.BAR);
+				config.effectVolume = e;
+
 				askRepaint(base);
 			}
 		};
@@ -351,6 +381,22 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 
+		buttonSounds = new UICheckBox(get("settings.button_sounds"), 14, commons.common().checkmark, commons.text());
+		buttonSounds.onChange = new Act() {
+			@Override
+			public void act() {
+				config.buttonSounds = buttonSounds.selected();
+			}
+		};
+
+		satelliteDeploy = new UICheckBox(get("settings.satellite_deplay"), 14, commons.common().checkmark, commons.text());
+		satelliteDeploy.onChange = new Act() {
+			@Override
+			public void act() {
+				config.satelliteDeploy = satelliteDeploy.selected();
+			}
+		};
+
 		
 		addThis();
 	}
@@ -372,7 +418,9 @@ public class LoadSaveScreen extends ScreenBase {
 		reequipBombs.selected(config.reequipBombs);
 		computerVoiceScreen.selected(config.computerVoiceScreen);
 		computerVoiceNotify.selected(config.computerVoiceNotify);
-
+		autoRepair.selected(config.autoRepair);
+		buttonSounds.selected(config.buttonSounds);
+		satelliteDeploy.selected(config.satelliteDeploy);
 	}
 
 	@Override
@@ -383,7 +431,10 @@ public class LoadSaveScreen extends ScreenBase {
 			listWorker.cancel(true);
 			listWorker = null;
 		}
-		config.save();
+		// save only if no game is active
+		if (commons.world() == null) {
+			config.save();
+		}
 	}
 
 	@Override
@@ -427,6 +478,8 @@ public class LoadSaveScreen extends ScreenBase {
 		autoBuildLabel.location(base.x + 30, base.y + 310 + 8);
 		autoBuildLimit.location(base.x + 50 + autoBuildLabel.width, base.y + 310);
 		autoBuildLimit.width = 200;
+		buttonSounds.location(base.x + 30, base.y + 340 + 8);
+		satelliteDeploy.location(base.x + 30, base.y + 370 + 8);
 	}
 	@Override
 	public Screens screen() {

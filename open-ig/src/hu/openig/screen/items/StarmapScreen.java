@@ -2120,27 +2120,29 @@ public class StarmapScreen extends ScreenBase {
 			commons.pause();
 		}
 //		commons.stopMusic();
-		commons.control().playVideos(new Act() {
-			@Override
-			public void act() {
-				ResearchType rt = world().researches.get(typeId);
-				
-				InventoryItem pii = new InventoryItem();
-				pii.count = 1;
-				pii.owner = player();
-				pii.type = rt;
-				
-				p.inventory.add(pii);
-				if (ttl > 0) {
-					p.timeToLive.put(pii, ttl);
+		if (config.satelliteDeploy) {
+			commons.control().playVideos(new Act() {
+				@Override
+				public void act() {
+					ResearchType rt = world().researches.get(typeId);
+					
+					InventoryItem pii = new InventoryItem();
+					pii.count = 1;
+					pii.owner = player();
+					pii.type = rt;
+					
+					p.inventory.add(pii);
+					if (ttl > 0) {
+						p.timeToLive.put(pii, ttl);
+					}
+					
+					if (!isPaused) {
+						commons.resume();
+					}
+	//				commons.playRegularMusic();
 				}
-				
-				if (!isPaused) {
-					commons.resume();
-				}
-//				commons.playRegularMusic();
-			}
-		}, media);
+			}, media);
+		}
 	}
 	@Override
 	public void onLeave() {

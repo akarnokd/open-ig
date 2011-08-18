@@ -290,15 +290,19 @@ public class AudioThread extends Thread {
 		}
 	}
 	/**
-	 * Compute the gain of the given gain control based on a linear mapping of th
+	 * Compute the gain of the given gain control based on a linear mapping of the
 	 * volume.
 	 * @param fc The target float control
 	 * @param volume the linear volume of 0..100
 	 * @return the gain value
 	 */
 	public static float computeGain(FloatControl fc, int volume) {
-		double minLinear = Math.pow(10, fc.getMinimum() / 20);
-		double maxLinear = Math.pow(10, fc.getMaximum() / 20);
-		return (float)(20 * Math.log10(minLinear + volume * (maxLinear - minLinear) / 100));
+//		double minLinear = Math.pow(10, fc.getMinimum() / 20);
+//		double maxLinear = Math.pow(10, fc.getMaximum() / 20);
+//		return (float)(20 * Math.log10(minLinear + volume * (maxLinear - minLinear) / 100));
+//		return fc.getMinimum() + (fc.getMaximum() - fc.getMinimum()) * volume / 100;
+		float min = Math.max(fc.getMinimum(), -43);
+		float max = Math.min(fc.getMaximum(), 0);
+		return min + (max - min) * volume / 100;
 	}
 }

@@ -101,4 +101,10 @@ public interface GameControls {
 	void endGame();
 	/** Start the next battle from the pending battles. */
 	void startBattle();
+	/** 
+	 * Creates a fake mouse move event by sending a MOVE to the current screens.
+	 * Can be used to update event listeners when the screen changes under the mouse (e.g., ship
+	 * walk transition). 
+	 */
+	void moveMouse();
 }

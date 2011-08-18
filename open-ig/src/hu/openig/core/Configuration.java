@@ -9,6 +9,8 @@
 package hu.openig.core;
 
 
+import hu.openig.utils.XElement;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,10 +38,13 @@ import javax.swing.SwingUtilities;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.93.100";
+	public static final String VERSION = "0.93.300";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
+	/** Annotation for indicating load/save a field into a game save. */
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface LoadSaveGame { }
 	/** The log limit. */
 	private int logLimit = 512;
 	/** The log entries. */
@@ -83,27 +88,35 @@ public class Configuration {
 	public int audioChannels = 8;
 	/** The music volume 0-100. */
 	@LoadSave
+	@LoadSaveGame
 	public int musicVolume = 100;
 	/** Mute music? */
 	@LoadSave
+	@LoadSaveGame
 	public boolean muteMusic;
 	/** The effect volume 0-100. */
 	@LoadSave
+	@LoadSaveGame
 	public int effectVolume = 100;
 	/** Mute effect. */
 	@LoadSave
+	@LoadSaveGame
 	public boolean muteEffect;
 	/** The effect filter step. */
 	@LoadSave
+	@LoadSaveGame
 	public int effectFilter = 1;
 	/** Video volume 0-100. */
 	@LoadSave
+	@LoadSaveGame
 	public int videoVolume = 100;
 	/** Mute video. */
 	@LoadSave
+	@LoadSaveGame
 	public boolean muteVideo;
 	/** The video filter step. */
 	@LoadSave
+	@LoadSaveGame
 	public int videoFilter = 1;
 	/** The debug watcher window. */
 	public Closeable watcherWindow;
@@ -118,22 +131,36 @@ public class Configuration {
 	public boolean autoResources = true;
 	/** Reequip tanks after battles. */
 	@LoadSave
+	@LoadSaveGame
 	public boolean reequipTanks = true;
 	/** Reequip bombs after battles. */
 	@LoadSave
+	@LoadSaveGame
 	public boolean reequipBombs = true;
 	/** Computer voice for screen switches. */
 	@LoadSave
+	@LoadSaveGame
 	public boolean computerVoiceScreen = true;
 	/** Computer voice for notifications. */
 	@LoadSave
+	@LoadSaveGame
 	public boolean computerVoiceNotify = true;
 	/** Build limit. */
 	@LoadSave
-	public int autoBuildLimit;
+	@LoadSaveGame
+	public int autoBuildLimit = 20000;
 	/** Automatic repair. */
 	@LoadSave
+	@LoadSaveGame
 	public boolean autoRepair;
+	/** Play button sounds? */
+	@LoadSave
+	@LoadSaveGame
+	public boolean buttonSounds = true;
+	/** Play satellite deploy video? */
+	@LoadSave
+	@LoadSaveGame
+	public boolean satelliteDeploy = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
@@ -414,5 +441,49 @@ public class Configuration {
 		}
 		
 		return result;
+	}
+	/**
+	 * Load game properties from the given game world object.
+	 * @param xworld the world object.
+	 */
+	public void loadProperties(XElement xworld) {
+		try {
+			for (Field f : this.getClass().getDeclaredFields()) {
+				if (f.isAnnotationPresent(LoadSaveGame.class)) {
+					if (f.getType() == Boolean.TYPE) {
+						if (xworld.has(f.getName())) {
+							f.set(this,  Boolean.valueOf(xworld.get(f.getName())));
+						}
+					} else
+					if (f.getType() == Integer.TYPE || f.getType() == Integer.class) {
+						if (xworld.has(f.getName())) {
+							f.set(this, Integer.valueOf(xworld.get(f.getName())));
+						}
+					} else
+					if (f.getType() == String.class) {
+						if (xworld.has(f.getName())) {
+							f.set(this,  xworld.get(f.getName()));
+						}
+					}
+				}
+			}
+		} catch (IllegalAccessException ex) {
+			error(ex);
+		}
+	}
+	/**
+	 * Save game properties from the given game world object.
+	 * @param xworld the world object.
+	 */
+	public void saveProperties(XElement xworld) {
+		try {
+			for (Field f : this.getClass().getDeclaredFields()) {
+				if (f.isAnnotationPresent(LoadSaveGame.class)) {
+					xworld.set(f.getName(), f.get(this));
+				}
+			}
+		} catch (IllegalAccessException ex) {
+			error(ex);
+		}
 	}
 }
