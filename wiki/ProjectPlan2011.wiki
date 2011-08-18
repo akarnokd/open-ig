@@ -3,10 +3,6 @@
 
 <wiki:toc max_depth="1" />
 
-= Introduction =
-
-This page lists tasks that I want to complete with expected times.
-
 = Plans =
 
 || *Task* || *Expected completion time* || *Status* || *Remarks* ||
