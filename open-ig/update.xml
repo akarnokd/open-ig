@@ -65,7 +65,7 @@
 		</file>
 
 
-		<remove url='open-ig-upgrade-20110818a.zip' sha1='4ef017a14b2e9f8722b077e8845715aa17478a8b'>
+		<remove file='open-ig-upgrade-20110818a.zip' sha1='4ef017a14b2e9f8722b077e8845715aa17478a8b'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 18 / A</desc>
 			<desc lang='en'>The upgraded resource file. 18th August, 2011 / A</desc>
 		</remove>
