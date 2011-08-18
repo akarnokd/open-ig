@@ -52,3 +52,5 @@ List of things that need fixing, but without any due date other than hopefully t
 || Add smoke and fire animation to buildings || The animation is simple but where to place them? ||
 || Make the equipment screen resize with the game window. || This will simplify the management of larger fleets where the mini scroll panel is tedious now. ||
 || Add explicite mute options to volumes || Currently, 0 means mute but some platforms do not have the MUTE command for Java audio stream. They need to stop playing music, ignore sound effects and movie. ||
+|| Add tooltips & status text to the statusbars || Tooltips for buttons show up on the upper right box, status text such as "Stopped", "You have message" and the current planet name will show up on the lower right box. ||
+|| Add sound effects to buttons & ability to disable button sounds separately || Same as computer voice, fun at first, but annoying later on. ||
