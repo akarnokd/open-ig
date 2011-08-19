@@ -1013,9 +1013,10 @@ public class EquipmentScreen extends ScreenBase {
 
 			PlanetStatistics ps = planet().getStatistics();
 			
-			newButton.visible(planet().owner == player() && ps.hasMilitarySpaceport);
-			noSpaceport.visible(planet().owner == player() && !ps.hasMilitarySpaceport);
-			notYourPlanet.visible(planet().owner != player());
+			boolean own = planet().owner == player();
+			
+			newButton.visible(own && ps.hasMilitarySpaceport);
+			notYourPlanet.visible(!own);
 			noPlanetNearby.visible(false);
 			
 			if (planetShown != planet() || lastSelection != player().selectionMode) {
@@ -1063,13 +1064,14 @@ public class EquipmentScreen extends ScreenBase {
 			
 			configure.selectedSlot = null;
 			
-			if (rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+			if (own && rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 				addButton.visible(player().inventoryCount(rt) > 0
 						&& planet().inventoryCount(rt.category, player()) < 3);
 				delButton.visible(false);
 				sell.visible(planet().inventoryCount(rt, player()) > 0);
+				noSpaceport.visible(false);
 			} else
-			if (ps.hasMilitarySpaceport && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+			if (own && ps.hasMilitarySpaceport && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				addButton.visible(
 						ps.hasSpaceStation
 						&& player().inventoryCount(rt) > 0
@@ -1079,17 +1081,19 @@ public class EquipmentScreen extends ScreenBase {
 				);
 				sell.visible(delButton.visible());
 			} else
-			if (rt.category == ResearchSubCategory.WEAPONS_TANKS
+			if (own && rt.category == ResearchSubCategory.WEAPONS_TANKS
 					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				addButton.visible(player().inventoryCount(rt) > 0
 						&& planet().inventoryCount(rt.category, player()) < ps.vehicleMax);
 				delButton.visible(
 						planet().inventoryCount(rt, player()) > 0);
 				sell.visible(delButton.visible());
+				noSpaceport.visible(false);
 			} else {
 				addButton.visible(false);
 				delButton.visible(false);
 				sell.visible(false);
+				noSpaceport.visible(own);
 			}
 			addOne.visible(false);
 			removeOne.visible(false);
