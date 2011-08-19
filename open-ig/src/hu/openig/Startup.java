@@ -50,7 +50,7 @@ public final class Startup {
 			}
 		}
 		Configuration config = new Configuration("open-ig-config.xml");
-		config.watcherWindow = new ConsoleWatcher();
+		config.watcherWindow = new ConsoleWatcher(args, Configuration.VERSION);
 		config.load();
 //		if (!config.load() || argset.contains("-config")) {
 //			doStartConfiguration(config);
@@ -68,10 +68,7 @@ public final class Startup {
 			public void run() {
 				JOptionPane.showMessageDialog(null, "<html><p>Unable to auto-start Open Imperium Galactica version " + Configuration.VERSION + ".<br>Please make sure you have at least " 
 						+ MINIMUM_MEMORY + "MB defined for running a Java program in either your<br>"
-						+ "operating system's configuration for Java programs,<br> or run the program from command line using the <code>-Xmx" + MINIMUM_MEMORY + "M</code> parameter.</p><br>"
-						+ "<p>Nem siker�lt automatikusan elind�tani az Open Imperium Galactika " + Configuration.VERSION + " programot.<br>K�rem ellen�rizze, hogy alap�rtelmez�sben a Java programok futtat�s�hoz "
-						+ "legal�bb " + MINIMUM_MEMORY + "MB mem�ria<br> van be�ll�tva az Oper�ci�s Rendszerben,<br> vagy ind�tsa a program parancssorb�l a <code>-Xmx" + MINIMUM_MEMORY + "M</code> "
-						+ "param�ter megad�s�val.</p>"
+						+ "operating system's configuration for Java programs,<br> or run the program from command line using the <code>-Xmx" + MINIMUM_MEMORY + "M</code> parameter.</p>"
 				);
 			}
 		});

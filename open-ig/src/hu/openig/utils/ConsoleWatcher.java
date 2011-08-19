@@ -33,11 +33,19 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	JTextArea area;
 	/** Original error. */
 	private PrintStream originalErr;
+	/** The original command line. */
+	String[] commandLine;
+	/** The program version. */
+	String version;
 	/**
 	 * Create the gui.
+	 * @param commandLine the command line
+	 * @param version the game version
 	 */
-	public ConsoleWatcher() {
+	public ConsoleWatcher(String[] commandLine, String version) {
 		setTitle("Error");
+		this.commandLine = commandLine;
+		this.version = version;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		originalErr = System.err;
 		
@@ -52,6 +60,8 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 		setLocationRelativeTo(null);
 		
 		System.setErr(new PrintStream(new OutputStream() {
+			/** First message, display diagnostic information. */
+			volatile boolean first = true;
 			@Override
 			public void write(final int b) throws IOException {
 				write(new byte[] { (byte)b }, 0, 1);
@@ -66,6 +76,10 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 						if (!isVisible()) {
 							setVisible(true);
 						}
+						if (first) {
+							first = false;
+							writeDiagnosticInfo();
+						}
 						area.append(new String(b2, off, len));
 					}
 				});
@@ -79,5 +93,20 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 		}
 		System.setErr(originalErr);
 		dispose();
+	}
+	/** Write the diagnostic info. */
+	void writeDiagnosticInfo() {
+		area.append("An unexpected error occurred.\r\n");
+		area.append("You should consider submitting an error report via the project issue list:\r\nhttp://code.google.com/p/open-ig/issues/list\r\n");
+		area.append("Please include the following diagnostic information followed by the error stacktrace(s):\r\n");
+		area.append(String.format("   Java version: %s%n", System.getProperty("java.version")));
+		area.append(String.format("   Java vendor: %s (%s)%n", System.getProperty("java.vendor"), System.getProperty("java.vendor.url")));
+		area.append(String.format("   Java compiler: %s (class version: %s)%n", System.getProperty("java.compiler"), System.getProperty("java.class.version")));
+		area.append(String.format("   Operating system: %s, %s, %s%n", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version")));
+		area.append(String.format("   Game version: %s%n", version));
+		area.append(String.format("   Command line: %s%n", Arrays.toString(commandLine)));
+		area.append(String.format("   Maximum memory: %s MB%n", Runtime.getRuntime().maxMemory() / 1024 / 1024));
+		area.append(String.format("   Parallelism: %s%n", Runtime.getRuntime().availableProcessors()));
+		area.append("----\r\n");
 	}
 }

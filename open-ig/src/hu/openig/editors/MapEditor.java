@@ -547,18 +547,19 @@ public class MapEditor extends JFrame {
 		}
 		final Configuration config = new Configuration("open-ig-config.xml");
 		if (config.load()) {
-			doStartProgram(config);
+			doStartProgram(config, args);
 		}
 	}
 	/**
 	 * Start the program.
 	 * @param config the configuration.
+	 * @param args the program arguments
 	 */
-	static void doStartProgram(final Configuration config) {
+	static void doStartProgram(final Configuration config, final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				config.watcherWindow = new ConsoleWatcher();
+				config.watcherWindow = new ConsoleWatcher(args, VERSION);
 				MapEditor editor = new MapEditor(config);
 				editor.setLocationRelativeTo(null);
 				editor.setVisible(true);
