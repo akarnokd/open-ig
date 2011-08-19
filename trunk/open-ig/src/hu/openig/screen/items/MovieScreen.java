@@ -56,6 +56,8 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	 * The media player.
 	 */
 	private MediaPlayer player;
+	/** The mouse was pressed down. */
+	boolean down;
 	/**
 	 * Start playback.
 	 * @param media the media
@@ -124,7 +126,14 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (e.has(Type.UP)) {
+		if (e.has(Type.DOWN)) {
+			down = true;
+		} else
+		if (e.has(Type.LEAVE)) {
+			down = false;
+		} else
+		if (e.has(Type.UP) && down) {
+			down = false;
 			stopPlayback();
 		}
 		return false;
@@ -132,6 +141,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 
 	@Override
 	public void onEnter(Screens mode) {
+		down = false;
 		playNext();
 	}
 
@@ -144,9 +154,9 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	@Override
 	public void draw(Graphics2D g2) {
 		onResize();
-		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		if (frontBuffer != null) {
+			g2.setColor(Color.BLACK);
+			g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 			swapLock.lock();
 			try {
 				RenderTools.setInterpolation(g2, true);

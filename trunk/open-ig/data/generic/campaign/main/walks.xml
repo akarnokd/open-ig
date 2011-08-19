@@ -35,8 +35,11 @@
 		<position id='corridor_bar' picture='flagship/corridor_from_bar_level_2'>
 			<transition media='flagship/corridor_to_bridge_3_level_2' label='flagship.moveto.bridge' area='0,0 72,0 72,398 0,398' to='*bridge'/>
 			<transition media='flagship/corridor_to_cabin_2_level_2' label='flagship.moveto.cabin' area='526,0 639,0 639,408 526,408' to='cabin'/>
-			<transition media='flagship/corridor_to_bar_3_level_2' label='flagship.moveto.bar' area='60,411 551,441 551,441 60,441' to='*bar'/>
+			<transition media='flagship/corridor_to_bar_3_level_2' label='flagship.moveto.bar' area='60,400 551,400 551,441 60,441' to='*bar'/>
 		</position>
+		<position id='*bar' picture='flagship/bar_level_2'>
+			<transition media='flagship/bar_to_corridor_level_2' label='flagship.moveto.corridor' area='0,356 639,356 639,441 0,441' to='corridor_bar'/>
+		</position>		
 	</ship>
 	<ship id='3'>
 		<position id='*bridge' picture='flagship/bridge_level_3'>

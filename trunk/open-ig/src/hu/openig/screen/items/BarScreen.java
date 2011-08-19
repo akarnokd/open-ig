@@ -162,15 +162,17 @@ public class BarScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(base, width, height, true);
+		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
 		
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
+		RenderTools.darkenAround(base, getInnerWidth(), getInnerHeight(), g2, 0.5f, true);
 
 		if (talkMode && state != null && state.picture != null) {
-			g2.drawImage(state.picture, base.x, base.y, null);
+			int dx = (base.width - state.picture.getWidth()) / 2;
+			int dy = (base.height - state.picture.getHeight()) / 2;
+			g2.drawImage(state.picture, base.x + dx, base.y + dy, null);
 			int idx = 0;
 			for (Choice c : choices) {
 				TalkSpeech ts = state.speeches.get(idx);
@@ -231,7 +233,7 @@ public class BarScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (e.has(Type.CLICK)) {
+		if (e.has(Type.DOWN)) {
 			if (talkMode) {
 				int idx = 0;
 				Point pt = new Point(e.x, e.y);
@@ -252,15 +254,28 @@ public class BarScreen extends ScreenBase {
 					idx++;
 				}
 				askRepaint();
-			} else
-			if (enableTalk && e.within(base.x, base.y, base.width, 400)) {
-				// FIXME talkmode
-				TalkPerson tp = getPerson();
-				if (tp != null) {
-					talkMode = true;
-					person = tp;
-					setState(tp.states.get(TalkState.START));
-					askRepaint();
+			} else {
+				if (enableTalk && e.within(base.x, base.y, base.width, 400)) {
+					// FIXME talkmode
+					TalkPerson tp = getPerson();
+					if (tp != null) {
+						talkMode = true;
+						person = tp;
+						setState(tp.states.get(TalkState.START));
+						askRepaint();
+					}
+				} else
+				if (!base.contains(e.x, e.y)) {
+					hideSecondary();
+					return true;
+				} else {
+					WalkPosition position = ScreenUtils.getWalk("*bar", world());
+					for (WalkTransition wt : position.transitions) {
+						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
+							ScreenUtils.doTransition(position, wt, commons);
+							return true;
+						}
+					}
 				}
 			}
 		} else
@@ -268,17 +283,19 @@ public class BarScreen extends ScreenBase {
 			if (talkMode) {
 				Point pt = new Point(e.x, e.y);
 				int idx = 0;
+				TalkSpeech last = highlight;
 				highlight = null;
 				for (Choice c : choices) {
 					if (c.test(base.x, base.y, pt)) {
 						highlight = state.speeches.get(idx);
-						askRepaint();
 						break;
 					}
 					idx++;
 				}
+				if (last != highlight) {
+					askRepaint();
+				}
 			} else {
-				
 				WalkTransition prev = pointerTransition;
 				pointerTransition = null;
 				WalkPosition position = ScreenUtils.getWalk("*bar", world());
@@ -290,19 +307,6 @@ public class BarScreen extends ScreenBase {
 				}
 				if (prev != pointerTransition) {
 					askRepaint();
-				}
-			}
-		} else
-		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
-			hideSecondary();
-			return true;
-		} else
-		if (e.has(Type.DOWN) && !talkMode) {
-			WalkPosition position = ScreenUtils.getWalk("*bar", world());
-			for (WalkTransition wt : position.transitions) {
-				if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-					ScreenUtils.doTransition(position, wt, commons);
-					return true;
 				}
 			}
 		}

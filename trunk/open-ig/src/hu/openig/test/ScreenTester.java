@@ -106,6 +106,8 @@ public class ScreenTester extends JFrame implements GameControls {
 	volatile String parentText = txtLoad;
 	/** The UI language. */
 	volatile String language = "hu";
+	/** The initial arguments. */
+	static String[] arguments;
 	/** The render panel. */
 	final JComponent surface = new JComponent() {
 		/** */
@@ -529,7 +531,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				try {
 					config = new Configuration("open-ig-config.xml");
 					config.load();
-					config.watcherWindow = new ConsoleWatcher();
+					config.watcherWindow = new ConsoleWatcher(arguments, VERSION);
 					config.language = language;
 					long t = System.nanoTime();
 					commons = new CommonResources(config, ScreenTester.this);
@@ -603,6 +605,7 @@ public class ScreenTester extends JFrame implements GameControls {
 	 * @param args no arguments
 	 */
 	public static void main(String[] args) {
+		arguments = args;
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
