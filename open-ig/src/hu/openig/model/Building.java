@@ -93,9 +93,12 @@ public class Building {
 		}
 		int workerDemand = getWorkers();
 		int energyDemand = (int)getResource("energy");
-		if (assignedWorker * 2 > workerDemand) {
-			return 0.0f;
-		}
+
+//		Efficiency doesn't drop to 0 when less than half workers    		
+//		if (assignedWorker * 2 > workerDemand) {
+//			return 0.0f;
+//		}
+
 		// if the building doesn't need energy
 		if (energyDemand >= 0) {
 			return Math.min(assignedWorker / (float)workerDemand, hitpoints / (float)type.hitpoints);
@@ -106,6 +109,19 @@ public class Building {
 		return Math.min(
 				Math.min(assignedEnergy / (float)energyDemand, assignedWorker / (float)workerDemand), 
 				hitpoints / (float)type.hitpoints);
+	}
+	/**
+	 * @return test if the building is operational
+	 */
+	public boolean isOperational() {
+		return isOperational(getEfficiency());
+	}
+	/**
+	 * @param efficiency the efficiency value 0..1 
+	 * @return tell if an efficiency value indicates an operational building. 
+	 */
+	public static boolean isOperational(float efficiency) {
+		return efficiency > 0.0;
 	}
 	/**
 	 * @return is the building in construction phase?

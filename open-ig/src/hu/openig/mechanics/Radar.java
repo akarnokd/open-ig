@@ -132,7 +132,7 @@ public final class Radar {
 			}
 			int radar = 0;
 			for (Building b : p.surface.buildings) {
-				if (b.getEfficiency() >= 0.5) {
+				if (b.isOperational()) {
 					if (b.hasResource("radar")) {
 						radar = Math.max(radar, (int)b.getResource("radar"));
 					}

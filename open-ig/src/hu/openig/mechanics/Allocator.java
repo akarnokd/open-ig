@@ -142,7 +142,7 @@ public final class Allocator {
 		int availableWorker = availableWorkers;
 		int demandWorker = 0;
 		for (BuildingAllocationWorker b : ras) {
-			if (b.efficiencyBound >= 0.5f) {
+			if (Building.isOperational(b.efficiencyBound)) {
 				demandWorker += b.workerDemand * b.efficiencyBound;
 			} else {
 				b.workerAllocated = 0;
@@ -159,7 +159,7 @@ public final class Allocator {
 		float availableEnergy = 0;
 		
 		for (BuildingAllocationWorker b : ras) {
-			if (b.efficiencyBound >= 0.5f) {
+			if (Building.isOperational(b.efficiencyBound)) {
 				int toAssign = (int)(b.workerDemand * b.efficiencyBound * targetEfficiency);
 				b.workerAllocated = toAssign > availableWorker ? toAssign : availableWorker;
 				availableWorker -= b.workerAllocated;
@@ -178,7 +178,7 @@ public final class Allocator {
 		targetEfficiency = Math.min(1.0f, availableEnergy / demandEnergy);
 		
 		for (BuildingAllocationWorker b : ras) {
-			if (b.efficiencyBound >= 0.5f) {
+			if (Building.isOperational(b.efficiencyBound)) {
 				if (!b.producesEnergy) {
 					float workerPercent = 1.0f * b.workerAllocated / b.workerDemand;
 					float allocPercent = workerPercent * targetEfficiency;

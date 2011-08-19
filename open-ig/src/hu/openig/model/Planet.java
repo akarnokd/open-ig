@@ -131,27 +131,28 @@ public class Planet implements Named, Owned {
 		result.vehicleMax = 8; // default per planet
 		
 		for (Building b : surface.buildings) {
-			if (b.getEfficiency() >= 0.5) {
+			float eff = b.getEfficiency();
+			if (Building.isOperational(eff)) {
 				if (b.hasResource("house")) {
-					result.houseAvailable += b.getResource("house") * b.getEfficiency();
+					result.houseAvailable += b.getResource("house") * eff;
 				}
 				if (b.hasResource("food")) {
-					result.foodAvailable += b.getResource("food") * b.getEfficiency();
+					result.foodAvailable += b.getResource("food") * eff;
 				}
 				if (b.hasResource("police")) {
-					result.policeAvailable += b.getResource("police") * b.getEfficiency();
+					result.policeAvailable += b.getResource("police") * eff;
 				}
 				if (b.hasResource("hospital")) {
-					result.hospitalAvailable += b.getResource("hospital") * b.getEfficiency();
+					result.hospitalAvailable += b.getResource("hospital") * eff;
 				}
 				if (b.hasResource("spaceship")) {
-					result.spaceshipActive += b.getResource("spaceship") * b.getEfficiency();
+					result.spaceshipActive += b.getResource("spaceship") * eff;
 				}
 				if (b.hasResource("equipment")) {
-					result.equipmentActive += b.getResource("equipment") * b.getEfficiency();
+					result.equipmentActive += b.getResource("equipment") * eff;
 				}
 				if (b.hasResource("weapon")) {
-					result.weaponsActive += b.getResource("weapon") * b.getEfficiency();
+					result.weaponsActive += b.getResource("weapon") * eff;
 				}
 				if (b.hasResource("civil")) {
 					result.civilLabActive += b.getResource("civil");
@@ -176,7 +177,7 @@ public class Planet implements Named, Owned {
 				}
 				if (b.hasResource("repair")) {
 					result.freeRepair = Math.max(b.getResource("repair"), result.freeRepair);
-					result.freeRepairEff = Math.max(b.getEfficiency(), result.freeRepairEff);
+					result.freeRepairEff = Math.max(eff, result.freeRepairEff);
 				}
 				colonyHubOperable |= "MainBuilding".equals(b.type.kind);
 				if ("TradersSpaceport".equals(b.type.id)) {

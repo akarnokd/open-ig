@@ -343,10 +343,10 @@ public class PlanetScreen extends ScreenBase {
 				if (se.building.isDamaged()) {
 					tile = se.building.type.minimapTiles.damaged;
 				} else
-				if (se.building.getEfficiency() < 0.5f) {
-					tile = se.building.type.minimapTiles.inoperable;
-				} else {
+				if (se.building.isOperational()) {
 					tile = se.building.type.minimapTiles.normal;
+				} else {
+					tile = se.building.type.minimapTiles.inoperable;
 				}
 			}
 			
@@ -376,10 +376,10 @@ public class PlanetScreen extends ScreenBase {
 			if (se.building.isSeverlyDamaged()) {
 				tile = se.building.tileset.damaged;
 			} else 
-			if (se.building.getEfficiency() < 0.5f) {
-				tile = se.building.tileset.nolight;
-			} else {
+			if (se.building.isOperational()) {
 				tile = se.building.tileset.normal;
+			} else {
+				tile = se.building.tileset.nolight;
 			}
 			cell.yCompensation = 27 - tile.imageHeight;
 			cell.a = loc1.x - se.virtualColumn;
