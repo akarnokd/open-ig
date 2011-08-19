@@ -181,6 +181,7 @@ public class SingleplayerScreen extends ScreenBase {
 								config.computerVoiceScreen = false;
 								commons.start(true);
 								commons.control().displayPrimary(Screens.BRIDGE);
+								config.computerVoiceScreen = csw;
 								commons.control().displayStatusbar();
 								
 								commons.pool.schedule(new Callable<Void>() {
@@ -189,7 +190,6 @@ public class SingleplayerScreen extends ScreenBase {
 										SwingUtilities.invokeLater(new Runnable() {
 											@Override
 											public void run() {
-												config.computerVoiceScreen = csw;
 												Message msg = new Message();
 												msg.gametime = world().time.getTimeInMillis();
 												msg.timestamp = System.currentTimeMillis();
