@@ -25,7 +25,7 @@
 			<desc lang='en'>The program's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.93.200'>
+	<module id='Game' version='0.93.300'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -40,7 +40,7 @@
 			<desc lang='hu'>Javítások és apró fejlesztések.</desc>
 			<desc lang='en'>Bug fixes and small improvements.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.200.jar' sha1='fd6c0baf3fda4718a670fe7adcb04cf22cbf540f'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.300.jar' sha1='18cebb8087ba744ac98996cb01674169cbe315ef'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
@@ -59,12 +59,15 @@
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip' sha1='123225ba78e3a02d1d3e43227e4dfd67a9bbcdfe'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip' sha1='2964a6bbf5dad6f43c5712c9662024b6808c6010'/>
 
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110818b.zip' sha1='51efe6977695b34b5a8dc840b78e91e5b38c3918'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 18 / B</desc>
-			<desc lang='en'>The upgraded resource file. 18th August, 2011 / B</desc>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110819a.zip' sha1='802d10ec807120310f3f37010ee40babbfe5a7bf'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 19 / A</desc>
+			<desc lang='en'>The upgraded resource file. 19th August, 2011 / A</desc>
 		</file>
 
-
+		<remove file='open-ig-upgrade-20110818b.zip' sha1='51efe6977695b34b5a8dc840b78e91e5b38c3918'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 18 / B</desc>
+			<desc lang='en'>The upgraded resource file. 18th August, 2011 / B</desc>
+		</remove>
 		<remove file='open-ig-upgrade-20110818a.zip' sha1='4ef017a14b2e9f8722b077e8845715aa17478a8b'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 18 / A</desc>
 			<desc lang='en'>The upgraded resource file. 18th August, 2011 / A</desc>
