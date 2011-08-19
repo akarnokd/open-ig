@@ -844,7 +844,8 @@ public class SpacewarScreen extends ScreenBase {
 			double shieldValue = 0;
 			// add shields
 			for (Building b : nearbyPlanet.surface.buildings) {
-				if (b.getEfficiency() >= 0.5 && b.type.kind.equals("Shield")) {
+				float eff = b.getEfficiency();
+				if (Building.isOperational(eff) && b.type.kind.equals("Shield")) {
 					BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
 					
 					SpacewarShield sws = new SpacewarShield();
@@ -856,7 +857,7 @@ public class SpacewarScreen extends ScreenBase {
 					sws.destruction = bge.destruction;
 					sws.building = b;
 
-					shieldValue = Math.max(shieldValue, b.getEfficiency() * bge.shields);
+					shieldValue = Math.max(shieldValue, eff * bge.shields);
 
 					shields.add(sws);
 					surface.add(sws);
@@ -864,7 +865,8 @@ public class SpacewarScreen extends ScreenBase {
 			}
 			// add projectors
 			for (Building b : nearbyPlanet.surface.buildings) {
-				if (b.getEfficiency() >= 0.5 && b.type.kind.equals("Gun")) {
+				float eff = b.getEfficiency();
+				if (Building.isOperational(eff) && b.type.kind.equals("Gun")) {
 					BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
 					SpacewarProjector sp = new SpacewarProjector();
 

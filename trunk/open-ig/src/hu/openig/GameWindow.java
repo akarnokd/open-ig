@@ -1546,10 +1546,10 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 				// check surface for defensive structures
 				for (Building b : bi.targetPlanet.surface.buildings) {
-					if (b.getEfficiency() >= 0.5 && "Defensive".equals(b.type.kind)) {
+					if (b.isOperational() && "Defensive".equals(b.type.kind)) {
 						groundBattle = true;
 					}
-					if (b.getEfficiency() >= 0.5 && "Gun".equals(b.type.kind)) {
+					if (b.isOperational() && "Gun".equals(b.type.kind)) {
 						spaceBattle = true;
 					}
 				}

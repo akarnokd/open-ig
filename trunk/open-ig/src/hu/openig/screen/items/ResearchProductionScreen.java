@@ -1489,16 +1489,16 @@ public class ResearchProductionScreen extends ScreenBase {
 						Research rs = player().research.get(rt);
 						switch (rs.state) {
 						case RUNNING:
-							selectedTechStatusValue.text(format("researchinfo.progress.running", (int)rs.getPercent()), true).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.running", (int)rs.getPercent())).visible(true);
 							break;
 						case STOPPED:
-							selectedTechStatusValue.text(format("researchinfo.progress.paused", (int)rs.getPercent()), true).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.paused", (int)rs.getPercent())).visible(true);
 							break;
 						case LAB:
-							selectedTechStatusValue.text(format("researchinfo.progress.lab", (int)rs.getPercent()), true).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.lab", (int)rs.getPercent())).visible(true);
 							break;
 						case MONEY:
-							selectedTechStatusValue.text(format("researchinfo.progress.money", (int)rs.getPercent()), true).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.money", (int)rs.getPercent())).visible(true);
 							break;
 						default:
 							selectedTechStatusValue.text("");
@@ -1579,7 +1579,6 @@ public class ResearchProductionScreen extends ScreenBase {
 			selectedCompleteValue.text("----");
 			selectedTechStatusValue.text("----");
 			selectedTechNameValue.text("-");
-			selectedTechStatusValue.text("-");
 			selectedTimeValue.text("----");
 			selectedTimeValue.size(14);
 		}

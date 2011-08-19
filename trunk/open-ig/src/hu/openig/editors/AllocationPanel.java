@@ -233,15 +233,16 @@ public class AllocationPanel extends JPanel {
 			if (b.isReady()) {
 				totalWorkerDemand += b.getWorkers();
 				int e = b.getEnergy();
+				float eff = b.getEfficiency();
 				if (e < 0) {
 					totalEnergyDemand += e;
 				} else {
-					producedEnergy += b.getEnergy() * b.getEfficiency();
+					producedEnergy += b.getEnergy() * eff;
 				}
-				if (b.getEfficiency() >= 0.5f) {
+				if (Building.isOperational(eff)) {
 					operationalBuildings++;
 				}
-				totalEfficiency += b.getEfficiency();
+				totalEfficiency += eff;
 			}
 		}
 		workerDemand.setText("" + totalWorkerDemand);

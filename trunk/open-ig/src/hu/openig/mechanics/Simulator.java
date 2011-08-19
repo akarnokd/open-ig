@@ -207,7 +207,10 @@ public final class Simulator {
 			
 			planet.owner.statistics.totalBuilding++;
 			world.statistics.totalBuilding++;
-			if (b.getEfficiency() >= 0.5f) {
+			
+			float eff = b.getEfficiency();
+			
+			if (Building.isOperational(eff)) {
 				planet.owner.statistics.totalAvailableBuilding++;
 				world.statistics.totalAvailableBuilding++;
 			}
@@ -262,7 +265,7 @@ public final class Simulator {
 				b.repairing = false;
 				result = true;
 			}
-			if (b.getEfficiency() >= 0.5) {
+			if (Building.isOperational(eff)) {
 				if (b.hasResource("credit")) {
 					tradeIncome += b.getResource("credit");
 				}
@@ -270,7 +273,7 @@ public final class Simulator {
 					multiply = b.getResource("multiply");
 				}
 				if (b.hasResource("morale")) {
-					moraleBoost += b.getResource("morale") * b.getEfficiency();
+					moraleBoost += b.getResource("morale") * eff;
 				}
 				if (b.hasResource("radar")) {
 					radar = Math.max(radar, (int)b.getResource("radar"));
@@ -380,14 +383,20 @@ public final class Simulator {
 			planet.morale = (int)nextMorale;
 			
 			// avoid a practically infinite population descent
-			if (planet.population < 1000 && nextMorale < 50) {
-				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
-			} else 
+//			if (planet.population < 1000 && nextMorale < 50) {
+//				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
+//			} else 
+//			if (nextMorale < 50) {
+//				// lower morale should decrease population more rapidly
+//				planet.population = (int)Math.max(0, planet.population + planet.population * (nextMorale - 50) / 250);
+//			} else {
+//				planet.population = (int)Math.max(0, planet.population + planet.population * (nextMorale - 50) / 500);
+//			}
+
 			if (nextMorale < 50) {
-				// lower morale should decrease population more rapidly
-				planet.population = (int)Math.max(0, planet.population + planet.population * (nextMorale - 50) / 250);
+				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
 			} else {
-				planet.population = (int)Math.max(0, planet.population + planet.population * (nextMorale - 50) / 500);
+				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
 			}
 			
 			planet.tradeIncome = (int)(tradeIncome * multiply);
