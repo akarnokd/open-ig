@@ -19,6 +19,7 @@ import hu.openig.model.InventoryItemGroup;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
@@ -43,7 +44,9 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -188,8 +191,6 @@ public class EquipmentScreen extends ScreenBase {
 	UILabel innerEquipmentSeparator;
 	/** The name and type of the current selected ship or equipment. */
 	UILabel selectedNameAndType;
-	/** The planet image. */
-	UIImage planet;
 	/** The equipment slot locations. */
 	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
 	/** The rolling disk animation timer. */
@@ -234,6 +235,8 @@ public class EquipmentScreen extends ScreenBase {
 	UIImageButton sell;
 	/** The last selection mode. */
 	SelectionMode lastSelection;
+	/** Is the planet visible? */
+	boolean planetVisible;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -600,7 +603,6 @@ public class EquipmentScreen extends ScreenBase {
 		selectedNameAndType.color(0xFF6DB269);
 		selectedNameAndType.horizontally(HorizontalAlignment.CENTER);
 		
-		planet = new UIImage(commons.equipment().planetOrbit);
 		leftList = new VehicleList(commons);
 		rightList = new VehicleList(commons);
 		rightList.visible(false);
@@ -725,11 +727,32 @@ public class EquipmentScreen extends ScreenBase {
 	@Override
 	public void onEnter(Screens mode) {
 		ResearchType rt = research();
+		List<ResearchType> rts = world().getResearch();
 		if (rt == null) {
-			List<ResearchType> rts = world().getResearch();
 			if (rts.size() > 0) {
 				rt = rts.get(0);
-				world().selectResearch(rt);
+				research(rt);
+			}
+		}
+		if (rt.category.main == ResearchMainCategory.BUILDINS) {
+			if (player().selectionMode == SelectionMode.FLEET && fleet() != null) {
+				// select first fighter
+				for (ResearchType rt0 : rts) {
+					if (rt0.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+						rt = rt0;
+						research(rt0);
+						break;
+					}
+				}
+			} else
+			if (player().selectionMode == SelectionMode.PLANET || player().selectionMode == null) {
+				for (ResearchType rt0 : rts) {
+					if (rt0.category == ResearchSubCategory.WEAPONS_TANKS) {
+						rt = rt0;
+						research(rt0);
+						break;
+					}
+				}
 			}
 		}
 		displayCategory(rt.category);
@@ -875,8 +898,6 @@ public class EquipmentScreen extends ScreenBase {
 		left2.location(left1.x - 48, left1.y);
 		left3.location(left2.x - 48, left2.y);
 		
-		planet.location(leftPanel.x, leftPanel.y + (leftPanel.height - planet.height) / 2);
-		
 		for (int i = 0; i < 6; i++) {
 			VehicleCell vc = leftFighterCells.get(i);
 			vc.bounds(leftPanel.x + leftPanel.width - 2 - (6 - i) * 34, leftPanel.y + 2, 33, 38);
@@ -930,6 +951,14 @@ public class EquipmentScreen extends ScreenBase {
 		
 		super.draw(g2);
 
+		if (planetVisible) {
+			Shape save0 = g2.getClip();
+			g2.clipRect(leftPanel.x, leftPanel.y, leftPanel.width, leftPanel.height);
+			BufferedImage planet = commons.equipment().planetOrbit;
+			g2.drawImage(planet, leftPanel.x, leftPanel.y + (leftPanel.height - planet.getHeight()) / 2, null);
+			g2.setClip(save0);
+		}
+		
 		if (innerEquipmentVisible) {
 			g2.setColor(new Color(0xFF4D7DB6));
 			g2.drawRect(innerEquipment.x, innerEquipment.y, innerEquipment.width - 1, innerEquipment.height - 1);
@@ -1049,7 +1078,7 @@ public class EquipmentScreen extends ScreenBase {
 				minimap.moveTo(planet().x, planet().y);
 			}
 			
-			planet.visible(true);
+			planetVisible = true;
 			List<Planet> planets = player().ownPlanets();
 			Collections.sort(planets, Planet.NAME_ORDER);
 			int idx = planets.indexOf(planet());
@@ -1158,7 +1187,7 @@ public class EquipmentScreen extends ScreenBase {
 			prev.enabled(idx > 0);
 			next.enabled(idx < fleets.size() - 1);
 			
-			planet.visible(false);
+			planetVisible = false;
 			if (editPrimary && (animationStep % 10) < 5) {
 				fleetName.text(f.name + "-");
 			} else {
@@ -1756,6 +1785,13 @@ public class EquipmentScreen extends ScreenBase {
 					secondary.name += e.getKeyChar();
 				}
 				e.consume();
+			}
+		} else
+		if (e.getKeyCode() == KeyEvent.VK_ENTER && leftList.selectedItem != null) {
+			if ((e.getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != 0) {
+				leftList.previousGroupItem();
+			} else {
+				leftList.nextGroupItem(); 
 			}
 		}
 		return super.keyboard(e);
