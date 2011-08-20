@@ -50,7 +50,7 @@ List of things that need fixing, but without any due date other than hopefully t
 || Add demand for fire brigade || I guess it is a simple rule of population >= 25000. ||
 || ~~Add earthquake to earth and rocky planets~~ || ~~With a probability of 1 in two months. Damages buildings by 25% and power planets by 55%.~~  *v0.92*||
 || Add smoke and fire animation to buildings || The animation is simple but where to place them? ||
-|| Make the equipment screen resize with the game window. || This will simplify the management of larger fleets where the mini scroll panel is tedious now. ||
+|| ~Make the equipment screen resize with the game window.~ || ~This will simplify the management of larger fleets where the mini scroll panel is tedious now.~ *v0.93.350* ||
 || Add explicite mute options to volumes || Currently, 0 means mute but some platforms do not have the MUTE command for Java audio stream. They need to stop playing music, ignore sound effects and movie. ||
 || Add tooltips & status text to the statusbars || Tooltips for buttons show up on the upper right box, status text such as "Stopped", "You have message" and the current planet name will show up on the lower right box. ||
 || Add sound effects to buttons & ability to disable button sounds separately || Same as computer voice, fun at first, but annoying later on. ||
