@@ -32,6 +32,7 @@ import hu.openig.screen.ScreenBase;
 import hu.openig.screen.TechnologySlot;
 import hu.openig.screen.VehicleCell;
 import hu.openig.screen.VehicleList;
+import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
@@ -597,6 +598,7 @@ public class EquipmentScreen extends ScreenBase {
 		selectedNameAndType = new UILabel(format("equipment.selectednametype", "TODO", "TODO"), 10, commons.text());
 		selectedNameAndType.visible(false);
 		selectedNameAndType.color(0xFF6DB269);
+		selectedNameAndType.horizontally(HorizontalAlignment.CENTER);
 		
 		planet = new UIImage(commons.equipment().planetOrbit);
 		leftList = new VehicleList(commons);
@@ -731,6 +733,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		}
 		displayCategory(rt.category);
+		update();
 		doSelectVehicle(rt);
 		doSelectListVehicle(rt);
 		updateCurrentInventory();
@@ -787,16 +790,18 @@ public class EquipmentScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
+		base.height = height - 38;
 		RenderTools.centerScreen(base, width, height, true);
 		
-		leftPanel.setBounds(base.x + 1, base.y + 1, 318, 198);
-		rightPanel.setBounds(leftPanel.x + leftPanel.width + 2, leftPanel.y, 318, 198);
-		infoButton.location(base.x + 535, base.y + 303 - 20);
+		leftPanel.setBounds(base.x + 1, base.y + 1, 318, base.height - 244);
+		rightPanel.setBounds(leftPanel.x + leftPanel.width + 2, leftPanel.y, 318, base.height - 244);
+		
+		infoButton.location(base.x + 535, base.y + base.height - 139 - 20);
 		productionButton.location(infoButton.x, infoButton.y + infoButton.height);
 		researchButton.location(productionButton.x, productionButton.y + productionButton.height);
 		bridgeButton.location(researchButton.x, researchButton.y + researchButton.height);
 		
-		starmapButton.location(base.x + 479, base.y + 303 - 20);
+		starmapButton.location(base.x + 479, base.y + base.height - 139 - 20);
 		colonyButton.location(starmapButton.x + 26, starmapButton.y);
 		
 		noResearch.location(researchButton.location());
@@ -807,10 +812,10 @@ public class EquipmentScreen extends ScreenBase {
 		endJoin.location(infoButton.location());
 		endSplit.location(infoButton.location());
 		
-		prev.location(base.x + 151, base.y + 304 - 20);
-		next.location(base.x + 152 + 50, base.y + 304 - 20);
+		prev.location(base.x + 151, base.y + base.height - 138 - 20);
+		next.location(base.x + 152 + 50, base.y + base.height - 138 - 20);
 		
-		fleetName.location(base.x + 3, base.y + 308 - 20);
+		fleetName.location(base.x + 3, base.y + base.height - 134 - 20);
 		fleetName.width = 147;
 		
 		spaceshipsLabel.location(fleetName.x + 3, fleetName.y + 20);
@@ -828,7 +833,7 @@ public class EquipmentScreen extends ScreenBase {
 		secondaryFighters.location(secondaryLabel.x, secondaryLabel.y + 14);
 		secondaryVehicles.location(secondaryLabel.x, secondaryFighters.y + 14);
 		
-		battleships.location(base.x + 2, base.y + 435 - 20);
+		battleships.location(base.x + 2, base.y + base.height - 7 - 20);
 		stations.location(battleships.location());
 		cruisers.location(battleships.x + 50, battleships.y);
 		fighters.location(cruisers.x + 50, cruisers.y);
@@ -842,42 +847,35 @@ public class EquipmentScreen extends ScreenBase {
 		vehiclesEmpty.location(vehicles.location());
 		
 		for (int i = 0; i < 6; i++) {
-			slots.get(i).location(base.x + 2 + i * 106, base.y + 219 - 20);
+			slots.get(i).location(base.x + 2 + i * 106, base.y + base.height - 223 - 20);
 			slots.get(i).size(106, 82);
 		}
 
-		noPlanetNearby.location(base.x + 242, base.y + 194 - 20);
+		noPlanetNearby.location(base.x + 242, base.y + base.height - 248 - 20);
 		noSpaceport.location(noPlanetNearby.location());
 		notYourPlanet.location(noSpaceport.location());
 		noSpaceStation.location(noSpaceport.location());
 		
-		transferButton.location(base.x + 401, base.y + 194 - 20);
+		transferButton.location(base.x + 401, base.y + base.height - 248 - 20);
 //		joinButton.location(transferButton.location());
-		splitButton.location(base.x + 480, base.y + 194 - 20);
+		splitButton.location(base.x + 480, base.y + base.height - 248 - 20);
 		
-		newButton.location(base.x + 560, base.y + 194 - 20);
-		addButton.location(base.x + 322, base.y + 194 - 20);
+		newButton.location(base.x + 560, base.y + base.height - 248 - 20);
+		addButton.location(base.x + 322, base.y + base.height - 248 - 20);
 		addOne.location(addButton.location());
-		delButton.location(base.x + 242, base.y + 194 - 20);
-		removeOne.location(base.x + 242, base.y + 194 - 20);
+		delButton.location(base.x + 242, base.y + base.height - 248 - 20);
+		removeOne.location(base.x + 242, base.y + base.height - 248 - 20);
 		
-		listButton.location(base.x + 620, base.y + 49 - 20);
+		listButton.location(base.x + 620, base.y + (rightPanel.height - listButton.height) / 2);
 		
-		right1.location(base.x + 322, base.y + 191 - 20);
+		right1.location(base.x + 322, base.y + base.height - 251 - 20);
 		right2.location(right1.x + 48, right1.y);
 		right3.location(right2.x + 48, right2.y);
-		left1.location(base.x + 272, base.y + 191 - 20);
+		left1.location(base.x + 272, base.y + base.height - 251 - 20);
 		left2.location(left1.x - 48, left1.y);
 		left3.location(left2.x - 48, left2.y);
 		
-		innerEquipment.setBounds(base.x + 325, base.y + 156 - 20, 120, 35);
-		innerEquipmentName.location(innerEquipment.x + 5, innerEquipment.y + 4);
-		innerEquipmentSeparator.location(innerEquipmentName.x, innerEquipmentName.y + 10);
-		innerEquipmentValue.location(innerEquipmentName.x, innerEquipmentName.y + 20);
-		
-		selectedNameAndType.location(base.x + 326, base.y + 56 - 20);
-		
-		planet.location(leftPanel.x - 1, leftPanel.y - 1);
+		planet.location(leftPanel.x, leftPanel.y + (leftPanel.height - planet.height) / 2);
 		
 		for (int i = 0; i < 6; i++) {
 			VehicleCell vc = leftFighterCells.get(i);
@@ -888,7 +886,8 @@ public class EquipmentScreen extends ScreenBase {
 		}
 		for (int i = 0; i < 7; i++) {
 			VehicleCell vc = leftTankCells.get(i);
-			vc.bounds(leftPanel.x + leftPanel.width - 2 - (7 - i) * 34, leftPanel.y + leftPanel.height - 56, 33, 28);
+			vc.bounds(leftPanel.x + leftPanel.width - 2 - (7 - i) * 34, 
+					leftPanel.y + leftPanel.height - 56, 33, 28);
 			
 			vc = rightTankCells.get(i);
 			vc.bounds(rightPanel.x + 2 + i * 34, rightPanel.y + rightPanel.height - 56, 33, 28);
@@ -896,20 +895,36 @@ public class EquipmentScreen extends ScreenBase {
 
 		leftList.bounds(leftPanel.x + 72, leftPanel.y + 40, leftPanel.width - 74, leftPanel.height - 56 - 38);
 		rightList.bounds(rightPanel.x, rightPanel.y + 40, rightPanel.width - 22, rightPanel.height - 56 - 38);
+
+		configure.bounds(rightPanel.x, rightPanel.y + 28 + (rightPanel.height - 198) / 2, 298, 128);
+
+		innerEquipment.setBounds(base.x + 325, addOne.y - 36, 120, 35);
+		innerEquipmentName.location(innerEquipment.x + 5, innerEquipment.y + 4);
+		innerEquipmentSeparator.location(innerEquipmentName.x, innerEquipmentName.y + 10);
+		innerEquipmentValue.location(innerEquipmentName.x, innerEquipmentName.y + 20);
 		
-		configure.bounds(rightPanel.x, rightPanel.y + 28, 298, 128);
+		selectedNameAndType.location(base.x + 326, configure.y - 20);
+		selectedNameAndType.size(rightPanel.width, 20);
+
 		
 		fleetListing.bounds(rightPanel.x + 5, listButton.y, rightPanel.width - 26, listButton.height);
 
-		minimap.bounds(base.x + 254, base.y + 281, 225, 161);
+		minimap.bounds(base.x + 254, base.y + base.height - 161, 225, 161);
 		
 		sell.location(delButton.x - delButton.width - 2, delButton.y);
 		deleteButton.location(sell.x - sell.width, sell.y);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		base.height = height - 38;
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
-		g2.drawImage(commons.equipment().base, base.x, base.y, null);
+
+		g2.drawImage(commons.equipment().panelTop, base.x, base.y, null);
+		RenderTools.fill(g2, base.x, base.y + commons.equipment().panelTop.getHeight(), base.width, base.y + base.height - commons.equipment().panelBottom.getHeight(), commons.equipment().panelMiddle);
+		g2.drawImage(commons.equipment().panelBottom, base.x, base.y + base.height - commons.equipment().panelBottom.getHeight(), null);
+		
+		RenderTools.fill(g2, leftPanel, commons.equipment().leftStars);
+		RenderTools.fill(g2, rightPanel, commons.equipment().rightStars);
 		
 		update();
 		
@@ -947,7 +962,7 @@ public class EquipmentScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (!base.contains(e.x, e.y) && e.has(Type.UP) && !minimap.panMode) {
+		if (!base.contains(e.x, e.y) && e.has(Type.DOWN) && !minimap.panMode) {
 			hideSecondary();
 			return true;
 		} else {
@@ -1077,7 +1092,6 @@ public class EquipmentScreen extends ScreenBase {
 						&& planet().inventoryCount(rt.category, player()) < 3);
 				delButton.visible(false);
 				sell.visible(planet().inventoryCount(rt, player()) > 0);
-				noSpaceStation.visible(false);
 			} else
 			if (own && ps.hasSpaceStation && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				addButton.visible(
@@ -1095,13 +1109,13 @@ public class EquipmentScreen extends ScreenBase {
 				delButton.visible(
 						planet().inventoryCount(rt, player()) > 0);
 				sell.visible(delButton.visible());
-				noSpaceStation.visible(false);
 			} else {
 				addButton.visible(false);
 				delButton.visible(false);
 				sell.visible(false);
-				noSpaceStation.visible(own);
 			}
+			noSpaceStation.visible(own && !ps.hasSpaceStation && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS);
+
 			addOne.visible(false);
 			removeOne.visible(false);
 			editPrimary = false;
@@ -1201,6 +1215,7 @@ public class EquipmentScreen extends ScreenBase {
 				
 				infoButton.visible(false);
 				configure.visible(false);
+				selectedNameAndType.visible(false);
 				rightList.visible(true);
 				prepareCells(null, secondary, rightFighterCells, rightTankCells);
 				
@@ -1229,6 +1244,7 @@ public class EquipmentScreen extends ScreenBase {
 				right2.visible(false);
 				right3.visible(false);
 				rightList.visible(false);
+				selectedNameAndType.visible(true);
 			}
 			
 			fleetStatusLabel.visible(true);
@@ -1333,6 +1349,9 @@ public class EquipmentScreen extends ScreenBase {
 			splitButton.visible(secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
 			transferButton.visible(secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && fleet().fleetsInRange(20).size() > 0);
 			deleteButton.visible(secondary == null && f.inventory.size() == 0 && f.owner == player());
+		}
+		if (configure.type != null) {
+			selectedNameAndType.text(configure.type.longName);
 		}
 	}
 	/** 

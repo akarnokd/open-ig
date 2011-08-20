@@ -135,4 +135,8 @@ public class ResearchType {
 		}
 		return Integer.parseInt(s);
 	}
+	/** @return the research time in 10s of ingame minutes. */
+	public int researchTime() {
+		return researchCost * 3 / 80;
+	}
 }

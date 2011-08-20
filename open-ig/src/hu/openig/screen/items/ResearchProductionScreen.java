@@ -1526,8 +1526,9 @@ public class ResearchProductionScreen extends ScreenBase {
 					} else {
 						selectedTechStatusValue.text(get("researchinfo.progress.can"));
 						selectedCompleteValue.text("----");
-						selectedTimeValue.text("" + (rt.researchCost / 20));
-						if ((rt.researchCost / 20) >= 10000) {
+						int rtime = rt.researchTime();
+						selectedTimeValue.text("" + (rtime));
+						if (rtime >= 10000) {
 							selectedTimeValue.size(10);
 						} else {
 							selectedTimeValue.size(14);

@@ -30,7 +30,7 @@ public class Research {
 		if (remainingMoney == 0) {
 			return 0;
 		}
-		int normalFullTime = (type.researchCost / 20);
+		int normalFullTime = type.researchTime();
 		float remainingPercent = (100 - getPercent()) / 100;
 		float fundingPercent = 0.5f * remainingMoney / assignedMoney;
 		return (int)(normalFullTime * fundingPercent * remainingPercent);

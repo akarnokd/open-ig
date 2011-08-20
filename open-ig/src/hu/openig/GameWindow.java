@@ -41,6 +41,7 @@ import hu.openig.screen.items.DiplomacyScreen;
 import hu.openig.screen.items.EquipmentScreen;
 import hu.openig.screen.items.InfoScreen;
 import hu.openig.screen.items.LoadSaveScreen;
+import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
 import hu.openig.screen.items.LoadingScreen;
 import hu.openig.screen.items.MainScreen;
 import hu.openig.screen.items.MovieScreen;
@@ -1119,6 +1120,7 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_ESCAPE:
 					LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
 					scr.maySave = true;
+					scr.displayPage(SettingsPage.LOAD_SAVE);
 					e.consume();
 					break;
 				default:
