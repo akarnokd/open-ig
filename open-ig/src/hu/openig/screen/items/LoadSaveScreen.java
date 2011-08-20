@@ -274,7 +274,31 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 		
-		soundVolume = new UISpinner(14, sprev, snext, commons.text());
+		soundVolume = new UISpinner(14, sprev, snext, commons.text()) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
+					int dw = next.x - prev.x - prev.width - 2;
+					int x0 = e.x - prev.x - prev.width;
+					config.effectVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
+					return true;
+				} else
+				if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.effectVolume == 100))) {
+					commons.sounds.play(SoundType.BAR);
+					return true;
+				}
+				return super.mouse(e);
+			}
+			@Override
+			public void draw(Graphics2D g2) {
+				int dw = next.x - prev.x - prev.width - 2;
+				int ox = prev.x + prev.width + 1;
+				int dx = config.effectVolume * dw / 100;
+				g2.setColor(Color.WHITE);
+				g2.fillRect(ox + dx, 1, 2, height - 2);
+				super.draw(g2);
+			}
+		};
 		soundVolume.getValue = new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
@@ -319,7 +343,36 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 
-		musicVolume = new UISpinner(14, mprev, mnext, commons.text());
+		musicVolume = new UISpinner(14, mprev, mnext, commons.text()) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
+					int dw = next.x - prev.x - prev.width - 2;
+					int x0 = e.x - prev.x - prev.width;
+					config.musicVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
+					return true;
+				} else
+				if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.musicVolume == 100))) {
+					if (!commons.music.isRunning()) {
+						int ev = config.effectVolume;
+						config.effectVolume = config.musicVolume;
+						commons.sounds.play(SoundType.BAR);
+						config.effectVolume = ev;
+					}
+					return true;
+				}
+				return super.mouse(e);
+			}
+			@Override
+			public void draw(Graphics2D g2) {
+				int dw = next.x - prev.x - prev.width - 2;
+				int ox = prev.x + prev.width + 1;
+				int dx = config.musicVolume * dw / 100;
+				g2.setColor(Color.WHITE);
+				g2.fillRect(ox + dx, 1, 2, height - 2);
+				super.draw(g2);
+			}
+		};
 		musicVolume.getValue = new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
@@ -361,7 +414,35 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 
-		videoVolume = new UISpinner(14, vprev, vnext, commons.text());
+		videoVolume = new UISpinner(14, vprev, vnext, commons.text()) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
+					int dw = next.x - prev.x - prev.width - 2;
+					int x0 = e.x - prev.x - prev.width;
+					config.videoVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
+					return true;
+				} else
+				if (e.has(Type.UP) && ((e.x > prev.x + prev.width && e.x < next.x) 
+							|| config.videoVolume == 100)) {
+					int ev = config.effectVolume;
+					config.effectVolume = config.videoVolume;
+					commons.sounds.play(SoundType.BAR);
+					config.effectVolume = ev;
+					return true;
+				}
+				return super.mouse(e);
+			}
+			@Override
+			public void draw(Graphics2D g2) {
+				int dw = next.x - prev.x - prev.width - 2;
+				int ox = prev.x + prev.width + 1;
+				int dx = config.videoVolume * dw / 100;
+				g2.setColor(Color.WHITE);
+				g2.fillRect(ox + dx, 1, 2, height - 2);
+				super.draw(g2);
+			}
+		};
 		videoVolume.getValue = new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
@@ -584,11 +665,11 @@ public class LoadSaveScreen extends ScreenBase {
 		int vol = Math.max(soundLabel.width, Math.max(musicLabel.width, videoLabel.width));
 		
 		soundVolume.location(base.x + 50 + vol, base.y + 70);
-		soundVolume.width = 130;
+		soundVolume.width = 160;
 		musicVolume.location(base.x + 50 + vol, base.y + 100);
-		musicVolume.width = 130;
+		musicVolume.width = 160;
 		videoVolume.location(base.x + 50 + vol, base.y + 130);
-		videoVolume.width = 130;
+		videoVolume.width = 160;
 
 		computerVoiceScreen.location(base.x + 30, base.y + 160 + 8);
 		computerVoiceNotify.location(base.x + 30, base.y + 190 + 8);
