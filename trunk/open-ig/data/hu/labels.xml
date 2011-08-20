@@ -1944,7 +1944,7 @@
 	<entry key='settings.audio'>Hangok</entry>
 	<entry key='settings.gameplay'>Játékmenet</entry>
 	<entry key='settings.back'>Vissza</entry>
-	<entry key=''></entry>
+	<entry key='autobuild.no_more_building_space'>Az Auto-Építés kikapcsolt a(z) %s bolygón, mert elfogyott a hely.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
