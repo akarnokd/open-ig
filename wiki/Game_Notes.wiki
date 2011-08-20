@@ -18,6 +18,7 @@
   * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=40 Issue #40] switching to the equipment screen while a building research is selected now changes the selection to tanks (in case of a fleet) or to fighters (in case of a planet)
   * *Fix* fixed some UI behavior on the equipment screen
   * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=41 Issue #41] when upgrading equipment on a ship, you can now move to the next ship in the selected group by hitting ENTER (SHIFT+ENTER goes backwards)
+  * *Update* [http://code.google.com/p/open-ig/issues/detail?id=25 Issue #25] buildings operational level now requires 50% or more energy and less than 50% damage, previous 50% worker limit has been removed. This implies that undermanned buildings may still operate on efficiency such as 12%.
 
 = Version 0.93.300 - Mostly fixes =
   * Released: 2011-08-19 17:30
