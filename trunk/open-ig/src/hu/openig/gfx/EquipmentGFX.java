@@ -120,6 +120,9 @@ public class EquipmentGFX {
 	/** No spaceport. */
 	@Img(name = "equipment/label_no_spaceport")
 	public BufferedImage noSpaceport;
+	/** No spaceport. */
+	@Img(name = "equipment/label_no_spacestation")
+	public BufferedImage noSpaceStation;
 	/** Not your planet. */
 	@Img(name = "equipment/label_not_your_planet")
 	public BufferedImage notYourplanet;

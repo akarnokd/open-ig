@@ -139,6 +139,8 @@ public class EquipmentScreen extends ScreenBase {
 	UIImage noPlanetNearby;
 	/** No spaceport on the nearby planet. */
 	UIImage noSpaceport;
+	/** No space station. */
+	UIImage noSpaceStation;
 	/** Not your planet. */
 	UIImage notYourPlanet;
 	/** New fleet button. */
@@ -402,8 +404,13 @@ public class EquipmentScreen extends ScreenBase {
 		
 		noPlanetNearby = new UIImage(commons.equipment().noPlanetNearby);
 		noPlanetNearby.visible(false);
+		
 		noSpaceport = new UIImage(commons.equipment().noSpaceport);
 		noSpaceport.visible(false);
+		
+		noSpaceStation = new UIImage(commons.equipment().noSpaceStation);
+		noSpaceStation.visible(false);
+		
 		notYourPlanet = new UIImage(commons.equipment().notYourplanet);
 		notYourPlanet.visible(false);
 		
@@ -842,6 +849,7 @@ public class EquipmentScreen extends ScreenBase {
 		noPlanetNearby.location(base.x + 242, base.y + 194 - 20);
 		noSpaceport.location(noPlanetNearby.location());
 		notYourPlanet.location(noSpaceport.location());
+		noSpaceStation.location(noSpaceport.location());
 		
 		transferButton.location(base.x + 401, base.y + 194 - 20);
 //		joinButton.location(transferButton.location());
@@ -1069,12 +1077,11 @@ public class EquipmentScreen extends ScreenBase {
 						&& planet().inventoryCount(rt.category, player()) < 3);
 				delButton.visible(false);
 				sell.visible(planet().inventoryCount(rt, player()) > 0);
-				noSpaceport.visible(false);
+				noSpaceStation.visible(false);
 			} else
-			if (own && ps.hasMilitarySpaceport && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+			if (own && ps.hasSpaceStation && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				addButton.visible(
-						ps.hasSpaceStation
-						&& player().inventoryCount(rt) > 0
+						player().inventoryCount(rt) > 0
 						&& planet().inventoryCount(rt, player()) < 30);
 				delButton.visible(
 						planet().inventoryCount(rt, player()) > 0
@@ -1088,12 +1095,12 @@ public class EquipmentScreen extends ScreenBase {
 				delButton.visible(
 						planet().inventoryCount(rt, player()) > 0);
 				sell.visible(delButton.visible());
-				noSpaceport.visible(false);
+				noSpaceStation.visible(false);
 			} else {
 				addButton.visible(false);
 				delButton.visible(false);
 				sell.visible(false);
-				noSpaceport.visible(own);
+				noSpaceStation.visible(own);
 			}
 			addOne.visible(false);
 			removeOne.visible(false);
@@ -1106,6 +1113,7 @@ public class EquipmentScreen extends ScreenBase {
 			deleteButton.visible(false);
 			splitButton.visible(false);
 			transferButton.visible(false);
+			noSpaceport.visible(false);
 		} else {
 			if (fleetShown != fleet() || lastSelection != player().selectionMode) {
 				fleetShown = fleet();
@@ -1259,6 +1267,7 @@ public class EquipmentScreen extends ScreenBase {
 			noSpaceport.visible(secondary == null && ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
 			notYourPlanet.visible(secondary == null && ps != null && fs.planet.owner != f.owner);
 			noPlanetNearby.visible(secondary == null && ps == null);
+			noSpaceStation.visible(false);
 
 			if (ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport && secondary == null) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -1914,6 +1923,17 @@ public class EquipmentScreen extends ScreenBase {
 						planet().inventory.remove(ii);
 					} else {
 						planet().changeInventory(research(), player(), -1);
+					}
+					// if this was the last space station, place the fighters back into the inventory
+					if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+						if (planet().inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, player()) == 0) {
+							for (InventoryItem ii2 : new ArrayList<InventoryItem>(planet().inventory)) {
+								if (ii2.owner == player() && ii2.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+									player().changeInventoryCount(ii2.type, ii2.count);
+									planet().inventory.remove(ii2);
+								}
+							}
+						}
 					}
 					updateInventory(planet(), null, leftList);
 				}
