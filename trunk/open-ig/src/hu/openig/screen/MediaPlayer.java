@@ -125,9 +125,7 @@ public class MediaPlayer {
 							sdl.open();
 							FloatControl fc = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
 							if (fc != null) {
-								double minLinear = Math.pow(10, fc.getMinimum() / 20);
-								double maxLinear = Math.pow(10, fc.getMaximum() / 20);
-								fc.setValue((float)(20 * Math.log10(minLinear + audioVolume * (maxLinear - minLinear) / 100)));
+								fc.setValue(AudioThread.computeGain(fc, audioVolume));
 							}
 							videoThread.setAudioLength(buffer.length);
 							try {
