@@ -2,7 +2,7 @@
 
 <wiki:toc max_depth="1" />
 
-= Version 0.93.300 - Fixes and small improvements =
+= Version 0.93.350 - Fixes and small improvements =
   * Released: 2011-08-20 18:00 CET
   * *Update* the Equipment screen now resizes vertically with the game window, making it easier to manage a larger list of diverse ships
   * *Fix* planetary shield build limit changed to one-of-a-kind (like the research labs)
