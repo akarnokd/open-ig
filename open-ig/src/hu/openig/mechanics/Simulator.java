@@ -672,9 +672,14 @@ public final class Simulator {
 				}
 			}
 			);
+			sendIfAutoBuildOffMessage(world, planet);
 			return;
 		}
 		if (planet.autoBuild == AutoBuild.CIVIL) {
+			AutoBuild ab = planet.autoBuild;
+			int offRequest = 0;
+			int buildCount = 0;
+			buildCount++;
 			// if living space shortage
 			if (ps.houseAvailable < planet.population || (planet.population <= 5000 && ps.houseAvailable <= 5000)) {
 				findOptions(world, planet, 
@@ -692,7 +697,12 @@ public final class Simulator {
 					}
 				}
 				);
+				if (planet.autoBuild == AutoBuild.OFF) {
+					offRequest++;
+					planet.autoBuild = ab;
+				}
 			}
+			buildCount++;
 			// if food shortage
 			if (ps.foodAvailable < planet.population) {
 				findOptions(world, planet, 
@@ -710,7 +720,12 @@ public final class Simulator {
 					}
 				}
 				);
+				if (planet.autoBuild == AutoBuild.OFF) {
+					offRequest++;
+					planet.autoBuild = ab;
+				}
 			}
+			buildCount++;
 			// if hospital shortage
 			if (ps.hospitalAvailable < planet.population) {
 				findOptions(world, planet, 
@@ -728,7 +743,12 @@ public final class Simulator {
 					}
 				}
 				);
+				if (planet.autoBuild == AutoBuild.OFF) {
+					offRequest++;
+					planet.autoBuild = ab;
+				}
 			}
+			buildCount++;
 			// if living space shortage
 			if (ps.policeAvailable < planet.population) {
 				findOptions(world, planet, 
@@ -746,7 +766,13 @@ public final class Simulator {
 					}
 				}
 				);
+				if (planet.autoBuild == AutoBuild.OFF) {
+					offRequest++;
+					planet.autoBuild = ab;
+				}
 			}
+			buildCount++;
+			// build stadium
 			if (ps.hasProblem(PlanetProblems.STADIUM) || ps.hasWarning(PlanetProblems.STADIUM)) {
 				findOptions(world, planet, 
 					new Func1<Building, Boolean>() {
@@ -761,10 +787,19 @@ public final class Simulator {
 							return value.id.equals("Stadium");
 						}
 					}
-					);
+				);
+				if (planet.autoBuild == AutoBuild.OFF) {
+					offRequest++;
+					planet.autoBuild = ab;
+				}
 			}
+			if (offRequest == buildCount) {
+				planet.autoBuild = AutoBuild.OFF;
+			}
+			sendIfAutoBuildOffMessage(world, planet);
 		} else
 		if (planet.autoBuild == AutoBuild.ECONOMIC) {
+			AutoBuild ab = planet.autoBuild;
 			if (!findOptions(world, planet, 
 					new Func1<Building, Boolean>() {
 						@Override
@@ -779,6 +814,7 @@ public final class Simulator {
 						}
 					}
 				)) {
+					planet.autoBuild = ab;
 					findOptions(world, planet, 
 						new Func1<Building, Boolean>() {
 							@Override
@@ -794,8 +830,11 @@ public final class Simulator {
 						}
 					);
 				}
+			sendIfAutoBuildOffMessage(world, planet);
 		} else
 		if (planet.autoBuild == AutoBuild.FACTORY) {
+			// save mode, because construction failure will turn off the status unnecessary
+			AutoBuild ab = planet.autoBuild;
 			// construct first before upgrading
 			if (!findOptions(world, planet, 
 				new Func1<Building, Boolean>() {
@@ -811,6 +850,7 @@ public final class Simulator {
 					}
 				}
 			)) {
+				planet.autoBuild = ab;
 				findOptions(world, planet, 
 					new Func1<Building, Boolean>() {
 						@Override
@@ -826,6 +866,7 @@ public final class Simulator {
 					}
 				);
 			}
+			sendIfAutoBuildOffMessage(world, planet);
 		} else
 		if (planet.autoBuild == AutoBuild.UPGRADE) {
 			findOptions(world, planet, 
@@ -842,6 +883,7 @@ public final class Simulator {
 						}
 					}
 				);
+			sendIfAutoBuildOffMessage(world, planet);
 		} else
 		if (planet.autoBuild == AutoBuild.SOCIAL) {
 			findOptions(world, planet, 
@@ -858,8 +900,22 @@ public final class Simulator {
 					}
 				}
 			);
+			sendIfAutoBuildOffMessage(world, planet);
 		}
-		
+	}
+	/**
+	 * Send a message if the auto-build was turned off.
+	 * @param world the world object
+	 * @param planet the planet object
+	 */
+	static void sendIfAutoBuildOffMessage(World world, Planet planet) {
+		if (planet.autoBuild == AutoBuild.OFF) {
+			Message msg = world.newMessage("autobuild.no_more_building_space");
+			msg.priority = 50;
+			msg.targetPlanet = planet;
+			
+			planet.owner.messageQueue.add(msg);
+		}
 	}
 	/**
 	 * Find and invoke options for the given world and planet and use
@@ -870,7 +926,9 @@ public final class Simulator {
 	 * @param buildSelector the selector to find building types to construct
 	 * @return was there a construction/upgrade?
 	 */
-	static boolean findOptions(World world, Planet planet, Func1<Building, Boolean> upgradeSelector, Func1<BuildingType, Boolean> buildSelector) {
+	static boolean findOptions(World world, Planet planet, 
+			Func1<Building, Boolean> upgradeSelector, 
+			Func1<BuildingType, Boolean> buildSelector) {
 		List<Building> upgr = findUpgradables(planet, upgradeSelector);
 		if (upgr.size() > 0) {
 			doUpgrade(world, planet, upgr.get(0));
@@ -888,7 +946,6 @@ public final class Simulator {
 			}
 		}
 		// no room at all, turn off autobuild and let the user do it
-		// FIXME notify user
 		if (bts.size() > 0) {
 			planet.autoBuild = AutoBuild.OFF;
 		}

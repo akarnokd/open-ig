@@ -2681,6 +2681,7 @@
 	<entry key='settings.audio'>Audio</entry>
 	<entry key='settings.gameplay'>Gameplay</entry>
 	<entry key='settings.back'>Back</entry>
+	<entry key='autobuild.no_more_building_space'>Auto-Build on planet %s stopped due insufficient space.</entry>
 
 	<entry key=''></entry>
 	
