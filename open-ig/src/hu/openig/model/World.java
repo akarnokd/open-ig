@@ -1320,8 +1320,6 @@ public class World {
 				InventoryItem fii = new InventoryItem();
 				fii.type = researches.get(xfii.get("id"));
 				fii.count = xfii.getInt("count");
-				fii.shield = xfii.getInt("shield");
-				fii.hp = xfii.getInt("hp");
 				Set<String> slots = new HashSet<String>();
 				for (XElement xfis : xfii.childrenWithName("slot")) {
 					InventorySlot fis = new InventorySlot();
@@ -1343,6 +1341,8 @@ public class World {
 						fii.slots.add(fis);
 					}
 				}
+				fii.shield = xfii.getInt("shield", fii.shieldMax());
+				fii.hp = xfii.getInt("hp", fii.type.productionCost);
 				f.inventory.add(fii);
 			}
 			// fi

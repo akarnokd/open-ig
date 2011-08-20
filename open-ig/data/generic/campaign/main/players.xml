@@ -30,7 +30,26 @@
 		money='32000'
 		initial-stance='40'
 		ai='DEFAULT' ratios='1,2,1'
-	/>
+	>
+		<fleet id='1' x='366' y='442' name='Garthog flotta'>
+			<item id='GarthogBattleship' count='1'/>
+			<item id='GarthogBattleship' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogDestroyer' count='1'/>
+			<item id='GarthogFighter' count='30'/>
+		</fleet>
+	</player>
 	<player id='Morgath' race='morgath' name='players.morgath'
 		icon='starmap/fleets/morgath_fleet'
 		color='FFFCFCFC'

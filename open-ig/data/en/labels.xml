@@ -2683,6 +2683,11 @@
 	<entry key='settings.back'>Back</entry>
 	<entry key='autobuild.no_more_building_space'>Auto-Build on planet %s stopped due insufficient space.</entry>
 
+	<entry key='settings.autobattle'>Automatic battle</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	
 </labels>
