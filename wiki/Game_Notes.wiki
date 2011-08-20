@@ -2,6 +2,22 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.300 - Fixes and small improvements =
+  * Released: 2011-08-20 18:00 CET
+  * *Update* the Equipment screen now resizes vertically with the game window, making it easier to manage a larger list of diverse ships
+  * *Fix* planetary shield build limit changed to one-of-a-kind (like the research labs)
+  * *Fix* Initial fleet ships of a new campaign now display equipment slots on equipment screen.
+  * *Fix* Meson Projector research cost fixed
+  * *Update* planetary population growt now fixed between -2000 and +1000 per day.
+  * *Update* research time computation is now 75% of the research cost in game minutes
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=34 Issue #34] on the research screen, the running research status was sometimes truncated
+  * *Update* The load/save/settings screen changed and contains three tabs: load & save, audio, gameplay
+  * *New* [http://code.google.com/p/open-ig/issues/detail?id=37 Issue #37] option to set the research money percentage on newly started researches, e.g., when set to 200%, all new research will start with double money.
+  * *Fix* in planetary equipment, adding fighters to a planet requires a space station first (instead of military spaceport).
+  * *Fix* adding vehicles and space stations to planets do not require military spaceport
+  * *Fix* switching to the equipment screen while a building research is selected now changes the selection to tanks (in case of a fleet) or to fighters (in case of a planet)
+  * *Fix* fixed UI behavior on the equipment screen
+
 = Version 0.93.300 - Mostly fixes =
   * Released: 2011-08-19 17:30
   * *Fix* sound and music volume adjustment was incorrect.
