@@ -24,6 +24,21 @@ public class EquipmentGFX {
 	/** The base image. */
 	@Img(name = "equipment/panel_equipment_base")
 	public BufferedImage base;
+	/** The base image. */
+	@Img(name = "equipment/panel_top")
+	public BufferedImage panelTop;
+	/** The base image. */
+	@Img(name = "equipment/panel_middle")
+	public BufferedImage panelMiddle;
+	/** The base image. */
+	@Img(name = "equipment/panel_bottom")
+	public BufferedImage panelBottom;
+	/** The base image. */
+	@Img(name = "equipment/left_stars")
+	public BufferedImage leftStars;
+	/** The base image. */
+	@Img(name = "equipment/right_stars")
+	public BufferedImage rightStars;
 	/** The equipment is under development. */
 	@Img(name = "equipment/under_development_huge")
 	public BufferedImage underDevelopment;

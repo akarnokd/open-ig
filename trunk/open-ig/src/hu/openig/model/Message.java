@@ -43,11 +43,11 @@ public class Message implements Comparable<Message> {
 	public String label;
 	@Override
 	public int compareTo(Message o) {
-		int c = priority - o.priority;
+		int c = priority < o.priority ? -1 : (priority > o.priority ? 1 : 0);
 		if (c == 0) {
 			c = (timestamp < o.timestamp ? -1 : (timestamp > o.timestamp ? 1 : 0));
 		}
-		return c;
+		return -c;
 	}
 	/** 
 	 * Save the message.

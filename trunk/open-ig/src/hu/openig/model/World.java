@@ -1044,6 +1044,10 @@ public class World {
 		
 		for (XElement xplayer : xworld.childrenWithName("player")) {
 			Player p = players.get(xplayer.get("id"));
+			// clear player variables
+			p.messageHistory.clear();
+			p.messageQueue.clear();
+			
 			
 			p.money = xplayer.getLong("money");
 			p.currentPlanet = planets.get(xplayer.get("planet", null));
@@ -1312,16 +1316,18 @@ public class World {
 					f.waypoints.add(new Point2D.Float(Float.parseFloat(xy[0]), Float.parseFloat(xy[1])));
 				}
 			}
-			
 			for (XElement xfii : xfleet.childrenWithName("item")) {
 				InventoryItem fii = new InventoryItem();
 				fii.type = researches.get(xfii.get("id"));
 				fii.count = xfii.getInt("count");
 				fii.shield = xfii.getInt("shield");
 				fii.hp = xfii.getInt("hp");
+				Set<String> slots = new HashSet<String>();
 				for (XElement xfis : xfii.childrenWithName("slot")) {
 					InventorySlot fis = new InventorySlot();
-					fis.slot = fii.type.slots.get(xfis.get("id"));
+					String sid = xfis.get("id");
+					slots.add(sid);
+					fis.slot = fii.type.slots.get(sid);
 					fis.type = researches.get(xfis.get("type", null));
 					if (fis.type != null) {
 						fis.count = xfis.getInt("count");
@@ -1329,8 +1335,17 @@ public class World {
 					}
 					fii.slots.add(fis);
 				}
+				// add remaining undefined but empty slots
+				for (EquipmentSlot es : fii.type.slots.values()) {
+					if (!slots.contains(es.id)) {
+						InventorySlot fis = new InventorySlot();
+						fis.slot = es;
+						fii.slots.add(fis);
+					}
+				}
 				f.inventory.add(fii);
 			}
+			// fi
 			if (!f.inventory.isEmpty()) {
 				p.fleets.put(f, FleetKnowledge.FULL);
 			}

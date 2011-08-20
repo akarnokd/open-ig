@@ -177,6 +177,8 @@ public class StatusbarScreen extends ScreenBase {
 		top.bounds(0, -20, width, 20);
 		bottomY = 0;
 		bottom.bounds(0, height, width, 18);
+		animationStep = 0;
+		notification.currentMessage = null;
 		animation = commons.register(75, new Act() {
 			@Override
 			public void act() {
@@ -271,6 +273,7 @@ public class StatusbarScreen extends ScreenBase {
 	@Override
 	public void onEndGame() {
 		notification.currentMessage = null;
+		animationStep = 0;
 	}
 	/** The moving status indicator. */
 	class MovingNotification extends UIComponent {
