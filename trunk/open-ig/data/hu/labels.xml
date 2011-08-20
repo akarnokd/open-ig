@@ -1939,7 +1939,11 @@
 	<entry key='flagship.moveto.bar'>Bár</entry>
 	<entry key='settings.button_sounds'>Gombhangok</entry>
 	<entry key='settings.satellite_deplay'>Műhold telepítés videó</entry>
-	<entry key=''></entry>
+	<entry key='settings.research_money_percent'>Kutatási kezdőpénz</entry>
+	<entry key='settings.load_save'>Mentés / Betöltés</entry>
+	<entry key='settings.audio'>Hangok</entry>
+	<entry key='settings.gameplay'>Játékmenet</entry>
+	<entry key='settings.back'>Vissza</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -2676,7 +2676,12 @@
 	<entry key='flagship.moveto.bar'>Bar</entry>
 	<entry key='settings.button_sounds'>Button sounds</entry>
 	<entry key='settings.satellite_deplay'>Deploy satellite video</entry>
-	<entry key=''></entry>
+	<entry key='settings.research_money_percent'>Research initial money</entry>
+	<entry key='settings.load_save'>Load / Save</entry>
+	<entry key='settings.audio'>Audio</entry>
+	<entry key='settings.gameplay'>Gameplay</entry>
+	<entry key='settings.back'>Back</entry>
+
 	<entry key=''></entry>
 	
 </labels>

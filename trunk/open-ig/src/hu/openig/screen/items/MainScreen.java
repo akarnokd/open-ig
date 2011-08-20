@@ -12,6 +12,7 @@ import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.model.Screens;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
 import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
@@ -148,7 +149,7 @@ public class MainScreen extends ScreenBase {
 		config.load();
 		LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
 		scr.maySave = false;
-		scr.settingsMode = true;
+		scr.displayPage(SettingsPage.AUDIO);
 //		// do a small reflection trick to avoid circular dependency
 //		try {
 //			Class<?> clazz = Class.forName("hu.openig.Setup");
@@ -298,6 +299,7 @@ public class MainScreen extends ScreenBase {
 			@Override
 			public void act() {
 				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
+				scr.displayPage(SettingsPage.LOAD_SAVE);
 				scr.maySave = false;
 				
 			}

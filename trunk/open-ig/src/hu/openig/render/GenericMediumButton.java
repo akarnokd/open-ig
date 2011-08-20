@@ -73,6 +73,7 @@ public class GenericMediumButton implements GenericButtonRenderer {
 	@Override
 	public void paintTo(Graphics2D g2, int x, int y, 
 			int width, int height, boolean down, String text) {
+		Color textColor = g2.getColor();
 		g2.drawImage(topLeft, x, y, null);
 		g2.drawImage(topRight, x + width - topRight.getWidth(), y, null);
 		g2.drawImage(bottomLeft, x, y + height - bottomLeft.getHeight(), null);
@@ -114,7 +115,7 @@ public class GenericMediumButton implements GenericButtonRenderer {
 
 		g2.setColor(new Color(0x509090));
 		g2.drawString(text, tx + 1, ty + 1 + fm.getAscent());
-		g2.setColor(Color.BLACK);
+		g2.setColor(textColor);
 		g2.drawString(text, tx, ty + fm.getAscent());
 
 		if (down) {

@@ -65,9 +65,21 @@ import javax.xml.stream.XMLStreamException;
  * @author akarnokd, 2010.01.11.
  */
 public class LoadSaveScreen extends ScreenBase {
+	/** Which settings page to display. */
+	public enum SettingsPage {
+		/** Load/save. */
+		LOAD_SAVE,
+		/** Audio options. */
+		AUDIO,
+		/** Gameplay options. */
+		GAMEPLAY
+	}
 	/** The fields for the settings screen. */
 	@Retention(RetentionPolicy.RUNTIME)
-	@interface Settings { }
+	@interface Settings { 
+		/** On which page to display. */
+		SettingsPage page();
+	}
 	/** The panel base rectangle. */
 	final Rectangle base = new Rectangle(0, 0, 640, 442);
 	/** The random background. */
@@ -77,75 +89,128 @@ public class LoadSaveScreen extends ScreenBase {
 	/** The screen to restore when exiting. */
 	Screens restore;
 	/** Show the settings page? */
-	public boolean settingsMode;
+	public SettingsPage settingsMode;
 	/** Allow saving? */
 	public boolean maySave;
 	/** Resume the simulation after exiting? */
 	boolean resume;
 	/** The save button. */
+	UIGenericButton loadSavePage;
+	/** The save button. */
+	UIGenericButton audioPage;
+	/** The save button. */
+	UIGenericButton gameplayPage;
+	/** The save button. */
+	UIGenericButton back;
+	/** The save button. */
+	@Settings(page = SettingsPage.LOAD_SAVE)
 	UIGenericButton save;
 	/** The load button. */
+	@Settings(page = SettingsPage.LOAD_SAVE)
 	UIGenericButton load;
-	/** The settings button. */
-	UIGenericButton settings;
-	/** The main menu button. */
-	UIGenericButton mainmenu;
 	/** Delete. */
+	@Settings(page = SettingsPage.LOAD_SAVE)
 	UIGenericButton delete;
+	/** Return to main menu. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UIGenericButton mainmenu;
 	/** The file listing worker. */
 	SwingWorker<Void, Void> listWorker;
 	/** The file list. */
+	@Settings(page = SettingsPage.LOAD_SAVE)
 	FileList list;
 	/** The sound volume. */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UISpinner soundVolume;
 	/** The sound label. */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UILabel soundLabel;
 	/** The music volume. */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UISpinner musicVolume;
 	/** The music label. */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UILabel musicLabel;
 	/** The video volume. */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UISpinner videoVolume;
 	/** The video volume. */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UILabel videoLabel;
 	/** Re-equip tanks? */
-	@Settings
+	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox reequipTanks;
 	/** Re-equip bombs? */
-	@Settings
+	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox reequipBombs;
 	/** Enable computer voice for screen switches. */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox computerVoiceScreen;
 	/** Enable computer voice for notifications. */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox computerVoiceNotify;
 	/** Auto-build credit limit. */
-	@Settings
+	@Settings(page = SettingsPage.GAMEPLAY)
 	UISpinner autoBuildLimit;
 	/** Auto build label. */
-	@Settings
+	@Settings(page = SettingsPage.GAMEPLAY)
 	UILabel autoBuildLabel;
 	/** Enable automatic repair. */
-	@Settings
+	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox autoRepair;
 	/** Allow button sounds. */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox buttonSounds;
 	/** Play satellite deploy animation? */
-	@Settings
+	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox satelliteDeploy;
+	/** Auto-build credit limit. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UISpinner researchMoneyPercent;
+	/** Auto build label. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UILabel researchMoneyLabel;
 	@Override
 	public void onInitialize() {
+		loadSavePage = new UIGenericButton(get("settings.load_save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		loadSavePage.disabledPattern(commons.common().disabledPattern);
+		loadSavePage.onClick = new Act() {
+			@Override
+			public void act() {
+				displayPage(SettingsPage.LOAD_SAVE);
+			}
+		};
+		audioPage = new UIGenericButton(get("settings.audio"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		audioPage.disabledPattern(commons.common().disabledPattern);
+		audioPage.onClick = new Act() {
+			@Override
+			public void act() {
+				displayPage(SettingsPage.AUDIO);
+			}
+		};
+
+		gameplayPage = new UIGenericButton(get("settings.gameplay"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		gameplayPage.disabledPattern(commons.common().disabledPattern);
+		gameplayPage.onClick = new Act() {
+			@Override
+			public void act() {
+				displayPage(SettingsPage.GAMEPLAY);
+			}
+		};
+
+		back = new UIGenericButton(get("settings.back"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		back.disabledPattern(commons.common().disabledPattern);
+		back.onClick = new Act() {
+			@Override
+			public void act() {
+				doBack();
+			}
+		};
+
+		// ===================================================
+		
 		save = new UIGenericButton(get("save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		save.disabledPattern(commons.common().disabledPattern);
-		
 		save.onClick = new Act() {
 			@Override
 			public void act() {
@@ -159,14 +224,6 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void act() {
 				doLoad();
-			}
-		};
-		settings = new UIGenericButton(get("settings"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
-		settings.disabledPattern(commons.common().disabledPattern);
-		settings.onClick = new Act() {
-			@Override
-			public void act() {
-				doSettings();
 			}
 		};
 		
@@ -398,20 +455,73 @@ public class LoadSaveScreen extends ScreenBase {
 		};
 
 		
+		final UIImageButton rmprev = new UIImageButton(commons.common().moveLeft);
+		rmprev.setDisabledPattern(commons.common().disabledPattern);
+		rmprev.setHoldDelay(250);
+		final UIImageButton rmnext = new UIImageButton(commons.common().moveRight);
+		anext.setDisabledPattern(commons.common().disabledPattern);
+		anext.setHoldDelay(250);
+		
+		rmprev.onClick = new Act() {
+			@Override
+			public void act() {
+				config.researchMoneyPercent = Math.max(125, config.researchMoneyPercent - 125);
+				askRepaint(base);
+			}
+		};
+		rmnext.onClick = new Act() {
+			@Override
+			public void act() {
+				config.researchMoneyPercent = Math.min(2000, config.researchMoneyPercent + 125);
+				askRepaint(base);
+			}
+		};
+		
+		researchMoneyPercent = new UISpinner(14, rmprev, rmnext, commons.text());
+		researchMoneyPercent.getValue = new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				StringBuilder b = new StringBuilder();
+				b.append(config.researchMoneyPercent / 10);
+				b.append(".").append(config.researchMoneyPercent % 10);
+				b.append(" %");
+				return b.toString();
+			}
+		};
+		researchMoneyLabel = new UILabel(get("settings.research_money_percent"), 14, commons.text());
+
+		
 		addThis();
 	}
-
+	/**
+	 * Show the controls of the given page and hide the rest.
+	 * @param page the settings page controls to display
+	 */
+	public void displayPage(SettingsPage page) {
+		for (Field f : getClass().getDeclaredFields()) {
+			if (f.isAnnotationPresent(Settings.class) && UIComponent.class.isAssignableFrom(f.getType())) {
+				Settings s = f.getAnnotation(Settings.class);
+				try {
+					UIComponent.class.cast(f.get(this)).visible(s.page() == page);
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		settingsMode = page;
+	}
 	@Override
 	public void onEnter(Screens mode) {
 		restore = mode;
 		background = commons.background().options[rnd.nextInt(commons.background().options.length)];
-		settingsMode = false;
+		settingsMode = SettingsPage.LOAD_SAVE;
 		resume = commons.world() != null && !commons.paused();
 		commons.pause();
 		commons.nongame = true;
 		commons.worldLoading = true;
 		list.items.clear();
 		list.selected = null;
+		
 		startWorker();
 		
 		reequipTanks.selected(config.reequipTanks);
@@ -446,15 +556,26 @@ public class LoadSaveScreen extends ScreenBase {
 	@Override
 	public void onResize() {
 		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
+
+		// tabs
 		
-		load.location(base.x + 10, base.y + 10);
-		save.location(load.x + load.width + 10, load.y);
-		delete.location(save.x + save.width + 30, save.y);
-		settings.location(delete.x + delete.width + 30, delete.y);
-		mainmenu.location(settings.x + settings.width + 30, settings.y);
+		loadSavePage.location(base.x + 10, base.y + 10);
+		audioPage.location(loadSavePage.x + 10 + loadSavePage.width, base.y + 10);
+		gameplayPage.location(audioPage.x + 10 + audioPage.width , base.y + 10);
+		back.location(base.x + base.width - 10 - back.width, base.y + 10);
+		
+		// ------------------------------------------------------------
+		// load/save
+		
+		load.location(base.x + 30, loadSavePage.y + loadSavePage.height + 10);
+		save.location(base.x + 40 + load.width, load.y);
+		delete.location(base.x + base.width - delete.width - 10, load.y);
+		mainmenu.location(base.x + (base.width - mainmenu.width) / 2, base.y + 370);
 		
 		list.location(base.x + 10, load.y + load.height + 10);
 		list.size(base.width - 20, base.height - list.y + base.y - 10);
+		
+		// audio
 		
 		soundLabel.location(base.x + 30, base.y + 70 + 8);
 		musicLabel.location(base.x + 30, base.y + 100 + 8);
@@ -468,18 +589,26 @@ public class LoadSaveScreen extends ScreenBase {
 		musicVolume.width = 130;
 		videoVolume.location(base.x + 50 + vol, base.y + 130);
 		videoVolume.width = 130;
+
+		computerVoiceScreen.location(base.x + 30, base.y + 160 + 8);
+		computerVoiceNotify.location(base.x + 30, base.y + 190 + 8);
+
+		buttonSounds.location(base.x + 30, base.y + 220 + 8);
+		satelliteDeploy.location(base.x + 30, base.y + 250 + 8);
+
+		// gameplay
 		
-		reequipTanks.location(base.x + 30, base.y + 160 + 8);
-		reequipBombs.location(base.x + 30, base.y + 190 + 8);
-		autoRepair.location(base.x + 30, base.y + + 220 + 8);
-		computerVoiceScreen.location(base.x + 30, base.y + 250 + 8);
-		computerVoiceNotify.location(base.x + 30, base.y + 280 + 8);
+		reequipTanks.location(base.x + 30, base.y + 70 + 8);
+		reequipBombs.location(base.x + 30, base.y + 100 + 8);
+		autoRepair.location(base.x + 30, base.y + + 130 + 8);
 		
-		autoBuildLabel.location(base.x + 30, base.y + 310 + 8);
-		autoBuildLimit.location(base.x + 50 + autoBuildLabel.width, base.y + 310);
+		autoBuildLabel.location(base.x + 30, base.y + 160 + 8);
+		autoBuildLimit.location(base.x + 50 + autoBuildLabel.width, base.y + 160);
 		autoBuildLimit.width = 200;
-		buttonSounds.location(base.x + 30, base.y + 340 + 8);
-		satelliteDeploy.location(base.x + 30, base.y + 370 + 8);
+		researchMoneyLabel.location(base.x + 30, base.y + 190 + 8);
+		researchMoneyPercent.location(base.x + 50 + researchMoneyLabel.width, base.y + 190);
+		researchMoneyPercent.width = 200;
+
 	}
 	@Override
 	public Screens screen() {
@@ -494,18 +623,11 @@ public class LoadSaveScreen extends ScreenBase {
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 
-		if (settingsMode) {
-			if (!soundVolume.visible()) {
-				showHideSettings();
-			}
+		if (settingsMode != SettingsPage.LOAD_SAVE) {
 			g2.drawImage(commons.background().setup, base.x, base.y, null);
-			list.visible(false);
-			save.visible(false);
-			load.visible(false);
-			delete.visible(false);
-			mainmenu.visible(false);
-			settings.text(get("load_save"));
-			
+			g2.setColor(new Color(0, 0, 0, 192));
+			g2.fillRect(base.x + 20, base.y + 60, base.width - 40, base.height - 80);
+
 			soundVolume.prev.enabled(config.effectVolume > 0);
 			soundVolume.next.enabled(config.effectVolume < 100);
 
@@ -517,27 +639,35 @@ public class LoadSaveScreen extends ScreenBase {
 
 			autoBuildLimit.prev.enabled(config.autoBuildLimit > 0);
 			autoBuildLimit.next.enabled(config.autoBuildLimit < Integer.MAX_VALUE);
-
-			g2.setColor(new Color(0, 0, 0, 192));
-			g2.fillRect(base.x + 20, base.y + 60, base.width - 40, base.height - 80);
 			
+			researchMoneyPercent.prev.enabled(config.researchMoneyPercent > 125);
+			researchMoneyPercent.next.enabled(config.researchMoneyPercent < 2000);
+
 		} else {
-			if (soundVolume.visible()) {
-				showHideSettings();
-			}
+
 			g2.drawImage(background, base.x, base.y, null);
-			list.visible(true);
-			save.visible(true);
-			load.visible(true);
-			delete.visible(true);
-			mainmenu.visible(true);
-			settings.text(get("settings"));
+
+			save.enabled(maySave);
+			mainmenu.enabled(commons.world() != null);
+			
+			load.enabled(list.selected != null);
+			delete.enabled(list.selected != null);
 		}
-		
-		save.enabled(maySave);
-		
-		load.enabled(list.selected != null);
-		delete.enabled(list.selected != null);
+		if (settingsMode == SettingsPage.LOAD_SAVE) {
+			loadSavePage.color(0xFFFFFFFF);
+		} else {
+			loadSavePage.color(0xFF000000);
+		}
+		if (settingsMode == SettingsPage.AUDIO) {
+			audioPage.color(0xFFFFFFFF);
+		} else {
+			audioPage.color(0xFF000000);
+		}
+		if (settingsMode == SettingsPage.GAMEPLAY) {
+			gameplayPage.color(0xFFFFFFFF);
+		} else {
+			gameplayPage.color(0xFF000000);
+		}
 		
 		super.draw(g2);
 	}
@@ -819,23 +949,4 @@ public class LoadSaveScreen extends ScreenBase {
 			commons.resume();
 		}
 	}
-	/** Toggle the settings screen. */
-	void doSettings() {
-		settingsMode = !settingsMode;
-	}
-	/** Show/hide settings. */
-	void showHideSettings() {
-		for (Field f : getClass().getDeclaredFields()) {
-			if (f.isAnnotationPresent(Settings.class) && UIComponent.class.isAssignableFrom(f.getType())) {
-				try {
-					UIComponent.class.cast(f.get(this)).visible(settingsMode);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	
 }

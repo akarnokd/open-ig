@@ -12,6 +12,7 @@ import hu.openig.core.Act;
 import hu.openig.render.GenericButtonRenderer;
 import hu.openig.render.RenderTools;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -46,6 +47,8 @@ public class UIGenericButton extends UIComponent {
 	protected boolean down;
 	/** The text to display. */
 	protected String text;
+	/** The text color. */
+	protected int color = 0xFF000000;
 	/** The buttom renderer. */
 	protected final GenericButtonRenderer normal;
 	/** The buttom renderer. */
@@ -116,6 +119,7 @@ public class UIGenericButton extends UIComponent {
 	public void draw(Graphics2D g2) {
 		Font f1 = g2.getFont();
 		g2.setFont(f1.deriveFont(Font.BOLD).deriveFont((float)size));
+		g2.setColor(new Color(color));
 		if (!enabled && disabledPattern != null) {
 			normal.paintTo(g2, 0, 0, width, height, false, text);
 			RenderTools.fill(g2, 0, 0, width, height, disabledPattern);
@@ -174,5 +178,16 @@ public class UIGenericButton extends UIComponent {
 	public UIGenericButton text(String text) {
 		this.text = text;
 		return this;
+	}
+	/** @return the text color ARGB. */
+	public int color() {
+		return color;
+	}
+	/**
+	 * Sets the text color.
+	 * @param color the color ARGB
+	 */
+	public void color(int color) {
+		this.color = color;
 	}
 }

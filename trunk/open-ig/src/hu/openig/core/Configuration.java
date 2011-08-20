@@ -161,6 +161,10 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean satelliteDeploy = true;
+	/** The research money percent in 10s of percentages. */
+	@LoadSave
+	@LoadSaveGame
+	public int researchMoneyPercent = 1000;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

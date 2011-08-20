@@ -640,7 +640,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			rs.type = rt;
 			player().research.put(rt, rs);
 			rs.remainingMoney = rt.researchCost;
-			rs.assignedMoney = rt.researchCost / 2;
+			rs.assignedMoney = (int)(rt.researchCost * (long)config.researchMoneyPercent / 2000);
 		}
 		rs.state = ResearchState.RUNNING;
 		if (config.computerVoiceScreen) {
