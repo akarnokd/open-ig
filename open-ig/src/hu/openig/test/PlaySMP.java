@@ -38,30 +38,31 @@ public final class PlaySMP {
 		int dataLen = sample.length + (sample.length % 2 == 0 ? 0 : 1);
 
 		DataOutputStream dout = new DataOutputStream(new FileOutputStream("audio/hu/ui/welcome.wav"));
-		
-		// HEADER
-		dout.write("RIFF".getBytes("ISO-8859-1"));
-		dout.writeInt(Integer.reverseBytes(36 + dataLen)); // chunk size
-		dout.write("WAVE".getBytes("ISO-8859-1"));
-		
-		// FORMAT
-		dout.write("fmt ".getBytes("ISO-8859-1"));
-		dout.writeInt(Integer.reverseBytes(16)); // chunk size
-		dout.writeShort(Short.reverseBytes((short)1)); // Format: PCM = 1
-		dout.writeShort(Short.reverseBytes((short)1)); // Channels = 1
-		dout.writeInt(Integer.reverseBytes(22050)); // Sample Rate = 22050
-		dout.writeInt(Integer.reverseBytes(22050)); // Byte Rate = 22050
-		dout.writeShort(Short.reverseBytes((short)1)); // Block alignment = 1
-		dout.writeShort(Short.reverseBytes((short)8)); // Bytes per sample = 8
-
-		// DATA
-		dout.write("data".getBytes("ISO-8859-1"));
-		dout.writeInt(Integer.reverseBytes(dataLen));
-		for (byte b : sample) {
-			dout.write(128 + b);
+		try {
+			// HEADER
+			dout.write("RIFF".getBytes("ISO-8859-1"));
+			dout.writeInt(Integer.reverseBytes(36 + dataLen)); // chunk size
+			dout.write("WAVE".getBytes("ISO-8859-1"));
+			
+			// FORMAT
+			dout.write("fmt ".getBytes("ISO-8859-1"));
+			dout.writeInt(Integer.reverseBytes(16)); // chunk size
+			dout.writeShort(Short.reverseBytes((short)1)); // Format: PCM = 1
+			dout.writeShort(Short.reverseBytes((short)1)); // Channels = 1
+			dout.writeInt(Integer.reverseBytes(22050)); // Sample Rate = 22050
+			dout.writeInt(Integer.reverseBytes(22050)); // Byte Rate = 22050
+			dout.writeShort(Short.reverseBytes((short)1)); // Block alignment = 1
+			dout.writeShort(Short.reverseBytes((short)8)); // Bytes per sample = 8
+	
+			// DATA
+			dout.write("data".getBytes("ISO-8859-1"));
+			dout.writeInt(Integer.reverseBytes(dataLen));
+			for (byte b : sample) {
+				dout.write(128 + b);
+			}
+		} finally {		
+			dout.close();
 		}
-		
-		dout.close();
 	}
 	/**
 	 * Enumerates sounds of SMP files.
