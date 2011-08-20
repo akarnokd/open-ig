@@ -1518,7 +1518,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if (bi.targetPlanet != null && bi.targetPlanet.owner == bi.attacker.owner) {
 				continue;
 			}
-			if (bi.attacker.owner != world().player 
+			if ((bi.attacker.owner != world().player || config.automaticBattle) 
 					&& ((bi.targetFleet != null && bi.targetFleet.owner != world().player)
 							|| (bi.targetPlanet != null && bi.targetPlanet.owner != world().player))) {
 				Simulator.autoBattle(world(), this, bi);

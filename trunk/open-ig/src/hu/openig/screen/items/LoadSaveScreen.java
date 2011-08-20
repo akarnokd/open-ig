@@ -170,6 +170,9 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Auto build label. */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UILabel researchMoneyLabel;
+	/** Play satellite deploy animation? */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox automaticBattle;
 	@Override
 	public void onInitialize() {
 		loadSavePage = new UIGenericButton(get("settings.load_save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
@@ -571,6 +574,14 @@ public class LoadSaveScreen extends ScreenBase {
 		};
 		researchMoneyLabel = new UILabel(get("settings.research_money_percent"), 14, commons.text());
 
+		automaticBattle = new UICheckBox(get("settings.autobattle"), 14, commons.common().checkmark, commons.text());
+		automaticBattle.onChange = new Act() {
+			@Override
+			public void act() {
+				config.automaticBattle = automaticBattle.selected();
+			}
+		};
+
 		
 		addThis();
 	}
@@ -612,6 +623,7 @@ public class LoadSaveScreen extends ScreenBase {
 		autoRepair.selected(config.autoRepair);
 		buttonSounds.selected(config.buttonSounds);
 		satelliteDeploy.selected(config.satelliteDeploy);
+		automaticBattle.selected(config.automaticBattle);
 	}
 
 	@Override

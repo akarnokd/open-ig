@@ -165,6 +165,10 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public int researchMoneyPercent = 1000;
+	/** Automatically determine battle outcome. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean automaticBattle;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

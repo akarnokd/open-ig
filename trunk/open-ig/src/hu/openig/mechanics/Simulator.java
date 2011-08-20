@@ -13,12 +13,14 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
 import hu.openig.model.AutoBuild;
+import hu.openig.model.Battle;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
@@ -1071,6 +1073,17 @@ public final class Simulator {
 			}
 		}
 	}
+	/** The battle statistics record. */
+	static class BattleStatistics {
+		/** Total firepower. */
+		public int firepower;
+		/** Total hitpoints. */
+		public int hp;
+		/** The anti-ecm level. */
+		public int antiEcm;
+		/** The ecm level. */
+		public int ecm;
+	}
 	/**
 	 * Run the given battle automatically.
 	 * @param world the world object
@@ -1078,6 +1091,111 @@ public final class Simulator {
 	 * @param battle the battle information
 	 */
 	public static void autoBattle(World world, GameControls controls, BattleInfo battle) {
-		// TODO  implement
+		// comparison variables
+		BattleStatistics attacker = new BattleStatistics();
+		BattleStatistics defender = new BattleStatistics();
+		
+		Planet nearbyPlanet = battle.targetPlanet;
+		if (battle.targetFleet != null) {
+			Planet np = findNearbyPlanet(world, battle);
+			if (np != null) {
+				nearbyPlanet = np;
+			}
+		}
+		Fleet nearbyFleet = battle.targetFleet;
+		if (battle.targetPlanet != null) {
+			Fleet nf = findNearbyFleet(battle.targetPlanet);
+			if (nf != null) {
+				nearbyFleet = nf;
+			}
+		}
+		
+		setBattleStatistics(battle.attacker, attacker, world.battle);
+			
+	}
+	/**
+	 * Calculate fleet battle statistics.
+	 * @param fleet the fleet
+	 * @param stats the statistics output
+	 * @param battle the battle configuration
+	 */
+	static void setBattleStatistics(Fleet fleet, BattleStatistics stats, Battle battle) {
+		// collect attacker statistics
+		for (InventoryItem ii : fleet.inventory) {
+			stats.hp += (ii.hp + ii.shield) * ii.count;
+			stats.ecm = Math.max(stats.ecm, ii.type.getInt("ecm", 0));
+			for (InventorySlot is : ii.slots) {
+				if (is.type != null) {
+					stats.ecm = Math.max(stats.ecm, is.type.getInt("ecm", 0));
+					stats.antiEcm = Math.max(stats.antiEcm, is.type.getInt("anti-ecm", 0));
+					if (is.type.has("projectile")) {
+						stats.firepower += is.count  * battle.projectiles.get(is.type.get("projectile")).damage;
+					}
+				}
+			}
+			for (Map.Entry<ResearchType, Integer> e : ii.type.fixedSlots.entrySet()) {
+				ResearchType type = e.getKey();
+				int count = e.getValue();
+				stats.ecm = Math.max(stats.ecm, type.getInt("ecm", 0));
+				stats.antiEcm = Math.max(stats.antiEcm, type.getInt("anti-ecm", 0));
+				if (type.has("projectile")) {
+					stats.firepower += count  * battle.projectiles.get(type.get("projectile")).damage;
+				}
+				
+			}
+		}
+	}
+	/**
+	 * Find the nearest fleet to the planet with the same owner.
+	 * @param planet the target planet
+	 * @return the nearest fleet or null if none
+	 */
+	public static Fleet findNearbyFleet(Planet planet) {
+		Fleet nf = null;
+		final int checkRange = 20;
+		double minDistance = Double.MAX_VALUE;
+		for (Fleet f : planet.owner.fleets.keySet()) {
+			if (f.owner == planet.owner) {
+				double d1 = World.dist(planet.x, planet.y, f.x, f.y);
+				if (d1 < minDistance) {
+					minDistance = d1;
+					if (minDistance < checkRange) {
+						nf = f;
+					}
+				}
+			}
+		}
+			
+		return nf;
+	}
+	/**
+	 * Find a nearby planet in relation to the attacker of target fleets.
+	 * @param world the world object
+	 * @param battle the battle settings
+	 * @return the nearby planet or null if none
+	 */
+	public static Planet findNearbyPlanet(World world, BattleInfo battle) {
+		final int checkRange = 20;
+		Planet nearbyPlanet = null;
+		double minDistance = Double.MAX_VALUE;
+		for (Planet p : world.planets.values()) {
+			if (p.owner == battle.attacker.owner || p.owner == battle.targetFleet.owner) {
+				double d1 = World.dist(p.x, p.y, battle.attacker.x, battle.attacker.y);
+				if (d1 < minDistance) {
+					minDistance = d1;
+					if (minDistance < checkRange) {
+						nearbyPlanet = p;
+					}
+				}
+				double d2 = World.dist(p.x, p.y, battle.targetFleet.x, battle.targetFleet.y);
+				if (d2 < minDistance) {
+					minDistance = d1;
+					if (minDistance < checkRange) {
+						nearbyPlanet = p;
+					}
+				}
+			}
+		}
+		return nearbyPlanet;
 	}
 }

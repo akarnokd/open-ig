@@ -88,7 +88,7 @@ public final class Radar {
 								updateKnowledge(world, player, q, PlanetKnowledge.BUILDING);
 							}
 						}
-						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, ri * 35)) {
+						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, ri * 25)) {
 							if (ri < 1.1) {
 								updateKnowledge(world, player, f1, FleetKnowledge.VISIBLE);
 							} else
@@ -122,7 +122,7 @@ public final class Radar {
 					}
 					if ("4".equals(radar)) {
 						for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * 35)) {
-							updateKnowledge(world, pii.owner, q, PlanetKnowledge.BUILDING);
+							updateKnowledge(world, pii.owner, q, PlanetKnowledge.NAME);
 						}
 						for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * 35)) {
 							updateKnowledge(world, pii.owner, f, FleetKnowledge.FULL);
@@ -140,15 +140,7 @@ public final class Radar {
 			}
 			if (radar > 0) {
 				for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * 35)) {
-					if (radar == 3) {
-						updateKnowledge(world, p.owner, q, PlanetKnowledge.BUILDING);
-					} else
-					if (radar == 2) {
-						updateKnowledge(world, p.owner, q, PlanetKnowledge.OWNER);
-					} else
-					if (radar == 1) {
-						updateKnowledge(world, p.owner, q, PlanetKnowledge.VISIBLE);
-					}
+					updateKnowledge(world, p.owner, q, PlanetKnowledge.NAME);
 				}
 				for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * 35)) {
 					if (radar == 1) {

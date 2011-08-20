@@ -9,6 +9,7 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Act;
+import hu.openig.mechanics.Simulator;
 import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
 import hu.openig.model.BattleInfo;
@@ -32,7 +33,6 @@ import hu.openig.model.SpacewarShip;
 import hu.openig.model.SpacewarStation;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWeaponPort;
-import hu.openig.model.World;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
@@ -809,23 +809,9 @@ public class SpacewarScreen extends ScreenBase {
 		
 		nearbyPlanet = battle.targetPlanet;
 		if (battle.targetFleet != null) {
-			// locate the nearest planet if the target is a fleet
-			double minDistance = Double.MAX_VALUE;
-			for (Planet p : world().planets.values()) {
-				double d1 = World.dist(p.x, p.y, battle.attacker.x, battle.attacker.y);
-				if (d1 < minDistance) {
-					minDistance = d1;
-					if (minDistance < 20) {
-						nearbyPlanet = p;
-					}
-				}
-				double d2 = World.dist(p.x, p.y, battle.targetFleet.x, battle.targetFleet.y);
-				if (d2 < minDistance) {
-					minDistance = d1;
-					if (minDistance < 20) {
-						nearbyPlanet = p;
-					}
-				}
+			Planet np = Simulator.findNearbyPlanet(world(), battle);
+			if (np != null) {
+				nearbyPlanet = np;
 			}
 		}
 		
