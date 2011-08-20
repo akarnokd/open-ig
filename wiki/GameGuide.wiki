@@ -170,6 +170,8 @@ The build strategy is as follows:
 
 The downside of the auto-build is that it may hold your overall progress back in the early game time where your biggest shortage will be the money.
 
+To avoid unnecessary draining of credits by the auto-build feature, you can set the auto-build money limit in the options / gameplay page. This limit won't let the auto-build proceed if you have less than the specified money. The feature can be used to ensure the auto-build always chooses the most expensive (and most effective) buildings, basically "waiting" until you gather enough money to build them, and not building the cheapest one due money shortage.
+
 == Satellite survival ==
 
 Placing satellites around alien and enemy planets will take their attention sooner or later and destroy it. The same is true for alien satellites around the planets you own.
