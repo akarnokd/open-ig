@@ -203,6 +203,37 @@ public class VehicleList extends UIContainer {
 		}
 		return super.mouse(e);
 	}
+	/**
+	 * Select the next item from the current group.
+	 */
+	public void nextGroupItem() {
+		if (group) {
+			for (InventoryItemGroup ig : map.values()) {
+				if (selectedItem != null && ig.type == selectedItem.type) {
+					ig.index--;
+					if (ig.index < 0) {
+						ig.index = ig.items.size() - 1;
+					}
+					onSelect.invoke(ig.items.get(ig.index));
+					break;
+				}
+			}
+		}
+	}
+	/**
+	 * Select the previous item from the current group.
+	 */
+	public void previousGroupItem() {
+		if (group) {
+			for (InventoryItemGroup ig : map.values()) {
+				if (selectedItem != null && ig.type == selectedItem.type) {
+					ig.index = (ig.index + 1) % ig.items.size();
+					onSelect.invoke(ig.items.get(ig.index));
+					break;
+				}
+			}
+		}		
+	}
 	/** Scroll up. */
 	void doScrollUp() {
 		yOffset = Math.max(0, Math.min(yOffset - 16, maxHeight - height));

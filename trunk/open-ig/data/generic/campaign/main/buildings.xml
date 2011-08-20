@@ -1088,7 +1088,7 @@
 			<tech id="dargslan" height="2" width="2"/>
 			<tech id="ecalep" height="2" width="2"/>
 		</graphics>
-		<build limit="-5" kind='Shield' cost='15000' research='InversionShield'/>
+		<build limit="-1" kind='Shield' cost='15000' research='InversionShield'/>
 		<operation>
 			<resource type='shield'>50</resource>
 			<resource type='energy'>-4000</resource>
@@ -1128,7 +1128,7 @@
 			<tech id="dargslan" height="2" width="4"/>
 			<tech id="ecalep" height="3" width="2"/>
 		</graphics>
-		<build limit="-5" kind="Shield" cost="35000" research='HyperShield'/>
+		<build limit="-1" kind="Shield" cost="35000" research='HyperShield'/>
 		<operation>
 			<resource type='shield'>100</resource>
 			<resource type='energy'>-6000</resource>
