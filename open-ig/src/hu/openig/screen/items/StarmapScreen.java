@@ -2004,7 +2004,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				surveySatellite.visible(false);
-				deploySatellite("Hubble2", "interlude/deploy_hubble_2", 0);
+				deploySatellite("Hubble2", "interlude/deploy_hubble", 0);
 			}
 		};
 		
@@ -2119,29 +2119,15 @@ public class StarmapScreen extends ScreenBase {
 		if (!isPaused) {
 			commons.pause();
 		}
-//		commons.stopMusic();
 		if (config.satelliteDeploy) {
 			commons.control().playVideos(new Act() {
 				@Override
 				public void act() {
-					ResearchType rt = world().researches.get(typeId);
-					
-					InventoryItem pii = new InventoryItem();
-					pii.count = 1;
-					pii.owner = player();
-					pii.type = rt;
-					
-					p.inventory.add(pii);
-					if (ttl > 0) {
-						p.timeToLive.put(pii, ttl);
-					}
-					
-					if (!isPaused) {
-						commons.resume();
-					}
-	//				commons.playRegularMusic();
+					placeSatellite(typeId, ttl, p, isPaused);
 				}
 			}, media);
+		} else {
+			placeSatellite(typeId, ttl, p, isPaused);
 		}
 	}
 	@Override
@@ -2403,5 +2389,30 @@ public class StarmapScreen extends ScreenBase {
 		selectRadarDot();
 		limitOffsets();
 		computeViewport();
+	}
+	/**
+	 * Place satellite around the given planet and resume simulation if needed.
+	 * @param typeId the satellite id
+	 * @param ttl the time to live
+	 * @param p the target planet
+	 * @param isPaused was the game paused
+	 */
+	void placeSatellite(final String typeId, final int ttl, final Planet p,
+			final boolean isPaused) {
+		ResearchType rt = world().researches.get(typeId);
+		
+		InventoryItem pii = new InventoryItem();
+		pii.count = 1;
+		pii.owner = player();
+		pii.type = rt;
+		
+		p.inventory.add(pii);
+		if (ttl > 0) {
+			p.timeToLive.put(pii, ttl);
+		}
+		
+		if (!isPaused) {
+			commons.resume();
+		}
 	}
 }
