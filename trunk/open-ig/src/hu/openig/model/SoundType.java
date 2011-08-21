@@ -44,7 +44,7 @@ public enum SoundType {
 	/** Sound. */
 	INFORMATION_FLEETS("ui/fleets"),
 	/** Sound. */
-	DATABASE("ui/information"),
+	DATABASE("ui/cabin"),
 	/** Sound. */
 	INFORMATION_INVENTIONS("ui/inventions"),
 	/** Sound. */
