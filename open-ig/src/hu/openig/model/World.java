@@ -529,11 +529,13 @@ public class World {
 			
 			for (XElement xinv : xplanet.childElement("inventory").childrenWithName("item")) {
 				InventoryItem ii = new InventoryItem();
+				ii.owner = players.get(xinv.get("owner"));
 				ii.type = researches.get(xinv.get("id"));
 				ii.count = xinv.getInt("count");
 				ii.hp = xinv.getInt("hp", ii.type.productionCost);
-				ii.shield = xinv.getInt("shield", ii.shieldMax());
-				ii.owner = players.get(xinv.get("owner"));
+				ii.createSlots();
+				ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
+
 				p.inventory.add(ii);
 			}
 			
@@ -608,7 +610,12 @@ public class World {
 			tech.slots.put(s.id, s);
 		}
 		for (XElement slotFixed : item.childrenWithName("slot-fixed")) {
-			tech.fixedSlots.put(getResearch(slotFixed.get("item")), slotFixed.getInt("count"));
+			EquipmentSlot s = new EquipmentSlot();
+			s.fixed = true;
+			s.id = slotFixed.get("id");
+			s.max = slotFixed.getInt("count");
+			s.items.add(getResearch(slotFixed.get("item")));
+			tech.slots.put(s.id, s);
 		}
 		for (XElement prop : item.childrenWithName("property")) {
 			tech.properties.put(prop.get("name"), prop.get("value"));
@@ -1200,7 +1207,8 @@ public class World {
 				pii.type = researches.get(xpii.get("id"));
 				pii.count = xpii.getInt("count");
 				pii.hp = xpii.getInt("hp", pii.type.productionCost);
-				pii.shield = xpii.getInt("shield", pii.shieldMax());
+				pii.createSlots();
+				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
 				
 				int ttl = xpii.getInt("ttl", 0);
 				if (ttl > 0) {
@@ -1333,15 +1341,20 @@ public class World {
 					}
 					fii.slots.add(fis);
 				}
-				// add remaining undefined but empty slots
+				// add remaining undefined slots
 				for (EquipmentSlot es : fii.type.slots.values()) {
 					if (!slots.contains(es.id)) {
 						InventorySlot fis = new InventorySlot();
 						fis.slot = es;
+						if (es.fixed) {
+							fis.type = es.items.get(0);
+							fis.count = es.max;
+							fis.hp = fis.type.productionCost;
+						}
 						fii.slots.add(fis);
 					}
 				}
-				fii.shield = xfii.getInt("shield", fii.shieldMax());
+				fii.shield = xfii.getInt("shield", Math.max(0, fii.shieldMax()));
 				fii.hp = xfii.getInt("hp", fii.type.productionCost);
 				f.inventory.add(fii);
 			}

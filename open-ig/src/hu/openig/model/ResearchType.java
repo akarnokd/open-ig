@@ -78,8 +78,6 @@ public class ResearchType {
 	public BufferedImage equipmentCustomizeImage;
 	/** The available equipment slots. */
 	public final Map<String, EquipmentSlot> slots = new LinkedHashMap<String, EquipmentSlot>();
-	/** Contains fixed equipment with predefined type and count. */
-	public final Map<ResearchType, Integer> fixedSlots = new LinkedHashMap<ResearchType, Integer>();
 	// -------------------------------------------------
 	// Resources for the Space battle screen.
 //	/** 

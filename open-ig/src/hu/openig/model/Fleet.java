@@ -89,10 +89,9 @@ public class Fleet implements Named, Owned {
 			pii.owner = owner;
 			pii.count = amount;
 			pii.hp = type.productionCost;
-			int shieldMax = pii.shieldMax();
-			if (shieldMax >= 0) {
-				pii.shield = shieldMax;
-			}
+			pii.createSlots();
+			pii.shield = Math.max(0, pii.shieldMax());
+			
 			inventory.add(pii);
 		}
 	}
@@ -208,23 +207,28 @@ public class Fleet implements Named, Owned {
 				for (EquipmentSlot es : type.slots.values()) {
 					InventorySlot is = new InventorySlot();
 					is.slot = es;
-					
-					List<ResearchType> availList = owner.availableLevel(type);
-					
-					for (ResearchType rt1 : es.items) {
-						if (availList.contains(rt1)) {
-							is.type = rt1;
-							// always assign a hyperdrive
-							if (rt1.category == ResearchSubCategory.EQUIPMENT_HYPERDRIVES) {
-								is.count = 1;
-							} else {
-								is.count = es.max / 2;
+					if (es.fixed) {
+						is.type = es.items.get(0);
+						is.count = es.max;
+						is.hp = is.type.productionCost;
+					} else {
+						List<ResearchType> availList = owner.availableLevel(type);
+						
+						for (ResearchType rt1 : es.items) {
+							if (availList.contains(rt1)) {
+								is.type = rt1;
+								// always assign a hyperdrive
+								if (rt1.category == ResearchSubCategory.EQUIPMENT_HYPERDRIVES) {
+									is.count = 1;
+								} else {
+									is.count = es.max / 2;
+								}
+								is.hp = rt1.productionCost;
 							}
-							is.hp = rt1.productionCost;
 						}
-					}
-					if (is.count == 0) {
-						is.type = null;
+						if (is.count == 0) {
+							is.type = null;
+						}
 					}
 					ii.slots.add(is);
 				}

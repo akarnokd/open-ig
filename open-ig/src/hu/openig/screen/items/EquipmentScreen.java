@@ -1576,7 +1576,11 @@ public class EquipmentScreen extends ScreenBase {
 					pii.type = research();
 					pii.count = 1;
 					pii.hp = pii.type.productionCost;
-					pii.shield = pii.type.productionCost;
+					
+					pii.createSlots();
+					
+					pii.shield = Math.max(0, pii.shieldMax());
+					
 					planet().inventory.add(pii);
 					leftList.items.add(pii);
 					leftList.compute();
@@ -1738,7 +1742,7 @@ public class EquipmentScreen extends ScreenBase {
 			configure.selectedSlot.count = 1;
 			configure.selectedSlot.hp = research().productionCost;
 			if (research().has("shield")) {
-				configure.item.shield = configure.item.shieldMax();
+				configure.item.shield = Math.max(0, configure.item.shieldMax());
 			}
 		} else {
 			configure.selectedSlot.count++;
@@ -1949,8 +1953,8 @@ public class EquipmentScreen extends ScreenBase {
 				int worth = ii.type.productionCost;
 				
 				for (InventorySlot is : ii.slots) {
-					if (is.type != null) {
-						worth += is.type.productionCost;
+					if (is.type != null && !is.slot.fixed) {
+						worth += is.type.productionCost * is.count;
 					}
 				}
 				
