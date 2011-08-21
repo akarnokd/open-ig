@@ -18,6 +18,7 @@ import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile;
+import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
@@ -42,7 +43,6 @@ import hu.openig.model.SoundType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.model.World;
-import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.screen.GameControls;
 import hu.openig.utils.JavaUtils;
 
@@ -209,6 +209,15 @@ public final class Simulator {
 			} else {
 				planet.earthQuakeTTL--;
 			}
+		}
+		
+		// progress quarantine if any
+		if (planet.quarantineTTL > 0) {
+			planet.quarantineTTL--;
+		}
+		if (planet.quarantineTTL <= 0) {
+			planet.quarantine = false;
+			planet.quarantineTTL = 0;
 		}
 		
 		boolean rebuildroads = false;
@@ -1195,10 +1204,16 @@ public final class Simulator {
 			if (nearbyPlanet != null) {
 				if (nearbyPlanet.owner != battle.attacker.owner) {
 					damageDefenses(world, nearbyPlanet, 100, 20);
-					nearbyPlanet.quarantine |= attacker.virus;
+					if (attacker.virus) {
+						nearbyPlanet.quarantine = true;
+						nearbyPlanet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+					}
 				} else {
 					if (defend > 0) {
-						nearbyPlanet.quarantine |= defender.virus;
+						if (defender.virus) {
+							nearbyPlanet.quarantine = true;
+							nearbyPlanet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+						}
 						damageDefenses(world, nearbyPlanet, 
 								(int)(100 * defenderRatio * dfp / attackerRatio / defend), 
 								(int)(20 * defenderRatio * dfp / attackerRatio / defend));
@@ -1211,7 +1226,10 @@ public final class Simulator {
 			}
 			if (battle.targetPlanet != null) {
 				damageDefenses(world, battle.targetPlanet, 100, 20);
-				battle.targetPlanet.quarantine |= attacker.virus;
+				if (attacker.virus) {
+					battle.targetPlanet.quarantine = true;
+					battle.targetPlanet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+				}
 				FleetStatistics fs = battle.attacker.getStatistics();
 				if (fs.vehicleCount > 0) {
 					// continue with ground assault
@@ -1236,7 +1254,10 @@ public final class Simulator {
 			if (nearbyPlanet != null) {
 				if (nearbyPlanet.owner == battle.attacker.owner) {
 					if (attack > 0) {
-						nearbyPlanet.quarantine |= defender.virus;
+						if (defender.virus) {
+							nearbyPlanet.quarantine = true;
+							nearbyPlanet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+						}
 						damageDefenses(world, nearbyPlanet, 
 								(int)(100 * attackerRatio * afp / defenderRatio / attack), 
 								(int)(20 * attackerRatio * afp / defenderRatio / attack));
@@ -1247,7 +1268,10 @@ public final class Simulator {
 					}
 				} else {
 					if (defend > 0) {
-						nearbyPlanet.quarantine |= attacker.virus;
+						if (attacker.virus) {
+							nearbyPlanet.quarantine = true;
+							nearbyPlanet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+						}
 						damageDefenses(world, nearbyPlanet, 
 								(int)(100 * defenderRatio * dfp / attackerRatio / defend), 
 								(int)(20 * defenderRatio * dfp / attackerRatio / defend));
@@ -1274,13 +1298,19 @@ public final class Simulator {
 			// destroy planet's defenses
 			if (battle.targetPlanet != null) {
 				damageDefenses(world, battle.targetPlanet, 100, 20);
-				battle.targetPlanet.quarantine |= attacker.virus;
+				if (attacker.virus) {
+					battle.targetPlanet.quarantine = true;
+					battle.targetPlanet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+				}
 			}
 
 			// destroy planet's defenses
 			if (nearbyPlanet != null) {
 				damageDefenses(world, nearbyPlanet, 100, 20);
-				nearbyPlanet.quarantine |= (nearbyPlanet.owner == battle.attacker.owner && defender.virus) || (nearbyPlanet.owner != battle.attacker.owner && attacker.virus);
+				if ((nearbyPlanet.owner == battle.attacker.owner && defender.virus) || (nearbyPlanet.owner != battle.attacker.owner && attacker.virus)) {
+					nearbyPlanet.quarantine = true;
+					nearbyPlanet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+				}
 			}
 		}
 		
