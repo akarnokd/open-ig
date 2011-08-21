@@ -938,14 +938,14 @@ public class StarmapScreen extends ScreenBase {
 		spySatellite1.visible(
 				p.owner != player() 
 				&& p.owner != null
-				&& knowledge(p, PlanetKnowledge.OWNER) >= 0
+				&& knowledge(p, PlanetKnowledge.NAME) >= 0
 				&& player().inventoryCount(world().researches.get("SpySatellite1")) > 0
 				&& !p.hasInventory(world().researches.get("SpySatellite1"), player())
 		);
 		spySatellite2.visible(
 				p.owner != player()
 				&& p.owner != null
-				&& knowledge(p, PlanetKnowledge.OWNER) >= 0
+				&& knowledge(p, PlanetKnowledge.NAME) >= 0
 				&& player().inventoryCount(world().researches.get("SpySatellite2")) > 0
 				&& !p.hasInventory(world().researches.get("SpySatellite2"), player())
 		);
@@ -1987,7 +1987,7 @@ public class StarmapScreen extends ScreenBase {
 		spySatellite1.onClick = new Act() {
 			@Override
 			public void act() {
-				surveySatellite.visible(false);
+				spySatellite1.visible(false);
 				deploySatellite("SpySatellite1", "interlude/deploy_spy_satellite_1", 24 * 6);
 			}
 		};
@@ -1995,7 +1995,7 @@ public class StarmapScreen extends ScreenBase {
 		spySatellite2.onClick = new Act() {
 			@Override
 			public void act() {
-				surveySatellite.visible(false);
+				spySatellite2.visible(false);
 				deploySatellite("SpySatellite2", "interlude/deploy_spy_satellite_2", 96 * 6);
 			}
 		};
@@ -2003,7 +2003,7 @@ public class StarmapScreen extends ScreenBase {
 		hubble2.onClick = new Act() {
 			@Override
 			public void act() {
-				surveySatellite.visible(false);
+				hubble2.visible(false);
 				deploySatellite("Hubble2", "interlude/deploy_hubble", 0);
 			}
 		};

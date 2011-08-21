@@ -206,11 +206,16 @@ public class PlanetScreen extends ScreenBase {
 	/** Go to previous planet. */
 	@DragSensitive
 	UIImageButton next;
+	/** Show the building list panel? */
+	boolean showBuildingList = true;
+	/** Show the building info panel? */
+	boolean showBuildingInfo = true;
+	
 	@Override
 	public void onFinish() {
 		onEndGame();
 	}
-
+	
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		boolean rep = false;
@@ -589,6 +594,9 @@ public class PlanetScreen extends ScreenBase {
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
 			}
+			buildingsPanel.visible(planet().owner == player() && showBuildingList);
+			buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
+			
 			setBuildingList(0);
 			buildingInfoPanel.update();
 			PlanetStatistics ps = infoPanel.update();
@@ -697,7 +705,7 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 			}
-			if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0) {
+			if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
 				for (Building b : surface.buildings) {
 					Rectangle r = getBoundingRect(b.location);
 //					if (r == null) {
@@ -1581,11 +1589,13 @@ public class PlanetScreen extends ScreenBase {
 				buildingInfoPanel.progressUpper.visible(false);
 			}
 			buildingInfoPanel.demolish.enabled(planet().owner == player() && currentBuilding != null);
-			buildingInfoPanel.stateActive.enabled(currentBuilding != null);
-			buildingInfoPanel.stateDamaged.enabled(currentBuilding != null);
-			buildingInfoPanel.stateNoEnergy.enabled(currentBuilding != null);
-			buildingInfoPanel.stateInactive.enabled(currentBuilding != null);
-			buildingInfoPanel.stateOffline.enabled(currentBuilding != null);
+			buildingInfoPanel.stateActive.enabled(planet().owner == player() && currentBuilding != null);
+			buildingInfoPanel.stateDamaged.enabled(planet().owner == player() && currentBuilding != null);
+			buildingInfoPanel.stateNoEnergy.enabled(planet().owner == player() && currentBuilding != null);
+			buildingInfoPanel.stateInactive.enabled(planet().owner == player() && currentBuilding != null);
+			buildingInfoPanel.stateOffline.enabled(planet().owner == player() && currentBuilding != null);
+			buildingInfoPanel.repairing.enabled(planet().owner == player());
+			buildingInfoPanel.damaged.enabled(planet().owner == player());
 			
 			upgradePanel.visible(
 					b != null && b.type.upgrades.size() > 0 
@@ -2102,14 +2112,20 @@ public class PlanetScreen extends ScreenBase {
 		sidebarBuildingInfo.onClick = new Act() {
 			@Override
 			public void act() {
-				buildingInfoPanel.visible(!buildingInfoPanel.visible());
-				upgradePanel.visible(currentBuilding != null && currentBuilding.type.upgrades.size() > 0 && buildingInfoPanel.visible());
+				if (planet().owner == player()) {
+					showBuildingInfo = !showBuildingInfo;
+					upgradePanel.visible(currentBuilding != null 
+							&& currentBuilding.type.upgrades.size() > 0 
+							&& buildingInfoPanel.visible());
+				}
 			}
 		};
 		sidebarBuildings.onClick = new Act() {
 			@Override
 			public void act() {
-				buildingsPanel.visible(!buildingsPanel.visible());
+				if (planet().owner == player()) {
+					showBuildingList = !showBuildingList;
+				}
 			}
 		};
 		colonyInfo.onClick = new Act() {
