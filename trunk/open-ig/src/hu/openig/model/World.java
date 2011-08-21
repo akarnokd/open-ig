@@ -970,6 +970,7 @@ public class World {
 				xp.set("owner", p.owner.id);
 				xp.set("race", p.race);
 				xp.set("quarantine", p.quarantine);
+				xp.set("quarantine-ttl", p.quarantineTTL);
 				xp.set("allocation", p.allocation);
 				xp.set("tax", p.tax);
 				xp.set("morale", p.morale);
@@ -1186,6 +1187,7 @@ public class World {
 			p.owner = players.get(xplanet.get("owner"));
 			p.race = xplanet.get("race");
 			p.quarantine = "true".equals(xplanet.get("quarantine"));
+			p.quarantineTTL = xplanet.getInt("quarantine-ttl", p.quarantine ? Planet.DEFAULT_QUARANTINE_TTL : 0);
 			p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
 			p.tax = TaxLevel.valueOf(xplanet.get("tax"));
 			p.morale = xplanet.getInt("morale");
