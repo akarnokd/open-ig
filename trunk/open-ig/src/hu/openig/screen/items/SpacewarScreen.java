@@ -21,7 +21,6 @@ import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
-import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SpacewarBeam;
 import hu.openig.model.SpacewarExplosion;
@@ -54,7 +53,6 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The spacewar screen.
@@ -1067,20 +1065,6 @@ public class SpacewarScreen extends ScreenBase {
 			}
 			if (is.type != null && is.type.has("ecm")) {
 				ecmLevel = Math.max(ecmLevel, is.type.getInt("ecm"));
-			}
-		}
-		for (Map.Entry<ResearchType, Integer> e : ii.type.fixedSlots.entrySet()) {
-			ResearchType type = e.getKey();
-			if ((type.category == ResearchSubCategory.WEAPONS_CANNONS
-					|| type.category == ResearchSubCategory.WEAPONS_LASERS
-					|| type.category == ResearchSubCategory.WEAPONS_PROJECTILES)) {
-				SpacewarWeaponPort wp = new SpacewarWeaponPort();
-				wp.count = e.getValue();
-				wp.projectile = world().battle.projectiles.get(type.id);
-				ports.add(wp);
-			}
-			if (type.has("ecm")) {
-				ecmLevel = Math.max(ecmLevel, type.getInt("ecm"));
 			}
 		}
 		return ecmLevel;

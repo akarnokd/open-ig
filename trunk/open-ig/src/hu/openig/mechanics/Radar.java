@@ -61,41 +61,37 @@ public final class Radar {
 			for (Fleet f : new ArrayList<Fleet>(player.fleets.keySet())) {
 				if (f.owner == player) {
 					// find the max radar
-					String radar = "0.3";
+					float radar = 0.3f;
 					for (InventoryItem fi : f.inventory) {
 						for (InventorySlot fis : fi.slots) {
 							if (fis.type != null) {
-								String r = fis.type.get("radar");
-								if (r != null && radar.compareTo(r) < 0) {
-									radar = r;
-								}
+								radar = Math.max(radar, fis.type.getInt("radar", 0));
 							}
 						}
 					}
-					float ri = Float.parseFloat(radar);
-					if (ri > 0) {
-						for (Planet q : findPlanetsInRange(world, f.x, f.y, ri * 25)) {
-							if (ri < 1f) {
+					if (radar > 0) {
+						for (Planet q : findPlanetsInRange(world, f.x, f.y, radar * 25)) {
+							if (radar < 1f) {
 								updateKnowledge(world, player, q, PlanetKnowledge.VISIBLE);
 							} else
-							if (ri < 1.1f) {
+							if (radar < 1.1f) {
 								updateKnowledge(world, player, q, PlanetKnowledge.NAME);
 							} else
-							if (ri < 2.1f) {
+							if (radar < 2.1f) {
 								updateKnowledge(world, player, q, PlanetKnowledge.OWNER);
 							} else
-							if (ri < 3.1f) {
+							if (radar < 3.1f) {
 								updateKnowledge(world, player, q, PlanetKnowledge.BUILDING);
 							}
 						}
-						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, ri * 25)) {
-							if (ri < 1.1) {
+						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, radar * 25)) {
+							if (radar < 1.1) {
 								updateKnowledge(world, player, f1, FleetKnowledge.VISIBLE);
 							} else
-							if (ri < 2.1) {
+							if (radar < 2.1) {
 								updateKnowledge(world, player, f1, FleetKnowledge.COMPOSITION);
 							} else
-							if (ri < 3.1) {
+							if (radar < 3.1) {
 								updateKnowledge(world, player, f1, FleetKnowledge.FULL);
 							}
 						}

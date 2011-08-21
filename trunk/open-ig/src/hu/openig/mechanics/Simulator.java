@@ -42,6 +42,7 @@ import hu.openig.model.SoundType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.model.World;
+import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.screen.GameControls;
 import hu.openig.utils.JavaUtils;
 
@@ -1088,6 +1089,8 @@ public final class Simulator {
 		public int hp;
 		/** The ecm level. */
 		public int ecm;
+		/** Virus infection possible. */
+		boolean virus;
 		/** Firepower per anti-ecm levels. */
 		public final Map<Integer, Integer> antiEcmFirepower = JavaUtils.newHashMap();
 		/**
@@ -1172,6 +1175,8 @@ public final class Simulator {
 		double attackerRatio = attack / defender.hp;
 		double defenderRatio = defend / attacker.hp;
 		
+		boolean doGroundBattle = false;
+		
 		if (attackerRatio > defenderRatio) {
 			// defender looses
 
@@ -1190,8 +1195,10 @@ public final class Simulator {
 			if (nearbyPlanet != null) {
 				if (nearbyPlanet.owner != battle.attacker.owner) {
 					damageDefenses(world, nearbyPlanet, 100, 20);
+					nearbyPlanet.quarantine |= attacker.virus;
 				} else {
 					if (defend > 0) {
+						nearbyPlanet.quarantine |= defender.virus;
 						damageDefenses(world, nearbyPlanet, 
 								(int)(100 * defenderRatio * dfp / attackerRatio / defend), 
 								(int)(20 * defenderRatio * dfp / attackerRatio / defend));
@@ -1204,11 +1211,11 @@ public final class Simulator {
 			}
 			if (battle.targetPlanet != null) {
 				damageDefenses(world, battle.targetPlanet, 100, 20);
-				
+				battle.targetPlanet.quarantine |= attacker.virus;
 				FleetStatistics fs = battle.attacker.getStatistics();
 				if (fs.vehicleCount > 0) {
 					// continue with ground assault
-					// TODO implement
+					doGroundBattle = true;
 				}
 			}
 		} else
@@ -1229,6 +1236,7 @@ public final class Simulator {
 			if (nearbyPlanet != null) {
 				if (nearbyPlanet.owner == battle.attacker.owner) {
 					if (attack > 0) {
+						nearbyPlanet.quarantine |= defender.virus;
 						damageDefenses(world, nearbyPlanet, 
 								(int)(100 * attackerRatio * afp / defenderRatio / attack), 
 								(int)(20 * attackerRatio * afp / defenderRatio / attack));
@@ -1239,6 +1247,7 @@ public final class Simulator {
 					}
 				} else {
 					if (defend > 0) {
+						nearbyPlanet.quarantine |= attacker.virus;
 						damageDefenses(world, nearbyPlanet, 
 								(int)(100 * defenderRatio * dfp / attackerRatio / defend), 
 								(int)(20 * defenderRatio * dfp / attackerRatio / defend));
@@ -1265,12 +1274,19 @@ public final class Simulator {
 			// destroy planet's defenses
 			if (battle.targetPlanet != null) {
 				damageDefenses(world, battle.targetPlanet, 100, 20);
+				battle.targetPlanet.quarantine |= attacker.virus;
 			}
 
 			// destroy planet's defenses
 			if (nearbyPlanet != null) {
 				damageDefenses(world, nearbyPlanet, 100, 20);
+				nearbyPlanet.quarantine |= (nearbyPlanet.owner == battle.attacker.owner && defender.virus) || (nearbyPlanet.owner != battle.attacker.owner && attacker.virus);
 			}
+		}
+		
+		// -------------------------------------------------------------------------------
+		if (doGroundBattle) {
+			
 		}
 	}
 	/**
@@ -1301,6 +1317,14 @@ public final class Simulator {
 			} else {
 				hpBefore += hp0;
 				hpAfter += ii.hp;
+				
+				// use up rockets and bombs
+				for (InventorySlot is : ii.slots) {
+					if (is.type != null && is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
+						is.count = is.count * (100 - percent) / 100;
+					}
+				}
+
 			}
 		}
 		FleetStatistics fs = fleet.getStatistics();
@@ -1341,6 +1365,13 @@ public final class Simulator {
 					ii.hp = Math.max(0, ii.hp - ii.type.productionCost * defensivePercent / 100);
 					if (ii.hp <= 0) {
 						planet.inventory.remove(ii);
+					} else {
+						// use up rockets and bombs
+						for (InventorySlot is : ii.slots) {
+							if (is.type != null && is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
+								is.count = is.count * (100 - defensivePercent) / 100;
+							}
+						}
 					}
 				}
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -1482,7 +1513,8 @@ public final class Simulator {
 				if (is.type != null) {
 					stats.ecm = Math.max(stats.ecm, is.type.getInt("ecm", 0));
 					if (is.type.has("projectile")) {
-						int firepower = is.count  * battle.projectiles.get(is.type.get("projectile")).damage;
+						BattleProjectile bp = battle.projectiles.get(is.type.get("projectile"));
+						int firepower = is.count  * bp.damage;
 						if (is.type.has("anti-ecm")) {
 							int antiEcm = is.type.getInt("anti-ecm");
 							Integer fp = stats.antiEcmFirepower.get(antiEcm);
@@ -1490,21 +1522,9 @@ public final class Simulator {
 						} else {
 							stats.firepower += firepower;
 						}
-					}
-				}
-			}
-			for (Map.Entry<ResearchType, Integer> e : ii.type.fixedSlots.entrySet()) {
-				ResearchType type = e.getKey();
-				int count = e.getValue();
-				stats.ecm = Math.max(stats.ecm, type.getInt("ecm", 0));
-				if (type.has("projectile")) {
-					int firepower = count  * battle.projectiles.get(type.get("projectile")).damage;
-					if (type.has("anti-ecm")) {
-						int antiEcm = type.getInt("anti-ecm");
-						Integer fp = stats.antiEcmFirepower.get(antiEcm);
-						stats.antiEcmFirepower.put(antiEcm, fp != null ? fp.intValue() + firepower : firepower);
-					} else {
-						stats.firepower += firepower;
+						if (bp.mode == Mode.VIRUS) {
+							stats.virus = true;
+						}
 					}
 				}
 			}

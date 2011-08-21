@@ -55,31 +55,33 @@ public class EquipmentConfigure extends UIComponent {
 		
 		Color green = new Color(0x009A00);
 		for (InventorySlot is : item.slots) {
-			if (is.type != null) {
-				g2.setColor(is == selectedSlot ? green : Color.BLACK);
-				g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
-				if (is != selectedSlot && is.hp < is.type.productionCost) {
-					g2.setColor(interpolate(
-							is.hp * 1.0f / is.type.productionCost, 
-							Color.RED, Color.ORANGE, Color.YELLOW));
+			if (!is.slot.fixed) {
+				if (is.type != null) {
+					g2.setColor(is == selectedSlot ? green : Color.BLACK);
+					g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
+					if (is != selectedSlot && is.hp < is.type.productionCost) {
+						g2.setColor(interpolate(
+								is.hp * 1.0f / is.type.productionCost, 
+								Color.RED, Color.ORANGE, Color.YELLOW));
+					} else {
+						g2.setColor(green);
+					}
+					g2.drawRect(is.slot.x + 1, is.slot.y + 1, is.slot.width - 3, is.slot.height - 3);
 				} else {
+					g2.setColor(is == selectedSlot ? green : Color.BLACK);
+					g2.drawRect(is.slot.x + 1, is.slot.y + 1, is.slot.width - 3, is.slot.height - 3);
+					g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
 					g2.setColor(green);
+					Stroke save0 = g2.getStroke();
+					g2.setStroke(new BasicStroke(1.0f,
+	                        BasicStroke.CAP_BUTT,
+	                        BasicStroke.JOIN_MITER,
+	                        1.0f, new float[] { 2f, 1f }, 0.0f));
+					
+					g2.drawRect(is.slot.x + 1, is.slot.y + 1, is.slot.width - 3, is.slot.height - 3);
+					g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
+					g2.setStroke(save0);
 				}
-				g2.drawRect(is.slot.x + 1, is.slot.y + 1, is.slot.width - 3, is.slot.height - 3);
-			} else {
-				g2.setColor(is == selectedSlot ? green : Color.BLACK);
-				g2.drawRect(is.slot.x + 1, is.slot.y + 1, is.slot.width - 3, is.slot.height - 3);
-				g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
-				g2.setColor(green);
-				Stroke save0 = g2.getStroke();
-				g2.setStroke(new BasicStroke(1.0f,
-                        BasicStroke.CAP_BUTT,
-                        BasicStroke.JOIN_MITER,
-                        1.0f, new float[] { 2f, 1f }, 0.0f));
-				
-				g2.drawRect(is.slot.x + 1, is.slot.y + 1, is.slot.width - 3, is.slot.height - 3);
-				g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
-				g2.setStroke(save0);
 			}
 		}
 	}
