@@ -362,6 +362,7 @@ public class LoadSaveScreen extends ScreenBase {
 						commons.sounds.play(SoundType.BAR);
 						config.effectVolume = ev;
 					}
+					commons.music.setVolume(config.musicVolume);
 					return true;
 				}
 				return super.mouse(e);
