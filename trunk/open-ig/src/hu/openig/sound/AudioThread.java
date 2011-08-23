@@ -28,8 +28,24 @@ import javax.sound.sampled.SourceDataLine;
  * @author akarnokd, 2009.01.11.
  */
 public class AudioThread extends Thread {
+	/** The audio data configuration. */
+	public static class Data {
+		/** The data bytes. */
+		public final byte[] data;
+		/** The data needs to be upscaled to 16 bit. */
+		public final boolean upscale;
+		/**
+		 * Constructor.
+		 * @param data the data bytes
+		 * @param upscale need upscaling?
+		 */
+		public Data(byte[] data, boolean upscale) {
+			this.data = data;
+			this.upscale = upscale;
+		}
+	}
 	/** The queue for asynchronus music play. */
-	private final BlockingQueue<byte[]> queue;
+	private final BlockingQueue<Data> queue;
 	/** The output audio line. */
 	private final SourceDataLine sdl;
 	/** The start semaphore. */
@@ -47,7 +63,7 @@ public class AudioThread extends Thread {
 	 */
 	public AudioThread() {
 		super("AudioPlayback");
-		queue = new LinkedBlockingQueue<byte[]>();
+		queue = new LinkedBlockingQueue<Data>();
 		sdl = createAudioOutput();
 	}
 	/**
@@ -55,7 +71,7 @@ public class AudioThread extends Thread {
 	 * @param idx the index
 	 * @param queue the queue to use
 	 */
-	public AudioThread(int idx, BlockingQueue<byte[]> queue) {
+	public AudioThread(int idx, BlockingQueue<Data> queue) {
 		super("AudioPlayback-" + idx);
 		this.queue = queue;
 		sdl = createAudioOutput();
@@ -67,8 +83,8 @@ public class AudioThread extends Thread {
 	public void run() {
 		try {
 			while (!stop && !isInterrupted()) {
-				byte[] data = queue.take();
-				if (data.length == 0) {
+				Data data = queue.take();
+				if (data.data.length == 0) {
 					sdl.drain();
 					break;
 				}
@@ -89,8 +105,12 @@ public class AudioThread extends Thread {
 						lock.unlock();
 					}
 				}
-				byte[] data16 = convert8To16(data); //split16To8(movingAverage(upscale8To16(data), ));
-				sdl.write(data16, 0, data16.length);
+				if (data.upscale) {
+					byte[] data16 = convert8To16(data.data); //split16To8(movingAverage(upscale8To16(data), ));
+					sdl.write(data16, 0, data16.length);
+				} else {
+					sdl.write(data.data, 0, data.data.length);
+				}
 				sdl.drain();
 			}
 		} catch (InterruptedException ex) {
@@ -212,9 +232,10 @@ public class AudioThread extends Thread {
 	 * Send an audio sample to the audio player.
 	 * Can be called from any thread.
 	 * @param data the non null data to send
+	 * @param upscale the data needs to be upscaled to 16 bits?
 	 */
-	public void submit(byte[] data) {
-		if (!queue.offer(data)) {
+	public void submit(byte[] data, boolean upscale) {
+		if (!queue.offer(new Data(data, upscale))) {
 			throw new AssertionError("Queue problems");
 		}
 	}
@@ -244,7 +265,7 @@ public class AudioThread extends Thread {
 	 * Stops the playback.
 	 */
 	public void stopPlayback() {
-		if (!queue.offer(new byte[0])) {
+		if (!queue.offer(new Data(new byte[0], false))) {
 			throw new AssertionError("Queue problems");
 		}
 		lock.lock();

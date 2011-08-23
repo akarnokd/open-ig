@@ -76,8 +76,8 @@ public final class PlaySMP {
 			AudioThread at = new AudioThread();
 			at.start();
 			at.startPlaybackNow();
-			at.submit(IOUtils.load(p.toFile()));
-			at.submit(new byte[0]);
+			at.submit(IOUtils.load(p.toFile()), true);
+			at.submit(new byte[0], false);
 			at.join();
 			Thread.sleep(200);
 		}

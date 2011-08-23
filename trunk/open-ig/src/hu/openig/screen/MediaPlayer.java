@@ -103,7 +103,7 @@ public class MediaPlayer {
 			subtitle = null;
 		}
 		stop = false;
-		final int audioSmooth = commons.config.videoFilter;
+//		final int audioSmooth = commons.config.videoFilter;
 		final int audioVolume = commons.config.videoVolume;
 		audioThread = new Thread(new Runnable() {
 			@Override
@@ -117,9 +117,21 @@ public class MediaPlayer {
 					try {
 						byte[] buffer = new byte[in.available()];
 						in.read(buffer);
-						byte[] buffer2 = AudioThread.split16To8(AudioThread.movingAverage(upscale8To16AndSignify(buffer), audioSmooth));
 						try {
+							AudioFormat af = in.getFormat();
+							byte[] buffer2 = null;
+							if (af.getSampleSizeInBits() == 8) {
+								if (af.getEncoding() == AudioFormat.Encoding.PCM_UNSIGNED) {
+									for (int i = 0; i < buffer.length; i++) {
+										buffer[i] = (byte)((buffer[i] & 0xFF) - 128);
+									}
+								}
+								buffer2 = AudioThread.convert8To16(buffer);
+							} else {
+								buffer2 = buffer;
+							}
 							AudioFormat streamFormat = new AudioFormat(in.getFormat().getSampleRate(), 16, 1, true, false);
+							
 							DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
 							sdl = (SourceDataLine) AudioSystem.getLine(clipInfo);
 							sdl.open();
@@ -127,7 +139,7 @@ public class MediaPlayer {
 							if (fc != null) {
 								fc.setValue(AudioThread.computeGain(fc, audioVolume));
 							}
-							videoThread.setAudioLength(buffer.length);
+							videoThread.setAudioLength(buffer2.length / 2);
 							try {
 								barrier.await();
 								if (!stop) {
@@ -140,19 +152,17 @@ public class MediaPlayer {
 							} catch (InterruptedException ex) {
 								
 							} catch (BrokenBarrierException ex) {
-								
+								ex.printStackTrace();
 							}
 						} catch (LineUnavailableException ex) {
-							// TODO log
+							ex.printStackTrace();
 						}
 					} finally {
 						in.close();
 					}
 				} catch (UnsupportedAudioFileException ex) {
-					// TODO log
 					ex.printStackTrace();
 				} catch (IOException ex) {
-					// TODO log
 					ex.printStackTrace();
 				} finally {
 					if (continuation.decrementAndGet() == 0) {

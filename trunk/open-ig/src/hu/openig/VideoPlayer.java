@@ -784,8 +784,19 @@ public class VideoPlayer extends JFrame {
 				try {
 					byte[] buffer = new byte[in.available()];
 					in.read(buffer);
-					byte[] buffer2 = AudioThread.split16To8(AudioThread.movingAverage(upscale8To16AndSignify(buffer), config.videoFilter));
 					try {
+						AudioFormat af = in.getFormat();
+						byte[] buffer2 = null;
+						if (af.getSampleSizeInBits() == 8) {
+							if (af.getEncoding() == AudioFormat.Encoding.PCM_UNSIGNED) {
+								for (int i = 0; i < buffer.length; i++) {
+									buffer[i] = (byte)((buffer[i] & 0xFF) - 128);
+								}
+							}
+							buffer2 = AudioThread.convert8To16(buffer);
+						} else {
+							buffer2 = buffer;
+						}
 						AudioFormat streamFormat = new AudioFormat(22050, 16, 1, true, false);
 						DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
 						clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
