@@ -206,3 +206,19 @@ When an earthquake happens, the player is notified and double clicking on the bo
 It is possible, that unattended planets might be completely destroyed by earthquakes.
 
 _Depending on playtester's response, the mechanics might change. Having earthquakes tear down the initial colonies at the start might be too much._
+
+== Radar ==
+
+|| *Radar type* || *Alien planet* || *Alien fleet* ||
+|| No radar || Displays gray label,<br> display black surface and text about "Install satellite"  || Invisible ||
+|| Radar 1 || Display "Occupied",<br> display building base only || display owner,<br> display count of non-fighter ships exactly ||
+|| Radar 2 || ? || ? ||
+|| Radar 3 || ? || ? ||
+|| Survey satellite || Display owner,<br> display "Alien Empire",<br> display Space stations,<br> display buildings base only  || - ||
+|| Spy satellite 1 || Installable on nameless planets,<br> display owner,<br> display building base only,<br> display space stations,<br> display population number || - ||
+|| Spy satellite 2 || Installable on nameless planets,<br> display owner,<br> display buildings with name,<br> display space stations,<br> display population number,<br> display approximate vehicle and fighter counts || - ||
+|| Hubble || ? || ? ||
+|| Fleet without radar || Discover planet only || Show fleet owner as "Alien Fleet". ||
+|| Fleet radar 1 || display gray label, display "Install satellite" || display owner,<br> display count of non-fighter ships exactly,<br> display fighters as range ||
+|| Fleet radar 2 || display gray label,<br> display "Install satellite" || display owner,<br>  display count of non-fighter ships exactly,<br> display fighters as range<br> ||
+|| Fleet radar 3 || display owner,<br> display building bases only || display owner,<br> display count of non-fighter ships exactly,<br> display fighters as range ||
