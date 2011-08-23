@@ -219,6 +219,6 @@ _Depending on playtester's response, the mechanics might change. Having earthqua
 || Spy satellite 2 || Installable on nameless planets,<br> display owner,<br> display buildings with name,<br> display space stations,<br> display population number,<br> display approximate vehicle and fighter counts || - ||
 || Hubble || ? || ? ||
 || Fleet without radar || Discover planet only || Show fleet owner as "Alien Fleet". ||
-|| Fleet radar 1 || display gray label, display "Install satellite" || display owner,<br> display count of non-fighter ships exactly,<br> display fighters as range ||
+|| Fleet radar 1 || display gray label,<br> display "Install satellite" || display owner,<br> display count of non-fighter ships exactly,<br> display fighters as range ||
 || Fleet radar 2 || display gray label,<br> display "Install satellite" || display owner,<br>  display count of non-fighter ships exactly,<br> display fighters as range<br> ||
 || Fleet radar 3 || display owner,<br> display building bases only || display owner,<br> display count of non-fighter ships exactly,<br> display fighters as range ||
