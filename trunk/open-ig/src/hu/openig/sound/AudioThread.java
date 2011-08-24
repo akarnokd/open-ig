@@ -18,6 +18,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
@@ -325,5 +326,54 @@ public class AudioThread extends Thread {
 		float min = Math.max(fc.getMinimum(), -43);
 		float max = Math.min(fc.getMaximum(), 0);
 		return min + (max - min) * volume / 100;
+	}
+	/**
+	 * Set the volume on an audio line by trying various controls.
+	 * @param line the data line
+	 * @param volume the volume between 0 and 100. 0 means mute
+	 */
+	public static void setVolume(Line line, int volume) {
+		boolean muteFailed = false;
+		try {
+			if (line.isControlSupported(BooleanControl.Type.MUTE)) {
+				BooleanControl bc = (BooleanControl)line.getControl(BooleanControl.Type.MUTE);
+				bc.setValue(volume == 0);
+			} else {
+				muteFailed = volume == 0;
+			}
+		} catch (Exception ex) {
+			// some linux implementation throws exception
+			muteFailed = volume == 0;
+		}
+		try {
+			// try master gain
+			if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+				FloatControl fc = (FloatControl)line.getControl(FloatControl.Type.MASTER_GAIN);
+				if (muteFailed) {
+					// set to the lowest gain possible
+					fc.setValue(fc.getMinimum());
+				} else {
+					fc.setValue(computeGain(fc, volume));
+				}
+				return;
+			}
+		} catch (Exception ex) {
+			// some linux implementation throws exception, give up
+		}
+		try {
+			// try volume
+			if (line.isControlSupported(FloatControl.Type.VOLUME)) {
+				FloatControl fc = (FloatControl)line.getControl(FloatControl.Type.VOLUME);
+				if (muteFailed) {
+					fc.setValue(fc.getMinimum());
+				} else {
+					float low = fc.getMinimum();
+					float high = fc.getMaximum();
+					fc.setValue(low + (high - low) * volume / 100);
+				}
+			}
+		} catch (Exception ex) {
+			// some linux implementation throws exception, give up
+		}
 	}
 }

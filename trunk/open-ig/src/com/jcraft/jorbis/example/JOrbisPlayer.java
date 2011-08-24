@@ -284,7 +284,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 	 */
 	private int item2index(String item) {
 		for (int i = 0; i < cb.getItemCount(); i++) {
-			String foo = (String) (cb.getItemAt(i));
+			String foo = cb.getItemAt(i);
 			if (item.equals(foo)) {
 				return i;
 			}
@@ -301,7 +301,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 		String item = (String) (cb.getSelectedItem());
 		int currentIndex = item2index(item);
 		while (true) {
-			item = (String) (cb.getItemAt(currentIndex));
+			item = cb.getItemAt(currentIndex);
 			cb.setSelectedIndex(currentIndex);
 			bitStream = selectSource(item);
 			if (bitStream != null) {
@@ -875,7 +875,7 @@ public class JOrbisPlayer extends JApplet implements ActionListener, Runnable {
 
 		boolean find = false;
 		for (int i = 0; i < cb.getItemCount(); i++) {
-			String foo = (String) (cb.getItemAt(i));
+			String foo = cb.getItemAt(i);
 			if (item.equals(foo)) {
 				find = true;
 				break;

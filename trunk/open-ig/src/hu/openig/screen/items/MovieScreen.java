@@ -14,8 +14,8 @@ import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.MediaPlayer;
-import hu.openig.screen.ScreenBase;
 import hu.openig.screen.MediaPlayer.LabelEvent;
+import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 

@@ -27,7 +27,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -127,6 +126,7 @@ public class MediaPlayer {
 									}
 								}
 								buffer2 = AudioThread.convert8To16(buffer);
+								af = new AudioFormat(af.getFrameRate(), 16, af.getChannels(), true, false);
 							} else {
 								buffer2 = buffer;
 							}
@@ -135,10 +135,7 @@ public class MediaPlayer {
 							DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
 							sdl = (SourceDataLine) AudioSystem.getLine(clipInfo);
 							sdl.open();
-							FloatControl fc = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
-							if (fc != null) {
-								fc.setValue(AudioThread.computeGain(fc, audioVolume));
-							}
+							AudioThread.setVolume(sdl, audioVolume);
 							videoThread.setAudioLength(buffer2.length / 2);
 							try {
 								barrier.await();

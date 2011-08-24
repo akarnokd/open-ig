@@ -10,10 +10,10 @@ package hu.openig.editors;
 import java.awt.Container;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
-import javax.swing.GroupLayout.Alignment;
 
 /** A window with indeterminate backgound progress indicator. */
 public class BackgroundProgress extends JDialog {
