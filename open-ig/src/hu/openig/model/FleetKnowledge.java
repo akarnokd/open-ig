@@ -15,7 +15,7 @@ package hu.openig.model;
 public enum FleetKnowledge {
 	/** The fleet is visible, but nothing else is known. */
 	VISIBLE,
-	/** The fleet composition is known, but not the numbers. */
+	/** The fleet composition is known for larger ships, but fighters are displayed as range. */
 	COMPOSITION,
 	/** The fleet composition, numbers and firepower is known. */
 	FULL

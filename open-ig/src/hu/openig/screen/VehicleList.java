@@ -257,6 +257,9 @@ public class VehicleList extends UIContainer {
 		int y = 0;
 		if (group) {
 			for (Map.Entry<ResearchType, InventoryItemGroup> e : map.entrySet()) {
+				if (e.getValue().items.size() == 0) {
+					continue;
+				}
 				if (row++ > 0) {
 					y += 5;
 				}

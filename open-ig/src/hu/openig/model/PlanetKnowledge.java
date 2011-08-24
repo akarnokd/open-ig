@@ -17,8 +17,13 @@ public enum PlanetKnowledge {
 	VISIBLE,
 	/** The planet name is known and displayed, but in gray color. */
 	NAME,
-	/** The owner of the planet is known and its colored label indicates this. Buildings are outlined as black cells. */
+	/** 
+	 * The owner of the planet is known and its colored label indicates this. 
+	 * Buildings are outlined as initial construction cells. 
+	 */
 	OWNER,
+	/** Display space stations and population number. */
+	STATIONS,
 	/** The buildings are also drawn. */
 	BUILDING,
 }

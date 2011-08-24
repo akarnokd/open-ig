@@ -334,7 +334,9 @@ public class EquipmentScreen extends ScreenBase {
 		fleetName = new UILabel("Fleet1", 14, commons.text()) {
 			@Override
 			public boolean mouse(UIMouse e) {
-				if (e.has(Type.DOUBLE_CLICK) && player().selectionMode == SelectionMode.FLEET && fleet() != null) {
+				if (e.has(Type.DOUBLE_CLICK) 
+						&& player().selectionMode == SelectionMode.FLEET && fleet() != null 
+						&& fleet().owner == player()) {
 					editPrimary = true;
 					editSecondary = false;
 				}
@@ -1062,7 +1064,7 @@ public class EquipmentScreen extends ScreenBase {
 		innerEquipmentValue.visible(false);
 		ResearchType rt = research();
 		if (player().selectionMode == SelectionMode.PLANET) {
-
+			
 			PlanetStatistics ps = planet().getStatistics();
 			
 			boolean own = planet().owner == player();
@@ -1088,15 +1090,21 @@ public class EquipmentScreen extends ScreenBase {
 			
 			spaceshipsLabel.visible(false);
 			spaceshipsMaxLabel.visible(false);
-			fightersLabel.text(format("equipment.fighters", ps.fighterCount), true);
-			vehiclesLabel.text(format("equipment.vehicles", ps.vehicleCount), true);
-			
-			if (ps.hasSpaceStation) {
-				fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
+			if (own) {
+				fightersLabel.text(format("equipment.fighters", ps.fighterCount), true);
+				vehiclesLabel.text(format("equipment.vehicles", ps.vehicleCount), true);
+				if (ps.hasSpaceStation) {
+					fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
+				} else {
+					fightersMaxLabel.text(format("equipment.max", 0), true);
+				}
+				vehiclesMaxLabel.text(format("equipment.max", ps.vehicleMax), true);
 			} else {
-				fightersMaxLabel.text(format("equipment.max", 0), true);
+				fightersLabel.text("");
+				vehiclesLabel.text("");
+				fightersMaxLabel.text("");
+				vehiclesMaxLabel.text("");
 			}
-			vehiclesMaxLabel.text(format("equipment.max", ps.vehicleMax), true);
 			
 			fleetStatusLabel.visible(false);
 			
@@ -1176,6 +1184,8 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			
 			Fleet f = fleet();
+			boolean own = f.owner == player();
+			
 			FleetStatistics fs = f.getStatistics();
 			
 			prepareCells(null, fleet(), leftFighterCells, leftTankCells);
@@ -1191,15 +1201,34 @@ public class EquipmentScreen extends ScreenBase {
 			if (editPrimary && (animationStep % 10) < 5) {
 				fleetName.text(f.name + "-");
 			} else {
-				fleetName.text(f.name);
+				if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
+					fleetName.text(f.name);
+				} else {
+					fleetName.text(get("fleetinfo.alien_fleet"));
+				}
 			}
-			spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount), true).visible(true);
-			spaceshipsMaxLabel.text(format("equipment.max", 25), true).visible(true);
-			fightersLabel.text(format("equipment.fighters", fs.fighterCount), true);
-			vehiclesLabel.text(format("equipment.vehicles", fs.vehicleCount), true);
-			fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
-			vehiclesMaxLabel.text(format("equipment.max", fs.vehicleMax), true);
-			
+			if (own) {
+				spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount), true).visible(true);
+				spaceshipsMaxLabel.text(format("equipment.max", 25), true).visible(true);
+				fightersLabel.text(format("equipment.fighters", fs.fighterCount), true);
+				vehiclesLabel.text(format("equipment.vehicles", fs.vehicleCount), true);
+				fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
+				vehiclesMaxLabel.text(format("equipment.max", fs.vehicleMax), true);
+			} else {
+				if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
+					spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount + fs.battleshipCount), true).visible(true);
+					int fcnt = (fs.fighterCount / 10) * 10;
+					int fcnt2 = fcnt + 10;
+					fightersLabel.text(format("equipment.fighters", fcnt + ".." + fcnt2), true);
+				} else {
+					spaceshipsLabel.text("");
+					fightersLabel.text("");
+				}
+				spaceshipsMaxLabel.text("");
+				vehiclesLabel.text("");
+				fightersMaxLabel.text("");
+				vehiclesMaxLabel.text("");
+			}
 			if (secondary != null) {
 				secondaryLabel.visible(true);
 				if (editSecondary && (animationStep % 10) < 5) {
@@ -1308,9 +1337,9 @@ public class EquipmentScreen extends ScreenBase {
 			cruisersEmpty.visible(false);
 			stations.visible(false);
 			
-			newButton.visible(secondary == null && ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
+			newButton.visible(own && secondary == null && ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
 			noSpaceport.visible(secondary == null && ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
-			notYourPlanet.visible(secondary == null && ps != null && fs.planet.owner != f.owner);
+			notYourPlanet.visible(false);
 			noPlanetNearby.visible(secondary == null && ps == null);
 			noSpaceStation.visible(false);
 
@@ -1375,12 +1404,14 @@ public class EquipmentScreen extends ScreenBase {
 				sell.visible(false);
 			}
 			
-			splitButton.visible(secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
-			transferButton.visible(secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && fleet().fleetsInRange(20).size() > 0);
-			deleteButton.visible(secondary == null && f.inventory.size() == 0 && f.owner == player());
+			splitButton.visible(own && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
+			transferButton.visible(own && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && fleet().fleetsInRange(20).size() > 0);
+			deleteButton.visible(own && secondary == null && f.inventory.size() == 0);
 		}
 		if (configure.type != null) {
 			selectedNameAndType.text(configure.type.longName);
+		} else {
+			selectedNameAndType.text("");
 		}
 	}
 	/** 
@@ -1407,7 +1438,7 @@ public class EquipmentScreen extends ScreenBase {
 		clearCells(tanks);
 		
 		for (ResearchType rt : world().researches.values()) {
-			if (!world().canDisplayResearch(rt)) {
+			if (!world().canDisplayResearch(rt) || (p != null && p.owner != player()) || (f != null && f.owner != player())) {
 				continue;
 			}
 			VehicleCell vc = null;
@@ -1487,14 +1518,15 @@ public class EquipmentScreen extends ScreenBase {
 	void updateInventory(Planet p, Fleet f, VehicleList list) {
 		list.clear();
 		
-		if (p != null) {
+		if (p != null && p.owner == player()) {
 			list.group = false;
 			for (InventoryItem pii : p.inventory) {
 				if (pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 					list.items.add(pii);
 				}
 			}
-		} else {		
+		} else 
+		if (f != null && f.owner == player()) {		
 			list.group = true;
 			for (InventoryItem pii : f.inventory) {
 				if (pii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
