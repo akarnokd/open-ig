@@ -294,7 +294,7 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 			@Override
 			public void draw(Graphics2D g2) {
-				int dw = next.x - prev.x - prev.width - 2;
+				int dw = width - next.width - prev.width - 2;
 				int ox = prev.x + prev.width + 1;
 				int dx = config.effectVolume * dw / 100;
 				g2.setColor(Color.WHITE);
@@ -369,7 +369,7 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 			@Override
 			public void draw(Graphics2D g2) {
-				int dw = next.x - prev.x - prev.width - 2;
+				int dw = width - next.width - prev.width - 2;
 				int ox = prev.x + prev.width + 1;
 				int dx = config.musicVolume * dw / 100;
 				g2.setColor(Color.WHITE);
@@ -439,7 +439,7 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 			@Override
 			public void draw(Graphics2D g2) {
-				int dw = next.x - prev.x - prev.width - 2;
+				int dw = width - next.width - prev.width - 2;
 				int ox = prev.x + prev.width + 1;
 				int dx = config.videoVolume * dw / 100;
 				g2.setColor(Color.WHITE);
