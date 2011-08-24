@@ -65,8 +65,6 @@ public class OggMusic {
 	public volatile SourceDataLine outputLine = null;
 	/** Current/initial sound gain. */
 	private int initialVolume;
-	/** Current/initial mute state. */
-	private boolean initialMute; 
 	/**
 	 * Constructor.
 	 * @param me the playback thread running the run() method
@@ -75,7 +73,6 @@ public class OggMusic {
 	public OggMusic(Thread me, int volume) {
 		this.playbackThread = me;
 		this.initialVolume = volume;
-		this.initialMute = volume == 0;
 		
 	}
 	/** Close playback thread. */
@@ -289,7 +286,7 @@ public class OggMusic {
 			// Preset initial gain and mute
 			SourceDataLine sdl = getOutputLine(vi.channels, vi.rate);
 			
-			AudioThread.setVolume(sdl, initialMute ? initialVolume : 0);
+			AudioThread.setVolume(sdl, initialVolume);
 			
 			while (eos == 0) {
 				while (eos == 0) {

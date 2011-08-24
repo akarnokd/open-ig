@@ -37,8 +37,6 @@ public class Music {
 	private SourceDataLine sdl;
 	/** The background playback thread. */
 	private volatile Thread playbackThread;
-	/** Adjust master gain in dB. */
-	private volatile int volume;
 	/** The resource manager. */
 	private final ResourceLocator rl;
 	/** The clip for sound playback. */
@@ -65,7 +63,6 @@ public class Music {
 		try {
 			sdl = (SourceDataLine) AudioSystem.getLine(dli);
 			sdl.open(af);
-			setVolume(volume);
 		} catch (LineUnavailableException ex) {
 		}
 	}
@@ -76,9 +73,11 @@ public class Music {
 	public void play() {
 		if (sdl != null) {
 			sdl.start();
-		} else if (soundClip != null) {
+		} else 
+		if (soundClip != null) {
 			soundClip.start();
-		} else if (oggMusic != null) {
+		} else 
+		if (oggMusic != null) {
 			oggMusic.outputLine.start();
 		}
 	}
@@ -87,9 +86,11 @@ public class Music {
 	public void stop() {
 		if (sdl != null) {
 			sdl.stop();
-		} else if (soundClip != null) {
+		} else 
+		if (soundClip != null) {
 			soundClip.stop();
-		} else if (oggMusic != null) {
+		} else 
+		if (oggMusic != null) {
 			oggMusic.outputLine.stop();
 		}
 	}
@@ -124,8 +125,9 @@ public class Music {
 	 * Play the given file list in the given sequence.
 	 * 
 	 * @param fileName the array of filenames to play
+	 * @param volume the initial playback volume
 	 */
-	public void playFile(final String... fileName) {
+	public void playFile(final int volume, final String... fileName) {
 		stop();
 		Thread th = playbackThread;
 		if (th != null) {
@@ -135,7 +137,7 @@ public class Music {
 		th = new Thread(null, new Runnable() {
 			@Override 
 			public void run() {
-				playbackLoop(fileName);
+				playbackLoop(volume, fileName);
 			}
 		}, "MusicPlayback-" + Arrays.toString(fileName));
 		playbackThread = th;
@@ -147,8 +149,9 @@ public class Music {
 	 * 
 	 * @param fileNames
 	 *            the audio files to play back
+   	 * @param volume the initial playback volume
 	 */
-	private void playbackLoop(String... fileNames) {
+	private void playbackLoop(int volume, String... fileNames) {
 		int fails = 0;
 		while (checkStop() && fails < fileNames.length) {
 			for (String name : fileNames) {
@@ -158,16 +161,16 @@ public class Music {
 					break;
 				}
 				if (useClip) {
-					playBackClip(rp);
+					playBackClip(rp, volume);
 				} else {
 					try {
 						if (fileName.toUpperCase().endsWith(".WAV")) {
-							if (!playbackWav(rp)) {
+							if (!playbackWav(rp, volume)) {
 								fails++;
 							}
 						} else 
 						if (fileName.toUpperCase().endsWith(".OGG")) {
-							if (!playbackOgg(rp)) {
+							if (!playbackOgg(rp, volume)) {
 								fails++;
 							}
 						} else {
@@ -191,10 +194,11 @@ public class Music {
 	/**
 	 * Plays back the given filename as an OGG audio file.
 	 * @param res the resource place representing the music
+	 * @param volume the initial playback volume
 	 * @return true if the file was accessible
 	 * @throws IOException on IO error
 	 */
-	private boolean playbackOgg(ResourcePlace res) throws IOException {
+	private boolean playbackOgg(ResourcePlace res, int volume) throws IOException {
 		InputStream raf = res.openNew();
 		try {
 			oggMusic = new OggMusic(Thread.currentThread(), volume);
@@ -209,10 +213,11 @@ public class Music {
 	/**
 	 * Plays back the given filename as a WAV file.
 	 * @param rp the resource place
+	 * @param volume the initial playback volume
 	 * @return true if the file is accessible
 	 * @throws IOException if there is problem with the IO
 	 */
-	private boolean playbackWav(ResourcePlace rp) throws IOException {
+	private boolean playbackWav(ResourcePlace rp, int volume) throws IOException {
 		InputStream raf = rp.openNew();
 		// skip chunks
 		try {
@@ -244,8 +249,9 @@ public class Music {
 	/**
 	 * Play back music using the Clip object.
 	 * @param rp the resource to play back
+	 * @param volume the initial playback volume
 	 */
-	private void playBackClip(ResourcePlace rp) {
+	private void playBackClip(ResourcePlace rp, int volume) {
 		try {
 			AudioInputStream soundStream = AudioSystem.getAudioInputStream(rp.openNew());
 			
@@ -327,10 +333,10 @@ public class Music {
 			AudioThread.setVolume(sdl, volume);
 		} else 
 		if (soundClip != null) {
-			AudioThread.setVolume(sdl, volume);
+			AudioThread.setVolume(soundClip, volume);
 		} else 
-		if (oggMusic != null) {
-			AudioThread.setVolume(sdl, volume);
+		if (oggMusic != null && oggMusic.outputLine != null) {
+			AudioThread.setVolume(oggMusic.outputLine, volume);
 		}
 	}
 	/** @return is a music playing? */

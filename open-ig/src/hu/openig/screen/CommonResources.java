@@ -656,14 +656,12 @@ public class CommonResources {
 	 */
 	public void playRegularMusic() {
 		stopMusic();
-		music.setVolume(config.musicVolume);
-		music.playFile("music/Music1", "music/Music2", "music/Music3");
+		music.playFile(config.musicVolume, "music/Music1", "music/Music2", "music/Music3");
 	}
 	/** Convenience method to start playing the original battle music. */
 	public void playBattleMusic() {
 		stopMusic();
-		music.setVolume(config.musicVolume);
-		music.playFile("music/Spacewar");
+		music.playFile(config.musicVolume, "music/Spacewar");
 	}
 	/** Stop the current music playback. */
 	public void stopMusic() {

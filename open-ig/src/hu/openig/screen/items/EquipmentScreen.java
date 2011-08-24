@@ -1770,6 +1770,10 @@ public class EquipmentScreen extends ScreenBase {
 	/** Add one or replace the current slot contents. */
 	void doAddOne() {
 		if (configure.selectedSlot.type != research()) {
+			if (configure.selectedSlot.count > 0) {
+				// put back the current equipment into the inventory.
+				player().changeInventoryCount(configure.selectedSlot.type, configure.selectedSlot.count);
+			}
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 1;
 			configure.selectedSlot.hp = research().productionCost;
@@ -1824,7 +1828,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		} else
 		if (e.getKeyCode() == KeyEvent.VK_ENTER && leftList.selectedItem != null) {
-			if ((e.getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != 0) {
+			if ((e.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) != 0) {
 				leftList.previousGroupItem();
 			} else {
 				leftList.nextGroupItem(); 

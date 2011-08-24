@@ -210,6 +210,20 @@ public class VehicleList extends UIContainer {
 		if (group) {
 			for (InventoryItemGroup ig : map.values()) {
 				if (selectedItem != null && ig.type == selectedItem.type) {
+					ig.index = (ig.index + 1) % ig.items.size();
+					onSelect.invoke(ig.items.get(ig.index));
+					break;
+				}
+			}
+		}		
+	}
+	/**
+	 * Select the previous item from the current group.
+	 */
+	public void previousGroupItem() {
+		if (group) {
+			for (InventoryItemGroup ig : map.values()) {
+				if (selectedItem != null && ig.type == selectedItem.type) {
 					ig.index--;
 					if (ig.index < 0) {
 						ig.index = ig.items.size() - 1;
@@ -219,20 +233,6 @@ public class VehicleList extends UIContainer {
 				}
 			}
 		}
-	}
-	/**
-	 * Select the previous item from the current group.
-	 */
-	public void previousGroupItem() {
-		if (group) {
-			for (InventoryItemGroup ig : map.values()) {
-				if (selectedItem != null && ig.type == selectedItem.type) {
-					ig.index = (ig.index + 1) % ig.items.size();
-					onSelect.invoke(ig.items.get(ig.index));
-					break;
-				}
-			}
-		}		
 	}
 	/** Scroll up. */
 	void doScrollUp() {
