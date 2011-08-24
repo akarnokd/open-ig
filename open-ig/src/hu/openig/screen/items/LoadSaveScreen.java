@@ -112,7 +112,6 @@ public class LoadSaveScreen extends ScreenBase {
 	@Settings(page = SettingsPage.LOAD_SAVE)
 	UIGenericButton delete;
 	/** Return to main menu. */
-	@Settings(page = SettingsPage.GAMEPLAY)
 	UIGenericButton mainmenu;
 	/** The file listing worker. */
 	SwingWorker<Void, Void> listWorker;
@@ -180,6 +179,7 @@ public class LoadSaveScreen extends ScreenBase {
 		loadSavePage.onClick = new Act() {
 			@Override
 			public void act() {
+				setRandomBackground();
 				displayPage(SettingsPage.LOAD_SAVE);
 			}
 		};
@@ -606,7 +606,7 @@ public class LoadSaveScreen extends ScreenBase {
 	@Override
 	public void onEnter(Screens mode) {
 		restore = mode;
-		background = commons.background().options[rnd.nextInt(commons.background().options.length)];
+		setRandomBackground();
 		settingsMode = SettingsPage.LOAD_SAVE;
 		resume = commons.world() != null && !commons.paused();
 		commons.pause();
@@ -625,6 +625,12 @@ public class LoadSaveScreen extends ScreenBase {
 		buttonSounds.selected(config.buttonSounds);
 		satelliteDeploy.selected(config.satelliteDeploy);
 		automaticBattle.selected(config.automaticBattle);
+	}
+	/**
+	 * Choose a random background for the options.
+	 */
+	void setRandomBackground() {
+		background = commons.background().options[rnd.nextInt(commons.background().options.length)];
 	}
 
 	@Override
@@ -656,7 +662,8 @@ public class LoadSaveScreen extends ScreenBase {
 		loadSavePage.location(base.x + 10, base.y + 10);
 		audioPage.location(loadSavePage.x + 10 + loadSavePage.width, base.y + 10);
 		gameplayPage.location(audioPage.x + 10 + audioPage.width , base.y + 10);
-		back.location(base.x + base.width - 10 - back.width, base.y + 10);
+		back.location(gameplayPage.x + 10 + gameplayPage.width, base.y + 10);
+		mainmenu.location(base.x + base.width - 10 - back.width, base.y + 10);
 		
 		// ------------------------------------------------------------
 		// load/save
@@ -664,10 +671,9 @@ public class LoadSaveScreen extends ScreenBase {
 		load.location(base.x + 30, loadSavePage.y + loadSavePage.height + 10);
 		save.location(base.x + 40 + load.width, load.y);
 		delete.location(base.x + base.width - delete.width - 10, load.y);
-		mainmenu.location(base.x + (base.width - mainmenu.width) / 2, base.y + 370);
 		
-		list.location(base.x + 10, load.y + load.height + 10);
-		list.size(base.width - 20, base.height - list.y + base.y - 10);
+		list.location(base.x + 10, load.y + load.height + 8);
+		list.size(base.width - 20, base.height - list.y + base.y - 6);
 		
 		// audio
 		

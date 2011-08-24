@@ -229,7 +229,7 @@ public final class PackageStuff {
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
-				buildPatch("20110818b");
+				buildPatch("20110824a");
 			}
 		});
 		exec.execute(new Runnable() {
