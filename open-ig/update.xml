@@ -40,7 +40,7 @@
 			<desc lang='hu'>Játékmechanikai javítások</desc>
 			<desc lang='en'>Game mechanics fixes.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.375.jar' sha1='ac9a7afa1cb6ca312c7a13df81e3a857d52cb278'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.375.jar' sha1='dcfe6cf5e889afc09cddc1e08016a8ae0a47aff4'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
