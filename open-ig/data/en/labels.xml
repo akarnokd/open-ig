@@ -1033,6 +1033,7 @@
 	<entry key='fleetinformation.cruisers'   >Cruisers   : %s</entry>
 	<entry key='fleetinformation.fighters'   >Fighters   : %s</entry>
 	<entry key='fleetinformation.vehicles'   >Vehicles   : %s</entry>
+	<entry key='fleetinformation.spaceships' >Spaceships : %s</entry>
 	
 	<entry key='info.empty-list'>None</entry>
 	<entry key='production.needs_orbital_factory'>Orbital Factory</entry>
@@ -2689,7 +2690,6 @@
 	<entry key='fleetstatus.composition.alien'>Spaceships: %s, Fighters: %s</entry>
 	<entry key='fleetinfo.alien_fleet'>Alien fleet</entry>
 	<entry key='planet.install_satellite'>Install any satellite to view the surface.</entry>
-	<entry key=''></entry>
 	<entry key=''></entry>
 	
 </labels>

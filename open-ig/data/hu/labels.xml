@@ -1020,6 +1020,7 @@
 	<entry key='fleetinformation.cruisers'   >Cirkáló  : %s</entry>
 	<entry key='fleetinformation.fighters'   >Vadász   : %s</entry>
 	<entry key='fleetinformation.vehicles'   >Jármű    : %s</entry>
+	<entry key='fleetinformation.spaceships' >Űrhajók  : %s</entry>
 	
 	<entry key='info.empty-list'>Nincs</entry>
 	<entry key='production.needs_orbital_factory'>Orbitális gyár</entry>
@@ -1951,7 +1952,6 @@
 	<entry key='fleetstatus.composition.alien'>Űrhajók: %s, Vadászok: %s</entry>
 	<entry key='fleetinfo.alien_fleet'>Idegen flotta</entry>
 	<entry key='planet.install_satellite'>Felszín megtekintéséhez telepíts valamilyen műholdat!</entry>
-	<entry key=''></entry>
 	<entry key=''></entry>
 	
 </labels>

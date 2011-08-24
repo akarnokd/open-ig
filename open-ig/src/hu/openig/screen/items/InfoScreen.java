@@ -662,7 +662,10 @@ public class InfoScreen extends ScreenBase {
 		fleets.getText = new Func1<Fleet, String>() {
 			@Override
 			public String invoke(Fleet value) {
-				return value.name;
+				if (knowledge(value, FleetKnowledge.VISIBLE) > 0) {
+					return value.name;
+				}
+				return get("fleetinfo.alien_fleet");
 			}
 		};
 		fleets.getCurrent = new Func1<Void, Fleet>() {
@@ -1380,16 +1383,15 @@ public class InfoScreen extends ScreenBase {
 			int textSize = 10;
 			int w = 0;
 			int h = 0;
-			int i = 0;
+			int dy = 25;
 			for (UILabel c : lines) {
 				if (c.visible()) {
 					c.x = 10;
-					c.y = 25 + (textSize + 5) * i;
+					c.y = dy;
 					c.size(textSize);
-					c.height = textSize;
 					w = Math.max(w, c.x + c.width);
 					h = Math.max(h, c.y + c.height);
-					i++;
+					dy += c.height + 5;
 				}
 			}
 			w = Math.max(w, this.planet.x + this.planet.width);
@@ -1513,7 +1515,7 @@ public class InfoScreen extends ScreenBase {
 			}
 			other.text(format("colonyinfo.other",
 					world().getOtherItems()
-			), true);
+			));
 
 			computeSize();
 		}
@@ -2867,7 +2869,8 @@ public class InfoScreen extends ScreenBase {
 			int row = 0;
 			for (ResearchType rt : res) {
 				if (rt.category == ResearchSubCategory.WEAPONS_TANKS 
-						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES
+						|| rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 
 					int cnt = planet().getInventoryCount(rt);
 					
@@ -3438,11 +3441,15 @@ public class InfoScreen extends ScreenBase {
 			fleetVehicles.visible(false);
 			return;
 		}
-		
-		fleetName.text(f.name).visible(true);
+		if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
+			fleetName.text(f.name).visible(true);
+			fleetOwner.text(f.owner.name, true).visible(true);
+			fleetOwner.color(f.owner.color);
+		} else {
+			fleetName.text(get("fleetinfo.alien_fleet")).visible(true);
+			fleetOwner.text("");
+		}
 		fleetName.color(f.owner.color);
-		fleetOwner.text(f.owner.name, true).visible(true);
-		fleetOwner.color(f.owner.color);
 		
 		if (knowledge(f, FleetKnowledge.FULL) >= 0) {
 			if (f.targetFleet == null && f.targetPlanet == null) {
@@ -3494,10 +3501,12 @@ public class InfoScreen extends ScreenBase {
 		} else	
 		if (knowledge(f, FleetKnowledge.COMPOSITION) >= 0) {
 			fleetFirepower.visible(false);
-			fleetBattleships.text(format("fleetinformation.battleships", ((fs.battleshipCount / 10) * 10) + ".." + ((fs.battleshipCount  / 10 + 1) * 10)), true).visible(true);
-			fleetCruisers.text(format("fleetinformation.cruisers", ((fs.cruiserCount / 10) * 10) + ".." + ((fs.cruiserCount  / 10 + 1) * 10)), true).visible(true);
+			int fcnt = fs.battleshipCount + fs.cruiserCount;
+			fleetBattleships.visible(false);
+			fleetCruisers.text(format("fleetinformation.spaceships", ((fcnt / 10) * 10) + ".." + ((fcnt  / 10 + 1) * 10)), true).visible(true);
 			fleetFighters.text(format("fleetinformation.fighters", ((fs.fighterCount / 10) * 10) + ".." + ((fs.fighterCount  / 10 + 1) * 10)), true).visible(true);
-			fleetVehicles.text(format("fleetinformation.vehicles", ((fs.vehicleCount / 10) * 10) + ".." + ((fs.vehicleCount  / 10 + 1) * 10)), true).visible(true);
+//			fleetVehicles.text(format("fleetinformation.vehicles", ((fs.vehicleCount / 10) * 10) + ".." + ((fs.vehicleCount  / 10 + 1) * 10)), true).visible(true);
+			fleetVehicles.visible(false);
 		} else {
 			fleetFirepower.visible(false);
 			fleetBattleships.visible(false);
