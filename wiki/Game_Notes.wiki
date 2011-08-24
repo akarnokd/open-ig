@@ -17,7 +17,7 @@
   * Fix [http://code.google.com/p/open-ig/issues/detail?id=59 Issue #59] uninhabited planets now display "Empty - Colonizable" on the starmap screen.
   * Fix [http://code.google.com/p/open-ig/issues/detail?id=60 Issue #60] audio problem when showing or hiding the comm panel on the bridge.
   * Fix [http://code.google.com/p/open-ig/issues/detail?id=61 Issue #61] The main menu button in the options screen has been moved back to its original place in the upper right corner.
-
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=78 Issue #78] audio support is sometimes strangely implemented on Linux or in OpenJDK.
 
 = Version 0.93.350 - Fixes and small improvements =
   * Released: 2011-08-20 18:00 CET
