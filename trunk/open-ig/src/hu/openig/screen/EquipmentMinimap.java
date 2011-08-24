@@ -9,6 +9,7 @@
 package hu.openig.screen;
 
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.SelectionMode;
@@ -84,8 +85,14 @@ public class EquipmentMinimap extends UIComponent {
 			
 			g2.drawImage(f.owner.fleetIcon, cx - f.owner.fleetIcon.getWidth() / 2, cy - f.owner.fleetIcon.getHeight() / 2, null);
 			
-			int nw = commons.text().getTextWidth(7, f.name);
-			commons.text().paintTo(g2, cx - nw / 2, cy + f.owner.fleetIcon.getHeight() / 2 + 3, 7, f.owner.color, f.name);
+			String fleetName = f.name;
+			if (commons.world().player.knowledge(f, FleetKnowledge.VISIBLE) == 0) {
+				fleetName = commons.labels0().get("fleetinfo.alien_fleet");
+			}
+			
+			int nw = commons.text().getTextWidth(7, fleetName);
+			commons.text().paintTo(g2, cx - nw / 2, cy + f.owner.fleetIcon.getHeight() / 2 + 3, 7, 
+					f.owner.color, fleetName);
 			if (f == commons.world().player.currentFleet) {
 				if (commons.world().player.selectionMode == SelectionMode.FLEET) {
 					g2.setColor(Color.WHITE);

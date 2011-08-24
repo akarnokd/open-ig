@@ -652,11 +652,13 @@ public class World {
 	public List<BuildingType> listBuildings(Player player, Planet planet) {
 		List<BuildingType> result = new ArrayList<BuildingType>();
 		
-		for (BuildingType bt : buildingModel.buildings.values()) {
-			if (bt.tileset.containsKey(planet.isPopulated() ? planet.race : player.race)) {
-				if (bt.research == null || (planet.owner != player)
-						|| (player.isAvailable(bt.research) || bt.research.level == 0)) {
-					result.add(bt);
+		if (player.knowledge(planet, PlanetKnowledge.BUILDING) >= 0) {
+			for (BuildingType bt : buildingModel.buildings.values()) {
+				if (bt.tileset.containsKey(planet.isPopulated() ? planet.race : player.race)) {
+					if (bt.research == null || (planet.owner != player)
+							|| (player.isAvailable(bt.research) || bt.research.level == 0)) {
+						result.add(bt);
+					}
 				}
 			}
 		}
@@ -1404,7 +1406,7 @@ public class World {
 				os.append(pii.type.name);
 			} else
 			if (pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS
-			&& (pii.owner == player || player.knowledge(player.currentPlanet, PlanetKnowledge.BUILDING) >= 0)) {
+			&& (pii.owner == player || player.knowledge(player.currentPlanet, PlanetKnowledge.STATIONS) >= 0)) {
 				if (os.length() > 0) {
 					os.append(", ");
 				}

@@ -1662,9 +1662,9 @@ public class InfoScreen extends ScreenBase {
 					int x0 = (int)(f.x * width / commons.starmap().background.getWidth());
 					int y0 = (int)(f.y * height / commons.starmap().background.getHeight());
 					int w = f.owner.fleetIcon.getWidth();
-					int h = y0 - f.owner.fleetIcon.getHeight();
+					int h = f.owner.fleetIcon.getHeight();
 					int x1 = x0 - w / 2;
-					int y1 = h / 2;
+					int y1 = y0 - h / 2;
 					
 					if (x >= x1 - 1 && x <= x1 + w + 2 && y >= y1 - 1 && y <= y1 + h + 2) {
 						return f;
@@ -1988,7 +1988,8 @@ public class InfoScreen extends ScreenBase {
 			List<BuildingType> planets = getList.invoke(null);
 			Map<BuildingType, Integer> counts = player().countBuildings();
 			Map<BuildingType, Integer> current = planet().countBuildings();
-			boolean showCounts = knowledge(planet(), PlanetKnowledge.OWNER) >= 0;
+			boolean showCounts = planet().owner == player() 
+					|| knowledge(planet(), PlanetKnowledge.BUILDING) >= 0;
 			for (int j = 0; j < columns; j++) {
 				int x0 = j * columnWidth;  
 				for (int i = 0; i < rowCount; i++) {
@@ -2371,7 +2372,7 @@ public class InfoScreen extends ScreenBase {
 						p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
 				), true);
 			} else {
-				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
+				if (knowledge(p, PlanetKnowledge.STATIONS) >= 0) {
 					if (p.isPopulated()) {
 						buildingPlanetRace.text(format("colonyinfo.population.short.alien", 
 								p.population
@@ -2825,7 +2826,7 @@ public class InfoScreen extends ScreenBase {
 			population.visible(false);
 
 			if (p.isPopulated()) {
-				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
+				if (knowledge(p, PlanetKnowledge.STATIONS) >= 0) {
 					if (p.owner == player()) {
 						population.text(format("colonyinfo.population", 
 								p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)

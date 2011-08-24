@@ -432,7 +432,7 @@
 	<entry key='mapeditor.edit_paste_building'>Paste: building</entry>
 	<entry key='mapeditor.edit_paste_surface'>Paste: surface</entry>
 	<entry key='equipment.spaceships'>Ships   :%d</entry>
-	<entry key='equipment.fighters'>Fighters:%d</entry>
+	<entry key='equipment.fighters'>Fighters:%s</entry>
 	<entry key='equipment.vehicles'>Vehicles:%d</entry>
 	<entry key='equipment.max'>max:%d</entry>
 	<entry key='equipment.maxpertype'>max:%d/type</entry>
@@ -2685,9 +2685,10 @@
 
 	<entry key='settings.autobattle'>Automatic battle</entry>
 	<entry key='flagship.moveto.research'>Research screen</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='planet.colonizable'>Empty - Colonizable</entry>
+	<entry key='fleetstatus.composition.alien'>Spaceships: %s, Fighters: %s</entry>
+	<entry key='fleetinfo.alien_fleet'>Alien fleet</entry>
+	<entry key='planet.install_satellite'>Install any satellite to view the surface.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	

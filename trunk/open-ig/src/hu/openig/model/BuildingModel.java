@@ -79,10 +79,15 @@ public class BuildingModel {
 				XElement norm = scaffTech.childElement("normal");
 				
 				String nbase = norm.get("base");
-				int nstart = Integer.parseInt(norm.get("from"));
-				int nend = Integer.parseInt(norm.get("to"));
+				final int nstart = Integer.parseInt(norm.get("from"));
+				final int nend = Integer.parseInt(norm.get("to"));
 				
 				for (int i = nstart; i <= nend; i++) {
+					scaffolding.normal.add(null);
+				}
+				
+				for (int i = nstart; i <= nend; i++) {
+					final int fi = i;
 					final String normalImg = String.format(scaffBase, id, String.format(nbase, i));
 					final String normalLight = normalImg + "_lights";
 					
@@ -98,8 +103,9 @@ public class BuildingModel {
 								}
 								BufferedImage image = rl.getImage(normalImg);
 								
+								Tile t = new Tile(1, 1, image, lightMap);
 								synchronized (scaffolding.normal) {
-									scaffolding.normal.add(new Tile(1, 1, image, lightMap));
+									scaffolding.normal.set(fi - nstart, t);
 								}
 							} finally {
 								wip.dec();
@@ -110,10 +116,14 @@ public class BuildingModel {
 				
 				XElement dam = scaffTech.childElement("damaged");
 				String dbase = dam.get("base");
-				int dstart = Integer.parseInt(dam.get("from"));
-				int dend = Integer.parseInt(dam.get("to"));
+				final int dstart = Integer.parseInt(dam.get("from"));
+				final int dend = Integer.parseInt(dam.get("to"));
+				for (int i = dstart; i <= dend; i++) {
+					scaffolding.damaged.add(null);
+				}
 				
 				for (int i = dstart; i <= dend; i++) {
+					final int fi = i;
 					final String normalImg = String.format(scaffBase, id, String.format(dbase, i));
 					final String normalLight = normalImg + "_lights";
 					
@@ -129,8 +139,9 @@ public class BuildingModel {
 								}
 								BufferedImage image = rl.getImage(normalImg);
 								
+								Tile t = new Tile(1, 1, image, lightMap);
 								synchronized (scaffolding.damaged) {
-									scaffolding.damaged.add(new Tile(1, 1, image, lightMap));
+									scaffolding.damaged.set(fi - dstart, t);
 								}
 							} finally {
 								wip.dec();

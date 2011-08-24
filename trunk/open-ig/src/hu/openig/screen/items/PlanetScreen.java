@@ -210,7 +210,8 @@ public class PlanetScreen extends ScreenBase {
 	boolean showBuildingList = true;
 	/** Show the building info panel? */
 	boolean showBuildingInfo = true;
-	
+	/** Show the information panel. */
+	boolean showInfo = true;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -361,7 +362,17 @@ public class PlanetScreen extends ScreenBase {
 			cell.b = loc1.y;
 			
 			return;
+		} else
+		if (knowledge(planet(), PlanetKnowledge.BUILDING) < 0) {
+			Tile tile =  se.building.scaffolding.normal.get(0);
+			cell.yCompensation = 27 - tile.imageHeight;
+			tile.alpha = alpha;
+			cell.image = tile.getStrip(0);
+			cell.a = loc1.x;
+			cell.b = loc1.y;
+			return;
 		}
+
 		if (se.building.isConstructing()) {
 			Tile tile = null;
 			if (se.building.isSeverlyDamaged()) {
@@ -596,6 +607,7 @@ public class PlanetScreen extends ScreenBase {
 			}
 			buildingsPanel.visible(planet().owner == player() && showBuildingList);
 			buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
+			infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo);
 			
 			setBuildingList(0);
 			buildingInfoPanel.update();
@@ -633,212 +645,225 @@ public class PlanetScreen extends ScreenBase {
 			int x0 = surface.baseXOffset;
 			int y0 = surface.baseYOffset;
 
-			Rectangle br = surface.boundingRectangle;
-			g2.setColor(Color.YELLOW);
-			g2.drawRect(br.x, br.y, br.width, br.height);
+			if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
 			
-			
-//			long timestamp = System.nanoTime();
-			BufferedImage empty = areaEmpty.getStrip(0);
-			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
-			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
-				Location loc = surface.renderingOrigins.get(i);
-				for (int j = 0; j < surface.renderingLength.get(i); j++) {
-					int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
-					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
-					Location loc1 = Location.of(loc.x - j, loc.y);
-					SurfaceEntity se = surface.buildingmap.get(loc1);
-					if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
-						se = surface.basemap.get(loc1);
-					}
-					if (se != null) {
-						getImage(se, knowledge(planet(), PlanetKnowledge.BUILDING) < 0, loc1, cell);
-						int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
-						if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
-							if (cell.image != null) {
-								g2.drawImage(cell.image, x, yref, null);
+				Rectangle br = surface.boundingRectangle;
+				g2.setColor(Color.YELLOW);
+				g2.drawRect(br.x, br.y, br.width, br.height);
+				
+				
+	//			long timestamp = System.nanoTime();
+				BufferedImage empty = areaEmpty.getStrip(0);
+				Rectangle renderingWindow = new Rectangle(0, 0, width, height);
+				for (int i = 0; i < surface.renderingOrigins.size(); i++) {
+					Location loc = surface.renderingOrigins.get(i);
+					for (int j = 0; j < surface.renderingLength.get(i); j++) {
+						int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
+						int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
+						Location loc1 = Location.of(loc.x - j, loc.y);
+						SurfaceEntity se = surface.buildingmap.get(loc1);
+						if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
+							se = surface.basemap.get(loc1);
+						}
+						if (se != null) {
+							getImage(se, false, loc1, cell);
+							int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
+							if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
+								if (cell.image != null) {
+									g2.drawImage(cell.image, x, yref, null);
+								}
+							}
+						} else {
+							if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
+								g2.drawImage(empty, x, y, null);
 							}
 						}
-					} else {
-						if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
-							g2.drawImage(empty, x, y, null);
+					}
+				}
+	//			System.out.println("draw: " + (1E9 / (System.nanoTime() - timestamp)));
+				if (placementHints) {
+					for (Location loc : surface.basemap.keySet()) {
+						if (!surface().canPlaceBuilding(loc.x, loc.y)) {
+							int x = x0 + Tile.toScreenX(loc.x, loc.y);
+							int y = y0 + Tile.toScreenY(loc.x, loc.y);
+							g2.drawImage(areaDeny.getStrip(0), x, y, null);
 						}
 					}
 				}
-			}
-//			System.out.println("draw: " + (1E9 / (System.nanoTime() - timestamp)));
-			if (placementHints) {
-				for (Location loc : surface.basemap.keySet()) {
-					if (!surface().canPlaceBuilding(loc.x, loc.y)) {
-						int x = x0 + Tile.toScreenX(loc.x, loc.y);
-						int y = y0 + Tile.toScreenY(loc.x, loc.y);
-						g2.drawImage(areaDeny.getStrip(0), x, y, null);
-					}
-				}
-			}
-			if (!placementMode) {
-				if (selectedRectangle != null) {
-					for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
-						for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
-							int x = x0 + Tile.toScreenX(i, j);
-							int y = y0 + Tile.toScreenY(i, j);
-							g2.drawImage(selection.getStrip(0), x, y, null);
-						}
-					}
-				}
-			}
-			if (placementMode) {
-				if (placementRectangle.width > 0) {
-					for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
-						for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
-							
-							BufferedImage img = areaAccept.getStrip(0);
-							// check for existing building
-							if (!surface().canPlaceBuilding(i, j)) {
-								img = areaDeny.getStrip(0);
+				if (!placementMode) {
+					if (selectedRectangle != null) {
+						for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
+							for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
+								int x = x0 + Tile.toScreenX(i, j);
+								int y = y0 + Tile.toScreenY(i, j);
+								g2.drawImage(selection.getStrip(0), x, y, null);
 							}
-							
-							int x = x0 + Tile.toScreenX(i, j);
-							int y = y0 + Tile.toScreenY(i, j);
-							g2.drawImage(img, x, y, null);
 						}
 					}
 				}
-			}
-			if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
-				for (Building b : surface.buildings) {
-					Rectangle r = getBoundingRect(b.location);
-//					if (r == null) {
-//						continue;
-//					}
-					int nameSize = 10;
-					int nameLen = commons.text().getTextWidth(nameSize, b.type.name);
-					int h = (r.height - nameSize) / 2;
-					int nx = r.x + (r.width - nameLen) / 2;
-					int ny = r.y + h;
-					
-					Composite compositeSave = null;
-					Composite a1 = null;
-					
-					if (textBackgrounds) {
-						compositeSave = g2.getComposite();
-						a1 = AlphaComposite.SrcOver.derive(0.8f);
-						g2.setComposite(a1);
-						g2.setColor(Color.BLACK);
-						g2.fillRect(nx - 2, ny - 2, nameLen + 4, nameSize + 5);
-						g2.setComposite(compositeSave);
-					}
-					
-					commons.text().paintTo(g2, nx + 1, ny + 1, nameSize, 0xFF8080FF, b.type.name);
-					commons.text().paintTo(g2, nx, ny, nameSize, 0xD4FC84, b.type.name);
-
-					// paint upgrade level indicator
-					int uw = b.upgradeLevel * commons.colony().upgrade.getWidth();
-					int ux = r.x + (r.width - uw) / 2;
-					int uy = r.y + h - commons.colony().upgrade.getHeight() - 4; 
-
-					String percent = null;
-					int color = 0xFF8080FF;
-					if (b.isConstructing()) {
-						percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
-					} else
-					if (b.hitpoints < b.type.hitpoints) {
-						percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
-						if (!blink) {
-							color = 0xFFFF0000;
+				if (placementMode) {
+					if (placementRectangle.width > 0) {
+						for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
+							for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
+								
+								BufferedImage img = areaAccept.getStrip(0);
+								// check for existing building
+								if (!surface().canPlaceBuilding(i, j)) {
+									img = areaDeny.getStrip(0);
+								}
+								
+								int x = x0 + Tile.toScreenX(i, j);
+								int y = y0 + Tile.toScreenY(i, j);
+								g2.drawImage(img, x, y, null);
+							}
 						}
 					}
-					if (percent != null) {
-						int pw = commons.text().getTextWidth(10, percent);
-						int px = r.x + (r.width - pw) / 2;
-						int py = uy - 14;
-
+				}
+				if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
+					for (Building b : surface.buildings) {
+						Rectangle r = getBoundingRect(b.location);
+	//					if (r == null) {
+	//						continue;
+	//					}
+						int nameSize = 10;
+						int nameLen = commons.text().getTextWidth(nameSize, b.type.name);
+						int h = (r.height - nameSize) / 2;
+						int nx = r.x + (r.width - nameLen) / 2;
+						int ny = r.y + h;
+						
+						Composite compositeSave = null;
+						Composite a1 = null;
+						
 						if (textBackgrounds) {
+							compositeSave = g2.getComposite();
+							a1 = AlphaComposite.SrcOver.derive(0.8f);
 							g2.setComposite(a1);
 							g2.setColor(Color.BLACK);
-							g2.fillRect(px - 2, py - 2, pw + 4, 15);
+							g2.fillRect(nx - 2, ny - 2, nameLen + 4, nameSize + 5);
 							g2.setComposite(compositeSave);
 						}
 						
-						commons.text().paintTo(g2, px + 1, py + 1, 10, color, percent);
-						commons.text().paintTo(g2, px, py, 10, 0xD4FC84, percent);
-					}
-					if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
-						for (int i = 1; i <= b.upgradeLevel; i++) {
-							g2.drawImage(commons.colony().upgrade, ux, uy, null);
-							ux += commons.colony().upgrade.getWidth();
-						}
-						
-						if (b.enabled) {
-							int ey = r.y + h + 11;
-							int w = 0;
-							if (b.isEnergyShortage()) {
-								w += commons.colony().unpowered[0].getWidth();
-							}
-							if (b.isWorkerShortage()) {
-								w += commons.colony().worker[0].getWidth();
-							}
-							if (b.repairing) {
-								w += commons.colony().repair[0].getWidth();
-							}
-							int ex = r.x + (r.width - w) / 2;
-							// paint power shortage
-							if (b.isEnergyShortage()) {
-								g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
-								ex += commons.colony().unpowered[0].getWidth();
-							}
-							if (b.isWorkerShortage()) {
-								g2.drawImage(commons.colony().worker[blink ? 0 : 1], ex, ey, null);
-								ex += commons.colony().worker[0].getWidth();
-							}
-							if (b.repairing) {
-								g2.drawImage(commons.colony().repair[(animation % 3)], ex, ey, null);
-								ex += commons.colony().repair[0].getWidth();
-							}
-						} else {
-							int ey = r.y + h + 13;
-							String offline = get("buildings.offline");
-							int w = commons.text().getTextWidth(10, offline);
-							color = 0xFF8080FF;
+						commons.text().paintTo(g2, nx + 1, ny + 1, nameSize, 0xFF8080FF, b.type.name);
+						commons.text().paintTo(g2, nx, ny, nameSize, 0xD4FC84, b.type.name);
+	
+						// paint upgrade level indicator
+						int uw = b.upgradeLevel * commons.colony().upgrade.getWidth();
+						int ux = r.x + (r.width - uw) / 2;
+						int uy = r.y + h - commons.colony().upgrade.getHeight() - 4; 
+	
+						String percent = null;
+						int color = 0xFF8080FF;
+						if (b.isConstructing()) {
+							percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
+						} else
+						if (b.hitpoints < b.type.hitpoints) {
+							percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
 							if (!blink) {
 								color = 0xFFFF0000;
 							}
-							int ex = r.x + (r.width - w) / 2;
+						}
+						if (percent != null) {
+							int pw = commons.text().getTextWidth(10, percent);
+							int px = r.x + (r.width - pw) / 2;
+							int py = uy - 14;
+	
 							if (textBackgrounds) {
 								g2.setComposite(a1);
 								g2.setColor(Color.BLACK);
-								g2.fillRect(ex - 2, ey - 2, w + 4, 15);
+								g2.fillRect(px - 2, py - 2, pw + 4, 15);
 								g2.setComposite(compositeSave);
 							}
 							
-							commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
-							commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
+							commons.text().paintTo(g2, px + 1, py + 1, 10, color, percent);
+							commons.text().paintTo(g2, px, py, 10, 0xD4FC84, percent);
+						}
+						if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
+							for (int i = 1; i <= b.upgradeLevel; i++) {
+								g2.drawImage(commons.colony().upgrade, ux, uy, null);
+								ux += commons.colony().upgrade.getWidth();
+							}
+							
+							if (b.enabled) {
+								int ey = r.y + h + 11;
+								int w = 0;
+								if (b.isEnergyShortage()) {
+									w += commons.colony().unpowered[0].getWidth();
+								}
+								if (b.isWorkerShortage()) {
+									w += commons.colony().worker[0].getWidth();
+								}
+								if (b.repairing) {
+									w += commons.colony().repair[0].getWidth();
+								}
+								int ex = r.x + (r.width - w) / 2;
+								// paint power shortage
+								if (b.isEnergyShortage()) {
+									g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
+									ex += commons.colony().unpowered[0].getWidth();
+								}
+								if (b.isWorkerShortage()) {
+									g2.drawImage(commons.colony().worker[blink ? 0 : 1], ex, ey, null);
+									ex += commons.colony().worker[0].getWidth();
+								}
+								if (b.repairing) {
+									g2.drawImage(commons.colony().repair[(animation % 3)], ex, ey, null);
+									ex += commons.colony().repair[0].getWidth();
+								}
+							} else {
+								int ey = r.y + h + 13;
+								String offline = get("buildings.offline");
+								int w = commons.text().getTextWidth(10, offline);
+								color = 0xFF8080FF;
+								if (!blink) {
+									color = 0xFFFF0000;
+								}
+								int ex = r.x + (r.width - w) / 2;
+								if (textBackgrounds) {
+									g2.setComposite(a1);
+									g2.setColor(Color.BLACK);
+									g2.fillRect(ex - 2, ey - 2, w + 4, 15);
+									g2.setComposite(compositeSave);
+								}
+								
+								commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
+								commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
+							}
 						}
 					}
 				}
-			}
-			if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && buildingBox != null) {
-				g2.setColor(Color.RED);
-				g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
-			}
-			
-			g2.setTransform(at);
-			g2.setColor(Color.BLACK);
-			
-			String pn = planet().name;
-			int nameHeight = 14;
-			int nameWidth = commons.text().getTextWidth(nameHeight, pn);
-			int nameLeft = (width - nameWidth) / 2;
-			g2.fillRect(nameLeft - 5, 0, nameWidth + 10, nameHeight + 4);
-			
-			int pc = TextRenderer.GRAY;
-			if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && planet().owner != null) {
-				pc = planet().owner.color;
-			}
-			commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
-
-			if (ps != null) {
-				renderProblems(g2, ps);
+				if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && buildingBox != null) {
+					g2.setColor(Color.RED);
+					g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+				}
+				
+				g2.setTransform(at);
+				g2.setColor(Color.BLACK);
+				
+				String pn = planet().name;
+				int nameHeight = 14;
+				int nameWidth = commons.text().getTextWidth(nameHeight, pn);
+				int nameLeft = (width - nameWidth) / 2;
+				g2.fillRect(nameLeft - 5, 0, nameWidth + 10, nameHeight + 4);
+				
+				int pc = TextRenderer.GRAY;
+				if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && planet().owner != null) {
+					pc = planet().owner.color;
+				}
+				commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
+	
+				if (ps != null && planet().owner == player()) {
+					renderProblems(g2, ps);
+				}
+			} else {
+				g2.setTransform(at);
+				
+				g2.setColor(new Color(0, 0, 0, 128));
+				String installSatellite = get("planet.install_satellite");
+				int tw = commons.text().getTextWidth(14, installSatellite);
+				int tx = (width - tw) / 2;
+				int ty = (height - 14) / 2;
+				g2.fillRect(tx - 5, ty - 5, tw + 10, 24);
+				commons.text().paintTo(g2, tx, ty, 14, TextRenderer.WHITE, installSatellite);
 			}
 			
 			g2.setClip(save0);
@@ -963,6 +988,7 @@ public class PlanetScreen extends ScreenBase {
 			Rectangle br = surface.boundingRectangle;
 
 			AffineTransform at = g2.getTransform();
+			
 			float scalex = width * 1.0f / br.width;
 			float scaley = height * 1.0f / br.height;
 			float scale = Math.min(scalex, scaley);
@@ -972,53 +998,52 @@ public class PlanetScreen extends ScreenBase {
 			int x0 = surface.baseXOffset;
 			int y0 = surface.baseYOffset;
 
-//			g2.setColor(new Color(128, 0, 0));
-//			g2.fillRect(br.x, br.y, br.width, br.height);
 			g2.setColor(new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255));
 			g2.fillRect(br.x, br.y, br.width, br.height);
-			g2.setColor(Color.YELLOW);
-			g2.drawRect(br.x, br.y, br.width - 1, br.height - 1);
+//			g2.setColor(Color.YELLOW);
+//			g2.drawRect(br.x, br.y, br.width - 1, br.height - 1);
 			
-			BufferedImage empty = areaEmpty.getStrip(0);
-			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
-			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
-				Location loc = surface.renderingOrigins.get(i);
-				for (int j = 0; j < surface.renderingLength.get(i); j++) {
-					int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
-					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
-					Location loc1 = Location.of(loc.x - j, loc.y);
-					SurfaceEntity se = surface.buildingmap.get(loc1);
-					if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
-						se = surface.basemap.get(loc1);
-					}
-					if (se != null) {
-						getImage(se, true, loc1, cell);
-						int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
-						if (renderingWindow.intersects(x * scale, yref * scale, 57 * scale, se.tile.imageHeight * scale)) {
-							if (cell.image != null) {
-								g2.drawImage(cell.image, x, yref, null);
+			if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
+				BufferedImage empty = areaEmpty.getStrip(0);
+				Rectangle renderingWindow = new Rectangle(0, 0, width, height);
+				for (int i = 0; i < surface.renderingOrigins.size(); i++) {
+					Location loc = surface.renderingOrigins.get(i);
+					for (int j = 0; j < surface.renderingLength.get(i); j++) {
+						int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
+						int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
+						Location loc1 = Location.of(loc.x - j, loc.y);
+						SurfaceEntity se = surface.buildingmap.get(loc1);
+						if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
+							se = surface.basemap.get(loc1);
+						}
+						if (se != null) {
+							getImage(se, true, loc1, cell);
+							int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
+							if (renderingWindow.intersects(x * scale, yref * scale, 57 * scale, se.tile.imageHeight * scale)) {
+								if (cell.image != null) {
+									g2.drawImage(cell.image, x, yref, null);
+								}
+							}
+						} else {
+							if (renderingWindow.intersects(x * scale, y * scale, 57 * scale, 27 * scale)) {
+								g2.drawImage(empty, x, y, null);
 							}
 						}
-					} else {
-						if (renderingWindow.intersects(x * scale, y * scale, 57 * scale, 27 * scale)) {
-							g2.drawImage(empty, x, y, null);
-						}
 					}
 				}
-			}
-			g2.setColor(Color.RED);
-			if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0) {
-				if (buildingBox != null) {
-					g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+				g2.setColor(Color.RED);
+				if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0) {
+					if (buildingBox != null) {
+						g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+					}
 				}
+				g2.setColor(Color.WHITE);
+				g2.drawRect(
+						(int)(-render.offsetX / render.scale), 
+						(int)(-render.offsetY / render.scale), 
+						(int)(render.width / render.scale - 1), 
+						(int)(render.height / render.scale - 1));
 			}
-			g2.setColor(Color.WHITE);
-			g2.drawRect(
-					(int)(-render.offsetX / render.scale), 
-					(int)(-render.offsetY / render.scale), 
-					(int)(render.width / render.scale - 1), 
-					(int)(render.height / render.scale - 1));
-			
 			g2.setTransform(at);
 			
 			g2.setClip(save0);
@@ -2215,7 +2240,7 @@ public class PlanetScreen extends ScreenBase {
 		sidebarColonyInfo.onClick = new Act() {
 			@Override
 			public void act() {
-				infoPanel.visible(!infoPanel.visible());
+				showInfo = !showInfo;
 			}
 		};
 		upgradePanel = new UpgradePanel();
