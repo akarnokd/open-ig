@@ -2,6 +2,23 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.375 - Game mechanics fixes =
+  * Released: 2011-08-24 15:45 CET
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=43 Issue #43] Auto-build turns off even if there is opportunity for upgrading
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=26 Issue #26] population growth reduced.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=46 Issue #46] if the satellite deployment video was disabled in the options, the game didn't install the satellite.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=45 Issue #45] Video volume was incorrectly set.
+  * Fix multiple issues related to displaying information about planets, fleets and surfaces in face of various radar coverage configurations. ([http://code.google.com/p/open-ig/issues/detail?id=48 Issue #48], [http://code.google.com/p/open-ig/issues/detail?id=49 Issue #49], [http://code.google.com/p/open-ig/issues/detail?id=50 Issue #50], [http://code.google.com/p/open-ig/issues/detail?id=58 Issue #58])
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=55 Issue #55] alien buildings could be turned on-off by the player.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=56 Issue #56] missing label for ship-walk research screen.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=47 Issue #47] Hubble deployment video was incorrect (it played a campaign video instead of the regular).
+  * Fixed issue with alien fleets controllable via keyboard shortcuts on the starmap (temporarily, moving them with M still available for testing purposes).
+  * Fixed crash when displaying equipment for an alien fleet.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=59 Issue #59] uninhabited planets now display "Empty - Colonizable" on the starmap screen.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=60 Issue #60] audio problem when showing or hiding the comm panel on the bridge.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=61 Issue #61] The main menu button in the options screen has been moved back to its original place in the upper right corner.
+
+
 = Version 0.93.350 - Fixes and small improvements =
   * Released: 2011-08-20 18:00 CET
   * *Update* the Equipment screen now resizes vertically with the game window, making it easier to manage a larger list of diverse ships
