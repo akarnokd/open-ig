@@ -14,9 +14,7 @@ import java.io.InputStream;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
@@ -290,13 +288,8 @@ public class OggMusic {
 
 			// Preset initial gain and mute
 			SourceDataLine sdl = getOutputLine(vi.channels, vi.rate);
-			FloatControl f = (FloatControl)sdl.getControl(FloatControl.Type.MASTER_GAIN);
-			f.setValue(AudioThread.computeGain(f, initialVolume));
-			BooleanControl b = (BooleanControl)sdl.getControl(BooleanControl.Type.MUTE);
-			if (b != null) {
-				b.setValue(initialMute);
-			}
 			
+			AudioThread.setVolume(sdl, initialMute ? initialVolume : 0);
 			
 			while (eos == 0) {
 				while (eos == 0) {

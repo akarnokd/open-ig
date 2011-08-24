@@ -36,7 +36,6 @@ import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineEvent.Type;
 import javax.sound.sampled.LineListener;
@@ -142,10 +141,7 @@ public class Sounds {
 						Clip c = AudioSystem.getClip();
 						c.open(af, data, 0, data.length);
 						
-						FloatControl fc = (FloatControl)c.getControl(FloatControl.Type.MASTER_GAIN);
-						if (fc != null) {
-							fc.setValue(AudioThread.computeGain(fc, vol));
-						}
+						AudioThread.setVolume(c, vol);
 						LineListener ll = new LineListener() {
 							@Override
 							public void update(LineEvent event) {

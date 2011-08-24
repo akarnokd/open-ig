@@ -21,10 +21,8 @@ import java.util.Arrays;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -320,65 +318,19 @@ public class Music {
 			}
 		}
 	}
-
-	/**
-	 * Mute or unmute the sound.
-	 * 
-	 * @param mute
-	 *            the mute to set
-	 */
-	public void setMute(boolean mute) {
-		if (sdl != null) {
-			BooleanControl b = (BooleanControl) sdl
-					.getControl(BooleanControl.Type.MUTE);
-			if (b != null) {
-				b.setValue(mute);
-			}
-		} else if (soundClip != null) {
-			BooleanControl b = (BooleanControl) soundClip
-					.getControl(BooleanControl.Type.MUTE);
-			if (b != null) {
-				b.setValue(mute);
-			}
-		} else if (oggMusic != null && oggMusic.outputLine != null) {
-			BooleanControl b = (BooleanControl) oggMusic.outputLine
-					.getControl(BooleanControl.Type.MUTE);
-			if (b != null) {
-				b.setValue(mute);
-			}
-		}
-	}
 	/**
 	 * Set the linear volume.
 	 * @param volume the volume 0..100, volume 0 mutes the sound
 	 */
 	public void setVolume(int volume) {
-		this.volume = volume;
-		if (volume == 0) {
-			setMute(true);
-		} else {
-			setMute(false);
-			if (sdl != null) {
-				FloatControl f = (FloatControl) sdl
-						.getControl(FloatControl.Type.MASTER_GAIN);
-				if (f != null) {
-					f.setValue(AudioThread.computeGain(f, volume));
-				}
-			} else 
-			if (soundClip != null) {
-				FloatControl f = (FloatControl) soundClip
-						.getControl(FloatControl.Type.MASTER_GAIN);
-				if (f != null) {
-					f.setValue(AudioThread.computeGain(f, volume));
-				}
-			} else 
-			if (oggMusic != null) {
-				FloatControl f = (FloatControl) oggMusic.outputLine
-				.getControl(FloatControl.Type.MASTER_GAIN);
-				if (f != null) {
-					f.setValue(AudioThread.computeGain(f, volume));
-				}
-			}
+		if (sdl != null) {
+			AudioThread.setVolume(sdl, volume);
+		} else 
+		if (soundClip != null) {
+			AudioThread.setVolume(sdl, volume);
+		} else 
+		if (oggMusic != null) {
+			AudioThread.setVolume(sdl, volume);
 		}
 	}
 	/** @return is a music playing? */

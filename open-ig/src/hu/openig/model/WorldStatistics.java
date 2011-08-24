@@ -8,9 +8,9 @@
 
 package hu.openig.model;
 
-import java.lang.reflect.Field;
-
 import hu.openig.utils.XElement;
+
+import java.lang.reflect.Field;
 
 /**
  * The global world statistics.

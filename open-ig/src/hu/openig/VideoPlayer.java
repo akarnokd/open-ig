@@ -49,7 +49,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -754,10 +753,7 @@ public class VideoPlayer extends JFrame {
 		 */
 		public void setVolume(int volume) {
 			if (clip != null) {
-				FloatControl fc = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
-				double minLinear = Math.pow(10, fc.getMinimum() / 20);
-				double maxLinear = Math.pow(10, fc.getMaximum() / 20);
-				fc.setValue((float)(20 * Math.log10(minLinear + volume * (maxLinear - minLinear) / 100)));
+				AudioThread.setVolume(clip, volume);
 			}
 		}
 		/**
@@ -794,11 +790,11 @@ public class VideoPlayer extends JFrame {
 								}
 							}
 							buffer2 = AudioThread.convert8To16(buffer);
+							af = new AudioFormat(af.getFrameRate(), 16, af.getChannels(), true, false);
 						} else {
 							buffer2 = buffer;
 						}
-						AudioFormat streamFormat = new AudioFormat(22050, 16, 1, true, false);
-						DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
+						DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, af);
 						clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
 						clip.open();
 						setVolume(initialVolume);
