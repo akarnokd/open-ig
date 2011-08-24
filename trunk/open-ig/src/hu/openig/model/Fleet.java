@@ -140,7 +140,7 @@ public class Fleet implements Named, Owned {
 			if (fii.type.has("damage")) {
 				result.firepower += fii.type.getInt("damage");
 			}
-			
+			int itemspeed = 6;
 			for (InventorySlot slot : fii.slots) {
 				if (slot.type != null) {
 					if (slot.type.has("radar")) {
@@ -153,10 +153,11 @@ public class Fleet implements Named, Owned {
 						result.firepower += slot.type.getInt("damage");
 					}
 					if (slot.type.has("speed")) {
-						result.speed = Math.min(result.speed, slot.type.getInt("speed"));
+						itemspeed = slot.type.getInt("speed");
 					}
 				}
 			}
+			result.speed = Math.min(itemspeed, result.speed);
 		}
 		
 		if (result.speed == Integer.MAX_VALUE) {

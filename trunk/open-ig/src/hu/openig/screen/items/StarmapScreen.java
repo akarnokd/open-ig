@@ -1456,22 +1456,22 @@ public class StarmapScreen extends ScreenBase {
 		boolean rep = false;
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
-			pan(0, -30);
-			rep = true;
-			e.consume();
-			break;
-		case KeyEvent.VK_DOWN:
 			pan(0, 30);
 			rep = true;
 			e.consume();
 			break;
+		case KeyEvent.VK_DOWN:
+			pan(0, -30);
+			rep = true;
+			e.consume();
+			break;
 		case KeyEvent.VK_LEFT:
-			pan(-30, 0);
+			pan(30, 0);
 			rep = true;
 			e.consume();
 			break;
 		case KeyEvent.VK_RIGHT:
-			pan(30, 0);
+			pan(-30, 0);
 			rep = true;
 			e.consume();
 			break;
