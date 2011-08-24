@@ -441,7 +441,7 @@
 	<entry key='players.free_traders'>Kereskedők Szöv.</entry>
 	<entry key='players.free_nations'>Szabad Nemz. Sz.</entry>
 	<entry key='players.pirates'>Kalózok</entry>
-	<entry key='players.garthog'>Garthog Köztársaság</entry>
+	<entry key='players.garthog'>Garthog Birodalom</entry>
 	<entry key='players.ychom'>Ychom Birodalom</entry>
 	<entry key='players.morgath'>Morgath Birodalom</entry>
 	<entry key='players.dribs'>Dribs Birodalom</entry>
@@ -463,11 +463,11 @@
 
 	<entry key='planet.type.rocky'>sziklás</entry>
 	<entry key='planet.type.cratered'>kráteres</entry>
-	<entry key='planet.type.earth'>Föld-szerű</entry>
+	<entry key='planet.type.earth'>Föld-típusú</entry>
 	<entry key='planet.type.liquid'>folyékony</entry>
 	<entry key='planet.type.neptoplasm'>idegen</entry>
 	<entry key='planet.type.desert'>sivatagos</entry>
-	<entry key='planet.type.frozen'>fagyott</entry>
+	<entry key='planet.type.frozen'>jeges</entry>
 	
 	<entry key='morale.revolt'>lázad</entry>
 	<entry key='morale.hate'>gyűlöl</entry>
