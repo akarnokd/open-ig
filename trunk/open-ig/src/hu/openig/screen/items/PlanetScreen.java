@@ -2344,7 +2344,7 @@ public class PlanetScreen extends ScreenBase {
 			buildingsPanel.buildingName.text(bt.name);
 			buildingsPanel.build.enabled(buildingsPanel.preview.enabled());
 			
-			if (bt.research != null) {
+			if (bt.research != null && delta != 0) {
 				research(bt.research);
 			}
 		} else {

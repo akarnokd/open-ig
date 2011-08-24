@@ -1765,6 +1765,9 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** Top the research. */
 	void doStopResearch() {
 		doSelectTechnology(player().runningResearch);
+		if (player().runningResearch != null) {
+			player().research.get(player().runningResearch).state = ResearchState.STOPPED;
+		}
 		player().runningResearch = null;
 		if (config.computerVoiceScreen) {
 			commons.sounds.play(SoundType.STOP_RESEARCH);
