@@ -25,7 +25,7 @@
 			<desc lang='en'>The program's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.93.350'>
+	<module id='Game' version='0.93.375'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -37,10 +37,10 @@
 		<execute file='open-ig-%s.jar' memory='640'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>Javítások és apró fejlesztések.</desc>
-			<desc lang='en'>Bug fixes and small improvements.</desc>
+			<desc lang='hu'>Játékmechanikai javítások</desc>
+			<desc lang='en'>Game mechanics fixes.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.350.jar' sha1='b5347410c0932add5a8d717aa8f2203f9fdb5999'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.375.jar' sha1='ac9a7afa1cb6ca312c7a13df81e3a857d52cb278'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
@@ -59,10 +59,14 @@
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip' sha1='123225ba78e3a02d1d3e43227e4dfd67a9bbcdfe'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip' sha1='2964a6bbf5dad6f43c5712c9662024b6808c6010'/>
 
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110820a.zip' sha1='04b4fd8b15418202237bbc0595642185b048f868'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110824a.zip' sha1='a2cf248f7227a2dd22a7780ab978b7bdafab9a38'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 24 / A</desc>
+			<desc lang='en'>The upgraded resource file. 24th August, 2011 / A</desc>
+		</file>
+		<remove file='open-ig-upgrade-20110820a.zip' sha1='04b4fd8b15418202237bbc0595642185b048f868'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 20 / A</desc>
 			<desc lang='en'>The upgraded resource file. 20th August, 2011 / A</desc>
-		</file>
+		</remove>
 		<remove file='open-ig-upgrade-20110819a.zip' sha1='802d10ec807120310f3f37010ee40babbfe5a7bf'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 19 / A</desc>
 			<desc lang='en'>The upgraded resource file. 19th August, 2011 / A</desc>
