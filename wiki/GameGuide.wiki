@@ -1,4 +1,5 @@
 #summary The Game Guide
+#labels Featured
 
 <wiki:toc max_depth="3" />
 
