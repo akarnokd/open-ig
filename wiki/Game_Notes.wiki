@@ -2,6 +2,18 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.400 - Button sounds =
+  * Released: 2011-08-24 15:45
+  * Added button sounds ([http://code.google.com/p/open-ig/issues/detail?id=28 Issue #28], [http://code.google.com/p/open-ig/issues/detail?id=53 Issue #53], [http://code.google.com/p/open-ig/issues/detail?id=54 Issue #54], [http://code.google.com/p/open-ig/issues/detail?id=57 Issue #57], [http://code.google.com/p/open-ig/issues/detail?id=77 Issue #77]).
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=81 Issue #81] Fleet speed computation in case of multiple hyperdrive configurations.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=80 Issue #80] when replacing an installed equipment on a ship via the +1 button, the original equipment is removed and added to the available inventory.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=82 Issue #82] hungarian surface type labels.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=84 Issue #84] Garthogs are Empire in hungarian version.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=83 Issue #83] Keyboard arrows pan the starmap in the opposite direction.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=85 Issue #85] if a building can't be placed due money, play sound and send an error message.
+  * Added [http://code.google.com/p/open-ig/issues/detail?id=86 Issue #86] Message for yesterday's trade income.
+  * Added option to limit the auto-repair by setting a minimum required money amount.
+
 = Version 0.93.375 - Game mechanics fixes =
   * Released: 2011-08-24 15:45 CET
   * Fix [http://code.google.com/p/open-ig/issues/detail?id=43 Issue #43] Auto-build turns off even if there is opportunity for upgrading
