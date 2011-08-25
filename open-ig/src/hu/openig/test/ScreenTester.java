@@ -933,4 +933,9 @@ public class ScreenTester extends JFrame implements GameControls {
 			repaintInner();
 		}
 	}
+	@Override
+	public void displayError(String text) {
+		// TODO Auto-generated method stub
+		
+	}
 }

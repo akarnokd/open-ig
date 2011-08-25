@@ -87,6 +87,12 @@ public class StatusbarScreen extends ScreenBase {
 	ScreenMenu screenMenu;
 	/** The notification history. */
 	NotificationHistory notificationHistory;
+	/** The error text to display. */
+	public String errorText;
+	/** The time to live for the error text. */
+	public int errorTTL;
+	/** The default error text display time. */
+	public static final int DEFALT_ERROR_TTL = 15;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -279,7 +285,10 @@ public class StatusbarScreen extends ScreenBase {
 		public void draw(Graphics2D g2) {
 			Shape save0 = g2.getClip();
 			g2.clipRect(0, 0, width, height);
-			
+			if (errorText != null) {
+				int w = commons.text().getTextWidth(10, errorText);
+				commons.text().paintTo(g2, (width - w) / 2, 1, 10, TextRenderer.RED, errorText);
+			} else
 			if (currentMessage == null) {
 				String s = "Open Imperium Galactica";
 				int w = commons.text().getTextWidth(10, s);
@@ -425,37 +434,45 @@ public class StatusbarScreen extends ScreenBase {
 	 */
 	void doAnimation() {
 		if (!commons.nongame) {
-			if (notification.currentMessage != null) {
-				if (animationStep >= accelerationStep * 2 + stayStep) {
-					player().messageQueue.remove(notification.currentMessage);
-					player().messageHistory.add(notification.currentMessage);
-					notification.currentMessage = null;
-					animationStep = 0;
-					askRepaint();
-				} else {
-					animationStep++;
-					if (animationStep < accelerationStep) {
+			if (errorText == null) {
+				if (notification.currentMessage != null) {
+					if (animationStep >= accelerationStep * 2 + stayStep) {
+						player().messageQueue.remove(notification.currentMessage);
+						player().messageHistory.add(notification.currentMessage);
+						notification.currentMessage = null;
+						animationStep = 0;
 						askRepaint();
-					} else
-					if (animationStep < accelerationStep + stayStep) {
-						int frame = animationStep - accelerationStep;
-						if (frame == 0 || frame == stayStep / 3 || frame == stayStep * 2 / 3) {
+					} else {
+						animationStep++;
+						if (animationStep < accelerationStep) {
+							askRepaint();
+						} else
+						if (animationStep < accelerationStep + stayStep) {
+							int frame = animationStep - accelerationStep;
+							if (frame == 0 || frame == stayStep / 3 || frame == stayStep * 2 / 3) {
+								askRepaint();
+							}
+						} else
+						if (animationStep >= accelerationStep + stayStep) {
 							askRepaint();
 						}
-					} else
-					if (animationStep >= accelerationStep + stayStep) {
+					}
+				} else
+				if (animationStep == 0) {
+					Message msg = player().messageQueue.peek();
+					if (msg != null) {
+						notification.currentMessage = msg;
+						if (msg.sound != null && config.computerVoiceNotify) {
+							commons.sounds.play(msg.sound);
+						}
 						askRepaint();
 					}
 				}
-			} else
-			if (animationStep == 0) {
-				Message msg = player().messageQueue.peek();
-				if (msg != null) {
-					notification.currentMessage = msg;
-					if (msg.sound != null && config.computerVoiceNotify) {
-						commons.sounds.play(msg.sound);
-					}
-					askRepaint();
+			} else {
+				if (errorTTL > 0) {
+					errorTTL--;
+				} else {
+					errorText = null;
 				}
 			}
 		}
