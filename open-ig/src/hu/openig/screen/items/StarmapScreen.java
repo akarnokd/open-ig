@@ -1377,15 +1377,14 @@ public class StarmapScreen extends ScreenBase {
 	public Fleet getFleetAt(int x, int y, Fleet except) {
 		double zoom = getZoom();
 		for (Fleet f : player().visibleFleets()) {
-			if (f == except) {
-				continue;
-			}
-			int w = f.owner.fleetIcon.getWidth();
-			int h = f.owner.fleetIcon.getHeight();
-			int x0 = (int)(starmapRect.x + f.x * zoom - w * 0.5);
-			int y0 = (int)(starmapRect.y + f.y * zoom - h * 0.5);
-			if (x0 <= x && x <= x0 + w && y0 <= y && y <= y0 + h) {
-				return f;
+			if (f != except) {
+				int w = f.owner.fleetIcon.getWidth();
+				int h = f.owner.fleetIcon.getHeight();
+				int x0 = (int)(starmapRect.x + f.x * zoom - w * 0.5);
+				int y0 = (int)(starmapRect.y + f.y * zoom - h * 0.5);
+				if (x0 <= x && x <= x0 + w && y0 <= y && y <= y0 + h) {
+					return f;
+				}
 			}
 		}
 		return null;
@@ -1399,12 +1398,14 @@ public class StarmapScreen extends ScreenBase {
 	public Planet getPlanetAt(int x, int y) {
 		double zoom = getZoom();
 		for (Planet p : commons.world().planets.values()) {
-			double d = p.diameter * zoom / 4;
-			int di = (int)d;
-			int x0 = (int)(starmapRect.x + p.x * zoom - d / 2);
-			int y0 = (int)(starmapRect.y + p.y * zoom - d / 2);
-			if (x0 <= x && x <= x0 + di && y0 <= y && y <= y0 + di) {
-				return p;
+			if (knowledge(p, PlanetKnowledge.VISIBLE) >= 0) {
+				double d = p.diameter * zoom / 4;
+				int di = (int)d;
+				int x0 = (int)(starmapRect.x + p.x * zoom - d / 2);
+				int y0 = (int)(starmapRect.y + p.y * zoom - d / 2);
+				if (x0 <= x && x <= x0 + di && y0 <= y && y <= y0 + di) {
+					return p;
+				}
 			}
 		}
 		return null;
