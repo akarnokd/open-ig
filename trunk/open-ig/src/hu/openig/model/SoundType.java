@@ -105,11 +105,11 @@ public enum SoundType {
 	DEMOLISH_BUILDING("ui/demolish_building"),
 	/** The welcome message. */
 	WELCOME("ui/welcome"),
-	/** The function is not available. */
+	/** The function is not available. ui/not_available */
 	NOT_AVAILABLE("ui/not_available"),
-	/** Acknowledge command. */
+	/** Acknowledge command. spacewar/acknowledge_1 */
 	ACKNOWLEDGE_1("spacewar/acknowledge_1"),
-	/** Acknowledge command. */
+	/** Acknowledge command. groundwar/acknowledge_2 */
 	ACKNOWLEDGE_2("groundwar/acknowledge_2"),
 	/** Click response. */
 	CLICK("spacewar/click_1"),
@@ -157,8 +157,22 @@ public enum SoundType {
 	FIRE_ROCKET("groundwar/fire_rocket"),
 	/** Pause the game. */
 	PAUSE("ui/pause"),
-	/** Unpause the game. */
-	UNPAUSE("ui/acknowledge_1")
+	/** Unpause the game. ui/acknowledge_1 */
+	UNPAUSE("ui/acknowledge_1"),
+	/** Medium frequency click. ui/click_medium_2 */
+	CLICK_MEDIUM_2("ui/click_medium_2"),
+	/** UI acknowledge 2. */
+	UI_ACKNOWLEDGE_2("ui/acknowledge_2"),
+	/** UI click low 1. */
+	CLICK_LOW_1("ui/click_low_1"),
+	/** UI click high 2. */
+	CLICK_HIGH_2("ui/click_high_2"),
+	/** Groundwar toggle panel. */
+	GROUNDWAR_TOGGLE_PANEL("groundwar/toggle_panel"),
+	/** UI click high 3. */
+	CLICK_HIGH_3("ui/click_high_3"),
+	/** Acknowledge command. ui/acknowledge_1 */
+	UI_ACKNOWLEDGE_1("ui/acknowledge_1"),
 	;
 	/** The associated resource location. */
 	public final String resource;

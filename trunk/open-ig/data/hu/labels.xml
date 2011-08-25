@@ -1049,6 +1049,7 @@
 	<entry key='message.planet_died'>A(z) %s bolygó kihalt.</entry>
 	<entry key='message.planet_revolt'>A(z) %s bolygó lakosai lázadoznak.</entry>
 	<entry key='message.yesterday_tax_income'>A tegnapi adóbevételed %s credit volt.</entry>
+	<entry key='message.yesterday_trade_income'>A tegnapi kereskedelmi bevételed %s credit volt.</entry>
 	<entry key='message.new_planet_discovered'>Fölfedezted a(z) %s bolygót.</entry>
 	<entry key='message.new_race_discovered'>Fölfedezted a(z) %s fajt.</entry>
 	<entry key='screens.bridge'>F1 - Híd</entry>
@@ -1951,7 +1952,21 @@
 	<entry key='planet.colonizable'>Üres - Kolonizálható</entry>
 	<entry key='fleetstatus.composition.alien'>Űrhajók: %s, Vadászok: %s</entry>
 	<entry key='fleetinfo.alien_fleet'>Idegen flotta</entry>
-	<entry key='planet.install_satellite'>Felszín megtekintéséhez telepíts valamilyen műholdat!</entry>
+	<entry key='planet.install_satellite_1'>Felszín megtekintéséhez</entry>
+	<entry key='planet.install_satellite_2'>telepíts valamilyen műholdat!</entry>
+	<entry key='message.not_enough_money'>Nincs elég pénzed!</entry>
+	<entry key='settings.auto_repair_limit'>Automatikus javítás pénzkorlát</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	
 </labels>

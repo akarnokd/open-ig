@@ -172,6 +172,12 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Play satellite deploy animation? */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox automaticBattle;
+	/** Auto build label. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UILabel autoRepairLabel;
+	/** Auto-build credit limit. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UISpinner autoRepairLimit;
 	@Override
 	public void onInitialize() {
 		loadSavePage = new UIGenericButton(get("settings.load_save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
@@ -179,6 +185,7 @@ public class LoadSaveScreen extends ScreenBase {
 		loadSavePage.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				setRandomBackground();
 				displayPage(SettingsPage.LOAD_SAVE);
 			}
@@ -188,6 +195,7 @@ public class LoadSaveScreen extends ScreenBase {
 		audioPage.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPage(SettingsPage.AUDIO);
 			}
 		};
@@ -197,6 +205,7 @@ public class LoadSaveScreen extends ScreenBase {
 		gameplayPage.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPage(SettingsPage.GAMEPLAY);
 			}
 		};
@@ -206,6 +215,7 @@ public class LoadSaveScreen extends ScreenBase {
 		back.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doBack();
 			}
 		};
@@ -217,6 +227,7 @@ public class LoadSaveScreen extends ScreenBase {
 		save.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doSave();
 			}
 		};
@@ -226,6 +237,7 @@ public class LoadSaveScreen extends ScreenBase {
 		load.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doLoad();
 			}
 		};
@@ -235,6 +247,7 @@ public class LoadSaveScreen extends ScreenBase {
 		mainmenu.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doMainMenu();
 			}
 		};
@@ -245,6 +258,7 @@ public class LoadSaveScreen extends ScreenBase {
 		delete.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doDelete();
 			}
 		};
@@ -459,6 +473,7 @@ public class LoadSaveScreen extends ScreenBase {
 		reequipTanks.onChange = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.reequipTanks = reequipTanks.selected();
 			}
 		};
@@ -466,6 +481,7 @@ public class LoadSaveScreen extends ScreenBase {
 		reequipBombs.onChange = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.reequipBombs = reequipBombs.selected();
 			}
 		};
@@ -473,6 +489,7 @@ public class LoadSaveScreen extends ScreenBase {
 		computerVoiceScreen.onChange = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.computerVoiceScreen = computerVoiceScreen.selected();
 			}
 		};
@@ -480,6 +497,7 @@ public class LoadSaveScreen extends ScreenBase {
 		computerVoiceNotify.onChange = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.computerVoiceNotify = computerVoiceNotify.selected();
 			}
 		};
@@ -494,6 +512,7 @@ public class LoadSaveScreen extends ScreenBase {
 		aprev.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_LOW_1);
 				config.autoBuildLimit = Math.max(0, config.autoBuildLimit - 5000);
 				askRepaint(base);
 			}
@@ -501,6 +520,7 @@ public class LoadSaveScreen extends ScreenBase {
 		anext.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_LOW_1);
 				config.autoBuildLimit = Math.min(Integer.MAX_VALUE, config.autoBuildLimit + 5000);
 				askRepaint(base);
 			}
@@ -519,6 +539,7 @@ public class LoadSaveScreen extends ScreenBase {
 		autoRepair.onChange = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_LOW_1);
 				config.autoRepair = autoRepair.selected();
 			}
 		};
@@ -527,6 +548,7 @@ public class LoadSaveScreen extends ScreenBase {
 		buttonSounds.onChange = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_LOW_1);
 				config.buttonSounds = buttonSounds.selected();
 			}
 		};
@@ -535,6 +557,7 @@ public class LoadSaveScreen extends ScreenBase {
 		satelliteDeploy.onChange = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.satelliteDeploy = satelliteDeploy.selected();
 			}
 		};
@@ -550,6 +573,7 @@ public class LoadSaveScreen extends ScreenBase {
 		rmprev.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.researchMoneyPercent = Math.max(125, config.researchMoneyPercent - 125);
 				askRepaint(base);
 			}
@@ -557,6 +581,7 @@ public class LoadSaveScreen extends ScreenBase {
 		rmnext.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.researchMoneyPercent = Math.min(2000, config.researchMoneyPercent + 125);
 				askRepaint(base);
 			}
@@ -579,10 +604,47 @@ public class LoadSaveScreen extends ScreenBase {
 		automaticBattle.onChange = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.automaticBattle = automaticBattle.selected();
 			}
 		};
 
+		// ------------------------------------------------------------------
+		
+		final UIImageButton arprev = new UIImageButton(commons.common().moveLeft);
+		arprev.setDisabledPattern(commons.common().disabledPattern);
+		arprev.setHoldDelay(250);
+		final UIImageButton arnext = new UIImageButton(commons.common().moveRight);
+		arnext.setDisabledPattern(commons.common().disabledPattern);
+		arnext.setHoldDelay(250);
+		
+		arprev.onClick = new Act() {
+			@Override
+			public void act() {
+				sound(SoundType.CLICK_LOW_1);
+				config.autoRepairLimit = Math.max(0, config.autoRepairLimit - 5000);
+				askRepaint(base);
+			}
+		};
+		arnext.onClick = new Act() {
+			@Override
+			public void act() {
+				sound(SoundType.CLICK_LOW_1);
+				config.autoRepairLimit = Math.min(Integer.MAX_VALUE, config.autoRepairLimit + 5000);
+				askRepaint(base);
+			}
+		};
+		
+		autoRepairLimit = new UISpinner(14, arprev, arnext, commons.text());
+		autoRepairLimit.getValue = new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return config.autoRepairLimit + " cr";
+			}
+		};
+		autoRepairLabel = new UILabel(get("settings.auto_repair_limit"), 14, commons.text());
+
+		
 		
 		addThis();
 	}
@@ -700,14 +762,21 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		reequipTanks.location(base.x + 30, base.y + 70 + 8);
 		reequipBombs.location(base.x + 30, base.y + 100 + 8);
-		autoRepair.location(base.x + 30, base.y + + 130 + 8);
 		
-		autoBuildLabel.location(base.x + 30, base.y + 160 + 8);
-		autoBuildLimit.location(base.x + 50 + autoBuildLabel.width, base.y + 160);
+		autoRepair.location(base.x + 30, base.y + 130 + 8);
+		autoRepairLabel.location(base.x + 30, base.y + 160 + 8);
+		autoRepairLimit.width = 200;
+		autoRepairLimit.location(base.x + base.width - autoRepairLimit.width - 30, base.y + 160);
+		
+		autoBuildLabel.location(base.x + 30, base.y + 190 + 8);
 		autoBuildLimit.width = 200;
-		researchMoneyLabel.location(base.x + 30, base.y + 190 + 8);
-		researchMoneyPercent.location(base.x + 50 + researchMoneyLabel.width, base.y + 190);
+		autoBuildLimit.location(base.x + base.width - autoBuildLimit.width - 30, base.y + 190);
+		
+		researchMoneyLabel.location(base.x + 30, base.y + 220 + 8);
 		researchMoneyPercent.width = 200;
+		researchMoneyPercent.location(base.x + base.width - researchMoneyPercent.width - 30, base.y + 220);
+
+		automaticBattle.location(base.x + 30, base.y + 250 + 8);
 
 	}
 	@Override
@@ -748,8 +817,6 @@ public class LoadSaveScreen extends ScreenBase {
 			g2.drawImage(background, base.x, base.y, null);
 
 			save.enabled(maySave);
-			mainmenu.enabled(commons.world() != null);
-			
 			load.enabled(list.selected != null);
 			delete.enabled(list.selected != null);
 		}
@@ -768,6 +835,7 @@ public class LoadSaveScreen extends ScreenBase {
 		} else {
 			gameplayPage.color(0xFF000000);
 		}
+		mainmenu.visible(commons.world() != null);
 		
 		super.draw(g2);
 	}
@@ -963,6 +1031,7 @@ public class LoadSaveScreen extends ScreenBase {
 				int idx = top + e.y / rowHeight;
 				if (idx >= 0 && idx < items.size()) {
 					selected = items.get(idx);
+					sound(SoundType.CLICK_MEDIUM_2);
 					return true;
 				}
 			} else
@@ -970,6 +1039,7 @@ public class LoadSaveScreen extends ScreenBase {
 				int idx = top + e.y / rowHeight;
 				if (idx >= 0 && idx < items.size()) {
 					selected = items.get(idx);
+					sound(SoundType.CLICK_MEDIUM_2);
 					doLoad();
 					return true;
 				}

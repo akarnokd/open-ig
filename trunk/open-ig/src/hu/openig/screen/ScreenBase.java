@@ -18,6 +18,7 @@ import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.model.World;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -276,6 +277,15 @@ public abstract class ScreenBase extends UIContainer {
 			}
 		} catch (IOException ex) {
 			
+		}
+	}
+	/**
+	 * Play a given sound for buttons if the effect is enabled in options.
+	 * @param type the sound type
+	 */
+	public void sound(SoundType type) {
+		if (config.buttonSounds) {
+			commons.sounds.play(type);
 		}
 	}
 }

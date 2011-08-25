@@ -301,6 +301,7 @@ public class EquipmentScreen extends ScreenBase {
 		endSplit.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doEndSplit();
 			}
 		};
@@ -310,6 +311,7 @@ public class EquipmentScreen extends ScreenBase {
 		endJoin.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doEndJoin();
 			}
 		};
@@ -318,6 +320,7 @@ public class EquipmentScreen extends ScreenBase {
 		prev.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doPrev();
 			}
 		};
@@ -326,6 +329,7 @@ public class EquipmentScreen extends ScreenBase {
 		next.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doNext();
 			}
 		};
@@ -448,6 +452,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void act() {
 				if (addButton.visible()) {
+					sound(SoundType.CLICK_HIGH_2);
 					doAddItem();
 				}
 			}
@@ -460,6 +465,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void act() {
 				if (delButton.visible()) {
+					sound(SoundType.CLICK_HIGH_2);
 					doRemoveItem();
 				}
 			}
@@ -471,6 +477,7 @@ public class EquipmentScreen extends ScreenBase {
 		deleteButton.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doDeleteFleet();
 			}
 		};
@@ -505,6 +512,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void act() {
 				if (addOne.visible()) {
+					sound(SoundType.CLICK_HIGH_2);
 					doAddOne();
 				}
 			}
@@ -517,6 +525,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void act() {
 				if (removeOne.visible()) {
+					sound(SoundType.CLICK_HIGH_2);
 					doRemoveOne();
 				}
 			}
@@ -533,6 +542,7 @@ public class EquipmentScreen extends ScreenBase {
 		left1.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(secondary, fleet(), research(), 1, rightList.groupIndex(research(), 0));
 			}
 		};
@@ -541,6 +551,7 @@ public class EquipmentScreen extends ScreenBase {
 		left2.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(secondary, fleet(), research(), 2, rightList.groupIndex(research(), 0));
 			}
 		};
@@ -549,6 +560,7 @@ public class EquipmentScreen extends ScreenBase {
 		left3.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(secondary, fleet(), research(), 3, rightList.groupIndex(research(), 0));
 			}
 		};
@@ -557,6 +569,7 @@ public class EquipmentScreen extends ScreenBase {
 		right1.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(fleet(), secondary, research(), 1, leftList.groupIndex(research(), 0));
 			}
 		};
@@ -565,6 +578,7 @@ public class EquipmentScreen extends ScreenBase {
 		right2.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(fleet(), secondary, research(), 2, leftList.groupIndex(research(), 0));
 			}
 		};
@@ -573,6 +587,7 @@ public class EquipmentScreen extends ScreenBase {
 		right3.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(fleet(), secondary, research(), 3, leftList.groupIndex(research(), 0));
 			}
 		};
@@ -581,6 +596,7 @@ public class EquipmentScreen extends ScreenBase {
 		listButton.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				fleetListing.visible(!fleetListing.visible());
 				if (fleetListing.visible()) {
 					if (transferMode) {
@@ -615,6 +631,7 @@ public class EquipmentScreen extends ScreenBase {
 		configure.onSelect = new Action1<InventorySlot>() {
 			@Override
 			public void invoke(InventorySlot value) {
+				sound(SoundType.CLICK_HIGH_2);
 				onSelectInventorySlot(value);
 			}
 		};
@@ -622,24 +639,28 @@ public class EquipmentScreen extends ScreenBase {
 		Action1<ResearchType> selectSlot = new Action1<ResearchType>() {
 			@Override
 			public void invoke(ResearchType value) {
+				sound(SoundType.CLICK_MEDIUM_2);
 				onSelectResearchSlot(value);
 			}
 		};
 		Action1<ResearchType> selectVehicle = new Action1<ResearchType>() {
 			@Override
 			public void invoke(ResearchType value) {
+				sound(SoundType.CLICK_HIGH_2);
 				onSelectVehicleSlot(value);
 			}
 		};
 		leftList.onSelect = new Action1<InventoryItem>() {
 			@Override
 			public void invoke(InventoryItem value) {
+				sound(SoundType.CLICK_HIGH_2);
 				onSelectInventoryItem(value);
 			}
 		};
 		rightList.onSelect = new Action1<InventoryItem>() {
 			@Override
 			public void invoke(InventoryItem value) {
+				sound(SoundType.CLICK_HIGH_2);
 				onSelectInventoryItem(value);
 			}
 		};
@@ -680,6 +701,7 @@ public class EquipmentScreen extends ScreenBase {
 		fleetListing.onSelect = new Action1<Fleet>() {
 			@Override
 			public void invoke(Fleet value) {
+				sound(SoundType.CLICK_HIGH_2);
 				if (!transferMode) {
 					player().currentFleet = value;
 					player().selectionMode = SelectionMode.FLEET;
@@ -702,6 +724,7 @@ public class EquipmentScreen extends ScreenBase {
 		sell.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doSell();
 			}
 		};
@@ -721,6 +744,7 @@ public class EquipmentScreen extends ScreenBase {
 		return new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				displayCategory(cat);
 				configure.selectedSlot = null;
 			}

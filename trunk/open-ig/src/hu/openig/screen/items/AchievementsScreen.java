@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Act;
 import hu.openig.core.Func1;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ClickLabel;
@@ -166,6 +167,7 @@ public class AchievementsScreen extends ScreenBase {
 		scrollUpButton.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doScrollUp();
 			}
 		};
@@ -175,6 +177,7 @@ public class AchievementsScreen extends ScreenBase {
 		scrollDownButton.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doScrollDown();
 			}
 		};
@@ -249,6 +252,7 @@ public class AchievementsScreen extends ScreenBase {
 		achievementLabel.onPressed = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				mode = Screens.ACHIEVEMENTS;
 				adjustLabels();
 				adjustScrollButtons();
@@ -259,6 +263,7 @@ public class AchievementsScreen extends ScreenBase {
 		statisticsLabel.onPressed = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				mode = Screens.STATISTICS;
 				adjustLabels();
 				adjustScrollButtons();

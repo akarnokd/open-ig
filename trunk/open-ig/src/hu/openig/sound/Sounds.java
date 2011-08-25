@@ -21,8 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -134,40 +133,39 @@ public class Sounds {
 			exec.execute(new Runnable() {
 				@Override
 				public void run() {
-					byte[] data = soundMap.get(effect);
-					AudioFormat af = soundFormat.get(effect);
-					final CyclicBarrier barrier = new CyclicBarrier(2);
 					try {
-						Clip c = AudioSystem.getClip();
-						c.open(af, data, 0, data.length);
-						
-						AudioThread.setVolume(c, vol);
-						LineListener ll = new LineListener() {
-							@Override
-							public void update(LineEvent event) {
-								if (event.getType() == Type.STOP || event.getType() == Type.CLOSE) {
-									try {
-										barrier.await();
-									} catch (InterruptedException ex) {
-										// ignore
-									} catch (BrokenBarrierException ex) {
-										// ignore
+						byte[] data = soundMap.get(effect);
+						AudioFormat af = soundFormat.get(effect);
+						final CountDownLatch barrier = new CountDownLatch(1);
+						try {
+							Clip c = AudioSystem.getClip();
+							c.open(af, data, 0, data.length);
+							try {
+								AudioThread.setVolume(c, vol);
+								LineListener ll = new LineListener() {
+									@Override
+									public void update(LineEvent event) {
+										if (event.getType() == Type.STOP || event.getType() == Type.CLOSE) {
+											barrier.countDown();
+										}
 									}
-								}
+								};
+								c.addLineListener(ll);
+								c.start();
+								
+								barrier.await();
+								c.removeLineListener(ll);
+							} finally {
+								c.drain();
+								c.close();
 							}
-						};
-						c.addLineListener(ll);
-						c.start();
-						
-						barrier.await();
-						c.removeLineListener(ll);
-						c.close();
-					} catch (LineUnavailableException ex) {
-						ex.printStackTrace();
-					} catch (InterruptedException ex) {
-						// ignore
-					} catch (BrokenBarrierException ex) {
-						// ignore
+						} catch (LineUnavailableException ex) {
+							ex.printStackTrace();
+						} catch (InterruptedException ex) {
+							// ignore
+						}
+					} catch (Throwable t) {
+						t.printStackTrace();
 					}
 				}
 			});
