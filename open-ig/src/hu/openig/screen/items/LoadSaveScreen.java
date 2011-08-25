@@ -539,7 +539,7 @@ public class LoadSaveScreen extends ScreenBase {
 		autoRepair.onChange = new Act() {
 			@Override
 			public void act() {
-				sound(SoundType.CLICK_LOW_1);
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.autoRepair = autoRepair.selected();
 			}
 		};
@@ -548,7 +548,7 @@ public class LoadSaveScreen extends ScreenBase {
 		buttonSounds.onChange = new Act() {
 			@Override
 			public void act() {
-				sound(SoundType.CLICK_LOW_1);
+				sound(SoundType.CLICK_MEDIUM_2);
 				config.buttonSounds = buttonSounds.selected();
 			}
 		};
