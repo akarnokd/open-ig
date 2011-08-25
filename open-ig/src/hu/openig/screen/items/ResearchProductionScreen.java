@@ -179,6 +179,13 @@ public class ResearchProductionScreen extends ScreenBase {
 				if (onPress != null) {
 					onPress.act();
 				}
+				if (!lessPriority.within(e) 
+						&& !morePriority.within(e)
+						&& !lessBuild.within(e)
+						&& !moreBuild.within(e)
+				) {
+					sound(SoundType.CLICK_MEDIUM_2);
+				}
 				rep = true;
 			}
 			rep |= super.mouse(e);
@@ -1071,7 +1078,6 @@ public class ResearchProductionScreen extends ScreenBase {
 			pl.onPress = new Act() {
 				@Override
 				public void act() {
-					sound(SoundType.CLICK_MEDIUM_2);
 					doSelectProductionLine(pl, j);
 				}
 			};

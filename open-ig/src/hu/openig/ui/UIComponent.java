@@ -193,4 +193,12 @@ public class UIComponent {
 		size(width, height);
 		return this;
 	}
+	/**
+	 * Check if the give mouse event falls into the component.
+	 * @param e the mouse event
+	 * @return true if within the component
+	 */
+	public boolean within(UIMouse e) {
+		return e.within(x, y, width, height);
+	}
 }

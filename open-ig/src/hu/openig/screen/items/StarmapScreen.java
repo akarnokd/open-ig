@@ -1697,7 +1697,6 @@ public class StarmapScreen extends ScreenBase {
 						fleetMode = null;
 					} else
 					if (!e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
-						sound(SoundType.CLICK_HIGH_2);
 						selectPlanetOrFleetAt(e);
 					}
 					rep = true;
@@ -1836,10 +1835,12 @@ public class StarmapScreen extends ScreenBase {
 		Fleet f = getFleetAt(e.x, e.y, null);
 
 		if (f != null) {
-			player().currentFleet = f;
+			sound(SoundType.CLICK_HIGH_2);
+		player().currentFleet = f;
 			player().selectionMode = SelectionMode.FLEET;
 		} else
 		if (p != null) {
+			sound(SoundType.CLICK_HIGH_2);
 			player().currentPlanet = p;
 			player().selectionMode = SelectionMode.PLANET;
 		}
@@ -2131,18 +2132,21 @@ public class StarmapScreen extends ScreenBase {
 		fleetMove.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doFleetMove();
 			}
 		};
 		fleetAttack.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doFleetAttack();
 			}
 		};
 		fleetStop.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.NOT_AVAILABLE);
 				doFleetStop();
 			}
 		};
