@@ -151,7 +151,7 @@ However, if the Fire Brigade is damaged itself, but still operational, it will o
 
 Regular repair is always fixing 50 hipoints per turn.
 
-The options screen features an option to automatically repair damaged buildings, therefore, you don't need to manually turn repairs on and off for each and every building.
+The options screen features an option to automatically repair damaged buildings, therefore, you don't need to manually turn repairs on and off for each and every building. You may set a minimum required money amount for the automatic repair on this screen as well. This limit may help in resource constrained times when you want to preserve money for other tasks and not let the auto-repair drain your money.
 
 == Auto-Build ==
 
