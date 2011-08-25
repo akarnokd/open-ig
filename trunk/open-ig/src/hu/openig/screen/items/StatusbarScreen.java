@@ -128,7 +128,7 @@ public class StatusbarScreen extends ScreenBase {
 				if (commons.getSimulationSpeed.invoke(null) > 0) {
 					sound(SoundType.PAUSE);
 				} else {
-					sound(SoundType.CLICK_LOW_1);
+					sound(SoundType.UI_ACKNOWLEDGE_1);
 				}
 				commons.setSimulationSpeed.invoke(-1);
 			}

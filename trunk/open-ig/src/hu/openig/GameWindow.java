@@ -1019,7 +1019,7 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_SPACE:
 					if (commons.paused()) {
 						commons.resume();
-						allScreens.main.sound(SoundType.CLICK_LOW_1);
+						allScreens.main.sound(SoundType.UI_ACKNOWLEDGE_1);
 					} else {
 						commons.pause();
 						allScreens.main.sound(SoundType.PAUSE);
