@@ -107,4 +107,9 @@ public interface GameControls {
 	 * walk transition). 
 	 */
 	void moveMouse();
+	/** 
+	 * Display an error text in the status bar for a short period of time.
+	 * @param text the text to display 
+	 */
+	void displayError(String text);
 }

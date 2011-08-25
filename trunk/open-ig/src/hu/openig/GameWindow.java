@@ -1611,4 +1611,9 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		repaintInner();
 	}
+	@Override
+	public void displayError(String text) {
+		allScreens.statusbar.errorText = text;
+		allScreens.statusbar.errorTTL = StatusbarScreen.DEFALT_ERROR_TTL;
+	}
 }

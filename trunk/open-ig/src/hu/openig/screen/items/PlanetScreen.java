@@ -17,7 +17,6 @@ import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
-import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
@@ -2429,10 +2428,16 @@ public class PlanetScreen extends ScreenBase {
 				
 				commons.sounds.play(SoundType.DEPLOY_BUILDING);
 		} else {
-			sound(SoundType.NOT_AVAILABLE);
-			Message msg = world().newMessage("message.not_enough_money");
-			msg.priority = 100;
-			player().messageQueue.add(msg);
+			if (player().money < player().currentBuilding.cost) {
+				sound(SoundType.NOT_AVAILABLE);
+				
+				commons.control().displayError(get("message.not_enough_money"));
+			} else
+			if (!surface().canPlaceBuilding(placementRectangle)) {
+				sound(SoundType.NOT_AVAILABLE);
+				
+				commons.control().displayError(get("message.cant_build_there"));
+			}
 		}
 	}
 	@Override
