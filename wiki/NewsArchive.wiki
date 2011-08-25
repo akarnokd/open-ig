@@ -4,6 +4,14 @@
 
 = August, 2011 =
 
+*August 25, 2011*
+
+József "Joe" Torma officially joined the project, as you might have already noticed. He is doing an excellent job in discovering missing features or bugs in the game, which is good for the game quality, but bad for my schedule. 
+
+I need to spend more time on fixing bugs and introducing convenience improvements instead of doing the next big thing implementation.
+
+Anyway, the feature-complete beta release will come hopefully in the beginning of October, 2011. Until then, keep testing!
+
 *August 18, 2011*
 
 A developer build has been released (we are working on the game sound effects). It contains some bug fixes and gui improvements, and a small space battle implementation. If you attack an alien planet, the game switches to the spacewar screen and displays ground and space defenses. That's all. Just press F2 or F3 to return to the normal view. If you are lucky and the targeted planet has no defenses at all, you'll conquer the planet without fight.
