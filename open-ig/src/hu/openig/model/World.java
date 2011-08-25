@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
@@ -92,9 +93,7 @@ public class World {
 	/** The resource locator. */
 	public ResourceLocator rl;
 	/** Retrieve the auto build limit. */
-	public Func1<Void, Integer> getAutoBuildLimit;
-	/** Retrieve the auto repair settings. */
-	public Func1<Void, Boolean> isAutoRepair;
+	public Configuration config;
 	/** The global world statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();
 	/** The date formatter. */

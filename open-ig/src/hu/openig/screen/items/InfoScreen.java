@@ -628,6 +628,7 @@ public class InfoScreen extends ScreenBase {
 		colonies.onSelect = new Action1<Planet>() {
 			@Override
 			public void invoke(Planet value) {
+				sound(SoundType.CLICK_MEDIUM_2);
 				player().currentPlanet = value;
 				displayPlanetInfo();
 			}
@@ -677,6 +678,7 @@ public class InfoScreen extends ScreenBase {
 		fleets.onSelect = new Action1<Fleet>() {
 			@Override
 			public void invoke(Fleet value) {
+				sound(SoundType.CLICK_MEDIUM_2);
 				player().currentFleet = value;
 			}
 		};
@@ -692,6 +694,7 @@ public class InfoScreen extends ScreenBase {
 		buildings.onSelect = new Action1<BuildingType>() {
 			@Override
 			public void invoke(BuildingType value) {
+				sound(SoundType.CLICK_MEDIUM_2);
 				player().currentBuilding = value;
 				if (value.research != null) {
 					research(value.research);
@@ -826,6 +829,7 @@ public class InfoScreen extends ScreenBase {
 		togglePlanetListDetails.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				showPlanetListDetails = !showPlanetListDetails;
 				if (showPlanetListDetails) {
 					togglePlanetListDetails.text(get("info.hide_details"));
@@ -842,6 +846,7 @@ public class InfoScreen extends ScreenBase {
 		statisticsButton.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				displaySecondary(Screens.STATISTICS);
 			}
 		};
@@ -1352,6 +1357,7 @@ public class InfoScreen extends ScreenBase {
 			taxMore.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_HIGH_2);
 					doTaxMore();
 				}
 			};
@@ -1368,6 +1374,7 @@ public class InfoScreen extends ScreenBase {
 			taxLess.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_HIGH_2);
 					doTaxLess();
 				}
 			};
@@ -2587,6 +2594,7 @@ public class InfoScreen extends ScreenBase {
 				List<ResearchType> res = getResearchColumn(col);
 				int row = e.y / 12;
 				if (row < res.size()) {
+					sound(SoundType.CLICK_MEDIUM_2);
 					ResearchType rt = res.get(row);
 					world().selectResearch(rt);
 					return true;
@@ -3260,6 +3268,7 @@ public class InfoScreen extends ScreenBase {
 				List<Planet> list = getPlanets();
 				int idx = e.y / 13 + top;
 				if (idx >= 0 && idx < list.size()) {
+					sound(SoundType.CLICK_MEDIUM_2);
 					colonies.onSelect.invoke(list.get(idx));
 					return true;
 				}

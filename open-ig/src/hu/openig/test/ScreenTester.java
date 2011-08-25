@@ -545,18 +545,7 @@ public class ScreenTester extends JFrame implements GameControls {
 					commons.labels0().load(commons.rl, commons.world().definition.name);
 					commons.world().labels = commons.labels0();
 					commons.world().load(commons.rl, commons.world().definition.name);
-					commons.world().getAutoBuildLimit = new Func1<Void, Integer>() {
-						@Override
-						public Integer invoke(Void value) {
-							return config.autoBuildLimit;
-						}
-					};
-					commons.world().isAutoRepair = new Func1<Void, Boolean>() {
-						@Override
-						public Boolean invoke(Void value) {
-							return config.autoRepair;
-						}
-					};
+					commons.world().config = commons.config;
 					commons.world().startBattle = new Func1<Void, Void>() {
 						@Override
 						public Void invoke(Void value) {

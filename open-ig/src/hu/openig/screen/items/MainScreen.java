@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
 import hu.openig.ui.UIMouse;
@@ -73,6 +74,7 @@ public class MainScreen extends ScreenBase {
 		}
 		/** Invoke the associated action. */
 		public void invoke() {
+			sound(SoundType.UI_ACKNOWLEDGE_2);
 			if (action != null) {
 				action.act();
 			}

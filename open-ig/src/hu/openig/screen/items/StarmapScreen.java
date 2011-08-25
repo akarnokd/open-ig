@@ -1696,6 +1696,7 @@ public class StarmapScreen extends ScreenBase {
 						fleetMode = null;
 					} else
 					if (!e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
+						sound(SoundType.CLICK_HIGH_2);
 						selectPlanetOrFleetAt(e);
 					}
 					rep = true;
@@ -1708,6 +1709,7 @@ public class StarmapScreen extends ScreenBase {
 						int idx = planetsOffset + (e.y - planetsList.y) / 10;
 						List<Planet> planets = planets();
 						if (idx < planets.size()) {
+							sound(SoundType.CLICK_MEDIUM_2);
 							player().currentPlanet = planets.get(idx);
 							player().selectionMode = SelectionMode.PLANET;
 							rep = true;
@@ -1717,6 +1719,7 @@ public class StarmapScreen extends ScreenBase {
 						int idx = fleetsOffset + (e.y - fleetsList.y) / 10;
 						List<Fleet> fleets = player().ownFleets();
 						if (idx < fleets.size()) {
+							sound(SoundType.CLICK_MEDIUM_2);
 							player().currentFleet = fleets.get(idx);
 							player().selectionMode = SelectionMode.FLEET;
 							rep = true;
@@ -1877,6 +1880,7 @@ public class StarmapScreen extends ScreenBase {
 		prevPlanet.onClick = new Act() {
 			@Override 
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				List<Planet> planets = planets();
 				int idx = planets.indexOf(planet());
 				if (idx > 0 && planets.size() > 0) {
@@ -1888,6 +1892,7 @@ public class StarmapScreen extends ScreenBase {
 		nextPlanet.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				List<Planet> planets = planets();
 				int idx = planets.indexOf(planet());
 				if (idx + 1 < planets.size()) {
@@ -1899,6 +1904,7 @@ public class StarmapScreen extends ScreenBase {
 		prevFleet.onClick = new Act() {
 			@Override 
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				List<Fleet> fleets = player().ownFleets();
 				int idx = fleets.indexOf(fleet());
 				if (idx > 0 && fleets.size() > 0) {
@@ -1910,6 +1916,7 @@ public class StarmapScreen extends ScreenBase {
 		nextFleet.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				List<Fleet> fleets = player().ownFleets();
 				int idx = fleets.indexOf(fleet());
 				if (idx + 1 < fleets.size()) {
@@ -2015,12 +2022,36 @@ public class StarmapScreen extends ScreenBase {
 		
 		showRadarButton = new UIImageToggleButton(commons.starmap().viewRadar);
 		showRadarButton.selected = true;
+		showRadarButton.onClick = new Act() {
+			@Override
+			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
+			}
+		};
 		showFleetButton = new UIImageToggleButton(commons.starmap().viewFleet);
 		showFleetButton.selected = true;
+		showFleetButton.onClick = new Act() {
+			@Override
+			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
+			}
+		};
 		showStarsButton = new UIImageToggleButton(commons.starmap().viewStar);
 		showStarsButton.selected = true;
+		showStarsButton.onClick = new Act() {
+			@Override
+			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
+			}
+		};
 		showGridButton = new UIImageToggleButton(commons.starmap().viewSector);
 		showGridButton.selected = true;
+		showGridButton.onClick = new Act() {
+			@Override
+			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
+			}
+		};
 
 		
 		
@@ -2029,6 +2060,7 @@ public class StarmapScreen extends ScreenBase {
 		showNamesNone.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				showNamesNone.visible(false);
 				showNamesPlanet.visible(true);
 				showFleetNames = false;
@@ -2041,6 +2073,7 @@ public class StarmapScreen extends ScreenBase {
 		showNamesPlanet.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				showNamesPlanet.visible(false);
 				showNamesFleet.visible(true);
 				showFleetNames = true;
@@ -2053,6 +2086,7 @@ public class StarmapScreen extends ScreenBase {
 		showNamesFleet.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				showNamesFleet.visible(false);
 				showNamesBoth.visible(true);
 				showFleetNames = true;
@@ -2065,6 +2099,7 @@ public class StarmapScreen extends ScreenBase {
 		showNamesBoth.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				showNamesBoth.visible(false);
 				showNamesNone.visible(true);
 				showFleetNames = false;
@@ -2086,6 +2121,7 @@ public class StarmapScreen extends ScreenBase {
 		fleetColonize.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doColonize();
 			}
 		};

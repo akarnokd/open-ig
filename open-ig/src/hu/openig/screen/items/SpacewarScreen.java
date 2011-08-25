@@ -9,7 +9,7 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Act;
-import hu.openig.mechanics.Simulator;
+import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
 import hu.openig.model.BattleInfo;
@@ -807,7 +807,7 @@ public class SpacewarScreen extends ScreenBase {
 		
 		nearbyPlanet = battle.targetPlanet;
 		if (battle.targetFleet != null) {
-			Planet np = Simulator.findNearbyPlanet(world(), battle);
+			Planet np = BattleSimulator.findNearbyPlanet(world(), battle);
 			if (np != null) {
 				nearbyPlanet = np;
 			}

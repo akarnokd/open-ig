@@ -78,9 +78,9 @@ public class StatusbarScreen extends ScreenBase {
 	/** The animation frequency. */
 	double frequency = 20;
 	/** The acceleration step. */ 
-	final int accelerationStep = (int)(frequency * 2);
+	final int accelerationStep = (int)(frequency * 1);
 	/** The stay in center step. */
-	final int stayStep = (int)(frequency * 3);
+	final int stayStep = (int)(frequency * 1.5);
 	/** The current animation step. */
 	int animationStep;
 	/** The screen menu. */
@@ -125,8 +125,10 @@ public class StatusbarScreen extends ScreenBase {
 		pause.onPress = new Act() {
 			@Override
 			public void act() {
-				if (commons.config.buttonSounds) {
-					commons.sounds.play(SoundType.PAUSE);
+				if (commons.getSimulationSpeed.invoke(null) > 0) {
+					sound(SoundType.PAUSE);
+				} else {
+					sound(SoundType.CLICK_LOW_1);
 				}
 				commons.setSimulationSpeed.invoke(-1);
 			}
@@ -135,9 +137,7 @@ public class StatusbarScreen extends ScreenBase {
 		speed1.onPress = new Act() {
 			@Override
 			public void act() {
-				if (commons.config.buttonSounds) {
-					commons.sounds.play(SoundType.UNPAUSE);
-				}
+				sound(SoundType.CLICK_LOW_1);
 				commons.setSimulationSpeed.invoke(1000);
 			}
 		};
@@ -145,9 +145,7 @@ public class StatusbarScreen extends ScreenBase {
 		speed2.onPress = new Act() {
 			@Override
 			public void act() {
-				if (commons.config.buttonSounds) {
-					commons.sounds.play(SoundType.UNPAUSE);
-				}
+				sound(SoundType.CLICK_LOW_1);
 				commons.setSimulationSpeed.invoke(500);
 			}
 		};
@@ -155,9 +153,7 @@ public class StatusbarScreen extends ScreenBase {
 		speed4.onPress = new Act() {
 			@Override
 			public void act() {
-				if (commons.config.buttonSounds) {
-					commons.sounds.play(SoundType.UNPAUSE);
-				}
+				sound(SoundType.CLICK_LOW_1);
 				commons.setSimulationSpeed.invoke(250);
 			}
 		};
@@ -301,8 +297,8 @@ public class StatusbarScreen extends ScreenBase {
 					renderX = (int)(width / 2 + totalWidth - (v0 * time + acc / 2 * time * time));
 				} else
 				if (animationStep <= accelerationStep + stayStep) {
-					int time = animationStep - accelerationStep;
-					blink = time % ((int)frequency) < frequency / 2;
+					int frame = animationStep - accelerationStep;
+					blink = frame < (stayStep / 3) || frame >= (stayStep * 2 / 3);
 					renderX = width / 2;
 				} else
 				if (animationStep <= accelerationStep * 2 + stayStep) {
@@ -417,6 +413,7 @@ public class StatusbarScreen extends ScreenBase {
 				}
 			} else
 			if (e.has(Type.DOWN) && e.has(Button.RIGHT)) {
+				sound(SoundType.CLICK_MEDIUM_2);
 				notificationHistory.visible(!notificationHistory.visible());
 				return true;
 			}
@@ -429,7 +426,7 @@ public class StatusbarScreen extends ScreenBase {
 	void doAnimation() {
 		if (!commons.nongame) {
 			if (notification.currentMessage != null) {
-				if (animationStep == accelerationStep * 2 + stayStep) {
+				if (animationStep >= accelerationStep * 2 + stayStep) {
 					player().messageQueue.remove(notification.currentMessage);
 					player().messageHistory.add(notification.currentMessage);
 					notification.currentMessage = null;
@@ -440,8 +437,11 @@ public class StatusbarScreen extends ScreenBase {
 					if (animationStep < accelerationStep) {
 						askRepaint();
 					} else
-					if (animationStep < accelerationStep + stayStep && animationStep % ((int)(frequency / 2)) == 0) {
-						askRepaint();
+					if (animationStep < accelerationStep + stayStep) {
+						int frame = animationStep - accelerationStep;
+						if (frame == 0 || frame == stayStep / 3 || frame == stayStep * 2 / 3) {
+							askRepaint();
+						}
 					} else
 					if (animationStep >= accelerationStep + stayStep) {
 						askRepaint();
@@ -472,6 +472,7 @@ public class StatusbarScreen extends ScreenBase {
 			|| (notificationHistory.visible() && e.within(notificationHistory.x, notificationHistory.y, notificationHistory.width, notificationHistory.height))
 		) { 
 			if (e.has(Type.DOWN) && e.within(width - screenMenu.width, 0, screenMenu.width, 20)) {
+				sound(SoundType.CLICK_MEDIUM_2);
 				screenMenu.highlight = -1;
 				screenMenu.visible(true);
 				return true;
@@ -623,6 +624,7 @@ public class StatusbarScreen extends ScreenBase {
 			scrollUp.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_MEDIUM_2);
 					doScrollUp();
 				}
 			};
@@ -631,6 +633,7 @@ public class StatusbarScreen extends ScreenBase {
 			scrollDown.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_MEDIUM_2);
 					doScrollDown();
 				}
 			};
@@ -658,7 +661,9 @@ public class StatusbarScreen extends ScreenBase {
 				Message msg = player().messageHistory.get(i);
 				
 				// use an icon
-				if ("message.yesterday_tax_income".equals(msg.text)) {
+				if ("message.yesterday_tax_income".equals(msg.text)
+						|| "message.yesterday_trade_income".equals(msg.text)
+				) {
 					g2.drawImage(commons.statusbar().moneyNotification, 4, y + 2, null);
 				} else
 				if (msg.targetProduct != null) {

@@ -13,7 +13,7 @@ import hu.openig.core.Configuration;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
-import hu.openig.mechanics.Simulator;
+import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
@@ -981,9 +981,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.speed(1000);
-						if (commons.config.buttonSounds) {
-							commons.sounds.play(SoundType.UNPAUSE);
-						}
+						allScreens.main.sound(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
@@ -998,9 +996,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.speed(500);
-						if (commons.config.buttonSounds) {
-							commons.sounds.play(SoundType.UNPAUSE);
-						}
+						allScreens.main.sound(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
@@ -1015,9 +1011,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.speed(250);
-						if (commons.config.buttonSounds) {
-							commons.sounds.play(SoundType.UNPAUSE);
-						}
+						allScreens.main.sound(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
@@ -1025,14 +1019,10 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_SPACE:
 					if (commons.paused()) {
 						commons.resume();
-						if (commons.config.buttonSounds) {
-							commons.sounds.play(SoundType.UNPAUSE);
-						}
+						allScreens.main.sound(SoundType.CLICK_LOW_1);
 					} else {
 						commons.pause();
-						if (commons.config.buttonSounds) {
-							commons.sounds.play(SoundType.PAUSE);
-						}
+						allScreens.main.sound(SoundType.PAUSE);
 					}
 					repaintInner();
 					e.consume();
@@ -1385,18 +1375,7 @@ public class GameWindow extends JFrame implements GameControls {
 						world.labels = new Labels();
 						world.labels.load(commons.rl, game + "/labels");
 						world.load(commons.rl, world.definition.name);
-						world.getAutoBuildLimit = new Func1<Void, Integer>() {
-							@Override
-							public Integer invoke(Void value) {
-								return config.autoBuildLimit;
-							}
-						};
-						world.isAutoRepair = new Func1<Void, Boolean>() {
-							@Override
-							public Boolean invoke(Void value) {
-								return config.autoRepair;
-							}
-						};
+						world.config = commons.config;
 						world.startBattle = new Func1<Void, Void>() {
 							@Override
 							public Void invoke(Void value) {
@@ -1521,7 +1500,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if ((bi.attacker.owner != world().player || config.automaticBattle) 
 					&& ((bi.targetFleet != null && bi.targetFleet.owner != world().player)
 							|| (bi.targetPlanet != null && bi.targetPlanet.owner != world().player))) {
-				Simulator.autoBattle(world(), this, bi);
+				new BattleSimulator(world(), this, bi).autoBattle();
 				continue;
 			}
 			// do a space battle

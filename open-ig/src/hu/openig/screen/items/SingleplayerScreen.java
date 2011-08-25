@@ -128,6 +128,7 @@ public class SingleplayerScreen extends ScreenBase {
 		playLabel.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doStartGame();
 			}
 		};
@@ -141,16 +142,25 @@ public class SingleplayerScreen extends ScreenBase {
 		backLabel.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPrimary(Screens.MAIN);
 			}
 		};
 		
 		difficultyLeft = new UIImageButton(commons.common().moveLeft);
-		difficultyLeft.onClick = new Act() { @Override public void act() { doDifficultyLess(); adjustDifficultyButtons(); } };
+		difficultyLeft.onClick = new Act() { @Override public void act() { 
+			sound(SoundType.CLICK_HIGH_2);
+			doDifficultyLess(); 
+			adjustDifficultyButtons(); 
+		} };
 		difficultyLeft.setDisabledPattern(commons.common().disabledPattern);
 		
 		difficultyRight = new UIImageButton(commons.common().moveRight);
-		difficultyRight.onClick = new Act() { @Override public void act() { doDifficultyMore(); adjustDifficultyButtons(); } };
+		difficultyRight.onClick = new Act() { @Override public void act() { 
+			sound(SoundType.CLICK_HIGH_2);
+			doDifficultyMore(); 
+			adjustDifficultyButtons(); 
+		} };
 		difficultyRight.setDisabledPattern(commons.common().disabledPattern);
 		
 		addThis();
@@ -225,18 +235,7 @@ public class SingleplayerScreen extends ScreenBase {
 					labels.load(commons.rl, selectedDefinition.name + "/labels");
 					world.labels = labels;
 					world.load(commons.rl, selectedDefinition.name);
-					world.getAutoBuildLimit = new Func1<Void, Integer>() {
-						@Override
-						public Integer invoke(Void value) {
-							return config.autoBuildLimit;
-						}
-					};
-					world.isAutoRepair = new Func1<Void, Boolean>() {
-						@Override
-						public Boolean invoke(Void value) {
-							return config.autoRepair;
-						}
-					};
+					world.config = commons.config;
 					world.startBattle = new Func1<Void, Void>() {
 						@Override
 						public Void invoke(Void value) {

@@ -107,6 +107,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			lessPriority.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_HIGH_2);
 					doLessPriority();
 				}
 			};
@@ -115,6 +116,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			lessBuild.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_HIGH_2);
 					doChangeCount(-1);
 				}
 			};
@@ -123,6 +125,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			morePriority.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_HIGH_2);
 					doMorePriority();
 				}
 			};
@@ -131,6 +134,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			moreBuild.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_HIGH_2);
 					doChangeCount(1);
 				}
 			};
@@ -454,6 +458,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		b.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectSubCategory(cat);
 			}
 		};
@@ -796,6 +801,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		viewActive.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_1);
 				doSelectTechnology(player().runningResearch);
 			}
 		};
@@ -811,6 +817,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		spaceshipsLabel.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.SPACESHIPS);
 			}
 		};
@@ -818,6 +825,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		equipmentsLabel.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.EQUIPMENT);
 			}
 		};
@@ -825,6 +833,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		weaponsLabel.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.WEAPONS);
 			}
 		};
@@ -832,6 +841,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		buildingsLabel.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.BUILDINS);
 			}
 		};
@@ -989,6 +999,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		moneyButton.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_3);
 				doAdjustMoney(2.0f * (moneyMouseLast.x) / moneyButton.width - 1);
 			}
 		};
@@ -1012,6 +1023,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		removeTen.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doChangeCount(-10);
 			}
 		};
@@ -1020,6 +1032,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		removeOne.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doChangeCount(-1);
 			}
 		};
@@ -1028,6 +1041,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		addOne.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doChangeCount(1);
 			}
 		};
@@ -1036,6 +1050,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		addTen.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doChangeCount(10);
 			}
 		};
@@ -1044,6 +1059,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		sell.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				doSell();
 			}
 		};
@@ -1055,6 +1071,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			pl.onPress = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_MEDIUM_2);
 					doSelectProductionLine(pl, j);
 				}
 			};
@@ -1064,6 +1081,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		Action1<ResearchType> selectSlot = new Action1<ResearchType>() {
 			@Override
 			public void invoke(ResearchType value) {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doSelectTechnology(value);
 			}
 		};

@@ -1063,6 +1063,7 @@
 	<entry key='message.planet_died'>Planet %s has been abandoned.</entry>
 	<entry key='message.planet_revolt'>People revolt on planet %s.</entry>
 	<entry key='message.yesterday_tax_income'>Yesterday's tax income was %s credits.</entry>
+	<entry key='message.yesterday_tax_income'>Yesterday's trade income was %s credits.</entry>
 	<entry key='message.new_planet_discovered'>You discovered the planet %s.</entry>
 	<entry key='message.new_race_discovered'>You discovered the race %s.</entry>
 	<entry key='screens.bridge'>F1 - Bridge</entry>
@@ -2689,7 +2690,18 @@
 	<entry key='planet.colonizable'>Empty - Colonizable</entry>
 	<entry key='fleetstatus.composition.alien'>Spaceships: %s, Fighters: %s</entry>
 	<entry key='fleetinfo.alien_fleet'>Alien fleet</entry>
-	<entry key='planet.install_satellite'>Install any satellite to view the surface.</entry>
+	<entry key='planet.install_satellite_1'>Install any satellite</entry>
+	<entry key='planet.install_satellite_2'>to view the surface.</entry>
+	<entry key='message.not_enough_money'>Not enough money!</entry>
+	<entry key='settings.auto_repair_limit'>Auto-repair money limit</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	
 </labels>

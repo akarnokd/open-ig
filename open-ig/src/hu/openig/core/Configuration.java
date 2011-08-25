@@ -38,7 +38,7 @@ import javax.swing.SwingUtilities;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.93.375";
+	public static final String VERSION = "0.93.400";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -169,6 +169,10 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean automaticBattle;
+	/** Repair limit. */
+	@LoadSave
+	@LoadSaveGame
+	public int autoRepairLimit = 0;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

@@ -17,6 +17,7 @@ import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
@@ -527,10 +528,14 @@ public class PlanetScreen extends ScreenBase {
 					if (placementMode) {
 						placeBuilding(e.has(Modifier.SHIFT));	
 					} else {
-						if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 || planet().owner == player()) {
+						if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 
+								|| planet().owner == player()) {
 							Location loc = getLocationAt(e.x, e.y);
 							buildingBox = getBoundingRect(loc);
 							doSelectBuilding(getBuildingAt(loc));
+							if (currentBuilding != null) {
+								sound(SoundType.CLICK_MEDIUM_2);
+							}
 							rep = true;
 						} else {
 							doSelectBuilding(null);
@@ -858,10 +863,18 @@ public class PlanetScreen extends ScreenBase {
 				g2.setTransform(at);
 				
 				g2.setColor(new Color(0, 0, 0, 128));
-				String installSatellite = get("planet.install_satellite");
+				
+				String installSatellite = get("planet.install_satellite_1");
 				int tw = commons.text().getTextWidth(14, installSatellite);
 				int tx = (width - tw) / 2;
-				int ty = (height - 14) / 2;
+				int ty = (height - 14) / 2 - 12;
+				g2.fillRect(tx - 5, ty - 5, tw + 10, 24);
+				commons.text().paintTo(g2, tx, ty, 14, TextRenderer.WHITE, installSatellite);
+				
+				installSatellite = get("planet.install_satellite_2");
+				tw = commons.text().getTextWidth(14, installSatellite);
+				tx = (width - tw) / 2;
+				ty = (height - 14) / 2 + 12;
 				g2.fillRect(tx - 5, ty - 5, tw + 10, 24);
 				commons.text().paintTo(g2, tx, ty, 14, TextRenderer.WHITE, installSatellite);
 			}
@@ -1241,6 +1254,7 @@ public class PlanetScreen extends ScreenBase {
 			buildingDown.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_HIGH_2);
 					setBuildingList(1);
 				}
 			};
@@ -1248,6 +1262,7 @@ public class PlanetScreen extends ScreenBase {
 			buildingUp.onClick = new Act() {
 				@Override
 				public void act() {
+					sound(SoundType.CLICK_HIGH_2);
 					setBuildingList(-1);
 				}
 			};
@@ -1267,6 +1282,7 @@ public class PlanetScreen extends ScreenBase {
 				public void act() {
 					placementMode = !placementMode;
 					if (placementMode) {
+						sound(SoundType.CLICK_HIGH_2);
 						build.down = true;
 						currentBuilding = null;
 						buildingBox = null;
@@ -1980,6 +1996,7 @@ public class PlanetScreen extends ScreenBase {
 				up.onClick = new Act() {
 					@Override
 					public void act() {
+						sound(SoundType.CLICK_MEDIUM_2);
 						doUpgrade(j);
 					}
 				};
@@ -2121,6 +2138,7 @@ public class PlanetScreen extends ScreenBase {
 		sidebarNavigation.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 				colonyInfo.visible(!colonyInfo.visible());
 				bridge.visible(!bridge.visible());
 				planets.visible(!planets.visible());
@@ -2130,6 +2148,7 @@ public class PlanetScreen extends ScreenBase {
 		sidebarRadar.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 				radar.visible(!radar.visible());
 				radarPanel.visible(!radarPanel.visible());
 			}
@@ -2138,6 +2157,7 @@ public class PlanetScreen extends ScreenBase {
 			@Override
 			public void act() {
 				if (planet().owner == player()) {
+					sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 					showBuildingInfo = !showBuildingInfo;
 					upgradePanel.visible(currentBuilding != null 
 							&& currentBuilding.type.upgrades.size() > 0 
@@ -2149,6 +2169,7 @@ public class PlanetScreen extends ScreenBase {
 			@Override
 			public void act() {
 				if (planet().owner == player()) {
+					sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 					showBuildingList = !showBuildingList;
 				}
 			}
@@ -2196,24 +2217,28 @@ public class PlanetScreen extends ScreenBase {
 		buildingInfoPanel.stateActive.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
 		buildingInfoPanel.stateNoEnergy.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
 		buildingInfoPanel.stateDamaged.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
 		buildingInfoPanel.stateInactive.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
@@ -2221,18 +2246,21 @@ public class PlanetScreen extends ScreenBase {
 		buildingInfoPanel.stateOffline.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doOffline();
 			}
 		};
 		buildingInfoPanel.repairing.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doToggleRepair();
 			}
 		};
 		buildingInfoPanel.damaged.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
 				doToggleRepair();
 			}
 		};
@@ -2240,7 +2268,10 @@ public class PlanetScreen extends ScreenBase {
 		sidebarColonyInfo.onClick = new Act() {
 			@Override
 			public void act() {
-				showInfo = !showInfo;
+				if (knowledge(planet(), PlanetKnowledge.VISIBLE) > 0) {
+					sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
+					showInfo = !showInfo;
+				}
 			}
 		};
 		upgradePanel = new UpgradePanel();
@@ -2250,6 +2281,7 @@ public class PlanetScreen extends ScreenBase {
 		prev.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				player().movePrevPlanet();
 			}
 		};
@@ -2258,6 +2290,7 @@ public class PlanetScreen extends ScreenBase {
 		next.onClick = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.CLICK_HIGH_2);
 				player().moveNextPlanet();
 			}
 		};
@@ -2395,6 +2428,11 @@ public class PlanetScreen extends ScreenBase {
 				world().statistics.moneySpent += player().currentBuilding.cost;
 				
 				commons.sounds.play(SoundType.DEPLOY_BUILDING);
+		} else {
+			sound(SoundType.NOT_AVAILABLE);
+			Message msg = world().newMessage("message.not_enough_money");
+			msg.priority = 100;
+			player().messageQueue.add(msg);
 		}
 	}
 	@Override
