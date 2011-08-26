@@ -627,7 +627,7 @@ public class VideoPlayer extends JFrame {
 				playVideo(currentVideo.video, currentVideo.path, currentVideo.name, currentVideo.audio, currentVideo.subtitle);
 			}
 		} catch (InterruptedException ex) {
-			config.error(ex);
+			ex.printStackTrace();
 		}
 	}
 	/** Stop playback. */
@@ -814,15 +814,15 @@ public class VideoPlayer extends JFrame {
 						clip.stop();
 						clip.close();
 					} catch (LineUnavailableException ex) {
-						config.error(ex);
+						ex.printStackTrace();
 					}
 				} finally {
 					in.close();
 				}
 			} catch (UnsupportedAudioFileException ex) {
-				config.error(ex);
+				ex.printStackTrace();
 			} catch (IOException ex) {
-				config.error(ex);
+				ex.printStackTrace();
 			}
 		}
 	}
@@ -918,10 +918,12 @@ public class VideoPlayer extends JFrame {
 					}
 				}
 			} finally {
-				try { in.close(); } catch (IOException ex) { config.error(ex); }
+				try { in.close(); } catch (IOException ex) {
+					ex.printStackTrace();
+				}
 			}
 		} catch (IOException ex) {
-			config.error(ex);
+			ex.printStackTrace();
 		}
 	}
 	/** The last known export dir. */
