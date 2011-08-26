@@ -149,12 +149,12 @@ public final class BattleSimulator {
 			
 			// the helper fleet is destroyed
 			if (nearbyFleet != null) {
-				nearbyFleet.owner.fleets.remove(nearbyFleet);
+				world.removeFleet(nearbyFleet);
 				// TODO statistics
 			}
 			// the target fleet is destroyed
 			if (battle.targetFleet != null) {
-				battle.targetFleet.owner.fleets.remove(battle.targetFleet);
+				world.removeFleet(battle.targetFleet);
 			}
 			// the helper planet is damaged
 			if (nearbyPlanet != null) {
@@ -197,7 +197,7 @@ public final class BattleSimulator {
 			// attacker looses
 			
 			// destroy attacker's fleet
-			battle.attacker.owner.fleets.remove(battle.attacker);
+			world.removeFleet(battle.attacker);
 			
 			if (battle.targetFleet != null) {
 				damageFleet(battle.targetFleet, (int)(100 * attackerRatio / defenderRatio));
@@ -240,16 +240,16 @@ public final class BattleSimulator {
 			}
 		} else {
 			// destroy attacker's fleet
-			battle.attacker.owner.fleets.remove(battle.attacker);
+			world.removeFleet(battle.attacker);
 			
 			// the helper fleet is destroyed
 			if (nearbyFleet != null) {
-				nearbyFleet.owner.fleets.remove(nearbyFleet);
+				world.removeFleet(nearbyFleet);
 				// TODO statistics
 			}
 			// the target fleet is destroyed
 			if (battle.targetFleet != null) {
-				battle.targetFleet.owner.fleets.remove(battle.targetFleet);
+				world.removeFleet(battle.targetFleet);
 			}
 			// destroy planet's defenses
 			if (battle.targetPlanet != null) {

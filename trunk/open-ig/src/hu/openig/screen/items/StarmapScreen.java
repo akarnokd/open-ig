@@ -2363,7 +2363,7 @@ public class StarmapScreen extends ScreenBase {
 						f.changeInventory(world().researches.get("ColonyShip"), -1);
 						
 						if (f.inventory.isEmpty()) {
-							player().fleets.remove(f);
+							world().removeFleet(f);
 							List<Fleet> of = player().ownFleets();
 							if (of.size() > 0) {
 								player().currentFleet = of.iterator().next();
