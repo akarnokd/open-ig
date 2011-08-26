@@ -18,6 +18,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -362,6 +364,15 @@ public class SpacePathfinding extends JFrame {
 		return Math.sqrt((e1.x - e2.x) * (e1.x - e2.x) + (e1.y - e2.y) * (e1.y * e2.y));
 	}
 	/**
+	 * Compute the distance square between two entities.
+	 * @param e1 the first instance
+	 * @param e2 the second instance
+	 * @return the distance square
+	 */
+	double distance2(Entity e1, Entity e2) {
+		return (e1.x - e2.x) * (e1.x - e2.x) + (e1.y - e2.y) * (e1.y * e2.y);
+	}
+	/**
 	 * Compute the angle of the second entity in respect to the first entity's center.
 	 * @param e1 the first entity
 	 * @param e2 the second entity
@@ -385,9 +396,8 @@ public class SpacePathfinding extends JFrame {
 	 * vector crossing both of their centers. 
 	 * @param e1 the first entity
 	 * @param e2 the second entity
-	 * @param delta the general direction where to toss {@code e2}
 	 */
-	void tossAway(Entity e1, Entity e2, double delta) {
+	void tossAway(Entity e1, Entity e2) {
 		double theta = Math.atan2(e1.height, e1.width); // >= 0
 		
 		// the current angle relative to e1
@@ -397,14 +407,14 @@ public class SpacePathfinding extends JFrame {
 			double nx = e1.x + e1.width / 2 + e2.width / 2;
 			double mx = nx - e2.x;
 			e2.x = nx;
-			double dy = mx * Math.tan(delta);
+			double dy = mx * Math.tan(gamma);
 			e2.y += dy;
 		} else
 		if (theta < gamma && gamma < Math.PI - theta) {
 			double ny = e1.y + e1.height / 2 + e2.height / 2;
 			double my = ny - e2.y;
 			e2.y = ny;
-			double dx = my / Math.tan(delta);
+			double dx = my / Math.tan(gamma);
 			e2.x += dx;
 
 		} else
@@ -412,14 +422,14 @@ public class SpacePathfinding extends JFrame {
 			double nx = e1.x - e1.width / 2 - e2.width / 2;
 			double mx = e2.x - nx;
 			e2.x = nx;
-			double dy = -mx * Math.tan(delta);
+			double dy = -mx * Math.tan(gamma);
 			e2.y += dy;
 		} else
 		if (-theta > gamma && gamma > theta - Math.PI) {
 			double ny = e1.y - e1.height / 2 - e2.height / 2;
 			double my = e2.y - ny;
 			e2.y = ny;
-			e2.x += -my / Math.tan(delta);
+			e2.x += -my / Math.tan(gamma);
 		}
 	}
 	/** Add 10 random elements. */
@@ -571,7 +581,7 @@ public class SpacePathfinding extends JFrame {
 			bb.height = (int)(maxy - miny + 1);
 			bb.x = minx + bb.width / 2;
 			bb.y = miny + bb.height / 2;
-			tossAway(bb, e, angle(bb, e));
+			tossAway(bb, e);
 		}
 	}
 	/**
@@ -618,43 +628,51 @@ public class SpacePathfinding extends JFrame {
 	 * @param baseAngle the general direction
 	 */
 	void tossEverythingElseAside(Entity moving, double baseAngle) {
-		for (Entity e : items) {
-			if (moving != e && moving.overlaps(e)) {
-				double a = angle(moving, e);
-				double vx = Math.cos(a) + Math.cos(baseAngle);
-				double vy = Math.sin(a) + Math.sin(baseAngle); 
-
-				double a2 = Math.atan2(vy, vx);
-				if (vx == 0 && vy == 0) {
-					a2 = baseAngle;
+		Set<Entity> fixed = new HashSet<Entity>();
+		fixed.add(moving);
+		tossEverythingElseAside(sortByDistance(items, moving), fixed);
+	}
+	/**
+	 * Toss everyone else aside.
+	 * @param list the list to work with
+	 * @param fixed the set of already fixed items
+	 */
+	void tossEverythingElseAside(List<Entity> list, Set<Entity> fixed) {
+		for (Entity e : list) {
+			for (Entity f : fixed) {
+				if (e.overlaps(f)) {
+					tossAway(f, e);
 				}
-				
-				tossAway(moving, e, a2);
-
-				tossEverythingElseAside(e, a);
 			}
 		}
+	}
+	/**
+	 * @param source the source of the movement
+	 * @param target the center entity
+	 * @return sort the entities by distance from the given entity
+	 */
+	List<Entity> sortByDistance(final List<Entity> source, final Entity target) {
+		List<Entity> result = new ArrayList<Entity>();
+		for (Entity e : source) {
+			if (e != target) {
+				result.add(e);
+			}
+		}
+		Collections.sort(items, new Comparator<Entity>() {
+			@Override
+			public int compare(Entity o1, Entity o2) {
+				double d1 = distance2(target, o1);
+				double d2 = distance2(target, o2);
+				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+			}
+		});
+		return result;
 	}
 	/**
 	 * Toss everything aside from the selected groups.
 	 * @param baseAngle the base angle
 	 */
 	void tossEverythingElseAside(double baseAngle) {
-		for (Entity e0 : items) {
-			for (Entity e1 : items) {
-				if (e0 != e1 && !e1.selected && e0.overlaps(e1)) {
-					double a = angle(e0, e1);
-					double vx = Math.cos(a) + Math.cos(baseAngle);
-					double vy = Math.sin(a) + Math.sin(baseAngle); 
-
-					double a2 = Math.atan2(vy, vx);
-					if (vx == 0 && vy == 0) {
-						a2 = baseAngle;
-					}
-					
-					tossAway(e0, e1, a2);
-				}
-			}
-		}
+		
 	}
 }
