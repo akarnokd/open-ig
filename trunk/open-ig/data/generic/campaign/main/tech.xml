@@ -298,7 +298,7 @@
 	<item id='SpySatellite2' name='tech.spysatellite2.name' long-name='tech.spysatellite2.longname'
 		description='tech.spysatellite2.description' category='SPACESHIPS_SATELLITES'
 		image='inventions/spaceships/satellites/spy_satellite_2' factory='spaceship'
-		research-cost='12000' production-cost='1000' level='4'
+		research-cost='12000' production-cost='2300' level='4'
 		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='SpySatellite1' mech='2' comp='3' ai='3' mil='2' index='2'
 		video='technology/spaceships/satellites/spy_satellite_2'>
