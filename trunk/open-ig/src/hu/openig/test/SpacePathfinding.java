@@ -18,8 +18,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -38,9 +42,9 @@ public class SpacePathfinding extends JFrame {
 	/** The movable entity. */
 	class Entity {
 		/** The center location. */
-		int x;
+		double x;
 		/** The center location. */
-		int y;
+		double y;
 		/** The width. */
 		int width;
 		/** The height. */
@@ -97,15 +101,15 @@ public class SpacePathfinding extends JFrame {
 			for (Entity e : items) {
 				g2.setColor(e.color);
 				g2.fillRect(
-						(e.x - e.width / 2), 
-						(e.y - e.height / 2), 
+						(int)(e.x - e.width / 2), 
+						(int)(e.y - e.height / 2), 
 						(e.width), 
 						(e.height));
 				if (e.selected) {
 					g2.setColor(Color.YELLOW);
 					g2.drawRect(
-							(e.x - e.width / 2), 
-							(e.y - e.height / 2), 
+							(int)(e.x - e.width / 2), 
+							(int)(e.y - e.height / 2), 
 							(e.width - 1), 
 							(e.height - 1));
 				}
@@ -114,11 +118,11 @@ public class SpacePathfinding extends JFrame {
 			for (Entity e1 : items) {
 				for (Entity e2 : items) {
 					if (e1 != e2 && e1.overlaps(e2)) {
-						int ox1 = Math.max(e1.x - e1.width / 2, e2.x - e2.width / 2);
-						int ox2 = Math.min(e1.x + e1.width / 2, e2.x + e2.width / 2) - 1;
+						int ox1 = (int)Math.max(e1.x - e1.width / 2, e2.x - e2.width / 2);
+						int ox2 = (int)Math.min(e1.x + e1.width / 2, e2.x + e2.width / 2) - 1;
 						
-						int oy1 = Math.max(e1.y - e1.height / 2, e2.y - e2.height / 2);
-						int oy2 = Math.min(e1.y + e1.height / 2, e2.y + e2.height / 2) - 1;
+						int oy1 = (int)Math.max(e1.y - e1.height / 2, e2.y - e2.height / 2);
+						int oy2 = (int)Math.min(e1.y + e1.height / 2, e2.y + e2.height / 2) - 1;
 						
 						g2.fillRect(ox1, oy1, ox2 - ox1 + 1, oy2 - oy1 + 1);
 						
@@ -243,45 +247,6 @@ public class SpacePathfinding extends JFrame {
 			}
 		});
 	}
-	/** Fix overlappings of various entities. */
-	void fixOverlappings() {
-		// move back inside
-		for (Entity e : items) {
-			e.x = Math.max(Math.min(e.x, surface.getWidth() - e.width / 2), e.width / 2);
-			e.y = Math.max(Math.min(e.y, surface.getHeight() - e.height / 2), e.height / 2);
-		}
-		
-		// naive algorithm, push aside anybody recursively
-		
-		Set<Entity> memory = new HashSet<Entity>();
-		
-		// choose one at random
-		if (items.size() > 0) {
-			Entity e = items.get(rnd.nextInt(items.size()));
-			memory.add(e);
-			testOverlaps(e, memory);
-		}
-		
-	}
-	/** 
-	 * Test overlapping of one against the others.
-	 * @param e1 the base entity
-	 * @param memory the entities visited 
-	 */
-	void testOverlaps(Entity e1, Set<Entity> memory) {
-		Entity e0 = new Entity();
-		e0.x = e1.x;
-		e0.y = e1.y;
-		e0.width = e1.width;
-		e0.height = e1.height;
-		
-		for (Entity e2 : items) {
-			if (e1 != e2 && e1.overlaps(e2)) {
-				tossAway(e1, e2, angle(e1, e2));
-			}
-		}
-		
-	}
 	/**
 	 * Compute the distance between two entities.
 	 * @param e1 the first instance
@@ -298,8 +263,8 @@ public class SpacePathfinding extends JFrame {
 	 * @return the angle in radians
 	 */
 	double angle(Entity e1, Entity e2) {
-		int dx = e2.x - e1.x;
-		int dy = e2.y - e1.y;
+		double dx = e2.x - e1.x;
+		double dy = e2.y - e1.y;
 		
 		double gamma = 0;
 		if (dx == 0 && dy == 0) {
@@ -321,26 +286,26 @@ public class SpacePathfinding extends JFrame {
 		double theta = Math.atan2(e1.height, e1.width); // >= 0
 		
 		if (-theta <= gamma && gamma <= theta) {
-			int nx = e1.x + e1.width / 2 + e2.width / 2;
-			int mx = nx - e2.x;
+			double nx = e1.x + e1.width / 2 + e2.width / 2;
+			double mx = nx - e2.x;
 			e2.x = nx;
 			e2.y += mx * Math.tan(gamma);
 		} else
 		if (theta < gamma && gamma < Math.PI - theta) {
-			int ny = e1.y + e1.height / 2 + e2.height / 2;
-			int my = ny - e2.y;
+			double ny = e1.y + e1.height / 2 + e2.height / 2;
+			double my = ny - e2.y;
 			e2.y = ny;
 			e2.x += my / Math.tan(gamma);
 		} else
 		if (Math.PI - theta <= gamma || gamma <= theta - Math.PI) {
-			int nx = e1.x - e1.width / 2 - e2.width / 2;
-			int mx = e2.x - nx;
+			double nx = e1.x - e1.width / 2 - e2.width / 2;
+			double mx = e2.x - nx;
 			e2.x = nx;
 			e2.y += mx * Math.tan(gamma);
 		} else
 		if (-theta > gamma && gamma > theta - Math.PI) {
-			int ny = e1.y - e1.height / 2 + e2.height / 2;
-			int my = e2.y - ny;
+			double ny = e1.y - e1.height / 2 + e2.height / 2;
+			double my = e2.y - ny;
 			e2.y = ny;
 			e2.x += my / Math.tan(gamma);
 		}
@@ -369,5 +334,163 @@ public class SpacePathfinding extends JFrame {
 			}
 			items.add(e);
 		}
+	}
+	/** Fix overlappings of various entities. */
+	void fixOverlappings() {
+		// move back inside
+		for (Entity e : items) {
+			e.x = Math.max(Math.min(e.x, surface.getWidth() - e.width / 2), e.width / 2);
+			e.y = Math.max(Math.min(e.y, surface.getHeight() - e.height / 2), e.height / 2);
+		}
+
+		Map<Entity, Integer> intersections = new HashMap<Entity, Integer>();
+		
+		Deque<Entity> overlappings = new LinkedList<Entity>();
+		
+		int totalOverlaps = 0;
+		Set<Entity> entities = new HashSet<Entity>(items);
+		do {
+			totalOverlaps = 0;
+			intersections.clear();
+			for (Entity e1 : entities) {
+				int count = 0;
+				for (Entity e2 : entities) {
+					if (e1 != e2 && e1.overlaps(e2)) {
+						count++;
+						totalOverlaps++;
+					}
+				}
+				if (count > 0) {
+					intersections.put(e1, count);
+				}
+			}
+			int max = 0;
+			Entity maxE = null;
+			for (Map.Entry<Entity, Integer> me : intersections.entrySet()) {
+				if (me.getValue() > max) {
+					max = me.getValue();
+					maxE = me.getKey();
+				}
+			}
+			if (maxE != null) {
+				overlappings.push(maxE);
+				entities.remove(maxE);
+			}
+		} while (totalOverlaps > 0);
+		
+		elimination:
+		while (!overlappings.isEmpty()) {
+			Entity e = overlappings.pop();
+			
+			// center coordinates
+			double cx = 0;
+			double cy = 0;
+			// bounding box of the current list
+			double minx = Double.MAX_VALUE;
+			double miny = Double.MAX_VALUE;
+			double maxx = 0;
+			double maxy = 0;
+			
+			for (Entity e1 : entities) {
+				cx += e1.x;
+				cy += e1.y;
+				
+				minx = Math.min(minx, e1.x - e1.width / 2);
+				miny = Math.min(miny, e1.y - e1.height / 2);
+				maxx = Math.max(maxx, e1.x + e1.width / 2);
+				maxy = Math.max(maxy, e1.y + e1.height / 2);
+				
+				
+			}
+			cx /= entities.size();
+			cy /= entities.size();
+			
+			
+			double dx = cx - e.x;
+			double dy = cy - e.y;
+			double angle = Math.atan2(dy, dx);
+			
+			if (dx == 0 && dy == 0) {
+				angle = Math.PI * (1 - rnd.nextDouble() * 2);
+			}
+			// try four directions
+			double cx2 = e.x;
+			double cy2 = e.y;
+			
+			double mindist = Double.MAX_VALUE;
+			double ex0 = e.x;
+			double ey0 = e.y;
+			boolean found = false;
+			angleTest:
+			for (double gamma : new double[] { angle, angle + Math.PI / 2, angle + Math.PI, angle - Math.PI / 2 }) {
+				e.x = cx2;
+				e.y = cy2;
+				while (!outside(minx, miny, maxx, maxy, cx2, cy2)) {
+					if (!anyIntersection(e, entities)) {
+						double dq = dist(e.x, e.y, cx, cy);
+						if (dq < mindist) {
+							mindist = dq;
+							ex0 = e.x;
+							ey0 = e.y;
+							found = true;
+						}
+						continue angleTest;
+					}
+					e.x += Math.cos(gamma);
+					e.y += Math.sin(gamma);
+				}
+			}
+			if (found) {
+				e.x = ex0;
+				e.y = ey0;
+				entities.add(e);
+				continue elimination;
+			}
+			// no angle was good enough, toss it outside of the bonding box
+			Entity bb = new Entity();
+			bb.width = (int)(maxx - minx + 1);
+			bb.height = (int)(maxy - miny + 1);
+			bb.x = minx + bb.width / 2;
+			bb.y = miny + bb.height / 2;
+			tossAway(bb, e, angle(bb, e));
+		}
+	}
+	/**
+	 * Compute the distance square of two points.
+	 * @param cx the first X
+	 * @param cy the first Y
+	 * @param px the second X
+	 * @param py the second Y
+	 * @return the distance square
+	 */
+	double dist(double cx, double cy, double px, double py) {
+		return (cx - px) * (cx - px) + (cy - py) * (cy - py);
+	}
+	/**
+	 * Is the point outside of the rectangle?
+	 * @param x1 the bounding rectangle minimum x
+	 * @param y1 the bounding rectangle minimum y
+	 * @param x2 the bounding rectangle maximum x
+	 * @param y2 the bounding rectangle maximum y
+	 * @param px the parget point X
+	 * @param py the target point Y
+	 * @return true if outside
+	 */
+	boolean outside(double x1, double y1, double x2, double y2, double px, double py) {
+		return px < x1 || px > x2 || py < y1 || py > y2;
+	}
+	/**
+	 * Check if the given entity overlaps with any other entity.
+	 * @param e the target entity
+	 * @param others the other entitites
+	 * @return true if intersecting
+	 */
+	boolean anyIntersection(Entity e, Iterable<Entity> others) {
+		for (Entity e0 : others) {
+			if (e.overlaps(e0)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
