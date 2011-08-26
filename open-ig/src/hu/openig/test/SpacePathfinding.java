@@ -106,7 +106,7 @@ public class SpacePathfinding extends JFrame {
 						(e.width), 
 						(e.height));
 				if (e.selected) {
-					g2.setColor(Color.YELLOW);
+					g2.setColor(Color.BLACK);
 					g2.drawRect(
 							(int)(e.x - e.width / 2), 
 							(int)(e.y - e.height / 2), 
@@ -176,6 +176,28 @@ public class SpacePathfinding extends JFrame {
 						doAddRandom();
 						repaint();
 					}
+					if (e.getKeyChar() == 'a') {
+						centerAll();
+						repaint();
+					} 
+				} else
+				if (e.getID() == KeyEvent.KEY_PRESSED) {
+					if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+						moveSelected(-4, -4);
+						repaint();
+					}
+					if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+						moveSelected(4, 4);
+						repaint();
+					}
+					if (e.getKeyCode() == KeyEvent.VK_UP) {
+						moveSelected(4, -4);
+						repaint();
+					}
+					if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+						moveSelected(-4, 4);
+						repaint();
+					}
 				}
 				return false;
 			}
@@ -186,6 +208,20 @@ public class SpacePathfinding extends JFrame {
 		pack();
 		setLocationRelativeTo(null);
 	}
+	/**
+	 * Move the selected entities with the given amount.
+	 * @param dx the delta-x
+	 * @param dy the delta-y
+	 */
+	void moveSelected(int dx, int dy) {
+		for (Entity e : items) {
+			if (e.selected) {
+				e.x += dx;
+				e.y += dy;
+			}
+		}
+		tossEverythingElseAside(Math.atan2(dy, dx));
+	}
 	/** Remove all entities. */
 	void doClear() {
 		items.clear();
@@ -193,6 +229,12 @@ public class SpacePathfinding extends JFrame {
 	}
 	/** The mouse controls. */
 	class MouseControls extends MouseAdapter {
+		/** Last mouse x. */
+		int lastx;
+		/** Last mouse y. */
+		int lasty;
+		/** Entity moving. */
+		Entity moving;
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (SwingUtilities.isLeftMouseButton(e)) {
@@ -231,8 +273,71 @@ public class SpacePathfinding extends JFrame {
 					items.add(entity);
 //					fixOverlappings();
 					repaint();
+				} else {
+					lastx = e.getX();
+					lasty = e.getY();
+					moving = find(lastx, lasty);
+					select(moving);
+					repaint();
 				}
 			}
+		}
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				moving = null;
+			}
+		}
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			if (moving != null) {
+				double dx = e.getX() - lastx;
+				double dy = e.getY() - lasty;
+				
+				lastx = e.getX();
+				lasty = e.getY();
+				
+				// move small distance per loop
+
+				double a = Math.atan2(dy, dx);
+				double len = Math.sqrt(dx * dx + dy * dy);
+				
+				while (len > 0.01) {
+					double v = len >= 1 ? 1 : len;
+					moving.x += v * Math.cos(a);
+					moving.y += v * Math.sin(a);
+					tossEverythingElseAside(moving, a);
+					len -= 1.0;
+				}
+
+				
+				
+				repaint();
+			}
+		}
+	}
+	/**
+	 * Find an entity with the given location.
+	 * @param x the mouse X
+	 * @param y the mouse Y
+	 * @return the entity or null
+	 */
+	Entity find(int x, int y) {
+		for (Entity e : items) {
+			if (e.x - e.width / 2 <= x && e.y - e.height / 2 <= y
+					&& e.x + e.width / 2 > x && e.y + e.height / 2 > y) {
+				return e;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Select the given entity.
+	 * @param e the entity
+	 */
+	void select(Entity e) {
+		for (Entity e0 : items) {
+			e0.selected = e0 == e;
 		}
 	}
 	/**
@@ -280,34 +385,41 @@ public class SpacePathfinding extends JFrame {
 	 * vector crossing both of their centers. 
 	 * @param e1 the first entity
 	 * @param e2 the second entity
-	 * @param gamma the angle where to toss away
+	 * @param delta the general direction where to toss {@code e2}
 	 */
-	void tossAway(Entity e1, Entity e2, double gamma) {
+	void tossAway(Entity e1, Entity e2, double delta) {
 		double theta = Math.atan2(e1.height, e1.width); // >= 0
+		
+		// the current angle relative to e1
+		double gamma = angle(e1, e2);
 		
 		if (-theta <= gamma && gamma <= theta) {
 			double nx = e1.x + e1.width / 2 + e2.width / 2;
 			double mx = nx - e2.x;
 			e2.x = nx;
-			e2.y += mx * Math.tan(gamma);
+			double dy = mx * Math.tan(delta);
+			e2.y += dy;
 		} else
 		if (theta < gamma && gamma < Math.PI - theta) {
 			double ny = e1.y + e1.height / 2 + e2.height / 2;
 			double my = ny - e2.y;
 			e2.y = ny;
-			e2.x += my / Math.tan(gamma);
+			double dx = my / Math.tan(delta);
+			e2.x += dx;
+
 		} else
 		if (Math.PI - theta <= gamma || gamma <= theta - Math.PI) {
 			double nx = e1.x - e1.width / 2 - e2.width / 2;
 			double mx = e2.x - nx;
 			e2.x = nx;
-			e2.y += mx * Math.tan(gamma);
+			double dy = -mx * Math.tan(delta);
+			e2.y += dy;
 		} else
 		if (-theta > gamma && gamma > theta - Math.PI) {
-			double ny = e1.y - e1.height / 2 + e2.height / 2;
+			double ny = e1.y - e1.height / 2 - e2.height / 2;
 			double my = e2.y - ny;
 			e2.y = ny;
-			e2.x += my / Math.tan(gamma);
+			e2.x += -my / Math.tan(delta);
 		}
 	}
 	/** Add 10 random elements. */
@@ -333,6 +445,13 @@ public class SpacePathfinding extends JFrame {
 				e.color = Color.PINK;
 			}
 			items.add(e);
+		}
+	}
+	/** Center all entities. */
+	void centerAll() {
+		for (Entity e : items) {
+			e.x = surface.getWidth() / 2;
+			e.y = surface.getHeight() / 2;
 		}
 	}
 	/** Fix overlappings of various entities. */
@@ -492,5 +611,50 @@ public class SpacePathfinding extends JFrame {
 			}
 		}
 		return false;
+	}
+	/**
+	 * Toss everyone else aside.
+	 * @param moving the moving object
+	 * @param baseAngle the general direction
+	 */
+	void tossEverythingElseAside(Entity moving, double baseAngle) {
+		for (Entity e : items) {
+			if (moving != e && moving.overlaps(e)) {
+				double a = angle(moving, e);
+				double vx = Math.cos(a) + Math.cos(baseAngle);
+				double vy = Math.sin(a) + Math.sin(baseAngle); 
+
+				double a2 = Math.atan2(vy, vx);
+				if (vx == 0 && vy == 0) {
+					a2 = baseAngle;
+				}
+				
+				tossAway(moving, e, a2);
+
+				tossEverythingElseAside(e, a);
+			}
+		}
+	}
+	/**
+	 * Toss everything aside from the selected groups.
+	 * @param baseAngle the base angle
+	 */
+	void tossEverythingElseAside(double baseAngle) {
+		for (Entity e0 : items) {
+			for (Entity e1 : items) {
+				if (e0 != e1 && !e1.selected && e0.overlaps(e1)) {
+					double a = angle(e0, e1);
+					double vx = Math.cos(a) + Math.cos(baseAngle);
+					double vy = Math.sin(a) + Math.sin(baseAngle); 
+
+					double a2 = Math.atan2(vy, vx);
+					if (vx == 0 && vy == 0) {
+						a2 = baseAngle;
+					}
+					
+					tossAway(e0, e1, a2);
+				}
+			}
+		}
 	}
 }
