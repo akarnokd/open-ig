@@ -1993,7 +1993,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				surveySatellite.visible(false);
-				deploySatellite("Satellite", "interlude/deploy_satellite", 12 * 6);
+				deploySatellite("Satellite", "interlude/deploy_satellite", satelliteSurvivalDifficulty(12 * 6));
 			}
 		};
 		spySatellite1 = new UIImageButton(commons.starmap().deploySpySat1);
@@ -2001,7 +2001,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				spySatellite1.visible(false);
-				deploySatellite("SpySatellite1", "interlude/deploy_spy_satellite_1", 24 * 6);
+				deploySatellite("SpySatellite1", "interlude/deploy_spy_satellite_1", satelliteSurvivalDifficulty(24 * 6));
 			}
 		};
 		spySatellite2 = new UIImageButton(commons.starmap().deploySpySat2);
@@ -2009,7 +2009,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void act() {
 				spySatellite2.visible(false);
-				deploySatellite("SpySatellite2", "interlude/deploy_spy_satellite_2", 96 * 6);
+				deploySatellite("SpySatellite2", "interlude/deploy_spy_satellite_2", satelliteSurvivalDifficulty(96 * 6));
 			}
 		};
 		hubble2 = new UIImageButton(commons.starmap().deployHubble);
@@ -2149,6 +2149,21 @@ public class StarmapScreen extends ScreenBase {
 		};
 
 		addThis();
+	}
+	/**
+	 * Compute the satellite survival in respect to the difficulty level.
+	 * @param value the initial value
+	 * @return the updated TTL value
+	 */
+	int satelliteSurvivalDifficulty(int value) {
+		switch (world().difficulty) {
+		case EASY:
+			return value * 4;
+		case NORMAL:
+			return value * 2;
+		default:
+			return value;
+		}
 	}
 	/**
 	 * Deploy a satellite with an animation.
