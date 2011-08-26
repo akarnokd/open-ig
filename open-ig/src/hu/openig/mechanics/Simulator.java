@@ -337,7 +337,7 @@ public final class Simulator {
 						msg.priority = 50;
 						msg.sound = SoundType.SATELLITE_DESTROYED;
 						msg.targetPlanet = planet;
-						planet.owner.messageQueue.add(msg);
+						ittl.getKey().owner.messageQueue.add(msg);
 	
 					} else {
 						ittl.setValue(cttl2);
