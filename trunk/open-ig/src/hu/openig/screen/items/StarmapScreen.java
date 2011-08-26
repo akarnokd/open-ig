@@ -2343,10 +2343,11 @@ public class StarmapScreen extends ScreenBase {
 	}
 	/** Colonize the fleet nearby planet. */
 	void doColonize() {
-		if (fleet() == null) {
+		Fleet f = fleet();
+		if (f == null) {
 			return;
 		}
-		Planet p = fleet().getStatistics(world().battle).planet;
+		Planet p = f.getStatistics(world().battle).planet;
 		if (p == null || p.owner != null) {
 			// FIXME message: colonize failed
 			sound(SoundType.NOT_AVAILABLE);
@@ -2359,12 +2360,13 @@ public class StarmapScreen extends ScreenBase {
 					Point pt = p.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
 					if (pt != null) {
 						
-						fleet().changeInventory(world().researches.get("ColonyShip"), -1);
+						f.changeInventory(world().researches.get("ColonyShip"), -1);
 						
-						if (fleet().inventory.isEmpty()) {
-							player().fleets.remove(fleet());
-							if (player().fleets.size() > 0) {
-								player().currentFleet = player().fleets.keySet().iterator().next();
+						if (f.inventory.isEmpty()) {
+							player().fleets.remove(f);
+							List<Fleet> of = player().ownFleets();
+							if (of.size() > 0) {
+								player().currentFleet = of.iterator().next();
 							} else {
 								player().currentFleet = null;
 								player().selectionMode = SelectionMode.PLANET;
