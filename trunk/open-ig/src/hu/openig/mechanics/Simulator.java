@@ -625,7 +625,7 @@ public final class Simulator {
 			}
 			if (target != null) {
 				double dist = Math.sqrt((f.x - target.x) * (f.x - target.x) + (f.y - target.y) * (f.y - target.y));
-				double dx = f.getStatistics().speed / 4;
+				double dx = f.getStatistics(world.battle).speed / 4;
 				
 				if (dx >= dist) {
 					f.x = target.x;

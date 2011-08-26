@@ -191,7 +191,7 @@ public final class BattleSimulator {
 					battle.targetPlanet.quarantine = true;
 					battle.targetPlanet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
 				}
-				FleetStatistics fs = battle.attacker.getStatistics();
+				FleetStatistics fs = battle.attacker.getStatistics(world.battle);
 				if (fs.vehicleCount > 0) {
 					// continue with ground assault
 					doGroundBattle = true;
@@ -285,7 +285,7 @@ public final class BattleSimulator {
 	 * @param fleet the target fleet
 	 * @param percent the target percent
 	 */
-	static void damageFleet(Fleet fleet, int percent) {
+	void damageFleet(Fleet fleet, int percent) {
 		int hpBefore = 0;
 		int hpAfter = 0;
 		for (InventoryItem ii : new ArrayList<InventoryItem>(fleet.inventory)) {
@@ -318,7 +318,7 @@ public final class BattleSimulator {
 
 			}
 		}
-		FleetStatistics fs = fleet.getStatistics();
+		FleetStatistics fs = fleet.getStatistics(world.battle);
 		// remove vehicles proportional to the damage taken
 		int max = fs.vehicleMax * hpAfter / hpBefore;
 		if (fs.vehicleCount > max) {

@@ -824,7 +824,7 @@ public class StarmapScreen extends ScreenBase {
 			fleetStop.down = f.mode == null;
 		}
 		
-		FleetStatistics fs = f.getStatistics();
+		FleetStatistics fs = f.getStatistics(world().battle);
 		
 		fleetColonize.visible(
 				fleetMode && f.owner == player()
@@ -1089,7 +1089,7 @@ public class StarmapScreen extends ScreenBase {
 			if (showFleetButton.selected) {
 				for (Fleet f : fleets) {
 					if (f.owner == player()) {
-						f.getStatistics();
+						f.getStatistics(world().battle);
 						paintRadar(g2, (int)f.x, (int)f.y, f.radar, zoom);
 					}
 				}
@@ -1840,7 +1840,6 @@ public class StarmapScreen extends ScreenBase {
 			player().selectionMode = SelectionMode.FLEET;
 		} else
 		if (p != null) {
-			sound(SoundType.CLICK_HIGH_2);
 			player().currentPlanet = p;
 			player().selectionMode = SelectionMode.PLANET;
 		}
@@ -2139,14 +2138,12 @@ public class StarmapScreen extends ScreenBase {
 		fleetAttack.onPress = new Act() {
 			@Override
 			public void act() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doFleetAttack();
 			}
 		};
 		fleetStop.onPress = new Act() {
 			@Override
 			public void act() {
-				sound(SoundType.NOT_AVAILABLE);
 				doFleetStop();
 			}
 		};
@@ -2349,9 +2346,10 @@ public class StarmapScreen extends ScreenBase {
 		if (fleet() == null) {
 			return;
 		}
-		Planet p = fleet().getStatistics().planet;
+		Planet p = fleet().getStatistics(world().battle).planet;
 		if (p == null || p.owner != null) {
 			// FIXME message: colonize failed
+			sound(SoundType.NOT_AVAILABLE);
 			return;
 		}
 		for (BuildingType bt : world().buildingModel.buildings.values()) {
