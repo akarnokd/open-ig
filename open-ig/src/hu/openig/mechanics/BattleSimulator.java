@@ -24,7 +24,6 @@ import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.World;
-import hu.openig.screen.GameControls;
 import hu.openig.utils.JavaUtils;
 
 import java.awt.Rectangle;
@@ -39,19 +38,15 @@ import java.util.Map;
 public final class BattleSimulator {
 	/** The world object. */
 	protected final World world;
-	/** The game controls. */
-	protected final GameControls controls;
 	/** The battle configuration. */
 	protected final BattleInfo battle;
 	/**
 	 * Constructor.
 	 * @param world the world object
-	 * @param controls the controls
 	 * @param battle the battle configuration
 	 */
-	public BattleSimulator(World world, GameControls controls, BattleInfo battle) {
+	public BattleSimulator(World world, BattleInfo battle) {
 		this.world = world;
-		this.controls = controls;
 		this.battle = battle;
 	}
 	/** The space battle statistics record. */
