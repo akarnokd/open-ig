@@ -146,7 +146,6 @@ public class Fleet implements Named, Owned {
 			if (fii.type.has("damage")) {
 				result.firepower += fii.type.getInt("damage");
 			}
-			int itemspeed = 6;
 			for (InventorySlot slot : fii.slots) {
 				if (slot.type != null) {
 					if (slot.type.has("radar")) {
@@ -156,7 +155,7 @@ public class Fleet implements Named, Owned {
 						result.vehicleMax += slot.type.getInt("vehicles"); 
 					}
 					if (checkHyperdrive && slot.type.has("speed")) {
-						itemspeed = slot.type.getInt("speed");
+						result.speed = Math.min(slot.type.getInt("speed"), result.speed);
 					}
 					if (slot.type.has("projectile")) {
 						BattleProjectile bp = battle.projectiles.get(slot.type.get("projectile"));
@@ -166,7 +165,7 @@ public class Fleet implements Named, Owned {
 					}
 				}
 			}
-			result.speed = Math.min(itemspeed, result.speed);
+			;
 		}
 		
 		if (result.speed == Integer.MAX_VALUE) {
