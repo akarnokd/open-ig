@@ -109,18 +109,24 @@ public class Fleet implements Named, Owned {
 		}
 		return count;
 	}
-	/** @return calculate the fleet statistics. */
-	public FleetStatistics getStatistics() {
+	/**
+	 * @param battle the battle configuration 
+	 * @return calculate the fleet statistics. 
+	 */
+	public FleetStatistics getStatistics(Battle battle) {
 		FleetStatistics result = new FleetStatistics();
 
 		result.speed = Integer.MAX_VALUE;
 		radar = 0;
 		for (InventoryItem fii : inventory) {
+			boolean checkHyperdrive = false;
 			if (fii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 				result.battleshipCount += fii.count;
+				checkHyperdrive = true;
 			} else
 			if (fii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 				result.cruiserCount += fii.count;
+				checkHyperdrive = true;
 			} else
 			if (fii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				result.fighterCount += fii.count;
@@ -149,11 +155,14 @@ public class Fleet implements Named, Owned {
 					if (slot.type.has("vehicles")) {
 						result.vehicleMax += slot.type.getInt("vehicles"); 
 					}
-					if (slot.type.has("damage")) {
-						result.firepower += slot.type.getInt("damage");
-					}
-					if (slot.type.has("speed")) {
+					if (checkHyperdrive && slot.type.has("speed")) {
 						itemspeed = slot.type.getInt("speed");
+					}
+					if (slot.type.has("projectile")) {
+						BattleProjectile bp = battle.projectiles.get(slot.type.get("projectile"));
+						if (bp != null) {
+							result.firepower += slot.count * bp.damage;
+						}
 					}
 				}
 			}
@@ -269,10 +278,11 @@ public class Fleet implements Named, Owned {
 	/**
 	 * Compute how many of the supplied items can be added without violating the limit constraints. 
 	 * @param rt the item type
+	 * @param battle the battle configuration
 	 * @return the currently alloved
 	 */
-	public int getAddLimit(ResearchType rt) {
-		FleetStatistics fs = getStatistics();
+	public int getAddLimit(ResearchType rt, Battle battle) {
+		FleetStatistics fs = getStatistics(battle);
 		switch (rt.category) {
 		case SPACESHIPS_BATTLESHIPS:
 			return 3 - fs.battleshipCount;

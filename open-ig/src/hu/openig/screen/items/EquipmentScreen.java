@@ -433,7 +433,7 @@ public class EquipmentScreen extends ScreenBase {
 					doCreateFleet(true, planet().x, planet().y);
 				} else {
 					if (fleet() != null) {
-						FleetStatistics fs = fleet().getStatistics();
+						FleetStatistics fs = fleet().getStatistics(world().battle);
 						if (fs.planet != null && fs.planet.owner == player()) {
 							doCreateFleet(true, fs.planet.x, fs.planet.y);
 						}
@@ -1210,7 +1210,7 @@ public class EquipmentScreen extends ScreenBase {
 			Fleet f = fleet();
 			boolean own = f.owner == player();
 			
-			FleetStatistics fs = f.getStatistics();
+			FleetStatistics fs = f.getStatistics(world().battle);
 			
 			prepareCells(null, fleet(), leftFighterCells, leftTankCells);
 
@@ -1260,7 +1260,7 @@ public class EquipmentScreen extends ScreenBase {
 				} else {
 					secondaryValue.text(secondary.name).visible(true);
 				}
-				FleetStatistics fs2 = secondary.getStatistics();
+				FleetStatistics fs2 = secondary.getStatistics(world().battle);
 				secondaryFighters.text(format("equipment.fighters", fs2.fighterCount)).visible(true);
 				secondaryVehicles.text(format("equipment.vehiclesandmax", fs2.vehicleCount, fs2.vehicleMax)).visible(true);
 				
@@ -1909,7 +1909,7 @@ public class EquipmentScreen extends ScreenBase {
 			if (mode == 3) {
 				transferCount = srcCount;
 			}
-			transferCount = Math.min(transferCount, dst.getAddLimit(type));
+			transferCount = Math.min(transferCount, dst.getAddLimit(type, world().battle));
 			
 			if (type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
 					|| type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
@@ -1931,7 +1931,7 @@ public class EquipmentScreen extends ScreenBase {
 				}
 				
 				// move some vehicles if they would not fin onto the src fleet
-				FleetStatistics fs = src.getStatistics();
+				FleetStatistics fs = src.getStatistics(world().battle);
 				if (fs.vehicleCount > fs.vehicleMax) {
 					int delta = fs.vehicleCount - fs.vehicleMax;
 					for (int j = src.inventory.size() - 1; j >= 0; j--) {
