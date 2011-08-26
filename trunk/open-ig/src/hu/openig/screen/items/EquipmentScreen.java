@@ -825,11 +825,12 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		}
 		if (fleet() != null && fleet().inventory.isEmpty()) {
-			if (player().fleets.isEmpty()) {
+			List<Fleet> of = player().ownFleets();
+			if (of.isEmpty()) {
 				player().currentFleet = null;
 				player().selectionMode = SelectionMode.PLANET;
 			} else {
-				player().currentFleet = player().fleets.keySet().iterator().next();
+				player().currentFleet = of.iterator().next();
 			}
 		}
 	}
@@ -1998,7 +1999,7 @@ public class EquipmentScreen extends ScreenBase {
 		if (f != null && f.owner == player() && f.inventory.size() == 0) {
 			List<Fleet> fs = player().ownFleets();
 			int idx = fs.indexOf(f);
-			player().fleets.remove(fleet());
+			player().fleets.remove(f);
 			if (idx >= 0 && player().fleets.size() > 0) {
 				if (idx < fs.size()) {
 					player().currentFleet = fs.get(idx > 0 ? idx - 1 : 1);
