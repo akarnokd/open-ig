@@ -34,6 +34,7 @@ import hu.openig.screen.TechnologySlot;
 import hu.openig.screen.VehicleCell;
 import hu.openig.screen.VehicleList;
 import hu.openig.ui.HorizontalAlignment;
+import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
@@ -974,7 +975,7 @@ public class EquipmentScreen extends ScreenBase {
 		RenderTools.fill(g2, rightPanel, commons.equipment().rightStars);
 		
 		update();
-		
+
 		super.draw(g2);
 
 		if (planetVisible) {
@@ -986,9 +987,25 @@ public class EquipmentScreen extends ScreenBase {
 		}
 		
 		if (innerEquipmentVisible) {
+			g2.setColor(new Color(0, 0, 0, 128));
+			g2.fillRect(innerEquipment.x, innerEquipment.y, innerEquipment.width - 1, innerEquipment.height - 1);
 			g2.setColor(new Color(0xFF4D7DB6));
 			g2.drawRect(innerEquipment.x, innerEquipment.y, innerEquipment.width - 1, innerEquipment.height - 1);
+
+			drawAgain(g2, innerEquipmentName);
+			drawAgain(g2, innerEquipmentSeparator);
+			drawAgain(g2, innerEquipmentValue);
 		}
+	}
+	/**
+	 * Draws the specified component only.
+	 * @param g2 the graphics context
+	 * @param c the component
+	 */
+	void drawAgain(Graphics2D g2, UIComponent c) {
+		g2.translate(c.x, c.y);
+		c.draw(g2);
+		g2.translate(-c.x, -c.y);
 	}
 	/**
 	 * Update the slot belonging to the specified technology.
@@ -1407,14 +1424,6 @@ public class EquipmentScreen extends ScreenBase {
 					removeOne.visible(
 							configure.selectedSlot.type != null && configure.selectedSlot.count > 0
 					);
-					innerEquipmentVisible = true;
-					innerEquipmentName.text(get("inventoryslot." + configure.selectedSlot.slot.id), true).visible(true);
-					if (configure.selectedSlot.type != null) {
-						innerEquipmentSeparator.text(configure.selectedSlot.type.name, true).visible(true);
-					} else {
-						innerEquipmentSeparator.text("----", true).visible(true);
-					}
-					innerEquipmentValue.text(format("equipment.innercount", configure.selectedSlot.count, configure.selectedSlot.slot.max), true).visible(true);
 				} else {
 					addOne.visible(false);
 					removeOne.visible(false);
@@ -1427,6 +1436,17 @@ public class EquipmentScreen extends ScreenBase {
 				removeOne.visible(false);
 				sell.visible(false);
 			}
+			if (configure.selectedSlot != null) {
+				innerEquipmentVisible = true;
+				innerEquipmentName.text(get("inventoryslot." + configure.selectedSlot.slot.id), true).visible(true);
+				if (configure.selectedSlot.type != null) {
+					innerEquipmentSeparator.text(configure.selectedSlot.type.name, true).visible(true);
+				} else {
+					innerEquipmentSeparator.text("----", true).visible(true);
+				}
+				innerEquipmentValue.text(format("equipment.innercount", configure.selectedSlot.count, configure.selectedSlot.slot.max), true).visible(true);
+			}
+			
 			
 			splitButton.visible(own && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
 			transferButton.visible(own && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && fleet().fleetsInRange(20).size() > 0);
