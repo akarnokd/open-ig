@@ -2457,6 +2457,8 @@ public class StarmapScreen extends ScreenBase {
 			p.timeToLive.put(pii, ttl);
 		}
 		
+		player().changeInventoryCount(rt, -1);
+		
 		if (!isPaused) {
 			commons.resume();
 		}

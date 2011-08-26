@@ -1084,8 +1084,8 @@ public class GameWindow extends JFrame implements GameControls {
 							Integer cnt = commons.world().player.inventory.get(commons.world().player.currentResearch());
 							cnt = cnt != null ? cnt + 1 : 1;
 							commons.world().player.inventory.put(commons.world().player.currentResearch(), cnt);
-							if (secondary.screen() == Screens.RESEARCH
-									|| secondary.screen() == Screens.PRODUCTION) {
+							if (secondary != null && (secondary.screen() == Screens.RESEARCH
+									|| secondary.screen() == Screens.PRODUCTION)) {
 								if (researched) {
 									((ResearchProductionScreen)secondary).playAnim(commons.world().player.currentResearch());
 								}
