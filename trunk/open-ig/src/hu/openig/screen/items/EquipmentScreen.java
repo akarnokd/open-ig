@@ -1820,25 +1820,31 @@ public class EquipmentScreen extends ScreenBase {
 				player().changeInventoryCount(configure.selectedSlot.type, configure.selectedSlot.count);
 			}
 			configure.selectedSlot.type = research();
-			configure.selectedSlot.count = 1;
+			configure.selectedSlot.count = 0;
 			configure.selectedSlot.hp = research().productionCost;
 			if (research().has("shield")) {
 				configure.item.shield = Math.max(0, configure.item.shieldMax());
 			}
-		} else {
-			configure.selectedSlot.count++;
 		}
-		player().changeInventoryCount(configure.selectedSlot.type, -1);
+		if (!configure.selectedSlot.isFilled()) {
+			configure.selectedSlot.count++;
+			player().changeInventoryCount(configure.selectedSlot.type, -1);
+		} else {
+			addOne.stop();
+		}
 	}
 	/** Remove one item from the current slot. */
 	void doRemoveOne() {
-		player().changeInventoryCount(configure.selectedSlot.type, 1);
-		configure.selectedSlot.count--;
-		if (configure.selectedSlot.type.has("shield")) {
-			configure.item.shield = 0;
-		}
-		if (configure.selectedSlot.count == 0) {
-			configure.selectedSlot.type = null;
+		if (configure.selectedSlot.count > 0) {
+			player().changeInventoryCount(configure.selectedSlot.type, 1);
+			configure.selectedSlot.count--;
+			if (configure.selectedSlot.type.has("shield")) {
+				configure.item.shield = 0;
+			}
+			if (configure.selectedSlot.count == 0) {
+				configure.selectedSlot.type = null;
+				removeOne.stop();
+			}
 		}
 	}
 	@Override
