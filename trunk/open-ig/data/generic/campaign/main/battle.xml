@@ -1,21 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <battle>
 	<projectiles>
-		<projectile id='Laser1' matrix='inventions/weapons/lasers/laser_1_rotate' width='16' height='1' sound='FIRE_LASER' damage='1' delay='700' range='30' mode='BEAM'/>
-		<projectile id='Laser2' matrix='inventions/weapons/lasers/laser_2_rotate' width='16' height='1' sound='FIRE_LASER' damage='3' delay='700' range='120' mode='BEAM'/>
-		<projectile id='Laser3' matrix='inventions/weapons/lasers/laser_3_rotate' width='16' height='1' sound='FIRE_LASER' damage='5' delay='700' range='120' mode='BEAM'/>
-		<projectile id='Laser4' matrix='inventions/weapons/lasers/laser_4_rotate' width='16' height='1' sound='FIRE_LASER'  damage='7' delay='700' range='120' mode='BEAM'/>
-		<projectile id='Ion' matrix='inventions/weapons/cannons/ion_projectile_rotate' width='64' height='1' sound='FIRE_PARTICLE' damage='3' delay='800' range='200' mode='BEAM'/>
-		<projectile id='Plasma' matrix='inventions/weapons/cannons/plasma_projectile_rotate' width='64' height='1' sound='FIRE_PARTICLE' damage='6' delay='800' range='200' mode='BEAM'/>
-		<projectile id='Particle' matrix='inventions/weapons/cannons/particle_projectile_rotate' width='64' height='1' sound='FIRE_PARTICLE'  damage='9' delay='800' range='200' mode='BEAM'/>
-		<projectile id='Meson' matrix='inventions/weapons/cannons/meson_projectile_matrix' width='1' height='12' sound='FIRE_MESON'  damage='12' delay='800' range='40' mode='BEAM'/>
+		<projectile id='Laser1' matrix='inventions/weapons/lasers/laser_1_rotate' width='16' height='1' sound='FIRE_LASER' damage='5' delay='700' range='30' mode='BEAM'/>
+		<projectile id='Laser2' matrix='inventions/weapons/lasers/laser_2_rotate' width='16' height='1' sound='FIRE_LASER' damage='10' delay='700' range='120' mode='BEAM'/>
+		<projectile id='Laser3' matrix='inventions/weapons/lasers/laser_3_rotate' width='16' height='1' sound='FIRE_LASER' damage='15' delay='700' range='120' mode='BEAM'/>
+		<projectile id='Laser4' matrix='inventions/weapons/lasers/laser_4_rotate' width='16' height='1' sound='FIRE_LASER' damage='20' delay='700' range='120' mode='BEAM'/>
+		<projectile id='Ion' matrix='inventions/weapons/cannons/ion_projectile_rotate' width='64' height='1' sound='FIRE_PARTICLE' damage='25' delay='800' range='200' mode='BEAM'/>
+		<projectile id='Plasma' matrix='inventions/weapons/cannons/plasma_projectile_rotate' width='64' height='1' sound='FIRE_PARTICLE' damage='30' delay='800' range='200' mode='BEAM'/>
+		<projectile id='Particle' matrix='inventions/weapons/cannons/particle_projectile_rotate' width='64' height='1' sound='FIRE_PARTICLE'  damage='35' delay='800' range='200' mode='BEAM'/>
+		<projectile id='Meson' matrix='inventions/weapons/cannons/meson_projectile_matrix' width='1' height='12' sound='FIRE_MESON'  damage='40' delay='800' range='40' mode='BEAM'/>
 		<projectile id='Rocket1' matrix='inventions/weapons/projectiles/rocket_1_rotate' alternative='inventions/weapons/projectiles/alien_rocket_1_rotate' width='64' height='1' sound='FIRE_ROCKET_1'
-		 damage='20' delay='200' range='-1' mode='ROCKET'/>
-		<projectile id='Rocket2' matrix='inventions/weapons/projectiles/rocket_2_rotate' alternative='inventions/weapons/projectiles/alien_rocket_2_rotate' width='64' height='1' sound='FIRE_ROCKET_2' damage='40' delay='200' range='-1' mode='ROCKET'/>
-		<projectile id='MultiheadedRocket' matrix='inventions/weapons/projectiles/multi_headed_rocket_rotate' alternative='inventions/weapons/projectiles/alien_multi_headed_rocket_rotate' width='64' height='1' sound='FIRE_ROCKET_2' damage='50' delay='200' range='-1' mode='MULTI_ROCKET'/>
-		<projectile id='Bomb1' matrix='inventions/weapons/projectiles/bomb_1_rotate' alternative='inventions/weapons/projectiles/alien_bomb_1_rotate' width='64' height='1' sound='FIRE_ROCKET_1' damage='30' delay='200' range='-1' mode='BOMB'/>
-		<projectile id='Bomb2' matrix='inventions/weapons/projectiles/bomb_2_rotate' alternative='inventions/weapons/projectiles/alien_bomb_2_rotate' width='64' height='1' sound='FIRE_ROCKET_2' damage='40' delay='200' range='-1'  mode='BOMB'/>
-		<projectile id='VirusBomb' matrix='inventions/weapons/projectiles/virus_bomb_rotate' alternative='inventions/weapons/projectiles/alien_virus_bomb_rotate' width='64' height='1' sound='FIRE_ROCKET_2' damage='20' delay='200' range='-1' mode='VIRUS'/>
+		 damage='10' delay='200' range='-1' mode='ROCKET'/>
+		<projectile id='Rocket2' matrix='inventions/weapons/projectiles/rocket_2_rotate' alternative='inventions/weapons/projectiles/alien_rocket_2_rotate' width='80' height='1' sound='FIRE_ROCKET_2' damage='15' delay='200' range='-1' mode='ROCKET'/>
+		<projectile id='MultiheadedRocket' matrix='inventions/weapons/projectiles/multi_headed_rocket_rotate' alternative='inventions/weapons/projectiles/alien_multi_headed_rocket_rotate' width='64' height='1' sound='FIRE_ROCKET_2' damage='20' delay='200' range='-1' mode='MULTI_ROCKET'/>
+		<projectile id='Bomb1' matrix='inventions/weapons/projectiles/bomb_1_rotate' alternative='inventions/weapons/projectiles/alien_bomb_1_rotate' width='64' height='1' sound='FIRE_ROCKET_1' damage='60' delay='200' range='-1' mode='BOMB'/>
+		<projectile id='Bomb2' matrix='inventions/weapons/projectiles/bomb_2_rotate' alternative='inventions/weapons/projectiles/alien_bomb_2_rotate' width='64' height='1' sound='FIRE_ROCKET_2' damage='80' delay='200' range='-1'  mode='BOMB'/>
+		<projectile id='VirusBomb' matrix='inventions/weapons/projectiles/virus_bomb_rotate' alternative='inventions/weapons/projectiles/alien_virus_bomb_rotate' width='64' height='1' sound='FIRE_ROCKET_2' damage='100' delay='200' range='-1' mode='VIRUS'/>
 	</projectiles>
 	<!-- Entities for spacewar with rotation info for regular and alternative appearances. -->
 	<space-entities>

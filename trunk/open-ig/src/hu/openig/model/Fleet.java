@@ -120,16 +120,20 @@ public class Fleet implements Named, Owned {
 		radar = 0;
 		for (InventoryItem fii : inventory) {
 			boolean checkHyperdrive = false;
+			boolean checkFirepower = false;
 			if (fii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 				result.battleshipCount += fii.count;
 				checkHyperdrive = true;
+				checkFirepower = true;
 			} else
 			if (fii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 				result.cruiserCount += fii.count;
 				checkHyperdrive = true;
+				checkFirepower = true;
 			} else
 			if (fii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				result.fighterCount += fii.count;
+				checkFirepower = true;
 			} else
 			if (fii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| fii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
@@ -157,10 +161,10 @@ public class Fleet implements Named, Owned {
 					if (checkHyperdrive && slot.type.has("speed")) {
 						result.speed = Math.min(slot.type.getInt("speed"), result.speed);
 					}
-					if (slot.type.has("projectile")) {
+					if (checkFirepower && slot.type.has("projectile")) {
 						BattleProjectile bp = battle.projectiles.get(slot.type.get("projectile"));
 						if (bp != null) {
-							result.firepower += slot.count * bp.damage;
+							result.firepower += slot.count * bp.damage * fii.count;
 						}
 					}
 				}
