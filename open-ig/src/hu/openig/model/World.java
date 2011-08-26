@@ -1633,4 +1633,13 @@ public class World {
 	public static double dist(double x1, double y1, double x2, double y2) {
 		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 	}
+	/**
+	 * Remove the specified fleet from existence of all player's knowledge.
+	 * @param fleet the fleet
+	 */
+	public void removeFleet(Fleet fleet) {
+		for (Player p : players.values()) {
+			p.fleets.remove(fleet);
+		}
+	}
 }
