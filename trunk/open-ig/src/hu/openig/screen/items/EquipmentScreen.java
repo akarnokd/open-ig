@@ -821,7 +821,7 @@ public class EquipmentScreen extends ScreenBase {
 		// delete empty fleets
 		for (Fleet f : new ArrayList<Fleet>(player().fleets.keySet())) {
 			if (f.inventory.isEmpty()) {
-				player().fleets.remove(f);
+				world().removeFleet(f);
 			}
 		}
 		if (fleet() != null && fleet().inventory.isEmpty()) {
@@ -1894,12 +1894,13 @@ public class EquipmentScreen extends ScreenBase {
 	}
 	/** End split. */
 	void doEndSplit() {
-		if (fleet().inventory.size() == 0) {
-			player().fleets.remove(fleet());
+		Fleet f = fleet();
+		if (f.inventory.size() == 0) {
+			world().removeFleet(f);
 			player().currentFleet = secondary;
 		}
 		if (secondary.inventory.size() == 0) {
-			player().fleets.remove(secondary);
+			world().removeFleet(secondary);
 		}
 		if (secondary.inventory.contains(configure.item)) {
 			configure.item = fleet().getInventoryItem(configure.item.type);
@@ -1999,7 +2000,7 @@ public class EquipmentScreen extends ScreenBase {
 		if (f != null && f.owner == player() && f.inventory.size() == 0) {
 			List<Fleet> fs = player().ownFleets();
 			int idx = fs.indexOf(f);
-			player().fleets.remove(f);
+			world().removeFleet(f);
 			if (idx >= 0 && player().fleets.size() > 0) {
 				if (idx < fs.size()) {
 					player().currentFleet = fs.get(idx > 0 ? idx - 1 : 1);
