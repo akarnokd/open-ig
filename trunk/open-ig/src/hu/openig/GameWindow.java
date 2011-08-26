@@ -1500,7 +1500,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if ((bi.attacker.owner != world().player || config.automaticBattle) 
 					&& ((bi.targetFleet != null && bi.targetFleet.owner != world().player)
 							|| (bi.targetPlanet != null && bi.targetPlanet.owner != world().player))) {
-				new BattleSimulator(world(), this, bi).autoBattle();
+				new BattleSimulator(world(), bi).autoBattle();
 				continue;
 			}
 			// do a space battle

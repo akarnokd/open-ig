@@ -154,8 +154,8 @@ public class Fleet implements Named, Owned {
 					if (slot.type.has("vehicles")) {
 						result.vehicleMax += slot.type.getInt("vehicles"); 
 					}
-					if (checkHyperdrive && slot.type.has("speed")) {
-						result.speed = Math.min(slot.type.getInt("speed"), result.speed);
+					if (checkHyperdrive) {
+						result.speed = Math.min(slot.type.getInt("speed", 6), result.speed);
 					}
 					if (slot.type.has("projectile")) {
 						BattleProjectile bp = battle.projectiles.get(slot.type.get("projectile"));
