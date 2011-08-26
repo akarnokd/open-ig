@@ -8,14 +8,13 @@
 
 package hu.openig.test;
 
+import hu.openig.utils.Base64;
 import hu.openig.utils.IOUtils;
 
 import java.io.OutputStream;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import sun.misc.BASE64Encoder;
 
 /**
  * Utility class to upload files to the google-code site.
@@ -47,8 +46,7 @@ public final class UploadToWeb {
 			URL u = new URL(String.format("https://%s.googlecode.com/files", project));
 			HttpsURLConnection c = (HttpsURLConnection)u.openConnection();
 			try {
-				BASE64Encoder b64 = new BASE64Encoder();
-				String up = b64.encode(String.format("%s:%s", username, password).getBytes("UTF-8"));
+				String up = Base64.encodeBytes(String.format("%s:%s", username, password).getBytes("UTF-8"));
 				c.setRequestProperty("Authorization", "Basic " + up);
 				c.setRequestProperty("Content-Type", String.format("multipart/form-data; boundary=%s", boundary));
 				c.setRequestProperty("User-Agent", "Open-IG Google Code Upload 0.1");

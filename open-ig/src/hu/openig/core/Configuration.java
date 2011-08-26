@@ -30,8 +30,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.swing.SwingUtilities;
-
 /**
  * The main configuration object with rolling log support.
  * @author akarnokd, 2009.09.25.
@@ -45,8 +43,6 @@ public class Configuration {
 	/** Annotation for indicating load/save a field into a game save. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSaveGame { }
-	/** The log limit. */
-	private int logLimit = 512;
 	/** The log entries. */
 	public final List<LogEntry> logs = new ArrayList<LogEntry>();
 	/** The log listeners. */
@@ -208,7 +204,7 @@ public class Configuration {
 			loadProperties(props);
 			return true;
 		} catch (IOException ex) {
-			error(ex);
+			ex.printStackTrace();
 			return false;
 		}
 	}
@@ -250,7 +246,7 @@ public class Configuration {
 				}
 			}
 		} catch (IllegalAccessException ex) {
-			error(ex);
+			ex.printStackTrace();
 		}
 	}
 	/**
@@ -282,7 +278,7 @@ public class Configuration {
 				}
 			}
 		} catch (IllegalAccessException ex) {
-			error(ex);
+			ex.printStackTrace();
 		}
 	}
 	/**
@@ -303,92 +299,6 @@ public class Configuration {
 			return true;
 		} catch (IOException ex) {
 			return false;
-		}
-	}
-	/**
-	 * Debug a message.
-	 * @param message the message
-	 */
-	public void debug(String message) {
-		log("DEBUG", message, null);
-	}
-	/** 
-	 * Debug a throwable.
-	 * @param t the throwable
-	 */
-	public void debug(Throwable t) {
-		log("DEBUG", t.getMessage(), t);
-	}
-	/**
-	 * Debug a message and throwable.
-	 * @param message the message
-	 * @param t the throwable
-	 */
-	public void debug(String message, Throwable t) {
-		log("DEBUG", message, t);
-	}
-	/**
-	 * Error a message.
-	 * @param message the message
-	 */
-	public void error(String message) {
-		log("ERROR", message, null);
-	}
-	/**
-	 * Error a throwable.
-	 * @param t a throwable
-	 */
-	public void error(Throwable t) {
-		log("ERROR", t.getMessage(), t);
-	}
-	/**
-	 * Error a message and throwable.
-	 * @param message the message
-	 * @param t the throwable
-	 */
-	public void error(String message, Throwable t) {
-		log("ERROR", message, t);
-	}
-	/**
-	 * Log a given event.
-	 * @param level the level
-	 * @param message the message
-	 * @param t the throwable
-	 */
-	public void log(final String level, final String message, final Throwable t) {
-		if (SwingUtilities.isEventDispatchThread()) {
-			logInternal(level, message, t);
-		} else {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					logInternal(level, message, t);
-				}
-			});
-		}
-	}
-	/**
-	 * Perform the log in the EDT.
-	 * @param level the level
-	 * @param message the message
-	 * @param t the throwable
-	 */
-	private void logInternal(final String level, final String message,
-			final Throwable t) {
-		LogEntry e = new LogEntry();
-		e.timestamp = System.currentTimeMillis();
-		e.severity = level;
-		e.message = message;
-		e.stackTrace = LogEntry.toString(t);
-		if (logs.size() == logLimit) {
-			logs.remove(0);
-		}
-		logs.add(e);
-		if (t != null) {
-			t.printStackTrace();
-		}
-		for (Act a : logListener) {
-			a.act();
 		}
 	}
 	/**
@@ -480,7 +390,7 @@ public class Configuration {
 				}
 			}
 		} catch (IllegalAccessException ex) {
-			error(ex);
+			ex.printStackTrace();
 		}
 	}
 	/**
@@ -495,7 +405,7 @@ public class Configuration {
 				}
 			}
 		} catch (IllegalAccessException ex) {
-			error(ex);
+			ex.printStackTrace();
 		}
 	}
 }
