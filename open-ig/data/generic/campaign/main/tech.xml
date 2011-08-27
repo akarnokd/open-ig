@@ -284,7 +284,7 @@
 		research-cost='200' production-cost='120' level='0'
 		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' comp='1'
 		ai='1' index='0' video='technology/spaceships/satellites/satellite'>
-		<property name='radar' value='1' />
+		<property name='detector' value='1' />
 	</item>
 	<item id='SpySatellite1' name='tech.spysatellite1.name' long-name='tech.spysatellite1.longname'
 		description='tech.spysatellite1.description' category='SPACESHIPS_SATELLITES'
@@ -293,7 +293,7 @@
 		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' mech='1'
 		comp='1' ai='1' index='1'
 		video='technology/spaceships/satellites/spy_satellite_1'>
-		<property name='radar' value='2' />
+		<property name='detector' value='2' />
 	</item>
 	<item id='SpySatellite2' name='tech.spysatellite2.name' long-name='tech.spysatellite2.longname'
 		description='tech.spysatellite2.description' category='SPACESHIPS_SATELLITES'
@@ -302,7 +302,7 @@
 		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='SpySatellite1' mech='2' comp='3' ai='3' mil='2' index='2'
 		video='technology/spaceships/satellites/spy_satellite_2'>
-		<property name='radar' value='3' />
+		<property name='detector' value='3' />
 	</item>
 	<item id='Hubble2' name='tech.hubble2.name' long-name='tech.hubble2.longname'
 		description='tech.hubble2.description' category='SPACESHIPS_SATELLITES'

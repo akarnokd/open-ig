@@ -1068,6 +1068,7 @@ public class GameWindow extends JFrame implements GameControls {
 									commons.world().player.setAvailable(b.type.research);
 								}
 							}
+							p.removeOwnerSatellites();
 							p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 							repaintInner();
 						}

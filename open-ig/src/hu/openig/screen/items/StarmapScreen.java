@@ -2374,9 +2374,10 @@ public class StarmapScreen extends ScreenBase {
 				if (ts != null) {
 					Point pt = p.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
 					if (pt != null) {
-						
+						// remove colony ship from fleet
 						f.changeInventory(world().researches.get("ColonyShip"), -1);
 						
+						// remove empty fleet
 						if (f.inventory.isEmpty()) {
 							world().removeFleet(f);
 							List<Fleet> of = player().ownFleets();
@@ -2387,7 +2388,7 @@ public class StarmapScreen extends ScreenBase {
 								player().selectionMode = SelectionMode.PLANET;
 							}
 						}
-						
+						// place building
 						Building b = new Building(bt, player().race);
 						p.race = player().race;
 						p.population = 5000;
@@ -2405,8 +2406,13 @@ public class StarmapScreen extends ScreenBase {
 						
 						player().statistics.planetsColonized++;
 						
+						// uninstall satellites
+						p.removeOwnerSatellites();
+						
 						displayPrimary(Screens.COLONY);
 						return;
+					} else {
+						System.err.printf("Could not colonize planet %s, not enough initial space for colony hub of race %s.", p.id, player().race);
 					}
 				}
 			}

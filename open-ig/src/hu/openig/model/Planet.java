@@ -573,4 +573,17 @@ public class Planet implements Named, Owned {
 //		}
 //		return r * 35;
 //	}
+	/**
+	 * Remove detector-capable satellites (e.g., spy satellites) from orbit.
+	 */
+	public void removeOwnerSatellites() {
+		Iterator<InventoryItem> it = inventory.iterator();
+		while (it.hasNext()) {
+			InventoryItem ii = it.next();
+			if (ii.owner == owner && ii.type.has("detector")) {
+				ii.owner.changeInventoryCount(ii.type, 1);
+				it.remove();
+			}
+		}
+	}
 }
