@@ -108,24 +108,22 @@ public final class Radar {
 				updateKnowledge(world, p.owner, p, PlanetKnowledge.BUILDING);
 			}
 			for (InventoryItem pii : p.inventory) {
-				String radar = pii.type.get("radar");
-				if (radar != null) {
-					if ("1".equals(radar)) {
-						updateKnowledge(world, pii.owner, p, PlanetKnowledge.OWNER);
+				int detectorType = pii.type.getInt("detector", 0);
+				if (detectorType == 1) {
+					updateKnowledge(world, pii.owner, p, PlanetKnowledge.OWNER);
+				}
+				if (detectorType == 2) {
+					updateKnowledge(world, pii.owner, p, PlanetKnowledge.STATIONS);
+				}
+				if (detectorType == 3) {
+					updateKnowledge(world, pii.owner, p, PlanetKnowledge.BUILDING);
+				}
+				if (pii.type.getInt("radar", 0) == 4) {
+					for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * 35)) {
+						updateKnowledge(world, pii.owner, q, PlanetKnowledge.NAME);
 					}
-					if ("2".equals(radar)) {
-						updateKnowledge(world, pii.owner, p, PlanetKnowledge.STATIONS);
-					}
-					if ("3".equals(radar)) {
-						updateKnowledge(world, pii.owner, p, PlanetKnowledge.BUILDING);
-					}
-					if ("4".equals(radar)) {
-						for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * 35)) {
-							updateKnowledge(world, pii.owner, q, PlanetKnowledge.NAME);
-						}
-						for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * 35)) {
-							updateKnowledge(world, pii.owner, f, FleetKnowledge.COMPOSITION);
-						}
+					for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * 35)) {
+						updateKnowledge(world, pii.owner, f, FleetKnowledge.COMPOSITION);
 					}
 				}
 			}
