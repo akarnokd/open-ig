@@ -40,6 +40,7 @@ import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
@@ -507,7 +508,18 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		};
 
-		addOne = new UIImageButton(commons.equipment().addOne);
+		addOne = new UIImageButton(commons.equipment().addOne) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				if (e.has(Type.DOWN) && e.has(Modifier.SHIFT)) {
+					sound(SoundType.CLICK_HIGH_2);
+					doAddMany();
+					stop();
+					return true;
+				}
+				return super.mouse(e);
+			}
+		};
 		addOne.visible(false);
 		addOne.onClick = new Act() {
 			@Override
@@ -520,7 +532,18 @@ public class EquipmentScreen extends ScreenBase {
 		};
 		addOne.setHoldDelay(150);
 		
-		removeOne = new UIImageButton(commons.equipment().removeOne);
+		removeOne = new UIImageButton(commons.equipment().removeOne) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				if (e.has(Type.DOWN) && e.has(Modifier.SHIFT)) {
+					sound(SoundType.CLICK_HIGH_2);
+					doRemoveMany();
+					stop();
+					return true;
+				}
+				return super.mouse(e);
+			}
+		};
 		removeOne.visible(false);
 		removeOne.onClick = new Act() {
 			@Override
@@ -1812,6 +1835,27 @@ public class EquipmentScreen extends ScreenBase {
 			configure.item = leftList.selectedItem;
 		}
 	}
+	/** Add many items as possible. */
+	void doAddMany() {
+		if (configure.selectedSlot.type != research()) {
+			if (configure.selectedSlot.count > 0) {
+				// put back the current equipment into the inventory.
+				player().changeInventoryCount(configure.selectedSlot.type, configure.selectedSlot.count);
+			}
+			configure.selectedSlot.type = research();
+			configure.selectedSlot.count = 0;
+			configure.selectedSlot.hp = research().productionCost;
+			if (research().has("shield")) {
+				configure.item.shield = Math.max(0, configure.item.shieldMax());
+			}
+		}
+		int remaining = configure.selectedSlot.slot.max - configure.selectedSlot.count;
+		int available = player().inventoryCount(configure.selectedSlot.type);
+		
+		int toAdd = Math.min(available, remaining);
+		configure.selectedSlot.count += toAdd;
+		player().changeInventoryCount(configure.selectedSlot.type, -toAdd);
+	}
 	/** Add one or replace the current slot contents. */
 	void doAddOne() {
 		if (configure.selectedSlot.type != research()) {
@@ -1845,6 +1889,17 @@ public class EquipmentScreen extends ScreenBase {
 				configure.selectedSlot.type = null;
 				removeOne.stop();
 			}
+		}
+	}
+	/** Remove all items from the current slot. */
+	void doRemoveMany() {
+		if (configure.selectedSlot.count > 0) {
+			player().changeInventoryCount(configure.selectedSlot.type, configure.selectedSlot.count);
+			if (configure.selectedSlot.type.has("shield")) {
+				configure.item.shield = 0;
+			}
+			configure.selectedSlot.count = 0;
+			configure.selectedSlot.type = null;
 		}
 	}
 	@Override
