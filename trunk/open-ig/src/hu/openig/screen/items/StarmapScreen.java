@@ -1646,6 +1646,7 @@ public class StarmapScreen extends ScreenBase {
 						fleet().mode = FleetMode.MOVE;
 						fleet().waypoints.add(toMapCoordinates(e.x, e.y));
 					}
+					panning = false;
 				} else
 				if (e.has(Modifier.SHIFT)) {
 					fleet().targetPlanet = null;
@@ -1653,6 +1654,7 @@ public class StarmapScreen extends ScreenBase {
 					fleet().mode = FleetMode.MOVE;
 					fleet().waypoints.add(toMapCoordinates(e.x, e.y));
 					fleetMode = null;
+					panning = false;
 				}
 			} else
 			if (e.has(Button.LEFT)) {

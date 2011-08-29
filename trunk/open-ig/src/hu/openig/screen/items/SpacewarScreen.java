@@ -16,6 +16,7 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile;
 import hu.openig.model.BattleSpaceEntity;
 import hu.openig.model.Building;
+import hu.openig.model.Fleet;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
@@ -328,8 +329,6 @@ public class SpacewarScreen extends ScreenBase {
 	private ThreePhaseButton viewRange;
 	/** View grids. */
 	private ThreePhaseButton viewGrid;
-	/** The nearby planet. */
-	Planet nearbyPlanet;
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -804,204 +803,265 @@ public class SpacewarScreen extends ScreenBase {
 		explosions.clear();
 		
 		this.battle = battle;
-		
-		nearbyPlanet = battle.targetPlanet;
-		if (battle.targetFleet != null) {
-			Planet np = BattleSimulator.findNearbyPlanet(world(), battle);
-			if (np != null) {
-				nearbyPlanet = np;
-			}
-		}
+		BattleSimulator.findHelpers(battle, world());
 		
 		int xmax = space.width;
-		
-		if (nearbyPlanet != null 
-				&& (nearbyPlanet.owner == battle.attacker.owner 
-				|| nearbyPlanet == battle.targetPlanet 
-				|| nearbyPlanet.owner == battle.targetFleet.owner)) {
+
+		Planet nearbyPlanet = battle.getPlanet();
+		Fleet nearbyFleet = battle.getFleet();
+
+		if (nearbyPlanet != null) {
 			planetVisible = true;
 			
-			// place planetary defenses
 			boolean alien = nearbyPlanet.owner != player();
 			
-			List<SpacewarStructure> surface = new ArrayList<SpacewarStructure>();
-			double shieldValue = 0;
-			// add shields
-			for (Building b : nearbyPlanet.surface.buildings) {
-				float eff = b.getEfficiency();
-				if (Building.isOperational(eff) && b.type.kind.equals("Shield")) {
-					BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
-					
-					SpacewarShield sws = new SpacewarShield();
-					sws.image = alien ? bge.alternative : bge.normal;
-					sws.infoImage = bge.infoImage;
-					sws.hp = b.hitpoints;
-					sws.hpMax = b.type.hitpoints;
-					sws.owner = nearbyPlanet.owner;
-					sws.destruction = bge.destruction;
-					sws.building = b;
+			// place planetary defenses
+			double shieldValue = placeShields(nearbyPlanet, alien);
+			placeProjectors(nearbyPlanet, alien, shieldValue);
 
-					shieldValue = Math.max(shieldValue, eff * bge.shields);
-
-					shields.add(sws);
-					surface.add(sws);
-				}
-			}
-			// add projectors
-			for (Building b : nearbyPlanet.surface.buildings) {
-				float eff = b.getEfficiency();
-				if (Building.isOperational(eff) && b.type.kind.equals("Gun")) {
-					BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
-					SpacewarProjector sp = new SpacewarProjector();
-
-					sp.angles = alien ? bge.alternative : bge.normal;
-					sp.angle = Math.PI;
-					sp.infoImage = bge.image;
-					sp.hp = b.hitpoints;
-					sp.hpMax = b.type.hitpoints;
-					sp.owner = nearbyPlanet.owner;
-					sp.destruction = bge.destruction;
-					sp.building = b;
-
-					BattleProjectile pr = world().battle.projectiles.get(bge.projectile);
-					
-					SpacewarWeaponPort wp = new SpacewarWeaponPort();
-					wp.projectile = pr;
-					
-					sp.ports.add(wp);
-					
-					projectors.add(sp);
-					surface.add(sp);
-				}
-			}
-			if (surface.size() > 0) {
-				// place and align surface objects equally
-				int dy = space.height / surface.size();
-				int y = dy / 2;
-				for (SpacewarStructure o : surface) {
-					o.x = space.width - commons.spacewar().planet.getWidth() / 2;
-					o.y = y;
-					o.shield = (int)(o.hp * shieldValue / 100);
-					o.shieldMax = o.shield; 
-					y += dy;
-				}
-				xmax -= commons.spacewar().planet.getWidth();
-			}
-			surface.clear();
-			int maxw = 0;
+			int defenseWidth = Math.max(maxWidth(shields), maxWidth(projectors));
+			centerStructures(space.width - commons.spacewar().planet.getWidth() / 2, JavaUtils.concat(shields, projectors));
+			xmax -= 3 * defenseWidth / 2;
 			
-			// add space stations
-			for (InventoryItem ii : nearbyPlanet.inventory) {
-				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS && ii.owner == nearbyPlanet.owner) {
-					
-					BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
-					
-					SpacewarStation st = new SpacewarStation();
-					st.item = ii;
-					st.owner = nearbyPlanet.owner;
-					st.destruction = bse.destruction;
-					st.image = alien ? bse.alternative[0] : bse.normal[0];
-					st.infoImage = bse.infoImage;
-					st.shield = ii.shield;
-					st.shieldMax = Math.max(0, ii.shieldMax());
-					st.hp = ii.hp;
-					st.hpMax = ii.type.productionCost;
-					
-					maxw = Math.max(maxw, st.image.getWidth());
-					
-					st.ecmLevel = setWeaponPorts(ii, st.ports);
-					
-					surface.add(st);
-					stations.add(st);
-				}
-			}
-
-			// distribute the stations equally
-			if (surface.size() > 0) {
-				int dy = space.height / surface.size();
-				int y = dy / 2;
-				for (SpacewarStructure s : surface) {
-					s.x = xmax - maxw;
-					s.y = y;
-					y += dy;
-				}
-			}
+			// place and align stations
+			placeStations(nearbyPlanet, alien);
+			int stationWidth = maxWidth(stations);
+			centerStructures(xmax - stationWidth, stations);
+			xmax -= 3 * stationWidth / 2;
 			
-			// reduce space for fleet layouts
-			xmax -= 3 * maxw / 2;
 			
 			// add fighters of the planet
-			
-			surface.clear();
 			List<SpacewarShip> shipWall = JavaUtils.newArrayList();
-			createSpacewarShips(nearbyPlanet.inventory, nearbyPlanet.owner, EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
+			createSpacewarShips(nearbyPlanet.inventory, nearbyPlanet.owner, 
+					EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
 			
-			if (shipWall.size() > 0) {
-				maxw = createFighterBatchWall(xmax, shipWall, ships);
+			if (!shipWall.isEmpty()) {
+				int maxw = createSingleRowBatchWall(xmax, true, shipWall, ships);
 				xmax -= 3 * maxw / 2;
 			}
 		} else {
 			planetVisible = false;
 		}
+		
+		// FIXME for now, place fleets via the wall formation
+		
+		if (nearbyPlanet != null && nearbyPlanet.owner == battle.attacker.owner) {
+			// place the attacker on the right side (planet side)
+			
+			placeFleet(xmax, true, battle.attacker);
+			// place the defender on the left side
+			
+			if (nearbyFleet != null) {
+				placeFleet(0, false, nearbyFleet);
+			}
+		} else {
+			// place attacker on the left side
+			placeFleet(0, false, battle.attacker);
+			
+			// place the defender on the planet side (right side)
+			if (nearbyFleet != null) {
+				placeFleet(xmax, true, nearbyFleet);
+			}
+		}
+		
 		zoomToFit();
 	}
 	/**
-	 * Create a wall of fighters by distributing their numbers to new items.
-	 * @param x the  
+	 * Place a fleet onto the map starting from the {@code x} position and {@code angle}.
+	 * @param x the starting position
+	 * @param left expand to the left?
+	 * @param fleet the fleet to place
+	 */
+	void placeFleet(int x, boolean left, Fleet fleet) {
+		List<SpacewarShip> largeShipWall = JavaUtils.newArrayList();
+		// place attacker on the planet side (right side)
+		createSpacewarShips(fleet.inventory, fleet.owner, 
+				EnumSet.of(ResearchSubCategory.SPACESHIPS_BATTLESHIPS, ResearchSubCategory.SPACESHIPS_CRUISERS), largeShipWall);
+		
+		if (!largeShipWall.isEmpty()) {
+			int maxw = createMultiRowWall(x, left, largeShipWall, ships);
+			x = left ? (x - maxw) : (x + maxw);
+		}
+		
+		List<SpacewarShip> smallShipWall = JavaUtils.newArrayList();
+		List<SpacewarShip> smallShipWallOut = JavaUtils.newArrayList();
+		
+		createSpacewarShips(fleet.inventory, fleet.owner, 
+				EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), smallShipWall);
+		if (!smallShipWall.isEmpty()) {
+			createSingleRowBatchWall(x, left, smallShipWall, smallShipWallOut);
+			ships.addAll(smallShipWallOut);
+		}
+
+		orientStructures(left ? Math.PI : 0, largeShipWall);
+		orientStructures(left ? Math.PI : 0, smallShipWallOut);
+
+	}
+	
+	/**
+	 * Place the stations from the planet inventory.
+	 * @param nearbyPlanet the nearby planet
+	 * @param alien true if allied with the non-player
+	 */
+	void placeStations(Planet nearbyPlanet, boolean alien) {
+		
+		for (InventoryItem ii : nearbyPlanet.inventory) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS && ii.owner == nearbyPlanet.owner) {
+				
+				BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
+				
+				SpacewarStation st = new SpacewarStation();
+				st.item = ii;
+				st.owner = nearbyPlanet.owner;
+				st.destruction = bse.destruction;
+				st.image = alien ? bse.alternative[0] : bse.normal[0];
+				st.infoImage = bse.infoImage;
+				st.shield = ii.shield;
+				st.shieldMax = Math.max(0, ii.shieldMax());
+				st.hp = ii.hp;
+				st.hpMax = ii.type.productionCost;
+				
+				st.ecmLevel = setWeaponPorts(ii, st.ports);
+				
+				stations.add(st);
+			}
+		}
+
+	}
+	/**
+	 * Add shields to the planet surface.
+	 * @param nearbyPlanet the planet nearby
+	 * @param alien true if allied with the non-player
+	 * @return the shield value
+	 */
+	double placeShields(Planet nearbyPlanet, boolean alien) {
+		double shieldValue = 0;
+		// add shields
+		for (Building b : nearbyPlanet.surface.buildings) {
+			float eff = b.getEfficiency();
+			if (Building.isOperational(eff) && b.type.kind.equals("Shield")) {
+				BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
+				
+				SpacewarShield sws = new SpacewarShield();
+				sws.image = alien ? bge.alternative : bge.normal;
+				sws.infoImage = bge.infoImage;
+				sws.hp = b.hitpoints;
+				sws.hpMax = b.type.hitpoints;
+				sws.owner = nearbyPlanet.owner;
+				sws.destruction = bge.destruction;
+				sws.building = b;
+
+				shieldValue = Math.max(shieldValue, eff * bge.shields);
+
+				shields.add(sws);
+			}
+		}
+		for (SpacewarShield sws : shields) {
+			sws.shield = (int)(sws.hp * shieldValue / 100);
+			sws.shieldMax = (int)(sws.hpMax * shieldValue / 100);
+		}
+		return shieldValue;
+	}
+	/**
+	 * Place projectors on the planet surface.
+	 * @param nearbyPlanet the nearby planet
+	 * @param alien true if allied with the non-player
+	 * @param shieldValue the shield percentage
+	 */
+	void placeProjectors(Planet nearbyPlanet, boolean alien, double shieldValue) {
+		for (Building b : nearbyPlanet.surface.buildings) {
+			float eff = b.getEfficiency();
+			if (Building.isOperational(eff) && b.type.kind.equals("Gun")) {
+				BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
+				SpacewarProjector sp = new SpacewarProjector();
+
+				sp.angles = alien ? bge.alternative : bge.normal;
+				sp.angle = Math.PI;
+				sp.infoImage = bge.image;
+				sp.hp = b.hitpoints;
+				sp.hpMax = b.type.hitpoints;
+				sp.owner = nearbyPlanet.owner;
+				sp.destruction = bge.destruction;
+				sp.building = b;
+				
+				sp.shield = (int)(sp.hp * shieldValue / 100);
+				sp.shieldMax = (int)(sp.hpMax * shieldValue / 100);
+
+				BattleProjectile pr = world().battle.projectiles.get(bge.projectile);
+				
+				SpacewarWeaponPort wp = new SpacewarWeaponPort();
+				wp.projectile = pr;
+				
+				sp.ports.add(wp);
+				
+				projectors.add(sp);
+			}
+		}
+	}
+	/**
+	 * Create a single row of batched items.
+	 * @param x the starting position 
+	 * @param left expand to the left?
 	 * @param items the list of items to distribute
 	 * @param out the output for the new distributions
 	 * @return the width of the wall
 	 */
-	int createFighterBatchWall(int x,
-			Collection<SpacewarShip> items, Collection<SpacewarShip> out) {
+	int createSingleRowBatchWall(int x, boolean left,
+			Collection<SpacewarShip> items, 
+			Collection<SpacewarShip> out) {
 		int maxWidth = 0;
-		int maxHeight = 0;
 		// determine number of slots
 		for (SpacewarShip e : items) {
-			maxWidth = Math.max(maxWidth, e.angles[0].getWidth());
-			maxHeight = Math.max(maxHeight, e.angles[0].getHeight());
+			maxWidth = Math.max(maxWidth, e.get().getWidth());
 		}
 		
-		int slots = Math.max(items.size(), space.height / maxHeight);
+		LinkedList<SpacewarShip> slotShip = new LinkedList<SpacewarShip>();
 		
-		LinkedList<SpacewarShip> slotShip = new LinkedList<SpacewarShip>(items);
+		centerStructures(left ? x - maxWidth / 2 : x + maxWidth / 2, slotShip);
 		
-		// create half until all slots are filled
-		while (slots >= slotShip.size()) {
-			// create copy
-			SpacewarShip sws = slotShip.removeFirst();
-			SpacewarShip sws2 = sws.copy();
-			slotShip.addLast(sws);
-			slotShip.addLast(sws2);
-
-			int count = 1;
-			for (SpacewarShip s2 : slotShip) {
-				if (s2.item == sws.item) {
-					count++;
-				}
-			}
-			// even out the counts
-			int n = sws.item.count / count;
-			for (SpacewarShip s2 : slotShip) {
-				if (s2.item == sws2.item) {
-					if (s2 == sws2) {
-						s2.count = count;
-					} else {
-						s2.count = n;
-						count -= n;
-					}
-				}
-			}
-		}
-
-		int dy = space.height / slotShip.size();
-		int y = dy / 2;
-		for (SpacewarShip sws : slotShip) {
-			sws.x = x - maxWidth;
-			sws.y = y;
-			y += dy;
-		}
 		out.addAll(slotShip);
+		
+		return maxWidth;
+	}
+	/**
+	 * Create multiple rows of ships based on how many fit vertically.
+	 * @param x the center position of the first row
+	 * @param left expand the columns to the left?
+	 * @param ships the list of ships to lay out
+	 * @param out where to place the ships
+	 * @return the total width of the row
+	 */
+	int createMultiRowWall(int x, boolean left,
+			Collection<? extends SpacewarShip> ships, 
+			Collection<? super SpacewarShip> out) {
+		
+		List<List<SpacewarShip>> rows = new ArrayList<List<SpacewarShip>>();
+		int rowIndex = -1;
+		int y = 0;
+		List<SpacewarShip> currentRow = null;
+		
+		// put ships into rows
+		for (SpacewarShip sws : ships) {
+			if (y + sws.get().getHeight() >= space.height || rowIndex < 0) {
+				rowIndex++;
+				currentRow = new ArrayList<SpacewarShip>();
+				rows.add(currentRow);
+				y = 0;
+			}
+			currentRow.add(sws);
+			y += sws.get().getHeight();
+		}
+
+		int maxWidth = 0;
+		// align all rows center
+		for (List<SpacewarShip> row : rows) {
+			int w = maxWidth(row);
+			centerStructures(left ? x - w / 2 : x + w / 2, row);
+			x = left ? (x - w) : (x + w);
+			maxWidth = maxWidth + w;
+		}
+		
+		out.addAll(ships);
 		
 		return maxWidth;
 	}
@@ -1024,7 +1084,7 @@ public class SpacewarScreen extends ScreenBase {
 				SpacewarShip sws = new SpacewarShip();
 
 				sws.item = ii;
-				sws.owner = nearbyPlanet.owner;
+				sws.owner = owner;
 				sws.destruction = bse.destruction;
 				sws.angles = owner != player() ? bse.alternative : bse.normal;
 				sws.infoImage = bse.infoImage;
@@ -1103,9 +1163,8 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		g2.translate(mainmap.x + ox, mainmap.y + oy);
 		g2.scale(scale, scale);
-		
-		g2.setColor(Color.GRAY);
-		g2.fill(space);
+
+		g2.drawImage(commons.spacewar().background, 0, 0, space.width, space.height, null);
 		
 		if (planetVisible) {
 			g2.drawImage(commons.spacewar().planet, space.width - commons.spacewar().planet.getWidth(), 0, null);
@@ -1187,28 +1246,54 @@ public class SpacewarScreen extends ScreenBase {
 			int h = img.getHeight();
 			int h2 = h / 2;
 			if (e.selected) {
-				g2.setColor(Color.YELLOW);
-				g2.drawRect((int)e.x - w2 - 1, 
-						(int)e.y - h2 - 1, w + 2, h + 2);
+				g2.setColor(Color.GREEN);
+				drawRectCorners(g2, (int)e.x, (int)e.y, w + 2, h + 2, 8);
+				drawRectCorners(g2, (int)e.x, (int)e.y, w + 4, h + 4, 8);
 			}
 			if (viewDamage.selected) {
-				int y = (int)e.y - h2 - 5;
-				if (e.shieldMax > 0) {
-					y -= 4;
-				}
+				int y = (int)e.y - h2;
 				g2.setColor(Color.BLACK);
 				g2.fillRect((int)e.x - w2, y, w, 3);
 				g2.setColor(Color.GREEN);
 				g2.fillRect((int)e.x - w2, y, e.hp * w / e.hpMax, 3);
 				if (e.shieldMax > 0) {
-					g2.setColor(Color.BLACK);
-					y += 4;
-					g2.fillRect((int)e.x - w2, y, w, 3);
 					g2.setColor(new Color(0xFFFFCC00));
 					g2.fillRect((int)e.x - w2, y, e.shield * w / e.shieldMax, 3);
 				}
 			}
+			if (e instanceof SpacewarShip) {
+				SpacewarShip sws = (SpacewarShip)e;
+				if (sws.count != 1) {
+					commons.text().paintTo(g2, (int)e.x, (int)(e.y + h / 2 - 8), 7, 0xFFFFFFFF, Integer.toString(sws.count));
+				}
+			}
 		}
+	}
+	/**
+	 * Draw corners of the specified rectangle with a given length.
+	 * @param g2 the graphics context
+	 * @param cx the center
+	 * @param cy the center
+	 * @param w the width
+	 * @param h the height
+	 * @param len the corner length
+	 */
+	void drawRectCorners(Graphics2D g2, int cx, int cy, int w, int h, int len) {
+		int x0 = cx - w / 2;
+		int x1 = x0 + w - 1;
+		int y0 = cy - h / 2;
+		int y1 = cy + h - 1;
+		
+		g2.drawLine(x0, y0, x0 + len, y0); // top-left horizontal
+		g2.drawLine(x0, y0, x0, y0 + len); // top-left vertical
+		g2.drawLine(x1 - len, y0, x1, y0); // top-right horizontal
+		g2.drawLine(x1, y0, x1, y0 + len); // top-right vertical
+		
+		g2.drawLine(x0, y1, x0 + len, y1); // bottom-left horizontal
+		g2.drawLine(x0, y1, x0, y1 - len); // bottom-left vertical
+		g2.drawLine(x1 - len, y1, x1, y1); // bottom-right horizontal
+		g2.drawLine(x1, y1 - len, x1, y1); // bottom-right vertical
+		
 	}
 	/**
 	 * Draw the spacewar structures symbolically onto the minimap.
@@ -1231,5 +1316,50 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	void drawCenter(BufferedImage img, double x, double y, Graphics2D g2) {
 		g2.drawImage(img, (int)(x - img.getWidth() / 2), (int)(y - img.getHeight() / 2), null);
+	}
+	/**
+	 * Computes the maximum width of the structures.
+	 * @param structures the sequence of structures
+	 * @return the maximum width or 0
+	 */
+	int maxWidth(Iterable<? extends SpacewarStructure> structures) {
+		int w = 0;
+		for (SpacewarStructure s : structures) {
+			w = Math.max(s.get().getWidth(), w);
+		}
+		return w;
+	}
+	/**
+	 * Center structures vertically.
+	 * @param x the center line
+	 * @param structures the collection of structures
+	 */
+	void centerStructures(int x, Iterable<? extends SpacewarStructure> structures) {
+		if (structures.iterator().hasNext()) {
+			int sumHeight = 0;
+			int count = 0;
+			for (SpacewarStructure s : structures) {
+				sumHeight += s.get().getHeight();
+				count++;
+			}
+			double dy = (space.height - sumHeight) * 1.0 / count;
+			double y = dy / 2;
+			for (SpacewarStructure s : structures) {
+				s.x = x;
+				s.y = y + s.get().getHeight() / 2;
+				
+				y += s.get().getHeight() + dy;
+			}
+		}
+	}
+	/**
+	 * Orient structures into the given angle.
+	 * @param angle the target angle in radians
+	 * @param structures the sequence of structures
+	 */
+	void orientStructures(double angle, Iterable<? extends SpacewarShip> structures) {
+		for (SpacewarShip s : structures) {
+			s.angle = angle;
+		}
 	}
 }

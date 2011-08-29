@@ -572,4 +572,45 @@ public final class BattleSimulator {
 	void autoGroundBattle() {
 		
 	}
+	/**
+	 * Find helper fleet or planet for the battle.
+	 * @param battle the battle configuration
+	 * @param world the world object
+	 */
+	public static void findHelpers(BattleInfo battle, World world) {
+		final int minDistance = 20;
+		if (battle.targetFleet != null) {
+			// locate the nearest planet
+			double dmin = Double.MAX_VALUE;
+			Planet pmin = null;
+			for (Planet p : world.planets.values()) {
+				if (p.owner == battle.attacker.owner || p.owner == battle.targetFleet.owner) {
+					double d = World.dist(battle.targetFleet.x, battle.targetFleet.y, p.x, p.y);
+					if (d < dmin && d <= minDistance) {
+						dmin = d;
+						pmin = p;
+					}
+				}
+				
+			}
+			battle.helperPlanet = pmin;
+		} else 
+		if (battle.targetPlanet != null) {
+			// locate the nearest fleet with the same owner
+			double dmin = Double.MAX_VALUE;
+			Fleet fmin = null;
+			for (Fleet f : battle.targetPlanet.owner.fleets.keySet()) {
+				if (f.owner == battle.targetFleet.owner) {
+					double d = World.dist(f.x, f.y, battle.targetPlanet.x, battle.targetPlanet.y);
+					if (d < dmin && d <= minDistance) {
+						dmin = d;
+						fmin = f;
+					}
+				}
+			}
+			battle.helperFleet = fmin;
+		} else {
+			throw new AssertionError("No target in battle settings.");
+		}
+	}
 }

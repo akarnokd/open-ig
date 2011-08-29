@@ -1331,6 +1331,7 @@ public class World {
 				InventoryItem fii = new InventoryItem();
 				fii.type = researches.get(xfii.get("id"));
 				fii.count = xfii.getInt("count");
+				fii.owner = f.owner;
 				Set<String> slots = new HashSet<String>();
 				for (XElement xfis : xfii.childrenWithName("slot")) {
 					InventorySlot fis = new InventorySlot();
