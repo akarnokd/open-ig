@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 /**
  * Utility class for missing java functionalities.
@@ -181,6 +183,48 @@ public final class JavaUtils {
 					t.printStackTrace();
 					throw t;
 				}
+			}
+		};
+	}
+	/**
+	 * Concatenate the sequence of two iterables.
+	 * @param <T> the element type
+	 * @param first the first iterable
+	 * @param second the second iterable
+	 * @return the combining iterable
+	 */
+	public static <T> Iterable<T> concat(final Iterable<? extends T> first, final Iterable<? extends T> second) {
+		return new Iterable<T>() {
+			@Override
+			public Iterator<T> iterator() {
+				return new Iterator<T>() {
+					/** The current iterable. */
+					Iterable<? extends T> currentIt = first;
+					/** The current iterable. */
+					Iterator<? extends T> current = first.iterator();
+					@Override
+					public boolean hasNext() {
+						if (current.hasNext()) {
+							return true;
+						}
+						if (currentIt != second) {
+							currentIt = second;
+							current = currentIt.iterator();
+						}
+						return current.hasNext();
+					}
+					@Override
+					public T next() {
+						if (hasNext()) {
+							return current.next();
+						}
+						throw new NoSuchElementException();
+					}
+					@Override
+					public void remove() {
+						current.remove();
+					}
+				};
 			}
 		};
 	}

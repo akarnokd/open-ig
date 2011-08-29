@@ -19,4 +19,16 @@ public class BattleInfo {
 	public Fleet targetFleet;
 	/** The targeted planet if non null. */
 	public Planet targetPlanet;
+	/** The potential helper fleet if a planet is attacked. */
+	public Fleet helperFleet;
+	/** The potential helper planet if a fleet is attacked. */
+	public Planet helperPlanet;
+	/** @return the helper planet if any. */
+	public Planet getPlanet() {
+		return targetPlanet != null ? targetPlanet : helperPlanet;
+	}
+	/** @return the helper fleet if any. */
+	public Fleet getFleet() {
+		return targetFleet != null ? targetFleet : helperFleet;
+	}
 }
