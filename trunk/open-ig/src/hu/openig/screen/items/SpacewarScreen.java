@@ -25,7 +25,6 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SpacewarBeam;
 import hu.openig.model.SpacewarExplosion;
-import hu.openig.model.SpacewarObject;
 import hu.openig.model.SpacewarProjectile;
 import hu.openig.model.SpacewarProjector;
 import hu.openig.model.SpacewarShield;
@@ -47,6 +46,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -329,6 +329,23 @@ public class SpacewarScreen extends ScreenBase {
 	private ThreePhaseButton viewRange;
 	/** View grids. */
 	private ThreePhaseButton viewGrid;
+	/** We are drawing the selection box. */
+	boolean selectionBox;
+	/** The selection box mode. */
+	enum SelectionBoxMode {
+		/** New selection. */
+		NEW,
+		/** Additive selection. */
+		ADD,
+		/** Subtractive selection. */
+		SUBTRACT
+	}
+	/** The selection mode. */
+	SelectionBoxMode selectionMode;
+	/** The selection box start point. */
+	Point selectionStart;
+	/** The selection box end point. */
+	Point selectionEnd;
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -488,6 +505,19 @@ public class SpacewarScreen extends ScreenBase {
 					}
 				}
 			}
+			if (e.has(Button.LEFT) && mainmap.contains(e.x, e.y)) {
+				selectionBox = true;
+				selectionStart = new Point(e.x, e.y);
+				selectionEnd = selectionStart;
+				if (e.has(Modifier.SHIFT)) {
+					selectionMode = SelectionBoxMode.ADD;
+				} else
+				if (e.has(Modifier.CTRL)) {
+					selectionMode = SelectionBoxMode.SUBTRACT;
+				} else {
+					selectionMode = SelectionBoxMode.NEW;
+				}
+			}
 			if (e.has(Button.RIGHT) && mainmap.contains(e.x, e.y)) {
 				lastX = e.x;
 				lastY = e.y;
@@ -504,6 +534,17 @@ public class SpacewarScreen extends ScreenBase {
 				lastX = e.x;
 				lastY = e.y;
 				needRepaint = true;
+			}
+			if (selectionBox) {
+				selectionEnd = new Point(e.x, e.y);
+				needRepaint = true;
+			}
+			break;
+		case LEAVE:
+			panning = false;
+			if (selectionBox) {
+				doSelectStructures();
+				selectionBox = false;
 			}
 			break;
 		case WHEEL:
@@ -534,6 +575,10 @@ public class SpacewarScreen extends ScreenBase {
 		case UP:
 			if (e.has(Button.RIGHT)) {
 				panning = false;
+			}
+			if (e.has(Button.LEFT) && selectionBox) {
+				doSelectStructures();
+				selectionBox = false;
 			}
 			for (ThreePhaseButton btn : mainCommands) {
 				if (btn.pressed) {
@@ -592,12 +637,103 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		return needRepaint;
 	}
+	/**
+	 * @return Returns a list of the currently selected structures.
+	 */
+	List<SpacewarStructure> getSelection() {
+		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		getSelection(stations, result);
+		getSelection(shields, result);
+		getSelection(projectors, result);
+		getSelection(ships, result);
+		return result;
+	}
+	/**
+	 * Get the selected structures from the {@code source} list.
+	 * @param source the source list
+	 * @param dest the destination list
+	 */
+	void getSelection(List<? extends SpacewarStructure> source, List<? super SpacewarStructure> dest) {
+		for (SpacewarStructure s : source) {
+			if (s.selected) {
+				dest.add(s);
+			}
+		}
+	}
+	/**
+	 * Select the structures which intersect with the current selection box.
+	 */
+	void doSelectStructures() {
+		List<SpacewarStructure> candidates = new ArrayList<SpacewarStructure>();
+		List<SpacewarStructure> currentSelection = getSelection();
+		boolean own = false;
+		if (selectionMode == SelectionBoxMode.ADD) {
+			candidates.addAll(currentSelection);
+		}
+		if (selectionMode != SelectionBoxMode.NEW) {
+			for (SpacewarStructure s : currentSelection) {
+				own |= s.owner == player();
+			}
+		}
+		int sx0 = Math.min(selectionStart.x, selectionEnd.x);
+		int sy0 = Math.min(selectionStart.y, selectionEnd.y);
+		int sx1 = Math.max(selectionStart.x, selectionEnd.x);
+		int sy1 = Math.max(selectionStart.y, selectionEnd.y);
+		
+		Point2D.Double p0 = mouseToSpace(sx0, sy0);
+		Point2D.Double p1 = mouseToSpace(sx1, sy1);
+		
+		own = testStructure(stations, candidates, own, p0, p1);
+		own = testStructure(shields, candidates, own, p0, p1);
+		own = testStructure(projectors, candidates, own, p0, p1);
+		own = testStructure(ships, candidates, own, p0, p1);
+		
+		if (selectionMode == SelectionBoxMode.SUBTRACT) {
+			currentSelection.removeAll(candidates);
+			candidates = currentSelection;
+		}
+		
+		if (own) {
+			for (SpacewarStructure s : candidates) {
+				if (s.owner == player()) {
+					s.selected = true;
+				} else {
+					s.selected = false;
+				}
+			}
+		} else {
+			for (SpacewarStructure s : candidates) {
+				s.selected = true;
+			}
+		}
+	}
+	/**
+	 * Test the structures in source.
+	 * @param source the source structures
+	 * @param candidates the candidate for selection
+	 * @param own was own items?
+	 * @param p0 the top-left point
+	 * @param p1 the bottom-right point
+	 * @return was own items?
+	 */
+	boolean testStructure(Iterable<? extends SpacewarStructure> source,
+			List<SpacewarStructure> candidates, boolean own,
+			Point2D.Double p0, Point2D.Double p1) {
+		for (SpacewarStructure s : source) {
+			s.selected = false;
+			if (s.intersects(p0.x, p0.y, p1.x - p0.x, p1.y - p0.y)) {
+				own |= s.owner == player();
+				candidates.add(s);
+			}
+		}
+		return own;
+	}
 	/** Zoom in/out to fit the available main map space. */
 	void zoomToFit() {
 		double xscale = mainmap.width * 1.0 / space.width;
 		double yscale = mainmap.height * 1.0 / space.height;
 		double s = Math.min(xscale, yscale) * 20;
-		scale = Math.round(s) / 20.0;
+		scale = Math.min(1.0, Math.round(s) / 20.0);
 		pan(0, 0);
 	}
 
@@ -703,10 +839,10 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param y the mouse position to keep steady 
 	 */
 	protected void doZoomIn(int x, int y) {
-		Point p0 = mouseToSpace(x, y);
+		Point2D.Double p0 = mouseToSpace(x, y);
 		scale = Math.min(scale + 0.05, 1.0);
-		Point p1 = mouseToSpace(x, y);
-		pan(p0.x - p1.x, p0.y - p1.y);
+		Point2D.Double p1 = mouseToSpace(x, y);
+		pan((int)(p0.x - p1.x), (int)(p0.y - p1.y));
 	}
 	/** 
 	 * Zoom out.
@@ -714,10 +850,10 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param y the mouse position to keep steady 
 	 */
 	protected void doZoomOut(int x, int y) {
-		Point p0 = mouseToSpace(x, y);
+		Point2D.Double p0 = mouseToSpace(x, y);
 		scale = Math.max(scale - 0.05, 0.45);
-		Point p1 = mouseToSpace(x, y);
-		pan(p0.x - p1.x, p0.y - p1.y);
+		Point2D.Double p1 = mouseToSpace(x, y);
+		pan((int)(p0.x - p1.x), (int)(p0.y - p1.y));
 	}
 	/**
 	 * Convert the mouse coordinate to space coordinates.
@@ -725,7 +861,7 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param y the current mouse Y on the screen
 	 * @return the space coordinates
 	 */
-	Point mouseToSpace(int x, int y) {
+	Point2D.Double mouseToSpace(int x, int y) {
 		int ox = -offsetX;
 		int oy = -offsetY;
 		if (space.width * scale < mainmap.width) {
@@ -735,9 +871,9 @@ public class SpacewarScreen extends ScreenBase {
 			oy = (int)((mainmap.height - space.height * scale) / 2);
 		}
 		
-		int x0 = x - mainmap.x - ox;
-		int y0 = y - mainmap.y - oy;
-		return new Point(x0, y0);
+		double x0 = (x - mainmap.x - ox) * scale;
+		double y0 = (y - mainmap.y - oy) * scale;
+		return new Point2D.Double(x0, y0);
 	}
 	/** Pause. */
 	protected void doPause() {
@@ -1010,18 +1146,74 @@ public class SpacewarScreen extends ScreenBase {
 			Collection<SpacewarShip> items, 
 			Collection<SpacewarShip> out) {
 		int maxWidth = 0;
+		int maxHeight = 0;
 		// determine number of slots
 		for (SpacewarShip e : items) {
 			maxWidth = Math.max(maxWidth, e.get().getWidth());
+			maxHeight += e.get().getWidth();
 		}
 		
-		LinkedList<SpacewarShip> slotShip = new LinkedList<SpacewarShip>();
+		LinkedList<SpacewarShip> ships = new LinkedList<SpacewarShip>(items);
+		LinkedList<SpacewarShip> group = new LinkedList<SpacewarShip>();
+
+		while (!ships.isEmpty()) {
+			SpacewarShip sws = ships.removeFirst();
+			if (sws.count > 1) {
+				if (maxHeight + sws.get().getHeight() <= space.height) {
+					int sum = sws.count;
+					SpacewarShip sws2 = sws.copy();
+					sws.count = sum / 2;
+					sws2.count = sum - sum / 2;
+					ships.addLast(sws);
+					ships.addLast(sws2);
+					evenCounts(ships, sws.item);
+					maxHeight += sws.get().getHeight();
+				} else {
+					group.add(sws);
+					break;
+				}
+			} else {
+				group.add(sws);
+			}
+		}
+		group.addAll(ships);
 		
-		centerStructures(left ? x - maxWidth / 2 : x + maxWidth / 2, slotShip);
+		centerStructures(left ? x - maxWidth / 2 : x + maxWidth / 2, group);
 		
-		out.addAll(slotShip);
+		out.addAll(group);
 		
 		return maxWidth;
+	}
+	/**
+	 * Even out the counts of the ships based on the inventory item.
+	 * @param ships the ship collection
+	 * @param item the reference item
+	 */
+	void evenCounts(Collection<SpacewarShip> ships, InventoryItem item) {
+		int count = 0;
+		int sum = 0;
+		for (SpacewarShip sws : ships) {
+			if (sws.item == item) {
+				count++;
+				sum += sws.count;
+			}
+		}
+		double n = 1.0 * sum / count;
+		int i = 1;
+		int alloc = 0;
+		SpacewarShip last = null;
+		for (SpacewarShip sws : ships) {
+			if (sws.item == item) {
+				double m = n * i;
+				sws.count = (int)(m - alloc);
+				alloc += sws.count;
+				i++;
+				last = sws;
+			}
+		}
+		if (alloc < sum) {
+			last.count += sum - alloc;
+		}
 	}
 	/**
 	 * Create multiple rows of ships based on how many fit vertically.
@@ -1184,8 +1376,18 @@ public class SpacewarScreen extends ScreenBase {
 		for (SpacewarExplosion e : explosions) {
 			drawCenter(e.get(), e.x, e.y, g2);
 		}
-		
 		g2.setTransform(af);
+
+		if (selectionBox) {
+			int sx0 = Math.min(selectionStart.x, selectionEnd.x);
+			int sy0 = Math.min(selectionStart.y, selectionEnd.y);
+			int sx1 = Math.max(selectionStart.x, selectionEnd.x);
+			int sy1 = Math.max(selectionStart.y, selectionEnd.y);
+			g2.setColor(new Color(255, 255, 255, 128));
+			g2.fillRect(sx0, sy0, sx1 - sx0 + 1, sy1 - sy0 + 1);
+		}
+
+		
 		g2.setClip(save0);
 		
 		// draw minimap
@@ -1247,24 +1449,25 @@ public class SpacewarScreen extends ScreenBase {
 			int h2 = h / 2;
 			if (e.selected) {
 				g2.setColor(Color.GREEN);
-				drawRectCorners(g2, (int)e.x, (int)e.y, w + 2, h + 2, 8);
-				drawRectCorners(g2, (int)e.x, (int)e.y, w + 4, h + 4, 8);
+				drawRectCorners(g2, (int)e.x, (int)e.y, w, h, 8);
+//				drawRectCorners(g2, (int)e.x, (int)e.y, w + 6, h + 6, 8);
 			}
 			if (viewDamage.selected) {
-				int y = (int)e.y - h2;
+				int y = (int)e.y - h2 + 2;
+				int dw = w - 6;
 				g2.setColor(Color.BLACK);
-				g2.fillRect((int)e.x - w2, y, w, 3);
+				g2.fillRect((int)e.x - w2 + 3, y, dw, 3);
 				g2.setColor(Color.GREEN);
-				g2.fillRect((int)e.x - w2, y, e.hp * w / e.hpMax, 3);
+				g2.fillRect((int)e.x - w2 + 3, y, e.hp * dw / e.hpMax, 3);
 				if (e.shieldMax > 0) {
 					g2.setColor(new Color(0xFFFFCC00));
-					g2.fillRect((int)e.x - w2, y, e.shield * w / e.shieldMax, 3);
+					g2.fillRect((int)e.x - w2 + 3, y, e.shield * dw / e.shieldMax, 3);
 				}
 			}
 			if (e instanceof SpacewarShip) {
 				SpacewarShip sws = (SpacewarShip)e;
 				if (sws.count != 1) {
-					commons.text().paintTo(g2, (int)e.x, (int)(e.y + h / 2 - 8), 7, 0xFFFFFFFF, Integer.toString(sws.count));
+					commons.text().paintTo(g2, (int)(e.x - w2), (int)(e.y + h / 2 - 8), 7, 0xFFFFFFFF, Integer.toString(sws.count));
 				}
 			}
 		}
@@ -1282,7 +1485,7 @@ public class SpacewarScreen extends ScreenBase {
 		int x0 = cx - w / 2;
 		int x1 = x0 + w - 1;
 		int y0 = cy - h / 2;
-		int y1 = cy + h - 1;
+		int y1 = y0 + h - 1;
 		
 		g2.drawLine(x0, y0, x0 + len, y0); // top-left horizontal
 		g2.drawLine(x0, y0, x0, y0 + len); // top-left vertical
@@ -1301,10 +1504,35 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param g2 the graphics context
 	 */
 	void drawSpacewarStructuresMinimap(Iterable<? extends SpacewarStructure> structures, Graphics2D g2) {
-		for (SpacewarObject e : structures) {
+		for (SpacewarStructure e : structures) {
+			if (e.owner == player()) {
+				if (e.selected) {
+					g2.setColor(Color.GREEN);
+				} else {
+					g2.setColor(new Color(0x786cc2));
+				}
+			} else {
+				g2.setColor(Color.ORANGE);
+			}
 			int x = minimap.x + (int)(e.x * minimap.width / space.width);
 			int y = minimap.y + (int)(e.y * minimap.height / space.height);
-			g2.drawLine(x, y, x, y);
+			int w = 2;
+			if (e instanceof SpacewarShip) {
+				SpacewarShip sws = (SpacewarShip) e;
+				if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+					w = 2;
+				} else
+				if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+					w = 3;
+				} else
+				if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					w = 1;
+				}
+			} else
+			if (e instanceof SpacewarStation) {
+				w = 3;
+			}
+			g2.fillRect(x - w / 2, y - w / 2, w, w);
 		}
 	}
 	/**
