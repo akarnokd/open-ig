@@ -33,9 +33,11 @@ import hu.openig.model.SpacewarStation;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWeaponPort;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
+import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.JavaUtils;
 
 import java.awt.Color;
@@ -196,11 +198,7 @@ public class SpacewarScreen extends ScreenBase {
 		}
 	}
 	/** Animated toggle button. */
-	class AnimatedRadioButton {
-		/** The x coordinate. */
-		int x;
-		/** The y coordinate. */
-		int y;
+	class AnimatedRadioButton extends UIComponent {
 		/** The phases. The 0th is the default when not selected. */
 		BufferedImage[] phases;
 		/** Is selected? */
@@ -211,52 +209,38 @@ public class SpacewarScreen extends ScreenBase {
 		Act action;
 		/**
 		 * Constructor.
-		 * @param x the X coordinate
-		 * @param y the Y coordinate
 		 * @param phases the phases
 		 */
-		public AnimatedRadioButton(int x, int y, BufferedImage[] phases) {
-			this.x = x;
-			this.y = y;
+		public AnimatedRadioButton(BufferedImage[] phases) {
 			this.phases = phases;
-		}
-		/** Move to the next animation. */
-		protected void doAnimate() {
-			animationIndex = (animationIndex + 1) % (phases.length - 1);
-			askRepaint(x, y, phases[0].getWidth(), phases[0].getHeight());
+			width = phases[0].getWidth();
+			height = phases[0].getHeight();
 		}
 		/**
 		 * Render the button.
 		 * @param g2 the graphics object
-		 * @param x0 the reference x coordinate
-		 * @param y0 the reference y coordinate
 		 */
-		public void paintTo(Graphics2D g2, int x0, int y0) {
-			g2.drawImage(commons.spacewar().stat, x0 + x, y0 + y, null);
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.drawImage(commons.spacewar().stat, 0, 0, null);
 			if (selected) {
-				g2.drawImage(phases[1 + animationIndex], x0 + x + (commons.spacewar().stat.getWidth() - phases[1 + animationIndex].getWidth()) / 2,
-						y0 + y + (commons.spacewar().stat.getHeight() - phases[1 + animationIndex].getHeight()) / 2, null);
+				g2.drawImage(phases[1 + animationIndex], 
+						(commons.spacewar().stat.getWidth() - phases[1 + animationIndex].getWidth()) / 2,
+						(commons.spacewar().stat.getHeight() - phases[1 + animationIndex].getHeight()) / 2, null);
 			} else {
-				g2.drawImage(phases[0], x0 + x + (commons.spacewar().stat.getWidth() - phases[0].getWidth()) / 2,
-						y0 + y + (commons.spacewar().stat.getHeight() - phases[0].getHeight()) / 2, null);
+				g2.drawImage(phases[0], (commons.spacewar().stat.getWidth() - phases[0].getWidth()) / 2,
+						(commons.spacewar().stat.getHeight() - phases[0].getHeight()) / 2, null);
 			}
 		}
-		/**
-		 * Test if the mouse is within this button.
-		 * @param mx the mouse X coordinate
-		 * @param my the mouse Y coordinate
-		 * @param x0 the reference x coordinate
-		 * @param y0 the reference y coordinate
-		 * @return true if within the button
-		 */
-		public boolean test(int mx, int my, int x0, int y0) {
-			return mx >= x0 + x && my >= y0 + y && mx < x0 + x + phases[0].getWidth() && my < y0 + y + phases[0].getHeight();
-		}
-		/** Invoke the associated action if present. */
-		public void invoke() {
-			if (action != null) {
-				action.act();
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				if (action != null) {
+					action.act();
+				}
+				return true;
 			}
+			return false;
 		}
 	}
 	/** The animation timer. */
@@ -277,10 +261,6 @@ public class SpacewarScreen extends ScreenBase {
 	TwoPhaseButton confirmRetreat;
 	/** Stop retreat. */
 	TwoPhaseButton stopRetreat;
-	/** The left animated buttons. */
-	List<AnimatedRadioButton> leftButtons;
-	/** The right animated buttons. */
-	List<AnimatedRadioButton> rightButtons;
 	/** The space ships for animation. */
 	final List<SpacewarShip> ships = new ArrayList<SpacewarShip>();
 	/** The space stations for animation. */
@@ -340,12 +320,51 @@ public class SpacewarScreen extends ScreenBase {
 		/** Subtractive selection. */
 		SUBTRACT
 	}
+	/** The panel mode. */
+	enum PanelMode {
+		/** Show ship status. */
+		SHIP_STATUS,
+		/** Show fleet statistics. */
+		STATISTICS,
+		/** Show ship information. */
+		SHIP_INFORMATION,
+		/** Show communicator. */
+		COMMUNICATOR,
+		/** Show movie. */
+		MOVIE,
+		/** The layout. */
+		LAYOUT
+	}
 	/** The selection mode. */
 	SelectionBoxMode selectionMode;
 	/** The selection box start point. */
 	Point selectionStart;
 	/** The selection box end point. */
 	Point selectionEnd;
+	/** Left ship status button. */
+	AnimatedRadioButton leftShipStatus;
+	/** Right ship status button. */
+	AnimatedRadioButton rightShipStatus;
+	/** Left fleet statistics button. */
+	AnimatedRadioButton leftStatistics;
+	/** Right fleet statistics button. */
+	AnimatedRadioButton rightStatistics;
+	/** Left ship information list. */
+	AnimatedRadioButton leftShipInformation;
+	/** Right ship information list. */
+	AnimatedRadioButton rightShipInformation;
+	/** Left communicator window. */
+	AnimatedRadioButton leftCommunicator;
+	/** Right communicator window. */
+	AnimatedRadioButton rightCommunicator;
+	/** Left movie. */
+	AnimatedRadioButton leftMovie;
+	/** Right movie. */
+	AnimatedRadioButton rightMovie;
+	/** The list of animation buttons. */
+	List<AnimatedRadioButton> animatedButtonsLeft = new ArrayList<AnimatedRadioButton>();
+	/** The list of animation buttons. */
+	List<AnimatedRadioButton> animatedButtonsRight = new ArrayList<AnimatedRadioButton>();
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -377,30 +396,76 @@ public class SpacewarScreen extends ScreenBase {
 		confirmRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().sure);
 		stopRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().stopTall);
 		
-		leftButtons = new ArrayList<AnimatedRadioButton>();
-		leftButtons.add(new AnimatedRadioButton(0, 0, commons.spacewar().ships));
-		leftButtons.add(new AnimatedRadioButton(0, 40, commons.spacewar().statistics));
-		leftButtons.add(new AnimatedRadioButton(0, 80, commons.spacewar().fires));
-		leftButtons.add(new AnimatedRadioButton(0, 120, commons.spacewar().computers));
-		leftButtons.add(new AnimatedRadioButton(0, 160, commons.spacewar().movies));
 		
-		rightButtons = new ArrayList<AnimatedRadioButton>();
-		rightButtons.add(new AnimatedRadioButton(0, 0, commons.spacewar().ships));
-		rightButtons.add(new AnimatedRadioButton(0, 40, commons.spacewar().statistics));
-		rightButtons.add(new AnimatedRadioButton(0, 80, commons.spacewar().fires));
-		rightButtons.add(new AnimatedRadioButton(0, 120, commons.spacewar().computers));
-		rightButtons.add(new AnimatedRadioButton(0, 160, commons.spacewar().movies));
+		leftShipStatus = createButton(commons.spacewar().ships, true, PanelMode.SHIP_STATUS);
+		rightShipStatus = createButton(commons.spacewar().ships, false, PanelMode.SHIP_STATUS);
+		
+		leftStatistics = createButton(commons.spacewar().statistics, true, PanelMode.STATISTICS);
+		rightStatistics = createButton(commons.spacewar().statistics, false, PanelMode.STATISTICS);
+		
+		leftShipInformation = createButton(commons.spacewar().shipInfo, true, PanelMode.SHIP_INFORMATION);
+		rightShipInformation = createButton(commons.spacewar().shipInfo, false, PanelMode.SHIP_INFORMATION);
+		
+		leftCommunicator = createButton(commons.spacewar().computers, true, PanelMode.COMMUNICATOR);
+		rightCommunicator = createButton(commons.spacewar().computers, false, PanelMode.COMMUNICATOR);
+		
+		leftMovie = createButton(commons.spacewar().movies, true, PanelMode.MOVIE);
+		rightMovie = createButton(commons.spacewar().movies, false, PanelMode.MOVIE);
+		
+		addThis();
+	}
+	/**
+	 * Creates an animation button with the panel mode settings.
+	 * @param phases the animation phases
+	 * @param left put it onto the left side?
+	 * @param mode the panel mode
+	 * @return the button
+	 */
+	AnimatedRadioButton createButton(BufferedImage[] phases, final boolean left, final PanelMode mode) {
+		final AnimatedRadioButton btn = new AnimatedRadioButton(phases);
+		btn.action = new Act() {
+			@Override
+			public void act() {
+				displayPanel(mode, left);
+				selectButton(btn, left);
+			}
+		};
+		if (left) {
+			animatedButtonsLeft.add(btn);
+		} else {
+			animatedButtonsRight.add(btn);
+		}
+		return btn;
+	}
+	/**
+	 * Select the specified radio button.
+	 * @param btn the button to select
+	 * @param left on the left side?
+	 */
+	void selectButton(AnimatedRadioButton btn, boolean left) {
+		for (AnimatedRadioButton b : (left ? animatedButtonsLeft : animatedButtonsRight)) {
+			b.selected = b == btn;
+		}
+		askRepaint();
+	}
+	/**
+	 * Display the specified information panel on the given side.
+	 * @param mode the panel mode
+	 * @param left on the left side?
+	 */
+	void displayPanel(PanelMode mode, boolean left) {
+		
 	}
 	/**
 	 * Animate selected buttons.
 	 */
 	protected void doButtonAnimations() {
-		for (AnimatedRadioButton arb : leftButtons) {
+		for (AnimatedRadioButton arb : animatedButtonsLeft) {
 			if (arb.selected) {
 				arb.animationIndex = (arb.animationIndex + 1) % (arb.phases.length - 1);
 			}
 		}
-		for (AnimatedRadioButton arb : rightButtons) {
+		for (AnimatedRadioButton arb : animatedButtonsRight) {
 			if (arb.selected) {
 				arb.animationIndex = (arb.animationIndex + 1) % (arb.phases.length - 1);
 			}
@@ -413,7 +478,8 @@ public class SpacewarScreen extends ScreenBase {
 		boolean needRepaint = false;
 		switch (e.type) {
 		case DOWN:
-			if (e.x < commons.spacewar().commands.getWidth() && e.y < commons.spacewar().commands.getHeight() + 20 + commons.spacewar().frameTopLeft.getHeight()) {
+			if (e.x < commons.spacewar().commands.getWidth() 
+					&& e.y < commons.spacewar().commands.getHeight() + 20 + commons.spacewar().frameTopLeft.getHeight()) {
 				for (ThreePhaseButton btn : mainCommands) {
 					if (btn.test(e.x, e.y)) {
 						btn.selected = true;
@@ -470,39 +536,6 @@ public class SpacewarScreen extends ScreenBase {
 				if (stopRetreat.test(e.x, e.y)) {
 					stopRetreat.pressed = true;
 					needRepaint = true;
-				}
-			}
-			if (e.x < leftPanel.x && e.y > leftPanel.y) {
-				for (AnimatedRadioButton arb : leftButtons) {
-					if (arb.test(e.x, e.y, leftPanel.x - 28, leftPanel.y + 1) 
-							&& !arb.selected) {
-						arb.selected = true;
-						arb.animationIndex = 0;
-						for (AnimatedRadioButton arb2 : leftButtons) {
-							if (arb != arb2) {
-								arb2.selected = false;
-							}
-						}
-						arb.invoke();
-						needRepaint = true;
-						break;
-					}
-				}
-			}
-			if (e.x > rightPanel.x && e.y > rightPanel.y) {
-				for (AnimatedRadioButton arb : rightButtons) {
-					if (arb.test(e.x, e.y, rightPanel.x + rightPanel.width + 5, rightPanel.y + 1) && !arb.selected) {
-						arb.selected = true;
-						arb.animationIndex = 0;
-						for (AnimatedRadioButton arb2 : rightButtons) {
-							if (arb != arb2) {
-								arb2.selected = false;
-							}
-						}
-						arb.invoke();
-						needRepaint = true;
-						break;
-					}
 				}
 			}
 			if (e.has(Button.LEFT) && mainmap.contains(e.x, e.y)) {
@@ -635,6 +668,9 @@ public class SpacewarScreen extends ScreenBase {
 			break;
 		default:
 		}
+		if (!needRepaint) {
+			needRepaint = super.mouse(e);
+		}
 		return needRepaint;
 	}
 	/**
@@ -758,12 +794,26 @@ public class SpacewarScreen extends ScreenBase {
 	}
 	@Override
 	public void onResize() {
-		// TODO Auto-generated method stub
 		minimap.setBounds(62, 168 + 20, 110, 73);
 		mainmap.setBounds(175, 23, getInnerWidth() - 3 - commons.spacewar().commands.getWidth(),
 				getInnerHeight() - 38 - 3 - commons.spacewar().panelStatLeft.getHeight());
 		leftPanel.setBounds(32, getInnerHeight() - 18 - 3 - 195, 286, 195);
 		rightPanel.setBounds(getInnerWidth() - 33 - 286, getInnerHeight() - 18 - 3 - 195, 286, 195);
+		
+
+		leftShipStatus.location(leftPanel.x - 28, leftPanel.y + 1);
+		leftStatistics.location(leftPanel.x - 28, leftPanel.y + 41);
+		leftShipInformation.location(leftPanel.x - 28, leftPanel.y + 81);
+		leftCommunicator.location(leftPanel.x - 28, leftPanel.y + 121);
+		leftMovie.location(leftPanel.x - 28, leftPanel.y + 161);
+
+		rightShipStatus.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 1);
+		rightStatistics.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 41);
+		rightShipInformation.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 81);
+		rightCommunicator.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 121);
+		rightMovie.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 161);
+
+		
 		pan(0, 0);
 	}
 
@@ -817,12 +867,6 @@ public class SpacewarScreen extends ScreenBase {
 		confirmRetreat.paintTo(g2);
 		stopRetreat.paintTo(g2);
 
-		for (AnimatedRadioButton arb : leftButtons) {
-			arb.paintTo(g2, leftPanel.x - 28, leftPanel.y + 1);
-		}
-		for (AnimatedRadioButton arb : rightButtons) {
-			arb.paintTo(g2, rightPanel.x + rightPanel.width + 5, rightPanel.y + 1);
-		}
 		g2.setColor(Color.BLACK);
 		g2.fill(minimap);
 		
@@ -832,6 +876,7 @@ public class SpacewarScreen extends ScreenBase {
 		g2.drawImage(commons.spacewar().panelIg, rightPanel.x, rightPanel.y, null);
 		
 		drawBattle(g2);
+		super.draw(g2);
 	}
 	/** 
 	 * Zoom in.
