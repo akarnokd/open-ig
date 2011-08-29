@@ -30,5 +30,4 @@ public abstract class SpacewarStructure extends SpacewarObject {
 	public int shieldMax;
 	/** The destruction sound. */
 	public SoundType destruction;
-
 }
