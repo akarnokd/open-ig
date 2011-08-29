@@ -42,7 +42,7 @@ public class SpacewarGFX {
 	public BufferedImage[] statistics;
 	/** Fires animation. */
 	@Anim(name = "spacewar/button_label_stat_3", width = 20)
-	public BufferedImage[] fires;
+	public BufferedImage[] shipInfo;
 	/** Computers animation. */
 	@Anim(name = "spacewar/button_label_stat_4", width = 21)
 	public BufferedImage[] computers;
