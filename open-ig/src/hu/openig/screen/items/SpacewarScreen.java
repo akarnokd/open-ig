@@ -791,6 +791,15 @@ public class SpacewarScreen extends ScreenBase {
 		commons.restoreMainSimulationSpeedFunction();
 		commons.battleMode = false;
 		commons.playRegularMusic();
+		
+		battle = null;
+		stations.clear();
+		shields.clear();
+		projectiles.clear();
+		projectors.clear();
+		ships.clear();
+		beams.clear();
+		explosions.clear();
 	}
 	@Override
 	public void onResize() {
@@ -1100,7 +1109,7 @@ public class SpacewarScreen extends ScreenBase {
 				st.shield = ii.shield;
 				st.shieldMax = Math.max(0, ii.shieldMax());
 				st.hp = ii.hp;
-				st.hpMax = ii.type.productionCost;
+				st.hpMax = ii.type.hitpoints();
 				
 				st.ecmLevel = setWeaponPorts(ii, st.ports);
 				
@@ -1127,7 +1136,7 @@ public class SpacewarScreen extends ScreenBase {
 				sws.image = alien ? bge.alternative : bge.normal;
 				sws.infoImage = bge.infoImage;
 				sws.hp = b.hitpoints;
-				sws.hpMax = b.type.hitpoints;
+				sws.hpMax = b.type.hitpoints();
 				sws.owner = nearbyPlanet.owner;
 				sws.destruction = bge.destruction;
 				sws.building = b;
@@ -1160,7 +1169,7 @@ public class SpacewarScreen extends ScreenBase {
 				sp.angle = Math.PI;
 				sp.infoImage = bge.image;
 				sp.hp = b.hitpoints;
-				sp.hpMax = b.type.hitpoints;
+				sp.hpMax = b.type.hitpoints();
 				sp.owner = nearbyPlanet.owner;
 				sp.destruction = bge.destruction;
 				sp.building = b;
@@ -1317,6 +1326,9 @@ public class SpacewarScreen extends ScreenBase {
 		for (InventoryItem ii : inventory) {
 			if (categories.contains(ii.type.category) && ii.owner == owner) {
 				BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
+				if (bse == null) {
+					System.err.println("Missing space entity: " + ii.type.id);
+				}
 				
 				SpacewarShip sws = new SpacewarShip();
 
@@ -1327,8 +1339,8 @@ public class SpacewarScreen extends ScreenBase {
 				sws.infoImage = bse.infoImage;
 				sws.shield = ii.shield;
 				sws.shieldMax = Math.max(0, ii.shieldMax());
-				sws.hp = ii.type.productionCost;
-				sws.hpMax = ii.type.productionCost;
+				sws.hp = ii.hp;
+				sws.hpMax = ii.type.hitpoints();
 				sws.count = ii.count;
 				sws.rotationSpeed = bse.rotationSpeed;
 				sws.movementSpeed = bse.movementSpeed;
@@ -1357,7 +1369,11 @@ public class SpacewarScreen extends ScreenBase {
 					|| is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES)) {
 				SpacewarWeaponPort wp = new SpacewarWeaponPort();
 				wp.count = is.count;
-				wp.projectile = world().battle.projectiles.get(is.type.id);
+				BattleProjectile bp = world().battle.projectiles.get(is.type.get("projectile"));
+				if (bp == null) {
+					System.err.println("Missing projectile: " + is.type.id);
+				}
+				wp.projectile = bp;
 				ports.add(wp);
 			}
 			if (is.type != null && is.type.has("ecm")) {

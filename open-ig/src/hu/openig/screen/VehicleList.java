@@ -272,7 +272,7 @@ public class VehicleList extends UIContainer {
 				
 				InventoryItem ii = e.getValue().items.get(e.getValue().index);
 				
-				int hpx = ((availableWidth - maxWidth) * ii.hp / ii.type.productionCost);
+				int hpx = ((availableWidth - maxWidth) * ii.hp / ii.type.hitpoints());
 				
 				g2.setColor(Color.GREEN);
 				g2.fillRect(maxWidth + 5, y, hpx, 4);
@@ -315,7 +315,7 @@ public class VehicleList extends UIContainer {
 				
 				// damage and shield indicators
 				
-				long hpMax = pii.type.productionCost;
+				long hpMax = pii.type.hitpoints();
 				int hpx = (int)((availableWidth - maxWidth) * pii.hp / hpMax);
 				
 				g2.setColor(Color.GREEN);

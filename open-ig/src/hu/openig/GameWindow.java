@@ -17,6 +17,7 @@ import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Message;
@@ -24,6 +25,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
@@ -1078,6 +1080,13 @@ public class GameWindow extends JFrame implements GameControls {
 						scr.maySave = true;
 					}
 					break;
+				case KeyEvent.VK_M:
+					if (e.isControlDown()) {
+						doPlaceTestFleets();
+						repaintInner();
+						e.consume();
+					}
+					break;
 				case KeyEvent.VK_I:
 					if (e.isControlDown()) {
 						if (commons.world().player.currentResearch() != null) {
@@ -1617,4 +1626,41 @@ public class GameWindow extends JFrame implements GameControls {
 		allScreens.statusbar.errorText = text;
 		allScreens.statusbar.errorTTL = StatusbarScreen.DEFALT_ERROR_TTL;
 	}
+	/**
+	 * Place test fleets at certain positions to test space battle.
+	 */
+	void doPlaceTestFleets() {
+		Fleet playerFleet = new Fleet();
+		playerFleet.id = world().fleetIdSequence++;
+		playerFleet.name = "Test";
+		playerFleet.owner = world().player;
+		playerFleet.x = world().planets.get("Centronom").x + 10;
+		playerFleet.y = world().planets.get("Centronom").y;
+		playerFleet.owner.fleets.put(playerFleet, FleetKnowledge.FULL);
+		
+		Fleet alienFleet = new Fleet();
+		alienFleet.id = world().fleetIdSequence++;
+		alienFleet.name = "Test";
+		alienFleet.owner = world().players.get("Garthog");
+		alienFleet.x = world().planets.get("Centronom").x;
+		alienFleet.y = world().planets.get("Centronom").y + 10;
+		alienFleet.owner.fleets.put(alienFleet, FleetKnowledge.FULL);
+		
+		
+		for (ResearchType rt : world().researches.values()) {
+			InventoryItem ii = new InventoryItem();
+			ii.type = rt;
+			ii.count = 1;
+			ii.hp = rt.hitpoints();
+			ii.createSlots();
+			if (rt.race.contains(world().player.race)) {
+				ii.owner = playerFleet.owner;
+				playerFleet.inventory.add(ii);
+			} else {
+				ii.owner = alienFleet.owner;
+				alienFleet.inventory.add(ii);
+			}
+		}
+	}
+	
 }
