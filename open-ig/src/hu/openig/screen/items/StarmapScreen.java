@@ -2140,12 +2140,14 @@ public class StarmapScreen extends ScreenBase {
 		fleetAttack.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doFleetAttack();
 			}
 		};
 		fleetStop.onPress = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.NOT_AVAILABLE);
 				doFleetStop();
 			}
 		};

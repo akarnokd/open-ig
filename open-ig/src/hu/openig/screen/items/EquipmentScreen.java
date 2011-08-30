@@ -856,6 +856,7 @@ public class EquipmentScreen extends ScreenBase {
 				player().currentFleet = of.iterator().next();
 			}
 		}
+		configure.clear();
 	}
 
 	@Override

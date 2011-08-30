@@ -53,13 +53,22 @@ public class EquipmentConfigure extends UIComponent {
 			return;
 		}
 		
+		drawSlots(g2, item, selectedSlot);
+	}
+	/**
+	 * Draw the inventory slots.
+	 * @param g2 the graphics context
+	 * @param item the inventory item
+	 * @param selected the current slot
+	 */
+	public static void drawSlots(Graphics2D g2, InventoryItem item, InventorySlot selected) {
 		Color green = new Color(0x009A00);
 		for (InventorySlot is : item.slots) {
 			if (!is.slot.fixed) {
 				if (is.type != null) {
-					g2.setColor(is == selectedSlot ? green : Color.BLACK);
+					g2.setColor(is == selected ? green : Color.BLACK);
 					g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
-					if (is != selectedSlot && is.hp < is.type.hitpoints()) {
+					if (is != selected && is.hp < is.type.hitpoints()) {
 						g2.setColor(interpolate(
 								is.hp * 1.0f / is.type.hitpoints(), 
 								Color.RED, Color.ORANGE, Color.YELLOW));
@@ -68,7 +77,7 @@ public class EquipmentConfigure extends UIComponent {
 					}
 					g2.drawRect(is.slot.x + 1, is.slot.y + 1, is.slot.width - 3, is.slot.height - 3);
 				} else {
-					g2.setColor(is == selectedSlot ? green : Color.BLACK);
+					g2.setColor(is == selected ? green : Color.BLACK);
 					g2.drawRect(is.slot.x + 1, is.slot.y + 1, is.slot.width - 3, is.slot.height - 3);
 					g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
 					g2.setColor(green);
@@ -90,7 +99,7 @@ public class EquipmentConfigure extends UIComponent {
 		if (onSelect != null && item != null 
 				&& e.has(Button.LEFT) && e.has(Type.DOWN)) {
 			for (InventorySlot es : item.slots) {
-				if (e.within(es.slot.x, es.slot.y, es.slot.width, es.slot.height)) {
+				if (!es.slot.fixed && e.within(es.slot.x, es.slot.y, es.slot.width, es.slot.height)) {
 					onSelect.invoke(es);
 					return true;
 				}
@@ -106,7 +115,7 @@ public class EquipmentConfigure extends UIComponent {
 	 * @param colors the available color points
 	 * @return the new color
 	 */
-	Color interpolate(float amount, Color... colors) {
+	static Color interpolate(float amount, Color... colors) {
 		int idx = (int)(amount * (colors.length - 1));
 		if (idx == colors.length - 1) {
 			return colors[colors.length - 1];
@@ -131,5 +140,22 @@ public class EquipmentConfigure extends UIComponent {
 				(int)(b0 + (amount - f0) / f1 * (b1 - b0)),
 				(int)(a0 + (amount - f0) / f1 * (a1 - a0))
 		);
+	}
+	/**
+	 * Assign the type, item and slot values from the another instance.
+	 * @param other the another instance
+	 */
+	public void assign(EquipmentConfigure other) {
+		this.type = other.type;
+		this.item = other.item;
+		this.selectedSlot = other.selectedSlot;
+	}
+	/**
+	 * Clear the configuration.
+	 */
+	public void clear() {
+		this.type = null;
+		this.item = null;
+		this.selectedSlot = null;
 	}
 }

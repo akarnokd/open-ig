@@ -620,6 +620,8 @@ public class CommonResources {
 						act.action.act();
 					} catch (CancellationException ex) {
 						act.cancelled = true;
+					} catch (Throwable t) {
+						t.printStackTrace();
 					}
 				}
 			}

@@ -24,5 +24,5 @@ public class BattleGroundProjector {
 	/** The projectile used. */
 	public String projectile;
 	/** The information image. */
-	public BufferedImage image;
+	public BufferedImage infoImage;
 }

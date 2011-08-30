@@ -1566,7 +1566,7 @@ public class World {
 			} else {
 				se.alternative = se.normal;
 			}
-			se.image = rl.getImage(xdefense.get("image"));
+			se.infoImage = rl.getImage(xdefense.get("image"));
 			if (xdefense.has("sound")) {
 				se.destruction = SoundType.valueOf(xdefense.get("sound"));
 			} else {
