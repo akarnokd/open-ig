@@ -59,9 +59,9 @@ public class EquipmentConfigure extends UIComponent {
 				if (is.type != null) {
 					g2.setColor(is == selectedSlot ? green : Color.BLACK);
 					g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
-					if (is != selectedSlot && is.hp < is.type.productionCost) {
+					if (is != selectedSlot && is.hp < is.type.hitpoints()) {
 						g2.setColor(interpolate(
-								is.hp * 1.0f / is.type.productionCost, 
+								is.hp * 1.0f / is.type.hitpoints(), 
 								Color.RED, Color.ORANGE, Color.YELLOW));
 					} else {
 						g2.setColor(green);

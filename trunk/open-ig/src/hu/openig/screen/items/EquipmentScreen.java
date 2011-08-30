@@ -1505,10 +1505,24 @@ public class EquipmentScreen extends ScreenBase {
 		clearCells(fighters);
 		clearCells(tanks);
 		
+		
+		
 		for (ResearchType rt : world().researches.values()) {
-			if (!world().canDisplayResearch(rt) || (p != null && p.owner != player()) || (f != null && f.owner != player())) {
+			if (!rt.race.contains(player().race) || (p != null && p.owner != player()) 
+					|| (f != null && f.owner != player())) {
 				continue;
 			}
+			
+			boolean avail = player().isAvailable(rt);
+			
+			int count = 0;
+			if (p != null) {
+				count = p.inventoryCount(rt, player());
+			} else 
+			if (f != null) {
+				count = f.inventoryCount(rt);
+			}
+			
 			VehicleCell vc = null;
 			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				vc = fighters.get(rt.index);
@@ -1519,15 +1533,10 @@ public class EquipmentScreen extends ScreenBase {
 			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				vc = tanks.get(rt.index + 4);
 			}
-			
-			if (vc != null && player().isAvailable(rt)) {
+
+			if (vc != null && (count > 0 || avail)) {
+				vc.count = count;
 				vc.type = rt;
-				if (p != null) {
-					vc.count = p.inventoryCount(rt, player());
-				} else
-				if (f != null) {
-					vc.count = f.inventoryCount(rt);
-				}
 			}
 		}
 	}
@@ -1675,7 +1684,7 @@ public class EquipmentScreen extends ScreenBase {
 					pii.owner = player();
 					pii.type = research();
 					pii.count = 1;
-					pii.hp = pii.type.productionCost;
+					pii.hp = pii.type.hitpoints();
 					
 					pii.createSlots();
 					
@@ -1844,7 +1853,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 0;
-			configure.selectedSlot.hp = research().productionCost;
+			configure.selectedSlot.hp = research().hitpoints();
 			if (research().has("shield")) {
 				configure.item.shield = Math.max(0, configure.item.shieldMax());
 			}
@@ -1865,7 +1874,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 0;
-			configure.selectedSlot.hp = research().productionCost;
+			configure.selectedSlot.hp = research().hitpoints();
 			if (research().has("shield")) {
 				configure.item.shield = Math.max(0, configure.item.shieldMax());
 			}
@@ -2093,11 +2102,11 @@ public class EquipmentScreen extends ScreenBase {
 				ii = planet().getInventoryItem(research(), player());
 			}
 			if (ii != null) {
-				int worth = ii.type.productionCost;
+				int worth = ii.type.hitpoints();
 				
 				for (InventorySlot is : ii.slots) {
 					if (is.type != null && !is.slot.fixed) {
-						worth += is.type.productionCost * is.count;
+						worth += is.type.hitpoints() * is.count;
 					}
 				}
 				

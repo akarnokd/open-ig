@@ -88,7 +88,7 @@ public class Fleet implements Named, Owned {
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
-			pii.hp = type.productionCost;
+			pii.hp = type.hitpoints();
 			pii.createSlots();
 			pii.shield = Math.max(0, pii.shieldMax());
 			
@@ -121,15 +121,18 @@ public class Fleet implements Named, Owned {
 		for (InventoryItem fii : inventory) {
 			boolean checkHyperdrive = false;
 			boolean checkFirepower = false;
+			boolean checkRadar = false;
 			if (fii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 				result.battleshipCount += fii.count;
 				checkHyperdrive = true;
 				checkFirepower = true;
+				checkRadar = true;
 			} else
 			if (fii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 				result.cruiserCount += fii.count;
 				checkHyperdrive = true;
 				checkFirepower = true;
+				checkRadar = true;
 			} else
 			if (fii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				result.fighterCount += fii.count;
@@ -141,9 +144,6 @@ public class Fleet implements Named, Owned {
 				result.vehicleCount += fii.count;
 			}
 			
-			if (fii.type.has("radar")) {
-				radar = Math.max(radar, fii.type.getInt("radar")); 
-			}
 			if (fii.type.has("vehicles")) {
 				result.vehicleMax += fii.type.getInt("vehicles"); 
 			}
@@ -152,7 +152,7 @@ public class Fleet implements Named, Owned {
 			}
 			for (InventorySlot slot : fii.slots) {
 				if (slot.type != null) {
-					if (slot.type.has("radar")) {
+					if (checkRadar && slot.type.has("radar")) {
 						radar = Math.max(radar, slot.type.getInt("radar")); 
 					}
 					if (slot.type.has("vehicles")) {
@@ -215,7 +215,7 @@ public class Fleet implements Named, Owned {
 				ii.count = 1;
 				ii.type = type;
 				ii.owner = owner;
-				ii.hp = type.productionCost;
+				ii.hp = type.hitpoints();
 				
 				for (EquipmentSlot es : type.slots.values()) {
 					InventorySlot is = new InventorySlot();
@@ -223,7 +223,7 @@ public class Fleet implements Named, Owned {
 					if (es.fixed) {
 						is.type = es.items.get(0);
 						is.count = es.max;
-						is.hp = is.type.productionCost;
+						is.hp = is.type.hitpoints();
 					} else {
 						List<ResearchType> availList = owner.availableLevel(type);
 						
@@ -236,7 +236,7 @@ public class Fleet implements Named, Owned {
 								} else {
 									is.count = es.max / 2;
 								}
-								is.hp = rt1.productionCost;
+								is.hp = rt1.hitpoints();
 							}
 						}
 						if (is.count == 0) {

@@ -284,7 +284,7 @@ public final class BattleSimulator {
 		int hpBefore = 0;
 		int hpAfter = 0;
 		for (InventoryItem ii : new ArrayList<InventoryItem>(fleet.inventory)) {
-			int d = ii.type.productionCost * percent / 100;
+			int d = ii.type.hitpoints() * percent / 100;
 			int hp0 = ii.hp;
 			if (ii.shield > 0) {
 				if (ii.shield >= d / 2) {
@@ -348,7 +348,7 @@ public final class BattleSimulator {
 		for (InventoryItem ii : new ArrayList<InventoryItem>(planet.inventory)) {
 			if (ii.owner == planet.owner) {
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					ii.hp = Math.max(0, ii.hp - ii.type.productionCost * defensivePercent / 100);
+					ii.hp = Math.max(0, ii.hp - ii.type.hitpoints() * defensivePercent / 100);
 					if (ii.hp <= 0) {
 						planet.inventory.remove(ii);
 					} else {

@@ -531,7 +531,7 @@ public class World {
 				ii.owner = players.get(xinv.get("owner"));
 				ii.type = researches.get(xinv.get("id"));
 				ii.count = xinv.getInt("count");
-				ii.hp = xinv.getInt("hp", ii.type.productionCost);
+				ii.hp = Math.min(xinv.getInt("hp", ii.type.hitpoints()), ii.type.hitpoints());
 				ii.createSlots();
 				ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
 
@@ -1209,7 +1209,7 @@ public class World {
 				pii.owner = players.get(xpii.get("owner"));
 				pii.type = researches.get(xpii.get("id"));
 				pii.count = xpii.getInt("count");
-				pii.hp = xpii.getInt("hp", pii.type.productionCost);
+				pii.hp = Math.min(xpii.getInt("hp", pii.type.hitpoints()), pii.type.hitpoints());
 				pii.createSlots();
 				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
 				
@@ -1353,13 +1353,13 @@ public class World {
 						if (es.fixed) {
 							fis.type = es.items.get(0);
 							fis.count = es.max;
-							fis.hp = fis.type.productionCost;
+							fis.hp = fis.type.hitpoints();
 						}
 						fii.slots.add(fis);
 					}
 				}
 				fii.shield = xfii.getInt("shield", Math.max(0, fii.shieldMax()));
-				fii.hp = xfii.getInt("hp", fii.type.productionCost);
+				fii.hp = Math.min(xfii.getInt("hp", fii.type.hitpoints()), fii.type.hitpoints());
 				f.inventory.add(fii);
 			}
 			// fi

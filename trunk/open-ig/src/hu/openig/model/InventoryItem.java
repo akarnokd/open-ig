@@ -42,7 +42,7 @@ public class InventoryItem {
 				result = Math.max(result, sl.type.getInt("shield"));
 			}
 		}
-		return result * type.productionCost / 100;
+		return result * type.hitpoints() / 100;
 	}
 	/**
 	 * Return the inventory slot with the given identifier.
@@ -67,8 +67,9 @@ public class InventoryItem {
 			if (es.fixed) {
 				is.type = es.items.get(0);
 				is.count = es.max;
-				is.hp = is.type.productionCost;
+				is.hp = is.type.hitpoints();
 			}
+			slots.add(is);
 		}
 	}
 }
