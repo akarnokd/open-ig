@@ -32,8 +32,13 @@ import hu.openig.model.SpacewarShip;
 import hu.openig.model.SpacewarStation;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWeaponPort;
+import hu.openig.render.TextRenderer;
+import hu.openig.screen.EquipmentConfigure;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIContainer;
+import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
@@ -51,6 +56,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -365,6 +373,21 @@ public class SpacewarScreen extends ScreenBase {
 	List<AnimatedRadioButton> animatedButtonsLeft = new ArrayList<AnimatedRadioButton>();
 	/** The list of animation buttons. */
 	List<AnimatedRadioButton> animatedButtonsRight = new ArrayList<AnimatedRadioButton>();
+	/** Annotation to show a component on a specified panel mode and side. */
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface Show {
+		/** The panel mode. */
+		PanelMode mode();
+		/** Is the left side? */
+		boolean left();
+	}
+	
+	/** The left equipment configuration. */
+	@Show(mode = PanelMode.SHIP_STATUS, left = true)
+	ShipStatus leftStatus;
+	/** The right equipment configuration. */
+	@Show(mode = PanelMode.SHIP_STATUS, left = false)
+	ShipStatus rightStatus;
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -412,6 +435,11 @@ public class SpacewarScreen extends ScreenBase {
 		leftMovie = createButton(commons.spacewar().movies, true, PanelMode.MOVIE);
 		rightMovie = createButton(commons.spacewar().movies, false, PanelMode.MOVIE);
 		
+		leftStatus = new ShipStatus();
+		leftStatus.visible(false);
+		rightStatus = new ShipStatus();
+		rightStatus.visible(false);
+		
 		addThis();
 	}
 	/**
@@ -454,7 +482,18 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param left on the left side?
 	 */
 	void displayPanel(PanelMode mode, boolean left) {
-		
+		for (Field f : getClass().getDeclaredFields()) {
+			Show a = f.getAnnotation(Show.class);
+			if (a != null) {
+				try {
+					if (a.left() == left) {
+						UIComponent.class.cast(f.get(this)).visible(a.mode() == mode);
+					}
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 	/**
 	 * Animate selected buttons.
@@ -742,6 +781,25 @@ public class SpacewarScreen extends ScreenBase {
 				s.selected = true;
 			}
 		}
+		displaySelectedShipInfo();
+	}
+	/** Display information about the selected ship. */
+	void displaySelectedShipInfo() {
+		List<SpacewarStructure> currentSelection = getSelection();
+		if (currentSelection.size() == 1) {
+			leftStatus.update(currentSelection.get(0));
+			rightStatus.update(currentSelection.get(0));	
+		} else {
+			leftStatus.update(null);
+			rightStatus.update(null);
+			if (currentSelection.size() > 1) {
+				leftStatus.displayMany();
+				rightStatus.displayMany();
+			} else {
+				leftStatus.displayNone();
+				rightStatus.displayNone();
+			}
+		}
 	}
 	/**
 	 * Test the structures in source.
@@ -792,6 +850,8 @@ public class SpacewarScreen extends ScreenBase {
 		commons.battleMode = false;
 		commons.playRegularMusic();
 		
+		// cleanup
+		
 		battle = null;
 		stations.clear();
 		shields.clear();
@@ -800,6 +860,9 @@ public class SpacewarScreen extends ScreenBase {
 		ships.clear();
 		beams.clear();
 		explosions.clear();
+		
+		leftStatus.clear();
+		rightStatus.clear();
 	}
 	@Override
 	public void onResize() {
@@ -822,6 +885,8 @@ public class SpacewarScreen extends ScreenBase {
 		rightCommunicator.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 121);
 		rightMovie.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 161);
 
+		leftStatus.location(leftPanel.x, leftPanel.y);
+		rightStatus.location(rightPanel.x, rightPanel.y);
 		
 		pan(0, 0);
 	}
@@ -1055,6 +1120,12 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		
 		zoomToFit();
+		commons.playBattleMusic();
+		
+		displayPanel(PanelMode.SHIP_STATUS, true);
+		if (battle.attacker.owner == player() && (nearbyPlanet == null || nearbyPlanet.owner != player())) {
+			displayPanel(PanelMode.LAYOUT, false);
+		}
 	}
 	/**
 	 * Place a fleet onto the map starting from the {@code x} position and {@code angle}.
@@ -1167,7 +1238,7 @@ public class SpacewarScreen extends ScreenBase {
 
 				sp.angles = alien ? bge.alternative : bge.normal;
 				sp.angle = Math.PI;
-				sp.infoImage = bge.image;
+				sp.infoImage = bge.infoImage;
 				sp.hp = b.hitpoints;
 				sp.hpMax = b.type.hitpoints();
 				sp.owner = nearbyPlanet.owner;
@@ -1649,6 +1720,213 @@ public class SpacewarScreen extends ScreenBase {
 	void orientStructures(double angle, Iterable<? extends SpacewarShip> structures) {
 		for (SpacewarShip s : structures) {
 			s.angle = angle;
+		}
+	}
+	/**
+	 * The ship status panel.
+	 * @author akarnokd, 2011.08.30.
+	 *
+	 */
+	class ShipStatus extends UIContainer {
+		/** Label. */
+		UILabel title;
+		/** Label. */
+		UILabel owner;
+		/** Label. */
+		UILabel unitType;
+		/** Label. */
+		UILabel unitName;
+		/** Label. */
+		UILabel type;
+		/** Label. */
+		UILabel count;
+		/** Label. */
+		UILabel damage;
+		/** The associated inventory item. */
+		InventoryItem item;
+		/** The selected inventory slot. */
+		InventorySlot selectedSlot;
+		/** The image to display. */
+		BufferedImage image;
+		/** Constructor with layout. */
+		public ShipStatus() {
+			width = 286;
+			height = 195;
+			
+			title = new UILabel(get("spacewar.ship_status"), 10, commons.text());
+			title.horizontally(HorizontalAlignment.CENTER);
+			title.width = width;
+			title.location(0, 7);
+			title.color(TextRenderer.YELLOW);
+			
+			owner = new UILabel("", 7, commons.text());
+			owner.color(TextRenderer.YELLOW);
+			unitType = new UILabel("", 7, commons.text());
+			unitType.color(TextRenderer.YELLOW);
+			unitName = new UILabel("", 7, commons.text());
+			unitName.color(TextRenderer.YELLOW);
+
+			type = new UILabel("", 7, commons.text());
+			count = new UILabel("", 7, commons.text());
+			damage = new UILabel("", 7, commons.text());
+
+			addThis();
+		}
+		/** Calculate locations. */
+		void setLocations() {
+			type.color(TextRenderer.WHITE);
+			count.color(TextRenderer.WHITE);
+			damage.color(TextRenderer.WHITE);
+			owner.location(15, 165);
+			unitType.location(15, 175);
+			unitName.location(15, 185);
+			type.location(15, 135);
+			count.location(15, 145);
+			damage.location(15, 155);
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			setLocations();
+			if (image != null) {
+				g2.drawImage(image, 0, 0, null);
+				if (item != null) {
+					g2.translate(-6, 15);
+					EquipmentConfigure.drawSlots(g2, item, selectedSlot);
+					g2.translate(6, -15);
+				}
+			} else {
+				g2.drawImage(commons.spacewar().panelStar, 0, 0, null);
+			}
+			super.draw(g2);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN) && e.has(Button.LEFT) && item != null) {
+				int dx = -6;
+				int dy = 15;
+				for (InventorySlot es : item.slots) {
+					if (!es.slot.fixed && e.within(es.slot.x + dx, es.slot.y + dy, es.slot.width, es.slot.height)) {
+						updateSlot(es);
+						return true;
+					}
+				}
+			}
+			return super.mouse(e);
+		}
+		/**
+		 * Update the display values.
+		 * @param item the inventory item
+		 */
+		public void update(SpacewarStructure item) {
+
+			unitType.text("", true);
+			unitName.text("", true);
+			type.text("", true);
+			damage.text("", true);
+			count.text("", true);
+			owner.text("", true);
+			
+			if (item != null) {
+				owner.text(format("spacewar.ship_owner", item.owner.name), true);
+				image = null;
+	
+				InventoryItem lastItem = this.item;
+				
+				if (item instanceof SpacewarShip) {
+					SpacewarShip s = (SpacewarShip) item;
+	
+					unitType.text(format("spacewar.ship_type", s.item.type.longName), true);
+					unitName.text(format("spacewar.ship_name", "-"), true);
+					
+					BattleSpaceEntity bse = world().battle.spaceEntities.get(s.item.type.id);
+					image = bse.infoImage;
+					
+					this.item = s.item;
+					if (lastItem != s.item) {
+						selectFirstSlot();
+					}
+					updateSlot(selectedSlot);
+				} else
+				if (item instanceof SpacewarStation) {
+					SpacewarStation s = (SpacewarStation) item;
+					unitType.text(format("spacewar.ship_type", s.item.type.longName), true);
+					unitName.text(format("spacewar.ship_name", "-"), true);
+					BattleSpaceEntity bse = world().battle.spaceEntities.get(s.item.type.id);
+					image = bse.infoImage;
+					this.item = s.item;
+					if (lastItem != s.item) {
+						selectFirstSlot();
+					}
+					updateSlot(selectedSlot);
+				} else
+				if (item instanceof SpacewarProjector) {
+					SpacewarProjector s = (SpacewarProjector) item;
+					unitType.text(format("spacewar.ship_type", s.building.type.name), true);
+					BattleGroundProjector bgp = world().battle.groundProjectors.get(s.building.type.id);
+					image = bgp.infoImage;
+					
+				} else
+				if (item instanceof SpacewarShield) {
+					SpacewarShield s = (SpacewarShield) item;
+					unitType.text(format("spacewar.ship_type", s.building.type.name), true);
+					BattleGroundShield bgp = world().battle.groundShields.get(s.building.type.id);
+					image = bgp.infoImage;
+				}
+			} else {
+				item = null;
+				selectedSlot = null;
+				image = null;
+			}
+		}
+		/** Display label for no ship selected. */
+		public void displayNone() {
+			owner.text(get("spacewar.ship_status_none"), true);
+		}
+		/** Display label for too many ships selected. */
+		public void displayMany() {
+			owner.text(get("spacewar.ship_status_many"), true);
+		}
+		/** Select the first slot. */
+		public void selectFirstSlot() {
+			updateSlot(null);
+			if (item != null) {
+				for (InventorySlot is : item.slots) {
+					if (!is.slot.fixed) {
+						updateSlot(is);
+						return;
+					}
+				}
+			}
+		}
+		/**
+		 * Set the current inventory slot.
+		 * @param is the new inventory slot
+		 */
+		public void updateSlot(InventorySlot is) {
+			this.selectedSlot = is;
+			if (is != null) {
+				if (is.type != null) {
+					damage.text(format("spacewar.ship_weapon_damage", 100 * (is.type.hitpoints() - is.hp) / is.type.hitpoints()), true);
+					count.text(format("spacewar.ship_weapon_count", is.count), true);
+					type.text(format("spacewar.ship_weapon_type", is.type.name), true);
+				} else {
+					count.text(format("spacewar.ship_weapon_count", 0), true);
+					type.text(format("spacewar.ship_weapon_type", get("inventoryslot." + is.slot.id)), true);
+					damage.text("", true);
+				}
+			} else {
+				damage.text("", true);
+				count.text("", true);
+				type.text("", true);
+			}
+		}
+		/** Clear the display. */
+		public void clear() {
+			item = null;
+			selectedSlot = null;
+			image = null;
+			update(null);
+			displayNone();
 		}
 	}
 }

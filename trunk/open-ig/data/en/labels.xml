@@ -2695,6 +2695,25 @@
 	<entry key='message.not_enough_money'>Not enough money!</entry>
 	<entry key='settings.auto_repair_limit'>Auto-repair money limit</entry>
 	<entry key='message.cant_build_there'>You can't build there!</entry>
+
+	<entry key='spacewar.ship_status'>Ship status</entry>
+	<entry key='spacewar.ship_owner' >Owner    : %s</entry>
+	<entry key='spacewar.ship_type'  >Type     : %s</entry>
+	<entry key='spacewar.ship_name'  >Unit name: %s</entry>
+	<entry key='spacewar.ship_weapon_type'  >Type  : %s</entry>
+	<entry key='spacewar.ship_weapon_count' >Count : %d</entry>
+	<entry key='spacewar.ship_weapon_damage'>Damage: %d%%</entry>
+	<entry key='spacewar.ship_weapon_empty'>Üres</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

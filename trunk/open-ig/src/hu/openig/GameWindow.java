@@ -1559,7 +1559,6 @@ public class GameWindow extends JFrame implements GameControls {
 					commons.pause();
 					SpacewarScreen sws = (SpacewarScreen)displayPrimary(Screens.SPACEWAR);
 					sws.initiateBattle(bi);
-					commons.playBattleMusic();
 				} else {
 					// check if the attacker has ground vehicles at all
 					boolean ableToGroundBattle = false;
