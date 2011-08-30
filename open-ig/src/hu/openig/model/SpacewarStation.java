@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.model.BattleProjectile.Mode;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,5 +30,19 @@ public class SpacewarStation extends SpacewarStructure {
 	@Override
 	public BufferedImage get() {
 		return image;
+	}
+	@Override
+	public int getFirepower() {
+		int sum = 0;
+		for (SpacewarWeaponPort p : ports) {
+			if (p.projectile.mode == Mode.BEAM) {
+				sum += p.projectile.damage * p.count;
+			}
+		}
+		return sum;
+	}
+	@Override
+	public String getType() {
+		return item.type.name;
 	}
 }

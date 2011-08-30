@@ -30,4 +30,12 @@ public abstract class SpacewarStructure extends SpacewarObject {
 	public int shieldMax;
 	/** The destruction sound. */
 	public SoundType destruction;
+	/** @return the type name describing this structure. */
+	public abstract String getType();
+	/** @return the damage in percent. */
+	public int getDamage() {
+		return 100 * (hpMax - hp) / hpMax;
+	}
+	/** @return the firepower. */
+	public abstract int getFirepower();
 }

@@ -234,4 +234,8 @@ public class Building {
 	public boolean isComplete() {
 		return buildProgress == type.hitpoints;
 	}
+	/** @return The hitpoints used in the battle calculations. */ 
+	public int battleHitpoints() {
+		return hitpoints / 10;
+	}
 }

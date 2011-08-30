@@ -14,6 +14,7 @@ import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile;
+import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.BattleSpaceEntity;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
@@ -230,14 +231,13 @@ public class SpacewarScreen extends ScreenBase {
 		 */
 		@Override
 		public void draw(Graphics2D g2) {
-			g2.drawImage(commons.spacewar().stat, 0, 0, null);
 			if (selected) {
 				g2.drawImage(phases[1 + animationIndex], 
-						(commons.spacewar().stat.getWidth() - phases[1 + animationIndex].getWidth()) / 2,
-						(commons.spacewar().stat.getHeight() - phases[1 + animationIndex].getHeight()) / 2, null);
+						(24 - phases[1 + animationIndex].getWidth()) / 2,
+						(34 - phases[1 + animationIndex].getHeight()) / 2, null);
 			} else {
-				g2.drawImage(phases[0], (commons.spacewar().stat.getWidth() - phases[0].getWidth()) / 2,
-						(commons.spacewar().stat.getHeight() - phases[0].getHeight()) / 2, null);
+				g2.drawImage(phases[0], (24 - phases[0].getWidth()) / 2,
+						(34 - phases[0].getHeight()) / 2, null);
 			}
 		}
 		@Override
@@ -384,10 +384,24 @@ public class SpacewarScreen extends ScreenBase {
 	
 	/** The left equipment configuration. */
 	@Show(mode = PanelMode.SHIP_STATUS, left = true)
-	ShipStatus leftStatus;
+	ShipStatusPanel leftStatusPanel;
 	/** The right equipment configuration. */
 	@Show(mode = PanelMode.SHIP_STATUS, left = false)
-	ShipStatus rightStatus;
+	ShipStatusPanel rightStatusPanel;
+	/** We are in layout selection mode? */
+	boolean layoutSelectionMode;
+	/** Left statistics panel. */
+	@Show(mode = PanelMode.STATISTICS, left = true)
+	StatisticsPanel leftStatisticsPanel;
+	/** Right statistics panel. */
+	@Show(mode = PanelMode.STATISTICS, left = false)
+	StatisticsPanel rightStatisticsPanel;
+	/** The left ship information panel. */
+	@Show(mode = PanelMode.SHIP_INFORMATION, left = true)
+	ShipInformationPanel leftShipInfoPanel;
+	/** The right ship information panel. */
+	@Show(mode = PanelMode.SHIP_INFORMATION, left = false)
+	ShipInformationPanel rightShipInfoPanel;
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -435,10 +449,20 @@ public class SpacewarScreen extends ScreenBase {
 		leftMovie = createButton(commons.spacewar().movies, true, PanelMode.MOVIE);
 		rightMovie = createButton(commons.spacewar().movies, false, PanelMode.MOVIE);
 		
-		leftStatus = new ShipStatus();
-		leftStatus.visible(false);
-		rightStatus = new ShipStatus();
-		rightStatus.visible(false);
+		leftStatusPanel = new ShipStatusPanel();
+		leftStatusPanel.visible(false);
+		rightStatusPanel = new ShipStatusPanel();
+		rightStatusPanel.visible(false);
+		
+		leftStatisticsPanel = new StatisticsPanel();
+		leftStatisticsPanel.visible(false);
+		rightStatisticsPanel = new StatisticsPanel();
+		rightStatisticsPanel.visible(false);
+		
+		leftShipInfoPanel = new ShipInformationPanel();
+		leftShipInfoPanel.visible(false);
+		rightShipInfoPanel = new ShipInformationPanel();
+		rightShipInfoPanel.visible(false);
 		
 		addThis();
 	}
@@ -787,17 +811,29 @@ public class SpacewarScreen extends ScreenBase {
 	void displaySelectedShipInfo() {
 		List<SpacewarStructure> currentSelection = getSelection();
 		if (currentSelection.size() == 1) {
-			leftStatus.update(currentSelection.get(0));
-			rightStatus.update(currentSelection.get(0));	
+			SpacewarStructure sws = currentSelection.get(0);
+			leftStatusPanel.update(sws);
+			rightStatusPanel.update(sws);
+			leftShipInfoPanel.item = sws;
+			rightShipInfoPanel.item = sws;
 		} else {
-			leftStatus.update(null);
-			rightStatus.update(null);
+			leftStatusPanel.update(null);
+			rightStatusPanel.update(null);
+			leftShipInfoPanel.item = null;
+			rightShipInfoPanel.item = null;
+			
 			if (currentSelection.size() > 1) {
-				leftStatus.displayMany();
-				rightStatus.displayMany();
+				leftStatusPanel.displayMany();
+				rightStatusPanel.displayMany();
+				
+				leftShipInfoPanel.isMany = true;
+				rightShipInfoPanel.isMany = true;
 			} else {
-				leftStatus.displayNone();
-				rightStatus.displayNone();
+				leftStatusPanel.displayNone();
+				rightStatusPanel.displayNone();
+				
+				leftShipInfoPanel.isMany = false;
+				rightShipInfoPanel.isMany = false;
 			}
 		}
 	}
@@ -861,8 +897,11 @@ public class SpacewarScreen extends ScreenBase {
 		beams.clear();
 		explosions.clear();
 		
-		leftStatus.clear();
-		rightStatus.clear();
+		leftStatusPanel.clear();
+		rightStatusPanel.clear();
+		
+		leftShipInfoPanel.clear();
+		rightShipInfoPanel.clear();
 	}
 	@Override
 	public void onResize() {
@@ -885,8 +924,24 @@ public class SpacewarScreen extends ScreenBase {
 		rightCommunicator.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 121);
 		rightMovie.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 161);
 
-		leftStatus.location(leftPanel.x, leftPanel.y);
-		rightStatus.location(rightPanel.x, rightPanel.y);
+		for (Field f : getClass().getDeclaredFields()) {
+			Show a = f.getAnnotation(Show.class);
+			if (a != null) {
+				if (a.left()) {
+					try {
+						UIComponent.class.cast(f.get(this)).location(leftPanel.x, leftPanel.y);
+					} catch (IllegalAccessException ex) {
+						ex.printStackTrace();
+					}
+				} else {
+					try {
+						UIComponent.class.cast(f.get(this)).location(rightPanel.x, rightPanel.y);
+					} catch (IllegalAccessException ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+		}
 		
 		pan(0, 0);
 	}
@@ -1065,6 +1120,14 @@ public class SpacewarScreen extends ScreenBase {
 		Planet nearbyPlanet = battle.getPlanet();
 		Fleet nearbyFleet = battle.getFleet();
 
+		battle.attackerGroundUnits = groundUnitCount(battle.attacker);
+		if (battle.targetFleet != null) {
+			battle.defenderGroundUnits = groundUnitCount(battle.targetFleet);
+		} else
+		if (battle.helperFleet != null) {
+			battle.defenderGroundUnits = groundUnitCount(battle.helperFleet);
+		}
+		
 		if (nearbyPlanet != null) {
 			planetVisible = true;
 			
@@ -1125,6 +1188,9 @@ public class SpacewarScreen extends ScreenBase {
 		displayPanel(PanelMode.SHIP_STATUS, true);
 		if (battle.attacker.owner == player() && (nearbyPlanet == null || nearbyPlanet.owner != player())) {
 			displayPanel(PanelMode.LAYOUT, false);
+			setLayoutSelectionMode(true);
+		} else {
+			setLayoutSelectionMode(false);
 		}
 	}
 	/**
@@ -1206,7 +1272,7 @@ public class SpacewarScreen extends ScreenBase {
 				SpacewarShield sws = new SpacewarShield();
 				sws.image = alien ? bge.alternative : bge.normal;
 				sws.infoImage = bge.infoImage;
-				sws.hp = b.hitpoints;
+				sws.hp = b.battleHitpoints();
 				sws.hpMax = b.type.hitpoints();
 				sws.owner = nearbyPlanet.owner;
 				sws.destruction = bge.destruction;
@@ -1239,7 +1305,7 @@ public class SpacewarScreen extends ScreenBase {
 				sp.angles = alien ? bge.alternative : bge.normal;
 				sp.angle = Math.PI;
 				sp.infoImage = bge.infoImage;
-				sp.hp = b.hitpoints;
+				sp.hp = b.battleHitpoints();
 				sp.hpMax = b.type.hitpoints();
 				sp.owner = nearbyPlanet.owner;
 				sp.destruction = bge.destruction;
@@ -1727,7 +1793,7 @@ public class SpacewarScreen extends ScreenBase {
 	 * @author akarnokd, 2011.08.30.
 	 *
 	 */
-	class ShipStatus extends UIContainer {
+	class ShipStatusPanel extends UIContainer {
 		/** Label. */
 		UILabel title;
 		/** Label. */
@@ -1749,7 +1815,7 @@ public class SpacewarScreen extends ScreenBase {
 		/** The image to display. */
 		BufferedImage image;
 		/** Constructor with layout. */
-		public ShipStatus() {
+		public ShipStatusPanel() {
 			width = 286;
 			height = 195;
 			
@@ -1927,6 +1993,294 @@ public class SpacewarScreen extends ScreenBase {
 			image = null;
 			update(null);
 			displayNone();
+		}
+	}
+	/** 
+	 * Toggle layout selection mode.
+	 * @param enabled enable? 
+	 */
+	void setLayoutSelectionMode(boolean enabled) {
+		layoutSelectionMode = enabled;
+		if (enabled) {
+			leftCommunicator.visible(false);
+			leftMovie.visible(false);
+			for (UIComponent c : animatedButtonsRight) {
+				c.visible(false);
+			}
+		} else {
+			for (UIComponent c : animatedButtonsLeft) {
+				c.visible(true);
+			}
+			for (UIComponent c : animatedButtonsRight) {
+				c.visible(true);
+			}
+		}
+	}
+	/** The battle statistics record. */
+	class SpacebattleStatistics {
+		/** The unit count. */
+		public int units;
+		/** The losses. */
+		public int losses;
+		/** The firepower. */
+		public int firepower;
+		/** The ground units. */
+		public int groundUnits;
+		/** The stations. */
+		public int stations;
+		/** The guns. */
+		public int guns;
+		/** The rocket count. */
+		public int rockets;
+		/** The bomb count. */
+		public int bombs;
+	}
+	/** The statistics panel. */
+	class StatisticsPanel extends UIComponent {
+		/** Initialize. */
+		public StatisticsPanel() {
+			width = 286;
+			height = 195;
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			SpacebattleStatistics own = new SpacebattleStatistics();
+			SpacebattleStatistics other = new SpacebattleStatistics();
+			calculateStatistics(own, other);
+			
+			String s = get("spacewar.statistics");
+			int dx = (width - commons.text().getTextWidth(10, s)) / 2;
+			commons.text().paintTo(g2, dx, 6, 10, TextRenderer.YELLOW, s);
+			
+			int y = 26;
+			
+			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_own_units", own.units);
+			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_losses", own.losses);
+			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_firepower", own.firepower);
+			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_ground", own.groundUnits);
+			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_rockets", own.rockets, own.bombs);
+			
+			if (own.stations > 0 || own.guns > 0) {
+				y += 10;
+				if (own.stations > 0) {
+					y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_stations", own.stations);
+				}
+				if (own.guns > 0) {
+					y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_guns", own.guns);
+				}
+			}
+			y += 16;
+
+			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_enemy_units", other.units);
+			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_losses", other.losses);
+			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_firepower", other.firepower);
+			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_ground", other.groundUnits);
+			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_rockets", other.rockets, other.bombs);
+			
+			if (other.stations > 0 || other.guns > 0) {
+				y += 10;
+				if (other.stations > 0) {
+					y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_stations", other.stations);
+				}
+				if (other.guns > 0) {
+					y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_guns", other.guns);
+				}
+			}
+			
+		}
+		/**
+		 * Draws a text line with the given format.
+		 * @param g2 the graphics context
+		 * @param y the top position
+		 * @param color the text color
+		 * @param labelFormat the format label
+		 * @param args the optional arguments
+		 * @return the new top position;
+		 */
+		int drawLine(Graphics2D g2, int y, int color, String labelFormat, Object... args) {
+			
+			commons.text().paintTo(g2, 8, y, 7, color, format(labelFormat, args));
+			
+			return y + 10;
+		}
+	}
+	/**
+	 * Calculate the battle statistics.
+	 * @param own the own statistics
+	 * @param other the other statistics
+	 */
+	void calculateStatistics(SpacebattleStatistics own, SpacebattleStatistics other) {
+		for (SpacewarProjector e : projectors) {
+			SpacebattleStatistics stat = (e.owner == player()) ? own : other;  
+
+			stat.guns++;
+			for (SpacewarWeaponPort p : e.ports) {
+				stat.firepower += p.count * p.projectile.damage;
+			}
+		}
+		for (SpacewarStation e : stations) {
+			SpacebattleStatistics stat = (e.owner == player()) ? own : other;  
+			stat.stations++;
+			for (SpacewarWeaponPort p : e.ports) {
+				stat.firepower += p.count * p.projectile.damage;
+			}
+		}
+		for (SpacewarShip e : ships) {
+			SpacebattleStatistics stat = (e.owner == player()) ? own : other;  
+			stat.units++;
+			for (SpacewarWeaponPort p : e.ports) {
+				if (p.projectile.mode == Mode.BEAM) {
+					stat.firepower += p.count * p.projectile.damage;
+				} else {
+					if (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS) {
+						stat.bombs += p.count;
+					} else {
+						stat.rockets += p.count;
+					}
+				}
+			}
+		}
+		if (battle.attacker.owner == player()) {
+			own.losses = battle.attackerLosses;
+			own.groundUnits = battle.attackerGroundUnits;
+			other.losses = battle.defenderLosses;
+			other.groundUnits = battle.defenderGroundUnits;
+		} else {
+			own.losses = battle.defenderLosses;
+			own.groundUnits = battle.defenderLosses;
+			other.losses = battle.attackerLosses;
+			other.groundUnits = battle.attackerLosses;
+		}
+	}
+	/**
+	 * Count the ground units only.
+	 * @param f the fleet
+	 * @return the number of ground units
+	 */
+	int groundUnitCount(Fleet f) {
+		int result = 0;
+		for (InventoryItem ii : f.inventory) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				result += ii.count;
+			}
+		}
+		return result;
+	}
+	/** The ship information panel. */
+	class ShipInformationPanel extends UIComponent {
+		/** The selected item. */
+		public SpacewarStructure item;
+		/** The selected item is null due too many selection. */
+		public boolean isMany;
+		/** Initialize. */
+		public ShipInformationPanel() {
+			width = 286;
+			height = 195;
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			String s = "";
+			if (item instanceof SpacewarStation) {
+				s = get("spacewar.station_information");
+			} else
+			if (item instanceof SpacewarShield) {
+				s = get("spacewar.shield_information");
+			} else
+			if (item instanceof SpacewarProjector) {
+				s = get("spacewar.projector_information");
+			} else {
+				s = get("spacewar.ship_information");				
+			}
+			int dx = (width - commons.text().getTextWidth(10, s)) / 2;
+			commons.text().paintTo(g2, dx, 6, 10, TextRenderer.YELLOW, s);
+			
+			int y = 26;
+			
+			boolean isws = item instanceof SpacewarShip;
+			if (item == null) {
+				if (isMany) {
+					commons.text().paintTo(g2, 8, y, 7, TextRenderer.GREEN, get("spacewar.ship_status_many"));
+				} else {
+					commons.text().paintTo(g2, 8, y, 7, TextRenderer.GREEN, get("spacewar.ship_status_none"));
+				}
+			} else {
+				// draw first column
+				int maxLabelWidth = 0;
+				
+				int c = TextRenderer.GREEN;
+				
+				Point p = new Point(8, 26);
+				
+				maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_type")), maxLabelWidth);
+				if (isws) {
+					maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_name")), maxLabelWidth);
+				}
+				maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_damage")), maxLabelWidth);
+				if (isws) {
+					maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_wins")), maxLabelWidth);
+					maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_crew")), maxLabelWidth);
+				}
+				int firepower = item.getFirepower();
+				if (firepower >= 0) {
+					maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_firepower")), maxLabelWidth);
+				}
+				p.y += 10;
+				if (isws) {
+					maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_equipment")), maxLabelWidth);
+					
+					SpacewarShip sws = (SpacewarShip)item;
+					for (InventorySlot is : sws.item.slots) {
+						if (!is.slot.fixed && is.type != null) {
+							maxLabelWidth = Math.max(drawLabel(g2, p, c, "- " + is.type.name), maxLabelWidth);
+						}
+					}
+				}
+				
+				// draw second column
+				p.x += maxLabelWidth;
+				p.y = 26;
+				
+				drawLabel(g2, p, c, "  : " + item.getType());
+				if (isws) {
+					drawLabel(g2, p, c, "  : " + "-"); // name
+				}
+				drawLabel(g2, p, c, "  : " + item.getDamage() + "%");
+				if (isws) {
+					drawLabel(g2, p, c, "  : " + "0"); // wins
+					drawLabel(g2, p, c, "  : " + "-"); // crew
+				}
+				if (firepower >= 0) {
+					drawLabel(g2, p, c, "  : " + firepower);
+				}
+				p.y += 20;
+				if (isws) {
+					SpacewarShip sws = (SpacewarShip)item;
+					for (InventorySlot is : sws.item.slots) {
+						if (!is.slot.fixed &&  is.type != null) {
+							drawLabel(g2, p, c, "  : " + is.count);
+						}
+					}
+				}
+			}
+		}
+		/**
+		 * Draw the given text and return its size.
+		 * @param g2 the graphics context
+		 * @param p where to put the text, updates its y value once the text is written
+		 * @param color the text color
+		 * @param text the text
+		 * @return dimension
+		 */
+		int drawLabel(Graphics2D g2, Point p, int color, String text) {
+			commons.text().paintTo(g2, p.x, p.y, 7, color, text);
+			p.y += 10;
+			return commons.text().getTextWidth(7, text);
+		}
+		/** Clear the contents. */
+		public void clear() {
+			item = null;
+			isMany = false;
 		}
 	}
 }
