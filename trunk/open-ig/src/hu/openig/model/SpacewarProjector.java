@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.model.BattleProjectile.Mode;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,5 +31,19 @@ public class SpacewarProjector extends SpacewarStructure {
 	public BufferedImage get() {
 		double a = angle / 2 / Math.PI; // angle to percentage
 		return angles[((int)Math.round(angles.length * a)) % angles.length];
+	}
+	@Override
+	public int getFirepower() {
+		int sum = 0;
+		for (SpacewarWeaponPort p : ports) {
+			if (p.projectile.mode == Mode.BEAM) {
+				sum += p.projectile.damage * p.count;
+			}
+		}
+		return sum;
+	}
+	@Override
+	public String getType() {
+		return building.type.name;
 	}
 }

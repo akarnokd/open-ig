@@ -23,6 +23,14 @@ public class BattleInfo {
 	public Fleet helperFleet;
 	/** The potential helper planet if a fleet is attacked. */
 	public Planet helperPlanet;
+	/** Count the attacker's losses. */
+	public int attackerLosses;
+	/** Count the defender's losses. */
+	public int defenderLosses;
+	/** Ground unit count of the attacker. */
+	public int attackerGroundUnits;
+	/** Ground unit count of the defender. */
+	public int defenderGroundUnits;
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;

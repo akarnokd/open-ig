@@ -2704,6 +2704,28 @@
 	<entry key='spacewar.ship_weapon_count' >Count : %d</entry>
 	<entry key='spacewar.ship_weapon_damage'>Damage: %d%%</entry>
 	<entry key='spacewar.ship_weapon_empty'>Üres</entry>
+
+	<entry key='spacewar.statistics'>Statistics</entry>
+	<entry key='spacewar.statistics_own_units'  >OWN units         : %6d</entry>
+	<entry key='spacewar.statistics_losses'     >Losses            : %6d</entry>
+	<entry key='spacewar.statistics_firepower'  >Firepower         : %6d</entry>
+	<entry key='spacewar.statistics_ground'     >Ground units      : %6d</entry>
+	<entry key='spacewar.statistics_rockets'    >Rockets and bombs : %6d / %2d</entry>
+	<entry key='spacewar.statistics_stations'   >Starbases         : %6d</entry>
+	<entry key='spacewar.statistics_guns'       >Ground cannons    : %6d</entry>
+	<entry key='spacewar.statistics_enemy_units'>ENEMY units       : %6d</entry>
+
+	<entry key='spacewar.ship_information'>Ship information</entry>
+	<entry key='spacewar.station_information'>Station information</entry>
+	<entry key='spacewar.shield_information'>Shield information</entry>
+	<entry key='spacewar.projector_information'>Gun information</entry>
+	<entry key='spacewar.ship_information_type' >Unit type</entry>
+	<entry key='spacewar.ship_information_name' >Unit name</entry>
+	<entry key='spacewar.ship_information_damage' >Damage</entry>
+	<entry key='spacewar.ship_information_firepower' >Firepower</entry>
+	<entry key='spacewar.ship_information_wins' >Wins</entry>
+	<entry key='spacewar.ship_information_crew' >Crew</entry>
+	<entry key='spacewar.ship_information_equipment'>Equipment list :</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

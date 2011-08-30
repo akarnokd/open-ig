@@ -1358,7 +1358,8 @@ public class World {
 						fii.slots.add(fis);
 					}
 				}
-				fii.shield = xfii.getInt("shield", Math.max(0, fii.shieldMax()));
+				int shieldMax = Math.max(0, fii.shieldMax());
+				fii.shield = Math.min(shieldMax, xfii.getInt("shield", shieldMax));
 				fii.hp = Math.min(xfii.getInt("hp", fii.type.hitpoints()), fii.type.hitpoints());
 				f.inventory.add(fii);
 			}
@@ -1641,6 +1642,18 @@ public class World {
 	public void removeFleet(Fleet fleet) {
 		for (Player p : players.values()) {
 			p.fleets.remove(fleet);
+			// if someone targeted this fleet
+			for (Fleet f : p.fleets.keySet()) {
+				if (f.owner == p) {
+					if (f.targetFleet == fleet) {
+						// change it to move to its last known location
+						f.targetFleet = null;
+						f.mode = FleetMode.MOVE;
+						f.waypoints.clear();
+						f.waypoints.add(new Point2D.Float(fleet.x, fleet.y));
+					}
+				}
+			}
 		}
 	}
 }

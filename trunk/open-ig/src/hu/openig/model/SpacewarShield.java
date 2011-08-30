@@ -23,4 +23,12 @@ public class SpacewarShield extends SpacewarStructure {
 	public BufferedImage get() {
 		return image;
 	}
+	@Override
+	public int getFirepower() {
+		return -1;
+	}
+	@Override
+	public String getType() {
+		return building.type.name;
+	}
 }

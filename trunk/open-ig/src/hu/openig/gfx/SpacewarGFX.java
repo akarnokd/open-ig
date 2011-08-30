@@ -52,9 +52,6 @@ public class SpacewarGFX {
 	/** Pause button. */
 	@Btn2(name = "spacewar/button_pause")
 	public BufferedImage[] pause;
-	/** The button for the various statistics images. */
-	@Img(name = "spacewar/button_stat_empty")
-	public BufferedImage stat;
 	/** The stop button. */
 	@Btn3(name = "spacewar/button_stop")
 	public BufferedImage[] stop;
