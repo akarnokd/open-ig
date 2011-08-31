@@ -319,9 +319,9 @@
 		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='2'
 		mech='2' comp='2' ai='1' mil='3' index='0'
 		video='technology/spaceships/stations/space_station_1'>
-		<slot-fixed id='Laser' item='Laser1' count='32' />
-		<slot-fixed id='Shield' item='Shield1' count='1' />
-		<slot-fixed id='Rocket' item='Rocket1' count='4' />
+		<slot-fixed id='Laser' item='Laser2' count='11' />
+		<slot-fixed id='Cannon' item='IonCannon' count='10' />
+		<slot-fixed id='Rocket' item='Rocket1' count='1' />
 	</item>
 	<item id='OrbitalFactory' name='tech.orbitalfactory.name'
 		long-name='tech.orbitalfactory.longname' description='tech.orbitalfactory.description'
@@ -330,7 +330,6 @@
 		level='3' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		civil='1' mech='1' comp='1' ai='1' mil='1' index='3'
 		video='technology/spaceships/stations/orbital_factory'>
-		<slot-fixed id='Shield' item='Shield1' count='1' />
 	</item>
 	<item id='SpaceStation2' name='tech.spacestation2.name' long-name='tech.spacestation2.longname'
 		description='tech.spacestation2.description' category='SPACESHIPS_STATIONS'
@@ -339,11 +338,10 @@
 		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='Laser2, IonCannon, SpaceStation1' civil='3' mech='3' comp='4'
 		ai='3' mil='5' index='1' video='technology/spaceships/stations/space_station_2'>
-		<slot-fixed id='Laser1' item='Laser1' count='32' />
-		<slot-fixed id='Cannon' item='IonCannon' count='16' />
-		<slot-fixed id='Laser2' item='Laser2' count='16' />
-		<slot-fixed id='Shield' item='Shield2' count='1' />
-		<slot-fixed id='Rocket' item='Rocket1' count='4' />
+		<slot-fixed id='Laser' item='Laser1' count='15' />
+		<slot-fixed id='Cannon' item='IonCannon' count='14' />
+		<slot-fixed id='Shield' item='Shield1' count='1' />
+		<slot-fixed id='Rocket' item='Rocket1' count='2' />
 		<slot-fixed id='ECM' item='ECM1' count='1' />
 	</item>
 	<item id='SpaceStation3' name='tech.spacestation3.name' long-name='tech.spacestation3.longname'
@@ -353,13 +351,11 @@
 		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='Laser4, IonCannon, Rocket2' civil='6' mech='4' comp='5' ai='3'
 		mil='6' index='2' video='technology/spaceships/stations/space_station_3'>
-		<slot-fixed id='Laser1' item='Laser3' count='32' />
-		<slot-fixed id='Cannon1' item='IonCannon' count='16' />
-		<slot-fixed id='Cannon2' item='ParticleCannon' count='8' />
-		<slot-fixed id='Cannon3' item='PlasmaCannon' count='4' />
-		<slot-fixed id='Laser2' item='Laser4' count='16' />
-		<slot-fixed id='Shield' item='Shield3' count='1' />
-		<slot-fixed id='Rocket' item='Rocket2' count='4' />
+		<slot-fixed id='Laser1' item='Laser3' count='7' />
+		<slot-fixed id='Cannon1' item='ParticleCannon' count='7' />
+		<slot-fixed id='Cannon2' item='PlasmaCannon' count='9' />
+		<slot-fixed id='Shield' item='Shield2' count='1' />
+		<slot-fixed id='Rocket' item='Rocket1' count='6' />
 		<slot-fixed id='ECM' item='ECM2' count='1' />
 	</item>
 	<item id='HyperDrive1' name='tech.hyperdrive1.name' long-name='tech.hyperdrive1.longname'
@@ -401,6 +397,14 @@
 		requires='HyperDrive4' civil='4' mech='6' comp='1' mil='4' index='4'
 		video='technology/equipments/hyperdrives/hyperdrive_5'>
 		<property name='speed' value='36' />
+	</item>
+	<item id='DargslanHyperDrive5' name='tech.hyperdrive5.name' long-name='tech.hyperdrive5.longname'
+		description='tech.hyperdrive5.description' category='EQUIPMENT_HYPERDRIVES'
+		image='inventions/equipments/hyperdrives/hyperdrive_5' factory='equipment'
+		research-cost='24000' production-cost='9000' level='5' race='dargslan'
+		civil='4' mech='6' comp='1' mil='4' index='4'
+		video='technology/equipments/hyperdrives/hyperdrive_5'>
+		<property name='speed' value='35' />
 	</item>
 	<item id='ECM1' name='tech.ecm1.name' long-name='tech.ecm1.longname'
 		description='tech.ecm1.description' category='EQUIPMENT_MODULES'
@@ -918,10 +922,11 @@
 		factory='spaceship' research-cost='44000' production-cost='22000'
 		level='0' race='dargslan' index='0'>
 		<slot-fixed id='Radar' count='1' item='Radar2' />
+		<slot-fixed id='ECM' count='1' item='ECM1' />
 		<slot-fixed id='Shield' count='1' item='Shield2' />
-		<slot-fixed id='Laser' count='18' item='Laser3' />
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive5' />
-		<slot-fixed id='Cannon' count='4' item='ParticleCannon' />
+		<slot-fixed id='Laser' count='11' item='Laser3' />
+		<slot-fixed id='Cannon' count='8' item='ParticleCannon' />
 	</item>
 	<item id='DribsDestroyer' name='tech.dribsdestroyer.name'
 		long-name='tech.dribsdestroyer.longname' description='tech.dribsdestroyer.description'
@@ -929,10 +934,10 @@
 		factory='spaceship' research-cost='40000' production-cost='20000'
 		level='0' race='dribs' index='0'>
 		<slot-fixed id='Radar' count='1' item='Radar2' />
-		<slot-fixed id='Shield' count='1' item='Shield1' />
-		<slot-fixed id='Laser' count='12' item='Laser3' />
-		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive4' />
-		<slot-fixed id='Cannon' count='2' item='ParticleCannon' />
+		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive3' />
+		<slot-fixed id='Laser' count='8' item='Laser2' />
+		<slot-fixed id='Cannon1' count='4' item='PlasmaCannon' />
+		<slot-fixed id='Cannon2' count='6' item='ParticleCannon' />
 	</item>
 	<item id='EcalepDestroyer' name='tech.ecalepdestroyer.name'
 		long-name='tech.ecalepdestroyer.longname' description='tech.ecalepdestroyer.description'
@@ -940,18 +945,17 @@
 		factory='spaceship' research-cost='40000' production-cost='20000'
 		level='0' race='ecalep' index='0'>
 		<slot-fixed id='Radar' count='1' item='Radar2' />
-		<slot-fixed id='Shield' count='1' item='Shield2' />
-		<slot-fixed id='Laser' count='12' item='Laser3' />
-		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive4' />
-		<slot-fixed id='Cannon' count='2' item='ParticleCannon' />
+		<slot-fixed id='ECM' count='1' item='ECM1' />
+		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive3' />
+		<slot-fixed id='Laser' count='7' item='Laser2' />
+		<slot-fixed id='Cannon' count='7' item='ParticleCannon' />
 	</item>
 	<item id='GarthogDestroyer' name='tech.garthogdestroyer.name'
 		long-name='tech.garthogdestroyer.longname' description='tech.garthogdestroyer.description'
 		category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/garthog_destroyer'
 		factory='spaceship' research-cost='32000' production-cost='17500'
 		level='0' race='garthog' index='0'>
-		<slot-fixed id='Laser' count='14' item='Laser3' />
-		<slot-fixed id='Shield' count='1' item='Shield2' />
+		<slot-fixed id='Laser' count='3' item='Laser2' />
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive3' />
 	</item>
 	<item id='MorgathDestroyer' name='tech.morgathdestroyer.name'
@@ -960,19 +964,18 @@
 		factory='spaceship' research-cost='40000' production-cost='20000'
 		level='0' race='morgath' index='0'>
 		<slot-fixed id='Radar' count='1' item='Radar2' />
-		<slot-fixed id='Shield' count='1' item='Shield1' />
-		<slot-fixed id='Laser' count='20' item='Laser3' />
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive4' />
-		<slot-fixed id='Cannon' count='1' item='ParticleCannon' />
+		<slot-fixed id='Laser' count='5' item='Laser2' />
+		<slot-fixed id='Cannon1' count='5' item='PlasmaCannon' />
+		<slot-fixed id='Cannon2' count='2' item='ParticleCannon' />
 	</item>
 	<item id='PirateDestroyer' name='tech.piratedestroyer.name'
 		long-name='tech.piratedestroyer.longname' description='tech.piratedestroyer.description'
 		category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/pirate_destroyer'
 		factory='spaceship' research-cost='10000' production-cost='12000'
 		level='0' race='pirate' index='0'>
-		<slot-fixed id='Shield' count='1' item='Shield1' />
-		<slot-fixed id='Laser' count='6' item='Laser1' />
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive1' />
+		<slot-fixed id='Laser' count='5' item='Laser1' />
 	</item>
 	<!-- Sullep destroyer not conclusive and lacks rotation image. I guess there 
 		was not any in the original game. -->
@@ -982,25 +985,25 @@
 		factory='spaceship' research-cost='40000' production-cost='20000'
 		level='0' race='ychom' index='0'>
 		<slot-fixed id='Radar' count='1' item='Radar2' />
-		<slot-fixed id='Shield' count='1' item='Shield2' />
-		<slot-fixed id='Laser' count='10' item='Laser3' />
-		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive4' />
-		<slot-fixed id='Cannon' count='4' item='ParticleCannon' />
+		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive2' />
+		<slot-fixed id='Laser' count='4' item='Laser2' />
+		<slot-fixed id='Cannon' count='3' item='IonCannon' />
 	</item>
 	<item id='DargslanBattleship' name='tech.dargslanbattleship.name'
 		long-name='tech.dargslanbattleship.longname' description='tech.dargslanbattleship.description'
 		category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/dargslan_battleship'
 		factory='spaceship' research-cost='180000' production-cost='230000'
 		level='0' race='dargslan' index='0'>
-		<slot-fixed id='Cannon' count='20' item='MesonCannon' />
-		<slot-fixed id='Bomb' count='20' item='Bomb2' />
-		<slot-fixed id='Rocket' count='14' item='Rocket2' />
+		<slot-fixed id='Bomb' count='6' item='Bomb2' />
+		<slot-fixed id='Rocket' count='6' item='Rocket2' />
 		<slot-fixed id='Storage' count='1' item='Storage2' />
 		<slot-fixed id='Radar' count='1' item='Radar3' />
 		<slot-fixed id='ECM' count='1' item='ECM2' />
-		<slot-fixed id='Shield' count='1' item='Shield4' />
-		<slot-fixed id='Laser' count='20' item='Laser4' />
-		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive5' />
+		<slot-fixed id='Shield' count='1' item='Shield3' />
+		<slot-fixed id='Hyperdrive' count='1' item='DargslanHyperDrive5' />
+		<slot-fixed id='Laser' count='14' item='Laser4' />
+		<slot-fixed id='Cannon1' count='12' item='ParticleCannon' />
+		<slot-fixed id='Cannon2' count='9' item='MesonCannon' />
 		<property name='vehicles' value='10' />
 		<property name='needsOrbitalFactory' value='true' />
 	</item>
@@ -1009,15 +1012,15 @@
 		category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/dribs_battleship'
 		factory='spaceship' research-cost='150000' production-cost='190000'
 		level='0' race='dribs' index='0'>
-		<slot-fixed id='Cannon' count='10' item='MesonCannon' />
-		<slot-fixed id='Bomb' count='10' item='Bomb2' />
-		<slot-fixed id='Rocket' count='10' item='Rocket2' />
-		<slot-fixed id='Storage' count='1' item='Storage2' />
+		<slot-fixed id='Bomb' count='4' item='Bomb1' />
+		<slot-fixed id='Rocket' count='4' item='Rocket1' />
+		<slot-fixed id='Storage' count='1' item='Storage1' />
 		<slot-fixed id='Radar' count='1' item='Radar3' />
-		<slot-fixed id='ECM' count='1' item='ECM2' />
-		<slot-fixed id='Shield' count='1' item='Shield4' />
-		<slot-fixed id='Laser' count='20' item='Laser4' />
-		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive4' />
+		<slot-fixed id='Shield' count='1' item='Shield2' />
+		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive3' />
+		<slot-fixed id='Laser' count='8' item='Laser3' />
+		<slot-fixed id='Cannon1' count='6' item='PlasmaCannon' />
+		<slot-fixed id='Cannon2' count='8' item='ParticleCannon' />
 		<property name='vehicles' value='10' />
 		<property name='needsOrbitalFactory' value='true' />
 	</item>
@@ -1026,15 +1029,16 @@
 		category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ecalep_battleship'
 		factory='spaceship' research-cost='150000' production-cost='190000'
 		level='0' race='ecalep' index='0'>
-		<slot-fixed id='Cannon' count='12' item='MesonCannon' />
-		<slot-fixed id='Bomb' count='10' item='Bomb2' />
-		<slot-fixed id='Rocket' count='10' item='Rocket2' />
-		<slot-fixed id='Storage' count='1' item='Storage2' />
+		<slot-fixed id='Bomb' count='4' item='Bomb1' />
+		<slot-fixed id='Rocket' count='2' item='MultiHeadedRocket' />
+		<slot-fixed id='Storage' count='1' item='Storage1' />
 		<slot-fixed id='Radar' count='1' item='Radar3' />
-		<slot-fixed id='ECM' count='1' item='ECM2' />
-		<slot-fixed id='Shield' count='1' item='Shield4' />
-		<slot-fixed id='Laser' count='14' item='Laser4' />
+		<slot-fixed id='ECM' count='1' item='ECM1' />
+		<slot-fixed id='Shield' count='1' item='Shield3' />
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive4' />
+		<slot-fixed id='Laser' count='9' item='Laser3' />
+		<slot-fixed id='Cannon1' count='8' item='PlasmaCannon' />
+		<slot-fixed id='Cannon2' count='11' item='ParticleCannon' />
 		<property name='vehicles' value='10' />
 		<property name='needsOrbitalFactory' value='true' />
 	</item>
@@ -1043,14 +1047,12 @@
 		category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/garthog_battleship'
 		factory='spaceship' research-cost='100000' production-cost='80000'
 		level='0' race='garthog' index='0'>
-		<slot-fixed id='Laser' count='14' item='Laser3' />
-		<slot-fixed id='Bomb' count='8' item='Bomb1' />
-		<slot-fixed id='Rocket' count='6' item='Rocket1' />
+		<slot-fixed id='Bomb' count='1' item='Bomb1' />
+		<slot-fixed id='Rocket' count='1' item='Rocket1' />
 		<slot-fixed id='Radar' count='1' item='Radar1' />
-		<slot-fixed id='Cannon' count='8' item='IonCannon' />
-		<slot-fixed id='Storage' count='1' item='Storage1' />
-		<slot-fixed id='Shield' count='1' item='Shield2' />
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive3' />
+		<slot-fixed id='Laser' count='7' item='Laser2' />
+		<slot-fixed id='Cannon' count='3' item='IonCannon' />
 		<property name='vehicles' value='5' />
 		<property name='needsOrbitalFactory' value='true' />
 	</item>
@@ -1059,15 +1061,14 @@
 		category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/morgath_battleship'
 		factory='spaceship' research-cost='150000' production-cost='190000'
 		level='0' race='morgath' index='0'>
-		<slot-fixed id='Cannon' count='16' item='MesonCannon' />
-		<slot-fixed id='Bomb' count='20' item='Bomb1' />
-		<slot-fixed id='Rocket' count='20' item='Rocket1' />
-		<slot-fixed id='Storage' count='1' item='Storage2' />
+		<slot-fixed id='Bomb' count='3' item='Bomb1' />
+		<slot-fixed id='Rocket' count='3' item='Rocket1' />
+		<slot-fixed id='Storage' count='1' item='Storage1' />
 		<slot-fixed id='Radar' count='1' item='Radar3' />
-		<slot-fixed id='ECM' count='1' item='ECM1' />
-		<slot-fixed id='Shield' count='1' item='Shield4' />
-		<slot-fixed id='Laser' count='10' item='Laser4' />
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive4' />
+		<slot-fixed id='Laser' count='5' item='Laser3' />
+		<slot-fixed id='Cannon2' count='6' item='PlasmaCannon' />
+		<slot-fixed id='Cannon1' count='5' item='ParticleCannon' />
 		<property name='vehicles' value='10' />
 		<property name='needsOrbitalFactory' value='true' />
 	</item>
@@ -1076,14 +1077,15 @@
 		category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/sullep_battleship'
 		factory='spaceship' research-cost='150000' production-cost='190000'
 		level='0' race='sullep' index='0'>
-		<slot-fixed id='Cannon' count='10' item='MesonCannon' />
-		<slot-fixed id='Bomb' count='20' item='Bomb1' />
-		<slot-fixed id='Rocket' count='20' item='Rocket1' />
-		<slot-fixed id='Storage' count='1' item='Storage2' />
+		<slot-fixed id='Bomb' count='4' item='Bomb1' />
+		<slot-fixed id='Rocket' count='4' item='Rocket1' />
+		<slot-fixed id='Storage' count='1' item='Storage1' />
 		<slot-fixed id='Radar' count='1' item='Radar3' />
 		<slot-fixed id='ECM' count='1' item='ECM1' />
-		<slot-fixed id='Shield' count='1' item='Shield4' />
-		<slot-fixed id='Laser' count='20' item='Laser4' />
+		<slot-fixed id='Shield' count='1' item='Shield3' />
+		<slot-fixed id='Laser' count='8' item='Laser3' />
+		<slot-fixed id='Cannon1' count='8' item='PlasmaCannon' />
+		<slot-fixed id='Cannon2' count='9' item='ParticleCannon' />
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive4' />
 		<property name='vehicles' value='10' />
 		<property name='needsOrbitalFactory' value='true' />
@@ -1093,15 +1095,14 @@
 		category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ychom_battleship'
 		factory='spaceship' research-cost='150000' production-cost='190000'
 		level='0' race='ychom' index='0'>
-		<slot-fixed id='Cannon' count='14' item='MesonCannon' />
-		<slot-fixed id='Bomb' count='10' item='Bomb2' />
-		<slot-fixed id='Rocket' count='10' item='Rocket2' />
-		<slot-fixed id='Storage' count='1' item='Storage2' />
+		<slot-fixed id='Bomb' count='2' item='Bomb1' />
+		<slot-fixed id='Rocket' count='2' item='Rocket1' />
+		<slot-fixed id='Storage' count='1' item='Storage1' />
 		<slot-fixed id='Radar' count='1' item='Radar3' />
-		<slot-fixed id='ECM' count='1' item='ECM1' />
-		<slot-fixed id='Shield' count='1' item='Shield3' />
-		<slot-fixed id='Laser' count='14' item='Laser4' />
-		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive4' />
+		<slot-fixed id='Laser' count='7' item='Laser2' />
+		<slot-fixed id='Cannon1' count='6' item='IonCannon' />
+		<slot-fixed id='Cannon2' count='4' item='PlasmaCannon' />
+		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive3' />
 		<property name='vehicles' value='10' />
 		<property name='needsOrbitalFactory' value='true' />
 	</item>

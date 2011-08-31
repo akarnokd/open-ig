@@ -27,6 +27,8 @@ public class SpacewarProjector extends SpacewarStructure {
 	public double angle;
 	/** The building reference. */
 	public Building building;
+	/** The rotation speed. */
+	public int rotationSpeed;
 	@Override
 	public BufferedImage get() {
 		double a = angle / 2 / Math.PI; // angle to percentage

@@ -144,6 +144,9 @@ public class EquipmentGFX {
 	/** Sell button. */
 	@Btn2(name = "equipment/button_sell")
 	public BufferedImage[] sell;
+	/** Sell button. */
+	@Btn2(name = "equipment/button_upgrade_all")
+	public BufferedImage[] upgradeAll;
 	/**
 	 * Load the resources.
 	 * @param rl the resource locator

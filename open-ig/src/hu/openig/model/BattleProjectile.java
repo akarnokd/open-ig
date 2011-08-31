@@ -44,4 +44,19 @@ public class BattleProjectile {
 	public int area;
 	/** The projectile mode. */
 	public Mode mode;
+	/**
+	 * @return copy of this structure
+	 */
+	public BattleProjectile copy() {
+		BattleProjectile result = new BattleProjectile();
+		result.sound = sound;
+		result.matrix = matrix;
+		result.alternative = alternative;
+		result.delay = delay;
+		result.range = range;
+		result.damage = damage;
+		result.area = area;
+		result.mode = mode;
+		return result;
+	}
 }
