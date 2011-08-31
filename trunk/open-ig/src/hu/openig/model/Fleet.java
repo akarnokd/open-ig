@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.model.BattleProjectile.Mode;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +165,7 @@ public class Fleet implements Named, Owned {
 					}
 					if (checkFirepower && slot.type.has("projectile")) {
 						BattleProjectile bp = battle.projectiles.get(slot.type.get("projectile"));
-						if (bp != null) {
+						if (bp != null && bp.mode == Mode.BEAM) {
 							result.firepower += slot.count * bp.damage * fii.count;
 						}
 					}

@@ -1336,12 +1336,20 @@ public class World {
 				for (XElement xfis : xfii.childrenWithName("slot")) {
 					InventorySlot fis = new InventorySlot();
 					String sid = xfis.get("id");
+					if (!fii.type.slots.containsKey(sid)) {
+						continue; // drop nonexistent slots
+					}
 					slots.add(sid);
 					fis.slot = fii.type.slots.get(sid);
 					fis.type = researches.get(xfis.get("type", null));
 					if (fis.type != null) {
-						fis.count = xfis.getInt("count");
-						fis.hp = xfis.getInt("hp");
+						ResearchType st = fis.slot.items.get(0);
+						if (fis.slot.fixed && st != fis.type) {
+							fis.type = st;
+						}
+						fis.count = Math.min(xfis.getInt("count"), fis.slot.max);
+						fis.hp = Math.min(xfis.getInt("hp"), fis.type.hitpoints());
+						
 					}
 					fii.slots.add(fis);
 				}
@@ -1358,6 +1366,7 @@ public class World {
 						fii.slots.add(fis);
 					}
 				}
+				
 				int shieldMax = Math.max(0, fii.shieldMax());
 				fii.shield = Math.min(shieldMax, xfii.getInt("shield", shieldMax));
 				fii.hp = Math.min(xfii.getInt("hp", fii.type.hitpoints()), fii.type.hitpoints());
@@ -1574,6 +1583,8 @@ public class World {
 				System.err.println("Missing sound for " + id);
 			}
 			se.projectile = xdefense.get("projectile");
+			se.rotationSpeed = xdefense.getInt("rotation-speed");
+			se.damage = xdefense.getInt("damage");
 			
 			battle.groundProjectors.put(id, se);
 		}

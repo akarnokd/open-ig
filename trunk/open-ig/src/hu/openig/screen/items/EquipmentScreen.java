@@ -239,6 +239,8 @@ public class EquipmentScreen extends ScreenBase {
 	SelectionMode lastSelection;
 	/** Is the planet visible? */
 	boolean planetVisible;
+	/** Upgrade all medium and large ships with the available best equipment. */
+	UIImageButton upgradeAll;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -753,6 +755,14 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		};
 		
+		upgradeAll = new UIImageButton(commons.equipment().upgradeAll);
+		upgradeAll.onClick = new Act() {
+			@Override
+			public void act() {
+				doUpgradeAll(fleet());
+			}
+		};
+		
 		add(leftFighterCells);
 		add(rightFighterCells);
 		add(leftTankCells);
@@ -986,6 +996,9 @@ public class EquipmentScreen extends ScreenBase {
 		
 		sell.location(delButton.x - delButton.width - 2, delButton.y);
 		deleteButton.location(sell.x - sell.width, sell.y);
+		
+		upgradeAll.location(deleteButton.location());
+		
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -1138,6 +1151,7 @@ public class EquipmentScreen extends ScreenBase {
 			newButton.visible(own && ps.hasMilitarySpaceport);
 			notYourPlanet.visible(!own);
 			noPlanetNearby.visible(false);
+			upgradeAll.visible(false);
 			
 			if (planetShown != planet() || lastSelection != player().selectionMode) {
 				planetShown = planet();
@@ -1232,16 +1246,17 @@ public class EquipmentScreen extends ScreenBase {
 			transferButton.visible(false);
 			noSpaceport.visible(false);
 		} else {
-			if (fleetShown != fleet() || lastSelection != player().selectionMode) {
-				fleetShown = fleet();
+			Fleet f = fleet();
+			if (fleetShown != f || lastSelection != player().selectionMode) {
+				fleetShown = f;
 				lastSelection = player().selectionMode;
 				updateCurrentInventory();
-				minimap.moveTo(fleet().x, fleet().y);
+				minimap.moveTo(f.x, f.y);
 				editPrimary = editNew;
 				editNew = false;
 				editSecondary = false;
 				configure.type = research();
-				configure.item = fleet().getInventoryItem(research());
+				configure.item = f.getInventoryItem(research());
 				configure.selectedSlot = null;
 				transferMode = false;
 				secondary = null;
@@ -1249,12 +1264,11 @@ public class EquipmentScreen extends ScreenBase {
 				doSelectListVehicle(research());
 			}
 			
-			Fleet f = fleet();
 			boolean own = f.owner == player();
 			
 			FleetStatistics fs = f.getStatistics(world().battle);
 			
-			prepareCells(null, fleet(), leftFighterCells, leftTankCells);
+			prepareCells(null, f, leftFighterCells, leftTankCells);
 
 			PlanetStatistics ps = fs.planet != null ? fs.planet.getStatistics() : null;
 			
@@ -1309,21 +1323,21 @@ public class EquipmentScreen extends ScreenBase {
 				boolean bleft = false;
 				boolean bright = false;
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-					bleft = fleet().inventoryCount(rt) < 30 && secondary.inventoryCount(rt) > 0;
-					bright = fleet().inventoryCount(rt) > 0 && secondary.inventoryCount(rt) < 30;
+					bleft = f.inventoryCount(rt) < 30 && secondary.inventoryCount(rt) > 0;
+					bright = f.inventoryCount(rt) > 0 && secondary.inventoryCount(rt) < 30;
 				} else
 				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
 						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 					bleft = fs.vehicleCount < fs.vehicleMax && secondary.inventoryCount(rt) > 0;
-					bright = fs2.vehicleCount < fs.vehicleMax && fleet().inventoryCount(rt) > 0;
+					bright = fs2.vehicleCount < fs.vehicleMax && f.inventoryCount(rt) > 0;
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 					bleft = fs.battleshipCount < 3 && secondary.inventoryCount(rt) > 0;
-					bright = fleet().inventoryCount(rt) > 0 && fs.battleshipCount < 3;
+					bright = f.inventoryCount(rt) > 0 && fs.battleshipCount < 3;
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 					bleft = fs.cruiserCount < 25 && secondary.inventoryCount(rt) > 0;
-					bright = fleet().inventoryCount(rt) > 0 && fs2.cruiserCount < 25;
+					bright = f.inventoryCount(rt) > 0 && fs2.cruiserCount < 25;
 				}
 				left1.visible(bleft);
 				left2.visible(bleft);
@@ -1412,34 +1426,38 @@ public class EquipmentScreen extends ScreenBase {
 			if (ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport && secondary == null) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					addButton.visible(player().inventoryCount(rt) > 0
-							&& fleet().inventoryCount(rt) < 30);
-					delButton.visible(fleet().inventoryCount(rt) > 0);
-					sell.visible(fleet().inventoryCount(rt) > 0);
+							&& f.inventoryCount(rt) < 30);
+					delButton.visible(f.inventoryCount(rt) > 0);
+					sell.visible(f.inventoryCount(rt) > 0);
 				} else
 				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
 						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 					addButton.visible(player().inventoryCount(rt) > 0
-							&& fleet().inventoryCount(rt.category) < fs.vehicleMax);
+							&& f.inventoryCount(rt.category) < fs.vehicleMax);
 					delButton.visible(
-							fleet().inventoryCount(rt) > 0);
-					sell.visible(fleet().inventoryCount(rt) > 0);
+							f.inventoryCount(rt) > 0);
+					sell.visible(f.inventoryCount(rt) > 0);
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 					addButton.visible(player().inventoryCount(rt) > 0
-							&& fleet().inventoryCount(rt.category) < 3);
+							&& f.inventoryCount(rt.category) < 3);
 					delButton.visible(false);
-					sell.visible(fleet().inventoryCount(rt) > 0);
+					sell.visible(f.inventoryCount(rt) > 0);
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 					addButton.visible(player().inventoryCount(rt) > 0
-							&& fleet().inventoryCount(rt.category) < 25);
+							&& f.inventoryCount(rt.category) < 25);
 					delButton.visible(false);
-					sell.visible(fleet().inventoryCount(rt) > 0);
+					sell.visible(f.inventoryCount(rt) > 0);
 				} else {
 					addButton.visible(false);
 					delButton.visible(false);
 					sell.visible(false);
 				}
+				upgradeAll.visible(own && secondary == null && ps.hasMilitarySpaceport 
+						&& mayUpgradeAll(f)
+						
+				);
 
 				if (configure.selectedSlot != null) {
 					addOne.visible(
@@ -1460,6 +1478,7 @@ public class EquipmentScreen extends ScreenBase {
 				addOne.visible(false);
 				removeOne.visible(false);
 				sell.visible(false);
+				upgradeAll.visible(false);
 			}
 			if (configure.selectedSlot != null) {
 				innerEquipmentVisible = true;
@@ -1474,7 +1493,7 @@ public class EquipmentScreen extends ScreenBase {
 			
 			
 			splitButton.visible(own && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
-			transferButton.visible(own && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && fleet().fleetsInRange(20).size() > 0);
+			transferButton.visible(own && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && f.fleetsInRange(20).size() > 0);
 			deleteButton.visible(own && secondary == null && f.inventory.size() == 0);
 		}
 		if (configure.type != null) {
@@ -2164,5 +2183,80 @@ public class EquipmentScreen extends ScreenBase {
 			break;
 		default:
 		}
+	}
+	/** 
+	 * Upgrade all medium and large ships if possible.
+	 * @param f the target fleet 
+	 */
+	public static void doUpgradeAll(Fleet f) {
+		
+		// remove every equipment from the ships and place it back into the global inventory
+		for (InventoryItem ii : f.inventory) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+				for (InventorySlot is : ii.slots) {
+					if (!is.slot.fixed && is.type != null) {
+						f.owner.changeInventoryCount(is.type, is.count);
+						is.type = null;
+						is.count = 0;
+						is.hp = 0;
+					}
+				}
+			}
+			ii.shield = 0;
+		}
+		// walk
+		for (InventoryItem ii : f.inventory) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+				for (InventorySlot is : ii.slots) {
+					if (!is.slot.fixed) {
+						for (int i = is.slot.items.size() - 1; i >= 0; i--) {
+							ResearchType rt = is.slot.items.get(i);
+							int cnt = f.owner.inventoryCount(rt);
+							if (cnt > 0) {
+								int toAdd = Math.min(cnt, is.slot.max);
+								is.type = rt;
+								is.count = toAdd;
+								is.hp = rt.hitpoints();
+								f.owner.changeInventoryCount(rt, -toAdd);
+								break;
+							}
+						}
+					}
+				}
+			}
+			ii.shield = Math.max(0, ii.shieldMax());
+		}
+	}
+	/**
+	 * Check if the given fleet may be upgraded.
+	 * @param f the target fleet
+	 * @return true if there is upgrade opportunity
+	 */
+	public static boolean mayUpgradeAll(Fleet f) {
+		for (InventoryItem ii : f.inventory) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+				for (InventorySlot is : ii.slots) {
+					if (!is.slot.fixed) {
+						// check if next better type is available
+						int index = is.slot.items.indexOf(is.type) + 1;
+						for (int i = index; i < is.slot.items.size(); i++) {
+							if (f.owner.inventoryCount(is.slot.items.get(i)) > 0) {
+								return true;
+							}
+						}
+						// check if current type can be more filled in
+						index = Math.max(0, index - 1);
+						if (is.slot.max > is.count 
+								&& is.slot.max - is.count <= f.owner.inventoryCount(is.slot.items.get(index))) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

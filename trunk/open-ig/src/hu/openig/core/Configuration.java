@@ -21,10 +21,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -228,18 +226,6 @@ public class Configuration {
 							f.set(this, Integer.valueOf(s));
 						}
 					} else
-					if (Collection.class.isAssignableFrom(f.getType())) {
-						String s = props.getProperty(f.getName() + "-count");
-						if (s != null) {
-						int count = Integer.parseInt(s);
-							if ("containers".equals(f.getName())) {
-								for (int i = 0; i < count; i++) {
-									s = props.getProperty(f.getName() + "-" + i);
-									containers.add(s);
-								}
-							}
-						}
-					} else
 					if (f.getType() == String.class) {
 						f.set(this, props.getProperty(f.getName(), (String)f.get(this)));
 					}
@@ -257,23 +243,9 @@ public class Configuration {
 		try {
 			for (Field f : this.getClass().getDeclaredFields()) {
 				if (f.isAnnotationPresent(LoadSave.class)) {
-					if (Collection.class.isAssignableFrom(f.getType())) {
-						Collection<?> c = (Collection<?>)f.get(this);
-						if ("containers".equals(f.getName())) {
-							Iterator<?> it = c.iterator();
-							int i = 0;
-							while (it.hasNext()) {
-								Object o = it.next();
-								props.setProperty(f.getName() + "-" + i, o != null ? o.toString() : "");
-								i++;
-							}
-						}
-						props.setProperty(f.getName() + "-count", Integer.toString(c.size()));
-					} else {
-						Object o = f.get(this);
-						if (o != null) {
-							props.setProperty(f.getName(), o.toString());
-						}
+					Object o = f.get(this);
+					if (o != null) {
+						props.setProperty(f.getName(), o.toString());
 					}
 				}
 			}

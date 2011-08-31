@@ -25,4 +25,8 @@ public class BattleGroundProjector {
 	public String projectile;
 	/** The information image. */
 	public BufferedImage infoImage;
+	/** The inflicted damage. */
+	public int damage;
+	/** The rotation speed. */
+	public int rotationSpeed;
 }

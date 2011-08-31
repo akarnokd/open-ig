@@ -875,6 +875,8 @@ public class SpacewarScreen extends ScreenBase {
 				doButtonAnimations();
 			}
 		});
+		selectButton(leftShipStatus, true);
+		selectButton(rightShipStatus, false);
 	}
 
 	@Override
@@ -1313,11 +1315,15 @@ public class SpacewarScreen extends ScreenBase {
 				
 				sp.shield = (int)(sp.hp * shieldValue / 100);
 				sp.shieldMax = (int)(sp.hpMax * shieldValue / 100);
+				
+				sp.rotationSpeed = bge.rotationSpeed;
 
 				BattleProjectile pr = world().battle.projectiles.get(bge.projectile);
 				
 				SpacewarWeaponPort wp = new SpacewarWeaponPort();
-				wp.projectile = pr;
+				wp.projectile = pr.copy();
+				wp.projectile.damage = bge.damage;
+				
 				
 				sp.ports.add(wp);
 				
@@ -2112,33 +2118,18 @@ public class SpacewarScreen extends ScreenBase {
 	void calculateStatistics(SpacebattleStatistics own, SpacebattleStatistics other) {
 		for (SpacewarProjector e : projectors) {
 			SpacebattleStatistics stat = (e.owner == player()) ? own : other;  
-
 			stat.guns++;
-			for (SpacewarWeaponPort p : e.ports) {
-				stat.firepower += p.count * p.projectile.damage;
-			}
+			setPortStatistics(stat, e.ports);
 		}
 		for (SpacewarStation e : stations) {
 			SpacebattleStatistics stat = (e.owner == player()) ? own : other;  
 			stat.stations++;
-			for (SpacewarWeaponPort p : e.ports) {
-				stat.firepower += p.count * p.projectile.damage;
-			}
+			setPortStatistics(stat, e.ports);
 		}
 		for (SpacewarShip e : ships) {
 			SpacebattleStatistics stat = (e.owner == player()) ? own : other;  
 			stat.units++;
-			for (SpacewarWeaponPort p : e.ports) {
-				if (p.projectile.mode == Mode.BEAM) {
-					stat.firepower += p.count * p.projectile.damage;
-				} else {
-					if (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS) {
-						stat.bombs += p.count;
-					} else {
-						stat.rockets += p.count;
-					}
-				}
-			}
+			setPortStatistics(stat, e.ports);
 		}
 		if (battle.attacker.owner == player()) {
 			own.losses = battle.attackerLosses;
@@ -2150,6 +2141,24 @@ public class SpacewarScreen extends ScreenBase {
 			own.groundUnits = battle.defenderLosses;
 			other.losses = battle.attackerLosses;
 			other.groundUnits = battle.attackerLosses;
+		}
+	}
+	/**
+	 * Set the weapon port statistics.
+	 * @param stat the output statistics
+	 * @param ports the port sequence
+	 */
+	void setPortStatistics(SpacebattleStatistics stat, Iterable<? extends SpacewarWeaponPort> ports) {
+		for (SpacewarWeaponPort p : ports) {
+			if (p.projectile.mode == Mode.BEAM) {
+				stat.firepower += p.count * p.projectile.damage;
+			} else {
+				if (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS) {
+					stat.bombs += p.count;
+				} else {
+					stat.rockets += p.count;
+				}
+			}
 		}
 	}
 	/**
@@ -2205,10 +2214,11 @@ public class SpacewarScreen extends ScreenBase {
 					commons.text().paintTo(g2, 8, y, 7, TextRenderer.GREEN, get("spacewar.ship_status_none"));
 				}
 			} else {
+				boolean showFixed = false;
 				// draw first column
 				int maxLabelWidth = 0;
 				
-				int c = TextRenderer.GREEN;
+				int c = item.owner == player() ? TextRenderer.GREEN : TextRenderer.YELLOW;
 				
 				Point p = new Point(8, 26);
 				
@@ -2231,7 +2241,7 @@ public class SpacewarScreen extends ScreenBase {
 					
 					SpacewarShip sws = (SpacewarShip)item;
 					for (InventorySlot is : sws.item.slots) {
-						if (!is.slot.fixed && is.type != null) {
+						if ((!is.slot.fixed || showFixed) && is.type != null) {
 							maxLabelWidth = Math.max(drawLabel(g2, p, c, "- " + is.type.name), maxLabelWidth);
 						}
 					}
@@ -2257,7 +2267,7 @@ public class SpacewarScreen extends ScreenBase {
 				if (isws) {
 					SpacewarShip sws = (SpacewarShip)item;
 					for (InventorySlot is : sws.item.slots) {
-						if (!is.slot.fixed &&  is.type != null) {
+						if ((!is.slot.fixed || showFixed) &&  is.type != null) {
 							drawLabel(g2, p, c, "  : " + is.count);
 						}
 					}
