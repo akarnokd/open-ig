@@ -378,9 +378,17 @@
 	</buildings>
 	<!-- Initial battle layouts. -->
 	<layouts>
-		<layout id='spear' name='battle.layout.spear'>
-		</layout>
-		<layout id='wall' name='battle.layout.wall'>
-		</layout>
+		<layout id='Original1' map='spacewar/layout_1'/>
+		<layout id='Original2' map='spacewar/layout_2'/>
+		<layout id='Original3' map='spacewar/layout_3'/>
+		<layout id='Original4' map='spacewar/layout_4'/>
+		<layout id='Original5' map='spacewar/layout_5'/>
+		<layout id='Original6' map='spacewar/layout_6'/>
+		<layout id='Original7' map='spacewar/layout_7'/>
+		<layout id='Original8' map='spacewar/layout_8'/>
+		<layout id='Original9' map='spacewar/layout_9'/>
+		<layout id='Original10' map='spacewar/layout_10'/>
+		<layout id='Original11' map='spacewar/layout_11'/>
+		<layout id='Original12' map='spacewar/layout_12'/>
 	</layouts>
 </battle>

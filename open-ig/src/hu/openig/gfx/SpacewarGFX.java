@@ -49,6 +49,12 @@ public class SpacewarGFX {
 	/** Layout OK. */
 	@Img(name = "spacewar/button_layout_ok")
 	public BufferedImage layoutOk;
+	/** Layout OK hovered. */
+	@Img(name = "spacewar/button_layout_ok_hover")
+	public BufferedImage layoutOkHover;
+	/** Layout OK pressed. */
+	@Img(name = "spacewar/button_layout_ok_pressed")
+	public BufferedImage layoutOkPressed;
 	/** Pause button. */
 	@Btn2(name = "spacewar/button_pause")
 	public BufferedImage[] pause;

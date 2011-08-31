@@ -9,6 +9,7 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Act;
+import hu.openig.core.Location;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
@@ -16,6 +17,7 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile;
 import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.BattleSpaceEntity;
+import hu.openig.model.BattleSpaceLayout;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.InventoryItem;
@@ -65,6 +67,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The spacewar screen.
@@ -402,6 +405,10 @@ public class SpacewarScreen extends ScreenBase {
 	/** The right ship information panel. */
 	@Show(mode = PanelMode.SHIP_INFORMATION, left = false)
 	ShipInformationPanel rightShipInfoPanel;
+	/** The initial layout panel. */
+	@Show(mode = PanelMode.LAYOUT, left = false)
+	LayoutPanel layoutPanel;
+	
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -463,6 +470,9 @@ public class SpacewarScreen extends ScreenBase {
 		leftShipInfoPanel.visible(false);
 		rightShipInfoPanel = new ShipInformationPanel();
 		rightShipInfoPanel.visible(false);
+		
+		layoutPanel = new LayoutPanel();
+		layoutPanel.visible(false);
 		
 		addThis();
 	}
@@ -641,6 +651,7 @@ public class SpacewarScreen extends ScreenBase {
 			if (selectionBox) {
 				doSelectStructures();
 				selectionBox = false;
+				needRepaint = true;
 			}
 			break;
 		case WHEEL:
@@ -877,6 +888,8 @@ public class SpacewarScreen extends ScreenBase {
 		});
 		selectButton(leftShipStatus, true);
 		selectButton(rightShipStatus, false);
+		selectionBox = false;
+		displaySelectedShipInfo();
 	}
 
 	@Override
@@ -904,6 +917,7 @@ public class SpacewarScreen extends ScreenBase {
 		
 		leftShipInfoPanel.clear();
 		rightShipInfoPanel.clear();
+		layoutPanel.selected = null;
 	}
 	@Override
 	public void onResize() {
@@ -2291,6 +2305,207 @@ public class SpacewarScreen extends ScreenBase {
 		public void clear() {
 			item = null;
 			isMany = false;
+		}
+	}
+	/**
+	 * Place the elements of the fleet based on the supplied layout map, where
+	 * the map values represent fighters (true) and non-fighters (false).
+	 * @param ships the sequence of ships
+	 * @param owner the owner filter
+	 * @param layout the layout definition
+	 */
+	void applyLayout(Iterable<? extends SpacewarShip> ships, Player owner, BattleSpaceLayout layout) {
+		LinkedList<SpacewarShip> fighters = JavaUtils.newLinkedList();
+		LinkedList<SpacewarShip> nonFighters = JavaUtils.newLinkedList();
+		for (SpacewarShip sws : ships) {
+			if (sws.owner == owner) {
+				if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+						|| sws.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+						) {
+					nonFighters.add(sws);
+				} else
+				if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					fighters.add(sws);
+				}
+			}
+		}
+		// fill in the regular places
+		List<Map.Entry<Location, Boolean>> olist = layout.order();
+		List<SpacewarShip> placed = new ArrayList<SpacewarShip>();
+		for (Map.Entry<Location, Boolean> e : olist) {
+			Location p = e.getKey();
+			if (e.getValue()) {
+				if (!fighters.isEmpty()) {
+					SpacewarShip sws = fighters.removeFirst();
+					sws.x = (p.x + 0.5) * space.width / layout.getWidth();
+					sws.y = (p.y + 0.5) * space.height / layout.getHeight();
+					placeNearby(placed, sws);
+				}
+			} else {
+				if (!nonFighters.isEmpty()) {
+					SpacewarShip sws = nonFighters.removeFirst();
+					sws.x = (p.x + 0.5) * space.width / layout.getWidth();
+					sws.y = (p.y + 0.5) * space.height / layout.getHeight();
+					placeNearby(placed, sws);
+				}
+			}
+		}
+		// take the remaining ships and place them near the slots
+
+		while (!fighters.isEmpty() || !nonFighters.isEmpty()) {
+			for (Map.Entry<Location, Boolean> e : olist) {
+				Location p = e.getKey();
+				if (e.getValue()) {
+					if (!fighters.isEmpty()) {
+						SpacewarShip sws = fighters.removeFirst();
+						sws.x = (p.x + 0.5) * space.width / layout.getWidth();
+						sws.y = (p.y + 0.5) * space.height / layout.getHeight();
+						placeNearby(placed, sws);
+					}
+				} else {
+					if (!nonFighters.isEmpty()) {
+						SpacewarShip sws = nonFighters.removeFirst();
+						sws.x = (p.x + 0.5) * space.width / layout.getWidth();
+						sws.y = (p.y + 0.5) * space.height / layout.getHeight();
+						placeNearby(placed, sws);
+					}					
+				}
+			}
+		}
+	}
+	/**
+	 * Check if the {@code s} ship intersects with any other ships.
+	 * @param ships the ship sequence
+	 * @param s the ship to test
+	 * @return true if intersects
+	 */
+	boolean intersects(Iterable<? extends SpacewarShip> ships, SpacewarShip s) {
+		for (SpacewarShip sws : ships) {
+			if (sws.intersects(s)) {
+				return true;
+			}
+		}
+		return !s.within(0, 0, space.width, space.height);
+	}
+	/**
+	 * Tries to find a place to put the given {@code s} ship where it does not
+	 * overlap with the other ships.
+	 * @param ships the list of ships
+	 * @param s the ship to place
+	 */
+	void placeNearby(List<SpacewarShip> ships, SpacewarShip s) {
+		double initialX = s.x; 
+		double initialY = s.y;
+		if (intersects(ships, s)) {
+			outer:
+			for (int r = 2; r < space.width; r += 2) {
+				for (double alpha = Math.PI / 2; alpha < 3 * Math.PI / 2; alpha += Math.PI / 36) {
+					s.x = initialX + r * Math.cos(alpha);
+					s.y = initialY + r * Math.sin(alpha);
+					if (!intersects(ships, s)) {
+						break outer;
+					}
+				}
+			}
+		}
+		ships.add(s);
+	}
+	/**
+	 * The layout panel.
+	 * @author akarnokd, 2011.08.31.
+	 */
+	class LayoutPanel extends UIComponent {
+		/** The selected layout. */
+		BattleSpaceLayout selected;
+		/** Hovering over the okay button? */
+		boolean okHover;
+		/** Pressing down over the okay button? */
+		boolean okDown;
+		/** Initialize. */
+		public LayoutPanel() {
+			width = 286;
+			height = 195;
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			int y = 2;
+			int x = 5;
+			int i = 0;
+			for (BattleSpaceLayout ly : world().battle.layouts) {
+
+				g2.setColor(ly == selected ? Color.RED : Color.GREEN);
+				g2.drawRect(x, y, ly.getWidth() + 1, ly.getHeight() + 1);
+				g2.setColor(new Color(0, 0, 0, 128));
+				g2.fillRect(x + 1, y + 1, ly.getWidth(), ly.getHeight());
+				g2.drawImage(ly.image, x + 1, y + 1, null);
+				
+				i++;
+				x += ly.getWidth() + 20;
+				if (i % 3 == 0) {
+					y += ly.getHeight() + 4;
+					x = 5;
+				}
+			}
+			if (okDown) {
+				g2.drawImage(commons.spacewar().layoutOkPressed, 5, 175, null);
+			} else
+			if (okHover) {
+				g2.drawImage(commons.spacewar().layoutOkHover, 5, 175, null);
+			} else {
+				g2.drawImage(commons.spacewar().layoutOk, 5, 175, null);
+			}
+//			g2.drawImage(commons.spacewar().layoutToggle, 103, 175, null);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				int row = (e.y - 2) / 43;
+				int col = (e.x - 5) / 98;
+				int idx = row * 3 + col;
+				if (idx >= 0 && idx < world().battle.layouts.size()) {
+					selected = world().battle.layouts.get(idx);
+					applyLayout(ships, player(), selected);
+					return true;
+				}
+				if (withinOk(e)) {
+					okDown = true;
+					return true;
+				}
+			} else
+			if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
+				if (withinOk(e)) {
+					if (!okHover) {
+						okHover = true;
+						return true;
+					}
+				} else {
+					if (okHover) {
+						okHover = false;
+						return true;
+					}
+				}
+			}
+			if (e.has(Type.UP)) {
+				if (okDown && within(e)) {
+					displayPanel(PanelMode.SHIP_STATUS, false);
+					setLayoutSelectionMode(false);
+					return true;
+				}
+			}
+			if (e.has(Type.LEAVE)) {
+				okDown = false;
+				okHover = false;
+				return true;
+			}
+			return super.mouse(e);
+		}
+		/**
+		 * Test if mouse is within the OK button.
+		 * @param e the mouse event
+		 * @return true if within
+		 */
+		boolean withinOk(UIMouse e) {
+			return e.within(5, 175, commons.spacewar().layoutOk.getWidth(), commons.spacewar().layoutOk.getHeight());
 		}
 	}
 }
