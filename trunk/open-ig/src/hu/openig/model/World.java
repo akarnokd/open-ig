@@ -1634,6 +1634,14 @@ public class World {
 			
 			battle.groundEntities.put(id, ge);
 		}
+		for (XElement xlayout : xbattle.childElement("layouts").childrenWithName("layout")) {
+			BattleSpaceLayout ly = new BattleSpaceLayout();
+			
+			ly.image = rl.getImage(xlayout.get("map"));
+			ly.parse();
+			
+			battle.layouts.add(ly);
+		}
 	}
 	/**
 	 * Compute the distance square between two points.

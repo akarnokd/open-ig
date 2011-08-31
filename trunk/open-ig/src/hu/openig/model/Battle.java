@@ -30,6 +30,8 @@ public class Battle {
 	public final Map<String, BattleGroundProjector> groundProjectors = JavaUtils.newHashMap();
 	/** The ground shield definitions. */
 	public final Map<String, BattleGroundShield> groundShields = JavaUtils.newHashMap();
+	/** The space battle layouts. */
+	public final List<BattleSpaceLayout> layouts = JavaUtils.newArrayList();
 	/**
 	 * Add a turret definition to the {@code turrets} mapping.
 	 * @param buildingId the building identifier.

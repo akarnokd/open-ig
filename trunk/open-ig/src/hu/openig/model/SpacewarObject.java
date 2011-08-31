@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 /**
@@ -54,5 +55,27 @@ public abstract class SpacewarObject {
 		int w = other.get().getWidth();
 		int h = other.get().getHeight();
 		return intersects(other.x - (w / 2), other.y - (h / 2), w , h);
+	}
+	/**
+	 * Test if the object is completely within the specified bounds.
+	 * @param rx the rectangle left
+	 * @param ry the rectangle top
+	 * @param width the rectangle width
+	 * @param height the rectangle height
+	 * @return true if within
+	 */
+	public boolean within(double rx, double ry, double width, double height) {
+		int w = get().getWidth();
+		int h = get().getHeight();
+		return (rx <= x - w / 2 && x - w / 2 + w < rx + width)
+				&& (ry <= y - h / 2 && y - h / 2 + h < ry + height);
+	}
+	/**
+	 * Test if the object is completely within the specified rectangle.
+	 * @param rect the bounding rectangle
+	 * @return true if within
+	 */
+	public boolean within(Rectangle rect) {
+		return within(rect.x, rect.y, rect.width, rect.height);
 	}
 }
