@@ -2,8 +2,28 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.425 - Fixes =
+  * Released: 2011-08-31 14:00 CET
+  * *You may need to start a new game!*
+  * Added ship and defense firepowers and updated alien ship configurations.
+  * Added option to upgrade the entire fleet's equipment with by clicking on the [+++] button in the equipment screen. The button is only visible if there is opportunity to replace any equipment or add more to the current equipment counts. Any obsolete equipment is placed back into the main inventory ([http://code.google.com/p/open-ig/issues/detail?id=102 Issue #102]). 
+  * Added option to fully fill or empty an inventory slot by SHIFT+Clicking on the +1 and -1 buttons ([http://code.google.com/p/open-ig/issues/detail?id=102 Issue #102]).
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=88 Issue #88] clicking on invisible planets was possible.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=89 Issue #89] missing or incorrect button click sounds.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=90 Issue #90] error messages now appear directly on the statusbar instead of a regular message.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=92 Issue #92] always show equipment configuration when a slot is selected
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=93 Issue #93] fleet speed computation.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=95 Issue #95] empty fleets get removed properly now.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=96 Issue #96] Deployed satellites do not decrease the available amount.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=97 Issue #97] crash while removing equipment.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=98 Issue #98] for firepower, count only beam-type weapons of ships.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=99 Issue #99] cost of Spy Satellite v2.0
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=100 Issue #100] destruction of satellites was not properly reported.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=101 Issue #101] colonized planets with satellites orbiting them no longer gain radar. In addition, any satellites will be placed back into the inventory.
+
+
 = Version 0.93.400 - Button sounds =
-  * Released: 2011-08-24 15:45
+  * Released: 2011-08-24 15:45 CET
   * Added button sounds ([http://code.google.com/p/open-ig/issues/detail?id=28 Issue #28], [http://code.google.com/p/open-ig/issues/detail?id=53 Issue #53], [http://code.google.com/p/open-ig/issues/detail?id=54 Issue #54], [http://code.google.com/p/open-ig/issues/detail?id=57 Issue #57], [http://code.google.com/p/open-ig/issues/detail?id=77 Issue #77]).
   * Fixed [http://code.google.com/p/open-ig/issues/detail?id=81 Issue #81] Fleet speed computation in case of multiple hyperdrive configurations.
   * Fixed [http://code.google.com/p/open-ig/issues/detail?id=80 Issue #80] when replacing an installed equipment on a ship via the +1 button, the original equipment is removed and added to the available inventory.
