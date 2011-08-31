@@ -13,9 +13,9 @@
     * [Launcher_Notes Release notes]
   * [MapEditor The Map Editor]
     * [MapEditor_Notes Release notes]
-  * [Testbed The development testbed]
-    * [Testbed_Notes Release notes]
-  * [UtilityPrograms Older utilities]
+  * Other utilities
     * [AnimPlay AnimPlay]
+    * [Testbed The development testbed]
+      * [Testbed_Notes Release notes]
   * [Questions Questions & Answers]
   * [Credits Credits]
