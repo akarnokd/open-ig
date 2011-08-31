@@ -3,7 +3,7 @@
 
   * [Introduction Introduction]
   * [Install Install instructions]
-    * [Game_Notes Release notes]
+  * [Game_Notes Release notes]
   * [Screenshots Screenshots]
   * [ProjectPlan2011 Project plans]
   * [NewsArchive News archive]
