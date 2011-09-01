@@ -368,4 +368,132 @@ public final class RenderTools {
 					RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
 	}
+	/**
+	 * Check if a specified point is inside a specified rectangle.
+	 * @param x0 the upper left coordinate
+	 * @param y0 the upper left coordinate
+	 * @param x1 the lower right coordinate (exclusive)
+	 * @param y1 the lower right coordinate (exclusive)
+	 * @param x the point to check
+	 * @param y the point to check
+	 * @return                True if the point is inside the rectangle,
+	 *                        false otherwise.
+	 */
+	public static boolean isPointInsideRectangle(double x0, double y0, double x1, double y1,
+			double x, double y) {
+		return x >= x0 && x < x1 && y >= y0 && y < y1;
+	}
+
+	/**
+	 * Return true if c is between a and b.
+	 * @param a range value (inclusive)
+	 * @param b range value (inclusive)
+	 * @param c the value to test
+	 * @return true if between
+	 */
+	private static boolean isBetween(double a, double b, double c) {
+		return b > a ? c >= a && c <= b : c >= b && c <= a;
+	}
+	/**
+	 * Check if two points are on the same side of a given line.
+	 * Algorithm from Sedgewick page 350.
+	 *
+	 * @param x0 the line start X
+	 * @param y0 the line start Y
+	 * @param x1 the line end X
+	 * @param y1 the line end Y
+	 * @param px0 the first point X
+	 * @param py0 the first point Y
+	 * @param px1 the second point X
+	 * @param py1 the second point Y
+	 * @return                <0 if points on opposite sides.
+	 *                        =0 if one of the points is exactly on the line
+	 *                        >0 if points on same side.
+	 */
+	private static int sameSide(double x0, double y0, double x1, double y1,
+			double px0, double py0, double px1, double py1)	{
+		int  sameSide = 0;
+
+		double dx  = x1  - x0;
+		double dy  = y1  - y0;
+		double dx1 = px0 - x0;
+		double dy1 = py0 - y0;
+		double dx2 = px1 - x1;
+		double dy2 = py1 - y1;
+
+		// Cross product of the vector from the endpoint of the line to the point
+		double c1 = dx * dy1 - dy * dx1;
+		double c2 = dx * dy2 - dy * dx2;
+
+		if (c1 != 0 && c2 != 0) {
+			sameSide = c1 < 0 != c2 < 0 ? -1 : 1;
+		} else 
+		if (dx == 0 && dx1 == 0 && dx2 == 0) {
+			sameSide = !isBetween(y0, y1, py0) && !isBetween(y0, y1, py1) ? 1 : 0;
+		} else 
+		if (dy == 0 && dy1 == 0 && dy2 == 0) {
+			sameSide = !isBetween(x0, x1, px0) && !isBetween(x0, x1, px1) ? 1 : 0;
+		}
+		return sameSide;
+	}
+	/**
+	 * Check if two line segments intersects.
+	 *
+	 * @param x0 the first line start X
+	 * @param y0 the first line start Y
+	 * @param x1 the first line end X
+	 * @param y1 the first line end Y
+	 * @param x2 the second line start X
+	 * @param y2 the second line start Y
+	 * @param x3 the second line end X
+	 * @param y3 the second line end Y
+	 * @return True if the two lines intersects.
+	 */
+	public static boolean isLineIntersectingLine(double x0, double y0, double x1, double y1,
+			double x2, double y2, double x3, double y3) {
+		int s1 = sameSide(x0, y0, x1, y1, x2, y2, x3, y3);
+		int s2 = sameSide(x2, y2, x3, y3, x0, y0, x1, y1);
+
+		return s1 <= 0 && s2 <= 0;
+	}
+	/**
+	 * Check if a specified line intersects a specified rectangle.
+	 * @param lx0 the line start X
+	 * @param ly0 the line start Y
+	 * @param lx1 the line end X
+	 * @param ly1 the line end Y
+	 * @param x0 the rectangle left
+	 * @param y0 the rectangle top
+	 * @param x1 the rectangle right (excluded)
+	 * @param y1 the rectangle bottom (excluded)
+	 * @return                True if the line intersects the rectangle,
+	 *                        false otherwise.
+	 */
+	public static boolean isLineIntersectingRectangle(double lx0, double ly0,
+			double lx1, double ly1, double x0, double y0, double x1, double y1)	{
+		// Is one of the line endpoints inside the rectangle
+		if (isPointInsideRectangle(x0, y0, x1, y1, lx0, ly0) 
+				|| isPointInsideRectangle(x0, y0, x1, y1, lx1, ly1)) {
+			return true;
+		}
+		// If it intersects it goes through. Need to check three sides only.
+
+		// Check against top rectangle line
+		if (isLineIntersectingLine(lx0, ly0, lx1, ly1,
+				x0, y0, x1, y0)) {
+			return true;
+		}
+		// Check against left rectangle line
+		if (isLineIntersectingLine(lx0, ly0, lx1, ly1,
+				x0, y0, x0, y1)) {
+			return true;
+		}
+		// Check against bottom rectangle line
+		if (isLineIntersectingLine(lx0, ly0, lx1, ly1,
+				x0, y1, x1, y1)) {
+			return true;
+		}
+		return false;
+	}
+	  
 }

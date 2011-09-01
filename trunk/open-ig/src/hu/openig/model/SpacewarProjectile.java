@@ -18,23 +18,37 @@ import java.awt.image.BufferedImage;
  */
 public class SpacewarProjectile extends SpacewarObject {
 	/** The beam speed per simulation tick. */
-	public double speed;
+	public int movementSpeed;
+	/** The rotation time per angle segment. */
+	public int rotationTime;
 	/** The angle images of the projectile. */
-	public BufferedImage[] angles;
+	public BufferedImage[][] matrix;
+	/** The animation phase with an angle. */
+	public int phase;
 	/** ECM distraction limit 1..2 .*/
 	public int ecmLimit;
 	/** The damage to inflict. */
 	public int damage;
 	/** The beam angle in an X-Y screen directed coordinate system, 0..2*PI. */
 	public double angle;
+	/** The targeted structure. */
+	public SpacewarStructure target;
+	/** The impact sound. */
+	public SoundType impactSound;
 	@Override
 	public BufferedImage get() {
-		double a = angle / 2 / Math.PI; // angle to percentage
-		return angles[((int)Math.round(angles.length * a)) % angles.length];
+		// -0.5 .. +0.5
+		double a = normalizedAngle() / Math.PI / 2;
+		if (a < 0) {
+			a = 1 + a; 
+		}
+		BufferedImage[] imageAngle = matrix[((int)Math.round(matrix.length * a)) % matrix.length]; 
+		return imageAngle[phase % imageAngle.length];
 	}
-	/** Move the beam to the next location. */
-	public void move() {
-		x += speed * Math.cos(angle);
-		y += speed * Math.sin(angle);
+	/**
+	 * @return the normalized angle between -PI and +PI.
+	 */
+	public double normalizedAngle() {
+		return Math.atan2(Math.sin(angle), Math.cos(angle));
 	}
 }

@@ -19,8 +19,14 @@ public class SpacewarExplosion extends SpacewarObject {
 	public int phase;
 	/** The phase image of the beam (e.g., the rotating meson bubble). */
 	public BufferedImage[] phases;
+	/** The structure to remove when the explosion is at the middle. */
+	public SpacewarStructure target;
 	@Override
 	public BufferedImage get() {
 		return phases[phase % phases.length];
+	}
+	/** @return true if the animation is at the middle. */
+	public boolean isMiddle() {
+		return (phase % phases.length) == phases.length / 2;
 	}
 }

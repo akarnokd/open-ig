@@ -44,6 +44,10 @@ public class BattleProjectile {
 	public int area;
 	/** The projectile mode. */
 	public Mode mode;
+	/** The linear movement speed. */
+	public int movementSpeed;
+	/** The rotation speed. */
+	public int rotationTime;
 	/**
 	 * @return copy of this structure
 	 */
@@ -57,6 +61,8 @@ public class BattleProjectile {
 		result.damage = damage;
 		result.area = area;
 		result.mode = mode;
+		result.movementSpeed = movementSpeed;
+		result.rotationTime = rotationTime;
 		return result;
 	}
 }

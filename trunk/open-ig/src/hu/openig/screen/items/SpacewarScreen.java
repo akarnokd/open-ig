@@ -28,6 +28,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarBeam;
 import hu.openig.model.SpacewarExplosion;
 import hu.openig.model.SpacewarProjectile;
@@ -1698,7 +1699,6 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		drawRanges(g2, structures);
 		drawCommands(g2, structures);
-		drawSpacewarStructures(structures, g2);
 		
 		for (SpacewarProjectile e : projectiles) {
 			drawCenter(e.get(), e.x, e.y, g2);
@@ -1709,6 +1709,9 @@ public class SpacewarScreen extends ScreenBase {
 		for (SpacewarExplosion e : explosions) {
 			drawCenter(e.get(), e.x, e.y, g2);
 		}
+		
+		drawSpacewarStructures(structures, g2);
+
 		g2.setTransform(af);
 
 		if (selectionBox) {
@@ -2773,38 +2776,6 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		// TODO stop command for other structures
 	}
-	/** Perform the spacewar simulation. */
-	void doSpacewarSimulation() {
-		// fleet movements
-		for (SpacewarStructure ship : structures) {
-			if (ship.moveTo != null) {
-				// rotate into correct angle if needed
-				if (rotateStep(ship, ship.moveTo.x, ship.moveTo.y)) {
-					if (moveStep(ship, ship.moveTo.x, ship.moveTo.y, 0)) {
-						ship.moveTo = null;
-					}
-				}
-			} else
-			if (ship.attack != null) {
-				if (rotateStep(ship, ship.attack.x, ship.attack.y)) {
-					// move into minimum attack range if needed
-					if (!ship.guard && ship.type == StructureType.SHIP) {
-						moveStep(ship, ship.attack.x, ship.attack.y, ship.minimumRange - 5);
-					}
-					// TODO fire weapons which are in range
-					ship.inRange(ship.attack);
-				}
-			} else
-			if (ship.guard) {
-				// pick a target
-				List<SpacewarStructure> es = enemiesInRange(ship);
-				if (es.size() > 0) {
-					ship.attack = es.get(world().random.get().nextInt(es.size()));
-				}
-			}
-		}
-		askRepaint();
-	}
 	/**
 	 * Creates a list of in-range enemy structures.
 	 * @param ship the center ship
@@ -2872,6 +2843,33 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		return false;
 	}
+	
+	/**
+	 * Move the projectile one animation step further.
+	 * @param obj the projectile
+	 * @return true if collided with the target
+	 */
+	boolean moveStep(SpacewarProjectile obj) {
+		double ds = SIMULATION_DELAY / obj.movementSpeed;
+		double dx = ds * Math.cos(obj.angle);
+		double dy = ds * Math.sin(obj.angle);
+		
+		double w = obj.target.get().getWidth();
+		double h = obj.target.get().getHeight();
+		double x0 = obj.target.x - w / 2;
+		double x1 = x0 + w;
+		double y0 = obj.target.y - h / 2;
+		double y1 = y0 + h;
+		obj.phase++;
+		if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx, 
+				obj.y + dy, x0, y0, x1, y1)) {
+			return true;
+		}
+		obj.x += dx;
+		obj.y += dy;
+		return false;
+	}
+	
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyChar() == 's' || e.getKeyChar() == 'S') {
@@ -2923,5 +2921,106 @@ public class SpacewarScreen extends ScreenBase {
 				ship.guard = true;
 			}
 		}
+	}
+	/** Perform the spacewar simulation. */
+	void doSpacewarSimulation() {
+		// move projectiles
+		for (SpacewarProjectile p : new ArrayList<SpacewarProjectile>(projectiles)) {
+			if (moveStep(p)) {
+				projectiles.remove(p);
+				
+				int damage = p.damage;
+				if (p.target.shield > 0) {
+					if (p.target.shield > damage / 2) {
+						p.target.shield -= damage / 2;
+						damage = damage / 2;
+					} else {
+						damage -= p.target.shield * 2;
+						p.target.shield = 0;
+					}
+				}
+				p.target.hp = Math.max(0, p.target.hp - damage);
+				if (p.target.hp > 0) {
+					sound(p.impactSound);
+				} else {
+					sound(p.target.destruction);
+					
+				}
+			} else
+			if (!p.intersects(0, 0, space.width, space.height)) {
+				projectiles.remove(p);
+			}
+		}
+		for (SpacewarExplosion exp : new ArrayList<SpacewarExplosion>(explosions)) {
+			
+		}
+		// fleet movements
+		for (SpacewarStructure ship : structures) {
+			if (ship.hp > 0) {
+				if (ship.moveTo != null) {
+					// rotate into correct angle if needed
+					if (rotateStep(ship, ship.moveTo.x, ship.moveTo.y)) {
+						if (moveStep(ship, ship.moveTo.x, ship.moveTo.y, 0)) {
+							ship.moveTo = null;
+						}
+					}
+				} else
+				if (ship.attack != null) {
+					if (rotateStep(ship, ship.attack.x, ship.attack.y)) {
+						// move into minimum attack range if needed
+						if (!ship.guard && ship.type == StructureType.SHIP) {
+							moveStep(ship, ship.attack.x, ship.attack.y, ship.minimumRange - 5);
+						}
+						fireAtTargetOf(ship);
+					}
+				} else
+				if (ship.guard) {
+					// pick a target
+					List<SpacewarStructure> es = enemiesInRange(ship);
+					if (es.size() > 0) {
+						ship.attack = es.get(world().random.get().nextInt(es.size()));
+					}
+				}
+			}
+		}
+		askRepaint();
+	}
+	/**
+	 * Fire at the target of the given ship with the available weapons.
+	 * @param ship the attacker ship
+	 */
+	void fireAtTargetOf(SpacewarStructure ship) {
+		for (SpacewarWeaponPort p : ship.inRange(ship.attack)) {
+			if (p.cooldown <= 0) {
+				createBeam(ship, p.projectile, ship.attack.x, ship.attack.y, ship.attack);
+				p.cooldown = p.projectile.delay;
+			} else {
+				p.cooldown -= SIMULATION_DELAY;
+			}
+		}
+	}
+	/**
+	 * Create a beam aimed at (ax, ay) and should hit the target only.
+	 * @param source the 
+	 * @param p the projectile settings
+	 * @param ax the aim X
+	 * @param ay the aim Y
+	 * @param target the targeted structure
+	 */
+	void createBeam(SpacewarStructure source, BattleProjectile p, 
+			double ax, double ay, SpacewarStructure target) {
+		SpacewarProjectile sp = new SpacewarProjectile();
+		sp.owner = source.owner; 
+		sp.target = target;
+		sp.movementSpeed = sp.movementSpeed;
+		sp.impactSound = SoundType.HIT; // FIXME
+		sp.x = source.x;
+		sp.y = source.y;
+		sp.angle = Math.atan2(sp.y - ay, sp.x - ax);
+		sp.matrix = sp.owner == player() ? p.alternative : p.matrix;
+		sp.damage = p.damage;
+		
+		projectiles.add(sp);
+		sound(p.sound);
 	}
 }
