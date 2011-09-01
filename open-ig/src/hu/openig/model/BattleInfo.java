@@ -8,6 +8,10 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.JavaUtils;
+
+import java.util.Set;
+
 /**
  * Defines the battle parties.
  * @author akarnokd, 2011.08.16.
@@ -31,6 +35,8 @@ public class BattleInfo {
 	public int attackerGroundUnits;
 	/** Ground unit count of the defender. */
 	public int defenderGroundUnits;
+	/** The structure losses. */
+	public final Set<SpacewarStructure> losses = JavaUtils.newHashSet();
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;

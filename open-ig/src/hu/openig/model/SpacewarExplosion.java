@@ -23,10 +23,17 @@ public class SpacewarExplosion extends SpacewarObject {
 	public SpacewarStructure target;
 	@Override
 	public BufferedImage get() {
-		return phases[phase % phases.length];
+		return phases[(phase) % phases.length];
 	}
 	/** @return true if the animation is at the middle. */
 	public boolean isMiddle() {
-		return (phase % phases.length) == phases.length / 2;
+		return ((phase) % phases.length) == phases.length / 2;
+	}
+	/** 
+	 * Move to the next phase.
+	 * @return true if the end is reached
+	 */
+	public boolean next() {
+		return ++phase == phases.length;
 	}
 }

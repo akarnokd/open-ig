@@ -141,6 +141,6 @@ public class ResearchType {
 	 * @return the technology's maximum hitpoints value used in equipment and space battles.
 	 */
 	public int hitpoints() {
-		return productionCost / 10;
+		return productionCost / 100;
 	}
 }
