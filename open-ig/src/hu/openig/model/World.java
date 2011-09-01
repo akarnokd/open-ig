@@ -1528,6 +1528,12 @@ public class World {
 				bp.area = 1;
 			}
 			bp.mode = BattleProjectile.Mode.valueOf(xproj.get("mode"));
+			
+			bp.movementSpeed = xproj.getInt("movement-speed");
+			if (xproj.has("rotation-time")) {
+				bp.rotationTime = xproj.getInt("rotation-time");
+			}
+			
 			battle.projectiles.put(id, bp);
 			
 		}

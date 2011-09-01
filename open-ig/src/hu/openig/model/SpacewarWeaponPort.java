@@ -17,6 +17,8 @@ public class SpacewarWeaponPort {
 	public BattleProjectile projectile;
 	/** The number of items. */
 	public int count = 1;
+	/** The cooldown until this port can fire again. */
+	public int cooldown;
 	/** @return create a copy of this record. */
 	public SpacewarWeaponPort copy() {
 		SpacewarWeaponPort r = new SpacewarWeaponPort();

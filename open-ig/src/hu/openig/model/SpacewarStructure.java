@@ -149,7 +149,7 @@ public class SpacewarStructure extends SpacewarObject {
 		return r;
 	}
 	/**
-	 * Returns a list of those weapon ports, which have the target structure in range.
+	 * Returns a list of those BEAM weapon ports, which have the target structure in range.
 	 * @param target the target structure
 	 * @return the list of weapon ports
 	 */
