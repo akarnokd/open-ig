@@ -15,6 +15,7 @@ import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
+import hu.openig.core.SimulationSpeed;
 import hu.openig.gfx.BackgroundGFX;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.gfx.CommonGFX;
@@ -124,32 +125,16 @@ public class CommonResources {
 		/** The flag to indicate the action was cancelled. */
 		public boolean cancelled;
 	}
-	/** The current speed delay in milliseconds. */
-	protected int speed = 1000;
-	/** Is the simulation paused? */
-	protected boolean paused;
 	/** The radar handler. */
 	protected Closeable radarHandler;
 	/** The allocator handler. */
 	protected Closeable allocatorHandler;
-	/** The simulator handler. */
-	protected Closeable simulatorHandler;
 	/** The sound objects.*/
 	public Sounds sounds;
 	/** The music player. */
 	public Music music;
-	/** 
-	 * Callback function to set the simulation speed of the current mode.
-	 * -1 means toggle pause, 0 means pause, >0 means set speed to that value.
-	 * <p>Call {@link #restoreMainSimulationSpeedFunction()} to reset it back to the normal space simulation controls.</p> 
-	 */
-	public Func1<Integer, Void> setSimulationSpeed;
-	/**
-	 * Retrieves the current simulation speed settings.
-	 * Negative value means paused at the given speed settings.
-	 * <p>Call {@link #restoreMainSimulationSpeedFunction()} to reset it back to the normal space simulation controls.</p> 
-	 */
-	public Func1<Void, Integer> getSimulationSpeed;
+	/** The current simulation controls. */
+	public SimulationTimer simulation;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -447,15 +432,12 @@ public class CommonResources {
 	public void stop() {
 		close0(allocatorHandler);
 		close0(radarHandler);
-		close0(simulatorHandler);
+		close0(simulation);
 		
 		allocatorHandler = null;
 		radarHandler = null;
-		simulatorHandler = null;
+		simulation = null;
 
-		paused = false;
-		speed = 1000;
-		
 		timer.stop();
 		
 		stopMusic();
@@ -475,35 +457,39 @@ public class CommonResources {
 	}
 	/** Restore the main simulation speed function. Call this function after the battle completes. */
 	public void restoreMainSimulationSpeedFunction() {
-		setSimulationSpeed = new Func1<Integer, Void>() {
-			@Override
-			public Void invoke(Integer value) {
-				// toggle pause
-				if (value < 0) {
-					if (paused()) {
-						resume();
-					} else {
-						pause();
+		replaceSimulation(
+				new Act() {
+					@Override
+					public void act() {
+						if (Simulator.compute(world)) {
+							control.save();
+						}
+						control.repaintInner();
 					}
-				} else
-				// explicitely pause
-				if (value == 0) {
-					pause();
-				} else {
-					speed(value);
+				},
+				new Func1<SimulationSpeed, Integer>() {
+					@Override
+					public Integer invoke(SimulationSpeed value) {
+						switch (value) {
+						case NORMAL: return 1000;
+						case FAST: return 500;
+						case ULTRA_FAST: return 250;
+						default:
+							throw new AssertionError("" + value);
+						}
+					}
 				}
-				return null;
-			}
-		};
-		getSimulationSpeed = new Func1<Void, Integer>() {
-			@Override
-			public Integer invoke(Void value) {
-				if (paused()) {
-					return -speed;
-				}
-				return speed;
-			}
-		};
+		);
+	}
+	/**
+	 * Replace the current simulation controls with a new
+	 * simulation controls.
+	 * @param action the new simulation action
+	 * @param delay the function to tell the delay value from speed enumeration.
+	 */
+	public void replaceSimulation(Act action, Func1<SimulationSpeed, Integer> delay) {
+		close0(simulation);
+		simulation = newSimulationTimer(action, delay);
 	}
 	/** 
 	 * Start the timed actions.
@@ -511,11 +497,14 @@ public class CommonResources {
 	 */
 	public void start(boolean withMusic) {
 		stop();
+		
+		restoreMainSimulationSpeedFunction();
+
 		radarHandler = register(1000, new Act() {
 			@Override
 			public void act() {
 				world.statistics.playTime++;
-				if (!paused()) {
+				if (!simulation.paused()) {
 					world.statistics.simulationTime++;
 				}
 				Radar.compute(world);
@@ -524,7 +513,6 @@ public class CommonResources {
 				}
 			}
 		});
-		resume();
 		allocatorHandler = register(1000, new Act() {
 			@Override
 			public void act() {
@@ -534,56 +522,13 @@ public class CommonResources {
 		});
 		Allocator.compute(world, pool);
 		Radar.compute(world);
+		
+		simulation.resume();
+		
 		timer.start();
-		restoreMainSimulationSpeedFunction();
 		if (withMusic) {
 			playRegularMusic();
 		}
-	}
-	/** 
-	 * Replace the simulator with the given delayed new simulator.
-	 * @param delay the simulator delay
-	 */
-	void replaceSimulator(int delay) {
-		close0(simulatorHandler);
-		simulatorHandler = register(delay, new Act() {
-			@Override
-			public void act() {
-				if (Simulator.compute(world)) {
-					control.save();
-				}
-				control.repaintInner();
-			}
-		});
-	}
-	/** @return Is the simulation paused? */
-	public boolean paused() {
-		return paused;
-	}
-	/** Pause the simulation. */
-	public void pause() {
-		paused = true;
-		close0(simulatorHandler);
-		simulatorHandler = null;
-	}
-	/** Resume the simulator. */
-	public void resume() {
-		paused = false;
-		replaceSimulator(speed);
-	}
-	/**
-	 * Change the simulator speed.
-	 * @param delay the delay
-	 */
-	public void speed(int delay) {
-		if (speed != delay || paused) {
-			this.speed = delay;
-			resume();
-		}
-	}
-	/** @return Get the current speed. */
-	public int speed() {
-		return speed;
 	}
 	/** @return the world instance. */
 	public World world() {
@@ -668,5 +613,83 @@ public class CommonResources {
 	/** Stop the current music playback. */
 	public void stopMusic() {
 		music.close();
+	}
+	/**
+	 * Create a new simulation timer controls with the given action.
+	 * @param action the simulation action
+		 * @param delay the function which tells the delay from the speed enumeration
+	 * @return the new simulation timer
+	 */
+	public SimulationTimer newSimulationTimer(Act action, Func1<SimulationSpeed, Integer> delay) {
+		return new SimulationTimer(action, delay);
+	}
+	/**
+	 * The class to manage simulation timer related commands (pause, resume, curren).
+	 * @author akarnokd, 2011.09.01.
+	 */
+	public class SimulationTimer implements Closeable {
+		/** The handler for the timer. */
+		protected Closeable handler;
+		/** The current speed value. */
+		protected SimulationSpeed speed = SimulationSpeed.NORMAL;
+		/** Is the simulation paused? */
+		protected boolean paused = true;
+		/** The timer action. */
+		protected final Act action;
+		/** The delay computation function. */
+		protected final Func1<SimulationSpeed, Integer> delay;
+		/**
+		 * Constructor.
+		 * @param action the timer action.
+		 * @param delay the function which tells the delay from the speed enumeration
+		 */
+		public SimulationTimer(Act action, Func1<SimulationSpeed, Integer> delay) {
+			this.action = action;
+			this.delay = delay;
+		}
+		/**
+		 * Pauses the simulation if not already paused.
+		 */
+		public void pause() {
+			if (!paused) {
+				paused = true;
+				close();
+			}
+		}
+		/** Resumes the simulation if not already running. */
+		public void resume() {
+			if (paused) {
+				speed(speed);
+			}
+		}
+		/** Register the action with the timer and delay. */
+		void registerAction() {
+			close();
+			handler = register(delay.invoke(speed), action);
+		}
+		/**
+		 * Sets a new simulation speed and resumes the simulation.
+		 * @param newSpeed the new speed
+		 */
+		public void speed(SimulationSpeed newSpeed) {
+			if (newSpeed != speed || paused) {
+				speed = newSpeed;
+				paused = false;
+				registerAction();
+			}
+		}
+		/** @return the current simulation speed. */
+		public SimulationSpeed speed() {
+			return speed;
+		}
+		/** @return true if the simulation is paused. */
+		public boolean paused() {
+			return paused;
+		}
+		@Override
+		public void close() {
+			close0(handler);
+			handler = null;
+		}
 	}
 }

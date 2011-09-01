@@ -9,7 +9,9 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Act;
+import hu.openig.core.Func1;
 import hu.openig.core.Location;
+import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
@@ -313,13 +315,13 @@ public class SpacewarScreen extends ScreenBase {
 	/** The last Y coordinate. */
 	int lastY;
 	/** View commands. */
-	private ThreePhaseButton viewCommand;
+	ThreePhaseButton viewCommand;
 	/** View damages. */
-	private ThreePhaseButton viewDamage;
+	ThreePhaseButton viewDamage;
 	/** View range. */
-	private ThreePhaseButton viewRange;
+	ThreePhaseButton viewRange;
 	/** View grids. */
-	private ThreePhaseButton viewGrid;
+	ThreePhaseButton viewGrid;
 	/** We are drawing the selection box. */
 	boolean selectionBox;
 	/** The selection box mode. */
@@ -408,7 +410,6 @@ public class SpacewarScreen extends ScreenBase {
 	/** The initial layout panel. */
 	@Show(mode = PanelMode.LAYOUT, left = false)
 	LayoutPanel layoutPanel;
-	
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -1007,6 +1008,7 @@ public class SpacewarScreen extends ScreenBase {
 			btn.paintTo(g2);
 		}
 		zoom.paintTo(g2);
+		pause.pressed = commons.simulation.paused();
 		pause.paintTo(g2);
 		retreat.paintTo(g2);
 		confirmRetreat.paintTo(g2);
@@ -1067,11 +1069,11 @@ public class SpacewarScreen extends ScreenBase {
 	}
 	/** Pause. */
 	protected void doPause() {
-		
+		commons.simulation.pause();
 	}
 	/** Unpause. */
 	protected void doUnpause() {
-		
+		commons.simulation.resume();
 	}
 	/** Retreat mode. */
 	protected void doRetreat() {
@@ -1200,14 +1202,18 @@ public class SpacewarScreen extends ScreenBase {
 		
 		zoomToFit();
 		commons.playBattleMusic();
-		
+
+		setSpacewarTimeControls();
+
 		displayPanel(PanelMode.SHIP_STATUS, true);
 		if (battle.attacker.owner == player() && (nearbyPlanet == null || nearbyPlanet.owner != player())) {
 			displayPanel(PanelMode.LAYOUT, false);
 			setLayoutSelectionMode(true);
 		} else {
 			setLayoutSelectionMode(false);
+			commons.simulation.resume();
 		}
+		
 	}
 	/**
 	 * Place a fleet onto the map starting from the {@code x} position and {@code angle}.
@@ -2507,5 +2513,31 @@ public class SpacewarScreen extends ScreenBase {
 		boolean withinOk(UIMouse e) {
 			return e.within(5, 175, commons.spacewar().layoutOk.getWidth(), commons.spacewar().layoutOk.getHeight());
 		}
+	}
+	/** Set the spacewar time controls. */
+	void setSpacewarTimeControls() {
+		commons.replaceSimulation(new Act() {
+			@Override
+			public void act() {
+				doSpacewarSimulation();
+			}
+		},
+		new Func1<SimulationSpeed, Integer>() {
+			@Override
+			public Integer invoke(SimulationSpeed value) {
+				switch (value) {
+				case NORMAL: return 200;
+				case FAST: return 100;
+				case ULTRA_FAST: return 50;
+				default:
+					throw new AssertionError("" + value);
+				}
+			};
+		}
+		);
+	}
+	/** Perform the spacewar simulation. */
+	void doSpacewarSimulation() {
+		
 	}
 }

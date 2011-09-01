@@ -2180,9 +2180,9 @@ public class StarmapScreen extends ScreenBase {
 	 */
 	void deploySatellite(final String typeId, String media, final int ttl) {
 		final Planet p = planet();
-		final boolean isPaused = commons.paused();
+		final boolean isPaused = commons.simulation.paused();
 		if (!isPaused) {
-			commons.pause();
+			commons.simulation.pause();
 		}
 		if (config.satelliteDeploy) {
 			commons.control().playVideos(new Act() {
@@ -2488,7 +2488,7 @@ public class StarmapScreen extends ScreenBase {
 		player().changeInventoryCount(rt, -1);
 		
 		if (!isPaused) {
-			commons.resume();
+			commons.simulation.resume();
 		}
 	}
 }
