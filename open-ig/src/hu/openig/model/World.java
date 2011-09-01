@@ -1528,7 +1528,6 @@ public class World {
 				bp.area = 1;
 			}
 			bp.mode = BattleProjectile.Mode.valueOf(xproj.get("mode"));
-			
 			battle.projectiles.put(id, bp);
 			
 		}
@@ -1555,8 +1554,8 @@ public class World {
 			if (xspace.has("movement-speed")) {
 				se.movementSpeed = xspace.getInt("movement-speed");
 			}
-			if (xspace.has("rotation-speed")) {
-				se.rotationSpeed = xspace.getInt("rotation-speed");
+			if (xspace.has("rotation-time")) {
+				se.rotationTime = xspace.getInt("rotation-time");
 			}
 			
 			battle.spaceEntities.put(id, se);
@@ -1583,7 +1582,7 @@ public class World {
 				System.err.println("Missing sound for " + id);
 			}
 			se.projectile = xdefense.get("projectile");
-			se.rotationSpeed = xdefense.getInt("rotation-speed");
+			se.rotationTime = xdefense.getInt("rotation-time");
 			se.damage = xdefense.getInt("damage");
 			
 			battle.groundProjectors.put(id, se);
