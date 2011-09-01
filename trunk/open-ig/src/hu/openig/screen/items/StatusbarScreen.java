@@ -9,6 +9,7 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Act;
+import hu.openig.core.SimulationSpeed;
 import hu.openig.model.Message;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
@@ -131,12 +132,13 @@ public class StatusbarScreen extends ScreenBase {
 		pause.onPress = new Act() {
 			@Override
 			public void act() {
-				if (commons.getSimulationSpeed.invoke(null) > 0) {
+				if (!commons.simulation.paused()) {
 					sound(SoundType.PAUSE);
+					commons.simulation.pause();
 				} else {
 					sound(SoundType.UI_ACKNOWLEDGE_1);
+					commons.simulation.resume();
 				}
-				commons.setSimulationSpeed.invoke(-1);
 			}
 		};
 		speed1 = new UIImageTabButton2(commons.common().speed1);
@@ -144,7 +146,7 @@ public class StatusbarScreen extends ScreenBase {
 			@Override
 			public void act() {
 				sound(SoundType.CLICK_LOW_1);
-				commons.setSimulationSpeed.invoke(1000);
+				commons.simulation.speed(SimulationSpeed.NORMAL);
 			}
 		};
 		speed2 = new UIImageTabButton2(commons.common().speed2);
@@ -152,7 +154,7 @@ public class StatusbarScreen extends ScreenBase {
 			@Override
 			public void act() {
 				sound(SoundType.CLICK_LOW_1);
-				commons.setSimulationSpeed.invoke(500);
+				commons.simulation.speed(SimulationSpeed.FAST);
 			}
 		};
 		speed4 = new UIImageTabButton2(commons.common().speed4);
@@ -160,7 +162,7 @@ public class StatusbarScreen extends ScreenBase {
 			@Override
 			public void act() {
 				sound(SoundType.CLICK_LOW_1);
-				commons.setSimulationSpeed.invoke(250);
+				commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
 			}
 		};
 		
@@ -253,11 +255,11 @@ public class StatusbarScreen extends ScreenBase {
 		speed2.location(top.x + 31, top.y + 2);
 		speed4.location(top.x + 46, top.y + 2);
 		
-		int spd = commons.getSimulationSpeed.invoke(null);
-		pause.selected = spd < 0;
-		speed1.selected = 1000 == spd || -1000 == spd;
-		speed2.selected = 500 == spd || -500 == spd;
-		speed4.selected = 250 == spd || -250 == spd;
+		SimulationSpeed spd = commons.simulation.speed();
+		pause.selected = commons.simulation.paused();
+		speed1.selected = spd == SimulationSpeed.NORMAL;
+		speed2.selected = spd == SimulationSpeed.FAST;
+		speed4.selected = spd == SimulationSpeed.ULTRA_FAST;
 		
 		year.bounds(top.x + 171, top.y + 3, 34, 14);
 		month.bounds(top.x + 211, top.y + 3, 82, 14);

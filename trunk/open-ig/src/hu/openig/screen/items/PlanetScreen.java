@@ -1660,7 +1660,7 @@ public class PlanetScreen extends ScreenBase {
 	/** Animate the shaking during an earthquake. */
 	void doEarthquake() {
 		if (planet().earthQuakeTTL > 0) {
-			if (!commons.paused()) {
+			if (!commons.simulation.paused()) {
 				render.offsetX += (2 - world().random.get().nextInt(5)) * 2;
 				render.offsetY += (1 - world().random.get().nextInt(3));
 				askRepaint();

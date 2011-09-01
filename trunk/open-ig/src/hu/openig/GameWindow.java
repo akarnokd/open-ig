@@ -13,6 +13,7 @@ import hu.openig.core.Configuration;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
+import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
@@ -982,7 +983,7 @@ public class GameWindow extends JFrame implements GameControls {
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
 					} else {
-						commons.speed(1000);
+						commons.simulation.speed(SimulationSpeed.NORMAL);
 						allScreens.main.sound(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
@@ -997,7 +998,7 @@ public class GameWindow extends JFrame implements GameControls {
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
 					} else {
-						commons.speed(500);
+						commons.simulation.speed(SimulationSpeed.FAST);
 						allScreens.main.sound(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
@@ -1012,18 +1013,18 @@ public class GameWindow extends JFrame implements GameControls {
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
 					} else {
-						commons.speed(250);
+						commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
 						allScreens.main.sound(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
 					break;
 				case KeyEvent.VK_SPACE:
-					if (commons.paused()) {
-						commons.resume();
+					if (commons.simulation.paused()) {
+						commons.simulation.resume();
 						allScreens.main.sound(SoundType.UI_ACKNOWLEDGE_1);
 					} else {
-						commons.pause();
+						commons.simulation.pause();
 						allScreens.main.sound(SoundType.PAUSE);
 					}
 					repaintInner();
@@ -1337,7 +1338,7 @@ public class GameWindow extends JFrame implements GameControls {
 		commons.worldLoading = true;
 		boolean running = false;
 		if (commons.world() != null) {
-			running = !commons.paused();
+			running = !commons.simulation.paused();
 			commons.stop();
 		}
 		final boolean frunning = running;
@@ -1421,7 +1422,7 @@ public class GameWindow extends JFrame implements GameControls {
 							restoreSettings(xworld);
 							commons.start(true);
 							if (!frunning) {
-								commons.pause();
+								commons.simulation.pause();
 							}
 						}
 					});
@@ -1556,7 +1557,7 @@ public class GameWindow extends JFrame implements GameControls {
 				if (spaceBattle) {
 					commons.battleMode = true;
 					commons.stopMusic();
-					commons.pause();
+					commons.simulation.pause();
 					SpacewarScreen sws = (SpacewarScreen)displayPrimary(Screens.SPACEWAR);
 					sws.initiateBattle(bi);
 				} else {
@@ -1579,7 +1580,7 @@ public class GameWindow extends JFrame implements GameControls {
 					if (groundBattle) {
 						commons.battleMode = true;
 						commons.stopMusic();
-						commons.pause();
+						commons.simulation.pause();
 						playVideos(new Act() {
 							@Override
 							public void act() {
