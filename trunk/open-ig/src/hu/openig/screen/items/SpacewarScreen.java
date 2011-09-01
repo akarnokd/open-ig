@@ -29,7 +29,6 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
-import hu.openig.model.SpacewarBeam;
 import hu.openig.model.SpacewarExplosion;
 import hu.openig.model.SpacewarProjectile;
 import hu.openig.model.SpacewarStructure;
@@ -311,8 +310,6 @@ public class SpacewarScreen extends ScreenBase {
 	TwoPhaseButton stopRetreat;
 	/** The space ships for animation. */
 	final List<SpacewarStructure> structures = new ArrayList<SpacewarStructure>();
-	/** The beams for animation. */
-	final List<SpacewarBeam> beams = new ArrayList<SpacewarBeam>();
 	/** The projectiles for animation. */
 	final List<SpacewarProjectile> projectiles = new ArrayList<SpacewarProjectile>();
 	/** The space explosions for animation. */
@@ -966,7 +963,6 @@ public class SpacewarScreen extends ScreenBase {
 		battle = null;
 		structures.clear();
 		projectiles.clear();
-		beams.clear();
 		explosions.clear();
 		
 		leftStatusPanel.clear();
@@ -1127,8 +1123,8 @@ public class SpacewarScreen extends ScreenBase {
 			oy = (int)((mainmap.height - space.height * scale) / 2);
 		}
 		
-		double x0 = (x - mainmap.x - ox) * scale;
-		double y0 = (y - mainmap.y - oy) * scale;
+		double x0 = (x - mainmap.x - ox) / scale;
+		double y0 = (y - mainmap.y - oy) / scale;
 		return new Point2D.Double(x0, y0);
 	}
 	/** Pause. */
@@ -1183,7 +1179,6 @@ public class SpacewarScreen extends ScreenBase {
 		structures.clear();
 		
 		projectiles.clear();
-		beams.clear();
 		explosions.clear();
 		
 		this.battle = battle;
@@ -1703,14 +1698,11 @@ public class SpacewarScreen extends ScreenBase {
 		for (SpacewarProjectile e : projectiles) {
 			drawCenter(e.get(), e.x, e.y, g2);
 		}
-		for (SpacewarBeam e : beams) {
-			drawCenter(e.get(), e.x, e.y, g2);
-		}
+		drawSpacewarStructures(structures, g2);
 		for (SpacewarExplosion e : explosions) {
 			drawCenter(e.get(), e.x, e.y, g2);
 		}
 		
-		drawSpacewarStructures(structures, g2);
 
 		g2.setTransform(af);
 
@@ -1729,12 +1721,6 @@ public class SpacewarScreen extends ScreenBase {
 		// draw minimap
 		g2.setColor(Color.GRAY);
 		for (SpacewarProjectile e : projectiles) {
-			int x = (int)(e.x * minimap.width / space.width);
-			int y = (int)(e.y * minimap.height / space.height);
-			g2.drawLine(x, y, x, y);
-		}
-		g2.setColor(Color.LIGHT_GRAY);
-		for (SpacewarBeam e : beams) {
 			int x = (int)(e.x * minimap.width / space.width);
 			int y = (int)(e.y * minimap.height / space.height);
 			g2.drawLine(x, y, x, y);
@@ -1837,15 +1823,17 @@ public class SpacewarScreen extends ScreenBase {
 				int y = (int)e.y - h2 + 2;
 				int dw = w - 6;
 				g2.setColor(Color.BLACK);
-				g2.fillRect((int)e.x - w2 + 3, y, dw, 3);
+				g2.fillRect((int)e.x - w2 + 3, y, dw, 4);
 				g2.setColor(Color.GREEN);
-				g2.fillRect((int)e.x - w2 + 3, y, e.hp * dw / e.hpMax, 3);
+				g2.fillRect((int)e.x - w2 + 3, y, e.hp * dw / e.hpMax, 4);
+				g2.setColor(Color.RED);
+				g2.drawRect((int)e.x - w2 + 3, y, dw, 4);
 				if (e.shieldMax > 0) {
 					g2.setColor(new Color(0xFFFFCC00));
-					g2.fillRect((int)e.x - w2 + 3, y, e.shield * dw / e.shieldMax, 3);
+					g2.fillRect((int)e.x - w2 + 3, y, e.shield * dw / e.shieldMax, 4);
 				}
 			}
-			if (e.type == StructureType.SHIP && e.count != 1) {
+			if (e.type == StructureType.SHIP && e.count > 1) {
 				commons.text().paintTo(g2, (int)(e.x - w2), (int)(e.y + h / 2 - 8), 7, 0xFFFFFFFF, Integer.toString(e.count));
 			}
 		}
@@ -2356,24 +2344,23 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		@Override
 		public void draw(Graphics2D g2) {
-			String s = "";
-			if (item.type == StructureType.STATION) {
-				s = get("spacewar.station_information");
-			} else
-			if (item.type == StructureType.SHIELD) {
-				s = get("spacewar.shield_information");
-			} else
-			if (item.type == StructureType.PROJECTOR) {
-				s = get("spacewar.projector_information");
-			} else {
-				s = get("spacewar.ship_information");				
+			String s = get("spacewar.ship_information");
+			if (item != null) {
+				if (item.type == StructureType.STATION) {
+					s = get("spacewar.station_information");
+				} else
+				if (item.type == StructureType.SHIELD) {
+					s = get("spacewar.shield_information");
+				} else
+				if (item.type == StructureType.PROJECTOR) {
+					s = get("spacewar.projector_information");
+				}
 			}
 			int dx = (width - commons.text().getTextWidth(10, s)) / 2;
 			commons.text().paintTo(g2, dx, 6, 10, TextRenderer.YELLOW, s);
 			
 			int y = 26;
 			
-			boolean isws = item.type == StructureType.SHIP;
 			if (item == null) {
 				if (isMany) {
 					commons.text().paintTo(g2, 8, y, 7, TextRenderer.GREEN, get("spacewar.ship_status_many"));
@@ -2381,6 +2368,7 @@ public class SpacewarScreen extends ScreenBase {
 					commons.text().paintTo(g2, 8, y, 7, TextRenderer.GREEN, get("spacewar.ship_status_none"));
 				}
 			} else {
+				boolean isws = item.type == StructureType.SHIP;
 				boolean showFixed = false;
 				// draw first column
 				int maxLabelWidth = 0;
@@ -2830,10 +2818,13 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	boolean moveStep(SpacewarStructure ship, double x, double y, double r) {
 		// travel until the distance
-		double dist = Math.hypot(ship.x - x, ship.y - y) - r;
+		double dist = Math.hypot(ship.x - x, ship.y - y);
+		if (dist < r) {
+			return true;
+		}
 		double angle = Math.atan2(y - ship.y, x - ship.x);
 		double ds = 1.0 * SIMULATION_DELAY / ship.movementSpeed;
-		if (dist > ds) {
+		if (dist - r > ds) {
 			ship.x += ds * Math.cos(angle);
 			ship.y += ds * Math.sin(angle);
 		} else {
@@ -2854,16 +2845,18 @@ public class SpacewarScreen extends ScreenBase {
 		double dx = ds * Math.cos(obj.angle);
 		double dy = ds * Math.sin(obj.angle);
 		
-		double w = obj.target.get().getWidth();
-		double h = obj.target.get().getHeight();
-		double x0 = obj.target.x - w / 2;
-		double x1 = x0 + w;
-		double y0 = obj.target.y - h / 2;
-		double y1 = y0 + h;
-		obj.phase++;
-		if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx, 
-				obj.y + dy, x0, y0, x1, y1)) {
-			return true;
+		if (!obj.target.isDestroyed()) {
+			double w = obj.target.get().getWidth();
+			double h = obj.target.get().getHeight();
+			double x0 = obj.target.x - w / 2;
+			double x1 = x0 + w;
+			double y0 = obj.target.y - h / 2;
+			double y1 = y0 + h;
+			obj.phase++;
+			if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx, 
+					obj.y + dy, x0, y0, x1, y1)) {
+				return true;
+			}
 		}
 		obj.x += dx;
 		obj.y += dy;
@@ -2922,37 +2915,56 @@ public class SpacewarScreen extends ScreenBase {
 			}
 		}
 	}
+	/**
+	 * Create explosion object for the given spacewar structure.
+	 * @param s the structure
+	 */
+	void createExplosion(SpacewarStructure s) {
+		SpacewarExplosion x = new SpacewarExplosion();
+		x.owner = s.owner;
+		x.target = s;
+		x.x = s.x;
+		x.y = s.y;
+		switch (s.destruction) {
+		case EXPLOSION_MEDIUM:
+		case EXPLOSION_MEDIUM_2:
+			x.phases = commons.spacewar().explosionMedium;
+			break;
+		case EXPLOSION_SHORT:
+			x.phases = commons.spacewar().explosionSmall;
+			break;
+		default:
+			x.phases = commons.spacewar().explosionLarge;
+		}
+		explosions.add(x);
+	}
 	/** Perform the spacewar simulation. */
 	void doSpacewarSimulation() {
+		// advance explosions
+		for (SpacewarExplosion exp : new ArrayList<SpacewarExplosion>(explosions)) {
+			if (exp.next()) {
+				explosions.remove(exp);
+			} else
+			if (exp.isMiddle() && exp.target.isDestroyed()) {
+				structures.remove(exp.target);
+			}
+		}
 		// move projectiles
 		for (SpacewarProjectile p : new ArrayList<SpacewarProjectile>(projectiles)) {
 			if (moveStep(p)) {
 				projectiles.remove(p);
 				
-				int damage = p.damage;
-				if (p.target.shield > 0) {
-					if (p.target.shield > damage / 2) {
-						p.target.shield -= damage / 2;
-						damage = damage / 2;
-					} else {
-						damage -= p.target.shield * 2;
-						p.target.shield = 0;
-					}
-				}
-				p.target.hp = Math.max(0, p.target.hp - damage);
-				if (p.target.hp > 0) {
-					sound(p.impactSound);
-				} else {
+				if (p.target.damage(p.damage)) {
+					battle.losses.add(p.target);
 					sound(p.target.destruction);
-					
+					createExplosion(p.target);
+				} else {
+					sound(p.impactSound);
 				}
 			} else
 			if (!p.intersects(0, 0, space.width, space.height)) {
 				projectiles.remove(p);
 			}
-		}
-		for (SpacewarExplosion exp : new ArrayList<SpacewarExplosion>(explosions)) {
-			
 		}
 		// fleet movements
 		for (SpacewarStructure ship : structures) {
@@ -2966,6 +2978,9 @@ public class SpacewarScreen extends ScreenBase {
 					}
 				} else
 				if (ship.attack != null) {
+					if (ship.attack.isDestroyed()) {
+						ship.attack = null;
+					} else
 					if (rotateStep(ship, ship.attack.x, ship.attack.y)) {
 						// move into minimum attack range if needed
 						if (!ship.guard && ship.type == StructureType.SHIP) {
@@ -2980,10 +2995,57 @@ public class SpacewarScreen extends ScreenBase {
 					if (es.size() > 0) {
 						ship.attack = es.get(world().random.get().nextInt(es.size()));
 					}
-				}
+				} /* else
+				if (ship.owner != player()) {
+					if (ship.type == StructureType.STATION 
+							|| ship.type == StructureType.PROJECTOR) {
+						ship.guard = true;
+					} else
+					if (ship.type == StructureType.SHIP) {
+						List<SpacewarStructure> es = enemiesOf(ship);
+						if (es.size() > 0) {
+							ship.attack = es.get(world().random.get().nextInt(es.size()));
+						}
+					}
+				} */
 			}
 		}
 		askRepaint();
+	}
+	/** @return the player who won the battle, null if nof yet finished */
+	Player checkWinner() {
+		int playerUnits = 0;
+		int nonplayerUnits = 0;
+		Player other = null;
+		for (SpacewarStructure s : structures) {
+			if (s.owner == player()) {
+				playerUnits++;
+			} else {
+				nonplayerUnits++;
+				other = s.owner;
+			}
+		}
+		if (playerUnits == 0) {
+			return other;
+		} else
+		if (nonplayerUnits == 0) {
+			return player();
+		}
+		return null;
+	}
+	/**
+	 * Returns a list of structures which are the enemies of {@code s}.
+	 * @param s the structure
+	 * @return the list of enemies
+	 */
+	List<SpacewarStructure> enemiesOf(SpacewarStructure s) {
+		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		for (SpacewarStructure f : structures) {
+			if (f.owner != s.owner) {
+				result.add(s);
+			}
+		}
+		return result;
 	}
 	/**
 	 * Fire at the target of the given ship with the available weapons.
@@ -3012,11 +3074,11 @@ public class SpacewarScreen extends ScreenBase {
 		SpacewarProjectile sp = new SpacewarProjectile();
 		sp.owner = source.owner; 
 		sp.target = target;
-		sp.movementSpeed = sp.movementSpeed;
+		sp.movementSpeed = p.movementSpeed;
 		sp.impactSound = SoundType.HIT; // FIXME
 		sp.x = source.x;
 		sp.y = source.y;
-		sp.angle = Math.atan2(sp.y - ay, sp.x - ax);
+		sp.angle = Math.atan2(ay - sp.y, ax - sp.x);
 		sp.matrix = sp.owner == player() ? p.alternative : p.matrix;
 		sp.damage = p.damage;
 		

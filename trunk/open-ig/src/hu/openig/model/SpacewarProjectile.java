@@ -11,8 +11,7 @@ package hu.openig.model;
 import java.awt.image.BufferedImage;
 
 /**
- * A projectile representing a rocket or bomb, 
- * capable of changing directions in flight.
+ * A projectile representing a laser, cannon, rocket or bomb.
  * They don't have any animation phase in general.
  * @author akarnokd, 2011.08.15.
  */
@@ -25,7 +24,7 @@ public class SpacewarProjectile extends SpacewarObject {
 	public BufferedImage[][] matrix;
 	/** The animation phase with an angle. */
 	public int phase;
-	/** ECM distraction limit 1..2 .*/
+	/** ECM distraction limit 0..2 .*/
 	public int ecmLimit;
 	/** The damage to inflict. */
 	public int damage;
@@ -42,8 +41,10 @@ public class SpacewarProjectile extends SpacewarObject {
 		if (a < 0) {
 			a = 1 + a; 
 		}
-		BufferedImage[] imageAngle = matrix[((int)Math.round(matrix.length * a)) % matrix.length]; 
-		return imageAngle[phase % imageAngle.length];
+		int phaseIndex = phase % matrix.length;
+		BufferedImage[] imageAngle = matrix[phaseIndex];
+		int angleIndex = ((int)Math.round(imageAngle.length * a)) % imageAngle.length;
+		return imageAngle[angleIndex];
 	}
 	/**
 	 * @return the normalized angle between -PI and +PI.

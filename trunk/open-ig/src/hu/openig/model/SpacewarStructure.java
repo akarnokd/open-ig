@@ -67,6 +67,8 @@ public class SpacewarStructure extends SpacewarObject {
 	public int minimumRange;
 	/** The number of batched fighters. Once hp reaches zero, this number is reduced, the batch will disappear when the count reaches zero. */
 	public int count = 1;
+	/** The loss counter. */
+	public int loss;
 	/** The movement target. */
 	public Point2D.Double moveTo;
 	/** The attack target. */
@@ -169,5 +171,39 @@ public class SpacewarStructure extends SpacewarObject {
 	 */
 	public double normalizedAngle() {
 		return Math.atan2(Math.sin(angle), Math.cos(angle));
+	}
+	/**
+	 * Apply damage to this structure, considering the shield level and
+	 * counts.
+	 * @param points the damage points to apply
+	 * @return is at least an unit destroyed
+	 */
+	public boolean damage(int points) {
+		if (shield > 0) {
+			if (shield > points / 2) {
+				shield -= points / 2;
+				points = points / 2;
+			} else {
+				points -= shield * 2;
+				shield = 0;
+			}
+		}
+		hp -= points;
+		
+		boolean result = hp <= 0;
+		while (count > 0 && hp <= 0) {
+			hp += shieldMax;
+			count--;
+			loss++;
+		}
+		if (count == 0) {
+			hp = 0;
+		}
+		
+		return result;
+	}
+	/** @return is the structure destroyed? */
+	public boolean isDestroyed() {
+		return count <= 0;
 	}
 }

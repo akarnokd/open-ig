@@ -1660,6 +1660,7 @@ public class GameWindow extends JFrame implements GameControls {
 				ii.owner = alienFleet.owner;
 				alienFleet.inventory.add(ii);
 			}
+			ii.shield = Math.max(0, ii.shieldMax());
 		}
 	}
 	

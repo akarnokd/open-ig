@@ -2,16 +2,16 @@
 <battle>
 	<projectiles>
 		<projectile id='Laser1' matrix='inventions/weapons/lasers/laser_1_rotate'
-			width='16' height='1' sound='FIRE_LASER' damage='5' delay='700'
+			width='64' height='1' sound='FIRE_LASER' damage='5' delay='700'
 			range='180' mode='BEAM' movement-speed='5'/>
 		<projectile id='Laser2' matrix='inventions/weapons/lasers/laser_2_rotate'
-			width='16' height='1' sound='FIRE_LASER' damage='10' delay='700'
+			width='64' height='1' sound='FIRE_LASER' damage='10' delay='700'
 			range='200' mode='BEAM' movement-speed='5'/>
 		<projectile id='Laser3' matrix='inventions/weapons/lasers/laser_3_rotate'
-			width='16' height='1' sound='FIRE_LASER' damage='15' delay='700'
+			width='64' height='1' sound='FIRE_LASER' damage='15' delay='700'
 			range='220' mode='BEAM' movement-speed='5'/>
 		<projectile id='Laser4' matrix='inventions/weapons/lasers/laser_4_rotate'
-			width='16' height='1' sound='FIRE_LASER' damage='20' delay='700'
+			width='64' height='1' sound='FIRE_LASER' damage='20' delay='700'
 			range='240' mode='BEAM' movement-speed='5'/>
 		<projectile id='Ion'
 			matrix='inventions/weapons/cannons/ion_projectile_rotate' width='64'

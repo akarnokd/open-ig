@@ -1515,6 +1515,8 @@ public class World {
 			if (xproj.has("alternative")) {
 				m = rl.getImage(xproj.get("alternative"));
 				bp.alternative = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
+			} else {
+				bp.alternative = bp.matrix;
 			}
 			if (xproj.has("sound")) {
 				bp.sound = SoundType.valueOf(xproj.get("sound"));

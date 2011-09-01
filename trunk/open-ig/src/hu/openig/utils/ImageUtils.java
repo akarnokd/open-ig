@@ -100,8 +100,9 @@ public final class ImageUtils {
 	 */
 	public static BufferedImage[][] split(BufferedImage img, int width, int height) {
 		if (img.getWidth() > 0) {
-			
-			BufferedImage[][] result = new BufferedImage[(img.getHeight() + height - 1) / height][(img.getWidth() + width - 1) / width];
+			int d0 = (img.getHeight() + height - 1) / height;
+			int d1 = (img.getWidth() + width - 1) / width;
+			BufferedImage[][] result = new BufferedImage[d0][d1];
 			int y = 0;
 			for (int j = 0; j < result.length; j++) {
 				int x = 0;
@@ -113,6 +114,7 @@ public final class ImageUtils {
 				}
 				y += height;
 			}
+			return result;
 		}
 		return new BufferedImage[0][];
 	}
