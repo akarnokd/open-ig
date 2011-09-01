@@ -78,4 +78,16 @@ public abstract class SpacewarObject {
 	public boolean within(Rectangle rect) {
 		return within(rect.x, rect.y, rect.width, rect.height);
 	}
+	/**
+	 * Test if the given point is inside the object.
+	 * @param px the X coordinate
+	 * @param py the Y coordinate
+	 * @return true if within
+	 */
+	public boolean contains(double px, double py) {
+		int w = get().getWidth();
+		int h = get().getHeight();
+		return x - w / 2 <= px && x - w / 2 + w > px
+				&& y - h / 2 <= px && y - h / 2 + h > py;
+	}
 }

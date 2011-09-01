@@ -24,8 +24,8 @@ public class BattleSpaceEntity {
 	public BufferedImage[] alternative;
 	/** The sound effect for explosion. */
 	public SoundType destruction;
-	/** The rotation speed. */
-	public int rotationSpeed;
-	/** The movement speed. */
+	/** The rotation speed: full rotation time in milliseconds. */
+	public int rotationTime;
+	/** The movement speed: milliseconds per pixel. */
 	public int movementSpeed; 
 }
