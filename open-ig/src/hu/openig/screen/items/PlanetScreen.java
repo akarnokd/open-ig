@@ -10,9 +10,12 @@ package hu.openig.screen.items;
 
 
 import hu.openig.core.Act;
+import hu.openig.core.Func1;
 import hu.openig.core.Location;
+import hu.openig.core.SimulationSpeed;
 import hu.openig.core.Tile;
 import hu.openig.mechanics.Allocator;
+import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
@@ -2450,11 +2453,58 @@ public class PlanetScreen extends ScreenBase {
 		buildingBox = null;
 		lastSurface = null;
 	}
+	/** The simulation delay on normal speed. */
+	static final int SIMULATION_DELAY = 100;
+	/** The battle information. */
+	BattleInfo battle;
+	
+	/** Set the spacewar time controls. */
+	void setGroundWarTimeControls() {
+		commons.replaceSimulation(new Act() {
+			@Override
+			public void act() {
+				doGroundWarSimulation();
+			}
+		},
+		new Func1<SimulationSpeed, Integer>() {
+			@Override
+			public Integer invoke(SimulationSpeed value) {
+				switch (value) {
+				case NORMAL: return SIMULATION_DELAY;
+				case FAST: return SIMULATION_DELAY / 2;
+				case ULTRA_FAST: return SIMULATION_DELAY / 4;
+				default:
+					throw new AssertionError("" + value);
+				}
+			};
+		}
+		);
+	}
+	/** The ground war simulation. */
+	void doGroundWarSimulation() {
+		
+	}
 	/**
 	 * Initiate a battle with the given settings.
 	 * @param battle the battle information
 	 */
 	public void initiateBattle(BattleInfo battle) {
 		// TODO prepare battle
+		
+		this.battle = battle;
+		
+		player().currentPlanet = battle.targetPlanet;
+
+		if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
+			world().takeover(battle.targetPlanet, battle.attacker.owner);
+			battle.groundwarWinner = battle.attacker.owner;
+		}
+		
+		setGroundWarTimeControls();
+		
+		// FIXME 
+		BattleInfo bi = battle;
+		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
+		bfs.displayBattleSummary(bi);
 	}
 }

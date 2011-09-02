@@ -261,19 +261,19 @@
 		<tech id='IonProjector' normal='inventions/buildings/guns/ion_projector_rotate'
 			alternative='inventions/buildings/guns/alien_ion_projector_rotate'
 			image='inventions/buildings/guns/ion_projector_huge' width='64'
-			sound='EXPLOSION_MEDIUM' projectile='Ion' damage='120' rotation-time='750'/>
+			sound='EXPLOSION_MEDIUM' projectile='Ion' damage='120' rotation-time='150'/>
 		<tech id='PlasmaProjector' normal='inventions/buildings/guns/plasma_projector_rotate'
 			alternative='inventions/buildings/guns/alien_plasma_projector_rotate'
 			image='inventions/buildings/guns/plasma_projector_huge' width='64'
-			sound='EXPLOSION_MEDIUM' projectile='Plasma'  damage='230' rotation-time='750'/>
+			sound='EXPLOSION_MEDIUM' projectile='Plasma'  damage='230' rotation-time='150'/>
 		<tech id='ParticleProjector' normal='inventions/buildings/guns/particle_projector_rotate'
 			alternative='inventions/buildings/guns/alien_particle_projector_rotate'
 			image='inventions/buildings/guns/particle_projector_huge' width='64'
-			sound='EXPLOSION_MEDIUM' projectile='Particle'  damage='370' rotation-time='750'/>
+			sound='EXPLOSION_MEDIUM' projectile='Particle'  damage='370' rotation-time='150'/>
 		<tech id='MesonProjector' normal='inventions/buildings/guns/meson_projector_rotate'
 			alternative='inventions/buildings/guns/alien_meson_projector_rotate'
 			image='inventions/buildings/guns/meson_projector_huge' width='64'
-			sound='EXPLOSION_MEDIUM' projectile='Meson'  damage='600' rotation-time='750'/>
+			sound='EXPLOSION_MEDIUM' projectile='Meson'  damage='600' rotation-time='150'/>
 	</ground-projectors>
 	<!-- The rotation-fire phase matrixes for surface tanks and vehicles -->
 	<ground-vehicles>

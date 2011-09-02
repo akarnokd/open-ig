@@ -32,8 +32,14 @@ public class SpacewarStructure extends SpacewarObject {
 		/** A shield. */
 		SHIELD
 	}
+	/** The container fleet. */
+	public Fleet fleet;
 	/** The referenced inventory item. */
 	public InventoryItem item;
+	/** The container planet. */
+	public Planet planet;
+	/** The building reference. */
+	public Building building;
 	/** The information image. */
 	public BufferedImage infoImage;
 	/** Available hitpoints, single object. */
@@ -75,8 +81,6 @@ public class SpacewarStructure extends SpacewarObject {
 	public SpacewarStructure attack;
 	/** Attack anything in range. */
 	public boolean guard;
-	/** The building reference. */
-	public Building building;
 	/** @return the type name describing this structure. */
 	public String getType() {
 		if (type == StructureType.SHIP || type == StructureType.STATION) {

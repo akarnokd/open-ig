@@ -79,6 +79,11 @@ public class OggMusic {
 	public void close() {
 		Thread th = playbackThread;
 		if (th != null) {
+			if (outputLine != null) {
+				outputLine.stop();
+				outputLine.drain();
+				outputLine.close();
+			}
 			th.interrupt();
 			playbackThread = null;
 		}

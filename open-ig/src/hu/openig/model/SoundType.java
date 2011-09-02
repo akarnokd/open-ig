@@ -173,6 +173,8 @@ public enum SoundType {
 	CLICK_HIGH_3("ui/click_high_3"),
 	/** Acknowledge command. ui/acknowledge_1 */
 	UI_ACKNOWLEDGE_1("ui/acknowledge_1"),
+	/** UI good bye. */
+	GOOD_BYE("ui/good_bye")
 	;
 	/** The associated resource location. */
 	public final String resource;

@@ -190,7 +190,22 @@ public class Sounds {
 	public void close() {
 		if (exec != null) {
 			exec.shutdown();
+			try {
+				exec.awaitTermination(60, TimeUnit.SECONDS);
+			} catch (InterruptedException ex) {
+				// ignored
+			}
+			for (BlockingQueue<SourceDataLine> lines : soundPool.values()) {
+				while (!lines.isEmpty()) {
+					try {
+						lines.take().close();
+					} catch (InterruptedException ex) {
+						// ignored
+					}
+				}
+			}
 		}
+		
 	}
 	/**
 	 * Play the given sound effect.

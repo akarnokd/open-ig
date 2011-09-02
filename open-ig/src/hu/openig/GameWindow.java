@@ -22,7 +22,6 @@ import hu.openig.model.FleetKnowledge;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
-import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
@@ -524,10 +523,6 @@ public class GameWindow extends JFrame implements GameControls {
 			sb = allScreens.colony;
 			sound = (SoundType.COLONY);
 			break;
-		case COLONY_BATTLE:
-			sb = allScreens.colony;
-			mode = screen;
-			break;
 		case DIPLOMACY:
 			sb = allScreens.diplomacy;
 			sound = (SoundType.DIPLOMACY);
@@ -625,6 +620,7 @@ public class GameWindow extends JFrame implements GameControls {
 			sb = allScreens.credits;
 			break;
 		case BATTLE_FINISH:
+			sb = allScreens.battleFinish;
 			break;
 		default:
 		}
@@ -804,8 +800,75 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 				e.consume();
 			}
+			if (!commons.worldLoading && commons.world() != null && !movieVisible) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_1:
+					if (e.isControlDown() && !commons.battleMode) {
+						commons.world().level = 1;
+						if (primary != null) {
+							primary.onLeave();
+						}
+						primary = null;
+						displayPrimary(Screens.BRIDGE);
+					} else {
+						commons.simulation.speed(SimulationSpeed.NORMAL);
+						allScreens.main.sound(SoundType.CLICK_LOW_1);
+						repaintInner();
+					}
+					e.consume();
+					break;
+				case KeyEvent.VK_2:
+					if (e.isControlDown() && !commons.battleMode) {
+						commons.world().level = 2;
+						if (primary != null) {
+							primary.onLeave();
+						}
+						primary = null;
+						displayPrimary(Screens.BRIDGE);
+					} else {
+						commons.simulation.speed(SimulationSpeed.FAST);
+						allScreens.main.sound(SoundType.CLICK_LOW_1);
+						repaintInner();
+					}
+					e.consume();
+					break;
+				case KeyEvent.VK_3:
+					if (e.isControlDown() && !commons.battleMode) {
+						commons.world().level = 3;
+						if (primary != null) {
+							primary.onLeave();
+						}
+						primary = null;
+						displayPrimary(Screens.BRIDGE);
+					} else {
+						commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
+						allScreens.main.sound(SoundType.CLICK_LOW_1);
+						repaintInner();
+					}
+					e.consume();
+					break;
+				case KeyEvent.VK_SPACE:
+					if (commons.simulation.paused()) {
+						commons.simulation.resume();
+						allScreens.main.sound(SoundType.UI_ACKNOWLEDGE_1);
+					} else {
+						commons.simulation.pause();
+						allScreens.main.sound(SoundType.PAUSE);
+					}
+					repaintInner();
+					e.consume();
+					break;
+				case KeyEvent.VK_ESCAPE:
+					LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
+					scr.maySave = false;
+					scr.displayPage(SettingsPage.AUDIO);
+					e.consume();
+					break;
+				default:
+				}
+			}
 			if (!commons.worldLoading && commons.world() != null 
-					&& !movieVisible /* && !commons.battleMode */) {
+					&& !movieVisible && !commons.battleMode) {
 				if (e.getKeyChar() == '+') {
 					commons.world().player.moveNextPlanet();
 					repaintInner();
@@ -974,62 +1037,6 @@ public class GameWindow extends JFrame implements GameControls {
 					} else {
 						displaySecondary(Screens.ACHIEVEMENTS);
 					}
-					e.consume();
-					break;
-				case KeyEvent.VK_1:
-					if (e.isControlDown()) {
-						commons.world().level = 1;
-						if (primary != null) {
-							primary.onLeave();
-						}
-						primary = null;
-						displayPrimary(Screens.BRIDGE);
-					} else {
-						commons.simulation.speed(SimulationSpeed.NORMAL);
-						allScreens.main.sound(SoundType.CLICK_LOW_1);
-						repaintInner();
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_2:
-					if (e.isControlDown()) {
-						commons.world().level = 2;
-						if (primary != null) {
-							primary.onLeave();
-						}
-						primary = null;
-						displayPrimary(Screens.BRIDGE);
-					} else {
-						commons.simulation.speed(SimulationSpeed.FAST);
-						allScreens.main.sound(SoundType.CLICK_LOW_1);
-						repaintInner();
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_3:
-					if (e.isControlDown()) {
-						commons.world().level = 3;
-						if (primary != null) {
-							primary.onLeave();
-						}
-						primary = null;
-						displayPrimary(Screens.BRIDGE);
-					} else {
-						commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
-						allScreens.main.sound(SoundType.CLICK_LOW_1);
-						repaintInner();
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_SPACE:
-					if (commons.simulation.paused()) {
-						commons.simulation.resume();
-						allScreens.main.sound(SoundType.UI_ACKNOWLEDGE_1);
-					} else {
-						commons.simulation.pause();
-						allScreens.main.sound(SoundType.PAUSE);
-					}
-					repaintInner();
 					e.consume();
 					break;
 				case KeyEvent.VK_4:
@@ -1510,6 +1517,9 @@ public class GameWindow extends JFrame implements GameControls {
 			if (bi.targetPlanet != null && bi.targetPlanet.owner == bi.attacker.owner) {
 				continue;
 			}
+			if (bi.targetPlanet != null) {
+				bi.originalTargetPlanetOwner = bi.targetPlanet.owner;
+			}
 			if ((bi.attacker.owner != world().player || config.automaticBattle) 
 					&& ((bi.targetFleet != null && bi.targetFleet.owner != world().player)
 							|| (bi.targetPlanet != null && bi.targetPlanet.owner != world().player))) {
@@ -1518,6 +1528,7 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 			// do a space battle
 			if (bi.targetFleet != null) {
+				commons.battleMode = true;
 				SpacewarScreen sws = (SpacewarScreen)displayPrimary(Screens.SPACEWAR);
 				sws.initiateBattle(bi);
 			} else {
@@ -1573,10 +1584,8 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 					}
 					if (!ableToGroundBattle) {
-						Message msgLost = world().newMessage("message.no_vehicles_for_assault");
-						msgLost.priority = 100;
-						msgLost.targetPlanet = bi.targetPlanet;
-						bi.attacker.owner.messageQueue.add(msgLost);
+						displayError(commons.labels0().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
+						commons.sounds.play(SoundType.NOT_AVAILABLE);
 						continue;
 					}
 					if (groundBattle) {
@@ -1586,7 +1595,7 @@ public class GameWindow extends JFrame implements GameControls {
 						playVideos(new Act() {
 							@Override
 							public void act() {
-								PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY_BATTLE);
+								PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
 								ps.initiateBattle(bi);
 								commons.playBattleMusic();
 							}
@@ -1594,27 +1603,7 @@ public class GameWindow extends JFrame implements GameControls {
 						
 					} else {
 						// just take ownership
-						Player lastOwner = bi.targetPlanet.owner;
-						bi.targetPlanet.owner = bi.attacker.owner;
-						bi.targetPlanet.owner.statistics.planetsConquered++;
-						for (Building b : bi.targetPlanet.surface.buildings) {
-							if (b.type.research != null) {
-								commons.world().player.setAvailable(b.type.research);
-							}
-						}
-						bi.targetPlanet.owner.planets.put(bi.targetPlanet, PlanetKnowledge.BUILDING);
-						
-						// notify about ownership change
-						Message msgLost = world().newMessage("message.planet_lost");
-						msgLost.priority = 100;
-						msgLost.targetPlanet = bi.targetPlanet;
-						lastOwner.messageQueue.add(msgLost);
-						
-						Message msgConq = world().newMessage("message.planet_conquered");
-						msgConq.priority = 100;
-						msgConq.targetPlanet = bi.targetPlanet;
-						bi.attacker.owner.messageQueue.add(msgConq);
-						
+						world().takeover(bi.targetPlanet, bi.attacker.owner);
 						continue;
 					}
 				}
@@ -1671,6 +1660,13 @@ public class GameWindow extends JFrame implements GameControls {
 					}
 				}
 			}
+			types = EnumSet.of(
+					ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
+					ResearchSubCategory.SPACESHIPS_CRUISERS,
+					ResearchSubCategory.SPACESHIPS_FIGHTERS,
+					ResearchSubCategory.WEAPONS_TANKS,
+					ResearchSubCategory.WEAPONS_VEHICLES
+			);
 			for (ResearchType rt : world().researches.values()) {
 				if (types.contains(rt.category)) {
 					if (rt.race.contains(world().player.race)) {

@@ -21,7 +21,7 @@ import java.util.Map;
  * A planet.
  * @author akarnokd, 2010.01.07.
  */
-public class Planet implements Named, Owned {
+public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	/** The planet's identifier. */
 	public String id;
 	/** The planet's display name. */
@@ -585,5 +585,9 @@ public class Planet implements Named, Owned {
 				it.remove();
 			}
 		}
+	}
+	@Override
+	public Iterator<InventoryItem> iterator() {
+		return inventory.iterator();
 	}
 }

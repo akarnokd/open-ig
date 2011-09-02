@@ -12,13 +12,14 @@ import hu.openig.model.BattleProjectile.Mode;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * A fleet.
  * @author akarnokd, 2010.01.07.
  */
-public class Fleet implements Named, Owned {
+public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	/** The unique fleet identifier. */
 	public int id;
 	/** The owner of the fleet. */
@@ -316,6 +317,51 @@ public class Fleet implements Named, Owned {
 					result.add(f);
 				}
 			}
+		}
+		return result;
+	}
+	@Override
+	public Iterator<InventoryItem> iterator() {
+		return inventory.iterator();
+	}
+	/**
+	 * If the current vehicle count is greater than the supported vehicle count,
+	 * remove excess vehicles.
+	 * @return the number of vehicles removed
+	 */
+	public int adjustVehicleCounts() {
+		int vehicleCount = 0;
+		int vehicleMax = 0;
+		int result = 0;
+		for (InventoryItem fii : inventory) {
+			if (fii.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| fii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				vehicleCount += fii.count;
+			}
+			if (fii.type.has("vehicles")) {
+				vehicleMax += fii.type.getInt("vehicles"); 
+			}
+			for (InventorySlot slot : fii.slots) {
+				if (slot.type != null) {
+					if (slot.type.has("vehicles")) {
+						vehicleMax += slot.type.getInt("vehicles"); 
+					}
+				}
+			}
+		}
+		while (vehicleCount > vehicleMax) {
+			for (InventoryItem fii : inventory) {
+				if (fii.type.category == ResearchSubCategory.WEAPONS_TANKS
+						|| fii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					fii.count--;
+					vehicleCount--;
+					result++;
+					if (fii.count == 0) {
+						inventory.remove(fii);
+					}
+					break;
+				}
+			}			
 		}
 		return result;
 	}

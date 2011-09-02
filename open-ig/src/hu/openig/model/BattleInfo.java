@@ -23,6 +23,8 @@ public class BattleInfo {
 	public Fleet targetFleet;
 	/** The targeted planet if non null. */
 	public Planet targetPlanet;
+	/** The original target planet owner. */
+	public Player originalTargetPlanetOwner;
 	/** The potential helper fleet if a planet is attacked. */
 	public Fleet helperFleet;
 	/** The potential helper planet if a fleet is attacked. */
@@ -31,10 +33,20 @@ public class BattleInfo {
 	public int attackerLosses;
 	/** Count the defender's losses. */
 	public int defenderLosses;
+	/** The number of lost ground units: attacker. */
+	public int attackerGroundLosses;
+	/** The number of lost ground units: defender. */
+	public int defenderGroundLosses;
 	/** Ground unit count of the attacker. */
 	public int attackerGroundUnits;
 	/** Ground unit count of the defender. */
 	public int defenderGroundUnits;
+	/** The winner of the spacewar. */
+	public Player spacewarWinner;
+	/** The winner of the groundwar. */
+	public Player groundwarWinner;
+	/** The loser retreated. */
+	public boolean retreated;
 	/** The structure losses. */
 	public final Set<SpacewarStructure> losses = JavaUtils.newHashSet();
 	/** @return the helper planet if any. */
