@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Simulation algorithms for the space and surface battles.
+ * Simulation algorithms for automatic space and surface battles.
  * @author akarnokd, 2011.08.25.
  *
  */
@@ -612,5 +612,22 @@ public final class BattleSimulator {
 		} else {
 			throw new AssertionError("No target in battle settings.");
 		}
+	}
+	/**
+	 * @param planet the target planet 
+	 * @return true if there are troops or structures on the surface which need to be destroyed. 
+	 */
+	public static boolean groundBattleNeeded(Planet planet) {
+		int vehicles = planet.inventoryCount(ResearchSubCategory.WEAPONS_TANKS, planet.owner)
+				+ planet.inventoryCount(ResearchSubCategory.WEAPONS_VEHICLES, planet.owner);
+		if (vehicles > 0) {
+			return true;
+		}
+		for (Building b : planet.surface.buildings) {
+			if (b.type.kind.equals("Defensive")) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

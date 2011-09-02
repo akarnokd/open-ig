@@ -57,6 +57,6 @@ public class BuildingType {
 	 * @return the battle hitpoints
 	 */
 	public int hitpoints() {
-		return hitpoints / 10;
+		return hitpoints / 20;
 	}
 }

@@ -74,7 +74,6 @@ public class MainScreen extends ScreenBase {
 		}
 		/** Invoke the associated action. */
 		public void invoke() {
-			sound(SoundType.UI_ACKNOWLEDGE_2);
 			if (action != null) {
 				action.act();
 			}
@@ -131,6 +130,12 @@ public class MainScreen extends ScreenBase {
 	}
 	/** Perform the exit. */
 	void doExit() {
+		commons.sounds.play(SoundType.GOOD_BYE);
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException ex) {
+			// ignored
+		}
 		exit();
 	}
 	/**
@@ -282,6 +287,7 @@ public class MainScreen extends ScreenBase {
 		single.action = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPrimary(Screens.SINGLEPLAYER);
 			}
 		};
@@ -291,6 +297,7 @@ public class MainScreen extends ScreenBase {
 		continueLabel.action = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doContinue();
 			}
 		};
@@ -300,10 +307,10 @@ public class MainScreen extends ScreenBase {
 		load.action = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
 				scr.displayPage(SettingsPage.LOAD_SAVE);
 				scr.maySave = false;
-				
 			}
 		};
 		clicklabels.add(load);
@@ -315,6 +322,7 @@ public class MainScreen extends ScreenBase {
 		settings.action = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doSettings();
 			}
 		};
@@ -323,6 +331,7 @@ public class MainScreen extends ScreenBase {
 		videosLabel.action = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displaySecondary(Screens.VIDEOS);
 			}
 		};
@@ -349,13 +358,16 @@ public class MainScreen extends ScreenBase {
 		creditsLabel.action = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doPlayCredits();
 			}
 		};
 		clicklabels.add(creditsLabel);
 		
 		ClickLabel exit = new ClickLabel(120, 380, 400, 20, "mainmenu.exit");
-		exit.action = new Act() { @Override public void act() { doExit(); } };
+		exit.action = new Act() { @Override public void act() { 
+			doExit(); 
+		} };
 		clicklabels.add(exit);
 		
 		// Language switcher on the main menu, for convenience
@@ -367,6 +379,7 @@ public class MainScreen extends ScreenBase {
 		toEng.action = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				toEng.disabled = true;
 				toHu.disabled = false;
 				commons.control().switchLanguage("en");
@@ -379,6 +392,7 @@ public class MainScreen extends ScreenBase {
 		toHu.action = new Act() {
 			@Override
 			public void act() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
 				toEng.disabled = false;
 				toHu.disabled = true;
 				commons.control().switchLanguage("hu");

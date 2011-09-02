@@ -1682,4 +1682,34 @@ public class World {
 			}
 		}
 	}
+	/**
+	 * Take over the planet.
+	 * @param planet the target planet
+	 * @param newOwner the new owner
+	 */
+	public void takeover(Planet planet, Player newOwner) {
+		Player lastOwner = planet.owner;
+		planet.owner = newOwner;
+		planet.owner.statistics.planetsConquered++;
+		for (Building b : planet.surface.buildings) {
+			if (b.type.research != null) {
+				planet.owner.setAvailable(b.type.research);
+			}
+		}
+		planet.owner.planets.put(planet, PlanetKnowledge.BUILDING);
+		lastOwner.planets.put(planet, PlanetKnowledge.NAME);
+		
+		// notify about ownership change
+		Message msgLost = newMessage("message.planet_lost");
+		msgLost.priority = 100;
+		msgLost.targetPlanet = planet;
+		lastOwner.messageQueue.add(msgLost);
+		
+		Message msgConq = newMessage("message.planet_conquered");
+		msgConq.priority = 100;
+		msgConq.targetPlanet = planet;
+		planet.owner.messageQueue.add(msgConq);
+		
+		planet.removeOwnerSatellites();
+	}
 }
