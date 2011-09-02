@@ -22,6 +22,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.RotationDirection;
 import hu.openig.model.Screens;
@@ -1371,14 +1372,15 @@ public class StarmapScreen extends ScreenBase {
 	 * Get a planet at the given absolute location. 
 	 * @param x the absolute x
 	 * @param y the absolute y
+	 * @param owner the owner
 	 * @param enemyOnly consider only enemy fleets?
 	 * @param except the fleet to ignore (usually self)
 	 * @return a planet or null if not found
 	 */
-	public Fleet getFleetAt(int x, int y, boolean enemyOnly, Fleet except) {
+	public Fleet getFleetAt(Player owner, int x, int y, boolean enemyOnly, Fleet except) {
 		double zoom = getZoom();
 		for (Fleet f : player().visibleFleets()) {
-			if ((!enemyOnly || f.owner != player()) && (f != except)) {
+			if ((!enemyOnly || f.owner != owner) && (f != except)) {
 				int w = f.owner.fleetIcon.getWidth();
 				int h = f.owner.fleetIcon.getHeight();
 				int x0 = (int)(starmapRect.x + f.x * zoom - w * 0.5);
@@ -1391,17 +1393,18 @@ public class StarmapScreen extends ScreenBase {
 		return null;
 	}
 	/** 
-	 * Get a planet at the given absolute location. 
+	 * Get a planet at the given absolute location.
+	 * @param owner the owner 
 	 * @param x the absolute x
 	 * @param y the absolute y
 	 * @param enemyOnly consider only enemy planets?
 	 * @return a planet or null if not found
 	 */
-	public Planet getPlanetAt(int x, int y, boolean enemyOnly) {
+	public Planet getPlanetAt(Player owner, int x, int y, boolean enemyOnly) {
 		double zoom = getZoom();
 		for (Planet p : commons.world().planets.values()) {
-			if ((!enemyOnly || p.owner != player()) 
-					&& knowledge(p, PlanetKnowledge.VISIBLE) >= 0) {
+			if ((!enemyOnly || p.owner != owner) 
+					&& owner.knowledge(p, PlanetKnowledge.VISIBLE) >= 0) {
 				double d = p.diameter * zoom / 4;
 				int di = (int)d;
 				int x0 = (int)(starmapRect.x + p.x * zoom - d / 2);
@@ -1491,7 +1494,8 @@ public class StarmapScreen extends ScreenBase {
 				}
 			} else
 			if (c == 'A') {
-				if (player().selectionMode == SelectionMode.FLEET && fleet() != null 
+				if (player().selectionMode == SelectionMode.FLEET 
+						&& fleet() != null 
 						/* && fleet().owner == player() */) {
 					fleetAttack.down = true;
 					fleetAttack.onPress.act();
@@ -1629,8 +1633,8 @@ public class StarmapScreen extends ScreenBase {
 					&& fleet() != null && fleet().owner == player()) {
 				if (e.has(Modifier.CTRL)) {
 					// attack move
-					Planet p = getPlanetAt(e.x, e.y, true);
-					Fleet f = getFleetAt(e.x, e.y, true, fleet());
+					Planet p = getPlanetAt(player(), e.x, e.y, true);
+					Fleet f = getFleetAt(player(), e.x, e.y, true, fleet());
 					if (f != null) {
 						fleetMode = null;
 						fleet().targetPlanet = null;
@@ -1664,8 +1668,8 @@ public class StarmapScreen extends ScreenBase {
 			if (e.has(Button.LEFT)) {
 				if (starmapWindow.contains(e.x, e.y)) {
 					if (fleetMode == FleetMode.ATTACK) {
-						Fleet f = getFleetAt(e.x, e.y, true, fleet());
-						Planet p = getPlanetAt(e.x, e.y, true);
+						Fleet f = getFleetAt(fleet().owner, e.x, e.y, true, fleet());
+						Planet p = getPlanetAt(fleet().owner, e.x, e.y, true);
 						if (f != null) {
 							fleetMode = null;
 							fleet().targetPlanet = null;
@@ -1682,8 +1686,8 @@ public class StarmapScreen extends ScreenBase {
 						}
 					} else
 					if (fleetMode == FleetMode.MOVE) {
-						Planet p = getPlanetAt(e.x, e.y, false);
-						Fleet f = getFleetAt(e.x, e.y, false, fleet());
+						Planet p = getPlanetAt(fleet().owner, e.x, e.y, false);
+						Fleet f = getFleetAt(fleet().owner, e.x, e.y, false, fleet());
 						if (p != null) {
 							fleet().targetPlanet = p;
 							fleet().targetFleet = null;
@@ -1736,8 +1740,8 @@ public class StarmapScreen extends ScreenBase {
 			break;
 		case DOUBLE_CLICK:
 			if (starmapWindow.contains(e.x, e.y)) {
-				Planet p = getPlanetAt(e.x, e.y, false);
-				Fleet f = getFleetAt(e.x, e.y, false, null);
+				Planet p = getPlanetAt(player(), e.x, e.y, false);
+				Fleet f = getFleetAt(player(), e.x, e.y, false, null);
 				if (f != null) {
 					player().currentFleet = f;
 					player().selectionMode = SelectionMode.FLEET;
@@ -1837,8 +1841,8 @@ public class StarmapScreen extends ScreenBase {
 	 * @param e the mouse coordinate
 	 */
 	void selectPlanetOrFleetAt(UIMouse e) {
-		Planet p = getPlanetAt(e.x, e.y, false);
-		Fleet f = getFleetAt(e.x, e.y, false, null);
+		Planet p = getPlanetAt(player(), e.x, e.y, false);
+		Fleet f = getFleetAt(player(), e.x, e.y, false, null);
 
 		if (f != null) {
 			sound(SoundType.CLICK_HIGH_2);
