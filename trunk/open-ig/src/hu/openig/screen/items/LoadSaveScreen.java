@@ -670,8 +670,12 @@ public class LoadSaveScreen extends ScreenBase {
 		restore = mode;
 		setRandomBackground();
 		settingsMode = SettingsPage.LOAD_SAVE;
-		resume = commons.world() != null && !commons.simulation.paused();
-		commons.simulation.pause();
+		if (commons.simulation != null) {
+			resume = commons.world() != null && !commons.simulation.paused();
+			commons.simulation.pause();
+		} else {
+			resume = false;
+		}
 		commons.nongame = true;
 		commons.worldLoading = true;
 		list.items.clear();

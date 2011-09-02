@@ -14,14 +14,16 @@ import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceType;
 import hu.openig.model.SoundType;
 import hu.openig.utils.IOUtils;
+import hu.openig.utils.JavaUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -34,21 +36,45 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineEvent.Type;
-import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  * @author akarnokd, Apr 18, 2011
  */
 public class Sounds {
+	/** The audio format type providing the proper equals and hashcode. */
+	static final class AudioFormatType {
+		/** The audio format. */
+		public final AudioFormat format;
+		/**
+		 * Constructur.
+		 * @param format the format to store
+		 */
+		public AudioFormatType(AudioFormat format) {
+			this.format = format;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof AudioFormatType) {
+				AudioFormatType aft = (AudioFormatType)obj;
+				return format.matches(aft.format);
+			}
+			return false;
+		}
+		@Override
+		public int hashCode() {
+			return Arrays.asList(format.getSampleRate(), format.getSampleSizeInBits(), 
+					format.getChannels(), format.getEncoding()).hashCode();
+		}
+	}
 	/** The sound map. */
 	final Map<SoundType, byte[]> soundMap = new HashMap<SoundType, byte[]>();
 	/** The sound map. */
-	final Map<SoundType, AudioFormat> soundFormat = new HashMap<SoundType, AudioFormat>();
+	final Map<SoundType, AudioFormatType> soundFormat = new HashMap<SoundType, AudioFormatType>();
+	/** The sound pool. */
+	final Map<AudioFormatType, BlockingQueue<SourceDataLine>> soundPool = JavaUtils.newHashMap();
 	/** The sound pool. */
 	ExecutorService exec;
 	/** Function to retrieve the current volume. */
@@ -76,7 +102,7 @@ public class Sounds {
 						af = new AudioFormat(af.getSampleRate(), 16, af.getChannels(), true, af.isBigEndian());
 					}
 					soundMap.put(st, snd);
-					soundFormat.put(st, af);
+					soundFormat.put(st, new AudioFormatType(af));
 				} finally {
 					ain.close();
 				}
@@ -116,6 +142,49 @@ public class Sounds {
 				
 		);
 		exec = tpe;
+		// initialize the sound pool
+		for (AudioFormatType aft : soundFormat.values()) {
+			if (!soundPool.containsKey(aft)) {
+				soundPool.put(aft, new LinkedBlockingQueue<SourceDataLine>());
+				addLine(aft);
+			}
+		}
+	}
+	/**
+	 * Add a new SourceDataLine with the specified format to the sound pool.
+	 * @param aft the audio format to add
+	 * @return sdl the data line created
+	 */
+	SourceDataLine addLine(AudioFormatType aft) {
+		try {
+			SourceDataLine sdl = AudioSystem.getSourceDataLine(aft.format);
+			sdl.open(aft.format);
+			soundPool.get(aft).add(sdl);
+			return sdl;
+		} catch (LineUnavailableException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * Get or create a line for the specified audio format.
+	 * @param aft the audio format
+	 * @return the data line
+	 */
+	SourceDataLine getLine(AudioFormatType aft) {
+		SourceDataLine result = soundPool.get(aft).poll();
+		if (result == null) {
+			result = addLine(aft);
+		}
+		return result;
+	}
+	/**
+	 * Places back the data line into the pool.
+	 * @param aft the audio format
+	 * @param sdl the source data line
+	 */
+	void putBackLine(AudioFormatType aft, SourceDataLine sdl) {
+		soundPool.get(aft).add(sdl);
 	}
 	/** Close all audio lines. */
 	public void close() {
@@ -135,34 +204,18 @@ public class Sounds {
 				public void run() {
 					try {
 						byte[] data = soundMap.get(effect);
-						AudioFormat af = soundFormat.get(effect);
-						final CountDownLatch barrier = new CountDownLatch(1);
-						try {
-							Clip c = AudioSystem.getClip();
-							c.open(af, data, 0, data.length);
+						AudioFormatType aft = soundFormat.get(effect);
+						SourceDataLine sdl = getLine(aft);
+						if (sdl != null) {
 							try {
-								AudioThread.setVolume(c, vol);
-								LineListener ll = new LineListener() {
-									@Override
-									public void update(LineEvent event) {
-										if (event.getType() == Type.STOP || event.getType() == Type.CLOSE) {
-											barrier.countDown();
-										}
-									}
-								};
-								c.addLineListener(ll);
-								c.start();
-								
-								barrier.await();
-								c.removeLineListener(ll);
+								AudioThread.setVolume(sdl, vol);
+								sdl.start();
+								sdl.write(data, 0, data.length);
+								sdl.drain();
+								sdl.stop();
 							} finally {
-								c.drain();
-								c.close();
+								putBackLine(aft, sdl);
 							}
-						} catch (LineUnavailableException ex) {
-							ex.printStackTrace();
-						} catch (InterruptedException ex) {
-							// ignore
 						}
 					} catch (Throwable t) {
 						t.printStackTrace();

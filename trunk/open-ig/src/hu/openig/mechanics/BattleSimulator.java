@@ -600,7 +600,7 @@ public final class BattleSimulator {
 			double dmin = Double.MAX_VALUE;
 			Fleet fmin = null;
 			for (Fleet f : battle.targetPlanet.owner.fleets.keySet()) {
-				if (f.owner == battle.targetFleet.owner) {
+				if (f.owner == battle.targetPlanet.owner) {
 					double d = World.dist(f.x, f.y, battle.targetPlanet.x, battle.targetPlanet.y);
 					if (d < dmin && d <= minDistance) {
 						dmin = d;
