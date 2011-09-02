@@ -891,7 +891,7 @@
 	<item id='PirateFighter' name='tech.piratefighter.name' long-name='tech.piratefighter.longname'
 		description='tech.piratefighter.description' category='SPACESHIPS_FIGHTERS'
 		image='inventions/spaceships/fighters/pirate_fighter' factory='spaceship'
-		research-cost='3000' production-cost='2000' level='0' race='pirate'
+		research-cost='3000' production-cost='2000' level='0' race='pirates'
 		index='0'>
 		<slot-fixed id='Laser' count='1' item='Laser1' />
 	</item>
@@ -973,7 +973,7 @@
 		long-name='tech.piratedestroyer.longname' description='tech.piratedestroyer.description'
 		category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/pirate_destroyer'
 		factory='spaceship' research-cost='10000' production-cost='12000'
-		level='0' race='pirate' index='0'>
+		level='0' race='pirates' index='0'>
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive1' />
 		<slot-fixed id='Laser' count='5' item='Laser1' />
 	</item>
