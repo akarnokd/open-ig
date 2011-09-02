@@ -921,7 +921,9 @@ public class LoadSaveScreen extends ScreenBase {
 								w = XElement.parseXML(f.getAbsolutePath());
 								fi.name = "save-" + f.getName().substring(6);
 								fi.money = w.getLong("money");
-								shortMemory.add(fn);
+								if (new File(dir, fi.name).canRead()) {
+									shortMemory.add(fn);
+								}
 							} catch (XMLStreamException ex) {
 								ex.printStackTrace();
 								continue;

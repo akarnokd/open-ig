@@ -812,7 +812,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.simulation.speed(SimulationSpeed.NORMAL);
-						allScreens.main.sound(SoundType.CLICK_LOW_1);
+						commons.sounds.play(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
@@ -827,7 +827,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.simulation.speed(SimulationSpeed.FAST);
-						allScreens.main.sound(SoundType.CLICK_LOW_1);
+						commons.sounds.play(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
@@ -842,7 +842,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
-						allScreens.main.sound(SoundType.CLICK_LOW_1);
+						commons.sounds.play(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
@@ -850,19 +850,21 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_SPACE:
 					if (commons.simulation.paused()) {
 						commons.simulation.resume();
-						allScreens.main.sound(SoundType.UI_ACKNOWLEDGE_1);
+						commons.sounds.play(SoundType.UI_ACKNOWLEDGE_1);
 					} else {
 						commons.simulation.pause();
-						allScreens.main.sound(SoundType.PAUSE);
+						commons.sounds.play(SoundType.PAUSE);
 					}
 					repaintInner();
 					e.consume();
 					break;
 				case KeyEvent.VK_ESCAPE:
-					LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
-					scr.maySave = false;
-					scr.displayPage(SettingsPage.AUDIO);
-					e.consume();
+					if (commons.battleMode) {
+						LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
+						scr.maySave = false;
+						scr.displayPage(SettingsPage.AUDIO);
+						e.consume();
+					}
 					break;
 				default:
 				}
@@ -1415,8 +1417,15 @@ public class GameWindow extends JFrame implements GameControls {
 							commons.world(fworld);
 							commons.worldLoading = false;
 							
-							if (pri == Screens.MAIN || pri == Screens.LOAD_SAVE || pri == Screens.SINGLEPLAYER) {
+							if (pri == Screens.MAIN 
+									|| pri == Screens.LOAD_SAVE 
+									|| pri == Screens.SINGLEPLAYER
+									) {
 								displayPrimary(Screens.BRIDGE);
+								displayStatusbar();
+							} else
+							if (pri == Screens.SPACEWAR) {
+								displayPrimary(Screens.STARMAP);
 								displayStatusbar();
 							} else
 							if (pri != null) {
