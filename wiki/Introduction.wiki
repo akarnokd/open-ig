@@ -29,10 +29,5 @@ Apart from the tons of missing screens and behaviors, there are few deliberate c
   * Several additional information displays, new screens.
   * Many graphical inconsistencies fixed.
 
-
-= External tools =
-
-There exist an unpacker for the game PAC files. You can downoad it from [http://bgafc.t-hosting.hu/data/ig1pac_h.exe here].
-
 = About the author =
 I'm a Ph.D student specializing in Production Informatics, Supply Chains and Manufacturing Execution Systems.
