@@ -229,3 +229,11 @@ _Depending on playtester's response, the mechanics might change. Having earthqua
 || Fleet radar 1 || display gray label,<br> display "Install satellite" || display owner,<br> display count of non-fighter ships exactly,<br> display fighters as range ||
 || Fleet radar 2 || display gray label,<br> display "Install satellite" || display owner,<br>  display count of non-fighter ships exactly,<br> display fighters as range<br> ||
 || Fleet radar 3 || display owner,<br> display building bases only || display owner,<br> display count of non-fighter ships exactly,<br> display fighters as range ||
+
+== Attacking ==
+
+(Since v0.94)
+
+You can attack alien planets and fleets on the starmap. You should select a fleet and click on the ATTACK button, hit the A key and left-click on the target or CTRL + Right Click on the target.
+
+The original game had a small inconvenience: if fleets and planets overlapped on screen, you could not attack and got a nice warning most of the time. In current Open-IG, you click will select an alien fleet/planet under the mouse pointer, or do nothing. (_Later on, I plan to show a small menu listing all the fleets and planets at the spot and you may choose one of them more easily._)
