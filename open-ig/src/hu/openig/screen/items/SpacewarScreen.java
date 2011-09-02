@@ -3166,7 +3166,8 @@ public class SpacewarScreen extends ScreenBase {
 	void fireAtTargetOf(SpacewarStructure ship) {
 		for (SpacewarWeaponPort p : ship.inRange(ship.attack)) {
 			if (p.cooldown <= 0) {
-				createBeam(ship, p.projectile, ship.attack.x, ship.attack.y, ship.attack);
+				createBeam(ship, p, ship.attack.x, 
+						ship.attack.y, ship.attack);
 				p.cooldown = p.projectile.delay;
 			}
 		}
@@ -3179,21 +3180,21 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param ay the aim Y
 	 * @param target the targeted structure
 	 */
-	void createBeam(SpacewarStructure source, BattleProjectile p, 
+	void createBeam(SpacewarStructure source, SpacewarWeaponPort p, 
 			double ax, double ay, SpacewarStructure target) {
 		SpacewarProjectile sp = new SpacewarProjectile();
 		sp.owner = source.owner; 
 		sp.target = target;
-		sp.movementSpeed = p.movementSpeed;
+		sp.movementSpeed = p.projectile.movementSpeed;
 		sp.impactSound = SoundType.HIT; // FIXME
 		sp.x = source.x;
 		sp.y = source.y;
 		sp.angle = Math.atan2(ay - sp.y, ax - sp.x);
-		sp.matrix = sp.owner == player() ? p.alternative : p.matrix;
-		sp.damage = p.damage;
+		sp.matrix = sp.owner == player() ? p.projectile.alternative : p.projectile.matrix;
+		sp.damage = p.projectile.damage * p.count;
 		
 		projectiles.add(sp);
-		sound(p.sound);
+		sound(p.projectile.sound);
 	}
 	/**
 	 * Apply loss results back to the initial fleets and planets.
