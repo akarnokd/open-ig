@@ -88,6 +88,6 @@ public abstract class SpacewarObject {
 		int w = get().getWidth();
 		int h = get().getHeight();
 		return x - w / 2 <= px && x - w / 2 + w > px
-				&& y - h / 2 <= px && y - h / 2 + h > py;
+				&& y - h / 2 <= py && y - h / 2 + h > py;
 	}
 }
