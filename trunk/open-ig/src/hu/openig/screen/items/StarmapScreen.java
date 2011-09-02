@@ -1492,7 +1492,7 @@ public class StarmapScreen extends ScreenBase {
 			} else
 			if (c == 'A') {
 				if (player().selectionMode == SelectionMode.FLEET && fleet() != null 
-						&& fleet().owner == player()) {
+						/* && fleet().owner == player() */) {
 					fleetAttack.down = true;
 					fleetAttack.onPress.act();
 					rep = true;
@@ -1500,7 +1500,8 @@ public class StarmapScreen extends ScreenBase {
 				}
 			} else
 			if (c == 'S') {
-				if (player().selectionMode == SelectionMode.FLEET && fleet() != null && fleet().owner == player()) {
+				if (player().selectionMode == SelectionMode.FLEET 
+						/* && fleet() != null && fleet().owner == player() */) {
 					fleetStop.down = true;
 					fleetStop.onPress.act();
 					rep = true;
@@ -2382,7 +2383,7 @@ public class StarmapScreen extends ScreenBase {
 					Point pt = p.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
 					if (pt != null) {
 						// remove colony ship from fleet
-						f.changeInventory(world().researches.get("ColonyShip"), -1);
+						f.changeInventory(world().researches.get("ColonyShip"), -1, world());
 						
 						// remove empty fleet
 						if (f.inventory.isEmpty()) {

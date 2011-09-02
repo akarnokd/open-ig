@@ -23,4 +23,6 @@ public class BattleGroundEntity {
 	public SoundType destroy;
 	/** The fire sound if non null. */
 	public SoundType fire;
+	/** The hitpoints. */
+	public int hp;
 }

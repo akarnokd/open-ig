@@ -10,6 +10,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Act;
 import hu.openig.core.Action1;
+import hu.openig.core.Func1;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
@@ -25,6 +26,7 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
+import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.screen.EquipmentConfigure;
 import hu.openig.screen.EquipmentMinimap;
@@ -651,7 +653,12 @@ public class EquipmentScreen extends ScreenBase {
 		rightList = new VehicleList(commons);
 		rightList.visible(false);
 		
-		configure = new EquipmentConfigure();
+		configure = new EquipmentConfigure(new Func1<Void, World>() {
+			@Override
+			public World invoke(Void value) {
+				return world();
+			}
+		});
 		configure.z = -1;
 		configure.size(298, 128);
 		configure.onSelect = new Action1<InventorySlot>() {
@@ -759,7 +766,7 @@ public class EquipmentScreen extends ScreenBase {
 		upgradeAll.onClick = new Act() {
 			@Override
 			public void act() {
-				doUpgradeAll(fleet());
+				doUpgradeAll(fleet(), world());
 			}
 		};
 		
@@ -1704,18 +1711,18 @@ public class EquipmentScreen extends ScreenBase {
 					pii.owner = player();
 					pii.type = research();
 					pii.count = 1;
-					pii.hp = pii.type.hitpoints();
+					pii.hp = world().getHitpoints(pii.type);
 					
-					pii.createSlots();
+					pii.createSlots(world());
 					
-					pii.shield = Math.max(0, pii.shieldMax());
+					pii.shield = Math.max(0, pii.shieldMax(world()));
 					
 					planet().inventory.add(pii);
 					leftList.items.add(pii);
 					leftList.compute();
 				}
 			} else {
-				planet().changeInventory(research(), player(), delta);
+				planet().changeInventory(research(), player(), delta, world());
 			}
 		} else {
 			if (research().category == ResearchSubCategory.SPACESHIPS_CRUISERS
@@ -1723,7 +1730,7 @@ public class EquipmentScreen extends ScreenBase {
 			) {
 				if (delta > 0) {
 					int cnt = fleet().inventoryCount(research());
-					List<InventoryItem> iss = fleet().addInventory(research(), delta);
+					List<InventoryItem> iss = fleet().addInventory(research(), delta, world());
 					
 					leftList.items.clear();
 					leftList.items.addAll(fleet().getSingleItems());
@@ -1736,7 +1743,7 @@ public class EquipmentScreen extends ScreenBase {
 					commons.sounds.play(SoundType.SHIP_DEPLOYED);
 				}
 			} else {
-				fleet().changeInventory(research(), delta);
+				fleet().changeInventory(research(), delta, world());
 			}
 		}
 		player().changeInventoryCount(research(), -delta);
@@ -1873,9 +1880,9 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 0;
-			configure.selectedSlot.hp = research().hitpoints();
+			configure.selectedSlot.hp = world().getHitpoints(research());
 			if (research().has("shield")) {
-				configure.item.shield = Math.max(0, configure.item.shieldMax());
+				configure.item.shield = Math.max(0, configure.item.shieldMax(world()));
 			}
 		}
 		int remaining = configure.selectedSlot.slot.max - configure.selectedSlot.count;
@@ -1894,9 +1901,9 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 0;
-			configure.selectedSlot.hp = research().hitpoints();
+			configure.selectedSlot.hp = world().getHitpoints(research());
 			if (research().has("shield")) {
-				configure.item.shield = Math.max(0, configure.item.shieldMax());
+				configure.item.shield = Math.max(0, configure.item.shieldMax(world()));
 			}
 		}
 		if (!configure.selectedSlot.isFilled()) {
@@ -2052,8 +2059,8 @@ public class EquipmentScreen extends ScreenBase {
 							|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
 						) {
 							int toremove = delta > ii.count ? ii.count : delta;
-							dst.changeInventory(ii.type, toremove);
-							src.changeInventory(ii.type, -toremove);
+							dst.changeInventory(ii.type, toremove, world());
+							src.changeInventory(ii.type, -toremove, world());
 							delta -= toremove;
 							if (delta == 0) {
 								break;
@@ -2065,8 +2072,8 @@ public class EquipmentScreen extends ScreenBase {
 				updateInventory(null, fleet(), leftList);
 				updateInventory(null, secondary, rightList);
 			} else {
-				src.changeInventory(type, -transferCount);
-				dst.changeInventory(type, transferCount);
+				src.changeInventory(type, -transferCount, world());
+				dst.changeInventory(type, transferCount, world());
 			}
 		}
 	}
@@ -2122,11 +2129,11 @@ public class EquipmentScreen extends ScreenBase {
 				ii = planet().getInventoryItem(research(), player());
 			}
 			if (ii != null) {
-				int worth = ii.type.hitpoints();
+				int worth = world().getHitpoints(ii.type);
 				
 				for (InventorySlot is : ii.slots) {
 					if (is.type != null && !is.slot.fixed) {
-						worth += is.type.hitpoints() * is.count;
+						worth += world().getHitpoints(is.type) * is.count;
 					}
 				}
 				
@@ -2146,14 +2153,14 @@ public class EquipmentScreen extends ScreenBase {
 						
 						fleet().inventory.remove(ii);
 					} else {
-						fleet().changeInventory(research(), -1);
+						fleet().changeInventory(research(), -1, world());
 					}
 					updateInventory(null, fleet(), leftList);
 				} else {
 					if (leftList.selectedItem != null) {
 						planet().inventory.remove(ii);
 					} else {
-						planet().changeInventory(research(), player(), -1);
+						planet().changeInventory(research(), player(), -1, world());
 					}
 					// if this was the last space station, place the fighters back into the inventory
 					if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
@@ -2187,8 +2194,9 @@ public class EquipmentScreen extends ScreenBase {
 	/** 
 	 * Upgrade all medium and large ships if possible.
 	 * @param f the target fleet 
+	 * @param world the world object
 	 */
-	public static void doUpgradeAll(Fleet f) {
+	public static void doUpgradeAll(Fleet f, World world) {
 		
 		// remove every equipment from the ships and place it back into the global inventory
 		for (InventoryItem ii : f.inventory) {
@@ -2218,7 +2226,7 @@ public class EquipmentScreen extends ScreenBase {
 								int toAdd = Math.min(cnt, is.slot.max);
 								is.type = rt;
 								is.count = toAdd;
-								is.hp = rt.hitpoints();
+								is.hp = world.getHitpoints(rt);
 								f.owner.changeInventoryCount(rt, -toAdd);
 								break;
 							}
@@ -2226,7 +2234,7 @@ public class EquipmentScreen extends ScreenBase {
 					}
 				}
 			}
-			ii.shield = Math.max(0, ii.shieldMax());
+			ii.shield = Math.max(0, ii.shieldMax(world));
 		}
 	}
 	/**

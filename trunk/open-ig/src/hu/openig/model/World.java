@@ -149,12 +149,15 @@ public class World {
 				}
 			});
 		exec.allowCoreThreadTimeOut(true);
-		final WipPort wip = new WipPort(8);
+		final WipPort wip = new WipPort(7);
 		try {
 			level = definition.startingLevel;
 			
 			processResearches(rl.getXML(game + "/tech"));
-			
+
+			battle = new Battle();
+			processBattle(rl.getXML(game + "/battle"));
+
 			processPlayers(rl.getXML(game + "/players")); 
 			
 			talks = new Talks();
@@ -163,7 +166,6 @@ public class World {
 			galaxyModel = new GalaxyModel();
 			test = JavaUtils.newLinkedHashMap();
 			diplomacy = JavaUtils.newLinkedHashMap();
-			battle = new Battle();
 			
 			exec.submit(new Runnable() {
 				@Override
@@ -191,19 +193,6 @@ public class World {
 				}
 			});
 
-			exec.submit(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						processBattle(rl.getXML(game + "/battle"));
-					} catch (Throwable t) {
-						t.printStackTrace();
-					} finally {
-						wip.dec();
-					}
-				}
-			});
-			
 			exec.submit(new Runnable() {
 				@Override
 				public void run() {
@@ -531,9 +520,9 @@ public class World {
 				ii.owner = players.get(xinv.get("owner"));
 				ii.type = researches.get(xinv.get("id"));
 				ii.count = xinv.getInt("count");
-				ii.hp = Math.min(xinv.getInt("hp", ii.type.hitpoints()), ii.type.hitpoints());
-				ii.createSlots();
-				ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
+				ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type)), getHitpoints(ii.type));
+				ii.createSlots(this);
+				ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax(this)));
 
 				p.inventory.add(ii);
 			}
@@ -1209,9 +1198,9 @@ public class World {
 				pii.owner = players.get(xpii.get("owner"));
 				pii.type = researches.get(xpii.get("id"));
 				pii.count = xpii.getInt("count");
-				pii.hp = Math.min(xpii.getInt("hp", pii.type.hitpoints()), pii.type.hitpoints());
-				pii.createSlots();
-				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
+				pii.hp = Math.min(xpii.getInt("hp", getHitpoints(pii.type)), getHitpoints(pii.type));
+				pii.createSlots(this);
+				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax(this)));
 				
 				int ttl = xpii.getInt("ttl", 0);
 				if (ttl > 0) {
@@ -1348,7 +1337,7 @@ public class World {
 							fis.type = st;
 						}
 						fis.count = Math.min(xfis.getInt("count"), fis.slot.max);
-						fis.hp = Math.min(xfis.getInt("hp"), fis.type.hitpoints());
+						fis.hp = Math.min(xfis.getInt("hp"), getHitpoints(fis.type));
 						
 					}
 					fii.slots.add(fis);
@@ -1361,15 +1350,15 @@ public class World {
 						if (es.fixed) {
 							fis.type = es.items.get(0);
 							fis.count = es.max;
-							fis.hp = fis.type.hitpoints();
+							fis.hp = getHitpoints(fis.type);
 						}
 						fii.slots.add(fis);
 					}
 				}
 				
-				int shieldMax = Math.max(0, fii.shieldMax());
+				int shieldMax = Math.max(0, fii.shieldMax(this));
 				fii.shield = Math.min(shieldMax, xfii.getInt("shield", shieldMax));
-				fii.hp = Math.min(xfii.getInt("hp", fii.type.hitpoints()), fii.type.hitpoints());
+				fii.hp = Math.min(xfii.getInt("hp", getHitpoints(fii.type)), getHitpoints(fii.type));
 				f.inventory.add(fii);
 			}
 			// fi
@@ -1566,6 +1555,8 @@ public class World {
 				se.rotationTime = xspace.getInt("rotation-time");
 			}
 			
+			se.hp = xspace.getInt("hp");
+			
 			battle.spaceEntities.put(id, se);
 		}
 		for (XElement xdefense : xbattle.childElement("ground-projectors").childrenWithName("tech")) {
@@ -1593,6 +1584,8 @@ public class World {
 			se.rotationTime = xdefense.getInt("rotation-time");
 			se.damage = xdefense.getInt("damage");
 			
+			se.hp = xdefense.getInt("hp");
+			
 			battle.groundProjectors.put(id, se);
 		}
 		for (XElement xdefense : xbattle.childElement("ground-shields").childrenWithName("tech")) {
@@ -1617,6 +1610,8 @@ public class World {
 			}
 			se.shields = xdefense.getInt("shield");
 			
+			se.hp = xdefense.getInt("hp");
+			
 			battle.groundShields.put(id, se);
 		}
 		for (XElement xground : xbattle.childElement("ground-vehicles").childrenWithName("tech")) {
@@ -1638,6 +1633,8 @@ public class World {
 			if (xground.has("fire")) {
 				ge.fire = SoundType.valueOf(xground.get("fire"));
 			}
+			
+			ge.hp = xground.getInt("hp");
 			
 			battle.groundEntities.put(id, ge);
 		}
@@ -1711,5 +1708,37 @@ public class World {
 		planet.owner.messageQueue.add(msgConq);
 		
 		planet.removeOwnerSatellites();
+	}
+	/**
+	 * Returns the hitpoints of the given research type.
+	 * @param rt the research type
+	 * @return the hitpoints
+	 */
+	public int getHitpoints(ResearchType rt) {
+		BattleSpaceEntity se = battle.spaceEntities.get(rt.id);
+		if (se != null) {
+			return se.hp;
+		}
+		BattleGroundEntity e = battle.groundEntities.get(rt.id);
+		if (e != null) {
+			return e.hp;
+		}
+		return rt.productionCost / 50;
+	}
+	/**
+	 * Returns the hitpoints of the given building type.
+	 * @param rt the research type
+	 * @return the hitpoints
+	 */
+	public int getHitpoints(BuildingType rt) {
+		BattleGroundProjector se = battle.groundProjectors.get(rt.id);
+		if (se != null) {
+			return se.hp;
+		}
+		BattleGroundShield e = battle.groundShields.get(rt.id);
+		if (e != null) {
+			return e.hp;
+		}
+		return rt.hitpoints / 20;
 	}
 }

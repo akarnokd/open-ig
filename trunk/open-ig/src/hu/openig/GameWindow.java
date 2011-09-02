@@ -866,6 +866,12 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				case KeyEvent.VK_L:
+					if (e.isControlDown()) {
+						loadWorld(null);
+						e.consume();
+					}
+					break;
 				default:
 				}
 			}
@@ -1718,18 +1724,18 @@ public class GameWindow extends JFrame implements GameControls {
 		InventoryItem ii = new InventoryItem();
 		ii.type = rt;
 		ii.count = 1;
-		ii.hp = rt.hitpoints();
-		ii.createSlots();
+		ii.hp = commons.world().getHitpoints(ii.type);
+		ii.createSlots(commons.world());
 		ii.owner = target.owner;
 		// fill in best equipment
 		for (InventorySlot is : ii.slots) {
 			if (!is.slot.fixed) {
 				is.type = is.slot.items.get(is.slot.items.size() - 1);
 				is.count = is.slot.max;
-				is.hp = is.type.hitpoints();
+				is.hp = commons.world().getHitpoints(is.type);
 			}
 		}
-		ii.shield = Math.max(0, ii.shieldMax());
+		ii.shield = Math.max(0, ii.shieldMax(commons.world()));
 		target.inventory.add(ii);
 	}
 	

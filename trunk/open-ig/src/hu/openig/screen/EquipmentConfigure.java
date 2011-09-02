@@ -9,9 +9,11 @@
 package hu.openig.screen;
 
 import hu.openig.core.Action1;
+import hu.openig.core.Func1;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.ResearchType;
+import hu.openig.model.World;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
@@ -36,6 +38,15 @@ public class EquipmentConfigure extends UIComponent {
 	public InventorySlot selectedSlot;
 	/** The action to invoke. */
 	public Action1<InventorySlot> onSelect;
+	/** The associated world callback. */
+	public Func1<Void, World> world;
+	/**
+	 * Constructor with a world callback.
+	 * @param world the world callback
+	 */
+	public EquipmentConfigure(Func1<Void, World> world) {
+		this.world = world;
+	}
 	@Override
 	public void draw(Graphics2D g2) {
 		if (type == null || type.equipmentCustomizeImage == null) {
@@ -53,24 +64,26 @@ public class EquipmentConfigure extends UIComponent {
 			return;
 		}
 		
-		drawSlots(g2, item, selectedSlot);
+		drawSlots(g2, item, selectedSlot, world.invoke(null));
 	}
 	/**
 	 * Draw the inventory slots.
 	 * @param g2 the graphics context
 	 * @param item the inventory item
 	 * @param selected the current slot
+	 * @param world the world object
 	 */
-	public static void drawSlots(Graphics2D g2, InventoryItem item, InventorySlot selected) {
+	public static void drawSlots(Graphics2D g2, 
+			InventoryItem item, InventorySlot selected, World world) {
 		Color green = new Color(0x009A00);
 		for (InventorySlot is : item.slots) {
 			if (!is.slot.fixed) {
 				if (is.type != null) {
 					g2.setColor(is == selected ? green : Color.BLACK);
 					g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
-					if (is != selected && is.hp < is.type.hitpoints()) {
+					if (is != selected && is.hp < world.getHitpoints(is.type)) {
 						g2.setColor(interpolate(
-								is.hp * 1.0f / is.type.hitpoints(), 
+								is.hp * 1.0f / world.getHitpoints(is.type), 
 								Color.RED, Color.ORANGE, Color.YELLOW));
 					} else {
 						g2.setColor(green);

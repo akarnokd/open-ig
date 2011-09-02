@@ -71,8 +71,9 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	 * Change the inventory amount of a given technology. 
 	 * @param type the item type
 	 * @param amount the amount delta
+	 * @param world the world object
 	 */
-	public void changeInventory(ResearchType type, int amount) {
+	public void changeInventory(ResearchType type, int amount, World world) {
 		int idx = 0;
 		boolean found = false;
 		for (InventoryItem pii : inventory) {
@@ -91,9 +92,9 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
-			pii.hp = type.hitpoints();
-			pii.createSlots();
-			pii.shield = Math.max(0, pii.shieldMax());
+			pii.hp = world.getHitpoints(type);
+			pii.createSlots(world);
+			pii.shield = Math.max(0, pii.shieldMax(world));
 			
 			inventory.add(pii);
 		}
@@ -203,22 +204,23 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	 * Add a given number of inventory item to this fleet.
 	 * @param type the technology to add
 	 * @param amount the amount to add
+	 * @param world the world object
 	 * @return result the items added
 	 */
-	public List<InventoryItem> addInventory(ResearchType type, int amount) {
+	public List<InventoryItem> addInventory(ResearchType type, int amount, World world) {
 		List<InventoryItem> result = new ArrayList<InventoryItem>();
 		if (type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 			|| type.category == ResearchSubCategory.WEAPONS_TANKS
 			|| type.category == ResearchSubCategory.WEAPONS_VEHICLES
 		) {
-			changeInventory(type, amount);
+			changeInventory(type, amount, world);
 		} else {
 			for (int i = 0; i < amount; i++) {
 				InventoryItem ii = new InventoryItem();
 				ii.count = 1;
 				ii.type = type;
 				ii.owner = owner;
-				ii.hp = type.hitpoints();
+				ii.hp = world.getHitpoints(type);
 				
 				for (EquipmentSlot es : type.slots.values()) {
 					InventorySlot is = new InventorySlot();
@@ -226,7 +228,7 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 					if (es.fixed) {
 						is.type = es.items.get(0);
 						is.count = es.max;
-						is.hp = is.type.hitpoints();
+						is.hp = world.getHitpoints(is.type);
 					} else {
 						List<ResearchType> availList = owner.availableLevel(type);
 						
@@ -239,7 +241,7 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 								} else {
 									is.count = es.max / 2;
 								}
-								is.hp = rt1.hitpoints();
+								is.hp = world.getHitpoints(rt1);
 							}
 						}
 						if (is.count == 0) {
