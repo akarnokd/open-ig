@@ -1395,9 +1395,9 @@ public class SpacewarScreen extends ScreenBase {
 				st.angles = new BufferedImage[] { alien ? bse.alternative[0] : bse.normal[0] };
 				st.infoImage = bse.infoImage;
 				st.shield = ii.shield;
-				st.shieldMax = Math.max(0, ii.shieldMax());
+				st.shieldMax = Math.max(0, ii.shieldMax(world()));
 				st.hp = ii.hp;
-				st.hpMax = ii.type.hitpoints();
+				st.hpMax = world().getHitpoints(ii.type);
 				st.planet = nearbyPlanet;
 				
 				st.ecmLevel = setWeaponPorts(ii, st.ports);
@@ -1425,8 +1425,8 @@ public class SpacewarScreen extends ScreenBase {
 				sws.type = StructureType.SHIELD;
 				sws.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
 				sws.infoImage = bge.infoImage;
-				sws.hp = b.battleHitpoints();
-				sws.hpMax = b.type.hitpoints();
+				sws.hpMax = world().getHitpoints(b.type);
+				sws.hp = b.hitpoints * sws.hpMax / b.type.hitpoints;
 				sws.owner = nearbyPlanet.owner;
 				sws.destruction = bge.destruction;
 				sws.building = b;
@@ -1460,8 +1460,8 @@ public class SpacewarScreen extends ScreenBase {
 				sp.angles = alien ? bge.alternative : bge.normal;
 				sp.angle = Math.PI;
 				sp.infoImage = bge.infoImage;
-				sp.hp = b.battleHitpoints();
-				sp.hpMax = b.type.hitpoints();
+				sp.hpMax = world().getHitpoints(b.type);
+				sp.hp = b.hitpoints * sp.hpMax / b.type.hitpoints;
 				sp.owner = nearbyPlanet.owner;
 				sp.destruction = bge.destruction;
 				sp.building = b;
@@ -1642,9 +1642,9 @@ public class SpacewarScreen extends ScreenBase {
 				sws.angles = inventory.owner() != player() ? bse.alternative : bse.normal;
 				sws.infoImage = bse.infoImage;
 				sws.shield = ii.shield;
-				sws.shieldMax = Math.max(0, ii.shieldMax());
+				sws.shieldMax = Math.max(0, ii.shieldMax(world()));
 				sws.hp = ii.hp;
-				sws.hpMax = ii.type.hitpoints();
+				sws.hpMax = world().getHitpoints(ii.type);
 				sws.count = ii.count;
 				sws.rotationTime = bse.rotationTime;
 				sws.movementSpeed = bse.movementSpeed;
@@ -2065,7 +2065,7 @@ public class SpacewarScreen extends ScreenBase {
 				g2.drawImage(image, 0, 0, null);
 				if (item != null) {
 					g2.translate(-6, 15);
-					EquipmentConfigure.drawSlots(g2, item, selectedSlot);
+					EquipmentConfigure.drawSlots(g2, item, selectedSlot, world());
 					g2.translate(6, -15);
 				}
 			} else {
@@ -2179,7 +2179,8 @@ public class SpacewarScreen extends ScreenBase {
 			this.selectedSlot = is;
 			if (is != null) {
 				if (is.type != null) {
-					damage.text(format("spacewar.ship_weapon_damage", 100 * (is.type.hitpoints() - is.hp) / is.type.hitpoints()), true);
+					damage.text(format("spacewar.ship_weapon_damage", 
+							100 * (world().getHitpoints(is.type) - is.hp) / world().getHitpoints(is.type)), true);
 					count.text(format("spacewar.ship_weapon_count", is.count), true);
 					type.text(format("spacewar.ship_weapon_type", is.type.name), true);
 				} else {
@@ -3216,7 +3217,7 @@ public class SpacewarScreen extends ScreenBase {
 				}
 			} else
 			if (s.building != null) {
-				s.building.battleHitpoints(s.hp);
+				s.building.hitpoints = s.hp * s.building.type.hitpoints / s.hpMax;
 				if (s.building.hitpoints <= 0) {
 					s.planet.surface.removeBuilding(s.building);
 					s.planet.surface.placeRoads(s.planet.race, world().buildingModel);

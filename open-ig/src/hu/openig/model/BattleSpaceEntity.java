@@ -27,5 +27,7 @@ public class BattleSpaceEntity {
 	/** The rotation speed: full rotation time in milliseconds. */
 	public int rotationTime;
 	/** The movement speed: milliseconds per pixel. */
-	public int movementSpeed; 
+	public int movementSpeed;
+	/** The default hitpoints. */
+	public int hp;
 }

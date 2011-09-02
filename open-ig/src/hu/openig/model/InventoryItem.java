@@ -30,9 +30,10 @@ public class InventoryItem {
 	/** The fleet's inventory slots. */
 	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
 	/**
+	 * @param world the world object
 	 * @return the maximum shield amount or -1 for no shielding
 	 */
-	public int shieldMax() {
+	public int shieldMax(World world) {
 		int result = -1;
 		if (type.has("shield")) {
 			result = type.getInt("shield");
@@ -42,7 +43,7 @@ public class InventoryItem {
 				result = Math.max(result, sl.type.getInt("shield"));
 			}
 		}
-		return result * type.hitpoints() / 100;
+		return result * world.getHitpoints(type) / 100;
 	}
 	/**
 	 * Return the inventory slot with the given identifier.
@@ -59,15 +60,16 @@ public class InventoryItem {
 	}
 	/**
 	 * Create slots from the base definition.
+	 * @param world the world object
 	 */
-	public void createSlots() {
+	public void createSlots(World world) {
 		for (EquipmentSlot es : type.slots.values()) {
 			InventorySlot is = new InventorySlot();
 			is.slot = es;
 			if (es.fixed) {
 				is.type = es.items.get(0);
 				is.count = es.max;
-				is.hp = is.type.hitpoints();
+				is.hp = world.getHitpoints(is.type);
 			}
 			slots.add(is);
 		}

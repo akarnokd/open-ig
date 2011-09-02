@@ -29,4 +29,6 @@ public class BattleGroundProjector {
 	public int damage;
 	/** The rotation speed. */
 	public int rotationTime;
+	/** The hitpoints. */
+	public int hp;
 }

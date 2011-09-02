@@ -272,14 +272,14 @@ public class VehicleList extends UIContainer {
 				
 				InventoryItem ii = e.getValue().items.get(e.getValue().index);
 				
-				int hpx = ((availableWidth - maxWidth) * ii.hp / ii.type.hitpoints());
+				int hpx = ((availableWidth - maxWidth) * ii.hp / commons.world().getHitpoints(ii.type));
 				
 				g2.setColor(Color.GREEN);
 				g2.fillRect(maxWidth + 5, y, hpx, 4);
 				g2.setColor(Color.RED);
 				g2.fillRect(maxWidth + 5 + hpx, y, (availableWidth - hpx - 5 - maxWidth), 4);
 				
-				long sMax = ii.shieldMax();
+				long sMax = ii.shieldMax(commons.world());
 				if (sMax > 0) {
 					long s0 = ii.shield;
 					int shx = (int)((availableWidth - maxWidth) * s0 / sMax);
@@ -315,7 +315,7 @@ public class VehicleList extends UIContainer {
 				
 				// damage and shield indicators
 				
-				long hpMax = pii.type.hitpoints();
+				long hpMax = commons.world().getHitpoints(pii.type);
 				int hpx = (int)((availableWidth - maxWidth) * pii.hp / hpMax);
 				
 				g2.setColor(Color.GREEN);
@@ -323,7 +323,7 @@ public class VehicleList extends UIContainer {
 				g2.setColor(Color.RED);
 				g2.fillRect(maxWidth + 5 + hpx, y, (availableWidth - hpx - 5 - maxWidth), 4);
 				
-				long sm = pii.shieldMax();
+				long sm = pii.shieldMax(commons.world());
 				if (sm > 0) {
 					int shx = (int)((availableWidth - maxWidth) * pii.shield / sm);
 					g2.setColor(Color.ORANGE);

@@ -469,8 +469,10 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	 * @param type the item type
 	 * @param owner the owner
 	 * @param amount the amount delta
+	 * @param world the world object
 	 */
-	public void changeInventory(ResearchType type, Player owner, int amount) {
+	public void changeInventory(ResearchType type, 
+			Player owner, int amount, World world) {
 		int idx = 0;
 		boolean found = false;
 		for (InventoryItem pii : inventory) {
@@ -489,8 +491,8 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
-			pii.createSlots();
-			pii.shield = Math.max(0, pii.shieldMax());
+			pii.createSlots(world);
+			pii.shield = Math.max(0, pii.shieldMax(world));
 			
 			inventory.add(pii);
 		}

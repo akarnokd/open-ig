@@ -234,15 +234,4 @@ public class Building {
 	public boolean isComplete() {
 		return buildProgress == type.hitpoints;
 	}
-	/** @return The hitpoints used in the battle calculations. */ 
-	public int battleHitpoints() {
-		return hitpoints / 20;
-	}
-	/**
-	 * Set the battle hitpoints.
-	 * @param newHitpoints the new hitpoints
-	 */
-	public void battleHitpoints(int newHitpoints) {
-		hitpoints = Math.max(0, Math.min(newHitpoints * 20, type.hitpoints));
-	}
 }

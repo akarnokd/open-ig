@@ -53,10 +53,4 @@ public class BuildingType {
 	public Map<String, Scaffolding> scaffoldings;
 	/** The common minimap tiles for various building states. */
 	public BuildingMinimapTiles minimapTiles;
-	/**
-	 * @return the battle hitpoints
-	 */
-	public int hitpoints() {
-		return hitpoints / 20;
-	}
 }
