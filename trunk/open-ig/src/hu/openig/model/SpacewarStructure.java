@@ -208,7 +208,7 @@ public class SpacewarStructure extends SpacewarObject {
 		
 		boolean result = hp <= 0;
 		while (count > 0 && hp <= 0) {
-			hp += shieldMax;
+			hp += hpMax;
 			count--;
 			loss++;
 		}
