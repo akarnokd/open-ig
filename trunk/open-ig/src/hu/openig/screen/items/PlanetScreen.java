@@ -17,14 +17,18 @@ import hu.openig.core.Tile;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.AutoBuild;
+import hu.openig.model.BattleGroundEntity;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.GroundwarUnit;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.model.SurfaceEntity;
@@ -47,6 +51,7 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.ImageUtils;
+import hu.openig.utils.JavaUtils;
 import hu.openig.utils.Parallels;
 
 import java.awt.AlphaComposite;
@@ -64,6 +69,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -90,6 +97,8 @@ public class PlanetScreen extends ScreenBase {
 	Tile areaAccept;
 	/** The empty tile indicator. */
 	Tile areaEmpty;
+	/** The area where to deploy. */
+	Tile areaDeploy;
 	/** The placement tile for denied area. */
 	Tile areaDeny;
 	/** The current cell tile. */
@@ -215,6 +224,11 @@ public class PlanetScreen extends ScreenBase {
 	boolean showBuildingInfo = true;
 	/** Show the information panel. */
 	boolean showInfo = true;
+	/** The set where the vehicles may be placed. */
+	final Set<Location> battlePlacements = JavaUtils.newHashSet();
+	/** The ground war units. */
+	final List<GroundwarUnit> units = JavaUtils.newArrayList();
+	
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -305,6 +319,7 @@ public class PlanetScreen extends ScreenBase {
 		animationTimer = null;
 		close0(earthQuakeTimer);
 		earthQuakeTimer = null;
+		battlePlacements.clear();
 	}
 
 	/**
@@ -679,12 +694,14 @@ public class PlanetScreen extends ScreenBase {
 								if (cell.image != null) {
 									g2.drawImage(cell.image, x, yref, null);
 								}
+								placeUnits(g2, loc.x - j, loc.y);
 							}
 						} else {
 							if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
 								g2.drawImage(empty, x, y, null);
 							}
 						}
+						// place units
 					}
 				}
 	//			System.out.println("draw: " + (1E9 / (System.nanoTime() - timestamp)));
@@ -695,6 +712,13 @@ public class PlanetScreen extends ScreenBase {
 							int y = y0 + Tile.toScreenY(loc.x, loc.y);
 							g2.drawImage(areaDeny.getStrip(0), x, y, null);
 						}
+					}
+				}
+				if (battlePlacements.size() > 0) {
+					for (Location loc : battlePlacements) {
+						int x = x0 + Tile.toScreenX(loc.x, loc.y);
+						int y = y0 + Tile.toScreenY(loc.x, loc.y);
+						g2.drawImage(areaDeploy.getStrip(0), x, y, null);
 					}
 				}
 				if (!placementMode) {
@@ -2097,6 +2121,7 @@ public class PlanetScreen extends ScreenBase {
 		selection = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFFFFFF00), null);
 		areaAccept = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
 		areaEmpty = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF808080), null);
+		areaDeploy = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
 		areaDeny = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFF0000), null);
 		areaCurrent  = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFFCC00), null);
 		
@@ -2482,7 +2507,85 @@ public class PlanetScreen extends ScreenBase {
 	}
 	/** The ground war simulation. */
 	void doGroundWarSimulation() {
-		
+		// TODO war simulation
+	}
+	/** Place deployment indicators. */
+	void setDeploymentLocations() {
+		battlePlacements.clear();
+		if (planet().owner == player()) {
+			for (Building b : planet().surface.buildings) {
+				placeAround(b);
+			}
+		} else {
+			for (int i = 0; i < 3; i++) {
+				placeEdge(i);
+			}
+		}
+	}
+	/**
+	 * Place around building.
+	 * @param b the building
+	 */
+	void placeAround(Building b) {
+		for (int x = b.location.x - 3; x < b.location.x + b.tileset.normal.width + 3; x++) {
+			for (int y = b.location.y + 3; y > b.location.y - b.tileset.normal.height - 3; y--) {
+				if (surface().canPlaceBuilding(x, y)) {
+					battlePlacements.add(Location.of(x, y));
+				}						
+			}
+		}
+	}
+	/**
+	 * Place deployment indicators.
+	 * @param distance the distance from edge
+	 */
+	void placeEdge(int distance) {
+		int w = planet().surface.width;
+		int h = planet().surface.height;
+		int n = 0;
+		int x = 0;
+		int y = -distance;
+		while (n < w) {
+			if (surface().canPlaceBuilding(x, y)) {
+				battlePlacements.add(Location.of(x, y));
+			}						
+			x++;
+			y--;
+			n++;
+		}
+		n = 0;
+		x = 0;
+		y = -distance;
+		while (n < h) {
+			if (surface().canPlaceBuilding(x, y)) {
+				battlePlacements.add(Location.of(x, y));
+			}						
+			x--;
+			y--;
+			n++;
+		}
+		n = 0;
+		x = -h + distance + 1;
+		y = -h + 1;
+		while (n < w) {
+			if (surface().canPlaceBuilding(x, y)) {
+				battlePlacements.add(Location.of(x, y));
+			}						
+			x++;
+			y--;
+			n++;
+		}
+		n = 0;
+		x = w - distance - 1;
+		y = -w + 1;
+		while (n < h) {
+			if (surface().canPlaceBuilding(x, y)) {
+				battlePlacements.add(Location.of(x, y));
+			}						
+			x--;
+			y--;
+			n++;
+		}
 	}
 	/**
 	 * Initiate a battle with the given settings.
@@ -2502,9 +2605,73 @@ public class PlanetScreen extends ScreenBase {
 		
 		setGroundWarTimeControls();
 		
+		setDeploymentLocations();
+
+		LinkedList<Location> locations = new LinkedList<Location>(battlePlacements);
+		for (InventoryItem ii : battle.attacker.inventory) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				GroundwarUnit u = new GroundwarUnit();
+				Location loc = locations.removeFirst();
+				u.x = loc.x;
+				u.y = loc.y;
+				
+				BattleGroundEntity bge = world().battle.groundEntities.get(ii.type.id);
+				u.matrix = ii.owner == player() ? bge.normal : bge.alternative;
+				
+				units.add(u);
+			}
+		}
+		
 		// FIXME 
 		BattleInfo bi = battle;
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 		bfs.displayBattleSummary(bi);
+	}
+	/**
+	 * Place units into the cell.
+	 * @param g2 the graphics context
+	 * @param cx the cell coordinates
+	 * @param cy the cell coordinates
+	 */
+	void placeUnits(Graphics2D g2, int cx, int cy) {
+		List<GroundwarUnit> multiple = JavaUtils.newArrayList();
+		for (GroundwarUnit u : units) {
+			if ((int)(u.x) == cx && (int)(u.y) == cy) {
+				multiple.add(u);
+			}
+		}
+		// order by y first, x later
+		Collections.sort(multiple, new Comparator<GroundwarUnit>() {
+			@Override
+			public int compare(GroundwarUnit o1, GroundwarUnit o2) {
+				if (o1.y > o2.y) {
+					return -1; 
+				} else
+				if (o1.y < o2.y) {
+					return 1;
+				} else
+				if (o1.x > o2.x) {
+					return -1;
+				} else
+				if (o1.x < o2.x) {
+					return 1;
+				}
+				return 0;
+			}
+		});
+		int x0 = planet().surface.baseXOffset;
+		int y0 = planet().surface.baseYOffset;
+		for (GroundwarUnit u : multiple) {
+			int px = (int)(x0 + Tile.toScreenX(u.x, u.y));
+			int py = (int)(y0 + Tile.toScreenY(u.x, u.y));
+			BufferedImage img = u.get();
+			
+			int ux = px;
+			int uy = py - 5;
+			
+			
+			g2.drawImage(img, ux, uy, null);
+		}
 	}
 }
