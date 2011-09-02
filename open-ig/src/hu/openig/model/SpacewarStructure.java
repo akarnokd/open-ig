@@ -183,12 +183,24 @@ public class SpacewarStructure extends SpacewarObject {
 	 * @return is at least an unit destroyed
 	 */
 	public boolean damage(int points) {
+		/*
 		if (shield > 0) {
 			if (shield > points / 2) {
 				shield -= points / 2;
 				points = points / 2;
 			} else {
 				points -= shield * 2;
+				shield = 0;
+			}
+		}
+		hp -= points;
+		*/
+		if (shield > 0) {
+			if (shield > points) {
+				shield -= points;
+				points = 0;
+			} else {
+				points -= shield;
 				shield = 0;
 			}
 		}
