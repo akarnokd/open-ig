@@ -1105,6 +1105,13 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				case KeyEvent.VK_N:
+					if (e.isControlDown() && e.isShiftDown()) {
+						doPlaceRaceFleets();
+						e.consume();
+						repaintInner();
+					}
+					break;
 				case KeyEvent.VK_I:
 					if (e.isControlDown()) {
 						if (commons.world().player.currentResearch() != null) {
@@ -1633,6 +1640,48 @@ public class GameWindow extends JFrame implements GameControls {
 		allScreens.statusbar.errorTTL = StatusbarScreen.DEFALT_ERROR_TTL;
 	}
 	/**
+	 * Create race specific, fully filled fleets.
+	 */
+	void doPlaceRaceFleets() {
+		int j = 0;
+		for (Player p : world().players.values()) {
+			Fleet f = new Fleet();
+			f.id = world().fleetIdSequence++;
+			f.name = "Test " + p.name;
+			f.owner = p;
+			f.x = world().planets.get("Achilles").x + 10;
+			f.y = world().planets.get("Achilles").y + j * 10;
+			f.owner.fleets.put(f, FleetKnowledge.FULL);
+			
+			boolean firstCruiser = true;
+			
+			for (ResearchType rt : world().researches.values()) {
+				if (rt.race.contains(p.race)) {
+					if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+						for (int i = 0; i < (p == commons.world().player ? 1 : 3); i++) {
+							addToFleet(f, rt, 1);
+						}
+					} else
+					if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+						int n = p == commons.world().player ? 4 : 24;
+						if (firstCruiser) {
+							firstCruiser = false;
+							n++;
+						}
+						for (int i = 0; i < n; i++) {
+							addToFleet(f, rt, 1);
+						}
+					} else
+					if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+						addToFleet(f, rt, 30);
+					}
+						
+				}
+			}
+			j++;
+		}
+	}
+	/**
 	 * Place test fleets at certain positions to test space battle.
 	 * @param individual create individual fleets instead of one big
 	 */
@@ -1666,10 +1715,11 @@ public class GameWindow extends JFrame implements GameControls {
 						alienFleet.id = world().fleetIdSequence++;
 						alienFleet.name = "Test " + alienOwner.name;
 						alienFleet.owner = alienOwner;
-						alienFleet.x = world().planets.get("Centronom").x;
-						alienFleet.y = world().planets.get("Centronom").y + (i++) * 10;
+						alienFleet.x = world().planets.get("Centronom").x + (i % 5) * 20;
+						alienFleet.y = world().planets.get("Centronom").y + (i / 5) * 20 + 10;
+						i++;
 						alienFleet.owner.fleets.put(alienFleet, FleetKnowledge.FULL);
-						addToFleet(alienFleet, rt);
+						addToFleet(alienFleet, rt, 1);
 					} else {
 						System.out.printf("Could not find owner for %s (%s)%n", rt.name, rt.race);
 					}
@@ -1685,7 +1735,7 @@ public class GameWindow extends JFrame implements GameControls {
 			for (ResearchType rt : world().researches.values()) {
 				if (types.contains(rt.category)) {
 					if (rt.race.contains(world().player.race)) {
-						addToFleet(playerFleet, rt);
+						addToFleet(playerFleet, rt, 1);
 					}
 				}
 			}
@@ -1708,9 +1758,9 @@ public class GameWindow extends JFrame implements GameControls {
 			for (ResearchType rt : world().researches.values()) {
 				if (types.contains(rt.category)) {
 					if (rt.race.contains(world().player.race)) {
-						addToFleet(playerFleet, rt);
+						addToFleet(playerFleet, rt, 1);
 					}
-					addToFleet(alienFleet, rt);
+					addToFleet(alienFleet, rt, 1);
 				}
 			}
 		}
@@ -1719,11 +1769,12 @@ public class GameWindow extends JFrame implements GameControls {
 	 * Adds a new inventory item with the specified type to the target fleet.
 	 * @param target the target fleet
 	 * @param rt the type
+	 * @param count the count
 	 */
-	void addToFleet(Fleet target, ResearchType rt) {
+	void addToFleet(Fleet target, ResearchType rt, int count) {
 		InventoryItem ii = new InventoryItem();
 		ii.type = rt;
-		ii.count = 1;
+		ii.count = count;
 		ii.hp = commons.world().getHitpoints(ii.type);
 		ii.createSlots(commons.world());
 		ii.owner = target.owner;
