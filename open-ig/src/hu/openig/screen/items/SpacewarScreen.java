@@ -2498,7 +2498,8 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param owner the owner filter
 	 * @param layout the layout definition
 	 */
-	void applyLayout(Iterable<? extends SpacewarStructure> ships, Player owner, BattleSpaceLayout layout) {
+	void applyLayout(final Iterable<? extends SpacewarStructure> ships, 
+			final Player owner, final BattleSpaceLayout layout) {
 		LinkedList<SpacewarStructure> fighters = JavaUtils.newLinkedList();
 		LinkedList<SpacewarStructure> nonFighters = JavaUtils.newLinkedList();
 		for (SpacewarStructure sws : ships) {
@@ -2581,17 +2582,20 @@ public class SpacewarScreen extends ScreenBase {
 		double initialX = s.x; 
 		double initialY = s.y;
 		if (intersects(ships, s)) {
-			outer:
-			for (int r = 2; r < space.width; r += 2) {
-				for (double alpha = Math.PI / 2; alpha < 3 * Math.PI / 2; alpha += Math.PI / 36) {
+			for (int r = 10; r < space.width; r += 10) {
+				for (double alpha = Math.PI / 2; alpha < 5 * Math.PI / 2; alpha += Math.PI / 36) {
 					s.x = initialX + r * Math.cos(alpha);
 					s.y = initialY + r * Math.sin(alpha);
 					if (!intersects(ships, s)) {
-						break outer;
+						ships.add(s);
+						return;
 					}
 				}
 			}
 		}
+		// no choice but to overlap
+		s.x = initialX;
+		s.y = initialY;
 		ships.add(s);
 	}
 	/**
@@ -2938,6 +2942,11 @@ public class SpacewarScreen extends ScreenBase {
 				return true;
 			}
 		}
+		if (e.getKeyCode() == KeyEvent.VK_A && e.isControlDown()) {
+			doSelectAll();
+			e.consume();
+			return true;
+		} else
 		if (e.getKeyChar() == 'a' || e.getKeyChar() == 'A') {
 			if (attackButton.enabled) {
 				selectButton(attackButton);
@@ -2945,6 +2954,13 @@ public class SpacewarScreen extends ScreenBase {
 				return true;
 			}
 			e.consume();
+		}
+		if (e.getKeyChar() == 'g' || e.getKeyChar() == 'G') {
+			if (guardButton.enabled) {
+				doSelectionGuard();
+				e.consume();
+				return true;
+			}
 		}
 		if (e.getKeyChar() == 'm' || e.getKeyChar() == 'M') {
 			if (moveButton.enabled) {
@@ -2964,7 +2980,13 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		return super.keyboard(e);
 	}
-	
+	/** Select all player structures. */
+	void doSelectAll() {
+		for (SpacewarStructure s : structures) {
+			s.selected = s.owner == player();
+		}
+		enableFleetControls(true);
+	}
 	/**
 	 * Select the specified button and deselect others.
 	 * @param b the button to select
@@ -2983,6 +3005,7 @@ public class SpacewarScreen extends ScreenBase {
 				ship.guard = true;
 			}
 		}
+		enableFleetControls(true);
 	}
 	/**
 	 * Create explosion object for the given spacewar structure.
@@ -3210,11 +3233,11 @@ public class SpacewarScreen extends ScreenBase {
 				if (s.item.hp <= 0) {
 					if (s.fleet != null) {
 						s.fleet.inventory.remove(s.item);
+						fleets.add(s.fleet);
 					} else
 					if (s.planet != null) {
 						s.planet.inventory.remove(s.item);
 					}
-					fleets.add(s.fleet);
 				}
 			} else
 			if (s.building != null) {
