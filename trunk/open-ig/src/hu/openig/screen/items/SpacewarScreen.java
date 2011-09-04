@@ -1246,7 +1246,7 @@ public class SpacewarScreen extends ScreenBase {
 			// place and align stations
 			placeStations(nearbyPlanet, alien);
 			int stationWidth = maxWidth(stations());
-			centerStructures(xmax - stationWidth, stations());
+			centerStructures(xmax - stationWidth / 4, stations());
 			xmax -= 3 * stationWidth / 2;
 			
 			
