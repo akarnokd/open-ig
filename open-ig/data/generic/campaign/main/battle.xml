@@ -186,6 +186,9 @@
 		<tech id='EcalepDestroyer' normal='inventions/spaceships/cruisers/ecalep_destroyer_rotate'
 			image='inventions/spaceships/cruisers/ecalep_destroyer_huge' width='64'
 			sound='EXPLOSION_MEDIUM' movement-speed='50' rotation-time='150' hp='5000'/>
+		<tech id='SullepDestroyer' normal='inventions/spaceships/cruisers/sullep_destroyer_rotate'
+			image='inventions/spaceships/cruisers/sullep_destroyer_huge' width='64'
+			sound='EXPLOSION_MEDIUM' movement-speed='50' rotation-time='150' hp='5000'/>
 		<tech id='GarthogDestroyer'
 			normal='inventions/spaceships/cruisers/garthog_destroyer_rotate'
 			image='inventions/spaceships/cruisers/garthog_destroyer_huge' width='64'

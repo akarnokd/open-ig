@@ -2617,6 +2617,9 @@
 	<entry key='tech.ecalepdestroyer.name'>Ecalep Destroyer</entry>
 	<entry key='tech.ecalepdestroyer.longname'>Ecalep Destroyer</entry>
 	<entry key='tech.ecalepdestroyer.description'>Medium-strong destroyer</entry>
+	<entry key='tech.sullepdestroyer.name'>Sullep Destroyer</entry>
+	<entry key='tech.sullepdestroyer.longname'>Sullep Destroyer</entry>
+	<entry key='tech.sullepdestroyer.description'>Medium-strong destroyer</entry>
 	<entry key='tech.garthogdestroyer.name'>Garthog Destroyer</entry>
 	<entry key='tech.garthogdestroyer.longname'>Garthog Destroyer</entry>
 	<entry key='tech.garthogdestroyer.description'>Medium-strong destroyer</entry>
