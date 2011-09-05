@@ -186,6 +186,12 @@ public class ColonyGFX {
 	/** The no upgrades button. */
 	@Img(name = "colony/upgrade_none")
 	public BufferedImage upgradeNone;
+	/** The unit selection box. */
+	@Img(name = "groundwar/selection_box_dark")
+	public BufferedImage selectionBoxLight;
+	/** The unit selection box. */
+	@Img(name = "groundwar/selection_box_light")
+	public BufferedImage selectionBoxDark;
 	/**
 	 * Load the resources for the given language.
 	 * @param rl the resource locator

@@ -17,8 +17,6 @@ import java.awt.image.BufferedImage;
 public class GroundwarUnit {
 	/** The unit type. */
 	public enum UnitType {
-		/** A fixed defensive gun. */
-		GUN,
 		/** A regular tank. */
 		TANK,
 		/** A rocket sled. */
@@ -82,6 +80,12 @@ public class GroundwarUnit {
 	public Fleet fleet;
 	/** Unit type. */
 	public UnitType type;
+	/** Unit target if non null. */
+	public GroundwarUnit attackUnit;
+	/** Building target if non null. */
+	public Building attackBuilding;
+	/** Is this unit selected? */
+	public boolean selected;
 	/** @return Get the image for the current rotation and phase. */
 	public BufferedImage get() {
 		// -0.5 .. +0.5

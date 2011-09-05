@@ -51,4 +51,13 @@ public class Battle {
 		}
 		ts.add(turret);
 	}
+	/**
+	 * Get the turret positions based on the building type and race.
+	 * @param buildingId the building id
+	 * @param race the race
+	 * @return the list of turret ports
+	 */
+	public List<BuildingTurret> getTurrets(String buildingId, String race) {
+		return turrets.get(buildingId).get(race);
+	}
 }

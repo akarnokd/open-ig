@@ -1484,9 +1484,10 @@ public class World {
 				String rid = xrace.get("id");
 				for (XElement xport : xrace.childrenWithName("port")) {
 					BuildingTurret tr = new BuildingTurret();
-					tr.strip = xport.getInt("strip");
-					tr.dx = xport.getInt("dx");
-					tr.dy = xport.getInt("dy");
+					tr.rx = xport.getInt("rx");
+					tr.ry = xport.getInt("ry");
+					tr.px = xport.getInt("px");
+					tr.py = xport.getInt("py");
 					tr.matrix = matrix;
 					battle.addTurret(id, rid, tr);
 				}
