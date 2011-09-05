@@ -537,7 +537,7 @@ public class PlanetScreen extends ScreenBase {
 						drag = true;
 						lastX = e.x;
 						lastY = e.y;
-						doDragMode();
+						doDragMode(true);
 					}
 					offsetX += e.x - lastX;
 					offsetY += e.y - lastY;
@@ -573,7 +573,7 @@ public class PlanetScreen extends ScreenBase {
 					drag = true;
 					lastX = e.x;
 					lastY = e.y;
-					doDragMode();
+					doDragMode(true);
 				} else
 				if (e.has(Button.MIDDLE)) {
 					render.offsetX = -(surface().boundingRectangle.width - width) / 2;
@@ -601,24 +601,26 @@ public class PlanetScreen extends ScreenBase {
 						selectionStart = new Point(e.x, e.y);
 						selectionEnd = selectionStart;
 						rep = true;
+						doDragMode(true);
 					}
 				}
 				break;
 			case UP:
 				if (e.has(Button.RIGHT)) {
 					drag = false;
-					doDragMode();
+					doDragMode(false);
 				}
 				if (e.has(Button.LEFT) && selectionMode) {
 					selectionMode = false;
 					selectionEnd = new Point(e.x, e.y);
 					selectUnits();
+					doDragMode(false);
 				}
 				rep = true;
 				break;
 			case LEAVE:
 				drag = false;
-				doDragMode();
+				doDragMode(false);
 				if (selectionMode) {
 					selectionMode = false;
 					selectionEnd = new Point(e.x, e.y);
@@ -1315,18 +1317,21 @@ public class PlanetScreen extends ScreenBase {
 	public boolean mouse(UIMouse e) {
 		if (e.has(Type.UP) && e.has(Button.RIGHT)) {
 			drag = false;
-			doDragMode();
+			doDragMode(drag);
 		}
 		return super.mouse(e);
 	}
-	/** Set drag mode UI settings. */
-	void doDragMode() {
+	/** 
+	 * Set drag mode UI settings. 
+	 * @param dragging the dragging indicator.
+	 */
+	void doDragMode(boolean dragging) {
 		for (Field f : getClass().getDeclaredFields()) {
 			if (f.isAnnotationPresent(DragSensitive.class)) {
 				try {
 					Object o = f.get(this);
 					if (o != null) {
-						UIComponent.class.cast(o).enabled(!drag);
+						UIComponent.class.cast(o).enabled(!dragging);
 					} else {
 						System.out.println(f.getName());
 					}
