@@ -21,10 +21,6 @@ public class GroundwarGun {
 	public int rx;
 	/** The rendering cell position of the gun. */
 	public int ry;
-	/** The pixel offset of the rendering. */
-	public int px;
-	/** The pixel offset of the rendering. */
-	public int py;
 	/** The facing angle. */
 	public double angle;
 	/** The fire animation phase. */
