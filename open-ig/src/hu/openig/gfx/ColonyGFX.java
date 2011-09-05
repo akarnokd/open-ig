@@ -187,10 +187,10 @@ public class ColonyGFX {
 	@Img(name = "colony/upgrade_none")
 	public BufferedImage upgradeNone;
 	/** The unit selection box. */
-	@Img(name = "groundwar/selection_box_dark")
+	@Img(name = "groundwar/selection_box_light")
 	public BufferedImage selectionBoxLight;
 	/** The unit selection box. */
-	@Img(name = "groundwar/selection_box_light")
+	@Img(name = "groundwar/selection_box_dark")
 	public BufferedImage selectionBoxDark;
 	/**
 	 * Load the resources for the given language.

@@ -127,6 +127,10 @@ public class PlanetScreen extends ScreenBase {
 	boolean textBackgrounds = true;
 	/** Render placement hints on the surface. */
 	boolean placementHints;
+	/** The unit selection rectangle start. */
+	Point selectionStart;
+	/** The unit selection rectangle end. */
+	Point selectionEnd;
 	/** The surface cell image. */
 	static class SurfaceCell {
 		/** The tile target. */
@@ -146,8 +150,6 @@ public class PlanetScreen extends ScreenBase {
 	int lastY;
 	/** Is the map dragged. */
 	boolean drag;
-	/** Is a selection box dragged. */
-	boolean sel;
 	/** The originating location. */
 	Location orig;
 	/** The base rectangle. */
@@ -236,6 +238,8 @@ public class PlanetScreen extends ScreenBase {
 	final List<GroundwarUnit> units = JavaUtils.newArrayList();
 	/** The guns. */
 	final List<GroundwarGun> guns = JavaUtils.newArrayList();
+	/** The user is dragging a selection box. */
+	boolean selectionMode;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -558,6 +562,10 @@ public class PlanetScreen extends ScreenBase {
 						placementRectangle.y = current.y + placementRectangle.height / 2;
 						rep = true;
 					}
+				} else
+				if (selectionMode) {
+					selectionEnd = new Point(e.x, e.y);
+					rep = true;
 				}
 				break;
 			case DOWN:
@@ -589,6 +597,10 @@ public class PlanetScreen extends ScreenBase {
 						} else {
 							doSelectBuilding(null);
 						}
+						selectionMode = true;
+						selectionStart = new Point(e.x, e.y);
+						selectionEnd = selectionStart;
+						rep = true;
 					}
 				}
 				break;
@@ -597,14 +609,22 @@ public class PlanetScreen extends ScreenBase {
 					drag = false;
 					doDragMode();
 				}
-//				if (e.has(Button.LEFT)) {
-//					sel = false;
-//				}
+				if (e.has(Button.LEFT) && selectionMode) {
+					selectionMode = false;
+					selectionEnd = new Point(e.x, e.y);
+					selectUnits();
+				}
 				rep = true;
 				break;
 			case LEAVE:
 				drag = false;
 				doDragMode();
+				if (selectionMode) {
+					selectionMode = false;
+					selectionEnd = new Point(e.x, e.y);
+					selectUnits();
+					rep = true;
+				}
 				break;
 			case WHEEL:
 				if (e.has(Modifier.CTRL)) {
@@ -732,10 +752,10 @@ public class PlanetScreen extends ScreenBase {
 								if ((se.building != null 
 										&& "Defensive".equals(se.building.type.kind))
 										|| se.type == SurfaceEntityType.ROAD) {
-									placeGuns(g2, loc.x - j, loc.y);
+									drawGuns(g2, loc.x - j, loc.y);
 								}
 								// place units after
-								placeUnits(g2, loc.x - j, loc.y);
+								drawUnits(g2, loc.x - j, loc.y);
 							}
 						} else {
 							if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
@@ -792,10 +812,17 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 				// unit selection boxes}
+				BufferedImage selBox = commons.colony().selectionBoxLight;
 				for (GroundwarUnit u : units) {
 					if (u.selected) {
 						Point p = unitPosition(u);
-						g2.drawImage(commons.colony().selectionBoxLight, p.x, p.y, null);
+						g2.drawImage(selBox, p.x, p.y, null);
+					}
+				}
+				for (GroundwarGun g : guns) {
+					if (g.selected) {
+						Rectangle r = gunRectangle(g);
+						g2.drawImage(selBox, r.x + (r.width - selBox.getWidth()) / 2, r.y + (r.height - selBox.getHeight()) / 2, null);
 					}
 				}
 				if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
@@ -989,7 +1016,12 @@ public class PlanetScreen extends ScreenBase {
 				g2.fillRect(tx - 5, ty - 5, tw + 10, 24);
 				commons.text().paintTo(g2, tx, ty, 14, TextRenderer.WHITE, installSatellite);
 			}
-			
+
+			if (selectionMode) {
+				g2.setColor(new Color(255, 255, 255, 128));
+				g2.fill(selectionRectangle());
+			}
+
 			g2.setClip(save0);
 			RenderTools.setInterpolation(g2, false);
 			
@@ -2797,8 +2829,6 @@ public class PlanetScreen extends ScreenBase {
 					GroundwarGun g = new GroundwarGun();
 					g.rx = b.location.x + bt.rx;
 					g.ry = b.location.y + bt.ry;
-					g.px = bt.px;
-					g.py = bt.py;
 					g.model = bt;
 					g.building = b;
 					g.owner = player();
@@ -2849,12 +2879,12 @@ public class PlanetScreen extends ScreenBase {
 		}
 	}
 	/**
-	 * Place units into the cell.
+	 * Draw units into the cell.
 	 * @param g2 the graphics context
 	 * @param cx the cell coordinates
 	 * @param cy the cell coordinates
 	 */
-	void placeUnits(Graphics2D g2, int cx, int cy) {
+	void drawUnits(Graphics2D g2, int cx, int cy) {
 		List<GroundwarUnit> multiple = JavaUtils.newArrayList();
 		for (GroundwarUnit u : units) {
 			if ((int)Math.floor(u.x - 1) == cx && (int)Math.floor(u.y) == cy) {
@@ -2905,12 +2935,12 @@ public class PlanetScreen extends ScreenBase {
 		return new Rectangle(p.x, p.y, img.getWidth(), img.getHeight());
 	}
 	/** 
-	 * Place guns at the specified location.
+	 * Draw guns at the specified location.
 	 * @param g2 the graphics context
 	 * @param cx the cell X coordinate
 	 * @param cy the cell Y coordinate 
 	 */
-	void placeGuns(Graphics2D g2, int cx, int cy) {
+	void drawGuns(Graphics2D g2, int cx, int cy) {
 		List<GroundwarGun> multiple = JavaUtils.newArrayList();
 		for (GroundwarGun u : guns) {
 			if (u.rx - 1 == cx && u.ry - 1 == cy) {
@@ -2924,12 +2954,11 @@ public class PlanetScreen extends ScreenBase {
 			int py = (y0 + Tile.toScreenY(u.rx, u.ry));
 			BufferedImage img = u.get();
 			
-			int ux = px + (54 - 90) / 2 + u.px;
-			int uy = py + (28 - 55) / 2 + u.py;
+			int ux = px + (54 - 90) / 2 + u.model.px;
+			int uy = py + (28 - 55) / 2 + u.model.py;
 			
 			
 			g2.drawImage(img, ux, uy, null);
-//			g2.drawRect(ux, uy, 1440 / 16, 255 / 5);
 		}
 
 	}
@@ -2962,4 +2991,83 @@ public class PlanetScreen extends ScreenBase {
 		}
 		return wasCollision ? result : null;
 	}
+	/**
+	 * @return Computes the selection rectangle.
+	 */
+	Rectangle selectionRectangle() {
+		int x0 = Math.min(selectionStart.x, selectionEnd.x);
+		int y0 = Math.min(selectionStart.y, selectionEnd.y);
+		int x1 = Math.max(selectionStart.x, selectionEnd.x);
+		int y1 = Math.max(selectionStart.y, selectionEnd.y);
+		
+		return new Rectangle(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
+	}
+	/**
+	 * Select units within the selection rectangle.
+	 */
+	void selectUnits() {
+		Rectangle sr = selectionRectangle();
+		boolean own = false;
+		boolean enemy = false;
+		for (GroundwarUnit u : units) {
+			Rectangle r = unitRectangle(u);
+			
+			scaleToScreen(r);
+			
+			u.selected = sr.intersects(r);
+			
+			if (u.selected) {
+				own |= u.owner == player();
+				enemy |= u.owner != player();
+			}
+		}
+		for (GroundwarGun g : guns) {
+			Rectangle r = gunRectangle(g);
+			scaleToScreen(r);
+			
+			g.selected = sr.intersects(r);
+
+			if (g.selected) {
+				own |= g.owner == player();
+				enemy |= g.owner != player();
+			}
+		}
+		// if mixed selection, deselect aliens
+		if (own && enemy) {
+			for (GroundwarUnit u : units) {
+				u.selected &= u.owner == player();
+			}			
+			for (GroundwarGun u : guns) {
+				u.selected &= u.owner == player();
+			}			
+		}
+	}
+	/**
+	 * Sacle and position the given rectangle according to the current offset and scale.
+	 * @param r the target rectangle
+	 */
+	void scaleToScreen(Rectangle r) {
+		r.x = (int)(r.x * render.scale + render.offsetX);
+		r.y = (int)(r.y * render.scale + render.offsetY);
+		r.width *= render.scale;
+		r.height *= render.scale;
+	}
+	/**
+	 * Returns the unscaled bounding rectangle of the gun in reference to the surface map.
+	 * @param g the gun object
+	 * @return the bounding rectangle
+	 */
+	Rectangle gunRectangle(GroundwarGun g) {
+		int x0 = planet().surface.baseXOffset;
+		int y0 = planet().surface.baseYOffset;
+		int px = (x0 + Tile.toScreenX(g.rx, g.ry));
+		int py = (y0 + Tile.toScreenY(g.rx, g.ry));
+		BufferedImage img = g.get();
+		
+		int ux = px + (54 - img.getWidth()) / 2 + g.model.px;
+		int uy = py + (28 - img.getHeight()) / 2 + g.model.py;
+		
+		return new Rectangle(ux, uy, img.getWidth(), img.getHeight());
+	}
 }
+
