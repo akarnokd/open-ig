@@ -20,7 +20,9 @@ import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleGroundEntity;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
+import hu.openig.model.BuildingTurret;
 import hu.openig.model.BuildingType;
+import hu.openig.model.GroundwarGun;
 import hu.openig.model.GroundwarUnit;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
@@ -29,6 +31,7 @@ import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.model.SurfaceEntity;
@@ -228,7 +231,8 @@ public class PlanetScreen extends ScreenBase {
 	final Set<Location> battlePlacements = JavaUtils.newHashSet();
 	/** The ground war units. */
 	final List<GroundwarUnit> units = JavaUtils.newArrayList();
-	
+	/** The guns. */
+	final List<GroundwarGun> guns = JavaUtils.newArrayList();
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -626,6 +630,8 @@ public class PlanetScreen extends ScreenBase {
 				placementMode = false;
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
+				doAddGuns();
+				doAddUnits();
 			}
 			buildingsPanel.visible(planet().owner == player() && showBuildingList);
 			buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
@@ -694,6 +700,13 @@ public class PlanetScreen extends ScreenBase {
 								if (cell.image != null) {
 									g2.drawImage(cell.image, x, yref, null);
 								}
+								// place guns on buildings or roads
+								if ((se.building != null 
+										&& "Defensive".equals(se.building.type.kind))
+										|| se.type == SurfaceEntityType.ROAD) {
+									placeGuns(g2, loc.x - j, loc.y);
+								}
+								// place units after
 								placeUnits(g2, loc.x - j, loc.y);
 							}
 						} else {
@@ -750,12 +763,17 @@ public class PlanetScreen extends ScreenBase {
 						}
 					}
 				}
+				// unit selection boxes}
+				for (GroundwarUnit u : units) {
+					if (u.selected) {
+						int px = (int)(x0 + Tile.toScreenX(u.x, u.y));
+						int py = (int)(y0 + Tile.toScreenY(u.x, u.y)) - 5;
+						g2.drawImage(commons.colony().selectionBoxLight, px, py, null);
+					}
+				}
 				if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
 					for (Building b : surface.buildings) {
 						Rectangle r = getBoundingRect(b.location);
-	//					if (r == null) {
-	//						continue;
-	//					}
 						int nameSize = 10;
 						int nameLen = commons.text().getTextWidth(nameSize, b.type.name);
 						int h = (r.height - nameSize) / 2;
@@ -1682,6 +1700,24 @@ public class PlanetScreen extends ScreenBase {
 		animation++;
 		blink = animation % 2 == 0;
 		
+		// FIXME animation testing
+		for (GroundwarGun g : guns) {
+			if (g.phase < g.matrix.length) {
+				g.phase++;
+			} else {
+				g.phase = 0;
+				g.angle += Math.PI / 8;
+			}
+		}
+		for (GroundwarUnit g : units) {
+			if (g.phase < g.matrix.length) {
+				g.phase++;
+			} else {
+				g.phase = 0;
+				g.angle += Math.PI / 8;
+			}
+		}
+
 		askRepaint();
 	}
 	/** Animate the shaking during an earthquake. */
@@ -2616,6 +2652,8 @@ public class PlanetScreen extends ScreenBase {
 				u.x = loc.x;
 				u.y = loc.y;
 				
+				u.selected = true;
+				
 				BattleGroundEntity bge = world().battle.groundEntities.get(ii.type.id);
 				u.matrix = ii.owner == player() ? bge.normal : bge.alternative;
 				
@@ -2623,10 +2661,75 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 		
+		doAddGuns();
+		
 		// FIXME 
 		BattleInfo bi = battle;
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 		bfs.displayBattleSummary(bi);
+	}
+	/** Add guns for the buildings. */
+	void doAddGuns() {
+		guns.clear();
+		for (Building b : planet().surface.buildings) {
+			if (b.type.kind.equals("Defensive")) {
+				List<BuildingTurret> turrets = world().battle.getTurrets(b.type.id, planet().race);
+				int i = 0;
+				for (BuildingTurret bt : turrets) {
+					// half damaged building receive half turrets
+					if (b.hitpoints * 2 < b.type.hitpoints && i * 2 == turrets.size()) {
+						break;
+					}
+					
+					GroundwarGun g = new GroundwarGun();
+					g.rx = b.location.x + bt.rx;
+					g.ry = b.location.y + bt.ry;
+					g.px = bt.px;
+					g.py = bt.py;
+					g.matrix = bt.matrix;
+					
+					guns.add(g);
+					i++;
+				}
+			}
+		}
+	}
+	/** Place various units around the colony hub. */
+	void doAddUnits() {
+		units.clear();
+		for (Building b : surface().buildings) {
+			if (b.type.kind.equals("MainBuilding")) {
+				Set<Location> locations = new HashSet<Location>();
+				
+				for (int x = b.location.x - 1; x < b.location.x + b.tileset.normal.width + 1; x++) {
+					for (int y = b.location.y + 1; y > b.location.y - b.tileset.normal.height - 1; y--) {
+						Location loc = Location.of(x, y);
+						if (surface().canPlaceBuilding(loc.x, loc.y)) {
+							locations.add(loc);
+						}
+					}
+				}
+				LinkedList<Location> locs = new LinkedList<Location>(locations);
+				for (ResearchType rt : world().researches.values()) {
+					if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
+							|| rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+						GroundwarUnit u = new GroundwarUnit();
+						Location loc = locs.removeFirst();
+						u.x = loc.x;
+						u.y = loc.y;
+						
+						u.selected = true;
+						
+						BattleGroundEntity bge = world().battle.groundEntities.get(rt.id);
+						u.matrix = bge.normal;
+						
+						units.add(u);
+					}
+				}
+				
+				break;
+			}
+		}
 	}
 	/**
 	 * Place units into the cell.
@@ -2670,8 +2773,36 @@ public class PlanetScreen extends ScreenBase {
 			int ux = px;
 			int uy = py - 5;
 			
-			
 			g2.drawImage(img, ux, uy, null);
 		}
+	}
+	/** 
+	 * Place guns at the specified location.
+	 * @param g2 the graphics context
+	 * @param cx the cell X coordinate
+	 * @param cy the cell Y coordinate 
+	 */
+	void placeGuns(Graphics2D g2, int cx, int cy) {
+		List<GroundwarGun> multiple = JavaUtils.newArrayList();
+		for (GroundwarGun u : guns) {
+			if (u.rx == cx && u.ry == cy) {
+				multiple.add(u);
+			}
+		}
+		int x0 = planet().surface.baseXOffset;
+		int y0 = planet().surface.baseYOffset;
+		for (GroundwarGun u : multiple) {
+			int px = (x0 + Tile.toScreenX(u.rx, u.ry));
+			int py = (y0 + Tile.toScreenY(u.rx, u.ry));
+			BufferedImage img = u.get();
+			
+			int ux = px + (54 - 90) / 2 + u.px;
+			int uy = py + (28 - 55) / 2 + u.py;
+			
+			
+			g2.drawImage(img, ux, uy, null);
+			g2.drawRect(ux, uy, 1440 / 16, 255 / 5);
+		}
+
 	}
 }

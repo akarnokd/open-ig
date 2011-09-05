@@ -15,12 +15,14 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, Jul 31, 2011
  */
 public class BuildingTurret {
-	/** The strip index where the turret should be rendered. */
-	public int strip;
-	/** The rendering position relative to the left of the target strip. */
-	public int dx;
-	/** The rendering position relative to the bottom of the target strip. */
-	public int dy;
+	/** The rendering cell X relative to the building. */
+	public int rx;
+	/** The rendering cell Y relative to the building. */
+	public int ry;
+	/** The pixel offset from the cells on-screen coordinates. */ 
+	public int px;
+	/** The pixel offset from the cells on-screen coordinates. */
+	public int py;
 	/** The [rotation][fire phase] images of the turret. */ 
 	public BufferedImage[][] matrix;
 }
