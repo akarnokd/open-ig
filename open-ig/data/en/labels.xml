@@ -379,7 +379,7 @@
 	<entry key='buildings.bunker'>Bunker</entry>
 	<entry key='buildings.ion_projector'>Ion Projector</entry>
 	<entry key='buildings.plasma_projector'>Plasma Projector</entry>
-	<entry key='buildings.fusion_projector'>Fusion Projector</entry>
+	<entry key='buildings.particle_projectorprojector'>Fusion Projector</entry>
 	<entry key='buildings.meson_projector'>Meson Projector</entry>
 	<entry key='buildings.inversion_shield'>Inversion Shield</entry>
 	<entry key='buildings.hypershield'>Hypershield</entry>
@@ -875,11 +875,11 @@
 	<entry key='buildings.plasma_projector.upgrade_2'>Increase the firepower to 130%, the energy- and worker-demand to 200%.</entry>
 	<entry key='buildings.plasma_projector.upgrade_3'>Increase the firepower to 145%, the energy- and worker-demand to 250%.</entry>
 	<entry key='buildings.plasma_projector.upgrade_4'>Increase the firepower to 160%, the energy- and worker-demand to 250%.</entry>
-	<entry key='buildings.fusion_projector.desc'>Getting hit by a shot from a Fusion Projector is like running into a small sun. It inflicts severe damage on enemy starships that stray into its range.</entry>
-	<entry key='buildings.fusion_projector.upgrade_1'>Increase the firepower to 115%, the energy- and worker-demand to 150%.</entry>
-	<entry key='buildings.fusion_projector.upgrade_2'>Increase the firepower to 130%, the energy- and worker-demand to 200%.</entry>
-	<entry key='buildings.fusion_projector.upgrade_3'>Increase the firepower to 145%, the energy- and worker-demand to 250%.</entry>
-	<entry key='buildings.fusion_projector.upgrade_4'>Increase the firepower to 160%, the energy- and worker-demand to 250%.</entry>
+	<entry key='buildings.particle_projector.desc'>Getting hit by a shot from a Fusion Projector is like running into a small sun. It inflicts severe damage on enemy starships that stray into its range.</entry>
+	<entry key='buildings.particle_projector.upgrade_1'>Increase the firepower to 115%, the energy- and worker-demand to 150%.</entry>
+	<entry key='buildings.particle_projector.upgrade_2'>Increase the firepower to 130%, the energy- and worker-demand to 200%.</entry>
+	<entry key='buildings.particle_projector.upgrade_3'>Increase the firepower to 145%, the energy- and worker-demand to 250%.</entry>
+	<entry key='buildings.particle_projector.upgrade_4'>Increase the firepower to 160%, the energy- and worker-demand to 250%.</entry>
 	<entry key='buildings.meson_projector.desc'>The Meson Projector fires a stream of subatomic particles that decay into highly explosive matter. These projectors can easily cripple an unsuspecting starship with a single blast.</entry>
 	<entry key='buildings.meson_projector.upgrade_1'>Increase the firepower to 115%, the energy- and worker-demand to 150%.</entry>
 	<entry key='buildings.meson_projector.upgrade_2'>Increase the firepower to 130%, the energy- and worker-demand to 200%.</entry>

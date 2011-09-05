@@ -269,7 +269,7 @@
 			alternative='inventions/buildings/guns/alien_plasma_projector_rotate'
 			image='inventions/buildings/guns/plasma_projector_huge' width='64'
 			sound='EXPLOSION_MEDIUM' projectile='Plasma'  damage='230' rotation-time='150' hp='20000'/>
-		<tech id='FusionProjector' normal='inventions/buildings/guns/ion_projector_rotate'
+		<tech id='ParticleProjector' normal='inventions/buildings/guns/ion_projector_rotate'
 			alternative='inventions/buildings/guns/alien_ion_projector_rotate'
 			image='inventions/buildings/guns/particle_projector_huge' width='64'
 			sound='EXPLOSION_MEDIUM' projectile='Particle'  damage='370' rotation-time='150' hp='30000'/>
@@ -282,44 +282,44 @@
 	<ground-vehicles>
 		<tech id='LightTank' normal='inventions/weapons/tanks/light_tank_matrix'
 			alternative='inventions/weapons/tanks/light_tank_matrix' width='16'
-			height='5' destroy='EXPLOSION_SHORT' fire='GROUND_FIRE_6' hp='50'/>
+			height='5' destroy='EXPLOSION_SHORT' fire='GROUND_FIRE_6' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='TANK'/>
 		<tech id='MediumTank' normal='inventions/weapons/tanks/medium_tank_matrix'
 			alternative='inventions/weapons/tanks/alien_medium_tank_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM' fire='GROUND_FIRE_6' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM' fire='GROUND_FIRE_6' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='TANK'/>
 		<tech id='HeavyTank' normal='inventions/weapons/tanks/heavy_tank_matrix'
 			alternative='inventions/weapons/tanks/alien_heavy_tank_matrix' width='16'
-			height='5' destroy='EXPLOSION_MEDIUM_2' fire='GROUND_FIRE_6' hp='50'/>
+			height='5' destroy='EXPLOSION_MEDIUM_2' fire='GROUND_FIRE_6' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='TANK'/>
 		<tech id='Behemoth' normal='inventions/weapons/tanks/behemoth_matrix'
 			alternative='inventions/weapons/tanks/alien_behemoth_matrix' width='16'
-			height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6' hp='50'/>
+			height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='TANK'/>
 		<tech id='RadarCar' normal='inventions/weapons/vehicles/radar_car_matrix'
 			alternative='inventions/weapons/vehicles/alien_radar_car_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='RADAR'/>
 		<tech id='RocketLauncher1' normal='inventions/weapons/vehicles/rocket_launcher_1_matrix'
 			alternative='inventions/weapons/vehicles/alien_rocket_launcher_1_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='ROCKET_SLED'/>
 		<tech id='RocketLauncher2' normal='inventions/weapons/vehicles/rocket_launcher_2_matrix'
 			alternative='inventions/weapons/vehicles/alien_rocket_launcher_2_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='ROCKET_SLED'/>
 
 		<tech id='DargslanSelfRepairTank'
 			normal='inventions/weapons/vehicles/dargslan_self_repair_tank_matrix'
-			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='SELF_REPAIR_TANK'/>
 		<tech id='DribsParalizer' normal='inventions/weapons/vehicles/dribs_paralizer_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='PARALIZER'/>
 		<tech id='EcalepRocketJammer'
 			normal='inventions/weapons/vehicles/ecalep_rocket_jammer_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50'  damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='ROCKET_JAMMER'/>
 		<tech id='GarthogRadarJammer'
 			normal='inventions/weapons/vehicles/garthog_radar_jammer_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='RADAR_JAMMER'/>
 		<tech id='MorgathKamikazeTank'
 			normal='inventions/weapons/vehicles/morgath_kamikaze_tank_matrix'
-			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='KAMIKAZE'/>
 		<tech id='SullepArtillery' normal='inventions/weapons/vehicles/sullep_artillery_matrix'
-			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_3' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_3' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='ARTILLERY'/>
 		<tech id='YchomMineLayer' normal='inventions/weapons/vehicles/ychom_mine_layer_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='MINELAYER'/>
 	</ground-vehicles>
 	<ground-weapons>
 		<tech id='Mine' matrix='groundwar/mine' width='1' height='1' />
@@ -335,58 +335,58 @@
 			matrix='inventions/buildings/military/barracks_gun_matrix' width='16'
 			height='5'>
 			<race id='human'>
-				<port rx='0' ry='0'  px='0' py='0'/>
-				<port rx='2' ry='-2'  px='0' py='0'/>
-				<port rx='0' ry='-2'  px='0' py='0'/>
-				<port rx='2' ry='0'  px='0' py='0'/>
+				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='2' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 		</building-turret>
 		<building-turret id='Fortress'
 			matrix='inventions/buildings/military/fortress_gun_matrix' width='16'
 			height='5'>
 			<race id='human'>
-				<port rx='0' ry='0' px='0' py='0'/>
-				<port rx='2' ry='-2'  px='0' py='0'/>
-				<port rx='0' ry='-2'  px='0' py='0'/>
-				<port rx='2' ry='0'  px='0' py='0'/>
+				<port rx='0' ry='0' px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='2' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 			<race id='garthog'>
-				<port rx='0' ry='0'  px='0' py='0'/>
-				<port rx='3' ry='-3'  px='0' py='0'/>
+				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='3' ry='-3'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 			<race id='morgath'>
-				<port rx='0' ry='0'  px='0' py='0'/>
-				<port rx='2' ry='-2'  px='0' py='0'/>
+				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 			<race id='sullep'>
-				<port rx='0' ry='0'  px='0' py='0'/>
-				<port rx='1' ry='-2'  px='0' py='0'/>
+				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='1' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 			<race id='ychom'>
-				<port rx='0' ry='0'  px='0' py='0'/>
-				<port rx='3' ry='-3'  px='0' py='0'/>
+				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='3' ry='-3'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 			<race id='dribs'>
-				<port rx='0' ry='0'  px='0' py='0'/>
-				<port rx='2' ry='-2'  px='0' py='0'/>
+				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 			<race id='dargslan'>
-				<port rx='0' ry='0'  px='0' py='0'/>
-				<port rx='1' ry='-2'  px='0' py='0'/>
+				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='1' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 			<race id='ecalep'>
-				<port rx='0' ry='0'  px='0' py='0'/>
-				<port rx='2' ry='-2'  px='0' py='0'/>
+				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 		</building-turret>
 		<building-turret id='Stronghold'
 			matrix='inventions/buildings/military/stronghold_gun_matrix' width='16'
 			height='5'>
 			<race id='human'>
-				<port rx='0' ry='0'  px='0' py='0'/>
-				<port rx='3' ry='-3'  px='0' py='0'/>
-				<port rx='0' ry='-3'  px='0' py='0'/>
-				<port rx='3' ry='0'  px='0' py='0'/>
+				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='3' ry='-3'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-3'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='3' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
 			</race>
 		</building-turret>
 	</buildings>

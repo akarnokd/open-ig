@@ -369,7 +369,7 @@
 	<entry key='buildings.bunker'>Bunker</entry>
 	<entry key='buildings.ion_projector'>Ionágyú</entry>
 	<entry key='buildings.plasma_projector'>Plazmaágyú</entry>
-	<entry key='buildings.fusion_projector'>Részecskeágyú</entry>
+	<entry key='buildings.particle_projector'>Részecskeágyú</entry>
 	<entry key='buildings.meson_projector'>Mezonágyú</entry>
 	<entry key='buildings.inversion_shield'>Inverziós pajzs</entry>
 	<entry key='buildings.hypershield'>Hiperpajzs</entry>
@@ -864,11 +864,11 @@
 	<entry key='buildings.plasma_projector.upgrade_2'>130%-ra növeli a tűzerőt, 200%-ra a munkás- és energiaigényt.</entry>
 	<entry key='buildings.plasma_projector.upgrade_3'>145%-ra növeli a tűzerőt, 250%-ra a munkás- és energiaigényt.</entry>
 	<entry key='buildings.plasma_projector.upgrade_4'>160%-ra növeli a tűzerőt, 250%-ra a munkás- és energiaigényt.</entry>
-	<entry key='buildings.fusion_projector.desc'>Sok ellenséges flottát állított már meg ezekből az ágyúkból álló védelem! Egyetlen hátrányuk óriási energiafogyasztásuk: egy-egy ágyú egy gyár energiáját használja fel!</entry>
-	<entry key='buildings.fusion_projector.upgrade_1'>115%-ra növeli a tűzerőt, 150%-ra a munkás- és energiaigényt.</entry>
-	<entry key='buildings.fusion_projector.upgrade_2'>130%-ra növeli a tűzerőt, 200%-ra a munkás- és energiaigényt.</entry>
-	<entry key='buildings.fusion_projector.upgrade_3'>145%-ra növeli a tűzerőt, 250%-ra a munkás- és energiaigényt.</entry>
-	<entry key='buildings.fusion_projector.upgrade_4'>160%-ra növeli a tűzerőt, 250%-ra a munkás- és energiaigényt.</entry>
+	<entry key='buildings.particle_projector.desc'>Sok ellenséges flottát állított már meg ezekből az ágyúkból álló védelem! Egyetlen hátrányuk óriási energiafogyasztásuk: egy-egy ágyú egy gyár energiáját használja fel!</entry>
+	<entry key='buildings.particle_projector.upgrade_1'>115%-ra növeli a tűzerőt, 150%-ra a munkás- és energiaigényt.</entry>
+	<entry key='buildings.particle_projector.upgrade_2'>130%-ra növeli a tűzerőt, 200%-ra a munkás- és energiaigényt.</entry>
+	<entry key='buildings.particle_projector.upgrade_3'>145%-ra növeli a tűzerőt, 250%-ra a munkás- és energiaigényt.</entry>
+	<entry key='buildings.particle_projector.upgrade_4'>160%-ra növeli a tűzerőt, 250%-ra a munkás- és energiaigényt.</entry>
 	<entry key='buildings.meson_projector.desc'>Több ellenséges fajnál találkozott flottánk ezekből az ágyúkból álló védelemmel. A katonai vezetés nyomására a földi tudósok is kifejlesztették ezt az igen erős föld-űr védelmi rendszert.</entry>
 	<entry key='buildings.meson_projector.upgrade_1'>115%-ra növeli a tűzerőt, 150%-ra a munkás- és energiaigényt.</entry>
 	<entry key='buildings.meson_projector.upgrade_2'>130%-ra növeli a tűzerőt, 200%-ra a munkás- és energiaigényt.</entry>

@@ -1483,11 +1483,18 @@ public class World {
 			for (XElement xrace : xturret.childrenWithName("race")) {
 				String rid = xrace.get("id");
 				for (XElement xport : xrace.childrenWithName("port")) {
-					BuildingTurret tr = new BuildingTurret();
+					BattleGroundTurret tr = new BattleGroundTurret();
 					tr.rx = xport.getInt("rx");
 					tr.ry = xport.getInt("ry");
 					tr.px = xport.getInt("px");
 					tr.py = xport.getInt("py");
+					
+					tr.fire = SoundType.valueOf(xport.get("fire"));
+					tr.maxRange = xport.getInt("max-range");
+					tr.damage = xport.getInt("damage");
+					tr.rotationTime = xport.getInt("rotation-time");
+					tr.delay = xport.getInt("delay");
+					
 					tr.matrix = matrix;
 					battle.addTurret(id, rid, tr);
 				}
@@ -1619,7 +1626,7 @@ public class World {
 			String id = xground.get("id");
 			int nx = xground.getInt("width");
 			int ny = xground.getInt("height");
-			BattleGroundEntity ge = new BattleGroundEntity();
+			BattleGroundVehicle ge = new BattleGroundVehicle();
 
 			BufferedImage ni = rl.getImage(xground.get("normal"));
 			ge.normal = ImageUtils.split(ni, ni.getWidth() / nx, ni.getHeight() / ny);
@@ -1636,6 +1643,15 @@ public class World {
 			}
 			
 			ge.hp = xground.getInt("hp");
+			
+			ge.damage = xground.getInt("damage");
+			ge.type = GroundwarUnitType.valueOf(xground.get("type"));
+			ge.minRange = xground.getInt("min-range");
+			ge.maxRange = xground.getInt("max-range");
+			ge.area = xground.getInt("area");
+			ge.movementSpeed = xground.getInt("movement-speed");
+			ge.rotationTime = xground.getInt("rotation-time");
+			ge.delay = xground.getInt("delay");
 			
 			battle.groundEntities.put(id, ge);
 		}
@@ -1720,7 +1736,7 @@ public class World {
 		if (se != null) {
 			return se.hp;
 		}
-		BattleGroundEntity e = battle.groundEntities.get(rt.id);
+		BattleGroundVehicle e = battle.groundEntities.get(rt.id);
 		if (e != null) {
 			return e.hp;
 		}
