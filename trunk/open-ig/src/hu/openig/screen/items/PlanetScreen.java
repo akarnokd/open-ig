@@ -17,13 +17,14 @@ import hu.openig.core.Tile;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.AutoBuild;
+import hu.openig.model.BattleGroundTurret;
 import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
-import hu.openig.model.BattleGroundTurret;
 import hu.openig.model.BuildingType;
 import hu.openig.model.GroundwarGun;
 import hu.openig.model.GroundwarUnit;
+import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
@@ -78,6 +79,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -1030,6 +1032,25 @@ public class PlanetScreen extends ScreenBase {
 	 * @author akarnokd, Mar 27, 2011
 	 */
 	class RadarRender extends UIComponent {
+		/** The jammer frame counter. */
+		int jammerCounter;
+		/** The pre-rendered noise. */
+		BufferedImage[] noises = new BufferedImage[0];
+		/** Prepare the noise images. */
+		public void prepareNoise() {
+			noises = new BufferedImage[3];
+			Random rnd = new Random();
+			for (int k = 0; k < noises.length; k++) {
+				noises[k] = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				for (int i = 0; i < width; i += 1) {
+					for (int j = 0; j < height; j += 1) {
+						if (rnd.nextDouble() < 0.20) {
+							noises[k].setRGB(i, j, 0xFF000000);
+						}
+					}
+				}
+			}
+		}
 		@Override
 		public void draw(Graphics2D g2) {
 			RenderTools.setInterpolation(g2, true);
@@ -1101,14 +1122,30 @@ public class PlanetScreen extends ScreenBase {
 						(int)(render.width / render.scale - 1), 
 						(int)(render.height / render.scale - 1));
 			}
+			// TODO radar jammer effect
+			boolean jammed = false;
 			for (GroundwarUnit u : units) {
-				int px = (int)(x0 + Tile.toScreenX(u.x + 0.5, u.y - 0.5)) - 11;
-				int py = (int)(y0 + Tile.toScreenY(u.x + 0.5, u.y - 0.5));
-				
-				g2.setColor(u.owner == player() ? Color.GREEN : Color.RED);
-				g2.fillRect(px, py, 28, 28);
+				if (u.model.type == GroundwarUnitType.RADAR_JAMMER && u.owner != player()) {
+					jammed = true;
+					break;
+				}
+			}			
+			if (!jammed) {
+				for (GroundwarUnit u : units) {
+					int px = (int)(x0 + Tile.toScreenX(u.x + 0.5, u.y - 0.5)) - 11;
+					int py = (int)(y0 + Tile.toScreenY(u.x + 0.5, u.y - 0.5));
+					
+					g2.setColor(u.owner == player() ? Color.GREEN : Color.RED);
+					g2.fillRect(px, py, 28, 28);
+				}
 			}
+			
+			
 			g2.setTransform(at);
+			
+			if (jammed) {
+				g2.drawImage(noises[animation % noises.length], 0, 0, null);
+			}
 			
 			g2.setClip(save0);
 			RenderTools.setInterpolation(g2, false);
@@ -2198,6 +2235,8 @@ public class PlanetScreen extends ScreenBase {
 		
 		radarPanel = new UIImage(commons.colony().radarPanel);
 		radar = new RadarRender();
+		radar.size(154, 134);
+		radar.prepareNoise();
 		radar.z = 1;
 		
 		buildingsPanel = new BuildingsPanel();
@@ -2396,7 +2435,7 @@ public class PlanetScreen extends ScreenBase {
 				sidebarBuildingInfo.width, sidebarColonyInfo.y - sidebarBuildingInfo.y - sidebarBuildingInfo.height);
 		
 		radarPanel.location(sidebarRadar.x + sidebarRadar.width - 1, sidebarRadar.y);
-		radar.bounds(radarPanel.x + 13, radarPanel.y + 13, 154, 134);
+		radar.location(radarPanel.x + 13, radarPanel.y + 13);
 		buildingsPanel.location(sidebarBuildings.x + sidebarBuildings.width - 1, sidebarBuildings.y);
 		buildingInfoPanel.location(sidebarBuildingInfo.x - buildingInfoPanel.width, sidebarBuildingInfo.y);
 		
@@ -2730,7 +2769,7 @@ public class PlanetScreen extends ScreenBase {
 						u.y = loc.y;
 						
 						u.selected = true;
-						u.owner = player();
+						u.owner = world().players.get("Garthog");
 						u.planet = planet();
 						
 						u.model = world().battle.groundEntities.get(rt.id);
