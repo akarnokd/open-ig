@@ -17,10 +17,10 @@ import hu.openig.core.Tile;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.AutoBuild;
-import hu.openig.model.BattleGroundEntity;
+import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
-import hu.openig.model.BuildingTurret;
+import hu.openig.model.BattleGroundTurret;
 import hu.openig.model.BuildingType;
 import hu.openig.model.GroundwarGun;
 import hu.openig.model.GroundwarUnit;
@@ -1101,6 +1101,13 @@ public class PlanetScreen extends ScreenBase {
 						(int)(render.width / render.scale - 1), 
 						(int)(render.height / render.scale - 1));
 			}
+			for (GroundwarUnit u : units) {
+				int px = (int)(x0 + Tile.toScreenX(u.x + 0.5, u.y - 0.5)) - 11;
+				int py = (int)(y0 + Tile.toScreenY(u.x + 0.5, u.y - 0.5));
+				
+				g2.setColor(u.owner == player() ? Color.GREEN : Color.RED);
+				g2.fillRect(px, py, 28, 28);
+			}
 			g2.setTransform(at);
 			
 			g2.setClip(save0);
@@ -1702,7 +1709,7 @@ public class PlanetScreen extends ScreenBase {
 		
 		// FIXME animation testing
 		for (GroundwarGun g : guns) {
-			if (g.phase < g.matrix.length) {
+			if (g.phase < g.maxPhase()) {
 				g.phase++;
 			} else {
 				g.phase = 0;
@@ -1713,6 +1720,8 @@ public class PlanetScreen extends ScreenBase {
 			if (g.phase < g.matrix.length) {
 				g.phase++;
 			} else {
+//				g.y -= 0.1;
+//				g.x += 0.1;
 				g.phase = 0;
 				g.angle += Math.PI / 8;
 			}
@@ -2654,7 +2663,7 @@ public class PlanetScreen extends ScreenBase {
 				
 				u.selected = true;
 				
-				BattleGroundEntity bge = world().battle.groundEntities.get(ii.type.id);
+				BattleGroundVehicle bge = world().battle.groundEntities.get(ii.type.id);
 				u.matrix = ii.owner == player() ? bge.normal : bge.alternative;
 				
 				units.add(u);
@@ -2673,9 +2682,9 @@ public class PlanetScreen extends ScreenBase {
 		guns.clear();
 		for (Building b : planet().surface.buildings) {
 			if (b.type.kind.equals("Defensive")) {
-				List<BuildingTurret> turrets = world().battle.getTurrets(b.type.id, planet().race);
+				List<BattleGroundTurret> turrets = world().battle.getTurrets(b.type.id, planet().race);
 				int i = 0;
-				for (BuildingTurret bt : turrets) {
+				for (BattleGroundTurret bt : turrets) {
 					// half damaged building receive half turrets
 					if (b.hitpoints * 2 < b.type.hitpoints && i * 2 == turrets.size()) {
 						break;
@@ -2686,7 +2695,9 @@ public class PlanetScreen extends ScreenBase {
 					g.ry = b.location.y + bt.ry;
 					g.px = bt.px;
 					g.py = bt.py;
-					g.matrix = bt.matrix;
+					g.model = bt;
+					g.building = b;
+					g.owner = player();
 					
 					guns.add(g);
 					i++;
@@ -2719,9 +2730,11 @@ public class PlanetScreen extends ScreenBase {
 						u.y = loc.y;
 						
 						u.selected = true;
+						u.owner = player();
+						u.planet = planet();
 						
-						BattleGroundEntity bge = world().battle.groundEntities.get(rt.id);
-						u.matrix = bge.normal;
+						u.model = world().battle.groundEntities.get(rt.id);
+						u.matrix = u.model.normal;
 						
 						units.add(u);
 					}
@@ -2740,7 +2753,7 @@ public class PlanetScreen extends ScreenBase {
 	void placeUnits(Graphics2D g2, int cx, int cy) {
 		List<GroundwarUnit> multiple = JavaUtils.newArrayList();
 		for (GroundwarUnit u : units) {
-			if ((int)(u.x) == cx && (int)(u.y) == cy) {
+			if ((int)Math.floor(u.x) == cx && (int)Math.floor(u.y) == cy) {
 				multiple.add(u);
 			}
 		}

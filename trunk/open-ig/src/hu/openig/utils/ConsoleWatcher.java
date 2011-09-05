@@ -101,7 +101,7 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 		area.append("Please include the following diagnostic information followed by the error stacktrace(s):\r\n");
 		area.append(String.format("   Java version: %s%n", System.getProperty("java.version")));
 		area.append(String.format("   Java vendor: %s (%s)%n", System.getProperty("java.vendor"), System.getProperty("java.vendor.url")));
-		area.append(String.format("   Java compiler: %s (class version: %s)%n", System.getProperty("java.compiler"), System.getProperty("java.class.version")));
+		area.append(String.format("   Java class version: %s%n", System.getProperty("java.class.version")));
 		area.append(String.format("   Operating system: %s, %s, %s%n", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version")));
 		area.append(String.format("   Game version: %s%n", version));
 		area.append(String.format("   Command line: %s%n", Arrays.toString(commandLine)));

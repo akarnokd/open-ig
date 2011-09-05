@@ -8,13 +8,14 @@
 
 package hu.openig.model;
 
+
 import java.awt.image.BufferedImage;
 
 /**
  * The rotation + fire phase images of ground entities.
  * @author akarnokd, Jul 31, 2011
  */
-public class BattleGroundEntity {
+public class BattleGroundVehicle {
 	/** The normal [rotation][fire-phase] of the entity. */
 	public BufferedImage[][] normal;
 	/** The alternative [rotation][fire-phase] of the entity. */
@@ -25,4 +26,20 @@ public class BattleGroundEntity {
 	public SoundType fire;
 	/** The hitpoints. */
 	public int hp;
+	/** The inflicted damage. */
+	public int damage;
+	/** The minimum range. */
+	public int minRange;
+	/** The maximum range. */
+	public int maxRange;
+	/** The damage area. */
+	public int area;
+	/** The unit behavior type. */
+	public GroundwarUnitType type;
+	/** The rotation time per angle-segment. */
+	public int rotationTime;
+	/** The movement pixels per simulation step. */
+	public int movementSpeed;
+	/** Delay between firing. */
+	public int delay;
 }

@@ -19,11 +19,11 @@ import java.util.Map;
  */
 public class Battle {
 	/** A map from building id to (map from race to list of turret definition). */
-	public final Map<String, Map<String, List<BuildingTurret>>> turrets = JavaUtils.newHashMap();
+	public final Map<String, Map<String, List<BattleGroundTurret>>> turrets = JavaUtils.newHashMap();
 	/** The space entity definitions. */
 	public final Map<String, BattleSpaceEntity> spaceEntities = JavaUtils.newHashMap();
 	/** The ground entity definitions. */
-	public final Map<String, BattleGroundEntity> groundEntities = JavaUtils.newHashMap();
+	public final Map<String, BattleGroundVehicle> groundEntities = JavaUtils.newHashMap();
 	/** The map from projectile ID to [rotation][fire-phase] images. */
 	public final Map<String, BattleProjectile> projectiles = JavaUtils.newHashMap();
 	/** The ground projectors definitions. */
@@ -38,13 +38,13 @@ public class Battle {
 	 * @param race the race name
 	 * @param turret the turret definition object
 	 */
-	public void addTurret(String buildingId, String race, BuildingTurret turret) {
-		Map<String, List<BuildingTurret>> bt = turrets.get(buildingId);
+	public void addTurret(String buildingId, String race, BattleGroundTurret turret) {
+		Map<String, List<BattleGroundTurret>> bt = turrets.get(buildingId);
 		if (bt == null) {
 			bt = JavaUtils.newHashMap();
 			turrets.put(buildingId, bt);
 		}
-		List<BuildingTurret> ts = bt.get(race);
+		List<BattleGroundTurret> ts = bt.get(race);
 		if (ts == null) {
 			ts = JavaUtils.newArrayList();
 			bt.put(race, ts);
@@ -57,7 +57,7 @@ public class Battle {
 	 * @param race the race
 	 * @return the list of turret ports
 	 */
-	public List<BuildingTurret> getTurrets(String buildingId, String race) {
+	public List<BattleGroundTurret> getTurrets(String buildingId, String race) {
 		return turrets.get(buildingId).get(race);
 	}
 }

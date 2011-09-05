@@ -997,8 +997,8 @@
 			</upgrade>
 		</upgrades>
 	</building>
-	<building name="buildings.fusion_projector" id="FusionProjector">
-		<graphics base="colony/buildings/%s/fusion_projector">
+	<building name="buildings.particle_projector" id="ParticleProjector">
+		<graphics base="colony/buildings/%s/particle_projector">
 			<tech height="3" width="3" id="human"/>
 			<tech id="garthog" height="2" width="3"/>
 			<tech id="morgath" height="3" width="3"/>
@@ -1010,28 +1010,23 @@
 		</graphics>
 		<build limit="-5" kind="Gun" cost="32000" research="ParticleProjector"/>
 		<operation>
-			<resource type="fusion">90</resource>
 			<resource type='energy'>-4000</resource>
 			<resource type='worker'>-160</resource>
 		</operation>
 		<upgrades>
-			<upgrade desc="buildings.fusion_projector.upgrade_1">
-				<resource type="fusion">1.15</resource>
+			<upgrade desc="buildings.particle_projector.upgrade_1">
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
-			<upgrade desc="buildings.fusion_projector.upgrade_2">
-				<resource type="fusion">1.3</resource>
+			<upgrade desc="buildings.particle_projector.upgrade_2">
 				<resource type="energy">2</resource>
 				<resource type="worker">2</resource>
 			</upgrade>
-			<upgrade desc="buildings.fusion_projector.upgrade_3">
-				<resource type="fusion">1.45</resource>
+			<upgrade desc="buildings.particle_projector.upgrade_3">
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
-			<upgrade desc="buildings.fusion_projector.upgrade_4">
-				<resource type="fusion">1.6</resource>
+			<upgrade desc="buildings.particle_projector.upgrade_4">
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>

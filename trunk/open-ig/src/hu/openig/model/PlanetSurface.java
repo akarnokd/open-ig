@@ -226,11 +226,14 @@ public class PlanetSurface {
 		
 		for (XElement tile : buildings.childrenWithName("building")) {
 			String id = tile.get("id");
+			if (id.equals("FusionProjector")) {
+				id = "ParticleProjector";
+			}
 			String tech = tile.get("tech");
 			
 			Building b = new Building(bm.buildings.get(id), tech);
-			int x = Integer.parseInt(tile.get("x"));
-			int y = Integer.parseInt(tile.get("y"));
+			int x = tile.getInt("x");
+			int y = tile.getInt("y");
 		
 			b.location = Location.of(x, y);
 			

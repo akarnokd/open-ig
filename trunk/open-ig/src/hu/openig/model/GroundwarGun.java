@@ -15,6 +15,8 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, 2011.09.05.
  */
 public class GroundwarGun {
+	/** The turret model. */
+	public BattleGroundTurret model;
 	/** The rendering cell position of the gun. */
 	public int rx;
 	/** The rendering cell position of the gun. */
@@ -27,24 +29,18 @@ public class GroundwarGun {
 	public double angle;
 	/** The fire animation phase. */
 	public int phase;
-	/** The render matrix. */
-	public BufferedImage[][] matrix;
 	/** The attached building. */
 	public Building building;
 	/** The owner planet. */
 	public Planet planet;
 	/** The owner. */
 	public Player owner;
-	/** The rotation speed: millisecond time per angle element. */
-	public int rotationTime;
-	/** The damage inflicted. */
-	public int damage;
-	/** The firing range maximum. */
-	public int maxRange;
-	/** The sound to play when firing. */
-	public SoundType fire;
 	/** The target unit. */
 	public GroundwarUnit attack;
+	/** Is the specific gun selected? */
+	public boolean selected;
+	/** The weapon cooldown counter. */
+	public int cooldown;
 	/** @return Get the image for the current rotation and phase. */
 	public BufferedImage get() {
 		// -0.5 .. +0.5
@@ -52,8 +48,8 @@ public class GroundwarGun {
 		if (a < 0) {
 			a = 1 + a; 
 		}
-		int phaseIndex = phase % matrix.length;
-		BufferedImage[] imageAngle = matrix[phaseIndex];
+		int phaseIndex = phase % model.matrix.length;
+		BufferedImage[] imageAngle = model.matrix[phaseIndex];
 		int angleIndex = ((int)Math.round(imageAngle.length * a)) % imageAngle.length;
 		return imageAngle[angleIndex];
 	}
@@ -62,5 +58,17 @@ public class GroundwarGun {
 	 */
 	public double normalizedAngle() {
 		return Math.atan2(Math.sin(angle), Math.cos(angle));
+	}
+	/**
+	 * @return the maximum phase count
+	 */
+	public int maxPhase() {
+		return model.matrix.length;
+	}
+	/**
+	 * @return the angle between the rotation phases (in radians)
+	 */
+	public double angleDelta() {
+		return Math.PI * 2 / model.matrix[0].length;
 	}
 }

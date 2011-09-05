@@ -15,31 +15,8 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, 2011.09.02.
  */
 public class GroundwarUnit {
-	/** The unit type. */
-	public enum UnitType {
-		/** A regular tank. */
-		TANK,
-		/** A rocket sled. */
-		ROCKET_SLED,
-		/** A radar car. */
-		RADAR,
-		/** A radar jammer. */
-		RADAR_JAMMER,
-		/** A paralizer. */
-		PARALIZER,
-		/** A rocket jammer. */
-		ROCKET_JAMMER,
-		/** A minelayer. */
-		MINELAYER,
-		/** A mine. */
-		MINE,
-		/** An artillery. */
-		ARTILLERY,
-		/** A kamikaze tank. */
-		KAMIKAZE,
-		/** A self repair tank. */
-		SELF_REPAIR_TANK
-	}
+	/** The model entity. */
+	public BattleGroundVehicle model;
 	/** The position with fractional precision in surface coordinates. */
 	public double x;
 	/** The position with fractional precision in surface coordinates. */
@@ -52,24 +29,6 @@ public class GroundwarUnit {
 	public BufferedImage[][] matrix;
 	/** The available hitpoints. */
 	public int hp;
-	/** The maximum hitpoints. */
-	public int hpMax;
-	/** The rotation speed: millisecond time per angle element. */
-	public int rotationTime;
-	/** The movement speed: Milliseconds per one pixel. */
-	public int movementSpeed;
-	/** The firing range maximum. */
-	public int maxRange;
-	/** The firing range minimum. */
-	public int minRange;
-	/** The effect area. */
-	public double area;
-	/** The damage inflicted. */
-	public int damage;
-	/** The sound to play when destroyed. */
-	public SoundType destroy;
-	/** The sound to play when firing. */
-	public SoundType fire;
 	/** The original inventory item. */
 	public InventoryItem item;
 	/** The unit owner. */
@@ -78,14 +37,14 @@ public class GroundwarUnit {
 	public Planet planet;
 	/** The owner fleet if non-null. */
 	public Fleet fleet;
-	/** Unit type. */
-	public UnitType type;
 	/** Unit target if non null. */
 	public GroundwarUnit attackUnit;
 	/** Building target if non null. */
 	public Building attackBuilding;
 	/** Is this unit selected? */
 	public boolean selected;
+	/** The weapon cooldown counter. */
+	public int cooldown;
 	/** @return Get the image for the current rotation and phase. */
 	public BufferedImage get() {
 		// -0.5 .. +0.5
@@ -103,5 +62,17 @@ public class GroundwarUnit {
 	 */
 	public double normalizedAngle() {
 		return Math.atan2(Math.sin(angle), Math.cos(angle));
+	}
+	/**
+	 * @return the maximum phase count
+	 */
+	public int maxPhase() {
+		return matrix.length;
+	}
+	/**
+	 * @return the angle between the rotation phases (in radians)
+	 */
+	public double angleDelta() {
+		return Math.PI * 2 / matrix[0].length;
 	}
 }

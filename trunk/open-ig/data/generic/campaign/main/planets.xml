@@ -189,7 +189,7 @@
       <building id='Arcology' tech='ychom' x='-12' y='-32' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='ColonyHub' tech='ychom' x='-8' y='-32' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='ychom' x='-8' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='ychom' x='-4' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='ychom' x='-4' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='HyperShield' tech='ychom' x='-3' y='-36' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='MechanicalDevCenter' tech='ychom' x='-1' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='NuclearPlant' tech='ychom' x='-22' y='-43' enabled='true' repairing='false' energy='0' worker='0' level='2' build='' hp=''/>
@@ -245,7 +245,7 @@
       <building id='EquipmentFactory' tech='ychom' x='-13' y='-21' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='FieldTelescope' tech='ychom' x='10' y='-20' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='ychom' x='-16' y='-43' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='ychom' x='-19' y='-27' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='ychom' x='-19' y='-27' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='ychom' x='-5' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='InversionShield' tech='ychom' x='-15' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='IonProjector' tech='ychom' x='5' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -274,7 +274,7 @@
       <building id='ComputerDevCenter' tech='ychom' x='-9' y='-44' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='ychom' x='-5' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='ychom' x='-23' y='-49' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='ychom' x='-14' y='-61' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='ychom' x='-14' y='-61' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='ychom' x='-14' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='HyperShield' tech='ychom' x='-19' y='-54' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='MilitarySpaceport' tech='ychom' x='-12' y='-56' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -552,8 +552,8 @@
       <building id='Fortress' tech='sullep' x='-28' y='-49' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='sullep' x='-4' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='sullep' x='-14' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='sullep' x='-28' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='sullep' x='-32' y='-43' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='sullep' x='-28' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='sullep' x='-32' y='-43' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='sullep' x='-25' y='-43' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='HyperShield' tech='sullep' x='-28' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='InversionShield' tech='sullep' x='-20' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -685,7 +685,7 @@
       <building id='Fortress' tech='sullep' x='1' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='sullep' x='-2' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='sullep' x='-12' y='-51' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='sullep' x='-20' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='sullep' x='-20' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='sullep' x='-12' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='sullep' x='-1' y='-44' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='HyperShield' tech='sullep' x='3' y='-38' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -979,8 +979,8 @@
       <building id='EquipmentFactory' tech='human' x='-13' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='human' x='2' y='-27' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='human' x='-6' y='-13' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='human' x='-7' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='human' x='0' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='human' x='-7' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='human' x='0' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='human' x='5' y='-21' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='HyperShield' tech='human' x='-22' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='MechanicalDevCenter' tech='human' x='-8' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1006,8 +1006,8 @@
     <buildings>
       <building id='Arcology' tech='human' x='-19' y='-58' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='ColonyHub' tech='human' x='-13' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='human' x='-15' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='human' x='-4' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='human' x='-15' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='human' x='-4' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='HyperShield' tech='human' x='-18' y='-42' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='NuclearPlant' tech='human' x='-15' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='4' build='' hp=''/>
       <building id='NuclearPlant' tech='human' x='-21' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='4' build='' hp=''/>
@@ -1022,8 +1022,8 @@
       <building id='ColonyHub' tech='human' x='-8' y='-32' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='human' x='-7' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='human' x='-2' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='human' x='-7' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='human' x='-6' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='human' x='-7' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='human' x='-6' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='human' x='-3' y='-21' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='HyperShield' tech='human' x='-3' y='-27' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='MilitarySpaceport' tech='human' x='-10' y='-18' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1195,8 +1195,8 @@
       <building id='EquipmentFactory' tech='dribs' x='-2' y='-43' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='dribs' x='-9' y='-48' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='dribs' x='2' y='-26' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='dribs' x='-3' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='dribs' x='-2' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='dribs' x='-3' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='dribs' x='-2' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='dribs' x='8' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='HyperShield' tech='dribs' x='1' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='MilitarySpaceport' tech='dribs' x='0' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
@@ -1220,8 +1220,8 @@
     <buildings>
       <building id='Arcology' tech='dribs' x='-2' y='-23' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='ColonyHub' tech='dribs' x='-7' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='dribs' x='-10' y='-27' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='dribs' x='-5' y='-29' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='dribs' x='-10' y='-27' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='dribs' x='-5' y='-29' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='dribs' x='-13' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='InversionShield' tech='dribs' x='-8' y='-32' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='NuclearPlant' tech='dribs' x='-17' y='-29' enabled='true' repairing='false' energy='0' worker='0' level='4' build='' hp=''/>
@@ -1243,8 +1243,8 @@
       <building id='Fortress' tech='dribs' x='-23' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='dribs' x='-6' y='-21' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='dribs' x='-15' y='-25' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='dribs' x='6' y='-23' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
-      <building id='FusionProjector' tech='dribs' x='-8' y='-41' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='dribs' x='6' y='-23' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <building id='ParticleProjector' tech='dribs' x='-8' y='-41' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Hospital' tech='dribs' x='-22' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='HyperShield' tech='dribs' x='-13' y='-43' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='NuclearPlant' tech='dribs' x='-11' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='4' build='' hp=''/>
