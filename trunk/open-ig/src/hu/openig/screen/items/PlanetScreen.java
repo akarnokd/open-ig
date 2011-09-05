@@ -62,6 +62,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
@@ -793,9 +794,8 @@ public class PlanetScreen extends ScreenBase {
 				// unit selection boxes}
 				for (GroundwarUnit u : units) {
 					if (u.selected) {
-						int px = (int)(x0 + Tile.toScreenX(u.x, u.y));
-						int py = (int)(y0 + Tile.toScreenY(u.x, u.y)) - 5;
-						g2.drawImage(commons.colony().selectionBoxLight, px, py, null);
+						Point p = unitPosition(u);
+						g2.drawImage(commons.colony().selectionBoxLight, p.x, p.y, null);
 					}
 				}
 				if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
@@ -2880,18 +2880,19 @@ public class PlanetScreen extends ScreenBase {
 				return 0;
 			}
 		});
-		int x0 = planet().surface.baseXOffset;
-		int y0 = planet().surface.baseYOffset;
 		for (GroundwarUnit u : multiple) {
-			int px = (int)(x0 + Tile.toScreenX(u.x, u.y));
-			int py = (int)(y0 + Tile.toScreenY(u.x, u.y));
-			BufferedImage img = u.get();
-			
-			int ux = px;
-			int uy = py - 5;
-			
-			g2.drawImage(img, ux, uy, null);
+			Point p = unitPosition(u);
+			g2.drawImage(u.get(), p.x, p.y, null);
 		}
+	}
+	/**
+	 * Computes the unit bounding rectangle's left-top position.
+	 * @param u the unit
+	 * @return the position
+	 */
+	Point unitPosition(GroundwarUnit u) {
+		return new Point((int)(planet().surface.baseXOffset + Tile.toScreenX(u.x, u.y)), 
+				(int)(planet().surface.baseYOffset + Tile.toScreenY(u.x, u.y)) + 27 - u.get().getHeight());
 	}
 	/**
 	 * The on-screen rectangle of the ground unit.
@@ -2899,12 +2900,9 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the rectangle
 	 */
 	public Rectangle unitRectangle(GroundwarUnit u) {
-		int x0 = planet().surface.baseXOffset;
-		int y0 = planet().surface.baseYOffset;
-		int px = (int)(x0 + Tile.toScreenX(u.x, u.y));
-		int py = (int)(y0 + Tile.toScreenY(u.x, u.y));
 		BufferedImage img = u.get();
-		return new Rectangle(px, py - 5, img.getWidth(), img.getHeight());
+		Point p = unitPosition(u);
+		return new Rectangle(p.x, p.y, img.getWidth(), img.getHeight());
 	}
 	/** 
 	 * Place guns at the specified location.
@@ -2915,7 +2913,7 @@ public class PlanetScreen extends ScreenBase {
 	void placeGuns(Graphics2D g2, int cx, int cy) {
 		List<GroundwarGun> multiple = JavaUtils.newArrayList();
 		for (GroundwarGun u : guns) {
-			if (u.rx == cx && u.ry == cy) {
+			if (u.rx - 1 == cx && u.ry - 1 == cy) {
 				multiple.add(u);
 			}
 		}
@@ -2931,7 +2929,7 @@ public class PlanetScreen extends ScreenBase {
 			
 			
 			g2.drawImage(img, ux, uy, null);
-			g2.drawRect(ux, uy, 1440 / 16, 255 / 5);
+//			g2.drawRect(ux, uy, 1440 / 16, 255 / 5);
 		}
 
 	}
