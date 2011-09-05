@@ -458,6 +458,31 @@ public class PlanetScreen extends ScreenBase {
 		return null;
 	}
 	/**
+	 * Returns the bounding rectangle of the building in non-scaled screen coordinates.
+	 * @param b the building to test
+	 * @return the bounding rectangle
+	 */
+	public Rectangle buildingRectangle(Building b) {
+		int a0 = b.location.x;
+		int b0 = b.location.y;
+		int x = surface().baseXOffset + Tile.toScreenX(a0, b0);
+		int y = surface().baseYOffset + Tile.toScreenY(a0, b0 - b.tileset.normal.height + 1) + 27;
+		
+		return new Rectangle(x, y - b.tileset.normal.imageHeight, b.tileset.normal.imageWidth, b.tileset.normal.imageHeight);
+	}
+	/**
+	 * Returns the bounding rectangle of the given surface feature in non-scaled screen coordinates.
+	 * @param f the surface feature
+	 * @return the bounding rectangle
+	 */
+	public Rectangle featureRectangle(SurfaceFeature f) {
+		int a0 = f.location.x;
+		int b0 = f.location.y;
+		int x = surface().baseXOffset + Tile.toScreenX(a0, b0);
+		int y = surface().baseYOffset + Tile.toScreenY(a0, b0 - f.tile.height + 1) + 27;
+		return new Rectangle(x, y - f.tile.imageHeight, f.tile.imageWidth, f.tile.imageHeight);
+	}
+	/**
 	 * Return a building instance at the specified location.
 	 * @param loc the location
 	 * @return the building object or null
@@ -882,6 +907,46 @@ public class PlanetScreen extends ScreenBase {
 						}
 					}
 				}
+				// paint red on overlapping images of buildings, land-features and vehicles
+
+				if (!units.isEmpty()) {
+					for (GroundwarUnit u : units) {
+						Rectangle ur = unitRectangle(u);
+						for (Building b : surface().buildings) {
+							if (u.y <= b.location.y - b.tileset.normal.height
+									|| u.x < b.location.x
+									) {
+								continue;
+							}
+							Rectangle bur = buildingRectangle(b);
+							if (ur.intersects(bur)) {
+								Rectangle is = ur.intersection(bur);
+								BufferedImage ci = collisionImage(u, ur, b.tileset.normal, bur, is);
+								if (ci != null) {
+									g2.drawImage(ci, is.x, is.y, null);
+								}
+							}
+						}
+						for (SurfaceFeature sf : surface().features) {
+							if (u.y <= sf.location.y - sf.tile.height
+									|| u.x < sf.location.x
+									) {
+								continue;
+							}
+							if (sf.tile.width > 1 || sf.tile.height > 1) {
+								Rectangle fur = featureRectangle(sf);
+								if (ur.intersects(fur)) {
+									Rectangle is = ur.intersection(fur);
+									BufferedImage ci = collisionImage(u, ur, sf.tile, fur, is);
+									if (ci != null) {
+										g2.drawImage(ci, is.x, is.y, null);
+									}
+								}
+							}
+						}
+					}
+				}
+				
 				if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && buildingBox != null) {
 					g2.setColor(Color.RED);
 					g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
@@ -2792,7 +2857,7 @@ public class PlanetScreen extends ScreenBase {
 	void placeUnits(Graphics2D g2, int cx, int cy) {
 		List<GroundwarUnit> multiple = JavaUtils.newArrayList();
 		for (GroundwarUnit u : units) {
-			if ((int)Math.floor(u.x) == cx && (int)Math.floor(u.y) == cy) {
+			if ((int)Math.floor(u.x - 1) == cx && (int)Math.floor(u.y) == cy) {
 				multiple.add(u);
 			}
 		}
@@ -2828,6 +2893,19 @@ public class PlanetScreen extends ScreenBase {
 			g2.drawImage(img, ux, uy, null);
 		}
 	}
+	/**
+	 * The on-screen rectangle of the ground unit.
+	 * @param u the unit to test
+	 * @return the rectangle
+	 */
+	public Rectangle unitRectangle(GroundwarUnit u) {
+		int x0 = planet().surface.baseXOffset;
+		int y0 = planet().surface.baseYOffset;
+		int px = (int)(x0 + Tile.toScreenX(u.x, u.y));
+		int py = (int)(y0 + Tile.toScreenY(u.x, u.y));
+		BufferedImage img = u.get();
+		return new Rectangle(px, py - 5, img.getWidth(), img.getHeight());
+	}
 	/** 
 	 * Place guns at the specified location.
 	 * @param g2 the graphics context
@@ -2856,5 +2934,34 @@ public class PlanetScreen extends ScreenBase {
 			g2.drawRect(ux, uy, 1440 / 16, 255 / 5);
 		}
 
+	}
+	/**
+	 * Compute the collision image.
+	 * @param u the ground unit object
+	 * @param ur the ground unit bounding rectangle
+	 * @param t the tile
+	 * @param tr the tile bounding rectangle
+	 * @param is the intersection rectangle
+	 * @return the collision image
+	 */
+	BufferedImage collisionImage(GroundwarUnit u, Rectangle ur, Tile t, Rectangle tr, Rectangle is) {
+		BufferedImage bi = u.get();
+		BufferedImage result = new BufferedImage(is.width, is.height, BufferedImage.TYPE_INT_ARGB);
+		boolean wasCollision = false;
+		
+		for (int y = is.y; y < is.y + is.height; y++) {
+			for (int x = is.x; x < is.x + is.width; x++) {
+				int urgb = bi.getRGB(x - ur.x, y - ur.y);
+				if ((urgb & 0xFF000000) != 0) {
+					int trgb = t.image[(y - tr.y) * t.imageWidth + (x - tr.x)];
+					if ((trgb & 0xFF000000) != 0) {
+						result.setRGB(x - is.x, y - is.y, 0xFFFF0000);
+						wasCollision = true;
+					}
+				}
+			}
+			
+		}
+		return wasCollision ? result : null;
 	}
 }
