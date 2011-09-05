@@ -46,7 +46,7 @@ public class Tile {
 		}
 	};
 	/** The strip cache. */
-	private final BufferedImage[] stripCache;
+	public final BufferedImage[] stripCache;
 	/**
 	 * Constructor. Sets the fields.
 	 * @param width the width in top-right angle.
