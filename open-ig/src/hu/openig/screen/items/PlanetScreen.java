@@ -11,11 +11,13 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Act;
 import hu.openig.core.Func1;
+import hu.openig.core.Func2;
 import hu.openig.core.Location;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.core.Tile;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.BattleSimulator;
+import hu.openig.mechanics.Pathfinding;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleGroundTurret;
 import hu.openig.model.BattleGroundVehicle;
@@ -240,6 +242,10 @@ public class PlanetScreen extends ScreenBase {
 	final List<GroundwarGun> guns = JavaUtils.newArrayList();
 	/** The user is dragging a selection box. */
 	boolean selectionMode;
+	/** The pathfinding routine. */
+	Pathfinding pathfinding;
+	/** The path computed by the pathfinding. */
+	List<Location> path = JavaUtils.newArrayList();
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -578,10 +584,15 @@ public class PlanetScreen extends ScreenBase {
 				break;
 			case DOWN:
 				if (e.has(Button.RIGHT)) {
-					drag = true;
-					lastX = e.x;
-					lastY = e.y;
-					doDragMode(true);
+					if (e.has(Modifier.SHIFT)) {
+						doMoveSelectedUnits(e.x, e.y);
+						rep = true;
+					} else {
+						drag = true;
+						lastX = e.x;
+						lastY = e.y;
+						doDragMode(true);
+					}
 				} else
 				if (e.has(Button.MIDDLE)) {
 					render.offsetX = -(surface().boundingRectangle.width - width) / 2;
@@ -834,6 +845,18 @@ public class PlanetScreen extends ScreenBase {
 						Rectangle r = gunRectangle(g);
 						g2.drawImage(selBox, r.x + (r.width - selBox.getWidth()) / 2, r.y + (r.height - selBox.getHeight()) / 2, null);
 					}
+				}
+				g2.setColor(Color.WHITE);
+				for (int i = 0; i < path.size() - 1; i++) {
+					Location l0 = path.get(i);
+					Location l1 = path.get(i + 1);
+					
+					int xa = x0 + Tile.toScreenX(l0.x, l0.y) + 27;
+					int ya = y0 + Tile.toScreenY(l0.x, l0.y) + 14;
+					int xb = x0 + Tile.toScreenX(l1.x, l1.y) + 27;
+					int yb = y0 + Tile.toScreenY(l1.x, l1.y) + 14;
+					
+					g2.drawLine(xa, ya, xb, yb);
 				}
 				if (config.showBuildingName && knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
 					for (Building b : surface.buildings) {
@@ -2516,6 +2539,37 @@ public class PlanetScreen extends ScreenBase {
 			}
 		};
 		
+		pathfinding = new Pathfinding();
+		pathfinding.isPassable = new Func1<Location, Boolean>() {
+			@Override
+			public Boolean invoke(Location value) {
+				if (surface().canPlaceBuilding(value.x, value.y)) {
+					for (GroundwarUnit u : units) {
+						if (((int)(u.x) == value.x && (int)(u.y) == value.y)) {
+							return false;
+						}
+					}
+					return true;
+				}
+				return false;
+			}
+		};
+		pathfinding.estimation = new Func2<Location, Location, Integer>() {
+			@Override
+			public Integer invoke(Location t, Location u) {
+				return (Math.abs(t.x - u.x) + Math.abs(t.y - u.y)) * 1000;
+			}
+		};
+		pathfinding.distance = new Func2<Location, Location, Integer>() {
+			@Override
+			public Integer invoke(Location t, Location u) {
+				if (t.x == u.x || u.y == t.y) {
+					return 1000;
+				}
+				return 1414;
+			}
+		};
+		
 		addThis();
 	}
 	@Override
@@ -3077,6 +3131,23 @@ public class PlanetScreen extends ScreenBase {
 		int uy = py + (28 - img.getHeight()) / 2 + g.model.py;
 		
 		return new Rectangle(ux, uy, img.getWidth(), img.getHeight());
+	}
+	/** 
+	 * Compute a path for one of the selected unit.
+	 * @param mx the mouse x
+	 * @param my the mouse y
+	 */
+	void doMoveSelectedUnits(int mx, int my) {
+		path.clear();
+		for (GroundwarUnit u : units) {
+			if (u.selected) {
+				Location lu = Location.of((int)u.x, (int)u.y);
+				Location lm = render.getLocationAt(mx, my);
+				path.addAll(pathfinding.search(lu, lm));
+				
+				return;
+			}
+		}
 	}
 }
 
