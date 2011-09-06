@@ -61,6 +61,36 @@ public class Pathfinding {
 		openSet.add(initial);
 		openSet2.add(initial);
 		
+		// heuristic if destination is not passable
+		if (!isPassable.invoke(destination)) {
+			// try locating a passable target nearby
+			int maxradius = Math.max(Math.abs(destination.x - initial.x), Math.abs(destination.y - initial.y));
+			int r = 1;
+			Location found = null;
+			while (r < maxradius) {
+				Set<Location> locations = squareAround(destination, r);
+				int minCommon = Integer.MAX_VALUE;
+				for (Location loc : locations) {
+					int com = (loc.x - destination.x) * (loc.x - destination.x)
+							+ (loc.y - destination.y) * (loc.y - destination.y)
+							+ (loc.x - initial.x) * (loc.x - initial.x)
+							+ (loc.y - initial.y) * (loc.y - initial.y);
+					if (com < minCommon) {
+						minCommon = com;
+						found = loc;
+					}
+				}
+				if (found != null) {
+					List<Location> result2 = search(initial, found);
+					if (result2.size() > 0) {
+						return result2;
+					}
+				}
+				found = null;
+				r++;
+			}
+		}
+		
 		while (!openSet.isEmpty()) {
 			
 			Location current = openSet.get(0);
@@ -100,6 +130,40 @@ public class Pathfinding {
 			}
 		}
 		return Collections.emptyList();
+	}
+	/**
+	 * Returns a list of passable locations around the given center by the given radius.
+	 * @param center the center location
+	 * @param radius the radius
+	 * @return the locations around the center
+	 */
+	public Set<Location> squareAround(Location center, int radius) {
+		Set<Location> result = JavaUtils.newHashSet();
+		int x0 = center.x - radius;
+		int x1 = center.x + radius;
+		int y0 = center.y - radius;
+		int y1 = center.y + radius;
+		for (int x = x0; x <= x1; x++) {
+			Location loc = Location.of(x, y0);
+			if (isPassable.invoke(loc)) {
+				result.add(loc);
+			}
+			loc = Location.of(x, y1);
+			if (isPassable.invoke(loc)) {
+				result.add(loc);
+			}
+		}
+		for (int y = y0; y <= y1; y++) {
+			Location loc = Location.of(x0, y);
+			if (isPassable.invoke(loc)) {
+				result.add(loc);
+			}
+			loc = Location.of(x1, y);
+			if (isPassable.invoke(loc)) {
+				result.add(loc);
+			}
+		}
+		return result;
 	}
 	/**
 	 * Returns a list of neighboring, passable cells, but avoids corner cutting cases.
