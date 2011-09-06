@@ -8,7 +8,11 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Location;
+import hu.openig.utils.JavaUtils;
+
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * The ground war unit.
@@ -45,6 +49,8 @@ public class GroundwarUnit {
 	public boolean selected;
 	/** The weapon cooldown counter. */
 	public int cooldown;
+	/** The current movement path to the target. */
+	public final List<Location> path = JavaUtils.newArrayList();
 	/** @return Get the image for the current rotation and phase. */
 	public BufferedImage get() {
 		// -0.5 .. +0.5
