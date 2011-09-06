@@ -2539,36 +2539,7 @@ public class PlanetScreen extends ScreenBase {
 			}
 		};
 		
-		pathfinding = new Pathfinding();
-		pathfinding.isPassable = new Func1<Location, Boolean>() {
-			@Override
-			public Boolean invoke(Location value) {
-				if (surface().canPlaceBuilding(value.x, value.y)) {
-					for (GroundwarUnit u : units) {
-						if (((int)(u.x) == value.x && (int)(u.y) == value.y)) {
-							return false;
-						}
-					}
-					return true;
-				}
-				return false;
-			}
-		};
-		pathfinding.estimation = new Func2<Location, Location, Integer>() {
-			@Override
-			public Integer invoke(Location t, Location u) {
-				return (Math.abs(t.x - u.x) + Math.abs(t.y - u.y)) * 1000;
-			}
-		};
-		pathfinding.distance = new Func2<Location, Location, Integer>() {
-			@Override
-			public Integer invoke(Location t, Location u) {
-				if (t.x == u.x || u.y == t.y) {
-					return 1000;
-				}
-				return 1414;
-			}
-		};
+		initPathfinding();
 		
 		addThis();
 	}
@@ -3148,6 +3119,41 @@ public class PlanetScreen extends ScreenBase {
 				return;
 			}
 		}
+	}
+	/**
+	 * Initialize the pathfinding functions.
+	 */
+	void initPathfinding() {
+		pathfinding = new Pathfinding();
+		pathfinding.isPassable = new Func1<Location, Boolean>() {
+			@Override
+			public Boolean invoke(Location value) {
+				if (surface().canPlaceBuilding(value.x, value.y)) {
+					for (GroundwarUnit u : units) {
+						if (((int)(u.x) == value.x && (int)(u.y) == value.y)) {
+							return !u.path.isEmpty();
+						}
+					}
+					return true;
+				}
+				return false;
+			}
+		};
+		pathfinding.estimation = new Func2<Location, Location, Integer>() {
+			@Override
+			public Integer invoke(Location t, Location u) {
+				return (Math.abs(t.x - u.x) + Math.abs(t.y - u.y)) * 1000;
+			}
+		};
+		pathfinding.distance = new Func2<Location, Location, Integer>() {
+			@Override
+			public Integer invoke(Location t, Location u) {
+				if (t.x == u.x || u.y == t.y) {
+					return 1000;
+				}
+				return 1414;
+			}
+		};
 	}
 }
 
