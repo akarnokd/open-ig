@@ -3143,7 +3143,7 @@ public class PlanetScreen extends ScreenBase {
 			if (u.selected) {
 				Location lu = Location.of((int)u.x, (int)u.y);
 				Location lm = render.getLocationAt(mx, my);
-				path.addAll(pathfinding.search(lu, lm));
+				path.addAll(pathfinding.searchApproximate(lu, lm));
 				
 				return;
 			}

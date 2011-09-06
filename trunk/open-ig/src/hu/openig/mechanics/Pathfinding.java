@@ -13,6 +13,7 @@ import hu.openig.core.Func2;
 import hu.openig.core.Location;
 import hu.openig.utils.JavaUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -61,36 +62,6 @@ public class Pathfinding {
 		openSet.add(initial);
 		openSet2.add(initial);
 		
-		// heuristic if destination is not passable
-		if (!isPassable.invoke(destination)) {
-			// try locating a passable target nearby
-			int maxradius = Math.max(Math.abs(destination.x - initial.x), Math.abs(destination.y - initial.y));
-			int r = 1;
-			Location found = null;
-			while (r < maxradius) {
-				Set<Location> locations = squareAround(destination, r);
-				int minCommon = Integer.MAX_VALUE;
-				for (Location loc : locations) {
-					int com = (loc.x - destination.x) * (loc.x - destination.x)
-							+ (loc.y - destination.y) * (loc.y - destination.y)
-							+ (loc.x - initial.x) * (loc.x - initial.x)
-							+ (loc.y - initial.y) * (loc.y - initial.y);
-					if (com < minCommon) {
-						minCommon = com;
-						found = loc;
-					}
-				}
-				if (found != null) {
-					List<Location> result2 = search(initial, found);
-					if (result2.size() > 0) {
-						return result2;
-					}
-				}
-				found = null;
-				r++;
-			}
-		}
-		
 		while (!openSet.isEmpty()) {
 			
 			Location current = openSet.get(0);
@@ -130,6 +101,53 @@ public class Pathfinding {
 			}
 		}
 		return Collections.emptyList();
+	}
+	/**
+	 * Search for a path leading closest to the given destination.
+	 * @param initial the initial location
+	 * @param destination the destination
+	 * @return the path, empty if the target is completely unreachable
+	 */
+	public List<Location> searchApproximate(final Location initial, final Location destination) {
+		List<Location> result = search(initial, destination);
+		if (result.size() == 0) {
+			// try locating a passable target nearby
+			int maxradius = Math.max(Math.abs(destination.x - initial.x), Math.abs(destination.y - initial.y));
+			int r = 1;
+			while (r < maxradius) {
+				List<Location> locations = new ArrayList<Location>(squareAround(destination, r));
+				Collections.sort(locations, new Comparator<Location>() {
+					@Override
+					public int compare(Location o1, Location o2) {
+						int d1 = distance2(initial, destination, o1);
+						int d2 = distance2(initial, destination, o2);
+						return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+					}
+				});
+				for (Location found : locations) {
+					List<Location> result2 = search(initial, found);
+					if (result2.size() > 0) {
+						return result2;
+					}
+				}
+				r++;
+			}
+			return Collections.emptyList();
+		}
+		return result;
+	}
+	/**
+	 * Computes the sum of the distance squares between (target and source1) and (target and source2).
+	 * @param source1 the first point
+	 * @param source2 the second point
+	 * @param target the target point
+	 * @return the distance
+	 */
+	int distance2(Location source1, Location source2, Location target) {
+		return (target.x - source1.x) * (target.x - source1.x)
+				+ (target.y - source1.y) * (target.y - source1.y)
+				+ (target.x - source2.x) * (target.x - source2.x)
+				+ (target.y - source2.y) * (target.y - source2.y);
 	}
 	/**
 	 * Returns a list of passable locations around the given center by the given radius.
