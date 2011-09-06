@@ -330,63 +330,61 @@
 	<!-- Contains explicit battle information for building turrets and weapon 
 		projectiles -->
 	<buildings>
+	    <matrix id='barracks' image='inventions/buildings/military/barracks_gun_matrix' width='16' height='5'/>
+	    <matrix id='fortress' image='inventions/buildings/military/fortress_gun_matrix' width='16' height='5'/>
+	    <matrix id='stronghold' image='inventions/buildings/military/stronghold_gun_matrix' width='16' height='5'/>
 		<!-- Definition of building turret graphical location for each race. -->
-		<building-turret id='Barracks'
-			matrix='inventions/buildings/military/barracks_gun_matrix' width='16'
-			height='5'>
+		<building-turret id='Barracks'>
 			<race id='human'>
-				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='0' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='2' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-1'  px='-18' py='-50' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'
+			matrix='barracks' />
+				<port rx='2' ry='-2'  px='-6' py='-44' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'
+			matrix='fortress'/>
 			</race>
 		</building-turret>
-		<building-turret id='Fortress'
-			matrix='inventions/buildings/military/fortress_gun_matrix' width='16'
-			height='5'>
+		<building-turret id='Fortress'>
 			<race id='human'>
-				<port rx='0' ry='0' px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='0' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='2' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-1' px='-6' py='-54' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='barracks'/>
+				<port rx='2' ry='-2'  px='4' py='-18' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
 			</race>
 			<race id='garthog'>
-				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='3' ry='-3'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-1'  px='-16' py='-46' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='barracks'/>
+				<port rx='3' ry='-3'  px='-14' py='-24' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='barracks'/>
+				<port rx='0' ry='-3'  px='4' py='-36' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='barracks'/>
+				<port rx='0' ry='-3'  px='-10' py='-100' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='barracks'/>
 			</race>
 			<race id='morgath'>
-				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-2'  px='0' py='-70' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
+				<port rx='1' ry='-2'  px='0' py='-22' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
 			</race>
 			<race id='sullep'>
-				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='1' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
+				<port rx='0' ry='-2'  px='-28' py='-76' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
 			</race>
 			<race id='ychom'>
-				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='3' ry='-3'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-1'  px='-14' py='-60' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
+				<port rx='0' ry='-3'  px='0' py='-60' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
+				<port rx='3' ry='-3'  px='-20' py='-46' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='barracks'/>
 			</race>
 			<race id='dribs'>
-				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-1'  px='-27' py='-30' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='barracks'/>
+				<port rx='0' ry='-2'  px='4' py='-94' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
 			</race>
 			<race id='dargslan'>
-				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='1' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-2'  px='-20' py='-72' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='stronghold'/>
+				<port rx='1' ry='-2'  px='14' py='-6' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='stronghold'/>
 			</race>
 			<race id='ecalep'>
-				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='2' ry='-2'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-1'  px='-6' py='-60' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='stronghold'/>
+				<port rx='2' ry='-2'  px='-20' py='-50' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='stronghold'/>
 			</race>
 		</building-turret>
-		<building-turret id='Stronghold'
-			matrix='inventions/buildings/military/stronghold_gun_matrix' width='16'
-			height='5'>
+		<building-turret id='Stronghold'>
 			<race id='human'>
-				<port rx='0' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='3' ry='-3'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='0' ry='-3'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
-				<port rx='3' ry='0'  px='0' py='0' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500'/>
+				<port rx='0' ry='-2'  px='-18' py='-74' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='barracks'/>
+				<port rx='3' ry='-3'  px='-6' py='-36' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
+				<port rx='0' ry='-3'  px='26' py='-56' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='fortress'/>
+				<port rx='0' ry='-3'  px='10' py='-110' fire='GROUND_FIRE_1' max-range='5' damage='5' rotation-time='100' delay='500' matrix='stronghold'/>
 			</race>
 		</building-turret>
 	</buildings>

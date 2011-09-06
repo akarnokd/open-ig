@@ -61,7 +61,7 @@ public class XElement implements Iterable<XElement> {
 	public String get(String attributeName) {
 		String s = attributes.get(attributeName);
 		if (s == null) {
-			throw new IllegalArgumentException(name + ": missing attribute: " + attributeName);
+			throw new IllegalArgumentException(this + ": missing attribute: " + attributeName);
 		}
 		return s;
 	}

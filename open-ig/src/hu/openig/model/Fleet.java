@@ -180,18 +180,8 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 			result.speed = 6;
 		}
 		
-		float dmin = Integer.MAX_VALUE; 
-		Planet pmin = null;
-		for (Planet p : owner.planets.keySet()) {
-			float d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
-			if (d < dmin) {
-				dmin = d;
-				pmin = p;
-			}
-		}
-		if (dmin < 20 * 20) {
-			result.planet = pmin;
-		}
+		result.planet = nearbyPlanet();
+		
 		if (!inventory.isEmpty() && radar == 0) {
 			radar = 12;
 		} else {
@@ -199,6 +189,24 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 		}
 		
 		return result;
+	}
+	/**
+	 * @return Returns the nearest planet or null if out of range. 
+	 */
+	public Planet nearbyPlanet() {
+		float dmin = Integer.MAX_VALUE; 
+		Planet pmin = null;
+		for (Planet p : owner.planets.keySet()) {
+			float d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+			if (d < dmin && d < 20 * 20) {
+				dmin = d;
+				pmin = p;
+			}
+		}
+		if (pmin != null) {
+			return pmin;
+		}
+		return null;
 	}
 	/** 
 	 * Add a given number of inventory item to this fleet.

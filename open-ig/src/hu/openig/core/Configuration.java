@@ -167,6 +167,10 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public int autoRepairLimit = 0;
+	/** Display the building names and status? */
+	@LoadSave
+	@LoadSaveGame
+	public boolean showBuildingName = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

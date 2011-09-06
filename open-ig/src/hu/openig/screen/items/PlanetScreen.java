@@ -273,6 +273,12 @@ public class PlanetScreen extends ScreenBase {
 				rep = true;
 			}
 			break;
+		case KeyEvent.VK_N:
+			if (e.isControlDown()) {
+				config.showBuildingName = !config.showBuildingName;
+				e.consume();
+				rep = true;
+			}
 		default:
 		}
 		return rep;
@@ -331,6 +337,8 @@ public class PlanetScreen extends ScreenBase {
 		close0(earthQuakeTimer);
 		earthQuakeTimer = null;
 		battlePlacements.clear();
+		guns.clear();
+		units.clear();
 	}
 
 	/**
@@ -750,15 +758,15 @@ public class PlanetScreen extends ScreenBase {
 								if (cell.image != null) {
 									g2.drawImage(cell.image, x, yref, null);
 								}
-								// place guns on buildings or roads
-								if ((se.building != null 
-										&& "Defensive".equals(se.building.type.kind))
-										|| se.type == SurfaceEntityType.ROAD) {
-									drawGuns(g2, loc.x - j, loc.y);
-								}
-								// place units after
-								drawUnits(g2, loc.x - j, loc.y);
 							}
+							// place guns on buildings or roads
+							if ((se.building != null 
+									&& "Defensive".equals(se.building.type.kind))
+									|| se.type == SurfaceEntityType.ROAD) {
+								drawGuns(g2, loc.x - j, loc.y);
+							}
+							// place units after
+							drawUnits(g2, loc.x - j, loc.y);
 						} else {
 							if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
 								g2.drawImage(empty, x, y, null);
@@ -827,7 +835,7 @@ public class PlanetScreen extends ScreenBase {
 						g2.drawImage(selBox, r.x + (r.width - selBox.getWidth()) / 2, r.y + (r.height - selBox.getHeight()) / 2, null);
 					}
 				}
-				if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
+				if (config.showBuildingName && knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
 					for (Building b : surface.buildings) {
 						Rectangle r = getBoundingRect(b.location);
 						int nameSize = 10;
@@ -2946,24 +2954,20 @@ public class PlanetScreen extends ScreenBase {
 	 * @param cy the cell Y coordinate 
 	 */
 	void drawGuns(Graphics2D g2, int cx, int cy) {
-		List<GroundwarGun> multiple = JavaUtils.newArrayList();
-		for (GroundwarGun u : guns) {
-			if (u.rx - 1 == cx && u.ry - 1 == cy) {
-				multiple.add(u);
-			}
-		}
 		int x0 = planet().surface.baseXOffset;
 		int y0 = planet().surface.baseYOffset;
-		for (GroundwarGun u : multiple) {
-			int px = (x0 + Tile.toScreenX(u.rx, u.ry));
-			int py = (y0 + Tile.toScreenY(u.rx, u.ry));
-			BufferedImage img = u.get();
-			
-			int ux = px + (54 - 90) / 2 + u.model.px;
-			int uy = py + (28 - 55) / 2 + u.model.py;
-			
-			
-			g2.drawImage(img, ux, uy, null);
+		for (GroundwarGun u : guns) {
+			if (u.rx - 1 == cx && u.ry - 1 == cy) {
+				int px = (x0 + Tile.toScreenX(u.rx, u.ry));
+				int py = (y0 + Tile.toScreenY(u.rx, u.ry));
+				BufferedImage img = u.get();
+				
+				int ux = px + (54 - 90) / 2 + u.model.px;
+				int uy = py + (28 - 55) / 2 + u.model.py;
+				
+				
+				g2.drawImage(img, ux, uy, null);
+			}
 		}
 
 	}
