@@ -125,7 +125,7 @@ public final class Simulator {
 			progressResearch(world, player, all);
 			// result |= player == world.player
 			progressProduction(world, player, all);
-			invokeRadar |= moveFleets(player.ownFleets(), world);
+			invokeRadar |= moveFleets(player.ownFleets(), world, planetStats);
 		}
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
@@ -603,12 +603,29 @@ public final class Simulator {
 	 * Move fleets.
 	 * @param playerFleets the list of fleets
 	 * @param world the world object to indicate battle scenarios
+	 * @param planetStats the planet statistics
 	 * @return true if a fleet was moved and the radar needs to be recalculated
 	 */
-	static boolean moveFleets(List<Fleet> playerFleets, World world) {
+	static boolean moveFleets(List<Fleet> playerFleets, World world, Map<Planet, PlanetStatistics> planetStats) {
 		boolean invokeRadar = false;
 		
 		for (Fleet f : playerFleets) {
+			// regenerate shields
+			for (InventoryItem ii : f.inventory) {
+				int hpMax = world.getHitpoints(ii.type);
+				if (ii.hp < hpMax) {
+					Planet np = f.nearbyPlanet();
+					if (np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport) {
+						ii.hp = Math.min(hpMax, (ii.hp * 100 + hpMax) / 100);
+					}
+				}
+				int sm = ii.shieldMax(world);
+				if (sm > 0 && ii.shield < sm) {
+					ii.shield = Math.min(sm, (ii.shield * 100 + sm) / 100);
+				}
+			}
+			
+			// move fleet
 			Point2D.Float target = null;
 			boolean removeWp = false;
 			if (f.targetFleet != null) {

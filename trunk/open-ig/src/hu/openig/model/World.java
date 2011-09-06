@@ -1471,15 +1471,16 @@ public class World {
 	 * @param xbattle the battle definition
 	 */
 	void processBattle(XElement xbattle) {
-		for (XElement xturret : xbattle.childElement("buildings").childrenWithName("building-turret")) {
-
-			int nx = xturret.getInt("width");
-			int ny = xturret.getInt("height");
-			String id = xturret.get("id");
-			
-			BufferedImage m = rl.getImage(xturret.get("matrix"));
+		Map<String, BufferedImage[][]> matrices = JavaUtils.newHashMap();
+		for (XElement xmatrix : xbattle.childElement("buildings").childrenWithName("matrix")) {
+			int nx = xmatrix.getInt("width");
+			int ny = xmatrix.getInt("height");
+			BufferedImage m = rl.getImage(xmatrix.get("image"));
 			BufferedImage[][] matrix = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
-
+			String id = xmatrix.get("id");
+			matrices.put(id, matrix);
+		}
+		for (XElement xturret : xbattle.childElement("buildings").childrenWithName("building-turret")) {
 			for (XElement xrace : xturret.childrenWithName("race")) {
 				String rid = xrace.get("id");
 				for (XElement xport : xrace.childrenWithName("port")) {
@@ -1495,7 +1496,13 @@ public class World {
 					tr.rotationTime = xport.getInt("rotation-time");
 					tr.delay = xport.getInt("delay");
 					
-					tr.matrix = matrix;
+					String id = xturret.get("id");
+					
+					String mid = xport.get("matrix");
+					tr.matrix = matrices.get(mid);
+					if (tr.matrix == null) {
+						System.err.printf("Missing matrix: %s%n", mid);
+					}
 					battle.addTurret(id, rid, tr);
 				}
 			}
