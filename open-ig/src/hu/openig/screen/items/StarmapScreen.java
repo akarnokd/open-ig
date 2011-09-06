@@ -410,6 +410,10 @@ public class StarmapScreen extends ScreenBase {
 	boolean showFleetNames = true;
 	/** The statistics cache delayed by ~450ms. */
 	final Map<Planet, PlanetStatistics> cache = new HashMap<Planet, PlanetStatistics>();
+	/** The statistics button. */
+	UIImageButton statistics;
+	/** The achievements button. */
+	UIImageButton achievements;
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
 	void computeRectangles() {
 		starmapWindow.x = 0;
@@ -493,7 +497,10 @@ public class StarmapScreen extends ScreenBase {
 		zoomingPanel.x = buttonsPanel.x;
 		zoomingPanel.y = buttonsPanel.y - zoomingPanel.height - 2;
 
-		zoom.location(zoomingPanel.x + zoomingPanel.width - zoom.width - 1, zoomingPanel.y + 1);
+		zoom.location(zoomingPanel.x + zoomingPanel.width - zoom.width - 2, zoomingPanel.y + 1);
+		
+		statistics.location(zoomingPanel.x + 3, zoomingPanel.y + 1);
+		achievements.location(zoomingPanel.x + 3, zoomingPanel.y + 34);
 
 		planetFleetSplitterRange.x = zoomingPanel.x;
 		planetFleetSplitterRange.width = zoomingPanel.width;
@@ -1978,6 +1985,20 @@ public class StarmapScreen extends ScreenBase {
 				} else {
 					doZoomOut(starmapWindow.width / 2, starmapWindow.height / 2);
 				}
+			}
+		};
+		achievements = new UIImageButton(commons.starmap().achievements);
+		achievements.onClick = new Act() {
+			@Override
+			public void act() {
+				displaySecondary(Screens.ACHIEVEMENTS);
+			}
+		};
+		statistics = new UIImageButton(commons.starmap().statistics);
+		statistics.onClick = new Act() {
+			@Override
+			public void act() {
+				displaySecondary(Screens.STATISTICS);
 			}
 		};
 		
