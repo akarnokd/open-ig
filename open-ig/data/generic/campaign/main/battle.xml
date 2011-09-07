@@ -2,33 +2,33 @@
 <battle>
 	<projectiles>
 		<projectile id='Laser1' matrix='inventions/weapons/lasers/laser_1_rotate'
-			width='64' height='1' sound='FIRE_LASER' damage='5' delay='700'
-			range='180' mode='BEAM' movement-speed='5'/>
+			width='64' height='1' sound='FIRE_LASER1' damage='5' delay='800'
+			range='180' mode='BEAM' movement-speed='6'/>
 		<projectile id='Laser2' matrix='inventions/weapons/lasers/laser_2_rotate'
-			width='64' height='1' sound='FIRE_LASER' damage='10' delay='600'
+			width='64' height='1' sound='FIRE_LASER2' damage='10' delay='700'
 			range='200' mode='BEAM' movement-speed='5'/>
 		<projectile id='Laser3' matrix='inventions/weapons/lasers/laser_3_rotate'
-			width='64' height='1' sound='FIRE_LASER1' damage='15' delay='300'
-			range='220' mode='BEAM' movement-speed='4'/>
+			width='64' height='1' sound='FIRE_LASER3' damage='15' delay='500'
+			range='220' mode='BEAM' movement-speed='3'/>
 		<projectile id='Laser4' matrix='inventions/weapons/lasers/laser_4_rotate'
-			width='64' height='1' sound='FIRE_LASER1' damage='20' delay='300'
-			range='240' mode='BEAM' movement-speed='3'/>
+			width='64' height='1' sound='FIRE_LASER4' damage='20' delay='600'
+			range='240' mode='BEAM' movement-speed='4'/>
 		<projectile id='Ion'
 			matrix='inventions/weapons/cannons/ion_projectile_rotate' width='64'
-			height='1' sound='FIRE_PARTICLE' damage='20' delay='900' range='300'
-			mode='BEAM' movement-speed='10'/>
+			height='1' sound='FIRE_PARTICLE' damage='20' delay='1000' range='300'
+			mode='BEAM' movement-speed='9'/>
 		<projectile id='Plasma'
 			matrix='inventions/weapons/cannons/plasma_projectile_rotate' width='64'
-			height='1' sound='FIRE_PARTICLE' damage='25' delay='800' range='320'
+			height='1' sound='FIRE_PARTICLE' damage='25' delay='900' range='320'
 			mode='BEAM' movement-speed='10'/>
 		<projectile id='Particle'
 			matrix='inventions/weapons/cannons/particle_projectile_matrix' width='1'
-			height='12' sound='FIRE_MESON' damage='35' delay='700' range='340'
+			height='12' sound='FIRE_MESON' damage='35' delay='800' range='340'
 			mode='BEAM' movement-speed='8'/>
 		<projectile id='Meson'
 			matrix='inventions/weapons/cannons/meson_projectile_matrix' width='1'
-			height='12' sound='FIRE_MESON' damage='40' delay='600' range='360'
-			mode='BEAM' movement-speed='8'/>
+			height='12' sound='FIRE_MESON' damage='40' delay='900' range='360'
+			mode='BEAM' movement-speed='7'/>
 		<projectile id='Rocket1'
 			matrix='inventions/weapons/projectiles/rocket_1_rotate' alternative='inventions/weapons/projectiles/alien_rocket_1_rotate'
 			width='64' height='1' sound='FIRE_ROCKET_1' damage='10' delay='200'
@@ -133,11 +133,11 @@
 		<tech id='SpaceStation2' normal='inventions/spaceships/stations/space_station_2_rotate'
 			alternative='inventions/spaceships/stations/alien_space_station_2_rotate'
 			image='inventions/spaceships/stations/space_station_2_huge' width='1'
-			sound='EXPLOSION_LONG'  hp='120000'/>
+			sound='EXPLOSION_LONG'  hp='105000'/>
 		<tech id='SpaceStation3' normal='inventions/spaceships/stations/space_station_3_rotate'
 			alternative='inventions/spaceships/stations/alien_space_station_3_rotate'
 			image='inventions/spaceships/stations/space_station_3_huge' width='1'
-			sound='EXPLOSION_LONG'  hp='200000'/>
+			sound='EXPLOSION_LONG'  hp='150000'/>
 		<tech id='OrbitalFactory' normal='inventions/spaceships/stations/orbital_factory_rotate'
 			alternative='inventions/spaceships/stations/alien_orbital_factory_rotate'
 			image='inventions/spaceships/stations/orbital_factory_huge' width='1'
@@ -146,7 +146,7 @@
 		<tech id='ColonyShip' normal='inventions/spaceships/battleships/colonyship_rotate'
 			alternative='inventions/spaceships/battleships/alien_colonyship_rotate'
 			image='inventions/spaceships/battleships/colonyship_huge' width='64'
-			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150'  hp='2000'/>
+			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150'  hp='3000'/>
 
 		<tech id='DargslanFighter' normal='inventions/spaceships/fighters/dargslan_fighter_rotate'
 			image='inventions/spaceships/fighters/dargslan_fighter_huge' width='64'
@@ -243,18 +243,18 @@
 		<tech id='TradersFreight1'
 			normal='inventions/spaceships/cruisers/traders_freight_1_rotate'
 			image='inventions/spaceships/cruisers/traders_freight_1_huge' width='64'
-			sound='EXPLOSION_MEDIUM' movement-speed='50' rotation-time='150'  hp='1000'/>
+			sound='EXPLOSION_MEDIUM' movement-speed='50' rotation-time='150'  hp='2000'/>
 		<tech id='TradersFreight2'
 			normal='inventions/spaceships/cruisers/traders_freight_2_rotate'
 			image='inventions/spaceships/cruisers/traders_freight_2_huge' width='64'
-			sound='EXPLOSION_MEDIUM' movement-speed='50' rotation-time='150'  hp='2000'/>
+			sound='EXPLOSION_MEDIUM' movement-speed='50' rotation-time='150'  hp='4000'/>
 
 	</space-entities>
 	<ground-shields>
 		<tech id='InversionShield' normal='inventions/buildings/military/inversion_shield_rotate'
 			alternative='inventions/buildings/military/alien_inversion_shield_rotate'
 			image='inventions/buildings/military/inversion_shield_huge' sound='EXPLOSION_MEDIUM'
-			shield='50'  hp='8000'/>
+			shield='50'  hp='12000'/>
 		<tech id='HyperShield' normal='inventions/buildings/military/hypershield_rotate'
 			alternative='inventions/buildings/military/alien_hypershield_rotate'
 			image='inventions/buildings/military/hypershield_huge' sound='EXPLOSION_MEDIUM'
@@ -264,7 +264,7 @@
 		<tech id='IonProjector' normal='inventions/buildings/guns/ion_projector_rotate'
 			alternative='inventions/buildings/guns/alien_ion_projector_rotate'
 			image='inventions/buildings/guns/ion_projector_huge' width='64'
-			sound='EXPLOSION_MEDIUM' projectile='Ion' damage='120' rotation-time='150' hp='8000'/>
+			sound='EXPLOSION_MEDIUM' projectile='Ion' damage='120' rotation-time='150' hp='12000'/>
 		<tech id='PlasmaProjector' normal='inventions/buildings/guns/plasma_projector_rotate'
 			alternative='inventions/buildings/guns/alien_plasma_projector_rotate'
 			image='inventions/buildings/guns/plasma_projector_huge' width='64'

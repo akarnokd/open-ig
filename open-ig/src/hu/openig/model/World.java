@@ -1471,43 +1471,6 @@ public class World {
 	 * @param xbattle the battle definition
 	 */
 	void processBattle(XElement xbattle) {
-		Map<String, BufferedImage[][]> matrices = JavaUtils.newHashMap();
-		for (XElement xmatrix : xbattle.childElement("buildings").childrenWithName("matrix")) {
-			int nx = xmatrix.getInt("width");
-			int ny = xmatrix.getInt("height");
-			BufferedImage m = rl.getImage(xmatrix.get("image"));
-			BufferedImage[][] matrix = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
-			String id = xmatrix.get("id");
-			matrices.put(id, matrix);
-		}
-		for (XElement xturret : xbattle.childElement("buildings").childrenWithName("building-turret")) {
-			for (XElement xrace : xturret.childrenWithName("race")) {
-				String rid = xrace.get("id");
-				for (XElement xport : xrace.childrenWithName("port")) {
-					BattleGroundTurret tr = new BattleGroundTurret();
-					tr.rx = xport.getInt("rx");
-					tr.ry = xport.getInt("ry");
-					tr.px = xport.getInt("px");
-					tr.py = xport.getInt("py");
-					
-					tr.fire = SoundType.valueOf(xport.get("fire"));
-					tr.maxRange = xport.getInt("max-range");
-					tr.damage = xport.getInt("damage");
-					tr.rotationTime = xport.getInt("rotation-time");
-					tr.delay = xport.getInt("delay");
-					
-					String id = xturret.get("id");
-					
-					String mid = xport.get("matrix");
-					tr.matrix = matrices.get(mid);
-					if (tr.matrix == null) {
-						System.err.printf("Missing matrix: %s%n", mid);
-					}
-					battle.addTurret(id, rid, tr);
-				}
-			}
-			
-		}
 		for (XElement xproj : xbattle.childElement("projectiles").childrenWithName("projectile")) {
 			String id = xproj.get("id");
 			int nx = xproj.getInt("width");
@@ -1629,6 +1592,14 @@ public class World {
 			
 			battle.groundShields.put(id, se);
 		}
+		for (XElement xlayout : xbattle.childElement("layouts").childrenWithName("layout")) {
+			BattleSpaceLayout ly = new BattleSpaceLayout();
+			
+			ly.image = rl.getImage(xlayout.get("map"));
+			ly.parse();
+			
+			battle.layouts.add(ly);
+		}
 		for (XElement xground : xbattle.childElement("ground-vehicles").childrenWithName("tech")) {
 			String id = xground.get("id");
 			int nx = xground.getInt("width");
@@ -1659,18 +1630,82 @@ public class World {
 			ge.movementSpeed = xground.getInt("movement-speed");
 			ge.rotationTime = xground.getInt("rotation-time");
 			ge.delay = xground.getInt("delay");
+			ge.angles = computeAngles(ge.normal[0].length);
 			
 			battle.groundEntities.put(id, ge);
 		}
-		for (XElement xlayout : xbattle.childElement("layouts").childrenWithName("layout")) {
-			BattleSpaceLayout ly = new BattleSpaceLayout();
+		Map<String, BufferedImage[][]> matrices = JavaUtils.newHashMap();
+		for (XElement xmatrix : xbattle.childElement("buildings").childrenWithName("matrix")) {
+			int nx = xmatrix.getInt("width");
+			int ny = xmatrix.getInt("height");
+			BufferedImage m = rl.getImage(xmatrix.get("image"));
+			BufferedImage[][] matrix = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
+			String id = xmatrix.get("id");
+			matrices.put(id, matrix);
+		}
+		for (XElement xturret : xbattle.childElement("buildings").childrenWithName("building-turret")) {
+			for (XElement xrace : xturret.childrenWithName("race")) {
+				String rid = xrace.get("id");
+				for (XElement xport : xrace.childrenWithName("port")) {
+					BattleGroundTurret tr = new BattleGroundTurret();
+					tr.rx = xport.getInt("rx");
+					tr.ry = xport.getInt("ry");
+					tr.px = xport.getInt("px");
+					tr.py = xport.getInt("py");
+					
+					tr.fire = SoundType.valueOf(xport.get("fire"));
+					tr.maxRange = xport.getInt("max-range");
+					tr.damage = xport.getInt("damage");
+					tr.rotationTime = xport.getInt("rotation-time");
+					tr.delay = xport.getInt("delay");
+					
+					String id = xturret.get("id");
+					
+					String mid = xport.get("matrix");
+					tr.matrix = matrices.get(mid);
+					if (tr.matrix == null) {
+						System.err.printf("Missing matrix: %s%n", mid);
+					}
+					tr.angles = computeAngles(tr.matrix[0].length);
+					
+					battle.addTurret(id, rid, tr);
+				}
+			}
 			
-			ly.image = rl.getImage(xlayout.get("map"));
-			ly.parse();
-			
-			battle.layouts.add(ly);
 		}
 	}
+	/** 
+	 * Compute the rotation side angles. 
+	 * @param count the number of elements within the full circle
+	 * @return the angles
+	 */
+	public static double[] computeAngles(int count) {
+		double[] vx = { 28, -30, -28,  30, 28};
+		double[] vy = { 15,  12, -15, -12, 15};
+		
+		double[] angles = new double[count + 1];
+		int n = (angles.length - 1) / 4;
+		
+		for (int i = 0; i < 4; i++) {
+			double wx = vx[i + 1] - vx[i];
+			double wy = vy[i + 1] - vy[i];
+			for (int j = 0; j < n; j++) {
+				double px = vx[i] + wx * j / n;
+				double py = vy[i] + wy * j / n;
+				
+				double a = Math.atan2(py, px) / Math.PI / 2;
+				if (a < 0) {
+					a = 1 + a; // 0..1
+				}
+				angles[i * n + j] = a;
+			}
+
+		}
+		// wrap around
+		angles[angles.length - 1] = angles[0];
+		return angles;
+	}
+
 	/**
 	 * Compute the distance square between two points.
 	 * @param x1 the first X

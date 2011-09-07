@@ -18,25 +18,17 @@ import java.util.List;
  * The ground war unit.
  * @author akarnokd, 2011.09.02.
  */
-public class GroundwarUnit {
+public class GroundwarUnit extends GroundwarObject {
 	/** The model entity. */
 	public BattleGroundVehicle model;
 	/** The position with fractional precision in surface coordinates. */
 	public double x;
 	/** The position with fractional precision in surface coordinates. */
 	public double y;
-	/** The facing angle. */
-	public double angle;
-	/** The fire animation phase. */
-	public int phase;
-	/** The render matrix. */
-	public BufferedImage[][] matrix;
 	/** The available hitpoints. */
 	public int hp;
 	/** The original inventory item. */
 	public InventoryItem item;
-	/** The unit owner. */
-	public Player owner;
 	/** The owner planet if non-null. */
 	public Planet planet;
 	/** The owner fleet if non-null. */
@@ -45,40 +37,33 @@ public class GroundwarUnit {
 	public GroundwarUnit attackUnit;
 	/** Building target if non null. */
 	public Building attackBuilding;
-	/** Is this unit selected? */
-	public boolean selected;
 	/** The weapon cooldown counter. */
 	public int cooldown;
+	/** The unit matrix [phase][angle]. */
+	public BufferedImage[][] matrix;
 	/** The current movement path to the target. */
 	public final List<Location> path = JavaUtils.newArrayList();
-	/** @return Get the image for the current rotation and phase. */
-	public BufferedImage get() {
-		// -0.5 .. +0.5
-		double a = normalizedAngle() / Math.PI / 2;
-		if (a < 0) {
-			a = 1 + a; 
-		}
-		int phaseIndex = phase % matrix.length;
-		BufferedImage[] imageAngle = matrix[phaseIndex];
-		int angleIndex = ((int)Math.round(imageAngle.length * a)) % imageAngle.length;
-		return imageAngle[angleIndex];
+	/** The next move rotation. */
+	public Location nextRotate;
+	/** The next move location. */
+	public Location nextMove;
+	/** @return is this unit destroyed? */
+	public boolean isDestroyed() {
+		return hp <= 0;
 	}
 	/**
-	 * @return the normalized angle between -PI and +PI.
+	 * Apply damage to this unit.
+	 * @param points the points of damage
 	 */
-	public double normalizedAngle() {
-		return Math.atan2(Math.sin(angle), Math.cos(angle));
+	public void damage(int points) {
+		hp = Math.max(0, hp - points);
 	}
-	/**
-	 * @return the maximum phase count
-	 */
-	public int maxPhase() {
-		return matrix.length;
+	@Override
+	protected double[] getAngles() {
+		return model.angles;
 	}
-	/**
-	 * @return the angle between the rotation phases (in radians)
-	 */
-	public double angleDelta() {
-		return Math.PI * 2 / matrix[0].length;
+	@Override
+	protected BufferedImage[][] getMatrix() {
+		return matrix;
 	}
 }

@@ -24,6 +24,8 @@ import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.ExplosionType;
+import hu.openig.model.GroundwarExplosion;
 import hu.openig.model.GroundwarGun;
 import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarUnitType;
@@ -244,8 +246,10 @@ public class PlanetScreen extends ScreenBase {
 	boolean selectionMode;
 	/** The pathfinding routine. */
 	Pathfinding pathfinding;
-	/** The path computed by the pathfinding. */
-	List<Location> path = JavaUtils.newArrayList();
+	/** The current animating explosions. */
+	Set<GroundwarExplosion> explosions = JavaUtils.newHashSet();
+	/** The groundwar animation simulator. */
+	Closeable simulator;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -331,6 +335,13 @@ public class PlanetScreen extends ScreenBase {
 			render.offsetY = -(int)((surface().boundingRectangle.height * render.scale - height) / 2);
 		}
 		focused = render;
+		
+		simulator = commons.register(SIMULATION_DELAY, new Act() {
+			@Override
+			public void act() {
+				doGroundWarSimulation();
+			}
+		});
 	}
 
 	@Override
@@ -345,6 +356,10 @@ public class PlanetScreen extends ScreenBase {
 		battlePlacements.clear();
 		guns.clear();
 		units.clear();
+		explosions.clear();
+		
+		close0(simulator);
+		simulator = null;
 	}
 
 	/**
@@ -778,6 +793,7 @@ public class PlanetScreen extends ScreenBase {
 							}
 							// place units after
 							drawUnits(g2, loc.x - j, loc.y);
+							drawExplosions(g2, loc.x - j, loc.y);
 						} else {
 							if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
 								g2.drawImage(empty, x, y, null);
@@ -835,6 +851,31 @@ public class PlanetScreen extends ScreenBase {
 				// unit selection boxes}
 				BufferedImage selBox = commons.colony().selectionBoxLight;
 				for (GroundwarUnit u : units) {
+					g2.setColor(Color.WHITE);
+					for (int i = 0; i < u.path.size() - 1; i++) {
+						Location l0 = u.path.get(i);
+						Location l1 = u.path.get(i + 1);
+						
+						int xa = x0 + Tile.toScreenX(l0.x, l0.y) + 27;
+						int ya = y0 + Tile.toScreenY(l0.x, l0.y) + 14;
+						int xb = x0 + Tile.toScreenX(l1.x, l1.y) + 27;
+						int yb = y0 + Tile.toScreenY(l1.x, l1.y) + 14;
+						
+						g2.drawLine(xa, ya, xb, yb);
+					}
+					if (u.attackBuilding != null) {
+						Point gp = centerOf(u.attackBuilding);
+						Point up = centerOf(u);
+						g2.setColor(Color.RED);
+						g2.drawLine(gp.x, gp.y, up.x, up.y);
+						
+					} else
+					if (u.attackUnit != null) {
+						Point gp = centerOf(u.attackUnit);
+						Point up = centerOf(u);
+						g2.setColor(Color.RED);
+						g2.drawLine(gp.x, gp.y, up.x, up.y);
+					}
 					if (u.selected) {
 						Point p = unitPosition(u);
 						g2.drawImage(selBox, p.x, p.y, null);
@@ -845,18 +886,6 @@ public class PlanetScreen extends ScreenBase {
 						Rectangle r = gunRectangle(g);
 						g2.drawImage(selBox, r.x + (r.width - selBox.getWidth()) / 2, r.y + (r.height - selBox.getHeight()) / 2, null);
 					}
-				}
-				g2.setColor(Color.WHITE);
-				for (int i = 0; i < path.size() - 1; i++) {
-					Location l0 = path.get(i);
-					Location l1 = path.get(i + 1);
-					
-					int xa = x0 + Tile.toScreenX(l0.x, l0.y) + 27;
-					int ya = y0 + Tile.toScreenY(l0.x, l0.y) + 14;
-					int xb = x0 + Tile.toScreenX(l1.x, l1.y) + 27;
-					int yb = y0 + Tile.toScreenY(l1.x, l1.y) + 14;
-					
-					g2.drawLine(xa, ya, xb, yb);
 				}
 				if (config.showBuildingName && knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
 					for (Building b : surface.buildings) {
@@ -1262,11 +1291,13 @@ public class PlanetScreen extends ScreenBase {
 			}			
 			if (!jammed) {
 				for (GroundwarUnit u : units) {
-					int px = (int)(x0 + Tile.toScreenX(u.x + 0.5, u.y - 0.5)) - 11;
-					int py = (int)(y0 + Tile.toScreenY(u.x + 0.5, u.y - 0.5));
-					
-					g2.setColor(u.owner == player() ? Color.GREEN : Color.RED);
-					g2.fillRect(px, py, 28, 28);
+					if (blink) {
+						int px = (int)(x0 + Tile.toScreenX(u.x + 0.5, u.y - 0.5)) - 11;
+						int py = (int)(y0 + Tile.toScreenY(u.x + 0.5, u.y - 0.5));
+						
+						g2.setColor(u.owner == player() ? Color.GREEN : Color.RED);
+						g2.fillRect(px, py, 40, 40);
+					}
 				}
 			}
 			
@@ -1876,26 +1907,6 @@ public class PlanetScreen extends ScreenBase {
 		}
 		animation++;
 		blink = animation % 2 == 0;
-		
-		// FIXME animation testing
-		for (GroundwarGun g : guns) {
-			if (g.phase < g.maxPhase()) {
-				g.phase++;
-			} else {
-				g.phase = 0;
-				g.angle += Math.PI / 8;
-			}
-		}
-		for (GroundwarUnit g : units) {
-			if (g.phase < g.matrix.length) {
-				g.phase++;
-			} else {
-//				g.y -= 0.1;
-//				g.x += 0.1;
-				g.phase = 0;
-				g.angle += Math.PI / 8;
-			}
-		}
 
 		askRepaint();
 	}
@@ -2724,10 +2735,6 @@ public class PlanetScreen extends ScreenBase {
 		}
 		);
 	}
-	/** The ground war simulation. */
-	void doGroundWarSimulation() {
-		// TODO war simulation
-	}
 	/** Place deployment indicators. */
 	void setDeploymentLocations() {
 		battlePlacements.clear();
@@ -2907,6 +2914,7 @@ public class PlanetScreen extends ScreenBase {
 						
 						u.model = world().battle.groundEntities.get(rt.id);
 						u.matrix = u.model.normal;
+						u.hp = u.model.hp;
 						
 						units.add(u);
 					}
@@ -2948,9 +2956,20 @@ public class PlanetScreen extends ScreenBase {
 				return 0;
 			}
 		});
+		
 		for (GroundwarUnit u : multiple) {
 			Point p = unitPosition(u);
-			g2.drawImage(u.get(), p.x, p.y, null);
+			BufferedImage img = u.get();
+			g2.drawImage(img, p.x, p.y, null);
+			
+			g2.setColor(Color.BLACK);
+			g2.fillRect(p.x + 4, p.y + 3, img.getWidth() - 7, 5);
+			if (u.owner == player()) {
+				g2.setColor(new Color(0x458AAA));
+			} else {
+				g2.setColor(new Color(0xAE6951));
+			}
+			g2.fillRect(p.x + 5, p.y + 4, u.hp * (img.getWidth() - 9) / u.model.hp, 3);
 		}
 	}
 	/**
@@ -2992,9 +3011,34 @@ public class PlanetScreen extends ScreenBase {
 				
 				
 				g2.drawImage(img, ux, uy, null);
+				
+				if (u.attack != null) {
+					Point gp = centerOf(u.attack);
+					Point up = centerOf(u);
+					g2.setColor(Color.RED);
+					g2.drawLine(gp.x, gp.y, up.x, up.y);
+				}
 			}
 		}
 
+	}
+	/**
+	 * Draw explosions for the given cell.
+	 * @param g2 the graphics context
+	 * @param cx the cell coordinate
+	 * @param cy the cell coordinate
+	 */
+	void drawExplosions(Graphics2D g2, int cx, int cy) {
+		int x0 = planet().surface.baseXOffset;
+		int y0 = planet().surface.baseYOffset;
+		int px = (x0 + Tile.toScreenX(cx + 1, cy + 1));
+		int py = (y0 + Tile.toScreenY(cx + 1, cy + 1));
+		for (GroundwarExplosion exp : explosions) {
+			if (exp.within(px, py, 54, 28)) {
+				BufferedImage img = exp.get();
+				g2.drawImage(img, exp.x - img.getWidth() / 2, exp.y - img.getHeight() / 2, null);
+			}
+		}
 	}
 	/**
 	 * Compute the collision image.
@@ -3109,14 +3153,13 @@ public class PlanetScreen extends ScreenBase {
 	 * @param my the mouse y
 	 */
 	void doMoveSelectedUnits(int mx, int my) {
-		path.clear();
 		for (GroundwarUnit u : units) {
 			if (u.selected) {
 				Location lu = Location.of((int)u.x, (int)u.y);
 				Location lm = render.getLocationAt(mx, my);
-				path.addAll(pathfinding.searchApproximate(lu, lm));
-				
-				return;
+				u.path.clear();
+				u.path.addAll(pathfinding.searchApproximate(lu, lm));
+				u.path.remove(0); // remove current position
 			}
 		}
 	}
@@ -3154,6 +3197,255 @@ public class PlanetScreen extends ScreenBase {
 				return 1414;
 			}
 		};
+	}
+	/** The ground war simulation. */
+	void doGroundWarSimulation() {
+		if (commons.simulation.paused()) {
+			return;
+		}
+		// destruction animations
+		for (GroundwarExplosion exp : new ArrayList<GroundwarExplosion>(explosions)) {
+			if (exp.next()) {
+				if (exp.half()) {
+					units.remove(exp.target);
+					if (battle != null) {
+						battle.groundLosses.add(exp.target);
+					}
+				}
+			} else {
+				explosions.remove(exp);
+			}
+		}
+		for (GroundwarUnit u : units) {
+			if (!u.path.isEmpty()) {
+				moveUnit(u);
+			}
+		}
+		for (GroundwarGun g : guns) {
+			if (g.phase > 0) {
+				g.phase++;
+				if (g.phase >= g.maxPhase()) {
+					if (unitInRange(g, g.attack, g.model.maxRange)) {
+						g.attack.damage(g.model.damage);
+						if (g.attack.isDestroyed()) {
+							sound(g.attack.model.destroy);
+							createExplosion(g.attack, ExplosionType.GROUND_RED);
+							g.attack = null;
+						}
+						g.cooldown = g.model.delay;
+					}
+					g.phase = 0;
+				}
+			} else {
+				if (g.attack != null && !g.attack.isDestroyed() 
+						&& unitInRange(g, g.attack, g.model.maxRange)) {
+					if (rotateStep(g, centerOf(g.attack))) {
+						if (g.cooldown <= 0) {
+							g.phase++;
+							sound(g.model.fire);
+						} else {
+							g.cooldown -= SIMULATION_DELAY;
+						}
+					}
+				} else {
+					g.attack = null;
+					// find a new target
+					List<GroundwarUnit> targets = unitsInRange(g);
+					if (targets.size() > 0) {
+						g.attack = targets.get(world().random.get().nextInt(targets.size()));
+					}
+				}
+			}
+		}
+		askRepaint();
+	}
+	/**
+	 * Rotate the structure towards the given target angle by a step.
+	 * @param gun the gun in question
+	 * @param target the target point
+	 * @return rotation done?
+	 */
+	boolean rotateStep(GroundwarGun gun, Point target) {
+		Point pg = centerOf(gun);
+		double targetAngle = Math.atan2(target.y - pg.y, target.x - pg.x);
+		
+		double currentAngle = gun.normalizedAngle();
+
+		double diff = targetAngle - currentAngle;
+		if (diff < -Math.PI) {
+			diff = 2 * Math.PI - diff;
+		} else
+		if (diff > Math.PI) {
+			diff -= 2 * Math.PI; 
+		}
+		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.model.matrix[0].length / SIMULATION_DELAY;
+		if (Math.abs(diff) < anglePerStep) {
+			gun.angle = targetAngle;
+			return true;
+		} else {
+			gun.angle += Math.signum(diff) * anglePerStep;
+		}
+		return false;
+	}
+	/**
+	 * Create an explosion animation at the given center location.
+	 * @param target the target of the explosion
+	 * @param type the type of the explosion animation
+	 */
+	void createExplosion(GroundwarUnit target, ExplosionType type) {
+		GroundwarExplosion exp = new GroundwarExplosion();
+		Point center = centerOf(target);
+		exp.x = center.x;
+		exp.y = center.y;
+		exp.target = target;
+		exp.phases = commons.colony().explosions.get(type);
+		explosions.add(exp);
+	}
+	/**
+	 * Find the units within the range of the gun.
+	 * @param g the gun
+	 * @return the units in range
+	 */
+	List<GroundwarUnit> unitsInRange(GroundwarGun g) {
+		List<GroundwarUnit> result = JavaUtils.newArrayList();
+		for (GroundwarUnit u : units) {
+			if (u.owner != g.owner && !u.isDestroyed() && unitInRange(g, u, g.model.maxRange)) {
+				result.add(u);
+			}
+		}
+		return result;
+	}
+	/**
+	 * Gives the center point of the gun rectangle in the unscaled pixel space.
+	 * @param g the gun in question
+	 * @return the center point
+	 */
+	Point centerOf(GroundwarGun g) {
+		Rectangle gr = gunRectangle(g);
+		return new Point(gr.x + gr.width / 2, gr.y + gr.height / 2);
+	}
+	/**
+	 * Gives the center point of the unit rectangle in the unscaled pixel space.
+	 * @param g the unit in question
+	 * @return the center point
+	 */
+	Point centerOf(GroundwarUnit g) {
+		Rectangle ur = unitRectangle(g);
+		return new Point(ur.x + ur.width / 2, ur.y + ur.height / 2);
+	}
+	/**
+	 * Gives the center point of the location cell in the unscaled pixel space.
+	 * @param g the unit in question
+	 * @return the center point
+	 */
+	Point centerOf(Location g) {
+		return new Point(surface().baseXOffset + Tile.toScreenX(g.x, g.y) + 28, 
+				surface().baseYOffset + Tile.toScreenY(g.x, g.y) + 14);
+	}
+	/**
+	 * Gives the center point of the fractional location cell in the unscaled pixel space.
+	 * @param x the fractional cell location
+	 * @param y the fractional cell location
+	 * @return the center point
+	 */
+	Point centerOf(double x, double y) {
+		return new Point((int)(surface().baseXOffset + Tile.toScreenX(x, y) + 28), 
+				(int)(surface().baseYOffset + Tile.toScreenY(x, y) + 14));
+	}
+	/**
+	 * Gives the center point of the unit rectangle in the unscaled pixel space.
+	 * @param b the building object
+	 * @return the center point
+	 */
+	Point centerOf(Building b) {
+		Rectangle ur = buildingRectangle(b);
+		return new Point(ur.x + ur.width / 2, ur.y + ur.height / 2);
+	}
+	/**
+	 * Check if the given unit is within the range of the gun.
+	 * @param g the gun
+	 * @param u the unit
+	 * @param range the maximum range
+	 * @return true if within range
+	 */
+	boolean unitInRange(GroundwarGun g, GroundwarUnit u, int range) {
+		
+		Point gp = centerOf(g.building);
+		Point up = centerOf(u);
+		
+		double gpx = Tile.toTileX(gp.x, gp.y);
+		double gpy = Tile.toTileY(gp.x, gp.y);
+		double upx = Tile.toTileX(up.x, up.y);
+		double upy = Tile.toTileY(up.x, up.y);
+		
+		double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
+		
+		return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range; 
+	}
+	/**
+	 * Rotate the structure towards the given target angle by a step.
+	 * @param gun the gun in question
+	 * @param target the target point
+	 * @return rotation done?
+	 */
+	boolean rotateStep(GroundwarUnit gun, Location target) {
+		Point pg = centerOf(gun.x, gun.y);
+		Point tg = centerOf(target);
+		double targetAngle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
+		
+		double currentAngle = gun.normalizedAngle();
+
+		double diff = targetAngle - currentAngle;
+		if (diff < -Math.PI) {
+			diff = 2 * Math.PI - diff;
+		} else
+		if (diff > Math.PI) {
+			diff -= 2 * Math.PI; 
+		}
+		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.matrix[0].length / SIMULATION_DELAY;
+		if (Math.abs(diff) < anglePerStep) {
+			gun.angle = targetAngle;
+			return true;
+		} else {
+			gun.angle += Math.signum(diff) * anglePerStep;
+		}
+		return false;
+	}
+	/**
+	 * Move an unit by a given amount into the next path location.
+	 * @param u The unit to move one step. 
+	 */
+	void moveUnit(GroundwarUnit u) {
+		// FIXME implement
+		if (u.isDestroyed()) {
+			return;
+		}
+		if (u.nextMove == null) {
+			u.nextMove = u.path.get(0);
+			u.nextRotate = u.nextMove;
+		}
+		
+		
+		
+		if (u.nextRotate != null && rotateStep(u, u.nextRotate)) {
+			u.nextRotate = null;
+		}
+		if (u.nextRotate == null) {
+			double dv = 1.0 * SIMULATION_DELAY / u.model.movementSpeed / 28;
+			double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
+			double distanceToTarget = (u.nextMove.x - u.x) * (u.nextMove.x - u.x)
+					+ (u.nextMove.y - u.y) * (u.nextMove.y - u.y) / ratio;
+			if (distanceToTarget < dv * dv) {
+				u.x = u.nextMove.x;
+				u.y = u.nextMove.y;
+				u.nextMove = null;
+				u.path.remove(0);
+			} else {
+				double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
+				u.x += dv * Math.cos(angle);
+				u.y += dv * Math.sin(angle) / ratio;
+			}
+		}
 	}
 }
 

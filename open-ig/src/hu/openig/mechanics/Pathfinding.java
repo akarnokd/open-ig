@@ -38,7 +38,7 @@ public class Pathfinding {
 	 * @param destination the destination location
 	 * @return the sortest path or an empty list if no such path exists. 
 	 */
-	public List<Location> search(Location initial, Location destination) {
+	public List<Location> search(final Location initial, final Location destination) {
 		Set<Location> closedSet = JavaUtils.newHashSet();
 		Map<Location, Location> cameFrom = JavaUtils.newHashMap();
 		final Map<Location, Integer> gScore = JavaUtils.newHashMap();

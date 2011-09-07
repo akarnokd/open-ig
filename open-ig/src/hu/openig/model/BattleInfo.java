@@ -48,7 +48,9 @@ public class BattleInfo {
 	/** The loser retreated. */
 	public boolean retreated;
 	/** The structure losses. */
-	public final Set<SpacewarStructure> losses = JavaUtils.newHashSet();
+	public final Set<SpacewarStructure> spaceLosses = JavaUtils.newHashSet();
+	/** The ground unit losses. */
+	public final Set<GroundwarUnit> groundLosses = JavaUtils.newHashSet();
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;
