@@ -141,10 +141,14 @@ public enum SoundType {
 	GROUND_FIRE_6("groundwar/fire_6"),
 	/** Ground fire type 1. */
 	GROUND_FIRE_7("groundwar/fire_7"),
-	/** Fire lasers. */
-	FIRE_LASER("spacewar/fire_laser"),
-	/** Newer laser fire. */
+	/** Fire laser1. */
 	FIRE_LASER1("spacewar/fire_laser1"),
+	/** Fire laser2. */
+	FIRE_LASER2("spacewar/fire_laser2"),
+	/** Fire laser3. */
+	FIRE_LASER3("spacewar/fire_laser3"),
+	/** Fire laser4. */
+	FIRE_LASER4("spacewar/fire_laser4"),
 	/** Fire meson cannon. */
 	FIRE_MESON("spacewar/fire_meson"),
 	/** Fire particle cannon. */

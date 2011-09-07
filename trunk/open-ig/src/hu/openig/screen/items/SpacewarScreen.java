@@ -3049,7 +3049,7 @@ public class SpacewarScreen extends ScreenBase {
 				
 				int loss0 = p.target.loss;
 				if (p.target.damage(p.damage)) {
-					battle.losses.add(p.target);
+					battle.spaceLosses.add(p.target);
 					soundsToPlay.add(p.target.destruction);
 					createExplosion(p.target);
 					if (p.target.type == StructureType.SHIELD) {
@@ -3225,7 +3225,7 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	void concludeBattle(Player winner) {
 		Set<Fleet> fleets = new HashSet<Fleet>();
-		for (SpacewarStructure s : battle.losses) {
+		for (SpacewarStructure s : battle.spaceLosses) {
 			if (s.item != null) {
 				s.item.count = s.count;
 				s.item.hp = s.hp;

@@ -13,8 +13,12 @@ import hu.openig.core.Btn2;
 import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
 import hu.openig.core.ResourceLocator;
+import hu.openig.model.ExplosionType;
+import hu.openig.utils.ImageUtils;
+import hu.openig.utils.JavaUtils;
 
 import java.awt.image.BufferedImage;
+import java.util.Map;
 
 /**
  * The colony graphics.
@@ -192,6 +196,8 @@ public class ColonyGFX {
 	/** The unit selection box. */
 	@Img(name = "groundwar/selection_box_dark")
 	public BufferedImage selectionBoxDark;
+	/** The explosion images. */
+	public final Map<ExplosionType, BufferedImage[]> explosions = JavaUtils.newHashMap();
 	/**
 	 * Load the resources for the given language.
 	 * @param rl the resource locator
@@ -199,6 +205,11 @@ public class ColonyGFX {
 	 */
 	public ColonyGFX load(ResourceLocator rl) {
 		GFXLoader.loadResources(this, rl);
+		
+		for (ExplosionType et : ExplosionType.values()) {
+			BufferedImage img = rl.getImage(et.image);
+			explosions.put(et, ImageUtils.splitByWidth(img, img.getWidth() / et.frames));
+		}
 		return this;
 	}
 }

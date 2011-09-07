@@ -24,6 +24,8 @@ public class BattleGroundVehicle {
 	public SoundType destroy;
 	/** The fire sound if non null. */
 	public SoundType fire;
+	/** The explosion to play. */
+	public ExplosionType explosion;
 	/** The hitpoints. */
 	public int hp;
 	/** The inflicted damage. */
@@ -42,4 +44,6 @@ public class BattleGroundVehicle {
 	public int movementSpeed;
 	/** Delay between firing. */
 	public int delay;
+	/** The available angles of the rotation matrix. */
+	public double[] angles;
 }
