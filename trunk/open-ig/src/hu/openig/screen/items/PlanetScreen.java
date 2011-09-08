@@ -81,6 +81,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -251,6 +252,16 @@ public class PlanetScreen extends ScreenBase {
 	Set<GroundwarExplosion> explosions = JavaUtils.newHashSet();
 	/** The groundwar animation simulator. */
 	Closeable simulator;
+	/** The direct attack units. */
+	final EnumSet<GroundwarUnitType> directAttackUnits = EnumSet.of(
+			GroundwarUnitType.ARTILLERY,
+			GroundwarUnitType.TANK,
+			GroundwarUnitType.ROCKET_SLED,
+			GroundwarUnitType.SELF_REPAIR_TANK,
+			GroundwarUnitType.KAMIKAZE,
+			GroundwarUnitType.PARALIZER
+	);
+
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -3300,39 +3311,77 @@ public class PlanetScreen extends ScreenBase {
 	 * @param u the unit to update
 	 */
 	void updateUnit(GroundwarUnit u) {
+		if (u.isDestroyed()) {
+			return;
+		}
 		if (u.phase > 0) {
 			u.phase++;
 			if (u.phase >= u.maxPhase()) {
 				if (u.attackUnit != null) {
+					// damage on impact no matter who is there
+					if (u.model.type == GroundwarUnitType.ARTILLERY) {
+						damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage, u.model.area);
+					} else
+					if (u.model.type == GroundwarUnitType.KAMIKAZE) {
+						damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage, u.model.area);
+						u.hp = 0; // destroy self
+						createExplosion(u, ExplosionType.GROUND_YELLOW);
+					} else
 					if (unitWithinRange(u, u.attackUnit)) {
-						u.attackUnit.damage(u.model.damage);
-						if (u.attackUnit.isDestroyed()) {
-							sound(u.attackUnit.model.destroy);
-							createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
-							u.attackUnit = null;
+						if (u.model.type == GroundwarUnitType.SELF_REPAIR_TANK
+								|| u.model.type == GroundwarUnitType.TANK
+								) {
+							u.attackUnit.damage(u.model.damage);
+							if (u.attackUnit.isDestroyed()) {
+								sound(u.attackUnit.model.destroy);
+								createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
+								
+								if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
+									if (u.attackUnit.attackUnit != null
+											&& u.attackUnit.attackUnit.paralizedBy == u.attackUnit) {
+										u.attackUnit.attackUnit.paralizedBy = null;
+									}
+								}
+								
+								u.attackUnit = null;
+							}
 						}
 						u.cooldown = u.model.delay;
 					}
 				} else
 				if (u.attackBuilding != null) {
 					damageBuilding(u.attackBuilding, u.model.damage);
-					if (u.attackUnit.isDestroyed()) {
+					if (u.attackBuilding.isDestroyed()) {
 						// TODO demolish animation
-						u.attackUnit = null;
 //						surface().removeBuilding(u.attackBuilding);
+						u.attackBuilding = null;
 					}
 				}
 				u.phase = 0;
 			}
-		} else {
+		} else 
+		if (u.paralizedBy == null) {
 			if (u.attackUnit != null && !u.attackUnit.isDestroyed()) {
 				// if within range
 				if (unitWithinRange(u, u.attackUnit)) {
+					if (u.nextMove != null) {
+						u.path.clear();
+						u.path.add(u.nextMove);
+					}
 					if (rotateStep(u, Location.of((int)u.attackUnit.x, (int)u.attackUnit.y))) {
 						if (u.cooldown <= 0) {
 							u.phase++;
-							sound(u.model.fire);
-							
+							if (u.model.fire != null) {
+								sound(u.model.fire);
+							}
+							if (u.model.type == GroundwarUnitType.PARALIZER) {
+								if (u.attackUnit.paralizedBy == null) {
+									u.attackUnit.paralizedBy = u;
+								} else
+								if (u.attackUnit.paralizedBy != u) {
+									u.attackUnit = null;
+								}
+							}
 							// TODO different firing behavior here
 						} else {
 							u.cooldown -= SIMULATION_DELAY;
@@ -3341,7 +3390,7 @@ public class PlanetScreen extends ScreenBase {
 				} else {
 					if (u.path.isEmpty()) {
 						// plot path
-						u.path.addAll(pathfinding.search(Location.of((int)u.x, (int)u.y), 
+						u.path.addAll(pathfinding.searchApproximate(Location.of((int)u.x, (int)u.y), 
 								Location.of((int)u.attackUnit.x, (int)u.attackUnit.y)));
 					} else {
 						moveUnit(u);
@@ -3350,10 +3399,16 @@ public class PlanetScreen extends ScreenBase {
 			} else 
 			if (u.attackBuilding != null && !u.attackBuilding.isDestroyed()) {
 				if (unitWithinRange(u, u.attackBuilding)) {
+					if (u.nextMove != null) {
+						u.path.clear();
+						u.path.add(u.nextMove);
+					}
 					if (rotateStep(u, centerCellOf(u.attackBuilding))) {
 						if (u.cooldown <= 0) {
 							u.phase++;
-							sound(u.model.fire);
+							if (u.model.fire != null) {
+								sound(u.model.fire);
+							}
 							
 							// TODO different firing behavior here
 						} else {
@@ -3376,25 +3431,32 @@ public class PlanetScreen extends ScreenBase {
 									(int)(c.y + (u.model.minRange + 1.4142) * Math.sin(angle))
 							);
 							
-							u.path.addAll(pathfinding.search(
+							u.path.addAll(pathfinding.searchApproximate(
 									Location.of((int)u.x, (int)u.y), c1 
 									));
 							
 						}
-					} else {
-						moveUnit(u);
 					}
 				}
 			} else {
-				// find a new target in range
-				u.attackUnit = null;
-				u.attackBuilding = null;
-				List<GroundwarUnit> targets = unitsInRange(u);
-				if (targets.size() > 0) {
-					u.attackUnit = targets.get(world().random.get().nextInt(targets.size()));
-				} else {
-					List<Building> targets2 = buildingsInRange(u);
-					u.attackBuilding = targets2.get(world().random.get().nextInt(targets2.size()));
+				if (u.path.isEmpty() && directAttackUnits.contains(u.model.type)) {
+					// find a new target in range
+					if (u.model.type == GroundwarUnitType.PARALIZER) {
+						if (u.attackUnit != null) {
+							u.attackUnit.paralizedBy = null;
+						}
+					}
+					u.attackUnit = null;
+					u.attackBuilding = null;
+					List<GroundwarUnit> targets = unitsInRange(u);
+					if (targets.size() > 0) {
+						u.attackUnit = targets.get(world().random.get().nextInt(targets.size()));
+					} else {
+						List<Building> targets2 = buildingsInRange(u);
+						if (targets2.size() > 0) {
+							u.attackBuilding = targets2.get(world().random.get().nextInt(targets2.size()));
+						}
+					}
 				}
 			}
 			
@@ -3403,7 +3465,30 @@ public class PlanetScreen extends ScreenBase {
 			moveUnit(u);
 		}
 	}
-
+	/**
+	 * Damage units and structures within the specified cell area.
+	 * @param cx the cell x
+	 * @param cy the cell y
+	 * @param damage the damage to apply
+	 * @param area the effect area
+	 */
+	void damageArea(double cx, double cy, int damage, int area) {
+		for (GroundwarUnit u : units) {
+			if (cellInRange(cx, cy, u.x, u.y, area)) {
+				u.damage(damage);
+				if (u.isDestroyed()) {
+					createExplosion(u, ExplosionType.GROUND_RED);
+				}
+			}
+		}
+		for (Building b : surface().buildings) {
+			Location u = centerCellOf(b);
+			if (cellInRange(cx, cy, u.x, u.y, area)) {
+				damageBuilding(b, damage);
+			}
+		}
+	}
+	
 	/**
 	 * Update the properties of the given gun.
 	 * @param g the target gun
@@ -3520,7 +3605,7 @@ public class PlanetScreen extends ScreenBase {
 		for (Building u : surface().buildings) {
 			if (planet().owner != g.owner && !u.isDestroyed() 
 					&& unitInRange(g, u, g.model.maxRange)
-					&& !unitInRange(g, u, g.model.minRange)) {
+					&& !unitInRange(g, u, g.model.minRange) && u.type.kind.equals("Defensive")) {
 				result.add(u);
 			}
 		}
@@ -3609,6 +3694,19 @@ public class PlanetScreen extends ScreenBase {
 		return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range; 
 	}
 	/**
+	 * Check if two cells are within the distance of range.
+	 * @param cx the first cell X
+	 * @param cy the first cell Y
+	 * @param px the second cell X
+	 * @param py the second cell Y
+	 * @param range the range in cells
+	 * @return true if within range
+	 */
+	boolean cellInRange(double cx, double cy, double px, double py, int range) {
+		
+		return (cx - px) * (cx - px) + (cy - py) * (cy - py) <= range * range; 
+	}
+	/**
 	 * Check if the given unit is within the range of the gun.
 	 * @param g the source unit
 	 * @param u the unit
@@ -3685,7 +3783,7 @@ public class PlanetScreen extends ScreenBase {
 	 */
 	void moveUnit(GroundwarUnit u) {
 		// FIXME implement
-		if (u.isDestroyed() || u.paralized) {
+		if (u.isDestroyed() || u.paralizedBy != null) {
 			return;
 		}
 		if (u.nextMove == null) {
@@ -3726,6 +3824,11 @@ public class PlanetScreen extends ScreenBase {
 					u.path.add(u.nextMove);
 				}
 				u.attackBuilding = null;
+				if (u.model.type == GroundwarUnitType.PARALIZER) {
+					if (u.attackUnit != null && u.attackUnit.paralizedBy == u) {
+						u.attackUnit.paralizedBy = null;
+					}
+				}
 				u.attackUnit = null;
 			}
 		}
@@ -3742,16 +3845,16 @@ public class PlanetScreen extends ScreenBase {
 	 */
 	void doAttackWithSelectedUnits(int mx, int my) {
 		for (GroundwarUnit u : units) {
-			if (u.selected) {
+			if (u.selected && directAttackUnits.contains(u.model.type)) {
 				Location lm = render.getLocationAt(mx, my);
 				Building b = getBuildingAt(lm);
-				if (b != null && planet().owner != u.owner) {
+				if (b != null && planet().owner != u.owner && u.model.type != GroundwarUnitType.PARALIZER) {
 					u.attackBuilding = b;
 					u.attackUnit = null;
 				} else {
 					for (GroundwarUnit u1 : units) {
 						if (u1 != u && u1.owner != u.owner
-								&& (int)u.x == lm.x && (int)u.y == lm.y) {
+								&& (int)u1.x == lm.x && (int)u1.y == lm.y) {
 							u.attackUnit = u1;
 							u.attackBuilding = null;
 							break;
@@ -3759,6 +3862,18 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 				
+			}
+		}
+		for (GroundwarGun g : guns) {
+			if (g.selected) {
+				Location lm = render.getLocationAt(mx, my);
+				for (GroundwarUnit u1 : units) {
+					if (u1.owner != g.owner
+							&& (int)u1.x == lm.x && (int)u1.y == lm.y) {
+						g.attack = u1;
+						break;
+					}
+				}
 			}
 		}
 	}

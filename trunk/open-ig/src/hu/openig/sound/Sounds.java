@@ -212,6 +212,9 @@ public class Sounds {
 	 * @param effect the sound to play
 	 */
 	public void play(final SoundType effect) {
+		if (effect == null) {
+			new IllegalArgumentException("Null effect").printStackTrace();
+		}
 		final int vol = getVolume.invoke(null);
 		if (vol > 0) {
 			exec.execute(new Runnable() {
