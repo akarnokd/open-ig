@@ -15,6 +15,13 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, 2011.09.05.
  */
 public class GroundwarGun extends GroundwarObject {
+	/**
+	 * Constructor.
+	 * @param matrix the gun matrix
+	 */
+	public GroundwarGun(BufferedImage[][] matrix) {
+		super(matrix);
+	}
 	/** The turret model. */
 	public BattleGroundTurret model;
 	/** The rendering cell position of the gun. */
@@ -29,12 +36,4 @@ public class GroundwarGun extends GroundwarObject {
 	public GroundwarUnit attack;
 	/** The weapon cooldown counter. */
 	public int cooldown;
-	@Override
-	protected double[] getAngles() {
-		return model.angles;
-	}
-	@Override
-	protected BufferedImage[][] getMatrix() {
-		return model.matrix;
-	}
 }

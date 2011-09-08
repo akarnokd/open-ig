@@ -39,8 +39,6 @@ public class GroundwarUnit extends GroundwarObject {
 	public Building attackBuilding;
 	/** The weapon cooldown counter. */
 	public int cooldown;
-	/** The unit matrix [phase][angle]. */
-	public BufferedImage[][] matrix;
 	/** The current movement path to the target. */
 	public final List<Location> path = JavaUtils.newArrayList();
 	/** The next move rotation. */
@@ -60,12 +58,12 @@ public class GroundwarUnit extends GroundwarObject {
 	public void damage(int points) {
 		hp = Math.max(0, hp - points);
 	}
-	@Override
-	protected double[] getAngles() {
-		return model.angles;
-	}
-	@Override
-	protected BufferedImage[][] getMatrix() {
-		return matrix;
+	/**
+	 * Constructor.
+	 * @param matrix the unit matrix
+	 */
+	public GroundwarUnit(BufferedImage[][] matrix) {
+		super(matrix);
+		// TODO Auto-generated constructor stub
 	}
 }

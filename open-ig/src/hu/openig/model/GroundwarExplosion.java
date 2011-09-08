@@ -27,11 +27,11 @@ public class GroundwarExplosion {
 	public GroundwarUnit target;
 	/** @return the image of the current phase. */
 	public BufferedImage get() {
-		return phases[phase % phases.length];
+		return phases[phase];
 	}
 	/** @return move to the next phase and return true if more phases are available. */
 	public boolean next() {
-		return phase++ < phases.length;
+		return ++phase < phases.length;
 	}
 	/** @return Is the current phase the half? */
 	public boolean half() {

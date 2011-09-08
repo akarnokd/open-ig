@@ -28,19 +28,26 @@ public abstract class GroundwarObject {
 	/** The cached index. */
 	protected int cachedIndex;
 	/** @return The precalcualted angle table. */
-	protected abstract double[] getAngles();
+	protected final double[] angles;
 	/** @return the matrix [phase][angle] */
-	protected abstract BufferedImage[][] getMatrix();
+	protected final BufferedImage[][] matrix;
+	/**
+	 * Initializes the object with the given rotation matrix.
+	 * @param matrix the rotation matrix
+	 */
+	public GroundwarObject(BufferedImage[][] matrix) {
+		this.matrix = matrix;
+		this.angles = computeAngles(matrix[0].length);
+	}
 	/** @return Get the image for the current rotation and phase. */
 	public BufferedImage get() {
-		BufferedImage[] rotation = getMatrix()[phase];
+		BufferedImage[] rotation = matrix[phase % matrix.length];
 
 		if (cachedAngle != angle) {
 			double a = normalizedAngle() / 2 / Math.PI;
 			if (a < 0) {
 				a = 1 + a;
 			}
-			double[] angles = getAngles();
 			for (int i = 0; i < angles.length - 1; i++) {
 				double a0 = angles[i];
 				double a1 = angles[i + 1];
@@ -78,6 +85,41 @@ public abstract class GroundwarObject {
 	 * @return the maximum phase index
 	 */
 	public int maxPhase() {
-		return getMatrix().length - 1;
+		return matrix.length - 1;
+	}
+	/** @return the number of angles of the matrix. */
+	public int angleCount() {
+		return matrix[0].length;
+	}
+	/** 
+	 * Compute the rotation side angles. 
+	 * @param count the number of elements within the full circle
+	 * @return the angles
+	 */
+	public static double[] computeAngles(int count) {
+		double[] vx = { 28, -30, -28,  30, 28};
+		double[] vy = { 15,  12, -15, -12, 15};
+		
+		double[] angles = new double[count + 1];
+		int n = (angles.length - 1) / 4;
+		
+		for (int i = 0; i < 4; i++) {
+			double wx = vx[i + 1] - vx[i];
+			double wy = vy[i + 1] - vy[i];
+			for (int j = 0; j < n; j++) {
+				double px = vx[i] + wx * j / n;
+				double py = vy[i] + wy * j / n;
+				
+				double a = Math.atan2(py, px) / Math.PI / 2;
+				if (a < 0) {
+					a = 1 + a; // 0..1
+				}
+				angles[i * n + j] = a;
+			}
+
+		}
+		// wrap around
+		angles[angles.length - 1] = angles[0];
+		return angles;
 	}
 }

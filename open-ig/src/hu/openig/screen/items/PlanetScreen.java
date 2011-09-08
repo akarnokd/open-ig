@@ -27,6 +27,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.ExplosionType;
 import hu.openig.model.GroundwarExplosion;
 import hu.openig.model.GroundwarGun;
+import hu.openig.model.GroundwarRocket;
 import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.InventoryItem;
@@ -250,6 +251,8 @@ public class PlanetScreen extends ScreenBase {
 	Pathfinding pathfinding;
 	/** The current animating explosions. */
 	Set<GroundwarExplosion> explosions = JavaUtils.newHashSet();
+	/** The active rockets. */
+	Set<GroundwarRocket> rockets = JavaUtils.newHashSet();
 	/** The groundwar animation simulator. */
 	Closeable simulator;
 	/** The direct attack units. */
@@ -302,7 +305,7 @@ public class PlanetScreen extends ScreenBase {
 				rep = true;
 			}
 		case KeyEvent.VK_S:
-			stopSelectedUnits();
+			doStopSelectedUnits();
 			e.consume();
 			rep = true;
 		default:
@@ -373,6 +376,7 @@ public class PlanetScreen extends ScreenBase {
 		guns.clear();
 		units.clear();
 		explosions.clear();
+		rockets.clear();
 		
 		close0(simulator);
 		simulator = null;
@@ -813,6 +817,7 @@ public class PlanetScreen extends ScreenBase {
 							// place units after
 							drawUnits(g2, loc.x - j, loc.y);
 							drawExplosions(g2, loc.x - j, loc.y);
+							drawRockets(g2, loc.x - j, loc.y);
 						} else {
 							if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
 								g2.drawImage(empty, x, y, null);
@@ -2855,15 +2860,15 @@ public class PlanetScreen extends ScreenBase {
 		for (InventoryItem ii : battle.attacker.inventory) {
 			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-				GroundwarUnit u = new GroundwarUnit();
+
+				BattleGroundVehicle bge = world().battle.groundEntities.get(ii.type.id);
+				
+				GroundwarUnit u = new GroundwarUnit(ii.owner == player() ? bge.normal : bge.alternative);
 				Location loc = locations.removeFirst();
 				u.x = loc.x;
 				u.y = loc.y;
 				
 				u.selected = true;
-				
-				BattleGroundVehicle bge = world().battle.groundEntities.get(ii.type.id);
-				u.matrix = ii.owner == player() ? bge.normal : bge.alternative;
 				
 				units.add(u);
 			}
@@ -2889,7 +2894,7 @@ public class PlanetScreen extends ScreenBase {
 						break;
 					}
 					
-					GroundwarGun g = new GroundwarGun();
+					GroundwarGun g = new GroundwarGun(bt.matrix);
 					g.rx = b.location.x + bt.rx;
 					g.ry = b.location.y + bt.ry;
 					g.model = bt;
@@ -2923,7 +2928,9 @@ public class PlanetScreen extends ScreenBase {
 				for (ResearchType rt : world().researches.values()) {
 					if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
 							|| rt.category == ResearchSubCategory.WEAPONS_TANKS) {
-						GroundwarUnit u = new GroundwarUnit();
+						BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
+						
+						GroundwarUnit u = new GroundwarUnit(planet().owner == player() ? bgv.normal : bgv.alternative);
 						Location loc = locs.removeFirst();
 						u.x = loc.x;
 						u.y = loc.y;
@@ -2932,8 +2939,7 @@ public class PlanetScreen extends ScreenBase {
 						u.owner = planet().owner;
 						u.planet = planet();
 						
-						u.model = world().battle.groundEntities.get(rt.id);
-						u.matrix = u.model.normal;
+						u.model = bgv;
 						u.hp = u.model.hp;
 						
 						units.add(u);
@@ -2948,15 +2954,18 @@ public class PlanetScreen extends ScreenBase {
 			enemy = world().players.get("Garthog");
 		}
 		locs.clear();
-		for (int x = 0; x > -surface().height; x--) {
-			if (surface().canPlaceBuilding(x, x - 1)) {
-				locs.add(Location.of(x, x - 1));
+		for (int d = 0; d < 4; d++) {
+			for (int x = 0; x > -surface().height; x--) {
+				if (surface().canPlaceBuilding(x + d, x - 1 - d)) {
+					locs.add(Location.of(x + d, x - 1 - d));
+				}
 			}
 		}
 		for (ResearchType rt : world().researches.values()) {
 			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
 					|| rt.category == ResearchSubCategory.WEAPONS_TANKS) {
-				GroundwarUnit u = new GroundwarUnit();
+				BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
+				GroundwarUnit u = new GroundwarUnit(enemy == player() ? bgv.normal : bgv.alternative);
 				Location loc = locs.removeFirst();
 				u.x = loc.x;
 				u.y = loc.y;
@@ -2965,8 +2974,7 @@ public class PlanetScreen extends ScreenBase {
 				u.owner = enemy;
 				u.planet = planet();
 				
-				u.model = world().battle.groundEntities.get(rt.id);
-				u.matrix = u.model.normal;
+				u.model = bgv;
 				u.hp = u.model.hp;
 				
 				units.add(u);
@@ -3020,6 +3028,55 @@ public class PlanetScreen extends ScreenBase {
 				g2.setColor(new Color(0xAE6951));
 			}
 			g2.fillRect(p.x + 5, p.y + 4, u.hp * (img.getWidth() - 9) / u.model.hp, 3);
+			
+			if (u.paralizedBy != null) {
+				if (blink) {
+					BufferedImage icon = commons.common().errorIcon;
+					int dx = p.x + (img.getWidth() - icon.getWidth()) / 2;
+					int dy = p.y + (img.getHeight() - icon.getHeight()) / 2;
+					g2.drawImage(icon, dx, dy, null);
+				}
+			}
+		}
+	}
+	/**
+	 * Draw rockets into the cell.
+	 * @param g2 the graphics context
+	 * @param cx the cell coordinates
+	 * @param cy the cell coordinates
+	 */
+	void drawRockets(Graphics2D g2, int cx, int cy) {
+		List<GroundwarRocket> multiple = JavaUtils.newArrayList();
+		for (GroundwarRocket u : rockets) {
+			if ((int)Math.floor(u.x - 1) == cx && (int)Math.floor(u.y - 1) == cy) {
+				multiple.add(u);
+			}
+		}
+		// order by y first, x later
+		Collections.sort(multiple, new Comparator<GroundwarRocket>() {
+			@Override
+			public int compare(GroundwarRocket o1, GroundwarRocket o2) {
+				if (o1.y > o2.y) {
+					return -1; 
+				} else
+				if (o1.y < o2.y) {
+					return 1;
+				} else
+				if (o1.x > o2.x) {
+					return -1;
+				} else
+				if (o1.x < o2.x) {
+					return 1;
+				}
+				return 0;
+			}
+		});
+		
+		for (GroundwarRocket u : multiple) {
+			Point p = unitPosition(u);
+			BufferedImage img = u.get();
+			g2.drawImage(img, p.x, p.y, null);
+//			g2.drawRect(p.x, p.y, img.getWidth(), img.getHeight());
 		}
 	}
 	/**
@@ -3030,6 +3087,16 @@ public class PlanetScreen extends ScreenBase {
 	Point unitPosition(GroundwarUnit u) {
 		return new Point((int)(planet().surface.baseXOffset + Tile.toScreenX(u.x, u.y)), 
 				(int)(planet().surface.baseYOffset + Tile.toScreenY(u.x, u.y)) + 27 - u.get().getHeight());
+	}
+	/**
+	 * Computes the unit bounding rectangle's left-top position.
+	 * @param u the unit
+	 * @return the position
+	 */
+	Point unitPosition(GroundwarRocket u) {
+		return new Point(
+				(int)(planet().surface.baseXOffset + Tile.toScreenX(u.x + 0.5, u.y)), 
+				(int)(planet().surface.baseYOffset + Tile.toScreenY(u.x + 0.5, u.y)));
 	}
 	/**
 	 * The on-screen rectangle of the ground unit.
@@ -3208,12 +3275,23 @@ public class PlanetScreen extends ScreenBase {
 				Location lu = Location.of((int)u.x, (int)u.y);
 				Location lm = render.getLocationAt(mx, my);
 				u.path.clear();
+
 				// the next immediate movement should be kept
 				if (u.nextMove != null) {
 					u.path.add(u.nextMove);
 				}
 				u.path.addAll(pathfinding.searchApproximate(lu, lm));
-				u.path.remove(0); // remove current position
+				if (u.path.size() > 0) {
+					u.path.remove(0); // remove current position
+				}
+				
+				u.attackBuilding = null;
+				if (u.attackUnit != null 
+						&& u.model.type == GroundwarUnitType.PARALIZER
+						&& u.attackUnit.paralizedBy == u) {
+					u.attackUnit.paralizedBy = null;
+				}
+				u.attackUnit = null;
 			}
 		}
 	}
@@ -3261,14 +3339,19 @@ public class PlanetScreen extends ScreenBase {
 		for (GroundwarExplosion exp : new ArrayList<GroundwarExplosion>(explosions)) {
 			if (exp.next()) {
 				if (exp.half()) {
-					units.remove(exp.target);
-					if (battle != null) {
-						battle.groundLosses.add(exp.target);
+					if (exp.target != null) {
+						units.remove(exp.target);
+						if (battle != null) {
+							battle.groundLosses.add(exp.target);
+						}
 					}
 				}
 			} else {
 				explosions.remove(exp);
 			}
+		}
+		for (GroundwarRocket rocket : new ArrayList<GroundwarRocket>(rockets)) {
+			updateRocket(rocket);
 		}
 		for (GroundwarUnit u : units) {
 			updateUnit(u);
@@ -3346,8 +3429,8 @@ public class PlanetScreen extends ScreenBase {
 								u.attackUnit = null;
 							}
 						}
-						u.cooldown = u.model.delay;
 					}
+					u.cooldown = u.model.delay;
 				} else
 				if (u.attackBuilding != null) {
 					damageBuilding(u.attackBuilding, u.model.damage);
@@ -3377,12 +3460,22 @@ public class PlanetScreen extends ScreenBase {
 							if (u.model.type == GroundwarUnitType.PARALIZER) {
 								if (u.attackUnit.paralizedBy == null) {
 									u.attackUnit.paralizedBy = u;
+									// deparalize target of a paralizer
+									if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
+										if (u.attackUnit.attackUnit != null
+												&& u.attackUnit.attackUnit.paralizedBy == u.attackUnit
+												) {
+											u.attackUnit.attackUnit.paralizedBy = null;
+										}
+									}
 								} else
 								if (u.attackUnit.paralizedBy != u) {
 									u.attackUnit = null;
 								}
 							}
-							// TODO different firing behavior here
+							if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
+								createRocket(u, u.attackUnit.x, u.attackUnit.y);
+							}
 						} else {
 							u.cooldown -= SIMULATION_DELAY;
 						}
@@ -3410,7 +3503,11 @@ public class PlanetScreen extends ScreenBase {
 								sound(u.model.fire);
 							}
 							
-							// TODO different firing behavior here
+							if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
+								Location loc = centerCellOf(u.attackBuilding);
+								createRocket(u, loc.x, loc.y);
+							}
+							u.cooldown = u.model.delay;
 						} else {
 							u.cooldown -= SIMULATION_DELAY;
 						}
@@ -3576,6 +3673,19 @@ public class PlanetScreen extends ScreenBase {
 		exp.x = center.x;
 		exp.y = center.y;
 		exp.target = target;
+		exp.phases = commons.colony().explosions.get(type);
+		explosions.add(exp);
+	}
+	/**
+	 * Create an explosion animation at the given center location.
+	 * @param x the explosion center in screen coordinates
+	 * @param y the explosion center in screen coordinates
+	 * @param type the type of the explosion animation
+	 */
+	void createExplosion(int x, int y, ExplosionType type) {
+		GroundwarExplosion exp = new GroundwarExplosion();
+		exp.x = x;
+		exp.y = y;
 		exp.phases = commons.colony().explosions.get(type);
 		explosions.add(exp);
 	}
@@ -3768,7 +3878,7 @@ public class PlanetScreen extends ScreenBase {
 		if (diff > Math.PI) {
 			diff -= 2 * Math.PI; 
 		}
-		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.matrix[0].length / SIMULATION_DELAY;
+		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.angleCount() / SIMULATION_DELAY;
 		if (Math.abs(diff) < anglePerStep) {
 			gun.angle = targetAngle;
 			return true;
@@ -3816,7 +3926,7 @@ public class PlanetScreen extends ScreenBase {
 	/**
 	 * Cancel movements and attacks of the selected units.
 	 */
-	void stopSelectedUnits() {
+	void doStopSelectedUnits() {
 		for (GroundwarUnit u : units) {
 			if (u.selected /* && u.owner == player() */) {
 				u.path.clear();
@@ -3876,6 +3986,81 @@ public class PlanetScreen extends ScreenBase {
 				}
 			}
 		}
+	}
+	/**
+	 * Create a rocket.
+	 * @param sender the sender object
+	 * @param x the target spot
+	 * @param y the target spot
+	 */
+	void createRocket(GroundwarUnit sender, double x, double y) {
+		GroundwarRocket rocket = new GroundwarRocket(commons.colony().rocket);
+		rocket.x = sender.x;
+		rocket.y = sender.y;
+		rocket.owner = sender.owner;
+		rocket.targetX = x;
+		rocket.targetY = y;
+		rocket.movementSpeed = 25; // FIXME rocket movement speed
+		
+		rocket.damage = sender.model.damage;
+		rocket.area = sender.model.area;
+		
+		Point pg = centerOf(sender.x, sender.y);
+		Point tg = centerOf(x, y);
+		rocket.angle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
+		
+		rockets.add(rocket);
+	}
+	/**
+	 * Update rocket properties.
+	 * @param rocket the rocket
+	 */
+	void updateRocket(GroundwarRocket rocket) {
+		double dv = 1.0 * SIMULATION_DELAY / rocket.movementSpeed / 28;
+		double distanceToTarget = Math.hypot(rocket.targetX - rocket.x, rocket.targetY - rocket.y);
+		if (distanceToTarget < dv) {
+			// target reached, check for enemy rocket jammers
+			boolean jammed = isRocketJammed(rocket, 0.5);
+			if (!jammed) {
+				// if no jammers, affect area
+				damageArea(rocket.targetX, rocket.targetY, rocket.damage, rocket.area);
+			}
+			Point p = centerOf(rocket.x, rocket.y);
+			createExplosion(p.x, p.y, ExplosionType.GROUND_ROCKET_2);
+			rockets.remove(rocket);
+		} else {
+			double angle = Math.atan2(rocket.targetY - rocket.y, rocket.targetX - rocket.x);
+			rocket.x += dv * Math.cos(angle);
+			rocket.y += dv * Math.sin(angle);
+			rocket.phase++;
+			
+			if (isRocketJammed(rocket, 0.5)) {
+				Point p = centerOf(rocket.x, rocket.y);
+				createExplosion(p.x, p.y, ExplosionType.GROUND_ROCKET_2);
+				rockets.remove(rocket);
+			}
+		}
+		
+	}
+	/** 
+	 * Check if any enemy uint is within jamming range?
+	 * @param rocket the rocket
+	 * @param penetrationRatio how far may the rocket travel into the range before it is reported as jammed?
+	 * @return is jammed
+	 */
+	boolean isRocketJammed(GroundwarRocket rocket, double penetrationRatio) {
+		for (GroundwarUnit u : units) {
+			if (u.owner != rocket.owner && u.model.type == GroundwarUnitType.ROCKET_JAMMER) {
+				double distance = Math.hypot(u.x - rocket.x, u.y - rocket.y);
+				if (distance < u.model.maxRange * penetrationRatio) {
+					if (u.phase == 0) {
+						u.phase++;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
 

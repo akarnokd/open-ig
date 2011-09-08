@@ -1611,7 +1611,7 @@ public class World {
 			
 			if (xground.has("alternative")) {
 				BufferedImage ai = rl.getImage(xground.get("alternative"));
-				ge.alternative = ImageUtils.split(ai, ai.getWidth() / nx, ai.getWidth() / ny);
+				ge.alternative = ImageUtils.split(ai, ai.getWidth() / nx, ai.getHeight() / ny);
 			} else {
 				ge.alternative = ge.normal;
 			}
@@ -1630,7 +1630,6 @@ public class World {
 			ge.movementSpeed = xground.getInt("movement-speed");
 			ge.rotationTime = xground.getInt("rotation-time");
 			ge.delay = xground.getInt("delay");
-			ge.angles = computeAngles(ge.normal[0].length);
 			
 			battle.groundEntities.put(id, ge);
 		}
@@ -1666,44 +1665,11 @@ public class World {
 					if (tr.matrix == null) {
 						System.err.printf("Missing matrix: %s%n", mid);
 					}
-					tr.angles = computeAngles(tr.matrix[0].length);
-					
 					battle.addTurret(id, rid, tr);
 				}
 			}
 			
 		}
-	}
-	/** 
-	 * Compute the rotation side angles. 
-	 * @param count the number of elements within the full circle
-	 * @return the angles
-	 */
-	public static double[] computeAngles(int count) {
-		double[] vx = { 28, -30, -28,  30, 28};
-		double[] vy = { 15,  12, -15, -12, 15};
-		
-		double[] angles = new double[count + 1];
-		int n = (angles.length - 1) / 4;
-		
-		for (int i = 0; i < 4; i++) {
-			double wx = vx[i + 1] - vx[i];
-			double wy = vy[i + 1] - vy[i];
-			for (int j = 0; j < n; j++) {
-				double px = vx[i] + wx * j / n;
-				double py = vy[i] + wy * j / n;
-				
-				double a = Math.atan2(py, px) / Math.PI / 2;
-				if (a < 0) {
-					a = 1 + a; // 0..1
-				}
-				angles[i * n + j] = a;
-			}
-
-		}
-		// wrap around
-		angles[angles.length - 1] = angles[0];
-		return angles;
 	}
 
 	/**

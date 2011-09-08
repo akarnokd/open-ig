@@ -30,6 +30,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
+import hu.openig.model.SelectionBoxMode;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarExplosion;
 import hu.openig.model.SpacewarProjectile;
@@ -87,15 +88,6 @@ public class SpacewarScreen extends ScreenBase {
 		PanelMode mode();
 		/** Is the left side? */
 		boolean left();
-	}
-	/** The selection box mode. */
-	enum SelectionBoxMode {
-		/** New selection. */
-		NEW,
-		/** Additive selection. */
-		ADD,
-		/** Subtractive selection. */
-		SUBTRACT
 	}
 	/** The panel mode. */
 	enum PanelMode {

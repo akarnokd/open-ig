@@ -143,6 +143,15 @@ public class CommonGFX {
 	/** The check mark. */
 	@Img(name = "checkmark")
 	public BufferedImage checkmark;
+	/** Small error icon. */
+	@Img(name = "error")
+	public BufferedImage errorIcon;
+	/** Small warning icon. */
+	@Img(name = "warning")
+	public BufferedImage warningIcon;
+	/** Small okay icon. */
+	@Img(name = "ok")
+	public BufferedImage okayIcon;
 	/**
 	 * Initialize the common resources.
 	 * @param rl the resource locator

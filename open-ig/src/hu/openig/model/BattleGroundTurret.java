@@ -35,6 +35,4 @@ public class BattleGroundTurret {
 	public int rotationTime;
 	/** The delay between firing. */
 	public int delay;
-	/** The available angles of the rotation matrix. */
-	public double[] angles;
 }

@@ -196,6 +196,10 @@ public class ColonyGFX {
 	/** The unit selection box. */
 	@Img(name = "groundwar/selection_box_dark")
 	public BufferedImage selectionBoxDark;
+	/** The flying rocket [phase][angle]. */
+	public BufferedImage[][] rocket;
+	/** The laid mine. */
+	public BufferedImage[][] mine;
 	/** The explosion images. */
 	public final Map<ExplosionType, BufferedImage[]> explosions = JavaUtils.newHashMap();
 	/**
@@ -210,6 +214,12 @@ public class ColonyGFX {
 			BufferedImage img = rl.getImage(et.image);
 			explosions.put(et, ImageUtils.splitByWidth(img, img.getWidth() / et.frames));
 		}
+		
+		BufferedImage rimg = rl.getImage("inventions/weapons/vehicles/rocket_matrix");
+		rocket = ImageUtils.split(rimg, rimg.getWidth() / 16, rimg.getHeight() / 3);
+		mine = new BufferedImage[][] {
+			{ rl.getImage("groundwar/mine") }
+		};
 		return this;
 	}
 }
