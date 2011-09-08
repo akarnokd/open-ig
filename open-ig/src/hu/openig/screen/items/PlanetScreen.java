@@ -606,6 +606,10 @@ public class PlanetScreen extends ScreenBase {
 					if (e.has(Modifier.SHIFT)) {
 						doMoveSelectedUnits(e.x, e.y);
 						rep = true;
+					} else 
+					if (e.has(Modifier.CTRL)) {
+						doAttackWithSelectedUnits(e.x, e.y);
+						rep = true;
 					} else {
 						drag = true;
 						lastX = e.x;
@@ -3256,99 +3260,197 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 		for (GroundwarUnit u : units) {
-			if (u.phase > 0) {
-				u.phase++;
-				if (u.phase >= u.maxPhase()) {
-					if (u.attackUnit != null) {
-						if (unitInRange(u, u.attackUnit, u.model.maxRange)
-								&& !unitInRange(u, u.attackUnit, u.model.minRange)
-								) {
-							u.attackUnit.damage(u.model.damage);
-							if (u.attackUnit.isDestroyed()) {
-								sound(u.attackUnit.model.destroy);
-								createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
-								u.attackUnit = null;
-							}
-							u.cooldown = u.model.delay;
-						}
-					}
-					u.phase = 0;
-				}
-			} else {
-				if (u.attackUnit != null && !u.attackUnit.isDestroyed()) {
-					// if within range
-					if (unitInRange(u, u.attackUnit, u.model.maxRange)
-							&& !unitInRange(u, u.attackUnit, u.model.minRange)) {
-						if (rotateStep(u, Location.of((int)u.attackUnit.x, (int)u.attackUnit.y))) {
-							if (u.cooldown <= 0) {
-								u.phase++;
-								sound(u.model.fire);
-								
-								// TODO different firing behavior here
-							} else {
-								u.cooldown -= SIMULATION_DELAY;
-							}
-						}
-					} else {
-						if (u.path.isEmpty()) {
-							// plot path
-							u.path.addAll(pathfinding.search(Location.of((int)u.x, (int)u.y), 
-									Location.of((int)u.attackUnit.x, (int)u.attackUnit.y)));
-						} else {
-							moveUnit(u);
-						}
-					}
-				} else {
-					u.attackUnit = null;
-					// find a new target
-					List<GroundwarUnit> targets = unitsInRange(u);
-					if (targets.size() > 0) {
-						u.attackUnit = targets.get(world().random.get().nextInt(targets.size()));
-					}
-				}
-				
-			}
-			if (!u.path.isEmpty()) {
-				moveUnit(u);
-			}
+			updateUnit(u);
 		}
 		for (GroundwarGun g : guns) {
-			if (g.phase > 0) {
-				g.phase++;
-				if (g.phase >= g.maxPhase()) {
-					if (unitInRange(g, g.attack, g.model.maxRange)) {
-						g.attack.damage(g.model.damage);
-						if (g.attack.isDestroyed()) {
-							sound(g.attack.model.destroy);
-							createExplosion(g.attack, ExplosionType.GROUND_RED);
-							g.attack = null;
+			updateGun(g);
+		}
+		askRepaint();
+	}
+	/**
+	 * Is the given target within the min-max range of the unit.
+	 * @param u the unit
+	 * @param target the target unit
+	 * @return true if within the min-max range
+	 */
+	boolean unitWithinRange(GroundwarUnit u, GroundwarUnit target) {
+		return unitInRange(u, target, u.model.maxRange)
+				&& !unitInRange(u, target, u.model.minRange);
+	}
+	/**
+	 * Is the given target within the min-max range of the unit.
+	 * @param u the unit
+	 * @param target the target unit
+	 * @return true if within the min-max range
+	 */
+	boolean unitWithinRange(GroundwarUnit u, Building target) {
+		return unitInRange(u, target, u.model.maxRange)
+				&& !unitInRange(u, target, u.model.minRange);
+	}
+	/**
+	 * Apply groundwar damage to the given building.
+	 * @param b the target building
+	 * @param damage the damage amout
+	 */
+	void damageBuilding(Building b, int damage) {
+		b.hitpoints = Math.max(0, b.hitpoints - damage * 15);
+	}
+	/**
+	 * Update the properties of the target unit.
+	 * @param u the unit to update
+	 */
+	void updateUnit(GroundwarUnit u) {
+		if (u.phase > 0) {
+			u.phase++;
+			if (u.phase >= u.maxPhase()) {
+				if (u.attackUnit != null) {
+					if (unitWithinRange(u, u.attackUnit)) {
+						u.attackUnit.damage(u.model.damage);
+						if (u.attackUnit.isDestroyed()) {
+							sound(u.attackUnit.model.destroy);
+							createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
+							u.attackUnit = null;
 						}
-						g.cooldown = g.model.delay;
+						u.cooldown = u.model.delay;
 					}
-					g.phase = 0;
+				} else
+				if (u.attackBuilding != null) {
+					damageBuilding(u.attackBuilding, u.model.damage);
+					if (u.attackUnit.isDestroyed()) {
+						// TODO demolish animation
+						u.attackUnit = null;
+//						surface().removeBuilding(u.attackBuilding);
+					}
 				}
-			} else {
-				if (g.attack != null && !g.attack.isDestroyed() 
-						&& unitInRange(g, g.attack, g.model.maxRange)) {
-					if (rotateStep(g, centerOf(g.attack))) {
-						if (g.cooldown <= 0) {
-							g.phase++;
-							sound(g.model.fire);
+				u.phase = 0;
+			}
+		} else {
+			if (u.attackUnit != null && !u.attackUnit.isDestroyed()) {
+				// if within range
+				if (unitWithinRange(u, u.attackUnit)) {
+					if (rotateStep(u, Location.of((int)u.attackUnit.x, (int)u.attackUnit.y))) {
+						if (u.cooldown <= 0) {
+							u.phase++;
+							sound(u.model.fire);
+							
+							// TODO different firing behavior here
 						} else {
-							g.cooldown -= SIMULATION_DELAY;
+							u.cooldown -= SIMULATION_DELAY;
 						}
 					}
 				} else {
-					g.attack = null;
-					// find a new target
-					List<GroundwarUnit> targets = unitsInRange(g);
-					if (targets.size() > 0) {
-						g.attack = targets.get(world().random.get().nextInt(targets.size()));
+					if (u.path.isEmpty()) {
+						// plot path
+						u.path.addAll(pathfinding.search(Location.of((int)u.x, (int)u.y), 
+								Location.of((int)u.attackUnit.x, (int)u.attackUnit.y)));
+					} else {
+						moveUnit(u);
 					}
+				}
+			} else 
+			if (u.attackBuilding != null && !u.attackBuilding.isDestroyed()) {
+				if (unitWithinRange(u, u.attackBuilding)) {
+					if (rotateStep(u, centerCellOf(u.attackBuilding))) {
+						if (u.cooldown <= 0) {
+							u.phase++;
+							sound(u.model.fire);
+							
+							// TODO different firing behavior here
+						} else {
+							u.cooldown -= SIMULATION_DELAY;
+						}
+					}
+				} else {
+					if (u.path.isEmpty()) {
+						if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
+							// plot path to the building
+							u.path.addAll(pathfinding.search(
+									Location.of((int)u.x, (int)u.y), 
+									centerCellOf(u.attackBuilding)));
+						} else {
+							// plot path outside the minimum range
+							Location c = centerCellOf(u.attackBuilding);
+							double angle = world().random.get().nextDouble() * 2 * Math.PI;
+							Location c1 = Location.of(
+									(int)(c.x + (u.model.minRange + 1.4142) * Math.cos(angle)),
+									(int)(c.y + (u.model.minRange + 1.4142) * Math.sin(angle))
+							);
+							
+							u.path.addAll(pathfinding.search(
+									Location.of((int)u.x, (int)u.y), c1 
+									));
+							
+						}
+					} else {
+						moveUnit(u);
+					}
+				}
+			} else {
+				// find a new target in range
+				u.attackUnit = null;
+				u.attackBuilding = null;
+				List<GroundwarUnit> targets = unitsInRange(u);
+				if (targets.size() > 0) {
+					u.attackUnit = targets.get(world().random.get().nextInt(targets.size()));
+				} else {
+					List<Building> targets2 = buildingsInRange(u);
+					u.attackBuilding = targets2.get(world().random.get().nextInt(targets2.size()));
+				}
+			}
+			
+		}
+		if (!u.path.isEmpty()) {
+			moveUnit(u);
+		}
+	}
+
+	/**
+	 * Update the properties of the given gun.
+	 * @param g the target gun
+	 */
+	void updateGun(GroundwarGun g) {
+		if (g.phase > 0) {
+			g.phase++;
+			if (g.phase >= g.maxPhase()) {
+				if (unitInRange(g, g.attack, g.model.maxRange)) {
+					g.attack.damage(g.model.damage);
+					if (g.attack.isDestroyed()) {
+						sound(g.attack.model.destroy);
+						createExplosion(g.attack, ExplosionType.GROUND_RED);
+						g.attack = null;
+					}
+					g.cooldown = g.model.delay;
+				}
+				g.phase = 0;
+			}
+		} else {
+			if (g.attack != null && !g.attack.isDestroyed() 
+					&& unitInRange(g, g.attack, g.model.maxRange)) {
+				if (rotateStep(g, centerOf(g.attack))) {
+					if (g.cooldown <= 0) {
+						g.phase++;
+						sound(g.model.fire);
+					} else {
+						g.cooldown -= SIMULATION_DELAY;
+					}
+				}
+			} else {
+				g.attack = null;
+				// find a new target
+				List<GroundwarUnit> targets = unitsInRange(g);
+				if (targets.size() > 0) {
+					g.attack = targets.get(world().random.get().nextInt(targets.size()));
 				}
 			}
 		}
-		askRepaint();
+	}
+	/**
+	 * Returns the center cell op the given building.
+	 * @param b the building
+	 * @return the location of the center cell
+	 */
+	Location centerCellOf(Building b) {
+		return Location.of(b.location.x + b.tileset.normal.width / 2, b.location.y - b.tileset.normal.height);
 	}
 	/**
 	 * Rotate the structure towards the given target angle by a step.
@@ -3401,6 +3503,22 @@ public class PlanetScreen extends ScreenBase {
 		List<GroundwarUnit> result = JavaUtils.newArrayList();
 		for (GroundwarUnit u : units) {
 			if (u.owner != g.owner && !u.isDestroyed() 
+					&& unitInRange(g, u, g.model.maxRange)
+					&& !unitInRange(g, u, g.model.minRange)) {
+				result.add(u);
+			}
+		}
+		return result;
+	}
+	/**
+	 * Find the units within the range of the gun.
+	 * @param g the gun
+	 * @return the units in range
+	 */
+	List<Building> buildingsInRange(GroundwarUnit g) {
+		List<Building> result = JavaUtils.newArrayList();
+		for (Building u : surface().buildings) {
+			if (planet().owner != g.owner && !u.isDestroyed() 
 					&& unitInRange(g, u, g.model.maxRange)
 					&& !unitInRange(g, u, g.model.minRange)) {
 				result.add(u);
@@ -3512,6 +3630,27 @@ public class PlanetScreen extends ScreenBase {
 		return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range; 
 	}
 	/**
+	 * Check if the given unit is within the range of the gun.
+	 * @param g the source unit
+	 * @param b the building
+	 * @param range the maximum range
+	 * @return true if within range
+	 */
+	boolean unitInRange(GroundwarUnit g, Building b, int range) {
+		
+		Point gp = centerOf(g);
+		Point up = centerOf(b);
+		
+		double gpx = Tile.toTileX(gp.x, gp.y);
+		double gpy = Tile.toTileY(gp.x, gp.y);
+		double upx = Tile.toTileX(up.x, up.y);
+		double upy = Tile.toTileY(up.x, up.y);
+		
+		double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
+		
+		return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range; 
+	}
+	/**
 	 * Rotate the structure towards the given target angle by a step.
 	 * @param gun the gun in question
 	 * @param target the target point
@@ -3593,6 +3732,33 @@ public class PlanetScreen extends ScreenBase {
 		for (GroundwarGun g : guns) {
 			if (g.selected /* && g.owner == player() */) {
 				g.attack = null;
+			}
+		}
+	}
+	/**
+	 * Attack the object at the given mouse location with the currently selected units.
+	 * @param mx the mouse X
+	 * @param my the mouse Y
+	 */
+	void doAttackWithSelectedUnits(int mx, int my) {
+		for (GroundwarUnit u : units) {
+			if (u.selected) {
+				Location lm = render.getLocationAt(mx, my);
+				Building b = getBuildingAt(lm);
+				if (b != null && planet().owner != u.owner) {
+					u.attackBuilding = b;
+					u.attackUnit = null;
+				} else {
+					for (GroundwarUnit u1 : units) {
+						if (u1 != u && u1.owner != u.owner
+								&& (int)u.x == lm.x && (int)u.y == lm.y) {
+							u.attackUnit = u1;
+							u.attackBuilding = null;
+							break;
+						}
+					}
+				}
+				
 			}
 		}
 	}
