@@ -2792,7 +2792,9 @@ public class SpacewarScreen extends ScreenBase {
 	 */
 	void doAttackWithShips(SpacewarStructure target) {
 		for (SpacewarStructure ship : structures) {
-			if (ship.type != StructureType.SHIELD && ship.selected && ship.owner == player()) {
+			if (ship.type != StructureType.SHIELD 
+					&& ship.selected && ship.owner == player()
+					&& !ship.ports.isEmpty()) {
 				ship.moveTo = null;
 				ship.attack = target;
 				ship.guard = false;
