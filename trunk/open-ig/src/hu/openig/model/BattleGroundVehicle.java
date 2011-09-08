@@ -44,6 +44,4 @@ public class BattleGroundVehicle {
 	public int movementSpeed;
 	/** Delay between firing. */
 	public int delay;
-	/** The available angles of the rotation matrix. */
-	public double[] angles;
 }

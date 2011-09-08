@@ -26,7 +26,9 @@ public enum ExplosionType {
 	/** Explosion. */
 	GROUND_YELLOW_MINI("groundwar/explosion_yellow_mini", 5),
 	/** Explosion. */
-	GROUND_ROCKET("groundwar/rocket_explosions", 9)
+	GROUND_ROCKET("groundwar/rocket_explosions", 9),
+	/** Explosion. */
+	GROUND_ROCKET_2("groundwar/rocket_explosions_2", 9)
 	;
 	/** The explosion image resource. */
 	public final String image;
