@@ -2968,31 +2968,31 @@ public class PlanetScreen extends ScreenBase {
 		if (planet().owner == player()) {
 			enemy = world().players.get("Garthog");
 		}
-		locs.clear();
 		for (int d = 0; d < 4; d++) {
+			locs.clear();
 			for (int x = 0; x > -surface().height; x--) {
 				if (surface().canPlaceBuilding(x + d, x - 1 - d)) {
 					locs.add(Location.of(x + d, x - 1 - d));
 				}
 			}
-		}
-		for (ResearchType rt : world().researches.values()) {
-			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
-					|| rt.category == ResearchSubCategory.WEAPONS_TANKS) {
-				BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
-				GroundwarUnit u = new GroundwarUnit(enemy == player() ? bgv.normal : bgv.alternative);
-				Location loc = locs.removeFirst();
-				u.x = loc.x;
-				u.y = loc.y;
-				
-				u.selected = true;
-				u.owner = enemy;
-				u.planet = planet();
-				
-				u.model = bgv;
-				u.hp = u.model.hp;
-				
-				units.add(u);
+			for (ResearchType rt : world().researches.values()) {
+				if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
+						|| rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+					BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
+					GroundwarUnit u = new GroundwarUnit(enemy == player() ? bgv.normal : bgv.alternative);
+					Location loc = locs.removeFirst();
+					u.x = loc.x;
+					u.y = loc.y;
+					
+					u.selected = true;
+					u.owner = enemy;
+					u.planet = planet();
+					
+					u.model = bgv;
+					u.hp = u.model.hp;
+					
+					units.add(u);
+				}
 			}
 		}
 		
