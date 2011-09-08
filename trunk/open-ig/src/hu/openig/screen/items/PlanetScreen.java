@@ -40,6 +40,7 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
+import hu.openig.model.SelectionBoxMode;
 import hu.openig.model.SoundType;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
@@ -670,7 +671,14 @@ public class PlanetScreen extends ScreenBase {
 				if (e.has(Button.LEFT) && selectionMode) {
 					selectionMode = false;
 					selectionEnd = new Point(e.x, e.y);
-					selectUnits();
+					SelectionBoxMode mode = SelectionBoxMode.NEW;
+					if (e.has(Modifier.SHIFT)) {
+						mode = SelectionBoxMode.ADD;
+					} else
+					if (e.has(Modifier.CTRL)) {
+						mode = SelectionBoxMode.SUBTRACT;
+					}
+					selectUnits(mode);
 					doDragMode(false);
 				}
 				rep = true;
@@ -681,7 +689,14 @@ public class PlanetScreen extends ScreenBase {
 				if (selectionMode) {
 					selectionMode = false;
 					selectionEnd = new Point(e.x, e.y);
-					selectUnits();
+					SelectionBoxMode mode = SelectionBoxMode.NEW;
+					if (e.has(Modifier.SHIFT)) {
+						mode = SelectionBoxMode.ADD;
+					} else
+					if (e.has(Modifier.CTRL)) {
+						mode = SelectionBoxMode.SUBTRACT;
+					}
+					selectUnits(mode);
 					rep = true;
 				}
 				break;
@@ -3199,17 +3214,29 @@ public class PlanetScreen extends ScreenBase {
 	}
 	/**
 	 * Select units within the selection rectangle.
+	 * @param mode the selection mode
 	 */
-	void selectUnits() {
+	void selectUnits(SelectionBoxMode mode) {
 		Rectangle sr = selectionRectangle();
 		boolean own = false;
 		boolean enemy = false;
+		
 		for (GroundwarUnit u : units) {
 			Rectangle r = unitRectangle(u);
 			
 			scaleToScreen(r);
+		
 			
-			u.selected = sr.intersects(r);
+			boolean in = sr.intersects(r);
+			if (mode == SelectionBoxMode.NEW) {
+				u.selected = in;
+			} else
+			if (mode == SelectionBoxMode.SUBTRACT) {
+				u.selected &= !in;
+			} else
+			if (mode == SelectionBoxMode.ADD) {
+				u.selected |= in;
+			}
 			
 			if (u.selected) {
 				own |= u.owner == player();
@@ -3220,7 +3247,16 @@ public class PlanetScreen extends ScreenBase {
 			Rectangle r = gunRectangle(g);
 			scaleToScreen(r);
 			
-			g.selected = sr.intersects(r);
+			boolean in = sr.intersects(r);
+			if (mode == SelectionBoxMode.NEW) {
+				g.selected = in;
+			} else
+			if (mode == SelectionBoxMode.SUBTRACT) {
+				g.selected &= !in;
+			} else
+			if (mode == SelectionBoxMode.ADD) {
+				g.selected |= in;
+			}
 
 			if (g.selected) {
 				own |= g.owner == player();
