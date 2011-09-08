@@ -4086,7 +4086,8 @@ public class PlanetScreen extends ScreenBase {
 	 */
 	boolean isRocketJammed(GroundwarRocket rocket, double penetrationRatio) {
 		for (GroundwarUnit u : units) {
-			if (u.owner != rocket.owner && u.model.type == GroundwarUnitType.ROCKET_JAMMER) {
+			if (u.owner != rocket.owner 
+					&& u.model.type == GroundwarUnitType.ROCKET_JAMMER && u.paralizedBy == null) {
 				double distance = Math.hypot(u.x - rocket.x, u.y - rocket.y);
 				if (distance < u.model.maxRange * penetrationRatio) {
 					if (u.phase == 0) {
