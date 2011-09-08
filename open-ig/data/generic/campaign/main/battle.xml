@@ -281,7 +281,7 @@
 	<!-- The rotation-fire phase matrixes for surface tanks and vehicles -->
 	<ground-vehicles>
 		<tech id='LightTank' normal='inventions/weapons/tanks/light_tank_matrix'
-			alternative='inventions/weapons/tanks/light_tank_matrix' width='16'
+			alternative='inventions/weapons/tanks/alien_light_tank_matrix' width='16'
 			height='5' destroy='EXPLOSION_SHORT' fire='GROUND_FIRE_6' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='TANK'/>
 		<tech id='MediumTank' normal='inventions/weapons/tanks/medium_tank_matrix'
 			alternative='inventions/weapons/tanks/alien_medium_tank_matrix'
@@ -297,10 +297,10 @@
 			width='16' height='5' destroy='EXPLOSION_MEDIUM' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='RADAR'/>
 		<tech id='RocketLauncher1' normal='inventions/weapons/vehicles/rocket_launcher_1_matrix'
 			alternative='inventions/weapons/vehicles/alien_rocket_launcher_1_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='ROCKET_SLED'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='1000' type='ROCKET_SLED'/>
 		<tech id='RocketLauncher2' normal='inventions/weapons/vehicles/rocket_launcher_2_matrix'
 			alternative='inventions/weapons/vehicles/alien_rocket_launcher_2_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='ROCKET_SLED'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='FIRE_ROCKET' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='1000' type='ROCKET_SLED'/>
 
 		<tech id='DargslanSelfRepairTank'
 			normal='inventions/weapons/vehicles/dargslan_self_repair_tank_matrix'
@@ -321,12 +321,6 @@
 		<tech id='YchomMineLayer' normal='inventions/weapons/vehicles/ychom_mine_layer_matrix'
 			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='MINELAYER'/>
 	</ground-vehicles>
-	<ground-weapons>
-		<tech id='Mine' matrix='groundwar/mine' width='1' height='1' />
-		<tech id='Rocket' matrix='inventions/weapons/vehicles/rocket_matrix'
-			width='16' height='3' sound='FIRE_ROCKET' />
-
-	</ground-weapons>
 	<!-- Contains explicit battle information for building turrets and weapon 
 		projectiles -->
 	<buildings>
