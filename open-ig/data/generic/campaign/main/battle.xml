@@ -315,9 +315,9 @@
 			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='RADAR_JAMMER'/>
 		<tech id='MorgathKamikazeTank'
 			normal='inventions/weapons/vehicles/morgath_kamikaze_tank_matrix'
-			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='KAMIKAZE'/>
+			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_6' hp='50' damage='5' min-range='0' max-range='1' area='2' movement-speed='50' rotation-time='100' delay='500' type='KAMIKAZE'/>
 		<tech id='SullepArtillery' normal='inventions/weapons/vehicles/sullep_artillery_matrix'
-			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_3' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='ARTILLERY'/>
+			width='16' height='5' destroy='EXPLOSION_LONG' fire='GROUND_FIRE_3' hp='50' damage='5' min-range='2' max-range='6' area='2' movement-speed='50' rotation-time='100' delay='500' type='ARTILLERY'/>
 		<tech id='YchomMineLayer' normal='inventions/weapons/vehicles/ychom_mine_layer_matrix'
 			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='50' damage='5' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='MINELAYER'/>
 	</ground-vehicles>

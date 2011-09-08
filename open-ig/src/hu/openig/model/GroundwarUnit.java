@@ -48,7 +48,7 @@ public class GroundwarUnit extends GroundwarObject {
 	/** The next move location. */
 	public Location nextMove;
 	/** Is the unit paralized? */
-	public boolean paralized;
+	public GroundwarUnit paralizedBy;
 	/** @return is this unit destroyed? */
 	public boolean isDestroyed() {
 		return hp <= 0;
