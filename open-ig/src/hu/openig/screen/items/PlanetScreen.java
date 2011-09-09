@@ -88,6 +88,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -256,6 +257,8 @@ public class PlanetScreen extends ScreenBase {
 	Set<GroundwarRocket> rockets = JavaUtils.newHashSet();
 	/** The groundwar animation simulator. */
 	Closeable simulator;
+	/** The helper map to list ground units to be rendered at a specific location. */
+	final Map<Location, Set<GroundwarUnit>> unitsAtLocation = JavaUtils.newHashMap();
 	/** The direct attack units. */
 	final EnumSet<GroundwarUnitType> directAttackUnits = EnumSet.of(
 			GroundwarUnitType.ARTILLERY,
@@ -378,6 +381,7 @@ public class PlanetScreen extends ScreenBase {
 		units.clear();
 		explosions.clear();
 		rockets.clear();
+		unitsAtLocation.clear();
 		
 		close0(simulator);
 		simulator = null;
@@ -797,50 +801,7 @@ public class PlanetScreen extends ScreenBase {
 
 			if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
 			
-				Rectangle br = surface.boundingRectangle;
-				g2.setColor(Color.YELLOW);
-				g2.drawRect(br.x, br.y, br.width, br.height);
-				
-				
-	//			long timestamp = System.nanoTime();
-				BufferedImage empty = areaEmpty.getStrip(0);
-				Rectangle renderingWindow = new Rectangle(0, 0, width, height);
-				for (int i = 0; i < surface.renderingOrigins.size(); i++) {
-					Location loc = surface.renderingOrigins.get(i);
-					for (int j = 0; j < surface.renderingLength.get(i); j++) {
-						int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
-						int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
-						Location loc1 = Location.of(loc.x - j, loc.y);
-						SurfaceEntity se = surface.buildingmap.get(loc1);
-						if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
-							se = surface.basemap.get(loc1);
-						}
-						if (se != null) {
-							getImage(se, false, loc1, cell);
-							int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
-							if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
-								if (cell.image != null) {
-									g2.drawImage(cell.image, x, yref, null);
-								}
-							}
-							// place guns on buildings or roads
-							if ((se.building != null 
-									&& "Defensive".equals(se.building.type.kind))
-									|| se.type == SurfaceEntityType.ROAD) {
-								drawGuns(g2, loc.x - j, loc.y);
-							}
-							// place units after
-							drawUnits(g2, loc.x - j, loc.y);
-							drawExplosions(g2, loc.x - j, loc.y);
-							drawRockets(g2, loc.x - j, loc.y);
-						} else {
-							if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
-								g2.drawImage(empty, x, y, null);
-							}
-						}
-						// place units
-					}
-				}
+				drawTiles(g2, surface, x0, y0);
 	//			System.out.println("draw: " + (1E9 / (System.nanoTime() - timestamp)));
 				if (placementHints) {
 					for (Location loc : surface.basemap.keySet()) {
@@ -887,192 +848,14 @@ public class PlanetScreen extends ScreenBase {
 						}
 					}
 				}
-				// unit selection boxes}
-				BufferedImage selBox = commons.colony().selectionBoxLight;
-				for (GroundwarUnit u : units) {
-					g2.setColor(Color.WHITE);
-					for (int i = 0; i < u.path.size() - 1; i++) {
-						Location l0 = u.path.get(i);
-						Location l1 = u.path.get(i + 1);
-						
-						int xa = x0 + Tile.toScreenX(l0.x, l0.y) + 27;
-						int ya = y0 + Tile.toScreenY(l0.x, l0.y) + 14;
-						int xb = x0 + Tile.toScreenX(l1.x, l1.y) + 27;
-						int yb = y0 + Tile.toScreenY(l1.x, l1.y) + 14;
-						
-						g2.drawLine(xa, ya, xb, yb);
-					}
-					if (u.attackBuilding != null) {
-						Point gp = centerOf(u.attackBuilding);
-						Point up = centerOf(u);
-						g2.setColor(Color.RED);
-						g2.drawLine(gp.x, gp.y, up.x, up.y);
-						
-					} else
-					if (u.attackUnit != null) {
-						Point gp = centerOf(u.attackUnit);
-						Point up = centerOf(u);
-						g2.setColor(Color.RED);
-						g2.drawLine(gp.x, gp.y, up.x, up.y);
-					}
-					if (u.selected) {
-						Point p = unitPosition(u);
-						g2.drawImage(selBox, p.x, p.y, null);
-					}
-				}
-				for (GroundwarGun g : guns) {
-					if (g.selected) {
-						Rectangle r = gunRectangle(g);
-						g2.drawImage(selBox, r.x + (r.width - selBox.getWidth()) / 2, r.y + (r.height - selBox.getHeight()) / 2, null);
-					}
-				}
+				drawBattleHelpers(g2, x0, y0);
 				if (config.showBuildingName && knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
-					for (Building b : surface.buildings) {
-						Rectangle r = getBoundingRect(b.location);
-						int nameSize = 10;
-						int nameLen = commons.text().getTextWidth(nameSize, b.type.name);
-						int h = (r.height - nameSize) / 2;
-						int nx = r.x + (r.width - nameLen) / 2;
-						int ny = r.y + h;
-						
-						Composite compositeSave = null;
-						Composite a1 = null;
-						
-						if (textBackgrounds) {
-							compositeSave = g2.getComposite();
-							a1 = AlphaComposite.SrcOver.derive(0.8f);
-							g2.setComposite(a1);
-							g2.setColor(Color.BLACK);
-							g2.fillRect(nx - 2, ny - 2, nameLen + 4, nameSize + 5);
-							g2.setComposite(compositeSave);
-						}
-						
-						commons.text().paintTo(g2, nx + 1, ny + 1, nameSize, 0xFF8080FF, b.type.name);
-						commons.text().paintTo(g2, nx, ny, nameSize, 0xD4FC84, b.type.name);
-	
-						// paint upgrade level indicator
-						int uw = b.upgradeLevel * commons.colony().upgrade.getWidth();
-						int ux = r.x + (r.width - uw) / 2;
-						int uy = r.y + h - commons.colony().upgrade.getHeight() - 4; 
-	
-						String percent = null;
-						int color = 0xFF8080FF;
-						if (b.isConstructing()) {
-							percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
-						} else
-						if (b.hitpoints < b.type.hitpoints) {
-							percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
-							if (!blink) {
-								color = 0xFFFF0000;
-							}
-						}
-						if (percent != null) {
-							int pw = commons.text().getTextWidth(10, percent);
-							int px = r.x + (r.width - pw) / 2;
-							int py = uy - 14;
-	
-							if (textBackgrounds) {
-								g2.setComposite(a1);
-								g2.setColor(Color.BLACK);
-								g2.fillRect(px - 2, py - 2, pw + 4, 15);
-								g2.setComposite(compositeSave);
-							}
-							
-							commons.text().paintTo(g2, px + 1, py + 1, 10, color, percent);
-							commons.text().paintTo(g2, px, py, 10, 0xD4FC84, percent);
-						}
-						if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
-							for (int i = 1; i <= b.upgradeLevel; i++) {
-								g2.drawImage(commons.colony().upgrade, ux, uy, null);
-								ux += commons.colony().upgrade.getWidth();
-							}
-							
-							if (b.enabled) {
-								int ey = r.y + h + 11;
-								int w = 0;
-								if (b.isEnergyShortage()) {
-									w += commons.colony().unpowered[0].getWidth();
-								}
-								if (b.isWorkerShortage()) {
-									w += commons.colony().worker[0].getWidth();
-								}
-								if (b.repairing) {
-									w += commons.colony().repair[0].getWidth();
-								}
-								int ex = r.x + (r.width - w) / 2;
-								// paint power shortage
-								if (b.isEnergyShortage()) {
-									g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
-									ex += commons.colony().unpowered[0].getWidth();
-								}
-								if (b.isWorkerShortage()) {
-									g2.drawImage(commons.colony().worker[blink ? 0 : 1], ex, ey, null);
-									ex += commons.colony().worker[0].getWidth();
-								}
-								if (b.repairing) {
-									g2.drawImage(commons.colony().repair[(animation % 3)], ex, ey, null);
-									ex += commons.colony().repair[0].getWidth();
-								}
-							} else {
-								int ey = r.y + h + 13;
-								String offline = get("buildings.offline");
-								int w = commons.text().getTextWidth(10, offline);
-								color = 0xFF8080FF;
-								if (!blink) {
-									color = 0xFFFF0000;
-								}
-								int ex = r.x + (r.width - w) / 2;
-								if (textBackgrounds) {
-									g2.setComposite(a1);
-									g2.setColor(Color.BLACK);
-									g2.fillRect(ex - 2, ey - 2, w + 4, 15);
-									g2.setComposite(compositeSave);
-								}
-								
-								commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
-								commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
-							}
-						}
-					}
+					drawBuildingHelpers(g2, surface);
 				}
 				// paint red on overlapping images of buildings, land-features and vehicles
 
 				if (!units.isEmpty()) {
-					for (GroundwarUnit u : units) {
-						Rectangle ur = unitRectangle(u);
-						for (Building b : surface().buildings) {
-							if (u.y <= b.location.y - b.tileset.normal.height
-									|| u.x < b.location.x
-									) {
-								continue;
-							}
-							Rectangle bur = buildingRectangle(b);
-							if (ur.intersects(bur)) {
-								Rectangle is = ur.intersection(bur);
-								BufferedImage ci = collisionImage(u, ur, b.tileset.normal, bur, is);
-								if (ci != null) {
-									g2.drawImage(ci, is.x, is.y, null);
-								}
-							}
-						}
-						for (SurfaceFeature sf : surface().features) {
-							if (u.y <= sf.location.y - sf.tile.height
-									|| u.x < sf.location.x
-									) {
-								continue;
-							}
-							if (sf.tile.width > 1 || sf.tile.height > 1) {
-								Rectangle fur = featureRectangle(sf);
-								if (ur.intersects(fur)) {
-									Rectangle is = ur.intersection(fur);
-									BufferedImage ci = collisionImage(u, ur, sf.tile, fur, is);
-									if (ci != null) {
-										g2.drawImage(ci, is.x, is.y, null);
-									}
-								}
-							}
-						}
-					}
+					drawHiddenUnitIndicators(g2);
 				}
 				
 				if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && buildingBox != null) {
@@ -1131,6 +914,263 @@ public class PlanetScreen extends ScreenBase {
 				g2.fillRect(prev.x - this.x - 1, prev.y - this.y - 1, prev.width + next.width + 4, prev.height + 2);
 			}
 			
+		}
+		/**
+		 * Draw hidden unit indicator red pixels.
+		 * @param g2 the graphics context
+		 */
+		void drawHiddenUnitIndicators(Graphics2D g2) {
+			for (GroundwarUnit u : units) {
+				Rectangle ur = unitRectangle(u);
+				for (Building b : surface().buildings) {
+					if (u.y <= b.location.y - b.tileset.normal.height
+							|| u.x < b.location.x
+							) {
+						continue;
+					}
+					Rectangle bur = buildingRectangle(b);
+					if (ur.intersects(bur)) {
+						Rectangle is = ur.intersection(bur);
+						BufferedImage ci = collisionImage(u, ur, b.tileset.normal, bur, is);
+						if (ci != null) {
+							g2.drawImage(ci, is.x, is.y, null);
+						}
+					}
+				}
+				for (SurfaceFeature sf : surface().features) {
+					if (sf.tile.width > 1 || sf.tile.height > 1) {
+						if (u.y <= sf.location.y - sf.tile.height
+								|| u.x < sf.location.x
+								) {
+							continue;
+						}
+						Rectangle fur = featureRectangle(sf);
+						if (ur.intersects(fur)) {
+							Rectangle is = ur.intersection(fur);
+							BufferedImage ci = collisionImage(u, ur, sf.tile, fur, is);
+							if (ci != null) {
+								g2.drawImage(ci, is.x, is.y, null);
+							}
+						}
+					}
+				}
+			}
+		}
+		/**
+		 * Draw building name, upgrade level, damage and allocation status.
+		 * @param g2 the graphics context
+		 * @param surface the surface object
+		 */
+		void drawBuildingHelpers(Graphics2D g2, PlanetSurface surface) {
+			for (Building b : surface.buildings) {
+				Rectangle r = getBoundingRect(b.location);
+				int nameSize = 10;
+				int nameLen = commons.text().getTextWidth(nameSize, b.type.name);
+				int h = (r.height - nameSize) / 2;
+				int nx = r.x + (r.width - nameLen) / 2;
+				int ny = r.y + h;
+				
+				Composite compositeSave = null;
+				Composite a1 = null;
+				
+				if (textBackgrounds) {
+					compositeSave = g2.getComposite();
+					a1 = AlphaComposite.SrcOver.derive(0.8f);
+					g2.setComposite(a1);
+					g2.setColor(Color.BLACK);
+					g2.fillRect(nx - 2, ny - 2, nameLen + 4, nameSize + 5);
+					g2.setComposite(compositeSave);
+				}
+				
+				commons.text().paintTo(g2, nx + 1, ny + 1, nameSize, 0xFF8080FF, b.type.name);
+				commons.text().paintTo(g2, nx, ny, nameSize, 0xD4FC84, b.type.name);
+
+				// paint upgrade level indicator
+				int uw = b.upgradeLevel * commons.colony().upgrade.getWidth();
+				int ux = r.x + (r.width - uw) / 2;
+				int uy = r.y + h - commons.colony().upgrade.getHeight() - 4; 
+
+				String percent = null;
+				int color = 0xFF8080FF;
+				if (b.isConstructing()) {
+					percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
+				} else
+				if (b.hitpoints < b.type.hitpoints) {
+					percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
+					if (!blink) {
+						color = 0xFFFF0000;
+					}
+				}
+				if (percent != null) {
+					int pw = commons.text().getTextWidth(10, percent);
+					int px = r.x + (r.width - pw) / 2;
+					int py = uy - 14;
+
+					if (textBackgrounds) {
+						g2.setComposite(a1);
+						g2.setColor(Color.BLACK);
+						g2.fillRect(px - 2, py - 2, pw + 4, 15);
+						g2.setComposite(compositeSave);
+					}
+					
+					commons.text().paintTo(g2, px + 1, py + 1, 10, color, percent);
+					commons.text().paintTo(g2, px, py, 10, 0xD4FC84, percent);
+				}
+				if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
+					for (int i = 1; i <= b.upgradeLevel; i++) {
+						g2.drawImage(commons.colony().upgrade, ux, uy, null);
+						ux += commons.colony().upgrade.getWidth();
+					}
+					
+					if (b.enabled) {
+						int ey = r.y + h + 11;
+						int w = 0;
+						if (b.isEnergyShortage()) {
+							w += commons.colony().unpowered[0].getWidth();
+						}
+						if (b.isWorkerShortage()) {
+							w += commons.colony().worker[0].getWidth();
+						}
+						if (b.repairing) {
+							w += commons.colony().repair[0].getWidth();
+						}
+						int ex = r.x + (r.width - w) / 2;
+						// paint power shortage
+						if (b.isEnergyShortage()) {
+							g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
+							ex += commons.colony().unpowered[0].getWidth();
+						}
+						if (b.isWorkerShortage()) {
+							g2.drawImage(commons.colony().worker[blink ? 0 : 1], ex, ey, null);
+							ex += commons.colony().worker[0].getWidth();
+						}
+						if (b.repairing) {
+							g2.drawImage(commons.colony().repair[(animation % 3)], ex, ey, null);
+							ex += commons.colony().repair[0].getWidth();
+						}
+					} else {
+						int ey = r.y + h + 13;
+						String offline = get("buildings.offline");
+						int w = commons.text().getTextWidth(10, offline);
+						color = 0xFF8080FF;
+						if (!blink) {
+							color = 0xFFFF0000;
+						}
+						int ex = r.x + (r.width - w) / 2;
+						if (textBackgrounds) {
+							g2.setComposite(a1);
+							g2.setColor(Color.BLACK);
+							g2.fillRect(ex - 2, ey - 2, w + 4, 15);
+							g2.setComposite(compositeSave);
+						}
+						
+						commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
+						commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
+					}
+				}
+			}
+		}
+		/**
+		 * Draw battle helper objects such as paths and attack targets.
+		 * @param g2 the graphics context
+		 * @param x0 the base x offset
+		 * @param y0 the base y offset
+		 */
+		void drawBattleHelpers(Graphics2D g2, int x0, int y0) {
+			// unit selection boxes}
+			BufferedImage selBox = commons.colony().selectionBoxLight;
+			for (GroundwarUnit u : units) {
+				g2.setColor(Color.WHITE);
+				for (int i = 0; i < u.path.size() - 1; i++) {
+					Location l0 = u.path.get(i);
+					Location l1 = u.path.get(i + 1);
+					
+					int xa = x0 + Tile.toScreenX(l0.x, l0.y) + 27;
+					int ya = y0 + Tile.toScreenY(l0.x, l0.y) + 14;
+					int xb = x0 + Tile.toScreenX(l1.x, l1.y) + 27;
+					int yb = y0 + Tile.toScreenY(l1.x, l1.y) + 14;
+					
+					g2.drawLine(xa, ya, xb, yb);
+				}
+				if (u.attackBuilding != null) {
+					Point gp = centerOf(u.attackBuilding);
+					Point up = centerOf(u);
+					g2.setColor(Color.RED);
+					g2.drawLine(gp.x, gp.y, up.x, up.y);
+					
+				} else
+				if (u.attackUnit != null) {
+					Point gp = centerOf(u.attackUnit);
+					Point up = centerOf(u);
+					g2.setColor(Color.RED);
+					g2.drawLine(gp.x, gp.y, up.x, up.y);
+				}
+				if (u.selected) {
+					Point p = unitPosition(u);
+					g2.drawImage(selBox, p.x, p.y, null);
+				}
+			}
+			for (GroundwarGun g : guns) {
+				if (g.selected) {
+					Rectangle r = gunRectangle(g);
+					g2.drawImage(selBox, r.x + (r.width - selBox.getWidth()) / 2, r.y + (r.height - selBox.getHeight()) / 2, null);
+				}
+			}
+		}
+		/**
+		 * Draw surface tiles and battle units.
+		 * @param g2 the graphics context
+		 * @param surface the surface object
+		 * @param x0 the base x offset
+		 * @param y0 the base y offset
+		 */
+		void drawTiles(Graphics2D g2, PlanetSurface surface, int x0, int y0) {
+			Rectangle br = surface.boundingRectangle;
+			g2.setColor(Color.YELLOW);
+			g2.drawRect(br.x, br.y, br.width, br.height);
+			
+			int cellCount = 0;
+//			long timestamp = System.nanoTime();
+			BufferedImage empty = areaEmpty.getStrip(0);
+			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
+			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
+				Location loc = surface.renderingOrigins.get(i);
+				for (int j = 0; j < surface.renderingLength.get(i); j++) {
+					int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
+					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
+					Location loc1 = Location.of(loc.x - j, loc.y);
+					SurfaceEntity se = surface.buildingmap.get(loc1);
+					if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
+						se = surface.basemap.get(loc1);
+					}
+					if (se != null) {
+						getImage(se, false, loc1, cell);
+						int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
+						if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
+							if (cell.image != null) {
+								g2.drawImage(cell.image, x, yref, null);
+								cellCount++;
+							}
+						}
+						// place guns on buildings or roads
+						if ((se.building != null 
+								&& "Defensive".equals(se.building.type.kind))
+								|| se.type == SurfaceEntityType.ROAD) {
+							drawGuns(g2, loc.x - j, loc.y);
+						}
+						// place units after
+						drawUnits(g2, loc.x - j, loc.y);
+						drawExplosions(g2, loc.x - j, loc.y);
+						drawRockets(g2, loc.x - j, loc.y);
+					} else {
+						if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
+							g2.drawImage(empty, x, y, null);
+						}
+					}
+					// place units
+				}
+			}
+			commons.text().paintTo(g2, -offsetX, -offsetY, 14, 0xFFFFFFFF, Integer.toString(cellCount));
 		}
 		/**
 		 * Render the problem icons.
@@ -2880,8 +2920,7 @@ public class PlanetScreen extends ScreenBase {
 				
 				GroundwarUnit u = new GroundwarUnit(ii.owner == player() ? bge.normal : bge.alternative);
 				Location loc = locations.removeFirst();
-				u.x = loc.x;
-				u.y = loc.y;
+				updateUnitLocation(u, loc.x, loc.y, false);
 				
 				u.selected = true;
 				
@@ -2925,6 +2964,7 @@ public class PlanetScreen extends ScreenBase {
 	/** Place various units around the colony hub. */
 	void doAddUnits() {
 		units.clear();
+		unitsAtLocation.clear();
 		LinkedList<Location> locs = new LinkedList<Location>();
 		for (Building b : surface().buildings) {
 			if (b.type.kind.equals("MainBuilding")) {
@@ -2947,8 +2987,7 @@ public class PlanetScreen extends ScreenBase {
 						
 						GroundwarUnit u = new GroundwarUnit(planet().owner == player() ? bgv.normal : bgv.alternative);
 						Location loc = locs.removeFirst();
-						u.x = loc.x;
-						u.y = loc.y;
+						updateUnitLocation(u, loc.x, loc.y, false);
 						
 						u.selected = true;
 						u.owner = planet().owner;
@@ -2981,8 +3020,7 @@ public class PlanetScreen extends ScreenBase {
 					BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
 					GroundwarUnit u = new GroundwarUnit(enemy == player() ? bgv.normal : bgv.alternative);
 					Location loc = locs.removeFirst();
-					u.x = loc.x;
-					u.y = loc.y;
+					updateUnitLocation(u, loc.x, loc.y, false);
 					
 					u.selected = true;
 					u.owner = enemy;
@@ -3004,12 +3042,11 @@ public class PlanetScreen extends ScreenBase {
 	 * @param cy the cell coordinates
 	 */
 	void drawUnits(Graphics2D g2, int cx, int cy) {
-		List<GroundwarUnit> multiple = JavaUtils.newArrayList();
-		for (GroundwarUnit u : units) {
-			if ((int)Math.floor(u.x - 1) == cx && (int)Math.floor(u.y) == cy) {
-				multiple.add(u);
-			}
+		Set<GroundwarUnit> unitsAt = unitsAtLocation.get(Location.of(cx, cy));
+		if (unitsAt == null) {
+			return;
 		}
+		List<GroundwarUnit> multiple = new ArrayList<GroundwarUnit>(unitsAt);
 		// order by y first, x later
 		Collections.sort(multiple, new Comparator<GroundwarUnit>() {
 			@Override
@@ -3377,6 +3414,7 @@ public class PlanetScreen extends ScreenBase {
 				if (exp.half()) {
 					if (exp.target != null) {
 						units.remove(exp.target);
+						removeUnitLocation(exp.target);
 						if (battle != null) {
 							battle.groundLosses.add(exp.target);
 						}
@@ -3951,14 +3989,12 @@ public class PlanetScreen extends ScreenBase {
 			double distanceToTarget = (u.nextMove.x - u.x) * (u.nextMove.x - u.x)
 					+ (u.nextMove.y - u.y) * (u.nextMove.y - u.y) / ratio;
 			if (distanceToTarget < dv * dv) {
-				u.x = u.nextMove.x;
-				u.y = u.nextMove.y;
+				updateUnitLocation(u, u.nextMove.x, u.nextMove.y, false);
 				u.nextMove = null;
 				u.path.remove(0);
 			} else {
 				double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
-				u.x += dv * Math.cos(angle);
-				u.y += dv * Math.sin(angle) / ratio;
+				updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle) / ratio, true);
 			}
 		}
 	}
@@ -4101,6 +4137,53 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 		return false;
+	}
+	/**
+	 * Remove a destroyed unit from the location helper.
+	 * @param u the unit to remove
+	 */
+	void removeUnitLocation(GroundwarUnit u) {
+		Location loc = Location.of((int)Math.floor(u.x - 1), (int)Math.floor(u.y));
+		Set<GroundwarUnit> set = unitsAtLocation.get(loc);
+		if (set != null) {
+			if (!set.remove(u)) {
+				System.out.printf("Unit was not found at location %s, %s%n", u.x - 1, u.y);
+			}
+		}
+	}
+	/**
+	 * Update the location of the specified unit by the given amount.
+	 * @param u the unit to move
+	 * @param dx the delta X to move
+	 * @param dy the delta Y to move
+	 * @param relative is this a relative move
+	 */
+	void updateUnitLocation(GroundwarUnit u, double dx, double dy, boolean relative) {
+		Location current = Location.of((int)Math.floor(u.x - 1), (int)Math.floor(u.y - 1));
+		if (relative) {
+			u.x += dx;
+			u.y += dy;
+		} else {
+			u.x = dx;
+			u.y = dy;
+		}
+		Location next = Location.of((int)Math.floor(u.x - 1), (int)Math.floor(u.y - 1));
+		if (!current.equals(next)) {
+			Set<GroundwarUnit> set = unitsAtLocation.get(current);
+			if (set != null) {
+				if (!set.remove(u)) {
+					System.out.printf("Unit was not found at location %s, %s%n", current.x, current.y);
+				}
+			}		
+			
+		}
+
+		Set<GroundwarUnit> set = unitsAtLocation.get(next);
+		if (set == null) {
+			set = JavaUtils.newHashSet();
+			unitsAtLocation.put(next, set);
+		}
+		set.add(u);
 	}
 }
 
