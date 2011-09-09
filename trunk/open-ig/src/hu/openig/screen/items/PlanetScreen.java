@@ -3457,7 +3457,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @param damage the damage amout
 	 */
 	void damageBuilding(Building b, int damage) {
-		b.hitpoints = Math.max(0, b.hitpoints - damage * 15);
+		b.hitpoints = Math.max(0, b.hitpoints - damage * b.type.hitpoints / world().getHitpoints(b.type, false));
 	}
 	/**
 	 * Update the properties of the target unit.
@@ -3645,7 +3645,7 @@ public class PlanetScreen extends ScreenBase {
 	void damageArea(double cx, double cy, int damage, int area) {
 		for (GroundwarUnit u : units) {
 			if (cellInRange(cx, cy, u.x, u.y, area)) {
-				u.damage(damage);
+				u.damage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
 				if (u.isDestroyed()) {
 					createExplosion(u, ExplosionType.GROUND_RED);
 				}
@@ -3654,7 +3654,7 @@ public class PlanetScreen extends ScreenBase {
 		for (Building b : surface().buildings) {
 			Location u = centerCellOf(b);
 			if (cellInRange(cx, cy, u.x, u.y, area)) {
-				damageBuilding(b, damage);
+				damageBuilding(b, (int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
 			}
 		}
 	}
