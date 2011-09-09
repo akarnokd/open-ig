@@ -1562,8 +1562,6 @@ public class World {
 			se.rotationTime = xdefense.getInt("rotation-time");
 			se.damage = xdefense.getInt("damage");
 			
-			se.hp = xdefense.getInt("hp");
-			
 			battle.groundProjectors.put(id, se);
 		}
 		for (XElement xdefense : xbattle.childElement("ground-shields").childrenWithName("tech")) {
@@ -1587,8 +1585,6 @@ public class World {
 				System.err.println("Missing sound for " + id);
 			}
 			se.shields = xdefense.getInt("shield");
-			
-			se.hp = xdefense.getInt("hp");
 			
 			battle.groundShields.put(id, se);
 		}
@@ -1630,6 +1626,9 @@ public class World {
 			ge.movementSpeed = xground.getInt("movement-speed");
 			ge.rotationTime = xground.getInt("rotation-time");
 			ge.delay = xground.getInt("delay");
+			if (xground.has("repair-time")) {
+				ge.selfRepairTime = xground.getInt("repair-time");
+			}
 			
 			battle.groundEntities.put(id, ge);
 		}
@@ -1668,7 +1667,11 @@ public class World {
 					battle.addTurret(id, rid, tr);
 				}
 			}
-			
+		}
+		// the building hitpoints
+		for (XElement xhp : xbattle.childElement("buildings").childrenWithName("hitpoints")) {
+			battle.groundHitpoints.put(xhp.get("id"), xhp.getInt("ground"));
+			battle.spaceHitpoints.put(xhp.get("id"), xhp.getInt("space"));
 		}
 	}
 
@@ -1753,16 +1756,13 @@ public class World {
 	/**
 	 * Returns the hitpoints of the given building type.
 	 * @param rt the research type
+	 * @param space the space hitpoints?
 	 * @return the hitpoints
 	 */
-	public int getHitpoints(BuildingType rt) {
-		BattleGroundProjector se = battle.groundProjectors.get(rt.id);
-		if (se != null) {
-			return se.hp;
-		}
-		BattleGroundShield e = battle.groundShields.get(rt.id);
-		if (e != null) {
-			return e.hp;
+	public int getHitpoints(BuildingType rt, boolean space) {
+		Integer hp = (space ? battle.spaceHitpoints : battle.groundHitpoints).get(rt.id);
+		if (hp != null) {
+			return hp;
 		}
 		return rt.hitpoints / 20;
 	}

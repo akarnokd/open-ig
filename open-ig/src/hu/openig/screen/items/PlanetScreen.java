@@ -3042,7 +3042,7 @@ public class PlanetScreen extends ScreenBase {
 			} else {
 				g2.setColor(new Color(0xAE6951));
 			}
-			g2.fillRect(p.x + 5, p.y + 4, u.hp * (img.getWidth() - 9) / u.model.hp, 3);
+			g2.fillRect(p.x + 5, p.y + 4, (int)(u.hp * (img.getWidth() - 9) / u.model.hp), 3);
 			
 			if (u.paralizedBy != null) {
 				if (blink) {
@@ -3432,6 +3432,9 @@ public class PlanetScreen extends ScreenBase {
 	void updateUnit(GroundwarUnit u) {
 		if (u.isDestroyed()) {
 			return;
+		}
+		if (u.model.selfRepairTime > 0) {
+			u.hp += 1.0 * u.model.hp / u.model.selfRepairTime;
 		}
 		if (u.phase > 0) {
 			u.phase++;

@@ -26,7 +26,7 @@ public class GroundwarUnit extends GroundwarObject {
 	/** The position with fractional precision in surface coordinates. */
 	public double y;
 	/** The available hitpoints. */
-	public int hp;
+	public double hp;
 	/** The original inventory item. */
 	public InventoryItem item;
 	/** The owner planet if non-null. */
