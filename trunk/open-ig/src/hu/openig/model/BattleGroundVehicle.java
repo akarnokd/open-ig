@@ -44,4 +44,6 @@ public class BattleGroundVehicle {
 	public int movementSpeed;
 	/** Delay between firing. */
 	public int delay;
+	/** Number of milliseconds for a full HP repair. */
+	public int selfRepairTime;
 }

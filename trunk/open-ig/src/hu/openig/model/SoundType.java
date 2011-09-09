@@ -129,18 +129,20 @@ public enum SoundType {
 	FIRE_3("spacewar/fire_3"),
 	/** Ground fire type 1. */
 	GROUND_FIRE_1("groundwar/fire_1"),
-	/** Ground fire type 1. */
+	/** Ground fire type 2. */
 	GROUND_FIRE_2("groundwar/fire_2"),
-	/** Ground fire type 1. */
+	/** Ground fire type 3. */
 	GROUND_FIRE_3("groundwar/fire_3"),
-	/** Ground fire type 1. */
+	/** Ground fire type 4. */
 	GROUND_FIRE_4("groundwar/fire_4"),
-	/** Ground fire type 1. */
+	/** Ground fire type 5. */
 	GROUND_FIRE_5("groundwar/fire_5"),
-	/** Ground fire type 1. */
+	/** Ground fire type 6. */
 	GROUND_FIRE_6("groundwar/fire_6"),
-	/** Ground fire type 1. */
+	/** Ground fire type 7. */
 	GROUND_FIRE_7("groundwar/fire_7"),
+	/** Ground rocket hit. */
+	GROUND_ROCKET_HIT("groundwar/ground_rocket_hit"),
 	/** Fire laser1. */
 	FIRE_LASER1("spacewar/fire_laser1"),
 	/** Fire laser2. */

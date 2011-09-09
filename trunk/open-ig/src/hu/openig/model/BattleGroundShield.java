@@ -25,6 +25,4 @@ public class BattleGroundShield {
 	public int shields;
 	/** The information image. */
 	public BufferedImage infoImage;
-	/** The hitpoints. */
-	public int hp;
 }

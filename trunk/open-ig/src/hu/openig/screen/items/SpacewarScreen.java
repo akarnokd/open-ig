@@ -1417,7 +1417,7 @@ public class SpacewarScreen extends ScreenBase {
 				sws.type = StructureType.SHIELD;
 				sws.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
 				sws.infoImage = bge.infoImage;
-				sws.hpMax = world().getHitpoints(b.type);
+				sws.hpMax = world().getHitpoints(b.type, true);
 				sws.hp = b.hitpoints * sws.hpMax / b.type.hitpoints;
 				sws.owner = nearbyPlanet.owner;
 				sws.destruction = bge.destruction;
@@ -1452,7 +1452,7 @@ public class SpacewarScreen extends ScreenBase {
 				sp.angles = alien ? bge.alternative : bge.normal;
 				sp.angle = Math.PI;
 				sp.infoImage = bge.infoImage;
-				sp.hpMax = world().getHitpoints(b.type);
+				sp.hpMax = world().getHitpoints(b.type, true);
 				sp.hp = b.hitpoints * sp.hpMax / b.type.hitpoints;
 				sp.owner = nearbyPlanet.owner;
 				sp.destruction = bge.destruction;
