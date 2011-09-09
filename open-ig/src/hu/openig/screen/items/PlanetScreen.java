@@ -1129,8 +1129,6 @@ public class PlanetScreen extends ScreenBase {
 			g2.setColor(Color.YELLOW);
 			g2.drawRect(br.x, br.y, br.width, br.height);
 			
-			int cellCount = 0;
-//			long timestamp = System.nanoTime();
 			BufferedImage empty = areaEmpty.getStrip(0);
 			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
 			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
@@ -1149,7 +1147,6 @@ public class PlanetScreen extends ScreenBase {
 						if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
 							if (cell.image != null) {
 								g2.drawImage(cell.image, x, yref, null);
-								cellCount++;
 							}
 						}
 						// place guns on buildings or roads
@@ -1170,7 +1167,6 @@ public class PlanetScreen extends ScreenBase {
 					// place units
 				}
 			}
-			commons.text().paintTo(g2, -offsetX, -offsetY, 14, 0xFFFFFFFF, Integer.toString(cellCount));
 		}
 		/**
 		 * Render the problem icons.
@@ -4143,13 +4139,21 @@ public class PlanetScreen extends ScreenBase {
 	 * @param u the unit to remove
 	 */
 	void removeUnitLocation(GroundwarUnit u) {
-		Location loc = Location.of((int)Math.floor(u.x - 1), (int)Math.floor(u.y));
+		Location loc = unitLocation(u);
 		Set<GroundwarUnit> set = unitsAtLocation.get(loc);
 		if (set != null) {
 			if (!set.remove(u)) {
-				System.out.printf("Unit was not found at location %s, %s%n", u.x - 1, u.y);
+				System.out.printf("Unit was not found at location %s, %s%n", loc.x, loc.y);
 			}
 		}
+	}
+	/**
+	 * Returns the given unit's rendering location in cell coordinates.
+	 * @param u the unit
+	 * @return the the rendering location
+	 */
+	Location unitLocation(GroundwarUnit u) {
+		return Location.of((int)Math.floor(u.x - 1), (int)Math.floor(u.y - 1));
 	}
 	/**
 	 * Update the location of the specified unit by the given amount.
@@ -4159,7 +4163,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @param relative is this a relative move
 	 */
 	void updateUnitLocation(GroundwarUnit u, double dx, double dy, boolean relative) {
-		Location current = Location.of((int)Math.floor(u.x - 1), (int)Math.floor(u.y - 1));
+		Location current = unitLocation(u);
 		if (relative) {
 			u.x += dx;
 			u.y += dy;
