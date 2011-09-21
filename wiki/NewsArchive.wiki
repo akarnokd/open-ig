@@ -2,6 +2,12 @@
 
 <wiki:toc max_depth="1" />
 
+= September, 2011 =
+
+*September 21, 2011*
+
+The ground and space battles are almost playable. The notable missing feature is the manual deployment of vehicles and the proper damage / hitpoint adjustments.
+
 = August, 2011 =
 
 *August 25, 2011*
