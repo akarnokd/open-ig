@@ -77,6 +77,7 @@ public class BattlefinishScreen extends ScreenBase {
 	}
 	@Override
 	public void onEnter(Screens mode) {
+		showText = false;
 		textDelay.start();
 	}
 

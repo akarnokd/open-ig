@@ -676,11 +676,13 @@ public class PlanetScreen extends ScreenBase {
 						} else {
 							doSelectBuilding(null);
 						}
-						selectionMode = true;
-						selectionStart = new Point(e.x, e.y);
-						selectionEnd = selectionStart;
-						rep = true;
-						doDragMode(true);
+						if (battle != null && !startBattle.visible()) {
+							selectionMode = true;
+							selectionStart = new Point(e.x, e.y);
+							selectionEnd = selectionStart;
+							rep = true;
+							doDragMode(true);
+						}
 					}
 				}
 				break;
@@ -783,6 +785,9 @@ public class PlanetScreen extends ScreenBase {
 			bridge.visible(showSidebarButtons && battle == null);
 			planets.visible(showSidebarButtons && battle == null);
 			
+			next.visible(battle == null);
+			prev.visible(battle == null);
+			
 			setBuildingList(0);
 			buildingInfoPanel.update();
 			PlanetStatistics ps = infoPanel.update();
@@ -869,7 +874,8 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 				drawBattleHelpers(g2, x0, y0);
-				if (config.showBuildingName && knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
+				if (config.showBuildingName 
+						&& (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0 || (battle != null && !startBattle.visible()))) {
 					drawBuildingHelpers(g2, surface);
 				}
 				// paint red on overlapping images of buildings, land-features and vehicles
@@ -933,7 +939,40 @@ public class PlanetScreen extends ScreenBase {
 				g2.setColor(Color.BLACK);
 				g2.fillRect(prev.x - this.x - 1, prev.y - this.y - 1, prev.width + next.width + 4, prev.height + 2);
 			}
-			
+			if (battle != null && startBattle.visible()) {
+				drawNextVehicleToDeploy(g2);
+			}
+		}
+		/**
+		 * Draw the next vehicle's image to deploy.
+		 * @param g2 the graphics context
+		 */
+		void drawNextVehicleToDeploy(Graphics2D g2) {
+			if (!unitsToPlace.isEmpty()) {
+				BufferedImage img = commons.colony().smallInfoPanel;
+				int x = buildingsPanel.x;
+				int y = buildingsPanel.y;
+				int w = img.getWidth();
+				int h = img.getHeight();
+				g2.drawImage(img, x, y, null);
+
+				String s = unitsToPlace.size() + " / " + (unitsToPlace.size() + units.size());
+				int sx = x + (w - commons.text().getTextWidth(7, s)) / 2;
+				commons.text().paintTo(g2, sx, y + 10, 7, TextRenderer.YELLOW, s);
+
+				
+				GroundwarUnit u = unitsToPlace.getFirst();
+				
+				BufferedImage ui = u.matrix()[0][0];
+				int ux = x + (w - ui.getWidth()) / 2;
+				int uy = y + 24;
+				
+				g2.drawImage(ui, ux, uy, null);
+				
+				s = u.item.type.name;
+				sx = x + (w - commons.text().getTextWidth(7, s)) / 2;
+				commons.text().paintTo(g2, sx, y + h - 14, 7, TextRenderer.YELLOW, s);
+			}
 		}
 		/**
 		 * Draw hidden unit indicator red pixels.
@@ -1149,13 +1188,13 @@ public class PlanetScreen extends ScreenBase {
 			g2.setColor(Color.YELLOW);
 			g2.drawRect(br.x, br.y, br.width, br.height);
 			
-			BufferedImage empty = areaEmpty.getStrip(0);
+//			BufferedImage empty = areaEmpty.getStrip(0);
 			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
 			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
 				Location loc = surface.renderingOrigins.get(i);
-				for (int j = 0; j < surface.renderingLength.get(i); j++) {
+				for (int j = 0; j < surface.renderingLength.get(i) + 2; j++) {
 					int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
-					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
+//					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
 					Location loc1 = Location.of(loc.x - j, loc.y);
 					SurfaceEntity se = surface.buildingmap.get(loc1);
 					if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
@@ -1176,15 +1215,16 @@ public class PlanetScreen extends ScreenBase {
 							drawGuns(g2, loc.x - j, loc.y);
 						}
 						// place units after
+//					} else {
+//						if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
+//							g2.drawImage(empty, x, y, null);
+//						}
+					}
+					if (battle != null) {
 						drawUnits(g2, loc.x - j, loc.y);
 						drawExplosions(g2, loc.x - j, loc.y);
 						drawRockets(g2, loc.x - j, loc.y);
-					} else {
-						if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
-							g2.drawImage(empty, x, y, null);
-						}
 					}
-					// place units
 				}
 			}
 		}
@@ -2673,7 +2713,7 @@ public class PlanetScreen extends ScreenBase {
 		starmap.location(bridge.x - starmap.width, base.y + base.height - starmap.height);
 		planets.location(starmap.x - planets.width, base.y + base.height - planets.height);
 		colonyInfo.location(planets.x - colonyInfo.width, base.y + base.height - colonyInfo.height);
-		startBattle.location(sidebarNavigation.x - startBattle.x - startBattle.width, sidebarNavigation.y + sidebarNavigation.height - startBattle.height);
+		startBattle.location(sidebarNavigation.x - startBattle.width, sidebarNavigation.y + sidebarNavigation.height - startBattle.height);
 
 		render.bounds(window.x, window.y, window.width, window.height);
 		
@@ -3334,8 +3374,10 @@ public class PlanetScreen extends ScreenBase {
 	 * @param my the mouse y
 	 */
 	void doMoveSelectedUnits(int mx, int my) {
+		boolean moved = false;
 		for (GroundwarUnit u : units) {
-			if (u.selected) {
+			if (u.selected && u.owner == player()) {
+				moved = true;
 				Location lu = Location.of((int)u.x, (int)u.y);
 				Location lm = render.getLocationAt(mx, my);
 				u.path.clear();
@@ -3357,6 +3399,9 @@ public class PlanetScreen extends ScreenBase {
 				}
 				u.attackUnit = null;
 			}
+		}
+		if (moved) {
+			sound(SoundType.ACKNOWLEDGE_2);
 		}
 	}
 	/**
@@ -3455,6 +3500,10 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 		
+		if (battle.attacker.owner == winner) {
+			world().takeover(planet(), winner);
+		}
+
 		battle = null;
 		
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
@@ -3537,6 +3586,7 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 				battle.defenderFortificationLosses++;
+				surface().removeBuilding(b);
 			}
 		}
 	}
@@ -3568,18 +3618,22 @@ public class PlanetScreen extends ScreenBase {
 						if (u.model.type == GroundwarUnitType.SELF_REPAIR_TANK
 								|| u.model.type == GroundwarUnitType.TANK
 								) {
-							u.attackUnit.damage(u.model.damage);
-							if (u.attackUnit.isDestroyed()) {
-								sound(u.attackUnit.model.destroy);
-								createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
-								
-								if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
-									if (u.attackUnit.attackUnit != null
-											&& u.attackUnit.attackUnit.paralizedBy == u.attackUnit) {
-										u.attackUnit.attackUnit.paralizedBy = null;
+							if (!u.attackUnit.isDestroyed()) {
+								u.attackUnit.damage(u.model.damage);
+								if (u.attackUnit.isDestroyed()) {
+									sound(u.attackUnit.model.destroy);
+									createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
+									
+									if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
+										if (u.attackUnit.attackUnit != null
+												&& u.attackUnit.attackUnit.paralizedBy == u.attackUnit) {
+											u.attackUnit.attackUnit.paralizedBy = null;
+										}
 									}
+									
+									u.attackUnit = null;
 								}
-								
+							} else {
 								u.attackUnit = null;
 							}
 						}
@@ -3670,7 +3724,7 @@ public class PlanetScreen extends ScreenBase {
 					if (u.path.isEmpty()) {
 						if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
 							// plot path to the building
-							u.path.addAll(pathfinding.search(
+							u.path.addAll(pathfinding.searchApproximate(
 									Location.of((int)u.x, (int)u.y), 
 									centerCellOf(u.attackBuilding)));
 						} else {
@@ -3726,9 +3780,11 @@ public class PlanetScreen extends ScreenBase {
 	void damageArea(double cx, double cy, int damage, int area) {
 		for (GroundwarUnit u : units) {
 			if (cellInRange(cx, cy, u.x, u.y, area)) {
-				u.damage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
-				if (u.isDestroyed()) {
-					createExplosion(u, ExplosionType.GROUND_RED);
+				if (!u.isDestroyed()) {
+					u.damage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
+					if (u.isDestroyed()) {
+						createExplosion(u, ExplosionType.GROUND_RED);
+					}
 				}
 			}
 		}
@@ -3749,10 +3805,14 @@ public class PlanetScreen extends ScreenBase {
 			g.phase++;
 			if (g.phase >= g.maxPhase()) {
 				if (unitInRange(g, g.attack, g.model.maxRange)) {
-					g.attack.damage(g.model.damage);
-					if (g.attack.isDestroyed()) {
-						sound(g.attack.model.destroy);
-						createExplosion(g.attack, ExplosionType.GROUND_RED);
+					if (!g.attack.isDestroyed()) {
+						g.attack.damage(g.model.damage);
+						if (g.attack.isDestroyed()) {
+							sound(g.attack.model.destroy);
+							createExplosion(g.attack, ExplosionType.GROUND_RED);
+							g.attack = null;
+						}
+					} else {
 						g.attack = null;
 					}
 					g.cooldown = g.model.delay;
@@ -3786,7 +3846,8 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the location of the center cell
 	 */
 	Location centerCellOf(Building b) {
-		return Location.of(b.location.x + b.tileset.normal.width / 2, b.location.y - b.tileset.normal.height);
+		return Location.of(b.location.x + b.tileset.normal.width / 2, 
+				b.location.y - b.tileset.normal.height / 2);
 	}
 	/**
 	 * Rotate the structure towards the given target angle by a step.
@@ -4078,8 +4139,10 @@ public class PlanetScreen extends ScreenBase {
 	 * Cancel movements and attacks of the selected units.
 	 */
 	void doStopSelectedUnits() {
+		boolean stopped = false;
 		for (GroundwarUnit u : units) {
-			if (u.selected /* && u.owner == player() */) {
+			if (u.selected && u.owner == player()) {
+				stopped = true;
 				u.path.clear();
 				if (u.nextMove != null) {
 					u.path.add(u.nextMove);
@@ -4094,9 +4157,13 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 		for (GroundwarGun g : guns) {
-			if (g.selected /* && g.owner == player() */) {
+			if (g.selected && g.owner == player()) {
+				stopped = true;
 				g.attack = null;
 			}
+		}
+		if (stopped) {
+			sound(SoundType.NOT_AVAILABLE);
 		}
 	}
 	/**
@@ -4105,8 +4172,9 @@ public class PlanetScreen extends ScreenBase {
 	 * @param my the mouse Y
 	 */
 	void doAttackWithSelectedUnits(int mx, int my) {
+		boolean attacked = true;
 		for (GroundwarUnit u : units) {
-			if (u.selected && directAttackUnits.contains(u.model.type)) {
+			if (u.selected && directAttackUnits.contains(u.model.type) && u.owner == player()) {
 				Location lm = render.getLocationAt(mx, my);
 				Building b = getBuildingAt(lm);
 				if (b != null && planet().owner != u.owner && u.model.type != GroundwarUnitType.PARALIZER) {
@@ -4116,6 +4184,7 @@ public class PlanetScreen extends ScreenBase {
 					for (GroundwarUnit u1 : units) {
 						if (u1 != u && u1.owner != u.owner
 								&& (int)u1.x == lm.x && (int)u1.y == lm.y) {
+							attacked = true;
 							u.attackUnit = u1;
 							u.attackBuilding = null;
 							break;
@@ -4126,16 +4195,20 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 		for (GroundwarGun g : guns) {
-			if (g.selected) {
+			if (g.selected && g.owner == player()) {
 				Location lm = render.getLocationAt(mx, my);
 				for (GroundwarUnit u1 : units) {
 					if (u1.owner != g.owner
 							&& (int)u1.x == lm.x && (int)u1.y == lm.y) {
 						g.attack = u1;
+						attacked = true;
 						break;
 					}
 				}
 			}
+		}
+		if (attacked) {
+			sound(SoundType.ACKNOWLEDGE_1);
 		}
 	}
 	/**
@@ -4251,7 +4324,7 @@ public class PlanetScreen extends ScreenBase {
 			u.x = dx;
 			u.y = dy;
 		}
-		Location next = Location.of((int)Math.floor(u.x - 1), (int)Math.floor(u.y - 1));
+		Location next = unitLocation(u);
 		if (!current.equals(next)) {
 			Set<GroundwarUnit> set = unitsAtLocation.get(current);
 			if (set != null) {
@@ -4266,6 +4339,19 @@ public class PlanetScreen extends ScreenBase {
 		if (set == null) {
 			set = JavaUtils.newHashSet();
 			unitsAtLocation.put(next, set);
+		}
+		set.add(u);
+	}
+	/**
+	 * Add a unit with its current location to the mapping.
+	 * @param u the unit to move
+	 */
+	void addUnitLocation(GroundwarUnit u) {
+		Location current = unitLocation(u);
+		Set<GroundwarUnit> set = unitsAtLocation.get(current);
+		if (set == null) {
+			set = JavaUtils.newHashSet();
+			unitsAtLocation.put(current, set);
 		}
 		set.add(u);
 	}
@@ -4291,7 +4377,7 @@ public class PlanetScreen extends ScreenBase {
 		battlePlacements.clear();
 		battlePlacements.addAll(setDeploymentLocations(planet().owner == player()));
 
-		unitsToPlace.clear(); // TODO
+		unitsToPlace.clear();
 		boolean atBuildings = planet().owner == player();
 		Iterable<InventoryItem> iis = atBuildings ? planet() : battle.attacker;
 		createGroundUnits(atBuildings, iis, unitsToPlace);
@@ -4444,7 +4530,9 @@ public class PlanetScreen extends ScreenBase {
 		if (locations.contains(loc)) {
 			locations.remove(loc);
 			GroundwarUnit u = units.removeFirst();
-			updateUnitLocation(u, x, y, false);
+			u.x = x;
+			u.y = y;
+			addUnitLocation(u);
 			units.add(u);
 		}
 		return units.isEmpty() || locations.isEmpty();
@@ -4508,7 +4596,9 @@ public class PlanetScreen extends ScreenBase {
 				if (!unitsToPlace.isEmpty()) {
 					GroundwarUnit u = unitsToPlace.removeFirst();
 					units.add(u);
-					updateUnitLocation(u, lm.x, lm.y, false);
+					u.x = lm.x;
+					u.y = lm.y;
+					addUnitLocation(u);
 					battlePlacements.remove(lm);
 				}
 			} else {

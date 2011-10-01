@@ -109,8 +109,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 
 	@Override
 	public boolean keyboard(KeyEvent e) {
-		// TODO Auto-generated method stub
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_SPACE) {
 			stopPlayback();
 		}
 		return false;
@@ -147,7 +146,6 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 
 	@Override
 	public void onLeave() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -229,7 +227,6 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
 		
 	}
 }

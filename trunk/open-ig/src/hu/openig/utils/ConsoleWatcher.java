@@ -105,6 +105,7 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 		area.append(String.format("   Operating system: %s, %s, %s%n", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version")));
 		area.append(String.format("   Game version: %s%n", version));
 		area.append(String.format("   Command line: %s%n", Arrays.toString(commandLine)));
+		area.append(String.format("   Available memory: %s MB%n", Runtime.getRuntime().freeMemory() / 1024 / 1024));
 		area.append(String.format("   Maximum memory: %s MB%n", Runtime.getRuntime().maxMemory() / 1024 / 1024));
 		area.append(String.format("   Parallelism: %s%n", Runtime.getRuntime().availableProcessors()));
 		area.append("----\r\n");
