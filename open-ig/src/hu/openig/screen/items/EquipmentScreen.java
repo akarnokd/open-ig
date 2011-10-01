@@ -719,10 +719,12 @@ public class EquipmentScreen extends ScreenBase {
 		}
 		for (int i = 0; i < 7; i++) {
 			VehicleCell vc = new VehicleCell(commons);
+			vc.z = 1;
 			vc.onSelect = selectVehicle;
 			leftTankCells.add(vc);
 			
 			vc = new VehicleCell(commons);
+			vc.z = 1;
 			vc.onSelect = selectVehicle;
 			rightTankCells.add(vc);
 		}
@@ -983,9 +985,11 @@ public class EquipmentScreen extends ScreenBase {
 			vc.bounds(rightPanel.x + 2 + i * 34, rightPanel.y + rightPanel.height - 56, 33, 28);
 		}
 
-		leftList.bounds(leftPanel.x + 72, leftPanel.y + 40, leftPanel.width - 74, leftPanel.height - 56 - 38);
-		rightList.bounds(rightPanel.x, rightPanel.y + 40, rightPanel.width - 22, rightPanel.height - 56 - 38);
-
+		leftList.bounds(leftPanel.x + 72, leftPanel.y + 40, leftPanel.width - 74, leftPanel.height - 56 - 39);
+		leftList.adjustScroll();
+		rightList.bounds(rightPanel.x, rightPanel.y + 40, rightPanel.width - 22, rightPanel.height - 56 - 39);
+		rightList.adjustScroll();
+		
 		configure.bounds(rightPanel.x, rightPanel.y + 28 + (rightPanel.height - 198) / 2, 298, 128);
 
 		innerEquipment.setBounds(base.x + 325, addOne.y - 36, 120, 35);
