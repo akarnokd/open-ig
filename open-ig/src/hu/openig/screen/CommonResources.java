@@ -608,7 +608,7 @@ public class CommonResources {
 	/** Convenience method to start playing the original battle music. */
 	public void playBattleMusic() {
 		stopMusic();
-		music.playFile(config.musicVolume, "music/Spacewar");
+		music.playFile(config.musicVolume, "music/War");
 	}
 	/** Stop the current music playback. */
 	public void stopMusic() {

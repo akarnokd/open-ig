@@ -637,7 +637,7 @@ public class GameWindow extends JFrame implements GameControls {
 				if (primary != null) {
 					primary.onLeave();
 				}
-				if (sound != null && config.computerVoiceScreen) {
+				if (sound != null && config.computerVoiceScreen && !commons.battleMode) {
 					commons.sounds.play(sound);
 				}
 				primary = sb;
@@ -1353,7 +1353,7 @@ public class GameWindow extends JFrame implements GameControls {
 		for (ScreenBase sb : screens) {
 			sb.onEndGame();
 		}
-
+		commons.battleMode = false;
 		displayPrimary(Screens.LOADING);
 		hideStatusbar();
 		
@@ -1520,7 +1520,6 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void startBattle() {
-		// TODO Auto-generated method stub
 		while (true) {
 			final BattleInfo bi = world().pendingBattles.poll();
 			// exit when no more battle is pending

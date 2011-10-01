@@ -3267,6 +3267,7 @@ public class SpacewarScreen extends ScreenBase {
 						@Override
 						public void act() {
 							PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
+							
 							ps.initiateBattle(bi);
 							commons.playBattleMusic();
 						}
