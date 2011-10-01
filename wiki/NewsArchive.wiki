@@ -2,6 +2,14 @@
 
 <wiki:toc max_depth="1" />
 
+= October, 2011 =
+
+Finally! The basic ground battle simulation is integrated into the game, but with two major shortcomings:
+  * Vehicles move over each other
+  * Firepower vs. Hitpoints are not properly adjusted, but Joe is working on it.
+
+Note also the memory requirements are now at least 768MB.
+
 = September, 2011 =
 
 *September 21, 2011*
