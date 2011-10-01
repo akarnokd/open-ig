@@ -21,13 +21,5 @@ Double click on the file, or in command line, type:
 java -jar open-ig-launcher.jar
 }}}
 
-== Differences from the original game ==
-Apart from the tons of missing screens and behaviors, there are few deliberate changes:
-  * Starmap and planet screens are occupying the entire window, the rest are centered and shadow out the big screens behind them. The original game was constrained to 640x480.
-  * Scrolling the starmap and planet is done using right-mouse pan. In the original game, you had to hold the right mouse button near the edges of the view to scroll it. I think this is a bit cumbersome for a modern UI game.
-  * Zoom is done with CTRL+Mouse Wheel. You can also left/right click on the zoom button to zoom in/out. The original game, you could click on the zoom button, or switch to zoom mode and click on the starmap. This is understandable, as in 1996 there were not many mouses with scroll wheel.
-  * Several additional information displays, new screens.
-  * Many graphical inconsistencies fixed.
-
 = About the author =
 I'm a Ph.D student specializing in Production Informatics, Supply Chains and Manufacturing Execution Systems.
