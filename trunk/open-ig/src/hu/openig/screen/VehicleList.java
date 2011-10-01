@@ -242,6 +242,10 @@ public class VehicleList extends UIContainer {
 	void doScrollDown() {
 		yOffset = Math.max(0, Math.min(yOffset + 16, maxHeight - height));
 	}
+	/** Adjust scroll level if the height changes. */
+	public void adjustScroll() {
+		yOffset = Math.max(0, Math.min(yOffset, maxHeight - height));
+	}
 	@Override
 	public void draw(Graphics2D g2) {
 		scrollUp.location(width - scrollUp.width, 0);

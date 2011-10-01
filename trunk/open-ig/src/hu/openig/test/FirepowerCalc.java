@@ -17,7 +17,7 @@ public final class FirepowerCalc {
 	 * @param args no arguments
 	 */
 	public static void main(String[] args) {
-		findSum(340, 10, 25, 30);
+		findSum(360, 10, 30, 35);
 	}
 	/**
 	 * Print sums which add up to the total.

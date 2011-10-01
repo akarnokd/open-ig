@@ -189,7 +189,7 @@ public class BattlefinishScreen extends ScreenBase {
 				y = printStatistics(g2, y, "battlefinish.shields", lossCount(true, "Shield"), lossCount(false, "Shield"));
 			}
 			if (battle.groundwarWinner != null) {
-				y = printStatistics(g2, y, "battlefinish.fortifications", 0, 0); // TODO
+				y = printStatistics(g2, y, "battlefinish.fortifications", 0, battle.defenderFortificationLosses); // TODO
 			}
 			y += 20;
 			

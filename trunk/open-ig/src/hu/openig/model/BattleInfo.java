@@ -47,6 +47,8 @@ public class BattleInfo {
 	public Player groundwarWinner;
 	/** The loser retreated. */
 	public boolean retreated;
+	/** The number of fortifications destroyed. */
+	public int defenderFortificationLosses;
 	/** The structure losses. */
 	public final Set<SpacewarStructure> spaceLosses = JavaUtils.newHashSet();
 	/** The ground unit losses. */
