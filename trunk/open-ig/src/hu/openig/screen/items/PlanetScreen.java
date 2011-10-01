@@ -241,6 +241,8 @@ public class PlanetScreen extends ScreenBase {
 	boolean showBuildingInfo = true;
 	/** Show the information panel. */
 	boolean showInfo = true;
+	/** Show the screen navigation buttons? */
+	boolean showSidebarButtons = true;
 	/** The set where the vehicles may be placed. */
 	final Set<Location> battlePlacements = JavaUtils.newHashSet();
 	/** The ground war units. */
@@ -268,6 +270,11 @@ public class PlanetScreen extends ScreenBase {
 			GroundwarUnitType.KAMIKAZE,
 			GroundwarUnitType.PARALIZER
 	);
+	/** The list of remaining units to place. */
+	final LinkedList<GroundwarUnit> unitsToPlace = JavaUtils.newLinkedList();
+	/** Start the battle. */
+	@DragSensitive
+	UIImageButton startBattle;
 
 	@Override
 	public void onFinish() {
@@ -313,6 +320,14 @@ public class PlanetScreen extends ScreenBase {
 			e.consume();
 			rep = true;
 		default:
+		}
+		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+			// back out of fight instantly
+			commons.restoreMainSimulationSpeedFunction();
+			commons.battleMode = false;
+			displayPrimary(Screens.STARMAP);
+			commons.playRegularMusic();
+			return true;
 		}
 		return rep;
 	}
@@ -756,12 +771,15 @@ public class PlanetScreen extends ScreenBase {
 				placementMode = false;
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
-				doAddGuns();
-				doAddUnits();
 			}
-			buildingsPanel.visible(planet().owner == player() && showBuildingList);
+			buildingsPanel.visible(planet().owner == player() && showBuildingList && battle == null);
 			buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
-			infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo);
+			infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo && battle == null);
+			
+			starmap.visible(showSidebarButtons && battle == null);
+			colonyInfo.visible(showSidebarButtons && battle == null);
+			bridge.visible(showSidebarButtons && battle == null);
+			planets.visible(showSidebarButtons && battle == null);
 			
 			setBuildingList(0);
 			buildingInfoPanel.update();
@@ -2439,6 +2457,8 @@ public class PlanetScreen extends ScreenBase {
 		sidebarBuildingInfo = new UIImageButton(commons.colony().sidebarBuildingInfo);
 		sidebarColonyInfo = new UIImageButton(commons.colony().sidebarColonyInfo);
 		sidebarNavigation = new UIImageButton(commons.colony().sidebarButtons);
+		startBattle = new UIImageButton(commons.colony().startBattle);
+		startBattle.visible(false);
 		
 		colonyInfo = new UIImageButton(commons.colony().colonyInfo);
 		bridge = new UIImageButton(commons.colony().bridge);
@@ -2468,10 +2488,7 @@ public class PlanetScreen extends ScreenBase {
 			@Override
 			public void act() {
 				sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
-				colonyInfo.visible(!colonyInfo.visible());
-				bridge.visible(!bridge.visible());
-				planets.visible(!planets.visible());
-				starmap.visible(!starmap.visible());
+				showSidebarButtons = !showSidebarButtons;
 			}
 		};
 		sidebarRadar.onClick = new Act() {
@@ -2624,6 +2641,14 @@ public class PlanetScreen extends ScreenBase {
 			}
 		};
 		
+		startBattle.onClick = new Act() {
+			@Override
+			public void act() {
+				doStartBattle();
+			}
+		};
+		
+		
 		initPathfinding();
 		
 		addThis();
@@ -2646,6 +2671,7 @@ public class PlanetScreen extends ScreenBase {
 		starmap.location(bridge.x - starmap.width, base.y + base.height - starmap.height);
 		planets.location(starmap.x - planets.width, base.y + base.height - planets.height);
 		colonyInfo.location(planets.x - colonyInfo.width, base.y + base.height - colonyInfo.height);
+		startBattle.location(sidebarNavigation.x - startBattle.x, sidebarNavigation.y + sidebarNavigation.height - startBattle.height);
 
 		render.bounds(window.x, window.y, window.width, window.height);
 		
@@ -2809,37 +2835,47 @@ public class PlanetScreen extends ScreenBase {
 		}
 		);
 	}
-	/** Place deployment indicators. */
-	void setDeploymentLocations() {
-		battlePlacements.clear();
-		if (planet().owner == player()) {
+	/** 
+	 * Place deployment indicators.
+	 * @param atBuildings should the placement locations around buildings?
+	 * @return the set of locations 
+	 */
+	Set<Location> setDeploymentLocations(boolean atBuildings) {
+		Set<Location> result = JavaUtils.newHashSet();;
+		if (atBuildings) {
 			for (Building b : planet().surface.buildings) {
-				placeAround(b);
+				result.addAll(placeAround(b));
 			}
 		} else {
 			for (int i = 0; i < 3; i++) {
-				placeEdge(i);
+				result.addAll(placeEdge(i));
 			}
 		}
+		return result;
 	}
 	/**
 	 * Place around building.
 	 * @param b the building
+	 * @return the set of available placement locations
 	 */
-	void placeAround(Building b) {
+	Set<Location> placeAround(Building b) {
+		Set<Location> result = JavaUtils.newHashSet();
 		for (int x = b.location.x - 3; x < b.location.x + b.tileset.normal.width + 3; x++) {
 			for (int y = b.location.y + 3; y > b.location.y - b.tileset.normal.height - 3; y--) {
 				if (surface().canPlaceBuilding(x, y)) {
-					battlePlacements.add(Location.of(x, y));
+					result.add(Location.of(x, y));
 				}						
 			}
 		}
+		return result;
 	}
 	/**
 	 * Place deployment indicators.
 	 * @param distance the distance from edge
+	 * @return the set of available placement locations
 	 */
-	void placeEdge(int distance) {
+	Set<Location> placeEdge(int distance) {
+		Set<Location> result = JavaUtils.newHashSet();
 		int w = planet().surface.width;
 		int h = planet().surface.height;
 		int n = 0;
@@ -2847,7 +2883,7 @@ public class PlanetScreen extends ScreenBase {
 		int y = -distance;
 		while (n < w) {
 			if (surface().canPlaceBuilding(x, y)) {
-				battlePlacements.add(Location.of(x, y));
+				result.add(Location.of(x, y));
 			}						
 			x++;
 			y--;
@@ -2858,7 +2894,7 @@ public class PlanetScreen extends ScreenBase {
 		y = -distance;
 		while (n < h) {
 			if (surface().canPlaceBuilding(x, y)) {
-				battlePlacements.add(Location.of(x, y));
+				result.add(Location.of(x, y));
 			}						
 			x--;
 			y--;
@@ -2869,7 +2905,7 @@ public class PlanetScreen extends ScreenBase {
 		y = -h + 1;
 		while (n < w) {
 			if (surface().canPlaceBuilding(x, y)) {
-				battlePlacements.add(Location.of(x, y));
+				result.add(Location.of(x, y));
 			}						
 			x++;
 			y--;
@@ -2880,56 +2916,13 @@ public class PlanetScreen extends ScreenBase {
 		y = -w + 1;
 		while (n < h) {
 			if (surface().canPlaceBuilding(x, y)) {
-				battlePlacements.add(Location.of(x, y));
+				result.add(Location.of(x, y));
 			}						
 			x--;
 			y--;
 			n++;
 		}
-	}
-	/**
-	 * Initiate a battle with the given settings.
-	 * @param battle the battle information
-	 */
-	public void initiateBattle(BattleInfo battle) {
-		// TODO prepare battle
-		
-		this.battle = battle;
-		
-		player().currentPlanet = battle.targetPlanet;
-
-		if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
-			world().takeover(battle.targetPlanet, battle.attacker.owner);
-			battle.groundwarWinner = battle.attacker.owner;
-		}
-		
-		setGroundWarTimeControls();
-		
-		setDeploymentLocations();
-
-		LinkedList<Location> locations = new LinkedList<Location>(battlePlacements);
-		for (InventoryItem ii : battle.attacker.inventory) {
-			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
-					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-
-				BattleGroundVehicle bge = world().battle.groundEntities.get(ii.type.id);
-				
-				GroundwarUnit u = new GroundwarUnit(ii.owner == player() ? bge.normal : bge.alternative);
-				Location loc = locations.removeFirst();
-				updateUnitLocation(u, loc.x, loc.y, false);
-				
-				u.selected = true;
-				
-				units.add(u);
-			}
-		}
-		
-		doAddGuns();
-		
-		// FIXME 
-		BattleInfo bi = battle;
-		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
-		bfs.displayBattleSummary(bi);
+		return result;
 	}
 	/** Add guns for the buildings. */
 	void doAddGuns() {
@@ -3429,7 +3422,67 @@ public class PlanetScreen extends ScreenBase {
 		for (GroundwarGun g : guns) {
 			updateGun(g);
 		}
+		Player winner = checkWinner();
+		if (winner != null && explosions.size() == 0 && rockets.size() == 0) {
+			commons.simulation.pause();
+			concludeBattle(winner);
+		}
 		askRepaint();
+	}
+	/**
+	 * Conclude the battle.
+	 * @param winner the winner
+	 */
+	void concludeBattle(Player winner) {
+		final BattleInfo bi = battle;
+		
+		bi.groundwarWinner = winner;
+		
+		for (GroundwarUnit u : bi.groundLosses) {
+			u.item.count--;
+			if (u.owner == planet().owner) {
+				bi.defenderGroundLosses++;
+				if (u.item.count <= 0) {
+					planet().inventory.remove(u.item);
+				}
+			} else {
+				bi.attackerGroundLosses++;
+				if (u.item.count <= 0) {
+					bi.attacker.inventory.remove(u.item);
+				}
+			}
+		}
+		
+		battle = null;
+		
+		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
+		bfs.displayBattleSummary(bi);
+	}
+	/** @return Check if one of the fighting parties has run out of units/structures. */
+	Player checkWinner() {
+		int attackerCount = 0;
+		int defenderCount = guns.size();
+		for (GroundwarUnit u : units) {
+			if (u.owner == planet().owner) {
+				defenderCount++;
+			} else {
+				attackerCount++;
+			}
+		}
+		// if attacker looses all of its units, the winner is always the defender
+		if (attackerCount == 0) {
+			return planet().owner;
+		} else
+		if (defenderCount == 0) {
+			return battle.attacker.owner;
+		}
+		return null;
+	}
+	/**
+	 * Conclude the battle.
+	 */
+	void concludeBattle() {
+		
 	}
 	/**
 	 * Is the given target within the min-max range of the unit.
@@ -3457,7 +3510,32 @@ public class PlanetScreen extends ScreenBase {
 	 * @param damage the damage amout
 	 */
 	void damageBuilding(Building b, int damage) {
+		int hpBefore = b.hitpoints;
 		b.hitpoints = Math.max(0, b.hitpoints - damage * b.type.hitpoints / world().getHitpoints(b.type, false));
+		// if damage passes the half mark
+		if (hpBefore * 2 >= b.type.hitpoints && b.hitpoints * 2 < b.type.hitpoints) {
+			if ("Defensive".equals(b.type.kind)) {
+				int count = world().battle.getTurrets(b.type.id, planet().race).size() / 2;
+				int i = guns.size() - 1;
+				while (i >= 0 && count > 0) {
+					// remove half of the guns
+					if (guns.get(i).building == b) {
+						count--;
+						guns.remove(i);
+					}
+					i--;
+				}
+			}
+		}
+		// if building got destroyed
+		if (hpBefore > 0 && b.hitpoints <= 0) {
+			for (int i = guns.size() - 1; i >= 0; i--) {
+				if (guns.get(i).building == b) {
+					// remove guns
+					guns.remove(i);
+				}
+			}
+		}
 	}
 	/**
 	 * Update the properties of the target unit.
@@ -4188,6 +4266,161 @@ public class PlanetScreen extends ScreenBase {
 			unitsAtLocation.put(next, set);
 		}
 		set.add(u);
+	}
+	/**
+	 * Initiate a battle with the given settings.
+	 * @param battle the battle information
+	 */
+	public void initiateBattle(BattleInfo battle) {
+		// TODO prepare battle
+		
+		this.battle = battle;
+		
+		player().currentPlanet = battle.targetPlanet;
+
+		if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
+			world().takeover(battle.targetPlanet, battle.attacker.owner);
+			battle.groundwarWinner = battle.attacker.owner;
+		}
+		
+		setGroundWarTimeControls();
+		
+		battlePlacements.clear();
+		battlePlacements.addAll(setDeploymentLocations(planet().owner == player()));
+
+		doAddGuns();
+		startBattle.visible(true);
+	}
+	/** Deploy the non-player vehicles. */
+	void deployNonPlayerVehicles() {
+		boolean atBuildings = planet().owner != player();
+		
+		Iterable<InventoryItem> iis = atBuildings ? planet() : battle.attacker;
+		
+		LinkedList<GroundwarUnit> gus = JavaUtils.newLinkedList();
+		// create units
+		createNonPlayerUnits(atBuildings, iis, gus);
+		
+		placeNonPlayerUnits(atBuildings, gus);
+	}
+
+	/**
+	 * Place the non-player units near the geometric center of the deployment location.
+	 * @param atBuildings place at buildings
+	 * @param gus the list of units
+	 */
+	void placeNonPlayerUnits(boolean atBuildings, LinkedList<GroundwarUnit> gus) {
+		Set<Location> locations = setDeploymentLocations(atBuildings);
+		if (atBuildings) {
+			// locate geometric center
+			double cx = 0;
+			double cy = 0;
+			boolean first = true;
+			int minX = 0;
+			int maxX = 0;
+			int minY = 0;
+			int maxY = 0;
+			for (Location loc : locations) {
+				cx += loc.x;
+				cy += loc.y;
+				if (first) {
+					minX = loc.x;
+					maxX = loc.x;
+					minY = loc.y;
+					maxY = loc.y;
+					first = false;
+				} else {
+					minX = Math.min(minX, loc.x);
+					minY = Math.min(minY, loc.y);
+					maxX = Math.max(maxX, loc.x);
+					maxY = Math.max(maxY, loc.y);
+				}
+			}
+			cx /= locations.size();
+			cy /= locations.size();
+			int icx = (int)cx;
+			int icy = (int)cy;
+			// expand radially and place vehicles
+			int rmax = Math.max(Math.max(Math.abs(icx - minX), Math.abs(icx - maxX)), Math.max(Math.abs(icy - minY), Math.abs(icy - maxY))) + 1;
+			outer:
+			for (int r = 0; r < rmax; r++) {
+				for (int x = icx - r; x <= icx + r; x++) {
+					if (tryPlaceNonPlayerUnit(x, icy + r, locations, gus)) {
+						break outer;
+					}
+					if (tryPlaceNonPlayerUnit(x, icy - r, locations, gus)) {
+						break outer;
+					}
+				}
+				for (int y = icy + r; y >= icy - r; y--) {
+					if (tryPlaceNonPlayerUnit(icx - r, y, locations, gus)) {
+						break outer;
+					}
+					if (tryPlaceNonPlayerUnit(icx + r, y, locations, gus)) {
+						break outer;
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Try placing an unit at the specified location and if successful,
+	 * remove the location and unit from the corresponding collection.
+	 * @param x the location X
+	 * @param y the location Y
+	 * @param locations the set of locations
+	 * @param units the list of units
+	 * @return if no more units or locations available
+	 */
+	boolean tryPlaceNonPlayerUnit(int x, int y, Set<Location> locations, LinkedList<GroundwarUnit> units) {
+		Location loc = Location.of(x, y);
+		if (locations.contains(loc)) {
+			locations.remove(loc);
+			GroundwarUnit u = units.removeFirst();
+			updateUnitLocation(u, x, y, false);
+			units.add(u);
+		}
+		return units.isEmpty() || locations.isEmpty();
+	}
+	/**
+	 * Create the non-player units.
+	 * @param atBuildings place them at buildings
+	 * @param iis the inventory
+	 * @param gus the unit holder
+	 */
+	void createNonPlayerUnits(boolean atBuildings, Iterable<InventoryItem> iis,
+			LinkedList<GroundwarUnit> gus) {
+		for (InventoryItem ii : iis) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+
+				BattleGroundVehicle bge = world().battle.groundEntities.get(ii.type.id);
+				
+				GroundwarUnit u = new GroundwarUnit(ii.owner == player() 
+						? bge.normal : bge.alternative);
+				
+				if (atBuildings) {
+					u.owner = planet().owner;
+					u.planet = planet();
+				} else {
+					u.owner = battle.attacker.owner;
+					u.fleet = battle.attacker;
+				}
+				
+				u.model = bge;
+				u.hp = u.model.hp;
+				
+				gus.add(u);
+			}
+		}
+	}
+	/**
+	 * Start the battle. 
+	 */
+	void doStartBattle() {
+		deployNonPlayerVehicles();
+		startBattle.visible(false);
+		commons.simulation.resume();
 	}
 }
 
