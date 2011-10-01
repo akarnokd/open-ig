@@ -22,8 +22,8 @@
 || Screen: Credits || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || A simple scrolling credits. *v0.91* ||
 || Sound & Music integration || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Add sound and music, add statusbar notification and message history. *v0.91* music deferred. ||
 || Music || 2011-07-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Add music. *v0.92* ||
-|| Surface & Space battles || 2011-10-02 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Rendering and basic simulation ||
-|| Create the Artificial Intelligence || 2011-10-09 || - || This is going to be a real challenge. ||
+|| Surface & Space battles || 2011-10-02 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Rendering and basic simulation. *v0.93.450* ||
+|| Create the Artificial Intelligence || 2011-10-09 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || This is going to be a real challenge. ||
 || Profile & Achievements || 2011-10-16 || - || Create a profile system and add achievement display & tracking. ||
 || Screen: Diplomacy || 2011-10-16 || - || I need to run the original game to figure out the available talk options. ||
 || Screen: Bridge & Walk|| 2011-10-23 || - || Complete the bridge screen with working communications. Replace gray areas with other means to indicate a clickable position. ||
