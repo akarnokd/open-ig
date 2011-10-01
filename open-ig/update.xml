@@ -25,7 +25,7 @@
 			<desc lang='en'>The program's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.93.425'>
+	<module id='Game' version='0.93.450'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -34,21 +34,25 @@
 				The Open Imperium Galactica game.
 			</desc>
 		</general>
-		<execute file='open-ig-%s.jar' memory='640'/>
+		<execute file='open-ig-%s.jar' memory='768'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>Javítások.</desc>
-			<desc lang='en'>Fixes.</desc>
+			<desc lang='hu'>Földharc.</desc>
+			<desc lang='en'>Ground battle.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.425.jar' sha1='8b66dd198e870cb149dedbba479c6ae48a4d5299'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.450.jar' sha1='a4ea4193cf535b27e521ff9ec61c43fedf356546'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
 
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110831a.zip' sha1='d3b7b809f68283cb069fc5d9a7b1b5729d8e5c69'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20111001a.zip' sha1='f168cc09014428ecb5dd681fd7828f575b369015'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 októbar 1 / A</desc>
+			<desc lang='en'>The upgraded resource file. 1st October, 2011 / A</desc>
+		</file>
+		<remove file='open-ig-upgrade-20110831a.zip' sha1='d3b7b809f68283cb069fc5d9a7b1b5729d8e5c69'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 31 / A</desc>
 			<desc lang='en'>The upgraded resource file. 31th August, 2011 / A</desc>
-		</file>
+		</remove>
 		<remove file='open-ig-upgrade-20110825a.zip' sha1='6fefb41d69fa2361ce45fe469a26e8ef28209ddd'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 25 / A</desc>
 			<desc lang='en'>The upgraded resource file. 25th August, 2011 / A</desc>
