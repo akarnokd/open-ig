@@ -9,6 +9,7 @@
   * Improved the battle music quality.
   * Small UI improvements.
   * Added _statistics_ and _achievements_ button to the starmap screen.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=103 Issue #103] Sullep destroyer image.
 
 = Version 0.93.425 - Fixes =
   * Released: 2011-08-31 14:00 CET
