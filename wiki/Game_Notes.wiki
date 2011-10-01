@@ -2,6 +2,14 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.450 - Ground battles =
+  * Released: 2011-10-01 14:30 CET
+  * *You may need to start a new game!*
+  * Added ground battles.
+  * Improved the battle music quality.
+  * Small UI improvements.
+  * Added _statistics_ and _achievements_ button to the starmap screen.
+
 = Version 0.93.425 - Fixes =
   * Released: 2011-08-31 14:00 CET
   * *You may need to start a new game!*
