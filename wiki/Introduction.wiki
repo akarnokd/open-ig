@@ -5,7 +5,7 @@
  * Java JRE/JDK 1.6.X or 1.7.X, *Java 7 recommended*
  * Any operating system with graphical user interface
  * A mouse with scroll wheel.
- * 640 MB RAM
+ * 768 MB RAM
  * 1.2 GB disk space
  * 1.5 GHz P4 or equivalent (estimated)
  * Optional: GPU with DirectX/OpenGL hardware acceleration
