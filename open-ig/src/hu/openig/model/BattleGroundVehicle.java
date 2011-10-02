@@ -46,4 +46,6 @@ public class BattleGroundVehicle {
 	public int delay;
 	/** Number of milliseconds for a full HP repair. */
 	public int selfRepairTime;
+	/** The technology name. */
+	public String id;
 }

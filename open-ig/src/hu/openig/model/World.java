@@ -1602,6 +1602,8 @@ public class World {
 			int ny = xground.getInt("height");
 			BattleGroundVehicle ge = new BattleGroundVehicle();
 
+			ge.id = id;
+			
 			BufferedImage ni = rl.getImage(xground.get("normal"));
 			ge.normal = ImageUtils.split(ni, ni.getWidth() / nx, ni.getHeight() / ny);
 			
