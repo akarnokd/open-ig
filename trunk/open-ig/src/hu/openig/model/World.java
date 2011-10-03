@@ -1479,9 +1479,11 @@ public class World {
 			
 			BufferedImage m = rl.getImage(xproj.get("matrix"));
 			bp.matrix = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
+			trimTransparencyOnSides(bp.matrix);
 			if (xproj.has("alternative")) {
 				m = rl.getImage(xproj.get("alternative"));
 				bp.alternative = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
+				trimTransparencyOnSides(bp.alternative);
 			} else {
 				bp.alternative = bp.matrix;
 			}
@@ -1514,13 +1516,15 @@ public class World {
 			
 			BufferedImage ni = rl.getImage(xspace.get("normal"));
 			se.normal = ImageUtils.splitByWidth(ni, ni.getWidth() / nx);
-			
+			trimTransparencyOnSides(se.normal);
 			if (xspace.has("alternative")) {
 				BufferedImage ai = rl.getImage(xspace.get("alternative"));
 				se.alternative = ImageUtils.splitByWidth(ai, ai.getWidth() / nx);
+				trimTransparencyOnSides(se.alternative);
 			} else {
 				se.alternative = se.normal;
 			}
+			
 			se.infoImage = rl.getImage(xspace.get("image"));
 			se.destruction = SoundType.valueOf(xspace.get("sound"));
 			if (se.destruction == null) {
@@ -1545,10 +1549,12 @@ public class World {
 			
 			BufferedImage ni = rl.getImage(xdefense.get("normal"));
 			se.normal = ImageUtils.splitByWidth(ni, ni.getWidth() / nx);
+			trimTransparencyOnSides(se.normal);
 			
 			if (xdefense.has("alternative")) {
 				BufferedImage ai = rl.getImage(xdefense.get("alternative"));
 				se.alternative = ImageUtils.splitByWidth(ai, ai.getWidth() / nx);
+				trimTransparencyOnSides(se.alternative);
 			} else {
 				se.alternative = se.normal;
 			}
@@ -1606,10 +1612,15 @@ public class World {
 			
 			BufferedImage ni = rl.getImage(xground.get("normal"));
 			ge.normal = ImageUtils.split(ni, ni.getWidth() / nx, ni.getHeight() / ny);
+			ge.width = ni.getWidth() / nx;
+			ge.height = ni.getHeight() / ny;
+			
+			trimTransparencyOnSides(ge.normal);
 			
 			if (xground.has("alternative")) {
 				BufferedImage ai = rl.getImage(xground.get("alternative"));
 				ge.alternative = ImageUtils.split(ai, ai.getWidth() / nx, ai.getHeight() / ny);
+				trimTransparencyOnSides(ge.normal);
 			} else {
 				ge.alternative = ge.normal;
 			}
@@ -1676,7 +1687,71 @@ public class World {
 			battle.spaceHitpoints.put(xhp.get("id"), xhp.getInt("space"));
 		}
 	}
+	/**
+	 * Trim the image items symmetrically to free up some unnecessary memory
+	 * and rendering time.
+	 * @param images the image matrix
+	 */
+	void trimTransparencyOnSides(BufferedImage[][] images) {
+		for (BufferedImage[] img : images) {
+			trimTransparencyOnSides(img);
+		}
+	}
+	/**
+	 * Trim the image items symmetrically to free up some unnecessary memory
+	 * and rendering time.
+	 * @param images the image arrays
+	 */
+	void trimTransparencyOnSides(BufferedImage[] images) {
+		for (int i = 0; i < images.length; i++) {
+			BufferedImage img = images[i];
 
+			int tx = 0;
+			int ty = 0;
+			
+			int w = img.getWidth();
+			int h = img.getHeight();
+			
+			// horizontal
+			outer:
+			for (int x = 0; x < w / 2; x++) {
+				for (int y = 0; y < h; y++) {
+					int c = img.getRGB(x, y);
+					if ((c & 0xFF000000) != 0) {
+						tx = x - 1;
+						break outer;
+					}
+					c = img.getRGB(w - x - 1, y);
+					if ((c & 0xFF000000) != 0) {
+						tx = x - 1;
+						break outer;
+					}
+				}
+			}
+
+			// vertical
+			outer2:
+			for (int y = 0; y < h / 2; y++) {
+				for (int x = 0; x < w; x++) {
+					int c = img.getRGB(x, y);
+					if ((c & 0xFF000000) != 0) {
+						ty = y - 1;
+						break outer2;
+					}
+					c = img.getRGB(x, h - y - 1);
+					if ((c & 0xFF000000) != 0) {
+						ty = y - 1;
+						break outer2;
+					}
+				}
+			}
+			tx = Math.max(0, tx);
+			ty = Math.max(0, ty);
+			if (tx > 0 || ty > 0) {
+				images[i] = ImageUtils.newSubimage(img, tx, ty, w - 2 * tx, h - 2 * ty);
+			}
+		}
+	}
 	/**
 	 * Compute the distance square between two points.
 	 * @param x1 the first X

@@ -48,4 +48,8 @@ public class BattleGroundVehicle {
 	public int selfRepairTime;
 	/** The technology name. */
 	public String id;
+	/** The original image width. */
+	public int width;
+	/** The original image height. */
+	public int height;
 }
