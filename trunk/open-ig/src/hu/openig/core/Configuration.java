@@ -78,8 +78,8 @@ public class Configuration {
 	@LoadSave
 	private String fileName;
 	/** The number of audio channels. */
-	@LoadSave
-	public int audioChannels = 8;
+//	@LoadSave
+	public int audioChannels = 16;
 	/** The music volume 0-100. */
 	@LoadSave
 	@LoadSaveGame

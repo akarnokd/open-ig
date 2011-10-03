@@ -16,17 +16,16 @@ import hu.openig.model.SoundType;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.JavaUtils;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -77,6 +76,8 @@ public class Sounds {
 	final Map<AudioFormatType, BlockingQueue<SourceDataLine>> soundPool = JavaUtils.newHashMap();
 	/** The sound pool. */
 	ExecutorService exec;
+	/** The parallel sound effect semaphore. */
+	Semaphore effectSemaphore;
 	/** Function to retrieve the current volume. */
 	private Func1<Void, Integer> getVolume;
 	/**
@@ -132,21 +133,24 @@ public class Sounds {
 						Thread t = new Thread(r, "UISounds-" + tid.incrementAndGet());
 						return t;
 					}
-				},
+				}
+				/*
+				,
 				new RejectedExecutionHandler() {
 					@Override
 					public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-						// ignore
+						System.err.println("Rejected");
 					}
-				} 
+				}
+				*/
 				
 		);
 		exec = tpe;
+		effectSemaphore = new Semaphore(channels);
 		// initialize the sound pool
 		for (AudioFormatType aft : soundFormat.values()) {
 			if (!soundPool.containsKey(aft)) {
 				soundPool.put(aft, new LinkedBlockingQueue<SourceDataLine>());
-				addLine(aft);
 			}
 		}
 	}
@@ -195,15 +199,19 @@ public class Sounds {
 			} catch (InterruptedException ex) {
 				// ignored
 			}
-			for (BlockingQueue<SourceDataLine> lines : soundPool.values()) {
-				while (!lines.isEmpty()) {
-					try {
-						lines.take().close();
-					} catch (InterruptedException ex) {
-						// ignored
+			for (Map.Entry<AudioFormatType, BlockingQueue<SourceDataLine>> lines : soundPool.entrySet()) {
+				int cnt = 0;
+				while (true) {
+					SourceDataLine sdl = lines.getValue().poll();
+					if (sdl == null) {
+						break;
 					}
+					sdl.close();
+					cnt++;
 				}
+				System.out.printf("Closed %d of %s%n", cnt, lines.getKey().format);
 			}
+			soundPool.clear();
 		}
 		
 	}
@@ -217,49 +225,54 @@ public class Sounds {
 		}
 		final int vol = getVolume.invoke(null);
 		if (vol > 0) {
-			exec.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
+			if (effectSemaphore.tryAcquire()) {
+				exec.execute(new Runnable() {
+					@Override
+					public void run() {
 						byte[] data = soundMap.get(effect);
 						AudioFormatType aft = soundFormat.get(effect);
-						SourceDataLine sdl = getLine(aft);
-						if (sdl != null) {
-							try {
-								AudioThread.setVolume(sdl, vol);
-								sdl.start();
-								sdl.write(data, 0, data.length);
-								sdl.drain();
-								sdl.stop();
-							} finally {
-								putBackLine(aft, sdl);
+						try {
+							SourceDataLine sdl = getLine(aft);
+							if (sdl != null) {
+								try {
+									AudioThread.setVolume(sdl, vol);
+									sdl.start();
+									sdl.write(data, 0, data.length);
+									sdl.drain();
+									sdl.stop();
+								} finally {
+									putBackLine(aft, sdl);
+								}
 							}
+						} catch (Throwable t) {
+							t.printStackTrace();
+						} finally {
+							effectSemaphore.release();
 						}
-					} catch (Throwable t) {
-						t.printStackTrace();
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 	
 	/**
 	 * Test program for sound effects.
 	 * @param args no arguments
-	 * @throws IOException on error
+	 * @throws Exception on error
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		final Configuration config = new Configuration("open-ig-config.xml");
 		config.load();
 		Sounds s = new Sounds(config.newResourceLocator());
-		s.initialize(8, new Func1<Void, Integer>() {
+		s.initialize(config.audioChannels, new Func1<Void, Integer>() {
 			@Override
 			public Integer invoke(Void value) {
-				return config.effectVolume;
+				return 100;
 			}
 		});
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		String line = null;
+//		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+//		String line = in.readLine();
+		/*
 		int i = 0;
 		SoundType[] values = SoundType.values();
 		while ((line = in.readLine()) != null) {
@@ -269,6 +282,13 @@ public class Sounds {
 			System.out.println("Playing " + values[i]);
 			s.play(values[i]);
 			i++;
+		}
+		s.close();
+		*/
+		Random rnd = new Random();
+		for (int i = 0; i < 100; i++) {
+			s.play(rnd.nextBoolean() ? SoundType.FIRE_1 : SoundType.GROUND_FIRE_1);
+			Thread.sleep(100);
 		}
 		s.close();
 	}
