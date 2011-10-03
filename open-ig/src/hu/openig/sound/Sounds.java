@@ -200,16 +200,13 @@ public class Sounds {
 				// ignored
 			}
 			for (Map.Entry<AudioFormatType, BlockingQueue<SourceDataLine>> lines : soundPool.entrySet()) {
-				int cnt = 0;
 				while (true) {
 					SourceDataLine sdl = lines.getValue().poll();
 					if (sdl == null) {
 						break;
 					}
 					sdl.close();
-					cnt++;
 				}
-				System.out.printf("Closed %d of %s%n", cnt, lines.getKey().format);
 			}
 			soundPool.clear();
 		}
@@ -270,21 +267,6 @@ public class Sounds {
 				return 100;
 			}
 		});
-//		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-//		String line = in.readLine();
-		/*
-		int i = 0;
-		SoundType[] values = SoundType.values();
-		while ((line = in.readLine()) != null) {
-			if (i >= values.length || line.equalsIgnoreCase("q")) {
-				break;
-			}
-			System.out.println("Playing " + values[i]);
-			s.play(values[i]);
-			i++;
-		}
-		s.close();
-		*/
 		Random rnd = new Random();
 		for (int i = 0; i < 100; i++) {
 			s.play(rnd.nextBoolean() ? SoundType.FIRE_1 : SoundType.GROUND_FIRE_1);

@@ -3134,16 +3134,21 @@ public class PlanetScreen extends ScreenBase {
 		for (GroundwarUnit u : multiple) {
 			Point p = unitPosition(u);
 			BufferedImage img = u.get();
-			g2.drawImage(img, p.x, p.y, null);
+			
+			// compensate for trimmed image
+			int tx = (u.model.width - img.getWidth()) / 2;
+			int ty = (u.model.height - img.getHeight()) / 2;
+			
+			g2.drawImage(img, p.x + tx, p.y + ty, null);
 			
 			g2.setColor(Color.BLACK);
-			g2.fillRect(p.x + 4, p.y + 3, img.getWidth() - 7, 5);
+			g2.fillRect(p.x + 4, p.y + 3, u.model.width - 7, 5);
 			if (u.owner == player()) {
 				g2.setColor(new Color(0x458AAA));
 			} else {
 				g2.setColor(new Color(0xAE6951));
 			}
-			g2.fillRect(p.x + 5, p.y + 4, (int)(u.hp * (img.getWidth() - 9) / u.model.hp), 3);
+			g2.fillRect(p.x + 5, p.y + 4, (int)(u.hp * (u.model.width - 9) / u.model.hp), 3);
 			
 			if (u.paralizedTTL > 0) {
 //				if (blink) {
@@ -3210,7 +3215,7 @@ public class PlanetScreen extends ScreenBase {
 	 */
 	Point unitPosition(GroundwarUnit u) {
 		return new Point((int)(planet().surface.baseXOffset + Tile.toScreenX(u.x, u.y)), 
-				(int)(planet().surface.baseYOffset + Tile.toScreenY(u.x, u.y)) + 27 - u.get().getHeight());
+				(int)(planet().surface.baseYOffset + Tile.toScreenY(u.x, u.y)) + 27 - u.model.height);
 	}
 	/**
 	 * Computes the unit bounding rectangle's left-top position.
