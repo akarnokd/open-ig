@@ -528,21 +528,21 @@ public final class ConvertDiplomacy {
 		for (int i = 0; i < data.length; i++) {
 			int c = data[i] & 0xFF;
 			switch (c) {
-			case 0x82: c = 'é';	break;
-			case 0xA2: c = 'ó';	break;
-			case 0xA0: c = 'á';	break;
-			case 0x93: c = 'õ';	break;
-			case 0x81: c = 'ü';	break;
-			case 0x94: c = 'ö';	break;
-			case 0xA1: c = 'í';	break;
-			case 0xA3: c = 'ú'; break;
-			case 0x97: c = 'Ú'; break;
-			case 0x96: c = 'û'; break;
-			case 0x99: c = 'Ö'; break;
-			case 0x8F: c = 'Á'; break;
-			case 0x90: c = 'É'; break;
-			case 0x9A: c = 'Ü'; break;
-			case 0x8D: c = 'Í'; break;
+			case 0x82: c = 'Ã©';	break;
+			case 0xA2: c = 'Ã³';	break;
+			case 0xA0: c = 'Ã¡';	break;
+			case 0x93: c = 'Å‘';	break;
+			case 0x81: c = 'Ã¼';	break;
+			case 0x94: c = 'Ã¶';	break;
+			case 0xA1: c = 'Ã­';	break;
+			case 0xA3: c = 'Ãº'; break;
+			case 0x97: c = 'Ãš'; break;
+			case 0x96: c = 'Å±'; break;
+			case 0x99: c = 'Ã–'; break;
+			case 0x8F: c = 'Ã'; break;
+			case 0x90: c = 'Ã‰'; break;
+			case 0x9A: c = 'Ãœ'; break;
+			case 0x8D: c = 'Ã'; break;
 			default:
 			}
 			sb.append((char)c);
