@@ -7,6 +7,7 @@
 
 See ProjectFacts2011 for the completed items.
 
+|| *Task* || *Expected completion time* || *Status* || *Remarks* ||
 || Create the Artificial Intelligence || 2011-10-09 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || This is going to be a real challenge. ||
 || Profile & Achievements || 2011-10-16 || - || Create a profile system and add achievement display & tracking. ||
 || Screen: Diplomacy || 2011-10-16 || - || I need to run the original game to figure out the available talk options. ||
