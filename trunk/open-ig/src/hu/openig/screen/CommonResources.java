@@ -529,6 +529,8 @@ public class CommonResources {
 		if (withMusic) {
 			playRegularMusic();
 		}
+		
+		battleMode = false;
 	}
 	/** @return the world instance. */
 	public World world() {
