@@ -50,7 +50,7 @@ public final class Startup {
 			}
 		}
 		Configuration config = new Configuration("open-ig-config.xml");
-		config.watcherWindow = new ConsoleWatcher(args, Configuration.VERSION);
+		config.watcherWindow = new ConsoleWatcher(args, Configuration.VERSION, config.language);
 		config.load();
 //		if (!config.load() || argset.contains("-config")) {
 //			doStartConfiguration(config);

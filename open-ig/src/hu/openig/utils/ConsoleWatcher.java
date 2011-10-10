@@ -37,12 +37,16 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	String[] commandLine;
 	/** The program version. */
 	String version;
+	/** Language. */
+	String language;
 	/**
 	 * Create the gui.
 	 * @param commandLine the command line
 	 * @param version the game version
+	 * @param language the startup language
 	 */
-	public ConsoleWatcher(String[] commandLine, String version) {
+	public ConsoleWatcher(String[] commandLine, String version, String language) {
+		this.language = language;
 		setTitle("Error");
 		this.commandLine = commandLine;
 		this.version = version;
@@ -108,6 +112,7 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 		area.append(String.format("   Available memory: %s MB%n", Runtime.getRuntime().freeMemory() / 1024 / 1024));
 		area.append(String.format("   Maximum memory: %s MB%n", Runtime.getRuntime().maxMemory() / 1024 / 1024));
 		area.append(String.format("   Parallelism: %s%n", Runtime.getRuntime().availableProcessors()));
+		area.append(String.format("   Startup language: %s%n", language));
 		area.append("----\r\n");
 	}
 }

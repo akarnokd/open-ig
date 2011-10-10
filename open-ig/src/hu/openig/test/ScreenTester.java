@@ -531,7 +531,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				try {
 					config = new Configuration("open-ig-config.xml");
 					config.load();
-					config.watcherWindow = new ConsoleWatcher(arguments, VERSION);
+					config.watcherWindow = new ConsoleWatcher(arguments, VERSION, config.language);
 					config.language = language;
 					long t = System.nanoTime();
 					commons = new CommonResources(config, ScreenTester.this);
