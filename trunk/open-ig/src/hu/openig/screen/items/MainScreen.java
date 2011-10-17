@@ -157,16 +157,6 @@ public class MainScreen extends ScreenBase {
 		LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
 		scr.maySave = false;
 		scr.displayPage(SettingsPage.AUDIO);
-//		// do a small reflection trick to avoid circular dependency
-//		try {
-//			Class<?> clazz = Class.forName("hu.openig.Setup");
-//			Constructor<?> c = clazz.getConstructor(Configuration.class);
-//			Object instance = c.newInstance(commons.config);
-//			clazz.getMethod("setLocationRelativeTo", Component.class).invoke(instance, new Object[] { null });
-//			clazz.getMethod("setVisible", Boolean.TYPE).invoke(instance, true);
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//		}
 	}
 
 	@Override
