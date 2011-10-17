@@ -579,7 +579,7 @@ public class PlanetScreen extends ScreenBase {
 	}
 	/**
 	 * The surface renderer component.
-	 * @author karnok, Mar 27, 2011
+	 * @author akarnokd, Mar 27, 2011
 	 */
 	class SurfaceRenderer extends UIComponent {
 		/** The current scaling factor. */

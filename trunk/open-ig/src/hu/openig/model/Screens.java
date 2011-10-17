@@ -10,7 +10,7 @@ package hu.openig.model;
 
 /**
  * The enumeration to refer to a screen for switching.
- * @author akarnok, 2011.03.06.
+ * @author akarnokd, 2011.03.06.
  */
 public enum Screens {
 	/** The bridge screen. */

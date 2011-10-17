@@ -283,7 +283,7 @@ public class XElement implements Iterable<XElement> {
 		}
 	}
 	/**
-	 * Connverts all sensitive characters to its HTML entity equivalent.
+	 * Converts all sensitive characters to its HTML entity equivalent.
 	 * @param s the string to convert, can be null
 	 * @return the converted string, or an empty string
 	 */
