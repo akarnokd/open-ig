@@ -816,6 +816,8 @@ public class LoadSaveScreen extends ScreenBase {
 			researchMoneyPercent.prev.enabled(config.researchMoneyPercent > 125);
 			researchMoneyPercent.next.enabled(config.researchMoneyPercent < 2000);
 
+			autoRepairLimit.prev.enabled(config.autoRepairLimit > 0);
+			
 		} else {
 
 			g2.drawImage(background, base.x, base.y, null);

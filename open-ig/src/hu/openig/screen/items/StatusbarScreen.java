@@ -16,6 +16,7 @@ import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -619,7 +620,9 @@ public class StatusbarScreen extends ScreenBase {
 				displaySecondary(Screens.ACHIEVEMENTS);
 				break;
 			case 12:
-				displaySecondary(Screens.LOAD_SAVE);
+				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
+				scr.maySave = !commons.battleMode;
+				scr.displayPage(SettingsPage.AUDIO);
 				break;
 			default:
 			}
