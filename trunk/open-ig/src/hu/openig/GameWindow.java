@@ -78,6 +78,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -269,14 +270,13 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param config the configuration object.
 	 */
 	public GameWindow(Configuration config) {
-		super("Open Imperium Galactica " + Configuration.VERSION);
+		super("Open Imperium Galactica " + Configuration.VERSION + " [pid: " + ManagementFactory.getRuntimeMXBean().getName() + "]");
 		URL icon = this.getClass().getResource("/hu/openig/gfx/open-ig-logo.png");
 		if (icon != null) {
 			try {
 				setIconImage(ImageIO.read(icon));
 			} catch (IOException e) {
 				e.printStackTrace();
-//				config.log("ERROR", e.getMessage(), e);
 			}
 		}
 		
@@ -307,9 +307,6 @@ public class GameWindow extends JFrame implements GameControls {
 		pack();
 		setMinimumSize(getSize());
 		setLocationRelativeTo(null);
-//		if (config.width > 0) {
-//			setBounds(config.left, config.top, config.width, config.height);
-//		}
 		
 		// Event handling
 		
