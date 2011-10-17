@@ -965,7 +965,7 @@
 	<entry key='statistics.production_count'>Gyártás darabszám</entry>
 	<entry key='statistics.upgrade_count'>Épület fejlesztés darabszám</entry>
 	<entry key='statistics.planet_conquered'>Meghódított bolygók</entry>
-	<entry key='statistics.galaxy_money_aquired'>Galaxis összed bevétel</entry>
+	<entry key='statistics.galaxy_money_aquired'>Galaxis összes bevétel</entry>
 	<entry key='statistics.galaxy_money_demolish_income'>Galaxis lerombolás bevétel</entry>
 	<entry key='statistics.galaxy_money_sell_income'>Galaxis eladás bevétel</entry>
 	<entry key='statistics.galaxy_money_spent_building'>Galaxis építési költség</entry>
