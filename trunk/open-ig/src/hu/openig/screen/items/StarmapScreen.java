@@ -1103,6 +1103,14 @@ public class StarmapScreen extends ScreenBase {
 				}
 			}
 		}
+		// Enlarge planet name if zoomed in
+		int nameFontSize = 5;
+		if (zoomIndex >= 12) {
+			nameFontSize = 10;
+		} else
+		if (zoomIndex >= 9) {
+			nameFontSize = 7;
+		}
 
 		for (Planet p : commons.world().planets.values()) {
 			if (knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
@@ -1115,7 +1123,7 @@ public class StarmapScreen extends ScreenBase {
 			int y0 = (int)(starmapRect.y + p.y * zoom - d / 2);
 			g2.drawImage(phase, x0, y0, (int)d, (int)d, null);
 			
-			int tw = commons.text().getTextWidth(5, p.name);
+			int tw = commons.text().getTextWidth(nameFontSize, p.name);
 			int xt = (int)(starmapRect.x + p.x * zoom - tw / 2);
 			int yt = (int)(starmapRect.y + p.y * zoom + d / 2) + 4;
 			int labelColor = TextRenderer.GRAY;
@@ -1123,7 +1131,7 @@ public class StarmapScreen extends ScreenBase {
 				labelColor = p.owner.color;
 			}
 			if (showPlanetNames && knowledge(p, PlanetKnowledge.NAME) >= 0) {
-				commons.text().paintTo(g2, xt, yt, 5, labelColor, p.name);
+				commons.text().paintTo(g2, xt, yt, nameFontSize, labelColor, p.name);
 			}
 			if (p == planet()) {
 				if (player().selectionMode == SelectionMode.PLANET) {
@@ -1277,11 +1285,11 @@ public class StarmapScreen extends ScreenBase {
 				if (knowledge(f, FleetKnowledge.VISIBLE) == 0) {
 					fleetName = get("fleetinfo.alien_fleet");
 				}
-				int tw = commons.text().getTextWidth(5, fleetName);
+				int tw = commons.text().getTextWidth(nameFontSize, fleetName);
 				int xt = (int)(starmapRect.x + f.x * zoom - tw / 2);
 				int yt = (int)(starmapRect.y + f.y * zoom + f.owner.fleetIcon.getHeight() / 2) + 3;
 				if (showFleetNames) {
-					commons.text().paintTo(g2, xt, yt, 5, f.owner.color, fleetName);
+					commons.text().paintTo(g2, xt, yt, nameFontSize, f.owner.color, fleetName);
 				}
 				if (f == fleet()) {
 					if (player().selectionMode == SelectionMode.FLEET) {
