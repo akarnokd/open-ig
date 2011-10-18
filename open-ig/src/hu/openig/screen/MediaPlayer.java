@@ -61,6 +61,10 @@ public class MediaPlayer {
 	public volatile Act onComplete;
 	/** The label event. */
 	public volatile LabelEvent onLabel;
+	/** The indicator to continue a phase. */
+	private AtomicInteger continuation;
+	/** The indicator to continue a phase. */
+	private AtomicInteger audioFinish;
 	/**
 	 * Constructor.
 	 * @param commons the commons resources
@@ -93,7 +97,8 @@ public class MediaPlayer {
 
 		final CyclicBarrier barrier = new CyclicBarrier(audio != null ? 2 : 1);
 		
-		final AtomicInteger continuation = new AtomicInteger(barrier.getParties());
+		continuation = new AtomicInteger(barrier.getParties());
+		audioFinish = new AtomicInteger(1);
 		
 		ResourcePlace sub = commons.rl.get(media.video, ResourceType.SUBTITLE);
 		if (sub != null) {
@@ -141,15 +146,19 @@ public class MediaPlayer {
 								barrier.await();
 								if (!stop) {
 									sdl.start();
-									sdl.write(buffer2, 0, buffer2.length);
-									sdl.drain();
-									sdl.stop();
-									sdl.close();
+									try {
+										sdl.write(buffer2, 0, buffer2.length);
+										sdl.drain();
+									} finally {
+										sdl.stop();
+									}
 								}
 							} catch (InterruptedException ex) {
 								
 							} catch (BrokenBarrierException ex) {
 								ex.printStackTrace();
+							} finally {
+								sdl.close();
 							}
 						} catch (LineUnavailableException ex) {
 							ex.printStackTrace();
@@ -162,9 +171,7 @@ public class MediaPlayer {
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				} finally {
-					if (continuation.decrementAndGet() == 0) {
-						invokeComplete();
-					}
+					doCompleteAudio();
 				}
 			}
 		}, "Movie Audio");
@@ -238,12 +245,13 @@ public class MediaPlayer {
 	 */
 	public void stop() {
 		stop = true;
-		if (sdl != null) {
-			sdl.stop();
-			audioThread.interrupt();
-		}
 		if (videoThread != null) {
 			videoThread.stopPlayback();
+		}
+		if (sdl != null) {
+			doCompleteAudio();
+			audioThread.interrupt();
+			sdl.stop();
 		}
 	}
 	/**
@@ -253,5 +261,15 @@ public class MediaPlayer {
 		terminated = true;
 		videoThread.terminatePlayback();
 		stop();
+	}
+	/**
+	 * If the audio hasn't finished yet, complete it and if all parties have finished, invoke the completion handler. 
+	 */
+	void doCompleteAudio() {
+		if (audioFinish.decrementAndGet() == 0) {
+			if (continuation.decrementAndGet() == 0) {
+				invokeComplete();
+			}
+		}
 	}
 }
