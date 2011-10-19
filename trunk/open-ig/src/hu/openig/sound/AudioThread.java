@@ -119,8 +119,6 @@ public class AudioThread extends Thread {
 			interrupt();
 		} finally {
 			if (sdl != null) {
-				sdl.stop();
-				sdl.drain();
 				sdl.close();
 			}
 		}
@@ -244,9 +242,8 @@ public class AudioThread extends Thread {
 	 * Stops the playback immediately.
 	 */
 	public void stopPlaybackNow() {
-		sdl.stop();
-		sdl.drain();
 		queue.clear();
+		sdl.close();
 		// should always return true
 		stopPlayback();
 	}

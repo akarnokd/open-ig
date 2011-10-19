@@ -80,8 +80,6 @@ public class OggMusic {
 		Thread th = playbackThread;
 		if (th != null) {
 			if (outputLine != null) {
-				outputLine.stop();
-				outputLine.drain();
 				outputLine.close();
 			}
 			th.interrupt();
@@ -161,8 +159,6 @@ public class OggMusic {
 		if (outputLine == null || this.rate != rate
 				|| this.channels != channels) {
 			if (outputLine != null) {
-				outputLine.drain();
-				outputLine.stop();
 				outputLine.close();
 			}
 			initAudio(channels, rate);
@@ -300,8 +296,6 @@ public class OggMusic {
 							|| Thread.currentThread().isInterrupted()) {
 						try {
 							bitStream.close();
-							outputLine.drain();
-							outputLine.stop();
 							outputLine.close();
 							outputLine = null;
 						} catch (IOException ee) {
