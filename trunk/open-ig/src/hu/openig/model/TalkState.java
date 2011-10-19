@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +24,8 @@ public class TalkState {
 	public static final String END = "end";
 	/** The state id. */
 	public String id;
-	/** The state picture. */
-	public BufferedImage picture;
+	/** The resource name of the picture. */
+	public String pictureName;
 	/** The available talk speeches. */
 	public final List<TalkSpeech> speeches = new ArrayList<TalkSpeech>();
 }

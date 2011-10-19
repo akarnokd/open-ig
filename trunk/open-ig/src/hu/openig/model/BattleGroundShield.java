@@ -24,5 +24,5 @@ public class BattleGroundShield {
 	/** The projectile used. */
 	public int shields;
 	/** The information image. */
-	public BufferedImage infoImage;
+	public String infoImageName;
 }

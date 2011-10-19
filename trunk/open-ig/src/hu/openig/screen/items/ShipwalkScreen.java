@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	/** The current position. */
-	public WalkPosition position;
+	private WalkPosition position;
 	/** The next position after the transition. Might be null because of a special output. */
 	public WalkPosition next;
 	/** The next position's id. */
@@ -60,6 +60,8 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	final Rectangle origin = new Rectangle(0, 0, 640, 442);
 	/** The action to call when the transition ends. */
 	public Act onCompleted;
+	/** The position picture. */
+	BufferedImage picture;
 	@Override
 	public void onResize() {
 		RenderTools.centerScreen(origin, width, height, true);
@@ -165,20 +167,20 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		if (videoMode) {
 			swapLock.lock();
 			try {
-				if (frontBuffer != null && position != null) {
+				if (frontBuffer != null && position != null && picture != null) {
 					g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-					g2.drawImage(frontBuffer, 0, 0, position.picture.getWidth(), position.picture.getHeight(), null);
+					g2.drawImage(frontBuffer, 0, 0, picture.getWidth(), picture.getHeight(), null);
 				} else 
-				if (position != null) {
-					g2.drawImage(position.picture, 0, 0, null);
+				if (position != null && picture != null) {
+					g2.drawImage(picture, 0, 0, null);
 				}
 			} finally {
 				swapLock.unlock();
 			}
 			
 		} else {
-			if (position != null) {
-				g2.drawImage(position.picture, 0, 0, null);
+			if (position != null && picture != null) {
+				g2.drawImage(picture, 0, 0, null);
 				
 				if (pointerTransition != null) {
 					String gotoLocation = get(pointerTransition.label);
@@ -280,7 +282,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		if (nextId.startsWith("*")) {
 			commons.switchScreen(nextId);
 		} else {
-			position = next;
+			setPosition(next);
 			pointerTransition = null;
 			commons.control().moveMouse();
 			// simple sound hack for cabin
@@ -297,6 +299,19 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	public void onEndGame() {
 		next = null;
 		position = null;
+		picture = null;
 		pointerTransition = null;
+	}
+	/**
+	 * Set the position to the given new state.
+	 * @param pos the new position
+	 */
+	public void setPosition(WalkPosition pos) {
+		this.position = pos;
+		if (pos != null) {
+			picture = rl.getImage(pos.pictureName);
+		} else {
+			picture = null;
+		}
 	}
 }

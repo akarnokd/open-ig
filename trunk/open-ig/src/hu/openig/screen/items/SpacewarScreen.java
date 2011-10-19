@@ -71,6 +71,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -414,6 +415,19 @@ public class SpacewarScreen extends ScreenBase {
 	ThreePhaseButton rocketButton;
 	/** The simulation delay on normal speed. */
 	static final int SIMULATION_DELAY = 100;
+	/** Keep the last info images. */
+	static final int IMAGE_CACHE_SIZE = 8;
+	/** Info image cache. */
+	final Map<String, BufferedImage> infoImages = new LinkedHashMap<String, BufferedImage>() {
+		/** */
+		private static final long serialVersionUID = 1723316137301684429L;
+
+		@Override
+		protected boolean removeEldestEntry(
+				java.util.Map.Entry<String, BufferedImage> eldest) {
+			return size() > IMAGE_CACHE_SIZE;
+		}
+	};
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -967,6 +981,8 @@ public class SpacewarScreen extends ScreenBase {
 		leftShipInfoPanel.clear();
 		rightShipInfoPanel.clear();
 		layoutPanel.selected = null;
+		
+		infoImages.clear();
 	}
 	@Override
 	public void onResize() {
@@ -1385,7 +1401,7 @@ public class SpacewarScreen extends ScreenBase {
 				st.owner = nearbyPlanet.owner;
 				st.destruction = bse.destruction;
 				st.angles = new BufferedImage[] { alien ? bse.alternative[0] : bse.normal[0] };
-				st.infoImage = bse.infoImage;
+				st.infoImageName = bse.infoImageName;
 				st.shield = ii.shield;
 				st.shieldMax = Math.max(0, ii.shieldMax(world()));
 				st.hp = ii.hp;
@@ -1416,7 +1432,7 @@ public class SpacewarScreen extends ScreenBase {
 				SpacewarStructure sws = new SpacewarStructure();
 				sws.type = StructureType.SHIELD;
 				sws.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
-				sws.infoImage = bge.infoImage;
+				sws.infoImageName = bge.infoImageName;
 				sws.hpMax = world().getHitpoints(b.type, true);
 				sws.hp = b.hitpoints * sws.hpMax / b.type.hitpoints;
 				sws.owner = nearbyPlanet.owner;
@@ -1451,7 +1467,7 @@ public class SpacewarScreen extends ScreenBase {
 				sp.type = StructureType.PROJECTOR;
 				sp.angles = alien ? bge.alternative : bge.normal;
 				sp.angle = Math.PI;
-				sp.infoImage = bge.infoImage;
+				sp.infoImageName = bge.infoImageName;
 				sp.hpMax = world().getHitpoints(b.type, true);
 				sp.hp = b.hitpoints * sp.hpMax / b.type.hitpoints;
 				sp.owner = nearbyPlanet.owner;
@@ -1632,7 +1648,7 @@ public class SpacewarScreen extends ScreenBase {
 				sws.owner = inventory.owner();
 				sws.destruction = bse.destruction;
 				sws.angles = inventory.owner() != player() ? bse.alternative : bse.normal;
-				sws.infoImage = bse.infoImage;
+				sws.infoImageName = bse.infoImageName;
 				sws.shield = ii.shield;
 				sws.shieldMax = Math.max(0, ii.shieldMax(world()));
 				sws.hp = ii.hp;
@@ -2104,7 +2120,7 @@ public class SpacewarScreen extends ScreenBase {
 					unitName.text(format("spacewar.ship_name", "-"), true);
 					
 					BattleSpaceEntity bse = world().battle.spaceEntities.get(item.item.type.id);
-					image = bse.infoImage;
+					image = getInfoImage(bse.infoImageName);
 					
 					this.item = item.item;
 					if (lastItem != item.item) {
@@ -2116,7 +2132,7 @@ public class SpacewarScreen extends ScreenBase {
 					unitType.text(format("spacewar.ship_type", item.item.type.longName), true);
 					unitName.text(format("spacewar.ship_name", "-"), true);
 					BattleSpaceEntity bse = world().battle.spaceEntities.get(item.item.type.id);
-					image = bse.infoImage;
+					image = getInfoImage(bse.infoImageName);
 					this.item = item.item;
 					if (lastItem != item.item) {
 						selectFirstSlot();
@@ -2126,14 +2142,14 @@ public class SpacewarScreen extends ScreenBase {
 				if (item.type == StructureType.PROJECTOR) {
 					unitType.text(format("spacewar.ship_type", item.building.type.name), true);
 					BattleGroundProjector bgp = world().battle.groundProjectors.get(item.building.type.id);
-					image = bgp.infoImage;
+					image = getInfoImage(bgp.infoImageName);
 					this.item = null;
 					this.selectedSlot = null;
 				} else
 				if (item.type == StructureType.SHIELD) {
 					unitType.text(format("spacewar.ship_type", item.building.type.name), true);
 					BattleGroundShield bgp = world().battle.groundShields.get(item.building.type.id);
-					image = bgp.infoImage;
+					image = getInfoImage(bgp.infoImageName);
 					this.item = null;
 					this.selectedSlot = null;
 				}
@@ -3278,5 +3294,18 @@ public class SpacewarScreen extends ScreenBase {
 		}
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 		bfs.displayBattleSummary(bi);
+	}
+	/**
+	 * Retrieve the info image of the specified name.
+	 * @param name the name
+	 * @return the image
+	 */
+	public BufferedImage getInfoImage(String name) {
+		BufferedImage result = infoImages.get(name);
+		if (result == null) {
+			result = rl.getImage(name);
+			infoImages.put(name, result);
+		}
+		return result;
 	}
 }

@@ -147,7 +147,13 @@ public class MediaPlayer {
 								if (!stop) {
 									sdl.start();
 									try {
-										sdl.write(buffer2, 0, buffer2.length);
+										int chunkSize = 128 * 1024;
+										int bstart = 0;
+										while (!stop && bstart < buffer2.length) {
+											int blen = (bstart + chunkSize) > buffer2.length ? buffer2.length - bstart : chunkSize;
+											sdl.write(buffer2, bstart, blen);
+											bstart += blen;
+										}
 										sdl.drain();
 									} finally {
 										sdl.stop();

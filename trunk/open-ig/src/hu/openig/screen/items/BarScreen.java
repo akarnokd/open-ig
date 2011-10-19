@@ -67,6 +67,8 @@ public class BarScreen extends ScreenBase {
 	WalkTransition pointerTransition;
 	/** The list of choices. */
 	final List<Choice> choices = new ArrayList<Choice>();
+	/** The state picture. */
+	BufferedImage picture;
 	/** A talk choice. */
 	class Choice {
 		/** The target rendering rectangle. */
@@ -105,8 +107,9 @@ public class BarScreen extends ScreenBase {
 	void setState(TalkState state) {
 		this.state = state;
 		if (state != null) {
-			int h0 = state.picture.getHeight();
-			int w0 = state.picture.getWidth();
+			picture = rl.getImage(state.pictureName);
+			int h0 = picture.getHeight();
+			int w0 = picture.getWidth();
 			int h = 0;
 			choices.clear();
 			int maxTw = 0;
@@ -128,6 +131,7 @@ public class BarScreen extends ScreenBase {
 			}
 		} else {
 			talkMode = false;
+			picture = null;
 		}
 	}
 	@Override
@@ -169,10 +173,10 @@ public class BarScreen extends ScreenBase {
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, getInnerWidth(), getInnerHeight(), g2, 0.5f, true);
 
-		if (talkMode && state != null && state.picture != null) {
-			int dx = (base.width - state.picture.getWidth()) / 2;
-			int dy = (base.height - state.picture.getHeight()) / 2;
-			g2.drawImage(state.picture, base.x + dx, base.y + dy, null);
+		if (talkMode && state != null && picture != null) {
+			int dx = (base.width - picture.getWidth()) / 2;
+			int dy = (base.height - picture.getHeight()) / 2;
+			g2.drawImage(picture, base.x + dx, base.y + dy, null);
 			int idx = 0;
 			for (Choice c : choices) {
 				TalkSpeech ts = state.speeches.get(idx);
@@ -318,7 +322,19 @@ public class BarScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
-		
+		talkDoctor = null;
+		talkKelly = null;
+		talkBrian = null;
+		talkPhsychologist = null;
+		bar2 = null;
+		bar3 = null;
+		person = null;
+		state = null;
+		next = null;
+		highlight = null;
+		pointerTransition = null;
+		choices.clear();
+		/** The state picture. */
+		picture = null;
 	}
 }

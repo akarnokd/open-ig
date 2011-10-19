@@ -84,6 +84,10 @@ public class Music {
 
 	/** Stop the music playback. */
 	public void stop() {
+		Thread th = playbackThread;
+		if (th != null) {
+			th.interrupt();
+		}
 		if (sdl != null) {
 			sdl.stop();
 		} else 
@@ -99,6 +103,11 @@ public class Music {
 	 * Stop the music playback and close the playback thread.
 	 */
 	public void close() {
+		Thread th = playbackThread;
+		if (th != null) {
+			th.interrupt();
+			playbackThread = null;
+		}
 		if (sdl != null) {
 			sdl.stop();
 			sdl.drain();
@@ -114,10 +123,6 @@ public class Music {
 		if (oggMusic != null) {
 			oggMusic.close();
 			oggMusic = null;
-		}
-		if (playbackThread != null) {
-			playbackThread.interrupt();
-			playbackThread = null;
 		}
 	}
 

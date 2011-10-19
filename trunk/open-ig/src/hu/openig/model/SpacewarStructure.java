@@ -41,7 +41,7 @@ public class SpacewarStructure extends SpacewarObject {
 	/** The building reference. */
 	public Building building;
 	/** The information image. */
-	public BufferedImage infoImage;
+	public String infoImageName;
 	/** Available hitpoints, single object. */
 	/** Is the ship selected? */
 	public boolean selected;
@@ -138,7 +138,7 @@ public class SpacewarStructure extends SpacewarObject {
 		r.ecmLevel = ecmLevel;
 		r.hp = hp;
 		r.hpMax = hpMax;
-		r.infoImage = infoImage;
+		r.infoImageName = infoImageName;
 		r.item = item;
 		r.movementSpeed = movementSpeed;
 		for (SpacewarWeaponPort w : ports) {
