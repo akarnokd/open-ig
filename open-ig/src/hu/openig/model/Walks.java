@@ -52,7 +52,7 @@ public class Walks {
 					wp.ship = ws;
 					wp.id = position.get("id");
 					ws.positions.put(wp.id, wp);
-					wp.picture = rl.getImage(position.get("picture"));
+					wp.pictureName = position.get("picture");
 					for (XElement transition : position.childrenWithName("transition")) {
 						WalkTransition wt = new WalkTransition();
 						wp.transitions.add(wt);

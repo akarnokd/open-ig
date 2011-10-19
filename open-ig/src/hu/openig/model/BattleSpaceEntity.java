@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
  */
 public class BattleSpaceEntity {
 	/** The image used for displaying details of the selected entity. */
-	public BufferedImage infoImage;
+	public String infoImageName;
 	/** The normal rotation image. */
 	public BufferedImage[] normal;
 	/** The alternative rotation image. */

@@ -45,7 +45,7 @@ public final class ScreenUtils {
 			commons.switchScreen(to);
 		} else {
 			final ShipwalkScreen sws = (ShipwalkScreen)commons.control().displayPrimary(Screens.SHIPWALK);
-			sws.position = position;
+			sws.setPosition(position);
 			
 			WalkShip ship = commons.world().getShip();
 			sws.next = ship.positions.get(tr.to);

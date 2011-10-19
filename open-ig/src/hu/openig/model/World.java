@@ -57,8 +57,8 @@ public class World {
 	public int level;
 	/** The current player. */
 	public Player player;
-	/** The map of player-id to player object. */
-	public final Map<String, Player> players = new HashMap<String, Player>();
+	/** The available players. */
+	public final Players players = new Players();
 	/** The time. */
 	public final GregorianCalendar time = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 	{
@@ -70,10 +70,10 @@ public class World {
 		time.set(GregorianCalendar.SECOND, 0);
 		time.set(GregorianCalendar.MILLISECOND, 0);
 	}
-	/** All planets on the starmap. */
-	public final Map<String, Planet> planets = new LinkedHashMap<String, Planet>();
-	/** The list of available researches. */
-	public final Map<String, ResearchType> researches = new HashMap<String, ResearchType>();
+	/** The available planets. */
+	public final Planets planets = new Planets();
+	/** The researches. */
+	public final Researches researches = new Researches();
 	/** The available crew-talks. */
 	public Talks talks;
 	/** The ship-walk definitions. */
@@ -224,7 +224,7 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						buildingModel.processBuildings(rl, game + "/buildings", researches, labels, exec, wip);
+						buildingModel.processBuildings(rl, game + "/buildings", researches.map(), labels, exec, wip);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -445,7 +445,7 @@ public class World {
 			
 			for (XElement xinventory : xplayer.childrenWithName("inventory")) {
 				String rid = xinventory.get("id");
-				ResearchType rt = researches.get(rid);
+				ResearchType rt = researches.researches.get(rid);
 				if (rt == null) {
 					System.err.printf("Missing research %s for player %s%n", rid, player.id);
 				} else {
@@ -458,7 +458,7 @@ public class World {
 			setFleets(deferredFleets, xplayer, p);
 			
 			this.players.put(p.id, p);
-			for (ResearchType rt : researches.values()) {
+			for (ResearchType rt : researches.researches.values()) {
 				if (rt.race.contains(p.race) && rt.level == 0) {
 					p.setAvailable(rt);
 				}
@@ -1525,7 +1525,7 @@ public class World {
 				se.alternative = se.normal;
 			}
 			
-			se.infoImage = rl.getImage(xspace.get("image"));
+			se.infoImageName = xspace.get("image");
 			se.destruction = SoundType.valueOf(xspace.get("sound"));
 			if (se.destruction == null) {
 				System.err.println("Missing sound " + xspace.get("sound") + " for " + id);
@@ -1558,7 +1558,7 @@ public class World {
 			} else {
 				se.alternative = se.normal;
 			}
-			se.infoImage = rl.getImage(xdefense.get("image"));
+			se.infoImageName = xdefense.get("image");
 			if (xdefense.has("sound")) {
 				se.destruction = SoundType.valueOf(xdefense.get("sound"));
 			} else {
@@ -1584,7 +1584,7 @@ public class World {
 			} else {
 				se.alternative = se.normal;
 			}
-			se.infoImage = rl.getImage(xdefense.get("image"));
+			se.infoImageName = xdefense.get("image");
 			if (xdefense.has("sound")) {
 				se.destruction = SoundType.valueOf(xdefense.get("sound"));
 			} else {

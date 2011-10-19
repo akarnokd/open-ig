@@ -27,14 +27,13 @@ public class Talks {
 	 * @param data the data resource
 	 */
 	public void load(ResourceLocator rl, String data) {
-		process(rl.getXML(data), rl);
+		process(rl.getXML(data));
 	}
 	/**
 	 * Process the document.
 	 * @param root the root element
-	 * @param rl the resource locator
 	 */
-	protected void process(XElement root, ResourceLocator rl) {
+	protected void process(XElement root) {
 		for (XElement talk : root.childrenWithName("talk")) {
 			TalkPerson tp = new TalkPerson();
 			tp.id = talk.get("with");
@@ -42,7 +41,7 @@ public class Talks {
 			for (XElement state : talk.childrenWithName("state")) {
 				TalkState ts = new TalkState();
 				ts.id = state.get("id");
-				ts.picture = rl.getImage(state.get("picture"));
+				ts.pictureName = state.get("picture");
 				tp.states.put(ts.id, ts);
 				for (XElement tr : state.childrenWithName("transition")) {
 					TalkSpeech tsp = new TalkSpeech();

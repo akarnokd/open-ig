@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class WalkPosition {
 	/** The walk position id. */
 	public String id;
 	/** The static image of the position. */
-	public BufferedImage picture;
+	public String pictureName;
 	/** The list of possible transitions. */
 	public final List<WalkTransition> transitions = new ArrayList<WalkTransition>();
 }

@@ -816,7 +816,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			mi.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					sw.position = s.positions.get("*bridge");
+					sw.setPosition(s.positions.get("*bridge"));
 					repaint();
 				}
 			});
@@ -838,7 +838,7 @@ public class ScreenTester extends JFrame implements GameControls {
 				pos.addActionListener(new Act() {
 					@Override
 					public void act() {
-						sw.position = e.getValue();
+						sw.setPosition(e.getValue());
 						repaint();
 					}
 				});
@@ -850,7 +850,7 @@ public class ScreenTester extends JFrame implements GameControls {
 			
 		}
 		if (last != null) {
-			sw.position = last.positions.get("*bridge");
+			sw.setPosition(last.positions.get("*bridge"));
 			repaint();
 		}
 	}
