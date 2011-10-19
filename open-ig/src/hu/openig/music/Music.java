@@ -89,13 +89,13 @@ public class Music {
 			th.interrupt();
 		}
 		if (sdl != null) {
-			sdl.stop();
+			sdl.close();
 		} else 
 		if (soundClip != null) {
-			soundClip.stop();
+			soundClip.close();
 		} else 
 		if (oggMusic != null) {
-			oggMusic.outputLine.stop();
+			oggMusic.outputLine.close();
 		}
 	}
 
@@ -109,14 +109,10 @@ public class Music {
 			playbackThread = null;
 		}
 		if (sdl != null) {
-			sdl.stop();
-			sdl.drain();
 			sdl.close();
 			sdl = null;
 		}
 		if (soundClip != null) {
-			soundClip.stop();
-			soundClip.drain();
 			soundClip.close();
 			soundClip = null;
 		}

@@ -146,18 +146,14 @@ public class MediaPlayer {
 								barrier.await();
 								if (!stop) {
 									sdl.start();
-									try {
-										int chunkSize = 128 * 1024;
-										int bstart = 0;
-										while (!stop && bstart < buffer2.length) {
-											int blen = (bstart + chunkSize) > buffer2.length ? buffer2.length - bstart : chunkSize;
-											sdl.write(buffer2, bstart, blen);
-											bstart += blen;
-										}
-										sdl.drain();
-									} finally {
-										sdl.stop();
+									int chunkSize = 128 * 1024;
+									int bstart = 0;
+									while (!stop && bstart < buffer2.length) {
+										int blen = (bstart + chunkSize) > buffer2.length ? buffer2.length - bstart : chunkSize;
+										sdl.write(buffer2, bstart, blen);
+										bstart += blen;
 									}
+									sdl.drain();
 								}
 							} catch (InterruptedException ex) {
 								

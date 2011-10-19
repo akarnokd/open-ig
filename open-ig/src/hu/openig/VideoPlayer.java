@@ -811,7 +811,6 @@ public class VideoPlayer extends JFrame {
 							clip.write(buffer2, skip * 2, buffer2.length - skip * 2);
 						}
 						clip.drain();
-						clip.stop();
 						clip.close();
 					} catch (LineUnavailableException ex) {
 						ex.printStackTrace();
