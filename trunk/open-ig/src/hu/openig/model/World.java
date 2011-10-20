@@ -1633,8 +1633,8 @@ public class World {
 			
 			ge.damage = xground.getInt("damage");
 			ge.type = GroundwarUnitType.valueOf(xground.get("type"));
-			ge.minRange = xground.getInt("min-range");
-			ge.maxRange = xground.getInt("max-range");
+			ge.minRange = Double.parseDouble(xground.get("min-range"));
+			ge.maxRange = Double.parseDouble(xground.get("max-range"));
 			ge.area = xground.getInt("area");
 			ge.movementSpeed = xground.getInt("movement-speed");
 			ge.rotationTime = xground.getInt("rotation-time");
@@ -1665,7 +1665,7 @@ public class World {
 					tr.py = xport.getInt("py");
 					
 					tr.fire = SoundType.valueOf(xport.get("fire"));
-					tr.maxRange = xport.getInt("max-range");
+					tr.maxRange = Double.parseDouble(xport.get("max-range"));
 					tr.damage = xport.getInt("damage");
 					tr.rotationTime = xport.getInt("rotation-time");
 					tr.delay = xport.getInt("delay");

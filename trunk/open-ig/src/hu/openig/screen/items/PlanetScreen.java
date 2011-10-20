@@ -268,7 +268,8 @@ public class PlanetScreen extends ScreenBase {
 			GroundwarUnitType.ROCKET_SLED,
 			GroundwarUnitType.SELF_REPAIR_TANK,
 			GroundwarUnitType.KAMIKAZE,
-			GroundwarUnitType.PARALIZER
+			GroundwarUnitType.PARALIZER,
+			GroundwarUnitType.ROCKET_JAMMER
 	);
 	/** The list of remaining units to place. */
 	final LinkedList<GroundwarUnit> unitsToPlace = JavaUtils.newLinkedList();
@@ -3748,7 +3749,15 @@ public class PlanetScreen extends ScreenBase {
 						u.path.addAll(pathfinding.searchApproximate(Location.of((int)u.x, (int)u.y), 
 								Location.of((int)u.attackUnit.x, (int)u.attackUnit.y)));
 					} else {
-						moveUnit(u);
+						Location ep = u.path.get(u.path.size() - 1);
+						// if the target unit moved since last
+						double dx = ep.x - u.attackUnit.x;
+						double dy = ep.y - u.attackUnit.y;
+						if (Math.hypot(dx, dy) > 1) {
+							u.path.clear();
+							u.path.addAll(pathfinding.searchApproximate(Location.of((int)u.x, (int)u.y), 
+									Location.of((int)(u.attackUnit.x), (int)(u.attackUnit.y))));
+						}
 					}
 				}
 			} else 
@@ -4058,8 +4067,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @param range the maximum range
 	 * @return true if within range
 	 */
-	boolean unitInRange(GroundwarGun g, GroundwarUnit u, int range) {
-		
+	boolean unitInRange(GroundwarGun g, GroundwarUnit u, double range) {
 		Point gp = centerOf(g.building);
 		Point up = centerOf(u);
 		
@@ -4092,19 +4100,8 @@ public class PlanetScreen extends ScreenBase {
 	 * @param range the maximum range
 	 * @return true if within range
 	 */
-	boolean unitInRange(GroundwarUnit g, GroundwarUnit u, int range) {
-		
-		Point gp = centerOf(g);
-		Point up = centerOf(u);
-		
-		double gpx = Tile.toTileX(gp.x, gp.y);
-		double gpy = Tile.toTileY(gp.x, gp.y);
-		double upx = Tile.toTileX(up.x, up.y);
-		double upy = Tile.toTileY(up.x, up.y);
-		
-		double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
-		
-		return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range; 
+	boolean unitInRange(GroundwarUnit g, GroundwarUnit u, double range) {
+		return Math.hypot(g.x - u.x, g.y - u.y) <= range; 
 	}
 	/**
 	 * Check if the given unit is within the range of the gun.
@@ -4113,19 +4110,44 @@ public class PlanetScreen extends ScreenBase {
 	 * @param range the maximum range
 	 * @return true if within range
 	 */
-	boolean unitInRange(GroundwarUnit g, Building b, int range) {
+	boolean unitInRange(GroundwarUnit g, Building b, double range) {
+		int bx = b.location.x;
+		int bx2 = bx + b.tileset.normal.width - 1;
+		int by = b.location.y;
+		int by2 = by - b.tileset.normal.height + 1;
 		
-		Point gp = centerOf(g);
-		Point up = centerOf(b);
-		
-		double gpx = Tile.toTileX(gp.x, gp.y);
-		double gpy = Tile.toTileY(gp.x, gp.y);
-		double upx = Tile.toTileX(up.x, up.y);
-		double upy = Tile.toTileY(up.x, up.y);
-		
-		double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
-		
-		return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range; 
+		if (Math.hypot(g.x - bx, g.y - by) <= range) {
+			return true;
+		} else
+		if (Math.hypot(g.x - bx2, g.y - by) <= range) {
+			return true;
+		} else
+		if (Math.hypot(g.x - bx, g.y - by2) <= range) {
+			return true;
+		} else
+		if (Math.hypot(g.x - bx2, g.y - by2) <= range) {
+			return true;
+		} else
+		if (g.x >= bx && g.x <= bx2 && (within(g.y - by, 0, range) || within(by2 - g.y, 0, range))) {
+			return true;
+		} else
+		if (g.y <= by && g.y >= by2 && (within(bx - g.x, 0, range) || within(g.x - bx2, 0, range))) {
+			return true;
+		}
+		return false; 
+	}
+	/**
+	 * Check if the value is within the specified range.
+	 * @param value the value
+	 * @param x0 the range
+	 * @param x1 the range
+	 * @return true if within
+	 */
+	boolean within(double value, double x0, double x1) {
+		if (x0 < x1) {
+			return value >= x0 && value <= x1;
+		}
+		return value >= x1 && value <= x0;
 	}
 	/**
 	 * Rotate the structure towards the given target angle by a step.
