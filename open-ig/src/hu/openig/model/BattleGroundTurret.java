@@ -28,7 +28,7 @@ public class BattleGroundTurret {
 	/** The firing sound effect. */
 	public SoundType fire;
 	/** The firing range. */
-	public int maxRange;
+	public double maxRange;
 	/** The damage. */
 	public int damage;
 	/** The rotation time per angle-segment. */

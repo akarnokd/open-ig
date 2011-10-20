@@ -31,9 +31,9 @@ public class BattleGroundVehicle {
 	/** The inflicted damage. */
 	public int damage;
 	/** The minimum range. */
-	public int minRange;
+	public double minRange;
 	/** The maximum range. */
-	public int maxRange;
+	public double maxRange;
 	/** The damage area. */
 	public int area;
 	/** The unit behavior type. */
