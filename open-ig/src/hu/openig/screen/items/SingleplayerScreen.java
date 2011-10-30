@@ -191,6 +191,7 @@ public class SingleplayerScreen extends ScreenBase {
 								config.computerVoiceScreen = false;
 								commons.start(true);
 								commons.control().displayPrimary(Screens.BRIDGE);
+								
 								config.computerVoiceScreen = csw;
 								commons.control().displayStatusbar();
 								

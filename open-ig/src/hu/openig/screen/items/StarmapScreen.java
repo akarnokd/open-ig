@@ -414,6 +414,8 @@ public class StarmapScreen extends ScreenBase {
 	UIImageButton statistics;
 	/** The achievements button. */
 	UIImageButton achievements;
+	/** Flag to indicate this is the first time the starmap is displayed in a new game. */
+	boolean newGameStarted;
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
 	void computeRectangles() {
 		starmapWindow.x = 0;
@@ -1643,6 +1645,9 @@ public class StarmapScreen extends ScreenBase {
 				scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 				rep = true;
 			}
+			if (starmapWindow.contains(e.x, e.y) && e.has(Button.MIDDLE) && e.has(Modifier.CTRL)) {
+				zoomToFit();
+			} else
 			if (starmapWindow.contains(e.x, e.y) && e.has(Button.RIGHT) 
 					&& player().selectionMode == SelectionMode.FLEET 
 					&& fleet() != null && fleet().owner == player()) {
@@ -1747,6 +1752,44 @@ public class StarmapScreen extends ScreenBase {
 							sound(SoundType.CLICK_MEDIUM_2);
 							player().currentFleet = fleets.get(idx);
 							player().selectionMode = SelectionMode.FLEET;
+							rep = true;
+						}
+					}
+				}
+			} else
+			if (e.has(Button.RIGHT)) {
+				if (rightPanelVisible) {
+					if (planetsList.contains(e.x, e.y)) {
+						int idx = planetsOffset + (e.y - planetsList.y) / 10;
+						List<Planet> planets = planets();
+						if (idx < planets.size()) {
+							sound(SoundType.CLICK_MEDIUM_2);
+							player().currentPlanet = planets.get(idx);
+							player().selectionMode = SelectionMode.PLANET;
+							
+							double zoom = getZoom();
+							int px = (int)(player().currentPlanet.x * zoom);
+							int py = (int)(player().currentPlanet.y * zoom);
+							
+							pan(xOffset + starmapWindow.width / 2 - px, yOffset + starmapWindow.height / 2 - py);
+							
+							rep = true;
+						}
+					}
+					if (fleetsList.contains(e.x, e.y)) {
+						int idx = fleetsOffset + (e.y - fleetsList.y) / 10;
+						List<Fleet> fleets = player().ownFleets();
+						if (idx < fleets.size()) {
+							sound(SoundType.CLICK_MEDIUM_2);
+							player().currentFleet = fleets.get(idx);
+							player().selectionMode = SelectionMode.FLEET;
+							
+							double zoom = getZoom();
+							int px = (int)(player().currentFleet.x * zoom);
+							int py = (int)(player().currentFleet.y * zoom);
+							
+							pan(xOffset + starmapWindow.width / 2 - px, yOffset + starmapWindow.height / 2 - py);
+							
 							rep = true;
 						}
 					}
@@ -1872,6 +1915,7 @@ public class StarmapScreen extends ScreenBase {
 	@Override
 	public void onEndGame() {
 		cache.clear();
+		newGameStarted = true;
 	}
 	@Override
 	public void onEnter(Screens mode) {
@@ -1883,12 +1927,17 @@ public class StarmapScreen extends ScreenBase {
 			}
 		});
 		cache.clear();
+		if (newGameStarted) {
+			newGameStarted = false;
+			zoomToFit();
+		}
 	}
 	@Override
 	public void onFinish() {
 	}
 	@Override
 	public void onInitialize() {
+		newGameStarted = true;
 		scrollbarPainter = new ScrollBarPainter();
 		prevPlanet = new UIImageButton(commons.starmap().backwards);
 		prevPlanet.setDisabledPattern(commons.common().disabledPattern);
@@ -2524,5 +2573,24 @@ public class StarmapScreen extends ScreenBase {
 		if (!isPaused) {
 			commons.simulation.resume();
 		}
+	}
+	/**
+	 * Zoom in to fit the available window.
+	 */
+	public void zoomToFit() {
+		int mw = starmapWindow.width;
+		int mh = starmapWindow.height;
+		int w = world().galaxyModel.map.getWidth();
+		int h = world().galaxyModel.map.getHeight();
+		
+		double s1 = 1.0 * mw / w;
+		double s2 = 1.0 * mh / h;
+		double s = Math.min(s1, s2);
+		double s0 = Math.min(4, Math.max(0.5, s));
+		
+		int zi = (int)(s0 * 4 - minimumZoom);
+
+		readjustZoom(mw / 2, mh / 2, zi);
+		//TODO
 	}
 }
