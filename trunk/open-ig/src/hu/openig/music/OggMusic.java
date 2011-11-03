@@ -316,7 +316,7 @@ public class OggMusic {
 							break; //
 						} //
 
-						while (true) {
+						while (!Thread.currentThread().isInterrupted()) {
 							result = os.packetout(op);
 							if (result == 0) {
 								break; // need more data
@@ -328,8 +328,9 @@ public class OggMusic {
 									// success!
 									vd.synthesisBlockin(vb);
 								}
-								while ((samples = vd.synthesisPcmout(lPcmf,
-										lIndex)) > 0) {
+								samples = vd.synthesisPcmout(lPcmf,
+										lIndex);
+								while (samples > 0 && !Thread.currentThread().isInterrupted()) {
 									float[][] pcmf = lPcmf[0];
 									int bout = (samples < convsize ? samples
 											: convsize);
@@ -360,6 +361,8 @@ public class OggMusic {
 									outputLine.write(convbuffer, 0, 2
 											* vi.channels * bout);
 									vd.synthesisRead(bout);
+									samples = vd.synthesisPcmout(lPcmf,
+											lIndex);
 								}
 							}
 						}

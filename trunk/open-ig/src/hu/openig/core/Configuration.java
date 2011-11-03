@@ -171,6 +171,10 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean showBuildingName = true;
+	/** Display the union of the radar circles instead of each circle separately? */
+	@LoadSave
+	@LoadSaveGame
+	public boolean radarUnion;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

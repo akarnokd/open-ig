@@ -2751,7 +2751,7 @@
 	<entry key='battlefinish.enemy_fleet_destroyed'>The enemy fleet %s has been destroyed.</entry>
 	<entry key='battlefinish.planet_lost'>You lost the planet %s.</entry>
 	<entry key='battlefinish.planet_won'>You conquered the planet %s.</entry>
-	<entry key=''></entry>
+	<entry key='settings.radarunion'>Display perimeter radar only</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
