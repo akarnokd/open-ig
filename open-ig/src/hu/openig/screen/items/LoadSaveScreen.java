@@ -178,6 +178,9 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Auto-build credit limit. */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UISpinner autoRepairLimit;
+	/** Display the radar union? */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox radarUnion;
 	@Override
 	public void onInitialize() {
 		loadSavePage = new UIGenericButton(get("settings.load_save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
@@ -608,6 +611,15 @@ public class LoadSaveScreen extends ScreenBase {
 				config.automaticBattle = automaticBattle.selected();
 			}
 		};
+		
+		radarUnion = new UICheckBox(get("settings.radarunion"), 14, commons.common().checkmark, commons.text());
+		radarUnion.onChange = new Act() {
+			@Override
+			public void act() {
+				sound(SoundType.CLICK_MEDIUM_2);
+				config.radarUnion = radarUnion.selected();
+			}
+		};
 
 		// ------------------------------------------------------------------
 		
@@ -691,6 +703,7 @@ public class LoadSaveScreen extends ScreenBase {
 		buttonSounds.selected(config.buttonSounds);
 		satelliteDeploy.selected(config.satelliteDeploy);
 		automaticBattle.selected(config.automaticBattle);
+		radarUnion.selected(config.radarUnion);
 	}
 	/**
 	 * Choose a random background for the options.
@@ -781,6 +794,7 @@ public class LoadSaveScreen extends ScreenBase {
 		researchMoneyPercent.location(base.x + base.width - researchMoneyPercent.width - 30, base.y + 220);
 
 		automaticBattle.location(base.x + 30, base.y + 250 + 8);
+		radarUnion.location(base.x + 30, base.y + 280 + 8);
 
 	}
 	@Override

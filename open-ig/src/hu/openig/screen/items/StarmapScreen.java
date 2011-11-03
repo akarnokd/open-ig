@@ -53,6 +53,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1050,7 +1051,38 @@ public class StarmapScreen extends ScreenBase {
 			readjustZoom(x, y, zoomIndex - 1);
 		}
 	}
-
+	/**
+	 * The parameters of a radar circle. 
+	 * @author akarnokd, 2011.11.03.
+	 */
+	final class RadarCircle {
+		/** Center X. */
+		final int x;
+		/** Center Y. */
+		final int y;
+		/** Radius. */
+		final int r;
+		/**
+		 * Construct a circle object.
+		 * @param x the center X
+		 * @param y the center Y
+		 * @param r the radius
+		 */
+		public RadarCircle(int x, int y, int r) {
+			this.x = x;
+			this.y = y;
+			this.r = r;
+		}
+		/**
+		 * Test if a point is within the circle.
+		 * @param x the point
+		 * @param y the point
+		 * @return boolean if within
+		 */
+		public boolean in(double x, double y) {
+			return (this.x - x) * (this.x - x) + (this.y - y) * (this.y - y) < r * r;
+		}
+	}
 	@Override
 	public void draw(Graphics2D g2) {
 		if (blinkCounter == 0) {
@@ -1084,6 +1116,7 @@ public class StarmapScreen extends ScreenBase {
 		
 		// render radar circles
 		if (showRadarButton.selected) {
+			List<RadarCircle> radarCircles = new ArrayList<RadarCircle>();
 			for (Planet p : world().planets.values()) {
 				if (p.owner == player()) {
 					PlanetStatistics ps = cache.get(p);
@@ -1092,9 +1125,16 @@ public class StarmapScreen extends ScreenBase {
 						cache.put(p, ps);
 					}
 					if (p.radar > 0) {
-						paintRadar(g2, p.x, p.y, p.radar, zoom);
+						if (config.radarUnion) {
+							radarCircles.add(new RadarCircle(p.x, p.y, p.radar));
+						} else {
+							paintRadar(g2, p.x, p.y, p.radar, zoom);
+						}
 					}
 				}
+			}
+			if (config.radarUnion) {
+				paintRadar(g2, radarCircles, zoom);
 			}
 			if (showFleetButton.selected) {
 				for (Fleet f : fleets) {
@@ -2310,6 +2350,41 @@ public class StarmapScreen extends ScreenBase {
 			g2.drawImage(radarDot, (int)rx, (int)ry, null);
 			
 			angle += dangle;
+		}
+	}
+	/**
+	 * Render a set of radar circles but only those points which are at the external polygons
+	 * (e.g., not within another circle).
+	 * @param g2 the graphics context
+	 * @param circles the circles
+	 * @param zoom the zoom level
+	 */
+	void paintRadar(Graphics2D g2, List<RadarCircle> circles, double zoom) {
+		for (RadarCircle c : circles) {
+			double angle = 0;
+			int n = (int)(2 * c.r * Math.PI * zoom / 10);
+			double dangle = Math.PI * 2 / n;
+			while (angle < 2 * Math.PI) {
+				
+				double ix = c.x + Math.cos(angle) * c.r;
+				double iy = c.y + Math.sin(angle) * c.r;
+
+				boolean in = false;
+				for (RadarCircle c2 : circles) {
+					if (c2 != c && c2.in(ix, iy)) {
+						in = true;
+						break;
+					}
+				}
+				if (!in) {
+					double rx = ix * zoom + starmapRect.x;
+					double ry = iy * zoom + starmapRect.y;
+					
+					g2.drawImage(radarDot, (int)rx, (int)ry, null);
+				}
+				
+				angle += dangle;
+			}
 		}
 	}
 	/**

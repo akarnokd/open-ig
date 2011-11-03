@@ -2014,6 +2014,7 @@
 	<entry key='battlefinish.enemy_fleet_destroyed'>Az ellenséges %s flotta megsemmisült.</entry>
 	<entry key='battlefinish.planet_lost'>A(z) %s bolygót elvesztetted.</entry>
 	<entry key='battlefinish.planet_won'>A(z) %s bolygót elfoglaltad.</entry>
+	<entry key='settings.radarunion'>Csak a határ radar mutatása</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

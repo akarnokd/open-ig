@@ -80,6 +80,8 @@ public class Sounds {
 	Semaphore effectSemaphore;
 	/** Function to retrieve the current volume. */
 	private Func1<Void, Integer> getVolume;
+	/** The open lines. */
+	final BlockingQueue<SourceDataLine> lines = new LinkedBlockingQueue<SourceDataLine>();
 	/**
 	 * Initialize the sound pool.
 	 * @param rl the resource locator
@@ -164,6 +166,7 @@ public class Sounds {
 			SourceDataLine sdl = AudioSystem.getSourceDataLine(aft.format);
 			sdl.open(aft.format);
 			soundPool.get(aft).add(sdl);
+			lines.add(sdl);
 			return sdl;
 		} catch (LineUnavailableException ex) {
 			ex.printStackTrace();
@@ -199,14 +202,8 @@ public class Sounds {
 			} catch (InterruptedException ex) {
 				// ignored
 			}
-			for (Map.Entry<AudioFormatType, BlockingQueue<SourceDataLine>> lines : soundPool.entrySet()) {
-				while (true) {
-					SourceDataLine sdl = lines.getValue().poll();
-					if (sdl == null) {
-						break;
-					}
-					sdl.close();
-				}
+			for (SourceDataLine sdl : lines) {
+				sdl.close();
 			}
 			soundPool.clear();
 		}
@@ -226,6 +223,9 @@ public class Sounds {
 				exec.execute(new Runnable() {
 					@Override
 					public void run() {
+						String n = Thread.currentThread().getName();
+						Thread.currentThread().setName(n + "-" + effect);
+						
 						byte[] data = soundMap.get(effect);
 						AudioFormatType aft = soundFormat.get(effect);
 						try {
@@ -244,6 +244,8 @@ public class Sounds {
 						} catch (Throwable t) {
 							t.printStackTrace();
 						} finally {
+							Thread.currentThread().setName(n);
+
 							effectSemaphore.release();
 						}
 					}
