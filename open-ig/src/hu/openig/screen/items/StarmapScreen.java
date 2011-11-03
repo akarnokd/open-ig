@@ -50,6 +50,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
@@ -1081,6 +1083,18 @@ public class StarmapScreen extends ScreenBase {
 		 */
 		public boolean in(double x, double y) {
 			return (this.x - x) * (this.x - x) + (this.y - y) * (this.y - y) < r * r;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof RadarCircle) {
+				RadarCircle that = (RadarCircle) obj;
+				return this.x == that.x && this.y == that.y && this.r == that.r;
+			}
+			return false;
+		}
+		@Override
+		public int hashCode() {
+			return (((17 + x) * 31 + y) * 31 + r) * 31;
 		}
 	}
 	@Override
@@ -2352,6 +2366,30 @@ public class StarmapScreen extends ScreenBase {
 			angle += dangle;
 		}
 	}
+	/** Caches the radar settings. */
+	class RadarCache {
+		/** The zoom value associated. */
+		double zoom;
+		/** The area to fill in. */
+		Area radarArea;
+		/** The radar dots. */
+		final List<Point> dots = new ArrayList<Point>();
+		/** The old radar circle. */
+		final Set<RadarCircle> old = new HashSet<RadarCircle>();
+		/** 
+		 * Test if the old circles are still the same as the new circles.
+		 * @param that the another list
+		 * @return true if same
+		 */
+		boolean changed(List<RadarCircle> that) {
+			if (old.size() != that.size()) {
+				return false;
+			}
+			return old.containsAll(that);
+		}
+	}
+	/** The radar cache. */
+	final RadarCache radarCache = new RadarCache();
 	/**
 	 * Render a set of radar circles but only those points which are at the external polygons
 	 * (e.g., not within another circle).
@@ -2360,32 +2398,59 @@ public class StarmapScreen extends ScreenBase {
 	 * @param zoom the zoom level
 	 */
 	void paintRadar(Graphics2D g2, List<RadarCircle> circles, double zoom) {
-		for (RadarCircle c : circles) {
-			double angle = 0;
-			int n = (int)(2 * c.r * Math.PI * zoom / 10);
-			double dangle = Math.PI * 2 / n;
-			while (angle < 2 * Math.PI) {
+		// check cache changes
+		if (Math.abs(zoom - radarCache.zoom) > 0.001 || radarCache.changed(circles)) {
+			radarCache.zoom = zoom;
+			radarCache.radarArea = null;
+			radarCache.dots.clear();
+			for (RadarCircle c : circles) {
+				double rx = c.x * zoom;
+				double ry = c.y * zoom;
+				double rr = c.r * zoom * 2;
 				
-				double ix = c.x + Math.cos(angle) * c.r;
-				double iy = c.y + Math.sin(angle) * c.r;
+				Ellipse2D.Double e = new Ellipse2D.Double(rx - rr / 2, ry - rr / 2, rr, rr);
+				if (radarCache.radarArea != null) {
+					radarCache.radarArea.add(new Area(e));
+				} else {
+					radarCache.radarArea = new Area(e);
+				}
 
-				boolean in = false;
-				for (RadarCircle c2 : circles) {
-					if (c2 != c && c2.in(ix, iy)) {
-						in = true;
-						break;
-					}
-				}
-				if (!in) {
-					double rx = ix * zoom + starmapRect.x;
-					double ry = iy * zoom + starmapRect.y;
+				double angle = 0;
+				int n = (int)(2 * c.r * Math.PI * zoom / 10);
+				double dangle = Math.PI * 2 / n;
+				while (angle < 2 * Math.PI) {
 					
-					g2.drawImage(radarDot, (int)rx, (int)ry, null);
+					double ix = c.x + Math.cos(angle) * c.r;
+					double iy = c.y + Math.sin(angle) * c.r;
+
+					boolean in = false;
+					for (RadarCircle c2 : circles) {
+						if (c2 != c && c2.in(ix, iy)) {
+							in = true;
+							break;
+						}
+					}
+					if (!in) {
+						double rx0 = ix * zoom;
+						double ry0 = iy * zoom;
+						
+						radarCache.dots.add(new Point((int)rx0, (int)ry0));
+					}
+					
+					angle += dangle;
 				}
 				
-				angle += dangle;
 			}
 		}
+		g2.translate(starmapRect.x, starmapRect.y);
+		if (radarCache.radarArea != null) {
+			g2.setColor(new Color(128, 0, 0, 32));
+			g2.fill(radarCache.radarArea);
+		}
+		for (Point p : radarCache.dots) {
+			g2.drawImage(radarDot, p.x, p.y, null);
+		}
+		g2.translate(-starmapRect.x, -starmapRect.y);
 	}
 	/**
 	 * Pan the starmap with the given pixels.
