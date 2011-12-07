@@ -2,7 +2,9 @@
 
 <wiki:toc max_depth="1" />
 
-=December 7, 2011=
+=December, 2011=
+
+*December 7, 2011*
 
 After a big rush in another open source [https://sourceforge.net/projects/advance-project/ project] of mine (which finally contained real computer science!) I'm back to Open-IG and doing the next big thing: AI for general operations. I found a reasonable [http://www.gamasutra.com/view/feature/1535/designing_ai_algorithms_for_.php explanation] of how to do it in principle.
 
