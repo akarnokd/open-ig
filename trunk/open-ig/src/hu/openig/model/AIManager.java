@@ -16,10 +16,19 @@ import hu.openig.utils.XElement;
  */
 public interface AIManager {
 	/**
-	 * Manage the world.
-	 * @param world the AI world.
+	 * Prepare the world.
+	 * @param w the real world
+	 * @param p the player
 	 */
-	void manage(AIWorld world);
+	void prepare(World w, Player p);
+	/**
+	 * Manage the world.
+	 */
+	void manage();
+	/**
+	 * Apply the changes from the world management.
+	 */
+	void apply();
 	/**
 	 * Calculates the diplomatic response to an offer coming from another player.
 	 * @param world the world

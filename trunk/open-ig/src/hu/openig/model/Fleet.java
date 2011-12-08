@@ -41,9 +41,30 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	/** If the fleet should follow the other fleet. */
 	public Fleet targetFleet;
 	/** If the fleet should move to the planet. */
-	public Planet targetPlanet;
+	private Planet targetPlanet;
+	/** If the fleet was moved to a planet. */
+	public Planet arrivedAt;
 	/** The fleet movement mode. */
 	public FleetMode mode;
+	/**
+	 * Set the new target planet and save the current target into {@code arrivedAt}.
+	 * @param p the new target planet
+	 */
+	public void targetPlanet(Planet p) {
+		if (p == null) {
+			arrivedAt = targetPlanet;
+		} else {
+			arrivedAt = null;
+		}
+		targetPlanet = p;
+	}
+	/**
+	 * Returns the current target planet.
+	 * @return the current target planet
+	 */
+	public Planet targetPlanet() {
+		return targetPlanet;
+	}
 	@Override
 	public String name() {
 		return name;

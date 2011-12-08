@@ -1793,18 +1793,19 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public Func1<Player, AIManager> aiFactory() {
-		return defaultAIFactory();
+		return defaultAIFactory(commons.labels0());
 	}
 	/**
 	 * Returns a default AI factory.
+	 * @param labels the labels
 	 * @return the factory function
 	 */
-	public static Func1<Player, AIManager> defaultAIFactory() {
+	public static Func1<Player, AIManager> defaultAIFactory(final Labels labels) {
 		return new Func1<Player, AIManager>() {
 			@Override
 			public AIManager invoke(Player value) {
 				if (value.aiMode == AIMode.TRADERS) {
-					return new AITrader();
+					return new AITrader(labels.get("traders.fleetname"));
 				} else
 				if (value.aiMode == AIMode.PIRATES) {
 					return new AIPirate();

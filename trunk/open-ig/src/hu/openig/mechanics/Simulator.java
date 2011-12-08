@@ -633,8 +633,8 @@ public final class Simulator {
 				target = new Point2D.Float(f.targetFleet.x, f.targetFleet.y);
 				f.waypoints.clear();
 			} else
-			if (f.targetPlanet != null) {
-				target = new Point2D.Float(f.targetPlanet.x, f.targetPlanet.y);
+			if (f.targetPlanet() != null) {
+				target = new Point2D.Float(f.targetPlanet().x, f.targetPlanet().y);
 				f.waypoints.clear();
 			} else
 			if (f.waypoints.size() > 0) {
@@ -656,12 +656,12 @@ public final class Simulator {
 							BattleInfo bi = new BattleInfo();
 							bi.attacker = f;
 							bi.targetFleet = f.targetFleet;
-							bi.targetPlanet = f.targetPlanet;
+							bi.targetPlanet = f.targetPlanet();
 							world.pendingBattles.add(bi);
 						}
 						f.mode = null;
 						f.targetFleet = null;
-						f.targetPlanet = null;
+						f.targetPlanet(null);
 					}
 				} else {
 					double angle = Math.atan2(target.y - f.y, target.x - f.x);

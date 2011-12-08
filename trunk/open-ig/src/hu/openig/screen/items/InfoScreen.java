@@ -3461,7 +3461,7 @@ public class InfoScreen extends ScreenBase {
 		fleetName.color(f.owner.color);
 		
 		if (knowledge(f, FleetKnowledge.FULL) >= 0) {
-			if (f.targetFleet == null && f.targetPlanet == null) {
+			if (f.targetFleet == null && f.targetPlanet() == null) {
 				if (f.waypoints.size() > 0) {
 					fleetStatus.text(format("fleetstatus.moving"), true);
 				} else {
@@ -3472,18 +3472,18 @@ public class InfoScreen extends ScreenBase {
 					if (f.targetFleet != null) {
 						fleetStatus.text(format("fleetstatus.attack", f.targetFleet.name), true);
 					} else {
-						fleetStatus.text(format("fleetstatus.attack", f.targetPlanet.name), true);
+						fleetStatus.text(format("fleetstatus.attack", f.targetPlanet().name), true);
 					}
 				} else {
 					if (f.targetFleet != null) {
 						fleetStatus.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
 					} else {
-						fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet.name), true);
+						fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet().name), true);
 					}
 				}
 			}
 		} else {
-			if (f.waypoints.size() > 0 || f.targetFleet != null || f.targetPlanet != null) {
+			if (f.waypoints.size() > 0 || f.targetFleet != null || f.targetPlanet() != null) {
 				fleetStatus.text(format("fleetstatus.moving"), true);
 			} else {
 				fleetStatus.text(format("fleetstatus.stopped"), true);

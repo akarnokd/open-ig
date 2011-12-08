@@ -9,7 +9,6 @@
 package hu.openig.mechanics;
 
 import hu.openig.model.AIManager;
-import hu.openig.model.AIWorld;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Player;
@@ -24,9 +23,20 @@ import hu.openig.utils.XElement;
 public class AIPirate implements AIManager {
 
 	@Override
-	public void manage(AIWorld world) {
+	public void prepare(World w, Player p) {
 		// TODO Auto-generated method stub
-
+		
+	}
+	
+	@Override
+	public void manage() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void apply() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

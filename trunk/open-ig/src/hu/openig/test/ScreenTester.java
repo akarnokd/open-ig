@@ -941,6 +941,6 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	@Override
 	public Func1<Player, AIManager> aiFactory() {
-		return GameWindow.defaultAIFactory();
+		return GameWindow.defaultAIFactory(commons.labels0());
 	}
 }
