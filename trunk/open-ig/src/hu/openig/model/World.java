@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
@@ -125,7 +126,9 @@ public class World {
 	/** The list of pending battles. */
 	public Deque<BattleInfo> pendingBattles = new LinkedList<BattleInfo>();
 	/** The callback function to initiate a battle. */
-	public Func1<Void, Void> startBattle;
+	public Action0 startBattle;
+	/** The factory to instantiate an AI manager for a particular player. */ 
+	public Func1<Player, AIManager> aiFactory;
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -283,6 +286,11 @@ public class World {
 		
 		processPlanets(rl.getXML(game + "/planets"));
 
+		// create AI for the players
+		for (Player p : players.values()) {
+			p.ai = aiFactory.invoke(p);
+		}
+		
 		try {
 			exec.shutdown();
 		} finally {
@@ -804,6 +812,11 @@ public class World {
 			xp.set("running", p.runningResearch != null ? p.runningResearch.id : null);
 			xp.set("mode", p.selectionMode);
 			
+			// save AI state
+			if (p.ai != null) {
+				p.ai.save(xp.add("ai"));
+			}
+			
 			p.statistics.save(xp.add("statistics"));
 
 			if (p.knownPlayers.size() > 0) {
@@ -1254,6 +1267,16 @@ public class World {
 			}
 		}
 		linkDeferredFleetTargets(deferredTargets);
+
+		// restore AI for players
+		for (XElement xplayer : xworld.childrenWithName("player")) {
+			XElement xai = xplayer.childElement("ai");
+			if (xai != null) {
+				Player p = players.get(xplayer.get("id"));
+				p.ai = aiFactory.invoke(p);
+				p.ai.load(xai);
+			}
+		}
 	}
 	/**
 	 * Link the fleet's targetFleet value with the fleet given by the ID.
@@ -1842,5 +1865,70 @@ public class World {
 			return hp;
 		}
 		return rt.hitpoints / 20;
+	}
+	/**
+	 * Calculate the current fleet health.
+	 * @param f the fleet
+	 * @return the health percent 0..1
+	 */
+	public double fleetHealth(Fleet f) {
+		if (f.inventory.size() == 0) {
+			return 0.0;
+		}
+		double max = 0;
+		double hp = 0;
+		for (InventoryItem fi : f.inventory) {
+			max += getHitpoints(fi.type);
+			int s = fi.shieldMax(this);
+			if (s >= 0) {
+				max += s;
+			}
+			hp += fi.hp + fi.shield;
+		}
+		return hp / max;
+	}
+	/**
+	 * Returns the colony health in percentages.
+	 * @param p the planet
+	 * @return the colony health percentage of 0..1
+	 */
+	public double colonyHealth(Planet p) {
+		if (p.surface.buildings.size() == 0) {
+			return 0.0;
+		}
+		double max = 0;
+		double hp = 0;
+		for (Building b : p.surface.buildings) {
+			max += getHitpoints(b.type, false);
+			hp += b.hitpoints;
+		}
+		return hp / max;
+	}
+	/**
+	 * Generate the AI worlds.
+	 * @return the map for each player and its world
+	 */
+	public Map<Player, AIWorld> createAIWorlds() {
+		Map<Player, AIWorld> result = new HashMap<Player, AIWorld>();
+		
+		for (Player p : players.values()) {
+			if (aiAccept(p)) {
+				AIWorld w = new AIWorld();
+				w.assign(this, p);
+				
+				result.put(p, w);
+			}
+		}
+		
+		return result;
+	}
+	/**
+	 * Check if the given player should be considered for AI computations or not.
+	 * <p>For example, trader's and pirate's objects may be safely ignored.</p>
+	 * @param player the target player to test
+	 * @return true if can be accepted
+	 */
+	public boolean aiAccept(Player player) {
+		return player != null && player.aiMode != AIMode.TRADERS && player.aiMode != AIMode.PIRATES;
 	}
 }

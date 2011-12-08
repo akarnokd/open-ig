@@ -9,12 +9,15 @@
 package hu.openig;
 
 import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.SimulationSpeed;
+import hu.openig.mechanics.AI;
 import hu.openig.mechanics.BattleSimulator;
+import hu.openig.model.AIManager;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
@@ -1406,13 +1409,18 @@ public class GameWindow extends JFrame implements GameControls {
 						world.definition = GameDefinition.parse(commons.rl, game);
 						world.labels = new Labels();
 						world.labels.load(commons.rl, game + "/labels");
+						world.aiFactory = new Func1<Player, AIManager>() {
+							@Override
+							public AIManager invoke(Player value) {
+								return new AI();
+							}
+						};
 						world.load(commons.rl, world.definition.name);
 						world.config = commons.config;
-						world.startBattle = new Func1<Void, Void>() {
+						world.startBattle = new Action0() {
 							@Override
-							public Void invoke(Void value) {
+							public void invoke() {
 								startBattle();
-								return null;
 							}
 						};
 					}

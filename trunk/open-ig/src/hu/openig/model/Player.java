@@ -97,6 +97,8 @@ public class Player {
 	public boolean noDatabase;
 	/** Do not list this player in diplomacy tables. */
 	public boolean noDiplomacy;
+	/** The AI associated with this player. */
+	public AIManager ai;
 	/**
 	 * @return returns the next planet by goind top-bottom relative to the current planet
 	 */

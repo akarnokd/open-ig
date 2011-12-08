@@ -158,7 +158,7 @@ public final class Simulator {
 			result = true;
 		}
 		if (!world.pendingBattles.isEmpty()) {
-			world.startBattle.invoke(null);
+			world.startBattle.invoke();
 			result = true;
 		}
 		return result;
@@ -606,7 +606,8 @@ public final class Simulator {
 	 * @param planetStats the planet statistics
 	 * @return true if a fleet was moved and the radar needs to be recalculated
 	 */
-	static boolean moveFleets(List<Fleet> playerFleets, World world, Map<Planet, PlanetStatistics> planetStats) {
+	static boolean moveFleets(List<Fleet> playerFleets, World world, 
+			Map<Planet, PlanetStatistics> planetStats) {
 		boolean invokeRadar = false;
 		
 		for (Fleet f : playerFleets) {
