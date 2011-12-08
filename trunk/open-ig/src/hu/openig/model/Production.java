@@ -21,4 +21,16 @@ public class Production {
 	public int progress;
 	/** The priority value. */
 	public int priority;
+	/**
+	 * Create a copy of this production status.
+	 * @return the copy
+	 */
+	public Production copy() {
+		Production result = new Production();
+		result.type = type;
+		result.count = count;
+		result.progress = progress;
+		result.priority = priority;
+		return result;
+	}
 }

@@ -9,6 +9,9 @@
 package hu.openig.screen;
 
 import hu.openig.core.Act;
+import hu.openig.core.Func1;
+import hu.openig.model.AIManager;
+import hu.openig.model.Player;
 import hu.openig.model.Screens;
 import hu.openig.model.World;
 
@@ -112,4 +115,9 @@ public interface GameControls {
 	 * @param text the text to display 
 	 */
 	void displayError(String text);
+	/**
+	 * Returns the AI factory function.
+	 * @return the AI factory function
+	 */
+	Func1<Player, AIManager> aiFactory();
 }

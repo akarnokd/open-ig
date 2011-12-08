@@ -11,13 +11,9 @@ package hu.openig.screen.items;
 import hu.openig.core.Act;
 import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
-import hu.openig.core.Func1;
 import hu.openig.core.Labels;
-import hu.openig.mechanics.AI;
-import hu.openig.model.AIManager;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Message;
-import hu.openig.model.Player;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
@@ -239,12 +235,7 @@ public class SingleplayerScreen extends ScreenBase {
 					final Labels labels = new Labels(); 
 					labels.load(commons.rl, selectedDefinition.name + "/labels");
 					world.labels = labels;
-					world.aiFactory = new Func1<Player, AIManager>() {
-						@Override
-						public AIManager invoke(Player value) {
-							return new AI();
-						}
-					};
+					world.aiFactory = commons.control().aiFactory();
 					
 					world.load(commons.rl, selectedDefinition.name);
 					world.config = commons.config;

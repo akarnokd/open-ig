@@ -15,20 +15,19 @@ package hu.openig.model;
 public class AIPlanet extends AIObject {
 	/** The original planet. */
 	public Planet planet;
+	/** The knowledge level about the planet. */
+	public PlanetKnowledge knowledge;
+	/** The planet statistics. */
+	public PlanetStatistics statistics;
 	/**
 	 * Assign the necessary properties from a planet.
 	 * @param planet the target fleet
 	 * @param world the world object
 	 */
-	public void assign(Planet planet, World world) {
+	public void assign(Planet planet, AIWorld world) {
 		this.planet = planet;
-	}
-	/**
-	 * Apply the planet properties.
-	 * @param world the world object
-	 */
-	public void apply(World world) {
-		
+		this.knowledge = world.knowledge(planet);
+		this.statistics = world.getStatistics(planet);
 	}
 	@Override
 	public void assign(AITaskCandidate tc) {

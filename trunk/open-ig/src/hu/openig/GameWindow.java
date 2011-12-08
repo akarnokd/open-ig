@@ -16,8 +16,11 @@ import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.AI;
+import hu.openig.mechanics.AIPirate;
+import hu.openig.mechanics.AITrader;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.AIManager;
+import hu.openig.model.AIMode;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
@@ -1409,12 +1412,7 @@ public class GameWindow extends JFrame implements GameControls {
 						world.definition = GameDefinition.parse(commons.rl, game);
 						world.labels = new Labels();
 						world.labels.load(commons.rl, game + "/labels");
-						world.aiFactory = new Func1<Player, AIManager>() {
-							@Override
-							public AIManager invoke(Player value) {
-								return new AI();
-							}
-						};
+						world.aiFactory = commons.control().aiFactory();
 						world.load(commons.rl, world.definition.name);
 						world.config = commons.config;
 						world.startBattle = new Action0() {
@@ -1793,5 +1791,26 @@ public class GameWindow extends JFrame implements GameControls {
 		ii.shield = Math.max(0, ii.shieldMax(commons.world()));
 		target.inventory.add(ii);
 	}
-	
+	@Override
+	public Func1<Player, AIManager> aiFactory() {
+		return defaultAIFactory();
+	}
+	/**
+	 * Returns a default AI factory.
+	 * @return the factory function
+	 */
+	public static Func1<Player, AIManager> defaultAIFactory() {
+		return new Func1<Player, AIManager>() {
+			@Override
+			public AIManager invoke(Player value) {
+				if (value.aiMode == AIMode.TRADERS) {
+					return new AITrader();
+				} else
+				if (value.aiMode == AIMode.PIRATES) {
+					return new AIPirate();
+				}
+				return new AI();
+			}
+		};
+	}
 }

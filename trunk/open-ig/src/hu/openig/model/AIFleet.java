@@ -15,20 +15,19 @@ package hu.openig.model;
 public class AIFleet extends AIObject {
 	/** The original fleet object. */
 	public Fleet fleet;
+	/** The current fleet knowledge. */
+	public FleetKnowledge knowledge;
+	/** The current fleet statistics. */
+	public FleetStatistics statistics;
 	/**
 	 * Assign the necessary properties from a fleet.
 	 * @param fleet the target fleet
 	 * @param world the world object
 	 */
-	public void assign(Fleet fleet, World world) {
+	public void assign(Fleet fleet, AIWorld world) {
 		this.fleet = fleet;
-	}
-	/**
-	 * Apply the fleet properties.
-	 * @param world the world object
-	 */
-	public void apply(World world) {
-		
+		knowledge = world.knowledge(fleet);
+		this.statistics = world.getStatistics(fleet);
 	}
 	@Override
 	public void assign(AITaskCandidate tc) {

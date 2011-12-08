@@ -50,4 +50,17 @@ public class Research {
 		) 
 		/ (type.civilLab + type.mechLab + type.compLab + type.aiLab + type.milLab);
 	}
+	/**
+	 * Create a copy of this research.
+	 * @return the copy
+	 */
+	public Research copy() {
+		Research result = new Research();
+		result.assignedMoney = assignedMoney;
+		result.remainingMoney = remainingMoney;
+		result.state = state;
+		result.type = type;
+		
+		return result;
+	}
 }
