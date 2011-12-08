@@ -898,44 +898,7 @@ public class World {
 				Fleet f = fl.getKey();
 				if (f.owner == p && !f.inventory.isEmpty()) {
 					XElement xfleet = xp.add("fleet");
-					xfleet.set("id", f.id);
-					xfleet.set("x", f.x);
-					xfleet.set("y", f.y);
-					xfleet.set("name", f.name);
-					if (f.targetFleet != null) {
-						xfleet.set("target-fleet", f.targetFleet.id);
-					} else
-					if (f.targetPlanet != null) {
-						xfleet.set("target-planet", f.targetPlanet.id);
-					}
-					xfleet.set("mode", f.mode);
-					if (f.waypoints.size() > 0) {
-						StringBuilder wp = new StringBuilder();
-						for (Point2D.Float pt : f.waypoints) {
-							if (wp.length() > 0) {
-								wp.append(" ");
-							}
-							wp.append(pt.x).append(";").append(pt.y);
-						}
-						xfleet.set("waypoints", wp.toString());
-					}
-					
-					for (InventoryItem fii : f.inventory) {
-						XElement xfii = xfleet.add("item");
-						xfii.set("id", fii.type.id);
-						xfii.set("count", fii.count);
-						xfii.set("hp", fii.hp);
-						xfii.set("shield", fii.shield);
-						for (InventorySlot fis : fii.slots) {
-							XElement xfs = xfii.add("slot");
-							xfs.set("id", fis.slot.id);
-							if (fis.type != null) {
-								xfs.set("type", fis.type.id);
-								xfs.set("count", fis.count);
-								xfs.set("hp", fis.hp);
-							}
-						}
-					}
+					saveFleet(f, xfleet);
 				}
 			}
 			// save discovered planets only
@@ -1015,6 +978,54 @@ public class World {
 		}
 		
 		return world;
+	}
+	/**
+	 * Save the fleet into XML.
+	 * @param f the fleet object
+	 * @param xfleet the XML
+	 */
+	void saveFleet(Fleet f, XElement xfleet) {
+		xfleet.set("id", f.id);
+		xfleet.set("x", f.x);
+		xfleet.set("y", f.y);
+		xfleet.set("name", name);
+		if (f.targetFleet != null) {
+			xfleet.set("target-fleet", f.targetFleet.id);
+		} else
+		if (f.targetPlanet() != null) {
+			xfleet.set("target-planet", f.targetPlanet().id);
+		}
+		if (f.arrivedAt != null) {
+			xfleet.set("arrived-at", f.arrivedAt.id);
+		}
+		xfleet.set("mode", f.mode);
+		if (f.waypoints.size() > 0) {
+			StringBuilder wp = new StringBuilder();
+			for (Point2D.Float pt : f.waypoints) {
+				if (wp.length() > 0) {
+					wp.append(" ");
+				}
+				wp.append(pt.x).append(";").append(pt.y);
+			}
+			xfleet.set("waypoints", wp.toString());
+		}
+		
+		for (InventoryItem fii : f.inventory) {
+			XElement xfii = xfleet.add("item");
+			xfii.set("id", fii.type.id);
+			xfii.set("count", fii.count);
+			xfii.set("hp", fii.hp);
+			xfii.set("shield", fii.shield);
+			for (InventorySlot fis : fii.slots) {
+				XElement xfs = xfii.add("slot");
+				xfs.set("id", fis.slot.id);
+				if (fis.type != null) {
+					xfs.set("type", fis.type.id);
+					xfs.set("count", fis.count);
+					xfs.set("hp", fis.hp);
+				}
+			}
+		}
 	}
 	/**
 	 * Load the world state.
@@ -1326,8 +1337,13 @@ public class World {
 			}
 			s0 = xfleet.get("target-planet", null);
 			if (s0 != null) {
-				f.targetPlanet = planets.get(s0);
+				f.targetPlanet(planets.get(s0));
 			}
+			s0 = xfleet.get("arrived-at", null);
+			if (s0 != null) {
+				f.arrivedAt = planets.get(s0);
+			}
+			
 			s0 = xfleet.get("mode", null);
 			if (s0 != null) {
 				f.mode = FleetMode.valueOf(s0);

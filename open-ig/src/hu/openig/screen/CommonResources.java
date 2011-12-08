@@ -30,7 +30,6 @@ import hu.openig.gfx.StatusbarGFX;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Simulator;
-import hu.openig.model.AIWorld;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.Screens;
@@ -501,17 +500,18 @@ public class CommonResources {
 				SwingWorker<Void, Void> sw = runningAI.get(p);
 				// if not present or finished, start a new
 				if (sw == null || sw.isDone()) {
-					final AIWorld aiw = new AIWorld();
-					aiw.assign(world, p);
+					p.ai.prepare(world, p);
 					sw = new SwingWorker<Void, Void>() {
 						@Override
 						protected Void doInBackground() throws Exception {
-							p.ai.manage(aiw);
+							p.ai.manage();
 							return null;
 						}
 						@Override
 						protected void done() {
-							aiw.apply();
+							if (!battleMode) {
+								p.ai.apply();
+							}
 						}
 					};
 					runningAI.put(p, sw);

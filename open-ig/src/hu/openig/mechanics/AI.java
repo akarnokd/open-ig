@@ -25,6 +25,8 @@ import hu.openig.utils.XElement;
  * @author akarnokd, 2011.12.08.
  */
 public class AI implements AIManager {
+	/** The world. */
+	AIWorld world;
 	/**
 	 * Create a task candidate object.
 	 * @param task the task
@@ -46,10 +48,23 @@ public class AI implements AIManager {
 		return (task.basePriority + task.dynamicPriority) / taskTime;
 	}
 	@Override
-	public void manage(AIWorld world) {
+	public void prepare(World w, Player p) {
+		world = new AIWorld();
+		world.assign(w, p);
+	}
+	
+	@Override
+	public void manage() {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void apply() {
+		// TODO Auto-generated method stub
+		
+		world = null;
+	}
+	
 	@Override
 	public ResponseMode diplomacy(World world, Player we, Player other,
 			DiplomaticInteraction offer) {

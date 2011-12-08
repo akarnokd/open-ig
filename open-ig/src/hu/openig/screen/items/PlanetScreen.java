@@ -3553,6 +3553,9 @@ public class PlanetScreen extends ScreenBase {
 	}
 	/** @return Check if one of the fighting parties has run out of units/structures. */
 	Player checkWinner() {
+		if (battle == null) {
+			return null;
+		}
 		int attackerCount = 0;
 		int defenderCount = guns.size();
 		for (GroundwarUnit u : units) {

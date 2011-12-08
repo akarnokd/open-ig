@@ -13,8 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.SwingUtilities;
-
 /**
  * Class representing the world for an AI player, copying the world state to allow a thread-safe evaluation.
  * @author akarnokd, 2011.12.08.
@@ -52,9 +50,6 @@ public class AIWorld extends AIObject {
 	 * @param player the player
 	 */
 	public void assign(World world, Player player) {
-		if (SwingUtilities.isEventDispatchThread()) {
-			throw new IllegalStateException("Should run in EDT!");
-		}
 		this.world = world;
 		this.player = player;
 		money = player.money;
@@ -103,15 +98,6 @@ public class AIWorld extends AIObject {
 				enemyPlanets.add(aip);
 			}
 		}
-	}
-	/**
-	 * Apply the results of the AI actions back to the real world.
-	 */
-	public void apply() {
-		if (SwingUtilities.isEventDispatchThread()) {
-			throw new IllegalStateException("Should run in EDT!");
-		}
-		
 	}
 	@Override
 	public void assign(AITaskCandidate tc) {

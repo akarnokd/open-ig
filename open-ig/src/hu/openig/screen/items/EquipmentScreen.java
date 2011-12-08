@@ -1397,7 +1397,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			
 			fleetStatusLabel.visible(true);
-			if (f.targetFleet == null && f.targetPlanet == null) {
+			if (f.targetFleet == null && f.targetPlanet() == null) {
 				if (f.waypoints.size() > 0) {
 					fleetStatusLabel.text(format("fleetstatus.moving"), true);
 				} else {
@@ -1412,13 +1412,13 @@ public class EquipmentScreen extends ScreenBase {
 					if (f.targetFleet != null) {
 						fleetStatusLabel.text(format("fleetstatus.attack", f.targetFleet.name), true);
 					} else {
-						fleetStatusLabel.text(format("fleetstatus.attack", f.targetPlanet.name), true);
+						fleetStatusLabel.text(format("fleetstatus.attack", f.targetPlanet().name), true);
 					}
 				} else {
 					if (f.targetFleet != null) {
 						fleetStatusLabel.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
 					} else {
-						fleetStatusLabel.text(format("fleetstatus.moving.to", f.targetPlanet.name), true);
+						fleetStatusLabel.text(format("fleetstatus.moving.to", f.targetPlanet().name), true);
 					}
 				}
 			}
