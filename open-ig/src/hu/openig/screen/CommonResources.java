@@ -30,6 +30,8 @@ import hu.openig.gfx.StatusbarGFX;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Simulator;
+import hu.openig.model.AIWorld;
+import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.Screens;
 import hu.openig.model.World;
@@ -54,6 +56,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.SwingWorker;
 import javax.swing.Timer;
 
 
@@ -135,6 +138,8 @@ public class CommonResources {
 	public Music music;
 	/** The current simulation controls. */
 	public SimulationTimer simulation;
+	/** Map of currently running AIs. */
+	public final Map<Player, SwingWorker<Void, Void>> runningAI = new HashMap<Player, SwingWorker<Void, Void>>();
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -430,6 +435,11 @@ public class CommonResources {
 	}
 	/** Close the resources. */
 	public void stop() {
+		for (SwingWorker<Void, Void> sw : runningAI.values()) {
+			sw.cancel(true);
+		}
+		runningAI.clear();
+		
 		close0(allocatorHandler);
 		close0(radarHandler);
 		close0(simulation);
@@ -461,10 +471,7 @@ public class CommonResources {
 				new Act() {
 					@Override
 					public void act() {
-						if (Simulator.compute(world)) {
-							control.save();
-						}
-						control.repaintInner();
+						simulation();
 					}
 				},
 				new Func1<SimulationSpeed, Integer>() {
@@ -480,6 +487,39 @@ public class CommonResources {
 					}
 				}
 		);
+	}
+	/**
+	 * Execute a step of simulation.
+	 */
+	public void simulation() {
+		if (Simulator.compute(world)) {
+			control.save();
+		}
+		// run AI routines in background
+		for (final Player p : world.players.values()) {
+			if (p != world.player && p.ai != null) {
+				SwingWorker<Void, Void> sw = runningAI.get(p);
+				// if not present or finished, start a new
+				if (sw == null || sw.isDone()) {
+					final AIWorld aiw = new AIWorld();
+					aiw.assign(world, p);
+					sw = new SwingWorker<Void, Void>() {
+						@Override
+						protected Void doInBackground() throws Exception {
+							p.ai.manage(aiw);
+							return null;
+						}
+						@Override
+						protected void done() {
+							aiw.apply();
+						}
+					};
+					runningAI.put(p, sw);
+					pool.execute(sw);
+				}
+			}
+		}
+		control.repaintInner();
 	}
 	/**
 	 * Replace the current simulation controls with a new

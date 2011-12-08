@@ -10,11 +10,15 @@ package hu.openig.test;
 
 import hu.openig.Startup;
 import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.ResourceLocator;
+import hu.openig.mechanics.AI;
+import hu.openig.model.AIManager;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.Player;
 import hu.openig.model.Screens;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
@@ -544,13 +548,19 @@ public class ScreenTester extends JFrame implements GameControls {
 					commons.world().difficulty = Difficulty.values()[0];
 					commons.labels0().load(commons.rl, commons.world().definition.name);
 					commons.world().labels = commons.labels0();
+					commons.world().aiFactory = new Func1<Player, AIManager>() {
+						@Override
+						public AIManager invoke(Player value) {
+							return new AI();
+						}
+					};
+					
 					commons.world().load(commons.rl, commons.world().definition.name);
 					commons.world().config = commons.config;
-					commons.world().startBattle = new Func1<Void, Void>() {
+					commons.world().startBattle = new Action0() {
 						@Override
-						public Void invoke(Void value) {
+						public void invoke() {
 							commons.control().startBattle();
-							return null;
 						}
 					};
 
