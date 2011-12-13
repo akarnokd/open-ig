@@ -26,6 +26,9 @@ import hu.openig.model.World;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XElement;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -274,16 +277,40 @@ public class AITrader implements AIManager {
 				Planet pl = lastVisitedPlanet.get(s.fleet);
 				if (pl != null) {
 					s.fleet.targetPlanet(pl);
-					s.fleet.mode = FleetMode.MOVE;
 				} else {
-					System.err.printf("Fleet %s of %s did not emerge from a planet!%n", s.fleet.id, s.fleet.owner.id);
+					s.fleet.targetPlanet(nearest(world.world().planets.values(), s.fleet));
 				}
+				s.fleet.mode = FleetMode.MOVE;
 			}
 			return SpacewarAction.FLEE;
 		}
 		return SpacewarAction.CONTINUE;
 	}
-	
+	/**
+	 * Returns the nearest owned planet planet.
+	 * @param planets the collection of planets
+	 * @param fleet the fleet
+	 * @return the planet
+	 */
+	Planet nearest(Collection<Planet> planets, final Fleet fleet) {
+		return Collections.min(planets, new Comparator<Planet>() {
+			@Override
+			public int compare(Planet o1, Planet o2) {
+				if (o1.owner != null && o2.owner == null) {
+					return -1;
+				} else
+				if (o1.owner == null && o2.owner != null) {
+					return 1;
+				} else
+				if (o1.owner == null && o2.owner == null) {
+					return 0;
+				}
+				double d1 = World.dist(o1.x, o1.y, fleet.x, fleet.y);
+				double d2 = World.dist(o2.x, o2.y, fleet.x, fleet.y);
+				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+			}
+		});
+	}
 	@Override
 	public void groundBattle(World world, Player we, BattleInfo battle) {
 		// NO ground battle involvement
