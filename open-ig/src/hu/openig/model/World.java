@@ -988,7 +988,7 @@ public class World {
 		xfleet.set("id", f.id);
 		xfleet.set("x", f.x);
 		xfleet.set("y", f.y);
-		xfleet.set("name", name);
+		xfleet.set("name", f.name);
 		if (f.targetFleet != null) {
 			xfleet.set("target-fleet", f.targetFleet.id);
 		} else
