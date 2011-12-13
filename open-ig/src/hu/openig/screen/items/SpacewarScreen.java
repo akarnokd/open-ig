@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2011, David Karnok 
+ * Copyright 2008-2012, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -1410,6 +1410,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.shieldMax = Math.max(0, ii.shieldMax(world()));
 				st.hp = ii.hp;
 				st.hpMax = world().getHitpoints(ii.type);
+				st.value = ii.type.productionCost;
 				st.planet = nearbyPlanet;
 				
 				st.ecmLevel = setWeaponPorts(ii, st.ports);
@@ -1439,6 +1440,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				sws.infoImageName = bge.infoImageName;
 				sws.hpMax = world().getHitpoints(b.type, true);
 				sws.hp = b.hitpoints * sws.hpMax / b.type.hitpoints;
+				sws.value = b.type.cost;
 				sws.owner = nearbyPlanet.owner;
 				sws.destruction = bge.destruction;
 				sws.building = b;
@@ -1473,6 +1475,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				sp.angle = Math.PI;
 				sp.infoImageName = bge.infoImageName;
 				sp.hpMax = world().getHitpoints(b.type, true);
+				sp.value = b.type.cost;
 				sp.hp = b.hitpoints * sp.hpMax / b.type.hitpoints;
 				sp.owner = nearbyPlanet.owner;
 				sp.destruction = bge.destruction;
@@ -1657,6 +1660,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				sws.shieldMax = Math.max(0, ii.shieldMax(world()));
 				sws.hp = ii.hp;
 				sws.hpMax = world().getHitpoints(ii.type);
+				sws.value = totalValue(ii);
 				sws.count = ii.count;
 				sws.rotationTime = bse.rotationTime;
 				sws.movementSpeed = bse.movementSpeed;
@@ -1668,6 +1672,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		
+	}
+	/**
+	 * Calculates the total value of the inventory intem based on the base production cost.
+	 * @param ii the inventory item
+	 * @return the value
+	 */
+	int totalValue(InventoryItem ii) {
+		int result = ii.type.productionCost;
+		for (InventorySlot is : ii.slots) {
+			if (is.type != null) {
+				result += is.type.productionCost * is.count;
+			}
+		}
+		return result;
 	}
 	/**
 	 * Set the weapon ports based on the configuration of the inventory item,
@@ -3087,6 +3105,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		Player aiPlayer = null;
 		// fleet movements
 		for (SpacewarStructure ship : structures) {
+			if (ship.owner != player()) {
+				aiPlayer = ship.owner;
+			}
 			if (!ship.isDestroyed()) {
 				// general cooldown of weapons
 				for (SpacewarWeaponPort p : ship.ports) {
@@ -3121,10 +3142,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					if (ship.owner == player()) {
 						List<SpacewarStructure> es = enemiesInRange(ship);
 						if (es.size() > 0) {
-							ship.attack = es.get(world().random.get().nextInt(es.size()));
+							ship.attack = random(es);
 						}
 					} else {
-						aiPlayer = ship.owner;
 						idles.add(ship);
 					}
 				} else
@@ -3342,5 +3362,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		s.attack = null;
 		s.guard = false;
+	}
+	@Override
+	public List<SpacewarStructure> structures(Player owner) {
+		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		for (SpacewarStructure s : structures) {
+			if (s.owner == owner) {
+				result.add(s);
+			}
+		}
+		return result;
 	}
 }
