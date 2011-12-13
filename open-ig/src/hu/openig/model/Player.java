@@ -99,6 +99,8 @@ public class Player {
 	public boolean noDiplomacy;
 	/** The AI associated with this player. */
 	public AIManager ai;
+	/** Indicates that the player has a colony ship researched. */
+	public boolean colonyShipAvailable;
 	/**
 	 * @return returns the next planet by goind top-bottom relative to the current planet
 	 */
@@ -139,6 +141,19 @@ public class Player {
 	 */
 	public boolean isAvailable(ResearchType rt) {
 		return availableResearch.containsKey(rt);
+	}
+	/**
+	 * Check if the given research ID is available.
+	 * @param researchId the research ID
+	 * @return true if available
+	 */
+	public boolean isAvailable(String researchId) {
+		for (ResearchType rt : availableResearch.keySet()) {
+			if (rt.id.equals(researchId)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * @return the number of built buildings per type
@@ -318,9 +333,19 @@ public class Player {
 	public boolean add(ResearchType rt) {
 		if (!availableResearch.containsKey(rt)) {
 			availableResearch.put(rt, new ArrayList<ResearchType>()) ;
+			customResearchAction(rt);
 			return true;
 		}
 		return false; 
+	}
+	/**
+	 * Perform additional actions in case a research becomes available.
+	 * @param rt the research type to process
+	 */
+	public void customResearchAction(ResearchType rt) {
+		if (rt.id.equals("ColonyShip")) {
+			colonyShipAvailable = true;
+		}
 	}
 	/** 
 	 * Set the availability of the given research.
@@ -347,6 +372,7 @@ public class Player {
 			}
 			
 			availableResearch.put(rt, avail);
+			customResearchAction(rt);
 			
 			return true;
 		}
@@ -404,5 +430,18 @@ public class Player {
 			return -1;
 		}
 		return k.ordinal() < expected.ordinal() ? -1 : 1;
+	}
+	/**
+	 * Returns a fleet with the given ID.
+	 * @param id the fleet id
+	 * @return the fleet object
+	 */
+	public Fleet fleet(int id) {
+		for (Fleet f : fleets.keySet()) {
+			if (f.id == id) {
+				return f;
+			}
+		}
+		return null;
 	}
 }

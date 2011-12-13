@@ -19,12 +19,17 @@ import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
+import hu.openig.model.SpacewarAction;
+import hu.openig.model.SpacewarStructure;
+import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XElement;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * AI for managing the trader's fleet.
@@ -35,12 +40,21 @@ public class AITrader implements AIManager {
 	final List<TraderFleet> fleets = JavaUtils.newLinkedList();
 	/** List of the planets with trader's spaceport. */ 
 	final List<Planet> planets = JavaUtils.newArrayList();
+	// -----------------------------------------------------------------
+	// State
 	/** Map of the landed fleets. */
 	final List<LandedFleet> landed = JavaUtils.newLinkedList();
+	/** Set of fleets turned back by space battle. */
+	final Set<Fleet> fleetTurnedBack = JavaUtils.newHashSet();
+	/** The last visited planet of the fleet. */
+	final Map<Fleet, Planet> lastVisitedPlanet = JavaUtils.newHashMap();
+	// -----------------------------------------------------------------
 	/** The world. */
 	World world;
 	/** The label to use for naming a trader fleet. */
 	String traderLabel;
+	/** How many new ships should emerge? */
+	int actionCount;
 	/**
 	 * Constructor.
 	 * @param label the fleet name label
@@ -74,12 +88,30 @@ public class AITrader implements AIManager {
 	}
 	/** The time for staying landed. */
 	public static final int LANDING_TTL = 11;
+	/** The time for staying landed if the fleet was turned back by a player attack. */
+	public static final int TURN_BACK_TTL = 61;
 	/** The player. */
 	private Player player;
 	@Override
 	public void prepare(World w, Player p) {
 		this.world = w;
 		this.player = p;
+		
+		switch (w.difficulty) {
+		case EASY:
+			actionCount = 1;
+			break;
+		case NORMAL:
+			actionCount = 2;
+			break;
+		case HARD:
+			actionCount = 4;
+			break;
+		default:
+			actionCount = 1;
+			break;
+		}
+		
 		fleets.clear();
 		planets.clear();
 		// get fleets
@@ -117,13 +149,14 @@ public class AITrader implements AIManager {
 				LandedFleet lf = new LandedFleet();
 				lf.fleet = tf.fleet;
 				lf.target = tf.arrivedAt;
-				lf.ttl = LANDING_TTL;
+				lf.ttl = fleetTurnedBack.contains(lf.fleet) ? TURN_BACK_TTL : LANDING_TTL;
 				landed.add(lf);
 				world.removeFleet(lf.fleet);
+				lastVisitedPlanet.remove(lf.fleet);
 			}
 			activeCount++;
 		}
-		
+		int actions = 0;
 		// if more planets available than fleets
 		while (activeCount < planets.size()) {
 			// create new fleets as landed
@@ -153,15 +186,20 @@ public class AITrader implements AIManager {
 			
 			landed.add(lf);
 			activeCount++;
+			if (++actions >= actionCount) {
+				break;
+			}
 		}
 		
 		if (activeCount > planets.size()) {
 			// remove landed fleets
 			Iterator<LandedFleet> it = landed.iterator();
 			while (landed.size() > 0 && activeCount > planets.size()) {
-				it.next();
+				LandedFleet lf = it.next();
 				it.remove();
 				activeCount--;
+				lastVisitedPlanet.remove(lf.fleet);
+				fleetTurnedBack.remove(lf.fleet);
 			}
 		}
 		// progress landed TTL and let them emerge
@@ -189,6 +227,9 @@ public class AITrader implements AIManager {
 					for (InventoryItem ii : lf.fleet.inventory) {
 						ii.hp = world.getHitpoints(ii.type);
 					}
+					
+					lastVisitedPlanet.put(lf.fleet, lf.target);
+					
 				} else
 				if (planets.size() == 1 && planets.get(0) != lf.target) {
 					lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
@@ -198,9 +239,14 @@ public class AITrader implements AIManager {
 					for (InventoryItem ii : lf.fleet.inventory) {
 						ii.hp = world.getHitpoints(ii.type);
 					}
+					
+					lastVisitedPlanet.put(lf.fleet, lf.target);
 				}
 				
 				it.remove();
+				if (++actions >= actionCount) {
+					break;
+				}
 			}
 		}
 	}
@@ -213,26 +259,91 @@ public class AITrader implements AIManager {
 	}
 
 	@Override
-	public void spaceBattle(World world, Player we, BattleInfo battle) {
-		// TODO Auto-generated method stub
-
+	public SpacewarAction spaceBattle(SpacewarWorld world, Player player,
+			List<SpacewarStructure> idles) {
+		double hpMax = 0;
+		double hp = 0;
+		for (SpacewarStructure s : idles) {
+			hpMax += s.hpMax;
+			hp += s.hp;
+		}
+		if (hp * 2 < hpMax) {
+			for (SpacewarStructure s : idles) {
+				world.flee(s);
+				fleetTurnedBack.add(s.fleet);
+				Planet pl = lastVisitedPlanet.get(s.fleet);
+				if (pl != null) {
+					s.fleet.targetPlanet(pl);
+					s.fleet.mode = FleetMode.MOVE;
+				} else {
+					System.err.printf("Fleet %s of %s did not emerge from a planet!%n", s.fleet.id, s.fleet.owner.id);
+				}
+			}
+			return SpacewarAction.FLEE;
+		}
+		return SpacewarAction.CONTINUE;
 	}
-
+	
 	@Override
 	public void groundBattle(World world, Player we, BattleInfo battle) {
 		// NO ground battle involvement
 	}
 
 	@Override
-	public void save(XElement out) {
-		// TODO Auto-generated method stub
-
+	public void load(XElement in, World world, Player player) {
+		for (XElement xlf : in.childrenWithName("landed")) {
+			int fid = xlf.getInt("fleet");
+			Fleet f = player.fleet(fid);
+			if (f != null) {
+				int ttl = xlf.getInt("ttl");
+				String pid = xlf.get("planet");
+				Planet p = world.planets.get(pid);
+				
+				if (p != null) {
+					LandedFleet lf = new LandedFleet();
+					lf.fleet = f;
+					lf.target = p;
+					lf.ttl = ttl;
+					landed.add(lf);
+				}
+			}
+		}
+		for (XElement xtb : in.childrenWithName("turned-back")) {
+			int fid = xtb.getInt("fleet");
+			Fleet f = player.fleet(fid);
+			if (f != null) {
+				fleetTurnedBack.add(f);
+			}
+		}
+		for (XElement xlast : in.childrenWithName("last-visit")) {
+			int fid = xlast.getInt("fleet");
+			Fleet f = player.fleet(fid);
+			if (f != null) {
+				String pid = xlast.get("planet");
+				Planet p = world.planets.get(pid);
+				
+				if (p != null) {
+					lastVisitedPlanet.put(f, p);
+				}
+			}
+		}
 	}
-
 	@Override
-	public void load(XElement in) {
-		// TODO Auto-generated method stub
-
+	public void save(XElement out, World world, Player player) {
+		for (LandedFleet lf : landed) {
+			XElement xlf = out.add("landed");
+			xlf.set("fleet", lf.fleet.id);
+			xlf.set("planet", lf.target.id);
+			xlf.set("ttl", lf.ttl);
+		}
+		for (Fleet tb : fleetTurnedBack) {
+			XElement xtb = out.add("turned-back");
+			xtb.set("fleet", tb.id);
+		}
+		for (Map.Entry<Fleet, Planet> last : lastVisitedPlanet.entrySet()) {
+			XElement xlast = out.add("last-visit");
+			xlast.set("fleet", last.getKey().id);
+			xlast.set("planet", last.getValue().id);
+		}
 	}
-
 }

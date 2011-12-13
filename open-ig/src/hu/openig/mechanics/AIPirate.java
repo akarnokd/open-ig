@@ -8,11 +8,16 @@
 
 package hu.openig.mechanics;
 
+import java.util.List;
+
 import hu.openig.model.AIManager;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Player;
 import hu.openig.model.ResponseMode;
+import hu.openig.model.SpacewarAction;
+import hu.openig.model.SpacewarStructure;
+import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
 import hu.openig.utils.XElement;
 
@@ -47,9 +52,12 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public void spaceBattle(World world, Player we, BattleInfo battle) {
-		// TODO Auto-generated method stub
-
+	public SpacewarAction spaceBattle(SpacewarWorld world, Player player,
+			List<SpacewarStructure> idles) {
+		for (SpacewarStructure s : idles) {
+			AI.defaultAttackBehavior(world, s);
+		}
+		return SpacewarAction.CONTINUE;
 	}
 
 	@Override
@@ -58,15 +66,15 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public void save(XElement out) {
+	public void load(XElement in, World world, Player player) {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 	@Override
-	public void load(XElement in) {
+	public void save(XElement out, World world, Player player) {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 }

@@ -8,16 +8,19 @@
 
 package hu.openig.mechanics;
 
+import java.util.List;
+
 import hu.openig.model.AIManager;
-import hu.openig.model.AIObject;
-import hu.openig.model.AITask;
-import hu.openig.model.AITaskCandidate;
 import hu.openig.model.AIWorld;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Player;
 import hu.openig.model.ResponseMode;
+import hu.openig.model.SpacewarAction;
+import hu.openig.model.SpacewarStructure;
+import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
+import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.utils.XElement;
 
 /**
@@ -27,30 +30,16 @@ import hu.openig.utils.XElement;
 public class AI implements AIManager {
 	/** The world. */
 	AIWorld world;
-	/**
-	 * Create a task candidate object.
-	 * @param task the task
-	 * @param taskDoer the task doer
-	 * @param taskTime the task time
-	 * @return the candidate
+	/** 
+	 * AI players won't start colonization until the player has actually researched its colony ship.
+	 * To avoid the headstart problem in skirmish mode. 
 	 */
-	AITaskCandidate createCandidate(AITask task, AIObject taskDoer, double taskTime) {
-		return new AITaskCandidate(task, taskDoer, score(task, taskDoer, taskTime));
-	}
-	/**
-	 * Calculate the score for a task and task doer.
-	 * @param task the task
-	 * @param taskDoer the task doer
-	 * @param taskTime the cached task time from AIObject.taskTime()
-	 * @return the score
-	 */
-	double score(AITask task, AIObject taskDoer, double taskTime) {
-		return (task.basePriority + task.dynamicPriority) / taskTime;
-	}
+	boolean playerColonyShipAvailable;
 	@Override
 	public void prepare(World w, Player p) {
 		world = new AIWorld();
 		world.assign(w, p);
+		playerColonyShipAvailable = w.player.colonyShipAvailable;
 	}
 	
 	@Override
@@ -72,9 +61,61 @@ public class AI implements AIManager {
 		return null;
 	}
 	@Override
-	public void spaceBattle(World world, Player we, BattleInfo battle) {
-		// TODO Auto-generated method stub
-		
+	public SpacewarAction spaceBattle(SpacewarWorld world, Player player,
+			List<SpacewarStructure> idles) {
+		// FIXME make more sophisticated
+		for (SpacewarStructure ship : idles) {
+			defaultAttackBehavior(world, ship);
+		}
+		return SpacewarAction.CONTINUE;
+	}
+
+	/**
+	 * Orders the given structure to attack a random enemy.
+	 * @param world the world
+	 * @param ship the ship
+	 */
+	public static void defaultAttackBehavior(SpacewarWorld world,
+			SpacewarStructure ship) {
+		if (ship.type == StructureType.STATION 
+				|| ship.type == StructureType.PROJECTOR) {
+			ship.guard = true;
+		} else
+		if (ship.type == StructureType.SHIP) {
+			List<SpacewarStructure> es = world.enemiesInRange(ship);
+			if (es.size() > 0) {
+				ship.attack = world.random(es);
+			} else {
+				es = world.enemiesOf(ship);
+				if (es.size() > 0) {
+					ship.attack = world.random(es);
+				}
+			}
+		}
+	}
+	/**
+	 * Orders the given structure to attack a random enemy.
+	 * @param world the world
+	 * 
+	 * @param ship the ship
+	 */
+	public static void costAttackBehavior(SpacewarWorld world, 
+			SpacewarStructure ship) {
+		if (ship.type == StructureType.STATION 
+				|| ship.type == StructureType.PROJECTOR) {
+			ship.guard = true;
+		} else
+		if (ship.type == StructureType.SHIP) {
+			List<SpacewarStructure> es = world.enemiesInRange(ship);
+			if (es.size() > 0) {
+				ship.attack = world.random(es);
+			} else {
+				es = world.enemiesOf(ship);
+				if (es.size() > 0) {
+					ship.attack = world.random(es);
+				}
+			}
+		}
 	}
 	@Override
 	public void groundBattle(World world, Player we, BattleInfo battle) {
@@ -82,12 +123,12 @@ public class AI implements AIManager {
 		
 	}
 	@Override
-	public void load(XElement in) {
+	public void load(XElement in, World world, Player player) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void save(XElement out) {
+	public void save(XElement out, World world, Player player) {
 		// TODO Auto-generated method stub
 		
 	}

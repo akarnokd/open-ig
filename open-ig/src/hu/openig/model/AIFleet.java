@@ -12,7 +12,7 @@ package hu.openig.model;
  * Class representing a fleet for an AI player.
  * @author akarnokd, 2011.12.08.
  */
-public class AIFleet extends AIObject {
+public class AIFleet {
 	/** The original fleet object. */
 	public Fleet fleet;
 	/** The current fleet knowledge. */
@@ -28,15 +28,5 @@ public class AIFleet extends AIObject {
 		this.fleet = fleet;
 		knowledge = world.knowledge(fleet);
 		this.statistics = world.getStatistics(fleet);
-	}
-	@Override
-	public void assign(AITaskCandidate tc) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public double taskTime(AITask task) {
-		// TODO Auto-generated method stub
-		return Double.POSITIVE_INFINITY;
 	}
 }
