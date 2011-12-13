@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2011, David Karnok 
+ * Copyright 2008-2012, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -49,6 +49,8 @@ public class SpacewarStructure extends SpacewarObject {
 	public int hp;
 	/** The maximum hitpoints. */
 	public int hpMax;
+	/** The value of this structure (e.g., the build cost). */
+	public int value;
 	/** The shield hitpoints. */
 	public int shield;
 	/** The maximum shield hitpoints. */
@@ -138,6 +140,7 @@ public class SpacewarStructure extends SpacewarObject {
 		r.ecmLevel = ecmLevel;
 		r.hp = hp;
 		r.hpMax = hpMax;
+		r.value = value;
 		r.infoImageName = infoImageName;
 		r.item = item;
 		r.movementSpeed = movementSpeed;

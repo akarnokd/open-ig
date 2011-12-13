@@ -14,7 +14,6 @@
     <property name="tabWidth" value="4"/>
     <module name="JavadocMethod">
       <property name="allowUndeclaredRTE" value="true"/>
-      <property name="logLoadErrors" value="true"/>
       <property name="suppressLoadErrors" value="true"/>
     </module>
     <module name="JavadocType"/>
@@ -96,7 +95,6 @@
     </module>
     <module name="MissingSwitchDefault"/>
     <module name="RedundantThrows">
-      <property name="logLoadErrors" value="true"/>
       <property name="suppressLoadErrors" value="true"/>
     </module>
     <module name="SimplifyBooleanExpression"/>
@@ -119,8 +117,7 @@
     </module>
     <module name="GenericIllegalRegexp">
       <property name="severity" value="ignore"/>
-      <property name="format" value="\s+$"/>
-      <property name="message" value="Line has trailing spaces."/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
     <module name="TodoComment">
       <property name="severity" value="ignore"/>
@@ -153,6 +150,7 @@
     </module>
     <module name="PackageHtml">
       <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
   </module>
   <module name="FileLength">
@@ -173,7 +171,7 @@
     <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
   </module>
   <module name="RegexpHeader">
-    <property name="header" value="^/\*$\n^ \* Copyright 2008-2011, David Karnok.*$\n^ \* The file is part of the Open Imperium Galactica.*$"/>
+    <property name="header" value="^/\*$\n^ \* Copyright 2008-2012, David Karnok.*$\n^ \* The file is part of the Open Imperium Galactica.*$"/>
     <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="GE header"/>
   </module>
 </module>

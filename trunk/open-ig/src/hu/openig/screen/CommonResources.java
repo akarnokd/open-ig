@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2011, David Karnok 
+ * Copyright 2008-2012, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -37,6 +37,7 @@ import hu.openig.model.World;
 import hu.openig.music.Music;
 import hu.openig.render.TextRenderer;
 import hu.openig.sound.Sounds;
+import hu.openig.utils.WipPort;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -494,16 +495,23 @@ public class CommonResources {
 		if (Simulator.compute(world)) {
 			control.save();
 		}
+		
 		// run AI routines in background
+		final WipPort wip = new WipPort(1);
 		for (final Player p : world.players.values()) {
 			if (p != world.player && p.ai != null) {
 				SwingWorker<Void, Void> sw = runningAI.get(p);
 				// if not present or finished, start a new
 				if (sw == null || sw.isDone()) {
-					p.ai.prepare(world, p);
+					wip.inc();
 					sw = new SwingWorker<Void, Void>() {
 						@Override
 						protected Void doInBackground() throws Exception {
+							// parallel convert world state
+							p.ai.prepare(world, p);
+							// wait for all to read world state
+							wip.dec();
+							// act on the world state
 							p.ai.manage();
 							return null;
 						}
@@ -518,6 +526,12 @@ public class CommonResources {
 					pool.execute(sw);
 				}
 			}
+		}
+		wip.dec();
+		try {
+			wip.await();
+		} catch (InterruptedException ex) {
+			// ignored
 		}
 		control.repaintInner();
 	}
