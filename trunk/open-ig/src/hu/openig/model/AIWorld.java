@@ -31,7 +31,9 @@ public class AIWorld {
 	/** The active productions. */
 	public final Map<ResearchType, Production> productions = new HashMap<ResearchType, Production>();
 	/** The active researches. */
-	public final Map<ResearchType, Research> researches = new HashMap<ResearchType, Research>(); 
+	public final Map<ResearchType, Research> researches = new HashMap<ResearchType, Research>();
+	/** The current inventory level. */
+	public final Map<ResearchType, Integer> inventory = new HashMap<ResearchType, Integer>();
 	/** The list of known other players. */
 	public final List<Player> players = new LinkedList<Player>();
 	/** The list of own fleets. */
@@ -53,6 +55,9 @@ public class AIWorld {
 		this.world = world;
 		this.player = player;
 		money = player.money;
+		
+
+		inventory.putAll(player.inventory);
 		
 		for (Map<ResearchType, Production> prods : player.production.values()) {
 			for (Production prod : prods.values()) {
