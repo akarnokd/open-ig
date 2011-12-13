@@ -814,7 +814,7 @@ public class World {
 			
 			// save AI state
 			if (p.ai != null) {
-				p.ai.save(xp.add("ai"));
+				p.ai.save(xp.add("ai"), this, p);
 			}
 			
 			p.statistics.save(xp.add("statistics"));
@@ -1285,7 +1285,7 @@ public class World {
 			if (xai != null) {
 				Player p = players.get(xplayer.get("id"));
 				p.ai = aiFactory.invoke(p);
-				p.ai.load(xai);
+				p.ai.load(xai, this, p);
 			}
 		}
 	}
@@ -1415,7 +1415,8 @@ public class World {
 		XElement xavail0 = xplayer.childElement("available");
 		if (xavail0 != null) {
 			for (XElement xavail : xavail0.childrenWithName("type")) {
-				ResearchType rt = researches.get(xavail.get("id"));
+				String id = xavail.get("id");
+				ResearchType rt = researches.get(id);
 				if (rt == null) {
 					throw new IllegalArgumentException("available technology not found: " + xavail);
 				}

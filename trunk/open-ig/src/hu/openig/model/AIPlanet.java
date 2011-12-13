@@ -12,7 +12,7 @@ package hu.openig.model;
  * Class representing a planet for the AI player.
  * @author akarnokd, 2011.12.08.
  */
-public class AIPlanet extends AIObject {
+public class AIPlanet {
 	/** The original planet. */
 	public Planet planet;
 	/** The knowledge level about the planet. */
@@ -28,15 +28,5 @@ public class AIPlanet extends AIObject {
 		this.planet = planet;
 		this.knowledge = world.knowledge(planet);
 		this.statistics = world.getStatistics(planet);
-	}
-	@Override
-	public void assign(AITaskCandidate tc) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public double taskTime(AITask task) {
-		// TODO Auto-generated method stub
-		return Double.POSITIVE_INFINITY;
 	}
 }

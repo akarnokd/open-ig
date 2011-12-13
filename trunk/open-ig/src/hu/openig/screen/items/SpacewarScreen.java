@@ -32,11 +32,13 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionBoxMode;
 import hu.openig.model.SoundType;
+import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarExplosion;
 import hu.openig.model.SpacewarProjectile;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWeaponPort;
+import hu.openig.model.SpacewarWorld;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.EquipmentConfigure;
@@ -81,7 +83,7 @@ import java.util.Set;
  * The spacewar screen.
  * @author akarnokd, 2010.01.06.
  */
-public class SpacewarScreen extends ScreenBase {
+public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** Annotation to show a component on a specified panel mode and side. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface Show {
@@ -1161,16 +1163,18 @@ public class SpacewarScreen extends ScreenBase {
 		
 		for (SpacewarStructure s : structures) {
 			if (s.owner == player()) {
-				s.moveTo = new Point2D.Double(-1000, s.y);
-				s.attack = null;
-				s.guard = false;
+				flee(s);
 			}
 		}
 	}
-	/** @return check if all ships left the screen? */
-	boolean playerRetreatedBeyondScreen() {
+	/**
+	 * Check if all ships of the player has left the screen?
+	 * @param owner the owner 
+	 * @return check if all ships left the screen? 
+	 */
+	boolean playerRetreatedBeyondScreen(Player owner) {
 		for (SpacewarStructure s : structures) {
-			if (s.owner == player()) {
+			if (s.owner == owner) {
 				if (s.intersects(0, 0, space.width, space.height)) {
 					return false;
 				}
@@ -2828,7 +2832,8 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param ship the center ship
 	 * @return the list of structures
 	 */
-	List<SpacewarStructure> enemiesInRange(SpacewarStructure ship) {
+	@Override
+	public List<SpacewarStructure> enemiesInRange(SpacewarStructure ship) {
 		List<SpacewarStructure> result = JavaUtils.newArrayList();
 		for (SpacewarStructure s : structures) {
 			if (s.owner != ship.owner) {
@@ -3078,6 +3083,8 @@ public class SpacewarScreen extends ScreenBase {
 				projectiles.remove(p);
 			}
 		}
+		List<SpacewarStructure> idles = JavaUtils.newArrayList();
+		Player aiPlayer = null;
 		// fleet movements
 		for (SpacewarStructure ship : structures) {
 			if (!ship.isDestroyed()) {
@@ -3099,7 +3106,8 @@ public class SpacewarScreen extends ScreenBase {
 							|| (!ship.attack.intersects(0, 0, space.width, space.height))) {
 						ship.attack = null;
 					} else {
-						if (ship.type == StructureType.STATION ||  rotateStep(ship, ship.attack.x, ship.attack.y)) {
+						if (ship.type == StructureType.STATION 
+								|| rotateStep(ship, ship.attack.x, ship.attack.y)) {
 							// move into minimum attack range if needed
 							if (!ship.guard && ship.type == StructureType.SHIP) {
 								moveStep(ship, ship.attack.x, ship.attack.y, ship.minimumRange - 5);
@@ -3110,34 +3118,32 @@ public class SpacewarScreen extends ScreenBase {
 				} else
 				if (ship.guard) {
 					// pick a target
-					List<SpacewarStructure> es = enemiesInRange(ship);
-					if (es.size() > 0) {
-						ship.attack = es.get(world().random.get().nextInt(es.size()));
-					}
-				} else
-				if (ship.owner != player()) {
-					if (ship.type == StructureType.STATION 
-							|| ship.type == StructureType.PROJECTOR) {
-						ship.guard = true;
-					} else
-					if (ship.type == StructureType.SHIP) {
+					if (ship.owner == player()) {
 						List<SpacewarStructure> es = enemiesInRange(ship);
 						if (es.size() > 0) {
 							ship.attack = es.get(world().random.get().nextInt(es.size()));
-						} else {
-							es = enemiesOf(ship);
-							if (es.size() > 0) {
-								ship.attack = es.get(world().random.get().nextInt(es.size()));
-							}
 						}
+					} else {
+						aiPlayer = ship.owner;
+						idles.add(ship);
 					}
+				} else
+				if (ship.owner != player()) {
+					idles.add(ship);
 				}
 			}
 		}
+		
+		SpacewarAction act = SpacewarAction.CONTINUE;
+		if (aiPlayer != null) {
+			act = aiPlayer.ai.spaceBattle(this, aiPlayer, idles);
+		}
+		
 		for (SoundType st : soundsToPlay) {
 			sound(st);
 		}
-		Player winner = checkWinner();
+		Player winner = act == SpacewarAction.SURRENDER ? player() : checkWinner();
+		
 		if (winner != null && explosions.size() == 0 && projectiles.size() == 0) {
 			commons.simulation.pause();
 			concludeBattle(winner);
@@ -3173,8 +3179,11 @@ public class SpacewarScreen extends ScreenBase {
 		if (nonplayerUnits == 0) {
 			return player();
 		}
-		if (stopRetreat.visible && playerRetreatedBeyondScreen()) {
+		if (stopRetreat.visible && playerRetreatedBeyondScreen(player())) {
 			return other;
+		} else
+		if (playerRetreatedBeyondScreen(other)) {
+			return player();
 		}
 		return null;
 	}
@@ -3183,7 +3192,8 @@ public class SpacewarScreen extends ScreenBase {
 	 * @param s the structure
 	 * @return the list of enemies
 	 */
-	List<SpacewarStructure> enemiesOf(SpacewarStructure s) {
+	@Override
+	public List<SpacewarStructure> enemiesOf(SpacewarStructure s) {
 		List<SpacewarStructure> result = JavaUtils.newArrayList();
 		for (SpacewarStructure f : structures) {
 			if (f.owner != s.owner) {
@@ -3307,5 +3317,30 @@ public class SpacewarScreen extends ScreenBase {
 			infoImages.put(name, result);
 		}
 		return result;
+	}
+	@Override
+	public <T> T random(List<T> list) {
+		int idx = world().random.get().nextInt(list.size());
+		return list.get(idx);
+	}
+	@Override
+	public List<SpacewarStructure> structures() {
+		return structures;
+	}
+	@Override
+	public BattleInfo battle() {
+		return battle;
+	}
+	@Override
+	public void flee(SpacewarStructure s) {
+		if (s.owner == battle.attacker.owner) {
+			// flee to the left side
+			s.moveTo = new Point2D.Double(-1000, s.y);
+		} else {
+			// flee to the right side
+			s.moveTo = new Point2D.Double(space.width + 1000, s.y);
+		}
+		s.attack = null;
+		s.guard = false;
 	}
 }

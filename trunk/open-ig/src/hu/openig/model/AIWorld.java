@@ -17,7 +17,7 @@ import java.util.Map;
  * Class representing the world for an AI player, copying the world state to allow a thread-safe evaluation.
  * @author akarnokd, 2011.12.08.
  */
-public class AIWorld extends AIObject {
+public class AIWorld {
 	/** The backing world. */
 	public World world;
 	/** The player of this world. */
@@ -29,9 +29,9 @@ public class AIWorld extends AIObject {
 	/** The precomputed planet statistics. */
 	public final Map<Fleet, FleetStatistics> fleetStatistics = new HashMap<Fleet, FleetStatistics>();
 	/** The active productions. */
-	public final List<Production> productions = new LinkedList<Production>();
+	public final Map<ResearchType, Production> productions = new HashMap<ResearchType, Production>();
 	/** The active researches. */
-	public final List<Research> researches = new LinkedList<Research>(); 
+	public final Map<ResearchType, Research> researches = new HashMap<ResearchType, Research>(); 
 	/** The list of known other players. */
 	public final List<Player> players = new LinkedList<Player>();
 	/** The list of own fleets. */
@@ -56,11 +56,11 @@ public class AIWorld extends AIObject {
 		
 		for (Map<ResearchType, Production> prods : player.production.values()) {
 			for (Production prod : prods.values()) {
-				productions.add(prod.copy());
+				productions.put(prod.type, prod.copy());
 			}
 		}
 		for (Research res : player.research.values()) {
-			researches.add(res.copy());
+			researches.put(res.type, res.copy());
 		}
 		
 		for (Player p2 : world.players.values()) {
@@ -98,16 +98,6 @@ public class AIWorld extends AIObject {
 				enemyPlanets.add(aip);
 			}
 		}
-	}
-	@Override
-	public void assign(AITaskCandidate tc) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public double taskTime(AITask task) {
-		// TODO Auto-generated method stub
-		return Double.POSITIVE_INFINITY;
 	}
 	/**
 	 * Returns or calculates the planet statistics.
