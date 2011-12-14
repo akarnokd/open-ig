@@ -143,6 +143,10 @@ public class AITrader implements AIManager {
 	public void manage() {
 		
 	}
+	/** @return the maximum number of active fleets. */
+	public int maxFleets() {
+		return planets.size() / 2 + 1;
+	}
 	@Override
 	public void apply() {
 		// check if fleet arrived at target
@@ -161,29 +165,13 @@ public class AITrader implements AIManager {
 		}
 		int actions = 0;
 		// if more planets available than fleets
-		while (activeCount < planets.size()) {
+		while (activeCount < maxFleets()) {
 			// create new fleets as landed
-			Fleet nf = new Fleet();
-			nf.owner = player;
-			nf.name = traderLabel;
-			List<ResearchType> rts = JavaUtils.newArrayList();
-			for (ResearchType rt : world.researches.values()) {
-				if (rt.race.contains(player.race)) {
-					rts.add(rt);
-				}
-			}
-			int rnd = world.random.get().nextInt(rts.size());
-			InventoryItem ii = new InventoryItem();
-			ii.owner = player;
-			ii.count = 1;
-			ii.type = rts.get(rnd);
-			ii.hp = world.getHitpoints(ii.type);
+			Fleet nf = createFleet();
 			
-			nf.inventory.add(ii);
 			LandedFleet lf = new LandedFleet();
 			lf.fleet = nf;
-			rnd = world.random.get().nextInt(planets.size());
-			lf.target = planets.get(rnd);
+			lf.target = world.random(planets);
 			nf.x = lf.target.x;
 			nf.y = lf.target.y;
 			
@@ -194,7 +182,7 @@ public class AITrader implements AIManager {
 			}
 		}
 		
-		if (activeCount > planets.size()) {
+		if (activeCount > maxFleets()) {
 			// remove landed fleets
 			Iterator<LandedFleet> it = landed.iterator();
 			while (landed.size() > 0 && activeCount > planets.size()) {
@@ -252,6 +240,53 @@ public class AITrader implements AIManager {
 				}
 			}
 		}
+	}
+	/**
+	 * @return create a new random fleet
+	 */
+	public Fleet createFleet() {
+		Fleet nf = new Fleet();
+		nf.owner = player;
+		nf.name = traderLabel;
+		List<ResearchType> rts = JavaUtils.newArrayList();
+		for (ResearchType rt : world.researches.values()) {
+			if (rt.race.contains(player.race)) {
+				rts.add(rt);
+			}
+		}
+		InventoryItem ii = new InventoryItem();
+		ii.owner = player;
+		ii.count = 1;
+		ii.type = world.random(rts);
+		ii.hp = world.getHitpoints(ii.type);
+		
+		nf.inventory.add(ii);
+		return nf;
+	}
+	/**
+	 * Creates a fleet with the given ship tech id as its single inventory.
+	 * @param id the tech id of the ship
+	 * @return create a new fleet
+	 */
+	public Fleet createFleet(String id) {
+		Fleet nf = new Fleet();
+		nf.owner = player;
+		nf.name = traderLabel;
+		ResearchType type = null;
+		for (ResearchType rt : world.researches.values()) {
+			if (rt.race.contains(player.race) && rt.id.equals(id)) {
+				type = rt;
+				break;
+			}
+		}
+		InventoryItem ii = new InventoryItem();
+		ii.owner = player;
+		ii.count = 1;
+		ii.type = type;
+		ii.hp = world.getHitpoints(ii.type);
+		
+		nf.inventory.add(ii);
+		return nf;
 	}
 
 	@Override
@@ -319,20 +354,17 @@ public class AITrader implements AIManager {
 	@Override
 	public void load(XElement in, World world, Player player) {
 		for (XElement xlf : in.childrenWithName("landed")) {
-			int fid = xlf.getInt("fleet");
-			Fleet f = player.fleet(fid);
-			if (f != null) {
-				int ttl = xlf.getInt("ttl");
-				String pid = xlf.get("planet");
-				Planet p = world.planets.get(pid);
-				
-				if (p != null) {
-					LandedFleet lf = new LandedFleet();
-					lf.fleet = f;
-					lf.target = p;
-					lf.ttl = ttl;
-					landed.add(lf);
-				}
+			String fid = xlf.get("fleet");
+			String pid = xlf.get("planet");
+			Planet p = world.planets.get(pid);
+			int ttl = xlf.getInt("ttl");
+			Fleet f = createFleet(fid);
+			if (p != null) {
+				LandedFleet lf = new LandedFleet();
+				lf.fleet = f;
+				lf.target = p;
+				lf.ttl = ttl;
+				landed.add(lf);
 			}
 		}
 		for (XElement xtb : in.childrenWithName("turned-back")) {
@@ -358,10 +390,12 @@ public class AITrader implements AIManager {
 	@Override
 	public void save(XElement out, World world, Player player) {
 		for (LandedFleet lf : landed) {
-			XElement xlf = out.add("landed");
-			xlf.set("fleet", lf.fleet.id);
-			xlf.set("planet", lf.target.id);
-			xlf.set("ttl", lf.ttl);
+			if (lf.fleet.inventory.size() > 0) {
+				XElement xlf = out.add("landed");
+				xlf.set("fleet", lf.fleet.inventory.get(0).type.id);
+				xlf.set("planet", lf.target.id);
+				xlf.set("ttl", lf.ttl);
+			}
 		}
 		for (Fleet tb : fleetTurnedBack) {
 			XElement xtb = out.add("turned-back");

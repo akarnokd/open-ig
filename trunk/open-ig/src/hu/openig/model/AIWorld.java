@@ -24,6 +24,8 @@ public class AIWorld {
 	public Player player;
 	/** The player's current money. */
 	public long money;
+	/** The global planet statistics. */
+	public PlanetStatistics global;
 	/** The precomputed planet statistics. */
 	public final Map<Planet, PlanetStatistics> planetStatistics = new HashMap<Planet, PlanetStatistics>();
 	/** The precomputed planet statistics. */
@@ -87,6 +89,7 @@ public class AIWorld {
 				enemyFleets.add(aif);
 			}
 		}
+		global = new PlanetStatistics();
 		for (Planet pl : player.planets.keySet()) {
 			if (pl.owner == null || player.knowledge(pl, PlanetKnowledge.OWNER) < 0) {
 				AIPlanet aip = new AIPlanet();
@@ -97,12 +100,14 @@ public class AIWorld {
 				AIPlanet aip = new AIPlanet();
 				aip.assign(pl, this);
 				ownPlanets.add(aip);
+				global.add(aip.statistics);
 			} else {
 				AIPlanet aip = new AIPlanet();
 				aip.assign(pl, this);
 				enemyPlanets.add(aip);
 			}
 		}
+		
 	}
 	/**
 	 * Returns or calculates the planet statistics.

@@ -212,6 +212,28 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 		return result;
 	}
 	/**
+	 * Calculate the speed value of the fleet.
+	 * @return the speed
+	 */
+	public int getSpeed() {
+		int speed = Integer.MAX_VALUE;
+		for (InventoryItem fii : inventory) {
+			boolean checkHyperdrive = fii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS 
+					|| fii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS;
+			for (InventorySlot slot : fii.slots) {
+				if (slot.type != null) {
+					if (checkHyperdrive && slot.type.has("speed")) {
+						speed = Math.min(slot.type.getInt("speed"), speed);
+					}
+				}
+			}
+		}		
+		if (speed == Integer.MAX_VALUE) {
+			speed = 6;
+		}
+		return speed;
+	}
+	/**
 	 * @return Returns the nearest planet or null if out of range. 
 	 */
 	public Planet nearbyPlanet() {
