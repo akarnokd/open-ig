@@ -1948,4 +1948,14 @@ public class World {
 	public boolean aiAccept(Player player) {
 		return player != null && player.aiMode != AIMode.TRADERS && player.aiMode != AIMode.PIRATES;
 	}
+	/**
+	 * Returns a random element from the list.
+	 * @param <T> the element type
+	 * @param ts the list of elements
+	 * @return the selected element
+	 */
+	public <T> T random(List<T> ts) {
+		int idx = random.get().nextInt(ts.size());
+		return ts.get(idx);
+	}
 }

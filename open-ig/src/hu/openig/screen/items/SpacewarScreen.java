@@ -3340,8 +3340,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	@Override
 	public <T> T random(List<T> list) {
-		int idx = world().random.get().nextInt(list.size());
-		return list.get(idx);
+		return world().random(list);
 	}
 	@Override
 	public List<SpacewarStructure> structures() {

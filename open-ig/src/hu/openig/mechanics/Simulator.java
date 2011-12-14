@@ -628,10 +628,18 @@ public final class Simulator {
 			
 			// move fleet
 			Point2D.Float target = null;
+			double targetSpeed = 0.0;
 			boolean removeWp = false;
 			if (f.targetFleet != null) {
 				target = new Point2D.Float(f.targetFleet.x, f.targetFleet.y);
 				f.waypoints.clear();
+				// if not in radar range any more just move to its last position and stop
+				if (!f.owner.fleets.containsKey(f.targetFleet)) {
+					f.targetFleet = null;
+					f.mode = FleetMode.MOVE;
+				} else {
+					targetSpeed = getSpeed(f.targetFleet);
+				}
 			} else
 			if (f.targetPlanet() != null) {
 				target = new Point2D.Float(f.targetPlanet().x, f.targetPlanet().y);
@@ -643,7 +651,11 @@ public final class Simulator {
 			}
 			if (target != null) {
 				double dist = Math.sqrt((f.x - target.x) * (f.x - target.x) + (f.y - target.y) * (f.y - target.y));
-				double dx = f.getStatistics(world.battle).speed / 4;
+				double dx = getSpeed(f);
+				// if the target has roughly the same speed as our fleet, give a small boost
+				if (Math.abs(dx - targetSpeed) < 0.5) {
+					dx += 0.5;
+				}
 				
 				if (dx >= dist) {
 					f.x = target.x;
@@ -675,6 +687,14 @@ public final class Simulator {
 		}
 		
 		return invokeRadar;
+	}
+	/**
+	 * Calculates the fleet speed per simulation step.
+	 * @param f the fleet
+	 * @return the speed
+	 */
+	static double getSpeed(Fleet f) {
+		return f.getSpeed() / 4;
 	}
 	/**
 	 * Perform the auto-build if necessary.

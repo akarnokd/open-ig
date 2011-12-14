@@ -322,6 +322,21 @@ public class PlanetScreen extends ScreenBase {
 				rep = true;
 			}
 			break;
+		case KeyEvent.VK_D:
+			if (e.isControlDown()) {
+				if (battle == null) {
+					doAddGuns();
+					doAddUnits();
+					rep = true;
+				}
+			}
+			break;
+		case KeyEvent.VK_B:
+			if (buildingsPanel.build.enabled()) {
+				buildingsPanel.build.onPress.act();
+				rep = true;
+			}
+			break;
 		case KeyEvent.VK_S:
 			doStopSelectedUnits();
 			e.consume();
@@ -788,10 +803,6 @@ public class PlanetScreen extends ScreenBase {
 				placementMode = false;
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
-				if (battle == null) {
-					doAddGuns();
-					doAddUnits();
-				}
 			}
 			buildingsPanel.visible(planet().owner == player() && showBuildingList && battle == null);
 			buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);

@@ -8,6 +8,10 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.JavaUtils;
+
+import java.util.List;
+
 /**
  * Class representing a planet for the AI player.
  * @author akarnokd, 2011.12.08.
@@ -19,6 +23,8 @@ public class AIPlanet {
 	public PlanetKnowledge knowledge;
 	/** The planet statistics. */
 	public PlanetStatistics statistics;
+	/** The inventory items of the planet. */
+	public final List<AIInventoryItem> inventory = JavaUtils.newArrayList();
 	/**
 	 * Assign the necessary properties from a planet.
 	 * @param planet the target fleet
@@ -28,5 +34,8 @@ public class AIPlanet {
 		this.planet = planet;
 		this.knowledge = world.knowledge(planet);
 		this.statistics = world.getStatistics(planet);
+		for (InventoryItem ii : planet.inventory) {
+			inventory.add(new AIInventoryItem(ii));
+		}
 	}
 }
