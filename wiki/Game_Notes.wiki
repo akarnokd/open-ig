@@ -2,6 +2,18 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.475 - Ground battles =
+  * Released: 2011-12-15 11:30 CET
+  * *You may need to start a new game!*
+  * Fixed sound issues and hangs on Mac systems.
+  * Added AI framework
+  * Added trader fleets: they wander around, can be attacked. If attacked and get below 50% health, they will turn around, return to their last visited planet, and stay there for 10 ingame hours.
+  * Space battle against aliens now considers their attack/defense/social preferences, which determines when they switch tactics between attack any/attack costly ships/flee.
+  * Fix: If a tracked fleet moves outside the radar zone, the follower goes to its last known location and stops.
+  * Added game option to display the radar coverage area similarly to Imperium Galactica 2.
+  * Label fixes for issues [http://code.google.com/p/open-ig/issues/detail?id=112 #112], [http://code.google.com/p/open-ig/issues/detail?id=114 #114]
+  
+
 = Version 0.93.450 - Ground battles =
   * Released: 2011-10-01 14:30 CET
   * *You may need to start a new game!*
