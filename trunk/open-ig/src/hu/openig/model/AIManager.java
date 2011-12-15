@@ -18,11 +18,15 @@ import java.util.List;
  */
 public interface AIManager {
 	/**
-	 * Prepare the world.
-	 * @param w the real world
-	 * @param p the player
+	 * Initialize the AI manager by showing the world and the player object it is representing.
+	 * @param w the world object
+	 * @param p the player object
 	 */
-	void prepare(World w, Player p);
+	void init(World w, Player p);
+	/**
+	 * Prepare the world for AI processing outside the EDT, e.g., copy relevant world state into private data.
+	 */
+	void prepare();
 	/**
 	 * Manage the world.
 	 */
@@ -42,7 +46,6 @@ public interface AIManager {
 	ResponseMode diplomacy(World world, Player we, Player other, DiplomaticInteraction offer);
 	/**
 	 * Handle some aspects of a space battle.
-	 * TODO output?
 	 * @param world the world
 	 * @param player the AI's player object
 	 * @param idles the list of objects which have completed their current attack objectives and awaiting new commands
@@ -60,15 +63,61 @@ public interface AIManager {
 	/**
 	 * Save the state of this AI manager from a save file.
 	 * @param out the output XElement
-	 * @param world the global world
-	 * @param player the AI's player object
 	 */
-	void save(XElement out, World world, Player player);
+	void save(XElement out);
 	/**
 	 * Load the state of this AI manager from a save file.
 	 * @param in the input XElement
-	 * @param world the global world
-	 * @param player the AI's player object
 	 */
-	void load(XElement in, World world, Player player);
+	void load(XElement in);
+	/**
+	 * Notification if a research has completed.
+	 * @param rt the research
+	 */
+	void onResearchComplete(ResearchType rt);
+	/**
+	 * Notification if a production (batch) is complete.
+	 * @param rt the research
+	 */
+	void onProductionComplete(ResearchType rt);
+	/**
+	 * Notification if a new planet has been discovered.
+	 * @param planet the planet
+	 */
+	void onDiscoverPlanet(Planet planet);
+	/**
+	 * Notification if a fleet has been discovered.
+	 * @param fleet the fleet
+	 */
+	void onDiscoverFleet(Fleet fleet);
+	/**
+	 * Notification if a new player has been discovered.
+	 * @param player the player
+	 */
+	void onDiscoverPlayer(Player player);
+	/**
+	 * Notification if a fleet arrived at a specific point in space.
+	 * @param fleet the fleet
+	 * @param x the X space coordinate
+	 * @param y the Y space coordinate
+	 */
+	void onFleetArrivedAtPoint(Fleet fleet, double x, double y);
+	/**
+	 * Notification if a fleet arrived at a planet.
+	 * @param fleet the fleet
+	 * @param planet the planet
+	 */
+	void onFleetArrivedAtPlanet(Fleet fleet, Planet planet);
+	/**
+	 * Notification if a fleet arrived at another fleet.
+	 * @param fleet the fleet
+	 * @param other the other fleet
+	 */
+	void onFleetArrivedAtFleet(Fleet fleet, Fleet other);
+	/**
+	 * Notification if a building is completed.
+	 * @param planet the planet
+	 * @param building the building
+	 */
+	void onBuildingComplete(Planet planet, Building building);
 }

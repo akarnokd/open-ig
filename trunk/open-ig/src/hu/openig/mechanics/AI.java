@@ -8,12 +8,17 @@
 
 package hu.openig.mechanics;
 
+import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIWorld;
 import hu.openig.model.BattleInfo;
+import hu.openig.model.Building;
+import hu.openig.model.BuildingType;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
+import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
@@ -34,6 +39,10 @@ import java.util.Set;
  */
 public class AI implements AIManager {
 	/** The world. */
+	World w;
+	/** The player. */
+	Player p;
+	/** The world. */
 	AIWorld world;
 	/** 
 	 * AI players won't start colonization until the player has actually researched its colony ship.
@@ -43,7 +52,12 @@ public class AI implements AIManager {
 	/** Set of fleets which will behave as defenders in the space battle. */
 	final Set<Fleet> defensiveTask = JavaUtils.newHashSet();
 	@Override
-	public void prepare(World w, Player p) {
+	public void init(World w, Player p) {
+		this.w = w;
+		this.p = p;
+	}
+	@Override
+	public void prepare() {
 		world = new AIWorld();
 		world.assign(w, p);
 		playerColonyShipAvailable = w.player.colonyShipAvailable;
@@ -59,6 +73,105 @@ public class AI implements AIManager {
 		// TODO Auto-generated method stub
 		
 		world = null;
+	}
+	
+	/**
+	 * Action to start the research.
+	 * @param rt the research type
+	 */
+	public void actionStartResearch(ResearchType rt) {
+		// TODO implement
+	}
+	/**
+	 * Deploy a fleet from the inventory.
+	 * @param loadFactor percentage of 0..1 about how many units to place into fighter/cruiser/battleship slots.
+	 * @param powerFactor percentage of 0..1 about how well the units should be equipped
+	 * @param items the sequence of items to choose from when filling in the slots
+	 */
+	public void actionDeployFleet(double loadFactor, double powerFactor, Iterable<ResearchType> items) {
+		// TODO implement
+	}
+	
+	/**
+	 * Start the production of the given technology with the amount and priority.
+	 * @param rt the technology
+	 * @param count number of items to produce
+	 * @param priority the production priority
+	 */
+	public void actionStartProduction(ResearchType rt, int count, int priority) {
+		// TODO implement
+	}
+	
+	/**
+	 * Place a building onto the planet (via the autobuild location mechanism).
+	 * @param planet the target planet
+	 * @param buildingType the building type
+	 */
+	public void actionPlaceBuilding(Planet planet, BuildingType buildingType) {
+		// TODO implement
+	}
+	/**
+	 * Upgrade a building on the given planet to the given level.
+	 * @param planet the target planet
+	 * @param building the building
+	 * @param newLevel the new level
+	 */
+	public void actionUpgradeBuilding(Planet planet, Building building, int newLevel) {
+		// TODO implement
+	}
+	/**
+	 * Deploy units such as tanks, fighters and stations into a planet.
+	 * @param loadFactor percentage of 0..1 about how many units to place into slots.
+	 * @param powerFactor percentage of 0..1 about how well the units should be equipped
+	 * @param planet the target planet
+	 * @param items the item types to deploy
+	 */
+	public void actionDeployUnits(double loadFactor, double powerFactor, Planet planet, Iterable<ResearchType> items) {
+		// TODO implement
+	}
+	
+	/**
+	 * Use the fleet to attack the planet.
+	 * @param fleet the fleet
+	 * @param planet the target planet
+	 * @param mode the aim of the attack
+	 */
+	public void actionAttackPlanet(Fleet fleet, Planet planet, AIAttackMode mode) {
+		// TODO implement
+	}
+	/**
+	 * Use the fleet to attack the enemy fleet.
+	 * @param fleet the fleet
+	 * @param enemy the enemy fleet
+	 * @param defense indicate if the attack is to stop an advancing enemy
+	 */
+	public void actionAttackFleet(Fleet fleet, Fleet enemy, boolean defense) {
+		// TODO implement
+	}
+	/**
+	 * Move the fleet to the designated coordinates.
+	 * @param fleet the fleet
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 */
+	public void actionMoveFleet(Fleet fleet, double x, double y) {
+		// TODO implement
+	}
+	/**
+	 * Send the fleet to colonize the target planet.
+	 * @param fleet the fleet
+	 * @param planet the planet
+	 */
+	public void actionColonizePlanet(Fleet fleet, Planet planet) {
+		// TODO implement
+	}
+	/**
+	 * Send a diplomatic request/statement to the other player. 
+	 * @param other the other player
+	 * @param offer the offer
+	 */
+	public void actionDiplomaticInteraction(Player other, DiplomaticInteraction offer) {
+		// TODO implement
 	}
 	
 	@Override
@@ -180,20 +293,67 @@ public class AI implements AIManager {
 		
 	}
 	@Override
-	public void load(XElement in, World world, Player player) {
+	public void load(XElement in) {
 		for (XElement xf : in.childrenWithName("task-defensive")) {
 			int fid = xf.getInt("fleet");
-			Fleet f = player.fleet(fid);
+			Fleet f = p.fleet(fid);
 			if (f != null) {
 				defensiveTask.add(f);
 			}
 		}
 	}
 	@Override
-	public void save(XElement out, World world, Player player) {
+	public void save(XElement out) {
 		for (Fleet f : defensiveTask) {
 			XElement xf = out.add("task-defensive");
 			xf.set("fleet", f.id);
 		}
 	}
+	@Override
+	public void onResearchComplete(ResearchType rt) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onProductionComplete(ResearchType rt) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onDiscoverPlanet(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onDiscoverFleet(Fleet fleet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onDiscoverPlayer(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onFleetArrivedAtPoint(Fleet fleet, double x, double y) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onFleetArrivedAtPlanet(Fleet fleet, Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onFleetArrivedAtFleet(Fleet fleet, Fleet other) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onBuildingComplete(Planet planet, Building building) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 }

@@ -803,6 +803,10 @@ public class PlanetScreen extends ScreenBase {
 				placementMode = false;
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
+				if (battle == null) {
+					guns.clear();
+					units.clear();
+				}
 			}
 			buildingsPanel.visible(planet().owner == player() && showBuildingList && battle == null);
 			buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);

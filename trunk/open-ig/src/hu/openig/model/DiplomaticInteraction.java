@@ -8,11 +8,27 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.XElement;
+
 /**
  * The diplomatic interaction properties.
  * @author akarnokd, 2011.12.08.
  */
 public class DiplomaticInteraction {
-	/** Indicates if the interaction is received by the active party (i.e., the AI or the player). */
-	public boolean receive;
+	/** The sender player ID of the request. */
+	public String sender;
+	/**
+	 * Restore the state from the XML.
+	 * @param in the XML input
+	 */
+	public void load(XElement in) {
+		// TODO implement
+	}
+	/**
+	 * Save the state into the XML.
+	 * @param out the XML output
+	 */
+	public void save(XElement out) {
+		// TODO implement
+	}
 }

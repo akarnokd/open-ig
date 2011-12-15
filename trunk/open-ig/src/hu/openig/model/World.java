@@ -289,6 +289,7 @@ public class World {
 		// create AI for the players
 		for (Player p : players.values()) {
 			p.ai = aiFactory.invoke(p);
+			p.ai.init(this, p);
 		}
 		
 		try {
@@ -814,7 +815,11 @@ public class World {
 			
 			// save AI state
 			if (p.ai != null) {
-				p.ai.save(xp.add("ai"), this, p);
+				p.ai.save(xp.add("ai"));
+			}
+			XElement xdipl = xp.add("diplomacy");
+			for (DiplomaticInteraction di : p.diplomacy) {
+				di.save(xdipl.add("message"));
 			}
 			
 			p.statistics.save(xp.add("statistics"));
@@ -1096,6 +1101,17 @@ public class World {
 			p.today.researchCost = xtoday.getInt("research");
 			p.today.productionCost = xtoday.getInt("production");
 
+			p.diplomacy.clear();
+			XElement xdipl = xplayer.childElement("diplomacy");
+			if (xdipl != null) {
+				for (XElement xdi : xdipl.childrenWithName("message")) {
+					DiplomaticInteraction di = new DiplomaticInteraction();
+					di.load(xdi);
+					p.diplomacy.add(di);
+				}
+			}
+
+			
 			for (Map<ResearchType, Production> prod : p.production.values()) {
 				prod.clear();
 			}
@@ -1285,7 +1301,8 @@ public class World {
 			if (xai != null) {
 				Player p = players.get(xplayer.get("id"));
 				p.ai = aiFactory.invoke(p);
-				p.ai.load(xai, this, p);
+				p.ai.init(this, p);
+				p.ai.load(xai);
 			}
 		}
 	}
