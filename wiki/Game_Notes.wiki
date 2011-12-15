@@ -2,7 +2,7 @@
 
 <wiki:toc max_depth="1" />
 
-= Version 0.93.475 - Ground battles =
+= Version 0.93.475 - Traders =
   * Released: 2011-12-15 11:30 CET
   * *You may need to start a new game!*
   * Fixed sound issues and hangs on Mac systems ([http://code.google.com/p/open-ig/issues/detail?id=114 Issue #114]).
