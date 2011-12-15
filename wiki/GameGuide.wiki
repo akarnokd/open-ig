@@ -27,7 +27,7 @@
 || CTRL+B || Colony || Toggle build mode ||
 || S || Colony, Ground war, Spacewar || Stop selected units ||
 || BACKSPACE || Ground war, Spacewar || TEST: Quit the battle instantly ||
-|| CTRL+V || Starmap || Show all planets and fleets ||
+|| CTRL+V || Starmap || TEST: Show all planets and fleets ||
 || A || Starmap || Fleet attack mode ||
 || M || Starmap || Fleet move mode ||
 || F1 || Any || Bridge screen ||
