@@ -10,7 +10,7 @@
   * Added trader fleets: they wander around, can be attacked. If attacked and get below 50% health, they will turn around, return to their last visited planet, and stay there for 10 ingame hours. ([http://code.google.com/p/open-ig/issues/detail?id=117 Issue #117])
   * Space battle against aliens now considers their attack/defense/social preferences, which determines when they switch tactics between attack any/attack costly ships/flee.
   * Fix: If a tracked fleet moves outside the radar zone, the follower goes to its last known location and stops.
-  * Added game option to display the radar coverage area similarly to Imperium Galactica 2.
+  * Added game option to display the radar coverage area similarly to Imperium Galactica 2. ([([http://code.google.com/p/open-ig/issues/detail?id=124 Issue #124])
   * Label fixes ([http://code.google.com/p/open-ig/issues/detail?id=112 Issue #112])
   * Right clicking on a fleet or planet on the Starmap screen now jumps to that object ([http://code.google.com/p/open-ig/issues/detail?id=115 Issue #115])
   * CTRL+Middle click now zooms the view to fit the screen. When starting a new game, the view is also fit to screen. ([http://code.google.com/p/open-ig/issues/detail?id=120 Issue #120])
