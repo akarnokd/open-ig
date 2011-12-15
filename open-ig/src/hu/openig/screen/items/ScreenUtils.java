@@ -86,7 +86,7 @@ public final class ScreenUtils {
 	public static void drawTransitionLabel(Graphics2D g2, WalkTransition pointerTransition,
 			Rectangle origin, CommonResources commons) {
 		Rectangle r = pointerTransition.area.getBounds();
-		String gotoLocation = commons.labels0().get(pointerTransition.label);
+		String gotoLocation = commons.labels().get(pointerTransition.label);
 		int tw = commons.text().getTextWidth(14, gotoLocation) + 10;
 		int th = 20;
 		

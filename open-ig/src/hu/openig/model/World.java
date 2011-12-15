@@ -8,10 +8,8 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
-import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
@@ -125,10 +123,15 @@ public class World {
 	public Battle battle;
 	/** The list of pending battles. */
 	public Deque<BattleInfo> pendingBattles = new LinkedList<BattleInfo>();
-	/** The callback function to initiate a battle. */
-	public Action0 startBattle;
-	/** The factory to instantiate an AI manager for a particular player. */ 
-	public Func1<Player, AIManager> aiFactory;
+	/** The game environment. */
+	public final GameEnvironment env;
+	/**
+	 * Constructs a world under the given game environment.
+	 * @param env the environment
+	 */
+	public World(GameEnvironment env) {
+		this.env = env;
+	}
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
@@ -288,8 +291,8 @@ public class World {
 
 		// create AI for the players
 		for (Player p : players.values()) {
-			p.ai = aiFactory.invoke(p);
-			p.ai.init(this, p);
+			p.ai = env.getAI(p);
+			p.ai.init(env, p);
 		}
 		
 		try {
@@ -1300,8 +1303,8 @@ public class World {
 			XElement xai = xplayer.childElement("ai");
 			if (xai != null) {
 				Player p = players.get(xplayer.get("id"));
-				p.ai = aiFactory.invoke(p);
-				p.ai.init(this, p);
+				p.ai = env.getAI(p);
+				p.ai.init(env, p);
 				p.ai.load(xai);
 			}
 		}

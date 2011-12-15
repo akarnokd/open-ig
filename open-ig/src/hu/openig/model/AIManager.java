@@ -19,10 +19,10 @@ import java.util.List;
 public interface AIManager {
 	/**
 	 * Initialize the AI manager by showing the world and the player object it is representing.
-	 * @param w the world object
+	 * @param env the game environment
 	 * @param p the player object
 	 */
-	void init(World w, Player p);
+	void init(GameEnvironment env, Player p);
 	/**
 	 * Prepare the world for AI processing outside the EDT, e.g., copy relevant world state into private data.
 	 */
@@ -120,4 +120,15 @@ public interface AIManager {
 	 * @param building the building
 	 */
 	void onBuildingComplete(Planet planet, Building building);
+	/**
+	 * Notification about a fleet disappearing from radar.
+	 * @param fleet the fleet we lost sight of
+	 */
+	void onLostSight(Fleet fleet);
+	/**
+	 * Notification about a fleet loosing its target due radar coverage, destruction or disassembly.
+	 * @param fleet the fleet
+	 * @param target the target fleet
+	 */
+	void onLostTarget(Fleet fleet, Fleet target);
 }

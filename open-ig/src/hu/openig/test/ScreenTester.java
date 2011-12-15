@@ -11,7 +11,6 @@ package hu.openig.test;
 import hu.openig.GameWindow;
 import hu.openig.Startup;
 import hu.openig.core.Act;
-import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
@@ -543,21 +542,14 @@ public class ScreenTester extends JFrame implements GameControls {
 					rl = commons.rl;
 
 					t = System.nanoTime();
-					commons.world(new World());
+					commons.world(new World(commons));
 					commons.world().definition = GameDefinition.parse(commons.rl, "campaign/main");
 					commons.world().difficulty = Difficulty.values()[0];
-					commons.labels0().load(commons.rl, commons.world().definition.name);
-					commons.world().labels = commons.labels0();
-					commons.world().aiFactory = commons.control().aiFactory();
+					commons.labels().load(commons.rl, commons.world().definition.name);
+					commons.world().labels = commons.labels();
 					
 					commons.world().load(commons.rl, commons.world().definition.name);
 					commons.world().config = commons.config;
-					commons.world().startBattle = new Action0() {
-						@Override
-						public void invoke() {
-							commons.control().startBattle();
-						}
-					};
 
 					commons.world().level = 5;
 					System.out.printf("Rest: %.3f ms%n", (System.nanoTime() - t) / 1000000.0);
@@ -941,6 +933,6 @@ public class ScreenTester extends JFrame implements GameControls {
 	}
 	@Override
 	public Func1<Player, AIManager> aiFactory() {
-		return GameWindow.defaultAIFactory(commons.labels0());
+		return GameWindow.defaultAIFactory(commons);
 	}
 }
