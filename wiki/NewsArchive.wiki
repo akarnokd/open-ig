@@ -4,6 +4,12 @@
 
 =December, 2011=
 
+*December 15, 2011*
+
+A small release with a more lively galaxy. 
+
+I'm still reading about AI techniques. Most sources just throw up the planning algorith: Knapsack solver, Heuristic solver, Goal Oriented Action Planning, A`*`, etc. These are fine, but the never talk about how to determine the value/score/priority of the entities statically and dinamically.
+
 *December 7, 2011*
 
 After a big rush in another open source [https://sourceforge.net/projects/advance-project/ project] of mine (which finally contained real computer science!) I'm back to Open-IG and doing the next big thing: AI for general operations. I found a reasonable [http://www.gamasutra.com/view/feature/1535/designing_ai_algorithms_for_.php explanation] of how to do it in principle.
