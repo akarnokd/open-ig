@@ -419,6 +419,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	static final int SIMULATION_DELAY = 100;
 	/** Keep the last info images. */
 	static final int IMAGE_CACHE_SIZE = 8;
+	/** Indicates if the attacker is placed on the right side. */
+	boolean attackerOnRight;
 	/** Info image cache. */
 	final Map<String, BufferedImage> infoImages = new LinkedHashMap<String, BufferedImage>() {
 		/** */
@@ -1280,6 +1282,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (nearbyPlanet != null && nearbyPlanet.owner == battle.attacker.owner) {
 			// place the attacker on the right side (planet side)
 			
+			attackerOnRight = true;
+			
 			placeFleet(xmax, true, battle.attacker);
 			// place the defender on the left side
 			
@@ -1289,6 +1293,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		} else {
 			// place attacker on the left side
 			placeFleet(0, false, battle.attacker);
+			
+			attackerOnRight = false;
 			
 			// place the defender on the planet side (right side)
 			if (nearbyFleet != null) {
@@ -3352,7 +3358,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	@Override
 	public void flee(SpacewarStructure s) {
-		if (s.owner == battle.attacker.owner) {
+		if (s.owner == battle.attacker.owner && !attackerOnRight) {
 			// flee to the left side
 			s.moveTo = new Point2D.Double(-1000, s.y);
 		} else {
@@ -3371,5 +3377,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		return result;
+	}
+	@Override
+	public int facing() {
+		return battle.attacker.owner == player() && !attackerOnRight ? -1 : 1;
 	}
 }

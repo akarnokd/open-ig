@@ -53,4 +53,9 @@ public interface SpacewarWorld {
 	 * @param s the target structure
 	 */
 	void flee(SpacewarStructure s);
+	/**
+	 * @return -1 if a forward move would decrease the X coordinate, +1 if a forward move would
+	 * increase the X coordinate
+	 */
+	int facing();
 }

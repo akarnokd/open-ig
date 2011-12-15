@@ -26,6 +26,7 @@ import hu.openig.model.World;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XElement;
 
+import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -318,6 +319,11 @@ public class AITrader implements AIManager {
 				s.fleet.mode = FleetMode.MOVE;
 			}
 			return SpacewarAction.FLEE;
+		} else {
+			// move a bit forward
+			for (SpacewarStructure s : idles) {
+				s.moveTo = new Point2D.Double(s.x + world.facing() * s.movementSpeed, s.y);
+			}			
 		}
 		return SpacewarAction.CONTINUE;
 	}
