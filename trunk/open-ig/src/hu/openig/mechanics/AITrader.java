@@ -15,6 +15,7 @@ import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
+import hu.openig.model.GameEnvironment;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -61,13 +62,6 @@ public class AITrader implements AIManager {
 	/** How many new ships should emerge? */
 	int actionCount;
 	/**
-	 * Constructor.
-	 * @param label the fleet name label
-	 */
-	public AITrader(String label) {
-		this.traderLabel = label;
-	}
-	/**
 	 * A trader fleet status.
 	 * @author akarnokd, Dec 8, 2011
 	 */
@@ -98,8 +92,9 @@ public class AITrader implements AIManager {
 	/** The player. */
 	private Player player;
 	@Override
-	public void init(World w, Player p) {
-		this.world = w;
+	public void init(GameEnvironment env, Player p) {
+		this.traderLabel = env.labels().get("");
+		this.world = env.world();
 		this.player = p;
 	}
 	@Override
@@ -458,6 +453,16 @@ public class AITrader implements AIManager {
 	}
 	@Override
 	public void onBuildingComplete(Planet planet, Building building) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onLostSight(Fleet fleet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onLostTarget(Fleet fleet, Fleet target) {
 		// TODO Auto-generated method stub
 		
 	}

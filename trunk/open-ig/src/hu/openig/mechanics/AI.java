@@ -16,6 +16,7 @@ import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
+import hu.openig.model.GameEnvironment;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
@@ -52,8 +53,8 @@ public class AI implements AIManager {
 	/** Set of fleets which will behave as defenders in the space battle. */
 	final Set<Fleet> defensiveTask = JavaUtils.newHashSet();
 	@Override
-	public void init(World w, Player p) {
-		this.w = w;
+	public void init(GameEnvironment env, Player p) {
+		this.w = env.world();
 		this.p = p;
 	}
 	@Override
@@ -267,7 +268,7 @@ public class AI implements AIManager {
 	 * Find the highest cost enemy target.
 	 * @param enemies the list of enemies
 	 * @param ship the current ship
-	 * @return the new target
+	 * @return the new target or null if no targets remain
 	 */
 	public static SpacewarStructure highestCost(List<SpacewarStructure> enemies, SpacewarStructure ship) {
 		if (enemies.isEmpty()) {
@@ -354,6 +355,15 @@ public class AI implements AIManager {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	@Override
+	public void onLostSight(Fleet fleet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onLostTarget(Fleet fleet, Fleet target) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

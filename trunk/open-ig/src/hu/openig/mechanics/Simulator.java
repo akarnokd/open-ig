@@ -158,7 +158,7 @@ public final class Simulator {
 			result = true;
 		}
 		if (!world.pendingBattles.isEmpty()) {
-			world.startBattle.invoke();
+			world.env.startBattle();
 			result = true;
 		}
 		return result;

@@ -88,7 +88,7 @@ public class EquipmentMinimap extends UIComponent {
 			
 			String fleetName = f.name;
 			if (commons.world().player.knowledge(f, FleetKnowledge.VISIBLE) == 0) {
-				fleetName = commons.labels0().get("fleetinfo.alien_fleet");
+				fleetName = commons.labels().get("fleetinfo.alien_fleet");
 			}
 			
 			int nw = commons.text().getTextWidth(7, fleetName);

@@ -146,7 +146,7 @@ public abstract class ScreenBase extends UIContainer {
 	 * @return the translation
 	 */
 	public String get(String label) {
-		return commons.labels0().get(label);
+		return commons.labels().get(label);
 	}
 	/** 
 	 * Returns a formatted translation of the given label.
@@ -155,7 +155,7 @@ public abstract class ScreenBase extends UIContainer {
 	 * @return the translation
 	 */
 	public String format(String label, Object... args) {
-		return commons.labels0().format(label, args);
+		return commons.labels().format(label, args);
 	}
 	/**
 	 * Returns the planet knowledge about the given planet by the current player.

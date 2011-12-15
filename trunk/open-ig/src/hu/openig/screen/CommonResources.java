@@ -30,6 +30,8 @@ import hu.openig.gfx.StatusbarGFX;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Simulator;
+import hu.openig.model.AIManager;
+import hu.openig.model.GameEnvironment;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.Screens;
@@ -65,7 +67,7 @@ import javax.swing.Timer;
  * Contains all common ang game specific graphical and textual resources.
  * @author akarnokd, 2009.12.25.
  */
-public class CommonResources {
+public class CommonResources implements GameEnvironment {
 	/** The main configuration object. */
 	public Configuration config;
 	/** The main resource locator object. */
@@ -366,7 +368,8 @@ public class CommonResources {
 		}
 	}
 	/** @return lazily initialize the labels or return the existing one. */
-	public Labels labels0() {
+	@Override
+	public Labels labels() {
 		return labels;
 	}
 	/** @return lazily initialize the status bar or return the existing one. */
@@ -587,6 +590,7 @@ public class CommonResources {
 		battleMode = false;
 	}
 	/** @return the world instance. */
+	@Override
 	public World world() {
 		return world;
 	}
@@ -747,5 +751,13 @@ public class CommonResources {
 			close0(handler);
 			handler = null;
 		}
+	}
+	@Override
+	public AIManager getAI(Player player) {
+		return control.aiFactory().invoke(player);
+	}
+	@Override
+	public void startBattle() {
+		control.startBattle();
 	}
 }

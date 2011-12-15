@@ -9,7 +9,6 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Act;
-import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.model.GameDefinition;
@@ -229,26 +228,19 @@ public class SingleplayerScreen extends ScreenBase {
 			Thread t1 = new Thread("Start Game Loading") {
 				@Override 
 				public void run() {
-					final World world = new World();
+					final World world = new World(commons);
 					world.definition = selectedDefinition;
 					world.difficulty = Difficulty.values()[difficulty];
 					final Labels labels = new Labels(); 
 					labels.load(commons.rl, selectedDefinition.name + "/labels");
 					world.labels = labels;
-					world.aiFactory = commons.control().aiFactory();
 					
 					world.load(commons.rl, selectedDefinition.name);
 					world.config = commons.config;
-					world.startBattle = new Action0() {
-						@Override
-						public void invoke() {
-							commons.control().startBattle();
-						}
-					};
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							commons.labels0().replaceWith(labels);
+							commons.labels().replaceWith(labels);
 							commons.world(world);
 							commons.worldLoading = false;
 							barrier.release();

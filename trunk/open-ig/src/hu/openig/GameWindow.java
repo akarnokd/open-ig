@@ -9,7 +9,6 @@
 package hu.openig;
 
 import hu.openig.core.Act;
-import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
@@ -18,6 +17,7 @@ import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.AI;
 import hu.openig.mechanics.AIPirate;
 import hu.openig.mechanics.AITrader;
+import hu.openig.mechanics.AIUser;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIMode;
@@ -1408,19 +1408,12 @@ public class GameWindow extends JFrame implements GameControls {
 					if (!game.equals(currentGame)) {
 						commons.world(null);
 						// load world model
-						world = new World();
+						world = new World(commons);
 						world.definition = GameDefinition.parse(commons.rl, game);
 						world.labels = new Labels();
 						world.labels.load(commons.rl, game + "/labels");
-						world.aiFactory = commons.control().aiFactory();
 						world.load(commons.rl, world.definition.name);
 						world.config = commons.config;
-						world.startBattle = new Action0() {
-							@Override
-							public void invoke() {
-								startBattle();
-							}
-						};
 					}
 					
 					world.loadState(xworld);
@@ -1429,7 +1422,7 @@ public class GameWindow extends JFrame implements GameControls {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							commons.labels0().replaceWith(fworld.labels);
+							commons.labels().replaceWith(fworld.labels);
 							commons.world(fworld);
 							commons.worldLoading = false;
 							
@@ -1608,7 +1601,7 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 					}
 					if (!ableToGroundBattle) {
-						displayError(commons.labels0().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
+						displayError(commons.labels().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
 						commons.sounds.play(SoundType.NOT_AVAILABLE);
 						continue;
 					}
@@ -1793,22 +1786,25 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public Func1<Player, AIManager> aiFactory() {
-		return defaultAIFactory(commons.labels0());
+		return defaultAIFactory(commons);
 	}
 	/**
 	 * Returns a default AI factory.
-	 * @param labels the labels
+	 * @param commons the common resources
 	 * @return the factory function
 	 */
-	public static Func1<Player, AIManager> defaultAIFactory(final Labels labels) {
+	public static Func1<Player, AIManager> defaultAIFactory(final CommonResources commons) {
 		return new Func1<Player, AIManager>() {
 			@Override
 			public AIManager invoke(Player value) {
 				if (value.aiMode == AIMode.TRADERS) {
-					return new AITrader(labels.get("traders.fleetname"));
+					return new AITrader();
 				} else
 				if (value.aiMode == AIMode.PIRATES) {
 					return new AIPirate();
+				} else
+				if (value.aiMode == AIMode.NONE) {
+					return new AIUser();
 				}
 				return new AI();
 			}
