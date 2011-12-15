@@ -10,6 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.model.AIManager;
 import hu.openig.model.BattleInfo;
+import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
@@ -97,11 +98,13 @@ public class AITrader implements AIManager {
 	/** The player. */
 	private Player player;
 	@Override
-	public void prepare(World w, Player p) {
+	public void init(World w, Player p) {
 		this.world = w;
 		this.player = p;
-		
-		switch (w.difficulty) {
+	}
+	@Override
+	public void prepare() {
+		switch (world.difficulty) {
 		case EASY:
 			actionCount = 1;
 			break;
@@ -119,8 +122,8 @@ public class AITrader implements AIManager {
 		fleets.clear();
 		planets.clear();
 		// get fleets
-		for (Fleet f : p.fleets.keySet()) {
-			if (f.owner == p) {
+		for (Fleet f : player.fleets.keySet()) {
+			if (f.owner == player) {
 				TraderFleet tf = new TraderFleet();
 				tf.fleet = f;
 				tf.target = f.targetPlanet();
@@ -128,7 +131,7 @@ public class AITrader implements AIManager {
 				fleets.add(tf);
 			}
 		}
-		for (Planet pl : w.planets.values()) {
+		for (Planet pl : world.planets.values()) {
 			if (pl.owner != null) {
 				planets.add(pl);
 //				for (Building b : pl.surface.buildings) {
@@ -358,7 +361,7 @@ public class AITrader implements AIManager {
 	}
 
 	@Override
-	public void load(XElement in, World world, Player player) {
+	public void load(XElement in) {
 		for (XElement xlf : in.childrenWithName("landed")) {
 			String fid = xlf.get("fleet");
 			String pid = xlf.get("planet");
@@ -394,7 +397,7 @@ public class AITrader implements AIManager {
 		}
 	}
 	@Override
-	public void save(XElement out, World world, Player player) {
+	public void save(XElement out) {
 		for (LandedFleet lf : landed) {
 			if (lf.fleet.inventory.size() > 0) {
 				XElement xlf = out.add("landed");
@@ -412,5 +415,50 @@ public class AITrader implements AIManager {
 			xlast.set("fleet", last.getKey().id);
 			xlast.set("planet", last.getValue().id);
 		}
+	}
+	@Override
+	public void onResearchComplete(ResearchType rt) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onProductionComplete(ResearchType rt) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onDiscoverPlanet(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onDiscoverFleet(Fleet fleet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onDiscoverPlayer(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onFleetArrivedAtPoint(Fleet fleet, double x, double y) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onFleetArrivedAtPlanet(Fleet fleet, Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onFleetArrivedAtFleet(Fleet fleet, Fleet other) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onBuildingComplete(Planet planet, Building building) {
+		// TODO Auto-generated method stub
+		
 	}
 }

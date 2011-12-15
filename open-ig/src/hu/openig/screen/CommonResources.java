@@ -508,7 +508,7 @@ public class CommonResources {
 						@Override
 						protected Void doInBackground() throws Exception {
 							// parallel convert world state
-							p.ai.prepare(world, p);
+							p.ai.prepare();
 							// wait for all to read world state
 							wip.dec();
 							// act on the world state

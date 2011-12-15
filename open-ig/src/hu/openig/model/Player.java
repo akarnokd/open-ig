@@ -12,8 +12,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -101,6 +103,10 @@ public class Player {
 	public AIManager ai;
 	/** Indicates that the player has a colony ship researched. */
 	public boolean colonyShipAvailable;
+	/**
+	 * The queue for pending diplomatic interactions.
+	 */
+	public final Deque<DiplomaticInteraction> diplomacy = new LinkedList<DiplomaticInteraction>();
 	/**
 	 * @return returns the next planet by goind top-bottom relative to the current planet
 	 */

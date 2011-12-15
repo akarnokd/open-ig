@@ -59,6 +59,38 @@ public class PlayerStatistics {
 	public long planetsConquered;
 	/** Number of planets colonized. */
 	public long planetsColonized;
+	/** Number of planets lost to the enemy. TODO gather */
+	public long planetsLost;
+	/** Number of planets lost due revolts. TODO gather */
+	public long planetsRevolted;
+	/** Number of planets lost due it died out. TODO gather */
+	public long planetsDied;
+	/** Number of fought space battles. TODO gather */
+	public long spaceBattles;
+	/** Number of fought ground battles. TODO gather */
+	public long groundBattles;
+	/** Number of space wins. TODO gather */
+	public long spaceWins;
+	/** Number of ground wins. TODO gather */
+	public long groundWins;
+	/** Number of space loses. TODO gather */
+	public long spaceLoses;
+	/** Number of ground loses. TODO gather */
+	public long groundLoses;
+	/** Number of space retreats. TODO gather */
+	public long spaceRetreats;
+	/** Fleets created. TODO gather */
+	public long fleetsCreated;
+	/** Fleets lost. TODO gather */
+	public long fleetsLost;
+	/** Enemy fleets destroyed. TODO gather */
+	public long fleetsDestroyed;
+	/** Number of buildings destroyed during battle. TODO gather */
+	public long buildingsDestroyed;
+	/** Number of ships destroyed. TODO gather */
+	public long shipsDestroyed;
+	/** Number of ships lost. TODO gather */
+	public long shipsLost;
 	/** Total buildings. */
 	public long totalBuilding;
 	/** Total working buildings. */
