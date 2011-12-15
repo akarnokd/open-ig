@@ -25,7 +25,7 @@
 			<desc lang='en'>The program's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.93.450'>
+	<module id='Game' version='0.93.475'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -37,18 +37,26 @@
 		<execute file='open-ig-%s.jar' memory='768'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>Földharc.</desc>
-			<desc lang='en'>Ground battle.</desc>
+			<desc lang='hu'>AI keretrendszer, kereskedők.</desc>
+			<desc lang='en'>AI framework, traders.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.450.jar' sha1='a4ea4193cf535b27e521ff9ec61c43fedf356546'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.475.jar' sha1='9d20c1af111fe99c9121825758752e3f2d966288'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20111215a.zip' sha1='b8c9bb89a43c9ec5087010cee53938a123a818a2'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 december 15 / A</desc>
+			<desc lang='en'>The upgraded resource file. 15th December, 2011 / A</desc>
+		</file>
+		<remove file='open-ig-0.93.450.jar' sha1='a4ea4193cf535b27e521ff9ec61c43fedf356546'>
+			<desc lang='hu'>A program fő fájlja.</desc>
+			<desc lang='en'>The program's main file.</desc>
+		</remove>
 
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20111001a.zip' sha1='f168cc09014428ecb5dd681fd7828f575b369015'>
+		<remove file='open-ig-upgrade-20111001a.zip' sha1='f168cc09014428ecb5dd681fd7828f575b369015'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 októbar 1 / A</desc>
 			<desc lang='en'>The upgraded resource file. 1st October, 2011 / A</desc>
-		</file>
+		</remove>
 		<remove file='open-ig-upgrade-20110831a.zip' sha1='d3b7b809f68283cb069fc5d9a7b1b5729d8e5c69'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 augusztus 31 / A</desc>
 			<desc lang='en'>The upgraded resource file. 31th August, 2011 / A</desc>
