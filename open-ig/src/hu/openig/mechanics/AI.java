@@ -17,21 +17,28 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.GameEnvironment;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.Production;
+import hu.openig.model.Research;
+import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.model.TileSet;
 import hu.openig.model.World;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XElement;
 
+import java.awt.Point;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -79,9 +86,24 @@ public class AI implements AIManager {
 	/**
 	 * Action to start the research.
 	 * @param rt the research type
+	 * @param moneyFactor the money multiplier for the research
 	 */
-	public void actionStartResearch(ResearchType rt) {
-		// TODO implement
+	public void actionStartResearch(ResearchType rt, double moneyFactor) {
+		if (p.runningResearch != null) {
+			Research r = p.research.get(p.runningResearch);
+			r.state = ResearchState.STOPPED;
+		}
+		p.runningResearch = rt;
+		Research r = p.research.get(p.runningResearch);
+		if (r == null) {
+			r = new Research();
+			r.type = rt;
+			r.remainingMoney = r.type.researchCost;
+			r.assignedMoney = (int)(r.type.researchCost * moneyFactor);
+		} else {
+			r.assignedMoney = (int)(r.remainingMoney * moneyFactor);
+		}
+		r.state = ResearchState.RUNNING;
 	}
 	/**
 	 * Deploy a fleet from the inventory.
@@ -100,7 +122,15 @@ public class AI implements AIManager {
 	 * @param priority the production priority
 	 */
 	public void actionStartProduction(ResearchType rt, int count, int priority) {
-		// TODO implement
+		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
+		Production prod = prodLine.get(rt);
+		if (prod == null) {
+			prod = new Production();
+			prod.type = rt;
+			prodLine.put(rt, prod);
+		}
+		prod.priority = priority;
+		prod.count += count;
 	}
 	
 	/**
@@ -110,6 +140,11 @@ public class AI implements AIManager {
 	 */
 	public void actionPlaceBuilding(Planet planet, BuildingType buildingType) {
 		// TODO implement
+		TileSet ts = buildingType.tileset.get(planet.race);
+		Point pt = planet.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
+		if (pt != null) {
+			Simulator.doConstruct(w, planet, buildingType, pt);
+		}
 	}
 	/**
 	 * Upgrade a building on the given planet to the given level.
@@ -119,6 +154,7 @@ public class AI implements AIManager {
 	 */
 	public void actionUpgradeBuilding(Planet planet, Building building, int newLevel) {
 		// TODO implement
+		Simulator.doUpgrade(w, planet, building, newLevel);
 	}
 	/**
 	 * Deploy units such as tanks, fighters and stations into a planet.
@@ -311,7 +347,7 @@ public class AI implements AIManager {
 		}
 	}
 	@Override
-	public void onResearchComplete(ResearchType rt) {
+	public void onResearchStateChange(ResearchType rt, ResearchState state) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -365,5 +401,24 @@ public class AI implements AIManager {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	@Override
+	public void onNewDay() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSatelliteDestroyed(Planet planet, InventoryItem ii) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetDied(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetRevolt(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
 }

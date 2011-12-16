@@ -8,23 +8,27 @@
 
 package hu.openig.mechanics;
 
-import java.util.List;
-
 import hu.openig.model.AIManager;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.GameEnvironment;
+import hu.openig.model.InventoryItem;
+import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
 import hu.openig.utils.XElement;
+
+import java.util.List;
 
 /**
  * An AI node representing the human player.
@@ -32,10 +36,17 @@ import hu.openig.utils.XElement;
  * @author akarnokd, 2011.12.15.
  */
 public class AIUser implements AIManager {
+	/** The game environment. */
+	GameEnvironment env;
+	/** The world. */
+	World w;
+	/** The player. */
+	Player p;
 	@Override
 	public void init(GameEnvironment env, Player p) {
-		// TODO Auto-generated method stub
-
+		this.env = env;
+		this.w = env.world();
+		this.p = p;
 	}
 
 	@Override
@@ -89,21 +100,31 @@ public class AIUser implements AIManager {
 	}
 
 	@Override
-	public void onResearchComplete(ResearchType rt) {
-		// TODO Auto-generated method stub
-
+	public void onResearchStateChange(ResearchType rt, ResearchState state) {
+		if (state == ResearchState.COMPLETE) {
+			Message msg = w.newMessage("message.research_completed");
+			msg.priority = 40;
+			msg.sound = SoundType.RESEARCH_COMPLETE;
+			msg.targetResearch = rt;
+			p.messageQueue.add(msg);
+		}
 	}
 
 	@Override
 	public void onProductionComplete(ResearchType rt) {
-		// TODO Auto-generated method stub
-
+		Message msg = w.newMessage("message.production_completed");
+		msg.priority = 40;
+		msg.sound = SoundType.PRODUCTION_COMPLETE;
+		msg.targetProduct = rt;
+		p.messageQueue.add(msg);
 	}
 
 	@Override
 	public void onDiscoverPlanet(Planet planet) {
-		// TODO Auto-generated method stub
-
+		Message msg = w.newMessage("message.new_planet_discovered");
+		msg.targetPlanet = planet;
+		msg.priority = 20;
+		p.messageQueue.add(msg);
 	}
 
 	@Override
@@ -114,8 +135,10 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void onDiscoverPlayer(Player player) {
-		// TODO Auto-generated method stub
-
+		Message msg = w.newMessage("message.new_race_discovered");
+		msg.priority = 20;
+		msg.label = player.getRaceLabel();
+		p.messageQueue.add(msg);
 	}
 
 	@Override
@@ -138,7 +161,13 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void onBuildingComplete(Planet planet, Building building) {
-		// TODO Auto-generated method stub
+		if (building.type.kind.equals("MainBuilding")) {
+			Message msg = w.newMessage("message.colony_hub_completed");
+			msg.priority = 60;
+			msg.targetPlanet = planet;
+			
+			p.messageQueue.add(msg);
+		}
 
 	}
 
@@ -153,5 +182,39 @@ public class AIUser implements AIManager {
 		// TODO Auto-generated method stub
 
 	}
+	@Override
+	public void onNewDay() {
+		Message msg = w.newMessage("message.yesterday_tax_income");
+		msg.priority = 20;
+		msg.value = "" + w.player.yesterday.taxIncome;
+		p.messageQueue.add(msg);
 
+		msg = w.newMessage("message.yesterday_trade_income");
+		msg.priority = 20;
+		msg.value = "" + w.player.yesterday.tradeIncome;
+		p.messageQueue.add(msg);
+	}
+	@Override
+	public void onSatelliteDestroyed(Planet planet, InventoryItem ii) {
+		Message msg = w.newMessage("message.satellite_destroyed");
+		msg.priority = 50;
+		msg.sound = SoundType.SATELLITE_DESTROYED;
+		msg.targetPlanet = planet;
+		p.messageQueue.add(msg);
+	}
+	@Override
+	public void onPlanetDied(Planet planet) {
+		Message msg = w.newMessage("message.planet_died");
+		msg.priority = 80;
+		msg.targetPlanet = planet;
+		planet.owner.messageQueue.add(msg);
+	}
+	@Override
+	public void onPlanetRevolt(Planet planet) {
+		Message msg = w.newMessage("message.planet_revolt");
+		msg.priority = 100;
+		msg.sound = SoundType.REVOLT;
+		msg.targetPlanet = planet;
+		planet.owner.messageQueue.add(msg);
+	}
 }

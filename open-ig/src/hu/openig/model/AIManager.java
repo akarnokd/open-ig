@@ -71,10 +71,11 @@ public interface AIManager {
 	 */
 	void load(XElement in);
 	/**
-	 * Notification if a research has completed.
+	 * Notification if a research has changed its state to completed, money or lab.
 	 * @param rt the research
+	 * @param state the state
 	 */
-	void onResearchComplete(ResearchType rt);
+	void onResearchStateChange(ResearchType rt, ResearchState state);
 	/**
 	 * Notification if a production (batch) is complete.
 	 * @param rt the research
@@ -131,4 +132,23 @@ public interface AIManager {
 	 * @param target the target fleet
 	 */
 	void onLostTarget(Fleet fleet, Fleet target);
+	/** Notification if a new day arrived. */
+	void onNewDay();
+	/**
+	 * Notification if a satellite was destroyed.
+	 * @param planet the planet
+	 * @param ii the inventory item
+	 */
+	void onSatelliteDestroyed(Planet planet, InventoryItem ii);
+	/**
+	 * Notification if a planet died.
+	 * <p>Called before the <code>planet.die()</code> method in the simulator</p>
+	 * @param planet the target planet
+	 */
+	void onPlanetDied(Planet planet);
+	/**
+	 * Notification if a planet is in revolt state.
+	 * @param planet the target planet
+	 */
+	void onPlanetRevolt(Planet planet);
 }

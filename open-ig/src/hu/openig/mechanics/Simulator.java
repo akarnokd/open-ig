@@ -31,7 +31,6 @@ import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Resource;
-import hu.openig.model.SoundType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.model.World;
@@ -70,17 +69,7 @@ public final class Simulator {
 		
 		// Prepare global statistics
 		// -------------------------
-		world.statistics.totalPopulation = 0;
-		world.statistics.totalBuilding = 0;
-		world.statistics.totalAvailableBuilding = 0;
-		
-		world.statistics.totalWorkerDemand = 0;
-		world.statistics.totalEnergyDemand = 0;
-		world.statistics.totalAvailableEnergy = 0;
-		world.statistics.totalAvailableHouse = 0;
-		world.statistics.totalAvailableFood = 0;
-		world.statistics.totalAvailableHospital = 0;
-		world.statistics.totalAvailablePolice = 0;
+		prepareGlobalStatistics(world);
 		
 		// -------------------------
 		boolean invokeRadar = false;
@@ -92,27 +81,7 @@ public final class Simulator {
 			// -------------------------
 			// Prepare player statistics
 			
-			player.statistics.totalPopulation = 0;
-			player.statistics.totalBuilding = 0;
-			player.statistics.totalAvailableBuilding = 0;
-			
-			player.statistics.totalWorkerDemand = all.workerDemand;
-			player.statistics.totalEnergyDemand = all.energyDemand;
-			player.statistics.totalAvailableEnergy = all.energyAvailable;
-			player.statistics.totalAvailableHouse = all.houseAvailable;
-			player.statistics.totalAvailableFood = all.foodAvailable;
-			player.statistics.totalAvailableHospital = all.hospitalAvailable;
-			player.statistics.totalAvailablePolice = all.policeAvailable;
-
-			world.statistics.totalWorkerDemand += all.workerDemand;
-			world.statistics.totalEnergyDemand += all.energyDemand;
-			world.statistics.totalAvailableEnergy += all.energyAvailable;
-			world.statistics.totalAvailableHouse += all.houseAvailable;
-			world.statistics.totalAvailableFood += all.foodAvailable;
-			world.statistics.totalAvailableHospital += all.hospitalAvailable;
-			world.statistics.totalAvailablePolice += all.policeAvailable;
-			
-			player.statistics.planetsOwned = 0;
+			preparePlayerStatistics(world, player, all);
 			
 			// -------------------------
 			
@@ -144,16 +113,9 @@ public final class Simulator {
 		
 		if (day0 != day1) {
 			
-			Message msg = world.newMessage("message.yesterday_tax_income");
-			msg.priority = 20;
-			msg.value = "" + world.player.yesterday.taxIncome;
-			world.player.messageQueue.add(msg);
-
-			msg = world.newMessage("message.yesterday_trade_income");
-			msg.priority = 20;
-			msg.value = "" + world.player.yesterday.tradeIncome;
-			world.player.messageQueue.add(msg);
-
+			for (Player p : world.players.values()) {
+				p.ai.onNewDay();
+			}
 			
 			result = true;
 		}
@@ -162,6 +124,54 @@ public final class Simulator {
 			result = true;
 		}
 		return result;
+	}
+	/**
+	 * Prepare global statistics.
+	 * <p>Typically accumulative values.</p>
+	 * @param world the world object
+	 */
+	static void prepareGlobalStatistics(World world) {
+		world.statistics.totalPopulation = 0;
+		world.statistics.totalBuilding = 0;
+		world.statistics.totalAvailableBuilding = 0;
+		
+		world.statistics.totalWorkerDemand = 0;
+		world.statistics.totalEnergyDemand = 0;
+		world.statistics.totalAvailableEnergy = 0;
+		world.statistics.totalAvailableHouse = 0;
+		world.statistics.totalAvailableFood = 0;
+		world.statistics.totalAvailableHospital = 0;
+		world.statistics.totalAvailablePolice = 0;
+	}
+	/**
+	 * Prepare the world and player statistics.
+	 * @param world the world
+	 * @param player the player
+	 * @param all the all planet statistics of the player
+	 */
+	static void preparePlayerStatistics(World world, Player player,
+			PlanetStatistics all) {
+		player.statistics.totalPopulation = 0;
+		player.statistics.totalBuilding = 0;
+		player.statistics.totalAvailableBuilding = 0;
+		
+		player.statistics.totalWorkerDemand = all.workerDemand;
+		player.statistics.totalEnergyDemand = all.energyDemand;
+		player.statistics.totalAvailableEnergy = all.energyAvailable;
+		player.statistics.totalAvailableHouse = all.houseAvailable;
+		player.statistics.totalAvailableFood = all.foodAvailable;
+		player.statistics.totalAvailableHospital = all.hospitalAvailable;
+		player.statistics.totalAvailablePolice = all.policeAvailable;
+
+		world.statistics.totalWorkerDemand += all.workerDemand;
+		world.statistics.totalEnergyDemand += all.energyDemand;
+		world.statistics.totalAvailableEnergy += all.energyAvailable;
+		world.statistics.totalAvailableHouse += all.houseAvailable;
+		world.statistics.totalAvailableFood += all.foodAvailable;
+		world.statistics.totalAvailableHospital += all.hospitalAvailable;
+		world.statistics.totalAvailablePolice += all.policeAvailable;
+		
+		player.statistics.planetsOwned = 0;
 	}
 	/**
 	 * Make progress on the buildings of the planet.
@@ -236,12 +246,8 @@ public final class Simulator {
 				b.hitpoints += 200;
 				b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 				
-				if (b.hitpoints == b.type.hitpoints && b.type.kind.equals("MainBuilding")) {
-					Message msg = world.newMessage("message.colony_hub_completed");
-					msg.priority = 60;
-					msg.targetPlanet = planet;
-					
-					planet.owner.messageQueue.add(msg);
+				if (b.hitpoints == b.type.hitpoints) {
+					planet.owner.ai.onBuildingComplete(planet, b);
 				}
 				
 				result = true;
@@ -276,6 +282,7 @@ public final class Simulator {
 			}
 			// turn of repairing when hitpoints are reached
 			if (b.repairing && b.hitpoints == b.type.hitpoints) {
+				// FIXME planet.owner.ai.onRepairComplete(planet, b);
 				b.repairing = false;
 				result = true;
 			}
@@ -333,12 +340,7 @@ public final class Simulator {
 						planet.timeToLive.remove(ittl.getKey());
 						planet.inventory.remove(ittl.getKey());
 	
-						Message msg = world.newMessage("message.satellite_destroyed");
-						msg.priority = 50;
-						msg.sound = SoundType.SATELLITE_DESTROYED;
-						msg.targetPlanet = planet;
-						ittl.getKey().owner.messageQueue.add(msg);
-	
+						ittl.getKey().owner.ai.onSatelliteDestroyed(planet, ittl.getKey());
 					} else {
 						ittl.setValue(cttl2);
 					}
@@ -396,17 +398,6 @@ public final class Simulator {
 			float nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
 			planet.morale = (int)nextMorale;
 			
-			// avoid a practically infinite population descent
-//			if (planet.population < 1000 && nextMorale < 50) {
-//				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
-//			} else 
-//			if (nextMorale < 50) {
-//				// lower morale should decrease population more rapidly
-//				planet.population = (int)Math.max(0, planet.population + planet.population * (nextMorale - 50) / 250);
-//			} else {
-//				planet.population = (int)Math.max(0, planet.population + planet.population * (nextMorale - 50) / 500);
-//			}
-
 			if (nextMorale < 50) {
 				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
 			} else {
@@ -432,19 +423,15 @@ public final class Simulator {
 			planet.owner.yesterday.taxMoraleCount++;
 			
 			if (planet.population == 0) {
-				Message msg = world.newMessage("message.planet_died");
-				msg.priority = 80;
-				msg.targetPlanet = planet;
-				planet.owner.messageQueue.add(msg);
-				
+				planet.owner.ai.onPlanetDied(planet);
+				planet.owner.statistics.planetsDied++;
 				planet.die();
 			} else {
 				if (planet.morale <= 15) {
-					Message msg = world.newMessage("message.planet_revolt");
-					msg.priority = 100;
-					msg.sound = SoundType.REVOLT;
-					msg.targetPlanet = planet;
-					planet.owner.messageQueue.add(msg);
+					planet.owner.ai.onPlanetRevolt(planet);
+					if (planet.lastMorale > 15) {
+						planet.owner.statistics.planetsRevolted++;
+					}
 				}
 			}
 		}
@@ -485,28 +472,31 @@ public final class Simulator {
 
 						world.statistics.moneyResearch += dmoney;
 						world.statistics.moneySpent += dmoney;
-						
+
+						ResearchState last = rs.state;
 						rs.state = ResearchState.RUNNING;
+						if (last != rs.state) {
+							player.ai.onResearchStateChange(rs.type, rs.state);
+						}
 					} else {
 						rs.state = ResearchState.MONEY;
+						player.ai.onResearchStateChange(rs.type, rs.state);
 					}
 				} else {
 					rs.state = ResearchState.LAB;
+					player.ai.onResearchStateChange(rs.type, rs.state);
 				}
 			}
 			// test for completedness
 			if (rs.remainingMoney == 0) {
+				rs.state = ResearchState.COMPLETE;
 				player.runningResearch = null;
 				player.research.remove(rs.type);
 				player.setAvailable(rs.type);
 				
 				player.statistics.researchCount++;
 				
-				Message msg = world.newMessage("message.research_completed");
-				msg.priority = 40;
-				msg.sound = SoundType.RESEARCH_COMPLETE;
-				msg.targetResearch = rs.type;
-				player.messageQueue.add(msg);
+				player.ai.onResearchStateChange(rs.type, rs.state);
 			}
 			return true;
 		}
@@ -579,11 +569,7 @@ public final class Simulator {
 						result = true;
 						
 						if (pr.count == 0) {
-							Message msg = world.newMessage("message.production_completed");
-							msg.priority = 40;
-							msg.sound = SoundType.PRODUCTION_COMPLETE;
-							msg.targetProduct = pr.type;
-							player.messageQueue.add(msg);
+							player.ai.onProductionComplete(pr.type);
 						}
 					}
 				}			
@@ -612,19 +598,7 @@ public final class Simulator {
 		
 		for (Fleet f : playerFleets) {
 			// regenerate shields
-			for (InventoryItem ii : f.inventory) {
-				int hpMax = world.getHitpoints(ii.type);
-				if (ii.hp < hpMax) {
-					Planet np = f.nearbyPlanet();
-					if (np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport) {
-						ii.hp = Math.min(hpMax, (ii.hp * 100 + hpMax) / 100);
-					}
-				}
-				int sm = ii.shieldMax(world);
-				if (sm > 0 && ii.shield < sm) {
-					ii.shield = Math.min(sm, (ii.shield * 100 + sm) / 100);
-				}
-			}
+			regenerateFleet(world, planetStats, f);
 			
 			// move fleet
 			Point2D.Float target = null;
@@ -635,6 +609,9 @@ public final class Simulator {
 				f.waypoints.clear();
 				// if not in radar range any more just move to its last position and stop
 				if (!f.owner.fleets.containsKey(f.targetFleet)) {
+					
+					f.owner.ai.onLostTarget(f, f.targetFleet);
+					
 					f.targetFleet = null;
 					f.mode = FleetMode.MOVE;
 				} else {
@@ -670,6 +647,15 @@ public final class Simulator {
 							bi.targetFleet = f.targetFleet;
 							bi.targetPlanet = f.targetPlanet();
 							world.pendingBattles.add(bi);
+						} else {
+							if (f.targetPlanet() != null) {
+								f.owner.ai.onFleetArrivedAtPlanet(f, f.targetPlanet());
+							} else
+							if (f.targetFleet != null) {
+								f.owner.ai.onFleetArrivedAtFleet(f, f.targetFleet);
+							} else {
+								f.owner.ai.onFleetArrivedAtPoint(f, f.x, f.y);
+							}
 						}
 						f.mode = null;
 						f.targetFleet = null;
@@ -687,6 +673,28 @@ public final class Simulator {
 		}
 		
 		return invokeRadar;
+	}
+	/**
+	 * Regenerate the shields and/or health.
+	 * @param world the world object
+	 * @param planetStats the planet statistics
+	 * @param f the fleet
+	 */
+	static void regenerateFleet(World world,
+			Map<Planet, PlanetStatistics> planetStats, Fleet f) {
+		for (InventoryItem ii : f.inventory) {
+			int hpMax = world.getHitpoints(ii.type);
+			if (ii.hp < hpMax) {
+				Planet np = f.nearbyPlanet();
+				if (np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport) {
+					ii.hp = Math.min(hpMax, (ii.hp * 100 + hpMax) / 100);
+				}
+			}
+			int sm = ii.shieldMax(world);
+			if (sm > 0 && ii.shield < sm) {
+				ii.shield = Math.min(sm, (ii.shield * 100 + sm) / 100);
+			}
+		}
 	}
 	/**
 	 * Calculates the fleet speed per simulation step.
@@ -1056,7 +1064,7 @@ public final class Simulator {
 	 * @param bt the building type to build
 	 * @param pt the place to build (the top-left corner of the roaded building base rectangle).
 	 */
-	static void doConstruct(World world, Planet planet, BuildingType bt,
+	public static void doConstruct(World world, Planet planet, BuildingType bt,
 			Point pt) {
 		Building b = new Building(bt, planet.race);
 		b.location = Location.of(pt.x + 1, pt.y - 1);
@@ -1083,22 +1091,38 @@ public final class Simulator {
 	 */
 	static void doUpgrade(World world, Planet planet, Building b) {
 		do {
-			b.setLevel(b.upgradeLevel + 1);
-			b.buildProgress = b.type.hitpoints * 1 / 4;
-			b.hitpoints = b.buildProgress;
-			
-			planet.owner.today.buildCost += b.type.cost;
-			
-			planet.owner.money -= b.type.cost;
-			planet.owner.statistics.upgradeCount++;
-			planet.owner.statistics.moneySpent += b.type.cost;
-			planet.owner.statistics.moneyUpgrade += b.type.cost;
-			
-			world.statistics.upgradeCount++;
-			world.statistics.moneySpent += b.type.cost;
-			world.statistics.moneyUpgrade += b.type.cost;
 			// maximize upgrade level if the player has enough money relative to the building's cost
+			doUpgrade(world, planet, b, b.upgradeLevel + 1);
 		} while (b.upgradeLevel < b.type.upgrades.size() && planet.owner.money >= 30 * b.type.cost);
+	}
+	/**
+	 * Update the building to the given new level.
+	 * @param world the world
+	 * @param planet the planet
+	 * @param building the building
+	 * @param newLevel the new level
+	 */
+	public static void doUpgrade(World world, Planet planet, Building building, int newLevel) {
+		if (newLevel <= building.upgradeLevel || newLevel >= building.type.upgrades.size()) {
+			return;
+		}
+		int diff = newLevel - building.upgradeLevel;
+		int buildCost = building.type.cost * diff;
+
+		building.setLevel(newLevel);
+		building.buildProgress = building.type.hitpoints * 1 / 4;
+		building.hitpoints = building.buildProgress;
+		
+		planet.owner.today.buildCost += buildCost;
+		
+		planet.owner.money -= buildCost;
+		planet.owner.statistics.upgradeCount++;
+		planet.owner.statistics.moneySpent += buildCost;
+		planet.owner.statistics.moneyUpgrade += buildCost;
+		
+		world.statistics.upgradeCount++;
+		world.statistics.moneySpent += buildCost;
+		world.statistics.moneyUpgrade += buildCost;
 	}
 	/**
 	 * A world diagnostic to check for mechanics consistency errors.

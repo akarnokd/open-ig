@@ -20,5 +20,7 @@ public enum ResearchState {
 	/** We run out of money. */
 	MONEY,
 	/** We run out of labs. */
-	LAB
+	LAB,
+	/** The research has completed. */
+	COMPLETE
 }

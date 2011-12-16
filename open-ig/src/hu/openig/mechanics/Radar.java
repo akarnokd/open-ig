@@ -13,7 +13,6 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
-import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
@@ -165,11 +164,7 @@ public final class Radar {
 		if (k0 == null && planet.owner != player) {
 			player.statistics.planetsDiscovered++;
 
-			Message msg = world.newMessage("message.new_planet_discovered");
-			msg.targetPlanet = planet;
-			msg.priority = 20;
-			player.messageQueue.add(msg);
-			
+			player.ai.onDiscoverPlanet(planet);
 		}
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			player.planets.put(planet, k);
@@ -177,10 +172,7 @@ public final class Radar {
 		if (planet.owner != null && planet.owner != player && !player.knows(planet.owner)) {
 			player.setStance(planet.owner, player.initialStance);
 			if (!world.player.race.equals(planet.owner.race)) {
-				Message msg = world.newMessage("message.new_race_discovered");
-				msg.priority = 20;
-				msg.label = planet.getRaceLabel();
-				player.messageQueue.add(msg);
+				player.ai.onDiscoverPlayer(planet.owner);
 			}
 		}
 	}
@@ -198,11 +190,7 @@ public final class Radar {
 		}
 		if (fleet.owner != null && fleet.owner != player && !player.knows(fleet.owner)) {
 			player.setStance(fleet.owner, player.initialStance);
-			// FIXME send discover message
-			Message msg = world.newMessage("message.new_race_discovered");
-			msg.priority = 20;
-			msg.value = fleet.owner.race;
-			player.messageQueue.add(msg);
+			player.ai.onDiscoverPlayer(fleet.owner);
 		}
 	}
 	/**
