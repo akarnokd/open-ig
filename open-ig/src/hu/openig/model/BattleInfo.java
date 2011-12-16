@@ -61,4 +61,18 @@ public class BattleInfo {
 	public Fleet getFleet() {
 		return targetFleet != null ? targetFleet : helperFleet;
 	}
+	/**
+	 * Convenience method to check if the space war is completed.
+	 * @return true if completed
+	 */
+	public boolean isSpacewarComplete() {
+		return spacewarWinner != null;
+	}
+	/**
+	 * Convenience method to check if the ground war is completed.
+	 * @return true if completed
+	 */
+	public boolean isGroundwarComplete() {
+		return groundwarWinner != null;
+	}
 }

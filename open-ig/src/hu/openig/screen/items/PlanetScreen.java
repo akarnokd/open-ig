@@ -15,6 +15,7 @@ import hu.openig.core.Func2;
 import hu.openig.core.Location;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.core.Tile;
+import hu.openig.mechanics.AI;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.mechanics.Pathfinding;
@@ -808,6 +809,15 @@ public class PlanetScreen extends ScreenBase {
 					units.clear();
 				}
 			}
+			// check if the AI has removed any building while we were looking at its planet
+			if (planet().owner != player() && currentBuilding != null) {
+				if (!planet().surface.buildings.contains(currentBuilding)) {
+					buildingBox = null;
+					currentBuilding = null;
+					// FIXME more actions?
+				}
+			}
+			
 			buildingsPanel.visible(planet().owner == player() && showBuildingList && battle == null);
 			buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
 			infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo && battle == null);
@@ -2109,20 +2119,7 @@ public class PlanetScreen extends ScreenBase {
 	}
 	/** Demolish the selected building. */
 	void doDemolish() {
-		surface().removeBuilding(currentBuilding);
-		surface().placeRoads(planet().race, commons.world().buildingModel);
-		
-		int moneyBack = currentBuilding.type.cost * (1 + currentBuilding.upgradeLevel) / 2;
-		
-		player().money += moneyBack;
-		
-		player().statistics.demolishCount++;
-		player().statistics.moneyDemolishIncome += moneyBack;
-		player().statistics.moneyIncome += moneyBack;
-
-		world().statistics.demolishCount++;
-		world().statistics.moneyDemolishIncome += moneyBack;
-		world().statistics.moneyDemolishIncome += moneyBack;
+		AI.demolishBuilding(world(), planet(), currentBuilding);
 
 		doAllocation();
 		buildingBox = null;

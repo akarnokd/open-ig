@@ -28,4 +28,6 @@ public interface GameEnvironment {
 	 * @return the AI manager
 	 */
 	AIManager getAI(Player player);
+	/** @return the game event interface. */
+	GameEvents events();
 }
