@@ -450,4 +450,8 @@ public class Player {
 		}
 		return null;
 	}
+	/** @return the race label. */
+	public String getRaceLabel() {
+		return "race." + race;
+	}
 }

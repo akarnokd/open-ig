@@ -16,8 +16,10 @@ import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.GameEnvironment;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
 import hu.openig.model.SpacewarAction;
@@ -88,11 +90,11 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public void onResearchComplete(ResearchType rt) {
+	public void onResearchStateChange(ResearchType rt, ResearchState state) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void onProductionComplete(ResearchType rt) {
 		// TODO Auto-generated method stub
@@ -147,6 +149,26 @@ public class AIPirate implements AIManager {
 	}
 	@Override
 	public void onLostTarget(Fleet fleet, Fleet target) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onNewDay() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSatelliteDestroyed(Planet planet, InventoryItem ii) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetDied(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetRevolt(Planet planet) {
 		// TODO Auto-generated method stub
 		
 	}
