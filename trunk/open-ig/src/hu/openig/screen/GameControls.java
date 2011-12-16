@@ -8,7 +8,7 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.model.AIManager;
 import hu.openig.model.Player;
@@ -53,7 +53,7 @@ public interface GameControls {
 	 * @param onComplete the completion handler
 	 * @param videos the videos to play
 	 */
-	void playVideos(Act onComplete, String... videos);
+	void playVideos(Action0 onComplete, String... videos);
 	/** Display the status bar. */
 	void displayStatusbar();
 	/** Hide the statusbar. */
@@ -93,7 +93,7 @@ public interface GameControls {
 	 * @param action the action
 	 * @return the handler to cancel the registration
 	 */
-	Closeable register(int delay, Act action);
+	Closeable register(int delay, Action0 action);
 	/** @return The current world. */
 	World world();
 	/** @return the current primary screen type or null if none. */

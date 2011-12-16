@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Func1;
 import hu.openig.model.AutoBuild;
@@ -543,44 +543,44 @@ public class InfoScreen extends ScreenBase {
 		aliensEmpty.z = -1;
 		
 		colony = new UIImageButton(commons.info().colony);
-		colony.onClick = new Act() {
+		colony.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.COLONY);
 			}
 		};
 		research = new UIImageButton(commons.info().research);
-		research.onClick = new Act() {
+		research.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.RESEARCH);
 			}
 		};
 		production = new UIImageButton(commons.info().production);
-		production.onClick = new Act() {
+		production.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.PRODUCTION);
 			}
 		};
 		starmap = new UIImageButton(commons.info().starmap);
-		starmap.onClick = new Act() {
+		starmap.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.STARMAP);
 			}
 		};
 		diplomacy = new UIImageButton(commons.info().diplomacy);
-		diplomacy.onClick = new Act() {
+		diplomacy.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.DIPLOMACY);
 			}
 		};
 		equipment = new UIImageButton(commons.info().equipment);
-		equipment.onClick = new Act() {
+		equipment.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.EQUIPMENT);
 			}
 		};
@@ -712,7 +712,7 @@ public class InfoScreen extends ScreenBase {
 				displayBuildingInfo();
 				if (planet().canBuild(value)) {
 					PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
-					ps.buildingsPanel.build.onPress.act();
+					ps.buildingsPanel.build.onPress.invoke();
 				}
 			}
 		};
@@ -783,27 +783,27 @@ public class InfoScreen extends ScreenBase {
 		researchPre2 = new UILabel("", 10, commons.text());
 		researchPre3 = new UILabel("", 10, commons.text());
 
-		researchPre1.onPress = new Act() {
+		researchPre1.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				ResearchType rt = research();
 				if (rt != null && rt.prerequisites.size() > 0) {
 					world().selectResearch(rt.prerequisites.get(0));
 				}
 			}
 		};
-		researchPre2.onPress = new Act() {
+		researchPre2.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				ResearchType rt = research();
 				if (rt != null && rt.prerequisites.size() > 1) {
 					world().selectResearch(rt.prerequisites.get(1));
 				}
 			}
 		};
-		researchPre3.onPress = new Act() {
+		researchPre3.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				ResearchType rt = research();
 				if (rt != null && rt.prerequisites.size() > 2) {
 					world().selectResearch(rt.prerequisites.get(2));
@@ -826,9 +826,9 @@ public class InfoScreen extends ScreenBase {
 		planetListDetais = new PlanetListDetails();
 		togglePlanetListDetails = new UIGenericButton(get("info.list_details"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
 
-		togglePlanetListDetails.onClick = new Act() {
+		togglePlanetListDetails.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				showPlanetListDetails = !showPlanetListDetails;
 				if (showPlanetListDetails) {
@@ -843,9 +843,9 @@ public class InfoScreen extends ScreenBase {
 		};
 
 		statisticsButton = new UIGenericButton(get("info.statistics"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
-		statisticsButton.onClick = new Act() {
+		statisticsButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				displaySecondary(Screens.STATISTICS);
 			}
@@ -1047,9 +1047,9 @@ public class InfoScreen extends ScreenBase {
 	 * @return the button
 	 */
 	UIImageTabButton2 changeMode(UIImageTabButton2 button, final Screens mode) {
-		button.onPress = new Act() {
+		button.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				InfoScreen.this.mode = mode;
 				if (config.computerVoiceScreen) {
 					switch (mode) {
@@ -1089,9 +1089,9 @@ public class InfoScreen extends ScreenBase {
 	public void onEnter(Screens mode) {
 		this.mode = mode != null ? mode : Screens.INFORMATION_PLANETS;
 		applyMode();
-		animation = commons.register(500, new Act() {
+		animation = commons.register(500, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				animationBlink = !animationBlink;
 				askRepaint(base);
 			}
@@ -1354,9 +1354,9 @@ public class InfoScreen extends ScreenBase {
 					return super.mouse(e);
 				};
 			};
-			taxMore.onClick = new Act() {
+			taxMore.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_HIGH_2);
 					doTaxMore();
 				}
@@ -1371,9 +1371,9 @@ public class InfoScreen extends ScreenBase {
 					return super.mouse(e);
 				};
 			};
-			taxLess.onClick = new Act() {
+			taxLess.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_HIGH_2);
 					doTaxLess();
 				}

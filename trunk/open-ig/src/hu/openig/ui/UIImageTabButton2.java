@@ -8,7 +8,7 @@
 
 package hu.openig.ui;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.render.RenderTools;
 
 import java.awt.Graphics2D;
@@ -32,12 +32,12 @@ public class UIImageTabButton2 extends UIComponent {
 	/** The disabled pattern to use for the button. */
 	protected BufferedImage disabledPattern;
 	/** The action to invoke when the button is clicked. */
-	public Act onClick;
+	public Action0 onClick;
 	/** 
 	 * The action to invoke when the button is pressed down.
 	 * Can be used to use this button as a tab.
 	 */
-	public Act onPress;
+	public Action0 onPress;
 	/** Is the mouse pressed down on this component. */
 	public boolean down;
 	/** Indicates the button is in selected state. */
@@ -76,13 +76,13 @@ public class UIImageTabButton2 extends UIComponent {
 	 */
 	protected void doClick() {
 		if (onClick != null) {
-			onClick.act();
+			onClick.invoke();
 		}
 	}
 	/** Call the press action if set. */
 	protected void doPress() {
 		if (onPress != null) {
-			onPress.act();
+			onPress.invoke();
 		}
 	}
 	@Override

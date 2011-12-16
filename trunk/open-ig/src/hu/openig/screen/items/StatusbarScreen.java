@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.model.Message;
 import hu.openig.model.Screens;
@@ -130,9 +130,9 @@ public class StatusbarScreen extends ScreenBase {
 		time = new UILabel("", 10, commons.text()).horizontally(HorizontalAlignment.CENTER).color(TextRenderer.YELLOW);
 		
 		pause = new UIImageTabButton2(commons.common().pause);
-		pause.onPress = new Act() {
+		pause.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (!commons.simulation.paused()) {
 					sound(SoundType.PAUSE);
 					commons.simulation.pause();
@@ -143,25 +143,25 @@ public class StatusbarScreen extends ScreenBase {
 			}
 		};
 		speed1 = new UIImageTabButton2(commons.common().speed1);
-		speed1.onPress = new Act() {
+		speed1.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_LOW_1);
 				commons.simulation.speed(SimulationSpeed.NORMAL);
 			}
 		};
 		speed2 = new UIImageTabButton2(commons.common().speed2);
-		speed2.onPress = new Act() {
+		speed2.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_LOW_1);
 				commons.simulation.speed(SimulationSpeed.FAST);
 			}
 		};
 		speed4 = new UIImageTabButton2(commons.common().speed4);
-		speed4.onPress = new Act() {
+		speed4.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_LOW_1);
 				commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
 			}
@@ -184,9 +184,9 @@ public class StatusbarScreen extends ScreenBase {
 		bottom.bounds(0, height, width, 18);
 		animationStep = 0;
 		notification.currentMessage = null;
-		animation = commons.register(75, new Act() {
+		animation = commons.register(75, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (top.y < 0) {
 					top.y += 2;
 					askRepaint();
@@ -643,18 +643,18 @@ public class StatusbarScreen extends ScreenBase {
 		/** Construct the buttons. */
 		public NotificationHistory() {
 			scrollUp = new UIImageButton(commons.common().moveUp);
-			scrollUp.onClick = new Act() {
+			scrollUp.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_MEDIUM_2);
 					doScrollUp();
 				}
 			};
 			scrollUp.setHoldDelay(250);
 			scrollDown = new UIImageButton(commons.common().moveDown);
-			scrollDown.onClick = new Act() {
+			scrollDown.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_MEDIUM_2);
 					doScrollDown();
 				}

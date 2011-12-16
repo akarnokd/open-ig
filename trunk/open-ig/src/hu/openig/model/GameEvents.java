@@ -157,4 +157,14 @@ public interface GameEvents {
 	 * @param fleet the fleet
 	 */
 	void onLost(Fleet fleet);
+	/** 
+	 * Notification about a full screen video playback completed.
+	 * @param video the video that has completed 
+	 */
+	void onVideoComplete(String video);
+	/**
+	 * Notification about a sound playback completed.
+	 * @param audio the audio
+	 */
+	void onSoundComplete(String audio);
 }

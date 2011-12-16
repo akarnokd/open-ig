@@ -9,7 +9,7 @@
 package hu.openig.screen.items;
 
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Location;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
@@ -1591,7 +1591,7 @@ public class StarmapScreen extends ScreenBase {
 				if (player().selectionMode == SelectionMode.FLEET && fleet() != null 
 						/* && fleet().owner == player() */) {
 					fleetMove.down = true;
-					fleetMove.onPress.act();
+					fleetMove.onPress.invoke();
 					rep = true;
 					e.consume();
 				}
@@ -1601,7 +1601,7 @@ public class StarmapScreen extends ScreenBase {
 						&& fleet() != null 
 						/* && fleet().owner == player() */) {
 					fleetAttack.down = true;
-					fleetAttack.onPress.act();
+					fleetAttack.onPress.invoke();
 					rep = true;
 					e.consume();
 				}
@@ -1610,7 +1610,7 @@ public class StarmapScreen extends ScreenBase {
 				if (player().selectionMode == SelectionMode.FLEET 
 						/* && fleet() != null && fleet().owner == player() */) {
 					fleetStop.down = true;
-					fleetStop.onPress.act();
+					fleetStop.onPress.invoke();
 					rep = true;
 					e.consume();
 				}
@@ -2005,9 +2005,9 @@ public class StarmapScreen extends ScreenBase {
 	}
 	@Override
 	public void onEnter(Screens mode) {
-		rotationTimer = commons.register(75, new Act() {
+		rotationTimer = commons.register(75, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				rotatePlanets();
 				askRepaint();
 			}
@@ -2038,9 +2038,9 @@ public class StarmapScreen extends ScreenBase {
 		info = new UIImageButton(commons.common().infoButton);
 		bridge = new UIImageButton(commons.common().bridgeButton);
 		
-		prevPlanet.onClick = new Act() {
+		prevPlanet.onClick = new Action0() {
 			@Override 
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				List<Planet> planets = planets();
 				int idx = planets.indexOf(planet());
@@ -2050,9 +2050,9 @@ public class StarmapScreen extends ScreenBase {
 				}
 			}
 		};
-		nextPlanet.onClick = new Act() {
+		nextPlanet.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				List<Planet> planets = planets();
 				int idx = planets.indexOf(planet());
@@ -2062,9 +2062,9 @@ public class StarmapScreen extends ScreenBase {
 				}
 			}
 		};
-		prevFleet.onClick = new Act() {
+		prevFleet.onClick = new Action0() {
 			@Override 
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				List<Fleet> fleets = player().ownFleets();
 				int idx = fleets.indexOf(fleet());
@@ -2074,9 +2074,9 @@ public class StarmapScreen extends ScreenBase {
 				}
 			}
 		};
-		nextFleet.onClick = new Act() {
+		nextFleet.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				List<Fleet> fleets = player().ownFleets();
 				int idx = fleets.indexOf(fleet());
@@ -2087,27 +2087,27 @@ public class StarmapScreen extends ScreenBase {
 			}
 		};
 
-		colony.onClick = new Act() {
+		colony.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.COLONY);
 			}	
 		};
-		equipment.onClick = new Act() {
+		equipment.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.EQUIPMENT);
 			}
 		};
-		info.onClick = new Act() {
+		info.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.INFORMATION_COLONY);
 			}
 		};
-		bridge.onClick = new Act() {
+		bridge.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.BRIDGE);
 			}
 		};
@@ -2120,9 +2120,9 @@ public class StarmapScreen extends ScreenBase {
 			};
 		};
 		zoom.setHoldDelay(100);
-		zoom.onClick = new Act() {
+		zoom.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (zoomDirection) {
 					doZoomIn(starmapWindow.width / 2, starmapWindow.height / 2);
 				} else {
@@ -2131,16 +2131,16 @@ public class StarmapScreen extends ScreenBase {
 			}
 		};
 		achievements = new UIImageButton(commons.starmap().achievements);
-		achievements.onClick = new Act() {
+		achievements.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.ACHIEVEMENTS);
 			}
 		};
 		statistics = new UIImageButton(commons.starmap().statistics);
-		statistics.onClick = new Act() {
+		statistics.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.STATISTICS);
 			}
 		};
@@ -2163,33 +2163,33 @@ public class StarmapScreen extends ScreenBase {
 		problemsPolice = new UIImage(commons.common().policeIcon);
 
 		surveySatellite = new UIImageButton(commons.starmap().deploySatellite);
-		surveySatellite.onClick = new Act() {
+		surveySatellite.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				surveySatellite.visible(false);
 				deploySatellite("Satellite", "interlude/deploy_satellite", satelliteSurvivalDifficulty(12 * 6));
 			}
 		};
 		spySatellite1 = new UIImageButton(commons.starmap().deploySpySat1);
-		spySatellite1.onClick = new Act() {
+		spySatellite1.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				spySatellite1.visible(false);
 				deploySatellite("SpySatellite1", "interlude/deploy_spy_satellite_1", satelliteSurvivalDifficulty(24 * 6));
 			}
 		};
 		spySatellite2 = new UIImageButton(commons.starmap().deploySpySat2);
-		spySatellite2.onClick = new Act() {
+		spySatellite2.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				spySatellite2.visible(false);
 				deploySatellite("SpySatellite2", "interlude/deploy_spy_satellite_2", satelliteSurvivalDifficulty(96 * 6));
 			}
 		};
 		hubble2 = new UIImageButton(commons.starmap().deployHubble);
-		hubble2.onClick = new Act() {
+		hubble2.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				hubble2.visible(false);
 				deploySatellite("Hubble2", "interlude/deploy_hubble", 0);
 			}
@@ -2197,33 +2197,33 @@ public class StarmapScreen extends ScreenBase {
 		
 		showRadarButton = new UIImageToggleButton(commons.starmap().viewRadar);
 		showRadarButton.selected = true;
-		showRadarButton.onClick = new Act() {
+		showRadarButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 			}
 		};
 		showFleetButton = new UIImageToggleButton(commons.starmap().viewFleet);
 		showFleetButton.selected = true;
-		showFleetButton.onClick = new Act() {
+		showFleetButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 			}
 		};
 		showStarsButton = new UIImageToggleButton(commons.starmap().viewStar);
 		showStarsButton.selected = true;
-		showStarsButton.onClick = new Act() {
+		showStarsButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 			}
 		};
 		showGridButton = new UIImageToggleButton(commons.starmap().viewSector);
 		showGridButton.selected = true;
-		showGridButton.onClick = new Act() {
+		showGridButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 			}
 		};
@@ -2232,9 +2232,9 @@ public class StarmapScreen extends ScreenBase {
 		
 		showNamesNone = new UIImageButton(commons.starmap().namesNone);
 		showNamesNone.visible(!showFleetNames && !showPlanetNames);
-		showNamesNone.onClick = new Act() {
+		showNamesNone.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				showNamesNone.visible(false);
 				showNamesPlanet.visible(true);
@@ -2245,9 +2245,9 @@ public class StarmapScreen extends ScreenBase {
 		
 		showNamesPlanet = new UIImageButton(commons.starmap().namesPlanets);
 		showNamesPlanet.visible(!showFleetNames && showPlanetNames);
-		showNamesPlanet.onClick = new Act() {
+		showNamesPlanet.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				showNamesPlanet.visible(false);
 				showNamesFleet.visible(true);
@@ -2258,9 +2258,9 @@ public class StarmapScreen extends ScreenBase {
 
 		showNamesFleet = new UIImageButton(commons.starmap().namesFleets);
 		showNamesFleet.visible(showFleetNames && !showPlanetNames);
-		showNamesFleet.onClick = new Act() {
+		showNamesFleet.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				showNamesFleet.visible(false);
 				showNamesBoth.visible(true);
@@ -2271,9 +2271,9 @@ public class StarmapScreen extends ScreenBase {
 
 		showNamesBoth = new UIImageButton(commons.starmap().namesBoth);
 		showNamesBoth.visible(showFleetNames && showPlanetNames);
-		showNamesBoth.onClick = new Act() {
+		showNamesBoth.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				showNamesBoth.visible(false);
 				showNamesNone.visible(true);
@@ -2293,32 +2293,32 @@ public class StarmapScreen extends ScreenBase {
 		fleetAttack = new UIImageTabButton(commons.starmap().attack);
 		fleetStop = new UIImageTabButton(commons.starmap().stop);
 		fleetColonize = new UIImageButton(commons.starmap().colonize);
-		fleetColonize.onClick = new Act() {
+		fleetColonize.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doColonize();
 			}
 		};
 		fleetSeparator = new UIImage(commons.starmap().commandSeparator);
 
-		fleetMove.onPress = new Act() {
+		fleetMove.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doFleetMove();
 			}
 		};
-		fleetAttack.onPress = new Act() {
+		fleetAttack.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doFleetAttack();
 			}
 		};
-		fleetStop.onPress = new Act() {
+		fleetStop.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.NOT_AVAILABLE);
 				doFleetStop();
 			}
@@ -2354,9 +2354,9 @@ public class StarmapScreen extends ScreenBase {
 			commons.simulation.pause();
 		}
 		if (config.satelliteDeploy) {
-			commons.control().playVideos(new Act() {
+			commons.control().playVideos(new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					placeSatellite(typeId, ttl, p, isPaused);
 				}
 			}, media);

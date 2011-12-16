@@ -8,7 +8,7 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 
@@ -166,10 +166,10 @@ public class TechnologyVideoRenderer {
 		if (images.size() > 0 && !stopped) {
 			final int frameSize = frames; 
 			int delay = (((int)(1000 / fps)) / 25) * 25; // round frames down
-			Closeable t = commons.register(delay, new Act() {
+			Closeable t = commons.register(delay, new Action0() {
 				int frameIndex = 0;
 				@Override
-				public void act() {
+				public void invoke() {
 					if (!stopped) {
 						final BufferedImage fimg = images.get(frameIndex);
 						onFrame.invoke(fimg);

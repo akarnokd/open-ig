@@ -8,7 +8,6 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
 import hu.openig.model.Screens;
 import hu.openig.screen.ScreenBase;
 
@@ -17,6 +16,8 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
@@ -41,9 +42,9 @@ public class LoadingScreen extends ScreenBase {
 
 	@Override
 	public void onInitialize() {
-		animation = new Timer(100, new Act() {
+		animation = new Timer(100, new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doAnimate();
 			}
 		});

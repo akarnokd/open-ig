@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Production;
@@ -94,7 +94,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		/** Completion info. */
 		UILabel completion;
 		/** The activation event. */
-		public Act onPress;
+		public Action0 onPress;
 		/** Initialize the inner fields. */
 		public ProductionLine() {
 			base = new UIImage(commons.research().productionLine);
@@ -104,36 +104,36 @@ public class ResearchProductionScreen extends ScreenBase {
 			
 			lessPriority = new UIImageButton(commons.research().less);
 			lessPriority.setHoldDelay(200);
-			lessPriority.onClick = new Act() {
+			lessPriority.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_HIGH_2);
 					doLessPriority();
 				}
 			};
 			lessBuild = new UIImageButton(commons.research().less);
 			lessBuild.setHoldDelay(200);
-			lessBuild.onClick = new Act() {
+			lessBuild.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_HIGH_2);
 					doChangeCount(-1);
 				}
 			};
 			morePriority = new UIImageButton(commons.research().more);
 			morePriority.setHoldDelay(200);
-			morePriority.onClick = new Act() {
+			morePriority.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_HIGH_2);
 					doMorePriority();
 				}
 			};
 			moreBuild = new UIImageButton(commons.research().more);
 			moreBuild.setHoldDelay(200);
-			moreBuild.onClick = new Act() {
+			moreBuild.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_HIGH_2);
 					doChangeCount(1);
 				}
@@ -177,7 +177,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			if (e.has(Type.DOWN)) {
 				select(true);
 				if (onPress != null) {
-					onPress.act();
+					onPress.invoke();
 				}
 				if (!lessPriority.within(e) 
 						&& !morePriority.within(e)
@@ -462,9 +462,9 @@ public class ResearchProductionScreen extends ScreenBase {
 	 */
 	void createSubCategory(final ResearchSubCategory cat, BufferedImage[] buttonImage) {
 		UIImageTabButton b = new UIImageTabButton(buttonImage);
-		b.onPress = new Act() {
+		b.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectSubCategory(cat);
 			}
@@ -746,9 +746,9 @@ public class ResearchProductionScreen extends ScreenBase {
 
 		playAnim(selectCurrentOrFirst());
 
-		animation = commons.register(100, new Act() {
+		animation = commons.register(100, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doAnimation();
 			}
 		});
@@ -790,24 +790,24 @@ public class ResearchProductionScreen extends ScreenBase {
 		descriptionBase.z = -1;
 		
 		startNew = new UIImageButton(commons.research().start);
-		startNew.onClick = new Act() {
+		startNew.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doStartNew();
 			}
 		};
 		stopActive = new UIImageButton(commons.research().stop);
-		stopActive.onClick = new Act() {
+		stopActive.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doStopResearch();
 				
 			}
 		};
 		viewActive = new UIImageButton(commons.research().view);
-		viewActive.onClick = new Act() {
+		viewActive.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_1);
 				doSelectTechnology(player().runningResearch);
 			}
@@ -821,33 +821,33 @@ public class ResearchProductionScreen extends ScreenBase {
 		video = new UIImage();
 		
 		spaceshipsLabel = new UIImageTabButton(commons.research().spaceships);
-		spaceshipsLabel.onPress = new Act() {
+		spaceshipsLabel.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.SPACESHIPS);
 			}
 		};
 		equipmentsLabel = new UIImageTabButton(commons.research().equipment);
-		equipmentsLabel.onPress = new Act() {
+		equipmentsLabel.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.EQUIPMENT);
 			}
 		};
 		weaponsLabel = new UIImageTabButton(commons.research().weapons);
-		weaponsLabel.onPress = new Act() {
+		weaponsLabel.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.WEAPONS);
 			}
 		};
 		buildingsLabel = new UIImageTabButton(commons.research().buildings);
-		buildingsLabel.onPress = new Act() {
+		buildingsLabel.onPress = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.BUILDINS);
 			}
@@ -879,45 +879,45 @@ public class ResearchProductionScreen extends ScreenBase {
 		createSubCategory(ResearchSubCategory.BUILDINGS_RADARS, commons.research().radarBuildings);
 		createSubCategory(ResearchSubCategory.BUILDINGS_GUNS, commons.research().planetaryGuns);
 
-		researchButton.onClick = new Act() {
+		researchButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				setMode(Screens.RESEARCH);
 				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.RESEARCH);
 				}
 			}
 		};
-		productionButton.onClick = new Act() {
+		productionButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				setMode(Screens.PRODUCTION);
 				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.PRODUCTION);
 				}
 			}
 		};
-		equipmentButton.onClick = new Act() {
+		equipmentButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.EQUIPMENT);
 			}
 		};
-		addButton.onClick = new Act() {
+		addButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doAddProduction();
 			}
 		};
-		removeButton.onClick = new Act() {
+		removeButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doRemoveProduction();
 			}
 		};
-		bridgeButton.onClick = new Act() {
+		bridgeButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.BRIDGE);
 			}
 		};
@@ -1003,9 +1003,9 @@ public class ResearchProductionScreen extends ScreenBase {
 				return true;
 			};
 		};
-		moneyButton.onClick = new Act() {
+		moneyButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_3);
 				doAdjustMoney(2.0f * (moneyMouseLast.x) / moneyButton.width - 1);
 			}
@@ -1027,45 +1027,45 @@ public class ResearchProductionScreen extends ScreenBase {
 		
 		removeTen = new UIImageButton(commons.research().minusTen);
 		removeTen.setDisabledPattern(commons.common().disabledPattern);
-		removeTen.onClick = new Act() {
+		removeTen.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doChangeCount(-10);
 			}
 		};
 		removeOne = new UIImageButton(commons.research().minusOne);
 		removeOne.setDisabledPattern(commons.common().disabledPattern);
-		removeOne.onClick = new Act() {
+		removeOne.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doChangeCount(-1);
 			}
 		};
 		addOne = new UIImageButton(commons.research().plusOne);
 		addOne.setDisabledPattern(commons.common().disabledPattern);
-		addOne.onClick = new Act() {
+		addOne.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doChangeCount(1);
 			}
 		};
 		addTen = new UIImageButton(commons.research().plusTen);
 		addTen.setDisabledPattern(commons.common().disabledPattern);
-		addTen.onClick = new Act() {
+		addTen.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doChangeCount(10);
 			}
 		};
 		sell = new UIImageButton(commons.research().sell);
 		sell.setDisabledPattern(commons.common().disabledPattern);
-		sell.onClick = new Act() {
+		sell.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doSell();
 			}
@@ -1075,9 +1075,9 @@ public class ResearchProductionScreen extends ScreenBase {
 		for (int i = 0; i < 5; i++) {
 			final int j = i;
 			final ProductionLine pl = new ProductionLine();
-			pl.onPress = new Act() {
+			pl.onPress = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					doSelectProductionLine(pl, j);
 				}
 			};
@@ -1448,9 +1448,9 @@ public class ResearchProductionScreen extends ScreenBase {
 			if (rt.prerequisites.size() > 0) {
 				requires1.text(rt.prerequisites.get(0).name, true);
 				requires1.color(world().getResearchColor(rt.prerequisites.get(0)));
-				requires1.onPress = new Act() {
+				requires1.onPress = new Action0() {
 					@Override
-					public void act() {
+					public void invoke() {
 						doSelectTechnology(rt.prerequisites.get(0));
 					}
 				};
@@ -1460,9 +1460,9 @@ public class ResearchProductionScreen extends ScreenBase {
 			if (rt.prerequisites.size() > 1) {
 				requires2.text(rt.prerequisites.get(1).name, true);
 				requires2.color(world().getResearchColor(rt.prerequisites.get(1)));
-				requires2.onPress = new Act() {
+				requires2.onPress = new Action0() {
 					@Override
-					public void act() {
+					public void invoke() {
 						doSelectTechnology(rt.prerequisites.get(1));
 					}
 				};
@@ -1472,9 +1472,9 @@ public class ResearchProductionScreen extends ScreenBase {
 			if (rt.prerequisites.size() > 2) {
 				requires3.text(rt.prerequisites.get(2).name, true);
 				requires3.color(world().getResearchColor(rt.prerequisites.get(2)));
-				requires3.onPress = new Act() {
+				requires3.onPress = new Action0() {
 					@Override
-					public void act() {
+					public void invoke() {
 						doSelectTechnology(rt.prerequisites.get(2));
 					}
 				};

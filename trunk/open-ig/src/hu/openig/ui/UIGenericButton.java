@@ -8,7 +8,7 @@
 
 package hu.openig.ui;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.render.GenericButtonRenderer;
 import hu.openig.render.RenderTools;
 
@@ -17,6 +17,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Timer;
@@ -29,12 +31,12 @@ public class UIGenericButton extends UIComponent {
 	/** The disabled pattern to use for the button. */
 	protected BufferedImage disabledPattern;
 	/** The action to invoke when the button is clicked. */
-	public Act onClick;
+	public Action0 onClick;
 	/** 
 	 * The action to invoke when the button is pressed down.
 	 * Can be used to use this button as a tab.
 	 */
-	public Act onPress;
+	public Action0 onPress;
 	/** 
 	 * The optional delay to fire onClick events when
 	 * the mouse is pressed over the button.
@@ -71,9 +73,9 @@ public class UIGenericButton extends UIComponent {
 		size = fm.getFont().getSize();
 		this.width = d.width;
 		this.height = d.height;
-		this.holdTimer = new Timer(100, new Act() {
+		this.holdTimer = new Timer(100, new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doClick();
 				if (holdDelay < 0 || !enabled || !visible) {
 					holdTimer.stop();
@@ -112,7 +114,7 @@ public class UIGenericButton extends UIComponent {
 	 */
 	protected void doClick() {
 		if (onClick != null) {
-			onClick.act();
+			onClick.invoke();
 		}
 	}
 	@Override
@@ -141,7 +143,7 @@ public class UIGenericButton extends UIComponent {
 				doClick();
 			} else
 			if (onPress != null) {
-				onPress.act();
+				onPress.invoke();
 			}
 			return true;
 		case UP:

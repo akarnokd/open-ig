@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
 import hu.openig.core.SimulationSpeed;
@@ -120,7 +120,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** Pressed state. */
 		boolean pressed;
 		/** The action to perform on the press. */
-		Act action;
+		Action0 action;
 		/** Is the button disabled? */
 		boolean enabled = true;
 		/**
@@ -171,7 +171,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** Invoke the associated action if present. */
 		public void invoke() {
 			if (action != null) {
-				action.act();
+				action.invoke();
 			}
 		}
 	}
@@ -186,9 +186,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** The phases. */
 		BufferedImage[] phases;
 		/** The action to perform on the press. */
-		Act onPress;
+		Action0 onPress;
 		/** The action to perform on release. */
-		Act onRelease;
+		Action0 onRelease;
 		/** Is this button visible. */
 		boolean visible;
 		/** Is the button enabled? */
@@ -235,13 +235,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		 */
 		public void pressed() {
 			if (onPress != null) {
-				onPress.act();
+				onPress.invoke();
 			}
 		}
 		/** Invoke the onRelease action. */
 		public void released() {
 			if (onRelease != null) {
-				onRelease.act();
+				onRelease.invoke();
 			}
 		}
 	}
@@ -254,7 +254,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** The current animation index. */
 		int animationIndex;
 		/** The action to perform on the press. */
-		Act action;
+		Action0 action;
 		/**
 		 * Constructor.
 		 * @param phases the phases
@@ -283,7 +283,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		public boolean mouse(UIMouse e) {
 			if (e.has(Type.DOWN)) {
 				if (action != null) {
-					action.act();
+					action.invoke();
 				}
 				return true;
 			}
@@ -437,9 +437,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		mainCommands = new ArrayList<ThreePhaseButton>();
 		
 		stopButton = new ThreePhaseButton(33, 24, commons.spacewar().stop);
-		stopButton.action = new Act() {
+		stopButton.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doStopSelectedShips();
 				stopButton.selected = false;
 			}
@@ -448,9 +448,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		kamikazeButton = new ThreePhaseButton(33, 24 + 35, commons.spacewar().kamikaze);
 		attackButton = new ThreePhaseButton(33 + 72, 24 + 35, commons.spacewar().attack);
 		guardButton = new ThreePhaseButton(33, 24 + 35 * 2, commons.spacewar().guard);
-		guardButton.action = new Act() {
+		guardButton.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doSelectionGuard();
 			}
 		};
@@ -530,9 +530,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	AnimatedRadioButton createButton(BufferedImage[] phases, final boolean left, final PanelMode mode) {
 		final AnimatedRadioButton btn = new AnimatedRadioButton(phases);
-		btn.action = new Act() {
+		btn.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPanel(mode, left);
 				selectButton(btn, left);
 			}
@@ -952,9 +952,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 	@Override
 	public void onEnter(Screens mode) {
-		buttonTimer = commons.register(100, new Act() {
+		buttonTimer = commons.register(100, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doButtonAnimations();
 			}
 		});
@@ -2737,9 +2737,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** Set the spacewar time controls. */
 	void setSpacewarTimeControls() {
-		commons.replaceSimulation(new Act() {
+		commons.replaceSimulation(new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doSpacewarSimulation();
 			}
 		},
@@ -3315,9 +3315,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				FleetStatistics fs = battle.attacker.getStatistics(world().battle);
 				if (fs.vehicleCount > 0) {
 					commons.stopMusic();
-					commons.control().playVideos(new Act() {
+					commons.control().playVideos(new Action0() {
 						@Override
-						public void act() {
+						public void invoke() {
 							PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
 							
 							ps.initiateBattle(bi);

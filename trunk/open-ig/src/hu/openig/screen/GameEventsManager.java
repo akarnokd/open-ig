@@ -170,4 +170,14 @@ public class GameEventsManager implements GameEvents {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void onSoundComplete(String audio) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onVideoComplete(String video) {
+		// TODO Auto-generated method stub
+		
+	}
 }

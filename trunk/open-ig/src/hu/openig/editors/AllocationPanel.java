@@ -8,13 +8,14 @@
 
 package hu.openig.editors;
 
-import hu.openig.core.Act;
 import hu.openig.mechanics.Allocator;
 import hu.openig.model.Building;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResourceAllocationStrategy;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -122,15 +123,15 @@ public class AllocationPanel extends JPanel {
 		totalEfficiency.setEditable(false);
 		totalEfficiency.setHorizontalAlignment(JTextField.RIGHT);
 		
-		apply.addActionListener(new Act() {
+		apply.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doCompute();
 			}
 		});
-		refresh.addActionListener(new Act() {
+		refresh.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doRefresh();
 			}
 		});

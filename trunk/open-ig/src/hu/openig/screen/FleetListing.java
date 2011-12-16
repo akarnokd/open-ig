@@ -8,7 +8,7 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.model.Fleet;
 import hu.openig.render.TextRenderer;
@@ -52,17 +52,17 @@ public class FleetListing extends UIContainer {
 	public FleetListing(CommonResources commons) {
 		this.commons = commons;
 		scrollUp = new UIImageButton(commons.common().moveUp);
-		scrollUp.onClick = new Act() {
+		scrollUp.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doScrollUp();
 			}
 		};
 		scrollUp.setHoldDelay(100);
 		scrollDown = new UIImageButton(commons.common().moveDown);
-		scrollDown.onClick = new Act() {
+		scrollDown.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doScrollDown();
 			}
 		};

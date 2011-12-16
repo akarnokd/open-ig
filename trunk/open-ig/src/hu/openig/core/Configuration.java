@@ -22,10 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -41,10 +39,6 @@ public class Configuration {
 	/** Annotation for indicating load/save a field into a game save. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSaveGame { }
-	/** The log entries. */
-	public final List<LogEntry> logs = new ArrayList<LogEntry>();
-	/** The log listeners. */
-	public final Set<Act> logListener = new HashSet<Act>();
 	/** The configuration is new. */
 	public boolean isNew;
 	/** The language code. */

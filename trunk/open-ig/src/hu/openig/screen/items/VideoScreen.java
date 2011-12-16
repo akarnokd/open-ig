@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.model.Screens;
@@ -104,18 +104,18 @@ public class VideoScreen extends ScreenBase {
 		 
 		scrollUpButton = new UIImageButton(commons.database().arrowUp);
 		scrollUpButton.setHoldDelay(100);
-		scrollUpButton.onClick = new Act() {
+		scrollUpButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doScrollUp(1);
 			}
 		};
 		
 		scrollDownButton = new UIImageButton(commons.database().arrowDown);
 		scrollDownButton.setHoldDelay(100);
-		scrollDownButton.onClick = new Act() {
+		scrollDownButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doScrollDown(1);
 			}
 		};
@@ -126,9 +126,9 @@ public class VideoScreen extends ScreenBase {
 				commons.common().mediumButton,
 				commons.common().mediumButtonPressed
 				);
-		playLabel.onClick = new Act() {
+		playLabel.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (selectedVideo != null) {
 					commons.control().playVideos(selectedVideo.fullName);
 				}
@@ -141,9 +141,9 @@ public class VideoScreen extends ScreenBase {
 			commons.common().mediumButton,
 			commons.common().mediumButtonPressed
 		);
-		backLabel.onClick = new Act() {
+		backLabel.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				hideSecondary();
 			}
 		};

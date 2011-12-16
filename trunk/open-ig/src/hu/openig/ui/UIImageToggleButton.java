@@ -8,7 +8,7 @@
 
 package hu.openig.ui;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.render.RenderTools;
 
 import java.awt.Graphics2D;
@@ -27,7 +27,7 @@ public class UIImageToggleButton extends UIComponent {
 	/** The disabled pattern to use for the button. */
 	protected BufferedImage disabledPattern;
 	/** The action to invoke when the button is clicked. */
-	public Act onClick;
+	public Action0 onClick;
 	/** Is the mouse pressed down on this component. */
 	protected boolean down;
 	/** Indicates the button is in selected state. */
@@ -65,7 +65,7 @@ public class UIImageToggleButton extends UIComponent {
 	 */
 	protected void doClick() {
 		if (onClick != null) {
-			onClick.act();
+			onClick.invoke();
 		}
 	}
 	@Override

@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
@@ -46,7 +46,7 @@ public class MainScreen extends ScreenBase {
 		/** The label's maximum width to use when centering. */
 		public int width;
 		/** The action to invoke. */
-		public Act action;
+		public Action0 action;
 		/** The text size. */
 		public int size;
 		/** The text label. */
@@ -75,7 +75,7 @@ public class MainScreen extends ScreenBase {
 		/** Invoke the associated action. */
 		public void invoke() {
 			if (action != null) {
-				action.act();
+				action.invoke();
 			}
 		}
 		/**
@@ -274,9 +274,9 @@ public class MainScreen extends ScreenBase {
 		clicklabels = new LinkedList<ClickLabel>();
 		
 		ClickLabel single = new ClickLabel(120, 120, 400, 20, "mainmenu.singleplayer");
-		single.action = new Act() {
+		single.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPrimary(Screens.SINGLEPLAYER);
 			}
@@ -284,9 +284,9 @@ public class MainScreen extends ScreenBase {
 		clicklabels.add(single);
 
 		continueLabel = new ClickLabel(120, 155, 400, 14, "mainmenu.continue");
-		continueLabel.action = new Act() {
+		continueLabel.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doContinue();
 			}
@@ -294,9 +294,9 @@ public class MainScreen extends ScreenBase {
 		continueLabel.disabled = true;
 		clicklabels.add(continueLabel);
 		ClickLabel load = new ClickLabel(120, 180, 400, 14, "mainmenu.load");
-		load.action = new Act() {
+		load.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
 				scr.displayPage(SettingsPage.LOAD_SAVE);
@@ -309,18 +309,18 @@ public class MainScreen extends ScreenBase {
 		multiplayer.disabled = true;
 		clicklabels.add(multiplayer);
 		ClickLabel settings = new ClickLabel(120, 250, 400, 20, "mainmenu.settings");
-		settings.action = new Act() {
+		settings.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doSettings();
 			}
 		};
 		clicklabels.add(settings);
 		ClickLabel videosLabel = new ClickLabel(120, 285, 400, 20, "mainmenu.videos");
-		videosLabel.action = new Act() {
+		videosLabel.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displaySecondary(Screens.VIDEOS);
 			}
@@ -328,26 +328,26 @@ public class MainScreen extends ScreenBase {
 		clicklabels.add(videosLabel);
 		
 		ClickLabel introLabel = new ClickLabel(120, 320, 180, 14, "mainmenu.videos.intro");
-		introLabel.action = new Act() {
+		introLabel.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doPlayIntro();
 			}
 		};
 		clicklabels.add(introLabel);
 		ClickLabel titleLabel = new ClickLabel(340, 320, 180, 14, "mainmenu.videos.title");
-		titleLabel.action = new Act() {
+		titleLabel.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doPlayTitle();
 			}
 		};
 		clicklabels.add(titleLabel);
 		
 		ClickLabel creditsLabel = new ClickLabel(120, 345, 400, 14, "credits");
-		creditsLabel.action = new Act() {
+		creditsLabel.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doPlayCredits();
 			}
@@ -355,7 +355,7 @@ public class MainScreen extends ScreenBase {
 		clicklabels.add(creditsLabel);
 		
 		ClickLabel exit = new ClickLabel(120, 380, 400, 20, "mainmenu.exit");
-		exit.action = new Act() { @Override public void act() { 
+		exit.action = new Action0() { @Override public void invoke() { 
 			doExit(); 
 		} };
 		clicklabels.add(exit);
@@ -366,9 +366,9 @@ public class MainScreen extends ScreenBase {
 		final ClickLabel toHu = new ClickLabel(550, 380, 20, 14, "HU");
 		toHu.disabled = commons.config.language.equals("hu");
 		
-		toEng.action = new Act() {
+		toEng.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				toEng.disabled = true;
 				toHu.disabled = false;
@@ -379,9 +379,9 @@ public class MainScreen extends ScreenBase {
 				askRepaint();
 			}
 		};
-		toHu.action = new Act() {
+		toHu.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				toEng.disabled = false;
 				toHu.disabled = true;

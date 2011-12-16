@@ -7,6 +7,7 @@
  */
 package hu.openig.music;
 
+import hu.openig.core.Action1;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
@@ -26,6 +27,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.SwingUtilities;
 
 /**
  * Background music player.
@@ -45,6 +47,8 @@ public class Music {
 	private final boolean useClip = false;
 	/** OGG music player. */
 	private volatile OggMusic oggMusic;
+	/** The completion handler once a sound element completed. */
+	public Action1<String> onComplete;
 
 	/**
 	 * Constructor.
@@ -123,12 +127,12 @@ public class Music {
 	}
 
 	/**
-	 * Play the given file list in the given sequence.
+	 * Play the given file list in the given sequence repeatedly.
 	 * 
 	 * @param fileName the array of filenames to play
 	 * @param volume the initial playback volume
 	 */
-	public void playFile(final int volume, final String... fileName) {
+	public void playLooped(final int volume, final String... fileName) {
 		stop();
 		Thread th = playbackThread;
 		if (th != null) {
@@ -140,7 +144,29 @@ public class Music {
 			public void run() {
 				playbackLoop(volume, fileName);
 			}
-		}, "MusicPlayback-" + Arrays.toString(fileName));
+		}, "MusicPlaybackL-" + Arrays.toString(fileName));
+		playbackThread = th;
+		th.start();
+	}
+	/**
+	 * Play the given file list in the given sequence once.
+	 * 
+	 * @param fileName the array of filenames to play
+	 * @param volume the initial playback volume
+	 */
+	public void playSequence(final int volume, final String... fileName) {
+		stop();
+		Thread th = playbackThread;
+		if (th != null) {
+			th.interrupt();
+			playbackThread = null;
+		}
+		th = new Thread(null, new Runnable() {
+			@Override 
+			public void run() {
+				playbackSequence(volume, fileName);
+			}
+		}, "MusicPlaybackS-" + Arrays.toString(fileName));
 		playbackThread = th;
 		th.start();
 	}
@@ -155,7 +181,19 @@ public class Music {
 	private void playbackLoop(int volume, String... fileNames) {
 		int fails = 0;
 		while (checkStop() && fails < fileNames.length) {
-			for (String name : fileNames) {
+			fails += playbackSequence(volume, fileNames);
+		}
+	}
+	/**
+	 * Play the sequence of audio data and return when all completed.
+	 * @param volume the audio volume
+	 * @param fileNames the list of resource names to get
+	 * @return the failure count
+	 */
+	int playbackSequence(int volume, String... fileNames) {
+		int fails = 0;
+		for (final String name : fileNames) {
+			try {
 				ResourcePlace rp = rl.get(name, ResourceType.AUDIO);
 				String fileName = rp.getFileName();
 				if (!checkStop()) {
@@ -181,8 +219,18 @@ public class Music {
 						ex.printStackTrace();
 					}
 				}
+			} finally {
+				if (onComplete != null) {
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							onComplete.invoke(name);
+						}
+					});
+				}
 			}
 		}
+		return fails;
 	}
 	/**
 	 * Returns true if the playback can continue.

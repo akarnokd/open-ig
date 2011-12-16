@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
@@ -51,7 +51,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	/** The media queue to play videos after each other. */
 	public final Queue<String> mediaQueue = new LinkedList<String>();
 	/** The action to invoke when the playback has finished. */
-	public Act playbackFinished;
+	public Action0 playbackFinished;
 	/**
 	 * The media player.
 	 */
@@ -64,9 +64,9 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	 */
 	protected void startPlayback(final String media) {
 		player = new MediaPlayer(commons, media, this);
-		player.onComplete = new Act() {
+		player.onComplete = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				frontBuffer = null;
 				playNext();
 			}
@@ -88,7 +88,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 			startPlayback(nextMedia);
 		} else 
 		if (playbackFinished != null) {
-			playbackFinished.act();
+			playbackFinished.invoke();
 		}
 	}
 	@Override

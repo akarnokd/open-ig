@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.model.Screens;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkShip;
@@ -52,9 +52,9 @@ public final class ScreenUtils {
 			sws.nextId = tr.to;
 			
 			final String media = tr.media;
-			sws.onCompleted = new Act() {
+			sws.onCompleted = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					commons.switchScreen(to);
 					sws.onCompleted = null;
 				}

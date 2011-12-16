@@ -8,7 +8,7 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
@@ -58,7 +58,7 @@ public class MediaPlayer {
 	/** Is the playback terminated. */
 	protected volatile boolean terminated;
 	/** The event to invoke when completed. */
-	public volatile Act onComplete;
+	public volatile Action0 onComplete;
 	/** The label event. */
 	public volatile LabelEvent onLabel;
 	/** The indicator to continue a phase. */
@@ -200,7 +200,7 @@ public class MediaPlayer {
 			@Override
 			public void run() {
 				if (onComplete != null && !terminated) {
-					onComplete.act();
+					onComplete.invoke();
 				}
 			}
 		});

@@ -9,7 +9,7 @@
 package hu.openig.screen.items;
 
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.Func2;
 import hu.openig.core.Location;
@@ -334,7 +334,7 @@ public class PlanetScreen extends ScreenBase {
 			break;
 		case KeyEvent.VK_B:
 			if (buildingsPanel.build.enabled()) {
-				buildingsPanel.build.onPress.act();
+				buildingsPanel.build.onPress.invoke();
 				rep = true;
 			}
 			break;
@@ -380,15 +380,15 @@ public class PlanetScreen extends ScreenBase {
 
 	@Override
 	public void onEnter(Screens mode) {
-		animationTimer = commons.register(500, new Act() {
+		animationTimer = commons.register(500, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doAnimation();
 			}
 		});
-		earthQuakeTimer = commons.register(100, new Act() {
+		earthQuakeTimer = commons.register(100, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doEarthquake();
 			}
 		});
@@ -398,9 +398,9 @@ public class PlanetScreen extends ScreenBase {
 		}
 		focused = render;
 		
-		simulator = commons.register(SIMULATION_DELAY, new Act() {
+		simulator = commons.register(SIMULATION_DELAY, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doGroundWarSimulation();
 			}
 		});
@@ -1700,35 +1700,35 @@ public class PlanetScreen extends ScreenBase {
 			width = commons.colony().buildingsPanel.getWidth();
 			height = commons.colony().buildingsPanel.getHeight();
 			
-			buildingDown.onClick = new Act() {
+			buildingDown.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_HIGH_2);
 					setBuildingList(1);
 				}
 			};
 			buildingDown.setHoldDelay(150);
-			buildingUp.onClick = new Act() {
+			buildingUp.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					sound(SoundType.CLICK_HIGH_2);
 					setBuildingList(-1);
 				}
 			};
 			buildingUp.setHoldDelay(150);
 			
-			buildingList.onClick = new Act() {
+			buildingList.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					placementMode = false;
 					build.down = false;
 					upgradePanel.hideUpgradeSelection();
 					displaySecondary(Screens.INFORMATION_BUILDINGS);
 				}
 			};
-			build.onPress = new Act() {
+			build.onPress = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					placementMode = !placementMode;
 					if (placementMode) {
 						sound(SoundType.CLICK_HIGH_2);
@@ -2417,9 +2417,9 @@ public class PlanetScreen extends ScreenBase {
 			upgradeDescription.color(TextRenderer.YELLOW);
 			
 			none = new UIImageButton(commons.colony().upgradeNone);
-			none.onClick = new Act() {
+			none.onClick = new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					doUpgrade(0);
 				}
 			};
@@ -2429,9 +2429,9 @@ public class PlanetScreen extends ScreenBase {
 				up.location(upgradeLabel.x + upgradeLabel.width + i * 16 + 16, upgradeLabel.y - 2);
 				steps.add(up);
 				final int j = i;
-				up.onClick = new Act() {
+				up.onClick = new Action0() {
 					@Override
-					public void act() {
+					public void invoke() {
 						sound(SoundType.CLICK_MEDIUM_2);
 						doUpgrade(j);
 					}
@@ -2576,24 +2576,24 @@ public class PlanetScreen extends ScreenBase {
 		
 		infoPanel = new InfoPanel();
 		
-		sidebarNavigation.onClick = new Act() {
+		sidebarNavigation.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 				showSidebarButtons = !showSidebarButtons;
 			}
 		};
-		sidebarRadar.onClick = new Act() {
+		sidebarRadar.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 				radar.visible(!radar.visible());
 				radarPanel.visible(!radarPanel.visible());
 			}
 		};
-		sidebarBuildingInfo.onClick = new Act() {
+		sidebarBuildingInfo.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (planet().owner == player()) {
 					sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 					showBuildingInfo = !showBuildingInfo;
@@ -2603,109 +2603,109 @@ public class PlanetScreen extends ScreenBase {
 				}
 			}
 		};
-		sidebarBuildings.onClick = new Act() {
+		sidebarBuildings.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (planet().owner == player()) {
 					sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 					showBuildingList = !showBuildingList;
 				}
 			}
 		};
-		colonyInfo.onClick = new Act() {
+		colonyInfo.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				placementMode = false;
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
 				displaySecondary(Screens.INFORMATION_COLONY);
 			}
 		};
-		planets.onClick = new Act() {
+		planets.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				placementMode = false;
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
 				displaySecondary(Screens.INFORMATION_PLANETS);
 			}
 		};
-		starmap.onClick = new Act() {
+		starmap.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				upgradePanel.hideUpgradeSelection();
 				displayPrimary(Screens.STARMAP);
 			}
 		};
-		bridge.onClick = new Act() {
+		bridge.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				upgradePanel.hideUpgradeSelection();
 				displayPrimary(Screens.BRIDGE);
 			}
 		};
 		
-		buildingInfoPanel.demolish.onClick = new Act() {
+		buildingInfoPanel.demolish.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				upgradePanel.hideUpgradeSelection();
 				doDemolish();
 			}
 		};
-		buildingInfoPanel.stateActive.onClick = new Act() {
+		buildingInfoPanel.stateActive.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
-		buildingInfoPanel.stateNoEnergy.onClick = new Act() {
+		buildingInfoPanel.stateNoEnergy.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
-		buildingInfoPanel.stateDamaged.onClick = new Act() {
+		buildingInfoPanel.stateDamaged.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
-		buildingInfoPanel.stateInactive.onClick = new Act() {
+		buildingInfoPanel.stateInactive.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
 
-		buildingInfoPanel.stateOffline.onClick = new Act() {
+		buildingInfoPanel.stateOffline.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doOffline();
 			}
 		};
-		buildingInfoPanel.repairing.onClick = new Act() {
+		buildingInfoPanel.repairing.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doToggleRepair();
 			}
 		};
-		buildingInfoPanel.damaged.onClick = new Act() {
+		buildingInfoPanel.damaged.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doToggleRepair();
 			}
 		};
 		
-		sidebarColonyInfo.onClick = new Act() {
+		sidebarColonyInfo.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (knowledge(planet(), PlanetKnowledge.VISIBLE) > 0) {
 					sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 					showInfo = !showInfo;
@@ -2716,26 +2716,26 @@ public class PlanetScreen extends ScreenBase {
 		
 		prev = new UIImageButton(commons.starmap().backwards);
 		prev.setHoldDelay(250);
-		prev.onClick = new Act() {
+		prev.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				player().movePrevPlanet();
 			}
 		};
 		next = new UIImageButton(commons.starmap().forwards);
 		next.setHoldDelay(250);
-		next.onClick = new Act() {
+		next.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				player().moveNextPlanet();
 			}
 		};
 		
-		startBattle.onClick = new Act() {
+		startBattle.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doStartBattle();
 			}
 		};
@@ -2903,9 +2903,9 @@ public class PlanetScreen extends ScreenBase {
 	
 	/** Set the spacewar time controls. */
 	void setGroundWarTimeControls() {
-		commons.replaceSimulation(new Act() {
+		commons.replaceSimulation(new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doGroundWarSimulation();
 			}
 		},

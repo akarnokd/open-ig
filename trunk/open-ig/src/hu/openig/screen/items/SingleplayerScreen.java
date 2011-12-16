@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.model.GameDefinition;
@@ -124,9 +124,9 @@ public class SingleplayerScreen extends ScreenBase {
 				commons.common().mediumButton,
 				commons.common().mediumButtonPressed
 				);
-		playLabel.onClick = new Act() {
+		playLabel.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doStartGame();
 			}
@@ -138,16 +138,16 @@ public class SingleplayerScreen extends ScreenBase {
 			commons.common().mediumButton,
 			commons.common().mediumButtonPressed
 		);
-		backLabel.onClick = new Act() {
+		backLabel.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPrimary(Screens.MAIN);
 			}
 		};
 		
 		difficultyLeft = new UIImageButton(commons.common().moveLeft);
-		difficultyLeft.onClick = new Act() { @Override public void act() { 
+		difficultyLeft.onClick = new Action0() { @Override public void invoke() { 
 			sound(SoundType.CLICK_HIGH_2);
 			doDifficultyLess(); 
 			adjustDifficultyButtons(); 
@@ -155,7 +155,7 @@ public class SingleplayerScreen extends ScreenBase {
 		difficultyLeft.setDisabledPattern(commons.common().disabledPattern);
 		
 		difficultyRight = new UIImageButton(commons.common().moveRight);
-		difficultyRight.onClick = new Act() { @Override public void act() { 
+		difficultyRight.onClick = new Action0() { @Override public void invoke() { 
 			sound(SoundType.CLICK_HIGH_2);
 			doDifficultyMore(); 
 			adjustDifficultyButtons(); 
@@ -251,9 +251,9 @@ public class SingleplayerScreen extends ScreenBase {
 			t1.setPriority(Thread.MIN_PRIORITY);
 			t1.start();
 			// the video playback
-			commons.control().playVideos(new Act() {
+			commons.control().playVideos(new Action0() {
 				@Override
-				public void act() {
+				public void invoke() {
 					barrier.release();
 				}
 			}, selectedDefinition.intro);

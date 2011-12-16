@@ -8,7 +8,7 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemGroup;
@@ -62,17 +62,17 @@ public class VehicleList extends UIContainer {
 		this.commons = commons;
 		scrollUp = new UIImageButton(commons.common().moveUp);
 		scrollUp.setHoldDelay(100);
-		scrollUp.onClick = new Act() {
+		scrollUp.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doScrollUp();
 			}
 		};
 		scrollDown = new UIImageButton(commons.common().moveDown);
 		scrollDown.setHoldDelay(100);
-		scrollDown.onClick = new Act() {
+		scrollDown.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doScrollDown();
 			}
 		};

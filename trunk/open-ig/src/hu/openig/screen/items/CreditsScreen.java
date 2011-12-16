@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.screen.ScreenBase;
@@ -48,9 +48,9 @@ public class CreditsScreen extends ScreenBase {
 		reachedEnd = false;
 		imageCache.clear();
 		offset = 0;
-		animation = commons.register(50, new Act() {
+		animation = commons.register(50, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doAnimation();
 			}
 		});
