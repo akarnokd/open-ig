@@ -32,6 +32,7 @@ import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Simulator;
 import hu.openig.model.AIManager;
 import hu.openig.model.GameEnvironment;
+import hu.openig.model.GameEvents;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.Screens;
@@ -140,6 +141,8 @@ public class CommonResources implements GameEnvironment {
 	public Music music;
 	/** The current simulation controls. */
 	public SimulationTimer simulation;
+	/** The game events. */
+	public GameEvents events;
 	/** Map of currently running AIs. */
 	public final Map<Player, SwingWorker<Void, Void>> runningAI = new HashMap<Player, SwingWorker<Void, Void>>();
 	/**
@@ -185,6 +188,7 @@ public class CommonResources implements GameEnvironment {
 		timer.start();
 		
 		init();
+		events = new GameEventsManager(this);
 	}
 	/** Initialize the resources in parallel. */
 	private void init() {
@@ -759,5 +763,9 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public void startBattle() {
 		control.startBattle();
+	}
+	@Override
+	public GameEvents events() {
+		return events;
 	}
 }

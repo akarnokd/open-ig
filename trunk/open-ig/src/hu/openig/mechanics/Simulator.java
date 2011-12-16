@@ -123,6 +123,7 @@ public final class Simulator {
 			world.env.startBattle();
 			result = true;
 		}
+		world.env.events().onTime();
 		return result;
 	}
 	/**
@@ -248,6 +249,7 @@ public final class Simulator {
 				
 				if (b.hitpoints == b.type.hitpoints) {
 					planet.owner.ai.onBuildingComplete(planet, b);
+					world.env.events().onBuildingComplete(planet, b);
 				}
 				
 				result = true;
@@ -283,6 +285,7 @@ public final class Simulator {
 			// turn of repairing when hitpoints are reached
 			if (b.repairing && b.hitpoints == b.type.hitpoints) {
 				// FIXME planet.owner.ai.onRepairComplete(planet, b);
+				world.env.events().onRepairComplete(planet, b);
 				b.repairing = false;
 				result = true;
 			}
@@ -341,6 +344,7 @@ public final class Simulator {
 						planet.inventory.remove(ittl.getKey());
 	
 						ittl.getKey().owner.ai.onSatelliteDestroyed(planet, ittl.getKey());
+						world.env.events().onInventoryRemove(planet, ittl.getKey());
 					} else {
 						ittl.setValue(cttl2);
 					}
@@ -424,6 +428,7 @@ public final class Simulator {
 			
 			if (planet.population == 0) {
 				planet.owner.ai.onPlanetDied(planet);
+				world.env.events().onLost(planet);
 				planet.owner.statistics.planetsDied++;
 				planet.die();
 			} else {
@@ -497,6 +502,7 @@ public final class Simulator {
 				player.statistics.researchCount++;
 				
 				player.ai.onResearchStateChange(rs.type, rs.state);
+				world.env.events().onResearched(player, rs.type);
 			}
 			return true;
 		}
@@ -570,6 +576,7 @@ public final class Simulator {
 						
 						if (pr.count == 0) {
 							player.ai.onProductionComplete(pr.type);
+							world.env.events().onProduced(player, pr.type);
 						}
 					}
 				}			
@@ -641,21 +648,23 @@ public final class Simulator {
 						f.waypoints.remove(0);
 					}
 					if (f.waypoints.size() == 0) {
+						if (f.targetPlanet() != null) {
+							f.owner.ai.onFleetArrivedAtPlanet(f, f.targetPlanet());
+							world.env.events().onFleetAt(f, f.targetPlanet());
+						} else
+						if (f.targetFleet != null) {
+							f.owner.ai.onFleetArrivedAtFleet(f, f.targetFleet);
+							world.env.events().onFleetAt(f, f.targetFleet);
+						} else {
+							f.owner.ai.onFleetArrivedAtPoint(f, f.x, f.y);
+							world.env.events().onFleetAt(f, f.x, f.y);
+						}
 						if (f.mode == FleetMode.ATTACK) {
 							BattleInfo bi = new BattleInfo();
 							bi.attacker = f;
 							bi.targetFleet = f.targetFleet;
 							bi.targetPlanet = f.targetPlanet();
 							world.pendingBattles.add(bi);
-						} else {
-							if (f.targetPlanet() != null) {
-								f.owner.ai.onFleetArrivedAtPlanet(f, f.targetPlanet());
-							} else
-							if (f.targetFleet != null) {
-								f.owner.ai.onFleetArrivedAtFleet(f, f.targetFleet);
-							} else {
-								f.owner.ai.onFleetArrivedAtPoint(f, f.x, f.y);
-							}
 						}
 						f.mode = null;
 						f.targetFleet = null;

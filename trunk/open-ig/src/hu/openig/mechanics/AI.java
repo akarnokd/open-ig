@@ -147,6 +147,37 @@ public class AI implements AIManager {
 		}
 	}
 	/**
+	 * Demolish a building.
+	 * @param planet the target planet
+	 * @param b the building
+	 */
+	public void actionDemolishBuilding(Planet planet, Building b) {
+		demolishBuilding(w, planet, b);
+	}
+	/**
+	 * Demolish a building on the given planet, update statistics and get some money back.
+	 * @param world the world object
+	 * @param planet the target planet
+	 * @param building the target building
+	 */
+	public static void demolishBuilding(World world, Planet planet, Building building) {
+		planet.surface.removeBuilding(building);
+		planet.surface.placeRoads(planet.race, world.buildingModel);
+		
+		int moneyBack = building.type.cost * (1 + building.upgradeLevel) / 2;
+		
+		planet.owner.money += moneyBack;
+		
+		planet.owner.statistics.demolishCount++;
+		planet.owner.statistics.moneyDemolishIncome += moneyBack;
+		planet.owner.statistics.moneyIncome += moneyBack;
+
+		world.statistics.demolishCount++;
+		world.statistics.moneyDemolishIncome += moneyBack;
+		world.statistics.moneyDemolishIncome += moneyBack;
+
+	}
+	/**
 	 * Upgrade a building on the given planet to the given level.
 	 * @param planet the target planet
 	 * @param building the building
