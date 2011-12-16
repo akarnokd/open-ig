@@ -10,7 +10,6 @@ package hu.openig;
 
 import hu.openig.core.Configuration;
 import hu.openig.editors.MapEditor;
-import hu.openig.test.ScreenTester;
 import hu.openig.utils.IOUtils;
 
 import java.io.BufferedOutputStream;
@@ -230,12 +229,6 @@ public final class PackageStuff {
 			@Override
 			public void run() {
 				buildPatch("20111215a");
-			}
-		});
-		exec.execute(new Runnable() {
-			@Override
-			public void run() {
-				buildTestbed(ScreenTester.VERSION);
 			}
 		});
 

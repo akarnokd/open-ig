@@ -8,10 +8,11 @@
 
 package hu.openig.editors;
 
-import hu.openig.core.Act;
 import hu.openig.core.Labels;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -58,16 +59,16 @@ public class NewResizeDialog extends JDialog {
 		JLabel widthLbl = new JLabel(labels.get("mapeditor.new_width"));
 		JLabel heightLbl = new JLabel(labels.get("mapeditor.new_height"));
 		JButton ok = new JButton(labels.get("mapeditor.ok"));
-		ok.addActionListener(new Act() {
+		ok.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doOk();
 			}
 		});
 		JButton cancel = new JButton(labels.get("mapeditor.cancel"));
-		cancel.addActionListener(new Act() {
+		cancel.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doCancel();
 			}
 		});

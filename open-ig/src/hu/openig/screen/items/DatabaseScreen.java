@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.gfx.DatabaseGFX;
 import hu.openig.model.Player;
 import hu.openig.model.Screens;
@@ -24,6 +24,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -122,7 +123,7 @@ public class DatabaseScreen extends ScreenBase {
 		/** Phase. */
 		int phase;
 		/** The action to perform when clicked. */
-		ActionListener action;
+		Action0 action;
 		/** The graphics phases. */
 		BufferedImage[] phases;
 		/** The selection indicator. */
@@ -134,7 +135,7 @@ public class DatabaseScreen extends ScreenBase {
 		 * @param phases graphics phases
 		 * @param action the action to perform on click
 		 */
-		public DatabaseButton(int x, int y, BufferedImage[] phases, ActionListener action) {
+		public DatabaseButton(int x, int y, BufferedImage[] phases, Action0 action) {
 			this.x = x;
 			this.y = y;
 			this.phases = phases;
@@ -168,7 +169,7 @@ public class DatabaseScreen extends ScreenBase {
 		 */
 		void doAction() {
 			if (action != null) {
-				action.actionPerformed(null);
+				action.invoke();
 			}
 		}
 	}
@@ -216,9 +217,9 @@ public class DatabaseScreen extends ScreenBase {
 		
 		highlight = new HashSet<DatabaseButton>();
 		unlight = new HashSet<DatabaseButton>();
-		highlightTimer = new Timer(50, new Act() {
+		highlightTimer = new Timer(50, new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doHighlight();
 			}
 		});
@@ -394,21 +395,21 @@ public class DatabaseScreen extends ScreenBase {
 		buttons.clear();
 		
 		recordMessage = new DatabaseButton(x, y + 0 * 28 - gfx.recordMessage[0].getHeight(), gfx.recordMessage, null);
-		aliens = new DatabaseButton(x, y + 1 * 28 - gfx.aliens[0].getHeight(), gfx.aliens, new Act() {
+		aliens = new DatabaseButton(x, y + 1 * 28 - gfx.aliens[0].getHeight(), gfx.aliens, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doAliensClicked();
 			}
 		});
-		map = new DatabaseButton(x, y + 2 * 28 - gfx.map[0].getHeight(), gfx.map, new Act() {
+		map = new DatabaseButton(x, y + 2 * 28 - gfx.map[0].getHeight(), gfx.map, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doMapClicked();
 			}
 		});
-		help = new DatabaseButton(x, y + 3 * 28 - gfx.help[0].getHeight(), gfx.help, new Act() {
+		help = new DatabaseButton(x, y + 3 * 28 - gfx.help[0].getHeight(), gfx.help, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doHelpClicked();
 			}
 		});
@@ -425,54 +426,54 @@ public class DatabaseScreen extends ScreenBase {
 		starmap = new DatabaseButton(x, y + 2 * 34 - gfx.starmap[0].getHeight(), gfx.starmap, null);
 		diplomacy = new DatabaseButton(x, y + 3 * 34 - gfx.diplomacy[0].getHeight(), gfx.diplomacy, null);
 		
-		recordMessage.action = new Act() {
+		recordMessage.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				commons.sounds.play(SoundType.RECORD_MESSAGE_NO);
 			}
 		};
 		
-		bridge.action = new Act() {
+		bridge.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.BRIDGE);
 			}
 		};
-		info.action = new Act() {
+		info.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.INFORMATION_ALIENS);
 			}
 		};
-		starmap.action = new Act() {
+		starmap.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.STARMAP);
 			}
 		};
-		diplomacy.action = new Act() {
+		diplomacy.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.DIPLOMACY);
 			}
 		};
 		
-		exit.action = new Act() {
+		exit.action = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				hideSecondary();
 			}
 		};
 		
-		moveUp = new DatabaseButton(465, 300, gfx.arrowUp, new Act() {
+		moveUp = new DatabaseButton(465, 300, gfx.arrowUp, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doMoveUp();
 			}
 		});
-		moveDown = new DatabaseButton(465, 380, gfx.arrowDown, new Act() {
+		moveDown = new DatabaseButton(465, 380, gfx.arrowDown, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doMoveDown();
 			}
 		});
@@ -518,9 +519,9 @@ public class DatabaseScreen extends ScreenBase {
 		map.selected = true;
 		help.selected = false;
 		aliens.selected = false;
-		doHide(new Act() {
+		doHide(new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doMapShow();
 			}
 		});
@@ -533,9 +534,9 @@ public class DatabaseScreen extends ScreenBase {
 			pictureFrameVisible = true;
 			pictureInIndex = 0;
 			clearListeners(expandCollapse);
-			expandCollapse.addActionListener(new Act() {
+			expandCollapse.addActionListener(new ActionListener() {
 				@Override
-				public void act() {
+				public void actionPerformed(ActionEvent e) {
 					if (pictureInIndex < picturePhaseCount) {
 						pictureInIndex++;
 						askRepaint(base);
@@ -547,9 +548,9 @@ public class DatabaseScreen extends ScreenBase {
 						mapVisible = true;
 						pictureFrameVisible = true;
 						clearListeners(expandCollapse);
-						expandCollapse.addActionListener(new Act() {
+						expandCollapse.addActionListener(new ActionListener() {
 							@Override
-							public void act() {
+							public void actionPerformed(ActionEvent e) {
 								if (mapPhaseIndex < mapPhaseCount) {
 									mapPhaseIndex++;
 									askRepaint(base);
@@ -559,9 +560,9 @@ public class DatabaseScreen extends ScreenBase {
 									textPhaseIndex = 0;
 									textpanelVisible = true;
 									clearListeners(expandCollapse);
-									expandCollapse.addActionListener(new Act() {
+									expandCollapse.addActionListener(new ActionListener() {
 										@Override
-										public void act() {
+										public void actionPerformed(ActionEvent e) {
 											if (textPhaseIndex < textPhaseCount) {
 												textPhaseIndex++;
 												askRepaint(base);
@@ -591,9 +592,9 @@ public class DatabaseScreen extends ScreenBase {
 		map.selected = false;
 		help.selected = true;
 		aliens.selected = false;
-		doHide(new Act() {
+		doHide(new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doHelpShow();
 			}
 		});
@@ -602,13 +603,13 @@ public class DatabaseScreen extends ScreenBase {
 	 * Hide current text or picture panels. 
 	 * @param endAction the action to perform at the last step.
 	 */
-	protected void doHide(final ActionListener endAction) {
+	protected void doHide(final Action0 endAction) {
 		if (textpanelVisible) {
 			textOutIndex = 0;
 			clearListeners(expandCollapse);
-			expandCollapse.addActionListener(new Act() {
+			expandCollapse.addActionListener(new ActionListener() {
 				@Override
-				public void act() {
+				public void actionPerformed(ActionEvent e) {
 					if (textOutIndex < textPhaseCount) {
 						textOutIndex++;
 						askRepaint(base);
@@ -628,9 +629,9 @@ public class DatabaseScreen extends ScreenBase {
 		if (pictureFrameVisible) {
 			pictureOutIndex = 0;
 			clearListeners(expandCollapse);
-			expandCollapse.addActionListener(new Act() {
+			expandCollapse.addActionListener(new ActionListener() {
 				@Override
-				public void act() {
+				public void actionPerformed(ActionEvent e) {
 					if (pictureOutIndex < picturePhaseCount) {
 						pictureOutIndex++;
 						askRepaint(base);
@@ -650,7 +651,7 @@ public class DatabaseScreen extends ScreenBase {
 		helpVisible = false;
 		aliensVisible = false;
 		if (endAction != null) {
-			endAction.actionPerformed(null);
+			endAction.invoke();
 		}
 	}
 	/** Do help show animations. */
@@ -661,9 +662,9 @@ public class DatabaseScreen extends ScreenBase {
 			selectedHelp = -1;
 			highlightHelp = -1;
 			clearListeners(expandCollapse);
-			expandCollapse.addActionListener(new Act() {
+			expandCollapse.addActionListener(new ActionListener() {
 				@Override
-				public void act() {
+				public void actionPerformed(ActionEvent e) {
 					if (pictureInIndex < picturePhaseCount) {
 						pictureInIndex++;
 						askRepaint(base);
@@ -683,7 +684,7 @@ public class DatabaseScreen extends ScreenBase {
 		map.selected = false;
 		help.selected = false;
 		aliens.selected = true;
-		doHide(new Act() { @Override public void act() { doAliensShow(); } });
+		doHide(new Action0() { @Override public void invoke() { doAliensShow(); } });
 	}
 	/** Aliens show. */
 	protected void doAliensShow() {
@@ -693,9 +694,9 @@ public class DatabaseScreen extends ScreenBase {
 			selectedAliens = -1;
 			highlightAliens = -1;
 			clearListeners(expandCollapse);
-			expandCollapse.addActionListener(new Act() {
+			expandCollapse.addActionListener(new ActionListener() {
 				@Override
-				public void act() {
+				public void actionPerformed(ActionEvent e) {
 					if (pictureInIndex < picturePhaseCount) {
 						pictureInIndex++;
 						askRepaint(base);
@@ -718,9 +719,9 @@ public class DatabaseScreen extends ScreenBase {
 		if (textpanelVisible) {
 			textOutIndex = 0;
 			clearListeners(expandCollapse);
-			expandCollapse.addActionListener(new Act() {
+			expandCollapse.addActionListener(new ActionListener() {
 				@Override
-				public void act() {
+				public void actionPerformed(ActionEvent e) {
 					if (textOutIndex < textPhaseCount) {
 						textOutIndex++;
 						askRepaint(base);
@@ -739,9 +740,9 @@ public class DatabaseScreen extends ScreenBase {
 		textPhaseIndex = 0;
 		textpanelVisible = true;
 		clearListeners(expandCollapse);
-		expandCollapse.addActionListener(new Act() {
+		expandCollapse.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				if (textPhaseIndex < textPhaseCount) {
 					textPhaseIndex++;
 					askRepaint(base);
@@ -759,9 +760,9 @@ public class DatabaseScreen extends ScreenBase {
 		if (textpanelVisible) {
 			textOutIndex = 0;
 			clearListeners(expandCollapse);
-			expandCollapse.addActionListener(new Act() {
+			expandCollapse.addActionListener(new ActionListener() {
 				@Override
-				public void act() {
+				public void actionPerformed(ActionEvent e) {
 					if (textOutIndex < textPhaseCount) {
 						textOutIndex++;
 						askRepaint(base);
@@ -780,9 +781,9 @@ public class DatabaseScreen extends ScreenBase {
 		alienPhaseIndex = 0;
 		textpanelVisible = true;
 		clearListeners(expandCollapse);
-		expandCollapse.addActionListener(new Act() {
+		expandCollapse.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				if (textPhaseIndex < textPhaseCount) {
 					textPhaseIndex++;
 				}

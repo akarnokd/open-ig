@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Func1;
 import hu.openig.model.Fleet;
@@ -253,42 +253,42 @@ public class EquipmentScreen extends ScreenBase {
 		researchButton = new UIImageButton(commons.research().research);
 		productionButton = new UIImageButton(commons.research().production);
 		
-		researchButton.onClick = new Act() {
+		researchButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.RESEARCH);
 			}
 		};
-		productionButton.onClick = new Act() {
+		productionButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.PRODUCTION);
 			}
 		};
-		bridgeButton.onClick = new Act() {
+		bridgeButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.BRIDGE);
 			}
 		};
-		infoButton.onClick = new Act() {
+		infoButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.INFORMATION_INVENTIONS);
 			}
 		};
 		
 		starmapButton = new UIImageButton(commons.equipment().starmap);
-		starmapButton.onClick = new Act() {
+		starmapButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.STARMAP);
 			}
 		};
 		colonyButton = new UIImageButton(commons.equipment().planet);
-		colonyButton.onClick = new Act() {
+		colonyButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.COLONY);
 			}
 		};
@@ -304,9 +304,9 @@ public class EquipmentScreen extends ScreenBase {
 		
 		endSplit = new UIImageButton(commons.equipment().endSplit);
 		endSplit.visible(false);
-		endSplit.onClick = new Act() {
+		endSplit.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doEndSplit();
 			}
@@ -314,27 +314,27 @@ public class EquipmentScreen extends ScreenBase {
 		
 		endJoin = new UIImageButton(commons.equipment().endJoin);
 		endJoin.visible(false);
-		endJoin.onClick = new Act() {
+		endJoin.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				doEndJoin();
 			}
 		};
 		
 		prev = new UIImageButton(commons.starmap().backwards);
-		prev.onClick = new Act() {
+		prev.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doPrev();
 			}
 		};
 		prev.setDisabledPattern(commons.common().disabledPattern);
 		next = new UIImageButton(commons.starmap().forwards);
-		next.onClick = new Act() {
+		next.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doNext();
 			}
@@ -432,9 +432,9 @@ public class EquipmentScreen extends ScreenBase {
 		
 		newButton = new UIImageButton(commons.equipment().newFleet);
 		newButton.visible(false);
-		newButton.onClick = new Act() {
+		newButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (player().selectionMode == SelectionMode.PLANET) {
 					doCreateFleet(true, planet().x, planet().y);
 				} else {
@@ -454,9 +454,9 @@ public class EquipmentScreen extends ScreenBase {
 		
 		addButton = new UIImageButton(commons.equipment().add);
 		addButton.visible(false);
-		addButton.onClick = new Act() {
+		addButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (addButton.visible()) {
 					sound(SoundType.CLICK_HIGH_2);
 					doAddItem();
@@ -467,9 +467,9 @@ public class EquipmentScreen extends ScreenBase {
 		
 		delButton = new UIImageButton(commons.equipment().remove);
 		delButton.visible(false);
-		delButton.onClick = new Act() {
+		delButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (delButton.visible()) {
 					sound(SoundType.CLICK_HIGH_2);
 					doRemoveItem();
@@ -480,9 +480,9 @@ public class EquipmentScreen extends ScreenBase {
 		
 		deleteButton = new UIImageButton(commons.equipment().delete);
 		deleteButton.visible(false);
-		deleteButton.onClick = new Act() {
+		deleteButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doDeleteFleet();
 			}
@@ -490,9 +490,9 @@ public class EquipmentScreen extends ScreenBase {
 		
 		transferButton = new UIImageButton(commons.equipment().transfer);
 		transferButton.visible(false);
-		transferButton.onClick = new Act() {
+		transferButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doTransfer();
 				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.JOIN_FLEETS);
@@ -502,9 +502,9 @@ public class EquipmentScreen extends ScreenBase {
 		
 		splitButton = new UIImageButton(commons.equipment().split);
 		splitButton.visible(false);
-		splitButton.onClick = new Act() {
+		splitButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doSplit();
 				if (config.computerVoiceScreen) {
 					commons.sounds.play(SoundType.SPLIT_FLEET);
@@ -525,9 +525,9 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		};
 		addOne.visible(false);
-		addOne.onClick = new Act() {
+		addOne.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (addOne.visible()) {
 					sound(SoundType.CLICK_HIGH_2);
 					doAddOne();
@@ -549,9 +549,9 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		};
 		removeOne.visible(false);
-		removeOne.onClick = new Act() {
+		removeOne.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				if (removeOne.visible()) {
 					sound(SoundType.CLICK_HIGH_2);
 					doRemoveOne();
@@ -567,63 +567,63 @@ public class EquipmentScreen extends ScreenBase {
 		
 		left1 = new UIImageButton(commons.equipment().moveLeft1);
 		left1.visible(false);
-		left1.onClick = new Act() {
+		left1.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(secondary, fleet(), research(), 1, rightList.groupIndex(research(), 0));
 			}
 		};
 		left2 = new UIImageButton(commons.equipment().moveLeft2);
 		left2.visible(false);
-		left2.onClick = new Act() {
+		left2.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(secondary, fleet(), research(), 2, rightList.groupIndex(research(), 0));
 			}
 		};
 		left3 = new UIImageButton(commons.equipment().moveLeft3);
 		left3.visible(false);
-		left3.onClick = new Act() {
+		left3.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(secondary, fleet(), research(), 3, rightList.groupIndex(research(), 0));
 			}
 		};
 		right1 = new UIImageButton(commons.equipment().moveRight1);
 		right1.visible(false);
-		right1.onClick = new Act() {
+		right1.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(fleet(), secondary, research(), 1, leftList.groupIndex(research(), 0));
 			}
 		};
 		right2 = new UIImageButton(commons.equipment().moveRight2);
 		right2.visible(false);
-		right2.onClick = new Act() {
+		right2.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(fleet(), secondary, research(), 2, leftList.groupIndex(research(), 0));
 			}
 		};
 		right3 = new UIImageButton(commons.equipment().moveRight3);
 		right3.visible(false);
-		right3.onClick = new Act() {
+		right3.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doMoveItem(fleet(), secondary, research(), 3, leftList.groupIndex(research(), 0));
 			}
 		};
 
 		listButton = new UIImageButton(commons.equipment().list);
-		listButton.onClick = new Act() {
+		listButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				fleetListing.visible(!fleetListing.visible());
 				if (fleetListing.visible()) {
@@ -756,18 +756,18 @@ public class EquipmentScreen extends ScreenBase {
 		minimap = new EquipmentMinimap(commons);
 		
 		sell = new UIImageButton(commons.equipment().sell);
-		sell.onClick = new Act() {
+		sell.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doSell();
 			}
 		};
 		
 		upgradeAll = new UIImageButton(commons.equipment().upgradeAll);
-		upgradeAll.onClick = new Act() {
+		upgradeAll.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doUpgradeAll(fleet(), world());
 			}
 		};
@@ -783,10 +783,10 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param cat the category to set 
 	 * @return Create an action which selects the given category. 
 	 */
-	Act categoryAction(final ResearchSubCategory cat) {
-		return new Act() {
+	Action0 categoryAction(final ResearchSubCategory cat) {
+		return new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				displayCategory(cat);
 				configure.selectedSlot = null;
@@ -846,9 +846,9 @@ public class EquipmentScreen extends ScreenBase {
 		fleetListing.nearby = false;
 		secondary = null;
 		
-		animation = commons.register(100, new Act() {
+		animation = commons.register(100, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doAnimation();
 			}
 		});

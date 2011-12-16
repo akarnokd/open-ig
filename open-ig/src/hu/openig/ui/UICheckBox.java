@@ -8,7 +8,7 @@
 
 package hu.openig.ui;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIMouse.Type;
 
@@ -38,7 +38,7 @@ public class UICheckBox extends UIComponent {
 	/** The press indicator. */
 	protected boolean down;
 	/** The change handler. */
-	public Act onChange;
+	public Action0 onChange;
 	/**
 	 * Construct an UICheckBox.
 	 * @param text the text label
@@ -85,7 +85,7 @@ public class UICheckBox extends UIComponent {
 			if (!selected) {
 				selected = true;
 				if (onChange != null) {
-					onChange.act();
+					onChange.invoke();
 				}
 				down = true;
 				return true;
@@ -95,7 +95,7 @@ public class UICheckBox extends UIComponent {
 			if (selected && !down) {
 				selected = false;
 				if (onChange != null) {
-					onChange.act();
+					onChange.invoke();
 				}
 				return true;
 			}

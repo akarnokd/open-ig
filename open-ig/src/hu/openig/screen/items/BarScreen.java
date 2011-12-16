@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.model.Screens;
 import hu.openig.model.TalkPerson;
 import hu.openig.model.TalkSpeech;
@@ -246,9 +246,9 @@ public class BarScreen extends ScreenBase {
 						TalkSpeech ts = state.speeches.get(idx);
 						next = person.states.get(ts.to);
 						ts.spoken = true;
-						commons.control().playVideos(new Act() {
+						commons.control().playVideos(new Action0() {
 							@Override
-							public void act() {
+							public void invoke() {
 								setState(next);
 								askRepaint();
 							}

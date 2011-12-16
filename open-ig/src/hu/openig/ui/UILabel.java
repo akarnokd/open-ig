@@ -8,7 +8,7 @@
 
 package hu.openig.ui;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIMouse.Type;
 
@@ -47,7 +47,7 @@ public class UILabel extends UIComponent {
 	/** The vertical alignment. */
 	private VerticalAlignment valign = VerticalAlignment.MIDDLE;
 	/** The event handler for the mouse press. */
-	public Act onPress;
+	public Action0 onPress;
 	/**
 	 * Construct a non wrapping label with the given text size.
 	 * The label's dimensions are adjusted to the text width and height.
@@ -296,7 +296,7 @@ public class UILabel extends UIComponent {
 	public boolean mouse(UIMouse e) {
 		if (e.has(Type.DOWN)) {
 			if (onPress != null) {
-				onPress.act();
+				onPress.invoke();
 				return true;
 			}
 		}

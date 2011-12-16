@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.model.FileItem;
@@ -185,9 +185,9 @@ public class LoadSaveScreen extends ScreenBase {
 	public void onInitialize() {
 		loadSavePage = new UIGenericButton(get("settings.load_save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		loadSavePage.disabledPattern(commons.common().disabledPattern);
-		loadSavePage.onClick = new Act() {
+		loadSavePage.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				setRandomBackground();
 				displayPage(SettingsPage.LOAD_SAVE);
@@ -195,9 +195,9 @@ public class LoadSaveScreen extends ScreenBase {
 		};
 		audioPage = new UIGenericButton(get("settings.audio"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		audioPage.disabledPattern(commons.common().disabledPattern);
-		audioPage.onClick = new Act() {
+		audioPage.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPage(SettingsPage.AUDIO);
 			}
@@ -205,9 +205,9 @@ public class LoadSaveScreen extends ScreenBase {
 
 		gameplayPage = new UIGenericButton(get("settings.gameplay"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		gameplayPage.disabledPattern(commons.common().disabledPattern);
-		gameplayPage.onClick = new Act() {
+		gameplayPage.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPage(SettingsPage.GAMEPLAY);
 			}
@@ -215,9 +215,9 @@ public class LoadSaveScreen extends ScreenBase {
 
 		back = new UIGenericButton(get("settings.back"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		back.disabledPattern(commons.common().disabledPattern);
-		back.onClick = new Act() {
+		back.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doBack();
 			}
@@ -227,9 +227,9 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		save = new UIGenericButton(get("save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		save.disabledPattern(commons.common().disabledPattern);
-		save.onClick = new Act() {
+		save.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doSave();
 			}
@@ -237,9 +237,9 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		load = new UIGenericButton(get("load"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		load.disabledPattern(commons.common().disabledPattern);
-		load.onClick = new Act() {
+		load.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doLoad();
 			}
@@ -247,9 +247,9 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		mainmenu = new UIGenericButton(get("mainmenu"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		mainmenu.disabledPattern(commons.common().disabledPattern);
-		mainmenu.onClick = new Act() {
+		mainmenu.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doMainMenu();
 			}
@@ -258,9 +258,9 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		delete = new UIGenericButton(get("delete"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		delete.disabledPattern(commons.common().disabledPattern);
-		delete.onClick = new Act() {
+		delete.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doDelete();
 			}
@@ -277,17 +277,17 @@ public class LoadSaveScreen extends ScreenBase {
 		snext.setDisabledPattern(commons.common().disabledPattern);
 		snext.setHoldDelay(250);
 
-		sprev.onClick = new Act() {
+		sprev.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				config.effectVolume = Math.max(0, config.effectVolume - 1);
 				commons.sounds.play(SoundType.BAR);
 				askRepaint(base);
 			}
 		};
-		snext.onClick = new Act() {
+		snext.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				config.effectVolume = Math.min(100, config.effectVolume + 1);
 				commons.sounds.play(SoundType.BAR);
 				askRepaint(base);
@@ -334,9 +334,9 @@ public class LoadSaveScreen extends ScreenBase {
 		mnext.setDisabledPattern(commons.common().disabledPattern);
 		mnext.setHoldDelay(250);
 
-		mprev.onClick = new Act() {
+		mprev.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				config.musicVolume = Math.max(0, config.musicVolume - 1);
 				commons.music.setVolume(config.musicVolume);
 				if (!commons.music.isRunning()) {
@@ -348,9 +348,9 @@ public class LoadSaveScreen extends ScreenBase {
 				askRepaint(base);
 			}
 		};
-		mnext.onClick = new Act() {
+		mnext.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				config.musicVolume = Math.min(100, config.musicVolume + 1);
 				commons.music.setVolume(config.musicVolume);
 				if (!commons.music.isRunning()) {
@@ -405,9 +405,9 @@ public class LoadSaveScreen extends ScreenBase {
 		final UIImageButton vprev = new UIImageButton(commons.common().moveLeft);
 		vprev.setDisabledPattern(commons.common().disabledPattern);
 		vprev.setHoldDelay(250);
-		vprev.onClick = new Act() {
+		vprev.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				config.videoVolume = Math.max(0, config.videoVolume - 1);
 
 				int e = config.effectVolume;
@@ -421,9 +421,9 @@ public class LoadSaveScreen extends ScreenBase {
 		final UIImageButton vnext = new UIImageButton(commons.common().moveRight);
 		vnext.setDisabledPattern(commons.common().disabledPattern);
 		vnext.setHoldDelay(250);
-		vnext.onClick = new Act() {
+		vnext.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				config.videoVolume = Math.min(100, config.videoVolume + 1);
 
 				int e = config.effectVolume;
@@ -473,33 +473,33 @@ public class LoadSaveScreen extends ScreenBase {
 		videoLabel = new UILabel(get("settings.video_volume"), 14, commons.text());
 		
 		reequipTanks = new UICheckBox(get("settings.reequip_tanks"), 14, commons.common().checkmark, commons.text());
-		reequipTanks.onChange = new Act() {
+		reequipTanks.onChange = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.reequipTanks = reequipTanks.selected();
 			}
 		};
 		reequipBombs = new UICheckBox(get("settings.reequip_bombs"), 14, commons.common().checkmark, commons.text());
-		reequipBombs.onChange = new Act() {
+		reequipBombs.onChange = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.reequipBombs = reequipBombs.selected();
 			}
 		};
 		computerVoiceScreen = new UICheckBox(get("settings.computer_voice_screen"), 14, commons.common().checkmark, commons.text());
-		computerVoiceScreen.onChange = new Act() {
+		computerVoiceScreen.onChange = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.computerVoiceScreen = computerVoiceScreen.selected();
 			}
 		};
 		computerVoiceNotify = new UICheckBox(get("settings.computer_voice_notify"), 14, commons.common().checkmark, commons.text());
-		computerVoiceNotify.onChange = new Act() {
+		computerVoiceNotify.onChange = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.computerVoiceNotify = computerVoiceNotify.selected();
 			}
@@ -512,17 +512,17 @@ public class LoadSaveScreen extends ScreenBase {
 		anext.setDisabledPattern(commons.common().disabledPattern);
 		anext.setHoldDelay(250);
 		
-		aprev.onClick = new Act() {
+		aprev.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_LOW_1);
 				config.autoBuildLimit = Math.max(0, config.autoBuildLimit - 5000);
 				askRepaint(base);
 			}
 		};
-		anext.onClick = new Act() {
+		anext.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_LOW_1);
 				config.autoBuildLimit = Math.min(Integer.MAX_VALUE, config.autoBuildLimit + 5000);
 				askRepaint(base);
@@ -539,27 +539,27 @@ public class LoadSaveScreen extends ScreenBase {
 		autoBuildLabel = new UILabel(get("settings.autobuild_limit"), 14, commons.text());
 
 		autoRepair = new UICheckBox(get("settings.auto_repair"), 14, commons.common().checkmark, commons.text());
-		autoRepair.onChange = new Act() {
+		autoRepair.onChange = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.autoRepair = autoRepair.selected();
 			}
 		};
 
 		buttonSounds = new UICheckBox(get("settings.button_sounds"), 14, commons.common().checkmark, commons.text());
-		buttonSounds.onChange = new Act() {
+		buttonSounds.onChange = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.buttonSounds = buttonSounds.selected();
 			}
 		};
 
 		satelliteDeploy = new UICheckBox(get("settings.satellite_deplay"), 14, commons.common().checkmark, commons.text());
-		satelliteDeploy.onChange = new Act() {
+		satelliteDeploy.onChange = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.satelliteDeploy = satelliteDeploy.selected();
 			}
@@ -573,17 +573,17 @@ public class LoadSaveScreen extends ScreenBase {
 		anext.setDisabledPattern(commons.common().disabledPattern);
 		anext.setHoldDelay(250);
 		
-		rmprev.onClick = new Act() {
+		rmprev.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.researchMoneyPercent = Math.max(125, config.researchMoneyPercent - 125);
 				askRepaint(base);
 			}
 		};
-		rmnext.onClick = new Act() {
+		rmnext.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.researchMoneyPercent = Math.min(2000, config.researchMoneyPercent + 125);
 				askRepaint(base);
@@ -604,18 +604,18 @@ public class LoadSaveScreen extends ScreenBase {
 		researchMoneyLabel = new UILabel(get("settings.research_money_percent"), 14, commons.text());
 
 		automaticBattle = new UICheckBox(get("settings.autobattle"), 14, commons.common().checkmark, commons.text());
-		automaticBattle.onChange = new Act() {
+		automaticBattle.onChange = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.automaticBattle = automaticBattle.selected();
 			}
 		};
 		
 		radarUnion = new UICheckBox(get("settings.radarunion"), 14, commons.common().checkmark, commons.text());
-		radarUnion.onChange = new Act() {
+		radarUnion.onChange = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				config.radarUnion = radarUnion.selected();
 			}
@@ -630,17 +630,17 @@ public class LoadSaveScreen extends ScreenBase {
 		arnext.setDisabledPattern(commons.common().disabledPattern);
 		arnext.setHoldDelay(250);
 		
-		arprev.onClick = new Act() {
+		arprev.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_LOW_1);
 				config.autoRepairLimit = Math.max(0, config.autoRepairLimit - 5000);
 				askRepaint(base);
 			}
 		};
-		arnext.onClick = new Act() {
+		arnext.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_LOW_1);
 				config.autoRepairLimit = Math.min(Integer.MAX_VALUE, config.autoRepairLimit + 5000);
 				askRepaint(base);

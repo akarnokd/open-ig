@@ -7,10 +7,11 @@
  */
 package hu.openig.editors;
 
-import hu.openig.core.Act;
 import hu.openig.core.Labels;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.GroupLayout;
@@ -63,9 +64,9 @@ public class MapOpenSaveDialog extends JDialog {
 		surface = new JCheckBox(labels.get(save ? "mapeditor.save_surface_features" : "mapeditor.load_surface_features"), true);
 		buildings = new JCheckBox(labels.get(save ? "mapeditor.save_buildings" : "mapeditor.load_buildings"), true);
 		JButton browse = new JButton(labels.get("mapeditor.browse"));
-		browse.addActionListener(new Act() {
+		browse.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doBrowse();
 			}
 		});
@@ -77,9 +78,9 @@ public class MapOpenSaveDialog extends JDialog {
 		}
 		
 		JButton ok = new JButton(labels.get(save ? "mapeditor.save_map_save" : "mapeditor.open_map_open"));
-		ok.addActionListener(new Act() {
+		ok.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				saveSettings = new MapSaveSettings();
 				saveSettings.fileName = new File(fileName.getText());
 				saveSettings.surface = surface.isSelected();
@@ -88,9 +89,9 @@ public class MapOpenSaveDialog extends JDialog {
 			}
 		});
 		JButton cancel = new JButton(labels.get("mapeditor.cancel"));
-		cancel.addActionListener(new Act() { 
+		cancel.addActionListener(new ActionListener() { 
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});

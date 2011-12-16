@@ -8,7 +8,7 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 
@@ -26,13 +26,13 @@ public class ClickLabel extends UIComponent {
 	/** The text size. */
 	private int size;
 	/** The action to invoke on press. */
-	public Act onPressed;
+	public Action0 onPressed;
 	/** The action to invoke on release. */
-	public Act onReleased;
+	public Action0 onReleased;
 	/** The action to perform on mouse enter. */
-	public Act onEnter;
+	public Action0 onEnter;
 	/** The action to perform on mouse leave. */
-	public Act onLeave;
+	public Action0 onLeave;
 	/** Is the label selected? */
 	public boolean selected;
 	/** The common resources. */
@@ -66,22 +66,22 @@ public class ClickLabel extends UIComponent {
 		switch (e.type) {
 		case ENTER:
 			if (onEnter != null) {
-				onEnter.act();
+				onEnter.invoke();
 			}
 			return true;
 		case LEAVE:
 			if (onLeave != null) {
-				onLeave.act();
+				onLeave.invoke();
 			}
 			return true;
 		case DOWN:
 			if (onPressed != null) {
-				onPressed.act();
+				onPressed.invoke();
 			}
 			return true;
 		case UP:
 			if (onReleased != null) {
-				onReleased.act();
+				onReleased.invoke();
 			}
 			return true;
 		default:

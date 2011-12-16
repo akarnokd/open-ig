@@ -8,7 +8,6 @@
 
 package hu.openig.editors;
 
-import hu.openig.core.Act;
 import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
 import hu.openig.core.Location;
@@ -930,21 +929,21 @@ public class MapEditor extends JFrame {
 		ui.fileImport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doImport(); } });
 		ui.fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doExit();  } });
 		
-		ui.fileOpen.addActionListener(new Act() {
+		ui.fileOpen.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doLoad();
 			}
 		});
-		ui.fileSave.addActionListener(new Act() {
+		ui.fileSave.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doSave();
 			}
 		});
-		ui.fileSaveAs.addActionListener(new Act() {
+		ui.fileSaveAs.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doSaveAs();
 			}
 		});
@@ -960,9 +959,9 @@ public class MapEditor extends JFrame {
 		ui.editCopy = new JMenuItem("Copy");
 		ui.editPaste = new JMenuItem("Paste");
 		
-		ui.editCut.addActionListener(new Act() { @Override public void act() { doCut(true, true); } });
-		ui.editCopy.addActionListener(new Act() { @Override public void act() { doCopy(true, true); } });
-		ui.editPaste.addActionListener(new Act() { @Override public void act() { doPaste(true, true); } });
+		ui.editCut.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCut(true, true); } });
+		ui.editCopy.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCopy(true, true); } });
+		ui.editPaste.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPaste(true, true); } });
 		
 		ui.editPlaceMode = new JCheckBoxMenuItem("Placement mode");
 		
@@ -1000,15 +999,15 @@ public class MapEditor extends JFrame {
 		ui.editResize = new JMenuItem("Resize map");
 		ui.editCleanup = new JMenuItem("Remove outbound objects");
 		
-		ui.editResize.addActionListener(new Act() {
+		ui.editResize.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doResize();
 			}
 		});
-		ui.editCleanup.addActionListener(new Act() {
+		ui.editCleanup.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doCleanup();
 			}
 		});
@@ -1024,12 +1023,12 @@ public class MapEditor extends JFrame {
 		ui.editCopyBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		ui.editPasteBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		
-		ui.editCutBuilding.addActionListener(new Act() { @Override public void act() { doCut(false, true); } });
-		ui.editCutSurface.addActionListener(new Act() { @Override public void act() { doCut(true, false); } });
-		ui.editCopyBuilding.addActionListener(new Act() { @Override public void act() { doCopy(false, true); } });
-		ui.editCopySurface.addActionListener(new Act() { @Override public void act() { doCopy(true, false); } });
-		ui.editPasteBuilding.addActionListener(new Act() { @Override public void act() { doPaste(false, true); } });
-		ui.editPasteSurface.addActionListener(new Act() { @Override public void act() { doPaste(true, false); } });
+		ui.editCutBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCut(false, true); } });
+		ui.editCutSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCut(true, false); } });
+		ui.editCopyBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCopy(false, true); } });
+		ui.editCopySurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCopy(true, false); } });
+		ui.editPasteBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPaste(false, true); } });
+		ui.editPasteSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPaste(true, false); } });
 		
 		ui.viewZoomIn = new JMenuItem("Zoom in");
 		ui.viewZoomOut = new JMenuItem("Zoom out");
@@ -1070,16 +1069,16 @@ public class MapEditor extends JFrame {
 		
 		ui.viewStandardFonts = new JCheckBoxMenuItem("Use standard fonts", TextRenderer.USE_STANDARD_FONTS);
 		
-		ui.viewStandardFonts.addActionListener(new Act() {
+		ui.viewStandardFonts.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doStandardFonts();
 			}
 		});
 		ui.viewPlacementHints = new JCheckBoxMenuItem("View placement hints", renderer.placementHints);
-		ui.viewPlacementHints.addActionListener(new Act() {
+		ui.viewPlacementHints.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doViewPlacementHints();
 			}
 		});
@@ -1097,16 +1096,16 @@ public class MapEditor extends JFrame {
 		ui.languageMenu = new JMenu("Language");
 		
 		ui.languageEn = new JRadioButtonMenuItem("English", true);
-		ui.languageEn.addActionListener(new Act() {
+		ui.languageEn.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				setLabels("en");
 			}
 		});
 		ui.languageHu = new JRadioButtonMenuItem("Hungarian", false);
-		ui.languageHu.addActionListener(new Act() {
+		ui.languageHu.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				setLabels("hu");
 			}
 		});
@@ -1116,9 +1115,9 @@ public class MapEditor extends JFrame {
 		
 		ui.fileRecent = new JMenu("Recent");
 		ui.clearRecent = new JMenuItem("Clear recent");
-		ui.clearRecent.addActionListener(new Act() {
+		ui.clearRecent.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doClearRecent();
 			}
 		});
@@ -1225,9 +1224,9 @@ public class MapEditor extends JFrame {
 			result.setIcon(new ImageIcon(res));
 		}
 		result.setToolTipText(tooltip);
-		result.addActionListener(new Act() {
+		result.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				inMenu.doClick();
 			}
 		});
@@ -2067,15 +2066,15 @@ public class MapEditor extends JFrame {
 	JPanel createBuildingPropertiesPanel() {
 		ui.buildingInfoPanel = new BuildingInfoPanel();
 		
-		ui.buildingInfoPanel.apply.addActionListener(new Act() {
+		ui.buildingInfoPanel.apply.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				doApplyBuildingSettings();
 			}
 		});
-		ui.buildingInfoPanel.refresh.addActionListener(new Act() {
+		ui.buildingInfoPanel.refresh.addActionListener(new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				displayBuildingInfo();
 			}
 		});
@@ -2652,9 +2651,9 @@ public class MapEditor extends JFrame {
 				ui.fileRecent.addSeparator();
 			}
 			JMenuItem item = new JMenuItem(fileName);
-			item.addActionListener(new Act() {
+			item.addActionListener(new ActionListener() {
 				@Override
-				public void act() {
+				public void actionPerformed(ActionEvent e) {
 					doOpenRecent(fileName);
 				}
 			});

@@ -8,7 +8,7 @@
 
 package hu.openig.ui;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -46,16 +46,16 @@ public class UIScrollBox extends UIContainer {
 		this.content = content;
 		this.add(upButton, downButton, content);
 		adjustButtons();
-		upButton.onClick = new Act() {
+		upButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				scrollBy(delta);
 				askRepaint();
 			}
 		};
-		downButton.onClick = new Act() {
+		downButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				scrollBy(-delta);
 				askRepaint();
 			}

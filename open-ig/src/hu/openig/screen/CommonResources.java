@@ -8,7 +8,8 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
+import hu.openig.core.Action1;
 import hu.openig.core.Configuration;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
@@ -36,12 +37,15 @@ import hu.openig.model.GameEvents;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.model.World;
 import hu.openig.music.Music;
 import hu.openig.render.TextRenderer;
 import hu.openig.sound.Sounds;
 import hu.openig.utils.WipPort;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -127,7 +131,7 @@ public class CommonResources implements GameEnvironment {
 		/** The operation frequency. */
 		public int delay;
 		/** The action to invoke. */
-		public Act action;
+		public Action0 action;
 		/** The flag to indicate the action was cancelled. */
 		public boolean cancelled;
 	}
@@ -178,9 +182,9 @@ public class CommonResources implements GameEnvironment {
 		}
 		pool = scheduler;
 
-		timer = new Timer(25, new Act() {
+		timer = new Timer(25, new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				tick++;
 				doTimerTick();
 			}
@@ -475,9 +479,9 @@ public class CommonResources implements GameEnvironment {
 	/** Restore the main simulation speed function. Call this function after the battle completes. */
 	public void restoreMainSimulationSpeedFunction() {
 		replaceSimulation(
-				new Act() {
+				new Action0() {
 					@Override
-					public void act() {
+					public void invoke() {
 						simulation();
 					}
 				},
@@ -548,7 +552,7 @@ public class CommonResources implements GameEnvironment {
 	 * @param action the new simulation action
 	 * @param delay the function to tell the delay value from speed enumeration.
 	 */
-	public void replaceSimulation(Act action, Func1<SimulationSpeed, Integer> delay) {
+	public void replaceSimulation(Action0 action, Func1<SimulationSpeed, Integer> delay) {
 		close0(simulation);
 		simulation = newSimulationTimer(action, delay);
 	}
@@ -561,9 +565,9 @@ public class CommonResources implements GameEnvironment {
 		
 		restoreMainSimulationSpeedFunction();
 
-		radarHandler = register(1000, new Act() {
+		radarHandler = register(1000, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				world.statistics.playTime++;
 				if (!simulation.paused()) {
 					world.statistics.simulationTime++;
@@ -574,9 +578,9 @@ public class CommonResources implements GameEnvironment {
 				}
 			}
 		});
-		allocatorHandler = register(1000, new Act() {
+		allocatorHandler = register(1000, new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				Allocator.compute(world, pool);
 				control.repaintInner();
 			}
@@ -626,7 +630,7 @@ public class CommonResources implements GameEnvironment {
 			if (!act.cancelled) {
 				if ((tick * timer.getDelay()) % act.delay == 0) {
 					try {
-						act.action.act();
+						act.action.invoke();
 					} catch (CancellationException ex) {
 						act.cancelled = true;
 					} catch (Throwable t) {
@@ -642,7 +646,7 @@ public class CommonResources implements GameEnvironment {
 	 * @param action the action to invoke
 	 * @return the handler to close this instance
 	 */
-	public Closeable register(int delay, Act action) {
+	public Closeable register(int delay, Action0 action) {
 		if (delay % timer.getDelay() != 0 || delay == 0) {
 			throw new IllegalArgumentException("The delay must be in multiples of " + timer.getDelay() + " milliseconds!");
 		}
@@ -667,12 +671,12 @@ public class CommonResources implements GameEnvironment {
 	 */
 	public void playRegularMusic() {
 		stopMusic();
-		music.playFile(config.musicVolume, "music/Music1", "music/Music2", "music/Music3");
+		music.playLooped(config.musicVolume, "music/Music1", "music/Music2", "music/Music3");
 	}
 	/** Convenience method to start playing the original battle music. */
 	public void playBattleMusic() {
 		stopMusic();
-		music.playFile(config.musicVolume, "music/War");
+		music.playLooped(config.musicVolume, "music/War");
 	}
 	/** Stop the current music playback. */
 	public void stopMusic() {
@@ -684,7 +688,7 @@ public class CommonResources implements GameEnvironment {
 		 * @param delay the function which tells the delay from the speed enumeration
 	 * @return the new simulation timer
 	 */
-	public SimulationTimer newSimulationTimer(Act action, Func1<SimulationSpeed, Integer> delay) {
+	public SimulationTimer newSimulationTimer(Action0 action, Func1<SimulationSpeed, Integer> delay) {
 		return new SimulationTimer(action, delay);
 	}
 	/**
@@ -699,7 +703,7 @@ public class CommonResources implements GameEnvironment {
 		/** Is the simulation paused? */
 		protected boolean paused = true;
 		/** The timer action. */
-		protected final Act action;
+		protected final Action0 action;
 		/** The delay computation function. */
 		protected final Func1<SimulationSpeed, Integer> delay;
 		/**
@@ -707,7 +711,7 @@ public class CommonResources implements GameEnvironment {
 		 * @param action the timer action.
 		 * @param delay the function which tells the delay from the speed enumeration
 		 */
-		public SimulationTimer(Act action, Func1<SimulationSpeed, Integer> delay) {
+		public SimulationTimer(Action0 action, Func1<SimulationSpeed, Integer> delay) {
 			this.action = action;
 			this.delay = delay;
 		}
@@ -767,5 +771,29 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public GameEvents events() {
 		return events;
+	}
+	@Override
+	public void playAudio(String name) {
+		Music m = new Music(rl);
+		m.onComplete = new Action1<String>() {
+			@Override
+			public void invoke(String value) {
+				events.onSoundComplete(value);
+			}
+		};
+		m.playSequence(config.effectVolume, name);
+	}
+	@Override
+	public void playSound(SoundType type) {
+		sounds.play(type);
+	}
+	@Override
+	public void playVideo(final String name) {
+		control.playVideos(new Action0() {
+			@Override
+			public void invoke() {
+				events.onVideoComplete(name);
+			}
+		}, name);
 	}
 }

@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
@@ -59,7 +59,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	/** The rendering origin. */
 	final Rectangle origin = new Rectangle(0, 0, 640, 442);
 	/** The action to call when the transition ends. */
-	public Act onCompleted;
+	public Action0 onCompleted;
 	/** The position picture. */
 	BufferedImage picture;
 	@Override
@@ -258,15 +258,15 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	protected void startTransition(final String video) {
 		videoMode = true;
 		this.video = new MediaPlayer(commons, video, this);
-		this.video.onComplete = new Act() {
+		this.video.onComplete = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				videoMode = false;
 				try {
 					setNextPosition();
 					
 					if (onCompleted != null) {
-						onCompleted.act();
+						onCompleted.invoke();
 					}
 				} finally {
 					askRepaint();

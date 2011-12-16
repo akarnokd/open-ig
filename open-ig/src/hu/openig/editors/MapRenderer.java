@@ -7,7 +7,6 @@
  */
 package hu.openig.editors;
 
-import hu.openig.core.Act;
 import hu.openig.core.Labels;
 import hu.openig.core.Location;
 import hu.openig.core.Tile;
@@ -25,6 +24,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -205,9 +206,9 @@ public class MapRenderer extends JComponent {
 		addMouseMotionListener(ma);
 		addMouseListener(sma);
 		addMouseMotionListener(sma);
-		animationTimer = new Timer(100, new Act() {
+		animationTimer = new Timer(100, new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				//wrap animation index
 				if (animation == Integer.MAX_VALUE) {
 					animation = -1;

@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
@@ -164,9 +164,9 @@ public class AchievementsScreen extends ScreenBase {
 		
 		scrollUpButton = new UIImageButton(commons.database().arrowUp);
 		scrollUpButton.setHoldDelay(100);
-		scrollUpButton.onClick = new Act() {
+		scrollUpButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doScrollUp();
 			}
@@ -174,9 +174,9 @@ public class AchievementsScreen extends ScreenBase {
 		
 		scrollDownButton = new UIImageButton(commons.database().arrowDown);
 		scrollDownButton.setHoldDelay(100);
-		scrollDownButton.onClick = new Act() {
+		scrollDownButton.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_HIGH_2);
 				doScrollDown();
 			}
@@ -185,73 +185,73 @@ public class AchievementsScreen extends ScreenBase {
 		// create buttons for the main screens.
 		
 		bridge = new UIImageButton(commons.common().bridgeButton);
-		bridge.onClick = new Act() {
+		bridge.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.BRIDGE);
 			}
 		};
 		bridge.visible(false);
 		starmap = new UIImageButton(commons.info().starmap);
-		starmap.onClick = new Act() {
+		starmap.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.STARMAP);
 			}
 		};
 		colony = new UIImageButton(commons.info().colony);
-		colony.onClick = new Act() {
+		colony.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.COLONY);
 			}
 		};
 		
 		equimpent = new UIImageButton(commons.research().equipmentButton);
-		colony.onClick = new Act() {
+		colony.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displayPrimary(Screens.COLONY);
 			}
 		};
 
 		production = new UIImageButton(commons.info().production);
-		production.onClick = new Act() {
+		production.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.PRODUCTION);
 			}
 		};
 		
 		research = new UIImageButton(commons.info().research);
-		research.onClick = new Act() {
+		research.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.RESEARCH);
 			}
 		};
 
 		info = new UIImageButton(commons.common().infoButton);
-		info.onClick = new Act() {
+		info.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.INFORMATION_COLONY);
 			}
 		};
 
 		diplomacy = new UIImageButton(commons.info().diplomacy);
-		diplomacy.onClick = new Act() {
+		diplomacy.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				displaySecondary(Screens.DIPLOMACY);
 			}
 		};
 		diplomacy.visible(false);
 		
 		achievementLabel = new ClickLabel("achievements", 14, commons);
-		achievementLabel.onPressed = new Act() {
+		achievementLabel.onPressed = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				mode = Screens.ACHIEVEMENTS;
 				adjustLabels();
@@ -260,9 +260,9 @@ public class AchievementsScreen extends ScreenBase {
 		};
 		
 		statisticsLabel = new ClickLabel("statistics", 14, commons);
-		statisticsLabel.onPressed = new Act() {
+		statisticsLabel.onPressed = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				sound(SoundType.CLICK_MEDIUM_2);
 				mode = Screens.STATISTICS;
 				adjustLabels();

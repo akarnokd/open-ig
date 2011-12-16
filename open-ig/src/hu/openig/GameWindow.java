@@ -8,7 +8,7 @@
 
 package hu.openig;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
@@ -1257,16 +1257,16 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 	}
 	@Override
-	public void playVideos(final Act onComplete, String... videos) {
+	public void playVideos(final Action0 onComplete, String... videos) {
 		for (String s : videos) {
 			movie.mediaQueue.add(s);
 		}
-		movie.playbackFinished = new Act() {
+		movie.playbackFinished = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				hideMovie();
 				if (onComplete != null) {
-					onComplete.act();
+					onComplete.invoke();
 				}
 			}
 		};
@@ -1502,7 +1502,7 @@ public class GameWindow extends JFrame implements GameControls {
 		return commons.world();
 	}
 	@Override
-	public Closeable register(int delay, Act action) {
+	public Closeable register(int delay, Action0 action) {
 		return commons.register(delay, action);
 	}
 	@Override
@@ -1609,9 +1609,9 @@ public class GameWindow extends JFrame implements GameControls {
 						commons.battleMode = true;
 						commons.stopMusic();
 						commons.simulation.pause();
-						playVideos(new Act() {
+						playVideos(new Action0() {
 							@Override
-							public void act() {
+							public void invoke() {
 								PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
 								ps.initiateBattle(bi);
 								commons.playBattleMusic();

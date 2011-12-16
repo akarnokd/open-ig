@@ -9,7 +9,7 @@
 package hu.openig.screen.items;
 
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Screens;
 import hu.openig.model.WalkPosition;
@@ -172,9 +172,9 @@ public class BridgeScreen extends ScreenBase {
 				}
 			}
 		});
-		messageAnim.onComplete = new Act() {
+		messageAnim.onComplete = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				openCloseAnimating = false;
 				askRepaint();
 			}
@@ -211,9 +211,9 @@ public class BridgeScreen extends ScreenBase {
 				}
 			}
 		});
-		messageAnim.onComplete = new Act() {
+		messageAnim.onComplete = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				messageOpen = true;
 				openCloseAnimating = false;
 				askRepaint();
@@ -249,9 +249,9 @@ public class BridgeScreen extends ScreenBase {
 				}
 			}
 		});
-		messageAnim.onComplete = new Act() {
+		messageAnim.onComplete = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				messageOpen = false;
 				openCloseAnimating = false;
 				askRepaint();
@@ -287,9 +287,9 @@ public class BridgeScreen extends ScreenBase {
 				}
 			}
 		});
-		projectorAnim.onComplete = new Act() {
+		projectorAnim.onComplete = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				projectorOpen = true;
 				openCloseAnimating = false;
 				askRepaint();
@@ -325,9 +325,9 @@ public class BridgeScreen extends ScreenBase {
 				}
 			}
 		});
-		projectorAnim.onComplete = new Act() {
+		projectorAnim.onComplete = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				projectorOpen = false;
 				openCloseAnimating = false;
 				askRepaint();

@@ -30,4 +30,19 @@ public interface GameEnvironment {
 	AIManager getAI(Player player);
 	/** @return the game event interface. */
 	GameEvents events();
+	/**
+	 * Play a full screen video resource.
+	 * @param name the video name
+	 */
+	void playVideo(String name);
+	/**
+	 * Play an audio resource.
+	 * @param name the audio name
+	 */
+	void playAudio(String name);
+	/**
+	 * Play an sound type.
+	 * @param type the sound type
+	 */
+	void playSound(SoundType type);
 }

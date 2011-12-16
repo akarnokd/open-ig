@@ -8,7 +8,7 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.model.Screens;
 import hu.openig.model.TestAnswer;
 import hu.openig.model.TestQuestion;
@@ -50,9 +50,9 @@ public class TestScreen extends ScreenBase {
 		questionScroll = new QuestionScroll();
 		
 		scrollUp = new UIImageButton(commons.common().moveUp);
-		scrollUp.onClick = new Act() {
+		scrollUp.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				questionScroll.doScrollUp();
 				askRepaint(base);
 			}
@@ -60,9 +60,9 @@ public class TestScreen extends ScreenBase {
 		scrollUp.setHoldDelay(150);
 		
 		scrollDown = new UIImageButton(commons.common().moveDown);
-		scrollDown.onClick = new Act() {
+		scrollDown.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				questionScroll.doScrollDown();
 				askRepaint(base);
 			}
@@ -70,9 +70,9 @@ public class TestScreen extends ScreenBase {
 		scrollDown.setHoldDelay(150);
 		
 		done = new UIGenericButton(get("test.done"), fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
-		done.onClick = new Act() {
+		done.onClick = new Action0() {
 			@Override
-			public void act() {
+			public void invoke() {
 				doDone();
 			}
 		};

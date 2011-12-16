@@ -8,10 +8,12 @@
 
 package hu.openig.ui;
 
-import hu.openig.core.Act;
+import hu.openig.core.Action0;
 import hu.openig.render.RenderTools;
 
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Timer;
@@ -34,12 +36,12 @@ public class UIImageButton extends UIComponent {
 	/** The disabled pattern to use for the button. */
 	protected BufferedImage disabledPattern;
 	/** The action to invoke when the button is clicked. */
-	public Act onClick;
+	public Action0 onClick;
 	/** 
 	 * The action to invoke when the button is pressed down.
 	 * Can be used to use this button as a tab.
 	 */
-	public Act onPress;
+	public Action0 onPress;
 	/** 
 	 * The optional delay to fire onClick events when
 	 * the mouse is pressed over the button.
@@ -62,9 +64,9 @@ public class UIImageButton extends UIComponent {
 		this.hovered = hovered != null ? hovered : normal;
 		this.width = normal.getWidth();
 		this.height = normal.getHeight();
-		this.holdTimer = new Timer(100, new Act() {
+		this.holdTimer = new Timer(100, new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				if (holdDelay < 0 || !enabled || !visible) {
 					holdTimer.stop();
 				} else {
@@ -87,9 +89,9 @@ public class UIImageButton extends UIComponent {
 		this.hovered = images.length > 2 ? images[2] : images[0];
 		this.width = normal.getWidth();
 		this.height = normal.getHeight();
-		this.holdTimer = new Timer(100, new Act() {
+		this.holdTimer = new Timer(100, new ActionListener() {
 			@Override
-			public void act() {
+			public void actionPerformed(ActionEvent e) {
 				if (holdDelay < 0 || !enabled || !visible) {
 					holdTimer.stop();
 				} else {
@@ -121,7 +123,7 @@ public class UIImageButton extends UIComponent {
 	 */
 	protected void doClick() {
 		if (onClick != null) {
-			onClick.act();
+			onClick.invoke();
 		}
 	}
 	@Override
@@ -149,7 +151,7 @@ public class UIImageButton extends UIComponent {
 				doClick();
 			} else
 			if (onPress != null) {
-				onPress.act();
+				onPress.invoke();
 			}
 			return true;
 		case UP:
