@@ -13,7 +13,6 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
-import hu.openig.model.GameEnvironment;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -34,7 +33,7 @@ import java.util.List;
 public class AIPirate implements AIManager {
 	
 	@Override
-	public void init(GameEnvironment env, Player p) {
+	public void init(Player p) {
 		// TODO Auto-generated method stub
 	}
 	

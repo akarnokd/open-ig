@@ -15,7 +15,6 @@ import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
-import hu.openig.model.GameEnvironment;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -93,9 +92,9 @@ public class AITrader implements AIManager {
 	/** The player. */
 	private Player player;
 	@Override
-	public void init(GameEnvironment env, Player p) {
-		this.traderLabel = env.labels().get("");
-		this.world = env.world();
+	public void init(Player p) {
+		this.world = p.world;
+		this.traderLabel = world.env.labels().get("");
 		this.player = p;
 	}
 	@Override

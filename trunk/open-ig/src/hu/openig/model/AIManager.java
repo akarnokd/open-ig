@@ -19,10 +19,9 @@ import java.util.List;
 public interface AIManager {
 	/**
 	 * Initialize the AI manager by showing the world and the player object it is representing.
-	 * @param env the game environment
 	 * @param p the player object
 	 */
-	void init(GameEnvironment env, Player p);
+	void init(Player p);
 	/**
 	 * Prepare the world for AI processing outside the EDT, e.g., copy relevant world state into private data.
 	 */
