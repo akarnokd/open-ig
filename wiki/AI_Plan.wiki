@@ -13,7 +13,7 @@ Just a bunch of rules, ideas, requirements to properly design a Hybrid GOAP syst
   * speed
     * -> time to meet with the target
       * planet: distance/speed
-      * fleet: [need for good orbit estimation]
+      * fleet: need for good orbit estimation
 
 == Buildings ==
   * cost
