@@ -19,9 +19,12 @@ Planet's actions:
   # Deploy tanks from inventory
     * and/or Produce if enough time
   # Deploy stations from inventory
-    * and/or Produce if enough time
-  # Build guns
-  # Build shield
+    * if military spaceport available
+      * build station if enough time
+    * if no military spaceport available
+      * (build stations and military spaceport) if enough time
+  # Build more guns if enough time
+  # Build a shield if enough time
   # Ensure there is enough power to the defenses
     * build power plant
     * turn off other buildings
