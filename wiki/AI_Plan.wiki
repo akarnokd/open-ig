@@ -29,7 +29,24 @@ Just a bunch of rules, ideas, requirements to properly design a Hybrid GOAP syst
 == Research ==
   * base cost
   * speed 12.5% - 200% based on investment
-    * -> completion time
+    * -> completion time can be adjusted
+
+== Colony health ==
+
+  * Counteract population decrease
+    * reduce taxes
+    * build morale improving buildings (Police for aliens, Bar&Stadium for humans)
+  * Build for discrete demands
+    * Fire department
+    * Stadium
+    * ColonyHub
+  * Build for common shortages
+    * energy
+    * living space
+    * food
+    * police
+
+Note: maybe exact effect-functions can be derived from the simulation mechanics to support this (e.g., f(Tax, Population) -> NewPopulation
 
 = Enemy attacking fleet detected =
 
