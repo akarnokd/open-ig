@@ -87,3 +87,20 @@ Own fleet actions:
   * Flee to a planet with strong defenses
     * Consider upgrading the target planet's defenses in the mean time (see planet actions above)
   * Another fleet move to intercept (see fleet actions above)
+
+= Peace time =
+
+== Research ==
+
+  * list of technology with tech prerequisites met
+  * if enough labs, do it
+  * if total lab count <= planet count
+    * demolish and rebuild labs according to it
+      * A`*` or another planning layer would be beneficial here
+        * reduce rebuild amount
+        * anticipate new tech becoming researchable
+  * else colonize new planet(s)
+  * or else capture planet(s)
+    * having the lab already built
+  * consider partial research
+  * consider mixing the rebuild, capture and colonize
