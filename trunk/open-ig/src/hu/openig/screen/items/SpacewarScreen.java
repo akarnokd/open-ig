@@ -1413,7 +1413,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.angles = new BufferedImage[] { alien ? bse.alternative[0] : bse.normal[0] };
 				st.infoImageName = bse.infoImageName;
 				st.shield = ii.shield;
-				st.shieldMax = Math.max(0, ii.shieldMax(world()));
+				st.shieldMax = Math.max(0, ii.shieldMax());
 				st.hp = ii.hp;
 				st.hpMax = world().getHitpoints(ii.type);
 				st.value = ii.type.productionCost;
@@ -1663,7 +1663,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				sws.angles = inventory.owner() != player() ? bse.alternative : bse.normal;
 				sws.infoImageName = bse.infoImageName;
 				sws.shield = ii.shield;
-				sws.shieldMax = Math.max(0, ii.shieldMax(world()));
+				sws.shieldMax = Math.max(0, ii.shieldMax());
 				sws.hp = ii.hp;
 				sws.hpMax = world().getHitpoints(ii.type);
 				sws.value = totalValue(ii);

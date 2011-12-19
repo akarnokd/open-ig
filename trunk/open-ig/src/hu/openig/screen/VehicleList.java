@@ -283,7 +283,7 @@ public class VehicleList extends UIContainer {
 				g2.setColor(Color.RED);
 				g2.fillRect(maxWidth + 5 + hpx, y, (availableWidth - hpx - 5 - maxWidth), 4);
 				
-				long sMax = ii.shieldMax(commons.world());
+				long sMax = ii.shieldMax();
 				if (sMax > 0) {
 					long s0 = ii.shield;
 					int shx = (int)((availableWidth - maxWidth) * s0 / sMax);
@@ -327,7 +327,7 @@ public class VehicleList extends UIContainer {
 				g2.setColor(Color.RED);
 				g2.fillRect(maxWidth + 5 + hpx, y, (availableWidth - hpx - 5 - maxWidth), 4);
 				
-				long sm = pii.shieldMax(commons.world());
+				long sm = pii.shieldMax();
 				if (sm > 0) {
 					int shx = (int)((availableWidth - maxWidth) * pii.shield / sm);
 					g2.setColor(Color.ORANGE);

@@ -26,8 +26,10 @@ import java.util.PriorityQueue;
  * @author akarnokd, 2009.10.25.
  */
 public class Player {
+	/** The world. */
+	public final World world;
 	/** The player id. */
-	public String id;
+	public final String id;
 	/** The player's name. */
 	public String name;
 	/** The player's name. */
@@ -107,6 +109,15 @@ public class Player {
 	 * The queue for pending diplomatic interactions.
 	 */
 	public final Deque<DiplomaticInteraction> diplomacy = new LinkedList<DiplomaticInteraction>();
+	/**
+	 * Create a player for the world under the given id.
+	 * @param world the world
+	 * @param id the id
+	 */
+	public Player(World world, String id) {
+		this.world = world;
+		this.id = id;
+	}
 	/**
 	 * @return returns the next planet by goind top-bottom relative to the current planet
 	 */

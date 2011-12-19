@@ -37,13 +37,12 @@ public interface AIManager {
 	void apply();
 	/**
 	 * Calculates the diplomatic response to an offer coming from another player.
-	 * @param world the world
 	 * @param we the target player
 	 * @param other the other player
 	 * @param offer the kind of offer/request
 	 * @return the response
 	 */
-	ResponseMode diplomacy(World world, Player we, Player other, DiplomaticInteraction offer);
+	ResponseMode diplomacy(Player we, Player other, DiplomaticInteraction offer);
 	/**
 	 * Handle some aspects of a space battle.
 	 * @param world the world
@@ -55,11 +54,10 @@ public interface AIManager {
 	/**
 	 * Handle some aspects of a ground battle.
 	 * TODO output?
-	 * @param world the world
 	 * @param we the target player
 	 * @param battle the battle information
 	 */
-	void groundBattle(World world, Player we, BattleInfo battle);
+	void groundBattle(Player we, BattleInfo battle);
 	/**
 	 * Save the state of this AI manager from a save file.
 	 * @param out the output XElement

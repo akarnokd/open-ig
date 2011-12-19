@@ -768,7 +768,7 @@ public class EquipmentScreen extends ScreenBase {
 		upgradeAll.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				doUpgradeAll(fleet(), world());
+				doUpgradeAll(fleet());
 			}
 		};
 		
@@ -1717,9 +1717,9 @@ public class EquipmentScreen extends ScreenBase {
 					pii.count = 1;
 					pii.hp = world().getHitpoints(pii.type);
 					
-					pii.createSlots(world());
+					pii.createSlots();
 					
-					pii.shield = Math.max(0, pii.shieldMax(world()));
+					pii.shield = Math.max(0, pii.shieldMax());
 					
 					planet().inventory.add(pii);
 					leftList.items.add(pii);
@@ -1734,7 +1734,7 @@ public class EquipmentScreen extends ScreenBase {
 			) {
 				if (delta > 0) {
 					int cnt = fleet().inventoryCount(research());
-					List<InventoryItem> iss = fleet().addInventory(research(), delta, world());
+					List<InventoryItem> iss = fleet().addInventory(research(), delta);
 					
 					leftList.items.clear();
 					leftList.items.addAll(fleet().getSingleItems());
@@ -1747,7 +1747,7 @@ public class EquipmentScreen extends ScreenBase {
 					commons.sounds.play(SoundType.SHIP_DEPLOYED);
 				}
 			} else {
-				fleet().changeInventory(research(), delta, world());
+				fleet().changeInventory(research(), delta);
 			}
 		}
 		player().changeInventoryCount(research(), -delta);
@@ -1886,7 +1886,7 @@ public class EquipmentScreen extends ScreenBase {
 			configure.selectedSlot.count = 0;
 			configure.selectedSlot.hp = world().getHitpoints(research());
 			if (research().has("shield")) {
-				configure.item.shield = Math.max(0, configure.item.shieldMax(world()));
+				configure.item.shield = Math.max(0, configure.item.shieldMax());
 			}
 		}
 		int remaining = configure.selectedSlot.slot.max - configure.selectedSlot.count;
@@ -1907,7 +1907,7 @@ public class EquipmentScreen extends ScreenBase {
 			configure.selectedSlot.count = 0;
 			configure.selectedSlot.hp = world().getHitpoints(research());
 			if (research().has("shield")) {
-				configure.item.shield = Math.max(0, configure.item.shieldMax(world()));
+				configure.item.shield = Math.max(0, configure.item.shieldMax());
 			}
 		}
 		if (!configure.selectedSlot.isFilled()) {
@@ -2063,8 +2063,8 @@ public class EquipmentScreen extends ScreenBase {
 							|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
 						) {
 							int toremove = delta > ii.count ? ii.count : delta;
-							dst.changeInventory(ii.type, toremove, world());
-							src.changeInventory(ii.type, -toremove, world());
+							dst.changeInventory(ii.type, toremove);
+							src.changeInventory(ii.type, -toremove);
 							delta -= toremove;
 							if (delta == 0) {
 								break;
@@ -2076,8 +2076,8 @@ public class EquipmentScreen extends ScreenBase {
 				updateInventory(null, fleet(), leftList);
 				updateInventory(null, secondary, rightList);
 			} else {
-				src.changeInventory(type, -transferCount, world());
-				dst.changeInventory(type, transferCount, world());
+				src.changeInventory(type, -transferCount);
+				dst.changeInventory(type, transferCount);
 			}
 		}
 	}
@@ -2157,7 +2157,7 @@ public class EquipmentScreen extends ScreenBase {
 						
 						fleet().inventory.remove(ii);
 					} else {
-						fleet().changeInventory(research(), -1, world());
+						fleet().changeInventory(research(), -1);
 					}
 					updateInventory(null, fleet(), leftList);
 				} else {
@@ -2198,9 +2198,8 @@ public class EquipmentScreen extends ScreenBase {
 	/** 
 	 * Upgrade all medium and large ships if possible.
 	 * @param f the target fleet 
-	 * @param world the world object
 	 */
-	public static void doUpgradeAll(Fleet f, World world) {
+	public static void doUpgradeAll(Fleet f) {
 		
 		// remove every equipment from the ships and place it back into the global inventory
 		for (InventoryItem ii : f.inventory) {
@@ -2230,7 +2229,7 @@ public class EquipmentScreen extends ScreenBase {
 								int toAdd = Math.min(cnt, is.slot.max);
 								is.type = rt;
 								is.count = toAdd;
-								is.hp = world.getHitpoints(rt);
+								is.hp = f.owner.world.getHitpoints(rt);
 								f.owner.changeInventoryCount(rt, -toAdd);
 								break;
 							}
@@ -2238,7 +2237,7 @@ public class EquipmentScreen extends ScreenBase {
 					}
 				}
 			}
-			ii.shield = Math.max(0, ii.shieldMax(world));
+			ii.shield = Math.max(0, ii.shieldMax());
 		}
 	}
 	/**

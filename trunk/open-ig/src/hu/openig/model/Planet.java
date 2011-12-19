@@ -491,8 +491,8 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
-			pii.createSlots(world);
-			pii.shield = Math.max(0, pii.shieldMax(world));
+			pii.createSlots();
+			pii.shield = Math.max(0, pii.shieldMax());
 			
 			inventory.add(pii);
 		}

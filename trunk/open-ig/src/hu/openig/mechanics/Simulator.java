@@ -605,7 +605,7 @@ public final class Simulator {
 		
 		for (Fleet f : playerFleets) {
 			// regenerate shields
-			regenerateFleet(world, planetStats, f);
+			regenerateFleet(planetStats, f);
 			
 			// move fleet
 			Point2D.Float target = null;
@@ -685,21 +685,19 @@ public final class Simulator {
 	}
 	/**
 	 * Regenerate the shields and/or health.
-	 * @param world the world object
 	 * @param planetStats the planet statistics
 	 * @param f the fleet
 	 */
-	static void regenerateFleet(World world,
-			Map<Planet, PlanetStatistics> planetStats, Fleet f) {
+	static void regenerateFleet(Map<Planet, PlanetStatistics> planetStats, Fleet f) {
 		for (InventoryItem ii : f.inventory) {
-			int hpMax = world.getHitpoints(ii.type);
+			int hpMax = ii.owner.world.getHitpoints(ii.type);
 			if (ii.hp < hpMax) {
 				Planet np = f.nearbyPlanet();
 				if (np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport) {
 					ii.hp = Math.min(hpMax, (ii.hp * 100 + hpMax) / 100);
 				}
 			}
-			int sm = ii.shieldMax(world);
+			int sm = ii.shieldMax();
 			if (sm > 0 && ii.shield < sm) {
 				ii.shield = Math.min(sm, (ii.shield * 100 + sm) / 100);
 			}

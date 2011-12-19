@@ -68,7 +68,7 @@ public class AIUser implements AIManager {
 	}
 
 	@Override
-	public ResponseMode diplomacy(World world, Player we, Player other,
+	public ResponseMode diplomacy(Player we, Player other,
 			DiplomaticInteraction offer) {
 		// TODO Auto-generated method stub
 		return null;
@@ -82,7 +82,7 @@ public class AIUser implements AIManager {
 	}
 
 	@Override
-	public void groundBattle(World world, Player we, BattleInfo battle) {
+	public void groundBattle(Player we, BattleInfo battle) {
 		// TODO Auto-generated method stub
 
 	}

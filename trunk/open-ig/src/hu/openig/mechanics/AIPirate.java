@@ -23,7 +23,6 @@ import hu.openig.model.ResponseMode;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
-import hu.openig.model.World;
 import hu.openig.utils.XElement;
 
 import java.util.List;
@@ -57,7 +56,7 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public ResponseMode diplomacy(World world, Player we, Player other,
+	public ResponseMode diplomacy(Player we, Player other,
 			DiplomaticInteraction offer) {
 		// No diplomatic options
 		return ResponseMode.NO;
@@ -73,7 +72,7 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public void groundBattle(World world, Player we, BattleInfo battle) {
+	public void groundBattle(Player we, BattleInfo battle) {
 		// No ground battle
 	}
 

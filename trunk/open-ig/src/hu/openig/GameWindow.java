@@ -1771,7 +1771,7 @@ public class GameWindow extends JFrame implements GameControls {
 		ii.type = rt;
 		ii.count = count;
 		ii.hp = commons.world().getHitpoints(ii.type);
-		ii.createSlots(commons.world());
+		ii.createSlots();
 		ii.owner = target.owner;
 		// fill in best equipment
 		for (InventorySlot is : ii.slots) {
@@ -1781,7 +1781,7 @@ public class GameWindow extends JFrame implements GameControls {
 				is.hp = commons.world().getHitpoints(is.type);
 			}
 		}
-		ii.shield = Math.max(0, ii.shieldMax(commons.world()));
+		ii.shield = Math.max(0, ii.shieldMax());
 		target.inventory.add(ii);
 	}
 	@Override

@@ -15,8 +15,6 @@ import java.util.List;
  * @author akarnokd, 2011.12.13.
  */
 public interface SpacewarWorld {
-	/** @return The global world object. */
-	World world();
 	/**
 	 * @return the battle object
 	 */
