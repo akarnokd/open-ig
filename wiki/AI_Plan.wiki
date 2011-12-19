@@ -2,6 +2,8 @@
 
 Just a bunch of rules, ideas, requirements to properly design a Hybrid GOAP system. The original game's AI behavior and algorithm is unknown. Probably it used some state machine and random task arbitration, along with cheating the planet and world simulations.
 
+<wiki:toc max_depth="2" />
+
 = Score/priority system evaluation considerations =
 
 == Fleets ==
