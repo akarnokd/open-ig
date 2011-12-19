@@ -1,0 +1,28 @@
+#summary AI related ideas and requirements
+
+Just a bunch of rules, ideas, requirements to properly design a Hybrid GOAP system. The original game's AI behavior and algorithm is unknown. Probably it used some state machine and random task arbitration, along with cheating the planet and world simulations.
+
+= Enemy attacking fleet detected =
+
+Remark: Target is known from the fleet itself. Need to compensate the human player
+
+== Targets a planet ==
+
+Own fleet actions:
+  # Intercept fleet in space
+    * avoid meeting point over one of the enemies fleet
+    * potentially meet over one of our planet with space ground defenses
+  # Reinforce target planet in orbit
+  # Use multiple fleets
+
+Planet's actions:
+  # Deploy tanks from inventory
+    * and/or Produce if enough time
+  # Deploy stations from inventory
+    * and/or Produce if enough time
+  # Build guns
+  # Build shield
+  # Ensure there is enough power to the defenses
+    * build power plant
+    * turn off other buildings
+  
