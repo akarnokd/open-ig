@@ -2,6 +2,35 @@
 
 Just a bunch of rules, ideas, requirements to properly design a Hybrid GOAP system. The original game's AI behavior and algorithm is unknown. Probably it used some state machine and random task arbitration, along with cheating the planet and world simulations.
 
+= Score/priority system evaluation considerations =
+
+== Fleets ==
+
+  * hitpoints damage ratio (ignoring shields)
+  * attack/defense ratio
+  * speed
+    * -> time to meet with the target
+      * planet: distance/speed
+      * fleet: [need for good orbit estimation]
+
+== Buildings ==
+  * cost
+    * -> build time
+  * available space
+  * when built, what will be its efficiency
+    * for energy, build power plant(s) before?
+
+== Production ==
+  * cost
+  * speed
+    * -> time of completion
+  * case when build capacity / step > cost -> wasted capacity if build order is 1
+
+== Research ==
+  * base cost
+  * speed 12.5% - 200% based on investment
+    * -> completion time
+
 = Enemy attacking fleet detected =
 
 Remark: Target is known from the fleet itself. Need to compensate the human player
