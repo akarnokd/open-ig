@@ -292,7 +292,7 @@ public class World {
 		// create AI for the players
 		for (Player p : players.values()) {
 			p.ai = env.getAI(p);
-			p.ai.init(env, p);
+			p.ai.init(p);
 		}
 		
 		try {
@@ -1303,7 +1303,7 @@ public class World {
 			if (xai != null) {
 				Player p = players.get(xplayer.get("id"));
 				p.ai = env.getAI(p);
-				p.ai.init(env, p);
+				p.ai.init(p);
 				p.ai.load(xai);
 			}
 		}

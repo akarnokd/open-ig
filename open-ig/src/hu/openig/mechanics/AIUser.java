@@ -43,10 +43,10 @@ public class AIUser implements AIManager {
 	/** The player. */
 	Player p;
 	@Override
-	public void init(GameEnvironment env, Player p) {
-		this.env = env;
-		this.w = env.world();
+	public void init(Player p) {
 		this.p = p;
+		this.w = p.world;
+		this.env = w.env;
 	}
 
 	@Override

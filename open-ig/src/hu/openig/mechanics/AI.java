@@ -16,7 +16,6 @@ import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
-import hu.openig.model.GameEnvironment;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -60,8 +59,8 @@ public class AI implements AIManager {
 	/** Set of fleets which will behave as defenders in the space battle. */
 	final Set<Fleet> defensiveTask = JavaUtils.newHashSet();
 	@Override
-	public void init(GameEnvironment env, Player p) {
-		this.w = env.world();
+	public void init(Player p) {
+		this.w = p.world;
 		this.p = p;
 	}
 	@Override
