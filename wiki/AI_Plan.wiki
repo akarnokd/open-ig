@@ -41,7 +41,7 @@ Just a bunch of rules, ideas, requirements to properly design a Hybrid GOAP syst
   * Build for discrete demands
     * Fire department
     * Stadium
-    * ColonyHub
+    * Colony Hub
   * Build for common shortages
     * energy
     * living space
