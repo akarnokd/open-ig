@@ -246,6 +246,7 @@ public class AITrader implements AIManager {
 	 */
 	public Fleet createFleet() {
 		Fleet nf = new Fleet();
+		nf.id = world.fleetIdSequence++;
 		nf.owner = player;
 		nf.name = traderLabel;
 		List<ResearchType> rts = JavaUtils.newArrayList();
@@ -290,7 +291,7 @@ public class AITrader implements AIManager {
 	}
 
 	@Override
-	public ResponseMode diplomacy(World world, Player we, Player other,
+	public ResponseMode diplomacy(Player we, Player other,
 			DiplomaticInteraction offer) {
 		// No diplomatic relations
 		return ResponseMode.NO;
@@ -313,7 +314,7 @@ public class AITrader implements AIManager {
 				if (pl != null) {
 					s.fleet.targetPlanet(pl);
 				} else {
-					s.fleet.targetPlanet(nearest(world.world().planets.values(), s.fleet));
+					s.fleet.targetPlanet(nearest(player.world.planets.values(), s.fleet));
 				}
 				s.fleet.mode = FleetMode.MOVE;
 			}
@@ -352,7 +353,7 @@ public class AITrader implements AIManager {
 		});
 	}
 	@Override
-	public void groundBattle(World world, Player we, BattleInfo battle) {
+	public void groundBattle(Player we, BattleInfo battle) {
 		// NO ground battle involvement
 	}
 

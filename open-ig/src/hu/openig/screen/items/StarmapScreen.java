@@ -2637,7 +2637,7 @@ public class StarmapScreen extends ScreenBase {
 					Point pt = p.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
 					if (pt != null) {
 						// remove colony ship from fleet
-						f.changeInventory(world().researches.get("ColonyShip"), -1, world());
+						f.changeInventory(world().researches.get("ColonyShip"), -1);
 						
 						// remove empty fleet
 						if (f.inventory.isEmpty()) {

@@ -411,8 +411,7 @@ public class World {
 		Map<Fleet, Integer> deferredFleets = JavaUtils.newHashMap();
 		
 		for (XElement xplayer : xplayers.childrenWithName("player")) {
-			Player p = new Player();
-			p.id = xplayer.get("id");
+			Player p = new Player(this, xplayer.get("id"));
 			p.color = (int)Long.parseLong(xplayer.get("color"), 16);
 			p.race = xplayer.get("race");
 			p.name = labels.get(xplayer.get("name"));
@@ -533,8 +532,8 @@ public class World {
 				ii.type = researches.get(xinv.get("id"));
 				ii.count = xinv.getInt("count");
 				ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type)), getHitpoints(ii.type));
-				ii.createSlots(this);
-				ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax(this)));
+				ii.createSlots();
+				ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
 
 				p.inventory.add(ii);
 			}
@@ -1242,8 +1241,8 @@ public class World {
 				pii.type = researches.get(xpii.get("id"));
 				pii.count = xpii.getInt("count");
 				pii.hp = Math.min(xpii.getInt("hp", getHitpoints(pii.type)), getHitpoints(pii.type));
-				pii.createSlots(this);
-				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax(this)));
+				pii.createSlots();
+				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
 				
 				int ttl = xpii.getInt("ttl", 0);
 				if (ttl > 0) {
@@ -1415,7 +1414,7 @@ public class World {
 					}
 				}
 				
-				int shieldMax = Math.max(0, fii.shieldMax(this));
+				int shieldMax = Math.max(0, fii.shieldMax());
 				fii.shield = Math.min(shieldMax, xfii.getInt("shield", shieldMax));
 				fii.hp = Math.min(xfii.getInt("hp", getHitpoints(fii.type)), getHitpoints(fii.type));
 				f.inventory.add(fii);
@@ -1916,7 +1915,7 @@ public class World {
 		double hp = 0;
 		for (InventoryItem fi : f.inventory) {
 			max += getHitpoints(fi.type);
-			int s = fi.shieldMax(this);
+			int s = fi.shieldMax();
 			if (s >= 0) {
 				max += s;
 			}
