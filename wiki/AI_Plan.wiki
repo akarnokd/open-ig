@@ -274,8 +274,18 @@ Options:
   * Deploy into new fleet
     * Preconditions:
       * Colony ship available in inventory
+      * Military spaceport built
     * Actions
       * Create new fleet
-      * Deploy one colonyship into the fleet
+      * Deploy one colony ship into the fleet
+    * Effects
+      * Fleet with colony ship
+  * Deploy into existing fleet
+    * Preconditions:
+      * Fleet with room
+      * Military spaceport built
+    * Actions:
+      * Move fleet into orbit of a planet with military spaceport
+      * Deploy one colony ship into the fleet
     * Effects
       * Fleet with colony ship
