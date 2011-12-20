@@ -1,5 +1,7 @@
 #summary List of goals and actions
 
+<wiki:toc max_depth="2" />
+
 = Goals and actions =
 
 ==Goal: Discover a planet==
