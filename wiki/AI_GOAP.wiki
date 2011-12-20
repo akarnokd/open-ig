@@ -42,8 +42,11 @@ Options:
       * move fleet to planet
       * onFleetArrivedAtPlanet
         * if goal state still satisfied, do colonization
+      * build Colony hub
     * Effects:
       * planet X owned
+      * has room for lab Z,,i,,
+      * has room for factory F,,i,,
   * Conquer with fleet Y
     * Preconditions:
       * has surface vehicles
@@ -51,6 +54,11 @@ Options:
       * attack planet
     * Effects
       * planet X owned
+      * (depending on X and knowledge)
+        * has room for lab Z,,i,,
+        * provides lab Z
+        * has room for factory F,,i,,
+        * provides factory F,,i,,
 
 ==Goal: Have +1 of product type X==
 Options:
