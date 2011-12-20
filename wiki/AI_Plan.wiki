@@ -35,18 +35,8 @@ Just a bunch of rules, ideas, requirements to properly design a Hybrid GOAP syst
 
 == Colony health ==
 
-  * Counteract population decrease
-    * reduce taxes
-    * build morale improving buildings (Police for aliens, Bar&Stadium for humans)
-  * Build for discrete demands
-    * Fire department
-    * Stadium
-    * Colony Hub
-  * Build for common shortages
-    * energy
-    * living space
-    * food
-    * police
+  * current production efficiency on the planet
+  * expected tax and population values
 
 Note: maybe exact effect-functions can be derived from the simulation mechanics to support this (e.g., f(Tax, Population) -> NewPopulation
 
@@ -149,3 +139,18 @@ I = incoming call, O = outgoing call
   * Declare war (O)
     * issued if the given enemy seems to be weak enough
     * compute how many fleets and tanks to produce to take most of the enemy's planets
+
+== Colony ==
+
+  * Counteract population decrease
+    * reduce taxes
+    * build morale improving buildings (Police for aliens, Bar&Stadium for humans)
+  * Build for special demands
+    * Fire department
+    * Stadium
+    * Colony Hub
+  * Build for common shortages
+    * energy
+    * living space
+    * food
+    * police
