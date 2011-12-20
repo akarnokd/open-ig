@@ -104,3 +104,22 @@ Own fleet actions:
     * having the lab already built
   * consider partial research
   * consider mixing the rebuild, capture and colonize
+
+== Production ==
+
+  * limits on concurrent production:
+    * maybe limit to 5 like in the UI
+    * unlimited parallelism? -> speed distribution still in effect. Creating 10 items parallel will be very slow
+    * always single product?
+      * preemption via zero priority (pauses running production)
+
+== Exploration ==
+
+  * deployed fleet with colony ship
+    * produced colony ship
+      * researched colony ship
+  * do we need to have mixed fleets?
+  * algorithm to discover the galaxy:
+    * split the galaxy map into squares, move to each of these squares
+      * radial-circular exploration?
+      * square size is sqrt(2) * radar1 radius
