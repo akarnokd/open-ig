@@ -154,3 +154,12 @@ I = incoming call, O = outgoing call
     * living space
     * food
     * police
+
+= Attacking enemies =
+
+  * target's attack/defense ratio
+  * decision
+    * attack with current forces
+      * multiple waves
+    * buildup forces first
+  * Note: human player weak at the beginning, too easy target
