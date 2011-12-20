@@ -50,8 +50,9 @@ Options:
   * Conquer with fleet Y
     * Preconditions:
       * has surface vehicles
+      * can defeat space defenses
     * Actions:
-      * attack planet
+      * attack planet with fleet
     * Effects
       * planet X owned
       * (depending on X and knowledge)
@@ -133,3 +134,36 @@ Options:
       * Deploy one colony ship into the fleet
     * Effects
       * Fleet with colony ship
+
+==Goal: have fleet which can defeat space defenses of X==
+Options:
+  * Join fleets
+    * Preconditions:
+      * Has multiple fleets
+    * Actions:
+      * Move fleets together
+      * Transfer units
+    * Effects
+      * Fleet attack increased
+      * Fleet defense increased
+  * Create new fleet
+    * Preconditions:
+      * Inventory available
+      * Military spaceport available
+    * Actions
+      * Create new fleet
+      * Deploy units
+    * Effects
+      * Fleet attack increased
+      * Fleet defense increased
+  * Deploy into existing fleet
+    * Preconditions:
+      * A fleet
+      * Inventory available
+      * Military spaceport available
+    * Actions:
+      * Move fleet into orbit
+      * Deploy units
+    * Effects
+      * Fleet attack increased
+      * Fleet defense increased
