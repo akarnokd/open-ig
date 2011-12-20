@@ -123,3 +123,29 @@ Own fleet actions:
     * split the galaxy map into squares, move to each of these squares
       * radial-circular exploration?
       * square size is sqrt(2) `*` radar1 radius
+
+== Diplomacy ==
+
+I = incoming call, O = outgoing call
+ 
+  * Ask for money (I/O)
+    * cause: won't consider an attack for X days
+    * Maybe goal: get more money
+  * Improve relations (I/O)
+    * reduce likelihood of attack
+  * Trading agreement (I/O)
+    * reduce likelihood of attack
+  * Ally against (I/O)
+    * focus on common enemy when deciding who to attack
+  * Ally against dargslan (I)
+    * focus on dargslans specifically
+  * Ask for surrender (O)
+    * objective: keep as many of the enemy's defensive structures intact
+  * Resign (O)
+    * cosmetic response? what is the gain of this decision?
+  * Ask for peace (O)
+    * reduce likelihood of attack, can focus on other enemies
+    * if overwhelmed
+  * Declare war (O)
+    * issued if the given enemy seems to be weak enough
+    * compute how many fleets and tanks to produce to take most of the enemy's planets
