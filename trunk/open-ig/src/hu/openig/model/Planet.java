@@ -592,4 +592,28 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	public Iterator<InventoryItem> iterator() {
 		return inventory.iterator();
 	}
+	/**
+	 * Take over of this planet.
+	 * @param newOwner the new owner
+	 */
+	public void takeover(Player newOwner) {
+		Player lastOwner = owner;
+		owner = newOwner;
+		owner.statistics.planetsConquered++;
+		for (Building b : surface.buildings) {
+			if (b.type.research != null) {
+				owner.setAvailable(b.type.research);
+			}
+		}
+		owner.planets.put(this, PlanetKnowledge.BUILDING);
+		lastOwner.planets.put(this, PlanetKnowledge.NAME);
+
+		removeOwnerSatellites();
+
+		lastOwner.ai.onPlanetLost(this);
+		newOwner.ai.onPlanetConquered(this, lastOwner);
+		newOwner.world.env.events().onConquered(this, lastOwner);
+		
+		// notify about ownership change
+	}
 }

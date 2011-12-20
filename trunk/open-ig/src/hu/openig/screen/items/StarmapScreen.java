@@ -1308,8 +1308,8 @@ public class StarmapScreen extends ScreenBase {
 									(int)(starmapRect.y + f.targetPlanet().y * zoom));
 						}
 					} else {
-						float lastx = f.x;
-						float lasty = f.y;
+						double lastx = f.x;
+						double lasty = f.y;
 						if (f.targetFleet != null) {
 							g2.setColor(new Color(255, 255, 255, 128));
 							g2.drawLine(
@@ -1328,7 +1328,7 @@ public class StarmapScreen extends ScreenBase {
 						} else 
 						if (f.waypoints.size() > 0) {
 							g2.setColor(new Color(255, 255, 255, 128));
-							for (Point2D.Float pt : f.waypoints) {
+							for (Point2D.Double pt : f.waypoints) {
 								g2.drawLine(
 									(int)(starmapRect.x + lastx * zoom), 
 									(int)(starmapRect.y + lasty * zoom), 
@@ -1518,11 +1518,11 @@ public class StarmapScreen extends ScreenBase {
 	 * @param y the screen Y coordinate
 	 * @return the map point
 	 */
-	public Point2D.Float toMapCoordinates(int x, int y) {
-		float zoom = (float)getZoom();
-		float nx = (x - starmapRect.x) / zoom;
-		float ny = (y - starmapRect.y) / zoom;
-		return new Point2D.Float(nx, ny);
+	public Point2D.Double toMapCoordinates(int x, int y) {
+		double zoom = getZoom();
+		double nx = (x - starmapRect.x) / zoom;
+		double ny = (y - starmapRect.y) / zoom;
+		return new Point2D.Double(nx, ny);
 	}
 	/**
 	 * @return computes the current zoom factor.

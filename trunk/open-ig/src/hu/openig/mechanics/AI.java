@@ -16,6 +16,8 @@ import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
+import hu.openig.model.FleetMode;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -34,6 +36,7 @@ import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XElement;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -57,7 +60,21 @@ public class AI implements AIManager {
 	 */
 	boolean playerColonyShipAvailable;
 	/** Set of fleets which will behave as defenders in the space battle. */
-	final Set<Fleet> defensiveTask = JavaUtils.newHashSet();
+	final Set<Integer> defensiveTask = JavaUtils.newHashSet();
+	/** The estimations about how strong the other player's fleets are. */
+	final Map<String, PlayerFleetStrength> strengths = JavaUtils.newHashMap();
+	/**
+	 * Knowledge about a player's typical fleet strength based on encounters.
+	 * @author akarnokd, 2011.12.20.
+	 */
+	public static class PlayerFleetStrength {
+		/** The player ID. */
+		public String playerID;
+		/** The attack value. */
+		public double attack;
+		/** The defense value. */
+		public double defense;
+	}
 	@Override
 	public void init(Player p) {
 		this.w = p.world;
@@ -106,12 +123,28 @@ public class AI implements AIManager {
 	}
 	/**
 	 * Deploy a fleet from the inventory.
+	 * @param location the planet where the fleet will emerge
 	 * @param loadFactor percentage of 0..1 about how many units to place into fighter/cruiser/battleship slots.
 	 * @param powerFactor percentage of 0..1 about how well the units should be equipped
 	 * @param items the sequence of items to choose from when filling in the slots
 	 */
-	public void actionDeployFleet(double loadFactor, double powerFactor, Iterable<ResearchType> items) {
+	public void actionDeployFleet(
+			Planet location,
+			double loadFactor, 
+			double powerFactor, 
+			Iterable<ResearchType> items) {
 		// TODO implement
+		Fleet fleet = new Fleet();
+		fleet.id = w.fleetIdSequence++;
+		fleet.name = w.env.labels().get(p.race + ".new_fleet_name");
+		fleet.x = location.x;
+		fleet.y = location.y;
+
+		// TODO implement
+
+		
+		
+		p.fleets.put(fleet, FleetKnowledge.FULL);
 	}
 	
 	/**
@@ -131,7 +164,17 @@ public class AI implements AIManager {
 		prod.priority = priority;
 		prod.count += count;
 	}
-	
+	/**
+	 * Pause a production by setting its priority to zero.
+	 * @param rt the research type to pause
+	 */
+	public void actionPauseProduction(ResearchType rt) {
+		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
+		Production prod = prodLine.get(rt);
+		if (prod != null) {
+			prod.priority = 0;
+		}		
+	}
 	/**
 	 * Place a building onto the planet (via the autobuild location mechanism).
 	 * @param planet the target planet
@@ -223,6 +266,11 @@ public class AI implements AIManager {
 	 */
 	public void actionMoveFleet(Fleet fleet, double x, double y) {
 		// TODO implement
+		fleet.targetFleet = null;
+		fleet.targetPlanet(null);
+		fleet.waypoints.clear();
+		fleet.waypoints.add(new Point2D.Double(x, y));
+		fleet.mode = FleetMode.MOVE;
 	}
 	/**
 	 * Send the fleet to colonize the target planet.
@@ -248,16 +296,15 @@ public class AI implements AIManager {
 		return null;
 	}
 	@Override
-	public SpacewarAction spaceBattle(SpacewarWorld world, Player player,
-			List<SpacewarStructure> idles) {
+	public SpacewarAction spaceBattle(SpacewarWorld world, List<SpacewarStructure> idles) {
 		if (idles.size() == 0) {
 			return SpacewarAction.CONTINUE;
 		}
 		// FIXME make more sophisticated
 		
-		double health = fleetHealth(world.structures(player));
-		double switchToCostAttack = player.aiDefensiveRatio / (player.aiOffensiveRatio + player.aiDefensiveRatio);
-		double switchToFlee = player.aiSocialRatio() * switchToCostAttack;
+		double health = fleetHealth(world.structures(p));
+		double switchToCostAttack = p.aiDefensiveRatio / (p.aiOffensiveRatio + p.aiDefensiveRatio);
+		double switchToFlee = p.aiSocialRatio() * switchToCostAttack;
 		
 		if (health >= switchToFlee) {
 			boolean c = health < switchToCostAttack || defensiveTask.contains(idles.get(0).fleet);
@@ -355,25 +402,44 @@ public class AI implements AIManager {
 		});
 	}
 	@Override
-	public void groundBattle(Player we, BattleInfo battle) {
+	public void groundBattle(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void groundBattleDone(BattleInfo battle) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
+	public void groundBattleInit(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void spaceBattleDone(SpacewarWorld world) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void spaceBattleInit(SpacewarWorld world) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
 	public void load(XElement in) {
 		for (XElement xf : in.childrenWithName("task-defensive")) {
 			int fid = xf.getInt("fleet");
-			Fleet f = p.fleet(fid);
-			if (f != null) {
-				defensiveTask.add(f);
-			}
+			defensiveTask.add(fid);
 		}
 	}
 	@Override
 	public void save(XElement out) {
-		for (Fleet f : defensiveTask) {
+		for (Integer f : defensiveTask) {
 			XElement xf = out.add("task-defensive");
-			xf.set("fleet", f.id);
+			xf.set("fleet", f);
 		}
 	}
 	@Override
@@ -448,6 +514,16 @@ public class AI implements AIManager {
 	}
 	@Override
 	public void onPlanetRevolt(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetConquered(Planet planet, Player lastOwner) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetLost(Planet planet) {
 		// TODO Auto-generated method stub
 		
 	}

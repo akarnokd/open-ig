@@ -43,20 +43,42 @@ public interface AIManager {
 	 */
 	ResponseMode diplomacy(Player we, Player other, DiplomaticInteraction offer);
 	/**
+	 * Initialize the space battle.
+	 * <p>Called before the first battle simulation step.</p>
+	 * @param world the space war world.
+	 */
+	void spaceBattleInit(SpacewarWorld world);
+	/**
 	 * Handle some aspects of a space battle.
 	 * @param world the world
-	 * @param player the AI's player object
 	 * @param idles the list of objects which have completed their current attack objectives and awaiting new commands
 	 * @return the global action
 	 */
-	SpacewarAction spaceBattle(SpacewarWorld world, Player player, List<SpacewarStructure> idles);
+	SpacewarAction spaceBattle(SpacewarWorld world, List<SpacewarStructure> idles);
+	/**
+	 * Called after the space battle has been concluded and losses applied.
+	 * @param world the world object
+	 */
+	void spaceBattleDone(SpacewarWorld world);
+	/**
+	 * Initialize the ground battle.
+	 * TODO data structures?
+	 * <p>Called before the first battle simulation step.</p>
+	 * @param battle the battle info
+	 */
+	void groundBattleInit(BattleInfo battle);
 	/**
 	 * Handle some aspects of a ground battle.
-	 * TODO output?
-	 * @param we the target player
+	 * TODO data structures?
 	 * @param battle the battle information
 	 */
-	void groundBattle(Player we, BattleInfo battle);
+	void groundBattle(BattleInfo battle);
+	/**
+	 * Called after the ground battle has been concluded and losses applied.
+	 * TODO data structures?
+	 * @param battle the battle
+	 */
+	void groundBattleDone(BattleInfo battle);
 	/**
 	 * Save the state of this AI manager from a save file.
 	 * @param out the output XElement
@@ -148,4 +170,15 @@ public interface AIManager {
 	 * @param planet the target planet
 	 */
 	void onPlanetRevolt(Planet planet);
+	/**
+	 * Notification about a planet conquer.
+	 * @param planet the planet
+	 * @param lastOwner the last owner
+	 */
+	void onPlanetConquered(Planet planet, Player lastOwner);
+	/**
+	 * Notification about a planet lost.
+	 * @param planet the planet lost (showing the current owner)
+	 */
+	void onPlanetLost(Planet planet);
 }

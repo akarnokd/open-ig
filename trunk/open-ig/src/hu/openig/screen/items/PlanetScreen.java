@@ -3555,9 +3555,11 @@ public class PlanetScreen extends ScreenBase {
 		}
 		
 		if (battle.attacker.owner == winner) {
-			world().takeover(planet(), winner);
+			planet().takeover(winner);
 		}
 
+		nonPlayer().ai.groundBattleDone(battle);
+		
 		battle = null;
 		
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
@@ -4452,7 +4454,7 @@ public class PlanetScreen extends ScreenBase {
 		player().currentPlanet = battle.targetPlanet;
 
 		if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
-			world().takeover(battle.targetPlanet, battle.attacker.owner);
+			battle.targetPlanet.takeover(battle.attacker.owner);
 			battle.groundwarWinner = battle.attacker.owner;
 			BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 			bfs.displayBattleSummary(battle);
@@ -4460,6 +4462,8 @@ public class PlanetScreen extends ScreenBase {
 		}
 		
 		setGroundWarTimeControls();
+		
+		nonPlayer().ai.groundBattle(battle);
 		
 		battlePlacements.clear();
 		battlePlacements.addAll(setDeploymentLocations(planet().owner == player()));
@@ -4699,6 +4703,22 @@ public class PlanetScreen extends ScreenBase {
 				}
 			}
 		}
+	}
+	/**
+	 * Returns the non-human player of the current battle.
+	 * @return the player
+	 */
+	Player nonPlayer() {
+		if (battle.attacker.owner != player()) {
+			return battle.attacker.owner;
+		} else
+		if (battle.targetFleet != null && battle.targetFleet.owner != player()) {
+			return battle.targetFleet.owner;
+		} else
+		if (battle.targetPlanet != null && battle.targetPlanet.owner != player()) {
+			return battle.targetPlanet.owner;
+		}
+		return null;
 	}
 }
 

@@ -1307,6 +1307,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		setSpacewarTimeControls();
 
+		nonPlayer().ai.spaceBattleInit(this);
+		
 		displayPanel(PanelMode.SHIP_STATUS, true);
 		if (battle.attacker.owner == player() && (nearbyPlanet == null || nearbyPlanet.owner != player())) {
 			displayPanel(PanelMode.LAYOUT, false);
@@ -1319,6 +1321,22 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		retreat.enabled = false;
 		
+	}
+	/**
+	 * Returns the non-human player of the current battle.
+	 * @return the player
+	 */
+	Player nonPlayer() {
+		if (battle.attacker.owner != player()) {
+			return battle.attacker.owner;
+		} else
+		if (battle.targetFleet != null && battle.targetFleet.owner != player()) {
+			return battle.targetFleet.owner;
+		} else
+		if (battle.targetPlanet != null && battle.targetPlanet.owner != player()) {
+			return battle.targetPlanet.owner;
+		}
+		return null;
 	}
 	/** @return a list of shield structures. */
 	List<SpacewarStructure> shields() {
@@ -3162,7 +3180,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		SpacewarAction act = SpacewarAction.CONTINUE;
 		if (aiPlayer != null) {
-			act = aiPlayer.ai.spaceBattle(this, aiPlayer, idles);
+			act = aiPlayer.ai.spaceBattle(this, idles);
 		}
 		
 		for (SoundType st : soundsToPlay) {
@@ -3307,6 +3325,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		battle.spacewarWinner = winner;
 		battle.retreated = stopRetreat.visible;
+		
+		nonPlayer().ai.spaceBattleDone(this);
 		// attacker wins
 		final BattleInfo bi = battle;
 		if (battle.attacker.owner == winner) {
