@@ -34,6 +34,7 @@ import hu.openig.mechanics.Simulator;
 import hu.openig.model.AIManager;
 import hu.openig.model.GameEnvironment;
 import hu.openig.model.GameEvents;
+import hu.openig.model.Parameters;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.Screens;
@@ -147,6 +148,8 @@ public class CommonResources implements GameEnvironment {
 	public SimulationTimer simulation;
 	/** The game events. */
 	public GameEvents events;
+	/** The game simulation's parameters. */
+	private Parameters params = new Parameters();
 	/** Map of currently running AIs. */
 	public final Map<Player, SwingWorker<Void, Void>> runningAI = new HashMap<Player, SwingWorker<Void, Void>>();
 	/**
@@ -795,5 +798,9 @@ public class CommonResources implements GameEnvironment {
 				events.onVideoComplete(name);
 			}
 		}, name);
+	}
+	@Override
+	public Parameters params() {
+		return params;
 	}
 }

@@ -45,4 +45,9 @@ public interface GameEnvironment {
 	 * @param type the sound type
 	 */
 	void playSound(SoundType type);
+	/**
+	 * The various game parameters.
+	 * @return the game parameters
+	 */
+	Parameters params();
 }
