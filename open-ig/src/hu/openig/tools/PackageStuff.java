@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig;
+package hu.openig.tools;
 
 import hu.openig.core.Configuration;
 import hu.openig.editors.MapEditor;
