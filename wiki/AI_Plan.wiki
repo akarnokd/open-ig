@@ -166,17 +166,43 @@ I = incoming call, O = outgoing call
 
 = Goals and actions =
 
-Goal: Discover a planet
-Preconditions: has fleet, fleet has radar
-Actions:
-  # select am undiscovered cell
-  # move fleet to cell center
-  # if no new planets but cells remain, goto 1
+Goal: Discover a planet<br>
+Options:<br>
+  * Explore via fleet X
+    * Preconditions: 
+      * fleet has radar >= 1
+    * Actions:
+      # select an undiscovered cell
+      # move fleet X to cell center
+    * Effects:
+      * Planet(s) X[] discovered
+  * Surface radar of planet Y
+    * Preconditions:
+      * current radar doesn't reach into an undiscovered cell
+      * can afford radar type R
+      * has room for radar type R
+    * Actions:
+      * Build radar type R
+      * Wait one radar turn
+    * Effects:
+      * Planet(s) Z[] discovered
+  * Orbital radar over Y
+    * Preconditions
+      * Y has no orbital radar yet
+      * orbital radar in inventory
+    * Actions:
+      * deploy orbital radar
+      * wait one radar turn
+    * Effects:
+      * Planet(s) Z[] discovered
 
-Goal: Colonize planet X
-Preconditions: has fleet, fleet has colony ship, planet X owner known to be empty
-Actions:
-  # move fleet to planet
-  # onFleetArrivedAtPlanet: 
-    * check goal conditions again
-    * take ownership and start building the colony hub
+Goal: Colonize planet X<br>
+Preconditions: planet X owner known to be empty<br>
+Options:<br>
+  * Colonize with fleet Y
+    * Preconditions:
+      * has fleet with Colony ship
+    * Actions:
+      * move fleet to planet
+      * onFleetArrivedAtPlanet
+        * if goal state still satisfied, do colonization
