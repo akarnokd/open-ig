@@ -122,4 +122,4 @@ Own fleet actions:
   * algorithm to discover the galaxy:
     * split the galaxy map into squares, move to each of these squares
       * radial-circular exploration?
-      * square size is sqrt(2) * radar1 radius
+      * square size is sqrt(2) `*` radar1 radius
