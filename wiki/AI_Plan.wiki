@@ -216,7 +216,7 @@ Options:<br>
     * Effects
       * planet X owned
 
-Goal: Have +1 of product type X
+Goal: Have +1 of product type X<br>
 Options:
   * Produce X
     * Preconditions
@@ -228,7 +228,7 @@ Options:
       * Inventory of X +1
       * X available in inventory
 
-Goal: Know technology X
+Goal: Know technology X<br>
 Options:
   * Conquer a planet Y (for building technologies only)
     * Preconditions:
@@ -248,7 +248,7 @@ Options:
     * Effects:
       * technology X known
 
-Goal: Have lab configuration of Z,,i,,
+Goal: Have lab configuration of Z,,i,,<br>
 Options:
   * Add lab Y to planet X
     * Preconditions
@@ -269,11 +269,11 @@ Options:
       * Lab count of Y +1
       * Lab count of X -1;
 
-Goal: have fleet with colony ship
+Goal: have fleet with colony ship<br>
 Options:
   * Deploy into new fleet
     * Preconditions:
-      * ColonyShip available in inventory
+      * Colony ship available in inventory
     * Actions
       * Create new fleet
       * Deploy one colonyship into the fleet
