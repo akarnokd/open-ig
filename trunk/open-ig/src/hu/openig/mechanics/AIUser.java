@@ -252,4 +252,9 @@ public class AIUser implements AIManager {
 		msgLost.targetPlanet = planet;
 		p.messageQueue.add(msgLost);
 	}
+	@Override
+	public void onRadar() {
+		// TODO Auto-generated method stub
+		
+	}
 }

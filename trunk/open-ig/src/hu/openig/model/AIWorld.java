@@ -18,8 +18,6 @@ import java.util.Map;
  * @author akarnokd, 2011.12.08.
  */
 public class AIWorld {
-	/** The backing world. */
-	public World world;
 	/** The player of this world. */
 	public Player player;
 	/** The player's current money. */
@@ -50,11 +48,9 @@ public class AIWorld {
 	public final List<AIPlanet> colonizePlanets = new LinkedList<AIPlanet>();
 	/**
 	 * Assign the values to this world from the real world.
-	 * @param world the world
 	 * @param player the player
 	 */
-	public void assign(World world, Player player) {
-		this.world = world;
+	public void assign(Player player) {
 		this.player = player;
 		money = player.money;
 		
@@ -70,9 +66,9 @@ public class AIWorld {
 			researches.put(res.type, res.copy());
 		}
 		
-		for (Player p2 : world.players.values()) {
+		for (Player p2 : player.world.players.values()) {
 			// if self or ignorables
-			if (p2 != player && world.aiAccept(p2)) {
+			if (p2 != player && player.world.aiAccept(p2)) {
 				players.add(p2);
 			}
 		}
@@ -83,7 +79,7 @@ public class AIWorld {
 				aif.assign(f, this);
 				ownFleets.add(aif);
 			} else
-			if (world.aiAccept(f.owner)) {
+			if (player.world.aiAccept(f.owner)) {
 				AIFleet aif = new AIFleet();
 				aif.assign(f, this);
 				enemyFleets.add(aif);
@@ -130,7 +126,7 @@ public class AIWorld {
 	public FleetStatistics getStatistics(Fleet f) {
 		FleetStatistics fs = fleetStatistics.get(f);
 		if (fs == null) {
-			fs = f.getStatistics(world.battle);
+			fs = f.getStatistics(player.world.battle);
 			fleetStatistics.put(f, fs);
 		}
 		return fs;

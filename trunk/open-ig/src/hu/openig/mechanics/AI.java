@@ -8,6 +8,7 @@
 
 package hu.openig.mechanics;
 
+import hu.openig.core.Location;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIWorld;
@@ -36,9 +37,7 @@ import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XElement;
 
 import java.awt.Point;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -54,7 +53,7 @@ public class AI implements AIManager {
 	World w;
 	/** The player. */
 	Player p;
-	/** The world. */
+	/** The copy of world state. */
 	AIWorld world;
 	/** 
 	 * AI players won't start colonization until the player has actually researched its colony ship.
@@ -65,6 +64,14 @@ public class AI implements AIManager {
 	final Set<Integer> defensiveTask = JavaUtils.newHashSet();
 	/** The estimations about how strong the other player's fleets are. */
 	final Map<String, PlayerFleetStrength> strengths = JavaUtils.newHashMap();
+	/** The set of cells undiscovered on the starmap. */
+	final Set<Location> explorationMap = JavaUtils.newHashSet();
+	/** The cell size used for the exploration map cells. */
+	int explorationCellSize;
+	/** The number of rows of the exploration map. */
+	int explorationRows;
+	/** The number of columns of the exploration map. */
+	int explorationColumns;
 	/**
 	 * Knowledge about a player's typical fleet strength based on encounters.
 	 * @author akarnokd, 2011.12.20.
@@ -81,12 +88,17 @@ public class AI implements AIManager {
 	public void init(Player p) {
 		this.w = p.world;
 		this.p = p;
+		explorationCellSize = (int)Math.floor(Math.sqrt(2) * w.env.params().fleetRadarUnitSize()) - 4;
+		explorationRows = (int)Math.ceil(w.galaxyModel.map.getHeight() / explorationCellSize);
+		explorationColumns = (int)Math.ceil(w.galaxyModel.map.getWidth() / explorationCellSize);
+		initExplorationMap();
 	}
 	@Override
 	public void prepare() {
 		world = new AIWorld();
-		world.assign(w, p);
+		world.assign(p);
 		playerColonyShipAvailable = w.player.colonyShipAvailable;
+		updateExplorationMap();
 	}
 	
 	@Override
@@ -436,6 +448,16 @@ public class AI implements AIManager {
 			int fid = xf.getInt("fleet");
 			defensiveTask.add(fid);
 		}
+		// restore exploration map
+		for (XElement xloc : in.childrenWithName("exploration-map")) {
+			explorationMap.clear();
+			String coords = xloc.get("coords");
+			for (String xys : coords.split("\\s+")) {
+				String[] xy = xys.split(";");
+				Location loc = Location.of(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]));
+				explorationMap.add(loc);
+			}
+		}
 	}
 	@Override
 	public void save(XElement out) {
@@ -443,6 +465,15 @@ public class AI implements AIManager {
 			XElement xf = out.add("task-defensive");
 			xf.set("fleet", f);
 		}
+		XElement xloc = out.add("exporation-map");
+		StringBuilder coords = new StringBuilder();
+		for (Location loc : explorationMap) {
+			if (coords.length() > 0) {
+				coords.append(" ");
+			}
+			coords.append(loc.x).append(";").append(loc.y);
+		}
+		xloc.set("coords", coords);
 	}
 	@Override
 	public void onResearchStateChange(ResearchType rt, ResearchState state) {
@@ -530,23 +561,60 @@ public class AI implements AIManager {
 		
 	}
 	/**
-	 * Calculate which cells are fully discovered by just looking at the current radar settings.
+	 * Set all cells to undiscovered.
 	 */
-	void calculateDiscoveredSpace() {
-		double cellSize = Math.sqrt(2) * w.env.params().fleetRadarUnitSize();
-		int rows = (int)Math.ceil(w.galaxyModel.map.getHeight() / cellSize);
-		int columns = (int)Math.ceil(w.galaxyModel.map.getWidth() / cellSize);
+	void initExplorationMap() {
+		for (int x = 0; x < explorationColumns; x++) {
+			for (int y = 0; y < explorationRows; y++) {
+				Location loc = Location.of(x, y);
+				explorationMap.add(loc);
+			}
+		}
+	}
+	@Override
+	public void onRadar() {
+	}
+	/**
+	 * Update the exploration map by removing cells covered by current radar.
+	 */
+	void updateExplorationMap() {
+		for (Planet planet : p.planets.keySet()) {
+			if (planet.owner == p && planet.radar > 0) {
+				int cx = planet.x;
+				int cy = planet.y;
+				int r = planet.radar;
+				
+				removeCoverage(cx, cy, r);
+			}
+		}
+		for (Fleet fleet : p.fleets.keySet()) {
+			if (fleet.owner == p && fleet.radar > 0) {
+				removeCoverage((int)fleet.x, (int)fleet.y, fleet.radar);
+			}
+		}
+	}
+	/**
+	 * Remove the covered exploration cells.
+	 * @param cx the circle center
+	 * @param cy the circle center
+	 * @param r the circle radius
+	 */
+	void removeCoverage(int cx, int cy, int r) {
+		// inner rectangle
+		int ux1 = (int)Math.ceil(cx - Math.sqrt(2) * r);
+		int uy1 = (int)Math.ceil(cy - Math.sqrt(2) * r);
+		int ux2 = (int)Math.floor(cx + Math.sqrt(2) * r);
+		int uy2 = (int)Math.floor(cy + Math.sqrt(2) * r);
 		
-		Rectangle2D.Double r = new Rectangle2D.Double(0, 0, cellSize, cellSize);
-		for (int x = 0; x < columns; x++) {
-			for (int y = 0; y < rows; y++) {
-				r.x = x * cellSize;
-				r.y = y * cellSize;
-				for (Planet planet : p.planets.keySet()) {
-					if (planet.owner == p) {
-						
-					}
-				}
+		int colStart = (int)Math.ceil(1.0 * ux1 / explorationCellSize);
+		int colEnd = (int)Math.floor(1.0 * ux2 / explorationCellSize);
+		int rowStart = (int)Math.ceil(1.0 * uy1 / explorationCellSize);
+		int rowEnd = (int)Math.floor(1.0 * uy2 / explorationCellSize);
+		// remove whole enclosed cells
+		for (int x = colStart; x < colEnd; x++) {
+			for (int y = rowStart; y < rowEnd; y++) {
+				Location loc = Location.of(x, y);
+				explorationMap.remove(loc);
 			}
 		}
 	}

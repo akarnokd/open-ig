@@ -19,6 +19,8 @@ public class AIFleet {
 	public FleetKnowledge knowledge;
 	/** The current fleet statistics. */
 	public FleetStatistics statistics;
+	/** The radar range. */
+	public int radar;
 	/**
 	 * Assign the necessary properties from a fleet.
 	 * @param fleet the target fleet
@@ -28,5 +30,6 @@ public class AIFleet {
 		this.fleet = fleet;
 		knowledge = world.knowledge(fleet);
 		this.statistics = world.getStatistics(fleet);
+		this.radar = fleet.radar;
 	}
 }

@@ -181,4 +181,8 @@ public interface AIManager {
 	 * @param planet the planet lost (showing the current owner)
 	 */
 	void onPlanetLost(Planet planet);
+	/**
+	 * Notification about the radar sweep completion.
+	 */
+	void onRadar();
 }
