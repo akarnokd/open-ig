@@ -518,4 +518,9 @@ public class AITrader implements AIManager {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void onRadar() {
+		// TODO Auto-generated method stub
+		
+	}
 }

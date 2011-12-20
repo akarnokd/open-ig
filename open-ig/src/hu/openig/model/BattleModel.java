@@ -17,7 +17,7 @@ import java.util.Map;
  * The model definition for battles.
  * @author akarnokd, Jul 31, 2011
  */
-public class Battle {
+public class BattleModel {
 	/** A map from building id to (map from race to list of turret definition). */
 	public final Map<String, Map<String, List<BattleGroundTurret>>> turrets = JavaUtils.newHashMap();
 	/** The space entity definitions. */

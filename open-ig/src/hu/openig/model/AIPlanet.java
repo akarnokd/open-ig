@@ -23,6 +23,8 @@ public class AIPlanet {
 	public PlanetKnowledge knowledge;
 	/** The planet statistics. */
 	public PlanetStatistics statistics;
+	/** The radar range. */
+	public int radar;
 	/** The inventory items of the planet. */
 	public final List<AIInventoryItem> inventory = JavaUtils.newArrayList();
 	/**
@@ -34,6 +36,7 @@ public class AIPlanet {
 		this.planet = planet;
 		this.knowledge = world.knowledge(planet);
 		this.statistics = world.getStatistics(planet);
+		this.radar = planet.radar;
 		for (InventoryItem ii : planet.inventory) {
 			inventory.add(new AIInventoryItem(ii));
 		}

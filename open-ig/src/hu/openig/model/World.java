@@ -120,7 +120,7 @@ public class World {
 	/** The diplomacy definition. */
 	public Map<String, Diplomacy> diplomacy;
 	/** The battle object. */
-	public Battle battle;
+	public BattleModel battle;
 	/** The list of pending battles. */
 	public Deque<BattleInfo> pendingBattles = new LinkedList<BattleInfo>();
 	/** The game environment. */
@@ -161,7 +161,7 @@ public class World {
 			
 			processResearches(rl.getXML(game + "/tech"));
 
-			battle = new Battle();
+			battle = new BattleModel();
 			processBattle(rl.getXML(game + "/battle"));
 
 			processPlayers(rl.getXML(game + "/players")); 
@@ -1909,24 +1909,6 @@ public class World {
 			hp += b.hitpoints;
 		}
 		return hp / max;
-	}
-	/**
-	 * Generate the AI worlds.
-	 * @return the map for each player and its world
-	 */
-	public Map<Player, AIWorld> createAIWorlds() {
-		Map<Player, AIWorld> result = new HashMap<Player, AIWorld>();
-		
-		for (Player p : players.values()) {
-			if (aiAccept(p)) {
-				AIWorld w = new AIWorld();
-				w.assign(this, p);
-				
-				result.put(p, w);
-			}
-		}
-		
-		return result;
 	}
 	/**
 	 * Check if the given player should be considered for AI computations or not.

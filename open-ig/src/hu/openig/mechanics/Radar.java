@@ -100,6 +100,7 @@ public final class Radar {
 							}
 						}
 					}
+					f.radar = (int)(radar * rrf);
 				}
 			}
 		}
@@ -108,6 +109,7 @@ public final class Radar {
 			if (p.owner != null) {
 				updateKnowledge(world, p.owner, p, PlanetKnowledge.BUILDING);
 			}
+			int radar = 0;
 			for (InventoryItem pii : p.inventory) {
 				int detectorType = pii.type.getInt("detector", 0);
 				if (detectorType == 1) {
@@ -120,6 +122,7 @@ public final class Radar {
 					updateKnowledge(world, pii.owner, p, PlanetKnowledge.BUILDING);
 				}
 				if (pii.type.getInt("radar", 0) == 4) {
+					radar = 4;
 					for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * rrg)) {
 						updateKnowledge(world, pii.owner, q, PlanetKnowledge.NAME);
 					}
@@ -128,30 +131,28 @@ public final class Radar {
 					}
 				}
 			}
-			int radar = 0;
-			for (Building b : p.surface.buildings) {
-				if (b.isOperational()) {
-					if (b.hasResource("radar")) {
-						radar = Math.max(radar, (int)b.getResource("radar"));
+			if (radar == 0) {
+				for (Building b : p.surface.buildings) {
+					if (b.isOperational()) {
+						if (b.hasResource("radar")) {
+							radar = Math.max(radar, (int)b.getResource("radar"));
+						}
 					}
 				}
-			}
-			if (radar > 0) {
-				for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * rrg)) {
-					updateKnowledge(world, p.owner, q, PlanetKnowledge.NAME);
-				}
-				for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * rrg)) {
-					if (radar == 1) {
-						updateKnowledge(world, p.owner, f1, FleetKnowledge.COMPOSITION);
-					} else
-					if (radar == 2) {
-						updateKnowledge(world, p.owner, f1, FleetKnowledge.COMPOSITION);
-					} else
-					if (radar == 3) {
+				if (radar > 0) {
+					for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * rrg)) {
+						updateKnowledge(world, p.owner, q, PlanetKnowledge.NAME);
+					}
+					for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * rrg)) {
 						updateKnowledge(world, p.owner, f1, FleetKnowledge.COMPOSITION);
 					}
 				}
 			}
+			p.radar = radar * rrg;
+		}
+		// notify players about the radar sweep completed
+		for (Player p : world.players.values()) {
+			p.ai.onRadar();
 		}
 	}
 	/**

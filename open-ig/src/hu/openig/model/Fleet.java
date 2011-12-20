@@ -137,7 +137,7 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	 * @param battle the battle configuration 
 	 * @return calculate the fleet statistics. 
 	 */
-	public FleetStatistics getStatistics(Battle battle) {
+	public FleetStatistics getStatistics(BattleModel battle) {
 		FleetStatistics result = new FleetStatistics();
 
 		result.speed = Integer.MAX_VALUE;
@@ -338,7 +338,7 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	 * @param battle the battle configuration
 	 * @return the currently alloved
 	 */
-	public int getAddLimit(ResearchType rt, Battle battle) {
+	public int getAddLimit(ResearchType rt, BattleModel battle) {
 		FleetStatistics fs = getStatistics(battle);
 		switch (rt.category) {
 		case SPACESHIPS_BATTLESHIPS:
