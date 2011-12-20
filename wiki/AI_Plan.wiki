@@ -163,3 +163,20 @@ I = incoming call, O = outgoing call
       * multiple waves
     * buildup forces first
   * Note: human player weak at the beginning, too easy target
+
+= Goals and actions =
+
+Goal: Discover a planet
+Preconditions: has fleet, fleet has radar
+Actions:
+  # select am undiscovered cell
+  # move fleet to cell center
+  # if no new planets but cells remain, goto 1
+
+Goal: Colonize planet X
+Preconditions: has fleet, fleet has colony ship, planet X owner known to be empty
+Actions:
+  # move fleet to planet
+  # onFleetArrivedAtPlanet: 
+    * check goal conditions again
+    * take ownership and start building the colony hub
