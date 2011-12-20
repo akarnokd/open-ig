@@ -38,10 +38,11 @@ public final class BattleSimulator {
 	 * Run the given battle automatically.
 	 */
 	public void autoBattle() {
+		System.err.println("Automatic space battle not implemented!");
 	}
 	/** Simulate the ground battle. */
 	void autoGroundBattle() {
-		
+		System.err.println("Automatic ground battle not implemented!");
 	}
 	/**
 	 * Find helper fleet or planet for the battle.

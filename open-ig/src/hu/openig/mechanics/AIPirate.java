@@ -62,7 +62,7 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public SpacewarAction spaceBattle(SpacewarWorld world, Player player,
+	public SpacewarAction spaceBattle(SpacewarWorld world,
 			List<SpacewarStructure> idles) {
 		for (SpacewarStructure s : idles) {
 			AI.defaultAttackBehavior(world, s);
@@ -71,10 +71,31 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public void groundBattle(Player we, BattleInfo battle) {
+	public void groundBattle(BattleInfo battle) {
 		// No ground battle
 	}
 
+	@Override
+	public void groundBattleDone(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void groundBattleInit(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void spaceBattleDone(SpacewarWorld world) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void spaceBattleInit(SpacewarWorld world) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	@Override
 	public void load(XElement in) {
 		// TODO Auto-generated method stub
@@ -167,6 +188,16 @@ public class AIPirate implements AIManager {
 	}
 	@Override
 	public void onPlanetRevolt(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetConquered(Planet planet, Player lastOwner) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetLost(Planet planet) {
 		// TODO Auto-generated method stub
 		
 	}

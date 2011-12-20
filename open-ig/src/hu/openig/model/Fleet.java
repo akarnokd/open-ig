@@ -25,9 +25,9 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	/** The owner of the fleet. */
 	public Player owner;
 	/** The X coordinate. */
-	public float x;
+	public double x;
 	/** The Y coordinate. */
-	public float y;
+	public double y;
 //	/** The associated ship icon. */
 //	public BufferedImage shipIcon;
 	/** The radar radius. */
@@ -37,7 +37,7 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	/** The fleet inventory: ships and tanks. */
 	public final List<InventoryItem> inventory = new ArrayList<InventoryItem>();
 	/** The current list of movement waypoints. */
-	public final List<Point2D.Float> waypoints = new ArrayList<Point2D.Float>();
+	public final List<Point2D.Double> waypoints = new ArrayList<Point2D.Double>();
 	/** If the fleet should follow the other fleet. */
 	public Fleet targetFleet;
 	/** If the fleet should move to the planet. */
@@ -236,10 +236,10 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	 * @return Returns the nearest planet or null if out of range. 
 	 */
 	public Planet nearbyPlanet() {
-		float dmin = Integer.MAX_VALUE; 
+		double dmin = Integer.MAX_VALUE; 
 		Planet pmin = null;
 		for (Planet p : owner.planets.keySet()) {
-			float d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+			double d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
 			if (d < dmin && d < 20 * 20) {
 				dmin = d;
 				pmin = p;
@@ -363,7 +363,7 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 		List<Fleet> result = new ArrayList<Fleet>();
 		for (Fleet f : owner.fleets.keySet()) {
 			if (f.owner == owner && f != this) {
-				float dist = (x - f.x) * (x - f.x) + (y - f.y) * (y - f.y);
+				double dist = (x - f.x) * (x - f.x) + (y - f.y) * (y - f.y);
 				if (dist <= limit * limit) {
 					result.add(f);
 				}

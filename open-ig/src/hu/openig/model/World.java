@@ -1008,7 +1008,7 @@ public class World {
 		xfleet.set("mode", f.mode);
 		if (f.waypoints.size() > 0) {
 			StringBuilder wp = new StringBuilder();
-			for (Point2D.Float pt : f.waypoints) {
+			for (Point2D.Double pt : f.waypoints) {
 				if (wp.length() > 0) {
 					wp.append(" ");
 				}
@@ -1371,7 +1371,7 @@ public class World {
 			if (s0 != null) {
 				for (String wp : s0.split("\\s+")) {
 					String[] xy = wp.split(";");
-					f.waypoints.add(new Point2D.Float(Float.parseFloat(xy[0]), Float.parseFloat(xy[1])));
+					f.waypoints.add(new Point2D.Double(Double.parseDouble(xy[0]), Double.parseDouble(xy[1])));
 				}
 			}
 			for (XElement xfii : xfleet.childrenWithName("item")) {
@@ -1837,41 +1837,11 @@ public class World {
 						f.targetFleet = null;
 						f.mode = FleetMode.MOVE;
 						f.waypoints.clear();
-						f.waypoints.add(new Point2D.Float(fleet.x, fleet.y));
+						f.waypoints.add(new Point2D.Double(fleet.x, fleet.y));
 					}
 				}
 			}
 		}
-	}
-	/**
-	 * Take over the planet.
-	 * @param planet the target planet
-	 * @param newOwner the new owner
-	 */
-	public void takeover(Planet planet, Player newOwner) {
-		Player lastOwner = planet.owner;
-		planet.owner = newOwner;
-		planet.owner.statistics.planetsConquered++;
-		for (Building b : planet.surface.buildings) {
-			if (b.type.research != null) {
-				planet.owner.setAvailable(b.type.research);
-			}
-		}
-		planet.owner.planets.put(planet, PlanetKnowledge.BUILDING);
-		lastOwner.planets.put(planet, PlanetKnowledge.NAME);
-		
-		// notify about ownership change
-		Message msgLost = newMessage("message.planet_lost");
-		msgLost.priority = 100;
-		msgLost.targetPlanet = planet;
-		lastOwner.messageQueue.add(msgLost);
-		
-		Message msgConq = newMessage("message.planet_conquered");
-		msgConq.priority = 100;
-		msgConq.targetPlanet = planet;
-		planet.owner.messageQueue.add(msgConq);
-		
-		planet.removeOwnerSatellites();
 	}
 	/**
 	 * Returns the hitpoints of the given research type.

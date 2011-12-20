@@ -148,7 +148,7 @@ public class EquipmentMinimap extends UIComponent {
 	 * @param x the X coordinate
 	 * @param y the Y coordinate
 	 */
-	public void moveTo(float x, float y) {
+	public void moveTo(double x, double y) {
 		BufferedImage map = commons.world().galaxyModel.map;
 		mapRect.setSize((int)(map.getWidth() * zoom), (int)(map.getHeight() * zoom));
 		mapRect.x = (int)Math.max(0, Math.min(x * zoom - width / 2, mapRect.width - width));

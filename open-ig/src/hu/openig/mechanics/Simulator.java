@@ -608,11 +608,11 @@ public final class Simulator {
 			regenerateFleet(planetStats, f);
 			
 			// move fleet
-			Point2D.Float target = null;
+			Point2D.Double target = null;
 			double targetSpeed = 0.0;
 			boolean removeWp = false;
 			if (f.targetFleet != null) {
-				target = new Point2D.Float(f.targetFleet.x, f.targetFleet.y);
+				target = new Point2D.Double(f.targetFleet.x, f.targetFleet.y);
 				f.waypoints.clear();
 				// if not in radar range any more just move to its last position and stop
 				if (!f.owner.fleets.containsKey(f.targetFleet)) {
@@ -626,7 +626,7 @@ public final class Simulator {
 				}
 			} else
 			if (f.targetPlanet() != null) {
-				target = new Point2D.Float(f.targetPlanet().x, f.targetPlanet().y);
+				target = new Point2D.Double(f.targetPlanet().x, f.targetPlanet().y);
 				f.waypoints.clear();
 			} else
 			if (f.waypoints.size() > 0) {

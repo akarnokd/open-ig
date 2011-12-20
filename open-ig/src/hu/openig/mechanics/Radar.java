@@ -206,7 +206,7 @@ public final class Radar {
 	 * @param range the range
 	 * @return the list of planets in range
 	 */
-	static List<Planet> findPlanetsInRange(World world, float x, float y, float range) {
+	static List<Planet> findPlanetsInRange(World world, double x, double y, double range) {
 		List<Planet> result = new ArrayList<Planet>();
 		for (Planet p : world.planets.values()) {
 			if ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) < range * range) {
@@ -224,7 +224,7 @@ public final class Radar {
 	 * @param range the range
 	 * @return the list of planets in range
 	 */
-	static List<Fleet> findFleetsInRange(World world, float x, float y, float range) {
+	static List<Fleet> findFleetsInRange(World world, double x, double y, double range) {
 		List<Fleet> result = new ArrayList<Fleet>();
 		for (Player p : world.players.values()) {
 			for (Fleet f : p.fleets.keySet()) {

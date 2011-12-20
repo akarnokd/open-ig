@@ -1126,7 +1126,7 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param whereY where to create
 	 * @return the new fleet
 	 */
-	Fleet doCreateFleet(boolean select, float whereX, float whereY) {
+	Fleet doCreateFleet(boolean select, double whereX, double whereY) {
 		Fleet f = new Fleet();
 		f.id = world().fleetIdSequence++;
 		f.owner = player();
@@ -1134,8 +1134,8 @@ public class EquipmentScreen extends ScreenBase {
 		
 		int r = rnd.nextInt(14) + 5;
 		double k = rnd.nextDouble() * 2 * Math.PI;
-		f.x = (float)(whereX + Math.cos(k) * r);
-		f.y = (float)(whereY + Math.sin(k) * r);
+		f.x = (whereX + Math.cos(k) * r);
+		f.y = (whereY + Math.sin(k) * r);
 		
 		if (select) {
 			player().currentFleet = f;

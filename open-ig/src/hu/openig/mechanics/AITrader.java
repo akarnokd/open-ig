@@ -297,7 +297,7 @@ public class AITrader implements AIManager {
 	}
 
 	@Override
-	public SpacewarAction spaceBattle(SpacewarWorld world, Player player,
+	public SpacewarAction spaceBattle(SpacewarWorld world, 
 			List<SpacewarStructure> idles) {
 		double hpMax = 0;
 		double hp = 0;
@@ -352,10 +352,31 @@ public class AITrader implements AIManager {
 		});
 	}
 	@Override
-	public void groundBattle(Player we, BattleInfo battle) {
+	public void groundBattle(BattleInfo battle) {
 		// NO ground battle involvement
 	}
 
+	@Override
+	public void groundBattleDone(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void groundBattleInit(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void spaceBattleDone(SpacewarWorld world) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void spaceBattleInit(SpacewarWorld world) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	@Override
 	public void load(XElement in) {
 		for (XElement xlf : in.childrenWithName("landed")) {
@@ -484,6 +505,16 @@ public class AITrader implements AIManager {
 	}
 	@Override
 	public void onPlanetRevolt(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetConquered(Planet planet, Player lastOwner) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onPlanetLost(Planet planet) {
 		// TODO Auto-generated method stub
 		
 	}

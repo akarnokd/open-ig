@@ -75,18 +75,39 @@ public class AIUser implements AIManager {
 	}
 
 	@Override
-	public SpacewarAction spaceBattle(SpacewarWorld world, Player player,
+	public SpacewarAction spaceBattle(SpacewarWorld world, 
 			List<SpacewarStructure> idles) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void groundBattle(Player we, BattleInfo battle) {
+	public void groundBattle(BattleInfo battle) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
+	public void groundBattleDone(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void groundBattleInit(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void spaceBattleDone(SpacewarWorld world) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void spaceBattleInit(SpacewarWorld world) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	@Override
 	public void save(XElement out) {
 		// TODO Auto-generated method stub
@@ -207,7 +228,7 @@ public class AIUser implements AIManager {
 		Message msg = w.newMessage("message.planet_died");
 		msg.priority = 80;
 		msg.targetPlanet = planet;
-		planet.owner.messageQueue.add(msg);
+		p.messageQueue.add(msg);
 	}
 	@Override
 	public void onPlanetRevolt(Planet planet) {
@@ -215,6 +236,20 @@ public class AIUser implements AIManager {
 		msg.priority = 100;
 		msg.sound = SoundType.REVOLT;
 		msg.targetPlanet = planet;
-		planet.owner.messageQueue.add(msg);
+		p.messageQueue.add(msg);
+	}
+	@Override
+	public void onPlanetConquered(Planet planet, Player lastOwner) {
+		Message msgConq = w.newMessage("message.planet_conquered");
+		msgConq.priority = 100;
+		msgConq.targetPlanet = planet;
+		p.messageQueue.add(msgConq);
+	}
+	@Override
+	public void onPlanetLost(Planet planet) {
+		Message msgLost = w.newMessage("message.planet_lost");
+		msgLost.priority = 100;
+		msgLost.targetPlanet = planet;
+		p.messageQueue.add(msgLost);
 	}
 }

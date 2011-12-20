@@ -1620,7 +1620,7 @@ public class GameWindow extends JFrame implements GameControls {
 						
 					} else {
 						// just take ownership
-						world().takeover(bi.targetPlanet, bi.attacker.owner);
+						bi.targetPlanet.takeover(bi.attacker.owner);
 						continue;
 					}
 				}
