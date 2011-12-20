@@ -36,7 +36,9 @@ import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XElement;
 
 import java.awt.Point;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -526,5 +528,26 @@ public class AI implements AIManager {
 	public void onPlanetLost(Planet planet) {
 		// TODO Auto-generated method stub
 		
+	}
+	/**
+	 * Calculate which cells are fully discovered by just looking at the current radar settings.
+	 */
+	void calculateDiscoveredSpace() {
+		double cellSize = Math.sqrt(2) * w.env.params().fleetRadarUnitSize();
+		int rows = (int)Math.ceil(w.galaxyModel.map.getHeight() / cellSize);
+		int columns = (int)Math.ceil(w.galaxyModel.map.getWidth() / cellSize);
+		
+		Rectangle2D.Double r = new Rectangle2D.Double(0, 0, cellSize, cellSize);
+		for (int x = 0; x < columns; x++) {
+			for (int y = 0; y < rows; y++) {
+				r.x = x * cellSize;
+				r.y = y * cellSize;
+				for (Planet planet : p.planets.keySet()) {
+					if (planet.owner == p) {
+						
+					}
+				}
+			}
+		}
 	}
 }

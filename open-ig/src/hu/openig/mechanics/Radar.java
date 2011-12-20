@@ -36,6 +36,8 @@ public final class Radar {
 	 * @param world the world
 	 */
 	public static void compute(World world) {
+		final int rrg = world.env.params().groundRadarUnitSize();
+		final int rrf = world.env.params().fleetRadarUnitSize();
 		// clear knowledge
 		for (Player player : world.players.values()) {
 			// reset known planets to discovered state
@@ -69,7 +71,7 @@ public final class Radar {
 						}
 					}
 					if (radar > 0) {
-						for (Planet q : findPlanetsInRange(world, f.x, f.y, radar * 25)) {
+						for (Planet q : findPlanetsInRange(world, f.x, f.y, radar * rrf)) {
 							if (radar < 1f) {
 								updateKnowledge(world, player, q, PlanetKnowledge.VISIBLE);
 							} else
@@ -83,7 +85,7 @@ public final class Radar {
 								updateKnowledge(world, player, q, PlanetKnowledge.OWNER);
 							}
 						}
-						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, radar * 25)) {
+						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, radar * rrf)) {
 							if (radar < 1f) {
 								updateKnowledge(world, player, f1, FleetKnowledge.VISIBLE);
 							} else
@@ -118,10 +120,10 @@ public final class Radar {
 					updateKnowledge(world, pii.owner, p, PlanetKnowledge.BUILDING);
 				}
 				if (pii.type.getInt("radar", 0) == 4) {
-					for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * 35)) {
+					for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * rrg)) {
 						updateKnowledge(world, pii.owner, q, PlanetKnowledge.NAME);
 					}
-					for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * 35)) {
+					for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * rrg)) {
 						updateKnowledge(world, pii.owner, f, FleetKnowledge.COMPOSITION);
 					}
 				}
@@ -135,10 +137,10 @@ public final class Radar {
 				}
 			}
 			if (radar > 0) {
-				for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * 35)) {
+				for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * rrg)) {
 					updateKnowledge(world, p.owner, q, PlanetKnowledge.NAME);
 				}
-				for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * 35)) {
+				for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * rrg)) {
 					if (radar == 1) {
 						updateKnowledge(world, p.owner, f1, FleetKnowledge.COMPOSITION);
 					} else
