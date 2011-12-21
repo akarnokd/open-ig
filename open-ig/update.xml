@@ -25,7 +25,7 @@
 			<desc lang='en'>The program's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.93.475'>
+	<module id='Game' version='0.93.480'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -37,10 +37,10 @@
 		<execute file='open-ig-%s.jar' memory='768'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>AI keretrendszer, kereskedők.</desc>
-			<desc lang='en'>AI framework, traders.</desc>
+			<desc lang='hu'>Hibajavítás.</desc>
+			<desc lang='en'>Bug fix.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.475.jar' sha1='9d20c1af111fe99c9121825758752e3f2d966288'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.480.jar' sha1='25874dbdbc17ed7e5cb7953d12d7844508a750f6'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
