@@ -94,7 +94,7 @@ public class AITrader implements AIManager {
 	@Override
 	public void init(Player p) {
 		this.world = p.world;
-		this.traderLabel = world.env.labels().get("");
+		this.traderLabel = world.env.labels().get("traders.fleetname");
 		this.player = p;
 	}
 	@Override

@@ -54,8 +54,8 @@ public class Labels {
 		String value = map.get(key);
 		if (value == null) {
 			System.err.println("\t<entry key='" + key + "'></entry>");
-//			AssertionError ex = new AssertionError();
-//			ex.printStackTrace();
+			AssertionError ex = new AssertionError();
+			ex.printStackTrace();
 			map.put(key, key);
 			return key;
 		}

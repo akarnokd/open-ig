@@ -2001,6 +2001,7 @@ public class StarmapScreen extends ScreenBase {
 	@Override
 	public void onEndGame() {
 		cache.clear();
+		radarCache.clear();
 		newGameStarted = true;
 	}
 	@Override
@@ -2415,9 +2416,16 @@ public class StarmapScreen extends ScreenBase {
 		 */
 		boolean changed(List<RadarCircle> that) {
 			if (old.size() != that.size()) {
-				return false;
+				return true;
 			}
-			return old.containsAll(that);
+			return !old.containsAll(that);
+		}
+		/** Clear current values. */
+		public void clear() {
+			zoom = -1;
+			old.clear();
+			dots.clear();
+			radarArea = null;
 		}
 	}
 	/** The radar cache. */

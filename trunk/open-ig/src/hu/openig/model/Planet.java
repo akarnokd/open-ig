@@ -325,7 +325,7 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 		}
 		
 		if (owner != null) {
-			radar *= owner.world.env.params().fleetRadarUnitSize();
+			radar *= owner.world.env.params().groundRadarUnitSize();
 		}
 		
 		return result;
