@@ -253,7 +253,7 @@ public class MediaPlayer {
 		if (sdl != null) {
 			doCompleteAudio();
 			audioThread.interrupt();
-			sdl.stop();
+			sdl.close();
 		}
 	}
 	/**

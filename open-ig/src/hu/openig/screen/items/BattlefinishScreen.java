@@ -218,6 +218,7 @@ public class BattlefinishScreen extends ScreenBase {
 					}
 				}
 			}
+			textCenter(g2, base.x, base.y + base.height - 20, base.width, TextRenderer.GREEN, 14, get("battlefinish.click_to_exit"));
 		}
 	}
 	/**
@@ -308,7 +309,12 @@ public class BattlefinishScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (e.has(Type.DOWN) && !e.within(base.x, base.y, base.width, base.height)) {
+		if (e.has(Type.UP) /* && !e.within(base.x, base.y, base.width, base.height) */) {
+			if (!showText) {
+				showText = true;
+				textDelay.stop();
+				return true;
+			}
 			displayPrimary(Screens.STARMAP);
 			return false;
 		}
