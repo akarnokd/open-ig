@@ -2753,7 +2753,7 @@
 	<entry key='battlefinish.planet_won'>You conquered the planet %s.</entry>
 	<entry key='settings.radarunion'>Display perimeter radar only</entry>
 	<entry key='traders.fleetname'>Trader</entry>
-	<entry key=''></entry>
+	<entry key='battlefinish.click_to_exit'>Click to exit</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
