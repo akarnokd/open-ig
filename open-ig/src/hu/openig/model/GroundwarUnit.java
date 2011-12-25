@@ -49,6 +49,10 @@ public class GroundwarUnit extends GroundwarObject {
 	public GroundwarUnit paralized;
 	/** The remaining duration for paralization. */
 	public int paralizedTTL;
+	/** The countdown for yielding. */
+	public int yieldTTL;
+	/** Indicate that this unit is in motion. For path planning and yielding purposes. */
+	public boolean inMotionPlanning;
 	/** @return is this unit destroyed? */
 	public boolean isDestroyed() {
 		return hp <= 0;
@@ -67,5 +71,12 @@ public class GroundwarUnit extends GroundwarObject {
 	public GroundwarUnit(BufferedImage[][] matrix) {
 		super(matrix);
 		// TODO Auto-generated constructor stub
+	}
+	/**
+	 * Returns the integer location of this unit.
+	 * @return the location
+	 */
+	public Location location() {
+		return Location.of((int)x, (int)y);
 	}
 }

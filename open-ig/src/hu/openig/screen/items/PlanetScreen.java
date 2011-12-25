@@ -92,6 +92,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -283,6 +284,11 @@ public class PlanetScreen extends ScreenBase {
 	BattleInfo battle;
 	/** The time in sumulations steps during the paralize effect is in progress. */
 	static final int PARALIZED_TTL = 15 * 1000 / SIMULATION_DELAY;
+	/** How many steps to yield before replanning. */
+	static final int YIELD_TTL = 10 * 1000 / SIMULATION_DELAY;
+	/** List of requests about path planning. */
+	final List<PathPlanning> pathsToPlan = JavaUtils.newArrayList();
+	/** Collision avoidance yield set. */
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -415,17 +421,26 @@ public class PlanetScreen extends ScreenBase {
 		animationTimer = null;
 		close0(earthQuakeTimer);
 		earthQuakeTimer = null;
+
+		clearGroundBattle();
+		
+		battle = null;
+		close0(simulator);
+		simulator = null;
+	}
+
+	/**
+	 * Clear the fields of ground battle.
+	 */
+	void clearGroundBattle() {
 		battlePlacements.clear();
 		guns.clear();
 		units.clear();
+		pathsToPlan.clear();
 		explosions.clear();
 		rockets.clear();
 		unitsAtLocation.clear();
-		battle = null;
 		unitsToPlace.clear();
-		
-		close0(simulator);
-		simulator = null;
 	}
 
 	/**
@@ -805,8 +820,7 @@ public class PlanetScreen extends ScreenBase {
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
 				if (battle == null) {
-					guns.clear();
-					units.clear();
+					clearGroundBattle();
 				}
 			}
 			// check if the AI has removed any building while we were looking at its planet
@@ -3427,6 +3441,47 @@ public class PlanetScreen extends ScreenBase {
 		
 		return new Rectangle(ux, uy, img.getWidth(), img.getHeight());
 	}
+	/**
+	 * The task to plan a route to the given destination asynchronously. 
+	 * @author akarnokd, 2011.12.25.
+	 */
+	class PathPlanning implements Runnable {
+		/** The initial location. */
+		final Location current;
+		/** The goal location. */
+		final Location goal;
+		/** The unit. */
+		final GroundwarUnit unit;
+		/** The computed path. */
+		final List<Location> path = JavaUtils.newArrayList();
+		/**
+		 * Constructor. Initializes the fields.
+		 * @param initial the initial location
+		 * @param goal the goal location
+		 * @param unit the unit
+		 */
+		public PathPlanning(Location initial, Location goal, GroundwarUnit unit) {
+			this.current = initial;
+			this.goal = goal;
+			this.unit = unit;
+		}
+
+		@Override
+		public void run() {
+			path.addAll(pathfinding.searchApproximate(current, goal));
+		}
+		/**
+		 * Apply the computation result.
+		 */
+		public void apply() {
+			unit.path.addAll(path);
+			if (unit.path.size() > 0) {
+				unit.path.remove(0); // remove current position
+			}
+			unit.inMotionPlanning = false;
+			unit.yieldTTL = 0;
+		}
+	}
 	/** 
 	 * Compute a path for one of the selected unit.
 	 * @param mx the mouse x
@@ -3440,18 +3495,15 @@ public class PlanetScreen extends ScreenBase {
 				Location lu = Location.of((int)u.x, (int)u.y);
 				Location lm = render.getLocationAt(mx, my);
 				u.path.clear();
+				u.attackBuilding = null;
+				u.attackUnit = null;
+				u.inMotionPlanning = true;
 
 				// the next immediate movement should be kept
 				if (u.nextMove != null) {
 					u.path.add(u.nextMove);
 				}
-				u.path.addAll(pathfinding.searchApproximate(lu, lm));
-				if (u.path.size() > 0) {
-					u.path.remove(0); // remove current position
-				}
-				
-				u.attackBuilding = null;
-				u.attackUnit = null;
+				pathsToPlan.add(new PathPlanning(lu, lm, u));
 			}
 		}
 		if (moved) {
@@ -3469,7 +3521,7 @@ public class PlanetScreen extends ScreenBase {
 				if (surface().canPlaceBuilding(value.x, value.y)) {
 					for (GroundwarUnit u : units) {
 						if (((int)(u.x) == value.x && (int)(u.y) == value.y)) {
-							return !u.path.isEmpty();
+							return (!u.path.isEmpty() && u.yieldTTL * 2 < YIELD_TTL) || u.inMotionPlanning;
 						}
 					}
 					return true;
@@ -3498,37 +3550,78 @@ public class PlanetScreen extends ScreenBase {
 		if (startBattle.visible() || commons.simulation.paused()) {
 			return;
 		}
+		
+		// execute path plannings
+		doPathPlannings();
+		
 		// destruction animations
 		for (GroundwarExplosion exp : new ArrayList<GroundwarExplosion>(explosions)) {
-			if (exp.next()) {
-				if (exp.half()) {
-					if (exp.target != null) {
-						units.remove(exp.target);
-						removeUnitLocation(exp.target);
-						if (battle != null) {
-							battle.groundLosses.add(exp.target);
-						}
-					}
-				}
-			} else {
-				explosions.remove(exp);
-			}
+			updateExplosion(exp);
 		}
 		for (GroundwarRocket rocket : new ArrayList<GroundwarRocket>(rockets)) {
 			updateRocket(rocket);
 		}
-		for (GroundwarUnit u : units) {
-			updateUnit(u);
-		}
 		for (GroundwarGun g : guns) {
 			updateGun(g);
 		}
+
+		for (GroundwarUnit u : units) {
+			updateUnit(u);
+		}
+
+		
 		Player winner = checkWinner();
 		if (winner != null && explosions.size() == 0 && rockets.size() == 0) {
 			commons.simulation.pause();
 			concludeBattle(winner);
 		}
 		askRepaint();
+	}
+
+	/**
+	 * Execute path plannings asynchronously.
+	 */
+	void doPathPlannings() {
+		if (pathsToPlan.size() > 0) {
+			List<Future<?>> inProgress = JavaUtils.newLinkedList();
+			for (int i = 1; i < pathsToPlan.size(); i++) {
+				inProgress.add(commons.pool.submit(pathsToPlan.get(i)));
+			}
+			pathsToPlan.get(0).run();
+			for (Future<?> f : inProgress) {
+				try {
+					f.get();
+				} catch (ExecutionException ex) {
+					ex.printStackTrace();
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+			}
+			for (PathPlanning pp : pathsToPlan) {
+				pp.apply();
+			}
+			pathsToPlan.clear();
+		}
+	}
+
+	/**
+	 * Update the graphical state of an explosion.
+	 * @param exp the explosion
+	 */
+	void updateExplosion(GroundwarExplosion exp) {
+		if (exp.next()) {
+			if (exp.half()) {
+				if (exp.target != null) {
+					units.remove(exp.target);
+					removeUnitLocation(exp.target);
+					if (battle != null) {
+						battle.groundLosses.add(exp.target);
+					}
+				}
+			}
+		} else {
+			explosions.remove(exp);
+		}
 	}
 	/**
 	 * Conclude the battle.
@@ -3728,7 +3821,7 @@ public class PlanetScreen extends ScreenBase {
 					if (u.nextMove != null) {
 						u.path.clear();
 						u.path.add(u.nextMove);
-					}
+					} else
 					if (rotateStep(u, Location.of((int)u.attackUnit.x, (int)u.attackUnit.y))) {
 						if (u.cooldown <= 0) {
 							u.phase++;
@@ -3763,8 +3856,8 @@ public class PlanetScreen extends ScreenBase {
 				} else {
 					if (u.path.isEmpty()) {
 						// plot path
-						u.path.addAll(pathfinding.searchApproximate(Location.of((int)u.x, (int)u.y), 
-								Location.of((int)u.attackUnit.x, (int)u.attackUnit.y)));
+						u.inMotionPlanning = true;
+						pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
 					} else {
 						Location ep = u.path.get(u.path.size() - 1);
 						// if the target unit moved since last
@@ -3772,8 +3865,8 @@ public class PlanetScreen extends ScreenBase {
 						double dy = ep.y - u.attackUnit.y;
 						if (Math.hypot(dx, dy) > 1) {
 							u.path.clear();
-							u.path.addAll(pathfinding.searchApproximate(Location.of((int)u.x, (int)u.y), 
-									Location.of((int)(u.attackUnit.x), (int)(u.attackUnit.y))));
+							u.inMotionPlanning = true;
+							pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
 						}
 					}
 				}
@@ -3783,7 +3876,7 @@ public class PlanetScreen extends ScreenBase {
 					if (u.nextMove != null) {
 						u.path.clear();
 						u.path.add(u.nextMove);
-					}
+					} else
 					if (rotateStep(u, centerCellOf(u.attackBuilding))) {
 						if (u.cooldown <= 0) {
 							u.phase++;
@@ -3804,9 +3897,8 @@ public class PlanetScreen extends ScreenBase {
 					if (u.path.isEmpty()) {
 						if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
 							// plot path to the building
-							u.path.addAll(pathfinding.searchApproximate(
-									Location.of((int)u.x, (int)u.y), 
-									centerCellOf(u.attackBuilding)));
+							u.inMotionPlanning = true;
+							pathsToPlan.add(new PathPlanning(u.location(), centerCellOf(u.attackBuilding), u));
 						} else {
 							// plot path outside the minimum range
 							Location c = centerCellOf(u.attackBuilding);
@@ -3816,10 +3908,8 @@ public class PlanetScreen extends ScreenBase {
 									(int)(c.y + (u.model.minRange + 1.4142) * Math.sin(angle))
 							);
 							
-							u.path.addAll(pathfinding.searchApproximate(
-									Location.of((int)u.x, (int)u.y), c1 
-									));
-							
+							u.inMotionPlanning = true;
+							pathsToPlan.add(new PathPlanning(u.location(), c1, u));
 						}
 					}
 				}
@@ -4196,6 +4286,21 @@ public class PlanetScreen extends ScreenBase {
 		return false;
 	}
 	/**
+	 * Plan a new route to the current destination.
+	 * @param u the unit.
+	 */
+	void repath(final GroundwarUnit u) {
+		if (u.path.size() > 0) {
+			final Location current = Location.of((int)u.x, (int)u.y);
+			final Location goal = u.path.get(u.path.size() - 1);
+			u.nextMove = null;
+			u.nextRotate = null;
+			u.path.clear();
+			u.inMotionPlanning = true;
+			pathsToPlan.add(new PathPlanning(current, goal, u));
+		}
+	}
+	/**
 	 * Move an unit by a given amount into the next path location.
 	 * @param u The unit to move one step. 
 	 */
@@ -4203,11 +4308,26 @@ public class PlanetScreen extends ScreenBase {
 		if (u.isDestroyed()) {
 			return;
 		}
+		if (u.yieldTTL > 0) {
+			u.yieldTTL--;
+			if (u.yieldTTL == 0) {
+				// trigger replanning
+				repath(u);
+				return;
+			}
+		}
 		if (u.nextMove == null) {
 			u.nextMove = u.path.get(0);
 			u.nextRotate = u.nextMove;
+			
+			// is the next move location still passable?
+			if (!pathfinding.isPassable.invoke(u.nextMove)) {
+				// trigger replanning
+				repath(u);
+				return;
+			}
+
 		}
-		
 		
 		
 		if (u.nextRotate != null && rotateStep(u, u.nextRotate)) {
@@ -4215,6 +4335,27 @@ public class PlanetScreen extends ScreenBase {
 		}
 		if (u.nextRotate == null) {
 			double dv = 1.0 * SIMULATION_DELAY / u.model.movementSpeed / 28;
+			// detect collision
+			for (GroundwarUnit gu : units) {
+				if (gu != u) {
+					int minx = (int)Math.floor(gu.x);
+					int miny = (int)Math.floor(gu.y);
+					int maxx = (int)Math.ceil(gu.x);
+					int maxy = (int)Math.ceil(gu.y);
+					// check if our next position collided with the movement path of someone else
+					if (minx <= u.nextMove.x && u.nextMove.x <= maxx && miny <= u.nextMove.y && u.nextMove.y <= maxy) {
+						// yield
+						dv = 0;
+						if (u.yieldTTL <= 0) {
+							u.yieldTTL = YIELD_TTL;
+						}
+						break;
+					}
+				}
+			}
+			if (dv > 0) {
+				u.yieldTTL = 0;
+			}
 			double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
 			double distanceToTarget = (u.nextMove.x - u.x) * (u.nextMove.x - u.x)
 					+ (u.nextMove.y - u.y) * (u.nextMove.y - u.y) / ratio;
