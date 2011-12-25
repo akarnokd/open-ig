@@ -3804,7 +3804,10 @@ public class PlanetScreen extends ScreenBase {
 					u.cooldown = u.model.delay;
 				} else
 				if (u.attackBuilding != null) {
-					damageBuilding(u.attackBuilding, u.model.damage);
+					// for rocket sleds, damage is inflicted by the rocket impact
+					if (u.model.type != GroundwarUnitType.ROCKET_SLED) {
+						damageBuilding(u.attackBuilding, u.model.damage);
+					}
 					if (u.attackBuilding.isDestroyed()) {
 						// TODO demolish animation
 //						surface().removeBuilding(u.attackBuilding);
@@ -4256,32 +4259,54 @@ public class PlanetScreen extends ScreenBase {
 		}
 		return value >= x1 && value <= x0;
 	}
+	/** The composite record to return the rotation angles. */
+	static class RotationAngles {
+		/** The unit's current angle. */
+		double currentAngle;
+		/** The target angle. */
+		double targetAngle;
+		/** The difference to turn. */
+		double diff;
+	}
+	/**
+	 * Computes the rotation angles.
+	 * @param u the unit
+	 * @param target the target location
+	 * @return the angles
+	 */
+	RotationAngles computeRotation(GroundwarUnit u, Location target) {
+		RotationAngles result = new RotationAngles();
+
+		Point pg = centerOf(u.x, u.y);
+		Point tg = centerOf(target);
+		result.targetAngle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
+		
+		result.currentAngle = u.normalizedAngle();
+
+		result.diff = result.targetAngle - result.currentAngle;
+		if (result.diff < -Math.PI) {
+			result.diff = 2 * Math.PI - result.diff;
+		} else
+		if (result.diff > Math.PI) {
+			result.diff -= 2 * Math.PI; 
+		}
+
+		return result;
+	}
 	/**
 	 * Rotate the structure towards the given target angle by a step.
-	 * @param gun the gun in question
+	 * @param u the gun in question
 	 * @param target the target point
 	 * @return rotation done?
 	 */
-	boolean rotateStep(GroundwarUnit gun, Location target) {
-		Point pg = centerOf(gun.x, gun.y);
-		Point tg = centerOf(target);
-		double targetAngle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
-		
-		double currentAngle = gun.normalizedAngle();
-
-		double diff = targetAngle - currentAngle;
-		if (diff < -Math.PI) {
-			diff = 2 * Math.PI - diff;
-		} else
-		if (diff > Math.PI) {
-			diff -= 2 * Math.PI; 
-		}
-		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.angleCount() / SIMULATION_DELAY;
-		if (Math.abs(diff) < anglePerStep) {
-			gun.angle = targetAngle;
+	boolean rotateStep(GroundwarUnit u, Location target) {
+		RotationAngles ra = computeRotation(u, target);
+		double anglePerStep = 2 * Math.PI * u.model.rotationTime / u.angleCount() / SIMULATION_DELAY;
+		if (Math.abs(ra.diff) < anglePerStep) {
+			u.angle = ra.targetAngle;
 			return true;
 		} else {
-			gun.angle += Math.signum(diff) * anglePerStep;
+			u.angle += Math.signum(ra.diff) * anglePerStep;
 		}
 		return false;
 	}
@@ -4334,39 +4359,48 @@ public class PlanetScreen extends ScreenBase {
 			u.nextRotate = null;
 		}
 		if (u.nextRotate == null) {
-			double dv = 1.0 * SIMULATION_DELAY / u.model.movementSpeed / 28;
-			// detect collision
-			for (GroundwarUnit gu : units) {
-				if (gu != u) {
-					int minx = (int)Math.floor(gu.x);
-					int miny = (int)Math.floor(gu.y);
-					int maxx = (int)Math.ceil(gu.x);
-					int maxy = (int)Math.ceil(gu.y);
-					// check if our next position collided with the movement path of someone else
-					if (minx <= u.nextMove.x && u.nextMove.x <= maxx && miny <= u.nextMove.y && u.nextMove.y <= maxy) {
-						// yield
-						dv = 0;
-						if (u.yieldTTL <= 0) {
-							u.yieldTTL = YIELD_TTL;
-						}
-						break;
+			moveUnitStep(u, SIMULATION_DELAY);
+		}
+	}
+
+	/**
+	 * Move the ground unit one step.
+	 * @param u the unit
+	 * @param time the available time
+	 */
+	void moveUnitStep(GroundwarUnit u, double time) {
+		double dv = 1.0 * time / u.model.movementSpeed / 28;
+		// detect collision
+		for (GroundwarUnit gu : units) {
+			if (gu != u) {
+				int minx = (int)Math.floor(gu.x);
+				int miny = (int)Math.floor(gu.y);
+				int maxx = (int)Math.ceil(gu.x);
+				int maxy = (int)Math.ceil(gu.y);
+				// check if our next position collided with the movement path of someone else
+				if (minx <= u.nextMove.x && u.nextMove.x <= maxx && miny <= u.nextMove.y && u.nextMove.y <= maxy) {
+					// yield
+					dv = 0;
+					if (u.yieldTTL <= 0) {
+						u.yieldTTL = YIELD_TTL;
 					}
+					break;
 				}
 			}
-			if (dv > 0) {
-				u.yieldTTL = 0;
-			}
-			double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
-			double distanceToTarget = (u.nextMove.x - u.x) * (u.nextMove.x - u.x)
-					+ (u.nextMove.y - u.y) * (u.nextMove.y - u.y) / ratio;
-			if (distanceToTarget < dv * dv) {
-				updateUnitLocation(u, u.nextMove.x, u.nextMove.y, false);
-				u.nextMove = null;
-				u.path.remove(0);
-			} else {
-				double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
-				updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle) / ratio, true);
-			}
+		}
+		if (dv > 0) {
+			u.yieldTTL = 0;
+		}
+		double distanceToTarget = (u.nextMove.x - u.x) * (u.nextMove.x - u.x)
+				+ (u.nextMove.y - u.y) * (u.nextMove.y - u.y);
+		if (distanceToTarget < dv * dv) {
+			updateUnitLocation(u, u.nextMove.x, u.nextMove.y, false);
+
+			u.nextMove = null;
+			u.path.remove(0);
+		} else {
+			double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
+			updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle), true);
 		}
 	}
 	/**

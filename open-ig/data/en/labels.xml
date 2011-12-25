@@ -2754,6 +2754,10 @@
 	<entry key='settings.radarunion'>Display perimeter radar only</entry>
 	<entry key='traders.fleetname'>Trader</entry>
 	<entry key='battlefinish.click_to_exit'>Click to exit</entry>
+	<entry key='message.yesterday_trade_income'>Yesterday's trade income was %s credits.</entry>
+	<entry key='flagship.moveto.database'>Database screen</entry>
+	<entry key='spacewar.ship_status_none'>Nothing selected.</entry>
+	<entry key='spacewar.ship_status_many'>Too many things selected.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

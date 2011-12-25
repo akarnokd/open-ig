@@ -544,17 +544,25 @@ public class StatusbarScreen extends ScreenBase {
 			for (String s0 : labels) {
 				String s = get(s0);
 				int c = idx == highlight ? TextRenderer.WHITE : TextRenderer.ORANGE;
-				if ((idx == 5 && world().level < 2) 
-						|| (idx == 6 && world().level < 3)
-						|| (idx == 9 && world().level < 2)
-						|| (idx == 10 && world().level < 4)
-				) {
+				if (isScreenDisabled(idx)) {
 					c = TextRenderer.GRAY;
 				}
 				commons.text().paintTo(g2, 5, y, 14, c, s);
 				y += 18;
 				idx++;
 			}
+		}
+		/**
+		 * Check if the given screen index is disabled in the current state.
+		 * @param idx the sceen index
+		 * @return true if disabled
+		 */
+		boolean isScreenDisabled(int idx) {
+			return (idx == 5 && world().level < 2) 
+					|| (idx == 6 && world().level < 3)
+					|| (idx == 9 && world().level < 2)
+					|| (idx == 10 && world().level < 4)
+					|| (idx < 12 && commons.battleMode);
 		}
 		@Override
 		public boolean mouse(UIMouse e) {
@@ -564,8 +572,10 @@ public class StatusbarScreen extends ScreenBase {
 			} else {
 				highlight = -1;
 			}
-			if (e.has(Type.UP)) {
-				switchScreen();
+			if (!isScreenDisabled(highlight)) {
+				if (e.has(Type.UP)) {
+					switchScreen();
+				}
 			}
 			super.mouse(e);
 			return true;
