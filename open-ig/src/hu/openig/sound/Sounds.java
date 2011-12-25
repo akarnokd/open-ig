@@ -9,12 +9,11 @@
 package hu.openig.sound;
 
 import hu.openig.core.Configuration;
-import hu.openig.core.Func1;
+import hu.openig.core.Func0;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceType;
 import hu.openig.model.SoundType;
 import hu.openig.utils.IOUtils;
-import hu.openig.utils.JavaUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,8 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -73,13 +74,13 @@ public class Sounds {
 	/** The sound map. */
 	final Map<SoundType, AudioFormatType> soundFormat = new HashMap<SoundType, AudioFormatType>();
 	/** The sound pool. */
-	final Map<AudioFormatType, BlockingQueue<SourceDataLine>> soundPool = JavaUtils.newHashMap();
+	final Map<AudioFormatType, BlockingQueue<SourceDataLine>> soundPool = new ConcurrentHashMap<AudioFormatType, BlockingQueue<SourceDataLine>>();
 	/** The sound pool. */
 	ExecutorService exec;
 	/** The parallel sound effect semaphore. */
 	Semaphore effectSemaphore;
 	/** Function to retrieve the current volume. */
-	private Func1<Void, Integer> getVolume;
+	private Func0<Integer> getVolume;
 	/** The open lines. */
 	final BlockingQueue<SourceDataLine> lines = new LinkedBlockingQueue<SourceDataLine>();
 	/**
@@ -122,7 +123,7 @@ public class Sounds {
 	 * @param getVolume the function which returns the current volume, 
 	 * asked once before an effect plays. Volume of 0 means no sound
 	 */
-	public void initialize(int channels, final Func1<Void, Integer> getVolume) {
+	public void initialize(int channels, final Func0<Integer> getVolume) {
 		this.getVolume = getVolume;
 		ThreadPoolExecutor tpe = new ThreadPoolExecutor(
 				channels, channels, 5, TimeUnit.SECONDS, 
@@ -191,7 +192,10 @@ public class Sounds {
 	 * @param sdl the source data line
 	 */
 	void putBackLine(AudioFormatType aft, SourceDataLine sdl) {
-		soundPool.get(aft).add(sdl);
+		BlockingQueue<SourceDataLine> queue = soundPool.get(aft);
+		if (queue != null) {
+			queue.add(sdl);
+		}
 	}
 	/** Close all audio lines. */
 	public void close() {
@@ -205,7 +209,11 @@ public class Sounds {
 			for (SourceDataLine sdl : lines) {
 				sdl.close();
 			}
+			lines.clear();
 			soundPool.clear();
+			soundMap.clear();
+			soundFormat.clear();
+			exec = null;
 		}
 		
 	}
@@ -216,44 +224,57 @@ public class Sounds {
 	public void play(final SoundType effect) {
 		if (effect == null) {
 			new IllegalArgumentException("Null effect").printStackTrace();
+			return;
 		}
-		final int vol = getVolume.invoke(null);
+		final int vol = getVolume.invoke();
 		if (vol > 0) {
 			if (effectSemaphore.tryAcquire()) {
-				exec.execute(new Runnable() {
-					@Override
-					public void run() {
-						String n = Thread.currentThread().getName();
-						Thread.currentThread().setName(n + "-" + effect);
-						
-						byte[] data = soundMap.get(effect);
-						AudioFormatType aft = soundFormat.get(effect);
-						try {
-							SourceDataLine sdl = getLine(aft);
-							if (sdl != null) {
-								try {
-									AudioThread.setVolume(sdl, vol);
-									sdl.start();
-									sdl.write(data, 0, data.length);
-									sdl.drain();
-									sdl.stop();
-								} finally {
-									putBackLine(aft, sdl);
-								}
-							}
-						} catch (Throwable t) {
-							t.printStackTrace();
-						} finally {
-							Thread.currentThread().setName(n);
-
-							effectSemaphore.release();
+				try {
+					exec.execute(new Runnable() {
+						@Override
+						public void run() {
+							playSoundAsync(effect, vol);
 						}
-					}
-				});
+					});
+				} catch (RejectedExecutionException ex) {
+					effectSemaphore.release();
+				}
 			}
 		}
 	}
 	
+	/**
+	 * Play the sound type with the given volume asynchronously.
+	 * @param effect the effect
+	 * @param vol the volume
+	 */
+	void playSoundAsync(final SoundType effect, final int vol) {
+		String n = Thread.currentThread().getName();
+		Thread.currentThread().setName(n + "-" + effect);
+		
+		byte[] data = soundMap.get(effect);
+		AudioFormatType aft = soundFormat.get(effect);
+		try {
+			SourceDataLine sdl = getLine(aft);
+			if (sdl != null) {
+				try {
+					AudioThread.setVolume(sdl, vol);
+					sdl.start();
+					sdl.write(data, 0, data.length);
+					sdl.drain();
+					sdl.stop();
+				} finally {
+					putBackLine(aft, sdl);
+				}
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		} finally {
+			Thread.currentThread().setName(n);
+
+			effectSemaphore.release();
+		}
+	}
 	/**
 	 * Test program for sound effects.
 	 * @param args no arguments
@@ -263,14 +284,14 @@ public class Sounds {
 		final Configuration config = new Configuration("open-ig-config.xml");
 		config.load();
 		Sounds s = new Sounds(config.newResourceLocator());
-		s.initialize(config.audioChannels, new Func1<Void, Integer>() {
+		s.initialize(config.audioChannels, new Func0<Integer>() {
 			@Override
-			public Integer invoke(Void value) {
+			public Integer invoke() {
 				return 100;
 			}
 		});
 		Random rnd = new Random();
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1000; i++) {
 			s.play(rnd.nextBoolean() ? SoundType.FIRE_1 : SoundType.GROUND_FIRE_1);
 			Thread.sleep(100);
 		}

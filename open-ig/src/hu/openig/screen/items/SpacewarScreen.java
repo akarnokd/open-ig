@@ -1660,6 +1660,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			Collection<? super SpacewarStructure> ships
 			) {
 		for (InventoryItem ii : inventory) {
+			// Fix for zero inventory entries
+			if (ii.count <= 0) {
+				continue;
+			}
 			if (categories.contains(ii.type.category) && ii.owner == inventory.owner()) {
 				BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
 				if (bse == null) {
@@ -1784,9 +1788,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			g2.drawImage(commons.spacewar().planet, space.width - commons.spacewar().planet.getWidth(), 0, null);
 		}
 		
-		if (viewRange.selected) {
-			drawRanges(structures, g2);
-		}
 		drawRanges(g2, structures);
 		drawCommands(g2, structures);
 		
@@ -1831,14 +1832,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		Rectangle rect = computeMinimapViewport();
 		g2.drawRect(rect.x, rect.y, rect.width - 1, rect.height - 1);
 		g2.setClip(save0);
-	}
-	/**
-	 * Draws the ranges of the beam weapons on the given structures.
-	 * @param structures the sequence of structures
-	 * @param g2 the graphics context
-	 */
-	void drawRanges(Iterable<? extends SpacewarStructure> structures, Graphics2D g2) {
-		
 	}
 	/** @return calculates the minimap viewport rectangle coordinates. */
 	Rectangle computeMinimapViewport() {
@@ -3291,17 +3284,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		Set<Fleet> fleets = new HashSet<Fleet>();
 		for (SpacewarStructure s : battle.spaceLosses) {
 			if (s.item != null) {
-				s.item.count = s.count;
-				s.item.hp = s.hp;
-				s.item.shield = s.shield;
-				if (s.item.hp <= 0) {
-					if (s.fleet != null) {
-						s.fleet.inventory.remove(s.item);
-						fleets.add(s.fleet);
-					} else
-					if (s.planet != null) {
-						s.planet.inventory.remove(s.item);
+				if (s.count > 0) {
+					s.item.count = s.count;
+					s.item.hp = s.hp;
+					s.item.shield = s.shield;
+					if (s.item.hp <= 0) {
+						removeFromInventory(s);
 					}
+				} else {
+					removeFromInventory(s);
 				}
 			} else
 			if (s.building != null) {
@@ -3350,6 +3341,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 		bfs.displayBattleSummary(bi);
+	}
+	/**
+	 * Remove the structure from its parent inventory (either a planet or a fleet).
+	 * @param s the structore
+	 */
+	void removeFromInventory(SpacewarStructure s) {
+		if (s.planet != null) {
+			s.planet.inventory.remove(s.item);
+		} else
+		if (s.fleet != null) {
+			s.fleet.inventory.remove(s.item);
+		} else {
+			throw new AssertionError("Neither planet nor fleet set on structure.");
+		}
 	}
 	/**
 	 * Retrieve the info image of the specified name.

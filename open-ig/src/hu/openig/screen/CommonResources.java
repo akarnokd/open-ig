@@ -11,6 +11,7 @@ package hu.openig.screen;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Configuration;
+import hu.openig.core.Func0;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
@@ -295,9 +296,9 @@ public class CommonResources implements GameEnvironment {
 			common = get(commonFuture);
 
 			sounds = new Sounds(rl);
-			sounds.initialize(config.audioChannels, new Func1<Void, Integer>() {
+			sounds.initialize(config.audioChannels, new Func0<Integer>() {
 				@Override
-				public Integer invoke(Void value) {
+				public Integer invoke() {
 					return config.effectVolume;
 				}
 			});
