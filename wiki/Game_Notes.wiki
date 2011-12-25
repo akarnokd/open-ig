@@ -5,6 +5,7 @@
 = Version 0.93.490 - Quick fixes =
   * Released: 2011-12-25 20:20 CET
   * Fleet inventory issues (http://code.google.com/p/open-ig/issues/detail?id=133 Issue #133])
+  * Ground unit pathfinding improvements (http://code.google.com/p/open-ig/issues/detail?id=121 Issue #121])
 
 = Version 0.93.480 - Quick fix =
   * Released: 2011-12-21 14:30 CET
