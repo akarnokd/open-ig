@@ -1543,6 +1543,7 @@ public class GameWindow extends JFrame implements GameControls {
 				new BattleSimulator(world(), bi).autoBattle();
 				continue;
 			}
+			bi.originalSpeed = commons.simulation.speed();
 			// do a space battle
 			if (bi.targetFleet != null) {
 				commons.battleMode = true;

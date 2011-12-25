@@ -84,11 +84,10 @@ public class BattlefinishScreen extends ScreenBase {
 
 	@Override
 	public void onLeave() {
-		SimulationSpeed spd = commons.simulation.speed();
 		commons.restoreMainSimulationSpeedFunction();
 		commons.battleMode = false;
 		commons.playRegularMusic();
-		commons.simulation.speed(spd);
+		commons.simulation.speed(battle.originalSpeed);
 		textDelay.stop();
 		battle = null;
 	}
@@ -141,7 +140,7 @@ public class BattlefinishScreen extends ScreenBase {
 			g2.drawLine(x1, base.y + 35, x1 + w1 - 1, base.y + 35);
 			
 			if (battle.retreated) {
-				textCenter(g2, x2, base.y + 50, w2, TextRenderer.YELLOW, 14, get("battlefinish.spacewar_retreat"));
+				textCenter(g2, x1, base.y + 40, w1, TextRenderer.YELLOW, 14, get("battlefinish.spacewar_retreat"));
 			} else {
 				if (battle.spacewarWinner != null) {
 					if (battle.spacewarWinner == player()) {
