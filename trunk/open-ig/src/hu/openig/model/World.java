@@ -1375,9 +1375,13 @@ public class World {
 				}
 			}
 			for (XElement xfii : xfleet.childrenWithName("item")) {
+				int count = xfii.getInt("count");
+				if (count <= 0) {
+					continue;
+				}
 				InventoryItem fii = new InventoryItem();
 				fii.type = researches.get(xfii.get("id"));
-				fii.count = xfii.getInt("count");
+				fii.count = count;
 				fii.owner = f.owner;
 				Set<String> slots = new HashSet<String>();
 				for (XElement xfis : xfii.childrenWithName("slot")) {
