@@ -2,6 +2,10 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.490 - Quick fixes =
+  * Released: 2011-12-25 20:20 CET
+  * Fleet inventory issues (http://code.google.com/p/open-ig/issues/detail?id=133 Issue #133])
+
 = Version 0.93.480 - Quick fix =
   * Released: 2011-12-21 14:30 CET
   * Fixed NPE on loading a save ([http://code.google.com/p/open-ig/issues/detail?id=127 Issue # 127])
