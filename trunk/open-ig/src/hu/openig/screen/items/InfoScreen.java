@@ -522,6 +522,8 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_FLEETS
 	})
 	UILabel fleetVehicles;
+	/** The global statistics used in some screens. */
+	private PlanetStatistics globalStatistics;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -2573,7 +2575,7 @@ public class InfoScreen extends ScreenBase {
 							g2.drawLine(col * colWidth, row * 12 - 1, (col + 1) * colWidth, row * 12 - 1);
 						}
 						for (ResearchType rt : res) {
-							int c = world().getResearchColor(rt);
+							int c = world().getResearchColor(rt, globalStatistics);
 							commons.text().paintTo(g2, col * colWidth + 3, row * 12 + 2, 7, c, rt.name);
 							if (rt == research()) {
 								g2.setColor(new Color(TextRenderer.ORANGE));
@@ -2718,18 +2720,20 @@ public class InfoScreen extends ScreenBase {
 					}
 				}
 			}
+			globalStatistics = player().getPlanetStatistics(null);
+
 			if (rt.prerequisites.size() > 0) {
 				researchPrerequisites.visible(true);
 				researchPre1.text(rt.prerequisites.get(0).name, true).visible(true);
-				researchPre1.color(world().getResearchColor(rt.prerequisites.get(0)));
+				researchPre1.color(world().getResearchColor(rt.prerequisites.get(0), globalStatistics));
 			}
 			if (rt.prerequisites.size() > 1) {
 				researchPre2.text(rt.prerequisites.get(1).name, true).visible(true);
-				researchPre2.color(world().getResearchColor(rt.prerequisites.get(1)));
+				researchPre2.color(world().getResearchColor(rt.prerequisites.get(1), globalStatistics));
 			}
 			if (rt.prerequisites.size() > 2) {
 				researchPre3.text(rt.prerequisites.get(2).name, true).visible(true);
-				researchPre3.color(world().getResearchColor(rt.prerequisites.get(2)));
+				researchPre3.color(world().getResearchColor(rt.prerequisites.get(2), globalStatistics));
 			}
 			
 			researchLabs.get(0).text(Integer.toString(rt.civilLab));
@@ -2737,33 +2741,31 @@ public class InfoScreen extends ScreenBase {
 			researchLabs.get(2).text(Integer.toString(rt.compLab));
 			researchLabs.get(3).text(Integer.toString(rt.aiLab));
 			researchLabs.get(4).text(Integer.toString(rt.milLab));
-			
-			PlanetStatistics ps = player().getPlanetStatistics(null);
 
-			researchAvailable.get(0).text(Integer.toString(ps.civilLabActive));
+			researchAvailable.get(0).text(Integer.toString(globalStatistics.civilLabActive));
 			researchAvailable.get(0).color(
-					ps.civilLab < rt.civilLab ? TextRenderer.RED 
-						: (ps.civilLab > ps.civilLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.civilLab < rt.civilLab ? TextRenderer.RED 
+						: (globalStatistics.civilLab > globalStatistics.civilLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
-			researchAvailable.get(1).text(Integer.toString(ps.mechLabActive));
+			researchAvailable.get(1).text(Integer.toString(globalStatistics.mechLabActive));
 			researchAvailable.get(1).color(
-					ps.mechLab < rt.mechLab ? TextRenderer.RED 
-						: (ps.mechLab > ps.mechLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.mechLab < rt.mechLab ? TextRenderer.RED 
+						: (globalStatistics.mechLab > globalStatistics.mechLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
-			researchAvailable.get(2).text(Integer.toString(ps.compLabActive));
+			researchAvailable.get(2).text(Integer.toString(globalStatistics.compLabActive));
 			researchAvailable.get(2).color(
-					ps.compLab < rt.compLab ? TextRenderer.RED 
-						: (ps.compLab > ps.compLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.compLab < rt.compLab ? TextRenderer.RED 
+						: (globalStatistics.compLab > globalStatistics.compLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
-			researchAvailable.get(3).text(Integer.toString(ps.aiLabActive));
+			researchAvailable.get(3).text(Integer.toString(globalStatistics.aiLabActive));
 			researchAvailable.get(3).color(
-					ps.aiLab < rt.aiLab ? TextRenderer.RED 
-						: (ps.aiLab > ps.aiLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.aiLab < rt.aiLab ? TextRenderer.RED 
+						: (globalStatistics.aiLab > globalStatistics.aiLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
-			researchAvailable.get(4).text(Integer.toString(ps.milLabActive));
+			researchAvailable.get(4).text(Integer.toString(globalStatistics.milLabActive));
 			researchAvailable.get(4).color(
-					ps.milLab < rt.milLab ? TextRenderer.RED 
-						: (ps.milLab > ps.milLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.milLab < rt.milLab ? TextRenderer.RED 
+						: (globalStatistics.milLab > globalStatistics.milLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
 		}
 	}

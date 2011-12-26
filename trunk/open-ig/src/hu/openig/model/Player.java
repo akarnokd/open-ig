@@ -207,10 +207,10 @@ public class Player {
 	 * Is there enough labs to research the technology? Does
 	 * not consider the operational state of the labs.
 	 * @param rt the technology
+	 * @param ps the planet statistics
 	 * @return true if there are at least the required lab
 	 */
-	public LabLevel hasEnoughLabs(ResearchType rt) {
-		PlanetStatistics ps = getPlanetStatistics(null);
+	public LabLevel hasEnoughLabs(ResearchType rt, PlanetStatistics ps) {
 		if (ps.civilLab < rt.civilLab) {
 			return LabLevel.NOT_ENOUGH_TOTAL;
 		}

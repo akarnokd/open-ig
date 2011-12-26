@@ -10,6 +10,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
+import hu.openig.core.Func0;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
@@ -1094,6 +1095,12 @@ public class ResearchProductionScreen extends ScreenBase {
 		
 		for (int i = 0; i < 6; i++) {
 			TechnologySlot slot = new TechnologySlot(commons);
+			slot.statistics = new Func0<PlanetStatistics>() {
+				@Override
+				public PlanetStatistics invoke() {
+					return statistics;
+				}
+			};
 			slot.visible(false);
 			slot.onPress = selectSlot;
 			slots.add(slot);
@@ -1447,7 +1454,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		if (rt != null) {
 			if (rt.prerequisites.size() > 0) {
 				requires1.text(rt.prerequisites.get(0).name, true);
-				requires1.color(world().getResearchColor(rt.prerequisites.get(0)));
+				requires1.color(world().getResearchColor(rt.prerequisites.get(0), statistics));
 				requires1.onPress = new Action0() {
 					@Override
 					public void invoke() {
@@ -1459,7 +1466,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			}
 			if (rt.prerequisites.size() > 1) {
 				requires2.text(rt.prerequisites.get(1).name, true);
-				requires2.color(world().getResearchColor(rt.prerequisites.get(1)));
+				requires2.color(world().getResearchColor(rt.prerequisites.get(1), statistics));
 				requires2.onPress = new Action0() {
 					@Override
 					public void invoke() {
@@ -1471,7 +1478,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			}
 			if (rt.prerequisites.size() > 2) {
 				requires3.text(rt.prerequisites.get(2).name, true);
-				requires3.color(world().getResearchColor(rt.prerequisites.get(2)));
+				requires3.color(world().getResearchColor(rt.prerequisites.get(2), statistics));
 				requires3.onPress = new Action0() {
 					@Override
 					public void invoke() {
@@ -1535,7 +1542,7 @@ public class ResearchProductionScreen extends ScreenBase {
 							selectedTimeValue.size(14);
 						}
 						
-						switch (player().hasEnoughLabs(rs.type)) {
+						switch (player().hasEnoughLabs(rs.type, statistics)) {
 						case ENOUGH:
 							selectedTimeValue.color(TextRenderer.GREEN);
 							break;
@@ -1558,7 +1565,7 @@ public class ResearchProductionScreen extends ScreenBase {
 							selectedTimeValue.size(14);
 						}
 						
-						switch (player().hasEnoughLabs(rt)) {
+						switch (player().hasEnoughLabs(rt, statistics)) {
 						case ENOUGH:
 							selectedTimeValue.color(TextRenderer.GREEN);
 							break;
