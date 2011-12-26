@@ -33,18 +33,18 @@ public final class SimpleTransferSend {
 	public static void main(String[] args) throws Exception {
 		String basePath = "c:/temp/open-ig-launcher/";
 		String[] files = {
-			"open-ig-videos-01-0.8.zip",	
-			"open-ig-videos-02-0.8.zip",	
-			"open-ig-videos-03-0.8.zip",	
-			"open-ig-videos-04-0.8.zip",	
-			"open-ig-videos-05-0.8.zip",	
-			"open-ig-videos-06-0.8.zip",	
-			"open-ig-videos-07-0.8.zip",	
-			"open-ig-videos-08-0.8.zip",	
-			"open-ig-videos-09-0.8.zip",	
-			"open-ig-videos-10-0.8.zip",
-			"open-ig-videos-en-0.8.zip",	
-			"open-ig-videos-hu-0.8.zip",	
+			"open-ig-video-01-0.8.zip",	
+			"open-ig-video-02-0.8.zip",	
+			"open-ig-video-03-0.8.zip",	
+			"open-ig-video-04-0.8.zip",	
+			"open-ig-video-05-0.8.zip",	
+			"open-ig-video-06-0.8.zip",	
+			"open-ig-video-07-0.8.zip",	
+			"open-ig-video-08-0.8.zip",	
+			"open-ig-video-09-0.8.zip",	
+			"open-ig-video-10-0.8.zip",
+			"open-ig-video-en-0.8.zip",	
+			"open-ig-video-hu-0.8.zip",	
 		};
 		ServerSocket ss = new ServerSocket(5555);
 		byte[] buffer = new byte[8192];
