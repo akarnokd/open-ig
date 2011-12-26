@@ -8,7 +8,9 @@
 package hu.openig.screen;
 
 import hu.openig.core.Action1;
+import hu.openig.core.Func0;
 import hu.openig.model.LabLevel;
+import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchType;
@@ -48,6 +50,8 @@ public class TechnologySlot extends UIComponent {
 	public int animationStep;
 	/** The action to invoke when the user clicks on the slot. */
 	public Action1<ResearchType> onPress;
+	/** The planet statistics retrieval function. */
+	public Func0<PlanetStatistics> statistics;
 	/**
 	 * Constructor.
 	 * @param commons the common resources
@@ -98,7 +102,7 @@ public class TechnologySlot extends UIComponent {
 						TextRenderer.YELLOW, Integer.toString((int)commons.world().player.research.get(type).getPercent()) + "%");
 				
 			}
-			LabLevel lvl = commons.world().player.hasEnoughLabs(type);
+			LabLevel lvl = commons.world().player.hasEnoughLabs(type, statistics.invoke());
 			if (lvl == LabLevel.NOT_ENOUGH_TOTAL) {
 				g2.drawImage(commons.research().researchMissingPrerequisite, target.x + 5 + 16, target.y + 49 + 5, null);
 			} else

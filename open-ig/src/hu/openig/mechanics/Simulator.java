@@ -292,10 +292,10 @@ public final class Simulator {
 			}
 			if (Building.isOperational(eff)) {
 				if (b.hasResource("credit")) {
-					tradeIncome += b.getResource("credit");
+					tradeIncome += b.getResource("credit") * eff;
 				}
 				if (b.hasResource("multiply")) {
-					multiply = b.getResource("multiply");
+					multiply = b.getResource("multiply") * eff;
 				}
 				if (b.hasResource("morale")) {
 					moraleBoost += b.getResource("morale") * eff;

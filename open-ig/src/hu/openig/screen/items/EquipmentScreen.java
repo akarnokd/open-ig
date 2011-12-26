@@ -10,6 +10,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
+import hu.openig.core.Func0;
 import hu.openig.core.Func1;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
@@ -243,6 +244,8 @@ public class EquipmentScreen extends ScreenBase {
 	boolean planetVisible;
 	/** Upgrade all medium and large ships with the available best equipment. */
 	UIImageButton upgradeAll;
+	/** The global planet statistics. */
+	private PlanetStatistics statistics;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -700,6 +703,12 @@ public class EquipmentScreen extends ScreenBase {
 	
 		for (int i = 0; i < 6; i++) {
 			final TechnologySlot ts = new TechnologySlot(commons);
+			ts.statistics = new Func0<PlanetStatistics>() {
+				@Override
+				public PlanetStatistics invoke() {
+					return statistics;
+				}
+			};
 			ts.visible(false);
 			ts.onPress = selectSlot; 
 			
@@ -1155,11 +1164,11 @@ public class EquipmentScreen extends ScreenBase {
 		ResearchType rt = research();
 		if (player().selectionMode == SelectionMode.PLANET) {
 			
-			PlanetStatistics ps = planet().getStatistics();
+			statistics = planet().getStatistics();
 			
 			boolean own = planet().owner == player();
 			
-			newButton.visible(own && ps.hasMilitarySpaceport);
+			newButton.visible(own && statistics.hasMilitarySpaceport);
 			notYourPlanet.visible(!own);
 			noPlanetNearby.visible(false);
 			upgradeAll.visible(false);
@@ -1182,14 +1191,14 @@ public class EquipmentScreen extends ScreenBase {
 			spaceshipsLabel.visible(false);
 			spaceshipsMaxLabel.visible(false);
 			if (own) {
-				fightersLabel.text(format("equipment.fighters", ps.fighterCount), true);
-				vehiclesLabel.text(format("equipment.vehicles", ps.vehicleCount), true);
-				if (ps.hasSpaceStation) {
+				fightersLabel.text(format("equipment.fighters", statistics.fighterCount), true);
+				vehiclesLabel.text(format("equipment.vehicles", statistics.vehicleCount), true);
+				if (statistics.hasSpaceStation) {
 					fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
 				} else {
 					fightersMaxLabel.text(format("equipment.max", 0), true);
 				}
-				vehiclesMaxLabel.text(format("equipment.max", ps.vehicleMax), true);
+				vehiclesMaxLabel.text(format("equipment.max", statistics.vehicleMax), true);
 			} else {
 				fightersLabel.text("");
 				vehiclesLabel.text("");
@@ -1221,7 +1230,7 @@ public class EquipmentScreen extends ScreenBase {
 				delButton.visible(false);
 				sell.visible(planet().inventoryCount(rt, player()) > 0);
 			} else
-			if (own && ps.hasSpaceStation && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+			if (own && statistics.hasSpaceStation && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				addButton.visible(
 						player().inventoryCount(rt) > 0
 						&& planet().inventoryCount(rt, player()) < 30);
@@ -1233,7 +1242,7 @@ public class EquipmentScreen extends ScreenBase {
 			if (own && rt.category == ResearchSubCategory.WEAPONS_TANKS
 					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				addButton.visible(player().inventoryCount(rt) > 0
-						&& planet().inventoryCount(rt.category, player()) < ps.vehicleMax);
+						&& planet().inventoryCount(rt.category, player()) < statistics.vehicleMax);
 				delButton.visible(
 						planet().inventoryCount(rt, player()) > 0);
 				sell.visible(delButton.visible());
@@ -1242,7 +1251,7 @@ public class EquipmentScreen extends ScreenBase {
 				delButton.visible(false);
 				sell.visible(false);
 			}
-			noSpaceStation.visible(own && !ps.hasSpaceStation && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS);
+			noSpaceStation.visible(own && !statistics.hasSpaceStation && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS);
 
 			addOne.visible(false);
 			removeOne.visible(false);

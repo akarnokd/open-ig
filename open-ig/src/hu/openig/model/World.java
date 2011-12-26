@@ -702,9 +702,10 @@ public class World {
 	/**
 	 * Get the research color for the given research type.
 	 * @param rt the research type
+	 * @param stats the global statistics
 	 * @return the color
 	 */
-	public int getResearchColor(ResearchType rt) {
+	public int getResearchColor(ResearchType rt, PlanetStatistics stats) {
 		int c = TextRenderer.GRAY;
 		if (player.isAvailable(rt)) {
 			c = TextRenderer.ORANGE;
@@ -713,9 +714,26 @@ public class World {
 			c = TextRenderer.YELLOW;
 		} else
 		if (canResearch(rt)) {
-			c = TextRenderer.GREEN;
+			if (hasEnoughLabs(rt, stats)) {
+				c = TextRenderer.LIGHT_BLUE;
+			} else {
+				c = TextRenderer.GREEN;
+			}
 		}
 		return c;
+	}
+	/**
+	 * Check if the global planet statistics provides enough active labs to support the given research.
+	 * @param rt the research type.
+	 * @param ps the global planet statistics
+	 * @return true if enough active labs
+	 */
+	public boolean hasEnoughLabs(ResearchType rt, PlanetStatistics ps) {
+		return ps.civilLabActive >= rt.civilLab
+				&& ps.mechLabActive >= rt.mechLab 
+				&& ps.compLabActive >= rt.compLab
+				&& ps.aiLabActive >= rt.aiLab
+				&& ps.milLabActive >= rt.milLab;
 	}
 	/**
 	 * @return Returns an ordered list of the research types.
@@ -1302,7 +1320,7 @@ public class World {
 		}
 		linkDeferredFleetTargets(deferredTargets);
 
-		// restore AI for players
+		// restore AI for players, restore stance
 		for (XElement xplayer : xworld.childrenWithName("player")) {
 			XElement xai = xplayer.childElement("ai");
 			if (xai != null) {
@@ -1310,6 +1328,18 @@ public class World {
 				p.ai = env.getAI(p);
 				p.ai.init(p);
 				p.ai.load(xai);
+				
+				p.knownPlayers.clear();
+				
+				for (XElement xstance : xplayer.childrenWithName("stance")) {
+					for (XElement xwith : xstance.childrenWithName("with")) {
+						Player q = players.get(xwith.get("player"));
+						if (q != p) {
+							int v = xwith.getInt("value");
+							p.knownPlayers.put(q, v);
+						}
+					}
+				}
 			}
 		}
 	}
