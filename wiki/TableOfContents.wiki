@@ -17,4 +17,5 @@
     * [MapEditor The Map Editor]
       * [MapEditor_Notes Release notes]
   * [Questions Questions & Answers]
+    * [Typical_Issues Typical Issues]
   * [Credits Credits]
