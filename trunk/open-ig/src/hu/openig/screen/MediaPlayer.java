@@ -154,6 +154,7 @@ public class MediaPlayer {
 										bstart += blen;
 									}
 									sdl.drain();
+									sdl.stop();
 								}
 							} catch (InterruptedException ex) {
 								

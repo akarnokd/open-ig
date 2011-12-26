@@ -437,7 +437,7 @@ public class World {
 				p.noDatabase = true;
 			}
 			
-			String aim = xplayer.get("ai", "");
+			String aim = xplayer.get("ai", AIMode.DEFAULT.toString());
 			if (aim.length() > 0) {
 				p.aiMode = AIMode.valueOf(aim);
 			}

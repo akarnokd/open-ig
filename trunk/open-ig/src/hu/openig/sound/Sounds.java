@@ -83,6 +83,8 @@ public class Sounds {
 	private Func0<Integer> getVolume;
 	/** The open lines. */
 	final BlockingQueue<SourceDataLine> lines = new LinkedBlockingQueue<SourceDataLine>();
+	/** Should the sound map cache lines? */
+	static final boolean cacheLines = false;
 	/**
 	 * Initialize the sound pool.
 	 * @param rl the resource locator
@@ -160,15 +162,15 @@ public class Sounds {
 	/**
 	 * Add a new SourceDataLine with the specified format to the sound pool.
 	 * @param aft the audio format to add
-	 * @return sdl the data line created
+	 * @return the data line created
 	 */
 	SourceDataLine addLine(AudioFormatType aft) {
 		try {
-			SourceDataLine sdl = AudioSystem.getSourceDataLine(aft.format);
-			sdl.open(aft.format);
-			soundPool.get(aft).add(sdl);
-			lines.add(sdl);
-			return sdl;
+			synchronized (this) { // FIX for Linux PulseAudio Mixer theading issue 
+				SourceDataLine sdl = AudioSystem.getSourceDataLine(aft.format);
+				sdl.open(aft.format);
+				return sdl;
+			}
 		} catch (LineUnavailableException ex) {
 			ex.printStackTrace();
 		}
@@ -180,9 +182,16 @@ public class Sounds {
 	 * @return the data line
 	 */
 	SourceDataLine getLine(AudioFormatType aft) {
-		SourceDataLine result = soundPool.get(aft).poll();
+		SourceDataLine result = null; 
+		if (cacheLines) {
+			result = soundPool.get(aft).poll();
+		}
 		if (result == null) {
 			result = addLine(aft);
+			if (cacheLines) {
+				soundPool.get(aft).add(result);
+				lines.add(result);
+			}
 		}
 		return result;
 	}
@@ -192,9 +201,13 @@ public class Sounds {
 	 * @param sdl the source data line
 	 */
 	void putBackLine(AudioFormatType aft, SourceDataLine sdl) {
-		BlockingQueue<SourceDataLine> queue = soundPool.get(aft);
-		if (queue != null) {
-			queue.add(sdl);
+		if (cacheLines) {
+			BlockingQueue<SourceDataLine> queue = soundPool.get(aft);
+			if (queue != null) {
+				queue.add(sdl);
+			}
+		} else {
+			sdl.close();
 		}
 	}
 	/** Close all audio lines. */
@@ -206,6 +219,7 @@ public class Sounds {
 			} catch (InterruptedException ex) {
 				// ignored
 			}
+			exec.shutdownNow();
 			for (SourceDataLine sdl : lines) {
 				sdl.close();
 			}
@@ -295,6 +309,7 @@ public class Sounds {
 			s.play(rnd.nextBoolean() ? SoundType.FIRE_1 : SoundType.GROUND_FIRE_1);
 			Thread.sleep(100);
 		}
+		Thread.sleep(1000);
 		s.close();
 	}
 }
