@@ -1,0 +1,16 @@
+#summary Description of typical issues running the game.
+
+<wiki:toc max_depth="4" />
+
+= Linux =
+
+== Audio and/or game hangs ==
+
+There are several bugs in OpenJDK (6, 7) audio subsystem: PulseAudio.
+
+Possible resolutions:
+
+  * Update to the latest JDK version available
+  * Switch to JDK 7 if not already done
+  * Uninstall OpenJDK and Oracle JDK completely. Then reinstall just one
+  * Use Oracle JDK
