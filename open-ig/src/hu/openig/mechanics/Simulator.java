@@ -261,7 +261,8 @@ public final class Simulator {
 					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 					result = true;
 				} else {
-					if (planet.owner.money >= repairCost && planet.owner.money >= world.config.autoRepairLimit) {
+					if (planet.owner.money >= repairCost 
+							&& (b.repairing || planet.owner.money >= world.config.autoRepairLimit)) {
 						planet.owner.money -= repairCost; // FIXME repair cost per unit?
 						planet.owner.today.repairCost += repairCost;
 						b.hitpoints += repairAmount;
