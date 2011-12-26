@@ -16,6 +16,7 @@ import hu.openig.core.ResourceLocator;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.AI;
 import hu.openig.mechanics.AIPirate;
+import hu.openig.mechanics.AITest;
 import hu.openig.mechanics.AITrader;
 import hu.openig.mechanics.AIUser;
 import hu.openig.mechanics.BattleSimulator;
@@ -783,7 +784,7 @@ public class GameWindow extends JFrame implements GameControls {
 				rep |= pri.keyboard(e);
 			}
 			if (!e.isConsumed()) {
-				handleScreenSwitch(e);
+				handleDefaultKeyboard(e);
 			}
 			if (rep) {
 				repaintInner();
@@ -793,7 +794,7 @@ public class GameWindow extends JFrame implements GameControls {
 		 * Handle the screen switch if the appropriate key is pressed.
 		 * @param e the key event
 		 */
-		void handleScreenSwitch(KeyEvent e) {
+		void handleDefaultKeyboard(KeyEvent e) {
 			if (e.isAltDown()) {
 				if (e.getKeyCode() == KeyEvent.VK_F4) {
 					exit();
@@ -1142,6 +1143,23 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_L:
 					if (e.isControlDown()) {
 						loadWorld(null);
+						e.consume();
+					}
+					break;
+				case KeyEvent.VK_J:
+					// TOGGLE test AI on player
+					if (e.isControlDown()) {
+						Player p = world().player; 
+						if (p.aiMode == AIMode.NONE) {
+							p.aiMode = AIMode.TEST;
+							p.ai = new AITest();
+							p.ai.init(p);
+						} else {
+							p.aiMode = AIMode.NONE;
+							p.ai = new AIUser();
+							p.ai.init(p);
+						}
+						
 						e.consume();
 					}
 					break;
@@ -1798,16 +1816,18 @@ public class GameWindow extends JFrame implements GameControls {
 		return new Func1<Player, AIManager>() {
 			@Override
 			public AIManager invoke(Player value) {
-				if (value.aiMode == AIMode.TRADERS) {
+				switch (value.aiMode) {
+				case TRADERS:
 					return new AITrader();
-				} else
-				if (value.aiMode == AIMode.PIRATES) {
+				case PIRATES:
 					return new AIPirate();
-				} else
-				if (value.aiMode == AIMode.NONE) {
+				case NONE:
 					return new AIUser();
+				case TEST:
+					return new AITest();
+				default:
+					return new AI();
 				}
-				return new AI();
 			}
 		};
 	}

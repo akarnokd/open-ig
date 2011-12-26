@@ -68,7 +68,7 @@ public class AIUser implements AIManager {
 	}
 
 	@Override
-	public ResponseMode diplomacy(Player we, Player other,
+	public ResponseMode diplomacy(Player other,
 			DiplomaticInteraction offer) {
 		// TODO Auto-generated method stub
 		return null;

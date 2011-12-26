@@ -290,7 +290,7 @@ public class AITrader implements AIManager {
 	}
 
 	@Override
-	public ResponseMode diplomacy(Player we, Player other,
+	public ResponseMode diplomacy(Player other,
 			DiplomaticInteraction offer) {
 		// No diplomatic relations
 		return ResponseMode.NO;

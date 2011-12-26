@@ -21,5 +21,7 @@ public enum AIMode {
 	/** Special AI creating fleets of trader ships and moving between planets with trader's spaceport. */
 	TRADERS,
 	/** The default AI stance balancing between expenses defined by the ratio parameters. */
-	DEFAULT
+	DEFAULT,
+	/** Special AI combining the default AI and User AI. */
+	TEST
 }
