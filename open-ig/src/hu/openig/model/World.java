@@ -814,7 +814,7 @@ public class World {
 			xp.set("research", p.currentResearch() != null ? p.currentResearch().id : null);
 			xp.set("running", p.runningResearch != null ? p.runningResearch.id : null);
 			xp.set("mode", p.selectionMode);
-			
+			xp.set("ai", p.aiMode);
 			// save AI state
 			if (p.ai != null) {
 				p.ai.save(xp.add("ai"));
@@ -1102,6 +1102,11 @@ public class World {
 			p.today.repairCost = xtoday.getInt("repair");
 			p.today.researchCost = xtoday.getInt("research");
 			p.today.productionCost = xtoday.getInt("production");
+
+			String aim = xplayer.get("ai", "NONE");
+			if (aim.length() > 0) {
+				p.aiMode = AIMode.valueOf(aim);
+			}
 
 			p.diplomacy.clear();
 			XElement xdipl = xplayer.childElement("diplomacy");

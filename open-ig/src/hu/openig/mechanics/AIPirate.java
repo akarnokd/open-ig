@@ -55,7 +55,7 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public ResponseMode diplomacy(Player we, Player other,
+	public ResponseMode diplomacy(Player other,
 			DiplomaticInteraction offer) {
 		// No diplomatic options
 		return ResponseMode.NO;

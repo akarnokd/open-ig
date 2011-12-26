@@ -36,12 +36,11 @@ public interface AIManager {
 	void apply();
 	/**
 	 * Calculates the diplomatic response to an offer coming from another player.
-	 * @param we the target player
 	 * @param other the other player
 	 * @param offer the kind of offer/request
 	 * @return the response
 	 */
-	ResponseMode diplomacy(Player we, Player other, DiplomaticInteraction offer);
+	ResponseMode diplomacy(Player other, DiplomaticInteraction offer);
 	/**
 	 * Initialize the space battle.
 	 * <p>Called before the first battle simulation step.</p>
