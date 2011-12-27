@@ -251,6 +251,7 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	}
 	/** 
 	 * Add a given number of inventory item to this fleet.
+	 * <p>Cruisers and Battleships get default equipment.</p>
 	 * @param type the technology to add
 	 * @param amount the amount to add
 	 * @return result the items added

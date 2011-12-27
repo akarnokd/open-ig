@@ -22,6 +22,8 @@ import java.util.Map;
 public class AIPlanet {
 	/** The original planet. */
 	public Planet planet;
+	/** The owner. */
+	public Player owner;
 	/** The knowledge level about the planet. */
 	public PlanetKnowledge knowledge;
 	/** The planet statistics. */
@@ -43,6 +45,7 @@ public class AIPlanet {
 	 */
 	public void assign(final Planet planet, AIWorld world) {
 		this.planet = planet;
+		this.owner = planet.owner;
 		this.knowledge = world.knowledge(planet);
 		this.statistics = world.getStatistics(planet);
 		this.radar = planet.radar;

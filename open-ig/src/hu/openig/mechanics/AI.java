@@ -13,7 +13,9 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Location;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIControls;
+import hu.openig.model.AIFleet;
 import hu.openig.model.AIManager;
+import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
@@ -106,7 +108,6 @@ public class AI implements AIManager, AIControls {
 		world = new AIWorld();
 		world.assign(p);
 		playerColonyShipAvailable = w.player.colonyShipAvailable;
-		updateExplorationMap();
 	}
 	
 	@Override
@@ -145,17 +146,22 @@ public class AI implements AIManager, AIControls {
 			double powerFactor, 
 			Iterable<ResearchType> items) {
 		// TODO implement
+	}
+	@Override
+	public Fleet actionCreateFleet(String name, Planet location) {
 		Fleet fleet = new Fleet();
 		fleet.id = w.fleetIdSequence++;
-		fleet.name = w.env.labels().get(p.race + ".new_fleet_name");
+		if (name == null) {
+			fleet.name = w.env.labels().get(p.race + ".new_fleet_name");
+		} else {
+			fleet.name = name;
+		}
 		fleet.x = location.x;
 		fleet.y = location.y;
 
-		// TODO implement
-
-		
-		
 		p.fleets.put(fleet, FleetKnowledge.FULL);
+		log("CreateFleet, Fleet = %s, Planet = %s", fleet.name, location.id);
+		return fleet;
 	}
 	@Override
 	public void actionDeploySatellite(Planet planet, ResearchType satellite) {
@@ -332,7 +338,6 @@ public class AI implements AIManager, AIControls {
 	}
 	@Override
 	public void actionMoveFleet(Fleet fleet, double x, double y) {
-		// TODO implement
 		fleet.targetFleet = null;
 		fleet.targetPlanet(null);
 		fleet.waypoints.clear();
@@ -340,6 +345,15 @@ public class AI implements AIManager, AIControls {
 		fleet.mode = FleetMode.MOVE;
 		log("MoveFleet, Fleet = %s, Location = %s;%s", fleet.name, x, y);
 	}
+	@Override
+	public void actionMoveFleet(Fleet fleet, Planet planet) {
+		fleet.targetFleet = null;
+		fleet.waypoints.clear();
+		fleet.targetPlanet(planet);
+		fleet.mode = FleetMode.MOVE;
+		log("MoveFleet, Fleet = %s, Planet = %s", fleet.name, planet.id);
+	}
+	
 	@Override
 	public void actionColonizePlanet(Fleet fleet, Planet planet) {
 		if (fleet.getStatistics().planet == planet) {
@@ -350,6 +364,16 @@ public class AI implements AIManager, AIControls {
 			}
 		} else {
 			log("ColonizePlanet, Fleet = %s, Planet = %s, FAILED = not close enough", fleet.name, planet.id);
+		}
+	}
+	@Override
+	public void actionStopResearch(ResearchType rt) {
+		Research r = p.research.get(rt);
+		if (r != null) {
+			r.state = ResearchState.STOPPED;
+			if (r.type == p.runningResearch) {
+				p.runningResearch = null;
+			}
 		}
 	}
 	/**
@@ -421,6 +445,7 @@ public class AI implements AIManager, AIControls {
 		building.repairing = repair;
 		log("RepairBuilding, Planet = %s, Building = %s, Repair = %s", planet.id, building.type.id, repair);
 	}
+	
 	
 	/**
 	 * Display the action log.
@@ -694,6 +719,7 @@ public class AI implements AIManager, AIControls {
 	 * Set all cells to undiscovered.
 	 */
 	void initExplorationMap() {
+		explorationMap.clear();
 		for (int x = 0; x < explorationColumns; x++) {
 			for (int y = 0; y < explorationRows; y++) {
 				Location loc = Location.of(x, y);
@@ -708,17 +734,17 @@ public class AI implements AIManager, AIControls {
 	 * Update the exploration map by removing cells covered by current radar.
 	 */
 	void updateExplorationMap() {
-		for (Planet planet : p.planets.keySet()) {
-			if (planet.owner == p && planet.radar > 0) {
-				int cx = planet.x;
-				int cy = planet.y;
+		for (AIPlanet planet : world.ownPlanets) {
+			if (planet.radar > 0) {
+				int cx = planet.planet.x;
+				int cy = planet.planet.y;
 				int r = planet.radar;
 				
 				removeCoverage(cx, cy, r);
 			}
 		}
-		for (Fleet fleet : p.fleets.keySet()) {
-			if (fleet.owner == p && fleet.radar > 0) {
+		for (AIFleet fleet : world.ownFleets) {
+			if (fleet.radar > 0) {
 				removeCoverage((int)fleet.x, (int)fleet.y, fleet.radar);
 			}
 		}
@@ -731,10 +757,10 @@ public class AI implements AIManager, AIControls {
 	 */
 	void removeCoverage(int cx, int cy, int r) {
 		// inner rectangle
-		int ux1 = (int)Math.ceil(cx - Math.sqrt(2) * r);
-		int uy1 = (int)Math.ceil(cy - Math.sqrt(2) * r);
-		int ux2 = (int)Math.floor(cx + Math.sqrt(2) * r);
-		int uy2 = (int)Math.floor(cy + Math.sqrt(2) * r);
+		int ux1 = (int)Math.ceil(cx - Math.sqrt(2) * r / 2);
+		int uy1 = (int)Math.ceil(cy - Math.sqrt(2) * r / 2);
+		int ux2 = (int)Math.floor(cx + Math.sqrt(2) * r / 2);
+		int uy2 = (int)Math.floor(cy + Math.sqrt(2) * r / 2);
 		
 		int colStart = (int)Math.ceil(1.0 * ux1 / explorationCellSize);
 		int colEnd = (int)Math.floor(1.0 * ux2 / explorationCellSize);
@@ -744,12 +770,22 @@ public class AI implements AIManager, AIControls {
 		for (int x = colStart; x < colEnd; x++) {
 			for (int y = rowStart; y < rowEnd; y++) {
 				Location loc = Location.of(x, y);
-				explorationMap.remove(loc);
+				if (explorationMap.contains(loc)) {
+					explorationMap.remove(loc);
+				}
 			}
+		}
+		if (explorationMap.size() == 0) {
+			log("ExplorationComplete");
 		}
 	}
 	@Override
 	public void manage() {
+		if (explorationMap.size() == 0) {
+			initExplorationMap();
+		}
+		updateExplorationMap();
+		
 		List<Action0> acts = new ResearchPlanner(world, this).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
