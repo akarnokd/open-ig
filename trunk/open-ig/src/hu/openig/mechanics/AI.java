@@ -781,9 +781,9 @@ public class AI implements AIManager, AIControls {
 	}
 	@Override
 	public void manage() {
-		if (explorationMap.size() == 0) {
-			initExplorationMap();
-		}
+//		if (explorationMap.size() == 0) {
+//			initExplorationMap();
+//		}
 		updateExplorationMap();
 		
 		List<Action0> acts = new ResearchPlanner(world, this).run();
