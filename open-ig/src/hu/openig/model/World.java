@@ -1278,6 +1278,12 @@ public class World {
 			
 			if (p.owner != null) {
 				p.owner.planets.put(p, PlanetKnowledge.BUILDING);
+				// make owned technology available, just in case
+				for (Building b : p.surface.buildings) {
+					if (b.type.research != null) {
+						p.owner.setAvailable(b.type.research);
+					}
+				}
 			}
 			
 			allPlanets.remove(p.id);

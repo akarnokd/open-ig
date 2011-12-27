@@ -902,7 +902,10 @@ public class LoadSaveScreen extends ScreenBase {
 							if (isCancelled()) {
 								throw new CancellationException();
 							}
-							return (name.startsWith("save-") || name.startsWith("savex-")) && name.endsWith(".xml");
+							return (name.startsWith("save-") 
+									|| name.startsWith("savex-") 
+									|| name.startsWith("info-")) 
+									&& name.endsWith(".xml");
 						}
 					});
 					if (files != null) {
@@ -933,9 +936,14 @@ public class LoadSaveScreen extends ScreenBase {
 						
 						String fn = f.getName();
 						if (fn.startsWith("savex-")) {
+							if (!f.delete()) {
+								System.err.println("Could not delete " + f);
+							}
+						} else
+						if (fn.startsWith("info-")) {
 							try {
 								w = XElement.parseXML(f.getAbsolutePath());
-								fi.name = "save-" + f.getName().substring(6);
+								fi.name = "save-" + f.getName().substring(5);
 								fi.money = w.getLong("money");
 								if (new File(dir, fi.name).canRead()) {
 									shortMemory.add(fn);
@@ -945,7 +953,7 @@ public class LoadSaveScreen extends ScreenBase {
 								continue;
 							}
 						} else {
-							String fn2 = "savex-" + fn.substring(5);
+							String fn2 = "info-" + fn.substring(5);
 							if (!shortMemory.contains(fn2)) {
 								fi.name = f.getName();
 								
@@ -1107,6 +1115,10 @@ public class LoadSaveScreen extends ScreenBase {
 				System.err.println("Could not delete " + f);
 			}
 			f = new File("save/" + commons.profile.name + "/savex-" + list.selected.name.substring(5));
+			if (f.exists() && !f.delete()) {
+				System.err.println("Could not delete " + f);
+			}
+			f = new File("save/" + commons.profile.name + "/info-" + list.selected.name.substring(5));
 			if (f.exists() && !f.delete()) {
 				System.err.println("Could not delete " + f);
 			}

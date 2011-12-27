@@ -419,7 +419,7 @@ public class StarmapScreen extends ScreenBase {
 	/** The achievements button. */
 	UIImageButton achievements;
 	/** Flag to indicate this is the first time the starmap is displayed in a new game. */
-	boolean newGameStarted;
+	public boolean newGameStarted;
 	/** Debug: show all planets and fleets. */
 	boolean showAll;
 	/** Given the current panel visibility settings, set the map rendering coordinates. */

@@ -1344,7 +1344,7 @@ public class GameWindow extends JFrame implements GameControls {
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 						
 						File fout = new File(dir, "save-" + sdf.format(new Date()) + ".xml");
-						File foutx = new File(dir, "savex-" + sdf.format(new Date()) + ".xml");
+						File foutx = new File(dir, "info-" + sdf.format(new Date()) + ".xml");
 						try {
 							xworld.save(fout);
 							World.deriveShortWorldState(xworld).save(foutx);
@@ -1506,12 +1506,15 @@ public class GameWindow extends JFrame implements GameControls {
 		// restore starmap location and zoom
 		if (xworld.has("starmap-z")) {
 			allScreens.starmap.setZoomIndex(xworld.getInt("starmap-z"));
+			allScreens.starmap.newGameStarted = false;
 		}
 		if (xworld.has("starmap-x")) {
 			allScreens.starmap.setXOffset(xworld.getInt("starmap-x"));
+			allScreens.starmap.newGameStarted = false;
 		}
 		if (xworld.has("starmap-y")) {
 			allScreens.starmap.setYOffset(xworld.getInt("starmap-y"));
+			allScreens.starmap.newGameStarted = false;
 		}
 		config.loadProperties(xworld);
 	}
@@ -1795,11 +1798,11 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	void addToFleet(Fleet target, ResearchType rt, int count) {
 		InventoryItem ii = new InventoryItem();
+		ii.owner = target.owner;
 		ii.type = rt;
 		ii.count = count;
 		ii.hp = commons.world().getHitpoints(ii.type);
 		ii.createSlots();
-		ii.owner = target.owner;
 		// fill in best equipment
 		for (InventorySlot is : ii.slots) {
 			if (!is.slot.fixed) {

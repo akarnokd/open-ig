@@ -3647,11 +3647,14 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 		
-		if (battle.attacker.owner == winner) {
+		Player np = nonPlayer();
+		
+		if (bi.attacker.owner == winner) {
 			planet().takeover(winner);
 		}
 
-		nonPlayer().ai.groundBattleDone(battle);
+		player().ai.groundBattleDone(bi);
+		np.ai.groundBattleDone(bi);
 		
 		battle = null;
 		
@@ -3680,12 +3683,6 @@ public class PlanetScreen extends ScreenBase {
 			return battle.attacker.owner;
 		}
 		return null;
-	}
-	/**
-	 * Conclude the battle.
-	 */
-	void concludeBattle() {
-		
 	}
 	/**
 	 * Is the given target within the min-max range of the unit.
@@ -3960,7 +3957,7 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 		if (planet().owner != owner) {
-			for (Building b : surface().buildings) {
+			for (Building b : new ArrayList<Building>(surface().buildings)) {
 				Location u = centerCellOf(b);
 				if (cellInRange(cx, cy, u.x, u.y, area)) {
 					damageBuilding(b, (int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
@@ -4638,7 +4635,8 @@ public class PlanetScreen extends ScreenBase {
 		
 		setGroundWarTimeControls();
 		
-		nonPlayer().ai.groundBattle(battle);
+		player().ai.groundBattleInit(battle);
+		nonPlayer().ai.groundBattleInit(battle);
 		
 		battlePlacements.clear();
 		battlePlacements.addAll(setDeploymentLocations(planet().owner == player()));
