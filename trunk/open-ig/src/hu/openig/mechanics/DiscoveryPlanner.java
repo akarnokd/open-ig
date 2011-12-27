@@ -77,43 +77,42 @@ public class DiscoveryPlanner implements AIPlanner {
 		if (!p.id.equals("Empire")) {
 			return;
 		}
-		if (explorationMap.size() == 0) {
-			return;
-		}
-		// find a fleet which is not moving and has at least a decent radar range
-		// and is among the fastest available
-		AIFleet bestFleet = null;
-		for (AIFleet f : world.ownFleets) {
-			if (!f.isMoving() && f.radar >= w.params().fleetRadarUnitSize()) {
-				if (bestFleet == null || bestFleet.statistics.speed < f.statistics.speed) {
-					bestFleet = f;
+		if (explorationMap.size() > 0) {
+			// find a fleet which is not moving and has at least a decent radar range
+			// and is among the fastest available
+			AIFleet bestFleet = null;
+			for (AIFleet f : world.ownFleets) {
+				if (!f.isMoving() && f.radar >= w.params().fleetRadarUnitSize()) {
+					if (bestFleet == null || bestFleet.statistics.speed < f.statistics.speed) {
+						bestFleet = f;
+					}
 				}
 			}
-		}
-		
-		if (bestFleet != null) {
-			final AIFleet bf = bestFleet;
-			final Location loc = Collections.min(explorationMap, new Comparator<Location>() {
-				@Override
-				public int compare(Location o1, Location o2) {
-					double d1 = Math.hypot(bf.x - o1.x, bf.y - o1.y);
-					double d2 = Math.hypot(bf.x - o2.x, bf.y - o2.y);
-					return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-				}
-			});
-			final int ec = explorationCellSize;
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionMoveFleet(bf.fleet, loc.x + ec / 2, loc.y + ec / 2);
-				}
-			});
-			return;
+			
+			if (bestFleet != null) {
+				final AIFleet bf = bestFleet;
+				final int ec = explorationCellSize;
+				final Location loc = Collections.min(explorationMap, new Comparator<Location>() {
+					@Override
+					public int compare(Location o1, Location o2) {
+						double d1 = Math.hypot(bf.x - (o1.x + 0.5) * ec, bf.y - (o1.y + 0.5) * ec);
+						double d2 = Math.hypot(bf.x - (o2.x + 0.5) * ec, bf.y - (o2.y + 0.5) * ec);
+						return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+					}
+				});
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionMoveFleet(bf.fleet, (loc.x + 0.5) * ec, (loc.y + 0.5) * ec);
+					}
+				});
+				return;
+			}
 		}
 		
 		// traverse all known planet and deploy satellites
 		outer:
-		for (final AIPlanet planet : world.enemyPlanets) {
+		for (final AIPlanet planet : world.colonizePlanets) {
 			AIInventoryItem currentSatellite = null;
 			for (AIInventoryItem ii : planet.inventory) {
 				if (ii.owner == p && ii.type.has("detector") 

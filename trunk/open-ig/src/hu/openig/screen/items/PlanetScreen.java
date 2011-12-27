@@ -406,12 +406,14 @@ public class PlanetScreen extends ScreenBase {
 		}
 		focused = render;
 		
-		simulator = commons.register(SIMULATION_DELAY, new Action0() {
-			@Override
-			public void invoke() {
-				doGroundWarSimulation();
-			}
-		});
+		if (battle == null) {
+			simulator = commons.register(SIMULATION_DELAY, new Action0() {
+				@Override
+				public void invoke() {
+					doGroundWarSimulation();
+				}
+			});
+		}
 	}
 
 	@Override
