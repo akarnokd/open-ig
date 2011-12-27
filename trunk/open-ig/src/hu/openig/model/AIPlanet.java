@@ -28,6 +28,8 @@ public class AIPlanet {
 	public PlanetStatistics statistics;
 	/** The radar range. */
 	public int radar;
+	/** The population. */
+	public int population;
 	/** The inventory items of the planet. */
 	public final List<AIInventoryItem> inventory = JavaUtils.newArrayList();
 	/** Set of locations where no buildings may be placed. */
@@ -44,6 +46,7 @@ public class AIPlanet {
 		this.knowledge = world.knowledge(planet);
 		this.statistics = world.getStatistics(planet);
 		this.radar = planet.radar;
+		this.population = planet.population;
 		for (InventoryItem ii : planet.inventory) {
 			inventory.add(new AIInventoryItem(ii));
 		}

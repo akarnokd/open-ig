@@ -184,13 +184,17 @@ public final class Simulator {
 	static boolean progressPlanet(World world, Planet planet, boolean dayChange,
 			PlanetStatistics ps) {
 		boolean result = false;
-		final int repairCost = 20;
-		final int repairAmount = 50;
 		int tradeIncome = 0;
 		float multiply = 1.0f;
 		float moraleBoost = 0;
 		int radar = 0;
 		long eqPlaytime = 6L * 60 * 60 * 1000;
+		
+		final int repairCost = world.params().repairCost();
+		final int repairAmount = world.params().repairSpeed();
+//		final int buildCost = world.params().constructionCost();
+		final int buildAmount = world.params().constructionSpeed();
+		
 		if (world.statistics.playTime >= eqPlaytime && (planet.type.type.equals("earth") || planet.type.type.equals("rocky"))) {
 			if (planet.earthQuakeTTL <= 0) {
 				// cause earthquake once in every 12, 6 or 3 months
@@ -239,9 +243,9 @@ public final class Simulator {
 			}
 			
 			if (b.isConstructing()) {
-				b.buildProgress += 200;
+				b.buildProgress += buildAmount;
 				b.buildProgress = Math.min(b.type.hitpoints, b.buildProgress);
-				b.hitpoints += 200;
+				b.hitpoints += buildAmount;
 				b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 				
 				if (b.hitpoints == b.type.hitpoints) {
@@ -301,7 +305,6 @@ public final class Simulator {
 					radar = Math.max(radar, (int)b.getResource("radar"));
 				}
 			}
-			// there is one step when the building is ready but not yet allocated
 			if (planet.earthQuakeTTL > 0) {
 				if (b.type.kind.equals("Factory")) {
 					b.hitpoints -= b.type.hitpoints * 15 / 600;
@@ -459,7 +462,7 @@ public final class Simulator {
 			if (rs.remainingMoney > 0) {
 				if (rs.getPercent() < maxpc) {
 					float rel = 1.0f * rs.assignedMoney / rs.remainingMoney;
-					int dmoney = (int)(rel * 40);
+					int dmoney = (int)(rel * world.params().researchSpeed());
 					if (dmoney < player.money) {
 						rs.remainingMoney = Math.max(0, rs.remainingMoney - dmoney);
 						rs.assignedMoney = Math.min((int)(rs.remainingMoney * rel) + 1, rs.remainingMoney);
@@ -530,7 +533,7 @@ public final class Simulator {
 			}
 			if (prioritySum > 0) {
 				for (Production pr : new ArrayList<Production>(prs.getValue().values())) {
-					int targetCap = (capacity * pr.priority / prioritySum) / 50;
+					int targetCap = (capacity * pr.priority / prioritySum) / world.params().productionUnit();
 					if (pr.count == 0) {
 						targetCap = 0;
 					}

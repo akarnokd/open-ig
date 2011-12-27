@@ -572,25 +572,6 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 		}
 		return count;
 	}
-//	/** @return compute the the radar radius only. */
-//	public int radar() {
-//		int r = 0;
-//		for (Building b : surface.buildings) {
-//			if (b.getEfficiency() >= 0.5) {
-//				if (b.hasResource("radar")) {
-//					r = Math.max(radar, (int)b.getResource("radar"));
-//				}
-//			}
-//		}
-//		for (InventoryItem pii : inventory) {
-//			if (pii.owner == owner) {
-//				if (pii.type.get("radar") != null) {
-//					r = Math.max(radar, Integer.parseInt(pii.type.get("radar")));
-//				}
-//			}
-//		}
-//		return r * 35;
-//	}
 	/**
 	 * Remove detector-capable satellites (e.g., spy satellites) from orbit.
 	 */

@@ -81,7 +81,7 @@ public class PlanetSurface {
 		}
 		@Override
 		protected boolean cellInMap(int x, int y) {
-			return cellInMap(x, y);
+			return PlanetSurface.this.cellInMap(x, y);
 		}
 		@Override
 		protected int height() {
