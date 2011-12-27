@@ -3661,6 +3661,8 @@ public class PlanetScreen extends ScreenBase {
 		
 		battle = null;
 		
+		planet().surface.placeRoads(planet().race, world().buildingModel);
+		
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 		bfs.displayBattleSummary(bi);
 	}
