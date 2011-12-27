@@ -1043,9 +1043,7 @@ public final class Simulator {
 		List<BuildingType> result = new ArrayList<BuildingType>();
 		for (BuildingType bt : world.buildingModel.buildings.values()) {
 			if (
-					bt.tileset.containsKey(planet.race)
-					&& (bt.research == null || planet.owner.isAvailable(bt.research))
-					&& planet.owner.money >= bt.cost
+					planet.owner.money >= bt.cost
 					&& planet.canBuild(bt)
 					&& filter.invoke(bt)
 			) {

@@ -15,7 +15,6 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetStatistics;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
@@ -2165,7 +2164,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				surveySatellite.visible(false);
-				deploySatellite("Satellite", "interlude/deploy_satellite", satelliteSurvivalDifficulty(12 * 6));
+				deploySatellite("Satellite", "interlude/deploy_satellite");
 			}
 		};
 		spySatellite1 = new UIImageButton(commons.starmap().deploySpySat1);
@@ -2173,7 +2172,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				spySatellite1.visible(false);
-				deploySatellite("SpySatellite1", "interlude/deploy_spy_satellite_1", satelliteSurvivalDifficulty(24 * 6));
+				deploySatellite("SpySatellite1", "interlude/deploy_spy_satellite_1");
 			}
 		};
 		spySatellite2 = new UIImageButton(commons.starmap().deploySpySat2);
@@ -2181,7 +2180,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				spySatellite2.visible(false);
-				deploySatellite("SpySatellite2", "interlude/deploy_spy_satellite_2", satelliteSurvivalDifficulty(96 * 6));
+				deploySatellite("SpySatellite2", "interlude/deploy_spy_satellite_2");
 			}
 		};
 		hubble2 = new UIImageButton(commons.starmap().deployHubble);
@@ -2189,7 +2188,7 @@ public class StarmapScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				hubble2.visible(false);
-				deploySatellite("Hubble2", "interlude/deploy_hubble", 0);
+				deploySatellite("Hubble2", "interlude/deploy_hubble");
 			}
 		};
 		
@@ -2325,27 +2324,11 @@ public class StarmapScreen extends ScreenBase {
 		addThis();
 	}
 	/**
-	 * Compute the satellite survival in respect to the difficulty level.
-	 * @param value the initial value
-	 * @return the updated TTL value
-	 */
-	int satelliteSurvivalDifficulty(int value) {
-		switch (world().difficulty) {
-		case EASY:
-			return value * 4;
-		case NORMAL:
-			return value * 2;
-		default:
-			return value;
-		}
-	}
-	/**
 	 * Deploy a satellite with an animation.
 	 * @param typeId the satellite id
 	 * @param media the media to play
-	 * @param ttl the time to live value in 10s of ingame minutes
 	 */
-	void deploySatellite(final String typeId, String media, final int ttl) {
+	void deploySatellite(final String typeId, String media) {
 		final Planet p = planet();
 		final boolean isPaused = commons.simulation.paused();
 		if (!isPaused) {
@@ -2355,11 +2338,11 @@ public class StarmapScreen extends ScreenBase {
 			commons.control().playVideos(new Action0() {
 				@Override
 				public void invoke() {
-					placeSatellite(typeId, ttl, p, isPaused);
+					placeSatellite(typeId, p, isPaused);
 				}
 			}, media);
 		} else {
-			placeSatellite(typeId, ttl, p, isPaused);
+			placeSatellite(typeId, p, isPaused);
 		}
 	}
 	@Override
@@ -2681,25 +2664,14 @@ public class StarmapScreen extends ScreenBase {
 	/**
 	 * Place satellite around the given planet and resume simulation if needed.
 	 * @param typeId the satellite id
-	 * @param ttl the time to live
 	 * @param p the target planet
 	 * @param isPaused was the game paused
 	 */
-	void placeSatellite(final String typeId, final int ttl, final Planet p,
+	void placeSatellite(final String typeId, final Planet p,
 			final boolean isPaused) {
 		ResearchType rt = world().researches.get(typeId);
 		
-		InventoryItem pii = new InventoryItem();
-		pii.count = 1;
-		pii.owner = player();
-		pii.type = rt;
-		
-		p.inventory.add(pii);
-		if (ttl > 0) {
-			p.timeToLive.put(pii, ttl);
-		}
-		
-		player().changeInventoryCount(rt, -1);
+		AI.actionDeploySatellite(player(), p, rt);
 		
 		if (!isPaused) {
 			commons.simulation.resume();

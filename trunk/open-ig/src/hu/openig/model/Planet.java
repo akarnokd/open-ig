@@ -355,7 +355,16 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	 * @return can be built here?
 	 */
 	public boolean canBuild(BuildingType bt) {
+		// check if this planet type is on the exception list
 		if (bt.except.contains(type.type)) {
+			return false;
+		}
+		// check if the required research is available
+		if (owner != null && bt.research != null && owner.isAvailable(bt.research)) {
+			return false;
+		}
+		// if the building is not available for this race
+		if (!bt.tileset.containsKey(race)) {
 			return false;
 		}
 		boolean hubFound = false;
