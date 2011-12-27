@@ -106,7 +106,7 @@ public class ResearchPlanner {
 			Collections.sort(candidatesImmediate, new CompareFromMap<ResearchType>(enablesCount));
 			final ResearchType rt = candidatesImmediate.get(0);
 			double mf = 1.0;
-			if (rt.researchCost * 5 >= world.money) {
+			if (rt.researchCost * 5 <= world.money) {
 				mf = 2.0;
 			}
 			final double moneyFactor = mf; // TODO decision variable

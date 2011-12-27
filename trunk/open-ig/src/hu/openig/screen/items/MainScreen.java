@@ -233,12 +233,13 @@ public class MainScreen extends ScreenBase {
 		selectRandomBackground();
 		onResize();
 		
-		doContinueListing();
+		checkExistingSave();
 	}
 	/**
-	 * Search for previous saves.
+	 * Search for previous saves to continue.
 	 */
-	void doContinueListing() {
+	public void checkExistingSave() {
+		continueLabel.disabled = true;
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -374,7 +375,7 @@ public class MainScreen extends ScreenBase {
 				toHu.disabled = false;
 				commons.control().switchLanguage("en");
 				selectRandomBackground();
-				doContinueListing();
+				checkExistingSave();
 
 				askRepaint();
 			}
@@ -387,7 +388,7 @@ public class MainScreen extends ScreenBase {
 				toHu.disabled = true;
 				commons.control().switchLanguage("hu");
 				selectRandomBackground();
-				doContinueListing();
+				checkExistingSave();
 				askRepaint();
 			}
 		};
