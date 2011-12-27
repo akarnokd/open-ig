@@ -1067,6 +1067,7 @@ public final class Simulator {
 	}
 	/**
 	 * Construct a building on the given planet.
+	 * <p>Note that the build order does not check for money or placement requirements.</p>
 	 * @param world the world for the model
 	 * @param planet the target planet
 	 * @param bt the building type to build
