@@ -10,9 +10,7 @@ package hu.openig.screen.items;
 
 
 import hu.openig.core.Action0;
-import hu.openig.core.Location;
-import hu.openig.model.Building;
-import hu.openig.model.BuildingType;
+import hu.openig.mechanics.AI;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
@@ -28,7 +26,6 @@ import hu.openig.model.RotationDirection;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
-import hu.openig.model.TileSet;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
@@ -840,7 +837,7 @@ public class StarmapScreen extends ScreenBase {
 			fleetStop.down = f.mode == null;
 		}
 		
-		FleetStatistics fs = f.getStatistics(world().battle);
+		FleetStatistics fs = f.getStatistics();
 		
 		fleetColonize.visible(
 				fleetMode && f.owner == player()
@@ -1160,7 +1157,7 @@ public class StarmapScreen extends ScreenBase {
 			if (showFleetButton.selected) {
 				for (Fleet f : fleets) {
 					if (f.owner == player()) {
-						f.getStatistics(world().battle);
+						f.getStatistics();
 						paintRadar(g2, (int)f.x, (int)f.y, f.radar, zoom);
 					}
 				}
@@ -2632,60 +2629,14 @@ public class StarmapScreen extends ScreenBase {
 		if (f == null) {
 			return;
 		}
-		Planet p = f.getStatistics(world().battle).planet;
+		Planet p = f.getStatistics().planet;
 		if (p == null || p.owner != null) {
 			// FIXME message: colonize failed
 			sound(SoundType.NOT_AVAILABLE);
 			return;
 		}
-		for (BuildingType bt : world().buildingModel.buildings.values()) {
-			if ("MainBuilding".equals(bt.kind)) {
-				TileSet ts = bt.tileset.get(player().race);
-				if (ts != null) {
-					Point pt = p.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
-					if (pt != null) {
-						// remove colony ship from fleet
-						f.changeInventory(world().researches.get("ColonyShip"), -1);
-						
-						// remove empty fleet
-						if (f.inventory.isEmpty()) {
-							world().removeFleet(f);
-							List<Fleet> of = player().ownFleets();
-							if (of.size() > 0) {
-								player().currentFleet = of.iterator().next();
-							} else {
-								player().currentFleet = null;
-								player().selectionMode = SelectionMode.PLANET;
-							}
-						}
-						// place building
-						Building b = new Building(bt, player().race);
-						p.race = player().race;
-						p.population = 5000;
-						p.morale = 50;
-						p.lastMorale = 50;
-						p.lastPopulation = 5000;
-						p.owner = player();
-						b.location = Location.of(pt.x + 1, pt.y - 1);
-						
-						p.surface.placeBuilding(ts.normal, b.location.x, b.location.y, b);
-						p.surface.placeRoads(player().race, world().buildingModel);
-						
-						player().planets.put(p, PlanetKnowledge.BUILDING);
-						player().currentPlanet = p;
-						
-						player().statistics.planetsColonized++;
-						
-						// uninstall satellites
-						p.removeOwnerSatellites();
-						
-						displayPrimary(Screens.COLONY);
-						return;
-					} else {
-						System.err.printf("Could not colonize planet %s, not enough initial space for colony hub of race %s.", p.id, player().race);
-					}
-				}
-			}
+		if (AI.colonizeWithFleet(f, p)) {
+			displayPrimary(Screens.COLONY);
 		}
 		// FIXME message: colonize failed
 	}

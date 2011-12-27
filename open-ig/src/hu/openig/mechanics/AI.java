@@ -23,12 +23,14 @@ import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
+import hu.openig.model.SelectionMode;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
@@ -124,6 +126,7 @@ public class AI implements AIManager, AIControls {
 		if (p.runningResearch != null) {
 			Research r = p.research.get(p.runningResearch);
 			r.state = ResearchState.STOPPED;
+			log("PauseResearch, Type = %s", r.type.id);
 		}
 		p.runningResearch = rt;
 		Research r = p.research.get(p.runningResearch);
@@ -137,14 +140,9 @@ public class AI implements AIManager, AIControls {
 			r.assignedMoney = (int)(r.remainingMoney * moneyFactor);
 		}
 		r.state = ResearchState.RUNNING;
+		log("StartResearch, Type = %s, MoneyFactor = %s", rt.id, moneyFactor);
 	}
-	/**
-	 * Deploy a fleet from the inventory.
-	 * @param location the planet where the fleet will emerge
-	 * @param loadFactor percentage of 0..1 about how many units to place into fighter/cruiser/battleship slots.
-	 * @param powerFactor percentage of 0..1 about how well the units should be equipped
-	 * @param items the sequence of items to choose from when filling in the slots
-	 */
+	@Override
 	public void actionDeployFleet(
 			Planet location,
 			double loadFactor, 
@@ -174,17 +172,16 @@ public class AI implements AIManager, AIControls {
 		}
 		prod.priority = priority;
 		prod.count += count;
+		log("StartProduction, Type = %s, Count = %s, Priority = %s", rt.id, count, priority);
 	}
-	/**
-	 * Pause a production by setting its priority to zero.
-	 * @param rt the research type to pause
-	 */
+	@Override
 	public void actionPauseProduction(ResearchType rt) {
 		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
 		Production prod = prodLine.get(rt);
 		if (prod != null) {
 			prod.priority = 0;
-		}		
+		}
+		log("PauseProduction, Type = %s", rt.id);
 	}
 	@Override
 	public void actionPlaceBuilding(Planet planet, BuildingType buildingType) {
@@ -194,17 +191,18 @@ public class AI implements AIManager, AIControls {
 			Point pt = planet.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
 			if (pt != null) {
 				Simulator.doConstruct(w, planet, buildingType, pt);
+				log("placeBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
+			} else {
+				log("PlaceBuilding, Planet = %s, Type = %s, FAIL = no room", planet.id, buildingType.id);
 			}
+		} else {
+			log("PlaceBuilding, Planet = %s, Type = %s, FAIL = no money", planet.id, buildingType.id);
 		}
 	}
-	/**
-	 * Demolish a building.
-	 * @param planet the target planet
-	 * @param b the building
-	 */
 	@Override
 	public void actionDemolishBuilding(Planet planet, Building b) {
 		demolishBuilding(w, planet, b);
+		log("DemolishBuilding, Planet = %s, Building = %s", planet.id, b.type.id);
 	}
 	/**
 	 * Demolish a building on the given planet, update statistics and get some money back.
@@ -232,43 +230,26 @@ public class AI implements AIManager, AIControls {
 	@Override
 	public void actionUpgradeBuilding(Planet planet, Building building, int newLevel) {
 		// TODO implement
-		Simulator.doUpgrade(w, planet, building, newLevel);
+		if (Simulator.doUpgrade(w, planet, building, newLevel)) {
+			log("UpgradeBuilding, Planet = %s, Building = %s, NewLevel = %s", planet.id, building.type.id, newLevel);
+		} else {
+			log("UpgradeBuilding, Planet = %s, Building = %s, NewLevel = %s, FAILED = level limit", planet.id, building.type.id, newLevel);
+		}
+		
 	}
-	/**
-	 * Deploy units such as tanks, fighters and stations into a planet.
-	 * @param loadFactor percentage of 0..1 about how many units to place into slots.
-	 * @param powerFactor percentage of 0..1 about how well the units should be equipped
-	 * @param planet the target planet
-	 * @param items the item types to deploy
-	 */
+	@Override
 	public void actionDeployUnits(double loadFactor, double powerFactor, Planet planet, Iterable<ResearchType> items) {
 		// TODO implement
 	}
-	
-	/**
-	 * Use the fleet to attack the planet.
-	 * @param fleet the fleet
-	 * @param planet the target planet
-	 * @param mode the aim of the attack
-	 */
+	@Override
 	public void actionAttackPlanet(Fleet fleet, Planet planet, AIAttackMode mode) {
 		// TODO implement
 	}
-	/**
-	 * Use the fleet to attack the enemy fleet.
-	 * @param fleet the fleet
-	 * @param enemy the enemy fleet
-	 * @param defense indicate if the attack is to stop an advancing enemy
-	 */
+	@Override
 	public void actionAttackFleet(Fleet fleet, Fleet enemy, boolean defense) {
 		// TODO implement
 	}
-	/**
-	 * Move the fleet to the designated coordinates.
-	 * @param fleet the fleet
-	 * @param x the X coordinate
-	 * @param y the Y coordinate
-	 */
+	@Override
 	public void actionMoveFleet(Fleet fleet, double x, double y) {
 		// TODO implement
 		fleet.targetFleet = null;
@@ -276,22 +257,106 @@ public class AI implements AIManager, AIControls {
 		fleet.waypoints.clear();
 		fleet.waypoints.add(new Point2D.Double(x, y));
 		fleet.mode = FleetMode.MOVE;
+		log("MoveFleet, Fleet = %s, Location = %s;%s", fleet.name, x, y);
 	}
-	/**
-	 * Send the fleet to colonize the target planet.
-	 * @param fleet the fleet
-	 * @param planet the planet
-	 */
+	@Override
 	public void actionColonizePlanet(Fleet fleet, Planet planet) {
-		// TODO implement
+		if (fleet.getStatistics().planet == planet) {
+			if (colonizeWithFleet(fleet, planet)) {
+				log("ColonizePlanet, Fleet = %s, Planet = %s", fleet.name, planet.id);
+			} else {
+				log("ColonizePlanet, Fleet = %s, Planet = %s, FAILED = no room", fleet.name, planet.id);
+			}
+		} else {
+			log("ColonizePlanet, Fleet = %s, Planet = %s, FAILED = not close enough", fleet.name, planet.id);
+		}
 	}
 	/**
-	 * Send a diplomatic request/statement to the other player. 
-	 * @param other the other player
-	 * @param offer the offer
+	 * Apply colonizationc changes to the given planet and reduce the colony ship count in the fleet.
+	 * @param f the fleet
+	 * @param p the planet
+	 * @return true if colonization successful
 	 */
+	public static boolean colonizeWithFleet(Fleet f, Planet p) {
+		World w = f.owner.world;
+		for (BuildingType bt : w.buildingModel.buildings.values()) {
+			if ("MainBuilding".equals(bt.kind)) {
+				TileSet ts = bt.tileset.get(f.owner.race);
+				if (ts != null) {
+					Point pt = p.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
+					if (pt != null) {
+						// remove colony ship from fleet
+						f.changeInventory(w.researches.get("ColonyShip"), -1);
+						
+						// remove empty fleet
+						if (f.inventory.isEmpty()) {
+							w.removeFleet(f);
+							List<Fleet> of = f.owner.ownFleets();
+							if (of.size() > 0) {
+								f.owner.currentFleet = of.iterator().next();
+							} else {
+								f.owner.currentFleet = null;
+								f.owner.selectionMode = SelectionMode.PLANET;
+							}
+						}
+						// place building
+						Building b = new Building(bt, f.owner.race);
+						p.owner = f.owner;
+						p.race = f.owner.race;
+						p.population = 5000;
+						p.morale = 50;
+						p.lastMorale = 50;
+						p.lastPopulation = 5000;
+						b.location = Location.of(pt.x + 1, pt.y - 1);
+						
+						p.surface.placeBuilding(ts.normal, b.location.x, b.location.y, b);
+						p.surface.placeRoads(p.owner.race, w.buildingModel);
+						
+						p.owner.planets.put(p, PlanetKnowledge.BUILDING);
+						p.owner.currentPlanet = p;
+						
+						p.owner.statistics.planetsColonized++;
+						
+						// uninstall satellites
+						p.removeOwnerSatellites();
+						
+						return true;
+					} else {
+						System.err.printf("Could not colonize planet %s, not enough initial space for colony hub of race %s.", p.id, f.owner.race);
+					}
+				}
+			}
+		}
+		return false;
+	}
+	@Override
 	public void actionDiplomaticInteraction(Player other, DiplomaticInteraction offer) {
 		// TODO implement
+	}
+	
+	@Override
+	public void actionRepairBuilding(Planet planet, Building building,
+			boolean repair) {
+		building.repairing = repair;
+		log("RepairBuilding, Planet = %s, Building = %s, Repair = %s", planet.id, building.type.id, repair);
+	}
+	
+	/**
+	 * Display the action log.
+	 * @param message the message
+	 */
+	void log(String message) {
+		System.out.printf("AI:%s:%s%n", p.id, message);
+	}
+	/**
+	 * Display the action log.
+	 * @param message the message
+	 * @param values the message parameters
+	 */
+	void log(String message, Object... values) {
+		System.out.printf("AI:%s:");
+		System.out.printf(message, values);
+		System.out.println();
 	}
 	
 	@Override

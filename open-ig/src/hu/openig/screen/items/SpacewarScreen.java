@@ -3323,7 +3323,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (battle.attacker.owner == winner) {
 			// originally attacking the planet
 			if (battle.targetPlanet != null) {
-				FleetStatistics fs = battle.attacker.getStatistics(world().battle);
+				FleetStatistics fs = battle.attacker.getStatistics();
 				if (fs.vehicleCount > 0) {
 					commons.stopMusic();
 					commons.control().playVideos(new Action0() {

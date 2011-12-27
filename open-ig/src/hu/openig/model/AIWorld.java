@@ -150,7 +150,7 @@ public class AIWorld {
 	public FleetStatistics getStatistics(Fleet f) {
 		FleetStatistics fs = fleetStatistics.get(f);
 		if (fs == null) {
-			fs = f.getStatistics(player.world.battle);
+			fs = f.getStatistics();
 			fleetStatistics.put(f, fs);
 		}
 		return fs;
