@@ -28,8 +28,6 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	public double x;
 	/** The Y coordinate. */
 	public double y;
-//	/** The associated ship icon. */
-//	public BufferedImage shipIcon;
 	/** The radar radius. */
 	public int radar;
 	/** The fleet name. */
@@ -140,7 +138,7 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 		FleetStatistics result = new FleetStatistics();
 
 		result.speed = Integer.MAX_VALUE;
-		radar = 0;
+		int radar = 0;
 		for (InventoryItem fii : inventory) {
 			boolean checkHyperdrive = false;
 			boolean checkFirepower = false;
@@ -204,8 +202,9 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 		if (!inventory.isEmpty() && radar == 0) {
 			radar = 12;
 		} else {
-			radar *= 25;
+			radar *= owner.world.params().fleetRadarUnitSize();
 		}
+		this.radar = radar;
 		
 		return result;
 	}
