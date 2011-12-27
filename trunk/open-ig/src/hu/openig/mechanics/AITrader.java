@@ -428,9 +428,11 @@ public class AITrader implements AIManager {
 			xtb.set("fleet", tb.id);
 		}
 		for (Map.Entry<Fleet, Planet> last : lastVisitedPlanet.entrySet()) {
-			XElement xlast = out.add("last-visit");
-			xlast.set("fleet", last.getKey().id);
-			xlast.set("planet", last.getValue().id);
+			if (last.getValue() != null) {
+				XElement xlast = out.add("last-visit");
+				xlast.set("fleet", last.getKey().id);
+				xlast.set("planet", last.getValue().id);
+			}
 		}
 	}
 	@Override

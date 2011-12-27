@@ -604,22 +604,22 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	public void takeover(Player newOwner) {
 		Player lastOwner = owner;
 		owner = newOwner;
-		owner.statistics.planetsConquered++;
+		newOwner.statistics.planetsConquered++;
 		lastOwner.statistics.planetsLost++;
 		for (Building b : surface.buildings) {
 			if (b.type.research != null) {
-				owner.setAvailable(b.type.research);
+				newOwner.setAvailable(b.type.research);
 			}
 		}
-		owner.planets.put(this, PlanetKnowledge.BUILDING);
+		newOwner.planets.put(this, PlanetKnowledge.BUILDING);
 		lastOwner.planets.put(this, PlanetKnowledge.NAME);
 
 		removeOwnerSatellites();
 
+		// notify about ownership change
 		lastOwner.ai.onPlanetLost(this);
 		newOwner.ai.onPlanetConquered(this, lastOwner);
 		newOwner.world.env.events().onConquered(this, lastOwner);
 		
-		// notify about ownership change
 	}
 }
