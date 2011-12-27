@@ -134,10 +134,10 @@ public class AI implements AIManager, AIControls {
 			r = new Research();
 			r.type = rt;
 			r.remainingMoney = r.type.researchCost;
-			r.assignedMoney = (int)(r.type.researchCost * moneyFactor);
+			r.assignedMoney = (int)(r.type.researchCost * moneyFactor / 2);
 			p.research.put(r.type, r);
 		} else {
-			r.assignedMoney = (int)(r.remainingMoney * moneyFactor);
+			r.assignedMoney = (int)(r.remainingMoney * moneyFactor / 2);
 		}
 		r.state = ResearchState.RUNNING;
 		log("StartResearch, Type = %s, MoneyFactor = %s", rt.id, moneyFactor);
@@ -192,7 +192,7 @@ public class AI implements AIManager, AIControls {
 			Point pt = planet.surface.placement.findLocation(planet.getPlacementDimensions(buildingType));
 			if (pt != null) {
 				Simulator.doConstruct(w, planet, buildingType, pt);
-				log("placeBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
+				log("PlaceBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
 			} else {
 				log("PlaceBuilding, Planet = %s, Type = %s, FAIL = no room", planet.id, buildingType.id);
 			}
@@ -230,7 +230,6 @@ public class AI implements AIManager, AIControls {
 	}
 	@Override
 	public void actionUpgradeBuilding(Planet planet, Building building, int newLevel) {
-		// TODO implement
 		if (Simulator.doUpgrade(w, planet, building, newLevel)) {
 			log("UpgradeBuilding, Planet = %s, Building = %s, NewLevel = %s", planet.id, building.type.id, newLevel);
 		} else {
