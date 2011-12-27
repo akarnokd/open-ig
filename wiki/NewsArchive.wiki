@@ -4,6 +4,10 @@
 
 =December, 2011=
 
+*December 27, 2011*
+
+Fixes, fixes, fixes. Anyway, the AI still complicated thing. I'm still struggling with goal arbitration, alternative actions and parallel actions.
+
 *December 15, 2011*
 
 A small release with a more lively galaxy. 
