@@ -345,9 +345,11 @@ public class PlanetScreen extends ScreenBase {
 			}
 			break;
 		case KeyEvent.VK_S:
-			doStopSelectedUnits();
-			e.consume();
-			rep = true;
+			if (!e.isControlDown()) {
+				doStopSelectedUnits();
+				e.consume();
+				rep = true;
+			}
 			break;
 		default:
 		}

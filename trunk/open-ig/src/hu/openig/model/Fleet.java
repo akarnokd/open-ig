@@ -134,10 +134,9 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 		return count;
 	}
 	/**
-	 * @param battle the battle configuration 
 	 * @return calculate the fleet statistics. 
 	 */
-	public FleetStatistics getStatistics(BattleModel battle) {
+	public FleetStatistics getStatistics() {
 		FleetStatistics result = new FleetStatistics();
 
 		result.speed = Integer.MAX_VALUE;
@@ -186,7 +185,7 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 						result.speed = Math.min(slot.type.getInt("speed"), result.speed);
 					}
 					if (checkFirepower && slot.type.has("projectile")) {
-						BattleProjectile bp = battle.projectiles.get(slot.type.get("projectile"));
+						BattleProjectile bp = owner.world.battle.projectiles.get(slot.type.get("projectile"));
 						if (bp != null && bp.mode == Mode.BEAM) {
 							result.firepower += slot.count * bp.damage * fii.count;
 						}
@@ -335,11 +334,10 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	/**
 	 * Compute how many of the supplied items can be added without violating the limit constraints. 
 	 * @param rt the item type
-	 * @param battle the battle configuration
 	 * @return the currently alloved
 	 */
-	public int getAddLimit(ResearchType rt, BattleModel battle) {
-		FleetStatistics fs = getStatistics(battle);
+	public int getAddLimit(ResearchType rt) {
+		FleetStatistics fs = getStatistics();
 		switch (rt.category) {
 		case SPACESHIPS_BATTLESHIPS:
 			return 3 - fs.battleshipCount;

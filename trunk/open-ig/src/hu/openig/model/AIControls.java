@@ -45,5 +45,69 @@ public interface AIControls {
 	 * @param newLevel the new level
 	 */
 	void actionUpgradeBuilding(Planet planet, Building building, int newLevel);
-
+	/**
+	 * Set the repair state on the given building.
+	 * @param planet the target planet
+	 * @param building the target building
+	 * @param repair set the repair flag to this
+	 */
+	void actionRepairBuilding(Planet planet, Building building, boolean repair);
+	/**
+	 * Send the fleet to colonize the target planet.
+	 * @param fleet the fleet
+	 * @param planet the planet
+	 */
+	void actionColonizePlanet(Fleet fleet, Planet planet);
+	/**
+	 * Move the fleet to the designated coordinates.
+	 * @param fleet the fleet
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 */
+	void actionMoveFleet(Fleet fleet, double x, double y);
+	/**
+	 * Use the fleet to attack the enemy fleet.
+	 * @param fleet the fleet
+	 * @param enemy the enemy fleet
+	 * @param defense indicate if the attack is to stop an advancing enemy
+	 */
+	void actionAttackFleet(Fleet fleet, Fleet enemy, boolean defense);
+	/**
+	 * Use the fleet to attack the planet.
+	 * @param fleet the fleet
+	 * @param planet the target planet
+	 * @param mode the aim of the attack
+	 */
+	void actionAttackPlanet(Fleet fleet, Planet planet, AIAttackMode mode);
+	/**
+	 * Deploy units such as tanks, fighters and stations into a planet.
+	 * @param loadFactor percentage of 0..1 about how many units to place into slots.
+	 * @param powerFactor percentage of 0..1 about how well the units should be equipped
+	 * @param planet the target planet
+	 * @param items the item types to deploy
+	 */
+	void actionDeployUnits(double loadFactor, double powerFactor, Planet planet, Iterable<ResearchType> items);
+	/**
+	 * Pause a production by setting its priority to zero.
+	 * @param rt the research type to pause
+	 */
+	void actionPauseProduction(ResearchType rt);
+	/**
+	 * Deploy a fleet from the inventory.
+	 * @param location the planet where the fleet will emerge
+	 * @param loadFactor percentage of 0..1 about how many units to place into fighter/cruiser/battleship slots.
+	 * @param powerFactor percentage of 0..1 about how well the units should be equipped
+	 * @param items the sequence of items to choose from when filling in the slots
+	 */
+	void actionDeployFleet(
+			Planet location,
+			double loadFactor, 
+			double powerFactor, 
+			Iterable<ResearchType> items);
+	/**
+	 * Send a diplomatic request/statement to the other player. 
+	 * @param other the other player
+	 * @param offer the offer
+	 */
+	void actionDiplomaticInteraction(Player other, DiplomaticInteraction offer);
 }

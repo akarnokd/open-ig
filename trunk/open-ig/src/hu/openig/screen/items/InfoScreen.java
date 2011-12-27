@@ -3491,7 +3491,7 @@ public class InfoScreen extends ScreenBase {
 				fleetStatus.text(format("fleetstatus.stopped"), true);
 			}
 		}
-		FleetStatistics fs = f.getStatistics(world().battle);
+		FleetStatistics fs = f.getStatistics();
 		
 		if (fs.planet != null && knowledge(fs.planet, PlanetKnowledge.VISIBLE) >= 0) {
 			fleetPlanet.text(fs.planet.name, true).visible(true);

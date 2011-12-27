@@ -17,6 +17,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.Resource;
 import hu.openig.model.World;
 
 import java.util.ArrayList;
@@ -142,10 +143,11 @@ public class ResearchPlanner {
 			public void invoke() {
 				// scan for buildings
 				for (Building b : planet.surface.buildings) {
-					if (b.type.resources.containsKey("energy")) {
+					Resource r = b.type.resources.get("energy");
+					if (r != null && r.amount > 0) {
 						// if damaged, repair
 						if (b.isDamaged()) {
-							b.repairing = true;
+							controls.actionRepairBuilding(planet, b, !b.isOperational());
 							return;
 						} else
 						// if upgradable and can afford upgrade
