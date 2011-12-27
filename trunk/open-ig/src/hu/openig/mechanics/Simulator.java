@@ -1101,7 +1101,9 @@ public final class Simulator {
 	static void doUpgrade(World world, Planet planet, Building b) {
 		do {
 			// maximize upgrade level if the player has enough money relative to the building's cost
-			doUpgrade(world, planet, b, b.upgradeLevel + 1);
+			if (!doUpgrade(world, planet, b, b.upgradeLevel + 1)) {
+				break;
+			}
 		} while (b.upgradeLevel < b.type.upgrades.size() && planet.owner.money >= 30 * b.type.cost);
 	}
 	/**
@@ -1110,10 +1112,11 @@ public final class Simulator {
 	 * @param planet the planet
 	 * @param building the building
 	 * @param newLevel the new level
+	 * @return true if the upgrade was successful
 	 */
-	public static void doUpgrade(World world, Planet planet, Building building, int newLevel) {
-		if (newLevel <= building.upgradeLevel || newLevel >= building.type.upgrades.size()) {
-			return;
+	public static boolean doUpgrade(World world, Planet planet, Building building, int newLevel) {
+		if (newLevel <= building.upgradeLevel || newLevel > building.type.upgrades.size()) {
+			return false;
 		}
 		int diff = newLevel - building.upgradeLevel;
 		int buildCost = building.type.cost * diff;
@@ -1132,6 +1135,8 @@ public final class Simulator {
 		world.statistics.upgradeCount++;
 		world.statistics.moneySpent += buildCost;
 		world.statistics.moneyUpgrade += buildCost;
+		
+		return true;
 	}
 	/**
 	 * A world diagnostic to check for mechanics consistency errors.

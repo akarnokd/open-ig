@@ -11,8 +11,8 @@ package hu.openig.mechanics;
 import hu.openig.core.Action0;
 import hu.openig.core.Location;
 import hu.openig.model.AIAttackMode;
+import hu.openig.model.AIControls;
 import hu.openig.model.AIManager;
-import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
@@ -43,7 +43,6 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +51,7 @@ import java.util.Set;
  * The general artificial intelligence to run generic starmap-planet-production-research operations.
  * @author akarnokd, 2011.12.08.
  */
-public class AI implements AIManager {
+public class AI implements AIManager, AIControls {
 	/** The world. */
 	World w;
 	/** The player. */
@@ -120,12 +119,7 @@ public class AI implements AIManager {
 		applyActions.clear();
 		world = null;
 	}
-	
-	/**
-	 * Action to start the research.
-	 * @param rt the research type
-	 * @param moneyFactor the money multiplier for the research
-	 */
+	@Override
 	public void actionStartResearch(ResearchType rt, double moneyFactor) {
 		if (p.runningResearch != null) {
 			Research r = p.research.get(p.runningResearch);
@@ -169,13 +163,7 @@ public class AI implements AIManager {
 		
 		p.fleets.put(fleet, FleetKnowledge.FULL);
 	}
-	
-	/**
-	 * Start the production of the given technology with the amount and priority.
-	 * @param rt the technology
-	 * @param count number of items to produce
-	 * @param priority the production priority
-	 */
+	@Override
 	public void actionStartProduction(ResearchType rt, int count, int priority) {
 		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
 		Production prod = prodLine.get(rt);
@@ -198,11 +186,7 @@ public class AI implements AIManager {
 			prod.priority = 0;
 		}		
 	}
-	/**
-	 * Place a building onto the planet (via the autobuild location mechanism).
-	 * @param planet the target planet
-	 * @param buildingType the building type
-	 */
+	@Override
 	public void actionPlaceBuilding(Planet planet, BuildingType buildingType) {
 		// TODO implement
 		if (p.money >= buildingType.cost) {
@@ -218,6 +202,7 @@ public class AI implements AIManager {
 	 * @param planet the target planet
 	 * @param b the building
 	 */
+	@Override
 	public void actionDemolishBuilding(Planet planet, Building b) {
 		demolishBuilding(w, planet, b);
 	}
@@ -244,12 +229,7 @@ public class AI implements AIManager {
 		world.statistics.moneyDemolishIncome += moneyBack;
 
 	}
-	/**
-	 * Upgrade a building on the given planet to the given level.
-	 * @param planet the target planet
-	 * @param building the building
-	 * @param newLevel the new level
-	 */
+	@Override
 	public void actionUpgradeBuilding(Planet planet, Building building, int newLevel) {
 		// TODO implement
 		Simulator.doUpgrade(w, planet, building, newLevel);
@@ -633,298 +613,6 @@ public class AI implements AIManager {
 	 * Simple next research planner.
 	 */
 	void researchPlanner() {
-		if (!p.id.equals("Empire")) {
-			return;
-		}
-		if (world.runningResearch != null) {
-			return;
-		}
-		final Map<ResearchType, Integer> enablesCount = new HashMap<ResearchType, Integer>();
-		final Map<ResearchType, Integer> rebuildCount = new HashMap<ResearchType, Integer>();
-		List<ResearchType> candidatesImmediate = new ArrayList<ResearchType>();
-		List<ResearchType> candidatesReconstruct = new ArrayList<ResearchType>();
-		List<ResearchType> candidatesGetMorePlanets = new ArrayList<ResearchType>();
-		for (ResearchType rt : world.remainingResearch) {
-			if (rt.hasEnoughLabs(world.global)) {
-				candidatesImmediate.add(rt);
-				setResearchEnables(rt, enablesCount);
-			} else
-			if (rt.labCount() <= world.ownPlanets.size()) {
-				candidatesReconstruct.add(rt);
-				setResearchEnables(rt, enablesCount);
-				rebuildCount.put(rt, rebuildCount(rt));
-			} else {
-				candidatesGetMorePlanets.add(rt);
-				setResearchEnables(rt, enablesCount);
-			}
-		}
-		if (candidatesImmediate.size() > 0) {
-			Collections.sort(candidatesImmediate, new CompareFromMap<ResearchType>(enablesCount));
-			final ResearchType rt = candidatesImmediate.get(0);
-			double mf = 1.0;
-			if (rt.researchCost * 5 >= world.money) {
-				mf = 2.0;
-			}
-			final double moneyFactor = mf; // TODO decision variable
-			applyActions.add(new Action0() {
-				@Override
-				public void invoke() {
-					actionStartResearch(rt, moneyFactor);
-				}
-			});
-			return;
-		}
-		if (candidatesReconstruct.size() > 0) {
-			// find the research that requires the fewest lab rebuilds
-			Collections.sort(candidatesReconstruct, new CompareFromMap<ResearchType>(rebuildCount));
-
-			final ResearchType rt = candidatesReconstruct.get(candidatesReconstruct.size() - 1);
-			
-			for (AIPlanet planet : world.ownPlanets) {
-				if (planet.statistics.labCount() != planet.statistics.activeLabCount()
-						&& !planet.statistics.constructing) {
-					buildMorePowerPlant(planet.planet);
-					return;
-				}
-			}
-			// find an empty planet
-			for (AIPlanet planet : world.ownPlanets) {
-				if (planet.statistics.labCount() == 0 && !planet.statistics.constructing) {
-					buildOneLabFor(rt, planet);
-					return;
-				}
-			}
-			for (AIPlanet planet : world.ownPlanets) {
-				if (demolishOneLabFor(rt, planet)) {
-					return;
-				}
-			}
-			return;
-		}
-		if (candidatesGetMorePlanets.size() > 0) {
-			Collections.sort(candidatesGetMorePlanets, new CompareFromMap<ResearchType>(rebuildCount));
-			// TODO this is more complicated
-		}
-	}
-	/**
-	 * Build or upgade a power plant on the planet.
-	 * @param planet the target planet
-	 */
-	void buildMorePowerPlant(final Planet planet) {
-		applyActions.add(new Action0() {
-			@Override
-			public void invoke() {
-				// scan for buildings
-				for (Building b : planet.surface.buildings) {
-					if (b.type.resources.containsKey("energy")) {
-						// if damaged, repair
-						if (b.isDamaged()) {
-							b.repairing = true;
-							return;
-						} else
-						// if upgradable and can afford upgrade
-						if (b.upgradeLevel < b.type.upgrades.size()) {
-							int newLevel = Math.min(b.upgradeLevel + (int)(p.money / b.type.cost), b.type.upgrades.size());
-							if (newLevel != b.upgradeLevel) {
-								actionUpgradeBuilding(planet, b, newLevel);
-								return;
-							}
-						}
-					}
-				}
-				// if no existing building found
-				// find the most expensive still affordable building
-				BuildingType target = null;
-				for (BuildingType bt : w.buildingModel.buildings.values()) {
-					if (bt.resources.containsKey("energy") && planet.canBuild(bt)) {
-						if (target == null || (bt.cost <= p.money && bt.cost > target.cost)) {
-							target = bt;
-						}
-					}					
-				}
-				if (target != null) {
-					actionPlaceBuilding(planet, target);
-				}
-			}
-		});
-	}
-	/**
-	 * Demolish one of the excess labs on the planet to make room.
-	 * @param rt the research type
-	 * @param planet the target planet
-	 * @return true if demolish added
-	 */
-	boolean demolishOneLabFor(ResearchType rt, AIPlanet planet) {
-		if (demolishOneLabIf(rt.aiLab, world.global.aiLab, planet.statistics.aiLab, planet.planet, "ai")) {
-			return true;
-		}
-		if (demolishOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet.planet, "civil")) {
-			return true;
-		}
-		if (demolishOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet.planet, "computer")) {
-			return true;
-		}
-		if (demolishOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet.planet, "mechanical")) {
-			return true;
-		}
-		if (demolishOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet.planet, "military")) {
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Demolish one lab of the given resource.
-	 * @param lab the required lab count
-	 * @param global the global lab count
-	 * @param local the local lab count
-	 * @param planet the planet
-	 * @param resource the lab resource name
-	 * @return true if action added
-	 */
-	boolean demolishOneLabIf(int lab, int global, int local, final Planet planet, final String resource) {
-		if (lab < global && local > 0) {
-			applyActions.add(new Action0() {
-				@Override
-				public void invoke() {
-					for (Building b : planet.surface.buildings) {
-						if (b.type.resources.containsKey(resource)) {
-							actionDemolishBuilding(planet, b);
-							return;
-						}
-					}
-				}
-			});
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Build one of the required labs.
-	 * @param rt the research type
-	 * @param planet the target planet
-	 */
-	void buildOneLabFor(final ResearchType rt, final AIPlanet planet) {
-		if (buildOneLabIf(rt.aiLab, world.global.aiLab, planet.planet, "ai")) {
-			return;
-		}
-		if (buildOneLabIf(rt.civilLab, world.global.civilLab, planet.planet, "civil")) {
-			return;
-		}
-		if (buildOneLabIf(rt.compLab, world.global.compLab, planet.planet, "computer")) {
-			return;
-		}
-		if (buildOneLabIf(rt.mechLab, world.global.mechLab, planet.planet, "mechanical")) {
-			return;
-		}
-		if (buildOneLabIf(rt.milLab, world.global.milLab, planet.planet, "military")) {
-			return;
-		}
-	}
-	/**
-	 * Build one of the labs if the prerequisite counts match.
-	 * @param required the required count of lab
-	 * @param available the available count of lab
-	 * @param planet the target planet
-	 * @param resource the building type identification resource
-	 * @return true if successful
-	 */
-	boolean buildOneLabIf(int required, int available, final Planet planet, String resource) {
-		if (required > available) {
-			final BuildingType bt = findBuildingType(resource);
-			if (bt != null) {
-				if (bt.cost <= world.money) {
-					applyActions.add(new Action0() {
-						@Override
-						public void invoke() {
-							actionPlaceBuilding(planet, bt);
-						}
-					});
-					return true;
-				}
-			} else {
-				new AssertionError("Can't find building for resource " + resource).printStackTrace();
-			}
-		}
-		return false;
-	}
-	/**
-	 * Find the first building who provides the given resource.
-	 * @param resource the resource name
-	 * @return the building type or null
-	 */
-	BuildingType findBuildingType(String resource) {
-		for (BuildingType bt : w.buildingModel.buildings.values()) {
-			if (bt.resources.containsKey(resource)) {
-				return bt;
-			}
-		}
-		return null;
-	}
-	/**
-	 * Comparator which takes an integer index from the supplied map. 
-	 * @author akarnokd, 2011.12.26.
-	 * @param <T> the element type
-	 */
-	class CompareFromMap<T> implements Comparator<T> {
-		/** The backing map. */
-		final Map<T, Integer> map;
-		/**
-		 * Constructor.
-		 * @param map the backing map to use
-		 */
-		public CompareFromMap(Map<T, Integer> map) {
-			this.map = map;
-		}
-		@Override
-		public int compare(T o1, T o2) {
-			int count1 = map.get(o1);
-			int count2 = map.get(o2);
-			return count1 < count2 ? 1 : (count1 > count2 ? -1 : 0);
-		}
-	}
-	/**
-	 * Count how many labs need to be built in addition to the current settings.
-	 * @param rt the research type
-	 * @return the total number of new buildings required
-	 */
-	int rebuildCount(ResearchType rt) {
-		return 
-				rebuildRequiredCount(rt.aiLab, world.global.aiLab)
-				+ rebuildRequiredCount(rt.civilLab, world.global.civilLab)
-				+ rebuildRequiredCount(rt.compLab, world.global.compLab)
-				+ rebuildRequiredCount(rt.mechLab, world.global.mechLab)
-				+ rebuildRequiredCount(rt.milLab, world.global.milLab)
-		;
-	}
-	/**
-	 * If the lab count is greater than the active count, return the difference.
-	 * @param lab the research required lab count
-	 * @param active the active research counts
-	 * @return zero or the difference
-	 */
-	int rebuildRequiredCount(int lab, int active) {
-		if (lab > active) {
-			return lab - active;
-		}
-		return 0;
-	}
-	/**
-	 * Counts how many further research becomes available when the research is completed.
-	 * @param rt the current research
-	 * @param map the map for research to count
-	 */
-	void setResearchEnables(ResearchType rt, Map<ResearchType, Integer> map) {
-		int count = 0;
-		for (ResearchType rt2 : world.remainingResearch) {
-			if (rt2.prerequisites.contains(rt)) {
-				count++;
-			}
-		}
-		for (ResearchType rt2 : world.furtherResearch) {
-			if (rt2.prerequisites.contains(rt)) {
-				count++;
-			}
-		}
-		map.put(rt, count);
+		applyActions.addAll(new ResearchPlanner(world, this).run());
 	}
 }

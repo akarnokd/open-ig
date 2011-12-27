@@ -605,6 +605,7 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 		Player lastOwner = owner;
 		owner = newOwner;
 		owner.statistics.planetsConquered++;
+		lastOwner.statistics.planetsLost++;
 		for (Building b : surface.buildings) {
 			if (b.type.research != null) {
 				owner.setAvailable(b.type.research);
