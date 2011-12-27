@@ -126,7 +126,7 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	 */
 	public PlanetStatistics getStatistics() {
 		PlanetStatistics result = new PlanetStatistics();
-		radar = 0;
+		int radar = 0;
 		int stadiumCount = 0;
 		boolean buildup = false;
 		boolean damage = false;
@@ -338,9 +338,10 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 			}
 		}
 		
-		if (owner != null) {
+		if (owner != null && radar > 0) {
 			radar *= owner.world.env.params().groundRadarUnitSize();
 		}
+		this.radar = radar;
 		
 		return result;
 	}

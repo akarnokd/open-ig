@@ -9,6 +9,8 @@
 package hu.openig.model;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class representing a fleet for an AI player.
@@ -35,6 +37,8 @@ public class AIFleet {
 	public double x;
 	/** The current location. */
 	public double y;
+	/** The inventory. */
+	public final List<AIInventoryItem> inventory = new ArrayList<AIInventoryItem>();
 	/**
 	 * Assign the necessary properties from a fleet.
 	 * @param fleet the target fleet
@@ -53,6 +57,48 @@ public class AIFleet {
 		mode = fleet.mode;
 		x = fleet.x;
 		y = fleet.y;
+		for (InventoryItem ii : fleet.inventory) {
+			inventory.add(new AIInventoryItem(ii));
+		}
+	}
+	/**
+	 * Check if a specific technology is in the inventory.
+	 * @param rt the technology
+	 * @return true if present
+	 */
+	public boolean hasInventory(ResearchType rt) {
+		for (AIInventoryItem ii : inventory) {
+			if (ii.type == rt) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check if a specific technology is in the inventory.
+	 * @param id the technology id
+	 * @return true if present
+	 */
+	public boolean hasInventory(String id) {
+		for (AIInventoryItem ii : inventory) {
+			if (ii.type.id.equals(id)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check if a specific technology is in the inventory.
+	 * @param cat the technology category
+	 * @return true if present
+	 */
+	public boolean hasInventory(ResearchSubCategory cat) {
+		for (AIInventoryItem ii : inventory) {
+			if (ii.type.category == cat) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * @return true if moving

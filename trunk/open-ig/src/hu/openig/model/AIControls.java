@@ -66,6 +66,12 @@ public interface AIControls {
 	 */
 	void actionMoveFleet(Fleet fleet, double x, double y);
 	/**
+	 * Move the fleet to the given planet.
+	 * @param fleet the fleet
+	 * @param planet the target planet
+	 */
+	void actionMoveFleet(Fleet fleet, Planet planet);
+	/**
 	 * Use the fleet to attack the enemy fleet.
 	 * @param fleet the fleet
 	 * @param enemy the enemy fleet
@@ -121,4 +127,16 @@ public interface AIControls {
 	 * @param rt the technology
 	 */
 	void actionRemoveProduction(ResearchType rt);
+	/**
+	 * Create a new empty fleet with the given name.
+	 * @param name the optional name
+	 * @param location the planet where the fleet should be created
+	 * @return the created fleet
+	 */
+	Fleet actionCreateFleet(String name, Planet location);
+	/**
+	 * Stops the given research.
+	 * @param rt the research to stop
+	 */
+	void actionStopResearch(ResearchType rt);
 }

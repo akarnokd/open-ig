@@ -9,12 +9,16 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
+import hu.openig.mechanics.DiscoveryPlanner.ProductionOrder;
 import hu.openig.model.AIControls;
+import hu.openig.model.AIFleet;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIPlanner;
 import hu.openig.model.AIWorld;
+import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
@@ -68,6 +72,15 @@ public class ResearchPlanner implements AIPlanner {
 			return applyActions;
 		}
 		if (world.runningResearch != null) {
+			// if not enough labs, stop research and let the other management tasks apply
+			if (!world.runningResearch.hasEnoughLabs(world.global)) {
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionStopResearch(world.runningResearch);
+					}
+				});
+			}
 			return applyActions;
 		}
 		final Map<ResearchType, Integer> enablesCount = new HashMap<ResearchType, Integer>();
@@ -122,8 +135,130 @@ public class ResearchPlanner implements AIPlanner {
 		if (candidatesGetMorePlanets.size() > 0) {
 			Collections.sort(candidatesGetMorePlanets, new CompareFromMap<ResearchType>(rebuildCount));
 			// TODO this is more complicated
+			planConquest();
+			return applyActions;
 		}
 		return applyActions;
+	}
+	/**
+	 * Plan for conquest.
+	 */
+	void planConquest() {
+		// if a fleet with colony ship is in position, colonize the planet
+		for (AIFleet fleet : world.ownFleets) {
+			if (fleet.hasInventory("ColonyShip") && !fleet.isMoving()) {
+				if (fleet.statistics.planet != null) {
+					for (AIPlanet planet : world.enemyPlanets) {
+						if (planet.planet == fleet.statistics.planet && planet.owner == null) {
+							final Fleet f0 = fleet.fleet;
+							final Planet p0 = fleet.statistics.planet;
+							add(new Action0() {
+								@Override
+								public void invoke() {
+									if (p0.owner == null) {
+										controls.actionColonizePlanet(f0, p0);
+										p0.autoBuild = AutoBuild.CIVIL; // FIXME to avoid further problems
+									}
+								}
+							});
+							return;
+						}
+					}
+				}
+			}
+		}
+		// locate knownly colonizable planets
+		List<AIPlanet> ps = new ArrayList<AIPlanet>();
+		outer1:
+		for (AIPlanet p : world.enemyPlanets) {
+			if (p.owner == null) {
+				// check if no one targets this planet already
+				for (AIFleet f : world.ownFleets) {
+					if (f.targetPlanet == p.planet) {
+						continue outer1;
+					}
+				}
+				ps.add(p);
+			}
+		}
+		// if none exit
+		if (ps.size() == 0) {
+			return;
+		}
+		// bring one fleet to the target planet
+		for (final AIFleet fleet : world.ownFleets) {
+			if (fleet.hasInventory("ColonyShip") && !fleet.isMoving()) {
+				final AIPlanet p0 = Collections.min(ps, new Comparator<AIPlanet>() {
+					@Override
+					public int compare(AIPlanet o1, AIPlanet o2) {
+						double d1 = Math.hypot(fleet.x - o1.planet.x, fleet.y - o1.planet.y);
+						double d2 = Math.hypot(fleet.x - o2.planet.x, fleet.y - o2.planet.y);
+						return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+					}
+				});
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionMoveFleet(fleet.fleet, p0.planet);
+					}
+				});
+			}
+		}
+		AIPlanet sp = null;
+		for (AIPlanet pl : world.ownPlanets) {
+			if (pl.statistics.hasMilitarySpaceport) {
+				sp = pl;
+				break;
+			}
+		}
+		// if no planet has military spaceport, build one somewhere
+		if (sp == null) {
+			sp = w.random(world.ownPlanets);
+			final BuildingType bt = findBuilding("MilitarySpaceport");
+			if (bt == null) {
+				System.err.println("Military spaceport not buildable for player " + p.id);
+			} else {
+				if (bt.cost <= world.money) {
+					final Planet spaceport = sp.planet; 
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionPlaceBuilding(spaceport, bt);
+						}
+					});
+				}
+			}
+			return;
+		}
+		final Planet spaceport = sp.planet; 
+		// check if we have colony ships in the inventory
+		for (Map.Entry<ResearchType, Integer> e : world.inventory.entrySet()) {
+			final ResearchType rt = e.getKey();
+			if (rt.id.equals("ColonyShip") && e.getValue() > 0) {
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						Fleet f = controls.actionCreateFleet(w.env.labels().get(p.race + ".colony_fleet_name"), spaceport);
+						f.addInventory(rt, 1);
+					}
+				});
+				return;
+			}
+		}
+		// check if the colony ship is actually available
+		for (ResearchType rt : world.availableResearch) {
+			if (rt.id.equals("ColonyShip")) {
+				new ProductionOrder(world, rt, applyActions, controls).invoke();
+				return;
+			}
+		}
+	}
+	/**
+	 * Add the given action to the output.
+	 * @param action the action to add
+	 */
+	void add(Action0 action) {
+		applyActions.add(action);
 	}
 	/**
 	 * Display the action log.
@@ -183,6 +318,19 @@ public class ResearchPlanner implements AIPlanner {
 	BuildingType findBuildingKind(String kind) {
 		for (BuildingType bt : w.buildingModel.buildings.values()) {
 			if (bt.kind.equals(kind)) {
+				return bt;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Find a type the building kind.
+	 * @param id the building type id
+	 * @return the building type
+	 */
+	BuildingType findBuilding(String id) {
+		for (BuildingType bt : w.buildingModel.buildings.values()) {
+			if (bt.id.equals(id)) {
 				return bt;
 			}
 		}

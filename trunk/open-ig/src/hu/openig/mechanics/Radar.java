@@ -100,7 +100,6 @@ public final class Radar {
 							}
 						}
 					}
-					f.radar = (int)(radar * rrf);
 				}
 			}
 		}
@@ -148,7 +147,6 @@ public final class Radar {
 					}
 				}
 			}
-			p.radar = radar * rrg;
 		}
 		// notify players about the radar sweep completed
 		for (Player p : world.players.values()) {
