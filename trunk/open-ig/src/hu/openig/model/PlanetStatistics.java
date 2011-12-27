@@ -84,7 +84,7 @@ public class PlanetStatistics {
 	public int vehicleMax;
 	/** A space station is deployed. */
 	public boolean hasSpaceStation;
-	/** Building in progress. */
+	/** Building in progress or complete but not yet resource-allocated. */
 	public boolean constructing;
 	/**
 	 * Add the other planet statistics to this one.

@@ -20,12 +20,16 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.Resource;
 import hu.openig.model.World;
 
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A simple research planner.
@@ -42,6 +46,9 @@ public class ResearchPlanner {
 	public final List<Action0> applyActions;
 	/** The controls to affect the world in actions. */
 	private final AIControls controls;
+	/** The set of resource names. */
+	private static final Set<String> LAB_RESOURCE_NAMES = 
+			new HashSet<String>(Arrays.asList("ai", "civil", "computer", "mechanical", "military"));
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
@@ -70,6 +77,17 @@ public class ResearchPlanner {
 		List<ResearchType> candidatesImmediate = new ArrayList<ResearchType>();
 		List<ResearchType> candidatesReconstruct = new ArrayList<ResearchType>();
 		List<ResearchType> candidatesGetMorePlanets = new ArrayList<ResearchType>();
+		
+		// prepare lab costs
+		Map<String, Integer> labCosts = new HashMap<String, Integer>();
+		for (BuildingType bt : w.buildingModel.buildings.values()) {
+			for (String s : LAB_RESOURCE_NAMES) {
+				if (bt.resources.containsKey(s)) {
+					labCosts.put(s, bt.cost);
+					break;
+				}
+			}
+		}
 		for (ResearchType rt : world.remainingResearch) {
 			if (rt.hasEnoughLabs(world.global)) {
 				candidatesImmediate.add(rt);
@@ -78,7 +96,7 @@ public class ResearchPlanner {
 			if (rt.labCount() <= world.ownPlanets.size()) {
 				candidatesReconstruct.add(rt);
 				setResearchEnables(rt, enablesCount);
-				rebuildCount.put(rt, rebuildCount(rt));
+				rebuildCount.put(rt, rebuildCost(rt, labCosts));
 			} else {
 				candidatesGetMorePlanets.add(rt);
 				setResearchEnables(rt, enablesCount);
@@ -101,35 +119,56 @@ public class ResearchPlanner {
 			return applyActions;
 		}
 		if (candidatesReconstruct.size() > 0) {
-			// find the research that requires the fewest lab rebuilds
-			Collections.sort(candidatesReconstruct, new CompareFromMap<ResearchType>(rebuildCount));
-
-			final ResearchType rt = candidatesReconstruct.get(candidatesReconstruct.size() - 1);
-			
-			for (AIPlanet planet : world.ownPlanets) {
-				if (planet.statistics.labCount() != planet.statistics.activeLabCount()
-						&& !planet.statistics.constructing) {
-					buildMorePowerPlant(planet.planet);
-					return applyActions;
-				}
-			}
-			// find an empty planet
-			for (AIPlanet planet : world.ownPlanets) {
-				if (planet.statistics.labCount() == 0 && !planet.statistics.constructing) {
-					buildOneLabFor(rt, planet);
-					return applyActions;
-				}
-			}
-			for (AIPlanet planet : world.ownPlanets) {
-				if (demolishOneLabFor(rt, planet)) {
-					return applyActions;
-				}
-			}
-			return applyActions;
+			return planReconstruction(rebuildCount, candidatesReconstruct);
 		}
 		if (candidatesGetMorePlanets.size() > 0) {
 			Collections.sort(candidatesGetMorePlanets, new CompareFromMap<ResearchType>(rebuildCount));
 			// TODO this is more complicated
+		}
+		return applyActions;
+	}
+	/**
+	 * Display the action log.
+	 * @param message the message
+	 * @param values the message parameters
+	 */
+	void log(String message, Object... values) {
+		System.out.printf("AI:%s:", p.id);
+		System.out.printf(message, values);
+		System.out.println();
+	}
+	/**
+	 * Plan how the labs will be reconstructed to allow the next research.
+	 * @param rebuildCount the number of new buildings needed for each research
+	 * @param candidatesReconstruct the candidates for the research
+	 * @return the list of actions
+	 */
+	List<Action0> planReconstruction(
+			final Map<ResearchType, Integer> rebuildCount,
+			List<ResearchType> candidatesReconstruct) {
+		// find the research that requires the fewest lab rebuilds
+		Collections.sort(candidatesReconstruct, new CompareFromMap<ResearchType>(rebuildCount));
+
+		final ResearchType rt = candidatesReconstruct.get(candidatesReconstruct.size() - 1);
+		for (AIPlanet planet : world.ownPlanets) {
+			if (planet.statistics.labCount() != planet.statistics.activeLabCount()
+					&& !planet.statistics.constructing) {
+				buildMorePowerPlant(planet.planet);
+				return applyActions;
+			}
+		}
+		// find an empty planet
+		for (AIPlanet planet : world.ownPlanets) {
+			if (planet.statistics.labCount() == 0 
+					&& !planet.statistics.constructing) {
+				buildOneLabFor(rt, planet);
+				return applyActions;
+			}
+		}
+		for (AIPlanet planet : world.ownPlanets) {
+			if (demolishOneLabFor(rt, planet)) {
+				return applyActions;
+			}
 		}
 		return applyActions;
 	}
@@ -164,7 +203,8 @@ public class ResearchPlanner {
 				// find the most expensive still affordable building
 				BuildingType target = null;
 				for (BuildingType bt : w.buildingModel.buildings.values()) {
-					if (bt.resources.containsKey("energy") && planet.canBuild(bt)) {
+					Resource r = bt.resources.get("energy");
+					if (r != null && r.amount > 0 && planet.canBuild(bt)) {
 						if (target == null || (bt.cost <= p.money && bt.cost > target.cost)) {
 							target = bt;
 						}
@@ -232,19 +272,19 @@ public class ResearchPlanner {
 	 * @param planet the target planet
 	 */
 	void buildOneLabFor(final ResearchType rt, final AIPlanet planet) {
-		if (buildOneLabIf(rt.aiLab, world.global.aiLab, planet.planet, "ai")) {
+		if (buildOneLabIf(rt.aiLab, world.global.aiLab, planet, "ai")) {
 			return;
 		}
-		if (buildOneLabIf(rt.civilLab, world.global.civilLab, planet.planet, "civil")) {
+		if (buildOneLabIf(rt.civilLab, world.global.civilLab, planet, "civil")) {
 			return;
 		}
-		if (buildOneLabIf(rt.compLab, world.global.compLab, planet.planet, "computer")) {
+		if (buildOneLabIf(rt.compLab, world.global.compLab, planet, "computer")) {
 			return;
 		}
-		if (buildOneLabIf(rt.mechLab, world.global.mechLab, planet.planet, "mechanical")) {
+		if (buildOneLabIf(rt.mechLab, world.global.mechLab, planet, "mechanical")) {
 			return;
 		}
-		if (buildOneLabIf(rt.milLab, world.global.milLab, planet.planet, "military")) {
+		if (buildOneLabIf(rt.milLab, world.global.milLab, planet, "military")) {
 			return;
 		}
 	}
@@ -256,18 +296,22 @@ public class ResearchPlanner {
 	 * @param resource the building type identification resource
 	 * @return true if successful
 	 */
-	boolean buildOneLabIf(int required, int available, final Planet planet, String resource) {
+	boolean buildOneLabIf(int required, int available, final AIPlanet planet, String resource) {
 		if (required > available) {
 			final BuildingType bt = findBuildingType(resource);
 			if (bt != null) {
 				if (bt.cost <= world.money) {
-					applyActions.add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionPlaceBuilding(planet, bt);
-						}
-					});
-					return true;
+					Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
+					if (pt != null) {
+						final Planet planet0 = planet.planet;
+						applyActions.add(new Action0() {
+							@Override
+							public void invoke() {
+								controls.actionPlaceBuilding(planet0, bt);
+							}
+						});
+						return true;
+					}
 				}
 			} else {
 				new AssertionError("Can't find building for resource " + resource).printStackTrace();
@@ -313,15 +357,16 @@ public class ResearchPlanner {
 	/**
 	 * Count how many labs need to be built in addition to the current settings.
 	 * @param rt the research type
+	 * @param labCosts the cost of various labs
 	 * @return the total number of new buildings required
 	 */
-	int rebuildCount(ResearchType rt) {
+	int rebuildCost(ResearchType rt, Map<String, Integer> labCosts) {
 		return 
-				rebuildRequiredCount(rt.aiLab, world.global.aiLab)
-				+ rebuildRequiredCount(rt.civilLab, world.global.civilLab)
-				+ rebuildRequiredCount(rt.compLab, world.global.compLab)
-				+ rebuildRequiredCount(rt.mechLab, world.global.mechLab)
-				+ rebuildRequiredCount(rt.milLab, world.global.milLab)
+				rebuildRequiredCount(rt.aiLab, world.global.aiLab) * labCosts.get("ai")
+				+ rebuildRequiredCount(rt.civilLab, world.global.civilLab) * labCosts.get("civil")
+				+ rebuildRequiredCount(rt.compLab, world.global.compLab) * labCosts.get("computer")
+				+ rebuildRequiredCount(rt.mechLab, world.global.mechLab) * labCosts.get("mechanical")
+				+ rebuildRequiredCount(rt.milLab, world.global.milLab) * labCosts.get("military")
 		;
 	}
 	/**
