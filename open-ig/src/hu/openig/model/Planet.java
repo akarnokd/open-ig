@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.PlanetType;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -235,6 +236,16 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 			damage |= b.isDamaged();
 			buildup |= b.isConstructing();
 			colonyHub |= "MainBuilding".equals(b.type.kind) && !b.isConstructing();
+		}
+		// check if there is still a building with unallocated resources
+		for (Building b : surface.buildings) {
+			if (b.enabled 
+					&& ((b.assignedWorker == 0 && population > 0)
+							|| (result.energyAvailable > 0 && b.getEnergy() < 0 
+									&& b.assignedEnergy == 0))) {
+				result.constructing = true;
+				break;
+			}
 		}
 		
 		if (quarantine) {
@@ -620,6 +631,15 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 		lastOwner.ai.onPlanetLost(this);
 		newOwner.ai.onPlanetConquered(this, lastOwner);
 		newOwner.world.env.events().onConquered(this, lastOwner);
-		
+	}
+	/**
+	 * Returns the dimensions for the given building type on this planet,
+	 * considering the race.
+	 * @param bt the building type
+	 * @return the dimensions, including +1 roads on all sides
+	 */
+	public Dimension getPlacementDimensions(BuildingType bt) {
+		TileSet ts = bt.tileset.get(race);
+		return new Dimension(ts.normal.width + 2, ts.normal.height + 2);
 	}
 }

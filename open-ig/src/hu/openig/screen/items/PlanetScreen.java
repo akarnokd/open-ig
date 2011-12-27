@@ -885,10 +885,9 @@ public class PlanetScreen extends ScreenBase {
 			if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
 			
 				drawTiles(g2, surface, x0, y0);
-	//			System.out.println("draw: " + (1E9 / (System.nanoTime() - timestamp)));
 				if (placementHints) {
 					for (Location loc : surface.basemap.keySet()) {
-						if (!surface().canPlaceBuilding(loc.x, loc.y)) {
+						if (!surface().placement.canPlaceBuilding(loc.x, loc.y)) {
 							int x = x0 + Tile.toScreenX(loc.x, loc.y);
 							int y = y0 + Tile.toScreenY(loc.x, loc.y);
 							g2.drawImage(areaDeny.getStrip(0), x, y, null);
@@ -920,7 +919,7 @@ public class PlanetScreen extends ScreenBase {
 								
 								BufferedImage img = areaAccept.getStrip(0);
 								// check for existing building
-								if (!surface().canPlaceBuilding(i, j)) {
+								if (!surface().placement.canPlaceBuilding(i, j)) {
 									img = areaDeny.getStrip(0);
 								}
 								
@@ -2860,7 +2859,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @param more cancel the building mode on successful place?
 	 */
 	void placeBuilding(boolean more) {
-		if (surface().canPlaceBuilding(placementRectangle)
+		if (surface().placement.canPlaceBuilding(placementRectangle)
 				&& player().money >= player().currentBuilding.cost
 				&& planet().canBuild(player().currentBuilding)
 		) {
@@ -2899,7 +2898,7 @@ public class PlanetScreen extends ScreenBase {
 				
 				commons.control().displayError(get("message.not_enough_money"));
 			} else
-			if (!surface().canPlaceBuilding(placementRectangle)) {
+			if (!surface().placement.canPlaceBuilding(placementRectangle)) {
 				sound(SoundType.NOT_AVAILABLE);
 				
 				commons.control().displayError(get("message.cant_build_there"));
@@ -2966,7 +2965,7 @@ public class PlanetScreen extends ScreenBase {
 		Set<Location> result = JavaUtils.newHashSet();
 		for (int x = b.location.x - 3; x < b.location.x + b.tileset.normal.width + 3; x++) {
 			for (int y = b.location.y + 3; y > b.location.y - b.tileset.normal.height - 3; y--) {
-				if (surface().canPlaceBuilding(x, y)) {
+				if (surface().placement.canPlaceBuilding(x, y)) {
 					result.add(Location.of(x, y));
 				}						
 			}
@@ -2986,7 +2985,7 @@ public class PlanetScreen extends ScreenBase {
 		int x = 0;
 		int y = -distance;
 		while (n < w) {
-			if (surface().canPlaceBuilding(x, y)) {
+			if (surface().placement.canPlaceBuilding(x, y)) {
 				result.add(Location.of(x, y));
 			}						
 			x++;
@@ -2997,7 +2996,7 @@ public class PlanetScreen extends ScreenBase {
 		x = 0;
 		y = -distance;
 		while (n < h) {
-			if (surface().canPlaceBuilding(x, y)) {
+			if (surface().placement.canPlaceBuilding(x, y)) {
 				result.add(Location.of(x, y));
 			}						
 			x--;
@@ -3008,7 +3007,7 @@ public class PlanetScreen extends ScreenBase {
 		x = -h + distance + 1;
 		y = -h + 1;
 		while (n < w) {
-			if (surface().canPlaceBuilding(x, y)) {
+			if (surface().placement.canPlaceBuilding(x, y)) {
 				result.add(Location.of(x, y));
 			}						
 			x++;
@@ -3019,7 +3018,7 @@ public class PlanetScreen extends ScreenBase {
 		x = w - distance - 1;
 		y = -w + 1;
 		while (n < h) {
-			if (surface().canPlaceBuilding(x, y)) {
+			if (surface().placement.canPlaceBuilding(x, y)) {
 				result.add(Location.of(x, y));
 			}						
 			x--;
@@ -3066,7 +3065,7 @@ public class PlanetScreen extends ScreenBase {
 				for (int x = b.location.x - 1; x < b.location.x + b.tileset.normal.width + 1; x++) {
 					for (int y = b.location.y + 1; y > b.location.y - b.tileset.normal.height - 1; y--) {
 						Location loc = Location.of(x, y);
-						if (surface().canPlaceBuilding(loc.x, loc.y)) {
+						if (surface().placement.canPlaceBuilding(loc.x, loc.y)) {
 							locations.add(loc);
 						}
 					}
@@ -3103,7 +3102,7 @@ public class PlanetScreen extends ScreenBase {
 		for (int d = 0; d < 4; d++) {
 			locs.clear();
 			for (int x = 0; x > -surface().height; x--) {
-				if (surface().canPlaceBuilding(x + d, x - 1 - d)) {
+				if (surface().placement.canPlaceBuilding(x + d, x - 1 - d)) {
 					locs.add(Location.of(x + d, x - 1 - d));
 				}
 			}
@@ -3520,7 +3519,7 @@ public class PlanetScreen extends ScreenBase {
 		pathfinding.isPassable = new Func1<Location, Boolean>() {
 			@Override
 			public Boolean invoke(Location value) {
-				if (surface().canPlaceBuilding(value.x, value.y)) {
+				if (surface().placement.canPlaceBuilding(value.x, value.y)) {
 					for (GroundwarUnit u : units) {
 						if (((int)(u.x) == value.x && (int)(u.y) == value.y)) {
 							return (!u.path.isEmpty() && u.yieldTTL * 2 < YIELD_TTL) || u.inMotionPlanning;

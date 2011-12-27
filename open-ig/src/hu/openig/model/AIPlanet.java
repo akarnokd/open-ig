@@ -8,9 +8,12 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Location;
+import hu.openig.model.PlanetSurface.PlacementHelper;
 import hu.openig.utils.JavaUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class representing a planet for the AI player.
@@ -27,12 +30,16 @@ public class AIPlanet {
 	public int radar;
 	/** The inventory items of the planet. */
 	public final List<AIInventoryItem> inventory = JavaUtils.newArrayList();
+	/** Set of locations where no buildings may be placed. */
+	public final Map<Location, SurfaceEntity> nonbuildable = JavaUtils.newHashMap();
+	/** The placement helper. */
+	public PlacementHelper placement;
 	/**
 	 * Assign the necessary properties from a planet.
 	 * @param planet the target fleet
 	 * @param world the world object
 	 */
-	public void assign(Planet planet, AIWorld world) {
+	public void assign(final Planet planet, AIWorld world) {
 		this.planet = planet;
 		this.knowledge = world.knowledge(planet);
 		this.statistics = world.getStatistics(planet);
@@ -40,5 +47,37 @@ public class AIPlanet {
 		for (InventoryItem ii : planet.inventory) {
 			inventory.add(new AIInventoryItem(ii));
 		}
+		nonbuildable.putAll(planet.surface.buildingmap);
+		
+		final int width = planet.surface.width;
+		final int height = planet.surface.height;
+		
+		placement = new PlacementHelper() {
+			@Override
+			protected int width() {
+				return width;
+			}
+
+			@Override
+			protected int height() {
+				return height;
+			}
+
+			@Override
+			protected boolean cellInMap(int x, int y) {
+				return planet.surface.cellInMap(x, y);
+			}
+
+			@Override
+			protected Map<Location, SurfaceEntity> buildingmap() {
+				return nonbuildable;
+			}
+
+			@Override
+			protected Map<Location, SurfaceEntity> basemap() {
+				return planet.surface.basemap;
+			}
+			
+		};
 	}
 }

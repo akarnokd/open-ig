@@ -188,7 +188,7 @@ public class AI implements AIManager, AIControls {
 		// TODO implement
 		if (p.money >= buildingType.cost) {
 			TileSet ts = buildingType.tileset.get(planet.race);
-			Point pt = planet.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
+			Point pt = planet.surface.placement.findLocation(ts.normal.width + 2, ts.normal.height + 2);
 			if (pt != null) {
 				Simulator.doConstruct(w, planet, buildingType, pt);
 				log("placeBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
@@ -283,7 +283,7 @@ public class AI implements AIManager, AIControls {
 			if ("MainBuilding".equals(bt.kind)) {
 				TileSet ts = bt.tileset.get(f.owner.race);
 				if (ts != null) {
-					Point pt = p.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
+					Point pt = p.surface.placement.findLocation(ts.normal.width + 2, ts.normal.height + 2);
 					if (pt != null) {
 						// remove colony ship from fleet
 						f.changeInventory(w.researches.get("ColonyShip"), -1);
@@ -344,17 +344,10 @@ public class AI implements AIManager, AIControls {
 	/**
 	 * Display the action log.
 	 * @param message the message
-	 */
-	void log(String message) {
-		System.out.printf("AI:%s:%s%n", p.id, message);
-	}
-	/**
-	 * Display the action log.
-	 * @param message the message
 	 * @param values the message parameters
 	 */
 	void log(String message, Object... values) {
-		System.out.printf("AI:%s:");
+		System.out.printf("AI:%s:", p.id);
 		System.out.printf(message, values);
 		System.out.println();
 	}

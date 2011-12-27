@@ -32,7 +32,6 @@ import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Resource;
 import hu.openig.model.TaxLevel;
-import hu.openig.model.TileSet;
 import hu.openig.model.World;
 
 import java.awt.Point;
@@ -190,7 +189,6 @@ public final class Simulator {
 		int tradeIncome = 0;
 		float multiply = 1.0f;
 		float moraleBoost = 0;
-		boolean buildInProgress = false;
 		int radar = 0;
 		long eqPlaytime = 6L * 60 * 60 * 1000;
 		if (world.statistics.playTime >= eqPlaytime && (planet.type.type.equals("earth") || planet.type.type.equals("rocky"))) {
@@ -241,7 +239,6 @@ public final class Simulator {
 			}
 			
 			if (b.isConstructing()) {
-				buildInProgress = true;
 				b.buildProgress += 200;
 				b.buildProgress = Math.min(b.type.hitpoints, b.buildProgress);
 				b.hitpoints += 200;
@@ -305,10 +302,6 @@ public final class Simulator {
 				}
 			}
 			// there is one step when the building is ready but not yet allocated
-			if (b.enabled 
-					&& (b.assignedWorker == 0 || (ps.energyAvailable > 0 && b.getEnergy() < 0 && b.assignedEnergy == 0))) {
-				buildInProgress = true;
-			}
 			if (planet.earthQuakeTTL > 0) {
 				if (b.type.kind.equals("Factory")) {
 					b.hitpoints -= b.type.hitpoints * 15 / 600;
@@ -354,7 +347,7 @@ public final class Simulator {
 		}
 		if (planet.autoBuild != AutoBuild.OFF 
 				&& (planet.owner == world.player && planet.owner.money >= world.config.autoBuildLimit)) {
-			if (!buildInProgress 
+			if (!ps.constructing 
 					&& !ps.hasWarning(PlanetProblems.COLONY_HUB)
 					&& !ps.hasProblem(PlanetProblems.COLONY_HUB)
 			) {
@@ -1006,8 +999,7 @@ public final class Simulator {
 		List<BuildingType> bts = findBuildables(world, planet, buildSelector);
 		// build the most costly building if it can be placed
 		for (BuildingType bt : bts) {
-			TileSet ts = bt.tileset.get(planet.race);
-			Point pt = planet.surface.findLocation(ts.normal.width + 2, ts.normal.height + 2);
+			Point pt = planet.surface.placement.findLocation(planet.getPlacementDimensions(bt));
 			if (pt != null) {
 				doConstruct(world, planet, bt, pt);
 				return true;

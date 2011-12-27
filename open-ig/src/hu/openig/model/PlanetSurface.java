@@ -14,6 +14,7 @@ import hu.openig.core.Sides;
 import hu.openig.core.Tile;
 import hu.openig.utils.XElement;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -68,6 +69,29 @@ public class PlanetSurface {
 	public final List<Building> buildings = new ArrayList<Building>();
 	/** The list of surface features. */
 	public List<SurfaceFeature> features = new ArrayList<SurfaceFeature>();
+	/** The placement helper. */
+	public PlacementHelper placement = new PlacementHelper() {
+		@Override
+		protected Map<Location, SurfaceEntity> basemap() {
+			return basemap;
+		}
+		@Override
+		protected Map<Location, SurfaceEntity> buildingmap() {
+			return buildingmap;
+		}
+		@Override
+		protected boolean cellInMap(int x, int y) {
+			return cellInMap(x, y);
+		}
+		@Override
+		protected int height() {
+			return height;
+		}
+		@Override
+		protected int width() {
+			return width;
+		};
+	};
 	/** Compute the rendering start-stop locations. */
 	public void computeRenderingLocations() {
 		renderingOrigins.clear();
@@ -487,130 +511,125 @@ public class PlanetSurface {
 		}
 	}
 	/**
-	 * Test if the given rectangular region is eligible for building placement, e.g.:
-	 * all cells are within the map's boundary, no other buildings are present within the given bounds,
-	 * no multi-tile surface object is present at the location.
-	 * @param rect the surface rectangle
-	 * @return true if the building can be placed
+	 * The placement helper class to determine if a specific region size is available on the surface.
+	 * @author akarnokd, 2011.12.27.
 	 */
-	public boolean canPlaceBuilding(Rectangle rect) {
-		return canPlaceBuilding(rect.x, rect.y, rect.width, rect.height);
-	}
-	/**
-	 * Test if the given rectangular region is eligible for building placement, e.g.:
-	 * all cells are within the map's boundary, no other buildings are present within the given bounds,
-	 * no multi-tile surface object is present at the location.
-	 * @param x the left coordinate
-	 * @param y the top coordinate
-	 * @param width the width into +X direction
-	 * @param height the height into -Y direction
-	 * @return true if the building can be placed
-	 */
-	public boolean canPlaceBuilding(int x, int y, int width, int height) {
-		for (int i = x; i < x + width; i++) {
-			for (int j = y; j > y - height; j--) {
-				if (!canPlaceBuilding(i, j)) {
-					return false;
+	public abstract static class PlacementHelper {
+		/** @return the map's horizontal width. */
+		protected abstract int width();
+		/** @return the map's vertical height. */
+		protected abstract int height();
+		/**
+		 * Test if the given coordinate is within the map.
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 * @return true if within the map
+		 */
+		protected abstract boolean cellInMap(int x, int y);
+		/** @return the building map */
+		protected abstract Map<Location, SurfaceEntity> buildingmap();
+		/** @return the base map. */
+		protected abstract Map<Location, SurfaceEntity> basemap();
+		/**
+		 * Test if the given rectangular region is eligible for building placement, e.g.:
+		 * all cells are within the map's boundary, no other buildings are present within the given bounds,
+		 * no multi-tile surface object is present at the location.
+		 * @param rect the surface rectangle
+		 * @return true if the building can be placed
+		 */
+		public boolean canPlaceBuilding(Rectangle rect) {
+			return canPlaceBuilding(rect.x, rect.y, rect.width, rect.height);
+		}
+		/**
+		 * Test if the given rectangular region is eligible for building placement, e.g.:
+		 * all cells are within the map's boundary, no other buildings are present within the given bounds,
+		 * no multi-tile surface object is present at the location.
+		 * @param x the left coordinate
+		 * @param y the top coordinate
+		 * @param width the width into +X direction
+		 * @param height the height into -Y direction
+		 * @return true if the building can be placed
+		 */
+		public boolean canPlaceBuilding(int x, int y, int width, int height) {
+			for (int i = x; i < x + width; i++) {
+				for (int j = y; j > y - height; j--) {
+					if (!canPlaceBuilding(i, j)) {
+						return false;
+					}
 				}
 			}
+			return true;
 		}
-		return true;
-	}
-	/**
-	 * Test if the coordinates are suitable for building placement.
-	 * @param x the X coordinate
-	 * @param y the Y coordinate
-	 * @return true if placement is allowed
-	 */
-	public boolean canPlaceBuilding(int x, int y) {
-		if (!cellInMap(x, y)) {
-			return false;
-		} else {
-			SurfaceEntity se = buildingmap.get(Location.of(x, y));
-			if (se != null && se.type == SurfaceEntityType.BUILDING) {
+		/**
+		 * Test if the coordinates are suitable for building placement.
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 * @return true if placement is allowed
+		 */
+		public boolean canPlaceBuilding(int x, int y) {
+			if (!cellInMap(x, y)) {
 				return false;
 			} else {
-				se = basemap.get(Location.of(x, y));
-				if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
+				SurfaceEntity se = buildingmap().get(Location.of(x, y));
+				if (se != null && se.type == SurfaceEntityType.BUILDING) {
 					return false;
+				} else {
+					se = basemap().get(Location.of(x, y));
+					if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
+						return false;
+					}
 				}
 			}
+			return true;
 		}
-		return true;
-	}
-	/**
-	 * Find a location on the surface which can support a building (and surrounding roads)
-	 * with the given size. The location search starts of from the center of the map
-	 * @param width should be the building tile width + 2
-	 * @param height should be the builindg tile height + 2
-	 * @return the top-left point where this building could be built, null indicates that
-	 * no suitable location is present
-	 */
-	public Point findLocation(int width, int height) {
-		int cx = this.width / 2 - this.height / 2 - width / 2;
-		int cy = -this.width / 2 - this.height / 2 + height / 2;
-		
-		// the square size
-		Point pt = null;
-		long dist = -1L; 
-		for (int i = 0; i < Math.abs(cy); i++) {
-			for (int j = cx - i; j <= cx + i; j++) {
-				for (int k = cy + i; k >= cy - i; k--) {
-					if (
-						j < cx - i + 1 || j > cx + i - 1
-						|| k > cy + i - 1 || k < cy - i + 1
-					) { 
-						if (canPlaceBuilding(j, k, width, height)) {
-							Point pt1 = new Point(j, k);
-							long d1 = (j - cx) * (j - cx) + (k - cy) * (k - cy);
-							if (dist < 0 || d1 <= dist) {
-								pt = pt1;
-								dist = d1;
+		/**
+		 * Find a location for the given dimensions.
+		 * <p>Note: the dimensions should incorporate 1+1 road on both axis.</p>
+		 * @param dim the dimensions
+		 * @return the location or null if not found
+		 */
+		public Point findLocation(Dimension dim) {
+			return findLocation(dim.width, dim.height);
+		}
+		/**
+		 * Find a location on the surface which can support a building (and surrounding roads)
+		 * with the given size. The location search starts of from the center of the map
+		 * @param width should be the building tile width + 2
+		 * @param height should be the builindg tile height + 2
+		 * @return the top-left point where this building could be built, null indicates that
+		 * no suitable location is present
+		 */
+		public Point findLocation(int width, int height) {
+			int cx = this.width() / 2 - this.height() / 2 - width / 2;
+			int cy = -this.width() / 2 - this.height() / 2 + height / 2;
+			
+			// the square size
+			Point pt = null;
+			long dist = -1L; 
+			for (int i = 0; i < Math.abs(cy); i++) {
+				for (int j = cx - i; j <= cx + i; j++) {
+					for (int k = cy + i; k >= cy - i; k--) {
+						if (
+							j < cx - i + 1 || j > cx + i - 1
+							|| k > cy + i - 1 || k < cy - i + 1
+						) { 
+							if (canPlaceBuilding(j, k, width, height)) {
+								Point pt1 = new Point(j, k);
+								long d1 = (j - cx) * (j - cx) + (k - cy) * (k - cy);
+								if (dist < 0 || d1 <= dist) {
+									pt = pt1;
+									dist = d1;
+								}
 							}
 						}
 					}
 				}
+				if (pt != null) {
+					break;
+				}
 			}
-			if (pt != null) {
-				break;
-			}
+			
+			return pt;
 		}
-		
-		
-		
-//		for (int j = cx; j >= cx - i; j--) {
-//			if (canPlaceBuilding(j, cy + i, width, height)) {
-//				return new Point(j, cy + i);
-//			}
-//			if (canPlaceBuilding(j, cy - i, width, height)) {
-//				return new Point(j, cy - i);
-//			}
-//		}
-//		for (int j = cx; j <= cx + i; j++) {
-//			if (canPlaceBuilding(j, cy + i, width, height)) {
-//				return new Point(j, cy + i);
-//			}
-//			if (canPlaceBuilding(j, cy - i, width, height)) {
-//				return new Point(j, cy - i);
-//			}
-//		}
-//		for (int k = cy; k <= cy + i; k++) {
-//			if (canPlaceBuilding(cx - i, k, width, height)) {
-//				return new Point(cx - i, k);
-//			}
-//			if (canPlaceBuilding(cx + i, k, width, height)) {
-//				return new Point(cx + i, k);
-//			}
-//		}
-//		for (int k = cy; k >= cy - i; k--) {
-//			if (canPlaceBuilding(cx - i, k, width, height)) {
-//				return new Point(cx - i, k);
-//			}
-//			if (canPlaceBuilding(cx + i, k, width, height)) {
-//				return new Point(cx + i, k);
-//			}
-//		}
-		
-		return pt;
 	}
 }

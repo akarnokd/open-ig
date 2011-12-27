@@ -1079,21 +1079,12 @@ public class GameWindow extends JFrame implements GameControls {
 						if (p != null) {
 							if (p.owner == null) {
 								p.population = 5000; // initial colony
-							}
-							p.owner = commons.world().player;
-							if (p.race == null || p.race.isEmpty()) {
 								p.race = p.owner.race;
 								p.owner.statistics.planetsColonized++;
+								p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 							} else {
-								p.owner.statistics.planetsConquered++;
+								p.takeover(world().player);
 							}
-							for (Building b : p.surface.buildings) {
-								if (b.type.research != null) {
-									commons.world().player.setAvailable(b.type.research);
-								}
-							}
-							p.removeOwnerSatellites();
-							p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 							repaintInner();
 						}
 						e.consume();
@@ -1151,6 +1142,7 @@ public class GameWindow extends JFrame implements GameControls {
 					// CHEAT: add more money
 					if (e.isControlDown()) {
 						world().player.money += 10000;
+						repaintInner();
 						e.consume();
 					}
 					break;
@@ -1162,10 +1154,12 @@ public class GameWindow extends JFrame implements GameControls {
 							p.aiMode = AIMode.TEST;
 							p.ai = new AITest();
 							p.ai.init(p);
+							System.out.println("Switching to TEST AI.");
 						} else {
 							p.aiMode = AIMode.NONE;
 							p.ai = new AIUser();
 							p.ai.init(p);
+							System.out.println("Switching to no AI.");
 						}
 						
 						e.consume();

@@ -280,7 +280,7 @@ public class MapRenderer extends JComponent {
 		}
 		if (placementHints) {
 			for (Location loc : surface.basemap.keySet()) {
-				if (!surface.canPlaceBuilding(loc.x, loc.y)) {
+				if (!surface.placement.canPlaceBuilding(loc.x, loc.y)) {
 					int x = x0 + Tile.toScreenX(loc.x, loc.y);
 					int y = y0 + Tile.toScreenY(loc.x, loc.y);
 					g2.drawImage(areaDeny.getStrip(0), x, y, null);
@@ -309,7 +309,7 @@ public class MapRenderer extends JComponent {
 					
 					BufferedImage img = areaAccept.getStrip(0);
 					// check for existing building
-					if (!surface.canPlaceBuilding(i, j)) {
+					if (!surface.placement.canPlaceBuilding(i, j)) {
 						img = areaDeny.getStrip(0);
 					}
 					
