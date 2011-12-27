@@ -43,7 +43,7 @@ public class Parameters {
 	}
 	/** @return the construction points per simulation step. */
 	public int repairSpeed() {
-		return 50; // DEFAULT: 50
+		return 100; // DEFAULT: 50
 	}
 	/** @return the construction points per simulation step. */
 	public int repairCost() {
