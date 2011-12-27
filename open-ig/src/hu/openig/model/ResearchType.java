@@ -137,4 +137,22 @@ public class ResearchType {
 	public int researchTime() {
 		return researchCost * 3 / 80;
 	}
+	/**
+	 * Check if the global planet statistics provides enough active labs to support the given research.
+	 * @param ps the global planet statistics
+	 * @return true if enough active labs
+	 */
+	public boolean hasEnoughLabs(PlanetStatistics ps) {
+		return ps.civilLabActive >= civilLab
+				&& ps.mechLabActive >= mechLab 
+				&& ps.compLabActive >= compLab
+				&& ps.aiLabActive >= aiLab
+				&& ps.milLabActive >= milLab;
+	}
+	/**
+	 * @return The sum of all kinds of lab counts. 
+	 */
+	public int labCount() {
+		return civilLab + mechLab + compLab + aiLab + milLab;
+	}
 }

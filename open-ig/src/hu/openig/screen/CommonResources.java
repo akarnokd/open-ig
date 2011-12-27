@@ -514,7 +514,7 @@ public class CommonResources implements GameEnvironment {
 		// run AI routines in background
 		final WipPort wip = new WipPort(1);
 		for (final Player p : world.players.values()) {
-			if (p != world.player && p.ai != null) {
+			if (p.ai != null) {
 				SwingWorker<Void, Void> sw = runningAI.get(p);
 				// if not present or finished, start a new
 				if (sw == null || sw.isDone()) {

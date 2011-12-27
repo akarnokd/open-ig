@@ -136,6 +136,9 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 		
 		for (Building b : surface.buildings) {
 			float eff = b.getEfficiency();
+			if (b.isConstructing()) {
+				result.constructing = true;
+			}
 			if (Building.isOperational(eff)) {
 				if (b.hasResource("house")) {
 					result.houseAvailable += b.getResource("house") * eff;

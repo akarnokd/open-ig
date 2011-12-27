@@ -84,6 +84,8 @@ public class PlanetStatistics {
 	public int vehicleMax;
 	/** A space station is deployed. */
 	public boolean hasSpaceStation;
+	/** Building in progress. */
+	public boolean constructing;
 	/**
 	 * Add the other planet statistics to this one.
 	 * @param other the other statistics
@@ -115,6 +117,7 @@ public class PlanetStatistics {
 		orbitalFactory += other.orbitalFactory;
 		problems.putAll(other.problems);
 		warnings.putAll(other.warnings);
+		constructing |= other.constructing;
 	}
 	/**
 	 * The planet has the specified problem?
@@ -145,5 +148,17 @@ public class PlanetStatistics {
 	 */
 	public void addWarning(PlanetProblems probl) {
 		warnings.put(probl, probl);
+	}
+	/**
+	 * @return the total number of built labs.
+	 */
+	public int labCount() {
+		return aiLab + civilLab + compLab + mechLab + milLab;
+	}
+	/**
+	 * @return the total number of active labs.
+	 */
+	public int activeLabCount() {
+		return aiLabActive + civilLabActive + compLabActive + mechLabActive + milLabActive;
 	}
 }

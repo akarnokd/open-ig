@@ -9,9 +9,11 @@
 package hu.openig.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Class representing the world for an AI player, copying the world state to allow a thread-safe evaluation.
@@ -32,8 +34,16 @@ public class AIWorld {
 	public final Map<ResearchType, Production> productions = new HashMap<ResearchType, Production>();
 	/** The active researches. */
 	public final Map<ResearchType, Research> researches = new HashMap<ResearchType, Research>();
+	/** The currently running research. */
+	public ResearchType runningResearch;
 	/** The current inventory level. */
 	public final Map<ResearchType, Integer> inventory = new HashMap<ResearchType, Integer>();
+	/** The set of available researches. */
+	public final Set<ResearchType> availableResearch = new HashSet<ResearchType>();
+	/** The set of remaining research. */
+	public final Set<ResearchType> remainingResearch = new HashSet<ResearchType>();
+	/** The set of researches which can be developed in the current level. */
+	public final Set<ResearchType> furtherResearch = new HashSet<ResearchType>();
 	/** The list of known other players. */
 	public final List<Player> players = new LinkedList<Player>();
 	/** The list of own fleets. */
@@ -54,8 +64,22 @@ public class AIWorld {
 		this.player = player;
 		money = player.money;
 		
-
 		inventory.putAll(player.inventory);
+		
+		for (ResearchType rt : player.world.researches.values()) {
+			if (player.isAvailable(rt)) {
+				availableResearch.add(rt);
+			} else
+			if (rt.race.contains(player.race)) {
+				if (player.world.canResearch(rt)) {
+					remainingResearch.add(rt);
+				} else
+				if (rt.level <= player.world.level) {
+					furtherResearch.add(rt);
+				}
+			}
+		}
+		runningResearch = player.runningResearch;
 		
 		for (Map<ResearchType, Production> prods : player.production.values()) {
 			for (Production prod : prods.values()) {

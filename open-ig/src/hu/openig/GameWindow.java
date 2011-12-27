@@ -1117,6 +1117,7 @@ public class GameWindow extends JFrame implements GameControls {
 					}
 					break;
 				case KeyEvent.VK_I:
+					// CHEAT: add more money
 					if (e.isControlDown()) {
 						if (commons.world().player.currentResearch() != null) {
 							boolean researched = commons.world().player.setAvailable(commons.world().player.currentResearch());
@@ -1143,6 +1144,13 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_L:
 					if (e.isControlDown()) {
 						loadWorld(null);
+						e.consume();
+					}
+					break;
+				case KeyEvent.VK_G:
+					// CHEAT: add more money
+					if (e.isControlDown()) {
+						world().player.money += 10000;
 						e.consume();
 					}
 					break;

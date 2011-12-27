@@ -714,26 +714,13 @@ public class World {
 			c = TextRenderer.YELLOW;
 		} else
 		if (canResearch(rt)) {
-			if (hasEnoughLabs(rt, stats)) {
+			if (rt.hasEnoughLabs(stats)) {
 				c = TextRenderer.LIGHT_BLUE;
 			} else {
 				c = TextRenderer.GREEN;
 			}
 		}
 		return c;
-	}
-	/**
-	 * Check if the global planet statistics provides enough active labs to support the given research.
-	 * @param rt the research type.
-	 * @param ps the global planet statistics
-	 * @return true if enough active labs
-	 */
-	public boolean hasEnoughLabs(ResearchType rt, PlanetStatistics ps) {
-		return ps.civilLabActive >= rt.civilLab
-				&& ps.mechLabActive >= rt.mechLab 
-				&& ps.compLabActive >= rt.compLab
-				&& ps.aiLabActive >= rt.aiLab
-				&& ps.milLabActive >= rt.milLab;
 	}
 	/**
 	 * @return Returns an ordered list of the research types.
