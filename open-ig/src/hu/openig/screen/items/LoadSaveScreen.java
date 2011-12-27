@@ -723,7 +723,10 @@ public class LoadSaveScreen extends ScreenBase {
 		// save only if no game is active
 		if (commons.world() == null) {
 			config.save();
+			MainScreen ms = commons.control().getScreen(Screens.MAIN);
+			ms.checkExistingSave();
 		}
+				
 	}
 
 	@Override
@@ -1111,7 +1114,7 @@ public class LoadSaveScreen extends ScreenBase {
 		if (idx >= 0) {
 			
 			File f = new File("save/" + commons.profile.name + "/" + list.selected.name);
-			if (!f.delete()) {
+			if (f.exists() && !f.delete()) {
 				System.err.println("Could not delete " + f);
 			}
 			f = new File("save/" + commons.profile.name + "/savex-" + list.selected.name.substring(5));

@@ -120,4 +120,11 @@ public interface GameControls {
 	 * @return the AI factory function
 	 */
 	Func1<Player, AIManager> aiFactory();
+	/** 
+	 * Returns the specific sceen object without switching to it.
+	 * @param <T> the target type
+	 * @param screen the screen object
+	 * @return the requested screen
+	 */
+	<T extends ScreenBase> T getScreen(Screens screen);
 }

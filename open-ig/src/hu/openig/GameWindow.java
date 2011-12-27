@@ -1836,4 +1836,76 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		};
 	}
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends ScreenBase> T getScreen(Screens screen) {
+		switch (screen) {
+		case ACHIEVEMENTS:
+			return (T)allScreens.statisticsAchievements;
+		case BAR:
+			return (T)allScreens.bar;
+		case BATTLE_FINISH:
+			return (T)allScreens.battleFinish;
+		case BRIDGE:
+			return (T)allScreens.bridge;
+		case COLONY:
+			return (T)allScreens.colony;
+		case CREDITS:
+			return (T)allScreens.credits;
+		case DATABASE:
+			return (T)allScreens.database;
+		case DIPLOMACY:
+			return (T)allScreens.diplomacy;
+		case EQUIPMENT:
+			return (T)allScreens.equipment;
+		case INFORMATION_ALIENS:
+			return (T)allScreens.info;
+		case INFORMATION_BUILDINGS:
+			return (T)allScreens.info;
+		case INFORMATION_COLONY:
+			return (T)allScreens.info;
+		case INFORMATION_FINANCIAL:
+			return (T)allScreens.info;
+		case INFORMATION_FLEETS:
+			return (T)allScreens.info;
+		case INFORMATION_INVENTIONS:
+			return (T)allScreens.info;
+		case INFORMATION_MILITARY:
+			return (T)allScreens.info;
+		case INFORMATION_PLANETS:
+			return (T)allScreens.info;
+		case LOADING:
+			return (T)allScreens.loading;
+		case LOAD_SAVE:
+			return (T)allScreens.loadSave;
+		case MAIN:
+			return (T)allScreens.main;
+		case MOVIE:
+			return (T)allScreens.movie;
+		case MULTIPLAYER:
+			return null; // FIXME multiplayer screen
+		case PRODUCTION:
+			return (T)allScreens.researchProduction;
+		case RESEARCH:
+			return (T)allScreens.researchProduction;
+		case SHIPWALK:
+			return (T)allScreens.shipwalk;
+		case SINGLEPLAYER:
+			return (T)allScreens.singleplayer;
+		case SPACEWAR:
+			return (T)allScreens.spacewar;
+		case STARMAP:
+			return (T)allScreens.starmap;
+		case STATISTICS:
+			return (T)allScreens.statisticsAchievements;
+		case STATUSBAR:
+			return (T)allScreens.statusbar;
+		case TEST:
+			return (T)allScreens.test;
+		case VIDEOS:
+			return (T)allScreens.videos;
+		default:
+			throw new AssertionError(String.valueOf(screen));
+		}
+	}
 }
