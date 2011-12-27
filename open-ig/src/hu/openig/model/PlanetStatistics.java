@@ -161,4 +161,11 @@ public class PlanetStatistics {
 	public int activeLabCount() {
 		return aiLabActive + civilLabActive + compLabActive + mechLabActive + milLabActive;
 	}
+	/**
+	 * Check if building is possible on this planet.
+	 * @return true if building is possible
+	 */
+	public boolean canBuildAnything() {
+		return !hasProblem(PlanetProblems.COLONY_HUB) && !hasWarning(PlanetProblems.COLONY_HUB);
+	}
 }

@@ -1961,4 +1961,10 @@ public class World {
 		int idx = random.get().nextInt(ts.size());
 		return ts.get(idx);
 	}
+	/**
+	 * @return the various game parameters
+	 */
+	public Parameters params() {
+		return env.params();
+	}
 }

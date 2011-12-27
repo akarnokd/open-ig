@@ -150,21 +150,26 @@ public class ResearchPlanner {
 		Collections.sort(candidatesReconstruct, new CompareFromMap<ResearchType>(rebuildCount));
 
 		final ResearchType rt = candidatesReconstruct.get(candidatesReconstruct.size() - 1);
+		
+		// first, check for planets which have power shortages and have lab
 		for (AIPlanet planet : world.ownPlanets) {
 			if (planet.statistics.labCount() != planet.statistics.activeLabCount()
+					&& planet.statistics.workerDemand < planet.population
+					&& planet.statistics.energyAvailable < 2 * planet.statistics.energyDemand
 					&& !planet.statistics.constructing) {
-				buildMorePowerPlant(planet.planet);
+				checkPlanetHealth(planet);
 				return applyActions;
 			}
 		}
 		// find an empty planet
 		for (AIPlanet planet : world.ownPlanets) {
-			if (planet.statistics.labCount() == 0 
+			if (planet.statistics.activeLabCount() == 0 
 					&& !planet.statistics.constructing) {
 				buildOneLabFor(rt, planet);
 				return applyActions;
 			}
 		}
+		// find a planet with excess labs.
 		for (AIPlanet planet : world.ownPlanets) {
 			if (demolishOneLabFor(rt, planet)) {
 				return applyActions;
@@ -173,45 +178,82 @@ public class ResearchPlanner {
 		return applyActions;
 	}
 	/**
-	 * Build or upgade a power plant on the planet.
+	 * Find a type the building kind.
+	 * @param kind the kind
+	 * @return the building type
+	 */
+	BuildingType findBuildingKind(String kind) {
+		for (BuildingType bt : w.buildingModel.buildings.values()) {
+			if (bt.kind.equals(kind)) {
+				return bt;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Build, upgrade, repair any power plant on the planet.
 	 * @param planet the target planet
 	 */
-	void buildMorePowerPlant(final Planet planet) {
+	void checkPlanetHealth(final AIPlanet planet) {
+		final Planet planet0 = planet.planet;
+		// attempt to build a colony hub
+		if (!planet.statistics.canBuildAnything()) {
+			applyActions.add(new Action0() {
+				@Override
+				public void invoke() {
+					controls.actionPlaceBuilding(planet0, findBuildingKind("MainBuilding"));
+				}
+			});
+			return;
+		}
 		applyActions.add(new Action0() {
 			@Override
 			public void invoke() {
 				// scan for buildings
-				for (Building b : planet.surface.buildings) {
+				for (Building b : planet0.surface.buildings) {
 					Resource r = b.type.resources.get("energy");
 					if (r != null && r.amount > 0) {
 						// if damaged, repair
 						if (b.isDamaged()) {
-							controls.actionRepairBuilding(planet, b, !b.isOperational());
+							if (!b.repairing) {
+								controls.actionRepairBuilding(planet0, b, true);
+							}
 							return;
 						} else
 						// if upgradable and can afford upgrade
 						if (b.upgradeLevel < b.type.upgrades.size()) {
 							int newLevel = Math.min(b.upgradeLevel + (int)(p.money / b.type.cost), b.type.upgrades.size());
 							if (newLevel != b.upgradeLevel) {
-								controls.actionUpgradeBuilding(planet, b, newLevel);
+								controls.actionUpgradeBuilding(planet0, b, newLevel);
 								return;
 							}
 						}
 					}
+//					// check if the building is a lab
+//					for (String s : LAB_RESOURCE_NAMES) {
+//						if (b.type.resources.containsKey(s)) {
+//							if (b.isDamaged()) {
+//								if (!b.repairing) {
+//									controls.actionRepairBuilding(planet, b, true);
+//								}
+//								return;
+//							}
+//						}
+//					}
 				}
 				// if no existing building found
 				// find the most expensive still affordable building
 				BuildingType target = null;
 				for (BuildingType bt : w.buildingModel.buildings.values()) {
 					Resource r = bt.resources.get("energy");
-					if (r != null && r.amount > 0 && planet.canBuild(bt)) {
+					if (r != null && r.amount > 0 && planet0.canBuild(bt)) {
 						if (target == null || (bt.cost <= p.money && bt.cost > target.cost)) {
 							target = bt;
 						}
 					}					
 				}
 				if (target != null) {
-					controls.actionPlaceBuilding(planet, target);
+					controls.actionPlaceBuilding(planet0, target);
 				}
 			}
 		});
@@ -272,19 +314,19 @@ public class ResearchPlanner {
 	 * @param planet the target planet
 	 */
 	void buildOneLabFor(final ResearchType rt, final AIPlanet planet) {
-		if (buildOneLabIf(rt.aiLab, world.global.aiLab, planet, "ai")) {
+		if (buildOneLabIf(rt.aiLab, world.global.aiLab, planet.statistics.aiLab, planet, "ai")) {
 			return;
 		}
-		if (buildOneLabIf(rt.civilLab, world.global.civilLab, planet, "civil")) {
+		if (buildOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet, "civil")) {
 			return;
 		}
-		if (buildOneLabIf(rt.compLab, world.global.compLab, planet, "computer")) {
+		if (buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer")) {
 			return;
 		}
-		if (buildOneLabIf(rt.mechLab, world.global.mechLab, planet, "mechanical")) {
+		if (buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical")) {
 			return;
 		}
-		if (buildOneLabIf(rt.milLab, world.global.milLab, planet, "military")) {
+		if (buildOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet, "military")) {
 			return;
 		}
 	}
@@ -292,29 +334,50 @@ public class ResearchPlanner {
 	 * Build one of the labs if the prerequisite counts match.
 	 * @param required the required count of lab
 	 * @param available the available count of lab
+	 * @param local the locally built count
 	 * @param planet the target planet
 	 * @param resource the building type identification resource
 	 * @return true if successful
 	 */
-	boolean buildOneLabIf(int required, int available, final AIPlanet planet, String resource) {
+	boolean buildOneLabIf(int required, int available, int local, final AIPlanet planet, final String resource) {
 		if (required > available) {
-			final BuildingType bt = findBuildingType(resource);
-			if (bt != null) {
-				if (bt.cost <= world.money) {
-					Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
-					if (pt != null) {
-						final Planet planet0 = planet.planet;
-						applyActions.add(new Action0() {
-							@Override
-							public void invoke() {
-								controls.actionPlaceBuilding(planet0, bt);
+			final Planet planet0 = planet.planet;
+			if (!planet.statistics.canBuildAnything()) {
+				return false;
+			}
+			// if there is one locally available
+			if (local > 0) {
+				applyActions.add(new Action0() {
+					@Override
+					public void invoke() {
+						for (Building b : planet0.surface.buildings) {
+							if (b.hasResource(resource) && b.isDamaged()) {
+								if (!b.repairing) {
+									controls.actionRepairBuilding(planet0, b, true);
+									return;
+								}
 							}
-						});
-						return true;
+						}
 					}
-				}
-			} else {
+				});
+				return true;
+			}
+			final BuildingType bt = findBuildingType(resource);
+			if (bt == null) {
 				new AssertionError("Can't find building for resource " + resource).printStackTrace();
+				return false;
+			}
+			if (bt.cost <= world.money) {
+				Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
+				if (pt != null) {
+					applyActions.add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionPlaceBuilding(planet0, bt);
+						}
+					});
+					return true;
+				}
 			}
 		}
 		return false;

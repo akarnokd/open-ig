@@ -17,12 +17,36 @@ public class Parameters {
 	 * @return the multiplier for radar-range in pixels for ground radars
 	 */
 	public int groundRadarUnitSize() {
-		return 35;
+		return 35; // DEFAULT: 35
 	}
 	/**
 	 * @return the multiplier for radar-range in pixels for fleet radars
 	 */
 	public int fleetRadarUnitSize() {
-		return 25;
+		return 25; // DEFAULT: 25
+	}
+	/** @return the research speed in terms of money / simulation step. */
+	public int researchSpeed() {
+		return 80; // DEFAULT: 40
+	}
+	/** @return the production unit per simulation step. The lower the faster the production is. */
+	public int productionUnit() {
+		return 25; // DEFAULT: 50
+	}
+	/** @return the construction points per simulation step. */
+	public int constructionSpeed() {
+		return 200; // DEFAULT: 200
+	}
+	/** @return the construction points per simulation step. Not used now. */
+	public int constructionCost() {
+		return 200; // DEFAULT: 200
+	}
+	/** @return the construction points per simulation step. */
+	public int repairSpeed() {
+		return 50; // DEFAULT: 50
+	}
+	/** @return the construction points per simulation step. */
+	public int repairCost() {
+		return 20; // DEFAULT: 20
 	}
 }

@@ -185,10 +185,11 @@ public class AI implements AIManager, AIControls {
 	}
 	@Override
 	public void actionPlaceBuilding(Planet planet, BuildingType buildingType) {
-		// TODO implement
+		if (!planet.canBuild(buildingType)) {
+			log("PlaceBuilding, Planet = %s, Type = %s, FAIL = not supported or no colony hub", planet.id, buildingType.id);
+		} else
 		if (p.money >= buildingType.cost) {
-			TileSet ts = buildingType.tileset.get(planet.race);
-			Point pt = planet.surface.placement.findLocation(ts.normal.width + 2, ts.normal.height + 2);
+			Point pt = planet.surface.placement.findLocation(planet.getPlacementDimensions(buildingType));
 			if (pt != null) {
 				Simulator.doConstruct(w, planet, buildingType, pt);
 				log("placeBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
