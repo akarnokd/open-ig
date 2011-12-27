@@ -11,6 +11,7 @@ package hu.openig.mechanics;
 import hu.openig.core.Action0;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
+import hu.openig.model.AIPlanner;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
@@ -35,7 +36,7 @@ import java.util.Set;
  * A simple research planner.
  * @author akarnokd, 2011.12.27.
  */
-public class ResearchPlanner {
+public class ResearchPlanner implements AIPlanner {
 	/** The world copy. */
 	final AIWorld world;
 	/** The original world object. */
@@ -61,10 +62,7 @@ public class ResearchPlanner {
 		this.w = p.world;
 		this.applyActions = new ArrayList<Action0>();
 	}
-	/**
-	 * Simple next research planner.
-	 * @return the list of issued actions
-	 */
+	@Override
 	public List<Action0> run() {
 		if (!p.id.equals("Empire")) {
 			return applyActions;
@@ -229,17 +227,6 @@ public class ResearchPlanner {
 							}
 						}
 					}
-//					// check if the building is a lab
-//					for (String s : LAB_RESOURCE_NAMES) {
-//						if (b.type.resources.containsKey(s)) {
-//							if (b.isDamaged()) {
-//								if (!b.repairing) {
-//									controls.actionRepairBuilding(planet, b, true);
-//								}
-//								return;
-//							}
-//						}
-//					}
 				}
 				// if no existing building found
 				// find the most expensive still affordable building

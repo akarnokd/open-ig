@@ -9,6 +9,7 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Difficulty;
 import hu.openig.core.Location;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIControls;
@@ -109,11 +110,6 @@ public class AI implements AIManager, AIControls {
 	}
 	
 	@Override
-	public void manage() {
-		// TODO Auto-generated method stub
-		researchPlanner();
-	}
-	@Override
 	public void apply() {
 		for (Action0 a : applyActions) {
 			a.invoke();
@@ -161,6 +157,91 @@ public class AI implements AIManager, AIControls {
 		
 		p.fleets.put(fleet, FleetKnowledge.FULL);
 	}
+	@Override
+	public void actionDeploySatellite(Planet planet, ResearchType satellite) {
+		actionDeploySatellite(p, planet, satellite);
+		log("DeploySatellite, Planet = %s, Type = %s", planet.id, satellite.id);
+	}
+	@Override
+	public void actionRemoveProduction(ResearchType rt) {
+		actionRemoveProduction(p, rt);
+		log("RemoveProduction, Type = %s", rt.id);
+	}
+	/**
+	 * Remove the production line of the given research.
+	 * @param player the player
+	 * @param rt the research
+	 */
+	public static void actionRemoveProduction(Player player, ResearchType rt) {
+		Map<ResearchType, Production> map = player.production.get(rt.category.main);
+		if (map != null) {
+			Production prod = map.get(rt);
+			if (prod != null) {
+				map.remove(rt);
+				// update statistics
+				int m = prod.progress / 2;
+				player.money += m;
+				player.statistics.moneyProduction -= m;
+				player.statistics.moneySpent -= m;
+				player.world.statistics.moneyProduction -= m;
+				player.world.statistics.moneySpent -= m;
+			}
+		}
+	}
+	/**
+	 * Deploy a satellite of the given player to the target planet.
+	 * @param player the player
+	 * @param planet the planet
+	 * @param satellite the satellite type
+	 */
+	public static void actionDeploySatellite(Player player, Planet planet, ResearchType satellite) {
+		if (player.inventoryCount(satellite) > 0) {
+			InventoryItem ii = new InventoryItem();
+			ii.type = satellite;
+			ii.owner = player;
+			ii.count = 1;
+			ii.hp = player.world.getHitpoints(satellite);
+			planet.inventory.add(ii);
+			int ttl = getSatelliteTTL(satellite, player.world.difficulty);
+			if (ttl > 0) {
+				planet.timeToLive.put(ii, ttl);
+			}
+			player.changeInventoryCount(satellite, -1);
+		}
+	}
+	/**
+	 * Retrieve the satellite TTL value.
+	 * @param satellite the satellite type
+	 * @param difficulty the current difficulty
+	 * @return the TTL in simulation steps
+	 */
+	public static int getSatelliteTTL(ResearchType satellite, Difficulty difficulty) {
+		int radar = satellite.getInt("radar", 0);
+		int ttl = 0;
+		switch (radar) {
+		case 1:
+			ttl = 12 * 6;
+			break;
+		case 2:
+			ttl = 24 * 6;
+			break;
+		case 3:
+			ttl = 96 * 6;
+			break;
+		default:
+		}
+		switch (difficulty) {
+		case EASY:
+			ttl *= 4;
+			break;
+		case NORMAL:
+			ttl *= 2;
+			break;
+		default:
+		}
+		return ttl;
+	}
+
 	@Override
 	public void actionStartProduction(ResearchType rt, int count, int priority) {
 		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
@@ -667,10 +748,17 @@ public class AI implements AIManager, AIControls {
 			}
 		}
 	}
-	/**
-	 * Simple next research planner.
-	 */
-	void researchPlanner() {
-		applyActions.addAll(new ResearchPlanner(world, this).run());
+	@Override
+	public void manage() {
+		List<Action0> acts = new ResearchPlanner(world, this).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
+		acts = new DiscoveryPlanner(world, this, explorationMap, explorationCellSize).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
 	}
 }

@@ -110,4 +110,15 @@ public interface AIControls {
 	 * @param offer the offer
 	 */
 	void actionDiplomaticInteraction(Player other, DiplomaticInteraction offer);
+	/**
+	 * Deploy one unit of the satellite to the target planet.
+	 * @param planet the planet
+	 * @param satellite the satellite type
+	 */
+	void actionDeploySatellite(Planet planet, ResearchType satellite);
+	/**
+	 * Remove the production from the production lines.
+	 * @param rt the technology
+	 */
+	void actionRemoveProduction(ResearchType rt);
 }
