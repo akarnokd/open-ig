@@ -2,6 +2,17 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.492 - Fixes =
+  * Released: 2011-12-27 13:30 CET
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=133 Issue #133]
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=141 Issue #141]
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=137 Issue #137]
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=128 Issue #128]
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=139 Issue #139]
+  * Enhancement [http://code.google.com/p/open-ig/issues/detail?id=140 #140]: immediately researchable technology appears light-blue in the information-technology screen.
+  * Added small arrow to the top-right statusbar to indicate the presence of the screen-menu.
+  * Save now produces an {{{info-*.xml}}} file. Hopefully, next time I ask for a save, they send me the {{{save-*.xml}}} without confusion.
+
 = Version 0.93.490 - Quick fixes =
   * Released: 2011-12-25 20:20 CET
   * Fleet inventory issues ([http://code.google.com/p/open-ig/issues/detail?id=133 Issue #133])
