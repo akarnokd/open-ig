@@ -20,6 +20,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.TaxLevel;
 import hu.openig.utils.JavaUtils;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -110,6 +111,14 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("repair");
 			}
 		};
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				int v1 = 25000 - o1.population;
+				int v2 = 25000 - o2.population;
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+			}
+		};
 		return planCategory(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet value) {
@@ -121,7 +130,7 @@ public class ColonyPlanner extends Planner {
 				}
 				return value.population > value.statistics.workerDemand * 1.1;
 			}
-		}, food, costOrder, true);
+		}, planetOrder, food, costOrder, true);
 	}
 	/**
 	 * Issue a change taxation command.
@@ -253,12 +262,20 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("food");
 			}
 		};
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				int v1 = o1.statistics.foodAvailable - o1.population;
+				int v2 = o2.statistics.foodAvailable - o2.population;
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+			}
+		};
 		return planCategory(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet value) {
 				return value.population > value.statistics.foodAvailable;
 			}
-		}, food, costOrder, true);
+		}, planetOrder, food, costOrder, true);
 	}
 	/**
 	 * Check if there is shortage on police.
@@ -268,11 +285,19 @@ public class ColonyPlanner extends Planner {
 		BuildingSelector police = new BuildingSelector() {
 			@Override
 			public boolean accept(AIBuilding value) {
-				return value.hasResource("hospital");
+				return value.hasResource("police");
 			}
 			@Override
 			public boolean accept(BuildingType value) {
-				return value.hasResource("hospital");
+				return value.hasResource("police");
+			}
+		};
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				int v1 = o1.statistics.policeAvailable - o1.population;
+				int v2 = o2.statistics.policeAvailable - o2.population;
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
 			}
 		};
 		return planCategory(new Pred1<AIPlanet>() {
@@ -280,7 +305,7 @@ public class ColonyPlanner extends Planner {
 			public Boolean invoke(AIPlanet value) {
 				return value.population > value.statistics.policeAvailable * 1.1;
 			}
-		}, police, costOrder, true);
+		}, planetOrder, police, costOrder, true);
 	}
 	/**
 	 * Check if there is shortage on hospitals.
@@ -297,12 +322,20 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("hospital");
 			}
 		};
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				int v1 = o1.statistics.hospitalAvailable - o1.population;
+				int v2 = o2.statistics.hospitalAvailable - o2.population;
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+			}
+		};
 		return planCategory(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet value) {
 				return value.population > value.statistics.hospitalAvailable * 1.1;
 			}
-		}, hospital, costOrder, true);
+		}, planetOrder, hospital, costOrder, true);
 	}
 	/** 
 	 * Ensure that no living space shortage present.
@@ -319,12 +352,20 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("house");
 			}
 		};
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				int v1 = o1.statistics.houseAvailable - o1.population;
+				int v2 = o2.statistics.houseAvailable - o2.population;
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+			}
+		};
 		return planCategory(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet value) {
 				return value.population > value.statistics.houseAvailable;
 			}
-		}, livingSpace, costOrder, true);
+		}, planetOrder, livingSpace, costOrder, true);
 	}
 	/**
 	 * Check if there is some worker demand issues,
@@ -342,12 +383,18 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("morale") || value.hasResource("population-growth");
 			}
 		};
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				return o1.morale - o2.morale;
+			}
+		};
 		return planCategory(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet value) {
 				return value.population < value.statistics.workerDemand;
 			}
-		}, morale, costOrder, true);
+		}, planetOrder, morale, costOrder, true);
 	}
 	/**
 	 * Check if there are enough power on the planet,
@@ -365,13 +412,20 @@ public class ColonyPlanner extends Planner {
 				return buildingType.hasResource("energy");
 			}
 		};
-		
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				int v1 = o1.statistics.energyAvailable - o1.statistics.energyDemand;
+				int v2 = o2.statistics.energyAvailable - o2.statistics.energyDemand;
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
+			}
+		};
 		return planCategory(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet value) {
 				return value.statistics.energyAvailable < value.statistics.energyDemand;
 			}
-		}, energy, costOrder, true);	
+		}, planetOrder, energy, costOrder, true);	
 	}
 	/**
 	 * Check if a colony hub is available on planets,
