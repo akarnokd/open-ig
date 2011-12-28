@@ -64,6 +64,12 @@ public class EconomyPlanner extends Planner {
 				return checkFactory();
 			}
 		});
+		functions.add(new Pred0() {
+			@Override
+			public Boolean invoke() {
+				return checkSocial();
+			}
+		});
 
 		// random arbitration
 		Collections.shuffle(functions, w.random.get());
@@ -182,11 +188,11 @@ public class EconomyPlanner extends Planner {
 	boolean checkEconomy() {
 		BuildingSelector police = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding value) {
+			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("multiply") || value.hasResource("credit");
 			}
 			@Override
-			public boolean accept(BuildingType value) {
+			public boolean accept(AIPlanet planet, BuildingType value) {
 				return value.hasResource("multiply") || value.hasResource("credit");
 			}
 		};
@@ -212,11 +218,11 @@ public class EconomyPlanner extends Planner {
 	boolean checkFactory() {
 		BuildingSelector police = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding value) {
+			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
 			}
 			@Override
-			public boolean accept(BuildingType value) {
+			public boolean accept(AIPlanet planet, BuildingType value) {
 				return  value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
 			}
 		};
@@ -226,6 +232,35 @@ public class EconomyPlanner extends Planner {
 				int v1 = o1.statistics.workerDemand - o1.population;
 				int v2 = o2.statistics.workerDemand - o2.population;
 				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+			}
+		};
+		return planCategory(new Pred1<AIPlanet>() {
+			@Override
+			public Boolean invoke(AIPlanet value) {
+				return value.population > value.statistics.workerDemand * 1.1;
+			}
+		}, planetOrder, police, costOrder, false);
+	}
+	/**
+	 * Check if there is shortage on police.
+	 * @return if action taken
+	 */
+	boolean checkSocial() {
+		BuildingSelector police = new BuildingSelector() {
+			@Override
+			public boolean accept(AIPlanet planet, AIBuilding value) {
+				
+				return value.type.kind.equals("Social");
+			}
+			@Override
+			public boolean accept(AIPlanet planet, BuildingType value) {
+				return  value.kind.equals("Social") && limit(planet, value, 1);
+			}
+		};
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				return o1.morale - o2.morale;
 			}
 		};
 		return planCategory(new Pred1<AIPlanet>() {

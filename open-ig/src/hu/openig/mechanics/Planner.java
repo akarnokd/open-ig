@@ -39,16 +39,18 @@ public abstract class Planner {
 	public interface BuildingSelector {
 		/**
 		 * Accept the given building for upgrading.
+		 * @param planet the planet in question
 		 * @param building the building
 		 * @return true if accept
 		 */
-		boolean accept(AIBuilding building);
+		boolean accept(AIPlanet planet, AIBuilding building);
 		/**
 		 * Accept the given building type for construction.
+		 * @param planet the planet in question
 		 * @param buildingType the building type
 		 * @return true if accept
 		 */
-		boolean accept(BuildingType buildingType);
+		boolean accept(AIPlanet planet, BuildingType buildingType);
 	}
 	/**
 	 * Interface for comparing values of buildings. 
@@ -238,7 +240,7 @@ public abstract class Planner {
 			final BuildingSelector selector,
 			final BuildingOrder order) {
 		for (final AIBuilding b : planet.buildings) {
-			if (!b.enabled && selector.accept(b)) {
+			if (!b.enabled && selector.accept(planet, b)) {
 				add(new Action0() {
 					@Override
 					public void invoke() {
@@ -251,7 +253,7 @@ public abstract class Planner {
 		// scan for the most affordable upgrade
 		AIBuilding upgrade = null;
 		for (final AIBuilding b : planet.buildings) {
-			if (selector.accept(b) && b.canUpgrade() && b.type.cost <= world.money) {
+			if (selector.accept(planet, b) && b.canUpgrade() && b.type.cost <= world.money) {
 				if (upgrade == null || order.compare(upgrade, b) < 0) {
 					upgrade = b;
 				}
@@ -283,7 +285,7 @@ public abstract class Planner {
 		// try building a new one
 		BuildingType create = null;
 		for (final BuildingType bt : w.buildingModel.buildings.values()) {
-			if (selector.accept(bt) && planet.planet.canBuild(bt) && bt.cost <= world.money) {
+			if (selector.accept(planet, bt) && planet.planet.canBuild(bt) && bt.cost <= world.money) {
 				if (planet.findLocation(bt) != null) {
 					if (create == null || order.compare(create, bt) < 0) {
 						create = bt;
@@ -315,7 +317,7 @@ public abstract class Planner {
 			final BuildingOrder order) {
 		// try repairing existing
 		for (final AIBuilding b : planet.buildings) {
-			if (!b.repairing && b.isDamaged() && selector.accept(b)) {
+			if (!b.repairing && b.isDamaged() && selector.accept(planet, b)) {
 				add(new Action0() {
 					@Override
 					public void invoke() {
@@ -388,5 +390,20 @@ public abstract class Planner {
 			}
 		});
 	}
-
+	/**
+	 * Counts the buildings on the planet and returns false if already at max.
+	 * @param planet the target planet
+	 * @param bt the building type
+	 * @param max the maximum value
+	 * @return true if limit reached
+	 */
+	public boolean limit(AIPlanet planet, BuildingType bt, int max) {
+		 int count = 0;
+		 for (AIBuilding b : planet.buildings) {
+			 if (b.type == bt) {
+				 count++;
+			 }
+		 }
+		 return count < max;
+	}
 }
