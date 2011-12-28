@@ -402,15 +402,15 @@ public final class Simulator {
 			float nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
 			planet.morale = (int)nextMorale;
 			
-			int nextPopulation = 0;
+			float nextPopulation = 0;
 			if (nextMorale < 50) {
-				nextPopulation = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
+				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
 			} else {
-				nextPopulation = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
-				nextPopulation = (int)((nextPopulation - planet.population) * populationGrowthModifier);
+				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
+				nextPopulation += ((nextPopulation - planet.population) * populationGrowthModifier);
 			}
 			
-			planet.population = nextPopulation;
+			planet.population = (int)nextPopulation;
 			
 			planet.tradeIncome = (int)(tradeIncome * multiply);
 			planet.taxIncome = (int)(1.0f * planet.population * planet.morale * planet.tax.percent / 10000);
