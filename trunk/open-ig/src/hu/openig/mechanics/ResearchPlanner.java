@@ -9,21 +9,17 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
-import hu.openig.mechanics.DiscoveryPlanner.ProductionOrder;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIPlanet;
-import hu.openig.model.AIPlanner;
 import hu.openig.model.AIWorld;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
-import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Resource;
-import hu.openig.model.World;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -40,17 +36,7 @@ import java.util.Set;
  * A simple research planner.
  * @author akarnokd, 2011.12.27.
  */
-public class ResearchPlanner implements AIPlanner {
-	/** The world copy. */
-	final AIWorld world;
-	/** The original world object. */
-	final World w;
-	/** The player. */
-	final Player p;
-	/** The actions to perform. */
-	public final List<Action0> applyActions;
-	/** The controls to affect the world in actions. */
-	private final AIControls controls;
+public class ResearchPlanner extends Planner {
 	/** The set of resource names. */
 	private static final Set<String> LAB_RESOURCE_NAMES = 
 			new HashSet<String>(Arrays.asList("ai", "civil", "computer", "mechanical", "military"));
@@ -60,17 +46,10 @@ public class ResearchPlanner implements AIPlanner {
 	 * @param controls the controls to affect the world in actions
 	 */
 	public ResearchPlanner(AIWorld world, AIControls controls) {
-		this.world = world;
-		this.controls = controls;
-		this.p = world.player;
-		this.w = p.world;
-		this.applyActions = new ArrayList<Action0>();
+		super(world, controls);
 	}
 	@Override
-	public List<Action0> run() {
-		if (!p.id.equals("Empire")) {
-			return applyActions;
-		}
+	public void plan() {
 		if (world.runningResearch != null) {
 			// if not enough labs, stop research and let the other management tasks apply
 			if (!world.runningResearch.hasEnoughLabs(world.global)) {
@@ -81,7 +60,7 @@ public class ResearchPlanner implements AIPlanner {
 					}
 				});
 			}
-			return applyActions;
+			return;
 		}
 		final Map<ResearchType, Integer> enablesCount = new HashMap<ResearchType, Integer>();
 		final Map<ResearchType, Integer> rebuildCount = new HashMap<ResearchType, Integer>();
@@ -127,17 +106,18 @@ public class ResearchPlanner implements AIPlanner {
 					controls.actionStartResearch(rt, moneyFactor);
 				}
 			});
-			return applyActions;
+			return;
 		}
 		if (candidatesReconstruct.size() > 0) {
-			return planReconstruction(rebuildCount, candidatesReconstruct);
+			planReconstruction(rebuildCount, candidatesReconstruct);
+			return;
 		}
 		if (candidatesGetMorePlanets.size() > 0) {
 			// TODO this is more complicated
 			planConquest();
-			return applyActions;
+			return;
 		}
-		return applyActions;
+		return;
 	}
 	/**
 	 * Plan for conquest.
@@ -259,23 +239,6 @@ public class ResearchPlanner implements AIPlanner {
 		}
 	}
 	/**
-	 * Add the given action to the output.
-	 * @param action the action to add
-	 */
-	void add(Action0 action) {
-		applyActions.add(action);
-	}
-	/**
-	 * Display the action log.
-	 * @param message the message
-	 * @param values the message parameters
-	 */
-	void log(String message, Object... values) {
-		System.out.printf("AI:%s:", p.id);
-		System.out.printf(message, values);
-		System.out.println();
-	}
-	/**
 	 * Plan how the labs will be reconstructed to allow the next research.
 	 * @param rebuildCount the number of new buildings needed for each research
 	 * @param candidatesReconstruct the candidates for the research
@@ -314,32 +277,6 @@ public class ResearchPlanner implements AIPlanner {
 			}
 		}
 		return applyActions;
-	}
-	/**
-	 * Find a type the building kind.
-	 * @param kind the kind
-	 * @return the building type
-	 */
-	BuildingType findBuildingKind(String kind) {
-		for (BuildingType bt : w.buildingModel.buildings.values()) {
-			if (bt.kind.equals(kind)) {
-				return bt;
-			}
-		}
-		return null;
-	}
-	/**
-	 * Find a type the building kind.
-	 * @param id the building type id
-	 * @return the building type
-	 */
-	BuildingType findBuilding(String id) {
-		for (BuildingType bt : w.buildingModel.buildings.values()) {
-			if (bt.id.equals(id)) {
-				return bt;
-			}
-		}
-		return null;
 	}
 	/**
 	 * Build, upgrade, repair any power plant on the planet.

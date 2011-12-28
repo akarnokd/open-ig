@@ -14,38 +14,21 @@ import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
-import hu.openig.model.AIPlanner;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Planet;
-import hu.openig.model.Player;
-import hu.openig.model.Production;
-import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
-import hu.openig.model.World;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
+ * The starmap discovery and satellite planner.
  * @author akarnokd, 2011.12.27.
- *
  */
-public class DiscoveryPlanner implements AIPlanner {
-	/** The world copy. */
-	final AIWorld world;
-	/** The original world object. */
-	final World w;
-	/** The player. */
-	final Player p;
-	/** The actions to perform. */
-	public final List<Action0> applyActions;
-	/** The controls to affect the world in actions. */
-	final AIControls controls;
+public class DiscoveryPlanner extends Planner {
 	/** The current remaining exploration map. */
 	final Set<Location> explorationMap;
 	/** The cell size. */
@@ -54,29 +37,14 @@ public class DiscoveryPlanner implements AIPlanner {
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
 	 * @param controls the controls to affect the world in actions
-	 * @param explorationMap the remaining locations to visit
-	 * @param explorationCellSize the exploration cell size
 	 */
-	public DiscoveryPlanner(AIWorld world, AIControls controls, 
-			Set<Location> explorationMap, int explorationCellSize) {
-		this.world = world;
-		this.controls = controls;
-		this.p = world.player;
-		this.w = p.world;
-		this.applyActions = new ArrayList<Action0>();
-		this.explorationMap = explorationMap;
-		this.explorationCellSize = explorationCellSize;
+	public DiscoveryPlanner(AIWorld world, AIControls controls) {
+		super(world, controls);
+		this.explorationMap = controls.explorationMap();
+		this.explorationCellSize = controls.explorationCellSize();
 	}
 	@Override
-	public List<Action0> run() {
-		compute();
-		return applyActions;
-	}
-	/** Compute. */
-	void compute() {
-		if (!p.id.equals("Empire")) {
-			return;
-		}
+	public void plan() {
 		if (explorationMap.size() > 0) {
 			// find a fleet which is not moving and has at least a decent radar range
 			// and is among the fastest available
@@ -163,94 +131,5 @@ public class DiscoveryPlanner implements AIPlanner {
 				}
 			}
 		}
-	}
-	/**
-	 * The production order management action.
-	 * @author akarnokd, 2011.12.27.
-	 */
-	public static class ProductionOrder {
-		/** The world. */
-		final AIWorld world;
-		/** The technology. */
-		final ResearchType rt;
-		/** The list of actions. */
-		final List<Action0> actions;
-		/** The controls. */
-		final AIControls controls;
-		/**
-		 * Constructor. Initializes the fields.
-		 * @param world the world
-		 * @param rt the technology
-		 * @param actions the action list
-		 * @param controls the controls
-		 */
-		public ProductionOrder(AIWorld world, ResearchType rt,
-				List<Action0> actions, AIControls controls) {
-			this.world = world;
-			this.rt = rt;
-			this.actions = actions;
-			this.controls = controls;
-		}
-		/** Place or replace a production order. */
-		public void invoke() {
-			Production prod = world.productions.get(rt);
-			if (prod != null && prod.count > 0) {
-				return;
-			} else
-			if (prod != null) {
-				setProduction();
-				return;
-			}
-			int prodCnt = 0;
-			ResearchType cheapest = null;
-			for (ResearchType rt : world.productions.keySet()) {
-				prod = world.productions.get(rt);
-				if (rt.category.main == rt.category.main) {
-					prodCnt++;
-					if (cheapest == null || prod.count == 0 || cheapest.productionCost > rt.productionCost) {
-						cheapest = rt;
-					}
-				}
-			}
-			if (prodCnt < 5) {
-				setProduction();
-				return;
-			}
-			final ResearchType cp = cheapest;
-			actions.add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionRemoveProduction(cp);
-				}
-			});
-			return;
-		}
-		/**
-		 * Issue a production action for the given technology.
-		 */
-		void setProduction() {
-			int capacity = world.global.spaceshipActive;
-			if (rt.category.main == ResearchMainCategory.EQUIPMENT) {
-				capacity = world.global.equipmentActive;
-			} else
-			if (rt.category.main == ResearchMainCategory.WEAPONS) {
-				capacity = world.global.weaponsActive;
-			}
-			final int count = Math.max(1, 
-					capacity / rt.productionCost / world.player.world.params().productionUnit());
-			actions.add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionStartProduction(rt, count, 50);
-				}
-			});
-		}
-	}
-	/**
-	 * Add the given action to the output.
-	 * @param action the action to add
-	 */
-	void add(Action0 action) {
-		applyActions.add(action);
 	}
 }

@@ -36,6 +36,7 @@ import hu.openig.model.ResponseMode;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
+import hu.openig.model.TaxLevel;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.TileSet;
@@ -446,7 +447,18 @@ public class AI implements AIManager, AIControls {
 		building.repairing = repair;
 		log("RepairBuilding, Planet = %s, Building = %s, Repair = %s", planet.id, building.type.id, repair);
 	}
+	@Override
+	public void actionEnableBuilding(Planet planet, Building building,
+			boolean enabled) {
+		building.enabled = enabled;
+		log("EnableBuilding, Planet = %s, Building = %s, Repair = %s", planet.id, building.type.id, enabled);
+	}
 	
+	@Override
+	public void actionSetTaxation(Planet planet, TaxLevel newLevel) {
+		log("SetTaxation, Planet = %s, Level = %s, NewLevel = %s", planet.id, planet.tax, newLevel);
+		planet.tax = newLevel;
+	}
 	
 	/**
 	 * Display the action log.
@@ -780,26 +792,46 @@ public class AI implements AIManager, AIControls {
 				}
 			}
 		}
-		if (explorationMap.size() == 0) {
-			log("ExplorationComplete");
-		}
+//		if (explorationMap.size() == 0) {
+//			log("ExplorationComplete");
+//		}
 	}
 	@Override
+	public int explorationCellSize() {
+		return explorationCellSize;
+	}
+	@Override
+	public Set<Location> explorationMap() {
+		return explorationMap;
+	};
+	@Override
 	public void manage() {
+		if (!p.id.equals("Empire")) {
+			return;
+		}
 //		if (explorationMap.size() == 0) {
 //			initExplorationMap();
 //		}
 		updateExplorationMap();
 		
-		List<Action0> acts = new ResearchPlanner(world, this).run();
+		List<Action0> acts = null;
+
+		acts = new ColonyPlanner(world, this).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
 			return;
 		}
-		acts = new DiscoveryPlanner(world, this, explorationMap, explorationCellSize).run();
+
+		acts = new ResearchPlanner(world, this).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
+		acts = new DiscoveryPlanner(world, this).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
 			return;
 		}
 	}
+	
 }

@@ -53,4 +53,22 @@ public class BuildingType {
 	public Map<String, Scaffolding> scaffoldings;
 	/** The common minimap tiles for various building states. */
 	public BuildingMinimapTiles minimapTiles;
+	/**
+	 * Check if a given resource is present.
+	 * @param resource the resource name
+	 * @return true if present
+	 */
+	public boolean hasResource(String resource) {
+		return resources.containsKey(resource);
+	}
+	/**
+	 * Returns the resource amount.
+	 * <p>Does not check for the existence of the resource.</p>
+	 * @param resource the resource name
+	 * @return the amount
+	 */
+	public float getResource(String resource) {
+		Resource r = resources.get(resource);
+		return r.amount;
+	}
 }

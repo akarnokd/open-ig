@@ -188,6 +188,7 @@ public final class Simulator {
 		float moraleBoost = 0;
 		int radar = 0;
 		long eqPlaytime = 6L * 60 * 60 * 1000;
+		double populationGrowthModifier = 1.0;
 		
 		final int repairCost = world.params().repairCost();
 		final int repairAmount = world.params().repairSpeed();
@@ -303,6 +304,9 @@ public final class Simulator {
 				if (b.hasResource("radar")) {
 					radar = Math.max(radar, (int)b.getResource("radar"));
 				}
+				if (b.hasResource("population-growth")) {
+					populationGrowthModifier = 1 + b.getResource("population-growth") / 100;
+				}
 			}
 			if (planet.earthQuakeTTL > 0) {
 				if (b.type.kind.equals("Factory")) {
@@ -398,11 +402,15 @@ public final class Simulator {
 			float nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
 			planet.morale = (int)nextMorale;
 			
+			int nextPopulation = 0;
 			if (nextMorale < 50) {
-				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
+				nextPopulation = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
 			} else {
-				planet.population = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
+				nextPopulation = (int)Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
+				nextPopulation = (int)((nextPopulation - planet.population) * populationGrowthModifier);
 			}
+			
+			planet.population = nextPopulation;
 			
 			planet.tradeIncome = (int)(tradeIncome * multiply);
 			planet.taxIncome = (int)(1.0f * planet.population * planet.morale * planet.tax.percent / 10000);
