@@ -252,7 +252,7 @@ public abstract class Planner {
 		AIBuilding upgrade = null;
 		for (final AIBuilding b : planet.buildings) {
 			if (selector.accept(b) && b.canUpgrade() && b.type.cost <= world.money) {
-				if (upgrade == null || order.compare(upgrade, b) > 0) {
+				if (upgrade == null || order.compare(upgrade, b) < 0) {
 					upgrade = b;
 				}
 			}
@@ -285,7 +285,7 @@ public abstract class Planner {
 		for (final BuildingType bt : w.buildingModel.buildings.values()) {
 			if (selector.accept(bt) && planet.planet.canBuild(bt) && bt.cost <= world.money) {
 				if (planet.findLocation(bt) != null) {
-					if (create == null || order.compare(create, bt) > 0) {
+					if (create == null || order.compare(create, bt) < 0) {
 						create = bt;
 					}
 				}
