@@ -19,7 +19,6 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchType;
-import hu.openig.model.Resource;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -252,16 +251,6 @@ public class ResearchPlanner extends Planner {
 
 		final ResearchType rt = candidatesReconstruct.get(candidatesReconstruct.size() - 1);
 		
-		// first, check for planets which have power shortages and have lab
-		for (AIPlanet planet : world.ownPlanets) {
-			if (planet.statistics.labCount() != planet.statistics.activeLabCount()
-					&& planet.statistics.workerDemand < planet.population
-					&& planet.statistics.energyAvailable < 2 * planet.statistics.energyDemand
-					&& !planet.statistics.constructing) {
-				checkPlanetHealth(planet);
-				return applyActions;
-			}
-		}
 		// find an empty planet
 		for (AIPlanet planet : world.ownPlanets) {
 			if (planet.statistics.activeLabCount() == 0 
@@ -277,63 +266,6 @@ public class ResearchPlanner extends Planner {
 			}
 		}
 		return applyActions;
-	}
-	/**
-	 * Build, upgrade, repair any power plant on the planet.
-	 * @param planet the target planet
-	 */
-	void checkPlanetHealth(final AIPlanet planet) {
-		final Planet planet0 = planet.planet;
-		// attempt to build a colony hub
-		if (!planet.statistics.canBuildAnything()) {
-			applyActions.add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionPlaceBuilding(planet0, findBuildingKind("MainBuilding"));
-				}
-			});
-			return;
-		}
-		applyActions.add(new Action0() {
-			@Override
-			public void invoke() {
-				// scan for buildings
-				for (Building b : planet0.surface.buildings) {
-					Resource r = b.type.resources.get("energy");
-					if (r != null && r.amount > 0) {
-						// if damaged, repair
-						if (b.isDamaged()) {
-							if (!b.repairing) {
-								controls.actionRepairBuilding(planet0, b, true);
-							}
-							return;
-						} else
-						// if upgradable and can afford upgrade
-						if (b.upgradeLevel < b.type.upgrades.size()) {
-							int newLevel = Math.min(b.upgradeLevel + (int)(p.money / b.type.cost), b.type.upgrades.size());
-							if (newLevel != b.upgradeLevel) {
-								controls.actionUpgradeBuilding(planet0, b, newLevel);
-								return;
-							}
-						}
-					}
-				}
-				// if no existing building found
-				// find the most expensive still affordable building
-				BuildingType target = null;
-				for (BuildingType bt : w.buildingModel.buildings.values()) {
-					Resource r = bt.resources.get("energy");
-					if (r != null && r.amount > 0 && planet0.canBuild(bt)) {
-						if (target == null || (bt.cost <= p.money && bt.cost > target.cost)) {
-							target = bt;
-						}
-					}					
-				}
-				if (target != null) {
-					controls.actionPlaceBuilding(planet0, target);
-				}
-			}
-		});
 	}
 	/**
 	 * Demolish one of the excess labs on the planet to make room.
