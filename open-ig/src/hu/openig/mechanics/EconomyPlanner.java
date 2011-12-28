@@ -8,9 +8,8 @@
 
 package hu.openig.mechanics;
 
-import java.util.Comparator;
-
 import hu.openig.core.Action0;
+import hu.openig.core.Pred0;
 import hu.openig.core.Pred1;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
@@ -19,6 +18,11 @@ import hu.openig.model.AIWorld;
 import hu.openig.model.BuildingType;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Build factories and economic buildings.
@@ -40,14 +44,33 @@ public class EconomyPlanner extends Planner {
 
 	@Override
 	protected void plan() {
-		if (checkRadar()) {
-			return;
-		}
-		if (checkEconomy()) {
-			return;
-		}
-		if (checkFactory()) {
-			return;
+		
+		List<Pred0> functions = new ArrayList<Pred0>();
+		functions.add(new Pred0() {
+			@Override
+			public Boolean invoke() {
+				return checkRadar();
+			}
+		});
+		functions.add(new Pred0() {
+			@Override
+			public Boolean invoke() {
+				return checkEconomy();
+			}
+		});
+		functions.add(new Pred0() {
+			@Override
+			public Boolean invoke() {
+				return checkFactory();
+			}
+		});
+
+		// random arbitration
+		Collections.shuffle(functions, w.random.get());
+		for (Pred0 f : functions) {
+			if (f.invoke()) {
+				return;
+			}
 		}
 	}
 	/**
