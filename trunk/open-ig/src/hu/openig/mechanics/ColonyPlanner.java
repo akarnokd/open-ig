@@ -20,6 +20,8 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.TaxLevel;
 import hu.openig.utils.JavaUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -54,6 +56,9 @@ public class ColonyPlanner extends Planner {
 		if (checkWorker()) {
 			return;
 		}
+		if (checkMorale()) {
+			return;
+		}
 		if (checkLivingSpace()) {
 			return;
 		}
@@ -64,9 +69,6 @@ public class ColonyPlanner extends Planner {
 			return;
 		}
 		if (checkPolice()) {
-			return;
-		}
-		if (checkMorale()) {
 			return;
 		}
 		if (checkBuildingHealth()) {
@@ -182,7 +184,7 @@ public class ColonyPlanner extends Planner {
 			int moraleNow = planet.morale;
 			TaxLevel tax = planet.tax;
 			
-			if (moraleNow < 20) {
+			if (moraleNow < 25) {
 				if (tax != TaxLevel.NONE) {
 					setTaxLevelAction(planet, TaxLevel.NONE);
 					return true;
@@ -244,15 +246,27 @@ public class ColonyPlanner extends Planner {
 			
 		}
 		// if morale is still low, build a morale boosting building
-		for (AIPlanet planet : world.ownPlanets) {
+		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		Collections.sort(planets, new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				int c = o1.morale - o2.morale;
+				if (c == 0) {
+					c = o1.population - o2.population;
+				}
+				return c;
+			}
+		});
+		for (AIPlanet planet : planets) {
 			int moraleNow = planet.morale;
 			int moraleLast = planet.lastMorale;
 			
-			if (moraleNow < 35 && moraleLast < 45 && !planet.statistics.constructing) {
+			if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {
 				if (boostMoraleWithBuilding(planet)) {
 					return true;
 				}
 			}
+			
 		}
 		return false;
 	}
