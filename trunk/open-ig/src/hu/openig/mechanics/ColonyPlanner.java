@@ -190,13 +190,13 @@ public class ColonyPlanner extends Planner {
 					return true;
 				}
 			} else
-			if (moraleNow < 36) {
+			if (moraleNow < 38) {
 				if (tax != TaxLevel.VERY_LOW) {
 					setTaxLevelAction(planet, TaxLevel.VERY_LOW);
 					return true;
 				}
 			} else
-			if (moraleNow < 45) {
+			if (moraleNow < 47) {
 				if (tax != TaxLevel.LOW) {
 					setTaxLevelAction(planet, TaxLevel.LOW);
 					return true;
