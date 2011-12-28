@@ -942,9 +942,21 @@ public class World {
 		}
 		
 		for (Planet p : planets.values()) {
+			XElement xp = world.add("planet");
+			xp.set("id", p.id);
+			for (InventoryItem pii : p.inventory) {
+				XElement xpii = xp.add("item");
+				xpii.set("id", pii.type.id);
+				xpii.set("owner", pii.owner.id);
+				xpii.set("count", pii.count);
+				xpii.set("hp", pii.hp);
+				xpii.set("shield", pii.shield);
+				Integer ttl = p.timeToLive.get(pii); 
+				if (ttl != null && ttl > 0) {
+					xpii.set("ttl", ttl);
+				}
+			}
 			if (p.owner != null) {
-				XElement xp = world.add("planet");
-				xp.set("id", p.id);
 				xp.set("owner", p.owner.id);
 				xp.set("race", p.race);
 				xp.set("quarantine", p.quarantine);
@@ -959,19 +971,6 @@ public class World {
 				xp.set("tax-income", p.taxIncome);
 				xp.set("trade-income", p.tradeIncome);
 				xp.set("earthquake-ttl", p.earthQuakeTTL);
-				
-				for (InventoryItem pii : p.inventory) {
-					XElement xpii = xp.add("item");
-					xpii.set("id", pii.type.id);
-					xpii.set("owner", pii.owner.id);
-					xpii.set("count", pii.count);
-					xpii.set("hp", pii.hp);
-					xpii.set("shield", pii.shield);
-					Integer ttl = p.timeToLive.get(pii); 
-					if (ttl != null && ttl > 0) {
-						xpii.set("ttl", ttl);
-					}
-				}
 				for (Building b : p.surface.buildings) {
 					XElement xb = xp.add("building");
 					xb.set("x", b.location.x);
@@ -1226,20 +1225,7 @@ public class World {
 		for (XElement xplanet : xworld.childrenWithName("planet")) {
 			Planet p = planets.get(xplanet.get("id"));
 
-			p.owner = players.get(xplanet.get("owner"));
-			p.race = xplanet.get("race");
-			p.quarantine = "true".equals(xplanet.get("quarantine"));
-			p.quarantineTTL = xplanet.getInt("quarantine-ttl", p.quarantine ? Planet.DEFAULT_QUARANTINE_TTL : 0);
-			p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
-			p.tax = TaxLevel.valueOf(xplanet.get("tax"));
-			p.morale = xplanet.getInt("morale");
-			p.lastMorale = xplanet.getInt("morale-last", p.morale);
-			p.population = xplanet.getInt("population");
-			p.lastPopulation = xplanet.getInt("population-last", p.population);
-			p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));
-			p.taxIncome = xplanet.getInt("tax-income");
-			p.tradeIncome = xplanet.getInt("trade-income");
-			p.earthQuakeTTL = xplanet.getInt("earthquake-ttl", 0);
+			p.die();
 
 			p.inventory.clear();
 			p.surface.buildings.clear();
@@ -1273,10 +1259,25 @@ public class World {
 				
 				p.inventory.add(pii);
 			}
+			String sowner = xplanet.get("owner", null);
 
-			p.surface.setBuildings(buildingModel, xplanet);
-			
-			if (p.owner != null) {
+			if (sowner != null) {
+				p.owner = players.get(sowner);
+				p.race = xplanet.get("race");
+				p.quarantine = "true".equals(xplanet.get("quarantine"));
+				p.quarantineTTL = xplanet.getInt("quarantine-ttl", p.quarantine ? Planet.DEFAULT_QUARANTINE_TTL : 0);
+				p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
+				p.tax = TaxLevel.valueOf(xplanet.get("tax"));
+				p.morale = xplanet.getInt("morale");
+				p.lastMorale = xplanet.getInt("morale-last", p.morale);
+				p.population = xplanet.getInt("population");
+				p.lastPopulation = xplanet.getInt("population-last", p.population);
+				p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));
+				p.taxIncome = xplanet.getInt("tax-income");
+				p.tradeIncome = xplanet.getInt("trade-income");
+				p.earthQuakeTTL = xplanet.getInt("earthquake-ttl", 0);
+				
+				p.surface.setBuildings(buildingModel, xplanet);
 				p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 				// make owned technology available, just in case
 				for (Building b : p.surface.buildings) {
