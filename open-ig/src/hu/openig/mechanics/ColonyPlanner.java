@@ -472,20 +472,20 @@ public class ColonyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean findCheapestDamaged(final AIPlanet current, final Func1<Building, Boolean> check) {
-		Building cheapest = null;
-		for (Building b : current.buildings) {
+		AIBuilding cheapest = null;
+		for (AIBuilding b : current.buildings) {
 			if (check.invoke(b)) {
-				if (cheapest == null || cheapest.type.cost < b.type.cost) {
+				if (cheapest == null || cheapest.type.cost > b.type.cost) {
 					cheapest = b;
 				}
 			}
 		}
 		if (cheapest != null) {
-			final Building fcheapest = cheapest;
+			final AIBuilding fcheapest = cheapest;
 			add(new Action0() {
 				@Override
 				public void invoke() {
-					controls.actionDemolishBuilding(current.planet, fcheapest);
+					controls.actionDemolishBuilding(current.planet, fcheapest.building);
 				}
 			});
 			return true;
