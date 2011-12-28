@@ -250,11 +250,11 @@ public class EconomyPlanner extends Planner {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
 				
-				return value.type.kind.equals("Social");
+				return value.type.kind.equals("Social") && value.hasResource("morale");
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return  value.kind.equals("Social") && limit(planet, value, 1);
+				return  value.kind.equals("Social") && value.hasResource("morale") && limit(planet, value, 1);
 			}
 		};
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {

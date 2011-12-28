@@ -135,7 +135,7 @@ public class ColonyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return value.hasResource("repair");
+				return value.hasResource("repair") && limit(planet, value, 1);
 			}
 		};
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
@@ -149,11 +149,6 @@ public class ColonyPlanner extends Planner {
 			@Override
 			public Boolean invoke(AIPlanet value) {
 				// check if there is no or at least one upgradable fire department
-				for (Building b : value.buildings) {
-					if (b.hasResource("repair") && !b.canUpgrade() && !b.isDamaged()) {
-						return false;
-					}
-				}
 				if (value.population < 25000) {
 					return false;
 				}
@@ -184,7 +179,7 @@ public class ColonyPlanner extends Planner {
 			int moraleNow = planet.morale;
 			TaxLevel tax = planet.tax;
 			
-			if (moraleNow < 25 || planet.population < 4000) {
+			if (moraleNow < 25 || planet.population < 4500) {
 				if (tax != TaxLevel.NONE) {
 					setTaxLevelAction(planet, TaxLevel.NONE);
 					return true;
@@ -196,7 +191,7 @@ public class ColonyPlanner extends Planner {
 					return true;
 				}
 			} else
-			if (moraleNow < 55) {
+			if (moraleNow < 55 || planet.population < 5500) {
 				if (tax != TaxLevel.LOW) {
 					setTaxLevelAction(planet, TaxLevel.LOW);
 					return true;
@@ -214,25 +209,25 @@ public class ColonyPlanner extends Planner {
 					return true;
 				}
 			} else
-			if (moraleNow < 70) {
+			if (moraleNow < 70 && planet.population > 10000) {
 				if (tax != TaxLevel.HIGH) {
 					setTaxLevelAction(planet, TaxLevel.HIGH);
 					return true;
 				}
 			} else
-			if (moraleNow < 78) {
+			if (moraleNow < 78 && planet.population > 15000) {
 				if (tax != TaxLevel.VERY_HIGH) {
 					setTaxLevelAction(planet, TaxLevel.VERY_HIGH);
 					return true;
 				}
 			} else
-			if (moraleNow < 85) {
+			if (moraleNow < 85 && planet.population > 20000) {
 				if (tax != TaxLevel.OPPRESSIVE) {
 					setTaxLevelAction(planet, TaxLevel.OPPRESSIVE);
 					return true;
 				}
 			} else
-			if (moraleNow < 95) {
+			if (moraleNow < 95 && planet.population > 25000) {
 				if (tax != TaxLevel.EXPLOITER) {
 					setTaxLevelAction(planet, TaxLevel.EXPLOITER);
 					return true;
