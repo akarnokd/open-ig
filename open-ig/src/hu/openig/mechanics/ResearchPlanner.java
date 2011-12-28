@@ -61,8 +61,8 @@ public class ResearchPlanner extends Planner {
 			}
 			return;
 		}
-		final Map<ResearchType, Integer> enablesCount = new HashMap<ResearchType, Integer>();
-		final Map<ResearchType, Integer> rebuildCount = new HashMap<ResearchType, Integer>();
+		final Map<ResearchType, Double> enablesCount = new HashMap<ResearchType, Double>();
+		final Map<ResearchType, Double> rebuildCount = new HashMap<ResearchType, Double>();
 		List<ResearchType> candidatesImmediate = new ArrayList<ResearchType>();
 		List<ResearchType> candidatesReconstruct = new ArrayList<ResearchType>();
 		List<ResearchType> candidatesGetMorePlanets = new ArrayList<ResearchType>();
@@ -85,7 +85,7 @@ public class ResearchPlanner extends Planner {
 			if (rt.labCount() <= world.ownPlanets.size()) {
 				candidatesReconstruct.add(rt);
 				setResearchEnables(rt, enablesCount);
-				rebuildCount.put(rt, rebuildCost(rt, labCosts));
+				rebuildCount.put(rt, 1.0 * rebuildCost(rt, labCosts));
 			} else {
 				candidatesGetMorePlanets.add(rt);
 				setResearchEnables(rt, enablesCount);
@@ -94,10 +94,7 @@ public class ResearchPlanner extends Planner {
 		if (candidatesImmediate.size() > 0) {
 			Collections.sort(candidatesImmediate, new CompareFromMap<ResearchType>(enablesCount));
 			final ResearchType rt = candidatesImmediate.get(0);
-			double mf = 1.0;
-			if (rt.researchCost * 5 <= world.money) {
-				mf = 2.0;
-			}
+			double mf = 2.0;
 			final double moneyFactor = mf; // TODO decision variable
 			applyActions.add(new Action0() {
 				@Override
@@ -244,7 +241,7 @@ public class ResearchPlanner extends Planner {
 	 * @return the list of actions
 	 */
 	List<Action0> planReconstruction(
-			final Map<ResearchType, Integer> rebuildCount,
+			final Map<ResearchType, Double> rebuildCount,
 			List<ResearchType> candidatesReconstruct) {
 		// find the research that requires the fewest lab rebuilds
 		Collections.sort(candidatesReconstruct, new CompareFromMap<ResearchType>(rebuildCount));
@@ -411,19 +408,19 @@ public class ResearchPlanner extends Planner {
 	 */
 	class CompareFromMap<T> implements Comparator<T> {
 		/** The backing map. */
-		final Map<T, Integer> map;
+		final Map<T, Double> map;
 		/**
 		 * Constructor.
 		 * @param map the backing map to use
 		 */
-		public CompareFromMap(Map<T, Integer> map) {
+		public CompareFromMap(Map<T, Double> map) {
 			this.map = map;
 		}
 		@Override
 		public int compare(T o1, T o2) {
-			int count1 = map.get(o1);
-			int count2 = map.get(o2);
-			return count1 < count2 ? 1 : (count1 > count2 ? -1 : 0);
+			Double count1 = map.get(o1);
+			Double count2 = map.get(o2);
+			return count1.compareTo(count2);
 		}
 	}
 	/**
@@ -458,7 +455,7 @@ public class ResearchPlanner extends Planner {
 	 * @param rt the current research
 	 * @param map the map for research to count
 	 */
-	void setResearchEnables(ResearchType rt, Map<ResearchType, Integer> map) {
+	void setResearchEnables(ResearchType rt, Map<ResearchType, Double> map) {
 		int count = 0;
 		for (ResearchType rt2 : world.remainingResearch) {
 			if (rt2.prerequisites.contains(rt)) {
@@ -470,7 +467,7 @@ public class ResearchPlanner extends Planner {
 				count++;
 			}
 		}
-		map.put(rt, count);
+		map.put(rt, 1 + 1.0 * count / rt.researchCost);
 	}
 
 }

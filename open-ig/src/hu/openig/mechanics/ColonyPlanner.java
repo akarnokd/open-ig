@@ -408,7 +408,7 @@ public class ColonyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return value.hasResource("morale") || value.hasResource("population-growth");
+				return (value.hasResource("morale") || value.hasResource("population-growth")) && limit(planet, value, 1);
 			}
 		};
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
