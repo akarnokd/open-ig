@@ -23,6 +23,8 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.World;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -168,15 +170,21 @@ public abstract class Planner {
 	/**
 	 * Plan a specific category of building actions.
 	 * @param condition the condition to check for the planet
+	 * @param planetOrder the order in which the planets should be visited.
 	 * @param selector the selector of candidate buildings
 	 * @param order the order between alternative buildings
 	 * @param upgradeFirst try upgrading first?
 	 * @return true if action taken
 	 */
-	public final boolean planCategory(Func1<AIPlanet, Boolean> condition, 
-			BuildingSelector selector, BuildingOrder order, boolean upgradeFirst) {
+	public final boolean planCategory(
+			Func1<AIPlanet, Boolean> condition,
+			Comparator<AIPlanet> planetOrder,
+			BuildingSelector selector, 
+			BuildingOrder order, boolean upgradeFirst) {
 		// try to upgrade or build a new power plant
-		for (final AIPlanet planet : world.ownPlanets) {
+		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		Collections.sort(planets, planetOrder);
+		for (final AIPlanet planet : planets) {
 			if (planet.statistics.constructing) {
 				continue;
 			}

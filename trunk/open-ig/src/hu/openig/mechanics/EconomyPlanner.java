@@ -8,6 +8,8 @@
 
 package hu.openig.mechanics;
 
+import java.util.Comparator;
+
 import hu.openig.core.Action0;
 import hu.openig.core.Pred1;
 import hu.openig.model.AIBuilding;
@@ -164,12 +166,20 @@ public class EconomyPlanner extends Planner {
 				return value.hasResource("multiply") || value.hasResource("credit");
 			}
 		};
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				int v1 = o1.statistics.workerDemand - o1.population;
+				int v2 = o2.statistics.workerDemand - o2.population;
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+			}
+		};
 		return planCategory(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet value) {
 				return value.population > value.statistics.workerDemand * 1.1;
 			}
-		}, police, costOrder, false);
+		}, planetOrder, police, costOrder, false);
 	}
 	/**
 	 * Check if there is shortage on police.
@@ -186,11 +196,19 @@ public class EconomyPlanner extends Planner {
 				return  value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
 			}
 		};
+		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				int v1 = o1.statistics.workerDemand - o1.population;
+				int v2 = o2.statistics.workerDemand - o2.population;
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+			}
+		};
 		return planCategory(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet value) {
 				return value.population > value.statistics.workerDemand * 1.1;
 			}
-		}, police, costOrder, false);
+		}, planetOrder, police, costOrder, false);
 	}
 }
