@@ -12,6 +12,8 @@ import hu.openig.core.Location;
 import hu.openig.model.PlanetSurface.PlacementHelper;
 import hu.openig.utils.JavaUtils;
 
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +38,16 @@ public class AIPlanet {
 	public final List<AIInventoryItem> inventory = JavaUtils.newArrayList();
 	/** Set of locations where no buildings may be placed. */
 	public final Map<Location, SurfaceEntity> nonbuildable = JavaUtils.newHashMap();
+	/** Building list. */
+	public final List<AIBuilding> buildings = new ArrayList<AIBuilding>();
 	/** The placement helper. */
 	public PlacementHelper placement;
+	/** The current morale. */
+	public int morale;
+	/** The last morale. */
+	public int lastMorale;
+	/** The tax level. */
+	public TaxLevel tax;
 	/**
 	 * Assign the necessary properties from a planet.
 	 * @param planet the target fleet
@@ -50,6 +60,10 @@ public class AIPlanet {
 		this.statistics = world.getStatistics(planet);
 		this.radar = planet.radar;
 		this.population = planet.population;
+		this.morale = planet.morale;
+		this.lastMorale = planet.lastMorale;
+		this.tax = planet.tax;
+		
 		for (InventoryItem ii : planet.inventory) {
 			inventory.add(new AIInventoryItem(ii));
 		}
@@ -57,6 +71,10 @@ public class AIPlanet {
 		
 		final int width = planet.surface.width;
 		final int height = planet.surface.height;
+
+		for (Building b : planet.surface.buildings) {
+			buildings.add(new AIBuilding(b));
+		}
 		
 		placement = new PlacementHelper() {
 			@Override
@@ -85,5 +103,26 @@ public class AIPlanet {
 			}
 			
 		};
+	}
+	/**
+	 * Try to find a suitable location for the given building type.
+	 * @param bt the building type
+	 * @return the point or null if none
+	 */
+	public Point findLocation(BuildingType bt) {
+		return placement.findLocation(planet.getPlacementDimensions(bt));
+	}
+	/**
+	 * Check if the given technology is in the inventory.
+	 * @param rt the technology
+	 * @return true if present
+	 */
+	public boolean hasInventory(ResearchType rt) {
+		for (AIInventoryItem ii : inventory) {
+			if (ii.type == rt && ii.count > 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

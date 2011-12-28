@@ -139,6 +139,10 @@ public class Building {
 	public boolean isSeverlyDamaged() {
 		return hitpoints * 2 < (isConstructing() ? buildProgress : type.hitpoints);
 	}
+	/** @return the current damage ratio. */
+	public double damageRatio() {
+		return hitpoints / (isConstructing() ? (buildProgress > 0 ? buildProgress : 1) : type.hitpoints);
+	}
 	/**
 	 * @return is the building destroyed?
 	 */
@@ -233,5 +237,9 @@ public class Building {
 	/** @return is the building completed? */
 	public boolean isComplete() {
 		return buildProgress == type.hitpoints;
+	}
+	/** @return true if this building can be further upgraded */
+	public boolean canUpgrade() {
+		return upgradeLevel < type.upgrades.size();
 	}
 }

@@ -8,6 +8,10 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Location;
+
+import java.util.Set;
+
 /**
  * Interface to issue actions.
  * @author akarnokd, 2011.12.27.
@@ -139,4 +143,21 @@ public interface AIControls {
 	 * @param rt the research to stop
 	 */
 	void actionStopResearch(ResearchType rt);
+	/** @return the exploration map remaining cells. */
+	Set<Location> explorationMap();
+	/** @return the exploration cell size. */
+	int explorationCellSize();
+	/**
+	 * Change the enabled-state of the given building.
+	 * @param planet the target planet
+	 * @param building the building
+	 * @param enabled the new state
+	 */
+	void actionEnableBuilding(Planet planet, Building building, boolean enabled);
+	/**
+	 * Set the taxation level of the given planet.
+	 * @param planet the target planet
+	 * @param newLevel the new tax level
+	 */
+	void actionSetTaxation(Planet planet, TaxLevel newLevel);
 }

@@ -446,6 +446,7 @@
 	<entry key='building.resource.type.multiply'> x income</entry>
 	<entry key='building.resource.type.credit'> cr</entry>
 	<entry key='building.resource.type.hospital'> men</entry>
+	<entry key='building.resource.type.population-growth'> % +men</entry>
 	<entry key='planets.earth'>Earth</entry>
 	
 	<entry key='players.empire'>Galactic Empire</entry>
