@@ -50,16 +50,22 @@ public class ColonyPlanner extends Planner {
 		if (checkColonyHub()) {
 			return;
 		}
+		if (checkTax()) {
+			return;
+		}
+		if (checkBuildingHealth()) {
+			return;
+		}
 		if (checkPower()) {
 			return;
 		}
 		if (checkWorker()) {
 			return;
 		}
-		if (checkLivingSpace()) {
+		if (checkMorale()) {
 			return;
 		}
-		if (checkMorale()) {
+		if (checkLivingSpace()) {
 			return;
 		}
 		if (checkFood()) {
@@ -69,9 +75,6 @@ public class ColonyPlanner extends Planner {
 			return;
 		}
 		if (checkPolice()) {
-			return;
-		}
-		if (checkBuildingHealth()) {
 			return;
 		}
 		if (checkFireBrigade()) {
@@ -107,18 +110,30 @@ public class ColonyPlanner extends Planner {
 				return true;
 			}
 		}
-		// find and start repairing buildings
+		// find and start repairing the cheapest damaged building per planet
 		for (final AIPlanet planet : world.ownPlanets) {
 			for (final AIBuilding b : planet.buildings) {
-				if (b.isDamaged() && !b.repairing) {
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionRepairBuilding(planet.planet, b.building, true);
-						}
-					});
-					return true;
+				if (b.repairing) {
+					return true; // don't let other things continue
 				}
+			}
+			AIBuilding toRepair = null;
+			for (final AIBuilding b : planet.buildings) {
+				if (b.isDamaged() && !b.repairing) {
+					if (toRepair == null || toRepair.type.cost > b.type.cost) {
+						toRepair = b;
+					}
+				}
+			}
+			if (toRepair != null) {
+				final AIBuilding b = toRepair;
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionRepairBuilding(planet.planet, b.building, true);
+					}
+				});
+				return true;
 			}
 		}
 		return false;
@@ -173,7 +188,7 @@ public class ColonyPlanner extends Planner {
 	 * Check for low or high morale and adjust taxation to take advantage of it.
 	 * @return true if action taken
 	 */
-	boolean checkMorale() {
+	boolean checkTax() {
 		// try changing the tax
 		for (AIPlanet planet : world.ownPlanets) {
 			int moraleNow = planet.morale;
@@ -240,6 +255,10 @@ public class ColonyPlanner extends Planner {
 			}
 			
 		}
+		return false;
+	}
+	/** @return check the morale level and build social buildings in necessary. */
+	boolean checkMorale() {
 		// if morale is still low, build a morale boosting building
 		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
 		Collections.sort(planets, new Comparator<AIPlanet>() {
@@ -555,12 +574,12 @@ public class ColonyPlanner extends Planner {
 			}
 		});
 		for (Func1<Building, Boolean> f : functions) {
-			if (findCheapestDamaged(current, f)) {
+			if (findDamaged(current, f)) {
 				return true;
 			}
 			for (AIPlanet planet : world.ownPlanets) {
 				if (planet != current) {
-					if (findCheapestDamaged(planet, f)) {
+					if (findDamaged(planet, f)) {
 						return true;
 					}
 				}
@@ -575,11 +594,11 @@ public class ColonyPlanner extends Planner {
 	 * @param check the check function.
 	 * @return true if action taken
 	 */
-	boolean findCheapestDamaged(final AIPlanet current, final Func1<Building, Boolean> check) {
+	boolean findDamaged(final AIPlanet current, final Func1<Building, Boolean> check) {
 		AIBuilding cheapest = null;
 		for (AIBuilding b : current.buildings) {
 			if (check.invoke(b)) {
-				if (cheapest == null || cheapest.type.cost > b.type.cost) {
+				if (cheapest == null || cheapest.type.cost < b.type.cost) {
 					cheapest = b;
 				}
 			}
