@@ -146,6 +146,7 @@ public class EconomyPlanner extends Planner {
 							controls.actionPlaceBuilding(planet.planet, fbestRadar);
 						}
 					});
+					return true;
 				}
 			}
 		}

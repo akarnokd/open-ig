@@ -56,10 +56,10 @@ public class ColonyPlanner extends Planner {
 		if (checkWorker()) {
 			return;
 		}
-		if (checkMorale()) {
+		if (checkLivingSpace()) {
 			return;
 		}
-		if (checkLivingSpace()) {
+		if (checkMorale()) {
 			return;
 		}
 		if (checkFood()) {
