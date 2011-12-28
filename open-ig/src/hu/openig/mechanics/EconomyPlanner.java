@@ -266,7 +266,8 @@ public class EconomyPlanner extends Planner {
 		return planCategory(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.workerDemand * 1.1;
+				return value.population > value.statistics.workerDemand * 1.1
+						&& value.statistics.energyAvailable * 2 > value.statistics.energyDemand;
 			}
 		}, planetOrder, police, costOrder, false);
 	}

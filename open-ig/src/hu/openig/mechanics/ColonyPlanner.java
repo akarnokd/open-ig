@@ -62,10 +62,10 @@ public class ColonyPlanner extends Planner {
 		if (checkWorker()) {
 			return;
 		}
-		if (checkMorale()) {
+		if (checkLivingSpace()) {
 			return;
 		}
-		if (checkLivingSpace()) {
+		if (checkMorale()) {
 			return;
 		}
 		if (checkFood()) {
@@ -86,8 +86,22 @@ public class ColonyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkBuildingHealth() {
+		// demolish severely damanged buildings, faster to create a new one
+		for (final AIPlanet planet : world.ownPlanets) {
+			for (final AIBuilding b : planet.buildings) {
+				if (b.isSeverlyDamaged()) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionDemolishBuilding(planet.planet, b.building);
+						}
+					});
+					return true;
+				}
+			}
+		}		
 		// if low on money
-		if (world.money < 10000) {
+		if (world.money < 1000) {
 			// stop repairing
 			boolean anyConstruction = false;
 			for (final AIPlanet planet : world.ownPlanets) {
@@ -114,12 +128,21 @@ public class ColonyPlanner extends Planner {
 		for (final AIPlanet planet : world.ownPlanets) {
 			for (final AIBuilding b : planet.buildings) {
 				if (b.repairing) {
+					addEmpty();
 					return true; // don't let other things continue
 				}
 			}
 			AIBuilding toRepair = null;
 			for (final AIBuilding b : planet.buildings) {
 				if (b.isDamaged() && !b.repairing) {
+					if (b.hasResource("repair")) {
+						toRepair = b;
+						break;
+					} else
+					if (b.hasResource("energy") && b.getResource("energy") > 0) {
+						toRepair = b;
+						break;
+					}
 					if (toRepair == null || toRepair.type.cost > b.type.cost) {
 						toRepair = b;
 					}
@@ -274,13 +297,14 @@ public class ColonyPlanner extends Planner {
 		for (AIPlanet planet : planets) {
 			int moraleNow = planet.morale;
 			int moraleLast = planet.lastMorale;
-			
-			if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {
-				if (boostMoraleWithBuilding(planet)) {
-					return true;
+			// only if there is energy available
+			if (planet.statistics.energyAvailable * 2 >= planet.statistics.energyDemand) {
+				if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {
+					if (boostMoraleWithBuilding(planet)) {
+						return true;
+					}
 				}
 			}
-			
 		}
 		return false;
 	}
