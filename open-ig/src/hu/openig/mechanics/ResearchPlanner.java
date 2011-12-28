@@ -143,6 +143,12 @@ public class ResearchPlanner implements AIPlanner {
 	 * Plan for conquest.
 	 */
 	void planConquest() {
+		// if colonization ship underway, exit
+		for (AIFleet fleet : world.ownFleets) {
+			if (fleet.isMoving() && fleet.hasInventory("ColonyShip") && fleet.targetPlanet != null) {
+				return;
+			}
+		}
 		// if a fleet with colony ship is in position, colonize the planet
 		for (AIFleet fleet : world.ownFleets) {
 			if (!fleet.isMoving() && fleet.hasInventory("ColonyShip")) {
