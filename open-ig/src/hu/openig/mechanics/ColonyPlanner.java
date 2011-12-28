@@ -81,6 +81,31 @@ public class ColonyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkBuildingHealth() {
+		// if low on money
+		if (world.money < 10000) {
+			// stop repairing
+			boolean anyConstruction = false;
+			for (final AIPlanet planet : world.ownPlanets) {
+				if (planet.statistics.constructing) {
+					anyConstruction = true;
+					for (final AIBuilding b : planet.buildings) {
+						if (b.repairing) {
+							add(new Action0() {
+								@Override
+								public void invoke() {
+									controls.actionRepairBuilding(planet.planet, b.building, false);
+								}
+							});
+							return true;
+						}
+					}
+				}
+			}
+			if (anyConstruction) {
+				return true;
+			}
+		}
+		// find and start repairing buildings
 		for (final AIPlanet planet : world.ownPlanets) {
 			for (final AIBuilding b : planet.buildings) {
 				if (b.isDamaged() && !b.repairing) {
@@ -409,7 +434,7 @@ public class ColonyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(BuildingType buildingType) {
-				return buildingType.hasResource("energy");
+				return buildingType.hasResource("energy") && buildingType.getResource("energy") > 0;
 			}
 		};
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
