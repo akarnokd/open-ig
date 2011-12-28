@@ -126,7 +126,10 @@ public class MainScreen extends ScreenBase {
 	private ClickLabel continueLabel;
 	/** Resume the last gameplay. */
 	void doContinue() {
-		load(null);
+		continueLabel.disabled = !isSaveAvailable();
+		if (!continueLabel.disabled) {
+			load(null);
+		}
 	}
 	/** Perform the exit. */
 	void doExit() {
@@ -243,26 +246,33 @@ public class MainScreen extends ScreenBase {
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				File dir = new File("save/default");
-				if (dir.exists()) {
-					File[] files = dir.listFiles(new FilenameFilter() {
-						@Override
-						public boolean accept(File dir, String name) {
-							return name.startsWith("save-") && name.endsWith(".xml");
-						}
-					});
-					final boolean found = files != null && files.length > 0;
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							continueLabel.disabled = !found;
-							askRepaint();
-						}
-					});
-				}
+				final boolean found = isSaveAvailable();
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						continueLabel.disabled = !found;
+						askRepaint();
+					}
+				});
 			}
 		}, "Save-Lookup");
 		t.start();
+	}
+	/**
+	 * @return Check if save file is available.
+	 */
+	boolean isSaveAvailable() {
+		File dir = new File("save/default");
+		if (dir.exists()) {
+			File[] files = dir.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.startsWith("save-") && name.endsWith(".xml");
+				}
+			});
+			return files != null && files.length > 0;
+		}
+		return false;
 	}
 	@Override
 	public void onFinish() {

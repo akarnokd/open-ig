@@ -1364,6 +1364,18 @@ public class GameWindow extends JFrame implements GameControls {
 		loadWorld(name);
 	}
 	/** 
+	 * Cancel loading and return to the main menu.
+	 */
+	void cancelLoad() {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				commons.worldLoading = false;
+				displayPrimary(Screens.MAIN);
+			}
+		});
+	}
+	/** 
 	 * Load a the specified world save. 
 	 * @param name the full save name
 	 */
@@ -1414,9 +1426,13 @@ public class GameWindow extends JFrame implements GameControls {
 								lname = files[0].getAbsolutePath();
 							} else {
 								System.err.println("No saves!");
+								cancelLoad();
+								return;
 							}
 						} else {
 							System.err.println("save/default not found");
+							cancelLoad();
+							return;
 						}
 					}
 
@@ -1476,6 +1492,7 @@ public class GameWindow extends JFrame implements GameControls {
 
 				} catch (Throwable t) {
 					t.printStackTrace();
+					cancelLoad();
 				}
 			}
 		}, "Load");
