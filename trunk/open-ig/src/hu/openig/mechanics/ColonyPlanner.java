@@ -130,11 +130,11 @@ public class ColonyPlanner extends Planner {
 	boolean checkFireBrigade() {
 		BuildingSelector food = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding value) {
+			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("repair");
 			}
 			@Override
-			public boolean accept(BuildingType value) {
+			public boolean accept(AIPlanet planet, BuildingType value) {
 				return value.hasResource("repair");
 			}
 		};
@@ -184,31 +184,31 @@ public class ColonyPlanner extends Planner {
 			int moraleNow = planet.morale;
 			TaxLevel tax = planet.tax;
 			
-			if (moraleNow < 25) {
+			if (moraleNow < 25 || planet.population < 4000) {
 				if (tax != TaxLevel.NONE) {
 					setTaxLevelAction(planet, TaxLevel.NONE);
 					return true;
 				}
 			} else
-			if (moraleNow < 38) {
+			if (moraleNow < 38 || planet.population < 5000) {
 				if (tax != TaxLevel.VERY_LOW) {
 					setTaxLevelAction(planet, TaxLevel.VERY_LOW);
 					return true;
 				}
 			} else
-			if (moraleNow < 47) {
+			if (moraleNow < 55) {
 				if (tax != TaxLevel.LOW) {
 					setTaxLevelAction(planet, TaxLevel.LOW);
 					return true;
 				}
 			} else
-			if (moraleNow < 55) {
+			if (moraleNow < 60) {
 				if (tax != TaxLevel.MODERATE) {
 					setTaxLevelAction(planet, TaxLevel.MODERATE);
 					return true;
 				}
 			} else
-			if (moraleNow < 60) {
+			if (moraleNow < 65) {
 				if (tax != TaxLevel.ABOVE_MODERATE) {
 					setTaxLevelAction(planet, TaxLevel.ABOVE_MODERATE);
 					return true;
@@ -278,11 +278,11 @@ public class ColonyPlanner extends Planner {
 	boolean boostMoraleWithBuilding(final AIPlanet planet) {
 		BuildingSelector morale = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding value) {
+			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("morale");
 			}
 			@Override
-			public boolean accept(BuildingType value) {
+			public boolean accept(AIPlanet planet, BuildingType value) {
 				return value.hasResource("morale");
 			}
 		};
@@ -295,11 +295,11 @@ public class ColonyPlanner extends Planner {
 	boolean checkFood() {
 		BuildingSelector food = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding value) {
+			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("food");
 			}
 			@Override
-			public boolean accept(BuildingType value) {
+			public boolean accept(AIPlanet planet, BuildingType value) {
 				return value.hasResource("food");
 			}
 		};
@@ -323,11 +323,11 @@ public class ColonyPlanner extends Planner {
 	boolean checkPolice() {
 		BuildingSelector police = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding value) {
+			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("police");
 			}
 			@Override
-			public boolean accept(BuildingType value) {
+			public boolean accept(AIPlanet planet, BuildingType value) {
 				return value.hasResource("police");
 			}
 		};
@@ -351,11 +351,11 @@ public class ColonyPlanner extends Planner {
 	boolean checkHospital() {
 		BuildingSelector hospital = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding value) {
+			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("hospital");
 			}
 			@Override
-			public boolean accept(BuildingType value) {
+			public boolean accept(AIPlanet planet, BuildingType value) {
 				return value.hasResource("hospital");
 			}
 		};
@@ -379,11 +379,11 @@ public class ColonyPlanner extends Planner {
 	boolean checkLivingSpace() {
 		BuildingSelector livingSpace = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding value) {
+			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("house");
 			}
 			@Override
-			public boolean accept(BuildingType value) {
+			public boolean accept(AIPlanet planet, BuildingType value) {
 				return value.hasResource("house");
 			}
 		};
@@ -408,11 +408,11 @@ public class ColonyPlanner extends Planner {
 	boolean checkWorker() {
 		BuildingSelector morale = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding value) {
+			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("morale") || value.hasResource("population-growth");
 			}
 			@Override
-			public boolean accept(BuildingType value) {
+			public boolean accept(AIPlanet planet, BuildingType value) {
 				return value.hasResource("morale") || value.hasResource("population-growth");
 			}
 		};
@@ -437,11 +437,11 @@ public class ColonyPlanner extends Planner {
 	boolean checkPower() {
 		BuildingSelector energy = new BuildingSelector() {
 			@Override
-			public boolean accept(AIBuilding building) {
+			public boolean accept(AIPlanet planet, AIBuilding building) {
 				return building.getEnergy() > 0;
 			}
 			@Override
-			public boolean accept(BuildingType buildingType) {
+			public boolean accept(AIPlanet planet, BuildingType buildingType) {
 				return buildingType.hasResource("energy") && buildingType.getResource("energy") > 0;
 			}
 		};
