@@ -447,7 +447,7 @@ public class InfoScreen extends ScreenBase {
 	})
 	PlanetListDetails planetListDetais;
 	/** The toggle for planet list details. */
-	boolean showPlanetListDetails;
+	boolean showPlanetListDetails = true;
 	/** Toggle the planet list details view. */
 	@ModeUI(mode = { 
 			Screens.INFORMATION_PLANETS
