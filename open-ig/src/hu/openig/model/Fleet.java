@@ -414,4 +414,77 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 		}
 		return result;
 	}
+	/**
+	 * Upgrade equipments according to the best available from the owner's inventory.
+	 * <p>Ensure that the fleet is over a military spaceport.</p>
+	 */
+	public void upgradeAll() {
+		// remove every equipment from the ships and place it back into the global inventory
+		for (InventoryItem ii : inventory) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+				for (InventorySlot is : ii.slots) {
+					if (!is.slot.fixed && is.type != null) {
+						owner.changeInventoryCount(is.type, is.count);
+						is.type = null;
+						is.count = 0;
+						is.hp = 0;
+					}
+				}
+			}
+			ii.shield = 0;
+		}
+		// walk
+		for (InventoryItem ii : inventory) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+				for (InventorySlot is : ii.slots) {
+					if (!is.slot.fixed) {
+						for (int i = is.slot.items.size() - 1; i >= 0; i--) {
+							ResearchType rt = is.slot.items.get(i);
+							int cnt = owner.inventoryCount(rt);
+							if (cnt > 0) {
+								int toAdd = Math.min(cnt, is.slot.max);
+								is.type = rt;
+								is.count = toAdd;
+								is.hp = owner.world.getHitpoints(rt);
+								owner.changeInventoryCount(rt, -toAdd);
+								break;
+							}
+						}
+					}
+				}
+			}
+			ii.shield = Math.max(0, ii.shieldMax());
+		}
+	}
+	/**
+	 * Returns true if there are options available to upgrade the fleet.
+	 * @return true if there are options available to upgrade the fleet.
+	 */
+	public boolean canUpgrade() {
+		for (InventoryItem ii : inventory) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+				for (InventorySlot is : ii.slots) {
+					if (!is.slot.fixed) {
+						// check if next better type is available
+						int index = is.slot.items.indexOf(is.type) + 1;
+						for (int i = index; i < is.slot.items.size(); i++) {
+							if (owner.inventoryCount(is.slot.items.get(i)) > 0) {
+								return true;
+							}
+						}
+						// check if current type can be more filled in
+						index = Math.max(0, index - 1);
+						if (is.slot.max > is.count 
+								&& is.slot.max - is.count <= owner.inventoryCount(is.slot.items.get(index))) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
 }

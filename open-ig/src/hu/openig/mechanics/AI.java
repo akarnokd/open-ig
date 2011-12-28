@@ -832,6 +832,12 @@ public class AI implements AIManager, AIControls {
 			applyActions.addAll(acts);
 			return;
 		}
-	}
+
+		acts = new EconomyPlanner(world, this).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
+}
 	
 }

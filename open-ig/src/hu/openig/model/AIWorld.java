@@ -171,4 +171,26 @@ public class AIWorld {
 	public PlanetKnowledge knowledge(Planet p) {
 		return player.planets.get(p);
 	}
+	/**
+	 * The inventory count of the given research type.
+	 * @param rt the technology
+	 * @return the count
+	 */
+	public int inventoryCount(ResearchType rt) {
+		Integer i = inventory.get(rt);
+		return i != null ? i.intValue() : 0;
+	}
+	/**
+	 * The inventory count of the given research type.
+	 * @param id the identifier
+	 * @return the count
+	 */
+	public int inventoryCount(String id) {
+		for (Map.Entry<ResearchType, Integer> e : inventory.entrySet()) {
+			if (e.getKey().id.equals(id)) {
+				return e.getValue();
+			}
+		}
+		return 0;
+	}
 }

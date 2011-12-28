@@ -233,7 +233,7 @@ public class ResearchPlanner extends Planner {
 		// check if the colony ship is actually available
 		for (ResearchType rt : world.availableResearch) {
 			if (rt.id.equals("ColonyShip")) {
-				new ProductionOrder(world, rt, applyActions, controls).invoke();
+				placeProductionOrder(rt, 1);
 				return;
 			}
 		}

@@ -17,7 +17,6 @@ import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
-import hu.openig.model.ResearchType;
 import hu.openig.model.TaxLevel;
 import hu.openig.utils.JavaUtils;
 
@@ -34,55 +33,6 @@ import java.util.List;
  * @author akarnokd, 2011.12.28.
  */
 public class ColonyPlanner extends Planner {
-	/**
-	 * Interface for selecting a building or building type.
-	 * @author akarnokd, 2011.12.28.
-	 */
-	public interface BuildingSelector {
-		/**
-		 * Accept the given building for upgrading.
-		 * @param building the building
-		 * @return true if accept
-		 */
-		boolean accept(AIBuilding building);
-		/**
-		 * Accept the given building type for construction.
-		 * @param buildingType the building type
-		 * @return true if accept
-		 */
-		boolean accept(BuildingType buildingType);
-	}
-	/**
-	 * Interface for comparing values of buildings. 
-	 * @author akarnokd, 2011.12.28.
-	 */
-	public interface BuildingOrder {
-		/**
-		 * Compare the values of two concrete buildings.
-		 * @param b1 the first building
-		 * @param b2 the second building
-		 * @return -1, 0 or 1
-		 */
-		int compare(AIBuilding b1, AIBuilding b2);
-		/**
-		 * Compare the values of two building types.
-		 * @param b1 the first building type
-		 * @param b2 the second building type
-		 * @return -1, 0 or 1
-		 */
-		int compare(BuildingType b1, BuildingType b2);
-	}
-	/** Default incremental cost-order. */
-	final BuildingOrder costOrder = new BuildingOrder() {
-		@Override
-		public int compare(AIBuilding o1, AIBuilding o2) {
-			return o1.type.cost < o2.type.cost ? -1 : (o1.type.cost > o2.type.cost ? 1 : 0);
-		}
-		@Override
-		public int compare(BuildingType o1, BuildingType o2) {
-			return o1.cost < o2.cost ? -1 : (o1.cost > o2.cost ? 1 : 0);
-		}
-	};
 	/**
 	 * Constructor.
 	 * @param world the world
@@ -121,15 +71,6 @@ public class ColonyPlanner extends Planner {
 		if (checkBuildingHealth()) {
 			return;
 		}
-		if (checkRadar()) {
-			return;
-		}
-		if (checkEconomy()) {
-			return;
-		}
-		if (checkFactory()) {
-			return;
-		}
 		if (checkFireBrigade()) {
 			return;
 		}
@@ -149,106 +90,6 @@ public class ColonyPlanner extends Planner {
 						}
 					});
 					return true;
-				}
-			}
-		}
-		return false;
-	}
-	/**
-	 * If colony lacks radar, build one, if better available than the current
-	 * demolish existing (the next turn will build one).
-	 * If hubble2 is available place it, or produce it.
-	 * @return if action taken
-	 */
-	boolean checkRadar() {
-		// check if hubble2 is buildable
-		BuildingType bestRadar = null;
-		for (BuildingType bt : w.buildingModel.buildings.values()) {
-			if (bt.hasResource("radar") && (bt.research == null || world.availableResearch.contains(bt.research))) {
-				if (bestRadar == null || bestRadar.getResource("radar") < bt.getResource("radar")) {
-					bestRadar = bt;
-				}
-			}
-		}
-		ResearchType hubble2 = null;
-		for (ResearchType rt : world.availableResearch) {
-			if (rt.has("radar")) {
-				if (hubble2 == null || hubble2.getInt("radar") < rt.getInt("radar")) {
-					hubble2 = rt;
-				}
-			}
-		}
-		int hubble2Count = hubble2 != null ? world.inventory.get(hubble2) : 0; 
-		
-		outer:
-		for (final AIPlanet planet : world.ownPlanets) {
-			if (planet.statistics.constructing) {
-				continue;
-			}
-			// if hubble is in inventory
-			if (hubble2 != null && planet.hasInventory(hubble2)) {
-				// demolish remaining ground radars
-				for (final AIBuilding b : planet.buildings) {
-					if (b.hasResource("radar")) {
-						add(new Action0() {
-							@Override
-							public void invoke() {
-								controls.actionDemolishBuilding(planet.planet, b.building);
-							}
-						});
-						return true;
-					}
-				}
-				continue;
-			}
-			// if hubble in inventory, place one
-			if (hubble2Count > 0) {
-				final ResearchType fhubble2 = hubble2;
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						controls.actionDeploySatellite(planet.planet, fhubble2);
-					}
-				});
-				return true;
-			}
-			// if hubble available, produce some
-			if (hubble2 != null) {
-				new ProductionOrder(world, hubble2, applyActions, controls).invoke();
-				return true;
-			}
-			
-			if (bestRadar != null) {
-				// check if already present
-				for (AIBuilding b : planet.buildings) {
-					if (b.type == bestRadar) {
-						continue outer;
-					}
-				}
-				if (bestRadar.cost <= world.money 
-					&& planet.findLocation(bestRadar) != null) {
-					// demolish undertech radars
-					for (final AIBuilding b : planet.buildings) {
-						if (b.hasResource("radar")) {
-							if (b.getResource("radar") < bestRadar.getResource("radar")) {
-								add(new Action0() {
-									@Override
-									public void invoke() {
-										controls.actionDemolishBuilding(planet.planet, b.building);
-									}
-								});
-								return true;
-							}
-						}
-					}
-					// construct the best radar
-					final BuildingType fbestRadar = bestRadar;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionPlaceBuilding(planet.planet, fbestRadar);
-						}
-					});
 				}
 			}
 		}
@@ -423,50 +264,6 @@ public class ColonyPlanner extends Planner {
 	 * Check if there is shortage on police.
 	 * @return if action taken
 	 */
-	boolean checkEconomy() {
-		BuildingSelector police = new BuildingSelector() {
-			@Override
-			public boolean accept(AIBuilding value) {
-				return value.hasResource("multiply") || value.hasResource("credit");
-			}
-			@Override
-			public boolean accept(BuildingType value) {
-				return value.hasResource("multiply") || value.hasResource("credit");
-			}
-		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.workerDemand * 1.1;
-			}
-		}, police, costOrder, false);
-	}
-	/**
-	 * Check if there is shortage on police.
-	 * @return if action taken
-	 */
-	boolean checkFactory() {
-		BuildingSelector police = new BuildingSelector() {
-			@Override
-			public boolean accept(AIBuilding value) {
-				return value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
-			}
-			@Override
-			public boolean accept(BuildingType value) {
-				return  value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
-			}
-		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.workerDemand * 1.1;
-			}
-		}, police, costOrder, false);
-	}
-	/**
-	 * Check if there is shortage on police.
-	 * @return if action taken
-	 */
 	boolean checkPolice() {
 		BuildingSelector police = new BuildingSelector() {
 			@Override
@@ -575,137 +372,6 @@ public class ColonyPlanner extends Planner {
 				return value.statistics.energyAvailable < value.statistics.energyDemand;
 			}
 		}, energy, costOrder, true);	
-	}
-	/**
-	 * Try to choose an upgrade option.
-	 * @param planet the target planet
-	 * @param selector the building selector
-	 * @param order the building order
-	 * @return true if action taken
-	 */
-	boolean manageUpgrade(final AIPlanet planet, 
-			final BuildingSelector selector,
-			final BuildingOrder order) {
-		for (final AIBuilding b : planet.buildings) {
-			if (!b.enabled && selector.accept(b)) {
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						controls.actionEnableBuilding(planet.planet, b.building, true);
-					}
-				});
-				return true;
-			}
-		}
-		// scan for the most affordable upgrade
-		AIBuilding upgrade = null;
-		for (final AIBuilding b : planet.buildings) {
-			if (selector.accept(b) && b.canUpgrade() && b.type.cost <= world.money) {
-				if (upgrade == null || order.compare(upgrade, b) > 0) {
-					upgrade = b;
-				}
-			}
-		}
-		if (upgrade != null) {
-			final Building fupgrade = upgrade.building;
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionUpgradeBuilding(planet.planet, fupgrade, fupgrade.upgradeLevel + 1);
-					
-				}
-			});
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Try to choose a construction option.
-	 * @param planet the target planet
-	 * @param selector the building selector
-	 * @param order the building order
-	 * @return true if action taken
-	 */
-	boolean manageConstruction(final AIPlanet planet, 
-			final BuildingSelector selector,
-			final BuildingOrder order) {
-		// try building a new one
-		BuildingType create = null;
-		for (final BuildingType bt : w.buildingModel.buildings.values()) {
-			if (selector.accept(bt) && planet.planet.canBuild(bt) && bt.cost <= world.money) {
-				if (planet.findLocation(bt) != null) {
-					if (create == null || order.compare(create, bt) > 0) {
-						create = bt;
-					}
-				}
-			}
-		}
-		if (create != null) {
-			final BuildingType fcreate = create;
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionPlaceBuilding(planet.planet, fcreate);
-				}
-			});
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Try to choose a repair option.
-	 * @param planet the target planet
-	 * @param selector the building selector
-	 * @param order the building order
-	 * @return true if action taken
-	 */
-	boolean manageRepair(final AIPlanet planet, 
-			final BuildingSelector selector,
-			final BuildingOrder order) {
-		// try repairing existing
-		for (final AIBuilding b : planet.buildings) {
-			if (!b.repairing && b.isDamaged() && selector.accept(b)) {
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						controls.actionRepairBuilding(planet.planet, b.building, true);
-					}
-				});
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * Build or upgrade a power plant on the planet.
-	 * @param planet the target planet
-	 * @param selector to select the building type
-	 * @param order the comparator for order
-	 * @param upgradeFirst try upgrading first?
-	 * @return true if action taken 
-	 */
-	boolean manageBuildings(final AIPlanet planet, 
-			final BuildingSelector selector,
-			final BuildingOrder order, boolean upgradeFirst) {
-		if (upgradeFirst) {
-			if (manageUpgrade(planet, selector, order)) {
-				return true;
-			}
-			if (manageConstruction(planet, selector, order)) {
-				return true;
-			}
-		} else {
-			if (manageConstruction(planet, selector, order)) {
-				return true;
-			}
-			if (manageUpgrade(planet, selector, order)) {
-				return true;
-			}
-		}
-		if (manageRepair(planet, selector, order)) {
-			return true;
-		}
-		return false;
 	}
 	/**
 	 * Check if a colony hub is available on planets,
@@ -823,29 +489,6 @@ public class ColonyPlanner extends Planner {
 				}
 			});
 			return true;
-		}
-		return false;
-	}
-	/**
-	 * Plan a specific category of building actions.
-	 * @param condition the condition to check for the planet
-	 * @param selector the selector of candidate buildings
-	 * @param order the order between alternative buildings
-	 * @param upgradeFirst try upgrading first?
-	 * @return true if action taken
-	 */
-	boolean planCategory(Func1<AIPlanet, Boolean> condition, 
-			BuildingSelector selector, BuildingOrder order, boolean upgradeFirst) {
-		// try to upgrade or build a new power plant
-		for (final AIPlanet planet : world.ownPlanets) {
-			if (planet.statistics.constructing) {
-				continue;
-			}
-			if (condition.invoke(planet)) {
-				if (manageBuildings(planet, selector, order, upgradeFirst)) {
-					return true;
-				}
-			}
 		}
 		return false;
 	}
