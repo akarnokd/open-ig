@@ -112,7 +112,7 @@ public class DiscoveryPlanner implements AIPlanner {
 		
 		// traverse all known planet and deploy satellites
 		outer:
-		for (final AIPlanet planet : world.colonizePlanets) {
+		for (final AIPlanet planet : world.unknownPlanets) {
 			AIInventoryItem currentSatellite = null;
 			for (AIInventoryItem ii : planet.inventory) {
 				if (ii.owner == p && ii.type.has("detector") 

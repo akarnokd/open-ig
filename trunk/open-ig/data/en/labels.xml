@@ -2758,6 +2758,7 @@
 	<entry key='flagship.moveto.database'>Database screen</entry>
 	<entry key='spacewar.ship_status_none'>Nothing selected.</entry>
 	<entry key='spacewar.ship_status_many'>Too many things selected.</entry>
+	<entry key='colonizer_fleet_name'>Colonizer fleet</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

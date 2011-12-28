@@ -522,12 +522,19 @@ public class CommonResources implements GameEnvironment {
 					sw = new SwingWorker<Void, Void>() {
 						@Override
 						protected Void doInBackground() throws Exception {
-							// parallel convert world state
-							p.ai.prepare();
-							// wait for all to read world state
-							wip.dec();
-							// act on the world state
-							p.ai.manage();
+							try {
+								try {
+									// parallel convert world state
+									p.ai.prepare();
+								} finally {
+									// wait for all to read world state
+									wip.dec();
+								}
+								// act on the world state
+								p.ai.manage();
+							} catch (Throwable t) {
+								t.printStackTrace();
+							}
 							return null;
 						}
 						@Override

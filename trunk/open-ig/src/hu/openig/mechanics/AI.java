@@ -150,6 +150,7 @@ public class AI implements AIManager, AIControls {
 	@Override
 	public Fleet actionCreateFleet(String name, Planet location) {
 		Fleet fleet = new Fleet();
+		fleet.owner = p;
 		fleet.id = w.fleetIdSequence++;
 		if (name == null) {
 			fleet.name = w.env.labels().get(p.race + ".new_fleet_name");
@@ -620,7 +621,7 @@ public class AI implements AIManager, AIControls {
 			XElement xf = out.add("task-defensive");
 			xf.set("fleet", f);
 		}
-		XElement xloc = out.add("exporation-map");
+		XElement xloc = out.add("exploration-map");
 		StringBuilder coords = new StringBuilder();
 		for (Location loc : explorationMap) {
 			if (coords.length() > 0) {
@@ -756,6 +757,10 @@ public class AI implements AIManager, AIControls {
 	 * @param r the circle radius
 	 */
 	void removeCoverage(int cx, int cy, int r) {
+		if (r > 200) {
+			System.err.println("Impossible radar size!");
+			return;
+		}
 		// inner rectangle
 		int ux1 = (int)Math.ceil(cx - Math.sqrt(2) * r / 2);
 		int uy1 = (int)Math.ceil(cy - Math.sqrt(2) * r / 2);

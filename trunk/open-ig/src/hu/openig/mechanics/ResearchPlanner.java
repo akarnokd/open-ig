@@ -133,7 +133,6 @@ public class ResearchPlanner implements AIPlanner {
 			return planReconstruction(rebuildCount, candidatesReconstruct);
 		}
 		if (candidatesGetMorePlanets.size() > 0) {
-			Collections.sort(candidatesGetMorePlanets, new CompareFromMap<ResearchType>(rebuildCount));
 			// TODO this is more complicated
 			planConquest();
 			return applyActions;
@@ -146,7 +145,7 @@ public class ResearchPlanner implements AIPlanner {
 	void planConquest() {
 		// if a fleet with colony ship is in position, colonize the planet
 		for (AIFleet fleet : world.ownFleets) {
-			if (fleet.hasInventory("ColonyShip") && !fleet.isMoving()) {
+			if (!fleet.isMoving() && fleet.hasInventory("ColonyShip")) {
 				if (fleet.statistics.planet != null) {
 					for (AIPlanet planet : world.enemyPlanets) {
 						if (planet.planet == fleet.statistics.planet && planet.owner == null) {
@@ -187,7 +186,7 @@ public class ResearchPlanner implements AIPlanner {
 		}
 		// bring one fleet to the target planet
 		for (final AIFleet fleet : world.ownFleets) {
-			if (fleet.hasInventory("ColonyShip") && !fleet.isMoving()) {
+			if (!fleet.isMoving() && fleet.hasInventory("ColonyShip")) {
 				final AIPlanet p0 = Collections.min(ps, new Comparator<AIPlanet>() {
 					@Override
 					public int compare(AIPlanet o1, AIPlanet o2) {
@@ -238,7 +237,7 @@ public class ResearchPlanner implements AIPlanner {
 				add(new Action0() {
 					@Override
 					public void invoke() {
-						Fleet f = controls.actionCreateFleet(w.env.labels().get(p.race + ".colony_fleet_name"), spaceport);
+						Fleet f = controls.actionCreateFleet(w.env.labels().get("colonizer_fleet_name"), spaceport);
 						f.addInventory(rt, 1);
 					}
 				});
