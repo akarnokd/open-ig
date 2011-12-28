@@ -1336,9 +1336,9 @@ public class GameWindow extends JFrame implements GameControls {
 					File dir = new File("save/" + pn);
 					if (dir.exists() || dir.mkdirs()) {
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
-						
-						File fout = new File(dir, "save-" + sdf.format(new Date()) + ".xml");
-						File foutx = new File(dir, "info-" + sdf.format(new Date()) + ".xml");
+						String sdate = sdf.format(new Date());
+						File fout = new File(dir, "save-" + sdate + ".xml");
+						File foutx = new File(dir, "info-" + sdate + ".xml");
 						try {
 							xworld.save(fout);
 							World.deriveShortWorldState(xworld).save(foutx);

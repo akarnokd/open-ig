@@ -139,9 +139,8 @@ public class ColonyPlanner extends Planner {
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
 			@Override
 			public int compare(AIPlanet o1, AIPlanet o2) {
-				int v1 = 25000 - o1.population;
-				int v2 = 25000 - o2.population;
-				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+				return worst(25000, o1.population, 
+						25000, o2.population);
 			}
 		};
 		return planCategory(new Pred1<AIPlanet>() {
@@ -152,6 +151,9 @@ public class ColonyPlanner extends Planner {
 					if (b.hasResource("repair") && !b.canUpgrade() && !b.isDamaged()) {
 						return false;
 					}
+				}
+				if (value.population < 25000) {
+					return false;
 				}
 				return value.population > value.statistics.workerDemand * 1.1;
 			}
@@ -290,9 +292,7 @@ public class ColonyPlanner extends Planner {
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
 			@Override
 			public int compare(AIPlanet o1, AIPlanet o2) {
-				int v1 = o1.statistics.foodAvailable - o1.population;
-				int v2 = o2.statistics.foodAvailable - o2.population;
-				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+				return worst(o1.statistics.foodAvailable, o1.population, o2.statistics.foodAvailable, o2.population);
 			}
 		};
 		return planCategory(new Pred1<AIPlanet>() {
@@ -320,9 +320,7 @@ public class ColonyPlanner extends Planner {
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
 			@Override
 			public int compare(AIPlanet o1, AIPlanet o2) {
-				int v1 = o1.statistics.policeAvailable - o1.population;
-				int v2 = o2.statistics.policeAvailable - o2.population;
-				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+				return worst(o1.statistics.policeAvailable, o1.population, o2.statistics.policeAvailable, o2.population);
 			}
 		};
 		return planCategory(new Pred1<AIPlanet>() {
@@ -350,9 +348,7 @@ public class ColonyPlanner extends Planner {
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
 			@Override
 			public int compare(AIPlanet o1, AIPlanet o2) {
-				int v1 = o1.statistics.hospitalAvailable - o1.population;
-				int v2 = o2.statistics.hospitalAvailable - o2.population;
-				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+				return worst(o1.statistics.hospitalAvailable, o1.population, o2.statistics.hospitalAvailable, o2.population);
 			}
 		};
 		return planCategory(new Pred1<AIPlanet>() {
@@ -380,9 +376,7 @@ public class ColonyPlanner extends Planner {
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
 			@Override
 			public int compare(AIPlanet o1, AIPlanet o2) {
-				int v1 = o1.statistics.houseAvailable - o1.population;
-				int v2 = o2.statistics.houseAvailable - o2.population;
-				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
+				return worst(o1.statistics.houseAvailable, o1.population, o2.statistics.houseAvailable, o2.population);
 			}
 		};
 		return planCategory(new Pred1<AIPlanet>() {
@@ -440,9 +434,8 @@ public class ColonyPlanner extends Planner {
 		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
 			@Override
 			public int compare(AIPlanet o1, AIPlanet o2) {
-				int v1 = o1.statistics.energyAvailable - o1.statistics.energyDemand;
-				int v2 = o2.statistics.energyAvailable - o2.statistics.energyDemand;
-				return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
+				return worst(o1.statistics.energyAvailable, o1.statistics.energyDemand, 
+						o2.statistics.energyAvailable, o2.statistics.energyDemand);
 			}
 		};
 		return planCategory(new Pred1<AIPlanet>() {
@@ -451,6 +444,29 @@ public class ColonyPlanner extends Planner {
 				return value.statistics.energyAvailable < value.statistics.energyDemand;
 			}
 		}, planetOrder, energy, costOrder, true);	
+	}
+	/**
+	 * Compares the numerical levels of the values and returns which one of it is worse.
+	 * @param firstAvail the first availability
+	 * @param firstDemand the first demand
+	 * @param secondAvail the second availability
+	 * @param secondDemand the second demand
+	 * @return -1, 0 or 1
+	 */
+	int worst(int firstAvail, int firstDemand, int secondAvail, int secondDemand) {
+		boolean firstOk = firstAvail >= firstDemand;
+		boolean secondOk = secondAvail >= secondDemand;
+		if (firstOk && !secondOk) {
+			return 1;
+		} else
+		if (!firstOk && secondOk) {
+			return -1;
+		} else
+		if (firstOk && secondOk) {
+			return (secondAvail - secondDemand) - (firstAvail - firstDemand);
+		}
+		long v = (1L * secondDemand * firstAvail) - (1L * firstDemand * secondAvail);
+		return v < 0 ? -1 : (v > 0 ? 1 : 0);
 	}
 	/**
 	 * Check if a colony hub is available on planets,
