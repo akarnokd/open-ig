@@ -97,7 +97,6 @@ public final class Simulator {
 		}
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
-				// result |=  && p == world.player.currentPlanet;
 				progressPlanet(world, p, day0 != day1, planetStats.get(p));
 			}
 		}
