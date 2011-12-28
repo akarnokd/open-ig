@@ -361,7 +361,7 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 			return false;
 		}
 		// check if the required research is available
-		if (owner != null && bt.research != null && owner.isAvailable(bt.research)) {
+		if (owner != null && bt.research != null && !owner.isAvailable(bt.research)) {
 			return false;
 		}
 		// if the building is not available for this race
