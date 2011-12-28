@@ -700,8 +700,7 @@ public class AI implements AIManager, AIControls {
 	}
 	@Override
 	public void onNewDay() {
-		// TODO Auto-generated method stub
-		
+		// TODO
 	}
 	@Override
 	public void onSatelliteDestroyed(Planet planet, InventoryItem ii) {

@@ -114,6 +114,7 @@ public final class Simulator {
 			for (Player p : world.players.values()) {
 				p.ai.onNewDay();
 			}
+			System.out.println("----");
 			
 			result = true;
 		}
