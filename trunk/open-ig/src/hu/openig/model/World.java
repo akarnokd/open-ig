@@ -716,6 +716,9 @@ public class World {
 		if (canResearch(rt)) {
 			if (rt.hasEnoughLabs(stats)) {
 				c = TextRenderer.LIGHT_BLUE;
+			} else 
+			if (rt.labCount() <= stats.planetCount) {
+				c = TextRenderer.LIGHT_GREEN;
 			} else {
 				c = TextRenderer.GREEN;
 			}

@@ -86,11 +86,14 @@ public class PlanetStatistics {
 	public boolean hasSpaceStation;
 	/** Building in progress or complete but not yet resource-allocated. */
 	public boolean constructing;
+	/** The total planet count. */
+	public int planetCount;
 	/**
 	 * Add the other planet statistics to this one.
 	 * @param other the other statistics
 	 */
 	public void add(PlanetStatistics other) {
+		planetCount++;
 		houseAvailable += other.houseAvailable;
 		workerDemand += other.workerDemand;
 		hospitalAvailable += other.hospitalAvailable;
