@@ -66,8 +66,8 @@ public class ResearchPlanner extends Planner {
 			}
 			return;
 		}
-		final Map<ResearchType, Double> enablesCount = new HashMap<ResearchType, Double>();
-		final Map<ResearchType, Double> rebuildCount = new HashMap<ResearchType, Double>();
+		final Map<ResearchType, Integer> enablesCount = new HashMap<ResearchType, Integer>();
+		final Map<ResearchType, Integer> rebuildCount = new HashMap<ResearchType, Integer>();
 		List<ResearchType> candidatesImmediate = new ArrayList<ResearchType>();
 		List<ResearchType> candidatesReconstruct = new ArrayList<ResearchType>();
 		List<ResearchType> candidatesGetMorePlanets = new ArrayList<ResearchType>();
@@ -90,14 +90,14 @@ public class ResearchPlanner extends Planner {
 			if (rt.labCount() <= world.ownPlanets.size()) {
 				candidatesReconstruct.add(rt);
 				setResearchEnables(rt, enablesCount);
-				rebuildCount.put(rt, 1.0 * rebuildCost(rt, labCosts));
+				rebuildCount.put(rt, rebuildCost(rt, labCosts));
 			} else {
 				candidatesGetMorePlanets.add(rt);
 				setResearchEnables(rt, enablesCount);
 			}
 		}
 		if (candidatesImmediate.size() > 0) {
-			Collections.sort(candidatesImmediate, new CompareFromMap<ResearchType>(enablesCount));
+			Collections.sort(candidatesImmediate, new CompareFromMap(enablesCount));
 			final ResearchType rt = candidatesImmediate.get(0);
 			double mf = 2.0;
 			final double moneyFactor = mf; // TODO decision variable
@@ -301,12 +301,12 @@ public class ResearchPlanner extends Planner {
 	 * @return the list of actions
 	 */
 	List<Action0> planReconstruction(
-			final Map<ResearchType, Double> rebuildCount,
+			final Map<ResearchType, Integer> rebuildCount,
 			List<ResearchType> candidatesReconstruct) {
 		// find the research that requires the fewest lab rebuilds
-		Collections.sort(candidatesReconstruct, new CompareFromMap<ResearchType>(rebuildCount));
+		Collections.sort(candidatesReconstruct, new CompareFromMap(rebuildCount));
 
-		final ResearchType rt = candidatesReconstruct.get(candidatesReconstruct.size() - 1);
+		final ResearchType rt = candidatesReconstruct.get(0);
 		
 		// find an empty planet
 		for (AIPlanet planet : world.ownPlanets) {
@@ -406,27 +406,10 @@ public class ResearchPlanner extends Planner {
 	 * @return true if successful
 	 */
 	boolean buildOneLabIf(int required, int available, int local, final AIPlanet planet, final String resource) {
-		if (required > available) {
+		if (required > available && local == 0) {
 			final Planet planet0 = planet.planet;
 			if (!planet.statistics.canBuildAnything()) {
 				return false;
-			}
-			// if there is one locally available
-			if (local > 0) {
-				applyActions.add(new Action0() {
-					@Override
-					public void invoke() {
-						for (Building b : planet0.surface.buildings) {
-							if (b.hasResource(resource) && b.isDamaged()) {
-								if (!b.repairing) {
-									controls.actionRepairBuilding(planet0, b, true);
-									return;
-								}
-							}
-						}
-					}
-				});
-				return true;
 			}
 			final BuildingType bt = findBuildingType(resource);
 			if (bt == null) {
@@ -462,25 +445,35 @@ public class ResearchPlanner extends Planner {
 		return null;
 	}
 	/**
-	 * Comparator which takes an integer index from the supplied map. 
+	 * Comparator which takes an value from the supplied map for comparison. 
 	 * @author akarnokd, 2011.12.26.
 	 * @param <T> the element type
 	 */
-	class CompareFromMap<T> implements Comparator<T> {
+	class CompareFromMap implements Comparator<ResearchType> {
 		/** The backing map. */
-		final Map<T, Double> map;
+		final Map<ResearchType, Integer> map;
 		/**
 		 * Constructor.
 		 * @param map the backing map to use
 		 */
-		public CompareFromMap(Map<T, Double> map) {
+		public CompareFromMap(Map<ResearchType, Integer> map) {
 			this.map = map;
 		}
 		@Override
-		public int compare(T o1, T o2) {
-			Double count1 = map.get(o1);
-			Double count2 = map.get(o2);
-			return count1.compareTo(count2);
+		public int compare(ResearchType o1, ResearchType o2) {
+			Integer count1 = map.get(o1);
+			Integer count2 = map.get(o2);
+			int c = count1.compareTo(count2);
+			if (c == 0) {
+				c = o1.researchCost - o2.researchCost;
+			}
+			if (c == 0) {
+				c = o1.level - o2.level;
+			}
+			if (c == 0) {
+				c = o1.productionCost - o2.productionCost;
+			}
+			return c;
 		}
 	}
 	/**
@@ -515,7 +508,7 @@ public class ResearchPlanner extends Planner {
 	 * @param rt the current research
 	 * @param map the map for research to count
 	 */
-	void setResearchEnables(ResearchType rt, Map<ResearchType, Double> map) {
+	void setResearchEnables(ResearchType rt, Map<ResearchType, Integer> map) {
 //		int count = 0;
 //		for (ResearchType rt2 : world.remainingResearch) {
 //			if (rt2.prerequisites.contains(rt)) {
@@ -527,7 +520,7 @@ public class ResearchPlanner extends Planner {
 //				count++;
 //			}
 //		}
-		map.put(rt, 1.0 / rt.researchCost);
+		map.put(rt, rt.researchCost);
 	}
 
 }
