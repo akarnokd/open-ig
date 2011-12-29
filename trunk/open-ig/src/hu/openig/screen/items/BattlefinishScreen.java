@@ -195,11 +195,15 @@ public class BattlefinishScreen extends ScreenBase {
 			y += 20;
 			
 			if (battle.targetPlanet != null) {
-				if (battle.groundwarWinner == player() && battle.originalTargetPlanetOwner != player()) {
+				if (battle.groundwarWinner == player() 
+						&& battle.originalTargetPlanetOwner != player()
+						&& battle.targetPlanet.owner == player()) {
 					textCenter(g2, x1, y, w1, TextRenderer.GREEN, 14, format("battlefinish.planet_won", battle.targetPlanet.name));
 					y += 20;
 				} else
-				if (battle.groundwarWinner != player() && battle.originalTargetPlanetOwner == player()) {
+				if (battle.groundwarWinner != player() 
+				&& battle.originalTargetPlanetOwner == player() 
+				&& battle.targetPlanet.owner != player()) {
 					textCenter(g2, x1, y, w1, TextRenderer.RED, 14, format("battlefinish.planet_lost", battle.targetPlanet.name));
 					y += 20;
 				}
