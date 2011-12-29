@@ -37,15 +37,15 @@ public class Parameters {
 	public int constructionSpeed() {
 		return 200; // DEFAULT: 200
 	}
-	/** @return the construction points per simulation step. Not used now. */
+	/** @return the construction cost per simulation step. Not used now. */
 	public int constructionCost() {
 		return 200; // DEFAULT: 200
 	}
-	/** @return the construction points per simulation step. */
+	/** @return the hitpoints improved per simulation step. */
 	public int repairSpeed() {
 		return 100; // DEFAULT: 50
 	}
-	/** @return the construction points per simulation step. */
+	/** @return the repair cost per simulation step. */
 	public int repairCost() {
 		return 20; // DEFAULT: 20
 	}

@@ -160,4 +160,11 @@ public interface AIControls {
 	 * @param newLevel the new tax level
 	 */
 	void actionSetTaxation(Planet planet, TaxLevel newLevel);
+	/**
+	 * Sell the given amount from the satellites of the planet.
+	 * @param planet the planet
+	 * @param satellite the satellite
+	 * @param count the amount to sell
+	 */
+	void actionSellSatellite(Planet planet, ResearchType satellite, int count);
 }

@@ -153,8 +153,9 @@ public class ColonyPlanner extends Planner {
 				}
 			}
 			// if very low morale, yield
-			if (planet.morale < 35 
-					&& planet.statistics.problems.size() + planet.statistics.warnings.size() > 0) {
+			if (planet.morale >= 10 && planet.morale < 35 
+					&& planet.statistics.problems.size() + planet.statistics.warnings.size() > 0
+					&& world.money < 100000) {
 				addEmpty();
 				return;
 			}
@@ -234,7 +235,6 @@ public class ColonyPlanner extends Planner {
 		// find and start repairing the cheapest damaged building per planet
 		for (final AIBuilding b : planet.buildings) {
 			if (b.repairing) {
-				addEmpty();
 				return true; // don't let other things continue
 			}
 		}

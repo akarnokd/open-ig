@@ -9,8 +9,12 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Func1;
+import hu.openig.core.Pair;
+import hu.openig.core.Pred1;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
+import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.AutoBuild;
@@ -18,6 +22,7 @@ import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 
 import java.awt.Point;
@@ -213,27 +218,82 @@ public class ResearchPlanner extends Planner {
 		}
 		final Planet spaceport = sp.planet; 
 		// check if we have colony ships in the inventory
-		for (Map.Entry<ResearchType, Integer> e : world.inventory.entrySet()) {
-			final ResearchType rt = e.getKey();
-			if (rt.id.equals("ColonyShip") && e.getValue() > 0) {
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						Fleet f = controls.actionCreateFleet(w.env.labels().get("colonizer_fleet_name"), spaceport);
-						f.addInventory(rt, 1);
+		final Pair<Integer, ResearchType> csi = world.inventoryCount("ColonyShip");
+		if (csi.first > 0) {
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					Fleet f = controls.actionCreateFleet(label("colonizer_fleet_name"), spaceport);
+					f.addInventory(csi.second, 1);
+				}
+			});
+			return;
+		}
+		if (world.global.orbitalFactory == 0) {
+			// check if we have orbital factory in inventory, deploy it
+			final Pair<Integer, ResearchType> orbital = world.inventoryCount("OrbitalFactory");
+			if (orbital.first > 0) {
+				List<AIPlanet> planets = shuffle(world.ownPlanets);
+				for (final AIPlanet p2 : planets) {
+					int sats = count(p2.inventory, new Pred1<AIInventoryItem>() {
+						@Override
+						public Boolean invoke(AIInventoryItem value) {
+							return value.type.category == ResearchSubCategory.SPACESHIPS_STATIONS;
+						}
+					}, new Func1<AIInventoryItem, Integer>() {
+						@Override
+						public Integer invoke(AIInventoryItem value) {
+							return value.count;
+						}
+					});
+					if (sats < 3) {
+						add(new Action0() {
+							@Override
+							public void invoke() {
+								controls.actionDeploySatellite(p2.planet, orbital.second);
+							}
+						});
+						return;
 					}
-				});
+				}
+				// if no room, make
+				Pair<AIPlanet, ResearchType> toSell = null;
+				for (AIPlanet p : planets) {
+					for (AIInventoryItem ii : p.inventory) {
+						if (ii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
+							if (toSell == null || toSell.second.productionCost > ii.type.productionCost) {
+								toSell = Pair.of(p, ii.type);
+							}
+						}
+					}
+				}
+				if (toSell != null) {
+					final Pair<AIPlanet, ResearchType> fsell = toSell;
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionSellSatellite(fsell.first.planet, fsell.second, 1);
+						}
+					});
+					return;
+				}
+			}
+			
+			// if researched, build one
+			final ResearchType of = world.isAvailable("OrbitalFactory");
+			if (of != null) {
+				placeProductionOrder(of, 1);
 				return;
 			}
-		}
-		// check if the colony ship is actually available
-		for (ResearchType rt : world.availableResearch) {
-			if (rt.id.equals("ColonyShip")) {
-				placeProductionOrder(rt, 1);
+		} else {
+			final ResearchType cs = world.isAvailable("ColonyShip");
+			if (cs != null) {
+				placeProductionOrder(cs, 1);
 				return;
 			}
 		}
 	}
+	
 	/**
 	 * Plan how the labs will be reconstructed to allow the next research.
 	 * @param rebuildCount the number of new buildings needed for each research
@@ -456,18 +516,18 @@ public class ResearchPlanner extends Planner {
 	 * @param map the map for research to count
 	 */
 	void setResearchEnables(ResearchType rt, Map<ResearchType, Double> map) {
-		int count = 0;
-		for (ResearchType rt2 : world.remainingResearch) {
-			if (rt2.prerequisites.contains(rt)) {
-				count++;
-			}
-		}
-		for (ResearchType rt2 : world.furtherResearch) {
-			if (rt2.prerequisites.contains(rt)) {
-				count++;
-			}
-		}
-		map.put(rt, 1 + 1.0 * count / rt.researchCost);
+//		int count = 0;
+//		for (ResearchType rt2 : world.remainingResearch) {
+//			if (rt2.prerequisites.contains(rt)) {
+//				count++;
+//			}
+//		}
+//		for (ResearchType rt2 : world.furtherResearch) {
+//			if (rt2.prerequisites.contains(rt)) {
+//				count++;
+//			}
+//		}
+		map.put(rt, 1.0 / rt.researchCost);
 	}
 
 }

@@ -23,6 +23,7 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.World;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -197,6 +198,35 @@ public abstract class Planner {
 			}
 		}
 		return false;
+	}
+	/**
+	 * Shuffle the given collection randomly.
+	 * @param <T> the element type 
+	 * @param collection the collection
+	 * @return the shuffled collection
+	 */
+	<T> List<T> shuffle(Collection<? extends T> collection) {
+		List<T> result = new ArrayList<T>(collection);
+		Collections.shuffle(result, w.random.get());
+		return result;
+	}
+	/**
+	 * Count the number of elements in the collection which are
+	 * allowed by the filter and number associated by the counter.
+	 * @param <T> the element type
+	 * @param src the source sequence
+	 * @param where the filter
+	 * @param counter the counter
+	 * @return the count
+	 */
+	<T> int count(Iterable<T> src, Func1<? super T, Boolean> where, Func1<? super T, Integer> counter) {
+		int result = 0;
+		for (T ii : src) {
+			if (where.invoke(ii)) {
+				result += counter.invoke(ii);
+			}
+		}
+		return result;
 	}
 	/**
 	 * Build or upgrade a power plant on the planet.
@@ -405,5 +435,13 @@ public abstract class Planner {
 			 }
 		 }
 		 return count < max;
+	}
+	/**
+	 * Returns the given label.
+	 * @param value the label
+	 * @return the translation
+	 */
+	public String label(String value) {
+		return w.env.labels().get(value);
 	}
 }
