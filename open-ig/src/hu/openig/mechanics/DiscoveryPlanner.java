@@ -57,7 +57,7 @@ public class DiscoveryPlanner extends Planner {
 			// and is among the fastest available
 			AIFleet bestFleet = null;
 			for (AIFleet f : world.ownFleets) {
-				if (!f.isMoving() && f.radar >= w.params().fleetRadarUnitSize()) {
+				if (f.radar >= w.params().fleetRadarUnitSize()) {
 					if (bestFleet == null || bestFleet.statistics.speed < f.statistics.speed) {
 						bestFleet = f;
 					}
@@ -65,23 +65,25 @@ public class DiscoveryPlanner extends Planner {
 			}
 			
 			if (bestFleet != null) {
-				final AIFleet bf = bestFleet;
-				final int ec = explorationCellSize;
-				final Location loc = Collections.min(explorationMap, new Comparator<Location>() {
-					@Override
-					public int compare(Location o1, Location o2) {
-						double d1 = Math.hypot(bf.x - (o1.x + 0.5) * ec, bf.y - (o1.y + 0.5) * ec);
-						double d2 = Math.hypot(bf.x - (o2.x + 0.5) * ec, bf.y - (o2.y + 0.5) * ec);
-						return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-					}
-				});
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						controls.actionMoveFleet(bf.fleet, (loc.x + 0.5) * ec, (loc.y + 0.5) * ec);
-					}
-				});
-				return;
+				if (!bestFleet.isMoving()) {
+					final AIFleet bf = bestFleet;
+					final int ec = explorationCellSize;
+					final Location loc = Collections.min(explorationMap, new Comparator<Location>() {
+						@Override
+						public int compare(Location o1, Location o2) {
+							double d1 = Math.hypot(bf.x - (o1.x + 0.5) * ec, bf.y - (o1.y + 0.5) * ec);
+							double d2 = Math.hypot(bf.x - (o2.x + 0.5) * ec, bf.y - (o2.y + 0.5) * ec);
+							return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+						}
+					});
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionMoveFleet(bf.fleet, (loc.x + 0.5) * ec, (loc.y + 0.5) * ec);
+						}
+					});
+					return;
+				}
 			} else {
 				planDiscoveryFleet();
 			}
@@ -284,28 +286,44 @@ public class DiscoveryPlanner extends Planner {
 			placeProductionOrder(bestFixed, 1);
 			return true;
 		}
-		// find best available radar to produce
-		ResearchType bestRadar = null;
-		outer:
+		// list available radars
+		List<ResearchType> radars = new ArrayList<ResearchType>();
 		for (ResearchType rt : world.availableResearch) {
 			if (rt.has("radar") && rt.category == ResearchSubCategory.EQUIPMENT_RADARS) {
-				// check the ships if there is any of the cruisers which can accept such radar
-				for (ResearchType rt1 : world.availableResearch) {
-					if (rt1.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-						for (EquipmentSlot es : rt1.slots.values()) {
-							if (!es.fixed) {
-								if (!es.items.contains(rt)) {
-									continue outer;
-								}
+				radars.add(rt);
+			}
+		}
+		// list ships capable of carrying radar
+		List<ResearchType> ships = new ArrayList<ResearchType>();
+		outer4:
+		for (ResearchType rt1 : world.availableResearch) {
+			if (rt1.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+				for (EquipmentSlot es : rt1.slots.values()) {
+					if (!es.fixed) {
+						for (ResearchType rt2 : es.items) {
+							if (rt2.has("radar") && rt2.category == ResearchSubCategory.EQUIPMENT_RADARS) {
+								ships.add(rt1);
+								continue outer4;
 							}
 						}
 					}
 				}
-				if (bestRadar == null || bestRadar.getInt("radar") < rt.getInt("radar")) {
-					bestRadar = rt;
+			}
+		}
+		ResearchType bestRadar = null;
+		
+		// find the best radar/ship combination
+		for (ResearchType radar : radars) {
+			for (ResearchType ship : ships) {
+				EquipmentSlot es = ship.supports(radar);
+				if (es != null && !es.fixed) {
+					if (bestRadar == null || bestRadar.getInt("radar") < radar.getInt("radar")) {
+						bestRadar = radar;
+					}
 				}
 			}
 		}
+		
 		if (bestRadar != null) {
 			if (world.inventoryCount(bestRadar) > 0) {
 				return checkShip(bestRadar);
@@ -330,14 +348,12 @@ public class DiscoveryPlanner extends Planner {
 			if (rt.category != ResearchSubCategory.SPACESHIPS_CRUISERS) {
 				continue;
 			}
-			// check if supports the given radar
-			for (EquipmentSlot es : rt.slots.values()) {
-				if (es.items.contains(radar)) {
-					// find the cheapest
-					if (bestShip == null || bestShip.productionCost > rt.productionCost) {
-						bestShip = rt;
-						break;
-					}
+			EquipmentSlot es = rt.supports(radar);
+			if (es != null && !es.fixed) {
+				// find the cheapest
+				if (bestShip == null || bestShip.productionCost > rt.productionCost) {
+					bestShip = rt;
+					break;
 				}
 			}
 		}

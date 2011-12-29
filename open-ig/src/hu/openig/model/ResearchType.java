@@ -155,4 +155,17 @@ public class ResearchType {
 	public int labCount() {
 		return civilLab + mechLab + compLab + aiLab + milLab;
 	}
+	/**
+	 * Check if any of the slot supports this technology.
+	 * @param rt the technology
+	 * @return the slot or null if not supported
+	 */
+	public EquipmentSlot supports(ResearchType rt) {
+		for (EquipmentSlot es : slots.values()) {
+			if (es.items.contains(rt)) {
+				return es;
+			}
+		}
+		return null;
+	}
 }

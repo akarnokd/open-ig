@@ -118,6 +118,9 @@ public class PlanetStatistics {
 		problems.putAll(other.problems);
 		warnings.putAll(other.warnings);
 		constructing |= other.constructing;
+		hasMilitarySpaceport |= other.hasMilitarySpaceport;
+		hasSpaceStation |= other.hasSpaceStation;
+		hasTradersSpaceport |= other.hasTradersSpaceport;
 	}
 	/**
 	 * The planet has the specified problem?
