@@ -56,27 +56,27 @@ public final class AutoBuilder {
 			if (ps.workerDemand > planet.population) {
 				return;
 			}
-		}
-		// if there is a worker shortage, it may be the root clause
-		// if energy shortage
-		if (ps.energyAvailable < ps.energyDemand) {
-			findOptions(world, planet, 
-			new Func1<Building, Boolean>() {
-				@Override
-				public Boolean invoke(Building b) {
-					return b.getEnergy() > 0 && planet.owner.money >= b.type.cost;
+			// if there is a worker shortage, it may be the root clause
+			// if energy shortage
+			if (ps.energyAvailable < ps.energyDemand) {
+				findOptions(world, planet, 
+				new Func1<Building, Boolean>() {
+					@Override
+					public Boolean invoke(Building b) {
+						return b.getEnergy() > 0 && planet.owner.money >= b.type.cost;
+					}
+				},
+				new Func1<BuildingType, Boolean>() {
+					@Override
+					public Boolean invoke(BuildingType value) {
+						Resource res = value.resources.get("energy");
+						return res != null && res.amount > 0;
+					}
 				}
-			},
-			new Func1<BuildingType, Boolean>() {
-				@Override
-				public Boolean invoke(BuildingType value) {
-					Resource res = value.resources.get("energy");
-					return res != null && res.amount > 0;
-				}
+				);
+				sendIfAutoBuildOffMessage(world, planet);
+				return;
 			}
-			);
-			sendIfAutoBuildOffMessage(world, planet);
-			return;
 		}
 		if (planet.autoBuild == AutoBuild.CIVIL) {
 			AutoBuild ab = planet.autoBuild;
