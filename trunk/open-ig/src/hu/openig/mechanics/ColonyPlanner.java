@@ -200,7 +200,7 @@ public class ColonyPlanner extends Planner {
 	boolean checkBuildingHealth(final AIPlanet planet) {
 		// demolish severely damanged buildings, faster to create a new one
 		for (final AIBuilding b : planet.buildings) {
-			if (b.isDamaged() && b.health() < 0.5) {
+			if (b.isDamaged() && !b.isConstructing() && b.health() < 0.5) {
 				add(new Action0() {
 					@Override
 					public void invoke() {
