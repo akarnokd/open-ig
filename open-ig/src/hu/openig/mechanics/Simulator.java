@@ -383,7 +383,7 @@ public final class Simulator {
 				newMorale += (ps.houseAvailable - planet.population) * 2f / planet.population;
 			}
 			if (ps.hospitalAvailable < planet.population) {
-				newMorale += (ps.hospitalAvailable - planet.population) * 75f / planet.population;
+				newMorale += (ps.hospitalAvailable - planet.population) * 50f / planet.population;
 			}
 			if (ps.foodAvailable < planet.population) {
 				newMorale += (ps.foodAvailable - planet.population) * 75f / planet.population;
