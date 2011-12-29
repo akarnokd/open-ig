@@ -8,9 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Location;
-
-import java.util.Set;
 
 /**
  * Interface to issue actions.
@@ -143,10 +140,6 @@ public interface AIControls {
 	 * @param rt the research to stop
 	 */
 	void actionStopResearch(ResearchType rt);
-	/** @return the exploration map remaining cells. */
-	Set<Location> explorationMap();
-	/** @return the exploration cell size. */
-	int explorationCellSize();
 	/**
 	 * Change the enabled-state of the given building.
 	 * @param planet the target planet

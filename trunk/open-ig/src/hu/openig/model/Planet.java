@@ -12,6 +12,7 @@ import hu.openig.core.PlanetType;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -356,21 +357,36 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	 * @return can be built here?
 	 */
 	public boolean canBuild(BuildingType bt) {
+		return canBuild(this, surface.buildings, this.owner.available().keySet(), bt);
+	}
+	/**
+	 * Test if another instance of the building type can be built on this planet.
+	 * It checks for the building limits and surface type.
+	 * @param planet the target planet
+	 * @param buildings the list of existing buildings
+	 * @param researches the set of available researches
+	 * @param bt the building type to test
+	 * @return can be built here?
+	 */
+	public static boolean canBuild(Planet planet, 
+			Collection<? extends Building> buildings,
+			Collection<? extends ResearchType> researches,
+			BuildingType bt) {
 		// check if this planet type is on the exception list
-		if (bt.except.contains(type.type)) {
+		if (bt.except.contains(planet.type.type)) {
 			return false;
 		}
 		// check if the required research is available
-		if (owner != null && bt.research != null && !owner.isAvailable(bt.research)) {
+		if (planet.owner != null && bt.research != null && !researches.contains(bt.research)) {
 			return false;
 		}
 		// if the building is not available for this race
-		if (!bt.tileset.containsKey(race)) {
+		if (!bt.tileset.containsKey(planet.race)) {
 			return false;
 		}
 		boolean hubFound = false;
 		int count = 0;
-		for (Building b : surface.buildings) {
+		for (Building b : buildings) {
 			if ("MainBuilding".equals(b.type.kind) && b.isComplete()) {
 				hubFound = true;
 			}

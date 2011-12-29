@@ -16,6 +16,7 @@ import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.PlanetProblems;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
 import hu.openig.model.ResearchMainCategory;
@@ -82,6 +83,44 @@ public abstract class Planner {
 		@Override
 		public int compare(BuildingType o1, BuildingType o2) {
 			return o1.cost < o2.cost ? -1 : (o1.cost > o2.cost ? 1 : 0);
+		}
+	};
+	/** Compares planets and chooses the worst overall condition. */
+	public static final Comparator<AIPlanet> WORST_PLANET = new Comparator<AIPlanet>() {
+		@Override
+		public int compare(AIPlanet o1, AIPlanet o2) {
+			return status(o2) - status(o1);
+		}
+		/** 
+		 * Computes the health status.
+		 * @param o1 the planet
+		 * @return the status number
+		 */
+		int status(AIPlanet p) {
+			int value = 0;
+			value += required(p.morale, 50) * 1000;
+			value += required(p.buildings.size(), 3) * 1000;
+			if (p.statistics.hasProblem(PlanetProblems.COLONY_HUB) || p.statistics.hasWarning(PlanetProblems.COLONY_HUB)) {
+				value += 20000;
+			}
+			value += required(p.statistics.houseAvailable, p.population) * 2;
+			value += required(p.statistics.energyAvailable, p.statistics.energyDemand) * 2;
+			value += required(p.statistics.foodAvailable, p.population);
+			value += required(p.statistics.hospitalAvailable, p.population);
+			value += required(p.statistics.policeAvailable, p.population);
+			return value;
+		}
+		/**
+		 * If available is less than the demand, return the difference, return zero otherwise
+		 * @param available the available amount
+		 * @param demand the demand amount
+		 * @return the required
+		 */
+		int required(int available, int demand) {
+			if (available < demand) {
+				return demand - available;
+			}
+			return 0;
 		}
 	};
 	/** The world copy. */
@@ -238,7 +277,8 @@ public abstract class Planner {
 	 */
 	public final boolean manageBuildings(final AIPlanet planet, 
 			final BuildingSelector selector,
-			final BuildingOrder order, boolean upgradeFirst) {
+			final BuildingOrder order, 
+			boolean upgradeFirst) {
 		if (upgradeFirst) {
 			if (manageUpgrade(planet, selector, order)) {
 				return true;
@@ -316,7 +356,7 @@ public abstract class Planner {
 		// try building a new one
 		BuildingType create = null;
 		for (final BuildingType bt : w.buildingModel.buildings.values()) {
-			if (selector.accept(planet, bt) && planet.planet.canBuild(bt) && bt.cost <= world.money) {
+			if (selector.accept(planet, bt) && planet.canBuild(bt) && bt.cost <= world.money) {
 				if (planet.findLocation(bt) != null) {
 					if (create == null || order.compare(create, bt) < 0) {
 						create = bt;

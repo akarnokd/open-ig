@@ -15,9 +15,9 @@ import hu.openig.core.Func2;
 import hu.openig.core.Location;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.core.Tile;
-import hu.openig.mechanics.AI;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.BattleSimulator;
+import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.mechanics.Pathfinding;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleGroundTurret;
@@ -2136,7 +2136,7 @@ public class PlanetScreen extends ScreenBase {
 	}
 	/** Demolish the selected building. */
 	void doDemolish() {
-		AI.demolishBuilding(world(), planet(), currentBuilding);
+		DefaultAIControls.demolishBuilding(world(), planet(), currentBuilding);
 
 		doAllocation();
 		buildingBox = null;

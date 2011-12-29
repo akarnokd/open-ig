@@ -22,6 +22,8 @@ import java.util.Map;
  * @author akarnokd, 2011.12.08.
  */
 public class AIPlanet {
+	/** The parent AI world. */
+	public AIWorld world;
 	/** The original planet. */
 	public Planet planet;
 	/** The owner. */
@@ -54,6 +56,7 @@ public class AIPlanet {
 	 * @param world the world object
 	 */
 	public void assign(final Planet planet, AIWorld world) {
+		this.world = world;
 		this.planet = planet;
 		this.owner = planet.owner;
 		this.knowledge = world.knowledge(planet);
@@ -124,5 +127,14 @@ public class AIPlanet {
 			}
 		}
 		return false;
+	}
+	/**
+	 * Test if another instance of the building type can be built on this planet.
+	 * It checks for the building limits and surface type.
+	 * @param bt the building type to test
+	 * @return can be built here?
+	 */
+	public boolean canBuild(BuildingType bt) {
+		return Planet.canBuild(planet, buildings, world.availableResearch, bt);
 	}
 }

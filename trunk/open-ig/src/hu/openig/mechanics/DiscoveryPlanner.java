@@ -18,6 +18,7 @@ import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.BuildingType;
 import hu.openig.model.EquipmentSlot;
+import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
@@ -29,26 +30,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The starmap discovery and satellite planner.
  * @author akarnokd, 2011.12.27.
  */
 public class DiscoveryPlanner extends Planner {
-	/** The current remaining exploration map. */
-	final Set<Location> explorationMap;
-	/** The cell size. */
-	final int explorationCellSize;
+	/** The exploration map. */
+	final ExplorationMap exploration;
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
 	 * @param controls the controls to affect the world in actions
+	 * @param exploration the exploration map
 	 */
-	public DiscoveryPlanner(AIWorld world, AIControls controls) {
+	public DiscoveryPlanner(AIWorld world, AIControls controls, ExplorationMap exploration) {
 		super(world, controls);
-		this.explorationMap = controls.explorationMap();
-		this.explorationCellSize = controls.explorationCellSize();
+		this.exploration = exploration;
 	}
 	@Override
 	public void plan() {
@@ -62,12 +60,12 @@ public class DiscoveryPlanner extends Planner {
 				}
 			}
 		}
-		if (explorationMap.size() > 0) {
+		if (exploration.map.size() > 0) {
 			if (bestFleet != null) {
 				if (!bestFleet.isMoving()) {
 					final AIFleet bf = bestFleet;
-					final int ec = explorationCellSize;
-					final Location loc = Collections.min(explorationMap, new Comparator<Location>() {
+					final int ec = exploration.cellSize;
+					final Location loc = Collections.min(exploration.map, new Comparator<Location>() {
 						@Override
 						public int compare(Location o1, Location o2) {
 							double d1 = Math.hypot(bf.x - (o1.x + 0.5) * ec, bf.y - (o1.y + 0.5) * ec);

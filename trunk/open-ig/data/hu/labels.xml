@@ -525,6 +525,7 @@
 	<entry key='autobuild.FACTORY'>Gyárépületek</entry>
 	<entry key='autobuild.SOCIAL'>Szociális épületek</entry>
 	<entry key='autobuild.UPGRADE'>Épületfejlesztések</entry>
+	<entry key='autobuild.AI'>MI felügyelt</entry>
 	
 	<entry key='allocation.ZERO'>Nincs</entry>
 	<entry key='allocation.DEFAULT'>Egyenletes</entry>

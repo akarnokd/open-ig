@@ -10,7 +10,7 @@ package hu.openig.screen.items;
 
 
 import hu.openig.core.Action0;
-import hu.openig.mechanics.AI;
+import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
@@ -2618,7 +2618,7 @@ public class StarmapScreen extends ScreenBase {
 			sound(SoundType.NOT_AVAILABLE);
 			return;
 		}
-		if (AI.colonizeWithFleet(f, p)) {
+		if (DefaultAIControls.colonizeWithFleet(f, p)) {
 			displayPrimary(Screens.COLONY);
 		}
 		// FIXME message: colonize failed
@@ -2671,7 +2671,7 @@ public class StarmapScreen extends ScreenBase {
 			final boolean isPaused) {
 		ResearchType rt = world().researches.get(typeId);
 		
-		AI.actionDeploySatellite(player(), p, rt);
+		DefaultAIControls.actionDeploySatellite(player(), p, rt);
 		
 		if (!isPaused) {
 			commons.simulation.resume();
