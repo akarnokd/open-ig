@@ -8,12 +8,6 @@
 
 package hu.openig.mechanics;
 
-import java.awt.Point;
-import java.awt.geom.Point2D;
-import java.util.List;
-import java.util.Map;
-
-import hu.openig.core.Difficulty;
 import hu.openig.core.Location;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIControls;
@@ -35,6 +29,11 @@ import hu.openig.model.SelectionMode;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.model.World;
+
+import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The default AI controls.
@@ -149,7 +148,7 @@ public class DefaultAIControls implements AIControls {
 			ii.count = 1;
 			ii.hp = player.world.getHitpoints(satellite);
 			planet.inventory.add(ii);
-			int ttl = getSatelliteTTL(satellite, player.world.difficulty);
+			int ttl = player.world.getSatelliteTTL(satellite);
 			if (ttl > 0) {
 				planet.timeToLive.put(ii, ttl);
 			}
@@ -175,38 +174,6 @@ public class DefaultAIControls implements AIControls {
 			
 			log("SellSatellite, Planet = %s, Type = %s, Count = %s", planet.id, satellite.id, count);
 		}
-	}
-	/**
-	 * Retrieve the satellite TTL value.
-	 * @param satellite the satellite type
-	 * @param difficulty the current difficulty
-	 * @return the TTL in simulation steps
-	 */
-	public static int getSatelliteTTL(ResearchType satellite, Difficulty difficulty) {
-		int radar = satellite.getInt("detector", 0);
-		int ttl = 0;
-		switch (radar) {
-		case 1:
-			ttl = 12 * 6;
-			break;
-		case 2:
-			ttl = 24 * 6;
-			break;
-		case 3:
-			ttl = 96 * 6;
-			break;
-		default:
-		}
-		switch (difficulty) {
-		case EASY:
-			ttl *= 4;
-			break;
-		case NORMAL:
-			ttl *= 2;
-			break;
-		default:
-		}
-		return ttl;
 	}
 
 	@Override
