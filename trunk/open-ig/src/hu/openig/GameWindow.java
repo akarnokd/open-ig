@@ -1409,11 +1409,6 @@ public class GameWindow extends JFrame implements GameControls {
 		for (String s : savesSorted) {
 			File info = new File(dir, "info-" + s + ".xml");
 			File save = new File(dir, "save-" + s + ".xml");
-			if (remaining <= 0) {
-				info.delete();
-				save.delete();
-				continue;
-			}
 			if (info.canRead()) {
 				// if no associated save, delete the info
 				if (!save.canRead()) {
@@ -1427,6 +1422,11 @@ public class GameWindow extends JFrame implements GameControls {
 					
 					if (saveMode.equals(mode.toString())) {
 						remaining--;
+						if (remaining < 0) {
+							info.delete();
+							save.delete();
+							continue;
+						}
 					}
 				} catch (XMLStreamException ex) {
 					ex.printStackTrace();
@@ -1438,6 +1438,10 @@ public class GameWindow extends JFrame implements GameControls {
 					String saveMode = xml.get("save-mode", SaveMode.AUTO.toString());
 					if (saveMode.equals(mode.toString())) {
 						remaining--;
+						if (remaining < 0) {
+							save.delete();
+							continue;
+						}
 					}
 				} catch (XMLStreamException ex) {
 					ex.printStackTrace();
