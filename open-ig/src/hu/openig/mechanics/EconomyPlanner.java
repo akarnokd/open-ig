@@ -276,7 +276,7 @@ public class EconomyPlanner extends Planner {
 			}
 		};
 		if (planet.population > planet.statistics.workerDemand * 1.1
-				&& planet.statistics.energyAvailable * 2 > planet.statistics.energyDemand) {
+				&& planet.statistics.energyAvailable * 1.1 > planet.statistics.energyDemand) {
 			return manageBuildings(planet, social, costOrder, false);
 		}
 		return false;
