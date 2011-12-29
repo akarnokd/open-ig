@@ -49,7 +49,7 @@ public class ColonyPlanner extends Planner {
 		 */
 		int status(AIPlanet p) {
 			int value = 0;
-			value += required(p.morale, 50) * 500;
+			value += required(p.morale, 50) * 1000;
 			value += required(p.buildings.size(), 3) * 1000;
 			if (p.statistics.hasProblem(PlanetProblems.COLONY_HUB) || p.statistics.hasWarning(PlanetProblems.COLONY_HUB)) {
 				value += 20000;
@@ -151,6 +151,12 @@ public class ColonyPlanner extends Planner {
 				if (checkFireBrigade(planet)) {
 					return;
 				}
+			}
+			// if very low morale, yield
+			if (planet.morale < 35 
+					&& planet.statistics.problems.size() + planet.statistics.warnings.size() > 0) {
+				addEmpty();
+				return;
 			}
 		}
 	}
