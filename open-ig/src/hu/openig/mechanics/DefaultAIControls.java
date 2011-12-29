@@ -183,7 +183,7 @@ public class DefaultAIControls implements AIControls {
 	 * @return the TTL in simulation steps
 	 */
 	public static int getSatelliteTTL(ResearchType satellite, Difficulty difficulty) {
-		int radar = satellite.getInt("radar", 0);
+		int radar = satellite.getInt("detector", 0);
 		int ttl = 0;
 		switch (radar) {
 		case 1:
