@@ -141,7 +141,7 @@ public class Building {
 	}
 	/** @return the current damage ratio. */
 	public double health() {
-		return 1.0 * hitpoints / (isConstructing() ? (buildProgress > 0 ? buildProgress : 1) : type.hitpoints);
+		return isConstructing() ? 1 : 1.0 * hitpoints / type.hitpoints;
 	}
 	/**
 	 * @return is the building destroyed?
