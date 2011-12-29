@@ -1486,7 +1486,7 @@ public class GameWindow extends JFrame implements GameControls {
 		final String currentGame = commons.world() != null ? commons.world().name : null; 
 		commons.worldLoading = true;
 		boolean running = false;
-		if (commons.world() != null) {
+		if (commons.world() != null && commons.simulation != null) {
 			running = !commons.simulation.paused();
 			commons.stop();
 		}
