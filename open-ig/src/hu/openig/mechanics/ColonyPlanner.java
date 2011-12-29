@@ -50,7 +50,7 @@ public class ColonyPlanner extends Planner {
 		int status(AIPlanet p) {
 			int value = 0;
 			value += required(p.morale, 50) * 500;
-			value += required(p.buildings.size(), 2) * 1000;
+			value += required(p.buildings.size(), 3) * 1000;
 			if (p.statistics.hasProblem(PlanetProblems.COLONY_HUB) || p.statistics.hasWarning(PlanetProblems.COLONY_HUB)) {
 				value += 20000;
 			}
@@ -138,6 +138,20 @@ public class ColonyPlanner extends Planner {
 			}
 		}
 	}
+	/** 
+	 * Count the number of completed buildings.
+	 * @param planet the target planet
+	 * @return count 
+	 */
+	int builtCount(AIPlanet planet) {
+		int result = 0;
+		for (AIBuilding b : planet.buildings) {
+			if (b.isComplete()) {
+				result++;
+			}
+		}
+		return result;
+	}
 	/**
 	 * Check if the colony has only the colony hub. Help bootstrap new colonies.
 	 * @param planet the planet to work with
@@ -149,6 +163,10 @@ public class ColonyPlanner extends Planner {
 				return true;
 			}
 		}
+		if (builtCount(planet) < 2) {
+			addEmpty();
+			return true;
+		}
 		return false;
 	}
 	/**
@@ -159,7 +177,7 @@ public class ColonyPlanner extends Planner {
 	boolean checkBuildingHealth(final AIPlanet planet) {
 		// demolish severely damanged buildings, faster to create a new one
 		for (final AIBuilding b : planet.buildings) {
-			if (b.isSeverlyDamaged()) {
+			if (b.isDamaged() && b.health() < 0.35) {
 				add(new Action0() {
 					@Override
 					public void invoke() {
@@ -565,14 +583,14 @@ public class ColonyPlanner extends Planner {
 		functions.add(new Func1<Building, Boolean>() {
 			@Override
 			public Boolean invoke(Building value) {
-				return value.isSeverlyDamaged();
+				return value.health() < 0.35;
 			}
 		});
 		// damaged
 		functions.add(new Func1<Building, Boolean>() {
 			@Override
 			public Boolean invoke(Building value) {
-				return value.isDamaged();
+				return value.health() < 0.15;
 			}
 		});
 		// any
