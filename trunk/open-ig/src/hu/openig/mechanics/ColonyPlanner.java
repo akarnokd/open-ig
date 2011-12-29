@@ -333,25 +333,25 @@ public class ColonyPlanner extends Planner {
 				return true;
 			}
 		} else
-		if (moraleNow < 70 && planet.population > 10000) {
+		if (moraleNow < 70) {
 			if (tax != TaxLevel.HIGH) {
 				setTaxLevelAction(planet, TaxLevel.HIGH);
 				return true;
 			}
 		} else
-		if (moraleNow < 78 && planet.population > 15000) {
+		if (moraleNow < 78) {
 			if (tax != TaxLevel.VERY_HIGH) {
 				setTaxLevelAction(planet, TaxLevel.VERY_HIGH);
 				return true;
 			}
 		} else
-		if (moraleNow < 85 && planet.population > 20000) {
+		if (moraleNow < 85) {
 			if (tax != TaxLevel.OPPRESSIVE) {
 				setTaxLevelAction(planet, TaxLevel.OPPRESSIVE);
 				return true;
 			}
 		} else
-		if (moraleNow < 95 && planet.population > 25000) {
+		if (moraleNow < 95) {
 			if (tax != TaxLevel.EXPLOITER) {
 				setTaxLevelAction(planet, TaxLevel.EXPLOITER);
 				return true;
