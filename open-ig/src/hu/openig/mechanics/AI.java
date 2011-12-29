@@ -250,7 +250,7 @@ public class AI implements AIManager {
 		// restore exploration map
 		for (XElement xloc : in.childrenWithName("exploration-map")) {
 			exploration.map.clear();
-			String coords = xloc.get("coords");
+			String coords = xloc.get("coords", "");
 			if (coords.length() > 0) {
 				for (String xys : coords.split("\\s+")) {
 					String[] xy = xys.split(";");
