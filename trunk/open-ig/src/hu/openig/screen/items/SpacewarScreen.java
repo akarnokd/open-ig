@@ -1307,6 +1307,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		setSpacewarTimeControls();
 
+		player().ai.spaceBattleInit(this);
 		nonPlayer().ai.spaceBattleInit(this);
 		
 		displayPanel(PanelMode.SHIP_STATUS, true);
@@ -1458,21 +1459,21 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (Building.isOperational(eff) && b.type.kind.equals("Shield")) {
 				BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
 				
-				SpacewarStructure sws = new SpacewarStructure();
-				sws.type = StructureType.SHIELD;
-				sws.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
-				sws.infoImageName = bge.infoImageName;
-				sws.hpMax = world().getHitpoints(b.type, true);
-				sws.hp = b.hitpoints * sws.hpMax / b.type.hitpoints;
-				sws.value = b.type.cost;
-				sws.owner = nearbyPlanet.owner;
-				sws.destruction = bge.destruction;
-				sws.building = b;
-				sws.planet = nearbyPlanet;
+				SpacewarStructure st = new SpacewarStructure();
+				st.type = StructureType.SHIELD;
+				st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
+				st.infoImageName = bge.infoImageName;
+				st.hpMax = world().getHitpoints(b.type, true);
+				st.hp = b.hitpoints * st.hpMax / b.type.hitpoints;
+				st.value = b.type.cost;
+				st.owner = nearbyPlanet.owner;
+				st.destruction = bge.destruction;
+				st.building = b;
+				st.planet = nearbyPlanet;
 
 				shieldValue = Math.max(shieldValue, eff * bge.shields);
 
-				structures.add(sws);
+				structures.add(st);
 			}
 		}
 		for (SpacewarStructure sws : shields()) {
@@ -1492,24 +1493,24 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			float eff = b.getEfficiency();
 			if (Building.isOperational(eff) && b.type.kind.equals("Gun")) {
 				BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
-				SpacewarStructure sp = new SpacewarStructure();
+				SpacewarStructure st = new SpacewarStructure();
 
-				sp.type = StructureType.PROJECTOR;
-				sp.angles = alien ? bge.alternative : bge.normal;
-				sp.angle = Math.PI;
-				sp.infoImageName = bge.infoImageName;
-				sp.hpMax = world().getHitpoints(b.type, true);
-				sp.value = b.type.cost;
-				sp.hp = b.hitpoints * sp.hpMax / b.type.hitpoints;
-				sp.owner = nearbyPlanet.owner;
-				sp.destruction = bge.destruction;
-				sp.building = b;
-				sp.planet = nearbyPlanet;
+				st.type = StructureType.PROJECTOR;
+				st.angles = alien ? bge.alternative : bge.normal;
+				st.angle = Math.PI;
+				st.infoImageName = bge.infoImageName;
+				st.hpMax = world().getHitpoints(b.type, true);
+				st.value = b.type.cost;
+				st.hp = b.hitpoints * st.hpMax / b.type.hitpoints;
+				st.owner = nearbyPlanet.owner;
+				st.destruction = bge.destruction;
+				st.building = b;
+				st.planet = nearbyPlanet;
 				
-				sp.shield = (int)(sp.hp * shieldValue / 100);
-				sp.shieldMax = (int)(sp.hpMax * shieldValue / 100);
+				st.shield = (int)(st.hp * shieldValue / 100);
+				st.shieldMax = (int)(st.hpMax * shieldValue / 100);
 				
-				sp.rotationTime = bge.rotationTime;
+				st.rotationTime = bge.rotationTime;
 
 				BattleProjectile pr = world().battle.projectiles.get(bge.projectile);
 				
@@ -1518,9 +1519,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				wp.projectile.damage = bge.damage;
 				
 				
-				sp.ports.add(wp);
+				st.ports.add(wp);
 				
-				structures.add(sp);
+				structures.add(st);
 			}
 		}
 	}
@@ -1670,39 +1671,33 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					System.err.println("Missing space entity: " + ii.type.id);
 				}
 				
-				SpacewarStructure sws = new SpacewarStructure();
+				SpacewarStructure st = new SpacewarStructure();
 
 				if (inventory instanceof Planet) {
-					sws.planet = (Planet)inventory;
+					st.planet = (Planet)inventory;
 				} else {
-					sws.fleet = (Fleet)inventory;
+					st.fleet = (Fleet)inventory;
 				}
 				
-				sws.type = StructureType.SHIP;
-				sws.item = ii;
-				sws.owner = inventory.owner();
-				sws.destruction = bse.destruction;
-				sws.angles = inventory.owner() != player() ? bse.alternative : bse.normal;
-				sws.infoImageName = bse.infoImageName;
-				sws.shield = ii.shield;
-				sws.shieldMax = Math.max(0, ii.shieldMax());
-				sws.hp = ii.hp;
-				sws.hpMax = world().getHitpoints(ii.type);
-				sws.value = totalValue(ii);
-				sws.count = ii.count;
-				sws.rotationTime = bse.rotationTime;
-				sws.movementSpeed = bse.movementSpeed;
-				if (inventory instanceof Fleet) {
-					sws.fleet = (Fleet)inventory;
-				} else
-				if (inventory instanceof Planet) {
-					sws.planet = (Planet)inventory;
-				}
+				st.type = StructureType.SHIP;
+				st.item = ii;
+				st.owner = inventory.owner();
+				st.destruction = bse.destruction;
+				st.angles = inventory.owner() != player() ? bse.alternative : bse.normal;
+				st.infoImageName = bse.infoImageName;
+				st.shield = ii.shield;
+				st.shieldMax = Math.max(0, ii.shieldMax());
+				st.hp = ii.hp;
+				st.hpMax = world().getHitpoints(ii.type);
+				st.value = totalValue(ii);
+				st.count = ii.count;
+				st.rotationTime = bse.rotationTime;
+				st.movementSpeed = bse.movementSpeed;
 				
-				sws.ecmLevel = setWeaponPorts(ii, sws.ports);
-				sws.computeMinimumRange();
+				st.ecmLevel = setWeaponPorts(ii, st.ports);
+				st.computeMinimumRange();
 				
-				ships.add(sws);
+				ships.add(st);
 			}
 		}
 		
@@ -3124,13 +3119,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				projectiles.remove(p);
 			}
 		}
-		List<SpacewarStructure> idles = JavaUtils.newArrayList();
-		Player aiPlayer = null;
+		List<SpacewarStructure> enemyIdles = JavaUtils.newArrayList();
+		List<SpacewarStructure> playerIdles = JavaUtils.newArrayList();
 		// fleet movements
 		for (SpacewarStructure ship : structures) {
-			if (ship.owner != player()) {
-				aiPlayer = ship.owner;
-			}
 			if (!ship.isDestroyed()) {
 				// general cooldown of weapons
 				for (SpacewarWeaponPort p : ship.ports) {
@@ -3168,19 +3160,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 							ship.attack = random(es);
 						}
 					} else {
-						idles.add(ship);
+						enemyIdles.add(ship);
 					}
 				} else
 				if (ship.owner != player()) {
-					idles.add(ship);
+					enemyIdles.add(ship);
+				} else {
+					playerIdles.add(ship);
 				}
 			}
 		}
 		
 		SpacewarAction act = SpacewarAction.CONTINUE;
-		if (aiPlayer != null) {
-			act = aiPlayer.ai.spaceBattle(this, idles);
-		}
+		act = player().ai.spaceBattle(this, playerIdles);
+		act = nonPlayer().ai.spaceBattle(this, enemyIdles);
 		
 		for (SoundType st : soundsToPlay) {
 			sound(st);
@@ -3287,7 +3280,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param winner the winner of the fight
 	 */
 	void concludeBattle(Player winner) {
-		Set<Fleet> fleets = new HashSet<Fleet>();
 		for (SpacewarStructure s : battle.spaceLosses) {
 			if (s.item != null) {
 				if (s.count > 0) {
@@ -3309,6 +3301,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 			}
 		}
+		Set<Fleet> fleets = new HashSet<Fleet>();
+		fleets.add(battle.attacker);
+		if (battle.helperFleet != null) {
+			fleets.add(battle.helperFleet);
+		}
+		if (battle.targetFleet != null) {
+			fleets.add(battle.targetFleet);
+		}
 		for (Fleet f : fleets) {
 			int gu = f.adjustVehicleCounts();
 			if (f.owner == battle.attacker.owner) {
@@ -3323,6 +3323,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		battle.spacewarWinner = winner;
 		battle.retreated = stopRetreat.visible;
 		
+		player().ai.spaceBattleDone(this);
 		nonPlayer().ai.spaceBattleDone(this);
 		// attacker wins
 		final BattleInfo bi = battle;
@@ -3359,7 +3360,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (s.fleet != null) {
 			s.fleet.inventory.remove(s.item);
 		} else {
-			throw new AssertionError("Neither planet nor fleet set on structure.");
+			throw new AssertionError(String.format(
+					"Neither planet nor fleet set on structure: Owner = %s, Type = %s", s.owner.id, s.item.type.id));
 		}
 	}
 	/**

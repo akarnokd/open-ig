@@ -77,8 +77,7 @@ public class AIUser implements AIManager {
 	@Override
 	public SpacewarAction spaceBattle(SpacewarWorld world, 
 			List<SpacewarStructure> idles) {
-		// TODO Auto-generated method stub
-		return null;
+		return SpacewarAction.CONTINUE;
 	}
 
 	@Override

@@ -154,6 +154,8 @@ public class SpacewarStructure extends SpacewarObject {
 		r.minimumRange = minimumRange;
 		r.building = building;
 		r.type = type;
+		r.planet = planet;
+		r.fleet = fleet;
 		
 		return r;
 	}
