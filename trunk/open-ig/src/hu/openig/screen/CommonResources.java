@@ -495,7 +495,7 @@ public class CommonResources implements GameEnvironment {
 						switch (value) {
 						case NORMAL: return 1000;
 						case FAST: return 500;
-						case ULTRA_FAST: return 250;
+						case ULTRA_FAST: return 50;
 						default:
 							throw new AssertionError("" + value);
 						}
