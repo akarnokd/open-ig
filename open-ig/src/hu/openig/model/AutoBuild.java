@@ -30,4 +30,6 @@ public enum AutoBuild {
 	SOCIAL,
 	/** Upgrade buildings. */
 	UPGRADE,
+	/** Use the colony planner of the default AI. */
+	AI,
 }

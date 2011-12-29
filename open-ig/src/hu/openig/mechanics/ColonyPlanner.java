@@ -10,19 +10,20 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
+import hu.openig.core.Tile;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
-import hu.openig.model.PlanetProblems;
+import hu.openig.model.Planet;
 import hu.openig.model.TaxLevel;
 import hu.openig.utils.JavaUtils;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -36,44 +37,6 @@ import java.util.List;
  * @author akarnokd, 2011.12.28.
  */
 public class ColonyPlanner extends Planner {
-	/** Compares planets and chooses the worst overall condition. */
-	static final Comparator<AIPlanet> WORST_PLANET = new Comparator<AIPlanet>() {
-		@Override
-		public int compare(AIPlanet o1, AIPlanet o2) {
-			return status(o2) - status(o1);
-		}
-		/** 
-		 * Computes the health status.
-		 * @param o1 the planet
-		 * @return the status number
-		 */
-		int status(AIPlanet p) {
-			int value = 0;
-			value += required(p.morale, 50) * 1000;
-			value += required(p.buildings.size(), 3) * 1000;
-			if (p.statistics.hasProblem(PlanetProblems.COLONY_HUB) || p.statistics.hasWarning(PlanetProblems.COLONY_HUB)) {
-				value += 20000;
-			}
-			value += required(p.statistics.houseAvailable, p.population) * 2;
-			value += required(p.statistics.energyAvailable, p.statistics.energyDemand) * 2;
-			value += required(p.statistics.foodAvailable, p.population);
-			value += required(p.statistics.hospitalAvailable, p.population);
-			value += required(p.statistics.policeAvailable, p.population);
-			return value;
-		}
-		/**
-		 * If available is less than the demand, return the difference, return zero otherwise
-		 * @param available the available amount
-		 * @param demand the demand amount
-		 * @return the required
-		 */
-		int required(int available, int demand) {
-			if (available < demand) {
-				return demand - available;
-			}
-			return 0;
-		}
-	};
 	/** The living space selector. */
 	final BuildingSelector livingSpace = new BuildingSelector() {
 		@Override
@@ -100,66 +63,96 @@ public class ColonyPlanner extends Planner {
 		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
 		Collections.sort(planets, WORST_PLANET);
 		for (AIPlanet planet : planets) {
-			if (checkColonyHub(planet)) {
-				return;
-			}
-			if (checkBootstrap(planet)) {
-				return;
-			}
-			if (checkTax(planet)) {
-				return;
-			}
-			if (checkBuildingHealth(planet)) {
-				return;
-			}
-			if (!planet.statistics.constructing) {
-				if (checkPower(planet)) {
-					return;
-				}
-			}
-			if (!planet.statistics.constructing) {
-				if (checkWorker(planet)) {
-					return;
-				}
-			}
-			if (!planet.statistics.constructing) {
-				if (checkLivingSpace(planet)) {
-					return;
-				}
-			}
-			if (!planet.statistics.constructing) {
-				if (checkFood(planet)) {
-					return;
-				}
-			}
-			if (!planet.statistics.constructing) {
-				if (checkHospital(planet)) {
-					return;
-				}
-			}
-			if (!planet.statistics.constructing) {
-				if (checkMorale(planet)) {
-					return;
-				}
-			}
-			if (!planet.statistics.constructing) {
-				if (checkPolice(planet)) {
-					return;
-				}
-			}
-			if (!planet.statistics.constructing) {
-				if (checkFireBrigade(planet)) {
-					return;
-				}
-			}
-			// if very low morale, yield
-			if (planet.morale >= 10 && planet.morale < 35 
-					&& planet.statistics.problems.size() + planet.statistics.warnings.size() > 0
-					&& world.money < 100000) {
-				addEmpty();
+			if (managePlanet(planet)) {
 				return;
 			}
 		}
+	}
+	/**
+	 * Manage a planet. Used by the AutoBuilder.
+	 * @param planet the target planet
+	 */
+	public void managePlanet(Planet planet) {
+		for (AIPlanet p : world.ownPlanets) {
+			if (p.planet == planet) {
+				managePlanet(p);
+				return;
+			}
+		}
+	}
+	/** 
+	 * Returns the actions to perform.
+	 * @return the actions to perform
+	 */
+	public List<Action0> actions() {
+		return applyActions;
+	}
+	/**
+	 * Manage the given planet.
+	 * @param planet the target planet
+	 * @return true if action taken
+	 */
+	public boolean managePlanet(AIPlanet planet) {
+		if (checkColonyHub(planet)) {
+			return true;
+		}
+		if (checkBootstrap(planet)) {
+			return true;
+		}
+		if (checkTax(planet)) {
+			return true;
+		}
+		if (checkBuildingHealth(planet)) {
+			return true;
+		}
+		if (!planet.statistics.constructing) {
+			if (checkPower(planet)) {
+				return true;
+			}
+		}
+		if (!planet.statistics.constructing) {
+			if (checkWorker(planet)) {
+				return true;
+			}
+		}
+		if (!planet.statistics.constructing) {
+			if (checkLivingSpace(planet)) {
+				return true;
+			}
+		}
+		if (!planet.statistics.constructing) {
+			if (checkFood(planet)) {
+				return true;
+			}
+		}
+		if (!planet.statistics.constructing) {
+			if (checkHospital(planet)) {
+				return true;
+			}
+		}
+		if (!planet.statistics.constructing) {
+			if (checkMorale(planet)) {
+				return true;
+			}
+		}
+		if (!planet.statistics.constructing) {
+			if (checkPolice(planet)) {
+				return true;
+			}
+		}
+		if (!planet.statistics.constructing) {
+			if (checkFireBrigade(planet)) {
+				return true;
+			}
+		}
+		// if very low morale, yield
+		if (planet.morale >= 10 && planet.morale < 35 
+				&& planet.statistics.problems.size() + planet.statistics.warnings.size() > 0
+				&& world.money < 100000) {
+			addEmpty();
+			return true;
+		}
+		return false;
 	}
 	/** 
 	 * Count the number of completed buildings.
@@ -503,6 +496,18 @@ public class ColonyPlanner extends Planner {
 		}
 		return false;
 	}
+	/** The energy building selector. */
+	final BuildingSelector energy = new BuildingSelector() {
+		@Override
+		public boolean accept(AIPlanet planet, AIBuilding building) {
+			return building.getEnergy() > 0;
+		}
+		@Override
+		public boolean accept(AIPlanet planet, BuildingType buildingType) {
+			return buildingType.hasResource("energy") && buildingType.getResource("energy") > 0;
+		}
+	};
+
 	/**
 	 * Check if there are enough power on the planet,
 	 * if not, try adding morale and growth increasing buildings.
@@ -510,18 +515,65 @@ public class ColonyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkPower(final AIPlanet planet) {
-		BuildingSelector energy = new BuildingSelector() {
-			@Override
-			public boolean accept(AIPlanet planet, AIBuilding building) {
-				return building.getEnergy() > 0;
-			}
-			@Override
-			public boolean accept(AIPlanet planet, BuildingType buildingType) {
-				return buildingType.hasResource("energy") && buildingType.getResource("energy") > 0;
-			}
-		};
 		if (planet.statistics.energyAvailable < planet.statistics.energyDemand) {
-			return manageBuildings(planet, energy, costOrder, true);
+			if (manageBuildings(planet, energy, costOrder, true)) {
+				return true;
+			}
+			return checkReplacePP(planet);
+		}
+		return false;
+	}
+	/**
+	 * Check for the case if the planet is full, then demolish a
+	 * building to get space for the power plant.
+	 * @param planet the target planet
+	 * @return true if action taken
+	 */
+	boolean checkReplacePP(final AIPlanet planet) {
+		BuildingType roomFor = null;
+		BuildingType moneyFor = null;
+		for (BuildingType bt : w.buildingModel.buildings.values()) {
+			if (planet.canBuild(bt) && energy.accept(planet, bt)) {
+				Point pt = planet.findLocation(bt);
+				if (pt != null) {
+					roomFor = bt;
+				}
+				if (moneyFor == null || moneyFor.cost < bt.cost) {
+					moneyFor = bt;
+				}
+			}
+		}
+		// if no room but have money for one
+		if (roomFor == null && moneyFor != null) {
+			// find a cheaper power plant and demolish it
+			for (final AIBuilding b : planet.buildings) {
+				if (energy.accept(planet, b) && b.type.cost < moneyFor.cost) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionDemolishBuilding(planet.planet, b.building);
+						}
+					});
+					return true;
+				}
+			}
+			Tile b1 = moneyFor.tileset.get(planet.planet.race).normal; 
+			// if no such building, demolish something with large enough footprint
+			// except colony hub
+			for (final AIBuilding b : planet.buildings) {
+				if (!b.type.kind.equals("MainBuilding") && !energy.accept(planet, b)) {
+					Tile b0 = b.tileset.normal;
+					if (b0.width >= b1.width && b0.height >= b1.height) {
+						add(new Action0() {
+							@Override
+							public void invoke() {
+								controls.actionDemolishBuilding(planet.planet, b.building);
+							}
+						});
+						return true;
+					}
+				}
+			}			
 		}
 		return false;
 	}

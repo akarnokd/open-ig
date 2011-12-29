@@ -66,7 +66,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.SwingWorker;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 
@@ -153,7 +153,7 @@ public class CommonResources implements GameEnvironment {
 	/** The game simulation's parameters. */
 	private Parameters params = new Parameters();
 	/** Map of currently running AIs. */
-	public final Map<Player, SwingWorker<Void, Void>> runningAI = new HashMap<Player, SwingWorker<Void, Void>>();
+	public final Map<Player, Future<?>> runningAI = new HashMap<Player, Future<?>>();
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -451,7 +451,7 @@ public class CommonResources implements GameEnvironment {
 	}
 	/** Close the resources. */
 	public void stop() {
-		for (SwingWorker<Void, Void> sw : runningAI.values()) {
+		for (Future<?> sw : runningAI.values()) {
 			sw.cancel(true);
 		}
 		runningAI.clear();
@@ -505,6 +505,59 @@ public class CommonResources implements GameEnvironment {
 		);
 	}
 	/**
+	 * Invoke the AI for the player if not already running.
+	 * @param p the player
+	 * @param wip the work in progress port
+	 */
+	void invokeAI(final Player p, final WipPort wip) {
+
+		Future<?> sw = runningAI.get(p);
+		// if not present or finished, start a new
+		if (sw == null) {
+			wip.inc();
+			Runnable run = new Runnable() {
+				@Override
+				public void run() {
+					runAI(p, wip);
+				}
+			};
+			runningAI.put(p, pool.submit(run));
+		}
+	}
+	/**
+	 * Run the AI body function.
+	 * @param p the player
+	 * @param wip the wip
+	 */
+	void runAI(final Player p, final WipPort wip) {
+		try {
+			try {
+				// parallel convert world state
+				p.ai.prepare();
+			} finally {
+				// wait for all to read world state
+				wip.dec();
+			}
+			// act on the world state
+			p.ai.manage();
+			// issue commands
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						if (!battleMode) {
+							p.ai.apply();
+						}
+					} finally {
+						runningAI.remove(p);
+					}
+				}
+			});
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
+	/**
 	 * Execute a step of simulation.
 	 */
 	public void simulation() {
@@ -516,42 +569,7 @@ public class CommonResources implements GameEnvironment {
 		final WipPort wip = new WipPort(1);
 		for (final Player p : world.players.values()) {
 			if (p.ai != null) {
-				SwingWorker<Void, Void> sw = runningAI.get(p);
-				// if not present or finished, start a new
-				if (sw == null) {
-					wip.inc();
-					sw = new SwingWorker<Void, Void>() {
-						@Override
-						protected Void doInBackground() throws Exception {
-							try {
-								try {
-									// parallel convert world state
-									p.ai.prepare();
-								} finally {
-									// wait for all to read world state
-									wip.dec();
-								}
-								// act on the world state
-								p.ai.manage();
-							} catch (Throwable t) {
-								t.printStackTrace();
-							}
-							return null;
-						}
-						@Override
-						protected void done() {
-							try {
-								if (!battleMode) {
-									p.ai.apply();
-								}
-							} finally {
-								runningAI.remove(p);
-							}
-						}
-					};
-					runningAI.put(p, sw);
-					pool.execute(sw);
-				}
+				invokeAI(p, wip);
 			}
 		}
 		wip.dec();

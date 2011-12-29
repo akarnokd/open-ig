@@ -11,7 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Func0;
-import hu.openig.mechanics.AI;
+import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
@@ -586,7 +586,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 	/** Remove the selected production. */
 	void doRemoveProduction() {
-		AI.actionRemoveProduction(player(), research());
+		DefaultAIControls.actionRemoveProduction(player(), research());
 		if (config.computerVoiceScreen) {
 			commons.sounds.play(SoundType.DEL_PRODUCTION);
 		}
