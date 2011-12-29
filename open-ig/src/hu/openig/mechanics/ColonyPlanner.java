@@ -177,7 +177,7 @@ public class ColonyPlanner extends Planner {
 	boolean checkBuildingHealth(final AIPlanet planet) {
 		// demolish severely damanged buildings, faster to create a new one
 		for (final AIBuilding b : planet.buildings) {
-			if (b.isDamaged() && b.health() < 0.35) {
+			if (b.isDamaged() && b.health() < 0.5) {
 				add(new Action0() {
 					@Override
 					public void invoke() {
@@ -583,7 +583,7 @@ public class ColonyPlanner extends Planner {
 		functions.add(new Func1<Building, Boolean>() {
 			@Override
 			public Boolean invoke(Building value) {
-				return value.health() < 0.35;
+				return value.health() < 0.5;
 			}
 		});
 		// damaged
