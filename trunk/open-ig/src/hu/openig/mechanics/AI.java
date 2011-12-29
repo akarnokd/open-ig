@@ -36,9 +36,9 @@ import hu.openig.model.ResponseMode;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
-import hu.openig.model.TaxLevel;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
 import hu.openig.model.World;
 import hu.openig.utils.JavaUtils;
@@ -167,8 +167,11 @@ public class AI implements AIManager, AIControls {
 	}
 	@Override
 	public void actionDeploySatellite(Planet planet, ResearchType satellite) {
-		actionDeploySatellite(p, planet, satellite);
-		log("DeploySatellite, Planet = %s, Type = %s", planet.id, satellite.id);
+		if (actionDeploySatellite(p, planet, satellite)) {
+			log("DeploySatellite, Planet = %s, Type = %s", planet.id, satellite.id);
+		} else {
+			log("DeploySatellite, Planet = %s, Type = %s, FAILED = not in inventory", planet.id, satellite.id);
+		}
 	}
 	@Override
 	public void actionRemoveProduction(ResearchType rt) {
@@ -201,8 +204,9 @@ public class AI implements AIManager, AIControls {
 	 * @param player the player
 	 * @param planet the planet
 	 * @param satellite the satellite type
+	 * @return true if successful
 	 */
-	public static void actionDeploySatellite(Player player, Planet planet, ResearchType satellite) {
+	public static boolean actionDeploySatellite(Player player, Planet planet, ResearchType satellite) {
 		if (player.inventoryCount(satellite) > 0) {
 			InventoryItem ii = new InventoryItem();
 			ii.type = satellite;
@@ -215,6 +219,26 @@ public class AI implements AIManager, AIControls {
 				planet.timeToLive.put(ii, ttl);
 			}
 			player.changeInventoryCount(satellite, -1);
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public void actionSellSatellite(Planet planet, ResearchType satellite,
+			int count) {
+		if (planet.inventoryCount(satellite, planet.owner) >= count) {
+			planet.changeInventory(satellite, planet.owner, -count);
+			
+			int money = count * satellite.productionCost / 2; 
+			planet.owner.money += money;
+			planet.owner.statistics.sellCount += count;
+			planet.owner.statistics.moneySellIncome += money;
+			planet.owner.statistics.moneyIncome += money;
+			planet.owner.world.statistics.sellCount += count;
+			planet.owner.world.statistics.moneySellIncome += money;
+			planet.owner.world.statistics.moneyIncome += money;
+			
+			log("SellSatellite, Planet = %s, Type = %s, Count = %s", planet.id, satellite.id, count);
 		}
 	}
 	/**

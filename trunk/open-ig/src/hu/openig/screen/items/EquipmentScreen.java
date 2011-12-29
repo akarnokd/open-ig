@@ -1740,7 +1740,7 @@ public class EquipmentScreen extends ScreenBase {
 					leftList.compute();
 				}
 			} else {
-				planet().changeInventory(research(), player(), delta, world());
+				planet().changeInventory(research(), player(), delta);
 			}
 		} else {
 			if (research().category == ResearchSubCategory.SPACESHIPS_CRUISERS
@@ -2178,7 +2178,7 @@ public class EquipmentScreen extends ScreenBase {
 					if (leftList.selectedItem != null) {
 						planet().inventory.remove(ii);
 					} else {
-						planet().changeInventory(research(), player(), -1, world());
+						planet().changeInventory(research(), player(), -1);
 					}
 					// if this was the last space station, place the fighters back into the inventory
 					if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
@@ -2198,9 +2198,11 @@ public class EquipmentScreen extends ScreenBase {
 				
 				player().money += worth;
 				
+				player().statistics.sellCount++;
 				player().statistics.moneyIncome += worth;
 				player().statistics.moneySellIncome += worth;
 				
+				world().statistics.sellCount++;
 				world().statistics.moneyIncome += worth;
 				world().statistics.moneySellIncome += worth;
 				

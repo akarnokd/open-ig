@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Pair;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -185,12 +187,34 @@ public class AIWorld {
 	 * @param id the identifier
 	 * @return the count
 	 */
-	public int inventoryCount(String id) {
+	public Pair<Integer, ResearchType> inventoryCount(String id) {
 		for (Map.Entry<ResearchType, Integer> e : inventory.entrySet()) {
 			if (e.getKey().id.equals(id)) {
-				return e.getValue();
+				return Pair.of(e.getValue(), e.getKey());
 			}
 		}
-		return 0;
+		return Pair.of(0, null);
+	}
+	/**
+	 * Check if the given research is available.
+	 * @param rt the research
+	 * @return true if available
+	 */
+	public boolean isAvailable(ResearchType rt) {
+		return availableResearch.contains(rt);
+	}
+	/**
+	 * Check if the given research ID is available and
+	 * return the research object.
+	 * @param id the research id
+	 * @return the research or null if not available
+	 */
+	public ResearchType isAvailable(String id) {
+		for (ResearchType rt : availableResearch) {
+			if (rt.id.equals(id)) {
+				return rt;
+			}
+		}
+		return null;
 	}
 }

@@ -495,10 +495,9 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	 * @param type the item type
 	 * @param owner the owner
 	 * @param amount the amount delta
-	 * @param world the world object
 	 */
 	public void changeInventory(ResearchType type, 
-			Player owner, int amount, World world) {
+			Player owner, int amount) {
 		int idx = 0;
 		boolean found = false;
 		for (InventoryItem pii : inventory) {
