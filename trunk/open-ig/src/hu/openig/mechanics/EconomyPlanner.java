@@ -78,6 +78,9 @@ public class EconomyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	public boolean managePlanet(final AIPlanet planet) {
+		if (planet.statistics.constructing) {
+			return false;
+		}
 		List<Pred1<AIPlanet>> functions = new ArrayList<Pred1<AIPlanet>>();
 		functions.add(new Pred1<AIPlanet>() {
 			@Override
