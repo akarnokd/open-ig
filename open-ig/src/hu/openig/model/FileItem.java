@@ -10,12 +10,15 @@ package hu.openig.model;
 
 import hu.openig.core.Difficulty;
 
+import java.io.File;
 import java.util.Date;
 
 /** The file item. */
 public class FileItem implements Comparable<FileItem> {
 	/** The save name. */
-	public String name;
+	public String saveName;
+	/** The file to load. */
+	public final File file;
 	/** The level. */
 	public int level;
 	/** The difficulty. */
@@ -26,6 +29,13 @@ public class FileItem implements Comparable<FileItem> {
 	public Date saveDate;
 	/** The player money. */
 	public long money;
+	/**
+	 * Constructor.
+	 * @param file the backing file
+	 */
+	public FileItem(File file) {
+		this.file = file;
+	}
 	@Override
 	public int compareTo(FileItem o) {
 		return o.saveDate.compareTo(saveDate);

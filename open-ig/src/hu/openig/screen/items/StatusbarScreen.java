@@ -631,7 +631,7 @@ public class StatusbarScreen extends ScreenBase {
 				break;
 			case 12:
 				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
-				scr.maySave = !commons.battleMode;
+				scr.maySave(!commons.battleMode);
 				scr.displayPage(SettingsPage.AUDIO);
 				break;
 			default:

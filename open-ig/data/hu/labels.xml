@@ -2020,8 +2020,10 @@
 	<entry key='battlefinish.click_to_exit'>Kattints a kilépéshez</entry>
 	<entry key='colonizer_fleet_name'>Kolonizáló flotta</entry>
 	<entry key='discovery_fleet'>Felfedező flotta</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='autosave'>Automatikus</entry>
+	<entry key='quicksave'>Gyors</entry>
+	<entry key='settings.save_name'>Mentés neve:</entry>
+	<entry key='manualsave'>Mentés</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -12,6 +12,7 @@ import hu.openig.core.Action0;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIMouse.Type;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.util.ArrayList;
@@ -40,6 +41,11 @@ public class UILabel extends UIComponent {
 	 * to disable shadowing.
 	 */
 	private int shadowColor;
+	/** 
+	 * The shadow ARGB color to use as background color or zero
+	 * to disable background.
+	 */
+	private int backgroundColor;
 	/** Is the text wrapped. */
 	private boolean wrap;
 	/** The horizontal alignment. */
@@ -83,6 +89,10 @@ public class UILabel extends UIComponent {
 	public void draw(Graphics2D g2) {
 		Shape save0 = g2.getClip();
 		g2.clipRect(0, 0, width, height);
+		if (backgroundColor != 0) {
+			g2.setColor(new Color(backgroundColor, true));
+			g2.fillRect(0, 0, width, height);
+		}
 		if (wrap) {
 			List<String> lines = new ArrayList<String>();
 			if (shadowColor == 0) {
@@ -301,5 +311,16 @@ public class UILabel extends UIComponent {
 			}
 		}
 		return super.mouse(e);
+	}
+	/** @return the current background color. */
+	public int backgroundColor() {
+		return backgroundColor;
+	}
+	/**
+	 * Sets the background color under the text.
+	 * @param newColor the new color
+	 */
+	public void backgroundColor(int newColor) {
+		this.backgroundColor = newColor;
 	}
 }

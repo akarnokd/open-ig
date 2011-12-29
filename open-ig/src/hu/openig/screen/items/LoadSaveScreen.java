@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
+import hu.openig.core.SaveMode;
 import hu.openig.model.FileItem;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
@@ -34,6 +35,8 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -42,10 +45,12 @@ import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Deque;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -53,9 +58,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.concurrent.CancellationException;
 
 import javax.swing.SwingWorker;
+import javax.swing.Timer;
 import javax.xml.stream.XMLStreamException;
 
 
@@ -91,7 +96,7 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Show the settings page? */
 	public SettingsPage settingsMode;
 	/** Allow saving? */
-	public boolean maySave;
+	private boolean maySave;
 	/** Resume the simulation after exiting? */
 	boolean resume;
 	/** The save button. */
@@ -181,8 +186,29 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Display the radar union? */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox radarUnion;
+	/** The save name. */
+	@Settings(page = SettingsPage.LOAD_SAVE)
+	UILabel saveName;
+	/** The save name. */
+	@Settings(page = SettingsPage.LOAD_SAVE)
+	UILabel saveNameText;
+	/** The timer for the blinking cursor. */
+	Timer blink;
+	/** The currently editing save text. */
+	String saveText = "";
+	/** The blink phase. */
+	boolean blinking;
 	@Override
 	public void onInitialize() {
+		blink = new Timer(500, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				blinking = !blinking;
+				displaySaveText();
+				askRepaint();
+			}
+		});
+		
 		loadSavePage = new UIGenericButton(get("settings.load_save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		loadSavePage.disabledPattern(commons.common().disabledPattern);
 		loadSavePage.onClick = new Action0() {
@@ -656,8 +682,12 @@ public class LoadSaveScreen extends ScreenBase {
 		};
 		autoRepairLabel = new UILabel(get("settings.auto_repair_limit"), 14, commons.text());
 
+		saveName = new UILabel(get("settings.save_name"), 14, commons.text());
 		
-		
+		saveNameText = new UILabel("", 14, commons.text());
+		saveNameText.color(TextRenderer.YELLOW);
+		saveNameText.backgroundColor(0xC0000000);
+
 		addThis();
 	}
 	/**
@@ -714,6 +744,7 @@ public class LoadSaveScreen extends ScreenBase {
 
 	@Override
 	public void onLeave() {
+		blink.stop();
 		commons.nongame = false;
 		commons.worldLoading = false;
 		if (listWorker != null) {
@@ -754,9 +785,12 @@ public class LoadSaveScreen extends ScreenBase {
 		save.location(base.x + 40 + load.width, load.y);
 		delete.location(base.x + base.width - delete.width - 10, load.y);
 		
-		list.location(base.x + 10, load.y + load.height + 8);
+		list.location(base.x + 10, load.y + load.height + 30);
 		list.size(base.width - 20, base.height - list.y + base.y - 6);
 		
+		saveName.location(base.x + 10, load.y + load.height + 8);
+		saveNameText.location(saveName.x + saveName.width + 10, saveName.y);
+		saveNameText.size(base.width - saveName.width - 30, 20);
 		// audio
 		
 		soundLabel.location(base.x + 30, base.y + 70 + 8);
@@ -871,16 +905,36 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	@Override
 	public boolean keyboard(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		int code = e.getKeyCode();
+		char chr = e.getKeyChar();
+		if (code == KeyEvent.VK_ESCAPE) {
 			doBack();
 			e.consume();
-		} else
-		if (e.getKeyChar() == ' ' 
-			|| e.getKeyChar() == '1'
-			|| e.getKeyChar() == '2'
-			|| e.getKeyChar() == '3'
-		) {
-			e.consume();
+		} else {
+			if (maySave) {
+				if (code == KeyEvent.VK_BACK_SPACE) {
+					if (saveText.length() > 0) {
+						saveText = saveText.substring(0, saveText.length() - 1);
+					}
+					displaySaveText();
+					e.consume();
+					return true;
+				} else
+				if (commons.text().isSupported(chr)) {
+					saveText += chr;
+					displaySaveText();
+					e.consume();
+					return true;
+				}
+			} else {
+				if (chr == ' ' 
+						|| chr == '1'
+						|| chr == '2'
+						|| chr == '3'
+					) {
+						e.consume();
+					}
+			}
 		}
 		return super.keyboard(e);
 	}
@@ -891,103 +945,7 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			protected Void doInBackground() throws Exception {
 				try {
-					File dir = new File("save/" + commons.profile.name);
-					if (!dir.exists()) {
-						dir.mkdirs();
-					}
-					
-					LinkedList<File> fileLst = new LinkedList<File>();
-					
-					// fetch quick
-					File[] files = dir.listFiles(new FilenameFilter() {
-						@Override
-						public boolean accept(File dir, String name) {
-							if (isCancelled()) {
-								throw new CancellationException();
-							}
-							return (name.startsWith("save-") 
-									|| name.startsWith("savex-") 
-									|| name.startsWith("info-")) 
-									&& name.endsWith(".xml");
-						}
-					});
-					if (files != null) {
-						for (File f : files) {
-							if (f.getName().startsWith("save-")) {
-								fileLst.addLast(f);
-							} else {
-								fileLst.addFirst(f);
-							}
-						}
-					}
-					
-					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-					dateFormat.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
-					
-					Set<String> shortMemory = new HashSet<String>();
-					
-					for (File f : fileLst) {
-						if (isCancelled()) {
-							break;
-						}
-						final FileItem fi = new FileItem();
-						
-						XElement w = null;
-						if (isCancelled()) {
-							break;
-						}
-						
-						String fn = f.getName();
-						if (fn.startsWith("savex-")) {
-							if (!f.delete()) {
-								System.err.println("Could not delete " + f);
-							}
-						} else
-						if (fn.startsWith("info-")) {
-							try {
-								w = XElement.parseXML(f.getAbsolutePath());
-								fi.name = "save-" + f.getName().substring(5);
-								fi.money = w.getLong("money");
-								if (new File(dir, fi.name).canRead()) {
-									shortMemory.add(fn);
-								}
-							} catch (XMLStreamException ex) {
-								ex.printStackTrace();
-								continue;
-							}
-						} else {
-							String fn2 = "info-" + fn.substring(5);
-							if (!shortMemory.contains(fn2)) {
-								fi.name = f.getName();
-								
-								w = XElement.parseXML(f.getAbsolutePath());
-								
-								String pid = w.get("player");
-								for (XElement pl : w.childrenWithName("player")) {
-									if (pid.equals(pl.get("id"))) {
-										fi.money = pl.getLong("money");
-										break;
-									}
-								}
-								// resave a sort description
-								try {
-									World.deriveShortWorldState(w).save(new File(dir, fn2));
-								} catch (IOException ex) {
-									ex.printStackTrace();
-								}
-							} else {
-								continue;
-							}
-						}
-						fi.saveDate = new Date(f.lastModified());
-
-						fi.gameDate = dateFormat.parse(w.get("time"));
-						fi.difficulty = Difficulty.valueOf(w.get("difficulty"));
-						fi.level = w.getInt("level");
-						
-						flist.add(fi);
-					}
-					Collections.sort(flist);
+					findSaves(flist);
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
@@ -1016,7 +974,7 @@ public class LoadSaveScreen extends ScreenBase {
 		int textHeight = 10;
 		@Override
 		public void draw(Graphics2D g2) {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			dateFormat2.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
 			
@@ -1047,9 +1005,9 @@ public class LoadSaveScreen extends ScreenBase {
 						
 						int dh = (rowHeight - textHeight) / 2;
 						
-						commons.text().paintTo(g2, 5, y + dh, textHeight, c, dateFormat.format(fi.saveDate));
-						commons.text().paintTo(g2, 5 + 200, y + dh, textHeight, c, get(fi.difficulty.label));
-						commons.text().paintTo(g2, 5 + 300, y + dh, textHeight, c, "" + fi.level);
+						commons.text().paintTo(g2, 5, y + dh, textHeight, c, fi.saveName);
+						commons.text().paintTo(g2, 5 + 250, y + dh, textHeight, c, get(fi.difficulty.label));
+//						commons.text().paintTo(g2, 5 + 300, y + dh, textHeight, c, "" + fi.level);
 						commons.text().paintTo(g2, 5 + 330, y + dh, textHeight, c, dateFormat2.format(fi.gameDate));
 						String m = fi.money + " cr";
 						commons.text().paintTo(g2, width - 5 - commons.text().getTextWidth(10, m), y + dh, textHeight, c, m);
@@ -1113,15 +1071,16 @@ public class LoadSaveScreen extends ScreenBase {
 		int idx = list.items.indexOf(list.selected);
 		if (idx >= 0) {
 			
-			File f = new File("save/" + commons.profile.name + "/" + list.selected.name);
+			File f = list.selected.file;
 			if (f.exists() && !f.delete()) {
 				System.err.println("Could not delete " + f);
 			}
-			f = new File("save/" + commons.profile.name + "/savex-" + list.selected.name.substring(5));
+			String fsname = list.selected.file.getName().substring(5);
+			f = new File("save/" + commons.profile.name + "/savex-" + fsname);
 			if (f.exists() && !f.delete()) {
 				System.err.println("Could not delete " + f);
 			}
-			f = new File("save/" + commons.profile.name + "/info-" + list.selected.name.substring(5));
+			f = new File("save/" + commons.profile.name + "/info-" + fsname);
 			if (f.exists() && !f.delete()) {
 				System.err.println("Could not delete " + f);
 			}
@@ -1138,11 +1097,11 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Load the selected item. */
 	void doLoad() {
 		doBack();
-		load("save/" + commons.profile.name + "/" + list.selected.name);
+		load(list.selected.file.getAbsolutePath());
 	}
 	/** Create a save. */
 	void doSave() {
-		save();
+		commons.control().save(saveText, SaveMode.MANUAL);
 		doBack();
 	}
 	/** Return to the previous screen. */
@@ -1155,5 +1114,126 @@ public class LoadSaveScreen extends ScreenBase {
 		if (resume) {
 			commons.simulation.resume();
 		}
+	}
+	/**
+	 * Change the saveability settings.
+	 * @param value the value
+	 */
+	public void maySave(boolean value) {
+		this.maySave = value;
+		saveNameText.text(saveText, false);
+		if (maySave) {
+			blink.start();
+			saveNameText.color(TextRenderer.YELLOW);
+		} else {
+			blink.stop();
+			saveNameText.color(0xFFC0C0C0);
+		}
+	}
+	/** Display the save text and any cursor. */
+	void displaySaveText() {
+		if (blinking) {
+			saveNameText.text(saveText + "-", false);
+		} else {
+			saveNameText.text(saveText, false);
+		}
+	}
+	/**
+	 * Find saves in the profile directory.
+	 * @param saves the list of ordered saves
+	 */
+	void findSaves(List<FileItem> saves) {
+		// check if save dir exists
+		File dir = new File("save/" + commons.profile.name);
+		if (!dir.exists()) {
+			return;
+		}
+		
+		File[] files = dir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.startsWith("save-") || name.startsWith("savex-") || name.startsWith("info-");
+			}
+		});
+		if (files == null) {
+			return;
+		}
+		Set<String> saveSet = new HashSet<String>();
+		for (File f : files) {
+			String n = f.getName();
+			if (n.startsWith("savex-")) {
+				f.delete();
+				continue;
+			}
+			
+			saveSet.add(n.substring(5, n.length() - 4));
+			
+		}
+		
+		Deque<String> queue = new LinkedList<String>(saveSet);
+
+		SimpleDateFormat sdf0 = new SimpleDateFormat("MM-dd HH:mm:ss");
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		sdf.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
+		
+		while (!queue.isEmpty()) {
+			String s = queue.removeFirst();
+			File info = new File(dir, "info-" + s + ".xml");
+			File save = new File(dir, "save-" + s + ".xml");
+			if (info.canRead()) {
+				// if no associated save, delete the info
+				if (!save.canRead()) {
+					info.delete();
+					continue;
+				}
+				// load world info
+				try {
+					XElement xml = XElement.parseXML(info.getAbsolutePath());
+					
+					FileItem fi = new FileItem(save);
+					fi.saveDate = new Date(save.lastModified());
+
+					fi.saveName = xml.get("save-name", null);
+					if (fi.saveName == null) {
+						SaveMode sm = SaveMode.valueOf(xml.get("save-mode", SaveMode.AUTO.toString()));
+						if (sm == SaveMode.QUICK) {
+							fi.saveName = get("quicksave");
+						} else {
+							fi.saveName = get("autosave");
+						}
+						fi.saveName += " (" + sdf0.format(fi.saveDate) + ")";
+					}
+					try {
+						fi.gameDate = sdf.parse(xml.get("time"));
+					} catch (ParseException ex) {
+						ex.printStackTrace();
+						fi.gameDate = new Date();
+					}
+					fi.level = xml.getInt("level", 5);
+					fi.money = xml.getLong("money", 0);
+					fi.difficulty = Difficulty.valueOf(xml.get("difficulty", Difficulty.NORMAL.toString()));
+					
+					saves.add(fi);
+				} catch (XMLStreamException ex) {
+					ex.printStackTrace();
+				}
+			} else 
+			if (save.canRead()) {
+				try {
+					XElement xml = XElement.parseXML(save.getAbsolutePath());
+					// create a info and retry
+					World.deriveShortWorldState(xml).save(info.getAbsolutePath());
+					// retry
+					queue.addFirst(s);
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				} catch (XMLStreamException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		
+		Collections.sort(saves);
 	}
 }

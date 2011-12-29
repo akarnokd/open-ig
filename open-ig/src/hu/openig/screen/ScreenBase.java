@@ -255,10 +255,6 @@ public abstract class ScreenBase extends UIContainer {
 	 * to the game world anymore.
 	 */
 	public abstract void onEndGame();
-	/** Save the game. */
-	public void save() {
-		commons.control().save();
-	}
 	/** 
 	 * Load a specific save.
 	 * @param name the save name

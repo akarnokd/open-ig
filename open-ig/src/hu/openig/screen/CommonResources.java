@@ -17,6 +17,7 @@ import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
+import hu.openig.core.SaveMode;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.gfx.BackgroundGFX;
 import hu.openig.gfx.ColonyGFX;
@@ -508,7 +509,7 @@ public class CommonResources implements GameEnvironment {
 	 */
 	public void simulation() {
 		if (Simulator.compute(world)) {
-			control.save();
+			control.save(null, SaveMode.AUTO);
 		}
 		
 		// run AI routines in background
