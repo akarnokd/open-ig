@@ -1116,7 +1116,7 @@ public final class Simulator {
 	 * @return true if the upgrade was successful
 	 */
 	public static boolean doUpgrade(World world, Planet planet, Building building, int newLevel) {
-		if (building.canUpgrade() 
+		if (!building.canUpgrade() 
 				|| newLevel > building.type.upgrades.size()) {
 			return false;
 		}

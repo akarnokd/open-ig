@@ -283,7 +283,8 @@ public abstract class Planner {
 		// scan for the most affordable upgrade
 		AIBuilding upgrade = null;
 		for (final AIBuilding b : planet.buildings) {
-			if (selector.accept(planet, b) && b.canUpgrade() && !b.isDamaged() && b.type.cost <= world.money) {
+			if (selector.accept(planet, b) && b.canUpgrade() && !b.isDamaged() 
+					&& b.type.cost <= world.money) {
 				if (upgrade == null || order.compare(upgrade, b) < 0) {
 					upgrade = b;
 				}
