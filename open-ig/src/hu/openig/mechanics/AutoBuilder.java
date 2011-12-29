@@ -276,7 +276,7 @@ public final class AutoBuilder {
 					new Func1<Building, Boolean>() {
 						@Override
 						public Boolean invoke(Building b) {
-							return b.upgradeLevel < b.type.upgrades.size();
+							return !b.isDamaged() && b.canUpgrade();
 						}
 					},
 					new Func1<BuildingType, Boolean>() {

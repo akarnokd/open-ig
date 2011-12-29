@@ -21,7 +21,6 @@ import hu.openig.model.ResearchType;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -230,20 +229,10 @@ public class EconomyPlanner extends Planner {
 				return value.hasResource("multiply") || value.hasResource("credit");
 			}
 		};
-		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
-			@Override
-			public int compare(AIPlanet o1, AIPlanet o2) {
-				int v1 = o1.statistics.workerDemand - o1.population;
-				int v2 = o2.statistics.workerDemand - o2.population;
-				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
-			}
-		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.workerDemand * 1.1;
-			}
-		}, planetOrder, police, costOrder, false);
+		if (planet.population > planet.statistics.workerDemand * 1.1) {
+			return manageBuildings(planet, police, costOrder, false);
+		}
+		return false;
 	}
 	/**
 	 * Check if there is shortage on police.
@@ -251,7 +240,7 @@ public class EconomyPlanner extends Planner {
 	 * @return if action taken
 	 */
 	boolean checkFactory(AIPlanet planet) {
-		BuildingSelector police = new BuildingSelector() {
+		BuildingSelector factory = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
@@ -261,20 +250,10 @@ public class EconomyPlanner extends Planner {
 				return  value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
 			}
 		};
-		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
-			@Override
-			public int compare(AIPlanet o1, AIPlanet o2) {
-				int v1 = o1.statistics.workerDemand - o1.population;
-				int v2 = o2.statistics.workerDemand - o2.population;
-				return v1 < v2 ? -1 : (v1 > v2 ? 1 : o1.morale - o2.morale);
-			}
-		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.workerDemand * 1.1;
-			}
-		}, planetOrder, police, costOrder, false);
+		if (planet.population > planet.statistics.workerDemand * 1.1) {
+			return manageBuildings(planet, factory, costOrder, false);
+		}
+		return false;
 	}
 	/**
 	 * Check if there is shortage on police.
@@ -282,7 +261,7 @@ public class EconomyPlanner extends Planner {
 	 * @return if action taken
 	 */
 	boolean checkSocial(AIPlanet planet) {
-		BuildingSelector police = new BuildingSelector() {
+		BuildingSelector social = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
 				
@@ -293,18 +272,10 @@ public class EconomyPlanner extends Planner {
 				return  value.kind.equals("Social") && value.hasResource("morale") && limit(planet, value, 1);
 			}
 		};
-		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
-			@Override
-			public int compare(AIPlanet o1, AIPlanet o2) {
-				return o1.morale - o2.morale;
-			}
-		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.workerDemand * 1.1
-						&& value.statistics.energyAvailable * 2 > value.statistics.energyDemand;
-			}
-		}, planetOrder, police, costOrder, false);
+		if (planet.population > planet.statistics.workerDemand * 1.1
+				&& planet.statistics.energyAvailable * 2 > planet.statistics.energyDemand) {
+			return manageBuildings(planet, social, costOrder, false);
+		}
+		return false;
 	}
 }
