@@ -182,15 +182,10 @@ public class ResearchPlanner extends Planner {
 				});
 			}
 		}
-		// if colonization ship underway, exit
+		// if colonization fleet deployed, do nothing
 		for (AIFleet fleet : world.ownFleets) {
 			if (fleet.hasInventory("ColonyShip")) {
-				// if the fleet is underway to a planet
-				// or fleet is stopped, no target planet but arrived at a planet
-				if ((fleet.isMoving() && fleet.targetPlanet != null)
-						|| (!fleet.isMoving() && fleet.arrivedAt != null && fleet.targetPlanet == null && fleet.arrivedAt.owner == null)) {
-					return;
-				}
+				return;
 			}
 		}
 		AIPlanet sp = null;
