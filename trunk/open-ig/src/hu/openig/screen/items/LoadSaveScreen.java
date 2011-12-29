@@ -912,6 +912,11 @@ public class LoadSaveScreen extends ScreenBase {
 			e.consume();
 		} else {
 			if (maySave) {
+				if (code == KeyEvent.VK_ENTER) {
+					doSave();
+					e.consume();
+					return true;
+				} else
 				if (code == KeyEvent.VK_BACK_SPACE) {
 					if (saveText.length() > 0) {
 						saveText = saveText.substring(0, saveText.length() - 1);
