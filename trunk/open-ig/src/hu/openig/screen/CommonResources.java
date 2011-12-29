@@ -517,7 +517,7 @@ public class CommonResources implements GameEnvironment {
 			if (p.ai != null) {
 				SwingWorker<Void, Void> sw = runningAI.get(p);
 				// if not present or finished, start a new
-				if (sw == null || sw.isDone()) {
+				if (sw == null) {
 					wip.inc();
 					sw = new SwingWorker<Void, Void>() {
 						@Override
@@ -539,8 +539,12 @@ public class CommonResources implements GameEnvironment {
 						}
 						@Override
 						protected void done() {
-							if (!battleMode) {
-								p.ai.apply();
+							try {
+								if (!battleMode) {
+									p.ai.apply();
+								}
+							} finally {
+								runningAI.remove(this);
 							}
 						}
 					};
