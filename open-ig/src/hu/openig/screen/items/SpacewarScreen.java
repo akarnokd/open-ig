@@ -1692,6 +1692,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				sws.count = ii.count;
 				sws.rotationTime = bse.rotationTime;
 				sws.movementSpeed = bse.movementSpeed;
+				if (inventory instanceof Fleet) {
+					sws.fleet = (Fleet)inventory;
+				} else
+				if (inventory instanceof Planet) {
+					sws.planet = (Planet)inventory;
+				}
 				
 				sws.ecmLevel = setWeaponPorts(ii, sws.ports);
 				sws.computeMinimumRange();

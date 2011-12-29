@@ -232,7 +232,12 @@ public class EconomyPlanner extends Planner {
 				return value.hasResource("multiply") || value.hasResource("credit");
 			}
 		};
-		if (planet.population > planet.statistics.workerDemand * 1.1) {
+		if (planet.population > planet.statistics.workerDemand * 1.1
+				&& planet.statistics.energyAvailable > planet.statistics.energyDemand
+				&& planet.statistics.houseAvailable > planet.population
+				&& planet.statistics.foodAvailable > planet.population
+				&& planet.statistics.hospitalAvailable > planet.population
+				&& planet.statistics.policeAvailable > planet.population) {
 			return manageBuildings(planet, police, costOrder, false);
 		}
 		return false;
@@ -253,7 +258,12 @@ public class EconomyPlanner extends Planner {
 				return  value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
 			}
 		};
-		if (planet.population > planet.statistics.workerDemand * 1.1) {
+		if (planet.population > planet.statistics.workerDemand * 1.1
+				&& planet.statistics.energyAvailable > planet.statistics.energyDemand
+				&& planet.statistics.houseAvailable > planet.population
+				&& planet.statistics.foodAvailable > planet.population
+				&& planet.statistics.hospitalAvailable > planet.population
+				&& planet.statistics.policeAvailable > planet.population) {
 			return manageBuildings(planet, factory, costOrder, false);
 		}
 		return false;
