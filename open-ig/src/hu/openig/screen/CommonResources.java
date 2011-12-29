@@ -544,7 +544,7 @@ public class CommonResources implements GameEnvironment {
 									p.ai.apply();
 								}
 							} finally {
-								runningAI.remove(this);
+								runningAI.remove(p);
 							}
 						}
 					};
