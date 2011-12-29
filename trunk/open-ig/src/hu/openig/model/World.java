@@ -957,7 +957,7 @@ public class World {
 				xpii.set("hp", pii.hp);
 				xpii.set("shield", pii.shield);
 				Integer ttl = p.timeToLive.get(pii); 
-				if (ttl != null && ttl > 0) {
+				if (ttl != null) {
 					xpii.set("ttl", ttl);
 				}
 			}
@@ -1245,8 +1245,8 @@ public class World {
 				pii.createSlots();
 				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
 				
-				int ttl = xpii.getInt("ttl", 0);
-				if (ttl > 0) {
+				int ttl = xpii.getInt("ttl", -1);
+				if (ttl >= 0) {
 					p.timeToLive.put(pii, ttl);
 				} else
 				// set TTL to satellites which have been deployed prior the TTL introduction.
