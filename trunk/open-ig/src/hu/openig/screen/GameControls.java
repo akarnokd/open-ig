@@ -10,6 +10,7 @@ package hu.openig.screen;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
+import hu.openig.core.SaveMode;
 import hu.openig.model.AIManager;
 import hu.openig.model.Player;
 import hu.openig.model.Screens;
@@ -80,8 +81,12 @@ public interface GameControls {
 	 * @return the default font metrics object
 	 */
 	FontMetrics fontMetrics(int size);
-	/** Save the world state. */
-	void save();
+	/**
+	 * Save the world.
+	 * @param name the name the user entered, ony if mode == MANUAL
+	 * @param mode the mode
+	 */
+	void save(String name, SaveMode mode);
 	/**
 	 * Load the world state.
 	 * @param name the save name or null to load the most recent.

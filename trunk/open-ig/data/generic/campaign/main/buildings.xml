@@ -602,6 +602,7 @@
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
 			</upgrade>
+			<!-- 
 			<upgrade desc="buildings.traders_spaceport.upgrade_3">
 				<resource type="credit">1.75</resource>
 				<resource type="energy">1.75</resource>
@@ -612,6 +613,7 @@
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>
 			</upgrade>
+			 -->
 		</upgrades>
 	</building>
 	<building name="buildings.military_spaceport" id="MilitarySpaceport">
@@ -654,6 +656,7 @@
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>					
 			</upgrade>
+			<!-- 
 			<upgrade desc="buildings.bank.upgrade_3">
 				<resource type="multiply">1.75</resource>
 				<resource type="energy">1.75</resource>
@@ -664,6 +667,7 @@
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>					
 			</upgrade>
+			 -->
 		</upgrades>		
 	</building>
 	<building name="buildings.trade_center" id="TradeCenter">
@@ -694,6 +698,7 @@
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>					
 			</upgrade>
+			<!-- 
 			<upgrade desc="buildings.trade_center.upgrade_3">
 				<resource type="credit">1.75</resource>
 				<resource type="energy">1.75</resource>
@@ -704,6 +709,7 @@
 				<resource type="energy">1.75</resource>
 				<resource type="worker">1.75</resource>					
 			</upgrade>
+			 -->
 		</upgrades>
 	</building>
 	<building name="buildings.hospital" id="Hospital">

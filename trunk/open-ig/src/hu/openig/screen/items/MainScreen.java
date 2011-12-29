@@ -158,7 +158,7 @@ public class MainScreen extends ScreenBase {
 		// reload global configuration
 		config.load();
 		LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
-		scr.maySave = false;
+		scr.maySave(false);
 		scr.displayPage(SettingsPage.AUDIO);
 	}
 
@@ -311,7 +311,7 @@ public class MainScreen extends ScreenBase {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
 				scr.displayPage(SettingsPage.LOAD_SAVE);
-				scr.maySave = false;
+				scr.maySave(false);
 			}
 		};
 		clicklabels.add(load);

@@ -13,6 +13,7 @@ import hu.openig.core.Configuration;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
+import hu.openig.core.SaveMode;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.AI;
 import hu.openig.mechanics.AIPirate;
@@ -91,10 +92,13 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -102,6 +106,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * The base game window which handles paint and input events.
@@ -865,7 +870,7 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_ESCAPE:
 					if (commons.battleMode) {
 						LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
-						scr.maySave = false;
+						scr.maySave(false);
 						scr.displayPage(SettingsPage.AUDIO);
 						e.consume();
 					}
@@ -1090,7 +1095,7 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					} else {
 						LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
-						scr.maySave = true;
+						scr.maySave(true);
 					}
 					break;
 				case KeyEvent.VK_M:
@@ -1128,7 +1133,7 @@ public class GameWindow extends JFrame implements GameControls {
 					break;
 				case KeyEvent.VK_S:
 					if (e.isControlDown()) {
-						saveWorld();
+						saveWorld(null, SaveMode.QUICK);
 						e.consume();
 					}
 					break;
@@ -1167,7 +1172,7 @@ public class GameWindow extends JFrame implements GameControls {
 					break;
 				case KeyEvent.VK_ESCAPE:
 					LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
-					scr.maySave = true;
+					scr.maySave(true);
 					scr.displayPage(SettingsPage.LOAD_SAVE);
 					e.consume();
 					break;
@@ -1324,8 +1329,12 @@ public class GameWindow extends JFrame implements GameControls {
 	public FontMetrics fontMetrics(int size) {
 		return getFontMetrics(getFont().deriveFont((float)size).deriveFont(Font.BOLD));
 	}
-	/** Save the world. */
-	public void saveWorld() {
+	/**
+	 * Save the world.
+	 * @param name the user entered name, if mode == MANUAL
+	 * @param mode the mode
+	 */
+	public void saveWorld(final String name, final SaveMode mode) {
 		final String pn = commons.profile.name;
 		final XElement xworld = commons.world().saveState();
 		saveSettings(xworld);
@@ -1340,8 +1349,15 @@ public class GameWindow extends JFrame implements GameControls {
 						File fout = new File(dir, "save-" + sdate + ".xml");
 						File foutx = new File(dir, "info-" + sdate + ".xml");
 						try {
+							xworld.set("save-name", name);
+							xworld.set("save-mode", mode);
+							
+							XElement info = World.deriveShortWorldState(xworld);
+							
 							xworld.save(fout);
-							World.deriveShortWorldState(xworld).save(foutx);
+							info.save(foutx);
+							
+							limitSaves(dir, mode);
 						} catch (IOException ex) {
 							ex.printStackTrace();
 						}
@@ -1355,9 +1371,83 @@ public class GameWindow extends JFrame implements GameControls {
 		}, "Save");
 		t.start();
 	}
+	/**
+	 * Limit the number of various saves.
+	 * @param dir the saves directory
+	 * @param mode the mode
+	 */
+	void limitSaves(File dir, SaveMode mode) {
+		if (mode == SaveMode.MANUAL) {
+			return;
+		}
+		// locate saves
+		Set<String> saves = new HashSet<String>();
+		File[] files = dir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return (name.startsWith("info-") || name.startsWith("save-")) 
+						&& name.endsWith(".xml");
+			}
+		});
+		if (files == null) {
+			return;
+		}
+		// candidate saves
+		for (File f : files) {
+			String n = f.getName();
+			n = n.substring(5, n.length() - 4);
+			saves.add(n);
+		}
+		
+		List<String> savesSorted = new ArrayList<String>(saves);
+		Collections.sort(savesSorted);
+		// latest first
+		Collections.reverse(savesSorted);
+		
+		int remaining = 5; // the save limit
+		
+		for (String s : savesSorted) {
+			File info = new File(dir, "info-" + s + ".xml");
+			File save = new File(dir, "save-" + s + ".xml");
+			if (remaining <= 0) {
+				info.delete();
+				save.delete();
+				continue;
+			}
+			if (info.canRead()) {
+				// if no associated save, delete the info
+				if (!save.canRead()) {
+					info.delete();
+					continue;
+				}
+				// load world info
+				try {
+					XElement xml = XElement.parseXML(info.getAbsolutePath());
+					String saveMode = xml.get("save-mode", SaveMode.AUTO.toString());
+					
+					if (saveMode.equals(mode.toString())) {
+						remaining--;
+					}
+				} catch (XMLStreamException ex) {
+					ex.printStackTrace();
+				}
+			} else 
+			if (save.canRead()) {
+				try {
+					XElement xml = XElement.parseXML(save.getAbsolutePath());
+					String saveMode = xml.get("save-mode", SaveMode.AUTO.toString());
+					if (saveMode.equals(mode.toString())) {
+						remaining--;
+					}
+				} catch (XMLStreamException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+	}
 	@Override
-	public void save() {
-		saveWorld();
+	public void save(String name, SaveMode mode) {
+		saveWorld(name, mode);
 	}
 	@Override
 	public void load(String name) {
@@ -1408,7 +1498,7 @@ public class GameWindow extends JFrame implements GameControls {
 				try {
 					String lname = name;
 					if (lname == null) {
-						File dir = new File("save/default");
+						File dir = new File("save/" + commons.profile.name);
 						if (dir.exists()) {
 							File[] files = dir.listFiles(new FilenameFilter() {
 								@Override

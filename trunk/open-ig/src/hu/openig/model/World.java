@@ -780,6 +780,8 @@ public class World {
 				break;
 			}
 		}
+		sstate.set("save-name", worldSave.get("save-name", null));
+		sstate.set("save-mode", worldSave.get("save-mode", null));
 
 		return sstate;
 	}
