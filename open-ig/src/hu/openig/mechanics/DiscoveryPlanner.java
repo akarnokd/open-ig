@@ -52,18 +52,17 @@ public class DiscoveryPlanner extends Planner {
 	}
 	@Override
 	public void plan() {
-		if (explorationMap.size() > 0) {
-			// find a fleet which is not moving and has at least a decent radar range
-			// and is among the fastest available
-			AIFleet bestFleet = null;
-			for (AIFleet f : world.ownFleets) {
-				if (f.radar >= w.params().fleetRadarUnitSize()) {
-					if (bestFleet == null || bestFleet.statistics.speed < f.statistics.speed) {
-						bestFleet = f;
-					}
+		// find a fleet which has at least a decent radar range
+		// and is among the fastest available
+		AIFleet bestFleet = null;
+		for (AIFleet f : world.ownFleets) {
+			if (f.radar >= w.params().fleetRadarUnitSize()) {
+				if (bestFleet == null || bestFleet.statistics.speed < f.statistics.speed) {
+					bestFleet = f;
 				}
 			}
-			
+		}
+		if (explorationMap.size() > 0) {
 			if (bestFleet != null) {
 				if (!bestFleet.isMoving()) {
 					final AIFleet bf = bestFleet;
@@ -86,6 +85,23 @@ public class DiscoveryPlanner extends Planner {
 				}
 			} else {
 				planDiscoveryFleet();
+			}
+		} else {
+			// if we explored everything, let's patrol
+			if (bestFleet != null && !bestFleet.isMoving()) {
+				final AIFleet bf = bestFleet;
+				if (world.ownPlanets.size() > 0) {
+					AIPlanet p = w.random(world.ownPlanets);
+					final int x = p.planet.x;
+					final int y = p.planet.y;
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionMoveFleet(bf.fleet, x, y);
+						}
+					});
+					return;
+				}
 			}
 		}
 		

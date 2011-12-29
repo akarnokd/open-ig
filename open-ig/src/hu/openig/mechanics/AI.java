@@ -644,10 +644,12 @@ public class AI implements AIManager, AIControls {
 		for (XElement xloc : in.childrenWithName("exploration-map")) {
 			explorationMap.clear();
 			String coords = xloc.get("coords");
-			for (String xys : coords.split("\\s+")) {
-				String[] xy = xys.split(";");
-				Location loc = Location.of(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]));
-				explorationMap.add(loc);
+			if (coords.length() > 0) {
+				for (String xys : coords.split("\\s+")) {
+					String[] xy = xys.split(";");
+					Location loc = Location.of(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]));
+					explorationMap.add(loc);
+				}
 			}
 		}
 	}
@@ -665,7 +667,9 @@ public class AI implements AIManager, AIControls {
 			}
 			coords.append(loc.x).append(";").append(loc.y);
 		}
-		xloc.set("coords", coords);
+		if (coords.length() > 0) {
+			xloc.set("coords", coords);
+		}
 	}
 	@Override
 	public void onResearchStateChange(ResearchType rt, ResearchState state) {
