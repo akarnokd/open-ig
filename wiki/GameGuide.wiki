@@ -128,6 +128,16 @@ For example, a 6000 credit research would take 6000 game minutes. Game time adva
 
 For example, a technology uses 1 civil and 1 mechanical development centers. If you have 0 civil and 1 mechanical centers, the research will progress up to 50% and stop there. If you have 0 civil and 2 mechanical centers, the research will still go up to 50%.
 
+The Information / Research window offers several state information in the way the technology labels are colored. The meaning of the colors:
+
+|| *Color* || *Description* ||
+|| Orange || Technology available for production / construction ||
+|| Yellow || Research started (but may not be the active one) ||
+|| Light green || The current amount of planets, if filled with proper labs would support the successful research ||
+|| Green || There is simply not enough planets to complete the research if started ||
+|| Light blue || There is enough labs built to start this research ||
+|| Gray || Prerequisites of the research have been not met ||
+
 == Production ==
 
 The production speed depends mainly on how many factories you have and what efficiency they operate. The production progress is proportional to this capacity. 
