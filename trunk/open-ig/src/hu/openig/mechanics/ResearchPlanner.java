@@ -123,12 +123,6 @@ public class ResearchPlanner extends Planner {
 	 * Plan for conquest.
 	 */
 	void planConquest() {
-		// if colonization ship underway, exit
-		for (AIFleet fleet : world.ownFleets) {
-			if (fleet.isMoving() && fleet.hasInventory("ColonyShip") && fleet.targetPlanet != null) {
-				return;
-			}
-		}
 		// if a fleet with colony ship is in position, colonize the planet
 		for (AIFleet fleet : world.ownFleets) {
 			if (!fleet.isMoving() && fleet.hasInventory("ColonyShip")) {
@@ -186,6 +180,17 @@ public class ResearchPlanner extends Planner {
 						controls.actionMoveFleet(fleet.fleet, p0.planet);
 					}
 				});
+			}
+		}
+		// if colonization ship underway, exit
+		for (AIFleet fleet : world.ownFleets) {
+			if (fleet.hasInventory("ColonyShip")) {
+				// if the fleet is underway to a planet
+				// or fleet is stopped, no target planet but arrived at a planet
+				if ((fleet.isMoving() && fleet.targetPlanet != null)
+						|| (!fleet.isMoving() && fleet.arrivedAt != null && fleet.targetPlanet == null && fleet.arrivedAt.owner == null)) {
+					return;
+				}
 			}
 		}
 		AIPlanet sp = null;

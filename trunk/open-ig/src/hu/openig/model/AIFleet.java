@@ -29,6 +29,8 @@ public class AIFleet {
 	public Fleet targetFleet;
 	/** The target planet. */
 	public Planet targetPlanet;
+	/** The target planet. */
+	public Planet arrivedAt;
 	/** The target point. */
 	public Point2D.Double targetPoint;
 	/** The fleet mode. */
@@ -51,6 +53,7 @@ public class AIFleet {
 		this.radar = fleet.radar;
 		targetFleet = fleet.targetFleet;
 		targetPlanet = fleet.targetPlanet();
+		arrivedAt = fleet.arrivedAt;
 		if (fleet.waypoints.size() > 0) {
 			targetPoint = fleet.waypoints.get(0);
 		}
