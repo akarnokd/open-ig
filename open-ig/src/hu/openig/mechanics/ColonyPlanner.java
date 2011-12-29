@@ -112,29 +112,45 @@ public class ColonyPlanner extends Planner {
 			if (checkBuildingHealth(planet)) {
 				return;
 			}
-			if (checkPower(planet)) {
-				return;
+			if (!planet.statistics.constructing) {
+				if (checkPower(planet)) {
+					return;
+				}
 			}
-			if (checkWorker(planet)) {
-				return;
+			if (!planet.statistics.constructing) {
+				if (checkWorker(planet)) {
+					return;
+				}
 			}
-			if (checkLivingSpace(planet)) {
-				return;
+			if (!planet.statistics.constructing) {
+				if (checkLivingSpace(planet)) {
+					return;
+				}
 			}
-			if (checkFood(planet)) {
-				return;
+			if (!planet.statistics.constructing) {
+				if (checkFood(planet)) {
+					return;
+				}
 			}
-			if (checkHospital(planet)) {
-				return;
+			if (!planet.statistics.constructing) {
+				if (checkHospital(planet)) {
+					return;
+				}
 			}
-			if (checkMorale(planet)) {
-				return;
+			if (!planet.statistics.constructing) {
+				if (checkMorale(planet)) {
+					return;
+				}
 			}
-			if (checkPolice(planet)) {
-				return;
+			if (!planet.statistics.constructing) {
+				if (checkPolice(planet)) {
+					return;
+				}
 			}
-			if (checkFireBrigade(planet)) {
-				return;
+			if (!planet.statistics.constructing) {
+				if (checkFireBrigade(planet)) {
+					return;
+				}
 			}
 		}
 	}
