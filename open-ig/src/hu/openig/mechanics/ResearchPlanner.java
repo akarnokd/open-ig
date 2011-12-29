@@ -17,7 +17,6 @@ import hu.openig.model.AIFleet;
 import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
-import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
@@ -143,7 +142,6 @@ public class ResearchPlanner extends Planner {
 								public void invoke() {
 									if (p0.owner == null) {
 										controls.actionColonizePlanet(f0, p0);
-										p0.autoBuild = AutoBuild.CIVIL; // FIXME to avoid further problems
 									}
 								}
 							});
