@@ -1116,12 +1116,17 @@ public final class Simulator {
 	 * @return true if the upgrade was successful
 	 */
 	public static boolean doUpgrade(World world, Planet planet, Building building, int newLevel) {
-		if (newLevel <= building.upgradeLevel || newLevel > building.type.upgrades.size()) {
+		if (building.canUpgrade() 
+				|| newLevel > building.type.upgrades.size()) {
 			return false;
 		}
 		int diff = newLevel - building.upgradeLevel;
 		int buildCost = building.type.cost * diff;
 
+		if (planet.owner.money < buildCost) {
+			return false;
+		}
+		
 		building.setLevel(newLevel);
 		building.buildProgress = building.type.hitpoints * 1 / 4;
 		building.hitpoints = building.buildProgress;
