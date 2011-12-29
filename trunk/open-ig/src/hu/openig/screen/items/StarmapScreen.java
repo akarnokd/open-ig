@@ -2423,6 +2423,8 @@ public class StarmapScreen extends ScreenBase {
 			radarCache.zoom = zoom;
 			radarCache.radarArea = null;
 			radarCache.dots.clear();
+			radarCache.old.clear();
+			radarCache.old.addAll(circles);
 			for (RadarCircle c : circles) {
 				double rx = c.x * zoom;
 				double ry = c.y * zoom;

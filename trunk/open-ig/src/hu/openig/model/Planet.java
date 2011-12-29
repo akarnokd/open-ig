@@ -449,6 +449,7 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 		owner = null;
 		race = null;
 		quarantine = false;
+		quarantineTTL = 0;
 		allocation = ResourceAllocationStrategy.DEFAULT;
 		tax = TaxLevel.MODERATE;
 		morale = 50;
@@ -458,6 +459,7 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 		autoBuild = AutoBuild.OFF;
 		taxIncome = 0;
 		tradeIncome = 0;
+		radar = 0;
 		surface.buildings.clear();
 		surface.buildingmap.clear();
 	}

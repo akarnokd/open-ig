@@ -1170,6 +1170,13 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				case KeyEvent.VK_K:
+					if (e.isControlDown()) {
+						fullConquestTest();
+						e.consume();
+						repaintInner();
+					}
+					break;
 				case KeyEvent.VK_ESCAPE:
 					LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
 					scr.maySave(true);
@@ -1180,6 +1187,46 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			}
 		}
+	}
+	/**
+	 * Test scenario:
+	 * Kill all player planets except Achilles.
+	 * Achilles without buildings.
+	 * Make the colony ship available.
+	 */
+	void fullConquestTest() {
+		World w = world();
+		Player p = w.player;
+		// die all of the player's planets
+		for (Planet planet : w.planets.values()) {
+			if (planet.owner == p) {
+				planet.die();
+				if (planet.id.equals("Achilles")) {
+					planet.owner = p;
+					planet.race = p.race;
+					planet.population = 5000;
+					p.planets.put(planet, PlanetKnowledge.BUILDING);
+				} else {
+					p.planets.remove(planet);
+				}
+			}
+		}
+		// remove all non-default technologies
+		for (ResearchType rt : new ArrayList<ResearchType>(p.available().keySet())) {
+			if (rt.level > 0 && rt.race.contains(p.race)) {
+				p.available().remove(rt);
+			}
+		}
+		// enable colony ship
+		for (ResearchType rt : w.researches.values()) {
+			if (rt.id.equals("ColonyShip")) {
+				p.setAvailable(rt);
+			}
+			if (rt.id.equals("OrbitalFactory")) {
+				p.setAvailable(rt);
+			}
+		}
+		p.money = 100000;
 	}
 	/**
 	 * Toggle between full screen mode.
