@@ -1245,21 +1245,9 @@ public class World {
 				pii.createSlots();
 				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
 				
-				int ttl = xpii.getInt("ttl", -1);
-				if (ttl >= 0) {
+				int ttl = xpii.getInt("ttl", getSatelliteTTL(pii.type));
+				if (ttl > 0) {
 					p.timeToLive.put(pii, ttl);
-				} else
-				// set TTL to satellites which have been deployed prior the TTL introduction.
-				if (pii.owner != p.owner) {
-					if (pii.type.id.equals("Satellite")) {
-						p.timeToLive.put(pii, 12 * 6);
-					} else
-					if (pii.type.id.equals("SpySatellite1")) {
-						p.timeToLive.put(pii, 24 * 6);
-					} else
-					if (pii.type.id.equals("SpySatellite2")) {
-						p.timeToLive.put(pii, 96 * 6);
-					}
 				}
 				
 				p.inventory.add(pii);
@@ -1341,6 +1329,37 @@ public class World {
 				}
 			}
 		}
+	}
+	/**
+	 * Retrieve the satellite TTL value.
+	 * @param satellite the satellite type
+	 * @return the TTL in simulation steps
+	 */
+	public int getSatelliteTTL(ResearchType satellite) {
+		int radar = satellite.getInt("detector", 0);
+		int ttl = 0;
+		switch (radar) {
+		case 1:
+			ttl = 12 * 6;
+			break;
+		case 2:
+			ttl = 24 * 6;
+			break;
+		case 3:
+			ttl = 96 * 6;
+			break;
+		default:
+		}
+		switch (difficulty) {
+		case EASY:
+			ttl *= 4;
+			break;
+		case NORMAL:
+			ttl *= 2;
+			break;
+		default:
+		}
+		return ttl;
 	}
 	/**
 	 * Link the fleet's targetFleet value with the fleet given by the ID.
