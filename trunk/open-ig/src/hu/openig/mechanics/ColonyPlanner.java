@@ -10,13 +10,13 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
-import hu.openig.core.Pred1;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.PlanetProblems;
 import hu.openig.model.TaxLevel;
 import hu.openig.utils.JavaUtils;
 
@@ -49,9 +49,13 @@ public class ColonyPlanner extends Planner {
 		 */
 		int status(AIPlanet p) {
 			int value = 0;
-			value += required(p.morale, 50) * 300;
-			value += required(p.statistics.houseAvailable, p.population);
-			value += required(p.statistics.energyAvailable, p.statistics.energyDemand);
+			value += required(p.morale, 50) * 500;
+			value += required(p.buildings.size(), 2) * 1000;
+			if (p.statistics.hasProblem(PlanetProblems.COLONY_HUB) || p.statistics.hasWarning(PlanetProblems.COLONY_HUB)) {
+				value += 20000;
+			}
+			value += required(p.statistics.houseAvailable, p.population) * 2;
+			value += required(p.statistics.energyAvailable, p.statistics.energyDemand) * 2;
 			value += required(p.statistics.foodAvailable, p.population);
 			value += required(p.statistics.hospitalAvailable, p.population);
 			value += required(p.statistics.policeAvailable, p.population);
@@ -93,93 +97,93 @@ public class ColonyPlanner extends Planner {
 
 	@Override
 	protected void plan() {
-		if (checkColonyHub()) {
-			return;
-		}
-		if (checkBootstrap()) {
-			return;
-		}
-		if (checkTax()) {
-			return;
-		}
-		if (checkBuildingHealth()) {
-			return;
-		}
-		if (checkPower()) {
-			return;
-		}
-		if (checkWorker()) {
-			return;
-		}
-		if (checkLivingSpace()) {
-			return;
-		}
-		if (checkFood()) {
-			return;
-		}
-		if (checkHospital()) {
-			return;
-		}
-		if (checkMorale()) {
-			return;
-		}
-		if (checkPolice()) {
-			return;
-		}
-		if (checkFireBrigade()) {
-			return;
+		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		Collections.sort(planets, WORST_PLANET);
+		for (AIPlanet planet : planets) {
+			if (checkColonyHub(planet)) {
+				return;
+			}
+			if (checkBootstrap(planet)) {
+				return;
+			}
+			if (checkTax(planet)) {
+				return;
+			}
+			if (checkBuildingHealth(planet)) {
+				return;
+			}
+			if (checkPower(planet)) {
+				return;
+			}
+			if (checkWorker(planet)) {
+				return;
+			}
+			if (checkLivingSpace(planet)) {
+				return;
+			}
+			if (checkFood(planet)) {
+				return;
+			}
+			if (checkHospital(planet)) {
+				return;
+			}
+			if (checkMorale(planet)) {
+				return;
+			}
+			if (checkPolice(planet)) {
+				return;
+			}
+			if (checkFireBrigade(planet)) {
+				return;
+			}
 		}
 	}
 	/**
 	 * Check if the colony has only the colony hub. Help bootstrap new colonies.
+	 * @param planet the planet to work with
 	 * @return if action taken
 	 */
-	boolean checkBootstrap() {
-		for (final AIPlanet planet : world.ownPlanets) {
-			if (planet.buildings.size() < 2) {
-				if (manageBuildings(planet, livingSpace, costOrder, false)) {
-					return true;
-				}
+	boolean checkBootstrap(final AIPlanet planet) {
+		if (planet.buildings.size() < 2) {
+			if (manageBuildings(planet, livingSpace, costOrder, false)) {
+				return true;
 			}
 		}
 		return false;
 	}
 	/**
 	 * Ensure that buildings are repaired. 
+	 * @param planet the planet to work with
 	 * @return true if action taken
 	 */
-	boolean checkBuildingHealth() {
+	boolean checkBuildingHealth(final AIPlanet planet) {
 		// demolish severely damanged buildings, faster to create a new one
-		for (final AIPlanet planet : world.ownPlanets) {
-			for (final AIBuilding b : planet.buildings) {
-				if (b.isSeverlyDamaged()) {
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionDemolishBuilding(planet.planet, b.building);
-						}
-					});
-					return true;
-				}
+		for (final AIBuilding b : planet.buildings) {
+			if (b.isSeverlyDamaged()) {
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionDemolishBuilding(planet.planet, b.building);
+					}
+				});
+				return true;
 			}
-		}		
+		}
 		// if low on money
 		if (world.money < 1000) {
 			// stop repairing
 			boolean anyConstruction = false;
-			for (final AIPlanet planet : world.ownPlanets) {
-				if (planet.statistics.constructing) {
-					anyConstruction = true;
-					for (final AIBuilding b : planet.buildings) {
-						if (b.repairing) {
-							add(new Action0() {
-								@Override
-								public void invoke() {
-									controls.actionRepairBuilding(planet.planet, b.building, false);
-								}
-							});
-							return true;
-						}
+			if (planet.statistics.constructing) {
+				anyConstruction = true;
+				for (final AIBuilding b : planet.buildings) {
+					if (b.repairing) {
+						add(new Action0() {
+							@Override
+							public void invoke() {
+								controls.actionRepairBuilding(planet.planet, b.building, false);
+							}
+						});
+						return true;
 					}
 				}
 			}
@@ -188,48 +192,47 @@ public class ColonyPlanner extends Planner {
 			}
 		}
 		// find and start repairing the cheapest damaged building per planet
-		for (final AIPlanet planet : world.ownPlanets) {
-			for (final AIBuilding b : planet.buildings) {
-				if (b.repairing) {
-					addEmpty();
-					return true; // don't let other things continue
+		for (final AIBuilding b : planet.buildings) {
+			if (b.repairing) {
+				addEmpty();
+				return true; // don't let other things continue
+			}
+		}
+		AIBuilding toRepair = null;
+		for (final AIBuilding b : planet.buildings) {
+			if (b.isDamaged() && !b.repairing) {
+				if (b.hasResource("repair")) {
+					toRepair = b;
+					break;
+				} else
+				if (b.hasResource("energy") && b.getResource("energy") > 0) {
+					toRepair = b;
+					break;
+				}
+				if (toRepair == null || toRepair.type.cost > b.type.cost) {
+					toRepair = b;
 				}
 			}
-			AIBuilding toRepair = null;
-			for (final AIBuilding b : planet.buildings) {
-				if (b.isDamaged() && !b.repairing) {
-					if (b.hasResource("repair")) {
-						toRepair = b;
-						break;
-					} else
-					if (b.hasResource("energy") && b.getResource("energy") > 0) {
-						toRepair = b;
-						break;
-					}
-					if (toRepair == null || toRepair.type.cost > b.type.cost) {
-						toRepair = b;
-					}
+		}
+		if (toRepair != null) {
+			final AIBuilding b = toRepair;
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					controls.actionRepairBuilding(planet.planet, b.building, true);
 				}
-			}
-			if (toRepair != null) {
-				final AIBuilding b = toRepair;
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						controls.actionRepairBuilding(planet.planet, b.building, true);
-					}
-				});
-				return true;
-			}
+			});
+			return true;
 		}
 		return false;
 	}
 	/** 
 	 * Ensure that no living space shortage present.
+	 * @param planet the planet to work with
 	 * @return if action taken
 	 */
-	boolean checkFireBrigade() {
-		BuildingSelector food = new BuildingSelector() {
+	boolean checkFireBrigade(final AIPlanet planet) {
+		BuildingSelector fire = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return value.hasResource("repair");
@@ -239,23 +242,10 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("repair") && limit(planet, value, 1);
 			}
 		};
-		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
-			@Override
-			public int compare(AIPlanet o1, AIPlanet o2) {
-				return worst(25000, o1.population, 
-						25000, o2.population);
-			}
-		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				// check if there is no or at least one upgradable fire department
-				if (value.population < 25000) {
-					return false;
-				}
-				return value.population > value.statistics.workerDemand * 1.1;
-			}
-		}, planetOrder, food, costOrder, true);
+		if (planet.population >= 25000 && planet.population > planet.statistics.workerDemand * 1.1) {
+			return manageBuildings(planet, fire, costOrder, true);
+		}
+		return false;
 	}
 	/**
 	 * Issue a change taxation command.
@@ -272,100 +262,88 @@ public class ColonyPlanner extends Planner {
 	}
 	/**
 	 * Check for low or high morale and adjust taxation to take advantage of it.
+	 * @param planet the planet to work with
 	 * @return true if action taken
 	 */
-	boolean checkTax() {
+	boolean checkTax(final AIPlanet planet) {
 		// try changing the tax
-		for (AIPlanet planet : world.ownPlanets) {
-			int moraleNow = planet.morale;
-			TaxLevel tax = planet.tax;
-			
-			if (moraleNow < 25 || planet.population < 4500) {
-				if (tax != TaxLevel.NONE) {
-					setTaxLevelAction(planet, TaxLevel.NONE);
-					return true;
-				}
-			} else
-			if (moraleNow < 38 || planet.population < 5000) {
-				if (tax != TaxLevel.VERY_LOW) {
-					setTaxLevelAction(planet, TaxLevel.VERY_LOW);
-					return true;
-				}
-			} else
-			if (moraleNow < 55 || planet.population < 5500) {
-				if (tax != TaxLevel.LOW) {
-					setTaxLevelAction(planet, TaxLevel.LOW);
-					return true;
-				}
-			} else
-			if (moraleNow < 60) {
-				if (tax != TaxLevel.MODERATE) {
-					setTaxLevelAction(planet, TaxLevel.MODERATE);
-					return true;
-				}
-			} else
-			if (moraleNow < 65) {
-				if (tax != TaxLevel.ABOVE_MODERATE) {
-					setTaxLevelAction(planet, TaxLevel.ABOVE_MODERATE);
-					return true;
-				}
-			} else
-			if (moraleNow < 70 && planet.population > 10000) {
-				if (tax != TaxLevel.HIGH) {
-					setTaxLevelAction(planet, TaxLevel.HIGH);
-					return true;
-				}
-			} else
-			if (moraleNow < 78 && planet.population > 15000) {
-				if (tax != TaxLevel.VERY_HIGH) {
-					setTaxLevelAction(planet, TaxLevel.VERY_HIGH);
-					return true;
-				}
-			} else
-			if (moraleNow < 85 && planet.population > 20000) {
-				if (tax != TaxLevel.OPPRESSIVE) {
-					setTaxLevelAction(planet, TaxLevel.OPPRESSIVE);
-					return true;
-				}
-			} else
-			if (moraleNow < 95 && planet.population > 25000) {
-				if (tax != TaxLevel.EXPLOITER) {
-					setTaxLevelAction(planet, TaxLevel.EXPLOITER);
-					return true;
-				}
-			} else {
-				if (tax != TaxLevel.SLAVERY) {
-					setTaxLevelAction(planet, TaxLevel.SLAVERY);
-					return true;
-				}
+		int moraleNow = planet.morale;
+		TaxLevel tax = planet.tax;
+		
+		if (moraleNow < 25 || planet.population < 4500) {
+			if (tax != TaxLevel.NONE) {
+				setTaxLevelAction(planet, TaxLevel.NONE);
+				return true;
 			}
-			
+		} else
+		if (moraleNow < 38 || planet.population < 5000) {
+			if (tax != TaxLevel.VERY_LOW) {
+				setTaxLevelAction(planet, TaxLevel.VERY_LOW);
+				return true;
+			}
+		} else
+		if (moraleNow < 55 || planet.population < 5500) {
+			if (tax != TaxLevel.LOW) {
+				setTaxLevelAction(planet, TaxLevel.LOW);
+				return true;
+			}
+		} else
+		if (moraleNow < 60) {
+			if (tax != TaxLevel.MODERATE) {
+				setTaxLevelAction(planet, TaxLevel.MODERATE);
+				return true;
+			}
+		} else
+		if (moraleNow < 65) {
+			if (tax != TaxLevel.ABOVE_MODERATE) {
+				setTaxLevelAction(planet, TaxLevel.ABOVE_MODERATE);
+				return true;
+			}
+		} else
+		if (moraleNow < 70 && planet.population > 10000) {
+			if (tax != TaxLevel.HIGH) {
+				setTaxLevelAction(planet, TaxLevel.HIGH);
+				return true;
+			}
+		} else
+		if (moraleNow < 78 && planet.population > 15000) {
+			if (tax != TaxLevel.VERY_HIGH) {
+				setTaxLevelAction(planet, TaxLevel.VERY_HIGH);
+				return true;
+			}
+		} else
+		if (moraleNow < 85 && planet.population > 20000) {
+			if (tax != TaxLevel.OPPRESSIVE) {
+				setTaxLevelAction(planet, TaxLevel.OPPRESSIVE);
+				return true;
+			}
+		} else
+		if (moraleNow < 95 && planet.population > 25000) {
+			if (tax != TaxLevel.EXPLOITER) {
+				setTaxLevelAction(planet, TaxLevel.EXPLOITER);
+				return true;
+			}
+		} else {
+			if (tax != TaxLevel.SLAVERY) {
+				setTaxLevelAction(planet, TaxLevel.SLAVERY);
+				return true;
+			}
 		}
 		return false;
 	}
-	/** @return check the morale level and build social buildings in necessary. */
-	boolean checkMorale() {
-		// if morale is still low, build a morale boosting building
-		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
-		Collections.sort(planets, new Comparator<AIPlanet>() {
-			@Override
-			public int compare(AIPlanet o1, AIPlanet o2) {
-				int c = o1.morale - o2.morale;
-				if (c == 0) {
-					c = o1.population - o2.population;
-				}
-				return c;
-			}
-		});
-		for (AIPlanet planet : planets) {
-			int moraleNow = planet.morale;
-			int moraleLast = planet.lastMorale;
-			// only if there is energy available
-			if (planet.statistics.energyAvailable * 2 >= planet.statistics.energyDemand) {
-				if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {
-					if (boostMoraleWithBuilding(planet)) {
-						return true;
-					}
+	/** 
+	 * Check the morale level and build social buildings in necessary.
+	 * @param planet the planet to work with
+	 * @return action taken 
+	 */
+	boolean checkMorale(final AIPlanet planet) {
+		int moraleNow = planet.morale;
+		int moraleLast = planet.lastMorale;
+		// only if there is energy available
+		if (planet.statistics.energyAvailable * 2 >= planet.statistics.energyDemand) {
+			if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {
+				if (boostMoraleWithBuilding(planet)) {
+					return true;
 				}
 			}
 		}
@@ -391,9 +369,10 @@ public class ColonyPlanner extends Planner {
 	}
 	/** 
 	 * Ensure that no living space shortage present.
+	 * @param planet the target planet
 	 * @return if action taken
 	 */
-	boolean checkFood() {
+	boolean checkFood(final AIPlanet planet) {
 		BuildingSelector food = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
@@ -404,18 +383,17 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("food");
 			}
 		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.foodAvailable;
-			}
-		}, WORST_PLANET, food, costOrder, true);
+		if (planet.population > planet.statistics.foodAvailable) {
+			return manageBuildings(planet, food, costOrder, true);
+		}
+		return false;
 	}
 	/**
 	 * Check if there is shortage on police.
+	 * @param planet the target planet
 	 * @return if action taken
 	 */
-	boolean checkPolice() {
+	boolean checkPolice(final AIPlanet planet) {
 		BuildingSelector police = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
@@ -426,18 +404,17 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("police");
 			}
 		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.policeAvailable * 1.1;
-			}
-		}, WORST_PLANET, police, costOrder, true);
+		if (planet.population > planet.statistics.policeAvailable * 1.1) {
+			return manageBuildings(planet, police, costOrder, true);
+		}
+		return false;
 	}
 	/**
 	 * Check if there is shortage on hospitals.
+	 * @param planet the target planet
 	 * @return if action taken
 	 */
-	boolean checkHospital() {
+	boolean checkHospital(final AIPlanet planet) {
 		BuildingSelector hospital = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
@@ -448,31 +425,29 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("hospital");
 			}
 		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.hospitalAvailable * 1.1;
-			}
-		}, WORST_PLANET, hospital, costOrder, true);
+		if (planet.population > planet.statistics.hospitalAvailable * 1.1) {
+			return manageBuildings(planet, hospital, costOrder, true);
+		}
+		return false;
 	}
 	/** 
 	 * Ensure that no living space shortage present.
+	 * @param planet the target planet
 	 * @return if action taken
 	 */
-	boolean checkLivingSpace() {
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population > value.statistics.houseAvailable;
-			}
-		}, WORST_PLANET, livingSpace, costOrder, true);
+	boolean checkLivingSpace(final AIPlanet planet) {
+		if (planet.population > planet.statistics.houseAvailable) {
+			return manageBuildings(planet, livingSpace, costOrder, true);
+		}
+		return false;
 	}
 	/**
 	 * Check if there is some worker demand issues,
 	 * if so, try building morale and population growth boosting buildings.
+	 * @param planet the target planet
 	 * @return true if action taken
 	 */
-	boolean checkWorker() {
+	boolean checkWorker(final AIPlanet planet) {
 		BuildingSelector morale = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
@@ -483,25 +458,18 @@ public class ColonyPlanner extends Planner {
 				return (value.hasResource("morale") || value.hasResource("population-growth")) && limit(planet, value, 1);
 			}
 		};
-		Comparator<AIPlanet> planetOrder = new Comparator<AIPlanet>() {
-			@Override
-			public int compare(AIPlanet o1, AIPlanet o2) {
-				return o1.morale - o2.morale;
-			}
-		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.population < value.statistics.workerDemand;
-			}
-		}, planetOrder, morale, costOrder, true);
+		if (planet.population < planet.statistics.workerDemand) {
+			return manageBuildings(planet, morale, costOrder, true);
+		}
+		return false;
 	}
 	/**
 	 * Check if there are enough power on the planet,
 	 * if not, try adding morale and growth increasing buildings.
+	 * @param planet the target planet
 	 * @return true if action taken
 	 */
-	boolean checkPower() {
+	boolean checkPower(final AIPlanet planet) {
 		BuildingSelector energy = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding building) {
@@ -512,12 +480,10 @@ public class ColonyPlanner extends Planner {
 				return buildingType.hasResource("energy") && buildingType.getResource("energy") > 0;
 			}
 		};
-		return planCategory(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet value) {
-				return value.statistics.energyAvailable < value.statistics.energyDemand;
-			}
-		}, WORST_PLANET, energy, costOrder, true);	
+		if (planet.statistics.energyAvailable < planet.statistics.energyDemand) {
+			return manageBuildings(planet, energy, costOrder, true);
+		}
+		return false;
 	}
 	/**
 	 * Compares the numerical levels of the values and returns which one of it is worse.
@@ -546,47 +512,43 @@ public class ColonyPlanner extends Planner {
 	/**
 	 * Check if a colony hub is available on planets,
 	 * if not, try to build one.
+	 * @param planet the target planet
 	 * @return true if action taken
 	 */
-	boolean checkColonyHub() {
-		// check for planets without colony hub first
-		for (final AIPlanet planet : world.ownPlanets) {
-			boolean found = false;
-			for (Building b : planet.buildings) {
-				if (b.type.kind.equals("MainBuilding")) {
-					found = true;
-					break;
-				}
-			}
-			
-			if (!found) {
-				final BuildingType bt = findBuildingKind("MainBuilding");
-				if (world.money < bt.cost) {
-					if (getMoreMoney(planet)) {
-						return true;
-					} else {
-						// if no money could be gained, simply wait for the next day
-						addEmpty();
-						return true;
-					}
-				}
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						controls.actionPlaceBuilding(planet.planet, bt);
-					}
-				});
-				return true;
+	boolean checkColonyHub(final AIPlanet planet) {
+		boolean found = false;
+		for (Building b : planet.buildings) {
+			if (b.type.kind.equals("MainBuilding")) {
+				found = true;
+				break;
 			}
 		}
+		
+		if (!found) {
+			final BuildingType bt = findBuildingKind("MainBuilding");
+			if (world.money < bt.cost) {
+				if (getMoreMoney(planet)) {
+					return true;
+				} else {
+					// if no money could be gained, simply wait for the next day
+					addEmpty();
+					return true;
+				}
+			}
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					controls.actionPlaceBuilding(planet.planet, bt);
+				}
+			});
+			return true;
+		}
 		// check planets with damaged colony hub
-		for (final AIPlanet planet : world.ownPlanets) {
-			for (final AIBuilding b : planet.buildings) {
-				if (b.type.kind.equals("MainBuilding")) {
-					if (b.isDamaged() && !b.repairing) {
-						controls.actionRepairBuilding(planet.planet, b.building, true);
-						return true;
-					}
+		for (final AIBuilding b : planet.buildings) {
+			if (b.type.kind.equals("MainBuilding")) {
+				if (b.isDamaged() && !b.repairing) {
+					controls.actionRepairBuilding(planet.planet, b.building, true);
+					return true;
 				}
 			}
 		}
