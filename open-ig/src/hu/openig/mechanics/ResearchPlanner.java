@@ -66,10 +66,13 @@ public class ResearchPlanner extends Planner {
 			}
 			return;
 		}
-		// yield if one planet available and not enough money
-		if (world.money < 200000 && world.global.planetCount < 2) {
+		
+		//if low on money and planets, plan for conquest
+		if (world.money < 100000 && world.global.planetCount < 2) {
+			planConquest();
 			return;
 		}
+		
 		final Map<ResearchType, Integer> enablesCount = new HashMap<ResearchType, Integer>();
 		final Map<ResearchType, Integer> rebuildCount = new HashMap<ResearchType, Integer>();
 		List<ResearchType> candidatesImmediate = new ArrayList<ResearchType>();
@@ -100,6 +103,7 @@ public class ResearchPlanner extends Planner {
 				setResearchEnables(rt, enablesCount);
 			}
 		}
+		// yield if one planet available and not enough money
 		if (candidatesImmediate.size() > 0) {
 			Collections.sort(candidatesImmediate, new CompareFromMap(enablesCount));
 			final ResearchType rt = candidatesImmediate.get(0);

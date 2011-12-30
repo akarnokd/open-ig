@@ -613,85 +613,196 @@ public class PlanetSurface {
 			int cy = -this.width() / 2 - this.height() / 2 + height / 2;
 			
 			// the square size
-			Point pt = null;
-			long dist = -1L; 
-			for (int i = 0; i < Math.abs(cy); i++) {
-				for (int j = cx - i; j <= cx + i; j++) {
-					for (int k = cy + i; k >= cy - i; k--) {
-						if (
-							j < cx - i + 1 || j > cx + i - 1
-							|| k > cy + i - 1 || k < cy - i + 1
-						) { 
-							if (canPlaceBuilding(j, k, width, height)) {
-								Point pt1 = new Point(j, k);
-								long d1 = (j - cx) * (j - cx) + (k - cy) * (k - cy);
-								if (dist < 0 || d1 <= dist) {
-									pt = pt1;
-									dist = d1;
-								}
-							}
-						}
-					}
-				}
-				if (pt != null) {
-					break;
-				}
-			}
-			
-			if (pt != null) {
-				pt = nearestAdjust(pt, width, height);
-			}
-			
-			return pt;
-		}
-		/**
-		 * Try the surrounding cells for better contact width the surroundings.
-		 * @param original the original location
-		 * @param width the building width containing +2 for roads
-		 * @param height the building height containing +2 for roads
-		 * @return the adjusted location
-		 */
-		Point nearestAdjust(Point original, int width, int height) {
-			List<Building> bs = buildings();
-			if (bs.isEmpty()) {
-				return original;
-			}
-			
 			List<PlaceCandidate> candidates = JavaUtils.newArrayList();
-			int max = Math.max(Math.max(width, height), 6);
-			for (int r = 1; r <= max; r++) {
-				for (int x = -r; x <= r; x++) {
-					for (int y = -r; y <= r; y++) {
-						// don't check center region again
-						if (x > -r && x < r && y > -r && y < r) {
-							continue;
-						}
-						if (canPlaceBuilding(original.x + x, original.y + y, width, height)) {
-							int c = 0;
-							Set<Building> connects = new HashSet<Building>();
-							int mass = 0;
-							for (int k = 0; k < width + 2; k++) {
-								for (int j = 0; j < height + 2; j++) {
-									int x0 = original.x + x - 1 + k;
-									int y0 = original.y + y + 1 - j;
-									SurfaceEntity se = buildingmap().get(Location.of(x0, y0));
-									if (se != null && se.type == SurfaceEntityType.BUILDING) {
-										c++;
-										connects.add(se.building);
-										mass += se.building.tileset.normal.width * se.building.tileset.normal.height;
-									}
-								}
-							}
-							candidates.add(new PlaceCandidate(original.x + x, original.y + y, c, connects.size(), mass));
+			for (int i = 0; i < Math.abs(cy); i++) {
+				int len = i * 2 + 1;
+				int size = len > 1 ? len * 2 + (len - 2) * 2 : 1;
+				int[] xs = new int[size];
+				int[] ys = new int[size];
+				clockwise(xs, ys, len);
+				for (int k = 0; k < size; k++) {
+					int x0 = xs[k] + cx - i;
+					int y0 = ys[k] + cy + i;
+					if (canPlaceBuilding(x0, y0, width, height)) {
+						int d = (cx - x0) * (cx - x0) + (cy - y0) * (cy - y0);
+						PlaceCandidate pc = createCandidate(x0, y0, width, height, d);
+						if (pc != null) {
+							candidates.add(pc);
 						}
 					}
 				}
+				// if only check for placement is running
+				if (buildings().isEmpty() && !candidates.isEmpty()) {
+					PlaceCandidate pc = Collections.max(candidates);
+					return new Point(pc.x, pc.y);
+				}
 			}
-			PlaceCandidate pc = Collections.max(candidates);
-			if (pc != null) {
+			if (candidates.size() > 0) {
+				PlaceCandidate pc = Collections.max(candidates);
 				return new Point(pc.x, pc.y);
 			}
-			return original;
+			
+			return null;
+		}
+		/**
+		 * Create a candidate place for the location.
+		 * @param x0 coordinates
+		 * @param y0 coordinates
+		 * @param width placement width
+		 * @param height placement height
+		 * @param d distance to center
+		 * @return the candidate or null if not near a road
+		 */
+		PlaceCandidate createCandidate(int x0, int y0, int width, int height, int d) {
+			// no buildings at all
+			if (buildingmap().isEmpty()) {
+				return new PlaceCandidate(x0, y0, 0, 0, d);
+			}
+			int roads = 0;
+			int edges = 0;
+			for (int k = x0; k < x0 + width; k++) {
+				for (int j = y0; j > y0 - height; j--) {
+					if (isRoad(k, j)) {
+						roads++;
+						if (isCrossRoad(k, j)) {
+							edges++;
+						}
+					}
+				}
+			}
+			if (roads > 0) {
+				return new PlaceCandidate(x0, y0, roads, edges, d);
+			}
+			return null;
+		}
+		/**
+		 * Fill in a clockwise coordinate pair of a given length rectangle.
+		 * @param xs the xs
+		 * @param ys the ys
+		 * @param len the rectangle length
+		 */
+		void clockwise(int[] xs, int[] ys, int len) {
+			int j = 0;
+			for (int i = 0; i < len; i++) {
+				xs[j] = i;
+				ys[j] = 0;
+				j++;
+			}
+			for (int i = 1; i < len; i++) {
+				xs[j] = len - 1;
+				ys[j] = i;
+				j++;
+			}
+			for (int i = len - 2; i >= 0; i--) {
+				xs[j] = i;
+				ys[j] = len - 1;
+				j++;
+			}
+			for (int i = len - 2; i >= 1; i--) {
+				xs[j] = 0;
+				ys[j] = i;
+				j++;
+			}
+		}
+		/**
+		 * Check if the cell is the edge of a building road.
+		 * @param x the center x
+		 * @param y the center y
+		 * @return true if edge road
+		 */
+		boolean isCrossRoad(int x, int y) {
+			if (isEdge(x - 1, y - 1) && isRoad(x, y - 1) && isRoad(x - 1, y)) {
+				return true;
+			}
+			if (isEdge(x + 1, y - 1) && isRoad(x, y - 1) && isRoad(x + 1, y)) {
+				return true;
+			}
+			if (isEdge(x - 1, y + 1) && isRoad(x - 1, y) && isRoad(x, y + 1)) {
+				return true;
+			}
+			if (isEdge(x + 1, y + 1) && isRoad(x, y + 1) && isRoad(x + 1, y)) {
+				return true;
+			}
+			return false;
+		}
+		/**
+		 * Check if the given location is a road.
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 * @return true if road
+		 */
+		boolean isRoad(int x, int y) {
+			SurfaceEntity e = buildingmap().get(Location.of(x, y));
+			return e != null && e.type == SurfaceEntityType.ROAD;
+		}
+		/**
+		 * Check if the given location is a building edge.
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 * @return true if road
+		 */
+		boolean isEdge(int x, int y) {
+			SurfaceEntity e = buildingmap().get(Location.of(x, y));
+			if (e != null && e.building != null) {
+				if (e.virtualColumn == 0 && e.virtualRow == 0) {
+					return true;
+				}
+				if (e.virtualColumn == 0 && e.virtualRow == e.building.tileset.normal.height - 1) {
+					return true;
+				}
+				if (e.virtualColumn == e.building.tileset.normal.width - 1 && e.virtualRow == e.building.tileset.normal.height - 1) {
+					return true;
+				}
+				if (e.virtualColumn == e.building.tileset.normal.width - 1 && e.virtualRow == 0) {
+					return true;
+				}
+			}
+			return false;
+		}
+		/**
+		 * A building place candidate.
+		 * @author akarnokd, 2011.12.30.
+		 */
+		public static class PlaceCandidate implements Comparable<PlaceCandidate> {
+			/** Location X. */
+			public final int x;
+			/** Location Y. */
+			public final int y;
+			/** Number of contacting building cells. */
+			public final int contact;
+			/** Number of connected buildings. */
+			public final int edges;
+			/** Distance to center. */
+			public final int distance;
+			/**
+			 * Constructor. Initializes the fields.
+			 * @param x location X
+			 * @param y location Y
+			 * @param contact Number of contacting building cells
+			 * @param edges number of edges
+			 * @param distance distance to center
+			 */
+			public PlaceCandidate(int x, int y, int contact, int edges, int distance) {
+				this.x = x;
+				this.y = y;
+				this.contact = contact;
+				this.edges = edges;
+				this.distance = distance;
+			}
+			@Override
+			public int compareTo(PlaceCandidate o) {
+				int c = 0;
+				if (c == 0) {
+					c = contact - o.contact;
+				}
+				if (c == 0) {
+					c = edges - o.edges;
+				}
+				if (c == 0) {
+					c = distance - o.distance;
+				}
+				return c;
+			}
 		}
 		/**
 		 * Compute the gravitational effects of the surrounding building and move
@@ -756,48 +867,6 @@ public class PlanetSurface {
 				}
 			}
 			return result;
-		}
-	}
-	/**
-	 * A building place candidate.
-	 * @author akarnokd, 2011.12.30.
-	 */
-	public static class PlaceCandidate implements Comparable<PlaceCandidate> {
-		/** Location X. */
-		public final int x;
-		/** Location Y. */
-		public final int y;
-		/** Number of contacting building cells. */
-		public final int contact;
-		/** Number of connected buildings. */
-		public final int connect;
-		/** Mass of connected buildings. */
-		public final int mass;
-		/**
-		 * Constructor. Initializes the fields.
-		 * @param x location X
-		 * @param y location Y
-		 * @param contact Number of contacting building cells
-		 * @param connect Number of connected buildings
-		 * @param mass Mass of connected buildings
-		 */
-		public PlaceCandidate(int x, int y, int contact, int connect, int mass) {
-			this.x = x;
-			this.y = y;
-			this.contact = contact;
-			this.connect = connect;
-			this.mass = mass;
-		}
-		@Override
-		public int compareTo(PlaceCandidate o) {
-			int c = contact - o.contact;
-			if (c == 0) {
-				c = connect - o.connect;
-			}
-			if (c == 0) {
-				c = mass - o.mass;
-			}
-			return c;
 		}
 	}
 }
