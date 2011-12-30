@@ -179,7 +179,7 @@ public class ColonyPlanner extends Planner {
 				return true;
 			}
 		}
-		if (builtCount(planet) < 2) {
+		if (builtCount(planet) < 1) {
 			addEmpty();
 			return true;
 		}
@@ -437,7 +437,7 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("police");
 			}
 		};
-		if (planet.population > planet.statistics.policeAvailable * 1.1) {
+		if (planet.population > planet.statistics.policeAvailable) {
 			return manageBuildings(planet, police, costOrder, true);
 		}
 		return false;
@@ -458,7 +458,7 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("hospital");
 			}
 		};
-		if (planet.population > planet.statistics.hospitalAvailable * 1.1) {
+		if (planet.population > planet.statistics.hospitalAvailable) {
 			return manageBuildings(planet, hospital, costOrder, true);
 		}
 		return false;

@@ -17,6 +17,7 @@ import hu.openig.utils.XElement;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -91,6 +92,10 @@ public class PlanetSurface {
 		protected int width() {
 			return width;
 		};
+		@Override
+		protected List<Building> buildings() {
+			return buildings;
+		}
 	};
 	/** Compute the rendering start-stop locations. */
 	public void computeRenderingLocations() {
@@ -530,6 +535,8 @@ public class PlanetSurface {
 		protected abstract Map<Location, SurfaceEntity> buildingmap();
 		/** @return the base map. */
 		protected abstract Map<Location, SurfaceEntity> basemap();
+		/** @return the existing buildings. */
+		protected abstract List<Building> buildings();
 		/**
 		 * Test if the given rectangular region is eligible for building placement, e.g.:
 		 * all cells are within the map's boundary, no other buildings are present within the given bounds,
@@ -629,7 +636,76 @@ public class PlanetSurface {
 				}
 			}
 			
+			if (pt != null) {
+				pt = gravityAdjust(pt, width, height);
+			}
+			
 			return pt;
+		}
+		/**
+		 * Compute the gravitational effects of the surrounding building and move
+		 * to the direction while still placeable.
+		 * @param original the original location
+		 * @param width the building width containing +2 for roads
+		 * @param height the building height containing +2 for roads
+		 * @return the adjusted location
+		 */
+		Point gravityAdjust(Point original, int width, int height) {
+			// the average force
+			List<Building> bs = buildings();
+			if (bs.isEmpty()) {
+				return original;
+			}
+			Point result = new Point(original);
+			int countDown = 15;
+			while (!Thread.currentThread().isInterrupted() && (countDown-- > 0)) {
+				Point2D.Double force0 = new Point2D.Double(0, 0);
+				double mass0 = width * height;
+				for (Building b : bs) {
+					int bw = b.tileset.normal.width;
+					int bh = b.tileset.normal.height;
+					// vector from origin to building
+					Point2D.Double vector = new Point2D.Double(
+							b.location.x + bw / 2.0 - result.x + width / 2.0, 
+							b.location.y - bh / 2.0 - result.y - height / 2.0);
+					double distance2 = vector.x * vector.x + vector.y * vector.y;
+					double distance = Math.sqrt(distance2);
+					double mass = bw * bh;
+	
+					// unit vector
+					vector.x = vector.x / distance;
+					vector.y = vector.y / distance;
+	
+					Point2D.Double force = new Point2D.Double(0, 0);
+					
+					// F = k * m0 * m / r2 * |v|
+					force.x = mass0 * mass * vector.x / distance2;
+					force.y = mass0 * mass * vector.y / distance2;
+					
+					force0.x += force.x;
+					force0.y += force.y;
+				}
+				// determine movement direction
+				double angle = Math.atan2(force0.y, force0.x);
+				
+				Point save = new Point(result);
+				if (angle <= Math.PI / 4 && angle >= -Math.PI / 4) {
+					result.x++;
+				} else
+				if (angle > Math.PI / 4 && angle <= Math.PI * 3 / 4) {
+					result.y++;
+				} else
+				if (angle < -Math.PI / 4 && angle > -Math.PI * 3 / 4) {
+					result.y--;
+				} else {
+					result.x--;
+				}
+				if (!canPlaceBuilding(result.x, result.y, width, height)) {
+					result = save;
+					break;
+				}
+			}
+			return result;
 		}
 	}
 }

@@ -14,6 +14,7 @@ import hu.openig.utils.JavaUtils;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -104,7 +105,11 @@ public class AIPlanet {
 			protected Map<Location, SurfaceEntity> basemap() {
 				return planet.surface.basemap;
 			}
-			
+			@Override
+			protected List<Building> buildings() {
+				// prevents gravity adjust, not really necessary for placement tests
+				return Collections.emptyList();
+			}
 		};
 	}
 	/**
