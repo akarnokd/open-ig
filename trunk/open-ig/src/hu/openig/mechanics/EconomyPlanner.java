@@ -107,6 +107,11 @@ public class EconomyPlanner extends Planner {
 			}
 		});
 
+		if (world.money < 200000 && world.global.planetCount < 2) {
+			// always create economic first
+			return functions.get(1).invoke(planet);
+		}
+		
 		// random arbitration
 		Collections.shuffle(functions, w.random.get());
 		for (Pred1<AIPlanet> f : functions) {

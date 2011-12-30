@@ -657,22 +657,29 @@ public class PlanetSurface {
 			Point result = null;
 			int bestContact = 0;
 			
-			for (int x = -1; x <= 1; x++) {
-				for (int y = -1; y <= 1; y++) {
-					if (canPlaceBuilding(original.x + x, original.y + y, width, height)) {
-						int c = 0;
-						for (int k = 0; k < width + 2; k++) {
-							for (int j = 0; j < height + 2; j++) {
-								int x0 = original.x + x - 1 + k;
-								int y0 = original.y + y + 1 - j;
-								if (buildingmap().containsKey(Location.of(x0, y0))) {
-									c++;
+			int max = Math.max(width, height);
+			for (int r = 1; r <= max; r++) {
+				for (int x = -r; x <= r; x++) {
+					for (int y = -r; y <= r; y++) {
+						// don't check center region again
+						if (x > -r && x < r && y > -r && y < r) {
+							continue;
+						}
+						if (canPlaceBuilding(original.x + x, original.y + y, width, height)) {
+							int c = 0;
+							for (int k = 0; k < width + 2; k++) {
+								for (int j = 0; j < height + 2; j++) {
+									int x0 = original.x + x - 1 + k;
+									int y0 = original.y + y + 1 - j;
+									if (buildingmap().containsKey(Location.of(x0, y0))) {
+										c++;
+									}
 								}
 							}
-						}
-						if (result == null || c > bestContact) {
-							result = new Point(original.x + x, original.y + y);
-							bestContact = c;
+							if (result == null || c > bestContact) {
+								result = new Point(original.x + x, original.y + y);
+								bestContact = c;
+							}
 						}
 					}
 				}

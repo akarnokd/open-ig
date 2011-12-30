@@ -1227,6 +1227,7 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}
 		p.money = 100000;
+		saveWorld(null, SaveMode.QUICK);
 	}
 	/**
 	 * Toggle between full screen mode.
