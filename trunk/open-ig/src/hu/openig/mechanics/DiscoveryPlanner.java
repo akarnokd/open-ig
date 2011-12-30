@@ -53,38 +53,38 @@ public class DiscoveryPlanner extends Planner {
 	public void plan() {
 		// find a fleet which has at least a decent radar range
 		// and is among the fastest available
-		AIFleet bestFleet = null;
-		for (AIFleet f : findFleetsFor(FleetTask.EXPLORE, null)) {
-			if (f.radar >= w.params().fleetRadarUnitSize()) {
-				if (bestFleet == null || bestFleet.statistics.speed < f.statistics.speed) {
-					bestFleet = f;
-				}
-			}
-		}
 		if (exploration.map.size() > 0) {
-			if (bestFleet != null) {
-				if (!bestFleet.isMoving()) {
-					final AIFleet bf = bestFleet;
-					final int ec = exploration.cellSize;
-					final Location loc = Collections.min(exploration.map, new Comparator<Location>() {
-						@Override
-						public int compare(Location o1, Location o2) {
-							double d1 = Math.hypot(bf.x - (o1.x + 0.5) * ec, bf.y - (o1.y + 0.5) * ec);
-							double d2 = Math.hypot(bf.x - (o2.x + 0.5) * ec, bf.y - (o2.y + 0.5) * ec);
-							return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-						}
-					});
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							bf.fleet.task = FleetTask.EXPLORE;
-							controls.actionMoveFleet(bf.fleet, (loc.x + 0.5) * ec, (loc.y + 0.5) * ec);
-						}
-					});
+			// check our current exploration fleets are idle
+			List<AIFleet> fs = findFleetsWithTask(FleetTask.EXPLORE, null);
+			for (AIFleet f : fs) {
+				if (!f.isMoving()) {
+					// move it
+					setExplorationTarget(f);
 					return;
 				}
-			} else {
-				planDiscoveryFleet();
+			}
+			// if no active explorers
+			if (fs.size() == 0) {
+				
+				// find a fleet with radar
+				AIFleet bestFleet = null;
+				for (AIFleet f : findFleetsFor(FleetTask.EXPLORE, null)) {
+					if (f.radar >= w.params().fleetRadarUnitSize()) {
+						if (bestFleet == null 
+								|| (bestFleet.statistics.speed < f.statistics.speed && bestFleet.radar == f.radar)
+								|| bestFleet.radar < f.radar) {
+							bestFleet = f;
+						}
+					}
+				}
+				if (bestFleet != null) {
+					setExplorationTarget(bestFleet);
+					return;
+				}
+				
+				if (planDiscoveryFleet()) {
+					return;
+				}
 			}
 		} else {
 			// exploration complete, set explorers to idle
@@ -97,19 +97,18 @@ public class DiscoveryPlanner extends Planner {
 				});
 				return;
 			}
+			for (final AIFleet bf : findFleetsWithTask(FleetTask.PATROL, null)) {
+				if (!bf.isMoving()) {
+					if (world.ownPlanets.size() > 0) {
+						setPatrolTarget(bf);
+						return;
+					}
+				}
+			}
 			// if we explored everything, let's patrol
 			for (final AIFleet bf : findFleetsFor(FleetTask.PATROL, null)) {
 				if (world.ownPlanets.size() > 0) {
-					AIPlanet p = w.random(world.ownPlanets);
-					final int x = p.planet.x;
-					final int y = p.planet.y;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							bf.fleet.task = FleetTask.PATROL;
-							controls.actionMoveFleet(bf.fleet, x, y);
-						}
-					});
+					setPatrolTarget(bf);
 					return;
 				}
 			}
@@ -170,18 +169,59 @@ public class DiscoveryPlanner extends Planner {
 		}
 	}
 	/**
-	 * Plan for discovery fleet creation.
+	 * Set a patrol target for the given fleet.
+	 * @param bf the fleet
 	 */
-	void planDiscoveryFleet() {
+	void setPatrolTarget(final AIFleet bf) {
+		AIPlanet p = w.random(world.ownPlanets);
+		final int x = p.planet.x;
+		final int y = p.planet.y;
+		add(new Action0() {
+			@Override
+			public void invoke() {
+				bf.fleet.task = FleetTask.PATROL;
+				controls.actionMoveFleet(bf.fleet, x, y);
+			}
+		});
+	}
+	/**
+	 * Set a new exploration target and task for the given fleet.
+	 * @param bestFleet the fleet
+	 */
+	void setExplorationTarget(AIFleet bestFleet) {
+		final AIFleet bf = bestFleet;
+		final int ec = exploration.cellSize;
+		final Location loc = Collections.min(exploration.map, new Comparator<Location>() {
+			@Override
+			public int compare(Location o1, Location o2) {
+				double d1 = Math.hypot(bf.x - (o1.x + 0.5) * ec, bf.y - (o1.y + 0.5) * ec);
+				double d2 = Math.hypot(bf.x - (o2.x + 0.5) * ec, bf.y - (o2.y + 0.5) * ec);
+				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+			}
+		});
+		add(new Action0() {
+			@Override
+			public void invoke() {
+				bf.fleet.task = FleetTask.EXPLORE;
+				controls.actionMoveFleet(bf.fleet, (loc.x + 0.5) * ec, (loc.y + 0.5) * ec);
+			}
+		});
+	}
+	/**
+	 * Plan for discovery fleet creation.
+	 * @return if action taken
+	 */
+	boolean planDiscoveryFleet() {
 		if (checkMilitarySpaceport()) {
-			return;
+			return true;
 		}
 		if (checkEquipment()) {
-			return;
+			return true;
 		}
 		if (checkDeploy()) {
-			return;
+			return true;
 		}
+		return false;
 	}
 	/**
 	 * Find the best available radar and ship in inventory, and deploy it.
