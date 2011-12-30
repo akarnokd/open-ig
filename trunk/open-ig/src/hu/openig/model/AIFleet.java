@@ -116,4 +116,15 @@ public class AIFleet {
 	public boolean isAttacking() {
 		return mode == FleetMode.ATTACK;
 	}
+	/**
+	 * Returs the current radar level (0..3).
+	 * @return the radar level
+	 */
+	public int radarLevel() {
+		int n = fleet.owner.world.params().fleetRadarUnitSize();
+		if (radar < n) {
+			return 0;
+		}
+		return radar / n;
+	}
 }

@@ -63,25 +63,28 @@ public class DiscoveryPlanner extends Planner {
 					return;
 				}
 			}
-			// if no active explorers
-			if (fs.size() == 0) {
-				
-				// find a fleet with radar
-				AIFleet bestFleet = null;
-				for (AIFleet f : findFleetsFor(FleetTask.EXPLORE, null)) {
-					if (f.radar >= w.params().fleetRadarUnitSize()) {
-						if (bestFleet == null 
-								|| (bestFleet.statistics.speed < f.statistics.speed && bestFleet.radar == f.radar)
-								|| bestFleet.radar < f.radar) {
-							bestFleet = f;
-						}
+			// try recruiting a radar fleet
+			AIFleet bestFleet = null;
+			for (AIFleet f : findFleetsFor(FleetTask.EXPLORE, null)) {
+				if (f.radar >= w.params().fleetRadarUnitSize()) {
+					if (bestFleet == null 
+							|| (bestFleet.statistics.speed < f.statistics.speed && bestFleet.radar == f.radar)
+							|| bestFleet.radar < f.radar) {
+						bestFleet = f;
 					}
 				}
-				if (bestFleet != null) {
-					setExplorationTarget(bestFleet);
+			}
+			if (bestFleet != null) {
+				setExplorationTarget(bestFleet);
+				return;
+			} else {
+				// at least find a fleet and move it around
+				for (AIFleet f : findFleetsFor(FleetTask.EXPLORE, null)) {
+					setExplorationTarget(f);
 					return;
 				}
-				
+			}
+			if (checkExplorerLevel(fs)) {
 				if (planDiscoveryFleet()) {
 					return;
 				}
@@ -168,6 +171,27 @@ public class DiscoveryPlanner extends Planner {
 			}
 		}
 	}
+	
+	/**
+	 * Find the best radar and check if we could build
+	 * a fleet with even better radar.
+	 * @param fleets the list of current explorers
+	 * @return true if better radar available
+	 */
+	boolean checkExplorerLevel(List<AIFleet> fleets) {
+		int maxRadar = 0;
+		for (AIFleet f : fleets) {
+			if (f.radar > maxRadar) {
+				maxRadar = f.radarLevel();
+			}
+		}
+		for (ResearchType rt : world.availableResearch) {
+			if (rt.has("radar") && rt.getInt("radar") > maxRadar) {
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Set a patrol target for the given fleet.
 	 * @param bf the fleet
@@ -191,19 +215,32 @@ public class DiscoveryPlanner extends Planner {
 	void setExplorationTarget(AIFleet bestFleet) {
 		final AIFleet bf = bestFleet;
 		final int ec = exploration.cellSize;
-		final Location loc = Collections.min(exploration.map, new Comparator<Location>() {
+		Comparator<Location> distance = new Comparator<Location>() {
 			@Override
 			public int compare(Location o1, Location o2) {
 				double d1 = Math.hypot(bf.x - (o1.x + 0.5) * ec, bf.y - (o1.y + 0.5) * ec);
 				double d2 = Math.hypot(bf.x - (o2.x + 0.5) * ec, bf.y - (o2.y + 0.5) * ec);
 				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
 			}
-		});
+		};
+		Location loc = null;
+		if (bf.radarLevel() > 0) {
+			loc = Collections.min(exploration.map, distance);
+		} else {
+			List<Location> ls = new ArrayList<Location>(exploration.map);
+			Collections.sort(ls, distance);
+			if (ls.size() > 20) {
+				loc = w.random(ls.subList(0, 20));
+			} else {
+				loc = w.random(ls);
+			}
+		}
+		final Location floc = loc;
 		add(new Action0() {
 			@Override
 			public void invoke() {
 				bf.fleet.task = FleetTask.EXPLORE;
-				controls.actionMoveFleet(bf.fleet, (loc.x + 0.5) * ec, (loc.y + 0.5) * ec);
+				controls.actionMoveFleet(bf.fleet, (floc.x + 0.5) * ec, (floc.y + 0.5) * ec);
 			}
 		});
 	}
@@ -230,13 +267,8 @@ public class DiscoveryPlanner extends Planner {
 	boolean checkDeploy() {
 		List<AIPlanet> mss = JavaUtils.newArrayList();
 		for (final AIPlanet planet : world.ownPlanets) {
-			for (final AIBuilding b : planet.buildings) {
-				if (b.type.id.equals("MilitarySpaceport")) {
-					if (!b.isDamaged() && b.isOperational()) {
-						mss.add(planet);
-						break;
-					}
-				}
+			if (planet.statistics.hasMilitarySpaceport) {
+				mss.add(planet);
 			}
 		}
 		if (mss.isEmpty()) {
