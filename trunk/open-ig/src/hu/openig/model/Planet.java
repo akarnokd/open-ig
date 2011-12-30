@@ -13,6 +13,7 @@ import hu.openig.core.PlanetType;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -357,7 +358,8 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	 * @return can be built here?
 	 */
 	public boolean canBuild(BuildingType bt) {
-		return canBuild(this, surface.buildings, this.owner.available().keySet(), bt);
+		return canBuild(this, surface.buildings, 
+				owner != null ? this.owner.available().keySet() : Collections.<ResearchType>emptyList(), bt);
 	}
 	/**
 	 * Test if another instance of the building type can be built on this planet.

@@ -2000,7 +2000,8 @@ public class InfoScreen extends ScreenBase {
 			Map<BuildingType, Integer> counts = player().countBuildings();
 			Map<BuildingType, Integer> current = planet().countBuildings();
 			boolean showCounts = planet().owner == player() 
-					|| knowledge(planet(), PlanetKnowledge.BUILDING) >= 0;
+					|| knowledge(planet(), PlanetKnowledge.BUILDING) >= 0
+					|| (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && !planet().isPopulated());
 			for (int j = 0; j < columns; j++) {
 				int x0 = j * columnWidth;  
 				for (int i = 0; i < rowCount; i++) {
@@ -2376,24 +2377,29 @@ public class InfoScreen extends ScreenBase {
 		} else {
 			buildingPlanet.text("", true);
 		}
-		if (knowledge(p, PlanetKnowledge.OWNER) >= 0 && p.owner != null) {
-			buildingPlanetOwner.text(p.owner.name, true);
-			if (p.owner == player()) {
-				buildingPlanetRace.text(format("colonyinfo.population.own", 
-						p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
-				), true);
-			} else {
-				if (knowledge(p, PlanetKnowledge.STATIONS) >= 0) {
-					if (p.isPopulated()) {
-						buildingPlanetRace.text(format("colonyinfo.population.short.alien", 
-								p.population
-						), true);
-					} else {
-						buildingPlanetRace.text("");
-					}
+		if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+			if (p.owner != null) {
+				buildingPlanetOwner.text(p.owner.name, true);
+				if (p.owner == player()) {
+					buildingPlanetRace.text(format("colonyinfo.population.own", 
+							p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
+					), true);
 				} else {
-					buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "", true);
+					if (knowledge(p, PlanetKnowledge.STATIONS) >= 0) {
+						if (p.isPopulated()) {
+							buildingPlanetRace.text(format("colonyinfo.population.short.alien", 
+									p.population
+							), true);
+						} else {
+							buildingPlanetRace.text("");
+						}
+					} else {
+						buildingPlanetRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "", true);
+					}
 				}
+			} else {
+				buildingPlanetOwner.text(get("planet.colonizable"), true);
+				buildingPlanetRace.text("");
 			}
 		} else {
 			buildingPlanetOwner.text("", true);
@@ -2508,9 +2514,14 @@ public class InfoScreen extends ScreenBase {
 			planetTitle.visible(false);
 		}
 		
-		if (knowledge(p, PlanetKnowledge.OWNER) >= 0 && p.isPopulated()) {
-			colonyOwner.text(p.owner != null ? p.owner.name : "", true);
-			colonyRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+		if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+			if (p.isPopulated()) {
+				colonyOwner.text(p.owner != null ? p.owner.name : "", true);
+				colonyRace.text(p.isPopulated() ? get(p.getRaceLabel()) : "-", true);
+			} else {
+				colonyOwner.text(get("planet.colonizable"), true);
+				colonyRace.text("", true);
+			}
 			colonyOwner.visible(true);
 			colonyRace.visible(true);
 		} else {
