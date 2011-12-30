@@ -9,7 +9,19 @@
   * Fixed [http://code.google.com/p/open-ig/issues/detail?id=18 Issue #18], Autosave and Quicksave slots are limited to 5 each
   * Ability to save via custom name (unlimited)
   * Officially fixed [http://code.google.com/p/open-ig/issues/detail?id=111 Issue #111]
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=129 #129]
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=129 Issue #129]
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=130 Issue #130]
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=143 Issue #143]: Roads after ground war
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=144 Issue #144]: AI retry blocked research
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=145 Issue #145]
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=146 Issue #146]: Save exploration map
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=150 Issue #150]: Wrong battle conclusions
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=151 Issue #151]: AI autobuild to many buildings
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=152 Issue 152]: Assertion error when concluding battle
+  * Fixed various other bugs
+  * Fixed information screen to display "Colonizable" in the right subpanels.
+  * Reduced upgrade level to 2 for Bank, Traders Spaceport, Trade Center
+ 
 
 = Version 0.93.492 - Fixes =
   * Released: 2011-12-27 13:30 CET
