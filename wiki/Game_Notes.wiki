@@ -2,6 +2,15 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.500 - Fixes =
+  * Released: 2011-12-30 18:30 CET
+  * Added peaceful AI. Use CTRL+J to toggle it on the current user
+  * Added some performance and trouble shooting settings UI.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=18 Issue #18], Autosave and Quicksave slots are limited to 5 each
+  * Ability to save via custom name (unlimited)
+  * Officially fixed [http://code.google.com/p/open-ig/issues/detail?id=111 Issue #111]
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=129 #129]
+
 = Version 0.93.492 - Fixes =
   * Released: 2011-12-27 13:30 CET
   * Fix for [http://code.google.com/p/open-ig/issues/detail?id=133 Issue #133]
