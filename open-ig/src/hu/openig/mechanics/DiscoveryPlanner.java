@@ -225,7 +225,8 @@ public class DiscoveryPlanner extends Planner {
 			}
 		};
 		Location loc = null;
-		if (bf.radarLevel() > 0 || w.random.get().nextDouble() < 0.95) {
+		final int rl = bf.radarLevel();
+		if (rl > 0 && w.random.get().nextDouble() < 0.95) {
 			loc = Collections.min(exploration.map, distance);
 		} else {
 			List<Location> ls = new ArrayList<Location>(exploration.map);
@@ -236,12 +237,18 @@ public class DiscoveryPlanner extends Planner {
 				loc = w.random(ls);
 			}
 		}
+		// move to center or edge of the cell?
+		double bias = 0.5;
+		if (rl > 0 && rl % 2 == 0) {
+			bias = 0;
+		}
+		final double fbias = bias;
 		final Location floc = loc;
 		add(new Action0() {
 			@Override
 			public void invoke() {
 				bf.fleet.task = FleetTask.EXPLORE;
-				controls.actionMoveFleet(bf.fleet, (floc.x + 0.5) * ec, (floc.y + 0.5) * ec);
+				controls.actionMoveFleet(bf.fleet, (floc.x + fbias) * ec, (floc.y + fbias) * ec);
 			}
 		});
 	}
