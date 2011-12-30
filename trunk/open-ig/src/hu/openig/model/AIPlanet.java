@@ -56,7 +56,7 @@ public class AIPlanet {
 	 * @param planet the target fleet
 	 * @param world the world object
 	 */
-	public void assign(final Planet planet, AIWorld world) {
+	public void assign(final Planet planet, final AIWorld world) {
 		this.world = world;
 		this.planet = planet;
 		this.owner = planet.owner;
