@@ -168,8 +168,8 @@ public class World {
 			
 			talks = new Talks();
 			walks = new Walks();
-			buildingModel = new BuildingModel();
-			galaxyModel = new GalaxyModel();
+			buildingModel = new BuildingModel(env.config());
+			galaxyModel = new GalaxyModel(env.config());
 			test = JavaUtils.newLinkedHashMap();
 			diplomacy = JavaUtils.newLinkedHashMap();
 			
@@ -466,7 +466,7 @@ public class World {
 			}
 			setTechAvailability(xplayer, p);
 			
-			setFleets(deferredFleets, xplayer, p);
+			loadFleets(deferredFleets, xplayer, p);
 			
 			this.players.put(p.id, p);
 			for (ResearchType rt : researches.researches.values()) {
@@ -1005,6 +1005,7 @@ public class World {
 		xfleet.set("x", f.x);
 		xfleet.set("y", f.y);
 		xfleet.set("name", f.name);
+		xfleet.set("task", f.task);
 		if (f.targetFleet != null) {
 			xfleet.set("target-fleet", f.targetFleet.id);
 		} else
@@ -1187,7 +1188,7 @@ public class World {
 			
 			setTechAvailability(xplayer, p);
 			
-			setFleets(deferredTargets, xplayer, p);
+			loadFleets(deferredTargets, xplayer, p);
 			
 			p.planets.clear();
 			for (String pl : xplayer.get("discovered").split("\\s*,\\s*")) {
@@ -1384,7 +1385,7 @@ public class World {
 	 * @param xplayer the source definition
 	 * @param p the target player object
 	 */
-	private void setFleets(Map<Fleet, Integer> deferredTargets,
+	private void loadFleets(Map<Fleet, Integer> deferredTargets,
 			XElement xplayer, Player p) {
 		p.fleets.clear();
 		for (XElement xfleet : xplayer.childrenWithName("fleet")) {
@@ -1420,6 +1421,9 @@ public class World {
 			if (s0 != null) {
 				f.mode = FleetMode.valueOf(s0);
 			}
+			
+			f.task = FleetTask.valueOf(xfleet.get("task", FleetTask.IDLE.toString()));
+			
 			s0 = xfleet.get("waypoints", null);
 			if (s0 != null) {
 				for (String wp : s0.split("\\s+")) {

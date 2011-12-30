@@ -32,12 +32,10 @@ public class Tile {
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
 	protected final float lightThreshold = 0.65f;
-//	/** The cached image. */
-//	private final BufferedImage cached;
 	/** The cached alpha level. */
-	private float cachedAlpha = -1;
+	protected float cachedAlpha = -1;
 	/** The shared working buffeer. Therefore, the alpha adjustments should be done in a single thread! */
-	private static ThreadLocal<int[][]> work = new ThreadLocal<int[][]>() {
+	private static final ThreadLocal<int[][]> WORK = new ThreadLocal<int[][]>() {
 		@Override
 		protected int[][] initialValue() {
 			int[][] workarea = new int[1][];
@@ -46,7 +44,7 @@ public class Tile {
 		}
 	};
 	/** The strip cache. */
-	public final BufferedImage[] stripCache;
+	public BufferedImage[] stripCache;
 	/**
 	 * Constructor. Sets the fields.
 	 * @param width the width in top-right angle.
@@ -62,8 +60,8 @@ public class Tile {
 		// use ARGB images for the base
 		this.image = new int[this.imageWidth * this.imageHeight];
 		image.getRGB(0, 0, this.imageWidth, this.imageHeight, this.image, 0, this.imageWidth);
-		if (work.get()[0].length < this.image.length) {
-			work.get()[0] = new int[this.image.length];
+		if (WORK.get()[0].length < this.image.length) {
+			WORK.get()[0] = new int[this.image.length];
 		}
 		stripCache = new BufferedImage[width + height - 1];
 		if (lightMap != null) {
@@ -79,7 +77,7 @@ public class Tile {
 	 * @return the array containing [index,color] pairs subsequently
 	 */
 	private int[] createLightmapRLE(BufferedImage lightMap) {
-		int[] w = work.get()[0];
+		int[] w = WORK.get()[0];
 		lightMap.getRGB(0, 0, lightMap.getWidth(), lightMap.getHeight(), w, 0, lightMap.getWidth());
 		int[] result = new int[512];
 		int count = 0;
@@ -123,15 +121,22 @@ public class Tile {
 	 * @return the partial image
 	 */
 	public BufferedImage getStrip(int stripIndex) {
-		if (alpha - cachedAlpha >= 0.001 || alpha - cachedAlpha <= -0.001) {
+		if (hasAlphaChanged()) {
 			computeImageWithLights();
 		}
 		return stripCache[stripIndex];
 	}
 	/**
+	 * Check if the alpha level has changed since the last request for strip?
+	 * @return true if changed
+	 */
+	protected boolean hasAlphaChanged() {
+		return alpha - cachedAlpha >= 0.001 || alpha - cachedAlpha <= -0.001;
+	}
+	/**
 	 * Create an alpha blent image from the reference tile image.
 	 */
-	private void computeImageWithLights() {
+	protected void computeImageWithLights() {
 		// apply light map if exists?
 		applyLightMap();
 		// compute strips
@@ -142,7 +147,7 @@ public class Tile {
 	 * Create the rendering helper strips of the image.
 	 */
 	private void createStrips() {
-		int[] w = work.get()[0];
+		int[] w = WORK.get()[0];
 		if (stripCache.length == 1) {
 			stripCache[0].setRGB(0, 0, Math.min(57, imageWidth), imageHeight, w, 0, imageWidth);
 		} else {
@@ -162,7 +167,7 @@ public class Tile {
 	 * Apply the alpha and light map info on the base image.
 	 */
 	private void applyLightMap() {
-		int[] w = work.get()[0];
+		int[] w = WORK.get()[0];
 		for (int i = 0; i < image.length; i++) {
 			w[i] = withAlpha(image[i]);
 		}
@@ -176,7 +181,7 @@ public class Tile {
 	 * @return returns a full, uncached, lighed image of this tile.
 	 */
 	public BufferedImage getFullImage() {
-		int[] w = work.get()[0];
+		int[] w = WORK.get()[0];
 		BufferedImage result = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
 		computeImageWithLights();
 		result.setRGB(0, 0, imageWidth, imageHeight, w, 0, imageWidth);

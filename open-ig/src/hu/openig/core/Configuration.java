@@ -169,6 +169,25 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean radarUnion;
+	/** The alpha cache max element count. Zero means disabling the cache. */
+	@LoadSave
+	public int tileCacheSize = 0;
+	/** 
+	 * Limit on base tile size for tile caching.
+	 * <p>Positive value means tiles larger than the given value.
+	 * Negative value means tiles smaller than the given absolute value.
+	 * Zero means no caching.</p>
+	 */
+	@LoadSave
+	public int tileCacheBaseLimit = -10;
+	/** 
+	 * Limit on building size for tile caching.
+	 * <p>Positive value means tiles larger than the given value.
+	 * Negative value means tiles smaller than the given absolute value.
+	 * Zero means no caching.</p>
+	 */
+	@LoadSave
+	public int tileCacheBuildingLimit = 10;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

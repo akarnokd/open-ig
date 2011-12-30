@@ -44,6 +44,8 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 	public Planet arrivedAt;
 	/** The fleet movement mode. */
 	public FleetMode mode;
+	/** The current task. */
+	public FleetTask task = FleetTask.IDLE;
 	/**
 	 * Set the new target planet and save the current target into {@code arrivedAt}.
 	 * @param p the new target planet

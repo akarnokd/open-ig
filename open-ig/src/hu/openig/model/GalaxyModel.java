@@ -7,9 +7,11 @@
  */
 package hu.openig.model;
 
+import hu.openig.core.Configuration;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.Tile;
+import hu.openig.core.TileCached;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
@@ -32,6 +34,15 @@ public class GalaxyModel {
 	public float maxScale;
 	/** The planet types. */
 	public final Map<String, PlanetType> planetTypes = new HashMap<String, PlanetType>();
+	/** The configuration. */
+	protected final Configuration config;
+	/**
+	 * Constructor. Set the configuration.
+	 * @param config the configuration
+	 */
+	public GalaxyModel(Configuration config) {
+		this.config = config;
+	}
 	/**
 	 * Process the contents of the galaxy data.
 	 * @param rl the resource locator
@@ -74,7 +85,7 @@ public class GalaxyModel {
 									String hs = te.get("height", null);
 									int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
 									for (int id = start; id <= end; id++) {
-										Tile tile = new Tile(width, height, rl.getImage(String.format(tilePattern, id)), null);
+										Tile tile = newTile(width, height, rl.getImage(String.format(tilePattern, id)), null);
 										planetType.tiles.put(id, tile);
 									}
 								} else
@@ -84,7 +95,7 @@ public class GalaxyModel {
 									int width = ws != null && !ws.isEmpty() ? Integer.parseInt(ws) : 1;
 									String hs = te.get("height", null);
 									int height = hs != null && !hs.isEmpty() ? Integer.parseInt(hs) : 1;
-									Tile tile = new Tile(width, height, rl.getImage(String.format(tilePattern, id)), null);
+									Tile tile = newTile(width, height, rl.getImage(String.format(tilePattern, id)), null);
 									planetType.tiles.put(id, tile);
 								}
 							}
@@ -105,5 +116,29 @@ public class GalaxyModel {
 		} finally {
 			wip.dec();
 		}
+	}
+	/**
+	 * Construct a new tile with the given parameters.
+	 * @param width the width
+	 * @param height the height
+	 * @param image the base image
+	 * @param lightMap the optional light map
+	 * @return the tile
+	 */
+	protected Tile newTile(int width, int height, BufferedImage image,
+			BufferedImage lightMap) {
+		if (config.tileCacheSize > 0 && config.tileCacheBaseLimit != 0) {
+			int limit = Math.abs(config.tileCacheBaseLimit);
+			if (config.tileCacheBaseLimit > 0) {
+				if (width > limit && height > limit) {
+					return new TileCached(width, height, image, lightMap, config.tileCacheSize);
+				}
+			} else {
+				if (width < limit && height < limit) {
+					return new TileCached(width, height, image, lightMap, config.tileCacheSize);
+				}
+			}
+		}
+		return new Tile(width, height, image, lightMap);
 	}
 }

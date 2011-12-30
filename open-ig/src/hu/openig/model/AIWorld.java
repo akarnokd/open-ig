@@ -58,6 +58,8 @@ public class AIWorld {
 	public final List<AIPlanet> enemyPlanets = new LinkedList<AIPlanet>();
 	/** The list of maybe colonizable planets. */
 	public final List<AIPlanet> unknownPlanets = new LinkedList<AIPlanet>();
+	/** The map from regular planet to AI planet. */
+	public final Map<Planet, AIPlanet> planetMap = new HashMap<Planet, AIPlanet>();
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -113,19 +115,16 @@ public class AIWorld {
 		}
 		global = new PlanetStatistics();
 		for (Planet pl : player.planets.keySet()) {
+			AIPlanet aip = new AIPlanet();
+			aip.assign(pl, this);
+			planetMap.put(pl, aip);
 			if (player.knowledge(pl, PlanetKnowledge.OWNER) < 0) {
-				AIPlanet aip = new AIPlanet();
-				aip.assign(pl, this);
 				unknownPlanets.add(aip);
 			} else
 			if (pl.owner == player) {
-				AIPlanet aip = new AIPlanet();
-				aip.assign(pl, this);
 				ownPlanets.add(aip);
 				global.add(aip.statistics);
 			} else {
-				AIPlanet aip = new AIPlanet();
-				aip.assign(pl, this);
 				enemyPlanets.add(aip);
 			}
 		}

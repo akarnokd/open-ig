@@ -834,4 +834,8 @@ public class CommonResources implements GameEnvironment {
 	public Parameters params() {
 		return params;
 	}
+	@Override
+	public Configuration config() {
+		return config;
+	}
 }

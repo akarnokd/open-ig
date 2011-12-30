@@ -39,6 +39,8 @@ public class AIFleet {
 	public double x;
 	/** The current location. */
 	public double y;
+	/** The current task. */
+	public FleetTask task;
 	/** The inventory. */
 	public final List<AIInventoryItem> inventory = new ArrayList<AIInventoryItem>();
 	/**
@@ -58,6 +60,7 @@ public class AIFleet {
 			targetPoint = fleet.waypoints.get(0);
 		}
 		mode = fleet.mode;
+		task = fleet.task;
 		x = fleet.x;
 		y = fleet.y;
 		for (InventoryItem ii : fleet.inventory) {

@@ -33,6 +33,7 @@ import hu.openig.utils.XElement;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -59,6 +60,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.xml.stream.XMLStreamException;
@@ -198,6 +201,8 @@ public class LoadSaveScreen extends ScreenBase {
 	String saveText = "";
 	/** The blink phase. */
 	boolean blinking;
+	/** The other settings popup. */
+	UIGenericButton otherSettings;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -280,7 +285,17 @@ public class LoadSaveScreen extends ScreenBase {
 				doMainMenu();
 			}
 		};
-		
+
+		otherSettings = new UIGenericButton(get("othersettings"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		otherSettings.disabledPattern(commons.common().disabledPattern);
+		otherSettings.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
+				doOtherSettings();
+			}
+		};
+
 		
 		delete = new UIGenericButton(get("delete"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		delete.disabledPattern(commons.common().disabledPattern);
@@ -775,8 +790,13 @@ public class LoadSaveScreen extends ScreenBase {
 		loadSavePage.location(base.x + 10, base.y + 10);
 		audioPage.location(loadSavePage.x + 10 + loadSavePage.width, base.y + 10);
 		gameplayPage.location(audioPage.x + 10 + audioPage.width , base.y + 10);
-		back.location(gameplayPage.x + 10 + gameplayPage.width, base.y + 10);
-		mainmenu.location(base.x + base.width - 10 - back.width, base.y + 10);
+		if (world() != null) {
+			back.location(gameplayPage.x + 10 + gameplayPage.width, base.y + 10);
+			mainmenu.location(base.x + base.width - 10 - back.width, base.y + 10);
+		} else {
+			otherSettings.location(gameplayPage.x + 10 + gameplayPage.width, base.y + 10);
+			back.location(base.x + base.width - 10 - back.width, base.y + 10);
+		}
 		
 		// ------------------------------------------------------------
 		// load/save
@@ -892,7 +912,8 @@ public class LoadSaveScreen extends ScreenBase {
 		} else {
 			gameplayPage.color(0xFF000000);
 		}
-		mainmenu.visible(commons.world() != null);
+		mainmenu.visible(world() != null);
+		otherSettings.visible(world() == null);
 		
 		super.draw(g2);
 	}
@@ -1240,5 +1261,16 @@ public class LoadSaveScreen extends ScreenBase {
 		}
 		
 		Collections.sort(saves);
+	}
+	/** Display the other settings dialog. */
+	void doOtherSettings() {
+		JComponent c = commons.control().renderingComponent();
+		Container cont = c.getParent();
+		while (cont != null && !(cont instanceof JFrame)) {
+			cont = cont.getParent();
+		}
+		OtherSettingsDialog f = new OtherSettingsDialog((JFrame)cont, commons.labels(), commons.config);
+		f.setLocationRelativeTo(c);
+		f.setVisible(true);
 	}
 }
