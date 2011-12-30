@@ -132,6 +132,16 @@ public final class Startup {
 	 * @param config the configuration
 	 */
 	private static void doStartGame(final Configuration config) {
+		// setup troubleshooting flags
+		if (config.disableD3D) {
+			System.setProperty("sun.java2d.d3d", "false");
+		}
+		if (config.disableDirectDraw) {
+			System.setProperty("sun.java2d.noddraw", "true");
+		}
+		if (config.disableOpenGL) {
+			System.setProperty("sun.java2d.opengl", "false");
+		}
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
