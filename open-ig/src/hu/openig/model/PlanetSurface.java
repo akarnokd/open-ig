@@ -12,6 +12,7 @@ import hu.openig.core.PlanetType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Sides;
 import hu.openig.core.Tile;
+import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
@@ -20,6 +21,7 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -654,10 +656,9 @@ public class PlanetSurface {
 			if (bs.isEmpty()) {
 				return original;
 			}
-			Point result = null;
-			int bestContact = 0;
 			
-			int max = Math.max(width, height);
+			List<PlaceCandidate> candidates = JavaUtils.newArrayList();
+			int max = Math.max(Math.max(width, height), 6);
 			for (int r = 1; r <= max; r++) {
 				for (int x = -r; x <= r; x++) {
 					for (int y = -r; y <= r; y++) {
@@ -667,27 +668,29 @@ public class PlanetSurface {
 						}
 						if (canPlaceBuilding(original.x + x, original.y + y, width, height)) {
 							int c = 0;
+							Set<Building> connects = new HashSet<Building>();
+							int mass = 0;
 							for (int k = 0; k < width + 2; k++) {
 								for (int j = 0; j < height + 2; j++) {
 									int x0 = original.x + x - 1 + k;
 									int y0 = original.y + y + 1 - j;
-									if (buildingmap().containsKey(Location.of(x0, y0))) {
+									SurfaceEntity se = buildingmap().get(Location.of(x0, y0));
+									if (se != null && se.type == SurfaceEntityType.BUILDING) {
 										c++;
+										connects.add(se.building);
+										mass += se.building.tileset.normal.width * se.building.tileset.normal.height;
 									}
 								}
 							}
-							if (result == null || c > bestContact) {
-								result = new Point(original.x + x, original.y + y);
-								bestContact = c;
-							}
+							candidates.add(new PlaceCandidate(original.x + x, original.y + y, c, connects.size(), mass));
 						}
 					}
 				}
 			}
-			if (result != null) {
-				return result;
+			PlaceCandidate pc = Collections.max(candidates);
+			if (pc != null) {
+				return new Point(pc.x, pc.y);
 			}
-			
 			return original;
 		}
 		/**
@@ -753,6 +756,48 @@ public class PlanetSurface {
 				}
 			}
 			return result;
+		}
+	}
+	/**
+	 * A building place candidate.
+	 * @author akarnokd, 2011.12.30.
+	 */
+	public static class PlaceCandidate implements Comparable<PlaceCandidate> {
+		/** Location X. */
+		public final int x;
+		/** Location Y. */
+		public final int y;
+		/** Number of contacting building cells. */
+		public final int contact;
+		/** Number of connected buildings. */
+		public final int connect;
+		/** Mass of connected buildings. */
+		public final int mass;
+		/**
+		 * Constructor. Initializes the fields.
+		 * @param x location X
+		 * @param y location Y
+		 * @param contact Number of contacting building cells
+		 * @param connect Number of connected buildings
+		 * @param mass Mass of connected buildings
+		 */
+		public PlaceCandidate(int x, int y, int contact, int connect, int mass) {
+			this.x = x;
+			this.y = y;
+			this.contact = contact;
+			this.connect = connect;
+			this.mass = mass;
+		}
+		@Override
+		public int compareTo(PlaceCandidate o) {
+			int c = contact - o.contact;
+			if (c == 0) {
+				c = connect - o.connect;
+			}
+			if (c == 0) {
+				c = mass - o.mass;
+			}
+			return c;
 		}
 	}
 }

@@ -18,6 +18,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
+import hu.openig.utils.JavaUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,13 +82,7 @@ public class EconomyPlanner extends Planner {
 		if (planet.statistics.constructing) {
 			return false;
 		}
-		List<Pred1<AIPlanet>> functions = new ArrayList<Pred1<AIPlanet>>();
-		functions.add(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet planet) {
-				return checkRadar(planet);
-			}
-		});
+		List<Pred1<AIPlanet>> functions = JavaUtils.newArrayList();
 		functions.add(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet planet) {
@@ -106,14 +101,18 @@ public class EconomyPlanner extends Planner {
 				return checkSocial(planet);
 			}
 		});
+		functions.add(new Pred1<AIPlanet>() {
+			@Override
+			public Boolean invoke(AIPlanet planet) {
+				return checkRadar(planet);
+			}
+		});
 
-		if (world.money < 200000 && world.global.planetCount < 2) {
-			// always create economic first
-			return functions.get(1).invoke(planet);
+		if (world.money >= 200000 || world.global.planetCount >= 2) {
+			// random arbitration
+			Collections.shuffle(functions, w.random.get());
 		}
 		
-		// random arbitration
-		Collections.shuffle(functions, w.random.get());
 		for (Pred1<AIPlanet> f : functions) {
 			if (f.invoke(planet)) {
 				return true;
