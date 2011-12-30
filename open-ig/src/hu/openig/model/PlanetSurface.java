@@ -637,10 +637,51 @@ public class PlanetSurface {
 			}
 			
 			if (pt != null) {
-				pt = gravityAdjust(pt, width, height);
+				pt = nearestAdjust(pt, width, height);
 			}
 			
 			return pt;
+		}
+		/**
+		 * Try the surrounding cells for better contact width the surroundings.
+		 * @param original the original location
+		 * @param width the building width containing +2 for roads
+		 * @param height the building height containing +2 for roads
+		 * @return the adjusted location
+		 */
+		Point nearestAdjust(Point original, int width, int height) {
+			List<Building> bs = buildings();
+			if (bs.isEmpty()) {
+				return original;
+			}
+			Point result = null;
+			int bestContact = 0;
+			
+			for (int x = -1; x <= 1; x++) {
+				for (int y = -1; y <= 1; y++) {
+					if (canPlaceBuilding(original.x + x, original.y + y, width, height)) {
+						int c = 0;
+						for (int k = 0; k < width + 2; k++) {
+							for (int j = 0; j < height + 2; j++) {
+								int x0 = original.x + x - 1 + k;
+								int y0 = original.y + y + 1 - j;
+								if (buildingmap().containsKey(Location.of(x0, y0))) {
+									c++;
+								}
+							}
+						}
+						if (result == null || c > bestContact) {
+							result = new Point(original.x + x, original.y + y);
+							bestContact = c;
+						}
+					}
+				}
+			}
+			if (result != null) {
+				return result;
+			}
+			
+			return original;
 		}
 		/**
 		 * Compute the gravitational effects of the surrounding building and move
@@ -651,13 +692,12 @@ public class PlanetSurface {
 		 * @return the adjusted location
 		 */
 		Point gravityAdjust(Point original, int width, int height) {
-			// the average force
 			List<Building> bs = buildings();
 			if (bs.isEmpty()) {
 				return original;
 			}
 			Point result = new Point(original);
-			int countDown = 15;
+			int countDown = 1;
 			while (!Thread.currentThread().isInterrupted() && (countDown-- > 0)) {
 				Point2D.Double force0 = new Point2D.Double(0, 0);
 				double mass0 = width * height;
@@ -666,8 +706,8 @@ public class PlanetSurface {
 					int bh = b.tileset.normal.height;
 					// vector from origin to building
 					Point2D.Double vector = new Point2D.Double(
-							b.location.x + bw / 2.0 - result.x + width / 2.0, 
-							b.location.y - bh / 2.0 - result.y - height / 2.0);
+							b.location.x + bw / 2.0 - (result.x + width / 2.0), 
+							b.location.y - bh / 2.0 - (result.y - height / 2.0));
 					double distance2 = vector.x * vector.x + vector.y * vector.y;
 					double distance = Math.sqrt(distance2);
 					double mass = bw * bh;
