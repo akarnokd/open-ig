@@ -88,6 +88,17 @@ public abstract class Planner {
 			return o1.cost < o2.cost ? -1 : (o1.cost > o2.cost ? 1 : 0);
 		}
 	};
+	/** Default incremental decremental cost order. */
+	final BuildingOrder costOrderReverse = new BuildingOrder() {
+		@Override
+		public int compare(AIBuilding o1, AIBuilding o2) {
+			return o1.type.cost < o2.type.cost ? -1 : (o1.type.cost > o2.type.cost ? 1 : 0);
+		}
+		@Override
+		public int compare(BuildingType o1, BuildingType o2) {
+			return o1.cost < o2.cost ? 1 : (o1.cost > o2.cost ? -1 : 0);
+		}
+	};
 	/** Compares planets and chooses the worst overall condition. */
 	public static final Comparator<AIPlanet> WORST_PLANET = new Comparator<AIPlanet>() {
 		@Override

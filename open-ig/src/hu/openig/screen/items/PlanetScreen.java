@@ -828,7 +828,7 @@ public class PlanetScreen extends ScreenBase {
 				}
 			}
 			// check if the AI has removed any building while we were looking at its planet
-			if (planet().owner != player() && currentBuilding != null) {
+			if (currentBuilding != null) {
 				if (!planet().surface.buildings.contains(currentBuilding)) {
 					buildingBox = null;
 					currentBuilding = null;

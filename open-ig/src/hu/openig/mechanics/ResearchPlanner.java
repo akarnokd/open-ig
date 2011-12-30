@@ -54,6 +54,10 @@ public class ResearchPlanner extends Planner {
 	}
 	@Override
 	public void plan() {
+		// yield if one planet available and not enough money
+		if (world.money < 200000 && world.global.planetCount < 2) {
+			return;
+		}
 		if (world.runningResearch != null) {
 			// if not enough labs, stop research and let the other management tasks apply
 			if (!world.runningResearch.hasEnoughLabs(world.global)) {
