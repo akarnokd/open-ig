@@ -143,6 +143,7 @@ public class ResearchPlanner extends Planner {
 						if (p0.owner == null) {
 							controls.actionColonizePlanet(f0, p0);
 						}
+						f0.task = FleetTask.IDLE;
 					}
 				});
 				return;
