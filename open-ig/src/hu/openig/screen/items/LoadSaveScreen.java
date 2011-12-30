@@ -1269,7 +1269,8 @@ public class LoadSaveScreen extends ScreenBase {
 		while (cont != null && !(cont instanceof JFrame)) {
 			cont = cont.getParent();
 		}
-		OtherSettingsDialog f = new OtherSettingsDialog((JFrame)cont, commons.labels(), commons.config);
+		OtherSettingsDialog f = new OtherSettingsDialog(
+				(JFrame)cont, commons.labels(), commons.config, commons.background().setup);
 		f.setLocationRelativeTo(c);
 		f.setVisible(true);
 	}
