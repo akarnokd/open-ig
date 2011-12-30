@@ -660,6 +660,14 @@ public class World {
 					}
 				}
 			}
+		} else
+		if (player.knowledge(planet, PlanetKnowledge.OWNER) >= 0 && !planet.isPopulated()) {
+			for (BuildingType bt : buildingModel.buildings.values()) {
+				if (bt.tileset.containsKey(player.race)
+						&& (bt.research == null || player.isAvailable(bt.research))) {
+					result.add(bt);
+				}
+			}			
 		}
 		
 		return result;
