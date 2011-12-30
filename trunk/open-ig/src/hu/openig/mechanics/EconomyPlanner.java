@@ -238,7 +238,7 @@ public class EconomyPlanner extends Planner {
 				&& planet.statistics.foodAvailable > planet.population
 				&& planet.statistics.hospitalAvailable > planet.population
 				&& planet.statistics.policeAvailable > planet.population) {
-			return manageBuildings(planet, police, costOrder, false);
+			return manageBuildings(planet, police, costOrderReverse, false);
 		}
 		return false;
 	}
@@ -264,7 +264,7 @@ public class EconomyPlanner extends Planner {
 				&& planet.statistics.foodAvailable > planet.population
 				&& planet.statistics.hospitalAvailable > planet.population
 				&& planet.statistics.policeAvailable > planet.population) {
-			return manageBuildings(planet, factory, costOrder, false);
+			return manageBuildings(planet, factory, costOrderReverse, false);
 		}
 		return false;
 	}
@@ -287,7 +287,7 @@ public class EconomyPlanner extends Planner {
 		};
 		if (planet.population > planet.statistics.workerDemand * 1.1
 				&& planet.statistics.energyAvailable * 1.1 > planet.statistics.energyDemand) {
-			return manageBuildings(planet, social, costOrder, false);
+			return manageBuildings(planet, social, costOrderReverse, false);
 		}
 		return false;
 	}

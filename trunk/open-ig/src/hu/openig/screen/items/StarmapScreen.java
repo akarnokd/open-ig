@@ -1104,6 +1104,18 @@ public class StarmapScreen extends ScreenBase {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, width, height);
 		
+		if (!showAll) {
+			if (fleet() != null && player().knowledge(fleet(), FleetKnowledge.VISIBLE) < 0) {
+				player().currentFleet = null;
+			}
+			if (planet() != null && player().knowledge(planet(), PlanetKnowledge.VISIBLE) < 0) {
+				player().currentPlanet = null;
+			}
+			if (player().currentPlanet == null) {
+				player().moveNextPlanet();
+			}
+		}
+		
 		displayPlanetInfo();
 		displayFleetInfo();
 
