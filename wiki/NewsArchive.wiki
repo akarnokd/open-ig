@@ -4,6 +4,18 @@
 
 =December, 2011=
 
+*December 30, 2011*
+
+We've developed and tested the first version of the AI. The AI is capable to manage colonies, explore the galaxy, spy on other races, produce colonization fleets and colonize empty planets. The AI is disabled for the alien races at the moment.
+
+I've added a feature to enable AI support for the human player. By pressing CTRL+J (outside of battle), you can enable and disable this feature. When enabled, the AI will manage your entire realm. You can still build, produce, research and issue orders to fleets. You don't need to click-race with the AI, just pause the game. (This test feature lets us observe the decisions of the AI in a convenient way.)
+
+In addition, the "AI managed" auto-build option has been added. It uses the same AI planning algorithm, as the full AI. Switching to this mode will keep your colony healthy, so long there is enough funding.
+
+Finally, I've added a "From scratch" game mode. Start a new game and press CTRL+K. This will remove all of your colonies except Achilles, gives you some money and allows you to build a Colony Ship immediately (but you need factories for that). Note that this mode is extremely slow to ramp up. You'll need to spend months in fast forward. Try enabling the AI for this case and let's see what happens.
+
+Oh, and if you are desperately in need for money, press CTRL+G several times :)
+
 *December 27, 2011*
 
 Fixes, fixes, fixes. Anyway, the AI still complicated thing. I'm still struggling with goal arbitration, alternative actions and parallel actions.
