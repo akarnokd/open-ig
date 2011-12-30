@@ -130,7 +130,8 @@ public class ResearchPlanner extends Planner {
 				return value.hasInventory("ColonyShip");
 			}
 		};
-		for (AIFleet fleet : findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip)) {
+		List<AIFleet> colonizers = findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip);
+		for (AIFleet fleet : colonizers) {
 				if (!fleet.isMoving()
 							&& fleet.statistics.planet != null
 							&& world.planetMap.get(fleet.statistics.planet).owner == null) {
@@ -146,6 +147,10 @@ public class ResearchPlanner extends Planner {
 				});
 				return;
 			}
+		}
+		// if our colonizers are under way
+		if (colonizers.size() > 0) {
+			return;
 		}
 		// locate knownly colonizable planets
 		List<AIPlanet> ps = new ArrayList<AIPlanet>();
@@ -167,26 +172,21 @@ public class ResearchPlanner extends Planner {
 		}
 		// bring one fleet to the target planet
 		for (final AIFleet fleet : findFleetsFor(FleetTask.COLONIZE, hasColonyShip)) {
-			if (!fleet.isMoving()) {
-				final AIPlanet p0 = Collections.min(ps, new Comparator<AIPlanet>() {
-					@Override
-					public int compare(AIPlanet o1, AIPlanet o2) {
-						double d1 = Math.hypot(fleet.x - o1.planet.x, fleet.y - o1.planet.y);
-						double d2 = Math.hypot(fleet.x - o2.planet.x, fleet.y - o2.planet.y);
-						return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-					}
-				});
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						fleet.fleet.task = FleetTask.COLONIZE;
-						controls.actionMoveFleet(fleet.fleet, p0.planet);
-					}
-				});
-			}
-		}
-		// if colonization under way, skip the rest
-		if (findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip).size() > 0) {
+			final AIPlanet p0 = Collections.min(ps, new Comparator<AIPlanet>() {
+				@Override
+				public int compare(AIPlanet o1, AIPlanet o2) {
+					double d1 = Math.hypot(fleet.x - o1.planet.x, fleet.y - o1.planet.y);
+					double d2 = Math.hypot(fleet.x - o2.planet.x, fleet.y - o2.planet.y);
+					return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+				}
+			});
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					fleet.fleet.task = FleetTask.COLONIZE;
+					controls.actionMoveFleet(fleet.fleet, p0.planet);
+				}
+			});
 			return;
 		}
 		AIPlanet sp = null;
