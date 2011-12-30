@@ -12,6 +12,7 @@ import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.core.Pred1;
+import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIInventoryItem;
@@ -202,25 +203,33 @@ public class ResearchPlanner extends Planner {
 			if (pl.statistics.hasMilitarySpaceport) {
 				sp = pl;
 				break;
+			} else {
+				// if constructing here, return
+				for (AIBuilding b : pl.buildings) {
+					if (b.type.id.equals("MilitarySpaceport") && pl.statistics.constructing) {
+						return;
+					}
+				}
 			}
 		}
 		// if no planet has military spaceport, build one somewhere
 		if (sp == null) {
-			sp = w.random(world.ownPlanets);
 			final BuildingType bt = findBuilding("MilitarySpaceport");
-			if (bt == null) {
-				System.err.println("Military spaceport not buildable for player " + p.id);
-			} else {
-				if (bt.cost <= world.money) {
-					final Planet spaceport = sp.planet; 
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionPlaceBuilding(spaceport, bt);
-						}
-					});
+			planCategory(new Pred1<AIPlanet>() {
+				@Override
+				public Boolean invoke(AIPlanet value) {
+					return true;
 				}
-			}
+			}, BEST_PLANET, new BuildingSelector() {
+				@Override
+				public boolean accept(AIPlanet planet, AIBuilding building) {
+					return false;
+				}
+				@Override
+				public boolean accept(AIPlanet planet, BuildingType buildingType) {
+					return buildingType == bt && limit(planet, bt, 1);
+				}
+			}, costOrderReverse, false);
 			return;
 		}
 		final Planet spaceport = sp.planet; 

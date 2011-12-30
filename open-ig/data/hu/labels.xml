@@ -346,7 +346,7 @@
 	<entry key='buildings.fusion_plant'>Fúziós erőmű</entry>
 	<entry key='buildings.solar_plant'>Naperőmű</entry>
 	<entry key='buildings.water_vaporator'>Párologtató</entry>
-	<entry key='buildings.hydroponic_food_farm'>Hidropónikus farm</entry>
+	<entry key='buildings.hydroponic_food_farm'>Élelmiszerellátó Kp.</entry>
 	<entry key='buildings.phood_factory'>Élelmiszergyár</entry>
 	<entry key='buildings.spaceship_factory'>Űrhajógyár</entry>
 	<entry key='buildings.equipment_factory'>Felszerelésgyár</entry>
@@ -363,16 +363,16 @@
 	<entry key='buildings.hospital'>Kórház</entry>
 	<entry key='buildings.police_station'>Rendőrség</entry>
 	<entry key='buildings.fire_brigade'>Tűzoltóság</entry>
-	<entry key='buildings.radar_telescope'>Radar teleszkóp</entry>
-	<entry key='buildings.field_telescope'>Mező teleszkóp</entry>
-	<entry key='buildings.phased_telescope'>Fázis teleszkóp</entry>
+	<entry key='buildings.radar_telescope'>Radar 1.0</entry>
+	<entry key='buildings.field_telescope'>Radar 2.0</entry>
+	<entry key='buildings.phased_telescope'>Radar 3.0</entry>
 	<entry key='buildings.bunker'>Bunker</entry>
-	<entry key='buildings.ion_projector'>Ionágyú</entry>
-	<entry key='buildings.plasma_projector'>Plazmaágyú</entry>
-	<entry key='buildings.particle_projector'>Részecskeágyú</entry>
-	<entry key='buildings.meson_projector'>Mezonágyú</entry>
-	<entry key='buildings.inversion_shield'>Inverziós pajzs</entry>
-	<entry key='buildings.hypershield'>Hiperpajzs</entry>
+	<entry key='buildings.ion_projector'>Ionlöveg</entry>
+	<entry key='buildings.plasma_projector'>Plazmalöveg</entry>
+	<entry key='buildings.particle_projector'>Részecskelöveg</entry>
+	<entry key='buildings.meson_projector'>Mezonlöveg</entry>
+	<entry key='buildings.inversion_shield'>Planetáris Pajzs 1.0</entry>
+	<entry key='buildings.hypershield'>Planetáris Pajzs 2.0</entry>
 	<entry key='buildings.barracks'>Barakk</entry>
 	<entry key='buildings.fortress'>Laktanya</entry>
 	<entry key='buildings.stronghold'>Erőd</entry>
@@ -557,7 +557,7 @@
 	<entry key='tech.destroyer1.description'>A régi birodalom mára már elavult romboló osztályú hajója.</entry>
 	<entry key='tech.destroyer2.name'>Romboló 2</entry>
 	<entry key='tech.destroyer2.longname'>Romboló 2: "Pitbull"</entry>
-	<entry key='tech.destroyer2.description'>Az Őrző továbbfejlesztett változata, ionágyúk fogadására is képes lőállásokkal. A hajó méretei viszont jelentősen megnőttek az átalakítások miatt.</entry>
+	<entry key='tech.destroyer2.description'>Az Őrző továbbfejlesztett változata, fejlett lézerágyúk fogadására is képes lőállásokkal. A hajó méretei viszont jelentősen megnőttek az átalakítások miatt.</entry>
 	<entry key='tech.destroyer3.name'>Romboló 3</entry>
 	<entry key='tech.destroyer3.longname'>Romboló 3: "Tűzeső"</entry>
 	<entry key='tech.destroyer3.description'>Az utolsó és legfejlettebb hajó ebben a kategóriában. Még kísérleti stádiumban lévő hajtóművei jól vizsgáztak a csatákban: sebessége lényegesen nagyobb, mint elődeié.</entry>
@@ -647,7 +647,7 @@
 	<entry key='tech.radar1.description'>Nagyobb hajókra telepíthető radaregység, mely 2 SGE (Standard Galaktikus Egység) távolságból képes ellenséges egységeket detektálni.</entry>
 	<entry key='tech.radar2.name'>Radar v2</entry>
 	<entry key='tech.radar2.longname'>Radar v2.0</entry>
-	<entry key='tech.radar2.description'>A korábbi rakétamodul továbbfejlesztése 5 SGE hatásos hatótávolsággal.</entry>
+	<entry key='tech.radar2.description'>A korábbi radarmodul továbbfejlesztése 5 SGE hatásos hatótávolsággal.</entry>
 	<entry key='tech.radar3.name'>Radar v3</entry>
 	<entry key='tech.radar3.longname'>Radar v3.0</entry>
 	<entry key='tech.radar3.description'>A korábbi verzióknál érzékenyebb (az ellenséges flotta hozzávetőleges összetételét is detektáló) radaregység 10 SGE hatótávolsággal.</entry>
@@ -707,7 +707,7 @@
 	<entry key='tech.rocket2.longname'>Rakéta v2.0</entry>
 	<entry key='tech.rocket2.description'>Gyorsabb és erősebb változata a korábbi rakétatípusnak. Intelligensebb célkövető rendszere miatt a találati valószínűség is lényegesen nagyobb.</entry>
 	<entry key='tech.multiheadedrocket.name'>Többfejes rakéta</entry>
-	<entry key='tech.multiheadedrocket.longname'>Robbanófejes rakéta</entry>
+	<entry key='tech.multiheadedrocket.longname'>Multirobbanófejes rakéta</entry>
 	<entry key='tech.multiheadedrocket.description'>Elődeivel ellentétben nem a robbanófej méretével értek el nagyobb pusztítóerőt a fejlesztők, hanem a robbanófejek számát növelték meg. Vadászok ellen javasolt.</entry>
 
 	<entry key='tech.lighttank.name'>Könnyű tank</entry>
@@ -769,11 +769,11 @@
 	<entry key='tech.phasedtelescope.longname'>Kolónia Radar v3.0</entry>
 	<entry key='tech.phasedtelescope.description'>Speciális sugarakat használva ez a radar képes áthatolni távoli bolygók légkörén is, így információt szolgáltat a bolygó felszínéről, a benépesítő fajról is.</entry>
 
-	<entry key='tech.plasmaprojector.name'>Plazmavető</entry>
-	<entry key='tech.plasmaprojector.longname'>Plazmavető</entry>
+	<entry key='tech.plasmaprojector.name'>Plazmalöveg</entry>
+	<entry key='tech.plasmaprojector.longname'>Plazmalöveg</entry>
 	<entry key='tech.plasmaprojector.description'>Jóval hatékonyabb, mint az ionágyú, de energia fogyasztása is magasabb.</entry>
-	<entry key='tech.particleprojector.name'>Részecskevető</entry>
-	<entry key='tech.particleprojector.longname'>Részecskevető ágyú</entry>
+	<entry key='tech.particleprojector.name'>Részecskelöveg</entry>
+	<entry key='tech.particleprojector.longname'>Részecskelöveg</entry>
 	<entry key='tech.particleprojector.description'>Sok ellenséges flottát állított már meg ezekből az ágyúkból álló védelem! Egyetlen hátrányuk óriási energiafogyasztásuk:egy-egy ágyú egy gyár energiáját használja fel!</entry>
 	<entry key='tech.mesonprojector.name'>Mezonlöveg</entry>
 	<entry key='tech.mesonprojector.longname'>Mezonlöveg</entry>

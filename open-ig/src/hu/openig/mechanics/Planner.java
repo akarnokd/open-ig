@@ -137,6 +137,13 @@ public abstract class Planner {
 			return 0;
 		}
 	};
+	/** The best planet comparator. */
+	public static final Comparator<AIPlanet> BEST_PLANET = new Comparator<AIPlanet>() {
+		@Override
+		public int compare(AIPlanet o1, AIPlanet o2) {
+			return WORST_PLANET.compare(o2, o1);
+		}
+	};
 	/** The world copy. */
 	final AIWorld world;
 	/** The original world object. */
