@@ -31,7 +31,7 @@ public class IGButton extends JButton {
 	/** Constructor. Initializes the button graphics. */
 	public IGButton() {
 		super();
-		setOpaque(true);
+		setOpaque(false);
 		largeButton = new GenericMediumButton("/hu/openig/gfx/button_medium.png");
 		largeButtonPressed = new GenericMediumButton("/hu/openig/gfx/button_medium_pressed.png");
 	}
@@ -42,11 +42,12 @@ public class IGButton extends JButton {
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
+		g.setFont(getFont());
 		g.setColor(getForeground());
-		if (isSelected()) {
+		if (getModel().isPressed()) {
 			largeButtonPressed.paintTo(g2, 0, 0, getWidth(), getHeight(), true, getText());
 		} else {
-			largeButtonPressed.paintTo(g2, 0, 0, getWidth(), getHeight(), true, getText());
+			largeButton.paintTo(g2, 0, 0, getWidth(), getHeight(), false, getText());
 		}
 	}
 }
