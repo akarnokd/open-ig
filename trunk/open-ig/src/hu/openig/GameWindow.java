@@ -2066,4 +2066,8 @@ public class GameWindow extends JFrame implements GameControls {
 			throw new AssertionError(String.valueOf(screen));
 		}
 	}
+	@Override
+	public JComponent renderingComponent() {
+		return surface;
+	}
 }

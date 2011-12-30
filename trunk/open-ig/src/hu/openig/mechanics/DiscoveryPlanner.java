@@ -20,6 +20,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.EquipmentSlot;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetTask;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
@@ -53,7 +54,7 @@ public class DiscoveryPlanner extends Planner {
 		// find a fleet which has at least a decent radar range
 		// and is among the fastest available
 		AIFleet bestFleet = null;
-		for (AIFleet f : world.ownFleets) {
+		for (AIFleet f : findFleetsFor(FleetTask.EXPLORE, null)) {
 			if (f.radar >= w.params().fleetRadarUnitSize()) {
 				if (bestFleet == null || bestFleet.statistics.speed < f.statistics.speed) {
 					bestFleet = f;
@@ -76,6 +77,7 @@ public class DiscoveryPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
+							bf.fleet.task = FleetTask.EXPLORE;
 							controls.actionMoveFleet(bf.fleet, (loc.x + 0.5) * ec, (loc.y + 0.5) * ec);
 						}
 					});
@@ -85,9 +87,18 @@ public class DiscoveryPlanner extends Planner {
 				planDiscoveryFleet();
 			}
 		} else {
+			// exploration complete, set explorers to idle
+			for (final AIFleet f : findFleetsWithTask(FleetTask.EXPLORE, null)) {
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						f.fleet.task = FleetTask.IDLE;
+					}
+				});
+				return;
+			}
 			// if we explored everything, let's patrol
-			if (bestFleet != null && !bestFleet.isMoving()) {
-				final AIFleet bf = bestFleet;
+			for (final AIFleet bf : findFleetsFor(FleetTask.PATROL, null)) {
 				if (world.ownPlanets.size() > 0) {
 					AIPlanet p = w.random(world.ownPlanets);
 					final int x = p.planet.x;
@@ -95,6 +106,7 @@ public class DiscoveryPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
+							bf.fleet.task = FleetTask.PATROL;
 							controls.actionMoveFleet(bf.fleet, x, y);
 						}
 					});

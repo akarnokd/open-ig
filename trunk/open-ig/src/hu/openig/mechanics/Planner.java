@@ -12,10 +12,13 @@ import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
+import hu.openig.model.AIFleet;
 import hu.openig.model.AIPlanet;
+import hu.openig.model.AIResult;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.FleetTask;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
@@ -283,15 +286,19 @@ public abstract class Planner {
 			if (manageUpgrade(planet, selector, order)) {
 				return true;
 			}
-			if (manageConstruction(planet, selector, order)) {
+			AIResult result = manageConstruction(planet, selector, order);
+			if (result == AIResult.SUCCESS) {
 				return true;
 			}
 		} else {
-			if (manageConstruction(planet, selector, order)) {
+			AIResult result = manageConstruction(planet, selector, order);
+			if (result == AIResult.SUCCESS) {
 				return true;
 			}
-			if (manageUpgrade(planet, selector, order)) {
-				return true;
+			if (result == AIResult.NO_ROOM || result == AIResult.NO_AVAIL) {
+				if (manageUpgrade(planet, selector, order)) {
+					return true;
+				}
 			}
 		}
 		if (manageRepair(planet, selector, order)) {
@@ -348,18 +355,24 @@ public abstract class Planner {
 	 * @param planet the target planet
 	 * @param selector the building selector
 	 * @param order the building order
-	 * @return true if action taken
+	 * @return the result of the operation
 	 */
-	public final boolean manageConstruction(final AIPlanet planet, 
+	public final AIResult manageConstruction(final AIPlanet planet, 
 			final BuildingSelector selector,
 			final BuildingOrder order) {
 		// try building a new one
 		BuildingType create = null;
+		int moneyFor = 0;
+		int locationFor = 0;
 		for (final BuildingType bt : w.buildingModel.buildings.values()) {
-			if (selector.accept(planet, bt) && planet.canBuild(bt) && bt.cost <= world.money) {
-				if (planet.findLocation(bt) != null) {
-					if (create == null || order.compare(create, bt) < 0) {
-						create = bt;
+			if (selector.accept(planet, bt) && planet.canBuild(bt)) {
+				if (bt.cost <= world.money) {
+					moneyFor++;
+					if (planet.findLocation(bt) != null) {
+						locationFor++;
+						if (create == null || order.compare(create, bt) < 0) {
+							create = bt;
+						}
 					}
 				}
 			}
@@ -372,9 +385,15 @@ public abstract class Planner {
 					controls.actionPlaceBuilding(planet.planet, fcreate);
 				}
 			});
-			return true;
+			return AIResult.SUCCESS;
 		}
-		return false;
+		if (locationFor == 0) {
+			return AIResult.NO_ROOM;
+		} else
+		if (moneyFor == 0) {
+			return AIResult.NO_MONEY;
+		}
+		return AIResult.NO_AVAIL;
 	}
 	/**
 	 * Try to choose a repair option.
@@ -484,5 +503,39 @@ public abstract class Planner {
 	 */
 	public String label(String value) {
 		return w.env.labels().get(value);
+	}
+	/**
+	 * Find fleets for the specific tasks.
+	 * @param forTask the target task, any lower priority fleets will be found
+	 * @param filter optional filter for fleet properties
+	 * @return the list of fleets
+	 */
+	List<AIFleet> findFleetsFor(FleetTask forTask, Func1<AIFleet, Boolean> filter) {
+		List<AIFleet> result = new ArrayList<AIFleet>();
+		for (AIFleet f : world.ownFleets) {
+			if (f.task.ordinal() > forTask.ordinal()) {
+				if (filter == null || filter.invoke(f)) {
+					result.add(f);
+				}
+			}
+		}
+		return result;
+	}
+	/**
+	 * Find fleets with the specified task assignment.
+	 * @param withTask the current task
+	 * @param filter optional filter for fleet properties
+	 * @return the list of fleets
+	 */
+	List<AIFleet> findFleetsWithTask(FleetTask withTask, Func1<AIFleet, Boolean> filter) {
+		List<AIFleet> result = new ArrayList<AIFleet>();
+		for (AIFleet f : world.ownFleets) {
+			if (f.task == withTask) {
+				if (filter == null || filter.invoke(f)) {
+					result.add(f);
+				}
+			}
+		}
+		return result;
 	}
 }

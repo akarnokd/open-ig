@@ -19,6 +19,8 @@ import hu.openig.model.World;
 import java.awt.FontMetrics;
 import java.io.Closeable;
 
+import javax.swing.JComponent;
+
 /**
  * Interface for interacting with the game window or other objects in a global manner.
  * @author akarnokd, 2010.01.06.
@@ -81,6 +83,11 @@ public interface GameControls {
 	 * @return the default font metrics object
 	 */
 	FontMetrics fontMetrics(int size);
+	/**
+	 * Returns the rendering component used for display.
+	 * @return the rendering component
+	 */
+	JComponent renderingComponent();
 	/**
 	 * Save the world.
 	 * @param name the name the user entered, ony if mode == MANUAL

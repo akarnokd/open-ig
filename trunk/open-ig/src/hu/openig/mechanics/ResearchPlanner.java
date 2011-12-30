@@ -20,6 +20,7 @@ import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetTask;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
@@ -123,26 +124,27 @@ public class ResearchPlanner extends Planner {
 	 * Plan for conquest.
 	 */
 	void planConquest() {
-		// if a fleet with colony ship is in position, colonize the planet
-		for (AIFleet fleet : world.ownFleets) {
-			if (!fleet.isMoving() && fleet.hasInventory("ColonyShip")) {
-				if (fleet.statistics.planet != null) {
-					for (AIPlanet planet : world.enemyPlanets) {
-						if (planet.planet == fleet.statistics.planet && planet.owner == null) {
-							final Fleet f0 = fleet.fleet;
-							final Planet p0 = fleet.statistics.planet;
-							add(new Action0() {
-								@Override
-								public void invoke() {
-									if (p0.owner == null) {
-										controls.actionColonizePlanet(f0, p0);
-									}
-								}
-							});
-							return;
+		Pred1<AIFleet> hasColonyShip = new Pred1<AIFleet>() {
+			@Override
+			public Boolean invoke(AIFleet value) {
+				return value.hasInventory("ColonyShip");
+			}
+		};
+		for (AIFleet fleet : findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip)) {
+				if (!fleet.isMoving()
+							&& fleet.statistics.planet != null
+							&& world.planetMap.get(fleet.statistics.planet).owner == null) {
+				final Fleet f0 = fleet.fleet;
+				final Planet p0 = fleet.statistics.planet;
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						if (p0.owner == null) {
+							controls.actionColonizePlanet(f0, p0);
 						}
 					}
-				}
+				});
+				return;
 			}
 		}
 		// locate knownly colonizable planets
@@ -164,8 +166,8 @@ public class ResearchPlanner extends Planner {
 			return;
 		}
 		// bring one fleet to the target planet
-		for (final AIFleet fleet : world.ownFleets) {
-			if (!fleet.isMoving() && fleet.hasInventory("ColonyShip")) {
+		for (final AIFleet fleet : findFleetsFor(FleetTask.COLONIZE, hasColonyShip)) {
+			if (!fleet.isMoving()) {
 				final AIPlanet p0 = Collections.min(ps, new Comparator<AIPlanet>() {
 					@Override
 					public int compare(AIPlanet o1, AIPlanet o2) {
@@ -177,16 +179,15 @@ public class ResearchPlanner extends Planner {
 				add(new Action0() {
 					@Override
 					public void invoke() {
+						fleet.fleet.task = FleetTask.COLONIZE;
 						controls.actionMoveFleet(fleet.fleet, p0.planet);
 					}
 				});
 			}
 		}
-		// if colonization fleet deployed, do nothing
-		for (AIFleet fleet : world.ownFleets) {
-			if (fleet.hasInventory("ColonyShip")) {
-				return;
-			}
+		// if colonization under way, skip the rest
+		if (findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip).size() > 0) {
+			return;
 		}
 		AIPlanet sp = null;
 		for (AIPlanet pl : world.ownPlanets) {
@@ -258,7 +259,7 @@ public class ResearchPlanner extends Planner {
 				Pair<AIPlanet, ResearchType> toSell = null;
 				for (AIPlanet p : planets) {
 					for (AIInventoryItem ii : p.inventory) {
-						if (ii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
+						if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 							if (toSell == null || toSell.second.productionCost > ii.type.productionCost) {
 								toSell = Pair.of(p, ii.type);
 							}

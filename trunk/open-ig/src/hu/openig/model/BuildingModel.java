@@ -7,12 +7,14 @@
  */
 package hu.openig.model;
 
+import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
+import hu.openig.core.TileCached;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.WipPort;
@@ -38,6 +40,15 @@ public class BuildingModel {
 	public final Map<String, Map<RoadType, Tile>> roadTiles = new HashMap<String, Map<RoadType, Tile>>();
 	/** The road tile to road type reverse lookup table. */
 	public final Map<String, Map<Tile, RoadType>> tileRoads = new HashMap<String, Map<Tile, RoadType>>();
+	/** The configuration. */
+	protected final Configuration config;
+	/**
+	 * Constructor. Set the configuration.
+	 * @param config the configuration
+	 */
+	public BuildingModel(Configuration config) {
+		this.config = config;
+	}
 	/**
 	 * Process the contents of the buildings definition.
 	 * @param rl the resource locator
@@ -58,12 +69,12 @@ public class BuildingModel {
 			BufferedImage solidTile = rl.getImage("colony/tile_1x1");
 			
 			BuildingMinimapTiles bmt = new BuildingMinimapTiles();
-			bmt.normal = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF00C000), null);
-			bmt.damaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF0000), null);
-			bmt.inoperable = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFFFF00), null);
-			bmt.destroyed = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF202020), null);
-			bmt.constructing = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFF0040FF), null);
-			bmt.constructingDamaged = new Tile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF40FF), null);
+			bmt.normal = newTile(1, 1, ImageUtils.recolor(solidTile, 0xFF00C000), null);
+			bmt.damaged = newTile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF0000), null);
+			bmt.inoperable = newTile(1, 1, ImageUtils.recolor(solidTile, 0xFFFFFF00), null);
+			bmt.destroyed = newTile(1, 1, ImageUtils.recolor(solidTile, 0xFF202020), null);
+			bmt.constructing = newTile(1, 1, ImageUtils.recolor(solidTile, 0xFF0040FF), null);
+			bmt.constructingDamaged = newTile(1, 1, ImageUtils.recolor(solidTile, 0xFFFF40FF), null);
 			
 			XElement buildings = rl.getXML(data);
 			
@@ -103,7 +114,7 @@ public class BuildingModel {
 								}
 								BufferedImage image = rl.getImage(normalImg);
 								
-								Tile t = new Tile(1, 1, image, lightMap);
+								Tile t = newTile(1, 1, image, lightMap);
 								synchronized (scaffolding.normal) {
 									scaffolding.normal.set(fi - nstart, t);
 								}
@@ -139,7 +150,7 @@ public class BuildingModel {
 								}
 								BufferedImage image = rl.getImage(normalImg);
 								
-								Tile t = new Tile(1, 1, image, lightMap);
+								Tile t = newTile(1, 1, image, lightMap);
 								synchronized (scaffolding.damaged) {
 									scaffolding.damaged.set(fi - dstart, t);
 								}
@@ -185,9 +196,9 @@ public class BuildingModel {
 									lightMap = rl.getImage(normalLight);
 								}
 								BufferedImage image = rl.getImage(normalImg);
-								ts.normal = new Tile(width, height, image, lightMap);
-								ts.nolight = new Tile(width, height, image, null);
-								ts.damaged = new Tile(width, height, rl.getImage(damagedImg), null); // no lightmap for damaged building
+								ts.normal = newTile(width, height, image, lightMap);
+								ts.nolight = newTile(width, height, image, null);
+								ts.damaged = newTile(width, height, rl.getImage(damagedImg), null); // no lightmap for damaged building
 								ts.preview = rl.getImage(previewImg);
 								synchronized (b.tileset) {
 									b.tileset.put(rid, ts);
@@ -269,7 +280,7 @@ public class BuildingModel {
 								if (rp != null) {
 									lightMap = rl.getImage(normalLight);
 								}
-								Tile t = new Tile(1, 1, rl.getImage(normalImg), lightMap);
+								Tile t = newTile(1, 1, rl.getImage(normalImg), lightMap);
 								RoadType rt = RoadType.getByIndex(index);
 								addRoadType(rid, rt, t);
 							} finally {
@@ -304,5 +315,29 @@ public class BuildingModel {
 			tileRoads.put(rid, roads);
 		}
 		roads.put(tile, rt);
+	}
+	/**
+	 * Construct a new tile with the given parameters.
+	 * @param width the width
+	 * @param height the height
+	 * @param image the base image
+	 * @param lightMap the optional light map
+	 * @return the tile
+	 */
+	protected Tile newTile(int width, int height, BufferedImage image,
+			BufferedImage lightMap) {
+		if (config.tileCacheSize > 0 && config.tileCacheBuildingLimit != 0) {
+			int limit = Math.abs(config.tileCacheBuildingLimit);
+			if (config.tileCacheBuildingLimit > 0) {
+				if (width > limit && height > limit) {
+					return new TileCached(width, height, image, lightMap, config.tileCacheSize);
+				}
+			} else {
+				if (width < limit && height < limit) {
+					return new TileCached(width, height, image, lightMap, config.tileCacheSize);
+				}
+			}
+		}
+		return new Tile(width, height, image, lightMap);
 	}
 }

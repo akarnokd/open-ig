@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
 
 /**
@@ -50,4 +51,9 @@ public interface GameEnvironment {
 	 * @return the game parameters
 	 */
 	Parameters params();
+	/** 
+	 * Returns the configuration.
+	 * @return the configuration
+	 */
+	Configuration config();
 }

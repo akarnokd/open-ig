@@ -460,7 +460,7 @@ public class MapEditor extends JFrame {
 							@Override
 							public void run() {
 								try {
-									galaxyMap = new GalaxyModel();
+									galaxyMap = new GalaxyModel(config);
 									galaxyMap.processGalaxy(rl, "campaign/main/galaxy", exec, wip);
 								} finally {
 									wip.dec();
@@ -471,7 +471,7 @@ public class MapEditor extends JFrame {
 							@Override
 							public void run() {
 								try {
-									buildingMap = new BuildingModel();
+									buildingMap = new BuildingModel(config);
 									buildingMap.processBuildings(rl, "campaign/main/buildings", 
 											new HashMap<String, ResearchType>(), labels, exec, wip);
 								} finally {
