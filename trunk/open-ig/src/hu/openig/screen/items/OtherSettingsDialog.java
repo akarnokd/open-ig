@@ -396,6 +396,7 @@ public class OtherSettingsDialog extends JDialog {
 		} else {
 			config.tileCacheSize = 0;
 		}
+		config.save();
 		setVisible(false);
 	}
 	/** Close window. */
