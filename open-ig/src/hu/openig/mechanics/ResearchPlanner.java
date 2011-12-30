@@ -69,7 +69,6 @@ public class ResearchPlanner extends Planner {
 		
 		//if low on money and planets, plan for conquest
 		if (world.money < 100000 && world.global.planetCount < 2) {
-			planConquest();
 			return;
 		}
 		

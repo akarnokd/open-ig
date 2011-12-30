@@ -621,8 +621,8 @@ public class PlanetSurface {
 				int[] ys = new int[size];
 				clockwise(xs, ys, len);
 				for (int k = 0; k < size; k++) {
-					int x0 = xs[k] + cx - i;
-					int y0 = ys[k] + cy + i;
+					int x0 = cx + xs[k] - i;
+					int y0 = cy - ys[k] + i;
 					if (canPlaceBuilding(x0, y0, width, height)) {
 						int d = (cx - x0) * (cx - x0) + (cy - y0) * (cy - y0);
 						PlaceCandidate pc = createCandidate(x0, y0, width, height, d);
@@ -791,17 +791,19 @@ public class PlanetSurface {
 			}
 			@Override
 			public int compareTo(PlaceCandidate o) {
-				int c = 0;
-				if (c == 0) {
-					c = contact - o.contact;
-				}
-				if (c == 0) {
-					c = edges - o.edges;
-				}
-				if (c == 0) {
-					c = distance - o.distance;
-				}
-				return c;
+//				int c = 0;
+//				if (c == 0) {
+//					c = contact - o.contact;
+//				}
+//				if (c == 0) {
+//					c = edges - o.edges;
+//				}
+//				if (c == 0) {
+//					c = distance - o.distance;
+//				}
+				double v1 = (contact + edges * 4.0) / (distance + 1);
+				double v2 = (o.contact + o.edges * 4.0) / (o.distance + 1);
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
 			}
 		}
 		/**
