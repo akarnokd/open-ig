@@ -181,12 +181,13 @@ public class DiscoveryPlanner extends Planner {
 	boolean checkExplorerLevel(List<AIFleet> fleets) {
 		int maxRadar = 0;
 		for (AIFleet f : fleets) {
-			if (f.radar > maxRadar) {
-				maxRadar = f.radarLevel();
+			int rl = f.radarLevel();
+			if (rl > maxRadar) {
+				maxRadar = rl;
 			}
 		}
 		for (ResearchType rt : world.availableResearch) {
-			if (rt.has("radar") && rt.getInt("radar") > maxRadar) {
+			if (rt.has("radar") && rt.category == ResearchSubCategory.EQUIPMENT_RADARS && rt.getInt("radar") > maxRadar) {
 				return true;
 			}
 		}
@@ -224,7 +225,7 @@ public class DiscoveryPlanner extends Planner {
 			}
 		};
 		Location loc = null;
-		if (bf.radarLevel() > 0) {
+		if (bf.radarLevel() > 0 || w.random.get().nextDouble() < 0.95) {
 			loc = Collections.min(exploration.map, distance);
 		} else {
 			List<Location> ls = new ArrayList<Location>(exploration.map);
