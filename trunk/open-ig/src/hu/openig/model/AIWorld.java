@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.Pair;
 
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -60,12 +61,18 @@ public class AIWorld {
 	public final List<AIPlanet> unknownPlanets = new LinkedList<AIPlanet>();
 	/** The map from regular planet to AI planet. */
 	public final Map<Planet, AIPlanet> planetMap = new HashMap<Planet, AIPlanet>();
+	/** The inner limit. */
+	public Rectangle explorationInnerLimit;
+	/** The outer limit. */
+	public Rectangle explorationOuterLimit;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
 	 */
 	public void assign(Player player) {
 		this.player = player;
+		explorationInnerLimit = player.explorationInnerLimit;
+		explorationOuterLimit = player.explorationOuterLimit;
 		money = player.money;
 		
 		inventory.putAll(player.inventory);
@@ -215,5 +222,20 @@ public class AIWorld {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Check if the given coordinate is within the allowed exploration zones.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return true if within the limits
+	 */
+	public boolean withinLimits(int x, int y) {
+		if (explorationInnerLimit != null && explorationInnerLimit.contains(x, y)) {
+			return false;
+		}
+		if (explorationOuterLimit != null && !explorationOuterLimit.contains(x, y)) {
+			return false;
+		}
+		return true;
 	}
 }

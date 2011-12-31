@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The starmap exploration and satellite planner.
@@ -50,39 +49,11 @@ public class ExplorationPlanner extends Planner {
 		super(world, controls);
 		this.exploration = exploration;
 	}
-	/**
-	 * Computes the allowed exploration map, considering the player's exploration limits.
-	 * @return the updated map
-	 */
-	Set<Location> allowedMap() {
-		if (p.explorationInnerLimit == null && p.explorationOuterLimit == null) {
-			return exploration.map;
-		}
-		Set<Location> result = JavaUtils.newHashSet();
-		
-		for (Location loc : exploration.map) {
-			int cx = (int)((loc.x + 0.5) * exploration.cellSize);
-			int cy = (int)((loc.y + 0.5) * exploration.cellSize);
-			if (p.explorationInnerLimit != null) {
-				if (p.explorationInnerLimit.contains(cx, cy)) {
-					continue;
-				}
-			}
-			if (p.explorationOuterLimit != null) {
-				if (!p.explorationOuterLimit.contains(cx, cy)) {
-					continue;
-				}
-			}
-			result.add(loc);
-		}
-		
-		return result;
-	}
 	@Override
 	public void plan() {
 		// find a fleet which has at least a decent radar range
 		// and is among the fastest available
-		if (allowedMap().size() > 0) {
+		if (exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit).size() > 0) {
 			// check our current exploration fleets are idle
 			List<AIFleet> fs = findFleetsWithTask(FleetTask.EXPLORE, null);
 			for (AIFleet f : fs) {
@@ -263,9 +234,9 @@ public class ExplorationPlanner extends Planner {
 		Location loc = null;
 		final int rl = bf.radarLevel();
 		if (rl > 0 && w.random.get().nextDouble() < 0.95) {
-			loc = Collections.min(allowedMap(), distance);
+			loc = Collections.min(exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit), distance);
 		} else {
-			List<Location> ls = new ArrayList<Location>(allowedMap());
+			List<Location> ls = new ArrayList<Location>(exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit));
 			Collections.sort(ls, distance);
 			if (ls.size() > 20) {
 				loc = w.random(ls.subList(0, 20));

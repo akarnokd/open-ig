@@ -84,7 +84,7 @@ public class AI implements AIManager {
 		this.w = p.world;
 		this.p = p;
 		controls = new DefaultAIControls(p);
-		exploration = new ExplorationMap(w);
+		exploration = new ExplorationMap(p);
 	}
 	@Override
 	public void prepare() {
@@ -403,7 +403,7 @@ public class AI implements AIManager {
 			return;
 		}
 
-		acts = new ResearchPlanner(world, controls).run();
+		acts = new ResearchPlanner(world, controls, exploration).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
 			return;

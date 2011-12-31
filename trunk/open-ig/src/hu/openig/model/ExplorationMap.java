@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Location;
 import hu.openig.utils.JavaUtils;
 
+import java.awt.Rectangle;
 import java.util.Set;
 
 /**
@@ -26,16 +27,50 @@ public class ExplorationMap {
 	public final int rows;
 	/** The number of columns of the exploration map. */
 	public final int columns;
+	/** The player. */
+	protected final Player p;
 	/**
 	 * Constructor. Initializes the exploration map with everything unexplored. 
-	 * @param w the world
+	 * @param p the player
 	 */
-	public ExplorationMap(World w) {
-		cellSize = (int)Math.floor(Math.sqrt(2) * w.env.params().fleetRadarUnitSize()) - 4;
-		rows = (int)Math.ceil(w.galaxyModel.map.getHeight() / cellSize);
-		columns = (int)Math.ceil(w.galaxyModel.map.getWidth() / cellSize);
+	public ExplorationMap(Player p) {
+		this.p = p;
+		cellSize = (int)Math.floor(Math.sqrt(2) * p.world.params().fleetRadarUnitSize()) - 4;
+		rows = (int)Math.ceil(p.world.galaxyModel.map.getHeight() / cellSize);
+		columns = (int)Math.ceil(p.world.galaxyModel.map.getWidth() / cellSize);
 		initExplorationMap();
 	}
+	/**
+	 * Computes the allowed exploration map, considering the player's exploration limits.
+	 * @param inner the innter rectangle
+	 * @param outer the outer rectangle
+	 * @return the updated map
+	 */
+	public Set<Location> allowedMap(Rectangle inner, Rectangle outer) {
+		if (inner == null && outer == null) {
+			return map;
+		}
+		Set<Location> result = JavaUtils.newHashSet();
+		
+		for (Location loc : map) {
+			int cx = (int)((loc.x + 0.5) * cellSize);
+			int cy = (int)((loc.y + 0.5) * cellSize);
+			if (inner != null) {
+				if (inner.contains(cx, cy)) {
+					continue;
+				}
+			}
+			if (outer != null) {
+				if (!outer.contains(cx, cy)) {
+					continue;
+				}
+			}
+			result.add(loc);
+		}
+		
+		return result;
+	}
+
 	/**
 	 * Set all cells to undiscovered.
 	 */
