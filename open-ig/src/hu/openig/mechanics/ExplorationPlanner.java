@@ -194,8 +194,23 @@ public class ExplorationPlanner extends Planner {
 			}
 		}
 		for (ResearchType rt : world.availableResearch) {
-			if (rt.has("radar") && rt.category == ResearchSubCategory.EQUIPMENT_RADARS && rt.getInt("radar") > maxRadar) {
-				return true;
+			if (rt.has("radar") 
+					&& rt.category == ResearchSubCategory.EQUIPMENT_RADARS) {
+				if (rt.getInt("radar") > maxRadar) {
+					return true;
+				}
+			}
+			if (fitForExploration(rt)) {
+				// check fixed slot ships
+				for (EquipmentSlot es : rt.slots.values()) {
+					if (es.fixed) {
+						for (ResearchType rt1 : es.items) {
+							if (rt1.has("radar") && rt1.getInt("radar") > maxRadar) {
+								return true;
+							}
+						}
+					}
+				}
 			}
 		}
 		return false;
@@ -320,7 +335,7 @@ public class ExplorationPlanner extends Planner {
 				continue;
 			}
 			ResearchType rt = e.getKey();
-			if (rt.category != ResearchSubCategory.SPACESHIPS_CRUISERS) {
+			if (!fitForExploration(rt)) {
 				continue;
 			}
 			for (EquipmentSlot es : rt.slots.values()) {
@@ -347,7 +362,7 @@ public class ExplorationPlanner extends Planner {
 		outer0:
 		for (Map.Entry<ResearchType, Integer> e : world.inventory.entrySet()) {
 			ResearchType rt = e.getKey();
-			if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS && e.getValue() > 0) {
+			if (fitForExploration(rt) && e.getValue() > 0) {
 				for (EquipmentSlot es : rt.slots.values()) {
 					if (es.fixed) {
 						for (ResearchType rt0 : es.items) {
@@ -366,6 +381,15 @@ public class ExplorationPlanner extends Planner {
 		return bestFixed;
 	}
 	/**
+	 * Check if the given technology should be considered for exploration ship construction.
+	 * @param rt the technology
+	 * @return true if applicable
+	 */
+	boolean fitForExploration(ResearchType rt) {
+		return rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+				/* || rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS */;
+	}
+	/**
 	 * Check if we have radar in inventory.
 	 * @return if action taken
 	 */
@@ -379,7 +403,7 @@ public class ExplorationPlanner extends Planner {
 		int bestFixedRadar = 0;
 		outer1:
 		for (ResearchType rt : world.availableResearch) {
-			if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+			if (fitForExploration(rt)) {
 				for (EquipmentSlot es : rt.slots.values()) {
 					if (es.fixed) {
 						for (ResearchType rt0 : es.items) {
@@ -410,7 +434,7 @@ public class ExplorationPlanner extends Planner {
 		List<ResearchType> ships = new ArrayList<ResearchType>();
 		outer4:
 		for (ResearchType rt1 : world.availableResearch) {
-			if (rt1.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+			if (fitForExploration(rt1)) {
 				for (EquipmentSlot es : rt1.slots.values()) {
 					if (!es.fixed) {
 						for (ResearchType rt2 : es.items) {
@@ -458,7 +482,7 @@ public class ExplorationPlanner extends Planner {
 				continue;
 			}
 			ResearchType rt = e.getKey();
-			if (rt.category != ResearchSubCategory.SPACESHIPS_CRUISERS) {
+			if (!fitForExploration(rt)) {
 				continue;
 			}
 			EquipmentSlot es = rt.supports(radar);
@@ -476,7 +500,7 @@ public class ExplorationPlanner extends Planner {
 		}
 		// find the cheapest and produce it
 		for (ResearchType rt : world.availableResearch) {
-			if (rt.category != ResearchSubCategory.SPACESHIPS_CRUISERS) {
+			if (!fitForExploration(rt)) {
 				continue;
 			}
 			// check if supports the given radar

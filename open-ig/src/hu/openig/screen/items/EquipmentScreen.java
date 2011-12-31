@@ -1162,10 +1162,11 @@ public class EquipmentScreen extends ScreenBase {
 		innerEquipmentSeparator.visible(false);
 		innerEquipmentValue.visible(false);
 		ResearchType rt = research();
+		Fleet f = fleet();
 		
 		statistics = player().getPlanetStatistics(null);
 		
-		if (player().selectionMode == SelectionMode.PLANET) {
+		if (player().selectionMode == SelectionMode.PLANET || f == null) {
 			
 			PlanetStatistics ps = planet().getStatistics();
 			
@@ -1271,7 +1272,6 @@ public class EquipmentScreen extends ScreenBase {
 			transferButton.visible(false);
 			noSpaceport.visible(false);
 		} else {
-			Fleet f = fleet();
 			if (fleetShown != f || lastSelection != player().selectionMode) {
 				fleetShown = f;
 				lastSelection = player().selectionMode;
