@@ -302,65 +302,48 @@ public class ColonyPlanner extends Planner {
 		// try changing the tax
 		int moraleNow = planet.morale;
 		TaxLevel tax = planet.tax;
-		
+		TaxLevel newLevel = null;
 		if (moraleNow < 25 || planet.population < 4500) {
-			if (tax != TaxLevel.NONE) {
-				setTaxLevelAction(planet, TaxLevel.NONE);
-				return true;
-			}
+			newLevel = TaxLevel.NONE;
 		} else
 		if (moraleNow < 38 || planet.population < 5000) {
-			if (tax != TaxLevel.VERY_LOW) {
-				setTaxLevelAction(planet, TaxLevel.VERY_LOW);
-				return true;
-			}
+			newLevel = TaxLevel.VERY_LOW;
 		} else
 		if (moraleNow < 55 || planet.population < 5500) {
-			if (tax != TaxLevel.LOW) {
-				setTaxLevelAction(planet, TaxLevel.LOW);
-				return true;
-			}
+			newLevel = TaxLevel.LOW;
 		} else
 		if (moraleNow < 60) {
-			if (tax != TaxLevel.MODERATE) {
-				setTaxLevelAction(planet, TaxLevel.MODERATE);
-				return true;
-			}
+			newLevel = TaxLevel.MODERATE;
 		} else
 		if (moraleNow < 65) {
-			if (tax != TaxLevel.ABOVE_MODERATE) {
-				setTaxLevelAction(planet, TaxLevel.ABOVE_MODERATE);
-				return true;
-			}
+			newLevel = TaxLevel.ABOVE_MODERATE;
 		} else
 		if (moraleNow < 70) {
-			if (tax != TaxLevel.HIGH) {
-				setTaxLevelAction(planet, TaxLevel.HIGH);
-				return true;
-			}
+			newLevel = TaxLevel.HIGH;
 		} else
 		if (moraleNow < 78) {
-			if (tax != TaxLevel.VERY_HIGH) {
-				setTaxLevelAction(planet, TaxLevel.VERY_HIGH);
-				return true;
-			}
+			newLevel = TaxLevel.VERY_HIGH;
 		} else
 		if (moraleNow < 85) {
-			if (tax != TaxLevel.OPPRESSIVE) {
-				setTaxLevelAction(planet, TaxLevel.OPPRESSIVE);
-				return true;
-			}
+			newLevel = TaxLevel.OPPRESSIVE;
 		} else
 		if (moraleNow < 95) {
-			if (tax != TaxLevel.EXPLOITER) {
-				setTaxLevelAction(planet, TaxLevel.EXPLOITER);
-				return true;
-			}
+			newLevel = TaxLevel.EXPLOITER;
 		} else {
-			if (tax != TaxLevel.SLAVERY) {
-				setTaxLevelAction(planet, TaxLevel.SLAVERY);
-				return true;
-			}
+			newLevel = TaxLevel.SLAVERY;
+		}
+		// reduce tax level if worker shortage
+		if (newLevel != TaxLevel.NONE && planet.population < planet.statistics.workerDemand) {
+			newLevel = TaxLevel.values()[newLevel.ordinal() - 1];
+		}
+		// reduce tax further if even lower worker shortage
+		if (newLevel != TaxLevel.NONE && planet.population * 5 < planet.statistics.workerDemand * 4) {
+			newLevel = TaxLevel.values()[newLevel.ordinal() - 1];
+		}
+		
+		if (tax != newLevel) {
+			setTaxLevelAction(planet, newLevel);
+			return true;
 		}
 		return false;
 	}
