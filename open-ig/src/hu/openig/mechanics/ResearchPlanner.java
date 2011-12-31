@@ -257,7 +257,7 @@ public class ResearchPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType buildingType) {
-				return buildingType == bt && limit(planet, bt, 1);
+				return buildingType == bt && count(planet, bt) < 1;
 			}
 		}, costOrderReverse, false);
 	}

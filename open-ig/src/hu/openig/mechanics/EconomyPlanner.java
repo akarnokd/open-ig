@@ -312,7 +312,8 @@ public class EconomyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return  value.kind.equals("Social") && value.hasResource("morale") && limit(planet, value, 1);
+				return  value.kind.equals("Social") && value.hasResource("morale") 
+						&& count(planet, value) < 1;
 			}
 		};
 		if (planet.population > planet.statistics.workerDemand * 1.1
