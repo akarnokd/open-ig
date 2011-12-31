@@ -272,7 +272,7 @@ public class ColonyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return value.hasResource("repair") && limit(planet, value, 1);
+				return value.hasResource("repair") && count(planet, value) < 1;
 			}
 		};
 		if (planet.population >= 25000 && planet.population > planet.statistics.workerDemand * 1.1) {
@@ -395,7 +395,7 @@ public class ColonyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return value.hasResource("morale") && limit(planet, value, 1);
+				return value.hasResource("morale") && count(planet, value) < 1;
 			}
 		};
 		return manageBuildings(planet, morale, costOrder, true);
@@ -488,7 +488,8 @@ public class ColonyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return (value.hasResource("morale") || value.hasResource("population-growth")) && limit(planet, value, 1);
+				return (value.hasResource("morale") || value.hasResource("population-growth")) 
+						&& count(planet, value) < 1;
 			}
 		};
 		if (planet.population < planet.statistics.workerDemand) {
@@ -500,7 +501,7 @@ public class ColonyPlanner extends Planner {
 	final BuildingSelector energy = new BuildingSelector() {
 		@Override
 		public boolean accept(AIPlanet planet, AIBuilding building) {
-			return building.getEnergy() > 0;
+			return building.getEnergy() > 0 && count(planet, building.type) > 1;
 		}
 		@Override
 		public boolean accept(AIPlanet planet, BuildingType buildingType) {

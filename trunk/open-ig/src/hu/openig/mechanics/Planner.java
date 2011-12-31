@@ -81,7 +81,11 @@ public abstract class Planner {
 	final BuildingOrder costOrder = new BuildingOrder() {
 		@Override
 		public int compare(AIBuilding o1, AIBuilding o2) {
-			return o1.type.cost < o2.type.cost ? -1 : (o1.type.cost > o2.type.cost ? 1 : 0);
+			int c = o1.type.cost < o2.type.cost ? -1 : (o1.type.cost > o2.type.cost ? 1 : 0);
+			if (c == 0) {
+				c = o1.upgradeLevel - o2.upgradeLevel;
+			}
+			return c;
 		}
 		@Override
 		public int compare(BuildingType o1, BuildingType o2) {
@@ -499,20 +503,19 @@ public abstract class Planner {
 		});
 	}
 	/**
-	 * Counts the buildings on the planet and returns false if already at max.
+	 * Check the current building count.
 	 * @param planet the target planet
 	 * @param bt the building type
-	 * @param max the maximum value
-	 * @return true if limit reached
+	 * @return the building count
 	 */
-	public boolean limit(AIPlanet planet, BuildingType bt, int max) {
+	public int count(AIPlanet planet, BuildingType bt) {
 		 int count = 0;
 		 for (AIBuilding b : planet.buildings) {
 			 if (b.type == bt) {
 				 count++;
 			 }
 		 }
-		 return count < max;
+		 return count;
 	}
 	/**
 	 * Returns the given label.
