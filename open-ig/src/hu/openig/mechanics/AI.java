@@ -56,11 +56,6 @@ public class AI implements AIManager {
 	AIControls controls;
 	/** The exploration map manager. */
 	ExplorationMap exploration;
-	/** 
-	 * AI players won't start colonization until the player has actually researched its colony ship.
-	 * To avoid the headstart problem in skirmish mode. 
-	 */
-	boolean playerColonyShipAvailable;
 	/** Set of fleets which will behave as defenders in the space battle. */
 	final Set<Integer> defensiveTask = JavaUtils.newHashSet();
 	/** The estimations about how strong the other player's fleets are. */
@@ -90,7 +85,6 @@ public class AI implements AIManager {
 	public void prepare() {
 		world = new AIWorld();
 		world.assign(p);
-		playerColonyShipAvailable = w.player.colonyShipAvailable;
 	}
 	
 	@Override
@@ -387,11 +381,8 @@ public class AI implements AIManager {
 	@Override
 	public void manage() {
 		// if the player is the current player
-		if (p != w.player) {
-			return;
-		}
-//		if (explorationMap.size() == 0) {
-//			initExplorationMap();
+//		if (p != w.player) {
+//			return;
 //		}
 		updateExplorationMap();
 		

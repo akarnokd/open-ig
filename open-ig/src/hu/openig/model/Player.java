@@ -104,8 +104,6 @@ public class Player {
 	public boolean noDiplomacy;
 	/** The AI associated with this player. */
 	public AIManager ai;
-	/** Indicates that the player has a colony ship researched. */
-	public boolean colonyShipAvailable;
 	/** If non-null, it represents the rectangle where the explorers should not go into. */
 	public Rectangle explorationInnerLimit;
 	/** If non-null, it represents the rectangle where the explorers should not go outside. */
@@ -355,19 +353,9 @@ public class Player {
 	public boolean add(ResearchType rt) {
 		if (!availableResearch.containsKey(rt)) {
 			availableResearch.put(rt, new ArrayList<ResearchType>()) ;
-			customResearchAction(rt);
 			return true;
 		}
 		return false; 
-	}
-	/**
-	 * Perform additional actions in case a research becomes available.
-	 * @param rt the research type to process
-	 */
-	public void customResearchAction(ResearchType rt) {
-		if (rt.id.equals("ColonyShip")) {
-			colonyShipAvailable = true;
-		}
 	}
 	/** 
 	 * Set the availability of the given research.
@@ -394,7 +382,6 @@ public class Player {
 			}
 			
 			availableResearch.put(rt, avail);
-			customResearchAction(rt);
 			
 			return true;
 		}
