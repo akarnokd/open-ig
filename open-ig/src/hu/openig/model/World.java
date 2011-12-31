@@ -1886,7 +1886,7 @@ public class World {
 		// the building hitpoints
 		for (XElement xhp : xbattle.childElement("buildings").childrenWithName("hitpoints")) {
 			String id = xhp.get("id");
-			String player = xhp.get("player");
+			String player = xhp.get("player", null);
 			battle.groundHitpoints.put(Pair.of(id, player), xhp.getInt("ground"));
 			battle.spaceHitpoints.put(Pair.of(id, player), xhp.getInt("space"));
 		}
@@ -2012,7 +2012,12 @@ public class World {
 	 * @return the hitpoints
 	 */
 	public int getHitpoints(BuildingType rt, Player owner, boolean space) {
-		Integer hp = (space ? battle.spaceHitpoints : battle.groundHitpoints).get(Pair.of(rt.id, owner.id));
+		Map<Pair<String, String>, Integer> map = space ? battle.spaceHitpoints : battle.groundHitpoints;
+		Integer hp = map.get(Pair.of(rt.id, owner.id));
+		if (hp != null) {
+			return hp;
+		}
+		hp = map.get(Pair.of(rt.id, null));
 		if (hp != null) {
 			return hp;
 		}

@@ -135,13 +135,12 @@ public class MediaPlayer {
 							} else {
 								buffer2 = buffer;
 							}
-							AudioFormat streamFormat = new AudioFormat(in.getFormat().getSampleRate(), 16, 1, true, false);
 							
-							DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, streamFormat);
+							DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, af);
 							sdl = (SourceDataLine) AudioSystem.getLine(clipInfo);
 							sdl.open();
 							AudioThread.setVolume(sdl, audioVolume);
-							videoThread.setAudioLength(buffer2.length / 2);
+							videoThread.setAudioLength(buffer2.length * 8 / af.getChannels() / af.getSampleSizeInBits());
 							try {
 								barrier.await();
 								if (!stop) {
