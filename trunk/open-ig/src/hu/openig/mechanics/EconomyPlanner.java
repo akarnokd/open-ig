@@ -82,17 +82,19 @@ public class EconomyPlanner extends Planner {
 		if (planet.statistics.constructing) {
 			return false;
 		}
+		// don't upgrade unless we have a ton of money
+		final boolean allowUpgrades = world.money >= 100000;
 		List<Pred1<AIPlanet>> functions = JavaUtils.newArrayList();
 		functions.add(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet planet) {
-				return checkEconomy(planet);
+				return checkEconomy(planet, allowUpgrades);
 			}
 		});
 		functions.add(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet planet) {
-				return checkFactory(planet);
+				return checkFactory(planet, allowUpgrades);
 			}
 		});
 		functions.add(new Pred1<AIPlanet>() {
@@ -223,13 +225,14 @@ public class EconomyPlanner extends Planner {
 	/**
 	 * Check if there is shortage on police.
 	 * @param planet the planet to manage
+	 * @param allowUpgrades allow upgrading?
 	 * @return if action taken
 	 */
-	boolean checkEconomy(AIPlanet planet) {
+	boolean checkEconomy(AIPlanet planet, final boolean allowUpgrades) {
 		BuildingSelector police = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
-				return value.hasResource("multiply") || value.hasResource("credit");
+				return allowUpgrades && (value.hasResource("multiply") || value.hasResource("credit"));
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
@@ -249,13 +252,15 @@ public class EconomyPlanner extends Planner {
 	/**
 	 * Check if there is shortage on police.
 	 * @param planet the planet to manage
+	 * @param allowUpgrades allow upgrades?
 	 * @return if action taken
 	 */
-	boolean checkFactory(AIPlanet planet) {
+	boolean checkFactory(AIPlanet planet, final boolean allowUpgrades) {
 		BuildingSelector factory = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
-				return value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
+				return allowUpgrades 
+						&& (value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon"));
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {

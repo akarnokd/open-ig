@@ -1380,13 +1380,13 @@ public class World {
 		int ttl = 0;
 		switch (radar) {
 		case 1:
-			ttl = 12 * 6;
+			ttl = 12 * 6 * 4;
 			break;
 		case 2:
-			ttl = 24 * 6;
+			ttl = 24 * 6 * 2;
 			break;
 		case 3:
-			ttl = 96 * 6;
+			ttl = 96 * 6 * 4;
 			break;
 		default:
 		}
