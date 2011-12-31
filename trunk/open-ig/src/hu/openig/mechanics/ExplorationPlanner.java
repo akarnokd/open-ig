@@ -314,9 +314,12 @@ public class ExplorationPlanner extends Planner {
 			add(new Action0() {
 				@Override
 				public void invoke() {
-					Fleet f = controls.actionCreateFleet(w.env.labels().get("discovery_fleet"), deploy.planet);
-					f.addInventory(fwhat, 1);
-					f.upgradeAll();
+					if (deploy.planet.owner.inventoryCount(fwhat) > 0) {
+						Fleet f = controls.actionCreateFleet(w.env.labels().get("discovery_fleet"), deploy.planet);
+						f.addInventory(fwhat, 1);
+						f.upgradeAll();
+						f.owner.changeInventoryCount(fwhat, -1);
+					}
 				}
 			});
 			return true;
