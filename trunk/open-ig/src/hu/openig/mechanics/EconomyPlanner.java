@@ -260,11 +260,15 @@ public class EconomyPlanner extends Planner {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return allowUpgrades 
-						&& (value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon"));
+						&& (hasTechnologyFor(value.type, "spaceship") 
+								|| hasTechnologyFor(value.type, "equipment") 
+								|| hasTechnologyFor(value.type, "weapon"));
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return  value.hasResource("spaceship") || value.hasResource("equipment") || value.hasResource("weapon");
+				return  hasTechnologyFor(value, "spaceship") 
+						|| hasTechnologyFor(value, "equipment") 
+						|| hasTechnologyFor(value, "weapon");
 			}
 		};
 		if (planet.population > planet.statistics.workerDemand * 1.1
@@ -274,6 +278,23 @@ public class EconomyPlanner extends Planner {
 				&& planet.statistics.hospitalAvailable > planet.population
 				&& planet.statistics.policeAvailable > planet.population) {
 			return manageBuildings(planet, factory, costOrderReverse, false);
+		}
+		return false;
+	}
+	/**
+	 * Check if we have any technology requiring the given factory.
+	 * @param value the potential building type
+	 * @param factory the factory type to check
+	 * @return true if building should be built
+	 */
+	boolean hasTechnologyFor(BuildingType value, String factory) {
+		if (value.hasResource(factory)) {
+			for (ResearchType rt : w.researches.values()) {
+				if (rt.race.contains(rt) && rt.level <= w.level 
+						&& factory.equals(rt.factory)) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}
