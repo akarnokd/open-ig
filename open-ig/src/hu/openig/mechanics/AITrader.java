@@ -269,9 +269,7 @@ public class AITrader implements AIManager {
 	 * @return create a new fleet
 	 */
 	public Fleet createFleet(String id) {
-		Fleet nf = new Fleet();
-		nf.owner = player;
-		nf.name = traderLabel;
+		// locate research
 		ResearchType type = null;
 		for (ResearchType rt : world.researches.values()) {
 			if (rt.race.contains(player.race) && rt.id.equals(id)) {
@@ -279,14 +277,20 @@ public class AITrader implements AIManager {
 				break;
 			}
 		}
-		InventoryItem ii = new InventoryItem();
-		ii.owner = player;
-		ii.count = 1;
-		ii.type = type;
-		ii.hp = world.getHitpoints(ii.type);
-		
-		nf.inventory.add(ii);
-		return nf;
+		if (type != null) {
+			Fleet nf = new Fleet();
+			nf.owner = player;
+			nf.name = traderLabel;
+			InventoryItem ii = new InventoryItem();
+			ii.owner = player;
+			ii.count = 1;
+			ii.type = type;
+			ii.hp = world.getHitpoints(ii.type);
+			
+			nf.inventory.add(ii);
+			return nf;
+		} 
+		throw new AssertionError("Traders missing technology " + id);
 	}
 
 	@Override

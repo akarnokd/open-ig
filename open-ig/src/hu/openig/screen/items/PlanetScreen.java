@@ -2840,7 +2840,7 @@ public class PlanetScreen extends ScreenBase {
 			buildingsPanel.preview.count = planet().countBuilding(bt);
 			buildingsPanel.preview.enabled(planet().canBuild(bt) && planet().owner == player());
 			placementMode &= planet().canBuild(bt);
-			buildingsPanel.build.down &= planet().canBuild(bt);
+			buildingsPanel.build.down = buildingsPanel.build.down && planet().canBuild(bt);
 			buildingsPanel.buildingName.text(bt.name);
 			buildingsPanel.build.enabled(buildingsPanel.preview.enabled());
 			
@@ -3411,10 +3411,10 @@ public class PlanetScreen extends ScreenBase {
 		// if mixed selection, deselect aliens
 		if (own && enemy) {
 			for (GroundwarUnit u : units) {
-				u.selected &= u.owner == player();
+				u.selected = u.selected && u.owner == player();
 			}			
 			for (GroundwarGun u : guns) {
-				u.selected &= u.owner == player();
+				u.selected = u.selected && u.owner == player();
 			}			
 		}
 	}

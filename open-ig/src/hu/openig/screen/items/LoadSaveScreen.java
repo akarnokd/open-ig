@@ -50,6 +50,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Deque;
 import java.util.GregorianCalendar;
@@ -1188,7 +1189,9 @@ public class LoadSaveScreen extends ScreenBase {
 		for (File f : files) {
 			String n = f.getName();
 			if (n.startsWith("savex-")) {
-				f.delete();
+				if (!f.delete()) {
+					System.err.println("Warning: Could not delete file " + f);
+				}
 				continue;
 			}
 			
@@ -1210,7 +1213,9 @@ public class LoadSaveScreen extends ScreenBase {
 			if (info.canRead()) {
 				// if no associated save, delete the info
 				if (!save.canRead()) {
-					info.delete();
+					if (!info.delete()) {
+						System.err.println("Warning: Could not delete file " + info);
+					}
 					continue;
 				}
 				// load world info
@@ -1260,7 +1265,12 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		}
 		
-		Collections.sort(saves);
+		Collections.sort(saves, new Comparator<FileItem>() {
+			@Override
+			public int compare(FileItem o1, FileItem o2) {
+				return o1.saveDate.compareTo(o2.saveDate);
+			}
+		});
 	}
 	/** Display the other settings dialog. */
 	void doOtherSettings() {

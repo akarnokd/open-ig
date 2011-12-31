@@ -36,8 +36,8 @@ public class ExplorationMap {
 	public ExplorationMap(Player p) {
 		this.p = p;
 		cellSize = (int)Math.floor(Math.sqrt(2) * p.world.params().fleetRadarUnitSize()) - 4;
-		rows = (int)Math.ceil(p.world.galaxyModel.map.getHeight() / cellSize);
-		columns = (int)Math.ceil(p.world.galaxyModel.map.getWidth() / cellSize);
+		rows = (int)Math.ceil(p.world.galaxyModel.map.getHeight() * 1.0 / cellSize);
+		columns = (int)Math.ceil(p.world.galaxyModel.map.getWidth() * 1.0 / cellSize);
 		initExplorationMap();
 	}
 	/**
