@@ -254,7 +254,8 @@ public class ResearchPlanner extends Planner {
 			// check if we have orbital factory in inventory, deploy it
 			final Pair<Integer, ResearchType> orbital = world.inventoryCount("OrbitalFactory");
 			if (orbital.first > 0) {
-				List<AIPlanet> planets = shuffle(world.ownPlanets);
+				List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+				Collections.sort(planets, BEST_PLANET);
 				for (final AIPlanet p2 : planets) {
 					int sats = count(p2.inventory, new Pred1<AIInventoryItem>() {
 						@Override
