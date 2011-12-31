@@ -108,6 +108,8 @@ public class Player {
 	public Rectangle explorationInnerLimit;
 	/** If non-null, it represents the rectangle where the explorers should not go outside. */
 	public Rectangle explorationOuterLimit;
+	/** The colonization limit, -1 means unlimited. */
+	public int colonizationLimit;
 	/**
 	 * The queue for pending diplomatic interactions.
 	 */

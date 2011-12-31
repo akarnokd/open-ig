@@ -134,7 +134,10 @@ public class ResearchPlanner extends Planner {
 			planReconstruction(rebuildCount, candidatesReconstruct);
 			return;
 		}
-		if (candidatesGetMorePlanets.size() > 0 && world.mayConquer) {
+		if (candidatesGetMorePlanets.size() > 0 
+				&& world.mayConquer 
+				&& world.colonizationLimit >= 0 
+				&& world.colonizationLimit < world.statistics.planetsColonized) {
 			// TODO this is more complicated
 			planConquest();
 			return;

@@ -8,6 +8,7 @@
 		money='32000'
 		initial-stance='50'
 		ai='NONE'
+		colonization-limit='-1'
 	>
 	<!-- Initial inventory.
 		<inventory id='' count=''/>
@@ -32,6 +33,7 @@
 		ai='DEFAULT' ratios='1,2,1'
 		exploration-inner-limit=''
 		exploration-outer-limit='150, 360, 300, 130'
+		colonization-limit='0'
 	>
 		<available>
 			<type id='MediumTank' list=''/>
@@ -62,6 +64,7 @@
 		picture='database/morgath'
 		money='32000'
 		initial-stance='40'
+		colonization-limit='3'
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
@@ -74,6 +77,7 @@
 		picture='database/ychom'
 		money='32000'
 		initial-stance='40'
+		colonization-limit='3'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -85,6 +89,7 @@
 		picture='database/drib'
 		money='32000'
 		initial-stance='40'
+		colonization-limit='3'
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
@@ -97,6 +102,7 @@
 		picture='database/sullep'
 		money='32000'
 		initial-stance='40'
+		colonization-limit='3'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -110,6 +116,7 @@
 		initial-stance='10'
 		exploration-inner-limit='150, 360, 300, 130'
 		exploration-outer-limit=''
+		colonization-limit='1'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -121,6 +128,7 @@
 		picture='database/ecalep'
 		money='32000'
 		initial-stance='40'
+		colonization-limit='3'
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
@@ -133,6 +141,7 @@
 		picture='database/freenations'
 		money='32000'
 		initial-stance='50'
+		colonization-limit='3'
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
@@ -145,6 +154,7 @@
 		picture='database/freenations'
 		money='32000'
 		initial-stance='50'
+		colonization-limit='3'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -158,6 +168,7 @@
 		initial-stance='10'
 		ai='PIRATES'
 		nodiplomacy='true'
+		colonization-limit='0'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -172,6 +183,7 @@
 		ai='TRADERS'
 		nodiplomacy='true'
 		nodatabase='true'
+		colonization-limit='0'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
