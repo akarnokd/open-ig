@@ -107,6 +107,8 @@
 		picture='database/dargslan'
 		money='32000'
 		initial-stance='10'
+		exploration-inner-limit='150, 360, 300, 130'
+		exploration-outer-limit=''
 	>
 		<available>
 			<type id='ColonyShip' list=''/>

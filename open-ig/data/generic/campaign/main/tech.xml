@@ -402,7 +402,7 @@
 	<item id='DargslanHyperDrive5' name='tech.hyperdrive5.name' long-name='tech.hyperdrive5.longname'
 		description='tech.hyperdrive5.description' category='EQUIPMENT_HYPERDRIVES'
 		image='inventions/equipments/hyperdrives/hyperdrive_5' factory='equipment'
-		research-cost='24000' production-cost='9000' level='5' race='dargslan'
+		research-cost='24000' production-cost='9000' level='6' race='dargslan'
 		civil='4' mech='6' comp='1' mil='4' index='4'
 		video='technology/equipments/hyperdrives/hyperdrive_5'>
 		<property name='speed' value='35' />
