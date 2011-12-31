@@ -460,8 +460,12 @@ public class World {
 				if (rt == null) {
 					System.err.printf("Missing research %s for player %s%n", rid, player.id);
 				} else {
-					p.setAvailable(rt);
 					p.changeInventoryCount(rt, xinventory.getInt("count"));
+				}
+			}
+			for (ResearchType rt : p.inventory.keySet()) {
+				if (!p.isAvailable(rt)) {
+					p.setAvailable(rt);
 				}
 			}
 			setTechAvailability(xplayer, p);
@@ -571,8 +575,8 @@ public class World {
 		String image = item.get("image");
 		
 		tech.image = rl.getImage(image);
-		tech.infoImage = rl.getImage(image + "_large", true);
-		tech.infoImageWired = rl.getImage(image + "_wired_large", true);
+		tech.infoImage = placeholder(rl.getImage(image + "_large", true), tech.image);
+		tech.infoImageWired = placeholder(rl.getImage(image + "_wired_large", true), tech.image);
 		
 		tech.factory = item.get("factory");
 		tech.race.addAll(Arrays.asList(item.get("race").split("\\s*,\\s*")));
@@ -623,10 +627,25 @@ public class World {
 		tech.equipmentImage = rl.getImage(image + "_tiny", true);
 		tech.equipmentCustomizeImage = rl.getImage(image + "_small", true);
 		if (tech.equipmentCustomizeImage == null) {
-			tech.equipmentCustomizeImage = rl.getImage(image + "_huge", true);
+			tech.equipmentCustomizeImage = placeholder(rl.getImage(image + "_huge", true), tech.image);
 		}
 		tech.index = item.getInt("index");
 		tech.video = item.get("video", null);
+	}
+	/**
+	 * Creates a placeholder image if the given image is null.
+	 * @param image the input image
+	 * @param alternative image
+	 * @return the image or a placeholder
+	 */
+	BufferedImage placeholder(BufferedImage image, BufferedImage alternative) {
+		if (image != null) {
+			return image;
+		}
+		if (alternative != null) {
+			return alternative;
+		}
+		return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 	}
 	/**
 	 * Retrieve or create a research type.
@@ -1667,6 +1686,12 @@ public class World {
 			
 			se.hp = xspace.getInt("hp");
 			
+			ResearchType rt = researches.get(id);
+			// if no equipment image, use the first frame of the rotation
+			if (rt.equipmentImage == null) {
+				rt.equipmentImage = se.normal[0];
+			}
+			
 			battle.spaceEntities.put(id, se);
 		}
 		for (XElement xdefense : xbattle.childElement("ground-projectors").childrenWithName("tech")) {
@@ -1770,7 +1795,13 @@ public class World {
 			if (xground.has("repair-time")) {
 				ge.selfRepairTime = xground.getInt("repair-time");
 			}
-			
+
+			ResearchType rt = researches.get(id);
+			// if no equipment image, use the first frame of the rotation
+			if (rt.equipmentImage == null) {
+				rt.equipmentImage = ge.normal[0][0];
+			}
+
 			battle.groundEntities.put(id, ge);
 		}
 		Map<String, BufferedImage[][]> matrices = JavaUtils.newHashMap();

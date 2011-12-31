@@ -386,7 +386,8 @@ public class AI implements AIManager {
 	}
 	@Override
 	public void manage() {
-		if (!p.id.equals("Empire")) {
+		// if the player is the current player
+		if (p != w.player) {
 			return;
 		}
 //		if (explorationMap.size() == 0) {

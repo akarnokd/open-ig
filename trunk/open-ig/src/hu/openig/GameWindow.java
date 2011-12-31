@@ -1170,6 +1170,16 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				case KeyEvent.VK_P:
+					// set current player
+					if (e.isControlDown()) {
+						Player p = world().player;
+						if (p.currentPlanet != null && p.currentPlanet.owner != null) {
+							world().player = p.currentPlanet.owner;
+						}
+						e.consume();
+					}
+					break;
 				case KeyEvent.VK_K:
 					if (e.isControlDown()) {
 						fullConquestTest();

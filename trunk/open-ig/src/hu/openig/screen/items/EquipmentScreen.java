@@ -1576,7 +1576,9 @@ public class EquipmentScreen extends ScreenBase {
 				vc = tanks.get(rt.index);
 			} else
 			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-				vc = tanks.get(rt.index + 4);
+				if (tanks.size() > rt.index + 4) {
+					vc = tanks.get(rt.index + 4);
+				}
 			}
 
 			if (vc != null && (count > 0 || avail)) {
