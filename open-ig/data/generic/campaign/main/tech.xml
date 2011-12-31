@@ -299,7 +299,7 @@
 		description='tech.spysatellite2.description' category='SPACESHIPS_SATELLITES'
 		image='inventions/spaceships/satellites/spy_satellite_2' factory='spaceship'
 		research-cost='12000' production-cost='2300' level='4'
-		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='SpySatellite1' mech='2' comp='3' ai='3' mil='2' index='2'
 		video='technology/spaceships/satellites/spy_satellite_2'>
 		<property name='detector' value='3' />
@@ -336,7 +336,7 @@
 		description='tech.spacestation2.description' category='SPACESHIPS_STATIONS'
 		image='inventions/spaceships/stations/space_station_2' factory='spaceship'
 		research-cost='110000' production-cost='90000' level='4'
-		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='Laser2, IonCannon, SpaceStation1' civil='3' mech='3' comp='4'
 		ai='3' mil='5' index='1' video='technology/spaceships/stations/space_station_2'>
 		<slot-fixed id='Laser' item='Laser2' count='16' />
@@ -349,7 +349,7 @@
 		description='tech.spacestation3.description' category='SPACESHIPS_STATIONS'
 		image='inventions/spaceships/stations/space_station_3' factory='spaceship'
 		research-cost='200000' production-cost='125000' level='5'
-		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='Laser4, IonCannon, Rocket2' civil='6' mech='4' comp='5' ai='3'
 		mil='6' index='2' video='technology/spaceships/stations/space_station_3'>
 		<slot-fixed id='Laser1' item='Laser3' count='7' />
@@ -635,7 +635,7 @@
 		description='tech.heavytank.description' category='WEAPONS_TANKS'
 		image='inventions/weapons/tanks/heavy_tank' factory='weapon'
 		research-cost='24000' production-cost='7000' level='4'
-		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='MediumTank' civil='2' mech='3' comp='3' ai='2' mil='5'
 		index='2' video='technology/weapons/tanks/heavy_tank'>
 		<property name='range' value='4' />
@@ -647,7 +647,7 @@
 		description='tech.behemoth.description' category='WEAPONS_TANKS'
 		image='inventions/weapons/tanks/behemoth' factory='weapon'
 		research-cost='32000' production-cost='17500' level='5'
-		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='HeavyTank' civil='3' mech='4' comp='5' ai='3' mil='5' index='3'
 		video='technology/weapons/tanks/behemoth'>
 		<property name='range' value='5' />
@@ -682,7 +682,7 @@
 		long-name='tech.rocketlauncher2.longname' description='tech.rocketlauncher2.description'
 		category='WEAPONS_VEHICLES' image='inventions/weapons/vehicles/rocket_launcher_2'
 		factory='weapon' research-cost='24000' production-cost='24200' level='4'
-		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='RocketLauncher1' civil='2' mech='5' comp='4' ai='3' mil='6'
 		index='2' video='technology/weapons/vehicles/rocket_launcher_2'>
 		<property name='range' value='8' />
@@ -707,7 +707,7 @@
 	<item id='TradeCenter' name='tech.tradecenter.name' long-name='tech.tradecenter.longname'
 		description='tech.tradecenter.description' category='BUILDINGS_CIVIL'
 		image='inventions/buildings/civil/trade_center' factory='building'
-		research-cost='12000' production-cost='17000' level='4' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		research-cost='12000' production-cost='17000' level='4' race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		civil='2' mech='1' comp='1' ai='1' mil='1' index='2'
 		video='technology/buildings/civil/trade_center' />
 	<item id='InversionShield' name='tech.inversionshield.name'
@@ -719,7 +719,7 @@
 	<item id='HyperShield' name='tech.hypershield.name' long-name='tech.hypershield.longname'
 		description='tech.hypershield.description' category='BUILDINGS_MILITARY'
 		image='inventions/buildings/military/hypershield' factory='building'
-		research-cost='30000' production-cost='35000' level='4' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		research-cost='30000' production-cost='35000' level='4' race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		requires='InversionShield' civil='3' mech='2' comp='4' ai='2' mil='4'
 		index='1' video='technology/buildings/military/hypershield' />
 	<item id='Fortress' name='tech.fortress.name' long-name='tech.fortress.longname'
@@ -737,7 +737,7 @@
 	<item id='Bunker' name='tech.bunker.name' long-name='tech.bunker.longname'
 		description='tech.bunker.description' category='BUILDINGS_MILITARY'
 		image='inventions/buildings/military/bunker' factory='building'
-		research-cost='8000' production-cost='18000' level='4' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		research-cost='8000' production-cost='18000' level='4' race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
 		civil='3' mech='3' comp='2' mil='3' index='4'
 		video='technology/buildings/military/bunker' />
 	<item id='RadarTelescope' name='tech.radartelescope.name'
@@ -750,13 +750,13 @@
 		long-name='tech.fieldtelescope.longname' description='tech.fieldtelescope.description'
 		category='BUILDINGS_RADARS' image='inventions/buildings/radars/field_telescope'
 		factory='building' research-cost='14000' production-cost='10000'
-		level='3' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='1' mech='1' comp='2' ai='2' mil='2'
+		level='3' race='human,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='1' mech='1' comp='2' ai='2' mil='2'
 		index='1' video='technology/buildings/radars/field_telescope' />
 	<item id='PhasedTelescope' name='tech.phasedtelescope.name'
 		long-name='tech.phasedtelescope.longname' description='tech.phasedtelescope.description'
 		category='BUILDINGS_RADARS' image='inventions/buildings/radars/phased_telescope'
 		factory='building' research-cost='20000' production-cost='25000'
-		level='4' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='2' mech='2' comp='3' ai='4' mil='2'
+		level='4' race='human,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='2' mech='2' comp='3' ai='4' mil='2'
 		index='2' video='technology/buildings/radars/phased_telescope' />
 	<item id='PlasmaProjector' name='tech.plasmaprojector.name'
 		long-name='tech.plasmaprojector.longname' description='tech.plasmaprojector.description'
@@ -768,14 +768,14 @@
 		long-name='tech.particleprojector.longname' description='tech.particleprojector.description'
 		category='BUILDINGS_GUNS' image='inventions/buildings/guns/particle_projector'
 		factory='building' research-cost='34000' production-cost='32000'
-		level='4' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' requires='PlasmaProjector' civil='4' mech='3'
+		level='4' race='human,morgath,ychom,dribs,sullep,dargslan,ecalep' requires='PlasmaProjector' civil='4' mech='3'
 		comp='3' ai='2' mil='4' index='1'
 		video='technology/buildings/guns/particle_projector' />
 	<item id='MesonProjector' name='tech.mesonprojector.name'
 		long-name='tech.mesonprojector.longname' description='tech.mesonprojector.description'
 		category='BUILDINGS_GUNS' image='inventions/buildings/guns/meson_projector'
 		factory='building' research-cost='60000' production-cost='40000'
-		level='5' race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' requires='ParticleProjector' civil='5' mech='4'
+		level='5' race='human,morgath,ychom,dribs,sullep,dargslan,ecalep' requires='ParticleProjector' civil='5' mech='4'
 		comp='4' ai='4' mil='6' index='2'
 		video='technology/buildings/guns/meson_projector' />
 
