@@ -18,3 +18,4 @@
 || Sound & Music integration || 2011-04-24 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Add sound and music, add statusbar notification and message history. *v0.91* music deferred. ||
 || Music || 2011-07-17 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Add music. *v0.92* ||
 || Surface & Space battles || 2011-10-02 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Rendering and basic simulation. *v0.93.450* ||
+|| Profile & Achievements || 2011-12-31 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Create a profile system and add achievement display & tracking. *0.93.510* ||
