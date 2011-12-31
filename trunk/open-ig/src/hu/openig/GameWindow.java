@@ -488,6 +488,8 @@ public class GameWindow extends JFrame implements GameControls {
 		movie = allScreens.movie;
 		statusbar = allScreens.statusbar;
 		
+		commons.profile.load();
+		
 		displayPrimary(Screens.MAIN);
 	}
 	/** Unitialize the screens. */

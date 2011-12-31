@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Deque;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -70,6 +71,8 @@ public class World {
 		time.set(GregorianCalendar.SECOND, 0);
 		time.set(GregorianCalendar.MILLISECOND, 0);
 	}
+	/** The initial game date. */
+	public final Date initialDate = time.getTime();
 	/** The available planets. */
 	public final Planets planets = new Planets();
 	/** The researches. */

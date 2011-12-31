@@ -11,6 +11,8 @@ package hu.openig.model;
 import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
 
+import java.util.Deque;
+
 /**
  * Represents a set of callback options to interact with the game environment
  * (i.e. the UI and other structures outside the game world).
@@ -56,4 +58,14 @@ public interface GameEnvironment {
 	 * @return the configuration
 	 */
 	Configuration config();
+	/**
+	 * The place to issue the achievements.
+	 * @return the queue
+	 */
+	Deque<String> achievementQueue();
+	/** 
+	 * Returns the current profile.
+	 * @return the profile
+	 */
+	Profile profile();
 }

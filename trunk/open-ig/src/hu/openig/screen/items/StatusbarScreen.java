@@ -31,12 +31,16 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Closeable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import javax.swing.Timer;
 
 
 
@@ -95,6 +99,16 @@ public class StatusbarScreen extends ScreenBase {
 	public int errorTTL;
 	/** The default error text display time. */
 	public static final int DEFALT_ERROR_TTL = 15;
+	/** The current achievement showing. */
+	public String achievementShowing;
+	/** The number of pixels the achievement has moved. */
+	public int achievementDescent;
+	/** The time to show the achievement. */
+	public int achievementTTL;
+	/** The size of the achievement panel. */
+	final int achievementSize = 55;
+	/** The achievement animator. */
+	Timer achievementAnimator;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -174,6 +188,22 @@ public class StatusbarScreen extends ScreenBase {
 		notificationHistory = new NotificationHistory();
 		notificationHistory.visible(false);
 		
+		achievementAnimator = new Timer(50, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (achievementDescent > 0) {
+					achievementDescent -= 4;
+					askRepaint();
+				} else {
+					if (--achievementTTL <= 0) {
+						achievementShowing = null;
+						achievementAnimator.stop();
+						askRepaint();
+					}
+				}
+			}
+		});
+		
 		addThis();
 	}
 
@@ -204,11 +234,13 @@ public class StatusbarScreen extends ScreenBase {
 	public void onLeave() {
 		close0(animation);
 		animation = null;
+		achievementAnimator.stop();
 	}
 
 	@Override
 	public void onFinish() {
 		animation = null;
+		achievementAnimator.stop();
 	}
 
 	@Override
@@ -246,6 +278,30 @@ public class StatusbarScreen extends ScreenBase {
 			int w = commons.text().getTextWidth(10, s);
 			commons.text().paintTo(g2, notification.x + (notification.width - w) / 2, notification.y + 1, 10, TextRenderer.YELLOW, s);
 		}
+		if (achievementShowing != null) {
+			Shape clip = g2.getClip();
+			
+			String label = get(achievementShowing);
+			String desc = get(achievementShowing + ".desc");
+			
+			int w = Math.max(commons.text().getTextWidth(14, label), commons.text().getTextWidth(10, desc));
+			int aw = commons.common().achievement.getWidth();
+			w += 15 + aw;
+			g2.clipRect(0, 20, w, achievementSize - achievementDescent);
+			
+			g2.setColor(new Color(0xC0000000, true));
+			int bottom = achievementSize - achievementDescent;
+			g2.fillRect(0, 20, w, bottom);
+			g2.setColor(Color.GRAY);
+			g2.drawRect(0, 20, w - 1, bottom - 1);
+			
+			g2.drawImage(commons.common().achievement, 5, 20 + bottom - 48, null);
+			commons.text().paintTo(g2, 10 + aw, 20 + bottom - 45, 14, TextRenderer.YELLOW, label);
+			commons.text().paintTo(g2, 10 + aw, 20 + bottom - 20, 10, TextRenderer.LIGHT_BLUE, desc);
+			
+			g2.setClip(clip);
+		}
+		
 	}
 	/** Update the state displays. */
 	public void update() {
@@ -273,7 +329,17 @@ public class StatusbarScreen extends ScreenBase {
 		time.text(String.format("%02d:%02d",
 				world().time.get(GregorianCalendar.HOUR_OF_DAY),
 				world().time.get(GregorianCalendar.MINUTE)));
+
 		
+		// manage achievements
+		if (achievementShowing == null) {
+			achievementShowing = commons.achievementNotifier.poll();
+			if (achievementShowing != null) {
+				achievementDescent = achievementSize;
+				achievementTTL = 10 * 10; // 10 seconds
+				achievementAnimator.start();
+			}
+		}
 	}
 	@Override
 	public void onEndGame() {
