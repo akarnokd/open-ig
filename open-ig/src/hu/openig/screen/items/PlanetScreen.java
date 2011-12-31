@@ -26,6 +26,7 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.ExplosionType;
+import hu.openig.model.FleetTask;
 import hu.openig.model.GroundwarExplosion;
 import hu.openig.model.GroundwarGun;
 import hu.openig.model.GroundwarRocket;
@@ -3634,6 +3635,7 @@ public class PlanetScreen extends ScreenBase {
 		final BattleInfo bi = battle;
 		
 		bi.groundwarWinner = winner;
+		bi.attacker.task = FleetTask.IDLE;
 		
 		for (GroundwarUnit u : bi.groundLosses) {
 			u.item.count--;
