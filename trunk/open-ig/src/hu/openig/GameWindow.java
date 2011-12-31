@@ -1484,7 +1484,9 @@ public class GameWindow extends JFrame implements GameControls {
 						remaining--;
 						if (remaining < 0) {
 							info.delete();
-							save.delete();
+							if (!save.delete()) {
+								System.err.println("Warning: Could not delete file " + save);
+							}
 							continue;
 						}
 					}
@@ -1499,7 +1501,9 @@ public class GameWindow extends JFrame implements GameControls {
 					if (saveMode.equals(mode.toString())) {
 						remaining--;
 						if (remaining < 0) {
-							save.delete();
+							if (!save.delete()) {
+								System.err.println("Warning: Could not delete file " + save);
+							}
 							continue;
 						}
 					}

@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.Date;
 
 /** The file item. */
-public class FileItem implements Comparable<FileItem> {
+public class FileItem {
 	/** The save name. */
 	public String saveName;
 	/** The file to load. */
@@ -35,9 +35,5 @@ public class FileItem implements Comparable<FileItem> {
 	 */
 	public FileItem(File file) {
 		this.file = file;
-	}
-	@Override
-	public int compareTo(FileItem o) {
-		return o.saveDate.compareTo(saveDate);
 	}
 }

@@ -7,8 +7,6 @@
  */
 package hu.openig.utils;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -72,23 +70,6 @@ public class WipPort {
 		try {
 			while (wip.get() != 0) {
 				cond.await();
-			}
-		} finally {
-			lock.unlock();
-		}
-	}
-	/**
-	 * Await the completion signal for the specified amount of time.
-	 * @param time the time
-	 * @param unit the unit
-	 * @throws InterruptedException if the wait was interrupted
-	 * @throws TimeoutException if the wait timed out
-	 */
-	public void await(long time, TimeUnit unit) throws InterruptedException, TimeoutException {
-		lock.lock();
-		try {
-			while (wip.get() != 0) {
-				cond.await(time, unit);
 			}
 		} finally {
 			lock.unlock();

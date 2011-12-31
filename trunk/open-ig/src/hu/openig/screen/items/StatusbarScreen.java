@@ -394,7 +394,7 @@ public class StatusbarScreen extends ScreenBase {
 				} else {
 					String pre = msgText.substring(0, idx);
 					String post = msgText.substring(idx + 2);
-					String param = null;
+					String param = "";
 					if (currentMessage.targetPlanet != null) {
 						param = currentMessage.targetPlanet.name;
 					} else
@@ -443,7 +443,7 @@ public class StatusbarScreen extends ScreenBase {
 			} else {
 				String pre = msgText.substring(0, idx);
 				String post = msgText.substring(idx + 2);
-				String param = null;
+				String param = "";
 				if (currentMessage.targetPlanet != null) {
 					param = currentMessage.targetPlanet.name;
 				} else
@@ -787,7 +787,7 @@ public class StatusbarScreen extends ScreenBase {
 				} else {
 					String pre = msgText.substring(0, idx);
 					String post = msgText.substring(idx + 2);
-					String param = null;
+					String param = "";
 					if (msg.targetPlanet != null) {
 						param = msg.targetPlanet.name;
 					} else

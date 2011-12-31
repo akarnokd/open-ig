@@ -216,7 +216,10 @@ public class Launcher extends JFrame {
 			public void success(DownloadProgress progress, byte[] sha1) {
 				if (progress.bytesTotal < 0 || (progress.bytesReceived == progress.bytesTotal)) {
 					doUpdateXMLCompleted(fn);
-					new File(fn).delete();
+					File f0 = new File(fn);
+					if (!f0.delete()) {
+						System.err.println("Warning: Could not delete file " + f0);
+					}
 					listPanel.remove(dlp);
 					listPanel.revalidate();
 					listPanel.repaint();
@@ -227,7 +230,10 @@ public class Launcher extends JFrame {
 				listPanel.remove(dlp);
 				listPanel.revalidate();
 				listPanel.repaint();
-				new File(fn).delete();
+				File f0 = new File(fn);
+				if (!f0.delete()) {
+					System.err.println("Warning: Could not delete file " + f0);
+				}
 			}
 		});
 		dlp.cancel.addActionListener(new ActionListener() {
@@ -365,7 +371,9 @@ public class Launcher extends JFrame {
 		for (LFile f : m.files) {
 			int idx = f.url.lastIndexOf("/");
 			File f0 = new File(f.url.substring(idx + 1));
-			f0.delete();
+			if (!f0.delete()) {
+				System.err.println("Warning: Could not delete file " + f0);
+			}
 		}
 		installedVersions.remove(m.id);
 		setVisibleModuleButtons(m, mp);
@@ -647,29 +655,33 @@ public class Launcher extends JFrame {
 							try {
 								
 								FileInputStream fin = new FileInputStream(lff);
-								do {
-									int read = fin.read(buffer);
-									if (read > 0) {
-										bytesReceived += read;
-										final int findex = index;
-										final int fsize = m.files.size();
-										final long fbytesReceived = bytesReceived;
-										final long fbytesTotal = bytesTotal;
-										SwingUtilities.invokeLater(new Runnable() {
-											@Override 
-											public void run() {
-												mp.statistics.setText("[" + (findex + 1) + " / " + fsize + "] "
-														+ lf + " (" + String.format("%.2f", fbytesReceived / 1024.0 / 1024.0) + " MB)"  
-												);
-												mp.progress.setValue((int)(100 * fbytesReceived / fbytesTotal));
-											};
-										});
-										sha1.update(buffer, 0, read);
-									} else
-									if (read < 0) {
-										break;
-									}
-								} while (true);
+								try {
+									do {
+										int read = fin.read(buffer);
+										if (read > 0) {
+											bytesReceived += read;
+											final int findex = index;
+											final int fsize = m.files.size();
+											final long fbytesReceived = bytesReceived;
+											final long fbytesTotal = bytesTotal;
+											SwingUtilities.invokeLater(new Runnable() {
+												@Override 
+												public void run() {
+													mp.statistics.setText("[" + (findex + 1) + " / " + fsize + "] "
+															+ lf + " (" + String.format("%.2f", fbytesReceived / 1024.0 / 1024.0) + " MB)"  
+													);
+													mp.progress.setValue((int)(100 * fbytesReceived / fbytesTotal));
+												};
+											});
+											sha1.update(buffer, 0, read);
+										} else
+										if (read < 0) {
+											break;
+										}
+									} while (true);
+								} finally {
+									fin.close();
+								}
 								byte[] sha1h = sha1.digest();
 								byte[] sha1hupdate = LFile.toByteArray(f.sha1);
 								if (!Arrays.equals(sha1h, sha1hupdate)) {
@@ -771,7 +783,9 @@ public class Launcher extends JFrame {
 				// delete temporary files
 				for (FileEntry f : localFiles) {
 					File f0 = new File(f.localName);
-					f0.delete();
+					if (!f0.delete()) {
+						System.err.println("Warning: Could not delete file " + f0);
+					}
 				}
 				setVisibleModuleButtons(m, mp);
 			}
@@ -795,7 +809,9 @@ public class Launcher extends JFrame {
 				String s1 = s.substring(0, idx);
 				File f2 = new File(s1);
 				if (f2.exists()) {
-					f2.delete();
+					if (f2.delete()) {
+						System.err.println("Warning: Could not delete file " + f2);
+					}
 				}
 				if (!f.renameTo(f2)) {
 					System.err.printf("Could not rename %s to %s%n", s, s1);
@@ -803,7 +819,9 @@ public class Launcher extends JFrame {
 			}
 			for (LRemoveFile rf : m.removeFiles) {
 				File f = new File(rf.file);
-				f.delete();
+				if (!f.delete()) {
+					System.err.println("Warning: Could not delete file " + f);
+				}
 			}
 			mp.progress.setVisible(false);
 			mp.statistics.setVisible(false);
