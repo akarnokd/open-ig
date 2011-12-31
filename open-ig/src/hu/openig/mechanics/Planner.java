@@ -83,7 +83,7 @@ public abstract class Planner {
 		public int compare(AIBuilding o1, AIBuilding o2) {
 			int c = o1.type.cost < o2.type.cost ? -1 : (o1.type.cost > o2.type.cost ? 1 : 0);
 			if (c == 0) {
-				c = o1.upgradeLevel - o2.upgradeLevel;
+				c = o2.upgradeLevel - o1.upgradeLevel;
 			}
 			return c;
 		}
