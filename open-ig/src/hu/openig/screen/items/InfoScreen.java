@@ -826,7 +826,7 @@ public class InfoScreen extends ScreenBase {
 		militaryInfo = new MilitaryInfoPanel();
 		
 		planetListDetais = new PlanetListDetails();
-		togglePlanetListDetails = new UIGenericButton(get("info.list_details"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		togglePlanetListDetails = new UIGenericButton(get("info.hide_details"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
 
 		togglePlanetListDetails.onClick = new Action0() {
 			@Override

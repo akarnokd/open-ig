@@ -266,7 +266,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> DECADE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return t.time.getTimeInMillis() - t.initialDate.getTime() >= 10 * 365.2425 * 60 * 60 * 1000;
+			return t.time.getTimeInMillis() - t.initialDate.getTime() >= 10 * 365.2425 * 24 * 60 * 60 * 1000;
 		}
 	};
 	/** Test for achievement. */
@@ -274,7 +274,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> OLDEST_MAN = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return t.time.getTimeInMillis() - t.initialDate.getTime() >= 100 * 365.2425 * 60 * 60 * 1000;
+			return t.time.getTimeInMillis() - t.initialDate.getTime() >= 100 * 365.2425 * 24 * 60 * 60 * 1000;
 		}
 	};
 	/** Test for achievement. */
