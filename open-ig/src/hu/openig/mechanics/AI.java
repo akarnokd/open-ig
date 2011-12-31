@@ -408,7 +408,7 @@ public class AI implements AIManager {
 			applyActions.addAll(acts);
 			return;
 		}
-		acts = new DiscoveryPlanner(world, controls, exploration).run();
+		acts = new ExplorationPlanner(world, controls, exploration).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
 			return;

@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -105,6 +106,10 @@ public class Player {
 	public AIManager ai;
 	/** Indicates that the player has a colony ship researched. */
 	public boolean colonyShipAvailable;
+	/** If non-null, it represents the rectangle where the explorers should not go into. */
+	public Rectangle explorationInnerLimit;
+	/** If non-null, it represents the rectangle where the explorers should not go outside. */
+	public Rectangle explorationOuterLimit;
 	/**
 	 * The queue for pending diplomatic interactions.
 	 */
