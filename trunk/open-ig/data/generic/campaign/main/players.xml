@@ -34,7 +34,6 @@
 		exploration-outer-limit='150, 360, 300, 130'
 	>
 		<available>
-			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
 		</available>

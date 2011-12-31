@@ -373,7 +373,7 @@ public class ColonyPlanner extends Planner {
 		int moraleNow = planet.morale;
 		int moraleLast = planet.lastMorale;
 		// only if there is energy available
-		if (planet.statistics.energyAvailable * 2 >= planet.statistics.energyDemand) {
+		if (planet.statistics.energyAvailable >= planet.statistics.energyDemand * 1.1) {
 			if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {
 				if (boostMoraleWithBuilding(planet)) {
 					return true;

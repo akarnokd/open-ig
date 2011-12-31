@@ -71,7 +71,7 @@ public class Profile {
 	 */
 	void load(XElement xprofile) {
 		achievements.clear();
-		for (XElement xa : xprofile.childrenWithName("achievements")) {
+		for (XElement xa : xprofile.childrenWithName("achievement")) {
 			achievements.add(xa.get("id"));
 		}
 	}

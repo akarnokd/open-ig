@@ -647,7 +647,7 @@
 		description='tech.behemoth.description' category='WEAPONS_TANKS'
 		image='inventions/weapons/tanks/behemoth' factory='weapon'
 		research-cost='32000' production-cost='17500' level='5'
-		race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		race='human'
 		requires='HeavyTank' civil='3' mech='4' comp='5' ai='3' mil='5' index='3'
 		video='technology/weapons/tanks/behemoth'>
 		<property name='range' value='5' />
