@@ -59,7 +59,7 @@ public class PlayerStatistics {
 	public long planetsConquered;
 	/** Number of planets colonized. */
 	public long planetsColonized;
-	/** Number of planets lost to the enemy. TODO gather */
+	/** Number of planets lost to the enemy. TODO display */
 	public long planetsLost;
 	/** Number of planets lost due revolts. TODO gather */
 	public long planetsRevolted;
@@ -111,6 +111,58 @@ public class PlayerStatistics {
 	public long totalAvailableHospital;
 	/** Total available police. */
 	public long totalAvailablePolice;
+	/** @return creates a copy of this object */
+	public PlayerStatistics copy() {
+		PlayerStatistics result = new PlayerStatistics();
+		result.moneyIncome = moneyIncome;
+		result.moneyTradeIncome = moneyTradeIncome;
+		result.moneyTaxIncome = moneyTaxIncome;
+		result.moneyDemolishIncome = moneyDemolishIncome;
+		result.moneySellIncome = moneySellIncome;
+		result.moneySpent = moneySpent;
+		result.moneyBuilding = moneyBuilding;
+		result.moneyRepair = moneyRepair;
+		result.moneyResearch = moneyResearch;
+		result.moneyProduction = moneyProduction;
+		result.moneyUpgrade = moneyUpgrade;
+		result.buildCount = buildCount;
+		result.demolishCount = demolishCount;
+		result.sellCount = sellCount;
+		result.researchCount = researchCount;
+		result.productionCount = productionCount;
+		result.upgradeCount = upgradeCount;
+		result.planetsOwned = planetsOwned;
+		result.planetsDiscovered = planetsDiscovered;
+		result.planetsConquered = planetsConquered;
+		result.planetsColonized = planetsColonized;
+		result.planetsLost = planetsLost;
+		result.planetsRevolted = planetsRevolted;
+		result.planetsDied = planetsDied;
+		result.spaceBattles = spaceBattles;
+		result.groundBattles = groundBattles;
+		result.spaceWins = spaceWins;
+		result.groundWins = groundWins;
+		result.spaceLoses = spaceLoses;
+		result.groundLoses = groundLoses;
+		result.spaceRetreats = spaceRetreats;
+		result.fleetsCreated = fleetsCreated;
+		result.fleetsLost = fleetsLost;
+		result.fleetsDestroyed = fleetsDestroyed;
+		result.buildingsDestroyed = buildingsDestroyed;
+		result.shipsDestroyed = shipsDestroyed;
+		result.shipsLost = shipsLost;
+		result.totalBuilding = totalBuilding;
+		result.totalAvailableBuilding = totalAvailableBuilding;
+		result.totalPopulation = totalPopulation;
+		result.totalAvailableHouse = totalAvailableHouse;
+		result.totalEnergyDemand = totalEnergyDemand;
+		result.totalWorkerDemand = totalWorkerDemand;
+		result.totalAvailableEnergy = totalAvailableEnergy;
+		result.totalAvailableFood = totalAvailableFood;
+		result.totalAvailableHospital = totalAvailableHospital;
+		result.totalAvailablePolice = totalAvailablePolice;
+		return result;
+	}
 	/**
 	 * Save the statistics.
 	 * @param target the target XElement

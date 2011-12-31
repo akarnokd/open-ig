@@ -492,6 +492,8 @@ public class World {
 			if (!xpOuterLimit.isEmpty()) {
 				p.explorationOuterLimit = rectangleOf(xpOuterLimit);
 			}
+			
+			p.colonizationLimit = xplayer.getInt("colonization-limit", -1);
 		}
 		linkDeferredFleetTargets(deferredFleets);
 	}
