@@ -3718,7 +3718,8 @@ public class PlanetScreen extends ScreenBase {
 	 */
 	void damageBuilding(Building b, int damage) {
 		int hpBefore = b.hitpoints;
-		b.hitpoints = Math.max(0, b.hitpoints - damage * b.type.hitpoints / world().getHitpoints(b.type, false));
+		b.hitpoints = Math.max(0, b.hitpoints - damage * b.type.hitpoints 
+				/ world().getHitpoints(b.type, planet().owner, false));
 		// if damage passes the half mark
 		if ("Defensive".equals(b.type.kind)) {
 			if (hpBefore * 2 >= b.type.hitpoints && b.hitpoints * 2 < b.type.hitpoints) {

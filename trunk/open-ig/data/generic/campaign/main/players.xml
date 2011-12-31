@@ -63,6 +63,7 @@
 		money='32000'
 		initial-stance='40'
 	>
+		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='ColonyShip' list=''/>
 		</available>
