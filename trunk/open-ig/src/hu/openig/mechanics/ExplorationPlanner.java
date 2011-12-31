@@ -31,12 +31,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * The starmap discovery and satellite planner.
+ * The starmap exploration and satellite planner.
  * @author akarnokd, 2011.12.27.
  */
-public class DiscoveryPlanner extends Planner {
+public class ExplorationPlanner extends Planner {
 	/** The exploration map. */
 	final ExplorationMap exploration;
 	/**
@@ -45,15 +46,43 @@ public class DiscoveryPlanner extends Planner {
 	 * @param controls the controls to affect the world in actions
 	 * @param exploration the exploration map
 	 */
-	public DiscoveryPlanner(AIWorld world, AIControls controls, ExplorationMap exploration) {
+	public ExplorationPlanner(AIWorld world, AIControls controls, ExplorationMap exploration) {
 		super(world, controls);
 		this.exploration = exploration;
+	}
+	/**
+	 * Computes the allowed exploration map, considering the player's exploration limits.
+	 * @return the updated map
+	 */
+	Set<Location> allowedMap() {
+		if (p.explorationInnerLimit == null && p.explorationOuterLimit == null) {
+			return exploration.map;
+		}
+		Set<Location> result = JavaUtils.newHashSet();
+		
+		for (Location loc : exploration.map) {
+			int cx = (int)((loc.x + 0.5) * exploration.cellSize);
+			int cy = (int)((loc.y + 0.5) * exploration.cellSize);
+			if (p.explorationInnerLimit != null) {
+				if (p.explorationInnerLimit.contains(cx, cy)) {
+					continue;
+				}
+			}
+			if (p.explorationOuterLimit != null) {
+				if (!p.explorationOuterLimit.contains(cx, cy)) {
+					continue;
+				}
+			}
+			result.add(loc);
+		}
+		
+		return result;
 	}
 	@Override
 	public void plan() {
 		// find a fleet which has at least a decent radar range
 		// and is among the fastest available
-		if (exploration.map.size() > 0) {
+		if (allowedMap().size() > 0) {
 			// check our current exploration fleets are idle
 			List<AIFleet> fs = findFleetsWithTask(FleetTask.EXPLORE, null);
 			for (AIFleet f : fs) {
@@ -234,9 +263,9 @@ public class DiscoveryPlanner extends Planner {
 		Location loc = null;
 		final int rl = bf.radarLevel();
 		if (rl > 0 && w.random.get().nextDouble() < 0.95) {
-			loc = Collections.min(exploration.map, distance);
+			loc = Collections.min(allowedMap(), distance);
 		} else {
-			List<Location> ls = new ArrayList<Location>(exploration.map);
+			List<Location> ls = new ArrayList<Location>(allowedMap());
 			Collections.sort(ls, distance);
 			if (ls.size() > 20) {
 				loc = w.random(ls.subList(0, 20));

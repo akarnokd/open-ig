@@ -20,6 +20,7 @@ import hu.openig.utils.JavaUtils;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.text.ParseException;
@@ -478,8 +479,34 @@ public class World {
 					p.setAvailable(rt);
 				}
 			}
+			
+			String xpInnerLimit = xplayer.get("exploration-inner-limit", "");
+			if (!xpInnerLimit.isEmpty()) {
+				p.explorationInnerLimit = rectangleOf(xpInnerLimit);
+			}
+			String xpOuterLimit = xplayer.get("exploration-outer-limit", "");
+			if (!xpOuterLimit.isEmpty()) {
+				p.explorationOuterLimit = rectangleOf(xpOuterLimit);
+			}
 		}
 		linkDeferredFleetTargets(deferredFleets);
+	}
+	/**
+	 * Create a rectangle from the given string of comma separated x, y, width and height.
+	 * @param s the string
+	 * @return the rectangle or null if the string is invalid
+	 */
+	Rectangle rectangleOf(String s) {
+		String[] coords = s.split("\\s*,\\s*");
+		if (coords.length == 4) {
+			return new Rectangle(
+				Integer.parseInt(coords[0]),
+				Integer.parseInt(coords[1]),
+				Integer.parseInt(coords[2]),
+				Integer.parseInt(coords[3])
+			);
+		}
+		return null;
 	}
 	/**
 	 * Process the planets listing XML.

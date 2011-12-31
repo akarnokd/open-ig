@@ -30,6 +30,8 @@
 		money='32000'
 		initial-stance='40'
 		ai='DEFAULT' ratios='1,2,1'
+		exploration-inner-limit=''
+		exploration-outer-limit='150, 360, 300, 130'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>

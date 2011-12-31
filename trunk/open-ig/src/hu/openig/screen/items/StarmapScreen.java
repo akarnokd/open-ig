@@ -47,6 +47,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
@@ -1143,6 +1144,11 @@ public class StarmapScreen extends ScreenBase {
 			addAllFleets(fleets);
 		}
 		
+		// render exploration outer and inner limits
+		if (showGridButton.selected) {
+			renderExplorationLimits(g2);
+		}
+		
 		// render radar circles
 		if (showRadarButton.selected) {
 			List<RadarCircle> radarCircles = new ArrayList<RadarCircle>();
@@ -1453,6 +1459,64 @@ public class StarmapScreen extends ScreenBase {
 		
 		
 		super.draw(g2);
+	}
+	/**
+	 * Draw the exploration limit rectangle borders.
+	 * @param g2 the graphics context
+	 */
+	void renderExplorationLimits(Graphics2D g2) {
+		if (player().explorationOuterLimit != null) {
+			
+			Area a = new Area(new Rectangle(0, 0, world().galaxyModel.map.getWidth(), world().galaxyModel.map.getHeight()));
+			a.subtract(new Area(player().explorationOuterLimit));
+
+			g2.setColor(new Color(0x80FF0000, true));
+			
+			drawShape(g2, a, true);
+			
+			g2.setColor(Color.RED);
+			drawRect(g2, player().explorationOuterLimit, false);
+		} else
+		if (player().explorationInnerLimit != null) {
+			g2.setColor(new Color(0x80808080, true));
+			drawRect(g2, player().explorationInnerLimit, true);
+		}
+	}
+	/**
+	 * Draw the given rectangle onto the starmap.
+	 * @param g2 the graphics context
+	 * @param rect the rectangle
+	 * @param fill fill it?
+	 */
+	void drawRect(Graphics2D g2, Rectangle rect, boolean fill) {
+		double zoom = getZoom();
+		int x0 = (int)(starmapRect.x + zoom * rect.x);
+		int y0 = (int)(starmapRect.y + zoom * rect.y);
+		int w0 = (int)(zoom * rect.width);
+		int h0 = (int)(zoom * rect.height);
+		if (fill) {
+			g2.fillRect(x0, y0, w0, h0);
+		} else {
+			g2.drawRect(x0, y0, w0, h0);
+		}
+	}
+	/**
+	 * Draw the given rectangle onto the starmap.
+	 * @param g2 the graphics context
+	 * @param shape the shape
+	 * @param fill fill it?
+	 */
+	void drawShape(Graphics2D g2, Shape shape, boolean fill) {
+		double zoom = getZoom();
+		AffineTransform at = g2.getTransform();
+		g2.translate(starmapRect.x, starmapRect.y);
+		g2.scale(zoom, zoom);
+		if (fill) {
+			g2.fill(shape);
+		} else {
+			g2.draw(shape);
+		}
+		g2.setTransform(at);
 	}
 	/**
 	 * Add all fleets to the collection.
@@ -2700,6 +2764,11 @@ public class StarmapScreen extends ScreenBase {
 		int w = world().galaxyModel.map.getWidth();
 		int h = world().galaxyModel.map.getHeight();
 		
+		if (player().explorationOuterLimit != null) {
+			w = player().explorationOuterLimit.width;
+			h = player().explorationOuterLimit.height;
+		}
+		
 		double s1 = 1.0 * mw / w;
 		double s2 = 1.0 * mh / h;
 		double s = Math.min(s1, s2);
@@ -2708,6 +2777,16 @@ public class StarmapScreen extends ScreenBase {
 		int zi = (int)(s0 * 4 - minimumZoom);
 
 		readjustZoom(mw / 2, mh / 2, zi);
-		//TODO
+		if (player().explorationOuterLimit != null) {
+			xOffset = 0;
+			yOffset = 0;
+			double zoom = getZoom();
+			
+			double dw = player().explorationOuterLimit.width * zoom;
+			double dh = player().explorationOuterLimit.height * zoom;
+			
+			pan(-(int)(player().explorationOuterLimit.x * zoom - (mw - dw) / 2), 
+					-(int)(player().explorationOuterLimit.y * zoom - (mh - dh) / 2));
+		}
 	}
 }
