@@ -20,6 +20,7 @@ import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.Planet;
@@ -45,13 +46,17 @@ public class ResearchPlanner extends Planner {
 	/** The set of resource names. */
 	private static final Set<String> LAB_RESOURCE_NAMES = 
 			new HashSet<String>(Arrays.asList("ai", "civil", "computer", "mechanical", "military"));
+	/** The exploration map. */
+	final ExplorationMap exploration;
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
 	 * @param controls the controls to affect the world in actions
+	 * @param exploration the exploration map
 	 */
-	public ResearchPlanner(AIWorld world, AIControls controls) {
+	public ResearchPlanner(AIWorld world, AIControls controls, ExplorationMap exploration) {
 		super(world, controls);
+		this.exploration = exploration;
 	}
 	@Override
 	public void plan() {
@@ -165,7 +170,7 @@ public class ResearchPlanner extends Planner {
 		List<AIPlanet> ps = new ArrayList<AIPlanet>();
 		outer1:
 		for (AIPlanet p : world.enemyPlanets) {
-			if (p.owner == null) {
+			if (p.owner == null && world.withinLimits(p.planet.x, p.planet.y)) {
 				// check if no one targets this planet already
 				for (AIFleet f : world.ownFleets) {
 					if (f.targetPlanet == p.planet) {
@@ -175,7 +180,7 @@ public class ResearchPlanner extends Planner {
 				ps.add(p);
 			}
 		}
-		// if none exit
+		// if none, exit
 		if (ps.size() == 0) {
 			return;
 		}
