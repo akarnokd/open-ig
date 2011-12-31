@@ -121,9 +121,12 @@ public class DiscoveryPlanner extends Planner {
 			}
 		}
 		
+		List<AIPlanet> survey = new ArrayList<AIPlanet>(world.unknownPlanets);
+		survey.addAll(world.enemyPlanets);
+		Collections.shuffle(survey, w.random.get());
 		// traverse all known planet and deploy satellites
 		outer:
-		for (final AIPlanet planet : world.unknownPlanets) {
+		for (final AIPlanet planet : survey) {
 			AIInventoryItem currentSatellite = null;
 			for (AIInventoryItem ii : planet.inventory) {
 				if (ii.owner == p && ii.type.has("detector") 
