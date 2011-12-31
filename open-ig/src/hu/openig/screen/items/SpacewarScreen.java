@@ -1461,13 +1461,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
 				
 				SpacewarStructure st = new SpacewarStructure();
+				st.owner = nearbyPlanet.owner;
 				st.type = StructureType.SHIELD;
 				st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
 				st.infoImageName = bge.infoImageName;
-				st.hpMax = world().getHitpoints(b.type, true);
+				st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
 				st.hp = b.hitpoints * st.hpMax / b.type.hitpoints;
 				st.value = b.type.cost;
-				st.owner = nearbyPlanet.owner;
 				st.destruction = bge.destruction;
 				st.building = b;
 				st.planet = nearbyPlanet;
@@ -1494,16 +1494,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			float eff = b.getEfficiency();
 			if (Building.isOperational(eff) && b.type.kind.equals("Gun")) {
 				BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
-				SpacewarStructure st = new SpacewarStructure();
 
+				SpacewarStructure st = new SpacewarStructure();
+				st.owner = nearbyPlanet.owner;
 				st.type = StructureType.PROJECTOR;
 				st.angles = alien ? bge.alternative : bge.normal;
 				st.angle = Math.PI;
 				st.infoImageName = bge.infoImageName;
-				st.hpMax = world().getHitpoints(b.type, true);
+				st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
 				st.value = b.type.cost;
 				st.hp = b.hitpoints * st.hpMax / b.type.hitpoints;
-				st.owner = nearbyPlanet.owner;
 				st.destruction = bge.destruction;
 				st.building = b;
 				st.planet = nearbyPlanet;
@@ -2229,7 +2229,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (is != null) {
 				if (is.type != null) {
 					damage.text(format("spacewar.ship_weapon_damage", 
-							100 * (world().getHitpoints(is.type) - is.hp) / world().getHitpoints(is.type)), true);
+							100 * (world().getHitpoints(is.type) - is.hp) 
+							/ world().getHitpoints(is.type)), true);
 					count.text(format("spacewar.ship_weapon_count", is.count), true);
 					type.text(format("spacewar.ship_weapon_type", is.type.name), true);
 				} else {

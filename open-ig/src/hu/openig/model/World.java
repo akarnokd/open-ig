@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
+import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
@@ -1884,8 +1885,10 @@ public class World {
 		}
 		// the building hitpoints
 		for (XElement xhp : xbattle.childElement("buildings").childrenWithName("hitpoints")) {
-			battle.groundHitpoints.put(xhp.get("id"), xhp.getInt("ground"));
-			battle.spaceHitpoints.put(xhp.get("id"), xhp.getInt("space"));
+			String id = xhp.get("id");
+			String player = xhp.get("player");
+			battle.groundHitpoints.put(Pair.of(id, player), xhp.getInt("ground"));
+			battle.spaceHitpoints.put(Pair.of(id, player), xhp.getInt("space"));
 		}
 	}
 	/**
@@ -2004,15 +2007,16 @@ public class World {
 	/**
 	 * Returns the hitpoints of the given building type.
 	 * @param rt the research type
+	 * @param owner the building owner
 	 * @param space the space hitpoints?
 	 * @return the hitpoints
 	 */
-	public int getHitpoints(BuildingType rt, boolean space) {
-		Integer hp = (space ? battle.spaceHitpoints : battle.groundHitpoints).get(rt.id);
+	public int getHitpoints(BuildingType rt, Player owner, boolean space) {
+		Integer hp = (space ? battle.spaceHitpoints : battle.groundHitpoints).get(Pair.of(rt.id, owner.id));
 		if (hp != null) {
 			return hp;
 		}
-		return rt.hitpoints / 20;
+		return rt.hitpoints / 50;
 	}
 	/**
 	 * Calculate the current fleet health.
@@ -2047,7 +2051,7 @@ public class World {
 		double max = 0;
 		double hp = 0;
 		for (Building b : p.surface.buildings) {
-			max += getHitpoints(b.type, false);
+			max += getHitpoints(b.type, p.owner, false);
 			hp += b.hitpoints;
 		}
 		return hp / max;

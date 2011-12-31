@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Pair;
 import hu.openig.utils.JavaUtils;
 
 import java.util.List;
@@ -32,10 +33,10 @@ public class BattleModel {
 	public final Map<String, BattleGroundShield> groundShields = JavaUtils.newHashMap();
 	/** The space battle layouts. */
 	public final List<BattleSpaceLayout> layouts = JavaUtils.newArrayList();
-	/** The ground hit points of buildings. */
-	public final Map<String, Integer> groundHitpoints = JavaUtils.newHashMap();
+	/** The ground hit points of buildings per player. */
+	public final Map<Pair<String, String>, Integer> groundHitpoints = JavaUtils.newHashMap();
 	/** The space hitpoints of buildings. */
-	public final Map<String, Integer> spaceHitpoints = JavaUtils.newHashMap();
+	public final Map<Pair<String, String>, Integer> spaceHitpoints = JavaUtils.newHashMap();
 	/**
 	 * Add a turret definition to the {@code turrets} mapping.
 	 * @param buildingId the building identifier.
