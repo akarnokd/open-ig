@@ -290,7 +290,7 @@ public class EconomyPlanner extends Planner {
 	boolean hasTechnologyFor(BuildingType value, String factory) {
 		if (value.hasResource(factory)) {
 			for (ResearchType rt : w.researches.values()) {
-				if (rt.race.contains(rt) && rt.level <= w.level 
+				if (rt.race.contains(p.race) && rt.level <= w.level 
 						&& factory.equals(rt.factory)) {
 					return true;
 				}
