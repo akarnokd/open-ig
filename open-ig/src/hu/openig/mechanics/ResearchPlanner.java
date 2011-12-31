@@ -46,6 +46,14 @@ public class ResearchPlanner extends Planner {
 	/** The set of resource names. */
 	private static final Set<String> LAB_RESOURCE_NAMES = 
 			new HashSet<String>(Arrays.asList("ai", "civil", "computer", "mechanical", "military"));
+	/** Check colony ship function. */
+	final Pred1<AIFleet> hasColonyShip = new Pred1<AIFleet>() {
+		@Override
+		public Boolean invoke(AIFleet value) {
+			return value.hasInventory("ColonyShip");
+		}
+	};
+
 	/** The exploration map. */
 	final ExplorationMap exploration;
 	/**
@@ -134,15 +142,10 @@ public class ResearchPlanner extends Planner {
 		return;
 	}
 	/**
-	 * Plan for conquest.
+	 * Checki if the colonizers have actually reached their planet.
+	 * @return true if action taken
 	 */
-	void planConquest() {
-		Pred1<AIFleet> hasColonyShip = new Pred1<AIFleet>() {
-			@Override
-			public Boolean invoke(AIFleet value) {
-				return value.hasInventory("ColonyShip");
-			}
-		};
+	boolean checkColonizersReachedPlanet() {
 		List<AIFleet> colonizers = findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip);
 		for (AIFleet fleet : colonizers) {
 				if (!fleet.isMoving()
@@ -159,13 +162,19 @@ public class ResearchPlanner extends Planner {
 						f0.task = FleetTask.IDLE;
 					}
 				});
-				return;
+				return true;
 			}
 		}
 		// if our colonizers are under way
 		if (colonizers.size() > 0) {
-			return;
+			return true;
 		}
+		return false;
+	}
+	/**
+	 * @return list of colonizable planets not already targeted
+	 */
+	List<AIPlanet> findColonizablePlanets() {
 		// locate knownly colonizable planets
 		List<AIPlanet> ps = new ArrayList<AIPlanet>();
 		outer1:
@@ -180,10 +189,14 @@ public class ResearchPlanner extends Planner {
 				ps.add(p);
 			}
 		}
-		// if none, exit
-		if (ps.size() == 0) {
-			return;
-		}
+		return ps;
+	}
+	/**
+	 * Assign available fleets to colonization task.
+	 * @param ps the target planet
+	 * @return true if action taken
+	 */
+	boolean assignFleetsToColonization(List<AIPlanet> ps) {
 		// bring one fleet to the target planet
 		for (final AIFleet fleet : findFleetsFor(FleetTask.COLONIZE, hasColonyShip)) {
 			final AIPlanet p0 = Collections.min(ps, new Comparator<AIPlanet>() {
@@ -201,8 +214,16 @@ public class ResearchPlanner extends Planner {
 					controls.actionMoveFleet(fleet.fleet, p0.planet);
 				}
 			});
-			return;
+			return true;
 		}
+		return false;
+	}
+	/**
+	 * Find a military spaceport.
+	 * @return (false, null) if a military spaceport is being constructed,
+	 * (true, null) no military spaceport found, (true, X) found at planet X
+	 */
+	Pair<Boolean, AIPlanet> findMilitarySpaceport() {
 		AIPlanet sp = null;
 		for (AIPlanet pl : world.ownPlanets) {
 			if (pl.statistics.hasMilitarySpaceport) {
@@ -212,110 +233,191 @@ public class ResearchPlanner extends Planner {
 				// if constructing here, return
 				for (AIBuilding b : pl.buildings) {
 					if (b.type.id.equals("MilitarySpaceport") && pl.statistics.constructing) {
-						return;
+						return Pair.of(false, null);
 					}
 				}
 			}
 		}
-		// if no planet has military spaceport, build one somewhere
-		if (sp == null) {
-			final BuildingType bt = findBuilding("MilitarySpaceport");
-			planCategory(new Pred1<AIPlanet>() {
-				@Override
-				public Boolean invoke(AIPlanet value) {
-					return true;
-				}
-			}, BEST_PLANET, new BuildingSelector() {
-				@Override
-				public boolean accept(AIPlanet planet, AIBuilding building) {
-					return false;
-				}
-				@Override
-				public boolean accept(AIPlanet planet, BuildingType buildingType) {
-					return buildingType == bt && limit(planet, bt, 1);
-				}
-			}, costOrderReverse, false);
-			return;
-		}
-		final Planet spaceport = sp.planet; 
+		return Pair.of(true, sp);
+	}
+	/**
+	 * Build a military spaceport at the best planet.
+	 */
+	void buildMilitarySpaceport() {
+		final BuildingType bt = findBuilding("MilitarySpaceport");
+		planCategory(new Pred1<AIPlanet>() {
+			@Override
+			public Boolean invoke(AIPlanet value) {
+				return true;
+			}
+		}, BEST_PLANET, new BuildingSelector() {
+			@Override
+			public boolean accept(AIPlanet planet, AIBuilding building) {
+				return false;
+			}
+			@Override
+			public boolean accept(AIPlanet planet, BuildingType buildingType) {
+				return buildingType == bt && limit(planet, bt, 1);
+			}
+		}, costOrderReverse, false);
+	}
+	/**
+	 * Deploy a colony ship from inventory.
+	 * @param spaceport the target planet
+	 * @return true if action taken
+	 */
+	boolean deployInventoryColonyShip(final AIPlanet spaceport) {
 		// check if we have colony ships in the inventory
 		final Pair<Integer, ResearchType> csi = world.inventoryCount("ColonyShip");
 		if (csi.first > 0) {
 			add(new Action0() {
 				@Override
 				public void invoke() {
-					Fleet f = controls.actionCreateFleet(label("colonizer_fleet_name"), spaceport);
-					f.addInventory(csi.second, 1);
+					if (spaceport.owner.inventoryCount(csi.second) > 0) {
+						Fleet f = controls.actionCreateFleet(label("colonizer_fleet_name"), spaceport.planet);
+						f.addInventory(csi.second, 1);
+						spaceport.owner.changeInventoryCount(csi.second, -1);
+					}
 				}
 			});
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Plan for conquest.
+	 */
+	void planConquest() {
+		if (checkColonizersReachedPlanet()) {
 			return;
 		}
+		List<AIPlanet> ps = findColonizablePlanets();
+		// if none, exit
+		if (ps.size() == 0) {
+			return;
+		}
+		
+		if (assignFleetsToColonization(ps)) {
+			return;
+		}
+
+		final Pair<Boolean, AIPlanet> spaceport = findMilitarySpaceport();
+		// if no planet has military spaceport, build one somewhere
+		if (!spaceport.first) {
+			buildMilitarySpaceport();
+			return;
+		}
+		if (deployInventoryColonyShip(spaceport.second)) {
+			return;
+		}
+		if (checkOrbitalFactory()) {
+			return;
+		}
+		final ResearchType cs = world.isAvailable("ColonyShip");
+		if (cs != null) {
+			placeProductionOrder(cs, 1);
+			return;
+		}
+	}
+	/**
+	 * Check for the orbital factory.
+	 * @return true
+	 */
+	boolean checkOrbitalFactory() {
 		if (world.global.orbitalFactory == 0) {
 			// check if we have orbital factory in inventory, deploy it
 			final Pair<Integer, ResearchType> orbital = world.inventoryCount("OrbitalFactory");
 			if (orbital.first > 0) {
 				List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
 				Collections.sort(planets, BEST_PLANET);
-				for (final AIPlanet p2 : planets) {
-					int sats = count(p2.inventory, new Pred1<AIInventoryItem>() {
-						@Override
-						public Boolean invoke(AIInventoryItem value) {
-							return value.type.category == ResearchSubCategory.SPACESHIPS_STATIONS;
-						}
-					}, new Func1<AIInventoryItem, Integer>() {
-						@Override
-						public Integer invoke(AIInventoryItem value) {
-							return value.count;
-						}
-					});
-					if (sats < 3) {
-						add(new Action0() {
-							@Override
-							public void invoke() {
-								controls.actionDeploySatellite(p2.planet, orbital.second);
-							}
-						});
-						return;
-					}
+				
+				if (deployOrbitalFactory(orbital.second, planets)) {
+					return true;
 				}
 				// if no room, make
-				Pair<AIPlanet, ResearchType> toSell = null;
-				for (AIPlanet p : planets) {
-					for (AIInventoryItem ii : p.inventory) {
-						if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-							if (toSell == null || toSell.second.productionCost > ii.type.productionCost) {
-								toSell = Pair.of(p, ii.type);
-							}
-						}
-					}
-				}
-				if (toSell != null) {
-					final Pair<AIPlanet, ResearchType> fsell = toSell;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionSellSatellite(fsell.first.planet, fsell.second, 1);
-						}
-					});
-					return;
+				if (sellStations(planets)) {
+					return true;
 				}
 			}
 			
 			// if researched, build one
-			final ResearchType of = world.isAvailable("OrbitalFactory");
-			if (of != null) {
-				placeProductionOrder(of, 1);
-				return;
-			}
-		} else {
-			final ResearchType cs = world.isAvailable("ColonyShip");
-			if (cs != null) {
-				placeProductionOrder(cs, 1);
-				return;
+			if (produceOrbitalFactory()) {
+				return true;
 			}
 		}
+		return false;
 	}
-	
+	/**
+	 * Sell the cheapest deployed station.
+	 * @param planets the list of planets
+	 * @return true if action taken
+	 */
+	boolean sellStations(List<AIPlanet> planets) {
+		Pair<AIPlanet, ResearchType> toSell = null;
+		for (AIPlanet p : planets) {
+			for (AIInventoryItem ii : p.inventory) {
+				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					if (toSell == null || toSell.second.productionCost > ii.type.productionCost) {
+						toSell = Pair.of(p, ii.type);
+					}
+				}
+			}
+		}
+		if (toSell != null) {
+			final Pair<AIPlanet, ResearchType> fsell = toSell;
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					controls.actionSellSatellite(fsell.first.planet, fsell.second, 1);
+				}
+			});
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Deploy orbital factory.
+	 * @param rt the factory tech
+	 * @param planets the planets to check
+	 * @return true if action taken
+	 */
+	boolean deployOrbitalFactory(final ResearchType rt, List<AIPlanet> planets) {
+		for (final AIPlanet p2 : planets) {
+			int sats = count(p2.inventory, new Pred1<AIInventoryItem>() {
+				@Override
+				public Boolean invoke(AIInventoryItem value) {
+					return value.type.category == ResearchSubCategory.SPACESHIPS_STATIONS;
+				}
+			}, new Func1<AIInventoryItem, Integer>() {
+				@Override
+				public Integer invoke(AIInventoryItem value) {
+					return value.count;
+				}
+			});
+			if (sats < 3) {
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionDeploySatellite(p2.planet, rt);
+					}
+				});
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Produce an orbital factory.
+	 * @return action taken
+	 */
+	boolean produceOrbitalFactory() {
+		final ResearchType of = world.isAvailable("OrbitalFactory");
+		if (of != null) {
+			placeProductionOrder(of, 1);
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * Plan how the labs will be reconstructed to allow the next research.
 	 * @param rebuildCount the number of new buildings needed for each research
