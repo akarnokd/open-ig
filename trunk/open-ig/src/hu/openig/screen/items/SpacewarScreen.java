@@ -23,6 +23,7 @@ import hu.openig.model.BattleSpaceLayout;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
+import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Owned;
@@ -3310,6 +3311,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			fleets.add(battle.targetFleet);
 		}
 		for (Fleet f : fleets) {
+			f.task = FleetTask.IDLE;
 			int gu = f.adjustVehicleCounts();
 			if (f.owner == battle.attacker.owner) {
 				battle.attackerGroundLosses += gu;
