@@ -530,6 +530,14 @@ public class World {
 			p.surface = p.type.surfaces.get(Integer.parseInt(si)).copy();
 			p.surface.parseMap(xplanet, null, buildingModel);
 			
+			if (p.owner != null) {
+				// enable placed building's researches
+				for (Building b : p.surface.buildings) {
+					if (b.type.research != null && !p.owner.isAvailable(b.type.research)) {
+						p.owner.setAvailable(b.type.research);
+					}
+				}
+			}
 			for (XElement xinv : xplanet.childElement("inventory").childrenWithName("item")) {
 				InventoryItem ii = new InventoryItem();
 				ii.owner = players.get(xinv.get("owner"));
@@ -540,6 +548,10 @@ public class World {
 				ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
 
 				p.inventory.add(ii);
+				
+				if (!ii.owner.isAvailable(ii.type)) {
+					ii.owner.setAvailable(ii.type);
+				}
 			}
 			
 			this.planets.put(p.id, p);
