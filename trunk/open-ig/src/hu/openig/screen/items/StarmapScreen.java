@@ -1897,12 +1897,14 @@ public class StarmapScreen extends ScreenBase {
 	 * @return true if within limits
 	 */
 	boolean checkExplorationLimits(int mx, int my) {
-		Point2D.Double pt = toMapCoordinates(mx, my);
-		if (player().explorationInnerLimit != null) {
-			return player().explorationInnerLimit.contains(pt);
-		}
-		if (player().explorationOuterLimit != null) {
-			return !player().explorationOuterLimit.contains(pt);
+		if (!showAll) {
+			Point2D.Double pt = toMapCoordinates(mx, my);
+			if (player().explorationInnerLimit != null) {
+				return player().explorationInnerLimit.contains(pt);
+			}
+			if (player().explorationOuterLimit != null) {
+				return !player().explorationOuterLimit.contains(pt);
+			}
 		}
 		return false;
 	}
