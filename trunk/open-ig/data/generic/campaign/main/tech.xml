@@ -349,7 +349,7 @@
 		description='tech.spacestation3.description' category='SPACESHIPS_STATIONS'
 		image='inventions/spaceships/stations/space_station_3' factory='spaceship'
 		research-cost='200000' production-cost='125000' level='5'
-		race='human,morgath,ychom,dribs,sullep,dargslan,ecalep'
+		race='human,ychom,dribs,sullep,dargslan,ecalep'
 		requires='Laser4, IonCannon, Rocket2' civil='6' mech='4' comp='5' ai='3'
 		mil='6' index='2' video='technology/spaceships/stations/space_station_3'>
 		<slot-fixed id='Laser1' item='Laser3' count='7' />

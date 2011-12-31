@@ -65,6 +65,8 @@ public class AIWorld {
 	public Rectangle explorationInnerLimit;
 	/** The outer limit. */
 	public Rectangle explorationOuterLimit;
+	/** Check if the main player has conquered its first planet. */
+	public boolean mayConquer;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -74,6 +76,11 @@ public class AIWorld {
 		explorationInnerLimit = player.explorationInnerLimit;
 		explorationOuterLimit = player.explorationOuterLimit;
 		money = player.money;
+		
+		if (player != player.world.player) {
+			mayConquer = player.world.player.statistics.planetsColonized > 0;
+			
+		}
 		
 		inventory.putAll(player.inventory);
 		
