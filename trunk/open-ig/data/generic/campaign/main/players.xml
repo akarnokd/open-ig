@@ -33,6 +33,7 @@
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
+			<type id='RocketLauncher1' list=''/>
 		</available>
 		<fleet id='1' x='366' y='442' name='Garthog flotta'>
 			<item id='GarthogBattleship' count='1'/>
