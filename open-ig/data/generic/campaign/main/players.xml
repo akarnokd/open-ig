@@ -82,6 +82,7 @@
 		money='32000'
 		initial-stance='40'
 	>
+		<inventory id='ColonyShip' count='1'/>
 		<available>
 			<type id='ColonyShip' list=''/>
 		</available>
@@ -115,6 +116,7 @@
 		money='32000'
 		initial-stance='40'
 	>
+		<inventory id='ColonyShip' count='1'/>
 		<available>
 			<type id='ColonyShip' list=''/>
 		</available>
@@ -126,6 +128,7 @@
 		money='32000'
 		initial-stance='50'
 	>
+		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='ColonyShip' list=''/>
 		</available>
