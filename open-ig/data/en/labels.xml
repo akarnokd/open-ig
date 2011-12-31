@@ -177,8 +177,8 @@
 	<entry key="achievement.defender.desc">You successfully defended your colony</entry>
 	<entry key="achievement.embargo">Embargo</entry>
 	<entry key="achievement.embargo.desc">You destroyed your first Trader ship</entry>
-	<entry key="achievement.colombus">Colombus</entry>
-	<entry key="achievement.colombus.desc">You colonized your first planet</entry>
+	<entry key="achievement.columbus">Columbus</entry>
+	<entry key="achievement.columbus.desc">You colonized your first planet</entry>
 	<entry key="achievement.quarter">Quarter of the pie</entry>
 	<entry key="achievement.quarter.desc">You own 25 planets</entry>
 	<entry key="achievement.manufacturer">Manufacturer</entry>

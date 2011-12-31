@@ -21,6 +21,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
+import hu.openig.model.Profile;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
@@ -55,7 +56,7 @@ public final class Simulator {
 		world.time.add(GregorianCalendar.MINUTE, 10);
 		int day1 = world.time.get(GregorianCalendar.DATE);
 
-		 boolean result = false;
+		boolean result = false;
 		
 		// Prepare global statistics
 		// -------------------------
@@ -92,8 +93,6 @@ public final class Simulator {
 			}
 		}
 		
-		testAchievements(world);
-
 		if (invokeRadar) {
 			Radar.compute(world);
 		}
@@ -107,6 +106,9 @@ public final class Simulator {
 			
 			result = true;
 		}
+		
+		testAchievements(world, day0 != day1);
+		
 		if (!world.pendingBattles.isEmpty()) {
 			world.env.startBattle();
 			result = true;
@@ -577,9 +579,20 @@ public final class Simulator {
 	/**
 	 * Run the tests for achievements.
 	 * @param world the world to test for achievements
+	 * @param dayChange was there a day change?
 	 */
-	static void testAchievements(World world) {
-		// FIXME implement
+	static void testAchievements(World world, boolean dayChange) {
+		Profile p = world.env.profile();
+
+		for (String a : AchievementManager.achievements()) {
+			if (!p.hasAchievement(a)) {
+				if (AchievementManager.get(a).invoke(world, world.player)) {
+					world.env.achievementQueue().add(a);
+					p.grantAchievement(a);
+				}
+			}
+		}
+		
 	}
 	/**
 	 * Move fleets.

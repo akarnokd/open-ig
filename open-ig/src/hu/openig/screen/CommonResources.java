@@ -54,7 +54,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -110,6 +112,10 @@ public class CommonResources implements GameEnvironment {
 	private GameControls control;
 	/** The current player's profile. */
 	public Profile profile = new Profile();
+	/**
+	 * The queue for notifying the user about achievements.
+	 */
+	public final Deque<String> achievementNotifier = new LinkedList<String>();
 	// --------------------------------------------
 	// The various screen objects
 	// --------------------------------------------
@@ -675,7 +681,7 @@ public class CommonResources implements GameEnvironment {
 		}
 	}
 	/**
-	 * Register an action with the given delay.
+	 * Register a repeating action with the given delay.
 	 * @param delay the reqested frequency in milliseconds
 	 * @param action the action to invoke
 	 * @return the handler to close this instance
@@ -837,5 +843,13 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public Configuration config() {
 		return config;
+	}
+	@Override
+	public Deque<String> achievementQueue() {
+		return achievementNotifier;
+	}
+	@Override
+	public Profile profile() {
+		return profile;
 	}
 }

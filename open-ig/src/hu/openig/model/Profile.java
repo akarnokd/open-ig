@@ -8,8 +8,15 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.XElement;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.swing.SwingUtilities;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * The current user's profile.
@@ -27,5 +34,69 @@ public class Profile {
 	 */
 	public boolean hasAchievement(String name) {
 		return achievements.contains(name);
+	}
+	/**
+	 * Save the current profile settings.
+	 * <p>Will run on EDT.</p>
+	 */
+	public void save() {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					save();
+				}
+			});
+		}
+		XElement xprofile = new XElement("profile");
+		try {
+			save(xprofile);
+			xprofile.save(new File("save/" + name + "/profile.xml"));
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Save the current profile.
+	 * @param xprofile the profile XML
+	 */
+	void save(XElement xprofile) {
+		for (String s : achievements) {
+			xprofile.add("achievement").set("id", s);
+		}
+	}
+	/**
+	 * Load the profile.
+	 * @param xprofile the source XML
+	 */
+	void load(XElement xprofile) {
+		achievements.clear();
+		for (XElement xa : xprofile.childrenWithName("achievements")) {
+			achievements.add(xa.get("id"));
+		}
+	}
+	/**
+	 * Grant the achievement in the profile.
+	 * <p>Immediately saves the profile on the EDT.</p>
+	 * @param id the id of the achievement
+	 */
+	public void grantAchievement(String id) {
+		if (achievements.add(id)) {
+			save();
+		}
+	}
+	/**
+	 * Load the profile.
+	 */
+	public void load() {
+		try {
+			File f = new File("save/" + name + "/profile.xml");
+			if (f.canRead()) {
+				XElement xprofile = XElement.parseXML(f.getAbsolutePath());
+				load(xprofile);
+			}
+		} catch (XMLStreamException ex) {
+			ex.printStackTrace();
+		}
 	}
 }

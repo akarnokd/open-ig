@@ -150,7 +150,7 @@
 	<entry key="achievement.research_assistant">Kutató asszisztens</entry>
 	<entry key="achievement.research_assistant.desc">Kikutattál 5 technológiát</entry>
 	<entry key="achievement.scientist">Tudós</entry>
-	<entry key="achievement.scientist.desc">Kikutattál 30 technológiát</entry>
+	<entry key="achievement.scientist.desc">Kikutattál 15 technológiát</entry>
 	<entry key="achievement.nobel_prize">Nobel-díj</entry>
 	<entry key="achievement.nobel_prize.desc">Minden technológiát kikutattál</entry>
 	<entry key="achievement.popular">Népszerű</entry>
@@ -167,8 +167,8 @@
 	<entry key="achievement.defender.desc">Megvédted a kolóniádat a földi támadástól</entry>
 	<entry key="achievement.embargo">Embargó</entry>
 	<entry key="achievement.embargo.desc">Megsemmisítetted az első kereskedő hajót</entry>
-	<entry key="achievement.colombus">Kolombusz</entry>
-	<entry key="achievement.colombus.desc">Kolonizáltad az első bolygódat</entry>
+	<entry key="achievement.columbus">Kolombusz</entry>
+	<entry key="achievement.columbus.desc">Kolonizáltad az első bolygódat</entry>
 	<entry key="achievement.quarter">A torta negyede</entry>
 	<entry key="achievement.quarter.desc">25 bolygóval rendelkezel</entry>
 	<entry key="achievement.manufacturer">Gyártó</entry>

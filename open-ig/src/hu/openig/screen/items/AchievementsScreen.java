@@ -10,6 +10,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
+import hu.openig.mechanics.AchievementManager;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
@@ -430,43 +431,52 @@ public class AchievementsScreen extends ScreenBase {
 		g2.setClip(save0);
 		
 	}
+	/**
+	 * Add the given achievement if there is a support function for that.
+	 * @param id the achievement id
+	 */
+	void addAchievement(String id) {
+		if (AchievementManager.achievements().contains(id)) {
+			achievements.add(new AchievementEntry(id, id + ".desc"));
+		}
+	}
 	/** Create the test achievements. */
 	void createTestEntries() {
-		achievements.add(new AchievementEntry("achievement.conqueror", "achievement.conqueror.desc"));
-		achievements.add(new AchievementEntry("achievement.millionaire", "achievement.millionaire.desc"));
-		achievements.add(new AchievementEntry("achievement.student_of_bokros", "achievement.student_of_bokros.desc"));
-		achievements.add(new AchievementEntry("achievement.pirate_bay", "achievement.pirate_bay.desc"));
-		achievements.add(new AchievementEntry("achievement.dargslayer", "achievement.dargslayer.desc"));
-		achievements.add(new AchievementEntry("achievement.energizer", "achievement.energizer.desc"));
-		achievements.add(new AchievementEntry("achievement.death_star", "achievement.death_star.desc"));
-		achievements.add(new AchievementEntry("achievement.research_assistant", "achievement.research_assistant.desc"));
-		achievements.add(new AchievementEntry("achievement.scientist", "achievement.scientist.desc"));
-		achievements.add(new AchievementEntry("achievement.nobel_prize", "achievement.nobel_prize.desc"));
-		achievements.add(new AchievementEntry("achievement.popular", "achievement.popular.desc"));
-		achievements.add(new AchievementEntry("achievement.apeh", "achievement.apeh.desc"));
-		achievements.add(new AchievementEntry("achievement.ultimate_leader", "achievement.ultimate_leader.desc"));
-		achievements.add(new AchievementEntry("achievement.revolutioner", "achievement.revolutioner.desc"));
-		achievements.add(new AchievementEntry("achievement.mass_effect", "achievement.mass_effect.desc"));
-		achievements.add(new AchievementEntry("achievement.defender", "achievement.defender.desc"));
-		achievements.add(new AchievementEntry("achievement.embargo", "achievement.embargo.desc"));
-		achievements.add(new AchievementEntry("achievement.colombus", "achievement.colombus.desc"));
-		achievements.add(new AchievementEntry("achievement.quarter", "achievement.quarter.desc"));
-		achievements.add(new AchievementEntry("achievement.manufacturer", "achievement.manufacturer.desc"));
-		achievements.add(new AchievementEntry("achievement.salvage", "achievement.salvage.desc"));
-		achievements.add(new AchievementEntry("achievement.living_space", "achievement.living_space.desc"));
-		achievements.add(new AchievementEntry("achievement.food", "achievement.food.desc"));
-		achievements.add(new AchievementEntry("achievement.decade", "achievement.decade.desc"));
-		achievements.add(new AchievementEntry("achievement.oldest_man", "achievement.oldest_man.desc"));
-		achievements.add(new AchievementEntry("achievement.all_your_base", "achievement.all_your_base.desc"));
-		achievements.add(new AchievementEntry("achievement.et", "achievement.et.desc"));
-		achievements.add(new AchievementEntry("achievement.defense_contract", "achievement.defense_contract.desc"));
-		achievements.add(new AchievementEntry("achievement.coffee_break", "achievement.coffee_break.desc"));
-		achievements.add(new AchievementEntry("achievement.all_seeing_eye", "achievement.all_seeing_eye.desc"));
-		achievements.add(new AchievementEntry("achievement.newbie", "achievement.newbie.desc"));
-		achievements.add(new AchievementEntry("achievement.commander", "achievement.commander.desc"));
-		achievements.add(new AchievementEntry("achievement.admiral", "achievement.admiral.desc"));
-		achievements.add(new AchievementEntry("achievement.grand_admiral", "achievement.grand_admiral.desc"));
-		achievements.add(new AchievementEntry("achievement.influenza", "achievement.influenza.desc"));
+		addAchievement("achievement.conqueror");
+		addAchievement("achievement.millionaire");
+		addAchievement("achievement.student_of_bokros");
+		addAchievement("achievement.pirate_bay");
+		addAchievement("achievement.dargslayer");
+		addAchievement("achievement.energizer");
+		addAchievement("achievement.death_star");
+		addAchievement("achievement.research_assistant");
+		addAchievement("achievement.scientist");
+		addAchievement("achievement.nobel_prize");
+		addAchievement("achievement.popular");
+		addAchievement("achievement.apeh");
+		addAchievement("achievement.ultimate_leader");
+		addAchievement("achievement.revolutioner");
+		addAchievement("achievement.mass_effect");
+		addAchievement("achievement.defender");
+		addAchievement("achievement.embargo");
+		addAchievement("achievement.columbus");
+		addAchievement("achievement.quarter");
+		addAchievement("achievement.manufacturer");
+		addAchievement("achievement.salvage");
+		addAchievement("achievement.living_space");
+		addAchievement("achievement.food");
+		addAchievement("achievement.decade");
+		addAchievement("achievement.oldest_man");
+		addAchievement("achievement.all_your_base");
+		addAchievement("achievement.et");
+		addAchievement("achievement.defense_contract");
+		addAchievement("achievement.coffee_break");
+		addAchievement("achievement.all_seeing_eye");
+		addAchievement("achievement.newbie");
+		addAchievement("achievement.commander");
+		addAchievement("achievement.admiral");
+		addAchievement("achievement.grand_admiral");
+		addAchievement("achievement.influenza");
 		
 		statistics.add(new StatisticsEntry("statistics.total_gametime",
 		new Func1<Void, String>() {
