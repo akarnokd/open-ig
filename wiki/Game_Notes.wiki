@@ -2,6 +2,15 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.93.510 - Fixes =
+  * Released: 2012-01-01 01:40 CET
+  * Improved AI
+  * Enabled AI for all races
+  * Technology fixes
+  * Ability to switch players. CTRL+V shows all planets and fleets. Select an alien planet, the press CTRL+P. You can issue orders, build, research, etc.
+  * Added achievements: checking, display, save into profile
+  * Fixed several bugs
+
 = Version 0.93.500 - Fixes =
   * Released: 2011-12-30 18:30 CET
   * Added peaceful AI. Use CTRL+J to toggle it on the current user
