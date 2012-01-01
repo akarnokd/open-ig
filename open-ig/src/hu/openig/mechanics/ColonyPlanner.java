@@ -179,7 +179,7 @@ public class ColonyPlanner extends Planner {
 				return true;
 			}
 		}
-		if (builtCount(planet) < 1) {
+		if (builtCount(planet) < 1 && world.money < 500000) {
 			addEmpty();
 			return true;
 		}
