@@ -319,7 +319,10 @@
       <building id='Arcology' tech='human' x='-16' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Arcology' tech='human' x='-19' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='ColonyHub' tech='human' x='-6' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      <!-- TEMPFIX Can't get 4th and 5th planet without PhasedTelescope  
       <building id='FieldTelescope' tech='human' x='-9' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
+      -->
+      <building id='PhasedTelescope' tech='human' x='-9' y='-21' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='human' x='7' y='-23' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='human' x='-16' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
       <building id='Fortress' tech='human' x='-2' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='0' build='' hp=''/>
