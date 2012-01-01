@@ -85,7 +85,8 @@ public class AIWorld {
 		
 		if (player != player.world.player) {
 			mayConquer = player.world.player.statistics.planetsColonized > 0;
-			
+		} else {
+			mayConquer = true;
 		}
 		
 		inventory.putAll(player.inventory);
