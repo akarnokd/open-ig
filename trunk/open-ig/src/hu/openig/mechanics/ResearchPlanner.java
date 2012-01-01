@@ -136,8 +136,8 @@ public class ResearchPlanner extends Planner {
 		}
 		if (candidatesGetMorePlanets.size() > 0 
 				&& world.mayConquer 
-				&& world.colonizationLimit >= 0 
-				&& world.colonizationLimit < world.statistics.planetsColonized) {
+				&& (world.colonizationLimit < 0 
+				|| world.colonizationLimit < world.statistics.planetsColonized)) {
 			// TODO this is more complicated
 			planConquest();
 			return;
