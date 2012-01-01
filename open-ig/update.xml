@@ -44,7 +44,7 @@
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110101a.zip' sha1='36f3a2d2682a3e7c96d7826b11c86081eb65452f'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120101a.zip' sha1='36f3a2d2682a3e7c96d7826b11c86081eb65452f'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2012 Január 1 / A</desc>
 			<desc lang='en'>The upgraded resource file. 1st January, 2012 / A</desc>
 		</file>
