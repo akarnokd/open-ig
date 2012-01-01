@@ -7,7 +7,7 @@
   * Improved AI
   * Enabled AI for all races
   * Technology fixes
-  * Ability to switch players. CTRL+V shows all planets and fleets. Select an alien planet, the press CTRL+P. You can issue orders, build, research, etc.
+  * Ability to switch players. CTRL+V shows all planets and fleets. Select an alien planet, then press CTRL+P. You can issue orders, build, research, etc.
   * Added achievements: checking, display, save into profile
   * Fixed several bugs
 
