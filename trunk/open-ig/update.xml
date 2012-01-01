@@ -25,7 +25,7 @@
 			<desc lang='en'>The program's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.93.500'>
+	<module id='Game' version='0.93.510'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -37,17 +37,21 @@
 		<execute file='open-ig-%s.jar' memory='768'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>Békés AI. Hibajavítások.</desc>
-			<desc lang='en'>Peaceful AI. Bug fixes.</desc>
+			<desc lang='hu'>Jobb AI. Teljesítmények.</desc>
+			<desc lang='en'>Better AI. Achievements.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.500.jar' sha1='df9f2c20579151244bc77c4b020c153addb52161'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.93.510.jar' sha1='5f4a0899f5f00e1c64bcbe30734400ae6d84a47d'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20111230a.zip' sha1='9eb37c42e890bac0fac042c52cbf59cc70f40c88'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110101a.zip' sha1='36f3a2d2682a3e7c96d7826b11c86081eb65452f'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2012 Január 1 / A</desc>
+			<desc lang='en'>The upgraded resource file. 1st January, 2012 / A</desc>
+		</file>
+		<remove file='open-ig-upgrade-20111230a.zip' sha1='9eb37c42e890bac0fac042c52cbf59cc70f40c88'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 december 30 / A</desc>
 			<desc lang='en'>The upgraded resource file. 30th December, 2011 / A</desc>
-		</file>
+		</remove>
 		<remove file='open-ig-upgrade-20111226a.zip' sha1='d21861bdd795926faba9ccb0d2d1e3a10ef0a5ef'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 december 26 / A</desc>
 			<desc lang='en'>The upgraded resource file. 26th December, 2011 / A</desc>
