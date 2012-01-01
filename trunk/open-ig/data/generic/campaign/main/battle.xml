@@ -112,11 +112,11 @@
 		<tech id='Battleship1' normal='inventions/spaceships/battleships/battleship_1_rotate'
 			alternative='inventions/spaceships/battleships/alien_battleship_1_rotate'
 			image='inventions/spaceships/battleships/battleship_1_huge' width='64'
-			sound='EXPLOSION_LONG' movement-speed='75' rotation-time='100'  hp='3500'/>
+			sound='EXPLOSION_LONG' movement-speed='100' rotation-time='50'  hp='3500'/>
 		<tech id='Battleship2' normal='inventions/spaceships/battleships/battleship_2_rotate'
 			alternative='inventions/spaceships/battleships/alien_battleship_2_rotate'
 			image='inventions/spaceships/battleships/battleship_2_huge' width='64'
-			sound='EXPLOSION_LONG' movement-speed='75' rotation-time='100'  hp='9000'/>
+			sound='EXPLOSION_LONG' movement-speed='100' rotation-time='50'  hp='9000'/>
 		<tech id='Battleship3' normal='inventions/spaceships/battleships/battleship_3_rotate'
 			alternative='inventions/spaceships/battleships/alien_battleship_3_rotate'
 			image='inventions/spaceships/battleships/battleship_3_huge' width='64'
@@ -207,38 +207,38 @@
 		<tech id='DargslanBattleship'
 			normal='inventions/spaceships/battleships/dargslan_battleship_rotate'
 			image='inventions/spaceships/battleships/dargslan_battleship_huge'
-			width='64' sound='EXPLOSION_LONG' movement-speed='75'
-			rotation-time='100' hp='12000'/>
+			width='64' sound='EXPLOSION_LONG' movement-speed='100'
+			rotation-time='50' hp='12000'/>
 		<tech id='DribsBattleship'
 			normal='inventions/spaceships/battleships/dribs_battleship_rotate'
 			image='inventions/spaceships/battleships/dribs_battleship_huge'
-			width='64' sound='EXPLOSION_LONG' movement-speed='75'
-			rotation-time='100' hp='6500'/>
+			width='64' sound='EXPLOSION_LONG' movement-speed='100'
+			rotation-time='50' hp='6500'/>
 		<tech id='EcalepBattleship'
 			normal='inventions/spaceships/battleships/ecalep_battleship_rotate'
 			image='inventions/spaceships/battleships/ecalep_battleship_huge'
-			width='64' sound='EXPLOSION_LONG' movement-speed='75'
-			rotation-time='100'  hp='12000'/>
+			width='64' sound='EXPLOSION_LONG' movement-speed='100'
+			rotation-time='50'  hp='12000'/>
 		<tech id='GarthogBattleship'
 			normal='inventions/spaceships/battleships/garthog_battleship_rotate'
 			image='inventions/spaceships/battleships/garthog_battleship_huge'
-			width='64' sound='EXPLOSION_LONG' movement-speed='75'
-			rotation-time='100'  hp='3500'/>
+			width='64' sound='EXPLOSION_LONG' movement-speed='100'
+			rotation-time='50'  hp='3500'/>
 		<tech id='MorgathBattleship'
 			normal='inventions/spaceships/battleships/morgath_battleship_rotate'
 			image='inventions/spaceships/battleships/morgath_battleship_huge'
-			width='64' sound='EXPLOSION_LONG' movement-speed='75'
-			rotation-time='100'  hp='6500'/>
+			width='64' sound='EXPLOSION_LONG' movement-speed='100'
+			rotation-time='50'  hp='6500'/>
 		<tech id='SullepBattleship'
 			normal='inventions/spaceships/battleships/sullep_battleship_rotate'
 			image='inventions/spaceships/battleships/sullep_battleship_huge'
-			width='64' sound='EXPLOSION_LONG' movement-speed='75'
-			rotation-time='100'  hp='9000'/>
+			width='64' sound='EXPLOSION_LONG' movement-speed='100'
+			rotation-time='50'  hp='9000'/>
 		<tech id='YchomBattleship'
 			normal='inventions/spaceships/battleships/ychom_battleship_rotate'
 			image='inventions/spaceships/battleships/ychom_battleship_huge'
-			width='64' sound='EXPLOSION_LONG' movement-speed='57'
-			rotation-time='100'  hp='4500'/>
+			width='64' sound='EXPLOSION_LONG' movement-speed='100'
+			rotation-time='50'  hp='4500'/>
 
 		<tech id='TradersFreight1'
 			normal='inventions/spaceships/cruisers/traders_freight_1_rotate'
@@ -291,7 +291,7 @@
 			height='5' destroy='EXPLOSION_MEDIUM_2' fire='GROUND_FIRE_2' hp='360' damage='8' min-range='0' max-range='4' area='1' movement-speed='40' rotation-time='100' delay='500' type='TANK'/>
 		<tech id='Behemoth' normal='inventions/weapons/tanks/behemoth_matrix'
 			alternative='inventions/weapons/tanks/alien_behemoth_matrix' width='16'
-			height='5' destroy='EXPLOSION_MEDIUM_2' fire='GROUND_FIRE_6' hp='420' damage='10' min-range='0' max-range='5' area='1' movement-speed='30' rotation-time='100' delay='500' type='TANK'/>
+			height='5' destroy='EXPLOSION_MEDIUM_2' fire='GROUND_FIRE_6' hp='420' damage='10' min-range='0' max-range='5' area='1' movement-speed='25' rotation-time='100' delay='500' type='TANK'/>
 		<tech id='RadarCar' normal='inventions/weapons/vehicles/radar_car_matrix'
 			alternative='inventions/weapons/vehicles/alien_radar_car_matrix'
 			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='70' damage='0' min-range='0' max-range='5' area='1' movement-speed='50' rotation-time='100' delay='500' type='RADAR'/>
@@ -342,10 +342,10 @@
 				<port rx='2' ry='-2'  px='4' py='-18' fire='GROUND_FIRE_2' max-range='8' damage='15' rotation-time='300' delay='1500' matrix='fortress'/>
 			</race>
 			<race id='garthog'>
-				<port rx='0' ry='-1'  px='-16' py='-46' fire='GROUND_FIRE_4' max-range='7' damage='10' rotation-time='200' delay='1000' matrix='barracks'/>
-				<port rx='3' ry='-3'  px='-14' py='-24' fire='GROUND_FIRE_4' max-range='7' damage='10' rotation-time='200' delay='1000' matrix='barracks'/>
-				<port rx='0' ry='-3'  px='4' py='-36' fire='GROUND_FIRE_4' max-range='7' damage='10' rotation-time='200' delay='1000' matrix='barracks'/>
-				<port rx='0' ry='-3'  px='-10' py='-100' fire='GROUND_FIRE_4' max-range='7' damage='10' rotation-time='200' delay='1000' matrix='barracks'/>
+				<port rx='0' ry='-1'  px='-16' py='-46' fire='GROUND_FIRE_4' max-range='10' damage='12' rotation-time='200' delay='1000' matrix='barracks'/>
+				<port rx='3' ry='-3'  px='-14' py='-24' fire='GROUND_FIRE_4' max-range='10' damage='12' rotation-time='200' delay='1000' matrix='barracks'/>
+				<port rx='0' ry='-3'  px='4' py='-36' fire='GROUND_FIRE_4' max-range='10' damage='12' rotation-time='200' delay='1000' matrix='barracks'/>
+				<port rx='0' ry='-3'  px='-10' py='-100' fire='GROUND_FIRE_4' max-range='10' damage='12' rotation-time='200' delay='1000' matrix='barracks'/>
 			</race>
 			<race id='morgath'>
 				<port rx='0' ry='-2'  px='0' py='-70' fire='GROUND_FIRE_2' max-range='8' damage='15' rotation-time='300' delay='1500' matrix='fortress'/>
@@ -365,8 +365,8 @@
 				<port rx='0' ry='-2'  px='4' py='-94' fire='GROUND_FIRE_2' max-range='8' damage='15' rotation-time='300' delay='1500' matrix='fortress'/>
 			</race>
 			<race id='dargslan'>
-				<port rx='0' ry='-2'  px='-20' py='-72' fire='GROUND_FIRE_6' max-range='9' damage='20' rotation-time='400' delay='2000' matrix='stronghold'/>
-				<port rx='1' ry='-2'  px='14' py='-6' fire='GROUND_FIRE_6' max-range='9' damage='20' rotation-time='400' delay='2000' matrix='stronghold'/>
+				<port rx='0' ry='-2'  px='-20' py='-72' fire='GROUND_FIRE_6' max-range='14' damage='25' rotation-time='400' delay='1200' matrix='stronghold'/>
+				<port rx='1' ry='-2'  px='14' py='-6' fire='GROUND_FIRE_6' max-range='14' damage='25' rotation-time='400' delay='1200' matrix='stronghold'/>
 			</race>
 			<race id='ecalep'>
 				<port rx='0' ry='-1'  px='-6' py='-60' fire='GROUND_FIRE_6' max-range='9' damage='20' rotation-time='400' delay='2000' matrix='stronghold'/>
@@ -387,11 +387,20 @@
 		<hitpoints id='PlasmaProjector' space='20000' ground='2000'/>
 		<hitpoints id='ParticleProjector' space='30000' ground='3000'/>
 		<hitpoints id='MesonProjector' space='50000' ground='5000'/>
-		<hitpoints id='Barracks' space='10000' ground='500'/>
-		<hitpoints id='Fortress' space='20000' ground='1000'/>
-		<hitpoints id='Stronghold' space='30000' ground='2000'/>
+		<hitpoints id='Barracks' space='10000' ground='1500'/>
+		<hitpoints id='Fortress' space='20000' ground='3000'/>
+		<!-- Individual Fortress HP's for Non Human races -->
+		<hitpoints id='Fortress' player='garthog' space='20000' ground='3000'/>
+		<hitpoints id='Fortress' player='morgath' space='20000' ground='3000'/>
+		<hitpoints id='Fortress' player='sullep' space='20000' ground='3000'/>
+		<hitpoints id='Fortress' player='ychom' space='20000' ground='3000'/>
+		<hitpoints id='Fortress' player='dribs' space='20000' ground='3000'/>
+		<hitpoints id='Fortress' player='dargslan' space='20000' ground='3000'/>
+		<hitpoints id='Fortress' player='ecalep' space='20000' ground='3000'/>
+		<hitpoints id='Fortress'  space='20000' ground='3000'/>
+		<hitpoints id='Stronghold' space='30000' ground='8000'/>
 		<!-- 
-		<hitpoints id='' space='' ground=''/>
+		<hitpoints id='Building_name' player='racename' space='amount_spaceHP' ground='amount_groundHP'/>
 		 -->
 	</buildings>
 	<!-- Initial battle layouts. -->
