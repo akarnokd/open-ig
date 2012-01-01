@@ -20,8 +20,8 @@
 	-->
 	<!-- Initial fleets. -->
 		<fleet id='0' x='330' y='440' name='Főflotta'>
-			<item id='Destroyer1' count='1' hp='12000' shield='0'/>
-			<item id='Fighter1' count='3' hp='2000' shield='0'/>
+			<item id='Destroyer1' count='1' />
+			<item id='Fighter1' count='3' />
 		</fleet>
 	</player>
 	<player id='Garthog' race='garthog' name='players.garthog'
@@ -64,7 +64,7 @@
 		picture='database/morgath'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='3'
+		colonization-limit='23'
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
@@ -77,7 +77,7 @@
 		picture='database/ychom'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='3'
+		colonization-limit='15'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -89,7 +89,7 @@
 		picture='database/drib'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='3'
+		colonization-limit='2'
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
@@ -102,7 +102,7 @@
 		picture='database/sullep'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='3'
+		colonization-limit='0'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -116,7 +116,7 @@
 		initial-stance='10'
 		exploration-inner-limit='150, 360, 300, 130'
 		exploration-outer-limit=''
-		colonization-limit='1'
+		colonization-limit='0'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -128,7 +128,7 @@
 		picture='database/ecalep'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='3'
+		colonization-limit='1'
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
@@ -141,7 +141,7 @@
 		picture='database/freenations'
 		money='32000'
 		initial-stance='50'
-		colonization-limit='3'
+		colonization-limit='2'
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
@@ -154,7 +154,7 @@
 		picture='database/freenations'
 		money='32000'
 		initial-stance='50'
-		colonization-limit='3'
+		colonization-limit='0'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
