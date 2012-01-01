@@ -2,6 +2,16 @@
 
 <wiki:toc max_depth="1" />
 
+=January, 2012=
+
+*January 1, 2012*
+
+Happy new year! Four year ago I thought I can simply reimplement Imperium Galactica within 6 months...
+
+Anyway, here is a new release with improved AI. 
+
+*Note: if the game hangs, quit the Launcher.*
+
 =December, 2011=
 
 *December 30, 2011*
