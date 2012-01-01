@@ -362,7 +362,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> COMMANDER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return t.level >= 3;
+			return false; /* t.level >= 3; */
 		}
 	};
 	/** Test for achievement. */
@@ -370,7 +370,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> ADMIRAL = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return t.level >= 4;
+			return false; /* t.level >= 4; */
 		}
 	};
 	/** Test for achievement. */
@@ -378,7 +378,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> GRAND_ADMIRAL = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return t.level >= 5;
+			return false; /** t.level >= 5; */
 		}
 	};
 	// -------------------------------------------------------------------------------	
