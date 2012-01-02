@@ -152,8 +152,7 @@ public class ResearchPlanner extends Planner {
 		List<AIFleet> colonizers = findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip);
 		for (AIFleet fleet : colonizers) {
 				if (!fleet.isMoving()
-							&& fleet.statistics.planet != null
-							&& world.planetMap.get(fleet.statistics.planet).owner == null) {
+							&& fleet.statistics.planet != null) {
 				final Fleet f0 = fleet.fleet;
 				final Planet p0 = fleet.statistics.planet;
 				add(new Action0() {
