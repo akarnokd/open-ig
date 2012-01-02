@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
@@ -59,7 +60,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -5640883678496406236L;
 	/** The launcher's version. */
-	static final String VERSION = "0.12";
+	static final String VERSION = "0.13";
 	/** The list of stuff. */
 	JPanel listPanel;
 	/** The exit buttom. */
@@ -837,7 +838,9 @@ public class Launcher extends JFrame {
 			ProcessBuilder pb = new ProcessBuilder();
 			pb.command(System.getProperty("java.home") + "/bin/java", "-jar", ff, "-selfupdate", ff);
 			try {
-				pb.start();
+				Process p = pb.start();
+				consume(p.getErrorStream());
+				consume(p.getInputStream());
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
@@ -857,10 +860,42 @@ public class Launcher extends JFrame {
 			pb.command(System.getProperty("java.home") + "/bin/java", "-jar", String.format(m.executeFile, installedVersions.get(m.id)), "-memonce");
 		}
 		try {
-			pb.start();
+			Process p = pb.start();
+			consume(p.getErrorStream());
+			consume(p.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * Consume the input stream in the background.
+	 * @param in the input stream
+	 * @return the thread
+	 */
+	public static Thread consume(final InputStream in) {
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				byte[] buffer = new byte[8192];
+				try {
+					try {
+						while (!Thread.currentThread().isInterrupted()) {
+							int read = in.read(buffer);
+							if (read < 0) {
+								break;
+							}
+						}
+					} finally {
+						in.close();
+					}
+				} catch (IOException ex) {
+					// ignore
+				}
+			}
+		});
+		t.setDaemon(true);
+		t.start();
+		return t;
 	}
 	/**
 	 * @param args the arguments
@@ -878,7 +913,9 @@ public class Launcher extends JFrame {
 					IOUtils.save(old, IOUtils.load(f0));
 					ProcessBuilder pb = new ProcessBuilder();
 					pb.command(System.getProperty("java.home") + "/bin/java", "-jar", "open-ig-launcher.jar", "-selfdelete", args[1]);
-					pb.start();
+					Process p = pb.start();
+					consume(p.getInputStream());
+					consume(p.getErrorStream());
 					return;
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
