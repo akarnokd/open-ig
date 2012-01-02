@@ -4,6 +4,10 @@
 
 See the [Launcher] page about the application itself.
 
+= Version 0.13 - Bugfix release =
+  
+  * Fixed issue causing the game to hang when run from the Launcher.
+
 = Version 0.12 - Bugfix release =
 
   * Fixed a related bug where the application restarts itself infinitely, typically on Linux machines.
