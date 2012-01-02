@@ -4,9 +4,15 @@
 
 =January, 2012=
 
+*January 2, 2012*
+
+The latest version of the game may cause some inconveniences, namely unexpected hang and disappearance of saves. You may let the Launcher to update itself to version 0.13. 
+
+We recommend that you backup your *save/default* directory, as the game now limits the saves to 5 quick- and 5 autosave, and all pre v0.93.510 versions' save is considered autosave.
+
 *January 1, 2012*
 
-Happy new year! Four year ago I thought I can simply reimplement Imperium Galactica within 6 months...
+Happy new year! Four years ago I thought I can simply reimplement Imperium Galactica within 6 months...
 
 Anyway, here is a new release with improved AI. 
 
