@@ -2916,7 +2916,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			proj.x = r.fired.x;
 			proj.y = r.fired.y;
 			proj.angle = r.fired.angle;
-			proj.impactSound = SoundType.EXPLOSION_MEDIUM;
+			proj.impactSound = SoundType.HIT;
 			proj.steering = true;
 			proj.ecmLimit = r.type.getInt("anti-ecm", 0);
 			
