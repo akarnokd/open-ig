@@ -19,7 +19,11 @@ public class SpacewarProjectile extends SpacewarObject {
 	/** The beam speed per simulation tick. */
 	public int movementSpeed;
 	/** The rotation time per angle segment. */
-	public int rotationTime;
+	public double rotationTime;
+	/** Indicate that the projectile can track its target. */
+	public boolean steering;
+	/** The projectile's model. */
+	public BattleProjectile model;
 	/** The angle images of the projectile. */
 	public BufferedImage[][] matrix;
 	/** The animation phase with an angle. */

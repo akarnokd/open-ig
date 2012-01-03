@@ -386,33 +386,39 @@ public class AITrader implements AIManager {
 		for (XElement xlf : in.childrenWithName("landed")) {
 			String fid = xlf.get("fleet");
 			String pid = xlf.get("planet");
-			Planet p = world.planets.get(pid);
-			int ttl = xlf.getInt("ttl");
-			Fleet f = createFleet(fid);
-			if (p != null) {
-				LandedFleet lf = new LandedFleet();
-				lf.fleet = f;
-				lf.target = p;
-				lf.ttl = ttl;
-				landed.add(lf);
+			if (fid != null && pid != null) {
+				Planet p = world.planets.get(pid);
+				int ttl = xlf.getInt("ttl");
+				Fleet f = createFleet(fid);
+				if (p != null) {
+					LandedFleet lf = new LandedFleet();
+					lf.fleet = f;
+					lf.target = p;
+					lf.ttl = ttl;
+					landed.add(lf);
+				}
 			}
 		}
 		for (XElement xtb : in.childrenWithName("turned-back")) {
-			int fid = xtb.getInt("fleet");
-			Fleet f = player.fleet(fid);
-			if (f != null) {
-				fleetTurnedBack.add(f);
+			int fid = xtb.getInt("fleet", -1);
+			if (fid >= 0) {
+				Fleet f = player.fleet(fid);
+				if (f != null) {
+					fleetTurnedBack.add(f);
+				}
 			}
 		}
 		for (XElement xlast : in.childrenWithName("last-visit")) {
-			int fid = xlast.getInt("fleet");
-			Fleet f = player.fleet(fid);
-			if (f != null) {
-				String pid = xlast.get("planet");
-				Planet p = world.planets.get(pid);
-				
-				if (p != null) {
-					lastVisitedPlanet.put(f, p);
+			int fid = xlast.getInt("fleet", -1);
+			if (fid >= 0) {
+				Fleet f = player.fleet(fid);
+				if (f != null) {
+					String pid = xlast.get("planet");
+					Planet p = world.planets.get(pid);
+					
+					if (p != null) {
+						lastVisitedPlanet.put(f, p);
+					}
 				}
 			}
 		}
@@ -422,9 +428,11 @@ public class AITrader implements AIManager {
 		for (LandedFleet lf : landed) {
 			if (lf.fleet.inventory.size() > 0) {
 				XElement xlf = out.add("landed");
-				xlf.set("fleet", lf.fleet.inventory.get(0).type.id);
-				xlf.set("planet", lf.target.id);
-				xlf.set("ttl", lf.ttl);
+				if (lf.target != null) {
+					xlf.set("fleet", lf.fleet.inventory.get(0).type.id);
+					xlf.set("planet", lf.target.id);
+					xlf.set("ttl", lf.ttl);
+				}
 			}
 		}
 		for (Fleet tb : fleetTurnedBack) {

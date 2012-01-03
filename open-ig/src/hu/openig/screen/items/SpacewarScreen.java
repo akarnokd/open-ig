@@ -30,6 +30,7 @@ import hu.openig.model.Owned;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionBoxMode;
 import hu.openig.model.SoundType;
@@ -333,6 +334,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	int offsetY;
 	/** The rendering scale. */
 	double scale = 1.0;
+	/** The maximum scale. */
+	final double maxScale = 1.0;
 	/** The operational space at 1:1 zoom. */
 	final Rectangle space = new Rectangle(0, 0, 462 * 504 / 238, 504);
 	/** Panning the view. */
@@ -663,6 +666,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					doMoveSelectedShips(p.x, p.y);
 					moveButton.selected = false;
 				} else
+				if (rocketButton.selected) {
+					Point2D.Double p = mouseToSpace(e.x, e.y);
+					SpacewarStructure s = enemyAt(p.x, p.y);
+					if (s != null) {
+						doAttackWithRockets(s);
+					} else {
+						selectButton(stopButton);
+						mouse(e);
+					}
+				} else
 				if (attackButton.selected) {
 					Point2D.Double p = mouseToSpace(e.x, e.y);
 					SpacewarStructure s = enemyAt(p.x, p.y);
@@ -947,7 +960,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		double xscale = mainmap.width * 1.0 / space.width;
 		double yscale = mainmap.height * 1.0 / space.height;
 		double s = Math.min(xscale, yscale) * 20;
-		scale = Math.min(1.0, Math.round(s) / 20.0);
+		scale = Math.min(maxScale, Math.round(s) / 20.0);
 		pan(0, 0);
 	}
 
@@ -1110,7 +1123,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void doZoomIn(int x, int y) {
 		Point2D.Double p0 = mouseToSpace(x, y);
-		scale = Math.min(scale + 0.05, 1.0);
+		scale = Math.min(scale + 0.05, maxScale);
 		Point2D.Double p1 = mouseToSpace(x, y);
 		pan((int)(p0.x - p1.x), (int)(p0.y - p1.y));
 	}
@@ -1515,7 +1528,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 				BattleProjectile pr = world().battle.projectiles.get(bge.projectile);
 				
-				SpacewarWeaponPort wp = new SpacewarWeaponPort();
+				SpacewarWeaponPort wp = new SpacewarWeaponPort(null);
 				wp.projectile = pr.copy();
 				wp.projectile.damage = bge.damage;
 				
@@ -1732,7 +1745,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					&& (is.type.category == ResearchSubCategory.WEAPONS_CANNONS
 					|| is.type.category == ResearchSubCategory.WEAPONS_LASERS
 					|| is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES)) {
-				SpacewarWeaponPort wp = new SpacewarWeaponPort();
+				SpacewarWeaponPort wp = new SpacewarWeaponPort(is);
 				wp.count = is.count;
 				BattleProjectile bp = world().battle.projectiles.get(is.type.get("projectile"));
 				if (bp == null) {
@@ -2837,6 +2850,82 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 	}
 	/**
+	 * Function to locate the most appropriate rocket type.
+	 * @author akarnokd, 2012.01.03.
+	 */
+	class RocketSelected {
+		/** The remaining rocket count. */
+		int count = 0;
+		/** The technology. */
+		ResearchType type = null;
+		/** Who will fire the rocket. */
+		SpacewarStructure fired = null;
+		/** From which port. */
+		SpacewarWeaponPort port = null;
+		/**
+		 * Find a rocket for the specified target.
+		 * @param target the target
+		 * @param targetTyped use rocket for that kind of target?
+		 */
+		void findRocket(SpacewarStructure target, boolean targetTyped) {
+			// try to find rockets for ships or bombs for buildings
+			for (SpacewarStructure ship : structures) {
+				if (ship.type == StructureType.SHIP && ship.selected && ship.owner != target.owner) {
+					for (SpacewarWeaponPort p : ship.ports) {
+						if (p.count > 0 && p.projectile.mode != Mode.BEAM) {
+							if (!targetTyped || (target.building != null && (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS)
+									|| (target.building == null && (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET)))) {
+								if (p.count > count) {
+									count = p.count;
+									port = p;
+									fired = ship;
+									type = world().researches.get(p.projectile.id);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Fire a single rocket from the group.
+	 * @param target the target
+	 */
+	void doAttackWithRockets(SpacewarStructure target) {
+		RocketSelected r = new RocketSelected();
+		r.findRocket(target, true);
+		if (r.fired == null) {
+			r = new RocketSelected();
+			r.findRocket(target, false);
+		}
+		if (r.fired != null) {
+			r.port.count--;
+			if (r.port.is != null) {
+				r.port.is.count--;
+			}
+
+			SpacewarProjectile proj = new SpacewarProjectile();
+			proj.model = r.port.projectile;
+			proj.damage = r.port.projectile.damage;
+			proj.owner = r.fired.owner;
+			proj.target = target;
+			proj.matrix = r.port.projectile.matrix;
+			proj.movementSpeed = r.port.projectile.movementSpeed;
+			proj.rotationTime = r.port.projectile.rotationTime;
+			proj.x = r.fired.x;
+			proj.y = r.fired.y;
+			proj.angle = r.fired.angle;
+			proj.impactSound = SoundType.EXPLOSION_MEDIUM;
+			proj.steering = true;
+			proj.ecmLimit = r.type.getInt("anti-ecm", 0);
+			
+			projectiles.add(proj);
+			
+			sound(r.port.projectile.sound);
+		}
+	}
+	/**
 	 * Set to attack the specified target.
 	 * @param target the target structure
 	 */
@@ -2910,6 +2999,33 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		return false;
 	}
 	/**
+	 * Rotate the projectile towards the given target angle by a step.
+	 * @param proj the structure
+	 * @param x the target point X
+	 * @param y the target point Y
+	 * @return rotation done?
+	 */
+	boolean rotateStep(SpacewarProjectile proj, double x, double y) {
+		double targetAngle = Math.atan2(y - proj.y, x - proj.x);
+		double currentAngle = proj.normalizedAngle();
+
+		double diff = targetAngle - currentAngle;
+		if (diff < -Math.PI) {
+			diff = 2 * Math.PI - diff;
+		} else
+		if (diff > Math.PI) {
+			diff -= 2 * Math.PI; 
+		}
+		double anglePerStep = 2 * Math.PI * proj.rotationTime / proj.matrix.length / SIMULATION_DELAY;
+		if (Math.abs(diff) < anglePerStep) {
+			proj.angle = targetAngle;
+			return true;
+		} else {
+			proj.angle += Math.signum(diff) * anglePerStep;
+		}
+		return false;
+	}
+	/**
 	 * Perform a move step towards the given target point and up to the minimum distance if initially
 	 * further away.
 	 * @param ship the ship to move
@@ -2948,7 +3064,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		double dy = ds * Math.sin(obj.angle);
 		obj.phase++;
  		
+		
 		if (!obj.target.isDestroyed()) {
+			if (obj.steering) {
+				// adjust angle to match target
+				rotateStep(obj, obj.target.x, obj.target.y);
+			}
 			double w = obj.target.get().getWidth();
 			double h = obj.target.get().getHeight();
 			double x0 = obj.target.x - w / 2;
@@ -3023,6 +3144,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			e.consume();
 		}
+		if (e.getKeyChar() == 'r' || e.getKeyChar() == 'R') {
+			if (rocketButton.enabled) {
+				if (!rocketButton.selected) {
+					selectButton(rocketButton);
+				} else {
+					selectButton(stopButton);
+				}
+				e.consume();
+				return true;
+			}
+			e.consume();
+		}
 		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 			// back out of fight instantly
 			commons.restoreMainSimulationSpeedFunction();
@@ -3063,11 +3196,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/**
 	 * Create explosion object for the given spacewar structure.
 	 * @param s the structure
+	 * @param destroy should the explosion destroy the target?
 	 */
-	void createExplosion(SpacewarStructure s) {
+	void createExplosion(SpacewarStructure s, boolean destroy) {
 		SpacewarExplosion x = new SpacewarExplosion();
 		x.owner = s.owner;
-		x.target = s;
+		if (destroy) {
+			x.target = s;
+		}
 		x.x = s.x;
 		x.y = s.y;
 		switch (s.destruction) {
@@ -3083,6 +3219,26 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		explosions.add(x);
 	}
+	/**
+	 * Adjust the damage based on the target and projectile.
+	 * @param p the projectile
+	 * @return the target
+	 */
+	int damageAdjust(SpacewarProjectile p) {
+		if (p.model.mode != Mode.BEAM) {
+			if (p.model.mode == Mode.BOMB || p.model.mode == Mode.VIRUS) {
+				if (p.target.building == null) {
+					return p.damage / 5;
+				}
+			}
+			if (p.model.mode == Mode.ROCKET || p.model.mode == Mode.MULTI_ROCKET) {
+				if (p.target.building != null) {
+					return p.damage / 5;
+				}
+			}
+		}
+		return p.damage;
+	}
 	/** Perform the spacewar simulation. */
 	void doSpacewarSimulation() {
 		Set<SoundType> soundsToPlay = new HashSet<SoundType>();
@@ -3091,7 +3247,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (exp.next()) {
 				explosions.remove(exp);
 			} else
-			if (exp.isMiddle() && exp.target.isDestroyed()) {
+			if (exp.isMiddle() && exp.target != null && exp.target.isDestroyed()) {
 				structures.remove(exp.target);
 			}
 		}
@@ -3101,10 +3257,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				projectiles.remove(p);
 				
 				int loss0 = p.target.loss;
-				if (p.target.damage(p.damage)) {
+				int damage = damageAdjust(p);
+				
+				if (p.target.damage(damage)) {
+					if (p.model.mode == Mode.VIRUS && p.target.building != null) {
+						p.target.planet.quarantine |= true;
+						p.target.planet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL; 
+					}
 					battle.spaceLosses.add(p.target);
 					soundsToPlay.add(p.target.destruction);
-					createExplosion(p.target);
+					createExplosion(p.target, true);
 					if (p.target.type == StructureType.SHIELD) {
 						dropGroundShields();
 					}
@@ -3115,10 +3277,21 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					}
 				} else {
 					soundsToPlay.add(p.impactSound);
+					if (p.steering) {
+						createExplosion(p.target, false);
+					}
 				}
 			} else
 			if (!p.intersects(0, 0, space.width, space.height)) {
 				projectiles.remove(p);
+			} else {
+				double d = Math.hypot(p.x - p.target.x, p.y - p.target.y);
+				if (p.target.isDestroyed() || (p.target.ecmLevel > p.ecmLimit && d < 100 && d > 80)) {
+					// choose a new target
+					if (structures.size() > 0) {
+						p.target = world().random(structures);
+					}
+				}
 			}
 		}
 		List<SpacewarStructure> enemyIdles = JavaUtils.newArrayList();
@@ -3264,6 +3437,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void createBeam(SpacewarStructure source, SpacewarWeaponPort p, 
 			double ax, double ay, SpacewarStructure target) {
 		SpacewarProjectile sp = new SpacewarProjectile();
+		sp.model = p.projectile;
 		sp.owner = source.owner; 
 		sp.target = target;
 		sp.movementSpeed = p.projectile.movementSpeed;
