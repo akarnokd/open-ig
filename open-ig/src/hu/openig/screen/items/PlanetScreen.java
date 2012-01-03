@@ -1072,6 +1072,18 @@ public class PlanetScreen extends ScreenBase {
 		void drawHiddenUnitIndicators(Graphics2D g2) {
 			for (GroundwarUnit u : units) {
 				Rectangle ur = unitRectangle(u);
+
+				
+				// compensate rectangle to have only the trimmed image
+				BufferedImage bi = u.get();
+				int tx = (u.model.width - bi.getWidth()) / 2;
+				int ty = (u.model.height - bi.getHeight()) / 2;
+
+				ur.x += tx;
+				ur.y += ty;
+				ur.width = bi.getWidth();
+				ur.height = bi.getHeight();
+				
 				for (Building b : surface().buildings) {
 					if (u.y <= b.location.y - b.tileset.normal.height
 							|| u.x < b.location.x
@@ -3312,9 +3324,9 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the rectangle
 	 */
 	public Rectangle unitRectangle(GroundwarUnit u) {
-		BufferedImage img = u.get();
+//		BufferedImage img = u.get();
 		Point p = unitPosition(u);
-		return new Rectangle(p.x, p.y, img.getWidth(), img.getHeight());
+		return new Rectangle(p.x, p.y, u.model.width, u.model.height);
 	}
 	/** 
 	 * Draw guns at the specified location.
