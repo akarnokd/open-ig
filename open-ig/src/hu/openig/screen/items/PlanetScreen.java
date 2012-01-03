@@ -289,6 +289,19 @@ public class PlanetScreen extends ScreenBase {
 	static final int YIELD_TTL = 10 * 1000 / SIMULATION_DELAY;
 	/** List of requests about path planning. */
 	final List<PathPlanning> pathsToPlan = JavaUtils.newArrayList();
+	/** A mine. */
+	public static class Mine {
+		/** The owner. */
+		public Player owner;
+		/** The damage to inflict. */
+		public int damage;
+	}
+	/**
+	 * The mine locations.
+	 */
+	final Map<Location, Mine> mines = JavaUtils.newHashMap();
+	/** Set of minelayers currently placing a mine. */
+	final Set<GroundwarUnit> minelayers = JavaUtils.newHashSet();
 	/** Collision avoidance yield set. */
 	@Override
 	public void onFinish() {
@@ -337,6 +350,9 @@ public class PlanetScreen extends ScreenBase {
 					doAddUnits();
 					rep = true;
 				}
+			} else {
+				doMineLayerDeploy();
+				rep = true;
 			}
 			break;
 		case KeyEvent.VK_B:
@@ -364,7 +380,19 @@ public class PlanetScreen extends ScreenBase {
 		}
 		return rep;
 	}
-
+	/**
+	 * Issue mine laying orders to the selected mine layers.
+	 */
+	void doMineLayerDeploy() {
+		for (GroundwarUnit u : units) {
+//			if (u.owner != player()) {
+//				continue;
+//			}
+			if (u.selected && u.model.type == GroundwarUnitType.MINELAYER) {
+				minelayers.add(u);
+			}
+		}
+	}
 	/**
 	 * Zoom to 100%.
 	 */
@@ -441,6 +469,8 @@ public class PlanetScreen extends ScreenBase {
 		battlePlacements.clear();
 		guns.clear();
 		units.clear();
+		mines.clear();
+		minelayers.clear();
 		pathsToPlan.clear();
 		explosions.clear();
 		rockets.clear();
@@ -1282,11 +1312,29 @@ public class PlanetScreen extends ScreenBase {
 //						}
 					}
 //					if (battle != null) { FIXME during battle only
+						drawMine(g2, loc.x - j, loc.y);
 						drawUnits(g2, loc.x - j, loc.y);
 						drawExplosions(g2, loc.x - j, loc.y);
 						drawRockets(g2, loc.x - j, loc.y);
 //					} FIXME during battle only
 				}
+			}
+		}
+		/**
+		 * Render any mine in the specified location.
+		 * @param g2 the graphics context
+		 * @param cx the cell coordinete
+		 * @param cy the cell coordinate
+		 */
+		void drawMine(Graphics2D g2, int cx, int cy) {
+			Mine m = mines.get(Location.of(cx, cy));
+			if (m != null) {
+				int x0 = planet().surface.baseXOffset;
+				int y0 = planet().surface.baseYOffset;
+				int px = (x0 + Tile.toScreenX(cx, cy));
+				int py = (y0 + Tile.toScreenY(cx, cy));
+				BufferedImage bimg = commons.colony().mine[0][0];
+				g2.drawImage(bimg, px + 21, py + 12, null);
 			}
 		}
 		/**
@@ -3767,6 +3815,23 @@ public class PlanetScreen extends ScreenBase {
 				u.hp = Math.min(u.model.hp, u.hp + 1.0 * u.model.hp / u.model.selfRepairTime);
 			}
 		}
+		if (minelayers.contains(u) && u.path.size() == 0) {
+			Location loc = Location.of((int)u.x, (int)u.y);
+			if (!mines.containsKey(loc)) {
+				u.phase++;
+				if (u.phase >= u.maxPhase()) {
+					Mine m = new Mine();
+					m.damage = u.model.damage;
+					m.owner = u.owner;
+					mines.put(loc, m);
+					minelayers.remove(u);
+					u.phase = 0;
+				}
+			} else {
+				minelayers.remove(u);
+			}
+			return;
+		} else
 		if (u.phase > 0) {
 			u.phase++;
 			if (u.phase >= u.maxPhase()) {
@@ -3941,6 +4006,17 @@ public class PlanetScreen extends ScreenBase {
 		}
 		if (!u.path.isEmpty()) {
 			moveUnit(u);
+			if (u.nextMove == null) {
+				Location loc = Location.of((int)u.x, (int)u.y);
+				Mine m = mines.get(loc);
+				if (m != null && m.owner != u.owner) {
+					sound(SoundType.EXPLOSION_MEDIUM);
+					Point pt = centerOf(loc);
+					createExplosion(pt.x, pt.y, ExplosionType.GROUND_RED);
+					damageArea(u.x, u.y, m.damage, 1, m.owner);
+					mines.remove(loc);
+				}
+			}
 		}
 	}
 	/**
@@ -4422,6 +4498,7 @@ public class PlanetScreen extends ScreenBase {
 				}
 				u.attackBuilding = null;
 				u.attackUnit = null;
+				minelayers.remove(u);
 			}
 		}
 		for (GroundwarGun g : guns) {
