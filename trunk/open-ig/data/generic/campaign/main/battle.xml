@@ -319,7 +319,7 @@
 		<tech id='SullepArtillery' normal='inventions/weapons/vehicles/sullep_artillery_matrix'
 			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' fire='GROUND_FIRE_3' hp='300' damage='42' min-range='0' max-range='8' area='1' movement-speed='40' rotation-time='100' delay='2500' type='ARTILLERY'/>
 		<tech id='YchomMineLayer' normal='inventions/weapons/vehicles/ychom_mine_layer_matrix'
-			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='150' damage='5' min-range='0' max-range='5' area='4' movement-speed='50' rotation-time='100' delay='500' type='MINELAYER'/>
+			width='16' height='5' destroy='EXPLOSION_MEDIUM_2' hp='150' damage='100' min-range='0' max-range='5' area='4' movement-speed='50' rotation-time='100' delay='500' type='MINELAYER'/>
 	</ground-vehicles>
 	<!-- Contains explicit battle information for building turrets and weapon 
 		projectiles -->
