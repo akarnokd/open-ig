@@ -1664,10 +1664,11 @@ public class World {
 	 */
 	void processBattle(XElement xbattle) {
 		for (XElement xproj : xbattle.childElement("projectiles").childrenWithName("projectile")) {
-			String id = xproj.get("id");
+			BattleProjectile bp = new BattleProjectile();
+			
+			bp.id = xproj.get("id");
 			int nx = xproj.getInt("width");
 			int ny = xproj.getInt("height");
-			BattleProjectile bp = new BattleProjectile();
 			
 			BufferedImage m = rl.getImage(xproj.get("matrix"));
 			bp.matrix = ImageUtils.split(m, m.getWidth() / nx, m.getHeight() / ny);
@@ -1694,10 +1695,10 @@ public class World {
 			
 			bp.movementSpeed = xproj.getInt("movement-speed");
 			if (xproj.has("rotation-time")) {
-				bp.rotationTime = xproj.getInt("rotation-time");
+				bp.rotationTime = xproj.getFloat("rotation-time");
 			}
 			
-			battle.projectiles.put(id, bp);
+			battle.projectiles.put(bp.id, bp);
 			
 		}
 		for (XElement xspace : xbattle.childElement("space-entities").childrenWithName("tech")) {
@@ -1708,11 +1709,12 @@ public class World {
 			
 			BufferedImage ni = rl.getImage(xspace.get("normal"));
 			se.normal = ImageUtils.splitByWidth(ni, ni.getWidth() / nx);
-			trimTransparencyOnSides(se.normal);
+			
+//			trimTransparencyOnSides(se.normal);
 			if (xspace.has("alternative")) {
 				BufferedImage ai = rl.getImage(xspace.get("alternative"));
 				se.alternative = ImageUtils.splitByWidth(ai, ai.getWidth() / nx);
-				trimTransparencyOnSides(se.alternative);
+//				trimTransparencyOnSides(se.alternative);
 			} else {
 				se.alternative = se.normal;
 			}

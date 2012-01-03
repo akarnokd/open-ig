@@ -19,9 +19,18 @@ public class SpacewarWeaponPort {
 	public int count = 1;
 	/** The cooldown until this port can fire again. */
 	public int cooldown;
+	/** The parent inventory slot. */
+	public final InventorySlot is;
+	/**
+	 * Constructor.
+	 * @param is The inventory slot.
+	 */
+	public SpacewarWeaponPort(InventorySlot is) {
+		this.is = is;
+	}
 	/** @return create a copy of this record. */
 	public SpacewarWeaponPort copy() {
-		SpacewarWeaponPort r = new SpacewarWeaponPort();
+		SpacewarWeaponPort r = new SpacewarWeaponPort(is);
 		r.projectile = projectile;
 		r.count = count;
 		return r;

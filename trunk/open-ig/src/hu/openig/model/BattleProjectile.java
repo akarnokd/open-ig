@@ -28,6 +28,8 @@ public class BattleProjectile {
 		/** Multi rocket, may change direction. */
 		MULTI_ROCKET
 	}
+	/** The projectile id. */
+	public String id;
 	/** The sound effect to play when fired. */
 	public SoundType sound;
 	/** The normal [rotation][phase] image matrix. */
@@ -47,7 +49,7 @@ public class BattleProjectile {
 	/** The linear movement speed. */
 	public int movementSpeed;
 	/** The rotation speed. */
-	public int rotationTime;
+	public double rotationTime;
 	/**
 	 * @return copy of this structure
 	 */

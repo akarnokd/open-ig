@@ -56,7 +56,7 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 	/** How long the quarantine should stay in 10s ingame minutes? */
 	public int quarantineTTL;
 	/** The default quarnatine TTL. */
-	public static final int DEFAULT_QUARANTINE_TTL = 5 * 12 * 6;
+	public static final int DEFAULT_QUARANTINE_TTL = 5 * 12 * 3;
 	/** The contents of the planet. */
 	public PlanetSurface surface;
 	/** The resource allocation strategy. */
