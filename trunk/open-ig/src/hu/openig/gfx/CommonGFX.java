@@ -37,6 +37,9 @@ public class CommonGFX {
 	/** The empty background of the info panel. */
 	@Img(name = "info/info_empty")
 	public BufferedImage infoEmpty;
+	/** Delete button. */
+	@Btn2(name = "button_delete")
+	public BufferedImage[] delete;
 	/** Move up arrow. */
 	@Btn2(name = "button_up")
 	public BufferedImage[] moveUp;

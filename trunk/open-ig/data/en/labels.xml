@@ -1080,7 +1080,9 @@
 	<entry key='screens.diplomacy'>F10 - Diplomacy</entry>
 	<entry key='screens.statistics'>F11 - Statistics</entry>
 	<entry key='screens.achievements'>F12 - Achievements</entry>
-	<entry key='screens.options'>ESC - Load, Save and Options</entry>
+	<entry key='screens.loadsave'>ESC - Load/Save</entry>
+	<entry key='screens.options'>O - Options</entry>
+	
 	<entry key='test.q1'>I lack self-confidence when it comes to relationships! Do these feelings describe your inner emotions?</entry>
 	<entry key='test.q1.a1'>Yes. I do lack confidence.</entry>
 	<entry key='test.q1.a2'>I occasionally lack confidence.</entry>

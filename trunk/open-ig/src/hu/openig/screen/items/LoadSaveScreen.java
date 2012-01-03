@@ -933,7 +933,7 @@ public class LoadSaveScreen extends ScreenBase {
 			doBack();
 			e.consume();
 		} else {
-			if (maySave) {
+			if (maySave && settingsMode == SettingsPage.LOAD_SAVE) {
 				if (code == KeyEvent.VK_ENTER) {
 					doSave();
 					e.consume();
@@ -954,6 +954,10 @@ public class LoadSaveScreen extends ScreenBase {
 					return true;
 				}
 			} else {
+				if (chr == 'o' || chr == 'O') {
+					doBack();
+					e.consume();
+				} else
 				if (chr == ' ' 
 						|| chr == '1'
 						|| chr == '2'

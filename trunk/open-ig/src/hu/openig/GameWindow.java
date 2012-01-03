@@ -1097,6 +1097,7 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					} else {
 						LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
+						scr.displayPage(SettingsPage.AUDIO);
 						scr.maySave(true);
 					}
 					break;

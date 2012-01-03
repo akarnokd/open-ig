@@ -1066,7 +1066,8 @@
 	<entry key='screens.diplomacy'>F10 - Diplomácia</entry>
 	<entry key='screens.statistics'>F11 - Statisztika</entry>
 	<entry key='screens.achievements'>F12 - Teljesítmények</entry>
-	<entry key='screens.options'>ESC - Betölt, Ment és Opciók</entry>
+	<entry key='screens.loadsave'>ESC - Betölt, Ment</entry>
+	<entry key='screens.options'>O - Opciók</entry>
 	<entry key='test.q1'>Kapcsolataimban néha zavar kisebbségi érzésem - aminek nincs valóságos alapja.</entry>
 	<entry key='test.q1.a1'>Igen.</entry>
 	<entry key='test.q1.a2'>Időnként.</entry>
