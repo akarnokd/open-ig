@@ -588,6 +588,7 @@ public class StatusbarScreen extends ScreenBase {
 			"screens.diplomacy",
 			"screens.statistics",
 			"screens.achievements",
+			"screens.loadsave",
 			"screens.options",
 		};
 		/** Set the dimensions. */
@@ -698,6 +699,11 @@ public class StatusbarScreen extends ScreenBase {
 			case 12:
 				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
 				scr.maySave(!commons.battleMode);
+				scr.displayPage(SettingsPage.LOAD_SAVE);
+				break;
+			case 13:
+				scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
+				scr.maySave(!commons.battleMode);
 				scr.displayPage(SettingsPage.AUDIO);
 				break;
 			default:
@@ -710,6 +716,8 @@ public class StatusbarScreen extends ScreenBase {
 	class NotificationHistory extends UIContainer {
 		/** The bottom row index counted from the last element. */
 		int bottom = 0;
+		/** Clear history. */
+		UIImageButton clear;
 		/** Scroll up. */
 		UIImageButton scrollUp;
 		/** Scroll down. */
@@ -739,6 +747,19 @@ public class StatusbarScreen extends ScreenBase {
 			
 			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			sdf.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
+			clear = new UIImageButton(commons.common().delete) {
+				@Override
+				public boolean mouse(UIMouse e) {
+					return super.mouse(e);
+				}
+			};
+			clear.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					sound(SoundType.CLICK_MEDIUM_2);
+					doClearHistory();
+				}
+			};
 			addThis();
 		}
 		@Override
@@ -753,6 +774,7 @@ public class StatusbarScreen extends ScreenBase {
 			
 			int rowHeight = 20;
 			int rows = height / rowHeight;
+			bottom = Math.max(0, Math.min(bottom, player().messageHistory.size() - (height / 20)));
 			int start = player().messageHistory.size() - bottom - 1;
 			int y = height - rowHeight; 
 			for (int i = start; i >= start - rows && i >= 0; i--) {
@@ -824,9 +846,11 @@ public class StatusbarScreen extends ScreenBase {
 			}
 			g2.setClip(save0);
 			
-			scrollUp.location(width - 30, 1);
+			clear.location(width - 30, 1);
+			scrollUp.location(width - 30, clear.y + clear.height + 5);
 			scrollDown.location(width - 30, height - 30);
 			
+			clear.visible(!player().messageHistory.isEmpty());
 			scrollUp.visible(bottom + rows < player().messageHistory.size());
 			scrollDown.visible(bottom > 0);
 			
@@ -884,5 +908,11 @@ public class StatusbarScreen extends ScreenBase {
 			}
 			return super.mouse(e);
 		}
+	}
+	/**
+	 * Clear the entire history.
+	 */
+	void doClearHistory() {
+		player().messageHistory.clear();
 	}
 }
