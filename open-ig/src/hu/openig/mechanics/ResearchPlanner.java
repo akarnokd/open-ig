@@ -360,7 +360,9 @@ public class ResearchPlanner extends Planner {
 		// if at least one empty planet failed to build the required lab
 		// conquer more planets
 		if (failed > 0) {
-			conquerMorePlanets();
+			if (conquerMorePlanets()) {
+				return;
+			}
 		}
 		
 		// find a planet with excess labs.
