@@ -10,6 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Pred2;
 import hu.openig.model.Building;
+import hu.openig.model.ExplorationMap;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
@@ -336,15 +337,15 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> ALL_SEEING_EYE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			int area = t.galaxyModel.map.getWidth() * t.galaxyModel.map.getHeight();
-			double radar = 0;
-			for (Planet p : u.planets.keySet()) {
-				if (p.owner == u) {
-					radar += p.radar * p.radar * Math.PI;
+			if (t.level >= 5) {
+				ExplorationMap xp = new ExplorationMap(u);
+				int area0 = xp.map.size();
+				for (Planet p : u.planets.keySet()) {
+					if (p.owner == u) {
+						xp.removeCoverage(p.x, p.y, p.radar);
+					}
 				}
-			}
-			if (area * 0.8 <= radar) {
-				return true;
+				return xp.map.size() <= area0 / 5;
 			}
 			return false;
 		}

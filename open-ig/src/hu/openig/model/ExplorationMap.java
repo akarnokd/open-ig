@@ -74,7 +74,7 @@ public class ExplorationMap {
 	/**
 	 * Set all cells to undiscovered.
 	 */
-	private void initExplorationMap() {
+	protected void initExplorationMap() {
 		map.clear();
 		for (int x = 0; x < columns; x++) {
 			for (int y = 0; y < rows; y++) {
