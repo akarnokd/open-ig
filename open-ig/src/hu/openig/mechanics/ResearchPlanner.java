@@ -15,6 +15,7 @@ import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIPlanet;
+import hu.openig.model.AIResult;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
@@ -79,7 +80,7 @@ public class ResearchPlanner extends Planner {
 		}
 		
 		//if low on money and planets, plan for conquest
-		if (world.money < 50000) {
+		if (world.money < 100000 && world.global.planetCount < 2) {
 			return;
 		}
 		
@@ -131,15 +132,24 @@ public class ResearchPlanner extends Planner {
 			planReconstruction(rebuildCount, candidatesReconstruct);
 			return;
 		}
-		if (candidatesGetMorePlanets.size() > 0 
-				&& world.mayConquer 
+		if (candidatesGetMorePlanets.size() > 0 && conquerMorePlanets()) {
+			return;
+		}
+		return;
+	}
+	/**
+	 * Ckeck if more planets can be conquered.
+	 * @return true if action taken
+	 */
+	boolean conquerMorePlanets() {
+		if (world.mayConquer 
 				&& (world.colonizationLimit < 0 
 				|| world.colonizationLimit > world.statistics.planetsColonized)) {
 			// TODO this is more complicated
 			planConquest();
-			return;
+			return true;
 		}
-		return;
+		return false;
 	}
 	/**
 	 * Checki if the colonizers have actually reached their planet.
@@ -196,37 +206,23 @@ public class ResearchPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean assignFleetsToColonization(List<AIPlanet> ps) {
-		// colonize the closest one to center
-		double cx = 0;
-		double cy = 0;
-		for (AIPlanet p : world.ownPlanets) {
-			cx += p.planet.x;
-			cy += p.planet.y;
-		}
-		cx /= world.ownPlanets.size();
-		cy /= world.ownPlanets.size();
-		final double fcx = cx;
-		final double fcy = cy;
-		Collections.sort(ps, new Comparator<AIPlanet>() {
-			@Override
-			public int compare(AIPlanet o1, AIPlanet o2) {
-				double d1 = Math.hypot(fcx - o1.planet.x, fcy - o1.planet.y);
-				double d2 = Math.hypot(fcx - o2.planet.x, fcy - o2.planet.y);
-				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-			}
-		});
 		// bring one fleet to the target planet
 		for (final AIFleet fleet : findFleetsFor(FleetTask.COLONIZE, hasColonyShip)) {
-			if (ps.size() > 0) {
-				final AIPlanet fp0 = ps.remove(0); 
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						fleet.fleet.task = FleetTask.COLONIZE;
-						controls.actionMoveFleet(fleet.fleet, fp0.planet);
-					}
-				});
-			} 
+			final AIPlanet p0 = Collections.min(ps, new Comparator<AIPlanet>() {
+				@Override
+				public int compare(AIPlanet o1, AIPlanet o2) {
+					double d1 = Math.hypot(fleet.x - o1.planet.x, fleet.y - o1.planet.y);
+					double d2 = Math.hypot(fleet.x - o2.planet.x, fleet.y - o2.planet.y);
+					return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+				}
+			});
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					fleet.fleet.task = FleetTask.COLONIZE;
+					controls.actionMoveFleet(fleet.fleet, p0.planet);
+				}
+			});
 			return true;
 		}
 		return false;
@@ -336,9 +332,8 @@ public class ResearchPlanner extends Planner {
 	 * Plan how the labs will be reconstructed to allow the next research.
 	 * @param rebuildCount the number of new buildings needed for each research
 	 * @param candidatesReconstruct the candidates for the research
-	 * @return the list of actions
 	 */
-	List<Action0> planReconstruction(
+	void planReconstruction(
 			final Map<ResearchType, Integer> rebuildCount,
 			List<ResearchType> candidatesReconstruct) {
 		// find the research that requires the fewest lab rebuilds
@@ -347,20 +342,34 @@ public class ResearchPlanner extends Planner {
 		final ResearchType rt = candidatesReconstruct.get(0);
 		
 		// find an empty planet
+		int failed = 0;
 		for (AIPlanet planet : world.ownPlanets) {
-			if (planet.statistics.activeLabCount() == 0 
-					&& !planet.statistics.constructing) {
-				buildOneLabFor(rt, planet);
-				return applyActions;
+			if (planet.statistics.activeLabCount() == 0) {
+				if (!planet.statistics.constructing) {
+					AIResult r = buildOneLabFor(rt, planet);
+					if (r == AIResult.SUCCESS || r == AIResult.NO_MONEY) {
+						return;
+					} else {
+						failed++;
+					}
+				} else {
+					failed--; // constructing, maybe room will be available later
+				}
 			}
 		}
+		// if at least one empty planet failed to build the required lab
+		// conquer more planets
+		if (failed > 0) {
+			conquerMorePlanets();
+		}
+		
 		// find a planet with excess labs.
 		for (AIPlanet planet : world.ownPlanets) {
 			if (demolishOneLabFor(rt, planet)) {
-				return applyActions;
+				return;
 			}
 		}
-		return applyActions;
+		return;
 	}
 	/**
 	 * Demolish one of the excess labs on the planet to make room.
@@ -416,23 +425,30 @@ public class ResearchPlanner extends Planner {
 	 * Build one of the required labs.
 	 * @param rt the research type
 	 * @param planet the target planet
+	 * @return the construction result
 	 */
-	void buildOneLabFor(final ResearchType rt, final AIPlanet planet) {
+	AIResult buildOneLabFor(final ResearchType rt, final AIPlanet planet) {
 		if (buildOneLabIf(rt.aiLab, world.global.aiLab, planet.statistics.aiLab, planet, "ai")) {
-			return;
+			return AIResult.SUCCESS;
 		}
 		if (buildOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet, "civil")) {
-			return;
+			return AIResult.SUCCESS;
 		}
 		if (buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer")) {
-			return;
+			return AIResult.SUCCESS;
 		}
 		if (buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical")) {
-			return;
+			return AIResult.SUCCESS;
 		}
 		if (buildOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet, "military")) {
-			return;
+			return AIResult.SUCCESS;
 		}
+		// if we got plenty of money, still no building could be placed
+		// we run out of space, attempt to get more planets
+		if (world.money > 100000 && planet.buildings.size() > 6) {
+			return AIResult.NO_ROOM;
+		}
+		return AIResult.NO_MONEY;
 	}
 	/**
 	 * Build one of the labs if the prerequisite counts match.

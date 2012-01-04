@@ -394,9 +394,11 @@ public class DefaultAIControls implements AIControls {
 	 * @param values the message parameters
 	 */
 	void log(String message, Object... values) {
-		System.out.printf("AI:%s:", p.id);
-		System.out.printf(message, values);
-		System.out.println();
+		if (p == p.world.player) {
+			System.out.printf("AI:%s:", p.id);
+			System.out.printf(message, values);
+			System.out.println();
+		}
 	}
 
 }
