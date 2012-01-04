@@ -135,6 +135,7 @@ public class DefaultAIControls implements AIControls {
 	}
 	/**
 	 * Deploy a satellite of the given player to the target planet.
+	 * <p>Removes one item from inventory.</p>
 	 * @param player the player
 	 * @param planet the planet
 	 * @param satellite the satellite type

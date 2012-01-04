@@ -322,6 +322,12 @@ public final class AutoBuilder {
 			if (applyAI(e.actions())) {
 				return;
 			}
+			
+			StaticDefensePlanner d = new StaticDefensePlanner(w, controls);
+			d.managePlanet(planet);
+			if (applyAI(d.actions())) {
+				return;
+			}
 		}
 	}
 	/**

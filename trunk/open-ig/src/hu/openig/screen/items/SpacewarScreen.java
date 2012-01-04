@@ -2857,11 +2857,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** The remaining rocket count. */
 		int count = 0;
 		/** The technology. */
-		ResearchType type = null;
+		ResearchType type;
 		/** Who will fire the rocket. */
-		SpacewarStructure fired = null;
+		SpacewarStructure fired;
 		/** From which port. */
-		SpacewarWeaponPort port = null;
+		SpacewarWeaponPort port;
 		/**
 		 * Find a rocket for the specified target.
 		 * @param target the target

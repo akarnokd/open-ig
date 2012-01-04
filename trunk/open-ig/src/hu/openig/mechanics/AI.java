@@ -410,6 +410,11 @@ public class AI implements AIManager {
 			applyActions.addAll(acts);
 			return;
 		}
-}
+		acts = new StaticDefensePlanner(world, controls).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
+	}
 	
 }
