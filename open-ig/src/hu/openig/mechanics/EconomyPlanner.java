@@ -83,7 +83,7 @@ public class EconomyPlanner extends Planner {
 			return false;
 		}
 		// don't upgrade unless we have a ton of money
-		final boolean allowUpgrades = world.money >= 100000;
+		final boolean allowUpgrades = world.money >= 150000;
 		List<Pred1<AIPlanet>> functions = JavaUtils.newArrayList();
 		functions.add(new Pred1<AIPlanet>() {
 			@Override
@@ -91,24 +91,26 @@ public class EconomyPlanner extends Planner {
 				return checkEconomy(planet, allowUpgrades);
 			}
 		});
-		functions.add(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet planet) {
-				return checkFactory(planet, allowUpgrades);
-			}
-		});
-		functions.add(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet planet) {
-				return checkSocial(planet);
-			}
-		});
-		functions.add(new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet planet) {
-				return checkRadar(planet);
-			}
-		});
+		if (world.money >= 50000) {
+			functions.add(new Pred1<AIPlanet>() {
+				@Override
+				public Boolean invoke(AIPlanet planet) {
+					return checkFactory(planet, allowUpgrades);
+				}
+			});
+			functions.add(new Pred1<AIPlanet>() {
+				@Override
+				public Boolean invoke(AIPlanet planet) {
+					return checkSocial(planet);
+				}
+			});
+			functions.add(new Pred1<AIPlanet>() {
+				@Override
+				public Boolean invoke(AIPlanet planet) {
+					return checkRadar(planet);
+				}
+			});
+		}
 
 		if (world.money >= 200000 || world.global.planetCount >= 2) {
 			// random arbitration
