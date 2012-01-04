@@ -64,7 +64,7 @@
 		picture='database/morgath'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='23'
+		colonization-limit='15'
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
