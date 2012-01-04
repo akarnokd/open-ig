@@ -196,23 +196,37 @@ public class ResearchPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean assignFleetsToColonization(List<AIPlanet> ps) {
+		// colonize the closest one to center
+		double cx = 0;
+		double cy = 0;
+		for (AIPlanet p : world.ownPlanets) {
+			cx += p.planet.x;
+			cy += p.planet.y;
+		}
+		cx /= ps.size();
+		cy /= ps.size();
+		final double fcx = cx;
+		final double fcy = cy;
+		Collections.sort(ps, new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				double d1 = Math.hypot(fcx - o1.planet.x, fcy - o1.planet.y);
+				double d2 = Math.hypot(fcx - o2.planet.x, fcy - o2.planet.y);
+				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+			}
+		});
 		// bring one fleet to the target planet
 		for (final AIFleet fleet : findFleetsFor(FleetTask.COLONIZE, hasColonyShip)) {
-			final AIPlanet p0 = Collections.min(ps, new Comparator<AIPlanet>() {
-				@Override
-				public int compare(AIPlanet o1, AIPlanet o2) {
-					double d1 = Math.hypot(fleet.x - o1.planet.x, fleet.y - o1.planet.y);
-					double d2 = Math.hypot(fleet.x - o2.planet.x, fleet.y - o2.planet.y);
-					return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-				}
-			});
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					fleet.fleet.task = FleetTask.COLONIZE;
-					controls.actionMoveFleet(fleet.fleet, p0.planet);
-				}
-			});
+			if (ps.size() > 0) {
+				final AIPlanet fp0 = ps.remove(0); 
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						fleet.fleet.task = FleetTask.COLONIZE;
+						controls.actionMoveFleet(fleet.fleet, fp0.planet);
+					}
+				});
+			} 
 			return true;
 		}
 		return false;
