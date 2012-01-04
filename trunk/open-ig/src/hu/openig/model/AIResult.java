@@ -20,5 +20,7 @@ public enum AIResult {
 	/** No room for deployment/construction. */
 	NO_ROOM,
 	/** Not enough money. */
-	NO_MONEY
+	NO_MONEY,
+	/** No action was applicable, continue. */
+	CONTINUE,
 }

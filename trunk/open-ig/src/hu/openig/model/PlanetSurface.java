@@ -609,12 +609,17 @@ public class PlanetSurface {
 		 * no suitable location is present
 		 */
 		public Point findLocation(int width, int height) {
-			int cx = this.width() / 2 - this.height() / 2 - width / 2;
-			int cy = -this.width() / 2 - this.height() / 2 + height / 2;
-			
+			int cx = this.width() / 2 - this.height() / 2;
+			int cy = -this.width() / 2 - this.height() / 2;
+
+			int rx1 = Math.abs(this.width() - cx);
+			int rx2 = Math.abs(-this.height() - cx);
+			int ry1 = Math.abs(this.width() + this.height() + cy);
+			int ry2 = Math.abs(cy);
+			int maxr = Math.max(Math.max(rx1, rx2), Math.max(ry1, ry2));
 			// the square size
 			List<PlaceCandidate> candidates = JavaUtils.newArrayList();
-			for (int i = 0; i < Math.abs(cy); i++) {
+			for (int i = 0; i < maxr; i++) {
 				int len = i * 2 + 1;
 				int size = len > 1 ? len * 2 + (len - 2) * 2 : 1;
 				int[] xs = new int[size];
@@ -658,7 +663,7 @@ public class PlanetSurface {
 			if (buildingmap().isEmpty()) {
 				return new PlaceCandidate(x0, y0, 0, 0, d);
 			}
-			int roads = 0;
+			int roads = 1;
 			int edges = 0;
 			for (int k = x0; k < x0 + width; k++) {
 				for (int j = y0; j > y0 - height; j--) {
@@ -670,10 +675,10 @@ public class PlanetSurface {
 					}
 				}
 			}
-			if (roads > 0) {
+//			if (roads > 0) {
 				return new PlaceCandidate(x0, y0, roads, edges, d);
-			}
-			return null;
+//			}
+//			return null;
 		}
 		/**
 		 * Fill in a clockwise coordinate pair of a given length rectangle.
