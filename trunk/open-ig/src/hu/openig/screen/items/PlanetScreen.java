@@ -3804,6 +3804,7 @@ public class PlanetScreen extends ScreenBase {
 				}
 				battle.defenderFortificationLosses++;
 				surface().removeBuilding(b);
+				sound(SoundType.EXPLOSION_LONG);
 			}
 		}
 	}
