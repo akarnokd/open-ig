@@ -79,7 +79,7 @@ public class ResearchPlanner extends Planner {
 		}
 		
 		//if low on money and planets, plan for conquest
-		if (world.money < 100000) {
+		if (world.money < 60000) {
 			return;
 		}
 		

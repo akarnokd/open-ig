@@ -83,7 +83,8 @@ public class EconomyPlanner extends Planner {
 			return false;
 		}
 		// don't upgrade unless we have a ton of money
-		final boolean allowUpgrades = world.money >= 150000;
+		final boolean allowUpgrades = world.money >= 75000;
+		final boolean allowUpgrades2 = world.money >= 100000;
 		List<Pred1<AIPlanet>> functions = JavaUtils.newArrayList();
 		functions.add(new Pred1<AIPlanet>() {
 			@Override
@@ -95,7 +96,7 @@ public class EconomyPlanner extends Planner {
 			functions.add(new Pred1<AIPlanet>() {
 				@Override
 				public Boolean invoke(AIPlanet planet) {
-					return checkFactory(planet, allowUpgrades);
+					return checkFactory(planet, allowUpgrades2);
 				}
 			});
 			functions.add(new Pred1<AIPlanet>() {
