@@ -9,13 +9,11 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.core.Pred1;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
-import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
@@ -24,7 +22,6 @@ import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.Planet;
-import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 
 import java.awt.Point;
@@ -320,105 +317,6 @@ public class ResearchPlanner extends Planner {
 			placeProductionOrder(cs, 1);
 			return;
 		}
-	}
-	/**
-	 * Check for the orbital factory.
-	 * @return true
-	 */
-	boolean checkOrbitalFactory() {
-		if (world.global.orbitalFactory == 0) {
-			// check if we have orbital factory in inventory, deploy it
-			final Pair<Integer, ResearchType> orbital = world.inventoryCount("OrbitalFactory");
-			if (orbital.first > 0) {
-				List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
-				Collections.sort(planets, BEST_PLANET);
-				
-				if (deployOrbitalFactory(orbital.second, planets)) {
-					return true;
-				}
-				// if no room, make
-				if (sellStations(planets)) {
-					return true;
-				}
-			}
-			
-			// if researched, build one
-			if (produceOrbitalFactory()) {
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * Sell the cheapest deployed station.
-	 * @param planets the list of planets
-	 * @return true if action taken
-	 */
-	boolean sellStations(List<AIPlanet> planets) {
-		Pair<AIPlanet, ResearchType> toSell = null;
-		for (AIPlanet p : planets) {
-			for (AIInventoryItem ii : p.inventory) {
-				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					if (toSell == null || toSell.second.productionCost > ii.type.productionCost) {
-						toSell = Pair.of(p, ii.type);
-					}
-				}
-			}
-		}
-		if (toSell != null) {
-			final Pair<AIPlanet, ResearchType> fsell = toSell;
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionSellSatellite(fsell.first.planet, fsell.second, 1);
-				}
-			});
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Deploy orbital factory.
-	 * @param rt the factory tech
-	 * @param planets the planets to check
-	 * @return true if action taken
-	 */
-	boolean deployOrbitalFactory(final ResearchType rt, List<AIPlanet> planets) {
-		for (final AIPlanet p2 : planets) {
-			int sats = count(p2.inventory, new Pred1<AIInventoryItem>() {
-				@Override
-				public Boolean invoke(AIInventoryItem value) {
-					return value.type.category == ResearchSubCategory.SPACESHIPS_STATIONS;
-				}
-			}, new Func1<AIInventoryItem, Integer>() {
-				@Override
-				public Integer invoke(AIInventoryItem value) {
-					return value.count;
-				}
-			});
-			if (sats < 3) {
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						controls.actionDeploySatellite(p2.planet, rt);
-					}
-				});
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * Produce an orbital factory.
-	 * @return action taken
-	 */
-	boolean produceOrbitalFactory() {
-		final ResearchType of = world.isAvailable("OrbitalFactory");
-		if (of != null) {
-			placeProductionOrder(of, 1);
-			return true;
-		}
-		return false;
 	}
 	/**
 	 * Plan how the labs will be reconstructed to allow the next research.

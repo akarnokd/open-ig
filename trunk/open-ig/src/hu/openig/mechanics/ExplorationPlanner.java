@@ -310,6 +310,12 @@ public class ExplorationPlanner extends Planner {
 			what = findBestNormal();
 		}
 		if (what != null) {
+			if (what.has("needsOrbitalFactory")) {
+				// check the existence of orbital factory
+				if (checkOrbitalFactory()) {
+					return true;
+				}
+			}
 			final ResearchType fwhat = what;
 			add(new Action0() {
 				@Override
@@ -390,7 +396,7 @@ public class ExplorationPlanner extends Planner {
 	 */
 	boolean fitForExploration(ResearchType rt) {
 		return rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS
-				/* || rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS */;
+				|| rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
 	}
 	/**
 	 * Check if we have radar in inventory.
