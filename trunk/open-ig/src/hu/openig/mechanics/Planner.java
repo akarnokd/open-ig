@@ -568,6 +568,9 @@ public abstract class Planner {
 	 * @return true
 	 */
 	boolean checkOrbitalFactory() {
+		if (world.isAvailable("OrbitalFactory") == null) {
+			return true;
+		}
 		if (world.global.orbitalFactory == 0) {
 			// check if we have orbital factory in inventory, deploy it
 			final Pair<Integer, ResearchType> orbital = world.inventoryCount("OrbitalFactory");

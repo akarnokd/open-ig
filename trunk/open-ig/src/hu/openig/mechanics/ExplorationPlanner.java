@@ -310,12 +310,6 @@ public class ExplorationPlanner extends Planner {
 			what = findBestNormal();
 		}
 		if (what != null) {
-			if (what.has("needsOrbitalFactory")) {
-				// check the existence of orbital factory
-				if (checkOrbitalFactory()) {
-					return true;
-				}
-			}
 			final ResearchType fwhat = what;
 			add(new Action0() {
 				@Override
@@ -429,6 +423,12 @@ public class ExplorationPlanner extends Planner {
 			}
 		}
 		if (bestFixed != null) {
+			if (bestFixed.has("needsOrbitalFactory")) {
+				// check the existence of orbital factory
+				if (checkOrbitalFactory()) {
+					return true;
+				}
+			}
 			placeProductionOrder(bestFixed, 1);
 			return true;
 		}
@@ -523,6 +523,12 @@ public class ExplorationPlanner extends Planner {
 			}
 		}
 		if (bestShip != null) {
+			if (bestShip.has("needsOrbitalFactory")) {
+				// check the existence of orbital factory
+				if (checkOrbitalFactory()) {
+					return true;
+				}
+			}
 			placeProductionOrder(bestShip, 1);
 		}
 		return true;
@@ -537,7 +543,7 @@ public class ExplorationPlanner extends Planner {
 			return false;
 		}
 		// do not build below this money
-		if (world.money < 150000) {
+		if (world.money < 85000) {
 			return true;
 		}
 		// check if there is a spaceport which we could get operational
