@@ -438,4 +438,20 @@ public class XElement implements Iterable<XElement> {
 			out.close();
 		}
 	}
+	/**
+	 * Remove attributes and children.
+	 */
+	public void clear() {
+		attributes.clear();
+		children.clear();
+	}
+	/**
+	 * Detach this element from its parent.
+	 */
+	public void detach() {
+		if (parent != null) {
+			parent.children.remove(this);
+			parent = null;
+		}
+	}
 }

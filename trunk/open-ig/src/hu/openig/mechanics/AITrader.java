@@ -144,7 +144,7 @@ public class AITrader implements AIManager {
 	}
 	/** @return the maximum number of active fleets. */
 	public int maxFleets() {
-		return planets.size() / 2 + 1;
+		return planets.size() / 2;
 	}
 	@Override
 	public void apply() {

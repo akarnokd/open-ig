@@ -164,12 +164,12 @@ public class World {
 		try {
 			level = definition.startingLevel;
 			
-			processResearches(rl.getXML(game + "/tech"));
+			processResearches(rl.getXML(definition.tech));
 
 			battle = new BattleModel();
-			processBattle(rl.getXML(game + "/battle"));
+			processBattle(rl.getXML(definition.battle));
 
-			processPlayers(rl.getXML(game + "/players")); 
+			processPlayers(rl.getXML(definition.players)); 
 			
 			talks = new Talks();
 			walks = new Walks();
@@ -182,7 +182,7 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						TestQuestion.parse(rl.getXML(game + "/test"), test);
+						TestQuestion.parse(rl.getXML(definition.test), test);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -195,7 +195,7 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						Diplomacy.parse(rl.getXML(game + "/diplomacy"), diplomacy);
+						Diplomacy.parse(rl.getXML(definition.diplomacy), diplomacy);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -208,7 +208,7 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						talks.load(rl, game + "/talks");
+						talks.load(rl, definition.talks);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -220,10 +220,10 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						walks.load(rl, game + "/walks");
+						walks.load(rl, definition.walks);
 						
 						bridge = new Bridge();
-						processBridge(rl, game + "/bridge");
+						processBridge(rl, definition.bridge);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -235,7 +235,7 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						buildingModel.processBuildings(rl, game + "/buildings", researches.map(), labels, exec, wip);
+						buildingModel.processBuildings(rl, definition.buildings, researches.map(), labels, exec, wip);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -247,7 +247,7 @@ public class World {
 				@Override
 				public void run() {
 					try {
-						galaxyModel.processGalaxy(rl, game + "/galaxy", exec, wip);
+						galaxyModel.processGalaxy(rl, definition.galaxy, exec, wip);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
@@ -292,7 +292,7 @@ public class World {
 		}
 		await(wip);
 		
-		processPlanets(rl.getXML(game + "/planets"));
+		processPlanets(rl.getXML(definition.planets));
 
 		// create AI for the players
 		for (Player p : players.values()) {
@@ -528,7 +528,7 @@ public class World {
 				p.name = labels.get(nameLabel); 
 			}
 			p.owner = players.get(xplanet.get("owner", null));
-			p.race = xplanet.get("race");
+			p.race = xplanet.get("race", null);
 			p.x = Integer.parseInt(xplanet.get("x"));
 			p.y = Integer.parseInt(xplanet.get("y"));
 			
