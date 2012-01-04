@@ -279,10 +279,10 @@ public class ExplorationPlanner extends Planner {
 	 * @return if action taken
 	 */
 	boolean planDiscoveryFleet() {
-		if (checkMilitarySpaceport()) {
+		if (checkEquipment()) {
 			return true;
 		}
-		if (checkEquipment()) {
+		if (checkMilitarySpaceport()) {
 			return true;
 		}
 		if (checkDeploy()) {
@@ -529,6 +529,10 @@ public class ExplorationPlanner extends Planner {
 		// if there is at least one operational we are done
 		if (world.global.hasMilitarySpaceport) {
 			return false;
+		}
+		// do not build below this money
+		if (world.money < 150000) {
+			return true;
 		}
 		// check if there is a spaceport which we could get operational
 		for (final AIPlanet planet : world.ownPlanets) {
