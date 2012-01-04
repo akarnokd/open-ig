@@ -203,8 +203,8 @@ public class ResearchPlanner extends Planner {
 			cx += p.planet.x;
 			cy += p.planet.y;
 		}
-		cx /= ps.size();
-		cy /= ps.size();
+		cx /= world.ownPlanets.size();
+		cy /= world.ownPlanets.size();
 		final double fcx = cx;
 		final double fcy = cy;
 		Collections.sort(ps, new Comparator<AIPlanet>() {
