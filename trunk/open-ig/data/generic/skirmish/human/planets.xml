@@ -135,17 +135,17 @@
     <inventory/>
     <buildings/>
   </planet>
-  <planet id='Exterior 1' name='Exterior 1' x='156' y='504' size='18' rotate='LR' population='7500' owner='Empire' race='human' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
+  <planet id='Exterior 1' name='Exterior 1' x='156' y='504' size='18' rotate='LR' population='5000' owner='Empire' race='human' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='frozen' id='9'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet id='Exterior 2' name='Exterior 2' x='170' y='536' size='30' rotate='LR' population='7500' owner='Empire' race='human'  allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
+  <planet id='Exterior 2' name='Exterior 2' x='170' y='536' size='30' rotate='LR' population='5000' owner='Empire' race='human'  allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='6'/>
     <inventory/>
     <buildings/>
   </planet>
-  <planet id='Exterior 3' name='Exterior 3' x='126' y='556' size='30' rotate='RL' population='7500' owner='Empire' race='human'  allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
+  <planet id='Exterior 3' name='Exterior 3' x='126' y='556' size='30' rotate='RL' population='5000' owner='Empire' race='human'  allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='8'/>
     <inventory/>
     <buildings/>
@@ -405,7 +405,7 @@
     <inventory/>
     <buildings/>
   </planet>
-  <planet id='Outer 12' name='Outer 12' x='830' y='116' size='24' rotate='LR' population='7500' owner='FreeNations' race='human'  allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
+  <planet id='Outer 12' name='Outer 12' x='830' y='116' size='24' rotate='LR' population='5000' owner='FreeNations' race='human'  allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='liquid' id='5'/>
     <inventory/>
     <buildings/>
@@ -415,7 +415,7 @@
     <inventory/>
     <buildings/>
   </planet>
-  <planet id='Outer 14' name='Outer 14' x='890' y='160' size='18' rotate='RL' population='7500' owner='FreeNations' race='human' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
+  <planet id='Outer 14' name='Outer 14' x='890' y='160' size='18' rotate='RL' population='5000' owner='FreeNations' race='human' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='liquid' id='7'/>
     <inventory/>
     <buildings/>
@@ -485,7 +485,7 @@
     <inventory/>
     <buildings/>
   </planet>
-  <planet id='Outer 28' name='Outer 28' x='914' y='28' size='30' rotate='LR' population='7500'  owner='FreeNations' race='human'  allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
+  <planet id='Outer 28' name='Outer 28' x='914' y='28' size='30' rotate='LR' population='5000'  owner='FreeNations' race='human'  allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='rocky' id='4'/>
     <inventory/>
     <buildings/>
