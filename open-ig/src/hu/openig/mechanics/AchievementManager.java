@@ -143,7 +143,7 @@ public final class AchievementManager {
 					popular++;
 				}
 			}
-			return popular >= u.statistics.planetsOwned;
+			return popular >= u.statistics.planetsOwned && u.statistics.planetsOwned >= 3;
 		}
 	};
 	/** Test for achievement. */
@@ -157,7 +157,7 @@ public final class AchievementManager {
 					popular++;
 				}
 			}
-			return popular >= u.statistics.planetsOwned;
+			return popular >= u.statistics.planetsOwned && u.statistics.planetsOwned >= 3;
 		}
 	};
 	/** Test for achievement. */
@@ -171,7 +171,7 @@ public final class AchievementManager {
 					popular++;
 				}
 			}
-			return popular >= u.statistics.planetsOwned;
+			return popular >= u.statistics.planetsOwned && u.statistics.planetsOwned >= 3;
 		}
 	};
 	/** Test for achievement. */
@@ -328,7 +328,7 @@ public final class AchievementManager {
 					}
 				}
 			}
-			return true;
+			return u.statistics.planetsOwned >= 3;
 		}
 	};
 	/** Test for achievement. */

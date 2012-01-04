@@ -50,8 +50,6 @@ public class SingleplayerScreen extends ScreenBase {
 	BufferedImage background;
 	/** The list of campaigns. */
 	final List<GameDefinition> campaigns = new ArrayList<GameDefinition>();
-	/** The list of campaigns. */
-	final List<GameDefinition> skirmishes = new ArrayList<GameDefinition>();
 	/** The currently selected definition. */
 	GameDefinition selectedDefinition;
 	/** The campaign list. */
@@ -310,10 +308,10 @@ public class SingleplayerScreen extends ScreenBase {
 		}
 		for (String name : commons.rl.listDirectories(commons.config.language, "skirmish/")) {
 			GameDefinition gd = GameDefinition.parse(commons.rl, "skirmish/" + name);
-			skirmishes.add(gd);
+			campaigns.add(gd); // FIXME for now
 		}
 		
-		selectedDefinition = campaigns.size() > 0 ? campaigns.get(0) : (skirmishes.size() > 0 ? skirmishes.get(0) : null);
+		selectedDefinition = campaigns.size() > 0 ? campaigns.get(0) : null;
 		difficulty = Difficulty.values().length / 2;
 		adjustDifficultyButtons();
 		onResize();
@@ -373,8 +371,10 @@ public class SingleplayerScreen extends ScreenBase {
 				commons.text().paintTo(g2, descriptionRect.x + 10, y, 14, 0xFF00FF00, s);
 				y += 20;
 			}
-			g2.drawImage(selectedDefinition.image, pictureRect.x + (pictureRect.width - selectedDefinition.image.getWidth()) / 2,
-					pictureRect.y + (pictureRect.height - selectedDefinition.image.getHeight()) / 2, null);
+			if (selectedDefinition.image != null) {
+				g2.drawImage(selectedDefinition.image, pictureRect.x + (pictureRect.width - selectedDefinition.image.getWidth()) / 2,
+						pictureRect.y + (pictureRect.height - selectedDefinition.image.getHeight()) / 2, null);
+			}
 		}
 		
 		String diff = get(Difficulty.values()[difficulty].label);
