@@ -74,6 +74,9 @@ public class StaticDefensePlanner extends Planner {
 		if (world.money < 150000) {
 			return false;
 		}
+		if (planet.population < planet.statistics.workerDemand * 1.1) {
+			return false;
+		}
 		
 		List<Pred0> actions = new ArrayList<Pred0>();
 		

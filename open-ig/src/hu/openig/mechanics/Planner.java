@@ -344,12 +344,14 @@ public abstract class Planner {
 			final BuildingOrder order) {
 		for (final AIBuilding b : planet.buildings) {
 			if (!b.enabled && selector.accept(planet, b)) {
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						controls.actionEnableBuilding(planet.planet, b.building, true);
-					}
-				});
+				if (planet.population >= planet.statistics.workerDemand + b.getWorkers()) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionEnableBuilding(planet.planet, b.building, true);
+						}
+					});
+				}
 				return true;
 			}
 		}
