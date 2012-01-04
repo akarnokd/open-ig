@@ -609,8 +609,8 @@ public class PlanetSurface {
 		 * no suitable location is present
 		 */
 		public Point findLocation(int width, int height) {
-			int cx = this.width() / 2 - this.height() / 2;
-			int cy = -this.width() / 2 - this.height() / 2;
+			int cx = this.width() / 2 - this.height() / 2 - width / 2;
+			int cy = -this.width() / 2 - this.height() / 2 + height / 2;
 
 			int rx1 = Math.abs(this.width() - cx);
 			int rx2 = Math.abs(-this.height() - cx);
@@ -661,7 +661,7 @@ public class PlanetSurface {
 		PlaceCandidate createCandidate(int x0, int y0, int width, int height, int d) {
 			// no buildings at all
 			if (buildingmap().isEmpty()) {
-				return new PlaceCandidate(x0, y0, 0, 0, d);
+				return new PlaceCandidate(x0, y0, 1, 0, d);
 			}
 			int roads = 1;
 			int edges = 0;
