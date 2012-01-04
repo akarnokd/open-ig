@@ -257,6 +257,27 @@ public class ColonyPlanner extends Planner {
 			});
 			return true;
 		}
+		// enable cheapest building if worker ratio is okay
+		if (planet.statistics.workerDemand * 1.1 < planet.population) {
+			AIBuilding min = null;
+			for (AIBuilding b : planet.buildings) {
+				if (!b.enabled) {
+					if (min == null || min.getWorkers() > b.getWorkers()) {
+						min = b;
+					}
+				}
+			}
+			if (min != null) {
+				final AIBuilding fmin = min;
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionEnableBuilding(planet.planet, fmin.building, true);
+					}
+				});
+				return true;
+			}
+		}
 		return false;
 	}
 	/** 
@@ -475,7 +496,32 @@ public class ColonyPlanner extends Planner {
 						&& count(planet, value) < 1;
 			}
 		};
-		if (planet.population < planet.statistics.workerDemand) {
+		if (planet.population * 1.1 < planet.statistics.workerDemand) {
+			// try disabling buildings
+			AIBuilding max = null;
+			int energyCount = 0;
+			for (AIBuilding b : planet.buildings) {
+				if (b.getEnergy() > 0) {
+					energyCount++;
+				}
+				if (b.enabled) {
+					if (max == null || max.getWorkers() < b.getWorkers()) {
+						max = b;
+					}
+				}
+			}
+			if (max != null) {
+				if (energyCount > 1 || max.getEnergy() < 0) {
+					final AIBuilding fb = max;
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionEnableBuilding(planet.planet, fb.building, false);
+						}
+					});
+					return true;
+				}
+			}
 			return manageBuildings(planet, morale, costOrder, true);
 		}
 		return false;
@@ -499,7 +545,22 @@ public class ColonyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkPower(final AIPlanet planet) {
-		if (planet.statistics.energyAvailable < planet.statistics.energyDemand) {
+		// sell power plants if too much energy
+		if (planet.statistics.energyAvailable > planet.statistics.energyDemand * 2) {
+			for (final AIBuilding b : planet.buildings) {
+				if (b.getEnergy() > 0 && planet.statistics.energyAvailable - b.getEnergy() > planet.statistics.energyDemand) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionDemolishBuilding(planet.planet, b.building);
+						}
+					});
+					return true;
+				}
+			}
+		}
+		if (planet.statistics.energyAvailable < planet.statistics.energyDemand
+				&& planet.statistics.workerDemand < planet.population) {
 			if (manageBuildings(planet, energy, costOrder, true)) {
 				return true;
 			}
