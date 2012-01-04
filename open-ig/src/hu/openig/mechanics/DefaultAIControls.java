@@ -101,10 +101,10 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public void actionDeploySatellite(Planet planet, ResearchType satellite) {
-		if (actionDeploySatellite(p, planet, satellite)) {
-			log("DeploySatellite, Planet = %s, Type = %s", planet.id, satellite.id);
-		} else {
+		if (!actionDeploySatellite(p, planet, satellite)) {
 			log("DeploySatellite, Planet = %s, Type = %s, FAILED = not in inventory", planet.id, satellite.id);
+//		} else {
+//			log("DeploySatellite, Planet = %s, Type = %s", planet.id, satellite.id);
 		}
 	}
 	@Override
@@ -174,7 +174,7 @@ public class DefaultAIControls implements AIControls {
 			planet.owner.world.statistics.moneySellIncome += money;
 			planet.owner.world.statistics.moneyIncome += money;
 			
-			log("SellSatellite, Planet = %s, Type = %s, Count = %s", planet.id, satellite.id, count);
+//			log("SellSatellite, Planet = %s, Type = %s, Count = %s", planet.id, satellite.id, count);
 		}
 	}
 
@@ -247,10 +247,10 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public void actionUpgradeBuilding(Planet planet, Building building, int newLevel) {
-		if (AutoBuilder.upgrade(w, planet, building, newLevel)) {
-			log("UpgradeBuilding, Planet = %s, Building = %s, NewLevel = %s", planet.id, building.type.id, newLevel);
-		} else {
+		if (!AutoBuilder.upgrade(w, planet, building, newLevel)) {
 			log("UpgradeBuilding, Planet = %s, Building = %s, NewLevel = %s, FAILED = level limit", planet.id, building.type.id, newLevel);
+//		} else {
+//			log("UpgradeBuilding, Planet = %s, Building = %s, NewLevel = %s", planet.id, building.type.id, newLevel);			
 		}
 		
 	}
@@ -273,7 +273,7 @@ public class DefaultAIControls implements AIControls {
 		fleet.waypoints.clear();
 		fleet.waypoints.add(new Point2D.Double(x, y));
 		fleet.mode = FleetMode.MOVE;
-		log("MoveFleet, Fleet = %s, Location = %s;%s", fleet.name, x, y);
+//		log("MoveFleet, Fleet = %s, Location = %s;%s", fleet.name, x, y);
 	}
 	@Override
 	public void actionMoveFleet(Fleet fleet, Planet planet) {
@@ -384,7 +384,7 @@ public class DefaultAIControls implements AIControls {
 	
 	@Override
 	public void actionSetTaxation(Planet planet, TaxLevel newLevel) {
-		log("SetTaxation, Planet = %s, Level = %s, NewLevel = %s", planet.id, planet.tax, newLevel);
+//		log("SetTaxation, Planet = %s, Level = %s, NewLevel = %s", planet.id, planet.tax, newLevel);
 		planet.tax = newLevel;
 	}
 	
