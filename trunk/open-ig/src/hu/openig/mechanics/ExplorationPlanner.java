@@ -384,27 +384,14 @@ public class ExplorationPlanner extends Planner {
 		return bestFixed;
 	}
 	/**
-	 * Check if the given technology should be considered for exploration ship construction.
-	 * @param rt the technology
-	 * @return true if applicable
+	 * Find the best available, fixed radar ship from the technology tree.
+	 * @return the best found
 	 */
-	boolean fitForExploration(ResearchType rt) {
-		return rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS
-				|| rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
-	}
-	/**
-	 * Check if we have radar in inventory.
-	 * @return if action taken
-	 */
-	boolean checkEquipment() {
-		ResearchType bestFixed = findBestFixed();
-		if (bestFixed != null) {
-			return false;
-		}
-		// check if we can construct a ship with a fixed radar
-		bestFixed = null;
+	ResearchType findBestFixedTech() {
+		// check if we have a ship which has a fixed radar in inventory
+		ResearchType bestFixed = null;
 		int bestFixedRadar = 0;
-		outer1:
+		outer0:
 		for (ResearchType rt : world.availableResearch) {
 			if (fitForExploration(rt)) {
 				for (EquipmentSlot es : rt.slots.values()) {
@@ -415,6 +402,47 @@ public class ExplorationPlanner extends Planner {
 									bestFixed = rt;
 									bestFixedRadar = rt0.getInt("radar");
 								}
+								continue outer0;
+							}
+						}
+					}
+				}
+			}
+		}
+		return bestFixed;
+	}
+	/**
+	 * Check if the given technology should be considered for exploration ship construction.
+	 * @param rt the technology
+	 * @return true if applicable
+	 */
+	boolean fitForExploration(ResearchType rt) {
+		if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+			return true;
+		}
+		if (world.isAvailable("OrbitalFactory") != null) {
+			return rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
+		}
+		return false;
+	}
+	/**
+	 * Find the best available ship capable of carrying a radar.
+	 * @return the best technology
+	 */
+	ResearchType findBestTech() {
+		ResearchType best = null;
+		int bestFixedRadar = 0;
+		outer1:
+		for (ResearchType rt : world.availableResearch) {
+			if (fitForExploration(rt)) {
+				for (EquipmentSlot es : rt.slots.values()) {
+					if (es.fixed) {
+						for (ResearchType rt0 : es.items) {
+							if (rt0.has("radar") && world.isAvailable(rt0)) {
+								if (best == null || bestFixedRadar < rt0.getInt("radar")) {
+									best = rt;
+									bestFixedRadar = rt0.getInt("radar");
+								}
 								continue outer1;
 							}
 						}
@@ -422,14 +450,34 @@ public class ExplorationPlanner extends Planner {
 				}
 			}
 		}
-		if (bestFixed != null) {
-			if (bestFixed.has("needsOrbitalFactory")) {
+		return best;
+	}
+	/**
+	 * Check if we have radar in inventory.
+	 * @return if action taken
+	 */
+	boolean checkEquipment() {
+		ResearchType best = findBestFixedTech();
+		if (best != null) {
+			if (world.inventoryCount(best) > 0) {
+				return false;
+			}
+		} else {
+			best = findBestTech();
+			if (best != null) {
+				if (world.inventoryCount(best) > 0) {
+					return false;
+				}
+			}
+		}
+		if (best != null) {
+			if (best.has("needsOrbitalFactory")) {
 				// check the existence of orbital factory
 				if (checkOrbitalFactory()) {
 					return true;
 				}
 			}
-			placeProductionOrder(bestFixed, 1);
+			placeProductionOrder(best, 1);
 			return true;
 		}
 		// list available radars
