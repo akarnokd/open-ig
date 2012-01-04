@@ -359,7 +359,7 @@ public class ResearchPlanner extends Planner {
 		}
 		// if at least one empty planet failed to build the required lab
 		// conquer more planets
-		if (failed > 0) {
+		if (failed > 0 && !rt.hasEnoughLabs(world.global)) {
 			if (conquerMorePlanets()) {
 				return;
 			}
