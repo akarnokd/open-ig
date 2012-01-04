@@ -347,7 +347,11 @@ public class ResearchPlanner extends Planner {
 			if (planet.statistics.activeLabCount() == 0) {
 				if (!planet.statistics.constructing) {
 					AIResult r = buildOneLabFor(rt, planet);
-					if (r == AIResult.SUCCESS || r == AIResult.NO_MONEY) {
+					if (r == AIResult.CONTINUE) {
+						continue;
+					}
+					if (r == AIResult.SUCCESS 
+							|| r == AIResult.NO_MONEY) {
 						return;
 					} else {
 						failed++;
@@ -430,24 +434,43 @@ public class ResearchPlanner extends Planner {
 	 * @return the construction result
 	 */
 	AIResult buildOneLabFor(final ResearchType rt, final AIPlanet planet) {
-		if (buildOneLabIf(rt.aiLab, world.global.aiLab, planet.statistics.aiLab, planet, "ai")) {
+		int noroom = 0;
+		AIResult r = buildOneLabIf(rt.aiLab, world.global.aiLab, planet.statistics.aiLab, planet, "ai");
+		if (r == AIResult.SUCCESS) {
 			return AIResult.SUCCESS;
 		}
-		if (buildOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet, "civil")) {
+		if (r == AIResult.NO_ROOM) {
+			noroom++;
+		}
+		r = buildOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet, "civil");
+		if (r == AIResult.SUCCESS) {
 			return AIResult.SUCCESS;
 		}
-		if (buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer")) {
+		if (r == AIResult.NO_ROOM) {
+			noroom++;
+		}
+		buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer");
+		if (r == AIResult.SUCCESS) {
 			return AIResult.SUCCESS;
 		}
-		if (buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical")) {
+		if (r == AIResult.NO_ROOM) {
+			noroom++;
+		}
+		buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical");
+		if (r == AIResult.SUCCESS) {
 			return AIResult.SUCCESS;
 		}
-		if (buildOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet, "military")) {
+		if (r == AIResult.NO_ROOM) {
+			noroom++;
+		}
+		r = buildOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet, "military");
+		if (r == AIResult.SUCCESS) {
 			return AIResult.SUCCESS;
 		}
-		// if we got plenty of money, still no building could be placed
-		// we run out of space, attempt to get more planets
-		if (world.money > 100000 && planet.buildings.size() > 6) {
+		if (r == AIResult.NO_ROOM) {
+			noroom++;
+		}
+		if (noroom > 0) {
 			return AIResult.NO_ROOM;
 		}
 		return AIResult.NO_MONEY;
@@ -461,16 +484,16 @@ public class ResearchPlanner extends Planner {
 	 * @param resource the building type identification resource
 	 * @return true if successful
 	 */
-	boolean buildOneLabIf(int required, int available, int local, final AIPlanet planet, final String resource) {
+	AIResult buildOneLabIf(int required, int available, int local, final AIPlanet planet, final String resource) {
 		if (required > available && local == 0) {
 			final Planet planet0 = planet.planet;
 			if (!planet.statistics.canBuildAnything()) {
-				return false;
+				return AIResult.NO_AVAIL;
 			}
 			final BuildingType bt = findBuildingType(resource);
 			if (bt == null) {
 				new AssertionError("Can't find building for resource " + resource).printStackTrace();
-				return false;
+				return AIResult.NO_AVAIL;
 			}
 			if (bt.cost <= world.money) {
 				Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
@@ -481,11 +504,15 @@ public class ResearchPlanner extends Planner {
 							controls.actionPlaceBuilding(planet0, bt);
 						}
 					});
-					return true;
+					return AIResult.SUCCESS;
+				} else {
+					return AIResult.NO_ROOM;
 				}
+			} else {
+				return AIResult.NO_MONEY;
 			}
 		}
-		return false;
+		return AIResult.CONTINUE;
 	}
 	/**
 	 * Find the first building who provides the given resource.
