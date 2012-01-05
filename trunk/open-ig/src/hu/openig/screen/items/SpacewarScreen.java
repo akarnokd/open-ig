@@ -3486,32 +3486,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (groundLosses) {
 			// reduce population according to the battle statistics
 			if (battle.targetPlanet != null) {
-				int populationLoss = 0;
 				if (winner == battle.targetPlanet.owner) {
-					battle.targetPlanet.morale = 50;
-					populationLoss = Math.min(1000, battle.targetPlanet.population / 5);
+					BattleSimulator.applyPlanetDefended(battle.targetPlanet, 1000);
 				} else {
-					battle.targetPlanet.morale = 30;
-					populationLoss = Math.min(2000, battle.targetPlanet.population * 2 / 5);
-				}
-				if (hasBunker(battle.targetPlanet)) {
-					populationLoss /= 2;
-				}
-				battle.targetPlanet.population = Math.max(0, battle.targetPlanet.population - populationLoss);
-				if (battle.targetPlanet.population <= 0) {
-					battle.targetPlanet.die();
+					BattleSimulator.applyPlanetConquered(battle.targetPlanet, 1500);
 				}
 			} else
 			if (battle.helperPlanet != null) {
-				battle.helperPlanet.morale = 45;
-				int populationLoss = Math.min(500, battle.helperPlanet.population / 10);
-				if (hasBunker(battle.helperPlanet)) {
-					populationLoss /= 2;
-				}
-				battle.helperPlanet.population = Math.max(0, battle.helperPlanet.population - populationLoss);
-				if (battle.helperPlanet.population <= 0) {
-					battle.helperPlanet.die();
-				}
+				BattleSimulator.applyPlanetDefended(battle.helperPlanet, 500);
 			}
 		}
 		

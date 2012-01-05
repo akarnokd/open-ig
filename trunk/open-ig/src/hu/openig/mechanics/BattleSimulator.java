@@ -102,4 +102,57 @@ public final class BattleSimulator {
 		}
 		return false;
 	}
+	/**
+	 * Check if the planet has bunker.
+	 * @param planet the target planet
+	 * @return true if has bunker
+	 */
+	public static boolean hasBunker(Planet planet) {
+		for (Building b : planet.surface.buildings) {
+			if (b.type.kind.equals("Bunker")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Apply losses and morale to the conquered planet.
+	 * @param planet the target planet
+	 * @param minLosses the minimum losses
+	 */
+	public static void applyPlanetConquered(Planet planet, int minLosses) {
+		if (planet.morale >= 50) {
+			planet.morale = 30;
+		} else {
+			planet.morale = Math.max(0, planet.morale - 10);
+		}
+		int populationLoss = Math.max(minLosses, planet.population * 2 / 5);
+		if (hasBunker(planet)) {
+			populationLoss /= 2;
+		}
+		planet.population = Math.max(0, planet.population - populationLoss);
+		if (planet.population <= 0) {
+			planet.die();
+		}
+	}
+	/**
+	 * Apply losses and morale to the defended planet.
+	 * @param planet the target planet
+	 * @param minLosses the minimum losses
+	 */
+	public static void applyPlanetDefended(Planet planet, int minLosses) {
+		if (planet.morale >= 50) { 
+			planet.morale = 40;
+		} else {
+			planet.morale = Math.max(planet.morale - 10, 0);
+		}
+		int populationLoss = Math.max(minLosses, planet.population * 3 / 10);
+		if (hasBunker(planet)) {
+			populationLoss /= 2;
+		}
+		planet.population = Math.max(0, planet.population - populationLoss);
+		if (planet.population <= 0) {
+			planet.die();
+		}
+	}
 }
