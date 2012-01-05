@@ -12,8 +12,10 @@ import hu.openig.core.Action0;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
+import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.EquipmentSlot;
 import hu.openig.model.Fleet;
+import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.Production;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
@@ -216,21 +218,63 @@ public class OffensePlanner extends Planner {
 		
 		// 1/3 all kinds of vehicles
 		final int otherCount = vehicleCount - tankCount;
+		Map<ResearchType, Integer> vehicleConfig = JavaUtils.newHashMap();
 		if (otherCount > 0) {
-			if (checkProduction(vehicles, otherCount)) {
+			// limit radar car to 1
+			ResearchType bestRocketSled = null;
+			ResearchType radarcar = null;
+			for (ResearchType rt : vehicles) {
+				if (rt.id.equals("RadarCar")) {
+					vehicleConfig.put(rt, 1);
+					radarcar = rt;
+				} else {
+					BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
+					if (v != null && v.type == GroundwarUnitType.ROCKET_SLED) {
+						if (bestRocketSled == null || bestRocketSled.productionCost < rt.productionCost) {
+							bestRocketSled = rt;
+						}
+					}
+				}
+			}
+			// remove worst rocket sleds
+			for (ResearchType rt : new ArrayList<ResearchType>(vehicles)) {
+				BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
+				if (v != null && v.type == GroundwarUnitType.ROCKET_SLED && rt != bestRocketSled) {
+					vehicles.remove(rt);
+				}
+			}
+			
+			// distribute remaining slots evenly among non-radar cars
+			int vc = otherCount - 1;
+			int j = 0;
+			while (vc > 0) {
+				ResearchType rt = vehicles.get(j);
+				if (rt != radarcar) {
+					Integer d = vehicleConfig.get(rt);
+					vehicleConfig.put(rt, d != null ? d + 1 : 1);
+					vc--;
+				}
+				j++;
+				if (j == vehicles.size()) {
+					j = 0;
+				}
+			}
+			
+			// issue production orders
+			if (checkProduction(vehicles, vehicleConfig)) {
 				return;
 			}
 		}
-		
+		// enough tanks built?
 		if (world.inventoryCount(bestTank) < tankCount) {
 			return;
 		}
-		int ic2 = 0;
+		// enough units built?
 		for (ResearchType rt : vehicles) {
-			ic2 += world.inventoryCount(rt);
-		}
-		if (ic2 < otherCount) {
-			return;
+			Integer demand = vehicleConfig.get(rt);
+			if (demand != null && demand > world.inventoryCount(rt)) {
+				return;
+			}
 		}
 		
 		int totalFighters = 0;
