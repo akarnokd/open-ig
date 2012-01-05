@@ -220,8 +220,21 @@ public class OffensePlanner extends Planner {
 			return;
 		}
 		
+		if (world.inventoryCount(bestTank) < tankCount) {
+			return;
+		}
+		int ic2 = 0;
+		for (ResearchType rt : vehicles) {
+			ic2 += world.inventoryCount(rt);
+		}
+		if (ic2 < otherCount) {
+			return;
+		}
+		
 		final ResearchType fbestTank = bestTank;
 		final int ftankCount = tankCount;
+		
+		
 		
 		// select a spaceport
 		final AIPlanet spaceport = Collections.min(world.ownPlanets, BEST_PLANET);

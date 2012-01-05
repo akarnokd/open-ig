@@ -497,11 +497,15 @@ public class ResearchPlanner extends Planner {
 			}
 			if (bt.cost <= world.money) {
 				Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
+				final AssertionError e = new AssertionError("Warning: " + planet0.id + ", " + bt.id);
 				if (pt != null) {
 					applyActions.add(new Action0() {
 						@Override
 						public void invoke() {
-							controls.actionPlaceBuilding(planet0, bt);
+							AIResult r = controls.actionPlaceBuilding(planet0, bt);
+							if (r == AIResult.NO_AVAIL) {
+								e.printStackTrace();
+							}
 						}
 					});
 					return AIResult.SUCCESS;

@@ -11,6 +11,7 @@ package hu.openig.mechanics;
 import hu.openig.core.Location;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIControls;
+import hu.openig.model.AIResult;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.DiplomaticInteraction;
@@ -201,20 +202,24 @@ public class DefaultAIControls implements AIControls {
 		log("PauseProduction, Type = %s", rt.id);
 	}
 	@Override
-	public void actionPlaceBuilding(Planet planet, BuildingType buildingType) {
+	public AIResult actionPlaceBuilding(Planet planet, BuildingType buildingType) {
 		if (!planet.canBuild(buildingType)) {
 			log("PlaceBuilding, Planet = %s, Type = %s, FAIL = not supported or no colony hub", planet.id, buildingType.id);
+			return AIResult.NO_AVAIL;
 		} else
 		if (p.money >= buildingType.cost) {
 			Point pt = planet.surface.placement.findLocation(planet.getPlacementDimensions(buildingType));
 			if (pt != null) {
 				AutoBuilder.construct(w, planet, buildingType, pt);
 				log("PlaceBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
+				return AIResult.SUCCESS;
 			} else {
 				log("PlaceBuilding, Planet = %s, Type = %s, FAIL = no room", planet.id, buildingType.id);
+				return AIResult.NO_ROOM;
 			}
 		} else {
 			log("PlaceBuilding, Planet = %s, Type = %s, FAIL = no money", planet.id, buildingType.id);
+			return AIResult.NO_MONEY;
 		}
 	}
 	@Override
