@@ -231,17 +231,20 @@ public class OffensePlanner extends Planner {
 			return;
 		}
 		
-		final ResearchType fbestTank = bestTank;
-		final int ftankCount = tankCount;
-		
-		
-		
-		// select a spaceport
-		final AIPlanet spaceport = Collections.min(world.ownPlanets, BEST_PLANET);
+		int totalFighters = 0;
+		for (Integer ij : smallShips.values()) {
+			totalFighters += ij;
+		}
 		
 		// check load levels
 		if (bigShips.size() >= 3 && mediumShip.size() >= 25
-				&& smallShips.size() >= fighters.size()) {
+				&& totalFighters >= fighters.size() * 30) {
+			final ResearchType fbestTank = bestTank;
+			final int ftankCount = tankCount;
+			
+			// select a spaceport
+			final AIPlanet spaceport = Collections.min(world.ownPlanets, BEST_PLANET);
+			
 			add(new Action0() {
 				@Override
 				public void invoke() {

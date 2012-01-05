@@ -1272,7 +1272,7 @@ public class LoadSaveScreen extends ScreenBase {
 		Collections.sort(saves, new Comparator<FileItem>() {
 			@Override
 			public int compare(FileItem o1, FileItem o2) {
-				return o1.saveDate.compareTo(o2.saveDate);
+				return o2.saveDate.compareTo(o1.saveDate);
 			}
 		});
 	}
