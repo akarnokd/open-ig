@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Plans the creation of various ships, equipment and vehicles.
@@ -82,9 +83,9 @@ public class OffensePlanner extends Planner {
 			}
 		}
 		
-		final int cruiserBatch = 25;
-		final int fighterBatch = 30;
-		final int battleshipBatch = 3;
+		final int cruiserBatch = 1;
+		final int fighterBatch = 10;
+		final int battleshipBatch = 1;
 		
 		if (checkProduction(fighters, fighterBatch)) {
 			return;
@@ -125,166 +126,170 @@ public class OffensePlanner extends Planner {
 			}
 		}
 		Collections.sort(fighters, expensiveFirst);
+		int totalFighters = 0;
 		for (ResearchType rt : fighters) {
 			int invCount = world.inventoryCount(rt);
 			if (invCount > 0) {
-				smallShips.put(rt, Math.min(30, invCount));
+				int ij = Math.min(30, invCount);
+				smallShips.put(rt, ij);
+				totalFighters += ij;
 			}
-		}
-		
-		// count required equipment
-		List<ResearchType> rts = new ArrayList<ResearchType>(mediumShip);
-		rts.addAll(bigShips);
-		Map<ResearchType, Integer> equipmentDemands = countEquipments(rts);
-
-		List<ResearchType> equipments = new ArrayList<ResearchType>();
-		List<ResearchType> weapons = new ArrayList<ResearchType>();
-		for (Map.Entry<ResearchType, Integer> e : equipmentDemands.entrySet()) {
-			ResearchType rt = e.getKey();
-			int count = e.getValue();
-			if (count > world.inventoryCount(rt)) {
-				if (rt.category.main == ResearchMainCategory.EQUIPMENT) {
-					equipments.add(rt);
-				} else
-				if (rt.category.main == ResearchMainCategory.WEAPONS) {
-					weapons.add(rt);
-				}
-			}
-		}
-		
-		if (checkProduction(equipments, equipmentDemands)) {
-			return;
-		}
-
-		if (checkProduction(weapons, equipmentDemands)) {
-			return;
-		}
-
-		// check if all demand met
-		for (Map.Entry<ResearchType, Integer> e : equipmentDemands.entrySet()) {
-			ResearchType rt = e.getKey();
-			int count = e.getValue();
-			if (count > world.inventoryCount(rt)) {
-				return;
-			}
-		}		
-		
-		// count vehicle capacity
-		int vehicleCount = 0;
-		for (ResearchType rt : bigShips) {
-			if (rt.has("vehicles")) {
-				vehicleCount += rt.getInt("vehicles");
-			}
-			for (EquipmentSlot es : rt.slots.values()) {
-				ResearchType bay = null;
-				for (ResearchType rt0 : es.items) {
-					if (rt0.has("vehicles") && world.isAvailable(rt0)) {
-						bay = rt0;
-					}
-				}
-				if (bay != null) {
-					vehicleCount += bay.getInt("vehicles");
-				}
-			}
-		}
-		
-		ResearchType bestTank = null;
-		final List<ResearchType> vehicles = new ArrayList<ResearchType>();
-		for (ResearchType rt : world.availableResearch) {
-			if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
-				if (bestTank == null || bestTank.productionCost < rt.productionCost) {
-					bestTank = rt;
-				}
-			} else
-			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-				vehicles.add(rt);
-			}
-		}
-		// 2/3 best tank
-		
-		int tankCount = vehicleCount * 2 / 3;
-
-		if (bestTank != null) {
-			int ic = world.inventoryCount(bestTank);
-			if (ic < tankCount) {
-				if (!isAnyProduction(Collections.singletonList(bestTank))) {
-					placeProductionOrder(bestTank, tankCount - ic);
-					return;
-				}
-			}
-		} else {
-			tankCount = 0;
-		}
-		
-		// 1/3 all kinds of vehicles
-		final int otherCount = vehicleCount - tankCount;
-		final Map<ResearchType, Integer> vehicleConfig = JavaUtils.newHashMap();
-		if (otherCount > 0) {
-			// limit radar car to 1
-			ResearchType bestRocketSled = null;
-			ResearchType radarcar = null;
-			for (ResearchType rt : vehicles) {
-				if (rt.id.equals("RadarCar")) {
-					vehicleConfig.put(rt, 1);
-					radarcar = rt;
-				} else {
-					BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
-					if (v != null && v.type == GroundwarUnitType.ROCKET_SLED) {
-						if (bestRocketSled == null || bestRocketSled.productionCost < rt.productionCost) {
-							bestRocketSled = rt;
-						}
-					}
-				}
-			}
-			// remove worst rocket sleds
-			for (ResearchType rt : new ArrayList<ResearchType>(vehicles)) {
-				BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
-				if (v != null && v.type == GroundwarUnitType.ROCKET_SLED && rt != bestRocketSled) {
-					vehicles.remove(rt);
-				}
-			}
-			
-			// distribute remaining slots evenly among non-radar cars
-			int vc = otherCount - 1;
-			int j = 0;
-			while (vc > 0) {
-				ResearchType rt = vehicles.get(j);
-				if (rt != radarcar) {
-					Integer d = vehicleConfig.get(rt);
-					vehicleConfig.put(rt, d != null ? d + 1 : 1);
-					vc--;
-				}
-				j++;
-				if (j == vehicles.size()) {
-					j = 0;
-				}
-			}
-			
-			// issue production orders
-			if (checkProduction(vehicles, vehicleConfig)) {
-				return;
-			}
-		}
-		// enough tanks built?
-		if (world.inventoryCount(bestTank) < tankCount) {
-			return;
-		}
-		// enough units built?
-		for (ResearchType rt : vehicles) {
-			Integer demand = vehicleConfig.get(rt);
-			if (demand != null && demand > world.inventoryCount(rt)) {
-				return;
-			}
-		}
-		
-		int totalFighters = 0;
-		for (Integer ij : smallShips.values()) {
-			totalFighters += ij;
 		}
 		
 		// check load levels
 		if (bigShips.size() >= 3 && mediumShip.size() >= 25
 				&& totalFighters >= fighters.size() * 30) {
+			// count required equipment
+			List<ResearchType> rts = new ArrayList<ResearchType>(mediumShip);
+			rts.addAll(bigShips);
+			Map<ResearchType, Integer> equipmentDemands = countEquipments(rts);
+	
+			List<ResearchType> equipments = new ArrayList<ResearchType>();
+			List<ResearchType> weapons = new ArrayList<ResearchType>();
+			for (Map.Entry<ResearchType, Integer> e : equipmentDemands.entrySet()) {
+				ResearchType rt = e.getKey();
+				int count = e.getValue();
+				if (count > world.inventoryCount(rt)) {
+					if (rt.category.main == ResearchMainCategory.EQUIPMENT) {
+						equipments.add(rt);
+					} else
+					if (rt.category.main == ResearchMainCategory.WEAPONS) {
+						weapons.add(rt);
+					}
+				}
+			}
+			
+			if (checkProduction(equipments, equipmentDemands)) {
+				return;
+			}
+	
+			if (checkProduction(weapons, equipmentDemands)) {
+				return;
+			}
+	
+			// check if all demand met
+			for (Map.Entry<ResearchType, Integer> e : equipmentDemands.entrySet()) {
+				ResearchType rt = e.getKey();
+				int count = e.getValue();
+				if (count > world.inventoryCount(rt)) {
+					return;
+				}
+			}		
+			
+			// count vehicle capacity
+			int vehicleCount = 0;
+			for (ResearchType rt : bigShips) {
+				if (rt.has("vehicles")) {
+					vehicleCount += rt.getInt("vehicles");
+				}
+				for (EquipmentSlot es : rt.slots.values()) {
+					ResearchType bay = null;
+					if (es.fixed) {
+						if (es.items.get(0).has("vehicles")) {
+							bay = es.items.get(0);
+						}
+					} else {
+						for (ResearchType rt0 : es.items) {
+							if (rt0.has("vehicles") && world.isAvailable(rt0)) {
+								bay = rt0;
+							}
+						}
+					}
+					if (bay != null) {
+						vehicleCount += bay.getInt("vehicles");
+					}
+				}
+			}
+			
+			ResearchType bestTank = null;
+			final List<ResearchType> vehicles = new ArrayList<ResearchType>();
+			for (ResearchType rt : world.availableResearch) {
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+					if (bestTank == null || bestTank.productionCost < rt.productionCost) {
+						bestTank = rt;
+					}
+				} else
+				if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					vehicles.add(rt);
+				}
+			}
+			// 2/3 best tank
+			
+			int tankCount = vehicleCount * 2 / 3;
+	
+			if (bestTank != null) {
+				int ic = world.inventoryCount(bestTank);
+				if (ic < tankCount) {
+					if (!isAnyProduction(Collections.singletonList(bestTank))) {
+						placeProductionOrder(bestTank, tankCount - ic);
+						return;
+					}
+				}
+			} else {
+				tankCount = 0;
+			}
+			
+			// 1/3 all kinds of vehicles
+			final int otherCount = vehicleCount - tankCount;
+			final Map<ResearchType, Integer> vehicleConfig = JavaUtils.newHashMap();
+			final Set<ResearchType> onePerFleet = JavaUtils.newHashSet();
+			if (otherCount > 0) {
+				// limit radar car to 1
+				ResearchType bestRocketSled = null;
+				for (ResearchType rt : vehicles) {
+					if (rt.has("one-per-fleet") && "true".equals(rt.get("one-per-fleet"))) {
+						vehicleConfig.put(rt, 1);
+						onePerFleet.add(rt);
+					} else {
+						BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
+						if (v != null && v.type == GroundwarUnitType.ROCKET_SLED) {
+							if (bestRocketSled == null || bestRocketSled.productionCost < rt.productionCost) {
+								bestRocketSled = rt;
+							}
+						}
+					}
+				}
+				// remove worst rocket sleds
+				for (ResearchType rt : new ArrayList<ResearchType>(vehicles)) {
+					BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
+					if (v != null && v.type == GroundwarUnitType.ROCKET_SLED && rt != bestRocketSled) {
+						vehicles.remove(rt);
+					}
+				}
+				
+				// distribute remaining slots evenly among non-radar cars
+				int vc = otherCount - 1;
+				int j = 0;
+				while (vc > 0) {
+					ResearchType rt = vehicles.get(j);
+					if (!onePerFleet.contains(rt)) {
+						Integer d = vehicleConfig.get(rt);
+						vehicleConfig.put(rt, d != null ? d + 1 : 1);
+						vc--;
+					}
+					j++;
+					if (j == vehicles.size()) {
+						j = 0;
+					}
+				}
+				
+				// issue production orders
+				if (checkProduction(vehicles, vehicleConfig)) {
+					return;
+				}
+			}
+			// enough tanks built?
+			if (world.inventoryCount(bestTank) < tankCount) {
+				return;
+			}
+			// enough units built?
+			for (ResearchType rt : vehicles) {
+				Integer demand = vehicleConfig.get(rt);
+				if (demand != null && demand > world.inventoryCount(rt)) {
+					return;
+				}
+			}
+			
 			final ResearchType fbestTank = bestTank;
 			final int ftankCount = tankCount;
 			

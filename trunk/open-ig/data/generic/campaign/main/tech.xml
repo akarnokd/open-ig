@@ -662,6 +662,7 @@
 		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' mech='1'
 		ai='1' mil='1' index='0' video='technology/weapons/vehicles/radar_car'>
 		<property name='armor' value='3' />
+		<property name='one-per-fleet' value='true'/>
 		<property name='surfaceradar' value='true' />
 	</item>
 	<item id='RocketLauncher1' name='tech.rocketlauncher1.name'
@@ -818,6 +819,7 @@
 		image='inventions/weapons/vehicles/garthog_radar_jammer' index='3'>
 		<property name='speed' value='4' />
 		<property name='armor' value='3' />
+		<property name='one-per-fleet' value='true'/>
 		<property name='radarjammer' value='true' />
 	</item>
 	<item id='MorgathKamikazeTank' name='tech.morgathkamikazetank.name'
