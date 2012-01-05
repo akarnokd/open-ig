@@ -9,6 +9,7 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Difficulty;
 import hu.openig.core.Pred0;
 import hu.openig.core.Tile;
 import hu.openig.model.AIBuilding;
@@ -81,10 +82,19 @@ public class StaticDefensePlanner extends Planner {
 		
 		List<Pred0> actions = new ArrayList<Pred0>();
 		
+		int defenseLimit = 3;
+		if (w.difficulty == Difficulty.NORMAL) {
+			defenseLimit = 4;
+		} else
+		if (w.difficulty == Difficulty.HARD) {
+			defenseLimit = 5;
+		}
+		final int fdefenseLimit = defenseLimit;
+		
 		actions.add(new Pred0() {
 			@Override
 			public Boolean invoke() {
-				if (checkBuildingKind(planet, "Gun", Integer.MAX_VALUE)) {
+				if (checkBuildingKind(planet, "Gun", fdefenseLimit)) {
 					return true;
 				}
 				return false;
@@ -115,7 +125,7 @@ public class StaticDefensePlanner extends Planner {
 			public Boolean invoke() {
 				// find barracks..strongholds
 				// FIXME limit the numbers for AI player
-				if (checkBuildingKind(planet, "Defensive", 4)) {
+				if (checkBuildingKind(planet, "Defensive", fdefenseLimit)) {
 					return true;
 				}
 				return false;

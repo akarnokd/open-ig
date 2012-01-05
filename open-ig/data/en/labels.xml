@@ -2755,6 +2755,7 @@
 	<entry key='battlefinish.enemy_fleet_destroyed'>The enemy fleet %s has been destroyed.</entry>
 	<entry key='battlefinish.planet_lost'>You lost the planet %s.</entry>
 	<entry key='battlefinish.planet_won'>You conquered the planet %s.</entry>
+	<entry key='battlefinish.planet_destroyed'>The battle completely destroyed planet %s.</entry>
 	<entry key='settings.radarunion'>Display perimeter radar only</entry>
 	<entry key='traders.fleetname'>Trader</entry>
 	<entry key='battlefinish.click_to_exit'>Click to exit</entry>

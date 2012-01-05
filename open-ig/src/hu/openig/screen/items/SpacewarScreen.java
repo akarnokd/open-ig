@@ -3456,6 +3456,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param winner the winner of the fight
 	 */
 	void concludeBattle(Player winner) {
+		boolean groundLosses = false;
 		for (SpacewarStructure s : battle.spaceLosses) {
 			if (s.item != null) {
 				if (s.count > 0) {
@@ -3475,10 +3476,45 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					s.planet.surface.removeBuilding(s.building);
 					s.planet.surface.placeRoads(s.planet.race, world().buildingModel);
 				}
+				groundLosses = true;
 			}
 		}
 		Set<Fleet> fleets = new HashSet<Fleet>();
 		fleets.add(battle.attacker);
+
+		// if the planet was fired upon
+		if (groundLosses) {
+			// reduce population according to the battle statistics
+			if (battle.targetPlanet != null) {
+				int populationLoss = 0;
+				if (winner == battle.targetPlanet.owner) {
+					battle.targetPlanet.morale = 50;
+					populationLoss = Math.min(1000, battle.targetPlanet.population / 5);
+				} else {
+					battle.targetPlanet.morale = 30;
+					populationLoss = Math.min(2000, battle.targetPlanet.population * 2 / 5);
+				}
+				if (hasBunker(battle.targetPlanet)) {
+					populationLoss /= 2;
+				}
+				battle.targetPlanet.population = Math.max(0, battle.targetPlanet.population - populationLoss);
+				if (battle.targetPlanet.population <= 0) {
+					battle.targetPlanet.die();
+				}
+			} else
+			if (battle.helperPlanet != null) {
+				battle.helperPlanet.morale = 45;
+				int populationLoss = Math.min(500, battle.helperPlanet.population / 10);
+				if (hasBunker(battle.helperPlanet)) {
+					populationLoss /= 2;
+				}
+				battle.helperPlanet.population = Math.max(0, battle.helperPlanet.population - populationLoss);
+				if (battle.helperPlanet.population <= 0) {
+					battle.helperPlanet.die();
+				}
+			}
+		}
+		
 		if (battle.helperFleet != null) {
 			fleets.add(battle.helperFleet);
 		}
@@ -3506,7 +3542,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		final BattleInfo bi = battle;
 		if (battle.attacker.owner == winner) {
 			// originally attacking the planet
-			if (battle.targetPlanet != null) {
+			if (battle.targetPlanet != null && battle.targetPlanet.owner != null) {
 				FleetStatistics fs = battle.attacker.getStatistics();
 				if (fs.vehicleCount > 0) {
 					commons.stopMusic();
@@ -3525,6 +3561,19 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 		bfs.displayBattleSummary(bi);
+	}
+	/**
+	 * Check if the planet has bunker.
+	 * @param planet the target planet
+	 * @return true if has bunker
+	 */
+	boolean hasBunker(Planet planet) {
+		for (Building b : planet.surface.buildings) {
+			if (b.type.kind.equals("Bunker")) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Remove the structure from its parent inventory (either a planet or a fleet).

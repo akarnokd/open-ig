@@ -3713,9 +3713,28 @@ public class PlanetScreen extends ScreenBase {
 		}
 		
 		Player np = nonPlayer();
-		
+
+		int populationLoss = 0;
+
 		if (bi.attacker.owner == winner) {
 			planet().takeover(winner);
+
+			battle.targetPlanet.morale = 30;
+			populationLoss = Math.min(2000, battle.targetPlanet.population * 2 / 5);
+		} else {
+			battle.targetPlanet.morale = 40;
+			populationLoss = Math.min(1500, battle.targetPlanet.population * 3 / 10);
+		}
+		
+		if (hasBunker(battle.targetPlanet)) {
+			populationLoss /= 2;
+		}
+		battle.targetPlanet.population = Math.max(0, battle.targetPlanet.population - populationLoss);
+
+		if (battle.targetPlanet.population <= 0) {
+			battle.targetPlanet.die();
+		} else {
+			planet().surface.placeRoads(planet().race, world().buildingModel);
 		}
 
 		player().ai.groundBattleDone(bi);
@@ -3723,10 +3742,21 @@ public class PlanetScreen extends ScreenBase {
 		
 		battle = null;
 		
-		planet().surface.placeRoads(planet().race, world().buildingModel);
-		
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 		bfs.displayBattleSummary(bi);
+	}
+	/**
+	 * Check if the planet has bunker.
+	 * @param planet the target planet
+	 * @return true if has bunker
+	 */
+	boolean hasBunker(Planet planet) {
+		for (Building b : planet.surface.buildings) {
+			if (b.type.kind.equals("Bunker")) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/** @return Check if one of the fighting parties has run out of units/structures. */
 	Player checkWinner() {
