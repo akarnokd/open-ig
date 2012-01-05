@@ -71,6 +71,8 @@ public class OtherSettingsDialog extends JDialog {
 	JRadioButton radioBuildingsAtleast;
 	/** Settings. */
 	JRadioButton radioBuildingAtmost;
+	/** Settings. */
+	IGCheckBox animateInventory;
 	/**
 	 * Creates the dialog. 
 	 * @param owner the owner of the frame
@@ -235,6 +237,8 @@ public class OtherSettingsDialog extends JDialog {
 			}
 		};
 		
+		animateInventory = new IGCheckBox(labels.get("othersettings.animate_inventory"), font);
+		
 		tileCacheEnabled = new IGCheckBox(labels.get("othersettings.tile_cache_enabled"), font);
 		tileCacheEnabled.addActionListener(enabler);
 		tileCacheBaseEnabled = new IGCheckBox(labels.get("othersettings.tile_cache_base_enabled"), font);
@@ -279,6 +283,7 @@ public class OtherSettingsDialog extends JDialog {
 		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup()
+			.addComponent(animateInventory)
 			.addGroup(
 				gl.createSequentialGroup()
 				.addComponent(tileCacheEnabled)
@@ -311,6 +316,7 @@ public class OtherSettingsDialog extends JDialog {
 		
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
+			.addComponent(animateInventory)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(tileCacheEnabled)
@@ -356,6 +362,7 @@ public class OtherSettingsDialog extends JDialog {
 		radioBaseAtmost.setSelected(config.tileCacheBaseLimit <= 0);
 		radioBuildingsAtleast.setSelected(config.tileCacheBuildingLimit > 0);
 		radioBuildingAtmost.setSelected(config.tileCacheBuildingLimit <= 0);
+		animateInventory.setSelected(config.animateInventory);
 		enableControls();
 	}
 	/** Enable controls based on checkbox settings. */
@@ -396,6 +403,7 @@ public class OtherSettingsDialog extends JDialog {
 		} else {
 			config.tileCacheSize = 0;
 		}
+		config.animateInventory = animateInventory.isSelected();
 		config.save();
 		setVisible(false);
 	}

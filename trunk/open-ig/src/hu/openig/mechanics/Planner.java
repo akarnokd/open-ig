@@ -463,13 +463,19 @@ public abstract class Planner {
 			return;
 		}
 		int prodCnt = 0;
-		ResearchType cheapest = null;
+		ResearchType cheapestRunning = null;
+		ResearchType cheapestFinished = null;
 		for (ResearchType rt0 : world.productions.keySet()) {
 			prod = world.productions.get(rt0);
 			if (rt.category.main == rt0.category.main) {
 				prodCnt++;
-				if (cheapest == null || prod.count == 0 || cheapest.productionCost > rt0.productionCost) {
-					cheapest = rt0;
+				if (prod.count == 0) {
+					if (cheapestFinished == null || cheapestFinished.productionCost > rt0.productionCost) {
+						cheapestFinished = rt0;
+					}
+				} else
+				if (cheapestRunning == null || cheapestRunning.productionCost > rt0.productionCost) {
+					cheapestRunning = rt0;
 				}
 			}
 		}
@@ -477,13 +483,24 @@ public abstract class Planner {
 			issueProductionOrder(rt, count);
 			return;
 		}
-		final ResearchType cp = cheapest;
-		add(new Action0() {
-			@Override
-			public void invoke() {
-				controls.actionRemoveProduction(cp);
-			}
-		});
+		if (cheapestFinished != null) {
+			final ResearchType cp = cheapestFinished;
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					controls.actionRemoveProduction(cp);
+				}
+			});
+		} else
+		if (cheapestRunning != null && cheapestRunning.productionCost < rt.productionCost) {
+			final ResearchType cp = cheapestRunning;
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					controls.actionRemoveProduction(cp);
+				}
+			});
+		}
 		return;
 	}
 	/**
