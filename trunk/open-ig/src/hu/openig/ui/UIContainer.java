@@ -67,9 +67,11 @@ public class UIContainer extends UIComponent {
 	public void draw(Graphics2D g2) {
 		for (UIComponent c : components) {
 			if (c.visible) {
-				g2.translate(c.x, c.y);
+				int px = c.x;
+				int py = c.y;
+				g2.translate(px, py);
 				c.draw(g2);
-				g2.translate(-c.x, -c.y);
+				g2.translate(-px, -py);
 			}
 		}
 	}

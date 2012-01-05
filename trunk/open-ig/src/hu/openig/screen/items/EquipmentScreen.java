@@ -1061,9 +1061,11 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param c the component
 	 */
 	void drawAgain(Graphics2D g2, UIComponent c) {
-		g2.translate(c.x, c.y);
+		int px = c.x;
+		int py = c.y;
+		g2.translate(px, py);
 		c.draw(g2);
-		g2.translate(-c.x, -c.y);
+		g2.translate(-px, -py);
 	}
 	/**
 	 * Update the slot belonging to the specified technology.

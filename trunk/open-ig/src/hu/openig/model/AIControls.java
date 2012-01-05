@@ -31,8 +31,9 @@ public interface AIControls {
 	 * Place a building onto the planet (via the autobuild location mechanism).
 	 * @param planet the target planet
 	 * @param buildingType the building type
+	 * @return the action result
 	 */
-	void actionPlaceBuilding(Planet planet, BuildingType buildingType);
+	AIResult actionPlaceBuilding(Planet planet, BuildingType buildingType);
 	/**
 	 * Demolish a building.
 	 * @param planet the target planet

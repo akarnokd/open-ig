@@ -688,7 +688,8 @@ public class InfoScreen extends ScreenBase {
 			@Override
 			public void invoke(Fleet value) {
 				player().currentFleet = value;
-				displayPrimary(Screens.EQUIPMENT);
+				player().selectionMode = SelectionMode.FLEET;
+				displaySecondary(Screens.EQUIPMENT);
 			}
 		};
 		
