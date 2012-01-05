@@ -234,7 +234,6 @@ public class OffensePlanner extends Planner {
 			final Map<ResearchType, Integer> vehicleConfig = JavaUtils.newHashMap();
 			final Set<ResearchType> onePerFleet = JavaUtils.newHashSet();
 			if (otherCount > 0) {
-				// limit radar car to 1
 				ResearchType bestRocketSled = null;
 				for (ResearchType rt : vehicles) {
 					if (rt.has("one-per-fleet") && "true".equals(rt.get("one-per-fleet"))) {
@@ -258,7 +257,7 @@ public class OffensePlanner extends Planner {
 				}
 				
 				// distribute remaining slots evenly among non-radar cars
-				int vc = otherCount - 1;
+				int vc = otherCount - onePerFleet.size();
 				int j = 0;
 				while (vc > 0) {
 					ResearchType rt = vehicles.get(j);
