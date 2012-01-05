@@ -2762,8 +2762,6 @@
 	<entry key='flagship.moveto.database'>Database screen</entry>
 	<entry key='spacewar.ship_status_none'>Nothing selected.</entry>
 	<entry key='spacewar.ship_status_many'>Too many things selected.</entry>
-	<entry key='colonizer_fleet_name'>Colonizer fleet</entry>
-	<entry key='discovery_fleet'>Discovery fleet</entry>
 	<entry key='autosave'>Autosave</entry>
 	<entry key='quicksave'>Quicksave</entry>
 	<entry key='settings.save_name'>Save name:</entry>
@@ -2783,9 +2781,39 @@
 	<entry key='othersettings.tile_cache_building_enabled'>Cache building tiles</entry>
 	<entry key='othersettings.tile_cache_atleast'>Size at least:</entry>
 	<entry key='othersettings.tile_cache_atmost'>Size at most:</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='Empire.fleet'>Empire fleet</entry>
+	<entry key='Dribs.fleet'>Dribs fleet</entry>
+	<entry key='Ychom.fleet'>Ychom fleet</entry>
+	<entry key='Morgath.fleet'>Morgath fleet</entry>
+	<entry key='Sullep.fleet'>Sullep fleet</entry>
+	<entry key='Dargslan.fleet'>Dargslan fleet</entry>
+	<entry key='FreeNations.fleet'>FNS fleet</entry>
+	<entry key='FreeTraders.fleet'>FT fleet</entry>
+	<entry key='Garthog.fleet'>Garthog fleet</entry>
+	<entry key='Ecalep.fleet'>Ecalep fleet</entry>
+	
+	<entry key='Empire.colonizer_fleet'>Empire colonizer</entry>
+	<entry key='Dribs.colonizer_fleet'>Dribs colonizer</entry>
+	<entry key='Ychom.colonizer_fleet'>Ychom colonizer</entry>
+	<entry key='Morgath.colonizer_fleet'>Morgath colonizer</entry>
+	<entry key='Sullep.colonizer_fleet'>Sullep colonizer</entry>
+	<entry key='Dargslan.colonizer_fleet'>Dargslan colonizer</entry>
+	<entry key='FreeNations.colonizer_fleet'>FNS colonizer</entry>
+	<entry key='FreeTraders.colonizer_fleet'>FT colonizer</entry>
+	<entry key='Garthog.colonizer_fleet'>Garthog colonizer</entry>
+	<entry key='Ecalep.colonizer_fleet'>Ecalep colonizer</entry>
+
+	<entry key='Empire.explorer_fleet'>Empire explorer</entry>
+	<entry key='Dribs.explorer_fleet'>Dribs explorer</entry>
+	<entry key='Ychom.explorer_fleet'>Ychom explorer</entry>
+	<entry key='Morgath.explorer_fleet'>Morgath explorer</entry>
+	<entry key='Sullep.explorer_fleet'>Sullep explorer</entry>
+	<entry key='Dargslan.explorer_fleet'>Dargslan explorer</entry>
+	<entry key='FreeNations.explorer_fleet'>FNS explorer</entry>
+	<entry key='FreeTraders.explorer_fleet'>FT explorer</entry>
+	<entry key='Garthog.explorer_fleet'>Garthog explorer</entry>
+	<entry key='Ecalep.explorer_fleet'>Ecalep explorer</entry>
+
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

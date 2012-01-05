@@ -21,6 +21,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -130,6 +131,16 @@ public class StaticDefensePlanner extends Planner {
 				return false;
 			}
 		});
+		actions.add(new Pred0() {
+			@Override
+			public Boolean invoke() {
+				// check for military spaceport
+				if (checkMilitarySpaceport(planet)) {
+					return true;
+				}
+				return false;
+			}
+		});
 		
 		
 		Collections.shuffle(actions);
@@ -140,6 +151,43 @@ public class StaticDefensePlanner extends Planner {
 			}
 		}
 		
+		return false;
+	}
+	/**
+	 * Try constructing planets / 2 + 1 spaceports.
+	 * @param planet the target planet
+	 * @return true if action taken
+	 */
+	boolean checkMilitarySpaceport(final AIPlanet planet) {
+		if (world.money > 100000) {
+			if (planet.statistics.militarySpaceportCount == 0 
+					&& world.global.planetCount / 2 + 1 > world.global.militarySpaceportCount) {
+				final BuildingType bt = findBuilding("MilitarySpaceport");
+				Point pt = planet.findLocation(bt);
+				if (pt != null) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionPlaceBuilding(planet.planet, bt);
+						}
+					});
+					return true;
+				} else {
+					// if no room, make it by demolishing a traders spaceport
+					for (final AIBuilding b : planet.buildings) {
+						if (b.type.id.equals("TradersSpaceport")) {
+							add(new Action0() {
+								@Override
+								public void invoke() {
+									controls.actionDemolishBuilding(planet.planet, b.building);
+								}
+							});
+							return true;
+						}
+					}
+				}
+			}
+		}
 		return false;
 	}
 	/**
