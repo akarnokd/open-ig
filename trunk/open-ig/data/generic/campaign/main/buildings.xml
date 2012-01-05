@@ -901,6 +901,7 @@
 			<resource type='worker'>-30</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.bunker.upgrade_1">
 				<resource type="repair">1.1</resource>
 				<resource type="energy">1.5</resource>
@@ -921,6 +922,7 @@
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.ion_projector" id="IonProjector">
@@ -941,6 +943,7 @@
 			<resource type='worker'>-120</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.ion_projector.upgrade_1">
 				<resource type="ion">1.15</resource>
 				<resource type="energy">1.5</resource>
@@ -961,6 +964,7 @@
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
+			 -->
 		</upgrades>
 	</building>
 	<building name="buildings.plasma_projector" id="PlasmaProjector">
@@ -981,6 +985,7 @@
 			<resource type='worker'>-150</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.plasma_projector.upgrade_1">
 				<resource type="plasma">1.15</resource>
 				<resource type="energy">1.5</resource>
@@ -1001,6 +1006,7 @@
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.particle_projector" id="ParticleProjector">
@@ -1020,6 +1026,7 @@
 			<resource type='worker'>-160</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.particle_projector.upgrade_1">
 				<resource type="energy">1.5</resource>
 				<resource type="worker">1.5</resource>
@@ -1036,6 +1043,7 @@
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.meson_projector" id="MesonProjector">
@@ -1056,6 +1064,7 @@
 			<resource type='worker'>-165</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.meson_projector.upgrade_1">
 				<resource type="meson">1.15</resource>
 				<resource type="energy">1.5</resource>
@@ -1076,6 +1085,7 @@
 				<resource type="energy">2.5</resource>
 				<resource type="worker">2.5</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.inversion_shield" id="InversionShield">
@@ -1096,6 +1106,7 @@
 			<resource type='worker'>-50</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.inversion_shield.upgrade_1">
 				<resource type='shield'>1.2</resource>
 				<resource type='energy'>1.5</resource>
@@ -1116,6 +1127,7 @@
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.hypershield" id="HyperShield">
@@ -1136,6 +1148,7 @@
 			<resource type='worker'>-120</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.hypershield.upgrade_1">
 				<resource type='shield'>1.2</resource>
 				<resource type='energy'>1.5</resource>
@@ -1156,6 +1169,7 @@
 				<resource type='energy'>2.5</resource>
 				<resource type='worker'>2.5</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.barracks" id="Barracks">
@@ -1170,6 +1184,7 @@
 			<resource type='worker'>-360</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.barracks.upgrade_1">
 				<resource type='laser'>1.5</resource>
 				<resource type='energy'>1.5</resource>
@@ -1180,6 +1195,7 @@
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name='buildings.fortress' id='Fortress'>
@@ -1201,6 +1217,7 @@
 			<resource type='worker'>-530</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.fortress.upgrade_1">
 				<resource type='laser'>1.5</resource>
 				<resource type='energy'>1.5</resource>
@@ -1211,6 +1228,7 @@
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name='buildings.stronghold' id='Stronghold'>
@@ -1225,6 +1243,7 @@
 			<resource type='worker'>-550</resource>
 		</operation>
 		<upgrades>
+		<!-- 
 			<upgrade desc="buildings.fortress.upgrade_1">
 				<resource type='laser'>1.5</resource>
 				<resource type='energy'>1.5</resource>
@@ -1235,6 +1254,7 @@
 				<resource type='energy'>2</resource>
 				<resource type='worker'>2</resource>
 			</upgrade>
+		 -->
 		</upgrades>
 	</building>
 	<building name="buildings.recreation_center" id="RecreationCenter">
