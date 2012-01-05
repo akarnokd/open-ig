@@ -280,16 +280,16 @@ public class ColonyPlanner extends Planner {
 			return true;
 		}
 		// enable cheapest building if worker ratio is okay
-		if (planet.statistics.workerDemand * 1.1 < planet.population) {
+		if (planet.statistics.workerDemand < planet.population) {
 			AIBuilding min = null;
 			for (AIBuilding b : planet.buildings) {
 				if (!b.enabled) {
-					if (min == null || min.getWorkers() > b.getWorkers()) {
+					if (min == null || min.getWorkers() < b.getWorkers()) {
 						min = b;
 					}
 				}
 			}
-			if (min != null) {
+			if (min != null && planet.statistics.workerDemand - min.getWorkers() < planet.population) {
 				final AIBuilding fmin = min;
 				add(new Action0() {
 					@Override

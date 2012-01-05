@@ -344,7 +344,7 @@ public abstract class Planner {
 			final BuildingOrder order) {
 		for (final AIBuilding b : planet.buildings) {
 			if (!b.enabled && selector.accept(planet, b)) {
-				if (planet.population >= planet.statistics.workerDemand + b.getWorkers()) {
+				if (planet.population > planet.statistics.workerDemand - b.getWorkers()) {
 					add(new Action0() {
 						@Override
 						public void invoke() {
