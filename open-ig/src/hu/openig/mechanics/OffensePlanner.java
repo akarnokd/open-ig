@@ -218,7 +218,7 @@ public class OffensePlanner extends Planner {
 		
 		// 1/3 all kinds of vehicles
 		final int otherCount = vehicleCount - tankCount;
-		Map<ResearchType, Integer> vehicleConfig = JavaUtils.newHashMap();
+		final Map<ResearchType, Integer> vehicleConfig = JavaUtils.newHashMap();
 		if (otherCount > 0) {
 			// limit radar car to 1
 			ResearchType bestRocketSled = null;
@@ -295,49 +295,59 @@ public class OffensePlanner extends Planner {
 				@Override
 				public void invoke() {
 					Fleet f = controls.actionCreateFleet(label(p.id + ".fleet"), spaceport.planet);
+					boolean success = true;
 					for (ResearchType rt : bigShips) {
 						if (f.owner.inventoryCount(rt) > 0) {
 							f.addInventory(rt, 1);
 							f.owner.changeInventoryCount(rt, -1);
+						} else {
+							success = false;
+							break;
 						}
 					}
 					for (ResearchType rt : mediumShip) {
 						if (f.owner.inventoryCount(rt) > 0) {
 							f.addInventory(rt, 1);
 							f.owner.changeInventoryCount(rt, -1);
-						}
-					}
-					for (Map.Entry<ResearchType, Integer> rt : smallShips.entrySet()) {
-						int n = Math.min(f.owner.inventoryCount(rt.getKey()), rt.getValue());
-						if (n >= 0) {
-							f.addInventory(rt.getKey(), n);
-							f.owner.changeInventoryCount(rt.getKey(), -n);
-						}
-					}
-					if (fbestTank != null && ftankCount <= f.owner.inventoryCount(fbestTank)) {
-						f.addInventory(fbestTank, ftankCount);
-						f.owner.changeInventoryCount(fbestTank, -ftankCount);
-					}
-					int i = 0;
-					int c = otherCount;
-					int empty = 0;
-					while (c > 0 && empty < vehicles.size()) {
-						ResearchType vehicle = vehicles.get(i);
-						if (f.owner.inventoryCount(vehicle) > 0) {
-							f.addInventory(vehicle, 1);
-							f.owner.changeInventoryCount(vehicle, -1);
-							c--;
 						} else {
-							empty++;
+							success = false;
+							break;
 						}
-						i++;
-						if (i == vehicles.size()) {
-							i = 0;
+					}
+					for (Map.Entry<ResearchType, Integer> cfg : smallShips.entrySet()) {
+						int cnt = cfg.getValue();
+						ResearchType rt = cfg.getKey();
+						if (cnt <= f.owner.inventoryCount(rt)) {
+							f.addInventory(rt, cnt);
+							f.owner.changeInventoryCount(rt, -cnt);
+						} else {
+							success = false;
+							break;
+						}
+					}
+					if (fbestTank != null) {
+						if (ftankCount <= f.owner.inventoryCount(fbestTank)) {
+							f.addInventory(fbestTank, ftankCount);
+							f.owner.changeInventoryCount(fbestTank, -ftankCount);
+						} else {
+							success = false;
+						}
+					}
+					for (Map.Entry<ResearchType, Integer> cfg : vehicleConfig.entrySet()) {
+						int cnt = cfg.getValue();
+						ResearchType rt = cfg.getKey();
+						if (cnt <= f.owner.inventoryCount(rt)) {
+							f.addInventory(rt, cnt);
+							f.owner.changeInventoryCount(rt, -cnt);
+						} else {
+							success = false;
+							break;
 						}
 					}
 					
 					// inventory failed
-					if (f.inventory.size() == 0) {
+					if (f.inventory.size() == 0 || !success) {
+						log("DeployFleet, Failed = Inventory insufficient");
 						f.owner.world.removeFleet(f);
 					} else {
 						f.upgradeAll();
