@@ -188,6 +188,9 @@ public class Configuration {
 	 */
 	@LoadSave
 	public int tileCacheBuildingLimit = 10;
+	/** Enable the animation of inventory? */
+	@LoadSave
+	public boolean animateInventory = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

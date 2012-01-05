@@ -1333,10 +1333,15 @@ public class ResearchProductionScreen extends ScreenBase {
 			if (vid != null) {
 				videoRenderer = new TechnologyVideoRenderer(commons, commons.video(vid), 
 				new Action1<BufferedImage>() {
+					/** First frame. */
+					boolean first = true;
 					@Override
 					public void invoke(BufferedImage value) {
-						video.image(value);
-						askRepaint(video);
+						if (first || config.animateInventory) {
+							video.image(value);
+							askRepaint(video);
+						}
+						first = false;
 					}
 				}
 				);

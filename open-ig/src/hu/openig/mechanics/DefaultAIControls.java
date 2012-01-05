@@ -379,7 +379,7 @@ public class DefaultAIControls implements AIControls {
 	public void actionEnableBuilding(Planet planet, Building building,
 			boolean enabled) {
 		building.enabled = enabled;
-		log("EnableBuilding, Planet = %s, Building = %s, Repair = %s", planet.id, building.type.id, enabled);
+		log("EnableBuilding, Planet = %s, Building = %s, Enabled = %s", planet.id, building.type.id, enabled);
 	}
 	
 	@Override
