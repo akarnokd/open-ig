@@ -88,6 +88,8 @@ public class PlanetStatistics {
 	public boolean constructing;
 	/** The total planet count. */
 	public int planetCount;
+	/** The total military spaceport count. */
+	public int militarySpaceportCount;
 	/**
 	 * Add the other planet statistics to this one.
 	 * @param other the other statistics
@@ -124,6 +126,7 @@ public class PlanetStatistics {
 		hasMilitarySpaceport |= other.hasMilitarySpaceport;
 		hasSpaceStation |= other.hasSpaceStation;
 		hasTradersSpaceport |= other.hasTradersSpaceport;
+		militarySpaceportCount += other.militarySpaceportCount;
 	}
 	/**
 	 * The planet has the specified problem?

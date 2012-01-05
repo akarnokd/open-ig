@@ -597,6 +597,72 @@ public abstract class Planner {
 		return false;
 	}
 	/**
+	 * Create a military spaceport if necessary.
+	 * @return true if action taken
+	 */
+	boolean checkMilitarySpaceport() {
+		// if there is at least one operational we are done
+		if (world.global.hasMilitarySpaceport) {
+			return false;
+		}
+		// do not build below this money
+		if (world.money < 85000) {
+			return true;
+		}
+		// check if there is a spaceport which we could get operational
+		for (final AIPlanet planet : world.ownPlanets) {
+			for (final AIBuilding b : planet.buildings) {
+				if (b.type.id.equals("MilitarySpaceport")) {
+					if (b.isDamaged() && !b.repairing) {
+						add(new Action0() {
+							@Override
+							public void invoke() {
+								controls.actionRepairBuilding(planet.planet, b.building, true);
+							}
+						});
+					}
+					// found and wait for it to become available
+					return true;
+				}
+			}
+		}
+		// build one somewhere
+		final BuildingType ms = findBuilding("MilitarySpaceport");
+		// check if we can afford it
+		if (ms.cost <= world.money) {
+			List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+			Collections.shuffle(planets);
+			// try building one somewhere randomly
+			for (final AIPlanet planet : planets) {
+				if (planet.findLocation(ms) != null) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionPlaceBuilding(planet.planet, ms);
+						}
+					});
+					return true;
+				}
+			}
+			// there was no room, so demolish a trader's spaceport somewhere
+			for (final AIPlanet planet : planets) {
+				for (final AIBuilding b : planet.buildings) {
+					if (b.type.id.equals("TradersSpaceport")) {
+						add(new Action0() {
+							@Override
+							public void invoke() {
+								controls.actionDemolishBuilding(planet.planet, b.building);
+							}
+						});
+						return true;
+					}
+				}
+			}			
+		}
+		// can't seem to do much now
+		return true;
+	}
+	/**
 	 * Sell the cheapest deployed station.
 	 * @param planets the list of planets
 	 * @return true if action taken

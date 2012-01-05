@@ -200,6 +200,9 @@ public class Planet implements Named, Owned, Iterable<InventoryItem> {
 					result.vehicleMax += b.getResource("vehicles");
 				}
 			}
+			if ("MilitarySpaceport".equals(b.type.id)) {
+				result.militarySpaceportCount = 1;
+			}
 			if (b.hasResource("spaceship")) {
 				result.spaceship += b.getResource("spaceship");
 			}

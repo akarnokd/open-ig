@@ -10,13 +10,11 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Location;
-import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
-import hu.openig.model.BuildingType;
 import hu.openig.model.EquipmentSlot;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
@@ -315,7 +313,7 @@ public class ExplorationPlanner extends Planner {
 				@Override
 				public void invoke() {
 					if (deploy.planet.owner.inventoryCount(fwhat) > 0) {
-						Fleet f = controls.actionCreateFleet(w.env.labels().get("discovery_fleet"), deploy.planet);
+						Fleet f = controls.actionCreateFleet(w.env.labels().get(p.id + ".explorer_fleet"), deploy.planet);
 						f.addInventory(fwhat, 1);
 						f.upgradeAll();
 						f.owner.changeInventoryCount(fwhat, -1);
@@ -579,72 +577,6 @@ public class ExplorationPlanner extends Planner {
 			}
 			placeProductionOrder(bestShip, 1);
 		}
-		return true;
-	}
-	/**
-	 * Create a military spaceport if necessary.
-	 * @return true if action taken
-	 */
-	boolean checkMilitarySpaceport() {
-		// if there is at least one operational we are done
-		if (world.global.hasMilitarySpaceport) {
-			return false;
-		}
-		// do not build below this money
-		if (world.money < 85000) {
-			return true;
-		}
-		// check if there is a spaceport which we could get operational
-		for (final AIPlanet planet : world.ownPlanets) {
-			for (final AIBuilding b : planet.buildings) {
-				if (b.type.id.equals("MilitarySpaceport")) {
-					if (b.isDamaged() && !b.repairing) {
-						add(new Action0() {
-							@Override
-							public void invoke() {
-								controls.actionRepairBuilding(planet.planet, b.building, true);
-							}
-						});
-					}
-					// found and wait for it to become available
-					return true;
-				}
-			}
-		}
-		// build one somewhere
-		final BuildingType ms = findBuilding("MilitarySpaceport");
-		// check if we can afford it
-		if (ms.cost <= world.money) {
-			List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
-			Collections.shuffle(planets);
-			// try building one somewhere randomly
-			for (final AIPlanet planet : planets) {
-				if (planet.findLocation(ms) != null) {
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionPlaceBuilding(planet.planet, ms);
-						}
-					});
-					return true;
-				}
-			}
-			// there was no room, so demolish a trader's spaceport somewhere
-			for (final AIPlanet planet : planets) {
-				for (final AIBuilding b : planet.buildings) {
-					if (b.type.id.equals("TradersSpaceport")) {
-						add(new Action0() {
-							@Override
-							public void invoke() {
-								controls.actionDemolishBuilding(planet.planet, b.building);
-							}
-						});
-						return true;
-					}
-				}
-			}			
-		}
-		// can't seem to do much now
 		return true;
 	}
 }
