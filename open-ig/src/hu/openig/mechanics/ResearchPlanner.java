@@ -449,14 +449,14 @@ public class ResearchPlanner extends Planner {
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer");
+		r = buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer");
 		if (r == AIResult.SUCCESS) {
 			return AIResult.SUCCESS;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical");
+		r = buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical");
 		if (r == AIResult.SUCCESS) {
 			return AIResult.SUCCESS;
 		}

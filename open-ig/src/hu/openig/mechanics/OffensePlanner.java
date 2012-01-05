@@ -216,8 +216,10 @@ public class OffensePlanner extends Planner {
 		
 		// 1/3 all kinds of vehicles
 		final int otherCount = vehicleCount - tankCount;
-		if (checkProduction(vehicles, otherCount)) {
-			return;
+		if (otherCount > 0) {
+			if (checkProduction(vehicles, otherCount)) {
+				return;
+			}
 		}
 		
 		if (world.inventoryCount(bestTank) < tankCount) {

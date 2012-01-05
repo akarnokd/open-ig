@@ -520,44 +520,40 @@ public class ColonyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkWorker(final AIPlanet planet) {
-		BuildingSelector morale = new BuildingSelector() {
-			@Override
-			public boolean accept(AIPlanet planet, AIBuilding value) {
-				return value.hasResource("morale") || value.hasResource("population-growth");
-			}
-			@Override
-			public boolean accept(AIPlanet planet, BuildingType value) {
-				return (value.hasResource("morale") || value.hasResource("population-growth")) 
-						&& count(planet, value) < 1;
-			}
-		};
 		if (planet.population < planet.statistics.workerDemand) {
 			// try disabling buildings
 			AIBuilding max = null;
-			int energyCount = 0;
 			for (AIBuilding b : planet.buildings) {
-				if (b.getEnergy() > 0) {
-					energyCount++;
-				}
-				if (b.enabled) {
-					if (max == null || max.getWorkers() < b.getWorkers()) {
+				if (b.enabled && !b.type.kind.equals("MainBuilding") && b.getEnergy() < 0) {
+					int mw = max != null ? max.getWorkers() : 0;
+					int w = b.getWorkers();
+					if (max == null || mw > w) {
 						max = b;
 					}
 				}
 			}
 			if (max != null) {
-				if (energyCount > 1 || max.getEnergy() < 0) {
-					final AIBuilding fb = max;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionEnableBuilding(planet.planet, fb.building, false);
-						}
-					});
-					return true;
-				}
+				final AIBuilding fb = max;
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionEnableBuilding(planet.planet, fb.building, false);
+					}
+				});
+				return true;
 			}
-			return manageBuildings(planet, morale, costOrder, true);
+			BuildingSelector moraleGrowth = new BuildingSelector() {
+				@Override
+				public boolean accept(AIPlanet planet, AIBuilding value) {
+					return value.hasResource("morale") || value.hasResource("population-growth");
+				}
+				@Override
+				public boolean accept(AIPlanet planet, BuildingType value) {
+					return (value.hasResource("morale") || value.hasResource("population-growth")) 
+							&& count(planet, value) < 1;
+				}
+			};
+			return manageBuildings(planet, moraleGrowth, costOrder, true);
 		}
 		return false;
 	}
