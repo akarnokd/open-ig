@@ -3077,6 +3077,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			double x1 = x0 + w;
 			double y0 = obj.target.y - h / 2;
 			double y1 = y0 + h;
+			if (obj.owner.id.equals("Empire")) {
+				System.out.print("");
+			}
 			if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx, 
 					obj.y + dy, x0, y0, x1, y1)) {
 				// walk along the angle up to ds units and see if there is a pixel of the target there?
@@ -3286,11 +3289,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (!p.intersects(0, 0, space.width, space.height)) {
 				projectiles.remove(p);
 			} else {
-				double d = Math.hypot(p.x - p.target.x, p.y - p.target.y);
-				if (p.target.isDestroyed() || (p.target.ecmLevel > p.ecmLimit && d < 100 && d > 80)) {
-					// choose a new target
-					if (structures.size() > 0) {
-						p.target = world().random(structures);
+				if (p.steering) {
+					double d = Math.hypot(p.x - p.target.x, p.y - p.target.y);
+					if (p.target.isDestroyed() || (p.target.ecmLevel > p.ecmLimit && d < 100 && d > 80)) {
+						// choose a new target
+						if (structures.size() > 0) {
+							p.target = world().random(structures);
+						}
 					}
 				}
 			}
