@@ -12,14 +12,13 @@ import hu.openig.model.BattleProjectile.Mode;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * A fleet.
  * @author akarnokd, 2010.01.07.
  */
-public class Fleet implements Named, Owned, Iterable<InventoryItem> {
+public class Fleet implements Named, Owned, HasInventory {
 	/** The unique fleet identifier. */
 	public int id;
 	/** The owner of the fleet. */
@@ -373,8 +372,8 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 		return result;
 	}
 	@Override
-	public Iterator<InventoryItem> iterator() {
-		return inventory.iterator();
+	public List<InventoryItem> inventory() {
+		return inventory;
 	}
 	/**
 	 * If the current vehicle count is greater than the supported vehicle count,
@@ -401,19 +400,21 @@ public class Fleet implements Named, Owned, Iterable<InventoryItem> {
 				}
 			}
 		}
-		while (vehicleCount > vehicleMax) {
-			for (InventoryItem fii : inventory) {
-				if (fii.type.category == ResearchSubCategory.WEAPONS_TANKS
-						|| fii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-					fii.count--;
-					vehicleCount--;
-					result++;
-					if (fii.count == 0) {
-						inventory.remove(fii);
-					}
-					break;
-				}
-			}			
+		List<InventoryItem> veh = new ArrayList<InventoryItem>();
+		for (InventoryItem ii : inventory) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				veh.add(ii);
+			}
+		}
+		while (vehicleCount > vehicleMax && veh.size() > 0) {
+			InventoryItem fii = owner.world.random(veh);
+			fii.count--;
+			vehicleCount--;
+			result++;
+			if (fii.count <= 0) {
+				inventory.remove(fii);
+			}
 		}
 		return result;
 	}

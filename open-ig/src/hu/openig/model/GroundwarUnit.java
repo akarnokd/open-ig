@@ -79,4 +79,8 @@ public class GroundwarUnit extends GroundwarObject {
 	public Location location() {
 		return Location.of((int)x, (int)y);
 	}
+	@Override
+	public String toString() {
+		return item.type.id + " [hp = " + hp + "]";
+	}
 }

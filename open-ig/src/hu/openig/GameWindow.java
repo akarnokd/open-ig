@@ -1821,6 +1821,7 @@ public class GameWindow extends JFrame implements GameControls {
 					} else {
 						// just take ownership
 						bi.targetPlanet.takeover(bi.attacker.owner);
+						BattleSimulator.applyPlanetConquered(bi.targetPlanet, 500);
 						continue;
 					}
 				}
