@@ -9,7 +9,6 @@
 package hu.openig.tools;
 
 import hu.openig.core.Configuration;
-import hu.openig.editors.MapEditor;
 import hu.openig.utils.IOUtils;
 
 import java.io.BufferedOutputStream;
@@ -219,16 +218,18 @@ public final class PackageStuff {
 				buildLauncher();
 			}
 		});
+		/*
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
 				buildMapEditor(MapEditor.VERSION);
 			}
 		});
+		*/
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
-				buildPatch("20120101a");
+				buildPatch("20120106a");
 			}
 		});
 
