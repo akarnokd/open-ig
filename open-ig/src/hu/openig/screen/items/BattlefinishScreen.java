@@ -170,11 +170,11 @@ public class BattlefinishScreen extends ScreenBase {
 						lossCount(true, ResearchSubCategory.SPACESHIPS_FIGHTERS), 
 						lossCount(false, ResearchSubCategory.SPACESHIPS_FIGHTERS));
 				y = printStatistics(g2, y, "battlefinish.cruisers", 
-						lossCount(true, true), 
-						lossCount(false, true));
-				y = printStatistics(g2, y, "battlefinish.destroyers", 
 						lossCount(true, false), 
 						lossCount(false, false));
+				y = printStatistics(g2, y, "battlefinish.destroyers", 
+						lossCount(true, true), 
+						lossCount(false, true));
 				y = printStatistics(g2, y, "battlefinish.battleships", 
 						lossCount(true, ResearchSubCategory.SPACESHIPS_BATTLESHIPS), 
 						lossCount(false, ResearchSubCategory.SPACESHIPS_BATTLESHIPS));
