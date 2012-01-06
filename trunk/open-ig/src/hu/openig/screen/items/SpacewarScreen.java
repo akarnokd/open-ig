@@ -3060,7 +3060,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return true if collided with the target
 	 */
 	boolean moveStep(SpacewarProjectile obj) {
-		double ds = SIMULATION_DELAY / obj.movementSpeed;
+		double ds = SIMULATION_DELAY * 1.0 / obj.movementSpeed;
 		double dx = ds * Math.cos(obj.angle);
 		double dy = ds * Math.sin(obj.angle);
 		obj.phase++;
