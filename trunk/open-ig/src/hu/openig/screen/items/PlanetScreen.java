@@ -4730,6 +4730,7 @@ public class PlanetScreen extends ScreenBase {
 
 		if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
 			battle.targetPlanet.takeover(battle.attacker.owner);
+			BattleSimulator.applyPlanetConquered(battle.targetPlanet, 500);
 			battle.groundwarWinner = battle.attacker.owner;
 			BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 			bfs.displayBattleSummary(battle);
@@ -4746,7 +4747,7 @@ public class PlanetScreen extends ScreenBase {
 
 		unitsToPlace.clear();
 		boolean atBuildings = planet().owner == player();
-		Iterable<InventoryItem> iis = atBuildings ? planet() : battle.attacker;
+		Iterable<InventoryItem> iis = (atBuildings ? planet() : battle.attacker).inventory();
 		createGroundUnits(atBuildings, iis, unitsToPlace);
 		
 		startBattle.visible(true);
@@ -4755,7 +4756,7 @@ public class PlanetScreen extends ScreenBase {
 	void deployNonPlayerVehicles() {
 		boolean atBuildings = planet().owner != player();
 		
-		Iterable<InventoryItem> iis = atBuildings ? planet() : battle.attacker;
+		Iterable<InventoryItem> iis = (atBuildings ? planet() : battle.attacker).inventory();
 		
 		LinkedList<GroundwarUnit> gus = JavaUtils.newLinkedList();
 		// create units

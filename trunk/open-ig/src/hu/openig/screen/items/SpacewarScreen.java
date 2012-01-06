@@ -24,6 +24,7 @@ import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.FleetTask;
+import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Owned;
@@ -1669,12 +1670,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param categories the categories to use
 	 * @param ships the output of ships
 	 */
-	<T extends Owned & Iterable<InventoryItem>> void createSpacewarStructures(
+	<T extends Owned & HasInventory> void createSpacewarStructures(
 			T inventory,
 			EnumSet<ResearchSubCategory> categories,
 			Collection<? super SpacewarStructure> ships
 			) {
-		for (InventoryItem ii : inventory) {
+		for (InventoryItem ii : inventory.inventory()) {
 			// Fix for zero inventory entries
 			if (ii.count <= 0) {
 				continue;

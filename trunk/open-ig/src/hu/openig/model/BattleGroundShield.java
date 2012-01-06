@@ -21,7 +21,7 @@ public class BattleGroundShield {
 	public BufferedImage alternative;
 	/** The destruction sound. */
 	public SoundType destruction;
-	/** The projectile used. */
+	/** The shield percentage. */
 	public int shields;
 	/** The information image. */
 	public String infoImageName;

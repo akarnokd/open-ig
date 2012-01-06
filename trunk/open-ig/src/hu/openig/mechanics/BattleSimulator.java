@@ -8,12 +8,31 @@
 
 package hu.openig.mechanics;
 
+import hu.openig.core.Func1;
+import hu.openig.core.Pred1;
+import hu.openig.model.BattleGroundProjector;
+import hu.openig.model.BattleGroundShield;
+import hu.openig.model.BattleGroundTurret;
+import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.BattleInfo;
+import hu.openig.model.BattleProjectile;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
+import hu.openig.model.GroundwarUnit;
+import hu.openig.model.HasInventory;
+import hu.openig.model.InventoryItem;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.SpacewarStructure;
 import hu.openig.model.World;
+import hu.openig.utils.JavaUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Simulation algorithms for automatic space and surface battles.
@@ -25,6 +44,25 @@ public final class BattleSimulator {
 	protected final World world;
 	/** The battle configuration. */
 	protected final BattleInfo battle;
+	/** The ship filter. */
+	final Func1<InventoryItem, Boolean> ships = new Pred1<InventoryItem>() {
+		@Override
+		public Boolean invoke(InventoryItem value) {
+			return value.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+					||  value.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+					||  value.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+					;
+		}
+	};
+	/** The vehicle filter. */
+	final Func1<InventoryItem, Boolean> vehicles = new Pred1<InventoryItem>() {
+		@Override
+		public Boolean invoke(InventoryItem value) {
+			return value.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| value.type.category == ResearchSubCategory.WEAPONS_VEHICLES
+					;
+		}
+	};
 	/**
 	 * Constructor.
 	 * @param world the world object
@@ -38,7 +76,674 @@ public final class BattleSimulator {
 	 * Run the given battle automatically.
 	 */
 	public void autoBattle() {
-		System.err.println("Automatic space battle not implemented!");
+		findHelpers(battle, world);
+		if (spaceBattleNeeded()) {
+			runSpaceBattle();
+		}
+		if (attackerCanAttackGround()) {
+			if (groundBattleNeeded(battle.targetPlanet)) {
+				runGroundBattle();
+			} else {
+				battle.targetPlanet.takeover(battle.attacker.owner);
+				applyPlanetConquered(battle.targetPlanet, 500);
+			}
+		}
+	}
+	/** Run the ground battle. */
+	void runGroundBattle() {
+		List<GroundwarUnit> attackerUnits = vehicles(battle.attacker.inventory);
+		List<GroundwarUnit> defenderUnits = vehicles(battle.targetPlanet.inventory);
+		
+		AttackDefense attackerTVBattle = vehicleStrength(attackerUnits);
+
+		AttackDefense defenderTVBattle = vehicleStrength(defenderUnits);
+		
+		// tank+vehicle battle
+		double attackerTime = defenderTVBattle.defense / attackerTVBattle.attack;
+		double defenderTime = attackerTVBattle.defense / defenderTVBattle.attack;
+		
+		if (defenderTime <= attackerTime) {
+			removeVehicles(battle.attacker);
+			applyDamage(defenderUnits, defenderTime * attackerTVBattle.attack);
+			
+			applyPlanetDefended(battle.targetPlanet, 1500);
+		} else {
+			removeVehicles(battle.targetPlanet);
+			applyDamage(attackerUnits, attackerTime * defenderTVBattle.attack);
+
+			// attack buildings one by one
+			for (Building b : new ArrayList<Building>(battle.targetPlanet.surface.buildings)) {
+				if (b.type.kind.equals("Defensive")) {
+					double attackerRange = bestVehicleRange(attackerUnits);
+					double defenderRange = bestBuildingRange(battle.targetPlanet, b);
+					
+					if (attackerRange > defenderRange) { 
+						// attacker wins always, no further losses
+						battle.targetPlanet.surface.removeBuilding(b);
+					} else {
+						// remaining units attack buildings
+						AttackDefense defenderBuildings = new AttackDefense();
+						
+						buildingStrength(battle.targetPlanet, b, defenderBuildings);
+
+						// Determines how many units will attack at once
+						final int accessibility = world.random.get().nextInt(5) + 2;
+						
+						// take turns
+						while (!attackerUnits.isEmpty()) {
+							Collections.shuffle(attackerUnits, world.random.get());
+							
+							List<GroundwarUnit> attacking = subList(attackerUnits, 0, accessibility);
+							
+							attackerTVBattle = vehicleStrength(attacking);
+							
+							attackerTime = defenderBuildings.defense / attackerTVBattle.attack;
+							defenderTime = attackerTVBattle.defense / defenderBuildings.attack;
+							
+							if (attackerTime < defenderTime) {
+								battle.targetPlanet.surface.removeBuilding(b);
+								applyDamage(attacking, attackerTime * defenderBuildings.attack);
+								break;
+							} else {
+								applyDamage(attacking, defenderTime * defenderBuildings.attack * 2);
+								applyGroundDamage(battle.targetPlanet, b, defenderTime * attackerTVBattle.attack);
+								break;
+							}
+						}
+					}
+				}
+			}
+			cleanupInventory(battle.targetPlanet);
+			cleanupInventory(battle.attacker);
+			if (attackerUnits.isEmpty()) {
+				applyPlanetDefended(battle.targetPlanet, 1500);
+			} else {
+				battle.targetPlanet.takeover(battle.attacker.owner);
+				applyPlanetConquered(battle.targetPlanet, 2000);
+			}
+			battle.targetPlanet.surface.placeRoads(battle.targetPlanet.race, world.buildingModel);
+		}
+	}
+	/**
+	 * Creates a sublist from the list or an empty list if start is beyond the size.
+	 * @param <T> the element type
+	 * @param list the list
+	 * @param start the start index inclusive
+	 * @param end the end index exclusive
+	 * @return the sublist
+	 */
+	<T> List<T> subList(List<T> list, int start, int end) {
+		if (start >= list.size()) {
+			return new ArrayList<T>();
+		}
+		if (end >= list.size()) {
+			end = list.size();
+		}
+		return list.subList(start, end);
+	}
+	/**
+	 * Remove empty inventory items.
+	 * @param inv the inventory provied
+	 */
+	void cleanupInventory(HasInventory inv) {
+		Iterator<InventoryItem> it = inv.inventory().iterator();
+		while (it.hasNext()) {
+			InventoryItem ii = it.next();
+			if (ii.count <= 0) {
+				it.remove();
+			}
+		}
+	}
+	/**
+	 * Deal certain amount of damage to units.
+	 * @param units the list of units
+	 * @param hitpoints the hitpoints
+	 */
+	void applyDamage(List<GroundwarUnit> units, double hitpoints) {
+		List<GroundwarUnit> us = new ArrayList<GroundwarUnit>(units);
+		Collections.shuffle(us, world.random.get());
+		for (GroundwarUnit u : us) {
+			if (hitpoints <= 0) {
+				break;
+			}
+			if (u.hp <= hitpoints) {
+				hitpoints -= u.hp;
+				units.remove(u);
+				u.item.count--;
+			} else {
+				u.hp -= hitpoints;
+				hitpoints = 0;
+			}
+		}
+	}
+	/**
+	 * Remove defender buildings.
+	 * @param p the target planet
+	 */
+	void removeBuildings(Planet p) {
+		ArrayList<Building> bs = new ArrayList<Building>(p.surface.buildings);
+		Collections.shuffle(bs, world.random.get());
+		for (Building b : bs) {
+			if (b.type.kind.equals("Defensive")) {
+				p.surface.removeBuilding(b);
+			}
+		}
+		p.surface.placeRoads(p.race, world.buildingModel);
+		
+	}
+	/**
+	 * Remove all vehicles from the fleet.
+	 * @param f the fleet
+	 */
+	void removeVehicles(HasInventory f) {
+		List<InventoryItem> inv = f.inventory();
+		List<InventoryItem> is = new ArrayList<InventoryItem>(inv);
+		for (InventoryItem ii : is) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				inv.remove(ii);
+			}
+		}
+	}
+	/**
+	 * Compute the best vehicle range.
+	 * @param invs the inventory
+	 * @return the range
+	 */
+	double bestVehicleRange(Collection<GroundwarUnit> invs) {
+		double r = 0;
+		for (GroundwarUnit ii : invs) {
+			r = Math.max(r, ii.model.maxRange);
+		}
+		return r;
+	}
+	/**
+	 * Compute the best building range. 
+	 * @param p the planet
+	 * @return the range
+	 */
+	double bestBuildingRange(Planet p) {
+		double r = 0;
+		for (Building b : p.surface.buildings) {
+			if (b.type.kind.equals("Defensive")) {
+				r = Math.max(r, bestBuildingRange(p, b));
+			}
+		}
+		return r;
+	}
+	/**
+	 * Compute the best building range. 
+	 * @param p the planet
+	 * @param b the building
+	 * @return the range
+	 */
+	double bestBuildingRange(Planet p, Building b) {
+		double r = 0;
+		List<BattleGroundTurret> turrets = world.battle.getTurrets(b.type.id, p.race);
+		for (BattleGroundTurret bt : turrets) {
+			r = Math.max(r, bt.maxRange);
+		}			
+		return r;
+	}
+	/**
+	 * Creates the ground war units from the inventory.
+	 * @param items the items
+	 * @return the list of units
+	 */
+	List<GroundwarUnit> vehicles(Collection<InventoryItem> items) {
+		List<GroundwarUnit> result = JavaUtils.newArrayList();
+		for (InventoryItem ii : items) {
+			BattleGroundVehicle bgv = world.battle.groundEntities.get(ii.type.id);
+			if (bgv != null) {
+				for (int i = 0; i < ii.count; i++) {
+					GroundwarUnit u = new GroundwarUnit(bgv.normal);
+					u.hp = bgv.hp;
+					u.item = ii;
+					u.model = bgv;
+					result.add(u);
+				}
+			}
+		}
+		return result;
+	}
+	/**
+	 * Calculate vehicle strength.
+	 * @param items the vehicle inventory
+	 * @return the strength
+	 */
+	AttackDefense vehicleStrength(Collection<GroundwarUnit> items) {
+		double a = 0;
+		double d = 0;
+		
+		for (GroundwarUnit ii : items) {
+			a += ii.model.damage * 1.0 / ii.model.delay;
+			d += ii.hp;
+		}
+		
+		AttackDefense result = new AttackDefense();
+		result.attack = a;
+		result.defense = d;
+		return result;
+	}
+	/**
+	 * Compute building strength.
+	 * @param p the planet
+	 * @return the strength
+	 */
+	AttackDefense buildingStrength(Planet p) {
+		AttackDefense result = new AttackDefense();
+		
+		for (Building b : p.surface.buildings) {
+			if (b.type.kind.equals("Defensive")) {
+				buildingStrength(p, b, result);
+			}
+		}
+		
+		return result;
+	}
+	/**
+	 * The building strength calculator.
+	 * @param p the planet
+	 * @param b the building
+	 * @param result the output
+	 */
+	void buildingStrength(Planet p, Building b, AttackDefense result) {
+		List<BattleGroundTurret> turrets = world.battle.getTurrets(b.type.id, p.race);
+		for (BattleGroundTurret bt : turrets) {
+			result.attack += bt.damage * 1.0 / bt.delay;
+		}
+		result.defense += world.getHitpoints(b.type, p.owner, false);
+	}
+	/**
+	 * Run the space battle.
+	 */
+	void runSpaceBattle() {
+		AttackDefense attacker = fleetStrength(battle.attacker);
+		AttackDefense defender = new AttackDefense();
+		Fleet fleet = battle.getFleet();
+		if (fleet != null) {
+			defender.add(fleetStrength(fleet));
+		}
+		Planet planet = battle.getPlanet();
+		AttackDefense planetStrength = new AttackDefense();
+		if (planet != null) {
+			AttackDefense ps = planetStrength(planet);
+			planetStrength.add(ps);
+			if (planet.owner == battle.attacker.owner) {
+				attacker.add(ps);
+			} else {
+				defender.add(ps);
+			}
+		}
+		double attackerTime = defender.defense / attacker.attack;
+		double defenderTime = attacker.defense / defender.attack;
+		
+		if (attackerTime < defenderTime) {
+			// attacker wins
+			if (fleet != null) {
+				world.removeFleet(fleet);
+				fleet.inventory.clear();
+			}
+			if (planet != null) {
+				if (planet.owner != battle.attacker.owner) {
+					demolishDefenses(planet);
+					applyDamage(battle.attacker, attackerTime * defender.attack, ships);
+
+					applyPlanetDefended(planet, 1000);
+				} else {
+					double planetPercent = planetStrength.defense / attacker.defense;
+					
+					applyDamage(battle.attacker, attackerTime * defender.attack * (1 - planetPercent), ships);
+					applyDamage(planet, attackerTime * defender.attack * planetPercent);
+
+					applyPlanetDefended(planet, 500);
+				}
+			} else {
+				applyDamage(battle.attacker, attackerTime * defender.attack, ships);
+			}
+		} else 
+		if (attackerTime > defenderTime) {
+			// defender wins
+			world.removeFleet(battle.attacker);
+			battle.attacker.inventory.clear();
+			
+			if (planet != null) {
+				if (planet.owner != battle.attacker.owner) {
+					double planetPercent = planetStrength.defense / defender.defense;
+					applyDamage(planet, defenderTime * attacker.attack * planetPercent);
+
+					if (fleet != null) {
+						applyDamage(fleet, defenderTime * attacker.attack * (1 - planetPercent), ships);
+					}
+					
+					applyPlanetDefended(planet, 500);
+				} else {
+					demolishDefenses(planet);
+					applyPlanetDefended(planet, 1000);
+					if (fleet != null) {
+						applyDamage(fleet, defenderTime * attacker.attack, ships);
+					}
+				}
+			} else {
+				if (fleet != null) {
+					applyDamage(fleet, defenderTime * attacker.attack, ships);
+				}
+			}
+		} else {
+			// draw
+			battle.attacker.inventory.clear();
+			world.removeFleet(battle.attacker);
+			if (fleet != null) {
+				world.removeFleet(fleet);
+			}
+			if (planet != null) {
+				demolishDefenses(planet);
+				applyPlanetDefended(planet, 1000);
+			}
+		}
+	}
+	/**
+	 * Apply damage to the fleet.
+	 * @param f the target fleet
+	 * @param hitpoints the hitpoints
+	 * @param filter the filter for items
+	 */
+	void applyDamage(HasInventory f, double hitpoints, Func1<InventoryItem, Boolean> filter) {
+		List<InventoryItem> inv = f.inventory();
+		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>(inv);
+		Collections.shuffle(is, world.random.get());
+		for (InventoryItem ii : is) {
+			if (hitpoints <= 0) {
+				break;
+			}
+			if (filter.invoke(ii)) {
+				double hp0 = ii.hp;
+				double hp = hp0 + ii.shield;
+				if (hitpoints >= hp * ii.count) {
+					inv.remove(ii);
+					hitpoints -= hp * ii.count;
+				} else {
+					SpacewarStructure str = new SpacewarStructure();
+					str.hpMax = world.getHitpoints(ii.type);
+					str.count = ii.count;
+					str.hp = ii.hp;
+					str.shield = ii.shield;
+					str.damage((int)hitpoints);
+					ii.count = str.count;
+					ii.hp = str.hp;
+					ii.shield = str.shield;
+					if (ii.count <= 0) {
+						inv.remove(ii);
+					}
+					hitpoints = 0;
+				}
+			}
+		}
+		if (f instanceof Fleet) {
+			Fleet fleet = (Fleet) f;
+			if (inv.size() == 0) {
+				world.removeFleet(fleet);
+			} else {
+				fleet.adjustVehicleCounts();
+			}
+		}
+	}
+	/**
+	 * Compute the shield percentage (0..100).
+	 * @param p the planet
+	 * @return the shield percentage
+	 */
+	double shieldValue(Planet p) {
+		double shieldValue = 0;
+		// add shields
+		for (Building b : p.surface.buildings) {
+			float eff = b.getEfficiency();
+			if (Building.isOperational(eff)) {
+				if (b.type.kind.equals("Shield")) {
+					BattleGroundShield bge = world.battle.groundShields.get(b.type.id);
+					shieldValue = Math.max(shieldValue, eff * bge.shields);
+				}
+			}
+		}
+		return shieldValue;
+	}
+	/**
+	 * Apply ground to the planet.
+	 * @param p the target planet
+	 * @param b building
+	 * @param hitpoints the hitpoints
+	 */
+	void applyGroundDamage(Planet p, Building b, double hitpoints) {
+		double hpMax = world.getHitpoints(b.type, p.owner, true);
+		double hp = b.hitpoints * hpMax / b.type.hitpoints;
+		
+		if (hitpoints >= hp) {
+			p.surface.removeBuilding(b);
+			hitpoints -= hp;
+		} else {
+			hp -= hitpoints;
+			b.hitpoints = (int)(hp * b.type.hitpoints / hpMax);
+			
+			hitpoints = 0;
+		}
+	}
+	/**
+	 * Apply damage to the planet.
+	 * @param p the target planet
+	 * @param hitpoints the hitpoints
+	 */
+	void applyDamage(Planet p, double hitpoints) {
+		
+		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>(p.inventory);
+		Collections.shuffle(is, world.random.get());
+		for (InventoryItem ii : is) {
+			if (hitpoints <= 0) {
+				break;
+			}
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+				double hp = world.getHitpoints(ii.type);
+				hp += ii.shield;
+				if (hitpoints >= hp * ii.count) {
+					p.inventory.remove(ii);
+					hitpoints -= hp * ii.count;
+				} else {
+					int dc = (int)(hitpoints / hp);
+					ii.count -= dc;
+					hitpoints = 0;
+					if (ii.count <= 0) {
+						p.inventory.remove(ii);
+					}
+				}
+			}
+		}
+		
+		
+		double shieldValue = shieldValue(p);
+		ArrayList<Building> bs = new ArrayList<Building>(p.surface.buildings);
+		Collections.shuffle(bs, world.random.get());
+		for (Building b : bs) {
+			if (hitpoints <= 0) {
+				break;
+			}
+			if (b.isOperational()) {
+				if (b.type.kind.equals("Shield") || b.type.kind.equals("Gun")) {
+					double hpMax = world.getHitpoints(b.type, p.owner, true);
+					double hp = b.hitpoints * hpMax / b.type.hitpoints;
+					
+					double shieldedHP = hp + hp * shieldValue / 100;
+					if (hitpoints >= shieldedHP) {
+						p.surface.removeBuilding(b);
+						hitpoints -= shieldedHP;
+					} else {
+						hp = shieldedHP - hitpoints;
+						b.hitpoints = (int)(hp * b.type.hitpoints / hpMax);
+						hitpoints = 0;
+					}
+				}
+			}
+		}
+		p.surface.placeRoads(p.race, world.buildingModel);
+	}
+	/**
+	 * Demolish space defenses of the planet.
+	 * @param p the planet
+	 */
+	void demolishDefenses(Planet p) {
+		// demolish buildings
+		for (Building b : new ArrayList<Building>(p.surface.buildings)) {
+			if (b.isOperational()) {
+				if (b.type.kind.equals("Gun") || b.type.kind.equals("Shield")) {
+					p.surface.removeBuilding(b);
+				}
+			}
+		}
+		// remove ships and stations
+		for (InventoryItem ii : new ArrayList<InventoryItem>(p.inventory)) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+				p.inventory.remove(ii);
+			}
+		}
+		p.surface.placeRoads(p.race, world.buildingModel);
+	}
+	/**
+	 * Compute the planet strength.
+	 * @param p the planet
+	 * @return the strength
+	 */
+	AttackDefense planetStrength(Planet p) {
+		double offense = 0;
+		double defense = 0;
+		for (InventoryItem ii : p.inventory) {
+			if (ii.owner == p.owner) {
+				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					defense += world.getHitpoints(ii.type);
+					defense += ii.shield;
+					for (InventorySlot is : ii.slots) {
+						if (is.type != null) {
+							BattleProjectile bp = world.battle.projectiles.get(is.type.id);
+							if (bp != null) {
+								offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
+							}
+						}
+					}
+				}
+			}
+		}
+		double shieldValue = shieldValue(p);
+		for (Building b : p.surface.buildings) {
+			float eff = b.getEfficiency();
+			if (Building.isOperational(eff)) {
+				if (b.type.kind.equals("Shield")
+						|| b.type.kind.equals("Gun")) {
+					int hpMax = world.getHitpoints(b.type, p.owner, true);
+					int hp = b.hitpoints * hpMax / b.type.hitpoints;
+					defense += hp;
+					defense += hp * shieldValue / 100;
+					
+					BattleGroundProjector bge = world.battle.groundProjectors.get(b.type.id);
+					if (bge != null && bge.projectile != null) {
+						BattleProjectile pr = world.battle.projectiles.get(bge.projectile);
+						if (pr != null) {
+							offense += pr.damage * 1.0 / pr.delay;
+						}
+					}
+					
+				}
+			}
+		}
+		
+		AttackDefense d = new AttackDefense();
+		d.attack = offense;
+		d.defense = defense;
+		return d;
+	}
+	/**
+	 * Compute the fleet strength.
+	 * @param f the fleet
+	 * @return the strength
+	 */
+	AttackDefense fleetStrength(Fleet f) {
+		double offense = 0;
+		double defense = 0;
+		for (InventoryItem ii : f.inventory) {
+			defense += world.getHitpoints(ii.type);
+			defense += ii.shield;
+			
+			for (InventorySlot is : ii.slots) {
+				if (is.type != null) {
+					BattleProjectile bp = world.battle.projectiles.get(is.type.id);
+					if (bp != null) {
+						offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
+					}
+				}
+			}
+		}
+		AttackDefense d = new AttackDefense();
+		d.attack = offense;
+		d.defense = defense;
+		return d;
+	}
+	/** The attack/defense record. */
+	static class AttackDefense {
+		/** Attack value. */
+		public double attack;
+		/** Defense value. */
+		public double defense;
+		/**
+		 * Add another record.
+		 * @param d the other defense
+		 */
+		public void add(AttackDefense d) {
+			this.attack += d.attack;
+			this.defense += d.defense;
+		}
+	}
+	/**
+	 * Check if space battle will happen.
+	 * @return true if space battle will happen
+	 */
+	boolean spaceBattleNeeded() {
+		if (battle.targetFleet != null || battle.helperFleet != null) {
+			return true;
+		}
+		Planet p = battle.targetPlanet;
+		if (p == null) {
+			p = battle.helperPlanet;
+		}
+		if (p != null) {
+			for (InventoryItem ii : p.inventory) {
+				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					return true;
+				}
+			}
+			for (Building b : p.surface.buildings) {
+				if (b.isOperational()) {
+					if (b.type.kind.equals("Gun") || b.type.kind.equals("Shield")) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check if the inventory holds vehicles for a ground assault.
+	 * @return true if ground battle available
+	 */
+	boolean attackerCanAttackGround() {
+		if (battle.targetPlanet != null) {
+			for (InventoryItem ii : battle.attacker.inventory) {
+				if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+						|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	/** Simulate the ground battle. */
 	void autoGroundBattle() {
@@ -96,7 +801,7 @@ public final class BattleSimulator {
 			return true;
 		}
 		for (Building b : planet.surface.buildings) {
-			if (b.type.kind.equals("Defensive")) {
+			if (b.isOperational() && b.type.kind.equals("Defensive")) {
 				return true;
 			}
 		}
