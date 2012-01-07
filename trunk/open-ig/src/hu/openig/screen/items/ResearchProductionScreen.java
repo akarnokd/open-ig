@@ -1732,6 +1732,9 @@ public class ResearchProductionScreen extends ScreenBase {
 		int row = 0;
 		Production selected = null;
 		for (Production pr : productions.values()) {
+			if (row >= productionLines.size()) {
+				continue;
+			}
 			ProductionLine pl = productionLines.get(row);
 			pl.enabled(true);
 			

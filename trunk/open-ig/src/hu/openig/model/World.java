@@ -1223,8 +1223,6 @@ public class World {
 			}
 
 			for (XElement xprod : xplayer.childrenWithName("production")) {
-				ResearchMainCategory cat = ResearchMainCategory.valueOf(xprod.get("category"));
-				Map<ResearchType, Production> prod = new LinkedHashMap<ResearchType, Production>();
 				for (XElement xline : xprod.childrenWithName("line")) {
 					ResearchType rt = researches.get(xline.get("id"));
 					Production pr = new Production();
@@ -1232,9 +1230,14 @@ public class World {
 					pr.count = xline.getInt("count");
 					pr.priority = xline.getInt("priority");
 					pr.progress = xline.getInt("progress");
+					
+					Map<ResearchType, Production> prod = p.production.get(rt.category.main);
+					if (prod == null) {
+						prod = new LinkedHashMap<ResearchType, Production>();
+						p.production.put(rt.category.main, prod);
+					}
 					prod.put(rt, pr);
 				}
-				p.production.put(cat, prod);
 			}
 			p.research.clear();
 			for (XElement xres : xplayer.childrenWithName("research")) {
