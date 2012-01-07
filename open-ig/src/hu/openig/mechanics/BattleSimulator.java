@@ -122,33 +122,44 @@ public final class BattleSimulator {
 						// attacker wins always, no further losses
 						battle.targetPlanet.surface.removeBuilding(b);
 					} else {
-						// remaining units attack buildings
-						AttackDefense defenderBuildings = new AttackDefense();
 						
-						buildingStrength(battle.targetPlanet, b, defenderBuildings);
-
-						// Determines how many units will attack at once
-						final int accessibility = world.random.get().nextInt(5) + 2;
-						
+						System.out.printf("*Attacking building: %s%n", b.type.id);
 						// take turns
 						while (!attackerUnits.isEmpty()) {
+							// Determines how many units will attack at once
+							final int accessibility = world.random.get().nextInt(4) + 2;
+							
 							Collections.shuffle(attackerUnits, world.random.get());
 							
 							List<GroundwarUnit> attacking = subList(attackerUnits, 0, accessibility);
-							
 							attackerTVBattle = vehicleStrength(attacking);
+
+							// remaining units attack buildings
+							AttackDefense defenderBuildings = new AttackDefense();
+							buildingStrength(battle.targetPlanet, b, defenderBuildings);
+
+							System.out.printf("-NEXT TURN-%n");
+							System.out.printf("Attacker count: %s%n", accessibility);
+							System.out.printf("Attacker.Attack = %s%n", attackerTVBattle.attack);
+							System.out.printf("Attacker.Defense = %s%n", attackerTVBattle.defense);
+							System.out.printf("Building.Attack = %s%n", defenderBuildings.attack);
+							System.out.printf("Building.Defense = %s%n", defenderBuildings.defense);
 							
 							attackerTime = defenderBuildings.defense / attackerTVBattle.attack;
 							defenderTime = attackerTVBattle.defense / defenderBuildings.attack;
 							
+							System.out.printf("Attacker time (ms): %s%n", attackerTime);
+							System.out.printf("Defender time (ms): %s%n", defenderTime);
+							
 							if (attackerTime < defenderTime) {
 								battle.targetPlanet.surface.removeBuilding(b);
+								System.out.printf("Attacker won, damage taken: %s%n", attackerTime * defenderBuildings.attack);
 								applyDamage(attacking, attackerTime * defenderBuildings.attack);
-								break;
+								break; // next building
 							} else {
 								applyDamage(attacking, defenderTime * defenderBuildings.attack * 2);
+								System.out.printf("Defender won, damage taken: %s%n", defenderTime * attackerTVBattle.attack);
 								applyGroundDamage(battle.targetPlanet, b, defenderTime * attackerTVBattle.attack);
-								break;
 							}
 						}
 					}
@@ -350,16 +361,25 @@ public final class BattleSimulator {
 	 */
 	void buildingStrength(Planet p, Building b, AttackDefense result) {
 		List<BattleGroundTurret> turrets = world.battle.getTurrets(b.type.id, p.race);
-		for (BattleGroundTurret bt : turrets) {
-			result.attack += bt.damage * 1.0 / bt.delay;
+		int turretCount = turrets.size();
+		if (b.hitpoints * 2 < b.type.hitpoints) {
+			turretCount /= 2;
 		}
-		result.defense += world.getHitpoints(b.type, p.owner, false);
+		int i = 0;
+		for (BattleGroundTurret bt : turrets) {
+			if (i < turretCount) {
+				result.attack += bt.damage * 1.0 / bt.delay;
+			}
+		}
+		int hpMax = world.getHitpoints(b.type, p.owner, false);
+		result.defense += b.hitpoints * hpMax * 1.0 / b.type.hitpoints;
 	}
 	/**
 	 * Run the space battle.
 	 */
 	void runSpaceBattle() {
 		AttackDefense attacker = fleetStrength(battle.attacker);
+		
 		AttackDefense defender = new AttackDefense();
 		Fleet fleet = battle.getFleet();
 		if (fleet != null) {
@@ -376,10 +396,22 @@ public final class BattleSimulator {
 				defender.add(ps);
 			}
 		}
+		
+		System.out.printf("Attacker.Attack = %s%n", attacker.attack);
+		System.out.printf("Attacker.Defense = %s%n", attacker.defense);
+
+		System.out.printf("Defender.Attack = %s%n", defender.attack);
+		System.out.printf("Defender.Defense = %s%n", defender.defense);
+
 		double attackerTime = defender.defense / attacker.attack;
 		double defenderTime = attacker.defense / defender.attack;
 		
+		System.out.printf("Attacker time (ms): %s%n", attackerTime);
+		System.out.printf("Defender time (ms): %s%n", defenderTime);
+		
 		if (attackerTime < defenderTime) {
+			
+			System.out.printf("Attacker wins. Inflicted damage upon: %s%n", attackerTime * defender.attack);
 			// attacker wins
 			if (fleet != null) {
 				world.removeFleet(fleet);
@@ -404,6 +436,7 @@ public final class BattleSimulator {
 			}
 		} else 
 		if (attackerTime > defenderTime) {
+			System.out.printf("Defender wins. Inflicted damage upon: %s%n", defenderTime * attacker.attack);
 			// defender wins
 			world.removeFleet(battle.attacker);
 			battle.attacker.inventory.clear();
@@ -515,7 +548,7 @@ public final class BattleSimulator {
 	 * @param hitpoints the hitpoints
 	 */
 	void applyGroundDamage(Planet p, Building b, double hitpoints) {
-		double hpMax = world.getHitpoints(b.type, p.owner, true);
+		double hpMax = world.getHitpoints(b.type, p.owner, false);
 		double hp = b.hitpoints * hpMax / b.type.hitpoints;
 		
 		if (hitpoints >= hp) {

@@ -811,6 +811,9 @@ public class StarmapScreen extends ScreenBase {
 	void displayFleetInfo() {
 		
 		Fleet f = fleet();
+		if (!player().fleets.containsKey(f)) {
+			f = null;
+		}
 		boolean fleetMode = f != null && player().selectionMode == SelectionMode.FLEET;
 
 		fleetName.visible(fleetMode);
