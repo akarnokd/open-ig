@@ -915,14 +915,15 @@ public abstract class Planner {
 	 * Check if the inventory holds at least 20% of the batch size,
 	 * and if not, issue a production order.
 	 * @param rts the technologies
+	 * @param required the required amount
 	 * @param batch the batch size
 	 * @return true if action taken
 	 */
-	protected boolean checkProduction(List<ResearchType> rts, int batch) {
+	protected boolean checkProduction(List<ResearchType> rts, int required, int batch) {
 		if (!isAnyProduction(rts)) {
 			Collections.sort(rts, expensiveFirst);
 			for (ResearchType rt : rts) {
-				if (world.inventoryCount(rt) <= batch / 5) {
+				if (world.inventoryCount(rt) < required) {
 					placeProductionOrder(rt, batch);
 					return true;
 				}
