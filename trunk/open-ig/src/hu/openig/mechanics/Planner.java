@@ -907,9 +907,9 @@ public abstract class Planner {
 					return true;
 				}
 			}
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 	/**
 	 * Check if the inventory holds at least 20% of the batch size,
