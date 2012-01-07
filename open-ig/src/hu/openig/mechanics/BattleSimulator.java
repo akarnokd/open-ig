@@ -26,6 +26,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.World;
+import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.utils.JavaUtils;
 
 import java.util.ArrayList;
@@ -619,13 +620,17 @@ public final class BattleSimulator {
 			if (ii.owner == p.owner) {
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					defense += world.getHitpoints(ii.type);
-					defense += ii.shield;
+					defense += world.getHitpoints(ii.type) * ii.count;
+					defense += ii.shield * ii.count;
 					for (InventorySlot is : ii.slots) {
 						if (is.type != null) {
 							BattleProjectile bp = world.battle.projectiles.get(is.type.id);
 							if (bp != null) {
-								offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
+								if (bp.mode == Mode.BEAM) {
+									offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
+								} else {
+									offense += ii.count * bp.damage * 1.0 / bp.delay;
+								}
 							}
 						}
 					}
@@ -646,9 +651,7 @@ public final class BattleSimulator {
 					BattleGroundProjector bge = world.battle.groundProjectors.get(b.type.id);
 					if (bge != null && bge.projectile != null) {
 						BattleProjectile pr = world.battle.projectiles.get(bge.projectile);
-						if (pr != null) {
-							offense += pr.damage * 1.0 / pr.delay;
-						}
+						offense += bge.damage * 1.0 / pr.delay;
 					}
 					
 				}
@@ -669,14 +672,18 @@ public final class BattleSimulator {
 		double offense = 0;
 		double defense = 0;
 		for (InventoryItem ii : f.inventory) {
-			defense += world.getHitpoints(ii.type);
-			defense += ii.shield;
+			defense += ii.hp * ii.count;
+			defense += ii.shield * ii.count;
 			
 			for (InventorySlot is : ii.slots) {
 				if (is.type != null) {
 					BattleProjectile bp = world.battle.projectiles.get(is.type.id);
 					if (bp != null) {
-						offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
+						if (bp.mode == Mode.BEAM) {
+							offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
+						} else {
+							offense += ii.count * bp.damage * 1.0 / bp.delay;
+						}
 					}
 				}
 			}
