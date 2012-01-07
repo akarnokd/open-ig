@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Pair;
 
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -251,5 +252,21 @@ public class AIWorld {
 			return false;
 		}
 		return true;
+	}
+	/**
+	 * Computes the center location of all of our planets.
+	 * @return the center location
+	 */
+	public Point2D.Double center() {
+		double cx = 0;
+		double cy = 0;
+		for (AIPlanet p : ownPlanets) {
+			cx += p.planet.x;
+			cy += p.planet.y;
+		}
+		cx /= ownPlanets.size();
+		cy /= ownPlanets.size();
+
+		return new Point2D.Double(cx, cy);
 	}
 }
