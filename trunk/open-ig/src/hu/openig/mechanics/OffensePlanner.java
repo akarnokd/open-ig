@@ -69,20 +69,20 @@ public class OffensePlanner extends Planner {
 			}
 		}
 		
-		final int cruiserBatch = 1;
+		final int cruiserBatch = 2;
 		final int fighterBatch = 10;
 		final int battleshipBatch = 1;
 		
-		if (checkProduction(fighters, fighterBatch)) {
+		if (checkProduction(fighters, 30, fighterBatch)) {
 			return;
 		}
-		if (checkProduction(cruisers, cruiserBatch)) {
+		if (checkProduction(cruisers, 25, cruiserBatch)) {
 			return;
 		}
 		if (checkOrbitalFactory()) {
 			return;
 		}
-		if (checkProduction(battleships, battleshipBatch)) {
+		if (checkProduction(battleships, 3, battleshipBatch)) {
 			return;
 		}
 		
