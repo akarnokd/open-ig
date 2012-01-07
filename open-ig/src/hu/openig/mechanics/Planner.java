@@ -19,9 +19,11 @@ import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIResult;
 import hu.openig.model.AIWorld;
+import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.FleetTask;
+import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
@@ -29,12 +31,15 @@ import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.World;
+import hu.openig.utils.JavaUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The base class for planners.
@@ -105,6 +110,15 @@ public abstract class Planner {
 		@Override
 		public int compare(BuildingType o1, BuildingType o2) {
 			return o1.cost < o2.cost ? 1 : (o1.cost > o2.cost ? -1 : 0);
+		}
+	};
+	/**
+	 * Orders the technology as expensives first.
+	 */
+	final Comparator<ResearchType> expensiveFirst = new Comparator<ResearchType>() {
+		@Override
+		public int compare(ResearchType o1, ResearchType o2) {
+			return o2.productionCost - o1.productionCost;
 		}
 	};
 	/** Compares planets and chooses the worst overall condition. */
@@ -747,6 +761,167 @@ public abstract class Planner {
 		if (of != null) {
 			placeProductionOrder(of, 1);
 			return true;
+		}
+		return false;
+	}
+	/**
+	 * The vehicle construction plan.
+	 * @author akarnokd, 2012.01.07.
+	 */
+	public static class VehiclePlan {
+		/** The best tank. */
+		ResearchType bestTank;
+		/** Number of the tanks.*/
+		int tankCount;
+		/** The configuration of other vehicles (type, count). */
+		final Map<ResearchType, Integer> vehicleConfig = JavaUtils.newHashMap();
+	}
+	/**
+	 * Plan the production and deployment of the given number of tanks and vehicles,
+	 * considering their meaningful numbers.
+	 * @param vehicleCount the max vehicle count
+	 * @return the completed plan or null if plan is in progress
+	 */
+	public VehiclePlan planVehicles(int vehicleCount) {
+		VehiclePlan plan = new VehiclePlan();
+		final List<ResearchType> vehicles = new ArrayList<ResearchType>();
+		for (ResearchType rt : world.availableResearch) {
+			if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+				if (plan.bestTank == null || plan.bestTank.productionCost < rt.productionCost) {
+					plan.bestTank = rt;
+				}
+			} else
+			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				vehicles.add(rt);
+			}
+		}
+		// 2/3 best tank
+		
+		int tankCount = vehicleCount * 2 / 3;
+
+		if (plan.bestTank != null) {
+			int ic = world.inventoryCount(plan.bestTank);
+			if (ic < tankCount) {
+				if (!isAnyProduction(Collections.singletonList(plan.bestTank))) {
+					placeProductionOrder(plan.bestTank, tankCount - ic);
+					return null;
+				}
+			}
+		} else {
+			tankCount = 0;
+		}
+		
+		// 1/3 all kinds of vehicles
+		final int otherCount = vehicleCount - tankCount;
+		final Set<ResearchType> onePerFleet = JavaUtils.newHashSet();
+		if (otherCount > 0) {
+			ResearchType bestRocketSled = null;
+			for (ResearchType rt : vehicles) {
+				if (rt.has("one-per-fleet") && "true".equals(rt.get("one-per-fleet"))) {
+					plan.vehicleConfig.put(rt, 1);
+					onePerFleet.add(rt);
+				} else {
+					BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
+					if (v != null && v.type == GroundwarUnitType.ROCKET_SLED) {
+						if (bestRocketSled == null || bestRocketSled.productionCost < rt.productionCost) {
+							bestRocketSled = rt;
+						}
+					}
+				}
+			}
+			// remove worst rocket sleds
+			for (ResearchType rt : new ArrayList<ResearchType>(vehicles)) {
+				BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
+				if (v != null && v.type == GroundwarUnitType.ROCKET_SLED && rt != bestRocketSled) {
+					vehicles.remove(rt);
+				}
+			}
+			
+			// distribute remaining slots evenly among non-radar cars
+			int vc = otherCount - onePerFleet.size();
+			int j = 0;
+			while (vc > 0) {
+				ResearchType rt = vehicles.get(j);
+				if (!onePerFleet.contains(rt)) {
+					Integer d = plan.vehicleConfig.get(rt);
+					plan.vehicleConfig.put(rt, d != null ? d + 1 : 1);
+					vc--;
+				}
+				j++;
+				if (j == vehicles.size()) {
+					j = 0;
+				}
+			}
+			
+			// issue production orders
+			if (checkProduction(vehicles, plan.vehicleConfig)) {
+				return null;
+			}
+		}
+		// enough tanks built?
+		if (world.inventoryCount(plan.bestTank) < tankCount) {
+			return null;
+		}
+		// enough units built?
+		for (ResearchType rt : vehicles) {
+			Integer demand = plan.vehicleConfig.get(rt);
+			if (demand != null && demand > world.inventoryCount(rt)) {
+				return null;
+			}
+		}
+		return plan;
+	}
+	/**
+	 * Check if there is any ongoing production of the given list of technologies.
+	 * @param rts the list of technologies
+	 * @return true if any of it is in production
+	 */
+	protected boolean isAnyProduction(List<ResearchType> rts) {
+		for (ResearchType rt : rts) {
+			Production pr = world.productions.get(rt);
+			if (pr != null && pr.count > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check if the inventory holds the demand amount of any item
+	 * and if not, issue a production order.
+	 * @param rts the technologies
+	 * @param demand the technology demand
+	 * @return true if action taken
+	 */
+	protected boolean checkProduction(List<ResearchType> rts, Map<ResearchType, Integer> demand) {
+		if (!isAnyProduction(rts)) {
+			Collections.sort(rts, expensiveFirst);
+			for (ResearchType rt : rts) {
+				int count = demand.get(rt);
+				int ic = world.inventoryCount(rt); 
+				if (ic < count) {
+					placeProductionOrder(rt, count - ic);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check if the inventory holds at least 20% of the batch size,
+	 * and if not, issue a production order.
+	 * @param rts the technologies
+	 * @param batch the batch size
+	 * @return true if action taken
+	 */
+	protected boolean checkProduction(List<ResearchType> rts, int batch) {
+		if (!isAnyProduction(rts)) {
+			Collections.sort(rts, expensiveFirst);
+			for (ResearchType rt : rts) {
+				if (world.inventoryCount(rt) <= batch / 5) {
+					placeProductionOrder(rt, batch);
+					return true;
+				}
+			}
 		}
 		return false;
 	}

@@ -26,6 +26,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Planner for building ground defenses and space stations.
@@ -151,6 +152,16 @@ public class StaticDefensePlanner extends Planner {
 				return false;
 			}
 		});
+		actions.add(new Pred0() {
+			@Override
+			public Boolean invoke() {
+				// check for military spaceport
+				if (checkTanks(planet)) {
+					return true;
+				}
+				return false;
+			}
+		});
 		
 		
 		Collections.shuffle(actions);
@@ -161,6 +172,48 @@ public class StaticDefensePlanner extends Planner {
 			}
 		}
 		
+		return false;
+	}
+	/**
+	 * Check the tanks.
+	 * @param planet the target planet
+	 * @return true if action taken
+	 */
+	boolean checkTanks(final AIPlanet planet) {
+		if (planet.statistics.vehicleCount < planet.statistics.vehicleMax) {
+			final int count = planet.statistics.vehicleMax - planet.statistics.vehicleCount;
+			final VehiclePlan plan = planVehicles(count);
+			if (plan == null) {
+				return false;
+			}
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					if (planet.owner == planet.planet.owner) {
+						if (plan.bestTank != null) {
+							if (plan.tankCount <= planet.planet.owner.inventoryCount(plan.bestTank)) {
+								planet.planet.changeInventory(plan.bestTank, planet.owner, plan.tankCount);
+								planet.planet.owner.changeInventoryCount(plan.bestTank, -plan.tankCount);
+							}
+						}
+						for (Map.Entry<ResearchType, Integer> cfg : plan.vehicleConfig.entrySet()) {
+							int cnt = cfg.getValue();
+							ResearchType rt = cfg.getKey();
+							if (cnt <= planet.planet.owner.inventoryCount(rt)) {
+								planet.planet.changeInventory(rt, planet.owner, cnt);
+								planet.planet.owner.changeInventoryCount(rt, -cnt);
+							} else {
+								break;
+							}
+						}
+						log("DeployTanks, Planet = %s, Count = %s", planet.planet.id, count);
+					} else {
+						log("DeployTanks, Planet = %s, Count = %s, Failed = owner changed", planet.planet.id, count);
+					}
+				}
+			});
+			return true;
+		}
 		return false;
 	}
 	/**
