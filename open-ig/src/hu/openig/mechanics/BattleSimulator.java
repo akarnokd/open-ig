@@ -372,7 +372,7 @@ public final class BattleSimulator {
 			}
 		}
 		int hpMax = world.getHitpoints(b.type, p.owner, false);
-		result.defense += b.hitpoints * hpMax * 1.0 / b.type.hitpoints;
+		result.defense += 1.0 * b.hitpoints * hpMax / b.type.hitpoints;
 	}
 	/**
 	 * Run the space battle.
@@ -549,7 +549,7 @@ public final class BattleSimulator {
 	 */
 	void applyGroundDamage(Planet p, Building b, double hitpoints) {
 		double hpMax = world.getHitpoints(b.type, p.owner, false);
-		double hp = b.hitpoints * hpMax / b.type.hitpoints;
+		double hp = 1.0 * b.hitpoints * hpMax / b.type.hitpoints;
 		
 		if (hitpoints >= hp) {
 			p.surface.removeBuilding(b);
@@ -603,7 +603,7 @@ public final class BattleSimulator {
 			if (b.isOperational()) {
 				if (b.type.kind.equals("Shield") || b.type.kind.equals("Gun")) {
 					double hpMax = world.getHitpoints(b.type, p.owner, true);
-					double hp = b.hitpoints * hpMax / b.type.hitpoints;
+					double hp = 1.0 * b.hitpoints * hpMax / b.type.hitpoints;
 					
 					double shieldedHP = hp + hp * shieldValue / 100;
 					if (hitpoints >= shieldedHP) {
@@ -677,7 +677,7 @@ public final class BattleSimulator {
 				if (b.type.kind.equals("Shield")
 						|| b.type.kind.equals("Gun")) {
 					int hpMax = world.getHitpoints(b.type, p.owner, true);
-					int hp = b.hitpoints * hpMax / b.type.hitpoints;
+					int hp = (int)(1L * b.hitpoints * hpMax / b.type.hitpoints);
 					defense += hp;
 					defense += hp * shieldValue / 100;
 					

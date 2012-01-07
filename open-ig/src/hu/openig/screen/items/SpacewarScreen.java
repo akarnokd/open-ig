@@ -1480,7 +1480,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
 				st.infoImageName = bge.infoImageName;
 				st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
-				st.hp = b.hitpoints * st.hpMax / b.type.hitpoints;
+				st.hp = (int)(1L * b.hitpoints * st.hpMax / b.type.hitpoints);
 				st.value = b.type.cost;
 				st.destruction = bge.destruction;
 				st.building = b;
@@ -1517,7 +1517,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.infoImageName = bge.infoImageName;
 				st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
 				st.value = b.type.cost;
-				st.hp = b.hitpoints * st.hpMax / b.type.hitpoints;
+				st.hp = (int)(1L * b.hitpoints * st.hpMax / b.type.hitpoints);
 				st.destruction = bge.destruction;
 				st.building = b;
 				st.planet = nearbyPlanet;
@@ -3477,7 +3477,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 			} else
 			if (s.building != null) {
-				s.building.hitpoints = s.hp * s.building.type.hitpoints / s.hpMax;
+				s.building.hitpoints = (int)(1L * s.hp * s.building.type.hitpoints / s.hpMax);
 				if (s.building.hitpoints <= 0) {
 					s.planet.surface.removeBuilding(s.building);
 					s.planet.surface.placeRoads(s.planet.race, world().buildingModel);
