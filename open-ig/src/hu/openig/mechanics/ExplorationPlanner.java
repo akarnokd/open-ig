@@ -24,6 +24,7 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.utils.JavaUtils;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -121,7 +122,17 @@ public class ExplorationPlanner extends Planner {
 		
 		List<AIPlanet> survey = new ArrayList<AIPlanet>(world.unknownPlanets);
 		survey.addAll(world.enemyPlanets);
-		Collections.shuffle(survey, w.random.get());
+		
+		final Point2D.Double center = world.center();
+		
+		Collections.sort(survey, new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				double d1 = Math.hypot(o1.planet.x - center.x, o1.planet.y - center.x);
+				double d2 = Math.hypot(o2.planet.x - center.y, o2.planet.y - center.y);
+				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+			}
+		});
 		// traverse all known planet and deploy satellites
 		outer:
 		for (final AIPlanet planet : survey) {
@@ -231,16 +242,16 @@ public class ExplorationPlanner extends Planner {
 	}
 	/**
 	 * Set a new exploration target and task for the given fleet.
-	 * @param bestFleet the fleet
+	 * @param bf the fleet
 	 */
-	void setExplorationTarget(AIFleet bestFleet) {
-		final AIFleet bf = bestFleet;
+	void setExplorationTarget(final AIFleet bf) {
 		final int ec = exploration.cellSize;
+		final Point2D.Double center = world.center(); // new Point2D.Double(bf.x, bf.y);
 		Comparator<Location> distance = new Comparator<Location>() {
 			@Override
 			public int compare(Location o1, Location o2) {
-				double d1 = Math.hypot(bf.x - (o1.x + 0.5) * ec, bf.y - (o1.y + 0.5) * ec);
-				double d2 = Math.hypot(bf.x - (o2.x + 0.5) * ec, bf.y - (o2.y + 0.5) * ec);
+				double d1 = Math.hypot(center.x - (o1.x + 0.5) * ec, center.y - (o1.y + 0.5) * ec);
+				double d2 = Math.hypot(center.x - (o2.x + 0.5) * ec, center.y - (o2.y + 0.5) * ec);
 				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
 			}
 		};
