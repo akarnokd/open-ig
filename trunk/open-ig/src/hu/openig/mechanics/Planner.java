@@ -840,12 +840,14 @@ public abstract class Planner {
 			// distribute remaining slots evenly among non-radar cars
 			int vc = otherCount - onePerFleet.size();
 			int j = 0;
-			while (vc > 0) {
+			while (vc > 0 && vehicles.size() > 0) {
 				ResearchType rt = vehicles.get(j);
 				if (!onePerFleet.contains(rt)) {
 					Integer d = plan.vehicleConfig.get(rt);
 					plan.vehicleConfig.put(rt, d != null ? d + 1 : 1);
 					vc--;
+				} else {
+					vehicles.remove(j);
 				}
 				j++;
 				if (j == vehicles.size()) {
