@@ -128,8 +128,8 @@ public class ExplorationPlanner extends Planner {
 		Collections.sort(survey, new Comparator<AIPlanet>() {
 			@Override
 			public int compare(AIPlanet o1, AIPlanet o2) {
-				double d1 = Math.hypot(o1.planet.x - center.x, o1.planet.y - center.x);
-				double d2 = Math.hypot(o2.planet.x - center.y, o2.planet.y - center.y);
+				double d1 = Math.hypot(o1.planet.x - center.x, o1.planet.y - center.y);
+				double d2 = Math.hypot(o2.planet.x - center.x, o2.planet.y - center.y);
 				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
 			}
 		});
