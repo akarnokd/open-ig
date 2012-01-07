@@ -46,9 +46,9 @@ public final class AutoBuilder {
 	public static void performAutoBuild(final World world, final Planet planet, final PlanetStatistics ps) {
 		if (planet.autoBuild != AutoBuild.AI) {
 			// do not interfere with hubless colonies
-			if (!ps.constructing 
-					&& !ps.hasWarning(PlanetProblems.COLONY_HUB)
-					&& !ps.hasProblem(PlanetProblems.COLONY_HUB)
+			if (ps.constructing 
+					|| ps.hasWarning(PlanetProblems.COLONY_HUB)
+					|| ps.hasProblem(PlanetProblems.COLONY_HUB)
 			) {
 				return;
 			}			
