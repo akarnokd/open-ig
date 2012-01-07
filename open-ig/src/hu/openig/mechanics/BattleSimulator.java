@@ -16,6 +16,7 @@ import hu.openig.model.BattleGroundTurret;
 import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile;
+import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.GroundwarUnit;
@@ -26,12 +27,12 @@ import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.World;
-import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.utils.JavaUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -485,7 +486,13 @@ public final class BattleSimulator {
 	void applyDamage(HasInventory f, double hitpoints, Func1<InventoryItem, Boolean> filter) {
 		List<InventoryItem> inv = f.inventory();
 		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>(inv);
-		Collections.shuffle(is, world.random.get());
+//		Collections.shuffle(is, world.random.get());
+		Collections.sort(is, new Comparator<InventoryItem>() {
+			@Override
+			public int compare(InventoryItem o1, InventoryItem o2) {
+				return o1.type.productionCost - o2.type.productionCost;
+			}
+		});
 		for (InventoryItem ii : is) {
 			if (hitpoints <= 0) {
 				break;
