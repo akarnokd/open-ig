@@ -184,9 +184,13 @@ public class DefaultAIControls implements AIControls {
 		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
 		Production prod = prodLine.get(rt);
 		if (prod == null) {
-			prod = new Production();
-			prod.type = rt;
-			prodLine.put(rt, prod);
+			if (prodLine.size() < 5) {
+				prod = new Production();
+				prod.type = rt;
+				prodLine.put(rt, prod);
+			} else {
+				log("StartProduction, Type = %s, Count = %s, Priority = %s, Failed = production line limit", rt.id, count, priority);
+			}
 		}
 		prod.priority = priority;
 		prod.count += count;
