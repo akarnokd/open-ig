@@ -1978,6 +1978,10 @@ public class World {
 	public void removeFleet(Fleet fleet) {
 		for (Player p : players.values()) {
 			p.fleets.remove(fleet);
+			if (p.currentFleet == fleet) {
+				p.currentFleet = null;
+				p.selectionMode = SelectionMode.PLANET;
+			}
 			// if someone targeted this fleet
 			for (Fleet f : p.fleets.keySet()) {
 				if (f.owner == p) {
