@@ -797,22 +797,22 @@ public abstract class Planner {
 		}
 		// 2/3 best tank
 		
-		int tankCount = vehicleCount * 2 / 3;
+		plan.tankCount = vehicleCount * 2 / 3;
 
 		if (plan.bestTank != null) {
 			int ic = world.inventoryCount(plan.bestTank);
-			if (ic < tankCount) {
+			if (ic < plan.tankCount) {
 				if (!isAnyProduction(Collections.singletonList(plan.bestTank))) {
-					placeProductionOrder(plan.bestTank, tankCount - ic);
+					placeProductionOrder(plan.bestTank, plan.tankCount - ic);
 					return null;
 				}
 			}
 		} else {
-			tankCount = 0;
+			plan.tankCount = 0;
 		}
 		
 		// 1/3 all kinds of vehicles
-		final int otherCount = vehicleCount - tankCount;
+		final int otherCount = vehicleCount - plan.tankCount;
 		final Set<ResearchType> onePerFleet = JavaUtils.newHashSet();
 		if (otherCount > 0) {
 			ResearchType bestRocketSled = null;
@@ -831,9 +831,13 @@ public abstract class Planner {
 			}
 			// remove worst rocket sleds
 			for (ResearchType rt : new ArrayList<ResearchType>(vehicles)) {
-				BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
-				if (v != null && v.type == GroundwarUnitType.ROCKET_SLED && rt != bestRocketSled) {
+				if (onePerFleet.contains(rt)) {
 					vehicles.remove(rt);
+				} else {
+					BattleGroundVehicle v = w.battle.groundEntities.get(rt.id);
+					if (v != null && v.type == GroundwarUnitType.ROCKET_SLED && rt != bestRocketSled) {
+						vehicles.remove(rt);
+					}
 				}
 			}
 			
@@ -842,13 +846,11 @@ public abstract class Planner {
 			int j = 0;
 			while (vc > 0 && vehicles.size() > 0) {
 				ResearchType rt = vehicles.get(j);
-				if (!onePerFleet.contains(rt)) {
-					Integer d = plan.vehicleConfig.get(rt);
-					plan.vehicleConfig.put(rt, d != null ? d + 1 : 1);
-					vc--;
-				} else {
-					vehicles.remove(j);
-				}
+
+				Integer d = plan.vehicleConfig.get(rt);
+				plan.vehicleConfig.put(rt, d != null ? d + 1 : 1);
+				vc--;
+				
 				j++;
 				if (j == vehicles.size()) {
 					j = 0;
@@ -856,16 +858,16 @@ public abstract class Planner {
 			}
 			
 			// issue production orders
-			if (checkProduction(vehicles, plan.vehicleConfig)) {
+			if (checkProduction(plan.vehicleConfig)) {
 				return null;
 			}
 		}
 		// enough tanks built?
-		if (world.inventoryCount(plan.bestTank) < tankCount) {
+		if (world.inventoryCount(plan.bestTank) < plan.tankCount) {
 			return null;
 		}
 		// enough units built?
-		for (ResearchType rt : vehicles) {
+		for (ResearchType rt : plan.vehicleConfig.keySet()) {
 			Integer demand = plan.vehicleConfig.get(rt);
 			if (demand != null && demand > world.inventoryCount(rt)) {
 				return null;
@@ -890,11 +892,11 @@ public abstract class Planner {
 	/**
 	 * Check if the inventory holds the demand amount of any item
 	 * and if not, issue a production order.
-	 * @param rts the technologies
-	 * @param demand the technology demand
+	 * @param demand the technology and demand
 	 * @return true if action taken
 	 */
-	protected boolean checkProduction(List<ResearchType> rts, Map<ResearchType, Integer> demand) {
+	protected boolean checkProduction(Map<ResearchType, Integer> demand) {
+		List<ResearchType> rts = new ArrayList<ResearchType>(demand.keySet());
 		if (!isAnyProduction(rts)) {
 			Collections.sort(rts, expensiveFirst);
 			for (ResearchType rt : rts) {
@@ -905,6 +907,7 @@ public abstract class Planner {
 					return true;
 				}
 			}
+			return true;
 		}
 		return false;
 	}

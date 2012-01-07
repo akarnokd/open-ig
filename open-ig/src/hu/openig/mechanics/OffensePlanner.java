@@ -145,11 +145,7 @@ public class OffensePlanner extends Planner {
 				}
 			}
 			
-			if (checkProduction(equipments, equipmentDemands)) {
-				return;
-			}
-	
-			if (checkProduction(weapons, equipmentDemands)) {
+			if (checkProduction(equipmentDemands)) {
 				return;
 			}
 	

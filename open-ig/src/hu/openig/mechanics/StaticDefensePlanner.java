@@ -194,6 +194,9 @@ public class StaticDefensePlanner extends Planner {
 							if (plan.tankCount <= planet.planet.owner.inventoryCount(plan.bestTank)) {
 								planet.planet.changeInventory(plan.bestTank, planet.owner, plan.tankCount);
 								planet.planet.owner.changeInventoryCount(plan.bestTank, -plan.tankCount);
+							} else {
+								log("DeployTanks, Planet = %s, Count = %s, Failed = not enough of %s", planet.planet.id, plan.tankCount, plan.bestTank.id);
+								return;
 							}
 						}
 						for (Map.Entry<ResearchType, Integer> cfg : plan.vehicleConfig.entrySet()) {
@@ -203,7 +206,8 @@ public class StaticDefensePlanner extends Planner {
 								planet.planet.changeInventory(rt, planet.owner, cnt);
 								planet.planet.owner.changeInventoryCount(rt, -cnt);
 							} else {
-								break;
+								log("DeployTanks, Planet = %s, Count = %s, Failed = not enough of %s", planet.planet.id, cnt, rt.id);
+								return;
 							}
 						}
 						log("DeployTanks, Planet = %s, Count = %s", planet.planet.id, count);
