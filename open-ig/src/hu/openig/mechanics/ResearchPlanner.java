@@ -344,8 +344,8 @@ public class ResearchPlanner extends Planner {
 		// find an empty planet
 		int failed = 0;
 		for (AIPlanet planet : world.ownPlanets) {
-			if (planet.statistics.activeLabCount() == 0) {
-				if (!planet.statistics.constructing) {
+			if (!planet.statistics.constructing) {
+				if (planet.statistics.labCount() == 0) {
 					AIResult r = buildOneLabFor(rt, planet);
 					if (r == AIResult.CONTINUE) {
 						continue;

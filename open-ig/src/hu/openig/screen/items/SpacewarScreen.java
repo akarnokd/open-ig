@@ -37,6 +37,7 @@ import hu.openig.model.SelectionBoxMode;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarExplosion;
+import hu.openig.model.SpacewarObject;
 import hu.openig.model.SpacewarProjectile;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
@@ -426,6 +427,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	static final int IMAGE_CACHE_SIZE = 8;
 	/** Indicates if the attacker is placed on the right side. */
 	boolean attackerOnRight;
+	/** Scramble projectiles once. */
+	final Set<SpacewarObject> scrambled = new HashSet<SpacewarObject>();
+	/** The sounds to play. */
+	final Set<SoundType> soundsToPlay = new HashSet<SoundType>();
 	/** Info image cache. */
 	final Map<String, BufferedImage> infoImages = new LinkedHashMap<String, BufferedImage>() {
 		/** */
@@ -451,6 +456,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		};
 		moveButton = new ThreePhaseButton(33 + 72, 24, commons.spacewar().move);
 		kamikazeButton = new ThreePhaseButton(33, 24 + 35, commons.spacewar().kamikaze);
+		kamikazeButton.action = new Action0() {
+			@Override
+			public void invoke() {
+				doKamikaze();
+				kamikazeButton.selected = false;
+				enableSelectedFleetControls();
+			}
+		};
 		attackButton = new ThreePhaseButton(33 + 72, 24 + 35, commons.spacewar().attack);
 		guardButton = new ThreePhaseButton(33, 24 + 35 * 2, commons.spacewar().guard);
 		guardButton.action = new Action0() {
@@ -993,6 +1006,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		structures.clear();
 		projectiles.clear();
 		explosions.clear();
+		scrambled.clear();
+		soundsToPlay.clear();
 		
 		leftStatusPanel.clear();
 		rightStatusPanel.clear();
@@ -1241,6 +1256,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		projectiles.clear();
 		explosions.clear();
+		scrambled.clear();
 		
 		this.battle = battle;
 		BattleSimulator.findHelpers(battle, world());
@@ -1923,7 +1939,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				drawRectCorners(g2, (int)e.x, (int)e.y, w, h, 8);
 //				drawRectCorners(g2, (int)e.x, (int)e.y, w + 6, h + 6, 8);
 			}
-			if (viewDamage.selected) {
+			if (viewDamage.selected && e.kamikaze == 0) {
 				int y = (int)e.y - h2 + 2;
 				int dw = w - 6;
 				g2.setColor(Color.BLACK);
@@ -2807,20 +2823,22 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			List<SpacewarStructure> selection = getSelection();
 			if (selection.size() > 0) {
 				if (selection.get(0).owner == player()) {
-					stopButton.enabled = true;
+					stopButton.enabled = false;
 					moveButton.enabled = false;
-					attackButton.enabled = true;
-					guardButton.enabled = true;
+					attackButton.enabled = false;
+					guardButton.enabled = false;
 					kamikazeButton.enabled = false;
 					rocketButton.enabled = false;
-					guardButton.selected = true;
 					for (SpacewarStructure sws : selection) {
 						if (sws.type == StructureType.SHIP) {
-							kamikazeButton.enabled |= (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS);
+							kamikazeButton.enabled |= (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) && sws.kamikaze == 0;
 							for (SpacewarWeaponPort port : sws.ports) {
 								rocketButton.enabled |= port.projectile.mode != Mode.BEAM && port.count > 0; 
 							}
-							moveButton.enabled = true;
+							moveButton.enabled = sws.kamikaze == 0;
+							stopButton.enabled |= sws.kamikaze == 0;
+							attackButton.enabled |= sws.kamikaze == 0;
+							guardButton.enabled |= sws.kamikaze == 0;
 						}
 						guardButton.selected &= sws.guard; // keep guard only of all of the selection is in guard mode
 					}
@@ -2906,22 +2924,34 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				r.port.is.count--;
 			}
 
-			SpacewarProjectile proj = new SpacewarProjectile();
-			proj.model = r.port.projectile;
-			proj.damage = r.port.projectile.damage;
+			SpacewarStructure proj = new SpacewarStructure();
 			proj.owner = r.fired.owner;
-			proj.target = target;
-			proj.matrix = r.port.projectile.matrix;
+			proj.attack = target;
+			proj.angles = proj.owner == player() ? r.port.projectile.matrix[0] : r.port.projectile.alternative[0];
 			proj.movementSpeed = r.port.projectile.movementSpeed;
 			proj.rotationTime = r.port.projectile.rotationTime;
 			proj.x = r.fired.x;
 			proj.y = r.fired.y;
 			proj.angle = r.fired.angle;
-			proj.impactSound = SoundType.HIT;
-			proj.steering = true;
-			proj.ecmLimit = r.type.getInt("anti-ecm", 0);
+			proj.destruction = SoundType.HIT;
+			proj.ecmLevel = r.type.getInt("anti-ecm", 0);
+			proj.kamikaze = r.port.projectile.damage;
+			proj.hp = 1;
+			proj.hpMax = 1;
+			switch (r.port.projectile.mode) {
+			case ROCKET:
+			case MULTI_ROCKET:
+				proj.type = StructureType.ROCKET;
+				break;
+			case VIRUS:
+				proj.type = StructureType.VIRUS_BOMB;
+				break;
+			default:
+				proj.type = StructureType.BOMB;
+
+			}
 			
-			projectiles.add(proj);
+			structures.add(proj);
 			
 			sound(r.port.projectile.sound);
 		}
@@ -2932,7 +2962,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void doAttackWithShips(SpacewarStructure target) {
 		for (SpacewarStructure ship : structures) {
-			if (ship.type != StructureType.SHIELD 
+			if ((ship.type == StructureType.PROJECTOR
+					|| ship.type == StructureType.SHIP
+					|| ship.type == StructureType.STATION
+					) 
 					&& ship.selected && ship.owner == player()
 					&& !ship.ports.isEmpty()) {
 				ship.moveTo = null;
@@ -2942,11 +2975,26 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 	}
 	/**
+	 * Issue a kamikaze order to ship.
+	 */
+	void doKamikaze() {
+		for (SpacewarStructure ship : structures) {
+			if (ship.selected && ship.owner == player() 
+					&& ship.kamikaze == 0 && ship.type == StructureType.SHIP 
+					&& ship.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				SpacebattleStatistics sbs = new SpacebattleStatistics();
+				setPortStatistics(sbs, ship.ports);
+				ship.kamikaze = sbs.firepower * ship.count * 5;
+				ship.selected = false;
+			}
+		}
+	}
+	/**
 	 * Stop the activity of the selected structures.
 	 */
 	void doStopSelectedShips() {
 		for (SpacewarStructure ship : structures) {
-			if (ship.selected && ship.owner == player()) {
+			if (ship.selected && ship.owner == player() && ship.kamikaze == 0) {
 				ship.moveTo = null;
 				ship.attack = null;
 				ship.guard = false;
@@ -3017,7 +3065,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (diff > Math.PI) {
 			diff -= 2 * Math.PI; 
 		}
-		double anglePerStep = 2 * Math.PI * proj.rotationTime / proj.matrix.length / SIMULATION_DELAY;
+		double anglePerStep = 2 * Math.PI * proj.rotationTime / proj.matrix[0].length / SIMULATION_DELAY;
 		if (Math.abs(diff) < anglePerStep) {
 			proj.angle = targetAngle;
 			return true;
@@ -3067,19 +3115,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
  		
 		
 		if (!obj.target.isDestroyed()) {
-			if (obj.steering) {
-				// adjust angle to match target
-				rotateStep(obj, obj.target.x, obj.target.y);
-			}
 			double w = obj.target.get().getWidth();
 			double h = obj.target.get().getHeight();
 			double x0 = obj.target.x - w / 2;
 			double x1 = x0 + w;
 			double y0 = obj.target.y - h / 2;
 			double y1 = y0 + h;
-			if (obj.owner.id.equals("Empire")) {
-				System.out.print("");
-			}
 			if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx, 
 					obj.y + dy, x0, y0, x1, y1)) {
 				// walk along the angle up to ds units and see if there is a pixel of the target there?
@@ -3092,6 +3133,49 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					int py = (int)(obj.y + dds * Math.cos(obj.angle));
 					if (tx0 <= px && px < tx1 && ty0 <= py && py < ty1) {
 						int c = obj.target.get().getRGB(px - tx0, py - ty0);
+						if ((c & 0xFF000000) != 0) {
+							obj.x = px;
+							obj.y = py;
+							return true;
+						}
+					}
+				}
+			}
+		}
+		obj.x += dx;
+		obj.y += dy;
+		return false;
+	}
+	/**
+	 * Move the structure one animation step further.
+	 * @param obj the projectile
+	 * @return true if collided with the target
+	 */
+	boolean moveStep(SpacewarStructure obj) {
+		double ds = SIMULATION_DELAY * 1.0 / obj.movementSpeed;
+		double dx = ds * Math.cos(obj.angle);
+		double dy = ds * Math.sin(obj.angle);
+		
+		if (!obj.attack.isDestroyed()) {
+			BufferedImage img = obj.attack.get();
+			double w = img.getWidth();
+			double h = img.getHeight();
+			double x0 = obj.attack.x - w / 2;
+			double x1 = x0 + w;
+			double y0 = obj.attack.y - h / 2;
+			double y1 = y0 + h;
+			if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx, 
+					obj.y + dy, x0, y0, x1, y1)) {
+				// walk along the angle up to ds units and see if there is a pixel of the target there?
+				int tx0 = (int)(obj.attack.x - w / 2);
+				int ty0 = (int)(obj.attack.y - h / 2);
+				int tx1 = (int)(tx0 + w);
+				int ty1 = (int)(ty0 + h);
+				for (double dds = 0; dds <= ds; dds += 0.5) {
+					int px = (int)(obj.x + dds * Math.cos(obj.angle));
+					int py = (int)(obj.y + dds * Math.cos(obj.angle));
+					if (tx0 <= px && px < tx1 && ty0 <= py && py < ty1) {
+						int c = img.getRGB(px - tx0, py - ty0);
 						if ((c & 0xFF000000) != 0) {
 							obj.x = px;
 							obj.y = py;
@@ -3223,29 +3307,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		explosions.add(x);
 	}
-	/**
-	 * Adjust the damage based on the target and projectile.
-	 * @param p the projectile
-	 * @return the target
-	 */
-	int damageAdjust(SpacewarProjectile p) {
-		if (p.model.mode != Mode.BEAM) {
-			if (p.model.mode == Mode.BOMB || p.model.mode == Mode.VIRUS) {
-				if (p.target.building == null) {
-					return p.damage / 5;
-				}
-			}
-			if (p.model.mode == Mode.ROCKET || p.model.mode == Mode.MULTI_ROCKET) {
-				if (p.target.building != null) {
-					return p.damage / 5;
-				}
-			}
-		}
-		return p.damage;
-	}
 	/** Perform the spacewar simulation. */
 	void doSpacewarSimulation() {
-		Set<SoundType> soundsToPlay = new HashSet<SoundType>();
+		soundsToPlay.clear();
 		// advance explosions
 		for (SpacewarExplosion exp : new ArrayList<SpacewarExplosion>(explosions)) {
 			if (exp.next()) {
@@ -3255,56 +3319,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				structures.remove(exp.target);
 			}
 		}
-		// move projectiles
-		for (SpacewarProjectile p : new ArrayList<SpacewarProjectile>(projectiles)) {
-			if (moveStep(p)) {
-				projectiles.remove(p);
-				
-				int loss0 = p.target.loss;
-				int damage = damageAdjust(p);
-				
-				if (p.target.damage(damage)) {
-					if (p.model.mode == Mode.VIRUS && p.target.building != null) {
-						p.target.planet.quarantine |= true;
-						p.target.planet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL; 
-					}
-					battle.spaceLosses.add(p.target);
-					soundsToPlay.add(p.target.destruction);
-					createExplosion(p.target, true);
-					if (p.target.type == StructureType.SHIELD) {
-						dropGroundShields();
-					}
-					if (p.target.owner == battle.attacker.owner) {
-						battle.attackerLosses += p.target.loss - loss0;
-					} else {
-						battle.defenderLosses += p.target.loss - loss0;
-					}
-				} else {
-					soundsToPlay.add(p.impactSound);
-					if (p.steering) {
-						createExplosion(p.target, false);
-					}
-				}
-			} else
-			if (!p.intersects(0, 0, space.width, space.height)) {
-				projectiles.remove(p);
-			} else {
-				if (p.steering) {
-					double d = Math.hypot(p.x - p.target.x, p.y - p.target.y);
-					if (p.target.isDestroyed() || (p.target.ecmLevel > p.ecmLimit && d < 100 && d > 80)) {
-						// choose a new target
-						if (structures.size() > 0) {
-							p.target = world().random(structures);
-						}
-					}
-				}
-			}
-		}
+		
+		handleProjectiles();
+		
 		List<SpacewarStructure> enemyIdles = JavaUtils.newArrayList();
 		List<SpacewarStructure> playerIdles = JavaUtils.newArrayList();
 		// fleet movements
-		for (SpacewarStructure ship : structures) {
+		for (SpacewarStructure ship : new ArrayList<SpacewarStructure>(structures)) {
 			if (!ship.isDestroyed()) {
+				if (ship.kamikaze > 0) {
+					handleKamikaze(ship);
+					continue;
+				}
 				// general cooldown of weapons
 				for (SpacewarWeaponPort p : ship.ports) {
 					p.cooldown = Math.max(0, p.cooldown - SIMULATION_DELAY);
@@ -3366,6 +3392,118 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			concludeBattle(winner);
 		}
 		askRepaint();
+	}
+	/**
+	 * Choose a new target for the ship.
+	 * @param ship the ship
+	 */
+	void chooseNewTarget(SpacewarStructure ship) {
+		List<SpacewarStructure> sts = new ArrayList<SpacewarStructure>();
+		for (SpacewarStructure s : structures) {
+			if (s.type == StructureType.SHIP || s.type == StructureType.SHIELD 
+					|| s.type == StructureType.STATION || s.type == StructureType.PROJECTOR) {
+				sts.add(s);
+			}
+		}
+		if (sts.size() > 0) {
+			ship.attack = world().random(sts);
+		}
+	}
+	/**
+	 * Handle kamikaze units (and rockets).
+	 * @param ship the ship
+	 */
+	void handleKamikaze(SpacewarStructure ship) {
+		if (!ship.attack.isDestroyed()) {
+			rotateStep(ship, ship.attack.x, ship.attack.y);
+
+			double d = Math.hypot(ship.x - ship.attack.x, ship.y - ship.attack.y);
+			if (d < 80 && ship.type != StructureType.SHIP) {
+				if (scrambled.add(ship)) {
+					if (ship.ecmLevel < ship.attack.ecmLevel) {
+						chooseNewTarget(ship);
+					} else
+					if (ship.ecmLevel == ship.attack.ecmLevel) {
+						if (world().random.get().nextBoolean()) {
+							chooseNewTarget(ship);
+						}
+					}
+				}
+			}
+		}
+		if (moveStep(ship)) {
+			damageTarget(ship.attack, ship.kamikaze, ship.destruction);
+			createLoss(ship);
+			createExplosion(ship, true);
+			if (ship.type == StructureType.VIRUS_BOMB 
+					&& (ship.attack.type == StructureType.PROJECTOR || ship.attack.type == StructureType.SHIELD)) {
+				ship.attack.planet.quarantine = true;
+				ship.attack.planet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+			}
+		} else
+		if (ship.attack.isDestroyed() && !ship.intersects(0, 0, space.width, space.height)) {
+			createLoss(ship);
+			structures.remove(ship);
+		}
+	}
+	/**
+	 * Count the ship destruction as loss.
+	 * @param ship the ship
+	 */
+	void createLoss(SpacewarStructure ship) {
+		if (ship.type == StructureType.SHIP) {
+			battle.spaceLosses.add(ship);
+			if (ship.owner == battle.attacker.owner) {
+				battle.attackerLosses += ship.count;
+			} else {
+				battle.defenderLosses += ship.count;
+			}
+		}
+		ship.hp = 0;
+		ship.shield = 0;
+		ship.loss += ship.count;
+		ship.count = 0;
+	}
+	/**
+	 * Handle projectile movement, impact and rocket scrambling.
+	 */
+	void handleProjectiles() {
+		// move projectiles
+		for (SpacewarProjectile p : new ArrayList<SpacewarProjectile>(projectiles)) {
+			if (moveStep(p)) {
+				projectiles.remove(p);
+				
+				damageTarget(p.target, p.damage, p.impactSound);
+			} else
+			if (!p.intersects(0, 0, space.width, space.height)) {
+				projectiles.remove(p);
+			}
+		}
+	}
+	/**
+	 * Damage the target structure.
+	 * @param target the target
+	 * @param damage the damage
+	 * @param impactSound the impact sound
+	 */
+	void damageTarget(SpacewarStructure target, int damage, SoundType impactSound) {
+		int loss0 = target.loss;
+		
+		if (target.damage(damage)) {
+			battle.spaceLosses.add(target);
+			soundsToPlay.add(target.destruction);
+			createExplosion(target, true);
+			if (target.type == StructureType.SHIELD) {
+				dropGroundShields();
+			}
+			if (target.owner == battle.attacker.owner) {
+				battle.attackerLosses += target.loss - loss0;
+			} else {
+				battle.defenderLosses += target.loss - loss0;
+			}
+		} else {
+			soundsToPlay.add(impactSound);
+		}
 	}
 	/**
 	 * Drop ground shields.
