@@ -475,7 +475,7 @@
 		research-cost='20000' production-cost='7500' level='4' race='human'
 		requires='Shield1' comp='3' ai='1' mil='4' index='1'
 		video='technology/equipments/shields/shield_2'>
-		<property name='shield' value='50' />
+		<property name='shield' value='35' />
 	</item>
 	<item id='Shield3' name='tech.shield3.name' long-name='tech.shield3.longname'
 		description='tech.shield3.description' category='EQUIPMENT_SHIELDS'
@@ -483,7 +483,7 @@
 		research-cost='24000' production-cost='12000' level='4' race='human'
 		requires='Shield2, ParticleCannon' mech='1' comp='4' ai='2' mil='6'
 		index='2' video='technology/equipments/shields/shield_3'>
-		<property name='shield' value='75' />
+		<property name='shield' value='45' />
 	</item>
 	<item id='Shield4' name='tech.shield4.name' long-name='tech.shield4.longname'
 		description='tech.shield4.description' category='EQUIPMENT_SHIELDS'
@@ -491,7 +491,7 @@
 		research-cost='30000' production-cost='19000' level='5' race='human'
 		civil='1' mech='3' comp='6' ai='4' mil='7' index='3'
 		video='technology/equipments/shields/shield_4'>
-		<property name='shield' value='100' />
+		<property name='shield' value='60' />
 	</item>
 	<item id='Laser1' name='tech.laser1.name' long-name='tech.laser1.longname'
 		description='tech.laser1.description' category='WEAPONS_LASERS'
