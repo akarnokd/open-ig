@@ -431,7 +431,7 @@ public class Planet implements Named, Owned, HasInventory {
 		int result = 0;
 		for (InventoryItem pii : inventory) {
 			if (pii.type == rt) {
-				result++;
+				result += pii.count;
 			}
 		}
 		return result;
