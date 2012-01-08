@@ -2936,8 +2936,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			proj.destruction = SoundType.HIT;
 			proj.ecmLevel = r.type.getInt("anti-ecm", 0);
 			proj.kamikaze = r.port.projectile.damage;
-			proj.hp = 1;
-			proj.hpMax = 1;
+			proj.hp = 1500;
+			proj.hpMax = 1500;
 			switch (r.port.projectile.mode) {
 			case ROCKET:
 			case MULTI_ROCKET:
