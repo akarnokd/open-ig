@@ -3418,7 +3418,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			rotateStep(ship, ship.attack.x, ship.attack.y);
 
 			double d = Math.hypot(ship.x - ship.attack.x, ship.y - ship.attack.y);
-			if (d < 80 && ship.type != StructureType.SHIP) {
+			if (d < 80 && ship.type != StructureType.SHIP && ship.attack.ecmLevel > 0) {
 				if (scrambled.add(ship)) {
 					if (ship.ecmLevel < ship.attack.ecmLevel) {
 						chooseNewTarget(ship);

@@ -856,7 +856,9 @@ public abstract class Planner {
 					j = 0;
 				}
 			}
-			
+			if (vc > 0) {
+				plan.tankCount += vc;
+			}
 			// issue production orders
 			if (checkProduction(plan.vehicleConfig)) {
 				return null;
