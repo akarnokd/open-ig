@@ -515,6 +515,7 @@ public class Planet implements Named, Owned, HasInventory {
 	}
 	/** 
 	 * Change the inventory amount of a given technology. 
+	 * <p>Does not change the owner's inventory.</p>
 	 * @param type the item type
 	 * @param owner the owner
 	 * @param amount the amount delta

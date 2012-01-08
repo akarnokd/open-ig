@@ -1459,8 +1459,9 @@ public class EquipmentScreen extends ScreenBase {
 				} else
 				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
 						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-					addButton.visible(player().inventoryCount(rt) > 0
-							&& f.inventoryCount(rt.category) < fs.vehicleMax);
+					addButton.visible(
+							fs.vehicleCount < fs.vehicleMax
+							&& player().inventoryCount(rt) > 0);
 					delButton.visible(
 							f.inventoryCount(rt) > 0);
 					sell.visible(f.inventoryCount(rt) > 0);
@@ -1725,51 +1726,69 @@ public class EquipmentScreen extends ScreenBase {
 	 * @param delta the delta
 	 */
 	void addRemoveItem(int delta) {
-		if (player().selectionMode == SelectionMode.PLANET) {
-			if (research().category == ResearchSubCategory.SPACESHIPS_STATIONS
-			) {
-				if (delta > 0) {
-					InventoryItem pii = new InventoryItem();
-					pii.owner = player();
-					pii.type = research();
-					pii.count = 1;
-					pii.hp = world().getHitpoints(pii.type);
-					
-					pii.createSlots();
-					
-					pii.shield = Math.max(0, pii.shieldMax());
-					
-					planet().inventory.add(pii);
-					leftList.items.add(pii);
-					leftList.compute();
+		if (delta < 0 || player().inventoryCount(research()) >= delta) {
+			if (player().selectionMode == SelectionMode.PLANET) {
+				if (research().category == ResearchSubCategory.SPACESHIPS_STATIONS
+				) {
+					if (delta > 0) {
+						InventoryItem pii = new InventoryItem();
+						pii.owner = player();
+						pii.type = research();
+						pii.count = 1;
+						pii.hp = world().getHitpoints(pii.type);
+						
+						pii.createSlots();
+						
+						pii.shield = Math.max(0, pii.shieldMax());
+						
+						planet().inventory.add(pii);
+						leftList.items.add(pii);
+						leftList.compute();
+						player().changeInventoryCount(research(), -delta);
+					}
+				} else {
+					PlanetStatistics ps = planet().getStatistics();
+					if (ps.vehicleCount + delta <= ps.vehicleMax) {
+						planet().changeInventory(research(), player(), delta);
+						player().changeInventoryCount(research(), -delta);
+					}
 				}
 			} else {
-				planet().changeInventory(research(), player(), delta);
-			}
-		} else {
-			if (research().category == ResearchSubCategory.SPACESHIPS_CRUISERS
-					|| research().category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
-			) {
-				if (delta > 0) {
-					int cnt = fleet().inventoryCount(research());
-					List<InventoryItem> iss = fleet().addInventory(research(), delta);
-					
-					leftList.items.clear();
-					leftList.items.addAll(fleet().getSingleItems());
-					leftList.compute();
-					configure.item = iss.get(0);
-					
-					leftList.map.get(research()).index = cnt;
+				if (research().category == ResearchSubCategory.SPACESHIPS_CRUISERS
+						|| research().category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+				) {
+					if (delta > 0) {
+						int cnt = fleet().inventoryCount(research());
+						List<InventoryItem> iss = fleet().addInventory(research(), delta);
+						
+						leftList.items.clear();
+						leftList.items.addAll(fleet().getSingleItems());
+						leftList.compute();
+						configure.item = iss.get(0);
+						
+						leftList.map.get(research()).index = cnt;
+						player().changeInventoryCount(research(), -delta);
+					}
+					if (config.computerVoiceScreen) {
+						commons.sounds.play(SoundType.SHIP_DEPLOYED);
+					}
+				} else 
+				if (research().category == ResearchSubCategory.WEAPONS_TANKS 
+				|| research().category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					FleetStatistics fs = fleet().getStatistics();
+					if (fs.vehicleCount + delta <= fs.vehicleMax) {
+						fleet().changeInventory(research(), delta);
+						player().changeInventoryCount(research(), -delta);
+					}
+				} else {
+					if (fleet().inventoryCount(research()) + delta <= 30) {
+						fleet().changeInventory(research(), delta);
+						player().changeInventoryCount(research(), -delta);
+					}
 				}
-				if (config.computerVoiceScreen) {
-					commons.sounds.play(SoundType.SHIP_DEPLOYED);
-				}
-			} else {
-				fleet().changeInventory(research(), delta);
 			}
+			doSelectListVehicle(research());
 		}
-		player().changeInventoryCount(research(), -delta);
-		doSelectListVehicle(research());
 	}
 	/** Update the inventory display based on the current selection. */
 	void updateCurrentInventory() {

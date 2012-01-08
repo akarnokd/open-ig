@@ -89,6 +89,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	}
 	/** 
 	 * Change the inventory amount of a given technology. 
+	 * <p>Does not change the owner's inventory
 	 * @param type the item type
 	 * @param amount the amount delta
 	 */
