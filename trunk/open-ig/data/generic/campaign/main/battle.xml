@@ -32,29 +32,29 @@
 		<projectile id='Rocket1'
 			matrix='inventions/weapons/projectiles/rocket_1_rotate' alternative='inventions/weapons/projectiles/alien_rocket_1_rotate'
 			width='64' height='1' sound='FIRE_ROCKET_1' damage='400' delay='20000'
-			range='-1' mode='ROCKET'  movement-speed='15' rotation-time='1'/>
+			range='-1' mode='ROCKET'  movement-speed='15' rotation-time='50'/>
 		<projectile id='Rocket2'
 			matrix='inventions/weapons/projectiles/rocket_2_rotate' alternative='inventions/weapons/projectiles/alien_rocket_2_rotate'
 			width='80' height='1' sound='FIRE_ROCKET_1' damage='700' delay='20000'
-			range='-1' mode='ROCKET'  movement-speed='15' rotation-time='1'/>
+			range='-1' mode='ROCKET'  movement-speed='15' rotation-time='50'/>
 		<projectile id='MultiheadedRocket'
 			matrix='inventions/weapons/projectiles/multi_headed_rocket_rotate'
 			alternative='inventions/weapons/projectiles/alien_multi_headed_rocket_rotate'
 			width='64' height='1' sound='FIRE_ROCKET_1' damage='900' delay='20000'
-			range='-1' mode='MULTI_ROCKET'  movement-speed='15' rotation-time='1'/>
+			range='-1' mode='MULTI_ROCKET'  movement-speed='15' rotation-time='50'/>
 		<projectile id='Bomb1'
 			matrix='inventions/weapons/projectiles/bomb_1_rotate' alternative='inventions/weapons/projectiles/alien_bomb_1_rotate'
 			width='64' height='1' sound='FIRE_ROCKET_1' damage='2000' delay='20000'
-			range='-1' mode='BOMB'  movement-speed='15' rotation-time='1'/>
+			range='-1' mode='BOMB'  movement-speed='15' rotation-time='50'/>
 		<projectile id='Bomb2'
 			matrix='inventions/weapons/projectiles/bomb_2_rotate' alternative='inventions/weapons/projectiles/alien_bomb_2_rotate'
 			width='64' height='1' sound='FIRE_ROCKET_1' damage='3400' delay='20000'
-			range='-1' mode='BOMB'  movement-speed='15' rotation-time='1'/>
+			range='-1' mode='BOMB'  movement-speed='15' rotation-time='50'/>
 		<projectile id='VirusBomb'
 			matrix='inventions/weapons/projectiles/virus_bomb_rotate'
 			alternative='inventions/weapons/projectiles/alien_virus_bomb_rotate'
 			width='64' height='1' sound='FIRE_ROCKET_1' damage='4600' delay='20000'
-			range='-1' mode='VIRUS'  movement-speed='15' rotation-time='1'/>
+			range='-1' mode='VIRUS'  movement-speed='15' rotation-time='50'/>
 	</projectiles>
 	<!-- Entities for spacewar with rotation info for regular and alternative 
 		appearances. -->

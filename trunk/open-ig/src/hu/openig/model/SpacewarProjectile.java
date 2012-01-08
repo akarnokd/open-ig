@@ -20,8 +20,6 @@ public class SpacewarProjectile extends SpacewarObject {
 	public int movementSpeed;
 	/** The rotation time per angle segment. */
 	public double rotationTime;
-	/** Indicate that the projectile can track its target. */
-	public boolean steering;
 	/** The projectile's model. */
 	public BattleProjectile model;
 	/** The angle images of the projectile. */

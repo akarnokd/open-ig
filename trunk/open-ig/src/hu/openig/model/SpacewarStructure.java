@@ -30,7 +30,13 @@ public class SpacewarStructure extends SpacewarObject {
 		/** A projector. */
 		PROJECTOR,
 		/** A shield. */
-		SHIELD
+		SHIELD,
+		/** Rocket mode. */
+		ROCKET,
+		/** Bomb mode. */
+		BOMB,
+		/** Virus mode. */
+		VIRUS_BOMB
 	}
 	/** The container fleet. */
 	public Fleet fleet;
@@ -42,13 +48,8 @@ public class SpacewarStructure extends SpacewarObject {
 	public Building building;
 	/** The information image. */
 	public String infoImageName;
-	/** Available hitpoints, single object. */
 	/** Is the ship selected? */
 	public boolean selected;
-	/** The available hitpoints. */
-	public int hp;
-	/** The maximum hitpoints. */
-	public int hpMax;
 	/** The value of this structure (e.g., the build cost). */
 	public int value;
 	/** The shield hitpoints. */
@@ -68,7 +69,7 @@ public class SpacewarStructure extends SpacewarObject {
 	/** The beam angle in an X-Y screen directed coordinate system. */
 	public double angle;
 	/** The rotation speed: millisecond time per angle element. */
-	public int rotationTime;
+	public double rotationTime;
 	/** The movement speed: Milliseconds per one pixel. */
 	public int movementSpeed;
 	/** The range of the shortest beam-weapon. */
@@ -83,6 +84,12 @@ public class SpacewarStructure extends SpacewarObject {
 	public SpacewarStructure attack;
 	/** Attack anything in range. */
 	public boolean guard;
+	/** Kamikaze mode mode if greater than zero, indicates impact damage. */
+	public int kamikaze;
+	/** The available hitpoints. */
+	public int hp;
+	/** The maximum hitpoints. */
+	public int hpMax;
 	/** @return the type name describing this structure. */
 	public String getType() {
 		if (type == StructureType.SHIP || type == StructureType.STATION) {
@@ -164,7 +171,7 @@ public class SpacewarStructure extends SpacewarObject {
 	 * @param target the target structure
 	 * @return the list of weapon ports
 	 */
-	public List<SpacewarWeaponPort> inRange(SpacewarStructure target) {
+	public List<SpacewarWeaponPort> inRange(SpacewarObject target) {
 		List<SpacewarWeaponPort> result = JavaUtils.newArrayList();
 		double d = Math.hypot(x - target.x, y - target.y);
 		for (SpacewarWeaponPort p : ports) {
