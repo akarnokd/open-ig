@@ -24,6 +24,7 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.Production;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
@@ -289,6 +290,9 @@ public class OffensePlanner extends Planner {
 	 */
 	boolean checkSellOldTech() {
 		Set<ResearchType> inuse = JavaUtils.newHashSet();
+		for (Production prod : world.productions.values()) {
+			inuse.add(prod.type);
+		}
 		
 		Map<String, Pred1<ResearchType>> filters = JavaUtils.newHashMap();
 		Map<String, ResearchType> bestValue = JavaUtils.newHashMap();

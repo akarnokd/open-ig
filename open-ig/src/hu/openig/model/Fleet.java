@@ -385,10 +385,12 @@ public class Fleet implements Named, Owned, HasInventory {
 		int vehicleCount = 0;
 		int vehicleMax = 0;
 		int result = 0;
+		List<InventoryItem> veh = new ArrayList<InventoryItem>();
 		for (InventoryItem fii : inventory) {
 			if (fii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| fii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				vehicleCount += fii.count;
+				veh.add(fii);
 			}
 			if (fii.type.has("vehicles")) {
 				vehicleMax += fii.type.getInt("vehicles"); 
@@ -401,20 +403,16 @@ public class Fleet implements Named, Owned, HasInventory {
 				}
 			}
 		}
-		List<InventoryItem> veh = new ArrayList<InventoryItem>();
-		for (InventoryItem ii : inventory) {
-			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
-					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-				veh.add(ii);
-			}
-		}
 		while (vehicleCount > vehicleMax && veh.size() > 0) {
 			InventoryItem fii = owner.world.random(veh);
-			fii.count--;
-			vehicleCount--;
-			result++;
-			if (fii.count <= 0) {
-				inventory.remove(fii);
+			if (fii.count > 0) {
+				fii.count--;
+				vehicleCount--;
+				result++;
+				if (fii.count <= 0) {
+					inventory.remove(fii);
+					veh.remove(fii);
+				}
 			}
 		}
 		return result;
@@ -539,5 +537,15 @@ public class Fleet implements Named, Owned, HasInventory {
 		
 		inventory.clear();
 		owner.world.removeFleet(this);
+	}
+	/**
+	 * Stop the fleet.
+	 */
+	public void stop() {
+		waypoints.clear();
+		targetFleet = null;
+		targetPlanet = null;
+		mode = null;
+		task = FleetTask.IDLE;
 	}
 }

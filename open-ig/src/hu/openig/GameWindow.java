@@ -27,7 +27,6 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
-import hu.openig.model.FleetTask;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
@@ -1724,14 +1723,12 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 			// check if the source fleet still exists
 			if (!bi.attacker.owner.fleets.containsKey(bi.attacker)) {
-				bi.attacker.task = FleetTask.IDLE;
+				bi.attacker.stop();
 				continue;
 			}
 			// check if the target fleet is still exists
 			if (bi.targetFleet != null && !bi.targetFleet.owner.fleets.containsKey(bi.targetFleet)) {
-				bi.attacker.task = FleetTask.IDLE;
-				bi.attacker.targetFleet = null;
-				bi.attacker.mode = null;
+				bi.attacker.stop();
 				continue;
 			}
 			// check if the target planet already belongs to the attacker
@@ -1739,9 +1736,7 @@ public class GameWindow extends JFrame implements GameControls {
 					&& (bi.targetPlanet.owner == bi.attacker.owner 
 					|| bi.targetPlanet.owner == null
 					|| bi.attacker.owner.knowledge(bi.targetPlanet, PlanetKnowledge.OWNER) < 0)) {
-				bi.attacker.task = FleetTask.IDLE;
-				bi.attacker.targetPlanet(null);
-				bi.attacker.mode = null;
+				bi.attacker.stop();
 				continue;
 			}
 			if (bi.targetPlanet != null) {
@@ -1751,10 +1746,10 @@ public class GameWindow extends JFrame implements GameControls {
 					&& ((bi.targetFleet != null && bi.targetFleet.owner != world().player)
 							|| (bi.targetPlanet != null && bi.targetPlanet.owner != world().player))) {
 				new BattleSimulator(world(), bi).autoBattle();
-				bi.attacker.task = FleetTask.IDLE;
+				bi.attacker.stop();
 				Fleet f2 = bi.getFleet();
 				if (f2 != null) {
-					f2.task = FleetTask.IDLE;
+					f2.stop();
 				}
 				continue;
 			}
@@ -1819,9 +1814,7 @@ public class GameWindow extends JFrame implements GameControls {
 					if (!ableToGroundBattle) {
 						displayError(commons.labels().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
 						commons.sounds.play(SoundType.NOT_AVAILABLE);
-						bi.attacker.task = FleetTask.IDLE;
-						bi.attacker.targetPlanet(null);
-						bi.attacker.mode = null;
+						bi.attacker.stop();
 						continue;
 					}
 					if (groundBattle) {
@@ -1841,6 +1834,7 @@ public class GameWindow extends JFrame implements GameControls {
 						// just take ownership
 						bi.targetPlanet.takeover(bi.attacker.owner);
 						BattleSimulator.applyPlanetConquered(bi.targetPlanet, 500);
+						bi.attacker.stop();
 						continue;
 					}
 				}
