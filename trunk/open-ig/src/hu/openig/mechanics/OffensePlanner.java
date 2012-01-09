@@ -9,11 +9,15 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Difficulty;
 import hu.openig.model.AIControls;
+import hu.openig.model.AIFleet;
+import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.EquipmentSlot;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetTask;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
@@ -21,9 +25,12 @@ import hu.openig.utils.JavaUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Plans the creation of various ships, equipment and vehicles.
@@ -41,11 +48,20 @@ public class OffensePlanner extends Planner {
 
 	@Override
 	protected void plan() {
-		if (world.money < 100000) {
+		// have a fleet for every N planets + 1
+		int divider = 5;
+		if (w.difficulty == Difficulty.NORMAL) {
+			divider = 4;
+		} else
+		if (w.difficulty == Difficulty.HARD) {
+			divider = 3;
+		}
+		if (world.ownFleets.size() >= world.ownPlanets.size() / divider + 1) {
+			checkFleetUpgrade();
 			return;
 		}
-		// have a fleet for every 3 planets
-		if (world.ownFleets.size() >= world.ownPlanets.size() / 3 + 1) {
+		
+		if (world.money < 100000) {
 			return;
 		}
 
@@ -188,7 +204,7 @@ public class OffensePlanner extends Planner {
 				return;
 			}
 			// select a spaceport
-			final AIPlanet spaceport = Collections.min(world.ownPlanets, BEST_PLANET);
+			final AIPlanet spaceport = findBestMilitarySpaceport();
 			
 			add(new Action0() {
 				@Override
@@ -282,5 +298,97 @@ public class OffensePlanner extends Planner {
 		}
 		
 		return result;
+	}
+	/**
+	 * Check if the fleet could be upgraded.
+	 */
+	void checkFleetUpgrade() {
+		Set<AIFleet> toUpgrade = new HashSet<AIFleet>();
+		// upgrade fleet
+		for (AIFleet f : world.ownFleets) {
+			if (f.task == FleetTask.UPGRADE && f.isMoving()) {
+				return;
+			}
+		}
+		for (final AIFleet f : world.ownFleets) {
+			if (f.task == FleetTask.UPGRADE 
+					&& !f.isMoving() && f.statistics.planet != null) {
+				// decomission fleet
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						f.fleet.strip();
+						f.fleet.sell();
+						log("FleetDecomission, Fleet = %s", f.fleet.name);
+					}
+				});
+				return;
+			}
+		}
+		for (AIFleet f : world.ownFleets) {
+			if (f.task.ordinal() > FleetTask.UPGRADE.ordinal()) {
+				if (f.statistics.vehicleCount > 0) {
+					TankChecker tc = new TankChecker();
+					if (tc.check(f.inventory)) {
+						toUpgrade.add(f);
+					}
+				} else
+				if (isBetter(f.inventory, ResearchSubCategory.SPACESHIPS_FIGHTERS)) {
+					toUpgrade.add(f);
+				} else
+				if (isBetter(f.inventory, ResearchSubCategory.SPACESHIPS_CRUISERS)) {
+					toUpgrade.add(f);
+				} else
+				if (isBetter(f.inventory, ResearchSubCategory.SPACESHIPS_BATTLESHIPS)) {
+					toUpgrade.add(f);
+				}
+			}
+		}
+		if (!toUpgrade.isEmpty()) {
+			if (checkMilitarySpaceport()) {
+				return;
+			}
+			// find the weakest fleet and move it to the closest spaceport
+			final AIFleet min = Collections.min(toUpgrade, new Comparator<AIFleet>() {
+				@Override
+				public int compare(AIFleet o1, AIFleet o2) {
+					return o1.statistics.firepower - o2.statistics.firepower;
+				}
+			});
+			final AIPlanet spaceport = findClosestMilitarySpaceport(min.x, min.y);
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					min.fleet.task = FleetTask.UPGRADE;
+					controls.actionMoveFleet(min.fleet, spaceport.planet);
+				}
+			});
+			return;
+		}
+	}
+	/**
+	 * Check if a better technology is available. 
+	 * @param inv the inventory
+	 * @param cat the category filter
+	 * @return true if better technology is available.
+	 */
+	boolean isBetter(Iterable<AIInventoryItem> inv, ResearchSubCategory cat) {
+		ResearchType current = null;
+		ResearchType best = null;
+		for (ResearchType rt : world.availableResearch) {
+			if (rt.category == cat) {
+				if (best == null || best.productionCost < rt.productionCost) {
+					best = rt;
+				}
+			}
+		}
+		for (AIInventoryItem ii : inv) {
+			if (ii.type.category == cat) {
+				if (current == null || current.productionCost < ii.type.productionCost) {
+					current = ii.type;
+				}
+			}
+		}
+		return (current == null && best != null) || (current != null && best != null && current.productionCost < best.productionCost);
 	}
 }

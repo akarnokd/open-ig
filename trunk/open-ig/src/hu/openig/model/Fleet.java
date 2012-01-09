@@ -492,4 +492,50 @@ public class Fleet implements Named, Owned, HasInventory {
 		}
 		return false;
 	}
+	/**
+	 * Unload tanks, fighters, equipment.
+	 */
+	public void strip() {
+		for (InventoryItem ii : new ArrayList<InventoryItem>(inventory)) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				owner.changeInventoryCount(ii.type, ii.count);
+				inventory.remove(ii);
+			} else {
+				for (InventorySlot is : ii.slots) {
+					if (is.type != null && !is.slot.fixed) {
+						owner.changeInventoryCount(is.type, is.count);
+						is.type = null;
+					}
+				}
+			}
+		}
+		if (inventory.size() == 0) {
+			owner.world.removeFleet(this);
+		}
+	}
+	/**
+	 * Sell all inventory item.
+	 */
+	public void sell() {
+		long money = 0L;
+		for (InventoryItem ii : inventory) {
+			money += ii.count * ii.type.productionCost / 2;
+			for (InventorySlot is : ii.slots) {
+				if (is.type != null && !is.slot.fixed) {
+					money += is.count * is.type.productionCost / 2;
+				}
+			}
+		}
+		owner.money += money;
+		owner.statistics.moneySellIncome += money;
+		owner.statistics.moneyIncome += money;
+		
+		owner.world.statistics.moneyIncome += money;
+		owner.world.statistics.moneySellIncome += money;
+		
+		inventory.clear();
+		owner.world.removeFleet(this);
+	}
 }
