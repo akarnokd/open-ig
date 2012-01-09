@@ -1724,14 +1724,17 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 			// check if the source fleet still exists
 			if (!bi.attacker.owner.fleets.containsKey(bi.attacker)) {
+				bi.attacker.task = FleetTask.IDLE;
 				continue;
 			}
 			// check if the target fleet is still exists
 			if (bi.targetFleet != null && !bi.targetFleet.owner.fleets.containsKey(bi.targetFleet)) {
+				bi.attacker.task = FleetTask.IDLE;
 				continue;
 			}
 			// check if the target planet already belongs to the attacker
-			if (bi.targetPlanet != null && bi.targetPlanet.owner == bi.attacker.owner) {
+			if (bi.targetPlanet != null && (bi.targetPlanet.owner == bi.attacker.owner || bi.targetPlanet.owner == null)) {
+				bi.attacker.task = FleetTask.IDLE;
 				continue;
 			}
 			if (bi.targetPlanet != null) {

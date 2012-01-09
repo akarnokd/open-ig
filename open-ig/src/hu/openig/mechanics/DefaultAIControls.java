@@ -18,6 +18,7 @@ import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
+import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
@@ -269,11 +270,17 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public void actionAttackPlanet(Fleet fleet, Planet planet, AIAttackMode mode) {
-		// TODO implement
+		fleet.task = FleetTask.ATTACK;
+		fleet.targetPlanet(planet);
+		fleet.mode = FleetMode.ATTACK;
+		log("AttackPlanet, Attacker = %s, Defender = %s", fleet.name, planet.name);
 	}
 	@Override
 	public void actionAttackFleet(Fleet fleet, Fleet enemy, boolean defense) {
-		// TODO implement
+		fleet.task = FleetTask.ATTACK;
+		fleet.targetFleet = enemy;
+		fleet.mode = FleetMode.ATTACK;
+		log("AttackFleet, Attacker = %s, Defender = %s", fleet.name, enemy.name);
 	}
 	@Override
 	public void actionMoveFleet(Fleet fleet, double x, double y) {

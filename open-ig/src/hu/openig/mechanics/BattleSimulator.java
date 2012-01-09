@@ -819,7 +819,7 @@ public final class BattleSimulator {
 			}
 			battle.helperPlanet = pmin;
 		} else 
-		if (battle.targetPlanet != null) {
+		if (battle.targetPlanet != null && battle.targetPlanet.owner != null) {
 			// locate the nearest fleet with the same owner
 			double dmin = Double.MAX_VALUE;
 			Fleet fmin = null;

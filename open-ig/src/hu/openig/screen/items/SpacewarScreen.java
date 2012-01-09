@@ -1872,8 +1872,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		// draw minimap
 		g2.setColor(Color.GRAY);
 		for (SpacewarProjectile e : projectiles) {
-			int x = (int)(e.x * minimap.width / space.width);
-			int y = (int)(e.y * minimap.height / space.height);
+			int x = minimap.x + (int)(e.x * minimap.width / space.width);
+			int y = minimap.y + (int)(e.y * minimap.height / space.height);
 			g2.drawLine(x, y, x, y);
 		}
 		g2.setColor(Color.WHITE);

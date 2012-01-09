@@ -252,7 +252,22 @@ public class ExplorationPlanner extends Planner {
 			public int compare(Location o1, Location o2) {
 				double d1 = Math.hypot(center.x - (o1.x + 0.5) * ec, center.y - (o1.y + 0.5) * ec);
 				double d2 = Math.hypot(center.x - (o2.x + 0.5) * ec, center.y - (o2.y + 0.5) * ec);
-				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+				double a1 = Math.atan2(center.y - (o1.y + 0.5) * ec, center.x - (o1.x + 0.5) * ec);
+				double a2 = Math.atan2(center.y - (o2.y + 0.5) * ec, center.x - (o2.x + 0.5) * ec);
+
+				if (a1 < a2) {
+					return -1;
+				} else
+				if (a1 > a2) {
+					return 1;
+				} else
+				if (d1 < d2) {
+					return -1;
+				} else
+				if (d1 > d2) {
+					return 1;
+				}
+				return 0;
 			}
 		};
 		Location loc = null;
