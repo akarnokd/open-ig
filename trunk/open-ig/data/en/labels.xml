@@ -2817,6 +2817,9 @@
 
 	<entry key='othersettings.animate_inventory'>Animate technology</entry>
 	<entry key='settings.classic_controls'>Classic right mouse action controls</entry>
+	<entry key='statistics.planet_lost'>Planets lost</entry>
+	<entry key='statistics.planet_revolted'>Planets revolted</entry>
+	<entry key='statistics.planet_died'>Planets died</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

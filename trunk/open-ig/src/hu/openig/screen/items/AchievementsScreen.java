@@ -675,6 +675,31 @@ public class AchievementsScreen extends ScreenBase {
 			}
 		}
 		));
+		statistics.add(new StatisticsEntry("statistics.planet_lost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.planetsLost);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.planet_revolted", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.planetsRevolted);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.planet_died", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.planetsDied);
+			}
+		}
+		));
+
 		
 		statistics.add(new StatisticsEntry("statistics.total_buildings", 
 				new Func1<Void, String>() {

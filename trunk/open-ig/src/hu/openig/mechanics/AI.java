@@ -9,6 +9,7 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Action1;
 import hu.openig.core.Location;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
@@ -34,9 +35,11 @@ import hu.openig.model.World;
 import hu.openig.utils.JavaUtils;
 import hu.openig.utils.XElement;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,6 +65,8 @@ public class AI implements AIManager {
 	final Map<String, PlayerFleetStrength> strengths = JavaUtils.newHashMap();
 	/** The list of actions to apply. */
 	final List<Action0> applyActions = new ArrayList<Action0>();
+	/** The next attack date. */
+	Date nextAttack;
 	/**
 	 * Knowledge about a player's typical fleet strength based on encounters.
 	 * @author akarnokd, 2011.12.20.
@@ -85,6 +90,8 @@ public class AI implements AIManager {
 	public void prepare() {
 		world = new AIWorld();
 		world.assign(p);
+		
+		world.nextAttack = nextAttack;
 	}
 	
 	@Override
@@ -253,6 +260,18 @@ public class AI implements AIManager {
 				}
 			}
 		}
+		XElement attack = in.childElement("attack");
+		if (attack != null) {
+			String na = attack.get("next-attack", null);
+			
+			if (na != null) {
+				try {
+					nextAttack = XElement.parseDateTime(na);
+				} catch (ParseException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 	@Override
 	public void save(XElement out) {
@@ -270,6 +289,10 @@ public class AI implements AIManager {
 		}
 		if (coords.length() > 0) {
 			xloc.set("coords", coords);
+		}
+		XElement xa = out.add("attack");
+		if (nextAttack != null) {
+			xa.set("next-attack", XElement.formatDateTime(nextAttack));
 		}
 	}
 	@Override
@@ -418,6 +441,17 @@ public class AI implements AIManager {
 		}
 		
 		acts = new StaticDefensePlanner(world, controls).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
+		
+		acts = new AttackPlanner(world, controls, exploration, new Action1<Date>() {
+			@Override
+			public void invoke(Date value) {
+				nextAttack = value;
+			}
+		}).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
 			return;

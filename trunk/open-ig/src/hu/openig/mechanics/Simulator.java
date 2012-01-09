@@ -15,6 +15,7 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
+import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Message;
 import hu.openig.model.Planet;
@@ -623,6 +624,7 @@ public final class Simulator {
 					
 					f.targetFleet = null;
 					f.mode = FleetMode.MOVE;
+					f.task = FleetTask.IDLE;
 				} else {
 					targetSpeed = getSpeed(f.targetFleet);
 				}

@@ -12,6 +12,7 @@ import hu.openig.core.Pair;
 
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -72,6 +73,10 @@ public class AIWorld {
 	public PlayerStatistics statistics;
 	/** The colonization limit of the player. */
 	public int colonizationLimit;
+	/** The next attack date or null if never. */
+	public Date nextAttack;
+	/** The current date. */
+	public Date now;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -150,7 +155,7 @@ public class AIWorld {
 				enemyPlanets.add(aip);
 			}
 		}
-		
+		now = player.world.time.getTime();
 	}
 	/**
 	 * Returns or calculates the planet statistics.

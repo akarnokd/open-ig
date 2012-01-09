@@ -2074,9 +2074,9 @@
 
 	<entry key='othersettings.animate_inventory'>Technológia animálása</entry>
 	<entry key='settings.classic_controls'>Klasszikus bal egérgomb parancsok</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='statistics.planet_lost'>Elvesztett bolygók</entry>
+	<entry key='statistics.planet_revolted'>Fellázadt bolygók</entry>
+	<entry key='statistics.planet_died'>Kihalt bolygók</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
