@@ -1249,7 +1249,7 @@ public class EquipmentScreen extends ScreenBase {
 			if (own && rt.category == ResearchSubCategory.WEAPONS_TANKS
 					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				addButton.visible(player().inventoryCount(rt) > 0
-						&& planet().inventoryCount(rt.category, player()) < ps.vehicleMax);
+						&& ps.vehicleCount < ps.vehicleMax);
 				delButton.visible(
 						planet().inventoryCount(rt, player()) > 0);
 				sell.visible(delButton.visible());

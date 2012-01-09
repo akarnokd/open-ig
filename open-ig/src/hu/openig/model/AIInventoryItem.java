@@ -8,6 +8,9 @@
 
 package hu.openig.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents the inventory item for the AI computation.
  * @author akarnokd, 2011.12.14.
@@ -19,6 +22,8 @@ public class AIInventoryItem {
 	public Player owner;
 	/** The count. */
 	public int count;
+	/** The copy of the inventory slots. */
+	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
 	/**
 	 * Constructs the object from the inventory item.
 	 * @param ii the source
@@ -27,5 +32,8 @@ public class AIInventoryItem {
 		this.type = ii.type;
 		this.count = ii.count;
 		this.owner = ii.owner;
+		for (InventorySlot is : ii.slots) {
+			slots.add(is.copy());
+		}
 	}
 }

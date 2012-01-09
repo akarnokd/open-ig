@@ -981,10 +981,10 @@ public abstract class Planner {
 					}
 				}
 			}
-			if (currentTank.size() == 0 && bestTank != null) {
+			if (bestTank != null && !currentTank.contains(bestTank)) {
 				return true;
 			}
-			if (currentSled.size() == 0 && bestSled != null) {
+			if (bestSled != null && !currentSled.contains(bestSled)) {
 				return true;
 			}
 			if (bestTank != null 

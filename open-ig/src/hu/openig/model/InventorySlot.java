@@ -25,4 +25,16 @@ public class InventorySlot {
 	public boolean isFilled() {
 		return count >= slot.max;
 	}
+	/**
+	 * Create a copy of this slot.
+	 * @return the new inventory slot object
+	 */
+	public InventorySlot copy() {
+		InventorySlot is = new InventorySlot();
+		is.slot = slot;
+		is.type = type;
+		is.count = count;
+		is.hp = hp;
+		return is;
+	}
 }

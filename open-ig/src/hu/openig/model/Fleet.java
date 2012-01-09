@@ -507,6 +507,8 @@ public class Fleet implements Named, Owned, HasInventory {
 					if (is.type != null && !is.slot.fixed) {
 						owner.changeInventoryCount(is.type, is.count);
 						is.type = null;
+						is.count = 0;
+						is.hp = 0;
 					}
 				}
 			}

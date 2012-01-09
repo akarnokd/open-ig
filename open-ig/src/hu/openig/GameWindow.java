@@ -27,6 +27,7 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
+import hu.openig.model.FleetTask;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
@@ -1740,6 +1741,11 @@ public class GameWindow extends JFrame implements GameControls {
 					&& ((bi.targetFleet != null && bi.targetFleet.owner != world().player)
 							|| (bi.targetPlanet != null && bi.targetPlanet.owner != world().player))) {
 				new BattleSimulator(world(), bi).autoBattle();
+				bi.attacker.task = FleetTask.IDLE;
+				Fleet f2 = bi.getFleet();
+				if (f2 != null) {
+					f2.task = FleetTask.IDLE;
+				}
 				continue;
 			}
 			bi.originalSpeed = commons.simulation.speed();
