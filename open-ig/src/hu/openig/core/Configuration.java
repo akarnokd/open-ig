@@ -172,6 +172,10 @@ public class Configuration {
 	/** The alpha cache max element count. Zero means disabling the cache. */
 	@LoadSave
 	public int tileCacheSize = 0;
+	/** Classic right-click action control scheme. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean classicControls;
 	/** 
 	 * Limit on base tile size for tile caching.
 	 * <p>Positive value means tiles larger than the given value.

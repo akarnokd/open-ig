@@ -517,13 +517,15 @@ public class OffensePlanner extends Planner {
 	 * Check if the fleet could be upgraded.
 	 */
 	void checkFleetUpgrade() {
-		if (p.id.equals("Empire")) {
-			System.out.print("");
-		}
 		Set<AIFleet> toUpgrade = new HashSet<AIFleet>();
 		// upgrade fleet
 		for (AIFleet f : world.ownFleets) {
-			if ((f.task == FleetTask.UPGRADE || f.task == FleetTask.DEPLOY) && f.isMoving()) {
+			// ignore explorers and colonizers
+			if ((f.task == FleetTask.EXPLORE || f.task == FleetTask.COLONIZE)) {
+				return;
+			}
+			if ((f.task == FleetTask.UPGRADE 
+					|| f.task == FleetTask.DEPLOY) && f.isMoving()) {
 				return;
 			}
 		}
