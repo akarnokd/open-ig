@@ -77,6 +77,9 @@ public class AttackPlanner extends Planner {
 				if (world.mayConquer) {
 					if (w.random.get().nextBoolean()) {
 						targetFleet = selectTargetFleet();
+						if (targetFleet == null && w.random.get().nextBoolean()) {
+							targetPlanet = selectTargetPlanet();
+						}
 					} else {
 						targetPlanet = selectTargetPlanet();
 					}
@@ -105,7 +108,8 @@ public class AttackPlanner extends Planner {
 		}
 		if (world.nextAttack == null) {
 			if (world.mayConquer) {
-				long next = 1L * (w.random.get().nextInt(3) + 4) * (8 + 2 * w.random.get().nextInt(6)) * 60 * 60 * 1000;
+				int base = 4;
+				long next = 1L * (w.random.get().nextInt(3) + base) * (8 + 2 * w.random.get().nextInt(6)) * 60 * 60 * 1000;
 				world.nextAttack = new Date(world.now.getTime() + next);
 				setNewAttack.invoke(world.nextAttack);
 			}
