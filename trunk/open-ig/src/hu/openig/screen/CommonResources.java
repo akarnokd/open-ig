@@ -457,20 +457,22 @@ public class CommonResources implements GameEnvironment {
 	}
 	/** Close the resources. */
 	public void stop() {
-		for (Future<?> sw : runningAI.values()) {
-			sw.cancel(true);
-		}
-		runningAI.clear();
+		timer.stop();
 		
 		close0(allocatorHandler);
 		close0(radarHandler);
 		close0(simulation);
-		
+
+
+		for (Future<?> sw : runningAI.values()) {
+			sw.cancel(true);
+		}
+		runningAI.clear();
+				
 		allocatorHandler = null;
 		radarHandler = null;
 		simulation = null;
 
-		timer.stop();
 		
 		stopMusic();
 	}

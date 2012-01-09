@@ -89,6 +89,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		} else 
 		if (playbackFinished != null) {
 			playbackFinished.invoke();
+			playbackFinished = null;
 		}
 	}
 	@Override
@@ -100,6 +101,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	public void onFinish() {
 		mediaQueue.clear();
 		stopPlayback();
+		playbackFinished = null;
 	}
 
 	@Override
@@ -227,6 +229,6 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	}
 	@Override
 	public void onEndGame() {
-		
+		playbackFinished = null;
 	}
 }
