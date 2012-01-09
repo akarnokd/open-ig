@@ -18,6 +18,7 @@ import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.BuildingType;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
@@ -180,6 +181,12 @@ public class StaticDefensePlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkTanks(final AIPlanet planet) {
+		// check if better equipment is available
+		if (planet.statistics.vehicleCount > 0) {
+			if (checkBetterTanks(planet)) {
+				return true;
+			}
+		}
 		if (planet.statistics.vehicleCount < planet.statistics.vehicleMax) {
 			final int count = planet.statistics.vehicleMax - planet.statistics.vehicleCount;
 			final VehiclePlan plan = planVehicles(count);
@@ -214,6 +221,32 @@ public class StaticDefensePlanner extends Planner {
 					} else {
 						log("DeployTanks, Planet = %s, Count = %s, Failed = owner changed", planet.planet.id, count);
 					}
+				}
+			});
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Check if better tanks or vehicles are available.
+	 * @param planet the target planet
+	 * @return true if action taken
+	 */
+	boolean checkBetterTanks(final AIPlanet planet) {
+		TankChecker check = new TankChecker();
+		// if better tanks or sleds are available, unload all and let the planner put better stuff back
+		if (check.check(planet.inventory)) {
+			add(new Action0() {
+				@Override
+				public void invoke() {
+					for (InventoryItem ii : new ArrayList<InventoryItem>(planet.planet.inventory)) {
+						if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+								|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+							p.changeInventoryCount(ii.type, ii.count);
+							planet.planet.inventory.remove(ii);
+						}
+					}
+					log("UnloadPlanet, Planet = %s", planet.planet.id);
 				}
 			});
 			return true;

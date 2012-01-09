@@ -933,4 +933,97 @@ public abstract class Planner {
 		}
 		return false;
 	}
+	/**
+	 * Check if there are better tanks or rocket sleds than in the inventory.
+	 * @author akarnokd, 2012.01.09.
+	 */
+	public class TankChecker {
+		/** The best tank technology. */
+		ResearchType bestTank = null;
+		/** The best rocket sled technology. */
+		ResearchType bestSled = null;
+		/** The current tank in inventory. */
+		ResearchType currentTank = null;
+		/** The current sled in inventory. */
+		ResearchType currentSled = null;
+		/**
+		 * Check if we have better tanks or vehicles.
+		 * @param inv the inventory
+		 * @return true if better available
+		 */
+		public boolean check(Iterable<AIInventoryItem> inv) {
+			for (ResearchType rt : world.availableResearch) {
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+					if (bestTank == null || bestTank.productionCost < rt.productionCost) {
+						bestTank = rt;
+					}
+				}
+				if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					BattleGroundVehicle veh = w.battle.groundEntities.get(rt.id);
+					if (veh != null && veh.type == GroundwarUnitType.ROCKET_SLED) {
+						if (bestSled == null || bestSled.productionCost < rt.productionCost) {
+							bestSled = rt;
+						}
+					}
+				}
+			}
+			for (AIInventoryItem ii : inv) {
+				ResearchType rt = ii.type;
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+					if (bestTank == null || bestTank.productionCost < rt.productionCost) {
+						bestTank = rt;
+					}
+				}
+				if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					BattleGroundVehicle veh = w.battle.groundEntities.get(rt.id);
+					if (veh != null && veh.type == GroundwarUnitType.ROCKET_SLED) {
+						if (bestSled == null || bestSled.productionCost < rt.productionCost) {
+							bestSled = rt;
+						}
+					}
+				}
+			}
+			return (currentTank == null && bestTank != null)
+			|| (currentTank != null && currentTank.productionCost < bestTank.productionCost)
+			|| (currentSled == null && bestSled != null) 
+			|| (bestSled != null && currentSled.productionCost < bestSled.productionCost);		
+		}
+	}
+	/**
+	 * Find the best military spaceport.
+	 * @return the planet with the spaceport
+	 */
+	public AIPlanet findBestMilitarySpaceport() {
+		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		Collections.sort(planets, BEST_PLANET);
+		for (AIPlanet p : planets) {
+			if (p.statistics.hasMilitarySpaceport) {
+				return p;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Find the best military spaceport close to the given location.
+	 * @param x the coordinate
+	 * @param y the coordinate
+	 * @return the planet with the spaceport
+	 */
+	public AIPlanet findClosestMilitarySpaceport(final double x, final double y) {
+		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		Collections.sort(planets, new Comparator<AIPlanet>() {
+			@Override
+			public int compare(AIPlanet o1, AIPlanet o2) {
+				double d1 = Math.hypot(o1.planet.x - x, o1.planet.y - y);
+				double d2 = Math.hypot(o2.planet.x - x, o2.planet.y - y);
+				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
+			}
+		});
+		for (AIPlanet p : planets) {
+			if (p.statistics.hasMilitarySpaceport) {
+				return p;
+			}
+		}
+		return null;
+	}
 }
