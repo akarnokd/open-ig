@@ -1737,7 +1737,8 @@ public class GameWindow extends JFrame implements GameControls {
 			// check if the target planet already belongs to the attacker
 			if (bi.targetPlanet != null 
 					&& (bi.targetPlanet.owner == bi.attacker.owner 
-					|| bi.targetPlanet.owner == null)) {
+					|| bi.targetPlanet.owner == null
+					|| bi.attacker.owner.knowledge(bi.targetPlanet, PlanetKnowledge.OWNER) < 0)) {
 				bi.attacker.task = FleetTask.IDLE;
 				bi.attacker.targetPlanet(null);
 				bi.attacker.mode = null;
@@ -1818,6 +1819,9 @@ public class GameWindow extends JFrame implements GameControls {
 					if (!ableToGroundBattle) {
 						displayError(commons.labels().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
 						commons.sounds.play(SoundType.NOT_AVAILABLE);
+						bi.attacker.task = FleetTask.IDLE;
+						bi.attacker.targetPlanet(null);
+						bi.attacker.mode = null;
 						continue;
 					}
 					if (groundBattle) {

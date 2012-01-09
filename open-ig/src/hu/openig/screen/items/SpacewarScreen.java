@@ -2862,6 +2862,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 							stopButton.enabled |= sws.kamikaze == 0;
 							attackButton.enabled |= sws.kamikaze == 0;
 							guardButton.enabled |= sws.kamikaze == 0;
+						} else
+						if (sws.type == StructureType.STATION 
+						|| sws.type == StructureType.PROJECTOR) {
+							stopButton.enabled = true;
+							attackButton.enabled = true;
 						}
 						guardButton.selected &= sws.guard; // keep guard only of all of the selection is in guard mode
 					}
