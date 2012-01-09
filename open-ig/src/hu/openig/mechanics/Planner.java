@@ -39,7 +39,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * The base class for planners.
@@ -943,9 +945,9 @@ public abstract class Planner {
 		/** The best rocket sled technology. */
 		ResearchType bestSled = null;
 		/** The current tank in inventory. */
-		ResearchType currentTank = null;
+		final NavigableSet<ResearchType> currentTank = new TreeSet<ResearchType>(expensiveFirst);
 		/** The current sled in inventory. */
-		ResearchType currentSled = null;
+		final NavigableSet<ResearchType> currentSled = new TreeSet<ResearchType>(expensiveFirst);
 		/**
 		 * Check if we have better tanks or vehicles.
 		 * @param inv the inventory
@@ -970,23 +972,32 @@ public abstract class Planner {
 			for (AIInventoryItem ii : inv) {
 				ResearchType rt = ii.type;
 				if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
-					if (bestTank == null || bestTank.productionCost < rt.productionCost) {
-						bestTank = rt;
-					}
+					currentTank.add(rt);
 				}
 				if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 					BattleGroundVehicle veh = w.battle.groundEntities.get(rt.id);
 					if (veh != null && veh.type == GroundwarUnitType.ROCKET_SLED) {
-						if (bestSled == null || bestSled.productionCost < rt.productionCost) {
-							bestSled = rt;
-						}
+						currentSled.add(rt);
 					}
 				}
 			}
-			return (currentTank == null && bestTank != null)
-			|| (currentTank != null && currentTank.productionCost < bestTank.productionCost)
-			|| (currentSled == null && bestSled != null) 
-			|| (bestSled != null && currentSled.productionCost < bestSled.productionCost);		
+			if (currentTank.size() == 0 && bestTank != null) {
+				return true;
+			}
+			if (currentSled.size() == 0 && bestSled != null) {
+				return true;
+			}
+			if (bestTank != null 
+					&& (currentTank.size() > 1
+					|| currentTank.first().productionCost < bestTank.productionCost)) {
+				return true;
+			}
+			if (bestSled != null 
+					&& (currentSled.size() > 1
+					|| currentSled.first().productionCost < bestSled.productionCost)) {
+				return true;
+			}
+			return false;
 		}
 	}
 	/**
