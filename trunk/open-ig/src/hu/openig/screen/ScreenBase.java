@@ -23,6 +23,7 @@ import hu.openig.model.World;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 
 import java.awt.FontMetrics;
 import java.awt.Point;
@@ -283,5 +284,14 @@ public abstract class ScreenBase extends UIContainer {
 		if (config.buttonSounds) {
 			commons.sounds.play(type);
 		}
+	}
+	/**
+	 * Check if the mouse event is a panning event.
+	 * @param e the event
+	 * @return true if panning event
+	 */
+	public boolean isPanningEvent(UIMouse e) {
+		return (e.has(Button.RIGHT) && !config.classicControls)
+				|| (e.has(Button.MIDDLE) && config.classicControls);
 	}
 }

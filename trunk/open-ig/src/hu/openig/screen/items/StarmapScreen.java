@@ -1738,7 +1738,7 @@ public class StarmapScreen extends ScreenBase {
 		switch (e.type) {
 		case MOVE:
 		case DRAG:
-			if (panning || (e.has(Button.RIGHT) && e.has(Type.DRAG))) {
+			if (panning || isPanningEvent(e)) {
 				if (starmapWindow.contains(e.x, e.y)) {
 					if (!panning) {
 						lastX = e.x;
@@ -1921,7 +1921,9 @@ public class StarmapScreen extends ScreenBase {
 	 */
 	boolean onMouseDown(UIMouse e) {
 		boolean rep = false;
-		if (e.has(Button.RIGHT) && starmapWindow.contains(e.x, e.y)) {
+		if (((config.classicControls && e.has(Button.MIDDLE)) 
+				|| (!config.classicControls && e.has(Button.RIGHT)))
+				&& starmapWindow.contains(e.x, e.y)) {
 			panning = true;
 		}
 		if (e.has(Button.LEFT) && scrollbarPainter.vscrollKnobRect.contains(e.x, e.y)) {
@@ -1935,53 +1937,70 @@ public class StarmapScreen extends ScreenBase {
 			scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 			rep = true;
 		}
-		if (starmapWindow.contains(e.x, e.y) && e.has(Button.MIDDLE)) {
-			zoomToFit();
-		} else
-		if (starmapWindow.contains(e.x, e.y) && e.has(Button.RIGHT) 
-				&& player().selectionMode == SelectionMode.FLEET 
-				&& fleet() != null && fleet().owner == player()) {
-			if (checkExplorationLimits(e.x, e.y)) {
-				return false;
-			}
-			if (e.has(Modifier.CTRL)) {
-				// attack move
-				Planet p = getPlanetAt(player(), e.x, e.y, true);
-				Fleet f = getFleetAt(player(), e.x, e.y, true, fleet());
-				if (f != null) {
-					fleetMode = null;
-					fleet().targetPlanet(null);
-					fleet().targetFleet = f;
-					fleet().waypoints.clear();
-					fleet().task = FleetTask.ATTACK;
-					fleet().mode = FleetMode.ATTACK;
-				} else
-				if (p != null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
-					fleetMode = null;
-					fleet().targetPlanet(p);
-					fleet().targetFleet = null;
-					fleet().waypoints.clear();
-					fleet().task = FleetTask.ATTACK;
-					fleet().mode = FleetMode.ATTACK;
-				} else {
-					fleet().targetPlanet(null);
-					fleet().targetFleet = null;
-					fleet().mode = FleetMode.MOVE;
-					fleet().task = FleetTask.MOVE;
-					fleet().waypoints.add(toMapCoordinates(e.x, e.y));
+		if (starmapWindow.contains(e.x, e.y)) {
+			if (e.has(Button.MIDDLE)) {
+				if (config.classicControls == e.has(Modifier.CTRL)) {
+					zoomToFit();
 				}
-				panning = false;
 			} else
-			if (e.has(Modifier.SHIFT)) {
-				fleet().targetPlanet(null);
-				fleet().targetFleet = null;
-				fleet().mode = FleetMode.MOVE;
-				fleet().waypoints.add(toMapCoordinates(e.x, e.y));
-				fleet().task = FleetTask.MOVE;
-				fleetMode = null;
-				panning = false;
+			if (player().selectionMode == SelectionMode.FLEET && fleet() != null && fleet().owner == player()) {
+				if (e.has(Button.RIGHT)) {
+					if (checkExplorationLimits(e.x, e.y)) {
+						return false;
+					}
+					if (e.has(Modifier.SHIFT)) {
+						if (fleet().targetFleet != null || fleet().targetPlanet() != null) {
+							fleet().waypoints.clear();
+						}
+						fleet().targetPlanet(null);
+						fleet().targetFleet = null;
+						fleet().mode = FleetMode.MOVE;
+						fleet().waypoints.add(toMapCoordinates(e.x, e.y));
+						fleet().task = FleetTask.MOVE;
+						fleetMode = null;
+						panning = false;
+					} else
+					if (!config.classicControls == e.has(Modifier.CTRL)) {
+						Planet p = getPlanetAt(player(), e.x, e.y, true);
+						Fleet f = getFleetAt(player(), e.x, e.y, true, fleet());
+						if (f != null) {
+							fleetMode = null;
+							fleet().targetPlanet(null);
+							fleet().targetFleet = f;
+							fleet().waypoints.clear();
+							if (f.owner == player()) {
+								fleet().task = FleetTask.MOVE;
+								fleet().mode = FleetMode.MOVE;
+							} else {
+								fleet().task = FleetTask.ATTACK;
+								fleet().mode = FleetMode.ATTACK;
+							}
+						} else
+						if (p != null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+							fleetMode = null;
+							fleet().targetPlanet(p);
+							fleet().targetFleet = null;
+							fleet().waypoints.clear();
+							if (p.owner == player()) {
+								fleet().task = FleetTask.MOVE;
+								fleet().mode = FleetMode.MOVE;
+							} else {
+								fleet().task = FleetTask.ATTACK;
+								fleet().mode = FleetMode.ATTACK;
+							}
+						} else {
+							fleet().targetPlanet(null);
+							fleet().targetFleet = null;
+							fleet().mode = FleetMode.MOVE;
+							fleet().task = FleetTask.MOVE;
+							fleet().waypoints.clear();
+							fleet().waypoints.add(toMapCoordinates(e.x, e.y));
+						}
+						panning = false;
+					}
+				}
 			}
-		} else
+		}
 		if (e.has(Button.LEFT)) {
 			if (starmapWindow.contains(e.x, e.y)) {
 				if (checkExplorationLimits(e.x, e.y)) {
@@ -2061,7 +2080,7 @@ public class StarmapScreen extends ScreenBase {
 					}
 				}
 			}
-		} else
+		}
 		if (e.has(Button.RIGHT)) {
 			if (rightPanelVisible) {
 				if (planetsList.contains(e.x, e.y)) {

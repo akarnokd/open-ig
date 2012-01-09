@@ -677,7 +677,7 @@ public class PlanetScreen extends ScreenBase {
 			switch (e.type) {
 			case MOVE:
 			case DRAG:
-				if (drag || e.has(Button.RIGHT)) {
+				if (drag || isPanningEvent(e)) {
 					if (!drag) {
 						drag = true;
 						lastX = e.x;
@@ -718,22 +718,44 @@ public class PlanetScreen extends ScreenBase {
 						toggleUnitPlacementAt(e.x, e.y);
 					} else
 					if (e.has(Button.RIGHT)) {
-						if (e.has(Modifier.SHIFT)) {
-							doMoveSelectedUnits(e.x, e.y);
-							rep = true;
-						} else 
-						if (e.has(Modifier.CTRL)) {
-							doAttackWithSelectedUnits(e.x, e.y);
-							rep = true;
+						if (config.classicControls) {
+							Building b = buildingAt(e.x, e.y);
+							if (b != null) {
+								if (planet().owner == selectionOwner()) {
+									doMoveSelectedUnits(e.x, e.y);
+									rep = true;
+								} else {
+									doAttackWithSelectedUnits(e.x, e.y);
+									rep = true;
+								}
+							} else {
+								GroundwarUnit u = unitAt(e.x, e.y);
+								if (u != null && u.owner != selectionOwner()) {
+									doAttackWithSelectedUnits(e.x, e.y);
+									rep = true;
+								} else {
+									doMoveSelectedUnits(e.x, e.y);
+									rep = true;
+								}
+							}
 						} else {
-							drag = true;
-							lastX = e.x;
-							lastY = e.y;
-							doDragMode(true);
+							if (e.has(Modifier.SHIFT)) {
+								doMoveSelectedUnits(e.x, e.y);
+								rep = true;
+							} else 
+							if (e.has(Modifier.CTRL)) {
+								doAttackWithSelectedUnits(e.x, e.y);
+								rep = true;
+							} else {
+								drag = true;
+								lastX = e.x;
+								lastY = e.y;
+								doDragMode(true);
+							}
 						}
 					}
 //				} else FIXME only if battle
-				if (e.has(Button.MIDDLE)) {
+				if (e.has(Button.MIDDLE) && config.classicControls == e.has(Modifier.CTRL)) {
 					render.offsetX = -(surface().boundingRectangle.width - width) / 2;
 					render.offsetY = -(surface().boundingRectangle.height - height) / 2;
 					scale = 1;
@@ -766,7 +788,7 @@ public class PlanetScreen extends ScreenBase {
 				}
 				break;
 			case UP:
-				if (e.has(Button.RIGHT)) {
+				if (e.has(Button.RIGHT) || e.has(Button.MIDDLE)) {
 					drag = false;
 					doDragMode(false);
 				}
@@ -3859,7 +3881,7 @@ public class PlanetScreen extends ScreenBase {
 						damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage, u.model.area, u.owner);
 					} else
 					if (u.model.type == GroundwarUnitType.KAMIKAZE) {
-						damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage, u.model.area, u.owner);
+						damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage * 50, u.model.area, u.owner);
 						u.hp = 0; // destroy self
 						createExplosion(u, ExplosionType.GROUND_YELLOW);
 					} else
@@ -3954,7 +3976,7 @@ public class PlanetScreen extends ScreenBase {
 						// if the target unit moved since last
 						double dx = ep.x - u.attackUnit.x;
 						double dy = ep.y - u.attackUnit.y;
-						if (Math.hypot(dx, dy) > 1) {
+						if (Math.hypot(dx, dy) > 1 && !u.attackUnit.path.isEmpty()) {
 							u.path.clear();
 							u.inMotionPlanning = true;
 							pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
@@ -4530,6 +4552,30 @@ public class PlanetScreen extends ScreenBase {
 		}
 	}
 	/**
+	 * Retrieve the building at the given mouse location.
+	 * @param mx the x coodinate
+	 * @param my the y coordinate
+	 * @return the building or null
+	 */
+	Building buildingAt(int mx, int my) {
+		return getBuildingAt(render.getLocationAt(mx, my));
+	}
+	/**
+	 * Retrive the unit at the given location.
+	 * @param mx the mouse X
+	 * @param my the mouse Y
+	 * @return the unit or null if empty
+	 */
+	GroundwarUnit unitAt(int mx, int my) {
+		Location lm = render.getLocationAt(mx, my);
+		for (GroundwarUnit u1 : units) {
+			if ((int)u1.x == lm.x && (int)u1.y == lm.y) {
+				return u1;
+			}
+		}
+		return null;
+	}
+	/**
 	 * Attack the object at the given mouse location with the currently selected units.
 	 * @param mx the mouse X
 	 * @param my the mouse Y
@@ -4541,7 +4587,8 @@ public class PlanetScreen extends ScreenBase {
 					/* && u.owner == player() */) { // FIXME player only
 				Location lm = render.getLocationAt(mx, my);
 				Building b = getBuildingAt(lm);
-				if (b != null && planet().owner != u.owner && u.model.type != GroundwarUnitType.PARALIZER) {
+				if (b != null && planet().owner != u.owner 
+						&& u.model.type != GroundwarUnitType.PARALIZER) {
 					u.attackBuilding = b;
 					u.attackUnit = null;
 				} else {
@@ -4994,6 +5041,18 @@ public class PlanetScreen extends ScreenBase {
 		} else
 		if (battle.targetPlanet != null && battle.targetPlanet.owner != player()) {
 			return battle.targetPlanet.owner;
+		}
+		return null;
+	}
+	/**
+	 * Returns the owner of the currently selected units.
+	 * @return the owner
+	 */
+	Player selectionOwner() {
+		for (GroundwarUnit u : units) {
+			if (u.selected) {
+				return u.owner;
+			}
 		}
 		return null;
 	}

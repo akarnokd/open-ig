@@ -196,6 +196,9 @@ public class LoadSaveScreen extends ScreenBase {
 	/** The save name. */
 	@Settings(page = SettingsPage.LOAD_SAVE)
 	UILabel saveNameText;
+	/** Classic RTS controls? */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox classicControls;
 	/** The timer for the blinking cursor. */
 	Timer blink;
 	/** The currently editing save text. */
@@ -704,6 +707,17 @@ public class LoadSaveScreen extends ScreenBase {
 		saveNameText.color(TextRenderer.YELLOW);
 		saveNameText.backgroundColor(0xC0000000);
 
+		
+		classicControls = new UICheckBox(get("settings.classic_controls"), 14, commons.common().checkmark, commons.text());
+		classicControls.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				sound(SoundType.CLICK_MEDIUM_2);
+				config.classicControls = classicControls.selected();
+			}
+		};
+
+		
 		addThis();
 	}
 	/**
@@ -750,6 +764,7 @@ public class LoadSaveScreen extends ScreenBase {
 		satelliteDeploy.selected(config.satelliteDeploy);
 		automaticBattle.selected(config.automaticBattle);
 		radarUnion.selected(config.radarUnion);
+		classicControls.selected(config.classicControls);
 	}
 	/**
 	 * Choose a random background for the options.
@@ -853,6 +868,7 @@ public class LoadSaveScreen extends ScreenBase {
 
 		automaticBattle.location(base.x + 30, base.y + 250 + 8);
 		radarUnion.location(base.x + 30, base.y + 280 + 8);
+		classicControls.location(base.x + 30, base.y + 310 + 8);
 
 	}
 	@Override

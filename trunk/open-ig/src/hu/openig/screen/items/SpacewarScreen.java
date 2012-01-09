@@ -712,25 +712,48 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 			}
 			if (e.has(Button.RIGHT) && mainmap.contains(e.x, e.y)) {
-				if (e.has(Modifier.SHIFT)) {
-					Point2D.Double p = mouseToSpace(e.x, e.y);
-					doMoveSelectedShips(p.x, p.y);
-				} else
-				if (e.has(Modifier.CTRL)) {
+				if (config.classicControls) {
 					Point2D.Double p = mouseToSpace(e.x, e.y);
 					SpacewarStructure s = enemyAt(p.x, p.y);
-					if (s != null) {
-						doAttackWithShips(s);
+					if (s == null) {
+						doMoveSelectedShips(p.x, p.y);
+						moveButton.selected = false;
+					} else {
+						if (rocketButton.selected) {
+							doAttackWithRockets(s);
+						} else {
+							doAttackWithShips(s);
+							attackButton.selected = false;
+						}
 					}
+					
+				} else {
+					if (e.has(Modifier.SHIFT)) {
+						Point2D.Double p = mouseToSpace(e.x, e.y);
+						doMoveSelectedShips(p.x, p.y);
+					} else
+					if (e.has(Modifier.CTRL)) {
+						Point2D.Double p = mouseToSpace(e.x, e.y);
+						SpacewarStructure s = enemyAt(p.x, p.y);
+						if (s != null) {
+							doAttackWithShips(s);
+						}
+					} else {
+						lastX = e.x;
+						lastY = e.y;
+						panning = true;
+					}
+				}
+			}
+			if (e.has(Button.MIDDLE) && mainmap.contains(e.x, e.y)) {
+				if (config.classicControls && e.has(Modifier.CTRL)) { 
+					zoomToFit();
+					needRepaint = true;
 				} else {
 					lastX = e.x;
 					lastY = e.y;
 					panning = true;
 				}
-			}
-			if (e.has(Button.MIDDLE) && mainmap.contains(e.x, e.y)) {
-				zoomToFit();
-				needRepaint = true;
 			}
 			break;
 		case DRAG:
