@@ -1730,11 +1730,17 @@ public class GameWindow extends JFrame implements GameControls {
 			// check if the target fleet is still exists
 			if (bi.targetFleet != null && !bi.targetFleet.owner.fleets.containsKey(bi.targetFleet)) {
 				bi.attacker.task = FleetTask.IDLE;
+				bi.attacker.targetFleet = null;
+				bi.attacker.mode = null;
 				continue;
 			}
 			// check if the target planet already belongs to the attacker
-			if (bi.targetPlanet != null && (bi.targetPlanet.owner == bi.attacker.owner || bi.targetPlanet.owner == null)) {
+			if (bi.targetPlanet != null 
+					&& (bi.targetPlanet.owner == bi.attacker.owner 
+					|| bi.targetPlanet.owner == null)) {
 				bi.attacker.task = FleetTask.IDLE;
+				bi.attacker.targetPlanet(null);
+				bi.attacker.mode = null;
 				continue;
 			}
 			if (bi.targetPlanet != null) {
