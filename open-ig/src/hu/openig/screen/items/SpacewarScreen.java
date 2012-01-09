@@ -3656,7 +3656,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		// apply structure statuses
 		for (SpacewarStructure s : structures) {
 			if (s.item != null) {
-				s.item.count = s.count;
+				s.item.count = 0;
+			}
+		}
+		for (SpacewarStructure s : structures) {
+			if (s.item != null) {
+				s.item.count += s.count;
 				s.item.hp = s.hp;
 				s.item.shield = s.shield;
 			} else
