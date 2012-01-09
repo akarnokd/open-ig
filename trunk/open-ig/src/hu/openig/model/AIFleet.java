@@ -41,6 +41,8 @@ public class AIFleet {
 	public double y;
 	/** The current task. */
 	public FleetTask task;
+	/** Fleet can be upgraded? */
+	public boolean canUpgrade;
 	/** The inventory. */
 	public final List<AIInventoryItem> inventory = new ArrayList<AIInventoryItem>();
 	/**

@@ -535,7 +535,7 @@
 	<item id='PlasmaCannon' name='tech.plasmacannon.name' long-name='tech.plasmacannon.longname'
 		description='tech.plasmacannon.description' category='WEAPONS_CANNONS'
 		image='inventions/weapons/cannons/plasma_cannon' factory='weapon'
-		research-cost='12000' production-cost='3200' level='4' race='human'
+		research-cost='12000' production-cost='2400' level='4' race='human'
 		requires='IonCannon' mech='2' comp='4' ai='2' mil='4' index='1'
 		video='technology/weapons/cannons/plasma_cannon'>
 		<property name='projectile' value='Plasma' />

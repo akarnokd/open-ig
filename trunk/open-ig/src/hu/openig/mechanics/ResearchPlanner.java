@@ -357,7 +357,9 @@ public class ResearchPlanner extends Planner {
 						failed++;
 					}
 				} else {
-					failed--; // constructing, maybe room will be available later
+					if (planet.statistics.activeLabCount() == 0) {
+						failed--; // constructing, maybe room will be available later
+					}
 				}
 			}
 		}
