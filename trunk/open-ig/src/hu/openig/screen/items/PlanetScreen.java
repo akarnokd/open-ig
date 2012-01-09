@@ -988,7 +988,7 @@ public class PlanetScreen extends ScreenBase {
 				drawBattleHelpers(g2, x0, y0);
 				if (config.showBuildingName 
 						&& (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0 
-						|| (battle != null && !startBattle.visible()))) {
+						|| (battle != null && !startBattle.visible() && !battle.isGroundwarComplete()))) {
 					drawBuildingHelpers(g2, surface);
 				}
 				// paint red on overlapping images of buildings, land-features and vehicles

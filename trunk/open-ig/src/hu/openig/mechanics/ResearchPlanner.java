@@ -358,7 +358,13 @@ public class ResearchPlanner extends Planner {
 					}
 				} else {
 					if (planet.statistics.activeLabCount() == 0) {
-						failed--; // constructing, maybe room will be available later
+						failed--;
+						for (AIBuilding b : planet.buildings) {
+							if (b.type.kind.equals("Science") && b.enabled) {
+								failed += 2; // constructing, maybe room will be available later
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -444,12 +450,18 @@ public class ResearchPlanner extends Planner {
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
+		if (r == AIResult.NO_MONEY) {
+			return r;
+		}
 		r = buildOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet, "civil");
 		if (r == AIResult.SUCCESS) {
 			return AIResult.SUCCESS;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
+		}
+		if (r == AIResult.NO_MONEY) {
+			return r;
 		}
 		r = buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer");
 		if (r == AIResult.SUCCESS) {
@@ -458,12 +470,18 @@ public class ResearchPlanner extends Planner {
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
+		if (r == AIResult.NO_MONEY) {
+			return r;
+		}
 		r = buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical");
 		if (r == AIResult.SUCCESS) {
 			return AIResult.SUCCESS;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
+		}
+		if (r == AIResult.NO_MONEY) {
+			return r;
 		}
 		r = buildOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet, "military");
 		if (r == AIResult.SUCCESS) {
@@ -472,10 +490,13 @@ public class ResearchPlanner extends Planner {
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
+		if (r == AIResult.NO_MONEY) {
+			return r;
+		}
 		if (noroom > 0) {
 			return AIResult.NO_ROOM;
 		}
-		return AIResult.NO_MONEY;
+		return AIResult.CONTINUE;
 	}
 	/**
 	 * Build one of the labs if the prerequisite counts match.
