@@ -78,6 +78,15 @@ public final class BattleSimulator {
 	 * Run the given battle automatically.
 	 */
 	public void autoBattle() {
+		System.out.printf("Attacker: %s (%s)%n", battle.attacker.name, battle.attacker.owner.id);
+		Planet p0 = battle.getPlanet();
+		if (p0 != null) {
+			System.out.printf("Planet: %s (%s)%n", p0.name, p0.owner.id);
+		}
+		Fleet f0 = battle.getFleet();
+		if (f0 != null) {
+			System.out.printf("Fleet: %s (%s)%n", f0.name, f0.owner.id);
+		}
 		findHelpers(battle, world);
 		if (spaceBattleNeeded()) {
 			runSpaceBattle();

@@ -280,7 +280,7 @@ public class ExplorationPlanner extends Planner {
 		};
 		Location loc = null;
 		final int rl = bf.radarLevel();
-		if (rl > 0 && w.random.get().nextDouble() < 0.99) {
+		if (rl > 0/* && w.random.get().nextDouble() < 0.99*/) {
 			loc = Collections.min(allowed, distance);
 		} else {
 			List<Location> ls = new ArrayList<Location>(exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit));
