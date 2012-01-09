@@ -91,33 +91,33 @@ public class ExplorationPlanner extends Planner {
 			}
 		} else {
 			// yield more when exploration is finished
-			if (w.random.get().nextDouble() < 0.90) {
-				return;
-			}
-			// exploration complete, set explorers to idle
-			for (final AIFleet f : findFleetsWithTask(FleetTask.EXPLORE, null)) {
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						f.fleet.task = FleetTask.IDLE;
+			if (w.random.get().nextDouble() < 0.10) {
+				// exploration complete, set explorers to idle
+				for (final AIFleet f : findFleetsWithTask(FleetTask.EXPLORE, null)) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							f.fleet.task = FleetTask.IDLE;
+						}
+					});
+					return;
+				}
+				for (final AIFleet bf : findFleetsWithTask(FleetTask.PATROL, null)) {
+					if (!bf.isMoving()) {
+						if (world.ownPlanets.size() > 0) {
+							setPatrolTarget(bf);
+							return;
+						}
 					}
-				});
-				return;
-			}
-			for (final AIFleet bf : findFleetsWithTask(FleetTask.PATROL, null)) {
-				if (!bf.isMoving()) {
+				}
+				// if we explored everything, let's patrol
+				for (final AIFleet bf : findFleetsFor(FleetTask.PATROL, null)) {
 					if (world.ownPlanets.size() > 0) {
 						setPatrolTarget(bf);
 						return;
 					}
 				}
-			}
-			// if we explored everything, let's patrol
-			for (final AIFleet bf : findFleetsFor(FleetTask.PATROL, null)) {
-				if (world.ownPlanets.size() > 0) {
-					setPatrolTarget(bf);
-					return;
-				}
+				return;
 			}
 		}
 		

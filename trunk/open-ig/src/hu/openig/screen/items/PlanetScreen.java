@@ -987,7 +987,8 @@ public class PlanetScreen extends ScreenBase {
 				}
 				drawBattleHelpers(g2, x0, y0);
 				if (config.showBuildingName 
-						&& (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0 || (battle != null && !startBattle.visible()))) {
+						&& (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0 
+						|| (battle != null && !startBattle.visible()))) {
 					drawBuildingHelpers(g2, surface);
 				}
 				// paint red on overlapping images of buildings, land-features and vehicles
@@ -2219,7 +2220,19 @@ public class PlanetScreen extends ScreenBase {
 	}
 	/** Demolish the selected building. */
 	void doDemolish() {
+		boolean fortif = false;
+		for (GroundwarGun g : new ArrayList<GroundwarGun>(guns)) {
+			if (g.building == currentBuilding) {
+				guns.remove(g);
+				fortif = true;
+			}
+		}
+		if (battle != null && fortif) {
+			battle.defenderFortificationLosses++;
+		}
+		
 		DefaultAIControls.demolishBuilding(world(), planet(), currentBuilding);
+
 
 		doAllocation();
 		buildingBox = null;
@@ -4779,8 +4792,10 @@ public class PlanetScreen extends ScreenBase {
 			battle.targetPlanet.takeover(battle.attacker.owner);
 			BattleSimulator.applyPlanetConquered(battle.targetPlanet, 500);
 			battle.groundwarWinner = battle.attacker.owner;
+			BattleInfo bi = battle;
+			battle = null;
 			BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
-			bfs.displayBattleSummary(battle);
+			bfs.displayBattleSummary(bi);
 			return;
 		}
 		
@@ -4948,7 +4963,7 @@ public class PlanetScreen extends ScreenBase {
 			u.x = x;
 			u.y = y;
 			addUnitLocation(u);
-			units.add(u);
+			this.units.add(u);
 		}
 		return units.isEmpty() || locations.isEmpty();
 	}
