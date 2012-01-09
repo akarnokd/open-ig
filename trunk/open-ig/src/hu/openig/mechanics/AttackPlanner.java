@@ -158,6 +158,12 @@ public class AttackPlanner extends Planner {
 		List<AIPlanet> candidates = new ArrayList<AIPlanet>();
 		for (AIPlanet p : world.enemyPlanets) {
 			if (p.owner != null) {
+				if (world.explorationInnerLimit != null && world.explorationInnerLimit.contains(p.planet.x, p.planet.y)) {
+					continue;
+				}
+				if (world.explorationOuterLimit != null && !world.explorationOuterLimit.contains(p.planet.x, p.planet.y)) {
+					continue;
+				}
 				candidates.add(p);
 			}
 		}

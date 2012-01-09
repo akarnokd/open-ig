@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The starmap exploration and satellite planner.
@@ -247,24 +248,31 @@ public class ExplorationPlanner extends Planner {
 	void setExplorationTarget(final AIFleet bf) {
 		final int ec = exploration.cellSize;
 		final Point2D.Double center = world.center(); // new Point2D.Double(bf.x, bf.y);
+		Set<Location> allowed = exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit);
 		Comparator<Location> distance = new Comparator<Location>() {
 			@Override
 			public int compare(Location o1, Location o2) {
 				double d1 = Math.hypot(center.x - (o1.x + 0.5) * ec, center.y - (o1.y + 0.5) * ec);
 				double d2 = Math.hypot(center.x - (o2.x + 0.5) * ec, center.y - (o2.y + 0.5) * ec);
 				double a1 = Math.atan2(center.y - (o1.y + 0.5) * ec, center.x - (o1.x + 0.5) * ec);
+				if (a1 < 0) {
+					a1 += 2 * Math.PI;
+				}
 				double a2 = Math.atan2(center.y - (o2.y + 0.5) * ec, center.x - (o2.x + 0.5) * ec);
+				if (a2 < 0) {
+					a2 += 2 * Math.PI;
+				}
 
-				if (a1 < a2) {
-					return -1;
-				} else
-				if (a1 > a2) {
-					return 1;
-				} else
 				if (d1 < d2) {
 					return -1;
 				} else
 				if (d1 > d2) {
+					return 1;
+				}
+				if (a1 < a2) {
+					return -1;
+				} else
+				if (a1 > a2) {
 					return 1;
 				}
 				return 0;
@@ -272,8 +280,8 @@ public class ExplorationPlanner extends Planner {
 		};
 		Location loc = null;
 		final int rl = bf.radarLevel();
-		if (rl > 0 && w.random.get().nextDouble() < 0.95) {
-			loc = Collections.min(exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit), distance);
+		if (rl > 0 && w.random.get().nextDouble() < 0.99) {
+			loc = Collections.min(allowed, distance);
 		} else {
 			List<Location> ls = new ArrayList<Location>(exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit));
 			Collections.sort(ls, distance);
