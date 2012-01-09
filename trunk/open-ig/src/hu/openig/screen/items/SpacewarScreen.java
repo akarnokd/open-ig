@@ -23,7 +23,6 @@ import hu.openig.model.BattleSpaceLayout;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
-import hu.openig.model.FleetTask;
 import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
@@ -2421,6 +2420,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param other the other statistics
 	 */
 	void calculateStatistics(SpacebattleStatistics own, SpacebattleStatistics other) {
+		int vehicleMaxOwn = 0;
+		int vehicleMaxEnemy = 0;
 		for (SpacewarStructure e : structures) {
 			SpacebattleStatistics stat = (e.owner == player()) ? own : other;
 			if (e.type == StructureType.PROJECTOR) {
@@ -2433,17 +2434,35 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				stat.units++;
 			}
 			setPortStatistics(stat, e.ports);
+			if (e.item != null) {
+				int vm = 0;
+				if (e.item.type.has("vehicles")) {
+					vm += e.item.type.getInt("vehicles");
+					for (InventorySlot is : e.item.slots) {
+						if (is.type != null && is.type.has("vehicles")) {
+							vm += is.type.getInt("vehicles");
+						}
+					}
+				}
+				if (e.owner == player()) {
+					vehicleMaxOwn += vm;
+				} else {
+					vehicleMaxEnemy += vm;
+				}
+			}
 		}
 		if (battle.attacker.owner == player()) {
 			own.losses = battle.attackerLosses;
-			own.groundUnits = battle.attackerGroundUnits;
 			other.losses = battle.defenderLosses;
-			other.groundUnits = battle.defenderGroundUnits;
+
+			own.groundUnits = Math.min(battle.attackerGroundUnits, vehicleMaxOwn);
+			other.groundUnits = Math.min(battle.defenderGroundUnits, vehicleMaxEnemy);
 		} else {
 			own.losses = battle.defenderLosses;
-			own.groundUnits = battle.defenderLosses;
 			other.losses = battle.attackerLosses;
-			other.groundUnits = battle.attackerLosses;
+			
+			own.groundUnits = Math.min(battle.defenderGroundUnits, vehicleMaxOwn);
+			other.groundUnits = Math.min(battle.attackerGroundUnits, vehicleMaxOwn);
 		}
 	}
 	/**
@@ -3278,6 +3297,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			commons.battleMode = false;
 			displayPrimary(Screens.STARMAP);
 			commons.playRegularMusic();
+			battle.attacker.stop();
+			Fleet f2 = battle.getFleet();
+			if (f2 != null) {
+				f2.stop();
+			}
 			return true;
 		}
 		return super.keyboard(e);
@@ -3629,6 +3653,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void concludeBattle(Player winner) {
 		boolean groundLosses = false;
+		// apply structure statuses
+		for (SpacewarStructure s : structures) {
+			if (s.item != null) {
+				s.item.count = s.count;
+				s.item.hp = s.hp;
+				s.item.shield = s.shield;
+			} else
+			if (s.building != null) {
+				s.building.hitpoints = (int)(1L * s.hp * s.building.type.hitpoints / s.hpMax);
+			}
+		}
+		// apply losses
 		for (SpacewarStructure s : battle.spaceLosses) {
 			if (s.item != null) {
 				if (s.count > 0) {
@@ -3676,7 +3712,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			fleets.add(battle.targetFleet);
 		}
 		for (Fleet f : fleets) {
-			f.task = FleetTask.IDLE;
+			f.stop();
 			int gu = f.adjustVehicleCounts();
 			if (f.owner == battle.attacker.owner) {
 				battle.attackerGroundLosses += gu;
