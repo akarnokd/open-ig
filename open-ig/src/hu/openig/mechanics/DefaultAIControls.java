@@ -74,7 +74,7 @@ public class DefaultAIControls implements AIControls {
 			r.assignedMoney = (int)(r.remainingMoney * moneyFactor / 2);
 		}
 		r.state = ResearchState.RUNNING;
-		log("StartResearch, Type = %s, MoneyFactor = %s", rt.id, moneyFactor);
+//		log("StartResearch, Type = %s, MoneyFactor = %s", rt.id, moneyFactor);
 	}
 	@Override
 	public void actionDeployFleet(
@@ -112,7 +112,7 @@ public class DefaultAIControls implements AIControls {
 	@Override
 	public void actionRemoveProduction(ResearchType rt) {
 		actionRemoveProduction(p, rt);
-		log("RemoveProduction, Type = %s", rt.id);
+//		log("RemoveProduction, Type = %s", rt.id);
 	}
 	/**
 	 * Remove the production line of the given research.
@@ -191,11 +191,12 @@ public class DefaultAIControls implements AIControls {
 				prodLine.put(rt, prod);
 			} else {
 				log("StartProduction, Type = %s, Count = %s, Priority = %s, Failed = production line limit", rt.id, count, priority);
+				return;
 			}
 		}
 		prod.priority = priority;
 		prod.count += count;
-		log("StartProduction, Type = %s, Count = %s, Priority = %s", rt.id, count, priority);
+//		log("StartProduction, Type = %s, Count = %s, Priority = %s", rt.id, count, priority);
 	}
 	@Override
 	public void actionPauseProduction(ResearchType rt) {
@@ -216,7 +217,7 @@ public class DefaultAIControls implements AIControls {
 			Point pt = planet.surface.placement.findLocation(planet.getPlacementDimensions(buildingType));
 			if (pt != null) {
 				AutoBuilder.construct(w, planet, buildingType, pt);
-				log("PlaceBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
+//				log("PlaceBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
 				return AIResult.SUCCESS;
 			} else {
 				log("PlaceBuilding, Planet = %s, Type = %s, FAIL = no room", planet.id, buildingType.id);
@@ -230,7 +231,7 @@ public class DefaultAIControls implements AIControls {
 	@Override
 	public void actionDemolishBuilding(Planet planet, Building b) {
 		demolishBuilding(w, planet, b);
-		log("DemolishBuilding, Planet = %s, Building = %s", planet.id, b.type.id);
+//		log("DemolishBuilding, Planet = %s, Building = %s", planet.id, b.type.id);
 	}
 	/**
 	 * Demolish a building on the given planet, update statistics and get some money back.
