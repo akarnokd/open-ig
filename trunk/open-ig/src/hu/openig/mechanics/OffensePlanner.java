@@ -318,7 +318,6 @@ public class OffensePlanner extends Planner {
 		}
 		final AIFleet fleet = Collections.min(upgradeCandidates, firepowerAsc);
 
-		
 		Map<ResearchType, Integer> currentInventory = U.newHashMap();
 		
 		for (AIInventoryItem ii : fleet.inventory) {
@@ -452,7 +451,6 @@ public class OffensePlanner extends Planner {
 				return true;
 			}
 		}
-		
 		
 		return false;
 	}
