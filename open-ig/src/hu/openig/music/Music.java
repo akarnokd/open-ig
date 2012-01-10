@@ -8,6 +8,7 @@
 package hu.openig.music;
 
 import hu.openig.core.Action1;
+import hu.openig.core.Func0;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
@@ -132,7 +133,7 @@ public class Music {
 	 * @param fileName the array of filenames to play
 	 * @param volume the initial playback volume
 	 */
-	public void playLooped(final int volume, final String... fileName) {
+	public void playLooped(final Func0<Integer> volume, final String... fileName) {
 		stop();
 		Thread th = playbackThread;
 		if (th != null) {
@@ -154,7 +155,7 @@ public class Music {
 	 * @param fileName the array of filenames to play
 	 * @param volume the initial playback volume
 	 */
-	public void playSequence(final int volume, final String... fileName) {
+	public void playSequence(final Func0<Integer> volume, final String... fileName) {
 		stop();
 		Thread th = playbackThread;
 		if (th != null) {
@@ -178,7 +179,7 @@ public class Music {
 	 *            the audio files to play back
    	 * @param volume the initial playback volume
 	 */
-	private void playbackLoop(int volume, String... fileNames) {
+	private void playbackLoop(final Func0<Integer> volume, String... fileNames) {
 		int fails = 0;
 		while (checkStop() && fails < fileNames.length) {
 			fails += playbackSequence(volume, fileNames);
@@ -186,11 +187,11 @@ public class Music {
 	}
 	/**
 	 * Play the sequence of audio data and return when all completed.
-	 * @param volume the audio volume
+	 * @param volumeFunc the audio volume function
 	 * @param fileNames the list of resource names to get
 	 * @return the failure count
 	 */
-	int playbackSequence(int volume, String... fileNames) {
+	int playbackSequence(final Func0<Integer> volumeFunc, String... fileNames) {
 		int fails = 0;
 		for (final String name : fileNames) {
 			try {
@@ -199,6 +200,7 @@ public class Music {
 				if (!checkStop()) {
 					break;
 				}
+				int volume = volumeFunc.invoke();
 				if (useClip) {
 					playBackClip(rp, volume);
 				} else {

@@ -66,7 +66,7 @@ public class VehiclePlan {
 			demand.put(tanks.get(0), tankCount);
 		}
 		if (sleds.size() > 0) {
-			demand.put(tanks.get(0), sledCount);
+			demand.put(sleds.get(0), sledCount);
 		}
 	}
 }

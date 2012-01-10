@@ -73,6 +73,16 @@ public class OffensePlanner extends Planner {
 
 	@Override
 	protected void plan() {
+//		if (checkSellOldTech()) {
+//			return;
+//		}
+		if (world.money < 100000) {
+			return;
+		}
+		
+		if (upgradeFleets()) {
+			return;
+		}
 		// have a fleet for every N planets + 1
 		int divider = 5;
 		if (w.difficulty == Difficulty.NORMAL) {
@@ -80,22 +90,6 @@ public class OffensePlanner extends Planner {
 		} else
 		if (w.difficulty == Difficulty.HARD) {
 			divider = 3;
-		}
-		
-//		if (checkSellOldTech()) {
-//			return;
-//		}
-		
-		if (world.money < 100000) {
-			return;
-		}
-
-		if (p.id.equals("Empire")) {
-			System.out.print("");
-		}
-		
-		if (upgradeFleets()) {
-			return;
 		}
 		// construct fleets
 		if (world.ownPlanets.size() / divider + 1 > world.ownFleets.size()) {
@@ -283,6 +277,9 @@ public class OffensePlanner extends Planner {
 			}
 		});
 		if (upgradeTasks.isEmpty()) {
+			if (!findFleetsWithTask(FleetTask.UPGRADE, null).isEmpty()) {
+				return true;
+			}
 			return false;
 		}
 		
@@ -339,9 +336,9 @@ public class OffensePlanner extends Planner {
 			if (r == UpgradeResult.DEPLOY) {
 				bringinFleet(fleet);
 				return true;
-//			} else
-//			if (r == UpgradeResult.WAIT) {
-//				return false;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
 			}
 		}
 		
@@ -352,9 +349,9 @@ public class OffensePlanner extends Planner {
 			UpgradeResult r = checkProduction(rt, Math.min(25, ci + 5), ci);
 			if (r == UpgradeResult.ACTION) {
 				return true;
-//			} else
-//			if (r == UpgradeResult.WAIT) {
-//				return false;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
 			} else
 			if (r == UpgradeResult.DEPLOY) {
 				bringinFleet(fleet);
@@ -369,9 +366,9 @@ public class OffensePlanner extends Planner {
 			UpgradeResult r = checkProduction(rt, Math.min(3, ci + 1), ci);
 			if (r == UpgradeResult.ACTION) {
 				return true;
-//			} else
-//			if (r == UpgradeResult.WAIT) {
-//				return false;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
 			} else
 			if (r == UpgradeResult.DEPLOY) {
 				bringinFleet(fleet);

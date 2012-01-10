@@ -713,12 +713,22 @@ public class CommonResources implements GameEnvironment {
 	 */
 	public void playRegularMusic() {
 		stopMusic();
-		music.playLooped(config.musicVolume, "music/Music1", "music/Music2", "music/Music3");
+		music.playLooped(new Func0<Integer>() {
+			@Override
+			public Integer invoke() {
+				return config.musicVolume;
+			}
+		}, "music/Music1", "music/Music2", "music/Music3");
 	}
 	/** Convenience method to start playing the original battle music. */
 	public void playBattleMusic() {
 		stopMusic();
-		music.playLooped(config.musicVolume, "music/War");
+		music.playLooped(new Func0<Integer>() {
+			@Override
+			public Integer invoke() {
+				return config.musicVolume;
+			}
+		}, "music/War");
 	}
 	/** Stop the current music playback. */
 	public void stopMusic() {
@@ -823,7 +833,12 @@ public class CommonResources implements GameEnvironment {
 				events.onSoundComplete(value);
 			}
 		};
-		m.playSequence(config.effectVolume, name);
+		m.playSequence(new Func0<Integer>() {
+			@Override
+			public Integer invoke() {
+				return config.effectVolume;
+			}
+		}, name);
 	}
 	@Override
 	public void playSound(SoundType type) {
