@@ -209,10 +209,10 @@ public class AchievementsScreen extends ScreenBase {
 		};
 		
 		equimpent = new UIImageButton(commons.research().equipmentButton);
-		colony.onClick = new Action0() {
+		equimpent.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				displayPrimary(Screens.COLONY);
+				displaySecondary(Screens.EQUIPMENT);
 			}
 		};
 

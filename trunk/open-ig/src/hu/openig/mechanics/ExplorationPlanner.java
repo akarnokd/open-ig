@@ -84,7 +84,7 @@ public class ExplorationPlanner extends Planner {
 					return;
 				}
 			}
-			if (checkExplorerLevel(fs)) {
+			if (checkExplorerLevel(world.ownFleets)) {
 				if (planDiscoveryFleet()) {
 					return;
 				}

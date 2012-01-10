@@ -185,9 +185,6 @@ public class StaticDefensePlanner extends Planner {
 		final VehiclePlan plan = new VehiclePlan();
 		plan.calculate(world.availableResearch, w.battle, planet.statistics.vehicleMax);
 		
-		if (p.id.equals("Empire")) {
-			System.out.print("");
-		}
 		// issue production order for the difference
 		for (Map.Entry<ResearchType, Integer> prod : plan.demand.entrySet()) {
 			ResearchType rt = prod.getKey();
@@ -232,9 +229,10 @@ public class StaticDefensePlanner extends Planner {
 					@Override
 					public void invoke() {
 						int cnt = count - inventoryLocal;
-						if (p.inventoryCount(rt) > cnt) {
+						if (p.inventoryCount(rt) >= cnt) {
 							planet.planet.changeInventory(rt, planet.owner, cnt);
 							p.changeInventoryCount(rt, -cnt);
+							log("DeployTanks, Planet = %s, Type = %s, Count = %s", planet.planet.id, rt, cnt);
 						}
 						
 					}

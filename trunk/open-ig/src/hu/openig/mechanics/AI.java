@@ -404,9 +404,9 @@ public class AI implements AIManager {
 	@Override
 	public void manage() {
 		// if the player is the current player
-//		if (p != w.player) {
-//			return;
-//		}
+		if (p != w.player) {
+			return;
+		}
 		updateExplorationMap();
 		
 		List<Action0> acts = null;

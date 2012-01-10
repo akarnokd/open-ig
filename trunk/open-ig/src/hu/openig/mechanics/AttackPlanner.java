@@ -56,8 +56,7 @@ public class AttackPlanner extends Planner {
 	public void plan() {
 		// don't bother when exploring
 		for (AIFleet f : world.ownFleets) {
-			if (f.task == FleetTask.EXPLORE 
-					|| f.task == FleetTask.COLONIZE || f.task == FleetTask.ATTACK) {
+			if (f.task.ordinal() <= FleetTask.EXPLORE.ordinal()) {
 				return;
 			}
 		}
@@ -171,7 +170,7 @@ public class AttackPlanner extends Planner {
 				candidates.add(p);
 			}
 		}
-		if (!world.enemyPlanets.isEmpty()) {
+		if (!candidates.isEmpty()) {
 			final Point2D.Double center = world.center();
 			return Collections.min(candidates, new Comparator<AIPlanet>() {
 				@Override
