@@ -82,9 +82,9 @@ public class OffensePlanner extends Planner {
 			divider = 3;
 		}
 		
-		if (checkSellOldTech()) {
-			return;
-		}
+//		if (checkSellOldTech()) {
+//			return;
+//		}
 		
 		if (world.money < 100000) {
 			return;
