@@ -15,7 +15,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.World;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -388,7 +388,7 @@ public final class AchievementManager {
 		// utility class
 	}
 	/** The functions map for achievements. */
-	protected static final Map<String, Pred2<World, Player>> FUNCTIONS = JavaUtils.newHashMap();
+	protected static final Map<String, Pred2<World, Player>> FUNCTIONS = U.newHashMap();
 	static {
 		for (Field f : AchievementManager.class.getDeclaredFields()) {
 			if (Pred2.class.isAssignableFrom(f.getType()) && f.isAnnotationPresent(ID.class)) {

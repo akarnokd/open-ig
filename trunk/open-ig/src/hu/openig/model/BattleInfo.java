@@ -9,7 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.SimulationSpeed;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.util.Set;
 
@@ -51,9 +51,9 @@ public class BattleInfo {
 	/** The number of fortifications destroyed. */
 	public int defenderFortificationLosses;
 	/** The structure losses. */
-	public final Set<SpacewarStructure> spaceLosses = JavaUtils.newHashSet();
+	public final Set<SpacewarStructure> spaceLosses = U.newHashSet();
 	/** The ground unit losses. */
-	public final Set<GroundwarUnit> groundLosses = JavaUtils.newHashSet();
+	public final Set<GroundwarUnit> groundLosses = U.newHashSet();
 	/** The original simulation speed before the battle.*/
 	public SimulationSpeed originalSpeed = SimulationSpeed.NORMAL;
 	/** @return the helper planet if any. */

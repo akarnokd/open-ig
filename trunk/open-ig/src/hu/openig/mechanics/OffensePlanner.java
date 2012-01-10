@@ -24,28 +24,43 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.Planet;
 import hu.openig.model.Production;
-import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
-import hu.openig.utils.JavaUtils;
+import hu.openig.model.VehiclePlan;
+import hu.openig.utils.U;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Plans the creation of various ships, equipment and vehicles.
  * @author akarnokd, 2012.01.05.
  */
 public class OffensePlanner extends Planner {
+	/** Comparator for firepower, ascending order. */
+	final Comparator<AIFleet> firepowerAsc = new Comparator<AIFleet>() {
+		@Override
+		public int compare(AIFleet o1, AIFleet o2) {
+			return o1.statistics.firepower - o2.statistics.firepower;
+		}
+	};
+	/**
+	 * Compare effective firepower of two cruiser/destroyer technologies.
+	 */
+	final Comparator<ResearchType> effectiveFirepower = new Comparator<ResearchType>() {
+		@Override
+		public int compare(ResearchType o1, ResearchType o2) {
+			int v1 = firepower(o1);
+			int v2 = firepower(o2);
+			return v1 - v2;
+		}
+	};
 	/**
 	 * Initializes the planner.
 	 * @param world the current world
@@ -65,10 +80,6 @@ public class OffensePlanner extends Planner {
 		if (w.difficulty == Difficulty.HARD) {
 			divider = 3;
 		}
-		if (world.ownFleets.size() >= world.ownPlanets.size() / divider + 1) {
-			checkFleetUpgrade();
-			return;
-		}
 		
 		if (checkSellOldTech()) {
 			return;
@@ -78,224 +89,434 @@ public class OffensePlanner extends Planner {
 			return;
 		}
 
+		if (p.id.equals("Empire")) {
+			System.out.print("");
+		}
+		
+		if (upgradeFleets()) {
+			return;
+		}
 		// construct fleets
-		
-		List<ResearchType> fighters = new ArrayList<ResearchType>();
-		List<ResearchType> cruisers = new ArrayList<ResearchType>();
-		List<ResearchType> battleships = new ArrayList<ResearchType>();
-		
-		for (ResearchType rt : world.availableResearch) {
-			if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
-				if (!rt.id.equals("ColonyShip")) {
-					battleships.add(rt);
-				}
-			} else
-			if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-				cruisers.add(rt);
-			} else
-			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-				fighters.add(rt);
+		if (world.ownPlanets.size() / divider + 1 > world.ownFleets.size()) {
+			if (createNewFleet()) {
+				return;
 			}
 		}
+	}
+	/** 
+	 * Create a new fleet.
+	 * @return action taken 
+	 */
+	boolean createNewFleet() {
+		final List<ResearchType> fighters = U.sort2(availableResearchOf(EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS)), ResearchType.EXPENSIVE_FIRST);
+		final List<ResearchType> cruisers = U.sort2(availableResearchOf(EnumSet.of(ResearchSubCategory.SPACESHIPS_CRUISERS)), effectiveFirepower);
+		final List<ResearchType> battleships = U.sort2(availableResearchOf(EnumSet.of(ResearchSubCategory.SPACESHIPS_BATTLESHIPS)), ResearchType.EXPENSIVE_FIRST);
+		battleships.remove(world.isAvailable("ColonyShip"));
 		
-		final int cruiserBatch = 2;
-		final int fighterBatch = 10;
-		final int battleshipBatch = 1;
-		
-		if (checkProduction(fighters, 30, fighterBatch)) {
-			return;
+		if (!fighters.isEmpty()) {
+			ResearchType rt = fighters.get(0);
+			UpgradeResult r = checkProduction(rt, 1, 0);
+			if (r == UpgradeResult.ACTION) {
+				return true;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
+			}
 		}
-		if (checkProduction(cruisers, 25, cruiserBatch)) {
-			return;
+		if (!cruisers.isEmpty()) {
+			ResearchType rt = cruisers.get(0);
+			UpgradeResult r = checkProduction(rt, 1, 0);
+			if (r == UpgradeResult.ACTION) {
+				return true;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
+			}
 		}
-		if (checkOrbitalFactory()) {
-			return;
-		}
-		if (checkProduction(battleships, 3, battleshipBatch)) {
-			return;
-		}
-		
-		if (checkMilitarySpaceport()) {
-			return;
+		if (!battleships.isEmpty()) {
+			ResearchType rt = battleships.get(0);
+			UpgradeResult r = checkProduction(rt, 1, 0);
+			if (r == UpgradeResult.ACTION) {
+				return true;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
+			}
 		}
 
-		// check if we met the inventory level to deploy a fleet
-		final List<ResearchType> bigShips = new ArrayList<ResearchType>();
-		final List<ResearchType> mediumShip = new ArrayList<ResearchType>();
-		final Map<ResearchType, Integer> smallShips = new HashMap<ResearchType, Integer>();
-		
-		Collections.sort(battleships, expensiveFirst);
-		for (ResearchType rt : battleships) {
-			int count = world.inventoryCount(rt);
-			while (bigShips.size() < 3 && count > 0) {
-				bigShips.add(rt);
-				count--;
-			}
-		}
-		Collections.sort(cruisers, expensiveFirst);
-		for (ResearchType rt : cruisers) {
-			int count = world.inventoryCount(rt);
-			while (mediumShip.size() < 25 && count > 0) {
-				mediumShip.add(rt);
-				count--;
-			}
-		}
-		Collections.sort(fighters, expensiveFirst);
-		int totalFighters = 0;
-		for (ResearchType rt : fighters) {
-			int invCount = world.inventoryCount(rt);
-			if (invCount > 0) {
-				int ij = Math.min(30, invCount);
-				smallShips.put(rt, ij);
-				totalFighters += ij;
-			}
+		if (checkMilitarySpaceport()) {
+			return true;
 		}
 		
-		// check load levels
-		if (bigShips.size() >= 3 && mediumShip.size() >= 25
-				&& totalFighters >= fighters.size() * 30) {
-			// count required equipment
-			List<ResearchType> rts = new ArrayList<ResearchType>(mediumShip);
-			rts.addAll(bigShips);
-			Map<ResearchType, Integer> equipmentDemands = countEquipments(rts);
-	
-			List<ResearchType> equipments = new ArrayList<ResearchType>();
-			List<ResearchType> weapons = new ArrayList<ResearchType>();
-			for (Map.Entry<ResearchType, Integer> e : equipmentDemands.entrySet()) {
-				ResearchType rt = e.getKey();
-				int count = e.getValue();
-				if (count > world.inventoryCount(rt)) {
-					if (rt.category.main == ResearchMainCategory.EQUIPMENT) {
-						equipments.add(rt);
-					} else
-					if (rt.category.main == ResearchMainCategory.WEAPONS) {
-						weapons.add(rt);
+		final Planet spaceport = findBestMilitarySpaceport().planet;
+		
+		add(new Action0() {
+			@Override
+			public void invoke() {
+				Fleet f = controls.actionCreateFleet(w.env.labels().get(p.id + ".fleet"), spaceport);
+				if (!fighters.isEmpty()) {
+					ResearchType rt = fighters.get(0);
+					if (f.owner.inventoryCount(rt) > 0) {
+						f.addInventory(rt, 1);
+						f.owner.changeInventoryCount(rt, -1);
+					}
+				}
+				if (!cruisers.isEmpty()) {
+					ResearchType rt = cruisers.get(0);
+					if (f.owner.inventoryCount(rt) > 0) {
+						f.addInventory(rt, 1);
+						f.owner.changeInventoryCount(rt, -1);
+					}
+				}
+				if (!battleships.isEmpty()) {
+					ResearchType rt = battleships.get(0);
+					if (f.owner.inventoryCount(rt) > 0) {
+						f.addInventory(rt, 1);
+						f.owner.changeInventoryCount(rt, -1);
+					}
+				}
+				if (f.inventory.isEmpty()) {
+					w.removeFleet(f);
+					log("DeployFleet, Fleet = %s, Planet = %s, Failed = Not enough inventory", f.name, spaceport.id);
+				}
+			}
+		});
+		
+		return true;
+	}
+	/**
+	 * Compute the effective firepower of the ship by considering the best available weapon technology.
+	 * @param ship the ship type
+	 * @return the reachable firepower
+	 */
+	int firepower(ResearchType ship) {
+		int result = 0;
+		for (EquipmentSlot es : ship.slots.values()) {
+			ResearchType w = null;
+			if (es.fixed) {
+				w = es.items.get(0);
+			} else {
+				for (ResearchType rt0 : es.items) {
+					if (world.isAvailable(rt0)) {
+						w = rt0;
 					}
 				}
 			}
-			
-			if (checkProduction(equipmentDemands)) {
-				return;
+			if (w != null) {
+				BattleProjectile proj = this.w.battle.projectiles.get(w.id);
+				if (proj != null) {
+					result += proj.damage * es.max;
+				}
 			}
-	
-			// check if all demand met
-			for (Map.Entry<ResearchType, Integer> e : equipmentDemands.entrySet()) {
-				ResearchType rt = e.getKey();
-				int count = e.getValue();
-				if (count > world.inventoryCount(rt)) {
-					return;
+		}
+		return result;
+	}
+	/**
+	 * Compute the equipment demands for the best available technologies to fill-in the ship.
+	 * @param ship the ship technology
+	 * @param demands the map from equipment to demand
+	 */
+	void equipmentDemands(ResearchType ship, Map<ResearchType, Integer> demands) {
+		for (EquipmentSlot es : ship.slots.values()) {
+			if (!es.fixed) {
+				ResearchType w = null;
+				for (ResearchType rt0 : es.items) {
+					if (world.isAvailable(rt0)) {
+						w = rt0;
+					}
 				}
-			}		
-			
-			// count vehicle capacity
-			int vehicleCount = 0;
-			for (ResearchType rt : bigShips) {
-				if (rt.has("vehicles")) {
-					vehicleCount += rt.getInt("vehicles");
+				if (w != null) {
+					Integer cnt = demands.get(w);
+					demands.put(w, cnt != null ? cnt + es.max : es.max);
 				}
-				for (EquipmentSlot es : rt.slots.values()) {
-					ResearchType bay = null;
-					if (es.fixed) {
-						if (es.items.get(0).has("vehicles")) {
-							bay = es.items.get(0);
-						}
-					} else {
-						for (ResearchType rt0 : es.items) {
-							if (rt0.has("vehicles") && world.isAvailable(rt0)) {
-								bay = rt0;
+			}
+		}		
+	}
+	/** The upgrade result. */
+	enum UpgradeResult {
+		/** Wait, return with false. */
+		WAIT,
+		/** Action taken, return with true. */
+		ACTION,
+		/** Bring in fleet for upgrades. */
+		DEPLOY,
+		/** Continue with further checks. */
+		CONTINUE
+	}
+	/**
+	 * Organize the upgrade of fleets.
+	 * @return action taken
+	 */
+	boolean upgradeFleets() {
+		if (world.ownFleets.size() == 0) {
+			return false;
+		}
+
+		final List<ResearchType> fighters = U.sort2(availableResearchOf(EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS)), ResearchType.EXPENSIVE_FIRST);
+		final List<ResearchType> cruisers = U.sort2(availableResearchOf(EnumSet.of(ResearchSubCategory.SPACESHIPS_CRUISERS)), effectiveFirepower);
+		final List<ResearchType> battleships = U.sort2(availableResearchOf(EnumSet.of(ResearchSubCategory.SPACESHIPS_BATTLESHIPS)), ResearchType.EXPENSIVE_FIRST);
+		battleships.remove(world.isAvailable("ColonyShip"));
+
+		if (checkDeploy(cruisers, battleships)) {
+			return true;
+		}
+		if (checkCounts(fighters, cruisers, battleships)) {
+			return true;
+		}
+		
+		return false;
+	}
+	/**
+	 * Check if a fleet is in upgrade position over a planet.
+	 * @param cruisers the list of cruiser/destroyer technology ordered by expense
+	 * @param battleships the list of battleships ordered by expense
+	 * @return true if action taken
+	 */
+	boolean checkDeploy(final List<ResearchType> cruisers,
+			final List<ResearchType> battleships) {
+
+		List<AIFleet> upgradeTasks = findFleetsWithTask(FleetTask.UPGRADE, new Pred1<AIFleet>() {
+			@Override
+			public Boolean invoke(AIFleet value) {
+				return !value.isMoving() && value.statistics.planet != null;
+			}
+		});
+		if (upgradeTasks.isEmpty()) {
+			return false;
+		}
+		
+		final Fleet fleet = Collections.min(upgradeTasks, firepowerAsc).fleet;
+		
+		add(new Action0() {
+			@Override
+			public void invoke() {
+				fleet.upgradeAll();
+				if (!cruisers.isEmpty()) {
+					fleet.replaceWithShip(cruisers.get(0), 25);
+				}
+				if (!battleships.isEmpty()) {
+					fleet.replaceWithShip(battleships.get(0), 3);
+				}
+			}
+		});
+		
+		return true;
+	}
+	/**
+	 * Check if the ship or equipment counts and levels are okay.
+	 * @param fighters the list of fighter technology ordered by expense
+	 * @param cruisers the list of cruiser/destroyer technology ordered by expense
+	 * @param battleships the list of battleships ordered by expense
+	 * @return true if action taken
+	 */
+	boolean checkCounts(final List<ResearchType> fighters,
+			final List<ResearchType> cruisers,
+			final List<ResearchType> battleships) {
+		List<AIFleet> upgradeCandidates = findFleetsFor(FleetTask.UPGRADE, null);
+		if (upgradeCandidates.isEmpty()) {
+			return false;
+		}
+		final AIFleet fleet = Collections.min(upgradeCandidates, firepowerAsc);
+
+		
+		Map<ResearchType, Integer> currentInventory = U.newHashMap();
+		
+		for (AIInventoryItem ii : fleet.inventory) {
+			Integer cnt = currentInventory.get(ii.type);
+			currentInventory.put(ii.type, cnt != null ? cnt + ii.count : ii.count);
+		}
+		
+		// check if figthers are well equipped?
+		for (ResearchType rt : fighters) {
+			UpgradeResult r = checkProduction(rt, 10, nvl(currentInventory.get(rt)));
+			if (r == UpgradeResult.ACTION) {
+				return true;
+			} else
+			if (r == UpgradeResult.DEPLOY) {
+				bringinFleet(fleet);
+				return true;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
+			}
+		}
+		
+		// check if best cruiser is filled in
+		if (!cruisers.isEmpty()) {
+			ResearchType rt = cruisers.get(0);
+			UpgradeResult r = checkProduction(rt, 5, nvl(currentInventory.get(rt)));
+			if (r == UpgradeResult.ACTION) {
+				return true;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
+			} else
+			if (r == UpgradeResult.DEPLOY) {
+				bringinFleet(fleet);
+				return true;
+			}
+		}
+		
+		// check if best battleship is filled in
+		if (!battleships.isEmpty()) {
+			ResearchType rt = battleships.get(0);
+			UpgradeResult r = checkProduction(rt, 1, nvl(currentInventory.get(rt)));
+			if (r == UpgradeResult.ACTION) {
+				return true;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
+			} else
+			if (r == UpgradeResult.DEPLOY) {
+				bringinFleet(fleet);
+				return true;
+			}
+		}
+		
+		// scan for upgradable slots
+		Map<ResearchType, Integer> equipmentDemands = U.newHashMap();
+		for (AIInventoryItem ii : fleet.inventory) {
+			for (InventorySlot is : ii.slots) {
+				if (!is.slot.fixed) {
+					// current
+					ResearchType current = is.type;
+					// find best
+					ResearchType best = null;
+					for (ResearchType rt : is.slot.items) {
+						if (world.isAvailable(rt)) {
+							if (best == null || best.productionCost < rt.productionCost) {
+								best = rt;
 							}
 						}
 					}
-					if (bay != null) {
-						vehicleCount += bay.getInt("vehicles");
+					if (best != null) {
+						int cnt = nvl(equipmentDemands.get(best));
+						// if we have better, add full max demand
+						if (best != current) {
+							equipmentDemands.put(best, cnt + is.slot.max * ii.count);
+						} else {
+							// else add only demand for the missing counts
+							equipmentDemands.put(best, cnt + (is.slot.max - is.count) * ii.count);
+						}
 					}
 				}
 			}
-			
-			final VehiclePlan plan = planVehicles(vehicleCount);
-			if (plan == null) {
-				return;
+		}
+		
+		// create equipment and upgrade the fleet
+		for (Map.Entry<ResearchType, Integer> e : equipmentDemands.entrySet()) {
+			ResearchType rt = e.getKey();
+			int count = Math.min(30, e.getValue());
+			UpgradeResult r = checkProduction(rt, count, world.inventoryCount(rt));
+			if (r == UpgradeResult.ACTION) {
+				return true;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
+			} else
+			if (r == UpgradeResult.DEPLOY) {
+				bringinFleet(fleet);
+				return true;
 			}
-			// select a spaceport
-			final AIPlanet spaceport = findBestMilitarySpaceport();
-			
+		}
+		
+		// plan for vehicles
+		VehiclePlan plan = new VehiclePlan();
+		plan.calculate(world.availableResearch, w.battle, fleet.statistics.vehicleMax);
+		
+		// create equipment and upgrade the fleet
+		for (Map.Entry<ResearchType, Integer> e : plan.demand.entrySet()) {
+			ResearchType rt = e.getKey();
+			int count = Math.min(10, e.getValue());
+			UpgradeResult r = checkProduction(rt, count, world.inventoryCount(rt));
+			if (r == UpgradeResult.ACTION) {
+				return true;
+			} else
+			if (r == UpgradeResult.WAIT) {
+				return false;
+			} else
+			if (r == UpgradeResult.DEPLOY) {
+				bringinFleet(fleet);
+				return true;
+			}
+		}
+		
+		
+		return false;
+	}
+	/**
+	 * Bring in the fleet to the closest spaceport for upgrades.
+	 * @param fleet the target fleet
+	 */
+	void bringinFleet(final AIFleet fleet) {
+		if (!checkMilitarySpaceport()) {
+			final AIPlanet spaceport = findClosestMilitarySpaceport(fleet.x, fleet.y);
 			add(new Action0() {
 				@Override
 				public void invoke() {
-					Fleet f = controls.actionCreateFleet(label(p.id + ".fleet"), spaceport.planet);
-					boolean success = true;
-					for (ResearchType rt : bigShips) {
-						if (f.owner.inventoryCount(rt) > 0) {
-							f.addInventory(rt, 1);
-							f.owner.changeInventoryCount(rt, -1);
-						} else {
-							success = false;
-							break;
-						}
-					}
-					for (ResearchType rt : mediumShip) {
-						if (f.owner.inventoryCount(rt) > 0) {
-							f.addInventory(rt, 1);
-							f.owner.changeInventoryCount(rt, -1);
-						} else {
-							success = false;
-							break;
-						}
-					}
-					for (Map.Entry<ResearchType, Integer> cfg : smallShips.entrySet()) {
-						int cnt = cfg.getValue();
-						ResearchType rt = cfg.getKey();
-						if (cnt <= f.owner.inventoryCount(rt)) {
-							f.addInventory(rt, cnt);
-							f.owner.changeInventoryCount(rt, -cnt);
-						} else {
-							success = false;
-							break;
-						}
-					}
-					if (plan.bestTank != null) {
-						if (plan.tankCount <= f.owner.inventoryCount(plan.bestTank)) {
-							f.addInventory(plan.bestTank, plan.tankCount);
-							f.owner.changeInventoryCount(plan.bestTank, -plan.tankCount);
-						} else {
-							success = false;
-						}
-					}
-					for (Map.Entry<ResearchType, Integer> cfg : plan.vehicleConfig.entrySet()) {
-						int cnt = cfg.getValue();
-						ResearchType rt = cfg.getKey();
-						if (cnt <= f.owner.inventoryCount(rt)) {
-							f.addInventory(rt, cnt);
-							f.owner.changeInventoryCount(rt, -cnt);
-						} else {
-							success = false;
-							break;
-						}
-					}
-					
-					// inventory failed
-					if (f.inventory.size() == 0 || !success) {
-						log("DeployFleet, Failed = Inventory insufficient");
-						f.owner.world.removeFleet(f);
-					} else {
-						f.upgradeAll();
-					}
+					fleet.fleet.task = FleetTask.UPGRADE;
+					controls.actionMoveFleet(fleet.fleet, spaceport.planet);
 				}
 			});
 		}
+	}
+	/**
+	 * Check the inventory and production status of the given technology.
+	 * @param rt the target technology
+	 * @param max the maximum amount
+	 * @param currentInventory the current inventory level
+	 * @return the result
+	 */
+	UpgradeResult checkProduction(ResearchType rt, int max, int currentInventory) {
+		if (currentInventory < max) {
+			int globalInventory = world.inventoryCount(rt);
+			int required = max - currentInventory;
+			if (required > globalInventory) {
+				if (world.productionCount(rt) > 0) {
+					return UpgradeResult.WAIT;
+				}
+				placeProductionOrder(rt, required - globalInventory);
+				return UpgradeResult.ACTION;
+			} else {
+				return UpgradeResult.DEPLOY; 
+			}
+		}
+		return UpgradeResult.CONTINUE;
+	}
+	/**
+	 * Returns 0 if {@code i} is null, or the value itself.
+	 * @param value the value
+	 * @return the int value
+	 */
+	int nvl(Integer value) {
+		return value != null ? value : 0;
+	}
+	/**
+	 * Returns the list of available technologies matching the given set of categories.
+	 * @param categories the category set
+	 * @return the list of available research
+	 */
+	List<ResearchType> availableResearchOf(EnumSet<ResearchSubCategory> categories) {
+		List<ResearchType> result = U.newArrayList();
+		for (ResearchType rt : world.availableResearch) {
+			if (categories.contains(rt.category)) {
+				result.add(rt);
+			}
+		}
+		return result;
 	}
 	/**
 	 * Sell old technologies from inventory.
 	 * @return true if action taken
 	 */
 	boolean checkSellOldTech() {
-		Set<ResearchType> inuse = JavaUtils.newHashSet();
+		Set<ResearchType> inuse = U.newHashSet();
 		for (Production prod : world.productions.values()) {
 			inuse.add(prod.type);
 		}
 		
-		Map<String, Pred1<ResearchType>> filters = JavaUtils.newHashMap();
-		Map<String, ResearchType> bestValue = JavaUtils.newHashMap();
+		Map<String, Pred1<ResearchType>> filters = U.newHashMap();
+		Map<String, ResearchType> bestValue = U.newHashMap();
 		filters.put("Tank", new Pred1<ResearchType>() {
 			@Override
 			public Boolean invoke(ResearchType value) {
@@ -488,290 +709,5 @@ public class OffensePlanner extends Planner {
 		}
 		
 		return false;
-	}
-	/**
-	 * Count the required equipments.
-	 * @param ships the ships
-	 * @return the map of technology to count
-	 */
-	Map<ResearchType, Integer> countEquipments(List<ResearchType> ships) {
-		Map<ResearchType, Integer> result = JavaUtils.newHashMap();
-		
-		for (ResearchType rt : ships) {
-			for (EquipmentSlot es : rt.slots.values()) {
-				if (!es.fixed) {
-					ResearchType req = null;
-					// find best available tech
-					for (ResearchType rt0 : es.items) {
-						if (world.isAvailable(rt0)) {
-							req = rt0;
-						}
-					}
-					if (req != null) {
-						Integer v = result.get(req);
-						result.put(req, v != null ? v + es.max : es.max);
-					}
-				}
-			}
-		}
-		
-		return result;
-	}
-	/**
-	 * Check if the fleet could be upgraded.
-	 */
-	void checkFleetUpgrade() {
-		Set<AIFleet> toUpgrade = new HashSet<AIFleet>();
-		// upgrade fleet
-		for (AIFleet f : world.ownFleets) {
-			// ignore explorers and colonizers
-			if ((f.task == FleetTask.EXPLORE || f.task == FleetTask.COLONIZE)) {
-				return;
-			}
-			if ((f.task == FleetTask.UPGRADE 
-					|| f.task == FleetTask.DEPLOY) && f.isMoving()) {
-				return;
-			}
-		}
-		for (final AIFleet f : world.ownFleets) {
-			if (!f.isMoving() && f.statistics.planet != null) {
-				if (f.task == FleetTask.UPGRADE) {
-					// decomission fleet
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							f.fleet.strip();
-							f.fleet.sell();
-							log("FleetDecomission, Fleet = %s", f.fleet.name);
-						}
-					});
-					return;
-				} else
-				if (f.task == FleetTask.DEPLOY) {
-					add(getDeployAction(f.fleet));
-					return;
-				}
-			} 
-			
-		}
-		for (AIFleet f : world.ownFleets) {
-			if (f.task.ordinal() > FleetTask.UPGRADE.ordinal()) {
-				if (isBetter(f.inventory, ResearchSubCategory.SPACESHIPS_FIGHTERS)) {
-					toUpgrade.add(f);
-				} else
-				if (isBetter(f.inventory, ResearchSubCategory.SPACESHIPS_CRUISERS)) {
-					toUpgrade.add(f);
-				} else
-				if (isBetter(f.inventory, ResearchSubCategory.SPACESHIPS_BATTLESHIPS)) {
-					toUpgrade.add(f);
-				} else
-				if (isBetterEquipment(f.inventory)) {
-					toUpgrade.add(f);
-				}
-			}
-		}
-		if (checkMilitarySpaceport()) {
-			return;
-		}
-		if (!toUpgrade.isEmpty()) {
-			// find the weakest fleet and move it to the closest spaceport
-			final AIFleet min = Collections.min(toUpgrade, new Comparator<AIFleet>() {
-				@Override
-				public int compare(AIFleet o1, AIFleet o2) {
-					return o1.statistics.firepower - o2.statistics.firepower;
-				}
-			});
-			final AIPlanet spaceport = findClosestMilitarySpaceport(min.x, min.y);
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					min.fleet.task = FleetTask.UPGRADE;
-					controls.actionMoveFleet(min.fleet, spaceport.planet);
-				}
-			});
-			return;
-		} else {
-			// check tanks
-			if (!toUpgrade.isEmpty()) {
-				// check refill
-				for (AIFleet f : world.ownFleets) {
-					if (f.task.ordinal() > FleetTask.DEPLOY.ordinal()) {
-						if (isRefillNeeded(f.inventory).size() > 0) {
-							toUpgrade.add(f);
-						}
-					}
-				}
-				final AIFleet max = Collections.max(toUpgrade, new Comparator<AIFleet>() {
-					@Override
-					public int compare(AIFleet o1, AIFleet o2) {
-						return o1.statistics.firepower - o2.statistics.firepower;
-					}
-				});
-				// produce equipment
-				Map<ResearchType, Integer> counts = isRefillNeeded(max.inventory);
-				if (checkProduction(counts)) {
-					return;
-				}
-				// bring fleet to closest spaceport
-				final AIPlanet spaceport = findClosestMilitarySpaceport(max.x, max.y);
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						max.fleet.task = FleetTask.DEPLOY;
-						controls.actionMoveFleet(max.fleet, spaceport.planet);
-					}
-				});
-				return;
-				
-				
-			} else {
-				for (AIFleet f : world.ownFleets) {
-					if (f.task.ordinal() > FleetTask.DEPLOY.ordinal()) {
-						if (f.statistics.vehicleCount > 0) {
-							TankChecker tc = new TankChecker();
-							if (tc.check(f.inventory)) {
-								toUpgrade.add(f);
-							}
-						}
-					}
-				}
-				if (!toUpgrade.isEmpty()) {
-					final AIFleet max = Collections.max(toUpgrade, new Comparator<AIFleet>() {
-						@Override
-						public int compare(AIFleet o1, AIFleet o2) {
-							return o1.statistics.firepower - o2.statistics.firepower;
-						}
-					});
-					VehiclePlan plan = planVehicles(max.statistics.vehicleMax);
-					if (plan == null) {
-						return;
-					}
-					// bring fleet to closest spaceport
-					final AIPlanet spaceport = findClosestMilitarySpaceport(max.x, max.y);
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							max.fleet.task = FleetTask.DEPLOY;
-							controls.actionMoveFleet(max.fleet, spaceport.planet);
-						}
-					});
-					return;
-				}
-			}
-		}
-	}
-	/**
-	 * Is refill needed for projectiles?
-	 * @param inv the inventory sequence
-	 * @return true if refill needed
-	 */
-	Map<ResearchType, Integer> isRefillNeeded(Iterable<AIInventoryItem> inv) {
-		Map<ResearchType, Integer> result = JavaUtils.newHashMap();
-		for (AIInventoryItem ii : inv) {
-			for (InventorySlot is : ii.slots) {
-				if (is.type != null && is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
-					if (is.count < is.slot.max) {
-						Integer i = result.get(is.type);
-						result.put(is.type, (i != null ? i : 0) + is.slot.max - is.count);
-					}
-				}
-			}
-		}
-		return result;
-	}
-	/**
-	 * Check if better equipment is technologically available to this fleet.
-	 * @param inv the inventory now
-	 * @return true if better technology is available
-	 */
-	boolean isBetterEquipment(Iterable<AIInventoryItem> inv) {
-		for (AIInventoryItem ii : inv) {
-			for (InventorySlot is : ii.slots) {
-				if (!is.slot.fixed) {
-					int idx = 0;
-					if (is.type != null) {
-						idx = is.slot.items.indexOf(is.type) + 1;
-					}
-					while (idx < is.slot.items.size()) {
-						if (world.isAvailable(is.slot.items.get(idx))) {
-							return true;
-						}
-						idx++;
-					}
-				}
-			}
-		}
-		return false;
-	}
-	/**
-	 * Check if a better technology is available. 
-	 * @param inv the inventory
-	 * @param cat the category filter
-	 * @return true if better technology is available.
-	 */
-	boolean isBetter(Iterable<AIInventoryItem> inv, ResearchSubCategory cat) {
-		NavigableSet<ResearchType> current = new TreeSet<ResearchType>(expensiveFirst);
-		ResearchType best = null;
-		for (ResearchType rt : world.availableResearch) {
-			if (rt.category == cat) {
-				if (best == null || best.productionCost < rt.productionCost) {
-					best = rt;
-				}
-			}
-		}
-		for (AIInventoryItem ii : inv) {
-			if (ii.type.category == cat) {
-				current.add(ii.type);
-			}
-		}
-		if (!current.contains(best)) {
-			return true;
-		}
-		if (current.contains(best) && current.size() > 1 && cat != ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Create a deploy action for the given fleet.
-	 * @param f the fleet
-	 * @return the action
-	 */
-	Action0 getDeployAction(final Fleet f) {
-		final VehiclePlan plan = planVehicles(f.getStatistics().vehicleMax);
-		if (plan != null) {
-			return new Action0() {
-				@Override
-				public void invoke() {
-					// remove equipment and tanks
-					f.strip();
-					// place back better equipment
-					f.upgradeAll();
-					// place back tanks
-					if (plan.bestTank != null) {
-						if (plan.tankCount <= f.owner.inventoryCount(plan.bestTank)) {
-							f.addInventory(plan.bestTank, plan.tankCount);
-							f.owner.changeInventoryCount(plan.bestTank, -plan.tankCount);
-						}
-					}
-					for (Map.Entry<ResearchType, Integer> cfg : plan.vehicleConfig.entrySet()) {
-						int cnt = cfg.getValue();
-						ResearchType rt = cfg.getKey();
-						if (cnt <= f.owner.inventoryCount(rt)) {
-							f.addInventory(rt, cnt);
-							f.owner.changeInventoryCount(rt, -cnt);
-							break;
-						}
-					}
-					log("UpgradeFleet, Fleet = %s", f.name);
-				}
-			};
-		}
-		return new Action0() {
-			@Override
-			public void invoke() {
-				
-			}
-		};
 	}
 }

@@ -9,7 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -40,7 +40,7 @@ public class GroundwarUnit extends GroundwarObject {
 	/** The weapon cooldown counter. */
 	public int cooldown;
 	/** The current movement path to the target. */
-	public final List<Location> path = JavaUtils.newArrayList();
+	public final List<Location> path = U.newArrayList();
 	/** The next move rotation. */
 	public Location nextRotate;
 	/** The next move location. */

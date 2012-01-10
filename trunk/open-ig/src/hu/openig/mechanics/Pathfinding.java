@@ -10,7 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,7 +89,7 @@ public class Pathfinding extends AStarSearch<Location> {
 	 * @return the locations around the center
 	 */
 	public Set<Location> squareAround(Location center, int radius) {
-		Set<Location> result = JavaUtils.newHashSet();
+		Set<Location> result = U.newHashSet();
 		int x0 = center.x - radius;
 		int x1 = center.x + radius;
 		int y0 = center.y - radius;
@@ -122,7 +122,7 @@ public class Pathfinding extends AStarSearch<Location> {
 	 * @return the list of neighbors
 	 */
 	private List<Location> neighbors(Location current) {
-		LinkedList<Location> result = JavaUtils.newLinkedList();
+		LinkedList<Location> result = U.newLinkedList();
 		Location left = current.delta(-1, 0);
 		Location right = current.delta(1, 0);
 		Location bottom = current.delta(0, 1);

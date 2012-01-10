@@ -9,7 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.Rectangle;
 import java.util.Set;
@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public class ExplorationMap {
 	/** The set of cells undiscovered on the starmap. */
-	public final Set<Location> map = JavaUtils.newHashSet();
+	public final Set<Location> map = U.newHashSet();
 	/** The cell size used for the exploration map cells. */
 	public final int cellSize;
 	/** The number of rows of the exploration map. */
@@ -50,7 +50,7 @@ public class ExplorationMap {
 		if (inner == null && outer == null) {
 			return map;
 		}
-		Set<Location> result = JavaUtils.newHashSet();
+		Set<Location> result = U.newHashSet();
 		
 		for (Location loc : map) {
 			int cx = (int)((loc.x + 0.5) * cellSize);

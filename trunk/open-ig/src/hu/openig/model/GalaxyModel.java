@@ -12,7 +12,7 @@ import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.Tile;
 import hu.openig.core.TileCached;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
@@ -63,7 +63,7 @@ public class GalaxyModel {
 			XElement planets = galaxy.childElement("planets");
 			for (final XElement planet : planets.childrenWithName("planet")) {
 				wip.inc();
-				exec.submit(JavaUtils.checked(new Runnable() {
+				exec.submit(U.checked(new Runnable() {
 					@Override
 					public void run() {
 						try {

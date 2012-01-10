@@ -9,7 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.model.BattleProjectile.Mode;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -172,7 +172,7 @@ public class SpacewarStructure extends SpacewarObject {
 	 * @return the list of weapon ports
 	 */
 	public List<SpacewarWeaponPort> inRange(SpacewarObject target) {
-		List<SpacewarWeaponPort> result = JavaUtils.newArrayList();
+		List<SpacewarWeaponPort> result = U.newArrayList();
 		double d = Math.hypot(x - target.x, y - target.y);
 		for (SpacewarWeaponPort p : ports) {
 			if (p.projectile.range >= d && p.projectile.mode == Mode.BEAM) {

@@ -8,7 +8,7 @@
 
 package hu.openig.tools;
 
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
@@ -38,8 +38,8 @@ public final class LabelVerifier {
 		XElement xhu = XElement.parseXML("data/hu/labels.xml");
 		XElement xen = XElement.parseXML("data/en/labels.xml");
 		
-		Map<String, String> labelsHu = JavaUtils.newHashMap();
-		Map<String, String> labelsEn = JavaUtils.newHashMap();
+		Map<String, String> labelsHu = U.newHashMap();
+		Map<String, String> labelsEn = U.newHashMap();
 		
 		load(xhu, labelsHu);
 		load(xen, labelsEn);

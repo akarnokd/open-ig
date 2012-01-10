@@ -38,7 +38,7 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -1147,7 +1147,7 @@ public class StarmapScreen extends ScreenBase {
 		
 		Collection<Fleet> fleets = player().visibleFleets();
 		if (showAll) {
-			fleets = JavaUtils.newArrayList();
+			fleets = U.newArrayList();
 			addAllFleets(fleets);
 		}
 		
@@ -1551,7 +1551,7 @@ public class StarmapScreen extends ScreenBase {
 		double zoom = getZoom();
 		Collection<Fleet> vf = player().visibleFleets();
 		if (showAll) {
-			vf = JavaUtils.newArrayList();
+			vf = U.newArrayList();
 			addAllFleets(vf);
 		}
 		for (Fleet f : vf) {

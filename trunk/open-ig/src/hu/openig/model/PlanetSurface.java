@@ -12,7 +12,7 @@ import hu.openig.core.PlanetType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Sides;
 import hu.openig.core.Tile;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
@@ -618,7 +618,7 @@ public class PlanetSurface {
 			int ry2 = Math.abs(cy);
 			int maxr = Math.max(Math.max(rx1, rx2), Math.max(ry1, ry2));
 			// the square size
-			List<PlaceCandidate> candidates = JavaUtils.newArrayList();
+			List<PlaceCandidate> candidates = U.newArrayList();
 			for (int i = 0; i < maxr; i++) {
 				int len = i * 2 + 1;
 				int size = len > 1 ? len * 2 + (len - 2) * 2 : 1;

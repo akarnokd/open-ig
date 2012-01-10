@@ -54,7 +54,7 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -886,7 +886,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return Returns a list of the currently selected structures.
 	 */
 	List<SpacewarStructure> getSelection() {
-		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
 			if (s.selected) {
 				result.add(s);
@@ -1307,7 +1307,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 //			int defenseWidth = Math.max(maxWidth(shields()), maxWidth(projectors()));
 			centerStructures(space.width - commons.spacewar().planet.getWidth() / 2, 
-					JavaUtils.concat(shields(), projectors()));
+					U.concat(shields(), projectors()));
 			xmax -= 3 * commons.spacewar().planet.getWidth() / 2;
 			
 			// place and align stations
@@ -1318,7 +1318,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			
 			// add fighters of the planet
-			List<SpacewarStructure> shipWall = JavaUtils.newArrayList();
+			List<SpacewarStructure> shipWall = U.newArrayList();
 			createSpacewarStructures(nearbyPlanet, 
 					EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
 			
@@ -1394,7 +1394,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** @return a list of shield structures. */
 	List<SpacewarStructure> shields() {
-		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.SHIELD) {
 				result.add(s);
@@ -1404,7 +1404,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** @return a list of projector structures. */
 	List<SpacewarStructure> projectors() {
-		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.PROJECTOR) {
 				result.add(s);
@@ -1414,7 +1414,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** @return a list of ship structures. */
 	List<SpacewarStructure> ships() {
-		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.SHIP) {
 				result.add(s);
@@ -1424,7 +1424,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** @return a list of station structures. */
 	List<SpacewarStructure> stations() {
-		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.STATION) {
 				result.add(s);
@@ -1439,7 +1439,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param fleet the fleet to place
 	 */
 	void placeFleet(int x, boolean left, Fleet fleet) {
-		List<SpacewarStructure> largeShipWall = JavaUtils.newArrayList();
+		List<SpacewarStructure> largeShipWall = U.newArrayList();
 		// place attacker on the planet side (right side)
 		createSpacewarStructures(fleet, 
 				EnumSet.of(ResearchSubCategory.SPACESHIPS_BATTLESHIPS, ResearchSubCategory.SPACESHIPS_CRUISERS), largeShipWall);
@@ -1449,8 +1449,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			x = left ? (x - maxw) : (x + maxw);
 		}
 		
-		List<SpacewarStructure> smallShipWall = JavaUtils.newArrayList();
-		List<SpacewarStructure> smallShipWallOut = JavaUtils.newArrayList();
+		List<SpacewarStructure> smallShipWall = U.newArrayList();
+		List<SpacewarStructure> smallShipWallOut = U.newArrayList();
 		
 		createSpacewarStructures(fleet, 
 				EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), smallShipWall);
@@ -2622,8 +2622,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void applyLayout(final Iterable<? extends SpacewarStructure> ships, 
 			final Player owner, final BattleSpaceLayout layout) {
-		LinkedList<SpacewarStructure> fighters = JavaUtils.newLinkedList();
-		LinkedList<SpacewarStructure> nonFighters = JavaUtils.newLinkedList();
+		LinkedList<SpacewarStructure> fighters = U.newLinkedList();
+		LinkedList<SpacewarStructure> nonFighters = U.newLinkedList();
 		for (SpacewarStructure sws : ships) {
 			if (sws.owner == owner) {
 				if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
@@ -3057,7 +3057,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	@Override
 	public List<SpacewarStructure> enemiesInRange(SpacewarStructure ship) {
-		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
 			if (s.owner != ship.owner) {
 				if (ship.inRange(s).size() > 0) {
@@ -3374,8 +3374,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		handleProjectiles();
 		
-		List<SpacewarStructure> enemyIdles = JavaUtils.newArrayList();
-		List<SpacewarStructure> playerIdles = JavaUtils.newArrayList();
+		List<SpacewarStructure> enemyIdles = U.newArrayList();
+		List<SpacewarStructure> playerIdles = U.newArrayList();
 		// fleet movements
 		for (SpacewarStructure ship : new ArrayList<SpacewarStructure>(structures)) {
 			if (!ship.isDestroyed()) {
@@ -3601,7 +3601,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	@Override
 	public List<SpacewarStructure> enemiesOf(SpacewarStructure s) {
-		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure f : structures) {
 			if (f.owner != s.owner) {
 				result.add(f);
@@ -3824,7 +3824,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	@Override
 	public List<SpacewarStructure> structures(Player owner) {
-		List<SpacewarStructure> result = JavaUtils.newArrayList();
+		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
 			if (s.owner == owner) {
 				result.add(s);

@@ -22,7 +22,7 @@ import hu.openig.model.FleetTask;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -255,7 +255,7 @@ public class ExplorationPlanner extends Planner {
 			double locationValue(Location o) {
 				double dc = Math.hypot(center.x - (o.x + 0.5) * ec, center.y - (o.y + 0.5) * ec);
 				double df = Math.hypot(center.x - (fa.x + 0.5) * ec, center.y - (fa.y + 0.5) * ec);
-				return df / bf.statistics.speed / dc;
+				return -df / bf.statistics.speed / dc;
 			}
 			@Override
 			public int compare(Location o1, Location o2) {
@@ -313,7 +313,7 @@ public class ExplorationPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkDeploy() {
-		List<AIPlanet> mss = JavaUtils.newArrayList();
+		List<AIPlanet> mss = U.newArrayList();
 		for (final AIPlanet planet : world.ownPlanets) {
 			if (planet.statistics.hasMilitarySpaceport) {
 				mss.add(planet);

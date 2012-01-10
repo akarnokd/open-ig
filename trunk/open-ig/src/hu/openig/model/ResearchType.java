@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -172,4 +173,23 @@ public class ResearchType {
 	public String toString() {
 		return id;
 	}
+	/**
+	 * Orders the technology as expensives first.
+	 */
+	public static final Comparator<ResearchType> EXPENSIVE_FIRST = new Comparator<ResearchType>() {
+		@Override
+		public int compare(ResearchType o1, ResearchType o2) {
+			return o2.productionCost - o1.productionCost;
+		}
+	};
+	/**
+	 * Orders the technology as cheapest first.
+	 */
+	public static final Comparator<ResearchType> CHEAPEST_FIRST = new Comparator<ResearchType>() {
+		@Override
+		public int compare(ResearchType o1, ResearchType o2) {
+			return o1.productionCost - o2.productionCost;
+		}
+	};
+
 }

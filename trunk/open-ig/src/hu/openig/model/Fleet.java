@@ -9,10 +9,13 @@
 package hu.openig.model;
 
 import hu.openig.model.BattleProjectile.Mode;
+import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A fleet.
@@ -419,24 +422,11 @@ public class Fleet implements Named, Owned, HasInventory {
 	}
 	/**
 	 * Upgrade equipments according to the best available from the owner's inventory.
+	 * Fill in fighters and tanks as well
 	 * <p>Ensure that the fleet is over a military spaceport.</p>
 	 */
 	public void upgradeAll() {
-		// remove every equipment from the ships and place it back into the global inventory
-		for (InventoryItem ii : inventory) {
-			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
-					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-				for (InventorySlot is : ii.slots) {
-					if (!is.slot.fixed && is.type != null) {
-						owner.changeInventoryCount(is.type, is.count);
-						is.type = null;
-						is.count = 0;
-						is.hp = 0;
-					}
-				}
-			}
-			ii.shield = 0;
-		}
+		strip();
 		// walk
 		for (InventoryItem ii : inventory) {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
@@ -459,6 +449,23 @@ public class Fleet implements Named, Owned, HasInventory {
 				}
 			}
 			ii.shield = Math.max(0, ii.shieldMax());
+		}
+		
+		for (ResearchType rt : owner.available().keySet()) {
+			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				int count = Math.min(30, owner.inventoryCount(rt));
+				addInventory(rt, count);
+				owner.changeInventoryCount(rt, -count);
+			}
+		}
+		VehiclePlan plan = new VehiclePlan();
+		plan.calculate(owner.available().keySet(), owner.world.battle, getStatistics().vehicleMax);
+		for (Map.Entry<ResearchType, Integer> e : plan.demand.entrySet()) {
+			int demand = e.getValue();
+			ResearchType rt = e.getKey();
+			int count = Math.min(demand, owner.inventoryCount(rt));
+			addInventory(rt, count);
+			owner.changeInventoryCount(rt, -count);
 		}
 	}
 	/**
@@ -486,6 +493,11 @@ public class Fleet implements Named, Owned, HasInventory {
 						}
 					}
 				}
+			} else
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				if (ii.count < 30 && owner.inventoryCount(ii.type) > 0) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -501,14 +513,7 @@ public class Fleet implements Named, Owned, HasInventory {
 				owner.changeInventoryCount(ii.type, ii.count);
 				inventory.remove(ii);
 			} else {
-				for (InventorySlot is : ii.slots) {
-					if (is.type != null && !is.slot.fixed) {
-						owner.changeInventoryCount(is.type, is.count);
-						is.type = null;
-						is.count = 0;
-						is.hp = 0;
-					}
-				}
+				ii.strip();
 			}
 		}
 		if (inventory.size() == 0) {
@@ -519,21 +524,9 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * Sell all inventory item.
 	 */
 	public void sell() {
-		long money = 0L;
 		for (InventoryItem ii : inventory) {
-			money += ii.count * ii.type.productionCost / 2;
-			for (InventorySlot is : ii.slots) {
-				if (is.type != null && !is.slot.fixed) {
-					money += is.count * is.type.productionCost / 2;
-				}
-			}
+			ii.sell();
 		}
-		owner.money += money;
-		owner.statistics.moneySellIncome += money;
-		owner.statistics.moneyIncome += money;
-		
-		owner.world.statistics.moneyIncome += money;
-		owner.world.statistics.moneySellIncome += money;
 		
 		inventory.clear();
 		owner.world.removeFleet(this);
@@ -547,5 +540,46 @@ public class Fleet implements Named, Owned, HasInventory {
 		targetPlanet = null;
 		mode = null;
 		task = FleetTask.IDLE;
+	}
+	/**
+	 * Replace a medium or large ship from inventory.
+	 * @param rt the best ship technology
+	 * @param limit the limit of the ship category
+	 */
+	public void replaceWithShip(ResearchType rt, int limit) {
+		// the category count
+		int current = inventoryCount(rt.category);
+		// current available inventory
+		int invGlobal = owner.inventoryCount(rt);
+		// already in inventory
+		int invLocal = inventoryCount(rt);
+		// how many can we add?
+		int toAdd = Math.min(limit - invLocal, invGlobal);
+		
+		while (toAdd > 0) {
+			addInventory(rt, 1);
+			owner.changeInventoryCount(rt, -1);
+			current++;
+			toAdd--;
+		}
+		// lets remove excess
+		if (current > limit) {
+			List<InventoryItem> iis = U.sort(inventory, new Comparator<InventoryItem>() {
+				@Override
+				public int compare(InventoryItem o1, InventoryItem o2) {
+					return ResearchType.CHEAPEST_FIRST.compare(o1.type, o2.type);
+				}
+			});
+			for (InventoryItem ii : iis) {
+				if (current <= limit) {
+					break;
+				}
+				if (ii.type.category == rt.category && ii.type != rt) {
+					ii.strip();
+					inventory.remove(ii);
+					current--;
+				}
+			}
+		}
 	}
 }
