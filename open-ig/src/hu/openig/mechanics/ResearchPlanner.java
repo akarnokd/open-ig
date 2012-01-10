@@ -434,35 +434,35 @@ public class ResearchPlanner extends Planner {
 	 */
 	AIResult buildOneLabFor(final ResearchType rt, final AIPlanet planet) {
 		int noroom = 0;
-		AIResult r = buildOneLabIf(rt.aiLab, world.global.aiLabActive, planet.statistics.aiLab, planet, "ai");
+		AIResult r = buildOneLabIf(rt.aiLab, world.global.aiLab, planet.statistics.aiLab, planet, "ai");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		r = buildOneLabIf(rt.civilLab, world.global.civilLabActive, planet.statistics.civilLab, planet, "civil");
+		r = buildOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet, "civil");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		r = buildOneLabIf(rt.compLab, world.global.compLabActive, planet.statistics.compLab, planet, "computer");
+		r = buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		r = buildOneLabIf(rt.mechLab, world.global.mechLabActive, planet.statistics.mechLab, planet, "mechanical");
+		r = buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		r = buildOneLabIf(rt.milLab, world.global.milLabActive, planet.statistics.milLab, planet, "military");
+		r = buildOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet, "military");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
