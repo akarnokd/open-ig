@@ -355,16 +355,14 @@ public class ResearchPlanner extends Planner {
 				if (r == AIResult.NO_AVAIL) {
 					noroom = false;
 				}
-			} else
-			if (planet.statistics.activeLabCount() == 0
-			&& !planet.statistics.constructing) {
-				noroom = true;
 			}
 		}
 		// find a planet with excess labs.
 		for (AIPlanet planet : world.ownPlanets) {
-			if (demolishOneLabFor(rt, planet)) {
-				return;
+			if (!planet.statistics.constructing) {
+				if (demolishOneLabFor(rt, planet)) {
+					return;
+				}
 			}
 		}
 		// if at least one empty planet failed to build the required lab
