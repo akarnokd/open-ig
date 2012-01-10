@@ -267,10 +267,29 @@ public class ExplorationPlanner extends Planner {
 		Location loc = null;
 		final int rl = bf.radarLevel();
 		if (rl > 0/* && w.random.get().nextDouble() < 0.99*/) {
-			loc = Collections.min(allowed, distance);
+			outer:
+			for (Location loc0 : U.sort(allowed, distance)) {
+				for (AIFleet f : world.ownFleets) {
+					if (f.targetPoint != null && f.task == FleetTask.EXPLORE) {
+						double bias = 0.5;
+						if (rl > 0 && rl % 2 == 0) {
+							bias = 0;
+						}
+						double dc = Math.hypot(f.targetPoint.x - (loc0.x + bias) * ec, f.targetPoint.y - (loc0.y + bias) * ec);
+						if (dc < 1) {
+							continue outer;
+						}
+					}
+				}
+				// noone targeted this
+				loc = loc0;
+				break;
+			}
+			if (loc == null) {
+				loc = Collections.min(allowed, distance);
+			}
 		} else {
-			List<Location> ls = new ArrayList<Location>(exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit));
-			Collections.sort(ls, distance);
+			List<Location> ls = U.sort(allowed, distance);
 			if (ls.size() > 20) {
 				loc = w.random(ls.subList(0, 20));
 			} else {
