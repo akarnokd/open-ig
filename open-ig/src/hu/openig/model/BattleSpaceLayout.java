@@ -9,7 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -78,8 +78,8 @@ public class BattleSpaceLayout {
 		gx /= map.size();
 		gy /= map.size();
 		
-		final Map<Location, Integer> distances = JavaUtils.newHashMap();
-		final Map<Location, Integer> angles = JavaUtils.newHashMap();
+		final Map<Location, Integer> distances = U.newHashMap();
+		final Map<Location, Integer> angles = U.newHashMap();
 		for (Location loc : map.keySet()) {
 			distances.put(loc, (int)(World.dist(gx, gy, loc.x + 0.5, loc.y + 0.5) * 100));
 			angles.put(loc, (int)Math.abs((Math.atan2(loc.y - gy + 0.5, loc.x - gx + 0.5) * 180)));

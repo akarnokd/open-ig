@@ -17,7 +17,7 @@ import hu.openig.core.ResourceLocator;
 import hu.openig.model.Bridge.Level;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
@@ -175,8 +175,8 @@ public class World {
 			walks = new Walks();
 			buildingModel = new BuildingModel(env.config());
 			galaxyModel = new GalaxyModel(env.config());
-			test = JavaUtils.newLinkedHashMap();
-			diplomacy = JavaUtils.newLinkedHashMap();
+			test = U.newLinkedHashMap();
+			diplomacy = U.newLinkedHashMap();
 			
 			exec.submit(new Runnable() {
 				@Override
@@ -413,7 +413,7 @@ public class World {
 	 * @param xplayers the players node
 	 */
 	public void processPlayers(XElement xplayers) {
-		Map<Fleet, Integer> deferredFleets = JavaUtils.newHashMap();
+		Map<Fleet, Integer> deferredFleets = U.newHashMap();
 		
 		for (XElement xplayer : xplayers.childrenWithName("player")) {
 			Player p = new Player(this, xplayer.get("id"));
@@ -1854,7 +1854,7 @@ public class World {
 
 			battle.groundEntities.put(id, ge);
 		}
-		Map<String, BufferedImage[][]> matrices = JavaUtils.newHashMap();
+		Map<String, BufferedImage[][]> matrices = U.newHashMap();
 		for (XElement xmatrix : xbattle.childElement("buildings").childrenWithName("matrix")) {
 			int nx = xmatrix.getInt("width");
 			int ny = xmatrix.getInt("height");

@@ -18,10 +18,10 @@ import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.BuildingType;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
+import hu.openig.model.VehiclePlan;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -126,7 +126,6 @@ public class StaticDefensePlanner extends Planner {
 			@Override
 			public Boolean invoke() {
 				// find barracks..strongholds
-				// FIXME limit the numbers for AI player
 				if (checkBuildingKind(planet, "Defensive", fdefenseLimit)) {
 					return true;
 				}
@@ -181,76 +180,69 @@ public class StaticDefensePlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkTanks(final AIPlanet planet) {
-		// check if better equipment is available
-		if (planet.statistics.vehicleCount > 0) {
-			if (checkBetterTanks(planet)) {
+		// TODO implement
+
+		final VehiclePlan plan = new VehiclePlan();
+		plan.calculate(world.availableResearch, w.battle, planet.statistics.vehicleMax);
+		
+		if (p.id.equals("Empire")) {
+			System.out.print("");
+		}
+		// issue production order for the difference
+		for (Map.Entry<ResearchType, Integer> prod : plan.demand.entrySet()) {
+			ResearchType rt = prod.getKey();
+			int count = prod.getValue();
+			int inventoryGlobal = world.inventoryCount(rt);
+			int inventoryLocal = planet.inventoryCount(rt);
+			
+			int localDemand = count - inventoryLocal;
+			if (localDemand > 0 && localDemand > inventoryGlobal) {
+				// if in production wait
+				if (world.productionCount(rt) > 0) {
+					return false;
+				}
+				placeProductionOrder(rt, localDemand - inventoryGlobal);
 				return true;
 			}
 		}
-		if (planet.statistics.vehicleCount < planet.statistics.vehicleMax) {
-			final int count = planet.statistics.vehicleMax - planet.statistics.vehicleCount;
-			final VehiclePlan plan = planVehicles(count);
-			if (plan == null) {
-				return false;
+		
+		// undeploy old technology
+		for (final AIInventoryItem ii : planet.inventory) {
+			if (!plan.demand.containsKey(ii.type) 
+					&& (plan.tanks.contains(ii.type) || plan.sleds.contains(ii.type))) {
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						int cnt = planet.planet.inventoryCount(ii.type, ii.owner);
+						planet.planet.changeInventory(ii.type, planet.owner, -cnt);
+						planet.owner.changeInventoryCount(ii.type, cnt);
+						log("Undeploy, Planet = %s, Type = %s, Count = %s", planet.planet.id, ii.type, cnt);
+					}
+				});
+				return true;
 			}
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					if (planet.owner == planet.planet.owner) {
-						if (plan.bestTank != null) {
-							if (plan.tankCount <= planet.planet.owner.inventoryCount(plan.bestTank)) {
-								planet.planet.changeInventory(plan.bestTank, planet.owner, plan.tankCount);
-								planet.planet.owner.changeInventoryCount(plan.bestTank, -plan.tankCount);
-							} else {
-								log("DeployTanks, Planet = %s, Count = %s, Failed = not enough of %s", planet.planet.id, plan.tankCount, plan.bestTank.id);
-								return;
-							}
-						}
-						for (Map.Entry<ResearchType, Integer> cfg : plan.vehicleConfig.entrySet()) {
-							int cnt = cfg.getValue();
-							ResearchType rt = cfg.getKey();
-							if (cnt <= planet.planet.owner.inventoryCount(rt)) {
-								planet.planet.changeInventory(rt, planet.owner, cnt);
-								planet.planet.owner.changeInventoryCount(rt, -cnt);
-							} else {
-								log("DeployTanks, Planet = %s, Count = %s, Failed = not enough of %s", planet.planet.id, cnt, rt.id);
-								return;
-							}
-						}
-						log("DeployTanks, Planet = %s, Count = %s", planet.planet.id, count);
-					} else {
-						log("DeployTanks, Planet = %s, Count = %s, Failed = owner changed", planet.planet.id, count);
-					}
-				}
-			});
-			return true;
 		}
-		return false;
-	}
-	/**
-	 * Check if better tanks or vehicles are available.
-	 * @param planet the target planet
-	 * @return true if action taken
-	 */
-	boolean checkBetterTanks(final AIPlanet planet) {
-		TankChecker check = new TankChecker();
-		// if better tanks or sleds are available, unload all and let the planner put better stuff back
-		if (check.check(planet.inventory)) {
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					for (InventoryItem ii : new ArrayList<InventoryItem>(planet.planet.inventory)) {
-						if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
-								|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-							p.changeInventoryCount(ii.type, ii.count);
-							planet.planet.inventory.remove(ii);
+		// deploy new equipment
+		for (Map.Entry<ResearchType, Integer> e : plan.demand.entrySet()) {
+			final ResearchType rt = e.getKey();
+			final int count = e.getValue();
+			final int inventoryLocal = planet.inventoryCount(rt);
+			if (inventoryLocal < count) {
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						int cnt = count - inventoryLocal;
+						if (p.inventoryCount(rt) > cnt) {
+							planet.planet.changeInventory(rt, planet.owner, cnt);
+							p.changeInventoryCount(rt, -cnt);
 						}
+						
 					}
-					log("UnloadPlanet, Planet = %s", planet.planet.id);
-				}
-			});
-			return true;
+				});
+				return true;
+			}
 		}
+		
 		return false;
 	}
 	/**

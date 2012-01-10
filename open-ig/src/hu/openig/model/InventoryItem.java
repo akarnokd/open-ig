@@ -72,4 +72,45 @@ public class InventoryItem {
 			slots.add(is);
 		}
 	}
+	/**
+	 * Returns the sell value of this inventory item.
+	 * @return the sell value
+	 */
+	public long sellValue() {
+		long result = 1L * count * type.productionCost / 2;
+		for (InventorySlot is : slots) {
+			if (is.type != null && !is.slot.fixed) {
+				result += is.count * is.type.productionCost / 2;
+			}
+		}
+		return result;
+	}
+	/**
+	 * Sell the inventory item.
+	 */
+	public void sell() {
+		long money = sellValue();
+		owner.money += money;
+		owner.statistics.moneySellIncome += money;
+		owner.statistics.moneyIncome += money;
+		
+		owner.world.statistics.moneyIncome += money;
+		owner.world.statistics.moneySellIncome += money;
+
+		count = 0;
+		slots.clear();
+	}
+	/**
+	 * Strip the assigned equipment and put it back into the owner's inventory.
+	 */
+	public void strip() {
+		for (InventorySlot is : slots) {
+			if (is.type != null && !is.slot.fixed) {
+				owner.changeInventoryCount(is.type, is.count);
+				is.type = null;
+				is.count = 0;
+				is.hp = 0;
+			}
+		}
+	}
 }

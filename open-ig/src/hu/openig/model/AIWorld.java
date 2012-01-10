@@ -274,4 +274,16 @@ public class AIWorld {
 
 		return new Point2D.Double(cx, cy);
 	}
+	/**
+	 * The number of remaining production or zero if not producing.
+	 * @param rt the research type
+	 * @return the remaining count
+	 */
+	public int productionCount(ResearchType rt) {
+		Production prod = productions.get(rt);
+		if (prod != null) {
+			return prod.count;
+		}
+		return 0;
+	}
 }

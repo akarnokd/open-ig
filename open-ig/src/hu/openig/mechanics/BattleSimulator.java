@@ -27,7 +27,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.World;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -313,7 +313,7 @@ public final class BattleSimulator {
 	 * @return the list of units
 	 */
 	List<GroundwarUnit> vehicles(Collection<InventoryItem> items) {
-		List<GroundwarUnit> result = JavaUtils.newArrayList();
+		List<GroundwarUnit> result = U.newArrayList();
 		for (InventoryItem ii : items) {
 			BattleGroundVehicle bgv = world.battle.groundEntities.get(ii.type.id);
 			if (bgv != null) {

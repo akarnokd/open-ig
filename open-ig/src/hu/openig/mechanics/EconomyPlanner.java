@@ -18,7 +18,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +85,7 @@ public class EconomyPlanner extends Planner {
 		// don't upgrade unless we have a ton of money
 		final boolean allowUpgrades = world.money >= 75000;
 		final boolean allowUpgrades2 = world.money >= 100000;
-		List<Pred1<AIPlanet>> functions = JavaUtils.newArrayList();
+		List<Pred1<AIPlanet>> functions = U.newArrayList();
 		functions.add(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet planet) {

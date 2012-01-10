@@ -13,7 +13,7 @@ import hu.openig.model.BuildingAllocationWorker;
 import hu.openig.model.Planet;
 import hu.openig.model.ResourceAllocationStrategy;
 import hu.openig.model.World;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public final class Allocator {
 			if (ras.surface.buildings.size() == 0) {
 				continue;
 			}
-			final List<BuildingAllocationWorker> baw = JavaUtils.newArrayList();
+			final List<BuildingAllocationWorker> baw = U.newArrayList();
 			for (Building b : ras.surface.buildings) {
 				if (b.enabled && b.isComplete()) {
 					baw.add(b.getAllocationWorker());
@@ -93,7 +93,7 @@ public final class Allocator {
 		if (planet.surface.buildings.size() == 0) {
 			return;
 		}
-		final List<BuildingAllocationWorker> baw = JavaUtils.newArrayList();
+		final List<BuildingAllocationWorker> baw = U.newArrayList();
 		for (Building b : planet.surface.buildings) {
 			if (b.enabled) {
 				baw.add(b.getAllocationWorker());

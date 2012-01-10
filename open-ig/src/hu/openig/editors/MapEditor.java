@@ -30,7 +30,7 @@ import hu.openig.model.TileSet;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
@@ -434,11 +434,11 @@ public class MapEditor extends JFrame {
 			/** The colony graphics. */
 			private ColonyGFX colonyGraphics;
 			/** Surface list. */
-			private List<TileEntry> surfaces = JavaUtils.newArrayList();
+			private List<TileEntry> surfaces = U.newArrayList();
 			/** Buildings list. */
-			private List<TileEntry> buildings = JavaUtils.newArrayList();
+			private List<TileEntry> buildings = U.newArrayList();
 			/** Races. */
-			private Set<String> races = JavaUtils.newHashSet();
+			private Set<String> races = U.newHashSet();
 			/** The loaded text renderer. */
 			TextRenderer txt;
 			@Override

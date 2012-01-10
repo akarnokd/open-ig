@@ -32,7 +32,7 @@ import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.text.ParseException;
@@ -60,9 +60,9 @@ public class AI implements AIManager {
 	/** The exploration map manager. */
 	ExplorationMap exploration;
 	/** Set of fleets which will behave as defenders in the space battle. */
-	final Set<Integer> defensiveTask = JavaUtils.newHashSet();
+	final Set<Integer> defensiveTask = U.newHashSet();
 	/** The estimations about how strong the other player's fleets are. */
-	final Map<String, PlayerFleetStrength> strengths = JavaUtils.newHashMap();
+	final Map<String, PlayerFleetStrength> strengths = U.newHashMap();
 	/** The list of actions to apply. */
 	final List<Action0> applyActions = new ArrayList<Action0>();
 	/** The next attack date. */

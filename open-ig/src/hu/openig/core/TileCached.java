@@ -8,7 +8,7 @@
 
 package hu.openig.core;
 
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
 import java.lang.ref.Reference;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class TileCached extends Tile {
 	/** The cached image strips. The key is maxCount times the alpha value. */
-	protected final Map<Integer, Reference<BufferedImage[]>> cache = JavaUtils.newHashMap();
+	protected final Map<Integer, Reference<BufferedImage[]>> cache = U.newHashMap();
 	/** The maximum alpha cache count. */
 	protected final int maxCount;
 	/**

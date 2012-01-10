@@ -10,7 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Func1;
 import hu.openig.core.Func2;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,11 +40,11 @@ public class AStarSearch<T> {
 	 * @return the sortest path or an empty list if no such path exists. 
 	 */
 	public List<T> search(final T initial, final T destination) {
-		Set<T> closedSet = JavaUtils.newHashSet();
-		Map<T, T> cameFrom = JavaUtils.newHashMap();
-		final Map<T, Integer> gScore = JavaUtils.newHashMap();
-		final Map<T, Integer> hScore = JavaUtils.newHashMap();
-		final Map<T, Integer> fScore = JavaUtils.newHashMap();
+		Set<T> closedSet = U.newHashSet();
+		Map<T, T> cameFrom = U.newHashMap();
+		final Map<T, Integer> gScore = U.newHashMap();
+		final Map<T, Integer> hScore = U.newHashMap();
+		final Map<T, Integer> fScore = U.newHashMap();
 		final Comparator<T> smallestF = new Comparator<T>() {
 			@Override
 			public int compare(T o1, T o2) {
@@ -53,8 +53,8 @@ public class AStarSearch<T> {
 				return g1 < g2 ? -1 : (g1 > g2 ? 1 : 0);
 			}
 		};
-		Set<T> openSet2 = JavaUtils.newHashSet();
-		List<T> openSet = JavaUtils.newArrayList();
+		Set<T> openSet2 = U.newHashSet();
+		List<T> openSet = U.newArrayList();
 		
 		gScore.put(initial, 0);
 		hScore.put(initial, estimation.invoke(initial, destination));
@@ -110,7 +110,7 @@ public class AStarSearch<T> {
 	 * @return the list of the path elements
 	 */
 	public List<T> reconstructPath(Map<T, T> cameFrom, T current) {
-		LinkedList<T> path = JavaUtils.newLinkedList();
+		LinkedList<T> path = U.newLinkedList();
 		path.addLast(current);
 		T parent = cameFrom.get(current);
 		while (parent != null) {

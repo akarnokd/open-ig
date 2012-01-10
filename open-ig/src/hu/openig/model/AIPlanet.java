@@ -10,7 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.Location;
 import hu.openig.model.PlanetSurface.PlacementHelper;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -38,9 +38,9 @@ public class AIPlanet {
 	/** The population. */
 	public int population;
 	/** The inventory items of the planet. */
-	public final List<AIInventoryItem> inventory = JavaUtils.newArrayList();
+	public final List<AIInventoryItem> inventory = U.newArrayList();
 	/** Set of locations where no buildings may be placed. */
-	public final Map<Location, SurfaceEntity> nonbuildable = JavaUtils.newHashMap();
+	public final Map<Location, SurfaceEntity> nonbuildable = U.newHashMap();
 	/** Building list. */
 	public final List<AIBuilding> buildings = new ArrayList<AIBuilding>();
 	/** The placement helper. */
@@ -141,5 +141,19 @@ public class AIPlanet {
 	 */
 	public boolean canBuild(BuildingType bt) {
 		return Planet.canBuild(planet, buildings, world.availableResearch, bt);
+	}
+	/**
+	 * Returns the inventory count of the specified technology.
+	 * @param rt the technology
+	 * @return the count
+	 */
+	public int inventoryCount(ResearchType rt) {
+		int result = 0;
+		for (AIInventoryItem ii : inventory) {
+			if (ii.type == rt) {
+				result += ii.count;
+			}
+		}
+		return result;
 	}
 }

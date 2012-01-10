@@ -19,7 +19,7 @@ import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
 import hu.openig.model.TaxLevel;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -717,7 +717,7 @@ public class ColonyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean getMoreMoney(final AIPlanet current) {
-		List<Func1<Building, Boolean>> functions = JavaUtils.newArrayList();
+		List<Func1<Building, Boolean>> functions = U.newArrayList();
 		// severly damaged
 		functions.add(new Func1<Building, Boolean>() {
 			@Override

@@ -16,7 +16,7 @@ import hu.openig.core.RoadType;
 import hu.openig.core.Tile;
 import hu.openig.core.TileCached;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
@@ -103,7 +103,7 @@ public class BuildingModel {
 					final String normalLight = normalImg + "_lights";
 					
 					wip.inc();
-					exec.execute(JavaUtils.checked(new Runnable() {
+					exec.execute(U.checked(new Runnable() {
 						@Override
 						public void run() {
 							try {
@@ -139,7 +139,7 @@ public class BuildingModel {
 					final String normalLight = normalImg + "_lights";
 					
 					wip.inc();
-					exec.execute(JavaUtils.checked(new Runnable() {
+					exec.execute(U.checked(new Runnable() {
 						@Override
 						public void run() {
 							try {
@@ -186,7 +186,7 @@ public class BuildingModel {
 					final String previewImg = normalImg + "_mini";
 					
 					wip.inc();
-					exec.execute(JavaUtils.checked(new Runnable() {
+					exec.execute(U.checked(new Runnable() {
 						@Override
 						public void run() {
 							try {
@@ -271,7 +271,7 @@ public class BuildingModel {
 					
 					wip.inc();
 	
-					exec.execute(JavaUtils.checked(new Runnable() {
+					exec.execute(U.checked(new Runnable() {
 						@Override
 						public void run() {
 							try {

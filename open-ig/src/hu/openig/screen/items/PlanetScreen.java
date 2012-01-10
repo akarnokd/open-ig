@@ -64,7 +64,7 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.Parallels;
 
 import java.awt.AlphaComposite;
@@ -247,23 +247,23 @@ public class PlanetScreen extends ScreenBase {
 	/** Show the screen navigation buttons? */
 	boolean showSidebarButtons = true;
 	/** The set where the vehicles may be placed. */
-	final Set<Location> battlePlacements = JavaUtils.newHashSet();
+	final Set<Location> battlePlacements = U.newHashSet();
 	/** The ground war units. */
-	final List<GroundwarUnit> units = JavaUtils.newArrayList();
+	final List<GroundwarUnit> units = U.newArrayList();
 	/** The guns. */
-	final List<GroundwarGun> guns = JavaUtils.newArrayList();
+	final List<GroundwarGun> guns = U.newArrayList();
 	/** The user is dragging a selection box. */
 	boolean selectionMode;
 	/** The pathfinding routine. */
 	Pathfinding pathfinding;
 	/** The current animating explosions. */
-	Set<GroundwarExplosion> explosions = JavaUtils.newHashSet();
+	Set<GroundwarExplosion> explosions = U.newHashSet();
 	/** The active rockets. */
-	Set<GroundwarRocket> rockets = JavaUtils.newHashSet();
+	Set<GroundwarRocket> rockets = U.newHashSet();
 	/** The groundwar animation simulator. */
 	Closeable simulator;
 	/** The helper map to list ground units to be rendered at a specific location. */
-	final Map<Location, Set<GroundwarUnit>> unitsAtLocation = JavaUtils.newHashMap();
+	final Map<Location, Set<GroundwarUnit>> unitsAtLocation = U.newHashMap();
 	/** The direct attack units. */
 	final EnumSet<GroundwarUnitType> directAttackUnits = EnumSet.of(
 			GroundwarUnitType.ARTILLERY,
@@ -275,7 +275,7 @@ public class PlanetScreen extends ScreenBase {
 			GroundwarUnitType.ROCKET_JAMMER
 	);
 	/** The list of remaining units to place. */
-	final LinkedList<GroundwarUnit> unitsToPlace = JavaUtils.newLinkedList();
+	final LinkedList<GroundwarUnit> unitsToPlace = U.newLinkedList();
 	/** Start the battle. */
 	@DragSensitive
 	UIImageButton startBattle;
@@ -288,7 +288,7 @@ public class PlanetScreen extends ScreenBase {
 	/** How many steps to yield before replanning. */
 	static final int YIELD_TTL = 10 * 1000 / SIMULATION_DELAY;
 	/** List of requests about path planning. */
-	final List<PathPlanning> pathsToPlan = JavaUtils.newArrayList();
+	final List<PathPlanning> pathsToPlan = U.newArrayList();
 	/** A mine. */
 	public static class Mine {
 		/** The owner. */
@@ -299,9 +299,9 @@ public class PlanetScreen extends ScreenBase {
 	/**
 	 * The mine locations.
 	 */
-	final Map<Location, Mine> mines = JavaUtils.newHashMap();
+	final Map<Location, Mine> mines = U.newHashMap();
 	/** Set of minelayers currently placing a mine. */
-	final Set<GroundwarUnit> minelayers = JavaUtils.newHashSet();
+	final Set<GroundwarUnit> minelayers = U.newHashSet();
 	/** Collision avoidance yield set. */
 	@Override
 	public void onFinish() {
@@ -3042,7 +3042,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the set of locations 
 	 */
 	Set<Location> setDeploymentLocations(boolean atBuildings) {
-		Set<Location> result = JavaUtils.newHashSet();;
+		Set<Location> result = U.newHashSet();;
 		if (atBuildings) {
 			for (Building b : planet().surface.buildings) {
 				result.addAll(placeAround(b));
@@ -3060,7 +3060,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the set of available placement locations
 	 */
 	Set<Location> placeAround(Building b) {
-		Set<Location> result = JavaUtils.newHashSet();
+		Set<Location> result = U.newHashSet();
 		for (int x = b.location.x - 3; x < b.location.x + b.tileset.normal.width + 3; x++) {
 			for (int y = b.location.y + 3; y > b.location.y - b.tileset.normal.height - 3; y--) {
 				if (surface().placement.canPlaceBuilding(x, y)) {
@@ -3076,7 +3076,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the set of available placement locations
 	 */
 	Set<Location> placeEdge(int distance) {
-		Set<Location> result = JavaUtils.newHashSet();
+		Set<Location> result = U.newHashSet();
 		int w = planet().surface.width;
 		int h = planet().surface.height;
 		int n = 0;
@@ -3301,7 +3301,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @param cy the cell coordinates
 	 */
 	void drawRockets(Graphics2D g2, int cx, int cy) {
-		List<GroundwarRocket> multiple = JavaUtils.newArrayList();
+		List<GroundwarRocket> multiple = U.newArrayList();
 		for (GroundwarRocket u : rockets) {
 			if ((int)Math.floor(u.x - 1) == cx && (int)Math.floor(u.y - 1) == cy) {
 				multiple.add(u);
@@ -3552,7 +3552,7 @@ public class PlanetScreen extends ScreenBase {
 		/** The unit. */
 		final GroundwarUnit unit;
 		/** The computed path. */
-		final List<Location> path = JavaUtils.newArrayList();
+		final List<Location> path = U.newArrayList();
 		/**
 		 * Constructor. Initializes the fields.
 		 * @param initial the initial location
@@ -3682,7 +3682,7 @@ public class PlanetScreen extends ScreenBase {
 	 */
 	void doPathPlannings() {
 		if (pathsToPlan.size() > 0) {
-			List<Future<?>> inProgress = JavaUtils.newLinkedList();
+			List<Future<?>> inProgress = U.newLinkedList();
 			for (int i = 1; i < pathsToPlan.size(); i++) {
 				inProgress.add(commons.pool.submit(pathsToPlan.get(i)));
 			}
@@ -4217,7 +4217,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the units in range
 	 */
 	List<GroundwarUnit> unitsInRange(GroundwarUnit g) {
-		List<GroundwarUnit> result = JavaUtils.newArrayList();
+		List<GroundwarUnit> result = U.newArrayList();
 		for (GroundwarUnit u : units) {
 			if (u.owner != g.owner && !u.isDestroyed() 
 					&& unitInRange(g, u, g.model.maxRange)
@@ -4233,7 +4233,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the units in range
 	 */
 	List<Building> buildingsInRange(GroundwarUnit g) {
-		List<Building> result = JavaUtils.newArrayList();
+		List<Building> result = U.newArrayList();
 		for (Building u : surface().buildings) {
 			if (planet().owner != g.owner && !u.isDestroyed() 
 					&& unitInRange(g, u, g.model.maxRange)
@@ -4249,7 +4249,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @return the units in range
 	 */
 	List<GroundwarUnit> unitsInRange(GroundwarGun g) {
-		List<GroundwarUnit> result = JavaUtils.newArrayList();
+		List<GroundwarUnit> result = U.newArrayList();
 		for (GroundwarUnit u : units) {
 			if (u.owner != g.owner && !u.isDestroyed() 
 					&& unitInRange(g, u, g.model.maxRange)) {
@@ -4761,7 +4761,7 @@ public class PlanetScreen extends ScreenBase {
 
 		Set<GroundwarUnit> set = unitsAtLocation.get(next);
 		if (set == null) {
-			set = JavaUtils.newHashSet();
+			set = U.newHashSet();
 			unitsAtLocation.put(next, set);
 		}
 		set.add(u);
@@ -4774,7 +4774,7 @@ public class PlanetScreen extends ScreenBase {
 		Location current = unitLocation(u);
 		Set<GroundwarUnit> set = unitsAtLocation.get(current);
 		if (set == null) {
-			set = JavaUtils.newHashSet();
+			set = U.newHashSet();
 			unitsAtLocation.put(current, set);
 		}
 		set.add(u);
@@ -4820,7 +4820,7 @@ public class PlanetScreen extends ScreenBase {
 		
 		Iterable<InventoryItem> iis = (atBuildings ? planet() : battle.attacker).inventory();
 		
-		LinkedList<GroundwarUnit> gus = JavaUtils.newLinkedList();
+		LinkedList<GroundwarUnit> gus = U.newLinkedList();
 		// create units
 		createGroundUnits(atBuildings, iis, gus);
 		

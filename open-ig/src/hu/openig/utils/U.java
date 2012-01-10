@@ -9,21 +9,24 @@
 package hu.openig.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
  * Utility class for missing java functionalities.
  * @author akarnokd
  */
-public final class JavaUtils {
+public final class U {
 	/** Constructor. */
-	private JavaUtils() {
+	private U() {
 		// utility class
 	}
 	/**
@@ -227,5 +230,114 @@ public final class JavaUtils {
 				};
 			}
 		};
+	}
+	/**
+	 * Concatenate two lists by creating a new one.
+	 * @param <T> the element type
+	 * @param first the first list
+	 * @param second the second list
+	 * @return the concatenated list
+	 */
+	public static <T> List<T> concat(List<? extends T> first, List<? extends T> second) {
+		List<T> result = newArrayList();
+		result.addAll(first);
+		result.addAll(second);
+		return result;
+	}
+	/**
+	 * Concatenate three lists by creating a new one.
+	 * @param <T> the element type
+	 * @param first the first list
+	 * @param second the second list
+	 * @param third the third list
+	 * @return the concatenated list
+	 */
+	public static <T> List<T> concat(List<? extends T> first, List<? extends T> second, List<? extends T> third) {
+		List<T> result = newArrayList();
+		result.addAll(first);
+		result.addAll(second);
+		result.addAll(third);
+		return result;
+	}
+	/**
+	 * Concatenate two collections and place them into the given class of collection.
+	 * @param <T> the element type of the collection
+	 * @param <C> the output collection type
+	 * @param <W> the first collection type
+	 * @param <V> the second collection type
+	 * @param first the first collection
+	 * @param second the second collection
+	 * @param clazz the container class
+	 * @return the new collection
+	 */
+	public static <T,
+	C extends Collection<T>, 
+	W extends Collection<? extends T>,
+	V extends Collection<? extends T>> C concat(W first, V second, Class<C> clazz) {
+		try {
+			C result = clazz.cast(clazz.newInstance());
+			result.addAll(first);
+			result.addAll(second);
+			return result;
+		} catch (IllegalAccessException ex) {
+			throw new IllegalArgumentException("clazz", ex);
+		} catch (InstantiationException ex) {
+			throw new IllegalArgumentException("clazz", ex);
+		}
+	}
+	/**
+	 * Sort the given sequence into a new list according to its natural order.
+	 * @param <T> the element type
+	 * @param src the source sequence 
+	 * @return the list sorted.
+	 */
+	public static <T extends Comparable<? super T>> List<T> sort(Iterable<? extends T> src) {
+		List<T> result = new ArrayList<T>();
+		for (T t : src) {
+			result.add(t);
+		}
+		Collections.sort(result);
+		return result;
+	}
+	/**
+	 * Sort the given sequence into a new list according to the comparator.
+	 * @param <T> the element type
+	 * @param src the source sequence
+	 * @param comp the element comparator 
+	 * @return the list sorted.
+	 */
+	public static <T> List<T> sort(final Iterable<? extends T> src, final Comparator<? super T> comp) {
+		List<T> result = new ArrayList<T>();
+		for (T t : src) {
+			result.add(t);
+		}
+		Collections.sort(result, comp);
+		return result;
+	}
+	/**
+	 * Sort the given list in place and return it.
+	 * @param <T> the element type
+	 * @param src the source list
+	 * @param comp the comparator
+	 * @return the source list
+	 */
+	public static <T> List<T> sort2(List<T> src, Comparator<? super T> comp) {
+		Collections.sort(src, comp);
+		return src;
+	}
+	/**
+	 * Add the sequence of Ts to the destination collection and return this collection.
+	 * @param <T> the element type
+	 * @param <V> the collection type
+	 * @param dest the destination collection
+	 * @param src the source sequence
+	 * @return the {@code dest} parameter
+	 */
+	public static <T, V extends Collection<T>> 
+	V addAll(V dest, Iterable<? extends T> src) {
+		for (T t : src) {
+			dest.add(t);
+		}
+		return dest;
 	}
 }

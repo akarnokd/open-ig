@@ -15,7 +15,7 @@ import hu.openig.core.Img;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.ExplosionType;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
 import java.util.Map;
@@ -201,7 +201,7 @@ public class ColonyGFX {
 	/** The laid mine. */
 	public BufferedImage[][] mine;
 	/** The explosion images. */
-	public final Map<ExplosionType, BufferedImage[]> explosions = JavaUtils.newHashMap();
+	public final Map<ExplosionType, BufferedImage[]> explosions = U.newHashMap();
 	/**
 	 * Load the resources for the given language.
 	 * @param rl the resource locator

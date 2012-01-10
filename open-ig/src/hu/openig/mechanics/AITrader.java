@@ -25,7 +25,7 @@ import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
-import hu.openig.utils.JavaUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.geom.Point2D;
@@ -43,17 +43,17 @@ import java.util.Set;
  */
 public class AITrader implements AIManager {
 	/** List of the trader's fleets. */
-	final List<TraderFleet> fleets = JavaUtils.newLinkedList();
+	final List<TraderFleet> fleets = U.newLinkedList();
 	/** List of the planets with trader's spaceport. */ 
-	final List<Planet> planets = JavaUtils.newArrayList();
+	final List<Planet> planets = U.newArrayList();
 	// -----------------------------------------------------------------
 	// State
 	/** Map of the landed fleets. */
-	final List<LandedFleet> landed = JavaUtils.newLinkedList();
+	final List<LandedFleet> landed = U.newLinkedList();
 	/** Set of fleets turned back by space battle. */
-	final Set<Fleet> fleetTurnedBack = JavaUtils.newHashSet();
+	final Set<Fleet> fleetTurnedBack = U.newHashSet();
 	/** The last visited planet of the fleet. */
-	final Map<Fleet, Planet> lastVisitedPlanet = JavaUtils.newHashMap();
+	final Map<Fleet, Planet> lastVisitedPlanet = U.newHashMap();
 	// -----------------------------------------------------------------
 	/** The world. */
 	World world;
@@ -248,7 +248,7 @@ public class AITrader implements AIManager {
 		nf.id = world.fleetIdSequence++;
 		nf.owner = player;
 		nf.name = traderLabel;
-		List<ResearchType> rts = JavaUtils.newArrayList();
+		List<ResearchType> rts = U.newArrayList();
 		for (ResearchType rt : world.researches.values()) {
 			if (rt.race.contains(player.race)) {
 				rts.add(rt);
