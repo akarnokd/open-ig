@@ -26,6 +26,7 @@ import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.Production;
+import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.VehiclePlan;
@@ -58,7 +59,7 @@ public class OffensePlanner extends Planner {
 		public int compare(ResearchType o1, ResearchType o2) {
 			int v1 = firepower(o1);
 			int v2 = firepower(o2);
-			return v1 - v2;
+			return v2 - v1;
 		}
 	};
 	/**
@@ -297,6 +298,8 @@ public class OffensePlanner extends Planner {
 				if (!battleships.isEmpty()) {
 					fleet.replaceWithShip(battleships.get(0), 3);
 				}
+				fleet.task = FleetTask.IDLE;
+				log("UpgradeFleet, Fleet = %s", fleet.name);
 			}
 		});
 		
@@ -328,28 +331,30 @@ public class OffensePlanner extends Planner {
 		
 		// check if figthers are well equipped?
 		for (ResearchType rt : fighters) {
-			UpgradeResult r = checkProduction(rt, 10, nvl(currentInventory.get(rt)));
+			int ci = nvl(currentInventory.get(rt));
+			UpgradeResult r = checkProduction(rt, Math.min(30, ci + 10), ci);
 			if (r == UpgradeResult.ACTION) {
 				return true;
 			} else
 			if (r == UpgradeResult.DEPLOY) {
 				bringinFleet(fleet);
 				return true;
-			} else
-			if (r == UpgradeResult.WAIT) {
-				return false;
+//			} else
+//			if (r == UpgradeResult.WAIT) {
+//				return false;
 			}
 		}
 		
 		// check if best cruiser is filled in
 		if (!cruisers.isEmpty()) {
 			ResearchType rt = cruisers.get(0);
-			UpgradeResult r = checkProduction(rt, 5, nvl(currentInventory.get(rt)));
+			int ci = nvl(currentInventory.get(rt));
+			UpgradeResult r = checkProduction(rt, Math.min(25, ci + 5), ci);
 			if (r == UpgradeResult.ACTION) {
 				return true;
-			} else
-			if (r == UpgradeResult.WAIT) {
-				return false;
+//			} else
+//			if (r == UpgradeResult.WAIT) {
+//				return false;
 			} else
 			if (r == UpgradeResult.DEPLOY) {
 				bringinFleet(fleet);
@@ -360,12 +365,13 @@ public class OffensePlanner extends Planner {
 		// check if best battleship is filled in
 		if (!battleships.isEmpty()) {
 			ResearchType rt = battleships.get(0);
-			UpgradeResult r = checkProduction(rt, 1, nvl(currentInventory.get(rt)));
+			int ci = nvl(currentInventory.get(rt));
+			UpgradeResult r = checkProduction(rt, Math.min(3, ci + 1), ci);
 			if (r == UpgradeResult.ACTION) {
 				return true;
-			} else
-			if (r == UpgradeResult.WAIT) {
-				return false;
+//			} else
+//			if (r == UpgradeResult.WAIT) {
+//				return false;
 			} else
 			if (r == UpgradeResult.DEPLOY) {
 				bringinFleet(fleet);
@@ -395,8 +401,10 @@ public class OffensePlanner extends Planner {
 						if (best != current) {
 							equipmentDemands.put(best, cnt + is.slot.max * ii.count);
 						} else {
-							// else add only demand for the missing counts
-							equipmentDemands.put(best, cnt + (is.slot.max - is.count) * ii.count);
+							if (is.slot.max > is.count) {
+								// else add only demand for the missing counts
+								equipmentDemands.put(best, cnt + (is.slot.max - is.count) * ii.count);
+							}
 						}
 					}
 				}
@@ -404,22 +412,29 @@ public class OffensePlanner extends Planner {
 		}
 		
 		// create equipment and upgrade the fleet
+		Set<ResearchMainCategory> running = U.newHashSet();
 		for (Map.Entry<ResearchType, Integer> e : equipmentDemands.entrySet()) {
 			ResearchType rt = e.getKey();
-			int count = Math.min(30, e.getValue());
-			UpgradeResult r = checkProduction(rt, count, world.inventoryCount(rt));
-			if (r == UpgradeResult.ACTION) {
-				return true;
-			} else
-			if (r == UpgradeResult.WAIT) {
-				return false;
-			} else
-			if (r == UpgradeResult.DEPLOY) {
-				bringinFleet(fleet);
-				return true;
+			if (!running.contains(rt.category.main)) {
+				int count = Math.min(30, e.getValue());
+				if (count > 0) {
+					UpgradeResult r = checkProduction(rt, count, world.inventoryCount(rt));
+					if (r == UpgradeResult.ACTION) {
+						return true;
+					} else
+					if (r == UpgradeResult.WAIT || r == UpgradeResult.CONTINUE) {
+						running.add(rt.category.main);
+					} else
+					if (r == UpgradeResult.DEPLOY) {
+						bringinFleet(fleet);
+						return true;
+					}
+				}
 			}
 		}
-		
+		if (running.size() > 0) {
+			return false;
+		}
 		// plan for vehicles
 		VehiclePlan plan = new VehiclePlan();
 		plan.calculate(world.availableResearch, w.battle, fleet.statistics.vehicleMax);
