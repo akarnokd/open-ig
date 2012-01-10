@@ -43,7 +43,6 @@ public class VehiclePlan {
 			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				if (rt.has("one-per-fleet")) {
 					onePerKind.add(rt);
-					demand.put(rt, 1);
 				} else {
 					BattleGroundVehicle veh = battle.groundEntities.get(rt.id);
 					if (veh != null && veh.type == GroundwarUnitType.ROCKET_SLED) {
@@ -57,16 +56,26 @@ public class VehiclePlan {
 		
 		// expected composition
 		int tankCount = max * 2 / 3;
-		int sledCount = max - tankCount - onePerKind.size();
+		int vehicleCount = max - tankCount;
+		int sledCount = vehicleCount - onePerKind.size();
 		if (sleds.size() == 0) {
 			tankCount += sledCount;
 			sledCount = 0;
 		}
-		if (tanks.size() > 0) {
+		if (tanks.size() > 0 && tankCount > 0) {
 			demand.put(tanks.get(0), tankCount);
+			max -= tankCount;
 		}
-		if (sleds.size() > 0) {
+		if (sleds.size() > 0 && sledCount > 0) {
 			demand.put(sleds.get(0), sledCount);
+			max -= sledCount;
+		}
+		for (ResearchType rt : onePerKind) {
+			if (max <= 0) {
+				break;
+			}
+			demand.put(rt, 1);
+			max--;
 		}
 	}
 }
