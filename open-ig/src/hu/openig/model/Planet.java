@@ -134,6 +134,7 @@ public class Planet implements Named, Owned, HasInventory {
 		boolean damage = false;
 		boolean colonyHub = false;
 		boolean colonyHubOperable = false;
+		int nativeWorkerDemand = 0;
 		
 		result.vehicleMax = 8; // default per planet
 		
@@ -227,9 +228,9 @@ public class Planet implements Named, Owned, HasInventory {
 			if (b.hasResource("military")) {
 				result.milLab += b.getResource("military");
 			}
+			float health = b.hitpoints * 1.0f / b.type.hitpoints;
 			if (b.isReady()) {
 				// consider the damage level
-				float health = b.hitpoints * 1.0f / b.type.hitpoints;
 				result.workerDemand += Math.abs(b.getWorkers()) * health;
 				int e = b.getEnergy();
 				if (e < 0) {
@@ -238,6 +239,8 @@ public class Planet implements Named, Owned, HasInventory {
 					result.energyAvailable += e;
 				}
 			}
+			nativeWorkerDemand += Math.abs(b.getWorkers()) * health;
+			
 			damage |= b.isDamaged();
 			buildup |= b.isConstructing();
 			colonyHub |= "MainBuilding".equals(b.type.kind) && !b.isConstructing();
@@ -264,7 +267,9 @@ public class Planet implements Named, Owned, HasInventory {
 		if (Math.abs(result.workerDemand) > population) {
 			result.addWarning(PlanetProblems.WORKFORCE);
 		}
-		
+		if (nativeWorkerDemand > population) {
+			result.addWarning(PlanetProblems.WORKFORCE);
+		}
 		if (Math.abs(result.energyDemand) > Math.abs(result.energyAvailable) * 2) {
 			result.addProblem(PlanetProblems.ENERGY);
 		} else

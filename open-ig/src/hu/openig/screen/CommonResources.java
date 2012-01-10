@@ -160,6 +160,8 @@ public class CommonResources implements GameEnvironment {
 	private Parameters params = new Parameters();
 	/** Map of currently running AIs. */
 	public final Map<Player, Future<?>> runningAI = new HashMap<Player, Future<?>>();
+	/** Indicate if an asynchronous save is in operation. */
+	public final WipPort saving = new WipPort();
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.

@@ -1190,6 +1190,11 @@ public class LoadSaveScreen extends ScreenBase {
 	 * @param saves the list of ordered saves
 	 */
 	void findSaves(List<FileItem> saves) {
+		try {
+			commons.saving.await();
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
 		// check if save dir exists
 		File dir = new File("save/" + commons.profile.name);
 		if (!dir.exists()) {
