@@ -1399,6 +1399,7 @@ public class GameWindow extends JFrame implements GameControls {
 		final String pn = commons.profile.name;
 		final XElement xworld = commons.world().saveState();
 		saveSettings(xworld);
+		commons.saving.inc();
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -1427,6 +1428,8 @@ public class GameWindow extends JFrame implements GameControls {
 					}
 				} catch (Throwable t) {
 					t.printStackTrace();
+				} finally {
+					commons.saving.dec();
 				}
 			}
 		}, "Save");

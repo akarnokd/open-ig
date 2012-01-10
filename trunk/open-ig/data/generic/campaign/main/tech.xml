@@ -489,7 +489,7 @@
 		description='tech.shield4.description' category='EQUIPMENT_SHIELDS'
 		image='inventions/equipments/shields/shield_4' factory='equipment'
 		research-cost='30000' production-cost='19000' level='5' race='human'
-		civil='1' mech='3' comp='6' ai='4' mil='7' index='3'
+		civil='1' mech='3' comp='6' ai='4' mil='7' index='3' requires='Shield3'
 		video='technology/equipments/shields/shield_4'>
 		<property name='shield' value='60' />
 	</item>

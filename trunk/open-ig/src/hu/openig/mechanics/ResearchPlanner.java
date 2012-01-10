@@ -340,49 +340,42 @@ public class ResearchPlanner extends Planner {
 		Collections.sort(candidatesReconstruct, new CompareFromMap(rebuildCount));
 
 		final ResearchType rt = candidatesReconstruct.get(0);
-		
+
+		boolean noroom = false;
 		// find an empty planet
-		int failed = 0;
 		for (AIPlanet planet : world.ownPlanets) {
-			if (!planet.statistics.constructing) {
-				if (planet.statistics.labCount() == 0) {
-					AIResult r = buildOneLabFor(rt, planet);
-					if (r == AIResult.CONTINUE) {
-						continue;
-					}
-					if (r == AIResult.SUCCESS 
-							|| r == AIResult.NO_MONEY) {
-						return;
-					} else {
-						failed++;
-					}
-				} else {
-					if (planet.statistics.activeLabCount() == 0) {
-						failed--;
-						for (AIBuilding b : planet.buildings) {
-							if (b.type.kind.equals("Science") && b.enabled) {
-								failed += 2; // constructing, maybe room will be available later
-								break;
-							}
-						}
-					}
+			if (planet.statistics.labCount() == 0) {
+				AIResult r = buildOneLabFor(rt, planet);
+				if (r == AIResult.SUCCESS || r == AIResult.NO_MONEY) {
+					return;
+				} else
+				if (r == AIResult.NO_ROOM) {
+					noroom = true;
+				} else
+				if (r == AIResult.NO_AVAIL) {
+					noroom = false;
 				}
+			} else
+			if (planet.statistics.activeLabCount() == 0
+			&& !planet.statistics.constructing) {
+				noroom = true;
 			}
 		}
-		// if at least one empty planet failed to build the required lab
-		// conquer more planets
-		if (failed > 0 && !rt.hasEnoughLabs(world.global)) {
-			if (conquerMorePlanets()) {
-				return;
-			}
-		}
-		
 		// find a planet with excess labs.
 		for (AIPlanet planet : world.ownPlanets) {
 			if (demolishOneLabFor(rt, planet)) {
 				return;
 			}
 		}
+		// if at least one empty planet failed to build the required lab
+		// conquer more planets
+		boolean enoughLabs = rt.hasEnoughLabs(world.global);
+		if (noroom && !enoughLabs) {
+			if (conquerMorePlanets()) {
+				return;
+			}
+		}
+		
 		return;
 	}
 	/**
@@ -443,55 +436,40 @@ public class ResearchPlanner extends Planner {
 	 */
 	AIResult buildOneLabFor(final ResearchType rt, final AIPlanet planet) {
 		int noroom = 0;
-		AIResult r = buildOneLabIf(rt.aiLab, world.global.aiLab, planet.statistics.aiLab, planet, "ai");
-		if (r == AIResult.SUCCESS) {
-			return AIResult.SUCCESS;
+		AIResult r = buildOneLabIf(rt.aiLab, world.global.aiLabActive, planet.statistics.aiLab, planet, "ai");
+		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
+			return r;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		if (r == AIResult.NO_MONEY) {
+		r = buildOneLabIf(rt.civilLab, world.global.civilLabActive, planet.statistics.civilLab, planet, "civil");
+		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
-		}
-		r = buildOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet, "civil");
-		if (r == AIResult.SUCCESS) {
-			return AIResult.SUCCESS;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		if (r == AIResult.NO_MONEY) {
+		r = buildOneLabIf(rt.compLab, world.global.compLabActive, planet.statistics.compLab, planet, "computer");
+		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
-		}
-		r = buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer");
-		if (r == AIResult.SUCCESS) {
-			return AIResult.SUCCESS;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		if (r == AIResult.NO_MONEY) {
+		r = buildOneLabIf(rt.mechLab, world.global.mechLabActive, planet.statistics.mechLab, planet, "mechanical");
+		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
-		}
-		r = buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical");
-		if (r == AIResult.SUCCESS) {
-			return AIResult.SUCCESS;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		if (r == AIResult.NO_MONEY) {
+		r = buildOneLabIf(rt.milLab, world.global.milLabActive, planet.statistics.milLab, planet, "military");
+		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
-		}
-		r = buildOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet, "military");
-		if (r == AIResult.SUCCESS) {
-			return AIResult.SUCCESS;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
-		}
-		if (r == AIResult.NO_MONEY) {
-			return r;
 		}
 		if (noroom > 0) {
 			return AIResult.NO_ROOM;
