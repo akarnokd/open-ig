@@ -90,6 +90,8 @@ public class PlanetStatistics {
 	public int planetCount;
 	/** The total military spaceport count. */
 	public int militarySpaceportCount;
+	/** The worker demand of all built buildings, whether they are enabled or not. */
+	public int nativeWorkerDemand;
 	/**
 	 * Add the other planet statistics to this one.
 	 * @param other the other statistics
@@ -127,6 +129,7 @@ public class PlanetStatistics {
 		hasSpaceStation |= other.hasSpaceStation;
 		hasTradersSpaceport |= other.hasTradersSpaceport;
 		militarySpaceportCount += other.militarySpaceportCount;
+		nativeWorkerDemand += other.nativeWorkerDemand;
 	}
 	/**
 	 * The planet has the specified problem?
