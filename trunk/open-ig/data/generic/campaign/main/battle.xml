@@ -418,7 +418,7 @@
 		<layout id='Original12' map='spacewar/layout_12'/>
 	</layouts>
 	<properties>
-		<property id='Bomb1' name='ground-area' value='6'/>
-		<property id='Bomb2' player='Empire' name='ground-area' value='10'/>
+		<property id='Bomb1' ground-radius='6' damage-percent='5'/>
+		<property id='Bomb2' player='Empire' ground-radius='10' damage-percent='10'/>
 	</properties>
 </battle>

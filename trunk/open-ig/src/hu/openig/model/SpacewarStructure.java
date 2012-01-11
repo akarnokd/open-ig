@@ -90,6 +90,8 @@ public class SpacewarStructure extends SpacewarObject {
 	public int hp;
 	/** The maximum hitpoints. */
 	public int hpMax;
+	/** The technology id of this ship. */
+	public String techId;
 	/** @return the type name describing this structure. */
 	public String getType() {
 		if (type == StructureType.SHIP || type == StructureType.STATION) {

@@ -242,4 +242,9 @@ public class Building {
 	public boolean canUpgrade() {
 		return upgradeLevel < type.upgrades.size();
 	}
+	@Override
+	public String toString() {
+		
+		return type.id + " (hp = " + hitpoints + ")";
+	}
 }
