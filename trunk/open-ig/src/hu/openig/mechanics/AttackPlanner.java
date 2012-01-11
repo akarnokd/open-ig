@@ -65,7 +65,7 @@ public class AttackPlanner extends Planner {
 			
 			List<AIFleet> fleets = findFleetsFor(FleetTask.ATTACK, null);
 			if (!fleets.isEmpty()) {
-				final AIFleet ownFleet = Collections.min(fleets, new Comparator<AIFleet>() {
+				final AIFleet ownFleet = Collections.max(fleets, new Comparator<AIFleet>() {
 					@Override
 					public int compare(AIFleet o1, AIFleet o2) {
 						return o1.statistics.firepower - o2.statistics.firepower;
