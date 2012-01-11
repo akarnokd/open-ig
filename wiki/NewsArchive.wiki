@@ -4,6 +4,11 @@
 
 =January, 2012=
 
+*January 11, 2012*
+
+Hi there! New release with several bug fixes and improvements to UI and AI.
+One of the long awaited features is the ability to switch to classical right-click-action mode. In this mode, you can pan the maps with the middle mouse button. Right clicking on space/ground moves the units, right clicking on enemies issues attack order.
+
 *January 2, 2012*
 
 The latest version of the game may cause some inconveniences, namely unexpected hang and disappearance of saves. You may let the Launcher to update itself to version 0.13. 
