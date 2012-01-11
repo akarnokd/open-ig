@@ -1669,6 +1669,11 @@ public class GameWindow extends JFrame implements GameControls {
 		xworld.set("starmap-y", allScreens.starmap.getYOffset());
 		xworld.set("starmap-z", allScreens.starmap.getZoomIndex());
 		
+		xworld.set("spacewar-command", allScreens.spacewar.viewCommandSelected());
+		xworld.set("spacewar-damage", allScreens.spacewar.viewDamageSelected());
+		xworld.set("spacewar-range", allScreens.spacewar.viewRangeSelected());
+		xworld.set("spacewar-grid", allScreens.spacewar.viewGridSelected());
+		
 		config.saveProperties(xworld);
 	}
 	/**
@@ -1689,6 +1694,11 @@ public class GameWindow extends JFrame implements GameControls {
 			allScreens.starmap.setYOffset(xworld.getInt("starmap-y"));
 			allScreens.starmap.newGameStarted = false;
 		}
+		allScreens.spacewar.viewCommandSelected(xworld.getBoolean("spacewar-command", allScreens.spacewar.viewCommandSelected()));
+		allScreens.spacewar.viewDamageSelected(xworld.getBoolean("spacewar-damage", allScreens.spacewar.viewDamageSelected()));
+		allScreens.spacewar.viewRangeSelected(xworld.getBoolean("spacewar-range", allScreens.spacewar.viewRangeSelected()));
+		allScreens.spacewar.viewGridSelected(xworld.getBoolean("spacewar-grid", allScreens.spacewar.viewGridSelected()));
+		
 		config.loadProperties(xworld);
 	}
 	@Override

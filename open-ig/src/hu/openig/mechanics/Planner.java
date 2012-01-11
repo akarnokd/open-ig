@@ -280,7 +280,7 @@ public abstract class Planner {
 	 */
 	<T> List<T> shuffle(Collection<? extends T> collection) {
 		List<T> result = new ArrayList<T>(collection);
-		Collections.shuffle(result, w.random.get());
+		Collections.shuffle(result, w.random());
 		return result;
 	}
 	/**

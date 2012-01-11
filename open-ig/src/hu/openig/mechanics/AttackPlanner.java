@@ -74,9 +74,9 @@ public class AttackPlanner extends Planner {
 				AIFleet targetFleet = null;
 				AIPlanet targetPlanet = null;
 				if (world.mayConquer) {
-					if (w.random.get().nextBoolean()) {
+					if (w.random().nextBoolean()) {
 						targetFleet = selectTargetFleet();
-						if (targetFleet == null && w.random.get().nextBoolean()) {
+						if (targetFleet == null && w.random().nextBoolean()) {
 							targetPlanet = selectTargetPlanet();
 						}
 					} else {
@@ -108,7 +108,7 @@ public class AttackPlanner extends Planner {
 		if (world.nextAttack == null) {
 			if (world.mayConquer) {
 				int base = 4;
-				long next = 1L * (w.random.get().nextInt(3) + base) * (8 + 2 * w.random.get().nextInt(6)) * 60 * 60 * 1000;
+				long next = 1L * (w.random().nextInt(3) + base) * (8 + 2 * w.random().nextInt(6)) * 60 * 60 * 1000;
 				world.nextAttack = new Date(world.now.getTime() + next);
 				setNewAttack.invoke(world.nextAttack);
 			}

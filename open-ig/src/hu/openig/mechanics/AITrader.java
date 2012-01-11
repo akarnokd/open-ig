@@ -204,7 +204,7 @@ public class AITrader implements AIManager {
 					
 
 					while (!Thread.currentThread().isInterrupted()) {
-						int nt = world.random.get().nextInt(planets.size());
+						int nt = world.random().nextInt(planets.size());
 						Planet np = planets.get(nt);
 						if (np != lf.target) {
 							lf.fleet.targetPlanet(np);

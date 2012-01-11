@@ -3476,7 +3476,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 						chooseNewTarget(ship);
 					} else
 					if (ship.ecmLevel == ship.attack.ecmLevel) {
-						if (world().random.get().nextBoolean()) {
+						if (world().random().nextBoolean()) {
 							chooseNewTarget(ship);
 						}
 					}
@@ -3835,5 +3835,49 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	@Override
 	public int facing() {
 		return battle.attacker.owner == player() && !attackerOnRight ? -1 : 1;
+	}
+	/** @return view command selected */
+	public boolean viewCommandSelected() {
+		return viewCommand.selected;
+	}
+	/** @return view damage selected */
+	public boolean viewDamageSelected() {
+		return viewDamage.selected;
+	}
+	/** @return view range selected */
+	public boolean viewRangeSelected() {
+		return viewRange.selected;
+	}
+	/** @return view grid selected */
+	public boolean viewGridSelected() {
+		return viewGrid.selected;
+	}
+	/**
+	 * Set view command selected.
+	 * @param selected the new value
+	 */
+	public void viewCommandSelected(boolean selected) {
+		viewCommand.selected = selected;
+	}
+	/**
+	 * Set view damage selected.
+	 * @param selected the new value
+	 */
+	public void viewDamageSelected(boolean selected) {
+		viewDamage.selected = selected;
+	}
+	/**
+	 * Set view range selected.
+	 * @param selected the new value
+	 */
+	public void viewRangeSelected(boolean selected) {
+		viewRange.selected = selected;
+	}
+	/**
+	 * Set view grid selected.
+	 * @param selected the new value
+	 */
+	public void viewGridSelected(boolean selected) {
+		viewGrid.selected = selected;
 	}
 }

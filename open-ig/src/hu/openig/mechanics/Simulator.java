@@ -201,7 +201,7 @@ public final class Simulator {
 				if (world.difficulty == Difficulty.HARD) {
 					eqDelta /= 4;
 				}
-				if (world.random.get().nextInt(eqDelta) < 1) {
+				if (world.random().nextInt(eqDelta) < 1) {
 					planet.earthQuakeTTL = 6; // 1 hour
 					
 					Message msg = world.newMessage("message.earthquake");
