@@ -1884,6 +1884,15 @@ public class World {
 			battle.groundHitpoints.put(Pair.of(id, player), xhp.getInt("ground"));
 			battle.spaceHitpoints.put(Pair.of(id, player), xhp.getInt("space"));
 		}
+		for (XElement xprops : xbattle.childrenWithName("properties")) {
+			for (XElement xprop : xprops.childrenWithName("property")) {
+				battle.addProperty(
+						xprop.get("id"), 
+						xprop.get("player", null),
+						xprop.get("name"),
+						xprop.get("value"));
+			}
+		}
 	}
 	/**
 	 * Trim the image items symmetrically to free up some unnecessary memory

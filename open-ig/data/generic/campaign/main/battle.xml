@@ -417,4 +417,8 @@
 		<layout id='Original11' map='spacewar/layout_11'/>
 		<layout id='Original12' map='spacewar/layout_12'/>
 	</layouts>
+	<properties>
+		<property id='Bomb1' name='ground-area' value='6'/>
+		<property id='Bomb2' player='Empire' name='ground-area' value='10'/>
+	</properties>
 </battle>
