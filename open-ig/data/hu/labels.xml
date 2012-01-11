@@ -2077,6 +2077,12 @@
 	<entry key='statistics.planet_lost'>Elvesztett bolygók</entry>
 	<entry key='statistics.planet_revolted'>Fellázadt bolygók</entry>
 	<entry key='statistics.planet_died'>Kihalt bolygók</entry>
+	<entry key='spacewar.selection.name'         >Név   : %s</entry>
+	<entry key='spacewar.selection.name_count'   >Név   : %s x %s</entry>
+	<entry key='spacewar.selection.owner'        >Tulaj : %s</entry>
+	<entry key='spacewar.selection.parent'       >Hely  : %s</entry>
+	<entry key='spacewar.selection.firepower_dps'>DPS   : %s / %s</entry>
+	<entry key='spacewar.selection.bombs_rockets'>B/R   : %s / %s</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -2820,6 +2820,13 @@
 	<entry key='statistics.planet_lost'>Planets lost</entry>
 	<entry key='statistics.planet_revolted'>Planets revolted</entry>
 	<entry key='statistics.planet_died'>Planets died</entry>
+	<entry key='spacewar.selection.name'         >Name   : %s</entry>
+	<entry key='spacewar.selection.name_count'   >Name   : %s x %s</entry>
+	<entry key='spacewar.selection.owner'        >Owner  : %s</entry>
+	<entry key='spacewar.selection.parent'       >Parent : %s</entry>
+	<entry key='spacewar.selection.firepower_dps'>DPS    : %s / %s</entry>
+	<entry key='spacewar.selection.bombs_rockets'>B/R    : %s / %s</entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -64,8 +64,8 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.U;
 import hu.openig.utils.Parallels;
+import hu.openig.utils.U;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -88,6 +88,7 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -296,6 +297,8 @@ public class PlanetScreen extends ScreenBase {
 		/** The damage to inflict. */
 		public int damage;
 	}
+	/** The grouping of structures. */
+	final Map<Object, Integer> groups = U.newHashMap();
 	/**
 	 * The mine locations.
 	 */
@@ -369,6 +372,20 @@ public class PlanetScreen extends ScreenBase {
 			}
 			break;
 		default:
+		}
+		if (e.isControlDown()) {
+			if (e.getKeyCode() >= KeyEvent.VK_0 && e.getKeyCode() <= KeyEvent.VK_9) {
+				assignGroup(e.getKeyCode() - KeyEvent.VK_0);
+				e.consume();
+				rep = true;
+			}
+		}
+		if (e.isShiftDown()) {
+			if (e.getKeyCode() >= KeyEvent.VK_0 && e.getKeyCode() <= KeyEvent.VK_9) {
+				recallGroup(e.getKeyCode() - KeyEvent.VK_0);
+				e.consume();
+				rep = true;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 			// back out of fight instantly
@@ -5070,6 +5087,59 @@ public class PlanetScreen extends ScreenBase {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Assign the selected units to a group.
+	 * @param groupNo the group number
+	 */
+	void assignGroup(int groupNo) {
+		List<Object> selected = U.newArrayList();
+		Player p = null;
+		for (GroundwarUnit u : units) {
+			if (p != null && u.owner != p) {
+				return;
+			}
+			p = u.owner;
+			if (u.selected) {
+				selected.add(u);
+			}
+		}
+		for (GroundwarGun g : guns) {
+			if (p != null && g.owner != p) {
+				return;
+			}
+			p = g.owner;
+			if (g.selected) {
+				selected.add(g);
+			}
+		}
+		
+		// remove previous grouping
+		Iterator<Map.Entry<Object, Integer>> it = groups.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<Object, Integer> e = it.next();
+			if (e.getValue().intValue() == groupNo) {
+				it.remove();
+			}
+		}
+		
+		for (Object o : selected) {
+			groups.put(o, groupNo);
+		}
+	}
+	/**
+	 * Reselect the units of the saved group.
+	 * @param groupNo the group number
+	 */
+	void recallGroup(int groupNo) {
+		for (GroundwarUnit u : units) {
+			Integer gr = groups.get(u);
+			u.selected = gr != null && gr.intValue() == groupNo;
+		}
+		for (GroundwarGun g : guns) {
+			Integer gr = groups.get(g);
+			g.selected = gr != null && gr.intValue() == groupNo;
+		}
 	}
 }
 
