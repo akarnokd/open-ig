@@ -298,7 +298,7 @@ public class DefaultAIControls implements AIControls {
 		fleet.waypoints.clear();
 		fleet.targetPlanet(planet);
 		fleet.mode = FleetMode.MOVE;
-		log("MoveFleet, Fleet = %s, Planet = %s", fleet.name, planet.id);
+		log("MoveFleet, Fleet = %s (%d), Planet = %s", fleet.name, fleet.id, planet.id);
 	}
 	
 	@Override

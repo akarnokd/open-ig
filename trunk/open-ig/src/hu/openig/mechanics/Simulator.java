@@ -15,8 +15,10 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
+import hu.openig.model.FleetStatistics;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
@@ -26,6 +28,7 @@ import hu.openig.model.Profile;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.World;
@@ -699,11 +702,39 @@ public final class Simulator {
 				Planet np = f.nearbyPlanet();
 				if (np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport) {
 					ii.hp = Math.min(hpMax, (ii.hp * 100 + hpMax) / 100);
+					checkRefill(f, ii);
 				}
 			}
 			int sm = ii.shieldMax();
 			if (sm > 0 && ii.shield < sm) {
 				ii.shield = Math.min(sm, (ii.shield * 100 + sm) / 100);
+			}
+		}
+	}
+	/**
+	 * Check if the auto-refill of tanks and equipment is on.
+	 * @param f the target fleet
+	 * @param ii the target inventory
+	 */
+	static void checkRefill(Fleet f, InventoryItem ii) {
+		if (f.owner == f.owner.world.player) {
+			if (f.owner.world.env.config().reequipBombs) {
+				for (InventorySlot is : ii.slots) {
+					if (is.type != null && is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
+						int demand = is.slot.max - is.count;
+						int inv = f.owner.inventoryCount(is.type);
+						int add = Math.min(inv, demand);
+						is.count += add;
+						f.owner.changeInventoryCount(is.type, -add);
+					}
+				}
+			}
+			if (f.owner.world.env.config().reequipTanks) {
+				FleetStatistics fs = f.getStatistics();
+				if (fs.vehicleCount < fs.vehicleMax) {
+					f.stripVehicles();
+					f.upgradeVehicles(fs.vehicleMax);
+				}
 			}
 		}
 	}
