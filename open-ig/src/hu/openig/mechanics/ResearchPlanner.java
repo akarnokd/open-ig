@@ -51,7 +51,8 @@ public class ResearchPlanner extends Planner {
 			return value.hasInventory("ColonyShip");
 		}
 	};
-
+	/** Indicator to allow actions that spendmoney. */
+	boolean maySpendMoney;
 	/** The exploration map. */
 	final ExplorationMap exploration;
 	/**
@@ -80,9 +81,7 @@ public class ResearchPlanner extends Planner {
 		}
 		
 		//if low on money and planets, plan for conquest
-		if (world.money < 100000 && world.global.planetCount < 2) {
-			return;
-		}
+		maySpendMoney = (world.money >= 100000 || world.global.planetCount > 2);
 		
 		final Map<ResearchType, Integer> enablesCount = new HashMap<ResearchType, Integer>();
 		final Map<ResearchType, Integer> rebuildCount = new HashMap<ResearchType, Integer>();
@@ -114,23 +113,25 @@ public class ResearchPlanner extends Planner {
 				setResearchEnables(rt, enablesCount);
 			}
 		}
-		// yield if one planet available and not enough money
-		if (candidatesImmediate.size() > 0) {
-			Collections.sort(candidatesImmediate, new CompareFromMap(enablesCount));
-			final ResearchType rt = candidatesImmediate.get(0);
-			double mf = 2.0;
-			final double moneyFactor = mf; // TODO decision variable
-			applyActions.add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionStartResearch(rt, moneyFactor);
-				}
-			});
-			return;
-		}
-		if (candidatesReconstruct.size() > 0) {
-			planReconstruction(rebuildCount, candidatesReconstruct);
-			return;
+		if (maySpendMoney) {
+			// yield if one planet available and not enough money
+			if (candidatesImmediate.size() > 0) {
+				Collections.sort(candidatesImmediate, new CompareFromMap(enablesCount));
+				final ResearchType rt = candidatesImmediate.get(0);
+				double mf = 2.0;
+				final double moneyFactor = mf; // TODO decision variable
+				applyActions.add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionStartResearch(rt, moneyFactor);
+					}
+				});
+				return;
+			}
+			if (candidatesReconstruct.size() > 0) {
+				planReconstruction(rebuildCount, candidatesReconstruct);
+				return;
+			}
 		}
 		if (candidatesGetMorePlanets.size() > 0 && conquerMorePlanets()) {
 			return;
@@ -313,19 +314,23 @@ public class ResearchPlanner extends Planner {
 		final Pair<Boolean, AIPlanet> spaceport = findMilitarySpaceport();
 		// if no planet has military spaceport, build one somewhere
 		if (!spaceport.first) {
-			buildMilitarySpaceport();
+			if (maySpendMoney) {
+				buildMilitarySpaceport();
+			}
 			return;
 		}
 		if (deployInventoryColonyShip(spaceport.second)) {
 			return;
 		}
-		if (checkOrbitalFactory()) {
-			return;
-		}
-		final ResearchType cs = world.isAvailable("ColonyShip");
-		if (cs != null) {
-			placeProductionOrder(cs, 1);
-			return;
+		if (maySpendMoney) {
+			if (checkOrbitalFactory()) {
+				return;
+			}
+			final ResearchType cs = world.isAvailable("ColonyShip");
+			if (cs != null) {
+				placeProductionOrder(cs, 1);
+				return;
+			}
 		}
 	}
 	/**
