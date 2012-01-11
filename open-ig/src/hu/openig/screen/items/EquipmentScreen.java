@@ -21,7 +21,6 @@ import hu.openig.model.InventoryItemGroup;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
-import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
@@ -812,8 +811,12 @@ public class EquipmentScreen extends ScreenBase {
 				research(rt);
 			}
 		}
-		if (rt.category.main == ResearchMainCategory.BUILDINS) {
-			if (player().selectionMode == SelectionMode.FLEET && fleet() != null) {
+		if (player().selectionMode == SelectionMode.FLEET && fleet() != null) {
+			if (rt.category != ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+					&& rt.category != ResearchSubCategory.SPACESHIPS_CRUISERS
+					&& rt.category != ResearchSubCategory.SPACESHIPS_FIGHTERS
+					&& rt.category != ResearchSubCategory.WEAPONS_TANKS
+					&& rt.category != ResearchSubCategory.WEAPONS_VEHICLES) {
 				// select first fighter
 				for (ResearchType rt0 : rts) {
 					if (rt0.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -822,8 +825,13 @@ public class EquipmentScreen extends ScreenBase {
 						break;
 					}
 				}
-			} else
-			if (player().selectionMode == SelectionMode.PLANET || player().selectionMode == null) {
+			}
+		} else
+		if (player().selectionMode == SelectionMode.PLANET || player().selectionMode == null) {
+			if (rt.category != ResearchSubCategory.SPACESHIPS_STATIONS
+					&& rt.category != ResearchSubCategory.SPACESHIPS_FIGHTERS
+					&& rt.category != ResearchSubCategory.WEAPONS_TANKS
+					&& rt.category != ResearchSubCategory.WEAPONS_VEHICLES) {
 				for (ResearchType rt0 : rts) {
 					if (rt0.category == ResearchSubCategory.WEAPONS_TANKS) {
 						rt = rt0;

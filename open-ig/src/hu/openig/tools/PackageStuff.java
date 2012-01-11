@@ -40,10 +40,9 @@ public final class PackageStuff {
 		try {
 			ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
-							new FileOutputStream("open-ig-upgrade-" + version + ".zip"), 1024 * 1024));
+							new FileOutputStream("open-ig-upgrade-" + version + "1.zip"), 1024 * 1024));
 			try {
 				zout.setLevel(9);
-				processDirectory(".\\data\\", ".\\data", zout, null);
 				processDirectory(".\\images\\", ".\\images", zout, null);
 				processDirectory(".\\audio\\", ".\\audio", zout, new FilenameFilter() {
 					@Override
@@ -54,6 +53,19 @@ public final class PackageStuff {
 								;
 					}
 				});
+			} finally {
+				zout.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		try {
+			ZipOutputStream zout = new ZipOutputStream(
+					new BufferedOutputStream(
+							new FileOutputStream("open-ig-upgrade-" + version + "2.zip"), 1024 * 1024));
+			try {
+				zout.setLevel(9);
+				processDirectory(".\\data\\", ".\\data", zout, null);
 			} finally {
 				zout.close();
 			}
