@@ -37,6 +37,8 @@ public class BattleModel {
 	public final Map<Pair<String, String>, Integer> groundHitpoints = U.newHashMap();
 	/** The space hitpoints of buildings. */
 	public final Map<Pair<String, String>, Integer> spaceHitpoints = U.newHashMap();
+	/** Additional technology properties. */
+	public final Map<Pair<String, String>, Map<String, String>> properties = U.newHashMap();
 	/**
 	 * Add a turret definition to the {@code turrets} mapping.
 	 * @param buildingId the building identifier.
@@ -64,5 +66,77 @@ public class BattleModel {
 	 */
 	public List<BattleGroundTurret> getTurrets(String buildingId, String race) {
 		return turrets.get(buildingId).get(race);
+	}
+	/**
+	 * Retrieve a technology property.
+	 * @param technology the technology id
+	 * @param player the optional player id
+	 * @param property the property name
+	 * @return the property value
+	 */
+	public String getProperty(String technology, String player, String property) {
+		Pair<String, String> key = Pair.of(technology, player);
+		Map<String, String> kv = properties.get(key);
+		if (kv != null) {
+			String v = kv.get(property);
+			if (v != null) {
+				return v;
+			}
+		}
+		key = Pair.of(technology, null);
+		kv = properties.get(key);
+		if (kv != null) {
+			String v = kv.get(property);
+			if (v != null) {
+				return v;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Retrieve a technology property.
+	 * @param technology the technology id
+	 * @param player the optional player id
+	 * @param property the property name
+	 * @return the property value
+	 */
+	public int getIntProperty(String technology, String player, String property) {
+		return Integer.parseInt(getProperty(technology, player, property));
+	}
+	/**
+	 * Retrieve a technology property.
+	 * @param technology the technology id
+	 * @param player the optional player id
+	 * @param property the property name
+	 * @return the property value
+	 */
+	public double getDoubleProperty(String technology, String player, String property) {
+		return Double.parseDouble(getProperty(technology, player, property));
+	}
+	/**
+	 * Check if a property exists.
+	 * @param technology the technology id
+	 * @param player the optional player id
+	 * @param property the property name
+	 * @return true if thee property exists
+	 */
+	public boolean hasProperty(String technology, String player, String property) {
+		return getProperty(technology, player, property) != null;
+	}
+	/**
+	 * Add a property value.
+	 * @param technology the technology
+	 * @param player the optional player id
+	 * @param property the property name
+	 * @param value the property value
+	 */
+	public void addProperty(String technology, String player, String property, String value) {
+		Pair<String, String> key = Pair.of(technology, player);
+		Map<String, String> kv = properties.get(key);
+		if (kv == null) {
+			kv = U.newHashMap();
+			properties.put(key, kv);
+		}
+		kv.put(property, value);
 	}
 }
