@@ -568,29 +568,32 @@ public class ColonyPlanner extends Planner {
 	boolean checkWorker(final AIPlanet planet) {
 		if (planet.population < planet.statistics.workerDemand) {
 			// try disabling buildings
-			AIBuilding max = Collections.max(disableCandidates(planet), disableOrder);
-			if (max != null) {
-				final AIBuilding fb = max;
-				add(new Action0() {
+			List<AIBuilding> candidates = disableCandidates(planet);
+			if (!candidates.isEmpty()) {
+				AIBuilding max = Collections.max(candidates, disableOrder);
+				if (max != null) {
+					final AIBuilding fb = max;
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionEnableBuilding(planet.planet, fb.building, false);
+						}
+					});
+					return true;
+				}
+				BuildingSelector moraleGrowth = new BuildingSelector() {
 					@Override
-					public void invoke() {
-						controls.actionEnableBuilding(planet.planet, fb.building, false);
+					public boolean accept(AIPlanet planet, AIBuilding value) {
+						return value.hasResource("morale") || value.hasResource("population-growth");
 					}
-				});
-				return true;
+					@Override
+					public boolean accept(AIPlanet planet, BuildingType value) {
+						return (value.hasResource("morale") || value.hasResource("population-growth")) 
+								&& count(planet, value) < 1;
+					}
+				};
+				return manageBuildings(planet, moraleGrowth, costOrder, true);
 			}
-			BuildingSelector moraleGrowth = new BuildingSelector() {
-				@Override
-				public boolean accept(AIPlanet planet, AIBuilding value) {
-					return value.hasResource("morale") || value.hasResource("population-growth");
-				}
-				@Override
-				public boolean accept(AIPlanet planet, BuildingType value) {
-					return (value.hasResource("morale") || value.hasResource("population-growth")) 
-							&& count(planet, value) < 1;
-				}
-			};
-			return manageBuildings(planet, moraleGrowth, costOrder, true);
 		}
 		return false;
 	}
