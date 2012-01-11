@@ -632,4 +632,23 @@ public class XElement implements Iterable<XElement> {
 		}
 		return cal.getTime();
 	}
+	/**
+	 * Retrieve a boolean attribute value.
+	 * <p>The attribute must exist.</p>
+	 * @param name the attribute name
+	 * @return true or false
+	 */
+	public boolean getBoolean(String name) {
+		return "true".equals(get(name));
+	}
+	/**
+	 * Retrieve a boolean attribute value.
+	 * @param name the attribute name
+	 * @param defaultValue the default value if the attribute doesn't exist
+	 * @return true or false
+	 */
+	public boolean getBoolean(String name, boolean defaultValue) {
+		String s = attributes.get(name);
+		return s != null ? "true".equals(s) : defaultValue;
+	}
 }

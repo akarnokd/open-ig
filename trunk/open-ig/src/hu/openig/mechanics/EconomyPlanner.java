@@ -115,7 +115,7 @@ public class EconomyPlanner extends Planner {
 
 		if (world.money >= 200000 || world.global.planetCount >= 2) {
 			// random arbitration
-			Collections.shuffle(functions, w.random.get());
+			Collections.shuffle(functions, w.random());
 		}
 		
 		for (Pred1<AIPlanet> f : functions) {

@@ -91,7 +91,7 @@ public class ExplorationPlanner extends Planner {
 			}
 		} else {
 			// yield more when exploration is finished
-			if (w.random.get().nextDouble() < 0.10) {
+			if (w.random().nextDouble() < 0.10) {
 				// exploration complete, set explorers to idle
 				for (final AIFleet f : findFleetsWithTask(FleetTask.EXPLORE, null)) {
 					add(new Action0() {

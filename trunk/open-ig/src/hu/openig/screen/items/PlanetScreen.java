@@ -2212,8 +2212,8 @@ public class PlanetScreen extends ScreenBase {
 	void doEarthquake() {
 		if (planet().earthQuakeTTL > 0) {
 			if (!commons.simulation.paused()) {
-				render.offsetX += (2 - world().random.get().nextInt(5)) * 2;
-				render.offsetY += (1 - world().random.get().nextInt(3));
+				render.offsetX += (2 - world().random().nextInt(5)) * 2;
+				render.offsetY += (1 - world().random().nextInt(3));
 				askRepaint();
 			}
 		}
@@ -4028,7 +4028,7 @@ public class PlanetScreen extends ScreenBase {
 						} else {
 							// plot path outside the minimum range
 							Location c = centerCellOf(u.attackBuilding);
-							double angle = world().random.get().nextDouble() * 2 * Math.PI;
+							double angle = world().random().nextDouble() * 2 * Math.PI;
 							Location c1 = Location.of(
 									(int)(c.x + (u.model.minRange + 1.4142) * Math.cos(angle)),
 									(int)(c.y + (u.model.minRange + 1.4142) * Math.sin(angle))
@@ -4046,11 +4046,11 @@ public class PlanetScreen extends ScreenBase {
 					u.attackBuilding = null;
 					List<GroundwarUnit> targets = unitsInRange(u);
 					if (targets.size() > 0) {
-						u.attackUnit = targets.get(world().random.get().nextInt(targets.size()));
+						u.attackUnit = targets.get(world().random().nextInt(targets.size()));
 					} else {
 						List<Building> targets2 = buildingsInRange(u);
 						if (targets2.size() > 0) {
-							u.attackBuilding = targets2.get(world().random.get().nextInt(targets2.size()));
+							u.attackBuilding = targets2.get(world().random().nextInt(targets2.size()));
 						}
 					}
 				}
@@ -4142,7 +4142,7 @@ public class PlanetScreen extends ScreenBase {
 				// find a new target
 				List<GroundwarUnit> targets = unitsInRange(g);
 				if (targets.size() > 0) {
-					g.attack = targets.get(world().random.get().nextInt(targets.size()));
+					g.attack = targets.get(world().random().nextInt(targets.size()));
 				}
 			}
 		}

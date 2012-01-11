@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Deque;
 import java.util.GregorianCalendar;
@@ -101,7 +100,7 @@ public class World {
 	/** The global world statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();
 	/** The date formatter. */
-	public final ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>() {
+	public static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
 		@Override
 		protected SimpleDateFormat initialValue() {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -112,7 +111,7 @@ public class World {
 	/**
 	 * The random number generator for simulation/AI activities.
 	 */
-	public final ThreadLocal<Random> random = new ThreadLocal<Random>() {
+	public static final ThreadLocal<Random> RANDOM = new ThreadLocal<Random>() {
 		@Override
 		public Random get() {
 			return new Random();
@@ -807,19 +806,7 @@ public class World {
 				res.add(rt0);
 			}
 		}
-		Collections.sort(res, new Comparator<ResearchType>() {
-			@Override
-			public int compare(ResearchType o1, ResearchType o2) {
-				int c = o1.category.main.ordinal() - o2.category.main.ordinal();
-				if (c == 0) {
-					c = o1.category.ordinal() - o2.category.ordinal();
-					if (c == 0) {
-						c = o1.index - o2.index;
-					}
-				}
-				return c;
-			}
-		});
+		Collections.sort(res, ResearchType.LISTING_SORT);
 		return res;
 	}
 	/** 
@@ -871,7 +858,7 @@ public class World {
 		world.set("game", name);
 		world.set("player", player.id);
 		world.set("difficulty", difficulty);
-		world.set("time", dateFormat.get().format(time.getTime()));
+		world.set("time", DATE_FORMAT.get().format(time.getTime()));
 		
 		statistics.save(world.add("statistics"));
 		
@@ -920,14 +907,14 @@ public class World {
 				XElement xqueue = xp.add("message-queue");
 				for (Message msg : p.messageQueue) {
 					XElement xmessage = xqueue.add("message");
-					msg.save(xmessage, dateFormat.get());
+					msg.save(xmessage, DATE_FORMAT.get());
 				}
 			}
 			if (p.messageHistory.size() > 0) {
 				XElement xqueue = xp.add("message-history");
 				for (Message msg : p.messageHistory) {
 					XElement xmessage = xqueue.add("message");
-					msg.save(xmessage, dateFormat.get());
+					msg.save(xmessage, DATE_FORMAT.get());
 				}
 			}
 			
@@ -1126,7 +1113,7 @@ public class World {
 		fleetIdSequence = 0;
 		
 		try {
-			time.setTime(dateFormat.get().parse(xworld.get("time")));
+			time.setTime(DATE_FORMAT.get().parse(xworld.get("time")));
 			time.set(GregorianCalendar.MINUTE, (time.get(GregorianCalendar.MINUTE) / 10) * 10);
 			time.set(GregorianCalendar.SECOND, 0);
 			time.set(GregorianCalendar.MILLISECOND, 0);
@@ -2088,7 +2075,7 @@ public class World {
 	 * @return the selected element
 	 */
 	public <T> T random(List<T> ts) {
-		int idx = random.get().nextInt(ts.size());
+		int idx = RANDOM.get().nextInt(ts.size());
 		return ts.get(idx);
 	}
 	/**
@@ -2096,5 +2083,12 @@ public class World {
 	 */
 	public Parameters params() {
 		return env.params();
+	}
+	/**
+	 * Returns the random number generator.
+	 * @return the random number generator
+	 */
+	public Random random() {
+		return RANDOM.get();
 	}
 }

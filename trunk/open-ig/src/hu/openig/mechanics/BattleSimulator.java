@@ -137,9 +137,9 @@ public final class BattleSimulator {
 						// take turns
 						while (!attackerUnits.isEmpty()) {
 							// Determines how many units will attack at once
-							final int accessibility = world.random.get().nextInt(4) + 2;
+							final int accessibility = world.random().nextInt(4) + 2;
 							
-							Collections.shuffle(attackerUnits, world.random.get());
+							Collections.shuffle(attackerUnits, world.random());
 							
 							List<GroundwarUnit> attacking = subList(attackerUnits, 0, accessibility);
 							attackerTVBattle = vehicleStrength(attacking);
@@ -223,7 +223,7 @@ public final class BattleSimulator {
 	 */
 	void applyDamage(List<GroundwarUnit> units, double hitpoints) {
 		List<GroundwarUnit> us = new ArrayList<GroundwarUnit>(units);
-		Collections.shuffle(us, world.random.get());
+		Collections.shuffle(us, world.random());
 		for (GroundwarUnit u : us) {
 			if (hitpoints <= 0) {
 				break;
@@ -244,7 +244,7 @@ public final class BattleSimulator {
 	 */
 	void removeBuildings(Planet p) {
 		ArrayList<Building> bs = new ArrayList<Building>(p.surface.buildings);
-		Collections.shuffle(bs, world.random.get());
+		Collections.shuffle(bs, world.random());
 		for (Building b : bs) {
 			if (b.type.kind.equals("Defensive")) {
 				p.surface.removeBuilding(b);
@@ -585,7 +585,7 @@ public final class BattleSimulator {
 	void applyDamage(Planet p, double hitpoints) {
 		
 		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>(p.inventory);
-		Collections.shuffle(is, world.random.get());
+		Collections.shuffle(is, world.random());
 		for (InventoryItem ii : is) {
 			if (hitpoints <= 0) {
 				break;
@@ -611,7 +611,7 @@ public final class BattleSimulator {
 		
 		double shieldValue = shieldValue(p);
 		ArrayList<Building> bs = new ArrayList<Building>(p.surface.buildings);
-		Collections.shuffle(bs, world.random.get());
+		Collections.shuffle(bs, world.random());
 		for (Building b : bs) {
 			if (hitpoints <= 0) {
 				break;

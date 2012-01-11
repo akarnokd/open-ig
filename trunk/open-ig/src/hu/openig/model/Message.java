@@ -89,8 +89,8 @@ public class Message implements Comparable<Message> {
 	public void load(XElement xmessage, World world) {
 		priority = xmessage.getInt("priority");
 		try {
-			gametime = world.dateFormat.get().parse(xmessage.get("gametime")).getTime();
-			timestamp = world.dateFormat.get().parse(xmessage.get("timestamp")).getTime();
+			gametime = World.DATE_FORMAT.get().parse(xmessage.get("gametime")).getTime();
+			timestamp = World.DATE_FORMAT.get().parse(xmessage.get("timestamp")).getTime();
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 		}

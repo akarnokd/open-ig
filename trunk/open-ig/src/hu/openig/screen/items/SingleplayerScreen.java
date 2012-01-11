@@ -57,7 +57,9 @@ public class SingleplayerScreen extends ScreenBase {
 	/** The definition. */
 	final Rectangle descriptionRect = new Rectangle();
 	/** The video playback completion waiter. */
-	private Thread videoWaiter;
+	Thread videoWaiter;
+	/** The load waiter. */
+	Thread loadWaiter;
 	/** The reference frame. */
 	final Rectangle origin = new Rectangle();
 	/** Statistics label. */
@@ -108,6 +110,11 @@ public class SingleplayerScreen extends ScreenBase {
 	public void onFinish() {
 		if (videoWaiter != null) {
 			videoWaiter.interrupt();
+			videoWaiter = null;
+		}
+		if (loadWaiter != null) {
+			loadWaiter.interrupt();
+			loadWaiter = null;
 		}
 	}
 
@@ -173,59 +180,33 @@ public class SingleplayerScreen extends ScreenBase {
 	/** Start the selected game. */
 	void doStartGame() {
 		if (selectedDefinition != null) {
+			commons.world(null);
+			commons.worldLoading = true;
 			// display the loading screen.
 			commons.control().displaySecondary(Screens.LOADING);
 			final Semaphore barrier = new Semaphore(-1);
-			videoWaiter = new Thread("Start Game Video Waiter") {
-				@Override 
-				public void run() {
-					try {
-						barrier.acquire();
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override 
-							public void run() {
-								final boolean csw = config.computerVoiceScreen;
-								config.computerVoiceScreen = false;
-								commons.start(true);
-								commons.control().displayPrimary(Screens.BRIDGE);
-								
-								config.computerVoiceScreen = csw;
-								commons.control().displayStatusbar();
-								
-								commons.pool.schedule(new Callable<Void>() {
-									@Override
-									public Void call() throws Exception {
-										SwingUtilities.invokeLater(new Runnable() {
-											@Override
-											public void run() {
-												Message msg = new Message();
-												msg.gametime = world().time.getTimeInMillis();
-												msg.timestamp = System.currentTimeMillis();
-												msg.sound = SoundType.WELCOME;
-												msg.text = "welcome";
-												
-												player().messageQueue.add(msg);
-											}
-										});
-										return null;
-									}
-								}, 2, TimeUnit.SECONDS);
-
-							};
-						});
-					} catch (InterruptedException ex) {
-						
-					}
-				};
-			};
-			videoWaiter.setPriority(Thread.MIN_PRIORITY);
-			videoWaiter.start();
-			commons.world(null);
-			commons.worldLoading = true;
+			startVideoWaiter(barrier);
 			// the asynchronous loading
-			Thread t1 = new Thread("Start Game Loading") {
-				@Override 
-				public void run() {
+			startLoadWaiter(barrier);
+			// the video playback
+			commons.control().playVideos(new Action0() {
+				@Override
+				public void invoke() {
+					barrier.release();
+				}
+			}, selectedDefinition.intro);
+		}
+	}
+
+	/**
+	 * Start the load waiter thread.
+	 * @param barrier the notification barrier
+	 */
+	void startLoadWaiter(final Semaphore barrier) {
+		loadWaiter = new Thread("Start Game Loading") {
+			@Override 
+			public void run() {
+				try {
 					final World world = new World(commons);
 					world.definition = selectedDefinition;
 					world.difficulty = Difficulty.values()[difficulty];
@@ -244,18 +225,70 @@ public class SingleplayerScreen extends ScreenBase {
 							barrier.release();
 						}
 					});
-				};
-			};
-			t1.setPriority(Thread.MIN_PRIORITY);
-			t1.start();
-			// the video playback
-			commons.control().playVideos(new Action0() {
-				@Override
-				public void invoke() {
-					barrier.release();
+				} finally {
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							loadWaiter = null;	
+						}
+					});
 				}
-			}, selectedDefinition.intro);
-		}
+			};
+		};
+		loadWaiter.setPriority(Thread.MIN_PRIORITY);
+		loadWaiter.start();
+	}
+
+	/**
+	 * Start the video playback waiter.
+	 * @param barrier the notification barrier
+	 */
+	void startVideoWaiter(final Semaphore barrier) {
+		videoWaiter = new Thread("Start Game Video Waiter") {
+			@Override 
+			public void run() {
+				try {
+					barrier.acquire();
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override 
+						public void run() {
+							final boolean csw = config.computerVoiceScreen;
+							config.computerVoiceScreen = false;
+							commons.start(true);
+							commons.control().displayPrimary(Screens.BRIDGE);
+							
+							config.computerVoiceScreen = csw;
+							commons.control().displayStatusbar();
+							
+							commons.pool.schedule(new Callable<Void>() {
+								@Override
+								public Void call() throws Exception {
+									SwingUtilities.invokeLater(new Runnable() {
+										@Override
+										public void run() {
+											Message msg = new Message();
+											msg.gametime = world().time.getTimeInMillis();
+											msg.timestamp = System.currentTimeMillis();
+											msg.sound = SoundType.WELCOME;
+											msg.text = "welcome";
+											
+											player().messageQueue.add(msg);
+										}
+									});
+									return null;
+								}
+							}, 2, TimeUnit.SECONDS);
+						};
+					});
+				} catch (InterruptedException ex) {
+					
+				} finally {
+					videoWaiter = null;
+				}
+			};
+		};
+		videoWaiter.setPriority(Thread.MIN_PRIORITY);
+		videoWaiter.start();
 	}
 	@Override
 	public boolean keyboard(KeyEvent e) {

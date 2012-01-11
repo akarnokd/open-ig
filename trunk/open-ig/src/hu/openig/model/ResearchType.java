@@ -191,5 +191,20 @@ public class ResearchType {
 			return o1.productionCost - o2.productionCost;
 		}
 	};
-
+	/**
+	 * Comparator to sort by main category, subcategory and index.
+	 */
+	public static final Comparator<ResearchType> LISTING_SORT = new Comparator<ResearchType>() {
+		@Override
+		public int compare(ResearchType o1, ResearchType o2) {
+			int c = o1.category.main.ordinal() - o2.category.main.ordinal();
+			if (c == 0) {
+				c = o1.category.ordinal() - o2.category.ordinal();
+				if (c == 0) {
+					c = o1.index - o2.index;
+				}
+			}
+			return c;
+		}
+	};
 }
