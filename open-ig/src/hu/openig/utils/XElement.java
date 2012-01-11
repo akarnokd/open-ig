@@ -651,4 +651,8 @@ public class XElement implements Iterable<XElement> {
 		String s = attributes.get(name);
 		return s != null ? "true".equals(s) : defaultValue;
 	}
+	/** @return the attribute map. */
+	public Map<String, String> attributes() {
+		return attributes;
+	}
 }

@@ -12,6 +12,7 @@ import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
 import hu.openig.core.SimulationSpeed;
+import hu.openig.core.Tile;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
@@ -1494,6 +1495,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				
 				SpacewarStructure st = new SpacewarStructure();
 				st.type = StructureType.STATION;
+				st.techId = ii.type.id;
 				st.item = ii;
 				st.owner = nearbyPlanet.owner;
 				st.destruction = bse.destruction;
@@ -1528,6 +1530,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
 				
 				SpacewarStructure st = new SpacewarStructure();
+				st.techId = b.type.id;
 				st.owner = nearbyPlanet.owner;
 				st.type = StructureType.SHIELD;
 				st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
@@ -1563,6 +1566,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
 
 				SpacewarStructure st = new SpacewarStructure();
+				st.techId = b.type.id;
 				st.owner = nearbyPlanet.owner;
 				st.type = StructureType.PROJECTOR;
 				st.angles = alien ? bge.alternative : bge.normal;
@@ -1746,7 +1750,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				} else {
 					st.fleet = (Fleet)inventory;
 				}
-				
+				st.techId = ii.type.id;
 				st.type = StructureType.SHIP;
 				st.item = ii;
 				st.owner = inventory.owner();
@@ -2181,6 +2185,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				g2.drawImage(image, 0, 0, null);
 				if (item != null) {
 					g2.translate(-6, 15);
+					if (selectedSlot != null) {
+						updateSlot(selectedSlot);
+					}
 					EquipmentConfigure.drawSlots(g2, item, selectedSlot, world());
 					g2.translate(6, -15);
 				}
@@ -2987,6 +2994,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 
 			SpacewarStructure proj = new SpacewarStructure();
+			proj.techId = r.port.projectile.id;
 			proj.owner = r.fired.owner;
 			proj.attack = target;
 			proj.angles = proj.owner == player() ? r.port.projectile.matrix[0] : r.port.projectile.alternative[0];
@@ -3513,7 +3521,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		if (moveStep(ship)) {
-			damageTarget(ship.attack, ship.kamikaze, ship.destruction);
+			damageTarget(
+					ship.attack, 
+					ship.kamikaze, 
+					ship.destruction,
+					ship.techId,
+					ship.owner);
 			createLoss(ship);
 			createExplosion(ship, true);
 			if (ship.type == StructureType.VIRUS_BOMB 
@@ -3554,7 +3567,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (moveStep(p)) {
 				projectiles.remove(p);
 				
-				damageTarget(p.target, p.damage, p.impactSound);
+				damageTarget(p.target, p.damage, p.impactSound, p.model.id, p.owner);
 			} else
 			if (!p.intersects(0, 0, space.width, space.height)) {
 				projectiles.remove(p);
@@ -3566,8 +3579,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param target the target
 	 * @param damage the damage
 	 * @param impactSound the impact sound
+	 * @param techId the technology that inflicted the damage
+	 * @param owner the owner of the technology
 	 */
-	void damageTarget(SpacewarStructure target, int damage, SoundType impactSound) {
+	void damageTarget(
+			SpacewarStructure target, 
+			int damage, 
+			SoundType impactSound,
+			String techId,
+			Player owner) {
 		int loss0 = target.loss;
 		
 		if (target.damage(damage)) {
@@ -3585,6 +3605,67 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		} else {
 			soundsToPlay.add(impactSound);
 		}
+		if (target.building != null) {
+			damageBuildings(target, techId, damage, owner, impactSound);
+		}
+	}
+	/**
+	 * Damage the buildings around the target structure.
+	 * @param target the target
+	 * @param damage the original damage
+	 * @param techId the impactor
+	 * @param owner the owner of the impactor
+	 * @param impactSound the impact sound
+	 */
+	void damageBuildings(SpacewarStructure target, String techId, int damage,
+			Player owner, SoundType impactSound) {
+		String sradius = world().battle.getProperty(techId, owner.id, "ground-radius");
+		String spercent = world().battle.getProperty(techId, owner.id, "damage-percent");
+		if (sradius == null || spercent == null) {
+			return;
+		}
+		double radius = Double.parseDouble(sradius);
+		double percent = Double.parseDouble(spercent) / 100;
+		Point2D.Double center = buildingCenter(target.building);
+		
+		Map<Building, Integer> damaged = U.newHashMap();
+		
+		for (Building b : target.planet.surface.buildings) {
+			if (b != target.building) {
+				Point2D.Double loc = buildingCenter(b);
+				double d = loc.distance(center); 
+				if (d < radius) {
+					int applyDamage = (int)(damage * percent * (radius - d) / radius);
+					damaged.put(b, applyDamage);
+				}
+			}
+		}
+		
+		for (SpacewarStructure s : structures) {
+			if (damaged.containsKey(s.building)) {
+				damageTarget(s, damaged.get(s.building), impactSound, null, null);
+				damaged.remove(s.building);
+			}
+		}
+		for (Map.Entry<Building, Integer> e : damaged.entrySet()) {
+			int d = e.getValue();
+			Building b = e.getKey();
+			
+			int hpMax = world().getHitpoints(b.type, target.planet.owner, true);
+			b.hitpoints = (int)Math.max(0, b.hitpoints - d * 1.0 * b.type.hitpoints / hpMax);
+			if (b.hitpoints <= 0) {
+				target.planet.surface.removeBuilding(b);
+			}
+		}
+	}
+	/**
+	 * The center coordinate of the building.
+	 * @param b the building
+	 * @return the center location
+	 */
+	public Point2D.Double buildingCenter(Building b) {
+		Tile ts = b.tileset.normal;
+		return new Point2D.Double(b.location.x + ts.width / 2.0, b.location.y - ts.height / 2.0);
 	}
 	/**
 	 * Drop ground shields.

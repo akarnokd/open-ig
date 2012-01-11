@@ -1886,11 +1886,15 @@ public class World {
 		}
 		for (XElement xprops : xbattle.childrenWithName("properties")) {
 			for (XElement xprop : xprops.childrenWithName("property")) {
-				battle.addProperty(
-						xprop.get("id"), 
-						xprop.get("player", null),
-						xprop.get("name"),
-						xprop.get("value"));
+				String id = xprop.get("id");
+				String player = xprop.get("player", null);
+				for (Map.Entry<String, String> e : xprop.attributes().entrySet()) {
+					String n = e.getKey();
+					String v = e.getValue();
+					if (!n.equals("id") && !n.equals("player")) {
+						battle.addProperty(id, player, n, v);
+					}
+				}
 			}
 		}
 	}
