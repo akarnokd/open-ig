@@ -49,4 +49,8 @@ public class Parameters {
 	public int repairCost() {
 		return 20; // DEFAULT: 20
 	}
+	/** @return the denominator to compute hitpoints from costs in battles. */
+	public int costToHitpoints() {
+		return 10; // DEFAULT: 25
+	}
 }

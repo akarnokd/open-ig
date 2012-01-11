@@ -2013,7 +2013,7 @@ public class World {
 		if (e != null) {
 			return e.hp;
 		}
-		return rt.productionCost / 50;
+		return rt.productionCost / params().costToHitpoints();
 	}
 	/**
 	 * Returns the hitpoints of the given building type.
@@ -2032,7 +2032,7 @@ public class World {
 		if (hp != null) {
 			return hp;
 		}
-		return rt.hitpoints / 50;
+		return rt.hitpoints / params().costToHitpoints();
 	}
 	/**
 	 * Calculate the current fleet health.
