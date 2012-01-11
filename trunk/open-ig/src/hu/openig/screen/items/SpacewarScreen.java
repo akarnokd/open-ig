@@ -1525,8 +1525,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		double shieldValue = 0;
 		// add shields
 		for (Building b : nearbyPlanet.surface.buildings) {
-			float eff = b.getEfficiency();
-			if (Building.isOperational(eff) && b.type.kind.equals("Shield")) {
+			double power = -b.assignedEnergy * 1.0 / b.getEnergy();
+			if (power >= 0.5 && b.type.kind.equals("Shield")) {
+				
+				double eff = power;
+				
 				BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
 				
 				SpacewarStructure st = new SpacewarStructure();
@@ -1561,8 +1564,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void placeProjectors(Planet nearbyPlanet, boolean alien, double shieldValue) {
 		for (Building b : nearbyPlanet.surface.buildings) {
-			float eff = b.getEfficiency();
-			if (Building.isOperational(eff) && b.type.kind.equals("Gun")) {
+			double power = -b.assignedEnergy * 1.0 / b.getEnergy();
+			if (power >= 0.5 && b.type.kind.equals("Gun")) {
+				
 				BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
 
 				SpacewarStructure st = new SpacewarStructure();
@@ -3332,13 +3336,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			// back out of fight instantly
 			commons.restoreMainSimulationSpeedFunction();
 			commons.battleMode = false;
-			displayPrimary(Screens.STARMAP);
 			commons.playRegularMusic();
 			battle.attacker.stop();
 			Fleet f2 = battle.getFleet();
 			if (f2 != null) {
 				f2.stop();
 			}
+			displayPrimary(Screens.STARMAP);
 			return true;
 		}
 		return super.keyboard(e);
@@ -3526,7 +3530,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					ship.kamikaze, 
 					ship.destruction,
 					ship.techId,
-					ship.owner);
+					ship.owner.id);
 			createLoss(ship);
 			createExplosion(ship, true);
 			if (ship.type == StructureType.VIRUS_BOMB 
@@ -3567,7 +3571,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (moveStep(p)) {
 				projectiles.remove(p);
 				
-				damageTarget(p.target, p.damage, p.impactSound, p.model.id, p.owner);
+				damageTarget(p.target, p.damage, p.impactSound, p.model.id, p.owner.id);
 			} else
 			if (!p.intersects(0, 0, space.width, space.height)) {
 				projectiles.remove(p);
@@ -3587,7 +3591,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			int damage, 
 			SoundType impactSound,
 			String techId,
-			Player owner) {
+			String owner) {
 		int loss0 = target.loss;
 		
 		if (target.damage(damage)) {
@@ -3618,9 +3622,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param impactSound the impact sound
 	 */
 	void damageBuildings(SpacewarStructure target, String techId, int damage,
-			Player owner, SoundType impactSound) {
-		String sradius = world().battle.getProperty(techId, owner.id, "ground-radius");
-		String spercent = world().battle.getProperty(techId, owner.id, "damage-percent");
+			String owner, SoundType impactSound) {
+		String sradius = world().battle.getProperty(techId, owner, "ground-radius");
+		String spercent = world().battle.getProperty(techId, owner, "damage-percent");
 		if (sradius == null || spercent == null) {
 			return;
 		}
