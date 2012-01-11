@@ -38,6 +38,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * Plans the creation of various ships, equipment and vehicles.
@@ -76,11 +77,12 @@ public class OffensePlanner extends Planner {
 //		if (checkSellOldTech()) {
 //			return;
 //		}
-		if (world.money < 100000) {
-			return;
-		}
 		
 		if (upgradeFleets()) {
+			return;
+		}
+
+		if (world.money < 100000) {
 			return;
 		}
 		// have a fleet for every N planets + 1
@@ -110,7 +112,7 @@ public class OffensePlanner extends Planner {
 		
 		if (!fighters.isEmpty()) {
 			ResearchType rt = fighters.get(0);
-			UpgradeResult r = checkProduction(rt, 1, 0);
+			UpgradeResult r = checkProduction(rt, 1, 0, world.inventoryCount(rt), 1);
 			if (r == UpgradeResult.ACTION) {
 				return true;
 			} else
@@ -120,7 +122,7 @@ public class OffensePlanner extends Planner {
 		}
 		if (!cruisers.isEmpty()) {
 			ResearchType rt = cruisers.get(0);
-			UpgradeResult r = checkProduction(rt, 1, 0);
+			UpgradeResult r = checkProduction(rt, 1, 0, world.inventoryCount(rt), 1);
 			if (r == UpgradeResult.ACTION) {
 				return true;
 			} else
@@ -130,7 +132,7 @@ public class OffensePlanner extends Planner {
 		}
 		if (!battleships.isEmpty()) {
 			ResearchType rt = battleships.get(0);
-			UpgradeResult r = checkProduction(rt, 1, 0);
+			UpgradeResult r = checkProduction(rt, 1, 0, world.inventoryCount(rt), 1);
 			if (r == UpgradeResult.ACTION) {
 				return true;
 			} else
@@ -210,8 +212,9 @@ public class OffensePlanner extends Planner {
 	 * Compute the equipment demands for the best available technologies to fill-in the ship.
 	 * @param ship the ship technology
 	 * @param demands the map from equipment to demand
+	 * @param c the multiplier
 	 */
-	void equipmentDemands(ResearchType ship, Map<ResearchType, Integer> demands) {
+	void equipmentDemands(ResearchType ship, Map<ResearchType, Integer> demands, int c) {
 		for (EquipmentSlot es : ship.slots.values()) {
 			if (!es.fixed) {
 				ResearchType w = null;
@@ -222,7 +225,7 @@ public class OffensePlanner extends Planner {
 				}
 				if (w != null) {
 					Integer cnt = demands.get(w);
-					demands.put(w, cnt != null ? cnt + es.max : es.max);
+					demands.put(w, cnt != null ? cnt + es.max * c : es.max * c);
 				}
 			}
 		}		
@@ -254,6 +257,9 @@ public class OffensePlanner extends Planner {
 
 		if (checkDeploy(cruisers, battleships)) {
 			return true;
+		}
+		if (world.money < 100000) {
+			return false;
 		}
 		if (checkCounts(fighters, cruisers, battleships)) {
 			return true;
@@ -296,7 +302,7 @@ public class OffensePlanner extends Planner {
 					fleet.replaceWithShip(battleships.get(0), 3);
 				}
 				fleet.task = FleetTask.IDLE;
-				log("UpgradeFleet, Fleet = %s", fleet.name);
+				log("UpgradeFleet, Fleet = %s (%d)", fleet.name, fleet.id);
 			}
 		});
 		
@@ -318,70 +324,107 @@ public class OffensePlanner extends Planner {
 		}
 		final AIFleet fleet = Collections.min(upgradeCandidates, firepowerAsc);
 
-		Map<ResearchType, Integer> currentInventory = U.newHashMap();
-		
-		for (AIInventoryItem ii : fleet.inventory) {
-			Integer cnt = currentInventory.get(ii.type);
-			currentInventory.put(ii.type, cnt != null ? cnt + ii.count : ii.count);
-		}
-		
-		// check if figthers are well equipped?
+		Map<ResearchType, Integer> demands = U.newHashMap();
+
 		for (ResearchType rt : fighters) {
-			int ci = nvl(currentInventory.get(rt));
-			UpgradeResult r = checkProduction(rt, Math.min(30, ci + 10), ci);
-			if (r == UpgradeResult.ACTION) {
-				return true;
-			} else
-			if (r == UpgradeResult.DEPLOY) {
-				bringinFleet(fleet);
-				return true;
-			} else
-			if (r == UpgradeResult.WAIT) {
-				return false;
-			}
+			demands.put(rt, 30);
 		}
-		
-		// check if best cruiser is filled in
 		if (!cruisers.isEmpty()) {
 			ResearchType rt = cruisers.get(0);
-			int ci = nvl(currentInventory.get(rt));
-			UpgradeResult r = checkProduction(rt, Math.min(25, ci + 5), ci);
-			if (r == UpgradeResult.ACTION) {
-				return true;
-			} else
-			if (r == UpgradeResult.WAIT) {
-				return false;
-			} else
-			if (r == UpgradeResult.DEPLOY) {
-				bringinFleet(fleet);
-				return true;
-			}
+			demands.put(rt, 25);
+//			int available = fleet.inventoryCount(rt);
+//			equipmentDemands(rt, demands, 25 - available);
 		}
-		
-		// check if best battleship is filled in
 		if (!battleships.isEmpty()) {
 			ResearchType rt = battleships.get(0);
-			int ci = nvl(currentInventory.get(rt));
-			UpgradeResult r = checkProduction(rt, Math.min(3, ci + 1), ci);
-			if (r == UpgradeResult.ACTION) {
-				return true;
-			} else
-			if (r == UpgradeResult.WAIT) {
-				return false;
-			} else
-			if (r == UpgradeResult.DEPLOY) {
-				bringinFleet(fleet);
-				return true;
-			}
+			demands.put(rt, 3);
+//			int available = fleet.inventoryCount(rt);
+//			equipmentDemands(rt, demands, 3 - available);
 		}
 		
+		setFleetEquipmentDemands(fleet, demands);
+		
+		// plan for vehicles
+		VehiclePlan plan = new VehiclePlan();
+		plan.calculate(world.availableResearch, w.battle, fleet.statistics.vehicleMax);
+		
+		demands.putAll(plan.demand);
+		
+		// create equipment and upgrade the fleet
+		Set<ResearchMainCategory> running = U.newHashSet();
+		boolean bringin = false;
+		
+		List<Map.Entry<ResearchType, Integer>> demandList = U.sort(demands.entrySet(), new Comparator<Map.Entry<ResearchType, Integer>>() {
+			@Override
+			public int compare(Entry<ResearchType, Integer> o1,
+					Entry<ResearchType, Integer> o2) {
+				double v1 = o1.getKey().productionCost * 1.0 * o1.getValue();
+				double v2 = o2.getKey().productionCost * 1.0 * o2.getValue();
+				return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
+			}
+		});
+		Set<ResearchType> upgradeSet = U.newHashSet();
+		for (Map.Entry<ResearchType, Integer> e : demandList) {
+			ResearchType rt = e.getKey();
+			if (!running.contains(rt.category.main)) {
+				int limit = 30;
+				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+					limit = 1;
+				} else
+				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+					limit = 5;
+				} else
+				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					limit = 10;
+				} else
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+					limit = 5;
+				} else
+				if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					limit = 5;
+				}
+				
+				int inventory = world.inventoryCount(rt);
+				int available = fleet.inventoryCount(rt);
+				int demand = e.getValue();
+				
+				UpgradeResult r = checkProduction(rt, demand, available, inventory, limit);
+				if (r == UpgradeResult.ACTION) {
+					return true;
+				} else
+				if (r == UpgradeResult.WAIT) {
+					running.add(rt.category.main);
+				} else
+				if (r == UpgradeResult.DEPLOY) {
+					bringin = true;
+					upgradeSet.add(rt);
+				}
+			}
+		}
+		if (bringin) {
+			log("Upgrade set: %s", upgradeSet);
+			bringinFleet(fleet);
+			return true;
+		}
+
+		if (running.size() > 0) {
+			return false;
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Set the fleet equipment demands, e.g., how much more equipment is needed per type for this fleet.
+	 * @param fleet the fleet
+	 * @param demands the map from technology to demand count
+	 */
+	void setFleetEquipmentDemands(final AIFleet fleet,
+			Map<ResearchType, Integer> demands) {
 		// scan for upgradable slots
-		Map<ResearchType, Integer> equipmentDemands = U.newHashMap();
 		for (AIInventoryItem ii : fleet.inventory) {
 			for (InventorySlot is : ii.slots) {
 				if (!is.slot.fixed) {
-					// current
-					ResearchType current = is.type;
 					// find best
 					ResearchType best = null;
 					for (ResearchType rt : is.slot.items) {
@@ -392,67 +435,13 @@ public class OffensePlanner extends Planner {
 						}
 					}
 					if (best != null) {
-						int cnt = nvl(equipmentDemands.get(best));
+						int cnt = nvl(demands.get(best));
 						// if we have better, add full max demand
-						if (best != current) {
-							equipmentDemands.put(best, cnt + is.slot.max * ii.count);
-						} else {
-							if (is.slot.max > is.count) {
-								// else add only demand for the missing counts
-								equipmentDemands.put(best, cnt + (is.slot.max - is.count) * ii.count);
-							}
-						}
+						demands.put(best, cnt + is.slot.max * ii.count);
 					}
 				}
 			}
 		}
-		
-		// create equipment and upgrade the fleet
-		Set<ResearchMainCategory> running = U.newHashSet();
-		for (Map.Entry<ResearchType, Integer> e : equipmentDemands.entrySet()) {
-			ResearchType rt = e.getKey();
-			if (!running.contains(rt.category.main)) {
-				int count = Math.min(30, e.getValue());
-				if (count > 0) {
-					UpgradeResult r = checkProduction(rt, count, world.inventoryCount(rt));
-					if (r == UpgradeResult.ACTION) {
-						return true;
-					} else
-					if (r == UpgradeResult.WAIT || r == UpgradeResult.CONTINUE) {
-						running.add(rt.category.main);
-					} else
-					if (r == UpgradeResult.DEPLOY) {
-						bringinFleet(fleet);
-						return true;
-					}
-				}
-			}
-		}
-		if (running.size() > 0) {
-			return false;
-		}
-		// plan for vehicles
-		VehiclePlan plan = new VehiclePlan();
-		plan.calculate(world.availableResearch, w.battle, fleet.statistics.vehicleMax);
-		
-		// create equipment and upgrade the fleet
-		for (Map.Entry<ResearchType, Integer> e : plan.demand.entrySet()) {
-			ResearchType rt = e.getKey();
-			int count = Math.min(10, e.getValue());
-			UpgradeResult r = checkProduction(rt, count, world.inventoryCount(rt));
-			if (r == UpgradeResult.ACTION) {
-				return true;
-			} else
-			if (r == UpgradeResult.WAIT) {
-				return false;
-			} else
-			if (r == UpgradeResult.DEPLOY) {
-				bringinFleet(fleet);
-				return true;
-			}
-		}
-		
-		return false;
 	}
 	/**
 	 * Bring in the fleet to the closest spaceport for upgrades.
@@ -473,19 +462,22 @@ public class OffensePlanner extends Planner {
 	/**
 	 * Check the inventory and production status of the given technology.
 	 * @param rt the target technology
-	 * @param max the maximum amount
-	 * @param currentInventory the current inventory level
+	 * @param demand the total demand of this technology
+	 * @param available the local availability
+	 * @param inventory the global availability
+	 * @param limit the production limit
 	 * @return the result
 	 */
-	UpgradeResult checkProduction(ResearchType rt, int max, int currentInventory) {
-		if (currentInventory < max) {
-			int globalInventory = world.inventoryCount(rt);
-			int required = max - currentInventory;
-			if (required > globalInventory) {
+	UpgradeResult checkProduction(ResearchType rt, int demand, int available, int inventory, int limit) {
+		if (demand > available) {
+			int required = demand - available;
+			if (required > inventory) {
 				if (world.productionCount(rt) > 0) {
 					return UpgradeResult.WAIT;
 				}
-				placeProductionOrder(rt, required - globalInventory);
+				int produce = required - inventory;
+				produce = Math.min(produce, limit);
+				placeProductionOrder(rt, produce);
 				return UpgradeResult.ACTION;
 			} else {
 				return UpgradeResult.DEPLOY; 

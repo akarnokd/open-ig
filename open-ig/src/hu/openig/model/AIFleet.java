@@ -8,9 +8,12 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.U;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class representing a fleet for an AI player.
@@ -45,6 +48,8 @@ public class AIFleet {
 	public boolean canUpgrade;
 	/** The inventory. */
 	public final List<AIInventoryItem> inventory = new ArrayList<AIInventoryItem>();
+	/** The inventory counts. */
+	public final Map<ResearchType, Integer> inventoryCounts = U.newHashMap();
 	/**
 	 * Assign the necessary properties from a fleet.
 	 * @param fleet the target fleet
@@ -67,7 +72,24 @@ public class AIFleet {
 		y = fleet.y;
 		for (InventoryItem ii : fleet.inventory) {
 			inventory.add(new AIInventoryItem(ii));
+			Integer v = inventoryCounts.get(ii.type);
+			inventoryCounts.put(ii.type, v != null ? v + ii.count : ii.count);
+			for (InventorySlot is : ii.slots) {
+				if (is.type != null && !is.slot.fixed) {
+					v = inventoryCounts.get(is.type);
+					inventoryCounts.put(is.type, v != null ? v + is.count * ii.count : is.count * ii.count);
+				}
+			}
 		}
+	}
+	/**
+	 * Returns the inventory count if the specified ship, equipment or tank.
+	 * @param rt the technology
+	 * @return the count
+	 */
+	public int inventoryCount(ResearchType rt) {
+		Integer v = inventoryCounts.get(rt);
+		return v != null ? v.intValue() : 0;
 	}
 	/**
 	 * Check if a specific technology is in the inventory.

@@ -458,14 +458,58 @@ public class Fleet implements Named, Owned, HasInventory {
 				owner.changeInventoryCount(rt, -count);
 			}
 		}
+		upgradeVehicles(getStatistics().vehicleMax);
+	}
+	/**
+	 * Upgrade the vehicles based on the given vehicle limit.
+	 * The current vehicle count should be zero
+	 * @param vehicleMax the vehicle maximum
+	 */
+	public void upgradeVehicles(int vehicleMax) {
 		VehiclePlan plan = new VehiclePlan();
-		plan.calculate(owner.available().keySet(), owner.world.battle, getStatistics().vehicleMax);
+		plan.calculate(owner.available().keySet(), owner.world.battle, vehicleMax);
+		// fill in best
 		for (Map.Entry<ResearchType, Integer> e : plan.demand.entrySet()) {
 			int demand = e.getValue();
 			ResearchType rt = e.getKey();
 			int count = Math.min(demand, owner.inventoryCount(rt));
 			addInventory(rt, count);
 			owner.changeInventoryCount(rt, -count);
+			vehicleMax -= count;
+		}
+		if (vehicleMax > 0) {
+			List<ResearchType> remaining = U.newArrayList();
+			int max = Math.max(plan.tanks.size(), plan.sleds.size());
+			for (int i = 1; i < max; i++) {
+				if (i < plan.tanks.size()) {
+					remaining.add(plan.tanks.get(i));
+				}
+				if (i < plan.sleds.size()) {
+					remaining.add(plan.sleds.get(i));
+				}
+			}
+			// fill in remaining slots
+			for (ResearchType rt : remaining) {
+				if (vehicleMax <= 0) {
+					break;
+				}
+				int add = Math.min(vehicleMax, owner.inventoryCount(rt));
+				addInventory(rt, add);
+				owner.changeInventoryCount(rt, -add);
+				vehicleMax -= add;
+			}
+		}
+	}
+	/**
+	 * Remove all tanks and vehicles and place them back into the owner's inventory.
+	 */
+	public void stripVehicles() {
+		for (InventoryItem ii : new ArrayList<InventoryItem>(inventory)) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				owner.changeInventoryCount(ii.type, ii.count);
+				inventory.remove(ii);
+			}
 		}
 	}
 	/**
