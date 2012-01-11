@@ -1395,7 +1395,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param name the user entered name, if mode == MANUAL
 	 * @param mode the mode
 	 */
-	public void saveWorld(final String name, final SaveMode mode) {
+	public synchronized void saveWorld(final String name, final SaveMode mode) {
 		final String pn = commons.profile.name;
 		final XElement xworld = commons.world().saveState();
 		saveSettings(xworld);
@@ -1403,37 +1403,48 @@ public class GameWindow extends JFrame implements GameControls {
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					File dir = new File("save/" + pn);
-					if (dir.exists() || dir.mkdirs()) {
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
-						String sdate = sdf.format(new Date());
-						File fout = new File(dir, "save-" + sdate + ".xml");
-						File foutx = new File(dir, "info-" + sdate + ".xml");
-						try {
-							xworld.set("save-name", name);
-							xworld.set("save-mode", mode);
-							
-							XElement info = World.deriveShortWorldState(xworld);
-							
-							xworld.save(fout);
-							info.save(foutx);
-							
-							limitSaves(dir, mode);
-						} catch (IOException ex) {
-							ex.printStackTrace();
-						}
-					} else {
-						System.err.println("Could not create save/default.");
-					}
-				} catch (Throwable t) {
-					t.printStackTrace();
-				} finally {
-					commons.saving.dec();
-				}
+				save(name, mode, pn, xworld);
 			}
 		}, "Save");
 		t.start();
+	}
+	/**
+	 * Performs the save operation.
+	 * @param name the save name
+	 * @param mode the save mode
+	 * @param pn the profil name
+	 * @param xworld the world
+	 */
+	synchronized void save(final String name, final SaveMode mode, final String pn,
+			final XElement xworld) {
+		try {
+			File dir = new File("save/" + pn);
+			if (dir.exists() || dir.mkdirs()) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
+				String sdate = sdf.format(new Date());
+				File fout = new File(dir, "save-" + sdate + ".xml");
+				File foutx = new File(dir, "info-" + sdate + ".xml");
+				try {
+					xworld.set("save-name", name);
+					xworld.set("save-mode", mode);
+					
+					XElement info = World.deriveShortWorldState(xworld);
+					
+					xworld.save(fout);
+					info.save(foutx);
+					
+					limitSaves(dir, mode);
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			} else {
+				System.err.println("Could not create save/default.");
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		} finally {
+			commons.saving.dec();
+		}
 	}
 	/**
 	 * Limit the number of various saves.
