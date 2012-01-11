@@ -702,6 +702,14 @@ public final class Simulator {
 				Planet np = f.nearbyPlanet();
 				if (np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport) {
 					ii.hp = Math.min(hpMax, (ii.hp * 100 + hpMax) / 100);
+					// regenerate slots
+					for (InventorySlot is : ii.slots) {
+						if (is.type != null) {
+							int m = ii.owner.world.getHitpoints(is.type);
+							is.hp = Math.min(m, (is.hp * 100 + m) / 100);
+						}
+					}
+					
 					checkRefill(f, ii);
 				}
 			}
