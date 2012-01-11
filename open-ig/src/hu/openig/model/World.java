@@ -881,7 +881,7 @@ public class World {
 			xp.set("fleet", p.currentFleet != null ? p.currentFleet.id : null);
 			xp.set("building", p.currentBuilding != null ? p.currentBuilding.id : null);
 			xp.set("research", p.currentResearch() != null ? p.currentResearch().id : null);
-			xp.set("running", p.runningResearch != null ? p.runningResearch.id : null);
+			xp.set("running", p.runningResearch() != null ? p.runningResearch().id : null);
 			xp.set("mode", p.selectionMode);
 			xp.set("ai", p.aiMode);
 			// save AI state
@@ -1152,7 +1152,7 @@ public class World {
 			
 			p.currentBuilding = buildingModel.buildings.get(xplayer.get("building", null));
 			p.currentResearch(researches.get(xplayer.get("research", null)));
-			p.runningResearch = researches.get(xplayer.get("running", null));
+			p.runningResearch(researches.get(xplayer.get("running", null)));
 			p.selectionMode = SelectionMode.valueOf(xplayer.get("mode", SelectionMode.PLANET.toString()));
 			
 			XElement xyesterday = xplayer.childElement("yesterday");
@@ -1234,7 +1234,7 @@ public class World {
 				}
 				Research rs = new Research();
 				rs.type = rt;
-				rs.state = rt == p.currentResearch() ? ResearchState.RUNNING : ResearchState.STOPPED; 
+				rs.state = rt == p.runningResearch() ? ResearchState.RUNNING : ResearchState.STOPPED; 
 				rs.assignedMoney = xres.getInt("assigned");
 				rs.remainingMoney = xres.getInt("remaining");
 				p.research.put(rt, rs);

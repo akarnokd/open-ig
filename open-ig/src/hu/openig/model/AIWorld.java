@@ -110,7 +110,7 @@ public class AIWorld {
 				}
 			}
 		}
-		runningResearch = player.runningResearch;
+		runningResearch = player.runningResearch();
 		
 		for (Map<ResearchType, Production> prods : player.production.values()) {
 			for (Production prod : prods.values()) {
