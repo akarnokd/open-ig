@@ -61,7 +61,7 @@ public class Player {
 	/** The inventory counts. */
 	public final Map<ResearchType, Integer> inventory = new HashMap<ResearchType, Integer>();
 	/** The current running research. */
-	public ResearchType runningResearch;
+	private ResearchType runningResearch;
 	/** The actual planet. */
 	public Planet currentPlanet;
 	/** The actual fleet. */
@@ -458,5 +458,16 @@ public class Player {
 	/** @return the race label. */
 	public String getRaceLabel() {
 		return "race." + race;
+	}
+	/** @return the active research or null if none. */
+	public ResearchType runningResearch() {
+		return runningResearch;
+	}
+	/**
+	 * Sets the active research. Null to stop researching.
+	 * @param rt the new technology to start researching
+	 */
+	public void runningResearch(ResearchType rt) {
+		this.runningResearch = rt;
 	}
 }

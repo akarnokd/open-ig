@@ -452,8 +452,8 @@ public final class Simulator {
 	 * @return true if repaint will be needed 
 	 */
 	static boolean progressResearch(World world, Player player, PlanetStatistics all) {
-		if (player.runningResearch != null) {
-			Research rs = player.research.get(player.runningResearch);
+		if (player.runningResearch() != null) {
+			Research rs = player.research.get(player.runningResearch());
 			int maxpc = rs.getResearchMaxPercent(all);
 			// test for money
 			// test for max percentage
@@ -490,7 +490,7 @@ public final class Simulator {
 			// test for completedness
 			if (rs.remainingMoney == 0) {
 				rs.state = ResearchState.COMPLETE;
-				player.runningResearch = null;
+				player.runningResearch(null);
 				player.research.remove(rs.type);
 				player.setAvailable(rs.type);
 				

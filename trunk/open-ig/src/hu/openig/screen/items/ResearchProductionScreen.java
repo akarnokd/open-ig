@@ -529,7 +529,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param scale the scale factor -1.0 ... +1.0
 	 */
 	void doAdjustMoney(float scale) {
-		Research r = player().research.get(player().runningResearch);
+		Research r = player().research.get(player().runningResearch());
 		r.assignedMoney += scale * r.type.researchCost / 20;
 		r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);
 	}
@@ -641,11 +641,11 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 	/** Start a new research. */
 	void doStartNew() {
-		if (player().runningResearch != null) {
-			player().research.get(player().runningResearch).state = ResearchState.STOPPED;
+		if (player().runningResearch() != null) {
+			player().research.get(player().runningResearch()).state = ResearchState.STOPPED;
 		}
 		ResearchType rt = research();
-		player().runningResearch = rt;
+		player().runningResearch(rt);
 		Research rs = player().research.get(rt);
 		if (rs == null) {
 			rs = new Research();
@@ -681,14 +681,14 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param g2 the graphics context
 	 */
 	void drawResearchArrow(Graphics2D g2) {
-		if (player().runningResearch == null) {
+		if (player().runningResearch() == null) {
 			return;
 		}
-		UIImageTabButton c = mainComponents.get(player().runningResearch.category.main);
+		UIImageTabButton c = mainComponents.get(player().runningResearch().category.main);
 		g2.drawImage(commons.research().current, 
 				mainCategory.x + 5, c.y + (c.height - commons.research().current.getHeight()) / 2, null);
 		if (c.down) {
-			c = subComponents.get(player().runningResearch.category);
+			c = subComponents.get(player().runningResearch().category);
 			if (c != null) {
 				g2.drawImage(commons.research().current, 
 						subCategorySmall.x + 5, c.y + (c.height - commons.research().current.getHeight()) / 2, null);
@@ -809,7 +809,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_1);
-				doSelectTechnology(player().runningResearch);
+				doSelectTechnology(player().runningResearch());
 			}
 		};
 		
@@ -1593,7 +1593,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			
 			startNew.visible(
 					mode == Screens.RESEARCH
-					&& player().runningResearch != rt 
+					&& player().runningResearch() != rt 
 					&& world().canResearch(rt));
 		} else {
 			for (TechnologySlot slot : slots) {
@@ -1627,7 +1627,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	 * @param ps the all planet statistics
 	 */
 	void updateActive(PlanetStatistics ps) {
-		ResearchType rt = player().runningResearch;
+		ResearchType rt = player().runningResearch();
 		
 		activeCivilLabValue.text("" + ps.civilLabActive);
 		activeMechLabValue.text("" + ps.mechLabActive);
@@ -1803,11 +1803,11 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 	/** Top the research. */
 	void doStopResearch() {
-		doSelectTechnology(player().runningResearch);
-		if (player().runningResearch != null) {
-			player().research.get(player().runningResearch).state = ResearchState.STOPPED;
+		doSelectTechnology(player().runningResearch());
+		if (player().runningResearch() != null) {
+			player().research.get(player().runningResearch()).state = ResearchState.STOPPED;
 		}
-		player().runningResearch = null;
+		player().runningResearch(null);
 		if (config.computerVoiceScreen) {
 			commons.sounds.play(SoundType.STOP_RESEARCH);
 		}
