@@ -5,6 +5,7 @@
 = Version 0.93.540 - Improvements =
   * Released: 2012-01-11 21:10 CET
   * Several AI improvements and fixes
+  * Ability to switch to right-click-action controls (starmap, spacewar, groundwar). If enabled, simple right click moves or attacks. Panning is done with the middle mouse button. Zoom to fit is CTRL+Middle button in this mode.
   * Grouping units in space and ground battles. Use CTRL+0 .. CTRL+9 to assign, SHIFT+0 .. SHIFT+9 to recall a group. (Issues [http://code.google.com/p/open-ig/issues/detail?id=105 #105], [http://code.google.com/p/open-ig/issues/detail?id=106 #106])
   * Display selected unit information in the bottom-middle section of the spacewar screen. ([http://code.google.com/p/open-ig/issues/detail?id=107 Issue #107])
   * Balance related code and model improvements (Issues [http://code.google.com/p/open-ig/issues/detail?id=155 #155], [http://code.google.com/p/open-ig/issues/detail?id=170 #170])
