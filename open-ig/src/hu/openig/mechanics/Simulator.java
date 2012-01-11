@@ -696,7 +696,7 @@ public final class Simulator {
 	 * @param f the fleet
 	 */
 	static void regenerateFleet(Map<Planet, PlanetStatistics> planetStats, Fleet f) {
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
 			int hpMax = ii.owner.world.getHitpoints(ii.type);
 			if (ii.hp < hpMax) {
 				Planet np = f.nearbyPlanet();
