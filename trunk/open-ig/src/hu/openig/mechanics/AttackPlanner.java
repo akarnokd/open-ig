@@ -10,6 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
+import hu.openig.core.Difficulty;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
@@ -107,7 +108,13 @@ public class AttackPlanner extends Planner {
 		}
 		if (world.nextAttack == null) {
 			if (world.mayConquer) {
-				int base = 4;
+				int base = 3;
+				if (w.difficulty == Difficulty.NORMAL) {
+					base = 5;
+				} else
+				if (w.difficulty == Difficulty.EASY) {
+					base = 7;
+				}
 				long next = 1L * (w.random().nextInt(3) + base) * (8 + 2 * w.random().nextInt(6)) * 60 * 60 * 1000;
 				world.nextAttack = new Date(world.now.getTime() + next);
 				setNewAttack.invoke(world.nextAttack);

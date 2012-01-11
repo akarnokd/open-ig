@@ -1525,7 +1525,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		double shieldValue = 0;
 		// add shields
 		for (Building b : nearbyPlanet.surface.buildings) {
-			double power = -b.assignedEnergy * 1.0 / b.getEnergy();
+			double power = Math.abs(b.assignedEnergy * 1.0 / b.getEnergy());
 			if (power >= 0.5 && b.type.kind.equals("Shield")) {
 				
 				double eff = power;
@@ -1564,7 +1564,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void placeProjectors(Planet nearbyPlanet, boolean alien, double shieldValue) {
 		for (Building b : nearbyPlanet.surface.buildings) {
-			double power = -b.assignedEnergy * 1.0 / b.getEnergy();
+			double power = Math.abs(b.assignedEnergy * 1.0 / b.getEnergy());
 			if (power >= 0.5 && b.type.kind.equals("Gun")) {
 				
 				BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
