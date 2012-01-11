@@ -23,7 +23,9 @@ import hu.openig.utils.U;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -376,11 +378,11 @@ public class ColonyPlanner extends Planner {
 			newLevel = TaxLevel.SLAVERY;
 		}
 		// reduce tax level if worker shortage
-		if (newLevel != TaxLevel.NONE && planet.population < planet.statistics.workerDemand) {
+		if (newLevel != TaxLevel.NONE && planet.population < planet.statistics.nativeWorkerDemand) {
 			newLevel = TaxLevel.values()[newLevel.ordinal() - 1];
 		}
 		// reduce tax further if even lower worker shortage
-		if (newLevel != TaxLevel.NONE && planet.population * 5 < planet.statistics.workerDemand * 4) {
+		if (newLevel != TaxLevel.NONE && planet.population * 5 < planet.statistics.nativeWorkerDemand * 4) {
 			newLevel = TaxLevel.values()[newLevel.ordinal() - 1];
 		}
 		
@@ -514,6 +516,50 @@ public class ColonyPlanner extends Planner {
 		return false;
 	}
 	/**
+	 * Returns a list of buildings candidate for disablement.
+	 * @param planet the target planet
+	 * @return the list of buildings
+	 */
+	List<AIBuilding> disableCandidates(AIPlanet planet) {
+		List<AIBuilding> result = U.newArrayList();
+		for (AIBuilding b : planet.buildings) {
+			if (b.enabled && b.isComplete() && !b.type.kind.equals("MainBuilding") && b.getEnergy() < 0) {
+				result.add(b);
+			}
+		}
+		return result;
+	}
+	/**
+	 * The disable order.
+	 */
+	final Comparator<AIBuilding> disableOrder = new Comparator<AIBuilding>() {
+		/** The global kind order. */
+		final List<String> kinds = Arrays.asList(
+				"Defensive",
+				"Gun", 
+				"Shield", 
+				"Social", 
+				"Radar", 
+				"Economic", 
+				"MilitarySpaceport", 
+				"Factory"
+			);
+		@Override
+		public int compare(AIBuilding o1, AIBuilding o2) {
+			int i1 = kinds.indexOf(o1.type.kind);
+			int i2 = kinds.indexOf(o2.type.kind);
+			if (i1 < i2) {
+				return -1;
+			} else
+			if (i1 > i2) {
+				return 1;
+			}
+			int w1 = -o1.getWorkers();
+			int w2 = -o2.getWorkers();
+			return w2 - w1;
+		}
+	};
+	/**
 	 * Check if there is some worker demand issues,
 	 * if so, try building morale and population growth boosting buildings.
 	 * @param planet the target planet
@@ -522,16 +568,7 @@ public class ColonyPlanner extends Planner {
 	boolean checkWorker(final AIPlanet planet) {
 		if (planet.population < planet.statistics.workerDemand) {
 			// try disabling buildings
-			AIBuilding max = null;
-			for (AIBuilding b : planet.buildings) {
-				if (b.enabled && !b.type.kind.equals("MainBuilding") && b.getEnergy() < 0) {
-					int mw = max != null ? max.getWorkers() : 0;
-					int w = b.getWorkers();
-					if (max == null || mw > w) {
-						max = b;
-					}
-				}
-			}
+			AIBuilding max = Collections.max(disableCandidates(planet), disableOrder);
 			if (max != null) {
 				final AIBuilding fb = max;
 				add(new Action0() {
