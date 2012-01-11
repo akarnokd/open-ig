@@ -420,6 +420,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	ThreePhaseButton guardButton;
 	/** Fleet control button. */
 	ThreePhaseButton rocketButton;
+	/** The middle selection panel. */
+	SelectionPanel selectionPanel;
 	/** The simulation delay on normal speed. */
 	static final int SIMULATION_DELAY = 100;
 	/** Keep the last info images. */
@@ -430,6 +432,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	final Set<SpacewarObject> scrambled = new HashSet<SpacewarObject>();
 	/** The sounds to play. */
 	final Set<SoundType> soundsToPlay = new HashSet<SoundType>();
+	/** The grouping of structures. */
+	final Map<SpacewarStructure, Integer> groups = U.newHashMap();
 	/** Info image cache. */
 	final Map<String, BufferedImage> infoImages = new LinkedHashMap<String, BufferedImage>() {
 		/** */
@@ -535,6 +539,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		layoutPanel = new LayoutPanel();
 		layoutPanel.visible(false);
+		
+		selectionPanel = new SelectionPanel();
 		
 		addThis();
 	}
@@ -776,6 +782,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			break;
 		case WHEEL:
+			if (selectionPanel.within(e)) {
+				needRepaint = selectionPanel.mouse(e);
+			} else
 			if (e.has(Modifier.CTRL)) {
 				if (e.z < 0) {
 					doZoomIn(e.x, e.y);
@@ -1038,6 +1047,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		rightShipInfoPanel.clear();
 		layoutPanel.selected = null;
 		
+		selectionPanel.clear();
+		groups.clear();
+		
 		infoImages.clear();
 	}
 	@Override
@@ -1061,6 +1073,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		rightCommunicator.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 121);
 		rightMovie.location(rightPanel.x + rightPanel.width + 5, rightPanel.y + 161);
 
+		selectionPanel.location(leftPanel.x + leftPanel.width + 3, leftPanel.y);
+		selectionPanel.size(Math.max(0, rightPanel.x - 2 - selectionPanel.x), leftPanel.height);
+		
 		for (Field f : getClass().getDeclaredFields()) {
 			Show a = f.getAnnotation(Show.class);
 			if (a != null) {
@@ -3251,6 +3266,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				return true;
 			}
 		}
+		if (e.isControlDown()) {
+			if (e.getKeyCode() >= KeyEvent.VK_0 && e.getKeyCode() <= KeyEvent.VK_9) {
+				assignGroup(e.getKeyCode() - KeyEvent.VK_0);
+				e.consume();
+				return true;
+			}
+		}
+		if (e.isShiftDown()) {
+			if (e.getKeyCode() >= KeyEvent.VK_0 && e.getKeyCode() <= KeyEvent.VK_9) {
+				recallGroup(e.getKeyCode() - KeyEvent.VK_0);
+				e.consume();
+				return true;
+			}
+		}
 		if (e.getKeyCode() == KeyEvent.VK_A && e.isControlDown()) {
 			doSelectAll();
 			e.consume();
@@ -3879,5 +3908,294 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	public void viewGridSelected(boolean selected) {
 		viewGrid.selected = selected;
+	}
+	/**
+	 * The selection cell.
+	 * @author akarnokd, 2012.01.11.
+	 */
+	class SelectionCell {
+		/** The object's name. */
+		String name;
+		/** The object's owner. */
+		String owner;
+		/** The objects parent. */
+		String parent;
+		/** The color of the owner. */
+		int color;
+		/** The image. */
+		BufferedImage image;
+		/** The shield ratio. */
+		double shieldRatio;
+		/** The HP ratio. */
+		double hpRatio;
+		/** The firepower. */
+		int firepower;
+		/** The damage per second. */
+		double dps;
+		/** The rocket count. */
+		int rockets;
+		/** The bomb count. */
+		int bombs;
+		/** Count. */
+		int count;
+		/** The maximum image size. */
+		final int maxImage = 50;
+		/**
+		 * Returns the rendering width.
+		 * @return the rendering width
+		 */
+		int width() {
+			int w = 0;
+			if (count < 2) {
+				w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.name", name)));
+			} else {
+				w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.name_count", name, count)));
+			}
+			w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.owner", owner)));
+			w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.parent", parent)));
+			w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.firepower_dps", firepower, dps)));
+			if (rockets > 0 || bombs > 0) {
+				w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.bombs_rockets", bombs, rockets)));
+			}
+			return w + Math.min(maxImage, image.getWidth()) + 15;
+		}
+		/**
+		 * The total text height.
+		 * @return the total text height
+		 */
+		int textHeight() {
+			int rows = 4;
+			if (rockets > 0 || bombs > 0) {
+				rows++;
+			}
+			return 7 * rows + (rows - 1) * 2;
+		}
+		/**
+		 * Returns the rendering height.
+		 * @return the rendering height
+		 */
+		int height() {
+			int h = maxImage + 10;
+			h = Math.max(h, textHeight() + 2);
+			return h;
+		}
+		/**
+		 * Draws the cell.
+		 * @param g2 the graphics context
+		 * @param x0 the origin X
+		 * @param y0 the origin Y
+		 */
+		public void draw(Graphics2D g2, int x0, int y0) {
+			g2.translate(x0, y0);
+			
+			g2.setColor(Color.LIGHT_GRAY);
+
+			int h = height();
+//			int w = width();
+			
+//			g2.drawRect(0, 0, w, h);
+			int dy = (h - 10 - Math.min(50, image.getHeight())) / 2;
+			
+			g2.setColor(Color.GREEN);
+			int iw = Math.min(image.getWidth(), maxImage);
+			int iw2 = (int)(iw * hpRatio);
+			g2.drawRect(0, dy + 0, iw, 4);
+			g2.fillRect(0, dy + 0, iw2, 4);
+			
+			if (shieldRatio >= 0) {
+				g2.setColor(Color.ORANGE);
+				iw2 = (int)(iw * shieldRatio);
+				g2.drawRect(0, dy + 6, iw, 4);
+				g2.fillRect(0, dy + 6, iw2, 4);
+			}
+			
+			if (image.getWidth() > maxImage || image.getHeight() > maxImage) {
+				double scalex = 1.0 * maxImage / image.getWidth();
+				double scaley = 1.0 * maxImage / image.getHeight();
+				double scale = Math.min(scalex, scaley);
+				
+				int imw = (int)(image.getWidth() * scale);
+				int imh = (int)(image.getHeight() * scale);
+				
+				int dx = (maxImage - imw) / 2;
+				dy = (maxImage - imh) / 2 + 10;
+				
+				g2.drawImage(image, dx, dy, imw, imh, null);
+			} else {
+				g2.drawImage(image, 0, dy + 10, null);
+			}
+			
+			int dx = Math.min(maxImage, image.getWidth()) + 4;
+			
+			dy = (h - textHeight()) / 2;
+			
+			if (count > 1) {
+				commons.text().paintTo(g2, dx, dy, 7, color, format("spacewar.selection.name_count", name, count));
+			} else {
+				commons.text().paintTo(g2, dx, dy, 7, color, format("spacewar.selection.name", name));
+			}
+			commons.text().paintTo(g2, dx, dy + 9, 7, color, format("spacewar.selection.owner", owner));
+			commons.text().paintTo(g2, dx, dy + 18, 7, color, format("spacewar.selection.parent", parent));
+			commons.text().paintTo(g2, dx, dy + 27, 7, color, format("spacewar.selection.firepower_dps", firepower, dps));
+			if (rockets > 0 || bombs > 0) {
+				commons.text().paintTo(g2, dx, dy + 36, 7, color, format("spacewar.selection.bombs_rockets", bombs, rockets));
+			}
+			
+			g2.translate(-x0, -y0);
+		}
+	}
+	/**
+	 * The panel showing information about the current selection. 
+	 * @author akarnokd, 2012.01.11.
+	 */
+	class SelectionPanel extends UIContainer {
+		/** The current scroll offset. */
+		int offset = 0;
+		/** The row height. */
+		final int rowHeight = 30;
+		/** The last selection. */
+		List<SpacewarStructure> lastSelection = U.newArrayList();
+		@Override
+		public void draw(Graphics2D g2) {
+			List<SpacewarStructure> sel = getSelection();
+			
+			if (sel.size() != lastSelection.size() || !lastSelection.containsAll(sel)) {
+				offset = 0;
+			}
+			lastSelection = sel;
+			
+			
+			Shape save = g2.getClip();
+			g2.clipRect(0, 0, width, height);
+			
+			g2.setColor(Color.BLACK);
+			
+			g2.fillRect(0, 0, width, height);
+			
+			offset = Math.max(0, Math.min(offset, sel.size() - 1));
+			
+			List<SelectionCell> cells = U.newArrayList();
+			for (int i = 0; i < sel.size(); i++) {
+				SpacewarStructure s = sel.get(i);
+
+				SelectionCell c = new SelectionCell();
+				
+				c.image = s.angles[0];
+				if (s.item != null) {
+					c.name = s.item.type.name;
+				} else
+				if (s.building != null) {
+					c.name = s.building.type.name;
+				}
+				c.owner = s.owner.name;
+				c.color = s.owner.color;
+				if (s.fleet != null) {
+					c.parent = s.fleet.name;
+				} else
+				if (s.planet != null) {
+					c.parent = s.planet.name;
+				}
+				
+				c.hpRatio = 1.0 * s.hp / s.hpMax;
+				if (s.shieldMax > 0) {
+					c.shieldRatio = 1.0 * s.shield / s.shieldMax;
+				} else {
+					c.shieldRatio = -1;
+				}
+				c.count = s.count;
+				
+				for (SpacewarWeaponPort p : s.ports) {
+					if (p.projectile.mode == Mode.BEAM) {
+						c.firepower += p.projectile.damage;
+						c.dps += p.count * p.projectile.damage * 1000.0 / p.projectile.delay;
+					} else
+					if (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET) {
+						c.rockets += p.count;
+					} else
+					if (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS) {
+						c.bombs += p.count;
+					}
+				}
+				c.dps = Math.round(c.dps);
+				
+				cells.add(c);
+			}
+			int x0 = 0;
+			int y0 = 0;
+			int h = 0;
+			int row = 0;
+			for (SelectionCell c : cells) {
+				int cw = c.width();
+				if (x0 > 0 && x0 + cw >= width) {
+					x0 = 0;
+					y0 += h;
+					h = 0;
+					row++;
+				}
+				
+				if (row >= offset) {
+					c.draw(g2, x0, y0);
+					h = Math.max(h, c.height());
+				}
+				x0 += cw;
+			}
+			if (offset > row) {
+				offset = row;
+			}
+			
+			super.draw(g2);
+			
+			g2.setClip(save);
+		}
+		/** Clear any references. */
+		public void clear() {
+			lastSelection.clear();
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.WHEEL)) {
+				if (e.z < 0) {
+					offset--;
+				} else {
+					offset++;
+				}
+				return true;
+			}
+			return super.mouse(e);
+		}
+	}
+	/**
+	 * Assign the selected units to a group.
+	 * @param groupNo the group number
+	 */
+	void assignGroup(int groupNo) {
+		List<SpacewarStructure> sel = getSelection();
+		// player's objects only
+		for (SpacewarStructure s : sel) {
+			if (s.owner != player()) {
+				return;
+			}
+		}
+		// remove previous grouping
+		Iterator<Map.Entry<SpacewarStructure, Integer>> it = groups.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<SpacewarStructure, Integer> e = it.next();
+			if (e.getValue().intValue() == groupNo) {
+				it.remove();
+			}
+		}
+		for (SpacewarStructure s : sel) {
+			groups.put(s, groupNo);
+		}
+	}
+	/**
+	 * Reselect the units of the saved group.
+	 * @param groupNo the group number
+	 */
+	void recallGroup(int groupNo) {
+		for (SpacewarStructure s : structures) {
+			Integer g = groups.get(s);
+			s.selected = g != null && g.intValue() == groupNo;
+		}
 	}
 }
