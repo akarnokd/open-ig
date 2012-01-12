@@ -146,6 +146,12 @@ public class CommonGFX {
 	/** The check mark. */
 	@Img(name = "checkmark")
 	public BufferedImage checkmark;
+	/** The check mark. */
+	@Img(name = "cross_out")
+	public BufferedImage crossOut;
+	/** The check mark. */
+	@Img(name = "checkmark_green")
+	public BufferedImage checkmarkGreen;
 	/** Small error icon. */
 	@Img(name = "error")
 	public BufferedImage errorIcon;

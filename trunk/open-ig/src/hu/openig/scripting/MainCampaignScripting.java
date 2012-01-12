@@ -8,12 +8,15 @@
 
 package hu.openig.scripting;
 
+import hu.openig.core.Func0;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.CampaignScripting;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.Objective;
+import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
@@ -478,5 +481,48 @@ public class MainCampaignScripting implements CampaignScripting {
 			}
 		}
 		return null;
+	}
+	@Override
+	public List<Objective> currentObjectives() {
+		// TODO Auto-generated method stub
+		List<Objective> result = U.newArrayList();
+		
+		Objective o1 = createTestObjective();
+		Objective o2 = createTestObjective();
+		Objective o3 = createTestObjective();
+		
+		o1.subObjectives.add(o2);
+		o2.subObjectives.add(o3);
+		
+		o2.state = ObjectiveState.SUCCESS;
+		o3.state = ObjectiveState.FAILURE;
+		
+		result.add(o1);
+		result.add(o2);
+		result.add(o3);
+		return result;
+	}
+	/**
+	 * Create a test objective.
+	 * @return the objective
+	 */
+	Objective createTestObjective() {
+		Objective o = new Objective();
+		o.state = ObjectiveState.ACTIVE;
+		o.title = "Title";
+		o.description = "This is the description This is the description This is the description This is the description This is the description This is the description This is the description ";
+		o.progress = new Func0<Double>() {
+			@Override
+			public Double invoke() {
+				return 0.5;
+			}
+		};
+		o.progressValue = new Func0<String>() {
+			@Override
+			public String invoke() {
+				return String.valueOf(world.player.money);
+			}
+		};
+		return o;
 	}
 }

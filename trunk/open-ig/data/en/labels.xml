@@ -2877,6 +2877,16 @@
 	<entry key='messages.rebel'>Rebel governor</entry>
 	<entry key='messages.success'>Mission success</entry>
 	<entry key='messages.virus_carriers_destroyed'>Virus carriers destroyed</entry>
+	
+	<entry key='no_objectives'>No current objectives.</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	
 </labels>

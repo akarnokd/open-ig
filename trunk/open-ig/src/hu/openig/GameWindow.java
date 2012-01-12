@@ -131,6 +131,7 @@ public class GameWindow extends JFrame implements GameControls {
 		 */
 		public ScreenRenderer() {
 			setOpaque(true);
+			setFocusTraversalKeysEnabled(false);
 		}
 		@Override
 		public void paint(Graphics g) {
@@ -283,6 +284,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	public GameWindow(Configuration config) {
 		super("Open Imperium Galactica " + Configuration.VERSION + " [pid: " + ManagementFactory.getRuntimeMXBean().getName() + "]");
+		setFocusTraversalKeysEnabled(false);
 		URL icon = this.getClass().getResource("/hu/openig/gfx/open-ig-logo.png");
 		if (icon != null) {
 			try {
@@ -376,6 +378,7 @@ public class GameWindow extends JFrame implements GameControls {
 	public GameWindow(GameWindow that, boolean undecorated) {
 		setUndecorated(undecorated);
 		this.setTitle(that.getTitle());
+		setFocusTraversalKeysEnabled(false);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -898,7 +901,13 @@ public class GameWindow extends JFrame implements GameControls {
 					repaintInner();
 					e.consume();
 				}
-				switch (e.getKeyCode()) {
+				int keycode = e.getKeyCode();
+				switch (keycode) {
+				case KeyEvent.VK_TAB:
+					allScreens.statusbar.objectives.visible(!allScreens.statusbar.objectives.visible());
+					repaintInner();
+					e.consume();
+					break;
 				case KeyEvent.VK_F1:
 					displayPrimary(Screens.BRIDGE);
 					e.consume();
