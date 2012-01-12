@@ -4057,17 +4057,16 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 			} else {
+				stopUnit(u);
 				if (u.path.isEmpty() && directAttackUnits.contains(u.model.type)) {
 					// find a new target in range
-					u.attackUnit = null;
-					u.attackBuilding = null;
 					List<GroundwarUnit> targets = unitsInRange(u);
 					if (targets.size() > 0) {
-						u.attackUnit = targets.get(world().random().nextInt(targets.size()));
+						u.attackUnit = world().random(targets);
 					} else {
 						List<Building> targets2 = buildingsInRange(u);
 						if (targets2.size() > 0) {
-							u.attackBuilding = targets2.get(world().random().nextInt(targets2.size()));
+							u.attackBuilding = world().random(targets2);
 						}
 					}
 				}
@@ -4562,13 +4561,7 @@ public class PlanetScreen extends ScreenBase {
 		for (GroundwarUnit u : units) {
 			if (u.selected /* && u.owner == player() */) { // FIXME player only
 				stopped = true;
-				u.path.clear();
-				if (u.nextMove != null) {
-					u.path.add(u.nextMove);
-				}
-				u.attackBuilding = null;
-				u.attackUnit = null;
-				minelayers.remove(u);
+				stopUnit(u);
 			}
 		}
 		for (GroundwarGun g : guns) {
@@ -4580,6 +4573,19 @@ public class PlanetScreen extends ScreenBase {
 		if (stopped) {
 			sound(SoundType.NOT_AVAILABLE);
 		}
+	}
+	/**
+	 * Stop the given unit and let it move to a whole cell.
+	 * @param u the unit to stop
+	 */
+	public void stopUnit(GroundwarUnit u) {
+		u.path.clear();
+		if (u.nextMove != null) {
+			u.path.add(u.nextMove);
+		}
+		u.attackBuilding = null;
+		u.attackUnit = null;
+		minelayers.remove(u);
 	}
 	/**
 	 * Retrieve the building at the given mouse location.

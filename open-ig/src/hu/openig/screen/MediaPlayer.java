@@ -37,14 +37,6 @@ import javax.swing.SwingUtilities;
  * @author akarnokd, 2010.01.17.
  */
 public class MediaPlayer {
-	/** The label event. */
-	public interface LabelEvent {
-		/** 
-		 * Set the new label.
-		 * @param text the textual labels 
-		 */
-		void label(String text);
-	}
 	/** The video thread. */
 	protected VideoRenderer videoThread;
 	/** The audio playback thread. */
@@ -60,7 +52,7 @@ public class MediaPlayer {
 	/** The event to invoke when completed. */
 	public volatile Action0 onComplete;
 	/** The label event. */
-	public volatile LabelEvent onLabel;
+	public volatile Action1<String> onLabel;
 	/** The indicator to continue a phase. */
 	private AtomicInteger continuation;
 	/** The indicator to continue a phase. */
@@ -228,7 +220,7 @@ public class MediaPlayer {
 				@Override
 				public void run() {
 					long time = (long)(frameCount * 1000 / fps);
-					onLabel.label(subtitle.get(time));
+					onLabel.invoke(subtitle.get(time));
 				}
 			});
 		}
