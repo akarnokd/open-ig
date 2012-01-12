@@ -14,16 +14,21 @@ import hu.openig.core.Action1;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.core.SwappableRenderer;
+import hu.openig.model.Level;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
+import hu.openig.model.VideoMessage;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.MediaPlayer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.VideoRenderer;
+import hu.openig.ui.UIImageButton;
+import hu.openig.ui.UIImageToggleButton;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.U;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -31,6 +36,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -93,8 +99,12 @@ public class BridgeScreen extends ScreenBase {
 	volatile MediaPlayer videoAnim;
 	/** Is the message panel open? */
 	boolean messageOpen;
+	/** The message is closing. */
+	boolean messageClosing;
 	/** Is the projector open? */
 	boolean projectorOpen;
+	/** The projector is closing. */
+	boolean projectorClosing;
 	/** The opening/closing animation is in progress. */
 	boolean openCloseAnimating;
 	/** The transition the mouse is pointing at. */
@@ -113,8 +123,57 @@ public class BridgeScreen extends ScreenBase {
 	Action0 onProjectorComplete;
 	/** The action to invoke when the projector reached its end of animation. */
 	Action0 onMessageComplete;
+	/** The action when the message panel appeared. */
+	Action0 onAppearComplete;
 	/** Is a video running? */
 	boolean videoRunning;
+	/** The list up button. */
+	UIImageButton listUp;
+	/** The list down button. */
+	UIImageButton listDown;
+	/** The list up button. */
+	UIImageToggleButton send;
+	/** The list down button. */
+	UIImageToggleButton receive;
+	/** The current graphical list level. */
+	int listOffset;
+	/** The list of videos. */
+	final List<VideoMessageEntry> videos = U.newArrayList();
+	/** The currently selected video. */
+	VideoMessageEntry selectedVideo;
+	/** The message list row height. */
+	final int rowHeight = 25;
+	/**
+	 * A video message entry.
+	 * @author akarnokd, 2012.01.12.
+	 */
+	public static class VideoMessageEntry {
+		/** The video message. */
+		public VideoMessage videoMessage;
+		/** Indicate if the video was seen. */
+		public boolean seen;
+		/**
+		 * Draw this entry.
+		 * @param g2 the graphics context
+		 * @param x0 the base X
+		 * @param y0 the base Y
+		 * @param tr the text renderer
+		 */
+		public void draw(Graphics2D g2, int x0, int y0, TextRenderer tr) {
+			int colorMain = TextRenderer.RED;
+			int colorSub = TextRenderer.GREEN;
+			if (seen) {
+				colorMain = TextRenderer.GRAY;
+				colorSub = TextRenderer.GRAY;
+			}
+			tr.paintTo(g2, x0 + 2, y0 + 2, 10, colorMain, videoMessage.title);
+			tr.paintTo(g2, x0 + 2, y0 + 16, 7, colorSub, this.videoMessage.description);
+		}
+	}
+	/** The incoming message list. */
+	public final List<VideoMessage> incoming = U.newArrayList();
+	/** The outgoing message list. */
+	public final List<VideoMessage> outgoing = U.newArrayList();
 	@Override
 	public void onInitialize() {
 		videoAppearAnim = new Timer(50, new ActionListener() {
@@ -123,46 +182,6 @@ public class BridgeScreen extends ScreenBase {
 				doVideoAppear();
 			}
 		});
-	}
-	@Override
-	public void onResize() {
-		base.setBounds((getInnerWidth() - 640) / 2, 20 + (getInnerHeight() - 38 - 442) / 2, 640, 442);
-		messageOpenRect.setBounds(base.x + 572, base.y + 292, 68, 170);
-		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 4, base.y, 524, 258);
-		videoRect.setBounds(projectorRect.x + 103, projectorRect.y + 9, 320, 240);
-		messageRect.setBounds(base.x + base.width - 298, base.y + base.height - 182, 298, 182);
-
-		
-		
-		closeProjector = new Polygon(
-			new int[] { 
-					base.x, projectorRect.x, 
-					projectorRect.x, projectorRect.x + projectorRect.width, 
-					projectorRect.x + projectorRect.width, base.x + base.width - 1, 
-					base.x + base.width - 1, messageRect.x, 
-					messageRect.x, base.x
-				},
-			new int[] { 
-					base.y, base.y, 
-					projectorRect.y + projectorRect.height, projectorRect.y + projectorRect.height, 
-					base.y, base.y, 
-					messageRect.y, messageRect.y, 
-					base.y + base.height - 1, base.y + base.height - 1
-					
-				},
-			10
-		);
-		closeMessage = new Polygon(
-			new int[] {
-				base.x, base.x + base.width - 1, base.x + base.width - 1, messageRect.x,
-				messageRect.x, base.x
-			},
-			new int[] {
-				base.y, base.y, messageRect.y, messageRect.y, base.y + base.height - 1, 
-				base.y + base.height - 1
-			},
-			6
-		);
 	}
 	@Override
 	public void onFinish() {
@@ -209,7 +228,12 @@ public class BridgeScreen extends ScreenBase {
 		messageAnim.onComplete = new Action0() {
 			@Override
 			public void invoke() {
+				messageOpen = false;
 				openCloseAnimating = false;
+				if (onAppearComplete != null) {
+					onAppearComplete.invoke();
+					onAppearComplete = null;
+				}
 				askRepaint();
 			}
 		};
@@ -252,6 +276,7 @@ public class BridgeScreen extends ScreenBase {
 				openCloseAnimating = false;
 				if (onMessageComplete != null) {
 					onMessageComplete.invoke();
+					onMessageComplete = null;
 				}
 				askRepaint();
 			}
@@ -261,6 +286,7 @@ public class BridgeScreen extends ScreenBase {
 	/** Play message panel closing. */
 	void playMessageClose() {
 		openCloseAnimating = true;
+		messageClosing = true;
 		messageAnim = new MediaPlayer(commons, commons.world().getCurrentLevel().messageClose, new SwappableRenderer() {
 			@Override
 			public BufferedImage getBackbuffer() {
@@ -290,9 +316,11 @@ public class BridgeScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				messageOpen = false;
+				messageClosing = false;
 				openCloseAnimating = false;
 				if (onMessageComplete != null) {
 					onMessageComplete.invoke();
+					onMessageComplete = null;
 				}
 				askRepaint();
 			}
@@ -334,6 +362,7 @@ public class BridgeScreen extends ScreenBase {
 				openCloseAnimating = false;
 				if (onProjectorComplete != null) {
 					onProjectorComplete.invoke();
+					onProjectorComplete = null;
 				}
 				askRepaint();
 			}
@@ -343,6 +372,7 @@ public class BridgeScreen extends ScreenBase {
 	/** Play message panel closing. */
 	void playProjectorClose() {
 		openCloseAnimating = true;
+		projectorClosing = true;
 		projectorAnim = new MediaPlayer(commons, commons.world().getCurrentLevel().projectorClose, new SwappableRenderer() {
 			@Override
 			public BufferedImage getBackbuffer() {
@@ -373,8 +403,10 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				projectorOpen = false;
 				openCloseAnimating = false;
+				projectorClosing = false;
 				if (onProjectorComplete != null) {
 					onProjectorComplete.invoke();
+					onProjectorComplete = null;
 				}
 				commons.control().moveMouse();
 				askRepaint();
@@ -394,13 +426,42 @@ public class BridgeScreen extends ScreenBase {
 	
 	@Override
 	public boolean mouse(UIMouse e) {
+		if (messageOpen && !openCloseAnimating && !projectorOpen) {
+			if (listUp.enabled() && listUp.within(e)) {
+				return listUp.mouse(e);
+			}
+			if (listDown.enabled() && listDown.within(e)) {
+				return listDown.mouse(e);
+			}
+			if (send.within(e)) {
+				return send.mouse(e);
+			}
+			if (receive.within(e)) {
+				return receive.mouse(e);
+			}
+			if (e.has(Type.WHEEL)) {
+				scrollList(e.z);
+				return true;
+			}
+			if (messageListRect.contains(e.x, e.y) && e.has(Type.DOWN)) {
+				int idx = (e.y - messageListRect.y) / rowHeight + listOffset;
+				if (idx >= 0 && idx < videos.size()) {
+					selectedVideo = videos.get(idx);
+					selectedVideo.seen = true;
+					playVideo(selectedVideo.videoMessage.media);
+				} else {
+					selectedVideo = null;
+				}
+				return true;
+			}
+		}
 		if (e.type == UIMouse.Type.UP) {
 			if (!openCloseAnimating) {
 				if (videoRunning) {
 					videoAnim.stop();
 				} else
 				if (messageOpen && !projectorOpen) {
-					if (closeMessage.contains(e.x - base.x, e.y - base.y)) {
+					if (!messageRect.contains(e.x, e.y)) {
 						playMessageClose();
 					}
 				} else
@@ -448,9 +509,64 @@ public class BridgeScreen extends ScreenBase {
 	@Override
 	public void onEnter(Screens mode) {
 		background = commons.world().bridge.levels.get(commons.world().level).image;
+		
+		Level lvl = world().getCurrentLevel();
+
+		listUp = new UIImageButton(lvl.up);
+		listUp.setHoldDelay(200);
+		listUp.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				scrollList(-1);
+				askRepaint();
+			}
+		};
+		listDown = new UIImageButton(lvl.down);
+		listDown.setHoldDelay(200);
+		listDown.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				scrollList(1);
+				askRepaint();
+			}
+		};
+		send = new UIImageToggleButton(lvl.send);
+		send.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				send.selected = true;
+				receive.selected = false;
+				prepareSendList();
+			}
+		};
+		receive = new UIImageToggleButton(lvl.receive);
+		receive.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				send.selected = false;
+				receive.selected = true;
+				prepareReceiveList();
+			}
+		};
+		
+		
+		send.selected = true;
+		receive.selected = false;
+
+		scrollList(0);
+		
+		for (int i = 0; i < 20; i++) {
+			VideoMessageEntry e = new VideoMessageEntry();
+			e.videoMessage = new VideoMessage();
+			e.videoMessage.title = "Test" + i;
+			e.videoMessage.description = "Test" + i;
+			e.videoMessage.media = "messages/douglas_success";
+			
+			videos.add(e);
+		}
 		onResize();
+		
 		playMessageAppear();
-		playVideo("messages/douglas_success");
 	}
 
 	@Override
@@ -516,10 +632,101 @@ public class BridgeScreen extends ScreenBase {
 		} finally {
 			videoLock.unlock();
 		}
-		
-		if (!projectorOpen && !messageOpen && pointerTransition != null) {
+		if (messageOpen && !messageClosing) {
+			int rows = messageListRect.height / rowHeight;
+			int y = messageListRect.y;
+			Shape save0 = g2.getClip();
+			g2.clipRect(messageListRect.x, messageListRect.y, messageListRect.width, messageListRect.height);
+			
+			int maxOffset = Math.max(0, videos.size() - rows);
+			listOffset = Math.max(0, Math.min(listOffset, maxOffset));
+			
+			for (int i = listOffset; i < videos.size(); i++) {
+				VideoMessageEntry e = videos.get(i);
+				e.draw(g2, messageListRect.x, y, commons.text());
+				if (e == selectedVideo) {
+					g2.setColor(Color.WHITE);
+					g2.drawRect(messageListRect.x, y, messageListRect.width - 1, rowHeight);
+				}
+				y += rowHeight;
+			}
+			g2.setClip(save0);
+			
+			if (listOffset > 0) {
+				drawComponent(g2, listUp);
+			} else {
+				g2.drawImage(world().getCurrentLevel().upEmpty, listUp.x, listUp.y, null);
+			}
+			if (listOffset < maxOffset) {
+				drawComponent(g2, listDown);
+			} else {
+				g2.drawImage(world().getCurrentLevel().downEmpty, listDown.x, listDown.y, null);
+			}
+			drawComponent(g2, send);
+			drawComponent(g2, receive);
+
+		}
+		if (!projectorOpen && !messageOpen && pointerTransition != null && !openCloseAnimating) {
 			ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
 		}
+	}
+	/**
+	 * Scroll the list by the given amount.
+	 * @param delta the delta
+	 */
+	void scrollList(int delta) {
+		int rows = messageListRect.height / rowHeight;
+		int maxOffset = Math.max(0, videos.size() - rows);
+		listOffset = Math.max(0, Math.min(listOffset + delta, maxOffset));
+		listUp.enabled(listOffset > 0);
+		listDown.enabled(listOffset < maxOffset);
+	}
+	@Override
+	public void onResize() {
+		base.setBounds((getInnerWidth() - 640) / 2, 20 + (getInnerHeight() - 38 - 442) / 2, 640, 442);
+		messageOpenRect.setBounds(base.x + 572, base.y + 292, 68, 170);
+		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 4, base.y, 524, 258);
+		videoRect.setBounds(projectorRect.x + 103, projectorRect.y + 9, 320, 240);
+		messageRect.setBounds(base.x + base.width - 298, base.y + base.height - 182, 298, 182);
+
+		messageListRect.setBounds(messageRect.x + 13, messageRect.y + 27, 180, 138);
+		
+		if (listUp != null) {
+			listUp.location(messageRect.x + 231, messageRect.y + 106);
+			listDown.location(messageRect.x + 231, messageRect.y + 142);
+			send.location(messageRect.x + 220, messageRect.y + 67);
+			receive.location(messageRect.x + 220, messageRect.y + 29);
+		}
+		
+		closeProjector = new Polygon(
+			new int[] { 
+					base.x, projectorRect.x, 
+					projectorRect.x, projectorRect.x + projectorRect.width, 
+					projectorRect.x + projectorRect.width, base.x + base.width - 1, 
+					base.x + base.width - 1, messageRect.x, 
+					messageRect.x, base.x
+				},
+			new int[] { 
+					base.y, base.y, 
+					projectorRect.y + projectorRect.height, projectorRect.y + projectorRect.height, 
+					base.y, base.y, 
+					messageRect.y, messageRect.y, 
+					base.y + base.height - 1, base.y + base.height - 1
+					
+				},
+			10
+		);
+		closeMessage = new Polygon(
+			new int[] {
+				base.x, base.x + base.width - 1, base.x + base.width - 1, messageRect.x,
+				messageRect.x, base.x
+			},
+			new int[] {
+				base.y, base.y, messageRect.y, messageRect.y, base.y + base.height - 1, 
+				base.y + base.height - 1
+			},
+			6
+		);
 	}
 	/**
 	 * Paint a word-wrapped label.
@@ -646,5 +853,19 @@ public class BridgeScreen extends ScreenBase {
 			playProjectorClose();
 		}
 		askRepaint();
+	}
+	/**
+	 * Prepare the send list.
+	 */
+	void prepareSendList() {
+		// TODO implement
+		listOffset = 0;
+		selectedVideo = null;
+	}
+	/** Prepare the receive list. */
+	void prepareReceiveList() {
+		// TODO implement
+		listOffset = 0;
+		selectedVideo = null;
 	}
 }

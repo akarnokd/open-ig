@@ -67,13 +67,21 @@ public class UIContainer extends UIComponent {
 	public void draw(Graphics2D g2) {
 		for (UIComponent c : components) {
 			if (c.visible) {
-				int px = c.x;
-				int py = c.y;
-				g2.translate(px, py);
-				c.draw(g2);
-				g2.translate(-px, -py);
+				drawComponent(g2, c);
 			}
 		}
+	}
+	/**
+	 * Draw a particular component.
+	 * @param g2 the graphics context
+	 * @param c the component
+	 */
+	public void drawComponent(Graphics2D g2, UIComponent c) {
+		int px = c.x;
+		int py = c.y;
+		g2.translate(px, py);
+		c.draw(g2);
+		g2.translate(-px, -py);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
