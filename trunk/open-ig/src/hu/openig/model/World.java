@@ -525,7 +525,7 @@ public class World {
 	 * @param s the string
 	 * @return the rectangle or null if the string is invalid
 	 */
-	Rectangle rectangleOf(String s) {
+	public static Rectangle rectangleOf(String s) {
 		String[] coords = s.split("\\s*,\\s*");
 		if (coords.length == 4) {
 			return new Rectangle(

@@ -92,7 +92,7 @@ public final class Simulator {
 			invokeRadar |= moveFleets(player.ownFleets(), world, planetStats);
 		}
 		for (Planet p : world.planets.values()) {
-			if (p.owner != null) {
+			if (p.owner != null && !p.owner.id.equals("Traders")) {
 				progressPlanet(world, p, day0 != day1, planetStats.get(p));
 			}
 		}

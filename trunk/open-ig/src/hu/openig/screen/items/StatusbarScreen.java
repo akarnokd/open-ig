@@ -625,10 +625,10 @@ public class StatusbarScreen extends ScreenBase {
 		 * @return true if disabled
 		 */
 		boolean isScreenDisabled(int idx) {
-			return (idx == 5 && world().level < 2) 
-					|| (idx == 6 && world().level < 3)
-					|| (idx == 9 && world().level < 2)
-					|| (idx == 10 && world().level < 4)
+			return (idx == 4 && world().level < 2) 
+					|| (idx == 5 && world().level < 3)
+					|| (idx == 8 && world().level < 2)
+					|| (idx == 9 && world().level < 4)
 					|| (idx < 12 && commons.battleMode);
 		}
 		@Override

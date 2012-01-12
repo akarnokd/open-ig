@@ -269,6 +269,7 @@ public class SingleplayerScreen extends ScreenBase {
 	 * Enter the game.
 	 */
 	void enterGame() {
+		world().scripting.onNewGame();
 		final boolean csw = config.computerVoiceScreen;
 		config.computerVoiceScreen = false;
 		commons.start(true);
@@ -283,7 +284,6 @@ public class SingleplayerScreen extends ScreenBase {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						world().scripting.onNewGame();
 						Message msg = new Message();
 						msg.gametime = world().time.getTimeInMillis();
 						msg.timestamp = System.currentTimeMillis();
