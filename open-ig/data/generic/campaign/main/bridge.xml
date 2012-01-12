@@ -123,10 +123,12 @@
 			<message id='New Caroline-Virus' media='messages/new_caroline_virus_infection' title='messages.New Caroline' description='messages.virus'/>
 
 			<message id='New Caroline-Garthog-Virus' media='messages/new_caroline_virus' title='messages.New Caroline' description='messages.virus'/>
-			<message id='New Caroline-Garthog-Virus-Again' media='messages/new_caroline_virus' title='messages.New Caroline' description='messages.virus_again'/>
-			<message id='New Caroline-Garthog-Virus-Again-Deaths' media='messages/new_caroline_virus' title='messages.New Caroline' description='messages.virus_again_deaths'/>
-			<message id='New Caroline-Garthog-Virus-Breached' media='messages/new_caroline_virus' title='messages.New Caroline' description='messages.virus_breached'/>
-			<message id='New Caroline-Garthog-Virus-Resolved' media='messages/new_caroline_virus' title='messages.New Caroline' description='messages.virus_resolved'/>
+			<message id='New Caroline-Garthog-Virus-Again' media='messages/new_caroline_virus_again' title='messages.New Caroline' description='messages.virus_again'/>
+			<message id='New Caroline-Garthog-Virus-Again-Deaths' media='messages/new_caroline_virus_again_deaths' title='messages.New Caroline' description='messages.virus_again_deaths'/>
+			<message id='New Caroline-Garthog-Virus-Breached' media='messages/new_caroline_virus_quarantine_breached' title='messages.New Caroline' description='messages.virus_breached'/>
+			<message id='New Caroline-Garthog-Virus-Resolved' media='messages/new_caroline_virus_resolved' title='messages.New Caroline' description='messages.virus_resolved'/>
+		<!--<message id='New Caroline-Virus-Infection' media='messages/new_caroline_virus_infection' title='messages.New Caroline' description='messages.virus_infection'/>
+			-->
 
 			<message id='San Sterling-Is-Under-Attack' media='messages/san_sterling_is_under_attack' title='messages.San Sterling' description='messages.is_attack'/>
 			<message id='San Sterling-Under-Attack' media='messages/san_sterling_under_attack' title='messages.San Sterling' description='messages.attack'/>
