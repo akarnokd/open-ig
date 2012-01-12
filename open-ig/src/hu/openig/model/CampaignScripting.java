@@ -211,4 +211,13 @@ public interface CampaignScripting {
 	 * @param planet the planet
 	 */
 	void onPlanetCured(Planet planet);
+	/**
+	 * Notification about the user watched a message.
+	 * @param id the message id
+	 */
+	void onMessageSeen(String id);
+	/**
+	 * Notification about a new game start.
+	 */
+	void onNewGame();
 }

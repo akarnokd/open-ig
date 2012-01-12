@@ -426,7 +426,7 @@ public class BridgeScreen extends ScreenBase {
 	
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (messageOpen && !openCloseAnimating && !projectorOpen) {
+		if (messageOpen && !messageClosing) {
 			if (listUp.enabled() && listUp.within(e)) {
 				return listUp.mouse(e);
 			}
@@ -443,38 +443,35 @@ public class BridgeScreen extends ScreenBase {
 				scrollList(e.z);
 				return true;
 			}
-			if (messageListRect.contains(e.x, e.y) && e.has(Type.DOWN)) {
-				int idx = (e.y - messageListRect.y) / rowHeight + listOffset;
-				if (idx >= 0 && idx < videos.size()) {
-					VideoMessageEntry selectedVideo = videos.get(idx);
-					selectedVideo.videoMessage.seen = true;
-					selectedVideoId = selectedVideo.videoMessage.id;
-					playVideo(selectedVideo.videoMessage.media);
-				} else {
-					selectedVideoId = null;
+			if (!videoRunning && !videoAppearAnim.isRunning() && !openCloseAnimating) {
+				if (messageListRect.contains(e.x, e.y) && e.has(Type.DOWN)) {
+					int idx = (e.y - messageListRect.y) / rowHeight + listOffset;
+					if (idx >= 0 && idx < videos.size()) {
+						VideoMessageEntry selectedVideo = videos.get(idx);
+						selectedVideo.videoMessage.seen = true;
+						selectedVideoId = selectedVideo.videoMessage.id;
+						playVideo(selectedVideo.videoMessage.media);
+					} else {
+						selectedVideoId = null;
+					}
+					return true;
 				}
-				return true;
 			}
 		}
-		if (e.type == UIMouse.Type.UP) {
+		if (e.type == UIMouse.Type.DOWN) {
 			if (!openCloseAnimating) {
 				if (videoRunning) {
 					videoAnim.stop();
 				} else
-				if (messageOpen && !projectorOpen) {
-					if (!messageRect.contains(e.x, e.y)) {
-						playMessageClose();
-					}
-				} else
-				if (projectorOpen) {
-					if (closeProjector.contains(e.x - base.x, e.y - base.y)) {
-						if (videoAnim != null) {
-							videoAnim.stop();
-						}
+				if (!messageRect.contains(e.x, e.y) && !videoAppearAnim.isRunning() 
+						&& messageOpen
+						&& !projectorClosing && !messageClosing) {
+					if (projectorOpen) {
 						playProjectorClose();
 					}
-				} else 
-				if (!messageOpen && !projectorOpen) {
+					playMessageClose();
+				} else
+				if (!messageOpen) {
 					if (messageOpenRect.contains(e.x, e.y)) {
 						playMessageOpen();
 					} else {
@@ -552,6 +549,15 @@ public class BridgeScreen extends ScreenBase {
 			}
 		};
 		
+		openCloseAnimating = false;
+		projectorOpen = false;
+		messageOpen = false;
+		messageClosing = false;
+		projectorClosing = false;
+		messageFront = null;
+		messageBack = null;
+		projectorFront = null;
+		projectorBack = null;
 		
 		send.selected = true;
 		receive.selected = false;
@@ -567,14 +573,25 @@ public class BridgeScreen extends ScreenBase {
 	public void onLeave() {
 		if (messageAnim != null) {
 			messageAnim.stop();
+			messageAnim = null;
+			messageFront = null;
+			messageBack = null;
 		}
 		if (projectorAnim != null) {
 			projectorAnim.stop();
+			projectorAnim = null;
+			projectorFront = null;
+			projectorBack = null;
 		}
 		if (videoAnim != null) {
 			videoAnim.stop();
+			videoAnim = null;
+			videoFront = null;
+			videoBack = null;
 		}
+		
 		videoAppearAnim.stop();
+		videos.clear();
 	}
 	
 	@Override
@@ -787,27 +804,39 @@ public class BridgeScreen extends ScreenBase {
 			}
 		};
 		sw.execute();
-		onProjectorComplete = new Action0() {
-			@Override
-			public void invoke() {
-				videoAppearPercent = 0;
-				try {
-					videoAppear = sw.get();
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
-				} catch (ExecutionException ex) {
-					ex.printStackTrace();
+		if (!projectorOpen) {
+			onProjectorComplete = new Action0() {
+				@Override
+				public void invoke() {
+					playVideoAppear(sw);
 				}
-				sound(SoundType.ACKNOWLEDGE_2);
-				videoAppearAnim.start();
-			}
-		};
-		playProjectorOpen();
+			};
+			playProjectorOpen();
+		} else {
+			playVideoAppear(sw);
+		}
+	}
+	/**
+	 * Start playing the video.
+	 * @param sw the worker that will return the first frame.
+	 */
+	void playVideoAppear(final SwingWorker<BufferedImage, Void> sw) {
+		videoAppearPercent = 0;
+		try {
+			videoAppear = sw.get();
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		} catch (ExecutionException ex) {
+			ex.printStackTrace();
+		}
+		sound(SoundType.ACKNOWLEDGE_2);
+		videoAppearAnim.start();
 	}
 	/**
 	 * Animate the the appearance of the video.
 	 */
 	void doVideoAppear() {
+		final String fVideo = video;
 		videoAppearPercent += videoAppearIncrement;
 		if (videoAppearPercent == 100) {
 			videoAppearAnim.stop();
@@ -859,9 +888,11 @@ public class BridgeScreen extends ScreenBase {
 		if (videoAppearPercent == 200) {
 			videoAppearAnim.stop();
 			videoAppear = null;
-			onProjectorComplete = onVideoComplete;
-			onVideoComplete = null;
-			playProjectorClose();
+			if (onVideoComplete != null) {
+				onVideoComplete.invoke();
+				onVideoComplete = null;
+			}
+			world().scripting.onMessageSeen(fVideo);
 		}
 		askRepaint();
 	}
