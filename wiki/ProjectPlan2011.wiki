@@ -3,13 +3,4 @@
 
 See ProjectFacts2011 for the completed items.
 
-See [http://code.google.com/p/open-ig/issues/list Issue list] for enhancements.
-
-|| *Task* || *Expected completion time* || *Status* || *Remarks* ||
-|| Create the Artificial Intelligence || 2012-01-31 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || This is going to be a real challenge. ||
-|| Screen: Diplomacy || 2012-01-31 || - || I need to run the original game to figure out the available talk options. ||
-|| Screen: Bridge & Walk|| 2012-01-31 || - || Complete the bridge screen with working communications. Replace gray areas with other means to indicate a clickable position. ||
-|| Scripting for campaign || 2012-01-31 || - || Build a scriptable campaign engine. We will use the internal !JavaScript support. ||
-|| Beta release || 2012-01-31 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup. ||
-|| Multiplayer || 2012-02-05 || - || Multiplayer will be like a remote control: receive status changes and submit commands to the host. Human vs. Human with some technology tree simplifications (e.g., build colony ship from start). ||
-|| Android version || 2012-04-29 || - || Create a port for the single player part to Android 2.2+ devices. The interface, however, will be redesigned and restructured for those devices with smaller screen and touch based input. ||
+See ProjectPlan2012 for this year.
