@@ -12,6 +12,7 @@ import hu.openig.core.Action1;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.SwappableRenderer;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -65,6 +66,57 @@ public class VideoRenderer extends Thread {
 		this.surface = surface;
 		this.video = video;
 		this.onComplete = onComplete;
+	}
+	/**
+	 * Returns the first frame of the video.
+	 * @param video the video place
+	 * @return the frame
+	 */
+	public static BufferedImage firstFrame(ResourcePlace video) {
+		try {
+			DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 32 * 1024), 64 * 1024));
+			try {
+				int w = Integer.reverseBytes(in.readInt());
+				int h = Integer.reverseBytes(in.readInt());
+				in.skipBytes(8);
+				int[] palette = new int[256];
+				byte[] bytebuffer = new byte[w * h];
+				int[] currentImage = new int[w * h];
+				while (!Thread.currentThread().isInterrupted()) {
+					int c = in.read();
+					if (c < 0 || c == 'X') {
+						break;
+					} else
+					if (c == 'P') {
+						int len = in.read();
+						for (int j = 0; j < len; j++) {
+							int r = in.read() & 0xFF;
+							int g = in.read() & 0xFF;
+							int b = in.read() & 0xFF;
+							palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
+						}
+					} else
+					if (c == 'I') {
+						in.readFully(bytebuffer);
+						for (int i = 0; i < bytebuffer.length; i++) {
+							int c0 = palette[bytebuffer[i] & 0xFF];
+							if (c0 != 0) {
+								currentImage[i] = c0;
+							}
+						}
+						BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+						image.setRGB(0, 0, w, h, currentImage, 0, w);
+						return image;
+					}
+				}
+				
+			} finally {
+				in.close();
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 	}
 	/**
 	 * The main decoding loop.

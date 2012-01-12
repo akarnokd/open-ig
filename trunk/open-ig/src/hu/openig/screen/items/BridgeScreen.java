@@ -10,13 +10,18 @@ package hu.openig.screen.items;
 
 
 import hu.openig.core.Action0;
+import hu.openig.core.Action1;
+import hu.openig.core.ResourceLocator.ResourcePlace;
+import hu.openig.core.ResourceType;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.MediaPlayer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.VideoRenderer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 
@@ -26,11 +31,17 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.swing.SwingWorker;
+import javax.swing.Timer;
 
 /**
  * The bridge rendering screen.
@@ -53,46 +64,6 @@ public class BridgeScreen extends ScreenBase {
 	Polygon closeProjector;
 	/** The poligon to click on to close the message panel. */
 	Polygon closeMessage;
-	@Override
-	public void onResize() {
-		base.setBounds((getInnerWidth() - 640) / 2, 20 + (getInnerHeight() - 38 - 442) / 2, 640, 442);
-		messageOpenRect.setBounds(base.x + 572, base.y + 292, 68, 170);
-		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 4, base.y, 524, 258);
-		videoRect.setBounds(projectorRect.x + 99, projectorRect.y + 11, 320, 240);
-		messageRect.setBounds(base.x + base.width - 298, base.y + base.height - 182, 298, 182);
-
-		
-		
-		closeProjector = new Polygon(
-			new int[] { 
-					base.x, projectorRect.x, 
-					projectorRect.x, projectorRect.x + projectorRect.width, 
-					projectorRect.x + projectorRect.width, base.x + base.width - 1, 
-					base.x + base.width - 1, messageRect.x, 
-					messageRect.x, base.x
-				},
-			new int[] { 
-					base.y, base.y, 
-					projectorRect.y + projectorRect.height, projectorRect.y + projectorRect.height, 
-					base.y, base.y, 
-					messageRect.y, messageRect.y, 
-					base.y + base.height - 1, base.y + base.height - 1
-					
-				},
-			10
-		);
-		closeMessage = new Polygon(
-			new int[] {
-				base.x, base.x + base.width - 1, base.x + base.width - 1, messageRect.x,
-				messageRect.x, base.x
-			},
-			new int[] {
-				base.y, base.y, messageRect.y, messageRect.y, base.y + base.height - 1, 
-				base.y + base.height - 1
-			},
-			6
-		);
-	}
 	/** The message front buffer. */
 	BufferedImage messageFront;
 	/** The message back buffer. */
@@ -127,9 +98,69 @@ public class BridgeScreen extends ScreenBase {
 	boolean openCloseAnimating;
 	/** The transition the mouse is pointing at. */
 	WalkTransition pointerTransition;
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#finish()
-	 */
+	/** The video appear animation (the first frame). */
+	BufferedImage videoAppear;
+	/** The video appearance timer. */
+	Timer videoAppearAnim;
+	/** The video appearance percentage. */
+	public int videoAppearPercent;
+	/** The video appearance increment. */
+	public int videoAppearIncrement = 10;
+	/** The video to play back. */
+	public String video;
+	/** The action to invoke when the projector reached its end of animation. */
+	Action0 onProjectorComplete;
+	/** The action to invoke when the projector reached its end of animation. */
+	Action0 onMessageComplete;
+	@Override
+	public void onInitialize() {
+		videoAppearAnim = new Timer(50, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doVideoAppear();
+			}
+		});
+	}
+	@Override
+	public void onResize() {
+		base.setBounds((getInnerWidth() - 640) / 2, 20 + (getInnerHeight() - 38 - 442) / 2, 640, 442);
+		messageOpenRect.setBounds(base.x + 572, base.y + 292, 68, 170);
+		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 4, base.y, 524, 258);
+		videoRect.setBounds(projectorRect.x + 103, projectorRect.y + 9, 320, 240);
+		messageRect.setBounds(base.x + base.width - 298, base.y + base.height - 182, 298, 182);
+
+		
+		
+		closeProjector = new Polygon(
+			new int[] { 
+					base.x, projectorRect.x, 
+					projectorRect.x, projectorRect.x + projectorRect.width, 
+					projectorRect.x + projectorRect.width, base.x + base.width - 1, 
+					base.x + base.width - 1, messageRect.x, 
+					messageRect.x, base.x
+				},
+			new int[] { 
+					base.y, base.y, 
+					projectorRect.y + projectorRect.height, projectorRect.y + projectorRect.height, 
+					base.y, base.y, 
+					messageRect.y, messageRect.y, 
+					base.y + base.height - 1, base.y + base.height - 1
+					
+				},
+			10
+		);
+		closeMessage = new Polygon(
+			new int[] {
+				base.x, base.x + base.width - 1, base.x + base.width - 1, messageRect.x,
+				messageRect.x, base.x
+			},
+			new int[] {
+				base.y, base.y, messageRect.y, messageRect.y, base.y + base.height - 1, 
+				base.y + base.height - 1
+			},
+			6
+		);
+	}
 	@Override
 	public void onFinish() {
 		if (messageAnim != null) {
@@ -216,6 +247,9 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				messageOpen = true;
 				openCloseAnimating = false;
+				if (onMessageComplete != null) {
+					onMessageComplete.invoke();
+				}
 				askRepaint();
 			}
 		};
@@ -254,6 +288,9 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				messageOpen = false;
 				openCloseAnimating = false;
+				if (onMessageComplete != null) {
+					onMessageComplete.invoke();
+				}
 				askRepaint();
 			}
 		};
@@ -292,6 +329,9 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				projectorOpen = true;
 				openCloseAnimating = false;
+				if (onProjectorComplete != null) {
+					onProjectorComplete.invoke();
+				}
 				askRepaint();
 			}
 		};
@@ -330,23 +370,15 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				projectorOpen = false;
 				openCloseAnimating = false;
+				if (onProjectorComplete != null) {
+					onProjectorComplete.invoke();
+				}
 				askRepaint();
 			}
 		};
 		projectorAnim.start();
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#initialize()
-	 */
-	@Override
-	public void onInitialize() {
-		// TODO Auto-generated method stub
 
-	}
-
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#mouseReleased(int, int, int, int)
-	 */
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (e.type == UIMouse.Type.UP) {
@@ -402,11 +434,9 @@ public class BridgeScreen extends ScreenBase {
 		background = commons.world().bridge.levels.get(commons.world().level).image;
 		onResize();
 		playMessageAppear();
+		playVideo("messages/douglas_success");
 	}
 
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onLeave()
-	 */
 	@Override
 	public void onLeave() {
 		if (messageAnim != null) {
@@ -418,11 +448,9 @@ public class BridgeScreen extends ScreenBase {
 		if (videoAnim != null) {
 			videoAnim.stop();
 		}
+		videoAppearAnim.stop();
 	}
 	
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#paintTo(java.awt.Graphics2D)
-	 */
 	@Override
 	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
@@ -449,10 +477,22 @@ public class BridgeScreen extends ScreenBase {
 			projectorLock.unlock();
 		}
 
+		if (videoAppear != null) {
+			if (videoAppearPercent != 200) {
+				int p = videoAppearPercent;
+				if (videoAppearPercent > 100) {
+					p = (200 - videoAppearPercent);
+				}
+				int h = videoRect.height * p / 100;
+				int dy = (videoRect.height - h) / 2;
+				g2.drawImage(videoAppear, videoRect.x, videoRect.y + dy, videoRect.width, h, null);
+			}
+		}
+		
 		videoLock.lock();
 		try {
 			if (videoFront != null) {
-				g2.drawImage(projectorFront, videoRect.x, videoRect.y, videoRect.width, videoRect.height, null);
+				g2.drawImage(videoFront, videoRect.x, videoRect.y, videoRect.width, videoRect.height, null);
 				if (videoSubtitle != null) {
 					paintLabel(g2, base.x, videoRect.y + videoRect.height, base.width);
 				}
@@ -475,16 +515,21 @@ public class BridgeScreen extends ScreenBase {
 	public void paintLabel(Graphics2D g2, int x0, int y0, int width) {
 		List<String> lines = new ArrayList<String>();
 		int maxWidth = commons.text().wrapText(videoSubtitle, width, 14, lines);
-		int y = y0;
+		int y = y0 + 6;
 		Composite cp = g2.getComposite();
+		g2.setColor(Color.BLACK);
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.8f));
-		g2.fillRect(x0 + (width - maxWidth) / 2 - 3, y0 + y - 3, maxWidth + 6, lines.size() * 21 + 6);
+		int x1 = x0 + (width - maxWidth) / 2 - 3;
+		int y1 = y0 + 3;
+		int w1 = maxWidth + 6;
+		int h1 = lines.size() * 17 + 3;
+		g2.fillRect(x1, y1, w1, h1);
 		g2.setComposite(cp);
 		for (String s : lines) {
 			int tw = commons.text().getTextWidth(14, s);
 			int x = (width - tw) / 2;
-			commons.text().paintTo(g2, x0 + x, y0 + y, 14, TextRenderer.WHITE, s);
-			y += 21;
+			commons.text().paintTo(g2, x0 + x, y, 14, TextRenderer.WHITE, s);
+			y += 17;
 		}
 	}
 	@Override
@@ -494,6 +539,94 @@ public class BridgeScreen extends ScreenBase {
 	@Override
 	public void onEndGame() {
 		// TODO Auto-generated method stub
-		
+	}
+	/**
+	 * Play the specific video.
+	 * @param video the video
+	 */
+	public void playVideo(final String video) {
+		this.video = video;
+		final SwingWorker<BufferedImage, Void> sw = new SwingWorker<BufferedImage, Void>() {
+			@Override
+			protected BufferedImage doInBackground() throws Exception {
+				ResourcePlace rp = rl.get(video, ResourceType.VIDEO);
+				return VideoRenderer.firstFrame(rp);
+			}
+		};
+		sw.execute();
+		onProjectorComplete = new Action0() {
+			@Override
+			public void invoke() {
+				videoAppearPercent = 0;
+				try {
+					videoAppear = sw.get();
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				} catch (ExecutionException ex) {
+					ex.printStackTrace();
+				}
+				sound(SoundType.ACKNOWLEDGE_2);
+				videoAppearAnim.start();
+			}
+		};
+		playProjectorOpen();
+	}
+	/**
+	 * Animate the the appearance of the video.
+	 */
+	void doVideoAppear() {
+		videoAppearPercent += videoAppearIncrement;
+		if (videoAppearPercent == 100) {
+			videoAppearAnim.stop();
+			videoAnim = new MediaPlayer(commons, video, new SwappableRenderer() {
+				@Override
+				public BufferedImage getBackbuffer() {
+					return videoBack;
+				}
+				@Override
+				public void init(int width, int height) {
+					videoFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					videoFront.setAccelerationPriority(0);
+					videoBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					videoBack.setAccelerationPriority(0);
+				}
+				@Override
+				public void swap() {
+					videoLock.lock();
+					try {
+						BufferedImage temp = videoFront;
+						videoFront = videoBack;
+						videoBack = temp;
+					} finally {
+						videoLock.unlock();
+						askRepaint();
+					}
+				}
+			});
+			videoAnim.onLabel = new Action1<String>() {
+				@Override
+				public void invoke(String value) {
+					videoSubtitle = value;
+				}
+			};
+			videoAnim.onComplete = new Action0() {
+				@Override
+				public void invoke() {
+					videoAppear = videoFront;
+					videoFront = null;
+					videoAppearAnim.start();
+					sound(SoundType.ACKNOWLEDGE_2);
+					videoSubtitle = null;
+				}
+			};
+			videoAnim.start();
+		} else
+		if (videoAppearPercent == 200) {
+			videoAppearAnim.stop();
+			videoAppear = null;
+			onProjectorComplete = null;
+			playProjectorClose();
+		}
+		askRepaint();
 	}
 }

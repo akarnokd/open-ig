@@ -9,12 +9,12 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Action1;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.MediaPlayer;
-import hu.openig.screen.MediaPlayer.LabelEvent;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
@@ -71,9 +71,9 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 				playNext();
 			}
 		};
-		player.onLabel = new LabelEvent() {
+		player.onLabel = new Action1<String>() {
 			@Override
-			public void label(String text) {
+			public void invoke(String text) {
 				label = text;
 			}
 		};
