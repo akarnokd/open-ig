@@ -33,6 +33,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +113,8 @@ public class BridgeScreen extends ScreenBase {
 	Action0 onProjectorComplete;
 	/** The action to invoke when the projector reached its end of animation. */
 	Action0 onMessageComplete;
+	/** Is a video running? */
+	boolean videoRunning;
 	@Override
 	public void onInitialize() {
 		videoAppearAnim = new Timer(50, new ActionListener() {
@@ -373,6 +376,7 @@ public class BridgeScreen extends ScreenBase {
 				if (onProjectorComplete != null) {
 					onProjectorComplete.invoke();
 				}
+				commons.control().moveMouse();
 				askRepaint();
 			}
 		};
@@ -380,9 +384,21 @@ public class BridgeScreen extends ScreenBase {
 	}
 
 	@Override
+	public boolean keyboard(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE && videoRunning) {
+			videoAnim.stop();
+			e.consume();
+		}
+		return super.keyboard(e);
+	}
+	
+	@Override
 	public boolean mouse(UIMouse e) {
 		if (e.type == UIMouse.Type.UP) {
 			if (!openCloseAnimating) {
+				if (videoRunning) {
+					videoAnim.stop();
+				} else
 				if (messageOpen && !projectorOpen) {
 					if (closeMessage.contains(e.x - base.x, e.y - base.y)) {
 						playMessageClose();
@@ -612,6 +628,7 @@ public class BridgeScreen extends ScreenBase {
 			videoAnim.onComplete = new Action0() {
 				@Override
 				public void invoke() {
+					videoRunning = false;
 					videoAppear = videoFront;
 					videoFront = null;
 					videoAppearAnim.start();
@@ -619,6 +636,7 @@ public class BridgeScreen extends ScreenBase {
 					videoSubtitle = null;
 				}
 			};
+			videoRunning = true;
 			videoAnim.start();
 		} else
 		if (videoAppearPercent == 200) {
