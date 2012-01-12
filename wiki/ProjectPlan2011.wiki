@@ -1,5 +1,4 @@
 #summary List of tasks to complete in 2011
-#labels Featured
 
 See ProjectFacts2011 for the completed items.
 
