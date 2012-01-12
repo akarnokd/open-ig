@@ -10,7 +10,7 @@
 	</texts>
 	<image>campaign/main/main_campaign_image</image>
 	<intro>interlude/campaign_start</intro>
-	<level>5</level>
+	<level>1</level>
 	<battle>campaign/main/battle</battle>
 	<bridge>campaign/main/bridge</bridge>
 	<buildings>campaign/main/buildings</buildings>
