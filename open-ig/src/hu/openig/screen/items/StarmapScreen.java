@@ -1794,9 +1794,12 @@ public class StarmapScreen extends ScreenBase {
 			}
 			break;
 		case DOWN:
+//			Point2D.Double d1 = toMapCoordinates(lastX, lastY);
 			lastX = e.x;
 			lastY = e.y;
 			rep |= onMouseDown(e);
+//			Point2D.Double d = toMapCoordinates(e.x, e.y);
+//			System.out.printf("%s, %s, %s, %s%n", d1.x, d1.y, Math.abs(d.x - d1.x), Math.abs(d.y - d1.y));
 			break;
 		case DOUBLE_CLICK:
 			if (starmapWindow.contains(e.x, e.y)) {
