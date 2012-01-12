@@ -5,7 +5,7 @@
   * [Install Install instructions]
   * [Game_Notes Release notes]
   * [Screenshots Screenshots]
-  * [ProjectPlan2011 Project plans]
+  * [ProjectPlan2012 Project plans]
   * [NewsArchive News archive]
   * [GameGuide Game guide]
   * Other utilities
