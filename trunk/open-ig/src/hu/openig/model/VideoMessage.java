@@ -18,4 +18,8 @@ public class VideoMessage {
 	public String title;
 	/** The description. */
 	public String description;
+	/** Indicate that this message was viewed. */
+	public boolean seen;
+	/** Display in the message list? */
+	public boolean visible;
 }

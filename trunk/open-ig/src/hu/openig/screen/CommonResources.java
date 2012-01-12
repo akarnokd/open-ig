@@ -35,7 +35,6 @@ import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Simulator;
 import hu.openig.model.AIManager;
 import hu.openig.model.GameEnvironment;
-import hu.openig.model.GameEvents;
 import hu.openig.model.Parameters;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
@@ -154,8 +153,6 @@ public class CommonResources implements GameEnvironment {
 	public Music music;
 	/** The current simulation controls. */
 	public SimulationTimer simulation;
-	/** The game events. */
-	public GameEvents events;
 	/** The game simulation's parameters. */
 	private Parameters params = new Parameters();
 	/** Map of currently running AIs. */
@@ -205,7 +202,6 @@ public class CommonResources implements GameEnvironment {
 		timer.start();
 		
 		init();
-		events = new GameEventsManager(this);
 	}
 	/** Initialize the resources in parallel. */
 	private void init() {
@@ -475,6 +471,9 @@ public class CommonResources implements GameEnvironment {
 		radarHandler = null;
 		simulation = null;
 
+		if (world != null) {
+			world.scripting.done();
+		}
 		
 		stopMusic();
 	}
@@ -823,16 +822,14 @@ public class CommonResources implements GameEnvironment {
 		control.startBattle();
 	}
 	@Override
-	public GameEvents events() {
-		return events;
-	}
-	@Override
 	public void playAudio(String name) {
 		Music m = new Music(rl);
 		m.onComplete = new Action1<String>() {
 			@Override
 			public void invoke(String value) {
-				events.onSoundComplete(value);
+				if (world != null) {
+					world.scripting.onSoundComplete(value);
+				}
 			}
 		};
 		m.playSequence(new Func0<Integer>() {
@@ -851,7 +848,9 @@ public class CommonResources implements GameEnvironment {
 		control.playVideos(new Action0() {
 			@Override
 			public void invoke() {
-				events.onVideoComplete(name);
+				if (world != null) {
+					world.scripting.onVideoComplete(name);
+				}
 			}
 		}, name);
 	}

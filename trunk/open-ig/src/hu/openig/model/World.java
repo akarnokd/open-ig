@@ -128,6 +128,8 @@ public class World {
 	public Deque<BattleInfo> pendingBattles = new LinkedList<BattleInfo>();
 	/** The game environment. */
 	public final GameEnvironment env;
+	/** The campaign scripting. */
+	public CampaignScripting scripting;
 	/**
 	 * Constructs a world under the given game environment.
 	 * @param env the environment
@@ -307,6 +309,29 @@ public class World {
 				
 			}
 		}
+		
+		processScripting(rl.getXML(definition.scripting));
+		
+	}
+	/**
+	 * Initialize the scripting.
+	 * @param xscript the scripting XML
+	 */
+	void processScripting(XElement xscript) {
+		String clazz = xscript.get("class");
+		try {
+			Class<?> c = Class.forName(clazz);
+			if (CampaignScripting.class.isAssignableFrom(c)) {
+				this.scripting = CampaignScripting.class.cast(c.newInstance());
+				scripting.init(this, xscript);
+			}
+		} catch (InstantiationException ex) {
+			ex.printStackTrace();
+		} catch (IllegalAccessException ex) {
+			ex.printStackTrace();
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}
 	}
 	/**
 	 * Await the port.
@@ -388,7 +413,7 @@ public class World {
 			msg.media = message.get("media");
 			msg.title = message.get("title");
 			msg.description = message.get("description");
-			bridge.sendMessages.add(msg);
+			bridge.sendMessages.put(msg.id, msg);
 		}
 		XElement receive = messages.childElement("receive");
 		for (XElement message : receive.childrenWithName("message")) {
@@ -397,7 +422,7 @@ public class World {
 			msg.media = message.get("media");
 			msg.title = message.get("title");
 			msg.description = message.get("description");
-			bridge.receiveMessages.add(msg);
+			bridge.receiveMessages.put(msg.id, msg);
 		}
 	}
 	/**
@@ -1051,6 +1076,10 @@ public class World {
 			}
 		}
 		
+		XElement xscript = world.add("scripting");
+		xscript.set("class", scripting.getClass().getName());
+		scripting.save(xscript);
+		
 		return world;
 	}
 	/**
@@ -1390,6 +1419,10 @@ public class World {
 					}
 				}
 			}
+		}
+		XElement xscript = xworld.childElement("scripting");
+		if (xworld != null) {
+			scripting.load(xscript);
 		}
 	}
 	/**

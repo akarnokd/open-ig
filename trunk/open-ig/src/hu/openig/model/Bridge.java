@@ -8,9 +8,8 @@
 
 package hu.openig.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -21,7 +20,7 @@ public class Bridge {
 	/** The list of level graphics. */
 	public final Map<Integer, Level> levels = new HashMap<Integer, Level>();
 	/** The messages to send. */
-	public final List<VideoMessage> sendMessages = new ArrayList<VideoMessage>();
+	public final Map<String, VideoMessage> sendMessages = new LinkedHashMap<String, VideoMessage>();
 	/** The messages to receive. */
-	public final List<VideoMessage> receiveMessages = new ArrayList<VideoMessage>();
+	public final Map<String, VideoMessage> receiveMessages = new LinkedHashMap<String, VideoMessage>();
 }

@@ -64,10 +64,29 @@
 	</graphics>
 	<messages>
 		<send>
-			<message id='' media='' title='' description=''/>
+			<message id='Achilles-Come-Quickly' media='messages/achilles_come_quickly' title='messages.Achilles' description='messages.check'/>
+			<message id='Achilles-Not-Under-Attack' media='messages/achilles_not_under_attack' title='messages.Achilles' description='messages.check'/>
+			
+			<message id='Centronom-Check' media='messages/centronom_check' title='messages.Centronom' description='messages.check'/>
+			<message id='Centronom-Come-Quickly' media='messages/centronom_come_quickly' title='messages.Centronom' description='messages.check'/>
+			<message id='Centronom-Not-Under-Attack' media='messages/centronom_not_under_attack' title='messages.Centronom' description='messages.check'/>
+			
+			<message id='Naxos-Come-Quickly' media='messages/naxos_come_quickly' title='messages.Naxos' description='messages.check'/>
+			<message id='Naxos-No-Problem' media='messages/naxos_no_problem' title='messages.Naxos' description='messages.check'/>
+			<message id='Naxos-Not-Under-Attack' media='messages/naxos_not_under_attack' title='messages.Naxos' description='messages.check'/>
 		</send>
 		<receive>
-			<message id='' media='' title='' description=''/>
+			<message id='Achilles-Is-Under-Attack' media='messages/achilles_is_under_attack' title='messages.Achilles' description='messages.is_attack'/>
+			<message id='Achilles-Under-Attack' media='messages/achilles_under_attack' title='messages.Achilles' description='messages.attack'/>
+			<message id='Achilles-Virus' media='messages/achilles_virus_infection' title='messages.Achilles' description='messages.virus'/>
+			
+			<message id='Centronom-Is-Under-Attack' media='messages/centronom_is_under_attack' title='messages.Centronom' description='messages.is_attack'/>
+			<message id='Centronom-Virus' media='messages/centronom_virus_infection' title='messages.Centronom' description='messages.virus'/>
+			
+			<message id='Naxos-Is-Under-Attack' media='messages/naxos_is_under_attack' title='messages.Naxos' description='messages.is_attack'/>
+			<message id='Naxos-Under-Attack' media='messages/naxos_under_attack' title='messages.Naxos' description='messages.attack'/>
+			<message id='Naxos-Unknown-Ships' media='messages/naxos_unknown_ships_nearby' title='messages.Naxos' description='messages.unknown'/>
+			<message id='Naxos-Virus' media='messages/naxos_virus_infection' title='messages.Naxos' description='messages.virus'/>
 		</receive>
 	</messages>
 </bridge>

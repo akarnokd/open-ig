@@ -31,8 +31,6 @@ public interface GameEnvironment {
 	 * @return the AI manager
 	 */
 	AIManager getAI(Player player);
-	/** @return the game event interface. */
-	GameEvents events();
 	/**
 	 * Play a full screen video resource.
 	 * @param name the video name

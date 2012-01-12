@@ -6,33 +6,60 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.screen;
+package hu.openig.scripting;
+
+import java.util.List;
 
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
+import hu.openig.model.CampaignScripting;
 import hu.openig.model.Fleet;
-import hu.openig.model.GameEnvironment;
-import hu.openig.model.GameEvents;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.VideoMessage;
+import hu.openig.model.World;
+import hu.openig.utils.XElement;
 
 /**
- * The global game events manager, which in turn converts the events to campaign
- * script calls if needed.
- * @author akarnokd, 2011.12.16.
+ * An empty placeholder scripting for skirmish games.
+ * @author akarnokd, 2012.01.12.
  */
-public class GameEventsManager implements GameEvents {
-	/** The environment. */
-	final GameEnvironment env;
+public class EmptyScripting implements CampaignScripting {
 
-	/**
-	 * The game events manager.
-	 * @param env the game environment 
-	 */
-	public GameEventsManager(GameEnvironment env) {
-		this.env = env;
+	@Override
+	public List<VideoMessage> getSendMessages() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<VideoMessage> getReceiveMessages() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void init(World world, XElement in) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void load(XElement in) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void save(XElement out) {
+		// TODO Auto-generated method stub
+
+	}
+	@Override
+	public void done() {
+		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -130,53 +157,75 @@ public class GameEventsManager implements GameEvents {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
-	public void onBuildingComplete(Planet planet, Building building) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void onRepairComplete(Planet planet, Building building) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	@Override
 	public void onTime() {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onBuildingComplete(Planet planet, Building building) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRepairComplete(Planet planet, Building building) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public void onUpgrading(Planet planet, Building building, int newLevel) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
 	public void onInventoryAdd(Planet planet, InventoryItem item) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
 	public void onInventoryRemove(Planet planet, InventoryItem item) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
-	public void onLost(Fleet fleet) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	@Override
 	public void onLost(Planet planet) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onLost(Fleet fleet) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onVideoComplete(String video) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public void onSoundComplete(String audio) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
-	public void onVideoComplete(String video) {
+	public void onPlanetInfected(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPlanetCured(Planet planet) {
 		// TODO Auto-generated method stub
 		
 	}

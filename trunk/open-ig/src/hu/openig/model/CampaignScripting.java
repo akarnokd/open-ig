@@ -8,11 +8,45 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.XElement;
+
+import java.util.List;
+
 /**
- * Notification interface to support campaign scripting based on events in the simulation/user actions.
- * @author akarnokd, 2011.12.16.
+ * API to interact with a campaign scripting.
+ * @author akarnokd, 2012.01.12.
  */
-public interface GameEvents {
+public interface CampaignScripting {
+	/**
+	 * Returns the list of video messages to send.
+	 * @return the list of video messages to send.
+	 */
+	List<VideoMessage> getSendMessages();
+	/**
+	 * Returns the list of video messages to receive.
+	 * @return the list of video messages to receive.
+	 */
+	List<VideoMessage> getReceiveMessages();
+	/**
+	 * Initialize the scripting for the world and configuration.
+	 * @param world the current world fully loaded
+	 * @param in the script configuration
+	 */
+	void init(World world, XElement in);
+	/**
+	 * Close the scripting and release resources.
+	 */
+	void done();
+	/**
+	 * Load the scripting state from XML.
+	 * @param in the input XML
+	 */
+	void load(XElement in);
+	/**
+	 * Save the scripting state into an XML.
+	 * @param out the output XML
+	 */
+	void save(XElement out);
 	/**
 	 * Notification about research complete.
 	 * @param player the player
@@ -167,4 +201,14 @@ public interface GameEvents {
 	 * @param audio the audio
 	 */
 	void onSoundComplete(String audio);
+	/**
+	 * Notification about a planet infection.
+	 * @param planet the planet
+	 */
+	void onPlanetInfected(Planet planet);
+	/**
+	 * Notification about a planet cured.
+	 * @param planet the planet
+	 */
+	void onPlanetCured(Planet planet);
 }

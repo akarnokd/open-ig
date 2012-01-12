@@ -648,7 +648,7 @@ public class Planet implements Named, Owned, HasInventory {
 		// notify about ownership change
 		lastOwner.ai.onPlanetLost(this);
 		newOwner.ai.onPlanetConquered(this, lastOwner);
-		newOwner.world.env.events().onConquered(this, lastOwner);
+		newOwner.world.scripting.onConquered(this, lastOwner);
 	}
 	/**
 	 * Returns the dimensions for the given building type on this planet,
