@@ -229,4 +229,14 @@ public class EmptyScripting implements CampaignScripting {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void onMessageSeen(String id) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onNewGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

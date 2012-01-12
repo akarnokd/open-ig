@@ -252,33 +252,8 @@ public class SingleplayerScreen extends ScreenBase {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override 
 						public void run() {
-							final boolean csw = config.computerVoiceScreen;
-							config.computerVoiceScreen = false;
-							commons.start(true);
-							commons.control().displayPrimary(Screens.BRIDGE);
-							
-							config.computerVoiceScreen = csw;
-							commons.control().displayStatusbar();
-							
-							commons.pool.schedule(new Callable<Void>() {
-								@Override
-								public Void call() throws Exception {
-									SwingUtilities.invokeLater(new Runnable() {
-										@Override
-										public void run() {
-											Message msg = new Message();
-											msg.gametime = world().time.getTimeInMillis();
-											msg.timestamp = System.currentTimeMillis();
-											msg.sound = SoundType.WELCOME;
-											msg.text = "welcome";
-											
-											player().messageQueue.add(msg);
-										}
-									});
-									return null;
-								}
-							}, 2, TimeUnit.SECONDS);
-						};
+							enterGame();
+						}
 					});
 				} catch (InterruptedException ex) {
 					
@@ -290,6 +265,38 @@ public class SingleplayerScreen extends ScreenBase {
 		videoWaiter.setPriority(Thread.MIN_PRIORITY);
 		videoWaiter.start();
 	}
+	/**
+	 * Enter the game.
+	 */
+	void enterGame() {
+		final boolean csw = config.computerVoiceScreen;
+		config.computerVoiceScreen = false;
+		commons.start(true);
+		commons.control().displayPrimary(Screens.BRIDGE);
+		
+		config.computerVoiceScreen = csw;
+		commons.control().displayStatusbar();
+		
+		commons.pool.schedule(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						world().scripting.onNewGame();
+						Message msg = new Message();
+						msg.gametime = world().time.getTimeInMillis();
+						msg.timestamp = System.currentTimeMillis();
+						msg.sound = SoundType.WELCOME;
+						msg.text = "welcome";
+						
+						player().messageQueue.add(msg);
+					}
+				});
+				return null;
+			}
+		}, 2, TimeUnit.SECONDS);
+	};
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
