@@ -8,6 +8,7 @@
 
 package hu.openig.scripting;
 
+import java.util.Collections;
 import java.util.List;
 
 import hu.openig.model.BattleInfo;
@@ -15,6 +16,7 @@ import hu.openig.model.Building;
 import hu.openig.model.CampaignScripting;
 import hu.openig.model.Fleet;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.Objective;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
@@ -40,6 +42,11 @@ public class EmptyScripting implements CampaignScripting {
 		return null;
 	}
 
+	@Override
+	public List<Objective> currentObjectives() {
+		return Collections.emptyList();
+	}
+	
 	@Override
 	public void init(World world, XElement in) {
 		// TODO Auto-generated method stub

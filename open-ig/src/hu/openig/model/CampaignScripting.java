@@ -28,6 +28,11 @@ public interface CampaignScripting {
 	 */
 	List<VideoMessage> getReceiveMessages();
 	/**
+	 * Returns the list of current objectives.
+	 * @return List of current objectives.
+	 */
+	List<Objective> currentObjectives();
+	/**
 	 * Initialize the scripting for the world and configuration.
 	 * @param world the current world fully loaded
 	 * @param in the script configuration

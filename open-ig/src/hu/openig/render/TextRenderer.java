@@ -365,7 +365,8 @@ public class TextRenderer {
 					lineTest.append(" ");
 				}
 				lineTest.append(words[i]);
-				if (getTextWidth(size, lineTest.toString()) >= width) {
+				int tw = getTextWidth(size, lineTest.toString());
+				if (tw > width) {
 					if (line.length() > 0) {
 						String t = line.toString();
 						maxWidth = Math.max(maxWidth, getTextWidth(size, t));

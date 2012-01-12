@@ -11,6 +11,8 @@ package hu.openig.screen.items;
 import hu.openig.core.Action0;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.model.Message;
+import hu.openig.model.Objective;
+import hu.openig.model.ObjectiveState;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
@@ -27,6 +29,7 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -37,6 +40,7 @@ import java.io.Closeable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -109,6 +113,8 @@ public class StatusbarScreen extends ScreenBase {
 	final int achievementSize = 55;
 	/** The achievement animator. */
 	Timer achievementAnimator;
+	/** The objectives viewer. */
+	public ObjectivesView objectives;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -204,6 +210,11 @@ public class StatusbarScreen extends ScreenBase {
 			}
 		});
 		
+		objectives = new ObjectivesView();
+		objectives.enabled(false);
+		objectives.visible(false);
+		objectives.z = -1;
+		
 		addThis();
 	}
 
@@ -247,6 +258,8 @@ public class StatusbarScreen extends ScreenBase {
 	public void onResize() {
 		top.size(width, 20);
 		bottom.size(width, 18);
+		
+		objectives.location(5, 30 + achievementSize);
 	}
 	
 	@Override
@@ -267,6 +280,11 @@ public class StatusbarScreen extends ScreenBase {
 		top2.visible(commons.nongame);
 		bottom2.visible(commons.nongame);
 		
+		boolean objshowing = objectives.visible();
+		if (commons.nongame) {
+			screenMenu.visible(false);
+			objectives.visible(false);
+		}
 		notification.bounds(12, bottom.y + 3, width - 190, 12);
 		
 		screenMenu.location(width - screenMenu.width, 20);
@@ -274,6 +292,8 @@ public class StatusbarScreen extends ScreenBase {
 		notificationHistory.visible(notificationHistory.visible() && !commons.nongame);
 		super.draw(g2);
 		if (commons.nongame) {
+			objectives.visible(objshowing);
+			
 			String s = "Open Imperium Galactica";
 			int w = commons.text().getTextWidth(10, s);
 			commons.text().paintTo(g2, notification.x + (notification.width - w) / 2, notification.y + 1, 10, TextRenderer.YELLOW, s);
@@ -552,6 +572,11 @@ public class StatusbarScreen extends ScreenBase {
 			screenMenu.visible(false);
 			return true;
 		}
+		if (e.within(379, 3, 26, 14) && e.has(Type.DOWN)) {
+			objectives.visible(!objectives.visible());
+			sound(SoundType.CLICK_MEDIUM_2);
+			return true;
+		} else
 		if (e.within(0, 0, width, 20) 
 			|| e.within(0, height - 18, width, 18)
 			|| (screenMenu.visible() && e.within(screenMenu.x, screenMenu.y, screenMenu.width, screenMenu.height))
@@ -914,5 +939,197 @@ public class StatusbarScreen extends ScreenBase {
 	 */
 	void doClearHistory() {
 		player().messageHistory.clear();
+	}
+	/**
+	 * The objectives viewer.
+	 * @author akarnokd, Jan 12, 2012
+	 */
+	public class ObjectivesView extends UIComponent {
+		@Override
+		public void draw(Graphics2D g2) {
+			
+			List<Objective> objs = world().scripting.currentObjectives();
+			
+			if (objs.size() == 0) {
+				int w = commons.text().getTextWidth(14, get("no_objectives"));
+				g2.setColor(new Color(0xC0000000, true));
+				
+				g2.fillRect(0, 0, w + 10, 20);
+				commons.text().paintTo(g2, 5, 3, 14, TextRenderer.GRAY, get("no_objectives"));
+				return;
+			}
+			
+			int limit = StatusbarScreen.this.width - 20;
+			
+			int w = 0;
+			int h = 0;
+			
+			for (Objective o : objs) {
+				w = Math.max(w, objectiveWidth(o, limit - 25) + 25);
+				int oh = objectiveHeight(o, limit - 25);
+				h += 3 + oh;
+			}
+			h += 3;
+			
+			g2.setColor(new Color(0xC0000000, true));
+			
+			g2.fillRect(0, 0, w + 4, h);
+			g2.setColor(new Color(0xFFC0C0C0));
+			g2.drawRect(0, 0, w + 4, h);
+			
+			int y = 3;
+			for (Objective o : objs) {
+				y += drawObjective(g2, o, 2, y, w);
+			}
+			
+			super.draw(g2);
+		}
+		/**
+		 * Draw the objective.
+		 * @param g2 the graphics context.
+		 * @param o the objective
+		 * @param x the left
+		 * @param y the top
+		 * @param w the draw width
+		 * @return the y increment
+		 */
+		int drawObjective(Graphics2D g2, Objective o, int x, int y, int w) {
+			
+			g2.setColor(Color.WHITE);
+			g2.drawRect(x, y, 20, 20);
+			g2.drawRect(x + 1, y + 1, 18, 18);
+
+			int dy = 0;
+			
+			if (o.state == ObjectiveState.FAILURE) {
+				g2.drawImage(commons.common().crossOut, x, y, null);
+			} else
+			if (o.state == ObjectiveState.SUCCESS) {
+				g2.drawImage(commons.common().checkmarkGreen, x, y, null);
+			}
+			
+			dy += 3;
+			dy += drawText(g2, x + 25, y + dy, w - 25, 14, TextRenderer.WHITE, o.title);
+			dy += 3;
+			dy += drawText(g2, x + 25, y + dy, w - 25, 10, 0xFFC0C0C0, o.description);
+			
+			String pt = o.progressValue != null ? o.progressValue.invoke() : null;
+			Double pv = o.progress != null ? o.progress.invoke() : null;
+			if (pv != null || pt != null) {
+				int dx = 35;
+				if (pt != null) {
+					dx += commons.text().getTextWidth(7, pt) + 10;
+					commons.text().paintTo(g2, x + 35, y + dy, 7, 0xFFFFCC00, pt);
+				}
+				
+				if (pv != null) {
+					int rw = w - dx;
+					int rwf = (int)(rw * pv.doubleValue());
+					
+					g2.setColor(new Color(0xFFFFCC00));
+					g2.drawRect(x + dx, y + dy, rw, 7);
+					g2.fillRect(x + dx, y + dy, rwf, 7);
+				}
+				dy += 10;
+			}
+			
+			for (Objective o2 : o.subObjectives) {
+				dy += drawObjective(g2, o2, x + 25, y + dy, w - 25);
+			}
+			
+			return dy;
+		}
+		/**
+		 * Draw a multiline text by wrapping.
+		 * @param g2 the graphics context
+		 * @param x the left
+		 * @param y the top
+		 * @param w the width
+		 * @param size the text size
+		 * @param color the color
+		 * @param text the text
+		 * @return the delta y
+		 */
+		int drawText(Graphics2D g2, int x, int y, int w, int size, int color, String text) {
+			List<String> lines = U.newArrayList();
+			commons.text().wrapText(text, w, size, lines);
+			int dy = 0;
+			for (String s : lines) {
+				commons.text().paintTo(g2, x, y + dy, size, color, s);
+				dy += size + 3;
+			}
+			return dy;
+		}
+		/**
+		 * Returns the width of the objective, considering the set of sub-objectives.
+		 * @param o the objective
+		 * @param limit the width limit
+		 * @return the width
+		 */
+		public int objectiveWidth(Objective o, int limit) {
+			int titleWidth = commons.text().getTextWidth(14, o.title);
+			int descriptionWidth = commons.text().getTextWidth(10, o.description);
+			int progressGauge = (o.progress != null ? 100 : 0) + (o.progressValue != null ? commons.text().getTextWidth(7, o.progressValue.invoke()) : 0);
+			
+			int w = max(titleWidth, descriptionWidth, progressGauge);
+
+			int ws = 0;
+			for (Objective o2 : o.subObjectives) {
+				ws = Math.max(ws, objectiveWidth(o2, limit - 25));
+			}
+			
+			return Math.min(Math.max(w, ws), limit);
+		}
+		/**
+		 * Returns the height of the objective considering any sub-objectives.
+		 * @param o the objective
+		 * @param limit the width limit for wrapping
+		 * @return the height
+		 */
+		public int objectiveHeight(Objective o, int limit) {
+			int w = objectiveWidth(o, limit);
+			int titleWidth = commons.text().getTextWidth(14, o.title);
+			int descriptionWidth = commons.text().getTextWidth(10, o.description);
+			int progressGauge = (o.progress != null ? 100 : 0) + (o.progressValue != null ? commons.text().getTextWidth(7, o.progressValue.invoke()) : 0);
+			
+			int h = 0;
+			if (titleWidth > w) {
+				List<String> lines = U.newArrayList();
+				commons.text().wrapText(o.title, w, 14, lines);
+				h += lines.size() * 17 + 3;
+			} else {
+				h += 20;
+			}
+			
+			if (descriptionWidth > w) {
+				List<String> lines = U.newArrayList();
+				commons.text().wrapText(o.description, w, 10, lines);
+				h += lines.size() * 13;
+			} else {
+				h += 13;
+			}
+
+			if (progressGauge > 0) {
+				h += 10;
+			}
+			
+			for (Objective o2 : o.subObjectives) {
+				h += 3 + objectiveHeight(o2, limit - 25);
+			}
+			
+			return h;
+		}
+	}
+	/**
+	 * Returns the maximum.
+	 * @param is the array ints
+	 * @return the maximum
+	 */
+	static int max(int... is) {
+		int r = is[0];
+		for (int i = 1; i < is.length; i++) {
+			r = Math.max(r, is[i]);
+		}
+		return r;
 	}
 }
