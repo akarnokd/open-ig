@@ -124,13 +124,39 @@ public class MainCampaignScripting implements CampaignScripting {
 	@Override
 	public void load(XElement in) {
 		// TODO Auto-generated method stub
-
+		lastLevel = in.getInt("lastLevel", world.level);
+		for (XElement xmsg : in.childrenWithName("receive")) {
+			String id = xmsg.get("id");
+			VideoMessage vm = receive(id);
+			if (vm != null) {
+				vm.visible = xmsg.getBoolean("visible");
+			}
+		}
+		for (XElement xmsg : in.childrenWithName("send")) {
+			String id = xmsg.get("id");
+			VideoMessage vm = send(id);
+			if (vm != null) {
+				vm.visible = xmsg.getBoolean("visible");
+			}
+		}
 	}
 
 	@Override
 	public void save(XElement out) {
 		// TODO Auto-generated method stub
-
+		out.set("lastLevel", lastLevel);
+		
+		for (VideoMessage vm : world.bridge.receiveMessages.values()) {
+			XElement xmsg = out.add("receive");
+			xmsg.set("id", vm.id);
+			xmsg.set("visible", vm.visible);
+		}
+		for (VideoMessage vm : world.bridge.sendMessages.values()) {
+			XElement xmsg = out.add("send");
+			xmsg.set("id", vm.id);
+			xmsg.set("visible", vm.visible);
+		}
+		
 	}
 	@Override
 	public void done() {

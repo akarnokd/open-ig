@@ -1477,7 +1477,7 @@ public class StarmapScreen extends ScreenBase {
 			Area a = new Area(new Rectangle(0, 0, world().galaxyModel.map.getWidth(), world().galaxyModel.map.getHeight()));
 			a.subtract(new Area(player().explorationOuterLimit));
 
-			g2.setColor(new Color(0x80FF0000, true));
+			g2.setColor(new Color(0x80000000, true));
 			
 			drawShape(g2, a, true);
 			
@@ -1485,7 +1485,7 @@ public class StarmapScreen extends ScreenBase {
 			drawRect(g2, player().explorationOuterLimit, false);
 		} else
 		if (player().explorationInnerLimit != null) {
-			g2.setColor(new Color(0x80808080, true));
+			g2.setColor(new Color(0x80000000, true));
 			drawRect(g2, player().explorationInnerLimit, true);
 		}
 	}
