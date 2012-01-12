@@ -22,4 +22,5 @@
 	<tech>campaign/main/tech</tech>
 	<test>campaign/main/test</test>
 	<walks>campaign/main/walks</walks>
+	<scripting>campaign/main/scripting</scripting>
 </definition>

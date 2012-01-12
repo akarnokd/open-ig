@@ -166,7 +166,7 @@ public final class Radar {
 			player.statistics.planetsDiscovered++;
 
 			player.ai.onDiscoverPlanet(planet);
-			world.env.events().onDiscovered(player, planet);
+			world.scripting.onDiscovered(player, planet);
 		}
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			player.planets.put(planet, k);
@@ -175,7 +175,7 @@ public final class Radar {
 			player.setStance(planet.owner, player.initialStance);
 			if (!world.player.race.equals(planet.owner.race)) {
 				player.ai.onDiscoverPlayer(planet.owner);
-				world.env.events().onDiscovered(player, planet.owner);
+				world.scripting.onDiscovered(player, planet.owner);
 			}
 		}
 	}
@@ -191,12 +191,12 @@ public final class Radar {
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			player.fleets.put(fleet, k);
 			player.ai.onDiscoverFleet(fleet);
-			world.env.events().onDiscovered(player, fleet);
+			world.scripting.onDiscovered(player, fleet);
 		}
 		if (fleet.owner != null && fleet.owner != player && !player.knows(fleet.owner)) {
 			player.setStance(fleet.owner, player.initialStance);
 			player.ai.onDiscoverPlayer(fleet.owner);
-			world.env.events().onDiscovered(player, fleet.owner);
+			world.scripting.onDiscovered(player, fleet.owner);
 		}
 	}
 	/**

@@ -71,7 +71,9 @@ public class GameDefinition {
 	/** Resource location. */
 	@LoadField
 	public String walks;
-	
+	/** The scripting definition. */
+	@LoadField
+	public String scripting;
 	/**
 	 * Parse the game definition from.
 	 * @param rl the resource locator

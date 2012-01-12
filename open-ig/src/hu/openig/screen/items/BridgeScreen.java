@@ -140,34 +140,33 @@ public class BridgeScreen extends ScreenBase {
 	/** The list of videos. */
 	final List<VideoMessageEntry> videos = U.newArrayList();
 	/** The currently selected video. */
-	VideoMessageEntry selectedVideo;
+	String selectedVideoId;
 	/** The message list row height. */
 	final int rowHeight = 25;
+	/** If the video playback completed and the panel is retracted. */
+	Action0 onVideoComplete;
 	/**
 	 * A video message entry.
 	 * @author akarnokd, 2012.01.12.
 	 */
-	public static class VideoMessageEntry {
+	public class VideoMessageEntry {
 		/** The video message. */
 		public VideoMessage videoMessage;
-		/** Indicate if the video was seen. */
-		public boolean seen;
 		/**
 		 * Draw this entry.
 		 * @param g2 the graphics context
 		 * @param x0 the base X
 		 * @param y0 the base Y
-		 * @param tr the text renderer
 		 */
-		public void draw(Graphics2D g2, int x0, int y0, TextRenderer tr) {
+		public void draw(Graphics2D g2, int x0, int y0) {
 			int colorMain = TextRenderer.RED;
 			int colorSub = TextRenderer.GREEN;
-			if (seen) {
+			if (videoMessage.seen) {
 				colorMain = TextRenderer.GRAY;
 				colorSub = TextRenderer.GRAY;
 			}
-			tr.paintTo(g2, x0 + 2, y0 + 2, 10, colorMain, videoMessage.title);
-			tr.paintTo(g2, x0 + 2, y0 + 16, 7, colorSub, this.videoMessage.description);
+			commons.text().paintTo(g2, x0 + 2, y0 + 2, 10, colorMain, get(videoMessage.title));
+			commons.text().paintTo(g2, x0 + 2, y0 + 16, 7, colorSub, get(this.videoMessage.description));
 		}
 	}
 	/** The incoming message list. */
@@ -274,6 +273,7 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				messageOpen = true;
 				openCloseAnimating = false;
+				
 				if (onMessageComplete != null) {
 					onMessageComplete.invoke();
 					onMessageComplete = null;
@@ -446,11 +446,12 @@ public class BridgeScreen extends ScreenBase {
 			if (messageListRect.contains(e.x, e.y) && e.has(Type.DOWN)) {
 				int idx = (e.y - messageListRect.y) / rowHeight + listOffset;
 				if (idx >= 0 && idx < videos.size()) {
-					selectedVideo = videos.get(idx);
-					selectedVideo.seen = true;
+					VideoMessageEntry selectedVideo = videos.get(idx);
+					selectedVideo.videoMessage.seen = true;
+					selectedVideoId = selectedVideo.videoMessage.id;
 					playVideo(selectedVideo.videoMessage.media);
 				} else {
-					selectedVideo = null;
+					selectedVideoId = null;
 				}
 				return true;
 			}
@@ -536,7 +537,8 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				send.selected = true;
 				receive.selected = false;
-				prepareSendList();
+				listOffset = 0;
+				selectedVideoId = null;
 			}
 		};
 		receive = new UIImageToggleButton(lvl.receive);
@@ -545,7 +547,8 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				send.selected = false;
 				receive.selected = true;
-				prepareReceiveList();
+				listOffset = 0;
+				selectedVideoId = null;
 			}
 		};
 		
@@ -555,15 +558,6 @@ public class BridgeScreen extends ScreenBase {
 
 		scrollList(0);
 		
-		for (int i = 0; i < 20; i++) {
-			VideoMessageEntry e = new VideoMessageEntry();
-			e.videoMessage = new VideoMessage();
-			e.videoMessage.title = "Test" + i;
-			e.videoMessage.description = "Test" + i;
-			e.videoMessage.media = "messages/douglas_success";
-			
-			videos.add(e);
-		}
 		onResize();
 		
 		playMessageAppear();
@@ -633,6 +627,12 @@ public class BridgeScreen extends ScreenBase {
 			videoLock.unlock();
 		}
 		if (messageOpen && !messageClosing) {
+			if (send.selected) {
+				prepareSendList();
+			} else
+			if (receive.selected) {
+				prepareReceiveList();
+			}
 			int rows = messageListRect.height / rowHeight;
 			int y = messageListRect.y;
 			Shape save0 = g2.getClip();
@@ -643,8 +643,8 @@ public class BridgeScreen extends ScreenBase {
 			
 			for (int i = listOffset; i < videos.size(); i++) {
 				VideoMessageEntry e = videos.get(i);
-				e.draw(g2, messageListRect.x, y, commons.text());
-				if (e == selectedVideo) {
+				e.draw(g2, messageListRect.x, y);
+				if (e.videoMessage.id.equals(selectedVideoId)) {
 					g2.setColor(Color.WHITE);
 					g2.drawRect(messageListRect.x, y, messageListRect.width - 1, rowHeight);
 				}
@@ -768,6 +768,16 @@ public class BridgeScreen extends ScreenBase {
 	 * @param video the video
 	 */
 	public void playVideo(final String video) {
+		final boolean paused = commons.simulation.paused();
+		commons.simulation.pause();
+		onVideoComplete = new Action0() {
+			@Override
+			public void invoke() {
+				if (!paused) {
+					commons.simulation.resume();
+				}
+			}
+		};
 		this.video = video;
 		final SwingWorker<BufferedImage, Void> sw = new SwingWorker<BufferedImage, Void>() {
 			@Override
@@ -849,7 +859,8 @@ public class BridgeScreen extends ScreenBase {
 		if (videoAppearPercent == 200) {
 			videoAppearAnim.stop();
 			videoAppear = null;
-			onProjectorComplete = null;
+			onProjectorComplete = onVideoComplete;
+			onVideoComplete = null;
 			playProjectorClose();
 		}
 		askRepaint();
@@ -859,13 +870,23 @@ public class BridgeScreen extends ScreenBase {
 	 */
 	void prepareSendList() {
 		// TODO implement
-		listOffset = 0;
-		selectedVideo = null;
+		prepareList(world().scripting.getSendMessages());
 	}
 	/** Prepare the receive list. */
 	void prepareReceiveList() {
 		// TODO implement
-		listOffset = 0;
-		selectedVideo = null;
+		prepareList(world().scripting.getReceiveMessages());
+	}
+	/**
+	 * Prepare the video listings.
+	 * @param available the available messages
+	 */
+	void prepareList(List<VideoMessage> available) {
+		videos.clear();
+		for (VideoMessage msg : available) {
+			VideoMessageEntry e = new VideoMessageEntry();
+			e.videoMessage = msg;
+			videos.add(e);
+		}
 	}
 }

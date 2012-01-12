@@ -22,4 +22,5 @@
 	<tech>skirmish/human/tech</tech>
 	<test>campaign/main/test</test>
 	<walks>campaign/main/walks</walks>
+	<scripting>skirmish/human/scripting</scripting>
 </definition>
