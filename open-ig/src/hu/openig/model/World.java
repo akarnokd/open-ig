@@ -14,7 +14,6 @@ import hu.openig.core.Labels;
 import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
-import hu.openig.model.Bridge.Level;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.U;
@@ -336,7 +335,7 @@ public class World {
 		XElement root = rl.getXML(data);
 		XElement graphics = root.childElement("graphics");
 		for (XElement level : graphics.childrenWithName("level")) {
-			Bridge.Level lvl = new Bridge.Level();
+			Level lvl = new Level();
 			lvl.id = Integer.parseInt(level.get("id"));
 			lvl.image = rl.getImage(level.get("image"));
 			lvl.ship = walks.ships.get(level.get("ship-id"));
@@ -358,18 +357,18 @@ public class World {
 			XElement mpButtons = mp.childElement("buttons");
 			String up = mpButtons.get("up");
 			lvl.up[0] = rl.getImage(up);
-			lvl.up[0] = rl.getImage(up + "_pressed");
-			lvl.up[0] = rl.getImage(up + "_empty");
+			lvl.up[1] = rl.getImage(up + "_pressed");
+			lvl.upEmpty = rl.getImage(up + "_empty");
 			String down = mpButtons.get("down");
 			lvl.down[0] = rl.getImage(down);
-			lvl.down[0] = rl.getImage(down + "_pressed");
-			lvl.down[0] = rl.getImage(down + "_empty");
+			lvl.down[1] = rl.getImage(down + "_pressed");
+			lvl.downEmpty = rl.getImage(down + "_empty");
 			String send = mpButtons.get("send");
 			lvl.send[0] = rl.getImage(send);
-			lvl.send[0] = rl.getImage(send + "_pressed");
+			lvl.send[1] = rl.getImage(send + "_pressed");
 			String receive = mpButtons.get("receive");
 			lvl.receive[0] = rl.getImage(receive);
-			lvl.receive[0] = rl.getImage(receive + "_pressed");
+			lvl.receive[1] = rl.getImage(receive + "_pressed");
 			
 			XElement cp = level.childElement("comm-panel");
 			XElement cpOpen = cp.childElement("open");
@@ -384,7 +383,7 @@ public class World {
 		XElement messages = root.childElement("messages");
 		XElement send = messages.childElement("send");
 		for (XElement message : send.childrenWithName("message")) {
-			Bridge.Message msg = new Bridge.Message();
+			VideoMessage msg = new VideoMessage();
 			msg.id = message.get("id");
 			msg.media = message.get("media");
 			msg.title = message.get("title");
@@ -393,7 +392,7 @@ public class World {
 		}
 		XElement receive = messages.childElement("receive");
 		for (XElement message : receive.childrenWithName("message")) {
-			Bridge.Message msg = new Bridge.Message();
+			VideoMessage msg = new VideoMessage();
 			msg.id = message.get("id");
 			msg.media = message.get("media");
 			msg.title = message.get("title");
