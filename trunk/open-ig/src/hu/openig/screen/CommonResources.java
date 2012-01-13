@@ -814,6 +814,13 @@ public class CommonResources implements GameEnvironment {
 			close0(handler);
 			handler = null;
 		}
+		/**
+		 * Returns the simulation speed in milliseconds.
+		 * @return the simulation speed in milliseconds.
+		 */
+		public int speedValue() {
+			return delay.invoke(speed);
+		}
 	}
 	@Override
 	public AIManager getAI(Player player) {
@@ -887,5 +894,9 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public void showObjectives(boolean state) {
 		control().showObjectives(state);
+	}
+	@Override
+	public int simulationSpeed() {
+		return simulation.speedValue();
 	}
 }
