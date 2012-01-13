@@ -111,7 +111,7 @@ Reward: 5000 cr
 
 === Task 2 ===
 
-Sequence: 8
+Sequence: after first virus infection
 
 Objective: Defend trader from Garthog pirates again
 
@@ -156,3 +156,62 @@ Video: douglas_escort_centronom_governor
 
 Notes:
   * Appears at San Sterling, heading to Naxos
+
+== Mission 11 ==
+
+Sequence: 6
+
+Objective: Defend the planet from Garthog attack
+
+Success condition: planet saved
+
+Failure condition: planet lost
+
+Notes:
+  * Garthog will choose the least defended planet
+  * Display send messages according to the chosen planet
+
+== Mission 12 ==
+
+Sequence: 7
+
+Objective: Virus infection on New Caroline
+
+Success condition: planet survived
+
+Failure condition: planet lost
+
+Video: new_caroline_virus, new_caroline_virus_again, etc.
+
+Notes:
+  * Report the infection to colonel message
+  * Receive hubble2 on Naxos and San Sterling
+
+=== Task 1 ===
+First virus infection
+
+=== Task 2 ===
+Subsequent virus infection
+
+=== Task 3 ===
+Subsequent virus infection, unless reported to colonel
+
+=== Task 4 ===
+Subsequent virus infection, unless reported to colonel
+
+=== Task 5 ===
+Subsequent virus infection, unless reported to colonel
+
+
+== Mission 13 ==
+
+Sequence: 8
+
+Objective: Destroy the virus carriers
+
+Success: virus carriers destroyed
+
+Failure: *N/A*
+
+Notes:
+  * Becomes available after Task 2 and report to colonel, or after task 5
