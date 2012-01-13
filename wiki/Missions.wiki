@@ -75,3 +75,9 @@ Movie: thorin_escort
 Remark: if you saved the pirate in Mission 4, you get single-time help in the defense.
 
 = Level 2: Captain =
+
++ Cruiser 1 without radar
++ 2 Fighter 2
++ Centronom
++ New Caroline
+
