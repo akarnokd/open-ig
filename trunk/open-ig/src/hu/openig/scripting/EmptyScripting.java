@@ -13,13 +13,15 @@ import java.util.List;
 
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
-import hu.openig.model.CampaignScripting;
+import hu.openig.model.GameScripting;
 import hu.openig.model.Fleet;
+import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.World;
 import hu.openig.utils.XElement;
@@ -28,7 +30,7 @@ import hu.openig.utils.XElement;
  * An empty placeholder scripting for skirmish games.
  * @author akarnokd, 2012.01.12.
  */
-public class EmptyScripting implements CampaignScripting {
+public class EmptyScripting implements GameScripting {
 
 	@Override
 	public List<VideoMessage> getSendMessages() {
@@ -248,6 +250,36 @@ public class EmptyScripting implements CampaignScripting {
 	}
 	@Override
 	public void onLevelChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSpacewarFinish(SpacewarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSpacewarStart(SpacewarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSpacewarStep(SpacewarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onGroundwarFinish(GroundwarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onGroundwarStart(GroundwarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onGroundwarStep(GroundwarWorld war) {
 		// TODO Auto-generated method stub
 		
 	}

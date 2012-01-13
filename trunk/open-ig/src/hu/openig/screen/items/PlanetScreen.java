@@ -32,6 +32,7 @@ import hu.openig.model.GroundwarGun;
 import hu.openig.model.GroundwarRocket;
 import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarUnitType;
+import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
@@ -101,7 +102,7 @@ import java.util.concurrent.Future;
  * The planet surface rendering screen.
  * @author akarnokd, 2010.01.11.
  */
-public class PlanetScreen extends ScreenBase {
+public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** Indicate if a component is drag sensitive. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface DragSensitive { }
@@ -3057,11 +3058,11 @@ public class PlanetScreen extends ScreenBase {
 		);
 	}
 	/** 
-	 * Place deployment indicators.
+	 * Generate the set of deployment locations.
 	 * @param atBuildings should the placement locations around buildings?
 	 * @return the set of locations 
 	 */
-	Set<Location> setDeploymentLocations(boolean atBuildings) {
+	Set<Location> getDeploymentLocations(boolean atBuildings) {
 		Set<Location> result = U.newHashSet();;
 		if (atBuildings) {
 			for (Building b : planet().surface.buildings) {
@@ -3611,18 +3612,8 @@ public class PlanetScreen extends ScreenBase {
 		for (GroundwarUnit u : units) {
 			if (u.selected /* && u.owner == player() */) {  // FIXME player only
 				moved = true;
-				Location lu = Location.of((int)u.x, (int)u.y);
 				Location lm = render.getLocationAt(mx, my);
-				u.path.clear();
-				u.attackBuilding = null;
-				u.attackUnit = null;
-				u.inMotionPlanning = true;
-
-				// the next immediate movement should be kept
-				if (u.nextMove != null) {
-					u.path.add(u.nextMove);
-				}
-				pathsToPlan.add(new PathPlanning(lu, lm, u));
+				move(u, lm.x, lm.y);
 			}
 		}
 		if (moved) {
@@ -3780,8 +3771,10 @@ public class PlanetScreen extends ScreenBase {
 		
 		planet().surface.placeRoads(planet().race, world().buildingModel);
 
-		player().ai.groundBattleDone(bi);
-		np.ai.groundBattleDone(bi);
+		player().ai.groundBattleDone(this);
+		np.ai.groundBattleDone(this);
+		
+		world().scripting.onGroundwarFinish(this);
 		
 		battle = null;
 		
@@ -3913,10 +3906,8 @@ public class PlanetScreen extends ScreenBase {
 					if (u.model.type == GroundwarUnitType.ARTILLERY) {
 						damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage, u.model.area, u.owner);
 					} else
-					if (u.model.type == GroundwarUnitType.KAMIKAZE) {
-						damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage * 50, u.model.area, u.owner);
-						u.hp = 0; // destroy self
-						createExplosion(u, ExplosionType.GROUND_YELLOW);
+					if (u.model.type == GroundwarUnitType.KAMIKAZE && u.hp * 10 < u.model.hp) {
+						special(u);
 					} else
 					if (unitWithinRange(u, u.attackUnit)) {
 						if (u.model.type == GroundwarUnitType.SELF_REPAIR_TANK
@@ -3950,10 +3941,12 @@ public class PlanetScreen extends ScreenBase {
 					// for rocket sleds, damage is inflicted by the rocket impact
 					if (u.model.type != GroundwarUnitType.ROCKET_SLED) {
 						damageBuilding(u.attackBuilding, u.model.damage);
-					}
+					} else
+					if (u.model.type == GroundwarUnitType.KAMIKAZE && u.hp * 10 < u.model.hp) {
+						special(u);
+					} else
 					if (u.attackBuilding.isDestroyed()) {
 						// TODO demolish animation
-//						surface().removeBuilding(u.attackBuilding);
 						u.attackBuilding = null;
 					}
 				}
@@ -4060,7 +4053,7 @@ public class PlanetScreen extends ScreenBase {
 					}
 				}
 			} else {
-				stopUnit(u);
+				stop(u);
 				if (u.path.isEmpty() && directAttackUnits.contains(u.model.type)) {
 					// find a new target in range
 					List<GroundwarUnit> targets = unitsInRange(u);
@@ -4564,7 +4557,7 @@ public class PlanetScreen extends ScreenBase {
 		for (GroundwarUnit u : units) {
 			if (u.selected /* && u.owner == player() */) { // FIXME player only
 				stopped = true;
-				stopUnit(u);
+				stop(u);
 			}
 		}
 		for (GroundwarGun g : guns) {
@@ -4576,19 +4569,6 @@ public class PlanetScreen extends ScreenBase {
 		if (stopped) {
 			sound(SoundType.NOT_AVAILABLE);
 		}
-	}
-	/**
-	 * Stop the given unit and let it move to a whole cell.
-	 * @param u the unit to stop
-	 */
-	public void stopUnit(GroundwarUnit u) {
-		u.path.clear();
-		if (u.nextMove != null) {
-			u.path.add(u.nextMove);
-		}
-		u.attackBuilding = null;
-		u.attackUnit = null;
-		minelayers.remove(u);
 	}
 	/**
 	 * Retrieve the building at the given mouse location.
@@ -4827,11 +4807,11 @@ public class PlanetScreen extends ScreenBase {
 		
 		setGroundWarTimeControls();
 		
-		player().ai.groundBattleInit(battle);
-		nonPlayer().ai.groundBattleInit(battle);
+		player().ai.groundBattleInit(this);
+		nonPlayer().ai.groundBattleInit(this);
 		
 		battlePlacements.clear();
-		battlePlacements.addAll(setDeploymentLocations(planet().owner == player()));
+		battlePlacements.addAll(getDeploymentLocations(planet().owner == player()));
 
 		unitsToPlace.clear();
 		boolean atBuildings = planet().owner == player();
@@ -4912,7 +4892,7 @@ public class PlanetScreen extends ScreenBase {
 	 * @param gus the list of units
 	 */
 	void placeGroundUnits(boolean atBuildings, LinkedList<GroundwarUnit> gus) {
-		Set<Location> locations = setDeploymentLocations(atBuildings);
+		Set<Location> locations = getDeploymentLocations(atBuildings);
 		CenterAndRadius car = computePlacementCircle(locations);
 		if (atBuildings) {
 			placeAroundInCircle(gus, locations, car.icx, car.icy, car.rmax);
@@ -5038,6 +5018,9 @@ public class PlanetScreen extends ScreenBase {
 		deployNonPlayerVehicles();
 		
 		startBattle.visible(false);
+		
+		world().scripting.onGroundwarStart(this);
+		
 		commons.simulation.resume();
 	}
 	/**
@@ -5149,6 +5132,86 @@ public class PlanetScreen extends ScreenBase {
 			Integer gr = groups.get(g);
 			g.selected = gr != null && gr.intValue() == groupNo;
 		}
+	}
+	@Override
+	public BattleInfo battle() {
+		return battle;
+	}
+	@Override
+	public Set<Location> placementOptions(Player player) {
+		return getDeploymentLocations(player == planet().owner);
+	}
+	@Override
+	public void attack(GroundwarGun g, GroundwarUnit target) {
+		if (g.owner != target.owner) {
+			g.attack = target;
+		}
+	}
+	@Override
+	public void attack(GroundwarUnit u, GroundwarUnit target) {
+		if (directAttackUnits.contains(u.model.type) && u.owner != target.owner) {
+			u.attackBuilding = null;
+			u.attackUnit = target;
+		}
+	}
+	@Override
+	public void special(GroundwarUnit u) {
+		if (u.model.type == GroundwarUnitType.MINELAYER) {
+			minelayers.add(u);
+		} else
+		if (u.model.type == GroundwarUnitType.KAMIKAZE) {
+			double x = u.x;
+			double y = u.y;
+			double m = world().battle.getDoubleProperty(u.model.id, u.owner.id, "self-destruct-multiplier");
+			damageArea(x, y, (int)(u.model.damage * m), u.model.area, u.owner);
+			u.hp = 0; // destroy self
+			createExplosion(u, ExplosionType.GROUND_YELLOW);
+		}
+	}
+	@Override
+	public void attack(GroundwarUnit u, Building target) {
+		if (directAttackUnits.contains(u.model.type) && u.owner != planet().owner 
+				&& u.model.type != GroundwarUnitType.PARALIZER) {
+			u.attackBuilding = target;
+			u.attackUnit = null;
+		}
+	}
+	@Override
+	public List<GroundwarGun> guns() {
+		return guns;
+	}
+	@Override
+	public void move(GroundwarUnit u, int x, int y) {
+		u.path.clear();
+		u.attackBuilding = null;
+		u.attackUnit = null;
+		u.inMotionPlanning = true;
+
+		// the next immediate movement should be kept
+		if (u.nextMove != null) {
+			u.path.add(u.nextMove);
+		}
+		Location lu = Location.of((int)u.x, (int)u.y);
+		Location lm = Location.of(x, y);
+		pathsToPlan.add(new PathPlanning(lu, lm, u));
+	}
+	@Override
+	public void stop(GroundwarGun g) {
+		g.attack = null;
+	}
+	@Override
+	public void stop(GroundwarUnit u) {
+		u.path.clear();
+		if (u.nextMove != null) {
+			u.path.add(u.nextMove);
+		}
+		u.attackBuilding = null;
+		u.attackUnit = null;
+		minelayers.remove(u);
+	}
+	@Override
+	public List<GroundwarUnit> units() {
+		return units;
 	}
 }
 

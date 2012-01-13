@@ -129,7 +129,7 @@ public class World {
 	/** The game environment. */
 	public final GameEnvironment env;
 	/** The campaign scripting. */
-	public CampaignScripting scripting;
+	public GameScripting scripting;
 	/**
 	 * Constructs a world under the given game environment.
 	 * @param env the environment
@@ -321,8 +321,8 @@ public class World {
 		String clazz = xscript.get("class");
 		try {
 			Class<?> c = Class.forName(clazz);
-			if (CampaignScripting.class.isAssignableFrom(c)) {
-				this.scripting = CampaignScripting.class.cast(c.newInstance());
+			if (GameScripting.class.isAssignableFrom(c)) {
+				this.scripting = GameScripting.class.cast(c.newInstance());
 				scripting.init(this, xscript);
 			}
 		} catch (InstantiationException ex) {

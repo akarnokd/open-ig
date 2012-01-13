@@ -30,6 +30,8 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -62,8 +64,10 @@ public class SingleplayerScreen extends ScreenBase {
 	Thread loadWaiter;
 	/** The reference frame. */
 	final Rectangle origin = new Rectangle();
-	/** Statistics label. */
+	/** Play label. */
 	UIGenericButton playLabel;
+	/** Custom game. */
+	UIGenericButton customLabel;
 	/** Achievements label. */
 	UIGenericButton backLabel;
 	/** The left difficulty button. */
@@ -84,6 +88,9 @@ public class SingleplayerScreen extends ScreenBase {
 
 		playLabel.x = origin.x + w + (w - playLabel.width) / 2;
 		playLabel.y = origin.y + origin.height - playLabel.height - 5;
+		
+		customLabel.y = playLabel.y;
+		customLabel.x = origin.x + (origin.width - customLabel.width) / 2; 
 		
 		backLabel.x = origin.x + (w - backLabel.width) / 2;
 		backLabel.y = origin.y + origin.height - backLabel.height - 5;
@@ -134,6 +141,21 @@ public class SingleplayerScreen extends ScreenBase {
 			public void invoke() {
 				sound(SoundType.UI_ACKNOWLEDGE_2);
 				doStartGame();
+			}
+		};
+		customLabel = new UIGenericButton(
+				get("singleplayer.custom_game"),
+				fontMetrics(16),
+				commons.common().mediumButton,
+				commons.common().mediumButtonPressed
+				);
+		customLabel.disabledPattern(commons.common().disabledPattern);
+		customLabel.enabled(false);
+		customLabel.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				sound(SoundType.UI_ACKNOWLEDGE_2);
+				doCustomGame();
 			}
 		};
 		
@@ -346,10 +368,17 @@ public class SingleplayerScreen extends ScreenBase {
 			GameDefinition gd = GameDefinition.parse(commons.rl, "campaign/" + name);
 			campaigns.add(gd);
 		}
+		Collections.sort(campaigns, new Comparator<GameDefinition>() {
+			@Override
+			public int compare(GameDefinition o1, GameDefinition o2) {
+				return o1.name.compareToIgnoreCase(o2.name);
+			}
+		});
 		for (String name : commons.rl.listDirectories(commons.config.language, "skirmish/")) {
 			GameDefinition gd = GameDefinition.parse(commons.rl, "skirmish/" + name);
 			campaigns.add(gd); // FIXME for now
 		}
+		
 		
 		selectedDefinition = campaigns.size() > 0 ? campaigns.get(0) : null;
 		difficulty = Difficulty.values().length / 2;
@@ -430,7 +459,10 @@ public class SingleplayerScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
 		
+	}
+	/** Switch to custom game. */
+	void doCustomGame() {
+		// TODO implemetn
 	}
 }

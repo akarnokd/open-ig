@@ -8,11 +8,14 @@
 
 package hu.openig.mechanics;
 
+import hu.openig.core.Action0;
+import hu.openig.model.AIControls;
 import hu.openig.model.AIManager;
-import hu.openig.model.BattleInfo;
+import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
+import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -24,6 +27,7 @@ import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,26 +37,44 @@ import java.util.List;
 public class AIPirate implements AIManager {
 	/** The player. */
 	protected Player p;
+	/** The copy of world state. */
+	AIWorld world;
+	/** The controls. */
+	AIControls controls;
+	/** The list of actions to apply. */
+	final List<Action0> applyActions = new ArrayList<Action0>();
 	@Override
 	public void init(Player p) {
 		this.p = p;
+		controls = new DefaultAIControls(p);
 	}
 	
 	@Override
 	public void prepare() {
-		// TODO Auto-generated method stub
-		
+		world = new AIWorld();
+		world.assign(p);
 	}
 	
 	@Override
 	public void manage() {
-		// TODO Auto-generated method stub
+		List<Action0> acts = null;
+
+		acts = new ColonyPlanner(world, controls).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
 		
 	}
 	@Override
 	public void apply() {
-		// TODO Auto-generated method stub
-		p.money += 4000;
+		p.money += 30 * (world.ownPlanets.size() + 1); // FIXME is enough?
+		for (Action0 a : applyActions) {
+			a.invoke();
+		}
+		applyActions.clear();
+
+		world = null;
 	}
 
 	@Override
@@ -72,17 +94,17 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public void groundBattle(BattleInfo battle) {
+	public void groundBattle(GroundwarWorld battle) {
 		// No ground battle
 	}
 
 	@Override
-	public void groundBattleDone(BattleInfo battle) {
+	public void groundBattleDone(GroundwarWorld battle) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void groundBattleInit(BattleInfo battle) {
+	public void groundBattleInit(GroundwarWorld battle) {
 		// TODO Auto-generated method stub
 		
 	}

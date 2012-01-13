@@ -11,7 +11,7 @@ package hu.openig.model;
 import java.util.List;
 
 /**
- * Interface to tell things about the spacewar state to AI players.
+ * Interface to tell things about the spacewar state to AI players and the Scripting.
  * @author akarnokd, 2011.12.13.
  */
 public interface SpacewarWorld {
@@ -56,4 +56,29 @@ public interface SpacewarWorld {
 	 * increase the X coordinate
 	 */
 	int facing();
+	/**
+	 * Move the specified unit to the given location.
+	 * @param s the ship
+	 * @param x the target location
+	 * @param y the target location
+	 */
+	void move(SpacewarStructure s, double x, double y);
+	/**
+	 * Command the specified unit to attack the other unit.
+	 * @param s the ship
+	 * @param target the target structure
+	 * @param mode the attack mode, e.g., beam, rocket, etc.
+	 */
+	void attack(SpacewarStructure s, SpacewarStructure target, BattleProjectile.Mode mode);
+	/**
+	 * Stop the given unit.
+	 * <p>Disables guard mode as well.</p>
+	 * @param s the unit
+	 */
+	void stop(SpacewarStructure s);
+	/**
+	 * Switch to guard mode.
+	 * @param s the unit
+	 */
+	void guard(SpacewarStructure s);
 }
