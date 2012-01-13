@@ -300,3 +300,45 @@ Notes:
   * 2 weeks after blockade
   * Zeuson -> somewhere right
   * Attacked by 1+10+30 garthog fleet
+
+= Level 4: Admiral =
+
+Notes:
+  * +Thorin, 6 light tanks, 1 Cruiser 1, 6 Fighter 2
+
+== Mission 22 ==
+
+Objective: build, research, colonize
+
+Success condition: Own 7 more planets (either colonization or capture)
+
+Reward: Promotion to Grand admiral
+
+== Mission 23 ==
+
+== Task 1 ==
+Objective: Talk to the doctor in the Bar
+
+== Task 2 ==
+
+Objective: Contact the Earth development center of robotics
+
+Notes:
+  * Flashback after 2-3 days of promotion
+
+== Mission 24 ==
+
+Objective: Make first contact with the Dargslan
+
+Reward: Promotion to Grand admiral
+
+Notes:
+  * either the planet count, or the first battle with the Dargslan will trigger Level 5
+
+= Level 5: Grand Admiral =
+
+== Mission 25 ==
+
+Objective: Defeat the Dargslan
+
+Success condition: Dargslans own 0 planets
