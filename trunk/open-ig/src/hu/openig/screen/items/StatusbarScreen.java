@@ -948,14 +948,26 @@ public class StatusbarScreen extends ScreenBase {
 		@Override
 		public void draw(Graphics2D g2) {
 			
+			g2.translate(16, 0);
+			
 			List<Objective> objs = world().scripting.currentObjectives();
 			
 			if (objs.size() == 0) {
 				int w = commons.text().getTextWidth(14, get("no_objectives"));
 				g2.setColor(new Color(0xC0000000, true));
+
+				String hideS = get("hide_objectives");
+				int hideW = commons.text().getTextWidth(7, hideS);
+
+				w = Math.max(w, hideW);
 				
-				g2.fillRect(0, 0, w + 10, 20);
+				g2.fillRect(0, 0, w + 10, 33);
 				commons.text().paintTo(g2, 5, 3, 14, TextRenderer.GRAY, get("no_objectives"));
+				
+				g2.setColor(new Color(0xFFC0C0C0));
+				g2.drawLine(0, 20, Math.min(hideW, w), 20);
+				commons.text().paintTo(g2, 2, 22, 7, 0xFFFFFF00, hideS);
+
 				return;
 			}
 			
@@ -965,24 +977,35 @@ public class StatusbarScreen extends ScreenBase {
 			int h = 0;
 			
 			for (Objective o : objs) {
-				w = Math.max(w, objectiveWidth(o, limit - 25) + 25);
-				int oh = objectiveHeight(o, limit - 25);
+				w = Math.max(w, objectiveWidth(o, limit));
+				int oh = objectiveHeight(o, limit);
 				h += 3 + oh;
 			}
 			h += 3;
 			
+			String hideS = get("hide_objectives");
+			int hideW = commons.text().getTextWidth(7, hideS);
+			
+			w = Math.min(Math.max(hideW, w), limit);
+			
 			g2.setColor(new Color(0xC0000000, true));
 			
-			g2.fillRect(0, 0, w + 4, h);
+			g2.fillRect(0, 0, w + 4, h + 13);
 			g2.setColor(new Color(0xFFC0C0C0));
-			g2.drawRect(0, 0, w + 4, h);
+			g2.drawRect(0, 0, w + 4, h + 13);
 			
 			int y = 3;
 			for (Objective o : objs) {
 				y += drawObjective(g2, o, 2, y, w);
 			}
 			
+			g2.setColor(new Color(0xFFC0C0C0));
+			g2.drawLine(0, y + 2, Math.min(hideW, w), y + 2);
+			commons.text().paintTo(g2, 2, y + 4, 7, 0xFFFFFF00, hideS);
+			
 			super.draw(g2);
+			
+			g2.translate(-16, 0);
 		}
 		/**
 		 * Draw the objective.
@@ -995,7 +1018,7 @@ public class StatusbarScreen extends ScreenBase {
 		 */
 		int drawObjective(Graphics2D g2, Objective o, int x, int y, int w) {
 			
-			g2.setColor(Color.WHITE);
+			g2.setColor(Color.LIGHT_GRAY);
 			g2.drawRect(x, y, 20, 20);
 			g2.drawRect(x + 1, y + 1, 18, 18);
 
@@ -1009,9 +1032,11 @@ public class StatusbarScreen extends ScreenBase {
 			}
 			
 			dy += 3;
-			dy += drawText(g2, x + 25, y + dy, w - 25, 14, TextRenderer.WHITE, o.title);
+			dy += drawText(g2, x + 25, y + dy, w - 25, 14, player().color, o.title);
 			dy += 3;
-			dy += drawText(g2, x + 25, y + dy, w - 25, 10, 0xFFC0C0C0, o.description);
+			if (!o.description.isEmpty()) {
+				dy += drawText(g2, x + 25, y + dy, w - 25, 10, TextRenderer.LIGHT_GREEN, o.description);
+			}
 			
 			String pt = o.progressValue != null ? o.progressValue.invoke() : null;
 			Double pv = o.progress != null ? o.progress.invoke() : null;
@@ -1034,7 +1059,9 @@ public class StatusbarScreen extends ScreenBase {
 			}
 			
 			for (Objective o2 : o.subObjectives) {
-				dy += drawObjective(g2, o2, x + 25, y + dy, w - 25);
+				if (o2.visible) {
+					dy += drawObjective(g2, o2, x + 25, y + dy, w - 25);
+				}
 			}
 			
 			return dy;
@@ -1075,10 +1102,12 @@ public class StatusbarScreen extends ScreenBase {
 
 			int ws = 0;
 			for (Objective o2 : o.subObjectives) {
-				ws = Math.max(ws, objectiveWidth(o2, limit - 25));
+				if (o2.visible) {
+					ws = Math.max(ws, objectiveWidth(o2, limit - 25));
+				}
 			}
 			
-			return Math.min(Math.max(w, ws), limit);
+			return Math.min(25 + Math.max(w, ws), limit);
 		}
 		/**
 		 * Returns the height of the objective considering any sub-objectives.
@@ -1101,12 +1130,14 @@ public class StatusbarScreen extends ScreenBase {
 				h += 20;
 			}
 			
-			if (descriptionWidth > w) {
-				List<String> lines = U.newArrayList();
-				commons.text().wrapText(o.description, w, 10, lines);
-				h += lines.size() * 13;
-			} else {
-				h += 13;
+			if (descriptionWidth > 0) {
+				if (descriptionWidth > w) {
+					List<String> lines = U.newArrayList();
+					commons.text().wrapText(o.description, w, 10, lines);
+					h += lines.size() * 13;
+				} else {
+					h += 13;
+				}
 			}
 
 			if (progressGauge > 0) {
@@ -1114,7 +1145,9 @@ public class StatusbarScreen extends ScreenBase {
 			}
 			
 			for (Objective o2 : o.subObjectives) {
-				h += 3 + objectiveHeight(o2, limit - 25);
+				if (o2.visible) {
+					h += 3 + objectiveHeight(o2, limit - 25);
+				}
 			}
 			
 			return h;

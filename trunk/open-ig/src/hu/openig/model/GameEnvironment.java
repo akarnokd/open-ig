@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
 
@@ -66,4 +67,23 @@ public interface GameEnvironment {
 	 * @return the profile
 	 */
 	Profile profile();
+	/**
+	 * Force display of the given message on bridge.
+	 * @param messageId the message ID
+	 * @param onSeen the action to perform once the user saw the message
+	 */
+	void forceMessage(String messageId, Action0 onSeen);
+	/**
+	 * Lose the current game. Game over.
+	 */
+	void loseGame();
+	/**
+	 * Win the current game.
+	 */
+	void winGame();
+	/**
+	 * Display or hide the objectives.
+	 * @param state the state
+	 */
+	void showObjectives(boolean state);
 }

@@ -2879,13 +2879,17 @@
 	<entry key='messages.virus_carriers_destroyed'>Virus carriers destroyed</entry>
 	
 	<entry key='no_objectives'>No current objectives.</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mission-1.rebuild_achilles'>Rebuild Achilles</entry>
+	<entry key='mission-1.rebuild_achilles.desc'>Restore the colony. Do not lose the planet.</entry>
+	<entry key='mission-1.build_colonyhub'>Build a Colony Hub</entry>
+	<entry key='mission-1.build_colonyhub.desc'>Construct a colony hub as soon as possible.</entry>
+	<entry key='mission-1.fix_buildings'>Repair or rebuild the damaged buildings</entry>
+	<entry key='mission-1.fix_buildings.desc'>Have working power, housing, church, radar, police, fire department, laboratory and spaceport.</entry>
+	<entry key='mission-1.manage_colonies'>Handle the needs of other colonies</entry>
+	<entry key='mission-1.manage_colonies.desc'>Manage Naxos and San Sterling. Do not lose these planets.</entry>
+	<entry key='hide_objectives'>Press TAB to show/hide objectives.</entry>
+	<entry key='mission-1.manage_achilles'>Handle the needs of Achilles</entry>
+	<entry key='mission-1.manage_achilles.desc'>Manage Achilles. Do not lose the planet.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	

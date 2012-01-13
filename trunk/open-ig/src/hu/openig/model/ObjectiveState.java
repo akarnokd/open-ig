@@ -13,7 +13,7 @@ package hu.openig.model;
  * @author akarnokd, Jan 12, 2012
  */
 public enum ObjectiveState {
-	/** Objective is active. */
+	/** Objective is active (e.g., simply visible). */
 	ACTIVE,
 	/** Objective completed successfully. */
 	SUCCESS,
