@@ -49,7 +49,7 @@
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2012 Január 11 / A</desc>
 			<desc lang='en'>The upgraded resource file. 11th January, 2012 / A</desc>
 		</file>
-		<remove url='open-ig-upgrade-20120106a.zip' sha1='7ff823b1daa1a83be5e1e0d02b63fab529169ae3'>
+		<remove file='open-ig-upgrade-20120106a.zip' sha1='7ff823b1daa1a83be5e1e0d02b63fab529169ae3'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2012 Január 6 / A</desc>
 			<desc lang='en'>The upgraded resource file. 6th January, 2012 / A</desc>
 		</remove>
