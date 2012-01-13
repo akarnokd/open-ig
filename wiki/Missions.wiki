@@ -186,6 +186,7 @@ Video: new_caroline_virus, new_caroline_virus_again, etc.
 Notes:
   * Report the infection to colonel message
   * Receive hubble2 on Naxos and San Sterling
+  * Turn back traders. *Need ability to choose a target from overlapping units!*
 
 === Task 1 ===
 First virus infection
@@ -202,10 +203,24 @@ Subsequent virus infection, unless reported to colonel
 === Task 5 ===
 Subsequent virus infection, unless reported to colonel
 
-
 == Mission 13 ==
 
-Sequence: 8
+Sequence: 9
+
+Objective: Escort admiral Benson to New Caroline
+
+Failure condition: Not met with Benson
+
+Reward: 5 Laser ?
+
+Notes:
+  * Admiral's fleet starts off from Achilles
+  * Attacked by Garthog fleet containing one Battleship
+
+
+== Mission 14 ==
+
+Sequence: 10
 
 Objective: Destroy the virus carriers
 
@@ -215,3 +230,31 @@ Failure: *N/A*
 
 Notes:
   * Becomes available after Task 2 and report to colonel, or after task 5
+
+== Mission 15 ==
+
+Notes:
+  * See spy movie
+  * Talk to Kelly in the bar
+
+== Mission 16 ==
+
+Objective: Escort money carrier
+
+Notes:
+  * 2 weeks later
+  * New Caroline -> San Sterling
+  * Attacked by few Garthog fighters and destroyers
+
+== Mission 17 ==
+
+Objective: Stop the stolen prototype
+
+Reward: Move to level 3
+
+Notes:
+   * 1 week after money escort
+   * Appears near New Caroline -> Garthog N?
+   * Garthog: 2 Battleships, few destroyers, fighters, 1 Human Destroyer 2
+
+= Level 3: Commander =
