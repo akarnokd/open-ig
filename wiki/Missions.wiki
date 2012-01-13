@@ -1,0 +1,11 @@
+#summary List of missions, objectives, conditions and rewards
+
+<wiki:toc max_depth="1" />
+
+= Mission 1 =
+
+Objective: Rebuild Achilles
+
+Success condition: *original: N/A*
+
+Failure condition: Achilles gets deserted.
