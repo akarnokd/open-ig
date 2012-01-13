@@ -8,4 +8,52 @@ Objective: Rebuild Achilles
 
 Success condition: *original: N/A*
 
-Failure condition: Achilles gets deserted.
+Failure condition: Achilles gets destroyed. *Fired!*
+
+= Mission 2=
+
+Objective: Protect the random trader ships from pirates
+
+Success condition: *original: all traders saved?*
+
+Failure condition: *more than one trader lost?*
+
+*Fired when all traders lost?*
+
+Video: random trader under attack
+
+Remark: attack probably happens once per week, has TTL of several days
+
+== Task 1..3 ==
+
+Individual tasks for traders. 
+
+Rewards: 500 cr, 1000 cr, 5000 cr
+
+Last attack will contain a pirate destroyer
+
+Remark: interleaved with Mission 3 and 4
+
+= Mission 3 =
+
+Objective: Escort a cargo ship "Transport"
+
+Success condition: *ship not destroyed*, reward: Shield1
+
+Failure condition: *ship destroyed*
+
+Video: Escort cargo
+
+Remark: Pirate attack near San Sterling
+
+= Mission 4 =
+
+Objective: Resolve pirate battle near Naxos
+
+Success condition: *single pirate ship survived*
+
+Failure condition: *single pirate ship destroyed*
+
+Video: Naxos unknown ships?
+
+Remark: the single "Rebel" pirate ship will be your ally in the battle.
