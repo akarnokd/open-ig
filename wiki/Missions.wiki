@@ -83,6 +83,8 @@ Remark: if you saved the pirate in Mission 4, you get single-time help in the de
 
 == Mission 6 ==
 
+Sequence: 1
+
 Objective: Defend Achilles from Garthog surprise attack
 
 Notes: 
@@ -94,3 +96,63 @@ Success condition: Garthogs defeated (either in orbit or on ground)
 
 Failure condition: Achilles taken by Garthog. *Fired!*
 
+== Mission 7 ==
+
+=== Task 1 ===
+
+Sequence: 2
+
+Objective: Defend trader from Garthog pirates
+
+Video: merchant_under_attack_garthog
+
+Reward: 5000 cr
+
+
+=== Task 2 ===
+
+Sequence: 8
+
+Objective: Defend trader from Garthog pirates again
+
+Reward: Good relations with FreeTraders later on in the game
+
+== Mission 8 ==
+
+Sequence: 3
+
+Objective: Complete the test
+
+Notes:
+  * Activated by going to the bridge
+  * Flashbacks starts after this by 2 months
+
+== Mission 9 ==
+
+Sequence 4:
+
+Objective: Deal with the San Sterling Smuggler
+
+Success condition: either destroyed or smuggler flees
+
+Failure condition: 
+  * smuggler reaches the planet *san_sterling_smuggler_escaped*
+  * any other trader destroyed by you *san_sterling_smuggler_killed_innocent*
+
+
+Video: san_sterling_smuggler, san_sterling_smuggler_killed
+
+== Mission 10 ==
+
+Sequence: 5
+
+Objective: Escort governor of Centronom
+
+Success condition: *original: always*, ensure safe arrival
+
+Failure condition: governor's fleet destroyed
+
+Video: douglas_escort_centronom_governor
+
+Notes:
+  * Appears at San Sterling, heading to Naxos
