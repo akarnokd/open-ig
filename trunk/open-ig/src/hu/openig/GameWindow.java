@@ -2165,13 +2165,15 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void forceMessage(String messageId, Action0 onSeen) {
-		displayPrimary(Screens.BRIDGE);
-		allScreens.bridge.forceMessage(messageId, onSeen);
+		if (world() != null && !commons.worldLoading) {
+			displayPrimary(Screens.BRIDGE);
+			allScreens.bridge.forceMessage(messageId, onSeen);
+		}
 	}
 	@Override
 	public void loseGame() {
-		// TODO Auto-generated method stub
-		
+		displayPrimary(Screens.MAIN);
+		endGame();
 	}
 	@Override
 	public void winGame() {

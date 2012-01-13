@@ -568,6 +568,9 @@ public class StatusbarScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
+		if (commons.force) {
+			return false;
+		}
 		if (e.has(Type.UP) && screenMenu.visible() && !e.within(screenMenu.x, screenMenu.y, screenMenu.width, screenMenu.height)) {
 			screenMenu.visible(false);
 			return true;

@@ -146,8 +146,6 @@ public class BridgeScreen extends ScreenBase {
 	final int rowHeight = 25;
 	/** If the video playback completed and the panel is retracted. */
 	Action0 onVideoComplete;
-	/** Disable controls and force watching the video. */
-	public boolean force;
 	/** Action to invoke when a force-view was issued. */
 	public Action0 onSeen;
 	/**
@@ -426,7 +424,7 @@ public class BridgeScreen extends ScreenBase {
 			videoAnim.stop();
 			e.consume();
 		} else
-		if (force) {
+		if (commons.force) {
 			e.consume();
 			return true;
 		}
@@ -435,7 +433,7 @@ public class BridgeScreen extends ScreenBase {
 	
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (force) {
+		if (commons.force) {
 			if (e.type == UIMouse.Type.DOWN && videoRunning) {
 				videoAnim.stop();
 			}
@@ -605,7 +603,7 @@ public class BridgeScreen extends ScreenBase {
 			videoBack = null;
 		}
 		
-		force = false;
+		commons.force = false;
 		onSeen = null;
 		
 		videoAppearAnim.stop();
@@ -948,21 +946,24 @@ public class BridgeScreen extends ScreenBase {
 	 * @param onSeen the action to perform when the message ended
 	 */
 	public void forceMessage(final String messageId, final Action0 onSeen) {
-		
+		commons.simulation.pause();
 		if (videoRunning) {
 			videoAnim.stop();
 			rerunForce(messageId, onSeen);
+			return;
 		}
 		if (videoAppearAnim.isRunning()) {
 			rerunForce(messageId, onSeen);
+			return;
 		}
 		if (openCloseAnimating) {
 			rerunForce(messageId, onSeen);
+			return;
 		}
 		
 		final VideoMessage vm = world().bridge.receiveMessages.get(messageId);
 		vm.visible = true;
-		force = true;
+		commons.force = true;
 		this.onSeen = onSeen;
 		onMessageComplete = new Action0() {
 			@Override
