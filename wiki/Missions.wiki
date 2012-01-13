@@ -1,8 +1,9 @@
 #summary List of missions, objectives, conditions and rewards
 
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="2" />
 
-= Mission 1 =
+= Level 1: Lieutenant =
+== Mission 1 ==
 
 Objective: Rebuild Achilles
 
@@ -10,7 +11,7 @@ Success condition: *original: N/A*
 
 Failure condition: Achilles gets destroyed. *Fired!*
 
-= Mission 2=
+== Mission 2==
 
 Objective: Protect the random trader ships from pirates
 
@@ -24,7 +25,7 @@ Video: random trader under attack
 
 Remark: attack probably happens once per week, has TTL of several days
 
-== Task 1..3 ==
+=== Task 1..3 ===
 
 Individual tasks for traders. 
 
@@ -34,7 +35,7 @@ Last attack will contain a pirate destroyer
 
 Remark: interleaved with Mission 3 and 4
 
-= Mission 3 =
+== Mission 3 ==
 
 Objective: Escort a cargo ship "Transport"
 
@@ -46,7 +47,7 @@ Video: Escort cargo
 
 Remark: Pirate attack near San Sterling
 
-= Mission 4 =
+== Mission 4 ==
 
 Objective: Resolve pirate battle near Naxos
 
@@ -58,7 +59,7 @@ Video: Naxos unknown ships?
 
 Remark: the single "Rebel" pirate ship will be your ally in the battle.
 
-= Mission 5 =
+== Mission 5 ==
 
 Objective: Cover the Thorin's retreat from Garthog forces
 
@@ -72,3 +73,5 @@ douglas_thorin_escort, douglas_thorin_escort_reinforcements
 Movie: thorin_escort
 
 Remark: if you saved the pirate in Mission 4, you get single-time help in the defense.
+
+= Level 2: Captain =
