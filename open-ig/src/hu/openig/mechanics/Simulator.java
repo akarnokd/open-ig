@@ -21,6 +21,7 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Message;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
@@ -399,6 +400,15 @@ public final class Simulator {
 			planet.morale = (int)nextMorale;
 			
 			float nextPopulation = 0;
+			if (nextMorale < 20) {
+				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 100);
+			} else
+			if (nextMorale < 30) {
+				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 150);
+			} else
+			if (nextMorale < 40) {
+				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 200);
+			} else
 			if (nextMorale < 50) {
 				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
 			} else {
@@ -437,9 +447,13 @@ public final class Simulator {
 					if (planet.lastMorale > 15) {
 						planet.owner.statistics.planetsRevolted++;
 					}
+					if (planet.morale < 10 && planet.lastMorale < 10) {
+						revoltPlanet(world, planet);
+					}
 				}
 			}
 		}
+
 		
 		if (planet.owner != null) {
 			planet.owner.statistics.totalPopulation += planet.population;
@@ -448,6 +462,43 @@ public final class Simulator {
 		}
 		
 		return result;
+	}
+	/**
+	 * Switch sides for the revolting planet.
+	 * @param world the world
+	 * @param planet the planet
+	 */
+	static void revoltPlanet(World world, Planet planet) {
+		
+		// find the closest known alien planet
+		double d = -1;
+		Player newOwner = null;
+		for (Planet p : world.planets.values()) {
+			if (p.owner != null && p.owner != planet.owner && planet.owner.knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+				double d2 = Math.hypot(planet.x - p.x, planet.y - p.y);
+				if (d2 < 100) {
+					if (d < 0 || d > d2) {
+						d = d2;
+						newOwner = p.owner;
+					}
+				}
+			}
+		}
+		if (d < 0) {
+			newOwner = world.players.get("Pirates");
+		}
+		
+		
+		if (newOwner != null) {
+			planet.takeover(newOwner);
+			planet.autoBuild = AutoBuild.AI;
+			planet.morale = 50;
+		} else {
+			planet.owner.ai.onPlanetDied(planet);
+			world.scripting.onLost(planet);
+			planet.owner.statistics.planetsDied++;
+			planet.die();
+		}
 	}
 	/**
 	 * Make progress on the active research if any.

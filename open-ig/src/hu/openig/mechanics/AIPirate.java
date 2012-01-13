@@ -31,10 +31,11 @@ import java.util.List;
  * @author akarnokd, 2011.12.08.
  */
 public class AIPirate implements AIManager {
-	
+	/** The player. */
+	protected Player p;
 	@Override
 	public void init(Player p) {
-		// TODO Auto-generated method stub
+		this.p = p;
 	}
 	
 	@Override
@@ -51,7 +52,7 @@ public class AIPirate implements AIManager {
 	@Override
 	public void apply() {
 		// TODO Auto-generated method stub
-		
+		p.money += 4000;
 	}
 
 	@Override

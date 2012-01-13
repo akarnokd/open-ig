@@ -159,6 +159,8 @@ public class CommonResources implements GameEnvironment {
 	public final Map<Player, Future<?>> runningAI = new HashMap<Player, Future<?>>();
 	/** Indicate if an asynchronous save is in operation. */
 	public final WipPort saving = new WipPort();
+	/** Disable controls and force watching the video. */
+	public boolean force;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
