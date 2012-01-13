@@ -17,6 +17,7 @@ import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ClickLabel;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
@@ -105,6 +106,12 @@ public class AchievementsScreen extends ScreenBase {
 	UIImageButton research;
 	/** Diplomacy button. */
 	UIImageButton diplomacy;
+	/** Production button. */
+	UIImage noProduction;
+	/** Research button. */
+	UIImage noResearch;
+	/** Diplomacy button. */
+	UIImage noDiplomacy;
 	/** Information button. */
 	UIImageButton info;
 	/** Statistics label. */
@@ -149,7 +156,10 @@ public class AchievementsScreen extends ScreenBase {
 		
 		achievementLabel.x = base.x + base.width / 2 + (base.width / 2 - statisticsLabel.width) / 2;
 		achievementLabel.y = base.y - statisticsLabel.height / 2;
-		
+
+		noProduction.location(production.location());
+		noResearch.location(research.location());
+		noDiplomacy.location(diplomacy.location());
 	}
 
 	@Override
@@ -223,6 +233,11 @@ public class AchievementsScreen extends ScreenBase {
 				displaySecondary(Screens.PRODUCTION);
 			}
 		};
+		
+		noProduction = new UIImage(commons.common().emptyButton);
+		noResearch = new UIImage(commons.common().emptyButton);
+		noDiplomacy = new UIImage(commons.common().emptyButton);
+
 		
 		research = new UIImageButton(commons.info().research);
 		research.onClick = new Action0() {
@@ -353,15 +368,24 @@ public class AchievementsScreen extends ScreenBase {
 		}		
 		askRepaint();
 	}
-	/* (non-Javadoc)
-	 * @see hu.openig.v1.ScreenBase#onEnter()
-	 */
 	@Override
 	public void onEnter(Screens mode) {
 		this.mode = mode == null ? Screens.STATISTICS : mode;
 		onResize();
 		adjustScrollButtons();
 		adjustLabels();
+		
+		production.visible(world().level > 1);
+		research.visible(world().level > 2);
+		
+		noProduction.visible(!production.visible());
+		noResearch.visible(!research.visible());
+		/*
+		diplomacy.visible(world().level > 3);
+		noDiplomacy.visible(!diplomacy.visible());
+		*/
+		diplomacy.visible(false);
+		noDiplomacy.visible(false);
 	}
 	/** Adjust label selection. */
 	void adjustLabels() {

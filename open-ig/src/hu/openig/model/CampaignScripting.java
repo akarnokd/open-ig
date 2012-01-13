@@ -225,4 +225,6 @@ public interface CampaignScripting {
 	 * Notification about a new game start.
 	 */
 	void onNewGame();
+	/** Notify the scripting that a level jump occurred. */
+	void onLevelChanged();
 }

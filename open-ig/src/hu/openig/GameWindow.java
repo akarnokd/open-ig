@@ -819,6 +819,7 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_1:
 					if (e.isControlDown() && !commons.battleMode) {
 						commons.world().level = 1;
+						world().scripting.onLevelChanged();
 						if (primary != null) {
 							primary.onLeave();
 						}
@@ -834,6 +835,7 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_2:
 					if (e.isControlDown() && !commons.battleMode) {
 						commons.world().level = 2;
+						world().scripting.onLevelChanged();
 						if (primary != null) {
 							primary.onLeave();
 						}
@@ -849,6 +851,7 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_3:
 					if (e.isControlDown() && !commons.battleMode) {
 						commons.world().level = 3;
+						world().scripting.onLevelChanged();
 						if (primary != null) {
 							primary.onLeave();
 						}
@@ -940,28 +943,32 @@ public class GameWindow extends JFrame implements GameControls {
 					e.consume();
 					break;
 				case KeyEvent.VK_F5:
-					if (secondary != null) {
-						if (secondary.screen() == Screens.PRODUCTION) {
-							hideSecondary();
+					if (world().level >= 2) {
+						if (secondary != null) {
+							if (secondary.screen() == Screens.PRODUCTION) {
+								hideSecondary();
+							} else {
+								displaySecondary(Screens.PRODUCTION);
+							}
 						} else {
 							displaySecondary(Screens.PRODUCTION);
 						}
-					} else {
-						displaySecondary(Screens.PRODUCTION);
+						e.consume();
 					}
-					e.consume();
 					break;
 				case KeyEvent.VK_F6:
-					if (secondary != null) {
-						if (secondary.screen() == Screens.RESEARCH) {
-							hideSecondary();
+					if (world().level >= 3) {
+						if (secondary != null) {
+							if (secondary.screen() == Screens.RESEARCH) {
+								hideSecondary();
+							} else {
+								displaySecondary(Screens.RESEARCH);
+							}
 						} else {
 							displaySecondary(Screens.RESEARCH);
 						}
-					} else {
-						displaySecondary(Screens.RESEARCH);
+						e.consume();
 					}
-					e.consume();
 					break;
 				case KeyEvent.VK_F7:
 					if (secondary != null) {
@@ -1070,6 +1077,7 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_4:
 					if (e.isControlDown()) {
 						commons.world().level = 4;
+						world().scripting.onLevelChanged();
 						if (primary != null) {
 							primary.onLeave();
 						}
@@ -1081,6 +1089,7 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_5:
 					if (e.isControlDown()) {
 						commons.world().level = 5;
+						world().scripting.onLevelChanged();
 						if (primary != null) {
 							primary.onLeave();
 						}

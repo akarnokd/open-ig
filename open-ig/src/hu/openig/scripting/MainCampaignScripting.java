@@ -285,9 +285,7 @@ public class MainCampaignScripting implements CampaignScripting {
 		}
 		// update view limits if level changes
 		if (lastLevel != world.level) {
-			applyViewLimits();
-			applyPlanetOwners();
-			lastLevel = world.level;
+			onLevelChanged();
 		}
 	}
 	/**
@@ -394,8 +392,7 @@ public class MainCampaignScripting implements CampaignScripting {
 	public void onNewGame() {
 		// TODO Auto-generated method stub
 		lastLevel = world.level;
-		applyViewLimits();
-		applyPlanetOwners();
+		onLevelChanged();
 	}
 	/**
 	 * Add/remove planets to the player based on level.
@@ -422,6 +419,7 @@ public class MainCampaignScripting implements CampaignScripting {
 				setOwner(pi, empire);
 			}
 		}
+		empire.currentPlanet = planet("Achilles");
 	}
 	/**
 	 * Change the owner of the given planet without invoking event handlers.
@@ -524,5 +522,11 @@ public class MainCampaignScripting implements CampaignScripting {
 			}
 		};
 		return o;
+	}
+	@Override
+	public void onLevelChanged() {
+		applyViewLimits();
+		applyPlanetOwners();
+		lastLevel = world.level;
 	}
 }

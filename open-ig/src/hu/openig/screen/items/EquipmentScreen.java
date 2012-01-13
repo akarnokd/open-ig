@@ -870,6 +870,10 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		});
 
+		noProduction.visible(world().level < 2);
+		noResearch.visible(world().level < 3);
+		productionButton.visible(world().level >= 2);
+		researchButton.visible(world().level >= 3);
 	}
 
 	@Override

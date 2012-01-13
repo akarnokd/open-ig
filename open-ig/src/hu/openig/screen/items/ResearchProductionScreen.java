@@ -223,6 +223,9 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The research button. */
 	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton researchButton;
+	/** The research button. */
+	@ModeUI(mode = Screens.PRODUCTION)
+	UIImage noResearch;
 	/** The equipment button. */
 	UIImageButton equipmentButton;
 	/** The bridge button. */
@@ -753,6 +756,9 @@ public class ResearchProductionScreen extends ScreenBase {
 			}
 		});
 		statistics = null;
+		
+		researchButton.visible(world().level >= 3);
+		noResearch.visible(world().level < 3);
 	}
 	@Override
 	public void onFinish() {
@@ -771,6 +777,8 @@ public class ResearchProductionScreen extends ScreenBase {
 		researchButton = new UIImageButton(commons.research().research);
 		productionButton = new UIImageButton(commons.research().production);
 		equipmentButton = new UIImageButton(commons.research().equipmentButton);
+		noResearch = new UIImage(commons.common().emptyButton);
+		noResearch.visible(false);
 
 		mainCategory = new UIImage(commons.research().mainClassPanel);
 		mainCategory.z = -1;
@@ -1146,6 +1154,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		
 		productionButton.location(equipmentButton.x, equipmentButton.y + equipmentButton.height);
 		researchButton.location(productionButton.location());
+		noResearch.location(researchButton.location());
 		
 		bridgeButton.location(researchButton.x, researchButton.y + researchButton.height);
 		
