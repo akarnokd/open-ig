@@ -11,6 +11,7 @@ package hu.openig.scripting;
 import java.util.Collections;
 import java.util.List;
 
+import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.GameScripting;
@@ -286,5 +287,10 @@ public class EmptyScripting implements GameScripting {
 	@Override
 	public boolean mayControlFleet(Fleet f) {
 		return true;
+	}
+	@Override
+	public Pair<String, String> battleReward(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

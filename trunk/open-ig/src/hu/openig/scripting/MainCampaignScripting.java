@@ -9,6 +9,7 @@
 package hu.openig.scripting;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.GameScripting;
@@ -865,5 +866,10 @@ public class MainCampaignScripting implements GameScripting {
 	public boolean mayControlFleet(Fleet f) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+	@Override
+	public Pair<String, String> battleReward(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
