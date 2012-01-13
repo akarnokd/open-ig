@@ -86,4 +86,9 @@ public interface GameEnvironment {
 	 * @param state the state
 	 */
 	void showObjectives(boolean state);
+	/**
+	 * Returns the current simulation step time in milliseconds.
+	 * @return the step length in milliseconds
+	 */
+	int simulationSpeed();
 }

@@ -23,7 +23,6 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.World;
-import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -58,6 +57,8 @@ public class MainCampaignScripting implements CampaignScripting {
 	final Map<String, Objective> allObjectives = U.newLinkedHashMap();
 	/** The last level. */
 	int lastLevel;
+	/** The countdowns of various actions. */
+	final Map<String, Integer> countdowns = U.newHashMap();
 	/**
 	 * Add/remove planets to the player based on level.
 	 */
@@ -107,6 +108,25 @@ public class MainCampaignScripting implements CampaignScripting {
 	void checkLevel1Objectives() {
 		checkMission1Task2();
 		checkMission1Complete();
+		
+		Objective o0 = objective("Mission-1");
+		if (o0.state == ObjectiveState.SUCCESS && isTimeout("Mission-1-Success")) {
+			o0.visible = false;
+			objective("Mission-1-Task-1").visible = false;
+			objective("Mission-1-Task-2").visible = false;
+			objective("Mission-1-Task-4").visible = true;
+			world.env.showObjectives(true);
+			clearTimeout("Mission-1-Success");
+		} else
+		if (o0.state == ObjectiveState.FAILURE && isTimeout("Mission-1-Failure")) {
+			world.env.forceMessage("Douglas-Fire-Lost-Planet", new Action0() {
+				@Override
+				public void invoke() {
+					world.env.loseGame();
+				}
+			});
+			clearTimeout("Mission-1-Failure");
+		}
 	}
 	/**
 	 * Check if mission 1 was completed.
@@ -119,16 +139,7 @@ public class MainCampaignScripting implements CampaignScripting {
 		if (o0.visible && o1.state == ObjectiveState.SUCCESS && o2.state == ObjectiveState.SUCCESS) {
 			if (o0.state == ObjectiveState.ACTIVE) {
 				setObjectiveState(o0, ObjectiveState.SUCCESS);
-				Parallels.runDelayedInEDT(13000, new Runnable() {
-					@Override
-					public void run() {
-						o0.visible = false;
-						o1.visible = false;
-						o2.visible = false;
-						objective("Mission-1-Task-4").visible = true;
-						world.env.showObjectives(true);
-					}
-				});
+				setTimeout("Mission-1-Success", 13000);
 			}
 			
 		}
@@ -142,7 +153,7 @@ public class MainCampaignScripting implements CampaignScripting {
 			Objective o = objective("Mission-1");
 			if (o.visible) {
 				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
-					playMission1Fail();
+					setTimeout("Mission-1-Failure", 3000);
 				}
 			}
 		}
@@ -218,7 +229,7 @@ public class MainCampaignScripting implements CampaignScripting {
 			Objective o = objective("Mission-1-Task-3");
 			if (o.visible) {
 				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
-					playMission1Fail();
+					setTimeout("Mission-1-Failure", 3000);
 				}
 			}
 		}
@@ -232,7 +243,7 @@ public class MainCampaignScripting implements CampaignScripting {
 			Objective o = objective("Mission-1-Task-4");
 			if (o.visible) {
 				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
-					playMission1Fail();
+					setTimeout("Mission-1-Failure", 3000);
 				}
 			}
 		}
@@ -241,9 +252,9 @@ public class MainCampaignScripting implements CampaignScripting {
 	void checkObjectives() {
 		if (world.level == 1) {
 			checkLevel1Objectives();
-			
 			send("Naxos-Check").visible = true;
 			send("San Sterling-Check").visible = true;
+			
 		}
 		
 	}
@@ -439,6 +450,12 @@ public class MainCampaignScripting implements CampaignScripting {
 				Objective o = allObjectives.get(id);
 				o.visible = xo.getBoolean("visible");
 				o.state = ObjectiveState.valueOf(xo.get("state"));
+			}
+		}
+		countdowns.clear();
+		for (XElement xttls : in.childrenWithName("countdowns")) {
+			for (XElement xttl : xttls.childrenWithName("countdown")) {
+				countdowns.put(xttl.get("id"), xttl.getInt("value"));
 			}
 		}
 	}
@@ -667,7 +684,15 @@ public class MainCampaignScripting implements CampaignScripting {
 		if (lastLevel != world.level) {
 			onLevelChanged();
 		}
+		updateCounters();
 		checkObjectives();
+	}
+	/** Update timeout counters. */
+	void updateCounters() {
+		for (Map.Entry<String, Integer> e : countdowns.entrySet()) {
+			Integer i = e.getValue();
+			e.setValue(Math.max(0, i - world.env.simulationSpeed()));
+		}
 	}
 	@Override
 	public void onUpgrading(Planet planet, Building building, int newLevel) {
@@ -694,22 +719,6 @@ public class MainCampaignScripting implements CampaignScripting {
 	 */
 	Player player(String id) {
 		return world.players.get(id);
-	}
-	/**
-	 * Play the mission 1 failure video.
-	 */
-	void playMission1Fail() {
-		Parallels.runDelayedInEDT(3000, new Runnable() {
-			@Override
-			public void run() {
-				world.env.forceMessage("Douglas-Fire-Lost-Planet", new Action0() {
-					@Override
-					public void invoke() {
-						world.env.loseGame();
-					}
-				});
-			}
-		});
 	}
 	/**
 	 * Get a receive-message.
@@ -742,6 +751,13 @@ public class MainCampaignScripting implements CampaignScripting {
 			xo.set("id", o.id);
 			xo.set("visible", o.visible);
 			xo.set("state", o.state);
+		}
+		
+		XElement xttls = out.add("countdowns");
+		for (Map.Entry<String, Integer> e : countdowns.entrySet()) {
+			XElement xttl = xttls.add("countdown");
+			xttl.set("id", e.getKey());
+			xttl.set("value", e.getValue());
 		}
 	}
 	/**
@@ -784,5 +800,34 @@ public class MainCampaignScripting implements CampaignScripting {
 	 */
 	void setupObjectiveFunctions() {
 		// TODO implement
+	}
+	/**
+	 * Check if a timeout has been reached.
+	 * @param id the reference id
+	 * @return true if timeout reached
+	 */
+	boolean isTimeout(String id) {
+		Integer i = countdowns.get(id);
+		if (i != null && i.intValue() <= 0) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Register a new timeout counter.
+	 * @param id the reference id
+	 * @param time the time
+	 */
+	void setTimeout(String id, int time) {
+		countdowns.put(id, time);
+	}
+	/**
+	 * Remove timeout.
+	 * @param id the reference id
+	 */
+	void clearTimeout(String id) {
+		if (countdowns.remove(id) == null) {
+			new AssertionError("ClearTimeout, missing id: " + id).printStackTrace();
+		}
 	}
 }
