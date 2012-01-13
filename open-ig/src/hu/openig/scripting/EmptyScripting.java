@@ -283,4 +283,8 @@ public class EmptyScripting implements GameScripting {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public boolean mayControlFleet(Fleet f) {
+		return true;
+	}
 }

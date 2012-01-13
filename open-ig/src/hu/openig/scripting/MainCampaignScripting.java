@@ -860,6 +860,10 @@ public class MainCampaignScripting implements GameScripting {
 	@Override
 	public void onGroundwarStep(GroundwarWorld war) {
 		// TODO Auto-generated method stub
-		
+	}
+	@Override
+	public boolean mayControlFleet(Fleet f) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

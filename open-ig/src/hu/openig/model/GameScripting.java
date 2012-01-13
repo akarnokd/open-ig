@@ -257,4 +257,11 @@ public interface GameScripting {
 	 * @param war the battle context
 	 */
 	void onGroundwarFinish(GroundwarWorld war);
+	/**
+	 * Test if the user should be able to control a particular own fleet.
+	 * <p>Used by escort-like missions.</p>
+	 * @param f the fleet
+	 * @return true if may control
+	 */
+	boolean mayControlFleet(Fleet f);
 }
