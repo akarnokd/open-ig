@@ -957,11 +957,13 @@ public class StatusbarScreen extends ScreenBase {
 			
 			g2.translate(tx, ty);
 			
+			int background = 0xC0000000;
+			
 			List<Objective> objs = world().scripting.currentObjectives();
 			
 			if (objs.size() == 0) {
 				int w = commons.text().getTextWidth(14, get("no_objectives"));
-				g2.setColor(new Color(0xC0000000, true));
+				g2.setColor(new Color(background, true));
 
 				String hideS = get("hide_objectives");
 				int hideW = commons.text().getTextWidth(7, hideS);
@@ -995,7 +997,7 @@ public class StatusbarScreen extends ScreenBase {
 			
 			w = Math.min(Math.max(hideW, w), limit);
 			
-			g2.setColor(new Color(0xC0000000, true));
+			g2.setColor(new Color(background, true));
 			
 			g2.fillRect(0, 0, w + 4, h + 13);
 			g2.setColor(new Color(0xFFC0C0C0));
