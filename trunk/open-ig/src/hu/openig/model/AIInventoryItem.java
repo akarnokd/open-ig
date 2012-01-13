@@ -22,6 +22,8 @@ public class AIInventoryItem {
 	public Player owner;
 	/** The count. */
 	public int count;
+	/** The inventory item tag. */
+	public String tag;
 	/** The copy of the inventory slots. */
 	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
 	/**
@@ -32,6 +34,7 @@ public class AIInventoryItem {
 		this.type = ii.type;
 		this.count = ii.count;
 		this.owner = ii.owner;
+		this.tag = ii.tag;
 		for (InventorySlot is : ii.slots) {
 			slots.add(is.copy());
 		}

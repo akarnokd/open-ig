@@ -596,6 +596,7 @@ public class World {
 			}
 			for (XElement xinv : xplanet.childElement("inventory").childrenWithName("item")) {
 				InventoryItem ii = new InventoryItem();
+				ii.tag = xinv.get("tag", null);
 				ii.owner = players.get(xinv.get("owner"));
 				ii.type = researches.get(xinv.get("id"));
 				ii.count = xinv.getInt("count");
@@ -1048,6 +1049,7 @@ public class World {
 				xpii.set("count", pii.count);
 				xpii.set("hp", pii.hp);
 				xpii.set("shield", pii.shield);
+				xpii.set("tag", pii.tag);
 				Integer ttl = p.timeToLive.get(pii); 
 				if (ttl != null) {
 					xpii.set("ttl", ttl);
@@ -1129,6 +1131,7 @@ public class World {
 			xfii.set("count", fii.count);
 			xfii.set("hp", fii.hp);
 			xfii.set("shield", fii.shield);
+			xfii.set("tag", fii.tag);
 			for (InventorySlot fis : fii.slots) {
 				XElement xfs = xfii.add("slot");
 				xfs.set("id", fis.slot.id);
@@ -1351,6 +1354,7 @@ public class World {
 
 			for (XElement xpii : xplanet.childrenWithName("item")) {
 				InventoryItem pii = new InventoryItem();
+				pii.tag = xpii.get("tag", null);
 				pii.owner = players.get(xpii.get("owner"));
 				pii.type = researches.get(xpii.get("id"));
 				pii.count = xpii.getInt("count");
@@ -1555,6 +1559,7 @@ public class World {
 				InventoryItem fii = new InventoryItem();
 				fii.type = researches.get(xfii.get("id"));
 				fii.count = count;
+				fii.tag = xfii.get("tag", null);
 				fii.owner = f.owner;
 				Set<String> slots = new HashSet<String>();
 				for (XElement xfis : xfii.childrenWithName("slot")) {

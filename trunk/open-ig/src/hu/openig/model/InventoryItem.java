@@ -27,6 +27,8 @@ public class InventoryItem {
 	public int hp;
 	/** The current shield points. */
 	public int shield;
+	/** The optional tag used by the AI or scripting to remember a concrete inventory item. */
+	public String tag;
 	/** The fleet's inventory slots. */
 	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
 	/**
