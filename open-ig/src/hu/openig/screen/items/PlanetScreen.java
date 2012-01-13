@@ -2562,7 +2562,6 @@ public class PlanetScreen extends ScreenBase {
 				up.onClick = new Action0() {
 					@Override
 					public void invoke() {
-						sound(SoundType.CLICK_MEDIUM_2);
 						doUpgrade(j);
 					}
 				};
@@ -2653,6 +2652,10 @@ public class PlanetScreen extends ScreenBase {
 				world().statistics.moneySpent += delta;
 
 				currentBuilding.setLevel(j);
+				sound(SoundType.CLICK_MEDIUM_2);
+			} else {
+				sound(SoundType.NOT_AVAILABLE);
+				commons.control().displayError(get("message.not_enough_money"));
 			}
 		}
 	}
