@@ -68,4 +68,6 @@ Failure condition: *Thorin lost*, *Fired!*
 
 Video: Request reinforcements: Success: +3 Fighter 1
 
+Movie: thorin_escort
+
 Remark: if you saved the pirate in Mission 4, you get single-time help in the defense.
