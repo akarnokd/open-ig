@@ -2806,7 +2806,7 @@ public class StarmapScreen extends ScreenBase {
 	 * @param z the zoom index
 	 */
 	public void setZoomIndex(int z) {
-		zoomIndex = Math.max(0, Math.min(z, zoomLevelCount - 1));
+		zoomIndex = Math.max(0, Math.min(z, zoomLevelCount));
 		selectRadarDot();
 		limitOffsets();
 		computeViewport();

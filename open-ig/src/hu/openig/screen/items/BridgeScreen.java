@@ -28,6 +28,7 @@ import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageToggleButton;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 
 import java.awt.AlphaComposite;
@@ -145,6 +146,10 @@ public class BridgeScreen extends ScreenBase {
 	final int rowHeight = 25;
 	/** If the video playback completed and the panel is retracted. */
 	Action0 onVideoComplete;
+	/** Disable controls and force watching the video. */
+	public boolean force;
+	/** Action to invoke when a force-view was issued. */
+	public Action0 onSeen;
 	/**
 	 * A video message entry.
 	 * @author akarnokd, 2012.01.12.
@@ -420,12 +425,22 @@ public class BridgeScreen extends ScreenBase {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE && videoRunning) {
 			videoAnim.stop();
 			e.consume();
+		} else
+		if (force) {
+			e.consume();
+			return true;
 		}
 		return super.keyboard(e);
 	}
 	
 	@Override
 	public boolean mouse(UIMouse e) {
+		if (force) {
+			if (e.type == UIMouse.Type.DOWN && videoRunning) {
+				videoAnim.stop();
+			}
+			return true;
+		}
 		if (messageOpen && !messageClosing) {
 			if (listUp.enabled() && listUp.within(e)) {
 				return listUp.mouse(e);
@@ -589,6 +604,9 @@ public class BridgeScreen extends ScreenBase {
 			videoFront = null;
 			videoBack = null;
 		}
+		
+		force = false;
+		onSeen = null;
 		
 		videoAppearAnim.stop();
 		videos.clear();
@@ -893,6 +911,10 @@ public class BridgeScreen extends ScreenBase {
 				onVideoComplete = null;
 			}
 			world().scripting.onMessageSeen(fVideo);
+			if (onSeen != null) {
+				onSeen.invoke();
+				onSeen = null;
+			}
 		}
 		askRepaint();
 	}
@@ -919,5 +941,70 @@ public class BridgeScreen extends ScreenBase {
 			e.videoMessage = msg;
 			videos.add(e);
 		}
+	}
+	/**
+	 * Force the playback of the given message.
+	 * @param messageId the message id
+	 * @param onSeen the action to perform when the message ended
+	 */
+	public void forceMessage(final String messageId, final Action0 onSeen) {
+		
+		if (videoRunning) {
+			videoAnim.stop();
+			rerunForce(messageId, onSeen);
+		}
+		if (videoAppearAnim.isRunning()) {
+			rerunForce(messageId, onSeen);
+		}
+		if (openCloseAnimating) {
+			rerunForce(messageId, onSeen);
+		}
+		
+		final VideoMessage vm = world().bridge.receiveMessages.get(messageId);
+		vm.visible = true;
+		force = true;
+		this.onSeen = onSeen;
+		onMessageComplete = new Action0() {
+			@Override
+			public void invoke() {
+				send.selected = false;
+				receive.selected = true;
+				selectedVideoId = messageId;
+				
+				List<VideoMessage> list = world().scripting.getReceiveMessages();
+				
+				listOffset = list.indexOf(vm);
+				
+				playProjectorOpen();
+			}
+		};
+		onProjectorComplete = new Action0() {
+			@Override
+			public void invoke() {
+				playVideo(vm.media);
+			}
+		};
+		if (!messageOpen) {
+			playMessageOpen();
+		} else {
+			if (!projectorOpen) {
+				onMessageComplete.invoke();
+			} else {
+				onProjectorComplete.invoke();
+			}
+		}
+	}
+	/**
+	 * Rerun the force message.
+	 * @param messageId the message id
+	 * @param onSeen on seen action
+	 */
+	void rerunForce(final String messageId, final Action0 onSeen) {
+		Parallels.runDelayedInEDT(1000, new Runnable() {
+			@Override
+			public void run() {
+				forceMessage(messageId, onSeen);
+			}
+		});
 	}
 }

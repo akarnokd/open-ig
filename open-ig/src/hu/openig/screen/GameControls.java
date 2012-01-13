@@ -139,4 +139,23 @@ public interface GameControls {
 	 * @return the requested screen
 	 */
 	<T extends ScreenBase> T getScreen(Screens screen);
+	/**
+	 * Force display of the given message on bridge.
+	 * @param messageId the message ID
+	 * @param onSeen the action to perform once the user saw the message
+	 */
+	void forceMessage(String messageId, Action0 onSeen);
+	/**
+	 * Lose the current game. Game over.
+	 */
+	void loseGame();
+	/**
+	 * Win the current game.
+	 */
+	void winGame();
+	/**
+	 * Display or hide the objectives.
+	 * @param state the state
+	 */
+	void showObjectives(boolean state);
 }

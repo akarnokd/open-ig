@@ -870,4 +870,20 @@ public class CommonResources implements GameEnvironment {
 	public Profile profile() {
 		return profile;
 	}
+	@Override
+	public void forceMessage(String messageId, Action0 onSeen) {
+		control().forceMessage(messageId, onSeen);
+	}
+	@Override
+	public void loseGame() {
+		control().loseGame();
+	}
+	@Override
+	public void winGame() {
+		control().winGame();
+	}
+	@Override
+	public void showObjectives(boolean state) {
+		control().showObjectives(state);
+	}
 }

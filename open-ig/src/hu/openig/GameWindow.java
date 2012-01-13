@@ -66,6 +66,7 @@ import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.TestScreen;
 import hu.openig.screen.items.VideoScreen;
 import hu.openig.ui.UIMouse;
+import hu.openig.utils.Parallels;
 import hu.openig.utils.XElement;
 
 import java.awt.Container;
@@ -1649,35 +1650,8 @@ public class GameWindow extends JFrame implements GameControls {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							commons.labels().replaceWith(fworld.labels);
-							commons.world(fworld);
-							commons.worldLoading = false;
-							
-							if (pri == Screens.MAIN 
-									|| pri == Screens.LOAD_SAVE 
-									|| pri == Screens.SINGLEPLAYER
-									) {
-								displayPrimary(Screens.BRIDGE);
-								displayStatusbar();
-							} else
-							if (pri == Screens.SPACEWAR) {
-								displayPrimary(Screens.STARMAP);
-								displayStatusbar();
-							} else
-							if (pri != null) {
-								displayPrimary(pri);
-							}
-							if (sec != null) {
-								displaySecondary(sec);
-							}
-							if (status) {
-								displayStatusbar();
-							}
-							restoreSettings(xworld);
-							commons.start(true);
-							if (!frunning) {
-								commons.simulation.pause();
-							}
+							reenterWorld(pri, sec, status, frunning, xworld,
+									fworld);
 						}
 					});
 
@@ -1688,6 +1662,48 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}, "Load");
 		t.start();
+	}
+	/**
+	 * Re-enter a world.
+	 * @param pri the primary screen
+	 * @param sec the secondary screen
+	 * @param status the status
+	 * @param frunning was running
+	 * @param xworld the world settings
+	 * @param fworld the world object
+	 */
+	void reenterWorld(final Screens pri, final Screens sec,
+			final boolean status, final boolean frunning,
+			final XElement xworld, final World fworld) {
+		commons.labels().replaceWith(fworld.labels);
+		commons.world(fworld);
+		commons.worldLoading = false;
+		
+		if (pri == Screens.MAIN 
+				|| pri == Screens.LOAD_SAVE 
+				|| pri == Screens.SINGLEPLAYER
+				) {
+			displayPrimary(Screens.BRIDGE);
+			displayStatusbar();
+		} else
+		if (pri == Screens.SPACEWAR) {
+			displayPrimary(Screens.STARMAP);
+			displayStatusbar();
+		} else
+		if (pri != null) {
+			displayPrimary(pri);
+		}
+		if (sec != null) {
+			displaySecondary(sec);
+		}
+		if (status) {
+			displayStatusbar();
+		}
+		restoreSettings(xworld);
+		commons.start(true);
+		if (!frunning) {
+			commons.simulation.pause();
+		}
 	}
 	/**
 	 * Save the game related settings such as position and configuration values.
@@ -1712,15 +1728,18 @@ public class GameWindow extends JFrame implements GameControls {
 	void restoreSettings(XElement xworld) {
 		// restore starmap location and zoom
 		if (xworld.has("starmap-z")) {
-			allScreens.starmap.setZoomIndex(xworld.getInt("starmap-z"));
+			int z = xworld.getInt("starmap-z");
+			allScreens.starmap.setZoomIndex(z);
 			allScreens.starmap.newGameStarted = false;
 		}
 		if (xworld.has("starmap-x")) {
-			allScreens.starmap.setXOffset(xworld.getInt("starmap-x"));
+			int x = xworld.getInt("starmap-x");
+			allScreens.starmap.setXOffset(x);
 			allScreens.starmap.newGameStarted = false;
 		}
 		if (xworld.has("starmap-y")) {
-			allScreens.starmap.setYOffset(xworld.getInt("starmap-y"));
+			int y = xworld.getInt("starmap-y");
+			allScreens.starmap.setYOffset(y);
 			allScreens.starmap.newGameStarted = false;
 		}
 		allScreens.spacewar.viewCommandSelected(xworld.getBoolean("spacewar-command", allScreens.spacewar.viewCommandSelected()));
@@ -2143,5 +2162,34 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public JComponent renderingComponent() {
 		return surface;
+	}
+	@Override
+	public void forceMessage(String messageId, Action0 onSeen) {
+		displayPrimary(Screens.BRIDGE);
+		allScreens.bridge.forceMessage(messageId, onSeen);
+	}
+	@Override
+	public void loseGame() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void winGame() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void showObjectives(boolean state) {
+		boolean wasVisible = allScreens.statusbar.objectives.visible();
+		allScreens.statusbar.objectives.visible(state);
+		repaintInner();
+		if (state && !wasVisible) {
+			Parallels.runDelayedInEDT(10000, new Runnable() {
+				@Override
+				public void run() {
+					allScreens.statusbar.objectives.visible(false);
+				}
+			});
+		}
 	}
 }

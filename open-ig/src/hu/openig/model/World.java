@@ -908,6 +908,15 @@ public class World {
 			xp.set("running", p.runningResearch() != null ? p.runningResearch().id : null);
 			xp.set("mode", p.selectionMode);
 			xp.set("ai", p.aiMode);
+			
+			if (p.explorationInnerLimit != null) {
+				Rectangle r = p.explorationInnerLimit;
+				xp.set("exploration-inner-limit", String.format("%d, %d, %d, %d", r.x, r.y, r.width, r.height));
+			}
+			if (p.explorationOuterLimit != null) {
+				Rectangle r = p.explorationOuterLimit;
+				xp.set("exploration-outer-limit", String.format("%d, %d, %d, %d", r.x, r.y, r.width, r.height));
+			}
 			// save AI state
 			if (p.ai != null) {
 				p.ai.save(xp.add("ai"));
@@ -1200,6 +1209,15 @@ public class World {
 			p.today.researchCost = xtoday.getInt("research");
 			p.today.productionCost = xtoday.getInt("production");
 
+			String xpInnerLimit = xplayer.get("exploration-inner-limit", "");
+			if (!xpInnerLimit.isEmpty()) {
+				p.explorationInnerLimit = rectangleOf(xpInnerLimit);
+			}
+			String xpOuterLimit = xplayer.get("exploration-outer-limit", "");
+			if (!xpOuterLimit.isEmpty()) {
+				p.explorationOuterLimit = rectangleOf(xpOuterLimit);
+			}
+
 			String aim = xplayer.get("ai", "NONE");
 			if (aim.length() > 0) {
 				p.aiMode = AIMode.valueOf(aim);
@@ -1321,7 +1339,11 @@ public class World {
 		for (XElement xplanet : xworld.childrenWithName("planet")) {
 			Planet p = planets.get(xplanet.get("id"));
 
+			Player lo = p.owner;
 			p.die();
+			if (lo != null) {
+				lo.planets.remove(p);
+			}
 
 			p.inventory.clear();
 			p.surface.buildings.clear();

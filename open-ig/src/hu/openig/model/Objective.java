@@ -23,7 +23,7 @@ public class Objective {
 	/** Is the objective visible. */
 	public boolean visible = true;
 	/** The state. */
-	public ObjectiveState state;
+	public ObjectiveState state = ObjectiveState.ACTIVE;
 	/** The objective's title. */
 	public String title;
 	/** The objective's short description. */
