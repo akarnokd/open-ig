@@ -76,8 +76,21 @@ Remark: if you saved the pirate in Mission 4, you get single-time help in the de
 
 = Level 2: Captain =
 
-+ Cruiser 1 without radar
-+ 2 Fighter 2
-+ Centronom
-+ New Caroline
+  * + Cruiser 1 without radar
+  * + 2 Fighter 2
+  * + Centronom
+  * + New Caroline
+
+== Mission 6 ==
+
+Objective: Defend Achilles from Garthog surprise attack
+
+Notes: 
+  * scripted fleet attacks Achilles after a few days in the rank
+  * Ground units will attack cheapest buildings first
+  * Do not let the user produce Cruiser 1
+
+Success condition: Garthogs defeated (either in orbit or on ground)
+
+Failure condition: Achilles taken by Garthog. *Fired!*
 
