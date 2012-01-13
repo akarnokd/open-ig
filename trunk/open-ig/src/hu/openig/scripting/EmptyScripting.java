@@ -246,4 +246,9 @@ public class EmptyScripting implements CampaignScripting {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void onLevelChanged() {
+		// TODO Auto-generated method stub
+		
+	}
 }
