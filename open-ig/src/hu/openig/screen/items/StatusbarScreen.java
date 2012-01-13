@@ -1018,9 +1018,9 @@ public class StatusbarScreen extends ScreenBase {
 		 */
 		int drawObjective(Graphics2D g2, Objective o, int x, int y, int w) {
 			
-			g2.setColor(Color.LIGHT_GRAY);
-			g2.drawRect(x, y, 20, 20);
-			g2.drawRect(x + 1, y + 1, 18, 18);
+			g2.setColor(new Color(0xFFB0B0B0));
+			g2.drawRect(x + 3, y + 3, 14, 14);
+			g2.drawRect(x + 4, y + 4, 12, 12);
 
 			int dy = 0;
 			
@@ -1035,7 +1035,7 @@ public class StatusbarScreen extends ScreenBase {
 			dy += drawText(g2, x + 25, y + dy, w - 25, 14, player().color, o.title);
 			dy += 3;
 			if (!o.description.isEmpty()) {
-				dy += drawText(g2, x + 25, y + dy, w - 25, 10, TextRenderer.LIGHT_GREEN, o.description);
+				dy += drawText(g2, x + 25, y + dy, w - 25, 10, 0xFFC0C0FF, o.description);
 			}
 			
 			String pt = o.progressValue != null ? o.progressValue.invoke() : null;
