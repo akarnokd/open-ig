@@ -951,7 +951,6 @@ public class StatusbarScreen extends ScreenBase {
 		@Override
 		public void draw(Graphics2D g2) {
 			
-			
 			int tx = 16;
 			int ty = 0;
 			if (commons.control().primary() == Screens.COLONY) {
@@ -959,65 +958,66 @@ public class StatusbarScreen extends ScreenBase {
 			}
 			
 			g2.translate(tx, ty);
-			
-			int background = 0xC0000000;
-			
-			List<Objective> objs = world().scripting.currentObjectives();
-			
-			if (objs.size() == 0) {
-				int w = commons.text().getTextWidth(14, get("no_objectives"));
-				g2.setColor(new Color(background, true));
-
+			try {
+				int background = 0xC0000000;
+				
+				List<Objective> objs = world().scripting.currentObjectives();
+				
+				if (objs.size() == 0) {
+					int w = commons.text().getTextWidth(14, get("no_objectives"));
+					g2.setColor(new Color(background, true));
+	
+					String hideS = get("hide_objectives");
+					int hideW = commons.text().getTextWidth(7, hideS);
+	
+					w = Math.max(w, hideW);
+					
+					g2.fillRect(0, 0, w + 10, 33);
+					commons.text().paintTo(g2, 5, 3, 14, TextRenderer.GRAY, get("no_objectives"));
+					
+					g2.setColor(new Color(0xFFC0C0C0));
+					g2.drawLine(0, 20, Math.min(hideW, w), 20);
+					commons.text().paintTo(g2, 2, 22, 7, 0xFFFFFF00, hideS);
+	
+					return;
+				}
+				
+				int limit = StatusbarScreen.this.width - 20;
+				
+				int w = 0;
+				int h = 0;
+				
+				for (Objective o : objs) {
+					w = Math.max(w, objectiveWidth(o, limit));
+					int oh = objectiveHeight(o, limit);
+					h += 3 + oh;
+				}
+				h += 3;
+				
 				String hideS = get("hide_objectives");
 				int hideW = commons.text().getTextWidth(7, hideS);
-
-				w = Math.max(w, hideW);
 				
-				g2.fillRect(0, 0, w + 10, 33);
-				commons.text().paintTo(g2, 5, 3, 14, TextRenderer.GRAY, get("no_objectives"));
+				w = Math.min(Math.max(hideW, w), limit);
+				
+				g2.setColor(new Color(background, true));
+				
+				g2.fillRect(0, 0, w + 4, h + 13);
+				g2.setColor(new Color(0xFFC0C0C0));
+				g2.drawRect(0, 0, w + 4, h + 13);
+				
+				int y = 3;
+				for (Objective o : objs) {
+					y += drawObjective(g2, o, 2, y, w);
+				}
 				
 				g2.setColor(new Color(0xFFC0C0C0));
-				g2.drawLine(0, 20, Math.min(hideW, w), 20);
-				commons.text().paintTo(g2, 2, 22, 7, 0xFFFFFF00, hideS);
-
-				return;
+				g2.drawLine(0, y + 2, Math.min(hideW, w), y + 2);
+				commons.text().paintTo(g2, 2, y + 4, 7, 0xFFFFFF00, hideS);
+				
+				super.draw(g2);
+			} finally {			
+				g2.translate(-tx, -ty);
 			}
-			
-			int limit = StatusbarScreen.this.width - 20;
-			
-			int w = 0;
-			int h = 0;
-			
-			for (Objective o : objs) {
-				w = Math.max(w, objectiveWidth(o, limit));
-				int oh = objectiveHeight(o, limit);
-				h += 3 + oh;
-			}
-			h += 3;
-			
-			String hideS = get("hide_objectives");
-			int hideW = commons.text().getTextWidth(7, hideS);
-			
-			w = Math.min(Math.max(hideW, w), limit);
-			
-			g2.setColor(new Color(background, true));
-			
-			g2.fillRect(0, 0, w + 4, h + 13);
-			g2.setColor(new Color(0xFFC0C0C0));
-			g2.drawRect(0, 0, w + 4, h + 13);
-			
-			int y = 3;
-			for (Objective o : objs) {
-				y += drawObjective(g2, o, 2, y, w);
-			}
-			
-			g2.setColor(new Color(0xFFC0C0C0));
-			g2.drawLine(0, y + 2, Math.min(hideW, w), y + 2);
-			commons.text().paintTo(g2, 2, y + 4, 7, 0xFFFFFF00, hideS);
-			
-			super.draw(g2);
-			
-			g2.translate(-tx, -ty);
 		}
 		/**
 		 * Draw the objective.
