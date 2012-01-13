@@ -117,7 +117,7 @@ public class MainCampaignScripting implements CampaignScripting {
 		final Objective o2 = objective("Mission-1-Task-2");
 		
 		if (o0.visible && o1.state == ObjectiveState.SUCCESS && o2.state == ObjectiveState.SUCCESS) {
-			if (o1.state == ObjectiveState.ACTIVE) {
+			if (o0.state == ObjectiveState.ACTIVE) {
 				setObjectiveState(o0, ObjectiveState.SUCCESS);
 				Parallels.runDelayedInEDT(13000, new Runnable() {
 					@Override
@@ -175,14 +175,14 @@ public class MainCampaignScripting implements CampaignScripting {
 				{ "NuclearPlant", "FusionPlant", "SolarPlant" },
 				{ "CivilDevCenter", "MechanicalDevCenter", "ComputerDevCenter", "AIDevCenter", "MilitaryDevCenter" },
 				{ "Police" },
-				{ "FireDepartment" }, 
+				{ "FireBrigade" }, 
 				{ "MilitarySpaceport" },
 				{ "Radar1", "Radar2", "Radar3" }, 
 		};
 		boolean okay = true;
 		Set<String> buildingTypes = U.newHashSet();
 		for (Building b : p.surface.buildings) {
-			if (!b.isOperational() || !b.isDamaged()) {
+			if (!b.isOperational() || b.isDamaged()) {
 				okay = false;
 				break;
 			} else {
