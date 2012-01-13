@@ -948,7 +948,14 @@ public class StatusbarScreen extends ScreenBase {
 		@Override
 		public void draw(Graphics2D g2) {
 			
-			g2.translate(16, 0);
+			
+			int tx = 16;
+			int ty = 0;
+			if (commons.control().primary() == Screens.COLONY) {
+				ty = 110;
+			}
+			
+			g2.translate(tx, ty);
 			
 			List<Objective> objs = world().scripting.currentObjectives();
 			
@@ -1005,7 +1012,7 @@ public class StatusbarScreen extends ScreenBase {
 			
 			super.draw(g2);
 			
-			g2.translate(-16, 0);
+			g2.translate(-tx, -ty);
 		}
 		/**
 		 * Draw the objective.
