@@ -2726,6 +2726,38 @@
     <tile type='frozen' id='29' x='-15' y='-77'/>
     <tile type='frozen' id='26' x='-16' y='-78'/>
     <tile type='frozen' id='29' x='-17' y='-79'/>
+    <tile type='frozen' id='23' x='0' y='0'/>
+    <tile type='frozen' id='23' x='1' y='-1'/>
+    <tile type='frozen' id='23' x='2' y='-2'/>
+    <tile type='frozen' id='23' x='3' y='-3'/>
+    <tile type='frozen' id='23' x='4' y='-4'/>
+    <tile type='frozen' id='23' x='5' y='-5'/>
+    <tile type='frozen' id='23' x='6' y='-6'/>
+    <tile type='frozen' id='23' x='7' y='-7'/>
+    <tile type='frozen' id='23' x='8' y='-8'/>
+    <tile type='frozen' id='23' x='9' y='-9'/>
+    <tile type='frozen' id='23' x='10' y='-10'/>
+    <tile type='frozen' id='23' x='11' y='-11'/>
+    <tile type='frozen' id='23' x='12' y='-12'/>
+    <tile type='frozen' id='23' x='13' y='-13'/>
+    <tile type='frozen' id='23' x='14' y='-14'/>
+    <tile type='frozen' id='23' x='15' y='-15'/>
+    <tile type='frozen' id='23' x='16' y='-16'/>
+    <tile type='frozen' id='23' x='17' y='-17'/>
+    <tile type='frozen' id='23' x='18' y='-18'/>
+    <tile type='frozen' id='23' x='19' y='-19'/>
+    <tile type='frozen' id='23' x='20' y='-20'/>
+    <tile type='frozen' id='23' x='21' y='-21'/>
+    <tile type='frozen' id='23' x='22' y='-22'/>
+    <tile type='frozen' id='23' x='23' y='-23'/>
+    <tile type='frozen' id='23' x='24' y='-24'/>
+    <tile type='frozen' id='23' x='25' y='-25'/>
+    <tile type='frozen' id='23' x='26' y='-26'/>
+    <tile type='frozen' id='23' x='27' y='-27'/>
+    <tile type='frozen' id='23' x='28' y='-28'/>
+    <tile type='frozen' id='23' x='29' y='-29'/>
+    <tile type='frozen' id='23' x='30' y='-30'/>
+    <tile type='frozen' id='23' x='31' y='-31'/>
   </surface>
   <buildings/>
 </map>
