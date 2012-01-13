@@ -594,6 +594,8 @@ public class MainCampaignScripting implements CampaignScripting {
 		onLevelChanged();
 		
 		objective("Mission-1").visible = true;
+		objective("Mission-1-Task-1").visible = true;
+		objective("Mission-1-Task-2").visible = true;
 		objective("Mission-1-Task-3").visible = true;
 		world.env.showObjectives(true);
 	}
