@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Pair;
 import hu.openig.utils.XElement;
 
 import java.util.List;
@@ -264,4 +265,11 @@ public interface GameScripting {
 	 * @return true if may control
 	 */
 	boolean mayControlFleet(Fleet f);
+	/**
+	 * Returns the background image resource id and the battle reward string.
+	 * @param battle the battle
+	 * @return pair of background image resource id and the battle reward text,
+	 * null if no special condition on any part
+	 */
+	Pair<String, String> battleReward(BattleInfo battle);
 }
