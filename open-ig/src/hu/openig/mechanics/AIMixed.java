@@ -9,10 +9,10 @@
 package hu.openig.mechanics;
 
 import hu.openig.model.AIManager;
-import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
+import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -100,19 +100,19 @@ public class AIMixed implements AIManager {
 	}
 
 	@Override
-	public void groundBattleInit(BattleInfo battle) {
+	public void groundBattleInit(GroundwarWorld battle) {
 		first.groundBattleInit(battle);
 		second.groundBattleInit(battle);
 	}
 
 	@Override
-	public void groundBattle(BattleInfo battle) {
+	public void groundBattle(GroundwarWorld battle) {
 		first.groundBattle(battle);
 		second.groundBattle(battle);
 	}
 
 	@Override
-	public void groundBattleDone(BattleInfo battle) {
+	public void groundBattleDone(GroundwarWorld battle) {
 		first.groundBattleDone(battle);
 		second.groundBattleDone(battle);
 	}

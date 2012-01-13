@@ -11,9 +11,10 @@ package hu.openig.scripting;
 import hu.openig.core.Action0;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
-import hu.openig.model.CampaignScripting;
+import hu.openig.model.GameScripting;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
+import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
@@ -21,6 +22,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.World;
 import hu.openig.utils.U;
@@ -37,7 +39,7 @@ import java.util.Set;
  * The scripting for the original game's campaign.
  * @author akarnokd, 2012.01.12.
  */
-public class MainCampaignScripting implements CampaignScripting {
+public class MainCampaignScripting implements GameScripting {
 	/** The view limit records. */
 	static class ViewLimit {
 		/** The inner limit if non-null. */
@@ -829,5 +831,35 @@ public class MainCampaignScripting implements CampaignScripting {
 		if (countdowns.remove(id) == null) {
 			new AssertionError("ClearTimeout, missing id: " + id).printStackTrace();
 		}
+	}
+	@Override
+	public void onSpacewarFinish(SpacewarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSpacewarStart(SpacewarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSpacewarStep(SpacewarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onGroundwarFinish(GroundwarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onGroundwarStart(GroundwarWorld war) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onGroundwarStep(GroundwarWorld war) {
+		// TODO Auto-generated method stub
+		
 	}
 }

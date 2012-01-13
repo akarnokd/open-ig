@@ -9,12 +9,12 @@
 package hu.openig.mechanics;
 
 import hu.openig.model.AIManager;
-import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
+import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -356,17 +356,17 @@ public class AITrader implements AIManager {
 		});
 	}
 	@Override
-	public void groundBattle(BattleInfo battle) {
+	public void groundBattle(GroundwarWorld battle) {
 		// NO ground battle involvement
 	}
 
 	@Override
-	public void groundBattleDone(BattleInfo battle) {
+	public void groundBattleDone(GroundwarWorld battle) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void groundBattleInit(BattleInfo battle) {
+	public void groundBattleInit(GroundwarWorld battle) {
 		// TODO Auto-generated method stub
 		
 	}

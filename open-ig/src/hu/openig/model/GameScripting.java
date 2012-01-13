@@ -16,7 +16,7 @@ import java.util.List;
  * API to interact with a campaign scripting.
  * @author akarnokd, 2012.01.12.
  */
-public interface CampaignScripting {
+public interface GameScripting {
 	/**
 	 * Returns the list of video messages to send.
 	 * @return the list of video messages to send.
@@ -227,4 +227,34 @@ public interface CampaignScripting {
 	void onNewGame();
 	/** Notify the scripting that a level jump occurred. */
 	void onLevelChanged();
+	/**
+	 * Called once the structures are laid out.
+	 * @param war the battle context
+	 */
+	void onSpacewarStart(SpacewarWorld war);
+	/**
+	 * Called after each step in the spacewar.
+	 * @param war the battle context
+	 */
+	void onSpacewarStep(SpacewarWorld war);
+	/**
+	 * Called once the battle is concluded but before going to the next phase.
+	 * @param war the battle context
+	 */
+	void onSpacewarFinish(SpacewarWorld war);
+	/**
+	 * Called once the player placed its own units and the AI did its own placements.
+	 * @param war the battle context
+	 */
+	void onGroundwarStart(GroundwarWorld war);
+	/**
+	 * Called after each battle step.
+	 * @param war the battle context
+	 */
+	void onGroundwarStep(GroundwarWorld war);
+	/**
+	 * Called once the battle is concluded but before going to the next phase.
+	 * @param war the battle context
+	 */
+	void onGroundwarFinish(GroundwarWorld war);
 }

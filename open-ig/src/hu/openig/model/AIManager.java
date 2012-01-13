@@ -61,23 +61,20 @@ public interface AIManager {
 	void spaceBattleDone(SpacewarWorld world);
 	/**
 	 * Initialize the ground battle.
-	 * TODO data structures?
 	 * <p>Called before the first battle simulation step.</p>
-	 * @param battle the battle info
+	 * @param war the ground war world
 	 */
-	void groundBattleInit(BattleInfo battle);
+	void groundBattleInit(GroundwarWorld war);
 	/**
 	 * Handle some aspects of a ground battle.
-	 * TODO data structures?
-	 * @param battle the battle information
+	 * @param war the ground war world
 	 */
-	void groundBattle(BattleInfo battle);
+	void groundBattle(GroundwarWorld war);
 	/**
 	 * Called after the ground battle has been concluded and losses applied.
-	 * TODO data structures?
-	 * @param battle the battle
+	 * @param war the ground war world
 	 */
-	void groundBattleDone(BattleInfo battle);
+	void groundBattleDone(GroundwarWorld war);
 	/**
 	 * Save the state of this AI manager from a save file.
 	 * @param out the output XElement

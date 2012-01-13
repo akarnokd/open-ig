@@ -491,7 +491,7 @@ public final class Simulator {
 		
 		if (newOwner != null) {
 			planet.takeover(newOwner);
-			planet.autoBuild = AutoBuild.AI;
+			planet.autoBuild = AutoBuild.OFF;
 			planet.morale = 50;
 		} else {
 			planet.owner.ai.onPlanetDied(planet);

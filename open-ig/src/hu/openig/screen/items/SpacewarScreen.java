@@ -1386,6 +1386,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			enableFleetControls(false);
 		} else {
 			setLayoutSelectionMode(false);
+			world().scripting.onSpacewarStart(this);
 			commons.simulation.resume();
 			enableFleetControls(true);
 		}
@@ -2828,6 +2829,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					setLayoutSelectionMode(false);
 					enableFleetControls(true);
 					retreat.enabled = true;
+					world().scripting.onSpacewarStart(SpacewarScreen.this);
 					return true;
 				}
 			}
@@ -2963,17 +2965,27 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			// try to find rockets for ships or bombs for buildings
 			for (SpacewarStructure ship : structures) {
 				if (ship.type == StructureType.SHIP && ship.selected && ship.owner != target.owner) {
-					for (SpacewarWeaponPort p : ship.ports) {
-						if (p.count > 0 && p.projectile.mode != Mode.BEAM) {
-							if (!targetTyped || (target.building != null && (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS)
-									|| (target.building == null && (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET)))) {
-								if (p.count > count) {
-									count = p.count;
-									port = p;
-									fired = ship;
-									type = world().researches.get(p.projectile.id);
-								}
-							}
+					findRocketPort(target, targetTyped, ship);
+				}
+			}
+		}
+		/**
+		 * Find the apropriate rocket port in the ship.
+		 * @param target the tartet
+		 * @param targetTyped should return the proper port for the target?
+		 * @param ship the ship who will fire
+		 */
+		public void findRocketPort(SpacewarStructure target, boolean targetTyped,
+				SpacewarStructure ship) {
+			for (SpacewarWeaponPort p : ship.ports) {
+				if (p.count > 0 && p.projectile.mode != Mode.BEAM) {
+					if (!targetTyped || (target.building != null && (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS)
+							|| (target.building == null && (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET)))) {
+						if (p.count > count) {
+							count = p.count;
+							port = p;
+							fired = ship;
+							type = world().researches.get(p.projectile.id);
 						}
 					}
 				}
@@ -2992,43 +3004,51 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			r.findRocket(target, false);
 		}
 		if (r.fired != null) {
-			r.port.count--;
-			if (r.port.is != null) {
-				r.port.is.count--;
-			}
-
-			SpacewarStructure proj = new SpacewarStructure();
-			proj.techId = r.port.projectile.id;
-			proj.owner = r.fired.owner;
-			proj.attack = target;
-			proj.angles = proj.owner == player() ? r.port.projectile.matrix[0] : r.port.projectile.alternative[0];
-			proj.movementSpeed = r.port.projectile.movementSpeed;
-			proj.rotationTime = r.port.projectile.rotationTime;
-			proj.x = r.fired.x;
-			proj.y = r.fired.y;
-			proj.angle = r.fired.angle;
-			proj.destruction = SoundType.HIT;
-			proj.ecmLevel = r.type.getInt("anti-ecm", 0);
-			proj.kamikaze = r.port.projectile.damage;
-			proj.hp = world().battle.getIntProperty(proj.techId, proj.owner.id, "hp");
-			proj.hpMax = proj.hp;
-			switch (r.port.projectile.mode) {
-			case ROCKET:
-			case MULTI_ROCKET:
-				proj.type = StructureType.ROCKET;
-				break;
-			case VIRUS:
-				proj.type = StructureType.VIRUS_BOMB;
-				break;
-			default:
-				proj.type = StructureType.BOMB;
-
-			}
-			
-			structures.add(proj);
-			
-			sound(r.port.projectile.sound);
+			fireRocketAt(target, r);
 		}
+	}
+	/**
+	 * Fire the selected rocket at the target.
+	 * @param target the target
+	 * @param r the rocket selected
+	 */
+	void fireRocketAt(SpacewarStructure target, RocketSelected r) {
+		r.port.count--;
+		if (r.port.is != null) {
+			r.port.is.count--;
+		}
+
+		SpacewarStructure proj = new SpacewarStructure();
+		proj.techId = r.port.projectile.id;
+		proj.owner = r.fired.owner;
+		proj.attack = target;
+		proj.angles = proj.owner == player() ? r.port.projectile.matrix[0] : r.port.projectile.alternative[0];
+		proj.movementSpeed = r.port.projectile.movementSpeed;
+		proj.rotationTime = r.port.projectile.rotationTime;
+		proj.x = r.fired.x;
+		proj.y = r.fired.y;
+		proj.angle = r.fired.angle;
+		proj.destruction = SoundType.HIT;
+		proj.ecmLevel = r.type.getInt("anti-ecm", 0);
+		proj.kamikaze = r.port.projectile.damage;
+		proj.hp = world().battle.getIntProperty(proj.techId, proj.owner.id, "hp");
+		proj.hpMax = proj.hp;
+		switch (r.port.projectile.mode) {
+		case ROCKET:
+		case MULTI_ROCKET:
+			proj.type = StructureType.ROCKET;
+			break;
+		case VIRUS:
+			proj.type = StructureType.VIRUS_BOMB;
+			break;
+		default:
+			proj.type = StructureType.BOMB;
+
+		}
+		
+		structures.add(proj);
+		
+		sound(r.port.projectile.sound);
 	}
 	/**
 	 * Set to attack the specified target.
@@ -3475,6 +3495,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		act = player().ai.spaceBattle(this, playerIdles);
 		act = nonPlayer().ai.spaceBattle(this, enemyIdles);
 		
+		world().scripting.onSpacewarStep(this);
+		
 		for (SoundType st : soundsToPlay) {
 			sound(st);
 		}
@@ -3847,6 +3869,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		player().ai.spaceBattleDone(this);
 		nonPlayer().ai.spaceBattleDone(this);
+		world().scripting.onSpacewarFinish(this);
+		
 		// attacker wins
 		final BattleInfo bi = battle;
 		if (battle.attacker.owner == winner) {
@@ -4282,5 +4306,43 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			Integer g = groups.get(s);
 			s.selected = g != null && g.intValue() == groupNo;
 		}
+	}
+	@Override
+	public void attack(SpacewarStructure s, SpacewarStructure target, Mode mode) {
+		if (s.owner != target.owner) {
+			s.guard = false;
+			s.moveTo = null;
+			if (mode == Mode.BEAM) {
+				s.attack = target;
+			} else {
+				s.attack = null;
+				RocketSelected r = new RocketSelected();
+				r.findRocketPort(target, true, s);
+				if (r.fired == null) {
+					r.findRocketPort(target, false, s);
+				}
+				if (r.fired == s) {
+					fireRocketAt(target, r);
+				}
+			}
+		}
+	}
+	@Override
+	public void move(SpacewarStructure s, double x, double y) {
+		s.attack = null;
+		s.guard = false;
+		s.moveTo = new Point2D.Double(x, y);
+	}
+	@Override
+	public void guard(SpacewarStructure s) {
+		s.attack = null;
+		s.guard = true;
+		s.moveTo = null;
+	}
+	@Override
+	public void stop(SpacewarStructure s) {
+		s.attack = null;
+		s.moveTo = null;
+		s.attack = null;
 	}
 }
