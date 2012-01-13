@@ -57,3 +57,15 @@ Failure condition: *single pirate ship destroyed*
 Video: Naxos unknown ships?
 
 Remark: the single "Rebel" pirate ship will be your ally in the battle.
+
+= Mission 5 =
+
+Objective: Cover the Thorin's retreat from Garthog forces
+
+Success condition: *Thorin survives*
+
+Failure condition: *Thorin lost*, *Fired!*
+
+Video: Request reinforcements: Success: +3 Fighter 1
+
+Remark: if you saved the pirate in Mission 4, you get single-time help in the defense.
