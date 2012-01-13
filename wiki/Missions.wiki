@@ -258,3 +258,45 @@ Notes:
    * Garthog: 2 Battleships, few destroyers, fighters, 1 Human Destroyer 2
 
 = Level 3: Commander =
+
+Notes:
+
+  * +1 Flagship with 4 light tanks
+
+== Mission 18 ==
+
+Objective: Defeat the Garthogs
+
+=== Task 1..5 ===
+
+Objective: Capture Garthog N
+
+== Mission 19 ==
+
+Objective: Blockade of Zeuson
+
+Success condition: Rebel governor turned back
+
+Failure condition: Rebel governor escaped or *killed?*
+
+Notes:
+
+  * After 4-5 days, a FreeTraders "Unknown" will leave Zeuson, should flee
+
+== Mission 20 ==
+
+Objective: Talk to Brian
+
+Notes:
+  * Flashback after zeuson blockade
+
+== Mission 21 ==
+
+Objective: Escort prototype
+
+Reward: Destroyer 2 available
+
+Notes:
+  * 2 weeks after blockade
+  * Zeuson -> somewhere right
+  * Attacked by 1+10+30 garthog fleet
