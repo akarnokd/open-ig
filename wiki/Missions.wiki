@@ -67,6 +67,7 @@ Success condition: *Thorin survives*
 Failure condition: *Thorin lost*, *Fired!*
 
 Video: Request reinforcements: Success: +3 Fighter 1
+douglas_thorin_escort, douglas_thorin_escort_reinforcements
 
 Movie: thorin_escort
 
