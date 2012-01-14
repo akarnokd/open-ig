@@ -12,9 +12,9 @@ import hu.openig.core.Action0;
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
-import hu.openig.model.GameScripting;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
+import hu.openig.model.GameScripting;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
@@ -23,6 +23,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.World;
@@ -113,12 +114,21 @@ public class MainCampaignScripting implements GameScripting {
 		checkMission1Complete();
 		
 		Objective o0 = objective("Mission-1");
+		if (!o0.visible && o0.state == ObjectiveState.ACTIVE && isTimeout("Mission-1-Init")) {
+			objective("Mission-1-Task-1").visible = true;
+			objective("Mission-1-Task-2").visible = true;
+			objective("Mission-1-Task-3").visible = true;
+			showObjective("Mission-1");
+			clearTimeout("Mission-1-Init");
+		}
+		
 		if (o0.state == ObjectiveState.SUCCESS && isTimeout("Mission-1-Success")) {
 			o0.visible = false;
 			objective("Mission-1-Task-1").visible = false;
 			objective("Mission-1-Task-2").visible = false;
-			objective("Mission-1-Task-4").visible = true;
-			world.env.showObjectives(true);
+			
+			showObjective("Mission-1-Task-4");
+			
 			clearTimeout("Mission-1-Success");
 		} else
 		if (o0.state == ObjectiveState.FAILURE && isTimeout("Mission-1-Failure")) {
@@ -156,7 +166,7 @@ public class MainCampaignScripting implements GameScripting {
 			Objective o = objective("Mission-1");
 			if (o.visible) {
 				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
-					setTimeout("Mission-1-Failure", 3000);
+					setTimeout("Mission-1-Failure", 5000);
 				}
 			}
 		}
@@ -232,7 +242,7 @@ public class MainCampaignScripting implements GameScripting {
 			Objective o = objective("Mission-1-Task-3");
 			if (o.visible) {
 				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
-					setTimeout("Mission-1-Failure", 3000);
+					setTimeout("Mission-1-Failure", 5000);
 				}
 			}
 		}
@@ -246,7 +256,7 @@ public class MainCampaignScripting implements GameScripting {
 			Objective o = objective("Mission-1-Task-4");
 			if (o.visible) {
 				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
-					setTimeout("Mission-1-Failure", 3000);
+					setTimeout("Mission-1-Failure", 5000);
 				}
 			}
 		}
@@ -594,6 +604,7 @@ public class MainCampaignScripting implements GameScripting {
 		if (world.level == 1) {
 			checkMission1Failure(planet);
 			checkMission1Task3Failure(planet);
+			checkMission1Task4Failure(planet);
 		}
 	}
 	@Override
@@ -612,12 +623,8 @@ public class MainCampaignScripting implements GameScripting {
 		// TODO Auto-generated method stub
 		lastLevel = world.level;
 		onLevelChanged();
-		
-		objective("Mission-1").visible = true;
-		objective("Mission-1-Task-1").visible = true;
-		objective("Mission-1-Task-2").visible = true;
-		objective("Mission-1-Task-3").visible = true;
-		world.env.showObjectives(true);
+
+		setTimeout("Mission-1-Init", 8000);
 	}
 
 	@Override
@@ -781,6 +788,12 @@ public class MainCampaignScripting implements GameScripting {
 		if (o.state != newState) {
 			o.state = newState;
 			world.env.showObjectives(true);
+			if (newState == ObjectiveState.SUCCESS) {
+				world.env.playSound(SoundType.SUCCESS);
+			} else 
+			if (newState == ObjectiveState.FAILURE) {
+				world.env.playSound(SoundType.FAIL);
+			}
 			return true;
 		}
 		return false;
@@ -871,5 +884,20 @@ public class MainCampaignScripting implements GameScripting {
 	public Pair<String, String> battleReward(BattleInfo battle) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	/**
+	 * Show an objective in the objectives tab.
+	 * @param id the objective id
+	 * @return false if the objective is already visible
+	 */
+	boolean showObjective(String id) {
+		Objective o = objective(id);
+		if (!o.visible) {
+			o.visible = true;
+			world.env.showObjectives(true);
+			world.env.playSound(SoundType.SUCCESS);
+			return true;
+		}
+		return false;
 	}
 }

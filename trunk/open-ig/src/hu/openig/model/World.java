@@ -1577,7 +1577,8 @@ public class World {
 							fis.type = st;
 						}
 						fis.count = Math.min(xfis.getInt("count"), fis.slot.max);
-						fis.hp = Math.min(xfis.getInt("hp"), getHitpoints(fis.type));
+						int hp0 = getHitpoints(fis.type);
+						fis.hp = Math.min(xfis.getInt("hp", hp0), hp0);
 						
 					}
 					fii.slots.add(fis);

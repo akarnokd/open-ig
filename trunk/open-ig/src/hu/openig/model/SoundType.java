@@ -182,7 +182,11 @@ public enum SoundType {
 	/** Acknowledge command. ui/acknowledge_1 */
 	UI_ACKNOWLEDGE_1("ui/acknowledge_1"),
 	/** UI good bye. */
-	GOOD_BYE("ui/good_bye")
+	GOOD_BYE("ui/good_bye"),
+	/** Objective success. */
+	SUCCESS("ui/success"),
+	/** Objective fail. */
+	FAIL("ui/fail")
 	;
 	/** The associated resource location. */
 	public final String resource;

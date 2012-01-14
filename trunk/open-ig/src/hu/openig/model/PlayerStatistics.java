@@ -61,6 +61,8 @@ public class PlayerStatistics {
 	public long planetsColonized;
 	/** Number of planets lost to the enemy. TODO display */
 	public long planetsLost;
+	/** Planets lost to aliens (non pirates). */
+	public long planetsLostAlien;
 	/** Number of planets lost due revolts. TODO gather */
 	public long planetsRevolted;
 	/** Number of planets lost due it died out. TODO gather */
@@ -136,6 +138,7 @@ public class PlayerStatistics {
 		result.planetsConquered = planetsConquered;
 		result.planetsColonized = planetsColonized;
 		result.planetsLost = planetsLost;
+		result.planetsLostAlien = planetsLostAlien;
 		result.planetsRevolted = planetsRevolted;
 		result.planetsDied = planetsDied;
 		result.spaceBattles = spaceBattles;
