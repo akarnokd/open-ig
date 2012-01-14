@@ -655,4 +655,61 @@ public class XElement implements Iterable<XElement> {
 	public Map<String, String> attributes() {
 		return attributes;
 	}
+	/**
+	 * Retrieve a double attribute value.
+	 * <p>Attribute must exist.</p>
+	 * @param name the attribute name
+	 * @return the value
+	 */
+	public double getDouble(String name) {
+		return Double.parseDouble(get(name));
+	}
+	/**
+	 * Retrieve a double attribute value.
+	 * @param name the attribute name
+	 * @param defaultValue the default value if the attribute doesn't exist
+	 * @return the value
+	 */
+	public double getDouble(String name, double defaultValue) {
+		String s = attributes.get(name);
+		return s != null ? Double.parseDouble(s) : defaultValue;
+	}
+	/**
+	 * Returns an instance of the given enumeration from the attribute.
+	 * <p>The attribute should exist.</p>
+	 * @param <T> the enum type
+	 * @param name the attribute name
+	 * @param clazz the attribute class
+	 * @return the enumeration value
+	 */
+	public <T extends Enum<T>> T getEnum(String name, Class<T> clazz) {
+		String s = get(name);
+		T[] values = clazz.getEnumConstants();
+		for (T t : values) {
+			if (t.toString().equals(s)) {
+				return t;
+			}
+		}
+		throw new IllegalArgumentException(String.format("Attribute %s = %s is not a valid enum for %s", name, s, clazz.getName()));
+	}
+	/**
+	 * Returns an instance of the given enumeration from the attribute.
+	 * @param <T> the enum type
+	 * @param name the attribute name
+	 * @param clazz the attribute class
+	 * @param defaultValue the default value if the attribute is missing or not supported
+	 * @return the enumeration value
+	 */
+	public <T extends Enum<T>> T getEnum(String name, Class<T> clazz, T defaultValue) {
+		String s = attributes.get(name);
+		if (s != null) {
+			T[] values = clazz.getEnumConstants();
+			for (T t : values) {
+				if (t.toString().equals(s)) {
+					return t;
+				}
+			}
+		}
+		return defaultValue;
+	}
 }

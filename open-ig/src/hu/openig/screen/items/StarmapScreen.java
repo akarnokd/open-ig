@@ -271,7 +271,7 @@ public class StarmapScreen extends ScreenBase {
 	/** The blink counter. */
 	int blinkCounter;
 	/** The divident ratio between the planet listing and the fleet listing. */
-	private double planetFleetSplitter = 0.5;
+	public double planetFleetSplitter = 0.5;
 	/** The planets listing entire subpanel. */
 	final Rectangle planetsListPanel = new Rectangle();
 	/** The fleets listing entire subpanel. */
@@ -365,13 +365,13 @@ public class StarmapScreen extends ScreenBase {
 	/** Deploy hubble. */
 	UIImageButton hubble2;
 	/** Show radar. */
-	UIImageToggleButton showRadarButton;
+	public UIImageToggleButton showRadarButton;
 	/** Show fleet. */
-	UIImageToggleButton showFleetButton;
+	public UIImageToggleButton showFleetButton;
 	/** Show stars. */
-	UIImageToggleButton showStarsButton;
+	public UIImageToggleButton showStarsButton;
 	/** Show grid. */
-	UIImageToggleButton showGridButton;
+	public UIImageToggleButton showGridButton;
 	/** Show name. */
 	UIImageButton showNamesNone;
 	/** Show name. */
@@ -2860,5 +2860,45 @@ public class StarmapScreen extends ScreenBase {
 			pan(-(int)(player().explorationOuterLimit.x * zoom - (mw - dw) / 2), 
 					-(int)(player().explorationOuterLimit.y * zoom - (mh - dh) / 2));
 		}
+	}
+	/** Show names mode. */
+	public enum ShowNamesMode {
+		/** Show both fleets and planets. */
+		BOTH,
+		/** Show fleets only. */
+		FLEETS,
+		/** Show planets only. */
+		PLANETS,
+		/** Show none. */
+		NONE
+	}
+	/**
+	 * Returns the current show-names mode.
+	 * @return the current show-names mode
+	 */
+	public ShowNamesMode showNames() {
+		if (showNamesBoth.visible()) {
+			return ShowNamesMode.BOTH;
+		} else
+		if (showNamesFleet.visible()) {
+			return ShowNamesMode.FLEETS;
+		} else
+		if (showNamesPlanet.visible()) {
+			return ShowNamesMode.PLANETS;
+		}
+		return ShowNamesMode.NONE;
+	}
+	/**
+	 * Sets the show-names mode.
+	 * @param mode the mode
+	 */
+	public void showNames(ShowNamesMode mode) {
+		showNamesBoth.visible(mode == ShowNamesMode.BOTH);
+		showNamesFleet.visible(mode == ShowNamesMode.FLEETS);
+		showNamesPlanet.visible(mode == ShowNamesMode.PLANETS);
+		showNamesNone.visible(mode == ShowNamesMode.NONE);
+		
+		showFleetNames = mode == ShowNamesMode.BOTH || mode == ShowNamesMode.FLEETS;
+		showPlanetNames = mode == ShowNamesMode.BOTH || mode == ShowNamesMode.PLANETS;
 	}
 }
