@@ -143,7 +143,6 @@ public class MainCampaignScripting implements GameScripting {
 	 * @param id the video message id
 	 */
 	void loseGameMessage(String id) {
-		gameOver = true;
 		world.env.stopMusic();
 		world.player.messageQueue.clear();
 		world.env.forceMessage(id, new Action0() {
@@ -159,7 +158,6 @@ public class MainCampaignScripting implements GameScripting {
 	 * @param movie the movie
 	 */
 	void loseGameMessageAndMovie(String message, final String movie) {
-		gameOver = true;
 		world.env.stopMusic();
 		world.player.messageQueue.clear();
 		world.env.forceMessage(message, new Action0() {
@@ -179,7 +177,6 @@ public class MainCampaignScripting implements GameScripting {
 	 * @param id the video message id
 	 */
 	void loseGameMovie(String id) {
-		gameOver = true;
 		world.env.stopMusic();
 		world.player.messageQueue.clear();
 		world.env.playVideo(id, new Action0() {
@@ -214,6 +211,7 @@ public class MainCampaignScripting implements GameScripting {
 			Objective o = objective("Mission-1");
 			if (o.visible) {
 				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
+					gameOver = true;
 					setTimeout("Mission-1-Failure", 5000);
 				}
 			}
@@ -290,6 +288,7 @@ public class MainCampaignScripting implements GameScripting {
 			Objective o = objective("Mission-1-Task-3");
 			if (o.visible) {
 				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
+					gameOver = true;
 					setTimeout("Mission-1-Failure", 5000);
 				}
 			}
@@ -304,6 +303,7 @@ public class MainCampaignScripting implements GameScripting {
 			Objective o = objective("Mission-1-Task-4");
 			if (o.visible) {
 				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
+					gameOver = true;
 					setTimeout("Mission-1-Failure", 5000);
 				}
 			}
