@@ -21,11 +21,13 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -465,5 +467,16 @@ public abstract class Mission implements GameScriptingEvents {
 	public void onAutobattleStart(BattleInfo battle) {
 		// default implementation does not react to this event
 		
+	}
+	/**
+	 * Notify the user about the incoming message.
+	 * @param messageId the message id
+	 */
+	void incomingMessage(String messageId) {
+		helper.receive(messageId).visible = true;
+		helper.receive(messageId).seen = false;
+		
+		SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, SoundType.NEW_MESSAGE_1, SoundType.NEW_MESSAGE_2, SoundType.NEW_MESSAGE_3));
+		world.env.playSound(snd);
 	}
 }

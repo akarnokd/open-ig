@@ -2897,6 +2897,7 @@
 	<entry key='mission-2.save_trader.desc'>The trader's ship must survive.</entry>
 	<entry key='pirates.fleet_name'>Pirates</entry>
 	<entry key='mission-2.save_trader.reward'>Reward: %s credits</entry>
+	<entry key='incoming_message'>- Message -</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

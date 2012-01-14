@@ -64,8 +64,7 @@ public class Mission2 extends Mission {
 					int traderMessage = world.random().nextInt(7) + 1;
 					
 					helper.receive("Douglas-Pirates").visible = false;
-					helper.receive("Merchant-Under-Attack-" + traderMessage).visible = true;
-					helper.receive("Merchant-Under-Attack-" + traderMessage).seen = false;
+					incomingMessage("Merchant-Under-Attack-" + traderMessage);
 					helper.send("Douglas-Reinforcements-Denied").visible = true;
 
 					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"));
@@ -122,7 +121,7 @@ public class Mission2 extends Mission {
 				} else {
 					helper.setObjectiveState("Mission-2", ObjectiveState.SUCCESS);
 					helper.setTimeout("Mission-2-Success-But", 13000);
-					helper.receive("Douglas-Pirates").visible = true;
+					incomingMessage("Douglas-Pirates");
 				}
 			}
 			for (int i = 1; i <= 3; i++) {
