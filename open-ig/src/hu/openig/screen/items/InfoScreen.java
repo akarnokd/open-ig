@@ -524,6 +524,16 @@ public class InfoScreen extends ScreenBase {
 	UILabel fleetVehicles;
 	/** The global statistics used in some screens. */
 	private PlanetStatistics globalStatistics;
+	/** Go to next planet. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_COLONY
+	})
+	UIImageButton prevPlanet;
+	/** Go to previous planet. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_COLONY
+	})
+	UIImageButton nextPlanet;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -867,6 +877,27 @@ public class InfoScreen extends ScreenBase {
 		fleetCruisers = new UILabel("", 7, commons.text());
 		fleetFighters = new UILabel("", 7, commons.text());
 		fleetVehicles = new UILabel("", 7, commons.text());
+		
+		prevPlanet = new UIImageButton(commons.starmap().backwards);
+		prevPlanet.z = 2;
+		prevPlanet.setHoldDelay(250);
+		prevPlanet.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				sound(SoundType.CLICK_HIGH_2);
+				player().movePrevPlanet();
+			}
+		};
+		nextPlanet = new UIImageButton(commons.starmap().forwards);
+		nextPlanet.z = 2;
+		nextPlanet.setHoldDelay(250);
+		nextPlanet.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				sound(SoundType.CLICK_HIGH_2);
+				player().moveNextPlanet();
+			}
+		};
 
 		addThis();
 	}
@@ -981,6 +1012,9 @@ public class InfoScreen extends ScreenBase {
 		fleetFighters.location(fleetOwner.x, fleetOwner.y + 17 * 4 + 10 * 5);
 		fleetVehicles.location(fleetOwner.x, fleetOwner.y + 17 * 4 + 10 * 6);
 
+		nextPlanet.location(base.x + 410 - nextPlanet.width, base.y + 5);
+		prevPlanet.location(nextPlanet.x - prevPlanet.width - 2, base.y + 5);
+		
 	}
 	@Override
 	public void draw(Graphics2D g2) {
