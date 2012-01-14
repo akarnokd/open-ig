@@ -4600,7 +4600,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param my the mouse Y
 	 */
 	void doAttackWithSelectedUnits(int mx, int my) {
-		boolean attacked = true;
+		boolean attacked = false;
 		for (GroundwarUnit u : units) {
 			if (u.selected && directAttackUnits.contains(u.model.type)
 					/* && u.owner == player() */) { // FIXME player only
