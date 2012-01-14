@@ -1860,7 +1860,9 @@ public class EquipmentScreen extends ScreenBase {
 				ts.type = null;
 			}
 			for (ResearchType rt : slot.slot.items) {
-				updateSlot(rt);
+				if (world().canDisplayResearch(rt)) {
+					updateSlot(rt);
+				}
 			}
 			if (slot.type != null) {
 				world().selectResearch(slot.type);
