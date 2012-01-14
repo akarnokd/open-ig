@@ -291,4 +291,14 @@ public class EmptyScripting implements GameScripting {
 	public boolean mayAutoSave() {
 		return true;
 	}
+	@Override
+	public void onAutobattleFinish(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onAutobattleStart(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
 }
