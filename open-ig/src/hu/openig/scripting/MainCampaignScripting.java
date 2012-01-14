@@ -8,12 +8,10 @@
 
 package hu.openig.scripting;
 
-import hu.openig.core.Action0;
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
-import hu.openig.model.FleetMode;
 import hu.openig.model.GameScripting;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
@@ -27,10 +25,15 @@ import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.World;
+import hu.openig.scripting.missions.Mission;
+import hu.openig.scripting.missions.MissionScriptingHelper;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Rectangle;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +44,7 @@ import java.util.Set;
  * The scripting for the original game's campaign.
  * @author akarnokd, 2012.01.12.
  */
-public class MainCampaignScripting implements GameScripting {
+public class MainCampaignScripting extends Mission implements GameScripting, MissionScriptingHelper {
 	/** The view limit records. */
 	static class ViewLimit {
 		/** The inner limit if non-null. */
@@ -63,8 +66,20 @@ public class MainCampaignScripting implements GameScripting {
 	int lastLevel;
 	/** The countdowns of various actions. */
 	final Map<String, Integer> countdowns = U.newHashMap();
+	/** The mission timer. Contains mission specific start after N hours based on the current game since the start of the entire game. */
+	final Map<String, Integer> missiontimer = U.newHashMap();
 	/** Indicates a game over condition. */
 	boolean gameOver;
+	/** Set of fleet ids currently under control of scripting. */
+	final Set<Integer> scriptedFleets = U.newHashSet();
+	/** The list of missions. */
+	final List<Mission> missions = U.newArrayList();
+	/**
+	 * Annotate fields of simple types to save their values into the game's state.
+	 * @author akarnokd, 2012.01.14.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface Variable { }
 	/**
 	 * Add/remove planets to the player based on level.
 	 */
@@ -109,217 +124,6 @@ public class MainCampaignScripting implements GameScripting {
 		}
 	}
 	/**
-	 * Check the level 1 objectives.
-	 */
-	void checkLevel1Objectives() {
-		checkMission1Task2();
-		checkMission1Complete();
-		
-		Objective o0 = objective("Mission-1");
-		if (!o0.visible && o0.state == ObjectiveState.ACTIVE && isTimeout("Mission-1-Init")) {
-			objective("Mission-1-Task-1").visible = true;
-			objective("Mission-1-Task-2").visible = true;
-			objective("Mission-1-Task-3").visible = true;
-			showObjective("Mission-1");
-			clearTimeout("Mission-1-Init");
-		}
-		
-		if (o0.state == ObjectiveState.SUCCESS && isTimeout("Mission-1-Success")) {
-			o0.visible = false;
-			objective("Mission-1-Task-1").visible = false;
-			objective("Mission-1-Task-2").visible = false;
-			
-			showObjective("Mission-1-Task-4");
-			
-			clearTimeout("Mission-1-Success");
-		} else
-		if (o0.state == ObjectiveState.FAILURE && isTimeout("Mission-1-Failure")) {
-			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_1");
-			clearTimeout("Mission-1-Failure");
-		}
-	}
-	/**
-	 * Lose the current game with the given forced message.
-	 * @param id the video message id
-	 */
-	void loseGameMessage(String id) {
-		world.env.stopMusic();
-		world.player.messageQueue.clear();
-		world.env.forceMessage(id, new Action0() {
-			@Override
-			public void invoke() {
-				world.env.loseGame();
-			}
-		});
-	}
-	/**
-	 * Lose the current game with the forced message and then full screen movie.
-	 * @param message the message
-	 * @param movie the movie
-	 */
-	void loseGameMessageAndMovie(String message, final String movie) {
-		world.env.stopMusic();
-		world.player.messageQueue.clear();
-		world.env.forceMessage(message, new Action0() {
-			@Override
-			public void invoke() {
-				world.env.playVideo(movie, new Action0() {
-					@Override
-					public void invoke() {
-						world.env.loseGame();
-					}
-				});
-			}
-		});
-	}
-	/**
-	 * Lose the current game with the given forced message.
-	 * @param id the video message id
-	 */
-	void loseGameMovie(String id) {
-		world.env.stopMusic();
-		world.player.messageQueue.clear();
-		world.env.playVideo(id, new Action0() {
-			@Override
-			public void invoke() {
-				world.env.loseGame();
-			}
-		});
-	}
-	/**
-	 * Check if mission 1 was completed.
-	 */
-	void checkMission1Complete() {
-		final Objective o0 = objective("Mission-1");
-		final Objective o1 = objective("Mission-1-Task-1");
-		final Objective o2 = objective("Mission-1-Task-2");
-		
-		if (o0.visible && o1.state == ObjectiveState.SUCCESS && o2.state == ObjectiveState.SUCCESS) {
-			if (o0.state == ObjectiveState.ACTIVE) {
-				setObjectiveState(o0, ObjectiveState.SUCCESS);
-				setTimeout("Mission-1-Success", 13000);
-			}
-			
-		}
-	}
-	/**
-	 * Check if Achilles was lost.
-	 * @param planet the planet
-	 */
-	void checkMission1Failure(Planet planet) {
-		if (planet.id.equals("Achilles")) {
-			Objective o = objective("Mission-1");
-			if (o.visible) {
-				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
-					gameOver = true;
-					setTimeout("Mission-1-Failure", 5000);
-				}
-			}
-		}
-	}
-	/**
-	 * Check if the colony hub was built on Achilles.
-	 * @param planet the event planet
-	 * @param building the event building
-	 */
-	void checkMission1Task1(Planet planet, Building building) {
-		// Mission 1, Task 1: Build a Colony Hub
-		if (planet.id.equals("Achilles") && building.type.kind.equals("MainBuilding")) {
-			Objective o = allObjectives.get("Mission-1-Task-1");
-			if (o.visible) {
-				setObjectiveState(o, ObjectiveState.SUCCESS);
-			}
-		}
-	}
-	/**
-	 * Check if Achilles contains the required types of undamaged, operational buildings for Mission 1 Task 2.
-	 */
-	void checkMission1Task2() {
-		Objective m1t2 = objective("Mission-1-Task-2");
-		if (!m1t2.visible) {
-			return;
-		}
-		Planet p = planet("Achilles");
-		String[][] buildingSets = {
-				{ "PrefabHousing", "ApartmentBlock", "Arcology" },
-				{ "NuclearPlant", "FusionPlant", "SolarPlant" },
-				{ "CivilDevCenter", "MechanicalDevCenter", "ComputerDevCenter", "AIDevCenter", "MilitaryDevCenter" },
-				{ "Police" },
-				{ "FireBrigade" }, 
-				{ "MilitarySpaceport" },
-				{ "Radar1", "Radar2", "Radar3" }, 
-		};
-		boolean okay = true;
-		Set<String> buildingTypes = U.newHashSet();
-		for (Building b : p.surface.buildings) {
-			if (!b.isOperational() || b.isDamaged()) {
-				okay = false;
-				break;
-			} else {
-				buildingTypes.add(b.type.id);
-			}
-		}
-		if (okay) {
-			for (String[] bts : buildingSets) {
-				boolean found = true;
-				for (String bt : bts) {
-					if (buildingTypes.contains(bt)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					okay = false;
-					break;
-				}
-			}
-			if (okay) {
-				setObjectiveState(m1t2, ObjectiveState.SUCCESS);
-			}
-		}
-	}
-
-	/**
-	 * Check if either Naxos or San Sterling was lost.
-	 * @param planet the event planet
-	 */
-	void checkMission1Task3Failure(Planet planet) {
-		if (planet.id.equals("Naxos") || planet.id.equals("San Sterling")) {
-			Objective o = objective("Mission-1-Task-3");
-			if (o.visible) {
-				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
-					gameOver = true;
-					setTimeout("Mission-1-Failure", 5000);
-				}
-			}
-		}
-	}
-	/**
-	 * Check if either Naxos or San Sterling was lost.
-	 * @param planet the event planet
-	 */
-	void checkMission1Task4Failure(Planet planet) {
-		if (planet.id.equals("Achilles")) {
-			Objective o = objective("Mission-1-Task-4");
-			if (o.visible) {
-				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
-					gameOver = true;
-					setTimeout("Mission-1-Failure", 5000);
-				}
-			}
-		}
-	}
-	/** Check the objectives. */
-	void checkObjectives() {
-		if (world.level == 1) {
-			checkLevel1Objectives();
-			send("Naxos-Check").visible = true;
-			send("San Sterling-Check").visible = true;
-			
-		}
-		
-	}
-	/**
 	 * Create an objective from the XML.
 	 * @param xo the objective XML
 	 * @return the objective
@@ -334,7 +138,6 @@ public class MainCampaignScripting implements GameScripting {
 	}
 	@Override
 	public List<Objective> currentObjectives() {
-		// TODO Auto-generated method stub
 		List<Objective> result = U.newArrayList();
 		
 		for (Objective o : rootObjectives.values()) {
@@ -348,33 +151,14 @@ public class MainCampaignScripting implements GameScripting {
 
 	@Override
 	public void done() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * Returns a fleet.
-	 * @param id the fleet id
-	 * @return the fleet object
-	 */
-	Fleet fleet(int id) {
-		for (Player p : world.players.values()) {
-			for (Fleet f : p.fleets.keySet()) {
-				if (f.id == id) {
-					return f;
-				}
-			}
-		}
-		return null;
-	}
-	/**
-	 * Format a localized label.
-	 * @param id the label id
-	 * @param params the parameters
-	 * @return the localized text
-	 */
-	String format(String id, Object... params) {
-		return world.env.labels().format(id, params);
+		world = null;
+		player = null;
+		allObjectives.clear();
+		rootObjectives.clear();
+		missions.clear();
+		countdowns.clear();
+		missiontimer.clear();
+		scriptedFleets.clear();
 	}
 
 	@Override
@@ -436,6 +220,7 @@ public class MainCampaignScripting implements GameScripting {
 		this.world = world;
 		player = world.player;
 		init(in);
+		super.init(player, null, null);
 	}
 
 	/**
@@ -457,35 +242,33 @@ public class MainCampaignScripting implements GameScripting {
 		for (XElement xos : in.childrenWithName("objectives")) {
 			loadObjectives(xos, true);
 		}
-		setupObjectiveFunctions();
-	}
-
-	/**
-	 * Check if the planet is under attack by a fleet.
-	 * @param p the planet
-	 * @return the fleet
-	 */
-	public boolean isUnderAttack(Planet p) {
-		for (Fleet f : player.fleets.keySet()) {
-			if (f.owner != player && f.targetPlanet() == p && f.mode == FleetMode.ATTACK) {
-				return true;
+		for (XElement xmss : in.childrenWithName("missions")) {
+			for (XElement xms : xmss.childrenWithName("mission")) {
+				String clazz = xms.get("class");
+				try {
+					Class<?> c = Class.forName(clazz);
+					if (Mission.class.isAssignableFrom(c)) {
+						Mission m = Mission.class.cast(c.newInstance());
+						m.init(player, this, xms);
+						missions.add(m);
+					} else {
+						new AssertionError(String.format("Mission class %s is incompatible", clazz));
+					}
+				} catch (InstantiationException ex) {
+					ex.printStackTrace();
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				} catch (ClassNotFoundException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
-		return false;
-	}
-
-	/**
-	 * Retrieve a localized label.
-	 * @param id the label id
-	 * @return the localized text
-	 */
-	String label(String id) {
-		return world.env.labels().get(id);
+		
+		setupObjectiveFunctions();
 	}
 
 	@Override
 	public void load(XElement in) {
-		// TODO Auto-generated method stub
 		lastLevel = in.getInt("lastLevel", world.level);
 		for (XElement xmsgs : in.childrenWithName("receives")) {
 			for (XElement xmsg : xmsgs.childrenWithName("receive")) {
@@ -519,6 +302,55 @@ public class MainCampaignScripting implements GameScripting {
 				countdowns.put(xttl.get("id"), xttl.getInt("value"));
 			}
 		}
+		missiontimer.clear();
+		for (XElement xttls : in.childrenWithName("missiontimers")) {
+			for (XElement xttl : xttls.childrenWithName("missiontime")) {
+				missiontimer.put(xttl.get("id"), xttl.getInt("value"));
+			}
+		}
+		
+		for (XElement xvars : in.childrenWithName("variables")) {
+			for (XElement xvar : xvars.childrenWithName("var")) {
+				String id = xvar.get("id");
+				String value = xvar.get("value");
+				try {
+					Field f = getClass().getDeclaredField(id);
+					if (f.isAnnotationPresent(Variable.class)) {
+						if (f.getType() == Boolean.TYPE) {
+							f.set(this, "true".equals(value));
+						} else
+						if (f.getType() == Integer.TYPE) {
+							f.set(this, Integer.parseInt(value));
+						} else
+						if (f.getType() == Long.TYPE) {
+							f.set(this, Long.parseLong(value));
+						} else
+						if (f.getType() == Float.TYPE) {
+							f.set(this, Float.parseFloat(value));
+						} else
+						if (f.getType() == Double.TYPE) {
+							f.set(this, Double.parseDouble(value));
+						} else
+						if (f.getType() == String.class) {
+							f.set(this, value);
+						} else {
+							System.err.printf("Field %s of type %s received the value %s%n", f.getName(), f.getType(), value);
+						}
+					}
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				} catch (NoSuchFieldException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		
+		scriptedFleets.clear();
+		for (XElement xsfs : in.childrenWithName("scripted-fleets")) {
+			for (XElement xsf : xsfs.childrenWithName("fleet")) {
+				scriptedFleets.add(xsf.getInt("id"));
+			}
+		}
 	}
 
 	/**
@@ -541,98 +373,104 @@ public class MainCampaignScripting implements GameScripting {
 		return result;
 	}
 
-	/**
-	 * Retrieve an objective.
-	 * @param id the id
-	 * @return the objective
-	 */
-	Objective objective(String id) {
+	@Override
+	public Objective objective(String id) {
 		return allObjectives.get(id);
 	}
 
 	@Override
 	public void onAllyAgainst(Player first, Player second, Player commonEnemy) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onAllyAgainst(first, second, commonEnemy);
+		}
 	}
 
 	@Override
 	public void onBattleComplete(Player player, BattleInfo battle) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onBattleComplete(player, battle);
+		}		
 	}
 
 	@Override
 	public void onBuildingComplete(Planet planet, Building building) {
-		if (world.level == 1) {
-			checkMission1Task1(planet, building);
+		for (Mission m : missions) {
+			m.onBuildingComplete(planet, building);
 		}
 	}
 
 	@Override
 	public void onColonized(Planet planet) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onColonized(planet);
+		}
 	}
 
 	@Override
 	public void onConquered(Planet planet, Player previousOwner) {
-		if (world.level == 1 && previousOwner == player) {
-			checkMission1Failure(planet);
-			checkMission1Task3Failure(planet);
-			checkMission1Task4Failure(planet);
+		for (Mission m : missions) {
+			m.onConquered(planet, previousOwner);
 		}
 	}
 
 	@Override
 	public void onDestroyed(Fleet winner, Fleet loser) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onDestroyed(winner, loser);
+		}
 	}
 
 	@Override
 	public void onDiscovered(Player player, Fleet fleet) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onDiscovered(player, fleet);
+		}
 	}
 	@Override
 	public void onDiscovered(Player player, Planet planet) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onDiscovered(player, planet);
+		}
 	}
 	@Override
 	public void onDiscovered(Player player, Player other) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onDiscovered(player, other);
+		}
 	}
 
 	@Override
 	public void onFleetAt(Fleet fleet, double x, double y) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onFleetAt(fleet, x, y);
+		}
 	}
 	@Override
 	public void onFleetAt(Fleet fleet, Fleet other) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onFleetAt(fleet, other);
+		}
 	}
 
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onFleetAt(fleet, planet);
+		}
 	}
 
 	@Override
 	public void onInventoryAdd(Planet planet, InventoryItem item) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onInventoryAdd(planet, item);
+		}
 	}
 
 	@Override
 	public void onInventoryRemove(Planet planet, InventoryItem item) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onInventoryRemove(planet, item);
+		}
 	}
 
 	@Override
@@ -640,109 +478,101 @@ public class MainCampaignScripting implements GameScripting {
 		applyViewLimits();
 		applyPlanetOwners();
 		lastLevel = world.level;
+		for (Mission m : missions) {
+			m.onLevelChanged();
+		}
 	}
 
 	@Override
 	public void onLost(Fleet fleet) {
-		if (world.level == 1 && fleet.owner == player) {
-			Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip1", player);
-			if (ft == null) {
-				loseGameMovie("loose/destroyed_level_1");
-			}
+		for (Mission m : missions) {
+			m.onLost(fleet);
 		}
 	}
-	/**
-	 * Find a fleet and inventory item having the given tag.
-	 * @param tag the tag
-	 * @param owner the owner of the fleet
-	 * @return the fleet and inventory item pair
-	 */
-	public Pair<Fleet, InventoryItem> findTaggedFleet(String tag, Player owner) {
-		for (Fleet f : owner.fleets.keySet()) {
-			if (f.owner == owner) {
-				for (InventoryItem ii : f.inventory) {
-					if (tag.equals(ii.tag)) {
-						return Pair.of(f, ii);
-					}
-				}
-			}
-		}
-		return null;
-	}
+
 	@Override
 	public void onLost(Planet planet) {
-		if (world.level == 1) {
-			checkMission1Failure(planet);
-			checkMission1Task3Failure(planet);
-			checkMission1Task4Failure(planet);
+		for (Mission m : missions) {
+			m.onLost(planet);
 		}
+
 	}
 	@Override
 	public void onLostSight(Player player, Fleet fleet) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onLostSight(player, fleet);
+		}		
 	}
 	@Override
 	public void onMessageSeen(String id) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onMessageSeen(id);
+		}
 	}
 
 	@Override
 	public void onNewGame() {
-		// TODO Auto-generated method stub
 		lastLevel = world.level;
 		onLevelChanged();
 
-		setTimeout("Mission-1-Init", 8000);
+		for (Mission m : missions) {
+			m.onNewGame();
+		}
 	}
 
 	@Override
 	public void onPlanetCured(Planet planet) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onPlanetCured(planet);
+		}
 	}
 
 	@Override
 	public void onPlanetInfected(Planet planet) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onPlanetInfected(planet);
+		}
 	}
 
 	@Override
 	public void onPlayerBeaten(Player player) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onPlayerBeaten(player);
+		}
 	}
 
 	@Override
 	public void onProduced(Player player, ResearchType rt) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onProduced(player, rt);
+		}		
 	}
 	@Override
 	public void onRepairComplete(Planet planet, Building building) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onRepairComplete(planet, building);
+		}		
 	}
 	@Override
 	public void onResearched(Player player, ResearchType rt) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onResearched(player, rt);
+		}		
 	}
 	@Override
 	public void onSoundComplete(String audio) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onSoundComplete(audio);
+		}		
 	}
 	@Override
 	public void onStance(Player first, Player second) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onStance(first, second);
+		}
 	}
 	@Override
 	public void onTime() {
-		// TODO Auto-generated method stub
 		for (Planet p : player.planets.keySet()) {
 			if (p.owner != player) {
 				hideMessages(p.id);
@@ -765,7 +595,9 @@ public class MainCampaignScripting implements GameScripting {
 			onLevelChanged();
 		}
 		updateCounters();
-		checkObjectives();
+		for (Mission m : missions) {
+			m.onTime();
+		}
 	}
 	/** Update timeout counters. */
 	void updateCounters() {
@@ -776,41 +608,22 @@ public class MainCampaignScripting implements GameScripting {
 	}
 	@Override
 	public void onUpgrading(Planet planet, Building building, int newLevel) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onUpgrading(planet, building, newLevel);
+		}
 	}
 	@Override
 	public void onVideoComplete(String video) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onVideoComplete(video);
+		}		
 	}
-	/**
-	 * Returns a planet.
-	 * @param id the planet id
-	 * @return the planet object
-	 */
-	Planet planet(String id) {
-		return world.planets.get(id);
-	}
-	/**
-	 * Returns a player.
-	 * @param id the player id
-	 * @return the player
-	 */
-	Player player(String id) {
-		return world.players.get(id);
-	}
-	/**
-	 * Get a receive-message.
-	 * @param id the message id
-	 * @return the video message or null if not available
-	 */
-	VideoMessage receive(String id) {
+	@Override
+	public VideoMessage receive(String id) {
 		return world.bridge.receiveMessages.get(id);
 	}
 	@Override
 	public void save(XElement out) {
-		// TODO Auto-generated method stub
 		out.set("lastLevel", lastLevel);
 		
 		XElement xmsgs = out.add("receives");
@@ -839,22 +652,47 @@ public class MainCampaignScripting implements GameScripting {
 			xttl.set("id", e.getKey());
 			xttl.set("value", e.getValue());
 		}
+
+		xttls = out.add("missiontimers");
+		for (Map.Entry<String, Integer> e : missiontimer.entrySet()) {
+			XElement xttl = xttls.add("missiontime");
+			xttl.set("id", e.getKey());
+			xttl.set("value", e.getValue());
+		}
+
+		XElement xvars = out.add("variables");
+		for (Field f : getClass().getDeclaredFields()) {
+			if (f.isAnnotationPresent(Variable.class)) {
+				try {
+					XElement xvar = xvars.add("var");
+					xvar.set("id", f.getName());
+					xvar.set("value", f.get(this));
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		XElement xsfs = out.add("scripted-fleets");
+		for (int i : scriptedFleets) {
+			Fleet f = fleet(i);
+			if (f != null) {
+				XElement xsf = xsfs.add("fleet");
+				xsf.set("id", i);
+				xsf.set("owner", f.owner.id);
+				xsf.set("name", f.name);
+			}
+		}
 	}
-	/**
-	 * Get a send-message.
-	 * @param id the message id
-	 * @return the video message or null if not available
-	 */
-	VideoMessage send(String id) {
+	@Override
+	public VideoMessage send(String id) {
 		return world.bridge.sendMessages.get(id);
 	}
-	/**
-	 * Change the objective state and show the objectives.
-	 * @param o the objective
-	 * @param newState the new state
-	 * @return true if the state actually changed
-	 */
-	boolean setObjectiveState(Objective o, ObjectiveState newState) {
+	@Override
+	public boolean setObjectiveState(String oId, ObjectiveState newState) {
+		return setObjectiveState(objective(oId), newState);
+	}
+	@Override
+	public boolean setObjectiveState(Objective o, ObjectiveState newState) {
 		if (o.state != newState) {
 			o.state = newState;
 			world.env.showObjectives(true);
@@ -887,81 +725,78 @@ public class MainCampaignScripting implements GameScripting {
 	void setupObjectiveFunctions() {
 		// TODO implement
 	}
-	/**
-	 * Check if a timeout has been reached.
-	 * @param id the reference id
-	 * @return true if timeout reached
-	 */
-	boolean isTimeout(String id) {
+	@Override
+	public boolean isTimeout(String id) {
 		Integer i = countdowns.get(id);
 		if (i != null && i.intValue() <= 0) {
 			return true;
 		}
 		return false;
 	}
-	/**
-	 * Register a new timeout counter.
-	 * @param id the reference id
-	 * @param time the time
-	 */
-	void setTimeout(String id, int time) {
+	@Override
+	public void setTimeout(String id, int time) {
 		countdowns.put(id, time);
 	}
-	/**
-	 * Remove timeout.
-	 * @param id the reference id
-	 */
-	void clearTimeout(String id) {
+	@Override
+	public void clearTimeout(String id) {
 		if (countdowns.remove(id) == null) {
 			new AssertionError("ClearTimeout, missing id: " + id).printStackTrace();
 		}
 	}
 	@Override
-	public void onSpacewarFinish(SpacewarWorld war) {
-		// TODO Auto-generated method stub
-		
+	public Pair<String, String> onSpacewarFinish(SpacewarWorld war) {
+		for (Mission m : missions) {
+			Pair<String, String> result = m.onSpacewarFinish(war);
+			if (result != null) {
+				return result;
+			}
+		}
+		return null;
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onSpacewarStart(war);
+		}
 	}
 	@Override
 	public void onSpacewarStep(SpacewarWorld war) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onSpacewarStep(war);
+		}		
 	}
 	@Override
-	public void onGroundwarFinish(GroundwarWorld war) {
-		// TODO Auto-generated method stub
-		
+	public Pair<String, String> onGroundwarFinish(GroundwarWorld war) {
+		for (Mission m : missions) {
+			Pair<String, String> result = m.onGroundwarFinish(war);
+			if (result != null) {
+				return result;
+			}
+		}
+		return null;
 	}
 	@Override
 	public void onGroundwarStart(GroundwarWorld war) {
-		// TODO Auto-generated method stub
-		
+		for (Mission m : missions) {
+			m.onGroundwarStart(war);
+		}		
 	}
 	@Override
 	public void onGroundwarStep(GroundwarWorld war) {
-		// TODO Auto-generated method stub
+		for (Mission m : missions) {
+			m.onGroundwarStep(war);
+		}
 	}
 	@Override
 	public boolean mayControlFleet(Fleet f) {
-		// TODO Auto-generated method stub
-		return true;
+		return !scriptedFleets.contains(f.id);
 	}
 	@Override
-	public Pair<String, String> battleReward(BattleInfo battle) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean showObjective(String id) {
+		return showObjective(objective(id));
 	}
-	/**
-	 * Show an objective in the objectives tab.
-	 * @param id the objective id
-	 * @return false if the objective is already visible
-	 */
-	boolean showObjective(String id) {
-		Objective o = objective(id);
+	@Override
+	public boolean showObjective(Objective o) {
 		if (!o.visible) {
 			o.visible = true;
 			world.env.showObjectives(true);
@@ -973,5 +808,51 @@ public class MainCampaignScripting implements GameScripting {
 	@Override
 	public boolean mayAutoSave() {
 		return !gameOver;
+	}
+	@Override
+	public int now() {
+		long init = world.initialDate.getTime();
+		long now = world.time.getTimeInMillis();
+		
+		return (int)((now - init) / 3600000);
+	}
+	@Override
+	public void setMissionTime(String id, int hours) {
+		missiontimer.put(id, hours);
+	}
+	@Override
+	public void clearMissionTime(String id) {
+		if (missiontimer.remove(id) == null) {
+			new AssertionError(String.format("MissionTime %s not found.", id)).printStackTrace();
+		}
+	}
+	@Override
+	public boolean isMissionTime(String id) {
+		Integer i = missiontimer.get(id);
+		if (i != null) {
+			return i.intValue() <= now();
+		}
+		return false;
+	}
+	@Override
+	public boolean isActive(String oId) {
+		return isActive(objective(oId));
+	}
+	@Override
+	public boolean isActive(Objective o) {
+		return o.visible && o.state == ObjectiveState.ACTIVE;
+	}
+	@Override
+	public boolean canStart(String oId) {
+		Objective o0 = objective(oId);
+		return !o0.visible && o0.state == ObjectiveState.ACTIVE && isMissionTime(oId); 
+	}
+	@Override
+	public void gameover() {
+		gameOver = true;
+	}
+	@Override
+	public Set<Integer> scriptedFleets() {
+		return scriptedFleets;
 	}
 }

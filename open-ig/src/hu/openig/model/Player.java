@@ -470,4 +470,19 @@ public class Player {
 	public void runningResearch(ResearchType rt) {
 		this.runningResearch = rt;
 	}
+	/**
+	 * Check if the given coordinates fall into the allowed exploration regions (if exist).
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return true if within limits
+	 */
+	public boolean withinLimits(double x, double y) {
+		if (explorationInnerLimit != null && explorationInnerLimit.contains(x, y)) {
+			return false;
+		} else
+		if (explorationOuterLimit != null && !explorationOuterLimit.contains(x, y)) {
+			return false;
+		}
+		return true;
+	}
 }

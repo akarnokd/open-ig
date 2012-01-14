@@ -1,6 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <scripting class='hu.openig.scripting.MainCampaignScripting'>
 	<!-- Put initial conditions, parameters here. -->
+	<missions>
+		<mission class='hu.openig.scripting.missions.Mission1'/>
+		<mission class='hu.openig.scripting.missions.Mission2'/>
+	</missions>
 	<!--  The view limit for the empire player levels 1-3. Levels 4-5 are unlimited. -->
 	<limit-views>
 		<limit-view id='Empire.Level.1' inner='' outer='225, 400, 120, 80'/>
@@ -51,6 +55,17 @@
 		<objective id='Mission-1-Task-3' title='mission-1.manage_colonies'
 			description='mission-1.manage_colonies.desc' visible= 'false'
 		/>
+
+		<objective id='Mission-2' title='mission-2.protect_traders' 
+			description='mission-2.protect_traders.desc' visible='false'>
+			<objective id='Mission-2-Task-1' title='mission-2.save_trader'
+			description='mission-2.save_trader.desc' visible='false'/>
+			<objective id='Mission-2-Task-2' title='mission-2.save_trader'
+			description='mission-2.save_trader.desc' visible='false'/>
+			<objective id='Mission-2-Task-3' title='mission-2.save_trader'
+			description='mission-2.save_trader.desc' visible='false'/>
+		</objective>		
+		
 	</objectives>	
 	
 </scripting>

@@ -2192,9 +2192,11 @@
 	<entry key='battlefinishscreen.'></entry>
 	<entry key='battlefinishscreen._bonus'></entry>
 	<entry key='singleplayer.custom_game'>Egyéni játék...</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mission-2.protect_traders'>Védd meg a kereskedőket</entry>
+	<entry key='mission-2.protect_traders.desc'>Védd meg a kereskedőket az esetleges kalóz támadásoktól.</entry>
+	<entry key='mission-2.save_trader'>Mentsd meg a kereskedőt</entry>
+	<entry key='mission-2.save_trader'>A kereskedőnek túl kell élnie.</entry>
+	<entry key='pirates.fleet_name'>Kalózok</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	

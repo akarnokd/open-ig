@@ -14,6 +14,8 @@ package hu.openig.model;
  * @author akarnokd, 2011.12.30.
  */
 public enum FleetTask {
+	/** The fleet is executing a script. */
+	SCRIPT,
 	/** Defensive task. */
 	DEFEND,
 	/** Attacking. */

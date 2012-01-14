@@ -1,0 +1,224 @@
+/*
+ * Copyright 2008-2012, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
+
+package hu.openig.scripting.missions;
+
+import hu.openig.core.Pair;
+import hu.openig.model.BattleInfo;
+import hu.openig.model.Fleet;
+import hu.openig.model.FleetTask;
+import hu.openig.model.Objective;
+import hu.openig.model.ObjectiveState;
+import hu.openig.model.Player;
+import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.SpacewarStructure;
+import hu.openig.model.SpacewarWorld;
+
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
+/**
+ * Activities of Mission 2.
+ * @author akarnokd, 2012.01.14.
+ */
+public class Mission2 extends Mission {
+	/**
+	 * Check the starting conditions of Mission 2 and make it available.
+	 */
+	void checkMission2Start() {
+		if (helper.canStart("Mission-2")) {
+			helper.showObjective("Mission-2");
+			helper.clearMissionTime("Mission-2");
+			helper.setMissionTime("Mission-2-Task-1", helper.now() + 24);
+		}
+	}
+	/**
+	 * Check the starting conditions for mission 2 tasks.
+	 */
+	void checkMission2Tasks() {
+		if (!helper.objective("Mission-2").visible) {
+			return;
+		}
+		if (helper.isActive("Mission-2")) {
+			for (int i = 1; i <= 3; i++) {
+				String m2tio = String.format("Mission-2-Task-%d-Timeout", i);
+				String m2ti = String.format("Mission-2-Task-%d", i);
+				if (helper.isMissionTime(m2tio)) {
+					helper.setObjectiveState(m2ti, ObjectiveState.FAILURE);
+					helper.clearMissionTime(m2tio);
+				}
+				if (helper.objective(m2ti).state != ObjectiveState.ACTIVE) {
+					helper.clearMissionTime(m2tio);
+					
+					// schedule next task
+					if (i < 3) {
+						helper.setMissionTime(String.format("Mission-2-Task-%d", i + 1), 
+								helper.now() + (4 + world.random().nextInt(3)) * 24);
+					}
+				}
+				if (helper.canStart(m2ti)) {
+					int traderMessage = world.random().nextInt(7) + 1;
+					
+					helper.receive("Douglas-Pirates").visible = false;
+					helper.receive("Merchant-Under-Attack-" + traderMessage).visible = true;
+					helper.receive("Merchant-Under-Attack-" + traderMessage).seen = false;
+
+					List<Fleet> fs = findVisibleFleets(player, player("Traders"));
+					if (!fs.isEmpty()) {
+						helper.showObjective(m2ti);
+						helper.clearMissionTime(m2ti);
+						Fleet f = world.random(fs);
+						f.stop();
+						
+						// create simple pirate fleet
+						Fleet pf = createFleet(label("pirates.fleet_name"), player("Pirates"), f.x + 5, f.y + 5);
+						
+						helper.scriptedFleets().add(f.id);
+						helper.scriptedFleets().add(pf.id);
+						
+						// set failure timeout
+						helper.setMissionTime(m2tio, helper.now() + 48);
+					}
+					
+				}
+			}
+			int done = 0;
+			int success = 0;
+			for (int i = 1; i <= 3; i++) {
+				String m2ti = String.format("Mission-2-Task-%d", i);
+				Objective o = helper.objective(m2ti);
+				if (o.state != ObjectiveState.ACTIVE) {
+					done++;
+					if (o.state == ObjectiveState.SUCCESS) {
+						success++;
+					}
+				}
+			}
+			if (done == 3) {
+				if (success == 0) {
+					helper.setObjectiveState("Mission-2", ObjectiveState.FAILURE);
+					helper.setTimeout("Mission-2-Failed", 13000);
+				} else 
+				if (success == 3) {
+					helper.setObjectiveState("Mission-2", ObjectiveState.SUCCESS);
+					helper.setTimeout("Mission-2-Success", 13000);
+				} else {
+					helper.setObjectiveState("Mission-2", ObjectiveState.SUCCESS);
+					helper.setTimeout("Mission-2-Success-But", 13000);
+					helper.receive("Douglas-Pirates").visible = true;
+				}
+			}
+		}
+		if (helper.isTimeout("Mission-2-Failed")) {
+			helper.clearTimeout("Mission-2-Failed");
+			helper.objective("Mission-2").visible = false;
+			loseGameMessageAndMovie("Douglas-Fire-Lost-Merchants", "loose/fired_level_1");
+		} else
+		if (helper.isTimeout("Mission-2-Success")) {
+			helper.clearTimeout("Mission-2-Success");
+			helper.objective("Mission-2").visible = false;
+		} else
+		if (helper.isTimeout("Mission-2-Success-But")) {
+			helper.clearTimeout("Mission-2-Success-But");
+			helper.objective("Mission-2").visible = false;
+		}
+	}
+	@Override
+	public Pair<String, String> onSpacewarFinish(SpacewarWorld war) {
+		if (world.level == 1) {
+			for (int i = 1; i <= 3; i++) {
+				spacewarFinishTraderVsPirate(war, i);
+			}
+		}
+		return null;
+	}
+	@Override
+	public void onSpacewarStart(SpacewarWorld war) {
+		if (world.level == 1) {
+			for (int i = 1; i <= 3; i++) {
+				spacewarStartTraderVsPirate(war, i);
+			}
+		}
+	}
+	/**
+	 * Finish the war for the trader vs pirate missions.
+	 * @param war the war context
+	 * @param task the task index
+	 */
+	void spacewarFinishTraderVsPirate(SpacewarWorld war, int task) {
+		if (isMissionSpacewar(war, "Mission-2-Task-" + task)) {
+			// find the status of the trader ship
+			Player traders = player("Traders");
+			Player pirates = player("Pirates");
+			List<SpacewarStructure> sts = war.structures(traders);
+			if (sts.isEmpty()) {
+				helper.setObjectiveState(helper.objective("Mission-2-Task-" + task), ObjectiveState.FAILURE);
+			} else {
+				helper.setObjectiveState(helper.objective("Mission-2-Task-1" + task), ObjectiveState.SUCCESS);
+			}
+			for (int i : new ArrayList<Integer>(helper.scriptedFleets())) {
+				Fleet f = fleet(i);
+				if (f.owner == traders) {
+					f.task = FleetTask.IDLE;
+					helper.scriptedFleets().remove(f);
+				} else
+				if (f.owner == pirates) {
+					world.removeFleet(f);
+					helper.scriptedFleets().remove(f);
+				}
+			}
+			// hide message
+			for (int i = 1; i <= 7; i++) {
+				helper.receive("Merchant-Under-Attack-" + i).visible = false;
+			}
+		}
+	}
+	/**
+	 * Handle the spacewar between a trader and a pirate. 
+	 * @param war the war context
+	 * @param task the task index
+	 */
+	void spacewarStartTraderVsPirate(SpacewarWorld war, int task) {
+		if (isMissionSpacewar(war, "Mission-2-Task-" + task)) {
+			BattleInfo battle = war.battle();
+			Player traders = player("Traders");
+			Player pirates = player("Pirates");
+			Fleet tf = null;
+			Fleet pf = null;
+			for (int i : helper.scriptedFleets()) {
+				Fleet f = fleet(i);
+				if (f.owner == traders) {
+					tf = f;
+				} else
+				if (f.owner == pirates) {
+					pf = f;
+				}
+			}
+			// attack on the trader
+			// trader attacked
+			if (battle.attacker.targetFleet == tf) {
+				war.includeFleet(pf);
+			} else {
+				// pirate attacked
+				war.addStructures(tf.owner, tf.inventory, EnumSet.of(
+						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
+						ResearchSubCategory.SPACESHIPS_CRUISERS,
+						ResearchSubCategory.SPACESHIPS_FIGHTERS));
+			}
+			// center trader
+			Dimension d = war.space();
+			for (SpacewarStructure s : war.structures(tf.owner)) {
+				s.x = d.width / 2;
+				s.y = d.height / 2;
+				s.owner = player;
+			}
+		}
+	}
+}

@@ -24,10 +24,8 @@ import hu.openig.model.BattleSpaceLayout;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
-import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
-import hu.openig.model.Owned;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
@@ -58,6 +56,7 @@ import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.U;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
@@ -446,6 +445,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			return size() > IMAGE_CACHE_SIZE;
 		}
 	};
+	/** The maximum right placement of units. */
+	int maxRightPlacement;
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -1299,7 +1300,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		this.battle = battle;
 		BattleSimulator.findHelpers(battle, world());
 		
-		int xmax = space.width;
+		maxRightPlacement = space.width;
 
 		Planet nearbyPlanet = battle.getPlanet();
 		Fleet nearbyFleet = battle.getFleet();
@@ -1324,50 +1325,48 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 //			int defenseWidth = Math.max(maxWidth(shields()), maxWidth(projectors()));
 			centerStructures(space.width - commons.spacewar().planet.getWidth() / 2, 
 					U.concat(shields(), projectors()));
-			xmax -= 3 * commons.spacewar().planet.getWidth() / 2;
+			maxRightPlacement -= 3 * commons.spacewar().planet.getWidth() / 2;
 			
 			// place and align stations
 			placeStations(nearbyPlanet, alien);
 			int stationWidth = maxWidth(stations());
-			centerStructures(xmax - stationWidth / 4, stations());
-			xmax -= 3 * stationWidth / 2;
+			centerStructures(maxRightPlacement - stationWidth / 4, stations());
+			maxRightPlacement -= 3 * stationWidth / 2;
 			
 			
 			// add fighters of the planet
 			List<SpacewarStructure> shipWall = U.newArrayList();
-			createSpacewarStructures(nearbyPlanet, 
+			createStructures(nearbyPlanet.owner, nearbyPlanet.inventory, 
 					EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
 			
 			if (!shipWall.isEmpty()) {
-				int maxw = createSingleRowBatchWall(xmax, true, shipWall, structures);
-				xmax -= 3 * maxw / 2;
+				int maxw = createSingleRowBatchWall(maxRightPlacement, true, shipWall, structures);
+				maxRightPlacement -= 3 * maxw / 2;
 			}
 		} else {
 			planetVisible = false;
 		}
-		
-		// FIXME for now, place fleets via the wall formation
 		
 		if (nearbyPlanet != null && nearbyPlanet.owner == battle.attacker.owner) {
 			// place the attacker on the right side (planet side)
 			
 			attackerOnRight = true;
 			
-			placeFleet(xmax, true, battle.attacker);
+			placeFleet(maxRightPlacement, true, battle.attacker.owner, battle.attacker.inventory);
 			// place the defender on the left side
 			
 			if (nearbyFleet != null) {
-				placeFleet(0, false, nearbyFleet);
+				placeFleet(0, false, nearbyFleet.owner, nearbyFleet.inventory);
 			}
 		} else {
 			// place attacker on the left side
-			placeFleet(0, false, battle.attacker);
+			placeFleet(0, false, battle.attacker.owner, battle.attacker.inventory);
 			
 			attackerOnRight = false;
 			
 			// place the defender on the planet side (right side)
 			if (nearbyFleet != null) {
-				placeFleet(xmax, true, nearbyFleet);
+				placeFleet(maxRightPlacement, true, nearbyFleet.owner, nearbyFleet.inventory);
 			}
 		}
 		
@@ -1453,12 +1452,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * Place a fleet onto the map starting from the {@code x} position and {@code angle}.
 	 * @param x the starting position
 	 * @param left expand to the left?
+	 * @param owner the owner of the inventory
 	 * @param fleet the fleet to place
 	 */
-	void placeFleet(int x, boolean left, Fleet fleet) {
+	void placeFleet(int x, boolean left, Player owner, Iterable<InventoryItem> fleet) {
 		List<SpacewarStructure> largeShipWall = U.newArrayList();
 		// place attacker on the planet side (right side)
-		createSpacewarStructures(fleet, 
+		createStructures(owner, fleet, 
 				EnumSet.of(ResearchSubCategory.SPACESHIPS_BATTLESHIPS, ResearchSubCategory.SPACESHIPS_CRUISERS), largeShipWall);
 		
 		if (!largeShipWall.isEmpty()) {
@@ -1469,7 +1469,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		List<SpacewarStructure> smallShipWall = U.newArrayList();
 		List<SpacewarStructure> smallShipWallOut = U.newArrayList();
 		
-		createSpacewarStructures(fleet, 
+		createStructures(owner, fleet, 
 				EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), smallShipWall);
 		if (!smallShipWall.isEmpty()) {
 			createSingleRowBatchWall(x, left, smallShipWall, smallShipWallOut);
@@ -1725,24 +1725,29 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		return maxWidth;
 	}
+	@Override
+	public void addStructures(Player owner, Iterable<InventoryItem> inventory,
+			EnumSet<ResearchSubCategory> categories) {
+		createStructures(owner, inventory, categories, structures);
+	}
 	/**
 	 * Create the spacewar ships from the given inventory list and category filters.
-	 * @param <T> the inventory and owner
+	 * @param owner the owner
 	 * @param inventory the inventory provider
 	 * @param categories the categories to use
 	 * @param ships the output of ships
 	 */
-	<T extends Owned & HasInventory> void createSpacewarStructures(
-			T inventory,
+	void createStructures(Player owner,
+			Iterable<InventoryItem> inventory,
 			EnumSet<ResearchSubCategory> categories,
 			Collection<? super SpacewarStructure> ships
 			) {
-		for (InventoryItem ii : inventory.inventory()) {
+		for (InventoryItem ii : inventory) {
 			// Fix for zero inventory entries
 			if (ii.count <= 0) {
 				continue;
 			}
-			if (categories.contains(ii.type.category) && ii.owner == inventory.owner()) {
+			if (categories.contains(ii.type.category) && ii.owner == owner) {
 				BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
 				if (bse == null) {
 					System.err.println("Missing space entity: " + ii.type.id);
@@ -1758,9 +1763,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.techId = ii.type.id;
 				st.type = StructureType.SHIP;
 				st.item = ii;
-				st.owner = inventory.owner();
+				st.owner = owner;
 				st.destruction = bse.destruction;
-				st.angles = inventory.owner() != player() ? bse.alternative : bse.normal;
+				st.angles = owner != player() ? bse.alternative : bse.normal;
 				st.infoImageName = bse.infoImageName;
 				st.shield = ii.shield;
 				st.shieldMax = Math.max(0, ii.shieldMax());
@@ -4344,5 +4349,46 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		s.attack = null;
 		s.moveTo = null;
 		s.attack = null;
+	}
+	@Override
+	public Dimension space() {
+		return space.getSize();
+	}
+	@Override
+	public void includeFleet(Fleet f) {
+		// remove fleet structures of the same owner as f
+		for (int i = structures.size() - 1; i >= 0; i--) {
+			SpacewarStructure s = structures.get(i);
+			if (s.owner == f.owner && s.fleet != null) {
+				structures.remove(i);
+			}
+		}
+		
+		List<InventoryItem> common = U.newArrayList();
+		common.addAll(f.inventory);
+		
+		if (f.owner == battle.attacker.owner) {
+			common.addAll(battle.attacker.inventory);
+		}
+		Fleet nearbyFleet = battle.getFleet();
+		if (nearbyFleet != null && nearbyFleet.owner == f.owner) {
+			common.addAll(nearbyFleet.inventory);
+		}
+		
+		Planet nearbyPlanet = battle.getPlanet();
+		
+		if (nearbyPlanet == null || nearbyPlanet.owner != f.owner) {
+			if (f.owner == battle.attacker.owner) {
+				placeFleet(0, false, f.owner, common);
+			} else {
+				placeFleet(maxRightPlacement, true, f.owner, common);
+			}
+		} else {
+			if (f.owner == battle.attacker.owner) {
+				placeFleet(maxRightPlacement, true, f.owner, common);
+			} else {
+				placeFleet(0, false, f.owner, common);
+			}
+		}
 	}
 }
