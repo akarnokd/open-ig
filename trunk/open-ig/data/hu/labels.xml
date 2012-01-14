@@ -2146,7 +2146,6 @@
 	<entry key='hide_objectives'>Nyomd le a TAB billentyűt a feladatok mutatásához/elrejtéséhez.</entry>
 	<entry key='mission-1.manage_achilles'>Kezeld az Achilles igényeit</entry>
 	<entry key='mission-1.manage_achilles.desc'>Kezeld a bolygón felmerülő igényeket. A bolygót nem vesztheted el.</entry>
-	
 	<!--The original main missions-->
 	<entry key='battlefinishscreen.merchant1'>Köszönjük a segítségét, Kapitány! Rég beadtam volna a kulcsot, ha később érkezik.</entry>
 	<entry key='battlefinishscreen.merchant1_bonus'></entry>
@@ -2192,14 +2191,7 @@
 	<entry key='battlefinishscreen.32_bonus'>BONUS: Romboló v2.0 prototípus.</entry>
 	<entry key='battlefinishscreen.'></entry>
 	<entry key='battlefinishscreen._bonus'></entry>
-	
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='singleplayer.custom_game'>Egyéni játék...</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
