@@ -88,6 +88,7 @@ public final class BattleSimulator {
 			System.out.printf("Fleet: %s (%s)%n", f0.name, f0.owner.id);
 		}
 		findHelpers(battle, world);
+		world.scripting.onAutobattleStart(battle);
 		if (spaceBattleNeeded()) {
 			runSpaceBattle();
 		}
@@ -99,6 +100,7 @@ public final class BattleSimulator {
 				applyPlanetConquered(battle.targetPlanet, 500);
 			}
 		}
+		world.scripting.onAutobattleFinish(battle);
 	}
 	/** Run the ground battle. */
 	void runGroundBattle() {
@@ -183,6 +185,7 @@ public final class BattleSimulator {
 				battle.targetPlanet.takeover(battle.attacker.owner);
 				applyPlanetConquered(battle.targetPlanet, 2000);
 			}
+			battle.groundwarWinner = battle.targetPlanet.owner;
 			battle.targetPlanet.surface.placeRoads(battle.targetPlanet.race, world.buildingModel);
 		}
 	}
@@ -420,7 +423,7 @@ public final class BattleSimulator {
 		System.out.printf("Defender time (ms): %s%n", defenderTime);
 		
 		if (attackerTime < defenderTime) {
-			
+			battle.spacewarWinner = battle.attacker.owner;
 			System.out.printf("Attacker wins. Inflicted damage upon: %s%n", attackerTime * defender.attack);
 			// attacker wins
 			if (fleet != null) {
@@ -446,6 +449,12 @@ public final class BattleSimulator {
 			}
 		} else 
 		if (attackerTime > defenderTime) {
+			if (battle.targetPlanet != null) {
+				battle.spacewarWinner = battle.targetPlanet.owner;
+			} else
+			if (battle.targetFleet != null) {
+				battle.spacewarWinner = battle.targetFleet.owner;
+			}
 			System.out.printf("Defender wins. Inflicted damage upon: %s%n", defenderTime * attacker.attack);
 			// defender wins
 			world.removeFleet(battle.attacker);
@@ -494,14 +503,24 @@ public final class BattleSimulator {
 	 */
 	void applyDamage(HasInventory f, double hitpoints, Func1<InventoryItem, Boolean> filter) {
 		List<InventoryItem> inv = f.inventory();
-		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>(inv);
-//		Collections.shuffle(is, world.random.get());
+		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>();
+		for (InventoryItem ii : inv) {
+			if (ii.parent == f) {
+				is.add(ii);
+			}
+		}
 		Collections.sort(is, new Comparator<InventoryItem>() {
 			@Override
 			public int compare(InventoryItem o1, InventoryItem o2) {
 				return o1.type.productionCost - o2.type.productionCost;
 			}
 		});
+		// put those elements at the back who are not part of the same parent
+		for (InventoryItem ii : inv) {
+			if (ii.parent != f) {
+				is.add(ii);
+			}
+		}
 		for (InventoryItem ii : is) {
 			if (hitpoints <= 0) {
 				break;

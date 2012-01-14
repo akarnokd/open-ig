@@ -224,5 +224,14 @@ public interface GameScriptingEvents {
 	 * null if no special condition on any part
 	 */
 	Pair<String, String> onGroundwarFinish(GroundwarWorld war);
-
+	/**
+	 * Notification about the auto-battle to be executed.
+	 * @param battle the battle settings
+	 */
+	void onAutobattleStart(BattleInfo battle);
+	/**
+	 * Notification about the auto-battle completion.
+	 * @param battle the battle settings
+	 */
+	void onAutobattleFinish(BattleInfo battle);
 }

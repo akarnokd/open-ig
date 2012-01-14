@@ -849,4 +849,16 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	public Set<Integer> scriptedFleets() {
 		return scriptedFleets;
 	}
+	@Override
+	public void onAutobattleFinish(BattleInfo battle) {
+		for (Mission m : missions) {
+			m.onAutobattleFinish(battle);
+		}
+	}
+	@Override
+	public void onAutobattleStart(BattleInfo battle) {
+		for (Mission m : missions) {
+			m.onAutobattleStart(battle);
+		}
+	}
 }

@@ -891,6 +891,11 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				case KeyEvent.VK_TAB:
+					allScreens.statusbar.objectives.visible(!allScreens.statusbar.objectives.visible());
+					repaintInner();
+					e.consume();
+					break;
 				case KeyEvent.VK_L:
 					if (e.isControlDown()) {
 						loadWorld(null);
@@ -914,11 +919,6 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 				int keycode = e.getKeyCode();
 				switch (keycode) {
-				case KeyEvent.VK_TAB:
-					allScreens.statusbar.objectives.visible(!allScreens.statusbar.objectives.visible());
-					repaintInner();
-					e.consume();
-					break;
 				case KeyEvent.VK_F1:
 					displayPrimary(Screens.BRIDGE);
 					e.consume();

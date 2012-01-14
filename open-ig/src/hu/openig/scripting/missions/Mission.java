@@ -448,15 +448,24 @@ public abstract class Mission implements GameScriptingEvents {
 	}
 	/**
 	 * Check if the given spacewar is a mission-related spacewar.
-	 * @param war the war context
+	 * @param battle the battle settings
 	 * @param mission the mission
 	 * @return true if it is the related spacewar
 	 */
-	protected boolean isMissionSpacewar(SpacewarWorld war, String mission) {
-		BattleInfo battle = war.battle();
+	protected boolean isMissionSpacewar(BattleInfo battle, String mission) {
 		if (helper.isActive(mission) && battle.attacker.owner == player && battle.targetFleet != null) {
 			return helper.scriptedFleets().contains(battle.targetFleet.id);
 		}
 		return false;
+	}
+	@Override
+	public void onAutobattleFinish(BattleInfo battle) {
+		// default implementation does not react to this event
+		
+	}
+	@Override
+	public void onAutobattleStart(BattleInfo battle) {
+		// default implementation does not react to this event
+		
 	}
 }
