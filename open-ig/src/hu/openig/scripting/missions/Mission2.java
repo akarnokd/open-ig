@@ -58,6 +58,7 @@ public class Mission2 extends Mission {
 				if (helper.isMissionTime(m2tio)) {
 					helper.setObjectiveState(m2ti, ObjectiveState.FAILURE);
 					helper.clearMissionTime(m2tio);
+					scheduleNextTask(i);
 				}
 				if (helper.canStart(m2ti)) {
 					int traderMessage = world.random().nextInt(7) + 1;
@@ -128,11 +129,7 @@ public class Mission2 extends Mission {
 				if (helper.isTimeout("Mission-2-Task-" + i + "-Failed")) {
 					helper.setObjectiveState(helper.objective("Mission-2-Task-" + i), ObjectiveState.FAILURE);
 					helper.clearTimeout("Mission-2-Task-" + i + "-Failed");
-						// schedule next task
-					if (i < 3) {
-						helper.setMissionTime(String.format("Mission-2-Task-%d", i + 1), 
-								helper.now() + (4 + world.random().nextInt(3)) * 24);
-					}
+					scheduleNextTask(i);
 				} else
 				if (helper.isTimeout("Mission-2-Task-" + i + "-Success")) {
 					helper.setObjectiveState(helper.objective("Mission-2-Task-" + i), ObjectiveState.SUCCESS);
@@ -144,10 +141,7 @@ public class Mission2 extends Mission {
 					world.statistics.moneyIncome += m;
 					helper.clearTimeout("Mission-2-Task-" + i + "-Success");
 					
-					if (i < 3) {
-						helper.setMissionTime(String.format("Mission-2-Task-%d", i + 1), 
-								helper.now() + (4 + world.random().nextInt(3)) * 24);
-					}
+					scheduleNextTask(i);
 
 				}
 			}
@@ -165,6 +159,16 @@ public class Mission2 extends Mission {
 		if (helper.isTimeout("Mission-2-Success-But")) {
 			helper.clearTimeout("Mission-2-Success-But");
 			helper.objective("Mission-2").visible = false;
+		}
+	}
+	/**
+	 * Schedule the next task.
+	 * @param currentTask the current task
+	 */
+	void scheduleNextTask(int currentTask) {
+		if (currentTask < 3) {
+			helper.setMissionTime(String.format("Mission-2-Task-%d", currentTask + 1), 
+					helper.now() + (4 + world.random().nextInt(3)) * 24);
 		}
 	}
 	@Override
