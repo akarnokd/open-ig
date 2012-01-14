@@ -78,7 +78,7 @@ public class CreditsScreen extends ScreenBase {
 
 	@Override
 	public Screens screen() {
-		return Screens.TEST;
+		return Screens.CREDITS;
 	}
 
 	@Override

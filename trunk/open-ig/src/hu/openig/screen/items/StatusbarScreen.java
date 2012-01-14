@@ -115,6 +115,8 @@ public class StatusbarScreen extends ScreenBase {
 	Timer achievementAnimator;
 	/** The objectives viewer. */
 	public ObjectivesView objectives;
+	/** If non-null, defines a full-screen overlay painted. */
+	public Color overlay;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -322,6 +324,10 @@ public class StatusbarScreen extends ScreenBase {
 			g2.setClip(clip);
 		}
 		
+		if (overlay != null) {
+			g2.setColor(overlay);
+			g2.fillRect(0, 0, width, height);
+		}
 	}
 	/** Update the state displays. */
 	public void update() {

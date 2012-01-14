@@ -293,4 +293,8 @@ public class EmptyScripting implements GameScripting {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public boolean mayAutoSave() {
+		return true;
+	}
 }
