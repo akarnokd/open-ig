@@ -80,15 +80,16 @@ public abstract class Mission implements GameScriptingEvents {
 	/**
 	 * Find visible fleets considering the current exploration limits as well.
 	 * @param toPlayer who should see the fleets
+	 * @param shouldSee should the player see the ship?
 	 * @param owner the owner of the fleets
 	 * @return the list of fleets found
 	 */
-	protected List<Fleet> findVisibleFleets(Player toPlayer, Player owner) {
+	protected List<Fleet> findVisibleFleets(Player toPlayer, boolean shouldSee, Player owner) {
 		List<Fleet> result = U.newArrayList();
 		
 		for (Fleet f : owner.fleets.keySet()) {
 			if (f.owner == owner 
-					&& toPlayer.fleets.containsKey(f)
+					&& (toPlayer.fleets.containsKey(f) || !shouldSee)
 					&& toPlayer.withinLimits(f.x, f.y)) {
 				result.add(f);
 			}
