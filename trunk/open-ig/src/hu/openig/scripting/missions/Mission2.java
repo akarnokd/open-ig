@@ -12,6 +12,7 @@ import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Player;
@@ -69,6 +70,7 @@ public class Mission2 extends Mission {
 					helper.receive("Douglas-Pirates").visible = false;
 					helper.receive("Merchant-Under-Attack-" + traderMessage).visible = true;
 					helper.receive("Merchant-Under-Attack-" + traderMessage).seen = false;
+					helper.send("Douglas-Reinforcements-Denied").visible = true;
 
 					List<Fleet> fs = findVisibleFleets(player, player("Traders"));
 					if (!fs.isEmpty()) {
@@ -79,6 +81,16 @@ public class Mission2 extends Mission {
 						
 						// create simple pirate fleet
 						Fleet pf = createFleet(label("pirates.fleet_name"), player("Pirates"), f.x + 5, f.y + 5);
+						
+						if (i == 1) {
+							pf.addInventory(world.researches.get("PirateFighter"), 2);
+						} else
+						if (i == 2) {
+							pf.addInventory(world.researches.get("PirateFighter"), 3);
+						} else {
+							pf.addInventory(world.researches.get("PirateFighter"), 3);
+							pf.addInventory(world.researches.get("PirateDestroyer"), 1);
+						}
 						
 						helper.scriptedFleets().add(f.id);
 						helper.scriptedFleets().add(pf.id);
@@ -102,6 +114,7 @@ public class Mission2 extends Mission {
 				}
 			}
 			if (done == 3) {
+				helper.send("Douglas-Reinforcements-Denied").visible = false;
 				if (success == 0) {
 					helper.setObjectiveState("Mission-2", ObjectiveState.FAILURE);
 					helper.setTimeout("Mission-2-Failed", 13000);
@@ -167,6 +180,10 @@ public class Mission2 extends Mission {
 				Fleet f = fleet(i);
 				if (f.owner == traders) {
 					f.task = FleetTask.IDLE;
+					// fix owner
+					for (InventoryItem ii : f.inventory) {
+						ii.owner = f.owner;
+					}
 					helper.scriptedFleets().remove(f);
 				} else
 				if (f.owner == pirates) {
@@ -220,5 +237,10 @@ public class Mission2 extends Mission {
 				s.owner = player;
 			}
 		}
+	}
+	@Override
+	public void onTime() {
+		checkMission2Start();
+		checkMission2Tasks();
 	}
 }

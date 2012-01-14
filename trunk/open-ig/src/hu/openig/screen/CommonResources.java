@@ -473,10 +473,6 @@ public class CommonResources implements GameEnvironment {
 		radarHandler = null;
 		simulation = null;
 
-		if (world != null) {
-			world.scripting.done();
-		}
-		
 		stopMusic();
 	}
 	/**
@@ -608,8 +604,6 @@ public class CommonResources implements GameEnvironment {
 	 * @param withMusic set if play music 
 	 */
 	public void start(boolean withMusic) {
-		stop();
-		
 		restoreMainSimulationSpeedFunction();
 
 		radarHandler = register(1000, new Action0() {
@@ -655,6 +649,9 @@ public class CommonResources implements GameEnvironment {
 	 * @return this
 	 */
 	public CommonResources world(World w) {
+		if (this.world != null) {
+			world.scripting.done();
+		}
 		this.world = w;
 		return this;
 	}

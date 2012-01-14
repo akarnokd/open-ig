@@ -8,14 +8,11 @@
 
 package hu.openig.scripting;
 
-import java.util.Collections;
-import java.util.List;
-
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
-import hu.openig.model.GameScripting;
 import hu.openig.model.Fleet;
+import hu.openig.model.GameScripting;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
@@ -24,8 +21,10 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
-import hu.openig.model.World;
 import hu.openig.utils.XElement;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * An empty placeholder scripting for skirmish games.
@@ -51,7 +50,7 @@ public class EmptyScripting implements GameScripting {
 	}
 	
 	@Override
-	public void init(World world, XElement in) {
+	public void init(Player player, XElement in) {
 		// TODO Auto-generated method stub
 
 	}

@@ -34,10 +34,10 @@ public interface GameScripting extends GameScriptingEvents {
 	List<Objective> currentObjectives();
 	/**
 	 * Initialize the scripting for the world and configuration.
-	 * @param world the current world fully loaded
+	 * @param player the main player
 	 * @param in the script configuration
 	 */
-	void init(World world, XElement in);
+	void init(Player player, XElement in);
 	/**
 	 * Close the scripting and release resources.
 	 */
