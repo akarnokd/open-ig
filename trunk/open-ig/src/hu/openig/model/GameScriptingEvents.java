@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Pair;
 
 /**
  * Interface for the common game scripting events.
@@ -203,10 +202,8 @@ public interface GameScriptingEvents {
 	/**
 	 * Called once the battle is concluded but before going to the next phase.
 	 * @param war the battle context
-	 * @return pair of background image resource id and the battle reward text,
-	 * null if no special condition on any part
 	 */
-	Pair<String, String> onSpacewarFinish(SpacewarWorld war);
+	void onSpacewarFinish(SpacewarWorld war);
 	/**
 	 * Called once the player placed its own units and the AI did its own placements.
 	 * @param war the battle context
@@ -220,10 +217,8 @@ public interface GameScriptingEvents {
 	/**
 	 * Called once the battle is concluded but before going to the next phase.
 	 * @param war the battle context
-	 * @return pair of background image resource id and the battle reward text,
-	 * null if no special condition on any part
 	 */
-	Pair<String, String> onGroundwarFinish(GroundwarWorld war);
+	void onGroundwarFinish(GroundwarWorld war);
 	/**
 	 * Notification about the auto-battle to be executed.
 	 * @param battle the battle settings

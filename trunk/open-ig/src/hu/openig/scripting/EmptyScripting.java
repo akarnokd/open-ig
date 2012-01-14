@@ -8,7 +8,6 @@
 
 package hu.openig.scripting;
 
-import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
@@ -254,9 +253,8 @@ public class EmptyScripting implements GameScripting {
 		
 	}
 	@Override
-	public Pair<String, String> onSpacewarFinish(SpacewarWorld war) {
+	public void onSpacewarFinish(SpacewarWorld war) {
 		// TODO Auto-generated method stub
-		return null;
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
@@ -269,9 +267,8 @@ public class EmptyScripting implements GameScripting {
 		
 	}
 	@Override
-	public Pair<String, String> onGroundwarFinish(GroundwarWorld war) {
+	public void onGroundwarFinish(GroundwarWorld war) {
 		// TODO Auto-generated method stub
-		return null;
 	}
 	@Override
 	public void onGroundwarStart(GroundwarWorld war) {

@@ -8,7 +8,6 @@
 
 package hu.openig.scripting;
 
-import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
@@ -738,14 +737,10 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		}
 	}
 	@Override
-	public Pair<String, String> onSpacewarFinish(SpacewarWorld war) {
+	public void onSpacewarFinish(SpacewarWorld war) {
 		for (Mission m : missions) {
-			Pair<String, String> result = m.onSpacewarFinish(war);
-			if (result != null) {
-				return result;
-			}
+			m.onSpacewarFinish(war);
 		}
-		return null;
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
@@ -760,14 +755,10 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		}		
 	}
 	@Override
-	public Pair<String, String> onGroundwarFinish(GroundwarWorld war) {
+	public void onGroundwarFinish(GroundwarWorld war) {
 		for (Mission m : missions) {
-			Pair<String, String> result = m.onGroundwarFinish(war);
-			if (result != null) {
-				return result;
-			}
+			m.onGroundwarFinish(war);
 		}
-		return null;
 	}
 	@Override
 	public void onGroundwarStart(GroundwarWorld war) {

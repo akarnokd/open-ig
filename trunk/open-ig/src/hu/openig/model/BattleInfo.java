@@ -60,6 +60,10 @@ public class BattleInfo {
 	public SimulationSpeed originalSpeed = SimulationSpeed.NORMAL;
 	/** The set of the allies of the attacker which can be controlled. */
 	public final Set<Player> attackerAllies = U.newHashSet();
+	/** The optional finish image resource id. */
+	public String rewardImage;
+	/** The optional reward display text. */
+	public String rewardText;
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;

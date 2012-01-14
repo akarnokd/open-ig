@@ -424,9 +424,8 @@ public abstract class Mission implements GameScriptingEvents {
 	}
 
 	@Override
-	public Pair<String, String> onSpacewarFinish(SpacewarWorld war) {
+	public void onSpacewarFinish(SpacewarWorld war) {
 		// default implementation does not react to this event
-		return null;
 	}
 
 	@Override
@@ -442,9 +441,8 @@ public abstract class Mission implements GameScriptingEvents {
 	}
 
 	@Override
-	public Pair<String, String> onGroundwarFinish(GroundwarWorld war) {
+	public void onGroundwarFinish(GroundwarWorld war) {
 		// default implementation does not react to this event
-		return null;
 	}
 	/**
 	 * Check if the given spacewar is a mission-related spacewar.
