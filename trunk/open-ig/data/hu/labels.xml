@@ -2200,6 +2200,10 @@
 	<entry key='pirates.fleet_name'>Kalózok</entry>
 	<entry key='mission-2.save_trader.reward'>Jutalom: %s kredit</entry>
 	<entry key='incoming_message'>- Üzenet -</entry>
+	<entry key='mission-3.escort_carrier'>Szállítóhajó kísérete</entry>
+	<entry key='mission-3.escort_carrier.desc'>A szállítóhajó nem semmisülhet meg.</entry>
+	<entry key='mission-3.escort_carrier.name'>Szállító</entry>
+	<entry key='mission-3.reward'>Egy Pajzs v1.0 elérhető a felszerelések között.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

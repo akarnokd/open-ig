@@ -2944,10 +2944,10 @@
 	<entry key='pirates.fleet_name'>Pirates</entry>
 	<entry key='mission-2.save_trader.reward'>Reward: %s credits</entry>
 	<entry key='incoming_message'>- Message -</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mission-3.escort_carrier'>Escort carrier</entry>
+	<entry key='mission-3.escort_carrier.desc'>Ensure that the carrier is not destroyed.</entry>
+	<entry key='mission-3.escort_carrier.name'>Carrier</entry>
+	<entry key='mission-3.reward'>One Shield v1.0 added to your inventory.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

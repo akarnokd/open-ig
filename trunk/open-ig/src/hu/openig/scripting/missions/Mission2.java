@@ -61,14 +61,13 @@ public class Mission2 extends Mission {
 					scheduleNextTask(i);
 				}
 				if (helper.canStart(m2ti)) {
-					int traderMessage = world.random().nextInt(7) + 1;
-					
-					helper.receive("Douglas-Pirates").visible = false;
-					incomingMessage("Merchant-Under-Attack-" + traderMessage);
-					helper.send("Douglas-Reinforcements-Denied").visible = true;
-
 					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"));
 					if (!fs.isEmpty()) {
+						int traderMessage = world.random().nextInt(7) + 1;
+						
+						helper.receive("Douglas-Pirates").visible = false;
+						incomingMessage("Merchant-Under-Attack-" + traderMessage);
+						helper.send("Douglas-Reinforcements-Denied").visible = true;
 						helper.showObjective(m2ti);
 						helper.clearMissionTime(m2ti);
 						Fleet f = world.random(fs);

@@ -38,6 +38,12 @@ public interface MissionScriptingHelper {
 	 */
 	void setTimeout(String id, int time);
 	/**
+	 * Check if the specified timeout has been set.
+	 * @param id the timeout id
+	 * @return true if set
+	 */
+	boolean hasTimeout(String id);
+	/**
 	 * Remove timeout.
 	 * @param id the reference id
 	 */
@@ -50,6 +56,12 @@ public interface MissionScriptingHelper {
 	 * @param hours the hours
 	 */
 	void setMissionTime(String id, int hours);
+	/**
+	 * Checks if the mission time has been already set.
+	 * @param id the identifier
+	 * @return true if already set
+	 */
+	boolean hasMissionTime(String id);
 	/**
 	 * Clear the mission time.
 	 * @param id the mission id

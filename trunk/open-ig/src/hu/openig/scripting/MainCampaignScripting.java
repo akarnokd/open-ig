@@ -838,6 +838,14 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		return !o0.visible && o0.state == ObjectiveState.ACTIVE && isMissionTime(oId); 
 	}
 	@Override
+	public boolean hasMissionTime(String id) {
+		return missiontimer.containsKey("id");
+	}
+	@Override
+	public boolean hasTimeout(String id) {
+		return countdowns.containsKey(id);
+	}
+	@Override
 	public void gameover() {
 		gameOver = true;
 	}
