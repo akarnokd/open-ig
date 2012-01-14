@@ -62,6 +62,7 @@ import hu.openig.screen.items.ShipwalkScreen;
 import hu.openig.screen.items.SingleplayerScreen;
 import hu.openig.screen.items.SpacewarScreen;
 import hu.openig.screen.items.StarmapScreen;
+import hu.openig.screen.items.StarmapScreen.ShowNamesMode;
 import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.TestScreen;
 import hu.openig.screen.items.VideoScreen;
@@ -1719,6 +1720,14 @@ public class GameWindow extends JFrame implements GameControls {
 		xworld.set("spacewar-range", allScreens.spacewar.viewRangeSelected());
 		xworld.set("spacewar-grid", allScreens.spacewar.viewGridSelected());
 		
+		xworld.set("starmap-divider", allScreens.starmap.planetFleetSplitter);
+		xworld.set("starmap-radars", allScreens.starmap.showRadarButton.selected);
+		xworld.set("starmap-stars", allScreens.starmap.showStarsButton.selected);
+		xworld.set("starmap-grid", allScreens.starmap.showGridButton.selected);
+		xworld.set("starmap-fleets", allScreens.starmap.showFleetButton.selected);
+		xworld.set("starmap-names", allScreens.starmap.showNames());
+		
+		
 		config.saveProperties(xworld);
 	}
 	/**
@@ -1727,25 +1736,34 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	void restoreSettings(XElement xworld) {
 		// restore starmap location and zoom
+		StarmapScreen sm = allScreens.starmap;
 		if (xworld.has("starmap-z")) {
 			int z = xworld.getInt("starmap-z");
-			allScreens.starmap.setZoomIndex(z);
-			allScreens.starmap.newGameStarted = false;
+			sm.setZoomIndex(z);
+			sm.newGameStarted = false;
 		}
 		if (xworld.has("starmap-x")) {
 			int x = xworld.getInt("starmap-x");
-			allScreens.starmap.setXOffset(x);
-			allScreens.starmap.newGameStarted = false;
+			sm.setXOffset(x);
+			sm.newGameStarted = false;
 		}
 		if (xworld.has("starmap-y")) {
 			int y = xworld.getInt("starmap-y");
-			allScreens.starmap.setYOffset(y);
-			allScreens.starmap.newGameStarted = false;
+			sm.setYOffset(y);
+			sm.newGameStarted = false;
 		}
 		allScreens.spacewar.viewCommandSelected(xworld.getBoolean("spacewar-command", allScreens.spacewar.viewCommandSelected()));
 		allScreens.spacewar.viewDamageSelected(xworld.getBoolean("spacewar-damage", allScreens.spacewar.viewDamageSelected()));
 		allScreens.spacewar.viewRangeSelected(xworld.getBoolean("spacewar-range", allScreens.spacewar.viewRangeSelected()));
 		allScreens.spacewar.viewGridSelected(xworld.getBoolean("spacewar-grid", allScreens.spacewar.viewGridSelected()));
+		
+		sm.planetFleetSplitter = xworld.getDouble("starmap-divider", sm.planetFleetSplitter);
+		sm.showRadarButton.selected = xworld.getBoolean("starmap-radars", sm.showRadarButton.selected);
+		sm.showStarsButton.selected = xworld.getBoolean("starmap-stars", sm.showStarsButton.selected);
+		sm.showGridButton.selected = xworld.getBoolean("starmap-grid", sm.showGridButton.selected);
+		sm.showFleetButton.selected = xworld.getBoolean("starmap-fleets", sm.showFleetButton.selected);
+		sm.showNames(xworld.getEnum("starmap-names", ShowNamesMode.class, sm.showNames()));
+
 		
 		config.loadProperties(xworld);
 	}

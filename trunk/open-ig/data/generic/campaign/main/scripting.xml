@@ -46,11 +46,11 @@
 			<objective id='Mission-1-Task-2' title='mission-1.fix_buildings'
 			description='mission-1.fix_buildings.desc' visible='false'/>
 		</objective> 
+		<objective id='Mission-1-Task-4' title='mission-1.manage_achilles'
+		description='mission-1.manage_achilles.desc' visible='false'/>
 		<objective id='Mission-1-Task-3' title='mission-1.manage_colonies'
 			description='mission-1.manage_colonies.desc' visible= 'false'
 		/>
-		<objective id='Mission-1-Task-4' title='mission-1.manage_achilles'
-		description='mission-1.manage_achilles.desc' visible='false'/>
 	</objectives>	
 	
 </scripting>
