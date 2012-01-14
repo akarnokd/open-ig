@@ -70,23 +70,35 @@ public class FleetListing extends UIContainer {
 		
 		addThis();
 	}
+	/**
+	 * Lists the fleets within 20 distance.
+	 * @return the list of fleets
+	 */
+	List<Fleet> nearbyFleets() {
+		Fleet cf = commons.world().player.currentFleet;
+		List<Fleet> fleets = null;
+		if (nearby && cf != null) {
+			fleets = cf.fleetsInRange(20);
+			cf = selected;
+		} else {
+			fleets = commons.world().player.ownFleets();
+		}
+		for (int i = fleets.size() - 1; i >= 0; i--) {
+			if (!commons.world().scripting.mayControlFleet(fleets.get(i))) {
+				fleets.remove(i);
+			}
+		}
+		return fleets;
+	}
 	@Override
 	public void draw(Graphics2D g2) {
 		int rows = height / rowHeight;
-		List<Fleet> fleet = null;
-		
-		Fleet cf = commons.world().player.currentFleet;
-		if (nearby && cf != null) {
-			fleet = cf.fleetsInRange(20);
-			cf = selected;
-		} else {
-			fleet = commons.world().player.ownFleets();
-		}
+		List<Fleet> fleets = nearbyFleets();
 		
 		scrollUp.location(width - scrollUp.width, 0);
 		scrollUp.visible(top > 0);
 		scrollDown.location(width - scrollUp.width, height - scrollDown.height);
-		scrollDown.visible(top + rows < fleet.size());
+		scrollDown.visible(top + rows < fleets.size());
 		
 		
 		
@@ -99,10 +111,10 @@ public class FleetListing extends UIContainer {
 		g2.setColor(Color.LIGHT_GRAY);
 		g2.drawRect(0, 0, width - 1, height - 1);
 		
-		for (int i = top; i < fleet.size() && i < top + rows; i++) {
-			Fleet f = fleet.get(i);
+		for (int i = top; i < fleets.size() && i < top + rows; i++) {
+			Fleet f = fleets.get(i);
 			int c = TextRenderer.GREEN;
-			if (f == cf) {
+			if (f == commons.world().player.currentFleet) {
 				c = TextRenderer.RED;
 			}
 			commons.text().paintTo(g2, 4, i * rowHeight + 2, textHeight, c, f.name);
@@ -114,13 +126,7 @@ public class FleetListing extends UIContainer {
 	public boolean mouse(UIMouse e) {
 		if (e.has(Button.LEFT) && e.has(Type.DOWN) && onSelect != null && e.x < width - scrollUp.width - 2) {
 			int row = (e.y - top) / rowHeight;
-			List<Fleet> fleet = null;
-			Fleet cf = commons.world().player.currentFleet;
-			if (nearby && cf != null) {
-				fleet = cf.fleetsInRange(20);
-			} else {
-				fleet = commons.world().player.ownFleets();
-			}
+			List<Fleet> fleet = nearbyFleets();
 			if (row >= 0 && row < fleet.size()) {
 				onSelect.invoke(fleet.get(row));
 				return true;
