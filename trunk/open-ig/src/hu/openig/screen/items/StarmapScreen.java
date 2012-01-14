@@ -1670,7 +1670,9 @@ public class StarmapScreen extends ScreenBase {
 		default:
 			char c = Character.toUpperCase(e.getKeyChar());
 			if (c == 'M') {
-				if (player().selectionMode == SelectionMode.FLEET && fleet() != null 
+				if (player().selectionMode == SelectionMode.FLEET 
+						&& fleet() != null
+						&& world().scripting.mayControlFleet(fleet())
 						/* && fleet().owner == player() */) {
 					fleetMove.down = true;
 					fleetMove.onPress.invoke();
@@ -1681,6 +1683,7 @@ public class StarmapScreen extends ScreenBase {
 			if (c == 'A') {
 				if (player().selectionMode == SelectionMode.FLEET 
 						&& fleet() != null 
+						&& world().scripting.mayControlFleet(fleet())
 						/* && fleet().owner == player() */) {
 					fleetAttack.down = true;
 					fleetAttack.onPress.invoke();
@@ -1689,8 +1692,10 @@ public class StarmapScreen extends ScreenBase {
 				}
 			} else
 			if (c == 'S') {
-				if (player().selectionMode == SelectionMode.FLEET 
-						/* && fleet() != null && fleet().owner == player() */) {
+				if (player().selectionMode == SelectionMode.FLEET
+						&& fleet() != null
+						&& world().scripting.mayControlFleet(fleet())
+						/* && fleet().owner == player() */) {
 					fleetStop.down = true;
 					fleetStop.onPress.invoke();
 					rep = true;
