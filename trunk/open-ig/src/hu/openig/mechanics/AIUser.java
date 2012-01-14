@@ -233,11 +233,14 @@ public class AIUser implements AIManager {
 	}
 	@Override
 	public void onPlanetRevolt(Planet planet) {
-		Message msg = w.newMessage("message.planet_revolt");
-		msg.priority = 100;
-		msg.sound = SoundType.REVOLT;
-		msg.targetPlanet = planet;
-		p.messageQueue.add(msg);
+		// once per transition
+		if (planet.morale <= 15 && planet.lastMorale > 15) {
+			Message msg = w.newMessage("message.planet_revolt");
+			msg.priority = 100;
+			msg.sound = SoundType.REVOLT;
+			msg.targetPlanet = planet;
+			p.messageQueue.add(msg);
+		}
 	}
 	@Override
 	public void onPlanetConquered(Planet planet, Player lastOwner) {
