@@ -71,7 +71,7 @@ public class Mission2 extends Mission {
 					helper.receive("Merchant-Under-Attack-" + traderMessage).seen = false;
 					helper.send("Douglas-Reinforcements-Denied").visible = true;
 
-					List<Fleet> fs = findVisibleFleets(player, player("Traders"));
+					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"));
 					if (!fs.isEmpty()) {
 						helper.showObjective(m2ti);
 						helper.clearMissionTime(m2ti);
