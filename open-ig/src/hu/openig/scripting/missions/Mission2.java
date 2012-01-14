@@ -59,13 +59,6 @@ public class Mission2 extends Mission {
 					helper.setObjectiveState(m2ti, ObjectiveState.FAILURE);
 					helper.clearMissionTime(m2tio);
 				}
-				if (helper.objective(m2ti).state != ObjectiveState.ACTIVE) {
-					// schedule next task
-					if (i < 3) {
-						helper.setMissionTime(String.format("Mission-2-Task-%d", i + 1), 
-								helper.now() + (4 + world.random().nextInt(3)) * 24);
-					}
-				}
 				if (helper.canStart(m2ti)) {
 					int traderMessage = world.random().nextInt(7) + 1;
 					
@@ -135,6 +128,11 @@ public class Mission2 extends Mission {
 				if (helper.isTimeout("Mission-2-Task-" + i + "-Failed")) {
 					helper.setObjectiveState(helper.objective("Mission-2-Task-" + i), ObjectiveState.FAILURE);
 					helper.clearTimeout("Mission-2-Task-" + i + "-Failed");
+						// schedule next task
+					if (i < 3) {
+						helper.setMissionTime(String.format("Mission-2-Task-%d", i + 1), 
+								helper.now() + (4 + world.random().nextInt(3)) * 24);
+					}
 				} else
 				if (helper.isTimeout("Mission-2-Task-" + i + "-Success")) {
 					helper.setObjectiveState(helper.objective("Mission-2-Task-" + i), ObjectiveState.SUCCESS);
@@ -145,6 +143,12 @@ public class Mission2 extends Mission {
 					player.statistics.moneyIncome += m;
 					world.statistics.moneyIncome += m;
 					helper.clearTimeout("Mission-2-Task-" + i + "-Success");
+					
+					if (i < 3) {
+						helper.setMissionTime(String.format("Mission-2-Task-%d", i + 1), 
+								helper.now() + (4 + world.random().nextInt(3)) * 24);
+					}
+
 				}
 			}
 		}
