@@ -824,10 +824,13 @@ public class StarmapScreen extends ScreenBase {
 		fleetStatus.visible(fleetMode);
 		fleetPlanet.visible(fleetMode);
 		fleetComposition.visible(fleetMode && knowledge(f, FleetKnowledge.COMPOSITION) >= 0);
-		fleetAttack.visible(fleetMode && f.owner == player());
-		fleetStop.visible(fleetMode && f.owner == player());
-		fleetMove.visible(fleetMode && f.owner == player());
-		fleetSeparator.visible(fleetMode && f.owner == player());
+		
+		boolean showFleetControls = fleetMode && f.owner == player() && world().scripting.mayControlFleet(f); 
+		
+		fleetAttack.visible(showFleetControls);
+		fleetStop.visible(showFleetControls);
+		fleetMove.visible(showFleetControls);
+		fleetSeparator.visible(showFleetControls);
 
 		fleetFirepower.visible(fleetMode && knowledge(f, FleetKnowledge.FULL) >= 0);
 		fleetSpeed.visible(fleetMode);
@@ -1946,7 +1949,10 @@ public class StarmapScreen extends ScreenBase {
 					zoomToFit();
 				}
 			} else
-			if (player().selectionMode == SelectionMode.FLEET && fleet() != null && fleet().owner == player()) {
+			if (player().selectionMode == SelectionMode.FLEET 
+			&& fleet() != null 
+			&& fleet().owner == player()
+			&& world().scripting.mayControlFleet(fleet())) {
 				if (e.has(Button.RIGHT)) {
 					if (checkExplorationLimits(e.x, e.y)) {
 						return false;
@@ -2009,7 +2015,7 @@ public class StarmapScreen extends ScreenBase {
 				if (checkExplorationLimits(e.x, e.y)) {
 					return false;
 				}
-				if (fleetMode == FleetMode.ATTACK) {
+				if (fleetMode == FleetMode.ATTACK && world().scripting.mayControlFleet(fleet())) {
 					Fleet f = getFleetAt(fleet().owner, e.x, e.y, true, fleet());
 					Planet p = getPlanetAt(fleet().owner, e.x, e.y, true);
 					if (f != null) {
@@ -2029,7 +2035,7 @@ public class StarmapScreen extends ScreenBase {
 						commons.sounds.play(SoundType.NOT_AVAILABLE);
 					}
 				} else
-				if (fleetMode == FleetMode.MOVE) {
+				if (fleetMode == FleetMode.MOVE && world().scripting.mayControlFleet(fleet())) {
 					Planet p = getPlanetAt(fleet().owner, e.x, e.y, false);
 					Fleet f = getFleetAt(fleet().owner, e.x, e.y, false, fleet());
 					if (p != null) {

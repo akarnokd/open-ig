@@ -1304,6 +1304,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			
 			boolean own = f.owner == player();
+			boolean control = world().scripting.mayControlFleet(f);
 			
 			FleetStatistics fs = f.getStatistics();
 			
@@ -1512,7 +1513,14 @@ public class EquipmentScreen extends ScreenBase {
 					addOne.visible(false);
 					removeOne.visible(false);
 				}
-
+				if (!control) {
+					addButton.visible(false);
+					delButton.visible(false);
+					addOne.visible(false);
+					removeOne.visible(false);
+					sell.visible(false);
+					upgradeAll.visible(false);
+				}
 			} else {
 				addButton.visible(false);
 				delButton.visible(false);
@@ -1533,9 +1541,9 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			
 			
-			splitButton.visible(own && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
-			transferButton.visible(own && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && f.fleetsInRange(20).size() > 0);
-			deleteButton.visible(own && secondary == null && f.inventory.size() == 0);
+			splitButton.visible(own && control && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
+			transferButton.visible(own && control && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && f.fleetsInRange(20).size() > 0);
+			deleteButton.visible(own && control && secondary == null && f.inventory.size() == 0);
 		}
 		if (configure.type != null) {
 			selectedNameAndType.text(configure.type.longName);
