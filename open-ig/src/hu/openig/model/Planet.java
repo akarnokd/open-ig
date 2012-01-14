@@ -634,6 +634,9 @@ public class Planet implements Named, Owned, HasInventory {
 		Player lastOwner = owner;
 		owner = newOwner;
 		newOwner.statistics.planetsConquered++;
+		if (!newOwner.id.equals("Pirates")) {
+			lastOwner.statistics.planetsLostAlien++;
+		}
 		lastOwner.statistics.planetsLost++;
 		for (Building b : surface.buildings) {
 			if (b.type.research != null) {

@@ -12,7 +12,7 @@
 	>
 	<!-- Initial inventory.
 	 -->
-		<inventory id='Shield1,' count='1'/>
+		<inventory id='Shield1' count='1'/>
 	<!-- Available technology override.
 		<available>
 			<type id='' list=''/>
@@ -21,7 +21,7 @@
 	<!-- Initial fleets. -->
 		<fleet id='0' x='330' y='440' name='Főflotta'>
 			<item id='Destroyer1' count='1' tag='CampaignMainShip1'>
-				<slot id='Laser' type='Laser1' count='6'/>
+				<slot id='laser' type='Laser1' count='6'/>
 			</item>
 			<item id='Fighter1' count='3' />
 		</fleet>

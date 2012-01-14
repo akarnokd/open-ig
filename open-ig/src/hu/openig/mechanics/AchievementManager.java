@@ -283,7 +283,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> ALL_YOUR_BASE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsLost > 0;
+			return u.statistics.planetsLostAlien > 0;
 		}
 	};
 	/** Test for achievement. */
