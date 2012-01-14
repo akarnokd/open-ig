@@ -165,7 +165,7 @@
 			sound='EXPLOSION_LONG' movement-speed='25' rotation-time='200' hp='3000'/>
 		<tech id='PirateFighter' normal='inventions/spaceships/fighters/pirate_fighter_rotate'
 			image='inventions/spaceships/fighters/pirate_fighter_huge' width='64'
-			sound='EXPLOSION_LONG' movement-speed='25' rotation-time='200' hp='60'/>
+			sound='EXPLOSION_LONG' movement-speed='25' rotation-time='200' hp='240'/>
 		<tech id='SullepFighter1' normal='inventions/spaceships/fighters/sullep_fighter_1_rotate'
 			image='inventions/spaceships/fighters/sullep_fighter_1_huge' width='64'
 			sound='EXPLOSION_LONG' movement-speed='25' rotation-time='200' hp='7000'/>
@@ -199,7 +199,7 @@
 			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150' hp='2500'/>
 		<tech id='PirateDestroyer' normal='inventions/spaceships/cruisers/pirate_destroyer_rotate'
 			image='inventions/spaceships/cruisers/pirate_destroyer_huge' width='64'
-			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150' hp='600'/>
+			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150' hp='690'/>
 		<tech id='YchomDestroyer' normal='inventions/spaceships/cruisers/ychom_destroyer_rotate'
 			image='inventions/spaceships/cruisers/ychom_destroyer_huge' width='64'
 			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150' hp='2100'/>
@@ -243,11 +243,11 @@
 		<tech id='TradersFreight1'
 			normal='inventions/spaceships/cruisers/traders_freight_1_rotate'
 			image='inventions/spaceships/cruisers/traders_freight_1_huge' width='64'
-			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150'  hp='2000'/>
+			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150'  hp='350'/>
 		<tech id='TradersFreight2'
 			normal='inventions/spaceships/cruisers/traders_freight_2_rotate'
 			image='inventions/spaceships/cruisers/traders_freight_2_huge' width='64'
-			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150'  hp='4000'/>
+			sound='EXPLOSION_LONG' movement-speed='50' rotation-time='150'  hp='450'/>
 
 	</space-entities>
 	<ground-shields>
