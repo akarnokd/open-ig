@@ -26,6 +26,7 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.Owned;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
@@ -1336,7 +1337,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			// add fighters of the planet
 			List<SpacewarStructure> shipWall = U.newArrayList();
-			createStructures(nearbyPlanet.owner, nearbyPlanet.inventory, 
+			createStructures(nearbyPlanet, nearbyPlanet.inventory, 
 					EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
 			
 			if (!shipWall.isEmpty()) {
@@ -1352,21 +1353,21 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			attackerOnRight = true;
 			
-			placeFleet(maxRightPlacement, true, battle.attacker.owner, battle.attacker.inventory);
+			placeFleet(maxRightPlacement, true, battle.attacker, battle.attacker.inventory);
 			// place the defender on the left side
 			
 			if (nearbyFleet != null) {
-				placeFleet(0, false, nearbyFleet.owner, nearbyFleet.inventory);
+				placeFleet(0, false, nearbyFleet, nearbyFleet.inventory);
 			}
 		} else {
 			// place attacker on the left side
-			placeFleet(0, false, battle.attacker.owner, battle.attacker.inventory);
+			placeFleet(0, false, battle.attacker, battle.attacker.inventory);
 			
 			attackerOnRight = false;
 			
 			// place the defender on the planet side (right side)
 			if (nearbyFleet != null) {
-				placeFleet(maxRightPlacement, true, nearbyFleet.owner, nearbyFleet.inventory);
+				placeFleet(maxRightPlacement, true, nearbyFleet, nearbyFleet.inventory);
 			}
 		}
 		
@@ -1455,7 +1456,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param owner the owner of the inventory
 	 * @param fleet the fleet to place
 	 */
-	void placeFleet(int x, boolean left, Player owner, Iterable<InventoryItem> fleet) {
+	void placeFleet(int x, boolean left, Owned owner, Iterable<InventoryItem> fleet) {
 		List<SpacewarStructure> largeShipWall = U.newArrayList();
 		// place attacker on the planet side (right side)
 		createStructures(owner, fleet, 
@@ -1726,7 +1727,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		return maxWidth;
 	}
 	@Override
-	public void addStructures(Player owner, Iterable<InventoryItem> inventory,
+	public void addStructures(Owned owner, Iterable<InventoryItem> inventory,
 			EnumSet<ResearchSubCategory> categories) {
 		createStructures(owner, inventory, categories, structures);
 	}
@@ -1737,7 +1738,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param categories the categories to use
 	 * @param ships the output of ships
 	 */
-	void createStructures(Player owner,
+	void createStructures(Owned owner,
 			Iterable<InventoryItem> inventory,
 			EnumSet<ResearchSubCategory> categories,
 			Collection<? super SpacewarStructure> ships
@@ -1756,14 +1757,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				SpacewarStructure st = new SpacewarStructure();
 
 				if (inventory instanceof Planet) {
-					st.planet = (Planet)inventory;
+					st.planet = (Planet)owner;
 				} else {
-					st.fleet = (Fleet)inventory;
+					st.fleet = (Fleet)owner;
 				}
 				st.techId = ii.type.id;
 				st.type = StructureType.SHIP;
 				st.item = ii;
-				st.owner = owner;
+				st.owner = owner.owner();
 				st.destruction = bse.destruction;
 				st.angles = owner != player() ? bse.alternative : bse.normal;
 				st.infoImageName = bse.infoImageName;
@@ -4379,15 +4380,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		if (nearbyPlanet == null || nearbyPlanet.owner != f.owner) {
 			if (f.owner == battle.attacker.owner) {
-				placeFleet(0, false, f.owner, common);
+				placeFleet(0, false, f, common);
 			} else {
-				placeFleet(maxRightPlacement, true, f.owner, common);
+				placeFleet(maxRightPlacement, true, f, common);
 			}
 		} else {
 			if (f.owner == battle.attacker.owner) {
-				placeFleet(maxRightPlacement, true, f.owner, common);
+				placeFleet(maxRightPlacement, true, f, common);
 			} else {
-				placeFleet(0, false, f.owner, common);
+				placeFleet(0, false, f, common);
 			}
 		}
 	}

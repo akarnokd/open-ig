@@ -649,7 +649,7 @@ public class CommonResources implements GameEnvironment {
 	 * @return this
 	 */
 	public CommonResources world(World w) {
-		if (this.world != null) {
+		if (this.world != null && w == null) {
 			world.scripting.done();
 		}
 		this.world = w;

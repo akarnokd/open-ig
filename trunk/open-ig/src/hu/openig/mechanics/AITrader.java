@@ -14,6 +14,7 @@ import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
+import hu.openig.model.FleetTask;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
@@ -72,6 +73,8 @@ public class AITrader implements AIManager {
 		Planet target;
 		/** The target planet. */
 		Planet arrivedAt;
+		/** The current task. */
+		FleetTask task;
 	}
 	/**
 	 * Landed fleet's properties.
@@ -123,6 +126,7 @@ public class AITrader implements AIManager {
 				tf.fleet = f;
 				tf.target = f.targetPlanet();
 				tf.arrivedAt = f.arrivedAt;
+				tf.task = f.task;
 				fleets.add(tf);
 			}
 		}
@@ -151,7 +155,7 @@ public class AITrader implements AIManager {
 		// check if fleet arrived at target
 		int activeCount = landed.size();
 		for (TraderFleet tf : fleets) {
-			if (tf.target == null) {
+			if (tf.target == null && tf.task != FleetTask.SCRIPT) {
 				LandedFleet lf = new LandedFleet();
 				lf.fleet = tf.fleet;
 				lf.target = tf.arrivedAt;
