@@ -1008,4 +1008,40 @@ public class BridgeScreen extends ScreenBase {
 			}
 		});
 	}
+	/**
+	 * Display the message panel and switch to receive.
+	 */
+	public void displayReceive() {
+		if (openCloseAnimating) {
+			Parallels.runDelayedInEDT(1000, new Runnable() {
+				@Override
+				public void run() {
+					displayReceive();
+				}
+			});
+			return;
+		}
+		send.selected = false;
+		receive.selected = true;
+		if (!messageOpen) {
+			playMessageOpen();
+			Parallels.runDelayedInEDT(1000, new Runnable() {
+				@Override
+				public void run() {
+					displayReceive();
+				}
+			});
+			return;
+		} else {
+			List<VideoMessage> vms = world().scripting.getReceiveMessages();
+			for (VideoMessage vm : vms) {
+				if (!vm.seen) {
+					selectedVideoId = vm.id;
+					vm.seen = true;
+					playVideo(vm.media);
+					break;
+				}
+			}
+		}
+	}
 }

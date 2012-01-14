@@ -16,6 +16,7 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
+import hu.openig.model.VideoMessage;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
@@ -33,6 +34,7 @@ import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -117,6 +119,8 @@ public class StatusbarScreen extends ScreenBase {
 	public ObjectivesView objectives;
 	/** If non-null, defines a full-screen overlay painted. */
 	public Color overlay;
+	/** Incoming message rectangle. */
+	final Rectangle incomingMessage = new Rectangle();
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -262,6 +266,8 @@ public class StatusbarScreen extends ScreenBase {
 		bottom.size(width, 18);
 		
 		objectives.location(5, 30 + achievementSize);
+		
+		incomingMessage.setBounds(width - 176, height - 16, 164, 18);
 	}
 	
 	@Override
@@ -288,6 +294,7 @@ public class StatusbarScreen extends ScreenBase {
 			objectives.visible(false);
 		}
 		notification.bounds(12, bottom.y + 3, width - 190, 12);
+		incomingMessage.y = bottom.y + 2;
 		
 		screenMenu.location(width - screenMenu.width, 20);
 		notificationHistory.bounds(12, bottom.y - 140, width - 190, 140);
@@ -299,6 +306,12 @@ public class StatusbarScreen extends ScreenBase {
 			String s = "Open Imperium Galactica";
 			int w = commons.text().getTextWidth(10, s);
 			commons.text().paintTo(g2, notification.x + (notification.width - w) / 2, notification.y + 1, 10, TextRenderer.YELLOW, s);
+		} else {
+			if (hasUnseenMessage()) {
+				String s = get("incoming_message");
+				int w = commons.text().getTextWidth(10, s);
+				commons.text().paintTo(g2, incomingMessage.x + (incomingMessage.width - w) / 2, incomingMessage.y + 1, 10, TextRenderer.RED, s);
+			}
 		}
 		if (achievementShowing != null) {
 			Shape clip = g2.getClip();
@@ -328,6 +341,18 @@ public class StatusbarScreen extends ScreenBase {
 			g2.setColor(overlay);
 			g2.fillRect(0, 0, width, height);
 		}
+	}
+	/**
+	 * Check if there is unseen message.
+	 * @return true if unseen message is available
+	 */
+	boolean hasUnseenMessage() {
+		for (VideoMessage vm : world().scripting.getReceiveMessages()) {
+			if (!vm.seen) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/** Update the state displays. */
 	public void update() {
@@ -579,6 +604,11 @@ public class StatusbarScreen extends ScreenBase {
 		}
 		if (e.has(Type.UP) && screenMenu.visible() && !e.within(screenMenu.x, screenMenu.y, screenMenu.width, screenMenu.height)) {
 			screenMenu.visible(false);
+			return true;
+		}
+		if (e.has(Type.DOWN) && incomingMessage.contains(e.x, e.y) && hasUnseenMessage()) {
+			BridgeScreen bs = (BridgeScreen)displayPrimary(Screens.BRIDGE);
+			bs.displayReceive();
 			return true;
 		}
 		if (e.within(379, 3, 26, 14) && e.has(Type.DOWN)) {

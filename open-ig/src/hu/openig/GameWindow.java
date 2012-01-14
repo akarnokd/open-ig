@@ -2193,6 +2193,7 @@ public class GameWindow extends JFrame implements GameControls {
 	public void forceMessage(String messageId, Action0 onSeen) {
 		if (world() != null && !commons.worldLoading) {
 			displayPrimary(Screens.BRIDGE);
+			commons.playSound(SoundType.MESSAGE);
 			allScreens.bridge.forceMessage(messageId, onSeen);
 		}
 	}
