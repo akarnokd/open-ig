@@ -63,7 +63,11 @@ public class BattlefinishScreen extends ScreenBase {
 		if ((battle.spacewarWinner == null && battle.groundwarWinner == player())
 			|| (battle.groundwarWinner == null && battle.spacewarWinner == player()) 
 		) {
-			setWinImage();
+			if (battle.rewardImage != null) {
+				setRewardImage();
+			} else {
+				setWinImage();
+			}
 		} else {
 			setLoseImage();
 		}
@@ -75,6 +79,10 @@ public class BattlefinishScreen extends ScreenBase {
 	/** Set a random lose image. */
 	void setLoseImage() {
 		background = rl.getImage("battlefinish/lose_" + (1 + world().random().nextInt(2)));
+	}
+	/** Set the reward image. */
+	void setRewardImage() {
+		background = rl.getImage(battle.rewardImage);
 	}
 	@Override
 	public void onEnter(Screens mode) {
@@ -231,6 +239,14 @@ public class BattlefinishScreen extends ScreenBase {
 					}
 				}
 			}
+
+			if (battle.rewardText != null) {
+				y += 20;
+				textCenter(g2, x1, y, w1, TextRenderer.YELLOW, 14, battle.rewardText);
+				y += 20;
+			}
+			
+			
 			textCenter(g2, base.x, base.y + base.height - 20, base.width, TextRenderer.GREEN, 14, get("battlefinish.click_to_exit"));
 		}
 	}

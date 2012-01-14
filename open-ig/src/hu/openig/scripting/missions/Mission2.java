@@ -8,7 +8,6 @@
 
 package hu.openig.scripting.missions;
 
-import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
@@ -31,6 +30,10 @@ import java.util.List;
  * @author akarnokd, 2012.01.14.
  */
 public class Mission2 extends Mission {
+	/** The money reward per task. */
+	final int[] moneyReward = { 0, 1000, 2500, 5000 };
+	/** The custom battle finish image. */
+	final String[] imageReward = { null, null, null, null };
 	/**
 	 * Check the starting conditions of Mission 2 and make it available.
 	 */
@@ -131,9 +134,17 @@ public class Mission2 extends Mission {
 			for (int i = 1; i <= 3; i++) {
 				if (helper.isTimeout("Mission-2-Task-" + i + "-Failed")) {
 					helper.setObjectiveState(helper.objective("Mission-2-Task-" + i), ObjectiveState.FAILURE);
+					helper.clearTimeout("Mission-2-Task-" + i + "-Failed");
 				} else
 				if (helper.isTimeout("Mission-2-Task-" + i + "-Success")) {
 					helper.setObjectiveState(helper.objective("Mission-2-Task-" + i), ObjectiveState.SUCCESS);
+					
+					// Reward
+					int m = moneyReward[i];
+					player.money += m;
+					player.statistics.moneyIncome += m;
+					world.statistics.moneyIncome += m;
+					helper.clearTimeout("Mission-2-Task-" + i + "-Success");
 				}
 			}
 		}
@@ -153,13 +164,12 @@ public class Mission2 extends Mission {
 		}
 	}
 	@Override
-	public Pair<String, String> onSpacewarFinish(SpacewarWorld war) {
+	public void onSpacewarFinish(SpacewarWorld war) {
 		if (world.level == 1) {
 			for (int i = 1; i <= 3; i++) {
 				spacewarFinishTraderVsPirate(war, i);
 			}
 		}
-		return null;
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
@@ -181,6 +191,8 @@ public class Mission2 extends Mission {
 			List<SpacewarStructure> sts = war.structures(traders);
 			boolean traderSurvived = !sts.isEmpty();
 			completeTaskN(traderSurvived, task);
+			war.battle().rewardText = format("mission-2.save_trader.reward", moneyReward[task]);
+			war.battle().rewardImage = imageReward[task];
 		}
 	}
 	/**

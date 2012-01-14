@@ -2197,6 +2197,7 @@
 	<entry key='mission-2.save_trader'>Mentsd meg a kereskedőt</entry>
 	<entry key='mission-2.save_trader.desc'>A kereskedőnek túl kell élnie.</entry>
 	<entry key='pirates.fleet_name'>Kalózok</entry>
+	<entry key='mission-2.save_trader.reward'>Jutalom: %s kredit</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	
