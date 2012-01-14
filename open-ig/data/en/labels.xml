@@ -2894,7 +2894,7 @@
 	<entry key='mission-2.protect_traders'>Protect the traders</entry>
 	<entry key='mission-2.protect_traders.desc'>Protect the traders against possible pirate attacks.</entry>
 	<entry key='mission-2.save_trader'>Save the trader</entry>
-	<entry key='mission-2.save_trader'>The trader's ship must survive.</entry>
+	<entry key='mission-2.save_trader.desc'>The trader's ship must survive.</entry>
 	<entry key='pirates.fleet_name'>Pirates</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

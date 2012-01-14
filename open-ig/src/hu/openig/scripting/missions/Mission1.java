@@ -28,9 +28,13 @@ import hu.openig.utils.U;
 public class Mission1 extends Mission {
 	@Override
 	public void onTime() {
-		helper.send("Naxos-Check").visible = true;
-		helper.send("San Sterling-Check").visible = true;
-
+		if (world.level == 1) {
+			helper.send("Naxos-Check").visible = true;
+			helper.send("San Sterling-Check").visible = true;
+			checkMission1Start();
+			checkMission1Task2();
+			checkMission1Complete();
+		}
 	}
 	@Override
 	public void onBuildingComplete(Planet planet, Building building) {

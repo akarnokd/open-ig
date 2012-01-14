@@ -52,10 +52,6 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		/** The outer limit if non-null. */
 		Rectangle outer;
 	}
-	/** The current world. */
-	protected World world;
-	/** The current player. */
-	protected Player player;
 	/** The view limits. */
 	final Map<String, ViewLimit> viewLimits = U.newHashMap();
 	/** The map of root objectives. */
@@ -216,11 +212,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	}
 
 	@Override
-	public void init(World world, XElement in) {
-		this.world = world;
-		player = world.player;
-		init(in);
+	public void init(Player player, XElement in) {
 		super.init(player, null, null);
+		init(in);
 	}
 
 	/**

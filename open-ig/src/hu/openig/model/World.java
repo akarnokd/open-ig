@@ -323,7 +323,7 @@ public class World {
 			Class<?> c = Class.forName(clazz);
 			if (GameScripting.class.isAssignableFrom(c)) {
 				this.scripting = GameScripting.class.cast(c.newInstance());
-				scripting.init(this, xscript);
+				scripting.init(this.player, xscript);
 			}
 		} catch (InstantiationException ex) {
 			ex.printStackTrace();
