@@ -35,8 +35,9 @@ public interface GameEnvironment {
 	/**
 	 * Play a full screen video resource.
 	 * @param name the video name
+	 * @param onComplete the optional completion handler
 	 */
-	void playVideo(String name);
+	void playVideo(String name, Action0 onComplete);
 	/**
 	 * Play an audio resource.
 	 * @param name the audio name
@@ -47,6 +48,8 @@ public interface GameEnvironment {
 	 * @param type the sound type
 	 */
 	void playSound(SoundType type);
+	/** Stops the music playback. */
+	void stopMusic();
 	/**
 	 * The various game parameters.
 	 * @return the game parameters

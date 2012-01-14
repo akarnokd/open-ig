@@ -50,6 +50,7 @@ import hu.openig.screen.items.CreditsScreen;
 import hu.openig.screen.items.DatabaseScreen;
 import hu.openig.screen.items.DiplomacyScreen;
 import hu.openig.screen.items.EquipmentScreen;
+import hu.openig.screen.items.GameOverScreen;
 import hu.openig.screen.items.InfoScreen;
 import hu.openig.screen.items.LoadSaveScreen;
 import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
@@ -245,6 +246,8 @@ public class GameWindow extends JFrame implements GameControls {
 		public TestScreen test;
 		/** The credits. */
 		public CreditsScreen credits;
+		/** The game over screen. */
+		public GameOverScreen gameOver;
 	}
 	/** A pending repaint request. */
 	boolean repaintRequest;
@@ -631,6 +634,9 @@ public class GameWindow extends JFrame implements GameControls {
 			break;
 		case TEST:
 			sb = allScreens.test;
+			break;
+		case GAME_OVER:
+			sb = allScreens.gameOver;
 			break;
 		case CREDITS:
 			sb = allScreens.credits;
@@ -2171,6 +2177,8 @@ public class GameWindow extends JFrame implements GameControls {
 			return (T)allScreens.statusbar;
 		case TEST:
 			return (T)allScreens.test;
+		case GAME_OVER:
+			return (T)allScreens.gameOver;
 		case VIDEOS:
 			return (T)allScreens.videos;
 		default:
@@ -2190,8 +2198,7 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void loseGame() {
-		displayPrimary(Screens.MAIN);
-		endGame();
+		displaySecondary(Screens.GAME_OVER);
 	}
 	@Override
 	public void winGame() {

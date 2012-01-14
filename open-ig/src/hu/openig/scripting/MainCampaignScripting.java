@@ -63,6 +63,8 @@ public class MainCampaignScripting implements GameScripting {
 	int lastLevel;
 	/** The countdowns of various actions. */
 	final Map<String, Integer> countdowns = U.newHashMap();
+	/** Indicates a game over condition. */
+	boolean gameOver;
 	/**
 	 * Add/remove planets to the player based on level.
 	 */
@@ -132,14 +134,60 @@ public class MainCampaignScripting implements GameScripting {
 			clearTimeout("Mission-1-Success");
 		} else
 		if (o0.state == ObjectiveState.FAILURE && isTimeout("Mission-1-Failure")) {
-			world.env.forceMessage("Douglas-Fire-Lost-Planet", new Action0() {
-				@Override
-				public void invoke() {
-					world.env.loseGame();
-				}
-			});
+			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_1");
 			clearTimeout("Mission-1-Failure");
 		}
+	}
+	/**
+	 * Lose the current game with the given forced message.
+	 * @param id the video message id
+	 */
+	void loseGameMessage(String id) {
+		gameOver = true;
+		world.env.stopMusic();
+		world.player.messageQueue.clear();
+		world.env.forceMessage(id, new Action0() {
+			@Override
+			public void invoke() {
+				world.env.loseGame();
+			}
+		});
+	}
+	/**
+	 * Lose the current game with the forced message and then full screen movie.
+	 * @param message the message
+	 * @param movie the movie
+	 */
+	void loseGameMessageAndMovie(String message, final String movie) {
+		gameOver = true;
+		world.env.stopMusic();
+		world.player.messageQueue.clear();
+		world.env.forceMessage(message, new Action0() {
+			@Override
+			public void invoke() {
+				world.env.playVideo(movie, new Action0() {
+					@Override
+					public void invoke() {
+						world.env.loseGame();
+					}
+				});
+			}
+		});
+	}
+	/**
+	 * Lose the current game with the given forced message.
+	 * @param id the video message id
+	 */
+	void loseGameMovie(String id) {
+		gameOver = true;
+		world.env.stopMusic();
+		world.player.messageQueue.clear();
+		world.env.playVideo(id, new Action0() {
+			@Override
+			public void invoke() {
+				world.env.loseGame();
+			}
+		});
 	}
 	/**
 	 * Check if mission 1 was completed.
@@ -596,8 +644,30 @@ public class MainCampaignScripting implements GameScripting {
 
 	@Override
 	public void onLost(Fleet fleet) {
-		// TODO Auto-generated method stub
-		
+		if (world.level == 1 && fleet.owner == player) {
+			Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip1", player);
+			if (ft == null) {
+				loseGameMovie("loose/destroyed_level_1");
+			}
+		}
+	}
+	/**
+	 * Find a fleet and inventory item having the given tag.
+	 * @param tag the tag
+	 * @param owner the owner of the fleet
+	 * @return the fleet and inventory item pair
+	 */
+	public Pair<Fleet, InventoryItem> findTaggedFleet(String tag, Player owner) {
+		for (Fleet f : owner.fleets.keySet()) {
+			if (f.owner == owner) {
+				for (InventoryItem ii : f.inventory) {
+					if (tag.equals(ii.tag)) {
+						return Pair.of(f, ii);
+					}
+				}
+			}
+		}
+		return null;
 	}
 	@Override
 	public void onLost(Planet planet) {
@@ -899,5 +969,9 @@ public class MainCampaignScripting implements GameScripting {
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public boolean mayAutoSave() {
+		return !gameOver;
 	}
 }

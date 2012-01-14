@@ -573,7 +573,9 @@ public class CommonResources implements GameEnvironment {
 	 */
 	public void simulation() {
 		if (Simulator.compute(world)) {
-			control.save(null, SaveMode.AUTO);
+			if (world.scripting.mayAutoSave()) {
+				control.save(null, SaveMode.AUTO);
+			}
 		}
 		
 		// run AI routines in background
@@ -733,7 +735,7 @@ public class CommonResources implements GameEnvironment {
 			}
 		}, "music/War");
 	}
-	/** Stop the current music playback. */
+	@Override
 	public void stopMusic() {
 		music.close();
 	}
@@ -853,10 +855,13 @@ public class CommonResources implements GameEnvironment {
 		sounds.play(type);
 	}
 	@Override
-	public void playVideo(final String name) {
+	public void playVideo(final String name, final Action0 action) {
 		control.playVideos(new Action0() {
 			@Override
 			public void invoke() {
+				if (action != null) {
+					action.invoke();
+				}
 				if (world != null) {
 					world.scripting.onVideoComplete(name);
 				}

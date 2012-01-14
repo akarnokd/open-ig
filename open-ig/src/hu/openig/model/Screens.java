@@ -76,5 +76,7 @@ public enum Screens {
 	/** Full screen movie playback. */
 	MOVIE,
 	/** The phsychologist test screen. */
-	TEST
+	TEST,
+	/** The game over screen. */
+	GAME_OVER,
 }

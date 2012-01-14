@@ -266,6 +266,11 @@ public interface GameScripting {
 	 */
 	boolean mayControlFleet(Fleet f);
 	/**
+	 * Returns true if the game can be auto saved.
+	 * @return true if can auto saved
+	 */
+	boolean mayAutoSave();
+	/**
 	 * Returns the background image resource id and the battle reward string.
 	 * @param battle the battle
 	 * @return pair of background image resource id and the battle reward text,
