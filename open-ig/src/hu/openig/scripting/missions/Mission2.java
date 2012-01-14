@@ -22,6 +22,7 @@ import hu.openig.model.SpacewarWorld;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -78,9 +79,10 @@ public class Mission2 extends Mission {
 						helper.clearMissionTime(m2ti);
 						Fleet f = world.random(fs);
 						f.stop();
+						f.task = FleetTask.SCRIPT;
 						
 						// create simple pirate fleet
-						Fleet pf = createFleet(label("pirates.fleet_name"), player("Pirates"), f.x + 5, f.y + 5);
+						Fleet pf = createFleet(label("pirates.fleet_name"), player("Pirates"), f.x + 1, f.y + 1);
 						
 						if (i == 1) {
 							pf.addInventory(world.researches.get("PirateFighter"), 2);
@@ -185,6 +187,7 @@ public class Mission2 extends Mission {
 						ii.owner = f.owner;
 					}
 					helper.scriptedFleets().remove(f);
+					f.targetPlanet(world.random(Arrays.asList(planet("Achilles"), planet("Naxos"), planet("San Sterling"))));
 				} else
 				if (f.owner == pirates) {
 					world.removeFleet(f);
@@ -224,7 +227,7 @@ public class Mission2 extends Mission {
 				war.includeFleet(pf);
 			} else {
 				// pirate attacked
-				war.addStructures(tf.owner, tf.inventory, EnumSet.of(
+				war.addStructures(tf, tf.inventory, EnumSet.of(
 						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
 						ResearchSubCategory.SPACESHIPS_CRUISERS,
 						ResearchSubCategory.SPACESHIPS_FIGHTERS));

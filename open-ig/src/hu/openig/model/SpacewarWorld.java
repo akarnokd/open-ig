@@ -99,7 +99,7 @@ public interface SpacewarWorld {
 	 * @param inventory the inventory provider
 	 * @param categories the categories to use
 	 */
-	void addStructures(Player owner,
+	void addStructures(Owned owner,
 			Iterable<InventoryItem> inventory,
 			EnumSet<ResearchSubCategory> categories);
 }
