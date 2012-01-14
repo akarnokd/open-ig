@@ -540,7 +540,7 @@ public class Planet implements Named, Owned, HasInventory {
 			idx++;
 		}
 		if (!found && amount > 0) {
-			InventoryItem pii = new InventoryItem();
+			InventoryItem pii = new InventoryItem(this);
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;

@@ -1743,7 +1743,7 @@ public class EquipmentScreen extends ScreenBase {
 				if (research().category == ResearchSubCategory.SPACESHIPS_STATIONS
 				) {
 					if (delta > 0) {
-						InventoryItem pii = new InventoryItem();
+						InventoryItem pii = new InventoryItem(planet());
 						pii.owner = player();
 						pii.type = research();
 						pii.count = 1;
