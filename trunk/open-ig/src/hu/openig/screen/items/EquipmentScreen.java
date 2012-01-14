@@ -1451,10 +1451,11 @@ public class EquipmentScreen extends ScreenBase {
 				}
 			}
 			
-			battleships.visible(true);
+			battleships.visible(world().level >= 3);
 			cruisers.visible(true);
 			cruisersEmpty.visible(false);
 			stations.visible(false);
+			battleshipsAndStationsEmpty.visible(world().level < 3);
 			
 			newButton.visible(own && secondary == null && ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
 			noSpaceport.visible(secondary == null && ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
