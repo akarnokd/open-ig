@@ -595,7 +595,7 @@ public class World {
 				}
 			}
 			for (XElement xinv : xplanet.childElement("inventory").childrenWithName("item")) {
-				InventoryItem ii = new InventoryItem();
+				InventoryItem ii = new InventoryItem(p);
 				ii.tag = xinv.get("tag", null);
 				ii.owner = players.get(xinv.get("owner"));
 				ii.type = researches.get(xinv.get("id"));
@@ -1353,7 +1353,7 @@ public class World {
 			p.surface.buildingmap.clear();
 
 			for (XElement xpii : xplanet.childrenWithName("item")) {
-				InventoryItem pii = new InventoryItem();
+				InventoryItem pii = new InventoryItem(p);
 				pii.tag = xpii.get("tag", null);
 				pii.owner = players.get(xpii.get("owner"));
 				pii.type = researches.get(xpii.get("id"));
@@ -1556,7 +1556,7 @@ public class World {
 				if (count <= 0) {
 					continue;
 				}
-				InventoryItem fii = new InventoryItem();
+				InventoryItem fii = new InventoryItem(f);
 				fii.type = researches.get(xfii.get("id"));
 				fii.count = count;
 				fii.tag = xfii.get("tag", null);

@@ -48,6 +48,8 @@ public class BattleInfo {
 	public Player groundwarWinner;
 	/** The loser retreated. */
 	public boolean retreated;
+	/** Allow retreat from this battle? */
+	public boolean allowRetreat = true;
 	/** The number of fortifications destroyed. */
 	public int defenderFortificationLosses;
 	/** The structure losses. */
@@ -56,6 +58,8 @@ public class BattleInfo {
 	public final Set<GroundwarUnit> groundLosses = U.newHashSet();
 	/** The original simulation speed before the battle.*/
 	public SimulationSpeed originalSpeed = SimulationSpeed.NORMAL;
+	/** The set of the allies of the attacker which can be controlled. */
+	public final Set<Player> attackerAllies = U.newHashSet();
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;

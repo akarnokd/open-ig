@@ -91,15 +91,14 @@ public interface SpacewarWorld {
 	/**
 	 * Include the ships of the given fleet and re-place the ships of the same owner.
 	 * @param f the fleet to include
+	 * @param side which side to include
 	 */
-	void includeFleet(Fleet f);
+	void includeFleet(Fleet f, Player side);
 	/**
 	 * Add the spacewar ships from the given inventory list and category filters to the spacewar.
-	 * @param owner the owner
 	 * @param inventory the inventory provider
 	 * @param categories the categories to use
 	 */
-	void addStructures(Owned owner,
-			Iterable<InventoryItem> inventory,
+	void addStructures(Iterable<InventoryItem> inventory,
 			EnumSet<ResearchSubCategory> categories);
 }

@@ -17,6 +17,8 @@ import java.util.List;
  * @author akarnokd, 2011.04.05.
  */
 public class InventoryItem {
+	/** The parent fleet or planet. */
+	public final HasInventory parent;
 	/** The owner. */
 	public Player owner;
 	/** The item's type. */
@@ -31,6 +33,13 @@ public class InventoryItem {
 	public String tag;
 	/** The fleet's inventory slots. */
 	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
+	/**
+	 * Constructor. Initializes the parent.
+	 * @param parent the parent
+	 */
+	public InventoryItem(HasInventory parent) {
+		this.parent = parent;
+	}
 	/**
 	 * @return the maximum shield amount or -1 for no shielding
 	 */

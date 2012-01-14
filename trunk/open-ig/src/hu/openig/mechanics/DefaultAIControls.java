@@ -146,7 +146,7 @@ public class DefaultAIControls implements AIControls {
 	public static boolean actionDeploySatellite(Player player, Planet planet, ResearchType satellite) {
 		// decomission any previous satellites:
 		if (player.inventoryCount(satellite) > 0) {
-			InventoryItem ii = new InventoryItem();
+			InventoryItem ii = new InventoryItem(planet);
 			ii.type = satellite;
 			ii.owner = player;
 			ii.count = 1;

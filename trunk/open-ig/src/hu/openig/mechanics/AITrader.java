@@ -258,7 +258,7 @@ public class AITrader implements AIManager {
 				rts.add(rt);
 			}
 		}
-		InventoryItem ii = new InventoryItem();
+		InventoryItem ii = new InventoryItem(nf);
 		ii.owner = player;
 		ii.count = 1;
 		ii.type = world.random(rts);
@@ -285,7 +285,7 @@ public class AITrader implements AIManager {
 			Fleet nf = new Fleet();
 			nf.owner = player;
 			nf.name = traderLabel;
-			InventoryItem ii = new InventoryItem();
+			InventoryItem ii = new InventoryItem(nf);
 			ii.owner = player;
 			ii.count = 1;
 			ii.type = type;

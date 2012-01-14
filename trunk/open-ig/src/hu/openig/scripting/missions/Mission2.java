@@ -57,8 +57,6 @@ public class Mission2 extends Mission {
 					helper.clearMissionTime(m2tio);
 				}
 				if (helper.objective(m2ti).state != ObjectiveState.ACTIVE) {
-					helper.clearMissionTime(m2tio);
-					
 					// schedule next task
 					if (i < 3) {
 						helper.setMissionTime(String.format("Mission-2-Task-%d", i + 1), 
@@ -130,7 +128,16 @@ public class Mission2 extends Mission {
 					helper.receive("Douglas-Pirates").visible = true;
 				}
 			}
+			for (int i = 1; i <= 3; i++) {
+				if (helper.isTimeout("Mission-2-Task-" + i + "-Failed")) {
+					helper.setObjectiveState(helper.objective("Mission-2-Task-" + i), ObjectiveState.FAILURE);
+				} else
+				if (helper.isTimeout("Mission-2-Task-" + i + "-Success")) {
+					helper.setObjectiveState(helper.objective("Mission-2-Task-" + i), ObjectiveState.SUCCESS);
+				}
+			}
 		}
+		
 		if (helper.isTimeout("Mission-2-Failed")) {
 			helper.clearTimeout("Mission-2-Failed");
 			helper.objective("Mission-2").visible = false;
@@ -174,24 +181,28 @@ public class Mission2 extends Mission {
 			Player pirates = player("Pirates");
 			List<SpacewarStructure> sts = war.structures(traders);
 			if (sts.isEmpty()) {
-				helper.setObjectiveState(helper.objective("Mission-2-Task-" + task), ObjectiveState.FAILURE);
+				helper.setTimeout("Mission-2-Task-" + task + "-Failed", 3000);
+				helper.clearMissionTime("Mission-2-Task-" + task + "-Timeout");
 			} else {
-				helper.setObjectiveState(helper.objective("Mission-2-Task-1" + task), ObjectiveState.SUCCESS);
+				helper.setTimeout("Mission-2-Task-" + task + "-Success", 3000);
+				helper.clearMissionTime("Mission-2-Task-" + task + "-Timeout");
 			}
 			for (int i : new ArrayList<Integer>(helper.scriptedFleets())) {
 				Fleet f = fleet(i);
-				if (f.owner == traders) {
-					f.task = FleetTask.IDLE;
-					// fix owner
-					for (InventoryItem ii : f.inventory) {
-						ii.owner = f.owner;
+				if (f != null) {
+					if (f.owner == traders) {
+						f.task = FleetTask.IDLE;
+						// fix owner
+						for (InventoryItem ii : f.inventory) {
+							ii.owner = f.owner;
+						}
+						helper.scriptedFleets().remove(f);
+						f.targetPlanet(world.random(Arrays.asList(planet("Achilles"), planet("Naxos"), planet("San Sterling"))));
+					} else
+					if (f.owner == pirates) {
+						world.removeFleet(f);
+						helper.scriptedFleets().remove(f);
 					}
-					helper.scriptedFleets().remove(f);
-					f.targetPlanet(world.random(Arrays.asList(planet("Achilles"), planet("Naxos"), planet("San Sterling"))));
-				} else
-				if (f.owner == pirates) {
-					world.removeFleet(f);
-					helper.scriptedFleets().remove(f);
 				}
 			}
 			// hide message
@@ -223,11 +234,13 @@ public class Mission2 extends Mission {
 			}
 			// attack on the trader
 			// trader attacked
-			if (battle.attacker.targetFleet == tf) {
-				war.includeFleet(pf);
+			if (battle.targetFleet == tf) {
+				war.includeFleet(pf, pf.owner);
+				// fix target fleet
+				battle.targetFleet = pf;
 			} else {
 				// pirate attacked
-				war.addStructures(tf, tf.inventory, EnumSet.of(
+				war.addStructures(tf.inventory, EnumSet.of(
 						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
 						ResearchSubCategory.SPACESHIPS_CRUISERS,
 						ResearchSubCategory.SPACESHIPS_FIGHTERS));
@@ -237,8 +250,10 @@ public class Mission2 extends Mission {
 			for (SpacewarStructure s : war.structures(tf.owner)) {
 				s.x = d.width / 2;
 				s.y = d.height / 2;
-				s.owner = player;
+				s.angle = 0.0;
 			}
+			battle.attackerAllies.add(traders);
+			battle.allowRetreat = false;
 		}
 	}
 	@Override

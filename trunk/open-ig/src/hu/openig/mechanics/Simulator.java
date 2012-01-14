@@ -116,7 +116,7 @@ public final class Simulator {
 		
 		if (!world.pendingBattles.isEmpty()) {
 			world.env.startBattle();
-			result = true;
+//			result = true;
 		}
 		world.scripting.onTime();
 		return result;
@@ -727,6 +727,7 @@ public final class Simulator {
 							bi.attacker = f;
 							bi.targetFleet = f.targetFleet;
 							bi.targetPlanet = f.targetPlanet();
+							f.task = FleetTask.IDLE;
 							world.pendingBattles.add(bi);
 						}
 						f.mode = null;

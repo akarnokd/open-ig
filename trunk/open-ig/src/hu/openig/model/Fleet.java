@@ -111,7 +111,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			idx++;
 		}
 		if (!found && amount > 0) {
-			InventoryItem pii = new InventoryItem();
+			InventoryItem pii = new InventoryItem(this);
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
@@ -270,7 +270,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			changeInventory(type, amount);
 		} else {
 			for (int i = 0; i < amount; i++) {
-				InventoryItem ii = new InventoryItem();
+				InventoryItem ii = new InventoryItem(this);
 				ii.count = 1;
 				ii.type = type;
 				ii.owner = owner;
