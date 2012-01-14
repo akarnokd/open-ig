@@ -35,6 +35,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -650,7 +651,11 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		for (Map.Entry<String, Integer> e : missiontimer.entrySet()) {
 			XElement xttl = xttls.add("missiontime");
 			xttl.set("id", e.getKey());
-			xttl.set("value", e.getValue());
+			int h = e.getValue();
+			
+			Date dt = new Date(world.initialDate.getTime() + h * 60L * 60 * 1000);
+			xttl.set("value", h);
+			xttl.set("date", XElement.formatDateTime(dt));
 		}
 
 		XElement xvars = out.add("variables");
