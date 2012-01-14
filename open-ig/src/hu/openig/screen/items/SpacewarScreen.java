@@ -3141,7 +3141,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public List<SpacewarStructure> enemiesInRange(SpacewarStructure ship) {
 		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
-			if (s.owner != ship.owner) {
+			if (s.owner != ship.owner
+					&& !(ship.owner == battle.attacker.owner 
+					&& battle.attackerAllies.contains(s.owner))
+					) {
 				if (ship.inRange(s).size() > 0) {
 					result.add(s);
 				}
@@ -3774,7 +3777,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public List<SpacewarStructure> enemiesOf(SpacewarStructure s) {
 		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure f : structures) {
-			if (f.owner != s.owner) {
+			if (f.owner != s.owner
+					&& !(s.owner == battle.attacker.owner && battle.attackerAllies.contains(f.owner))) {
 				result.add(f);
 			}
 		}
