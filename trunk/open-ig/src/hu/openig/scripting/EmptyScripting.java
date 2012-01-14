@@ -255,9 +255,9 @@ public class EmptyScripting implements GameScripting {
 		
 	}
 	@Override
-	public void onSpacewarFinish(SpacewarWorld war) {
+	public Pair<String, String> onSpacewarFinish(SpacewarWorld war) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
@@ -270,9 +270,9 @@ public class EmptyScripting implements GameScripting {
 		
 	}
 	@Override
-	public void onGroundwarFinish(GroundwarWorld war) {
+	public Pair<String, String> onGroundwarFinish(GroundwarWorld war) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 	@Override
 	public void onGroundwarStart(GroundwarWorld war) {
@@ -287,11 +287,6 @@ public class EmptyScripting implements GameScripting {
 	@Override
 	public boolean mayControlFleet(Fleet f) {
 		return true;
-	}
-	@Override
-	public Pair<String, String> battleReward(BattleInfo battle) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	@Override
 	public boolean mayAutoSave() {

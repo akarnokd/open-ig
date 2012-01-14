@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import java.awt.Dimension;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -81,4 +83,23 @@ public interface SpacewarWorld {
 	 * @param s the unit
 	 */
 	void guard(SpacewarStructure s);
+	/**
+	 * The size of the battlespace.
+	 * @return the dimension
+	 */
+	Dimension space();
+	/**
+	 * Include the ships of the given fleet and re-place the ships of the same owner.
+	 * @param f the fleet to include
+	 */
+	void includeFleet(Fleet f);
+	/**
+	 * Add the spacewar ships from the given inventory list and category filters to the spacewar.
+	 * @param owner the owner
+	 * @param inventory the inventory provider
+	 * @param categories the categories to use
+	 */
+	void addStructures(Player owner,
+			Iterable<InventoryItem> inventory,
+			EnumSet<ResearchSubCategory> categories);
 }
