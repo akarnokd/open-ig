@@ -4,12 +4,15 @@
 
 = Version 0.94 - Missions =
   * Released: 2012-01-15 13:00 CET
+  * *Acknowledgement: Joe did a great job for this release!*
+  * *You may need to start a new game!*. If you want to carry on with your previous Main Campaign progress, you can edit your save XML and change the {{{<world game='campaign/main'}}} to {{{<world game='campaign/main2'}}} in the root node manually.
   * Improvements to the AI ([http://code.google.com/p/open-ig/issues/detail?id=118 Issue #118])
-  * Bug fixes (Issues [http://code.google.com/p/open-ig/issues/detail?id=185 #185], )
+  * Bug fixes (Issues [http://code.google.com/p/open-ig/issues/detail?id=185 #185], [http://code.google.com/p/open-ig/issues/detail?id=188 #188], [http://code.google.com/p/open-ig/issues/detail?id=189 #189], [http://code.google.com/p/open-ig/issues/detail?id=199 #199], [http://code.google.com/p/open-ig/issues/detail?id=200 #200], [http://code.google.com/p/open-ig/issues/detail?id=201 #201], [http://code.google.com/p/open-ig/issues/detail?id=202 #202], [http://code.google.com/p/open-ig/issues/detail?id=203 #203], [http://code.google.com/p/open-ig/issues/detail?id=208 #208])
   * Added: mission scripting framework
-  * Created missions 1, 2 and 3, see the Missions page.
-  * Added: missing lightmaps (by Joe) ([http://code.google.com/p/open-ig/issues/detail?id=62 Issue #62])
-  * Added: Use TAB key to display objectives ([http://code.google.com/p/open-ig/issues/detail?id=110 Issue #110]) 
+  * Created missions 1, 2 and 3, see the Missions page. (Issues [http://code.google.com/p/open-ig/issues/detail?id=197 #197], [http://code.google.com/p/open-ig/issues/detail?id=207 #207], [http://code.google.com/p/open-ig/issues/detail?id=209 #209])
+  * Added: missing lightmaps ([http://code.google.com/p/open-ig/issues/detail?id=62 Issue #62])
+  * Added: Use TAB key to display objectives (Issues [http://code.google.com/p/open-ig/issues/detail?id=110 #110], [http://code.google.com/p/open-ig/issues/detail?id=198 #198], [http://code.google.com/p/open-ig/issues/detail?id=206 #206]) 
+  * Balance updates (Issue [http://code.google.com/p/open-ig/issues/detail?id=204 #204])
 
 = Version 0.93.540 - Improvements =
   * Released: 2012-01-11 21:10 CET
