@@ -428,6 +428,7 @@ public final class BattleSimulator {
 			// attacker wins
 			if (fleet != null) {
 				world.removeFleet(fleet);
+				world.scripting.onLost(fleet);
 				fleet.inventory.clear();
 			}
 			if (planet != null) {
@@ -459,6 +460,7 @@ public final class BattleSimulator {
 			// defender wins
 			world.removeFleet(battle.attacker);
 			battle.attacker.inventory.clear();
+			world.scripting.onLost(battle.attacker);
 			
 			if (planet != null) {
 				if (planet.owner != battle.attacker.owner) {
@@ -486,8 +488,11 @@ public final class BattleSimulator {
 			// draw
 			battle.attacker.inventory.clear();
 			world.removeFleet(battle.attacker);
+			world.scripting.onLost(battle.attacker);
+
 			if (fleet != null) {
 				world.removeFleet(fleet);
+				world.scripting.onLost(fleet);
 			}
 			if (planet != null) {
 				demolishDefenses(planet);
@@ -552,6 +557,7 @@ public final class BattleSimulator {
 			Fleet fleet = (Fleet) f;
 			if (inv.size() == 0) {
 				world.removeFleet(fleet);
+				world.scripting.onLost(fleet);
 			} else {
 				fleet.adjustVehicleCounts();
 			}

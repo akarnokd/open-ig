@@ -127,29 +127,42 @@ public class AI implements AIManager {
 					costAttackBehavior(world, ship);
 				}
 			} else {
-				Set<SpacewarStructure> ess = U.newHashSet();
-				for (SpacewarStructure ship : idles) {
-					ess.addAll(world.enemiesInRange(ship));
-				}
-				if (ess.isEmpty()) {
-					for (SpacewarStructure ship : idles) {
-						ess.addAll(world.enemiesOf(ship));
-						break;
-					}
-				}
-				List<SpacewarStructure> esl = new ArrayList<SpacewarStructure>(ess);
-				int i = 0;
-				for (SpacewarStructure ship : idles) {
-					ship.attack = esl.get(i);
-					i++;
-					if (i >= esl.size()) {
-						i = 0;
-					}
-				}				
+				defaultAttackBehavior(world, idles);				
 			}
 			return SpacewarAction.CONTINUE;
 		}
 		return SpacewarAction.FLEE;
+	}
+	/**
+	 * The default group attack behavior which chooses the in-range enemy or
+	 * distributes attacks among all enemies.
+	 * @param world the world object
+	 * @param idles the list of units to handle
+	 */
+	public static void defaultAttackBehavior(SpacewarWorld world,
+			List<SpacewarStructure> idles) {
+		Set<SpacewarStructure> ess = U.newHashSet();
+		for (SpacewarStructure ship : idles) {
+			defaultAttackBehavior(world, ship);
+		}
+		if (ess.isEmpty()) {
+			for (SpacewarStructure ship : idles) {
+				ess.addAll(world.enemiesOf(ship));
+				break;
+			}
+		}
+		List<SpacewarStructure> esl = new ArrayList<SpacewarStructure>(ess);
+		Collections.shuffle(esl);
+		int i = 0;
+		for (SpacewarStructure ship : idles) {
+			if (ship.attack == null && ship.type == StructureType.SHIP) {
+				ship.attack = esl.get(i);
+				i++;
+				if (i >= esl.size()) {
+					i = 0;
+				}
+			}
+		}
 	}
 	/**
 	 * Calculate the percentage of the structure healths.
@@ -184,11 +197,6 @@ public class AI implements AIManager {
 			List<SpacewarStructure> es = world.enemiesInRange(ship);
 			if (es.size() > 0) {
 				ship.attack = world.random(es);
-			} else {
-				es = world.enemiesOf(ship);
-				if (es.size() > 0) {
-					ship.attack = world.random(es);
-				}
 			}
 		}
 	}

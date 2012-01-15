@@ -3828,17 +3828,39 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void concludeBattle(Player winner) {
 		boolean groundLosses = false;
-		// apply structure statuses
-		for (SpacewarStructure s : structures) {
-			if (s.item != null) {
-				s.item.count = 0;
-			}
-		}
 		Set<Fleet> fleets = new HashSet<Fleet>();
+		Set<Planet> planets = U.newHashSet();
+		
+		// reset surviving stucture counts
 		for (SpacewarStructure s : structures) {
 			if (s.fleet != null) {
 				fleets.add(s.fleet);
 			}
+			if (s.planet != null) {
+				planets.add(s.planet);
+			}
+			if (s.item != null) {
+				s.item.count = 0;
+			}
+		}
+		// remove destroyed buildings or items
+		for (SpacewarStructure s : battle.spaceLosses) {
+			if (s.building != null) {
+				s.planet.surface.removeBuilding(s.building);
+				planets.add(s.planet);
+			}
+			if (s.item != null) {
+				s.item.count = 0;
+			}
+			if (s.fleet != null) {
+				fleets.add(s.fleet);
+			}
+			if (s.planet != null) {
+				planets.add(s.planet);
+			}
+		}
+		// process surviving structures
+		for (SpacewarStructure s : structures) {
 			if (s.item != null) {
 				s.item.count += s.count;
 				s.item.hp = s.hp;
@@ -3846,36 +3868,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			} else
 			if (s.building != null) {
 				s.building.hitpoints = (int)(1L * s.hp * s.building.type.hitpoints / s.hpMax);
-			}
-		}
-		// apply losses
-		for (SpacewarStructure s : battle.spaceLosses) {
-			if (s.fleet != null) {
-				fleets.add(s.fleet);
-			}
-			if (s.item != null) {
-				if (s.count > 0) {
-					s.item.count = s.count;
-					s.item.hp = s.hp;
-					s.item.shield = s.shield;
-					if (s.item.hp <= 0) {
-						removeFromInventory(s);
-					}
-				} else {
-					removeFromInventory(s);
-				}
-			} else
-			if (s.building != null) {
-				s.building.hitpoints = (int)(1L * s.hp * s.building.type.hitpoints / s.hpMax);
-				if (s.building.hitpoints <= 0) {
-					s.planet.surface.removeBuilding(s.building);
-					s.planet.surface.placeRoads(s.planet.race, world().buildingModel);
-				}
 				groundLosses = true;
 			}
 		}
-		fleets.add(battle.attacker);
 
+		// rebuild roads.
+		for (Planet p : planets) {
+			p.surface.placeRoads(p.race, world().buildingModel);
+			p.cleanup();
+		}
 		// if the planet was fired upon
 		if (groundLosses) {
 			// reduce population according to the battle statistics
@@ -3891,13 +3892,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		
-		if (battle.helperFleet != null) {
-			fleets.add(battle.helperFleet);
-		}
-		if (battle.targetFleet != null) {
-			fleets.add(battle.targetFleet);
-		}
+		// cleanup fleets
 		for (Fleet f : fleets) {
+			f.cleanup();
 			f.stop();
 			int gu = f.adjustVehicleCounts();
 			if (f.owner == battle.attacker.owner) {
@@ -3907,6 +3904,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			if (f.inventory.size() == 0) {
 				world().removeFleet(f);
+				world().scripting.onLost(f);
 			}
 		}
 		battle.spacewarWinner = winner;

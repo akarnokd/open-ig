@@ -87,8 +87,14 @@ public class AIPirate implements AIManager {
 	@Override
 	public SpacewarAction spaceBattle(SpacewarWorld world,
 			List<SpacewarStructure> idles) {
-		for (SpacewarStructure s : idles) {
-			AI.defaultAttackBehavior(world, s);
+		List<SpacewarStructure> sts = world.structures(p);
+		double h = AI.fleetHealth(sts);
+		if (h >= 0.25) {
+			AI.defaultAttackBehavior(world, idles);
+		} else {
+			for (SpacewarStructure s : sts) {
+				world.flee(s);
+			}
 		}
 		return SpacewarAction.CONTINUE;
 	}

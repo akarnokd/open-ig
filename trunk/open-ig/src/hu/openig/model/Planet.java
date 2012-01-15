@@ -663,4 +663,12 @@ public class Planet implements Named, Owned, HasInventory {
 		TileSet ts = bt.tileset.get(race);
 		return new Dimension(ts.normal.width + 2, ts.normal.height + 2);
 	}
+	/** Remove inventory items with zero counts. */
+	public void cleanup() {
+		for (int i = inventory.size() - 1; i >= 0; i--) {
+			if (inventory.get(i).count <= 0) {
+				inventory.remove(i);
+			}
+		}
+	}
 }
