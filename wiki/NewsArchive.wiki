@@ -98,7 +98,7 @@ A developer build has been released (we are working on the game sound effects). 
 
 Finally, I have some free time and willingness to resume the development. The next big thing is surface and space battles.
 
-= July, 2011 =
+== July, 2011 ==
 
 *July 29, 2011*
 
@@ -424,7 +424,7 @@ Note again, that downloads marked as Deprecated and named with Developer is not 
 
 Note that the new VideoPlayer and video packs are currently for development purposes: this allows us to test the multilingual video playback and the creation of subtitles for the videos.
 
-= September, 2009 =
+== September, 2009 ==
 
 *September 27. 2009*
 
