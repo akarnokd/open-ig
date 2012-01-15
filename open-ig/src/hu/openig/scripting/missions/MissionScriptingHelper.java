@@ -91,6 +91,10 @@ public interface MissionScriptingHelper {
 	boolean isActive(Objective o);
 	/**
 	 * Check if the objective/mission can be started.
+	 * <ul>
+	 * <li>The given objective is invisible and is in state ACTIVE</li>
+	 * <li>The isMissionTime() returns true for the id</li>
+	 * </ul>
 	 * @param oId the objective id
 	 * @return true if the mission can be started
 	 */
