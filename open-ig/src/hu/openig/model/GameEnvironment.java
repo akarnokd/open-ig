@@ -94,4 +94,8 @@ public interface GameEnvironment {
 	 * @return the step length in milliseconds
 	 */
 	int simulationSpeed();
+	/** Pause the game. */
+	void pause();
+	/** Set speed back to 1. */
+	void speed1();
 }

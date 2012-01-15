@@ -184,6 +184,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 */
 	protected void loseGameMessage(String id) {
 		world.env.stopMusic();
+		world.env.pause();
 		world.player.messageQueue.clear();
 		world.env.forceMessage(id, new Action0() {
 			@Override
@@ -199,6 +200,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 */
 	protected void loseGameMessageAndMovie(String message, final String movie) {
 		world.env.stopMusic();
+		world.env.pause();
 		world.player.messageQueue.clear();
 		world.env.forceMessage(message, new Action0() {
 			@Override
@@ -218,6 +220,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 */
 	protected void loseGameMovie(String id) {
 		world.env.stopMusic();
+		world.env.pause();
 		world.player.messageQueue.clear();
 		world.env.playVideo(id, new Action0() {
 			@Override

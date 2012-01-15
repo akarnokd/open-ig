@@ -63,7 +63,8 @@ public class Mission2 extends Mission {
 				}
 				if (helper.canStart(m2ti)) {
 					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"));
-					fs = filterByRange(fs, world.params().groundRadarUnitSize(), "Naxos", "San Sterling", "Achilles");
+					fs = filterByRange(fs, world.params().groundRadarUnitSize(), 
+							"Naxos", "San Sterling", "Achilles");
 					if (!fs.isEmpty()) {
 						int traderMessage = world.random().nextInt(7) + 1;
 						
@@ -72,6 +73,7 @@ public class Mission2 extends Mission {
 						helper.send("Douglas-Reinforcements-Denied").visible = true;
 						helper.showObjective(m2ti);
 						helper.clearMissionTime(m2ti);
+						world.env.speed1();
 						Fleet f = world.random(fs);
 						f.stop();
 						f.task = FleetTask.SCRIPT;
