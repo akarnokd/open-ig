@@ -44,7 +44,7 @@ public class Mission3 extends Mission {
 				helper.setMissionTime("Mission-3", helper.now() + 48);
 			}
 			if (helper.canStart("Mission-3")) {
-				helper.setTimeout("Mission-3-Message", 4000);
+				helper.setTimeout("Mission-3-Message", 2000);
 				helper.showObjective("Mission-3");
 				helper.clearMissionTime("Mission-3");
 				createCarrierTask();
