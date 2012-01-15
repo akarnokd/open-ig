@@ -1,0 +1,3 @@
+#summary List of completed plan elements
+
+|| *Task* || *Expected completion time* || *Status* || *Remarks* ||
