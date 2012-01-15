@@ -14,6 +14,7 @@ import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
+import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarStructure;
@@ -62,6 +63,7 @@ public class Mission2 extends Mission {
 				}
 				if (helper.canStart(m2ti)) {
 					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"));
+					fs = filterByRange(fs, world.params().groundRadarUnitSize(), "Naxos", "San Sterling", "Achilles");
 					if (!fs.isEmpty()) {
 						int traderMessage = world.random().nextInt(7) + 1;
 						
@@ -158,6 +160,30 @@ public class Mission2 extends Mission {
 			helper.clearTimeout("Mission-2-Success-But");
 			helper.objective("Mission-2").visible = false;
 		}
+	}
+	/**
+	 * Ensure that the given list of fleets contains only elements
+	 * which are within the given radar range of the listed planet ids.
+	 * @param fs the fleet list
+	 * @param r the radar range in pixels
+	 * @param planets the planets to check
+	 * @return fs parameter
+	 */
+	List<Fleet> filterByRange(List<Fleet> fs, int r,
+			String... planets) {
+		outer:
+		for (int i = fs.size() - 1; i >= 0; i--) {
+			Fleet f = fs.get(i);
+			for (String p : planets) {
+				Planet op = planet(p);
+				double d = Math.hypot(f.x - op.x, f.y - op.y);
+				if (d <= r) {
+					continue outer;
+				}
+			}
+			fs.remove(i);
+		}
+		return fs;
 	}
 	/**
 	 * Schedule the next task.
