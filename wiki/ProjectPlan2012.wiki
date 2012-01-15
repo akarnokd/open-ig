@@ -5,8 +5,6 @@ See [http://code.google.com/p/open-ig/issues/list Issue list] for enhancements.
 
 [ProjectFacts2012 Facts for 2012].
 
-
-[ProjectPlan2011 Plans for 2011].
 [ProjectFacts2011 Facts for 2011].
 
 || *Task* || *Expected completion time* || *Status* || *Remarks* ||
