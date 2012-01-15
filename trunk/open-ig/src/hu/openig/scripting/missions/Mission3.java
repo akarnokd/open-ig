@@ -37,7 +37,7 @@ public class Mission3 extends Mission {
 		if (world.level == 1) {
 			Objective m2t1 = helper.objective("Mission-2-Task-1");
 			Objective m3 = helper.objective("Mission-3");
-			if (!m3.visible 
+			if (!m3.visible && m3.state == ObjectiveState.ACTIVE
 					&& m2t1.visible 
 					&& m2t1.state != ObjectiveState.ACTIVE
 					&& !helper.hasMissionTime("Mission-3")) {

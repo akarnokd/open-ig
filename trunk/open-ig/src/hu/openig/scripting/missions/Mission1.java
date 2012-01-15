@@ -71,10 +71,10 @@ public class Mission1 extends Mission {
 				{ "PrefabHousing", "ApartmentBlock", "Arcology" },
 				{ "NuclearPlant", "FusionPlant", "SolarPlant" },
 				{ "CivilDevCenter", "MechanicalDevCenter", "ComputerDevCenter", "AIDevCenter", "MilitaryDevCenter" },
-				{ "Police" },
+				{ "PoliceStation" },
 				{ "FireBrigade" }, 
 				{ "MilitarySpaceport" },
-				{ "Radar1", "Radar2", "Radar3" }, 
+				{ "RadarTelescope", "FieldTelescope", "PhasedTelescope" }, 
 		};
 		boolean okay = true;
 		Set<String> buildingTypes = U.newHashSet();
@@ -88,7 +88,7 @@ public class Mission1 extends Mission {
 		}
 		if (okay) {
 			for (String[] bts : buildingSets) {
-				boolean found = true;
+				boolean found = false;
 				for (String bt : bts) {
 					if (buildingTypes.contains(bt)) {
 						found = true;
@@ -141,7 +141,9 @@ public class Mission1 extends Mission {
 	 */
 	void checkMission1Start() {
 		Objective o0 = helper.objective("Mission-1");
-		if (!o0.visible && o0.state == ObjectiveState.ACTIVE && helper.isTimeout("Mission-1-Init")) {
+		if (!o0.visible 
+				&& o0.state == ObjectiveState.ACTIVE 
+				&& helper.isTimeout("Mission-1-Init")) {
 			helper.objective("Mission-1-Task-1").visible = true;
 			helper.objective("Mission-1-Task-2").visible = true;
 			helper.showObjective("Mission-1");
