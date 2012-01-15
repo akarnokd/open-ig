@@ -1,390 +1,114 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <chats>
-	<!-- Cél nélküli kereskedők mektámadásakor ezek az üzenetek. -->
-	<chat id='ker1'>
-	procedure uzen1
-  gepelessebesseg 90
-  valaszt 1
-    "Azonosítsa magát!" beszol1
-end
+	<!-- messages when attack merchant and not related to any mission. -->
+	<entry key='chat.merchant1.choice1'>Azonosítsa magát!</entry>
+	<entry key='chat.merchant1.choice1.message0'>Azonosítsa magát!</entry>
+    <entry key='chat.merchant1.choice1.message1'>Ez a MOB451 hajó, kereskedelmi úton.</entry>
+	<entry key='chat.merchant1.choice2a'>Folytassa útját a célja felé!</entry>
+ 	<entry key='chat.merchant1.choice2a.message0'>Folytassa az útját a célja felé!</entry>
+ 	<entry key='chat.merchant1.choice2a.message1'>Köszönöm, Uram.</entry>
+  	<entry key='chat.merchant1.choice2b'>Igen, ilyen nevû hajót foglaltak el kalózok!</entry>
+ 	<entry key='chat.merchant1.choice2b.message0'>Biztos vagyok benne, hogy kalóz vagy. Készülj fel a halálra!</entry>
+   	<entry key='chat.merchant1.choice2b.message1'>Ne lôjön! Csak ártatlan kereskedô vagyok!</entry>
+    <entry key='chat.merchant1.choice3a'>Pusztulj!</entry>
+    <entry key='chat.merchant1.choice3b'>Naa, rendben. Folytasd az utadat!</entry>
+ 	<entry key='chat.merchant1.choice3a.message0'>Biztos vagyok benne, hogy kalóz vagy. Készülj fel a halálra!</entry>
+  	<entry key='chat.merchant1.choice3a.message1'>Ne lôjön! Ne lôjön! Azonnal visszafordulok!</entry>
+	<entry key='chat.merchant1.choice3b.message0'>Folytassa az útját a célja felé!</entry>
+ 	<entry key='chat.merchant1.choice3b.message1'>Köszönöm, Uram.</entry>
+   	<entry key='chat.merchant2.choice1'>Azonosítsa magát!</entry>
+  	<entry key='chat.merchant2.choice1.message0'>Azonosítsa magát!</entry>
+   	<entry key='chat.merchant2.choice1.message1'>Ez az MX43-as hajó, kereskedelmi úton.</entry>
+  	<entry key='chat.merchant2.choice2a'>Folytassa az útját a célja felé!</entry>
+   	<entry key='chat.merchant2.choice2b'>Azt hiszem, célzógyakorlatot fogok tartani.</entry>
+    <entry key='chat.merchant2.choice2a.message0'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant2.choice2a.message1'>Köszönöm, Uram!</entry>
+    <entry key='chat.merchant2.choice2b.message0'>Azt hiszem, célzógyakorlatot fogok tartani.</entry>
+    <entry key='chat.merchant2.choice2b.message1'>Ne lôjön! Csak ártatlan kereskedô vagyok!</entry>
+    <entry key='chat.merchant2.choice3a'>Halál vár rád!</entry>
+    <entry key='chat.merchant2.choice3b'>Na, rendben, most az egyszer elmehetsz.</entry>
+    <entry key='chat.merchant2.choice3a.message0'>Halál vár rád!</entry>
+    <entry key='chat.merchant2.choice3a.message1'>Aargh! Ne! Neeeee! Már fordulok is!</entry>
+    <entry key='chat.merchant2.choice3b.message0'> Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant2.choice3b.message1'>Köszönöm, Uram!</entry>
+    <entry key='chat.merchant3.choice1'>Azonosítsa magát!</entry>
+    <entry key='chat.merchant3.choice1.message0'>Azonosítsa magát!</entry>
+    <entry key='chat.merchant3.choice1.message1'>Ez az ECHO hajó, kereskedelmi úton.</entry>
+    <entry key='chat.merchant3.choice2a'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant3.choice2b'>Fel kellene melegítenem a fegyvereimet...</entry>
+    <entry key='chat.merchant3.choice2a.message0'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant3.choice2a.message1'>Köszönöm, Uram!</entry>
+    <entry key='chat.merchant3.choice2b.message0'>Kicsit fel kellene melegítenem a fegyvereimet. Remélem segítesz?</entry>
+    <entry key='chat.merchant3.choice2b.message1'>Ne lôjj! Årtatlan kereskedô vagyok.</entry>
+    <entry key='chat.merchant3.choice3a'>Szóval nem segítesz. Halál rád!</entry>
+    <entry key='chat.merchant3.choice3b'>Na, rendben. Átjuthatsz.</entry>
+    <entry key='chat.merchant3.choice3a.message0'>Szóval nem segítesz. Halál rád!</entry>
+    <entry key='chat.merchant3.choice3a.message1'>Aargh! Ne lôjön! Ne lôjön! Megfordulok.</entry>
+	<entry key='chat.merchant3.choice3b.message0'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant3.choice3b.message1'>Köszönöm, Uram!</entry>
+    <entry key='chat.merchant4.choice1'>Azonosítsa magát!</entry>
+    <entry key='chat.merchant4.choice1.message0'>Azonosítsa magát!</entry>
+    <entry key='chat.merchant4.choice1.message1'>Ez a Bravox kereskedelmi hajó. Itt George beszél, a hajó kapitánya.</entry>
+    <entry key='chat.merchant4.choice2a'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant4.choice2b'>Szóval mennyi védelmi díjat fizetsz?</entry>
+    <entry key='chat.merchant4.choice2a.message0'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant4.choice2a.message1'>Köszönöm, Uram.</entry>
+    <entry key='chat.merchant4.choice2b.message0'>Mennyi védelmi díjat fizetsz? Vagy inkább tartsunk itt egy hadgyakorlatot?</entry>
+    <entry key='chat.merchant4.choice2b.message1'>Ne tüzeljen, kapitány! Biztos vagyok benne, hogy a fônöke nem örülne a jelentésemnek...</entry>
+    <entry key='chat.merchant4.choice3a'>Szóval nem fizetsz? Vess magadra!</entry>
+    <entry key='chat.merchant4.choice3b'>Rendben, átmehetsz.</entry>
+    <entry key='chat.merchant4.choice3a.message0'>Szóval nem fizetsz? Vess magadra!</entry>
+    <entry key='chat.merchant4.choice3a.message1'>Ne lôjenek! Ne lôjenek!</entry>
+    <entry key='chat.merchant4.choice3b.message0'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant4.choice3b.message1'>Köszönöm, Uram.</entry>
+    <entry key='chat.merchant5.choice1'>Azonosítsa magát!</entry>
+    <entry key='chat.merchant5.choice1.message0'>Azonosítsa magát!</entry>
+    <entry key='chat.merchant5.choice1.message1'>Itt a Max4-es hajó kapitánya beszél. Kereskedelmi úton vagyunk, átnézheti a hajó okmányait, ha akarja.</entry>
+    <entry key='chat.merchant5.choice2a'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant5.choice2b'>Azt hiszed át tudsz verni?</entry>
+    <entry key='chat.merchant5.choice2a.message0'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant5.choice2a.message1'>Köszönöm, Uram.</entry>
+    <entry key='chat.merchant5.choice2b.message0'>Azt hiszed át tudsz verni? Te nem vagy kereskedô, sose voltál az!</entry>
+    <entry key='chat.merchant5.choice2b.message1'>Ismétlem itt McAllison beszél, a Max4-es hajó parancsnoka. Remélem, nem kalózkodásból szeretné kiegészíteni a fizetését, kapitány?</entry>
+    <entry key='chat.merchant5.choice3a'>Fizess vagy tüzet nyitunk!</entry>
+    <entry key='chat.merchant5.choice3b'>Na jó, elmehetsz.</entry>
+    <entry key='chat.merchant5.choice3a.message0'>Fizess, vagy tüzet nyitunk!</entry>
+    <entry key='chat.merchant5.choice3a.message1'>Ne lôjj! Ez biztos csak egy rossz vicc! Engedj el. Megígérem, hogy nem jelentem az esetet a parancsnokának.</entry>
+	<entry key='chat.merchant5.choice3b.message0'>Folytassa útját a célja felé!</entry>
+  	<entry key='chat.merchant5.choice3b.message1'>Köszönöm, Uram.</entry>
+    <!-- If select chat.merchant5.choice3a then proceed to chat.merchant5.choice4-->
+    <entry key='chat.merchant5.choice4a'>Rendben, ahogy akarod. Búcsúzz el a családodtól!</entry>
+    <entry key='chat.merchant5.choice4b'>Csak vicceltem. Folytassa az útját, McAllison!</entry>
+  	<entry key='chat.merchant5.choice4b.message0'>Csak vicceltem, folytassa az útját, McAllison.</entry>
+   	<entry key='chat.merchant5.choice4b.message1'>Majdnem becsapott, kapitány. Már itt sem vagyunk.</entry>
+  	<entry key='chat.merchant5.choice4a.message0'>Rendben, ahogy akarod. Búcsúzz el a családodtól!</entry>
+    <entry key='chat.merchant5.choice4a.message1'>Ne lôjön! Inkább elhagyom a körzetet!</entry>
+    <entry key='chat.merchant6.choice1'>Azonosítsa magát!</entry>
+    <entry key='chat.merchant6.choice1.message0'>Azonosítsa magát!</entry>
+    <entry key='chat.merchant6.choice1.message1'>Ez a Horse hajó, kereskedelmi úton.</entry>
+    <entry key='chat.merchant6.choice2a'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant6.choice2b'>Mit repked Maga itt össze-vissza?</entry>
+    <entry key='chat.merchant6.choice2a.message0'>Folytassa útját a célja felé!</entry>
+    <entry key='chat.merchant6.choice2a.message1'>Köszönöm, Uram.</entry>
+    <entry key='chat.merchant6.choice2b.message0'>Mit repked Maga itt össze-vissza? Ez engem rendkívül fel tud idegesíteni!</entry>
+  	<entry key='chat.merchant6.choice2b.message1'>Én csak egy szegény kereskedô vagyok, kérem engedjen az utamra.</entry>
+    <entry key='chat.merchant6.choice3a'>Halál rád, madár!</entry>
+    <entry key='chat.merchant6.choice3b'>Na rendben, elmehetsz.</entry>
+	<entry key='chat.merchant6.choice3a.message0'>Halál rád madár!</entry>
+  	<entry key='chat.merchant6.choice3a.message1'>Ne lôjön! Inkább visszafordulok!</entry>
 
-
-procedure beszol1
-  gepelessebesseg 60
-      message0 "Azonosítsa magát!"
-  gepelessebesseg 50
-      message1 "Ez a MOB451 hajó, kereskedelmi úton."
-  uzen2
-end
-
-
-procedure uzen2
-  gepelessebesseg 90
-  valaszt 2
-  "Folytassa útját a célja felé!" beszol2
-  "Igen, ilyen nevû hajót foglaltak el kalózok!" beszol3
-  halt
-end
-
-
-procedure beszol2
-   gepelessebesseg 30
- message0 "Folytassa az útját a célja felé!"
- message1 "Köszönöm, Uram."
-end
-
-
-procedure beszol3
-  gepelessebesseg 50
-   message0 "Biztos vagyok benne, hogy kalóz vagy."
-   message0 "Készülj fel a halálra!"
-   message1 "Ne lôjön! Csak ártatlan kereskedô vagyok!"
-  uzen3
-end
-
-procedure uzen3
-  gepelessebesseg 90
-  valaszt 2
-    "Pusztulj!" vvonul
-    "Naa, rendben. Folytasd az utadat!" beszol2
-end
-
-
-procedure vvonul
-  eredmeny 0
-  visszavonulas
-  gepelessebesseg 60
-  message0 "Biztos vagyok benne, hogy kalóz vagy."
-  message0 "Készülj fel a halálra!"
-  message1 "Ne lôjön! Ne lôjön!"
-  message1 "Azonnal visszafordulok!"
-  halt
-end
-	</chat>
-	<chat id='ker2'>procedure uzen1
-  gepelessebesseg 90
-  valaszt 1
-    "Azonosítsa magát!" beszol1
-end
-
-
-procedure beszol1
-  gepelessebesseg 40
-   message0 "Azonosítsa magát!"
-   message1 "Ez az MX43-as hajó, kereskedelmi úton."
-  uzen2
-end
-
-
-procedure uzen2
-  gepelessebesseg 90
-  valaszt 2
-    "Folytassa az útját a célja felé!" beszol2
-    "Azt hiszem, célzógyakorlatot fogok tartani." beszol3
-end
-
-
-procedure beszol2
-  gepelessebesseg 70
-      message0 "Folytassa útját a célja felé!"
-      message1 "Köszönöm, Uram!"
-  halt
-end
-
-
-procedure beszol3
-  gepelessebesseg 50
-      message0 "Azt hiszem, célzógyakorlatot fogok tartani."
-      message1 "Ne lôjön! Csak ártatlan kereskedô vagyok!"
-  uzen3
-end
-
-procedure uzen3
-  gepelessebesseg 90
-  valaszt 2
-    "Halál vár rád!" vvonul
-    "Na, rendben, most az egyszer elmehetsz." beszol2
-end
-
-
-procedure vvonul
-  gepelessebesseg 60
-  eredmeny 0
-  visszavonulas
-    message0 "Halál vár rád!"
-    message1 "Aargh! Ne! Neeeee!"
-    message1 "Már fordulok is!"
-  halt
-end
-	</chat>
-	<chat id='ker3'>procedure uzen1
-  gepelessebesseg 90
-  valaszt 1
-    "Azonosítsa magát!" beszol1
-end
-
-
-procedure beszol1
-  gepelessebesseg 80
-      message0 "Azonosítsa magát!"
-      message1 "Ez az ECHO hajó, kereskedelmi úton."
-  uzen2
-end
-
-
-procedure uzen2
-  gepelessebesseg 90
-  valaszt 2
-    "Folytassa útját a célja felé!" beszol2
-    "Fel kellene melegítenem a fegyvereimet..." beszol3
-end
-
-
-procedure beszol2
-  gepelessebesseg 90
-   message0 "Folytassa útját a célja felé!"
-   message1 "Köszönöm, Uram!"
-  halt
-end
-
-
-procedure beszol3
-  gepelessebesseg 60
-    message0 "Kicsit fel kellene melegítenem a"
-    message0 "fegyvereimet. Remélem segítesz?"
-  gepelessebesseg 90
-    message1 "Ne lôjj! Årtatlan kereskedô vagyok."
-  uzen3
-end
-
-procedure uzen3
-  gepelessebesseg 90
-  valaszt 2
-    "Szóval nem segítesz. Halál rád!" vvonul
-    "Na, rendben. Åtjuthatsz." beszol2
-end
-
-procedure vvonul
-  gepelessebesseg 60
-  visszavonulas
-  eredmeny 0
-    message0 "Szóval nem segítesz. Halál rád!"
-    message1 "Aargh! Ne lôjön! Ne lôjön!"
-    message1 "Megfordulok."
-  halt
-end
-	</chat>
-	<chat id='ker4'>procedure uzen1
-  gepelessebesseg 90
-  valaszt 1
-    "Azonosítsa magát!" beszol1
-end
-
-
-procedure beszol1
-  gepelessebesseg 40
-    message0 "Azonosítsa magát!"
-    message1 "Ez a Bravox kereskedelmi hajó."
-    message1 "Itt George beszél, a hajó kapitánya."
-  uzen2
-end
-
-
-procedure uzen2
-  gepelessebesseg 90
-  valaszt 2
-    "Folytassa útját a célja felé!" beszol2
-    "Szóval mennyi védelmi díjat fizetsz?" beszol3
-end
-
-
-procedure beszol2
-  gepelessebesseg 30
-     message0 "Folytassa útját a célja felé!"
-     message1 "Köszönöm, Uram."
-  halt
-end
-
-
-procedure beszol3
-  gepelessebesseg 100
-    message0 "Mennyi védelmi díjat fizetsz?"
-    message0 "Vagy inkább tartsunk itt egy hadgyakorlatot?"
-  gepelessebesseg 50
-    message1 "Ne tüzeljen, kapitány! Biztos vagyok benne,"
-    message1 "hogy a fônöke nem örülne a jelentésemnek..."
-  uzen3
-end
-
-procedure uzen3
-  gepelessebesseg 90
-  valaszt 2
-    "Szóval nem fizetsz? Vess magadra!" vvonul
-    "Rendben, átmehetsz." beszol2
-end
-
-
-procedure vvonul
-  gepelessebesseg 60
-  eredmeny 0
-  visszavonulas
-   message0 "Szóval nem fizetsz? Vess magadra!"
-   message1 "Ne lôjenek! Ne lôjenek!"
-  halt
-end
-	</chat>
-	<chat id='ker5'>procedure uzen1
-  gepelessebesseg 90
-  valaszt 1
-    "Azonosítsa magát!" beszol1
-end
-
-
-procedure beszol1
-  gepelessebesseg 40
-    message0 "Azonosítsa magát!"
-    message1 "Itt a Max4-es hajó kapitánya beszél."
-    message1 "Kereskedelmi úton vagyunk, átnézheti"
-    message1 "hajó okmányait, ha akarja."
-  uzen2
-end
-
-
-procedure uzen2
-  gepelessebesseg 90
-  valaszt 2
-    "Folytassa útját a célja felé!" beszol2
-    "Azt hiszed át tudsz verni?" beszol3
-end
-
-
-procedure beszol2
-  gepelessebesseg 30
-  message0 "Folytassa útját a célja felé!"
-  message1 "Köszönöm, Uram."
-  halt
-end
-
-
-procedure beszol3
-  gepelessebesseg 100
-    message0 "Azt hiszed át tudsz verni?"
-    message0 "Te nem vagy kereskedô, sose voltál az!"
-  gepelessebesseg 50
-    message1 "Ismétlem itt McAllison beszél, a Max4-es"
-    message1 "hajó parancsnoka. Remélem, nem kalózkodásból"
-    message1 "szeretné kiegészíteni a fizetését, kapitány?"
-  uzen3
-end
-
-procedure uzen3
-  gepelessebesseg 90
-  valaszt 2
-    "Fizess vagy tüzet nyitunk!" aga
-    "Na jó, elmehetsz." beszol2
-end
-
-procedure aga
-  gepelessebesseg 40
-    message0 "Fizess, vagy tüzet nyitunk!"
-    message1 "Ne lôjj! Ez biztos csak egy rossz vicc!"
-    message1 "Engedj el. Megígérem, hogy nem jelentem"
-    message1 "az esetet a parancsnokának."
-  abeszol2
-end
-
-
-procedure abeszol2
-  gepelessebesseg 90
-  valaszt 2
-    "Rendben, ahogy akarod. Búcsúzz el a családodtól!" vvonul
-    "Csak vicceltem. Folytassa az útját, McAllison!" beszol3
-end
-
-procedure beszol3
-  gepelessebesseg 80
-   message0 "Csak vicceltem, folytassa az útját, McAllison."
-   message1 "Majdnem becsapott, kapitány. Már itt sem
-   message1 "vagyunk."
-end
-
-procedure vvonul
-  gepelessebesseg 60
-  eredmeny 0
-  visszavonulas
-    message1 "Ne lôjön! Inkább elhagyom a körzetet!"
-  halt
-end
-	</chat>
-	<chat id='ker6'>procedure uzen1
-  gepelessebesseg 90
-  valaszt 1
-    "Azonosítsa magát!" beszol1
-end
-
-
-procedure beszol1
-  gepelessebesseg 40
-    message0 "Azonosítsa magát!"
-   message1 "Ez a Horse hajó, kereskedelmi úton."
-  uzen2
-end
-
-
-procedure uzen2
-  gepelessebesseg 90
-  valaszt 2
-    "Folytassa útját a célja felé!" beszol2
-    "Mit repked Maga itt össze-vissza?" beszol3
-end
-
-procedure beszol2
-  gepelessebesseg 30
-     message0 "Folytassa útját a célja felé!"
-     message1 "Köszönöm, Uram."
-  halt
-end
-
-
-procedure beszol3
-  gepelessebesseg 100
-    message0 "Mit repked Maga itt össze-vissza?"
-    message0 "Ez engem rendkívül fel tud idegesíteni!"
-  gepelessebesseg 50
-  message1 "Én csak egy szegény kereskedô vagyok, kérem"
-  message1 "engedjen az utamra."
-  uzen3
-end
-
-procedure uzen3
-  gepelessebesseg 90
-  valaszt 2
-    "Halál rád, madár!" vvonul
-    "Na rendben, elmehetsz." beszol2
-end
-
-
-procedure vvonul
-  gepelessebesseg 60
-  eredmeny 0
-  visszavonulas
-   message0 "Halál rád madár!"
-   message1 "Ne lôjön! Inkább visszafordulok!"
-  halt
-end
-	</chat>
 	<chat id='ker7'>procedure uzen1
   gepelessebesseg 90
   valaszt 1
-    "Azonosítsa magát!" beszol1
+    <entry key='chat.merchant7.choice1'>"Azonosítsa magát!" beszol1</entry>
 end
 
 
 procedure beszol1
   gepelessebesseg 70
     message0 "Azonosítsa magát!"
-      message1 "Itt az MX1O9 hajó kapitánya beszél."
-      message1 "Kereskedelmi úton vagyunk, fémet szállítunk."
+      <entry key='chat.merchant7.choice1.message0'>message1 "Itt az MX1O9 hajó kapitánya beszél."</entry>
+      <entry key='chat.merchant7.choice1.message1'>message1 "Kereskedelmi úton vagyunk, fémet szállítunk."</entry>
   uzen2
 end
 
@@ -392,25 +116,25 @@ end
 procedure uzen2
   gepelessebesseg 90
   valaszt 2
-    "Folytassa útját a célja felé!" beszol2
-    "Szóval ki a jobb lövô, én vagy te?" beszol3
+    <entry key='chat.merchant7.choice2a'>"Folytassa útját a célja felé!" beszol2</entry>
+    <entry key='chat.merchant7.choice2b'>"Szóval ki a jobb lövô, én vagy te?" beszol3</entry>
 end
 
 
 procedure beszol2
   gepelessebesseg 60
-     message0 "Folytassa útját a célja felé!"
-     message1 "Köszönöm, Uram."
+     <entry key='chat.merchant7.choice2a.message0'>message0 "Folytassa útját a célja felé!"</entry>
+     <entry key='chat.merchant7.choice2a.message1'>message1 "Köszönöm, Uram."</entry>
   halt
 end
 
 
 procedure beszol3
   gepelessebesseg 80
-    message0 "Szóval ki a jobb lövô, én vagy te?"
-    message1 "Ez egy fegyvertelen kereskedelmi hajó. Engedjen"
+    <entry key='chat.merchant7.choice2b.message0'>message0 "Szóval ki a jobb lövô, én vagy te?"</entry>
+    <entry key='chat.merchant7.choice2b.message0'>message1 "Ez egy fegyvertelen kereskedelmi hajó. Engedjen"
     message1 "az utunkra, különben jelentem ezt az"
-    message1 "incidenst a felettesének!"
+    message1 "incidenst a felettesének!"</entry>
   uzen3
 end
 
@@ -524,8 +248,7 @@ procedure vvonul
 end
 	</chat>
 	
-	
-	<!-- Blokád küldetéshez üzenetek, de nem tudom melyikhez. (Kereskedők megtámadásakor.) -->
+	<!-- Mission 9 San Sterling smugler. (When attacking merchants.) -->
 	<chat id='kok1'>procedure uzen1
   gepelessebesseg 90
   valaszt 1
