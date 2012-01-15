@@ -34,8 +34,10 @@ public class Mission1 extends Mission {
 			checkMission1Start();
 			checkMission1Task2();
 			checkMission1Complete();
+			checkMainShip();
 		}
 	}
+	
 	@Override
 	public void onBuildingComplete(Planet planet, Building building) {
 		if (world.level == 1) {
@@ -142,12 +144,17 @@ public class Mission1 extends Mission {
 		if (!o0.visible && o0.state == ObjectiveState.ACTIVE && helper.isTimeout("Mission-1-Init")) {
 			helper.objective("Mission-1-Task-1").visible = true;
 			helper.objective("Mission-1-Task-2").visible = true;
-			helper.objective("Mission-1-Task-3").visible = true;
 			helper.showObjective("Mission-1");
 			helper.clearTimeout("Mission-1-Init");
+
+			helper.setMissionTime("Mission-1-Task-3", helper.now() + 72);
 			
 			int mission2Time = 24 * (world.random().nextInt(2) + 7);
 			helper.setMissionTime("Mission-2", mission2Time);
+		}
+		if (helper.canStart("Mission-1-Task-3")) {
+			helper.showObjective("Mission-1-Task-3");
+			helper.clearMissionTime("Mission-1-Task-3");
 		}
 	}
 	/**
@@ -202,16 +209,6 @@ public class Mission1 extends Mission {
 		}
 	}
 	@Override
-	public void onLost(Fleet fleet) {
-		if (world.level == 1 && fleet.owner == player) {
-			Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip1", player);
-			if (ft == null) {
-				helper.gameover();
-				loseGameMovie("loose/destroyed_level_1");
-			}
-		}
-	}
-	@Override
 	public void onLost(Planet planet) {
 		if (world.level == 1) {
 			checkMission1Failure(planet);
@@ -222,5 +219,20 @@ public class Mission1 extends Mission {
 	@Override
 	public void onNewGame() {
 		helper.setTimeout("Mission-1-Init", 8000);
+	}
+	/**
+	 * Check if the main ship still exists.
+	 */
+	void checkMainShip() {
+		Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip1", player);
+		if (ft == null) {
+			if (!helper.hasTimeout("MainShip-Lost")) {
+				helper.setTimeout("MainShip-Lost", 3000);
+			}
+			if (helper.isTimeout("Mainship-Lost")) {
+				helper.gameover();
+				loseGameMovie("loose/destroyed_level_1");
+			}
+		}
 	}
 }

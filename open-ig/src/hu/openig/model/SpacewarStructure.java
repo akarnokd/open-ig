@@ -236,4 +236,9 @@ public class SpacewarStructure extends SpacewarObject {
 	public boolean isDestroyed() {
 		return count <= 0;
 	}
+	@Override
+	public String toString() {
+		return String.format("Type = %s, Count = %s, Owner = %s, HP = %s, Shield = %s, Parent = %s"
+				, type, count, owner.id, hp, shield, (fleet != null ? fleet.name : (planet != null ? planet.id : "")));
+	}
 }

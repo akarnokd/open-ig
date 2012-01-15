@@ -585,6 +585,14 @@ public class Fleet implements Named, Owned, HasInventory {
 		mode = null;
 		task = FleetTask.IDLE;
 	}
+	/** Remove inventory items with zero counts. */
+	public void cleanup() {
+		for (int i = inventory.size() - 1; i >= 0; i--) {
+			if (inventory.get(i).count <= 0) {
+				inventory.remove(i);
+			}
+		}
+	}
 	/**
 	 * Replace a medium or large ship from inventory.
 	 * @param rt the best ship technology
@@ -625,5 +633,9 @@ public class Fleet implements Named, Owned, HasInventory {
 				}
 			}
 		}
+	}
+	@Override
+	public String toString() {
+		return String.format("Fleet = %s (%d), Inventory = %d: %s", name, id, inventory.size(), inventory);
 	}
 }
