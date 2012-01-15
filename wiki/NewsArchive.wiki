@@ -1,8 +1,21 @@
 #summary News archive.
 
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="2" />
 
-=January, 2012=
+= Recent =
+== January, 2012 ==
+
+*January 15, 2012*
+
+Thanks to the great work of Joe, we can finally announce the version 0.94, where the AI and some missions are in place. Enjoy.
+
+Notable improvements:
+
+  * Introduction of the Objectives system, accessible through the TAB key or the checkmark/cross icons in the top-middle statusbar.
+  * Missions 1, 2 and 3 playable
+  * Introduction of the Main Campaign Freeplay (previously the Main Campaign)
+  * The bridge is now fully functional. You can send and receive messages.
+  * Game over is now possible.
 
 *January 11, 2012*
 
@@ -23,7 +36,9 @@ Anyway, here is a new release with improved AI.
 
 *Note: if the game hangs, quit the Launcher.*
 
-=December, 2011=
+= Earlier =
+
+==December, 2011==
 
 *December 30, 2011*
 
@@ -51,7 +66,7 @@ I'm still reading about AI techniques. Most sources just throw up the planning a
 
 After a big rush in another open source [https://sourceforge.net/projects/advance-project/ project] of mine (which finally contained real computer science!) I'm back to Open-IG and doing the next big thing: AI for general operations. I found a reasonable [http://www.gamasutra.com/view/feature/1535/designing_ai_algorithms_for_.php explanation] of how to do it in principle.
 
-= October, 2011 =
+== October, 2011 ==
 
 Finally! The basic ground battle simulation is integrated into the game, but with two major shortcomings:
   * Vehicles move over each other
@@ -59,13 +74,13 @@ Finally! The basic ground battle simulation is integrated into the game, but wit
 
 Note also the memory requirements are now at least 768MB.
 
-= September, 2011 =
+== September, 2011 ==
 
 *September 21, 2011*
 
 The ground and space battles are almost playable. The notable missing feature is the manual deployment of vehicles and the proper damage / hitpoint adjustments.
 
-= August, 2011 =
+== August, 2011 ==
 
 *August 25, 2011*
 
@@ -106,14 +121,14 @@ Therefore, here is an open call to anybody who has the time and willingness to *
 Note that by Murphy's Law we may expect some fine bugs or functional inconveniences to pop up during the recording.
 
 
-= June, 2011 =
+== June, 2011 ==
 
 *June 17, 2011*
 
 It's deliverable time again for FP7; and I'm a bit tired these days. Hopefully, I will be able to continue development in July (see the updated project plan).
 
 
-= May, 2011 =
+== May, 2011 ==
 
 *May 25, 2011*
 
@@ -129,7 +144,7 @@ The following additional changes are planned:
   * Add Time-to-Live for satellites.
 
 
-= April, 2011 =
+== April, 2011 ==
 
 *April 22, 2011*
 
@@ -199,7 +214,7 @@ A temporary cheat: hit CTRL+O to take ownership of an empty or enemy planet, if 
 
 *Note:* no options or load/save implemented yet.
 
-= March, 2011 =
+== March, 2011 ==
 
 *March 30. 2011*
 
@@ -225,7 +240,7 @@ Please use the project's [http://code.google.com/p/open-ig/issues/list Issues] p
 
 Equipment screen created. Not 100% functional as many things will depend on the actual data model coming later.
 
-= February, 2011 =
+== February, 2011 ==
 
 *February 27. 2011*
 
@@ -257,7 +272,7 @@ After mining 1.7 million m^3^ cobblestone, dirt and sand, completing a major ind
 I'll try to set up some milestones about the following 6 months. See the
 [http://code.google.com/p/open-ig/wiki/ProjectPlan2011 project plan for 2011].
 
-= October, 2010 =
+== October, 2010 ==
 
 *October 31. 2010*
 
@@ -276,7 +291,7 @@ It's the yearly article time for my PhD. Therefore, I am unable to do effective 
 
 The next step in the development will be a Launcher with ability to automatically update the game files. In addition, the new Starmap and Planet screens will be integrated with the main game till the end of october.
 
-= September, 2010 =
+== September, 2010 ==
 
 *September 18. 2010*
 
@@ -338,13 +353,13 @@ In addition, a pre-alpha version of the MapEditor has been uploaded. You can pla
 
 I'm working on the new Planet surface renderer and a cool [http://code.google.com/p/open-ig/wiki/MapEditor Map Editor]. It will be available later in this month for download along with the first upgrade pack.
 
-= August, 2010 =
+== August, 2010 ==
 
 *August 21. 2010*
 
 I've freed up some time and continue the development of the 0.8 branch. Until the next release, please check out [http://code.google.com/p/open-ig/wiki/GameUpgradeSystem how to upgrade the game resource files].
 
-= April, 2010 =
+== April, 2010 ==
 
 *April 8. 2010*
 
@@ -356,7 +371,7 @@ Unfortunately, I have little time to develop Open-IG at the moment. I plan to up
 
 I'm still uploading the resource files from a slow connection. Please be patient.
 
-= January, 2010 =
+== January, 2010 ==
 
 *January 18. 2010*
 
@@ -372,7 +387,7 @@ I hope I'll be able to do the development more frequently now. As the game's (no
 
 Until then, you can enjoy the screenshot for the new [http://code.google.com/p/open-ig/wiki/MainMenu Main Menu].
 
-= November, 2009 =
+== November, 2009 ==
 
 *November 20. 2009*
 
@@ -399,7 +414,7 @@ There is a slow and hidden progress behind the [http://code.google.com/p/open-ig
 
 To make thinks work standalone, I have to re-design all existing screens and re-model the backing data structures. There are simply too many pieces to compose and test.
 
-= October, 2009 =
+== October, 2009 ==
 
 *October 7. 2009*
 
@@ -460,7 +475,7 @@ I will create a package to contain common and language specific images. Expected
 
 If someone is willing to donate his German, French or other language version, I can create a small utility program, which extracts the language specific part from your version (~180MB) and you can submit that instead of the entire 1.2GB game.
 
-= August, 2009 =
+== August, 2009 ==
 
 *August 31. 2009*
 
@@ -480,7 +495,7 @@ I started a [http://groups.google.com/group/open-ig-discussion discussion group]
 
 *August 28. 2009*
 
-== TESTERS NEEDED! ==
+=== TESTERS NEEDED! ===
 
 But not for Open-IG at the moment! I'm about to implement the fleet management screen and I need volunteers, who extract the weapon statistics of the original game. The extraction is tedious, because: 
   
@@ -512,7 +527,7 @@ I put the four wife videos on youtube: <a href='http://www.youtube.com/watch?v=C
 
 I also updated the AnimPlay to have a playlist automatically filled in from the ANI files from a given directory, plus added a batch conversion to PNGs & WAV files. Just select the files you want to convert and hit the button. If you have multiple CPUs, the conversion will be even faster!
 
-= July, 2009 =
+== July, 2009 ==
 
 *July 9. 2009*
 
@@ -528,7 +543,7 @@ Unfortunately, I have to do my regular job and don't have time for Open-IG at th
   * Achievement system and display
   * Multiplayer
 
-= June, 2009 =
+== June, 2009 ==
 
 *June 19. 2009*
 
@@ -548,7 +563,7 @@ Unfortunately, I have to do my regular job and don't have time for Open-IG at th
   * User CTRL+R to completely research the currently selected technology
   * You might need to run the game with at least 160MB JVM memory: -Xmx160M
 
-= May, 2009 =
+== May, 2009 ==
 
 *May 29. 2009*
   * Some navigation and UI behavior fixes
@@ -600,7 +615,7 @@ Unfortunately, I have to do my regular job and don't have time for Open-IG at th
     * Create/use a command line script with -Xmx128M parameter
     * Change the JAR file extension assignment and include the -Xmx128M parameter
 
-= February, 2009 =
+== February, 2009 ==
 
 *February 19. 2009*
   * Thanks to Open-IG and a new wide screen monitor, I was able to find two bugs in the latest JDK regarding the new D3D rendering. See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6801614 and http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6804860 for further details as soon as they are available.
@@ -609,7 +624,7 @@ Unfortunately, I have to do my regular job and don't have time for Open-IG at th
 
   * Due some strange rendering behavior in 6u11 I strongly advise to use 6u7 on Windows for running Open-IG. The strange rendering occurs when the game windows are resized to a very large size (>1500 pixels). On these resolutions, the graphics gets misplaced, the dotted lines get garbled. Possible reason might be in the new D3D rendering pipeline (or just my videocard driver is too old).
 
-= January, 2009 =
+== January, 2009 ==
 
 *January 28. 2009*
 
