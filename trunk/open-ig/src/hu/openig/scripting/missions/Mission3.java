@@ -44,6 +44,7 @@ public class Mission3 extends Mission {
 				helper.setMissionTime("Mission-3", helper.now() + 48);
 			}
 			if (helper.canStart("Mission-3")) {
+				world.env.speed1();
 				helper.setTimeout("Mission-3-Message", 2000);
 				incomingMessage("Douglas-Carrier");
 				helper.clearMissionTime("Mission-3");
