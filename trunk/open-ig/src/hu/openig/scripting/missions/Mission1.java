@@ -231,7 +231,7 @@ public class Mission1 extends Mission {
 			if (!helper.hasTimeout("MainShip-Lost")) {
 				helper.setTimeout("MainShip-Lost", 3000);
 			}
-			if (helper.isTimeout("Mainship-Lost")) {
+			if (helper.isTimeout("MainShip-Lost")) {
 				helper.gameover();
 				loseGameMovie("loose/destroyed_level_1");
 			}

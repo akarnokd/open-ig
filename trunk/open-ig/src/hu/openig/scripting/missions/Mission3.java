@@ -138,6 +138,7 @@ public class Mission3 extends Mission {
 			double d = Math.hypot(fi.first.x - sansterling.x, fi.first.y - sansterling.y);
 			
 			if (d < 15) {
+				world.env.speed1();
 				helper.setMissionTime("Mission-3-Timeout", helper.now() + 24);
 				Fleet pf = createFleet(label("pirates.fleet_name"), 
 						player("Pirates"), fi.first.x + 1, fi.first.y + 1);

@@ -901,4 +901,14 @@ public class CommonResources implements GameEnvironment {
 	public int simulationSpeed() {
 		return simulation.speedValue();
 	}
+	@Override
+	public void pause() {
+		simulation.pause();
+	}
+	@Override
+	public void speed1() {
+		if (!simulation.paused()) {
+			simulation.speed(SimulationSpeed.NORMAL);
+		}
+	}
 }
