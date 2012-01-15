@@ -1,8 +1,8 @@
 #summary Game Credits
-
+<center>
 <h1>Imperium Galactica</h1>
 <h2>(C) Digital Reality, 1993-1997</h2>
-<img>DigitalRealityLogo</img>
+<img src='http://open-ig.googlecode.com/svn/trunk/open-ig/images/generic/DigitalRealityLogo.png' alt='DigitalRealityLogo'></img>
 <h2>Development</h2>
 <h3>Programming</h3>
 <p>István Árpád 'Spidy' Kiss</p>
@@ -134,3 +134,4 @@
 
 <h3>Testers</h3>
 <p>József "Joe" Torma</p>
+</center>
