@@ -57,4 +57,7 @@
   * Fixed various other bugs
   * Fixed information screen to display "Colonizable" in the right subpanels.
   * Reduced upgrade level to 2 for Bank, Traders Spaceport, Trade Center
- 
+
+= Earlier =
+
+See ReleaseNotesPre093.
