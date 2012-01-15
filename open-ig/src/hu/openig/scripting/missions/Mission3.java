@@ -45,13 +45,13 @@ public class Mission3 extends Mission {
 			}
 			if (helper.canStart("Mission-3")) {
 				helper.setTimeout("Mission-3-Message", 2000);
-				helper.showObjective("Mission-3");
+				incomingMessage("Douglas-Carrier");
 				helper.clearMissionTime("Mission-3");
-				createCarrierTask();
 			}
 			if (helper.isTimeout("Mission-3-Message")) {
-				incomingMessage("Douglas-Carrier");
 				helper.clearTimeout("Mission-3-Message");
+				helper.showObjective("Mission-3");
+				createCarrierTask();
 			}
 			if (m3.visible && m3.state == ObjectiveState.ACTIVE) {
 				checkCarrierLocation();
