@@ -316,10 +316,10 @@ Reward: Promotion to Grand admiral
 
 == Mission 23 ==
 
-== Task 1 ==
+=== Task 1 ===
 Objective: Talk to the doctor in the Bar
 
-== Task 2 ==
+=== Task 2 ===
 
 Objective: Contact the Earth development center of robotics
 
