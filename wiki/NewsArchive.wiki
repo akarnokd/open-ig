@@ -608,7 +608,7 @@ Unfortunately, I have to do my regular job and don't have time for Open-IG at th
   * Progress is slower than I expected. Creating a good and solid data model supporting skirmish, campaign and multiplayer is hard. But I uploaded the 0.6 version, which includes some style and bug fixes. 
   * Planet surface rendering is now correctly displaying multi-tile elements. Added the original campaign's ~100 planets with radar enabled. I also added the open source [http://www.jcraft.com/jorbis/ JOrbis] OGG player library. I had to slightly modify its source code to adhere the checkstyle rules used in the project and removed lots of unused codes from it. When the application will support custom campaigns, it will allow custom music/sound playback from .ogg or .wav files.
 
-= March, 2009 =
+== March, 2009 ==
 
 *March 7. 2009*
   * Created a package for the newest version of the program. Now, along with the JAR file, I've put the source code into a ZIP file. As the program evolves, unfortunately, the default 64 MB memory for double-clicked JAR programs becomes too sort. There are several options:
