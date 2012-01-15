@@ -2102,6 +2102,7 @@ public class EquipmentScreen extends ScreenBase {
 						// start only at the indexth element of this category
 						if (startIndex == 0) {
 							it.remove();
+							ii.parent = dst;
 							dst.inventory.add(ii);
 							transferCount--;
 						} else {

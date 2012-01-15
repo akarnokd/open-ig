@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class InventoryItem {
 	/** The parent fleet or planet. */
-	public final HasInventory parent;
+	public HasInventory parent;
 	/** The owner. */
 	public Player owner;
 	/** The item's type. */
