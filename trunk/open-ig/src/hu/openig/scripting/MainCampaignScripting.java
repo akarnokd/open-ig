@@ -839,7 +839,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	}
 	@Override
 	public boolean hasMissionTime(String id) {
-		return missiontimer.containsKey("id");
+		return missiontimer.containsKey(id);
 	}
 	@Override
 	public boolean hasTimeout(String id) {
