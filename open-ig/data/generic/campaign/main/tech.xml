@@ -991,7 +991,7 @@
 		factory='spaceship' research-cost='10000' production-cost='12000'
 		level='0' race='pirates' index='0'>
 		<slot-fixed id='Hyperdrive' count='1' item='HyperDrive1' />
-		<slot-fixed id='Laser' count='5' item='Laser1' />
+		<slot-fixed id='Laser' count='3' item='Laser1' />
 	</item>
 	<!-- Sullep destroyer not conclusive and lacks rotation image. I guess there 
 		was not any in the original game. -->
