@@ -671,4 +671,8 @@ public class Planet implements Named, Owned, HasInventory {
 			}
 		}
 	}
+	@Override
+	public String toString() {
+		return String.format("Id = %s, Owner = %s, Race = %s", id, owner != null ? owner.id : null, race);
+	}
 }

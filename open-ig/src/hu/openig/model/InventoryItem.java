@@ -126,6 +126,6 @@ public class InventoryItem {
 	}
 	@Override
 	public String toString() {
-		return String.format("Type = %s, Owner = %s, Count = %s, HP = %s, Shield = %s, Tag = %s", type.id, owner.id, count, hp, shield, tag);
+		return String.format("InventoryItem { Type = %s, Owner = %s, Count = %s, HP = %s, Shield = %s, Tag = %s }", type.id, owner.id, count, hp, shield, tag);
 	}
 }

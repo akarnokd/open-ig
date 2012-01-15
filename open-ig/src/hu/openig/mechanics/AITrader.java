@@ -44,13 +44,13 @@ import java.util.Set;
  */
 public class AITrader implements AIManager {
 	/** List of the trader's fleets. */
-	final List<TraderFleet> fleets = U.newLinkedList();
+	final List<TraderFleet> fleets = U.newArrayList();
 	/** List of the planets with trader's spaceport. */ 
 	final List<Planet> planets = U.newArrayList();
 	// -----------------------------------------------------------------
 	// State
 	/** Map of the landed fleets. */
-	final List<LandedFleet> landed = U.newLinkedList();
+	final List<LandedFleet> landed = U.newArrayList();
 	/** Set of fleets turned back by space battle. */
 	final Set<Fleet> fleetTurnedBack = U.newHashSet();
 	/** The last visited planet of the fleet. */
@@ -75,6 +75,10 @@ public class AITrader implements AIManager {
 		Planet arrivedAt;
 		/** The current task. */
 		FleetTask task;
+		@Override
+		public String toString() {
+			return String.format("LandedFleet { Fleet = %s, Target = %s, Arrived = %s, Task = %s }", fleet, target, arrivedAt, task);
+		}
 	}
 	/**
 	 * Landed fleet's properties.
@@ -87,6 +91,10 @@ public class AITrader implements AIManager {
 		Planet target;
 		/** The time to remain landed. */
 		int ttl;
+		@Override
+		public String toString() {
+			return fleet.toString() + " TTL = " + ttl ;
+		}
 	}
 	/** The time for staying landed. */
 	public static final int LANDING_TTL = 11;

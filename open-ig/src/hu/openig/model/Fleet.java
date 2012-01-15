@@ -636,6 +636,6 @@ public class Fleet implements Named, Owned, HasInventory {
 	}
 	@Override
 	public String toString() {
-		return String.format("Fleet = %s (%d), Inventory = %d: %s", name, id, inventory.size(), inventory);
+		return String.format("Fleet { Name = %s (%d) , Inventory = %d: %s }", name, id, inventory.size(), inventory);
 	}
 }
