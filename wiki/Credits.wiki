@@ -1,5 +1,5 @@
 #summary Game Credits
-<center>
+
 <h1>Imperium Galactica</h1>
 <h2>(C) Digital Reality, 1993-1997</h2>
 <img src='http://open-ig.googlecode.com/svn/trunk/open-ig/images/generic/DigitalRealityLogo.png' alt='DigitalRealityLogo'></img>
@@ -28,7 +28,7 @@
 <h3>Colony graphics</h3>
 <p>Tamás Fodor</p>
 
-<img>colony/buildings/human/colony_hub</img>
+<img src='http://open-ig.googlecode.com/svn/trunk/open-ig/images/generic/colony/buildings/human/colony_hub.png' alt='ColonyHub'></img>
 
 <h3>Producer</h3>
 <p>Jason Schreiber</p>
@@ -93,7 +93,7 @@
 <h1>Open Imperium Galactica</h1>
 <h2>2009-2012</h2>
 
-<img>open-ig-logo</img>
+<img src='http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/open-ig-logo.png' alt='OpenIGLogo'/>
 
 <h2>Helpers</h2>
 <h3>Actor/Actress identifications</h3>
@@ -134,4 +134,3 @@
 
 <h3>Testers</h3>
 <p>József "Joe" Torma</p>
-</center>
