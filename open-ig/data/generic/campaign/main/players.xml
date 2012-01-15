@@ -12,7 +12,9 @@
 	>
 	<!-- Initial inventory.
 	 -->
+	 <!-- Actually, this should be the reward for Mission 3. 
 		<inventory id='Shield1' count='1'/>
+	 -->
 	<!-- Available technology override.
 		<available>
 			<type id='' list=''/>

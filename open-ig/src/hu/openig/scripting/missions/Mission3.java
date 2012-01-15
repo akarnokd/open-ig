@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
@@ -43,10 +44,14 @@ public class Mission3 extends Mission {
 				helper.setMissionTime("Mission-3", helper.now() + 48);
 			}
 			if (helper.canStart("Mission-3")) {
-				incomingMessage("messages/douglas_escort_carrier");
+				helper.setTimeout("Mission-3-Message", 4000);
 				helper.showObjective("Mission-3");
 				helper.clearMissionTime("Mission-3");
 				createCarrierTask();
+			}
+			if (helper.isTimeout("Mission-3-Message")) {
+				incomingMessage("Douglas-Carrier");
+				helper.clearTimeout("Mission-3-Message");
 			}
 			if (m3.visible && m3.state == ObjectiveState.ACTIVE) {
 				checkCarrierLocation();
@@ -55,19 +60,41 @@ public class Mission3 extends Mission {
 				helper.clearMissionTime("Mission-3-Timeout");
 				helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
 				helper.setTimeout("Mission-3-Timeout", 13000);
+				
+				helper.receive("Douglas-Carrier").visible = false;
+				
+				Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Pirates", player("Pirates"));
+				world.removeFleet(fi.first);
+				helper.scriptedFleets().remove(fi.first.id);
+
+				fi = findTaggedFleet("Mission-3-Carrier", player);
+				world.removeFleet(fi.first);
+				helper.scriptedFleets().remove(fi.first.id);
 			}
 			if (helper.isTimeout("Mission-3-Timeout")) {
 				loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
 				helper.clearTimeout("Mission-3-Timeout");
 			}
 			if (helper.isTimeout("Mission-3-Failed")) {
+				helper.receive("Douglas-Carrier").visible = false;
 				helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
 				helper.clearTimeout("Mission-3-Failed");
 				incomingMessage("Douglas-Carrier-Lost");
+				helper.setTimeout("Mission-3-Done", 13000);
 			}
-			if (helper.isTimeout("Mission-3-Success")) {
+			if (helper.isMissionTime("Mission-3-Success")) {
+				helper.receive("Douglas-Carrier").visible = false;
 				helper.setObjectiveState("Mission-3", ObjectiveState.SUCCESS);
-				helper.clearTimeout("Mission-3-Success");
+				helper.clearMissionTime("Mission-3-Success");
+				player.changeInventoryCount(world.researches.get("Shield1"), 1);
+				helper.setTimeout("Mission-3-Done", 13000);
+				Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Carrier", player);
+				world.removeFleet(fi.first);
+				helper.scriptedFleets().remove(fi.first.id);
+			}
+			if (helper.isTimeout("Mission-3-Done")) {
+				helper.objective("Mission-3").visible = false;
+				helper.clearTimeout("Mission-3-Done");
 			}
 		}
 	}
@@ -77,11 +104,13 @@ public class Mission3 extends Mission {
 	void createCarrierTask() {
 		Planet naxos = planet("Naxos");
 		Fleet f = createFleet(label("mission-3.escort_carrier.name"), player, naxos.x + 20, naxos.y + 40);
-		for (InventoryItem ii : f.addInventory(world.researches.get("TradersFreight1"), 1)) {
+		f.addInventory(world.researches.get("TradersFreight1"), 1);
+		for (InventoryItem ii : f.inventory) {
 			ii.tag = "Mission-3-Carrier";
 		}
 		f.task = FleetTask.SCRIPT;
 		moveToDestination(f);
+		helper.scriptedFleets().add(f.id);
 	}
 	/**
 	 * Set the target for the carrier fleet.
@@ -90,6 +119,8 @@ public class Mission3 extends Mission {
 	void moveToDestination(Fleet f) {
 		Planet sansterling = planet("San Sterling");
 		f.waypoints.clear();
+		f.mode = FleetMode.MOVE;
+		f.task = FleetTask.SCRIPT;
 		f.waypoints.add(new Point2D.Double(sansterling.x - 20, sansterling.y - 40));
 	}
 	/**
@@ -100,19 +131,22 @@ public class Mission3 extends Mission {
 		if (m3.state == ObjectiveState.ACTIVE 
 				&& !helper.hasMissionTime("Mission-3-Timeout")
 				&& !helper.hasMissionTime("Mission-3-Success")
-				&& !helper.hasMissionTime("Mission-3-Failed")) {
+				&& !helper.hasTimeout("Mission-3-Failed")) {
 			Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Carrier", player);
 			Planet sansterling = planet("San Sterling");
 			
 			double d = Math.hypot(fi.first.x - sansterling.x, fi.first.y - sansterling.y);
 			
-			if (d < 20) {
+			if (d < 15) {
 				helper.setMissionTime("Mission-3-Timeout", helper.now() + 24);
 				Fleet pf = createFleet(label("pirates.fleet_name"), 
 						player("Pirates"), fi.first.x + 1, fi.first.y + 1);
 				
-				pf.addInventory(world.researches.get("PirateFighter"), 1);
-				pf.addInventory(world.researches.get("PirateDestroyer"), 1);
+				pf.addInventory(world.researches.get("PirateFighter"), 3);
+				for (InventoryItem ii : pf.inventory) {
+					ii.tag = "Mission-3-Pirates";
+				}
+//				pf.addInventory(world.researches.get("PirateDestroyer"), 1);
 				
 				helper.scriptedFleets().add(fi.first.id);
 				helper.scriptedFleets().add(pf.id);
@@ -130,7 +164,7 @@ public class Mission3 extends Mission {
 			helper.setTimeout("Mission-3-Failed", 3000);
 			helper.clearMissionTime("Mission-3-Timeout");
 		} else {
-			helper.setTimeout("Mission-3-Success", 3000);
+			helper.setMissionTime("Mission-3-Success", helper.now() + 9);
 			helper.clearMissionTime("Mission-3-Timeout");
 		}
 		for (int i : new ArrayList<Integer>(helper.scriptedFleets())) {
@@ -138,7 +172,6 @@ public class Mission3 extends Mission {
 			if (f != null) {
 				if (f.owner == player) {
 					moveToDestination(f);
-					helper.scriptedFleets().remove(i);
 				} else
 				if (f.owner == pirates) {
 					world.removeFleet(f);
@@ -240,7 +273,9 @@ public class Mission3 extends Mission {
 				}
 			}
 			completeMission(traderSurvived);
-			war.battle().rewardText = label("mission-3.reward");
+			if (traderSurvived) {
+				war.battle().rewardText = label("mission-3.reward");
+			}
 //			war.battle().rewardImage = imageReward[task];
 		}
 	}

@@ -3834,7 +3834,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				s.item.count = 0;
 			}
 		}
+		Set<Fleet> fleets = new HashSet<Fleet>();
 		for (SpacewarStructure s : structures) {
+			if (s.fleet != null) {
+				fleets.add(s.fleet);
+			}
 			if (s.item != null) {
 				s.item.count += s.count;
 				s.item.hp = s.hp;
@@ -3846,6 +3850,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		// apply losses
 		for (SpacewarStructure s : battle.spaceLosses) {
+			if (s.fleet != null) {
+				fleets.add(s.fleet);
+			}
 			if (s.item != null) {
 				if (s.count > 0) {
 					s.item.count = s.count;
@@ -3867,7 +3874,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				groundLosses = true;
 			}
 		}
-		Set<Fleet> fleets = new HashSet<Fleet>();
 		fleets.add(battle.attacker);
 
 		// if the planet was fired upon

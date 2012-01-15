@@ -197,8 +197,10 @@ public class Mission2 extends Mission {
 			List<SpacewarStructure> sts = war.structures(traders);
 			boolean traderSurvived = !sts.isEmpty();
 			completeTaskN(traderSurvived, task);
-			war.battle().rewardText = format("mission-2.save_trader.reward", moneyReward[task]);
-			war.battle().rewardImage = imageReward[task];
+			if (traderSurvived) {
+				war.battle().rewardText = format("mission-2.save_trader.reward", moneyReward[task]);
+				war.battle().rewardImage = imageReward[task];
+			}
 		}
 	}
 	/**

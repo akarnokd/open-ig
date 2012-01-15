@@ -122,12 +122,30 @@ public class AI implements AIManager {
 		
 		if (health >= switchToFlee) {
 			boolean c = health < switchToCostAttack || defensiveTask.contains(idles.get(0).fleet);
-			for (SpacewarStructure ship : idles) {
-				if (c) {
+			if (c) {
+				for (SpacewarStructure ship : idles) {
 					costAttackBehavior(world, ship);
-				} else {
-					defaultAttackBehavior(world, ship);
 				}
+			} else {
+				Set<SpacewarStructure> ess = U.newHashSet();
+				for (SpacewarStructure ship : idles) {
+					ess.addAll(world.enemiesInRange(ship));
+				}
+				if (ess.isEmpty()) {
+					for (SpacewarStructure ship : idles) {
+						ess.addAll(world.enemiesOf(ship));
+						break;
+					}
+				}
+				List<SpacewarStructure> esl = new ArrayList<SpacewarStructure>(ess);
+				int i = 0;
+				for (SpacewarStructure ship : idles) {
+					ship.attack = esl.get(i);
+					i++;
+					if (i >= esl.size()) {
+						i = 0;
+					}
+				}				
 			}
 			return SpacewarAction.CONTINUE;
 		}
