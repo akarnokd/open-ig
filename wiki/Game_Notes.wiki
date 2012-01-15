@@ -2,6 +2,15 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94 - Missions =
+  * Released: 2012-01-15 13:00 CET
+  * Improvements to the AI ([http://code.google.com/p/open-ig/issues/detail?id=118 Issue #118])
+  * Bug fixes (Issues [http://code.google.com/p/open-ig/issues/detail?id=185 #185], )
+  * Added: mission scripting framework
+  * Created missions 1, 2 and 3, see the Missions page.
+  * Added: missing lightmaps (by Joe) ([http://code.google.com/p/open-ig/issues/detail?id=62 Issue #62])
+  * Added: Use TAB key to display objectives ([http://code.google.com/p/open-ig/issues/detail?id=110 Issue #110]) 
+
 = Version 0.93.540 - Improvements =
   * Released: 2012-01-11 21:10 CET
   * Several AI improvements and fixes
