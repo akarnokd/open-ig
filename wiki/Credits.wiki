@@ -93,7 +93,7 @@
 <h1>Open Imperium Galactica</h1>
 <h2>2009-2012</h2>
 
-<img src='http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/OpenIG_Splash.png' alt='OpenIGLogo'/>
+<img src='http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/OpenIG_Splash_medium.png' alt='OpenIGLogo'/>
 
 <h2>Helpers</h2>
 <h3>Actor/Actress identifications</h3>
