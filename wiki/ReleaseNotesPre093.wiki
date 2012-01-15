@@ -1,1 +1,261 @@
 #summary Release notes, pre v0.93
+
+= Version 0.93.492 - Fixes =
+  * Released: 2011-12-27 13:30 CET
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=133 Issue #133]
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=141 Issue #141]
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=137 Issue #137]
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=128 Issue #128]
+  * Fix for [http://code.google.com/p/open-ig/issues/detail?id=139 Issue #139]
+  * Enhancement [http://code.google.com/p/open-ig/issues/detail?id=140 #140]: immediately researchable technology appears light-blue in the information-technology screen.
+  * Added small arrow to the top-right statusbar to indicate the presence of the screen-menu.
+  * Save now produces an {{{info-*.xml}}} file. Hopefully, next time I ask for a save, they send me the {{{save-*.xml}}} without confusion.
+
+= Version 0.93.490 - Quick fixes =
+  * Released: 2011-12-25 20:20 CET
+  * Fleet inventory issues ([http://code.google.com/p/open-ig/issues/detail?id=133 Issue #133])
+  * Ground unit pathfinding improvements ([http://code.google.com/p/open-ig/issues/detail?id=121 Issue #121])
+
+= Version 0.93.480 - Quick fix =
+  * Released: 2011-12-21 14:30 CET
+  * Fixed NPE on loading a save ([http://code.google.com/p/open-ig/issues/detail?id=127 Issue # 127])
+
+= Version 0.93.475 - Traders =
+  * Released: 2011-12-15 11:30 CET
+  * *You may need to start a new game!*
+  * Fixed sound issues and hangs on Mac systems ([http://code.google.com/p/open-ig/issues/detail?id=114 Issue #114]).
+  * Added AI framework
+  * Added trader fleets: they wander around, can be attacked. If attacked and get below 50% health, they will turn around, return to their last visited planet, and stay there for 10 ingame hours. ([http://code.google.com/p/open-ig/issues/detail?id=117 Issue #117])
+  * Space battle against aliens now considers their attack/defense/social preferences, which determines when they switch tactics between attack any/attack costly ships/flee.
+  * Fix: If a tracked fleet moves outside the radar zone, the follower goes to its last known location and stops.
+  * Added game option to display the radar coverage area similarly to Imperium Galactica 2. ([([http://code.google.com/p/open-ig/issues/detail?id=124 Issue #124])
+  * Label fixes ([http://code.google.com/p/open-ig/issues/detail?id=112 Issue #112])
+  * Right clicking on a fleet or planet on the Starmap screen now jumps to that object ([http://code.google.com/p/open-ig/issues/detail?id=115 Issue #115])
+  * CTRL+Middle click now zooms the view to fit the screen. When starting a new game, the view is also fit to screen. ([http://code.google.com/p/open-ig/issues/detail?id=120 Issue #120])
+  
+
+= Version 0.93.450 - Ground battles =
+  * Released: 2011-10-01 14:30 CET
+  * *You may need to start a new game!*
+  * Added ground battles.
+  * Improved the battle music quality.
+  * Small UI improvements.
+  * Added _statistics_ and _achievements_ button to the starmap screen.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=103 Issue #103] Sullep destroyer image.
+
+= Version 0.93.425 - Fixes =
+  * Released: 2011-08-31 14:00 CET
+  * *You may need to start a new game!*
+  * Added ship and defense firepowers and updated alien ship configurations.
+  * Added option to upgrade the entire fleet's equipment with by clicking on the [+++] button in the equipment screen. The button is only visible if there is opportunity to replace any equipment or add more to the current equipment counts. Any obsolete equipment is placed back into the main inventory ([http://code.google.com/p/open-ig/issues/detail?id=102 Issue #102]). 
+  * Added option to fully fill or empty an inventory slot by SHIFT+Clicking on the +1 and -1 buttons ([http://code.google.com/p/open-ig/issues/detail?id=102 Issue #102]).
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=88 Issue #88] clicking on invisible planets was possible.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=89 Issue #89] missing or incorrect button click sounds.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=90 Issue #90] error messages now appear directly on the statusbar instead of a regular message.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=92 Issue #92] always show equipment configuration when a slot is selected
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=93 Issue #93] fleet speed computation.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=95 Issue #95] empty fleets get removed properly now.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=96 Issue #96] Deployed satellites do not decrease the available amount.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=97 Issue #97] crash while removing equipment.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=98 Issue #98] for firepower, count only beam-type weapons of ships.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=99 Issue #99] cost of Spy Satellite v2.0
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=100 Issue #100] destruction of satellites was not properly reported.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=101 Issue #101] colonized planets with satellites orbiting them no longer gain radar. In addition, any satellites will be placed back into the inventory.
+
+
+= Version 0.93.400 - Button sounds =
+  * Released: 2011-08-24 15:45 CET
+  * Added button sounds ([http://code.google.com/p/open-ig/issues/detail?id=28 Issue #28], [http://code.google.com/p/open-ig/issues/detail?id=53 Issue #53], [http://code.google.com/p/open-ig/issues/detail?id=54 Issue #54], [http://code.google.com/p/open-ig/issues/detail?id=57 Issue #57], [http://code.google.com/p/open-ig/issues/detail?id=77 Issue #77]).
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=81 Issue #81] Fleet speed computation in case of multiple hyperdrive configurations.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=80 Issue #80] when replacing an installed equipment on a ship via the +1 button, the original equipment is removed and added to the available inventory.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=82 Issue #82] hungarian surface type labels.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=84 Issue #84] Garthogs are Empire in hungarian version.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=83 Issue #83] Keyboard arrows pan the starmap in the opposite direction.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=85 Issue #85] if a building can't be placed due money, play sound and send an error message.
+  * Added [http://code.google.com/p/open-ig/issues/detail?id=86 Issue #86] Message for yesterday's trade income.
+  * Added option to limit the auto-repair by setting a minimum required money amount.
+
+= Version 0.93.375 - Game mechanics fixes =
+  * Released: 2011-08-24 15:45 CET
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=43 Issue #43] Auto-build turns off even if there is opportunity for upgrading
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=26 Issue #26] population growth reduced.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=46 Issue #46] if the satellite deployment video was disabled in the options, the game didn't install the satellite.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=45 Issue #45] Video volume was incorrectly set.
+  * Fix multiple issues related to displaying information about planets, fleets and surfaces in face of various radar coverage configurations. ([http://code.google.com/p/open-ig/issues/detail?id=48 Issue #48], [http://code.google.com/p/open-ig/issues/detail?id=49 Issue #49], [http://code.google.com/p/open-ig/issues/detail?id=50 Issue #50], [http://code.google.com/p/open-ig/issues/detail?id=58 Issue #58])
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=55 Issue #55] alien buildings could be turned on-off by the player.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=56 Issue #56] missing label for ship-walk research screen.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=47 Issue #47] Hubble deployment video was incorrect (it played a campaign video instead of the regular).
+  * Fixed issue with alien fleets controllable via keyboard shortcuts on the starmap (temporarily, moving them with M still available for testing purposes).
+  * Fixed crash when displaying equipment for an alien fleet.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=59 Issue #59] uninhabited planets now display "Empty - Colonizable" on the starmap screen.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=60 Issue #60] audio problem when showing or hiding the comm panel on the bridge.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=61 Issue #61] The main menu button in the options screen has been moved back to its original place in the upper right corner.
+  * Fix [http://code.google.com/p/open-ig/issues/detail?id=78 Issue #78] audio support is sometimes strangely implemented on Linux or in OpenJDK.
+
+= Version 0.93.350 - Fixes and small improvements =
+  * Released: 2011-08-20 18:00 CET
+  * *Update* the Equipment screen now resizes vertically with the game window, making it easier to manage a larger list of diverse ships
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=42 Issue #42] planetary shield build limit changed to one-of-a-kind (like the research labs)
+  * *Fix* Initial fleet ships of a new campaign now display equipment slots on equipment screen.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=39 Issue #39] Meson Projector research cost fixed
+  * *Update* planetary population growt now fixed between -2000 and +1000 per day.
+  * *Update* research time computation is now 75% of the research cost in game minutes
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=34 Issue #34] on the research screen, the running research status was sometimes truncated
+  * *Update* The load/save/settings screen changed and contains three tabs: load & save, audio, gameplay
+  * *New* [http://code.google.com/p/open-ig/issues/detail?id=37 Issue #37] option to set the research money percentage on newly started researches, e.g., when set to 200%, all new research will start with double money.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=35 Issue #35]in planetary equipment, adding fighters to a planet requires a space station first (instead of military spaceport).
+  * *Fix* adding vehicles and space stations to planets do not require military spaceport
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=40 Issue #40] switching to the equipment screen while a building research is selected now changes the selection to tanks (in case of a fleet) or to fighters (in case of a planet)
+  * *Fix* fixed some UI behavior on the equipment screen
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=41 Issue #41] when upgrading equipment on a ship, you can now move to the next ship in the selected group by hitting ENTER (SHIFT+ENTER goes backwards)
+  * *Update* [http://code.google.com/p/open-ig/issues/detail?id=25 Issue #25] buildings operational level now requires 50% or more energy and less than 50% damage, previous 50% worker limit has been removed. This implies that undermanned buildings may still operate on efficiency such as 12%.
+
+= Version 0.93.300 - Mostly fixes =
+  * Released: 2011-08-19 17:30
+  * *Fix* sound and music volume adjustment was incorrect.
+  * *Fix* Ship walk elements, Walking around the ship no longer displays a half-transparent white poligon. Instead, move around the mouse cursor to see walk options shown by popup labels.
+  * *Update* error console now includes system information which could be used to report an issue more accurately.
+  * *New* added option to disable animation when deploying a satellite.
+  * *New* added option to disable button sound effects (effects to be added later on).
+  * *New* game options are now saved with the game you are playing. Settings accessible from the main menu affects only new gameplay.
+
+
+= Version 0.93.200 - Small improvements =
+  * Released: 2011-08-17 17:00
+  * *New* Player now starts with a small fleet when starting a new campaign.
+  * *New* Alien planets now have space stations deployed to them like in the original game. You have to start a new campaign.
+  * *New* scrollbars to the starmap screen.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=16 Issue #16]: Auto-repair buildings consumed money even when no building had damage.
+  * *Fix* presentation issue when deleting a save failed.
+  * *Update* [http://code.google.com/p/open-ig/issues/detail?id=20 Issue #20] earthquakes occur rarer and do less damage.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=21 Issue #21] Fusion Plant buildable except desert, rocky, neptoplasm; Solar Plant buildable except frozen, liquid.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=23 Issue #23] Free Nations and Free Traders name was too long on the information screen in Hungarian.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=24 Issue #24] You should be able to deploy space stations and vehicles to a planet without Military spaceport.
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=29 Issue #29] Hospitals and Stadiums had too few worker demands (80 -> 280, 350 -> 860).
+  * *Fix* [http://code.google.com/p/open-ig/issues/detail?id=31 Issue #31] San Sterling was to small, increased the vertical row number by 5 cells.
+
+= Version 0.92 - Music, few fixes and improvements =
+  * Released: 2011-07-19 23:00
+  * Removed upgrade options from Church, Bar, Recreation Center, Park, Stadium, Civil Lab, Mechanical Lab, Computer Lab, AI Lab and Military Lab. When you load a save, these buildings will return to their non-upgraded status (without money reclaim).
+  * Decreased the morale boosting effect of Police stations where the owner race is the same as the population race.
+  * *New:* Added time-to-live options to planetary inventory where satellites reside. 
+    * If a planet does not have any radar building or Hubble2 satellite, the satellites of other races may remain there forever. 
+    * Time-to-live is defined in 10s of game minutes; Survey satellite = 12 hours, Spy satellite = 24 hours, Spy satellite 2 = 96 hours.
+    * The better radar is available to the planet the faster it discovers a radar, e.g., a planet with hubble 2 (radar = 4) and an enemy survey satellite (12 hours) will be discovered within 3 hours.
+  * Improvements to the Load/Save screen to use a smaller XML file for the list of available saves which will reduce the population time for longer lists. Previously existing saves will become a companion XML on the next screen display.
+  * The Main Menu button is now hidden on the settings part of the load/save screen to avoid accidentally leaving the game instead of returning to the previous screen.
+  * *New:* Added music playback with the original 3 tunes.
+  * *Fix:* Some platforms may not support the MUTE audio control in Java which caused NPE. 
+  * *Fix:* The Windows feature of treating ZIP files as folders caused some resource loading problems. From now, the resource locator checks whether a .zip file is actually a directory or not and reads files accordingly.
+  * *New:* Added earthquake effect and notifications.
+
+= Version 0.91 - General improvements =
+  * Released: 2011-04-21 17:30
+  * *Credits* screen added. The main menu has been reordered to contain a label for it. To stop the credits, hit ESC.
+  * [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/questionare.png Test screen] added. You can only see it from the *Testbed* application. You may scroll the list via the mouse wheel.
+  * Created an [http://code.google.com/p/open-ig/wiki/GameGuide#Auto-Build Auto-Build] option.
+  * The *Options* screen has been implemented. Reachable through the main menu or via *ESC* or *O* key within the game.
+    * You can adjust the volume of effects, music and video.
+    * You can turn on auto-repair just like in the original
+    * *New:* Computer voice is fun but only for a few hours. After that, it becomes annoying. However, it is still useful if the computer reports a production or research to be completed or warns about an enemy fleet. Therefore, you may disable the screen switch commentary and notifications separately.
+    * *New:* adjust the credit limit for the Auto-Build option.
+  * In the colony screen within the building panel, the current count of the selected building type is displayed.
+  * Various building and research related amount fixes (money, upgrade, etc.)
+  * *Fix:* The waypoints and targets of the fleet are now saved.
+  * *New:* [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/message_history_screen_menu.png Jump screen menu]. Hold any mouse button down at the top-right corner of the status bar to display the list of available screens (just like in Imperium Galactica 2)
+  * Bottom status bar notifications implemented.
+    * If a message is visible, double click on it to go to its destination (a planet, a production or a research).
+    * *New:* Right click on this bar to show the [http://open-ig.googlecode.com/svn/trunk/open-ig/doc/message_history_screen_menu.png message history]. The history shows the event text, an icon and the game time when it happened. You may double click on any item to go to its target if applicable. You can hide the list by right clicking on the statusbar again. You may use the mouse scroll wheel over the list.
+  * Gameplay changes:
+    * Lower than 50% morale now reduces the population twice as fast
+    * You may only build 1 Water vaporator per planet but gives you +10 morale.
+    * Added shortage notification icons for police.
+  * The planet list table can now be sorted by the columns both ascending and descending: planets, population, morale and problems.
+
+= Version 0.90 - Fleets =
+  * Released: 2011-04-15 23:30
+  * Added functionality to the Equipment screen. [http://code.google.com/p/open-ig/source/browse/trunk/open-ig/doc/equipment-07.png Screenshot].
+    * You may now split fleets, transfer between fleets.
+    * *Cheat:* CTRL+I will make the currently selected item researched and adds one to the inventory
+    * *New feature:* Sell a fleet member. You may now sell even the larger ships from the fleet. You'll get back half of the production cost of the ship and its equipment.
+    * Heavier ships are now presented in a scrollable list instead of randomly placing them around. The list shows the health, shield level.
+    * To rename a fleet, double click on its name. To stop renaming, hit ENTER.
+  * Added functionality to the starmap screen.
+    * Move fleets, attack with the fleet (just visual indicator, no space battle so far)
+    * *New feature:* Waypoint mode. Click on the MOVE command, then hold SHIFT and left click to chain up movements.
+    * *New feature:* Direct move; Hold the SHIFT key and RIGHT click on the map. Direct attack; Hold CTRL and RIGHT click on the map. (You don't need to select the move or attack button.)
+  * Information/Fleets should work now
+  * Colonize an empty planet: build a colony ship and approach an empty planet. Note that some enemy planets may appear empty if you don't have them in a range of a v2.0 radar.
+  * Load and Save screen added. You may now load any previous saves. Saving is just simply adding a new save with the current time, similarly to CTRL+S. Note that the Settings view is not implemented.
+    * You may now return to the Main menu to start a new game instead of relaunching the application
+  * The old setup screen is now hidden. Will be replaced by the new ingame Settings screen mentioned before.
+  * Issue fixes
+    * [http://code.google.com/p/open-ig/issues/detail?id=6 Issue #6] bugs and most missing features
+    * [http://code.google.com/p/open-ig/issues/detail?id=7 Issue #7] bugs and missing features
+    * [http://code.google.com/p/open-ig/issues/detail?id=9 Issue #9] database screen missing labels
+    * [http://code.google.com/p/open-ig/issues/detail?id=10 Issue #10] starmap screen planet listing ordering
+    * [http://code.google.com/p/open-ig/issues/detail?id=11 Issue #11] crash on the information planet listing table
+
+= Version 0.89 - Bar and Database =
+  * Released: 2011-04-10 21:00
+  * Various data model fixes
+  * Statistics screen now working
+  * Database screen added
+  * Bar screen added. Use CTRL+2, CTRL+3 and CTRL+4 to talk to 3 persons (Kelly is not currently available due the lack of story scripting).
+  * Information: Aliens screen added
+  * The new game does not place satellites onto random planets. You have to develop Radar 2.0 to see the nearby planets. Use CTRL+O to take over and start researching Radar 3.0, you should see enough planets in chain to develop Hubble 2, which is the longest range radar.
+  * Various visual and behavior fixes.
+
+= Version 0.88 - Behavior changes =
+  * Released: 2011-04-08 21:00
+  * Gameplay fixes: the simulation now affects the population count
+  * Starmap screen improvements: added a zoom button, added visibility toggle buttons.
+  * Added the option to deploy a satellite: build a survey satellite and deploy it to Center 16 for example.
+  * Fixed the CTRL+O planet takeover to put an initial 5000 person population onto empty planets
+  * Planets information tab: added a new list view which shows the planets in a table: name, population and delta, morale and delta and current problems
+  * A blinking icons now indicate warning conditions (e.g., living space is a bit low), steady icons represents significant problems
+  * Quick save  (CTRL+S) and quick load (CTRL+L) feature added. Saves are stored as {{{save/default/save-YYYY-MM-DD-HH-mm-ss-SSS.xml}}}
+  * Autosave at midnight
+  * The main menu screen has a disabled *Load* option but a working *Continue* option which loads the last save.
+
+= Version 0.87 - Information screen =
+  * Released: 2011-04-06 23:30
+  * Information screen added
+  * Research and production screens updated
+  * Added simulation for:
+    * Research progress
+    * Production progress
+    * Building construction
+    * Building repair
+    * Building upgrade
+    * Day-by-day taxation and morale
+    * Day and night cycles
+
+= Version 0.86 - Colony screen =
+  * Released: 2011-03-30 22:00
+  * Colony screen integrated
+  * Rendering speed improvements
+  * Bug fixes
+
+= Version 0.85 - Research & Production screen =
+  * Released: 2011-03-20 14:30
+  * Research and production screen added
+  * Some fixed in the UI framework
+  * Fixed some image resources
+  * Fixed the infinite restart bug mostly occurring on Linux
+
+= Version 0.84 - Equipment screen =
+  * Released: 2011-03-06 11:30
+  * Equipment screen added.
+  * Rendering fixes.
+  * Resource improvements
+
+= Version 0.83 - New UI framework =
+  * Released: 2011-02-27 11:45
+  * Introduced a new and more composable UI framework for the screens
+  * Shipwalk fixes.
+  * Resource load time small improvements.
+
+= Version 0.82 - Small improvements =
+
+  * Improved the resource loading speed for multi-core systems. This affects the Game, the Map Editor and the Testbed applications too.
