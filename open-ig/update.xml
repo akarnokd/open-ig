@@ -35,7 +35,7 @@
 				The Open Imperium Galactica game.
 			</desc>
 		</general>
-		<execute file='open-ig-%s.jar' memory='768'/>
+		<execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
 			<desc lang='hu'>Szabad játék javítás.</desc>
@@ -177,7 +177,7 @@
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip' sha1='123225ba78e3a02d1d3e43227e4dfd67a9bbcdfe'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-en-0.8.zip' sha1='2964a6bbf5dad6f43c5712c9662024b6808c6010'/>
 	</module>
-	<module id='MapEditor' version='0.51'>
+	<module id='MapEditor' version='0.51' class='hu.openig.editors.MapEditor'>
 		<general url='http://code.google.com/p/open-ig/wiki/MapEditor'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.
@@ -228,6 +228,22 @@
 			<desc lang='hu'>Felülbírálva: 2011-02-27A</desc>
 			<desc lang='en'>Overridden by: 2011-02-27A</desc>
 		</remove>
+	</module>
+	<module id='VideoPlayer' version='0.92' class='hu.openig.tools.VideoPlayer'>
+		<general url='http://code.google.com/p/open-ig/wiki/VideoPlayer'>
+			<desc lang='hu'>A játék videóit játsza le és exportálja.</desc>
+			<desc lang='en'>Plays and exports the videos of the game.</desc>
+		</general>
+		<execute file='videoplayer-%s.jar' memory='512'/>
+		<!-- Release notes -->
+		<notes url='http://code.google.com/p/open-ig/wiki/VideoPlayer_Notes'>
+			<desc lang='hu'>Export javítás.</desc>
+			<desc lang='en'>Export.</desc>
+		</notes>
+		<file url='http://open-ig.googlecode.com/files/videoplayer-0.92.jar' sha1='e2d4aaa2065eccc8a05fcfbdebe2833738d5513c'>
+			<desc lang='hu'>A program fő fájlja.</desc>
+			<desc lang='en'>The program's main file.</desc>
+		</file>
 	</module>
 	<module id='Testbed' version='0.40'>
 		<general url='http://code.google.com/p/open-ig/wiki/Testbed'>
